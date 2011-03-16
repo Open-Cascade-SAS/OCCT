@@ -1,0 +1,37 @@
+-- File:        ContextDependentInvisibility.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ContextDependentInvisibility from StepVisual 
+
+inherits Invisibility from StepVisual 
+
+uses
+
+	InvisibilityContext from StepVisual, 
+	HArray1OfInvisibleItem from StepVisual
+is
+
+	Create returns mutable ContextDependentInvisibility;
+	---Purpose: Returns a ContextDependentInvisibility
+
+
+	Init (me : mutable;
+	      aInvisibleItems : mutable HArray1OfInvisibleItem from StepVisual) is redefined;
+
+	Init (me : mutable;
+	      aInvisibleItems : mutable HArray1OfInvisibleItem from StepVisual;
+	      aPresentationContext : InvisibilityContext from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPresentationContext(me : mutable; aPresentationContext : InvisibilityContext);
+	PresentationContext (me) returns InvisibilityContext;
+
+fields
+
+	presentationContext : InvisibilityContext from StepVisual; -- a SelectType
+
+end ContextDependentInvisibility;

@@ -1,0 +1,109 @@
+-- File:	TDF_Transaction.cdl
+--      	-------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct  1 1997	Creation
+
+
+class Transaction from TDF
+
+	---Purpose: This class offers services to open, commit or
+	--          abort a transaction in a more secure way than
+	--          using Data from TDF. If you forget to close a
+	--          transaction, it will be automaticaly aborted at
+	--          the destruction of this object, at the closure of
+	--          its scope.
+	--          
+	--          In case of catching errors, the effect will be the
+	--          same: aborting transactions until the good current
+	--          one.
+
+uses
+
+    Data  from TDF,
+    Delta from TDF,
+    AsciiString from TCollection
+
+raises
+
+    DomainError, NullObject from Standard
+
+is
+
+    Create(aName : AsciiString from TCollection = "")
+    	returns Transaction from TDF;
+	---Purpose: Creates an empty transaction context, unable to be
+	--          opened.
+
+    Create(aTrans : Transaction from TDF)
+    	returns Transaction from TDF
+    	is private;
+	---Purpose: Private to avoid copy.
+
+    Create(aDF : Data from TDF;
+    	   aName : AsciiString from TCollection = "")
+    	returns Transaction from TDF;
+	---Purpose: Creates a transaction context on <aDF>, ready to
+	--          be opened.
+
+    Initialize(me : in out; aDF : Data from TDF);
+	---Purpose: Aborts all the transactions on <myDF> and sets
+	--          <aDF> to build a transaction context on <aDF>,
+	--          ready to be opened.
+
+    Open(me : in out)
+    	returns Integer from Standard
+    	raises DomainError, NullObject from Standard;
+	---Purpose: If not yet done, opens a new transaction on
+	--          <myDF>. Returns the index of the just opened
+	--          transaction.
+	--          
+	--          It raises DomainError if the transaction is
+	--          already open, and NullObject if there is no
+	--          current Data framework.
+
+    Commit(me : in out;
+    	   withDelta : Boolean from Standard = Standard_False)
+    	returns Delta from TDF;
+	---Purpose: Commits the transactions until AND including the
+	--          current opened one.
+
+    Abort(me : in out);
+	---Purpose: Aborts the transactions until AND including the
+	--          current opened one.
+	--          
+	---C++: alias ~
+
+    Data(me) returns Data from TDF;
+	---Purpose: Returns the Data from TDF.
+	--          
+	---C++: inline
+
+    Transaction(me) returns Integer from Standard;
+	---Purpose: Returns the number of the transaction opened by <me>.
+	--          
+	---C++: inline
+
+    Name(me) returns AsciiString from TCollection;
+	---Purpose: Returns the transaction name.
+	--          
+	---C++: return const &
+
+    IsOpen(me)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if the transaction is open.
+	--          
+	---C++: inline
+
+
+fields
+
+    myDF               : Data from TDF;
+    myUntilTransaction : Integer from Standard;
+    myName             : AsciiString from TCollection;
+
+end Transaction;

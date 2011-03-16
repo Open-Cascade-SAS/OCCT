@@ -1,0 +1,20 @@
+-- File:	StepRepr_ShapeAspectTransition.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ShapeAspectTransition from StepRepr
+inherits ShapeAspectRelationship from StepRepr
+
+    ---Purpose: Representation of STEP entity ShapeAspectTransition
+
+uses
+    HAsciiString from TCollection,
+    ShapeAspect from StepRepr
+
+is
+    Create returns ShapeAspectTransition from StepRepr;
+	---Purpose: Empty constructor
+
+end ShapeAspectTransition;

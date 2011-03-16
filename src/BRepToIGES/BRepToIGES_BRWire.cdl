@@ -1,0 +1,157 @@
+-- File:	BRepToIGES_BRWire.cdl
+-- Created:	Fri Jan 27 11:18:52 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class BRWire from BRepToIGES inherits BREntity from BRepToIGES
+
+    ---Purpose: This class implements the transfer of Shape Entities 
+    --          from Geom To IGES. These can be :
+    --            . Vertex
+    --            . Edge
+    --            . Wire
+  
+
+uses
+
+    Shape                from TopoDS,
+    Vertex               from TopoDS,
+    Edge                 from TopoDS,
+    Wire                 from TopoDS,
+    Face                 from TopoDS,
+    Surface              from Geom,
+    Curve                from Geom2d,
+    Location             from TopLoc,
+    Pnt2d                from gp,
+    IGESEntity           from IGESData,
+    BREntity             from BRepToIGES
+    
+    
+is 
+    
+    Create returns BRWire from BRepToIGES;
+
+
+    Create (BR : BREntity from BRepToIGES)
+    	returns BRWire from BRepToIGES;    
+
+
+    TransferWire   (me        : in out;
+                    start     :        Shape from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Shape entity from TopoDS to IGES
+    --            this entity must be a Vertex or an Edge or a Wire.
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferVertex (me        : in out;
+                    myvertex  :        Vertex from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Vertex entity from TopoDS to IGES
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferVertex (me        : in out;
+                    myvertex  :        Vertex from TopoDS;		    
+    	    	    myedge    :        Edge   from TopoDS;
+                    parameter : out    Real   from Standard)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Vertex entity on an Edge from TopoDS to IGES
+    --            Returns the parameter of myvertex on myedge.
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferVertex (me        : in out;
+                    myvertex  :        Vertex from TopoDS;
+    	    	    myedge    :        Edge   from TopoDS;
+                    myface    :        Face   from TopoDS;
+                    parameter : out    Real   from Standard)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Vertex entity of an edge on a Face 
+    --            from TopoDS to IGES
+    --            Returns the parameter of myvertex on the pcurve 
+    --            of myedge on myface
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferVertex (me        : in out;
+                    myvertex  :        Vertex   from TopoDS;
+    	    	    myedge    :        Edge     from TopoDS;
+                    mysurface :        Surface  from Geom;
+    	    	    myloc     :        Location from TopLoc;
+                    parameter : out    Real     from Standard)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Vertex entity of an edge on a Surface 
+    --            from TopoDS to IGES
+    --            Returns the parameter of myvertex on the pcurve 
+    --            of myedge on mysurface
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferVertex (me        : in out;
+                    myvertex  :        Vertex from TopoDS;
+                    myface    :        Face   from TopoDS;
+                    mypoint   : out    Pnt2d  from gp)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Vertex entity on a Face from TopoDS to IGES
+    --            Returns the parameters of myvertex on myface
+    --            If this Entity could not be converted,
+    --            this member returns a NullEntity.
+
+
+    TransferEdge   (me        : in out;
+                    myedge    :        Edge    from TopoDS; 
+    --  	    IsRevol   : in     Boolean from Standard
+		    isBRepMode: in     Boolean from Standard) 
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Edge entity from TopoDS to IGES
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity. 
+    --            isBRepMode indicates if write mode is BRep 
+    --            (True when called from BRepToIGESBRep and False when from BRepToIGES) 
+    --            If edge is REVERSED and isBRepMode is False 3D edge curve is reversed, 
+    --            otherwise, not.
+
+
+    TransferEdge   (me        : in out;
+                    myedge    :           Edge from TopoDS;
+		    myface    :           Face from TopoDS;
+                    length    : in        Real from Standard;		    
+		    isBRepMode: in     Boolean from Standard) 
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Edge entity on a Face from TopoDS to IGES
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity. 
+    --            isBRepMode indicates if write mode is BRep
+    --            (True when called from BRepToIGESBRep and False when from BRepToIGES) 
+    --            passing into Transform2dCurve()
+
+    TransferWire   (me        : in out;
+                    mywire    :        Wire from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Wire entity from TopoDS to IGES
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity.
+
+
+    TransferWire   (me        : in out;
+                    mywire    :        Wire       from TopoDS;
+		    myface    :        Face       from TopoDS;
+		    mycurve2d : out    IGESEntity from IGESData;
+                    length    : in     Real       from Standard)
+    --		    IsRevol   : in     Boolean    from Standard		    
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Wire entity from TopoDS to IGES.
+    --            Returns the curve associated to mywire in 
+    --            the parametric space of myface.
+    --            If this Entity could not be converted, 
+    --            this member returns a NullEntity. 
+    --            Parameter IsRevol is not used anymore
+    
+end BRWire;

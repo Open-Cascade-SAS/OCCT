@@ -1,0 +1,27 @@
+-- File:	OrFilter.cdl
+-- Created:	Mon Dec  4 17:45:11 1995
+-- Author:	Stephane MORTAUD
+--		<smo@gibson>
+--last modifs by rob 29-01-96 : heritage de CompositionFilter
+---Copyright:	 Matra Datavision 1995
+
+
+class OrFilter from SelectMgr inherits CompositionFilter from SelectMgr
+
+    	---Purpose: A framework to define an or selection filter.
+    	-- This selects one or another type of sensitive entity.
+uses
+
+    Filter       from SelectMgr,
+    Transient    from Standard,
+    EntityOwner  from SelectMgr
+
+is
+
+    Create
+    returns mutable OrFilter from SelectMgr;
+    	---Purpose: Constructs an empty or selection filter.
+    IsOk(me; anobj : EntityOwner from SelectMgr)
+    returns Boolean from Standard ;
+
+end OrFilter;

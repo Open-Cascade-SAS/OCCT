@@ -1,0 +1,78 @@
+-- File:	BRepFeat_Builder.cdl
+-- Created:	Tue Jun 13 14:23:53 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class Builder from BRepFeat inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Provides  the   implementation  of  all    methods
+	--          required by BRepCtx for class using a Builder from
+	--          LocOpe.  All  features have  to inherit  from this
+	--          class. 
+
+uses 
+    Builder           from LocOpe,
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    MapOfShape        from TopTools,
+    ListOfShape       from TopTools,
+    ShapeModification from BRepBuilderAPI
+
+raises
+    NotDone           from StdFail,
+    ConstructionError from Standard
+
+is
+
+    Initialize;
+	---Purpose: Empty constructor.
+	---C++: inline
+	
+	
+    Initialize(S: Shape from TopoDS)
+	---Purpose: Creates a local operation on <S>.
+	---C++: inline
+	-- Raises ConstructionError  if <S> is a null shape.
+	raises ConstructionError from Standard;
+
+
+    Initialize(S,T: Shape from TopoDS)
+	---Purpose: Creates a local operation between <S> and <T>.
+	---C++: inline
+	-- Raises ConstructionError if <S> is a null shape
+	raises ConstructionError from Standard;
+
+
+    Init(me: in out; S: Shape from TopoDS)
+	---Purpose: Initializes a local operation on <S>.
+	---C++: inline
+	raises ConstructionError from Standard
+	--- The exception is raised if <S> is a null shape.
+    	is static;
+
+    Init(me: in out; S,T: Shape from TopoDS)
+	---Purpose: Initializes a local operation between <S> and <T>.
+	-- Raises ConstructionError if <S> is a null shape.
+	---C++: inline
+	raises ConstructionError from Standard
+    	is static;
+
+
+
+--- Methods inherited from MakeShape, that must be redefined.
+
+    Modified(me: in out; F: Shape from TopoDS)
+    	---Purpose: Returns the list of generated Faces.
+	---C++:     return const & 
+    returns ListOfShape from TopTools
+    is redefined static;
+    
+fields
+
+    myBuilder : Builder    from LocOpe   is protected;
+    myMap     : MapOfShape from TopTools is protected;
+    myGenFaces: ListOfShape from TopTools is protected;
+end Builder;

@@ -1,0 +1,91 @@
+-- File:	Sweep_NumShape.cdl
+-- Created:	Wed Feb  3 17:05:01 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993 
+
+
+class NumShape from Sweep 
+
+	---Purpose: Gives    a  simple  indexed   representation  of a
+	--          Directing Edge topology.
+
+uses
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs
+is
+
+    Create returns NumShape from Sweep;
+	---Purpose: Creates a dummy indexed edge.
+
+    Create (Index  : Integer; 
+            Type   : ShapeEnum from TopAbs;
+            Closed : Boolean = Standard_False; 
+            BegInf : Boolean = Standard_False; 
+            EndInf : Boolean = Standard_False) 
+    	returns NumShape from Sweep;
+	
+	---Purpose: Creates a new simple indexed edge.
+	--          
+	--          For an Edge : Index is the  number of vertices (0,
+	--          1 or 2),Type is TopAbs_EDGE, Closed  is true if it
+	--          is a  closed edge, BegInf is true  if  the Edge is
+	--          infinite at the  begenning, EndInf is true  if the
+	--          edge is infinite at the end.
+	--                        
+	--          For a Vertex : Index is the index of the vertex in
+	--          the edge (1 or 2),  Type  is TopAbsVERTEX, all the
+	--          other fields have no meanning.
+	
+    Init (me     : in out;
+    	  Index  : Integer; 
+          Type   : ShapeEnum from TopAbs;
+          Closed : Boolean = Standard_False; 
+          BegInf : Boolean = Standard_False; 
+          EndInf : Boolean = Standard_False) 
+	
+	---Purpose: Reinitialize a simple indexed edge.
+	--          
+	--          For an Edge : Index is the  number of vertices (0,
+	--          1 or 2),Type is TopAbs_EDGE, Closed  is true if it
+	--          is a  closed edge, BegInf is true  if  the Edge is
+	--          infinite at the  begenning, EndInf is true  if the
+	--          edge is infinite at the end.
+	--                        
+	--          For a Vertex : Index is the index of the vertex in
+	--          the edge (1 or 2), Type is TopAbsVERTEX, Closed is
+	--          true if it is the vertex of a closed edge, all the
+	--          other fields have no meanning.
+    is static;	
+
+    Index(me) returns Integer
+	---C++: inline
+    is static;
+	
+    Type(me) returns ShapeEnum from TopAbs
+	---C++: inline
+    is static;
+    
+    Closed(me) returns Boolean
+	---C++: inline
+    is static;
+    
+    BegInfinite(me) returns Boolean
+	---C++: inline
+    is static;
+   
+    EndInfinite(me) returns Boolean
+	---C++: inline
+    is static;
+
+    Orientation(me) returns Orientation from TopAbs
+    is static;
+fields
+
+    myType   : ShapeEnum from TopAbs;
+    myIndex  : Integer;
+    myClosed : Boolean;
+    myBegInf : Boolean;
+    myEndInf : Boolean;
+
+end NumShape;

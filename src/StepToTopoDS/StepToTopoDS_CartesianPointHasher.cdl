@@ -1,0 +1,21 @@
+-- File:	StepToTopoDS_CartesianPointHasher.cdl
+-- Created:	Mon Aug 30 12:14:19 1993
+-- Author:	Martine LANGLOIS
+--		<mla@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CartesianPointHasher from StepToTopoDS
+
+uses
+    CartesianPoint from StepGeom
+
+is
+    HashCode(myclass; K : CartesianPoint from StepGeom; Upper : Integer) 
+    returns Integer;
+	---Purpose: Returns a HasCode value  for  the  CartesianPoint
+	
+    IsEqual(myclass; K1, K2 : CartesianPoint from StepGeom) returns Boolean;
+	---Purpose: Returns True  when the two  CartesianPoint are the same
+
+end CartesianPointHasher;

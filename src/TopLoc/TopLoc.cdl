@@ -1,0 +1,60 @@
+
+-- -- File:	TopLoc.cdl
+-- Created:	Wed Dec 19 16:25:49 1990
+-- Author:	Christophe MARION
+--		<cma@topsn3>
+---Copyright:	 Matra Datavision 1990
+
+
+package TopLoc 
+
+    ---Level : Public. 
+    --  All methods of all  classes will be public.
+
+    ---Purpose: The TopLoc package gives ressources to handle 3D local
+    --          coordinate systems called Locations.
+    --          
+    --          A Location  is a composition of  elementary coordinate
+    --          systems,  each one is  called a  Datum.   The Location
+    --          keeps track of  this composition.
+    --          
+    
+uses
+    Standard,
+    MMgt,
+    TCollection,
+    gp
+
+is
+    pointer TrsfPtr to Trsf from gp;
+    class Datum3D;
+	---Purpose: An elementary 3D coordinate system.
+    
+    private class ItemLocation;
+	---Purpose: Used to implement  the Location. A  Datum3D with a
+	--          power elevation.
+	
+    private class SListOfItemLocation instantiates 
+    	SList from TCollection(ItemLocation from TopLoc);
+	---Purpose: Used to implement the Location.
+    
+    class Location;
+	---Purpose: A  Local Coordinate System.   A list of elementary
+	--          Datums.
+
+    class MapLocationHasher instantiates
+    	  MapHasher from TCollection(Location from TopLoc); 
+	  
+    class MapOfLocation instantiates
+    	  Map from TCollection(Location          from TopLoc,
+	    	    	       MapLocationHasher from TopLoc);
+    	
+    class IndexedMapOfLocation instantiates
+    	  IndexedMap from TCollection(Location          from TopLoc,
+	    	 		      MapLocationHasher from TopLoc);
+    	
+end TopLoc;
+
+
+
+

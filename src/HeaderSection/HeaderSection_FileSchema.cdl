@@ -1,0 +1,34 @@
+-- File:        FileSchema.cdl
+-- Created:     Thu Jun 16 18:05:54 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FileSchema from HeaderSection 
+
+inherits TShared from MMgt
+
+uses
+
+	HArray1OfHAsciiString from Interface,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable FileSchema;
+	---Purpose: Returns a FileSchema
+
+	Init (me : mutable;
+	      aSchemaIdentifiers : mutable HArray1OfHAsciiString from Interface);
+
+	-- Specific Methods for Field Data Access --
+
+	SetSchemaIdentifiers(me : mutable; aSchemaIdentifiers : mutable HArray1OfHAsciiString);
+	SchemaIdentifiers (me) returns mutable HArray1OfHAsciiString;
+	SchemaIdentifiersValue (me; num : Integer) returns mutable HAsciiString;
+	NbSchemaIdentifiers (me) returns Integer;
+
+fields
+
+	schemaIdentifiers : HArray1OfHAsciiString from Interface;
+
+end FileSchema;

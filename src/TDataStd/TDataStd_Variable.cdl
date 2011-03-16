@@ -1,0 +1,154 @@
+-- File:	TDesignVariable_Variable.cdl
+-- Created:	Wed Dec 10 10:37:50 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Variable from TDataStd inherits Attribute from TDF
+
+    ---Purpose: Variable attribute. 
+    --          ==================  
+    --          
+    --           * A variable is  associated to a TDataStd_Real (which
+    --          contains its    current  value) and  a   TDataStd_Name
+    --          attribute (which  contains  its name).  It  contains a
+    --          constant flag, and a Unit
+    --           
+    --          * An  expression may  be assigned  to a variable.   In
+    --          thatcase the expression  is handled by the  associated
+    --          Expression Attribute  and the Variable returns True to
+    --          the method <IsAssigned>.
+
+
+uses Attribute         from TDF,
+     Label             from TDF,
+     ExtendedString    from TCollection,
+     Real              from TDataStd,
+     Expression        from TDataStd,
+     GUID              from Standard,
+     Real              from Standard,  
+     RealEnum          from TDataStd,
+     DataSet           from TDF,
+     RelocationTable   from TDF,
+     AsciiString       from TCollection
+     
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Set (myclass ; label : Label from TDF)
+    ---Purpose: Find, or create, a  Variable attribute.
+    returns Variable from TDataStd;
+    
+    ---Purpose: Real methods
+    --          ============
+
+    Create
+    returns mutable Variable from TDataStd;
+
+    Name (me : mutable; string : ExtendedString from TCollection);
+    ---Purpose:  set or change the name  of the variable, in myUnknown
+    --           and my associated Name attribute.
+
+    Name (me)
+    returns ExtendedString from TCollection;
+    ---Purpose: returns    string   stored  in   the  associated  Name
+    --          attribute.
+    ---C++: return const &  
+
+    Set (me; value : Real from Standard; dimension : RealEnum from TDataStd = TDataStd_SCALAR);
+    ---Purpose: retrieve or create  the associated real attribute  and
+    --          set the  value  <value>.   if creation, dimension   is
+    --          written.
+
+    IsValued (me)
+    ---Purpose: returns True if a Real attribute is associated.
+    returns Boolean from Standard; 
+    
+    Get (me)
+    ---Purpose: returns value stored in associated Real attribute.
+    returns Real from Standard;
+
+    Real (me)
+    ---Purpose: returns associated Real attribute.
+    returns Real from TDataStd;      
+
+    IsAssigned (me) returns Boolean;
+    ---Purpose: returns True if an Expression attribute is associated.    
+
+	--    Assign (me; E : GeneralExpression from Expr)
+    ---Purpose: create(if doesn't exist), set and returns the assigned
+    --          expression attribute.
+    --returns Expression from TDataStd;    
+    
+    Assign (me)
+    ---Purpose: create(if  doesn't exist)  and  returns  the  assigned
+    --           expression  attribute. fill it after.
+    returns Expression from TDataStd;
+
+    Desassign (me);
+    ---Purpose: if <me> is  assigned delete the associated  expression
+    --          attribute.
+
+    Expression (me)
+    ---Purpose: if <me>  is  assigned, returns  associated  Expression
+    --          attribute.
+    returns Expression from TDataStd;
+    
+    IsCaptured (me) returns Boolean;
+    ---Purpose: shortcut for <Real()->IsCaptured()>
+
+    IsConstant (me)
+    ---Purpose: A constant value is not modified by regeneration.
+    returns Boolean from Standard;
+    
+    Unit (me:mutable; unit : AsciiString from TCollection);
+    
+    Unit (me)
+    ---C++: return const &
+    returns AsciiString from TCollection;
+    
+    ---Purpose: to read/write fields
+    --          ===================
+
+    Constant (me : mutable; status : Boolean from Standard);
+    ---Purpose:  if  <status> is   True, this  variable  will not   be
+    --          modified by the solver.
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me) 
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+  
+    References (me; DS : DataSet from TDF)
+    ---Purpose: to export reference to the associated Name attribute.
+    is redefined;
+  
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    isConstant : Boolean      from Standard;
+    myUnit     : AsciiString  from TCollection;
+
+end Variable;

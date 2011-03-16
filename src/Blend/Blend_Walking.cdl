@@ -1,0 +1,280 @@
+-- File:	Blend_Walking.cdl
+-- Created:	Thu Dec  2 11:33:03 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class Walking from Blend 
+    (TheVertex        as any;
+     TheArc           as any;
+     TheSurface       as any;
+     TheCurve         as any;
+     TheVertexTool    as any;
+     TheArcTool       as any;
+     TheSurfaceTool   as any;
+     TheCurveTool     as any;
+     TheTopolTool     as Transient;
+     TheBlendTool     as any;
+     ThePointOnRst    as any; -- as PointOnRst from Blend(TheArc)
+     TheSeqPointOnRst as any; -- as Iterator from Blend(ThePointOnRst)
+     TheExtremity     as any; -- as Extremity from Blend(TheVertex,TheArc,
+                              --    ThePointOnRst,TheSeqPointOnRst)
+     TheLine          as Transient) -- as Line from Blend(TheVertex,TheArc,
+                                    --   ThePointOnRst,TheSeqPointOnRst,
+                                    --   TheExtremity)
+ 
+
+
+	---Purpose: 
+
+uses Point            from Blend, 
+     SequenceOfPoint  from Blend,
+     Status           from Blend,
+     Vector           from math,
+     Matrix           from math,
+     Pnt              from gp,
+     Pnt2d            from gp,
+     Vec              from gp,
+     Vec2d            from gp,
+     Transition       from IntSurf,
+     Function         from Blend,
+     FuncInv          from Blend,
+     State            from TopAbs
+
+
+raises NotDone from StdFail
+
+
+is
+
+    Create(Surf1,Surf2: TheSurface; Domain1,Domain2: TheTopolTool)
+    
+    returns Walking from Blend;
+    
+    
+    SetDomainsToRecadre(me : in out; RecDomain1, RecDomain2: TheTopolTool); 
+    ---Purpose: To define different domains for control and clipping.
+
+    AddSingularPoint(me : in  out;  P :  Point  from  Blend); 
+    ---Purpose: To define singular points computed before walking.
+
+    Perform(me: in out; F       : in out Function from Blend;
+                        FInv    : in out FuncInv  from Blend;
+                        Pdep    : Real from Standard;
+                        Pmax    : Real from Standard;
+			MaxStep : Real from Standard;
+			TolGuide: Real from Standard;
+                        Soldep  : Vector from math;
+                        Tolesp  : Real from Standard;
+                        Fleche  : Real from Standard;
+                        Appro   : Boolean from Standard = Standard_False)
+
+    
+    is static;
+
+
+    PerformFirstSection(me         : in out; 
+                        F          : in out Function from Blend;
+                        Pdep       : Real from Standard;
+                        ParDep     : in out Vector from math;
+                        Tolesp     : Real from Standard; 
+			TolGuide   : Real from  Standard;
+                        Pos1, Pos2 : out State from TopAbs)
+    returns Boolean from Standard
+    is static;
+
+
+    PerformFirstSection(me: in out; 
+                        F       : in out Function from Blend;
+                        FInv    : in out FuncInv  from Blend;
+                        Pdep    : Real from Standard;
+                        Pmax    : Real from Standard;
+                        ParDep  : Vector from math;
+                        Tolesp  : Real from Standard; 
+			TolGuide   : Real from  Standard;
+			RecOnS1 : Boolean from Standard;
+			RecOnS2 : Boolean from Standard;
+                        Psol    : out Real from Standard;
+			ParSol  : out Vector from math)
+
+    returns Boolean from Standard
+    is static;
+
+
+    Continu(me: in out;F       : in out Function from Blend;
+                       FInv    : in out FuncInv  from Blend;
+                       P       : Real from Standard)
+			
+    returns Boolean from Standard
+    raises NotDone from StdFail
+    is static;
+
+
+    Continu(me: in out;F       : in out Function from Blend;
+                       FInv    : in out FuncInv  from Blend;
+                       P       : Real from Standard;
+    	    	       OnS1    : Boolean from Standard)
+			
+    returns Boolean from Standard
+    raises NotDone from StdFail
+    is static;
+
+    
+    Complete(me: in out;F       : in out Function from Blend;
+                        FInv    : in out FuncInv  from Blend;
+                        Pmin    : Real from Standard)
+			
+    returns Boolean from Standard
+    raises NotDone from StdFail
+    is static;
+
+
+    ClassificationOnS1(me : in out; 
+    	    	       C  : Boolean from Standard) 
+    is static;
+
+
+    ClassificationOnS2(me : in out;
+    	    	       C  : Boolean from Standard) 
+    is static;
+
+
+    Check2d(me : in out;
+    	    C  : Boolean from Standard) 
+    is static;
+
+
+    Check(me : in out;
+    	  C  : Boolean from Standard) 
+    is static;
+
+    TwistOnS1(me) returns Boolean from Standard 
+    ---C++: inline
+    is static;
+
+    TwistOnS2(me) returns Boolean from Standard 
+    ---C++: inline
+    is static;
+
+    InternalPerform (me: in out;F       : in out Function from Blend;
+                                FInv    : in out FuncInv  from Blend;
+                                Bound   : Real from Standard)
+			
+    is static private;
+
+
+    IsDone(me)
+    
+    returns Boolean from Standard
+    ---C++: inline
+
+    is static;
+
+
+
+
+    Line(me)
+    
+    returns TheLine
+    ---C++: inline
+    ---C++: return const&
+	
+    raises NotDone from StdFail
+
+    is static;
+
+    ArcToRecadre(me: in out;  
+    	    	 OnFirst: Boolean from Standard;
+                 Sol: Vector from math; 
+		 PrevIndex  :  Integer; 
+                 lpt2d      : out Pnt2d  from  gp; 
+                 pt2d       : out Pnt2d  from  gp; 
+                 ponarc     : out  Real)
+    returns Integer from Standard
+    is static private;
+
+
+    Recadre(me: in out; FInv : in out FuncInv from Blend;
+                        OnFirst: Boolean from Standard;
+                        Sol: Vector from math;
+			Solrst : out Vector from math;
+			Indexsol: out Integer from Standard;
+    	    	    	IsVtx: out Boolean from Standard;
+                        Vtx: out TheVertex; 
+                        Extrap  :  Real  =  0.0)			
+    returns Boolean from Standard
+    is static private;
+
+
+    Transition(me:in out; OnFirst: Boolean from Standard;
+    	                  A: TheArc; Param: Real from Standard;
+			  TLine,TArc: out Transition from IntSurf)
+
+    is static private;
+
+
+    MakeExtremity(me:in out; Extrem : in out TheExtremity;
+    	                     OnFirst: Boolean from Standard;
+                             Index  : Integer from Standard;
+    	                     Param  : Real from Standard;
+			     IsVtx  : Boolean from Standard;
+			     Vtx    : TheVertex)
+
+    is static private; 
+     
+    MakeSingularExtremity(me:in out;  
+                          Extrem : in out TheExtremity; 
+    	                  OnFirst: Boolean from Standard;
+			  Vtx    : TheVertex)
+
+    is static private;
+
+
+    CheckDeflection(me: in out; OnFirst   : Boolean from Standard;
+                                CurPoint  : Point from Blend) 
+    returns Status from Blend
+    is static private;
+
+
+    TestArret(me: in out; F    : in out Function from Blend;
+                          State: Status from Blend; 
+                          TestDeflection : Boolean =  Standard_True; 
+			  TestSolution   : Boolean = Standard_True; 
+                          TestLengthStep : Boolean  = Standard_False)
+    returns Status from Blend
+    is static private;
+
+
+
+fields
+    previousP    : Point            from Blend;
+    line         : TheLine;
+    sol          : Vector           from math; 
+    jalons       : SequenceOfPoint  from Blend; 
+    surf1        : TheSurface;
+    surf2        : TheSurface;
+    domain1      : TheTopolTool;
+    domain2      : TheTopolTool;
+    recdomain1   : TheTopolTool;
+    recdomain2   : TheTopolTool;
+
+    tolesp       : Real             from Standard;
+    tolgui       : Real             from Standard;
+    pasmax       : Real             from Standard;
+    fleche       : Real             from Standard;
+    param        : Real             from Standard;  
+    sens         : Real             from Standard;
+    
+    done         : Boolean          from Standard; 
+    rebrou       : Boolean          from Standard;
+    iscomplete   : Boolean          from Standard;
+    comptra      : Boolean          from Standard;
+    clasonS1     : Boolean          from Standard;
+    clasonS2     : Boolean          from Standard;
+    check2d      : Boolean          from Standard; 
+    check        : Boolean          from Standard; 
+    twistflag1   : Boolean          from Standard;
+    twistflag2   : Boolean          from Standard;
+end Walking;

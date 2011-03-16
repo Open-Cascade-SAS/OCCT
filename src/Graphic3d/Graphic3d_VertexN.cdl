@@ -1,0 +1,94 @@
+--
+-- File:	Graphic3d_VertexN.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+-- Modified:	03-02-98 : FMN ; Add Flag Normal
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class VertexN from Graphic3d inherits Vertex from Graphic3d
+
+	---Version:
+
+	---Purpose: This class allows the creation and update of
+	--	    a vertex with a 3D normal.
+
+	---Keywords: Vertex, Normal, Coordinate, Point
+
+	---Warning:
+	---References:
+
+uses
+
+	Vector	from Graphic3d
+
+is
+
+	Create
+		returns VertexN from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with 0.0, 0.0, 0.0 coordinates
+	--	    for which the normal is 0.0, 0.0, 1.0.
+
+	Create ( AX, AY, AZ	: Real from Standard;
+		 ANX, ANY, ANZ	: Real from Standard;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexN from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with coordinates <AX>, <AY>, <AZ> and
+	--	    for which the normal is <ANX>, <ANY>, <ANZ>.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	Create ( APoint		: Vertex from Graphic3d;
+		 AVector	: Vector from Graphic3d;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexN from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point in <APoint> for which the normal is <AVector>. 
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetNormal ( me			: in out;
+		    NXnew, NYnew, NZnew	: Real from Standard;
+		    FlagNormalise  : Boolean from Standard = Standard_True )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the normal to the point <me>.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Normal ( me;
+		 ANX, ANY, ANZ	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the normal to the point <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_VertexN
+--
+-- Purpose	:	Declaration of variables specific to points.
+--
+-- Reminder	:	A point is defined by its coordinates and its normal.
+
+	-- the normale to the point
+	MyDX	:	ShortReal from Standard;
+	MyDY	:	ShortReal from Standard;
+	MyDZ	:	ShortReal from Standard;
+
+end VertexN;

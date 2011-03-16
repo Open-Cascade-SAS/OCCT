@@ -1,0 +1,15 @@
+#ifndef _Geom2d_Curve_HeaderFile
+#include <Geom2d_Curve.hxx>
+#endif
+#ifndef _TColgp_HArray1OfPnt2d_HeaderFile
+#include <TColgp_HArray1OfPnt2d.hxx>
+#endif
+#ifndef _SelectBasics_EntityOwner_HeaderFile
+#include <SelectBasics_EntityOwner.hxx>
+#endif
+#ifndef _SelectBasics_ListOfBox2d_HeaderFile
+#include <SelectBasics_ListOfBox2d.hxx>
+#endif
+#ifndef _ISession2D_SensitiveCurve_HeaderFile
+#include <ISession2D_SensitiveCurve.hxx>
+#endif

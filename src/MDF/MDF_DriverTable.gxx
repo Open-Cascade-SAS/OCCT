@@ -1,0 +1,138 @@
+// File:	MDF_DriverTable.gxx
+//      	-------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	May  6 1997	Creation
+
+
+#include TheHDriver_hxx
+#include MDF_DataMapIteratorOfTypeDriverListMap_hxx
+#include MDF_DriverList_hxx
+
+
+//=======================================================================
+//function : MDF_DriverTable
+//purpose  : 
+//=======================================================================
+
+MDF_DriverTable::MDF_DriverTable() :
+myVersion(-1)
+{}
+
+
+//=======================================================================
+//function : SetDriver
+//purpose  : Sets a driver in its List,
+//           in decreasing version number order
+//=======================================================================
+
+void MDF_DriverTable::SetDriver
+(const Handle(TheHDriver)& anHDriver) 
+{
+  const Handle(Standard_Type)& type = anHDriver->SourceType();
+  if (myMapOfLst.IsBound(type)) {
+    MDF_DriverList& lst = myMapOfLst.ChangeFind(type);
+    if (lst.IsEmpty()) {
+      lst.Append(anHDriver);
+    }
+    else {
+      Standard_Integer driverVersion = anHDriver->VersionNumber();
+      Standard_Integer currentVersion;
+      for (MDF_ListIteratorOfDriverList itr(lst); itr.More(); itr.Next()) {
+	const Handle(TheHDriver)& driver = itr.Value();
+	currentVersion = driver->VersionNumber();
+	if (driverVersion == currentVersion) {
+	  lst.Remove(itr);
+	  if (lst.IsEmpty()) lst.Append(anHDriver);
+	  else               lst.InsertBefore(anHDriver,itr);
+	  break;
+	}
+	else if (driverVersion > currentVersion) {
+	  lst.InsertAfter(anHDriver,itr);
+	  break;
+	}
+      }
+    }
+  }
+  else {
+    MDF_DriverList lst;
+    lst.Append(anHDriver);
+    myMapOfLst.Bind(type,lst);
+  }
+  myMap.Clear();
+}
+
+
+//=======================================================================
+//function : SetDrivers
+//purpose  : 
+//=======================================================================
+
+void MDF_DriverTable::SetDrivers
+(const Handle(TheDriverHSeq)& aDriverHSeq) 
+{
+  const Standard_Integer upper = aDriverHSeq->Length();
+  for (Standard_Integer i = 1; i <= upper; ++i)
+    SetDriver(aDriverHSeq->Value(i));
+}
+
+
+//=======================================================================
+//function : GetDrivers
+//purpose  : 
+//=======================================================================
+
+const TheTypeDriverMap& MDF_DriverTable::GetDrivers
+(const Standard_Integer aVersion)
+{
+  if ((myMap.IsEmpty()) || (myVersion != aVersion)) {
+    // Rebuild the map.
+    Handle(TheHDriver) driver;
+    MDF_DataMapIteratorOfTypeDriverListMap itr(myMapOfLst);
+    for ( ; itr.More(); itr.Next()) {
+      const Handle(Standard_Type)& type = itr.Key();
+      if (MDF_DriverTable::GetDriver(type, driver, aVersion))
+	myMap.Bind(type, driver);
+    }
+    myVersion = aVersion;
+  }
+  return myMap;
+}
+
+//=======================================================================
+//function : GetDriver
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MDF_DriverTable::GetDriver
+(const Handle(Standard_Type)& aType,
+ Handle(TheHDriver)& anHDriver,
+ const Standard_Integer aVersion) const
+{
+  Standard_Boolean found = Standard_False;
+  if (myMapOfLst.IsBound(aType)) {
+    const MDF_DriverList& lst = myMapOfLst.Find(aType);
+    if ( (aVersion == 0) && !lst.IsEmpty() ) {
+      found = Standard_True;
+      anHDriver = lst.First();
+    }
+    else {
+      for (MDF_ListIteratorOfDriverList itr(lst); itr.More(); itr.Next()) {
+	const Handle(TheHDriver)& driver = itr.Value();
+	if (driver->VersionNumber() >= aVersion) {
+	  found = Standard_True;
+	  anHDriver = driver;
+	  break;
+	}
+      }
+    }
+  }
+  return found;
+}
+
+
+

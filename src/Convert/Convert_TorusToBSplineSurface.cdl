@@ -1,0 +1,64 @@
+-- File:	 TorusToBSplineSurface.cdl
+-- Created:	 Thu Oct 10 15:57:19 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+class TorusToBSplineSurface  from Convert
+
+        --- Purpose :
+        --  This algorithm converts a bounded Torus into a rational
+        --  B-spline surface. The torus is a Torus from package gp. 
+        --  The parametrization of the torus is :
+        --  P (U, V) = 
+        --     Loc  +  MinorRadius * Sin(V) * Zdir +
+        --     (MajorRadius+MinorRadius*Cos(V)) *  (Cos(U)*Xdir + Sin(U)*Ydir)
+        --  where Loc is the center of the torus, Xdir, Ydir and Zdir are the 
+        --  normalized directions of the local cartesian coordinate system of
+        --  the Torus. The parametrization range is U [0, 2PI], V [0, 2PI].
+        --- KeyWords :
+        --  Convert, Torus, BSplineSurface.
+
+inherits ElementarySurfaceToBSplineSurface
+
+uses Torus from gp
+
+raises DomainError from Standard
+
+is
+
+  Create (T : Torus; U1, U2, V1, V2 : Real)   returns TorusToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-spline surface as the same orientation as the 
+       --  torus in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
+        --  Raised if V1 = V2 or V1 = V2 + 2.0 * Pi
+
+
+  Create (T : Torus; 
+          Param1, Param2 : Real;
+          UTrim : Boolean = Standard_True)
+        returns TorusToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-spline surface as the same orientation as the 
+       --  torus in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if Param1 = Param2 or Param1 = Param2 + 2.0 * Pi
+
+
+  Create (T : Torus)   returns TorusToBSplineSurface;
+       --- Purpose : 
+       --  The equivalent B-spline surface as the same orientation as the 
+       --  torus in the U and V parametric directions.
+
+
+end TorusToBSplineSurface;
+
+
+
+

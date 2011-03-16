@@ -1,0 +1,36 @@
+//=======================================================================
+//function : Adaptor3d_GenHSurface
+//purpose  : 
+//=======================================================================
+
+Adaptor3d_GenHSurface::Adaptor3d_GenHSurface () {}
+
+//=======================================================================
+//function : Adaptor3d_GenHSurface
+//purpose  : 
+//=======================================================================
+
+Adaptor3d_GenHSurface::Adaptor3d_GenHSurface (const TheSurface& S):
+       mySurf(S)
+{}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+void Adaptor3d_GenHSurface::Set (const TheSurface& S)
+{
+  mySurf = S;
+}
+
+//=======================================================================
+//function : Surface
+//purpose  : 
+//=======================================================================
+
+const Adaptor3d_Surface& Adaptor3d_GenHSurface::Surface () const
+{
+  return mySurf;
+}
+

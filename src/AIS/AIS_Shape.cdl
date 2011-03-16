@@ -1,0 +1,296 @@
+-- File:	AIS_Shape.cdl
+-- Created:	Fri Dec 20 15:18:05 1996
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--	     Redefines the Color(),Material(),Transparency() methods 
+--	     for taking in acount the current facing model.
+--   GG :   BUC60536 The compute methods must be defined "protected" 
+--	and no more "private"
+
+---Copyright:	 Matra Datavision 1996
+
+
+class Shape from AIS inherits InteractiveObject from AIS
+
+	---Purpose: A framework to manage presentation and selection of shapes.
+    	-- AIS_Shape is the interactive object which is used the
+    	-- most by   applications. There are standard functions
+    	-- available which allow you to prepare selection
+    	-- operations on the constituent elements of shapes -
+    	-- vertices, edges, faces etc - in an open local context.
+    	-- The selection modes specific to "Shape" type objects
+    	-- are referred to as Standard Activation Mode. These
+    	-- modes are only taken into account in open local
+    	-- context and only act on Interactive Objects which
+    	-- have redefined the virtual method
+    	-- AcceptShapeDecomposition so that it returns true.
+    	-- Several advanced functions are also available. These
+    	-- include functions to manage deviation angle and
+    	-- deviation coefficient - both HLR and non-HLR - of
+    	-- an inheriting shape class. These services allow you to
+    	-- select one type of shape interactive object for higher
+    	-- precision drawing. When you do this, the
+    	-- AIS_Drawer::IsOwn... functions corresponding to the
+    	-- above deviation angle and coefficient functions return
+    	-- true indicating that there is a local setting available
+    	-- for the specific object.
+        
+uses
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Box                   from Bnd,
+    ShapeEnum             from TopAbs,
+    Shape                 from TopoDS,
+    GraphicObject         from Graphic2d,
+    NameOfMaterial        from Graphic3d ,
+    ---NameOfPhysicalMaterial  from Graphic3d ,
+    MaterialAspect        from Graphic3d, 
+    Presentation          from Prs3d,
+    Projector             from Prs3d,
+    PresentationManager2d from PrsMgr,
+    PresentationManager3d from PrsMgr,
+    Selection             from SelectMgr,
+    KindOfInteractive     from AIS,
+    Transformation        from Geom,
+    Drawer                from Prs3d
+ is
+
+    Create(shap: Shape from TopoDS) 
+    returns mutable Shape from AIS;
+    	---Purpose: Initializes construction of the shape shap from wires,
+    	-- edges and vertices.
+        
+    Signature(me) returns Integer from Standard is redefined virtual ;
+    	---Purpose: Returns index 0. This value refers to SHAPE from TopAbs_ShapeEnum
+        
+    Type(me) returns KindOfInteractive from AIS is redefined virtual;
+    	---Purpose: Returns Object as the type of Interactive Object.
+
+    AcceptShapeDecomposition(me) returns Boolean from Standard is redefined virtual;
+    	---Purpose: Returns true if the Interactive Object accepts shape decomposition.
+    
+    Set(me:mutable;ashap : Shape from TopoDS) is static;
+	---Purpose: Constructs an instance of the shape object ashape.
+    	---C++: inline
+
+    Shape(me)  returns Shape from TopoDS ;
+   	---Purpose: Returns this shape object.
+        ---C++: inline
+  	---C++: return const&
+
+    
+    --------------------------------------------------------------------- 
+    SetOwnDeviationCoefficient(me: mutable) returns Boolean from Standard ;
+    	---Purpose: Sets a local value for deviation coefficient for this specific shape.                                                                                  
+    SetOwnHLRDeviationCoefficient(me: mutable) returns Boolean from Standard ;
+    	---Purpose: Sets a local value for HLR deviation coefficient for this specific shape.                                                             
+    SetOwnDeviationAngle(me: mutable) returns Boolean from Standard ;
+    	---Purpose: Sets a local value for deviation angle for this specific shape.
+        
+    SetOwnHLRDeviationAngle(me: mutable) returns Boolean from Standard ;
+    	---Purpose: Sets a local value for HLR deviation angle for this specific shape.
+    
+
+    SetOwnDeviationCoefficient(me: mutable; aCoefficient: Real from Standard) ;  
+    	---Purpose: Sets a local value for deviation coefficient for this specific shape.
+
+    SetOwnHLRDeviationCoefficient(me: mutable; aCoefficient : Real from Standard) ;  
+    	---Purpose: sets myOwnHLRDeviationCoefficient field in AIS_Drawer &
+    	--          recomputes presentation 
+        
+    SetAngleAndDeviation(me:     mutable; anAngle: Real from Standard) ;  
+    	---Purpose: this compute a new angle and Deviation from the value anAngle               
+    	--   and set the values stored in myDrawer with these that become local to the shape
+
+    UserAngle(me) returns Real from Standard;
+    	---Purpose: gives back the angle initial value put by the User.
+    
+    SetOwnDeviationAngle(me: mutable; anAngle: Real from Standard) ;  
+    	---Purpose: sets myOwnDeviationAngle field in AIS_Drawer & recomputes presentation
+    
+    
+    SetHLRAngleAndDeviation(me:     mutable; anAngle: Real from Standard) ;  
+    	---Purpose: this compute a new Angle and Deviation from the value anAngle for HLR               
+    	--   and set the values stored in myDrawer for with these that become local to the shape
+
+    SetOwnHLRDeviationAngle(me: mutable; anAngle: Real from Standard) ;  
+    	---Purpose: sets myOwnHLRDeviationAngle field in AIS_Drawer & recomputes presentation
+    
+
+    OwnDeviationCoefficient(me; aCoefficient : out Real from Standard ;
+                                aPreviousCoefficient : out Real from Standard ) returns Boolean from Standard;
+    	---Purpose:   Returns true and the values of the deviation
+    	-- coefficient aCoefficient and the previous deviation
+    	-- coefficient aPreviousCoefficient. If these values are
+    	-- not already set, false is returned.
+    
+    OwnHLRDeviationCoefficient(me; aCoefficient : out Real from Standard;
+                                   aPreviousCoefficient : out Real from Standard ) returns Boolean from Standard;
+     	---Purpose:  Returns   true and the values of the HLR deviation
+    	-- coefficient aCoefficient and the previous HLR
+    	-- deviation coefficient aPreviousCoefficient. If these
+    	-- values are not already set, false is returned.
+                   
+    OwnDeviationAngle(me; anAngle: out Real from Standard;
+    	                  aPreviousAngle : out Real from Standard ) returns Boolean from Standard;
+     	---Purpose: Returns true and the values of the deviation angle
+    	-- anAngle and the previous deviation angle aPreviousAngle.
+    	-- If these values are not already set, false is returned.
+    
+
+    OwnHLRDeviationAngle(me; anAngle : out Real from Standard ;
+                             aPreviousAngle : out Real from Standard ) returns Boolean from Standard;
+     	---Purpose: Returns true and the values   of the HLR deviation
+    	-- angle anAngle and of the previous HLR deviation
+    	-- angle aPreviousAngle. If these values are not
+    	-- already set, false is returned.
+
+
+
+
+
+                    ---Category: Redefine Compute Methods...
+
+    Compute(me                   : mutable;
+            aPresentationManager : PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation from Prs3d;
+    	    aMode                : Integer from Standard = 0) 
+    is redefined virtual protected;
+
+    Compute(me                   : mutable;
+            aPresentationManager : PresentationManager2d from PrsMgr;
+            aPresentation        : mutable GraphicObject from Graphic2d;aMode:Integer from Standard = 0) 
+    is redefined virtual protected;
+  
+    Compute(me                   : mutable;
+    	    aProjector           : Projector from Prs3d;
+            aPresentation        : mutable Presentation from Prs3d)
+    is redefined virtual protected;
+
+    Compute(me                   : mutable;
+    	    aProjector           : Projector from Prs3d;
+	    aTrsf                : Transformation from Geom;
+	    aPresentation        : mutable Presentation from Prs3d)
+    is redefined virtual protected;
+    
+
+
+    ComputeSelection(me          : mutable;
+    	    	     aSelection  : mutable Selection from SelectMgr;
+    	    	     aMode       : Integer from Standard)
+    is redefined virtual protected; 
+				
+
+	    ---Category: The Attributes to be redefined
+
+    
+    SetColor(me:mutable;aColor:NameOfColor from Quantity) 
+    is redefined virtual;
+    	---Purpose: Sets the color aColor in the reconstructed
+    	-- compound shape. Acts via the Drawer methods below on the appearance of:
+    	-- -   free boundaries:
+    	--   AIS_Drawer_FreeBoundaryAspect,
+    	-- -   isos: AIS_Drawer_UIsoAspect,
+    	--   AIS_Drawer_VIsoAspect,
+    	-- -   shared boundaries:
+    	--   AIS_Drawer_UnFreeBoundaryAspect,
+    	-- -   shading: AIS_Drawer_ShadingAspect,
+    	-- -   visible line color in hidden line mode:
+    	--   AIS_Drawer_SeenLineAspect
+    	-- -   hidden line color in hidden line mode:
+    	--   AIS_Drawer_HiddenLineAspect.
+        
+    SetColor(me:mutable;aColor:Color from Quantity) 
+    is redefined virtual;
+
+    UnsetColor(me:mutable) is redefined virtual;
+    	---Purpose: Removes settings for color in the reconstructed compound shape.
+        
+    SetWidth(me:mutable; aValue:Real from Standard) is  redefined virtual;
+    	---Purpose: Sets the value aValue for line width in the reconstructed compound shape.
+    UnsetWidth(me:mutable) is redefined virtual;
+    	---Purpose: Removes the setting for line width in the reconstructed compound shape.
+
+   SetMaterial(me:mutable;aName:NameOfMaterial from Graphic3d) is redefined virtual;
+
+    SetMaterial(me:mutable;aName:MaterialAspect from Graphic3d) is redefined virtual;
+    	---Purpose: Allows you to provide settings for the material aName
+    	-- in the reconstructed compound shape.
+        
+    UnsetMaterial(me:mutable) is redefined virtual;
+    	--- Purpose: Removes settings for material in the reconstructed compound shape.
+        
+    SetTransparency(me:mutable;aValue : Real from Standard=0.6) is redefined virtual;  
+    	---Purpose: Sets the value aValue for transparency in the reconstructed compound shape.
+    
+    UnsetTransparency(me:mutable) is redefined virtual;
+    	---Purpose: Removes the setting for transparency in the reconstructed compound shape.
+ 
+    BoundingBox(me:mutable) returns Box from Bnd is virtual;
+    	---Purpose: Constructs a bounding box with which to reconstruct
+    	-- compound topological shapes for presentation.
+   	---C++: return const &
+
+    Color(me) returns NameOfColor from Quantity is redefined;
+    	---Purpose: Returns the NameOfColor attributes of the shape accordingly to
+    	--  the current facing model;
+
+    Color(me; aColor: out Color from Quantity) is redefined;
+    	---Purpose: Returns the Color attributes of the shape accordingly to
+    	--  the current facing model;
+
+    Material(me) returns NameOfMaterial from Graphic3d is redefined;
+    	---Purpose: Returns the NameOfMaterial attributes of the shape accordingly to
+    	--  the current facing model;
+    
+    Transparency(me) returns Real from Standard is redefined;
+    	---Purpose: Returns the transparency attributes of the shape accordingly to
+    	--  the current facing model;
+
+
+		    ---Category: 
+
+
+    SelectionType(myclass; aDecompositionMode : Integer from Standard) 
+    returns ShapeEnum from TopAbs;
+    	---Purpose: Activates the same TopAbs shape enumerations as
+    	-- those used by SelectionMode assigning a type to the mode aDecompositionMode. 
+
+    SelectionMode(myclass; aShapeType : ShapeEnum from TopAbs) 
+    returns Integer from Standard;
+	---Purpose: Establishes an equivalence between a mode and the
+    	-- type, aShapeType,   of selection. The correspondences are as follows:
+    	-- -   mode 0 - Shape
+    	-- -   mode 1 - Vertex
+    	-- -   mode 2 - Edge
+    	-- -   mode 3 - Wire
+    	-- -   mode 4 - Face
+    	-- -   mode 5 - Shell
+    	-- -   mode 6 - Solid
+    	-- -   mode 7 - Compsolid
+    	-- -   mode 8 - Compound
+
+   LoadRecomputable(me:mutable;TheMode : Integer from Standard) is static private;
+
+    Compute(me                   : mutable;
+    	    aProjector           : Projector from Prs3d;
+            aPresentation        : mutable Presentation from Prs3d;
+    	    ashape               : Shape from TopoDS) is static private;
+
+    GetDeflection(myclass; aShape  : Shape from TopoDS;
+    	    	    	   aDrawer : Drawer from Prs3d)
+    	    	    	   returns Real from Standard;
+		
+    DisplayBox(myclass; aPrs : Presentation from Prs3d;
+		       	aBox : Box from Bnd;
+		       	aDrawer : Drawer from Prs3d) is protected;
+    		
+    
+fields
+    myshape            : Shape   from TopoDS   is protected;
+    myBB               : Box     from Bnd      is protected;
+    myCompBB           : Boolean from Standard is protected;
+    myInitAng          : Real    from Standard;
+end Shape;

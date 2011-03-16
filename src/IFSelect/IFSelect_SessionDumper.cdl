@@ -1,0 +1,80 @@
+-- File:	IFSelect_SessionDumper.cdl
+-- Created:	Thu Nov  4 10:47:11 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class SessionDumper  from IFSelect  inherits TShared
+
+    ---Purpose : A SessionDumper is called by SessionFile. It takes into
+    --           account a set of classes (such as Selections, Dispatches ...).
+    --           SessionFile writes the Type (as defined by cdl) of each Item
+    --           and its general Parameters. It manages the names of the Items.
+    --           
+    --           A SessionDumper must be able to Write the Parameters which are
+    --           own of each Item it takes into account, given its Class, then
+    --           to Recognize the Type and Read its Own Parameters to create
+    --           an Item of this Type with these own Parameters.
+    --           
+    --           Then, there must be defined one sub-type of SessionDumper per
+    --           consistent set of classes (e.g. a package).
+    --           
+    --           By Own Parameters, understand Parameters given at Creation Time
+    --           if there are, or specific of a given class, apart from those
+    --           defined at superclass levels (e.g. Final Selection for a
+    --           Dispatch, Input Selection for a SelectExtract or SelectDeduct,
+    --           Direct Status for a SelectExtract, etc...).
+    --           
+    --           The Parameters are those stored in a WorkSession, they can be
+    --           of Types : IntParam, HAsciiString (for TextParam), Selection,
+    --           Dispatch.
+    --           
+    --           SessionDumpers are organized in a Library which is used by
+    --           SessionFile. They are put at Creation Time in this Library.
+
+uses Transient, AsciiString from TCollection, SessionFile
+
+is
+
+    Initialize;
+    ---Purpose : The Initialization puts a just created SessionDumper in the
+    --           Library of SessionDumper. Then, it suffices to create once
+    --           a SessionDumper to fill the Library with it
+
+    First (myclass) returns SessionDumper;
+    ---Purpose : Returns the First item of the Library of Dumper. The Next ones
+    --           are then obtained by Next on the returned items
+
+    Next (me) returns SessionDumper;
+    ---Purpose : Returns the Next SesionDumper in the Library. Returns a Null
+    --           Handle at the End.
+
+    WriteOwn (me; file : in out SessionFile; item : Transient)
+    	returns Boolean  is deferred;
+    ---Purpose : Writes the Own Parameters of a given Item, if it forecast to
+    --           manage its Type.
+    --           Returns True if it has recognized the Type of the Item (in
+    --           this case, it is assumed to have written the Own Parameters if
+    --           there are some), False else : in that case, SessionFile will
+    --           try another SessionDumper in the Library.
+    --           WriteOwn can use these methods from SessionFile : SendVoid,
+    --           SendItem, SendText, and if necessary, WorkSession.
+
+    ReadOwn  (me; file : in out SessionFile;
+    	    type : AsciiString from TCollection; item : out mutable Transient)
+    	returns Boolean  is deferred;
+    ---Purpose : Recognizes a Type (given as <type>) then Creates an Item of
+    --           this Type with the Own Parameter, as required.
+    --           Returns True if it has recognized the Type (in this case, it
+    --           is assumed to have created the Item, returned as <item>),
+    --           False else : in that case, SessionFile will try another
+    --           SessionDumper in the Library.
+    --           ReadOwn can use these methods from SessionFile to access Own
+    --           Parameters : NbOwnParams, IsVoid, IsText, TextValue, ItemValue
+
+fields
+
+    thenext : SessionDumper;
+
+end SessionDumper;

@@ -1,0 +1,73 @@
+-- File:	IntPolyh_Edge.cdl
+-- Created:	Fri Mar  5 18:12:33 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+--Copyright:	 Matra Datavision 1999
+
+
+
+class Edge from IntPolyh
+
+uses
+    
+    Pnt from gp
+
+
+is
+
+
+    Create;
+    
+    Create(i1,i2,i3,i4: Integer from Standard) ; 
+    
+    FirstPoint(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondPoint(me) 
+    returns Integer from Standard
+    is static;
+    
+    FirstTriangle(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondTriangle(me) 
+    returns Integer from Standard
+    is static;
+    
+    AnalysisFlag(me) 
+    returns Integer from Standard
+    is static;
+    
+--    GetTriangles(me; T1,T2: Integer from Standard)
+--    is static;
+
+    SetFirstPoint(me: in out; v: Integer from Standard) 
+    is static;
+	
+    SetSecondPoint(me: in out; v: Integer from Standard) 
+    is static;
+    
+    SetFirstTriangle(me: in out; v: Integer from Standard) 
+    is static;
+	
+    SetSecondTriangle(me: in out; v: Integer from Standard) 
+    is static;
+    
+    SetAnalysisFlag(me: in out; v: Integer from Standard) 
+    is static;
+    
+--    SetTriangles(me: in out; T1,T2: in out Integer from Standard) 
+--    is static;
+    
+    Dump(me; v: Integer from Standard) 
+    is static;
+     	
+fields
+
+    p1,p2 : Integer from Standard;
+    t1,t2 : Integer from Standard;
+    ia    : Integer from Standard;
+    
+end Edge from IntPolyh;

@@ -1,0 +1,56 @@
+--
+-- File:    Visual3d_LayerItem.cdl
+-- Created: March 20 2009
+-- Author:  ABD
+--
+
+class LayerItem from Visual3d inherits TShared from MMgt
+
+    ---Version:
+
+    ---Purpose: This class is drawable unit of 2d scene
+    ---Keywords:
+    ---Warning:
+    ---References:
+
+uses
+    Boolean from Standard
+is
+    -------------------------
+    -- Category: Constructors
+    -------------------------
+
+    Create returns LayerItem;
+    ---Level: Public
+    ---Purpose: Creates a layer item
+    ---Category: Constructors
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+    
+    ComputeLayerPrs( me : mutable )
+            is virtual; 
+    ---Level: Public
+    ---Purpose: virtual function for recompute 2D
+    --        presentation (empty by default)
+
+    RedrawLayerPrs( me : mutable )
+        is virtual;
+    ---Level: Public
+    ---Purpose: virtual function for recompute 2D
+    --        presentation (empty by default)
+
+        IsNeedToRecompute(me)
+        returns Boolean from Standard;
+    ---Level: Public
+        
+        SetNeedToRecompute( me                 : mutable;
+                            NeedToRecompute    : Boolean from Standard = Standard_True );
+    ---Level: Public
+
+fields
+
+    MyIsNeedToRecompute : Boolean from Standard;
+    
+end Layer from Visual3d;

@@ -1,0 +1,112 @@
+-- File:	HatchGen_PointOnElement.cdl
+-- Created:	Fri Oct 29 15:21:47 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:	Matra Datavision 1993
+
+class PointOnElement from HatchGen
+
+
+inherits IntersectionPoint from HatchGen
+
+
+uses
+    IntersectionType  from HatchGen ,
+    IntersectionPoint from IntRes2d ,
+    Orientation       from TopAbs
+
+
+is
+
+
+    Create
+    
+    	---Purpose; Creates an empty point on element
+
+      	---Category: PointOnElement
+
+    	returns PointOnElement from HatchGen ;
+	
+
+    Create (Point : PointOnElement from HatchGen)
+    
+    	---Purpose: Creates a point from an other.
+
+      	---Category: PointOnElement
+
+    	returns PointOnElement from HatchGen ;
+
+
+    Create (Point       : IntersectionPoint from IntRes2d)
+    
+    	---Purpose: Creates a point from an intersection point.
+
+      	---Category: PointOnElement
+
+    	returns PointOnElement from HatchGen ;
+
+
+    SetIntersectionType (me : in out ; Type : IntersectionType from HatchGen)
+		   
+      	---Purpose: Sets the intersection type at this point.
+
+      	---Category: PointOnElement
+    	---C++: inline
+    	is static ;
+
+
+    IntersectionType (me)
+    
+      	---Purpose: Returns the intersection type at this point.
+
+      	---Category: PointOnElement
+
+    	---C++: inline
+    	returns IntersectionType from HatchGen
+    	is static ;
+
+
+    IsIdentical (me; Point     : PointOnElement from HatchGen ;
+    	    	     Confusion : Real           from Standard)
+
+      	---Purpose: Tests if the point is identical to an other.
+      	--          That is to say :
+        --            P1.myIndex  = P2.myIndex
+        --            Abs (P1.myParam - P2.myParam) <= Confusion
+        --            P1.myPosit  = P2.myPosit       
+        --            P1.myBefore = P2.myBefore
+        --            P1.myAfter  = P2.myAfter
+	--            P1.mySegBeg = P2.mySegBeg
+    	--            P1.mySegEnd = P2.mySegEnd
+        --            P1.myType   = P2.myType
+
+      	---Category: PointOnElement
+
+	returns Boolean from Standard
+  	is static ;
+
+
+    IsDifferent (me; Point     : PointOnElement from HatchGen ;
+    	    	     Confusion : Real           from Standard)
+
+
+      	---Purpose: Tests if the point is different from an other.
+
+      	---Category: PointOnElement
+
+	returns Boolean from Standard
+  	is static ;
+
+
+    Dump (me; Index : Integer from Standard = 0)
+    
+    	---Purpose: Dump of the point on element.
+
+    	is static ;
+	
+
+fields
+
+    myType : IntersectionType from HatchGen is protected ;
+
+end PointOnElement from HatchGen ;

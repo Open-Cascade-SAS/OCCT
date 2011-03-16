@@ -1,0 +1,15 @@
+inline TCollection_AVLList::TCollection_AVLList() 
+: myNext(0L)
+{
+}
+
+inline Item & TCollection_AVLList::Value() const
+{
+  return (Item&)myValue;
+}
+
+inline Standard_Address & TCollection_AVLList::Next() const
+{
+  return (Standard_Address&)myNext;
+}
+

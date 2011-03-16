@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWStartWork.cdl
+-- Created:	Fri Nov 26 16:26:40 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWStartWork from RWStepAP203
+
+    ---Purpose: Read & Write tool for StartWork
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    StartWork from StepAP203
+
+is
+    Create returns RWStartWork from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : StartWork from StepAP203);
+	---Purpose: Reads StartWork
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: StartWork from StepAP203);
+	---Purpose: Writes StartWork
+
+    Share (me; ent : StartWork from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWStartWork;

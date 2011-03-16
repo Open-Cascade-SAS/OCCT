@@ -1,0 +1,96 @@
+-- File:	BOP_WireSplitter.cdl
+-- Created:	Mon Apr  9 10:50:36 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class WireSplitter from BOP 
+
+    	---Purpose: 
+    	---  the algorithm to split multiconnexed   
+    	---  wires on a face onto biconnexed ones 
+	---  .
+uses
+    Face   from TopoDS,  
+    Vertex from TopoDS, 
+    Edge   from TopoDS, 
+    
+    SequenceOfPnt2d  from TColgp, 
+    SequenceOfShape  from TopTools,   
+    ListOfShape      from TopTools, 
+    
+    ListOfListOfShape from BOPTColStd, 
+    
+    EdgeInfo                           from BOP,
+    IndexedDataMapOfVertexListEdgeInfo from BOP
+
+--raises
+
+is 
+    Create   
+    	returns WireSplitter from BOP; 
+    	---C++: inline
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    SetFace  (me:out; 
+    	    	aF: Face from TopoDS); 
+    	---C++: inline
+    	---Purpose:  
+    	--- Modifier
+    	---
+    DoWithListOfEdges(me:out; 
+    	    	    	aLE:ListOfShape from  TopTools); 
+    	---Purpose:  
+    	--- Perform the algorithm using the  list of shapes <aLE> as data  
+    	---
+    DoWithFace  (me:out); 
+    	---Purpose:  
+    	--- Perform the algorithm using the face as data  
+    	---
+    Do          (me:out) 
+    	is private;  
+    	---Purpose:  
+    	--- Perform the algorithm 
+    	---
+    IsNothingToDo (me) 
+    	returns  Boolean from Standard;
+    	---C++: inline
+    	---Purpose:  
+    	--- Returns TRUE if the source wire is biconnexed and      
+    	--- there is nothing to correct 
+    	---
+    IsDone (me) 
+    	returns  Boolean from Standard; 
+    	---C++: inline
+    	---Purpose:  
+    	--- Returns TRUE if the algorithm was performed  
+    	--- successfuly
+	---
+    Face   (me) 
+    	returns Face from TopoDS; 
+    	---C++:  return const &	    	 
+    	---C++: inline
+    	---Purpose:  
+    	--- Selector
+    	---
+    Shapes (me) 
+    	returns  ListOfListOfShape from BOPTColStd; 
+    	---C++:  return const &	    		 
+    	---C++: inline
+    	---Purpose:  
+    	--- Selector
+    	---
+    
+	
+fields  
+
+    myFace       :  Face from TopoDS; 
+    myIsDone     :  Boolean from Standard;
+    myNothingToDo:  Boolean from Standard;
+    myShapes     :  ListOfListOfShape from BOPTColStd; 
+    mySmartMap   :  IndexedDataMapOfVertexListEdgeInfo from BOP;  
+    myEdges      :  ListOfShape from  TopTools; 
+    
+end WireSplitter;

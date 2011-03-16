@@ -1,0 +1,66 @@
+-- File:	BRepSweep_Tool.cdl
+-- Created:	Tue Jun  8 17:01:08 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Tool from BRepSweep -- as Tool from Sweep
+
+    ---Purpose: Provides  the  indexation and type  analysis  services
+    --          required by the TopoDS generating Shape of BRepSweep.
+    --          
+
+uses
+
+    Shape from TopoDS,
+    IndexedMapOfShape from TopTools,
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs
+
+raises 
+
+    OutOfRange from Standard
+
+is
+
+    Create(aShape: Shape from TopoDS);
+	---Purpose: Initialize the tool  with <aShape>.  The IndexTool
+	--          must prepare an indexation for  all  the subshapes
+	--          of this shape.
+
+    NbShapes(me) returns Integer
+	---Purpose: Returns the number of subshapes in the shape.
+    is static;
+
+    Index(me; aShape : Shape from TopoDS) returns Integer
+	---Purpose: Returns the index of <aShape>.
+    is static;
+    
+    Shape(me; anIndex : Integer from Standard) returns Shape from TopoDS
+	---Purpose: Returns the Shape at Index anIdex.
+    is static;
+    
+    Type(me; aShape : Shape from TopoDS) returns ShapeEnum from TopAbs
+	---Purpose: Returns the type of <aShape>.
+    is static;
+
+    Orientation (me; aShape : Shape from TopoDS) 
+    returns Orientation from TopAbs
+	---Purpose: Returns the Orientation of <aShape>.
+    is static;
+
+    SetOrientation (me; 
+    	    	    aShape : in out Shape from TopoDS; 
+    	    	    Or     : Orientation  from  TopAbs) 
+	---Purpose: Set the Orientation of <aShape> with Or.
+    is static;
+
+fields
+
+    myMap : IndexedMapOfShape from TopTools;
+    
+end Tool from BRepSweep;
+
+
+

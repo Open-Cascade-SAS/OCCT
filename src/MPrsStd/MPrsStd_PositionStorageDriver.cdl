@@ -1,0 +1,40 @@
+-- File:	MPrsStd_PositionStorageDriver.cdl
+-- Created:	Tue Apr  7 14:57:33 1998
+-- Author:	Jean-Pierre COMBE
+--		<jpr@chariox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class PositionStorageDriver from MPrsStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)  
+    returns mutable PositionStorageDriver from MPrsStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: ColorAttribute from TGraphicAttribute.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end PositionStorageDriver;
+

@@ -1,0 +1,25 @@
+// File:	AIS_Circle.lxx
+// Created:	Thu Mar  6 14:25:37 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline AIS_KindOfInteractive AIS_Circle::Type() const 
+{return AIS_KOI_Datum;}
+
+
+inline Standard_Integer AIS_Circle::Signature() const 
+{return 6;}
+
+inline const Handle(Geom_Circle)& 
+AIS_Circle::Circle() const 
+{return myComponent;}
+
+inline void AIS_Circle::Parameters(Standard_Real& U1,Standard_Real& U2) const 
+{U1=myUStart;U2=myUEnd;}
+
+inline void AIS_Circle::SetCircle(const Handle(Geom_Circle)& C)
+{myComponent=C;}
+
+inline void AIS_Circle::SetFirstParam(const Standard_Real U)
+{myUStart=U;myCircleIsArc = Standard_True;}
+inline void AIS_Circle::SetLastParam(const Standard_Real U)
+{myUEnd=U; myCircleIsArc = Standard_True;}

@@ -1,0 +1,127 @@
+-- File     : Prs2d_Axis.cdl
+-- Created  : April  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class Axis from Prs2d inherits Line from Graphic2d
+
+ ---Purpose: Constructs the primitive Axis
+
+uses
+
+	Drawer	           from Graphic2d,
+	GraphicObject      from Graphic2d,
+	Ax2d               from gp,
+	Ax22d              from gp,
+  	Lin2d              from gp,
+        TypeOfAxis         from Prs2d,
+	TypeOfArrow        from Prs2d,
+	Array1OfShortReal  from TShort,
+        FStream            from Aspect,
+        HArray1OfPnt2d     from TColgp
+
+is
+	Create( aGraphicObject: GraphicObject  from Graphic2d;
+	        anAx          : Ax22d          from gp;
+		aLength       : Real           from Standard; 
+          	anArrAngle    : Real           from Standard = 30.0;
+		anArrLength   : Real           from Standard = 30.0;
+	    	anArrType     : TypeOfArrow    from Prs2d = Prs2d_TOA_OPENED;
+		aTxtScale     : Real           from Standard = 10.0 )
+	returns mutable Axis from Prs2d;
+
+   ---Purpose: Initializes the axis 2 position <anAx>
+
+
+    Create( aGraphicObject: GraphicObject  from Graphic2d;
+            anAx          : Ax2d           from gp;
+	    aLength       : Real           from Standard;
+            anArrAngle    : Real           from Standard = 30.0;
+	    anArrLength   : Real           from Standard = 30.0;
+	    anArrType     : TypeOfArrow    from Prs2d = Prs2d_TOA_OPENED;
+	    aTxtScale     : Real           from Standard = 10.0 ) 
+       returns mutable Axis from Prs2d;
+
+    ---Purpose: Initializes the axis position <anAx>.  
+    
+    Create( aGraphicObject: GraphicObject  from Graphic2d;
+	    aLine         : Lin2d          from gp;
+	    aLength       : Real           from Standard;
+	    anArrAngle    : Real           from Standard = 30.0;
+	    anArrLength   : Real           from Standard = 30.0;
+	    anArrType     : TypeOfArrow    from Prs2d = Prs2d_TOA_OPENED;
+	    aTxtScale     : Real           from Standard = 10.0 ) 
+        returns mutable Axis from Prs2d;
+
+    ---Purpose: Initializes the line <aLine>
+
+	-------------------------------------------------
+	-- Category: Draw and Pick
+	-------------------------------------------------
+
+    Draw( me : mutable; aDrawer: Drawer from Graphic2d ) is static protected;
+    ---Level: Internal
+    ---Purpose: Draws the axis <me>.
+
+    DrawElement( me : mutable; aDrawer: Drawer from Graphic2d;
+                 anIndex: Integer from Standard)
+    is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws element <anIndex> of the axis <me>.
+
+    DrawVertex( me : mutable; aDrawer: Drawer from Graphic2d;
+                anIndex: Integer from Standard)
+    is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws vertex <anIndex> of the axis <me>.
+    
+    TypeOfArrow( me ) returns TypeOfArrow from Prs2d;
+    ---Level: Public
+    ---Purpose: Returns type of arrow
+    --          Type is:
+    --             TOA_OPENED,
+    --             TOA_CLOSED,
+    --             TOA_FILLED
+
+    ArrayOfPnt2d( me ) returns HArray1OfPnt2d from TColgp;
+    ---Level: Public
+    ---C++: return const
+
+    ArrayOfXArrowPnt2d( me ) returns HArray1OfPnt2d from TColgp;
+    ---Level: Public
+    ---C++: return const
+
+    ArrayOfYArrowPnt2d( me ) returns HArray1OfPnt2d from TColgp;
+    ---Level: Public
+    ---C++: return const
+
+    TextScale( me ) returns Real from Standard;
+    ---Level: Public
+
+    Pick( me : mutable; X, Y: ShortReal from Standard;
+	  aPrecision: ShortReal from Standard;
+          aDrawer: Drawer from Graphic2d ) 
+    returns Boolean from Standard is static protected;
+    ---Level: Internal
+    ---Purpose: Returns Standard_True if the axis <me> is picked,
+    --	    Standard_False if not.
+
+    Save( me; aFStream: in out FStream from Aspect ) is virtual;
+													
+fields
+ 
+	myX0           : ShortReal         from Standard;
+	myY0           : ShortReal         from Standard;
+	myX1           : ShortReal         from Standard;
+	myY1           : ShortReal         from Standard;
+	myX2           : ShortReal         from Standard;
+	myY2           : ShortReal         from Standard;
+	myXVertX       : Array1OfShortReal from TShort;
+	myYVertX       : Array1OfShortReal from TShort;
+	myXVertY       : Array1OfShortReal from TShort;
+	myYVertY       : Array1OfShortReal from TShort;
+	myArrType      : TypeOfArrow       from Prs2d;
+	myisXY         : Boolean           from Standard;
+        myTextScale    : Real              from Standard;
+	    		
+end Axis from Prs2d;

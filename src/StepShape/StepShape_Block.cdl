@@ -1,0 +1,50 @@
+-- File:        Block.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Block from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	Axis2Placement3d from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Block;
+	---Purpose: Returns a Block
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aX : Real from Standard;
+	      aY : Real from Standard;
+	      aZ : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPosition(me : mutable; aPosition : mutable Axis2Placement3d);
+	Position (me) returns mutable Axis2Placement3d;
+	SetX(me : mutable; aX : Real);
+	X (me) returns Real;
+	SetY(me : mutable; aY : Real);
+	Y (me) returns Real;
+	SetZ(me : mutable; aZ : Real);
+	Z (me) returns Real;
+
+fields
+
+	position : Axis2Placement3d from StepGeom;
+	x : Real from Standard;
+	y : Real from Standard;
+	z : Real from Standard;
+
+end Block;

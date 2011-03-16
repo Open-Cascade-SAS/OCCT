@@ -1,0 +1,59 @@
+-- File:	TopClass.cdl
+-- Created:	Tue Nov 17 14:09:55 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package TopClass 
+
+	---Purpose: The  package TopClass   provides    Classification
+	--          algorithms.  A Classification algorithm is used to
+	--          compute if  a  point is inside,  outside or on the
+	--          boundary of a Shape.
+
+uses
+    gp,
+    TopTrans, -- complex transitions
+    TopAbs,   -- enumerations Orientation and State
+    TopoDS,   
+    IntRes2d,  -- to describe the result of intersections
+    IntCurveSurface
+---    TopExp   ------------- Pas Utilise mais sinon ca plante !!! 
+
+is
+
+    deferred generic class Intersection2d; 
+	---Purpose: Describes   the  intersection algorithm     for 2d
+	--          classifications. 
+	
+    generic class Classifier2d;
+	---Purpose: Basic algorithm for 2d classifications.
+
+    deferred generic class FaceExplorer;
+	---Purpose: Defines  the   description  of   a  face  for  the
+	--          FaceClassifier.
+
+    generic class  FaceClassifier, FClass2d;
+	---Purpose: Algorithm for classification in a Face.
+
+	
+
+
+    deferred class Intersection3d;
+	---Purpose: Describes the intersection algorithm for 3d 
+	--          classifications.    	    
+		
+    generic class Classifier3d;
+    	---Purpose: Basic algorithm for 3d classification.
+    	          
+    deferred class SolidExplorer;
+    	---Purpose: Defines the description of a solid for the 
+    	--          SolidClassifier.
+       
+    generic class SolidClassifier;
+    	---Purpose: Algorithm for classification in a Solid.
+    
+    
+    
+end TopClass;

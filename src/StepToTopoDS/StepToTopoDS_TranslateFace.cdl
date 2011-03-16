@@ -1,0 +1,50 @@
+-- File:	StepToTopoDS_TranslateFace.cdl
+-- Created:	Fri Dec 16 14:47:08 1994
+-- Author:	Frederic MAUPAS
+--		<fma@stylox>
+---Copyright:	 Matra Datavision 1994
+
+class TranslateFace from StepToTopoDS
+    inherits Root from StepToTopoDS
+    
+    ---Purpose:
+    --         
+
+uses
+
+    FaceSurface        from StepShape,
+    Tool               from StepToTopoDS,
+    TranslateFaceError from StepToTopoDS,
+    Shape              from TopoDS,
+    NMTool             from StepToTopoDS
+    
+raises NotDone from StdFail
+
+is
+
+    Create returns TranslateFace;
+    
+    Create (FS     : FaceSurface   from StepShape;
+            T      : in out Tool   from StepToTopoDS;
+            NMTool : in out NMTool from StepToTopoDS)
+    	returns TranslateFace;
+	    
+    Init (me     : in out;
+          FS     : FaceSurface   from StepShape;
+          T      : in out Tool   from StepToTopoDS;
+          NMTool : in out NMTool from StepToTopoDS);
+
+    Value (me) returns Shape from TopoDS
+    	raises NotDone
+	is static;
+	---C++: return const &
+
+    Error (me) returns TranslateFaceError from StepToTopoDS;
+    
+fields
+
+    myError  : TranslateFaceError  from StepToTopoDS;
+    
+    myResult : Shape               from TopoDS;
+    
+end TranslateFace;

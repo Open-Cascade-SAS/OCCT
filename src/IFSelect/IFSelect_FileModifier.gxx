@@ -1,0 +1,6 @@
+//#include <IFSelect_FileModifier.ixx>
+
+
+
+    IFSelect_FileModifier::IFSelect_FileModifier ()
+    :  IFSelect_GeneralModifier (Standard_False)    {  }

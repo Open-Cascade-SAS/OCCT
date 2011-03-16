@@ -1,0 +1,196 @@
+-- File:	BinTools_ShapeSet.cdl
+-- Created:	Tue May 11 18:04:54 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+class ShapeSet from BinTools 
+
+	---Purpose: Writes topology in OStream in binary format
+
+uses
+    Shape                 from TopoDS, 
+    IndexedMapOfShape     from TopTools,  
+    ShapeEnum             from TopAbs, 
+    Builder               from BRep,
+    ShapeEnum             from TopAbs, 
+    LocationSet           from BinTools, 
+    SurfaceSet            from BinTools,
+    CurveSet              from BinTools,
+    Curve2dSet            from BinTools,
+    IndexedMapOfTransient from TColStd
+
+
+is
+
+
+    Create(isWithTriangles: Boolean from Standard = Standard_False)
+    returns  ShapeSet from BinTools;
+        ---Purpose: Builds an empty ShapeSet.
+        --          Parameter <isWithTriangles> is added for XML Persistence  
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~BinTools_ShapeSet(){Delete() ; }"
+
+    SetFormatNb(me : out; theFormatNb : Integer) is static; 
+    
+    FormatNb(me) returns Integer is static;
+        ---Purpose: two formats available for the moment:
+        --          First: does not write CurveOnSurface UV Points into the file
+        --                 on reading calls Check() method.
+        --          Second: stores CurveOnSurface UV Points.
+        --          On reading format is recognized from Version string.
+	
+    Clear(me : in out)
+        ---Purpose: Clears the content of the set.
+    is virtual; 
+     
+    Add(me : in out; S : Shape from TopoDS) returns Integer
+        ---Purpose: Stores <S> and its sub-shape. Returns the index of <S>.
+        --          The method AddGeometry is called on each sub-shape.
+    is static; 
+            
+    Shape(me; I : Integer) returns Shape from TopoDS
+        ---Purpose: Returns the sub-shape of index <I>.
+        --          
+        ---C++: return const &
+    is static;
+    
+    Index(me; S : Shape from TopoDS) returns Integer
+        ---Purpose: Returns the index of <S>.
+    is static;
+        
+    Locations(me) returns LocationSet from BinTools
+        ---C++: return const &
+    is static;
+    
+    ChangeLocations(me : in out) returns LocationSet from BinTools
+        ---C++: return &
+    is static;  
+     
+    NbShapes(me) returns Integer;
+    ---Purpose:Returns number of shapes read from file. 
+    
+    Write(me; OS : in out OStream)
+        ---Purpose: Writes the content of  me  on the stream <OS> in binary
+        --          format that can be read back by Read.
+        --          
+        --          Writes the locations.
+        --          
+        --          Writes the geometry calling WriteGeometry.
+        --          
+        --          Dumps the shapes from last to first.
+        --            For each shape  :
+        --              Write the type.
+        --              calls WriteGeometry(S).
+        --              Write the flags, the subshapes.
+    is virtual;
+        
+    Read(me : in out; IS : in out IStream)
+        ---Purpose: Reads the content of me from the binary stream  <IS>. me
+        --          is first cleared.
+        --          
+        --          Reads the locations.
+        --          
+        --          Reads the geometry calling ReadGeometry.
+        --          
+        --          Reads the shapes.
+        --            For each shape 
+        --              Reads the type.
+        --              calls ReadGeometry(T,S).
+        --              Reads the flag, the subshapes.
+    is virtual;  
+
+    Write(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Writes   on  <OS>   the shape   <S>.    Writes the
+        --          orientation, the index of the TShape and the index
+        --          of the Location.
+    is virtual;
+    
+    WriteGeometry(me; OS : in out OStream)
+        ---Purpose: Writes the geometry of  me  on the stream <OS> in a
+        --          binary format that can be read back by Read.
+    is virtual;  
+     
+    ReadGeometry(me : in out; IS : in out IStream)
+        ---Purpose: Reads the geometry of me from the  stream  <IS>.
+    is virtual; 
+     
+    Read(me; S : in out Shape from TopoDS; IS : in out IStream;
+             NbShapes : Integer)
+        ---Purpose: Reads  from <IS>  a shape  and  returns  it in  S.
+        --          <NbShapes> is the number of tshapes in the set.
+    is virtual; 
+    
+    WriteGeometry(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Writes the geometry of <S>  on the stream <OS> in a
+        --          binary format that can be read back by Read.
+    is virtual;
+        
+    ReadGeometry(me : in out; T  : ShapeEnum from TopAbs;
+                              IS : in out IStream;
+                              S  : out Shape from TopoDS)
+        ---Purpose: Reads the geometry of a shape of type <T> from the
+        --          stream <IS> and returns it in <S>.
+    is virtual; 
+
+    AddGeometry(me : in out; S : Shape from TopoDS)
+        ---Purpose: Stores the goemetry of <S>.
+    is virtual;    
+     
+--    WriteLocations(me; OS: in out OStream from Standard) is static; 
+     
+--    ReadLocations(me: in out; OS: in out IStream from Standard) is static;  
+    
+    AddShapes(me : in out; S1 : in out Shape from TopoDS;
+                           S2 : Shape from TopoDS)
+        ---Purpose: Inserts  the shape <S2> in  the  shape <S1>.  
+    is virtual;
+     
+    ReadPolygon3D(me: in out; IS: in out IStream)
+        ---Purpose: Reads the 3d polygons  of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WritePolygon3D(me; OS: in out OStream)
+        ---Purpose: Writes the 3d polygons
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+    ReadTriangulation(me: in out; IS: in out IStream)
+        ---Purpose: Reads the triangulation of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WriteTriangulation(me; OS: in out OStream)
+        ---Purpose: Writes the triangulation
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+    ReadPolygonOnTriangulation(me: in out; IS: in out IStream)
+        ---Purpose: Reads the polygons on triangulation of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WritePolygonOnTriangulation(me; OS: in out OStream)
+        ---Purpose: Writes the polygons on triangulation 
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+  fields 
+    myShapes    :      IndexedMapOfShape     from TopTools; 
+    myLocations :      LocationSet           from BinTools; 
+    myFormatNb  :      Integer               from Standard; -- jfa 26.09.2001
+    myBuilder   :      Builder               from BRep;
+    mySurfaces  :      SurfaceSet            from BinTools;
+    myCurves    :      CurveSet              from BinTools;
+    myCurves2d  :      Curve2dSet            from BinTools;
+    myPolygons2D:      IndexedMapOfTransient from TColStd;
+    myPolygons3D:      IndexedMapOfTransient from TColStd;
+    myTriangulations:  IndexedMapOfTransient from TColStd;
+    myNodes     :      IndexedMapOfTransient from TColStd;
+    myWithTriangles:   Boolean               from Standard;
+end ShapeSet;

@@ -1,0 +1,154 @@
+-- File:	Standard.cdl
+-- Created:	Thu Sep  5 13:40:39 1991
+-- Author:	J.P. TIRAUlt
+--              C. LEYNADIER 
+
+package Standard
+
+    ---Purpose: 
+    --   The package Standard provides the minimum services necessary 
+    --   for other toolkits to handle persistent and transient objects. 
+    --   It is the Standard run-time encapsulation of the CAS.CADE 
+    --   database, that is, it defines a single programming interface 
+    --   for creating and accessing persistent objects manipulated by 
+    --   handles.
+
+
+is
+    enumeration InternalType is
+    	    	Void,          -- TYPUND     0x00000000  /* Undefined    */
+		Char,          -- TYPIT1     0x00010001  /* Byte         */
+		ExtChar,       -- TYPIT2     0x00020001  /* Integer*2    */
+		LongInt,       -- TYPIT4     0x00040001  /* Integer*4    */
+		Bool,          -- TYPLO4     0x00040002  /* Logical*4    */
+		Float,         -- TYPRE4     0x00040004  /* Real*4       */
+		LongDouble,    -- TYPRE8     0x00080004  /* Real*8       */
+		String,        -- TYPCHR     0x00000010  /* Character    */
+		EString,       -- TYPCHREXT  0x00000011  /* Character    */
+		EntryAddress,  -- TYPENT     0x00040020	 /* Function address */
+		DataAddress,   -- TYPDAD     0x00040080  /* Data address */
+		EngineHandle,  -- TYPHDLE    0x00004000  /* Handle       */
+		Long64,        -- TYPIT8     0x00080001  /* Integer*8    */
+		Array;         -- TYPARR     0x00008000  /* Tableau      */
+
+    enumeration WayOfLife is IsNothing, IsAddress, IsTransient, IsPersistent, IsNotLoaded;
+    enumeration KindOfType is IsUnKnown, IsClass, IsEnumeration, IsPrimitive, IsImported, IsPackage;
+    enumeration HandlerStatus is HandlerVoid, HandlerJumped, HandlerProcessed;
+
+    imported IStream;
+    imported OStream;
+    imported SStream;
+    imported UUID;
+    imported JmpBuf;
+    imported ThreadId;
+
+    primitive CString;
+    primitive ExtString;
+    primitive Address;
+    primitive Size;
+    primitive PByte;
+    primitive PCharacter;
+    primitive PExtCharacter;
+
+    deferred class ErrorHandlerCallback;
+    class ErrorHandler;
+    
+    class AncestorIterator;
+    
+    deferred class Storable ;
+    	primitive Boolean      inherits Storable;
+    	primitive Character    inherits Storable;
+        primitive ExtCharacter inherits Storable;
+        primitive Integer      inherits Storable;
+	primitive Byte         inherits Storable;
+        primitive Real         inherits Storable;
+        primitive ShortReal    inherits Storable;
+	
+    	primitive OId          inherits Storable;
+
+    	deferred class Persistent ; -- inherits Storable
+	class GUID;     -- inherits Storable
+
+    deferred class Transient ;
+   	    class Type; -- inherits Transient
+    	    class Failure; --  inherits Transient
+    	    	exception AbortiveTransaction inherits Failure;
+	        exception DomainError inherits Failure;
+    	    	    exception ConstructionError inherits DomainError;
+    	    	    exception NullObject inherits DomainError;
+		    exception NoSuchObject inherits DomainError;
+		    exception NoMoreObject inherits DomainError;
+		    exception ImmutableObject inherits DomainError;
+		    exception TypeMismatch inherits DomainError;
+		    exception MultiplyDefined inherits DomainError;
+		    exception DimensionError inherits DomainError;
+			exception DimensionMismatch inherits DimensionError;
+		    exception RangeError inherits DomainError;
+			exception OutOfRange inherits RangeError;
+			exception NullValue inherits RangeError;
+			exception NegativeValue inherits RangeError;
+    	    	exception NumericError inherits Failure;
+    	    	    exception Underflow inherits NumericError;
+    	    	    exception Overflow inherits NumericError;
+    	    	    exception DivideByZero inherits NumericError;
+    	    	exception ProgramError inherits Failure;
+    	    	    exception NotImplemented inherits ProgramError;
+    	    	    exception OutOfMemory inherits ProgramError;
+    	    	exception LicenseError inherits Failure;
+    	    	    exception LicenseNotFound inherits LicenseError;
+    	    	    exception TooManyUsers inherits LicenseError;
+
+    pointer PErrorHandler  to ErrorHandler; 
+    
+    
+    -- 
+    --  Mutex: a class to synchronize access to shared data 
+    --  from threads within one process
+    --
+    imported Mutex;
+    
+    -- 
+    --  Memory manager  
+    --
+    Allocate (aSize: Size from Standard)  
+    	returns Address from Standard; 
+    ---Purpose:  Allocates memory blocks  
+    --           aSize - bytes to  allocate 
+    
+    Free  (aStorage:in out Address from Standard); 
+    ---Purpose:  Deallocates memory blocks 
+    --           aStorage - previously allocated memory block to be freed                
+
+    Reallocate(aStorage: in out Address from Standard;
+               aNewSize: Size from Standard)  
+    	returns Address from Standard; 
+    ---Purpose:  Reallocates memory blocks 
+    --           aStorage - previously allocated memory block 
+    --           aNewSize - new size in bytes 
+     
+    Purge returns Integer from Standard; 
+    ---Purpose:  Deallocates the storage retained on the free list 
+    --           and clears the list. 
+    --           Returns non-zero if some memory has been actually freed.
+
+    IsReentrant returns Boolean from Standard;
+    ---Purpose: Returns boolean flag indicating whether OCCT is
+    --          operating in reentrant mode. This flag affects OCCT 
+    --          memory manager, exception and signal handling,
+    --          operations with handles etc., making them thread-safe.
+    --
+    --          By default, this flag is set to False, in order 
+    --          to avoid performance reduction due to locking.
+    --
+    --          In multithreaded applications this flag must be set to 
+    --          True, either by calling method SetReentrant(),
+    --          or by defining environment variable MMGT_REENTRANT.
+
+    SetReentrant (isReentrant: Boolean from Standard);
+    ---Purpose: Sets boolean flag indicating whether OCCT is
+    --          operating in reentrant mode. 
+    --          See method IsReentrant() for more information.
+    --          Note: This method may be called only when no any other
+    --                thread using OCCT exists
+
+end Standard;

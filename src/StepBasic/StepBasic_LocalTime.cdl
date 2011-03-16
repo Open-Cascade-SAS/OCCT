@@ -1,0 +1,54 @@
+-- File:        LocalTime.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class LocalTime from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Integer from Standard, 
+	Real from Standard, 
+	CoordinatedUniversalTimeOffset from StepBasic, 
+	Boolean from Standard
+is
+
+	Create returns mutable LocalTime;
+	---Purpose: Returns a LocalTime
+
+	Init (me : mutable;
+	      aHourComponent : Integer from Standard;
+	      hasAminuteComponent : Boolean from Standard;
+	      aMinuteComponent : Integer from Standard;
+	      hasAsecondComponent : Boolean from Standard;
+	      aSecondComponent : Real from Standard;
+	      aZone : mutable CoordinatedUniversalTimeOffset from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetHourComponent(me : mutable; aHourComponent : Integer);
+	HourComponent (me) returns Integer;
+	SetMinuteComponent(me : mutable; aMinuteComponent : Integer);
+	UnSetMinuteComponent (me:mutable);
+	MinuteComponent (me) returns Integer;
+	HasMinuteComponent (me) returns Boolean;
+	SetSecondComponent(me : mutable; aSecondComponent : Real);
+	UnSetSecondComponent (me:mutable);
+	SecondComponent (me) returns Real;
+	HasSecondComponent (me) returns Boolean;
+	SetZone(me : mutable; aZone : mutable CoordinatedUniversalTimeOffset);
+	Zone (me) returns mutable CoordinatedUniversalTimeOffset;
+
+fields
+
+	hourComponent : Integer from Standard;
+	minuteComponent : Integer from Standard;   -- OPTIONAL can be NULL
+	secondComponent : Real from Standard;   -- OPTIONAL can be NULL
+	zone : CoordinatedUniversalTimeOffset from StepBasic;
+	hasMinuteComponent : Boolean from Standard;
+	hasSecondComponent : Boolean from Standard;
+
+end LocalTime;

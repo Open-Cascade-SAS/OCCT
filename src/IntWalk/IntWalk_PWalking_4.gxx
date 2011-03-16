@@ -1,0 +1,169 @@
+//-- File : IntWalk_PWalking_4.gxx
+//-- 
+//-- Modif du 5 Octobre 94 (LBR) 
+//--   if(Trouve) ...
+//-- On deborde sur une frontiere, Duv[.] = -1 -1 -1 -1 
+//-- donc on garde la meme iso bloquee (voir if(k!=1) )
+//-- 
+
+//-- Modif du 8 juillet 96 (LBR)
+//-- simplifaication du traitement des auto-intersections.
+//-- Idee : 
+//--          Tester la boucle fermee en 3d et en 2d. 
+//-- 
+
+#include <gp_Pnt2d.hxx>
+
+
+Standard_Boolean IntWalk_PWalking::
+        TestArret(const Standard_Boolean DejaReparti,
+                  TColStd_Array1OfReal& Param,
+                  IntImp_ConstIsoparametric&  ChoixIso)
+
+//
+// tester si le point d intersection donne par ces parametres reste dans le
+// domaine naturelle de chaque carreau.
+// si le point deborde cadrer de facon a trouver la meilleure iso (frontiere)
+// qui intersecte le plus franchement l autre carreau
+// sinon tester si presence de ligne fermee  
+// 
+{
+  Standard_Real Uvd[4],Uvf[4],Epsuv[4],Duv[4],Uvp[4],dv,dv2,ParC[4];
+  Standard_Real DPc,DPb;
+#ifndef DEB
+  Standard_Integer i = 0, k = 0;
+#else 
+  Standard_Integer i,k;
+#endif
+  Epsuv[0] = ResoU1;
+  Epsuv[1] = ResoV1;
+  Epsuv[2] = ResoU2;
+  Epsuv[3] = ResoV2;
+  previousPoint.Parameters(Uvp[0],Uvp[1],Uvp[2],Uvp[3]);
+  Standard_Boolean Trouve = Standard_False;
+
+  Uvd[0]=Um1;   Uvf[0]=UM1;   Uvd[1]=Vm1;   Uvf[1]=VM1;
+  Uvd[2]=Um2;   Uvf[2]=UM2;   Uvd[3]=Vm2;   Uvf[3]=VM2;
+
+  Standard_Integer im1;
+  for ( i = 1,im1 = 0;i<=4;i++,im1++) {
+    switch(i) { 
+    case 1: k=2; break;
+    case 2: k=1; break;
+    case 3: k=4; break;
+    case 4: k=3; break;
+    }
+    if (Param(i) < (Uvd[im1]-Epsuv[im1])) {        //--     Current -----  Bound Inf -----  Previous
+      Trouve    = Standard_True;                   //-- 
+      DPc       = Uvp[im1]-Param(i);               //--     Previous  - Current
+      DPb       = Uvp[im1]-Uvd[im1];               //--     Previous  - Bound Inf
+      ParC[im1] = Uvd[im1];                        //--     ParamCorrige
+      dv        = Param(k)-Uvp[k-1];               //--     Current   - Previous (Sur Autre Direction)
+      dv2       = dv*dv;         
+      if(dv2>RealEpsilon()) {                       //--     Progression sur l autre Direction ?
+	Duv[im1]  = DPc*DPb + dv2;
+	Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
+      }
+      else {
+	Duv[im1]=-1.0;                              //--    Si Pas de prgogression, on ne change pas 
+      }                                             //--    le choix de l iso 
+    }   
+    else if (Param(i) > (Uvf[im1] + Epsuv[im1])) {  //--     Previous -----  Bound Sup -----  Current
+      Trouve    = Standard_True;                    //-- 
+      DPc       = Param(i)-Uvp[im1];                //--     Current   - Previous
+      DPb       = Uvf[im1]-Uvp[im1];                //--     Bound Sup - Previous 
+      ParC[im1] = Uvf[im1];                         //--     Param Corrige
+      dv        = Param(k)-Uvp[k-1];                //--     Current   - Previous (Sur autre Direction)
+      dv2       = dv*dv;
+      if(dv2>RealEpsilon()) {                       //--     Progression sur l autre Direction ?
+	Duv[im1]  =  DPc*DPb + dv2;
+	Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
+      }
+      else {
+	Duv[im1]=-1.0;                              //--    Si Pas de prgogression, on ne change pas 
+      }                                             //--    le choix de l iso 
+    }
+    else { 
+      Duv[im1]= -1.;
+      ParC[im1]=Param(i);
+    }
+  }
+
+  if (Trouve) {
+    //--------------------------------------------------
+    //-- Un des Parametres u1,v1,u2,v2 est en dehors  --
+    //-- des bornes naturelles.                       -- 
+    //-- On cherche la meilleure direction de         -- 
+    //-- progression et on recadre les params.        --
+    //--------------------------------------------------
+    Standard_Real ddv = -1.0;
+    k=-1;
+    for (i=0;i<=3;i++) {
+      Param(i+1) = ParC[i];
+      if(Duv[i]>ddv) { 
+	ddv = Duv[i];
+	k=i;
+      }
+    }
+    if(k!=-1) { 
+      ChoixIso   = ChoixRef[k];
+    }
+    else { 
+      if((ParC[0]<=Uvd[0]+Epsuv[0]) || (ParC[0]>=Uvf[0]-Epsuv[0])) {
+	ChoixIso = IntImp_UIsoparametricOnCaro1;
+      }
+      else if((ParC[1]<=Uvd[1]+Epsuv[1]) || (ParC[1]>=Uvf[1]-Epsuv[1])) {
+	ChoixIso = IntImp_VIsoparametricOnCaro1;
+      }
+      else if((ParC[2]<=Uvd[2]+Epsuv[2]) || (ParC[2]>=Uvf[2]-Epsuv[2])) {
+	ChoixIso = IntImp_UIsoparametricOnCaro2;
+      }
+      else if((ParC[3]<=Uvd[3]+Epsuv[3]) || (ParC[3]>=Uvf[3]-Epsuv[3])) {
+	ChoixIso = IntImp_VIsoparametricOnCaro2;
+      }
+    }
+    close = Standard_False;
+    return Standard_True;
+  }
+  else 
+    {  
+      if (!DejaReparti) { // recherche si ligne fermee
+
+	Standard_Real u,v,up,vp;
+	const IntSurf_PntOn2S& POn2S1=line->Value(1);
+	POn2S1.ParametersOnS1(u,v);
+	gp_Pnt2d P1uv(u,v);
+	previousPoint.ParametersOnS1(u,v);
+	up=u; vp=v;
+	gp_Pnt2d Prevuv(u,v);
+	myIntersectionOn2S.Point().ParametersOnS1(u,v);
+	gp_Pnt2d myIntersuv(u,v);
+	Standard_Boolean close2d = (P1uv.XY()-Prevuv.XY())*
+	  (P1uv.XY()-myIntersuv.XY()) <0.0;
+	
+	const gp_Pnt &P1 = line->Value(1).Value();
+	close = (P1.XYZ() - previousPoint.Value().XYZ())*
+	  (P1.XYZ() - myIntersectionOn2S.Point().Value().XYZ()) < 0;  
+	if(close != close2d) { 
+#ifdef DEB
+	  cout<<"\n PWalking_4 TestArret - close2d"<<close2d<<endl;
+#endif
+	}
+	Standard_Boolean autoclose = Standard_False;
+	previousPoint.ParametersOnS2(u,v);
+	if(   myIntersectionOn2S.Function().AuxillarSurface1() 
+	   == myIntersectionOn2S.Function().AuxillarSurface2()) { 
+	  if(Abs(u-up)<=1e-7 && Abs(v-vp)<=1e-7) { 
+	    autoclose=Standard_True;
+	  }
+	}
+	
+
+
+	return (autoclose || (close&&close2d));
+      }
+      else return Standard_False;
+    }
+}
+
+

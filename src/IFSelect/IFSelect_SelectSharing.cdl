@@ -1,0 +1,29 @@
+-- File:	IFSelect_SelectSharing.cdl
+-- Created:	Wed Nov  3 19:26:42 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class SelectSharing  from IFSelect  inherits SelectDeduct
+
+    ---Purpose : A SelectSharing selects Entities which directly Share (Level
+    --           One) the Entities of the Input list
+    --           Remark : if an Entity of the Input List directly shares
+    --           another one, it is of course present in the Result List
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectSharing;
+    ---Purpose : Creates a SelectSharing;
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities (list of entities
+    --           which share (level one) those of input list)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Sharing (one level)"
+
+end SelectSharing;

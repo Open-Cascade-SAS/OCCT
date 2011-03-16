@@ -1,0 +1,44 @@
+-- File:	IFGraph.cdl
+-- Created:	Tue Sep 22 18:15:48 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+package IFGraph
+
+    	---Purpose : Provides tools to operate on an InterfaceModel and its
+    	--           Entities as on a Graph. These Tools are based on classes
+    	--           Graph and GraphContent  from Interface
+
+uses Interface, GraphTools, TColStd, Standard
+
+is
+
+--  (sub-classes of GraphContent from Interface)
+    	class AllShared;
+	class AllConnected;
+    	class Cumulate;
+    	class Compare;
+	class ExternalSources;
+
+    	class Articulations;
+
+    class SubPartsIterator;  -- result as several subsets
+    	class ConnectedComponants;
+    	class StrongComponants;
+	class Cycles;
+	class SCRoots;
+
+--    class SortedStrongsFrom  instantiates  SortedStrgCmptsFromIterator from GraphTools
+--    	(Graph from Interface,Transient,
+--    	 MapTransientHasher from TColStd,GraphContent from Interface);
+
+--    class SortedStrongs instantiates SortedStrgCmptsIterator from GraphTools
+--    	(Graph from Interface,Transient,
+--    	 GraphContent from Interface,SortedStrongsFrom from IFGraph);
+
+--    class SortedStrongs instantiates SortedStrgCmptsIterator
+--    	(Graph,Transient,GraphContent,GraphContent);
+
+end IFGraph;

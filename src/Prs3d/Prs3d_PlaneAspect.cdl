@@ -1,0 +1,95 @@
+-- File:	Prs3d_PlaneAspect.cdl
+-- Created:	Mon Jan 17 14:29:30 1994
+-- Author:	Modelistation
+--		<model@mastox>
+---Copyright:	 Matra Datavision 1994
+
+class PlaneAspect from Prs3d inherits CompositeAspect from Prs3d
+    	---Purpose: A framework to define the display of planes.
+uses
+
+    LineAspect from Prs3d,
+    Length from Quantity,
+    PlaneAngle from Quantity
+    
+is
+
+    Create returns mutable PlaneAspect from Prs3d;
+    	---Purpose: Constructs an empty framework for the display of planes.    
+    EdgesAspect(me) returns mutable LineAspect from Prs3d;
+    
+    	---Purpose: Returns the attributes of displayed edges involved in the presentation of planes.    
+    
+    IsoAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the attributes of displayed isoparameters involved in the presentation of planes.
+        
+    ArrowAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the settings for displaying an arrow.    
+    SetArrowsLength(me:mutable; L : Length from Quantity);
+    
+    
+    ArrowsLength(me) returns Length from Quantity;
+    	--- Purpose: Returns the length of the arrow shaft used in the display of arrows.   
+
+    SetArrowsSize(me:mutable; L : Length from Quantity);
+    	---Purpose: Sets the angle of the arrowhead used in the display of planes.    
+    
+    ArrowsSize(me) returns Length from Quantity;
+    	---Purpose: Returns the size of arrows used in the display of planes.    
+  
+    SetArrowsAngle(me:mutable; ang : PlaneAngle from Quantity);
+    	---Purpose: Sets the angle of the arrowhead used in the display
+    	-- of arrows involved in the presentation of planes.    
+    
+    ArrowsAngle(me) returns PlaneAngle from Quantity;
+    	---Purpose: Returns the angle of the arrowhead used in the
+    	-- display of arrows involved in the presentation of planes.    
+    
+    SetDisplayCenterArrow(me:mutable ; draw: Boolean from Standard);
+    	---Purpose: Sets the display attributes defined in DisplayCenterArrow to active.
+    
+    DisplayCenterArrow(me) returns Boolean from Standard;
+    	---Purpose: Returns true if the display of center arrows is allowed.       
+    SetDisplayEdgesArrows(me:mutable ; draw: Boolean from Standard);
+    	---Purpose: Sets the display attributes defined in DisplayEdgesArrows to active. 
+    
+    DisplayEdgesArrows(me) returns Boolean from Standard;
+ 
+    	--- Purpose: Returns true if the display of edge arrows is allowed.   
+    SetDisplayEdges(me:mutable ; draw: Boolean from Standard);
+    DisplayEdges(me) returns Boolean from Standard;
+    
+    SetDisplayIso(me:mutable ; draw: Boolean from Standard);
+    	 ---Purpose: Sets the display attributes defined in DisplayIso to active.   
+    
+    DisplayIso(me) returns Boolean from Standard;
+    	--- Purpose: Returns true if the display of isoparameters is allowed.   
+    SetPlaneLength(me:mutable; LX,LY: Length from Quantity);
+    PlaneXLength(me) returns Length from Quantity;
+    	--- Purpose: Returns the length of the x axis used in the display of planes.   
+    
+    PlaneYLength(me) returns Length from Quantity;
+    	---Purpose: Returns the length of the y axis used in the display of planes.    
+    SetIsoDistance(me:mutable; L: Length from Quantity);
+    	---Purpose: Sets the distance L between isoparameters used in the display of planes.  
+    IsoDistance(me) returns Length from Quantity;
+    	---Purpose: Returns the distance between isoparameters used in the display of planes.
+        
+fields
+
+    myEdgesAspect: LineAspect from Prs3d;
+    myIsoAspect: LineAspect from Prs3d;
+    myArrowAspect: LineAspect from Prs3d;
+    myArrowsLength: Length from Quantity;
+    myArrowsSize: Length from Quantity;
+    myArrowsAngle: PlaneAngle from Quantity;
+    myDrawCenterArrow: Boolean from Standard;
+    myDrawEdgesArrows: Boolean from Standard;
+    myDrawEdges: Boolean from Standard;
+    myDrawIso: Boolean from Standard;
+    myPlaneXLength : Length from Quantity;    
+    myPlaneYLength : Length from Quantity;    
+    myIsoDistance: Length from Quantity;    
+
+end PlaneAspect from Prs3d;
+

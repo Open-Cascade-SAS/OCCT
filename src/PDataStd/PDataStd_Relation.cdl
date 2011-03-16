@@ -1,0 +1,33 @@
+-- File:	PDataStd_Relation.cdl
+-- Created:	Thu Jul 31 10:29:12 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Relation from PDataStd inherits Attribute from PDF
+
+uses HExtendedString  from PCollection,
+     HAttributeArray1 from PDF 
+
+is
+
+    Create returns mutable Relation from  PDataStd;
+    
+    Create (name : HExtendedString from PCollection) 
+    returns mutable Relation from PDataStd;
+    
+    GetName (me) returns HExtendedString from PCollection;
+    
+    SetName (me : mutable; vars : HExtendedString from PCollection);
+
+    GetVariables (me) returns HAttributeArray1 from PDF;
+    
+    SetVariables (me : mutable; vars : HAttributeArray1 from PDF);
+    
+fields
+
+    myName      : HExtendedString from PCollection;    
+    myVariables : HAttributeArray1 from PDF;
+
+end Relation;

@@ -1,0 +1,58 @@
+-- File:	VrmlConverter_Curve.cdl
+-- Created:	Wed Apr 23 11:38:10 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Curve from VrmlConverter 
+
+    	---Purpose: Curve - computes the presentation of objects to be
+    	--          seen  as curves  (the  computation  will  be  made
+    	--          with a constant  number  of  points),  converts this one
+    	--          into  VRML  objects  and  writes (adds) them  into
+    	--          anOStream.   All  requested   properties  of   the
+    	--          representation are specify  in aDrawer  of  Drawer
+    	--          class (VrmlConverter).    
+    	--          This kind of the presentation is converted into   
+    	--          IndexedLineSet ( VRML ). 
+
+    
+uses
+ 
+    Curve    from   Adaptor3d,
+    Length   from   Quantity,
+    Drawer   from   VrmlConverter
+
+is
+
+    Add(myclass; aCurve     : Curve          from Adaptor3d;
+                 aDrawer    : Drawer         from VrmlConverter;
+    	    	 anOStream  : in out OStream from Standard);
+
+    ---Purpose: adds to the OStream the drawing of the curve aCurve.
+    --          The aspect is defined by LineAspect in aDrawer.
+    --          
+
+
+    Add(myclass; aCurve     : Curve          from Adaptor3d;
+                 U1,U2      : Real           from Standard;
+                 aDrawer    : Drawer         from VrmlConverter;
+    	    	 anOStream  : in out OStream from Standard);
+		    
+    ---Purpose: adds to the OStream the drawing of the curve aCurve.
+    --          The aspect is defined by LineAspect in aDrawer.
+    --          The drawing will be limited between the points of parameter
+    --          U1 and U2.
+
+    Add(myclass; aCurve       : Curve          from Adaptor3d;
+    	    	 U1, U2       : Real           from Standard;
+    	    	 anOStream    : in out OStream from Standard;
+    	    	 aNbPoints    : Integer        from Standard);
+
+    ---Purpose: adds to the OStream the drawing of the curve aCurve.
+    --          The aspect is the current aspect.
+    --          The drawing will be limited between the points of parameter
+    --          U1 and U2. aNbPoints defines  number of points on  one interval. 
+
+end Curve;

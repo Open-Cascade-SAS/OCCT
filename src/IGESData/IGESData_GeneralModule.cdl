@@ -1,0 +1,117 @@
+-- File:	IGESData_GeneralModule.cdl
+-- Created:	Mon May 10 15:00:51 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class GeneralModule  from IGESData
+     inherits  GeneralModule  from Interface
+
+    ---Purpose : Definition of General Services adapted to IGES.
+    --           This Services comprise : Shared & Implied Lists, Copy, Check
+    --           They are adapted according to the organisation of IGES
+    --           Entities : Directory Part, Lists of Associativities and
+    --           Properties are specifically processed
+
+uses Transient,  HAsciiString from TCollection,
+     InterfaceModel, Check, ShareTool, EntityIterator, CopyTool,
+     IGESEntity, DirChecker
+
+is
+
+    FillSharedCase (me; CN : Integer; ent : Transient;
+    	iter : in out EntityIterator);
+    ---Purpose : Fills the list of Entities shared by an IGESEntity <ent>,
+    --           according a Case Number <CN> (formerly computed by CaseNum).
+    --           Considers Properties and Directory Part, and calls
+    --           OwnSharedCase (which is adapted to each Type of Entity)
+
+    OwnSharedCase  (me; CN : Integer; ent : IGESEntity;
+    	    	    iter : in out EntityIterator)  is deferred;
+    ---Purpose : Lists the Entities shared by a given IGESEntity <ent>, from
+    --           its specific parameters : specific for each type
+
+    ListImpliedCase (me; CN : Integer; ent : Transient;
+	             iter : in out EntityIterator)  is redefined;
+    ---Purpose : Lists the Implied References of <ent>. Here, these are the
+    --           Associativities, plus the Entities defined by OwnSharedCase
+
+    OwnImpliedCase  (me; CN : Integer; ent : IGESEntity;
+	             iter : in out EntityIterator)  is virtual;
+    ---Purpose : Specific list of Entities implied by a given IGESEntity <ent>
+    --           (in addition to Associativities). By default, there are none,
+    --           but this method can be redefined as required
+
+
+
+    CheckCase (me; CN : Integer; ent : Transient; shares : ShareTool;
+    	       ach    : in out Check);
+    ---Purpose : Semantic Checking of an IGESEntity. Performs general Checks,
+    --           which use DirChecker, then call OwnCheck which does a check
+    --           specific for each type of Entity
+
+    DirChecker (me; CN : Integer; ent : IGESEntity) returns DirChecker
+    	is deferred;
+    ---Purpose : Returns a DirChecker, specific for each type of Entity
+    --           (identified by its Case Number) : this DirChecker defines
+    --           constraints which must be respected by the DirectoryPart
+
+    OwnCheckCase (me; CN : Integer; ent : IGESEntity; shares : ShareTool;
+    	          ach    : in out Check)  is deferred;
+    ---Purpose : Performs Specific Semantic Check for each type of Entity
+
+
+    CanCopy (me; CN : Integer; ent : Transient) returns Boolean  is redefined;
+    ---Purpose : Specific answer to the question "is Copy properly implemented"
+    --           For IGES, answer is always True
+
+    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    	returns Boolean  is deferred;
+    ---Purpose : Specific creation of a new void entity
+
+    CopyCase (me; CN : Integer;
+    	      entfrom : Transient; entto : mutable Transient;
+    	      TC : in out CopyTool);
+    ---Purpose : Copy ("Deep") from <entfrom> to <entto> (same type)
+    --           by using a CopyTool which provides its working Map.
+    --           For IGESEntities, Copies general data (Directory Part, List of
+    --           Properties) and call OwnCopyCase
+
+    OwnCopyCase (me; CN : Integer;
+    	         entfrom : IGESEntity; entto : mutable IGESEntity;
+    	         TC : in out CopyTool)  is deferred;
+    ---Purpose : Copies parameters which are specific of each Type of Entity
+
+    RenewImpliedCase (me; CN : Integer;
+    	         entfrom : Transient; entto : mutable Transient;
+    	         TC : CopyTool)  is redefined;
+    ---Purpose : Renewing of Implied References.
+    --           For IGESEntities, Copies general data(List of Associativities)
+    --           and calls OwnRenewCase
+
+    OwnRenewCase     (me; CN : Integer;
+    	              entfrom : IGESEntity; entto : mutable IGESEntity;
+    	              TC : CopyTool)  is virtual;
+    ---Purpose : Renews parameters which are specific of each Type of Entity :
+    --           the provided default does nothing, but this method may be
+    --           redefined as required
+
+    WhenDeleteCase (me; CN : Integer;
+    	    	ent : mutable Transient; dispatched : Boolean)  is redefined;
+    ---Purpose : Prepares an IGES Entity for delete : works on directory part
+    --           then calls OwnDeleteCase
+    --           While dispatch requires to copy the entities, <dispatched> is
+    --           ignored, entities are cleared in any case
+
+    OwnDeleteCase (me; CN : Integer;
+    	    	ent : mutable IGESEntity)  is virtual;
+    ---Purpose : Specific preparation for delete, acts on own parameters
+    --           Default does nothing, to be redefined as required
+
+    Name (me; CN : Integer; ent : Transient; shares : ShareTool from Interface)
+    	returns HAsciiString from TCollection  is redefined virtual;
+    ---Purpose : Returns the name of an IGES Entity (its NameValue)
+    --           Can be redefined for an even more specific case ...
+
+end GeneralModule;

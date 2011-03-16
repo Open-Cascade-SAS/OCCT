@@ -1,0 +1,51 @@
+-- File:	ProjLib_ProjectOnSurface.cdl
+-- Created:	Thu Sep 15 15:35:59 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+class ProjectOnSurface from ProjLib 
+
+uses
+
+    HCurve       from Adaptor3d,
+    HSurface     from Adaptor3d,
+    BSplineCurve from Geom
+
+is
+
+    Create 
+    	---Purpose:  Create an empty projector.
+    returns ProjectOnSurface from ProjLib;
+    
+
+    Create( S  : HSurface from Adaptor3d)
+    	---Purpose: Create a projector normaly to the surface <S>.
+    returns ProjectOnSurface from ProjLib;
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~ProjLib_ProjectOnSurface(){Delete() ; }"
+    
+    Load(me : in out; S : HSurface from Adaptor3d)
+	---Purpose: Set the Surface to <S>.
+	--          To compute the projection, you have to Load the Curve.
+    is static;
+    
+    Load(me : in out; C : HCurve from Adaptor3d; Tolerance : Real)
+	---Purpose: Compute the projection of the curve <C> on the Surface.
+    is static;
+
+    IsDone(me) returns Boolean ;
+    
+    BSpline(me) returns BSplineCurve from Geom  
+    is static ;
+
+fields
+
+    myCurve      : HCurve   from Adaptor3d ;
+    mySurface    : HSurface from Adaptor3d ;
+    myTolerance  : Real ;
+    myIsDone     : Boolean ;
+    myResult     : BSplineCurve from Geom ;
+
+end ProjectOnSurface;

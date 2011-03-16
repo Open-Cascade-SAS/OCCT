@@ -1,0 +1,27 @@
+-- File:        CalendarDate.cdl
+-- Created:     Mon Dec  4 12:02:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWCalendarDate from RWStepBasic
+
+	---Purpose : Read & Write Module for CalendarDate
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     CalendarDate from StepBasic
+
+is
+
+	Create returns RWCalendarDate;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable CalendarDate from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : CalendarDate from StepBasic);
+
+end RWCalendarDate;

@@ -1,0 +1,95 @@
+
+--
+-- File:	Aspect_TypeMapEntry.cdl
+-- Created:	07/09/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class TypeMapEntry from Aspect
+
+	---Version: 0.0
+
+	---Purpose: This class defines a typemap entry.
+	--	    A typemap entry is an association between
+	--	    a LineStyle object and an index in the typemap.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	LineStyle from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+	Create
+	returns TypeMapEntry from Aspect;
+	---Level: Public
+	---Purpose: Creates an unallocated typemap entry
+	
+	Create ( index : Integer from Standard; 
+		 style : LineStyle from Aspect)
+ 	returns TypeMapEntry;
+	---Level: Public
+	---Purpose: Creates an allocated typemap entry
+
+	Create ( entry : TypeMapEntry from Aspect )
+ 	returns TypeMapEntry
+	---Level: Public
+	---Purpose: Creates an allocated typemap entry.
+	--  Warning: Raises error if the typemap entry <entry>
+	--	    is unallocated.
+	raises BadAccess from Aspect;
+
+	SetValue ( me: in out; index : Integer from Standard;
+			       style : LineStyle from Aspect );
+	---Level: Public
+ 	---Purpose: Sets typemap entry value and allocates it.
+ 
+	SetValue ( me: in out; entry : TypeMapEntry from Aspect);
+	---Level: Public
+ 	---Purpose: Sets typemap entry value and allocates it.
+	---C++: alias operator =
+ 
+	SetType ( me: in out; Style : LineStyle from Aspect );
+	---Level: Public
+ 	---Purpose: Sets the line style of typemap entry.
+
+	Type ( me ) returns LineStyle from Aspect
+	---Warning: Raises error if the typemap entry is unallocated .
+	raises BadAccess from Aspect;
+	---C++: return const & 
+
+	SetIndex ( me: in out; index : Integer from Standard);
+	---Level: Public
+ 	---Purpose: Sets index value of a typemap entry.
+
+	Index ( me ) returns Integer from Standard 
+	---Level: Public
+ 	---Purpose: Returns index value of a typemap entry.
+	--  Warning: Raises error if the typemap entry is unallocated .
+	raises BadAccess from Aspect;
+
+	Free ( me : in out );
+	---Level: Public
+	---Purpose: Unallocates the typemap entry.
+
+	IsAllocated ( me ) returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Returns True if the typemap entry is allocated.
+	--  Warning: A typemap entry is allocated when the type and
+	--	    the index is defined.
+
+        Dump( me ) ;
+	---Level: Internal
+
+fields
+	MyType		: LineStyle from Aspect;
+	MyIndex 	: Integer from Standard;
+	MyTypeIsDef	: Boolean from Standard;
+	MyIndexIsDef	: Boolean from Standard;
+
+end TypeMapEntry from Aspect;

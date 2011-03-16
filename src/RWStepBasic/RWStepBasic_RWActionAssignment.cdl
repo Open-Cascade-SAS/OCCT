@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWActionAssignment.cdl
+-- Created:	Fri Nov 26 16:26:29 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWActionAssignment from RWStepBasic
+
+    ---Purpose: Read & Write tool for ActionAssignment
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ActionAssignment from StepBasic
+
+is
+    Create returns RWActionAssignment from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ActionAssignment from StepBasic);
+	---Purpose: Reads ActionAssignment
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ActionAssignment from StepBasic);
+	---Purpose: Writes ActionAssignment
+
+    Share (me; ent : ActionAssignment from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWActionAssignment;

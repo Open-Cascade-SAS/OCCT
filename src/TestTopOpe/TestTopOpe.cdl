@@ -1,0 +1,48 @@
+-- File:	TestTopOpe.cdl
+-- Created:	Mon Oct 21 10:59:41 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+package TestTopOpe
+
+uses 
+ 
+    Draw,
+    TopOpeBRepBuild,
+    TopOpeBRepDS,
+    TopoDS
+    
+is
+
+    AllCommands(I : in out Interpretor from Draw);
+    ---Purpose: Defines all Top. Ope. test commands
+
+    TOPOCommands(I : in out Interpretor from Draw);
+
+    BOOPCommands(I : in out Interpretor from Draw);
+
+    HDSCommands(I : in out Interpretor from Draw);
+    ---Purpose: commands on a HDS involved in topological operations
+
+    CurrentHB(HDS : HBuilder from TopOpeBRepBuild);
+    ---Purpose : Defines the HBuilder on which BOOPCommands will operate.
+
+    CurrentDS(HDS : HDataStructure from TopOpeBRepDS);
+    ---Purpose : Defines the HDS on which HDSCommands/BOOPCommands will operate.
+
+    Shapes(S1,S2 : Shape from TopoDS);
+    ---Purpose: Defines current shapes of current topological operation
+
+    MesureCommands(I : in out Interpretor from Draw);
+
+    CORCommands(I : in out Interpretor from Draw);
+
+    DSACommands(I : in out Interpretor from Draw);
+
+    OtherCommands(I : in out Interpretor from Draw);
+
+    Factory (theDI : out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands of TKDrawDEB. Used for plugin.
+
+end TestTopOpe;

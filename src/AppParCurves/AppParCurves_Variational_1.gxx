@@ -1,0 +1,358 @@
+// File:	AppParCurves_Variational_1.gxx
+// Created:	Wed Sep 17 18:29:12 1997
+// Author:	Philippe MANGIN /Igor Feoktistov (1998)
+//		<pmn@sgi29>
+
+
+#include <SortTools_StraightInsertionSortOfReal.hxx>
+#include <TCollection_CompareOfReal.hxx>
+#include <TColStd_HArray2OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_Array2OfInteger.hxx>
+#include <FEmTool_Assembly.hxx>
+#include <FEmTool_AssemblyTable.hxx>
+#include <FEmTool_Curve.hxx>
+
+//====================== Private Methodes =============================//
+//=======================================================================
+//function : TheMotor
+//purpose  : Smoothing's motor like STRIM routine "MOTLIS"
+//=======================================================================
+//
+void AppParCurves_Variational::TheMotor(
+			 Handle(AppParCurves_SmoothCriterion)& J,
+//			 const Standard_Real WQuadratic,
+			 const Standard_Real ,
+			 const Standard_Real WQuality,
+			 Handle(FEmTool_Curve)& TheCurve,
+			 TColStd_Array1OfReal& Ecarts) 
+{
+// ...
+  
+  const Standard_Real BigValue = 1.e37, SmallValue = 1.e-6, SmallestValue = 1.e-9;
+
+//  SortTools_StraightInsertionSortOfReal Sort;
+  TCollection_CompareOfReal CompReal;
+  Handle(TColStd_HArray1OfReal) CurrentTi, NewTi, OldTi;  
+  Handle(TColStd_HArray2OfInteger) Dependence;
+  Standard_Boolean lestim, lconst, ToOptim, iscut;
+  Standard_Boolean isnear, again = Standard_True; 
+  Standard_Integer NbEst, ICDANA, NumPnt, Iter;
+  Standard_Integer MaxNbEst =5; 
+  Standard_Real VOCRI[3] = {BigValue, BigValue, BigValue}, EROLD = BigValue,
+                VALCRI[3], ERRMAX, ERRMOY, ERRQUA;
+  Standard_Real CBLONG, LNOLD;
+  Standard_Integer NbrPnt = myLastPoint - myFirstPoint + 1;
+  Standard_Integer NbrConstraint = myNbPassPoints + myNbTangPoints + myNbCurvPoints;
+  Handle(FEmTool_Curve) CCurrent, COld, CNew;
+  Standard_Real EpsLength;// = 1.e-6 * CBLONG / NbrPnt;
+  Standard_Real EpsDeg; // = Min(WQuality * .1, CBLONG * .001);
+
+  Standard_Real e1, e2, e3;
+  Standard_Real J1min, J2min, J3min;
+  Standard_Integer iprog;
+
+// (0) Init
+
+  J->GetEstimation(e1, e2, e3);
+  J1min = 1.e-8; J2min = J3min = (e1 + 1.e-8) * 1.e-6;
+
+  if(e1 < J1min) e1 = J1min;// Like in
+  if(e2 < J2min) e2 = J2min;// MOTLIS
+  if(e3 < J3min) e3 = J3min;
+
+
+  J->SetEstimation(e1, e2, e3);
+
+  CCurrent = TheCurve;  
+  CurrentTi = new TColStd_HArray1OfReal(1, myParameters->Length());  
+  CurrentTi->ChangeArray1() = myParameters->Array1();
+  OldTi = new (TColStd_HArray1OfReal) (1, CurrentTi->Length());
+  OldTi->ChangeArray1() = CurrentTi->Array1();
+  COld = CCurrent; 
+  LNOLD = CBLONG = J->EstLength();
+  Dependence = J->DependenceTable();
+
+  J->SetCurve(CCurrent);
+  FEmTool_Assembly * TheAssembly = 
+    new  FEmTool_Assembly (Dependence->Array2(), J->AssemblyTable());
+
+//============        Optimization      ============================
+//  Standard_Integer inagain = 0;
+  while (again) {
+
+    // (1) Loop  Optimization / Estimation
+    lestim = Standard_True;
+    lconst = Standard_True;
+    NbEst = 0;
+      
+    J->SetCurve(CCurrent);
+
+    while(lestim) {
+
+      //     (1.1) Curve's Optimization.
+      EpsLength = SmallValue * CBLONG / NbrPnt;
+      CNew = new (FEmTool_Curve) (CCurrent->Dimension(),
+				  CCurrent->NbElements(), CCurrent->Base(), EpsLength);
+      CNew->Knots() = CCurrent->Knots();
+      
+      J->SetParameters(CurrentTi);
+      EpsDeg = Min(WQuality * .1, CBLONG * .001);
+      
+      Optimization(J, *TheAssembly, lconst, EpsDeg, CNew, CurrentTi->Array1());
+      
+      lconst = Standard_False;
+
+      //        (1.2) calcul des criteres de qualites et amelioration
+      //              des estimation.
+      ICDANA = J->QualityValues(J1min, J2min, J3min, 
+				VALCRI[0], VALCRI[1], VALCRI[2]);
+
+      if(ICDANA > 0) lconst = Standard_True;
+      
+      J->ErrorValues(ERRMAX, ERRQUA, ERRMOY);
+
+      isnear = ((Sqrt(ERRQUA / NbrPnt) < 2*WQuality) && 
+		(myNbIterations > 1));
+
+//       (1.3) Optimisation des ti par proj orthogonale
+//             et calcul de l'erreur aux points.
+
+      if (isnear) {
+	NewTi = new (TColStd_HArray1OfReal) (1, CurrentTi->Length());
+	Project(CNew, CurrentTi->Array1(), 
+		NewTi->ChangeArray1(),
+		Ecarts, NumPnt, 
+		ERRMAX, ERRQUA, ERRMOY, 2);
+      }
+      else  NewTi = CurrentTi;
+
+ 
+//        (1.4) Progression's test
+      iprog = 0;
+      if ((EROLD > WQuality) && (ERRMAX < 0.95*EROLD)) iprog++;
+      if ((EROLD > WQuality) && (ERRMAX < 0.8*EROLD)) iprog++;  
+      if ((EROLD > WQuality) && (ERRMAX < WQuality)) iprog++;
+      if ((EROLD > WQuality) && (ERRMAX < 0.99*EROLD) 
+	  && (ERRMAX < 1.1*WQuality)) iprog++;  
+      if ( VALCRI[0] < 0.975 * VOCRI[0]) iprog++;
+      if ( VALCRI[0] < 0.9 * VOCRI[0]) iprog++; 
+      if ( VALCRI[1] < 0.95 * VOCRI[1]) iprog++;
+      if ( VALCRI[1] < 0.8 * VOCRI[1]) iprog++;  
+      if ( VALCRI[2] < 0.95 * VOCRI[2]) iprog++;
+      if ( VALCRI[2] < 0.8 * VOCRI[2]) iprog++;  
+      if ((VOCRI[1]>SmallestValue)&&(VOCRI[2]>SmallestValue)) {
+	if ((VALCRI[1]/VOCRI[1] + 2*VALCRI[2]/VOCRI[2]) < 2.8) iprog++;
+      }
+
+      if (iprog < 2 && NbEst == 0 ) {
+	//             (1.5) Invalidation of new knots.
+	VALCRI[0] = VOCRI[0];
+	VALCRI[1] = VOCRI[1];
+	VALCRI[2] = VOCRI[2];
+	ERRMAX = EROLD;
+	CBLONG =  LNOLD;
+	CCurrent = COld;
+	CurrentTi = OldTi;
+
+	goto L8000; // exit
+      }
+
+      VOCRI[0] = VALCRI[0];
+      VOCRI[1] = VALCRI[1];
+      VOCRI[2] = VALCRI[2];
+      LNOLD = CBLONG;
+      EROLD = ERRMAX;    
+
+      CCurrent = CNew;
+      CurrentTi = NewTi;
+
+      //       (1.6) Test if the Estimations seems  OK, else repeat
+      NbEst++;
+      lestim = ( (NbEst<MaxNbEst) && (ICDANA == 2)&& (iprog > 0) );      
+      
+      if (lestim && isnear)  {
+	//           (1.7) Optimization of ti by ACR.
+//	Sort.Sort(CurrentTi->ChangeArray1(), CompReal);
+        SortTools_StraightInsertionSortOfReal::Sort(CurrentTi->ChangeArray1(), CompReal);
+	Standard_Integer Decima = 4;
+	
+	CCurrent->Length(0., 1., CBLONG);
+	J->EstLength() = CBLONG;
+	
+	ACR(CCurrent, CurrentTi->ChangeArray1(), Decima); 
+	lconst = Standard_True;
+
+      }
+    }
+
+
+    //     (2) loop of parametric / geometric optimization
+
+    Iter = 1;
+    ToOptim = ((Iter < myNbIterations) && (isnear));
+    
+    while(ToOptim) {
+      Iter++;
+      //     (2.1) Save curent results
+      VOCRI[0] = VALCRI[0];
+      VOCRI[1] = VALCRI[1];
+      VOCRI[2] = VALCRI[2];
+      EROLD = ERRMAX;
+      LNOLD = CBLONG;
+      COld = CCurrent;
+      OldTi->ChangeArray1() = CurrentTi->Array1();
+          
+      //     (2.2) Optimization des ti by ACR.
+//      Sort.Sort(CurrentTi->ChangeArray1(), CompReal);
+      SortTools_StraightInsertionSortOfReal::Sort(CurrentTi->ChangeArray1(), CompReal);
+      Standard_Integer Decima = 4;
+      
+      CCurrent->Length(0., 1., CBLONG);
+      J->EstLength() = CBLONG;
+      
+      ACR(CCurrent, CurrentTi->ChangeArray1(), Decima); 
+      lconst = Standard_True;
+	
+      //      (2.3) Optimisation des courbes
+      EpsLength = SmallValue * CBLONG / NbrPnt;
+      
+      CNew = new (FEmTool_Curve) (CCurrent->Dimension(),
+				  CCurrent->NbElements(), CCurrent->Base(), EpsLength); 
+      CNew->Knots() = CCurrent->Knots();
+      
+      J->SetParameters(CurrentTi);
+      
+      EpsDeg = Min(WQuality * .1, CBLONG * .001);
+      Optimization(J, *TheAssembly, lconst, EpsDeg, CNew, CurrentTi->Array1());
+      
+      CCurrent = CNew;
+
+      //      (2.4) calcul des criteres de qualites et amelioration
+      //             des estimation.
+
+      ICDANA = J->QualityValues(J1min, J2min, J3min, VALCRI[0], VALCRI[1], VALCRI[2]);
+      if(ICDANA > 0) lconst = Standard_True;
+      
+    J->GetEstimation(e1, e2, e3);
+      //       (2.5) Optimisation des ti par proj orthogonale
+      
+      NewTi = new (TColStd_HArray1OfReal) (1, CurrentTi->Length());
+      Project(CCurrent, CurrentTi->Array1(), 
+	      NewTi->ChangeArray1(),
+	      Ecarts, NumPnt, 
+	      ERRMAX, ERRQUA, ERRMOY, 2);
+
+      //       (2.6)  Test de non regression
+
+      Standard_Integer iregre = 0;
+      if (NbrConstraint < NbrPnt) {
+	if ( (ERRMAX > WQuality) && (ERRMAX > 1.05*EROLD)) iregre++;
+	if ( (ERRMAX > WQuality) && (ERRMAX > 2*EROLD)) iregre++;
+	if ( (EROLD  > WQuality) && (ERRMAX <= 0.5*EROLD)) iregre--;
+      }
+      Standard_Real E1, E2, E3;
+      J->GetEstimation(E1, E2, E3);
+      if ( (VALCRI[0] > E1) && (VALCRI[0] > 1.1*VOCRI[0])) iregre++;
+      if ( (VALCRI[1] > E2) && (VALCRI[1] > 1.1*VOCRI[1])) iregre++;
+      if ( (VALCRI[2] > E3) && (VALCRI[2] > 1.1*VOCRI[2])) iregre++;
+
+      
+      if (iregre >= 2) {
+//      if (iregre >= 1) {
+	// (2.7) on restaure l'iteration precedente
+	VALCRI[0] = VOCRI[0];
+	VALCRI[1] = VOCRI[1];
+	VALCRI[2] = VOCRI[2];
+	ERRMAX = EROLD;
+	CBLONG = LNOLD;
+	CCurrent = COld;
+	CurrentTi->ChangeArray1() = OldTi->Array1();    
+	ToOptim = Standard_False;
+      }
+      else { // Iteration is Ok.
+	CCurrent = CNew;
+	CurrentTi = NewTi;
+      }
+      if (Iter >= myNbIterations) ToOptim = Standard_False;
+    }
+
+    // (3) Decoupe eventuelle
+    
+    if ( (CCurrent->NbElements() < myMaxSegment) && myWithCutting ) {
+      
+      //    (3.1) Sauvgarde de l'etat precedent
+      VOCRI[0] = VALCRI[0];
+      VOCRI[1] = VALCRI[1];
+      VOCRI[2] = VALCRI[2];
+      EROLD = ERRMAX;
+      COld = CCurrent;
+      OldTi->ChangeArray1() = CurrentTi->Array1();
+
+      //       (3.2) On arrange les ti : Trie + recadrage sur (0,1)
+      //         ---> On trie, afin d'assurer l'ordre par la suite.
+//      Sort.Sort(CurrentTi->ChangeArray1(), CompReal);
+      SortTools_StraightInsertionSortOfReal::Sort(CurrentTi->ChangeArray1(), CompReal);
+      
+      if ((CurrentTi->Value(1)!= 0.) || 
+	  (CurrentTi->Value(NbrPnt)!= 1.)) {
+	Standard_Real t, DelatT = 
+	  1.0 /(CurrentTi->Value(NbrPnt)-CurrentTi->Value(1));
+	for (Standard_Integer ii=2; ii<NbrPnt; ii++) {
+	  t = (CurrentTi->Value(ii)-CurrentTi->Value(1))*DelatT;
+	  CurrentTi->SetValue(ii, t);
+	}
+	CurrentTi->SetValue(1, 0.);
+	CurrentTi->SetValue(NbrPnt, 1.);
+      }
+
+      //       (3.3) Insert new Knots
+      
+      SplitCurve(CCurrent, CurrentTi->Array1(), EpsLength, CNew, iscut);
+      if (!iscut) again = Standard_False;
+      else {
+ 	CCurrent =  CNew;
+	// New Knots => New Assembly.
+	J->SetCurve(CNew);
+	delete TheAssembly;
+	TheAssembly = new FEmTool_Assembly (Dependence->Array2(),
+					    J->AssemblyTable());
+      }
+    }
+    else { again = Standard_False;}
+  }
+  
+  //    ================   Great loop end   ===================
+
+ L8000:
+
+  // (4) Compute the best Error.
+  NewTi = new (TColStd_HArray1OfReal) (1, CurrentTi->Length());
+  Project(CCurrent, CurrentTi->Array1(), 
+	  NewTi->ChangeArray1(),
+	  Ecarts, NumPnt, 
+	  ERRMAX, ERRQUA, ERRMOY, 10);
+
+// (5) field's update
+
+  TheCurve = CCurrent;
+  J->EstLength() = CBLONG;
+  myParameters->ChangeArray1() = NewTi->Array1();
+  myCriterium[0] = ERRQUA;
+  myCriterium[1] = Sqrt(VALCRI[0]);
+  myCriterium[2] = Sqrt(VALCRI[1]);
+  myCriterium[3] = Sqrt(VALCRI[2]);
+  myMaxError = ERRMAX;
+  myMaxErrorIndex = NumPnt;
+  if(NbrPnt > NbrConstraint)
+    myAverageError = ERRMOY / (NbrPnt - NbrConstraint);
+  else
+    myAverageError = ERRMOY / NbrConstraint;
+
+  delete TheAssembly;
+}
+
+
+
+
+

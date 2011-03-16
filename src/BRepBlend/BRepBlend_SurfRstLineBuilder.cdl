@@ -1,0 +1,230 @@
+-- File:	BRepBlend_SurfRstLineBuilder.cdl
+-- Created:	Thu Jan 23 16:25:47 1997
+-- Author:	Jacques GOUSSARD
+-- Author:	Laurent BOURESCHE
+--		<lbo@pomalox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class SurfRstLineBuilder from BRepBlend 
+
+      ---Purpose: This  class processes data  resulting  from  
+      --          Blend_CSWalking  taking  in consideration the Surface
+      --          supporting  the curve to detect the breakpoint.
+      --          
+      --          The criteria of  distribution  of  points on  the  line are  detailed 
+      --          because  it  is  to  be  used  in  the  calculatuon of values approached
+      --          by an approximation of functions continued  basing on
+      --          Blend_SurfRstFunction.
+      --          
+      --          Thus this pseudo path necessitates 3 criteria of regrouping :
+      --           
+      --          1) exit of the domain of  the curve 
+      --          
+      --          2) exit of the domain of  the  surface  
+      --          
+      --          3)  stall as there  is a solution to  the problem
+      --          surf/surf  within  the  domain of  the surface
+      --          of  support  of  the   restriction.
+
+uses Point            from Blend,
+     Status           from Blend,
+     SurfRstFunction  from Blend,
+     FuncInv          from Blend,
+     SurfPointFuncInv from Blend,
+     SurfCurvFuncInv  from Blend,
+     Vector           from math,
+     Matrix           from math,
+     State            from TopAbs,
+     Pnt              from gp,
+     Pnt2d            from gp,
+     Vec              from gp,
+     Vec2d            from gp,
+     HArray1OfReal    from TColStd,
+     Transition       from IntSurf,
+     HVertex          from Adaptor3d,
+     HSurface         from Adaptor3d,
+     HCurve2d         from Adaptor2d,
+     TopolTool        from Adaptor3d,
+     Line             from BRepBlend,
+     Extremity        from BRepBlend
+
+is
+    
+    Create(Surf1   : HSurface  from Adaptor3d;
+    	   Domain1 : TopolTool from Adaptor3d;
+    	   Surf2   : HSurface  from Adaptor3d; 
+    	   Rst     : HCurve2d  from Adaptor2d;
+    	   Domain2 : TopolTool from Adaptor3d)
+    returns SurfRstLineBuilder from BRepBlend;
+
+    Perform(me         : in out; 
+    	    Func       : in out SurfRstFunction from Blend;
+	    Finv       : in out FuncInv from Blend;
+	    FinvP      : in out SurfPointFuncInv from Blend;
+	    FinvC      : in out SurfCurvFuncInv from Blend;
+            Pdep       : Real from Standard;
+            Pmax       : Real from Standard;
+	    MaxStep    : Real from Standard;
+	    TolGuide   : Real from Standard;
+            Soldep     : Vector from math;
+            Tolesp     : Real from Standard;
+            Fleche     : Real from Standard;
+            Appro      : Boolean from Standard = Standard_False)
+    is static;
+
+    PerformFirstSection(me     : in out; 
+    	                Func   : in out SurfRstFunction from Blend;
+	                Finv   : in out FuncInv from Blend;
+	                FinvP  : in out SurfPointFuncInv from Blend;
+	                FinvC  : in out SurfCurvFuncInv from Blend;
+                        Pdep   : Real from Standard;
+                        Pmax   : Real from Standard;
+                        Soldep : Vector from math;
+                        Tolesp : Real from Standard; 
+			TolGuide  :  Real  from  Standard;
+                        RecRst : Boolean from Standard;
+                        RecP   : Boolean from Standard;
+                        RecS   : Boolean from Standard;
+                        Psol   : out Real from Standard;
+                        ParSol : out Vector from math)
+    returns Boolean from Standard
+    is static;
+
+    Complete(me    : in out;
+    	     Func  : in out SurfRstFunction from Blend;
+	     Finv  : in out FuncInv from Blend;
+	     FinvP : in out SurfPointFuncInv from Blend;
+	     FinvC : in out SurfCurvFuncInv from Blend;
+             Pmin  : Real from Standard)
+			
+    returns Boolean from Standard
+    is static;
+
+    InternalPerform (me    : in out;
+    	    	     Func  : in out SurfRstFunction from Blend;
+	             Finv  : in out FuncInv from Blend;
+	             FinvP : in out SurfPointFuncInv from Blend;
+	             FinvC : in out SurfCurvFuncInv from Blend;
+                     Bound : Real from Standard)
+    is static private;
+ 
+    ArcToRecadre(me :  in  out; 
+                 Sol  :  Vector  from math; 
+		 PrevIndex  :  Integer; 
+		 pt2d,  lastpt2d  :  out  Pnt2d  from  gp; 
+		 ponarc  :  out  Real) 
+    returns  Integer;	  
+				  
+    Recadre(me       : in out; 
+	    FinvC    : in out SurfCurvFuncInv from Blend;
+	    Solinv   : out Vector from math;
+	    Arc      : out HCurve2d from Adaptor2d;
+    	    IsVtx    : out Boolean from Standard;
+            Vtx      : out HVertex from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    Recadre(me       : in out; 
+   	    Func     : in out SurfRstFunction from Blend;
+    	    Finv     : in out FuncInv from Blend;
+	    Solinv   : out Vector from math;
+    	    IsVtx    : out Boolean from Standard;
+            Vtx      : out HVertex from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    Recadre(me       : in out; 
+	    FinvP    : in out SurfPointFuncInv from Blend;
+	    Solinv   : out Vector from math;
+    	    IsVtx    : out Boolean from Standard;
+            Vtx      : out HVertex from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    IsDone(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    Line(me)
+    returns Line from BRepBlend
+    ---C++: inline
+    ---C++: return const&
+    is static;
+
+    DecrochStart(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    	
+    DecrochEnd(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    	
+    Transition(me         : in out; 
+	       OnFirst : Boolean from Standard;
+    	       Arc        : HCurve2d from Adaptor2d; 
+               Param      : Real from Standard;
+	       TLine,TArc : out Transition from IntSurf)
+    is static private;
+
+    MakeExtremity(me      : in out; 
+    	    	  Extrem  : in out Extremity from BRepBlend;
+		  OnFirst : Boolean from Standard;
+    	    	  Arc     : HCurve2d from Adaptor2d;
+    	          Param   : Real from Standard;
+		  IsVtx   : Boolean from Standard;
+		  Vtx     : HVertex from Adaptor3d)
+    is static private;
+
+    CheckDeflectionOnSurf(me       : in out; 
+    	    	    	  CurPoint : Point from Blend)
+    returns Status from Blend
+    is static private;
+
+    CheckDeflectionOnRst(me       : in out; 
+    	    	    	 CurPoint : Point from Blend)
+    returns Status from Blend
+    is static private;
+
+    TestArret(me             : in out; 
+              Func           : in out SurfRstFunction from Blend;
+              TestDeflection : Boolean from Standard;
+              State          : Status from Blend)
+    returns Status from Blend
+    is static private;
+
+    CheckInside(me      : in out; 
+                Func    : in out SurfRstFunction from Blend;
+    	        SituOnC : out State from TopAbs;
+    	        SituOnS : out State from TopAbs;
+	        Decroch : out Boolean from Standard)
+    returns Boolean from Standard
+    is static private;
+
+fields
+
+    done         : Boolean    from Standard;
+    line         : Line       from BRepBlend;
+    sol          : Vector     from math;
+    surf1        : HSurface   from Adaptor3d;
+    domain1      : TopolTool  from Adaptor3d;
+    surf2        : HSurface   from Adaptor3d;
+    rst          : HCurve2d   from Adaptor2d;
+    domain2      : TopolTool  from Adaptor3d;
+			      
+    tolesp       : Real       from Standard;
+    tolgui       : Real       from Standard;
+    pasmax       : Real       from Standard;
+    fleche       : Real       from Standard;
+    param        : Real       from Standard;
+    previousP    : Point      from Blend;
+    rebrou       : Boolean    from Standard;
+    iscomplete   : Boolean    from Standard;
+    comptra      : Boolean    from Standard;
+    sens         : Real       from Standard;
+    decrochdeb   : Boolean    from Standard;
+    decrochfin   : Boolean    from Standard;
+
+end SurfRstLineBuilder from BRepBlend;

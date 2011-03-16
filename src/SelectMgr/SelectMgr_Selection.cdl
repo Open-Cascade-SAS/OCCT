@@ -1,0 +1,135 @@
+-- File:	SelectMgr_Selection.cdl
+-- Created:	Mon Feb  6 17:43:28 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+class Selection from SelectMgr inherits TShared from MMgt
+
+	---Purpose:  Represents the state of a given selection mode for a
+    	-- Selectable Object. Contains all the sensitive entities available for this mode.
+    	-- An interactive object can have an indefinite number of
+    	-- modes of selection, each representing a
+    	-- "decomposition" into sensitive primitives; each
+    	-- primitive has an Owner (SelectMgr_EntityOwner)
+    	-- which allows us to identify the exact entity which has
+    	-- been detected. Each Selection mode is identified by
+    	-- an index. The set of sensitive primitives which
+    	-- correspond to a given mode is stocked in a
+    	-- SelectMgr_Selection object. By Convention, the
+    	-- default selection mode which allows us to grasp the
+    	-- Interactive object in its entirety will be mode 0.
+    	-- AIS_Trihedron : 4 selection modes
+    	-- -   mode 0 : selection of a trihedron
+    	-- -   mode 1 : selection of the origin of the trihedron
+    	-- -   mode 2 : selection of the axes
+    	-- -   mode 3 : selection of the planes XOY, YOZ, XOZ
+    	-- when you activate one of modes 1 2 3 4 , you pick AIS objects of type:
+    	-- -   AIS_Point
+    	-- -   AIS_Axis (and information on the type of axis)
+    	-- -   AIS_Plane (and information on the type of plane).
+    	--   AIS_PlaneTrihedron offers 3 selection modes:
+    	-- -   mode 0 : selection of the whole trihedron
+    	-- -   mode 1 : selection of the origin of the trihedron
+    	-- -   mode 2 : selection of the axes - same remarks as for the Trihedron.
+    	-- AIS_Shape : 7 maximum selection modes, depending
+    	-- on the complexity of the shape :
+    	-- -   mode 0 : selection of the AIS_Shape
+    	-- -   mode 1 : selection of the vertices
+    	-- -   mode 2 : selection of the edges
+    	-- -   mode 3 : selection of the wires
+    	-- -   mode 4 : selection of the faces
+    	-- -   mode 5 : selection of the shells
+    	-- -   mode 6 :   selection of the constituent solids.
+
+uses
+    SensitiveEntity               from SelectBasics,
+    ListOfSensitive               from SelectBasics,
+    ListIteratorOfListOfSensitive from SelectBasics,
+    TypeOfUpdate                  from SelectMgr
+
+raises
+    NullObject
+
+is
+
+
+    Create (IdMode  : Integer = 0) returns mutable Selection;
+    	--- Purpose: Constructs a selection object defined by the selection mode IdMode.
+    	-- The default setting 0 is the selection mode for a shape in its entirety.   
+
+    Add  (me         : mutable;
+    	  aprimitive : SensitiveEntity from SelectBasics) 
+    	---Purpose: Adds the sensitive primitive aprimitive to the list of
+    	-- stored entities in this object.
+	-- Raises NullObject if the primitive is a null handle.
+	raises NullObject
+    	is static;
+
+    Clear(me :mutable) is static;
+    	---Purpose: empties the selection from all the stored entities 
+    
+    IsEmpty(me) returns Boolean is static;
+    	---Purpose: returns true if no sensitive entity is stored.
+
+    Mode (me) returns Integer;
+    	---Purpose: returns the selection mode represented by this selection
+    	---C++: inline
+
+
+    ---Category: get the sensitive entities inside the Selection
+    
+    Init(me:mutable) is static;
+    	---Purpose: Begins an iteration scanning for sensitive primitives.
+	---C++: inline
+
+    More(me) returns Boolean is static;
+    	---Purpose: Continues the iteration scanning for sensitive
+    	-- primitives with the mode defined in this framework.
+    	---C++: inline
+
+
+    Next(me:mutable) is static;
+    	---Purpose: Returns the next sensitive primitive found in the
+	-- iteration. This is a scan for entities with the mode
+	-- defined in this framework.
+    	---C++: inline
+ 
+    Sensitive (me) returns any SensitiveEntity from SelectBasics is static;
+    	---Purpose: Returns any sensitive primitive in this framework.
+    	---C++: return const&
+    	---C++: inline
+
+    	---Category: Internal Methods for Management
+    	--           
+    	--           sets and gets the update status of a selection
+    
+
+
+    UpdateStatus(me) returns TypeOfUpdate from SelectMgr;    
+    	---C++: inline
+    	---Purpose: Returns the flag UpdateFlag.
+    	-- This flage gives the update status of this framework
+    	-- in a ViewerSelector object:
+    	-- -   full
+    	-- -   partial, or
+    	-- -   none.
+    
+
+    UpdateStatus(me:mutable;UpdateFlag  : TypeOfUpdate from SelectMgr);
+    	---C++: inline
+
+
+
+
+fields
+
+    myentities     : ListOfSensitive from SelectBasics;
+    myit           : ListIteratorOfListOfSensitive from SelectBasics;
+    myMode         : Integer from Standard;
+    myUpdateStatus : TypeOfUpdate from SelectMgr;
+
+
+end Selection;
+
+

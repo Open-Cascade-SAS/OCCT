@@ -1,0 +1,25 @@
+-- File:	DsgPrs_SymbPresentation.cdl
+-- Created:	Fri Dec  8 16:44:46 1995
+-- Author:	Jean-Pierre COMBE
+--		<jpi@pdalon>
+---Copyright:	 Matra Datavision 1995
+
+class SymbPresentation from DsgPrs
+    	---Purpose: A framework to define display of symbols.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+		  OffsetPoint: Pnt from gp);
+    	---Purpose: Adds the text aText and the point OffsetPoint to the
+    	-- presentation object aPresentation.
+    	-- The display attributes of the shaded plane are
+    	-- defined by the attribute manager aDrawer.
+
+end SymbPresentation;

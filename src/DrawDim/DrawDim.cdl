@@ -1,0 +1,79 @@
+-- File:	DrawDim.cdl
+-- Created:	Tue Jan  9 16:39:53 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+package DrawDim 
+
+	---Purpose: This package provides Drawable Dimensions. 	
+	--          
+	--          The classes PlanarDimension and subclasses provide
+	--            services  to  build  drawable dimensions between
+	--          point line and circle in a given 3d plane.
+	--          
+	--           The   classes  Dimension and   subclasses provide
+	--            services  to build  drawable  dimensions between
+	--          plane and cylindrical surfaces.
+
+
+uses Draw, gp, TColgp, TopoDS, TCollection
+
+is
+
+
+
+    deferred class Dimension;
+    
+    ---Purpose: Dimension between planes and cylinder
+    --          =====================================
+    
+    	class Angle;
+	class Distance;
+	class Radius;
+
+    
+    ---Purpose: Dimensions between point, line and circle ON a plane
+    --          ====================================================
+
+    	deferred class PlanarDimension;
+	
+      	    class PlanarAngle;
+      	    class PlanarDistance;
+      	    class PlanarRadius; 
+    	    class PlanarDiameter;
+
+    ---Purpose: Commands
+    --          ========
+
+    DrawShapeName (ashape : Shape from TopoDS; aname : CString);
+    
+    AllCommands (I : in out Interpretor from Draw);
+    
+    PlanarDimensionCommands (I : in out Interpretor from Draw);
+
+    ---Purpose: tools
+    --          =====
+
+    Nearest (aShape : Shape from TopoDS; apoint : Pnt from gp)
+    returns Pnt from gp;
+
+    Lin (e : Edge from TopoDS; l           : in out Lin from gp; 
+                               infinite    : in out Boolean from Standard;
+                               first, last : in out Real from Standard)
+    ---Purpose: false if <e> is not a linear edge
+    returns Boolean from Standard;    
+
+    Circ (e : Edge from TopoDS; l : in out Circ from gp; first, last : in out Real from Standard)
+    ---Purpose: false if <e> is not a circular edge
+    returns Boolean from Standard;
+
+    Pln (f : Face from TopoDS; p : in out Pln from gp)    
+    ---Purpose: false if <f> is not a planar face
+    returns Boolean from Standard;
+    
+end DrawDim;
+
+
+

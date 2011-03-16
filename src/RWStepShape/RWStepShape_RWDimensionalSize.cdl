@@ -1,0 +1,35 @@
+-- File:	RWStepShape_RWDimensionalSize.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWDimensionalSize from RWStepShape
+
+    ---Purpose: Read & Write tool for DimensionalSize
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    DimensionalSize from StepShape
+
+is
+    Create returns RWDimensionalSize from RWStepShape;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : DimensionalSize from StepShape);
+	---Purpose: Reads DimensionalSize
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: DimensionalSize from StepShape);
+	---Purpose: Writes DimensionalSize
+
+    Share (me; ent : DimensionalSize from StepShape;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWDimensionalSize;

@@ -1,0 +1,21 @@
+-- File:        PlaneAngleMeasureWithUnit.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PlaneAngleMeasureWithUnit from StepBasic 
+
+inherits MeasureWithUnit from StepBasic 
+
+uses
+
+	Real from Standard, 
+	NamedUnit from StepBasic
+is
+
+	Create returns mutable PlaneAngleMeasureWithUnit;
+	---Purpose: Returns a PlaneAngleMeasureWithUnit
+
+
+end PlaneAngleMeasureWithUnit;

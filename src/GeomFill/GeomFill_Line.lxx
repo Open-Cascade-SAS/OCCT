@@ -1,0 +1,27 @@
+// File:	GeomFill_Line.lxx
+// Created:	Fri Feb 18 17:03:34 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : NbPoints
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer GeomFill_Line::NbPoints() const
+{
+  return myNbPoints;
+}
+
+
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer GeomFill_Line::Point(const Standard_Integer Index)
+     const
+{
+  return Index;
+}

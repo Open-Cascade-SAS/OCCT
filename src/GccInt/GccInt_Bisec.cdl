@@ -1,0 +1,88 @@
+-- File:	Bisec.cdl
+-- Created:	Fri Oct  4 11:16:59 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+deferred class 
+
+     Bisec from GccInt
+
+inherits TShared from MMgt
+
+     	---Purpose: The deferred class GccInt_Bisec is the root class for
+    	-- elementary bisecting loci between two simple geometric
+    	-- objects (i.e. circles, lines or points).
+    	-- Bisecting loci between two geometric objects are such
+    	-- that each of their points is at the same distance from the
+    	-- two geometric objects. It is typically a curve, such as a
+    	-- line, circle or conic.
+    	-- Generally there is more than one elementary object
+    	-- which is the solution to a bisecting loci problem: each
+    	-- solution is described with one elementary bisecting
+    	-- locus. For example, the bisectors of two secant straight
+    	-- lines are two perpendicular straight lines.
+    	-- The GccInt package provides concrete implementations
+    	-- of the following elementary derived bisecting loci:
+    	-- -   lines, circles, ellipses, hyperbolas and parabolas, and
+    	-- -   points (not used in this context).
+    	-- The GccAna package provides numerous algorithms for
+    	-- computing the bisecting loci between circles, lines or
+    	-- points, whose solutions are these types of elementary bisecting locus.
+        
+uses 
+
+     Circ2d  from gp,
+     Lin2d   from gp,
+     Pnt2d   from gp,
+     Elips2d from gp,
+     Parab2d from gp,
+     Hypr2d  from gp,
+     IType   from GccInt
+
+raises
+     DomainError from Standard
+is
+
+ArcType (me) returns IType from GccInt
+    is deferred;
+    	---Purpose: Returns the type of bisecting object (line, circle,
+    	-- parabola, hyperbola, ellipse, point).
+
+Point (me) returns Pnt2d from gp
+raises DomainError from Standard
+    	---Purpose: Returns the bisecting line when ArcType returns Pnt.
+    	--          An exception DomainError is raised if ArcType is not a Pnt. 
+is virtual;
+
+Line (me) returns Lin2d from gp
+    	---Purpose: Returns the bisecting line when ArcType returns Lin.
+raises DomainError from Standard
+    	---Purpose: An exception DomainError is raised if ArcType is not a Lin. 
+is virtual;
+    
+Circle (me) returns Circ2d from gp
+    	---Purpose: Returns the bisecting line when ArcType returns Cir.
+raises DomainError from Standard
+    	---Purpose: An exception DomainError is raised if ArcType is not a Cir. 
+is virtual;
+    
+Hyperbola (me) returns Hypr2d from gp
+    	---Purpose: Returns the bisecting line when ArcType returns Hpr.
+raises DomainError from Standard
+    	---Purpose: An exception DomainError is raised if ArcType is not a Hpr. 
+is virtual;
+    
+Parabola (me) returns Parab2d from gp
+    	---Purpose: Returns the bisecting line when ArcType returns Par.
+raises DomainError from Standard
+    	---Purpose: An exception DomainError is raised if ArcType is not a Par. 
+is virtual;
+    
+Ellipse (me) returns Elips2d from gp
+    	---Purpose: Returns the bisecting line when ArcType returns Ell.
+raises DomainError from Standard
+    	---Purpose: An exception DomainError is raised if ArcType is not an Ell. 
+is virtual;
+    
+end Bisec;

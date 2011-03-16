@@ -1,0 +1,32 @@
+-- File:	TopOpeBRepDS_PointData.cdl
+-- Created:	Wed Jun 23 10:00:09 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class PointData from TopOpeBRepDS
+    inherits GeometryData from TopOpeBRepDS
+
+uses
+
+    Point from TopOpeBRepDS
+
+is  
+
+    Create returns PointData;
+    Create(P : Point from TopOpeBRepDS) returns PointData;
+    Create(P : Point from TopOpeBRepDS; I1,I2 : Integer) returns PointData;
+    SetShapes(me:out;I1,I2:Integer);
+    GetShapes(me;I1,I2:out Integer);
+    
+fields 
+    
+    myPoint : Point from TopOpeBRepDS;
+    myS1,myS2 : Integer;
+    
+friends 
+
+    class DataStructure from TopOpeBRepDS
+    
+end PointData from TopOpeBRepDS; 

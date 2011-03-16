@@ -1,0 +1,27 @@
+-- File:	ShapeProcessAPI.cdl
+-- Created:	Thu Jun 17 18:34:19 1999
+-- Author:	data exchange team
+--		<det@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+package ShapeProcessAPI
+
+    ---Purpose: Provides tools for converting shapes for data exchange
+    --          between various systems (CATIA, EUCLID3 etc.)
+
+uses
+
+    TopAbs,
+    TopoDS,
+    TopTools,
+    Message,
+    ShapeProcess,
+    TCollection
+    
+is
+
+    class ApplySequence;
+    	---Purpose: Applies one of the sequence of calls from resource file.
+    
+end ShapeProcessAPI;

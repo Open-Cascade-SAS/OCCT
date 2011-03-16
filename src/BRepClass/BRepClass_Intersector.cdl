@@ -1,0 +1,37 @@
+-- File:	Intersector.cdl
+-- Created:	Thu Nov 19 14:27:14 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Intersector from BRepClass 
+inherits IntConicCurveOfGInter from Geom2dInt
+
+	---Purpose: Implement the Intersector2d required by the classifier.
+
+uses
+    Lin2d from gp,
+    Dir2d from gp,
+    Edge  from BRepClass
+
+is
+    Create returns Intersector from BRepClass;
+    
+    Perform(me : in out; 
+    	    L : Lin2d from gp; P : Real; Tol : Real; 
+    	    E : Edge from BRepClass)
+	---Purpose: Intersect the line segment and the edge.
+    is static;
+
+    LocalGeometry(me; E : Edge from BRepClass;
+    	    	      U : Real; 
+    	    	      T : out Dir2d from gp; 
+    	    	      N : out Dir2d from gp; 
+    	    	      C : out Real)
+	---Purpose: Returns in <T>,  <N> and <C>  the tangent,  normal
+	--          and  curvature of the edge  <E> at parameter value
+	--          <U>.
+    is static;
+
+end Intersector;

@@ -1,0 +1,33 @@
+-- File:	math_ComputeGaussPointsAndWeights.cdl
+-- Created:	Mon Dec 19 12:41:51 2005
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox>
+---Copyright:	 Matra Datavision 2005
+
+class ComputeGaussPointsAndWeights from math 
+
+uses 
+ 
+    Vector from math, 
+    HArray1OfReal from TColStd
+
+is 
+    Create(Number : Integer from Standard) 
+    returns ComputeGaussPointsAndWeights; 
+
+    IsDone(me) 
+    returns Boolean from Standard;
+
+    Points(me) 
+    returns Vector from math;
+
+    Weights(me)
+    returns Vector from math;
+
+fields 
+ 
+    myPoints  : HArray1OfReal from TColStd;
+    myWeights : HArray1OfReal from TColStd; 
+    myIsDone  : Boolean from Standard;
+     
+end ComputeGaussPointsAndWeights;

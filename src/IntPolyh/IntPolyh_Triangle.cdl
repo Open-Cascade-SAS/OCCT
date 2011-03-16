@@ -1,0 +1,201 @@
+-- File:	IntPolyh_Triangle.cdl
+-- Created:	Fri Mar  5 18:12:33 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Triangle from IntPolyh
+
+uses
+    
+    HSurface          from Adaptor3d,
+    Point             from IntPolyh,
+    ArrayOfPoints     from IntPolyh,
+    StartPoint        from IntPolyh,
+    ArrayOfEdges      from IntPolyh,
+    ArrayOfCouples    from IntPolyh,
+    ArrayOfTriangles  from IntPolyh,
+    Box               from Bnd
+
+is
+
+    Create;
+        
+    Create(i1,i2,i3: Integer from Standard);
+
+    FirstPoint(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondPoint(me) 
+    returns Integer from Standard
+    is static;
+
+    ThirdPoint(me) 
+    returns Integer from Standard
+    is static;
+
+    FirstEdge(me) 
+    returns Integer from Standard
+    is static;
+
+    FirstEdgeOrientation(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondEdge(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondEdgeOrientation(me) 
+    returns Integer from Standard
+    is static;
+
+    ThirdEdge(me) 
+    returns Integer from Standard
+    is static;
+
+    ThirdEdgeOrientation(me) 
+    returns Integer from Standard
+    is static;
+
+    GetFleche(me) 
+    returns Real from Standard
+    is static;
+
+    IndiceIntersectionPossible(me) 
+    returns Integer from Standard
+    is static;
+
+    IndiceIntersection(me) 
+    returns Integer from Standard
+    is static;
+	
+    SetFirstPoint(me: in out; v: Integer from Standard) 
+    is static;
+	
+    SetSecondPoint(me: in out; v: Integer from Standard) 
+    is static;
+	
+    SetThirdPoint(me: in out; v: Integer from Standard) 
+    is static;
+
+    SetFirstEdge(me: in out; v,s: Integer from Standard) 
+    is static;
+	
+    SetSecondEdge(me: in out; v,s: Integer from Standard) 
+    is static;
+	
+    SetThirdEdge(me: in out; v,s: Integer from Standard) 
+    is static;
+	
+    SetFleche(me: in out; v: Real from Standard) 
+    is static;
+	
+    SetIndiceIntersectionPossible(me: in out; v: Integer from Standard)
+    is static;
+	
+    SetIndiceIntersection(me: in out; v: Integer from Standard) 
+    is static;
+	
+    GetEdgeNumber(me;v: Integer from Standard )
+    returns Integer from Standard
+    is static;
+
+    SetEdge(me: in out; v,en: Integer from Standard )
+    is static;
+
+    GetEdgeOrientation(me;v: Integer from Standard )
+    returns Integer from Standard
+    is static;
+
+    SetEdgeOrientation(me: in out; v,oe: Integer from Standard )
+    is static;
+
+    TriangleDeflection(me : in out; MaSurface:HSurface from Adaptor3d;
+    	    	       TP : ArrayOfPoints from IntPolyh) 
+    is static;
+
+    CheckCommonEdge(me; PE1,PE2,P3,Index: Integer from Standard;
+    	    	    TTriangles: ArrayOfTriangles from IntPolyh)
+    returns Integer from Standard
+    is static;
+
+--    GetNextTriangle(me; NumTri,PE1,PE2,P3,FinTT,NbSamplesU,NbSamplesV: Integer from Standard;
+--    	    	    TTriangles: ArrayOfTriangles from IntPolyh)
+--    returns Integer from Standard
+--    is static;
+	
+    GetNextTriangle2(me; NumTri,NumEdge: Integer from Standard;
+    	    	    TEdges: ArrayOfEdges from IntPolyh)
+    returns Integer from Standard
+    is static;
+	
+    MiddleRefinement(me: in out; TriangleNumber: Integer from Standard; 
+    	    	     MySurface:HSurface from Adaptor3d;
+    	    	     TPoints: in out ArrayOfPoints from IntPolyh;
+    	    	     TTriangles: in out ArrayOfTriangles from IntPolyh;
+    	    	     TEdges: in out ArrayOfEdges from IntPolyh)
+    is static;
+
+
+    MultipleMiddleRefinement(me: in out; 
+    	    	    	    NombreAffinages,TriangleNumber: Integer from Standard; 
+    	    		    MySurface:HSurface from Adaptor3d;
+    	    	    	    TPoints: in out ArrayOfPoints from IntPolyh;
+    	    	  	    TTriangles: in out ArrayOfTriangles from IntPolyh;
+    	    		    TEdges: in out ArrayOfEdges from IntPolyh)
+    is static;
+    
+    CompareBoxTriangle(me; b: Box from Bnd;
+    	    	       TPoints: ArrayOfPoints from IntPolyh)	   
+    returns Integer from Standard
+    is static;
+
+    MultipleMiddleRefinement2(me: in out; 
+    	    	    	    RefineCriterion: Real from Standard; 
+    	    	    	    thebox: Box from Bnd;
+			    TriangleNumber: Integer from Standard;
+    	    		    MySurface:HSurface from Adaptor3d;
+    	    	    	    TPoints: in out ArrayOfPoints from IntPolyh;
+    	    	  	    TTriangles: in out ArrayOfTriangles from IntPolyh;
+    	    		    TEdges: in out ArrayOfEdges from IntPolyh)
+    is static;
+    
+    GetNextChainTriangle(me; SPIni: StartPoint from IntPolyh; LastTTC: Integer from Standard;
+                         TriContactsArray: in out ArrayOfCouples from IntPolyh;
+    	    	    	 TTriangles1, TTriangles2: ArrayOfTriangles from IntPolyh;
+    	    	    	 NumContact,NextTriangle: in out Integer from Standard)
+    returns Integer from Standard
+    is static;
+    
+    LinkEdges2Triangle(me: in out; TEdges: ArrayOfEdges from IntPolyh;
+    	    	    	ed1,ed2,ed3: Integer from Standard)
+    is static;
+
+    SetEdgeandOrientation(me: in out; Edge: Integer from Standard;
+    	    TEdges: ArrayOfEdges from IntPolyh)
+    is static;
+
+    Dump(me; v: Integer from Standard) 
+    is static;
+
+    DumpFleche(me; v: Integer from Standard) 
+    is static;
+     	
+fields
+
+    p1,p2,p3,e1,oe1,e2,oe2,e3,oe3,II,IP : Integer from Standard;
+    Fleche : Real from Standard;
+    
+end Triangle from IntPolyh;
+
+
+
+-- The code is inside, but as it is not used for my algorythms I leave
+-- it as a comment. 
+-- 
+-- RefinementG(me: in out; SurfID: Integer from Standard; T: in out
+-- Triangle from IntPolyh) is static;

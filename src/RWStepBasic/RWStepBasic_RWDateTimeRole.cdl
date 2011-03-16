@@ -1,0 +1,27 @@
+-- File:        DateTimeRole.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDateTimeRole from RWStepBasic
+
+	---Purpose : Read & Write Module for DateTimeRole
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DateTimeRole from StepBasic
+
+is
+
+	Create returns RWDateTimeRole;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DateTimeRole from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : DateTimeRole from StepBasic);
+
+end RWDateTimeRole;

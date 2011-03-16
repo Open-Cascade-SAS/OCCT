@@ -1,0 +1,227 @@
+-- File:	MAT2d_Tool2d.cdl
+-- Created:	Mon Jul 12 16:54:50 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Tool2d from MAT2d 
+
+ 	---Purpose: Set of the methods useful for the MAT's computation.
+ 	--          Tool2d contains the geometry of the bisecting locus.	 
+
+
+uses
+
+    Bisec                     from Bisector,
+    Side                      from MAT,
+    Bisector                  from MAT,
+    Connexion                 from MAT2d,
+    Circuit                   from MAT2d,    
+    DataMapOfIntegerBisec     from MAT2d,
+    DataMapOfIntegerPnt2d     from MAT2d,
+    DataMapOfIntegerVec2d     from MAT2d,    
+    SequenceOfInteger         from TColStd,
+    Pnt2d                     from gp,
+    Vec2d                     from gp,
+    TrimmedCurve              from Geom2d,
+    Curve                     from Geom2d,
+    Geometry                  from Geom2d
+    
+is
+    Create returns Tool2d from MAT2d;
+    	--- Purpose : Empty Constructor.
+    
+--- Category : Initialisation.    
+    
+    Sense(me : in out ; aside : Side from MAT)
+    	--- Purpose :<aSide> defines the side of the computation of the map. 
+    is static;
+
+    InitItems(me          : in out                    ; 
+              aCircuit    :        Circuit from MAT2d )
+    	--- Purpose : InitItems cuts the line in Items.
+    	--            this Items are the geometrics representations of
+    	--            the BasicElts from MAT.
+    is static;	    
+
+--- Category : Set of the methods used by the algorithm MAT from MAT.    
+    
+    NumberOfItems(me) 
+	--- Purpose : Returns the Number of Items .
+    returns Integer is static;
+
+    ToleranceOfConfusion(me) returns Real
+	---Purpose: Returns tolerance to test the confusion of two points.
+    is static;
+    
+    FirstPoint(me : in out ; anitem :     Integer;
+                             dist   : out Real   )
+	--- Purpose : Creates the point at the origin of the bisector between
+	--            anitem and the previous  item.
+	--            dist is the distance from the FirstPoint to <anitem>.
+	--            Returns the index of this point in <theGeomPnts>.    
+    returns Integer is static;
+    
+    TangentBefore(me : in out ; anitem : Integer) 
+    	--- Purpose : Creates the Tangent at the end of the Item defined
+    	--            by <anitem>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    returns Integer is static;
+    
+    TangentAfter(me : in out ; anitem : Integer) 
+    	--- Purpose : Creates the Reversed Tangent at the origin of the Item 
+    	--            defined by <anitem>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    returns Integer is static;
+    
+    Tangent(me : in out ; bisector : Integer)
+    	--- Purpose : Creates the Tangent at the end of the bisector defined
+    	--            by <bisector>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    returns Integer is static;
+    
+    CreateBisector(me : in out ; abisector : mutable Bisector from MAT)
+	--- Purpose : Creates the geometric bisector defined by <abisector>.
+    is static;
+    
+    TrimBisector(me : in out ; abisector : mutable Bisector from MAT)   
+	--- Purpose : Trims the geometric bisector by the <firstparameter>
+	--            of <abisector>.
+	--            If the parameter is out of the bisector, Return FALSE.
+	--            else Return True.
+    returns Boolean is static;
+    
+    TrimBisector(me        : in out ; 
+    	    	 abisector : mutable Bisector from MAT ;
+                 apoint    : Integer)
+        --- Purpose : Trims the geometric bisector by the point of index
+        --            <apoint> in <theGeomPnts>.
+	--            If the point is out of the bisector, Return FALSE.
+	--            else Return True.
+    returns Boolean is static;
+
+    IntersectBisector(me          : in out ;
+                      bisectorone : mutable Bisector from MAT ;
+                      bisectortwo : mutable Bisector from MAT ;
+                      intpnt      : in out Integer)
+        --- Purpose  : Computes  the point  of  intersection between  the
+        --             bisectors defined  by  <bisectorone>  and  
+        --             <bisectortwo> .
+        --             If this point exists,  <intpnt> is its  index 
+        --             in <theGeomPnts> and Return the distance of the point 
+        --             from the bisector else Return <RealLast>.
+    returns Real is static;
+    
+    Distance(me; 
+             abisector : Bisector from MAT;
+             param1    : Real;
+             param2    : Real)
+    	---Purpose: Returns the distance between the two points designed
+    	--          by their parameters on <abisector>.
+    returns Real is static;
+
+    Dump(me ; bisector , erease : Integer) is static;
+	--- Purpose : displays informations about the bisector defined by
+	--            <bisector>.
+    
+--- Category : Querying.    
+
+    GeomBis(me ; Index: Integer) 
+    	--- Purpose : Returns the <Bisec> of index <Index> in
+    	--            <theGeomBisectors>.
+    	--            
+    	---C++: return const &
+    returns Bisec from Bisector 
+    is static;
+    
+    GeomElt(me ; Index: Integer)
+    	--- Purpose : Returns the Geometry of index <Index> in <theGeomElts>.
+    returns Geometry from Geom2d 
+    is static;
+
+    GeomPnt(me ; Index: Integer)
+    	--- Purpose : Returns the point of index <Index> in the <theGeomPnts>.
+    	--  
+        ---C++: return const &
+    returns Pnt2d from gp
+    is static;
+
+    GeomVec(me ; Index: Integer)
+    	--- Purpose : Returns the  vector  of index <Index> in the 
+    	--            <theGeomVecs>.
+    	--            
+    	---C++: return const &            
+    returns Vec2d from gp
+    is static;
+	    	
+    Circuit(me)
+    ---Purpose: 
+    --          
+    returns Circuit from MAT2d
+    is static;	    
+
+---Category: Modification
+
+    BisecFusion(me     : in out;
+    	        Index1 : Integer;
+		Index2 : Integer)
+    is static;
+    
+    ChangeGeomBis(me : in out ; Index: Integer) 
+    	--- Purpose : Returns the <Bisec> of index <Index> in
+    	--            <theGeomBisectors>.
+    	--            
+    	---C++: return &
+    returns Bisec from Bisector 
+    is static;
+    
+---Category: Private
+
+    IsSameDistance(me ;
+                   bisectorone , bisectortwo : any Bisector from MAT ;
+		   apoint                    :     Pnt2d    from gp;
+		   adistance                 : out Real)
+        --- Purpose : Returns True if the point <apoint> is equidistant to
+        --            the elements separated by bisectors <bisectorone> and 
+        --            <bisectortwo>.
+        --            In this case <adistance> is the distance of the point
+        --            from the bisectors.
+    returns Boolean 
+    is static private;
+    
+    Projection (me ;
+	        IndexElt :     Integer from Standard;
+		Point    :     Pnt2d   from gp      ;
+		Distance : out Real    from Standard)
+        ---Purpose: Return <True> if the Point can be projected
+        --          on the element designed by <IndexElt>.
+        --          In this case <Distance> is the minimum of distance
+        --          between Point and its projections. 
+    returns Boolean
+    is static private;
+
+    TrimBisec (me ; 
+               Bis        : in out Bisec   from Bisector ;
+    	       IndexEdge  :        Integer from Standard ;
+    	       OnLine     :        Boolean from Standard ;
+               StartOrEnd :        Integer from Standard )
+    is static private;			       
+    
+fields
+
+    theDirection          : Real;
+    theNumberOfBisectors  : Integer;
+    theNumberOfPnts       : Integer;
+    theNumberOfVecs       : Integer;
+    theCircuit            : Circuit                   from MAT2d;
+    theGeomBisectors      : DataMapOfIntegerBisec     from MAT2d;
+    theGeomPnts           : DataMapOfIntegerPnt2d     from MAT2d;
+    theGeomVecs           : DataMapOfIntegerVec2d     from MAT2d; 
+    theLinesLength        : SequenceOfInteger         from TColStd;
+    
+end Tool2d;
+
+
+

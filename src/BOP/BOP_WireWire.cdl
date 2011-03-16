@@ -1,0 +1,53 @@
+-- File:	BOP_WireWire.cdl
+-- Created:	Fri Feb  1 12:52:38 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class WireWire from BOP inherits WireShape from BOP
+
+	---Purpose: 
+    	---        
+    	---        Performs Boolean Operations  (BO)  
+    	---        Common,Cut,Fuse for wires as      
+	---        arguments 
+uses
+    DSFiller  from BOPTools, 
+    PDSFiller from BOPTools, 
+    ListOfShape from TopTools 
+    
+--raises
+
+is 
+    Create   
+    	returns  WireWire from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    Do  (me:out) 
+    	is  redefined; 	 
+    	---Purpose:  
+    	--- (See base classes, please)
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- (See base classes, please)
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_WireWire(){Destroy();}"  
+    	---Purpose:   
+    	--- Destructor 
+    	---
+    BuildResult (me:out) 
+	is  redefined;	 
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    
+--fields
+  
+end WireWire;

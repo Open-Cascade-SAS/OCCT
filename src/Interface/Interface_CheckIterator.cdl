@@ -1,0 +1,188 @@
+-- File:	CheckIterator.cdl
+-- Created:	Wed Oct 28 14:17:10 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class CheckIterator  from Interface
+
+    ---Purpose : Result of a Check operation (especially from InterfaceModel)
+
+uses Integer, CString, AsciiString from TCollection,
+     Messenger from Message,
+     HSequenceOfInteger from TColStd,  HSequenceOfTransient from TColStd,
+     IntVal, Check, HSequenceOfCheck, InterfaceModel, CheckStatus
+
+raises NoSuchObject
+
+is
+
+    Create returns CheckIterator;
+    ---Purpose : Creates an empty CheckIterator
+
+    Create (name : CString) returns CheckIterator;
+    ---Purpose : Creates a CheckIterator with a name (displayed by Print as a
+    --           title)
+
+    SetName (me : in out; name : CString);
+    ---Purpose : Sets / Changes the name
+
+    Name (me) returns CString;
+    ---Purpose : Returns the recorded name (can be empty)
+
+    SetModel (me : in out; model : InterfaceModel);
+    ---Purpose : Defines a Model, used to locate entities (not required, if it
+    --           is absent, entities are simply less documented)
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the stored model (can be a null handle)
+
+    Clear (me : in out)  is static;
+    ---Purpose : Clears the list of checks
+
+    Merge (me : in out; other : in out CheckIterator)  is static;
+    ---Purpose : Merges another CheckIterator into <me>, i.e. adds each of its
+    --           Checks. Content of <other> remains unchanged.
+    --           Takes also the Model but not the Name
+
+    Add (me : in out; ach : Check; num : Integer = 0)  is static;
+    ---Purpose : Adds a Check to the list to be iterated
+    --           This Check is Accompanied by Entity Number in the Model
+    --           (0 for Global Check or Entity unknown in the Model), if 0 and
+    --           Model is recorded in <me>, it is computed
+
+    Check (me; num : Integer) returns Check  is static;
+    ---Purpose : Returns the Check which was attached to an Entity given its
+    --           Number in the Model. <num>=0 is for the Global Check.
+    --           If no Check was recorded for this Number, returns an empty
+    --           Check.
+    --  Remark : Works apart from the iteration methods (no interference)
+    ---C++ : return const &
+
+    Check (me; ent : Transient) returns Check  is static;
+    ---Purpose : Returns the Check attached to an Entity
+    --           If no Check was recorded for this Entity, returns an empty
+    --           Check.
+    --  Remark : Works apart from the iteration methods (no interference)
+    ---C++ : return const &
+
+    CCheck (me : in out; num : Integer) returns Check  is static;
+    ---Purpose : Returns the Check bound to an Entity Number (0 : Global)
+    --           in order to be consulted or completed on the spot
+    --           I.e. returns the Check if is already exists, or adds it then
+    --           returns the new empty Check
+    ---C++ : return &
+
+    CCheck (me : in out; ent : Transient) returns Check  is static;
+    ---Purpose : Returns the Check bound to an Entity, in order to be consulted
+    --           or completed on the spot
+    --           I.e. returns the Check if is already exists, or adds it then
+    --           returns the new empty Check
+    ---C++ : return &
+
+
+    IsEmpty (me; failsonly : Boolean) returns Boolean  is static;
+    ---Purpose : Returns True if : no Fail has been recorded if <failsonly> is
+    --           True, no Check at all if <failsonly> is False
+
+    Status (me) returns CheckStatus;
+    ---Purpose : Returns worst status among : OK, Warning, Fail
+
+    Complies    (me; status : CheckStatus) returns Boolean;
+    ---Purpose : Tells if this check list complies with a given status :
+    --           OK (i.e. empty),  Warning (at least one Warning, but no Fail),
+    --           Fail (at least one), Message (not OK), NoFail, Any
+
+    Extract     (me; status : CheckStatus) returns CheckIterator;
+    ---Purpose : Returns a CheckIterator which contains the checks which comply
+    --           with a given status
+    --           Each check is added completely (no split Warning/Fail)
+
+    Extract    (me; mess : CString; incl : Integer; status : CheckStatus)
+    	returns CheckIterator;
+    ---Purpose : Returns a CheckIterator which contains the check which comply
+    --           with a message, plus some conditions as follows :
+    --           <incl> = 0 : <mess> exactly matches one of the messages
+    --           <incl> < 0 : <mess> is contained by one of the messages
+    --           <incl> > 0 : <mess> contains one of the messages
+    --           For <status> : for CheckWarning and CheckFail, considers only
+    --             resp. Warning or Check messages. for CheckAny, considers all
+    --             other values are ignored (answer will be false)
+    --           Each Check which complies is entirely taken
+
+    Remove    (me : in out; mess : CString; incl : Integer; status : CheckStatus)
+    	returns Boolean;
+    ---Purpose : Removes the messages of all Checks, under these conditions :
+    --           <incl> = 0 : <mess> exactly matches one of the messages
+    --           <incl> < 0 : <mess> is contained by one of the messages
+    --           <incl> > 0 : <mess> contains one of the messages
+    --           For <status> : for CheckWarning and CheckFail, considers only
+    --             resp. Warning or Check messages. for CheckAny, considers all
+    --             other values are ignored (nothing is done)
+    --           Returns True if at least one message has been removed, False else
+
+    Checkeds (me; failsonly : Boolean; global : Boolean) returns
+    	HSequenceOfTransient;
+    ---Purpose : Returns the list of entities concerned by a Check
+    --           Only fails if <failsonly> is True, else all non-empty checks
+    --           If <global> is true, adds the model for a global check
+    --           Else, global check is ignored
+    ---Warning : if the model has not yet been defined, returns a Null Handle
+
+
+    Start (me)  is static;
+    ---Purpose : Starts Iteration. Thus, it is possible to restart it
+    --           Remark : an iteration may be done with a const Iterator
+    --           While its content is modified (through a pointer), this allows
+    --           to give it as a const argument to a function
+
+    More  (me) returns Boolean  is static;
+    ---Purpose : Returns True if there are more Checks to get
+
+    Next  (me)  is static;
+    ---Purpose : Sets Iteration to next Item
+
+    Value (me) returns Check
+    ---Purpose : Returns Check currently Iterated
+    --           It brings all other informations (status, messages, ...)
+    --           The Number of the Entity in the Model is given by Number below
+    	raises NoSuchObject  is static;
+    --           Error if Iteration has ended
+    ---C++ : return const &
+
+    Number (me) returns Integer
+    ---Purpose : Returns Number of Entity for the Check currently iterated
+    --           or 0 for GlobalCheck
+    	raises NoSuchObject  is static;
+    --           Error if Iteration has ended
+
+    Print (me; S : Messenger from Message; failsonly : Boolean; final : Integer = 0);
+    ---Purpose : Prints the list of Checks with their attached Numbers
+    --           If <failsonly> is True, prints only Fail messages
+    --           If <failsonly> is False, prints all messages
+    --           If <final> = 0 (D), prints also original messages if different
+    --           If <final> < 0, prints only original messages
+    --           If <final> > 0, prints only final messages
+    --           It uses the recorded Model if it is defined
+    --  Remark : Works apart from the iteration methods (no interference)
+
+    Print (me; S : Messenger from Message; model : InterfaceModel;
+    	       failsonly : Boolean; final : Integer = 0);
+    ---Purpose : Works as Print without a model, but for entities which have
+    --           no attached number (Number not positive), tries to compute
+    --           this Number from <model> and displays "original" or "computed"
+
+    Destroy (me : in out);
+    ---Purpose : Clears data of iteration
+    ---C++ : alias ~
+
+fields
+
+    thelist : HSequenceOfCheck;
+    thenums : HSequenceOfInteger from TColStd;
+    themod  : InterfaceModel;
+    thename : AsciiString;
+    thecurr : IntVal;
+
+end CheckIterator;

@@ -1,0 +1,313 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphDS_RelationGraph.gxx
+// Created:	Mon Sep  9 14:43:52 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <GraphDS_DataMapIteratorOfEntityRoleMap.hxx>
+
+//=======================================================================
+//function : GraphDS_RelationGraph
+//purpose  : 
+//=======================================================================
+
+GraphDS_RelationGraph::GraphDS_RelationGraph () 
+{
+}
+
+
+//=======================================================================
+//function : GraphDS_RelationGraph
+//purpose  : 
+//=======================================================================
+
+GraphDS_RelationGraph::GraphDS_RelationGraph 
+  (const GraphDS_RelationGraph& other)
+{
+  myEntities   = other.myEntities;
+  myRelations =  other.myRelations;
+}
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsEmpty () const 
+{
+  return myEntities.Extent() ==0;
+}
+
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+
+void GraphDS_RelationGraph::Clear () 
+{
+  myEntities.Clear();
+  myRelations.Clear();
+}
+
+
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::Contains 
+  (const Handle(GraphDS_Entity)& V) const 
+{
+  return myEntities.Contains(V);
+}
+
+
+//=======================================================================
+//function : IsInRelation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsInRelation 
+  (const Handle(GraphDS_Entity)& V) const 
+{
+  return (V->HasRelation());
+}
+
+
+//=======================================================================
+//function : IsInput
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsInput 
+  (const Handle(GraphDS_Entity)& V) const 
+{
+   return !IsDependent(V);
+}
+
+
+//=======================================================================
+//function : IsOutput
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsOutput 
+  (const Handle(GraphDS_Entity)& V) const 
+{
+  if (V->GetRelations().IsEmpty()) return Standard_True;
+  TColStd_MapIteratorOfMapOfTransient it (V->GetRelations());
+  for (;it.More();it.Next()) {
+    if (Handle(GraphDS_Relation)::DownCast(it.Key())->IsOutput(V)) return Standard_True;
+  }
+  return Standard_False;  
+}
+
+
+//=======================================================================
+//function : IsDependent
+//purpose  : il est seulement sortie d'une au moins de ses relations
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsDependent 
+  (const Handle(GraphDS_Entity)& E) const 
+{
+  if (E->GetRelations().IsEmpty()) return Standard_False;  
+  TColStd_MapIteratorOfMapOfTransient it (E->GetRelations());
+  for (;it.More();it.Next()) {
+    if (Handle(GraphDS_Relation)::DownCast(it.Key())->IsOutput(E)) {
+      if  (!Handle(GraphDS_Relation)::DownCast(it.Key())->IsInput(E))return Standard_True;
+    }
+  }
+  return Standard_False;  
+}
+
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::Contains 
+  (const Handle(GraphDS_Relation)& R) const 
+{
+  return (myRelations.Contains(R));
+}
+
+
+//=======================================================================
+//function : NbEntities
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphDS_RelationGraph::NbEntities() const 
+{
+  return myEntities.Extent();
+}
+
+
+//=======================================================================
+//function : NbRelations
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphDS_RelationGraph::NbRelations() const 
+{
+  return myRelations.Extent();
+}
+
+
+//=======================================================================
+//function : AddEntity
+//purpose  : 
+//=======================================================================
+
+Handle(GraphDS_Entity) GraphDS_RelationGraph::AddEntity
+       (const GraphDS_Item& item) 
+{
+  Handle(GraphDS_Entity) entity = new GraphDS_Entity(item);
+  myEntities.Add(entity);
+  return entity;
+}
+
+
+//=======================================================================
+//function : RemoveEntity
+//purpose  : Removes an Entity of the relation graph     
+//=======================================================================
+
+void GraphDS_RelationGraph::RemoveEntity
+ (const Handle(GraphDS_Entity)& E) 
+{
+  if (E->HasRelation()) Standard_DomainError::Raise();
+  myEntities.Remove(E); 
+}
+
+
+//=======================================================================
+//function : AddRelation
+//purpose  : 
+//=======================================================================
+Handle(GraphDS_Relation) GraphDS_RelationGraph::AddRelation
+       (const GraphDS_Attribute& att)
+{
+  Handle(GraphDS_Relation) newrel = new GraphDS_Relation(att);
+  myRelations.Add(newrel);
+  return newrel;
+}
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_RelationGraph::IsEmpty
+  (const Handle(GraphDS_Relation)& R) const
+{
+  return R->IsEmpty();
+} 
+
+
+//=======================================================================
+//function : Add
+//purpose  : InputAndOutput
+//=======================================================================
+void GraphDS_RelationGraph::Add
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E)
+{
+  Add (R,E,GraphDS_InputAndOutput);
+}
+
+//=======================================================================
+//function : AddInput
+//purpose  : OnlyInput
+//=======================================================================
+void GraphDS_RelationGraph::AddInput
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E)
+{
+  Add (R,E,GraphDS_OnlyInput);
+}
+
+//=======================================================================
+//function : AddOutput
+//purpose  : OnlyOutput
+//=======================================================================
+void GraphDS_RelationGraph::AddOutput
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E)
+{
+  Add (R,E,GraphDS_OnlyOutput);
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void GraphDS_RelationGraph::Add
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E,
+   const GraphDS_EntityRole role)
+{
+  R->Add(E,role);
+  E->Add(R);
+}
+
+//=======================================================================
+//function : SetRole
+//purpose  : 
+//=======================================================================
+void GraphDS_RelationGraph::SetRole
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E,
+   const GraphDS_EntityRole role)
+{
+  R->SetRole(E,role);
+}
+
+
+//=======================================================================
+//function : Remove
+//purpose  : 
+//=======================================================================
+void GraphDS_RelationGraph::Remove
+  (const Handle(GraphDS_Relation)& R,
+   const Handle(GraphDS_Entity)&   E)
+{
+  R->Remove(E);
+  E->Remove(R);
+}
+
+
+//=======================================================================
+//function : RemoveRelation
+//purpose  : Removes a relation of the relation graph 
+//=======================================================================
+
+void GraphDS_RelationGraph::RemoveRelation
+  (const Handle(GraphDS_Relation)& R) 
+{
+  Handle(GraphDS_Entity) ENT;
+  GraphDS_DataMapIteratorOfEntityRoleMap it;
+  for (it.Initialize(R->GetEntities());it.More();it.Next()) {
+    ENT = Handle(GraphDS_Entity)::DownCast(it.Key());
+    ENT->Remove(R);
+  }
+  myRelations.Remove(R);
+}    
+
+
+
+
+
+
+
+
+
+
+
+

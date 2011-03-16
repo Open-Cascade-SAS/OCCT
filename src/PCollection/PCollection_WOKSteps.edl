@@ -1,0 +1,17 @@
+
+--
+-- File:        PCollection_WOKSteps.edl
+-- Author:      Stephane Callegari
+-- History:     30-04-98 : CAL : Creation
+-- Copyright:   Matra Datavision 1998
+--
+
+@ifnotdefined ( %PCollection_WOKSteps_EDL) then
+
+  @set %PCollection_WOKSteps_EDL = "";
+
+  @string %WOKSteps_XcppGroup = " xcpp.fill xcpp.src xcpp.header xcpp.template obj.cgen obj.inc ";
+  --@set %WOKSteps_xcpp_repl = "*PCollection_Replace(xcpp.header)";
+
+@endif;
+

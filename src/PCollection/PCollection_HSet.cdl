@@ -1,0 +1,163 @@
+-- File:	PCollection_HSet.cdl
+-- Created:	Mon Sep 2 14:45:39 1991
+-- Author:	Mireille MERCIEN
+--		<apc@topsn1>
+---Copyright:	 Matra Datavision 1991
+
+
+
+generic class HSet from PCollection (Item as Storable) 
+inherits Persistent
+
+     ---Purpose: A set is an unordered collection of items.
+     -- We can not have duplicated items in a given set.
+    
+raises   NoSuchObject from Standard
+
+
+    class SetNode instantiates HSingleList from PCollection(Item); 
+
+    class SetIterator from PCollection 				      
+        ---Purpose: Iterator of the Set class.
+
+    raises NoMoreObject from Standard,
+           NoSuchObject from Standard
+    is     
+ 
+     	Create(S : HSet from PCollection) 
+        returns SetIterator from PCollection;
+        ---Purpose: Creates an iterator on the set S.
+        -- Set the iterator at the beginning of the set S.
+
+     	More(me) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if there are other items.
+
+     	Next(me: in out) raises NoMoreObject from Standard;
+        ---Level: Public
+	---Purpose: Sets the iterator to the next item.
+	    	
+     	Value(me) returns any Item raises NoSuchObject from Standard;
+        ---Level: Public
+	---Purpose: Returns the item value corresponding to 
+	-- the current position of the iterator.
+
+    fields
+    	 TheIterator : SetNode;
+    end;
+
+
+is
+
+     Create returns mutable HSet from PCollection;
+        ---Purpose: Creation of an empty set.
+
+     Extent(me) returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Number of items in the set me
+        ---Example: if S is the set {a,b,c,d,e} 
+        -- Extent returns 5
+
+     Last(me) returns SetNode;
+        ---Level: Public
+        ---Purpose: Returns the field TheLast .
+        -- (the last item enterred in the set)
+
+     IsEmpty(me) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if the set me is empty.
+
+     Clear(me : mutable);
+        ---Level: Public
+	---Purpose: Removes all the items of the set me.
+        ---Example: before
+        --   me = {a,b,c,d}
+        -- after
+        --   me = {}
+
+     Add(me : mutable; T : Item) returns Boolean from Standard;
+        ---Level: Public
+	---Purpose: Adds an item T in the set me if it does not already exist.
+	-- Returns False if the item T already exists, True otherwise. 
+        ---Example: before
+        --   me = {a,b,c,d}, T = y
+        -- after
+        --   me = {a,b,c,d,y}
+
+     Remove(me : mutable; T : Item) raises NoSuchObject from Standard;
+        ---Level: Public
+        ---Purpose: Removes the item T in the set me
+        -- Raises an exception if the item is not in the set.
+        ---Example: before
+        --   me = {a,b,c,d}, T = a
+        -- after
+        --   me = {b,c,d}
+        -- returns ()
+ 
+     Union(me; B : HSet from PCollection) returns mutable HSet from PCollection;
+        ---Level: Public
+        ---Purpose: Creation of a set containing all the items 
+        -- of the set me and all the items of the set B which 
+        -- are not in me.
+        ---Example: before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        -- {a,b,c,d,f}
+
+     Intersection(me; B : HSet from PCollection) returns mutable HSet from PCollection;
+        ---Level: Public
+        ---Purpose: Creation of a set containing all the 
+        -- items which are both in the set <me> and in the set B.
+        ---Example: before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        --   {a}
+
+     Difference(me; B: HSet from PCollection) returns mutable HSet from PCollection;
+        ---Level: Public
+        ---Purpose: Creation of a set containing the items 
+        -- which are in the set me and not in the set B.
+        ---Example: before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        --   {b,c}
+
+     Contains(me; T : Item) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if an item is in the set me.
+
+     IsASubset(me; S : HSet from PCollection) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if a set is contained in the set me.
+        -- The two sets can be identical.
+
+     IsAProperSubset(me; S : HSet from PCollection) returns Boolean from 
+        Standard;
+        ---Level: Public
+        ---Purpose: Returns True if a set is contained in the set me.
+        -- The two sets cannot be identical.
+
+     ShallowCopy(me) 
+        returns mutable like me 
+        is redefined;
+        ---Level: Advanced
+	---C++: function call
+
+
+     ShallowDump (me; s: in out OStream) 
+        is redefined;
+        ---Level: Advanced
+    	---C++: function call
+
+
+
+fields
+     TheExtent   : Integer from Standard;
+     TheLast     : SetNode;
+end;

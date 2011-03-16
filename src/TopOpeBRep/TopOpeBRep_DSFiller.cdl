@@ -1,0 +1,193 @@
+-- File:	TopOpeBRep_DSFiller.cdl
+-- Created:	Wed Jun 23 20:25:39 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class DSFiller from TopOpeBRep
+
+    ---Purpose: Provides class  methods  to  fill  a datastructure
+    --          with  results  of intersections.
+    --          
+    --          1.  Use  an    Intersector  to   find    pairs  of
+    --          intersecting GeomShapes
+    --          
+    --          2. For each  pair fill the DataStructure using the
+    --          appropriate Filler.
+    --          
+    --          3. Complete the  DataStructure to record shapes to
+    --          rebuild (shells, wires )
+
+uses
+
+    ShapeEnum from TopAbs,
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    Face from TopoDS,    
+    
+    ShapeTool from TopOpeBRepTool,
+    ShapeExplorer from TopOpeBRepTool,
+    PShapeClassifier from TopOpeBRepTool,
+
+    HDataStructure from TopOpeBRepDS,
+    DataStructure from TopOpeBRepDS,
+    Kind from TopOpeBRepDS,
+
+    ShapeIntersector from TopOpeBRep,
+    ShapeIntersector2d from TopOpeBRep,
+    FacesIntersector from TopOpeBRep,
+    FacesFiller from TopOpeBRep,
+    EdgesIntersector from TopOpeBRep,
+    EdgesFiller from TopOpeBRep,
+    FaceEdgeIntersector from TopOpeBRep,
+    FaceEdgeFiller from TopOpeBRep
+    
+is
+
+    Create returns DSFiller from TopOpeBRep;
+
+--modified by NIZNHY-PKV Mon Dec 16 10:24:42 2002  f
+    Destroy(me: out); 
+    ---C++:  alias  "Standard_EXPORT ~TopOpeBRep_DSFiller() {Destroy();}"
+--modified by NIZNHY-PKV Mon Dec 16 10:25:22 2002  t
+
+    PShapeClassifier(me) returns PShapeClassifier from TopOpeBRepTool;
+    ---Purpose: return field myPShapeClassifier. 
+    
+--modified by NIZNHY-PKV Mon Dec 16 11:30:17 2002  f
+--    SetPShapeClassifier(me : in out; PSC : PShapeClassifier from TopOpeBRepTool);
+    ---Purpose: set field myPShapeClassifier.
+--modified by NIZNHY-PKV Mon Dec 16 11:30:23 2002  t 
+
+    Insert(me : in out; S1,S2 : Shape from TopoDS; 
+    	    	        HDS : HDataStructure;
+    	    	    	orientFORWARD : Boolean = Standard_True)
+    ---Purpose: Stores in <DS> the intersections of <S1> and <S2>.
+    --          if orientFORWARD = True 
+    --               S FORWARD,REVERSED   --> FORWARD
+    --               S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
+    is static;
+
+    InsertIntersection(me : in out; S1,S2 : Shape from TopoDS; 
+    	    	             HDS : HDataStructure;
+    	    	    	     orientFORWARD : Boolean = Standard_True)
+    ---Purpose: Stores in <DS> the intersections of <S1> and <S2>.
+    --          if orientFORWARD = True 
+    --               S FORWAR,REVERSED   --> FORWARD
+    --               S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
+    is static;
+
+    Complete(me : in out; HDS : HDataStructure)
+    is static;
+
+    Insert2d(me : in out; S1,S2 : Shape from TopoDS; 
+			  HDS : HDataStructure)
+    ---Purpose: Stores in <DS> the intersections of <S1> and <S2>.
+    --          S1 et S2 contain only SameDomain Face
+    is static;
+
+    InsertIntersection2d(me : in out; S1,S2 : Shape from TopoDS; 
+    	    	               HDS : HDataStructure)
+    ---Purpose: S1, S2 set of tangent face
+    --          lance les intersections 2d pour coder correctement
+    --          les faces SameDomain.
+    is static;
+
+    IsMadeOf1d (me; S : Shape from TopoDS)
+    returns Boolean;
+
+    IsContext1d(me; S : Shape from TopoDS)
+    returns Boolean;
+
+    Insert1d(me : in out; S1,S2 : Shape from TopoDS;
+    	    	    	  F1,F2 : Face from TopoDS;
+    	    	          HDS : HDataStructure;
+			  orientFORWARD : Boolean = Standard_False)
+    ---Purpose: Stores in <DS> the intersections of <S1> and <S2>.
+    --          S1 and S2 are edges or wires.
+    --          S1 edges have a 2d representation in face F1
+    --          S2 edges have a 2d representation in face F2
+    --          F1 is the face which surface is taken as reference
+    --          for 2d description of S1 and S2 edges.
+    --          if orientFORWARD = True 
+    --               S FORWARD,REVERSED  --> FORWARD
+    --               S EXTERNAL,INTERNAL --> EXTERNAL,INTERNAL
+    is static;
+    
+    CheckInsert(me; S1,S2 : Shape from TopoDS) 
+    returns Boolean is static private ;
+
+    ClearShapeSameDomain(me : in out; S1,S2 : Shape from TopoDS;
+    	    	         HDS : HDataStructure) 
+    returns Boolean is static private ;
+    
+    ChangeShapeIntersector(me : in out) 
+    returns ShapeIntersector from TopOpeBRep
+    ---C++: return &
+    is static; 
+     
+    ChangeShapeIntersector2d(me : in out) 
+    returns ShapeIntersector2d from TopOpeBRep
+    ---C++: return &
+    is static; 
+     
+    ChangeFacesFiller(me : in out) 
+    returns FacesFiller from TopOpeBRep
+    ---C++: return &
+    is static;
+    
+    ChangeEdgesFiller(me : in out) 
+    returns EdgesFiller from TopOpeBRep
+    ---C++: return &
+    is static;
+    
+    ChangeFaceEdgeFiller(me : in out) 
+    returns FaceEdgeFiller from TopOpeBRep
+    ---C++: return &    
+    is static;
+    
+    GapFiller(me; HDS : HDataStructure) is static;
+
+    CompleteDS(me; HDS : HDataStructure)
+    ---Purpose: Update   the  data      structure  with   relevant
+    --          informations deduced from the intersections.
+    --          
+    --          Shells containing an intersected face.
+    --          Wires  containing an intersected edge.
+    --          
+    is static;
+
+    Filter(me; HDS : HDataStructure)
+    is static;
+
+    Reducer(me; HDS : HDataStructure)
+    is static;
+
+    RemoveUnsharedGeometry(me : in out; HDS : HDataStructure)
+    is static;
+
+    Checker(me; HDS : HDataStructure)
+    is static;
+    
+    CompleteDS2d(me; HDS : HDataStructure)
+    ---Purpose: Update   the  data      structure  with   relevant
+    --          informations deduced from the intersections 2d.
+    --          
+    --          Shells containing an intersected face.
+    --          Wires  containing an intersected edge.
+    --          
+    is static;
+
+--    CheckIGap(me; S1,S2 : Shape; HDS : HDataStructure) is static; //NYI
+    ---Purpose: search for interference identity using edge connexity //NYI
+
+fields
+
+    myShapeIntersector   : ShapeIntersector   from TopOpeBRep;
+    myShapeIntersector2d : ShapeIntersector2d from TopOpeBRep;
+    myFacesFiller        : FacesFiller        from TopOpeBRep;
+    myEdgesFiller        : EdgesFiller        from TopOpeBRep;
+    myFaceEdgeFiller     : FaceEdgeFiller     from TopOpeBRep;
+    myPShapeClassifier   : PShapeClassifier   from TopOpeBRepTool;
+    
+end DSFiller from TopOpeBRep;

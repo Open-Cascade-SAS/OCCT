@@ -1,0 +1,72 @@
+
+// File:	Geom2dInt_CurveTool.gxx
+// Created:	Thu Oct 22 12:09:58 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+//-Copyright:	 Matra Datavision 1992
+
+
+#include <GeomAbs_CurveType.hxx>
+#include <Handle_Geom2d_BezierCurve.hxx>
+#include <Handle_Geom2d_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+
+//============================================================
+Standard_Integer Geom2dInt_CurveTool::NbSamples (const IntCurveCurve& C,
+						 const Standard_Real U0,
+						 const Standard_Real U1) {
+  GeomAbs_CurveType typC = C.GetType();
+  static Standard_Real nbsOther = 10.0;
+  Standard_Real nbs = nbsOther;
+
+  if(typC == GeomAbs_Line) 
+    nbs = 2;
+  else if(typC == GeomAbs_BezierCurve) 
+    nbs = 3 + C.NbPoles();
+  else if(typC == GeomAbs_BSplineCurve) { 
+    Standard_Real t=C.LastParameter()-C.FirstParameter();
+    Standard_Real t1=U1-U0;
+    if(t1<0.0) t1=-t1;
+    nbs = C.NbKnots();
+    nbs*= C.Degree();
+    nbs*= (t1/t);
+    if(nbs < 4.0) nbs=4;
+  }
+  //// modified by jgv, 20.02.02 for bug OCC165 ////
+  else if (typC == GeomAbs_OtherCurve)
+    nbs = 20;
+  //////////////////////////////////////////////////
+
+  if(nbs>300)
+    nbs = 300;
+  return((Standard_Integer)nbs);
+}
+//============================================================
+Standard_Integer Geom2dInt_CurveTool::NbSamples (const IntCurveCurve& C) { 
+  GeomAbs_CurveType typC = C.GetType();
+  static Standard_Real nbsOther = 10.0;
+  Standard_Real nbs = nbsOther;
+  
+  if(typC == GeomAbs_Line) 
+    nbs = 2;
+  else if(typC == GeomAbs_BezierCurve) 
+    nbs = 3 + C.NbPoles();
+  else if(typC == GeomAbs_BSplineCurve) { 
+    nbs = C.NbKnots();
+    nbs*= C.Degree();
+    if(nbs < 2.0) nbs=2;
+  }
+  //// modified by jgv, 20.02.02 for bug OCC165 ////
+  else if (typC == GeomAbs_OtherCurve)
+    nbs = 20;
+  //////////////////////////////////////////////////
+
+  if(nbs>300)
+    nbs = 300;
+  return((Standard_Integer)nbs);
+}
+
+
+
+

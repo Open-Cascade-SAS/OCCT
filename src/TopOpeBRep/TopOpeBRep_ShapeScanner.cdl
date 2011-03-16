@@ -1,0 +1,42 @@
+-- File:	TopOpeBRep_ShapeScanner.cdl
+-- Created:	Wed Jul  7 19:56:26 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class ShapeScanner from TopOpeBRep
+    
+    ---Purpose: Find, among the  subshapes SS of a reference shape
+    --          RS, the ones which 3D box interfers with the box of
+    --          a shape S (SS and S are of the same type).
+
+uses
+
+    ShapeEnum from TopAbs,
+    Shape from TopoDS,
+    ListIteratorOfListOfInteger from TColStd,
+    ShapeExplorer from TopOpeBRepTool,
+    BoxSort from TopOpeBRepTool
+
+is
+
+    Create returns ShapeScanner from TopOpeBRep;
+    Clear(me:in out);
+    AddBoxesMakeCOB(me:in out;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    Init(me:in out;E:Shape);
+    Init(me:in out;X:in out ShapeExplorer from TopOpeBRepTool);
+    More(me) returns Boolean;
+    Next(me:in out);
+    Current(me) returns Shape;---C++: return const &
+    BoxSort(me) returns BoxSort from TopOpeBRepTool;---C++:return const &
+    ChangeBoxSort(me:in out) returns BoxSort from TopOpeBRepTool;---C++:return &
+    Index(me) returns Integer;
+    DumpCurrent(me; OS:in out OStream) returns OStream;---C++: return &
+    
+fields
+
+    myBoxSort:BoxSort from TopOpeBRepTool;
+    myListIterator:ListIteratorOfListOfInteger from TColStd;
+    
+end ShapeScanner from TopOpeBRep;
+

@@ -1,0 +1,82 @@
+-- File:	BRepLib_MakeShell.cdl
+-- Created:	Wed Jan  4 11:11:36 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+
+class MakeShell from BRepLib inherits MakeShape from BRepLib
+
+	---Purpose: Provides methos to build shells.
+	--          
+	--          Build a shell from a set of faces.
+	--          Build untied shell from a non C2 surface
+	--          splitting it into C2-continuous parts.
+
+uses
+
+    Surface    from Geom,
+    Shell      from TopoDS,
+    Face       from TopoDS,
+    ShellError from BRepLib
+    
+
+raises
+    NotDone from StdFail
+
+is
+    Create  
+	---Purpose: Not done.
+	---Level: Public
+    returns MakeShell from BRepLib;
+    
+    ----------------------------------------------
+    -- From a set of face
+    ----------------------------------------------
+
+    ----------------------------------------------
+    -- From a surface
+    ----------------------------------------------
+
+    Create(S : Surface from Geom;
+    	   Segment : Boolean from Standard = Standard_False)
+	---Level: Public
+    returns MakeShell from BRepLib;
+    
+    Create(S       : Surface from Geom; UMin, UMax, VMin, VMax : Real;
+    	   Segment : Boolean from Standard = Standard_False)
+	---Level: Public
+    returns MakeShell from BRepLib;
+
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real; 
+    	              Segment : Boolean from Standard = Standard_False)
+	---Purpose: Creates the shell from the surface  and the min-max
+	--          values.
+	---Level: Public
+    is static;
+
+
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    Error(me) returns ShellError from BRepLib
+	---Level: Public
+    is static;
+
+    Shell(me) returns Shell from TopoDS
+	---Purpose: Returns the new Shell.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Shell() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static; 
+    
+fields
+    myError : ShellError from BRepLib;
+
+end MakeShell;

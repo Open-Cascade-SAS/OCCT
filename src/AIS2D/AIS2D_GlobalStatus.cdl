@@ -1,0 +1,145 @@
+-- File     : AIS2D_GlobalStatus.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+private class GlobalStatus from AIS2D inherits TShared from MMgt
+ 
+    ---Purpose: Stores  information  about objects in graphic context:
+    --          - Status Of Display : in the main viewer 
+    --                                in the  collector
+    --                                fully Erased
+    --          - Displayed Modes 
+    --          - Active Selection Modes
+    --          - is the Interactive Object Current ?
+    --          - Layer Index
+
+
+uses 
+
+    ListOfInteger from TColStd,
+    PToListOfInt  from AIS2D,
+    DisplayStatus from AIS2D,
+    NameOfColor   from Quantity
+
+is
+
+    Create returns mutable GlobalStatus from AIS2D;
+    ---Purpose: Initialize GlobalStatus the default properties
+
+    Create( aStat             : DisplayStatus from AIS2D;
+    	    aDMode            : Integer from Standard;
+		    aSMode            : Integer from Standard;
+            isHighlight       : Boolean from Standard=Standard_False;
+	        aHighlCol         : NameOfColor from Quantity = Quantity_NOC_WHITE;
+	        aLayerIndex       : Integer from Standard = 0)
+	    returns mutable GlobalStatus from AIS2D;
+   ---Purpose: Initialize GlobalStatus the concrete properties
+		    
+    SetGraphicStatus( me: mutable; aStat :  DisplayStatus from AIS2D );
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Sets the graphic status <aStat>
+
+    AddDisplayMode( me: mutable; aMode: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Adds the display mode <aMode> to the list of display modes
+   
+    RemoveDisplayMode( me: mutable; aMode: Integer from Standard);
+    ---Level: Internal
+    ---Purpose: Removes the display mode <aMode> from the list of display modes
+
+    IsDModeIn( me; aMode: Integer from Standard ) returns Boolean from Standard;
+    ---Level: Internal
+    ---Purpose: Returns True if the list of display modes 
+    --          contains the display mode <aMode> 
+
+    AddSelectionMode( me: mutable; aMode: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Adds the selection mode <aMode> to the list of selection modes
+
+    RemoveSelectionMode( me: mutable; aMode: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Removes the selection mode <aMode> from the list of selection modes
+
+    ClearSelectionModes( me: mutable );
+    ---Level: Internal
+    ---Purpose: Removes all selection modes from the list of selection modes
+
+    IsSModeIn( me; aMode: Integer from Standard ) returns Boolean from Standard;
+    ---Level: Internal
+    ---Purpose: Returns True if the list of selection modes 
+    --          contains the selection mode <aMode> 
+    
+    SetLayerIndex( me: mutable; anIndex: Integer from Standard );
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Sets the layer index <anIndex>
+
+    SetHighlightStatus( me: mutable; aStat: Boolean from Standard ); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Sets the highlight status
+
+    SetHighlightColor( me: mutable; aHiCol: NameOfColor from Quantity );
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Sets the color of highight
+
+    IsSubIntensityOn( me ) returns Boolean from Standard; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Return True if SubIntensity is on
+
+    SubIntensityOn( me: mutable ); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Sets the SubIntensity
+
+    SubIntensityOff( me: mutable );
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Unsets the SubIntensity
+	  
+    GraphicStatus( me ) returns DisplayStatus from AIS2D;
+    ---C++: inline    
+    ---Level: Internal
+    ---Purpose: Indicates the display status
+
+    DisplayedModes( me: mutable ) returns PToListOfInt from AIS2D;
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: keeps the information of displayed modes in the 
+    --          main viewer.
+    --          (The convention is that the object is displayed
+    --          with the mode 0 in the collector...)
+    
+    SelectionModes( me: mutable ) returns PToListOfInt from AIS2D;
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: keeps the active selection modes of the object
+    --          in the main viewer.
+    --          (The convention is that the active selection mode
+    --          for an object in the collector is the mode 0).
+
+    IsHighlight(me) returns Boolean from Standard;
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: Returns True if highlight is on
+ 
+    HighlightColor( me ) returns NameOfColor from Quantity;
+    ---C++: inline   
+    ---Level: Internal
+    ---Purpose: Returns the color of highlight
+
+fields
+
+    myStatus     : DisplayStatus from AIS2D;
+    myDispModes  : ListOfInteger from TColStd;
+    mySelModes   : ListOfInteger from TColStd;
+    myLayerIndex : Integer       from Standard;
+    myIsHighl    : Boolean       from Standard;
+    myHiCol      : NameOfColor   from Quantity;
+    mySubInt     : Boolean       from Standard;
+
+end GlobalStatus;

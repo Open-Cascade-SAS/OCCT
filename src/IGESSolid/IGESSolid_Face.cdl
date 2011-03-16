@@ -1,0 +1,71 @@
+--
+-- File      : Face.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (SIVA)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Face from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Face, Type <510> Form Number <1>
+        --          in package IGESSolid
+        --          Face entity is a bound (partial) which has finite area
+
+uses
+
+        Loop              from IGESSolid,
+        HArray1OfLoop from IGESSolid
+
+raises OutOfRange
+
+is
+
+        Create returns mutable Face;
+
+            -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              aSurface      : IGESEntity;
+              outerLoopFlag : Boolean;
+              loops         : HArray1OfLoop);
+        ---Purpose : This method is used to set the fields of the class Face
+        --       - aSurface      : Pointer to the underlying surface
+        --       - outerLoopFlag : True means the first loop is the outer loop
+        --       - loops         : Array of loops bounding the face
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the underlying surface of the face
+
+        NbLoops (me) returns Integer;
+        ---Purpose : returns the number of the loops bounding the face
+
+        HasOuterLoop (me) returns Boolean;
+        ---Purpose : checks whether there is an outer loop or not
+
+        Loop (me; Index : Integer) returns Loop
+        raises OutOfRange;
+        ---Purpose : returns the Index'th loop that bounds the face
+        -- raises exception if Index < 0 or Index >= NbLoops
+
+fields
+
+--
+-- Class    : IGESSolid_Face
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Face.
+--
+-- Reminder : A Face instance is defined by :
+--            a underlying surface (Surface) bounded by loops (Loops)
+
+        theSurface   : IGESEntity;
+            --  underlying surface
+
+        hasOuterLoop : Boolean;
+            -- indicator for presence of the outer loop
+
+        theLoops     : HArray1OfLoop;
+            -- array of the bounding loops
+
+end Face;

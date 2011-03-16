@@ -1,0 +1,53 @@
+-- File:	StepToTopoDS_TranslatePolyLoop.cdl
+-- Created:	Fri Dec 16 14:49:27 1994
+-- Author:	Frederic MAUPAS
+--		<fma@stylox>
+---Copyright:	 Matra Datavision 1994
+
+class TranslatePolyLoop from StepToTopoDS
+    inherits Root from StepToTopoDS
+    
+    ---Purpose:
+    --         
+
+uses
+
+    PolyLoop               from StepShape,
+    TranslatePolyLoopError from StepToTopoDS,
+    Tool                   from StepToTopoDS,
+    Surface                from Geom,
+    Face                   from TopoDS,
+    Shape                  from TopoDS
+    
+raises NotDone from StdFail
+
+is
+
+    Create returns TranslatePolyLoop;
+    
+    Create (PL : PolyLoop    from StepShape;
+    	    T  : in out Tool from StepToTopoDS;
+    	    S  : Surface     from Geom;
+    	    F  : Face        from TopoDS)
+    	returns TranslatePolyLoop;
+	    
+    Init (me : in out;
+    	  PL : PolyLoop from StepShape;
+    	  T  : in out Tool from StepToTopoDS;
+    	  S  : Surface     from Geom;
+    	  F  : Face        from TopoDS);
+
+    Value (me) returns Shape from TopoDS
+    	raises NotDone
+	is static;
+	---C++: return const &
+
+    Error (me) returns TranslatePolyLoopError from StepToTopoDS;
+    
+fields
+
+    myError  : TranslatePolyLoopError from StepToTopoDS;
+    
+    myResult : Shape                  from TopoDS;
+    
+end TranslatePolyLoop;

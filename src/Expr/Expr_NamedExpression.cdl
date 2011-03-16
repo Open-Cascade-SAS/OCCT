@@ -1,0 +1,52 @@
+-- File:	NamedExpression.cdl
+-- Created:	Thu Jan 10 14:50:02 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class NamedExpression from Expr
+    
+inherits GeneralExpression from Expr  
+
+    ---Purpose: Describe an expression used  by its name (as constants 
+    --          or variables). A single reference is made to a 
+    --          NamedExpression in every Expression (i.e. a 
+    --          NamedExpression is shared).
+
+uses AsciiString from TCollection
+
+
+is
+
+    GetName(me)
+    returns AsciiString
+    ---C++: return const &
+    ---Level: Advanced
+    is static;
+
+    SetName(me : mutable; name : AsciiString)
+    ---Level: Internal
+    is static;
+
+    IsShareable(me)
+    ---Purpose: Tests if <me> can be shared by one or more expressions 
+    --          or must be copied. This method redefines to a True 
+    --          value the GeneralExpression method.
+    returns Boolean
+    is redefined;
+    
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --          This method does not include any simplification before
+    --          testing.
+    returns Boolean;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString from TCollection;
+
+fields
+
+    myName : AsciiString;
+
+end NamedExpression;

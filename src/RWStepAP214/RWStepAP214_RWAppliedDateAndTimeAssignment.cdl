@@ -1,0 +1,34 @@
+-- File:	RWStepAP214_RWAppliedDateAndTimeAssignment.cdl
+-- Created:	Fri Mar 12 11:01:26 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RWAppliedDateAndTimeAssignment from RWStepAP214 
+
+	---Purpose: Read & Write Module for AppliedDateAndTimeAssignment
+
+uses
+     Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AppliedDateAndTimeAssignment from StepAP214,
+     EntityIterator from Interface
+
+
+is
+    	Create returns RWAppliedDateAndTimeAssignment;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AppliedDateAndTimeAssignment from StepAP214);
+
+	WriteStep (me; SW : in out StepWriter; ent : AppliedDateAndTimeAssignment from StepAP214);
+
+	Share(me; ent : AppliedDateAndTimeAssignment from StepAP214; iter : in out EntityIterator);
+
+
+
+
+
+end RWAppliedDateAndTimeAssignment;

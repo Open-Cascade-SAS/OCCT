@@ -1,0 +1,54 @@
+// File:	ShapeUpgrade_EdgeDivide.lxx
+// Created:	Wed May 24 17:35:49 2000
+// Author:	data exchange team
+//		<det@friendox>
+
+//=======================================================================
+//function : SetFace
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_EdgeDivide::SetFace(const TopoDS_Face& F)
+{
+  myFace = F;
+}
+
+//=======================================================================
+//function : HasCurve2d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve2d() const
+{
+  return myHasCurve2d;
+}
+
+//=======================================================================
+//function : HasCurve3d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_EdgeDivide::HasCurve3d() const
+{
+  return myHasCurve3d;
+}
+
+//=======================================================================
+//function : Knots2d
+//purpose  : 
+//=======================================================================
+
+inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots2d() const
+{
+  return myKnots2d;
+}
+
+//=======================================================================
+//function : Knots3d
+//purpose  : 
+//=======================================================================
+
+inline Handle(TColStd_HSequenceOfReal) ShapeUpgrade_EdgeDivide::Knots3d() const
+{
+  return myKnots3d;
+}

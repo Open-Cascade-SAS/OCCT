@@ -1,0 +1,88 @@
+// File:	TCollection_HArray1.lxx
+// Created:	Thu Mar 11 18:34:58 1993
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray1::Length () const 
+{
+   return myArray.Length();
+}
+
+//=======================================================================
+//function : Lower
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray1::Lower () const 
+{
+   return myArray.Lower();
+}
+
+//=======================================================================
+//function : Upper
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray1::Upper () const 
+{
+   return myArray.Upper();
+}
+
+//=======================================================================
+//function : SetValue
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_HArray1::SetValue (const Standard_Integer Index,
+					   const ItemHArray1& Value)
+{
+   myArray.SetValue(Index,Value);
+}
+
+//=======================================================================
+//function : Array1
+//purpose  : 
+//=======================================================================
+
+inline const TheArray1& TCollection_HArray1::Array1() const
+{
+  return myArray;
+}
+
+
+//=======================================================================
+//function : ChangeArray1
+//purpose  : 
+//=======================================================================
+
+inline TheArray1& TCollection_HArray1::ChangeArray1() 
+{
+  return myArray;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const ItemHArray1& TCollection_HArray1::Value(const Standard_Integer Index) const
+{
+  return myArray(Index);
+}
+
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+
+inline ItemHArray1& TCollection_HArray1::ChangeValue(const Standard_Integer Index)
+{
+  return myArray(Index);
+}
+
+

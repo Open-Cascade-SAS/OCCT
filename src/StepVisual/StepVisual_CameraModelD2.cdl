@@ -1,0 +1,42 @@
+-- File:        CameraModelD2.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CameraModelD2 from StepVisual 
+
+inherits CameraModel from StepVisual 
+
+uses
+
+	PlanarBox from StepVisual, 
+	Boolean from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable CameraModelD2;
+	---Purpose: Returns a CameraModelD2
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aViewWindow : mutable PlanarBox from StepVisual;
+	      aViewWindowClipping : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetViewWindow(me : mutable; aViewWindow : mutable PlanarBox);
+	ViewWindow (me) returns mutable PlanarBox;
+	SetViewWindowClipping(me : mutable; aViewWindowClipping : Boolean);
+	ViewWindowClipping (me) returns Boolean;
+
+fields
+
+	viewWindow : PlanarBox from StepVisual;
+	viewWindowClipping : Boolean from Standard;
+
+end CameraModelD2;

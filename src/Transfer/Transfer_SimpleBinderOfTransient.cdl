@@ -1,0 +1,62 @@
+-- File:	Transfer_SimpleBinderOfTransient.cdl
+-- Created:	Thu Jun 10 09:54:01 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SimpleBinderOfTransient  from Transfer  inherits Binder
+
+    ---Purpose : An adapted instantiation of SimpleBinder for Transient Result,
+    --           i.e. ResultType can be computed from the Result itself,
+    --           instead of being static
+
+uses CString, Type, Transient
+
+raises TransferFailure
+
+is
+
+    Create returns mutable SimpleBinderOfTransient;
+    ---Purpose : Creates an empty SimpleBinderOfTransient
+
+--    IsMultiple (me) returns Boolean;
+    ---Purpose : Returns True if a starting object is bound with SEVERAL
+    --           results : Here, returns allways False
+    --           See Binder itself
+
+    ResultType (me) returns Type;
+    ---Purpose : Returns the Effective (Dynamic) Type of the Result
+    --           (Standard_Transient if no Result is defined)
+
+    ResultTypeName (me) returns CString;
+    ---Purpose : Returns the Effective Name of (Dynamic) Type of the Result
+    --           (void) if no result is defined
+
+    SetResult (me : mutable; res : any Transient)
+    ---Purpose : Defines the Result
+    	raises TransferFailure;
+    --           Error if the Result is already used (see class Binder)
+
+    Result (me) returns any Transient
+    ---Purpose : Returns the defined Result, if there is one
+    	raises TransferFailure;
+    --           Error if the Result is not defined (see class Binder)
+    ---C++ : return const &
+
+    GetTypedResult (myclass; bnd : Binder; atype : Type;
+    	res : out Transient) returns Boolean;
+    ---Purpose : Returns a transient result according to its type (IsKind)
+    --           i.e. the result itself if IsKind(atype), else searches in
+    --           NextResult, until first found, then returns True
+    --           If not found, returns False (res is NOT touched)
+    --           
+    --           This syntactic form avoids to do DownCast : if a result is
+    --           found with the good type, it is loaded in <res> and can be
+    --           immediately used, well initialised
+
+fields
+
+    theres : Transient;
+
+end SimpleBinderOfTransient;

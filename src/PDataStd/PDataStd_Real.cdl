@@ -1,0 +1,36 @@
+-- File:	PDataStd_Real.cdl
+-- Created:	Wed Apr  9 11:41:53 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+class Real from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses Real from Standard
+
+is
+
+    Create returns mutable Real from PDataStd;
+
+    
+    Create (Value     : Real from Standard;
+            Dimension : Integer from Standard)
+    returns mutable Real from PDataStd;
+    
+    Get (me) returns Real from Standard;
+
+    Set (me : mutable; V : Real from Standard);
+    
+    SetDimension (me : mutable; DIM : Integer from Standard);
+    
+    GetDimension (me)
+    returns Integer from Standard;
+
+fields
+
+    myValue     : Real    from Standard;
+    myDimension : Integer from Standard;
+
+end Real;

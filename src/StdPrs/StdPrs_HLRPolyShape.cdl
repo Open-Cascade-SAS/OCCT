@@ -1,0 +1,38 @@
+-- File:	StdPrs_HLRPolyShape.cdl
+-- Created:	Tue Sep 19 15:38:35 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+class HLRPolyShape from StdPrs
+
+inherits Root from Prs3d
+    	---Purpose: Instantiates Prs3d_PolyHLRShape to define a
+    	-- display of a shape where hidden and visible lines are
+    	-- identified with respect to a given projection.
+    	-- StdPrs_HLRPolyShape works with a polyhedral
+    	-- simplification of the shape whereas
+    	-- StdPrs_HLRShape takes the shape itself into
+    	-- account. When you use StdPrs_HLRShape, you
+    	-- obtain an exact result, whereas, when you use
+    	-- StdPrs_HLRPolyShape, you reduce computation
+    	-- time but obtain polygonal segments.
+uses
+    Shape        from TopoDS,
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Projector    from Prs3d
+
+is
+    Add(myclass; aPresentation: Presentation from Prs3d;
+    	    	 aShape       : Shape        from TopoDS;
+                 aDrawer      : Drawer       from Prs3d;
+		 aProjector   : Projector    from Prs3d);
+    	---Purpose: Defines the hidden line removal display of the
+    	-- topology aShape in the projection defined by
+    	-- aProjector. The shape and the projection are added
+    	-- to the display aPresentation, and the attributes of the
+    	-- elements present in the aPresentation are defined by
+    	-- the attribute manager aDrawer.
+        
+end HLRPolyShape from StdPrs;

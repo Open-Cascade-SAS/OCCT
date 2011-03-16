@@ -1,0 +1,12 @@
+// File:	AIS_FixRelation.lxx
+// Created:	Fri Feb 28 14:36:13 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_FixRelation::IsMovable() const 
+{
+  return Standard_True;
+}

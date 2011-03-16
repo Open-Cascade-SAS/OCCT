@@ -1,0 +1,14 @@
+-- File:	CDM_MessageDriver.cdl
+-- Created:	Thu Oct 29 08:15:10 1998
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+deferred class MessageDriver from CDM inherits Transient from Standard
+
+is
+
+    Write(me: mutable; aString: ExtString from Standard)
+    is deferred;
+    
+end MessageDriver from CDM;

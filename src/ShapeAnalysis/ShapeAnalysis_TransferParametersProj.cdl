@@ -1,0 +1,92 @@
+-- File:	ShapeAnalysis_TransferParametersProj.cdl
+-- Created:	Mon Jun 21 12:53:37 1999
+-- Author:	Galina KULIKOVA
+--		<gka@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class TransferParametersProj from ShapeAnalysis inherits TransferParameters from ShapeAnalysis
+
+	---Purpose: This tool is used for transferring parameters
+	--          from 3d curve of the edge to pcurve and vice versa.
+	--          This tool transfers parameters with help of 
+    	--          projection points from curve 3d on curve 2d and
+	--          vice versa
+uses
+ 
+    Edge            from TopoDS,
+    Face            from TopoDS,
+    HSequenceOfReal from TColStd,
+    Location        from TopLoc,
+    Curve           from Geom,
+    Curve           from Geom2d,
+    CurveOnSurface  from Adaptor3d,
+    Vertex from TopoDS
+is
+
+    Create returns mutable TransferParametersProj from ShapeAnalysis;
+    	---Purpose: Creats empty constructor. 
+    
+    Create(E: Edge from TopoDS; F: Face from TopoDS) 
+    returns mutable TransferParametersProj from ShapeAnalysis;
+    	---Purpose:
+    
+    Init(me: mutable; E: Edge from TopoDS; F: Face from TopoDS ) is redefined;
+    	---Purpose:
+    
+    Perform(me: mutable; Papams: HSequenceOfReal from TColStd; To2d: Boolean) 
+    returns  HSequenceOfReal from TColStd is redefined;
+    	---Purpose: Transfers parameters given by sequence Params from 3d curve
+	--          to pcurve (if To2d is True) or back (if To2d is False)
+    
+    Perform(me: mutable; Param: Real; To2d: Boolean) 
+    returns Real is redefined;
+    	---Purpose:Transfers parameter given by  Param from 3d curve
+	--          to pcurve (if To2d is True) or back (if To2d is False)
+
+    ForceProjection (me: mutable) returns Boolean;
+        ---Purpose: Returns modifiable flag forcing projection
+	--          If it is False (default), projection is done only
+	--          if edge is not SameParameter or if tolerance of edge
+	--          is greater than MaxTolerance()
+	---C++: return &
+    
+    TransferRange(me: mutable; newEdge: in out Edge from TopoDS; 
+    	    	    	       prevPar: Real;
+    	    	    	       currPar: Real;
+	    		       Is2d   : Boolean) is redefined;
+    	---Purpose: Recomputes range of curves from NewEdge.
+    	--	    If Is2d equals True parameters are recomputed by curve2d else by curve3d. 
+    
+    IsSameRange(me) returns Boolean is redefined;
+    	---Purpose: Returns False;
+	--          
+    
+    PreformSegment(me: mutable;Param :Real; To2d :Boolean;
+    	    	    	       First :Real; Last :Real)
+    returns Real is private;			       
+
+    CopyNMVertex(myclass; theVert: Vertex from TopoDS;
+    	    	      toedge: Edge from TopoDS;
+    	    	      fromedge: Edge from TopoDS ) returns Vertex from TopoDS;
+    	---Purpose: Make a copy of non-manifold vertex theVert 
+	--          (i.e. create new  TVertex and replace PointRepresentations for this vertex 
+    	--          from fromedge to toedge. Other representations were copied)
+    
+    CopyNMVertex(myclass; theVert: Vertex from TopoDS;
+    	    	      toFace: Face from TopoDS;
+    	    	      fromFace: Face from TopoDS ) returns Vertex from TopoDS;
+    	---Purpose: Make a copy of non-manifold vertex theVert 
+	--          (i.e. create new  TVertex and replace PointRepresentations for this vertex 
+    	--          from fromFace to toFace. Other representations were copied)
+fields
+
+    myCurve        : Curve from Geom; 
+    myCurve2d      : Curve from Geom2d;
+    myAC3d         : CurveOnSurface from Adaptor3d;
+    myPrecision    : Real;
+    myLocation     : Location from TopLoc;
+    myForceProj    : Boolean;
+    myInitOK       : Boolean;
+    
+end TransferParametersProj;

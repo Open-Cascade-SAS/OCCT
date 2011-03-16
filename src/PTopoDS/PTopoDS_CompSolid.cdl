@@ -1,0 +1,15 @@
+-- File:	PTopoDS_CompSolid.cdl
+-- Created:	Wed May  5 16:57:26 1993
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class CompSolid from PTopoDS inherits HShape from PTopoDS
+
+is
+    Create returns mutable CompSolid from PTopoDS;
+	---Level: Internal 
+
+end CompSolid;

@@ -1,0 +1,47 @@
+-- File:	Contap_SurfProps.cdl
+-- Created:	Fri Feb 24 15:30:15 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1995
+
+
+generic class SurfProps from Contap 
+    (TheSurface     as any;
+     TheSurfaceTool as any) -- as SurfaceTool from Contap
+
+	---Purpose: Internal tool used  to compute the  normal and its
+	--          derivatives. 
+
+uses Pnt from gp,
+     Vec from gp
+
+is
+
+    Normale(myclass; S: TheSurface; U,V: Real from Standard;
+                     P: out Pnt from gp;
+		     N: out Vec from gp);
+
+	---Purpose: Computes  the point <P>, and  normal vector <N> on
+	--          <S> at parameters U,V.
+
+
+
+    DerivAndNorm(myclass; S: TheSurface; U,V: Real from Standard;
+                          P      : out Pnt from gp;
+			  d1u,d1v: out Vec from gp;
+		          N      : out Vec from gp);
+
+	---Purpose: Computes  the point <P>, and  normal vector <N> on
+	--          <S> at parameters U,V.
+
+
+
+    NormAndDn(myclass; S: TheSurface; U,V: Real from Standard;
+                       P        : out Pnt from gp;
+		       N,Dnu,Dnv: out Vec from gp);
+
+	---Purpose: Computes the point <P>, normal vector <N>, and its
+	--          derivatives <Dnu> and <Dnv> on <S> at parameters U,V.
+
+
+end SurfProps;

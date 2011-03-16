@@ -1,0 +1,503 @@
+-- File:	HatchGen_Hatcher.cdl
+-- Created:	Mon Oct 25 17:01:45 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:   Matra Datavision 1993
+
+generic class Hatcher from HatchGen
+    (TheCurveE      as any ; -- as Curve       from Geom2dAdaptor
+     TheCurveH      as any ; -- as Curve       from Geom2dAdaptor
+     TheIntersector as any ) -- as Intersector from HatchGen
+
+uses
+    MapIntegerHasher from TColStd  ,
+    PointOnHatching  from HatchGen ,
+    Orientation      from TopAbs ,
+    State            from TopAbs ,
+    Domain           from HatchGen ,
+    ErrorStatus      from HatchGen
+
+raises
+    NoSuchObject      from Standard ,
+    OutOfRange        from Standard ,
+    NotDone           from StdFail
+
+----------------------------------------------------------------------
+--  Nested classes descriptions.
+----------------------------------------------------------------------
+
+class Element from HatchGen instantiates ElementGen from HatchGen
+    (TheCurveE) ;
+    
+class Elements from HatchGen instantiates ElementsGen from HatchGen
+    (Integer          from Standard,
+     Element          from HatchGen,
+     MapIntegerHasher from TColStd ,
+     TheCurveE                     ) ;
+     
+class Hatching from HatchGen instantiates HatchingGen from HatchGen
+    (TheCurveH) ;
+    
+class Hatchings from HatchGen instantiates DataMap from TCollection
+    (Integer          from Standard,
+     Hatching         from HatchGen,
+     MapIntegerHasher from TColStd) ;
+
+class Classifier from HatchGen instantiates FaceClassifier from  TopClass 
+    (Elements,
+     TheCurveE,
+     TheIntersector);
+
+----------------------------------------------------------------------
+--  class Hatcher description.
+----------------------------------------------------------------------
+
+is
+
+---Category: General use
+
+
+    Create (Intersector : TheIntersector ;
+    	    Confusion2d : Real    from Standard ;
+    	    Confusion3d : Real    from Standard ;
+    	    KeepPnt     : Boolean from Standard = Standard_False ;
+            KeepSeg     : Boolean from Standard = Standard_False)
+    	    
+    	---Purpose: Returns an empty hatcher.
+
+    	returns Hatcher from HatchGen ;
+
+
+    Intersector (me : in out ; Intersector : TheIntersector)
+    
+    	---Purpose: Sets the associated intersector.
+    	is static ;
+	
+
+    Intersector (me : in out)
+    
+    	---Purpose: Returns the associated intersector.
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns TheIntersector
+	is static ;
+	
+
+    ChangeIntersector (me : in out)
+    
+    	---Purpose: Returns the associated intersector.
+
+    	---C++: inline
+    	---C++: return &
+
+    	returns TheIntersector
+	is static ;
+	
+
+    Confusion2d (me : in out ; Confusion : Real from Standard)
+    
+       	---Purpose: Sets the confusion tolerance.
+
+    	is static ;
+
+
+    Confusion2d (me)
+    
+    	---Purpose: Returns the 2d confusion tolerance, i.e. the value under
+    	--          which two points are considered identical in the
+    	--          parametric space of the hatching.
+    	
+    	---C++: inline
+    	returns Real from Standard
+	is static ;
+
+
+    Confusion3d (me : in out ; Confusion : Real from Standard)
+    
+       	---Purpose: Sets the confusion tolerance.
+
+    	is static ;
+
+
+    Confusion3d (me)
+    
+    	---Purpose: Returns the 3d confusion tolerance, i.e. the value under
+    	--          which two points are considered identical in the
+    	--          3d space of the hatching.
+
+    	---C++: inline
+    	returns Real from Standard
+	is static ;
+
+
+    KeepPoints (me : in out; Keep : Boolean from Standard)
+    
+    	---Purpose: Sets the above flag.
+
+    	is static ;
+
+
+    KeepPoints (me)
+    
+    	---Purpose: Returns the flag about the points consideration.
+
+    	---C++: inline
+    	returns Boolean from Standard
+    	is static ;
+
+
+    KeepSegments (me : in out; Keep : Boolean from Standard)
+    
+    	---Purpose: Sets the above flag.
+
+    	is static ;
+
+
+    KeepSegments (me)
+    
+    	---Purpose: Returns the flag about the segments consideration.
+
+    	---C++: inline
+    	returns Boolean from Standard
+    	is static ;
+
+
+    Clear (me : in out)
+    
+    	---Purpose: Removes all the hatchings and all the elements.
+
+    	---C++: inline
+    	is static ;
+
+
+---Category: Element
+
+
+    Element (me : in out ; IndE : Integer from Standard)
+    
+    	---Purpose: Returns the IndE-th element.
+
+    	---Category: Element
+
+    	---C++: inline
+    	---C++: return &
+
+    	returns Element from HatchGen
+        raises NoSuchObject from Standard
+    	is static protected ;
+
+
+    ElementCurve (me; IndE : Integer from Standard)
+    
+    	---Purpose: Returns the curve associated to the IndE-th element.
+
+    	---Category: Element
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns TheCurveE
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+    AddElement (me : in out ; Curve       : TheCurveE ;
+    	    	    	      Orientation : Orientation from TopAbs = TopAbs_FORWARD)
+    
+    	---Purpose: Adds an element to the hatcher and returns its index.
+
+    	---Category: Element
+
+    	returns Integer from Standard
+    	is static ;
+
+
+    RemElement (me : in out ; IndE : Integer from Standard)
+    
+    	---Purpose: Removes the IndE-th element from the hatcher.
+
+    	---Category: Element
+
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+    ClrElements (me : in out)
+    
+    	---Purpose: Removes all the elements from the hatcher.
+
+    	---Category: Element
+
+    	is static ;
+
+
+---Category: Hatching
+
+
+    Hatching (me : in out ; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the IndH-th hatching.
+
+    	---Category: Hatching
+
+    	---C++: inline
+    	---C++: return &
+
+    	returns Hatching from HatchGen
+    	raises NoSuchObject from Standard
+    	is static protected ;
+
+
+    HatchingCurve (me; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the curve associated to the IndH-th hatching.
+
+    	---Category: Hatching
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns TheCurveH
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+    AddHatching (me : in out ; Curve : TheCurveH)
+    
+    	---Purpose: Adds a hatching to the hatcher and returns its index.
+
+    	---Category: Hatching
+
+    	returns Integer from Standard
+        is static ;
+
+
+    RemHatching (me : in out ; IndH : Integer from Standard)
+    
+    	---Purpose: Removes the IndH-th hatching from the hatcher.
+
+    	---Category: Hatching
+
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+    ClrHatchings (me : in out)
+    
+    	---Purpose: Removes all the hatchings from the hatcher.
+
+    	---Category: Hatching
+
+    	is static ;
+
+
+    NbPoints (me; IndH : Integer from Standard)
+
+    	---Purpose: Returns the number of intersection points of
+    	--          the IndH-th hatching.
+
+    	---Category: Hatching - Test
+
+    	---C++: inline
+    	returns Integer from Standard
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+    Point (me; IndH, IndP : Integer from Standard)
+    
+    	---Purpose: Returns the IndP-th intersection point of the
+    	--          IndH-th hatching.
+
+    	---Category: Hatching - Test
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns PointOnHatching from HatchGen
+    	raises NoSuchObject from Standard,
+	       OutOfRange   from Standard
+    	is static ;
+
+
+---Category: Computation - Trimming
+
+    Trim (me : in out)
+    
+    	---Purpose: Trims all the hatchings of the hatcher by all the
+    	--          elements of the hatcher.
+
+    	is static ;
+
+
+    Trim (me : in out ; Curve : TheCurveH)
+    
+    	---Purpose: Adds a hatching to the hatcher and trims it by
+    	--          the elements already given and returns its index.
+
+    	---Category: Computation
+
+    	returns Integer from Standard
+    	is static ;
+
+
+    Trim (me : in out ; IndH : Integer from Standard)
+    
+    	---Purpose: Trims the IndH-th hatching by the elements
+    	--          already given.
+
+    	---Category: Computation
+
+    	raises NoSuchObject from Standard
+        is static ;
+
+
+    Trim (me : in out ; IndH, IndE : Integer from Standard)
+    
+    	---Purpose: Trims the IndH-th hatching of the hatcher by the
+    	--          IndE-th element.
+
+    	---Category: Computation
+
+    	returns Boolean from Standard
+    	is static private ;
+
+
+---Category: Computation - Domains
+
+    GlobalTransition (me : in out; Point : in out PointOnHatching from HatchGen)
+    
+    	---Purpose: Sets the global transition (the before and after
+    	--          states and segment extremities flags) of the point.
+
+    	---Category: Computation - Domains
+
+    	returns Boolean from Standard
+    	is static private ;
+
+
+    ComputeDomains (me : in out)
+
+    	---Purpose: Computes the domains of all the hatchings.
+
+    	---Category: Computation - Domains
+
+    	is static ;
+
+
+    ComputeDomains (me : in out ; IndH : Integer from Standard)
+
+    	---Purpose: Computes the domains of the IndH-th hatching.
+
+    	---Category: Computation - Domains
+
+    	raises NoSuchObject from Standard
+    	is static ;
+
+
+---Category: Results
+
+    TrimDone (me; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the fact that the intersections were computed
+    	--          for the IndH-th hatching. 
+
+    	---C++: inline
+    	returns Boolean from Standard
+	raises NoSuchObject from Standard
+	is static ;
+
+
+    TrimFailed (me; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the fact that the intersections failed
+    	--          for the IndH-th hatching. 
+
+    	---C++: inline
+    	returns Boolean from Standard
+	raises NoSuchObject from Standard
+	is static ;
+
+
+    IsDone (me)
+    
+    	---Purpose: Returns the fact that the domains were computed
+    	--          for all the hatchings. 
+
+    	---C++: inline
+    	returns Boolean from Standard
+	raises NoSuchObject from Standard
+	is static ;
+
+
+    IsDone (me; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the fact that the domains were computed
+    	--          for the IndH-th hatching. 
+
+    	returns Boolean from Standard
+	raises NoSuchObject from Standard
+	is static ;
+
+
+    Status (me; IndH : Integer from Standard)
+    
+    	---Purpose: Returns the status about the IndH-th hatching. 
+
+    	---C++: inline
+    	returns ErrorStatus from HatchGen
+	raises NoSuchObject from Standard
+	is static ;
+
+
+    NbDomains (me; IndH : Integer from Standard)
+
+    	---Purpose: Returns the number of domains of the IndH-th hatching.
+    	--          Only ONE "INFINITE" domain means that the hatching is
+    	--          fully included in the contour defined by the elements.
+
+    	---C++: inline
+    	returns Integer from Standard
+    	raises NoSuchObject from Standard ,
+	       NotDone      from StdFail
+    	is static ;
+
+
+    Domain (me; IndH : Integer from Standard ;
+    	    	IDom : Integer from Standard )
+
+    	---Purpose: Returns the IDom-th domain of the IndH-th hatching.
+
+    	---C++: return const &
+
+    	returns Domain from HatchGen
+    	raises NoSuchObject from Standard ,
+	       NotDone      from StdFail ,
+	       OutOfRange   from Standard
+    	is static ;
+
+
+---Category: Dump
+
+    Dump (me)
+    
+    	---Purpose: Dump the hatcher.
+
+    	is static ;
+
+
+fields
+
+    myIntersector  : TheIntersector ;
+    myConfusion2d  : Real      from Standard ;
+    myConfusion3d  : Real      from Standard ;
+    myKeepPoints   : Boolean   from Standard ;
+    myKeepSegments : Boolean   from Standard ;
+    myNbElements   : Integer   from Standard ;
+    myElements     : Elements  from HatchGen ;
+    myNbHatchings  : Integer   from Standard ;
+    myHatchings    : Hatchings from HatchGen ;
+
+end Hatcher from HatchGen ;

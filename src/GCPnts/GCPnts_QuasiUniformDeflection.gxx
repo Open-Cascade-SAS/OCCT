@@ -1,0 +1,454 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <GCPnts_DeflectionType.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <BSplCLib.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <Precision.hxx>
+
+static void QuasiFleche(const TheCurve&,
+			const Standard_Real,
+			const Standard_Real,
+			const gp_Pnt&,
+			const gp_Vec&,
+			const Standard_Real,
+			const gp_Pnt&,
+			const gp_Vec&,
+			const Standard_Integer,
+			const Standard_Real,
+			TColStd_SequenceOfReal&,
+			TColgp_SequenceOfPnt&);
+
+static void QuasiFleche(const TheCurve&,
+			const Standard_Real,
+			const Standard_Real,
+			const gp_Pnt&,
+			const Standard_Real,
+			const gp_Pnt&,
+			const Standard_Integer,
+			TColStd_SequenceOfReal&,
+			TColgp_SequenceOfPnt&);
+
+
+//=======================================================================
+//function : PerformLinear
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformLinear (const TheCurve& C,
+                                       TColStd_SequenceOfReal& Parameters,
+                                       TColgp_SequenceOfPnt& Points,
+                                       const Standard_Real U1,
+                                       const Standard_Real U2)
+{
+  gp_Pnt aPoint;
+  Parameters.Append (U1);
+  aPoint = Value (C, U1);
+  Points.Append (aPoint);
+
+  Parameters.Append (U2);
+  aPoint = Value (C, U2);
+  Points.Append (aPoint);
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : PerformCircular
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformCircular (const TheCurve& C,
+                                         TColStd_SequenceOfReal& Parameters,
+                                         TColgp_SequenceOfPnt& Points,
+                                         const Standard_Real Deflection,
+                                         const Standard_Real U1,
+                                         const Standard_Real U2)
+
+{
+  gp_Pnt aPoint;
+  Standard_Real Angle = Max (1.0e0 - (Deflection / C.Circle().Radius()), 0.0e0);
+  Angle = 2.0e0 * ACos (Angle);
+  Standard_Integer NbPoints = (Standard_Integer )((U2 - U1) / Angle);
+  NbPoints += 2;
+  Angle = (U2 - U1) / (Standard_Real) (NbPoints - 1);
+  Standard_Real U = U1;
+  for (Standard_Integer i = 1; i <= NbPoints; ++i)
+  {
+    Parameters.Append (U);
+    aPoint = Value (C,U);
+    Points.Append (aPoint);
+    U += Angle;
+  }
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : GetDefType
+//purpose  :
+//=======================================================================
+static GCPnts_DeflectionType GetDefType (TheCurve& C)
+{
+  if (C.NbIntervals(GeomAbs_C1) > 1)
+    return GCPnts_DefComposite;
+  // pour forcer les decoupages aux cassures. G1 devrait marcher,
+  // mais donne des exceptions...
+
+  switch (C.GetType())
+  {
+    case GeomAbs_Line:   return GCPnts_Linear;
+    case GeomAbs_Circle: return GCPnts_Circular;
+    case GeomAbs_BSplineCurve:
+    {
+      Handle_TheBSplineCurve BS = C.BSpline();
+      return (BS->NbPoles() == 2) ? GCPnts_Linear : GCPnts_Curved;
+    }
+    case GeomAbs_BezierCurve:
+    {
+      Handle_TheBezierCurve BZ = C.Bezier();
+      return (BZ->NbPoles() == 2) ? GCPnts_Linear : GCPnts_Curved;
+    }
+    default: return GCPnts_Curved;
+  }
+}
+
+
+//=======================================================================
+//function : PerformCurve
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
+                                      TColgp_SequenceOfPnt& Points,
+                                      const TheCurve& C,
+                                      const Standard_Real Deflection,
+                                      const Standard_Real U1,
+                                      const Standard_Real U2,
+                                      const Standard_Real EPSILON,
+                                      const GeomAbs_Shape Continuity)
+{
+  Standard_Integer Nbmin = 21;
+
+  gp_Pnt Pdeb;
+  if (Continuity <= GeomAbs_G1)
+  {
+
+    Pdeb = Value (C, U1);
+    Parameters.Append (U1);
+    Points.Append (Pdeb);
+
+    gp_Pnt Pfin (Value (C, U2));
+    QuasiFleche (C, Deflection * Deflection,
+		U1, Pdeb,
+		U2, Pfin,
+		Nbmin,
+		Parameters, Points);
+  }
+  else
+  {
+    gp_Pnt Pfin;
+    gp_Vec Ddeb, Dfin;
+    D1 (C, U1, Pdeb, Ddeb);
+    Parameters.Append (U1);
+    Points.Append (Pdeb);
+
+    D1 (C, U2, Pfin, Dfin);
+    QuasiFleche (C, Deflection * Deflection,
+                 U1, Pdeb,
+                 Ddeb,
+                 U2, Pfin,
+                 Dfin,
+                 Nbmin,
+                 EPSILON * EPSILON,
+                 Parameters, Points);
+  }
+//  cout << "Nb de pts: " << Points.Length()<< endl;
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : PerformComposite
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
+                                          TColgp_SequenceOfPnt& Points,
+                                          TheCurve& C,
+                                          const Standard_Real Deflection,
+                                          const Standard_Real U1,
+                                          const Standard_Real U2,
+                                          const Standard_Real EPSILON,
+                                          const GeomAbs_Shape Continuity)
+{
+//
+//  coherence avec Intervals
+//
+  Standard_Integer NbIntervals = C.NbIntervals (GeomAbs_C2);
+  Standard_Integer PIndex;
+  TColStd_Array1OfReal TI (1, NbIntervals + 1);
+  C.Intervals (TI, GeomAbs_C2);
+  BSplCLib::Hunt (TI, U1, PIndex);
+
+  // iterate by continuous segments
+  Standard_Real Ua = U1;
+  for (Standard_Integer Index = PIndex;;)
+  {
+    Standard_Real Ub = Min (U2, TI (Index + 1));
+    if (!PerformCurve (Parameters, Points, C, Deflection,
+			           Ua, Ub, EPSILON, Continuity))
+      return Standard_False;
+
+    ++Index;
+    if (Index > NbIntervals || U2 < TI (Index))
+      return Standard_True;
+
+    // remove last point to avoid duplication
+    Parameters.Remove (Parameters.Length());
+    Points.Remove (Points.Length());
+
+    Ua = Ub;
+  }
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : GCPnts_QuasiUniformDeflection
+//purpose  :
+//=======================================================================
+GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection
+                               (TheCurve& C,
+                                const Standard_Real Deflection,
+                                const Standard_Real U1,
+                                const Standard_Real U2,
+                                const GeomAbs_Shape Continuity)
+{
+  Initialize (C, Deflection, U1, U2, Continuity);
+}
+
+
+//=======================================================================
+//function : GCPnts_QuasiUniformDeflection
+//purpose  :
+//=======================================================================
+GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection
+                               (TheCurve& C,
+                                const Standard_Real Deflection,
+                                const GeomAbs_Shape Continuity)
+{
+  Initialize (C, Deflection, Continuity);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  :
+//=======================================================================
+void GCPnts_QuasiUniformDeflection::Initialize (TheCurve& C,
+                                                const Standard_Real Deflection,
+                                                const GeomAbs_Shape Continuity)
+{
+  Initialize (C, Deflection, C.FirstParameter(),
+              C.LastParameter(), Continuity);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  :
+//=======================================================================
+
+void GCPnts_QuasiUniformDeflection::Initialize
+                     (TheCurve& C,
+				      const Standard_Real Deflection,
+				      const Standard_Real theU1,
+				      const Standard_Real theU2,
+				      const GeomAbs_Shape Continuity)
+{
+  myCont = (Continuity > GeomAbs_G1) ? GeomAbs_C1 : GeomAbs_C0;
+  Standard_Real EPSILON = C.Resolution (Precision::Confusion());
+  EPSILON = Min (EPSILON, 1.e50);
+  myDeflection = Deflection;
+  myDone = Standard_False;
+  myParams.Clear();
+  myPoints.Clear();
+  GCPnts_DeflectionType Type = GetDefType (C);
+
+  Standard_Real U1 = Min (theU1, theU2);
+  Standard_Real U2 = Max (theU1, theU2);
+
+  if (Type == GCPnts_Curved || Type == GCPnts_DefComposite)
+  {
+    if (C.GetType() == GeomAbs_BSplineCurve || C.GetType() == GeomAbs_BezierCurve)
+    {
+      Standard_Real maxpar = Max (Abs (C.FirstParameter()), Abs (C.LastParameter()));
+      if (EPSILON < Epsilon (maxpar)) return;
+    }
+  }
+
+  switch (Type)
+  {
+    case GCPnts_Linear:
+      myDone = PerformLinear (C, myParams, myPoints, U1, U2);
+      break;
+    case GCPnts_Circular:
+      myDone = PerformCircular (C, myParams, myPoints, Deflection, U1, U2);
+      break;
+    case GCPnts_Curved:
+      myDone = PerformCurve (myParams, myPoints, C, Deflection,
+                             U1, U2, EPSILON, myCont);
+      break;
+    case GCPnts_DefComposite:
+      myDone = PerformComposite (myParams, myPoints, C, Deflection,
+                                 U1, U2, EPSILON, myCont);
+      break;
+  }
+}
+
+
+//=======================================================================
+//function : QuasiFleche
+//purpose  :
+//=======================================================================
+void QuasiFleche (const TheCurve& C,
+                  const Standard_Real Deflection2,
+                  const Standard_Real Udeb,
+                  const gp_Pnt& Pdeb,
+                  const gp_Vec& Vdeb,
+                  const Standard_Real Ufin,
+                  const gp_Pnt& Pfin,
+                  const gp_Vec& Vfin,
+                  const Standard_Integer Nbmin,
+                  const Standard_Real Eps,
+                  TColStd_SequenceOfReal& Parameters,
+                  TColgp_SequenceOfPnt& Points)
+{
+  Standard_Integer Ptslength = Points.Length();
+  Standard_Real Udelta = Ufin - Udeb;
+  gp_Pnt Pdelta;
+  gp_Vec Vdelta;
+  if (Nbmin > 2)
+  {
+    Udelta /= (Nbmin - 1);
+    D1 (C, Udeb + Udelta, Pdelta, Vdelta);
+  }
+  else
+  {
+    Pdelta = Pfin;
+    Vdelta = Vfin;
+  }
+
+  Standard_Real Norme = gp_Vec (Pdeb, Pdelta).SquareMagnitude();
+  Standard_Real theFleche = 0;
+  Standard_Boolean flecheok = Standard_False;
+  if (Norme > Eps)
+  {
+    // Evaluation de la fleche par interpolation . Voir IntWalk_IWalking_5.gxx
+    Standard_Real N1 = Vdeb.SquareMagnitude();
+    Standard_Real N2 = Vdelta.SquareMagnitude();
+    if (N1 > Eps && N2 > Eps)
+    {
+      Standard_Real Normediff = (Vdeb.Normalized().XYZ() - Vdelta.Normalized().XYZ()).SquareModulus();
+      if (Normediff > Eps)
+      {
+        theFleche = Normediff * Norme / 64.;
+        flecheok = Standard_True;
+      }
+    }
+  }
+  if (!flecheok)
+  {
+    gp_Pnt Pmid ((Pdeb.XYZ() + Pdelta.XYZ()) * 0.5);
+    gp_Pnt Pverif (Value(C, Udeb + Udelta * 0.5));
+    theFleche = Pmid.SquareDistance (Pverif);
+  }
+
+  if (theFleche < Deflection2)
+  {
+    Parameters.Append (Udeb + Udelta);
+    Points.Append (Pdelta);
+  }
+  else
+  {
+    QuasiFleche (C, Deflection2, Udeb, Pdeb,
+                 Vdeb,
+                 Udeb + Udelta, Pdelta,
+                 Vdelta,
+                 3,
+                 Eps,
+                 Parameters, Points);
+  }
+
+  if (Nbmin > 2)
+  {
+    QuasiFleche (C, Deflection2, Udeb + Udelta, Pdelta,
+                 Vdelta,
+                 Ufin, Pfin,
+                 Vfin,
+                 Nbmin - (Points.Length() - Ptslength),
+                 Eps,
+                 Parameters, Points);
+  }
+}
+
+
+//=======================================================================
+//function : QuasiFleche
+//purpose  :
+//=======================================================================
+void QuasiFleche (const TheCurve& C,
+                  const Standard_Real Deflection2,
+                  const Standard_Real Udeb,
+                  const gp_Pnt& Pdeb,
+                  const Standard_Real Ufin,
+                  const gp_Pnt& Pfin,
+                  const Standard_Integer Nbmin,
+                  TColStd_SequenceOfReal& Parameters,
+                  TColgp_SequenceOfPnt& Points)
+{
+  Standard_Integer Ptslength = Points.Length();
+  Standard_Real Udelta = Ufin - Udeb;
+  gp_Pnt Pdelta;
+  if (Nbmin > 2)
+  {
+    Udelta /= (Nbmin-1);
+    Pdelta = Value (C, Udeb + Udelta);
+  }
+  else
+  {
+    Pdelta = Pfin;
+  }
+
+  gp_Pnt Pmid ((Pdeb.XYZ() + Pdelta.XYZ()) * 0.5);
+  gp_Pnt Pverif (Value (C, Udeb + Udelta * 0.5));
+  Standard_Real theFleche = Pmid.SquareDistance (Pverif);
+
+  if (theFleche < Deflection2)
+  {
+    Parameters.Append(Udeb + Udelta);
+    Points.Append (Pdelta);
+  }
+  else
+  {
+    QuasiFleche (C, Deflection2, Udeb, Pdeb,
+                 Udeb + Udelta * 0.5, Pverif,
+                 2,
+                 Parameters, Points);
+
+    QuasiFleche (C, Deflection2, Udeb + Udelta * 0.5, Pverif,
+                 Udeb + Udelta, Pdelta,
+                 2,
+                 Parameters, Points);
+  }
+
+  if (Nbmin > 2)
+  {
+    QuasiFleche (C, Deflection2, Udeb + Udelta, Pdelta,
+                 Ufin, Pfin,
+                 Nbmin - (Points.Length() - Ptslength),
+                 Parameters, Points);
+  }
+}

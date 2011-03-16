@@ -1,0 +1,38 @@
+-- File:	Interface_JaggedArray.cdl
+-- Created:	Tue May 30 13:43:39 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+generic class JaggedArray  from Interface
+    (TheKey as TShared)
+    inherits TShared
+
+    ---Purpose : This class allows to define an HArray1 Of HArray1 ...
+    --           which is not possible with the actual system of
+    --           genericity supported by CasCade
+
+uses Array1OfTransient
+
+is
+
+    Create (low, up : Integer) returns mutable JaggedArray;
+
+    Lower  (me) returns Integer;
+    Upper  (me) returns Integer;
+    Length (me) returns Integer;
+
+    SetValue (me : mutable; num : Integer; val : any TheKey);
+
+    Value (me; num : Integer) returns any TheKey;
+    -- C++ : return const & (NO , DownCast required)
+
+--    ChangeValue (me : mutable; num : Integer) returns any TheKey;
+    -- C++ : return & (NO , DownCast required !)
+
+fields
+
+    thelist : Array1OfTransient;
+
+end JaggedArray;

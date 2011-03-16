@@ -1,0 +1,28 @@
+-- File:	PXCAFDoc_Area.cdl
+-- Created:	Fri Sep  8 17:56:32 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Area from PXCAFDoc inherits  Attribute from PDF
+
+	---Purpose: 
+uses 
+    Real from Standard
+
+is
+    Create returns mutable Area from PXCAFDoc;
+
+    Create (Value     : Real from Standard)
+    returns mutable Area from PXCAFDoc;
+    
+    Get (me) returns Real from Standard;
+
+    Set (me : mutable; V : Real from Standard);
+    
+fields
+
+    myValue     : Real    from Standard;
+
+end Area from PXCAFDoc;

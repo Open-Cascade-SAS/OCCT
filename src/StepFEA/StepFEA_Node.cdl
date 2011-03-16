@@ -1,0 +1,22 @@
+-- File:	StepFEA_Node.cdl
+-- Created:	Thu Dec 12 17:51:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class Node from StepFEA
+inherits NodeRepresentation from StepFEA
+
+    ---Purpose: Representation of STEP entity Node
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr,
+    FeaModel from StepFEA
+
+is
+    Create returns Node from StepFEA;
+	---Purpose: Empty constructor
+
+end Node;

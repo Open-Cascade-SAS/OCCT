@@ -1,0 +1,207 @@
+-- File:	Prs3d.cdl
+-- Created:	Wed Aug 26 17:38:18 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+package Prs3d
+
+    	---Purpose: The Prs3d package provides the following services
+	-- -   a presentation object (the context for all
+	--   modifications to the display, its presentation will be
+	--   displayed in every view of an active viewer)
+	-- -   an attribute manager governing how objects such
+	--   as color, width, and type of line are displayed;
+	--   these are generic objects, whereas those in
+	--   StdPrs are specific geometries and topologies.
+	-- -   generic   algorithms providing default settings for
+	--   objects such as points, curves, surfaces and shapes
+	-- -   a root object which provides the abstract
+	--   framework for the DsgPrs definitions at work in
+	--   display of dimensions, relations and trihedra.
+    
+uses
+	Graphic3d,
+	Aspect,
+        Quantity,
+	MMgt,
+	Standard,
+        Adaptor3d,
+	BRepAdaptor,
+	Geom,
+        CPnts,
+    	GCPnts,
+    	TopAbs,
+	TopLoc,
+	TopoDS,
+	TopTools,
+	TopExp,
+    	HLRAlgo,
+        TCollection,
+	TColgp,
+	Bnd,
+	gp,
+	Poly,
+	TColStd
+is  
+        exception InvalidAngle inherits RangeError from Standard;
+	
+        enumeration TypeOfLinePicking is TOLP_Point,
+	                                 TOLP_Segment
+	end TypeOfLinePicking;
+
+        class Presentation;
+    	---Purpose: defines the presentation object. This object can be
+    	--          displayed, highlighted, erased, etc... The output
+    	--          of the presentation algorithms are sent in a
+    	--          presentation object. A presentation object is attached
+    	--          to a given Viewer.
+    	
+	---Category: Aspect classes.
+	---Purpose: The aspect classes qualifies how to represent
+	--          a given kind of object.
+	--          
+
+	
+        deferred class BasicAspect;	
+        class PointAspect;
+    	class LineAspect;
+	class ShadingAspect;
+	class TextAspect;
+        deferred class CompositeAspect;	
+        class IsoAspect;
+	class PlaneAspect;
+        class ArrowAspect;	
+	class LengthAspect;
+	class AngleAspect;
+	class RadiusAspect;
+	class DatumAspect;
+
+        class Drawer;
+	---Purpose: qualifies how the presentation algorithms compute
+	--          the presentation of a specific kind of object. 
+	--          This includes for example color, width and type
+	--          of lines, maximal chordial deviation, etc...
+	--          A drawer includes an instance of the Aspect classes
+	--          with particular default values.
+	
+        class Projector;
+	---Purpose: defines the projection parameters for the hidden
+	--          lines removal algorithm.
+	
+    	class PlaneSet;
+	---Purpose: defines a set of planes used for a presentation
+	--          by sections.
+	-- 
+
+    	deferred class Root;
+	---Purpose: defines the root of the presentation algorithms.
+	
+        generic class Point;
+	---Purpose: computes the presentation of objects to be
+	--          seen as points.
+	
+        generic class Line;
+	---Purpose: computes the presentation of objects to be
+	--          seen as broken lines.
+	
+        --generic class WFSectionShape;
+	---Purpose: computes the wireframe presentation of surfaces 
+	--          by displaying planar sections.
+	
+	generic class WFDeflectionRestrictedFace;
+	---Purpose: computes the wireframe presentation of faces with
+	--          restrictions by displaying a given number of U and/or
+	--          V isoparametric curves. The isoparametric curves are
+	--          drawn with respect to a maximal chordial deviation.
+	--          The presentation includes the restriction curves.
+	
+        
+	generic class WFRestrictedFace;
+	---Purpose: computes the wireframe presentation of faces with
+	--          restrictions by displaying a given number of U and/or
+	--          V isoparametric curves. The isoparametric curves are
+	--          drawn with a fixed number of points.
+	--          The presentation includes the restriction curves.
+    
+
+	generic class WFShape;
+	---Purpose: computes the wireframe presentation of compound set 
+	--          of faces, edges and vertices by displaying a given 
+	--          number of U and/or V isoparametric curves. 
+	
+
+
+	
+	---Category: Hidden lines removal algorithms.
+	
+	generic class HLRShape;
+		     ---Purpose: computes the presentation of objects with
+		     --          removal of their hidden lines for a specific
+		     --          projector.
+		     --          
+
+	---Category: Shading algorithms.
+
+        generic class SectionShapeTool;	
+	
+	generic class ShadedShape;
+	
+	
+       	---Category: Basis construction elements.
+        generic class Vector;
+	generic class Datum;
+
+        class LengthPresentation;
+	
+	class AnglePresentation;
+	
+	class Text;
+	
+	
+        ---Category: Class signatures.
+	--           
+	generic class PointTool;
+	---Purpose: describes the behaviour requested for a point presentation
+
+	generic class LineTool;
+	---Purpose: describes the behaviour requested for a line presentation
+
+      
+        generic class CurvePresentation;
+	
+        generic class RestrictionTool;
+       	---Purpose: describes the behaviour requested for a restricted
+	--          face presentation.
+
+	class ShapeTool;
+	---Purpose: describes the behaviour requested for a wireframe
+	--          shape presentation.
+
+	generic class HLRShapeTool;
+	---Purpose: describes the behaviour requested for a shape
+	--          presentation with hidden lines removal.
+	 
+	deferred generic class VectorTool;
+	---Purpose: describes the behaviour requested for a vector
+	--          presentation.
+	
+	deferred generic class DatumTool;
+	---Purpose: describes the behaviour requested for a datum
+	--          presentation.
+
+        class Arrow;
+	---Purpose: draws an arrow at a given location, with respect
+	--          to a given direction. 
+	 
+	imported NListOfSequenceOfPnt; 
+	imported NListIteratorListOfSequenceOfPnt;
+	
+        MatchSegment(X,Y,Z: Length from Quantity;
+	             aDistance: Length from Quantity;
+		     p1,p2: Pnt from gp;
+                     dist: out Length from Quantity)
+	returns Boolean from Standard;
+end Prs3d;
+
+

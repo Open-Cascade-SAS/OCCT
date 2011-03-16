@@ -1,0 +1,1538 @@
+#include anyPixel_hxx
+#include <Image_FlipType.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+
+#ifdef TRACE
+static int Verbose = 0 ;
+#endif
+
+#define MYPIXELFIELD ((Image_PixelField *)myPixelField)
+
+Image_GImage::Image_GImage ( const Standard_Integer x,
+			     const Standard_Integer y,
+			     const Standard_Integer dx,
+			     const Standard_Integer dy,
+			     const anyPixel&        Back)
+	: Image_Image( STANDARD_TYPE(Aspect_Pixel) )
+{ 
+  myX = x ; myY = y ;
+
+  myBackgroundPixel = Back ;
+
+  myPixelField = ( Standard_Address ) new Image_PixelField( dx, dy, Back ) ;
+
+}
+
+void Image_GImage::PixelFieldDestroy()
+
+{ if ( myPixelField ) {
+	MYPIXELFIELD->Destroy() ; 
+
+	myPixelField = NULL ;
+  }
+}
+
+void Image_GImage::Destroy() 
+{ 
+#ifdef TRACE
+	cout << "Image_GImage::Destroy()\n" ;
+#endif
+	Image_Image::Destroy() ;
+	PixelFieldDestroy() ;
+}
+
+Standard_Boolean Image_GImage::isSamePixel( 
+	const Standard_Integer X,
+	const Standard_Integer Y,
+	const Handle(Image_Image)& anotherImage,
+	const Standard_Integer anotherX,
+	const Standard_Integer anotherY ) const
+{ Handle(Image_GImage) aImage = 
+		Handle(Image_GImage)::DownCast( anotherImage ) ;
+
+  return ( Pixel( X,Y ) == aImage->Pixel( anotherX,anotherY ) ) ;
+}
+
+const Image_PixelField& Image_GImage::PixelField() const
+
+{
+  return ( *((Image_PixelField *)myPixelField) ) ;
+}
+
+Standard_Integer Image_GImage::Height() const {
+
+  return ( MYPIXELFIELD->Height() ) ;
+
+}
+
+Standard_Integer Image_GImage::Width() const {
+
+  return ( MYPIXELFIELD->Width() ) ;
+
+}
+
+Standard_Integer Image_GImage::LowerX() const {
+
+  return ( myX ) ;
+
+}
+
+Standard_Integer Image_GImage::LowerY() const {
+
+  return ( myY ) ;
+
+}
+
+Standard_Integer Image_GImage::UpperX() const {
+
+  return ( myX+Width()-1 ) ;
+
+}
+
+Standard_Integer Image_GImage::UpperY() const {
+
+  return ( myY+Height()-1 ) ;
+
+}
+
+void Image_GImage::Clear () {
+  Standard_Integer x,y ;
+  Standard_Integer UpX = UpperX() ;
+  Standard_Integer UpY = UpperY() ;
+
+  for ( y = LowerY() ; y <= UpY ; y++ ) {
+    for ( x = LowerX() ; x <= UpX ; x++ ) {
+	 SetPixel( x, y , myBackgroundPixel ) ;
+    }
+  }
+
+}
+
+void Image_GImage::SetOrigin (const Standard_Integer X,
+			      const Standard_Integer Y ) {
+  myX = X ; myY = Y ;
+}
+
+void Image_GImage::Row(	const Standard_Integer X,
+			const Standard_Integer Y,
+			      Image_PixelRow&  PR) const {
+
+  Standard_Integer TheLength = Min (PR.Length(), UpperX()-X+1);
+  Standard_Integer L         = PR.Lower() ;
+
+  for (Standard_Integer i=0; i< TheLength; i++) {
+    PR(L+i) = Pixel(X+i,Y);
+  }
+
+}
+
+void Image_GImage::SetRow( const Standard_Integer X,
+			   const Standard_Integer Y,
+			   const Image_PixelRow&  PR) {
+
+  Standard_Integer TheLength = Min (PR.Length(), UpperX()-X+1);
+  Standard_Integer L         = PR.Lower() ;
+
+  for (Standard_Integer i=0; i< TheLength; i++) {
+    MutPixel(X+i,Y) = PR(L+i) ;
+  }
+
+}
+
+void Image_GImage::Dump() const
+
+{ Standard_Integer x, y ;
+  Standard_Integer UpX = UpperX() ;
+  Standard_Integer UpY = UpperY() ;
+
+
+  cout << "Image Origin :" << myX << "," << myY << endl ;
+  cout << "Back Pixel   :" << myBackgroundPixel << endl ;
+  cout << "Pixel Field  :" << endl ;
+
+  for ( y = LowerY() ; y <= UpY ; y++ ) {
+    for ( x = LowerX() ; x <= UpX ; x++ ) {
+	cout << Pixel(x,y) << " " ;
+    }
+    cout << "\n" << flush ;
+  }
+}
+
+void Image_GImage::SwapRow (const Standard_Integer I,
+			    const Standard_Integer J)
+
+{ anyPixel P ;
+  Standard_Integer Up = UpperX() ;
+
+  for (Standard_Integer i = LowerX(); i <= Up; i++) {
+    P             = Pixel(i,I);
+    MutPixel(i,I) = Pixel(i,J);
+    MutPixel(i,J) = P;
+  }
+}
+
+void Image_GImage::SwapCol (const Standard_Integer I,
+			    const Standard_Integer J)
+
+{ anyPixel P ;
+  Standard_Integer Up = UpperY() ;
+
+  for (Standard_Integer i = LowerY(); i <= Up; i ++) {
+    P	          = Pixel(I,i);
+    MutPixel(I,i) = Pixel(J,i);
+    MutPixel(J,i) = P;
+  }
+}
+
+
+void Image_GImage::Rotate90()
+
+{ Standard_Integer x,y ;
+  Standard_Integer UpY     = MYPIXELFIELD->UpperY() ;
+  Standard_Integer UpX     = MYPIXELFIELD->UpperX() ;
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField(   MYPIXELFIELD->Height(),
+				 	MYPIXELFIELD->Width(),
+					myBackgroundPixel ) ;
+
+ for ( y = 0 ; y <= UpY ; y++ )
+    for ( x = 0 ; x <= UpX ; x++ )
+	NewPixelField->SetValue( UpY-y , x ,MYPIXELFIELD->Value( x , y ) );
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+}
+
+void Image_GImage::FlipMainDiagonal()
+
+{ Standard_Integer x,y ;
+  Standard_Integer UpY     = MYPIXELFIELD->UpperY() ;
+  Standard_Integer UpX     = MYPIXELFIELD->UpperX() ;
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField(   MYPIXELFIELD->Height(),
+				 	MYPIXELFIELD->Width(),
+					myBackgroundPixel ) ;
+
+  for ( y = 0 ; y <= UpY ; y++ )
+    for ( x = 0 ; x <= UpX ; x++ )
+	NewPixelField->SetValue( y , x , MYPIXELFIELD->Value( x , y ) );
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+}
+
+void Image_GImage::Rotate270()
+
+{ Standard_Integer x,y ;
+  Standard_Integer UpY     = MYPIXELFIELD->UpperY() ;
+  Standard_Integer UpX     = MYPIXELFIELD->UpperX() ;
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField(   MYPIXELFIELD->Height(),
+				 	MYPIXELFIELD->Width(),
+					myBackgroundPixel ) ;
+
+  for ( y = 0 ; y <= UpY ; y++ )
+    for ( x = 0 ; x <= UpX ; x++ )
+	NewPixelField->SetValue( y , UpX-x ,MYPIXELFIELD->Value( x,y ));
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+}
+
+void Image_GImage::FlipAntiDiagonal()
+
+{ Standard_Integer x,y ;
+  Standard_Integer Height   = MYPIXELFIELD->Height() ;
+  Standard_Integer Width    = MYPIXELFIELD->Width() ;
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField(   MYPIXELFIELD->Height(),
+				 	MYPIXELFIELD->Width(),
+					myBackgroundPixel ) ;
+
+  Standard_Integer NewUpY  = NewPixelField->UpperY() ;
+  Standard_Integer NewUpX  = NewPixelField->UpperX() ;
+
+  for ( y = 0 ; y < Height ; y++ )
+    for ( x = 0 ; x < Width ; x++ )
+	NewPixelField->SetValue( NewUpX-y, NewUpY-x,
+				 MYPIXELFIELD->Value( x,y ) ) ;
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+}
+
+void Image_GImage::Rotate180()
+
+{ anyPixel P ;
+  Standard_Integer x, y, HalfX, HalfY, W ;
+
+  HalfX = Width()  / 2 ;
+  HalfY = Height() / 2 ;
+  W     = Width() ;
+
+	for ( y = 0 ; y < HalfY ; y++ ){
+          for ( x = 0 ; x < W ; x++ ) {
+	    P                                  =Pixel( LowerX()+x , LowerY()+y);
+	    MutPixel( LowerX()+x , LowerY()+y )=Pixel( UpperX()-x , UpperY()-y);
+	    MutPixel( UpperX()-x , UpperY()-y )=P ;
+	  }
+    	}
+
+	if ( Height() % 2 ) {
+	  // Swap Half of the center ROW
+	  for ( x = 0 , y = HalfY ; x <= HalfX ; x++ ) {
+	    P                                  =Pixel( LowerX()+x , LowerY()+y);
+	    MutPixel( LowerX()+x , LowerY()+y )=Pixel( UpperX()-x , LowerY()+y);
+	    MutPixel( UpperX()-x , LowerY()+y )= P ;
+	  }
+	}
+}
+
+void Image_GImage::FlipHorizontal()
+
+{ anyPixel P ;
+  Standard_Integer x, y, HalfX, HalfY ;
+  Standard_Integer UpX = UpperX() ;
+
+  HalfX = Width()  / 2 ;
+  HalfY = Height() / 2 ;
+
+	for ( x = LowerX() ; x <= UpX ; x++ ){
+          for ( y = 0 ; y < HalfY ; y++ ) {
+		P                          = Pixel( x , LowerY()+y ) ;
+		MutPixel( x , LowerY()+y ) = Pixel( x , UpperY()-y ) ;
+		MutPixel( x , UpperY()-y ) = P ;
+	  }
+    	}
+}
+
+void Image_GImage::FlipVertical()
+
+{ anyPixel P ;
+  Standard_Integer x, y, HalfX, HalfY ;
+  Standard_Integer UpY = UpperY() ;
+
+  HalfX = Width()  / 2 ;
+  HalfY = Height() / 2 ;
+
+	for ( y = LowerY() ; y <= UpY ; y++ ){
+          for ( x = 0 ; x < HalfX ; x++ ) {
+		P                          = Pixel( LowerX()+x , y ) ;
+		MutPixel( LowerX()+x , y ) = Pixel( UpperX()-x , y ) ;
+		MutPixel( UpperX()-x , y ) = P ;
+	  }
+    	}
+}
+
+void Image_GImage::Transpose(const Image_FlipType aType) 
+
+{ switch (aType) {
+    case Image_FT_VERTICAL:
+		FlipVertical() ;
+    	break;
+    case Image_FT_HORIZONTAL:
+		FlipHorizontal() ;
+	break;
+    case Image_FT_MAINDIAGONAL:
+		FlipMainDiagonal() ;
+   	break;
+    case Image_FT_ANTIDIAGONAL:
+		FlipAntiDiagonal() ;
+    	break;
+    case Image_FT_CENTER:
+    case Image_FT_180:
+		Rotate180() ;
+    	break;
+    case Image_FT_90:
+		Rotate90() ;
+     	break;
+    case Image_FT_270:
+		Rotate270() ;
+    	break;
+    default :
+	cout << "Unknown ImageFlipType\n" ;
+  }
+}
+
+void Image_GImage::PixelFieldCopyTo(  Image_PixelField& Dst,
+				      const Standard_Integer Lowx ,
+				      const Standard_Integer Lowy ,
+				      const Standard_Integer Upx ,
+				      const Standard_Integer Upy ,
+				      const Standard_Integer DstLowx ,
+				      const Standard_Integer DstLowy ) const
+
+{ Standard_Integer x,y,nx,ny ;
+
+  if ( Lowy < DstLowy ) {
+	if ( Lowx < DstLowx ) {
+		y = Lowy ; ny = DstLowy ;
+
+		while( y <= Upy ) {
+		  x = Lowx ; nx = DstLowx ;
+		  while( x <= Upx ) {
+#ifdef TRACE
+  if ( Verbose ) {
+	cout << "PixelFieldCopy( (" << x << "," << y << "," << 
+						MYPIXELFIELD->Value( x , y ) << 
+		") to (" << nx << "," << ny << ")" << endl << flush ;
+  }				 
+#endif
+			Dst.SetValue( nx, ny ,MYPIXELFIELD->Value( x , y ) );
+			x++ ; nx++ ;
+    		  }
+    		  y++ ; ny++ ;
+  		}
+	}
+	else {
+		y = Lowy ; ny = DstLowy ;
+
+		while( y <= Upy ) {
+		  x = Upx  ; nx = DstLowx + ( Upx - Lowx ) ;
+		  while( x >= Lowx ) {
+#ifdef TRACE
+  if ( Verbose ) {
+	cout << "PixelFieldCopy( (" << x << "," << y << "," << 
+						MYPIXELFIELD->Value( x , y ) << 
+		") to (" << nx << "," << ny << ")" << endl << flush ;
+  }				 
+#endif
+			Dst.SetValue( nx, ny ,MYPIXELFIELD->Value( x , y ) );
+			x-- ; nx-- ;
+    		  }
+    		  y++ ; ny++ ;
+  		}
+	}
+  }
+  else {
+	if ( Lowx < DstLowx ) {
+		y = Upy  ; ny = DstLowy + ( Upy - Lowy ) ;
+
+		while( y >= Lowy ) {
+  		  x = Lowx ; nx = DstLowx ;
+		  while( x <= Upx ) {
+#ifdef TRACE
+  if ( Verbose ) {
+	cout << "PixelFieldCopy( (" << x << "," << y << "," << 
+						MYPIXELFIELD->Value( x , y ) << 
+		") to (" << nx << "," << ny << ")" << endl << flush ;
+  }				 
+#endif
+			Dst.SetValue( nx, ny ,MYPIXELFIELD->Value( x , y ) );
+			x++ ; nx++ ;
+    		  }
+    		  y-- ; ny-- ;
+  		}
+	}
+	else {
+		y = Upy ; ny = DstLowy + ( Upy - Lowy ) ;
+
+		while( y >= Lowy ) {
+		  x = Upx ; nx = DstLowx + ( Upx - Lowx ) ;
+		  while( x >= Lowx ) {
+#ifdef TRACE
+  if ( Verbose ) {
+	cout << "PixelFieldCopy( (" << x << "," << y << "," << 
+						MYPIXELFIELD->Value( x , y ) << 
+		") to (" << nx << "," << ny << ")" << endl << flush ;
+  }				 
+#endif
+			Dst.SetValue( nx, ny ,MYPIXELFIELD->Value( x , y ) );
+			x-- ; nx-- ;
+    		  }
+    		  y-- ; ny-- ;
+  		}
+	}
+  }
+}
+
+void Image_GImage::PixelFieldCopyFrom(const Image_PixelField& Src,
+				      const Standard_Integer Lowx ,
+				      const Standard_Integer Lowy ,
+				      const Standard_Integer Upx ,
+				      const Standard_Integer Upy ,
+				      const Standard_Integer DstLowx ,
+				      const Standard_Integer DstLowy )
+
+{ Standard_Integer x,y,nx,ny ;
+
+  if ( Lowy < DstLowy ) {
+	if ( Lowx < DstLowx ) {
+		y = Lowy ; ny = DstLowy ;
+
+		while( y <= Upy ) {
+		  x = Lowx ; nx = DstLowx ;
+		  while( x <= Upx ) {
+			MYPIXELFIELD->SetValue( nx, ny ,Src.Value( x , y ) );
+			x++ ; nx++ ;
+    		  }
+    		  y++ ; ny++ ;
+  		}
+	}
+	else {
+		y = Lowy ; ny = DstLowy ;
+
+		while( y <= Upy ) {
+		  x = Upx  ; nx = DstLowx + ( Upx - Lowx ) ;
+		  while( x >= Lowx ) {
+			MYPIXELFIELD->SetValue( nx, ny ,Src.Value( x , y ) );
+			x-- ; nx-- ;
+    		  }
+    		  y++ ; ny++ ;
+  		}
+	}
+  }
+  else {
+	if ( Lowx < DstLowx ) {
+		y = Upy  ; ny = DstLowy + ( Upy - Lowy ) ;
+
+		while( y >= Lowy ) {
+  		  x = Lowx ; nx = DstLowx ;
+		  while( x <= Upx ) {
+			MYPIXELFIELD->SetValue( nx, ny ,Src.Value( x , y ) );
+			x++ ; nx++ ;
+    		  }
+    		  y-- ; ny-- ;
+  		}
+	}
+	else {
+		y = Upy ; ny = DstLowy + ( Upy - Lowy ) ;
+
+		while( y >= Lowy ) {
+		  x = Upx ; nx = DstLowx + ( Upx - Lowx ) ;
+		  while( x >= Lowx ) {
+			MYPIXELFIELD->SetValue( nx, ny ,Src.Value( x , y ) );
+			x-- ; nx-- ;
+    		  }
+    		  y-- ; ny-- ;
+  		}
+	}
+  }
+}
+
+
+void Image_GImage::Shift(const Standard_Integer XShift,
+			 const Standard_Integer YShift )
+{ Standard_Integer x, y, nx, ny, Upy, Upx ;
+  Standard_Integer LowX, LowY, UpX, UpY ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	MYPIXELFIELD->Width(), 
+					MYPIXELFIELD->Height(),
+					myBackgroundPixel) ;
+
+  LowX = Max( LowerX(), LowerX()-XShift ) ;
+  UpX  = Min( UpperX(), LowX+Width()-Abs(XShift)-1 ) ;
+
+  LowY = Max( LowerY(), LowerY()-YShift ) ;
+  UpY  = Min( UpperY(), LowY+Height()-Abs(YShift)-1 ) ;
+
+  y     = ( LowY - myY ) ; 
+  Upy   = ( UpY  - myY ) ;
+  ny    = y + YShift ;
+
+  x     = ( LowX - myX ) ; 
+  Upx   = ( UpX  - myX ) ; 
+  nx    = x + XShift ;
+
+  if ( LowX <= UpX && LowY <= UpY ) {
+    PixelFieldCopyTo( *NewPixelField, x,y ,Upx,Upy, nx,ny ) ; 
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+}
+
+void Image_GImage::Fill(const Handle(Image_Image)& aImage )
+
+{ Standard_Integer x, y, nx, ny,  Upx, Upy ;
+  Standard_Integer LowX, LowY, UpX, UpY ;
+  Handle(Image_GImage) SrcImage = Handle(Image_GImage)::DownCast( aImage ) ;
+
+  LowX = Max( LowerX(), SrcImage->LowerX() ) ;
+  UpX  = Min( UpperX(), SrcImage->UpperX() ) ;
+
+  LowY = Max( LowerY(), SrcImage->LowerY() ) ;
+  UpY  = Min( UpperY(), SrcImage->UpperY() ) ;
+
+  y     = ( LowY - SrcImage->LowerY() ) ; 
+  Upy   = ( UpY  - SrcImage->LowerY() ) ; 
+  ny    = ( LowY - LowerY() ) ;
+
+  x     = ( LowX - SrcImage->LowerX() ) ; 
+  Upx   = ( UpX  - SrcImage->LowerX() ) ; 
+  nx    = ( LowX - LowerX() ) ;
+
+  if ( LowX <= UpX && LowY <= UpY ) {
+    PixelFieldCopyFrom( SrcImage->PixelField(), x,y, Upx,Upy, nx,ny ) ; 
+  }
+}
+
+void Image_GImage::Fill(const Handle(Image_Image)& aImage ,
+			const Standard_Integer SrcX ,
+			const Standard_Integer SrcY,
+			const Standard_Integer SrcWidth,
+			const Standard_Integer SrcHeight,
+			const Standard_Integer DstX,
+			const Standard_Integer DstY )
+{ Standard_Integer x, y, nx, ny, Upx, Upy ;
+  Standard_Integer LowX, LowY, UpX, UpY ;
+  Standard_Integer nLowX, nLowY, nUpX, nUpY ;
+  Handle(Image_GImage) SrcImage = Handle(Image_GImage)::DownCast( aImage ) ;
+
+  // Clipped PixelField in SrcImage
+  LowX = Max( SrcX, SrcImage->LowerX() ) ;
+  UpX  = Min( SrcImage->UpperX(), SrcX+SrcWidth-1 ) ;
+
+  LowY = Max( SrcY, SrcImage->LowerY() ) ;
+  UpY  = Min( SrcImage->UpperY(), SrcY+SrcHeight-1 ) ;
+
+  // UnClipped PixelField in DstImage from Clipped PixelField of SrcImage
+  nLowX = DstX ;
+  nUpX  = DstX+(UpX-LowX)+1 ;
+
+  nLowY = DstY ;
+  nUpY  = DstY+(UpY-LowY)+1 ;
+
+  // Clipped PixelField in DstImage and recompute Clipped PixelField in SrcImage
+  if ( nLowX > UpperX() ) {
+	return ;
+  }
+  else if ( nLowX < LowerX() ) {
+	LowX += ( LowerX()-nLowX ) ;
+	nLowX = LowerX() ;
+  }
+
+  if ( nLowY > UpperY() ) {
+	return ;
+  }
+  else if ( nLowY < LowerY() ) {
+	LowY += ( LowerY()-nLowY ) ;
+	nLowY = LowerY() ;
+  }
+
+  if ( nUpX < LowerX() ) {
+	return ;
+  }
+  else if ( nUpX > UpperX() ) {
+	UpX -= ( nUpX - UpperX() ) ;
+	nUpX = UpperX() ;
+  }
+
+  if ( nUpY < LowerY() ) {
+	return ;
+  }
+  else if ( nUpY > UpperY() ) {
+	UpY -= ( nUpY - UpperY() ) ;
+	nUpY = UpperY() ;
+  }
+
+  // Translate to PixelField Coordinate
+
+  y     = ( LowY - SrcImage->LowerY() ) ; 
+  Upy   = ( UpY  - SrcImage->LowerY() ) ; 
+
+  x     = ( LowX - SrcImage->LowerX() ) ; 
+  Upx   = ( UpX  - SrcImage->LowerX() ) ; 
+
+  ny    = ( nLowY - LowerY() ) ;
+  nx    = ( nLowX - LowerX() ) ;
+
+  if ( LowX <= UpX && LowY <= UpY ) {
+    PixelFieldCopyFrom( SrcImage->PixelField(), x,y, Upx,Upy, nx,ny ) ; 
+  }
+}
+
+void Image_GImage::FillRect(const anyPixel& aPixel ,
+			    const Standard_Integer SrcX ,
+			    const Standard_Integer SrcY,
+			    const Standard_Integer SrcWidth,
+			    const Standard_Integer SrcHeight )
+{ Standard_Integer ux, lx, uy, ly, x, y ;
+  Standard_Integer LowX, LowY, UpX, UpY ;
+
+  LowX = Max( SrcX, LowerX() ) ;
+  UpX  = Min( UpperX(), SrcX+SrcWidth-1 ) ;
+
+  LowY = Max( SrcY, LowerY() ) ;
+  UpY  = Min( UpperY(), SrcY+SrcHeight-1 ) ;
+
+  ly = ( LowY - myY ) ; 
+  uy = ( UpY  - myY ) ; 
+
+  lx = ( LowX - myX ) ; 
+  ux = ( UpX  - myX ) ; 
+
+  if ( LowX <= UpX && LowY <= UpY ) {
+
+	for ( y = ly ; y <= uy ; y++ ) {
+		for ( x = lx ; x <= ux ; x++ ) {
+			MYPIXELFIELD->SetValue( x, y, aPixel ) ;
+		}
+	}
+  }
+}
+
+static int w_compute_clip(
+	Standard_Integer LowX, 
+	Standard_Integer LowY, 
+	Standard_Integer UpX, 
+	Standard_Integer UpY ,
+	Standard_Integer *x1,
+	Standard_Integer *y1,
+	Standard_Integer *x2,
+	Standard_Integer *y2)
+
+{ Standard_Integer *c,c1,c2 ; 
+  Standard_Integer *x,*y;
+  register Standard_Integer flag  = 0 ;
+#ifdef TRACE
+Standard_Integer Tclip = 0 ;
+#endif
+
+  if ( *x1 < LowX )    c1 = 1 ;
+  else if( *x1 > UpX ) c1 = 2 ;
+  else                 c1 = 0;
+
+  if ( *y1 < LowY )    c1 = c1 | 4 ;
+  else if( *y1 > UpY ) c1 = c1 | 8 ;
+
+  if ( *x2 < LowX )    c2 = 1 ;
+  else if( *x2 > UpX ) c2 = 2 ;
+  else                 c2 = 0;
+
+  if ( *y2 < LowY )    c2 = c2 | 4 ;
+  else if( *y2 > UpY ) c2 = c2 | 8 ;
+
+  flag = 0;             
+  if ( c1 ) flag = 1 ;
+  if ( c2 ) flag = flag | 2;
+
+#ifdef TRACE
+  if ( Tclip ) 
+    printf("w_clip( %d,%d %d,%d 0x%2x,0x%2x)\n", *x1,*y1,*x2,*y2,c1,c2);
+#endif
+
+  while ( c1 || c2 ) {
+	flag ++ ;
+  	if ( c1 & c2 ) return (-1); /* Les 2 points sont du meme cote */
+
+  	if ( c1 ) {
+     		c = &c1 ;
+     		x = x1 ;
+     		y = y1 ;
+  	}
+  	else {
+     		c = &c2 ;
+     		x = x2 ;
+     		y = y2 ;
+  	}
+
+  	if ( *c & 1 ){
+     		*y = *y1 + Standard_Integer(
+				(float)(*y2)*(0-*x1)/(float)(*x2-*x1) -
+			 	(float)(*y1)*(0-*x1)/(float)(*x2-*x1) ) ;
+     		*x = 0 ;
+#ifdef TRACE
+  if ( Tclip ) 
+  	printf("clip left x,y,c %d %d %x\n",*x,*y,*c);
+#endif
+  	}
+  	else if ( *c & 2 ){ 
+     		*y = *y1 + Standard_Integer(
+				(float)(*y2)*(UpX-*x1)/(float)(*x2-*x1) -
+				(float)(*y1)*(UpX-*x1)/(float)(*x2-*x1) ) ;
+     		*x = UpX ;
+#ifdef TRACE
+  if ( Tclip ) 
+        printf("clip right x,y,c %d %d %x\n",*x,*y,*c);
+#endif
+  	}
+  	else if ( *c & 4 ) {
+     		*x = *x1 + Standard_Integer(
+				(float)(*x2)*(0-*y1)/(float)(*y2-*y1) -
+				(float)(*x1)*(0-*y1)/(float)(*y2-*y1) ) ;
+     		*y = 0 ;
+#ifdef TRACE
+  if ( Tclip ) 
+        printf("clip bottom x,y,c %d %d %x\n",*x,*y,*c);
+#endif
+  	}
+  	else if ( *c & 8 )  {
+     		*x = *x1 + Standard_Integer(
+				(float)(*x2)*(UpY-*y1)/(float)(*y2-*y1) -
+				(float)(*x1)*(UpY-*y1)/(float)(*y2-*y1) ) ;
+     		*y = UpY ;
+#ifdef TRACE
+  if ( Tclip ) 
+        printf("clip top x,y,c %d %d %x\n",*x,*y,*c);
+#endif
+  	}
+
+  	if ( *x < 0 )          *c = 1 ;
+  	else if( *x > UpX )    *c = 2 ;
+  	else                   *c = 0 ;
+
+  	if ( *y < 0 )          *c = *c | 4 ;
+  	else if( *y > UpY )    *c = *c | 8 ;
+
+#ifdef TRACE
+  if ( Tclip ) {
+    printf("recomputed code,c1,c2 %x %x,%x\n ",*c,c1,c2);
+  }
+#endif
+             
+  }
+
+  return (flag);
+}
+
+void Image_GImage::DrawLine(const anyPixel& aPixel ,
+			    const Standard_Integer X1 ,
+			    const Standard_Integer Y1,
+			    const Standard_Integer X2,
+			    const Standard_Integer Y2 )
+{ Standard_Integer x0,y0,x1,y1,x,y,dx,dy,d, incrE, incrNE ;
+  Standard_Integer i, tmp ;
+  Standard_Real m ;
+  Standard_Boolean SwapXY 	= 0 ;
+  Standard_Boolean XAxisMirror 	= 0 ;
+  Standard_Boolean YAxisMirror 	= 0 ;
+  // From : "Computer Graphics , Principles and Practice, Foley & Van Dam"
+
+  //Clip
+  x0 = X1 ;
+  y0 = Y1 ;
+  x1 = X2 ;
+  y1 = Y2 ;
+
+  i = w_compute_clip( LowerX(), LowerY(), UpperX(), UpperY(), &x0,&y0,&x1,&y1 );
+
+#ifdef TRACE
+  if ( Verbose ) 
+	cout << form("DrawLine( clip : %d )\n", i ) << flush ;
+#endif
+
+  if ( i == -1 ) return ; // Clipped Line
+
+  //Draw
+  dy = y1 - y0 ;
+  dx = x1 - x0 ;
+
+  if ( dx == 0 ) {
+	// Vertical line
+	Standard_Integer inc = ( dy > 0 )? 1 : -1 ;
+
+	for ( i = y0 ; i != y1 ; i+= inc ) SetPixel( x0,i, aPixel );
+  }
+  else if ( dy == 0 ) {
+	// Horizontal line
+	Standard_Integer inc = ( dx > 0 )? 1 : -1 ;
+
+	for ( i = x0 ; i != x1 ; i+= inc ) SetPixel( i, y0, aPixel ) ;
+
+	SetPixel( x1,y1, aPixel ) ;
+  }
+  else if ( Abs(dy) == Abs(dx) ) {
+	Standard_Integer incx = ( dx > 0 )? 1 : -1 ;
+	Standard_Integer incy = ( dy > 0 )? 1 : -1 ;
+
+	for ( x=x0,y=y0 ; x != x1 ; x+=incx , y+=incy ) SetPixel(x,y,aPixel);	
+
+	SetPixel( x1,y1, aPixel ) ;
+  }
+  else {
+	dy = y1 - y0 ;
+	dx = x1 - x0 ;
+
+	m  = Standard_Real(dy) / Standard_Real(dx) ;
+
+#ifdef TRACE
+  if ( Verbose ) 
+	cout << form("DrawLine( m = %.2f )\n", m ) ;
+#endif
+	if ( m < -1. || m > 1. ) {
+
+		SwapXY = 1 ;
+
+		tmp = x0 ; x0 = y0 ; y0 = tmp ;
+		tmp = x1 ; x1 = y1 ; y1 = tmp ;
+
+		dy = y1 - y0 ;
+		dx = x1 - x0 ;
+
+		m  = Standard_Real(dy) / Standard_Real(dx) ;
+	}
+
+	if ( m >= -1.  && m <= 1. ) {
+		if ( ( m > 0. && ( dy < 0 ) ) ||
+		     ( m < 0. && ( dy > 0 ) ) ) {
+		  // Draw line from ( x0,y0 ) to ( x0-dx ,y0-dy ) and make
+		  // a Mirror on X and Y Axis
+
+#ifdef TRACE
+  if ( Verbose ) 
+		  cout << "DrawLine( X and Y Axis Symetrie )\n" << flush ;
+#endif
+
+		  YAxisMirror++ ;
+
+		  x1 = x0 - dx ;
+
+		  XAxisMirror++ ;
+
+		  y1 = y0 - dy ;
+
+		  dy = y1 - y0 ;
+	  	  dx = x1 - x0 ;
+
+		  m  = Standard_Real(dy) / Standard_Real(dx) ;
+		}
+
+		if ( m < 0. ) {
+		  // Draw line from ( x0,y0 ) to ( x1, y0-dy and make
+		  // a Mirror on X Axis
+
+#ifdef TRACE
+  if ( Verbose ) 
+		  cout << "DrawLine( X Axis Symetrie )\n" << flush ;
+#endif
+
+		  XAxisMirror++ ;
+
+		  y1 = y0 - dy ;
+
+		  dy = y1 - y0 ;
+	  	  dx = x1 - x0 ;
+
+		  m  = Standard_Real(dy) / Standard_Real(dx) ;
+		}
+
+		dy = y1 - y0 ;
+		dx = x1 - x0 ;
+		d      = 2 * dy - dx ;	// Initial value for d
+		incrE  = 2 * dy ; 	// Increment used for move to E
+		incrNE = 2 * (dy-dx) ; 	// Increment used for move to NE
+		x      = x0 ;
+		y      = y0 ;
+
+		Standard_Integer xp,yp ;
+
+		xp = x ;
+		yp = y ;
+
+		if ( SwapXY ) {
+			tmp = xp ; xp = yp ; yp = tmp ;
+		}
+
+		SetPixel( xp,yp, aPixel ) ; // Start Pixel
+
+		while ( x < x1 ) {
+			if ( d <= 0 ) {
+				d += incrE ; // Choose E
+				x += 1 ;
+			}
+			else {
+				d += incrNE ; // Choose NE
+				x += 1 ;
+				y += 1 ;
+			}
+
+			xp = (YAxisMirror==1)? (x0 - (x-x0)) : x ;
+			yp = (XAxisMirror==1)? (y0 - (y-y0)) : y ;
+
+			if ( SwapXY == 1 ) {
+				tmp = xp ; xp = yp ; yp = tmp ;
+			}
+
+			SetPixel( xp,yp, aPixel ) ; 
+		}
+	}
+  }
+}
+
+void Image_GImage::CirclePixels(	const anyPixel& aPixel ,
+			    		const Standard_Integer X ,
+			    		const Standard_Integer Y,
+					const Standard_Integer x,
+					const Standard_Integer y,
+					const Standard_Integer LowX,
+					const Standard_Integer LowY,
+					const Standard_Integer UpX,
+					const Standard_Integer UpY)
+
+{ Standard_Integer NX, NY ;
+
+  NX = X+x , NY = Y+y ; 
+  if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+	SetPixel( NX, NY,aPixel ) ;
+
+  NY = Y-y ; 
+  if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+	SetPixel( NX, NY,aPixel ) ;
+
+  NX = X-x  ;
+  if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+	SetPixel( NX, NY,aPixel ) ;
+
+  NY = Y+y ; 
+  if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+	SetPixel( NX, NY,aPixel ) ;
+
+  if ( x != y ) {
+  	NX = X+y , NY = Y+x ;
+  	if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+		SetPixel( NX, NY,aPixel ) ;
+
+  	NY = Y-x ; 
+  	if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+		SetPixel( NX, NY,aPixel ) ;
+
+  	NX = X-y  ;
+  	if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+		SetPixel( NX, NY,aPixel ) ;
+
+  	NY = Y+x ; 
+  	if ( NX >= LowX && NX <= UpX && NY >= LowY && NY <= UpY ) 
+		SetPixel( NX, NY,aPixel ) ;
+  }
+}
+
+
+#ifdef IMPLEMENTED
+void Image_GImage::DrawCircle(const anyPixel& aPixel ,
+			    const Standard_Integer X ,
+			    const Standard_Integer Y,
+			    const Standard_Integer R ) 
+{ Standard_Integer x, y, d, deltaE, deltaSE ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+  // From : "Computer Graphics , Principles and Practice, Foley & Van Dam"
+
+  x = 0 ;
+  y = R ;
+
+  d = 1 - R ;
+
+  deltaE  = 3 ;
+  deltaSE = -2 * R + 5 ;
+
+  CirclePixels ( aPixel, X, Y, x, y, LowX,LowY,UpX,UpY ) ;
+
+  while ( y > x ) {
+	if ( d < 0 ) { // Select E
+		d       += deltaE ;
+		deltaE  += 2 ;
+		deltaSE += 2 ;
+		x++ ;
+	}
+	else {
+		d += deltaSE ;
+		deltaE  += 2 ;
+		deltaSE += 4 ;
+		x++ ;
+		y-- ;
+	}
+  	CirclePixels ( aPixel, X, Y, x, y, LowX,LowY,UpX,UpY ) ;
+  }
+  
+}
+#endif
+
+
+void Image_GImage::DrawRect(const anyPixel& aPixel ,
+			    const Standard_Integer SrcX ,
+			    const Standard_Integer SrcY,
+			    const Standard_Integer SrcWidth,
+			    const Standard_Integer SrcHeight )
+{ Standard_Integer ux, lx, uy, ly, x, y ;
+  Standard_Integer LowX, LowY, UpX, UpY ;
+
+  LowX = Max( SrcX, LowerX() ) ;
+  UpX  = Min( UpperX(), SrcX+SrcWidth-1 ) ;
+
+  if ( LowX <= UpX ) {
+	lx = ( LowX - myX ) ; 
+        ux = ( UpX  - myX ) ;
+	y  = SrcY ;
+
+	if ( y >= LowerY() && y <= UpperY() ) {
+	  y -= myY ;
+	  for ( x = lx ; x <= ux ; x++ ) MYPIXELFIELD->SetValue(x,y,aPixel) ;
+	}
+
+	y  = SrcY + SrcHeight - 1;
+
+	if ( y >= LowerY() && y <= UpperY() ) {
+	  y -= myY ;
+	  for ( x = lx ; x <= ux ; x++ ) MYPIXELFIELD->SetValue(x,y,aPixel) ;
+	}
+  }
+
+  LowY = Max( SrcY, LowerY() ) ;
+  UpY  = Min( UpperY(), SrcY+SrcHeight-1 ) ;
+
+  if ( LowY <= UpY ) {
+	ly = ( LowY - myY ) ; 
+	uy = ( UpY  - myY ) ;
+
+	x = SrcX ;
+
+	if ( x >= LowerX() && x <= UpperX() ) {
+	  x -= myX ;
+	  for ( y = ly ; y <= uy ; y++ ) MYPIXELFIELD->SetValue(x,y,aPixel) ;
+	}
+
+	x  = SrcX + SrcWidth - 1;
+
+	if ( x >= LowerX() && x <= UpperX() ) {
+	  x -= myX ;
+	  for ( y = ly ; y <= uy ; y++ ) MYPIXELFIELD->SetValue(x,y,aPixel) ;
+	}
+  }
+}
+
+
+void Image_GImage::Resize(const Standard_Real XOffset,
+			  const Standard_Real aCoefX,
+			  const Standard_Real YOffset,
+			  const Standard_Real aCoefY)
+
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY ;
+  anyPixel aPixel ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+  if ( aCoefX == 0. || aCoefY == 0. ) {
+	cout << "Image_GImage::Resize() singular transformation\n" ;
+  }
+
+  nLowX = Standard_Integer( IntegerPart( LowX * aCoefX + XOffset ) ) ;
+  nLowY = Standard_Integer( IntegerPart( LowY * aCoefY + YOffset ) ) ;
+
+  nUpX = Standard_Integer( IntegerPart( UpX * aCoefX + XOffset ) ) ;
+  nUpY = Standard_Integer( IntegerPart( UpY * aCoefY + YOffset ) ) ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	nUpX-nLowX+1,
+					nUpY-nLowY+1,
+					myBackgroundPixel) ;
+
+  for( Y = LowY ; Y <= UpY ; Y++ ) {
+	for( X = LowX ; X <= UpX ; X++ ) {
+	  aPixel = Pixel( X, Y ) ;
+	  if ( X >= nLowX && X <= nUpX && Y >= nLowY && Y <= nUpY ) 
+	  	NewPixelField->SetValue(X-nLowX,Y-nLowY,aPixel);
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = nLowX ; myY = nLowY ;
+  
+}
+
+void Image_GImage::Clip(const Standard_Integer X,
+			const Standard_Integer Y,
+			const Standard_Integer Width,
+			const Standard_Integer Height )
+{ Standard_Integer nx, x, ny, y, Upx, Upy ;
+  Standard_Integer LowX, LowY, UpY, UpX ;
+  Image_PixelField* NewPixelField = 
+		new Image_PixelField( 	Width ,
+				       	Height ,
+				       	myBackgroundPixel) ;
+
+  LowX = Max( X, myX );
+  UpX  = Min( UpperX(), X+Width-1 ) ;
+
+  LowY = Max( Y, myY );
+  UpY  = Min( UpperY(), Y+Height-1 ) ;
+
+  y     = ( LowY - myY ) ; 
+  Upy   = ( UpY  - myY ) ; 
+  ny    = ( LowY - Y   ) ;
+
+  x     = ( LowX - myX ) ; 
+  Upx   = ( UpX  - myX ) ; 
+  nx    = ( LowX - X   ) ;
+
+  if ( LowX <= UpX && LowY <= UpY ) {
+    PixelFieldCopyTo( *NewPixelField, x, y, Upx, Upy, nx, ny ) ;
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = X ; myY = Y ;
+}
+
+void Image_GImage::Affine( 
+	          const Image_PixelInterpolation& aInterpolation,
+	          const gp_GTrsf2d& aTrsf )
+
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY;
+  Standard_Real    SX, SY ;
+  anyPixel         aPixel ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+
+  if ( aTrsf.Form() == gp_Identity ) return ;
+  else if ( aTrsf.Form() == gp_Translation ) {
+	Translate( aInterpolation, aTrsf.Value( 1, 3 ), aTrsf.Value( 2, 3 ) ) ;
+	return ;
+  }
+  else if ( aTrsf.Form() == gp_Rotation ) {
+  }
+  else if ( aTrsf.Form() == gp_Scale ) {
+	Zoom( aInterpolation, aTrsf.Value( 1, 1 ), aTrsf.Value( 2, 2 ) ) ;
+	return ;
+  }
+
+  if ( aTrsf.IsSingular() ) {
+	cout << "Image_GImage::Affine() singular transformation\n" ;
+  }
+
+  gp_GTrsf2d InvTrsf( aTrsf ) ; InvTrsf.Invert() ;
+
+  nLowX = myX ;
+  nLowY = myY ;
+  nUpX  = UpperX() ;
+  nUpY  = UpperY() ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	MYPIXELFIELD->Width(), 
+					MYPIXELFIELD->Height(),
+					myBackgroundPixel) ;
+
+  for( Y = nLowY ; Y <= nUpY ; Y++ ) {
+	for( X = nLowX ; X <= nUpX ; X++ ) {
+	  SX = X ; SY = Y ; 
+	  InvTrsf.Transforms( SX, SY ) ;
+	  if ( aInterpolation.Interpolate(  this, SX, SY,
+					     LowX, LowY, UpX, UpY, aPixel ) ) {
+		NewPixelField->SetValue( X-nLowX, Y-nLowY, aPixel ) ;
+	  }
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = nLowX ; myY = nLowY ;
+  
+}
+
+void Image_GImage::Affine( 
+	          const Image_PixelInterpolation& aInterpolation,
+	          const gp_Trsf& aTrsf )
+
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY;
+  Standard_Real    SX, SY, SZ ;
+  anyPixel         aPixel ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+
+  if ( aTrsf.Form() == gp_Identity ) return ;
+  else if ( aTrsf.Form() == gp_Translation ) {
+	Translate( aInterpolation, aTrsf.Value( 1, 4 ), aTrsf.Value( 2, 4 ) ) ;
+	return ;
+  }
+  else if ( aTrsf.Form() == gp_Rotation ) {
+  }
+  else if ( aTrsf.Form() == gp_Scale ) {
+	Zoom( aInterpolation, aTrsf.Value( 1, 1 ), aTrsf.Value( 2, 2 ) ) ;
+	return ;
+  }
+
+  gp_Trsf InvTrsf = aTrsf.Inverted() ;
+
+  Standard_Real RmyX = Standard_Real(myX) ;
+  Standard_Real RmyY = Standard_Real(myY) ;
+
+  gp_Pln   Pln( gp_Pnt( RmyX, RmyY, 0. ),
+		gp_Dir( 0., 0., 1. ) 
+              ) ;
+  
+  Pln.Transform( aTrsf ) ;
+
+  Standard_Real a,b,c,d ;
+
+  Pln.Coefficients( a,b,c,d ) ;
+
+  if ( c == 0. ) {
+	cout << "Image_GImage::Affine() singular transformation\n" ;
+	return ;
+  }
+
+  nLowX = myX ;
+  nLowY = myY ;
+  nUpX  = UpperX() ;
+  nUpY  = UpperY() ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	MYPIXELFIELD->Width(), 
+					MYPIXELFIELD->Height(),
+					myBackgroundPixel) ;
+
+  for( Y = nLowY ; Y <= nUpY ; Y++ ) {
+	for( X = nLowX ; X <= nUpX ; X++ ) {
+	  SX = X ; SY = Y ; SZ = - ( d + a*SX + b*SY ) / c ;
+	  InvTrsf.Transforms( SX, SY, SZ ) ;
+	  if ( aInterpolation.Interpolate(  this, SX, SY,
+					     LowX, LowY, UpX, UpY, aPixel ) ) {
+		NewPixelField->SetValue( X-nLowX, Y-nLowY, aPixel ) ;
+	  }
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = nLowX ; myY = nLowY ;
+  
+}
+
+void Image_GImage::Rotate(
+			 const Image_PixelInterpolation& aInterpolation,
+			 const Quantity_PlaneAngle aAngle )
+
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY;
+  Standard_Real    SX, SY ;
+  anyPixel         aPixel ;
+#ifdef USE_GP
+  gp_Pnt2d	   Pnt( 0, 0 ) ;
+  pg_GTrsf2d	   Trsf ;
+#endif
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+  nLowX = myX ;
+  nLowY = myY ;
+  nUpX  = UpperX() ;
+  nUpY  = UpperY() ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	MYPIXELFIELD->Width(), 
+					MYPIXELFIELD->Height(),
+					myBackgroundPixel) ;
+
+#ifdef USE_GP
+  Trsf.SetRotation( Pnt, -aAngle ) ;
+#endif
+
+  for( Y = nLowY ; Y <= nUpY ; Y++ ) {
+	for( X = nLowX ; X <= nUpX ; X++ ) {
+#ifdef USE_GP
+	  SX = X ; SY = Y ; 
+	  Trsf.Transforms( SX, SY ) ;
+#else
+	  SX = X*Cos(-aAngle)  + Y*Sin(-aAngle) ;
+	  SY = -X*Sin(-aAngle) + Y*Cos(-aAngle) ;
+#endif
+	  if ( aInterpolation.Interpolate(  this, SX, SY,
+					     LowX, LowY, UpX, UpY, aPixel ) ) {
+		NewPixelField->SetValue( X-nLowX, Y-nLowY, aPixel ) ;
+	  }
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = nLowX ; myY = nLowY ;
+  
+}
+
+void Image_GImage::Zoom(const Image_PixelInterpolation& aInterpolation,
+			const Standard_Real aCoefX,
+			const Standard_Real aCoefY )
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY ;
+  anyPixel aPixel ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+  if ( aCoefX == 0. || aCoefY == 0. ) {
+	cout << "Image_GImage::Zoom() singular transformation\n" ;
+  }
+
+  nLowX = Standard_Integer( IntegerPart( LowX * aCoefX ) ) ;
+  nLowY = Standard_Integer( IntegerPart( LowY * aCoefY ) ) ;
+
+#ifdef OLD
+  nUpX  = nLowX + ( Width()  * aCoefX + 0.5 ) - 1 ;
+  nUpY  = nLowY + ( Height() * aCoefY + 0.5 ) - 1 ;
+#else
+  nUpX = Standard_Integer( IntegerPart( UpX * aCoefX ) ) ;
+  nUpY = Standard_Integer( IntegerPart( UpY * aCoefY ) ) ;
+#endif
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	nUpX-nLowX+1,
+					nUpY-nLowY+1,
+					myBackgroundPixel) ;
+
+  for( Y = nLowY ; Y <= nUpY ; Y++ ) {
+	for( X = nLowX ; X <= nUpX ; X++ ) {
+	  if ( aInterpolation.Interpolate( this, X/aCoefX, Y/aCoefY,
+					     LowX, LowY, UpX, UpY, aPixel ) ) {
+		NewPixelField->SetValue( X-nLowX, Y-nLowY, aPixel ) ;
+	  }
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+
+  myX = nLowX ; myY = nLowY ;
+  
+}
+
+void Image_GImage::Translate(
+			const Image_PixelInterpolation& aInterpolation,
+			const Standard_Real DX,
+			const Standard_Real DY )
+{ Standard_Integer X, Y, nLowX, nLowY, nUpX, nUpY ;
+  anyPixel aPixel ;
+  Standard_Integer LowX = LowerX() ;
+  Standard_Integer LowY = LowerY() ;
+  Standard_Integer UpX  = UpperX() ;
+  Standard_Integer UpY  = UpperY() ;
+
+  Image_PixelField *NewPixelField = 
+		new Image_PixelField( 	MYPIXELFIELD->Width(), 
+					MYPIXELFIELD->Height(),
+					myBackgroundPixel) ;
+
+  nLowX = myX      ;
+  nLowY = myY      ;
+  nUpX  = UpperX() ;
+  nUpY  = UpperY() ;
+
+  for( Y = nLowY ; Y <= nUpY ; Y++ ) {
+	for( X = nLowX ; X <= nUpX ; X++ ) {
+	  if ( aInterpolation.Interpolate( this, X-DX, Y-DY,
+					     LowX, LowY, UpX, UpY, aPixel ) ) {
+		NewPixelField->SetValue( X-nLowX, Y-nLowY, aPixel ) ;
+	  }
+	}
+  }
+
+  PixelFieldDestroy() ;
+
+  myPixelField = ( Standard_Address ) NewPixelField ;
+}
+
+void Image_GImage::InternalDup( const Handle(Image_Image)& aImage ) {
+
+  Handle(Image_GImage) GImage = Handle(Image_GImage)::DownCast(aImage) ;
+
+// Image Origin is set in Image_Gimage constructor
+
+	PixelFieldCopyFrom( GImage->PixelField(), 
+					0, 0,
+					(GImage->PixelField()).UpperX(), 
+					(GImage->PixelField()).UpperY(),
+					0, 0 ) ;
+
+	Image_Image::InternalDup( aImage ) ;
+}
+
+void Image_GImage::SetBackgroundPixel ( const anyPixel& aPixel ) {
+	myBackgroundPixel = aPixel ;
+}
+
+const anyPixel&  Image_GImage::BackgroundPixel () const {
+	return myBackgroundPixel;
+}
+
+void Image_GImage::SetPixel(const Standard_Integer X,
+			    const Standard_Integer Y,
+			    const Aspect_Pixel& aPixel)  {
+	//Assume that aPixel has similar type than Pixel from Image PixelField
+
+     	MYPIXELFIELD->SetValue(X-myX,Y-myY,(( anyPixel& )aPixel)) ;
+
+}
+
+void Image_GImage::SetPixel(const Standard_Integer X,
+			    const Standard_Integer Y,
+			    const Image_PixelAddress& aPixel)  {
+	//Assume that aPixel has similar type than Pixel from Image PixelField
+
+     	MYPIXELFIELD->SetValue(X-myX,Y-myY,*(( anyPixel* )aPixel)) ;
+
+}
+
+const anyPixel& Image_GImage::Pixel(const Standard_Integer X,
+			            const Standard_Integer Y) const {
+
+     return ( MYPIXELFIELD->Value(X-myX,Y-myY) ) ;
+
+}
+
+void Image_GImage::Pixel(const Standard_Integer X,
+			 const Standard_Integer Y,
+			 Image_PixelAddress& aPixel) const {
+
+	//Assume that aPixel has similar type than Pixel from Image PixelField
+     	aPixel = ( Image_PixelAddress ) 
+		&( MYPIXELFIELD->Value(X-myX,Y-myY ) );
+
+}
+
+void Image_GImage::Pixel(const Standard_Integer X,
+			 const Standard_Integer Y,
+			 Aspect_Pixel& aPixel) const {
+
+	//Assume that aPixel has similar type than Pixel from Image PixelField
+     	( anyPixel& )aPixel = MYPIXELFIELD->Value(X-myX,Y-myY ) ;
+
+}
+
+anyPixel& Image_GImage::MutPixel(const Standard_Integer X,
+			         const Standard_Integer Y) {
+
+     return (  MYPIXELFIELD->ChangeValue(X-myX,Y-myY) ) ;
+
+}
+
+void Image_GImage::SetPixel (const Standard_Integer X,
+			     const Standard_Integer Y,
+			     const anyPixel &        aPixel) {
+  MYPIXELFIELD->SetValue(X-myX,Y-myY,aPixel);
+
+}
+

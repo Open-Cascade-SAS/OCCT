@@ -1,0 +1,23 @@
+-- File:        IntersectionCurve.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class IntersectionCurve from StepGeom 
+
+inherits SurfaceCurve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Curve from StepGeom, 
+	HArray1OfPcurveOrSurface from StepGeom, 
+	PreferredSurfaceCurveRepresentation from StepGeom
+is
+
+	Create returns mutable IntersectionCurve;
+	---Purpose: Returns a IntersectionCurve
+
+
+end IntersectionCurve;

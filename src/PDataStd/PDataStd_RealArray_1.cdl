@@ -1,0 +1,36 @@
+-- File:	PDataStd_RealArray_1.cdl
+-- Created:	Wed Mar 26 18:28:54 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+class RealArray_1 from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistence
+
+uses HArray1OfReal from PColStd
+     
+     
+is
+
+    Create returns mutable RealArray_1 from PDataStd;
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+
+    SetValue(me: mutable; Index : Integer from Standard; Value : Real from Standard);
+    
+    Value(me;  Index : Integer from Standard) returns Real  from Standard;
+   
+    Lower (me) returns Integer from Standard;      
+
+    Upper (me) returns Integer from Standard; 
+     
+    SetDelta(me : mutable; delta : Boolean from Standard); 
+     
+    GetDelta(me) returns Boolean from Standard;      
+    
+fields
+    myValue  :  HArray1OfReal from PColStd;
+    myDelta  : Boolean from Standard;
+end RealArray_1;

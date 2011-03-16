@@ -1,0 +1,83 @@
+-- File:	Standard_ErrorHandler.cdl
+-- Created:	Mon Sep 28 13:41:03 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+class ErrorHandler from Standard
+
+uses 
+    Failure from Standard,
+    Boolean from Standard,
+    Address from Standard,
+    PErrorHandler from Standard,
+    Type from Standard
+is
+    Create returns ErrorHandler;
+    	--- Purpose: Create a ErrorHandler (to be used with try{}catch(){}).
+    	--           It uses the "setjmp" and "longjmp" routines. 
+    	---Level: Advanced
+    
+    Destroy(me: in out);
+    	---Purpose: Unlinks and checks if there is a raised exception.
+    	---C++: alias ~
+    	---Level: Advanced
+        
+    Unlink(me: in out);
+    	---Purpose: Removes handler from the handlers list
+	---Level: Advanced
+    
+    Catches(me: in out; aType: Type) returns Boolean;
+    	---Purpose: Returns "True" if the caught exception has the same type 
+    	--          or inherits from "aType"
+    	---Level: Advanced
+    
+    Label(me: in out) returns JmpBuf from Standard;
+    	---Purpose: Returns label for jump
+    	---C++: inline
+    	---C++: return &
+    	---Level: Advanced
+    
+    Abort(myclass) is private;
+    	---Purpose: A exception is raised but it is not yet caught. 
+    	--          So Abort the current function and transmit the exception 
+        --          to "calling routines".
+	-- Warning: If no catch is prepared for this exception, it displays the
+    	--          exception name and calls "exit(1)".
+    	---Level: Internal
+       
+    Error(me) returns Failure;
+    	---Purpose: Returns the current Error.
+
+    LastCaughtError(myclass) returns Failure;
+    	---Purpose: Returns the caught exception.
+    	--    
+    	---Level: Advanced
+    
+    Error(myclass; aError: Failure) is private;
+    	---Purpose: Set the Error which will be transmitted to "calling routines".
+    	---Level: Advanced
+    
+    IsInTryBlock(myclass) returns Boolean from  Standard;
+    	---Purpose: Test if the code is currently running in a try block
+    	---Level: Internal
+	
+    FindHandler(myclass; theStatus: HandlerStatus from Standard;
+    	    	    	 theUnlink: Boolean       from Standard) 
+    returns PErrorHandler from Standard is private;
+    	---Purpose: Returns the current handler (Top in former implemntations)
+    
+fields
+
+    myPrevious    : PErrorHandler from Standard;
+    myCaughtError : Failure from Standard;
+    myLabel       : JmpBuf from Standard;
+    myStatus      : HandlerStatus from Standard;
+    myThread      : ThreadId from Standard; 
+    myCallbackPtr : Address from Standard;
+
+friends
+    class Failure,
+    class ErrorHandlerCallback
+    
+end ErrorHandler from Standard;

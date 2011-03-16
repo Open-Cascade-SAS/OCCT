@@ -1,0 +1,87 @@
+-- File:	GeomFill_Boundary.cdl
+-- Created:	Tue Oct 17 14:45:36 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class Boundary from GeomFill inherits TShared from MMgt
+
+	---Purpose: Root class to define a boundary  which will form part of a
+    	-- contour around a gap requiring filling.
+    	-- The GeomFill package provides two classes to define constrained boundaries:
+    	-- -   GeomFill_SimpleBound to define an unattached boundary
+    	-- -   GeomFill_BoundWithSurf to define a boundary attached to a surface.
+    	--   These objects are used to define the boundaries for a
+    	-- GeomFill_ConstrainedFilling framework.
+    	    	    
+uses
+    Pnt from gp,
+    Vec from gp
+    
+is
+
+    Initialize(Tol3d  : Real from Standard;
+    	       Tolang : Real from Standard);
+    
+    Value(me; 
+          U : Real from Standard) 
+    returns Pnt from gp
+    is deferred;
+
+    D1(me; 
+       U : Real from Standard; 
+       P : out Pnt from gp; 
+       V : out Vec from gp) 
+    is deferred;
+
+    HasNormals(me)
+    returns Boolean from Standard
+    is virtual;
+
+    -- the methods giving informations  about normals  are implemented
+    -- with a raise.
+    -- use a call to HasNormals before calling Norm or D1Norm.
+    Norm(me; 
+         U : Real from Standard)
+    returns Vec from gp
+    is virtual;
+    
+    D1Norm(me; 
+           U  : Real from Standard;
+	   N  : out Vec from gp;
+	   DN : out Vec from gp)
+    is virtual;
+    
+    Reparametrize(me           : mutable;
+    	    	  First, Last  : Real from Standard;
+                  HasDF, HasDL : Boolean from Standard;
+                  DF, DL       : Real from Standard;
+    	          Rev          : Boolean from Standard)
+    is deferred;
+		  
+    Points(me; PFirst, PLast : out Pnt from gp);
+
+    Bounds(me; First, Last : out Real from Standard)
+    is deferred;
+
+    IsDegenerated(me) 
+    returns Boolean from Standard
+    is deferred;
+
+    Tol3d(me) returns Real from Standard;
+
+    Tol3d(me  : mutable; 
+    	  Tol : Real from Standard);
+
+    Tolang(me) returns Real from Standard;
+
+    Tolang(me  : mutable; 
+    	   Tol : Real from Standard);
+
+fields
+
+    myT3d  : Real from Standard;
+    myTang : Real from Standard;
+
+end Boundary;

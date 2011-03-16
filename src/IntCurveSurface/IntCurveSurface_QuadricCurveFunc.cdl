@@ -1,0 +1,75 @@
+-- File:	IntCurveSurface_QuadricCurveFunc.cdl
+-- Created:	Thu Aug 19 10:55:26 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class QuadricCurveFunc from IntCurveSurface ( 
+    	TheQuadric       as any;    -- as Quadric   from IntCurveSurface
+	TheCurve         as any;    
+        TheCurveTool     as any)    -- as CurveTool from Adaptor3d
+ 
+inherits  FunctionWithDerivative   from math
+
+
+        
+        ---Purpose: Implements     the function  Q(w)   and its  first
+        --          derivative used  by FunctionAllRoots  to  find the
+        --          areas where  the distance  between the quadric and
+        --          the   parametric   curves is    less than a  given
+        --          tolerance.
+        --          
+    	--   where Q(X,Y,Z) =  0   is the  implicit expression  of   a
+    	--   quadric and (X(w),Y(w),Z(w))  the point of parameter w on
+    	--   a parametric curve.
+    	--
+
+is
+
+    Create(Q: TheQuadric; C:TheCurve)
+    
+    	---Purpose: Create the function.
+    	--          
+    	returns QuadricCurveFunc from IntCurveSurface;
+	
+	
+	
+    Value(me: in out; Param: Real from Standard; F: out Real from Standard)
+
+      	---Purpose: Computes the value of the signed  distance between
+      	--          the  implicit surface and  the point  at parameter
+      	--          Param on the parametrised curve.
+      	--          Value always returns True. 
+
+    	returns Boolean from Standard
+        is redefined static;
+	
+	
+    Derivative(me: in out; Param: Real from Standard; 
+               D: out Real from Standard)
+	       
+    	---Purpose: Computes the derivative of the previous function at
+    	--          parameter Param.
+    	--          Derivative always returns True.
+
+    	returns Boolean from Standard
+        is redefined static;
+	
+	
+    Values(me: in out; Param: Real from Standard; F,D: out Real from Standard)
+    
+    	---Purpose: Computes the value and the derivative of the function.
+    	--          returns True. 
+
+    	returns Boolean from Standard
+    	is redefined static;
+
+
+fields 
+
+    myQuadric       : TheQuadric;    
+    myCurve         : TheCurve;
+		  
+end QuadricCurveFunc;
+

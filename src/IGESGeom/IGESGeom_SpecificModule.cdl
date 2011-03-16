@@ -1,0 +1,29 @@
+-- File:	IGESGeom_SpecificModule.cdl
+-- Created:	Tue Sep  7 11:14:37 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SpecificModule  from IGESGeom  inherits  SpecificModule from IGESData
+
+    ---Purpose : Defines Services attached to IGES Entities :
+    --           Dump & OwnCorrect, for IGESGeom
+
+uses Messenger from Message, IGESEntity, IGESDumper
+
+is
+
+    Create returns mutable SpecificModule from IGESGeom;
+    ---Purpose : Creates a SpecificModule from IGESGeom & puts it into SpecificLib
+
+    OwnDump (me; CN : Integer; ent : IGESEntity;
+    	      dumper : IGESDumper;  S : Messenger from Message; own : Integer);
+    ---Purpose : Specific Dump (own parameters) for IGESGeom
+
+    OwnCorrect (me; CN : Integer; ent : mutable IGESEntity)
+    	returns Boolean  is redefined;
+    ---Purpose : Performs non-ambiguous Correction on Entities which support
+    --           them (Boundary,ConicArc,Flash,OffsetCurve,TransformationMatrix)
+
+end SpecificModule;

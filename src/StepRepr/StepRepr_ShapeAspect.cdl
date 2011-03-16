@@ -1,0 +1,45 @@
+-- File:        ShapeAspect.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ShapeAspect from StepRepr 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	ProductDefinitionShape from StepRepr, 
+	Logical from StepData
+is
+
+	Create returns mutable ShapeAspect;
+	---Purpose: Returns a ShapeAspect
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aOfShape : mutable ProductDefinitionShape from StepRepr;
+	      aProductDefinitional : Logical from StepData) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+	SetOfShape(me : mutable; aOfShape : mutable ProductDefinitionShape);
+	OfShape (me) returns mutable ProductDefinitionShape;
+	SetProductDefinitional(me : mutable; aProductDefinitional : Logical);
+	ProductDefinitional (me) returns Logical;
+
+fields
+
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	ofShape : ProductDefinitionShape from StepRepr;
+	productDefinitional : Logical from StepData;
+
+end ShapeAspect;

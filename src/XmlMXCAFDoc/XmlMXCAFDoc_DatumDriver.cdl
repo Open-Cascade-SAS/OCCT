@@ -1,0 +1,33 @@
+-- File:	XmlMXCAFDoc_DatumDriver.cdl
+-- Created:	Wed Dec 10 15:01:27 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class DatumDriver from XmlMXCAFDoc  inherits ADriver from XmlMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable DatumDriver from XmlMXCAFDoc;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+end DatumDriver;

@@ -1,0 +1,92 @@
+-- File     : MeshVS_DeformedDataSource.cdl
+-- Created  : 11 December 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class DeformedDataSource from MeshVS inherits DataSource from MeshVS
+
+	---Purpose: The class provides default class which helps to represent node displacements by deformed mesh
+        --    This class has an internal handle to canonical non-deformed mesh data source and
+        -- map of displacement vectors. The displacement can be magnified to useful size.
+        -- All methods is implemented with calling the corresponding methods of non-deformed data source.
+
+uses
+  Integer from Standard,
+  Real    from Standard,
+  Boolean from Standard,
+  Address from Standard,
+
+  Vec from gp,
+
+  Array1OfReal               from TColStd,
+  Array1OfInteger            from TColStd,
+  PackedMapOfInteger         from TColStd,
+
+  DataMapOfIntegerVector     from MeshVS,
+  EntityType                 from MeshVS,
+  HArray1OfSequenceOfInteger from MeshVS
+
+is
+
+  Create ( theNonDeformDS : DataSource from MeshVS;
+           theMagnify     : Real ) returns mutable DeformedDataSource from MeshVS;
+	---Purpose:  Constructor
+        -- theNonDeformDS is canonical non-deformed data source, by which we are able to calculate
+        --   deformed mesh geometry
+        -- theMagnify is coefficient of displacement magnify
+
+  GetGeom ( me; ID     : Integer;
+            IsElement  : Boolean;
+            Coords     : out Array1OfReal from TColStd;
+            NbNodes    : out Integer;
+            Type       : out EntityType from MeshVS ) returns Boolean is redefined;
+
+  GetGeomType ( me; ID     : Integer;
+                IsElement  : Boolean;
+                Type       : out EntityType from MeshVS ) returns Boolean is redefined;
+
+  Get3DGeom( me; ID      : Integer;
+                 NbNodes : out Integer;
+                 Data    : out HArray1OfSequenceOfInteger from MeshVS ) returns Boolean is redefined;
+
+  GetAddr ( me; ID     : Integer;
+            IsElement  : Boolean   ) returns Address is redefined;
+
+  GetNodesByElement ( me; ID  : Integer;
+		      NodeIDs : out Array1OfInteger from TColStd;
+		      NbNodes : out Integer ) returns Boolean is redefined;
+
+  GetAllNodes    ( me ) returns PackedMapOfInteger from TColStd is redefined;
+	---C++: return const &
+
+  GetAllElements ( me ) returns PackedMapOfInteger from TColStd is redefined;
+	---C++: return const &
+
+  GetVectors ( me ) returns DataMapOfIntegerVector from MeshVS;
+	---C++: return const &
+	---Purpose: This method returns map of nodal displacement vectors
+
+  SetVectors ( me: mutable; Map : DataMapOfIntegerVector from MeshVS );
+	---Purpose: This method sets map of nodal displacement vectors (Map).
+
+  GetVector  ( me;          ID  : Integer; Vect : out Vec from gp ) returns Boolean;
+	---Purpose: This method returns vector ( Vect ) assigned to node number ID.
+
+  SetVector  ( me: mutable; ID  : Integer; Vect :     Vec from gp );
+	---Purpose: This method sets vector ( Vect ) assigned to node number ID.
+
+  SetNonDeformedDataSource ( me: mutable; theDS : DataSource from MeshVS );
+  GetNonDeformedDataSource    ( me ) returns DataSource from MeshVS;
+	---Purpose: With this methods you can read and change internal canonical data source
+
+  SetMagnify ( me: mutable; theMagnify : Real );
+  GetMagnify ( me ) returns Real;
+	---Purpose: With this methods you can read and change magnify coefficient of nodal displacements
+
+fields
+  myNonDeformedDataSource : DataSource from MeshVS;
+  myEmptyMap              : PackedMapOfInteger from TColStd;
+  myVectors               : DataMapOfIntegerVector from MeshVS;
+  myMagnify               : Real;
+
+end DataSource;

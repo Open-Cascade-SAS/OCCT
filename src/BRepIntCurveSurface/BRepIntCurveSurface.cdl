@@ -1,0 +1,73 @@
+-- File:	BRepIntCurveSurface.cdl
+-- Created:	Mon Feb  7 15:24:20 1994
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+package BRepIntCurveSurface 
+
+	---Purpose: Inttantiates IntCurveSurface with Surfaces from BRep 
+	--          and Curves from Adaptor
+
+        ---Level: Public
+        --
+        -- All the methods of the classes of this package are public.
+        -- 
+
+uses  
+--modified by NIZNHY-PKV Sun Dec 15 16:54:16 2002  f
+    BRepTopAdaptor, 
+--modified by NIZNHY-PKV Sun Dec 15 16:54:28 2002  t     
+    IntCurveSurface, 
+     BRepAdaptor,
+     Geom2dInt,
+     GeomAdaptor, 
+     TopoDS,
+     BRepClass, 
+     TopAbs, 
+     TopExp,
+     StdFail,
+     gp
+
+is
+
+    --------------------------------------------------
+    -- Instantiation of IntCurveSurfaces algorithms --
+    -- The intersection is computed on the surfaces --
+    -- with their natural boundaries.               --
+    --------------------------------------------------
+
+--    class ICSSurfaceTool instantiates 
+--          SurfaceTool from IntCurveSurface(
+----	    HSurface     from BRepAdaptor) ;
+--
+----	    
+--    class ICSCurveTool instantiates 
+----    	  CurveTool from IntCurveSurface(
+--	    HCurve       from GeomAdaptor) ;
+----
+--   
+----    class ICSInter instantiates 
+--          Inter from IntCurveSurface(
+----	     HCurve           from GeomAdaptor,
+-- 	     ICSCurveTool    from BRepIntCurveSurface,
+----	     HSurface         from BRepAdaptor,
+--             ICSSurfaceTool  from BRepIntCurveSurface);
+--
+
+    ------------------------------------------------------
+    -- The Inter class provides intersection between    --
+    --  - a BRepAdaptor surface and a GeomAdaptor curve --
+    --  - a Shape               and a GeomAdaptor curve --
+    -- Only the points which are inside the surface     --
+    -- are returned.                                    --
+    ------------------------------------------------------
+
+    class Inter; 
+    
+    
+    
+    
+end BRepIntCurveSurface;

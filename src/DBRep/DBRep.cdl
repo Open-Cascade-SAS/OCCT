@@ -1,0 +1,111 @@
+-- File:	DBRep.cdl
+-- Created:	Tue Jun 25 16:20:06 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package DBRep 
+
+ ---Purpose: Used to display BRep objects  using the DrawTrSurf
+	--          package.
+	--  The DrawableShape is a Display object build from a
+	--          Shape.
+     --  Provides methods to manage a directory of named shapes.
+	--          Provides a set of Draw commands for Shapes.
+
+uses
+
+    MMgt,
+    TCollection,
+    TColStd,
+    gp,
+    TColgp,
+    Draw,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    GeomAbs,
+    Geom2dHatch,
+    HLRBRep,
+    Poly
+
+is
+
+    class Edge; 
+	---Purpose: Display of an edge. Edge + color.
+	
+    class ListOfEdge instantiates 
+    List from TCollection(Edge from DBRep);
+
+    class Face;
+	---Purpose: Display of a face. Face + Array of iso + color.
+	
+    class ListOfFace instantiates 
+    List from TCollection(Face from DBRep);
+
+    class HideData;
+	---Purpose: Hidden lines data for a view
+
+    class ListOfHideData instantiates
+    List from TCollection(HideData from DBRep);
+
+    class DrawableShape;
+	---Purpose: Drawable structure to display a  shape. Contains a
+	--          list of edges and a list of faces.
+    
+    class IsoBuilder;
+	---Purpose: Creation of isoparametric curves.
+
+    --  class ProgressIndicator;
+    ---Purpose : Implements ProgressIndicator for DRAW
+
+    
+    --
+    --  Methods to manage variables
+    --  
+    
+    Set(Name : CString; S : Shape from TopoDS);
+	---Purpose: Sets  <S> in the  variable  <Name>.  Overwrite the
+	--          variable if already set.
+	
+    Get(Name : in out CString; 
+    	Typ  : ShapeEnum from TopAbs = TopAbs_SHAPE;
+        Complain : Boolean = Standard_False) 
+    returns Shape from TopoDS;
+	---Purpose: Returns the shape in the variable  <Name>. Returns
+	--          a null shape if the variable is not set or  not of
+	--          the given <Typ>.  If <Complain> is  True a message
+	--          is printed on cout if the variable is not set.
+
+    BasicCommands(theCommands : in out Interpretor from Draw);
+	---Purpose: Defines the basic commands.
+	
+    HLRMode returns Boolean from Standard;
+    	---Purpose: True if HLR, False if wireframe.
+
+    Rg1Mode returns Boolean from Standard;
+    	---Purpose: True if display Rg1Lines.
+
+    RgNMode returns Boolean from Standard;
+    	---Purpose: True if display RgNLines.
+
+    HidMode returns Boolean from Standard;
+    	---Purpose: True if display HiddenLines.
+
+    HLRAngle returns Real from Standard;
+    	---Purpose: discretisation angle for edges.
+
+    NbIsos returns Integer from Standard;
+	---Purpose: number of iso in U and V
+    
+    Discretisation returns Integer from Standard;
+	---Purpose: discretisation number of points for curves
+	
+    --SetProgressBar(thePI: ProgressIndicator from Message);
+        ---Purpose: set progress indicator
+	
+    --GetProgressBar returns ProgressIndicator from Message;
+        ---Purpose: get progress indicator
+    
+end DBRep;

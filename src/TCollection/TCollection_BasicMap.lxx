@@ -1,0 +1,68 @@
+// File:	TCollection_BasicMap.lxx
+// Created:	Fri Feb 26 17:02:30 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : NbBuckets
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_BasicMap::NbBuckets() const
+{
+  return myNbBuckets;
+}
+
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_BasicMap::Extent() const
+{
+  return mySize;
+}
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_BasicMap::IsEmpty() const
+{
+  return mySize == 0;
+}
+
+//=======================================================================
+//function : Resizable
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  TCollection_BasicMap::Resizable()const
+{
+  return IsEmpty() || (!mySaturated && (mySize > myNbBuckets));
+}
+
+//=======================================================================
+//function : Increment
+//purpose  : 
+//=======================================================================
+
+inline void  TCollection_BasicMap::Increment()
+{
+  mySize++;
+}
+
+
+//=======================================================================
+//function : Decrement
+//purpose  : 
+//=======================================================================
+
+inline void  TCollection_BasicMap::Decrement()
+{
+  mySize--;
+}
+
+

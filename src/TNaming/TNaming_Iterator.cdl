@@ -1,0 +1,89 @@
+-- File:	TNaming_Iterator.cdl
+-- Created:	Mon Dec 16 17:20:34 1996
+-- Author:	Remi Lequette
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Iterator from TNaming 
+
+	---Purpose: A tool to visit the contents of a named shape attribute.
+    	-- Pairs of shapes in the attribute are iterated, one
+    	-- being the pre-modification or the old shape, and
+    	-- the other the post-modification or the new shape.
+    	-- This allows you to have a full access to all
+    	-- contents of an attribute. If, on the other hand, you
+    	-- are only interested in topological entities stored
+    	-- in the attribute, you can use the functions
+    	-- GetShape and CurrentShape in TNaming_Tool.
+
+uses
+
+    Label       from TDF,
+    Evolution   from TNaming,
+    NamedShape  from TNaming,	
+    PtrNode     from TNaming,
+    Shape       from TopoDS
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard 
+
+is
+
+    Create( anAtt  : NamedShape from TNaming) returns Iterator from TNaming;
+	---Purpose: Iterates on all  the history records in
+	--          <anAtt>.
+    
+    Create( aLabel : Label from TDF) returns Iterator from TNaming;
+	---Purpose: Iterates on all  the history records in
+	--          the current transaction
+
+    Create( aLabel : Label from TDF; aTrans : Integer from Standard)
+    returns Iterator from TNaming;
+	---Purpose: Iterates on all  the history records in
+	--          the transaction <aTrans>
+	
+    More(me) returns Boolean;
+	---C++: inline
+	---Purpose: Returns True if there is a current Item in
+	--          the iteration.
+     
+    Next(me : in out)
+    	---Purpose: Moves the iteration to the next Item 
+    raises
+	NoMoreObject from Standard;
+   
+    OldShape(me) returns Shape from TopoDS
+    	---Purpose: Returns the old shape in this iterator object.
+    	-- This shape can be a null one.
+	---C++: return const&
+    raises
+	NoSuchObject from Standard;
+	 
+    NewShape(me) returns Shape from TopoDS
+    	---Purpose: Returns the new shape in this iterator object.
+ 	---C++: return const&
+   raises
+	 NoSuchObject from Standard;
+	 
+    IsModification(me) returns Boolean;
+	---Purpose: Returns true if the  new  shape is a modification  (split,
+	--          fuse,etc...) of the old shape.
+	--          
+    
+    Evolution(me) returns Evolution from TNaming;
+    
+
+fields
+
+    myNode  : PtrNode from TNaming;
+    myTrans : Integer from Standard;  -- is < 0 means in Current Transaction.
+
+friends
+    
+    class NewShapeIterator from TNaming,
+    class OldShapeIterator from TNaming    
+    
+end Iterator;

@@ -1,0 +1,68 @@
+-- File:	Bisector_PointOnBis.cdl
+-- Created:	Mon Jan 10 16:23:20 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class PointOnBis from Bisector 
+
+	---Purpose: 
+    
+uses 
+    Pnt2d from gp
+
+is
+    Create returns PointOnBis from Bisector;
+    
+    Create ( Param1, Param2, ParamBis, Distance : Real; Point : Pnt2d) 
+    returns PointOnBis from Bisector; 
+    
+    ParamOnC1 (me : in out; Param : Real)
+    is static;
+    
+    ParamOnC2 (me : in out; Param : Real)
+    is static;
+    
+    ParamOnBis (me : in out; Param : Real)
+    is static;
+    
+    Distance (me : in out; Distance : Real)
+    is static;
+    
+    IsInfinite (me : in out; Infinite : Boolean)
+    is static;
+
+    Point (me : in out ; P :Pnt2d)
+    is static;
+    
+    ParamOnC1 (me) returns Real
+    is static;
+    
+    ParamOnC2 (me) returns Real
+    is static;
+
+    ParamOnBis (me) returns Real
+    is static;
+        
+    Distance (me) returns Real
+    is static;
+    
+    Point (me) returns Pnt2d
+    is static;
+    
+    IsInfinite (me) returns Boolean 
+    is static;
+    
+    Dump (me) is static;
+    
+fields
+
+    param1   : Real;
+    param2   : Real;
+    paramBis : Real;
+    distance : Real;
+    infinite : Boolean;	
+    point    : Pnt2d from gp;
+    
+end PointOnBis;

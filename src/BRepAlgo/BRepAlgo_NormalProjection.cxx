@@ -1,0 +1,691 @@
+// File:	BRepAlgo_OrthogonalProjection.cxx
+// Created:	Mon Oct 13 16:36:58 1997
+// Author:	Roman BORISOV
+//		<rbv@velox.nnov.matra-dtv.fr>
+
+#include <BRepAlgo_NormalProjection.ixx>
+#include <ProjLib_CompProjectedCurve.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopAbs.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <ProjLib_HCompProjectedCurve.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <TopoDS.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAdaptor.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepAlgo_BooleanOperations.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Precision.hxx>
+#include <BRepAlgo_SequenceOfSequenceOfInteger.hxx>
+#include <TopExp.hxx>
+#include <BRepTools.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+
+#ifdef DEBUG
+#include <OSD_Timer.hxx>
+
+OSD_Chronometer chr_total, chr_init, chr_approx, chr_booltool;
+
+Standard_Real t_total, t_init, t_approx, t_booltool;
+Standard_IMPORT Standard_Real t_init_point, t_dicho_bound;
+Standard_IMPORT Standard_Integer init_point_count, dicho_bound_count;
+
+void InitChron(OSD_Chronometer& ch)
+{ 
+    ch.Reset();
+    ch.Start();
+}
+
+void ResultChron( OSD_Chronometer & ch, Standard_Real & time) 
+{
+    Standard_Real tch ;
+    ch.Stop();
+    ch.Show(tch);
+    time=time +tch;
+}
+
+#endif
+//=======================================================================
+//function : BRepAlgo_NormalProjection
+//purpose  : 
+//=======================================================================
+
+ BRepAlgo_NormalProjection::BRepAlgo_NormalProjection() 
+   : myWith3d(Standard_True)
+
+{
+  BRep_Builder BB;
+  BB.MakeCompound(TopoDS::Compound(myToProj));
+  myFaceBounds=Standard_True;
+  SetDefaultParams();
+  myMaxDist = -1;
+}
+
+//=======================================================================
+//function : BRepAlgo_NormalProjection
+//purpose  : 
+//=======================================================================
+
+ BRepAlgo_NormalProjection::BRepAlgo_NormalProjection(const TopoDS_Shape& S) 
+    : myWith3d(Standard_True)
+{
+  BRep_Builder BB;
+  BB.MakeCompound(TopoDS::Compound(myToProj));
+  SetDefaultParams();
+  myMaxDist = -1;
+  Init(S);
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::Init(const TopoDS_Shape& S) 
+{
+  myShape = S;
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::Add(const TopoDS_Shape& ToProj) 
+{
+  BRep_Builder BB;
+  BB.Add(myToProj, ToProj);
+}
+
+//=======================================================================
+//function : SetParams
+//purpose  : 
+//=======================================================================
+
+void BRepAlgo_NormalProjection::SetParams(const Standard_Real Tol3D,
+                                           const Standard_Real Tol2D,
+                                           const GeomAbs_Shape InternalContinuity,
+                                           const Standard_Integer MaxDegree,
+                                           const Standard_Integer MaxSeg) 
+{
+  myTol3d = Tol3D;
+  myTol2d = Tol2D;
+  myContinuity = InternalContinuity;
+  myMaxDegree = MaxDegree;
+  myMaxSeg = MaxSeg;
+}
+
+//=======================================================================
+//function : SetDefaultParams
+//purpose  : 
+//=======================================================================
+
+void BRepAlgo_NormalProjection::SetDefaultParams()
+{
+  myTol3d = 1.e-4;
+  myTol2d = Pow(myTol3d, 2./3);
+  myContinuity = GeomAbs_C2;
+  myMaxDegree = 14;
+  myMaxSeg    = 16;
+}
+
+//=======================================================================
+//function : SetLimits
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::SetLimit(const Standard_Boolean FaceBounds)
+{
+  myFaceBounds = FaceBounds;
+}
+
+//=======================================================================
+//function : SetMaxDistance
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::SetMaxDistance(const Standard_Real MaxDist)
+{
+  myMaxDist = MaxDist;
+}
+
+//=======================================================================
+//function : Compute3d
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::Compute3d(const Standard_Boolean With3d)
+{
+  myWith3d = With3d;
+}
+
+//=======================================================================
+//function : Build
+//purpose  : 
+//=======================================================================
+
+ void BRepAlgo_NormalProjection::Build() 
+{
+#ifdef DEBUG
+  Standard_Integer init_count = 0, approx_count = 0, booltool_count = 0;
+  t_total = 0;
+  t_init = 0;
+  t_approx = 0;
+  t_booltool = 0;
+  
+  t_init_point = 0;
+  init_point_count = 0;
+  
+  t_dicho_bound = 0;
+  dicho_bound_count = 0;
+  
+  InitChron(chr_total);
+#endif
+  myIsDone = Standard_False;
+  ProjLib_CompProjectedCurve Projector;
+  Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+  Handle(TopTools_HSequenceOfShape) Faces = new TopTools_HSequenceOfShape();
+  TopTools_ListOfShape DescenList;
+  Standard_Integer NbEdges = 0, NbFaces = 0, i, j, k;
+  TopExp_Explorer ExpOfWire, ExpOfShape;
+  Standard_Real Udeb, Ufin;
+  TopoDS_Shape VertexRes;
+  Standard_Boolean Only3d, Only2d, Elementary;
+  
+  // for isoparametric cases
+  TColgp_Array1OfPnt2d Poles(1, 2);
+  TColStd_Array1OfReal Knots(1, 2);
+  TColStd_Array1OfInteger Mults(1,2);
+  Standard_Integer Deg;
+  Deg = 1;
+  Mults(1) = Deg + 1;
+  Mults(2) = Deg + 1;
+  //
+  
+  for(ExpOfWire.Init(myToProj, TopAbs_EDGE); 
+      ExpOfWire.More(); 
+      ExpOfWire.Next(), NbEdges++) {
+    Edges->Append(ExpOfWire.Current());
+  }
+  
+  for(ExpOfShape.Init(myShape, TopAbs_FACE); 
+      ExpOfShape.More(); 
+      ExpOfShape.Next(), NbFaces++) {
+    Faces->Append(ExpOfShape.Current());
+  }
+  
+  BRep_Builder BB;
+  BB.MakeCompound(TopoDS::Compound(myRes));
+  BB.MakeCompound(TopoDS::Compound(VertexRes));
+  Standard_Boolean YaVertexRes = Standard_False;
+  
+  for(i = 1; i <= NbEdges; i++){
+    DescenList.Clear();
+    BRepAdaptor_Curve cur(TopoDS::Edge(Edges->Value(i)));
+    Handle(BRepAdaptor_HCurve) hcur = new BRepAdaptor_HCurve();
+    hcur->Set(cur);
+    Elementary = IsElementary(cur);
+    for(j = 1; j <= NbFaces; j++){
+      BRepAdaptor_Surface sur(TopoDS::Face(Faces->Value(j)));
+      Handle(BRepAdaptor_HSurface) hsur = new BRepAdaptor_HSurface();
+      hsur->Set(sur);
+      
+      // computation of  TolU and TolV
+      
+      Standard_Real  TolU, TolV;
+      
+      TolU = hsur->UResolution(myTol3d)/20;
+      TolV = hsur->VResolution(myTol3d)/20;
+      // Projection
+#ifdef DEBUG
+      InitChron(chr_init);
+#endif
+      Projector = 
+	ProjLib_CompProjectedCurve(hsur, hcur, TolU, TolV, myMaxDist);
+#ifdef DEBUG
+      ResultChron(chr_init,t_init);
+      init_count++;
+#endif
+      //
+      Handle(ProjLib_HCompProjectedCurve) HProjector = 
+	new ProjLib_HCompProjectedCurve();
+      HProjector->Set(Projector);
+      TopoDS_Shape prj;
+      Standard_Boolean Degenerated = Standard_False;
+      gp_Pnt2d P2d, Pdeb, Pfin;
+      gp_Pnt P;
+      Standard_Real UIso, VIso;
+      
+      Handle(Adaptor2d_HCurve2d) HPCur;
+      Handle(Geom2d_Curve) PCur2d; // Only for isoparametric projection
+      
+      for(k = 1; k <= Projector.NbCurves(); k++){
+	if(Projector.IsSinglePnt(k, P2d)){
+#ifdef DEBUG
+	  cout << "Projection of edge "<<i<<" on face "<<j;
+	  cout << " is punctual"<<endl<<endl;
+#endif
+	  Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
+	  prj = BRepLib_MakeVertex(P).Shape();
+	  DescenList.Append(prj);
+	  BB.Add(VertexRes, prj);
+	  YaVertexRes = Standard_True;
+	  
+	  myAncestorMap.Bind(prj, Edges->Value(i));
+	}
+	else {
+	  Only2d = Only3d = Standard_False;
+	  Projector.Bounds(k, Udeb, Ufin);
+	  
+	  /**************************************************************/
+	  if (Projector.IsUIso(k, UIso)) {
+#ifdef DEBUG
+	    cout << "Projection of edge "<<i<<" on face "<<j;
+	    cout << " is U-isoparametric"<<endl<<endl;
+#endif
+	    Projector.D0(Udeb, Pdeb);
+	    Projector.D0(Ufin, Pfin);
+	    Poles(1) = Pdeb;
+	    Poles(2) = Pfin;
+	    Knots(1) = Udeb;
+	    Knots(2) = Ufin;
+	    Handle(Geom2d_BSplineCurve) BS2d = 
+	      new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
+	    PCur2d = new Geom2d_TrimmedCurve( BS2d, Udeb, Ufin);
+	    HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+	    Only3d = Standard_True;
+	  }
+	  else if (Projector.IsVIso(k, VIso)) {
+#ifdef DEBUG
+	    cout << "Projection of edge "<<i<<" on face "<<j;
+	    cout << " is V-isoparametric"<<endl<<endl;
+#endif
+	    Projector.D0(Udeb, Pdeb);
+	    Projector.D0(Ufin, Pfin);
+	    Poles(1) = Pdeb;
+	    Poles(2) = Pfin;
+	    Knots(1) = Udeb;
+	    Knots(2) = Ufin;
+	    Handle(Geom2d_BSplineCurve) BS2d = 
+	      new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
+	    PCur2d = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
+	    HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+	    Only3d = Standard_True;
+	  }
+	  else HPCur = HProjector;
+	  
+	  if((myWith3d == Standard_False || Elementary) && 
+	     (Projector.MaxDistance(k) <= myTol3d)        )
+	    Only2d = Standard_True;
+	  
+	  if(Only2d && Only3d) {
+	    BRepLib_MakeEdge MKed(GeomAdaptor::MakeCurve(hcur->Curve()), 
+				  Ufin, Udeb);
+	    prj = MKed.Edge();
+	    BB.UpdateEdge(TopoDS::Edge(prj), 
+			  PCur2d, 
+			  TopoDS::Face(Faces->Value(j)),
+			  myTol3d);
+            BB.UpdateVertex(TopExp::FirstVertex(TopoDS::Edge(prj)),myTol3d);
+            BB.UpdateVertex(TopExp::LastVertex(TopoDS::Edge(prj)),myTol3d);
+	  }
+	  else {
+#ifdef DEBUG
+	    InitChron(chr_approx);
+#endif
+	    Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d, 
+				       myContinuity, myMaxDegree, myMaxSeg, 
+				       Only3d, Only2d);
+#ifdef DEBUG
+	    ResultChron(chr_approx,t_approx);
+	    approx_count++;
+	    
+	    cout<<"Approximation.IsDone = "<<appr.IsDone()<<endl;
+	    if(!Only2d)
+	      cout<<"MaxError3d = "<<appr.MaxError3d()<<endl<<endl;
+	    if(!Only3d) {
+	      cout<<"MaxError2dU = "<<appr.MaxError2dU()<<endl;
+	      cout<<"MaxError2dV = "<<appr.MaxError2dV()<<endl<<endl;
+	    }
+#endif
+
+	    
+	    if(!Only3d) PCur2d = appr.Curve2d();
+	    if(Only2d) {
+	      BRepLib_MakeEdge MKed(GeomAdaptor::MakeCurve(hcur->Curve()), 
+				    Udeb, Ufin);
+	      prj = MKed.Edge();
+	    }
+	    else  {
+            // On teste si la solution n'est pas degeneree pour mettre le
+            // flag a l'edge, on prend quelques points, on regarde si le nuage de 
+            // points a un diametre inferieur a la tolerance 3D
+              Degenerated = Standard_True;
+              Standard_Real Dist;
+              Handle(Geom_BSplineCurve) BS3d  = Handle(Geom_BSplineCurve)::DownCast( appr.Curve3d());
+              gp_Pnt P1(0.,0.,0.),PP; // skl : I change "P" to "PP"
+              Standard_Integer NbPoint,ii ; // skl : I change "i" to "ii"
+              Standard_Real Par,DPar;
+              // on commence avec 3 points pour rejeter les aretes non degenerees 
+              // tres rapidement
+              NbPoint =3;
+              DPar = (BS3d->LastParameter()-BS3d->FirstParameter())/(NbPoint-1);
+              for (ii=0;ii<NbPoint;ii++)
+	      {
+                 Par=BS3d->FirstParameter()+ii*DPar;
+                 PP=BS3d->Value(Par);
+                 P1.SetXYZ(P1.XYZ() + PP.XYZ()/NbPoint);
+	      }
+              for (ii=0;ii<NbPoint && Degenerated ;ii++)   
+              {
+                 Par=BS3d->FirstParameter()+ii*DPar;
+                 PP=BS3d->Value(Par);                 
+                 Dist=P1.Distance(PP);
+                 if(Dist > myTol3d) {
+                     Degenerated = Standard_False;
+                     break;
+		 }
+              }             
+              // si le test passe on fait un test plus precis
+              // avec 10 points
+              if (Degenerated) {
+                 P1.SetCoord(0.,0.,0.);
+                 NbPoint =10;
+                 DPar = (BS3d->LastParameter()-BS3d->FirstParameter())/(NbPoint-1);
+                 for (ii=0;ii<NbPoint;ii++)
+	         {
+		   Par=BS3d->FirstParameter()+ii*DPar;
+		   PP=BS3d->Value(Par);
+		   P1.SetXYZ(P1.XYZ() + PP.XYZ()/NbPoint);
+		 }
+                 for (ii=0;ii<NbPoint && Degenerated ;ii++)   
+                 {
+		   Par=BS3d->FirstParameter()+ii*DPar;
+		   PP=BS3d->Value(Par);                 
+		   Dist=P1.Distance(PP);
+		   if(Dist > myTol3d) {
+                     Degenerated = Standard_False;
+                     break;
+		   }
+                 }             
+              }
+	      if (Degenerated) {
+#ifdef DEBUG
+	          cout << "Projection of edge "<<i<<" on face "<<j;
+	          cout << " is degenerated "<<endl<<endl;
+#endif
+		TopoDS_Vertex VV;
+		BB.MakeVertex(VV);
+		BB.UpdateVertex(VV,P1,myTol3d);
+		BB.MakeEdge(TopoDS::Edge(prj));
+		BB.Add(TopoDS::Edge(prj),VV.Oriented(TopAbs_FORWARD));
+		BB.Add(TopoDS::Edge(prj),VV.Oriented(TopAbs_REVERSED));
+		BB.Degenerated(TopoDS::Edge(prj), Standard_True);
+	      }
+	      else {
+		prj = BRepLib_MakeEdge(BS3d).Edge();
+	      }
+	    }
+	    
+	    BB.UpdateEdge(TopoDS::Edge(prj), 
+			  PCur2d,
+			  TopoDS::Face(Faces->Value(j)), 
+			  appr.MaxError3d());
+            BB.UpdateVertex(TopExp::FirstVertex(TopoDS::Edge(prj)),appr.MaxError3d());
+            BB.UpdateVertex(TopExp::LastVertex(TopoDS::Edge(prj)),appr.MaxError3d());
+	    if (Degenerated) {
+	      BB.Range(TopoDS::Edge(prj),
+		       TopoDS::Face(Faces->Value(j)),
+		       Udeb,Ufin);
+	    }
+	  }
+	  
+	  if(myFaceBounds) {
+	    // Trimming edges by face bounds 
+            // si la solution est degeneree, on evite d'utiliser le BoolTool 
+            // qui n'aime pas ca.
+#ifdef DEBUG
+	    InitChron(chr_booltool);
+#endif
+            if(!Degenerated){
+    	       BRepAlgo_BooleanOperations BoolTool;
+	       BoolTool.Shapes2d(Faces->Value(j),prj);
+	       BoolTool.Common();
+	       Handle(TopOpeBRepBuild_HBuilder) HB;
+	       TopTools_ListOfShape LS;
+	       TopTools_ListIteratorOfListOfShape Iter; 
+	       HB = BoolTool.Builder();
+	       LS.Clear();
+	       if (HB->IsSplit(prj, TopAbs_IN))
+	         LS = HB->Splits(prj, TopAbs_IN);
+	       Iter.Initialize(LS);
+	       if(Iter.More()) {
+#ifdef DEBUG
+                  cout << " BooleanOperations :"  << Iter.More()<<" solutions " << endl; 
+#endif
+	          for(; Iter.More(); Iter.Next()) {
+	  	     BB.Add(myRes, Iter.Value());
+		     myAncestorMap.Bind(Iter.Value(), Edges->Value(i));
+		     myCorresp.Bind(Iter.Value(),Faces->Value(j));
+	          }
+	       }
+
+  	       else {
+
+	         BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
+			  		  	    Precision::Confusion());
+	         gp_Pnt2d Puv;
+	         Standard_Real f = PCur2d->FirstParameter();
+	         Standard_Real l = PCur2d->LastParameter();
+	         Standard_Real pmil = (f + l )/2;
+	         PCur2d->D0(pmil, Puv);
+	         TopAbs_State state;
+	         state = classifier.Perform(Puv);
+	         if(state == TopAbs_IN || state  == TopAbs_ON) {
+		   BB.Add(myRes, prj);
+		   DescenList.Append(prj);
+		   myAncestorMap.Bind(prj, Edges->Value(i));   
+		   myCorresp.Bind(prj, Faces->Value(j));
+	         }
+	       }
+            }
+            else {
+#ifdef DEB
+                 cout << " BooleanOperations : pas de solution " << endl;
+#endif
+
+	      BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
+			  		  	 Precision::Confusion());
+	      gp_Pnt2d Puv;
+	      Standard_Real f = PCur2d->FirstParameter();
+	      Standard_Real l = PCur2d->LastParameter();
+	      Standard_Real pmil = (f + l )/2;
+	      PCur2d->D0(pmil, Puv);
+	      TopAbs_State state;
+	      state = classifier.Perform(Puv);
+	      if(state == TopAbs_IN || state  == TopAbs_ON) {
+		 BB.Add(myRes, prj);
+		 DescenList.Append(prj);
+		 myAncestorMap.Bind(prj, Edges->Value(i));   
+		 myCorresp.Bind(prj, Faces->Value(j));
+	      }
+#ifdef DEBUG
+	       ResultChron(chr_booltool,t_booltool);
+	       booltool_count++;
+#endif
+            }
+	  }
+	  else {
+	    BB.Add(myRes, prj);
+	    DescenList.Append(prj);
+	    myAncestorMap.Bind(prj, Edges->Value(i));   
+	    myCorresp.Bind(prj, Faces->Value(j));
+	  }
+	}
+      }
+    }
+    myDescendants.Bind(Edges->Value(i), DescenList);
+  }
+// JPI : la creation eventuelle d'un wire est reportee dans une methode specifique 
+//       BuilWire qui pourra etre appelee par l'utilisateur. Sinon, on perdait les 
+//       relations des map myAncestorMap, myCorresp.  
+
+  if(YaVertexRes) BB.Add(myRes, VertexRes);
+  
+  myIsDone = Standard_True; 
+  
+#if DEBUG
+  ResultChron(chr_total,t_total);
+  
+  cout<<"Build - Total time  : "<<t_total<<" includes:" <<endl;
+  cout<<"- Projection           : "<<t_init<<endl;
+  cout<<"  -- Initial point search : "<<t_init_point<<endl;
+  cout<<"  -- DichoBound search : "<<t_dicho_bound<<endl;
+  cout<<"- Approximation        : "<<t_approx<<endl;
+  cout<<"- Boolean operation    : "<<t_booltool<<endl;
+  cout<<"- Rest of time         : "<<t_total-(t_init + t_approx + t_booltool )<<endl<<endl;
+  if (init_count != 0)
+    t_init /= init_count;
+  if (init_point_count != 0)
+    t_init_point /= init_point_count;
+  if (dicho_bound_count != 0)
+    t_dicho_bound /= dicho_bound_count;
+  if (approx_count != 0)
+    t_approx /= approx_count;
+  if (booltool_count != 0)
+    t_booltool /= booltool_count;
+  
+  cout<<"Unitary average time  : "<<endl;
+  cout<<"- Projection          : "<<t_init<<endl;
+  cout<<"  -- Initial point search: "<<t_init_point<<endl;
+  cout<<"  -- DichoBound search : "<<t_dicho_bound<<endl;
+  cout<<"- Approximation       : "<<t_approx<<endl;
+  cout<<"- Boolean operation   :"<<t_booltool<<endl;
+  cout<<endl<<"Number of initial point computations is "<<init_point_count<<endl<<endl;
+#endif
+}
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+ Standard_Boolean BRepAlgo_NormalProjection::IsDone() const
+{
+  return myIsDone;
+}
+
+//=======================================================================
+//function : Projection
+//purpose  : 
+//=======================================================================
+
+ const TopoDS_Shape& BRepAlgo_NormalProjection::Projection() const
+{
+  return myRes;
+}
+
+//=======================================================================
+//function : Ancestor
+//purpose  : 
+//=======================================================================
+
+ const TopoDS_Shape& BRepAlgo_NormalProjection::Ancestor(const TopoDS_Edge& E) const
+{
+  return myAncestorMap.Find(E);
+}
+
+//=======================================================================
+//function : Couple
+//purpose  : 
+//=======================================================================
+
+ const TopoDS_Shape& BRepAlgo_NormalProjection::Couple(const TopoDS_Edge& E) const
+{
+  return myCorresp.Find(E);
+}
+
+//=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+
+ const TopTools_ListOfShape& BRepAlgo_NormalProjection::Generated(const TopoDS_Shape& S)
+{
+  return myDescendants.Find(S);
+}
+
+//=======================================================================
+//function : IsElementary
+//purpose  : 
+//=======================================================================
+
+ Standard_Boolean BRepAlgo_NormalProjection::IsElementary(const Adaptor3d_Curve& C) const
+{
+  GeomAbs_CurveType type;
+  type = C.GetType();
+  switch(type) {
+  case GeomAbs_Line:
+  case GeomAbs_Circle:
+  case GeomAbs_Ellipse:
+  case GeomAbs_Hyperbola:
+  case GeomAbs_Parabola: return Standard_True;
+  default: return Standard_False;
+  }
+}
+//=======================================================================
+//function : BuildWire
+//purpose  : 
+//=======================================================================
+ 
+ Standard_Boolean BRepAlgo_NormalProjection::BuildWire(TopTools_ListOfShape& ListOfWire) const
+{
+  TopExp_Explorer ExpOfWire, ExpOfShape; 
+  Standard_Boolean IsWire=Standard_False;
+  ExpOfShape.Init(myRes, TopAbs_EDGE);
+  if(ExpOfShape.More()) 
+  {
+    TopTools_ListOfShape List;
+
+    for ( ; ExpOfShape.More(); ExpOfShape.Next()) 
+    {
+      const TopoDS_Shape& CurE = ExpOfShape.Current();
+      List.Append(CurE);
+    }
+    BRepLib_MakeWire MW;
+    MW.Add(List);
+    if (MW.IsDone()) 
+    {
+      const TopoDS_Shape& Wire = MW.Shape();
+      // Si le wire resultat contient le meme d'arete qu'au depart OK
+      // sinon le resultat est vraisemblablement constitue de plusieurs wires.
+      TopExp_Explorer exp2(Wire,TopAbs_EDGE);
+      Standard_Integer NbEdges = 0;
+      for (;exp2.More(); exp2.Next()) NbEdges++;
+      if ( NbEdges == List.Extent()) 
+      {
+          ListOfWire.Append(Wire);
+          IsWire = Standard_True;
+      }
+    }
+  }
+   return IsWire;
+}

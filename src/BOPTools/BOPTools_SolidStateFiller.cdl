@@ -1,0 +1,59 @@
+-- File:	BOPTools_SolidStateFiller.cdl
+-- Created:	Mon May 28 12:39:19 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class SolidStateFiller from BOPTools  inherits StateFiller from BOPTools 
+
+	---Purpose:  
+    	--  class to compute states (3D)  for the edges  (and theirs  
+	--- split parts), vertices, wires, faces, shells  
+        --- 
+	 
+	
+uses 
+    PPaveFiller from BOPTools, 
+    PaveFiller  from BOPTools,  
+    PShapesDataStructure from BooleanOperations, 
+    StateOfShape         from BooleanOperations, 
+    
+    Shape from TopoDS,   
+    Edge  from TopoDS, 
+    
+    State from TopAbs, 
+     
+    ShapeEnum from TopAbs
+    
+is 
+    Create (aFiller: PaveFiller from BOPTools) 
+    	returns SolidStateFiller from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    Do(me:out)  
+    	is redefined;
+    	---Purpose: 
+    	--- Launch the Filler   
+    	---
+    ---   
+    --- 
+    ---    private block 
+    ---  
+    DoNonSections  (me:out; 
+    	    iRankShape: Integer from Standard) 
+	is  private;  
+    DoShellNonSections  (me:out; 
+    	    iRankShape: Integer from Standard) 
+	is  private; 
+
+    DoSections  (me:out) 
+	is  private; 
+
+    IsFaceIntersected(me:out; 
+    	    nF: Integer from Standard) 
+    	returns Boolean from Standard 
+    	is  private; 
+     
+end SolidStateFiller;

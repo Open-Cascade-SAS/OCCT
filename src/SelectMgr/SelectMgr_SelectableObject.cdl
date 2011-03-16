@@ -1,0 +1,188 @@
+-- File:        SelectMgr_SelectableOject.cdl
+-- Created:     Mon Feb 20 17:39:48 1995
+-- Author:      Mister rmi
+--              <rmi@photon>
+---Copyright:    Matra Datavision 1995
+
+
+
+deferred class SelectableObject from SelectMgr  inherits PresentableObject from PrsMgr  
+
+    	 ---Purpose: A framework to supply the structure of the object to be
+    	-- selected. At the first pick, this structure is created by
+    	-- calling the appropriate algorithm and retaining this
+    	-- framework for further picking.
+    	-- This abstract framework is inherited in Application
+    	-- Interactive Services (AIS), notably in AIS_InteractiveObject.
+    	-- Consequently, 3D selection should be handled by the
+    	-- relevant daughter classes and their member functions
+    	-- in AIS. This is particularly true in the creation of new interactive objects.
+
+           
+uses
+
+    SelectionManager      from SelectMgr,
+    Selection             from SelectMgr,
+    SequenceOfSelection   from SelectMgr,
+    TypeOfPresentation3d  from PrsMgr,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    SequenceOfOwner       from SelectMgr,
+    NameOfColor           from Quantity,
+    EntityOwner           from SelectMgr, 
+    TransModeFlags        from Graphic3d
+
+raises 
+    NotImplemented from Standard
+
+is
+
+
+    ---Category: deferred Methods 
+
+
+    Initialize(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView);
+
+    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+                                 aMode      : Integer) is deferred private;
+        ---Purpose: Recovers and calculates any sensitive primitive,
+    	-- aSelection, available in Shape mode, specified by
+    	-- aMode. As a rule, these are sensitive faces.
+    	-- This method is defined as virtual. This enables you to
+    	-- implement it in the creation of a new class of AIS
+    	-- Interactive Object. You need to do this and in so
+    	-- doing, redefine this method, if you create a class
+    	-- which enriches the list of signatures and types.  
+    
+    NbPossibleSelection(me) returns Integer from Standard is virtual;
+        ---Level: Public 
+    	---Purpose: defines the number of different modes of selection
+    	--          (or decomposition) for an Object.
+    
+
+
+    ---Category: 
+    
+    
+    UpdateSelection (me:mutable) is static;
+	---Purpose: re-computes the sensitive primitives for all modes
+    
+    UpdateSelection (me:mutable; aMode: Integer from Standard) is static;
+        ---Purpose: re-computes the sensitive primitives which correspond to
+        --          the <amode>th selection mode.   
+
+
+    AddSelection(me:mutable ;aSelection:mutable Selection from SelectMgr;
+                             aMode : Integer) 
+    is static;
+        ---Purpose: Adds the selection aSelection with the selection mode
+    	-- index aMode to this framework.
+
+
+    ClearSelections(me:mutable; update: Boolean from Standard = Standard_False) is static;
+        ---Level: Public 
+    	---Purpose: Empties all the selections in the SelectableObject
+    	--          <update> parameter defines whether all object's
+    	-- selections should be flagged for further update or not.
+    	-- This improved method can be used to recompute an
+    	-- object's selection (without redisplaying the object
+    	-- completely) when some selection mode is activated not for the first time.
+
+    Selection(me;aMode : Integer) 
+    returns any Selection from SelectMgr 
+    is  static;
+	---C++:  return const& 
+    	---Purpose: Returns the selection Selection having the selection mode aMode.
+
+    HasSelection(me; aMode: Integer) 
+    returns Boolean from Standard is static ;
+   	--- Purpose: Returns true if a selection corresponding to the
+    	-- selection mode aMode is present in this framework.   
+
+
+    
+    Init(me:mutable) is static;
+    ---Purpose: Begins the iteration scanning for sensitive primitives.
+    ---C++: inline
+
+
+    More(me) returns Boolean is static;
+    ---Purpose: Continues the iteration scanning for sensitive primitives.
+    ---C++: inline
+    
+
+
+    Next(me:mutable) is static;
+    ---Purpose: Continues the iteration scanning for sensitive primitives.
+    ---C++: inline
+    
+
+
+    CurrentSelection(me) returns any Selection from SelectMgr;
+    ---Purpose: Returns the current selection in this framework. 
+    ---C++: return const&
+    ---C++: inline
+    
+
+    ResetLocation(me:mutable) is redefined static;
+    
+    UpdateLocation(me:mutable) is redefined virtual;
+        ---Purpose: Recomputes the location of the selection aSelection.
+
+    UpdateLocation(me:mutable;aSelection: Selection from SelectMgr) is virtual protected;
+    ---Level: Internal
+    ---Purpose: Updates locations in all sensitive entities from <aSelection> 
+    --          and in corresponding entity owners.
+        
+    HilightSelected       ( me : mutable; PM : PresentationManager3d from PrsMgr; 
+                            Seq : SequenceOfOwner from SelectMgr ) raises NotImplemented from Standard is virtual;
+    ---Purpose: Method which draws selected owners ( for fast presentation draw )
+
+    ClearSelected         ( me : mutable ) is virtual;
+        ---Purpose: Method which clear all selected owners belonging
+    	-- to this selectable object ( for fast presentation draw )
+
+    HilightOwnerWithColor ( me : mutable; thePM : PresentationManager3d from PrsMgr;
+                            theColor  : NameOfColor from Quantity;
+                            theOwner  : EntityOwner from SelectMgr ) raises NotImplemented from Standard is virtual;
+        ---Purpose: Method which hilight an owner belonging to
+    	-- this selectable object  ( for fast presentation draw )
+
+    IsAutoHilight  ( me ) returns Boolean from Standard is virtual;
+        ---Purpose: If returns True, the old mechanism for highlighting
+    	-- selected objects is used (HilightSelected Method may be empty).
+    	-- If returns False, the HilightSelected method will be
+    	-- fully responsible for highlighting selected entity
+    	-- owners belonging to this selectable object.
+
+    SetAutoHilight ( me : mutable; newAutoHilight : Boolean from Standard ) is virtual;
+    	---Purpose: Set AutoHilight property to true or false 
+     
+   -- SetTransformPersistence(  me     :  mutable; 
+   --			      aFlag  :  TransModeFlags  from  Graphic3d ) is redefined; 
+   ---Level:    Public 
+   ---Purpose:  Sets  up  Transform  Persistence Mode  for  this  object 
+      ---Category: Graphic attributes management
+     
+    GetHilightPresentation(  me: mutable;
+    	    	    	     TheMgr:  PresentationManager3d from PrsMgr )  returns Presentation from Prs3d  is  static; 
+    
+    GetSelectPresentation(   me: mutable;
+    	    	    	     TheMgr:  PresentationManager3d from PrsMgr )  returns Presentation from Prs3d  is  static; 
+			      
+fields
+
+    myselections        : SequenceOfSelection is protected;
+    mycurrent           : Integer;
+    myAutoHilight       : Boolean from Standard;
+
+    mySelectionPrs      : Presentation from Prs3d;
+    myHilightPrs        : Presentation from Prs3d;
+    
+friends
+    class SelectionManager from SelectMgr
+
+end SelectableObject;
+
+
+

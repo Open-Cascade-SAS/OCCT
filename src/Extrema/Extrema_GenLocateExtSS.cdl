@@ -1,0 +1,73 @@
+-- File:	Extrema_GenLocateExtSS.cdl
+-- Created:	Mon Jan 22 10:33:25 1996
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1996
+
+
+class   GenLocateExtSS from Extrema
+					 
+    	---Purpose: With two close points it calculates the distance 
+    	--          between two surfaces.
+    	--          This distance can be a minimum or a maximum.
+
+uses    POnSurf from Extrema,
+        Pnt     from gp,
+	Surface from Adaptor3d
+ 
+raises  DomainError from Standard,
+    	NotDone     from StdFail
+
+
+is
+    Create returns GenLocateExtSS;
+
+    Create (S1, S2: Surface from Adaptor3d; U1,V1, U2,V2: Real; Tol1,Tol2: Real)
+    	returns GenLocateExtSS
+    	---Purpose: Calculates the distance with two close points.
+    	--          The close points are defined by the parameter values
+    	--          (U1,V1) for S1 and (U2,V2) for S2.
+    	--          The function F(u1,v1,u2,v2)=distance(S1(u1,v1),S2(u2,v2)) 
+    	--          has an extremun when gradient(F)=0. The algorithm searchs
+    	--          a zero near the close points.
+    	raises  DomainError;
+	    	-- if U1,V1,U2,V2 are outside the definition ranges of the 
+	    	-- surfaces.
+    
+    Perform(me: in out; S1, S2: Surface from Adaptor3d; 
+    	    U1,V1, U2,V2: Real; Tol1,Tol2: Real) 
+    is static;
+    
+    
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+
+    SquareDistance (me) returns Real
+    	---Purpose: Returns the value of the extremum square distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    PointOnS1 (me) returns POnSurf
+    	---Purpose: Returns the point of the extremum distance on S1.
+    	---C++: return const&
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+
+    PointOnS2 (me) returns POnSurf
+    	---Purpose: Returns the point of the extremum distance on S2.
+    	---C++: return const&
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+fields
+    myDone  : Boolean;
+    mySqDist: Real;
+    myPoint1: POnSurf from Extrema;
+    myPoint2: POnSurf from Extrema;
+
+end GenLocateExtSS;

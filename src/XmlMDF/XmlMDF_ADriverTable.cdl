@@ -1,0 +1,42 @@
+-- File:      XmlMDF_ADriverTable.cdl
+-- Created:   26.09.01 16:24:36
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+class ADriverTable from XmlMDF inherits TShared from MMgt
+
+        ---Purpose: A driver table is an object building links between
+        --          object types and object drivers. In the
+        --          translation process, a driver table is asked to
+        --          give a translation driver for each current object
+        --          to be translated.
+
+uses
+    Type               from Standard,
+    MapTransientHasher from TColStd,
+    ADriver            from XmlMDF,    
+    TypeADriverMap     from XmlMDF
+
+is
+    Create returns mutable ADriverTable from XmlMDF;
+        ---Purpose: Creates a mutable ADriverTable from XmlMDF.
+
+    AddDriver(me : mutable; anHDriver : ADriver from XmlMDF);
+        ---Purpose: Sets a translation driver: <aDriver>.
+
+    GetDrivers(me)
+        returns TypeADriverMap from XmlMDF;
+        ---Purpose: Gets a map of drivers. 
+        ---C++: return const &
+
+    GetDriver(me; aType     : Type from Standard;
+                  anHDriver : in out ADriver from XmlMDF)
+        returns Boolean from Standard;
+        ---Purpose: Gets a driver <aDriver> according to <aType>
+        --          
+        --          Returns True if a driver is found; false otherwise.
+
+fields
+    myMap : TypeADriverMap from XmlMDF;
+
+end ADriverTable;

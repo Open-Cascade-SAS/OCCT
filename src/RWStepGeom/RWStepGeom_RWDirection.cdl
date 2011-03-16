@@ -1,0 +1,30 @@
+-- File:        Direction.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDirection from RWStepGeom
+
+	---Purpose : Read & Write Module for Direction
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Direction from StepGeom
+
+is
+
+	Create returns RWDirection;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Direction from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Direction from StepGeom);
+
+    	Check (me; ent : Direction from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWDirection;

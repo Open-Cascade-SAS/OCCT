@@ -1,0 +1,439 @@
+//#include <Dico_Dictionary.ixx>  pas en gxx
+#include <Standard_NoSuchObject.hxx>
+#include <string.h>
+
+
+
+// thecars[0] : caractere de consigne, caracterisant la cellule
+// thecars[1] : indicateur de presence : 0 rien, ==thecar[0] item present
+// thecars[2] : caractere du Sub  ou 0
+// thecars[3] : caractere du Next ou 0
+
+//  REMARQUE : Fonctions d acces dupliquees : TCollection_AsciiString / CString
+//  C est a chaque fois le MEME CODE, mais Length et Value ne sont pas obtenues
+//  de la  meme maniere ...
+//  SearchCell pas duplique : la version String appelle la version CString
+//  Les autres fonctions doivent d abord evaluer la longueur de <name>
+//  Sur String, methode Length, mais sur CString, il faut evaluer par  strlen
+//  String serait donc meilleur (plus systematique) MAIS suppose, sur appel
+//  CString, de constituer une TCollection_AsciiString ce qui peut couter ...
+//  CONCLUSION : Fonctions d acces par Nom dupliquees, pour optimisation
+
+
+    Dico_Dictionary::Dico_Dictionary ()
+{
+  thecars[0] = thecars[1] = thecars[2] = thecars[3] = '\0';
+  thesub.Nullify(); thenext.Nullify();
+}
+
+    void Dico_Dictionary::SetChar (const char car)  {  thecars[0] = car;  }
+
+
+//  ....                        HasItem                                ....
+
+    Standard_Boolean Dico_Dictionary::HasItem
+  (const Standard_CString name, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0) return Standard_False;
+  if (acell->HasIt()) return Standard_True;
+  if (!exact)    {  if (!acell->Complete(acell)) return Standard_False;  }
+  return (acell->HasIt());
+}
+
+    Standard_Boolean Dico_Dictionary::HasItem
+  (const TCollection_AsciiString& name, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0) return Standard_False;
+  if (acell->HasIt()) return Standard_True;
+  if (!exact)    {  if (!acell->Complete(acell)) return Standard_False;  }
+  return (acell->HasIt());
+}
+
+//  ....                        Item                                ....
+
+    const TheItem& Dico_Dictionary::Item
+  (const Standard_CString name, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0)
+    Standard_NoSuchObject::Raise("Dictionary : Item");
+  if (acell->HasIt()) return acell->It();
+  if (!exact)    {  if (!acell->Complete(acell)) return acell->It();  }
+  if (!acell->HasIt()) Standard_NoSuchObject::Raise("Dictionary : Item");
+  return (acell->It());
+}
+
+    const TheItem& Dico_Dictionary::Item
+  (const TCollection_AsciiString& name, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0)
+    Standard_NoSuchObject::Raise("Dictionary : Item");
+  if (acell->HasIt()) return acell->It();
+  if (!exact)    {  if (!acell->Complete(acell)) return acell->It();  }
+  if (!acell->HasIt()) Standard_NoSuchObject::Raise("Dictionary : Item");
+  return (acell->It());
+}
+
+//  ....                        GetItem                                ....
+
+    Standard_Boolean Dico_Dictionary::GetItem
+  (const Standard_CString name,
+   TheItem& anitem, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0) return Standard_False;
+  if (acell->HasIt())    {  anitem = acell->It();  return Standard_True;  }
+  if (!exact)      {  if (!acell->Complete(acell)) return Standard_False;  }
+  anitem = acell->It();
+  return (acell->HasIt());
+}
+
+    Standard_Boolean Dico_Dictionary::GetItem
+  (const TCollection_AsciiString& name,
+   TheItem& anitem, const Standard_Boolean exact) const
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
+  if (stat != 0 || reslev != 0) return Standard_False;
+  if (acell->HasIt())    {  anitem = acell->It();  return Standard_True;  }
+  if (!exact)      {  if (!acell->Complete(acell)) return Standard_False;  }
+  anitem = acell->It();
+  return (acell->HasIt());
+}
+
+//  ....                        SetItem                                ....
+
+    void Dico_Dictionary::SetItem
+  (const Standard_CString name,
+   const TheItem& anitem, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  Standard_Integer namlen = strlen(name);
+  SearchCell (name,namlen,name[0],1, acell,reslev,stat);
+  if (!exact && !acell->HasIt())
+    {  if (acell->Complete(acell)) { acell->SetIt(anitem); return; }  }
+  if (stat < 0) {  cout<<"Dictionary walk back not performed"<<endl; return;  }
+  NewCell (name,namlen, acell,reslev,stat);
+  acell->SetIt(anitem);
+}
+
+
+    void Dico_Dictionary::SetItem
+  (const TCollection_AsciiString& name,
+   const TheItem& anitem, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  Standard_CString namval = name.ToCString();
+  Standard_Integer namlen = name.Length();
+  SearchCell (namval,namlen,name.Value(1),1, acell,reslev,stat);
+  if (!exact && !acell->HasIt())
+    {  if (acell->Complete(acell)) { acell->SetIt(anitem); return; }  }
+  if (stat < 0) {  cout<<"Dictionary walk back not performed"<<endl; return;  }
+  NewCell (namval,namlen, acell,reslev,stat);
+  acell->SetIt(anitem);
+}
+
+
+//  ....                        NewItem                                ....
+
+    TheItem& Dico_Dictionary::NewItem
+  (const Standard_CString name,
+   Standard_Boolean& isvalued, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  Standard_Integer namlen = strlen(name);
+  SearchCell (name,namlen,name[0],1, acell,reslev,stat);
+  if (stat == 0 && reslev == 0) {
+    isvalued = acell->HasIt();    // ancien statut
+    acell->DeclIt();              // nouveau statut = value d office
+    return acell->ItAdr();
+  }
+  if (!exact) {
+    if (acell->Complete(acell))
+      {  isvalued = acell->HasIt(); acell->DeclIt();  return acell->ItAdr();  }
+  }
+  if (stat < 0) {   Standard_NoSuchObject::Raise("Dictionary : NewItem");  }
+  NewCell (name,namlen, acell,reslev,stat);
+  isvalued = acell->HasIt();    // ancien statut
+  acell->DeclIt();              // nouveau statut = value d office
+  return acell->ItAdr();
+}
+
+
+    TheItem& Dico_Dictionary::NewItem
+  (const TCollection_AsciiString& name,
+   Standard_Boolean& isvalued, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  Standard_Integer namlen = name.Length();
+  Standard_CString namval = name.ToCString();
+  SearchCell (namval,namlen,name.Value(1),1, acell,reslev,stat);
+  if (stat == 0 && reslev == 0) {
+    isvalued = acell->HasIt();    // ancien statut
+    acell->DeclIt();              // nouveau statut = value d office
+    return acell->ItAdr();
+  }
+  if (!exact) {
+    if (acell->Complete(acell))
+      {  isvalued = acell->HasIt(); acell->DeclIt();  return acell->ItAdr();  }
+  }
+  if (stat < 0) {   Standard_NoSuchObject::Raise("Dictionary : NewItem");  }
+  NewCell (namval,namlen, acell,reslev,stat);
+  isvalued = acell->HasIt();    // ancien statut
+  acell->DeclIt();              // nouveau statut = value d office
+  return acell->ItAdr();
+}
+
+//  ....                        RemoveItem                                ....
+
+    Standard_Boolean Dico_Dictionary::RemoveItem
+  (const Standard_CString name,
+   const Standard_Boolean cln, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
+//  if (stat != 0) { cout<<"Dictionary : RemoveItem not found"<<endl; return; }
+  if (stat != 0) return Standard_False;
+  if (!exact && !acell->HasIt())
+    {  if (!acell->Complete(acell)) return Standard_False;  }
+  acell->RemoveIt();
+  if (cln) Clean();
+  return Standard_True;
+}
+
+    Standard_Boolean Dico_Dictionary::RemoveItem
+  (const TCollection_AsciiString& name,
+   const Standard_Boolean cln, const Standard_Boolean exact)
+{
+  Handle(Dico_Dictionary) acell;
+  Standard_Integer reslev,stat;
+  SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
+//  if (stat != 0) { cout<<"Dictionary : RemoveItem not found"<<endl; return; }
+  if (stat != 0) return Standard_False;
+  if (!exact && !acell->HasIt())
+    {  if (!acell->Complete(acell)) return Standard_False;  }
+  acell->RemoveIt();
+  if (cln) Clean();
+  return Standard_True;
+}
+
+//  ....                Methodes d Interet General                        ....
+
+    void Dico_Dictionary::Clean ()
+{
+  if (HasSub()) {
+    thesub->Clean();
+    if (!thesub->HasIt() && !thesub->HasSub()) {    // alors prendre son Next
+      if (thesub->HasNext()) {
+	thesub = thesub->Next();
+	thecars[2] = thesub->CellChar();
+      } else {
+	thesub.Nullify();
+	thecars[2] = '\0';
+      }
+    }
+  }
+  if (HasNext()) {
+    thenext->Clean();
+    if (!thenext->HasIt() && !thenext->HasSub()) {    // alors prendre son Next
+      if (thenext->HasNext()) {
+	thenext = thenext->Next();
+	thecars[3] = thenext->CellChar();
+      } else {
+	thenext.Nullify();
+	thecars[3] = '\0';
+      }
+    }
+  }
+}
+
+    Standard_Boolean Dico_Dictionary::IsEmpty () const
+{
+  if (thecars[1] != '\0') return Standard_False;
+  if (!thesub.IsNull())
+    {  if (!thesub->IsEmpty()) return Standard_False;  }
+  if (!thenext.IsNull())
+    {  if (!thenext->IsEmpty()) return Standard_False;  }
+  return Standard_True;
+}
+
+    void Dico_Dictionary::Clear ()
+{
+  thecars[0] = thecars[1] = thecars[2] = thecars[3] = '\0';
+  thesub.Nullify();  thenext.Nullify();
+}
+
+
+    Handle(Dico_Dictionary) Dico_Dictionary::Copy () const
+{
+  Handle(Dico_Dictionary) newdic = new Dico_Dictionary;
+//    Handle(Dico_Dictionary)::DownCast(ShallowCopy());
+  newdic->GetCopied(this);    // qui doit gerer completement thecars et item
+  return newdic;
+}
+
+//  ########################################################################
+
+// ....                        Routines internes                        ....
+
+    Standard_Boolean Dico_Dictionary::HasSub () const
+      {  return (thecars[2] != '\0');  }
+
+    Handle(Dico_Dictionary) Dico_Dictionary::Sub () const   { return thesub;  }
+
+    Standard_Boolean Dico_Dictionary::HasNext () const
+      {  return (thecars[3] != '\0');  }
+
+    Handle(Dico_Dictionary) Dico_Dictionary::Next () const  { return thenext; }
+
+    void Dico_Dictionary::SetSub (const Handle(Dico_Dictionary)& acell)
+{
+  thesub = acell;      thecars[2] = '\0';
+  if (!acell.IsNull()) thecars[2] = acell->CellChar();
+}
+
+    void Dico_Dictionary::SetNext (const Handle(Dico_Dictionary)& acell)
+{
+  thenext = acell;     thecars[3] = '\0';
+  if (!acell.IsNull()) thecars[3] = acell->CellChar();
+}
+
+//  ....                            SearchCell                            ....
+
+    void Dico_Dictionary::SearchCell
+      (const Standard_CString name,  const Standard_Integer lmax,
+       const Standard_Character car, const Standard_Integer level,
+       Handle(Dico_Dictionary)& acell,
+       Standard_Integer& reslev,     Standard_Integer& stat) const
+{
+  reslev = lmax - level;
+  if      (car > thecars[0]) {
+    if (thecars[3] == '\0')     {  acell = this;  stat   =  1;    return;  }
+    else {                                      // ici, HasNext
+      if (thecars[3] > car)     {  acell = this;  stat   =  1;    return;  }
+      Standard_Integer lev2,stat2;
+      thenext->SearchCell (name,lmax,car,level,acell,lev2,stat2);
+      if (stat2 < 0)            {  acell = this;  stat   =  1;    return;  }
+      else                      {  stat = stat2;  reslev = lev2;  return;  }
+    }
+  }
+  else if (car == thecars[0]) {
+    if (reslev == 0 || thecars[2] == '\0')      // c-a-d !HasSub
+                                {  acell = this;  stat   =  0;    return;  }
+    else {
+      Standard_Character carsub = name[level];  // caractere no (level+1);
+      if (thecars[2] > carsub)  {  acell = this;  stat   =  0;    return;  }
+      Standard_Integer lev2,stat2;
+      thesub->SearchCell (name,lmax,carsub,level+1,acell,lev2,stat2);
+      if (stat2 < 0)            {  acell = this;  stat   =  0;    return;  }
+      else                      {  stat = stat2;  reslev = lev2;  return;  }
+    }
+  }
+  else if (car < thecars[0])    {  acell = this;  stat   = -1;    return;  }
+}
+
+
+//  ....                            NewCell                            ....
+
+    void Dico_Dictionary::NewCell
+  (const Standard_CString name, const Standard_Integer namlen,
+   Handle(Dico_Dictionary)& acell,
+   const Standard_Integer reslev, const Standard_Integer stat)
+{
+  Standard_Integer level = namlen - reslev;
+  if (stat > 0) {    // Creer une cellule next
+    Handle(Dico_Dictionary) newcell = new Dico_Dictionary;
+    newcell->SetChar( name[level-1] );      // caractere no level
+    if (acell->HasNext()) newcell->SetNext(acell->Next());
+    acell->SetNext(newcell);
+    acell = newcell;
+  }
+//  A present, voir les sous-niveaux
+  for (Standard_Integer i = level+1; i <= namlen; i ++) {
+    Handle(Dico_Dictionary) newcell = new Dico_Dictionary;
+    newcell->SetChar(name[i-1]);
+    if (acell->HasSub()) newcell->SetNext(acell->Sub());
+    acell->SetSub(newcell);
+    acell = newcell;
+  }
+}
+
+
+    Standard_Boolean Dico_Dictionary::Complete
+  (Handle(Dico_Dictionary)& newcell) const
+{
+  if (!HasSub())            {  newcell = this; return HasIt();  }
+  if (HasIt())              {  newcell = this; return Standard_False;  }
+  if (thesub->HasNext())    {  newcell = this; return Standard_False;  }
+  return thesub->Complete (newcell);
+}
+
+
+//  ##    ##    ##    ##    ##    ##    ##    ##    ##    ##    ##    ##    ##
+//  ....                    Actions Internes Unitaires                    ....
+
+    Standard_Boolean Dico_Dictionary::HasIt () const
+      {  return (thecars[1] != '\0');  }
+
+    const TheItem& Dico_Dictionary::It () const           {  return theitem;  }
+
+    TheItem& Dico_Dictionary::ItAdr ()                    {  return theitem;  }
+
+    void Dico_Dictionary::SetIt (const TheItem& anitem)
+      {  theitem = anitem;  thecars[1] = thecars[0];  }
+
+    void Dico_Dictionary::DeclIt ()              {  thecars[1] = thecars[0];  }
+
+    void Dico_Dictionary::RemoveIt ()                  {  thecars[1] = '\0';  }
+
+    Standard_Character Dico_Dictionary::CellChar () const
+      {  return thecars[0];  }
+
+    void Dico_Dictionary::GetCopied (const Handle(Dico_Dictionary)& fromcell)
+{
+  thecars[0] = fromcell->CellChar();
+//  On reprend l item s ilyena un
+  if (fromcell->HasIt()) {
+    thecars[1] = thecars[0];
+    theitem = fromcell->It();
+  }
+  else thecars[1] = '\0';
+
+//  On saute les noeuds vides
+  if (fromcell->HasSub()) {
+    thesub   = fromcell->Sub()->Copy();
+    while (!thesub->HasIt() && !thesub->HasSub()) {
+      thesub = thesub->Next();
+      if (thesub.IsNull()) { thecars[2] = '\0'; break; }
+      else                   thecars[2] = thesub->CellChar();
+    }
+  }
+
+  if (fromcell->HasNext()) {
+    thenext  = fromcell->Next()->Copy();
+    while (!thenext->HasIt() && !thenext->HasSub()) {
+      thenext = thenext->Next();
+      if (thenext.IsNull()) { thecars[3] = '\0'; break; }
+      else                    thecars[3] = thenext->CellChar();
+    }
+  }
+}

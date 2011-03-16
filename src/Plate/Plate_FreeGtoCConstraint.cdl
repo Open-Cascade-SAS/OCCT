@@ -1,0 +1,80 @@
+-- File:	Plate_FreeGtoCConstraint.cdl
+-- Created:	Thu Mar 26 11:55:26 1998
+-- Author:	# Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+class FreeGtoCConstraint from Plate
+---Purpose: define a G1, G2 or G3 constraint on the Plate using weaker
+--          constraint than GtoCConstraint 
+--          
+
+uses 
+ XY from gp, 
+ XYZ from gp, 
+ D1 from Plate, 
+ D2 from Plate, 
+ D3 from Plate, 
+ PinpointConstraint from Plate,
+ LinearScalarConstraint from Plate
+
+is
+    Create(point2d : XY ; D1S , D1T : D1 from Plate; 
+    IncrementalLoad:  Real  =1.0; orientation:  Integer  =  0   ) returns FreeGtoCConstraint;
+    -- G1 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate; 
+    IncrementalLoad:  Real  =1.0; orientation:  Integer  =  0   ) returns FreeGtoCConstraint;
+    -- G2 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate;
+       D3S, D3T : D3 from Plate; 
+    IncrementalLoad:  Real  =1.0; orientation:  Integer  =  0   ) returns FreeGtoCConstraint;
+    -- G3 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+    -- D3S : third derivative of  S, the surface we want to  correct 
+    -- D3T : third derivative of the reference surface
+
+    -- Accessors :
+    nb_PPC(me) returns Integer;
+    ---C++: inline 
+    ---C++: return const &
+          
+    GetPPC(me;  Index:  Integer) returns PinpointConstraint;
+    --	"C style" Index :  Index : 0 --> nb_PPC-1
+    ---C++: inline 
+    ---C++: return const &
+          
+    nb_LSC(me) returns Integer;
+    ---C++: inline 
+    ---C++: return const &
+
+    LSC(me;  Index:  Integer) returns LinearScalarConstraint;
+    --	"C   style" Index  :  Index  :  0 -->  nb_PPC-1
+    ---C++: inline 
+    ---C++: return const &
+
+
+fields
+
+    pnt2d : XY ;
+    nb_PPConstraints : Integer;
+    nb_LSConstraints : Integer;
+    myPPC : PinpointConstraint[5]; 
+    myLSC : LinearScalarConstraint[4];
+    
+end;
+

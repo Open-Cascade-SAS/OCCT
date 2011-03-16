@@ -1,0 +1,62 @@
+-- File     : Prs2d_Drawer.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class Drawer from Prs2d inherits TShared from MMgt
+
+  --- Purpose: Graphic attributes management
+  --           Qualifies how the presentation algorithms compute
+  --           the presentation of a specific kind of object. 
+  --           This includes for example color, width and type
+  --           of lines...
+
+uses
+
+    NameOfColor         from Quantity,
+    TypeOf2DObject      from Prs2d,
+    AspectRoot          from Prs2d,
+    AspectName          from Prs2d,
+    DataMapOfAspectRoot from Prs2d
+    
+is
+    Create returns mutable Drawer from Prs2d;
+    ---Purpose: Initializes graphic attribute manager
+
+    FindAspect( me; anAspectName: AspectName from Prs2d )
+      returns AspectRoot from Prs2d is virtual;
+    ---Level: Public
+    ---Purpose: Returns a link with Prs2d_Drawer AspectName, 
+    --          which provides settings for object "anAspectName" 
+    --          used to display "anAspectName"
+  	
+    SetAspect( me: mutable;
+               anAspectRoot: AspectRoot from Prs2d;
+               anAspectName: AspectName from Prs2d );
+    ---Level: Public
+    ---Purpose: Sets the Aspect <anAspectRoot> of the Drawer
+    
+    InitAspectRootMap( me: mutable ) is private;
+    ---Level: Internal
+    ---Purpose: Initializes Aspect classes data map
+
+   --******************************************************
+
+    SetMaxParameterValue( me: mutable; Value: Real from Standard ) is virtual;
+    ---Level: Public
+    ---Purpose: defines the maximum value allowed for the first and last
+    --          parameters of an infinite line.
+    --          Default value: 500000. 
+    
+    MaxParameterValue( me ) returns Real from Standard is virtual;
+    ---Level: Public
+    ---Purpose: Indicates the maximum value allowed for the first and last
+    --          parameters of an infinite line.
+
+
+fields
+
+    myDataMapAspectRoot: DataMapOfAspectRoot from Prs2d is protected;
+    myMaxParameterValue: Real from Standard is protected;
+   
+end Drawer;

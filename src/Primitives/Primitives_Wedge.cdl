@@ -1,0 +1,299 @@
+-- File:	Wedge.cdl
+-- Created:	Wed Sep 18 17:42:49 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+generic class Wedge from Primitives(
+    TheShell           as any;
+    TheFace            as any;
+    TheWire            as any;
+    TheEdge            as any;
+    TheVertex          as any;
+    TheBuilder         as any)
+
+	---Purpose: A wedge is defined by  :
+	--          
+	--          Axes : an Axis2 (coordinate system)
+	--          
+	--          YMin, YMax the  coordinates of the  ymin and ymax
+	--          rectangular faces parallel to the ZX plane (of the
+	--          coordinate systems)
+	--          
+	--          ZMin,ZMax,XMin,XMax the rectangular
+	--          left (YMin) face parallel to the Z and X axes.
+	--          
+	--          Z2Min,Z2Max,X2Min,X2Max the rectangular
+	--          right (YMax) face parallel to the Z and X axes.
+	--          
+	--          For a box Z2Min = ZMin, Z2Max = ZMax,
+	--                    X2Min = XMin, X2Max = XMax
+	--          
+	--          The wedge can be open in the corresponding direction
+	--          of its Boolean myInfinite
+
+
+uses
+    
+    Direction from Primitives,
+    
+    Ax2 from gp,
+    Pln from gp,
+    Lin from gp,
+    Pnt from gp
+
+raises
+    DomainError,
+    OutOfRange
+
+is
+    Create(B : TheBuilder; Axes : Ax2 from gp; dx, dy, dz : Real)
+    returns Wedge from Primitives
+	---Purpose: Creates a  Wedge  algorithm.   <Axes> is  the axis
+	--          system for the primitive.
+	--          
+	--          XMin, YMin, ZMin are set to 0
+	--          XMax, YMax, ZMax are set to dx, dy, dz
+	--          Z2Min = ZMin
+	--          Z2Max = ZMax
+	--          X2Min = XMin
+	--          X2Max = XMax
+	--          The result is a box
+	--          dx,dy,dz should be positive
+	raises DomainError;
+
+    Create(B : TheBuilder; Axes : Ax2 from gp; dx, dy, dz, ltx : Real)
+    returns Wedge from Primitives
+	---Purpose: Creates  a Wedge  primitive. <Axes> is   the  axis
+	--          system for the primitive.
+	--          
+	--          XMin, YMin, ZMin are set to 0
+	--          XMax, YMax, ZMax are set to dx, dy, dz
+	--          Z2Min = ZMin
+	--          Z2Max = ZMax
+	--          X2Min = ltx
+	--          X2Max = ltx
+	--          The result is a STEP right angular wedge
+	--          dx,dy,dz should be positive
+	--          ltx should not be negative
+	raises DomainError;
+
+    Create(B : TheBuilder; Axes : Ax2 from gp; xmin, ymin, zmin, z2min, x2min,
+                                   xmax, ymax, zmax, z2max, x2max : Real)
+    returns Wedge from Primitives
+	---Purpose: Create  a Wedge primitive.   <Axes>  is  the  axis
+	--          system for the primitive.
+	--          
+	--          all the fields are set to the corresponding value
+	--          XYZMax - XYZMin should be positive
+	--          ZX2Max - ZX2Min should not be negative 
+	raises DomainError;
+
+    Axes(me) returns Ax2 from gp
+	---Purpose: Returns the coordinates system from <me>.
+    is static;
+
+    GetXMin(me) returns Real
+	---Purpose: Returns Xmin value from <me>.
+    is static;
+
+    GetYMin(me) returns Real
+	---Purpose: Returns YMin value from <me>.
+    is static;
+
+    GetZMin(me) returns Real
+	---Purpose: Returns ZMin value from <me>.
+    is static;
+
+    GetZ2Min(me) returns Real 
+	---Purpose: Returns Z2Min value from <me>.
+    is static;
+
+    GetX2Min(me) returns Real 
+	---Purpose: Returns X2Min value from <me>.
+    is static;
+
+    GetXMax(me) returns Real
+	---Purpose: Returns XMax value from <me>.
+    is static;
+
+    GetYMax(me) returns Real
+	---Purpose: Returns YMax value from <me>.
+    is static;
+
+    GetZMax(me) returns Real
+	---Purpose: Returns ZMax value from <me>.
+    is static;
+
+    GetZ2Max(me) returns Real 
+	---Purpose: Returns Z2Max value from <me>.
+    is static;
+
+    GetX2Max(me) returns Real 
+	---Purpose: Returns X2Max value from <me>.
+    is static;
+
+    Open(me : in out; d1 : Direction from Primitives)
+	---Purpose: Opens <me> in <d1> direction. A face and its edges
+	--          or vertices are said nonexistant.
+    raises DomainError
+    is static;
+
+    Close(me : in out; d1 : Direction from Primitives)
+	---Purpose: Closes   <me>  in <d1>  direction.  A face and its
+	--          edges or vertices are said existant.
+    raises DomainError
+    is static;
+
+    IsInfinite(me; d1 : Direction from Primitives)
+	---Purpose: Returns True if <me> is open in <d1> direction.
+    returns Boolean;
+    
+    Shell(me : in out) returns TheShell
+	---Purpose: Returns the Shell containing the Faces of <me>.
+	--          
+	---C++: return const &
+    is static;
+
+    HasFace(me; d1 : Direction from Primitives)
+	---Purpose: Returns True if <me> has a Face in <d1> direction.
+    returns Boolean;
+
+    Face(me : in out; d1 : Direction from Primitives) returns TheFace
+	---Purpose: Returns the Face of <me> located in <d1> direction.
+	--          
+	---C++: return const &
+    raises DomainError
+    is static;
+    
+    Plane(me : in out; d1 : Direction from Primitives) returns Pln from  gp
+	---Purpose: Returns the plane  of the Face  of <me> located in
+	--          <d1> direction.
+    raises DomainError
+    is static;
+    
+    HasWire(me; d1 : Direction from Primitives)
+	---Purpose: Returns True if <me> has a Wire in <d1> direction.
+    returns Boolean;
+
+    Wire(me : in out; d1 : Direction from Primitives) returns TheWire
+	---Purpose: Returns the Wire of <me> located in <d1> direction.
+	--          
+	---C++: return const &
+    raises DomainError
+    is static;
+
+    HasEdge(me; d1, d2 : Direction from Primitives)
+	---Purpose: Returns True if <me> has an Edge in <d1><d2> direction.
+    returns Boolean;
+
+    Edge(me : in out; d1, d2 : Direction from Primitives) returns TheEdge
+	---Purpose: Returns the Edge of <me> located in <d1><d2> direction.
+	--          
+	---C++: return const &
+    raises DomainError
+    is static;
+
+    Line(me : in out; d1, d2 : Direction from Primitives) returns Lin from gp
+	---Purpose: Returns the line of  the Edge of <me>  located  in
+	--          <d1><d2> direction.
+    raises DomainError
+    is static;
+
+    HasVertex(me; d1, d2, d3 : Direction from Primitives)
+	---Purpose: Returns True if <me> has a  Vertex in <d1><d2><d3>
+	--          direction.
+    returns Boolean;
+
+    Vertex(me : in out; d1, d2, d3 : Direction from Primitives)
+    returns TheVertex
+	---Purpose: Returns the Vertex of <me> located in <d1><d2><d3>
+	--          direction.
+	--          
+	---C++: return const &
+    raises DomainError
+    is static;
+    
+    Point(me : in out; d1, d2, d3 : Direction from Primitives)
+    returns Pnt from gp
+	---Purpose: Returns the point of the Vertex of <me> located in
+	--          <d1><d2><d3> direction.
+    raises DomainError
+    is static;
+    
+fields
+    myBuilder : TheBuilder;
+
+    myAxes : Ax2 from gp;
+    XMin : Real;
+    XMax : Real;
+    YMin : Real;
+    YMax : Real;
+    ZMin : Real;
+    ZMax : Real;
+    Z2Min : Real;
+    Z2Max : Real;
+    X2Min : Real;
+    X2Max : Real;
+    
+    -- the Topology
+
+    myShell : TheShell;
+    ShellBuilt : Boolean;
+    
+    myVertices : TheVertex [8];
+    -- 0 : xmin ymin zmin
+    -- 1 : xmax ymin zmin
+    -- 2 : xmin ymax zmin
+    -- 3 : xmax ymax zmin
+    -- 4 : xmin ymin zmax
+    -- 5 : xmax ymin zmax
+    -- 6 : xmin ymax zmax
+    -- 7 : xmax ymax zmax
+    VerticesBuilt : Boolean [8];
+    
+    myEdges : TheEdge [12];
+    -- 0  : xmin ymin
+    -- 1  : xmax ymin
+    -- 2  : xmin ymax
+    -- 3  : xmax ymax
+    -- 4  : ymin zmin
+    -- 5  : ymax zmin
+    -- 6  : ymin zmax
+    -- 7  : ymax zmax
+    -- 8  : zmin xmin
+    -- 9  : zmax xmin
+    -- 10 : zmin xmax
+    -- 11 : zmax xmax
+    EdgesBuilt : Boolean [12];
+    
+    myWires : TheWire [6];
+    -- 0 : xmin
+    -- 1 : xmax
+    -- 2 : ymin
+    -- 3 : ymax
+    -- 4 : zmin
+    -- 5 : zmax
+    WiresBuilt : Boolean [6];
+    
+    myFaces : TheFace [6];
+    -- 0 : xmin
+    -- 1 : xmax
+    -- 2 : ymin
+    -- 3 : ymax
+    -- 4 : zmin
+    -- 5 : zmax
+    FacesBuilt : Boolean [6];
+
+    myInfinite : Boolean[6];
+    -- 0 : xmin
+    -- 1 : xmax
+    -- 2 : ymin
+    -- 3 : ymax
+    -- 4 : zmin
+    -- 5 : zmax
+
+end Wedge;

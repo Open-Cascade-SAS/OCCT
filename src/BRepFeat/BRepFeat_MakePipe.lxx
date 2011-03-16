@@ -1,0 +1,30 @@
+// File:	BRepFeat_MakePipe.lxx
+// Created:	Tue Sep  3 11:17:00 1996
+// Author:	Jacques GOUSSARD
+//		<jag@mobilox.lyon.matra-dtv.fr>
+
+
+//=======================================================================
+//function : BRepFeat_MakePipe
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakePipe::BRepFeat_MakePipe () {}
+
+
+//=======================================================================
+//function : BRepFeat_MakePipe
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakePipe::BRepFeat_MakePipe (const TopoDS_Shape& Sbase,
+					     const TopoDS_Shape& Pbase,
+					     const TopoDS_Face& Skface,
+					     const TopoDS_Wire& Spine,
+					     const Standard_Integer Fuse,
+					     const Standard_Boolean Modify)
+					       
+{
+  Init(Sbase,Pbase,Skface,Spine,Fuse,Modify);
+}
+

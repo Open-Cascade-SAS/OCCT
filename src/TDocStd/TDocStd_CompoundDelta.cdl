@@ -1,0 +1,34 @@
+-- File:	TDocStd_CompoundDelta.cdl
+-- Author:	Sergey RUIN
+---Copyright:	 MATRA DATAVISION 2001
+
+
+class CompoundDelta from TDocStd inherits Delta from TDF
+
+	---Purpose: A delta set is available at <aSourceTime>. If
+	--          applied, it restores the TDF_Data in the state it
+	--          was at <aTargetTime>.
+
+uses
+
+    OStream from Standard
+
+is
+
+
+    Create;
+	---Purpose: Creates a compound delta.
+
+--    SetValidTime(me : mutable;  aBeginTime, anEndTime : Integer from Standard) is private;
+    ---Purpose: Validates <me> at <aBeginTime>. If applied, it
+    --          restores the TDF_Data in the state it was at
+    --          <anEndTime>. Reserved to TDF_Data.
+    
+--    AppendAttributeDelta(me : mutable; anAttributeDelta : AttributeDelta from TDF) is private;
+    
+friends
+
+    class Document from TDocStd
+
+end Delta;
+

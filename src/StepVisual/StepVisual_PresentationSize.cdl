@@ -1,0 +1,36 @@
+-- File:        PresentationSize.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PresentationSize from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	PresentationSizeAssignmentSelect from StepVisual, 
+	PlanarBox from StepVisual
+is
+
+	Create returns mutable PresentationSize;
+	---Purpose: Returns a PresentationSize
+
+	Init (me : mutable;
+	      aUnit : PresentationSizeAssignmentSelect from StepVisual;
+	      aSize : mutable PlanarBox from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetUnit(me : mutable; aUnit : PresentationSizeAssignmentSelect);
+	Unit (me) returns PresentationSizeAssignmentSelect;
+	SetSize(me : mutable; aSize : mutable PlanarBox);
+	Size (me) returns mutable PlanarBox;
+
+fields
+
+	unit : PresentationSizeAssignmentSelect from StepVisual; -- a SelectType
+	size : PlanarBox from StepVisual;
+
+end PresentationSize;

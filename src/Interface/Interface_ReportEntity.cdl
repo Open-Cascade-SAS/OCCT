@@ -1,0 +1,94 @@
+-- File:	Interface_ReportEntity.cdl
+-- Created:	Fri Feb  5 16:35:30 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ReportEntity  from Interface  inherits TShared
+
+    ---Purpose : A ReportEntity is produced to aknowledge and memorize the
+    --           binding between a Check and an Entity. The Check can bring
+    --           Fails (+ Warnings if any), or only Warnings. If it is empty,
+    --           the Report Entity is for an Unknown Entity.
+    --           
+    --           The ReportEntity brings : the Concerned Entity, the
+    --           Check, and if the Entity is empty (Fails due to Read
+    --           Errors, hence the Entity could not be loaded), a Content.
+    --           The Content is itself an Transient Object, but remains in a
+    --           literal form : it is an "Unknown Entity". If the Concerned
+    --           Entity is itself Unknown, Concerned and Content are equal.
+    --           
+    --           According to the Check, if it brings Fail messages,
+    --           the ReportEntity is an "Error Entity", the Concerned Entity is
+    --           an "Erroneous Entity". Else it is a "Correction Entity", the
+    --           Concerned Entity is a "Corrected Entity". With no Check
+    --           message and if Concerened and Content are equal, it reports
+    --           for an "Unknown Entity".
+    --           
+    --           Each norm must produce its own type of Unknown Entity, but can
+    --           use the class UndefinedContent to brings parameters : it is
+    --           enough for most of information and avoids to redefine them,
+    --           only the specific part remains to be defined for each norm.
+
+uses Check, Transient
+
+is
+
+    Create (unknown : mutable Transient) returns mutable ReportEntity;
+    ---Purpose : Creates a ReportEntity for an Unknown Entity : Check is empty,
+    --           and Concerned equates Content (i.e. the Unknown Entity)
+
+    Create (acheck : Check; concerned : mutable Transient)
+    	returns mutable ReportEntity;
+    ---Purpose : Creates a ReportEntity with its features :
+    --           - <acheck> is the Check to be memorised
+    --           - <concerned> is the Entity to which the Check is bound
+    --           Later, a Content can be set : it is required for an Error
+
+    SetContent (me : mutable; content : mutable Transient);
+    ---Purpose : Sets a Content : it brings non interpreted data which belong
+    --           to the Concerned Entity. It can be empty then loaded later.
+    --           Remark that for an Unknown Entity, Content is set by Create.
+
+    Check (me) returns Check;
+    ---Purpose : Returns the stored Check
+    ---C++ : return const &
+
+    CCheck (me : mutable) returns Check;
+    ---Purpose : Returns the stored Check in order to change it
+    ---C++ : return &
+
+    Concerned (me) returns mutable Transient;
+    ---Purpose : Returns the stored Concerned Entity. It equates the Content
+    --           in the case of an Unknown Entity
+
+    HasContent (me) returns Boolean;
+    ---Purpose : Returns True if a Content is stored (it can equate Concerned)
+
+    HasNewContent (me) returns Boolean;
+    ---Purpose : Returns True if a Content is stored AND differs from Concerned
+    --           (i.e. redefines content) : used when Concerned could not be
+    --           loaded
+
+    Content (me) returns mutable Transient;
+    ---Purpose : Returns the stored Content, or a Null Handle
+    --           Remark that it must be an "Unknown Entity" suitable for
+    --           the norm of the containing Model
+
+
+    IsError (me) returns Boolean;
+    ---Purpose : Returns True for an Error Entity, i.e. if the Check
+    --           brings at least one Fail message
+
+    IsUnknown (me) returns Boolean;
+    ---Purpose : Returns True for an Unknown Entity, i,e. if the Check
+    --           is empty and Concerned equates Content
+
+fields
+
+    thecheck     : Check;
+    theconcerned : Transient;
+    thecontent   : Transient;
+
+end ReportEntity;

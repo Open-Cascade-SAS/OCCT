@@ -1,0 +1,71 @@
+-- File:	BOP_BlockIterator.cdl
+-- Created:	Thu Feb 25 18:01:55 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class BlockIterator from BOP 
+
+    ---Purpose:  
+     
+    --  Auxiliary class to provide 
+    --  simple iteration on indexes that 
+    --  belongs to the integer range  [Lower,Upper]  
+    --  with increment =1 
+
+raises
+
+    NoMoreObject from Standard
+
+is
+
+    Create  
+    	returns BlockIterator from BOP;
+    	---Purpose:  
+    	--- Empty  Constructor 
+    	---
+    Create(Lower,Upper : Integer from Standard) 
+    	returns BlockIterator from BOP;
+    	---Purpose:  
+    	--- Creates an object with initial range 
+    	--- of  [Lower,Upper]  	     
+    	---
+    
+    Initialize(me : in out)  
+    	is static;
+    	---Purpose:  
+    	--- Initialize an object with initial range 
+    	--- of  [Lower,Upper]  	     
+    	---
+    More(me)  
+    	returns Boolean from Standard  
+    	is static;
+    	---Purpose:  
+    	--- Support of Iteration 
+    	---
+    Next(me : in out)  
+    	raises NoMoreObject  
+    	is static;
+    	---Purpose:  
+    	--- Support of Iteration 
+    	---
+    Value(me)  
+    	returns Integer from Standard  
+    	is static;
+    	---Purpose:  
+    	--- Support of Iteration 
+    	---
+    Extent(me)  
+    	returns Integer from Standard  
+    	is static;
+    	---Purpose:  
+    	--- Returns the extension=myUpper - myLower + 1;   
+    	---
+    
+fields
+
+    myLower : Integer from Standard;
+    myUpper : Integer from Standard;
+    myValue : Integer from Standard;
+
+end BlockIterator;

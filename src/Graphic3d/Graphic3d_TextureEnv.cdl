@@ -1,0 +1,58 @@
+-- File:	Graphic3d_TextureEnv.cdl
+-- Created:	Mon Jul 28 10:37:10 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+-- Modified :	GG 10/01/2000 IMP 
+--		Add NumberOfTextures() and TextureName() methods
+--		Add Name() method
+---Copyright:	 Matra Datavision 1997
+
+class  TextureEnv  from  Graphic3d 
+    
+inherits  TextureRoot  from  Graphic3d 
+ 
+
+    ---Purpose: This class provides environment texture usable only in Visual3d_ContextView
+
+uses 
+    NameOfTextureEnv  from  Graphic3d, 
+    StructureManager  from  Graphic3d 
+
+raises
+    OutOfRange from Standard
+
+is 
+    Create(SM  :  StructureManager  from  Graphic3d; 
+           aFileName  :  CString  from  Standard)
+	returns  mutable TextureEnv  from  Graphic3d;    
+    ---Purpose: Creates an environment texture from a file
+
+    Create(SM  	:  StructureManager  from  Graphic3d;
+    	   aName:  NameOfTextureEnv  from  Graphic3d)  
+	returns  mutable  TextureEnv  from  Graphic3d; 
+    ---Purpose: Creates an environment texture from a predefined texture name set.
+
+    Name(me) returns NameOfTextureEnv from Graphic3d;
+    ---Purpose:
+    -- Returns the name of the predefined textures or NOT_ENV_UNKNOWN
+    -- when the name is given as a filename.
+    ---Level: Public
+
+    NumberOfTextures(myclass) returns Integer from Standard;
+    ---Purpose:
+    -- Returns the number of predefined textures.
+    ---Level: Public
+
+    TextureName(myclass; aRank: Integer from Standard)
+	returns CString from Standard
+	raises OutOfRange from Standard;
+    ---Purpose:
+    -- Returns the name of the predefined texture of rank <aRank>
+    ---Trigger: when <aRank> is < 1 or > NumberOfTextures.
+    ---Level: Public
+
+fields
+    myName: NameOfTextureEnv from Graphic3d;
+     
+end  TextureEnv; 
+

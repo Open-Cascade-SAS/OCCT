@@ -1,0 +1,419 @@
+-- File:       OSD.cdl
+-- Copyright:   Matra Datavision 1992,1995
+-- Update:
+--              20-01-2009 : ABD Integration support of system fonts (using FTGL and FreeType)
+
+package OSD
+
+ ---History:
+ --   Version   Date        Purpose
+ --   1.1   24/06/92    Operating System Dependent tools
+ --   1.2
+ --   2.0
+ --   3.0
+ --   Windows NT 30/09/96 ( EUG )
+ ---Purpose: Set of Operating Sytem Dependent Tools 
+ --         (O)perating (S)ystem (D)ependent
+
+uses  
+
+    Standard ,  
+    Quantity ,  
+    TCollection
+
+is
+ 
+ exception OSDError inherits Failure from Standard  ;
+
+ imported Function;
+   ---Purpose: This is in fact a pointer to a function.
+   --          This is not an "enumeration" but a trick to solve an omission
+   --          from CDL.
+   --- C++: alias "typedef int (* OSD_Function)(...);"
+
+ enumeration OEMType is Unavailable,SUN,DEC,SGI,NEC,MAC,PC,HP,IBM,VAX,LIN,AIX;
+   ---Purpose: This is set of possible machine types
+   --          used in OSD_Host::MachineType
+
+ enumeration SysType is Unknown,Default,UnixBSD, UnixSystemV, VMS, OS2, 
+                        OSF, MacOs, Taligent, WindowsNT, LinuxREDHAT,Aix;
+   ---Purpose: Thisd is a set of possible system types.
+   --          'Default' means SysType of machine operating this process.
+   --          This can be used with the Path class.
+   --          All UNIX-like are grouped under "UnixBSD" or "UnixSystemV".
+   --          Such systems are Solaris, NexTOS ...
+   --          A category of systems accept MSDOS-like path such as
+   --          WindowsNT and OS2. 
+
+ enumeration FromWhere is FromBeginning, FromHere, FromEnd;
+   ---Purpose: Used by OSD_File in the method Seek.
+
+ enumeration LockType is NoLock, ReadLock, WriteLock, ExclusiveLock;
+   ---Purpose: locks for files.
+   --          NoLock is the default value when opening a file.
+   --
+   --          ReadLock allows only one reading of the file at a time.
+   --
+   --          WriteLock prevents others writing into a file(excepted the user 
+   --          who puts the lock)but allows everybody to read.
+   --
+   --          ExclusiveLock prevents reading and writing except for the
+   --          current user of the file.
+   --          So ExclusiveLock means only one user on the file and this
+   --          user is the one who puts the lock.
+
+ enumeration SingleProtection is None,R,W,RW,X,RX,WX,RWX,D,RD,WD,RWD,XD,RXD,WXD,RWXD;
+   ---Purpose: Access rights for files.
+   --          R means Read, W means Write, X means eXecute and D means Delete.
+   --          On UNIX, the right to Delete is combined with Write access.
+   --          So if "W"rite is not set and "D"elete is, "W"rite will be set
+   --          and if "W" is set, "D" will be too.
+
+ enumeration OpenMode is ReadOnly, WriteOnly, ReadWrite;
+   ---Purpose: Specifies the file open mode.
+
+ enumeration LoadMode is RTLD_LAZY, RTLD_NOW;
+   ---Purpose: This enumeration is used to load shareable libraries.
+
+ enumeration KindFile is FILE, DIRECTORY, LINK, SOCKET, UNKNOWN;
+   ---Purpose: Specifies the type of files.
+   
+ --ABD Integration support of system fonts (using FTGL and FreeType)
+ enumeration FontAspect is FA_Undefined, FA_Regular, FA_Bold, FA_Italic, FA_BoldItalic;
+   ---Purpose: Specifies aspect of system font.
+
+ private enumeration WhoAmI is  WDirectory, WDirectoryIterator, 
+             WEnvironment, WFile, WFileNode, WFileIterator, WMailBox, 
+             WPath, WProcess, WProtection, WSemaphore, WHost, WDisk,
+             WChronometer, WSharedMemory, WTimer, WPackage, WPrinter,
+             WEnvironmentIterator;
+   ---Purpose: Allows great accuracy for error management.
+   --          This is private.
+
+
+         class Error;
+             ---Purpose: Accurate management of OSD specific errors.
+
+         class Protection;
+             ---Purpose: Gets and sets protection attributes of 'system , user ,
+             --          group, and world'.
+  
+         class Path;
+             ---Purpose: Manages independent system path translation.
+
+         deferred class FileNode;
+             ---Purpose: A set of file/directory manipulation tools.
+
+         class Disk;
+             ---Purpose: A set of disk oriented tools.
+
+         class File;
+             ---Purpose: A set of file oriented tools.
+
+         class FileIterator;
+             ---Purpose: Searches for child files in current directory.
+
+         class Directory;
+             ---Purpose: A set of directory oriented tools
+
+         class DirectoryIterator;
+             ---Purpose: Searches sub-directories in current directory.
+
+         class Chronometer;
+             ---Purpose: Measures time elapsed for performance program tests. 
+             --          Measures CPU time consumed by a method call.
+
+         class Timer;
+             ---Purpose: Measures the effective time elapsed for a method call.
+
+         class Printer;
+             ---Purpose: Selects a printer (used by File).
+
+         class Host;
+             ---Purpose: Carries information about a host.
+             --          System version ,host name, nodename ...
+
+         class Environment;
+             ---Purpose: Manages environment variables.
+
+         class EnvironmentIterator;
+             ---Purpose: Get all environment variables.
+
+         class Process;
+             ---Purpose: Process specific oriented tools
+
+         class SharedMemory;
+             ---Purpose: Manages shared memory. 
+
+         class Semaphore;
+             ---Purpose: Manages semaphores.
+ 
+--         class Mutex is alias Mutex from Standard;
+             ---Purpose: Mutex object to synchronize threads within one process
+ 
+         class MailBox;
+             ---Purpose: Manages asynchronous mail boxes.
+    
+         class SharedLibrary;
+             ---Purpose: Provides tools to load a shared library
+             --          and retrieve the address of an entry point.
+
+     imported PThread;
+     imported ThreadFunction;
+         class Thread;
+             ---Purpose: A tool to manage threads
+         
+         --ABD Integration support of system fonts (using FTGL and FreeType)
+     imported NListOfSystemFont;
+     class SystemFont;
+     class FontMgr;
+
+ 
+    class Real2String;
+             ---Purpose: Convertion of CString to Real and reciprocally   
+
+    class Localizer;
+             ---Purpose: Manages locale.
+   
+
+    -----------------------------------------------
+    --  UNIX specific exceptions and enumeration --
+    -----------------------------------------------
+
+    exception Signal  inherits Failure from  Standard;
+    exception SIGHUP  inherits Signal;
+    exception SIGINT  inherits Signal;
+    exception SIGQUIT inherits Signal;
+    exception SIGILL  inherits Signal;
+    exception SIGKILL inherits Signal;
+    exception SIGBUS  inherits Signal;
+    exception SIGSEGV inherits Signal;
+    exception SIGSYS  inherits Signal;
+    
+
+    enumeration Signals is
+      ---purpose:
+      --     The "posix" signals.
+      --     
+      S_SIGHUP,          -- "hangup."
+      S_SIGINT,          -- "interrupt."
+      S_SIGQUIT,         -- "quit."
+      S_SIGILL,          -- "illegal instruction."
+      S_SIGKILL,         -- "kill."
+      S_SIGBUS,          -- "bus error."
+      S_SIGSEGV,         -- "segmentation violation."
+      S_SIGSYS,          -- "bad argument to system call."
+      S_SIGFPE,          -- "floating point exception."
+      S_FPE_FLTDIV_TRAP, -- "floating/decimal divide by zero."
+      S_FPE_INTDIV_TRAP, -- "integer divide by zero."
+      S_FPE_FLTOVF_TRAP, -- "floating overflow."
+      S_FPE_INTOVF_TRAP, -- "integer overflow."
+      S_FPE_FLTUND_TRAP, -- "floating underflow."
+      S_FPE_FLTINEX_TRAP -- "floating inexact result."
+    end Signals;
+    
+    ----------------------------------------
+    -- Exceptions ( Windows NT specific ) --
+    ----------------------------------------
+
+    exception Exception inherits Failure   from  Standard;
+    
+    exception Exception_ACCESS_VIOLATION         inherits Exception;
+    exception Exception_ARRAY_BOUNDS_EXCEEDED    inherits Exception;
+    exception Exception_FLT_DENORMAL_OPERAND     inherits Exception;
+    exception Exception_FLT_DIVIDE_BY_ZERO       inherits Exception;
+    exception Exception_FLT_INEXACT_RESULT       inherits Exception;
+    exception Exception_FLT_INVALID_OPERATION    inherits Exception;
+    exception Exception_FLT_OVERFLOW             inherits Exception;
+    exception Exception_FLT_STACK_CHECK          inherits Exception;
+    exception Exception_FLT_UNDERFLOW            inherits Exception;
+    exception Exception_ILLEGAL_INSTRUCTION      inherits Exception;
+    exception Exception_IN_PAGE_ERROR            inherits Exception;
+    exception Exception_INT_DIVIDE_BY_ZERO       inherits Exception;
+    exception Exception_INT_OVERFLOW             inherits Exception;
+    exception Exception_INVALID_DISPOSITION      inherits Exception;
+    exception Exception_NONCONTINUABLE_EXCEPTION inherits Exception;
+    exception Exception_PRIV_INSTRUCTION         inherits Exception;
+    exception Exception_STACK_OVERFLOW           inherits Exception;
+    exception Exception_STATUS_NO_MEMORY         inherits Exception; -- generating by 'HeapAlloc'
+    exception Exception_CTRL_BREAK               inherits Exception; -- generating by 'Ctrl-C' keystroke
+
+    ----------------------------------------------
+    -- Handler and SegvHandler (UNIX specific ) --
+    ----------------------------------------------
+
+    -- 
+    --     Handler(aSignal: Signals; aCode: Signals) 
+    --     
+ 
+    Handler(aSignal: Signals; aSigInfo: Address; aContext: Address)    
+    ---Purpose:
+    --   1) Raise a exception when aSignal is a floating point signal.
+    --    aSignal is SIGFPE.
+    --    aCode is 
+    --        (FPE:  Floating Point Exception)
+    --        (FLT:  FLoaTing operation.)
+    --        (INT:  INTeger  operation.)
+    --        (DIV:  DIVided by zero.)
+    --        (OVF:  OVerFlow.)
+    --        (INEX: INEXact operation.)
+    --        
+    --        FPE_FLTDIV_TRAP  (the exception "DivideByZero" is raised.)
+    --        FPE_INTDIV_TRAP  (the exception "DivideByZero" is raised.)
+    --        
+    --        FPE_FLTOVF_TRAP  (the exception "Overflow" is raised.)
+    --        FPE_INTOVF_TRAP  (the exception "Overflow" is raised.)
+    --        
+    --        FPE_FLTINEX_TRAP (the exception "NumericError" is raised.)
+    --        
+    --   2) Display the signal name, and call "exit" with signal number for
+    --   a "Hardware" signal.
+    --   
+    raises
+        DivideByZero, 
+    Overflow,
+    Underflow,
+        SIGHUP,
+        SIGINT,
+        SIGQUIT,
+        SIGILL,
+        SIGKILL,
+        SIGBUS,
+        SIGSEGV,
+        SIGSYS
+    is private;
+
+    SegvHandler(aSignal: Signals; aSigInfo: Address; aContext: Address)
+    ---Purpose:
+    -- Handle access to null object and segmentation violation
+    --
+    raises
+        NullObject,
+        SIGSEGV
+    is private;
+
+    ---------------------------------------
+    -- WntHandler (Windows NT specific ) --
+    ---------------------------------------
+
+    WntHandler ( exceptionInfo : Address from Standard )
+     returns Integer from Standard
+     raises  DivideByZero,
+             Overflow,
+         Underflow,
+         Exception_ACCESS_VIOLATION,
+         Exception_ARRAY_BOUNDS_EXCEEDED,
+         Exception_FLT_DENORMAL_OPERAND,
+         Exception_FLT_DIVIDE_BY_ZERO,
+         Exception_FLT_INEXACT_RESULT,
+         Exception_FLT_INVALID_OPERATION,
+         Exception_FLT_OVERFLOW,
+         Exception_FLT_STACK_CHECK,
+         Exception_FLT_UNDERFLOW,
+         Exception_ILLEGAL_INSTRUCTION,
+         Exception_IN_PAGE_ERROR,
+         Exception_INVALID_DISPOSITION,
+         Exception_NONCONTINUABLE_EXCEPTION,
+         Exception_PRIV_INSTRUCTION,
+         Exception_STACK_OVERFLOW,
+         Exception_STATUS_NO_MEMORY
+     is private;
+        ---Purpose:
+        --  1) Raises an exception if the exception due to floating point errors.
+        --     Flosting point errors:
+        --     EXCEPTION_FLT_DENORMAL_OPERAND
+        --     EXCEPTION_FLT_DIVIDE_BY_ZERO
+        --     EXCEPTION_FLT_INEXACT_RESULT
+        --     EXCEPTION_FLT_INVALID_OPERATION
+        --     EXCEPTOPN_FLT_OVERFLOW
+        --     EXCEPTION_FLT_STACK_CHECK
+        --     EXCEPTION_FLT_UNDERFLOW
+        --  2) Displays a message box 'Continue' - 'Debugger' - 'Stop' if the environment
+        --     variable 'CSF_EXCEPTION_PROMPT' is set and takes appropriate action.
+        --     Raises an exception otherwise.
+ 
+    SetSignal(aFloatingSignal: Boolean = Standard_True);
+    ---Purpose:
+    --   1) Arms some floating point signals, and sets a "Handler" for them.
+    --   2) Sets a "Handler" for the "Hardware" signals.
+    --   For Win32 users: under VC++ you can control which method of handling
+    --   exceptions is used by means of UseSETranslator method before calling
+    --   SetSignal
+    --
+    --  Warning:
+    --   Some "Data Base Managers" use their own "Handler" for the signals 
+    --   such as  "SIGSEGV". So if a "Handler" is set for a signal it will
+    --   not be replaced by Standard "Handler". It is managed by OBJS
+    --   preprocessor definition.
+    --
+    ---Level: Internal    
+
+    AvailableMemory returns Integer from Standard;
+    ---Purpose: Returns available memory in Kilobytes.
+    ---Level: Advanced
+     
+    SecSleep(aDelay: Integer from Standard);
+    ---Purpose: Commands the process to sleep for a number of seconds.
+    ---Level: Public    
+
+    MilliSecSleep(aDelay: Integer from Standard);
+    ---Purpose: Commands the process to sleep for a number of milliseconds
+    ---Level: Public    
+
+    RealToCString(aReal: Real; aString:out PCharacter)  
+        returns Boolean ;
+    ---Purpose:
+    --  Converts aReal into aCstring in exponential format with a period as
+    --  decimal point, no thousand separator and no grouping of digits.
+    --  The conversion is independant from the current locale
+    ---Level: Public    
+
+    CStringToReal(aString: CString; aReal: out Real) returns Boolean ;
+    ---Purpose:
+    --  Converts aCstring representing a real with a period as
+    --  decimal point, no thousand separator and no grouping of digits
+    --  into aReal .
+    --  The conversion is independant from the current locale.
+    ---Level: Public    
+
+    IsDivisible(aDividend, aDivisor: Real from Standard)
+    returns Boolean from Standard;
+    ---Purpose: Tests if the quotient theDividend/theDivisor
+    --          does not overflow
+    ---Level: Public    
+    
+    GetExponent(aReal: Real from Standard)
+    returns Integer from Standard;
+    ---Purpose: Returns the exponent in base 2 of a floating-point number.
+    ---Level: Public    
+    
+    GetMantissa(aReal: Real from Standard)
+    returns Real from Standard;
+    ---Purpose: Returns the mantissa of a floating-point number.
+    ---Level: Public    
+    
+    -------------------------
+    -- Windows NT specific --
+    -------------------------
+                            
+    ControlBreak raises  Exception_CTRL_BREAK;
+    ---Purpose: since Windows NT does not support 'SIGINT' signal like UNIX,
+    --          then this method checks whether Ctrl-Break keystroke was or
+    --          not. If yes then raises Exception_CTRL_BREAK.
+
+    UseSETranslator(useSE : Boolean);
+    ---Purpose: Defines whether SetSignal must use _se_translator_function or
+    --          SetUnhandledExceptionFilter and signal to catch system
+    --          exceptions. The default behaviour is to use SE translator.
+    --  Warning: Using SE translator method SetSignal should be called for each
+    --          new created thread, while using the alternative method 
+    --          the exception handler is established once for the whole
+    --          process and all its threads.
+    --          This function takes effect only under VC++ compiler.
+
+    UseSETranslator returns Boolean;
+    ---Purpose: Returns the current value of the flag set by above method.
+
+end OSD;
+
+

@@ -1,0 +1,99 @@
+-- File:	TopOpeBRep_Point2d.cdl
+-- Created:	Thu Oct 29 09:46:39 1998
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class Point2d from TopOpeBRep
+
+uses
+
+    Pnt2d from gp,
+    Pnt from gp,
+    Vertex from TopoDS,
+    Edge from TopoDS,
+    Transition from TopOpeBRepDS,
+    Config from TopOpeBRepDS,
+    IntersectionPoint from IntRes2d,
+    P2Dstatus from TopOpeBRep,
+    Hctxff2d from TopOpeBRep,
+    Hctxee2d from TopOpeBRep
+
+is
+
+    Create returns Point2d  from TopOpeBRep;
+    Dump(me;ie1:Integer = 0;ie2:Integer = 0);
+
+    SetPint(me:in out;P:IntersectionPoint from IntRes2d);---C++ : inline
+    HasPint(me) returns Boolean;---C++ : inline
+    Pint(me) returns IntersectionPoint from IntRes2d;---C++ : inline
+    ---C++ : return const &
+    SetIsVertex(me:in out;I:Integer;B:Boolean);---C++ : inline
+    IsVertex(me;I:Integer) returns Boolean;---C++ : inline
+    SetVertex(me:in out;I:Integer;V:Vertex);---C++ : inline
+    Vertex(me;I:Integer) returns Vertex;---C++: return const &
+    SetTransition(me:in out;I:Integer;T:Transition);---C++ : inline
+    Transition(me;I:Integer) returns Transition;---C++: return const &
+    ChangeTransition(me:out;I:Integer) returns Transition;---C++: return &
+    SetParameter(me:in out;I:Integer;P:Real);---C++ : inline
+    Parameter(me;I:Integer) returns Real;---C++ : inline
+    SetIsPointOfSegment(me:in out;B:Boolean);---C++ : inline
+    IsPointOfSegment(me) returns Boolean;---C++ : inline
+    SetSegmentAncestors(me:in out;IP1,IP2:Integer);---C++ : inline
+    SegmentAncestors(me;IP1,IP2:out Integer) returns Boolean;---C++ : inline
+    SetStatus(me:in out;S:P2Dstatus);---C++ : inline
+    Status(me) returns P2Dstatus;---C++ : inline
+    SetIndex(me:in out;X:Integer);---C++ : inline
+    Index(me) returns Integer;---C++ : inline
+    SetValue(me:in out;P:Pnt from gp);---C++ : inline
+    Value(me) returns Pnt from gp;---C++ : inline
+    ---C++ : return const &
+    SetValue2d(me:in out;P:Pnt2d from gp);---C++ : inline
+    Value2d(me) returns Pnt2d from gp;---C++ : inline
+    ---C++ : return const &
+    SetKeep(me:in out;B:Boolean);---C++ : inline
+    Keep(me) returns Boolean;---C++ : inline
+    SetEdgesConfig(me:in out;C:Config from TopOpeBRepDS);---C++ : inline
+    EdgesConfig(me) returns Config from TopOpeBRepDS;---C++ : inline
+    SetTolerance(me:in out;T:Real);---C++ : inline
+    Tolerance(me) returns Real;---C++ : inline
+    SetHctxff2d(me:in out;ff2d:Hctxff2d);---C++ : inline
+    Hctxff2d(me) returns Hctxff2d;---C++ : inline
+    SetHctxee2d(me:in out;ee2d:Hctxee2d);---C++ : inline
+    Hctxee2d(me) returns Hctxee2d;---C++ : inline
+    
+fields
+
+    mypint : IntersectionPoint from IntRes2d;
+    myhaspint : Boolean;
+    
+    myisvertex1 : Boolean;
+    myvertex1 : Vertex;
+    mytransition1 : Transition;
+    myparameter1 : Real;
+
+    myisvertex2 : Boolean;
+    myvertex2 : Vertex;
+    mytransition2 : Transition; 
+    myparameter2 : Real;
+
+    myispointofsegment : Boolean;    
+    myips1,myips2 : Integer;
+    myhasancestors : Boolean;
+    mystatus : P2Dstatus from TopOpeBRep;
+    myindex : Integer;
+    mypnt : Pnt from gp;
+    mypnt2d : Pnt2d from gp;
+    mykeep : Boolean;
+    myedgesconfig : Config from TopOpeBRepDS;
+    
+    mytolerance : Real;
+    
+    myctxff2d : Hctxff2d from TopOpeBRep;
+    myctxee2d : Hctxee2d from TopOpeBRep;
+
+friends
+
+    class EdgesIntersector from TopOpeBRep
+        
+end Point2d from TopOpeBRep;

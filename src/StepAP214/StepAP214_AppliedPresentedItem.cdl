@@ -1,0 +1,38 @@
+-- File:	StepAP214_AppliedPresentedItem.cdl
+-- Created:	Wed Mar 10 15:19:53 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class AppliedPresentedItem from StepAP214 
+inherits PresentedItem from StepVisual
+	---Purpose: 
+
+uses
+    	HArray1OfPresentedItemSelect from StepAP214, 
+	PresentedItemSelect from StepAP214
+
+
+is
+    	Create returns mutable AppliedPresentedItem;
+	---Purpose: Returns a AutoDesignPresentedItem
+
+	Init (me : mutable;
+	      aItems : mutable HArray1OfPresentedItemSelect from StepAP214) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetItems(me : mutable; aItems : mutable HArray1OfPresentedItemSelect);
+	Items (me) returns mutable HArray1OfPresentedItemSelect;
+	ItemsValue (me; num : Integer) returns PresentedItemSelect;
+	NbItems (me) returns Integer;
+
+
+
+
+fields
+
+    	items : HArray1OfPresentedItemSelect from StepAP214;
+
+end AppliedPresentedItem;

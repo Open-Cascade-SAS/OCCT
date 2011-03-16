@@ -1,0 +1,107 @@
+-- File:        BinLDrivers_DocumentRetrievalDriver.cdl
+-- Created:     Thu Oct 31 10:52:35 2002
+-- Author:      Michael SAZONOV
+--              <msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2002
+
+class DocumentRetrievalDriver from BinLDrivers inherits RetrievalDriver from PCDM
+
+uses
+    HeaderData                  from Storage,
+    Position                    from Storage,
+    AsciiString                 from TCollection,
+    ExtendedString              from TCollection,
+    Document                    from PCDM,
+    Document                    from CDM,
+    Application                 from CDM,
+    MessageDriver               from CDM,
+    ADriverTable                from BinMDF,
+    RRelocationTable            from BinObjMgt,
+    Persistent                  from BinObjMgt,
+    Label                       from TDF,
+    IStream                     from Standard,
+    MapOfInteger                from TColStd,
+    DocumentSection             from BinLDrivers,
+    VectorOfDocumentSection     from BinLDrivers
+
+is
+    -- ===== Public methods =====
+
+    Create returns mutable DocumentRetrievalDriver from BinLDrivers;
+        ---Purpose: Constructor
+
+    SchemaName          (me)
+        returns ExtendedString from TCollection is redefined virtual;
+        ---Purpose: pure virtual method definition
+
+    Make                (me : mutable; PD : Document from PCDM;
+                                       TD : Document from CDM)
+        is redefined virtual;
+        ---Purpose: pure virtual method definition
+
+    CreateDocument      (me : mutable)
+        returns Document from CDM is redefined virtual;
+        ---Purpose: pure virtual method definition
+
+    Read(me:mutable; theFileName:    ExtendedString from TCollection;
+                     theNewDocument: Document    from CDM;
+                     theApplication: Application from CDM) is redefined virtual;
+        ---Purpose: retrieves the content of the file into a new Document.
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+        returns ADriverTable from BinMDF
+        is virtual;
+
+    -- ===== Protected methods =====
+
+    ReadSubTree (me: mutable; theIS   : in out IStream from Standard;
+                              theData : Label from TDF)
+        returns Integer from Standard
+        is virtual protected;
+        ---Purpose: Read the tree from the stream <theIS> to <theLabel>
+
+    ReadInfoSection(me: mutable; theFile : AsciiString from TCollection;
+                                 theData : in out HeaderData from Storage)
+        returns Position from Storage is protected;
+        ---Purpose: Read the  info  section  of  theFile into theData,
+        --          return a file  position  corresponding to the info
+        --          section end
+    
+    ReadSection    (me: mutable;
+                    theSection : in out DocumentSection from BinLDrivers;
+                    theDoc     : Document    from CDM;
+                    theIS      : in out IStream from Standard)
+        is virtual protected; 
+        ---Purpose: define the procedure of reading a section to file.
+
+    ReadShapeSection (me: mutable;
+                      theSection : in out DocumentSection from BinLDrivers;
+                      theIS      : in out IStream from Standard; 
+    	    	      isMess     : Boolean from Standard = Standard_False)
+        is virtual protected; 
+	
+    CheckShapeSection (me: mutable;
+                      thePos : Position from Storage;
+                      theIS  : in out IStream from Standard)
+        is virtual protected; 
+	 
+    PropagateDocumentVersion(me: mutable; theVersion : Integer from Standard) 
+    	is virtual protected; 
+	
+    WriteMessage(me: mutable; theMessage : ExtendedString from TCollection)
+        is protected;
+        ---Purpose: write  theMessage  to  the  MessageDriver  of  the
+        --          Application
+    
+fields
+    -- use one self-increasing buffer for an attribute
+    myPAtt      : Persistent            from BinObjMgt;
+    myDrivers   : ADriverTable          from BinMDF    is protected;
+    myRelocTable: RRelocationTable      from BinObjMgt is protected;
+    myMsgDriver : MessageDriver         from CDM;
+    -- map of type ID of attributes registered in file header but not having a driver
+    myMapUnsupported :  MapOfInteger    from TColStd;
+
+    mySections  : VectorOfDocumentSection from BinLDrivers;
+
+end DocumentRetrievalDriver;

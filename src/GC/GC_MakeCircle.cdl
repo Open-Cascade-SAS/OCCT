@@ -1,0 +1,105 @@
+-- File:	MakeCircle.cdl
+-- Created:	Mon Sep 28 11:49:17 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCircle from GC inherits Root from GC
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create Cirlec from Geom.
+    --           
+    --           * Create a Circle parallel to another and passing 
+    --             though a point.
+    --           * Create a Circle parallel to another at the distance 
+    --             Dist.
+    --           * Create a Circle passing through 3 points.
+    --           * Create a Circle with its center and the normal of its 
+    --             plane and its radius.
+    --           * Create a Circle with its axis and radius.
+    --  The circle's parameter is the angle (Radian).
+    --  The parametrization range is [0,2*PI].
+    --  The circle is a closed and periodic curve.
+    --  The center of the circle is the Location point of its axis
+    --  placement. The XDirection of the axis placement defines the 
+    --  origin of the parametrization. 
+
+uses Pnt       from gp,
+     Circ      from gp,
+     Circle    from Geom,
+     Dir       from gp,
+     Ax1       from gp,
+     Ax2       from gp,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (C : Circ from gp)   returns MakeCircle;
+    --- Purpose :  creates a circle from a non persistent circle C by its conversion.
+
+Create (A2     : Ax2  from gp      ; 
+    	Radius : Real from Standard)  returns MakeCircle;
+    --- Purpose :
+    --  A2 is the local coordinates system of the circle.
+    --  It is not forbidden to create a circle with Radius = 0.0
+    --  Status is "NegativeRadius" if Radius < 0.
+
+Create(Circ : Circ from gp      ;
+       Dist : Real from Standard) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom <TheCirc> parallel to another 
+    --           Circ <Circ> with a distance <Dist>.
+    --           If Dist is greater than zero the result is enclosing 
+    --           the circle <Circ>, else the result is enclosed by the 
+    --           circle <Circ>.
+
+Create(Circ    :     Circ from gp;
+       Point   :     Pnt  from gp) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom <TheCirc> parallel to another 
+    --           Circ <Circ> and passing through a Pnt <Point>.
+
+Create(P1,P2,P3 : Pnt  from gp) returns MakeCircle;
+    ---Purpose : Make a Circ from gp <TheCirc> passing through 3 
+    --           Pnt2d <P1>,<P2>,<P3>.
+
+Create(Center  : Pnt  from gp      ;
+       Norm    : Dir  from gp      ;
+       Radius  : Real from Standard) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom <TheCirc> with its center 
+    --           <Center> and the normal of its plane <Norm> and 
+    --           its radius <Radius>.
+
+Create(Center  : Pnt  from gp      ;
+       PtAxis  : Pnt  from gp      ;
+       Radius  : Real from Standard) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom <TheCirc> with its center 
+    --           <Center> and the normal of its plane defined by the 
+    --           two points <Center> and <PtAxis> and its radius <Radius>.
+
+Create(Axis   : Ax1  from gp      ;
+       Radius : Real from Standard) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom <TheCirc> with its center 
+    --           <Center> and its radius <Radius>.
+
+Value(me) returns Circle from Geom
+    raises NotDone
+    is static;
+    --- Purpose:
+    -- Returns the constructed circle.
+    -- Exceptions
+    -- StdFail_NotDone if no circle is constructed.
+    ---C++: return const&
+
+Operator(me) returns Circle from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_Circle() const;"
+
+fields
+
+    TheCircle : Circle from Geom;
+    --The solution from Geom.
+    
+end MakeCircle;
+

@@ -1,0 +1,61 @@
+// File:	TopLoc_Location.lxx
+// Created:	Mon Jan 11 17:41:43 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+#include <TopLoc_SListOfItemLocation.hxx>
+#include <TopLoc_ItemLocation.hxx>
+
+//=======================================================================
+//function : IsIdentity
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopLoc_Location::IsIdentity() const
+{
+  return myItems.IsEmpty();
+}
+
+//=======================================================================
+//function : Identity
+//purpose  : 
+//=======================================================================
+
+inline void TopLoc_Location::Identity()
+{
+  myItems.Clear();
+}
+
+//=======================================================================
+//function : FirstDatum
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TopLoc_Datum3D)&  TopLoc_Location::FirstDatum()const 
+{
+  return myItems.Value().myDatum;
+}
+
+//=======================================================================
+//function : FirstPower
+//purpose  : 
+//=======================================================================
+
+ inline Standard_Integer  TopLoc_Location::FirstPower()const 
+{
+  return myItems.Value().myPower;
+}
+
+
+//=======================================================================
+//function : NextLocation
+//purpose  : 
+//=======================================================================
+
+ inline const TopLoc_Location&  TopLoc_Location::NextLocation()const 
+{
+  return (*(TopLoc_Location*) &(myItems.Tail()));
+}
+
+

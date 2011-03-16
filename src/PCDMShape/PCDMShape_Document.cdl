@@ -1,0 +1,38 @@
+-- File:	PCDMShape_Document.cdl
+-- Created:	Thu Jan  8 15:54:20 1998
+-- Author:	Isabelle GRIGNON
+--		<isg@bigbox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class Document from PCDMShape inherits Document from PCDM
+
+
+    ---Purpose: This document is used to store a Shape1 from PTopoDS.
+    
+uses
+
+    Orientation   from TopAbs,
+    Shape1        from PTopoDS,
+    Location      from PTopLoc
+    
+is
+    Create returns mutable Document from PCDMShape;
+    ---Level: Internal 
+
+    Create(T : Shape1 from PTopoDS) returns mutable Document from PCDMShape;
+    ---Level: Internal 
+
+    Shape(me) returns Shape1 from PTopoDS
+    ---Level: Internal 
+    ---C++: return const
+    is static;
+
+    Shape(me : mutable; T : Shape1 from PTopoDS)
+    ---Level: Internal 
+    is static;
+
+fields
+
+    myShape : Shape1 from PTopoDS;
+
+end Document from PCDMShape;

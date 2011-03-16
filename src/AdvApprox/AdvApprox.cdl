@@ -1,0 +1,69 @@
+-- File:	AdvApprox.cdl
+-- Created:	Tue Jan 26 11:16:41 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package AdvApprox
+    
+     ---Purpose: This package provides algorithms approximating a function
+     --          that can be multidimensional creating in the end a 
+     --          BSpline function with the required continuity
+     --          
+               
+uses gp,
+     math,
+     GeomAbs,
+     TColStd, 
+     TColgp, 
+     TCollection, 
+     Standard,
+     StdFail, 
+     PLib
+
+    
+is
+    
+
+    class ApproxAFunction from AdvApprox ;
+    ---Purpose:
+    -- this approximate a given function
+    class SimpleApprox; 
+--  class ApproxAFunction;  
+
+    imported EvaluatorFunction ;
+    ---Purpose:
+    --  typedef  void (*EvaluatorFunction)  (
+    --  Standard_Integer *
+    --  Standard_Real    *
+    --  Standard_Real    *
+    --  Standard_Integer *
+    --  Standard_Real    *
+    --  Standard_Integer *) ;
+    
+
+    deferred class Cutting;
+    ---Purpose : 
+    -- this class is used to choose the way of cutting if needed 
+
+    class DichoCutting;
+    ---Purpose :
+    -- inherits class Cutting;
+    -- if Cutting is necessary in [a,b], we cut at (a+b) / 2.
+    -- 
+
+    class PrefCutting;
+    ---Purpose : 
+    -- inherits class Cutting; contains a list of preferential points (di)i
+    -- if Cutting is necessary in [a,b], we cut at the di nearest from (a+b)/2.
+    
+    class PrefAndRec;
+    ---Purpose : 
+    -- inherits class Cutting; contains two lists of preferential points to
+    -- manage to level of preferential cutting.
+    -- if Cutting is necessary in [a,b], we cut at the di nearest from (a+b)/2
+
+
+end AdvApprox;

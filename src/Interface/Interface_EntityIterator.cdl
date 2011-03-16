@@ -1,0 +1,83 @@
+-- File:	EntityIterator.cdl
+-- Created:	Mon Feb  3 14:08:35 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class EntityIterator  from Interface
+
+    ---Purpose : Defines an Iterator on Entities, complying with GraphTools
+    --           needs. Allows considering of various criteria
+
+uses Transient, HSequenceOfTransient from TColStd,
+     IntVal, InterfaceModel
+
+raises NoMoreObject, NoSuchObject
+
+is
+
+    Create returns EntityIterator;
+    ---Purpose : Defines an empty iterator (see AddList & AddItem)
+
+    Create  (list : HSequenceOfTransient)  returns EntityIterator;
+    ---Purpose : Defines an iterator on a list, directly i.e. without copying it
+
+    AddList (me : in out; list : HSequenceOfTransient);
+    ---Purpose : Gets a list of entities and adds its to the iteration list
+
+    AddItem (me : in out; anentity : any Transient);
+    ---Purpose : Adds to the iteration list a defined entity
+
+    GetOneItem (me : in out; anentity : any Transient) is static;
+    ---Purpose : same as AddItem (kept for compatibility)
+
+    Reset (me : in out) is protected;
+    ---Purpose : Allows subclasses of EntityIterator to reevaluate an iteration
+
+    SelectType (me : in out; atype : Type; keep : Boolean);
+    ---Purpose : Selects entities with are Kind of a given type,  keep only
+    --           them (is keep is True) or reject only them (if keep is False)
+
+
+    NbEntities (me) returns Integer  is static;
+    ---Purpose : Returns count of entities which will be iterated on
+    --           Calls Start if not yet done
+
+    NbTyped    (me; type : Type) returns Integer  is static;
+    ---Purpose : Returns count of entities of a given type (kind of)
+
+    Typed      (me; type : Type) returns EntityIterator;
+    ---Purpose : Returns the list of entities of a given type (kind of)
+
+    Start (me)  is virtual;
+    ---Purpose : Allows re-iteration (useless for the first iteration)
+
+    More (me) returns Boolean;
+    ---Purpose : Says if there are other entities (vertices) to iterate
+    --           the first time, calls Start
+
+    Next (me) raises NoMoreObject;
+    ---Purpose : Sets iteration to the next entity (vertex) to give
+
+    Value (me) returns any Transient  raises NoSuchObject;
+    ---Purpose : Returns the current Entity iterated, to be used by Interface
+    --           tools or by GraphTools (where Entity is a Vertex)
+    ---C++ : return const &
+
+    Content (me) returns HSequenceOfTransient;
+    ---Purpose : Returns the content of the Iterator, accessed through a Handle
+    --           to be used by a frontal-engine logic
+    --           Returns an empty Sequence if the Iterator is empty
+    --           Calls Start if not yet done
+
+    Destroy (me : in out) is virtual;
+    ---Purpose : Clears data of iteration
+    ---C++: alias "Standard_EXPORT virtual ~Interface_EntityIterator() { Destroy();}"
+    
+fields
+
+    thecurr : IntVal;
+    thelist : HSequenceOfTransient;
+
+end EntityIterator;

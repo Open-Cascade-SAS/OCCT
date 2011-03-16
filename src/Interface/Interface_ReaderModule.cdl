@@ -1,0 +1,57 @@
+-- File:	Interface_ReaderModule.cdl
+-- Created:	Thu Feb  4 18:06:48 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class ReaderModule  from Interface  inherits TShared
+
+    ---Purpose : Defines unitary operations required to read an Entity from a
+    --           File (see FileReaderData, FileReaderTool), under control of
+    --           a FileReaderTool. The initial creation is performed by a
+    --           GeneralModule (set in GeneralLib). Then, which remains is
+    --           Loading data from the FileReaderData to the Entity
+    --           
+    --           To work, a GeneralModule has formerly recognized the Type read
+    --           from FileReaderData as a positive Case Number, then the
+    --           ReaderModule reads it according to this Case Number
+
+uses Transient, FileReaderData, Check
+
+raises DomainError
+
+is
+
+    CaseNum (me; data : FileReaderData; num : Integer) returns Integer
+    	is deferred;
+    ---Purpose : Translates the type of record <num> in <data> to a positive
+    --           Case Number. If Recognition fails, must return 0
+
+    Read (me; casenum : Integer; data : FileReaderData; num : Integer;
+    	  ach : in out Check; ent : mutable Transient)
+    ---Purpose : Performs the effective loading from <data>, record <num>,
+    --           to the Entity <ent> formerly created
+    --           In case of Error or Warning, fills <ach> with messages
+    --           Remark that the Case Number comes from translating a record
+    	  raises DomainError  is deferred;
+    --           Can raise any exception, while it is preferable to prevent
+    --           them and fill the Check
+
+    NewRead (me; casenum : Integer; data : FileReaderData; num : Integer;
+    	  ach : in out Check; ent : out mutable Transient) returns Boolean
+    ---Purpose : Specific operator (create+read) defaulted to do nothing.
+    --           It can be redefined when it is not possible to work in two
+    --           steps (NewVoid then Read). This occurs when no default
+    --           constructor is defined : hence the result <ent> must be
+    --           created with an effective definition from the reader.
+    --           Remark : if NewRead is defined, Copy has nothing to do.
+    --           
+    --           Returns True if it has produced something, false else.
+    --           If nothing was produced, <ach> should be filled : it will be
+    --           treated as "Unrecognized case" by reader tool.
+    	  raises DomainError  is virtual;
+    --           Can raise any exception, while it is preferable to prevent
+    --           them and fill the Check
+
+end ReaderModule;

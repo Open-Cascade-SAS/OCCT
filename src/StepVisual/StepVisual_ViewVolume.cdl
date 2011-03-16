@@ -1,0 +1,67 @@
+-- File:        ViewVolume.cdl
+-- Created:     Fri Dec  1 11:11:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ViewVolume from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	CentralOrParallel from StepVisual, 
+	CartesianPoint from StepGeom, 
+	Real from Standard, 
+	Boolean from Standard, 
+	PlanarBox from StepVisual
+is
+
+	Create returns mutable ViewVolume;
+	---Purpose: Returns a ViewVolume
+
+	Init (me : mutable;
+	      aProjectionType : CentralOrParallel from StepVisual;
+	      aProjectionPoint : mutable CartesianPoint from StepGeom;
+	      aViewPlaneDistance : Real from Standard;
+	      aFrontPlaneDistance : Real from Standard;
+	      aFrontPlaneClipping : Boolean from Standard;
+	      aBackPlaneDistance : Real from Standard;
+	      aBackPlaneClipping : Boolean from Standard;
+	      aViewVolumeSidesClipping : Boolean from Standard;
+	      aViewWindow : mutable PlanarBox from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetProjectionType(me : mutable; aProjectionType : CentralOrParallel);
+	ProjectionType (me) returns CentralOrParallel;
+	SetProjectionPoint(me : mutable; aProjectionPoint : mutable CartesianPoint);
+	ProjectionPoint (me) returns mutable CartesianPoint;
+	SetViewPlaneDistance(me : mutable; aViewPlaneDistance : Real);
+	ViewPlaneDistance (me) returns Real;
+	SetFrontPlaneDistance(me : mutable; aFrontPlaneDistance : Real);
+	FrontPlaneDistance (me) returns Real;
+	SetFrontPlaneClipping(me : mutable; aFrontPlaneClipping : Boolean);
+	FrontPlaneClipping (me) returns Boolean;
+	SetBackPlaneDistance(me : mutable; aBackPlaneDistance : Real);
+	BackPlaneDistance (me) returns Real;
+	SetBackPlaneClipping(me : mutable; aBackPlaneClipping : Boolean);
+	BackPlaneClipping (me) returns Boolean;
+	SetViewVolumeSidesClipping(me : mutable; aViewVolumeSidesClipping : Boolean);
+	ViewVolumeSidesClipping (me) returns Boolean;
+	SetViewWindow(me : mutable; aViewWindow : mutable PlanarBox);
+	ViewWindow (me) returns mutable PlanarBox;
+
+fields
+
+	projectionType : CentralOrParallel from StepVisual; -- an Enumeration
+	projectionPoint : CartesianPoint from StepGeom;
+	viewPlaneDistance : Real from Standard;
+	frontPlaneDistance : Real from Standard;
+	frontPlaneClipping : Boolean from Standard;
+	backPlaneDistance : Real from Standard;
+	backPlaneClipping : Boolean from Standard;
+	viewVolumeSidesClipping : Boolean from Standard;
+	viewWindow : PlanarBox from StepVisual;
+
+end ViewVolume;

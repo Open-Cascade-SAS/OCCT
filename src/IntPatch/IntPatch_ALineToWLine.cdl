@@ -1,0 +1,81 @@
+-- File:	IntPatch_ALineToWLine.cdl
+-- Created:	Fri Nov 26 10:26:11 1993
+-- Author:	Modelistation
+---Copyright:	 Matra Datavision 1993
+
+
+class ALineToWLine from IntPatch
+
+uses 
+    WLine from IntPatch,
+    ALine from IntPatch,
+    Quadric from IntSurf
+
+is 
+
+    Create(Quad1 : Quadric from IntSurf;
+    	   Quad2 : Quadric from IntSurf)
+    
+    	returns ALineToWLine from IntPatch;
+	
+    Create(Quad1       : Quadric from IntSurf;
+           Quad2       : Quadric from IntSurf;
+           Deflection  : Real from Standard;
+    	   PasMaxUV    : Real from Standard;
+           NbMaxPoints : Integer from Standard) 
+    
+    	returns ALineToWLine from IntPatch;
+	
+	
+    SetTolParam(me:out; 
+    	    aT:Real from Standard); 
+	 
+    TolParam(me) 
+    	returns Real from Standard; 
+	 
+    SetTolOpenDomain(me:out; 
+    	    aT:Real from Standard); 
+	 
+    TolOpenDomain(me) 
+    	returns Real from Standard; 
+	 
+    SetTolTransition(me:out; 
+    	    aT:Real from Standard); 
+	 
+    TolTransition(me) 
+    	returns Real from Standard;  
+
+    SetTol3D(me:out; 
+    	    aT:Real from Standard); 
+	 
+    Tol3D(me) 
+    	returns Real from Standard;  
+     
+    SetConstantParameter(me);
+    
+    SetUniformAbscissa(me);
+    
+    SetUniformDeflection(me);
+    
+    MakeWLine(me; aline: ALine from IntPatch)
+    
+    	returns WLine from IntPatch;
+	
+    MakeWLine(me; aline: ALine from IntPatch; paraminf,paramsup: Real from Standard)
+    	returns WLine from IntPatch; 
+    
+fields
+    quad1         : Quadric from IntSurf;
+    quad2         : Quadric from IntSurf;
+    deflectionmax : Real    from Standard;
+    pasuvmax      : Real    from Standard;
+    nbpointsmax   : Integer from Standard;
+    type          : Integer from Standard; -- 0: Constant Parameter
+                                           -- 1: Uniform Abscissa
+                                           -- 2: Uniform Deflection
+    myTolParam      : Real from Standard; 
+    myTolOpenDomain : Real from Standard; 
+    myTolTransition : Real from Standard; 
+    myTol3D         : Real from Standard;        
+
+end;

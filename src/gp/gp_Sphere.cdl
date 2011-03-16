@@ -1,0 +1,229 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+
+class Sphere   from gp   inherits Storable
+
+       
+        --- Purpose :
+        -- Describes a sphere.
+        -- A sphere is defined by its radius and positioned in space
+        -- with a coordinate system (a gp_Ax3 object). The origin of
+        -- the coordinate system is the center of the sphere. This
+        -- coordinate system is the "local coordinate system" of the sphere.
+        -- Note: when a gp_Sphere sphere is converted into a
+        -- Geom_SphericalSurface sphere, some implicit
+        -- properties of its local coordinate system are used explicitly:
+        -- -   its origin, "X Direction", "Y Direction" and "main
+        --   Direction" are used directly to define the parametric
+        --   directions on the sphere and the origin of the parameters,
+        -- -   its implicit orientation (right-handed or left-handed)
+        --   gives the orientation (direct, indirect) to the
+        --   Geom_SphericalSurface sphere.
+        -- See Also
+        -- gce_MakeSphere which provides functions for more
+        -- complex sphere constructions
+        -- Geom_SphericalSurface which provides additional
+        -- functions for constructing spheres and works, in
+        -- particular, with the parametric equations of spheres. 
+
+uses Ax1  from gp,
+     Ax2  from gp,
+     Ax3  from gp,
+     Dir  from gp,
+     Pnt  from gp,
+     Trsf from gp,
+     Vec  from gp
+
+raises ConstructionError from Standard
+
+is
+
+  Create   returns Sphere;
+        ---C++:inline
+        --- Purpose : Creates an indefinite sphere.
+
+  Create (A3 : Ax3; Radius : Real)   returns Sphere
+        ---C++: inline
+        --- Purpose :
+        -- Constructs a sphere with radius Radius, centered on the origin     
+        --   of A3.  A3 is the local coordinate system of the sphere.
+        --  Warnings :
+        --  It is not forbidden to create a sphere with null radius.  
+        -- Raises ConstructionError if Radius < 0.0
+     raises ConstructionError;
+
+  SetLocation (me : in out; Loc : Pnt)  is static;
+        ---C++: inline
+        --- Purpose : Changes the center of the sphere.
+
+  SetPosition (me : in out; A3 : Ax3)   is static;
+        ---C++: inline
+        --- Purpose : Changes the local coordinate system of the sphere.
+
+  SetRadius (me : in out; R : Real)
+        ---C++: inline
+        --- Purpose : Assigns R the radius of the Sphere.
+        -- Warnings :
+        --  It is not forbidden to create a sphere with null radius. 
+        -- Raises ConstructionError if R < 0.0
+     raises ConstructionError
+     is static;
+
+  Area (me) returns Real  is static;
+        ---C++: inline
+        --- Purpose :
+        -- Computes the aera of the sphere.
+
+  Coefficients (me; A1, A2, A3, B1, B2, B3, C1, C2, C3, D : out Real)
+     is static;
+        --- Purpose :
+        --  Computes the coefficients of the implicit equation of the quadric
+        --  in the absolute cartesian coordinates system :
+        --  A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) +
+        --  2.(C1.X + C2.Y + C3.Z) + D = 0.0
+
+  UReverse (me : in out)
+        ---C++: inline
+	---Purpose: Reverses the   U   parametrization of   the sphere
+	--          reversing the YAxis.
+  is static;
+
+  VReverse (me : in out)
+        ---C++: inline
+        ---Purpose: Reverses the   V   parametrization of   the  sphere
+	--          reversing the ZAxis.
+  is static;
+
+  Direct (me) returns Boolean from Standard
+        ---C++: inline
+        ---Purpose: Returns true if the local coordinate system of this sphere
+        -- is right-handed.
+  is static;
+
+  Location (me)  returns Pnt  is static;
+        ---C++: inline
+        --- Purpose ;
+        --  Returns the center of the sphere.
+    	---C++: return const&
+
+  Position (me)  returns Ax3  is static;
+        --- Purpose :
+        --  Returns the local coordinates system of the sphere.
+        ---C++: inline
+    	---C++: return const&
+
+  Radius (me)  returns Real  is static;
+        ---C++: inline
+        --- Purpose : Returns the radius of the sphere.
+
+  Volume (me)  returns Real  is static;
+        ---C++: inline
+        --- Purpose : Computes the volume of the sphere
+
+  XAxis (me)  returns Ax1  is static;
+        ---C++: inline
+        --- Purpose : Returns the axis X of the sphere.
+
+  YAxis (me)  returns Ax1  is static;
+        ---C++: inline
+        --- Purpose : Returns the axis Y of the sphere.
+
+
+
+  Mirror (me : in out; P : Pnt)            is static;
+
+  Mirrored (me; P : Pnt)  returns Sphere   is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a sphere 
+        --  with respect to the point P which is the center of the 
+        --  symmetry.
+                    
+    
+
+  Mirror (me : in out; A1 : Ax1)              is static;
+
+  Mirrored (me; A1 : Ax1)   returns Sphere    is static;
+    --- Purpose :
+        --  Performs the symmetrical transformation of a sphere with
+        --  respect to an axis placement which is the axis of the
+        --  symmetry.
+
+
+
+  Mirror (me : in out; A2 : Ax2)               is static;
+
+  Mirrored (me; A2 : Ax2)    returns Sphere    is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a sphere with respect 
+        --  to a plane. The axis placement A2 locates the plane of the
+        --  of the symmetry : (Location, XDirection, YDirection).
+
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)         is static;
+        ---C++: inline
+
+  Rotated (me; A1 : Ax1; Ang : Real) returns Sphere  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a sphere. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+
+
+  Scale (me : in out; P : Pnt; S : Real)          is static;
+        ---C++:inline
+
+  Scaled (me; P : Pnt; S : Real)  returns Sphere  is static;
+        ---C++:inline
+        --- Purpose : 
+        --  Scales a sphere. S is the scaling value.
+        --  The absolute value of S is used to scale the sphere
+
+  Transform (me : in out; T : Trsf)               is static;
+        ---C++:inline
+
+  Transformed (me; T : Trsf)     returns Sphere   is static;
+        ---C++:inline
+
+        --- Purpose :
+        --  Transforms a sphere with the transformation T from class Trsf.
+
+
+      
+   
+
+  Translate (me : in out; V : Vec)          is static;
+        ---C++:inline
+
+  Translated (me; V : Vec)  returns Sphere  is static;
+        ---C++:inline
+     --- Purpose :
+        --  Translates a sphere in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+
+    
+  Translate (me : in out; P1, P2 : Pnt)          is static;   
+        ---C++:inline
+
+  Translated (me; P1, P2 : Pnt)  returns Sphere  is static;
+        ---C++:inline
+        --- Purpose :
+        --  Translates a sphere from the point P1 to the point P2.
+
+
+
+
+fields
+
+  pos    : Ax3;
+  radius : Real;
+
+end;
+
+

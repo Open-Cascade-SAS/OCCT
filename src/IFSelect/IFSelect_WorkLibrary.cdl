@@ -1,0 +1,123 @@
+-- File:	IFSelect_WorkLibrary.cdl
+-- Created:	Fri Jan  8 19:05:42 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class WorkLibrary  from IFSelect  inherits Transient
+
+    ---Purpose : This class defines the (empty) frame which can be used to
+    --           enrich a XSTEP set with new capabilities
+    --           In particular, a specific WorkLibrary must give the way for
+    --           Reading a File into a Model, and Writing a Model to a File
+    --           Thus, it is possible to define several Work Libraries for each
+    --           norm, but recommanded to define one general class for each one :
+    --           this general class will define the Read and Write methods.
+    --           
+    --           Also a Dump service is provided, it can produce, according the
+    --           norm, either a parcel of a file for an entity, or any other
+    --           kind of informations relevant for the norm,
+
+uses CString, 
+     Messenger from Message,
+     HArray1OfHAsciiString from Interface,
+     CheckIterator, InterfaceModel, Protocol from Interface,
+     EntityIterator, CopyTool,
+     AppliedModifiers, ContextWrite
+
+is
+
+    Initialize;
+    ---Purpose : Required to initialise fields
+
+    ReadFile (me; name : CString;
+    	      model    : out mutable InterfaceModel;
+    	      protocol : Protocol from Interface)
+	      returns Integer  is deferred;
+    ---Purpose : Gives the way to Read a File and transfer it to a Model
+    --           <mod> is the resulting Model, which has to be created by this
+    --           method. In case of error, <mod> must be returned Null
+    --           Return value is a status with free values.
+    --           Simply, 0 is for "Execution OK"
+    --           The Protocol can be used to work (e.g. create the Model, read
+    --           and recognize the Entities)
+
+    WriteFile (me; ctx : in out ContextWrite)
+    	    returns Boolean  is deferred;
+    ---Purpose : Gives the way to Write a File from a Model.
+    --           <ctx> contains all necessary informations : the model, the
+    --           protocol, the file name, and the list of File Modifiers to be
+    --           applied, also with restricted list of selected entities for
+    --           each one, if required.
+    --           In return, it brings the produced check-list
+    --           
+    --           The WorkLibrary has to query <applied> to get then run the
+    --           ContextWrite by looping like this (example) :
+    --             for (numap = 1; numap <= ctx.NbModifiers(); numap ++) {
+    --               ctx.SetModifier (numap);
+    --               cast ctx.FileModifier()  to specific type -> variable filemod
+    --               if (!filemod.IsNull()) filemod->Perform (ctx,writer);
+    --                 filemod then works with ctx. It can, either act on the
+    --                 model itself (for instance on its header), or iterate
+    --                 on selected entities (Start/Next/More/Value)
+    --                 it can call AddFail or AddWarning, as necessary
+    --             }
+
+    CopyModel (me;
+    	       original : InterfaceModel;
+	       newmodel : mutable InterfaceModel;
+	       list     : EntityIterator;
+	       TC       : in out CopyTool)
+	returns Boolean  is virtual;
+    ---Purpose : Performs the copy of entities from an original model to a new
+    --           one. It must also copy headers if any. Returns True when done.
+    --           The provided default works by copying the individual entities
+    --           designated in the list, by using the general service class
+    --           CopyTool.
+    --           It can be redefined for a norm which, either implements Copy
+    --           by another way (do not forget to Bind each copied result with
+    --           its original entity in TC) and returns True, or does not know
+    --           how to copy and returns False
+
+
+    DumpEntity (me;
+    	       model    : InterfaceModel;
+    	       protocol : Protocol from Interface;
+	       entity   : Transient;
+	       S        : Messenger from Message;
+	       level    : Integer)
+	is deferred;
+    ---Purpose : Gives the way of dumping an entity under a form comprehensive
+    --           for each norm. <model> helps to identify, number ... entities.
+    --           <level> is to be interpreted for each norm (because of the
+    --           formats which can be very different)
+
+    DumpEntity (me;
+    	       model    : InterfaceModel;
+    	       protocol : Protocol from Interface;
+	       entity   : Transient;
+	       S        : Messenger from Message);
+    ---Purpose : Calls deferred DumpEntity with the recorded default level
+
+    SetDumpLevels (me : mutable; def, max : Integer);
+    ---Purpose : Records a default level and a maximum value for level
+    --           level for DumpEntity can go between 0 and <max>
+    --           default value will be <def>
+
+    DumpLevels (me; def, max : out Integer);
+    ---Purpose : Returns the recorded default and maximum dump levels
+    --           If none was recorded, max is returned negative, def as zero
+
+    SetDumpHelp (me : mutable; level : Integer; help : CString);
+    ---Purpose : Records a short line of help for a level (0 - max)
+
+    DumpHelp (me; level : Integer) returns CString;
+    ---Purpose : Returns the help line recorded for <level>, or an empty string
+
+fields
+
+    thelevdef : Integer;
+    thelevhlp : HArray1OfHAsciiString from Interface;
+
+end WorkLibrary;

@@ -1,0 +1,72 @@
+-- File:	GeomLib_Interpolate.cdl
+-- Created:	Fri Aug 30 11:57:12 1996
+-- Author:	Xavier BENVENISTE
+--		<xab@zozox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class Interpolate from GeomLib
+
+	---Purpose: this class is used to construct a BSpline curve by
+	--          interpolation  of points  at given parameters  The
+	--          continuity   of the curve   is degree -  1 and the
+	--          method used when boundary  condition are not given
+	--          is to use odd degrees  and null the derivatives on
+	--          both sides from degree -1 down to (degree+1) / 2
+	--          When even degree is given the returned curve is of
+	--          degree - 1 so that the degree of the curve is odd 
+    	
+
+uses
+    Array1OfPnt         from TColgp,
+    Array1OfReal        from TColStd,
+    InterpolationErrors from GeomLib,
+    BSplineCurve        from Geom
+
+raises
+
+    NotDone    from StdFail,
+    OutOfRange from Standard
+    
+is
+
+    Create( Degree     : Integer from Standard ;
+    	    NumPoints  : Integer from Standard ;
+	    Points     : Array1OfPnt from TColgp ;
+	    Parameters : Array1OfReal from TColStd) 
+	     
+    returns Interpolate from GeomLib ;
+    
+    IsDone(me) returns Boolean from Standard
+    	---Purpose: 
+    	-- returns if everything went OK
+	---C++: inline
+    is static;
+
+
+    Error(me) returns InterpolationErrors from GeomLib 
+    ---Purpose: returns the error type if any 
+    ---C++: inline	      
+    --          
+    is static ;
+
+    Curve(me) 
+    ---Purpose:  returns the interpolated curve of the requested degree 
+
+    returns BSplineCurve from Geom
+    raises
+    	OutOfRange from Standard,
+	NotDone    from StdFail
+    is static;
+ 
+    
+    
+fields
+
+    myCurve : BSplineCurve from Geom ;
+    myIsDone : Boolean from Standard ;
+    myError  : InterpolationErrors  from GeomLib  ;
+    
+end Interpolate ;
+

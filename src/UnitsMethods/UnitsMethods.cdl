@@ -1,0 +1,63 @@
+-- File:	UnitsMethods.cdl
+-- Created:	Thu Sep 29 10:44:19 1994
+-- Author:	Dieter THIEMANN
+--		<dth@stylox>
+---Copyright:	 Matra Datavision 1994
+
+package UnitsMethods
+
+uses
+
+    Standard, Geom, Geom2d
+    
+is
+
+    InitializeFactors(LengthFactor :     Real from Standard;
+                      PlaneAngleFactor : Real from Standard;
+                      SolidAngleFactor : Real from Standard);
+
+       ---Purpose: Initializes the 3 factors for the conversion of
+       --          units
+
+    LengthFactor       
+    	returns   Real from Standard;
+
+    PlaneAngleFactor   
+    	returns   Real from Standard;
+
+    SolidAngleFactor   
+    	returns   Real from Standard;
+
+    Set3dConversion(B : Boolean from Standard);
+    
+    Convert3d          
+    	returns   Boolean from Standard;
+    
+    RadianToDegree(C : Curve from Geom2d; 
+    	    	   S : Surface from Geom)
+    	returns Curve from Geom2d;
+		   
+    DegreeToRadian(C : Curve from Geom2d; 
+    	    	   S : Surface from Geom)
+    	returns Curve from Geom2d;
+
+    MirrorPCurve(C : Curve from Geom2d)
+	returns Curve from Geom2d;
+
+    GetLengthFactorValue (param: Integer) returns Real;
+    	---Purpose: Returns value of unit encoded by parameter param
+        --          (integer value denoting unit, as described in IGES
+        --          standard) in millimeters
+	
+    GetCasCadeLengthUnit returns Real;
+    	---Purpose: Returns value of current internal unit for CASCADE
+	--          in millemeters
+	
+    SetCasCadeLengthUnit (param: Integer);
+    	---Purpose: Sets value of current internal unit for CASCADE
+	--          by parameter param (integer value denoting unit, 
+        --          as described in IGES standard) 
+	--          GetCasCadeLengthUnit() will then return value 
+	--          equal to GetLengthFactorValue(param)
+	
+end UnitsMethods;

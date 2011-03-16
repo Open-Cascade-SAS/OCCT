@@ -1,0 +1,39 @@
+-- File:	PBRep_PolygonOnClosedSurface.cdl
+-- Created:	Tue Oct 24 10:19:36 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnClosedSurface from PBRep
+
+    inherits PolygonOnSurface from PBRep
+    
+    	---Purpose: Representation by two 2d polygons in the parametric
+	--          space of a surface.
+
+uses Polygon2D           from PPoly,
+     Surface             from PGeom,
+     Location            from PTopLoc
+
+
+
+is
+    Create(P1: Polygon2D from PPoly;
+    	   P2: Polygon2D from PPoly;
+    	   S:  Surface   from PGeom;
+	   L:  Location  from PTopLoc)
+    returns mutable PolygonOnClosedSurface from PBRep;
+    
+    IsPolygonOnClosedSurface(me) returns Boolean
+    	---Purpose: returns True.
+    is redefined;
+
+    Polygon2(me) returns any Polygon2D from PPoly;
+
+    
+fields
+
+    myPolygon2: Polygon2D from PPoly;
+
+end PolygonOnClosedSurface;

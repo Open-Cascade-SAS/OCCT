@@ -1,0 +1,49 @@
+//=======================================================================
+// File:	StlMesh_Mesh.lxx
+// Created:	Mon Sep 25 09:56:46 1995
+// Author:      Philippe GIRODENGO
+// Copyright:    Matra Datavision	
+//=======================================================================
+//function : IsEmpty
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Boolean StlMesh_Mesh::IsEmpty() const 
+{return domains.IsEmpty ();}
+
+//=======================================================================
+//function : NbDomains
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Integer StlMesh_Mesh::NbDomains() const 
+{ return domains.Length ();}
+
+//=======================================================================
+//function : NbTriangles
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Integer StlMesh_Mesh::NbTriangles() const 
+{return nbTriangles;}
+
+//=======================================================================
+//function : NbVertices
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Integer StlMesh_Mesh::NbVertices() const 
+{return nbVertices;}
+
+
+
+
+
+
+
+
+

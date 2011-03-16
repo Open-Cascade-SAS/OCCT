@@ -1,0 +1,289 @@
+-- File:	HLRBRep_Surface.cdl
+-- Created:	Wed Apr 14 19:48:14 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class Surface from HLRBRep
+
+uses
+    Address         from Standard,    
+    Real            from Standard,
+    Integer         from Standard,
+    Boolean         from Standard,
+    Shape           from GeomAbs,
+    SurfaceType     from GeomAbs,
+    Ax1             from gp,
+    Pnt             from gp,
+    Dir             from gp,
+    Vec             from gp,
+    Pln             from gp,
+    Cylinder        from gp,
+    Sphere          from gp,
+    Torus           from gp,
+    Cone            from gp,
+    Array1OfReal    from TColStd,
+    Array1OfInteger from TColStd,
+    Array2OfReal    from TColStd,     
+    Array2OfPnt     from TColgp,
+    Face            from TopoDS,
+    Surface         from BRepAdaptor
+     
+raises
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+     
+is
+    Create returns Surface from HLRBRep;
+	---Purpose: Creates an undefined surface with no face loaded.
+	
+    Projector(me : in out; Proj : Address from Standard)
+    	---C++: inline
+    is static;
+
+    Surface(me : in out) returns Surface from BRepAdaptor
+	---Purpose: Returns the 3D Surface.
+	---C++: return &
+	---C++: inline      
+    is static;
+    
+    Surface(me : in out; F : Face from TopoDS)
+	---Purpose: Sets the 3D Surface to be projected.
+    is static;
+    
+    SideRowsOfPoles(me; tol      :     Real        from Standard;
+                        nbuPoles :     Integer     from Standard;
+                        nbvPoles :     Integer     from Standard;
+                        Pnt      : out Array2OfPnt from TColgp)
+    returns Boolean from Standard
+	---Purpose: returns true if it is a side face
+    is static private;
+    
+    IsSide(me; tolf,toler : Real from Standard)
+    returns Boolean from Standard
+	---Purpose: returns true if it is a side face
+    is static;
+    
+    IsAbove(me; back   : Boolean from Standard;
+                A      : Address from Standard; -- as TheCurve
+		tolC   : Real    from Standard)
+    returns Boolean from Standard
+    is static;
+    
+    --
+    --     Global methods - Apply to the whole surface.
+    --     
+    
+    FirstUParameter(me) returns Real from Standard
+	---C++: inline      
+    is static;
+
+    LastUParameter(me) returns Real from Standard
+	---C++: inline      
+    is static;
+    
+    FirstVParameter(me) returns Real from Standard
+	---C++: inline      
+    is static;
+
+    LastVParameter(me) returns Real from Standard
+	---C++: inline      
+    is static;
+    
+    UContinuity(me) returns Shape from GeomAbs
+	---C++: inline      
+    is static;
+    
+    VContinuity(me) returns Shape from GeomAbs
+	---C++: inline      
+    is static;
+    
+    NbUIntervals(me : in out; S : Shape from GeomAbs)
+    returns Integer from Standard
+	---Purpose: If necessary, breaks the surface in U intervals of
+	--          continuity    <S>.  And   returns  the  number  of
+	--          intervals.
+	---C++: inline      
+    is static;
+    
+    NbVIntervals(me : in out; S : Shape from GeomAbs)
+    returns Integer from Standard
+	---Purpose: If necessary, breaks the surface in V intervals of
+	--          continuity    <S>.  And   returns  the  number  of
+	--          intervals.
+	---C++: inline      
+    is static;
+    UIntervalContinuity(me) returns Shape from GeomAbs
+	---C++: inline      
+    is static;
+    
+    VIntervalContinuity(me) returns Shape from GeomAbs
+	---C++: inline      
+    is static;
+    
+    IsUClosed(me) returns Boolean from Standard
+	---C++: inline      
+    is static;
+     
+    IsVClosed(me) returns Boolean from Standard
+	---C++: inline      
+    is static;
+     
+    IsUPeriodic(me) returns Boolean from Standard
+	---C++: inline      
+    is static;
+    
+    UPeriod(me) returns Real from Standard
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+	---C++: inline      
+    is static;
+     
+    IsVPeriodic(me) returns Boolean from Standard
+	---C++: inline      
+    is static;
+    
+    VPeriod(me) returns Real from Standard
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+	---C++: inline      
+    is static;
+     
+    Value (me; U, V : Real from Standard)  returns Pnt from gp
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is static;
+
+    D0 (me; U, V :     Real from Standard;
+            P    : out Pnt  from gp)
+        --- Purpose : Computes the point of parameters U,V on the surface.
+	---C++: inline      
+    is static;
+
+    D1 (me; U, V     :     Real from Standard;
+            P        : out Pnt  from gp;
+            D1U, D1V : out Vec from gp)
+        --- Purpose : Computes the point  and the first derivatives on
+        --  the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised   if  the continuity  of   the  current
+        --  intervals is not C1.
+	---C++: inline      
+    is static;
+
+    D2 (me; U, V                     :     Real from Standard;
+            P                        : out Pnt  from gp;
+            D1U, D1V, D2U, D2V, D2UV : out Vec  from gp)
+        --- Purpose  :  Computes   the point,  the  first  and  second
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C2.
+	---C++: inline      
+    is static;
+
+    D3 (me; U, V                     :     Real from Standard;
+            P                        : out Pnt  from gp; 
+    	    D1U, D1V, D2U, D2V, D2UV : out Vec  from gp; 
+            D3U, D3V, D3UUV, D3UVV   : out Vec  from gp)
+        --- Purpose : Computes the point,  the first, second and third
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C3.
+	---C++: inline      
+    is static;
+
+    DN (me; U, V   : Real    from Standard;
+            Nu, Nv : Integer from Standard)
+    returns Vec from gp
+        --- Purpose  : Computes  the  derivative of order   Nu  in the
+        --  direction U and Nv in the  direction  V  at the point P(U,
+        --  V).
+    raises DomainError from Standard,
+        --- Purpose : Raised if the current U  interval is not not CNu
+        --  and the current V interval is not CNv.
+           OutOfRange from Standard
+        --- Purpose : Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
+	---C++: inline      
+    is static;
+  
+    GetType(me) returns SurfaceType from GeomAbs
+	---Purpose: Returns the type of the surface : Plane, Cylinder,
+	--          Cone,      Sphere,        Torus,    BezierSurface,
+	--          BSplineSurface,               SurfaceOfRevolution,
+	--          SurfaceOfExtrusion, OtherSurface
+	---C++: inline      
+    is static;
+    
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Plane(me) returns Pln from gp
+    raises NoSuchObject from Standard
+    is static;
+    
+    Cylinder(me) returns Cylinder from gp
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+    
+    Cone(me) returns Cone from gp
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+    
+    Sphere(me) returns Sphere from gp
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+    
+    Torus(me) returns Torus from gp
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+
+    UDegree(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+
+    NbUPoles(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+
+    VDegree(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+
+    NbVPoles(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+
+    NbUKnots(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+    
+    
+    NbVKnots(me) returns Integer from Standard
+    raises NoSuchObject from Standard
+	---C++: inline      
+    is static;
+    
+    Axis(me) returns Ax1 from gp
+    raises NoSuchObject from Standard -- only for SurfaceOfRevolution
+	---C++: inline      
+    is static;
+
+fields
+    mySurf  : Surface     from BRepAdaptor;
+    myType  : SurfaceType from GeomAbs;
+    myProj  : Address     from Standard;
+    
+end Surface;

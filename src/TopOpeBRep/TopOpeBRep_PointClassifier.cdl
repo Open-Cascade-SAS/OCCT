@@ -1,0 +1,39 @@
+-- File:	TopOpeBRep_PointClassifier.cdl
+-- Created:	Thu Dec  7 14:19:13 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class PointClassifier from TopOpeBRep
+
+uses 
+
+    State from TopAbs,
+    Face from TopoDS,
+    Pnt2d from gp,
+    TopolTool from BRepTopAdaptor,
+    HSurface from BRepAdaptor,
+    DataMapOfTopolTool from TopOpeBRep    
+    
+is
+
+    Create returns PointClassifier from TopOpeBRep;
+    
+    Init(me:in out) is static;
+    
+    Load(me:in out;F:Face from TopoDS) is static;
+
+    Classify(me:in out;F:Face from TopoDS;P:Pnt2d from gp;Tol:Real)
+    ---Purpose: compute position of point <P> regarding with the face <F>. 
+    returns State from TopAbs is static;
+
+    State(me) returns State from TopAbs is static;    
+
+fields
+
+    myTopolTool : TopolTool from BRepTopAdaptor;
+    myHSurface : HSurface from BRepAdaptor;
+    myTopolToolMap : DataMapOfTopolTool from TopOpeBRep;
+    myState : State from TopAbs;
+    
+end PointClassifier from TopOpeBRep;

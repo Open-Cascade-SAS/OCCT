@@ -1,0 +1,91 @@
+-- File:	BRepMesh_IncrementalMesh.cdl
+-- Created:	Tue Jun 20 10:19:28 1995
+-- Author:	Stagiaire Alain JOURDAIN
+--		<ajo@phobox>
+---Copyright:	 Matra Datavision 1995
+
+
+class IncrementalMesh from BRepMesh
+    	inherits DiscretRoot from BRepMesh 
+	
+       ---Purpose: Builds the mesh of a shape with respect of their
+       --          correctly triangulated parts
+       --  
+
+
+uses   
+    Box from Bnd,
+    Shape from TopoDS,
+    Face  from TopoDS,
+    Edge  from TopoDS,
+    MapOfShape  from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    DataMapOfShapeReal from TopTools,
+    FastDiscret from BRepMesh      
+
+is      
+    Create
+    	returns IncrementalMesh from BRepMesh;
+    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_IncrementalMesh();"
+        
+    Create(S      : Shape   from TopoDS;
+    	   D      : Real    from Standard;
+    	   Relatif: Boolean from Standard = Standard_False;
+           Ang    : Real    from Standard = 0.5)
+	   ---Purpose: if the  boolean    <Relatif>   is  True,    the
+	   --          deflection used   for the polygonalisation   of
+	   --          each edge will be <D> * Size of Edge.
+	   --          the deflection used for the faces will be the maximum
+	   --          deflection of their edges.
+       returns IncrementalMesh from BRepMesh;
+
+    SetRelative(me:out;  
+    	    theFlag : Boolean from Standard); 
+      
+    Relative(me)  
+    	returns Boolean from Standard; 
+      
+    Init(me:out) 
+    	is redefined protected;  
+     
+    Perform(me:out) 
+    	is redefined; 
+     
+    Update(me:out;  
+    	    S : Shape from TopoDS)
+	    ---Purpose: Builds the incremental mesh of the shape
+       is static; 
+       
+    IsModified(me) returns Boolean from Standard
+       is static; 
+     
+    Update(me : in out;
+    	      E  : Edge from TopoDS)
+	    ---Purpose: Locate a correct discretisation if it exists
+	    --          Set no one otherwise
+       is static private;
+     
+    Update(me : in out;
+    	      F  : Face from TopoDS) 
+            ---Purpose: if the face is  not correctly triangulated, or
+            --          if  one  of its edges  is  to be discretisated
+            --          correctly, the triangulation  of this face  is
+            --          built.
+    	is static private;
+	
+      
+fields
+    myRelative   : Boolean     from Standard is protected;
+    myMap        : MapOfShape  from TopTools is protected;
+    myMesh       : FastDiscret from BRepMesh is protected;
+    myModified   : Boolean     from Standard is protected;
+    mymapedge    : DataMapOfShapeReal from TopTools is protected; 
+    myancestors  : IndexedDataMapOfShapeListOfShape from TopTools is protected;
+    mydtotale    : Real from Standard is protected;
+    myBox        : Box  from Bnd is protected;
+
+end IncrementalMesh;
+
+
+
+

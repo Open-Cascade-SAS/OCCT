@@ -1,0 +1,60 @@
+--
+-- File      :  AssocGroupType.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class AssocGroupType from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines AssocGroupType, Type <406> Form <23>
+        --          in package IGESBasic
+        --          Used to assign an unambiguous identification to a Group
+        --          Associativity.
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable AssocGroupType;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; nbDataFields, aType : Integer; 
+              aName : HAsciiString );
+        ---Purpose : This method is used to set the fields of the class
+        --           AssocGroupType
+        --       - nbDataFields : number of parameter data fields = 2
+        --       - aType        : type of attached associativity
+        --       - aName        : identifier of associativity of type AType
+
+        NbData (me) returns Integer;
+        ---Purpose : returns the number of parameter data fields, always = 2
+
+        AssocType (me) returns Integer;
+        ---Purpose : returns the type of attached associativity
+
+        Name (me) returns HAsciiString from TCollection;
+        ---Purpose : returns identifier of instance of specified associativity
+
+fields
+
+--
+-- Class    : IGESBasic_AssocGroupType
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class AssocGroupType.
+--
+-- Reminder : A AssocGroupType instance is defined by :
+--            - the number of parameter data fields, always = 2
+--            - the type of attached associativity
+--            - the identifier of instance of specified associativity
+
+        theNbData : Integer;
+        theType   : Integer;
+        theName   : HAsciiString from TCollection;
+
+end AssocGroupType;

@@ -1,0 +1,115 @@
+-- File:	InteriorPoint.cdl
+-- Created:	Fri May 15 14:50:17 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class InteriorPoint from IntSurf
+
+	---Purpose: Definition of a point solution of the
+	--          intersection between an implicit an a
+	--          parametrised surface. These points are
+	--          passing points on the intersection lines,
+	--          or starting points for the closed lines
+	--          on the parametrised surface.
+
+
+uses Pnt   from gp,
+     Vec   from gp,
+     Vec2d from gp
+
+is
+
+    Create
+    
+    	returns InteriorPoint from IntSurf;
+
+
+    Create(P: Pnt from gp; U,V: Real from Standard;
+           Direc: Vec from gp; Direc2d: Vec2d from gp)
+	   
+	returns InteriorPoint from IntSurf;
+
+
+    SetValue(me: in out; P: Pnt from gp; U,V: Real from Standard;
+           Direc: Vec from gp; Direc2d: Vec2d from gp)
+	   
+	is static;
+
+
+    Value(me)
+    
+	---Purpose: Returns the 3d coordinates of the interior point.
+
+    	returns Pnt from gp
+    	---C++: return const&
+	---C++: inline
+
+	is static;
+
+
+    Parameters(me; U,V: out Real from Standard)
+    
+	---Purpose: Returns the parameters of the interior point on the
+	--          parametric surface.
+    
+	---C++: inline
+
+    	is static;
+
+
+    UParameter(me)
+    
+	---Purpose: Returns the first parameter of the interior point on the
+	--          parametric surface.
+
+    	returns Real from Standard
+	---C++: inline
+    
+    	is static;
+
+
+    VParameter(me)
+    
+	---Purpose: Returns the second parameter of the interior point on the
+	--          parametric surface.
+    
+    	returns Real from Standard
+	---C++: inline
+    
+    	is static;
+
+
+    Direction(me)
+
+        ---Purpose: Returns the tangent at the intersection in 3d space
+        --          associated to the interior point.
+    
+    	returns Vec from gp
+    	---C++: return const&
+	---C++: inline
+	
+	is static;
+
+
+    Direction2d(me)
+
+        ---Purpose: Returns the tangent at the intersection in the parametric
+        --          space of the parametric surface.
+    
+    	returns Vec2d from gp
+    	---C++: return const&
+	---C++: inline
+	
+	is static;
+
+fields
+
+    point   : Pnt   from gp;
+    paramu  : Real  from Standard;
+    paramv  : Real  from Standard;
+    direc   : Vec   from gp;
+    direc2d : Vec2d from gp;
+
+end InteriorPoint;

@@ -1,0 +1,18 @@
+-- File:	PFunction.cdl
+-- Created:	Thu Jun 17 10:55:04 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+package PFunction 
+
+uses 
+     
+    PDF, 
+    Standard   
+    
+is 
+ 
+    class Function; 
+     
+end PFunction;    

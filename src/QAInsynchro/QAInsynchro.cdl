@@ -1,0 +1,11 @@
+-- File:	QAInsynchro.cdl
+-- Created:	Wed May 22 15:59:19 2002
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2002
+
+package QAInsynchro
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

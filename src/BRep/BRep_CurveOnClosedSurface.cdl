@@ -1,0 +1,99 @@
+-- File:	BRep_CurveOnClosedSurface.cdl
+-- Created:	Tue Jul  6 10:16:47 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveOnClosedSurface from BRep inherits CurveOnSurface from BRep
+
+	---Purpose: Representation  of a    curve by two  pcurves   on
+	--          a closed surface.
+
+uses
+    Pnt2d    from gp,
+    Box2d    from Bnd,
+    Curve    from Geom2d,
+    Surface  from Geom,
+    Location from TopLoc,
+    Shape    from GeomAbs,
+    CurveRepresentation from BRep
+
+is
+
+    Create(PC1, PC2 : Curve    from Geom2d;
+    	   S        : Surface  from Geom;
+	   L        : Location from TopLoc;
+	   C        : Shape    from GeomAbs)
+    returns mutable CurveOnClosedSurface from BRep;
+
+    SetUVPoints2(me : mutable; P1, P2 : Pnt2d from gp)
+	---C++: inline
+    is static;
+
+    UVPoints2(me; P1, P2 : out Pnt2d from gp)
+	---C++: inline
+    is static;
+    
+    IsCurveOnClosedSurface(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+    IsRegularity(me) returns Boolean
+	---Purpose: Returns True
+    is redefined;
+    
+    IsRegularity(me; S1,S2 : Surface from Geom; 
+    	    	     L1,L2 : Location from TopLoc)  
+    returns Boolean
+	---Purpose: A curve on two surfaces (continuity). 
+    is redefined;
+
+    PCurve2(me) returns any Curve from Geom2d
+	---C++: return const &
+    is redefined;
+    
+    Surface2(me) returns any Surface from Geom
+	---Purpose: Returns Surface()
+	--          
+	---C++: return const &
+    is redefined;
+
+    Location2(me) returns Location from TopLoc
+	---Purpose: Returns Location()
+	--          
+	---C++: return const &
+    is redefined;
+
+    Continuity(me) returns Shape from GeomAbs
+	---C++: return const &
+    is redefined;
+
+    Continuity(me : mutable; C : Shape from GeomAbs)
+    is redefined;
+
+    PCurve2(me : mutable; C : Curve from Geom2d)
+    is redefined;
+
+    Copy(me) returns mutable CurveRepresentation from BRep
+	---Purpose: Return a copy of this representation.
+    is redefined;
+
+    Update(me : mutable)
+	---Purpose: Recomputes any derived data after a modification.
+	--          This is called when the range is modified.
+    is redefined;
+
+fields
+
+    myPCurve2     : Curve from Geom2d;
+    myContinuity  : Shape from GeomAbs;
+    myUV21        : Pnt2d from gp;
+    myUV22        : Pnt2d from gp;
+
+end CurveOnClosedSurface;
+
+
+
+
+

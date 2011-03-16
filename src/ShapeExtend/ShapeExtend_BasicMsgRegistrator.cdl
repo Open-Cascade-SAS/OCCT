@@ -1,0 +1,46 @@
+-- File:	ShapeExtend_BasicMsgRegistrator.cdl
+-- Created:	Fri Jan 28 19:33:57 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class BasicMsgRegistrator from ShapeExtend inherits TShared from MMgt
+
+    ---Purpose: Abstract class that can be used for attaching messages
+    --          to the objects (e.g. shapes).
+    --          It is used by ShapeHealing algorithms to attach a message
+    --          describing encountered case (e.g. removing small edge from
+    --          a wire).
+    --
+    --          The methods of this class are empty and redefined, for instance,
+    --          in the classes for Data Exchange processors for attaching
+    --          messages to interface file entities or CAS.CADE shapes.
+
+uses
+
+    Shape   from TopoDS,
+    Msg     from Message,
+    Gravity from Message
+     
+is
+
+    Create returns mutable BasicMsgRegistrator from ShapeExtend;
+    	---Purpose: Empty constructor.
+
+    Send (me: mutable; object : Transient;
+    	    	       message: Msg from Message;
+    	    	       gravity: Gravity from Message) is virtual;
+    	---Purpose: Sends a message to be attached to the object.
+	--          Object can be of any type interpreted by redefined MsgRegistrator.
+
+    Send (me: mutable; shape  : Shape from TopoDS;
+    	    	       message: Msg from Message;
+    	    	       gravity: Gravity from Message) is virtual;
+    	---Purpose: Sends a message to be attached to the shape.
+
+    Send (me: mutable; message: Msg from Message;
+    	    	       gravity: Gravity from Message) is virtual;
+    	---Purpose: Calls Send method with Null Transient.
+
+end BasicMsgRegistrator;

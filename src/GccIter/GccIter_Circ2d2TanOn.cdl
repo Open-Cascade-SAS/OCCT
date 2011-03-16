@@ -1,0 +1,339 @@
+-- File:	Circ2d2TanOn.cdl
+-- Created:	Fri Mar 29 14:04:23 1991
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+generic class Circ2d2TanOn from GccIter (
+    TheCurve          as any;
+    TheCurveTool      as any;  
+    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
+    	    	      	      --                  (TheCurve)
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles TANgent to 2 entities and 
+	--          having the center ON a curv.
+	--          The order of the tangency argument is always
+	--          QualifiedCirc, QualifiedLin, QualifiedCurv, Pnt2d. 
+	--          the arguments are :
+	--            - The two tangency arguments.
+	--            - The center line.
+	--            - The parameter for each tangency argument which 
+	--            is a curve.
+	--            - The tolerance.
+
+-- inherits Entity from Standard
+
+uses Pnt2d            from gp,
+     Lin2d            from gp,
+     Circ2d           from gp,  
+     QualifiedCirc    from GccEnt,
+     QualifiedLin     from GccEnt,
+     Position         from GccEnt
+     
+raises NotDone    from StdFail
+
+private class FuncTCuCuOnCu instantiates FunctionTanCuCuOnCu from GccIter (
+    	    	    	    	    	    	 TheCurve,TheCurveTool);
+is
+
+-- On a 2d line ..........................................................
+
+Create(Qualified1 : QualifiedCirc     ;
+       Qualified2 : TheQualifiedCurve ;
+       OnLine     : Lin2d             ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d circle and a curve and 
+    --          having the center ON a 2d line.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : QualifiedLin      ;
+       Qualified2 : TheQualifiedCurve ;
+       OnLine     : Lin2d             ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d line and a curve and 
+    --          having the center ON a 2d line.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Qualified2 : TheQualifiedCurve ;
+       OnLine     : Lin2d             ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to two curves and 
+    --          having the center ON a 2d line.
+    --          Param1 is the initial guess on the first QualifiedCurv.
+    --          Param2 is the initial guess on the first QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Point2     : Pnt2d             ;
+       OnLine     : Lin2d             ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d point and a curve and 
+    --          having the center ON a 2d line.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+
+-- -- On a 2d Circle .....................................................
+
+Create(Qualified1 : QualifiedCirc     ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCirc     : Circ2d            ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d circle and a curve and 
+    --          having the center ON a 2d circle.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : QualifiedLin      ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCirc     : Circ2d            ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d line and a curve and 
+    --          having the center ON a 2d circle.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCirc     : Circ2d            ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to two curves and 
+    --          having the center ON a 2d circle.
+    --          Param1 is the initial guess on the first QualifiedCurv.
+    --          Param2 is the initial guess on the first QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Point2     : Pnt2d             ;
+       OnCirc     : Circ2d            ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d point and a curve and 
+    --          having the center ON a 2d circle.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          Tolerance is used for the limit cases.
+
+-- -- On a curve .....................................................
+
+Create(Qualified1 : QualifiedCirc     ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCurv     : TheCurve          ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       ParamOn    : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d circle and a curve and 
+    --          having the center ON a 2d curve.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          ParamOn is the initial guess on the center curve OnCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : QualifiedLin      ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCurve    : TheCurve          ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       ParamOn    : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d line and a curve and 
+    --          having the center ON a 2d curve.
+    --          Param2 is the initial guess on the curve QualifiedCurv.
+    --          ParamOn is the initial guess on the center curve OnCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Point2     : Pnt2d             ;
+       OnCurve    : TheCurve          ;
+       Param1     : Real              ;
+       ParamOn    : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to a 2d Point and a curve and 
+    --          having the center ON a 2d curve.
+    --          Param1 is the initial guess on the curve QualifiedCurv.
+    --          ParamOn is the initial guess on the center curve OnCurv.
+    --          Tolerance is used for the limit cases.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Qualified2 : TheQualifiedCurve ;
+       OnCurve    : TheCurve          ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       ParamOn    : Real              ;
+       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles TANgent to two curves and 
+    --          having the center ON a 2d curve.
+    --          Param1 is the initial guess on the first curve QualifiedCurv.
+    --          Param1 is the initial guess on the second curve QualifiedCurv.
+    --          ParamOn is the initial guess on the center curve OnCurv.
+    --          Tolerance is used for the limit cases.
+
+-- -- ....................................................................
+
+IsDone(me) returns Boolean
+is static;
+    ---Purpose: This method returns True if the construction 
+    --          algorithm succeeded.
+
+ThisSolution(me) returns Circ2d 
+    ---Purpose: Returns the solution.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+WhichQualifier(me                                 ; 
+    	       Qualif1  : out Position from GccEnt;
+    	       Qualif2  : out Position from GccEnt)
+raises NotDone from StdFail
+is static;
+    -- It returns the informations about the qualifiers of the tangency 
+    -- arguments concerning the solution number Index.
+    -- It returns the real qualifiers (the qualifiers given to the 
+    -- constructor method in case of enclosed, enclosing and outside 
+    -- and the qualifiers computedin case of unqualified).
+
+Tangency1(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+    ---Purpose: Returns information about the tangency point between 
+    --          the result and the first argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntSol 
+    --          on the argument curv.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+Tangency2(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+    ---Purpose: Returns information about the tangency point between 
+    --          the result and the second argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntSol 
+    --          on the argument curv.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+CenterOn3 (me                       ;
+           ParArg        : out Real ;
+           PntSol        : out Pnt2d)
+    ---Purpose: Returns information about the center (on the curv) of the
+    --          result and the third argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+IsTheSame1(me) returns Boolean
+    -- Returns True if the solution is equal to the first argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+IsTheSame2(me) returns Boolean
+    -- Returns True if the solution is equal to the second argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+fields
+
+    WellDone : Boolean;
+    ---Purpose: True if the algorithm succeeded.
+
+    cirsol   : Circ2d from gp;
+    -- The solutions.
+
+    qualifier1 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    qualifier2 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    TheSame1 : Boolean;
+    ---Purpose: True if the solution and the first argument are the 
+    --          same in the tolerance of Tolerance.
+    --          False in the other cases.
+
+    TheSame2 : Boolean;
+    ---Purpose: True if the solution and the second argument are the 
+    --          same in the tolerance of Tolerance.
+    --          False in the other cases.
+
+    pnttg1sol   : Pnt2d;
+    ---Purpose: The tangency point between the solution and the first 
+    --          argument on the solution.
+
+    pnttg2sol   : Pnt2d;
+    ---Purpose: The tangency point between the solution and the second 
+    --          argument on the solution.
+
+    pntcen      : Pnt2d;
+    ---Purpose: The center point of the solution on the third argument.
+
+    par1sol   : Real;
+    ---Purpose: The parameter of the tangency point between the 
+    --          solution and the first argument on the solution.
+
+    par2sol   : Real;
+    ---Purpose: The parameter of the tangency point between the 
+    --          solution and the second argument on the solution.
+
+    pararg1   : Real;
+    ---Purpose: The parameter of the tangency point between the 
+    --          solution and the first argument on the first argument.
+
+    pararg2   : Real;
+    ---Purpose: The parameter of the tangency point between the 
+    --          solution and the second argument on the second argument.
+
+    parcen3   : Real;
+    ---Purpose: The parameter of the center point of the solution 
+    --          on the second argument.
+
+end Circ2d2TanOn;

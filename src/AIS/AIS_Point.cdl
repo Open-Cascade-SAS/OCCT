@@ -1,0 +1,124 @@
+-- File:	AIS_Point.cdl
+-- Created:	Wed Aug  9 14:38:00 1995
+-- Author:	Arnaud BOUZY
+--		<adn@houblon>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1995
+
+class Point from AIS inherits InteractiveObject from AIS
+
+	---Purpose: Constructs point datums to be used in construction of
+    	-- composite shapes. The datum is displayed as the plus marker +.
+
+uses 
+    Point                 from Geom,
+    TypeOfMarker          from Aspect,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Selection             from SelectMgr,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,
+    Vertex                from TopoDS,
+    KindOfInteractive     from AIS   
+
+
+is
+    Create(aComponent : Point from Geom) 
+    returns mutable Point from AIS;
+    	---Purpose:
+    	-- Initializes the point aComponent from which the point
+    	-- datum will be built.
+
+    Signature(me) returns Integer from Standard is redefined;
+   	 ---Purpose: Returns index 1, the default index for a point.
+   	 ---C++: inline
+
+    Type(me) returns KindOfInteractive from AIS is redefined;
+    	---Purpose: Indicates that a point is a datum.
+        ---C++: inline
+
+    Component(me: mutable) returns Point from Geom 
+    is static;
+    	---Purpose: Returns the component specified in SetComponent.
+    SetComponent(me: mutable;aComponent:Point from Geom )
+    is static;
+    	---Purpose: Constructs an instance of the point aComponent.
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard is redefined static;
+    	---Purpose: Returns true if the display mode selected is valid for point datums.
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard = 0) 
+    is redefined virtual protected;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>.
+    	--          To be Used when the associated degenerated Presentations
+    	--          have been transformed by <aTrsf> which is not a Pure
+   	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard )is private;
+
+-- Methods from InteractiveObject
+
+    SetColor(me :mutable; aColor : NameOfColor from Quantity) 
+    is redefined static;
+    	---Purpose: Allows you to provide settings for the cp;pr aColor.
+    SetColor(me :mutable; aColor : Color from Quantity) 
+    is redefined static;
+
+    UnsetColor(me:mutable) is redefined static;
+    	---Purpose: Allows you to remove color settings.
+    SetMarker(me:mutable; aType : TypeOfMarker from Aspect);
+    	---Purpose: Allows you to provide settings for a marker. These include
+    	-- -   type of marker,
+    	-- -   marker color,
+    	-- -   scale factor.    
+    
+    UnsetMarker(me:mutable);
+    	---Purpose: Removes the marker settings.    
+    HasMarker(me) returns Boolean from Standard;
+    	---Purpose: Returns true if the point datum has a marker.
+    	---C++: inline
+
+    Vertex(me) returns Vertex from TopoDS;
+    	---Purpose: Converts a point into a vertex.
+    UpdatePointValues(me:mutable) is private;
+    	---Level: Internal 
+		   
+
+
+fields
+
+    myComponent   : Point from Geom;
+    myHasTOM      : Boolean from Standard; 
+    myTOM         : TypeOfMarker from Aspect;    
+end Point;

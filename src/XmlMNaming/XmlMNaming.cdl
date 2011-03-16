@@ -1,0 +1,38 @@
+-- File:        XmlMNaming.cdl
+-- Created:     Sep 14 2001
+-- Author:      Alexander GRIGORIEV
+---Copyright:   Open Cascade 2001
+
+package XmlMNaming 
+
+        ---Purpose: 
+
+uses
+    TDF,
+    CDM,
+    BRepTools,
+    TopoDS,
+    TopAbs,
+    XmlMDF,
+    XmlObjMgt,
+    TopTools
+
+is
+    class NamedShapeDriver;  
+    
+    class NamingDriver;
+
+    class Shape1;
+    
+    class Array1OfShape1 instantiates Array1 from XmlObjMgt
+                (Shape1 from XmlMNaming);
+
+    AddDrivers (aDriverTable  : ADriverTable  from XmlMDF;
+                aMessageDriver: MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <aDriverTable>.
+
+    SetDocumentVersion (DocVersion  : Integer from Standard); 
+    
+    DocumentVersion returns Integer from Standard; 
+    
+end XmlMNaming;

@@ -1,0 +1,40 @@
+-- File:	TopBas.cdl
+-- Created:	Thu Aug 13 11:11:42 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package TopBas 
+
+	---Purpose: The  TopBas package  provides  data structure  for
+	--          topological algorithms.   THe data  structures are
+	--          used to store the intermediary dat and the results
+	--          of the algorithms.
+	--          
+	--          *  Interference, List  :  An Interference  is  the
+	--          topological    representation  of an intersection.
+	--          The classes are generic in order to be independant
+	--          of the data structure.
+
+uses
+    Standard,
+    TCollection,
+    TopAbs
+
+is
+    generic class Interference;
+	---Purpose: The   Interference  is  the    description  of  an
+	--          intersection on a Shape.
+
+    class TestInterference instantiates Interference from TopBas
+    	    	    	    (Real    from Standard,
+    	    	    	     Integer from Standard);
+			    
+    class ListOfTestInterference instantiates 
+    List from TCollection (TestInterference);
+
+end TopBas;
+
+

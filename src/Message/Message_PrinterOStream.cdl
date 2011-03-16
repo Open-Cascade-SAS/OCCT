@@ -1,0 +1,94 @@
+-- File:	Message_PrinterOStream.cdl
+-- Created:	Sat Jan  6 19:52:34 2001
+-- Author:	OCC Team
+---Copyright:	Open CASCADE S.A. 2005
+
+
+class PrinterOStream from Message inherits Printer from Message
+
+    ---Purpose: Implementation of a message printer associated with an ostream
+    --          The ostream may be either externally defined one (e.g. cout),
+    --          or file stream maintained internally (depending on constructor).
+
+uses
+
+    Address        from Standard,
+    OStream        from Standard,
+    Gravity        from Message,
+    AsciiString    from TCollection,
+    ExtendedString from TCollection    
+
+is
+
+    Create (theTraceLevel: Gravity from Message = Message_Info)
+    returns PrinterOStream from Message;
+    	---Purpose: Empty constructor, defaulting to cout
+    
+    Create (theFileName: CString; theDoAppend: Boolean;
+            theTraceLevel: Gravity from Message = Message_Info)
+    returns PrinterOStream from Message;
+    	---Purpose: Create printer for output to a specified file.
+    	--          The option theDoAppend specifies whether file should be
+    	--          appended or rewritten.
+    	--          For specific file names (cout, cerr) standard streams are used
+    
+    Close (me: mutable);
+        ---C++: alias ~
+    	---Purpose: Flushes the output stream and destroys it if it has been
+    	--          specified externally with option doFree (or if it is internal
+        --          file stream)
+	
+    GetTraceLevel (me) returns Gravity from Message;
+    	---C++: inline
+    	---Purpose: Return trace level used for filtering messages;
+	--          messages with lover gravity will be ignored.
+
+    SetTraceLevel (me: mutable; theTraceLevel: Gravity from Message);
+    	---C++: inline
+    	---Purpose: Set trace level used for filtering messages.
+    	--          By default, trace level is Message_Info, so that 
+    	--          all messages are output
+
+    GetUseUtf8 (me) returns Boolean;
+    	---Purpose: Returns option to convert non-Ascii symbols to UTF8 encoding
+    	---C++: inline
+
+    SetUseUtf8 (me: mutable; useUtf8: Boolean);
+    	---Purpose: Sets option to convert non-Ascii symbols to UTF8 encoding
+    	---C++: inline
+
+    GetStream (me) returns OStream;
+    	---Purpose: Returns reference to the output stream
+	---C++: return &
+    	---C++: inline
+    
+    Send (me; theString : CString; theGravity: Gravity from Message;
+	      putEndl: Boolean = Standard_True) is redefined;
+    	---Purpose: Puts a message to the current stream
+	--          if its gravity is equal or greater
+	--          to the trace level set by SetTraceLevel()
+	      
+    Send (me; theString : AsciiString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean = Standard_True) is redefined;
+    	---Purpose: Puts a message to the current stream
+	--          if its gravity is equal or greater
+	--          to the trace level set by SetTraceLevel()
+	      
+    Send (me; theString : ExtendedString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean = Standard_True) is redefined;
+    	---Purpose: Puts a message to the current stream
+	--          if its gravity is equal or greater
+	--          to the trace level set by SetTraceLevel()
+	--          Non-Ascii symbols are converted to UTF-8 if UseUtf8
+        --          option is set, else replaced by symbols '?'
+	      
+fields
+
+    myTraceLevel: Gravity from Message;
+    myStream:     Address from Standard; -- pointer to OStream 
+    myIsFile:     Boolean from Standard;
+    myUseUtf8:    Boolean from Standard;
+
+end PrinterOStream;

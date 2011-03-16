@@ -1,0 +1,42 @@
+-- File:	Vrml_Instancing.cdl
+-- Created:	Wed Feb  5 13:22:06 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Instancing from Vrml 
+
+	---Purpose: defines  "instancing" - using  the  same  instance  of  a  node   
+	--          multiple  times.
+	--  It  is  accomplished  by  using  the  "DEF"  and  "USE"  keywords.      
+    	--  The  DEF  keyword  both  defines  a  named  node,  and  creates  a  single 
+	--  instance  of  it.   
+    	--  The  USE  keyword  indicates  that  the  most  recently  defined  instance 
+    	--  should  be  used  again.   
+    	--  If  several  nades  were  given  the  same  name,  then  the  last  DEF 
+	--  encountered  during  parsing  "wins". 
+	--  DEF/USE  is  limited  to  a  single  file.
+uses
+
+     AsciiString from TCollection
+
+is
+ 
+    Create ( aString        : AsciiString from TCollection ) 
+        returns Instancing from Vrml;
+ 
+        ---Purpose: Adds "DEF  <myName>" in  anOStream  (VRML  file).
+    DEF ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+        ---Purpose: Adds "USE  <myName>" in  anOStream (VRML  file).
+    USE ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myName  : AsciiString from TCollection;  --  Name  using  DEF/USE  for a  node
+
+end Instancing;
+

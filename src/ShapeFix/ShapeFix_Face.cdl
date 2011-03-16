@@ -1,0 +1,261 @@
+-- File:	ShapeFix_Face.cdl
+-- Created:	Wed Jun  3 12:33:25 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Face from ShapeFix inherits Root from ShapeFix
+
+    ---Purpose: This operator allows to perform various fixes on face
+    --          and its wires: fixes provided by ShapeFix_Wire,
+    --          fixing orientation of wires, addition of natural bounds,
+    --          fixing of missing seam edge,
+    --          and detection and removal of null-area wires
+
+uses 
+
+    Surface             from Geom,
+    Shape               from TopoDS,
+    Face                from TopoDS,
+    Wire                from TopoDS,
+    BasicMsgRegistrator from ShapeExtend,
+    Status              from ShapeExtend,
+    Surface             from ShapeAnalysis,
+    Wire                from ShapeFix,
+    SequenceOfShape     from TopTools,
+    WireData            from ShapeExtend,
+    Vertex              from TopoDS,
+    DataMapOfShapeBox2d from ShapeFix,
+    DataMapOfShapeListOfShape from TopTools
+is
+
+    Create returns Face from ShapeFix;
+        ---Purpose: Creates an empty tool
+
+    Create (face: Face from TopoDS) returns Face from ShapeFix;
+        ---Purpose: Creates a tool and loads a face
+
+    ClearModes (me: mutable) is virtual;
+    	---Purpose: Sets all modes to default
+
+    Init (me: mutable; face: Face from TopoDS);
+        ---Purpose: Loads a whole face already created, with its wires, sense and
+        --          location
+
+    Init (me: mutable; surf: Surface from Geom; preci: Real;
+    	               fwd: Boolean = Standard_True);
+        ---Purpose: Starts the creation of the face
+        --          By default it will be FORWARD, or REVERSED if <fwd> is False
+
+    Init (me: mutable; surf: Surface from ShapeAnalysis; preci: Real;
+    	               fwd: Boolean = Standard_True);
+        ---Purpose: Starts the creation of the face
+        --          By default it will be FORWARD, or REVERSED if <fwd> is False
+
+    SetMsgRegistrator (me: mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is redefined;
+	---Purpose: Sets message registrator
+
+    SetPrecision (me: mutable; preci: Real) is redefined;
+    	---Purpose: Sets basic precision value (also to FixWireTool)
+
+    SetMinTolerance (me: mutable; mintol: Real) is redefined;
+    	---Purpose: Sets minimal allowed tolerance (also to FixWireTool)
+
+    SetMaxTolerance (me: mutable; maxtol: Real) is redefined;
+    	---Purpose: Sets maximal allowed tolerance (also to FixWireTool)
+
+    FixWireMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Wire, by default True. 
+
+    FixOrientationMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix orientation mode, by default
+        --          True. If True, wires oriented to border limited square.
+
+    FixAddNaturalBoundMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the add natural bound mode.
+	--          If true, natural boundary is added on faces that miss them.
+        --          Default is False for faces with single wire (they are
+        --          handled by FixOrientation in that case) and True for others.
+
+    FixMissingSeamMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix missing seam mode, by default
+        --          True. If True, tries to insert seam is missed.
+
+    FixSmallAreaWireMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix small area wire mode, by default
+        --          False. If True, drops small wires.
+    FixIntersectingWiresMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix intersecting wires mode
+        --          by default True.
+	
+    FixLoopWiresMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix loop wires mode
+        --          by default True.
+	
+    FixSplitFaceMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the fix split face mode
+        --          by default True.
+	
+    AutoCorrectPrecisionMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the auto-correct precision mode
+        --          by default False.
+	
+    Face (me) returns Face from TopoDS;
+	---C++: inline
+        ---Purpose: Returns a face which corresponds to the current state
+        --  Warning: The finally produced face may be another one ... but with the
+        --          same support
+
+    Result (me) returns Shape from TopoDS;
+	---C++: inline
+    	---Purpose: Returns resulting shape (Face or Shell if splitted)
+	--          To be used instead of Face() if FixMissingSeam involved
+
+    Add (me: mutable; wire: Wire from TopoDS);
+        ---Purpose: Add a wire to current face using BRep_Builder.
+	--          Wire is added without taking into account orientation of face
+	--          (as if face were FORWARD). 
+        ---Warning: Method is retained for compatibility with previous versions.
+
+    Perform (me: mutable) returns Boolean;
+        ---Purpose: Performs all the fixes, depending on modes
+	-- Function Status returns the status of last call to Perform()
+    	--          ShapeExtend_OK   : face was OK, nothing done
+    	--          ShapeExtend_DONE1: some wires are fixed
+    	--          ShapeExtend_DONE2: orientation of wires fixed
+    	--          ShapeExtend_DONE3: missing seam added
+    	--          ShapeExtend_DONE4: small area wire removed
+    	--          ShapeExtend_DONE5: natural bounds added
+    	--          ShapeExtend_FAIL1: some fails during fixing wires
+    	--          ShapeExtend_FAIL2: cannot fix orientation of wires
+    	--          ShapeExtend_FAIL3: cannot add missing seam
+    	--          ShapeExtend_FAIL4: cannot remove small area wire
+
+    FixOrientation (me: mutable) returns Boolean;
+        ---Purpose: Fixes orientation of wires on the face
+	--          It tries to make all wires lie outside all others (according
+	--          to orientation) by reversing orientation of some of them. 
+	--          If face lying on sphere or torus has single wire and 
+        --          AddNaturalBoundMode is True, that wire is not reversed in 
+        --          any case (supposing that natural bound will be added).
+	--          Returns True if wires were reversed
+
+    FixOrientation (me: mutable; MapWires : in out DataMapOfShapeListOfShape from TopTools)
+    returns Boolean;
+        ---Purpose: Fixes orientation of wires on the face
+	--          It tries to make all wires lie outside all others (according
+	--          to orientation) by reversing orientation of some of them. 
+	--          If face lying on sphere or torus has single wire and 
+        --          AddNaturalBoundMode is True, that wire is not reversed in 
+        --          any case (supposing that natural bound will be added).
+	--          Returns True if wires were reversed
+	--          OutWires return information about out wires + list of
+	--          internal wires for each (for performing split face).
+
+    FixAddNaturalBound(me: mutable) returns Boolean;
+        ---Purpose: Adds natural boundary on face if it is missing.
+	--          Two cases are supported:
+	--          - face has no wires
+	--          - face lies on geometrically double-closed surface 
+        --            (sphere or torus) and none of wires is left-oriented
+	--          Returns True if natural boundary was added
+    
+    FixMissingSeam (me: mutable) returns Boolean;
+        ---Purpose: Detects and fixes the special case when face on a closed
+        --          surface is given by two wires closed in 3d but with gap in 2d.
+        --          In that case it creates a new wire from the two, and adds a 
+        --          missing seam edge
+	--          Returns True if missing seam was added
+
+    FixSmallAreaWire (me: mutable) returns Boolean;
+    	---Purpose: Detects wires with small area (that is less than 
+    	--          100*Precision::PConfusion(). Removes these wires if they are internal.
+	--  Returns : True if at least one small wire removed,
+	--    	    False if does nothing.
+    FixLoopWire(me: mutable; aResWires : out SequenceOfShape from TopTools) returns Boolean;
+    	---Purpose: Detects if wire has a loop and fixes this situation by splitting on the few parts.
+	--          if wire has a loops and it was splitted Status was set to value ShapeExtend_DONE6.
+    	
+    SplitEdge (me: mutable; sewd: WireData from ShapeExtend; num: Integer from Standard;
+    	    	    	    param: Real from Standard; vert: Vertex from TopoDS;
+    	    	    	    preci: Real from Standard; boxes: in out DataMapOfShapeBox2d from ShapeFix)
+    returns Boolean from Standard is private;
+
+    SplitEdge (me: mutable; sewd: WireData from ShapeExtend; num: Integer from Standard;
+    	    	    	    param1: Real from Standard; param2: Real from Standard;
+    	    	    	    vert: Vertex from TopoDS; preci: Real from Standard;
+    	    	    	    boxes: in out DataMapOfShapeBox2d from ShapeFix)
+    returns Boolean from Standard is private;
+
+    FixIntersectingWires (me: mutable) returns Boolean;
+        ---Purpose: Detects and fixes the special case when face has more than one wire
+	--          and this wires have intersection point
+
+    FixWiresTwoCoincEdges (me: mutable) returns Boolean;
+        ---Purpose: If wire contains two coincidence edges it must be removed
+    -- Queries on status after Perform()
+
+    FixSplitFace (me: mutable; MapWires : DataMapOfShapeListOfShape from TopTools)
+    returns Boolean;
+        ---Purpose: Split face if there are more than one out wire
+	--          using inrormation after FixOrientation()
+
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status of last call to Perform()
+    	--          ShapeExtend_OK   : face was OK, nothing done
+    	--          ShapeExtend_DONE1: some wires are fixed
+    	--          ShapeExtend_DONE2: orientation of wires fixed
+    	--          ShapeExtend_DONE3: missing seam added
+    	--          ShapeExtend_DONE4: small area wire removed
+    	--          ShapeExtend_DONE5: natural bounds added
+    	--          ShapeExtend_DONE8: face may be splited
+    	--          ShapeExtend_FAIL1: some fails during fixing wires
+    	--          ShapeExtend_FAIL2: cannot fix orientation of wires
+    	--          ShapeExtend_FAIL3: cannot add missing seam
+    	--          ShapeExtend_FAIL4: cannot remove small area wire
+	---C++: inline
+
+    FixWireTool (me: mutable) returns Wire from ShapeFix;
+    	---Purpose: Returns tool for fixing wires.
+	---C++: inline
+
+fields
+
+    mySurf   : Surface from ShapeAnalysis is protected;
+    myFace   : Face from TopoDS is protected;
+    myResult : Shape from TopoDS is protected; -- result (shell or face)
+    myFixWire: Wire from ShapeFix is protected;
+    myFwd    : Boolean is protected;
+
+    myFixWireMode           : Integer;
+    myFixOrientationMode    : Integer;
+    myFixAddNaturalBoundMode: Integer;
+    myFixMissingSeamMode    : Integer;
+    myFixSmallAreaWireMode  : Integer;
+    myFixLoopWiresMode      : Integer; --gka 08.01.2004
+    myFixIntersectingWiresMode  : Integer;  -- skl 23.12.2003
+    myFixSplitFaceMode      : Integer; -- skl 03.02.2004
+    myAutoCorrectPrecisionMode: Integer; --skl 26.03.2010
+    myStatus : Integer is protected;
+
+end Face;

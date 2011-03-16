@@ -1,0 +1,82 @@
+-- File:        SVD.cdl
+-- Created:     Mon May 13 14:35:56 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+class SVD from math
+    	---Purpose: SVD implements the solution of a set of N linear equations
+    	-- of M unknowns without condition on N or M. The Singular
+    	-- Value Decomposition algorithm is used. For singular or
+    	-- nearly singular matrices SVD is a better choice than Gauss
+    	-- or GaussLeastSquare.
+
+uses Matrix from math, 
+     Vector from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       DimensionError from Standard
+
+is
+
+    Create(A: Matrix)
+    	---Purpose: 
+        -- Given as input an n X m matrix A with n < m, n = m or n > m 
+        -- this constructor performs the Singular Value Decomposition.
+
+    returns SVD;
+    
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+      	---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Solve(me; B: Vector; X: out Vector; Eps: Real = 1.0e-6)    
+    	---Purpose:
+    	-- Given the input Vector B this routine solves the set of linear 
+    	-- equations A . X = B. 
+    	-- Exception NotDone is raised if the decomposition of A was not done
+    	-- successfully.
+    	-- Exception DimensionError is raised if the range of B is not 
+    	-- equal to the rowrange of A.
+    	-- Exception DimensionError is raised if the range of X is not 
+    	-- equal to the colrange of A.
+    
+    raises NotDone,
+    	   DimensionError
+    is static;
+
+
+    PseudoInverse(me; Inv : out Matrix; Eps: Real= 1.0e-6)
+    	---Purpose: Computes the inverse Inv of matrix A such as A * Inverse = Identity.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+    	-- Standard_DimensionError if the ranges of Inv are
+    	-- compatible with the ranges of A.
+
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:       Boolean;
+Singular:   Boolean;
+U:          Matrix;
+V:          Matrix;
+Diag:       Vector;
+RowA:       Integer;
+
+end SVD;

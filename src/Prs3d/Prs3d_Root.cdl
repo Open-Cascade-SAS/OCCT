@@ -1,0 +1,30 @@
+-- File:	Prs3d_Root.cdl
+-- Created:	Tue Dec 15 18:07:36 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class Root from Prs3d
+
+    	---Purpose: A root class for the standard presentation algorithms
+    	-- of the StdPrs package.
+    	--          
+uses
+    Presentation from Prs3d,
+    Structure from Graphic3d,
+    Group from Graphic3d
+
+is
+    CurrentGroup(myclass; Prs3d: Presentation from Prs3d) returns Group from Graphic3d;
+    	---Purpose: Returns the current group of primititves inside graphic
+    	-- objects in the display.
+    	-- A group also contains the attributes whose ranges are
+    	-- limited to the primitives in it. 
+    
+    NewGroup (myclass; Prs3d: Presentation from Prs3d ) returns Group from Graphic3d ;
+    	---Purpose: Returns the new group of primitives inside graphic
+    	-- objects in the display.
+    	-- A group also contains the attributes whose ranges are limited to the primitives in it.
+    
+end Root from Prs3d;

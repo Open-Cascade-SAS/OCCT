@@ -1,0 +1,194 @@
+-- File:	XCAFDoc_LayerTool.cdl
+-- Created:	Tue Sep 26 15:15:27 2000
+-- Author:	Pavel TELKOV.
+--		<ptv@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class LayerTool from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: Provides tools to store and retrieve attributes (Layers)
+	--          of TopoDS_Shape in and from TDocStd_Document
+	--          A Document is intended to hold different 
+	--          attributes of ONE shape and it's sub-shapes
+
+uses
+    Shape           from TopoDS,
+    Label           from TDF,
+    LabelSequence   from TDF,
+    Document        from TDocStd,
+    ShapeTool       from XCAFDoc,
+    RelocationTable from TDF,
+    GraphNode    from XCAFDoc,
+    ExtendedString  from TCollection,
+    HSequenceOfExtendedString from TColStd
+is
+    Create returns LayerTool from XCAFDoc;
+
+    Set (myclass; L : Label from TDF) returns LayerTool from XCAFDoc;
+    	---Purpose: Creates (if not exist) LayerTool.
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    
+    ---API: General structure
+    
+    BaseLabel(me) returns Label from TDF;
+    	---Purpose: returns the label under which Layers are stored
+    
+    ShapeTool (me: mutable) returns ShapeTool from XCAFDoc;
+    	---Purpose: Returns internal XCAFDoc_ShapeTool tool
+	---C++: return const &
+
+
+    ---API: Layer table management
+    
+    IsLayer (me; lab: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label belongs to a Layertable and
+        --          is a Layer definition 
+    
+    GetLayer (me; lab: Label from TDF; aLayer: out ExtendedString from TCollection) 
+    returns Boolean;
+    	---Purpose: Returns Layer defined by label lab
+	--          Returns False if the label is not in Layertable
+	--          or does not define a Layer
+
+    FindLayer (me; aLayer : ExtendedString from TCollection; lab: out Label from TDF)
+    returns Boolean;
+    	---Purpose: Finds a Layer definition in a Layertable and returns
+	--          its label if found
+    	--          Returns False if Layer is not found in Layertable 
+    
+    FindLayer (me; aLayer : ExtendedString from TCollection) returns Label from TDF;
+    	---Purpose: Finds a Layer definition in a Layertable and returns
+	--          its label if found (or Null label else)
+    
+    AddLayer (me; aLayer : ExtendedString from TCollection) returns Label from TDF;
+    	---Purpose: Adds a Layer definition to a Layertable and returns
+	--          its label (returns existing label if the same Layer 
+        --          is already defined)
+    
+    RemoveLayer (me; lab: Label from TDF);
+    	---Purpose: Removes Layer from the Layertable
+    
+    GetLayerLabels (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of Layers currently stored 
+        --          in the Layertable
+    
+    ---API: Assignment of Layers to labels
+    
+    SetLayer (me; L: Label from TDF;
+		  LayerL: Label from TDF;
+    	    	  shapeInOneLayer: Boolean = Standard_False);
+    	---Purpose: Sets a link from label <L> to Layer
+    	--          defined by <LayerL>
+	--          optional parametr <shapeInOneLayer> show could shape be
+    	--          in number of layers or only in one.
+    
+    SetLayer (me; L: Label from TDF;
+		  aLayer : ExtendedString from TCollection;
+    	    	  shapeInOneLayer: Boolean = Standard_False);
+    	---Purpose: Sets a link from label <L> to Layer <aLayer>
+    	--          in the Layertable
+    	--          Adds a Layer as necessary
+	--          optional parametr <shapeInOneLayer> show could shape be
+    	--          in number of layers or only in one.
+    
+    UnSetLayers (me; L: Label from TDF);
+    	---Purpose: Removes a link from label <L> to all layers 
+    
+    UnSetOneLayer (me; L: Label from TDF;
+		     aLayer : ExtendedString from TCollection) returns Boolean;
+    	---Purpose: Remove link from label <L> and Layer <aLayer>.
+    	--          returns FALSE if no such layer.
+
+    IsSet (me; L: Label from TDF;
+	       aLayer : ExtendedString from TCollection) returns Boolean;
+    	---Purpose: Returns True if label <L> has a Layer assosiated 
+    	--          with the <aLayer>.
+    
+    GetLayers (me: mutable; L: Label from TDF; 
+    	    	    	   aLayerS : out HSequenceOfExtendedString from TColStd)
+     returns Boolean;
+    	---Purpose: Return sequence of strings <aLayerS> that assosiated with label <L>.
+    
+    GetLayers (me: mutable; L: Label from TDF) returns HSequenceOfExtendedString from TColStd;
+    	---Purpose: Return sequence of strings that assosiated with label <L>.
+    
+    GetShapesOfLayer (me; layerL: Label from TDF; ShLabels: out LabelSequence from TDF);
+    	---Purpose: Return sequanese of shape labels that assigned with layers to <ShLabels>.
+	
+    IsVisible (me; layerL: Label from TDF)
+    	---Purpose: Return TRUE if layer is visible, FALSE if invisible.
+    returns Boolean;
+    
+    SetVisibility(me; layerL: Label from TDF;
+    	    	      isvisible: Boolean = Standard_True);
+    	---Purpose: Set the visibility of layer. If layer is invisible when on it's layer
+	--          will set UAttribute with corresponding GUID.
+	
+    ---API: Assignment of Layers to shapes in Shapes section
+    
+    SetLayer (me: mutable; Sh: Shape from TopoDS;
+			   LayerL: Label from TDF;
+    	    	    	   shapeInOneLayer: Boolean = Standard_False)
+    returns Boolean;
+    	---Purpose: Sets a link from label that containig shape <Sh>
+    	--          with layer that situated at label <LayerL>.
+	--          optional parametr <shapeInOneLayer> show could shape be
+    	--          in number of layers or only in one.
+    	--          return FALSE if no such shape <Sh> or label <LayerL>
+
+    SetLayer (me: mutable; Sh: Shape from TopoDS;
+			   aLayer : ExtendedString from TCollection;
+			   shapeInOneLayer: Boolean = Standard_False)
+     returns Boolean;
+    	---Purpose: Sets a link from label that containig shape <Sh>
+	--          with layer <aLayer>. Add <aLayer> to LayerTable if nessesery.
+	--          optional parametr <shapeInOneLayer> show could shape be
+    	--          in number of layers or only in one.
+	--          return FALSE if no such shape <Sh>.
+	    
+    UnSetLayers (me: mutable; Sh: Shape from TopoDS) returns Boolean;
+	---Purpose: Remove link between shape <Sh> and all Layers at LayerTable.    
+    	--          return FALSE if no such shape <Sh> in XCAF Document.
+
+    UnSetOneLayer (me: mutable; Sh: Shape from TopoDS;
+			   aLayer : ExtendedString from TCollection) returns Boolean;
+    	---Purpose: Remove link between shape <Sh> and layer <aLayer>.
+	--          returns FALSE if no such layer <aLayer> or shape <Sh>.
+
+    IsSet (me: mutable; Sh: Shape from TopoDS;
+    	    	    	aLayer : ExtendedString from TCollection) returns Boolean;
+    	---Purpose: Returns True if shape <Sh> has a Layer assosiated 
+    	--          with the <aLayer>.
+    
+    GetLayers (me: mutable; Sh: Shape from TopoDS;
+    	    	    	   aLayerS : out HSequenceOfExtendedString from TColStd) returns Boolean;
+    	---Purpose: Return sequence of strings <aLayerS> that assosiated with shape <Sh>.
+    
+    GetLayers (me: mutable; Sh: Shape from TopoDS) returns HSequenceOfExtendedString from TColStd;
+    	---Purpose: Return sequence of strings that assosiated with shape <Sh>.
+
+            ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+
+    myShapeTool: ShapeTool from XCAFDoc;
+    
+end LayerTool;

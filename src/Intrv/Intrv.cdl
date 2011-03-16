@@ -1,0 +1,36 @@
+-- File:	Intrv.cdl
+-- Created:	Fri Dec 13 14:13:31 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+package Intrv 
+
+	---Purpose: 
+uses
+    Standard,
+    TCollection
+
+is
+                                 --                  other
+    enumeration Position is      --      me     **------------***
+    	Before,                  --    **---*
+	JustBefore,              --    **--------*
+	OverlappingAtStart,      --    **--------------*
+	JustEnclosingAtEnd,      --    **----------------------*
+	Enclosing,               --    **------------------------------*
+	JustOverlappingAtStart,  --              *---------*
+	Similar,                 --              *-------------*
+	JustEnclosingAtStart,    --              *---------------------*
+	Inside,                  --                    *---*
+	JustOverlappingAtEnd,    --                    *-------*
+    	OverlappingAtEnd,        --                    *---------------*
+	JustAfter,               --                            *-------*
+	After                    --                                 *--*
+    end Position;
+    
+    class Interval;
+    class Intervals;
+    class SequenceOfInterval instantiates Sequence from TCollection(Interval);
+    
+end Intrv;

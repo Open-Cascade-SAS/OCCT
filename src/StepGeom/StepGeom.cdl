@@ -1,0 +1,237 @@
+-- File:        StepGeom.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package StepGeom 
+
+    ---Purpose : AP214 CC1 , Revision 4  for Geom (Part42, geometric)
+    --           Upgrading from Revision 2 to Revision 4 : 26 Mar 1997
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt,
+	StepBasic, StepRepr
+
+is
+
+
+enumeration BSplineCurveForm is     -- reordered from Rev2 to Rev4
+
+	bscfPolylineForm,
+	bscfCircularArc,
+	bscfEllipticArc,
+	bscfParabolicArc,
+	bscfHyperbolicArc,
+	bscfUnspecified
+end;
+
+enumeration BSplineSurfaceForm is   -- reordered from Rev2 to Rev4
+
+	bssfPlaneSurf,
+	bssfCylindricalSurf,
+	bssfConicalSurf,
+	bssfSphericalSurf,
+	bssfToroidalSurf,
+	bssfSurfOfRevolution,
+	bssfRuledSurf,
+	bssfGeneralisedCone,
+	bssfQuadricSurf,
+	bssfSurfOfLinearExtrusion,
+	bssfUnspecified
+end;
+
+enumeration KnotType is     -- reordered from Rev2 to Rev4
+
+	ktUniformKnots,
+	ktUnspecified,
+	ktQuasiUniformKnots,
+	ktPiecewiseBezierKnots
+end;
+
+enumeration PreferredSurfaceCurveRepresentation is   -- reordered Rev2 to Rev4
+
+	pscrCurve3d,
+	pscrPcurveS1,
+	pscrPcurveS2
+end;
+
+-- Removed from Rev2 to Rev4 :enumeration TextPath
+
+enumeration TransitionCode is   -- reordered from Rev2 to Rev4
+
+	tcDiscontinuous,
+	tcContinuous,
+	tcContSameGradient,
+	tcContSameGradientSameCurvature
+end;
+
+enumeration TrimmingPreference is   -- reordered from Rev2 to Rev4
+
+	tpCartesian,
+	tpParameter,
+	tpUnspecified
+end;
+
+class Axis2Placement;		-- Select Type for
+
+	-- Axis2Placement2d
+	-- Axis2Placement3d
+
+
+class CurveOnSurface;		-- Select Type for
+
+	-- Pcurve
+	-- SurfaceCurve
+	-- CompositeCurveOnSurface
+
+class PcurveOrSurface;		-- Select Type for
+
+	-- Pcurve
+	-- Surface
+
+
+class TrimmingSelect;		-- Select Type for
+
+	-- CartesianPoint
+	-- ParameterValue i.e. Real (TrimmingMember)
+
+class TrimmingMember;
+
+class VectorOrDirection;		-- Select Type for
+
+	-- Vector
+	-- Direction
+
+
+--class Protocol;
+
+
+class CompositeCurveSegment;
+	class ReparametrisedCompositeCurveSegment;
+--class RepresentationContext;
+	class GeometricRepresentationContext;
+	class GeometricRepresentationContextAndGlobalUnitAssignedContext;
+    	-- Hand Made by FMA :
+	class GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx;     
+    	-- Hand Made by FMA :
+	class GeometricRepresentationContextAndParametricRepresentationContext;
+--class RepresentationItem;
+	class GeometricRepresentationItem;
+		class CartesianTransformationOperator;
+			class CartesianTransformationOperator2d;
+			class CartesianTransformationOperator3d;
+		class Curve;
+			class BoundedCurve;
+				class BSplineCurve;
+					class BSplineCurveWithKnots;
+					class BezierCurve;
+					class QuasiUniformCurve;
+					class RationalBSplineCurve;
+					class UniformCurve;
+					class UniformCurveAndRationalBSplineCurve;
+					class BSplineCurveWithKnotsAndRationalBSplineCurve;
+					class QuasiUniformCurveAndRationalBSplineCurve;
+					class BezierCurveAndRationalBSplineCurve;
+				class CompositeCurve;
+					class CompositeCurveOnSurface;
+						class BoundaryCurve;
+							class OuterBoundaryCurve;
+				class Polyline;
+				class TrimmedCurve;
+			class Conic;
+				class Circle;
+				class Ellipse;
+				class Hyperbola;
+				class Parabola;
+			class CurveReplica;
+			class Line;
+			class OffsetCurve3d;
+			class Pcurve;
+			class SurfaceCurve;
+				class IntersectionCurve;
+				class SeamCurve;
+			    class SurfaceCurveAndBoundedCurve;
+		class Direction;
+		class Placement;
+			class Axis1Placement;
+			class Axis2Placement2d;
+			class Axis2Placement3d;
+--V		class PlanarExtent;
+--V			class PlanarBox;
+		class Point;
+			class CartesianPoint;
+			class DegeneratePcurve;
+				class EvaluatedDegeneratePcurve;
+			class PointOnCurve;
+			class PointOnSurface;
+			class PointReplica;
+		class Surface;
+			class BoundedSurface;
+				class BSplineSurface;
+					class BSplineSurfaceWithKnots;
+					class BezierSurface;
+					class QuasiUniformSurface;
+					class RationalBSplineSurface;
+					class UniformSurface;
+					class BSplineSurfaceWithKnotsAndRationalBSplineSurface;
+					class UniformSurfaceAndRationalBSplineSurface;
+					class QuasiUniformSurfaceAndRationalBSplineSurface;
+					class BezierSurfaceAndRationalBSplineSurface;
+				class CurveBoundedSurface;
+				class RectangularCompositeSurface;
+				class RectangularTrimmedSurface;
+			class ElementarySurface;
+				class ConicalSurface;
+				class CylindricalSurface;
+				class Plane;
+				class SphericalSurface;
+				class ToroidalSurface;
+					class DegenerateToroidalSurface;
+			class OffsetSurface;
+			class SurfaceReplica;
+			class SweptSurface;
+				class SurfaceOfLinearExtrusion;
+				class SurfaceOfRevolution;
+			class OrientedSurface; --  Added from AP214 DIS to IS 4.01.2002
+		class Vector;
+class SurfacePatch;
+class SurfaceBoundary;
+
+
+class Array1OfCurve instantiates Array1 from TCollection (Curve);
+class HArray1OfCurve instantiates HArray1 from TCollection (Curve,Array1OfCurve from StepGeom);
+
+class Array1OfCartesianPoint instantiates Array1 from TCollection (CartesianPoint);
+class HArray1OfCartesianPoint instantiates HArray1 from TCollection (CartesianPoint,Array1OfCartesianPoint from StepGeom);
+
+class Array2OfCartesianPoint instantiates Array2 from TCollection (CartesianPoint);
+class HArray2OfCartesianPoint instantiates HArray2 from TCollection (CartesianPoint,Array2OfCartesianPoint from StepGeom);
+
+class Array1OfCompositeCurveSegment instantiates Array1 from TCollection (CompositeCurveSegment);
+class HArray1OfCompositeCurveSegment instantiates HArray1 from TCollection (CompositeCurveSegment,Array1OfCompositeCurveSegment from StepGeom);
+
+class Array1OfBoundaryCurve instantiates Array1 from TCollection (BoundaryCurve);
+class HArray1OfBoundaryCurve instantiates HArray1 from TCollection (BoundaryCurve,Array1OfBoundaryCurve from StepGeom);
+
+class Array2OfSurfacePatch instantiates Array2 from TCollection (SurfacePatch);
+class HArray2OfSurfacePatch instantiates HArray2 from TCollection (SurfacePatch,Array2OfSurfacePatch from StepGeom);
+
+class Array1OfSurfaceBoundary instantiates Array1 from TCollection (SurfaceBoundary);
+class HArray1OfSurfaceBoundary instantiates HArray1 from TCollection (SurfaceBoundary,Array1OfSurfaceBoundary from StepGeom);
+
+class Array1OfPcurveOrSurface instantiates Array1 from TCollection (PcurveOrSurface);
+class HArray1OfPcurveOrSurface instantiates HArray1 from TCollection (PcurveOrSurface,Array1OfPcurveOrSurface from StepGeom);
+
+class Array1OfTrimmingSelect instantiates Array1 from TCollection (TrimmingSelect);
+class HArray1OfTrimmingSelect instantiates HArray1 from TCollection (TrimmingSelect,Array1OfTrimmingSelect from StepGeom);
+
+--	Protocol returns Protocol from StepGeom;
+	---Purpose : creates a Protocol
+
+end StepGeom;
+

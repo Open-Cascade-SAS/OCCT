@@ -1,0 +1,38 @@
+-- File:	StepBasic_ActionRequestSolution.cdl
+-- Created:	Fri Nov 26 16:26:30 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ActionRequestSolution from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ActionRequestSolution
+
+uses
+    ActionMethod from StepBasic,
+    VersionedActionRequest from StepBasic
+
+is
+    Create returns ActionRequestSolution from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aMethod: ActionMethod from StepBasic;
+                       aRequest: VersionedActionRequest from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Method (me) returns ActionMethod from StepBasic;
+	---Purpose: Returns field Method
+    SetMethod (me: mutable; Method: ActionMethod from StepBasic);
+	---Purpose: Set field Method
+
+    Request (me) returns VersionedActionRequest from StepBasic;
+	---Purpose: Returns field Request
+    SetRequest (me: mutable; Request: VersionedActionRequest from StepBasic);
+	---Purpose: Set field Request
+
+fields
+    theMethod: ActionMethod from StepBasic;
+    theRequest: VersionedActionRequest from StepBasic;
+
+end ActionRequestSolution;

@@ -1,0 +1,43 @@
+-- File:	ShapeUpgrade_SplitCurve2dContinuity.cdl
+-- Created:	Wed Apr 14 18:47:29 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SplitCurve2dContinuity from ShapeUpgrade inherits SplitCurve2d from ShapeUpgrade
+
+    	---Purpose: Corrects/splits a 2d curve with a continuity criterion.
+    	--  Tolerance is used to correct the curve at a knot that respects
+    	--  geometrically the criterion, in order to reduce the
+    	--  multiplicity of the knot.
+
+uses
+
+    Curve from Geom2d,
+    Shape from GeomAbs
+
+is
+
+    Create returns SplitCurve2dContinuity from ShapeUpgrade;
+        ---Purpose: Empty constructor.
+	
+    SetCriterion (me: mutable; Criterion: Shape from GeomAbs);
+    	---Purpose: Sets criterion for splitting.
+	
+    SetTolerance (me: mutable; Tol: Real);
+    	---Purpose: Sets tolerance.
+	
+    
+    Compute(me: mutable) is redefined;
+    	---Purpose: Calculates points for correction/splitting of the curve
+    
+
+
+fields
+
+    myCriterion: Shape from GeomAbs;
+    myCont     : Integer;
+    myTolerance: Real;
+    
+end SplitCurve2dContinuity;

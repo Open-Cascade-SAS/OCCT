@@ -1,0 +1,93 @@
+-- File:	TDocStd_XLinkTool.cdl
+-- Created:	Tue May 12 10:05:06 1998
+-- Author:	Isabelle GRIGNON
+--		<isg@bigbox.paris1.matra-dtv.fr>
+---XLinkToolright:	 Matra Datavision 1998
+
+
+class XLinkTool from TDocStd
+
+	---Purpose: This  tool class  is  used to copy  the content of
+	--            source label   under  target label.   Only child
+	--           labels and  attributes   of  source are   copied.
+	--          attributes located   out of source  scope are  not
+	--          copied by this algorithm.
+	--           Depending  of   the called  method  an   external
+	--          reference is set  in  the the target  document  to
+	--          registred the externallink.
+	--  Warning1: Nothing is provided in this class  about the
+	--          opportunity to copy, set a link or  update  it.
+	--          Such decisions must be under application control. 
+	--  Warning2: If the document manages shapes, use after copy 
+	--            TNaming::ChangeShapes(target,M) to make copy of 
+	--            shapes.
+
+uses Label from TDF,
+     LabelMap from TDF,
+     IDFilter from TDF,
+     RelocationTable from TDF,
+     DataSet from TDF
+
+is
+
+    Create 
+    returns XLinkTool from TDocStd;
+
+    CopyWithLink (me : in out; intarget   : Label from TDF;
+                               fromsource : Label from TDF);			       
+    	---Purpose: Copies the content of the label <fromsource> to the label <intarget>. 
+    	--  The link is registred with an XLink attribute by <intarget>
+    	--           label.  if  the    content  of <fromsource>   is  not
+    	--          self-contained,  and/or <intarget> has already an XLink
+    	--          attribute, an exception is raised.
+   
+    UpdateLink (me : in out; L : Label);
+    	---Purpose: Update the external reference set   at <L>.
+    	--    Example
+    	-- Handle(TDocStd_Document) aDoc;
+    	-- if
+    	-- (!OCAFTest::GetDocument(1,aDoc)) return 1;
+    	-- Handle(TDataStd_Reference) aRef;
+    	-- TDocStd_XLinkTool xlinktool;
+    	-- if
+    	-- (!OCAFTest::Find(aDoc,2),TDataStd_Reference::GetID(),aRef) return 1;
+    	-- xlinktool.UpdateLink(aRef->Label());
+    	-- Exceptions
+    	-- Standard_DomainError if <L> has no XLink attribute.
+
+    Copy (me : in out; intarget   : Label from TDF;
+                       fromsource : Label from TDF) is virtual;   
+    	---Purpose:   Copy    the   content     of    <fromsource>   under
+    	--          <intarget>. Noone link is registred. noone check is done.
+    	-- Example
+    	--  Handle(TDocStd_Document) DOC, XDOC;
+    	--  TDF_Label L, XL;
+    	-- TDocStd_XLinkTool xlinktool;
+    	--  xlinktool.Copy(L,XL);
+    	-- Exceptions:
+    	-- Standard_DomainError if the contents of
+    	-- fromsource are not entirely in the scope of this
+    	-- label, in other words, are not self-contained. 
+	-- !!! ==> Warning: 
+	-- If the document manages shapes use the next way: 
+        -- TDocStd_XLinkTool xlinktool;
+    	-- xlinktool.Copy(L,XL); 
+	-- TopTools_DataMapOfShapeShape M;  
+	-- TNaming::ChangeShapes(target,M);
+     
+    IsDone (me)
+    returns Boolean from Standard;
+
+    DataSet (me)
+    returns DataSet from TDF;
+
+    RelocationTable (me)
+    returns RelocationTable from TDF;
+
+fields
+
+    isDone : Boolean         from Standard is protected;
+    myDS   : DataSet         from TDF;
+    myRT   : RelocationTable from TDF;
+
+end XLinkTool;

@@ -1,0 +1,48 @@
+-- File:	AIS_BadEdgeFilter.cdl
+-- Created:	Wed Mar  4 11:44:30 1998
+-- Author:	Julia Gerasimova
+--		<j-gerasimova@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class BadEdgeFilter from AIS inherits Filter from SelectMgr
+
+	---Purpose: A Class
+
+uses
+
+    EntityOwner                    from SelectMgr,
+    Edge                           from TopoDS,
+    DataMapOfIntegerListOfShape    from TopTools,    
+    ShapeEnum                      from TopAbs
+    
+is
+    Create
+    returns mutable BadEdgeFilter from AIS;
+    	--- Purpose: Constructs an empty filter object for bad edges.   
+    ActsOn( me; aType : ShapeEnum from TopAbs )
+    returns Boolean from Standard
+    is redefined;
+    
+    IsOk( me; EO : EntityOwner from SelectMgr )
+    returns Boolean from Standard is redefined virtual;
+
+    SetContour( me : mutable ; Index : Integer from Standard );
+    	---Purpose: sets  <myContour> with  current  contour. used  by
+    	--          IsOk.
+
+    AddEdge( me: mutable ; anEdge : Edge from TopoDS;
+    	    	    	   Index : Integer from Standard );
+    	---Purpose:  Adds an  edge  to the list  of non-selectionnable
+    	--          edges.
+
+    RemoveEdges( me: mutable ; Index : Integer from Standard );
+    	---Purpose: removes from the  list of non-selectionnable edges
+    	--          all edges in the contour <Index>.
+
+fields
+
+    myBadEdges : DataMapOfIntegerListOfShape from TopTools;
+    myContour  : Integer                     from Standard;
+
+end BadEdgeFilter;

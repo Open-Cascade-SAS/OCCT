@@ -1,0 +1,14 @@
+-- File:	Prs3d_DatumTool.cdl
+-- Created:	Fri Apr 16 13:36:55 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred generic class DatumTool from Prs3d ( Datum as any)
+
+uses Ax2 from gp
+
+is
+    Ax2 ( myclass; aDatum: Datum ) returns Ax2 from gp;
+
+end DatumTool from Prs3d;

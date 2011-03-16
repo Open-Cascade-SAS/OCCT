@@ -1,0 +1,24 @@
+-- File:	HeaderSection_HeaderRecognizer.cdl
+-- Created:	Mon Jun 27 17:42:45 1994
+-- Author:	Frederic MAUPAS
+--		<fma@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class HeaderRecognizer         from HeaderSection
+      inherits FileRecognizer  from StepData
+
+    ---Purpose : Recognizes STEP Standard Header Entities
+    --           (FileName, FileDescription, FileSchema)
+
+uses AsciiString from TCollection
+
+is
+
+    Create returns mutable HeaderRecognizer ;
+
+    Eval (me : mutable ; key : AsciiString from TCollection)  is protected;
+    ---Purpose: Recognizes data types of Header STEP Standard
+
+end HeaderRecognizer;

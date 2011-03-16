@@ -1,0 +1,42 @@
+-- File:      XmlXCAFDrivers.cdl
+-- Created:   11.09.01 11:50:20
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+
+package XmlXCAFDrivers 
+
+        ---Purpose: 
+
+uses
+    TCollection,
+    CDM,
+    XmlDrivers,
+    XmlMDF
+    
+is
+    class DocumentRetrievalDriver;
+    
+    class DocumentStorageDriver;
+
+    ---Category: Factory methods
+    --           ==============================================================
+
+    Factory (aGUID: GUID from Standard)
+    returns Transient from Standard;
+        ---Purpose: Depending from the  ID, returns a list of  storage
+        --          or retrieval attribute drivers. Used for plugin.
+        --          
+        --          Standard data model drivers
+        --          ===========================
+        --          47b0b826-d931-11d1-b5da-00a0c9064368 Transient-Persistent 
+        --          47b0b827-d931-11d1-b5da-00a0c9064368 Persistent-Transient
+        --          
+        --          XCAF data model drivers
+        --          =================================
+        --          ed8793f8-3142-11d4-b9b5-0060b0ee281b Transient-Persistent 
+        --          ed8793f9-3142-11d4-b9b5-0060b0ee281b Persistent-Transient
+        --          ed8793fa-3142-11d4-b9b5-0060b0ee281b XCAFSchema
+
+
+end XmlXCAFDrivers;

@@ -1,0 +1,73 @@
+-- File:	TCollection_BasicMapIterator.cdl
+-- Created:	Fri Feb 26 15:10:06 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+private deferred class BasicMapIterator from TCollection 
+
+	---Purpose: This  class  provides    basic   services  for the
+	-- iterators  on Maps. The  iterators  are  inherited
+	-- from this one.
+	-- 
+	-- The  iterator   contains  an   array   of pointers
+	-- (buckets). Each bucket is a  pointer  on a node. A
+	-- node contains a pointer on the next node.
+	-- 
+	-- This class  provides also basic  services for  the
+	-- implementation of Maps.
+    	-- A map iterator provides a step by step exploration of all
+    	-- entries of a map. After initialization of a concrete derived
+    	-- iterator, use in a loop:
+    	-- -   the function More to know if there is a current entry for
+    	--   the iterator in the map,
+    	-- -   then the functions which read data on an entry of the
+    	--   map (these functions are provided by each type of map),
+    	-- -   then the function Next to set the iterator to the next   entry of the map.
+    	--   Warning
+    	-- -   A map is a non-ordered data structure. The order in
+    	--   which entries of a map are explored by the iterator
+    	--  depends on its contents, and change when the map is edited.
+    	-- -   It is not recommended to modify the contents of a map
+    	--   during iteration: the result is unpredictable.
+  
+uses
+    BasicMap from TCollection
+
+is
+    Initialize;
+	---Purpose: Creates an empty iterator.
+
+    Initialize(M : BasicMap from TCollection);
+	---Purpose: Initialize on the first node in the buckets.
+	
+    Initialize(me : in out; M : BasicMap from TCollection)
+	---Purpose: Initialize on the first node in the buckets.
+    is static protected;
+    
+    Reset(me : in out)
+	---Purpose: Resets the iterator to the first node.
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns true if there is a current entry for this iterator in the map.
+    	-- Use the function Next to set this iterator to the position of
+    	-- the next entry, if it exists.
+	---C++: inline
+    is static;
+    
+    Next(me : in out)
+	---Purpose: Sets this iterator to the position of the next entry of the map.
+    	-- Nothing is changed if there is no more entry to explore in
+    	-- the map: this iterator is always positioned on the last entry
+    	-- of the map but the function More returns false.
+    is static;
+
+fields
+    	myNbBuckets : Integer;
+        myBuckets   : Address from Standard;
+        myBucket    : Integer;
+        myNode      : Address from Standard is protected;
+
+end BasicMapIterator;

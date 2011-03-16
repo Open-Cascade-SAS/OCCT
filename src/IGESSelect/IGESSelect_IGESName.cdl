@@ -1,0 +1,27 @@
+-- File:	IGESSelect_IGESName.cdl
+-- Created:	Wed Dec 21 13:01:09 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class IGESName from IGESSelect    inherits Signature  from IFSelect
+
+    ---Purpose : IGESName is a Signature specific to IGESNorm :
+    --           it considers the Name of an IGESEntity as being its ShortLabel
+    --           (some sending systems use name, not to identify entities, but
+    --           ratjer to classify them)
+
+uses CString, Transient, InterfaceModel
+
+is
+
+    Create returns mutable IGESName;
+    ---Purpose : Creates a Signature for IGES Name (reduced to ShortLabel,
+    --           without SubscriptLabel or Long Name)
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the ShortLabel as being the Name of an IGESEntity
+    --           If <ent> has no name, it returns empty string ""
+
+end IGESName;

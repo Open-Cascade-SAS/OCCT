@@ -1,0 +1,51 @@
+//=======================================================================
+// File:	StlMesh_MeshDomain.lxx
+// Created:	Mon Sep 25 10:03:46 1995
+// Author:	Philippe GIRODENGO
+// Copyright:    Matra Datavision	
+
+//=======================================================================
+//function : Deflection
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Real StlMesh_MeshDomain::Deflection() const 
+{ return deflection; }
+
+//=======================================================================
+//function : NbTriangles
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Integer StlMesh_MeshDomain::NbTriangles() const 
+{ return  nbTriangles; }
+
+//=======================================================================
+//function : NbVertices
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Integer StlMesh_MeshDomain::NbVertices() const 
+{ return  nbVertices; }
+
+//=======================================================================
+//function : Triangles
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline const StlMesh_SequenceOfMeshTriangle& StlMesh_MeshDomain::Triangles() const 
+{ return trianglesVertex; }
+
+//=======================================================================
+//function : Vertices
+//design   : 
+//warning  : 
+//=======================================================================
+
+ inline const TColgp_SequenceOfXYZ& StlMesh_MeshDomain::Vertices() const 
+{ return vertexCoords; }
+

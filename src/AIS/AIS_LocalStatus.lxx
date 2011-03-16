@@ -1,0 +1,57 @@
+inline Standard_Boolean AIS_LocalStatus::Decomposed() const 
+{return myDecomposition;}
+
+inline Standard_Boolean AIS_LocalStatus::IsTemporary() const 
+{return myIsTemporary;}
+
+inline Standard_Integer AIS_LocalStatus::DisplayMode() const 
+{return myDMode;}
+
+inline const TColStd_ListOfInteger& AIS_LocalStatus::
+SelectionModes() const 
+{return mySModes;}
+
+inline Standard_Boolean AIS_LocalStatus::IsSubIntensityOn() const 
+{return mySubIntensity;}
+
+inline void AIS_LocalStatus::SetDecomposition(const Standard_Boolean astatus)
+{myDecomposition=astatus;}
+
+inline void AIS_LocalStatus::SetTemporary(const Standard_Boolean astatus)
+{myIsTemporary = astatus;}
+
+
+inline void AIS_LocalStatus::SubIntensityOn()
+{mySubIntensity = Standard_True;}
+
+inline void AIS_LocalStatus::SubIntensityOff()
+{mySubIntensity = Standard_False;}
+
+inline void AIS_LocalStatus::
+SetDisplayMode(const Standard_Integer aMode)
+{myDMode = aMode;}
+
+
+inline void AIS_LocalStatus::SetHilightMode(const Standard_Integer aMode)
+{myHMode=aMode;}
+
+inline Standard_Integer AIS_LocalStatus::HilightMode() const 
+{return myHMode;}
+inline void AIS_LocalStatus::SetPreviousState(const Handle(Standard_Transient)& stat)
+{  myPreviousState = stat;}
+
+inline const Handle(Standard_Transient)& 
+AIS_LocalStatus::PreviousState() const 
+{return myPreviousState;}
+
+inline void AIS_LocalStatus::SetFirstDisplay(const Standard_Boolean aStat)
+{myFirstDisplay = aStat;}
+
+inline Standard_Boolean AIS_LocalStatus::IsFirstDisplay() const
+{return myFirstDisplay;}
+
+inline void AIS_LocalStatus::SetHilightColor(const Quantity_NameOfColor aCol)
+{myHiCol = aCol;}
+
+inline Quantity_NameOfColor AIS_LocalStatus::HilightColor() const
+{return myHiCol;}

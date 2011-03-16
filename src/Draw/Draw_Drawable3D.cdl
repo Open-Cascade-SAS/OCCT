@@ -1,0 +1,82 @@
+-- File:	Drawable3D.cdl
+-- Created:	Wed Apr 24 14:19:59 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+deferred class Drawable3D from Draw inherits TShared from MMgt
+
+	---Purpose: 
+
+uses Color      from Draw,
+    Display     from Draw,
+    Interpretor from Draw,
+    OStream
+
+is
+
+    Initialize;
+
+    DrawOn(me; dis : in out Display)
+    is deferred;
+    
+    PickReject(me; X,Y,Prec : Real) returns Boolean
+	---Purpose: Returs True if the pick is outside the box
+    is virtual;
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is virtual;
+	---Purpose: For variable copy.
+	
+    Dump(me; S : in out OStream)
+    is virtual;
+	---Purpose: For variable dump.
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is virtual;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+    Is3D(me) returns Boolean
+    is virtual;
+	---Purpose: Is a 3D object. (Default True).
+    
+    SetBounds(me : mutable; xmin,xmax,ymin,ymax : Real)
+    is static;
+    
+    Bounds(me; xmin,xmax,ymin,ymax : out Real)
+    is static;
+    
+    Visible(me) returns Boolean;
+	---C++: inline
+    
+    Visible(me : mutable; V : Boolean);
+	---C++: inline
+    
+    Protected(me) returns Boolean;
+	---C++: inline
+    
+    Protected(me : mutable; P : Boolean);
+	---C++: inline
+	
+    Name(me) returns CString;
+	---C++: inline
+	
+    Name(me : mutable; N : CString)
+    is virtual;
+	---C++: inline
+    
+    
+fields
+    
+    myXmin : Real;
+    myXmax : Real;
+    myYmin : Real;
+    myYmax : Real;
+    
+    isVisible   : Boolean;
+    isProtected : Boolean;
+    myName      : CString;
+    
+end Drawable3D;

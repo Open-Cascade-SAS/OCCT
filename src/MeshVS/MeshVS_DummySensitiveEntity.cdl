@@ -1,0 +1,44 @@
+-- File:	MeshVS_DummySensitiveEntity.cdl
+-- Created:	Mon Sep 29 2003
+-- Author:	Alexander SOLOVYOV and Sergey LITONIN
+---Copyright:	Open CASCADE 2003
+
+class DummySensitiveEntity from MeshVS inherits SensitiveEntity from SelectBasics
+
+	---Purpose: This class allows to create owners to all elements or nodes,
+        -- both hidden and shown, but these owners user cannot select "by hands"
+        -- in viewer. They means for internal application tasks, for example, receiving
+        -- all owners, both for hidden and shown entities.
+uses
+  EntityOwner   from SelectBasics,
+  ListOfBox2d   from SelectBasics,
+
+  Array1OfPnt2d from TColgp,
+
+  Box2d         from Bnd
+
+is
+   Create   ( OwnerId : EntityOwner from SelectBasics ) returns mutable DummySensitiveEntity from MeshVS;
+
+   Areas    ( me: mutable;
+              aresult: in out ListOfBox2d from SelectBasics ) is redefined;
+
+   Matches  ( me: mutable;
+              X, Y, aTol: Real;
+              DMin: out Real ) returns Boolean is redefined;
+
+   Matches  ( me: mutable;
+              XMin, YMin, XMax, YMax, aTol: Real ) returns Boolean is redefined;
+
+   Matches  ( me: mutable;
+              Polyline : Array1OfPnt2d from TColgp;
+              aBox     : Box2d from Bnd;
+              aTol     : Real    ) returns Boolean is redefined;
+
+   Is3D     ( me ) returns Boolean is redefined;
+
+   NeedsConversion ( me ) returns Boolean is redefined;
+
+   MaxBoxes ( me ) returns Integer is redefined;
+
+end DummySensitiveEntity;

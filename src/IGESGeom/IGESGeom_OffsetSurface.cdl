@@ -1,0 +1,71 @@
+--
+-- File      :  OffsetSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class OffsetSurface from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESOffsetSurface, Type <140> Form <0>
+        --          in package IGESGeom
+        --          An offset surface is a surface defined in terms of an
+        --          already existing surface.If S(u, v) is a parametrised
+        --          regular surface and N(u, v) is a differential field of
+        --          unit normal vectors defined on the whole surface, and
+        --          "d" a fixed non zero real number, then offset surface
+        --          to S is a parametrised surface S(u, v) given by
+        --          O(u, v) = S(u, v) + d * N(u, v);
+        --          u1 <= u <= u2; v1 <= v <= v2;
+
+uses
+
+        Vec from gp,
+        XYZ from gp
+
+is
+
+        Create returns mutable OffsetSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              anIndicatoR : XYZ;
+              aDistance   : Real;
+              aSurface    : IGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           OffsetSurface
+        --       - anIndicator : Offset indicator
+        --       - aDistance   : Offset distance
+        --       - aSurface    : Surface that is offset
+
+        OffsetIndicator (me) returns Vec;
+        ---Purpose : returns the offset indicator
+
+        TransformedOffsetIndicator (me) returns Vec;
+        ---Purpose : returns the offset indicator after applying Transf. Matrix
+
+        Distance (me) returns Real;
+        ---Purpose : returns the distance by which surface is offset
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the surface that has been offset
+
+fields
+
+--
+-- Class    : IGESGeom_OffsetSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class OffsetSurface.
+--
+-- Reminder : A OffsetSurface instance is defined by :
+--            The coordinates of offset indicator, the offset distance
+--            and the surface to be offset.
+
+        theIndicator : XYZ;
+        theDistance  : Real;
+        theSurface   : IGESEntity;
+
+end OffsetSurface;

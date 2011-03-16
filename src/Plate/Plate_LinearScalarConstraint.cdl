@@ -1,0 +1,76 @@
+-- File:	Plate_LinearScalarConstraint.cdl
+-- Created:	Mon Mar 23 17:40:14 1998
+-- Author:	# Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+class LinearScalarConstraint from Plate
+---Purpose : define on or several constraints  as linear combination of
+--         the X,Y and Z components of a set of PinPointConstraint
+--         
+uses 
+   XY from gp, 
+   XYZ from gp, 
+   PinpointConstraint  from  Plate,
+   HArray1OfPinpointConstraint  from  Plate,
+   HArray2OfXYZ from TColgp,
+   Array1OfPinpointConstraint  from  Plate,
+   Array2OfXYZ from TColgp,
+   Array1OfXYZ from TColgp 
+   
+raises
+    DimensionMismatch from Standard,
+    OutOfRange from Standard
+   
+is
+    Create
+         returns LinearScalarConstraint;
+
+    Create  (PPC1  :  PinpointConstraint; coeff  :  XYZ ) 
+           returns LinearScalarConstraint; 
+
+    Create  (PPC  :  Array1OfPinpointConstraint; coeff  :  Array1OfXYZ ) 
+           returns LinearScalarConstraint
+	   raises DimensionMismatch from Standard;
+    -- PPC and coeff have to be of the same length
+
+    Create  (PPC  :  Array1OfPinpointConstraint; coeff  :  Array2OfXYZ )
+           returns LinearScalarConstraint
+	   raises DimensionMismatch from Standard;
+    --  the length of PPC  have to be the  Row lentgth of  coeff
+
+    Create  (ColLen,RowLen  :  Integer ) 
+    -- initialize with 0 valued PPC and Coeffs
+           returns LinearScalarConstraint;
+
+    -- Accessors :
+    GetPPC(me) returns Array1OfPinpointConstraint;
+    ---C++: inline 
+    ---C++: return const &
+
+    Coeff(me) returns Array2OfXYZ;
+    ---C++: inline 
+    ---C++: return const &
+
+    SetPPC (me : in out;  
+    	Index: Integer from Standard;  
+    	Value: PinpointConstraint) 
+    	---Purpose:  Sets   the PinPointConstraint of   index Index to
+    	--          Value raise if Index is greater than the length of
+    	--          PPC or the Row length of coeff or lower  than 1
+    	raises OutOfRange from Standard;
+
+    SetCoeff (me : in out;  
+    	Row, Col: Integer from Standard;  
+    	Value: XYZ) 
+    	---Purpose:  Sets the coeff  of index (Row,Col)  to Value 
+    	--           raise if  Row (respectively Col)  is greater than the
+    	--          Row (respectively Column) length of coeff
+    	raises OutOfRange from Standard;
+
+fields
+    
+    myPPC  :  HArray1OfPinpointConstraint;
+    myCoef :  HArray2OfXYZ;
+
+end;

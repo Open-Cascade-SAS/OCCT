@@ -1,0 +1,41 @@
+-- File:	StdSelect_EdgeFilter.cdl
+-- Created:	Mon Mar 11 10:55:07 1996
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class EdgeFilter from StdSelect inherits Filter from SelectMgr
+
+	---Purpose: A framework to define a filter to select a specific type of edge.
+    	-- The types available include:
+    	-- -   any edge
+    	-- -   a linear edge
+    	-- -   a circular edge.
+  
+uses
+    TypeOfEdge from StdSelect,
+    Shape from TopoDS,
+    EntityOwner from SelectMgr,
+    ShapeEnum from TopAbs
+is
+    Create (Edge: TypeOfEdge from StdSelect)
+    returns mutable EdgeFilter from StdSelect;
+    	---Purpose: Constructs an edge filter object defined by the type of edge Edge.   
+    SetType(me:mutable;aNewType : TypeOfEdge from StdSelect);  
+    	---Purpose: Sets the type of edge aNewType. aNewType is to be highlighted in selection.    
+    
+    Type(me) returns TypeOfEdge from StdSelect;
+    	---Purpose: Returns the type of edge to be highlighted in selection.    
+    IsOk (me;anobj : EntityOwner from SelectMgr) 
+    returns Boolean from Standard is redefined virtual;
+
+    ActsOn(me; aStandardMode : ShapeEnum from TopAbs)
+    returns Boolean from Standard is redefined virtual;
+
+fields
+    mytype : TypeOfEdge from StdSelect;
+
+
+end EdgeFilter;

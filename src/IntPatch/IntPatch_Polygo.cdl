@@ -1,0 +1,38 @@
+-- File:	IntPatch_Polygo.cdl
+-- Created:	Thu May  6 17:49:16 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@form4>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Polygo from IntPatch
+
+	---Purpose: 
+
+uses Pnt2d from gp,
+     Box2d from Bnd
+
+is
+
+  Delete(me:out) is virtual;
+  ---C++: alias "Standard_EXPORT virtual ~IntPatch_Polygo(){Delete() ; }"
+    
+  Bounding (me)  
+    ---C++: return const & 
+    returns Box2d from Bnd
+    is deferred;
+    
+  Error(me) returns Real from Standard
+    is deferred;
+                         	    	          
+  Closed(me) returns Boolean from Standard
+    is deferred;
+
+  NbPoints(me) returns Integer
+    is deferred;
+    
+  Point(me; Index : Integer)
+    returns Pnt2d from gp
+    is deferred;
+    
+end Polygo;

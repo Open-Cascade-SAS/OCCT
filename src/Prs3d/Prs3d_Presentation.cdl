@@ -1,0 +1,126 @@
+-- File:	Presentation.cdl
+-- Created:	Wed Aug 26 17:37:40 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+-- Modified:	GG IMP020200 Add Transformation() method
+---Copyright:	 Matra Datavision 1992
+
+
+class Presentation from Prs3d inherits Structure from Graphic3d
+
+    	---Purpose: Defines a presentation object which can be displayed,
+    	-- highlighted or erased.
+    	-- The presentation object stores the results of the
+    	-- presentation algorithms as defined in the StdPrs
+    	-- classes and the Prs3d classes inheriting Prs3d_Root.
+    	-- This presentation object is used to give display
+    	-- attributes defined at this level to
+    	-- ApplicationInteractiveServices classes at the level above.
+        
+uses
+	Array2OfReal		from TColStd,
+    DataStructureManager from Graphic3d,
+    Structure            from Graphic3d,
+    StructureManager     from Graphic3d,
+    Group                from Graphic3d,
+    Transformation       from Geom,
+    NameOfColor          from Quantity,
+    Length               from Quantity,
+    ShadingAspect        from Prs3d
+    
+is
+    Create (aStructureManager: StructureManager from Graphic3d;
+    	    Init:              Boolean          from Standard = Standard_True) 
+    	---Purpose: Constructs a presentation object
+    	-- if <Init> is false, no color initialization is done.
+    returns mutable Presentation from Prs3d;
+
+
+    Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
+    returns Structure from Graphic3d
+    is redefined virtual;
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  AMatrix	: Array2OfReal from TColStd )
+		returns Structure from Graphic3d is redefined virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  aStructure	: in out Structure from Graphic3d )
+		is redefined virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  AMatrix	: Array2OfReal from TColStd;
+		  aStructure	: in out Structure from Graphic3d )
+		is redefined virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+
+---Category: Highlighting methods.
+--           
+    Highlight(me: mutable) is static;
+    	---Purpose: displays the whole content of the presentation in white.
+    Color(me: mutable; aColor: NameOfColor from Quantity) is static;
+    	---Purpose: displays the whole content of the presentation in the specified color.
+    BoundBox(me: mutable) is static;
+
+    Display ( me : mutable ) is redefined static;
+    
+---Category: Global modification methods.
+    SetShadingAspect(me: mutable; aShadingAspect: ShadingAspect from Prs3d);
+    
+---Category: Inquire methods.
+    IsPickable(me) returns Boolean from Standard;
+    
+---Category: Transformation methods.
+    Transform   (me: mutable; aTransformation: Transformation from Geom);
+    Place       (me: mutable; X,Y,Z: Length from Quantity);
+
+    Multiply    (me: mutable; aTransformation: Transformation from Geom); 
+    Move        (me: mutable; X,Y,Z: Length from Quantity);
+    Transformation   (me) returns Transformation from Geom;
+	
+    Clear(me:mutable; WithDestruction: Boolean from Standard = Standard_True) 
+    is redefined;
+    	---Purpose: removes the whole content of the presentation.
+    	--          Does not remove the other connected presentations.
+    	--	        if WithDestruction == Standard_False then
+    	--		clears all the groups of primitives in the structure.
+
+    Connect(me: mutable; aPresentation: Presentation from Prs3d);
+    
+    Remove (me: mutable; aPresentation: Presentation from Prs3d);
+    RemoveAll (me: mutable);
+
+    SetPickable(me: mutable) is static;
+    SetUnPickable(me: mutable) is static;
+    
+    CurrentGroup(me) returns mutable Group from Graphic3d is static private;
+    NewGroup(me:mutable) returns mutable Group from Graphic3d is static private;
+
+fields
+    myStruct      : Structure from Graphic3d;
+    myCurrentGroup: Group     from Graphic3d;
+--
+friends 
+    	class Root from Prs3d
+
+end Presentation;
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+-- File:        VertexLoop.cdl
+-- Created:     Fri Dec  1 11:11:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class VertexLoop from StepShape 
+
+inherits Loop from StepShape 
+
+uses
+
+	Vertex from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable VertexLoop;
+	---Purpose: Returns a VertexLoop
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aLoopVertex : mutable Vertex from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetLoopVertex(me : mutable; aLoopVertex : mutable Vertex);
+	LoopVertex (me) returns mutable Vertex;
+
+fields
+
+	loopVertex : Vertex from StepShape;
+
+end VertexLoop;

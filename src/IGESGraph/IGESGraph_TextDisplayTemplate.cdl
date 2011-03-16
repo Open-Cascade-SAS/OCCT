@@ -1,0 +1,170 @@
+--
+-- File      :  TextDisplayTemplate.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class TextDisplayTemplate from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGES TextDisplayTemplate Entity,
+        --          Type <312>, form <0, 1> in package IGESGraph
+        --
+        --          Used to set parameters for display of information
+        --          which has been logically included in another entity
+        --          as a parameter value
+
+uses
+
+        TextFontDef from IGESGraph,
+        Pnt         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable TextDisplayTemplate;
+
+        -- specific for the entity
+
+        Init (me             : mutable;
+              aWidth         : Real;
+              aHeight        : Real;
+              aFontCode      : Integer;
+              aFontEntity    : TextFontDef;
+              aSlantAngle    : Real;
+              aRotationAngle : Real;
+              aMirrorFlag    : Integer;
+              aRotationFlag  : Integer;
+              aCorner        : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           TextDisplayTemplate
+        --      - aWidth         : Character box width
+        --      - aHeight        : Character box height
+        --      - afontCode      : Font code
+        --      - aFontEntity    : Text Font Definition Entity
+        --      - aSlantAngle    : Slant angle
+        --      - aRotationAngle : Rotation angle
+        --      - aMirrorFlag    : Mirror Flag
+        --      - aRotationFlag  : Rotate internal text flag
+        --      - aCorner        : Lower left corner coordinates(Form No. 0),
+        --                         Increments from coordinates  (Form No. 1)
+
+        SetIncremental (me : mutable; mode : Boolean);
+	---Purpose : Sets <me> to be Incremental (Form 1) if <mode> is True,
+	--           or Basolute (Form 0) else
+
+        IsIncremental (me) returns Boolean;
+        ---Purpose : returns True  if entity is Incremental (Form 1).
+        --         False if entity is Absolute    (Form 0).
+
+
+        BoxWidth (me) returns Real;
+        ---Purpose : returns Character Box Width.
+
+        BoxHeight (me) returns Real;
+        ---Purpose : returns Character Box Height.
+
+        IsFontEntity (me) returns Boolean;
+        ---Purpose : returns False if theFontEntity is Null, True otherwise.
+
+        FontCode (me) returns Integer;
+        ---Purpose : returns the font code.
+
+        FontEntity (me) returns TextFontDef;
+        ---Purpose : returns Text Font Definition Entity used to define the font.
+
+        SlantAngle (me) returns Real;
+        ---Purpose : returns slant angle of character in radians.
+
+        RotationAngle (me) returns Real;
+        ---Purpose : returns Rotation angle of text block in radians.
+
+        MirrorFlag (me) returns Integer;
+        ---Purpose : returns Mirror flag
+        -- Mirror flag : 0 = no mirroring.
+        --               1 = mirror axis perpendicular to text base line.
+        --               2 = mirror axis is text base line.
+
+        RotateFlag (me) returns Integer;
+        ---Purpose : returns Rotate internal text flag.
+        --  Rotate internal text flag : 0 = text horizontal.
+        --                              1 = text vertical.
+
+        StartingCorner (me) returns Pnt;
+        ---Purpose : If IsIncremental() returns False,
+        --                  gets coordinates of lower left corner
+        --                  of first character box.
+        -- If IsIncremental() returns True,
+        --                  gets increments from X, Y, Z coordinates
+        --                  found in parent entity.
+
+        TransformedStartingCorner (me) returns Pnt;
+        ---Purpose : If IsIncremental() returns False,
+        --                  gets coordinates of lower left corner
+        --                  of first character box.
+        -- If IsIncremental() returns True,
+        --                  gets increments from X, Y, Z coordinates
+        --                  found in parent entity.
+
+fields
+
+-- Class    : IGESDraw_TextDisplayTemplate
+--
+-- Purpose  : Declaration of the variables specific to a
+--            TextDisplayTemplate.
+--
+-- Reminder : A  Text Display Template Entity is defined by :
+--                  - character box width,
+--                  - character box height,
+--                  - a font code or pointer to TextFontDef
+--                    used to define the font,
+--                  - slant angle of each individual character,
+--                  - rotation angle of text block,
+--                  - a mirroring axis,
+--                  - a rotate internal text flag,
+--                  - coordinates of lower left corner of first character
+--                    box if form number = 0, or
+--                    increments in corresponding coordinates found in
+--                    parent entity, if form number = 1
+
+        theBoxWidth         : Real;
+
+        theBoxHeight        : Real;
+
+        theFontCode         : Integer;
+        -- one of the predefined font codes
+
+        theFontEntity       : TextFontDef;
+        -- Text Font Definition Entity used to define the font
+
+        theSlantAngle       : Real;
+        -- slant angle of each individual character
+        -- For horizontal text, slant angle is measured from the XT axis
+        -- in a counterclockwise direction.
+        -- For Vertical Text, it is measured from the YT axis
+
+        theRotationAngle    : Real;
+        -- rotation angle of the text block
+        -- The rotation angle is applied  in a counterclockwise direction about
+        -- the text start point. The plane of rotation is the XT,YT plane.
+
+        theMirrorFlag       : Integer;
+        -- specifies the mirroring axis
+        --  Mirror flag : 0 = no mirroring
+        --                1 = mirror axis perpendicular to text base line
+        --                2 = mirror axis is text base line
+
+        theRotateFlag       : Integer;
+        -- specifies whether text box is filled with horizontal text or vertical
+        -- text
+        --  Rotate internal text flag : 0 = text horizontal
+        --                              1 = text vertical
+
+        theCorner           : XYZ;
+        -- theCorner specifies the coordinates of lower left corner of first
+        -- character box if form-number = 0.
+        -- If form-number = 1, it gives the increments in X, Y, Z from X, Y, Z
+        -- coordinates found in parent  entity.
+
+end TextDisplayTemplate;

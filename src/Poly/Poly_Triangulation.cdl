@@ -1,0 +1,180 @@
+-- File:        Poly_Triangulation.cdl
+-- Created:     Mon Mar  6 09:57:02 1995
+-- Author:      Laurent PAINNOT
+--              <lpa@metrox>
+---Copyright:    Matra Datavision 1995
+
+
+class Triangulation from Poly inherits TShared from MMgt
+
+        ---Purpose: Provides a triangulation for a surface, a set of surfaces, or
+        -- more generally a shape.
+        -- A triangulation consists of an approximate representation
+        -- of the actual shape, using a collection of points and
+        -- triangles. The points are located on the surface. The
+        -- edges of the triangles connect adjacent points with a
+        -- straight line that approximates the true curve on the surface.
+        -- A triangulation comprises:
+        -- -   A table of 3D nodes (3D points on the surface).
+        -- -   A table of triangles. Each triangle (Poly_Triangle
+        --   object) comprises a triplet of indices in the table of 3D
+        --   nodes specific to the triangulation.
+        -- -   A table of 2D nodes (2D points), parallel to the table of
+        --   3D nodes. This table is optional. If it exists, the
+        --   coordinates of a 2D point are the (u, v) parameters
+        --   of the corresponding 3D point on the surface
+        --   approximated by the triangulation.
+        -- -   A deflection (optional), which maximizes the distance
+        --   from a point on the surface to the corresponding point
+        --   on its approximate triangulation.
+        -- In many cases, algorithms do not need to work with the
+        -- exact representation of a surface. A triangular
+        -- representation induces simpler and more robust adjusting,
+        -- faster performances, and the results are as good.
+
+uses
+   HArray1OfPnt2d    from TColgp,
+   Array1OfPnt       from TColgp,
+   Array1OfPnt2d     from TColgp,
+   Array1OfTriangle  from Poly, 
+   HArray1OfShortReal  from  TShort,
+   Array1OfShortReal  from  TShort
+
+raises
+    DomainError from Standard,
+    NullObject  from Standard
+
+is
+
+    Create(nbNodes, nbTriangles: Integer; UVNodes: Boolean)
+    returns mutable Triangulation from Poly;
+        ---Purpose: Constructs a triangulation from a set of triangles. The
+        -- triangulation is initialized without a triangle or a node, but capable of
+        --   containing nbNodes nodes, and nbTriangles
+        --   triangles. Here the UVNodes flag indicates whether
+        --   2D nodes will be associated with 3D ones, (i.e. to
+        --   enable a 2D representation).
+
+    Create(Nodes:      Array1OfPnt      from TColgp;
+           Triangles:  Array1OfTriangle from Poly)
+    returns mutable Triangulation from Poly;
+        ---Purpose: Constructs a triangulation from a set of triangles. The
+        -- triangulation is initialized with 3D points from Nodes and triangles
+        --  from Triangles.
+
+    Create(Nodes:      Array1OfPnt      from TColgp;
+           UVNodes:    Array1OfPnt2d    from TColgp;
+           Triangles:  Array1OfTriangle from Poly)
+    returns mutable Triangulation from Poly;
+        ---Purpose:  Constructs a triangulation from a set of triangles. The
+        -- triangulation is initialized with 3D points from Nodes, 2D points from
+        --   UVNodes and triangles from Triangles, where
+        --   coordinates of a 2D point from UVNodes are the
+        --   (u, v) parameters of the corresponding 3D point
+        --   from Nodes on the surface approximated by the
+        --   constructed triangulation.
+
+    Deflection(me) returns Real;
+        ---Purpose: Returns the deflection of this triangulation.    
+    Deflection(me : mutable; D : Real);
+        ---Purpose: Sets the deflection of this triangulation to D.
+        --    See more on deflection in Polygon2D
+    RemoveUVNodes(me : mutable);
+        ---Purpose: Deallocates the UV nodes.
+
+    NbNodes(me) returns Integer;
+        ---Purpose: Returns the number of nodes for this triangulation.
+        -- Null if the nodes are not yet defined.
+        ---C++: inline
+          
+    
+    NbTriangles(me) returns Integer;
+        ---Purpose: Returns the number of triangles for this triangulation.
+        -- Null if the Triangles are not yet defined.
+        ---C++: inline
+
+    HasUVNodes(me) returns Boolean;
+        ---Purpose: Returns true if 2D nodes are associated with 3D nodes for
+        -- this triangulation.
+        ---C++: inline
+
+
+    Nodes(me) returns Array1OfPnt from TColgp
+        ---Purpose:  Returns the table of 3D nodes (3D points) for this triangulation.
+        ---C++: return const &
+    raises NullObject from Standard;
+
+    ChangeNodes(me : mutable) returns Array1OfPnt from TColgp
+        ---Purpose:  Returns the table of 3D nodes (3D points) for this triangulation.
+        --        The returned array is
+        -- shared. Therefore if the table is selected by reference, you
+        -- can, by simply modifying it, directly modify the data
+        -- structure of this triangulation.
+        ---C++: return &
+     raises NullObject from Standard;
+
+    UVNodes(me) returns Array1OfPnt2d from TColgp
+        ---Purpose: Returns the table of 2D nodes (2D points) associated with
+        -- each 3D node of this triangulation.
+        -- The function HasUVNodes  checks if 2D nodes
+        -- are associated with the 3D nodes of this triangulation.
+        -- Const reference on the 2d nodes values.
+        ---C++: return const &
+    raises NullObject from Standard;
+
+    ChangeUVNodes(me : mutable) returns Array1OfPnt2d from TColgp
+        ---Purpose: Returns the table of 2D nodes (2D points) associated with
+        -- each 3D node of this triangulation.
+        -- Function ChangeUVNodes shares  the returned array.
+        --   Therefore if the table is selected by reference,
+        --   you can, by simply modifying it, directly modify the data
+        --   structure of this triangulation.
+        ---C++: return &
+    raises NullObject from Standard;
+
+    Triangles(me) returns Array1OfTriangle from Poly
+        ---Purpose: Returns the table of triangles for this triangulation.
+        ---C++: return const &
+    raises NullObject from Standard;
+
+    ChangeTriangles(me : mutable) returns Array1OfTriangle from Poly
+        ---Purpose:  Returns the table of triangles for this triangulation.       
+        -- Function ChangeUVNodes shares  the returned array.
+        --   Therefore if the table is selected by reference,
+        --   you can, by simply modifying it, directly modify the data
+        --   structure of this triangulation.
+        ---C++: return &
+    raises NullObject from Standard; 
+     
+    SetNormals(me :  mutable;  theNormals : HArray1OfShortReal from TShort) 
+        ---Purpose:  Sets the table of node normals. 
+        -- raises exception if length of theNormals != 3*NbNodes 
+    raises DomainError from Standard; 
+     
+    Normals(me) returns Array1OfShortReal from TShort
+        ---C++: return const & 
+        --  raises exception if array of normals is empty or   
+        --  its length  != 3*NbNodes
+    raises NullObject from Standard;
+
+    ChangeNormals(me : mutable) returns Array1OfShortReal from TShort
+        ---C++: return & 
+        --  raises exception if array of normals is empty or   
+        --  its length  != 3*NbNodes
+    raises NullObject from Standard; 
+     
+    HasNormals(me)  returns  Boolean  from  Standard;
+
+fields
+
+    myDeflection  : Real;
+    myNbNodes     : Integer;
+    myNbTriangles : Integer;
+    myNodes       : Array1OfPnt      from TColgp;
+    myUVNodes     : HArray1OfPnt2d   from TColgp;
+    myTriangles   : Array1OfTriangle from Poly; 
+     
+    ----  Optional normals  --- 
+    myNormals     : HArray1OfShortReal from TShort;
+
+end Triangulation;

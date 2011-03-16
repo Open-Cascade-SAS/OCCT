@@ -1,0 +1,52 @@
+-- File:	MPrsStd.cdl
+-- Created:	Tue Aug 26 17:17:00 1997
+-- Author:	SMO
+--		<SMO@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+package MPrsStd 
+
+	---Purpose: Storage    and  Retrieval  drivers   for graphic
+	--          attributes.   Transient  attributes are defined in
+	--          package TPrsStd and persistent one are defined in
+	--          package PPrsStd
+
+uses TDF,
+     PDF,
+     MDF, 
+     CDM
+
+is
+
+    	    ---Purpose: Storage drivers for graphic attributes from
+    	    --          TPrsStd
+    	    ---Category: StorageDriver
+
+	class AISPresentationStorageDriver;
+	class PositionStorageDriver;
+	
+    	    ---Purpose: Retrieval drivers for graphic attributes from
+    	    --          PPrsStd
+    	    ---Category: RetrievalDriver
+
+
+        class AISPresentationRetrievalDriver;
+        class AISPresentationRetrievalDriver_1;	
+	class PositionRetrievalDriver;
+	
+    AddStorageDrivers(aDriverTable : ASDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverTable>.
+    	---Category: StorageDriversTable
+
+
+    AddRetrievalDrivers(aDriverTable : ARDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverTable>.
+    	---Category: RetrievalDriversTable
+
+
+end MPrsStd;
+
+
+

@@ -1,0 +1,90 @@
+-- File:	IGESData_IGESDumper.cdl
+-- Created:	Mon Sep  6 14:50:24 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class IGESDumper  from IGESData
+
+    ---Purpose : Provides a way to obtain a clear Dump of an IGESEntity
+    --           (distinct from normalized output). It works with tools
+    --           attached to Entities, as for normalized Reade and Write
+    --           
+    --           For each Entity, displaying data is splitted in own data
+    --           (specific to each type) and other attached data, which are
+    --           defined for all IGES Types (either from "Directory Entry" or
+    --           from Lists of Associativities and Properties)
+
+uses Messenger from Message, Protocol from IGESData, IGESModel, IGESEntity, SpecificLib
+
+raises InterfaceError
+
+is
+
+    Create (model : IGESModel; protocol : Protocol from IGESData)
+    	returns IGESDumper;
+    ---Purpose : Returns an IGESDumper ready to work. The IGESModel provides
+    --           the numbering of Entities : as for any InterfaceModel, it
+    --           gives each Entity a number; but for IGESEntities, the "Number
+    --           of Directory Entry" according to the definition of IGES Files,
+    --           is also usefull
+
+    PrintDNum (me; ent : IGESEntity; S : Messenger from Message)
+    ---Purpose : Prints onto an output, the "Number of Directory Entry" which
+    --           corresponds to an IGESEntity in the IGESModel, under the form
+    --           "D#nnn" (a Null Handle gives D#0)
+        raises InterfaceError;
+    --           Error if <ent> is not contained in the IGESModel
+
+    PrintShort (me; ent : IGESEntity; S : Messenger from Message)
+    ---Purpose : Prints onto an output, the "Number of Directory Entry" (see
+    --           PrintDNum) plus IGES Type and Form Numbers, which gives
+    --           "D#nnn  Type nnn  Form nnn"
+        raises InterfaceError;
+    --           Error if <ent> is not contained in the IGESModel
+
+    Dump (me; ent : IGESEntity; S : Messenger from Message;
+    	  own : Integer; attached : Integer = -1)
+    --           <own> commands level for proper data :
+    --           0 : Only DNum (PrintDNum)
+    --           1 : DNum with IGES Type and Form N0s (PrintShort) & Type Name
+    --           2 : idem plus (if defined) DNum of Transf and of View, and
+    --               (if defined) ShortLabel and Subscript Number
+    --           3 : idem plus (if defined) Value of Transf, DNum or Value of
+    --               other Directory Data (Color, etc...)
+    --           4 and over : idem plus calls method OwnDump
+    --           
+    --           When Implementing OwnDump, Please use this convention :
+    --           Anyway, give true complete IGES Name for Entity
+    --           4 : proper values as store in the fields of the Entity,
+    --               abbreviated if list is very long ...
+    --           5 : idem but complete display of fields (even if long)
+    --           6 : data under a comprehensive form if necessary, especially
+    --               taking in account Transf (e.g. for a Circle : give in 3D
+    --               Center, Radius, Axis ...)
+    --           In addition, for referenced Entities, simply display them by
+    --           call to PrintDNum above
+    --           
+    --           <attached> commands level for Properties and Associativities
+    --           with same signification as <own>, except for value 0 :
+    --           if <own> = 0 or 1, these lists are NOT printed at all
+    --           if <own> = 2, for each attached entity, call to PrintDNum
+    --           if <own> over 2, for each attached entity, call to PrintShort
+    --              (DNum with Type and Form numbers)
+    --           In addition, -1 inhibits output (only DNum are printed)
+        raises InterfaceError;
+    --           Error if <ent> is not contained in the IGESModel
+    --           Remark : if <ent> is Null, the message "(Null)" is displayed
+
+
+    OwnDump (me; ent : IGESEntity; S : Messenger from Message; own : Integer);
+    ---Purpose : Specific Dump for each IGES Entity, call by Dump (just above)
+    --           <own> is the parameter <own> from Dump
+
+fields
+
+    themodel : IGESModel;
+    thelib   : SpecificLib;
+
+end IGESDumper;

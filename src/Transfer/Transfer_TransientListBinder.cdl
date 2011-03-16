@@ -1,0 +1,55 @@
+-- File:	Transfer_ShapeListBinder.cdl
+-- Created:	Mon Oct  3 10:50:11 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TransientListBinder  from Transfer  inherits Binder from Transfer
+
+    ---Purpose : This binder binds several (a list of) Transients with a starting
+    --           entity, when this entity itself corresponds to a simple list
+    --           of Transients. Each part is not seen as a sub-result of an
+    --           independant componant, but as an item of a built-in list
+
+uses CString, Type,
+	      HSequenceOfTransient from TColStd
+
+raises TypeMismatch, OutOfRange
+
+is
+
+    Create returns mutable TransientListBinder;
+
+    Create (list : mutable HSequenceOfTransient from TColStd)
+    	 returns mutable TransientListBinder;
+
+    IsMultiple (me) returns Boolean  is redefined;
+    -- returns True if more than one result
+
+    ResultType (me) returns Type;
+    -- returns Standard_Transient
+
+    ResultTypeName (me) returns CString;
+    -- returns list(Standard_Transient)
+
+    AddResult (me : mutable; res : Transient);
+    ---Purpose : Adds an item to the result list
+
+    Result (me) returns HSequenceOfTransient from TColStd;
+
+    SetResult (me : mutable; num : Integer; res : Transient);
+    ---Purpose : Changes an already defined sub-result
+
+    NbTransients (me) returns Integer;
+
+    Transient (me; num : Integer) returns Transient
+    	raises OutOfRange;
+    ---C++ : return const &
+
+
+fields
+
+    theres :  HSequenceOfTransient from TColStd;
+
+end TransientListBinder;

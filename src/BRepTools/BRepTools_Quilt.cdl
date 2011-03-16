@@ -1,0 +1,101 @@
+-- File:	BRepTools_Quilt.cdl
+-- Created:	Thu Dec 22 15:32:41 1994
+-- Author:	Remi LEQUETTE
+--		<rle@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Quilt from BRepTools 
+
+	---Purpose: A  Tool    to  glue faces  at  common    edges and
+	--          reconstruct shells.
+	--          
+	--          The user designate pairs of common edges using the
+	--          method Bind. One edge is designated as the edge to
+	--          use  in place of the  other one (they are supposed
+	--          to   be    geometrically confused,  but  this  not
+	--          checked). They can be of opposite directions, this
+	--          is specified by the orientations.
+	--          
+	--          The user can add  shapes with the Add method,  all
+	--          the faces are  registred and  copies of faces  and
+	--          edges are made to glue at the bound edges.
+	--          
+	--          The user can call the Shells  methods to compute a
+	--          compound of shells from the current set of faces.
+	--          
+	--          If no  binding is made  this class can  be used to
+	--          make shell from faces already sharing their edges.
+
+uses
+
+    Vertex              from TopoDS,
+    Edge                from TopoDS,
+    Shape               from TopoDS,
+    DataMapOfShapeShape from TopTools,
+    IndexedDataMapOfShapeShape from TopTools
+raises
+
+    NoSuchObject from Standard
+
+is
+
+    Create returns Quilt from BRepTools;
+    
+    Bind(me : in out; Eold, Enew : Edge from TopoDS)
+	---Purpose: Binds <Enew> to   be  the  new edge  instead   of
+	--          <Eold>.  
+	--          
+	--          The faces  of  the added  shape containing  <Eold>
+	--          will be copied to substitute <Eold> by <Enew>.
+	--          
+	--          The vertices  of   <Eold> will   be bound to   the
+	--          vertices of <Enew> with the same orientation.
+	--          
+	--          If <Eold>  and <Enew>  have different orientations
+	--          the curves are considered  to be opposite  and the
+	--          pcurves of <Eold>  will be copied  and reversed in
+	--          the new faces.
+	--          
+	--          <Eold> must belong to the next added shape, <Enew> must belong
+	--          to a Shape added before.
+    is static;    
+
+    Bind(me : in out; Vold, Vnew : Vertex from TopoDS)
+    	---Purpose: Binds <VNew> to be a new vertex instead of <Vold>.
+    	--          
+    	--          The faces  of  the added  shape containing  <Vold>
+	--          will be copied to substitute <Vold> by <Vnew>.
+    is static; 
+    
+    Add(me : in out; S : Shape from TopoDS)
+	---Purpose: Add   the faces of  <S>  to  the Quilt,  the faces
+	--          containing bounded edges are copied.
+    is static;
+    
+    
+    IsCopied(me; S : Shape from TopoDS) returns Boolean
+	---Purpose: Returns   True if <S> has   been  copied (<S> is a
+	--          vertex, an edge or a face)
+    is static;
+    
+    Copy(me; S : Shape from TopoDS) returns Shape from TopoDS
+	---Purpose: Returns the shape  substitued to <S> in the Quilt.
+	--          
+	---C++: return const &
+    raises
+    	NoSuchObject from Standard -- if ! IsCopied(S)
+    is static;
+    
+    Shells(me) returns Shape from TopoDS
+	---Purpose: Returns a Compound of shells made from the current
+	--          set of faces. The shells will be flagged as closed
+	--          or not closed.
+    is static;
+
+fields
+
+    myBounds : IndexedDataMapOfShapeShape from TopTools;
+    hasCopy  : Boolean;  -- True if at least one copy was made
+
+end Quilt;

@@ -1,0 +1,37 @@
+-- File:        CsgSolid.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CsgSolid from StepShape 
+
+inherits SolidModel from StepShape 
+
+uses
+
+	CsgSelect from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable CsgSolid;
+	---Purpose: Returns a CsgSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aTreeRootExpression : CsgSelect from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetTreeRootExpression(me : mutable; aTreeRootExpression : CsgSelect);
+	TreeRootExpression (me) returns CsgSelect;
+
+fields
+
+	treeRootExpression : CsgSelect from StepShape; -- a SelectType
+
+end CsgSolid;

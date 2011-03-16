@@ -1,0 +1,61 @@
+-- File:        LoopAndPath.cdl
+-- Created:     Fri Dec  1 11:11:34 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class LoopAndPath from StepShape 
+
+inherits TopologicalRepresentationItem from StepShape 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+	Loop from StepShape, 
+	Path from StepShape, 
+	HAsciiString from TCollection, 
+	HArray1OfOrientedEdge from StepShape, 
+	OrientedEdge from StepShape
+is
+
+	Create returns mutable LoopAndPath;
+	---Purpose: Returns a LoopAndPath
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aLoop : mutable Loop from StepShape;
+	      aPath : mutable Path from StepShape) is virtual;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aEdgeList : mutable HArray1OfOrientedEdge from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetLoop(me : mutable; aLoop : mutable Loop);
+	Loop (me) returns mutable Loop;
+	SetPath(me : mutable; aPath : mutable Path);
+	Path (me) returns mutable Path;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetEdgeList(me : mutable; aEdgeList : mutable HArray1OfOrientedEdge);
+	EdgeList (me) returns mutable HArray1OfOrientedEdge;
+	EdgeListValue (me; num : Integer) returns mutable OrientedEdge;
+	NbEdgeList (me) returns Integer;
+
+fields
+
+	loop : Loop from StepShape;
+	path : Path from StepShape;
+
+end LoopAndPath;

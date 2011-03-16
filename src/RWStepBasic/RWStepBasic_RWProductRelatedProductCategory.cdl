@@ -1,0 +1,30 @@
+-- File:        ProductRelatedProductCategory.cdl
+-- Created:     Mon Dec  4 12:02:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWProductRelatedProductCategory from RWStepBasic
+
+	---Purpose : Read & Write Module for ProductRelatedProductCategory
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ProductRelatedProductCategory from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWProductRelatedProductCategory;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ProductRelatedProductCategory from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ProductRelatedProductCategory from StepBasic);
+
+	Share(me; ent : ProductRelatedProductCategory from StepBasic; iter : in out EntityIterator);
+
+end RWProductRelatedProductCategory;

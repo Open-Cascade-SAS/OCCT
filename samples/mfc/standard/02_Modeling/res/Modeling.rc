@@ -1,0 +1,386 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\Common\res\OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\..\\Common\\res\\OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "Toolbar.bmp"
+IDR_FRAME2              BITMAP                  "fram2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  20, 20
+BEGIN
+    BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_MIRROR
+    BUTTON      ID_MIRRORAXIS
+    BUTTON      ID_ROTATE
+    BUTTON      ID_SCALE
+    BUTTON      ID_TRANSLATION
+    BUTTON      ID_DISPLACEMENT
+    BUTTON      ID_DEFORM
+    SEPARATOR
+    BUTTON      ID_BOX
+    BUTTON      ID_Cylinder
+    BUTTON      ID_CONE
+    BUTTON      ID_SPHERE
+    BUTTON      ID_TORUS
+    BUTTON      ID_WEDGE
+    BUTTON      ID_PRISM
+    BUTTON      ID_REVOL
+    BUTTON      ID_PIPE
+    BUTTON      ID_THRU
+    BUTTON      ID_EVOLVED
+    BUTTON      ID_DRAFT
+    SEPARATOR
+    BUTTON      ID_CUT
+    BUTTON      ID_FUSE
+    BUTTON      ID_COMMON
+    BUTTON      ID_SECTION
+    BUTTON      ID_PSECTION
+    BUTTON      ID_BLEND
+    BUTTON      ID_EVOLVEDBLEND
+    BUTTON      ID_CHAMF
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_FRAME2 TOOLBAR  20, 20
+BEGIN
+    BUTTON      ID_PRISM_LOCAL
+    BUTTON      ID_DPRISM_LOCAL
+    BUTTON      ID_REVOL_LOCAL
+    BUTTON      ID_Pipe_LOCAL
+    BUTTON      ID_LINEAR_LOCAL
+    BUTTON      ID_GLUE_LOCAL
+    BUTTON      ID_SPLIT_LOCAL
+    BUTTON      ID_THICK_LOCAL
+    BUTTON      ID_OFFSET_LOCAL
+    SEPARATOR
+    BUTTON      ID_VERTEX
+    BUTTON      ID_EDGE
+    BUTTON      ID_WIRE
+    BUTTON      ID_FACE
+    BUTTON      ID_SHELL
+    BUTTON      ID_COMPOUND
+    BUTTON      ID_SEWING
+    BUTTON      ID_BUILDER
+    BUTTON      ID_GEOMETRIE
+    BUTTON      ID_EXPLORER
+    SEPARATOR
+    BUTTON      ID_VALID
+    BUTTON      ID_LINEAR
+    BUTTON      ID_SURFACE
+    BUTTON      ID_VOLUME
+    SEPARATOR
+    BUTTON      ID_FILLWITHTANG
+    BUTTON      ID_BUTTON_FILL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About TopologyTransformations...", ID_APP_ABOUT
+    END
+END
+
+IDR_3DTYPE MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About TopologyTransformations...", ID_APP_ABOUT
+    END
+END
+
+IDR_Popup3D MENU 
+BEGIN
+    POPUP "BackGround"
+    BEGIN
+        MENUITEM "Background Color...",         ID_Modify_ChangeBackground
+    END
+    POPUP "Object(s)"
+    BEGIN
+        MENUITEM "Erase",                       ID_OBJECT_ERASE
+        MENUITEM "Shading",                     ID_OBJECT_SHADING
+        MENUITEM "Wireframe",                   ID_OBJECT_WIREFRAME
+        MENUITEM "Color...",                    ID_OBJECT_COLOR
+        MENUITEM "Material...",                 ID_OBJECT_MATERIAL
+        POPUP "Material"
+        BEGIN
+            MENUITEM "Aluminium",                   ID_OBJECT_MATERIAL_ALUMINIUM
+            MENUITEM "Brass",                       ID_OBJECT_MATERIAL_BRASS
+            MENUITEM "Bronze",                      ID_OBJECT_MATERIAL_BRONZE
+            MENUITEM "Chrome",                      ID_OBJECT_MATERIAL_CHROME
+            MENUITEM "Copper",                      ID_OBJECT_MATERIAL_COPPER
+            MENUITEM "Gold",                        ID_OBJECT_MATERIAL_GOLD
+            MENUITEM "Jade",                        ID_OBJECT_MATERIAL_JADE
+            MENUITEM "Metalized",                   ID_OBJECT_MATERIAL_METALIZED
+            MENUITEM "Neon GNC",                    ID_OBJECT_MATERIAL_NEON_GNC
+            MENUITEM "Neon PHC",                    ID_OBJECT_MATERIAL_NEON_PHC
+            MENUITEM "Obsidian",                    ID_OBJECT_MATERIAL_OBSIDIAN
+            MENUITEM "Pewter",                      ID_OBJECT_MATERIAL_PEWTER
+            MENUITEM "Plaster",                     ID_OBJECT_MATERIAL_PLASTER
+            MENUITEM "Plastic",                     ID_OBJECT_MATERIAL_PLASTIC
+            MENUITEM "Satin",                       ID_OBJECT_MATERIAL_SATIN
+            MENUITEM "Shiny plastic",               ID_OBJECT_MATERIAL_SHINY_PLASTIC
+            MENUITEM "Silver",                      ID_OBJECT_MATERIAL_SILVER
+            MENUITEM "Steel",                       ID_OBJECT_MATERIAL_STEEL
+            MENUITEM "Stone",                       ID_OBJECT_MATERIAL_STONE
+            MENUITEM SEPARATOR
+            MENUITEM "Default",                     ID_OBJECT_MATERIAL_DEFAULT
+        END
+        MENUITEM "Transparency...",             ID_OBJECT_TRANSPARENCY
+    END
+    POPUP "Stop"
+    BEGIN
+        MENUITEM "Stop",                        ID_STOP_STOP
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Viewer MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "Viewer"
+            VALUE "LegalCopyright", "Copyright (C) 1997"
+            VALUE "OriginalFilename", "Viewer.EXE"
+            VALUE "ProductName", "SampleTopologyTransformations Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "TopologyTransformations"
+    IDR_3DTYPE              "\nViewer\n\n\n\n.Document\n Document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BOX                  "Make a box\nBox"
+    ID_Cylinder             "Make a cylinder\nCylinder"
+    ID_CONE                 "Make a cone\nCone"
+    ID_SPHERE               "Make a sphere\nSphere"
+    ID_TORUS                "Make a torus\nTorus"
+    ID_WEDGE                "Make a wedge\nWedge"
+    ID_PRISM                "Make a prism\nPrism"
+    ID_REVOL                "Make a revolution\nRevol"
+    ID_PIPE                 "Make a pipe\nPipe"
+    ID_THRU                 "Make a shape thru sections\nThru Sections"
+    ID_EVOLVED              "Make an evolutive shape\nEvolved"
+    ID_DRAFT                "Make a tapered shape\nDraft angle"
+    ID_BUTTON815            "Mirror\nMirror"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_MIRROR               "Transform a shape by a point Mirror\nMirror Point"
+    ID_MIRRORAXIS           "Transform a shape by an axis Mirror\nMirror Axis"
+    ID_ROTATE               "Transform a shape by a rotation\nRotate"
+    ID_SCALE                "Apply a scale factor on a shape\nScale"
+    ID_TRANSLATION          "Translate a shape\nTranslation"
+    ID_DISPLACEMENT         "Transform a shape from an axis placement to anotherone\nDisplacement"
+    ID_DEFORM               "Apply a  geometric transformation\nDeform"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_CUT                  "Cut a solid by an other\nCut"
+    ID_FUSE                 "Fuse two solids\nFuse two solids"
+    ID_COMMON               "Find the common surfaces\nCommon"
+    ID_SECTION              "Compute the intersection between two solids\nSection"
+    ID_PSECTION             "Compute a plane section\nPlane section"
+    ID_BLEND                "Compute blend on edges\nBlend"
+    ID_EVOLVEDBLEND         "Compute evolving blend on edges\nEvolved blend"
+    ID_CHAMF                "Compute chamfers on edges and faces\nChamfer"
+    ID_PRISM_LOCAL          "Make a local prism\nPrism"
+    ID_DPRISM_LOCAL         "Make a local prism with draft angle\nDraft angle"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_REVOL_LOCAL          "Make a local revolution shape\nRevol"
+    ID_Pipe_LOCAL           "Make a local  pipe\nPipe"
+    ID_LINEAR_LOCAL         "Make a rib\nRib"
+    ID_GLUE_LOCAL           "Glue two solids\nGlue"
+    ID_SPLIT_LOCAL          "Split faces of a shape\nSplit"
+    ID_THICK_LOCAL          "Make a thick solid from a shape\nThickSolid"
+    ID_OFFSET_LOCAL         "Make an offset shape\nOffset"
+    ID_VERTEX               "Make vertex from geometric point\nVertex"
+    ID_EDGE                 "Make edge\nEdge"
+    ID_WIRE                 "Make wire\nWire"
+    ID_FACE                 "Make face\nFace"
+    ID_SHELL                "Make a shell from a geometric surface\nShell"
+    ID_COMPOUND             "Make a compound\nCompound"
+    ID_SEWING               "Sew contigous faces\nSewing"
+    ID_BUILDER              "Create a shape with a builder\nBuilder"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_GEOMETRIE            "Tools to recover the geometrie\nTools"
+    ID_EXPLORER             "Explode a shape in faces\nExplorer"
+    ID_VALID                "Check Validity\nCheck Validity"
+    ID_LINEAR               "Compute Linear Properties\nLinear Properties"
+    ID_SURFACE              "Compute Surface Properties\nSurface Properties"
+    ID_VOLUME               "Compute Volume Properties\nVolume Properties"
+    ID_FILLWITHTANG         "Create a tangent surface between 2 faces\nTangent surface"
+    ID_BUTTON_FILL          "Fill  a hole between patches\nFilling hole"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

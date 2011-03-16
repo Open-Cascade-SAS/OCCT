@@ -1,0 +1,27 @@
+-- File:        ParametricRepresentationContext.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWParametricRepresentationContext from RWStepRepr
+
+	---Purpose : Read & Write Module for ParametricRepresentationContext
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ParametricRepresentationContext from StepRepr
+
+is
+
+	Create returns RWParametricRepresentationContext;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ParametricRepresentationContext from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : ParametricRepresentationContext from StepRepr);
+
+end RWParametricRepresentationContext;

@@ -1,0 +1,51 @@
+-- File:	PCDM_ReadWriter_1.cdl
+-- Created:	Tue Dec  9 08:20:45 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class ReadWriter_1 from PCDM inherits ReadWriter from PCDM
+
+uses
+    ExtendedString from TCollection,  
+    AsciiString from TCollection, 
+    Data from Storage, 
+    Document from CDM, 
+    MessageDriver from CDM, 
+    SequenceOfExtendedString from TColStd, 
+    SequenceOfReference from PCDM
+
+is
+
+    Create returns mutable ReadWriter_1 from PCDM;
+   
+    Version(me) returns AsciiString from TCollection;
+    ---Purpose: returns PCDM_ReadWriter_1.
+   
+    WriteReferenceCounter(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+
+    WriteReferences(me; aData: mutable Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection);
+
+    
+    WriteExtensions(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+
+    
+    WriteVersion(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+
+    
+    ReadReferenceCounter(me; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard;
+
+    ReadReferences(me; aFileName: ExtendedString from TCollection; theReferences: in out  SequenceOfReference from PCDM; theMsgDriver: MessageDriver from CDM);
+
+    
+    ReadExtensions(me; aFileName: ExtendedString from TCollection; theExtensions: in out  SequenceOfExtendedString from TColStd; theMsgDriver: MessageDriver from CDM);
+
+    ReadUserInfo(myclass; aFileName: ExtendedString from TCollection; Start, End: AsciiString from TCollection; theUserInfo:in  out SequenceOfExtendedString from TColStd;theMsgDriver: MessageDriver from CDM)
+    is private;
+
+    ReadDocumentVersion(me; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard;
+
+
+end ReadWriter_1 from PCDM;

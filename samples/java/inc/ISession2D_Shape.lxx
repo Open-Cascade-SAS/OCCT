@@ -1,0 +1,24 @@
+inline  HLRAlgo_Projector ISession2D_Shape::Projector() 
+{
+  return myProjector;
+}
+
+ 
+inline  Standard_Integer ISession2D_Shape::NbIsos() 
+{
+  return myNbIsos;
+}
+
+ 
+inline  Standard_Boolean ISession2D_Shape::AcceptShapeDecomposition() 
+{
+  return Standard_True;
+}
+
+ 
+inline  Standard_Boolean ISession2D_Shape::AcceptSelectionMode(const Standard_Integer ) 
+{
+  return Standard_True;
+}
+
+ 

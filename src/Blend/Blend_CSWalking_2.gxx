@@ -1,0 +1,342 @@
+Blend_Status Blend_CSWalking::TestArret(Blend_CSFunction& Function,
+					const math_Vector& Sol,
+					const Standard_Boolean TestDefl,
+					const Blend_Status State)
+
+// On regarde si le point donne est solution.
+// Si c est le cas,
+//  On verifie le critere de fleche sur surf et curv
+//   Si OK, on classifie les point sur surf
+//    Si le point est  dedans : on retourne Blend_OK
+//    sinon on resout le pb inverse sur la surface
+//   sinon (fleche non OK)
+//    on renvoie Blend_StepTooLarge.
+// sinon on renvoie Blend_StepTooLarge.
+//
+
+
+{
+  gp_Pnt pt1,pt2;
+  gp_Vec V1,V2;
+  gp_Vec Tgp1,Nor1;
+  gp_Vec2d V12d;
+  gp_Pnt2d pt2d;
+  Standard_Real pOnC;
+  Blend_Status State1,State2;
+#ifndef DEB
+  IntSurf_TypeTrans tras = IntSurf_Undecided;
+#else
+  IntSurf_TypeTrans tras;
+#endif
+  if (Function.IsSolution(Sol,tolesp)) {
+
+    pt1  = Function.PointOnS();
+    pt2  = Function.PointOnC();
+    pt2d = Function.Pnt2d();
+    pOnC = Function.ParameterOnC();
+    V1   = Function.TangentOnS();
+    V2   = Function.TangentOnC();
+    V12d = Function.Tangent2d();
+
+    if (TestDefl) {
+
+
+      // Verification du critere de fleche sur chaque surface
+      //et sur la ligne guide
+    
+      State1 = CheckDeflectionOnSurf(pt1,
+//				     gp_Pnt2d(sol(1),sol(2)),
+				     pt2d,
+				     V1,V12d);
+//      State2 = CheckDeflectionOnCurv(pt2,sol(3),V2);
+// Pour des pb dans les cheminements point/face on met
+// temporairement le test sur la courbe au placard. 
+//      State2 = CheckDeflectionOnCurv(pt2,pOnC,V2);
+      State2 = Blend_StepTooSmall;
+    }
+    else {
+      State1 = Blend_OK;
+      State2 = Blend_OK;
+    }
+      
+    if (State1 == Blend_Backward) {
+      State1 = Blend_StepTooLarge;
+      rebrou= Standard_True;
+    }
+
+    if (State2 == Blend_Backward) {
+      State2 = Blend_StepTooLarge;
+      rebrou = Standard_True;
+    }
+
+    if (State1 == Blend_StepTooLarge ||
+	State2 == Blend_StepTooLarge) {
+
+      return Blend_StepTooLarge;
+    }
+
+
+    if (!comptra) {
+//      Function.Tangent(sol(1),sol(2),Tgp1,Nor1);
+      Function.Tangent(pt2d.X(),pt2d.Y(),Tgp1,Nor1);
+      Standard_Real testra = Tgp1.Dot(Nor1.Crossed(V1));
+      if (Abs(testra) > Precision::Confusion()) {
+	if (testra < 0.) {
+	  tras = IntSurf_In;
+	}
+	else if (testra >0.) {
+	  tras = IntSurf_Out;
+	}
+	comptra = Standard_True;
+	line->Set(tras);
+      }
+    }
+
+    if (State1 == Blend_OK ||
+	State2 == Blend_OK ) {
+
+      previousP.SetValue(Function.PointOnS(),
+			 Function.PointOnC(),
+			 param,
+//			 sol(1),sol(2),
+//			 sol(3),
+			 pt2d.X(),pt2d.Y(),
+			 pOnC,
+			 V1,V2,
+			 V12d);
+			 
+
+      return State;
+    }
+    if (State1 == Blend_StepTooSmall &&
+	State2 == Blend_StepTooSmall) {
+
+      previousP.SetValue(Function.PointOnS(),
+			 Function.PointOnC(),
+			 param,
+//			 sol(1),sol(2),
+//			 sol(3),
+			 pt2d.X(),pt2d.Y(),
+			 pOnC,
+			 V1,V2,
+			 V12d);
+      if (State == Blend_OK) {
+	return Blend_StepTooSmall;
+      }
+      else {
+	return State;
+      }
+    }
+
+    if (State == Blend_OK) {
+      return Blend_SamePoints;
+    }
+    else {
+      return State;
+    }
+
+  }
+  else {
+    return Blend_StepTooLarge;
+  }
+}
+
+
+Blend_Status Blend_CSWalking::CheckDeflectionOnSurf
+  (const gp_Pnt& Psurf,
+   const gp_Pnt2d& Ponsurf,
+   const gp_Vec& Tgsurf,
+   const gp_Vec2d& Tgonsurf)
+{
+  // regle par tests dans U4 correspond a 11.478 d
+  const Standard_Real CosRef3D = 0.98;
+
+  const Standard_Real CosRef2D = 0.88; // correspond a 25 d
+
+  Standard_Real Norme, prevNorme, Cosi, Cosi2; // JAG MODIF 25.04.94
+  Standard_Real FlecheCourante;
+  Standard_Real Du,Dv,Duv,SqrtDuv;
+  Standard_Real paramu,paramv,tolu,tolv;
+//  TColgp_Array1OfPnt Poles(1,4);
+//  gp_Pnt POnCurv,Milieu;
+  gp_Pnt prevP;
+  gp_Vec prevTg;
+  gp_Vec2d previousd2d;
+
+  prevP = previousP.PointOnS();
+  prevTg = previousP.TangentOnS();
+  tolu = TheSurfaceTool::UResolution(surf,tolesp);
+  tolv = TheSurfaceTool::VResolution(surf,tolesp);
+
+  gp_Vec Corde(prevP,Psurf);
+  Norme = Corde.SquareMagnitude();
+  prevNorme = prevTg.SquareMagnitude(); // JAG MODIF 25.04.94
+
+
+  if (Norme <= tolesp*tolesp || prevNorme <= tolesp*tolesp) { // JAG MODIF 25.04.94
+    // il faudra peut etre  forcer meme point  JAG MODIF 25.04.94
+    return Blend_SamePoints;
+  }
+  Cosi = sens*Corde*prevTg;
+  if (Cosi <0.) { // angle 3d>pi/2. --> retour arriere
+    return Blend_Backward;
+  }
+
+  Cosi2 = Cosi * Cosi / prevNorme / Norme;
+  if (Cosi2 < CosRef3D) { 
+    return Blend_StepTooLarge;
+  }
+  
+  previousP.ParametersOnS(paramu,paramv);
+  previousd2d = previousP.Tangent2d();
+
+  Du = Ponsurf.X() - paramu;
+  Dv = Ponsurf.Y() - paramv;
+  Duv = Du * Du + Dv * Dv;
+  SqrtDuv = Sqrt(Duv);
+  if ((Abs(Du) < tolu && Abs(Dv) < tolv) ||  // JAG MODIF 25.04.94
+      (Abs(previousd2d.X()) < tolu && Abs(previousd2d.Y()) < tolv)){
+    // il faudra peut etre  forcer meme point   JAG MODIF 25.04.94
+    return Blend_SamePoints; //point confondu 2d
+  }
+  Cosi = sens*(Du * previousd2d.X() + Dv * previousd2d.Y());
+  if (Cosi < 0) {
+    return Blend_Backward; 
+  }
+
+  // Voir s il faut faire le controle sur le signe de prevtg*Tgsurf
+  Cosi = sens*Corde*Tgsurf;
+  Cosi2 = Cosi * Cosi / Tgsurf.SquareMagnitude() / Norme;
+  if (Cosi2 < CosRef3D || Cosi < 0.) { 
+    return Blend_StepTooLarge;
+  }
+
+  // Voir s il faut faire le controle sur le signe de Cosi
+  Cosi = sens*(Du * Tgonsurf.X() +  Dv * Tgonsurf.Y())/Tgonsurf.Magnitude();
+  Cosi2 = Cosi * Cosi / Duv;
+  if (Cosi2 < CosRef2D || Cosi <0.) { 
+    return Blend_StepTooLarge;
+  }
+
+  // Estimation de la fleche courante
+/*
+  Norme = Sqrt(Norme)/3.;
+  Poles(1) = prevP;
+  Poles(4) = Psurf;
+  Poles(2) = Poles(1).XYZ() + sens*Norme* prevTg.Normalized().XYZ();
+  Poles(3) = Poles(4).XYZ() - sens*Norme* Tgsurf.Normalized().XYZ();
+  BzCLib::PntPole(0.5,Poles,POnCurv);
+  Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
+  FlecheCourante = Milieu.Distance(POnCurv);
+  
+  if (FlecheCourante <= 0.5*fleche) {
+*/
+  FlecheCourante = (prevTg.Normalized().XYZ()-Tgsurf.Normalized().XYZ()).SquareModulus()*Norme/64.;
+
+  if (FlecheCourante <= 0.25*fleche*fleche) {
+
+    return Blend_StepTooSmall;
+  }
+  if (FlecheCourante > fleche*fleche) {
+    // pas trop grand : commentaire interessant
+    return Blend_StepTooLarge;
+  }
+
+  return Blend_OK;
+}
+
+
+
+Blend_Status Blend_CSWalking::CheckDeflectionOnCurv
+  (const gp_Pnt& Pcurv,
+   const Standard_Real Param,
+   const gp_Vec& Tgcurv)
+{
+  // regle par tests dans U4 correspond a 11.478 d
+  const Standard_Real CosRef3D = 0.98;
+
+  Standard_Real Norme, prevNorme, Cosi, Cosi2; // JAG MODIF 25.04.94
+  Standard_Real FlecheCourante;
+  Standard_Real Du,paramu,tolu;
+//  TColgp_Array1OfPnt Poles(1,4);
+//  gp_Pnt POnCurv,Milieu;
+  gp_Pnt prevP;
+  gp_Vec prevTg;
+
+  prevP = previousP.PointOnC();
+  prevTg = previousP.TangentOnC();
+  tolu = TheCurveTool::Resolution(curv,tolesp);
+
+  gp_Vec Corde(prevP,Pcurv);
+  Norme = Corde.SquareMagnitude();
+  prevNorme = prevTg.SquareMagnitude(); // JAG MODIF 25.04.94
+
+
+// if (Norme <= tolesp*tolesp || prevNorme <= tolesp*tolesp) { // JAG MODIF 25.04.94
+  if (Norme <= tolesp*tolesp) { // le 95.01.10
+    // il faudra peut etre  forcer meme point  JAG MODIF 25.04.94
+    return Blend_SamePoints;
+  }
+  else if (prevNorme > tolesp*tolesp) {
+    Cosi = sens*Corde*prevTg;
+    if (Cosi <0.) { // angle 3d>pi/2. --> retour arriere
+      return Blend_Backward;
+    }
+    
+    Cosi2 = Cosi * Cosi / prevNorme / Norme;
+    if (Cosi2 < CosRef3D) { 
+      return Blend_StepTooLarge;
+    }
+  }
+  
+  paramu = previousP.ParameterOnC();
+  Du = Param - paramu;
+  if (Abs(Du) < tolu){
+    // il faudra peut etre  forcer meme point   JAG MODIF 25.04.94
+    return Blend_SamePoints; //point confondu 2d
+  }
+
+  // Voir s il faut faire le controle sur le signe de prevtg*Tgsurf
+
+  if (Tgcurv.Magnitude() <= tolesp) {
+    return Blend_SamePoints; // GROS BOBARD EN ATTENDANT
+  }
+
+  Cosi = sens*Corde*Tgcurv;
+  Cosi2 = Cosi * Cosi / Tgcurv.SquareMagnitude() / Norme;
+  if (Cosi2 < CosRef3D || Cosi < 0.) { 
+    return Blend_StepTooLarge;
+  }
+
+  if (prevNorme > tolesp*tolesp) {
+
+    // Estimation de la fleche courante
+/*    
+    Norme = Sqrt(Norme)/3.;
+    Poles(1) = prevP;
+    Poles(4) = Pcurv;
+    Poles(2) = Poles(1).XYZ() + sens*Norme* prevTg.Normalized().XYZ();
+    Poles(3) = Poles(4).XYZ() - sens*Norme* Tgcurv.Normalized().XYZ();
+    BzCLib::PntPole(0.5,Poles,POnCurv);
+    Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
+    FlecheCourante = Milieu.Distance(POnCurv);
+    if (FlecheCourante <= 0.5*fleche) {
+*/
+    FlecheCourante = (prevTg.Normalized().XYZ()-Tgcurv.Normalized().XYZ()).SquareModulus()*Norme/64.;
+
+    if (FlecheCourante <= 0.25*fleche*fleche) {
+      return Blend_StepTooSmall;
+    }
+    if (FlecheCourante > fleche*fleche) {
+      // pas trop grand : commentaire interessant
+      return Blend_StepTooLarge;
+    }
+  }
+  return Blend_OK;
+}
+
+
+
+
+
+

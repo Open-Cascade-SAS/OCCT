@@ -1,0 +1,382 @@
+-- File:      GeomAdaptor_Surface.cdl
+-- Created:   Fri May 14 15:08:27 1993
+-- Author:    Bruno DUMORTIER
+---Copyright: Matra Datavision 1993
+
+class Surface from GeomAdaptor inherits Surface from Adaptor3d
+
+    	---Purpose: An interface between the services provided by any
+    	-- surface from the package Geom and those required
+    	-- of the surface by algorithms which use it.
+        
+uses
+     Pnt              from gp,
+     Vec              from gp,
+     Dir              from gp,
+     Pln              from gp,
+     Cone             from gp,
+     Cylinder         from gp,
+     Sphere           from gp,
+     Torus            from gp,
+     Ax1              from gp,
+     Array1OfReal     from TColStd,
+     Surface          from Geom,
+     BezierSurface    from Geom,
+     BSplineSurface   from Geom,
+     SurfaceType      from GeomAbs,
+     Shape            from GeomAbs,
+     Curve            from GeomAdaptor,
+     HCurve           from Adaptor3d,
+     HSurface         from Adaptor3d
+
+raises
+    NoSuchObject      from Standard,
+    OutOfRange        from Standard,
+    ConstructionError from Standard,
+    DomainError       from Standard
+
+is
+
+    Create returns Surface from GeomAdaptor;
+    	---C++: inline
+    
+    Create( S : Surface from Geom) returns Surface from GeomAdaptor;
+    	---C++: inline
+    
+    Create( S : Surface from Geom; UFirst,ULast,VFirst,VLast : Real; 
+            TolU  :  Real  =  0.0; 
+            TolV  :  Real  =  0.0) 
+    returns  Surface from GeomAdaptor
+    raises ConstructionError from Standard;
+    	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
+    	---C++: inline
+
+    Load(me : in out; S : Surface from Geom);
+    	---C++: inline
+    
+    Load(me : in out; S : Surface from Geom; 
+    	    	      UFirst,ULast,VFirst,VLast :  Real; 
+                      TolU  :  Real  =  0.0; 
+                      TolV  :  Real  =  0.0)
+    raises ConstructionError from Standard;
+    ---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
+
+    Surface(me) returns Surface from Geom
+    	---C++: return const&
+    	---C++: inline
+    is static;
+    
+    
+    --
+    --     Global methods - Apply to the whole surface.
+    --     
+    
+    FirstUParameter(me) returns Real
+         ---C++:inline
+    is redefined static;
+
+    LastUParameter(me) returns Real
+         ---C++:inline
+    is redefined static;
+    
+    FirstVParameter(me) returns Real
+         ---C++:inline
+    is redefined static;
+
+    LastVParameter(me) returns Real
+         ---C++:inline
+    is redefined static;
+    
+    UContinuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    VContinuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    NbUIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of U intervals for  continuity
+	--          <S>. May be one if UContinuity(me) >= <S>
+    is redefined static;
+    
+    NbVIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of V intervals for  continuity
+	--          <S>. May be one if VContinuity(me) >= <S>
+    is redefined static;
+    
+    UIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) 
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the U direction.
+    raises
+    	OutOfRange from Standard -- if the Length of the array does
+	    	    	         -- have enought slots to accomodate
+	    	    	         -- the result.
+    is redefined static;
+
+    VIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) 
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the V direction.
+    raises
+    	OutOfRange from Standard -- if the Length of the array does
+	    	    	         -- have enought slots to accomodate
+	    	    	         -- the result.
+    is redefined static;
+    
+    UTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the U direction
+	--           equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static ;
+    
+    VTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the V direction  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static ;
+
+    IsUClosed(me) returns Boolean
+    is redefined static;
+     
+    IsVClosed(me) returns Boolean
+    is redefined static;
+     
+    IsUPeriodic(me) returns Boolean
+    is redefined static;
+    
+    UPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    IsVPeriodic(me) returns Boolean
+    is redefined static;
+    
+    VPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value (me; U, V : Real)  returns Pnt from gp
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is redefined static;
+
+    D0 (me; U, V :     Real; 
+    	    P    : out Pnt  from gp)
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is redefined static;
+
+    D1 (me; U, V     :     Real; 
+    	    P        : out Pnt from gp; 
+    	    D1U, D1V : out Vec from gp)
+        --- Purpose : Computes the point  and the first derivatives on
+        --  the surface.
+        --  
+    	--  Warning : On the specific case of BSplineSurface:
+    	--  if the surface is cut in interval of continuity at least C1, 
+    	--  the derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis surface.
+    is redefined static;
+
+    D2 (me; U, V         : Real; 
+    	    P        : out Pnt  from gp; 
+    	    D1U, D1V : out Vec  from gp;
+    	    D2U, D2V : out Vec  from gp; 
+    	    D2UV     : out Vec  from gp)
+        --- Purpose  :  Computes   the point,  the  first  and  second
+        --  derivatives on the surface.
+        --  
+    	--  Warning : On the specific case of BSplineSurface:
+    	--  if the surface is cut in interval of continuity at least C2, 
+    	--  the derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis surface.
+    is redefined static;
+
+    D3 (me; U, V         :     Real;
+    	    P            : out Pnt  from gp; 
+    	    D1U, D1V     : out Vec  from gp;
+    	    D2U, D2V     : out Vec  from gp;
+    	    D2UV         : out Vec  from gp;
+    	    D3U, D3V     : out Vec  from gp;
+    	    D3UUV, D3UVV : out Vec  from gp)
+        --- Purpose : Computes the point,  the first, second and third
+        --  derivatives on the surface.
+        --  
+    	--  Warning : On the specific case of BSplineSurface:
+    	--  if the surface is cut in interval of continuity at least C3, 
+    	--  the derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis surface.
+    is redefined static;
+
+    DN (me; U, V : Real; Nu, Nv : Integer)   
+    returns Vec from gp
+        --- Purpose :  Computes the derivative of order Nu in the 
+        --  direction U and Nv in the direction V at the point P(U, V).
+        --  
+    	--  Warning : On the specific case of BSplineSurface:
+    	--  if the surface is cut in interval of continuity CN, 
+    	--  the derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis surface.
+    raises 
+    	OutOfRange from Standard
+        --- Purpose : Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
+    is redefined static;
+  
+    UResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric U  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;
+  
+    VResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric V  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;
+  
+    GetType(me) returns SurfaceType from GeomAbs
+	---Purpose: Returns the type of the surface : Plane, Cylinder,
+	--          Cone,      Sphere,        Torus,    BezierSurface,
+	--          BSplineSurface,               SurfaceOfRevolution,
+	--          SurfaceOfExtrusion, OtherSurface
+	---C++:inline
+    is redefined static;
+    
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Plane(me) returns Pln from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Cylinder(me) returns Cylinder from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Cone(me) returns Cone from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Sphere(me) returns Sphere from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Torus(me) returns Torus from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+
+    UDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    NbUPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    VDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    NbVPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+    
+    NbUKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is redefined static;
+    
+    
+    NbVKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is redefined static;
+    
+    
+    IsURational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    IsVRational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is redefined static;
+
+
+    Bezier(me) returns BezierSurface from Geom
+    	---Purpose: This will NOT make a copy of the
+    	--           Bezier Surface : If you want to modify
+    	--           the Surface please make a copy yourself
+    	--           Also it will NOT trim the surface to
+    	--           myU/VFirst/Last.
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+    BSpline(me) returns BSplineSurface from Geom
+    	---Purpose:  This will NOT make a copy of the
+    	--           BSpline Surface : If you want to modify
+    	--           the Surface please make a copy yourself
+    	--           Also it will NOT trim the surface to
+    	--           myU/VFirst/Last.
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    AxeOfRevolution(me) returns Ax1 from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfRevolution
+    is redefined static;
+
+    Direction(me) returns Dir from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfExtrusion
+    is redefined static;
+
+    BasisCurve(me) returns HCurve from Adaptor3d
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfExtrusion
+    is redefined static;
+    
+    
+    BasisSurface(me) returns HSurface from Adaptor3d
+    raises 
+       NoSuchObject from Standard -- only for Offset Surface
+    is redefined static;
+
+    OffsetValue(me) returns Real from Standard
+    raises 
+       NoSuchObject from Standard -- only for Offset Surface
+    is redefined static;
+  
+  
+     Span (me;Side :Integer; Ideb,Ifin:Integer; 
+    	    	   OutIdeb,OutIfin:out Integer; 
+    	    NbKnots : Integer ) 
+     is  private; 
+
+    IfUVBound (me;U,V :Real;Ideb,Ifin,IVdeb,IVfin :out Integer; 
+    	    	  USide,VSide:  Integer)  
+	returns  Boolean  from  Standard				    
+    is  private; 
+     
+ 
+fields
+
+    mySurface            : Surface          from Geom;
+    mySurfaceType        : SurfaceType      from GeomAbs;
+    myUFirst             : Real             from Standard;
+    myULast              : Real             from Standard;
+    myVFirst             : Real             from Standard;
+    myVLast              : Real             from Standard; 
+    myTolU,  myTolV      : Real             from Standard;
+
+end Surface;

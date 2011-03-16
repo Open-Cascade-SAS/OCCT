@@ -1,0 +1,48 @@
+-- File:	FairCurve_DistributionOfTension.cdl
+-- Created:	Fri Jan 26 15:04:32 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+private class DistributionOfTension from FairCurve inherits DistributionOfEnergy  from FairCurve
+
+	---Purpose: Compute the Tension Distribution
+
+uses  Vector        from math, 
+      FunctionSet   from math,
+      HArray1OfReal  from TColStd,
+      HArray1OfPnt2d from TColgp,
+      BattenLaw  from FairCurve
+
+
+is
+    Create( BSplOrder :  Integer;
+            FlatKnots :  HArray1OfReal;
+	    Poles     :  HArray1OfPnt2d;
+	    DerivativeOrder : Integer; 
+	    LengthSliding : Real;
+	    Law       :  BattenLaw;
+            NbValAux  : Integer = 0;
+            Uniform   : Boolean = Standard_False) returns DistributionOfTension;
+	    
+    SetLengthSliding(me: in out; LengthSliding : Real);
+    ---Purpose: change the length sliding
+    ---C++: inline
+    
+
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the functions for the 
+    	--          variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean is redefined;
+    
+
+fields
+    MyLengthSliding : Real;
+    MyLaw           : BattenLaw;
+    MyHeight        : Real;
+end DistributionOfTension;

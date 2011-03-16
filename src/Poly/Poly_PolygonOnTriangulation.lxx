@@ -1,0 +1,10 @@
+//=======================================================================
+//function : NbNodes
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Poly_PolygonOnTriangulation::NbNodes() const 
+{
+  return myNodes.Length();
+}
+

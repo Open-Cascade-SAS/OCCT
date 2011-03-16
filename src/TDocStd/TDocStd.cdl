@@ -1,0 +1,132 @@
+-- File:	TDocStd.cdl
+-- Created:	Wed Apr  7 11:01:24 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+package TDocStd 
+
+    ---Purpose: This package define  CAF main classes.
+    --            
+    --          * The standard application root class
+    --          
+    --          * The standard document wich contains data
+    --          
+    --          * The external reference mechanism between documents
+    --          
+    --          * Attributes for Document management
+-- Standard documents offer you a ready-to-use
+-- document containing a TDF-based data
+--  structure. The documents themselves are
+--  contained in a class inheriting from
+-- TDocStd_Application which manages creation,
+-- storage and retrieval of documents.
+-- You can implement undo and redo in your
+-- document, and refer from the data framework of
+-- one document to that of another one. This is
+-- done by means of external link attributes, which
+-- store the path and the entry of external links. To
+-- sum up, standard documents alone provide
+-- access to the data framework. They also allow
+-- you to:
+-- -   Update external links
+-- -   Manage the saving and opening of data
+-- -   Manage undo/redo functionality.
+-- Note
+-- For information on the relations between this
+-- component of OCAF and the others, refer to the
+-- OCAF User's Guide.
+
+uses 
+     Standard,
+     CDF,
+     CDM,
+     MDF,
+     TDF,
+     TColStd,
+     TCollection,
+     Resource
+
+is
+
+
+    ---Purpose: standard Application/Document
+    --          =============================
+
+    
+    deferred class Application;
+
+    class Document;
+
+    class Context;    
+
+    
+    ---Purpose: External reference Attribute
+    --          ============================
+	          
+    class XLink;
+    ---Purpose:   This attribute,   when  setted,  store  an  external
+    --          reference .  An external reference is a memorized link
+    --           between attributes   wich  originate  from  different
+    --          documents.
+    
+    class XLinkIterator;
+    ---Purpose: This is an iterator giving all the external references
+    --          of a Document.
+
+    class XLinkTool;
+    ---Purpose: This class provide services to set, update and perform
+    --          external references.
+
+
+    ---Purpose: Attributes for Document Management
+    --          ==================================
+
+    private class Owner;
+    ---Purpose:   This  attribute located  at  the  root label  of the
+    --          framework contains  a   back reference to   the  owner
+    --          TDocStd_Document, providing acces to the document from
+    --          any label.  private class Owner;
+
+    private class Modified;    
+    ---Purpose: This   attribute  located at the  root   label provide
+    --          services to register modified labels in a document.
+    
+    pointer XLinkPtr to XLink from TDocStd;
+    
+    private class XLinkRoot;
+    ---Purpose: This attribute is  the root of all external references
+    --          setted in a document.
+    
+    class PathParser;
+
+
+    class CompoundDelta;
+
+    class LabelIDMapDataMap instantiates DataMap from TCollection (Label from TDF,
+    	    	    	                                           IDMap from TDF,
+    	    	    	    	    	    	    	    	   LabelMapHasher from TDF);
+
+	class ApplicationDelta;
+
+    	class MultiTransactionManager;
+
+	class SequenceOfApplicationDelta instantiates
+    	      Sequence from TCollection(ApplicationDelta from TDocStd);	
+
+	class SequenceOfDocument instantiates
+    	      Sequence from TCollection(Document from TDocStd);	
+
+    ---Purpose: specific GUID of this package
+    --          =============================
+
+    IDList (anIDList : in out IDList from TDF);
+    ---Purpose: Appends to <anIDList> the list of the attributes
+    --          IDs of this package. CAUTION: <anIDList> is NOT
+    --          cleared before use.
+
+end TDocStd;
+
+

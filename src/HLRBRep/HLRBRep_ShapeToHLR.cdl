@@ -1,0 +1,48 @@
+-- File:	HLRBRep_ShapeToHLR.cdl
+-- Created:	Tue May  4 16:52:14 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class ShapeToHLR from HLRBRep
+
+	---Purpose: compute  the   OutLinedShape  of  a Shape with  an
+	--          OutLiner,    a  Projector  and   create  the  Data
+	--          Structure of a Shape.
+
+uses
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    IndexedMapOfShape from TopTools,
+    OutLiner          from HLRTopoBRep,
+    Projector         from HLRAlgo,
+    Data              from HLRBRep,
+    MapOfShapeTool    from BRepTopAdaptor
+
+is
+    Load(myclass; S     :        OutLiner  from HLRTopoBRep;
+                  P     :        Projector from HLRAlgo;
+		  MST   : in out MapOfShapeTool from BRepTopAdaptor;
+                  nbIso :        Integer   from Standard = 0)
+    returns Data from HLRBRep;
+	---Purpose: Creates  a DataStructure   containing the OutLiner
+	--          <S> depending on the projector <P> and nbIso.
+		   
+    ExploreFace(myclass;
+                S      :         OutLiner          from HLRTopoBRep;
+                DS     : mutable Data              from HLRBRep;
+	        FM     :         IndexedMapOfShape from TopTools;
+	        EM     :         IndexedMapOfShape from TopTools;
+		i      : in out  Integer           from Standard;
+                F      :         Face              from TopoDS;
+                closed :         Boolean           from Standard)
+    is private;
+
+    ExploreShape(myclass;
+                 S    :         OutLiner          from HLRTopoBRep;
+                 DS   : mutable Data              from HLRBRep;
+		 FM   :         IndexedMapOfShape from TopTools; 
+		 EM   :         IndexedMapOfShape from TopTools) 
+    is private;
+
+end ShapeToHLR;

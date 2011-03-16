@@ -1,0 +1,38 @@
+// File:	ShapeFix_FreeBounds.lxx
+// Created:	Wed Sep 16 19:09:52 1998
+// Author:	data exchange team
+//		<det@nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : GetClosedWires
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Compound& ShapeFix_FreeBounds::GetClosedWires() const
+{
+  return myWires;
+}
+
+ 
+//=======================================================================
+//function : GetOpenWires
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Compound& ShapeFix_FreeBounds::GetOpenWires() const
+{
+  return myEdges;
+}
+
+ 
+//=======================================================================
+//function : GetShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& ShapeFix_FreeBounds::GetShape() const
+{
+  return myShape;
+}
+
+ 

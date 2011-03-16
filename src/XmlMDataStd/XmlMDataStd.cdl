@@ -1,0 +1,73 @@
+-- File:        XmlMDataStd.cdl
+
+package XmlMDataStd 
+
+        ---Purpose: Storage and Retrieval drivers for modelling attributes.
+        --          Transient attributes are defined in package TDataStd.
+
+uses XmlMDF,
+     XmlObjMgt,
+     TDF,
+     CDM
+
+is
+        ---Purpose: Storage/Retrieval drivers for TDataStd attributes
+        --          =======================================
+
+        class NameDriver;
+
+        class IntegerDriver;
+        
+        class RealDriver;
+        
+        class IntegerArrayDriver;
+        
+        class RealArrayDriver;
+        
+        class ExtStringArrayDriver;
+        
+        class UAttributeDriver;
+        
+        class DirectoryDriver;
+        
+        class CommentDriver;
+        
+        class VariableDriver;
+        
+        class ExpressionDriver;
+        
+        class RelationDriver;
+        
+        class NoteBookDriver;
+        
+        class TreeNodeDriver;  
+	
+	-- Extension	 
+        class TickDriver;
+
+        -- Lists:
+       class IntegerListDriver; 
+       class RealListDriver;
+       class ExtStringListDriver;
+       class BooleanListDriver;
+       class ReferenceListDriver;
+    
+       -- Arrays:
+       class BooleanArrayDriver;
+       class ReferenceArrayDriver;
+       class ByteArrayDriver;
+
+
+       class NamedDataDriver;  
+       class AsciiStringDriver;
+       class IntPackedMapDriver; 
+
+    AddDrivers (aDriverTable : ADriverTable  from XmlMDF;
+                anMsgDrv     : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <aDriverTable>.  
+	
+    SetDocumentVersion (DocVersion  : Integer from Standard); 
+    
+    DocumentVersion returns Integer from Standard; 	
+
+end XmlMDataStd;

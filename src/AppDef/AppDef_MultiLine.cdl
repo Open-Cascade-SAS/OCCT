@@ -1,0 +1,155 @@
+-- File:	MultiLine.cdl
+-- Created:	Mon Dec  2 08:24:32 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+
+class MultiLine from AppDef
+
+
+    ---Purpose: This class describes the organized set of points used in the
+    --          approximations. A MultiLine is composed of n 
+    --          MultiPointConstraints. 
+    --          The approximation of the MultiLine will be done in the order 
+    --          of the given n MultiPointConstraints. 
+    --
+    --
+    --      Example of a MultiLine composed of MultiPointConstraints:
+    -- 
+    --      P1______P2_____P3______P4________........_____PNbMult
+    --
+    --      Q1______Q2_____Q3______Q4________........_____QNbMult
+    --      .                                               .
+    --      .                                               .
+    --      .                                               .
+    --      R1______R2_____R3______R4________........_____RNbMult
+    --
+    --     
+    --      Pi, Qi, ..., Ri are points of dimension 2 or 3.
+    --      
+    --      (P1, Q1, ...R1), ...(Pn, Qn, ...Rn) n= 1,...NbMult are 
+    --      MultiPointConstraints.
+    --      There are NbPoints points in each MultiPointConstraint.
+
+
+
+uses MultiPointConstraint              from AppDef,
+     HArray1OfMultiPointConstraint     from AppDef,
+     Array1OfMultiPointConstraint      from AppDef,
+     Array1OfPnt                       from TColgp,
+     Array1OfPnt2d                     from TColgp,
+     OStream                           from Standard
+
+
+raises ConstructionError from Standard,
+       DimensionError    from Standard,
+       OutOfRange        from Standard
+
+is
+
+
+    Create
+    	---Purpose: creates an undefined MultiLine.
+
+    returns MultiLine from AppDef;
+
+
+    Create(NbMult: Integer)
+    	---Purpose: given the number NbMult of MultiPointConstraints of this 
+    	--          MultiLine , it initializes all the fields.SetValue must be
+    	--  called in order for the values of the multipoint
+    	--  constraint to be taken into account.
+    	--          An exception is raised if NbMult < 0.
+    
+    returns MultiLine from AppDef
+    raises ConstructionError from Standard;
+    
+
+    Create(tabMultiP: Array1OfMultiPointConstraint)
+        ---Purpose: Constructs a MultiLine with an array of MultiPointConstraints.
+
+    returns MultiLine from AppDef
+    raises ConstructionError from Standard;
+    
+    
+    Create(tabP3d: Array1OfPnt)
+        ---Purpose: The MultiLine constructed will have one line of 
+        --          3d points without their tangencies.
+
+    returns MultiLine from AppDef
+    raises ConstructionError from Standard;
+
+    
+    Create(tabP2d: Array1OfPnt2d)
+        ---Purpose: The MultiLine constructed will have one line of 
+        --          2d points without their tangencies.
+
+    returns MultiLine from AppDef
+    raises ConstructionError from Standard;
+	    
+    
+    NbMultiPoints(me)
+    	---Purpose: returns the number of MultiPointConstraints of the 
+    	--          MultiLine.
+
+    returns Integer
+    is static;
+
+    
+    NbPoints(me)
+    	---Purpose: returns the number of Points from MultiPoints composing
+    	--          the MultiLine.
+
+    returns Integer
+    is static;
+    
+    
+    SetParameter(me: in out; Index: Integer; U: Real)
+    	---Purpose: Sets the value of the parameter for the
+    	-- MultiPointConstraint at position Index.
+    	-- Exceptions
+    	-- -   Standard_OutOfRange if Index is less
+    	--   than 0 or Index is greater than the number
+    	--   of Multipoint constraints in the MultiLine.
+    raises OutOfRange from Standard
+    is static;
+    
+    
+    SetValue(me: in out; Index: Integer; MPoint: MultiPointConstraint)
+    	---Purpose: It sets the MultiPointConstraint of range Index to the 
+    	--          value MPoint.
+    	--          An exception is raised if Index < 0 or Index> MPoint.
+    	--          An exception is raised if the dimensions of the 
+    	--          MultiPoints are different.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is static;
+
+
+    Value(me; Index: Integer)
+    	---Purpose: returns the MultiPointConstraint of range Index
+    	--          An exception is raised if Index<0 or Index>MPoint.
+
+    returns MultiPointConstraint from AppDef
+    raises OutOfRange from Standard
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current 
+    	--          state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+    
+fields
+
+tabMult: HArray1OfMultiPointConstraint from AppDef is protected;
+
+end MultiLine from AppDef;

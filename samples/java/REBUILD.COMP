@@ -1,0 +1,103 @@
+#! /bin/csh -f
+
+if ( $#argv > 1 ) then
+
+    setenv CASROOT     $argv[1]
+    setenv SAMPLE_ROOT $argv[2]
+
+endif
+
+
+echo "      ---------------- "
+echo "  Building OpenCASCADE Samples "
+echo "      ---------------- "
+echo " "
+echo " "
+
+if (! ($?CASROOT)) then
+  echo -n "Please define CASROOT to the folder containing OpenCascade '"'src'"', '"'drv'"' and '"'inc'"' folders. : "
+  set nogoodpath = 0
+  while ( ${nogoodpath} == 0 ) 
+	set res = $<
+	if ( ! (-e ${res}/inc/Standard_Real.hxx ) ) then
+	   echo -n "${res}/inc/Standard_Real.hxx  doesn't exist ; Please try again : "
+	else
+	   setenv CASROOT ${res}
+	   set nogoodpath = 1
+        endif
+  end
+endif
+
+## Variable for JAVA
+
+if ( !($?JAVAHOME) ) then
+
+    set javanotset = 0
+    while ( ${javanotset} == 0 )
+	echo -n "JAVAHOME not setted . Please define it : "
+	set res = $<
+	if (! (-e ${res}/bin/java)) then
+	     echo "java not found in  ${res}/bin"
+	else 
+	    # Now we verify if it is really a JDK 1.3 
+	    if ( !(-e ${res}/include/jawt.h ) ) then
+		echo " the ${res}/include directory doesn't contains jawt.h"
+		echo " it's seems it is not a JDK 1.3 distribution "
+		echo " Please try again"
+            else
+		setenv JAVAHOME  ${res}
+		set javanotset = 1
+	    endif
+	endif
+     end
+
+endif
+
+set REBUILDJAR = No
+echo -n "Do you want to rebuild the JAR file  [N]  : "
+set res = $<
+if ( ${res} != "" ) then
+   if ( ${res} == "Y" ) then
+     set REBUILDJAR = Yes
+   else 
+    if  ( ${res} == "y" ) then
+     set REBUILDJAR = Yes
+    endif
+   endif
+endif
+
+setenv STATION `uname`
+if (${STATION} == "IRIX64") setenv STATION IRIX
+
+setenv SAMPLE_ROOT `pwd`
+
+foreach pk (ISession ISession2D SampleAISBasicPackage SampleAISDisplayModePackage SampleAISSelectPackage SampleDisplayAnimationPackage SampleGeometryPackage SampleHLRPackage SampleImportExportPackage jcas SampleNativePaint SampleViewer3DPackage SamplesTopologyPackage User)
+   echo " compiling .. $pk "
+   csh -f ${SAMPLE_ROOT}/adm/${STATION}/$pk.comp
+end
+
+foreach tk (TKNativePaint TKSamples TKSamples2 TKjcas)
+echo " "
+echo " "
+echo " "
+echo " linking .. $tk "
+echo " "
+   csh -f ${SAMPLE_ROOT}/adm/${STATION}/$tk.lnk
+end
+
+foreach pk ( SampleAISBasicJni SampleAISDisplayModeJni SampleAISSelectJni SampleDisplayAnimationJni SampleGeometryJni SampleHLRJni SampleImportExportJni SampleViewer3DJni SamplesTopologyJni CASCADESamplesJni )
+echo " "
+echo " compiling .. $pk "
+echo " "
+   csh -fx ${SAMPLE_ROOT}/adm/${STATION}/$pk.comp
+echo " "
+echo " linking .. $pk "
+echo " "
+   csh -f ${SAMPLE_ROOT}/adm/${STATION}/$pk.lnk
+end
+
+if ( ${REBUILDJAR} == "Yes" ) then
+    echo "Building the JAR File "
+#    cd java
+    csh -f build.csh
+endif

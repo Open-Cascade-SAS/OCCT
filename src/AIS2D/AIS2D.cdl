@@ -1,0 +1,226 @@
+-- File     : AIS2D.cdl
+-- Created  : 07 April  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+package AIS2D
+
+	---Purpose: FOR APPLICATION INTERACTIVE SERVICES
+	--          
+	--          This package provides the classes and methods
+	--          to the maintenance of the high level 2D visualization . 
+	--          The central entity is Interactive Context for easily 
+	--          piloting presentation and selection.
+	--          AIS2D package proposes the classes of standard Interactive Objects  
+	--          and this one allows to implement users classes of interactive objects,
+	--          by respecting a certain rules of creating of Interactive Object.
+
+ uses
+
+   Aspect,
+   Quantity,
+   TColStd,
+   TCollection,
+   V2d,
+   Graphic2d,
+   GGraphic2d,
+   TopoDS,
+   TopTools,
+   HLRAlgo,
+   HLRBRep,
+   Prs2d
+
+ is
+
+  enumeration KindOfIO is
+    
+    KOI_None,
+    KOI_DATUM,
+    KOI_DIMENSION,
+    KOI_SHAPE,
+    KOI_PROJSHAPE,
+    KOI_COMPOUND
+    
+  end KindOfIO;
+
+  enumeration KindOfDimension is
+    
+    KOD_NONE,
+    KOD_LENGTH,
+    KOD_ANGLE,
+    KOD_DIAMETER,
+    KOD_RADIUS
+
+  end KindOfDimension;
+
+  enumeration KindOfPrimitive is
+    
+    KOP_NONE,
+    KOP_CIRCLE,
+    KOP_CIRCLEMARKER,
+    KOP_ELLIPS,
+    KOP_ELLIPSEMARKER,
+    KOP_FRAMEDTEXT,
+    KOP_HIDINGTEXT,
+    KOP_IMAGE,
+    KOP_IMAGEFILE,
+    KOP_INFINITELINE,
+    KOP_MARKER,
+    KOP_PARAGRAPH,
+    KOP_POLYLINE,
+    KOP_POLYLINEMARKER,
+    KOP_SEGMENT,
+    KOP_SETOFMARKERS,
+    KOP_SETOFPOLYLINES,
+    KOP_SETOFSEGMENTS,
+    KOP_TEXT,
+    KOP_CURVE,
+    KOP_SETOFCURVES,
+    KOP_ANGLE,
+    KOP_ANGULARITY,
+    KOP_ARROW,
+    KOP_AXIS,
+    KOP_CIRCULARITY,
+    KOP_CONCENTRIC,
+    KOP_CYLINDRIC,
+    KOP_DIAMETER,
+    KOP_FLATNESS,
+    KOP_LENGTH,
+    KOP_LINEPROFILE,
+    KOP_PARALLELISM,
+    KOP_PERPENDICULAR,
+    KOP_POINT,
+    KOP_RADIUS,
+    KOP_RADIUSINDEP,
+    KOP_REPERE,
+    KOP_STRAIGHTNESS,
+    KOP_SURFPROFILE,
+    KOP_SYMCIRCULAR,
+    KOP_SYMMETRY,
+    KOP_SYMTOTAL,
+    KOP_TAPER,
+    KOP_TOLERANCEFRAME
+
+  end KindOfPrimitive;
+
+  enumeration TypeOfAxis is 
+    
+	TOAX_Unknown,
+	TOAX_XAxis,
+	TOAX_YAxis
+
+  end TypeOfAxis;
+
+  enumeration DisplayStatus is
+
+    DS_Displayed,  -- displayed in main viewer
+    DS_Erased,     -- erased in the collector
+    DS_FullErased, -- erased but not in the collector
+    DS_Temporary,  -- temporary displayed
+    DS_None        -- nowhere
+
+  end DisplayStatus;
+
+  enumeration SelectStatus is
+
+    SS_Added,
+    SS_Removed,
+    SS_NotDone
+
+  end SelectStatus;
+
+  enumeration StatusOfPick is
+
+    SOP_Error,
+    SOP_NothingSelected,
+    SOP_Removed,
+    SOP_OneSelected,
+    SOP_SeveralSelected
+
+  end StatusOfPick;
+
+  enumeration StatusOfDetection is
+
+    SOD_Error,
+    SOD_Nothing,
+    SOD_AllBad,
+    SOD_Selected,
+    SOD_OnlyOneDetected,
+    SOD_OnlyOneGood,
+    SOD_SeveralGood
+
+  end StatusOfDetection;
+
+  enumeration TypeOfDetection is
+    TOD_OBJECT,
+    TOD_PRIMITIVE,
+    TOD_ELEMENT,
+    TOD_VERTEX,
+    TOD_NONE
+  end TypeOfDetection;
+
+ enumeration ClearMode is
+
+    CM_All,
+    CM_Interactive,
+    CM_StandardModes,
+    CM_TemporaryShapePrs
+
+  end ClearMode;
+
+  class InteractiveContext;
+  class InteractiveObject;
+  class ProjShape;
+  
+  private class LocalStatus;
+  private class GlobalStatus;
+  private class LocalContext;
+
+  private class PrimitiveArchit;
+  
+  private class SequenceOfIO instantiates Sequence from TCollection
+      ( InteractiveObject from AIS2D );
+
+  private class HSequenceOfIO instantiates HSequence from TCollection
+      ( InteractiveObject from AIS2D, SequenceOfIO from AIS2D );
+
+  private class SequenceOfPrimArchit instantiates Sequence from TCollection
+      ( PrimitiveArchit from AIS2D );
+
+  private class HSequenceOfPrimArchit instantiates HSequence from TCollection
+      ( PrimitiveArchit from AIS2D, SequenceOfPrimArchit from AIS2D );
+  
+  private class DataMapOfIOStatus instantiates DataMap from TCollection
+       ( InteractiveObject from AIS2D,
+         GlobalStatus from AIS2D,
+         MapTransientHasher from TColStd );
+  -- Management of interactiveObjects Status...
+
+  class ListOfIO instantiates List from TCollection
+      ( InteractiveObject from AIS2D );
+
+  class DataMapOfPrimAspects instantiates DataMap from TCollection 
+       ( Primitive from Graphic2d,
+	 AspectRoot from Prs2d,
+	 MapTransientHasher from TColStd);
+
+  private class DataMapOfLC instantiates DataMap from TCollection
+      ( Integer from Standard,
+        LocalContext from AIS2D,
+        MapIntegerHasher from TColStd );
+
+  private class DataMapOfLocStat instantiates DataMap from TCollection
+      ( InteractiveObject from AIS2D,
+        LocalStatus from AIS2D,
+        MapTransientHasher from TColStd );
+    -- to tell if an object is sensitive to Standard Modes Of Selection....
+
+
+  pointer PToListOfInt to ListOfInteger from TColStd;
+   
+  Save( aCntx: InteractiveContext from AIS2D; aFile: CString from Standard )
+       returns Boolean; 
+  Retrieve( aCntx: InteractiveContext from AIS2D; aFile: CString from Standard )
+       returns InteractiveObject from AIS2D;
+
+end AIS2D;

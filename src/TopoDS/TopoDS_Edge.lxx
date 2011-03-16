@@ -1,0 +1,13 @@
+// File:	TopoDS_Edge.lxx
+// Created:	Tue Apr 16 15:56:32 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Edge
+//purpose  : Empty Constructor
+//=======================================================================
+
+inline TopoDS_Edge::TopoDS_Edge ()
+{
+}

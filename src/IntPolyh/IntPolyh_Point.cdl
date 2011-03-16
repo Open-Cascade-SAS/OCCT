@@ -1,0 +1,124 @@
+-- File:	IntPolyh_Point.cdl
+-- Created:	Fri Mar  5 18:12:33 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Point from IntPolyh
+
+uses
+    
+    Pnt from gp,
+    HSurface from Adaptor3d
+
+is
+
+
+    Create;
+    
+    Create(xx,yy,zz,uu,vv : Real from Standard); 
+
+    X(me) 
+    returns Real from Standard
+    is static;
+
+    Y(me) 
+    returns Real from Standard
+    is static;
+
+    Z(me) 
+    returns Real from Standard
+    is static;
+
+    U(me) 
+    returns Real from Standard
+    is static;
+
+    V(me) 
+    returns Real from Standard
+    is static;
+    
+    PartOfCommon(me)
+    returns Integer from Standard
+    is static;
+    
+    Equal(me: in out; Pt: Point from IntPolyh)
+        ---C++: alias operator =
+    is static;
+	
+    Set(me: in out; v1,v2,v3,v4,v5: Real from Standard; II: Integer from Standard = 1)
+    is static;
+	
+    SetX(me: in out; v: Real from Standard) 
+    is static;
+	
+    SetY(me: in out; v: Real from Standard) 
+    is static;
+	
+    SetZ(me: in out; v: Real from Standard) 
+    is static;
+	
+    SetU(me: in out; v: Real from Standard) 
+    is static;
+	
+    SetV(me: in out; v: Real from Standard) 
+    is static;
+    
+    SetPartOfCommon(me :in out; ii: Integer from Standard)
+    is static;
+    
+    Middle(me: in out; MySurface: HSurface from Adaptor3d; P1,P2: Point from IntPolyh)
+    is static;
+
+    Add(me; P1: Point from IntPolyh)
+    	---C++: alias operator +     
+    returns Point from IntPolyh
+    is static;
+    
+    Sub(me; P1: Point from IntPolyh)
+    	---C++: alias operator -     
+    returns Point from IntPolyh
+    is static;
+    
+    Divide(me; rr: Real from Standard)
+    	---C++: alias operator /     
+    returns Point from IntPolyh
+    is static;    
+    
+    Multiplication(me; rr: Real from Standard)
+    	---C++: alias operator *     
+    returns Point from IntPolyh
+    is static;    
+    
+    SquareModulus(me)
+    returns Real from Standard
+    is static;       
+
+    SquareDistance(me; P2: Point from IntPolyh)
+    returns Real from Standard
+    is static;       
+          
+    Dot(me; P2: Point from IntPolyh)
+    returns Real from Standard
+    is static;   
+
+    Cross(me:in out; P1,P2: Point from IntPolyh)
+    is static;
+		
+    Dump(me) 
+    is static;
+    
+    Dump(me; i: Integer from Standard)
+    is static;
+     	
+fields
+
+    x,y,z,u,v : Real from Standard;
+    POC : Integer from Standard;
+    
+end Point from IntPolyh;
+
+
+

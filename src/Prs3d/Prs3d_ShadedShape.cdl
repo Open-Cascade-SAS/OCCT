@@ -1,0 +1,28 @@
+-- File:	ShadedShape.cdl
+-- Created:	Thu Sep 23 18:12:33 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class ShadedShape from Prs3d(anyShape           as any;
+    	    	    	    	     anyTopFace         as any;
+				     anyMeshTriangle    as any;
+				     anyMeshEdge        as any;
+    	    	    	    	     anyShadedShapeTool as any
+    	    	    	    	    )         
+inherits Root from Prs3d
+
+uses
+
+    Presentation from Prs3d,
+    Drawer from Prs3d
+    
+is
+    Add(myclass; aPresentation: Presentation from Prs3d;
+    	    	 aShape       : anyShape;
+                 aDrawer      : Drawer from Prs3d);
+		 
+    	---Purpose: Shades <aShape>.
+
+end ShadedShape from Prs3d;

@@ -1,0 +1,48 @@
+-- File:        FunctionWithDerivative.cdl
+-- Created:     Mon May 13 14:00:19 1991
+-- Author:      Laurent Painnot
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+deferred class FunctionWithDerivative from math
+    	 ---Purpose:
+    	 -- This abstract class describes the virtual functions associated with
+    	 -- a function of a single variable for which the first derivative is
+    	 -- available.
+
+inherits Function
+
+is
+
+    Delete(me:out) is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~math_FunctionWithDerivative(){Delete();}"
+    
+    Value(me: in out; X: Real; F: out Real)
+        ---Purpose: Computes the value <F>of the function for the variable <X>.
+    	--          Returns True if the calculation were successfully done, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+ 
+    Derivative(me: in out; X: Real; D: out Real)
+        ---Purpose: Computes the derivative <D> of the function 
+        --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+
+    returns Boolean
+    is deferred;    
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: Computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+end FunctionWithDerivative;

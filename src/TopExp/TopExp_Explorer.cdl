@@ -1,0 +1,165 @@
+-- File:	TopExp_Explorer.cdl
+-- Created:	Thu Jan 14 17:30:37 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Explorer from TopExp 
+
+	---Purpose: An Explorer is a Tool to visit  a Topological Data
+	--          Structure form the TopoDS package.
+	--          
+	--          An Explorer is built with :
+	--          
+	--            * The Shape to explore.
+	--            
+	--            * The type of Shapes to find : e.g VERTEX, EDGE.
+	--            This type cannot be SHAPE.
+	--            
+	--            * The type of Shapes to avoid. e.g  SHELL, EDGE.
+	--            By default   this type is  SHAPE which  means no
+	--            restriction on the exploration.
+	--            
+	--            
+	--          The Explorer  visits  all the  structure   to find
+	--          shapes of the   requested  type  which   are   not
+	--          contained in the type to avoid.
+	--          
+	--          Example to find all the Faces in the Shape S :
+	--          
+	--          TopExp_Explorer Ex;
+	--          for (Ex.Init(S,TopAbs_FACE); Ex.More(); Ex.Next()) {
+	--            ProcessFace(Ex.Current());
+	--            }
+	--            
+	--          // an other way
+	--          TopExp_Explorer Ex(S,TopAbs_FACE);
+	--          while (Ex.More()) {
+	--            ProcessFace(Ex.Current());
+	--            Ex.Next();
+	--            }
+	--            
+	--          To find all the vertices which are not in an edge :
+	--          
+	--          for (Ex.Init(S,TopAbs_VERTEX,TopAbs_EDGE); ...)
+	--          
+	--          
+	--          To  find all the faces  in   a SHELL, then all the
+	--          faces not in a SHELL :
+	--          
+	--          TopExp_Explorer Ex1, Ex2;
+	--          
+	--          for (Ex1.Init(S,TopAbs_SHELL),...) {
+	--            // visit all shells
+	--            for (Ex2.Init(Ex1.Current(),TopAbs_FACE),...) {
+	--              // visit all the faces of the current shell
+	--              }
+	--            }
+	--            
+	--          for (Ex1.Init(S,TopAbs_FACE,TopAbs_SHELL),...) {
+	--            // visit all faces not in a shell
+	--            }
+	--          
+	--          
+	--          If   the type  to avoid  is   the same  or is less
+	--          complex than the type to find it has no effect.
+	--          
+	--          For example searching edges  not in a vertex  does
+	--          not make a difference.
+	--          
+
+uses
+    ShapeEnum       from TopAbs,
+    Shape           from TopoDS,
+    Stack           from TopExp
+    
+raises
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create returns Explorer from TopExp;
+	---Purpose: Creates an empty explorer, becomes usefull after Init.
+    
+    Create(S       : Shape     from TopoDS;
+    	   ToFind  : ShapeEnum from TopAbs;
+	   ToAvoid : ShapeEnum from TopAbs = TopAbs_SHAPE)
+    returns Explorer from TopExp;
+	---Purpose: Creates an Explorer on the Shape <S>. 
+	--          
+	--          <ToFind> is the type of shapes to search. 
+	--              TopAbs_VERTEX, TopAbs_EDGE, ...
+	--           
+	--          <ToAvoid>   is the type   of shape to  skip in the
+	--          exploration.   If   <ToAvoid>  is  equal  or  less
+	--          complex than <ToFind> or if  <ToAVoid> is SHAPE it
+	--          has no effect on the exploration.
+	--          
+	
+    Init(me : in out; S       : Shape       from TopoDS;
+    	              ToFind  : ShapeEnum from TopAbs;
+	              ToAvoid : ShapeEnum from TopAbs = TopAbs_SHAPE)
+	---Purpose: Resets this explorer on the shape S. It is initialized to
+-- search the shape S, for shapes of type ToFind, that
+-- are not part of a shape ToAvoid.
+-- If the shape ToAvoid is equal to TopAbs_SHAPE, or
+-- if it is the same as, or less complex than, the shape
+-- ToFind it has no effect on the search.          
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns  True if  there are   more  shapes in  the
+	--          exploration. 
+ 	---C++: inline
+   is static;
+	
+    Next(me : in out)
+	---Purpose: Moves to the next Shape in the exploration.
+-- Exceptions
+-- Standard_NoMoreObject if there are no more shapes to explore.
+    raises
+    	NoMoreObject 
+    is static;
+    
+    Current(me) returns Shape from TopoDS
+	---Purpose: Returns the current shape in the exploration.
+ -- Exceptions
+-- Standard_NoSuchObject if this explorer has no more shapes to explore.
+    raises NoSuchObject from Standard 
+    ---C++: return const &
+    is static;
+    
+    ReInit(me : in out)
+	---Purpose: Reinitialize  the    exploration with the original
+	--          arguments.
+    is static;
+    
+    Depth(me) returns Integer
+	---Purpose: Returns the current depth of the exploration. 0 is
+	--          the shape to explore itself.
+	---C++: inline
+        is static;
+    
+    Clear(me : in out)
+	---Purpose: Clears the content of the explorer. It will return
+	--          False on More().
+	---C++: inline
+    is static;
+    
+    -- private implementation methods
+
+    Destroy(me : in out);
+    ---C++: alias ~
+    
+fields
+    myStack       : Stack           from TopExp;
+    myTop         : Integer         from Standard;
+    mySizeOfStack : Integer         from Standard;
+    myShape       : Shape           from TopoDS;
+    hasMore       : Boolean         from Standard;
+    toFind        : ShapeEnum       from TopAbs;
+    toAvoid       : ShapeEnum       from TopAbs;
+    
+end Explorer;

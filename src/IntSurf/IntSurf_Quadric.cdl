@@ -1,0 +1,181 @@
+-- File:	Quadric.cdl
+-- Created:	Mon Apr 13 17:38:01 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class Quadric from IntSurf 
+
+	---Purpose: 
+
+
+uses Ax3         from gp,
+     Pnt         from gp,
+     Vec         from gp,
+     Dir         from gp,
+     Lin         from gp,
+     Pln         from gp,
+     Cylinder    from gp,
+     Sphere      from gp,
+     Cone        from gp,
+     SurfaceType from GeomAbs     
+
+is
+
+    Create
+    
+        returns Quadric from IntSurf;
+
+
+    Create(P: Pln from gp)
+    
+    	returns Quadric from IntSurf;
+
+
+    Create(C: Cylinder from gp)
+    
+    	returns Quadric from IntSurf;
+
+
+    Create(S: Sphere from gp)
+    
+    	returns Quadric from IntSurf;
+
+
+    Create(C: Cone from gp)
+    
+    	returns Quadric from IntSurf;
+
+
+    SetValue(me: in out; P: Pln from gp)
+    
+    	is static;
+
+
+    SetValue(me: in out; C: Cylinder from gp)
+    
+    	is static;
+
+
+    SetValue(me: in out; S: Sphere from gp)
+    
+    	is static;
+
+
+    SetValue(me: in out; C: Cone from gp)
+    
+    	is static;
+
+
+    Distance(me; P: Pnt from gp)
+    
+    	returns Real from Standard
+
+        is static;
+
+
+    Gradient(me; P: Pnt from gp)
+
+    	returns Vec from gp
+	
+	is static;
+
+
+    ValAndGrad(me; P: Pnt from gp; Dist: out Real from Standard;
+               Grad: out Vec from gp)
+    
+      	is static;
+
+
+    TypeQuadric(me)
+    
+    	returns SurfaceType from GeomAbs
+	---C++: inline
+	
+	is static;
+
+
+    Plane(me)
+    
+    	returns Pln from gp
+	---C++: inline
+	
+	is static;
+
+
+    Sphere(me)
+    
+    	returns Sphere from gp
+	---C++: inline
+	
+	is static;
+
+
+    Cylinder(me)
+    
+    	returns Cylinder from gp
+	---C++: inline
+	
+	is static;
+
+
+    Cone(me)
+    
+    	returns Cone from gp
+	---C++: inline
+	
+	is static;
+
+
+
+    Value(me; U,V: Real)
+    
+    	returns Pnt from gp
+	
+	is static;
+
+
+    D1(me; U,V: Real; P: out Pnt; D1U,D1V: out Vec from gp)
+    
+	is static;
+
+
+    DN(me; U,V: Real; Nu,Nv: Integer)
+    
+    	returns Vec from gp
+	
+	is static;
+
+
+    Normale(me; U,V: Real)
+    
+    	returns Vec from gp
+	
+	is static;
+
+
+    Parameters(me; P: Pnt from gp; U,V: out Real)
+    
+    	is static;
+
+
+    Normale(me; P: Pnt from gp)
+    
+    	returns Vec from gp
+	
+	is static;
+
+
+fields
+
+    ax3      : Ax3         from gp;
+    lin      : Lin         from gp;
+    prm1     : Real        from Standard;
+    prm2     : Real        from Standard;
+    prm3     : Real        from Standard;
+    prm4     : Real        from Standard;
+    ax3direc : Boolean     from Standard;
+    typ      : SurfaceType from GeomAbs;
+
+end Quadric;

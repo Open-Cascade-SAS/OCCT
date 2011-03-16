@@ -1,0 +1,45 @@
+-- File:	PGeom_CylindricalSurface.cdl
+-- Created:	Tue Mar  2 10:46:12 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class CylindricalSurface from PGeom inherits ElementarySurface from PGeom
+
+        ---Purpose : This class defines the infinite cylindrical surface.
+        --  
+	---See Also : CylindricalSurface from Geom.
+
+uses Ax3      from gp
+
+is
+
+
+  Create returns mutable CylindricalSurface from PGeom;
+	---Purpose: Creates a CylindricalSurface with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition : Ax3 from gp;
+    	  aRadius    : Real from Standard)
+     returns mutable CylindricalSurface from PGeom;
+	---Purpose: Creates a CylindricalSurface with these values.
+    	---Level: Internal 
+
+
+  Radius (me: mutable; aRadius: Real from Standard);
+        ---Purpose : Set the field radius with <aRadius>.
+    	---Level: Internal 
+
+
+  Radius (me) returns Real from Standard;
+        ---Purpose : Returns the value of the field radius.
+    	---Level: Internal 
+     
+     
+fields
+
+  radius : Real from Standard;
+        
+end;

@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeLine.cdl
+-- Created:	Mon Jun 14 15:51:51 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeLine from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Line from StepGeom which describes a line from
+    --          Prostep and Line from Geom.
+
+uses 
+     Line from Geom,
+     Line from StepGeom
+
+is 
+
+    Convert ( myclass; SC : Line from StepGeom;
+                       CC : out Line from Geom )
+    returns Boolean from Standard;
+
+end MakeLine;

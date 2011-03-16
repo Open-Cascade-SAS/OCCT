@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolCylinder.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolCylinder  from IGESSolid
+
+    ---Purpose : Tool to work on a Cylinder. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses Cylinder from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolCylinder;
+    ---Purpose : Returns a ToolCylinder, ready to work
+
+
+    ReadOwnParams (me; ent : mutable Cylinder;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : Cylinder;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : Cylinder;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a Cylinder <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : Cylinder) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : Cylinder;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : Cylinder; entto : mutable Cylinder;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : Cylinder;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolCylinder;

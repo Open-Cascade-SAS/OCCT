@@ -1,0 +1,21 @@
+-- File:	StepToGeom_BSplineSurface.cdl
+-- Created:	Tue Jun 22 10:33:07 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeBSplineSurface from StepToGeom
+        
+    ---Purpose: This class implements the mapping between classes
+    --          BSplineSurface from StepGeom 
+    --          and class BSplineSurface from Geom
+
+uses BSplineSurface from Geom,
+     BSplineSurface from StepGeom     
+     
+is 
+
+    Convert ( myclass; SS : BSplineSurface from StepGeom;
+                       CS : out BSplineSurface from Geom)
+    returns Boolean from Standard;
+
+end MakeBSplineSurface;

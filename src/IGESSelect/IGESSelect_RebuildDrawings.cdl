@@ -1,0 +1,38 @@
+-- File:	IGESSelect_RebuildDrawings.cdl
+-- Created:	Wed Jun  1 18:18:26 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class RebuildDrawings  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Rebuilds Drawings which were bypassed to produce new models.
+    --           If a set of entities, all put into a same IGESModel, were
+    --           attached to a same Drawing in the starting Model, this Modifier
+    --           rebuilds the original Drawing, but only with the transferred
+    --           entities. This includes that all its views are kept too, but
+    --           empty; and annotations are not kept. Drawing Name is renewed.
+    --           
+    --           If the Input Selection is present, tries to rebuild Drawings
+    --           only for the selected entities. Else, tries to rebuild
+    --           Drawings for all the transferred entities.
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create returns mutable RebuildDrawings;
+    ---Purpose : Creates an RebuildDrawings, which uses the system Date
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : Rebuilds the original Drawings
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Rebuild Drawings"
+
+end RebuildDrawings;

@@ -1,0 +1,96 @@
+-- File:	AIS_LocalStatus.cdl
+-- Created:	Mon Jan 20 15:35:55 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class LocalStatus from AIS inherits TShared from MMgt
+
+	---Purpose: Stored Info about temporary objects.
+uses 
+    ListOfInteger from TColStd,
+    NameOfColor   from Quantity
+is
+
+    Create(IsTemporary   : Boolean from Standard = Standard_True;
+    	   Decompose     : Boolean from Standard = Standard_False; 
+    	   DisplayMode   : Integer from Standard = -1;
+    	   SelectionMode : Integer from Standard = -1; 
+	   HilightMode   : Integer from Standard = 0;
+    	   SubIntensity  : Boolean from Standard = 0;
+    	   TheHiCol      : NameOfColor from Quantity = Quantity_NOC_WHITE)
+     returns mutable LocalStatus from AIS;
+    
+
+
+		    ---Category: Read
+
+    Decomposed(me) returns Boolean from Standard;
+    ---C++: inline
+    IsTemporary(me) returns Boolean from Standard;
+    ---C++: inline
+    DisplayMode(me) returns Integer from Standard;
+    ---C++: inline
+    SelectionModes(me) returns ListOfInteger from TColStd;
+    ---C++: return const&
+    ---C++: inline
+    IsActivated(me; aSelMode :Integer from Standard) 
+    returns Boolean from Standard;
+    HilightMode(me) returns Integer from Standard;
+    ---C++: inline
+    IsSubIntensityOn(me) returns Boolean from Standard;
+    ---C++: inline
+    HilightColor(me) returns NameOfColor from Quantity;
+    ---C++: inline
+
+
+    SetDecomposition (me:mutable; astatus : Boolean from Standard);
+    ---C++: inline
+    SetTemporary     (me:mutable; astatus : Boolean from Standard);
+    ---C++: inline
+    SetDisplayMode   (me:mutable; aMode   : Integer from Standard);
+    ---C++: inline
+    SetFirstDisplay  (me:mutable; aStatus :  Boolean  from  Standard) ; 
+    ---C++: inline
+    IsFirstDisplay(me)  returns  Boolean  from  Standard;
+    ---C++: inline
+      
+    AddSelectionMode (me:mutable; aMode   : Integer from Standard);
+
+    RemoveSelectionMode(me:mutable; aMode   : Integer from Standard);
+
+    ClearSelectionModes(me:mutable);
+    
+    IsSelModeIn(me;aMode:Integer from Standard)
+    returns Boolean from Standard;    
+
+    SetHilightMode   (me:mutable; aMode   : Integer from Standard);
+    ---C++: inline
+    SetHilightColor (me:mutable;aHiCol:NameOfColor from Quantity);
+    ---C++: inline
+    SubIntensityOn  (me:mutable);
+    ---C++: inline
+    SubIntensityOff (me:mutable);
+    ---C++: inline
+
+
+    SetPreviousState(me:mutable;aStatus : Transient from Standard);
+    ---C++: inline
+    PreviousState(me) returns any Transient from Standard;
+    ---C++: inline
+    ---C++: return const &
+
+fields
+    myDecomposition : Boolean       from Standard;
+    myIsTemporary   : Boolean       from Standard;
+    myDMode         : Integer       from Standard; 
+    myFirstDisplay  : Boolean       from  Standard;
+    myHMode         : Integer       from Standard;
+    mySModes        : ListOfInteger from TColStd;
+    mySubIntensity  : Boolean       from Standard;
+    myHiCol         : NameOfColor   from Quantity;
+    
+    myPreviousState : Transient     from  Standard;
+    
+end LocalStatus;

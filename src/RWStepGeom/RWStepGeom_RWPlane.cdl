@@ -1,0 +1,30 @@
+-- File:        Plane.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPlane from RWStepGeom
+
+	---Purpose : Read & Write Module for Plane
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Plane from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPlane;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Plane from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Plane from StepGeom);
+
+	Share(me; ent : Plane from StepGeom; iter : in out EntityIterator);
+
+end RWPlane;

@@ -1,0 +1,73 @@
+-- File:	PGeom_TrimmedCurve.cdl
+-- Created:	Mon Mar  1 11:45:30 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class TrimmedCurve from PGeom inherits BoundedCurve from PGeom
+
+        ---Purpose :
+        --  Defines a portion of a curve limited by two values of 
+        --  parameters inside the parametric domain of the curve.
+        --  
+	---See Also : TrimmedCurve from Geom.
+
+
+uses Curve from PGeom
+
+is
+
+
+  Create returns mutable TrimmedCurve from PGeom;
+	---Purpose: Creates a TrimmedCurve with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	aBasisCurve: Curve from PGeom;
+    	aFirstU, aLastU: Real from Standard)
+     returns mutable TrimmedCurve from PGeom;
+        ---Purpose : Creates a TrimmedCurve with these field values.
+    	---Level: Internal 
+
+
+  FirstU(me : mutable; aFirstU: Real from Standard);
+        ---Purpose : Set the value of the field firstU with <aFirstU>.
+    	---Level: Internal 
+
+
+  FirstU(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field firstU.
+    	---Level: Internal 
+
+
+  LastU(me : mutable; aLastU: Real from Standard);
+        ---Purpose : Set the value of the field lastU with <aLastU>.
+    	---Level: Internal 
+
+
+  LastU(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field lastU.
+    	---Level: Internal 
+
+
+  BasisCurve (me: mutable; aBasisCurve: Curve from PGeom);
+        ---Purpose : Set the value of the field basisCurve with <aBasisCurve>.
+        --  This curve can be a trimmed curve.
+    	---Level: Internal 
+
+
+  BasisCurve (me) returns Curve from PGeom;
+        ---Purpose : Returns the value of the field basisCurve. 
+        --  This curve can be a trimmed curve.
+    	---Level: Internal 
+
+
+fields
+
+    basisCurve : Curve from PGeom;
+    firstU     : Real from Standard;
+    lastU      : Real from Standard;
+
+end;

@@ -1,0 +1,1415 @@
+// xab : modified 15-Mar-94 added EvalBSplineMatrix, FactorBandedMatrix, SolveBandedSystem
+//                          Eval, BuildCache, cacheD0, cacheD1, cacheD2, cacheD3, LocalMatrix,
+//                          EvalPolynomial, RationalDerivatives.
+// xab : 22-Mar-94 : fixed rational problem in BuildCache
+// xab : 12-Mar-96 : added MovePointAndTangent
+//
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <PLib.hxx>
+#include <math_Matrix.hxx>
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+//=======================================================================
+//struct : BSplCLib_DataContainer 
+//purpose: Auxiliary structure providing buffers for poles and knots used in
+//         evaluation of bspline (allocated in the stack)
+//=======================================================================
+
+struct BSplCLib_DataContainer 
+{
+  BSplCLib_DataContainer(Standard_Integer Degree) 
+  {
+    if ( Degree > BSplCLib::MaxDegree() || BSplCLib::MaxDegree() > 25 )
+      Standard_OutOfRange::Raise ("BSplCLib: bspline degree is greater than maximum supported");
+  }
+
+  Standard_Real poles[(25+1)*(Dimension_gen+1)];
+  Standard_Real knots[2*25];
+  Standard_Real ders[Dimension_gen*4];
+};
+
+//=======================================================================
+//function : Reverse
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::Reverse(Array1OfPoints& Poles,
+			const Standard_Integer L)
+{
+  Standard_Integer i, l = L;
+  l = Poles.Lower() + (l-Poles.Lower()) % (Poles.Upper()-Poles.Lower()+1);
+  
+  Array1OfPoints temp(0,Poles.Length()-1);
+  
+  for (i = Poles.Lower(); i <= l; i++)
+    temp(l-i) = Poles(i);
+  
+  for (i = l+1; i <= Poles.Upper(); i++)
+    temp(l-Poles.Lower()+Poles.Upper()-i+1) = Poles(i);
+  
+  for (i = Poles.Lower(); i <= Poles.Upper(); i++)
+    Poles(i) = temp(i-Poles.Lower());
+}
+
+//
+// CURVES MODIFICATIONS
+//
+
+//=======================================================================
+//function : RemoveKnot
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BSplCLib::RemoveKnot 
+(const Standard_Integer         Index,       
+ const Standard_Integer         Mult,        
+ const Standard_Integer         Degree,  
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,
+ Array1OfPoints&                NewPoles,   
+ TColStd_Array1OfReal&          NewWeights,
+ TColStd_Array1OfReal&          NewKnots,  
+ TColStd_Array1OfInteger&       NewMults,
+ const Standard_Real            Tolerance) 
+{
+  Standard_Boolean rational = &Weights  != NULL;
+  Standard_Integer dim;
+  dim = Dimension_gen;
+  if (rational) dim++;
+  
+  TColStd_Array1OfReal poles(1,dim*Poles.Length());
+  TColStd_Array1OfReal newpoles(1,dim*NewPoles.Length());
+  
+  if (rational) PLib::SetPoles(Poles,Weights,poles);
+  else          PLib::SetPoles(Poles,poles);
+  
+  if (!RemoveKnot(Index,Mult,Degree,Periodic,dim,
+		  poles,Knots,Mults,newpoles,NewKnots,NewMults,Tolerance))
+    return Standard_False;
+
+  if (rational) PLib::GetPoles(newpoles,NewPoles,NewWeights);
+  else          PLib::GetPoles(newpoles,NewPoles);
+  return Standard_True;
+}
+
+//=======================================================================
+//function : InsertKnots
+//purpose  : insert an array of knots and multiplicities
+//=======================================================================
+
+void BSplCLib::InsertKnots
+(const Standard_Integer         Degree, 
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,  
+ const TColStd_Array1OfReal&    Knots,    
+ const TColStd_Array1OfInteger& Mults, 
+ const TColStd_Array1OfReal&    AddKnots,    
+ const TColStd_Array1OfInteger& AddMults, 
+ Array1OfPoints&                NewPoles,     
+ TColStd_Array1OfReal&          NewWeights,
+ TColStd_Array1OfReal&          NewKnots,    
+ TColStd_Array1OfInteger&       NewMults, 
+ const Standard_Real            Epsilon,
+ const Standard_Boolean         Add) 
+{
+  Standard_Boolean rational = &Weights  != NULL;
+  Standard_Integer dim;
+  dim = Dimension_gen;
+  if (rational) dim++;
+  
+  TColStd_Array1OfReal poles(1,dim*Poles.Length());
+  TColStd_Array1OfReal newpoles(1,dim*NewPoles.Length());
+  
+  if (rational) PLib::SetPoles(Poles,Weights,poles);
+  else          PLib::SetPoles(Poles,poles);
+  
+  InsertKnots(Degree,Periodic,dim,poles,Knots,Mults,
+	      AddKnots,AddMults,newpoles,NewKnots,NewMults,Epsilon,Add);
+  
+  if (rational) PLib::GetPoles(newpoles,NewPoles,NewWeights);
+  else          PLib::GetPoles(newpoles,NewPoles);
+}
+
+//=======================================================================
+//function : InsertKnot
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::InsertKnot(const Standard_Integer , 
+			   const Standard_Real U,
+			   const Standard_Integer UMult, 
+			   const Standard_Integer Degree, 
+			   const Standard_Boolean Periodic, 
+			   const Array1OfPoints& Poles, 
+			   const TColStd_Array1OfReal& Weights, 
+			   const TColStd_Array1OfReal& Knots, 
+			   const TColStd_Array1OfInteger& Mults, 
+			   Array1OfPoints& NewPoles, 
+			   TColStd_Array1OfReal& NewWeights)
+{
+  TColStd_Array1OfReal k(1,1);
+  k(1) = U;
+  TColStd_Array1OfInteger m(1,1);
+  m(1) = UMult;
+  TColStd_Array1OfReal    nk(1,Knots.Length()+1);
+  TColStd_Array1OfInteger nm(1,Knots.Length()+1);
+  InsertKnots(Degree,Periodic,Poles,Weights,Knots,Mults,
+	      k,m,NewPoles,NewWeights,nk,nm,Epsilon(U));
+}
+
+//=======================================================================
+//function : RaiseMultiplicity
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::RaiseMultiplicity(const Standard_Integer KnotIndex,
+				  const Standard_Integer Mult,
+				  const Standard_Integer Degree, 
+				  const Standard_Boolean Periodic,
+				  const Array1OfPoints& Poles,
+				  const TColStd_Array1OfReal& Weights, 
+				  const TColStd_Array1OfReal& Knots, 
+				  const TColStd_Array1OfInteger& Mults, 
+				  Array1OfPoints& NewPoles,
+				  TColStd_Array1OfReal& NewWeights)
+{
+  TColStd_Array1OfReal k(1,1);
+  k(1) = Knots(KnotIndex);
+  TColStd_Array1OfInteger m(1,1);
+  m(1) = Mult - Mults(KnotIndex);
+  TColStd_Array1OfReal    nk(1,Knots.Length());
+  TColStd_Array1OfInteger nm(1,Knots.Length());
+  InsertKnots(Degree,Periodic,Poles,Weights,Knots,Mults,
+	      k,m,NewPoles,NewWeights,nk,nm,Epsilon(k(1)));
+}
+
+//=======================================================================
+//function : IncreaseDegree
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::IncreaseDegree 
+(const Standard_Integer          Degree,
+ const Standard_Integer          NewDegree,
+ const Standard_Boolean          Periodic,
+ const Array1OfPoints&           Poles,
+ const TColStd_Array1OfReal&     Weights,
+ const TColStd_Array1OfReal&     Knots,
+ const TColStd_Array1OfInteger&  Mults,
+ Array1OfPoints&                 NewPoles,
+ TColStd_Array1OfReal&           NewWeights,
+ TColStd_Array1OfReal&           NewKnots,
+ TColStd_Array1OfInteger&        NewMults) 
+{
+  Standard_Boolean rational = &Weights  != NULL;
+  Standard_Integer dim;
+  dim = Dimension_gen;
+  if (rational) dim++;
+  
+  TColStd_Array1OfReal poles(1,dim*Poles.Length());
+  TColStd_Array1OfReal newpoles(1,dim*NewPoles.Length());
+  
+  if (rational) PLib::SetPoles(Poles,Weights,poles);
+  else          PLib::SetPoles(Poles,poles);
+  
+  IncreaseDegree(Degree,NewDegree,Periodic,dim,poles,Knots,Mults,
+		 newpoles,NewKnots,NewMults);
+  
+  if (rational) PLib::GetPoles(newpoles,NewPoles,NewWeights);
+  else          PLib::GetPoles(newpoles,NewPoles);
+}
+
+//=======================================================================
+//function : Unperiodize
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::Unperiodize
+(const Standard_Integer         Degree, 
+ const TColStd_Array1OfInteger& Mults,
+ const TColStd_Array1OfReal&    Knots,
+ const Array1OfPoints&          Poles,
+ const TColStd_Array1OfReal&    Weights,
+ TColStd_Array1OfInteger& NewMults,
+ TColStd_Array1OfReal&    NewKnots,
+ Array1OfPoints&          NewPoles,
+ TColStd_Array1OfReal&    NewWeights)
+{
+  Standard_Boolean rational = &Weights  != NULL;
+  Standard_Integer dim;
+  dim = Dimension_gen;
+  if (rational) dim++;
+  
+  TColStd_Array1OfReal poles(1,dim*Poles.Length());
+  TColStd_Array1OfReal newpoles(1,dim*NewPoles.Length());
+  
+  if (rational) PLib::SetPoles(Poles,Weights,poles);
+  else          PLib::SetPoles(Poles,poles);
+  
+  Unperiodize(Degree, dim, Mults, Knots, poles,
+	      NewMults,NewKnots, newpoles);
+  
+  if (rational) PLib::GetPoles(newpoles,NewPoles,NewWeights);
+  else          PLib::GetPoles(newpoles,NewPoles);
+}
+
+//=======================================================================
+//function : Trimming
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::Trimming(const Standard_Integer         Degree, 
+			const Standard_Boolean         Periodic,
+			const TColStd_Array1OfReal&    Knots, 
+			const TColStd_Array1OfInteger& Mults,
+			const Array1OfPoints&          Poles,
+			const TColStd_Array1OfReal&    Weights, 
+			const Standard_Real            U1,
+			const Standard_Real            U2, 
+			TColStd_Array1OfReal&    NewKnots,
+			TColStd_Array1OfInteger& NewMults,
+			Array1OfPoints&          NewPoles,
+			TColStd_Array1OfReal&    NewWeights)
+{
+  Standard_Boolean rational = &Weights  != NULL;
+  Standard_Integer dim;
+  dim = Dimension_gen;
+  if (rational) dim++;
+  
+  TColStd_Array1OfReal poles(1,dim*Poles.Length());
+  TColStd_Array1OfReal newpoles(1,dim*NewPoles.Length());
+  
+  if (rational) PLib::SetPoles(Poles,Weights,poles);
+  else          PLib::SetPoles(Poles,poles);
+  
+  Trimming(Degree, Periodic, dim, Knots, Mults, poles, U1, U2,
+	   NewKnots, NewMults, newpoles);
+  
+  if (rational) PLib::GetPoles(newpoles,NewPoles,NewWeights);
+  else          PLib::GetPoles(newpoles,NewPoles);
+}
+
+//--------------------------------------------------------------------------
+//ELEMENTARY COMPUTATIONS
+//--------------------------------------------------------------------------
+//
+// All the following methods are methods of low level used in BSplCLib 
+// but also in BSplSLib (but not in Geom)
+// At the creation time of this package there is no possibility 
+// to declare private methods of package and to declare friend
+// methods of package.  It could interesting to declare that BSplSLib
+// is a package friend to BSplCLib because it uses all the basis methods
+// of BSplCLib.
+//--------------------------------------------------------------------------
+
+//=======================================================================
+//function : BuildEval
+//purpose  : builds the local array for evaluation
+//=======================================================================
+
+void  BSplCLib::BuildEval(const Standard_Integer         Degree,
+			  const Standard_Integer         Index,
+			  const Array1OfPoints&          Poles, 
+			  const TColStd_Array1OfReal&    Weights,
+			  Standard_Real&                 LP)
+{
+  Standard_Real w, *pole = &LP;
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+  Standard_Integer i;
+  Standard_Integer ip = PLower + Index - 1;
+  if (&Weights == NULL) {
+    for (i = 0; i <= Degree; i++) {
+      ip++;
+      if (ip > PUpper) ip = PLower;
+      const Point& P = Poles(ip);
+      PointToCoords (pole,P,+0);
+      pole += Dimension_gen;
+    }
+  }
+  else {
+    for (i = 0; i <= Degree; i++) {
+      ip++;
+      if (ip > PUpper) ip = PLower;
+      const Point& P = Poles(ip);
+      pole[Dimension_gen] = w = Weights(ip);
+      PointToCoords (pole, P, * w);
+      pole += Dimension_gen + 1;
+    }
+  }
+}
+
+//=======================================================================
+//function : PrepareEval
+//purpose  : stores data for Eval in the local arrays
+//           dc.poles and dc.knots
+//=======================================================================
+
+static void PrepareEval
+(Standard_Real&                 u,                  
+ Standard_Integer&              index, 
+ Standard_Integer&              dim,
+ Standard_Boolean&              rational,
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,
+ BSplCLib_DataContainer& dc) 
+{
+  // Set the Index
+  BSplCLib::LocateParameter(Degree,Knots,Mults,u,Periodic,index,u);
+
+  // make the knots
+  BSplCLib::BuildKnots(Degree,index,Periodic,Knots,Mults,*dc.knots);
+  if (&Mults == NULL)
+    index -= Knots.Lower() + Degree;
+  else
+    index = BSplCLib::PoleIndex(Degree,index,Periodic,Mults);
+  
+  // check truly rational
+  rational = (&Weights != NULL);
+  if (rational) {
+    Standard_Integer WLower = Weights.Lower() + index;
+    rational = BSplCLib::IsRational(Weights, WLower, WLower + Degree);
+  }
+  
+  // make the poles
+  if (rational) {
+    dim = Dimension_gen + 1;
+    BSplCLib::BuildEval(Degree, index, Poles, Weights              , *dc.poles);
+  }
+  else {
+    dim = Dimension_gen; 
+    BSplCLib::BuildEval(Degree, index, Poles, BSplCLib::NoWeights(), *dc.poles);
+  }
+}
+
+//=======================================================================
+//function : D0
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::D0 
+(const Standard_Real            U,                  
+ const Standard_Integer         Index,          
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,  
+ Point&                         P) 
+{                    
+//  Standard_Integer k,dim,index = Index;
+  Standard_Integer dim,index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,index,dim,rational,Degree,Periodic,Poles,Weights,Knots,Mults,dc);
+  BSplCLib::Eval(u,Degree,*dc.knots,dim,*dc.poles);
+
+  if (rational) {
+    Standard_Real w = dc.poles[Dimension_gen];
+    CoordsToPoint (P, dc.poles, / w);
+  }
+  else
+    CoordsToPoint (P, dc.poles, );
+}
+
+//=======================================================================
+//function : D1
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::D1
+(const Standard_Real            U,                  
+ const Standard_Integer         Index,          
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,  
+ Point&                         P,
+ Vector&                        V) 
+{                    
+  Standard_Integer dim,index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,index,dim,rational,Degree,Periodic,Poles,Weights,Knots,Mults,dc);
+  BSplCLib::Bohm(u,Degree,1,*dc.knots,dim,*dc.poles);
+  Standard_Real *result = dc.poles;
+  if (rational) {
+    PLib::RationalDerivative(Degree,1,Dimension_gen,*dc.poles,*dc.ders);
+    result = dc.ders;
+  }
+  
+  CoordsToPoint (P, result, );
+  CoordsToPoint (V, result + Dimension_gen, );
+}
+
+//=======================================================================
+//function : D2
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::D2
+(const Standard_Real            U,                  
+ const Standard_Integer         Index,          
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,  
+ Point&                         P,
+ Vector&                        V1,
+ Vector&                        V2) 
+{                    
+  Standard_Integer dim,index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,index,dim,rational,Degree,Periodic,Poles,Weights,Knots,Mults,dc);
+  BSplCLib::Bohm(u,Degree,2,*dc.knots,dim,*dc.poles);
+  Standard_Real *result = dc.poles;
+  if (rational) {
+    PLib::RationalDerivative(Degree,2,Dimension_gen,*dc.poles,*dc.ders);
+    result = dc.ders;
+  }
+  
+  CoordsToPoint (P,  result, );
+  CoordsToPoint (V1, result + Dimension_gen, );
+  if (!rational && (Degree < 2)) 
+    NullifyPoint (V2);
+  else
+    CoordsToPoint (V2, result + 2 * Dimension_gen, );  
+}
+
+//=======================================================================
+//function : D3
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::D3
+(const Standard_Real            U,                  
+ const Standard_Integer         Index,          
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,  
+ Point&                         P,
+ Vector&                        V1,
+ Vector&                        V2,
+ Vector&                        V3) 
+{                    
+  Standard_Integer dim,index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,index,dim,rational,Degree,Periodic,Poles,Weights,Knots,Mults,dc);
+  BSplCLib::Bohm(u,Degree,3,*dc.knots,dim,*dc.poles);
+  Standard_Real *result = dc.poles;
+  if (rational) {
+    PLib::RationalDerivative(Degree,3,Dimension_gen,*dc.poles,*dc.ders);
+    result = dc.ders;
+  }
+
+  CoordsToPoint (P,  result, );
+  CoordsToPoint (V1, result + Dimension_gen, );
+  if (!rational && (Degree < 2)) 
+    NullifyPoint (V2);
+  else
+    CoordsToPoint (V2, result + 2 * Dimension_gen, );  
+  if (!rational && (Degree < 3)) 
+    NullifyPoint (V3);
+  else
+    CoordsToPoint (V3, result + 3 * Dimension_gen, );  
+}
+
+//=======================================================================
+//function : DN
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::DN
+(const Standard_Real            U,                  
+ const Standard_Integer         N,          
+ const Standard_Integer         Index,          
+ const Standard_Integer         Degree,     
+ const Standard_Boolean         Periodic,
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ const TColStd_Array1OfReal&    Knots,  
+ const TColStd_Array1OfInteger& Mults,  
+ Vector&                        VN) 
+{                    
+  Standard_Integer dim,index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,index,dim,rational,Degree,Periodic,Poles,Weights,Knots,Mults,dc);
+  BSplCLib::Bohm(u,Degree,N,*dc.knots,dim,*dc.poles);
+
+  if (rational) {
+    Standard_Real v[Dimension_gen];
+    PLib::RationalDerivative(Degree,N,Dimension_gen,*dc.poles,v[0],Standard_False);
+    CoordsToPoint (VN, v, );
+  }
+  else {
+    if (N > Degree) 
+      NullifyPoint (VN);
+    else {
+      Standard_Real *DN = dc.poles + N * Dimension_gen;
+      CoordsToPoint (VN, DN, );
+    }
+  }
+}
+
+//=======================================================================
+//function : Solves a LU factored Matrix 
+//purpose  : 
+//=======================================================================
+
+Standard_Integer 
+BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
+			    const Standard_Integer UpperBandWidth,
+			    const Standard_Integer LowerBandWidth,
+			    Array1OfPoints&   PolesArray) 
+{
+  Standard_Real *PArray ;
+  PArray = (Standard_Real *) &PolesArray(PolesArray.Lower()) ;
+  
+  return BSplCLib::SolveBandedSystem(Matrix,
+				     UpperBandWidth,
+				     LowerBandWidth,
+				     Dimension_gen,
+				     PArray[0]) ;
+}
+
+//=======================================================================
+//function : Solves a LU factored Matrix 
+//purpose  : if HomogeneousFlag is 1 then the input and the output
+//           will be homogeneous that is no division or multiplication
+//           by weigths will happen. On the contrary if HomogeneousFlag
+//           is 0 then the poles will be multiplied first by the weights
+//           and after interpolation they will be devided by the weights
+//=======================================================================
+
+Standard_Integer 
+BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
+			    const Standard_Integer UpperBandWidth,
+			    const Standard_Integer LowerBandWidth,
+                            const Standard_Boolean HomogeneousFlag,
+			    Array1OfPoints&        PolesArray,
+                            TColStd_Array1OfReal&  WeightsArray) 
+{
+  Standard_Real *PArray,
+  * WArray ;
+  PArray = (Standard_Real *) &PolesArray(PolesArray.Lower()) ;
+  WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+  return BSplCLib::SolveBandedSystem(Matrix,
+				     UpperBandWidth,
+				     LowerBandWidth,
+				     HomogeneousFlag,
+				     Dimension_gen,
+				     PArray[0],
+				     WArray[0]) ;
+}
+
+//=======================================================================
+//function : Evaluates a Bspline function : uses the ExtrapMode 
+//purpose  : the function is extrapolated using the Taylor expansion
+//           of degree ExtrapMode[0] to the left and the Taylor
+//           expansion of degree ExtrapMode[1] to the right 
+//   if the HomogeneousFlag == True than the Poles are supposed
+//   to be stored homogeneously and the result will also be homogeneous
+//   Valid only if Weights 
+//=======================================================================
+void  BSplCLib::Eval(const Standard_Real                   Parameter,
+                     const Standard_Boolean                PeriodicFlag,
+		     const Standard_Boolean                HomogeneousFlag,
+                     Standard_Integer&                     ExtrapMode,
+		     const Standard_Integer                Degree,
+                     const  TColStd_Array1OfReal&          FlatKnots, 
+                     const  Array1OfPoints&                PolesArray,
+                     const  TColStd_Array1OfReal&          WeightsArray,
+                     Point&                                aPoint,
+		     Standard_Real&                        aWeight)
+{
+  Standard_Real  Inverse,
+  P[Dimension_gen],
+  *PArray,
+  *WArray ;
+  Standard_Integer kk ;
+  PArray = (Standard_Real *) &PolesArray(PolesArray.Lower()) ;
+  WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+  if (HomogeneousFlag) {
+    BSplCLib::Eval(Parameter,
+		   PeriodicFlag,
+		   0,
+		   ExtrapMode,
+		   Degree,
+		   FlatKnots,
+		   Dimension_gen,
+		   PArray[0],
+		   P[0]) ;
+    BSplCLib::Eval(Parameter,
+		   PeriodicFlag,
+		   0,
+		   ExtrapMode,
+		   Degree,
+		   FlatKnots,
+		   1,
+		   WArray[0],
+		   aWeight) ;
+  }
+  else {
+    BSplCLib::Eval(Parameter,
+		   PeriodicFlag,
+		   0,
+		   ExtrapMode,
+		   Degree,
+		   FlatKnots,
+		   Dimension_gen,
+		   PArray[0],
+		   WArray[0],
+		   P[0],
+		   aWeight) ;
+    Inverse = 1.0e0 / aWeight ;
+
+    for (kk = 0 ; kk < Dimension_gen ; kk++) {
+      P[kk] *= Inverse ;
+    } 
+  }
+  
+  for (kk = 0 ; kk < Dimension_gen ; kk++) 
+    aPoint.SetCoord(kk + 1, P[kk]) ;
+}
+
+//=======================================================================
+//function : CacheD0
+//purpose  : Evaluates the polynomial cache of the Bspline Curve
+//           
+//=======================================================================
+void  BSplCLib::CacheD0(const Standard_Real                  Parameter,
+			const  Standard_Integer               Degree,
+			const  Standard_Real                  CacheParameter,
+			const  Standard_Real                  SpanLenght,
+			const  Array1OfPoints&                PolesArray,
+			const  TColStd_Array1OfReal&          WeightsArray,
+			Point&                                aPoint)
+{
+  //
+  // the CacheParameter is where the cache polynomial was evaluated in homogeneous
+  // form
+  // the SpanLenght     is the normalizing factor so that the polynomial is between
+  // 0 and 1 
+  Standard_Real NewParameter, Inverse;
+  Standard_Real * PArray  = (Standard_Real *) &(PolesArray(PolesArray.Lower())) ;
+  Standard_Real * myPoint = (Standard_Real *) &aPoint  ;
+  NewParameter = (Parameter - CacheParameter) / SpanLenght ; 
+  PLib::NoDerivativeEvalPolynomial(NewParameter,
+		       Degree,
+		       Dimension_gen,
+		       Degree * Dimension_gen,
+		       PArray[0],
+		       myPoint[0]) ;
+  if (&WeightsArray != NULL) {
+    Standard_Real *
+      WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+    PLib::NoDerivativeEvalPolynomial(NewParameter,
+			 Degree,
+			 1,
+			 Degree,
+			 WArray[0],
+			 Inverse) ;
+    
+    Inverse = 1.0e0 / Inverse;
+    ModifyCoords (myPoint, *= Inverse);
+  }
+}
+
+//=======================================================================
+//function : CacheD1
+//purpose  : Evaluates the polynomial cache of the Bspline Curve
+//           
+//=======================================================================
+void  BSplCLib::CacheD1(const Standard_Real                  Parameter,
+		        const Standard_Integer                Degree,
+                        const  Standard_Real                  CacheParameter,
+                        const  Standard_Real                  SpanLenght,
+			const  Array1OfPoints&                PolesArray,
+			const  TColStd_Array1OfReal&          WeightsArray,
+			Point&                                aPoint,
+			Vector&                               aVector) 
+{
+  //
+  // the CacheParameter is where the cache polynomial was evaluated in homogeneous
+  // form
+  // the SpanLenght     is the normalizing factor so that the polynomial is between
+  // 0 and 1 
+  Standard_Real LocalPDerivatives[Dimension_gen << 1] ;
+//  Standard_Real LocalWDerivatives[2], NewParameter, Inverse ;
+  Standard_Real LocalWDerivatives[2], NewParameter ;
+  
+  Standard_Real * 
+    PArray = (Standard_Real *) &(PolesArray(PolesArray.Lower())) ;
+  Standard_Real *
+    myPoint = (Standard_Real *) &aPoint  ;
+  Standard_Real *
+    myVector = (Standard_Real *) &aVector ;
+  NewParameter = (Parameter - CacheParameter) / SpanLenght ; 
+  PLib::EvalPolynomial(NewParameter,
+		       1,
+		       Degree,
+		       Dimension_gen,
+		       PArray[0],
+		       LocalPDerivatives[0]) ;
+  // 
+  // unormalize derivatives since those are computed normalized
+  //
+
+  ModifyCoords (LocalPDerivatives + Dimension_gen, /= SpanLenght);
+  
+  if (&WeightsArray != NULL) {
+    Standard_Real *
+      WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+    PLib::EvalPolynomial(NewParameter,
+			 1,
+			 Degree,
+			 1,
+			 WArray[0],
+			 LocalWDerivatives[0]) ;
+    // 
+    // unormalize the result since the polynomial stored in the cache
+    // is normalized between 0 and 1
+    //
+    LocalWDerivatives[1] /= SpanLenght ;
+    
+    PLib::RationalDerivatives(1,
+			      Dimension_gen,
+			      LocalPDerivatives[0],
+			      LocalWDerivatives[0],
+			      LocalPDerivatives[0]) ;
+  }
+  
+  CopyCoords (myPoint,  LocalPDerivatives);
+  CopyCoords (myVector, LocalPDerivatives + Dimension_gen);
+}
+
+//=======================================================================
+//function : CacheD2
+//purpose  : Evaluates the polynomial cache of the Bspline Curve
+//           
+//=======================================================================
+void  BSplCLib::CacheD2(const Standard_Real                  Parameter,
+			const Standard_Integer                Degree,
+			const  Standard_Real                  CacheParameter,
+			const  Standard_Real                  SpanLenght,
+			const  Array1OfPoints&                PolesArray,
+			const  TColStd_Array1OfReal&          WeightsArray,
+			Point&                                aPoint,
+			Vector&                               aVector1, 
+			Vector&                               aVector2) 
+{
+  //
+  // the CacheParameter is where the cache polynomial was evaluated in homogeneous
+  // form
+  // the SpanLenght     is the normalizing factor so that the polynomial is between
+  // 0 and 1 
+  Standard_Integer ii,Index,EndIndex;
+  Standard_Real LocalPDerivatives[(Dimension_gen << 1) + Dimension_gen] ;
+//  Standard_Real LocalWDerivatives[3], NewParameter, Factor, Inverse ;
+  Standard_Real LocalWDerivatives[3], NewParameter, Factor ;
+  Standard_Real * PArray    = (Standard_Real *) &(PolesArray(PolesArray.Lower())) ;
+  Standard_Real * myPoint   = (Standard_Real *) &aPoint  ;
+  Standard_Real * myVector1 = (Standard_Real *) &aVector1 ;
+  Standard_Real * myVector2 = (Standard_Real *) &aVector2 ;
+  NewParameter = (Parameter - CacheParameter) / SpanLenght ; 
+  PLib::EvalPolynomial(NewParameter,
+		       2,
+		       Degree,
+		       Dimension_gen,
+		       PArray[0],
+		       LocalPDerivatives[0]) ;
+  // 
+  // unormalize derivatives since those are computed normalized
+  //
+  Factor = 1.0e0/ SpanLenght ;
+  Index = Dimension_gen ;
+  EndIndex = Min (2, Degree) ;
+
+  for (ii = 1 ; ii <= EndIndex ; ii++) {
+    ModifyCoords (LocalPDerivatives + Index, *= Factor);
+    Factor /= SpanLenght ;
+    Index  += Dimension_gen;
+  }
+
+  Index = (Degree + 1) * Dimension_gen;
+  for (ii = Degree ; ii < 2 ; ii++) {
+    NullifyCoords (LocalPDerivatives + Index);
+    Index += Dimension_gen;
+  }
+
+  if (&WeightsArray != NULL) {
+    Standard_Real *
+      WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+    
+    PLib::EvalPolynomial(NewParameter,
+			 2,
+			 Degree,
+			 1,
+			 WArray[0],
+			 LocalWDerivatives[0]) ;
+
+    for (ii = Degree + 1  ; ii <= 2 ; ii++) {
+      LocalWDerivatives[ii] = 0.0e0 ;
+    }
+    // 
+    // unormalize the result since the polynomial stored in the cache
+    // is normalized between 0 and 1
+    //
+    Factor = 1.0e0 / SpanLenght ;
+
+    for (ii = 1 ; ii <= EndIndex ; ii++) { 
+      LocalWDerivatives[ii] *= Factor ;
+      Factor /= SpanLenght ;
+    }
+    PLib::RationalDerivatives(2,
+			      Dimension_gen,
+			      LocalPDerivatives[0],
+			      LocalWDerivatives[0],
+			      LocalPDerivatives[0]) ;
+  }
+
+  CopyCoords (myPoint,   LocalPDerivatives);
+  CopyCoords (myVector1, LocalPDerivatives + Dimension_gen);
+  CopyCoords (myVector2, LocalPDerivatives + Dimension_gen * 2);
+}
+
+//=======================================================================
+//function : CacheD3
+//purpose  : Evaluates the polynomial cache of the Bspline Curve
+//           
+//=======================================================================
+void  BSplCLib::CacheD3(const Standard_Real                  Parameter,
+			const Standard_Integer                Degree,
+			const  Standard_Real                  CacheParameter,
+			const  Standard_Real                  SpanLenght,
+			const  Array1OfPoints&                PolesArray,
+			const  TColStd_Array1OfReal&          WeightsArray,
+			Point&                                aPoint,
+			Vector&                               aVector1, 
+			Vector&                               aVector2,
+			Vector&                               aVector3) 
+{
+  //
+  // the CacheParameter is where the cache polynomial was evaluated in homogeneous
+  // form
+  // the SpanLenght     is the normalizing factor so that the polynomial is between
+  // 0 and 1 
+  Standard_Integer ii, Index, EndIndex;
+  Standard_Real LocalPDerivatives[Dimension_gen << 2] ;
+//  Standard_Real LocalWDerivatives[4], Factor, NewParameter, Inverse ;
+  Standard_Real LocalWDerivatives[4], Factor, NewParameter ;
+  Standard_Real * PArray    = (Standard_Real *) &(PolesArray(PolesArray.Lower())) ;
+  Standard_Real * myPoint   = (Standard_Real *) &aPoint  ;
+  Standard_Real * myVector1 = (Standard_Real *) &aVector1 ;
+  Standard_Real * myVector2 = (Standard_Real *) &aVector2 ;
+  Standard_Real * myVector3 = (Standard_Real *) &aVector3 ;
+  NewParameter = (Parameter - CacheParameter) / SpanLenght ; 
+  PLib::EvalPolynomial(NewParameter,
+		       3,
+		       Degree,
+		       Dimension_gen,
+		       PArray[0],
+		       LocalPDerivatives[0]) ;
+
+  Index = (Degree + 1) * Dimension_gen;
+  for (ii = Degree ; ii < 3 ; ii++) {
+    NullifyCoords (LocalPDerivatives + Index);
+    Index += Dimension_gen;
+  }
+  
+  // 
+  // unormalize derivatives since those are computed normalized
+  //
+  Factor = 1.0e0 / SpanLenght ;
+  Index = Dimension_gen ;
+  EndIndex = Min(3,Degree) ;
+
+  for (ii = 1 ; ii <= EndIndex ; ii++) { 
+    ModifyCoords (LocalPDerivatives + Index, *= Factor);
+    Factor /= SpanLenght;
+    Index  += Dimension_gen;
+  }
+  
+  if (&WeightsArray != NULL) {
+    Standard_Real *
+      WArray = (Standard_Real *) &WeightsArray(WeightsArray.Lower()) ;
+    
+    PLib::EvalPolynomial(NewParameter,
+			 3,
+			 Degree,
+			 1,
+			 WArray[0],
+			 LocalWDerivatives[0]) ;
+    // 
+    // unormalize the result since the polynomial stored in the cache
+    // is normalized between 0 and 1
+    //
+    Factor = 1.0e0 / SpanLenght ;
+
+    for (ii = 1 ; ii <= EndIndex ; ii++) { 
+      LocalWDerivatives[ii] *= Factor ;
+      Factor /= SpanLenght ;
+    }
+
+    for (ii = (Degree + 1)  ; ii <= 3 ; ii++) {
+      LocalWDerivatives[ii] = 0.0e0 ;
+    }
+    PLib::RationalDerivatives(3,
+			      Dimension_gen,
+			      LocalPDerivatives[0],
+			      LocalWDerivatives[0],
+			      LocalPDerivatives[0]) ;
+  }
+  
+  CopyCoords (myPoint,   LocalPDerivatives);
+  CopyCoords (myVector1, LocalPDerivatives + Dimension_gen);
+  CopyCoords (myVector2, LocalPDerivatives + Dimension_gen * 2);
+  CopyCoords (myVector3, LocalPDerivatives + Dimension_gen * 3);
+}
+
+//=======================================================================
+//function : BuildCache
+//purpose  : Stores theTaylor expansion normalized between 0,1 in the
+//           Cache : in case of  a rational function the Poles are
+//           stored in homogeneous form 
+//=======================================================================
+
+void BSplCLib::BuildCache
+(const Standard_Real            U,   
+ const Standard_Real            SpanDomain,    
+ const Standard_Boolean         Periodic,
+ const Standard_Integer         Degree,     
+ const TColStd_Array1OfReal&    FlatKnots,   
+ const Array1OfPoints&          Poles,  
+ const TColStd_Array1OfReal&    Weights,
+ Array1OfPoints&                CachePoles,
+ TColStd_Array1OfReal&          CacheWeights)
+{                    
+  Standard_Integer ii,
+  Dimension,
+  LocalIndex,
+  index = 0 ;
+  Standard_Real    u = U,
+  LocalValue ;
+  Standard_Boolean rational;
+  
+  BSplCLib_DataContainer dc(Degree);
+  PrepareEval(u,
+              index,
+              Dimension,
+              rational,
+              Degree,
+              Periodic,
+              Poles,
+              Weights,
+              FlatKnots,
+              (BSplCLib::NoMults()),
+              dc);
+  // 
+  // Watch out : PrepareEval checks if locally the Bspline is polynomial
+  // therefore rational flag could be set to False even if there are 
+  // Weights. The Dimension is set accordingly.
+  //
+  
+  BSplCLib::Bohm(u,Degree,Degree,*dc.knots,Dimension,*dc.poles);
+  
+  LocalValue = 1.0e0 ;
+  LocalIndex = 0 ;
+
+  if (rational) {
+ 
+    for (ii = 1 ; ii <= Degree + 1 ; ii++) {
+      CoordsToPoint (CachePoles(ii), dc.poles + LocalIndex, * LocalValue);
+      LocalIndex += Dimension_gen + 1;
+      LocalValue *= SpanDomain / (Standard_Real) ii ;
+    }
+
+    LocalIndex = Dimension_gen;
+    LocalValue = 1.0e0 ;      
+    for (ii = 1 ; ii <= Degree + 1 ; ii++) {
+      CacheWeights(ii) = dc.poles[LocalIndex] * LocalValue ;
+      LocalIndex += Dimension_gen + 1;
+      LocalValue *= SpanDomain / (Standard_Real) ii ;
+    }
+  }
+  else {
+    
+    for (ii = 1 ; ii <= Degree + 1 ; ii++) {
+      CoordsToPoint (CachePoles(ii), dc.poles + LocalIndex, * LocalValue);
+      LocalIndex += Dimension_gen;
+      LocalValue *= SpanDomain / (Standard_Real) ii ;
+    }
+
+    if (&Weights != NULL) { 
+      for (ii = 1 ; ii <= Degree + 1 ; ii++)
+	CacheWeights(ii) = 0.0e0 ;
+      CacheWeights(1) = 1.0e0 ;
+    }
+  }
+}
+
+//=======================================================================
+//function : Interpolate
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::Interpolate(const Standard_Integer         Degree,
+			    const TColStd_Array1OfReal&    FlatKnots,
+			    const TColStd_Array1OfReal&    Parameters,
+			    const TColStd_Array1OfInteger& ContactOrderArray,
+			    Array1OfPoints&                Poles,
+			    Standard_Integer&              InversionProblem) 
+     
+{
+  Standard_Real *PArray ;
+  
+  PArray = (Standard_Real *) &Poles(Poles.Lower()) ;
+  
+  BSplCLib::Interpolate(Degree,
+			FlatKnots,
+			Parameters,
+			ContactOrderArray,
+			Dimension_gen,
+			PArray[0],
+			InversionProblem) ;
+}
+
+//=======================================================================
+//function : Interpolate
+//purpose  : 
+//=======================================================================
+
+void  BSplCLib::Interpolate(const Standard_Integer         Degree,
+			    const TColStd_Array1OfReal&    FlatKnots,
+			    const TColStd_Array1OfReal&    Parameters,
+			    const TColStd_Array1OfInteger& ContactOrderArray,
+			    Array1OfPoints&                Poles,
+                            TColStd_Array1OfReal&          Weights,
+			    Standard_Integer&              InversionProblem) 
+{
+  Standard_Real *PArray,
+  * WArray ;
+  PArray = (Standard_Real *) &Poles(Poles.Lower()) ;
+  WArray = (Standard_Real *) &Weights(Weights.Lower()) ;
+  BSplCLib::Interpolate(Degree,
+			FlatKnots,
+			Parameters,
+			ContactOrderArray,
+			Dimension_gen,
+			PArray[0],
+                        WArray[0],
+			InversionProblem) ;
+}
+
+//=======================================================================
+//function : MovePoint
+//purpose  : Find the new poles which allows  an old point (with a
+//           given  u as parameter) to reach a new position
+//=======================================================================
+
+void BSplCLib::MovePoint (const Standard_Real            U, 
+			  const Vector&                  Displ,
+			  const Standard_Integer         Index1,
+			  const Standard_Integer         Index2,
+			  const Standard_Integer         Degree,
+			  const Standard_Boolean         Rational,
+			  const Array1OfPoints&          Poles,  
+			  const TColStd_Array1OfReal&    Weights,
+			  const TColStd_Array1OfReal&    FlatKnots,
+			  Standard_Integer&              FirstIndex,
+			  Standard_Integer&              LastIndex,
+			  Array1OfPoints&                NewPoles)
+{
+  // calculate the BSplineBasis in the parameter U
+  Standard_Integer FirstNonZeroBsplineIndex;
+  math_Matrix BSplineBasis(1, 1,
+			   1, Degree+1);
+  Standard_Integer ErrorCode =
+    BSplCLib::EvalBsplineBasis(1,
+			       0,
+			       Degree+1,
+			       FlatKnots,
+			       U,
+			       FirstNonZeroBsplineIndex,
+			       BSplineBasis);  
+  if (ErrorCode != 0) {
+    FirstIndex = 0;
+    LastIndex = 0;
+
+    for (Standard_Integer i=Poles.Lower(); i<=Poles.Upper(); i++) {
+      NewPoles(i) = Poles(i);
+    }
+    return;
+  }
+  
+  // find the span which is predominant for parameter U
+  FirstIndex = FirstNonZeroBsplineIndex;
+  LastIndex = FirstNonZeroBsplineIndex + Degree ;
+  if (FirstIndex < Index1) FirstIndex = Index1;
+  if (LastIndex > Index2) LastIndex = Index2;
+  
+  Standard_Real maxValue = 0.0;
+  Standard_Integer i, kk1=0, kk2, ii;
+
+  for (i = FirstIndex-FirstNonZeroBsplineIndex+1;
+       i <= LastIndex-FirstNonZeroBsplineIndex+1; i++) {
+    if (BSplineBasis(1,i) > maxValue) {
+      kk1 = i + FirstNonZeroBsplineIndex - 1;
+      maxValue = BSplineBasis(1,i);
+    }
+  }
+  
+  // find a kk2 if symetriy
+  kk2 = kk1;
+  i = kk1 - FirstNonZeroBsplineIndex + 2;
+  if ((kk1+1) <= LastIndex) {
+    if (Abs(BSplineBasis(1, kk1-FirstNonZeroBsplineIndex+2) - maxValue) < 1.e-10) {
+      kk2 = kk1+1;
+    }
+  }
+  
+  // compute the vector of displacement
+  Standard_Real D1 = 0.0;
+  Standard_Real D2 = 0.0;
+  Standard_Real hN, Coef, Dval;
+  
+  for (i = 1; i <= Degree+1; i++) {
+    ii = i + FirstNonZeroBsplineIndex - 1;
+    if (Rational) {
+      hN = Weights(ii)*BSplineBasis(1, i);
+      D2 += hN;
+    }
+    else {
+      hN = BSplineBasis(1, i);
+    }
+    if (ii >= FirstIndex && ii <= LastIndex) {
+      if (ii < kk1) {
+	Dval = kk1-ii;
+      }
+      else if (ii > kk2) {
+	Dval = ii - kk2;
+      }
+      else {
+	Dval = 0.0;
+      }
+      D1 += 1./(Dval + 1.) * hN;
+    }
+  }
+  
+  if (Rational) {
+    Coef = D2/D1;
+  }
+  else {
+    Coef = 1./D1;
+  }
+  
+  // compute the new poles
+
+  for (i=Poles.Lower(); i<=Poles.Upper(); i++) {
+    if (i >= FirstIndex && i <= LastIndex) {
+      if (i < kk1) {
+	Dval = kk1-i;
+      }
+      else if (i > kk2) {
+	Dval = i - kk2;
+      }
+      else {
+	Dval = 0.0;
+      }
+      NewPoles(i) = Poles(i).Translated((Coef/(Dval+1.))*Displ);
+    }
+    else {
+      NewPoles(i) = Poles(i);
+    }
+  }
+}
+
+//=======================================================================
+//function : MovePoint
+//purpose  : Find the new poles which allows  an old point (with a
+//           given  u as parameter) to reach a new position
+//=======================================================================
+
+//=======================================================================
+//function : MovePointAndTangent
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::MovePointAndTangent (const Standard_Real      U, 
+				    const Vector&            Delta,
+				    const Vector&            DeltaDerivatives,
+				    const Standard_Real      Tolerance,
+				    const Standard_Integer   Degree,
+				    const Standard_Boolean   Rational,
+				    const Standard_Integer   StartingCondition,
+				    const Standard_Integer   EndingCondition,
+				    const Array1OfPoints&    Poles, 
+				    const TColStd_Array1OfReal&    Weights,
+				    const TColStd_Array1OfReal&    FlatKnots,
+				    Array1OfPoints&                NewPoles,
+				    Standard_Integer &             ErrorStatus)
+{
+  Standard_Real *delta_array,
+  *delta_derivative_array,
+  *poles_array,
+  *new_poles_array ;
+  
+  Standard_Integer num_poles ;
+  num_poles = Poles.Length() ;
+  
+  if (NewPoles.Length() != num_poles) {
+    Standard_ConstructionError::Raise(); 
+  }
+  delta_array = (Standard_Real *)  &Delta ;
+  delta_derivative_array = (Standard_Real *)&DeltaDerivatives ;
+  poles_array = (Standard_Real *) &Poles(Poles.Lower()) ;
+  
+  new_poles_array = (Standard_Real *) &NewPoles(NewPoles.Lower()) ;
+  MovePointAndTangent(U,
+		      Dimension_gen,
+		      delta_array[0],
+		      delta_derivative_array[0],
+		      Tolerance,
+		      Degree,
+		      Rational,
+		      StartingCondition,
+		      EndingCondition,
+		      poles_array[0],
+		      Weights,
+		      FlatKnots,
+		      new_poles_array[0],
+		      ErrorStatus) ;
+}
+
+//=======================================================================
+//function : Resolution
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::Resolution(const Array1OfPoints&          Poles,  
+			  const TColStd_Array1OfReal&    Weights,
+			  const Standard_Integer         NumPoles,
+			  const TColStd_Array1OfReal&    FlatKnots, 
+			  const Standard_Integer         Degree,
+			  const Standard_Real            Tolerance3D,
+			  Standard_Real&                 UTolerance) 
+{
+  Standard_Real *PolesArray ;
+  PolesArray = (Standard_Real *) &Poles(Poles.Lower()) ;
+  BSplCLib::Resolution(PolesArray[0],
+		       Dimension_gen,
+		       NumPoles,
+		       Weights,
+		       FlatKnots,
+		       Degree,
+		       Tolerance3D,
+		       UTolerance) ;
+}
+
+//=======================================================================
+//function : FunctionMultiply
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::FunctionMultiply
+(const BSplCLib_EvaluatorFunction & FunctionPtr,
+ const Standard_Integer              BSplineDegree,
+ const TColStd_Array1OfReal &        BSplineFlatKnots,
+ const Array1OfPoints &              Poles,
+ const TColStd_Array1OfReal &        FlatKnots,
+ const Standard_Integer              NewDegree,
+ Array1OfPoints &                   NewPoles,
+ Standard_Integer &                  Status) 
+{ 
+  Standard_Integer num_bspline_poles =
+    BSplineFlatKnots.Length() - BSplineDegree - 1 ;
+  Standard_Integer num_new_poles =
+    FlatKnots.Length() - NewDegree - 1 ;
+  
+  if (Poles.Length() != num_bspline_poles ||
+      NewPoles.Length() != num_new_poles) {
+    Standard_ConstructionError::Raise();  
+  }
+  Standard_Real  * array_of_poles =
+    (Standard_Real *) &Poles(Poles.Lower()) ;
+  Standard_Real  * array_of_new_poles =
+    (Standard_Real *) &NewPoles(NewPoles.Lower()) ;
+  BSplCLib::FunctionMultiply(FunctionPtr,
+			     BSplineDegree,
+			     BSplineFlatKnots,
+			     Dimension_gen,
+			     array_of_poles[0],
+			     FlatKnots,
+			     NewDegree,
+			     array_of_new_poles[0],
+			     Status) ;
+}
+
+//=======================================================================
+//function : FunctionReparameterise
+//purpose  : 
+//=======================================================================
+
+void BSplCLib::FunctionReparameterise
+(const BSplCLib_EvaluatorFunction & FunctionPtr,
+ const Standard_Integer              BSplineDegree,
+ const TColStd_Array1OfReal &        BSplineFlatKnots,
+ const Array1OfPoints &              Poles,
+ const TColStd_Array1OfReal &        FlatKnots,
+ const Standard_Integer              NewDegree,
+ Array1OfPoints &                   NewPoles,
+ Standard_Integer &                  Status) 
+{ 
+  Standard_Integer num_bspline_poles =
+    BSplineFlatKnots.Length() - BSplineDegree - 1 ;
+  Standard_Integer num_new_poles =
+    FlatKnots.Length() - NewDegree - 1 ;
+  
+  if (Poles.Length() != num_bspline_poles ||
+      NewPoles.Length() != num_new_poles) {
+    Standard_ConstructionError::Raise();  
+  }
+  Standard_Real  * array_of_poles =
+    (Standard_Real *) &Poles(Poles.Lower()) ;
+  Standard_Real  * array_of_new_poles =
+    (Standard_Real *) &NewPoles(NewPoles.Lower()) ;
+  BSplCLib::FunctionReparameterise(FunctionPtr,
+				   BSplineDegree,
+				   BSplineFlatKnots,
+				   Dimension_gen,
+				   array_of_poles[0],
+				   FlatKnots,
+				   NewDegree,
+				   array_of_new_poles[0],
+				   Status) ;
+}
+

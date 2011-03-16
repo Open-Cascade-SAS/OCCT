@@ -1,0 +1,122 @@
+-- File:	AIS_SymmetricRelation.cdl
+-- Created:	Mon Mar  3 15:51:50 1997
+-- Author:	Jean-Pierre COMBE
+--		<jpr@chariox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SymmetricRelation from AIS inherits Relation from AIS
+
+	---Purpose: A framework to display constraints of symmetricity
+    	-- between two or more datum Interactive Objects.
+    	-- A plane serves as the axis of symmetry between the
+    	-- shapes of which the datums are parts.
+
+uses Shape                 from TopoDS,
+     Presentation          from Prs3d,
+     PresentationManager3d from PrsMgr,
+     Selection             from SelectMgr,
+     Dir                   from gp,
+     Pnt                   from gp,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager2d from PrsMgr,
+     GraphicObject         from Graphic2d,
+     ExtendedString        from TCollection,
+     Plane                 from Geom
+
+is
+    Create(aSymmTool   : Shape from TopoDS;
+    	   FirstShape  : Shape from TopoDS;
+    	   SecondShape : Shape from TopoDS;
+	   aPlane      : Plane from Geom)
+    returns mutable SymmetricRelation from AIS;
+    	--- Purpose: Constructs an object to display constraints of symmetricity.
+    	-- This object is defined by a tool aSymmTool, a first
+    	-- shape FirstShape, a second shape SecondShape, and a plane aPlane.
+    	-- aPlane serves as the axis of symmetry.
+    	-- aSymmTool is the shape composed of FirstShape
+    	-- SecondShape and aPlane. It may be queried and
+    	-- edited using the functions GetTool and SetTool.
+    	-- The two shapes are typically two edges, two vertices or two points.   
+
+    IsMovable(me) returns Boolean from Standard 
+    	---Purpose: Returns true if the symmetric constraint display is movable.
+    	---C++: inline       
+      
+    is redefined;        
+    
+    SetTool(me:mutable; aSymmetricTool : Shape from TopoDS);
+        ---Purpose: Sets the tool aSymmetricTool composed of a first
+    	-- shape, a second shape, and a plane.
+    	-- This tool is initially created at construction time.
+        ---C++: inline
+
+    GetTool(me)
+    	---Purpose: Returns the tool composed of a first shape, a second
+    	-- shape, and a plane. This tool is created at construction time.
+ 	---C++: inline
+   	---C++: return const &
+    returns Shape from TopoDS;
+    
+-- Methods from PresentableObject
+
+    Compute(me            : mutable;
+  	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+--     SymmetricRelation Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)is private;
+
+--
+--     Computation private methods
+--
+
+    ComputeTwoFacesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoEdgesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoVerticesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    is private;
+    
+    
+fields
+
+    myTool          : Shape from TopoDS;
+    myFAttach       : Pnt   from gp;
+    mySAttach       : Pnt   from gp;
+    myFDirAttach    : Dir   from gp;
+    myAxisDirAttach : Dir   from gp;
+    
+end SymmetricRelation;

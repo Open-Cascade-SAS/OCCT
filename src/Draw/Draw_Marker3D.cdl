@@ -1,0 +1,44 @@
+-- File:	Marker3D.cdl
+-- Created:	Thu Apr 23 17:01:50 1992
+-- Author:	Modelistation
+--		<model@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class Marker3D from Draw inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses
+    Pnt from gp,
+    Color from Draw,
+    MarkerShape from Draw,
+    Display from Draw
+
+is
+    Create(P : Pnt from gp; T : MarkerShape from Draw; C : Color from Draw; 
+    	ISize : Integer = 5) returns mutable Marker3D from Draw;
+	
+    Create(P : Pnt from gp; T : MarkerShape from Draw; C : Color from Draw; 
+    	RSize : Real) returns mutable Marker3D from Draw;
+
+    ChangePos(me : mutable) returns Pnt from gp;
+    ---C++: return &
+    ---Purpose: myPos field
+
+    DrawOn(me; dis : in out Display from Draw);
+
+    PickReject(me; X,Y,Prec : Real) returns Boolean
+    ---Purpose: Returs always false
+    is redefined;
+
+fields
+
+    myPos : Pnt from gp;
+    myCol : Color from Draw;
+    myTyp : MarkerShape from Draw;
+    mySiz : Integer;
+    myRSiz : Real; 
+    myIsRSiz : Boolean;
+
+end Marker3D;

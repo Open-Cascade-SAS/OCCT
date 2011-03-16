@@ -1,0 +1,135 @@
+-- File:	Transfer_Finder.cdl
+-- Created:	Fri Nov  4 10:59:26 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class Finder  from Transfer  inherits TShared
+
+    ---Purpose : a Finder allows to map any kind of object as a Key for a Map.
+    --           This works by defining, for a Hash Code, that of the real Key,
+    --           not of the Finder which acts only as an intermediate.
+    --           When a Map asks for the HashCode of a Finder, this one returns
+    --           the code it has determined at creation time
+
+uses CString, Type, Transient,
+     DictionaryOfTransient from Dico, ParamType from Interface
+
+is
+
+    SetHashCode (me : mutable; code : Integer)  is static protected;
+    ---Purpose : Stores the HashCode which corresponds to the Value given to
+    --           create the Mapper
+
+    GetHashCode (me) returns Integer  is static;
+    ---Purpose : Returns the HashCode which has been stored by SetHashCode
+    --           (remark that HashCode could be deferred then be defined by
+    --            sub-classes, the result is the same)
+
+    Equates (me; other : Finder) returns Boolean  is deferred;
+    ---Purpose : Specific testof equallity : to be defined by each sub-class,
+    --           must be False if Finders have not the same true Type, else
+    --           their contents must be compared
+
+    ValueType    (me) returns Type  is virtual;
+    ---Purpose : Returns the Type of the Value. By default, returns the
+    --           DynamicType of <me>, but can be redefined
+
+    ValueTypeName (me) returns CString  is virtual;
+    ---Purpose : Returns the name of the Type of the Value. Default is name
+    --           of ValueType, unless it is for a non-handled object
+
+    	-- --    Attributes
+
+
+    SetAttribute (me : mutable; name : CString; val : Transient);
+    ---Purpose : Adds an attribute with a given name (replaces the former one
+    --           with the same name if already exists)
+
+    RemoveAttribute (me : mutable; name : CString) returns Boolean;
+    ---Purpose : Removes an attribute
+    --           Returns True when done, False if this attribute did not exist
+
+    GetAttribute (me; name : CString; type : Type from Standard;
+    	    	  val : out mutable Transient)  returns Boolean;
+    ---Purpose : Returns an attribute from its name, filtered by a type
+    --           If no attribute has this name, or if it is not kind of this
+    --           type, <val> is Null and returned value is False
+    --           Else, it is True
+
+    Attribute    (me; name : CString) returns Transient;
+    ---Purpose : Returns an attribute from its name. Null Handle if not recorded
+    --           (whatever Transient, Integer, Real ...)
+
+    AttributeType (me; name : CString) returns ParamType from Interface;
+    ---Purpose : Returns the type of an attribute :
+    --           ParamInt , ParamReal , ParamText (String) , ParamIdent (any)
+    --           or ParamVoid (not recorded)
+
+
+    SetIntegerAttribute (me : mutable; name : CString; val : Integer);
+    ---Purpose : Adds an integer value for an attribute
+
+    GetIntegerAttribute (me; name : CString; val : out Integer) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as integer
+    --           If no attribute has this name, or not an integer,
+    --           <val> is 0 and returned value is False
+    --           Else, it is True
+
+    IntegerAttribute (me; name : CString) returns Integer;
+    ---Purpose : Returns an integer attribute from its name. 0 if not recorded
+
+    SetRealAttribute    (me : mutable; name : CString; val : Real);
+    ---Purpose : Adds a real value for an attribute
+
+    GetRealAttribute    (me; name : CString; val : out Real) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as real
+    --           If no attribute has this name, or not a real
+    --           <val> is 0.0 and returned value is False
+    --           Else, it is True
+
+    RealAttribute       (me; name : CString) returns Real;
+    ---Purpose : Returns a real attribute from its name. 0.0 if not recorded
+
+    SetStringAttribute  (me : mutable; name : CString; val : CString);
+    ---Purpose : Adds a String value for an attribute
+
+    GetStringAttribute  (me; name : CString; val : out CString) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as String
+    --           If no attribute has this name, or not a String
+    --           <val> is 0.0 and returned value is False
+    --           Else, it is True
+
+    StringAttribute     (me; name : CString) returns CString;
+    ---Purpose : Returns a String attribute from its name. "" if not recorded
+
+    AttrList     (me) returns DictionaryOfTransient;
+    ---Purpose : Returns the exhaustive list of attributes
+
+    SameAttributes (me : mutable; other : Finder);
+    ---Purpose : Gets the list of attributes from <other>, as such, i.e.
+    --           not copied : attributes are shared, any attribute edited,
+    --           added, or removed in <other> is also in <me> and vice versa
+    --           The former list of attributes of <me> is dropped
+
+    GetAttributes  (me : mutable; other : Finder;
+    	    	    fromname : CString = ""; copied : Boolean = Standard_True);
+    ---Purpose : Gets the list of attributes from <other>, by copying it
+    --           By default, considers all the attributes from <other>
+    --           If <fromname> is given, considers only the attributes with
+    --           name beginning by <fromname>
+    --           
+    --           For each attribute, if <copied> is True (D), its value is also
+    --           copied if it is a basic type (Integer,Real,String), else it
+    --           remains shared between <other> and <me>
+    --           
+    --           These new attributes are added to the existing ones in <me>,
+    --           in case of same name, they replace the existing ones
+
+fields
+
+    thecode : Integer;
+    theattrib : DictionaryOfTransient;
+
+end Finder;

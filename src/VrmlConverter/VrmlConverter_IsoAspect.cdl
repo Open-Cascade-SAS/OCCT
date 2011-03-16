@@ -1,0 +1,46 @@
+-- File:	VrmlConverter_IsoAspect.cdl
+-- Created:	Tue May 13 17:31:05 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class IsoAspect from VrmlConverter inherits LineAspect from VrmlConverter
+
+ 	---Purpose: qualifies the aspect properties for  
+	--          the VRML conversation of iso curves . 
+
+uses 
+
+    Material    from   Vrml
+
+is
+
+    Create
+    returns mutable IsoAspect from VrmlConverter;
+
+    ---Purpose: create a default IsoAspect. 
+    --  Default value: myNumber  - 10.
+
+    Create  (aMaterial: Material from Vrml; 
+    	    	 OnOff: Boolean from Standard;
+               aNumber: Integer from Standard)
+    returns mutable IsoAspect from VrmlConverter;
+	    
+
+    SetNumber (me: mutable; aNumber: Integer from Standard) 
+    --Purpose: defines the number of U or V isoparametric curves 
+    --         to be drawn for a single face.
+    is static;
+
+    Number (me) returns Integer from Standard 
+    ---Purpose: returns the number of U or V isoparametric curves drawn for a
+    --          single face.
+    is static;
+
+    
+fields
+
+    myNumber: Integer from Standard;
+
+end IsoAspect;

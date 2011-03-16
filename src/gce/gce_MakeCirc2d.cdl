@@ -1,0 +1,115 @@
+-- File:	MakeCirc2d.cdl
+-- Created:	Wed Aug 26 14:31:09 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCirc2d from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create Circ2d from gp.
+    --           
+    --           * Create a Circ2d concentric with another and passing 
+    --             though a point.
+    --           * Create a Circ2d concentric with another at the distance 
+    --             Dist.
+    --           * Create a Circ2d passing through 3 points.
+    --           * Create a Circ2d with its center and radius.
+    --           * Create a Circ2d with its center and a point given 
+    --             the radius.
+    --           * Create a Circ2d with its axis and its radius.
+
+
+uses Pnt2d     from gp,
+     Circ2d    from gp,
+     Real      from Standard,
+     ErrorType from gce,
+     Ax2d      from gp,
+     Ax22d     from gp
+
+raises NotDone from StdFail
+
+is
+
+Create (XAxis  : Ax2d    from gp                      ;
+    	Radius : Real    from Standard                ;
+    	Sense  : Boolean from Standard = Standard_True)   returns MakeCirc2d;
+    --- Purpose :
+    --  The location point of XAxis is the center of the circle.
+    -- Warnings :
+    --  It is not forbidden to create a circle with Radius = 0.0
+    --  If Sense is true the local coordinate system of the solution 
+    --  is direct and non direct in the other case.
+    --  The status is "NegativeRadius" if Radius < 0.0.
+
+Create (Axis   : Ax22d   from gp      ;
+    	Radius : Real    from Standard)   returns MakeCirc2d;
+    --- Purpose :
+    --  The location point of Axis is the center of the circle.
+    --  Warnings :
+    --  It is not forbidden to create a circle with Radius = 0.0
+
+Create(Circ    :     Circ2d from gp      ;
+       Dist    :     Real   from Standard)
+    returns MakeCirc2d;
+    ---Purpose : Makes a Circ2d from gp <TheCirc> concentric with another 
+    --           circ2d <Circ> with a distance <Dist>.
+    --           If Dist is greater than zero the result encloses 
+    --           the circle <Circ>, else the result is enclosed by the 
+    --           circle <Circ>.
+    --           The local coordinate system of the solution is the 
+    --           same as Circ.
+
+Create(Circ    :     Circ2d from gp;
+       Point   :     Pnt2d  from gp)
+    returns MakeCirc2d;
+    ---Purpose : Makes a Circ2d from gp <TheCirc> concentric with another 
+    --           circ2d <Circ> and passing through a Pnt2d <Point>.
+    --           The local coordinate system of the solution is the 
+    --           same as Circ.
+
+Create(P1      :     Pnt2d  from gp;
+       P2      :     Pnt2d  from gp;
+       P3      :     Pnt2d  from gp)
+    returns MakeCirc2d;
+    ---Purpose : Makes a Circ2d from gp <TheCirc> passing through 3 
+    --           Pnt2d <P1>,<P2>,<P3>.
+    --           The local coordinate system of the solution is given 
+    --           by the three points P1, P2, P3.
+
+Create(Center : Pnt2d   from gp                      ;
+       Radius : Real    from Standard                ;
+       Sense  : Boolean from Standard = Standard_True)
+    returns MakeCirc2d;
+    ---Purpose : Makes a Circ2d from gp <TheCirc> with its center 
+    --           <Center> and its radius <Radius>.
+    --           If Sense is true the local coordinate system of 
+    --           the solution is direct and non direct in the other case.
+
+Create(Center : Pnt2d   from gp                      ;
+       Point  : Pnt2d   from gp                      ;
+       Sense  : Boolean from Standard = Standard_True)
+    returns MakeCirc2d;
+    ---Purpose : Makes a Circ2d from gp <TheCirc> with its center 
+    --           <Center> and a point giving the radius.
+    --           If Sense is true the local coordinate system of 
+    --           the solution is direct and non direct in the other case.
+
+Value(me) returns Circ2d from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed circle.
+    -- Exceptions StdFail_NotDone if no circle is constructed.
+
+Operator(me) returns Circ2d from gp 
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Circ2d() const;"
+
+fields
+
+    TheCirc2d : Circ2d from gp;
+    --The solution from gp.
+    
+end MakeCirc2d;

@@ -1,0 +1,41 @@
+// File      : BRepBlend_BlendTool.lxx
+// Created   : Mon Dec  6 09:49:19 1993
+// Author    : Jacques GOUSSARD
+// Copyright : Matra Datavision 1993
+
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMin (const Handle(Adaptor3d_HSurface)& )
+{
+  return Standard_False;
+}
+
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMax (const Handle(Adaptor3d_HSurface)& )
+{
+  return Standard_False;
+}
+
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMin (const Handle(Adaptor3d_HSurface)& )
+{
+  return Standard_False;
+}
+
+inline Standard_Boolean BRepBlend_BlendTool::SingularOnVMax (const Handle(Adaptor3d_HSurface)& )
+{
+  return Standard_False;
+}
+
+inline Standard_Real BRepBlend_BlendTool::Tolerance (const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_HCurve2d)& A)
+{
+//  return Adaptor2d_HCurve2dTool::Resolution(A,1.e-6); // a voir
+  return V->Resolution(A); // a voir
+}
+
+inline Standard_Real BRepBlend_BlendTool::Parameter (const Handle(Adaptor3d_HVertex)& V, const Handle(Adaptor2d_HCurve2d)& C)
+{
+//  return BRep_Tool::Parameter(V,A->Curve().Edge());
+  return V->Parameter(C);
+}
+
+inline Handle(Adaptor2d_HCurve2d) BRepBlend_BlendTool::CurveOnSurf (const Handle(Adaptor2d_HCurve2d)& C, const Handle(Adaptor3d_HSurface)&)
+{
+  return C;
+}

@@ -1,0 +1,181 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_Vertex.gxx
+// Created:	Wed May 29 17:04:56 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_Vertex::
+     PCollection_Vertex (const Item& Value,
+                        const Handle(PCollection_HDirectedGraph)& InGraph) 
+{
+  MyItem       = Value;
+  MyGraph      = InGraph;
+  MyFrontEdges = new PCollection_SetOfEdge;
+  MyBackEdges  = new PCollection_SetOfEdge;
+}
+
+//---------------------------------------------------------------------------
+// GetItem
+//---------------------------------------------------------------------------
+Item PCollection_Vertex::GetItem () const 
+{
+  return MyItem;
+}
+
+//---------------------------------------------------------------------------
+// SetItem
+//---------------------------------------------------------------------------
+void PCollection_Vertex::SetItem (const Item& Value) 
+{
+  MyItem = Value;
+}
+
+//---------------------------------------------------------------------------
+// GetGraph
+//---------------------------------------------------------------------------
+Handle(PCollection_HDirectedGraph) PCollection_Vertex::GetGraph () const 
+{
+  return MyGraph;
+}
+
+//---------------------------------------------------------------------------
+// AddFrontEdge
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::AddFrontEdge (const Handle(PCollection_Edge)& E) 
+{
+  if (MyFrontEdges->Contains(E)) {
+    return False;
+  }
+  else {
+    MyFrontEdges->Add(E);
+    return True;
+  }
+}
+
+//---------------------------------------------------------------------------
+// RemoveFrontEdge
+//---------------------------------------------------------------------------
+void PCollection_Vertex::RemoveFrontEdge (const Handle(PCollection_Edge)& E) 
+{
+  if (MyFrontEdges->Contains(E)) {
+    MyFrontEdges->Remove(E);
+  }
+  else {
+    Standard_NoSuchObject::Raise();
+  }
+}
+       
+//---------------------------------------------------------------------------
+// NbFrontEdges
+//---------------------------------------------------------------------------
+Integer PCollection_Vertex::NbFrontEdges () const 
+{
+  return MyFrontEdges->Extent();
+}
+
+//---------------------------------------------------------------------------
+// GetFrontEdges
+//---------------------------------------------------------------------------
+Handle(PCollection_SetOfEdge) PCollection_Vertex::GetFrontEdges () const 
+{
+  return MyFrontEdges;
+}
+
+//---------------------------------------------------------------------------
+// AddBackEdge
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::AddBackEdge (const Handle(PCollection_Edge)& E) 
+{
+  if (MyBackEdges->Contains(E)) {
+    return False;
+  }
+  else {
+    MyBackEdges->Add(E);
+    return True;
+  }
+}
+
+//---------------------------------------------------------------------------
+// RemoveBackEdge
+//---------------------------------------------------------------------------
+void PCollection_Vertex::RemoveBackEdge (const Handle(PCollection_Edge)& E) 
+{
+  if (MyBackEdges->Contains(E)) {
+    MyBackEdges->Remove(E);
+  }
+  else {
+     Standard_NoSuchObject::Raise();
+  }
+}
+
+//---------------------------------------------------------------------------
+// NbBackEdges
+//---------------------------------------------------------------------------
+Integer PCollection_Vertex::NbBackEdges () const 
+{
+  return MyBackEdges->Extent();
+}
+
+//---------------------------------------------------------------------------
+// GetBackEdges
+//---------------------------------------------------------------------------
+Handle(PCollection_SetOfEdge) PCollection_Vertex::GetBackEdges () const 
+{
+  return MyBackEdges;
+}
+
+//---------------------------------------------------------------------------
+// IsRoot
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::IsRoot () const 
+{
+  return (NbBackEdges() == 0);
+}   
+
+//---------------------------------------------------------------------------
+// IsLeaf
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::IsLeaf () const 
+{
+  return (NbFrontEdges() == 0);
+}
+
+//---------------------------------------------------------------------------
+// IsDestination
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::
+    IsDestination (const Handle(PCollection_Vertex)& V) const 
+{
+  PCollection_SetIteratorOfSetOfEdge It(MyBackEdges);
+  while (It.More()) {
+    Handle(PCollection_Edge) E = It.Value();
+    if (E->Source() == V) return True;
+    It.Next();
+  }
+  return False;
+}
+
+//---------------------------------------------------------------------------
+// IsSource
+//---------------------------------------------------------------------------
+Boolean PCollection_Vertex::
+         IsSource (const Handle(PCollection_Vertex)& V) const 
+{
+  PCollection_SetIteratorOfSetOfEdge It(MyFrontEdges);
+  while (It.More()) {
+    Handle(PCollection_Edge) E = It.Value();
+    if ( E->Destination() == V) return True;
+    It.Next();
+  }
+  return False;
+}
+

@@ -1,0 +1,60 @@
+-- File:	Geom2dLProp_CurAndInf2d.cdl
+-- Created:	Tue Sep  6 14:37:18 1994
+-- Author:	Yves FRICAUD
+--		<yfr@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class CurAndInf2d from Geom2dLProp inherits CurAndInf from LProp
+
+	---Purpose: An algorithm for computing local properties of a curve.
+    	-- These properties include:
+    	-- - the maximum and minimum curvatures
+    	-- - the inflection points.
+    	--   A CurAndInf2d object provides the framework for:
+    	-- - defining the curve to be analyzed
+    	-- - implementing the computation algorithms
+    	-- - consulting the results.
+    
+uses
+    Curve       from Geom2d
+is
+    Create;
+ 
+    	--- Purpose: Initializes the framework.
+    	-- Note: The curve on which the local properties are
+    	-- computed is defined using one of the following
+    	-- functions: Perform, PerformCurExt or PerformInf.   
+        
+    Perform (me : in out; C : Curve)
+    	---Purpose: For the curve C, Computes both the
+    	--  inflection points and the maximum and minimum curvatures.
+    is static;
+    
+    PerformCurExt (me : in out; C : Curve)
+    	---Purpose: For the curve C, Computes the locals extremas of curvature.
+    is static;
+    
+    PerformInf    (me : in out; C : Curve)
+       	---Purpose: For the curve C, Computes the inflections.
+        -- After computation, the following functions can be used:
+    	-- - IsDone to check if the computation was successful
+    	-- - NbPoints to obtain the number of computed particular points
+    	-- - Parameter to obtain the parameter on the curve for
+    	--   each particular point
+    	-- - Type to check if the point is an inflection point or an
+    	--   extremum of curvature of the curve C.
+    	--   Warning
+    	-- These functions can be used to analyze a series of
+    	-- curves, however it is necessary to clear the table of
+    	-- results between each computation.
+    is static;
+    
+    IsDone (me) returns Boolean
+    	---Purpose: True if the solutions are found. 
+    is static;
+     
+fields
+    isDone     : Boolean   from Standard;
+
+end CurAndInf2d;

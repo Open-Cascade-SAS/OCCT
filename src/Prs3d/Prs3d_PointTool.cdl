@@ -1,0 +1,13 @@
+-- File:	Prs3d_PointTool.cdl
+-- Created:	Wed Dec 16 13:36:55 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+generic class PointTool from Prs3d ( Point as any)
+uses
+    Length from Quantity
+is
+    Coord( myclass; aPoint: Point; X,Y,Z: out Length from Quantity);
+    
+end PointTool from Prs3d;

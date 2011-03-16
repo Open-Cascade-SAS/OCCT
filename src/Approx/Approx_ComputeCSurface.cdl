@@ -1,0 +1,153 @@
+-- File:	Approx_ComputeCSurface.cdl
+-- Created:	Thu Sep  9 16:21:47 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class ComputeCSurface from Approx 
+    	    	    (Surface as any;
+    	    	     SurfaceTool  as any) --as TheLineTool from AppCont(MultiLine)
+
+
+uses SequenceOfReal            from TColStd,
+     HArray1OfReal             from TColStd,
+     SequenceOfSurface         from TColGeom,
+     BezierSurface             from Geom,
+     Constraint                from AppParCurves
+     
+     
+
+private class MySLeastSquare instantiates SurfLeastSquare from AppCont
+    	    	    	    	       (Surface,
+			    	    	SurfaceTool);
+							  
+is
+
+
+    Create(Surf:            Surface;
+    	   degreemin:       Integer = 4;
+           degreemax:       Integer = 8;
+    	   Tolerance3d:     Real    = 1.0e-3;
+	   FirstCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastUCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastVCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastCons:        Constraint = AppParCurves_TangencyPoint;
+	   cutting:         Boolean = Standard_False)
+	   
+	---Purpose: The Surface <Surface> will be approximated until tolerances
+	--          will be reached.
+	--          The approximation will be done from degreemin to degreemax
+	--          with a cutting if the corresponding boolean is True.
+
+    returns ComputeCSurface;
+
+
+
+
+    Create(degreemin:       Integer = 3;
+    	   degreemax:       Integer = 8;
+    	   Tolerance3d:     Real    = 1.0e-03; 
+	   FirstCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastUCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastVCons:       Constraint = AppParCurves_TangencyPoint;
+	   LastCons:        Constraint = AppParCurves_TangencyPoint;
+	   cutting:         Boolean = Standard_False)
+	   
+	---Purpose: Initializes the fields of the algorithm.
+
+    returns ComputeCSurface;
+
+
+    Perform(me: in out; Surf: Surface)
+	---Purpose: runs the algorithm after having initialized the fields.
+    
+    is static;
+
+
+    Compute(me: in out; Surf: Surface; Ufirst, Ulast, Vfirst, Vlast: Real;
+    	    TheTol3d: in out Real)
+	---Purpose: is internally used by the algorithms.
+
+    returns Boolean
+    is static private;
+    
+    
+    SetDegrees(me: in out; degreemin, degreemax: Integer)
+    	---Purpose: changes the degrees of the approximation.
+    
+    is static;
+    
+    
+    SetTolerance(me: in out; Tolerance3d: Real)
+    	---Purpose: Changes the tolerances of the approximation.
+    
+    is static;
+    
+    
+    IsAllApproximated(me) 
+    	---Purpose: returns False if at a moment of the approximation,
+    	--          NotDone was sent.
+    
+    returns Boolean
+    is static;
+    
+    
+    IsToleranceReached(me)
+    	---Purpose: returns False if the status no cut has been done
+    	--          if necessary.
+    
+    returns Boolean
+    is static;
+    
+
+    Error(me; Index: Integer)
+    	---Purpose: returns the tolerance of the <Index> approximated Surface.
+    returns Real
+    is static;
+    
+
+    NbSurfaces(me)
+    	---Purpose: Returns the number of Bezier Surfaces doing the 
+    	--          approximation of the Surface.
+    returns Integer
+    is static;
+
+
+    Value(me; Index: Integer = 1)
+    	---Purpose: returns the approximation Surface of range <Index>.
+
+    returns BezierSurface from Geom;
+
+	    
+    Parameters(me; Index: Integer; firstU, lastU, firstV, lastV: in out Real)
+    	---purpose: returns the first and last parameters of the 
+    	--          <Index> Surface.
+    is static;
+	    
+
+fields
+
+
+mySurfaces:    SequenceOfSurface    from TColGeom;
+myfirstUparam: SequenceOfReal       from TColStd;
+mylastUparam:  SequenceOfReal       from TColStd;
+myfirstVparam: SequenceOfReal       from TColStd;
+mylastVparam:  SequenceOfReal       from TColStd;
+TheSurface:    BezierSurface        from Geom;
+alldone:       Boolean;
+tolreached:    Boolean;
+Tolers3d:      SequenceOfReal from TColStd;
+mydegremin:    Integer;
+mydegremax:    Integer;
+mytol3d:       Real;
+currenttol3d:  Real;
+mycut:         Boolean;
+myfirstUCons:  Constraint;
+mylastUCons:   Constraint;
+mylastVCons:   Constraint;
+mylastCons:    Constraint;
+
+
+
+end ComputeCSurface;

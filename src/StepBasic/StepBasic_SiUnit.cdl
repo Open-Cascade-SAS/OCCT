@@ -1,0 +1,53 @@
+-- File:        SiUnit.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SiUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	SiPrefix from StepBasic, 
+	SiUnitName from StepBasic, 
+	DimensionalExponents from StepBasic, 
+	Boolean from Standard
+is
+
+	Create returns mutable SiUnit;
+	---Purpose: Returns a SiUnit
+
+
+	Init (me : mutable;
+	      aDimensions : mutable DimensionalExponents from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      hasAprefix : Boolean from Standard;
+	      aPrefix : SiPrefix from StepBasic;
+	      aName : SiUnitName from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPrefix(me : mutable; aPrefix : SiPrefix);
+	UnSetPrefix (me:mutable);
+	Prefix (me) returns SiPrefix;
+	HasPrefix (me) returns Boolean;
+	SetName(me : mutable; aName : SiUnitName);
+	Name (me) returns SiUnitName;
+	SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) is redefined;
+	Dimensions (me) returns mutable DimensionalExponents is redefined;
+
+fields
+
+	prefix : SiPrefix from StepBasic; -- an Enumeration   -- OPTIONAL can be NULL
+	name : SiUnitName from StepBasic; -- an Enumeration
+	hasPrefix : Boolean from Standard;
+
+ -- 
+ -- NB : field <dimensions> inherited from classe <named_unit> is redeclared.
+ --      it shall appears in a physical file as a *.
+ --
+
+end SiUnit;

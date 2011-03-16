@@ -1,0 +1,100 @@
+--
+-- File:	Xw_MarkMap.cdl
+-- Created:	17/01/95
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class MarkMap from Xw inherits Transient
+
+	---Version: 0.0
+
+	---Purpose: This class defines a MarkMap object.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+
+	MarkMap		from Aspect,
+	MarkMapEntry	from Aspect,
+	MarkerStyle 	from Aspect
+
+raises
+
+	MarkMapDefinitionError	from Aspect,
+	BadAccess		from Aspect
+
+is
+
+	Create
+	returns mutable MarkMap from Xw
+	is protected ;
+	---Level: Internal
+
+	Create ( Connexion : CString from Standard ) 
+	returns mutable MarkMap from Xw 
+	---Level: Public
+	---Purpose: Creates a MarkMap with unallocated MarkMapEntry.
+	--  Warning: Raises if MarkMap creation failed according
+	--	    to the supported hardware
+	raises MarkMapDefinitionError from Aspect ;
+
+	SetEntry ( me : mutable ; 
+		   anEntry : MarkMapEntry from Aspect )
+	---Level: Public
+	---Purpose: Modifies an entry already defined or Add the Entry
+	--	    in the marker map <me> if it don't exist.
+	--  Warning: Raises if MarkMap size is exceeded,
+	--	    or MarkMap is not defined properly,
+	--	    or MarkMapEntry Index is out of range according
+	--	    to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	SetEntries ( me : mutable ; 
+		     aMarkmap : MarkMap from Aspect ) 
+	---Level: Public
+	---Purpose: Modifies all entries from a new Markmap
+	--  Warning: Raises if MarkMap size is exceeded,
+	--	    or MarkMap is not defined properly,
+	--	    or One of new MarkMapEntry Index is out of range according
+	--	    to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	Destroy ( me : mutable ) is virtual;
+	---Level: Public
+	---Purpose: Destroies the Markmap
+	---C++: alias ~
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	FreeMarkers ( me )
+	returns Integer from Standard 
+	---Level: Public
+	---Purpose: Returns the Number of Free Marks in the Typemap
+	--	    depending of the HardWare
+	--  Warning: Raises if MarkMap is not defined properly
+	raises BadAccess from Aspect is static;
+
+	ExtendedMarkMap ( me )
+	returns Address from Standard
+	is static protected ;
+	---Level: Internal
+	---Purpose: Returns extended data markermap structure pointer.
+	---Category: Inquire methods
+
+
+fields
+
+	MyExtendedDisplay	: Address from Standard ;
+	MyExtendedMarkMap 	: Address from Standard ;
+
+friends
+
+	class GraphicDevice from Xw
+
+end MarkMap ;

@@ -1,0 +1,9 @@
+inline TCollection_StdMapNode::TCollection_StdMapNode(const TheKey& K,const TCollection_MapNodePtr& n) 
+: TCollection_MapNode(n),myKey(K)
+{
+}
+
+inline TheKey& TCollection_StdMapNode::Key() const
+{
+  return (TheKey&)myKey;
+}

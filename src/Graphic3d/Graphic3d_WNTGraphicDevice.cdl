@@ -1,0 +1,55 @@
+--
+-- File:	Graphic3d_WNTGraphicDevice.cdl
+-- Created:	Thu Feb 15 09:29:45 1996
+-- Author:	PLOTNIKOV Eugeny
+--		<eugeny@maniax>
+---Copyright:	 Matra Datavision 1996
+
+class WNTGraphicDevice from Graphic3d inherits GraphicDevice from WNT
+
+      	---Purpose: This class initializes a Windows NT Graphic Device.
+        
+uses
+
+	Color		from Quantity,
+	ColorRef	from WNT,
+	Long		from WNT,
+	SharedLibrary	from OSD,
+	GraphicDriver	from Aspect,
+	GraphicDriver	from Graphic3d
+
+raises
+ 
+	GraphicDeviceDefinitionError	from Aspect
+  
+is
+ 
+	Create
+		returns mutable WNTGraphicDevice from Graphic3d
+	---Purpose: Creates a class instance and provide initialization
+	--	    of the graphic library.
+	--  Warning: Raises if something wrong.
+	raises GraphicDeviceDefinitionError from Aspect;
+   
+	Destroy ( me : mutable )
+		is redefined static;
+	---Purpose: Destroys all resources attached to the graphic device.
+	---C++:     alias~
+
+	GraphicDriver ( me )
+		returns GraphicDriver from Aspect
+		is redefined static;
+	---Level: Public
+	---Purpose: Returns the GraphicDriver.
+
+	SetGraphicDriver ( me	: mutable )
+		is private;
+	---Level: Internal
+	---Purpose: Sets the GraphicDriver.
+
+fields
+
+	MyGraphicDriver	:	GraphicDriver from Graphic3d;
+	MySharedLibrary	:	SharedLibrary from OSD;
+
+end WNTGraphicDevice;

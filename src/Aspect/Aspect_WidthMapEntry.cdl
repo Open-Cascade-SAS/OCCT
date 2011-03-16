@@ -1,0 +1,135 @@
+
+--
+-- File:	Aspect_WidthMapEntry.cdl
+-- Created:	09/09/93
+-- Author:	GG
+-- Updated by	JLF (Reason : Width MUST be given in METER 2 Mars 94) 
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class WidthMapEntry from Aspect
+
+	---Version: 0.0
+
+	---Purpose: This class defines a widthmap entry.
+	--	    A widthmap entry is an association between
+	--	    a LineStyle object and an index in the widthmap.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	WidthOfLine from Aspect,
+	Length from Quantity
+
+raises
+	OutOfRange 	from Standard,
+	BadAccess 	from Aspect
+
+is
+	Create
+	returns WidthMapEntry from Aspect;
+	---Level: Public
+	---Purpose: Creates an unallocated widthmap entry
+	
+	Create ( index : Integer from Standard; 
+		 style : WidthOfLine from Aspect)
+ 	returns WidthMapEntry;
+	---Level: Public
+	---Purpose: Creates an allocated widthmap entry from width style
+
+	Create ( index : Integer from Standard; 
+		 width : Length from Quantity)
+ 	returns WidthMapEntry;
+	---Level: Public
+	---Purpose: Creates an allocated widthmap entry from width value
+
+	Create ( entry : WidthMapEntry from Aspect )
+ 	returns WidthMapEntry
+	---Level: Public
+	---Purpose: Creates an allocated widthmap entry.
+	---Warning: Raises error if the widthmap entry <entry>
+	--	    is unallocated.
+	raises BadAccess from Aspect;
+
+	SetValue ( me: in out; index : Integer from Standard;
+			       style : WidthOfLine from Aspect );
+	---Level: Public
+ 	---Purpose: Sets widthmap entry value from width style
+	--	    and allocates it.
+
+	SetValue ( me: in out; index : Integer from Standard;
+			       width : Length from Quantity);
+	---Level: Public
+ 	---Purpose: Sets widthmap entry value from width value
+	--	    and allocates it.
+ 
+	SetValue ( me: in out; entry : WidthMapEntry from Aspect);
+	---Level: Public
+ 	---Purpose: Sets widthmap entry value and allocates it.
+	---C++: alias operator =
+
+	SetIndex ( me: in out; index : Integer from Standard);
+	---Level: Public
+ 	---Purpose: Sets index value of a widthmap entry.
+ 
+	SetType ( me: in out; Style : WidthOfLine from Aspect );
+	---Level: Public
+ 	---Purpose: Sets width style of widthmap entry.
+
+	SetWidth ( me: in out; Width : Length from Quantity);
+	---Level: Public
+ 	---Purpose: Sets width value of widthmap entry.
+
+	Type ( me ) returns WidthOfLine from Aspect
+	---Level: Public
+	---Warning: Raises error if the widthmap entry is unallocated .
+	raises BadAccess from Aspect;
+
+	Width ( me ) returns Length from Quantity 
+	---Level: Public
+ 	---Purpose: Returns width value of widthmap entry.
+	--  Warning: Raises error if the widthmap entry is unallocated .
+	raises BadAccess from Aspect;
+
+	Index ( me ) returns Integer from Standard 
+	---Level: Public
+ 	---Purpose: Returns index value of a widthmap entry.
+	--  Warning: Raises error if the widthmap entry is unallocated .
+	raises BadAccess from Aspect;
+
+	Free ( me : in out );
+	---Level: Public
+	---Purpose: Unallocates the widthmap entry.
+
+	IsAllocated ( me ) returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Returns True if the widthmap entry is allocated.
+	--  Warning: A widthmap entry is allocated when the width and
+	--	    the index is defined.
+
+        Dump( me );
+	---Level: Internal
+
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+
+        SetPredefinedStyle ( me : in out;
+		Type : WidthOfLine from Aspect )  
+	---Level: Internal
+        ---Purpose: Set Line Width with the predefined style values
+        --          according of type
+	--  Warning: Raises error if the Width style is USER_DEFINED
+	raises BadAccess from Aspect is private;
+        ---Category: Private methods
+
+fields
+	MyType		: WidthOfLine from Aspect;
+	MyWidth		: Real from Standard;
+	MyIndex 	: Integer from Standard;
+	MyTypeIsDef	: Boolean from Standard;
+	MyIndexIsDef	: Boolean from Standard;
+
+end WidthMapEntry from Aspect;

@@ -1,0 +1,46 @@
+-- File:	BOPTools_WireStateFiller.cdl
+-- Created:	Mon Feb  4 10:16:43 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class WireStateFiller from BOPTools inherits StateFiller from BOPTools 
+
+	---Purpose:  
+    	--  class to compute states (3D) for the edges (and theirs  
+	--- split parts), vertices, wires  
+        --- 
+
+uses
+    PaveFiller  from BOPTools
+     
+--raises
+
+is 
+    Create (aFiller: PaveFiller from BOPTools) 
+    	returns WireStateFiller from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    Do(me:out) 
+    	is redefined; 
+    	---Purpose: 
+    	--- Launch the Filler   
+    	---
+    DoWires (me:out; 
+    	    iRank: Integer from Standard) 
+	is  private;  
+    	---Purpose: 
+    	--- Internal usage   
+    	---
+    DoWireSolid (me:out; 
+    	    iRank: Integer from Standard) 
+	is  private;  
+    	---Purpose: 
+    	--- Internal usage   
+    	---
+    
+--fields
+
+end WireStateFiller;

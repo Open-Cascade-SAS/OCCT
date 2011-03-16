@@ -1,0 +1,3 @@
+inline void Prs2d_Repere::CalcTxtPos(const Standard_Boolean theFromAbs) {
+  
+}

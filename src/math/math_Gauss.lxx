@@ -1,0 +1,11 @@
+// math_Gauss.lxx 
+// lpa, le 28/01/92
+
+inline Standard_Boolean math_Gauss::IsDone() const { return Done; }
+
+inline Standard_OStream& operator<<(Standard_OStream& o, const math_Gauss& mG) 
+{
+  mG.Dump(o);
+  return o;
+}
+

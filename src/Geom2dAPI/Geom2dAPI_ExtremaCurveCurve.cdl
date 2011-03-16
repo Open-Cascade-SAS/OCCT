@@ -1,0 +1,173 @@
+-- File:	Geom2dAPI_ExtremaCurveCurve.cdl
+-- Created:	Wed Mar 23 15:09:47 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ExtremaCurveCurve from Geom2dAPI
+
+    	---Purpose: Describes functions for computing all the extrema
+    	-- between two 2D curves.
+    	-- An ExtremaCurveCurve algorithm minimizes or
+    	-- maximizes the distance between a point on the first
+    	-- curve and a point on the second curve. Thus, it
+    	-- computes the start point and end point of
+    	-- perpendiculars common to the two curves (an
+    	-- intersection point is not an extremum except where
+    	-- the two curves are tangential at this point).
+    	-- Solutions consist of pairs of points, and an extremum
+    	-- is considered to be a segment joining the two points of a solution.
+    	-- An ExtremaCurveCurve object provides a framework for:
+    	-- -   defining the construction of the extrema,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results.
+    	-- Warning
+    	-- In some cases, the nearest points between two
+    	-- curves do not correspond to one of the computed
+    	-- extrema. Instead, they may be given by:
+    	-- -   a limit point of one curve and one of the following:
+    	--  -   its orthogonal projection on the other curve,
+    	--  -   a limit point of the other curve; or
+    	-- -   an intersection point between the two curves.
+        
+uses
+    Curve     from Geom2d,
+    Curve     from Geom2dAdaptor,
+    ExtCC2d   from Extrema,
+    Pnt2d     from gp,
+    Length    from Quantity,
+    Parameter from Quantity
+    
+raises
+    OutOfRange from Standard,
+    NotDone    from StdFail
+    
+    
+is
+
+    
+    Create(C1   , C2    : Curve from Geom2d;
+    	   U1min, U1max : Parameter from Quantity; 
+    	   U2min, U2max : Parameter from Quantity)
+	---Purpose:  Computes the extrema between
+    	-- -   the portion of the curve C1 limited by the two
+    	--   points of parameter (U1min,U1max), and
+    	-- -   the portion of the curve C2 limited by the two
+    	--   points of parameter (U2min,U2max).
+    	-- Warning
+    	-- Use the function NbExtrema to obtain the number
+    	-- of solutions. If this algorithm fails, NbExtrema returns 0.
+    returns ExtremaCurveCurve from Geom2dAPI;
+
+
+--------------------------------------------
+-- on ne peut pas utiliser le constructeur vide
+-- car n existe pas dans Geom2dExtrema_ExtCC
+--------------------------------------------
+--    Init(me : in out;
+--    	 C1   , C2    : Curve from Geom2d;
+--    	 U1min, U1max : Parameter from Quantity; 
+--    	 U2min, U2max : Parameter from Quantity)
+--    is static;
+
+
+    NbExtrema(me)
+	---Purpose: Returns the number of extrema computed by this algorithm.
+    	-- Note: if this algorithm fails, NbExtrema returns 0.
+    returns Integer from Standard
+	---C++: alias "Standard_EXPORT operator Standard_Integer() const;"
+    is static;
+    
+    
+    Points(me; Index  :     Integer from Standard;
+    	       P1, P2 : out Pnt2d   from gp )
+        ---Purpose: Returns the points P1 on the first curve and P2 on
+    	-- the second curve, which are the ends of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;	       
+
+
+    Parameters(me; Index  :     Integer   from Standard;
+    	     	   U1, U2 : out Parameter from Quantity)
+        ---Purpose: Returns the parameters U1 of the point on the first
+    	-- curve and U2 of the point on the second curve, which
+    	-- are the ends of the extremum of index Index
+    	-- computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    Distance(me; Index : Integer from Standard)
+    returns Length from Quantity
+	---Purpose: Computes the distance between the end points of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    NearestPoints(me; P1, P2 : out Pnt2d from gp)
+	---Purpose: Returns the points P1 on the first curve and P2 on
+    	-- the second curve, which are the ends of the shortest
+    	-- extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistanceParameters(me;  U1, U2 : out Parameter from Quantity)
+	---Purpose: Returns the parameters U1 of the point on the first
+    	-- curve and U2 of the point on the second curve, which
+    	-- are the ends of the shortest extremum computed by this algorithm.
+    	-- Exceptions
+    	-- StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistance(me)
+	---Purpose: Computes the distance between the end points of the
+    	-- shortest extremum computed by this algorithm.
+    	-- Exceptions - StdFail_NotDone if this algorithm fails.
+    returns Length from Quantity
+	---C++: alias "Standard_EXPORT operator Standard_Real() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    Extrema(me)
+    	---Level: Advanced
+	---C++: return const&
+	---C++: inline      
+    returns ExtCC2d from Extrema
+    is static;
+    	
+	
+fields
+
+    myIsDone: Boolean from Standard;
+    myIndex : Integer from Standard;    -- index of the nearest solution
+    myExtCC : ExtCC2d from Extrema;
+    myC1    : Curve   from Geom2dAdaptor;
+    myC2    : Curve   from Geom2dAdaptor;
+
+end ExtremaCurveCurve;

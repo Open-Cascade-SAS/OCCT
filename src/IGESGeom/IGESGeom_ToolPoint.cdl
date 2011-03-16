@@ -1,0 +1,59 @@
+-- File:	IGESGeom_ToolPoint.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolPoint  from IGESGeom
+
+    ---Purpose : Tool to work on a Point. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses Point from IGESGeom,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolPoint;
+    ---Purpose : Returns a ToolPoint, ready to work
+
+
+    ReadOwnParams (me; ent : mutable Point;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : Point;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : Point;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a Point <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : Point) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : Point;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : Point; entto : mutable Point;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : Point;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolPoint;

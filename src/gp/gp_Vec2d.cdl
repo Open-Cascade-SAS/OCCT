@@ -1,0 +1,318 @@
+---Copyright:   Matra Datavision 1991
+
+class Vec2d    from gp   inherits Storable 
+
+        --- Purpose :
+        --  Defines a non-persistent vector in 2D space.
+
+uses Ax2d   from gp,
+     Dir2d  from gp, 
+     Pnt2d  from gp,
+     Trsf2d from gp,
+     XY     from gp
+
+raises ConstructionError        from Standard,
+       OutOfRange               from Standard,
+       VectorWithNullMagnitude  from gp
+
+is
+
+  Create   returns Vec2d;
+        ---C++: inline
+        --- Purpose : Creates a zero vector.
+
+  Create (V : Dir2d)  returns Vec2d;
+        ---C++: inline
+        --- Purpose : Creates a unitary vector from a direction V.
+
+  Create (Coord : XY)  returns Vec2d;
+        ---C++: inline
+        --- Purpose : Creates a vector with a doublet of coordinates.
+
+  Create (Xv, Yv : Real)  returns Vec2d;
+        ---C++: inline
+        --- Purpose : Creates a point with its two cartesian coordinates.
+
+  Create (P1, P2 : Pnt2d)  returns Vec2d;
+        ---C++: inline
+        --- Purpose :
+        --  Creates a vector from two points. The length of the vector 
+        --  is the distance between P1 and P2
+
+  SetCoord(me: in out; Index : Integer; Xi : Real)
+        ---C++: inline
+        --- Purpose : Changes the coordinate of range Index 
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified 
+	-- Raises OutOfRange if Index != {1, 2}.
+     raises OutOfRange
+     is static;
+
+  SetCoord (me : in out; Xv, Yv : Real)  is static;
+        ---Purpose: For this vector, assigns
+    	--   the values Xv and Yv to its two coordinates
+        ---C++: inline
+  SetX (me: in out; X : Real)            is static;
+        ---Purpose : Assigns the given value to the X coordinate of this vector.
+        ---C++: inline
+  SetY (me: in out; Y : Real)            is static;
+           ---Purpose : Assigns the given value to the Y coordinate of this vector.
+        ---C++: inline
+  SetXY (me: in out; Coord : XY)         is static;
+        ---Purpose: Assigns the two coordinates of Coord to this vector.
+        ---C++: inline
+  Coord (me; Index : Integer)   returns Real
+        ---C++: inline
+        --- Purpose :
+        --  Returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+      raises OutOfRange
+        --- Purpose : Raised if Index != {1, 2}.
+      is static;
+
+
+  Coord (me; Xv, Yv : out Real)    is static;
+	---Purpose:  For this vector, returns  its two coordinates Xv and Yv
+        ---C++: inline
+	
+  X (me)  returns Real             is static;
+        ---Purpose: For this vector, returns its X  coordinate.
+        ---C++: inline
+	
+  Y (me)  returns Real             is static;
+        ---Purpose: For this vector, returns its Y  coordinate.
+        ---C++: inline
+	
+  XY (me)  returns XY              is static;
+        ---Purpose: For this vector, returns its two coordinates as a number pair
+        ---C++: inline
+    	---C++: return const&
+	
+  IsEqual (me; Other : Vec2d; LinearTolerance, AngularTolerance : Real)
+     returns Boolean
+     is static;
+       --- Purpose :
+       --  Returns True if the two vectors have the same magnitude value
+       --  and the same direction. The precision values are LinearTolerance
+       --  for the magnitude and AngularTolerance for the direction.
+
+  IsNormal (me; Other : Vec2d; AngularTolerance : Real)
+     returns Boolean
+        ---C++: inline
+        --- Purpose :
+        --  Returns True if abs(Abs(<me>.Angle(Other)) - PI/2.)
+        --  <= AngularTolerance
+    	-- Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp.
+     raises VectorWithNullMagnitude
+      
+     is static;
+
+  IsOpposite (me; Other : Vec2d; AngularTolerance : Real)
+     returns Boolean
+        ---C++: inline     
+        --- Purpose :
+        --  Returns True if PI - Abs(<me>.Angle(Other)) <= AngularTolerance
+    	--  Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp.
+     raises VectorWithNullMagnitude
+      
+     is static;
+
+  IsParallel (me; Other : Vec2d; AngularTolerance : Real)
+     returns Boolean
+        ---C++: inline
+        --- Purpose :
+        --  Returns true if Abs(Angle(<me>, Other)) <= AngularTolerance or
+        --  PI - Abs(Angle(<me>, Other)) <= AngularTolerance
+        --  Two vectors with opposite directions are considered as parallel. 
+    	--  Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp
+     raises VectorWithNullMagnitude
+
+     is static;
+
+  Angle (me; Other : Vec2d)  returns Real
+        --- Purpose :
+        --  Computes the angular value between <me> and <Other>
+        --  returns the angle value between -PI and PI in radian.
+        --  The orientation is from <me> to Other. The positive sense is the
+        --  trigonometric sense.
+    	--    Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution from gp or
+        --  Other.Magnitude() <= Resolution because the angular value is
+        --  indefinite if one of the vectors has a null magnitude.
+     raises VectorWithNullMagnitude
+      
+     is static;
+
+  Magnitude (me)   returns Real        is static;
+        ---Purpose:  Computes the magnitude of this vector.
+        ---C++: inline
+	
+  SquareMagnitude (me)   returns Real  is static;
+         ---Purpose:  Computes the square magnitude of this vector.
+         ---C++: inline  
+
+  Add (me : in out; Other : Vec2d)         is static; 
+        ---C++: inline
+        ---C++: alias operator +=
+
+  Added (me; Other : Vec2d)  returns Vec2d  is static;
+        ---C++: inline
+        ---C++: alias operator +
+        --- Purpose : Adds two vectors 
+    
+  Crossed (me; Right : Vec2d) returns Real  is static;
+        ---C++: inline
+        --- Purpose : Computes the crossing product between two vectors
+        ---C++: alias operator ^
+
+  CrossMagnitude (me; Right : Vec2d) returns Real      is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||
+
+  CrossSquareMagnitude (me; Right : Vec2d) returns Real is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the square magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||**2
+
+  Divide (me : in out; Scalar : Real)          is static;
+        ---C++: inline
+        ---C++: alias operator /=
+
+  Divided (me; Scalar : Real)   returns Vec2d  is static;
+        ---C++: inline
+        ---C++: alias operator /
+
+        --- Purpose : divides a vector by a scalar
+    
+  Dot (me; Other : Vec2d)  returns Real  is static;
+        ---C++: inline
+        --- Purpose : Computes the scalar product
+        ---C++: alias operator *
+
+  Multiply (me : in out; Scalar : Real)           is static;
+        ---C++: inline
+        ---C++: alias operator *=
+
+  Multiplied (me; Scalar : Real)   returns Vec2d  is static;
+        ---C++: inline
+        ---C++: alias operator *
+    	--- Purpose : Normalizes a vector
+        --  Raises an exception if the magnitude of the vector is
+        --  lower or equal to Resolution from package gp.
+
+  Normalize (me : in out)        raises ConstructionError is static;
+        ---C++: inline  
+  
+  Normalized (me)  returns Vec2d raises ConstructionError is static;
+        ---C++: inline
+    	--- Purpose : Normalizes a vector
+        --  Raises an exception if the magnitude of the vector is
+        --  lower or equal to Resolution from package gp.
+
+        --- Purpose : Reverses the direction of a vector
+
+  Reverse (me : in out)         is static;
+        ---C++: inline
+
+  Reversed (me)  returns Vec2d  is static;
+        ---C++: inline
+    	---C++: alias operator -
+    	--- Purpose : Reverses the direction of a vector
+
+        --- Purpose : Subtracts two vectors
+
+  Subtract (me : in out; Right : Vec2d)          is static;
+        ---C++: inline
+        ---C++: alias operator -=
+
+  Subtracted (me; Right : Vec2d)  returns Vec2d  is static;
+        ---C++: inline
+        ---C++: alias operator -
+        --- Purpose : Subtracts two vectors
+
+  SetLinearForm (me : in out;
+                 A1 : Real; V1 : Vec2d; A2 : Real; V2 : Vec2d; V3 : Vec2d)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form :
+        --  A1 * V1 + A2 * V2 + V3
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; V1 : Vec2d; A2 : Real; V2 : Vec2d)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form : A1 * V1 + A2 * V2
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; V1, V2 : Vec2d)   is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form : A1 * V1 + V2
+        ---C++: inline
+
+  SetLinearForm (me : in out; Left, Right : Vec2d)         is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form : Left + Right
+        ---C++: inline
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to the vector V which is the center of 
+        --  the  symmetry.
+
+  Mirror (me : in out; V : Vec2d)         is static;
+
+  Mirrored (me; V : Vec2d) returns Vec2d  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to the vector V which is the center of 
+        --  the  symmetry.
+    --- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry.
+
+  Mirror (me : in out; A1 : Ax2d)         is static;
+
+  Mirrored (me; A1 : Ax2d)  returns Vec2d is static;
+   --- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry. 
+  
+  Rotate (me : in out; Ang : Real)        is static;
+        ---C++: inline
+	
+  Rotated (me; Ang : Real)  returns Vec2d is static;
+        ---C++: inline  
+    	--- Purpose :
+        --  Rotates a vector. Ang is the angular value of the
+        --  rotation in radians.
+
+  Scale (me : in out; S : Real)           is static;
+        ---C++: inline
+	
+  Scaled (me; S : Real)  returns Vec2d    is static;
+        ---C++: inline
+        --- Purpose : Scales a vector. S is the scaling value.
+
+
+  Transform (me : in out; T : Trsf2d)            is static;
+
+  Transformed (me; T : Trsf2d)   returns Vec2d   is static;
+        ---C++: inline
+        --- Purpose : Transforms a vector with a Trsf from gp.
+
+      
+fields
+
+  coord : XY;
+
+end;

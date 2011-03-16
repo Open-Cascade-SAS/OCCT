@@ -1,0 +1,121 @@
+-- File:	STEPConstruct_ExternRefs.cdl
+-- Created:	Fri Sep 29 16:09:49 2000
+-- Author:	Andrey BETENEV
+--	 	<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ExternRefs from STEPConstruct inherits Tool from STEPConstruct
+
+    ---Purpose: Provides a tool for analyzing (reading) and creating (writing)
+    --          references to external files in STEP
+    --
+    --          It maintains a data structure in the form of sequences
+    --          of relevant STEP entities (roots), allowing either to create
+    --          them by convenient API, or load from existing model and
+    --          investigate
+
+uses
+    HAsciiString from TCollection,
+    SequenceOfTransient from TColStd,
+    WorkSession from XSControl,
+    ProductDefinition from StepBasic,
+    SequenceOfInteger from TColStd,
+    CString from Standard,
+    ProductRelatedProductCategory from StepBasic,
+    DocumentType from StepBasic,
+    ApplicationProtocolDefinition from StepBasic,
+    AppliedDocumentReference from StepAP214,
+    DocumentFile from StepBasic,
+    ProductContext from StepBasic,
+    ProductDefinitionContext from StepBasic
+is
+
+    Create returns ExternRefs;
+    	---Purpose: Creates an empty tool
+
+    Create (WS: WorkSession from XSControl) returns ExternRefs;
+    	---Purpose: Creates a tool and initializes it
+	
+    Init (me: in out; WS: WorkSession from XSControl) returns Boolean;
+    	---Purpose: Initializes tool; returns True if succeeded
+
+    Clear (me: in out);
+    	---Purpose: Clears internal fields (list of defined extern refs)
+
+    ---Scope: Reading
+
+    LoadExternRefs (me: in out) returns Boolean;
+    	---Purpose: Searches current STEP model for external references
+	--          and loads them to the internal data structures
+	--          NOTE: does not clear data structures before loading
+
+    NbExternRefs (me) returns Integer;
+    	---Purpose: Returns number of defined extern references
+
+    FileName (me; num: Integer) returns CString;
+    	---Purpose: Returns filename for numth extern reference
+	--          Returns Null if FileName is not defined or bad
+	---C++: return const
+    
+    ProdDef (me; num: Integer) returns ProductDefinition from StepBasic;
+    	---Purpose: Returns ProductDefinition to which numth extern reference
+        --          is associated.
+	--          Returns Null if cannot be detected or if extern reference
+	--          is not associated to SDR in a proper way.
+    
+    Format (me; num: Integer) returns HAsciiString from TCollection;
+    	---Purpose: Returns format identification string for the extern document
+	--          Returns Null handle if format is not defined
+    
+    ---Scope: Writing
+
+    AddExternRef (me: in out; filename: CString; 
+                              PD: ProductDefinition from StepBasic;
+			      format: CString) returns Integer;
+	---Purpose: Create a new external reference with specified attributes
+	--          attached to a given SDR
+	--          <format> can be Null string, in that case this information
+        --          is not written. Else, it can be "STEP AP214" or "STEP AP203"
+	--          Returns index of a new extern ref
+    addAP214ExterRef (me: in out; ADR : AppliedDocumentReference from StepAP214;
+    	    	      PD: ProductDefinition from StepBasic;
+    	    	      DF : DocumentFile from StepBasic;
+    	    	      filename: CString from Standard )
+    returns Boolean from Standard is protected;
+	---Purpose: Create a new additional structure entities and add ncessary references
+	--          Note: do not refer from ADR to DF directly in AP214 (TRJ11).
+    
+    checkAP214Shared (me: in out);
+	---Purpose: Check (create if it is null) all shared entities for the model
+    
+    WriteExternRefs (me; num: Integer) returns Integer;
+    	---Purpose: Adds all the currently defined external refs to the model
+	--          Returns number of written extern refs
+	
+    SetAP214APD (me: in out; APD : ApplicationProtocolDefinition from StepBasic);
+    	---Purpose: Set the ApplicationProtocolDefinition of the PDM schema
+    
+    GetAP214APD (me: in out) returns ApplicationProtocolDefinition from StepBasic;
+    	---Purpose: Returns the ApplicationProtocolDefinition of the PDM schema
+	--          NOTE: if not defined then create new APD with new Application Context
+    
+fields
+
+    myAEIAs  : SequenceOfTransient from TColStd; -- StepAP214_AppliedExternalIdentificationAssignment
+    myRoles  : SequenceOfTransient from TColStd; -- StepBasic_RoleAssociation 
+    myFormats: SequenceOfTransient from TColStd; -- StepRepr_PropertyDefinitionRepresentation 
+    myShapes : SequenceOfTransient from TColStd; -- StepBasic_ProductDefinition 
+    myTypes  : SequenceOfTransient from TColStd; -- StepBasic_DocumentRepresentationType 
+    
+    myIsAP214: SequenceOfInteger from TColStd;
+    
+    myReplaceNum : SequenceOfInteger from TColStd;
+    myDocFiles : SequenceOfTransient from TColStd; -- StepBasic_DocumentFile
+    mySharedPRPC : ProductRelatedProductCategory from StepBasic; -- shared since AP214
+    mySharedDocType : DocumentType from StepBasic; -- shared since AP214
+    mySharedPDC : ProductDefinitionContext from StepBasic; -- shared since AP214
+    mySharedPC : ProductContext from StepBasic; -- shared since AP214
+    myAPD : ApplicationProtocolDefinition from StepBasic; -- Application Protocol Definition of PDM schema
+
+end ExternRefs;

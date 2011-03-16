@@ -1,0 +1,99 @@
+--
+-- File:	Xw_FontMap.cdl
+-- Created:	24/08/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class FontMap from Xw inherits Transient 
+
+	---Version: 0.0
+
+	---Purpose: This class defines a FontMap object.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+
+	FontMap			from Aspect,
+	FontMapEntry		from Aspect
+
+raises
+
+	FontMapDefinitionError	from Aspect,
+	BadAccess from Aspect
+
+is
+
+	Create
+	returns mutable FontMap from Xw
+	is protected;
+	---Level: Internal
+
+	Create (Connexion : CString from Standard) 
+	returns mutable FontMap from Xw 
+	---Level: Public
+	---Purpose: Creates a FontMap with an unallocated FontMapEntry.
+	raises FontMapDefinitionError from Aspect;
+	---Error if FontMap creation failed according
+	--       to the supported hardware
+
+	SetEntry (me : mutable; 
+		  Entry : FontMapEntry from Aspect)
+	---Level: Public
+	---Purpose: Modifies an entry already defined or adds <Entry>
+	--	    in the font map <me> if it don't exist.
+	raises BadAccess from Aspect is virtual;
+	---Purpose:  Warning if FontMap size is exceeded.
+	--	   or FontMap is not defined properly
+	--	   or FontMapEntry Index is out of range according
+	--	   to the supported hardware
+
+	SetEntries (me : mutable;
+	          Fontmap : FontMap from Aspect)
+	---Level: Public
+	---Purpose: Modifies all entries of <me> from the new Fontmap.
+	raises BadAccess from Aspect is virtual;
+	---Purpose:  Warning if FontMap size is exceeded.
+	--         or FontMap is not defined properly
+	--         or One of new FontMapEntry Index is out of range according
+	--         to the supported hardware
+
+	Destroy (me : mutable) is virtual;
+	---Level: Public
+	---Purpose: Destroies the Fontmap
+	---C++: alias ~
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	FreeFonts (me)
+	returns Integer from Standard 
+	---Level: Public
+	---Purpose: Returns the number of Free Fonts in the Fontmap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If FontMap is not defined properly
+
+	ExtendedFontMap (me)
+	returns Address from Standard
+	is static protected;
+	---Level: Public
+	---Purpose: Returns extended data fontmap structure pointer.
+	---Category: Inquire methods
+
+
+fields
+
+	MyExtendedDisplay 	: Address from Standard;
+	MyExtendedFontMap 	: Address from Standard;
+
+friends
+
+	class GraphicDevice from Xw
+
+end FontMap;

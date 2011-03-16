@@ -1,0 +1,91 @@
+-- File:	ProjLib_Plane.cdl
+-- Created:	Wed Aug 11 15:05:32 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Plane from ProjLib inherits Projector from ProjLib
+
+	---Purpose: Projects elementary curves on a plane.
+
+uses
+    CurveType  from GeomAbs,
+    Pln        from gp,
+    Lin        from gp,
+    Circ       from gp,
+    Elips      from gp,
+    Parab      from gp,
+    Hypr       from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Parab2d    from gp,
+    Hypr2d     from gp
+
+raises
+    NoSuchObject from Standard
+    
+is
+
+    Create returns Plane from ProjLib;
+	---Purpose: Undefined projection.
+
+    Create(Pl : Pln from gp) returns Plane from ProjLib;
+	---Purpose: Projection on the plane <Pl>.
+
+    Create(Pl : Pln from gp;
+           L  : Lin from gp) returns Plane from ProjLib;
+	---Purpose: Projection of the line <L> on the plane <Pl>.
+
+    Create(Pl : Pln  from gp;
+           C  : Circ from gp) returns Plane from ProjLib;
+	---Purpose: Projection of the circle <C> on the plane <Pl>.
+
+    Create(Pl : Pln from gp;
+           E  : Elips from gp) returns Plane from ProjLib;
+	---Purpose: Projection of the ellipse <E> on the plane <Pl>.
+
+    Create(Pl : Pln from gp;
+           P  : Parab from gp) returns Plane from ProjLib;
+	---Purpose: Projection of the parabola <P> on the plane <Pl>.
+
+    Create(Pl : Pln from gp;
+           H  : Hypr from gp) returns Plane from ProjLib;
+	---Purpose: Projection of the hyperbola <H> on the plane <Pl>.
+
+
+    Init(me : in out;
+    	 Pl : Pln from gp)
+    is static;
+	 
+    Project(me : in out;
+    	    L  : Lin from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    C  : Circ from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    E  : Elips from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    P  : Parab from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    H  : Hypr from gp)
+    is redefined;
+
+
+fields
+
+    myPlane : Pln from gp;
+
+end Plane;
+
+
+

@@ -1,0 +1,6 @@
+inline  Standard_Boolean TopOpeBRepTool_PurgeInternalEdges::IsDone() const
+{
+  return myIsDone;
+}
+
+ 

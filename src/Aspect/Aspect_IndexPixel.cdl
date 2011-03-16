@@ -1,0 +1,45 @@
+
+-- File:	Aspect_IndexPixel.cdl
+-- Created:	Fri Jul 23 16:25:00 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+class IndexPixel from Aspect inherits Pixel from Aspect
+
+is
+	Create
+	returns IndexPixel from Aspect;
+
+	Create (anIndex: Integer from Standard)
+	returns IndexPixel from Aspect;
+
+	Value(me)
+	returns Integer from Standard
+	is static ;
+
+	SetValue(me: in out; anIndex: Integer from Standard) is static ;
+
+	HashCode (me; Upper : Integer )
+	returns Integer
+	is redefined static ;
+	---Level: Public
+	---Purpose: Returns a hashed value denoting <me>. This value is in
+	--         the range 1..<Upper>.
+	---C++:  function call
+
+	Print( me ; s : in out OStream )
+	is redefined static ;
+	---Level: Public
+	---Purpose : Prints the contents of <me> on the stream <s>
+
+    	IsEqual(me; Other : IndexPixel from Aspect) returns Boolean;
+	    ---C++: alias operator==
+
+    	IsNotEqual(me; Other : IndexPixel from Aspect) returns Boolean;
+           ---C++: alias operator!=
+
+fields
+	myIndex: Integer from Standard;
+
+end IndexPixel from Aspect;

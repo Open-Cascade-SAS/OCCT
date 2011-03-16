@@ -1,0 +1,25 @@
+#include <string.h>
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer MoniTool_MTHasher::HashCode(const Standard_CString Str,
+                                                    const Standard_Integer Upper) 
+{
+  return ::HashCode(Str,Upper);
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean MoniTool_MTHasher::IsEqual(const Standard_CString Str1,
+                                                   const Standard_CString Str2) 
+{
+  return ! strcmp(Str1,Str2);
+}
+
+

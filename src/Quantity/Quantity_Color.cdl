@@ -1,0 +1,353 @@
+--
+-- File:	Quantity_Color.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992
+--
+
+class Color from Quantity
+inherits  Storable
+
+	---Purpose: This class allows the definition of a colour.
+	--	    The names of the colours are from the X11 specification.
+    	-- color object may be used for numerous applicative purposes.
+    	-- A color is defined by:
+    	-- -   its respective quantities of red, green and blue (R-G-B values), or
+    	-- -   its hue angle and its values of lightness and  saturation (H-L-S values).
+    	-- These two color definition systems are equivalent.
+    	-- Use this class in conjunction with:
+    	-- -   the Quantity_TypeOfColor enumeration
+    	--   which identifies the color definition system you are using,
+    	-- -   the Quantity_NameOfColor enumeration
+    	--   which lists numerous predefined colors and
+    	--   identifies them by their name.
+        
+uses
+
+	NameOfColor	from Quantity,
+	Parameter	from Quantity,
+	Rate		from Quantity,
+	TypeOfColor	from Quantity
+
+
+raises
+
+	ColorDefinitionError	from Quantity
+
+is
+
+	Create
+		returns Color
+	---Purpose: Creates a colour with the default value of
+	--	    Colour name : YELLOW
+	--
+	raises ColorDefinitionError from Quantity;
+	-- if the maximum number of colours is exceeded
+
+	Create ( AName	: NameOfColor from Quantity )
+		returns Color
+	---Purpose: Creates the colour <AName>.
+	--
+	raises ColorDefinitionError from Quantity;
+	-- if the given name is unknown or the maximum number
+	-- of colours is exceeded
+
+	Create ( R1, R2, R3	: Parameter from Quantity;
+		 AType		: TypeOfColor from Quantity )
+		returns Color
+	---Purpose: Creates a colour according to the definition system
+	--	    TypeOfColor.
+	--	    TOC_RGB : <R1> the value of red between 0. and 1.
+	--		      <R2> the value of green between 0. and 1.
+	--		      <R3> the value of blue between 0. and 1.
+	--
+	--	    TOC_HLS : <R1> is the hue angle in degrees, 0. being red
+	--	  	      <R2> is the lightness between 0. and 1.
+	--		      <R3> is the saturation between 0. and 1.
+	--
+	raises ColorDefinitionError from Quantity;
+	-- if the values are not in the allowed interval or
+	-- maximum number of colours is exceeded.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Assign ( me	: in out;
+		 Other	: Color from Quantity )
+		returns Color from Quantity is static;
+	---Purpose: Updates the colour <me> from the definition of the
+	--	    colour <Other>.
+	---Category: Methods to modify the class definition
+	---C++: alias operator =
+	---C++: return &
+
+	ChangeContrast ( me	: in out;
+			 ADelta	: Rate from Quantity ) is static;
+	---Purpose: Increases or decreases the contrast by <ADelta>.
+	--	    <ADelta> is a percentage. Any value greater than zero
+	--	    will increase the contrast.
+	--	    The variation is expressed as a percentage of the
+	--	    current value.
+	--	    It is a variation of the saturation.
+
+	ChangeIntensity ( me		: in out;
+			  ADelta	: Rate from Quantity ) is static;
+	---Purpose: Increases or decreases the intensity by <ADelta>.
+	--	    <ADelta> is a percentage. Any value greater than zero
+	--	    will increase the intensity.
+	--	    The variation is expressed as a percentage of the
+	--	    current value.
+	--	    It is a variation of the lightness.
+
+	SetValues ( me		: in out;
+		    AName	: NameOfColor from Quantity ) is static;
+	---Purpose: Updates the colour <me> from the definition of the
+	--	    colour <AName>.
+	---Category: Methods to modify the class definition
+
+	SetValues ( me		: in out;
+		    R1, R2, R3	: Parameter from Quantity;
+		    AType	: TypeOfColor from Quantity )
+	---Purpose: Updates a colour according to the mode specified by
+	--	    TypeOfColor
+	--	    TOC_RGB : <R1> the value of red between 0. and 1.
+	--		      <R2> the value of green between 0. and 1.
+	--		      <R3> the value of blue between 0. and 1.
+	--
+	--	    TOC_HLS : <R1> is the hue angle in degrees, 0. being red
+	--	  	      <R2> is the lightness between 0. and 1.
+	--		      <R3> is the saturation between 0. and 1.
+	--
+	raises ColorDefinitionError from Quantity is static;
+	-- if the values do not fall in the allowed interval
+	---Category: Methods to modify the class definition
+
+	------------------------------------------
+	-- Category: Methods to compare two colors
+	------------------------------------------
+
+	Delta ( me;
+		AColor	: Color from Quantity;
+		DC, DI	: out Parameter from Quantity ) is static;
+	---Purpose: Returns the percentage change of contrast and intensity
+	--	    between <me> and <AColor>.
+	--	    <DC> and <DI> are percentages, either positive or negative.
+	--	    The calculation is with respect to the current value of <me>
+	--	    If <DC> is positive then <me> is more contrasty.
+	--	    If <DI> is positive then <me> is more intense.
+	---Category: Methods to compare two colors
+
+	Distance ( me;
+		   AColor	: Color from Quantity )
+		returns Real from Standard is static;
+	---Purpose: Returns the distance between two colours. It's a
+	--	    value between 0 and the square root of 3
+	--	    (the black/white distance)
+	---Category: Methods to compare two colors
+
+	SquareDistance ( me;
+			 AColor	: Color from Quantity )
+		returns Real from Standard is static;
+	---Purpose: Returns the square of distance between two colours.
+	---Category: Methods to compare two colors
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Blue ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Blue component (quantity of blue) of the
+	--	    color <me>.
+	---Category: Inquire methods
+
+	Green ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Green component (quantity of green) of the
+	--	    color <me>.
+	---Category: Inquire methods
+
+	Hue ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Hue component (hue angle) of the
+	--	    color <me>.
+	---Category: Inquire methods
+
+	IsDifferent ( me;
+		      Other	: Color from Quantity )
+		returns Boolean from Standard is static;
+	---Purpose: Returns Standard_True if the distance between <me> and
+	--	    <Other> is greater than Epsilon ().
+	---Category: Inquire methods
+	---C++: alias operator !=
+
+	IsEqual ( me;
+		  Other	: Color from Quantity )
+		returns Boolean from Standard is static;
+	---Purpose: Returns true if the Other color is
+    	-- -   different from, or
+    	-- -   equal to this color.
+    	-- Two colors are considered to be equal if their
+    	-- distance is no greater than Epsilon().
+    	-- These methods are aliases of operator != and operator ==.
+	---C++: alias operator ==
+
+	Light ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Light component (value of the lightness) of the
+	--	    color <me>.
+	---Category: Inquire methods
+
+	Name ( me )
+		returns NameOfColor from Quantity is static;
+	---Purpose: Returns the name of the color defined by its
+    	-- quantities of red R, green G and blue B; more
+    	-- precisely this is the nearest color from the
+    	-- Quantity_NameOfColor enumeration.
+    	-- Exceptions
+    	-- Standard_OutOfRange if R, G or B is less than 0. or greater than 1.
+
+	Red ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Red component (quantity of red) of the
+	--	    color <me>.
+	---Category: Inquire methods
+
+	Saturation ( me )
+		returns Parameter from Quantity is static;
+	---Purpose: Returns the Saturation component (value of the saturation)
+	    	--	    of the color <me>.
+	---Category: Inquire methods
+
+	Values ( me;
+		 R1, R2, R3	: out Parameter from Quantity;
+		 AType		: TypeOfColor from Quantity )
+	---Purpose: Returns in R1, R2 and R3 the components of
+    	-- this color according to the color system definition AType.
+    	-- -   if AType is Quantity_TOC_RGB R1 is the
+    	--   quantity of red, R2 is the quantity of green and
+    	--   R3 is the quantity of blue in this color.
+    	-- -   if AType is Quantity_TOC_HLS R1 is the
+    	--   hue angle in degrees (0 being red), R2 is the
+    	--   lightness and R3 is the saturation of this color.
+    	--Exception
+    	-- Raises ColorDefinitionError if the values are not in the allowed interval
+
+	raises ColorDefinitionError from Quantity is static;
+	
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	SetEpsilon ( myclass;
+		     AnEpsilon	: Parameter from Quantity );
+	---Purpose: Sets the specified value used to compare <me> and
+	--	    an other color in IsDifferent and in IsEqual methods.
+	--  Warning: The default value is 0.0001
+	---Category: Class methods
+
+	Epsilon ( myclass )
+		returns Parameter from Quantity;
+	---Purpose: Returns the specified value used to compare <me> and
+	--	    an other color in IsDifferent and in IsEqual methods.
+	---Category: Class methods
+
+	Name ( myclass;
+	       R, G, B	: Parameter from Quantity )
+		returns NameOfColor from Quantity;
+	---Purpose: Returns the name of the colour for which the RGB components
+	--	    are nearest to <R>, <G> and <B>.
+	---Category: Class methods
+
+	StringName ( myclass;
+		     AColor	: NameOfColor from Quantity )
+		returns CString;
+	---Purpose:  Returns the name of the color identified by
+    	-- AName in the Quantity_NameOfColor enumeration.
+    	-- For example, the name of the color which
+    	-- corresponds to Quantity_NOC_BLACK is "BLACK".
+    	-- Exceptions
+    	-- Standard_OutOfRange if AName in not known
+    	-- in the Quantity_NameOfColor enumeration.
+
+	HlsRgb ( myclass;
+		 H, L, S	: Parameter from Quantity;
+		 R , G , B	: out Parameter from Quantity ) ;
+	---Purpose: Converts HLS components into RGB ones.
+	---Category: Class methods
+
+	RgbHls ( myclass;
+		 R, G, B	: Parameter from Quantity;
+		 H , L , S	: out Parameter from Quantity ) ;
+	---Purpose: Converts RGB components into HLS ones.
+	---Category: Class methods
+
+        Color2argb ( myclass; theColor: Color from Quantity;
+                              theARGB : out Integer from Standard );
+        ---Purpose: Convert the Color value to ARGB integer value.
+        --          theARGB has Alpha equal to zero, so the output is
+        --          formatted as 0x00RRGGBB
+
+        Argb2color ( myclass; theARGB : Integer from Standard;
+                              theColor: out Color from Quantity );
+        ---Purpose: Convert integer ARGB value to Color. Alpha bits are ignored
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	hlsrgb ( myclass;
+		 H, L, S	: ShortReal from Standard;
+		 R , G , B	: out ShortReal from Standard )
+		is private ;
+	---Purpose: Converts HLS components into RGB ones.
+	---Category: Private methods
+
+	rgbhls ( myclass;
+		 R, G, B	: ShortReal from Standard;
+		 H , L , S	: out ShortReal from Standard )
+		is private ;
+	---Purpose: Converts RGB components into HLS ones.
+	---Category: Private methods
+
+	ValuesOf ( myclass;
+		  AName		: NameOfColor from Quantity;
+		  AType		: TypeOfColor from Quantity;
+		  R1, R2, R3	: out ShortReal from Standard )
+		is private;
+	---Purpose: Returns the values of a predefined colour according to
+	--	    the mode specified by TypeOfColor
+	--	    TOC_RGB : <R1> the value of red between 0. and 1.
+	--		      <R2> the value of green between 0. and 1.
+	--		      <R3> the value of blue between 0. and 1.
+	--
+	--	    TOC_HLS : <R1> is the hue angle in degrees, 0. being red
+	--	  	      <R2> is the lightness between 0. and 1.
+	--		      <R3> is the saturation between 0. and 1.
+	---Category: Private methods
+
+	Test ( myclass );
+	---Purpose: Internal test
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Quantity_Color
+--
+-- Purpose	:	Declaration of variables specific to colours
+--
+-- Reminder	:	A colour is defined, either in RGB or HLS,
+--			or by a name defined in the X11 specification.
+--
+
+	-- RGB components
+	MyRed		:	ShortReal from Standard;
+	MyGreen		:	ShortReal from Standard;
+	MyBlue		:	ShortReal from Standard;
+
+end Color;

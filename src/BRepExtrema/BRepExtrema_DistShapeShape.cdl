@@ -1,0 +1,229 @@
+-- File:	BRepExtrema_DistShapeShape.cdl
+-- Created:	Tue Apr  9 14:29:10 1996
+-- Author:	Maria PUMBORIOS
+-- Author:      Herve LOUESSARD 
+--		<mps@sgi30>
+---Copyright:	 Matra Datavision 1996
+
+
+class DistShapeShape from BRepExtrema
+    ---Purpose: This class  provides tools to compute minimum distance
+    --          between two Shapes (Compound,CompSolid, Solid, Shell, Face, Wire, Edge, Vertex).
+
+uses
+
+    IndexedMapOfShape                     from TopTools,               
+    Boolean,  Integer, OutOfRange         from Standard, 
+    Pnt                                   from gp,
+    SupportType,SeqOfSolution             from BRepExtrema, 
+    Shape                                 from TopoDS,
+    Box, SeqOfBox                         from Bnd,
+    NotDone                               from StdFail 
+    
+raises
+
+    NotDone           from StdFail, 
+    OutOfRange        from Standard,
+    UnCompatibleShape from BRepExtrema    
+
+
+is
+
+--  --  the computation of the minimum distance is made in the constructor 
+
+    Create returns DistShapeShape from BRepExtrema;
+    	---Purpose: create empty brepextrema
+	
+    Create(Shape1 : Shape   from TopoDS;
+           Shape2 : Shape   from TopoDS)
+    	---Purpose: computation of  the minimum  distance  (value  and
+    	--          couple  of points) using default deflection 
+    returns DistShapeShape from BRepExtrema;
+   
+    Create(Shape1        : Shape   from TopoDS;
+           Shape2        : Shape   from TopoDS; 
+           theDeflection : Real from Standard)
+    	---Purpose: Creates brepextrema and load both shapes into it
+    	--          Default value is Precision::Confusion().
+	--
+    	--          Computation of  the minimum  distance  (value  and
+    	--          couple  of points). Parameter theDeflection is used 
+        --          to specify a maximum deviation of extreme distances 
+    	--          from the minimum one. 
+    	--          Default value is Precision::Confusion().
+    returns DistShapeShape from BRepExtrema;
+    
+    SetDeflection(me: in out; theDeflection : Real from Standard);
+    	--          Default value is Precision::Confusion().
+
+    LoadS1(me: in out; Shape1 : Shape   from TopoDS);
+    	---Purpose: load first shape into extrema
+    
+    LoadS2(me: in out; Shape1 : Shape   from TopoDS);
+    	---Purpose: load second shape into extrema
+   
+    Perform(me: in out) returns Boolean from Standard;
+    	---Purpose: computation of  the minimum  distance  (value  and
+    	--          couple  of points). Parameter theDeflection is used 
+        --          to specify a maximum deviation of extreme distances 
+    	--          from the minimum one. 
+    	--          Returns IsDone status.
+
+-- the following  method is only   used in the computation of
+-- minimum distance
+   
+    DistanceMapMap(me :in out; Map1, Map2: IndexedMapOfShape from TopTools;  
+    	    	    LBox1, LBox2: SeqOfBox from Bnd)
+	---Purpose: computes the minimum  distance  between two map  of
+	--          shapes(Face,Edge,Vertex)  
+	is private;		 
+
+---  methods giving informations about the  solutions
+
+
+    IsDone(me) returns Boolean from Standard;
+    	---Purpose: True if the minimum  distance  is found.
+
+ 
+     
+    NbSolution(me) returns Integer from Standard
+    	---Purpose: Returns the number of solutions satisfying the minimum
+    	--          distance.
+    raises NotDone from StdFail;
+
+
+    
+    Value(me) returns Real from Standard
+    	---Purpose: Returns the value of the minimum distance.
+    raises NotDone    from StdFail; 
+   
+
+
+    InnerSolution (me) returns Boolean from Standard;
+         ---Purpose: True if one of  the  shapes is  a solid and the
+         --          other shape is completely or partially inside the solid.
+
+    
+    PointOnShape1(me; N : Integer from Standard) returns Pnt from gp
+    	---Purpose: Returns the Point corresponding to  the <N>th  
+    	--          solution on the first Shape
+    raises NotDone    from StdFail, 
+    	   OutOfRange from Standard;
+
+
+    PointOnShape2(me; N : Integer from Standard) returns Pnt from gp
+    	---Purpose: Returns the Point  corresponding to the <N>th 
+    	--          solution on the second Shape 
+    raises NotDone    from StdFail, 
+    	   OutOfRange from Standard;
+ 
+
+   SupportTypeShape1(me; N : Integer from Standard) 
+    	    returns   SupportType from BRepExtrema 
+        ---Purpose: gives the type   of  the support  where the   Nth
+        --          solution on the first shape is situated:
+        --          IsVertex :
+        --          => the Nth solution on the first shape is a Vertex
+        --          IsOnEdge
+        --          => the Nth soluion on the first shape is on a Edge
+        --          IsInFace 
+        --          => the Nth solution on the first shape is inside a
+        --          face 
+        --          
+        --           the  corresponding  support   is  obtained by  the
+        --          method SupportOnShape1
+     raises NotDone    from StdFail, 
+    	    OutOfRange from Standard;
+
+
+    SupportTypeShape2(me; N : Integer from Standard) 
+    	    returns   SupportType from BRepExtrema 
+        ---Purpose: gives the type    of  the support  where the   Nth
+        --          solution on the second shape is situated:
+        --          IsVertex :
+        --          => the Nth solution on the second shape is a Vertex
+        --          IsOnEdge
+        --          => the Nth soluion on the secondt shape is on a Edge
+        --          IsInFace 
+        --          => the Nth solution on the second shape is inside a
+        --          face 
+        --                     
+        --          the support is obtained by the method SupportOnShape2         
+     raises NotDone    from StdFail, 
+    	    OutOfRange from Standard;
+     
+
+    SupportOnShape1(me; N : Integer from Standard) returns Shape from TopoDS 
+    	---Purpose :gives the support  where the   Nth
+        --          solution on the first  shape is situated.
+        --          This support can be a Vertex, an Edge or a Face. 
+     raises NotDone    from StdFail, 
+    	    OutOfRange from Standard;          
+                             
+   
+    SupportOnShape2(me; N : Integer from Standard) returns Shape from TopoDS 
+    	---Purpose: gives the support  where the   Nth
+        --          solution on the second   shape is situated.
+        --          This support can be a Vertex, an Edge or a Face.
+     raises NotDone    from StdFail, 
+    	    OutOfRange from Standard;
+
+
+    ParOnEdgeS1(me; N: Integer from Standard; t: out  Real from Standard)
+        ---Purpose: gives the  corresponding  parameter  t if the  Nth
+        --          Solution is situated on an Egde of the first shape 
+        raises UnCompatibleShape,
+	       NotDone    from StdFail, 
+    	       OutOfRange from Standard; 
+
+	
+    ParOnEdgeS2(me; N: Integer from Standard; t: out Real from Standard)   
+        ---Purpose: gives the  corresponding  parameter  t if the  Nth
+        --          Solution is situated on an Egde of the first shape   
+        raises UnCompatibleShape,
+	       NotDone    from StdFail, 
+    	       OutOfRange from Standard;
+	       
+
+    ParOnFaceS1(me; N: Integer from Standard; u: out Real from Standard; 
+    	    	v:out  Real from Standard)
+        ---Purpose: gives the  corresponding  parameters  (U,V)  if the  Nth
+        --          Solution is situated on an face  of the first shape 
+        raises UnCompatibleShape,
+	       NotDone    from StdFail, 
+    	       OutOfRange from Standard;
+	       
+
+    ParOnFaceS2(me; N: Integer from Standard; u: out Real from Standard; 
+    	    	v:out  Real from Standard)
+        ---Purpose: gives the  corresponding  parameters (U,V)   if the  Nth
+        --          Solution is situated on an Face  of the second  shape 
+        raises UnCompatibleShape,
+	       NotDone    from StdFail, 
+    	       OutOfRange from Standard;
+	       
+    Dump(me ; o : in out OStream);
+        ---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--         
+
+fields
+
+    myNbSolution : Integer from Standard;
+    myDistRef    : Real    from Standard;
+    myDistValue  : Real    from Standard;
+    myIsDone     : Boolean from Standard;
+    ListeDeSolutionShape1 :  SeqOfSolution from BRepExtrema;
+    ListeDeSolutionShape2 :  SeqOfSolution from BRepExtrema;  
+    myInnerSol   : Boolean from Standard; 
+    myEps        : Real    from Standard;
+    myShape1     : Shape   from TopoDS;
+    myShape2     : Shape   from TopoDS;
+    myMapV1      : IndexedMapOfShape from TopTools;
+    myMapV2      : IndexedMapOfShape from TopTools;
+    myMapE1      : IndexedMapOfShape from TopTools;
+    myMapE2      : IndexedMapOfShape from TopTools;
+    myMapF1      : IndexedMapOfShape from TopTools;
+    myMapF2      : IndexedMapOfShape from TopTools;
+
+end DistShapeShape;

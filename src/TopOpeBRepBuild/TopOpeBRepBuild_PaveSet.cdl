@@ -1,0 +1,66 @@
+-- File:	TopOpeBRepBuild_PaveSet.cdl
+-- Created:	Tue Jun 15 20:02:14 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class PaveSet from TopOpeBRepBuild 
+    inherits LoopSet from TopOpeBRepBuild
+
+---Purpose: 
+-- class providing an exploration of a set of vertices to build edges.
+-- It is similar to LoopSet from TopOpeBRepBuild where Loop is Pave.
+
+uses 
+    
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Loop from TopOpeBRepBuild,
+    Pave from TopOpeBRepBuild,
+    ListOfPave from TopOpeBRepBuild,
+    ListIteratorOfListOfPave from TopOpeBRepBuild
+    
+is
+
+    Create(E : Shape from TopoDS) returns PaveSet from TopOpeBRepBuild;
+    ---Purpose: Create a Pave set on edge <E>. It contains <E> vertices. 
+
+    RemovePV(me:in out; B : Boolean); -- particular case B = T/F : try/don't try
+    -- to remove Pave in Prepare() (T by default)
+		
+    Append(me : in out; PV : Pave from TopOpeBRepBuild) is static;
+    ---Purpose: Add <PV> in the Pave set.
+    
+    -- === start signature LoopSet
+    InitLoop(me : in out) is redefined;
+    MoreLoop(me) returns Boolean is redefined;
+    NextLoop(me : in out) is redefined;
+    Loop(me) returns Loop from TopOpeBRepBuild is redefined;
+    ---C++: return const &
+    -- === end signature LoopSet
+
+    Edge(me) returns Edge from TopoDS is static;
+    ---C++: return const &
+
+    HasEqualParameters(me : in out) returns Boolean is static;
+    EqualParameters(me) returns Real is static;
+    ClosedVertices(me : in out) returns Boolean is static;
+
+    Prepare(me : in out) is static private;
+    SortPave(myclass; Lin:ListOfPave; Lout:out ListOfPave);
+    
+fields
+
+    myEdge       : Edge from TopoDS;
+    myVertices   : ListOfPave from TopOpeBRepBuild;
+    myVerticesIt : ListIteratorOfListOfPave from TopOpeBRepBuild;
+    myEdgeVertexIndex  : Integer from Standard;
+    myEdgeVertexCount  : Integer from Standard;
+
+    myHasEqualParameters : Boolean from Standard;
+    myEqualParameters    : Real from Standard;
+    myClosed             : Boolean from Standard;
+    myPrepareDone        : Boolean from Standard;
+    myRemovePV : Boolean;
+    
+end PaveSet from TopOpeBRepBuild;

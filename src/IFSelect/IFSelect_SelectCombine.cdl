@@ -1,0 +1,63 @@
+-- File:	SelectCombine.cdl
+-- Created:	Tue Nov 17 19:02:56 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectCombine  from IFSelect  inherits Selection
+
+    ---Purpose : A SelectCombine type Selection defines algebraic operations
+    --           between results of several Selections
+    --           It is a deferred class : sub-classes will have to define
+    --           precise what operator is to be applied
+
+uses AsciiString from TCollection, EntityIterator,
+     Graph, SelectionIterator, TSeqOfSelection
+
+is
+
+    Initialize;
+    ---Purpose : Defines an empty SelectCombine
+
+    NbInputs (me) returns Integer;
+    ---Purpose : Returns the count of Input Selections
+
+    Input (me; num : Integer) returns mutable Selection;
+    ---Purpose : Returns an Input Selection, given its rank in the list
+
+    InputRank (me; sel : Selection) returns Integer;
+    ---Purpose : Returns the rank of an input Selection, 0 if not in the list.
+    --           Most generally, its value is meaningless, except for testing
+    --           the presence of an input Selection :
+    --           - == 0  if <sel> is not an input for <me>
+    --           - >  0  if <sel> is an input for <me>
+
+    Add (me : mutable; sel : mutable Selection; atnum : Integer = 0);
+    ---Purpose : Adds a Selection to the filling list
+    --           By default, adds it to the end of the list
+    --           A Positive rank less then NbInputs gives an insertion rank
+    --           (InsertBefore : the new <atnum>th item of the list is <sel>)
+
+    Remove (me : mutable; sel : Selection) returns Boolean;
+    ---Purpose : Removes an input Selection.
+    --           Returns True if Done, False, if <sel> is not an input for <me>
+
+    Remove (me : mutable; num : Integer) returns Boolean;
+    ---Purpose : Removes an input Selection, given its rank in the list
+    --           Returns True if Done, False if <num> is out of range
+
+
+    HasUniqueResult (me) returns Boolean  is redefined protected;
+    ---Purpose : Returns always True, because RootResult gives a Unique list
+
+
+    FillIterator (me; iter : in out SelectionIterator);
+    ---Purpose : Puts in an Iterator the Selections from which "me" depends
+    --           That is to say, the list of Input Selections
+
+fields
+
+    thelist : TSeqOfSelection;
+
+end SelectCombine;

@@ -1,0 +1,24 @@
+-- File:	BRepAlgo_Cut.cdl
+-- Created:	Thu Oct 14 18:27:02 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Cut from BRepAlgo inherits BooleanOperation from BRepAlgo
+	---Purpose: Describes functions for performing a topological cut
+    	-- operation (Boolean subtraction).
+    	-- A Cut object provides the framework for:
+    	-- - defining the construction of a cut shape,
+    	-- - implementing the construction algorithm, and
+    	-- - consulting the result.
+        
+uses
+    Shape from TopoDS
+
+is
+    Create (S1,S2 : Shape from TopoDS) returns Cut from BRepAlgo;  
+	---Purpose: Cuts the shape S2 from the shape S1.
+	
+end Cut;

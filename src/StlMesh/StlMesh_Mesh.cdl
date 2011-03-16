@@ -1,0 +1,159 @@
+-- File:	StlMesh_Mesh.cdl
+-- Created:	Tue Sep 21 09:49:25 1995
+-- Author:	Philippe GIRODENGO
+---Copyright:	 Matra Datavision 1995
+
+
+
+class Mesh from StlMesh inherits TShared from MMgt
+
+
+    	---Purpose: Mesh definition.  The mesh contains one or several
+    	--          domains. Each  mesh   domain  contains a  set   of
+    	--          triangles. Each domain can have its own deflection
+    	--          value.
+	--          
+uses
+
+    XYZ                    from gp,
+    SequenceOfMeshDomain   from StlMesh,
+    SequenceOfMeshTriangle from StlMesh,
+    SequenceOfXYZ          from TColgp
+
+raises
+ 
+    NegativeValue              from Standard,
+    NullValue                  from Standard,
+    NoSuchObject               from Standard
+
+is
+
+    Create  returns mutable Mesh;
+    	---Purpose: Creates an empty mesh.
+
+
+    AddDomain (me : mutable) is virtual;
+    	---Purpose: Adds a   new mesh domain.  The  mesh deflection is
+    	--          defaulted to Confusion from package Precision.
+
+
+    AddDomain (me : mutable; Deflection : Real)
+    	---Purpose: Adds a new mesh domain.
+    raises NegativeValue,
+    	---Purpose: Raised if the deflection is lower than zero
+    	   NullValue
+	---Purpose: Raised if  the deflection is lower  than Confusion
+	--          from package Precision
+    is virtual;
+    
+
+    AddTriangle (me : mutable; V1, V2, V3 : Integer; Xn, Yn, Zn : Real) 
+    returns Integer
+    	---Purpose: Build a triangle with the triplet of vertices (V1,
+    	--          V2, V3).  This triplet defines  the indexes of the
+    	--          vertex in the  current domain The coordinates  Xn,
+    	--          Yn,  Zn  defines   the normal  direction   to  the
+    	--          triangle.  Returns  the  range of  the triangle in
+    	--          the current domain.
+    is virtual;
+    
+
+    AddVertex (me : mutable; X, Y, Z : Real) returns Integer is virtual;
+    	---Purpose: Returns the  range  of the  vertex in the  current
+    	--          domain. 
+
+
+    AddOnlyNewVertex (me : mutable; X, Y, Z : Real) returns Integer
+    	---Purpose: Returns  the range of   the vertex in  the current
+    	--          domain.  The current vertex is not inserted in the
+    	--          mesh if it already exist.
+    is virtual;
+    
+
+    Bounds (me; XYZmax, XYZmin : in out XYZ) is virtual;
+    	---Purpose: Each  vertex of  the  mesh verifies  the following
+    	--          relations :
+    	--          XYZMin.X() <= X <= XYZMax.X()
+    	--          XYZMin.Y() <= Y <= XYZMax.y()
+    	--          XYZMin.Z() <= Z <= XYZMax.Z()
+
+
+    Clear (me : mutable) is virtual;
+
+
+    Deflection (me; DomainIndex : Integer) returns Real
+    	---Purpose: Returns the deflection of the mesh of the domain 
+    	--          of range <DomainIndex>.
+    raises NoSuchObject
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is virtual;
+    
+
+    IsEmpty (me) returns Boolean is virtual;
+    	---C++: inline
+
+
+    NbDomains (me)  returns Integer is virtual;
+    	---Purpose: Number of domains in the mesh.
+    	---C++: inline
+    
+
+    NbTriangles (me) returns Integer;
+    	---Purpose: Cumulative Number of triangles in the mesh.
+    	---C++: inline
+
+
+    NbTriangles (me; DomainIndex : Integer) returns Integer
+    	---Purpose: Number of  triangles   in  the  domain   of  range
+    	--          <DomainIndex>.
+    raises NoSuchObject
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is virtual;
+    
+    
+    NbVertices (me) returns Integer
+    	---Purpose: Cumulative Number of vertices in the mesh.
+    	---C++: inline
+    is virtual;
+    
+
+    NbVertices (me; DomainIndex : Integer) returns Integer
+    	---Purpose: Number of vertices in the domain of range 
+    	--          <DomainIndex>. 
+    raises NoSuchObject
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is virtual;
+    
+
+    Triangles (me; DomainIndex : Integer = 1) returns SequenceOfMeshTriangle
+    	---Purpose: Returns the set of triangle   of   the  mesh domain   of   range
+    	--          <DomainIndex>.   
+    	---C++: return const &
+    raises NoSuchObject
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is virtual;
+    
+    Vertices (me; DomainIndex : Integer = 1)  returns SequenceOfXYZ from TColgp
+    	---Purpose: Returns  the coordinates   of the  vertices of the
+    	--          mesh domain   of range <DomainIndex>.   {XV1, YV1,
+    	--          ZV1, XV2, YV2, ZV2, XV3,.....}
+    	---C++: return const &
+    raises NoSuchObject
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is virtual;
+
+
+fields
+
+    nbTriangles : Integer;
+    nbVertices  : Integer;
+    domains     : SequenceOfMeshDomain;
+    xyzmax      : XYZ;
+    xyzmin      : XYZ;
+	
+end Mesh;

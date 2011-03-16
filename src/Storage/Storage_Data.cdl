@@ -1,0 +1,229 @@
+-- File:	Storage_Data.cdl
+-- Created:	Thu Feb  6 15:10:29 1997
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Data from Storage
+
+inherits TShared from MMgt
+
+    	--- Purpose: A picture memorizing the data stored in a
+    	-- container (for example, in a file).
+    	-- A Storage_Data object represents either:
+    	-- -   persistent data to be written into a container,
+    	--   or
+    	-- -   persistent data which are read from a container.
+    	-- A Storage_Data object is used in both the
+    	-- storage and retrieval operations:
+    	-- -   Storage mechanism: create an empty
+    	--   Storage_Data object, then add successively
+    	--   persistent objects (roots) to be stored using
+    	--   the function AddRoot. When the set of data is
+    	--   complete, write it to a container using the
+    	--   function Write in your Storage_Schema
+    	--   storage/retrieval algorithm.
+    	-- -   Retrieval mechanism: a Storage_Data
+    	--   object is returned by the Read function from
+    	--   your Storage_Schema storage/retrieval
+    	--   algorithm. Use the functions NumberOfRoots
+    	--   and Roots to find the roots which were stored
+    	--   in the read container.
+    	-- The roots of a Storage_Data object may share
+    	-- references on objects. The shared internal
+    	-- references of a Storage_Data object are
+    	-- maintained by the storage/retrieval mechanism.
+    	-- Note: References shared by objects which are
+    	-- contained in two distinct Storage_Data objects
+    	-- are not maintained by the storage/retrieval
+    	-- mechanism: external references are not
+    	-- supported by Storage_Schema algorithm
+        
+uses TypeData from Storage,
+     RootData from Storage,
+     Root from Storage,
+     InternalData from Storage,
+     HSeqOfRoot from Storage,
+     AsciiString from TCollection,
+     HSequenceOfAsciiString from TColStd,
+     SequenceOfAsciiString from TColStd,
+     HeaderData from Storage,
+     Error from Storage,
+     ExtendedString from TCollection,
+     SequenceOfExtendedString from TColStd
+is
+
+    Create returns mutable Data from Storage;
+    	---Purpose:
+    	-- Creates an empty set of data.
+    	-- You explicitly create a Storage_Data object
+    	-- when preparing the set of objects to be stored
+    	-- together in a container (for example, in a file).
+    	-- Then use the function AddRoot to add
+    	-- persistent objects to the set of data.
+    	-- A Storage_Data object is also returned by the
+    	-- Read function of a Storage_Schema
+    	-- storage/retrieval algorithm. Use the functions
+    	-- NumberOfRoots and Roots to find the roots
+    	-- which were stored in the read container.
+    ErrorStatus(me) returns Error from Storage;
+    	---Purpose: Returns Storage_VSOk if
+    	-- -   the last storage operation performed with the
+    	--   function Read, or
+    	-- -   the last retrieval operation performed with the function Write
+    	--  by a Storage_Schema algorithm, on this set of data was successful.
+    	-- If the storage or retrieval operation was not
+    	-- performed, the returned error status indicates the
+    	-- reason why the operation failed. The algorithm
+    	-- stops its analysis at the first detected error
+    
+    ClearErrorStatus(me : mutable);
+    	---Purpose: 
+    	-- Clears the error status positioned either by:
+    	-- -   the last storage operation performed with the
+    	--   Read function, or
+    	-- -   the last retrieval operation performed with the Write function
+    	--   by a Storage_Schema algorithm, on this set of data.
+    	-- This error status may be read by the function ErrorStatus.
+
+    ErrorStatusExtension(me) returns AsciiString from TCollection;
+    
+    -- HEADER
+
+    CreationDate(me) returns AsciiString from TCollection;
+    ---Purpose: return the creation date
+
+    StorageVersion(me) returns AsciiString from TCollection;
+    ---Purpose: return the Storage package version
+  
+    SchemaVersion(me) returns AsciiString from TCollection;
+    ---Purpose: get the version of the schema
+  
+    SchemaName(me) returns AsciiString from TCollection;
+    ---Purpose: get the schema's name
+
+    SetApplicationVersion(me : mutable; aVersion : AsciiString from TCollection);
+    ---Purpose: set the version of the application
+
+    ApplicationVersion(me) returns AsciiString from TCollection;
+    ---Purpose: get the version of the application
+
+    SetApplicationName(me : mutable; aName : ExtendedString from TCollection);
+    ---Purpose: set the name of the application
+  
+    ApplicationName(me) returns ExtendedString from TCollection;
+    ---Purpose: get the name of the application
+
+    SetDataType(me : mutable; aType : ExtendedString from TCollection);
+    ---Purpose: set the data type
+
+    DataType(me) returns ExtendedString from TCollection;
+    ---Purpose: returns data type
+
+    AddToUserInfo(me : mutable; anInfo : AsciiString from TCollection);
+    ---Purpose: add <theUserInfo> to the user informations
+    
+    UserInfo(me) returns SequenceOfAsciiString from TColStd;
+    ---Purpose: return the user informations
+    ---C++: return const &
+
+    AddToComments(me : mutable; aComment : ExtendedString from TCollection);
+    ---Purpose: add <theUserInfo> to the user informations
+    
+    Comments(me) returns SequenceOfExtendedString from TColStd;
+    ---Purpose: return the user informations
+    ---C++: return const &
+	
+    NumberOfObjects(me) returns Integer;
+    ---Purpose: the the number of persistent objects
+    --  Return:
+    --   the number of persistent objects readed
+
+    -- ROOTS
+    
+    NumberOfRoots(me) returns Integer from Standard;
+    	---Purpose: Returns the number of root objects in this set of data.
+    	-- -   When preparing a storage operation, the
+    	--   result is the number of roots inserted into this
+    	--   set of data with the function AddRoot.
+    	-- -   When retrieving an object, the result is the
+    	--   number of roots stored in the read container.
+    	--   Use the Roots function to get these roots in a sequence.
+    
+    AddRoot(me; anObject : mutable Persistent from Standard);
+    	---Purpose: add a persistent root to write. the name of the root 
+    	--          is a driver reference number.
+
+    AddRoot(me; aName : AsciiString from TCollection; anObject : mutable Persistent from Standard);
+    	---Purpose: Adds the root anObject to this set of data.
+    	-- The name of the root is aName if given; if not, it
+    	-- will be a reference number assigned by the driver
+    	-- when writing the set of data into the container.
+    	-- When naming the roots, it is easier to retrieve
+    	-- objects by significant references rather than by
+    	-- references without any semantic values.
+
+    RemoveRoot(me : mutable; aName : AsciiString from TCollection);
+    	---Purpose: Removes from this set of data the root object named aName.
+    	-- Warning
+    	-- Nothing is done if there is no root object whose
+    	-- name is aName in this set of data.
+
+    Roots(me) returns HSeqOfRoot from Storage;
+    	---Purpose: Returns the roots of this set of data in a sequence.
+    	-- -   When preparing a storage operation, the
+    	--   sequence contains the roots inserted into this
+    	--   set of data with the function AddRoot.
+    	-- -   When retrieving an object, the sequence
+    	--   contains the roots stored in the container read.
+    	-- -   An empty sequence is returned if there is no root in this set of data.
+
+    Find(me; aName : AsciiString from TCollection) returns mutable Root from Storage;
+    	---Purpose: Gives the root object whose name is aName in
+    	-- this set of data. The returned object is a
+    	-- Storage_Root object, from which the object it
+    	-- encapsulates may be extracted.
+    	-- Warning
+    	-- A null handle is returned if there is no root object
+    	-- whose name is aName in this set of data.
+
+    IsRoot(me; aName : AsciiString from TCollection) returns Boolean from Standard;
+    ---Purpose: returns Standard_True if <me> contains a root named <aName>
+
+    -- TYPES
+
+    NumberOfTypes(me) returns Integer from Standard;
+    ---Purpose: Returns the number of types of objects used in this set of data.
+    
+    IsType(me; aName : AsciiString from TCollection) returns Boolean from Standard;
+    	---Purpose: Returns true if this set of data contains an object of type aName.
+    	-- Persistent objects from this set of data must
+    	-- have types which are recognized by the
+    	-- Storage_Schema algorithm used to store or retrieve them.
+    
+    Types(me) returns HSequenceOfAsciiString from TColStd;
+    	---Purpose: 
+    	-- Gives the list of types of objects used in this set of data in a sequence.
+
+    -- PRIVATE
+
+    HeaderData(me) returns mutable HeaderData from Storage is private;
+    RootData(me) returns mutable RootData from Storage is private;
+    TypeData(me) returns mutable TypeData from Storage is private;
+    InternalData(me) returns mutable InternalData from Storage is private;
+    Clear(me) is private;
+    SetErrorStatus(me : mutable; anError : Error from Storage) is private;    
+    SetErrorStatusExtension(me : mutable; anErrorExt : AsciiString from TCollection) is private;    
+    
+    fields
+      myHeaderData         : HeaderData       from Storage;
+      myRootData           : RootData         from Storage;
+      myTypeData           : TypeData         from Storage;
+      myInternal           : InternalData     from Storage;
+      myErrorStatus        : Error            from Storage;
+      myErrorStatusExt     : AsciiString      from TCollection;
+      
+    friends class Schema from Storage
+end;
+
+

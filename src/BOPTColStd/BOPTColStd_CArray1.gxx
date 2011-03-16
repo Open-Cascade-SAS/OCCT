@@ -1,0 +1,220 @@
+// File:	BOPTools_CArray1.gxx
+// Created:	Tue Nov 14 11:18:24 2000
+// Author:	Peter KURNEV
+//		<pkv@irinox>
+
+//=======================================================================
+//function : BOPTools_CArray1::BOPTools_CArray1
+//purpose  : 
+//=======================================================================
+  BOPTColStd_CArray1::BOPTColStd_CArray1
+       (const Standard_Integer aLength,
+	const Standard_Integer aBlockLength)
+  :  
+  myStart(NULL), 
+  myLength(0), 
+  myFactLength(0), 
+  myBlockLength(aBlockLength),
+  myIsAllocated(Standard_False)
+{
+  Resize(aLength);
+}
+//=======================================================================
+//function : Resize
+//purpose  : 
+//=======================================================================
+  void BOPTColStd_CArray1::Resize(const Standard_Integer aNL) 
+{
+  Array1Item* p = NULL;
+  if (aNL>0) {
+    Destroy();
+    
+    p=new Array1Item[aNL];
+    
+    if (!p) {
+      Standard_OutOfMemory::Raise
+	("IntBOPTools_CArray1 : Allocation failed.");
+    }
+
+    else {
+      myIsAllocated=Standard_True;
+      myLength=aNL;
+      myFactLength=myLength;
+      myStart = (void*) p;
+    }
+  }
+}
+//=======================================================================
+//function : Remove
+//purpose  : 
+//=======================================================================
+  void BOPTColStd_CArray1::Remove(const Standard_Integer anInd)
+{
+  if (myIsAllocated)  {
+    if (IsInvalidIndex(anInd)) {
+      Standard_OutOfMemory::Raise
+	("IntBOPTools_CArray1 : Attempt to remove inexisting Item.");
+    }
+    
+    const Standard_Integer aNFL=myFactLength-1;
+  
+    Array1Item *p=NULL;
+    p = new Array1Item[aNFL];
+  
+    if (!p) {
+      Standard_OutOfMemory::Raise
+	("IntBOPTools_CArray1::Append: Allocation failed.");
+    }
+
+    Standard_Integer i, j, anIndx, iLength;
+
+    iLength=myLength;
+
+    anIndx=anInd-1;
+    for (i=0, j=0; i<myLength; ++i) {
+      if (i!=anIndx) {
+	p[j]= ((Array1Item *)myStart)[i];
+	j++;
+      }
+    }
+
+    Destroy();
+
+    myFactLength=aNFL;
+    myLength=iLength-1;
+    myIsAllocated=Standard_True;
+    myStart = (void*) p;
+  }
+}
+//=======================================================================
+//function : Append
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOPTColStd_CArray1::Append(const Array1Item& aV) 
+{
+  Standard_Integer i, aNL;
+
+  aNL=myLength+1;
+  if (aNL > myFactLength) {
+
+    const Standard_Integer iLengthToAllocate=myLength+myBlockLength;
+    
+    Array1Item *p=NULL;
+    p = new Array1Item[iLengthToAllocate];
+  
+    if (!p) {
+      Standard_OutOfMemory::Raise
+	("IntBOPTools_CArray1::Append: Allocation failed.");
+    }
+    
+    for (i=0; i<myLength; i++) {
+      p[i]=((Array1Item *)myStart)[i];
+    }
+    p[myLength]=aV;
+    
+    Destroy();
+
+    myFactLength=iLengthToAllocate;
+    myIsAllocated=Standard_True;
+    myStart = (void*) p;
+  }
+  
+  else {
+    ((Array1Item *)myStart)[myLength]=aV; 
+  }
+
+  myLength=aNL;
+  return myLength;
+}
+//=======================================================================
+//function : IsInvalidIndex
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOPTColStd_CArray1::IsInvalidIndex
+        (const Standard_Integer anInd)const
+{
+  Standard_Boolean aFlag;
+  Standard_Integer anIndx=anInd-1;
+  aFlag=!(anIndx > -1 && anIndx < myLength);
+  return aFlag;
+}
+//=======================================================================
+//function : Destroy
+//purpose  : 
+//=======================================================================
+  void BOPTColStd_CArray1::Destroy() 
+{
+  if (myIsAllocated) {
+    delete [] (Array1Item *)myStart;
+    myIsAllocated=Standard_False;
+    myFactLength=0;
+    myLength=0;
+    myStart=NULL;
+  }
+  //myStart=NULL;
+}
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOPTColStd_CArray1::Length() const
+{
+  return myLength;
+}
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOPTColStd_CArray1::Extent() const
+{
+  return myLength;
+}
+//=======================================================================
+//function : FactLength
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOPTColStd_CArray1::FactLength() const
+{
+  return myFactLength;
+}
+//=======================================================================
+//function : BlockLength
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOPTColStd_CArray1::BlockLength() const
+{
+  return myBlockLength;
+}
+//=======================================================================
+//function : SetBlockLength
+//purpose  : 
+//=======================================================================
+  void BOPTColStd_CArray1::SetBlockLength(const Standard_Integer aBL) 
+{
+  if (aBL > 0)
+    myBlockLength=aBL;
+}
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+  const Array1Item& BOPTColStd_CArray1::Value
+      (const Standard_Integer Index) const
+{
+  if (IsInvalidIndex(Index)) {
+    Standard_OutOfRange::Raise("BOPTools_CArray1::Value");
+  }
+  return ((Array1Item *)myStart)[Index-1];
+}
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+  Array1Item& BOPTColStd_CArray1::ChangeValue
+      (const Standard_Integer Index) 
+{
+  if (IsInvalidIndex(Index)) {
+    Standard_OutOfRange::Raise("BOPTools_CArray1::ChangeValue");
+  }
+  return ((Array1Item *)myStart)[Index-1];
+}

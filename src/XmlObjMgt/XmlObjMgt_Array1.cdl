@@ -1,0 +1,77 @@
+-- File:        XmlObjMgt_Array1.cdl
+-- Created:     Wed Nov 25 17:47:24 1992
+-- Author:      Julia DOROVSKIKH
+---Copyright:   Open Cascade 2001
+
+generic class Array1 from XmlObjMgt  (Item as Storable) 
+
+        ---Purpose: The class Array1 represents unidimensionnal 
+        -- array of fixed size known at run time. 
+        -- The range of the index is user defined.
+        --  Warning: Programs clients of such class must be independant
+        -- of the range of the first element. Then, a C++ for
+        -- loop must be written like this
+        --     for (i = A->Lower(); i <= A->Upper(); i++)
+uses 
+    Element     from XmlObjMgt,
+    DOMString   from XmlObjMgt
+
+is
+    Create (Low, Up: Integer from Standard) returns Array1;
+            ---Purpose: Create an array of lower bound <Low> and 
+            -- upper bound <Up>. Range error is raised 
+            -- when <Up> is less than <Low>.
+
+    Create (theParent:  Element from XmlObjMgt;
+            theName:    DOMString from XmlObjMgt) returns Array1;
+            ---Purpose: for restoration from DOM_Element which is child of
+            --          theParent:
+            --             <theParent ...>
+            --                 <theName ...>
+
+    CreateArrayElement (me:in out; theParent: in out Element from XmlObjMgt;
+                                   theName  : DOMString from XmlObjMgt);
+        ---Purpose: Create DOM_Element representing the array, under 'theParent'
+
+    Element(me) returns Element from XmlObjMgt
+                is static;
+                ---Purpose:  Returns the DOM element of <me>.
+                ---Level: Public
+                ---C++: inline
+                ---C++: return const &
+
+    Length (me) returns Integer from Standard
+                is static;
+                ---Purpose:  Returns the number of elements of <me>.
+                ---Level: Public
+                ---C++: inline
+
+    Lower (me) returns Integer from Standard
+                is static;
+                ---Purpose: Returns the lower bound.
+                ---Level: Public
+                ---C++: inline
+
+    Upper (me) returns Integer from Standard
+                is static;
+                ---Purpose: Returns the upper bound.
+                ---Level: Public
+                ---C++: inline
+
+    SetValue (me: in out; Index: Integer from Standard;
+                          Value: in out Element from XmlObjMgt) 
+                is static;
+                ---Purpose: Set the <Index>th element of the array to <Value>.
+                ---Level: Public
+
+    Value (me; Index: Integer from Standard) returns Element from XmlObjMgt
+                is static;
+                ---Purpose: Returns the value of <Index>th element of the array.
+                ---Level: Public
+
+fields 
+    myElement   : Element from XmlObjMgt;
+    myFirst     : Integer from Standard;
+    myLast      : Integer from Standard;
+
+end Array1;

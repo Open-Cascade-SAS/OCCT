@@ -1,0 +1,67 @@
+-- File:	BRepSweep_Iterator.cdl
+-- Created:	Tue Jun  8 17:54:06 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Iterator from BRepSweep
+
+	---Purpose: This class provides iteration services required by
+	--          the Generating Line (TopoDS Shape) of a BRepSweep.
+	--          This   tool is  used  to   iterate  on the  direct
+	--          sub-shapes of a Shape.
+	--          
+
+uses
+
+    Iterator from TopoDS,
+    Shape from TopoDS,
+    Orientation from TopAbs
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create;
+
+    Init(me : in out; aShape: Shape from TopoDS)
+	---Purpose: Resest the Iterator on sub-shapes of <aShape>.
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns True if there is a current sub-shape.
+	--          
+	---C++: inline
+    is static;
+    
+    Next(me : in out)
+	---Purpose: Moves to the next sub-shape.
+    raises
+    	NoMoreObject from Standard
+    is static;
+    
+    Value(me) returns Shape from TopoDS
+	---Purpose: Returns the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: return const &
+	---C++: inline
+    is static;
+    
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns the orientation of the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: inline
+    is static;
+
+fields
+
+    myIterator : Iterator from TopoDS;
+
+end Iterator from BRepSweep;

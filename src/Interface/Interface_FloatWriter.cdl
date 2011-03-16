@@ -1,0 +1,96 @@
+-- File:	Interface_FloatWriter.cdl
+-- Created:	Fri Apr 15 08:51:31 1994
+-- Author:	Christian CAILLET
+--		<cky@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class FloatWriter  from Interface
+
+    ---Purpose : This class converts a floting number (Real) to a string
+    --           It can be used if the standard C-C++ output functions
+    --           (sprintf or cout<<) are not convenient. That is to say :
+    --           - to suppress trailing '0' and 'E+00' (if desired)
+    --           - to control exponant output and floating point output
+    --           
+    --           Formats are given in the form used by printf-sprintf
+
+uses Boolean, Character, Real, CString
+
+is
+
+    Create (chars : Integer = 0) returns FloatWriter;
+    ---Purpose : Creates a FloatWriter ready to work, with default options  - 
+    --           - zero suppress option is set
+    --           - main format is set to "%E"
+    --           - secondary format is set to "%f" for values between 0.1 and
+    --             1000. in absolute values
+    --           If <chars> is given (and positive), it will produce options
+    --           to produce this count of characters : "%<chars>f","%<chars>%E"
+
+
+    	--  Options for Real Formats  --
+
+    SetFormat (me : in out; form : CString; reset : Boolean = Standard_True);
+    ---Purpose : Sets a specific Format for Sending Reals (main format)
+    --           (Default from Creation is "%E")
+    --           If <reset> is given True (default), this call clears effects
+    --           of former calls to SetFormatForRange and SetZeroSuppress
+
+    SetFormatForRange (me : in out; form : CString; R1, R2 : Real);
+    ---Purpose : Sets a secondary Format for Real, to be applied between R1 and
+    --           R2 (in absolute values). A Call to SetRealForm cancels this
+    --           secondary form if <reset> is True.
+    --           (Default from Creation is "%f" between 0.1 and 1000.)
+    --  Warning : if the condition (0. <= R1 < R2) is not fulfilled, this
+    --           secondary form is canceled.
+
+    SetZeroSuppress (me : in out; mode : Boolean);
+    ---Purpose : Sets Sending Real Parameters to suppress trailing Zeros and
+    --           Null Exponant ("E+00"), if <mode> is given True, Resets this
+    --           mode if <mode> is False (in addition to Real Forms)
+    --           A call to SetRealFrom resets this mode to False ig <reset> is
+    --           given True (Default from Creation is True)
+
+    SetDefaults (me : in out; chars : Integer = 0);
+    ---Purpose : Sets again options to the defaults given by Create
+
+    Options (me; zerosup, range : out Boolean; R1, R2 : out Real);
+    ---Purpose : Returns active options : <zerosup> is the option ZeroSuppress,
+    --           <range> is True if a range is set, False else
+    --           R1,R2 give the range (if it is set)
+
+    MainFormat (me) returns CString;
+    ---Purpose : Returns the main format
+    -- was C++ : return const
+
+    FormatForRange (me) returns CString;
+    ---Purpose : Returns the format for range, if set
+    --           Meaningful only if <range> from Options is True
+    -- was C++ : return const
+
+    Write (me; val : Real; text : CString) returns Integer  is static;
+    ---Purpose : Writes a Real value <val> to a string <text> by using the
+    --           options. Returns the useful Length of produced string.
+    --           It calls the class method Convert.
+    --  Warning : <text> is assumed to be wide enough (20-30 is correct)
+    --           And, even if declared in, its content will be modified
+
+    Convert (myclass; val : Real;  text : CString;
+    	    	      zerosup : Boolean; Range1,Range2 : Real;
+    	     	      mainform, rangeform : CString)
+	returns Integer;
+    ---Purpose : This class method converts a Real Value to a string, given
+    --           options given as arguments. It can be called independantly.
+    --  Warning : even if declared in, content of <text> will be modified
+
+
+fields   -- options
+
+    themainform  : Character[12];  -- Main Printing from for Reals
+    therange1    : Real;           -- range for second printing form (if any)
+    therange2    : Real;           -- range for second printing form (if any)
+    therangeform : Character[12];  -- Printing form applying inside Range
+    thezerosup   : Boolean;        -- Trailing Zero Suppression Status
+
+end FloatWriter;

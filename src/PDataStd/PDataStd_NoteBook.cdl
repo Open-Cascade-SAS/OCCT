@@ -1,0 +1,15 @@
+-- File:	PDataStd_NoteBook.cdl
+-- Created:	Tue Jul 29 13:59:31 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+
+class NoteBook from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+is
+
+    Create returns mutable NoteBook from  PDataStd;
+
+end NoteBook;

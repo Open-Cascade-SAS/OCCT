@@ -1,0 +1,184 @@
+-- File:          WNT.cdl
+-- Created:       Tue Jan 23 16:05:48 1996
+-- Authors:       LAVNIKOV Alexey, PLOTNIKOV Eugeny & CHABROVSKY Dmitry
+--                <eugeny@proton>
+-- Modifications: DCB at March 1998  Porting MFT for Windows NT (95)
+--                PLOTNIKOV Eugeny at July 1998 (BUC60286)
+--                VKH at October 1999 (class PixMap added)
+---Copyright:     Matra Datavision 1996
+
+package WNT
+
+        ---Purpose: This package contains common Windows NT graphics interface.
+
+ uses
+
+    Aspect,
+    Image,
+    PlotMgt,
+    Quantity,
+    TCollection,
+    TColStd,
+    TShort,
+    MMgt,
+    OSD,
+    MFT
+
+ is
+
+
+        -----------------------
+        -- Category: Exceptions
+        -----------------------
+
+
+    exception ClassDefinitionError inherits ConstructionError;
+        ---Category: Exceptions
+
+    exception FontMapEntryDefinitionError inherits ConstructionError;
+        ---Category: Exceptions
+
+
+        --------------------
+        -- Category: Classes
+        --------------------
+
+
+    class GraphicDevice;
+        ---Purpose:  Creates the graphic device associated with DISPLAY.
+        ---Category: Classes
+
+    class WDriver;
+        ---Purpose:  Creates the window driver.
+        ---Category: Classes
+
+    class DDriver;
+        ---Purpose:  Creates the device driver ( for printing/plotting )
+        ---Category: Classes
+
+    class Window;
+        ---Purpose:  Creates the Window drawable.
+        ---Category: Classes
+
+    class PixMap;
+    ---Purpose: Creates a windows bitmap
+    ---Category: Classes
+
+    class WClass;
+        ---Purpose:  Creates a Windows NT window class.
+        ---Category: Classes
+
+    class IconBox;
+        ---Purpose:  Creates the Icon Box window.
+        ---Category: Classes
+
+    class FontMapEntry;
+        ---Purpose:  Defines correspondence between FontMapEntry from
+        --           Aspect and Windows NT font handle.
+        ---Category: Classes
+
+    class ImageManager;
+        ---Purpose:  Creates and manages images and/or icons.
+        ---Category: Classes
+
+    class Image;
+        ---Purpose:  Defines the class
+        ---Category: Classes
+
+    class Icon;
+        ---Purpose:  Defines the class
+        ---Category: Classes
+
+    class TextManager;
+        ---Purpose:  Defines the class for text drawing with MFT
+        ---Category: Classes
+
+
+        ---------------------------
+        -- Category: Enumerations
+        ---------------------------
+
+    enumeration OrientationType is
+
+        OT_PORTRAIT,
+        OT_LANDSCAPE
+
+    end OrientationType;
+---Purpose: Portrait/landscape orientation.
+    enumeration TypeOfImage is
+
+        TOI_BMP,         --Windows NT's device independent bitmap
+        TOI_XWD,         --X windows's image format
+        TOI_GIF          --CompuServe's Graphic Interchange Format
+
+    end TypeOfImage;
+
+
+        ---------------------------
+        -- Category: Imported types
+        ---------------------------
+
+
+    imported Long;
+        ---Purpose:  Defines a Windows NT LONG type.
+        ---Category: Imported types
+
+    imported Dword;
+        ---Purpose:  Defines a Windows NT DWORD type.
+        ---Category: Imported types
+
+    imported Uint;
+        ---Purpose:  Defines a Windows NT UINT type.
+        ---Category: Imported types
+
+    imported LogFont;
+        ---Purpose:  Defines a Windows NT LOGFONT type.
+        ---Category: Imported types
+
+    imported ColorRef;
+        ---Purpose:  Defines a Windows NT COLORREF type.
+        ---Category: Imported types
+
+    imported WindowData;
+        ---Purpose:  Defines additional window data type.
+        ---Category: Imported types
+
+
+        ---------------------------------
+        -- Category: Pointers
+        ---------------------------------
+
+    pointer WindowPtr to Window from WNT;
+
+        ---------------------------------
+        -- Category: Instantiated classes
+        ---------------------------------
+
+    class ColorTable instantiates
+     Array1 from TCollection ( ColorRef from WNT );
+
+    class HColorTable instantiates
+     HArray1 from TCollection ( ColorRef from WNT, ColorTable from WNT );
+
+    class FontTable instantiates
+     Array1 from TCollection ( FontMapEntry from WNT );
+
+    class HFontTable instantiates
+     HArray1 from TCollection (
+                   FontMapEntry from WNT,
+                   FontTable    from WNT
+                  );
+
+    class SequenceOfImage instantiates
+     Sequence from TCollection ( Image from WNT );
+
+        ---------------------------------
+    -- Changes for MFT Text drawing
+        ---------------------------------
+          class ListOfMFTFonts instantiates
+                  Array1 from TCollection (FontManager from MFT);
+
+          class HListOfMFTFonts instantiates
+                  HArray1 from TCollection (FontManager from MFT, ListOfMFTFonts);
+
+end WNT;

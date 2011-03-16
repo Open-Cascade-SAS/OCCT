@@ -1,0 +1,114 @@
+// File:	AIS_InteractiveObject.lxx
+// Created:	Wed Jan  8 10:28:40 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+#define GER61351		//GG_171199     Enable to set an object RGB color
+//						  instead a restricted object NameOfColor. 
+
+
+inline Standard_Boolean  AIS_InteractiveObject::AcceptShapeDecomposition() const 
+{return Standard_False;}
+
+
+inline Standard_Boolean AIS_InteractiveObject::IsInfinite() const 
+{return myInfiniteState;}
+
+inline Standard_Boolean AIS_InteractiveObject::HasColor() const 
+{return hasOwnColor;}
+
+inline const Handle(Standard_Transient)& 
+AIS_InteractiveObject::GetOwner() const 
+{return myOwner;}
+
+inline void AIS_InteractiveObject::SetOwner(const Handle(Standard_Transient)& ApplicativeEntity)
+{myOwner = ApplicativeEntity;}
+
+inline const TColStd_ListOfTransient&  
+AIS_InteractiveObject::Users() const 
+{return myUsers;}
+
+inline Standard_Boolean AIS_InteractiveObject::HasDisplayMode() const 
+{return myDisplayMode!=-1;}
+
+inline void AIS_InteractiveObject::UnsetDisplayMode()
+{myDisplayMode =-1;}
+
+inline Standard_Integer AIS_InteractiveObject::DisplayMode() const 
+{return myDisplayMode;}
+
+inline Standard_Boolean AIS_InteractiveObject::HasSelectionMode() const 
+{return mySelectionMode!=-1;}
+
+inline void AIS_InteractiveObject::UnsetSelectionMode()
+{mySelectionMode =-1;}
+
+inline Standard_Integer AIS_InteractiveObject::SelectionMode() const 
+{return mySelectionMode;}
+
+
+
+inline Quantity_NameOfColor AIS_InteractiveObject::Color() const 
+{
+#ifdef GER61351
+ return myOwnColor.Name();
+#else
+ return myOwnColor;
+#endif
+}
+
+#ifdef GER61351
+inline void AIS_InteractiveObject::Color(Quantity_Color& aColor) const 
+{
+ aColor = myOwnColor;
+}
+#endif
+
+inline Standard_Boolean AIS_InteractiveObject::HasWidth() const 
+{return (!myOwnWidth == 0.);}
+
+inline Standard_Real AIS_InteractiveObject::Width() const 
+{return myOwnWidth;}
+inline Standard_Boolean AIS_InteractiveObject::HasMaterial() const 
+{return hasOwnMaterial;}
+
+//POP pour K4L
+inline Graphic3d_NameOfMaterial AIS_InteractiveObject::Material() const 
+//inline Graphic3d_NameOfPhysicalMaterial AIS_InteractiveObject::Material() const 
+{return myOwnMaterial;}
+
+inline const Handle(AIS_Drawer)& 
+AIS_InteractiveObject::Attributes() const 
+{return myDrawer;}
+
+inline Standard_Boolean AIS_InteractiveObject::HasHilightMode() const  
+{return myHilightMode!=-1;}
+
+inline Standard_Integer AIS_InteractiveObject::HilightMode() const
+{return myHilightMode;}
+
+inline void AIS_InteractiveObject::SetHilightMode(const Standard_Integer aMode)
+{myHilightMode = aMode;}
+
+inline void AIS_InteractiveObject::UnsetHilightMode()
+{myHilightMode = -1;}
+
+
+inline Standard_Boolean AIS_InteractiveObject::IsTransparent() const 
+{return myTransparency >0.005;}
+
+inline Standard_Boolean AIS_InteractiveObject::HasSelectionPriority() const 
+{return mySelPriority != -1;}
+inline void AIS_InteractiveObject::SetSelectionPriority(const Standard_Integer P)
+{mySelPriority = P;}
+inline void AIS_InteractiveObject::UnsetSelectionPriority()
+{mySelPriority = -1;}
+inline Standard_Integer AIS_InteractiveObject::SelectionPriority() const 
+{return mySelPriority;}
+
+inline Standard_Integer AIS_InteractiveObject::State() const
+{return mystate;}
+
+inline void AIS_InteractiveObject::State(const Standard_Integer TheState)
+{mystate = TheState;}
+

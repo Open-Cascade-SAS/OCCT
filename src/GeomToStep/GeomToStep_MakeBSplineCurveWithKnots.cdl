@@ -1,0 +1,45 @@
+-- File:	GeomToStep_MakeBSplineCurveWithKnots.cdl
+-- Created:	Thu Aug  5 16:05:05 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeBSplineCurveWithKnots from GeomToStep inherits
+    Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes
+    --          BSplineCurve from Geom, Geom2d and the class
+    --          BSplineCurveWithKnots from StepGeom
+    --          which describes a bspline_curve_with_knots from
+    --          Prostep
+  
+uses
+
+     BSplineCurve from Geom,
+     BSplineCurve from Geom2d,
+     BSplineCurveWithKnots from StepGeom
+     
+raises
+
+     NotDone from StdFail
+     
+is 
+
+Create ( Bsplin : BSplineCurve from Geom ) returns
+    MakeBSplineCurveWithKnots;
+
+Create ( Bsplin : BSplineCurve from Geom2d ) returns
+    MakeBSplineCurveWithKnots;
+Value (me) returns
+    BSplineCurveWithKnots from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+    
+fields
+
+    theBSplineCurveWithKnots :
+    	BSplineCurveWithKnots from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeBSplineCurveWithKnots;

@@ -1,0 +1,70 @@
+-- File:	ShapeFix_SplitTool.cdl
+-- Created:	Wed Jul 14 16:04:29 2004
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class SplitTool from ShapeFix
+
+	---Purpose: Tool for splitting and cutting edges; includes methods
+	--          used in OverlappingTool and IntersectionTool
+
+uses
+
+    Face from TopoDS,
+    Edge from TopoDS,
+    Vertex from TopoDS,
+    ReShape from ShapeBuild,
+    SequenceOfShape from TopTools
+
+is
+    Create returns SplitTool from ShapeFix;
+    	---Purpose: Empty constructor
+	
+    SplitEdge(me; edge: Edge from TopoDS;
+    	    	  param: Real from Standard;
+    	          vert: Vertex from TopoDS;
+    	    	  face: Face from TopoDS;
+	          newE1: in out Edge from TopoDS;
+    	    	  newE2: in out Edge from TopoDS;
+    	          tol3d, tol2d : Real from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Split edge on two new edges using new vertex "vert"
+	--          and "param" - parameter for splitting
+	--          The "face" is necessary for pcurves and using TransferParameterProj
+
+    SplitEdge (me; edge: Edge from TopoDS;
+    	       	   param1: Real from Standard;
+    	       	   param2: Real from Standard;
+    	       	   vert: Vertex from TopoDS;
+	       	   face: Face from TopoDS;
+	           newE1: in out Edge from TopoDS;
+    	    	   newE2: in out Edge from TopoDS;
+               	   tol3d, tol2d : Real from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Split edge on two new edges using new vertex "vert"
+	--          and "param1" and "param2" - parameter for splitting and cutting
+	--          The "face" is necessary for pcurves and using TransferParameterProj
+
+    CutEdge(me; edge: Edge from TopoDS; pend: Real from Standard;
+    	        cut: Real from Standard; face: Face from TopoDS;
+	        iscutline: in out Boolean from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Cut edge by parameters pend and cut
+
+    SplitEdge(me; edge: Edge from TopoDS; fp: Real from Standard;
+    	          V1: Vertex from TopoDS; lp: Real from Standard;
+    	          V2: Vertex from TopoDS; face: Face from TopoDS;
+	          SeqE: in out SequenceOfShape from TopTools;
+		  aNum: in out Integer from Standard;
+		  context: ReShape from ShapeBuild;
+   	          tol3d, tol2d : Real from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Split edge on two new edges using two new vertex V1 and V2
+	--          and two parameters for splitting - fp and lp correspondingly
+	--          The "face" is necessary for pcurves and using TransferParameterProj
+	--          aNum - number of edge in SeqE which corresponding to [fp,lp]
+
+
+
+end SplitTool;

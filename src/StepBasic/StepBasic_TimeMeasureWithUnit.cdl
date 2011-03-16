@@ -1,0 +1,21 @@
+-- File:        TimeMeasureWithUnit.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TimeMeasureWithUnit from StepBasic 
+
+inherits MeasureWithUnit from StepBasic 
+
+uses
+
+	Real from Standard, 
+	NamedUnit from StepBasic
+is
+
+	Create returns mutable TimeMeasureWithUnit;
+	---Purpose: Returns a TimeMeasureWithUnit
+
+
+end TimeMeasureWithUnit;

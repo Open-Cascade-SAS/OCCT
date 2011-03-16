@@ -1,0 +1,67 @@
+-- File:	TDF_Reference.cdl
+-- Created:	Wed Mar  1 14:30:40 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+
+class Reference from TDF inherits Attribute from TDF
+
+	---Purpose: 
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is
+
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+
+    Set (myclass; I : Label from TDF; Origin : Label from TDF)
+    returns Reference from TDF;
+    
+
+    Set (me : mutable; Origin : Label from TDF);
+    
+    Get (me)
+    returns Label from TDF;
+
+    	---Category: TDF_Attribute methods
+    	--           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+
+    References (me; DS : DataSet from TDF) is redefined;
+
+    Dump(me; anOS : in out OStream from Standard)
+        returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+    Create
+    returns mutable Reference from TDF;    
+
+
+fields
+
+    myOrigin : Label from TDF;
+
+end Reference;

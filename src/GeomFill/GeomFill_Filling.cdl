@@ -1,0 +1,49 @@
+-- File:	GeomFill_Filling.cdl
+-- Created:	Tue Sep 28 12:37:19 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+class Filling from GeomFill
+
+
+uses
+    Array1OfPnt    from TColgp,
+    Array2OfPnt    from TColgp,
+    HArray2OfPnt   from TColgp,
+    Array1OfReal   from TColStd,
+    Array2OfReal   from TColStd,
+    HArray2OfReal  from TColStd
+    
+raises
+    NoSuchObject from Standard
+
+is
+    Create;
+    
+    NbUPoles(me) returns Integer from Standard
+    is static;
+    
+    NbVPoles(me) returns Integer from Standard
+    is static;
+
+    Poles(me; Poles : in out Array2OfPnt from TColgp)
+    is static;
+    
+    isRational(me) returns Boolean from Standard
+    is static;
+    
+    Weights(me; Weights : in out Array2OfReal from TColStd)
+    raises
+    	NoSuchObject from Standard
+    is static;    
+    
+    
+fields
+    
+    IsRational : Boolean        from Standard is protected;
+    myPoles    : HArray2OfPnt   from TColgp   is protected;
+    myWeights  : HArray2OfReal  from TColStd  is protected;
+
+end Filling;

@@ -1,0 +1,29 @@
+-- File:	QAViewer2dTest.cdl
+
+package QAViewer2dTest
+
+	---Purpose: 
+
+uses
+    Draw,
+    TCollection, 
+    TColStd, 
+    TopAbs,
+    TopTools,
+    TopoDS,
+    V2d,
+    AIS,
+    Graphic2d
+
+is 
+
+    ---Category: Draw Commands
+
+    Commands (theCommands : in out Interpretor from Draw);
+    MyCommands (theCommands : in out Interpretor from Draw);   --  My  Own  Com-s
+    GeneralCommands (theCommands :in out Interpretor from Draw);
+    ViewerCommands  (theCommands :in out Interpretor from Draw);
+    DisplayCommands (theCommands : in out Interpretor from Draw);
+    ObjectCommands  (theCommands :in out Interpretor from Draw);
+    
+end;

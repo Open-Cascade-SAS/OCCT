@@ -1,0 +1,33 @@
+-- File:        OrganizationAssignment.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class OrganizationAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Organization from StepBasic, 
+	OrganizationRole from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedOrganization : mutable Organization from StepBasic;
+	      aRole : mutable OrganizationRole from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedOrganization(me : mutable; aAssignedOrganization : mutable Organization);
+	AssignedOrganization (me) returns mutable Organization;
+	SetRole(me : mutable; aRole : mutable OrganizationRole);
+	Role (me) returns mutable OrganizationRole;
+
+fields
+
+	assignedOrganization : Organization from StepBasic;
+	role : OrganizationRole from StepBasic;
+
+end OrganizationAssignment;

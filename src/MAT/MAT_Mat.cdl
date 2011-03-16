@@ -1,0 +1,98 @@
+-- File:	MAT_Mat.cdl
+-- Created:	Tue Sep 22 15:06:57 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+generic class Mat from MAT (Tool as any)
+
+	---Purpose: this class contains the generic algoritm of 
+	--          computation of the bisecting locus.
+
+uses
+    Side                     from MAT,
+    Bisector                 from MAT,
+    ListOfEdge              from MAT,
+    ListOfBisector          from MAT,
+    DataMapOfIntegerBisector from MAT,
+    DataMapOfIntegerInteger  from TColStd
+    
+is
+
+    Create
+    ---Purpose: Empty construtor.
+    returns Mat from MAT;
+    
+--- Category : Computation.    
+    
+    CreateMat(me : in out ; aTool : in out Tool)
+       ---Purpose: Algoritm of computation of the bisecting locus.
+    is static;
+    
+    IsDone(me) returns Boolean from Standard
+       ---Purpose:  Returns <TRUE> if CreateMat has succeeded. 
+    is static;
+
+    LoadBisectorsToRemove(me                    : in out ; 
+    	    	    	  noofbisectorstoremove : in out Integer;
+    	    	          distance1             :        Real;
+			  distance2             :        Real;
+			  bisector1             :        Bisector from MAT;
+			  bisector2             :        Bisector from MAT;
+			  bisector3             :        Bisector from MAT;
+			  bisector4             :        Bisector from MAT)
+    is static private;
+
+
+    Intersect( me                   : in out                   ;
+    	       atool                : in out  Tool             ;
+    	       aside                :         Integer          ;
+    	       noofbisectorstoremove: in out  Integer           ;
+	       bisector1            : mutable Bisector from MAT;
+	       bisector2            : mutable Bisector from MAT)
+    is static private;	       
+  			       
+
+--- Category : Querying.    
+    
+    Init(me : in out)
+	--- Purpose : Initialize an iterator on the set of the roots
+	--            of the trees of bisectors.
+    is static;
+    
+    More(me) returns Boolean
+	--- Purpose : Return False if there is no more roots.
+    is static;
+    
+    Next(me : in out)
+	--- Purpose : Move to the next root.
+    is static;
+    
+    Bisector(me) returns any Bisector from MAT
+	--- Purpose : Returns the current root.
+    is static;
+
+    SemiInfinite(me) returns Boolean from Standard
+	--- Purpose : Returns True if there are semi_infinite bisectors.
+	--            So there is a tree for each semi_infinte bisector.
+    is static;
+
+    NumberOfBisectors(me) returns Integer from Standard
+	--- Purpose : Returns the total number of bisectors.
+    is static;
+
+fields
+
+    thenumberofbisectors  : Integer;
+    thenumberofedges      : Integer;
+    semiInfinite          : Boolean;
+    theedgelist           : ListOfEdge               from MAT;
+    typeofbisectortoremove: DataMapOfIntegerInteger  from TColStd;
+    bisectoronetoremove   : DataMapOfIntegerBisector from MAT;
+    bisectortwotoremove   : DataMapOfIntegerBisector from MAT;
+    bisectormap           : DataMapOfIntegerBisector from MAT;
+    roots                 : ListOfBisector           from MAT;
+    thecurrentindex       : Integer;
+    isDone                : Boolean;             
+    
+end Mat;

@@ -1,0 +1,13 @@
+// File:	TopoDS_TSolid.lxx
+// Created:	Fri Apr 12 14:50:32 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TSolid
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TSolid::TopoDS_TSolid() : TopoDS_TShape()
+{
+  Orientable(Standard_False);
+}

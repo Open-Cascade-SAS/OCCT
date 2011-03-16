@@ -1,0 +1,30 @@
+-- File:        PDataStd_ByteArray.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class ByteArray from PDataStd inherits Attribute from PDF
+
+uses 
+
+    HArray1OfInteger from PColStd
+
+is
+
+    Create 
+    returns mutable ByteArray from PDataStd;
+
+    Set (me : mutable;
+    	 values : HArray1OfInteger from PColStd);
+	 
+    Get (me)
+    ---C++: return const &
+    returns HArray1OfInteger from PColStd;
+
+fields
+
+    myValues : HArray1OfInteger from PColStd;
+
+
+end ByteArray;

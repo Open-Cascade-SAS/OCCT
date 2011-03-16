@@ -1,0 +1,74 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Host.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+class Host from OSD
+
+ ---Purpose: Carries information about a Host
+
+
+uses SysType, OEMType, Error, AsciiString from TCollection
+raises ConstructionError, NullObject, OSDError
+
+ is
+
+  Create returns Host;
+    ---Purpose: Initializes current host by default.
+    ---Level: Advanced
+
+  SystemVersion (me : in out) returns AsciiString is static;
+    ---Purpose: Returns system name and version
+    ---Level: Advanced
+
+  SystemId (me) returns SysType is static;
+    ---Purpose: Returns the system type (UNIX System V, UNIX BSD, MS-DOS...)
+    ---Level: Advanced
+
+  HostName (me : in out) returns AsciiString is static;
+    ---Purpose: Returns host name.
+    ---Level: Advanced
+
+  AvailableMemory (me : in out)  returns Integer is static;
+    ---Purpose: Returns available memory in Kilobytes.
+    ---Level: Obsolete syntax. Will be removed in next version
+
+  InternetAddress (me : in out) returns AsciiString is static;
+    ---Purpose: Returns Internet address of current host.
+    ---Level: Advanced
+
+  EthernetAddress (me : in out) returns AsciiString is static;
+    ---Purpose: Returns Ethernet address of current host.
+    ---Level: Advanced
+
+  MachineType (me : in out) returns OEMType is static;
+    ---Purpose: Returns type of current machine.
+    ---Level: Advanced
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+   ---Level: Advanced
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+   ---Level: Advanced
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+   ---Level: Advanced
+   raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Advanced
+
+fields
+  myName   : AsciiString;
+  myError  : Error;
+end Host from OSD;
+
+

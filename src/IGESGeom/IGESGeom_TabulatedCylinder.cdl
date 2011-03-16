@@ -1,0 +1,66 @@
+--
+-- File      :  TabulatedCylinder.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class TabulatedCylinder from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESTabulatedCylinder, Type <122> Form <0>
+        --          in package IGESGeom
+        --          A tabulated cylinder is a surface formed by moving a line
+        --          segment called generatrix parallel to itself along a curve
+        --          called directrix. The curve may be a line, circular arc,
+        --          conic arc, parametric spline curve, rational B-spline
+        --          curve or composite curve.
+
+uses
+
+        Pnt         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable TabulatedCylinder;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aDirectrix : IGESEntity;
+              anEnd      : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           TabulatedCylinder
+        --       - aDirectrix : Directrix Curve of the tabulated cylinder
+        --       - anEnd      : Coordinates of the terminate point of the
+        --                      generatrix
+        -- The start point of the directrix is identical to the start
+        -- point of the generatrix
+
+        Directrix (me) returns IGESEntity;
+        ---Purpose : returns the directrix curve of the tabulated cylinder
+
+        EndPoint(me) returns Pnt;
+        ---Purpose : returns end point of generatrix of the tabulated cylinder
+
+        TransformedEndPoint(me) returns Pnt;
+        ---Purpose : returns end point of generatrix of the tabulated cylinder
+        -- after applying Transf. Matrix
+
+fields
+
+--
+-- Class    : IGESGeom_TabulatedCylinder
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class TabulatedCylinder.
+--
+-- Reminder : A TabulatedCylinder instance is defined by :
+--            A directrix curve and the coordinates of end points of
+--            directrix curve
+
+        theDirectrix : IGESEntity;
+        theEnd       : XYZ;
+
+end TabulatedCylinder;

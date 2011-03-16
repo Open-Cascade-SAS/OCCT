@@ -1,0 +1,57 @@
+-- File:	IntPolyh_Couple.cdl
+-- Created:	Thu Apr 8 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Couple from IntPolyh
+ 
+
+uses
+    
+    Pnt from gp
+
+
+is
+
+
+    Create;
+    
+    Create(i1,i2: Integer from Standard) ; 
+    
+    FirstValue(me) 
+    returns Integer from Standard
+    is static;
+
+    SecondValue(me) 
+    returns Integer from Standard
+    is static;
+    
+    AnalyseFlagValue(me)
+    returns Integer from Standard
+    is static;
+
+    AngleValue(me)
+    returns Real from Standard
+    is static;
+
+    SetCoupleValue(me: in out; v,w: Integer from Standard) 
+    is static;
+	
+    SetAnalyseFlag(me: in out; v: Integer from Standard) 
+    is static;
+    
+    SetAngleValue(me: in out; ang: Real from Standard) 
+    is static;
+	
+    Dump(me; v: Integer from Standard) 
+    is static;
+     	
+fields
+
+    t1,t2,ia : Integer from Standard;
+    angle : Real from Standard;
+    
+end Couple from IntPolyh;

@@ -1,0 +1,247 @@
+-- File:        StepShape.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package StepShape 
+
+    ---Purpose: Collects definitions of STEP topological entities 
+    --          from Part 42 of ISO10303 (topology_schema)
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt,
+	StepBasic, StepRepr, StepGeom
+
+is
+
+
+
+enumeration BooleanOperator is
+
+	boDifference,
+	boIntersection,
+	boUnion
+end;
+
+
+class BooleanOperand;		-- Select Type for
+
+	-- SolidModel
+	-- HalfSpaceSolid
+	-- CsgPrimitive
+	-- BooleanResult
+
+
+class CsgPrimitive;		-- Select Type for
+
+	-- Sphere
+	-- Block
+	-- RightAngularWedge
+	-- Torus
+	-- RightCircularCone
+	-- RightCircularCylinder
+
+
+class CsgSelect;		-- Select Type for
+
+	-- BooleanResult
+	-- CsgPrimitive
+
+class GeometricSetSelect;		-- Select Type for
+
+	-- Point
+	-- Curve
+	-- Surface
+
+
+class ReversibleTopologyItem;		-- Select Type for
+
+	-- Edge
+	-- Path
+	-- Face
+	-- FaceBound
+	-- ClosedShell
+	-- OpenShell
+
+
+class Shell;		-- Select Type for
+
+	-- OpenShell
+	-- ClosedShell
+
+
+class SurfaceModel;		-- Select Type for
+
+	-- ShellBasedSurfaceModel
+	-- FaceBasedSurfaceModel
+
+
+--class Protocol;
+
+
+class BoxDomain;
+--class PropertyDefinitionRepresentation;
+    class ShapeDefinitionRepresentation;
+--class Representation;
+	class ShapeRepresentation;
+		class AdvancedBrepShapeRepresentation;
+		class CsgShapeRepresentation;
+		class FacetedBrepShapeRepresentation;
+		class GeometricallyBoundedSurfaceShapeRepresentation;
+		class GeometricallyBoundedWireframeShapeRepresentation;
+		class ManifoldSurfaceShapeRepresentation;
+    	    	class NonManifoldSurfaceShapeRepresentation;
+		class TransitionalShapeRepresentation;
+		class CompoundShapeRepresentation;
+		class EdgeBasedWireframeShapeRepresentation;
+		class ConnectedFaceShapeRepresentation;
+--class RepresentationItem;
+--	class GeometricRepresentationItem;
+		class Block;
+		class BooleanResult;
+		class GeometricSet;
+			class GeometricCurveSet;
+		class HalfSpaceSolid;
+			class BoxedHalfSpace;
+		class ConnectedEdgeSet;
+-- Removed from Rev2 to Rev4 :		class OneDirectionRepeatFactor;
+-- Removed from Rev2 to Rev4 :			class TwoDirectionRepeatFactor;
+		class RightAngularWedge;
+		class RightCircularCone;
+		class RightCircularCylinder;
+		class ShellBasedSurfaceModel;
+		class EdgeBasedWireframeModel;
+		class FaceBasedSurfaceModel;
+		class SolidModel;
+			class CsgSolid;
+			class ManifoldSolidBrep;
+				class BrepWithVoids;
+				class FacetedBrep;
+				class FacetedBrepAndBrepWithVoids; 
+    	    	    	    	-- Added by FMA (oublie ANDOR dans SCHEMA)
+			class SolidReplica;
+			class SweptAreaSolid;
+				class ExtrudedAreaSolid;
+				class RevolvedAreaSolid;
+				
+				--Added from CC2 to DIS
+			
+    	    	    	class SweptFaceSolid;
+			    	class ExtrudedFaceSolid;
+				class RevolvedFaceSolid;
+		class Sphere;
+		class Torus;
+	class DefinitionalRepresentationAndShapeRepresentation; -- abv CAX-IF TRJ4 k1_geo-ac
+	class TopologicalRepresentationItem;
+		class ConnectedFaceSet;
+			class ClosedShell;
+				class OrientedClosedShell;
+			class OpenShell;
+				class OrientedOpenShell;
+			class ConnectedFaceSubSet;--  Added from AP214 DIS to IS 4.01.2002
+		class Edge;
+			class EdgeCurve;
+			class OrientedEdge;
+			class Subedge;--  Added from AP214 DIS to IS 4.01.2002
+			class SeamEdge;--  Added from AP214 DIS to IS 4.01.2002
+		class Face;
+			class FaceSurface;
+				class AdvancedFace;
+			class OrientedFace;
+			class Subface;--  Added from AP214 DIS to IS 4.01.2002
+		class FaceBound;
+			class FaceOuterBound;
+		class Loop;
+			class EdgeLoop;
+			class PolyLoop;
+			class VertexLoop;
+		class Path;
+			class OrientedPath;
+		class Vertex;
+			class VertexPoint;
+		class LoopAndPath;
+
+    --  Added from AP214 CC1 to CC2
+
+    --- added for TR12J (GD&T)    
+    class ShapeRepresentationWithParameters; -- inherits ShapeRepresentation
+    
+
+class ContextDependentShapeRepresentation;
+
+class Array1OfOrientedClosedShell instantiates Array1 from TCollection (OrientedClosedShell);
+class HArray1OfOrientedClosedShell instantiates HArray1 from TCollection (OrientedClosedShell,Array1OfOrientedClosedShell from StepShape);
+
+class Array1OfEdge instantiates Array1 from TCollection (Edge);
+class HArray1OfEdge instantiates HArray1 from TCollection (Edge,Array1OfEdge from StepShape);
+
+class Array1OfFace instantiates Array1 from TCollection (Face);
+class HArray1OfFace instantiates HArray1 from TCollection (Face,Array1OfFace from StepShape);
+
+class Array1OfFaceBound instantiates Array1 from TCollection (FaceBound);
+class HArray1OfFaceBound instantiates HArray1 from TCollection (FaceBound,Array1OfFaceBound from StepShape);
+
+class Array1OfConnectedEdgeSet instantiates Array1 from TCollection (ConnectedEdgeSet);
+class HArray1OfConnectedEdgeSet instantiates HArray1 from TCollection (ConnectedEdgeSet,Array1OfConnectedEdgeSet from StepShape);
+
+class Array1OfConnectedFaceSet instantiates Array1 from TCollection (ConnectedFaceSet);
+class HArray1OfConnectedFaceSet instantiates HArray1 from TCollection (ConnectedFaceSet,Array1OfConnectedFaceSet from StepShape);
+
+class Array1OfGeometricSetSelect instantiates Array1 from TCollection (GeometricSetSelect);
+class HArray1OfGeometricSetSelect instantiates HArray1 from TCollection (GeometricSetSelect,Array1OfGeometricSetSelect from StepShape);
+
+class Array1OfOrientedEdge instantiates Array1 from TCollection (OrientedEdge);
+class HArray1OfOrientedEdge instantiates HArray1 from TCollection (OrientedEdge,Array1OfOrientedEdge from StepShape);
+
+class Array1OfShell instantiates Array1 from TCollection (Shell);
+class HArray1OfShell instantiates HArray1 from TCollection (Shell,Array1OfShell from StepShape);
+
+    -- ABV 18 Apr 00: for dimensions and tolerances (Part 47)
+    enumeration AngleRelator is 
+	Equal,
+	Large,
+	Small
+    end;
+    class DimensionalCharacteristic;
+    class AngularLocation;
+    class AngularSize;
+    class DimensionalCharacteristicRepresentation;
+    class DimensionalLocation;
+    class DirectedDimensionalLocation;
+    class DimensionalLocationWithPath;
+    class DimensionalSize;
+    class DimensionalSizeWithPath;
+    class ShapeDimensionRepresentation;
+
+    -- CKY 24 Apr 2001 : for dimensions and tolerances , continued (TR7J)
+    class LimitsAndFits;
+    class ToleranceValue;
+    class MeasureQualification;
+    class PlusMinusTolerance;
+    class PrecisionQualifier;
+    class TypeQualifier;
+
+    class ValueQualifier;
+    class ToleranceMethodDefinition;
+
+    class QualifiedRepresentationItem;
+    class MeasureRepresentationItemAndQualifiedRepresentationItem;
+
+    class Array1OfValueQualifier  instantiates Array1 from TCollection (ValueQualifier);
+    class HArray1OfValueQualifier instantiates HArray1 from TCollection 
+    	(ValueQualifier,Array1OfValueQualifier);
+
+--added for AP209
+
+    class PointRepresentation;
+
+--	Protocol returns Protocol from StepShape;
+	---Purpose : creates a Protocol
+
+end StepShape;
+

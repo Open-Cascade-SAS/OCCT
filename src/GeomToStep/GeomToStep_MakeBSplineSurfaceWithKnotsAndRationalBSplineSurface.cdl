@@ -1,0 +1,41 @@
+-- File:	GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface
+--              .cdl
+-- Created:	Tue Jun 22 10:33:07 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface from GeomToStep  
+    inherits Root from GeomToStep
+    
+    ---Purpose: This class implements the mapping between class
+    --          BSplineSurface from Geom and the class
+    --          BSplineSurfaceWithKnotsAndRationalBSplineSurface from  
+    --          StepGeom which describes a 
+    --          rational_bspline_Surface_with_knots from Prostep
+  
+uses BSplineSurface from Geom,
+     BSplineSurfaceWithKnotsAndRationalBSplineSurface from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( Bsplin : BSplineSurface from Geom ) returns
+    MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface;
+
+Value (me) returns
+    BSplineSurfaceWithKnotsAndRationalBSplineSurface from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theBSplineSurfaceWithKnotsAndRationalBSplineSurface :
+    	BSplineSurfaceWithKnotsAndRationalBSplineSurface from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface;
+
+

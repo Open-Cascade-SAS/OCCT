@@ -1,0 +1,270 @@
+-- File:	ShapeCustom_BSplineRestriction.cdl
+-- Created:	Fri Jun 18 12:02:57 1999
+-- Author:	Galina Koulikova
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+private class BSplineRestriction from ShapeCustom inherits Modification from BRepTools
+
+	---Purpose: this tool intended for aproximation surfaces, curves and pcurves with 
+	-- specified degree , max number of segments, tolerance 2d, tolerance 3d. Specified 
+    	-- continuity can be reduced if approximation with specified continuity was not done. 
+
+uses
+    Surface  from Geom, 
+    Curve    from Geom, 
+    Curve    from Geom2d, 
+    Shape    from TopoDS, 
+    Face     from TopoDS, 
+    Edge     from TopoDS, 
+    Vertex   from TopoDS, 
+    Location from TopLoc,
+    Shape    from GeomAbs,
+    Pnt      from gp,
+    RestrictionParameters from ShapeCustom
+    
+is
+    Create  returns  mutable BSplineRestriction from ShapeCustom;  
+    	---Purpose: Empty constructor.
+    
+    
+    Create(anApproxSurfaceFlag, 
+    	   anApproxCurve3dFlag, 
+    	   anApproxCurve2dFlag         : Boolean;
+           aTol3d, aTol2d              : Real; 
+           aContinuity3d, aContinuity2d: Shape from GeomAbs ;  
+    	   aMaxDegree, aNbMaxSeg       : Integer; 
+    	   Degree, Rational            : Boolean)
+    returns  mutable BSplineRestriction from ShapeCustom;
+        ---Purpose: Initializes with specified parameters of aproximation.
+    
+    Create(anApproxSurfaceFlag, anApproxCurve3dFlag, anApproxCurve2dFlag: Boolean from Standard;
+           aTol3d, aTol2d                                               : Real; 
+           aContinuity3d, aContinuity2d                                 : Shape from GeomAbs ;  
+    	   aMaxDegree, aNbMaxSeg                                        : Integer; 
+    	   Degree, Rational                                             : Boolean;
+	   aModes                                       : RestrictionParameters from ShapeCustom)
+    returns  mutable BSplineRestriction from ShapeCustom;  
+    	---Purpose: Initializes with specified parameters of aproximation.
+    
+    NewSurface(me: mutable; F       :     Face     from TopoDS;
+                            S       : out Surface  from Geom;
+		            L       : out Location from TopLoc;
+		            Tol     : out Real     from Standard;
+                            RevWires : out Boolean from Standard;
+                            RevFace  : out Boolean from Standard)
+    	
+    	---Purpose: Returns Standard_True if  the  face <F> has   been
+      	--          modified.  In this  case, <S> is the new geometric
+      	--          support of  the  face, <L> the new  location,<Tol>
+      	--          the new   tolerance.<RevWires>  has to be   set to
+      	--          Standard_True when  the modification reverses  the
+      	--          normal of  the   surface.(the wires  have   to  be
+      	--          reversed).  <RevFace>    has   to   be   set    to
+      	--          Standard_True if  the  orientation of the modified
+      	--          face changes in the shells which contain it.
+      	--          
+      	--          Otherwise, returns Standard_False, and <S>,   <L>,
+      	--          <Tol> , <RevWires> ,<RevFace> are not  significant.
+
+    
+    	returns Boolean from Standard;
+	
+
+    NewCurve(me: mutable; E  :     Edge     from TopoDS;
+                          C  : out Curve    from Geom;
+		          L  : out Location from TopLoc;
+		          Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard;
+
+    	---Purpose: Returns Standard_True  if  curve from the edge <E> has  been
+	--          modified.  In this case,  <C> is the new geometric
+	--          support of the  edge, <L> the  new location, <Tol>
+	--          the         new    tolerance.
+    	--          Otherwise, returns Standard_True if Surface is modified or 
+	--          one of pcurves of edge is modified. In this case C is copy of
+	--          geometric support of the edge.
+	--          In other cases returns Standard_False, and  <C>,  <L>,  <Tol> are not
+	--          significant.
+	
+    NewCurve2d(me: mutable;  E    :     Edge     from TopoDS;
+                             F    :     Face     from TopoDS;
+                             NewE :     Edge     from TopoDS;
+                             NewF :     Face     from TopoDS;
+                             C    : out Curve    from Geom2d;
+		             Tol  : out Real     from Standard)
+    
+    	returns Boolean from Standard;
+	
+    	---Purpose: Returns Standard_True if  the edge  <E> has been modified.
+	--          In this case,if curve on the surface is modified, <C>
+	--          is the new geometric support of  the edge, <L> the
+	--          new location, <Tol> the new tolerance. If curve on the surface 
+    	--    	    is not modified C is copy curve on surface from the edge <E>.
+	--          
+	--          Otherwise, returns  Standard_False, and <C>,  <L>,
+	--          <Tol> are not significant.
+	--          
+	--          <NewE> is the new  edge created from  <E>.  <NewF>
+	--          is the new face created from <F>. They may be usefull.
+	
+
+    ConvertSurface(me: mutable; aSurface : Surface from Geom; S : out Surface  from Geom; 
+    	UF,UL,VF,VL : Real from Standard;
+    	IsOf : Boolean from Standard = Standard_True) 
+    	returns Boolean from Standard;
+    ---Purpose: Returns Standard_True if  the surface has been modified.
+    --          if flag IsOf equals Standard_True Offset surfaces are aproximated to Offset 
+    --	        if Standard_False to BSpline
+    
+    ConvertCurve(me: mutable;aCurve : in out Curve from Geom; C : out Curve from Geom; IsConvert : Boolean;
+       First, Last : Real; TolCur : in out Real;IsOf : Boolean from Standard = Standard_True) 
+    	returns Boolean from Standard;
+    ---Purpose: Returns Standard_True if  the curve has been modified.
+    --          if flag IsOf equals Standard_True Offset curves are aproximated to Offset 
+    --	        if Standard_False to BSpline
+    
+    ConvertCurve2d(me: mutable;aCurve : in out Curve from Geom2d; C : out Curve from Geom2d; IsConvert : Boolean;
+       First, Last : Real; TolCur : in out Real;IsOf : Boolean from Standard = Standard_True)  
+    	returns Boolean from Standard;
+    ---Purpose: Returns Standard_True if the pcurve has been modified.
+    --          if flag IsOf equals Standard_True Offset pcurves are aproximated to Offset 
+    --	        if Standard_False to BSpline
+    
+    -- Methods for setting and obtaining fields
+    
+    SetTol3d(me: mutable; Tol3d : Real from Standard);
+    	---C++: inline
+    	---Purpose: Sets tolerance of aproximation for curve3d and surface
+    
+    SetTol2d(me: mutable; Tol2d : Real from Standard);
+    	---C++: inline
+    	---Purpose: Sets tolerance of aproximation for curve2d 
+    
+    ModifyApproxSurfaceFlag(me : mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the
+    	--          surface is aproximated.
+	
+    ModifyApproxCurve3dFlag(me : mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the
+        --          curve3d is aproximated.
+	
+    ModifyApproxCurve2dFlag(me : mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the curve2d is aproximated.
+    
+    SetContinuity3d(me : mutable; Continuity3d : Shape from GeomAbs);
+    	---C++: inline
+    	---Purpose: Sets continuity3d for aproximation curve3d and surface.
+    
+    SetContinuity2d(me : mutable; Continuity2d : Shape from GeomAbs);
+    	---C++: inline
+    	---Purpose: Sets continuity3d for aproximation curve2d.
+    
+    SetMaxDegree(me : mutable; MaxDegree : Integer from Standard);
+    	---C++: inline
+    	---Purpose: Sets max degree for aproximation.
+    
+    SetMaxNbSegments(me : mutable; MaxNbSegments : Integer from Standard);
+    	---C++: inline
+    	---Purpose: Sets max number of segments for aproximation.
+    
+    SetPriority(me : mutable; Degree : Boolean from Standard);
+    	---C++: inline
+    	---Purpose: Sets priority  for aproximation curves and surface.
+    	--          If Degree is True approximation is made with degree less 
+    	--          then specified MaxDegree at the expense of number of spanes.
+	--          If Degree is False approximation is made with number of 
+    	--          spans less then specified MaxNbSegment at the expense of 
+    	--          specified MaxDegree.
+    
+    SetConvRational(me : mutable; Rational : Boolean from Standard);
+    	---C++: inline
+    	---Purpose: Sets flag for define if rational BSpline or Bezier is 
+    	--          converted to polynomial. If Rational is True approximation 
+    	--          for rational BSpline and Bezier is made to polynomial even
+    	--          if degree is less then MaxDegree and number of spans is less
+    	--          then specified MaxNbSegment.
+    
+    GetRestrictionParameters(me) 
+    returns RestrictionParameters from ShapeCustom;
+    	---C++: inline
+    	---Purpose: Returns the container of modes which defines 
+    	--          what geometry should be converted to BSplines.
+	
+    SetRestrictionParameters(me: mutable; 
+    	    	    	     aModes: RestrictionParameters from ShapeCustom);
+    	---C++: inline
+    	---Purpose: Sets the container of modes which defines 
+    	--          what geometry should be converted to BSplines.
+    
+    Curve3dError(me) returns Real;
+    ---C++: inline
+    ---Purpose:Returns error for aproximation curve3d.
+    
+    Curve2dError(me) returns Real;
+    ---C++: inline
+    ---Purpose:Returns error for aproximation curve2d.
+    
+    SurfaceError(me) returns Real;
+    ---C++: inline
+    ---Purpose:Returns error for aproximation surface.
+
+    NewPoint(me: mutable; V  :     Vertex   from TopoDS;
+                          P  : out Pnt      from gp;
+		          Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard;
+
+    NewParameter(me: mutable; V  :     Vertex   from TopoDS;
+                              E  :     Edge     from TopoDS;
+                              P  : out Real     from Standard;
+  		              Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard;
+	
+
+    
+
+    Continuity(me: mutable; E          : Edge from TopoDS;
+    	                    F1,F2      : Face from TopoDS;
+			    NewE       : Edge from TopoDS;
+			    NewF1,NewF2: Face from TopoDS)
+    
+    	returns Shape from GeomAbs;
+
+    MaxErrors (me; aCurve3dErr, aCurve2dErr : out Real) returns Real from Standard;
+    ---Purpose:Returns error for aproximation surface, curve3d and curve2d.
+    
+    NbOfSpan (me) returns Integer from Standard;
+    ---Purpose:Returns number for aproximation surface, curve3d and curve2d.
+    
+
+fields 
+    myContinuity3d,
+    myContinuity2d   : Shape   from GeomAbs;
+    myMaxDegree,
+    myNbMaxSeg       : Integer from Standard;
+    myTol3d,
+    myTol2d,
+    mySurfaceError,
+    myCurve3dError,
+    myCurve2dError   : Real    from Standard;
+    myNbOfSpan       : Integer from Standard;
+    myApproxSurfaceFlag,
+    myApproxCurve3dFlag,
+    myApproxCurve2dFlag : Boolean from Standard;
+    myDeg            : Boolean from Standard;
+    myConvert        : Boolean from Standard;    
+    myRational       : Boolean from Standard;
+        
+    myParameters     : RestrictionParameters from ShapeCustom;
+    
+    
+end BSplineRestriction;

@@ -1,0 +1,17 @@
+// File:	IntTools_CArray1.lxx
+// Created:	Fri May 26 11:10:00 2000
+// Author:	Peter KURNEV
+//		<pkv@irinox>
+
+
+#include <Standard_OutOfRange.hxx>
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+  inline Standard_Integer IntTools_CArray1::Length() const 
+{
+  return myLength;
+}
+

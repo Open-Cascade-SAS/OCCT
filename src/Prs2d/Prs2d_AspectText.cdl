@@ -1,0 +1,110 @@
+-- File     : Prs2d_AspectText.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class AspectText from Prs2d inherits AspectRoot from Prs2d
+
+---Purpose: defines the attributes when drawing a text presentation
+
+uses 
+   
+   NameOfColor        from Quantity,
+   Length             from Quantity,
+   Color              from Quantity,
+   PlaneAngle         from Quantity,
+   TypeOfText         from Aspect,
+   TypeOfFont         from Aspect,
+   FontStyle          from Aspect
+
+is
+    Create( aColor       : NameOfColor     from Quantity = Quantity_NOC_YELLOW;
+            aFont        : CString	   from Standard = "TABTXT03";
+	      anHeight	 : Length 	   from Quantity = 3.0;
+            aType	     : TypeOfText      from Aspect = Aspect_TOT_SOLID;
+            isUnderlined : Boolean         from Standard = Standard_False)
+	   returns mutable AspectText from Prs2d;  
+    ---Purpose: constructor using basic aspect types.
+
+    Create( aColor       : Color           from Quantity;
+            aFont        : FontStyle       from Aspect;
+            aType	     : TypeOfText      from Aspect = Aspect_TOT_SOLID;
+            isUnderlined : Boolean         from Standard = Standard_False)
+	   returns mutable AspectText from Prs2d;  
+    ---Purpose: constructor using advanced aspect types.
+    
+    SetColor( me: mutable; aColor          : NameOfColor     from Quantity  ); 
+    ---Level: Public
+    ---Purpose: Change the color aspect with a predefined color.
+
+    SetColor( me: mutable; aColor          : Color           from Quantity  ); 
+    ---Level: Public
+    ---Purpose: Change the color aspect.
+
+    SetFont ( me: mutable; aFont           : FontStyle       from Aspect    ); 
+    ---Level: Public
+    ---Purpose: Change the font style aspect
+ 
+    SetFont ( me: mutable; aFont           : TypeOfFont      from Aspect    );
+    ---Level: Public
+    ---Purpose: Change the font style aspect with a new font type but
+    -- preserve all other parameters.
+
+    SetRelativeSlant( me: mutable; aSlant    	   : PlaneAngle      from Quantity  ); 
+    ---Level: Public
+    ---Purpose: Change the font style aspect with a new font slant 
+    -- added to the font original slant but preserve all other parameters.
+
+    SetHeight( me: mutable; anHeight        : Length          from Quantity;
+			    isCapsHeight    : Boolean         from Standard  ); 
+    ---Level: Public
+    ---Purpose: Change the font style aspect with a new font height
+    -- and CapsHeight indicator but preserve all other parameters.
+
+    SetType ( me : mutable; aType	   : TypeOfText      from Aspect    );
+    ---Level: Public
+    ---Purpose: Change the char type aspect of bolded fonts.
+
+    SetUnderlined ( me: mutable; anIsUnderline   : Boolean     from Standard  );
+    ---Level: Public
+    ---Purpose: Enable / Disable the underlined char aspect.
+ 
+    Values( me;
+	      aColor      : out Color           from Quantity;
+            aFont       : out FontStyle       from Aspect;
+	      aSlant	    : out PlaneAngle      from Quantity;
+            aType       : out TypeOfText      from Aspect; 
+            isUnderlined: out Boolean         from Standard
+    );
+    ---Level: Public
+    ---Purpose: Returns the current parameters of this text aspect.
+
+   FontIndex( me )	returns Integer from Standard;
+   ---Level: Internal
+   ---Purpose: Returns the current font index according to the font style aspect    
+
+   ColorIndex( me ) returns Integer from Standard;
+   ---Level: Internal
+   ---Purpose: Returns the current color index according to the color aspect
+   
+   SetFontIndex( me: mutable; anInd: Integer from Standard );
+   ---Level: Internal
+   ---Purpose: Sets the current color index according to the color aspect
+   
+   SetColorIndex( me: mutable; anInd: Integer from Standard );
+   ---Level: Internal
+   ---Purpose: Sets the current color index according to the color aspect
+   
+
+fields
+
+    myColor          : Color     	from Quantity;
+    myFont	         : FontStyle 	from Aspect;
+    myRelativeSlant  : PlaneAngle   from Quantity;
+    myType	         : TypeOfText	from Aspect;
+    myIsUnderlined   : Boolean   	from Standard;
+
+    myFontIndex	     : Integer 	    from Standard; 
+    myColorIndex     : Integer 	    from Standard;
+
+end AspectText from Prs2d;

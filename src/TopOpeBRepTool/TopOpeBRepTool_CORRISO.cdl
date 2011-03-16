@@ -1,0 +1,188 @@
+-- File:	TopOpeBRepTool_CORRISO.cdl
+-- Created:	Wed Nov 25 10:51:34 1998
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class CORRISO from TopOpeBRepTool
+
+--- Purpose : Fref is built on x-periodic surface (x=u,v).
+--           S built on Fref's geometry, should be UVClosed.
+--           
+--           Give us E, an edge of S. 2drep(E) is not UV connexed.
+--           We translate 2drep(E) in xdir*xperiod if necessary.
+--           
+--           call : TopOpeBRepTool_CORRISO Tool(Fref);
+--                  Tool.Init(S);
+--                  if (!Tool.UVClosed()) {
+--                     // initialize EdsToCheck,nfybounds,stopatfirst
+--                     
+--                     Tool.EdgeWithFaultyUV(EdsToCheck,nfybounds,FyEds,stopatfirst);
+--                     if (Tool.SetUVClosed()) S = Tool.GetnewS();
+--                  }
+
+uses 
+    Surface from GeomAdaptor,
+    Shape from TopoDS,
+    Vertex from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    C2DF from TopOpeBRepTool,
+    Curve from Geom2d,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    DataMapOfOrientedShapeInteger from TopTools,
+    DataMapOfOrientedShapeC2DF from TopOpeBRepTool											    
+is
+    Create returns CORRISO from TopOpeBRepTool;
+
+    Create (FRef : Face from TopoDS) 
+    returns CORRISO from TopOpeBRepTool;
+    
+    Fref (me) returns Face from TopoDS;
+    ---C++: return const &
+
+    GASref(me) returns Surface from GeomAdaptor; 
+    ---C++: return const &
+    
+    Refclosed (me; x : Integer; xperiod : out Real)
+    returns Boolean;
+    -- Returns true if <Fref>'s geometry is x-periodic, 
+    -- and sets <xperiod> with x-period.
+    -- x = 1 : returns IsUPeriodic
+    -- x = 2 : returns IsVPeriodic
+        
+    Init (me : in out; S : Shape from TopoDS)
+    returns Boolean;
+    -- Fills up the lists of 2d representations for edges of <S>.
+    -- <S> is built on <Fref>'s geometry.
+    -- Returns false if initialization fails        
+
+    S(me) returns Shape from TopoDS;
+    ---C++: return const &
+
+    Eds(me) returns ListOfShape from TopTools;
+    -- returns list of edges of S
+    ---C++: return const &
+
+    UVClosed(me) returns Boolean;
+    -- Returns true if S with the current set of 2d representations is UVclosed
+
+    Tol(me; I : Integer; tol3d : Real) returns Real;
+    -- I=1/2 (U/V)
+
+    PurgeFyClosingE(me; ClEds : ListOfShape from TopTools; fyClEds : out ListOfShape from TopTools) 
+    returns Boolean;
+    -- Returns true if we have to delete closing <E> from S
+
+    EdgeOUTofBoundsUV(me;
+    	    	      E : Edge from TopoDS;
+    	    	      onU : Boolean;
+		      tolx : Real;
+    	    	      parspE : out Real)
+    returns Integer;
+    --  
+    --  Checks if x-2drep(E) is in [xfirst,xfirst+xperiod]
+    --  ( onU = true/false : x = U/V, Fref must be x-periodic )
+    --  
+    --  returns 0  : split 2drep(E) on <parspE> of <E>
+    --  returns 1  : translate 2drep(E) +xperiod*xdir
+    --  returns -1 : translate 2drep(E) -xperiod*xdir
+
+    EdgesOUTofBoundsUV(me;
+    	     	       EdsToCheck : ListOfShape from TopTools;
+    	    	       onU : Boolean;
+		       tolx : Real;
+		       FyEds : out DataMapOfOrientedShapeInteger from TopTools)
+    returns Boolean;
+
+    EdgeWithFaultyUV(me;
+    	    	     E : Edge from TopoDS;
+    	    	     Ivfaulty : out Integer)		     
+    returns Boolean;
+    --
+    --  <Ivfaulty> = 1,2 : <E> has only one faulty bound
+    --               3 : <E> has its 2 bounds faulty
+    -- 
+    -- vertex v bound of edge fye is FAULTY if 2drep(v,fye) is not UV-connexed
+    -- 
+    --  returns true if <E> has faulty bounds
+    --          false elsewhere.
+
+    EdgesWithFaultyUV(me;
+    	    	      EdsToCheck : ListOfShape from TopTools;
+    	    	      nfybounds : Integer;
+		      FyEds : out DataMapOfOrientedShapeInteger from TopTools;
+    	    	      stopatfirst : Boolean = Standard_False)
+    returns Boolean;
+    -- 
+    -- nfybounds = 1 : get edges with only 1 faulty bound.
+    -- nfybounds = 2 : get only edges with 2 faulty bounds.
+    -- nfybounds = 3 : get all edges with faulty bounds.
+    -- 
+    -- <FyEds> is a map (fye, indexfaulty), fye in <EdsToCheck>
+    --                   indexfaulty = 1 : vertex(1,fye) is faulty
+    --                   indexfaulty = 2 : vertex(2,fye) is faulty 
+    --                   indexfaulty = 3 : vertex(1,fye), vertex(2,fye) are faulty  
+    --           
+    -- If stopatfirst=true, we stop when first faulty edge is found.
+
+    EdgeWithFaultyUV(me;
+    	   	     EdsToCheck : ListOfShape from TopTools;
+    	    	     nfybounds : Integer;
+		     fyE : out Shape from TopoDS; Ifaulty : out Integer)
+    returns Boolean;
+    -- Gets first faulty edge
+
+    TrslUV(me : in out; onU : Boolean; FyEds : DataMapOfOrientedShapeInteger from TopTools)
+    returns Boolean;
+    -- Sets  new  C2DF for  edges  of <FyEds>, translates  on  udir if
+    -- onU=true, on vdir elsewhere.
+    -- Returns false if  an  edge is to   split or  is not
+    -- stored.
+
+    GetnewS(me; newS : out Face from TopoDS)
+    returns Boolean;
+    -- newS : myS with the current 2d representation attached to edges.
+    -- if myS is not a face, or the compute fails returns false
+    
+
+    -- 
+    --  
+    -- 
+
+    UVRep (me; E : Edge from TopoDS; C2DF : out C2DF from TopOpeBRepTool)
+    returns Boolean;
+    SetUVRep (me : in out; E : Edge from TopoDS; C2DF : C2DF from TopOpeBRepTool)
+    returns Boolean;
+
+    Connexity(me; V : Vertex from TopoDS; Eds : out ListOfShape from TopTools)
+    returns Boolean;
+    SetConnexity(me : in out; V : Vertex from TopoDS; Eds : ListOfShape from TopTools) 
+    returns Boolean;
+	
+    AddNewConnexity(me : in out; V : Vertex from TopoDS; E : Edge from TopoDS) 
+    returns Boolean;
+    -- Modifies connexities from the input data, adding new connexity to vertex <V>,
+    -- updates map <myVEds> and maps <myEds>,<myERep2d> if necessary.
+    -- Returns true if update succeeds.
+	
+    RemoveOldConnexity(me : in out; V : Vertex from TopoDS; E : Edge from TopoDS) 
+    returns Boolean;
+    -- Modifies connexities from the input data, removing new connexity for vertex <V>,
+    -- updates map <myVEds> and maps <myEds>,<myERep2d> if necessary.
+    -- Returns true if update succeeds.
+    
+fields
+
+    myFref : Face from TopoDS; -- reference face
+    myGAS : Surface from GeomAdaptor; -- internal use for tolerances
+    myUclosed, myVclosed : Boolean; 
+    myUper, myVper : Real;
+    
+    myS : Shape from TopoDS;
+    myEds : ListOfShape from TopTools; -- edges of myS
+    myERep2d : DataMapOfOrientedShapeC2DF from TopOpeBRepTool; 
+    myVEds : DataMapOfShapeListOfShape from TopTools; -- map of connexity vertex,edges
+
+end CORRISO;

@@ -1,0 +1,68 @@
+-- File:	MakeArcOfHyperbola.cdl
+-- Created:	Mon Sep 28 11:50:50 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeArcOfHyperbola from GC inherits Root from GC
+    	---Purpose: Implements construction algorithms for an arc
+    	-- of hyperbola in 3D space. The result is a Geom_TrimmedCurve curve.
+    	-- A MakeArcOfHyperbola object provides a framework for:
+    	-- -   defining the construction of the arc of hyperbola,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results. In particular, the
+    	--   Value function returns the constructed arc of hyperbola.
+        
+uses Pnt          from gp,
+     Hypr         from gp,
+     Dir          from gp,
+     Ax1          from gp,
+     Real         from Standard,
+     TrimmedCurve from Geom
+
+raises NotDone from StdFail
+
+is
+
+Create(Hypr           : Hypr    from gp       ;
+       Alpha1, Alpha2 : Real    from Standard ;
+       Sense          : Boolean from Standard ) returns MakeArcOfHyperbola;
+    	---Purpose: Creates an arc of Hyperbola (TrimmedCurve from Geom) from 
+    	--          a Hyperbola between two parameters Alpha1 and Alpha2
+    	--          (given in radians).
+
+Create(Hypr  : Hypr    from gp       ;
+       P     : Pnt     from gp       ;
+       Alpha : Real    from Standard ;
+       Sense : Boolean from Standard ) returns MakeArcOfHyperbola;
+    	---Purpose: Creates an arc of Hyperbola (TrimmedCurve from Geom) from 
+    	--          a Hyperbola between point <P> and the parameter
+        --          Alpha (given in radians).
+
+Create(Hypr  : Hypr    from gp ;
+       P1    : Pnt     from gp ;
+       P2    : Pnt     from gp ;
+       Sense : Boolean from Standard ) returns MakeArcOfHyperbola;
+    	---Purpose: Creates an arc of Hyperbola (TrimmedCurve from Geom) from 
+    	--          a Hyperbola between two points P1 and P2.
+    	-- The orientation of the arc of hyperbola is:
+    	-- -   the sense of Hypr if Sense is true, or
+    	-- -   the opposite sense if Sense is false.
+    
+Value(me) returns TrimmedCurve from Geom
+    raises NotDone
+    is static;
+    	--- Purpose: Returns the constructed arc of hyperbola.
+    	---C++: return const&
+
+Operator(me) returns TrimmedCurve from Geom
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom_TrimmedCurve() const;"
+
+fields
+
+    TheArc : TrimmedCurve from Geom;
+    --The solution from Geom.
+    
+end MakeArcOfHyperbola;

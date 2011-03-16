@@ -1,0 +1,37 @@
+-- File:	PBRep_PointOnCurveOnSurface.cdl
+-- Created:	Wed Aug 11 11:47:38 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class PointOnCurveOnSurface from PBRep inherits PointsOnSurface from PBRep
+
+uses
+
+    Curve    from PGeom2d,
+    Surface  from PGeom,
+    Location from PTopLoc
+
+is
+
+    Create(P : Real;
+    	   C : Curve from PGeom2d;
+	   S : Surface from PGeom;
+	   L : Location from PTopLoc)
+    returns mutable PointOnCurveOnSurface from PBRep;
+    	---Level: Internal 
+    
+    PCurve(me) returns Curve from PGeom2d
+    is static;
+    	---Level: Internal 
+
+    IsPointOnCurveOnSurface(me) returns Boolean from Standard
+    	---Purpose: Returns True
+    is redefined;
+    
+fields
+
+    myPCurve : Curve from PGeom2d;
+
+end PointOnCurveOnSurface;

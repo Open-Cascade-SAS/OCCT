@@ -1,0 +1,50 @@
+-- File:	SelectBasics_BasicTool.cdl
+-- Created:	Thu Jun  8 11:04:56 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class BasicTool from SelectBasics 
+
+	---Purpose: 
+
+uses
+    Pnt2d from gp,
+    Array1OfPnt2d from TColgp
+is
+
+    MatchSegments(myclass;
+    	    	  P1,P2 : Pnt2d from gp;
+    	    	  P3,P4 : Pnt2d from gp)
+    returns Boolean;
+    ---Purpose: returns True if The Segment {P1P2} is
+    --          intersected by the segment {P3P4}
+
+    MatchSegment(myclass;
+		 pBegin,pEnd : Pnt2d from gp;
+		 X,Y,aTol    : Real;
+	         DMin        : in out Real) returns Boolean;
+    ---Level: Internal
+    ---Purpose: return True if Segment(pBegin, pEnd) is Selected 
+ 
+    AutoInter(myclass; aPolyg2d: Array1OfPnt2d from TColgp)
+    returns Boolean;
+      
+    MatchPolyg2d (myclass;
+    	    	  tabpoint: Array1OfPnt2d from TColgp;
+    	    	  X,Y,aTol: Real;
+	          DMin    : in out Real;
+    	    	  Rank    : in out Integer) returns Boolean;
+    ---Level: Internal 
+    ---Purpose: package method used to find if a point 
+    --          is close enough to a polygon of 2D points
+    --          to be Used by Primitives like curves or faces...
+    --          Rank gives the index of the touched
+    --          segment
+
+    
+
+
+end BasicTool;

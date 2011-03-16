@@ -1,0 +1,31 @@
+-- File:        ApprovalRole.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ApprovalRole from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ApprovalRole;
+	---Purpose: Returns a ApprovalRole
+
+	Init (me : mutable;
+	      aRole : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRole(me : mutable; aRole : mutable HAsciiString);
+	Role (me) returns mutable HAsciiString;
+
+fields
+
+	role : HAsciiString from TCollection;
+
+end ApprovalRole;

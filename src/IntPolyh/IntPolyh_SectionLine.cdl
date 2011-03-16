@@ -1,0 +1,73 @@
+-- File:	IntPolyh_SectionLine.cdl
+-- Created:	Tue Apr  6 11:05:48 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+--  modified by Edward AGAPOV (eap) Thu Feb 14 2002 (occ139)
+--  Add Prepend(), replace array with sequence
+
+class SectionLine from IntPolyh
+
+uses
+    
+    SeqOfStartPoints from IntPolyh,
+    StartPoint from IntPolyh
+
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &
+    returns StartPoint from IntPolyh    
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns StartPoint from IntPolyh    
+    is static;
+    
+    Copy(me: in out; Other : SectionLine from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns SectionLine from IntPolyh
+    is static;
+    
+    GetN(me)
+    returns Integer from Standard
+    is static;
+    
+    NbStartPoints(me)
+    returns Integer from Standard
+    is static;
+    
+    IncrementNbStartPoints(me: in out)
+    is static;
+    
+    Destroy(me: in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+    
+    Prepend(me:in out; SP: StartPoint from IntPolyh)
+    is static;
+     	
+fields
+
+--    n,nbstartpoints : Integer from Standard;
+--    ptr :Address from Standard;
+    mySeqOfSPoints : SeqOfStartPoints from IntPolyh;
+    
+end SectionLine from IntPolyh;

@@ -1,0 +1,61 @@
+-- File:	BOP_Section.cdl
+-- Created:	Fri May 18 09:21:35 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Section from BOP inherits Builder from BOP
+
+	----Purpose: Performs the Boolean Operation (BO) Section 
+    	---          for the shapes   
+	
+
+uses
+    DSFiller from BOPTools,
+    HistoryCollector from BOP
+
+is
+    Create 
+    	returns Section from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;  
+    	---
+    Do  (me:out) 
+    	is  redefined;
+    	---Purpose: 
+    	--- Does the BO from the beggining to the end, 
+    	--- i.e.  create new DataStructure, DSFiller,         
+    	--- compute all  interferences, compute states, 
+    	--- build result etc 
+    	---
+    Do  (me:out;toApprox         : Boolean from Standard;
+    	    	toComputePCurve1 : Boolean from Standard;
+    	    	toComputePCurve2 : Boolean from Standard);
+    	---Purpose: 
+    	--- Does the BO from the beggining to the end, 
+    	--- i.e.  create new DataStructure, DSFiller,         
+    	--- compute all  interferences, compute states, 
+    	--- build result etc 
+    	---
+
+    DoWithFiller (me:out; 
+    	    	  aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:   
+    	--- Does the BO using existing Filler to the end        
+    	---
+      
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_Section(){Destroy();}"   	 
+    	---Purpose:    
+    	--- Destructor 
+    	---
+
+    SetHistoryCollector(me: in out; theHistory: HistoryCollector from BOP)
+    	is redefined virtual;
+
+--fields 
+
+end Section;

@@ -1,0 +1,151 @@
+-- File:        Bnd_B3x.cdl
+-- Created:	Thu Sep  8 18:12:21 2005
+-- Author:	Alexander GRIGORIEV
+--              <agv@opencascade.com>
+---Copyright:    Open Cascade 2005
+
+generic class B3x from Bnd (RealType as any)
+
+uses    XYZ     from gp,
+        Pnt     from gp,
+        Ax1     from gp,
+        Ax3     from gp,
+        Trsf    from gp
+
+is
+
+    Create returns B3x from Bnd;
+    ---Purpose: Empty constructor.
+    ---C++: inline
+
+    Create      (theCenter: XYZ from gp; theHSize : XYZ from gp)
+        returns B3x from Bnd;
+    ---Purpose: Constructor.
+    ---C++: inline
+
+    IsVoid      (me)
+        returns Boolean from Standard;
+    ---Purpose: Returns True if the box is void (non-initialized).
+    ---C++: inline
+
+    Clear       (me:in out);
+    ---Purpose: Reset the box data.
+    ---C++: inline
+
+    Add         (me:in out; thePnt: XYZ from gp);
+    ---Purpose: Update the box by a point.
+
+    Add         (me: in out; thePnt: Pnt from gp);
+    ---Purpose: Update the box by a point.
+    ---C++: inline
+
+    Add         (me:in out; theBox: B3x from Bnd);
+    ---Purpose: Update the box by another box.
+    ---C++: inline
+
+    CornerMin   (me)
+        returns XYZ from gp;
+    ---Purpose: Query the lower corner: (Center - HSize). You must make sure that
+    --          the box is NOT VOID (see IsVoid()), otherwise the method returns
+    --          irrelevant result.
+    ---C++: inline
+
+    CornerMax   (me)
+        returns XYZ from gp;
+    ---Purpose: Query the upper corner: (Center + HSize). You must make sure that
+    --          the box is NOT VOID (see IsVoid()), otherwise the method returns
+    --          irrelevant result.
+    ---C++: inline
+
+    SquareExtent(me)
+        returns Real from Standard;
+    ---Purpose: Query the square diagonal. If the box is VOID (see method IsVoid())
+    --          then a very big real value is returned.
+    ---C++: inline
+
+    Enlarge     (me:in out; theDiff: Real from Standard);
+    ---Purpose: Extend the Box by the absolute value of theDiff.
+    ---C++: inline
+
+    Limit       (me:in out; theOtherBox: B3x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Limit the Box by the internals of theOtherBox.
+    --          Returns True if the limitation takes place, otherwise False
+    --          indicating that the boxes do not intersect. 
+
+    Transformed (me; theTrsf: Trsf from gp)
+        returns B3x from Bnd;
+    ---Purpose: Transform the bounding box with the given transformation.
+    --          The resulting box will be larger if theTrsf contains rotation.
+
+    IsOut       (me; thePnt: XYZ from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given point for the inclusion in the Box.
+    --          Returns True if the point is outside.
+    ---C++: inline
+
+    IsOut       (me; theCenter     : XYZ from gp;
+                     theRadius     : Real from Standard;
+                     isSphereHollow: Boolean from Standard = Standard_False)
+        returns Boolean from Standard;
+    ---Purpose: Check a sphere for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes. If the
+    --          parameter 'IsSphereHollow' is True, then the intersection is not
+    --          reported for a box that is completely inside the sphere (otherwise
+    --          this method would report an intersection).
+
+    IsOut       (me; theOtherBox: B3x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Check the given box for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes.
+    ---C++: inline
+
+    IsOut       (me; theOtherBox: B3x from Bnd; theTrsf: Trsf from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given box oriented by the given transformation
+    --          for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes.
+
+    IsOut       (me; theLine          : Ax1 from gp;
+                     isRay            : Boolean from Standard = Standard_False;
+                     theOverthickness : Real from Standard = 0.0)
+        returns Boolean from Standard;
+    ---Purpose: Check the given Line for the intersection with the current box.
+    --          Returns True if there is no intersection.
+    --          isRay==True means intersection check with the positive half-line
+    --          theOverthickness is the addition to the size of the current box
+    --          (may be negative). If positive, it can be treated as the thickness
+    --          of the line 'theLine' or the radius of the cylinder along 'theLine'
+
+    IsOut       (me; thePlane: Ax3 from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given Plane for the intersection with the current box.
+    --          Returns True if there is no intersection.
+
+    IsIn        (me; theBox: B3x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Check that the box 'this' is inside the given box 'theBox'. Returns
+    --          True if 'this' box is fully inside 'theBox'.
+    ---C++: inline
+
+    IsIn        (me; theBox: B3x from Bnd; theTrsf: Trsf from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check that the box 'this' is inside the given box 'theBox'
+    --          transformed by 'theTrsf'. Returns True if 'this' box is fully
+    --          inside the transformed 'theBox'.
+
+    SetCenter   (me: in out; theCenter: XYZ from gp);
+    ---Purpose: Set the Center coordinates
+    ---C++: inline
+
+    SetHSize    (me: in out; theHSize: XYZ from gp);
+    ---Purpose: Set the HSize (half-diagonal) coordinates.
+    --          All components of theHSize must be non-negative.
+    ---C++: inline
+  
+fields
+
+    myCenter :  RealType[3]     is protected;
+    myHSize  :  RealType[3]     is protected;
+
+end B3x from Bnd;

@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWNodeWithVector.cdl
+-- Created:	Thu Dec 12 17:51:07 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWNodeWithVector from RWStepFEA
+
+    ---Purpose: Read & Write tool for NodeWithVector
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    NodeWithVector from StepFEA
+
+is
+    Create returns RWNodeWithVector from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : NodeWithVector from StepFEA);
+	---Purpose: Reads NodeWithVector
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: NodeWithVector from StepFEA);
+	---Purpose: Writes NodeWithVector
+
+    Share (me; ent : NodeWithVector from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWNodeWithVector;

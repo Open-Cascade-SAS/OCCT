@@ -1,0 +1,112 @@
+-- File:	ChFi3d.cdl
+-- Created:	Tue Nov  9 15:39:27 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package ChFi3d 
+
+	---Purpose: creation of spatial fillets on a solid. 
+
+uses ChFiDS,
+     TopOpeBRepBuild,
+     TopOpeBRepDS,
+     BRepAdaptor,
+     BRepTopAdaptor,     
+     BRepBlend,
+     BlendFunc,
+     Blend,
+     AppBlend,
+     Law,
+     gp,
+     Geom2d,
+     Geom,
+     GeomAbs,
+     TopoDS,
+     TopAbs,
+     TCollection,
+     TColStd,
+     TColgp,
+     TopTools,
+     MMgt,
+     StdFail,
+     math,
+     AdvApprox,
+     Adaptor3d,
+     Adaptor2d,
+     Standard
+
+is
+    deferred class Builder;
+    ---Purpose: Structure and methods common for the construction 
+    --          of fillets  and  chamfers 3d.
+
+    class ChBuilder;
+    ---Purpose: Tool constructing chamfers on a solid.
+
+    class FilBuilder;
+    ---Purpose: Outil de construction de conges sur un solide.
+    
+    private class SearchSing;
+     ---Purpose: Searches   singularities on fillet
+
+    enumeration FilletShape is
+    	Rational,
+	QuasiAngular,
+	Polynomial
+ --- Purpose:
+-- Lists the types of fillet shapes. These include the following:
+-- -   ChFi3d_Rational (default value), which is the
+--   standard NURBS representation of circles,
+-- -   ChFi3d_QuasiAngular, which is a NURBS
+--   representation of circles where the parameters
+--   match those of the circle,
+-- -   ChFi3d_Polynomial, which corresponds to a
+--   polynomial approximation of circles. This type
+--   facilitates the implementation of the construction algorithm. 
+        
+    end FilletShape;
+     
+
+    ConcaveSide (S1,S2 : Surface from BRepAdaptor; E : Edge from TopoDS; 
+                 Or1,Or2 : out Orientation from TopAbs)
+    ---Purpose: Returns  Reversed  in  Or1  and(or)  Or2  if  
+    --          the  concave edge  defined by the  interior of faces F1 and F2,  
+    --          in  the  neighbourhood of  their boundary E is of the edge opposite to  the 
+    --          normal  of their surface  support.  The  orientation of
+    --          faces is  not  taken  into  consideration in  the calculation. The
+    --          function  returns  0 if  the calculation fails (tangence),
+    --          if  not, it  returns the  number of  choice of  the fillet
+    --          or chamfer corresponding to  the orientations  calculated
+    --          and  to  the tangent to  the  guide line read in  E.
+    --          
+    returns Integer from Standard;
+
+
+    NextSide (Or1,Or2         : in out Orientation from TopAbs;
+              OrSave1,OrSave2 :        Orientation from TopAbs;
+              ChoixSauv       :        Integer     from Standard)
+    ---Purpose: Same  as ConcaveSide, but the orientations are
+    --          logically  deduced from  the result of  the call of
+    --          ConcaveSide on  the  first pair of faces of  the fillet or
+    --          chamnfer.
+    returns Integer from Standard;
+
+    NextSide (Or : in out Orientation from TopAbs;
+              OrSave,OrFace : Orientation from TopAbs);
+    ---Purpose: Same  as  the  other NextSide, but the calculation is  done
+    --          on an edge  only.
+
+
+    SameSide(Or,OrSave1,OrSave2,OrFace1,OrFace2 : Orientation from TopAbs)
+    ---Purpose: Enables  to  determine while  processing  an  angle, if
+    --          two fillets or chamfers constituting a face have 
+    --          identic or opposed  concave  edges.
+    returns Boolean from Standard;
+    
+
+
+end ChFi3d;
+

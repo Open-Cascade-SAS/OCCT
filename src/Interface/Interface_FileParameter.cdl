@@ -1,0 +1,59 @@
+-- File:	FileParameter.cdl
+-- Created:	Mon Feb  3 15:49:37 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class FileParameter  from Interface
+
+    ---Purpose : Auxiliary class to store a litteral parameter in a file
+    --           intermediate directory or in an UndefinedContent : a reference
+    --           type Parameter detains an Integer which is used to address a
+    --           record in the directory.
+    --           FileParameter is intended to be stored in a ParamSet : hence
+    --           memory management is performed by ParamSet, which calls Clear
+    --           to work, while the Destructor (see Destroy) does nothing.
+    --           Also a FileParameter can be read for consultation only, not to
+    --           be read from a Structure to be included into another one.
+
+uses Integer, CString, AsciiString from TCollection, ParamType
+
+is
+
+    Create returns FileParameter;
+
+    Init (me : in out; val : AsciiString from TCollection; typ : ParamType)
+        is static;
+    ---Purpose : Fills fields (with Entity Number set to zero)
+
+    Init (me : in out; val : CString; typ : ParamType)  is static;
+    ---Purpose : Same as above, but builds the Value from a CString
+
+    CValue (me) returns CString  is static;
+    ---Purpose : Same as above, but as a CString (for immediate exploitation)
+    -- was C++ : return const
+
+    ParamType (me) returns ParamType  is static;
+    ---Purpose : Returns the type of the parameter
+
+    SetEntityNumber (me : in out; num : Integer)  is static;
+    ---Purpose : Allows to set a reference to an Entity in a numbered list
+
+    EntityNumber (me) returns Integer  is static;
+    ---Purpose : Returns value set by SetEntityNumber
+
+    Clear (me : in out) is static;
+    ---Purpose : Clears stored data : frees memory taken for the String Value
+
+    Destroy (me : in out) is static;
+    ---Purpose : Destructor. Does nothing because Memory is managed by ParamSet
+    ---C++ : alias ~
+
+fields
+
+    thetype : ParamType;  -- for ParamType
+    theval  : PCharacter;    -- for Value
+    thenum  : Integer;    -- for EntityNumber
+
+end FileParameter;

@@ -1,0 +1,64 @@
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+
+
+
+inline Standard_Integer PCollection_HArray2::ColLength () const
+{
+	return myUpperRow - myLowerRow + 1 ;
+}
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray2::LowerCol () const
+{
+	return myLowerCol ;
+}
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray2::UpperCol () const
+{
+	return myUpperCol ;
+}
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray2::LowerRow () const
+{
+	return myLowerRow;
+}
+
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray2::RowLength () const
+{
+	return myUpperCol - myLowerCol + 1 ;
+}
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray2::UpperRow () const
+{
+	return myUpperRow ;
+}
+
+
+

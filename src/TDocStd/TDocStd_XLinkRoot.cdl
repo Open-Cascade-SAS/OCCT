@@ -1,0 +1,126 @@
+-- File:	TDocStd_XLinkRoot.cdl
+--      	------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Aug 27 1997	Creation
+
+
+private class XLinkRoot from TDocStd inherits Attribute from TDF
+
+	---Purpose: This attribute is the root of all external
+	--          references contained in a Data from TDF. Only one
+	--          instance of this class is added to the TDF_Data
+	--          root label. Starting from this attribute all the
+	--          Reference are linked together, to be found
+	--          easely.
+
+uses
+
+    GUID from Standard,
+    Data            from TDF,
+    RelocationTable from TDF,
+    XLink    from TDocStd,
+    XLinkPtr from TDocStd
+
+-- raises
+
+is
+
+    -- CLASS methods.
+    -- --------------
+
+    GetID(myclass) returns GUID from Standard;
+	---Purpose: Returns the ID: 2a96b61d-ec8b-11d0-bee7-080009dc3333
+	--          
+    	---C++: return const &
+    
+    Set(myclass; aDF : Data from TDF)
+    	returns XLinkRoot from TDocStd;
+	---Purpose: Sets an empty XLinkRoot to Root or gets the
+	--          existing one. Only one attribute per TDF_Data.
+
+    Insert(myclass; anXLinkPtr : XLinkPtr from TDocStd);
+	---Purpose: Inserts <anXLinkPtr> at the beginning of the XLink chain.
+
+    Remove(myclass; anXLinkPtr : XLinkPtr from TDocStd);
+	---Purpose: Removes <anXLinkPtr> from the XLink chain, if it exists.
+
+    -- Basic methods.
+    -- --------------
+
+    Create
+    	returns mutable XLinkRoot from TDocStd
+    	is private;
+	---Purpose: Initializes fields.
+
+    -- Information access.
+    -- -------------------
+
+    ID(me) returns GUID from Standard
+    	is redefined static;
+	---Purpose: Returns the ID of the attribute.
+	--          
+	---C++: return const &             	
+  
+    BackupCopy(me) returns mutable Attribute from TDF
+    	is redefined static;
+	---Purpose: Returns a null handle.
+
+    Restore(me: mutable;
+    	    anAttribute : Attribute from TDF)
+    	is redefined static;
+	---Purpose: Does nothing.
+
+
+    First(me : mutable; anXLinkPtr : XLinkPtr from TDocStd)
+    	is private;
+	---Purpose: Sets the field <myFirst> with <anXLinkPtr>.
+	--          
+	---C++: inline
+
+    First(me)
+    	returns XLinkPtr from TDocStd
+    	is private;
+	---Purpose: Returns the contents of the field <myFirst>.
+	--          
+	---C++: inline
+
+
+    -- Copy use methods
+    -- ----------------
+
+    NewEmpty(me)
+    	returns mutable Attribute from TDF
+    	is redefined static;
+	---Purpose: Returns a null handle.
+
+    Paste(me;
+    	  intoAttribute    : mutable Attribute from TDF;
+	  aRelocationTable : mutable RelocationTable from TDF)
+    	is redefined static;
+	---Purpose: Does nothing.
+
+    -- Miscelleaneous
+    -- --------------
+
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined static;
+	---Purpose: Dumps the attribute on <aStream>.
+    	---C++ : return &
+
+
+fields
+
+    myFirst : XLinkPtr from TDocStd;
+
+friends
+
+    class XLinkIterator from TDocStd
+
+end XLinkRoot;

@@ -1,0 +1,25 @@
+-- File:	TSolid1.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+class TSolid1 from PTopoDS inherits TShape1 from PTopoDS
+
+	---Purpose: A topological  Solid1 shape.   
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TSolid1 from PTopoDS;
+	---Purpose: The new  TSolid1  has no  boundary  and covers  the
+	--          whole 3D space.
+    	---Level: Internal 
+    	
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    	---Level: Internal 
+
+end TSolid1;

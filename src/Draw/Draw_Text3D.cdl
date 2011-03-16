@@ -1,0 +1,39 @@
+-- File:	Text3D.cdl
+-- Created:	Wed Apr 29 15:29:05 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Text3D from Draw inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses Pnt from gp,
+    Color from Draw,
+    Display from Draw,
+    AsciiString from TCollection
+
+is
+
+    Create(p : Pnt; T : CString; col : Color)
+    returns mutable Text3D from Draw;
+    
+    Create(p : Pnt; T : CString; col : Color;
+    	   moveX : Real; moveY : Real)
+    returns mutable Text3D from Draw;
+
+    SetPnt(me : mutable; p : Pnt);
+   
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myPoint : Pnt          from gp;
+    myColor : Color        from Draw;
+    myText  : AsciiString  from TCollection;
+    mymoveX : Real      from Standard;
+    mymoveY : Real      from Standard;
+    
+end Text3D;

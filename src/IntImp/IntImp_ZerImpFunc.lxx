@@ -1,0 +1,54 @@
+#include <StdFail_UndefinedDerivative.hxx>
+
+inline void IntImp_ZerImpFunc::Set (const ThePSurface& PS)
+{
+  surf =  (Standard_Address)(&PS);
+}
+
+inline void IntImp_ZerImpFunc::SetImplicitSurface (const TheISurface& IS)
+{
+  func =  (Standard_Address)(&IS);
+}
+
+inline void IntImp_ZerImpFunc::Set (const Standard_Real Tol)
+{
+  tol = Tol;
+}
+
+inline Standard_Real IntImp_ZerImpFunc::Root() const 
+{ 
+  return valf;
+}
+
+inline Standard_Real IntImp_ZerImpFunc::Tolerance() const 
+{ 
+  return tol;
+}
+
+inline const gp_Pnt& IntImp_ZerImpFunc::Point() const 
+{
+  return pntsol;
+}
+
+inline const gp_Vec& IntImp_ZerImpFunc::Direction3d()
+{
+  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  return d3d;
+}
+
+inline const gp_Dir2d& IntImp_ZerImpFunc::Direction2d()
+{
+  if (IsTangent()) StdFail_UndefinedDerivative::Raise();       
+  return d2d;
+}
+
+inline const ThePSurface& IntImp_ZerImpFunc::PSurface() const 
+{
+  return  (*((ThePSurface *)(surf)));
+}
+
+inline const TheISurface& IntImp_ZerImpFunc::ISurface() const 
+{ 
+  return  (*((TheISurface *)(func)));
+}
+

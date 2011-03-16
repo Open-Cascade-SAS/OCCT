@@ -1,0 +1,66 @@
+-- File:	BOP_Draw.cdl
+-- Created:	Thu May 31 09:29:48 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Draw from BOP 
+
+	---Purpose: 
+    	---  auxiliary class to display intermediate results  
+    	---  in  Draw's winowds for the debugging purposes 
+	---   
+	 
+uses
+    ListOfShape from TopTools,
+    Face from TopoDS,
+    Edge from TopoDS 
+    
+is
+    DrawListOfShape  (myclass; 
+    	aList  : ListOfShape from TopTools; 
+	aName  : CString from Standard); 
+    	---Purpose:  
+    	--- Display in  3D-view shapes from the ListOfShape  <aList>   
+    	--- aName is base name of shape. Actual name for  each 
+    	--- subsequent shape  will  be  aName+"_#",  where 
+    	--- # - is ordered index of the shape in <aList>     	     
+    	---
+    DrawListOfEdgesWithPC  (myclass; 
+	aFace  : Face from TopoDS;   		    		     
+    	aList  : ListOfShape from TopTools; 
+	aName  : CString from Standard);  
+    	---Purpose:  
+    	--- Display in  2D-view the edges from the ListOfShape  <aList>,  
+    	--- that have P-curves for  the face <aFace>          
+    	--- aName is base name of shape. Actual name for  each 
+    	--- subsequent shape  will  be  aName+"_#",  where 
+    	--- # -  is ordered index of the shape in <aList>     	     
+    	---
+    DrawListOfEdgesWithPC  (myclass; 
+	aFace  : Face from TopoDS;   		    		     
+    	aList  : ListOfShape from TopTools; 
+	anInd  : Integer from Standard;         
+    	aName  : CString from Standard);  
+    	---Purpose:  
+    	--- Display in  2D-view the edges from the ListOfShape  <aList>,  
+    	--- that have P-curves for  the face <aFace>          
+    	--- aName is base name of shape. Actual name for  each 
+    	--- shape  will  be  aName+"_anInd"
+	---
+    DrawEdgeWithPC  (myclass; 
+	aFace  : Face from TopoDS;   		    		     
+    	aEdge  : Edge from TopoDS; 
+	aName  : CString from Standard);   
+    	---Purpose:   	
+    	--- Display in  2D-view the edge,  
+    	--- that has  P-curve for  the face <aFace>          
+    	--- aName is the name of shape.  
+    	---
+    Wait(myclass); 
+    	---Purpose:    
+    	--- Wait  for  user's keystroke       
+    	---
+		    	    	
+end Draw;

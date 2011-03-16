@@ -1,0 +1,68 @@
+-- File:	GeomFill_PlanFunc.cdl
+-- Created:	Thu Oct 29 10:47:24 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class PlanFunc from GeomFill   
+inherits  FunctionWithDerivative from math
+
+	---Purpose: 
+
+uses 
+  HCurve  from Adaptor3d, 
+  Pnt     from  gp, 
+  Vec     from  gp, 
+  XYZ     from  gp 
+  
+is 
+    Create(P  :  Pnt;  V  :  Vec;  C  :  HCurve  from  Adaptor3d)   
+    returns  PlanFunc from GeomFill;
+
+    Value(me: in out; X: Real; F: out Real)
+        ---Purpose: computes the value <F>of the function for the variable <X>.
+    	--          Returns True if the calculation were successfully done, 
+    	--          False otherwise.
+
+    returns Boolean
+    is redefined;
+ 
+    Derivative(me: in out; X: Real; D: out Real)
+         ---Purpose: computes the derivative <D> of the function 
+         --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+
+    returns Boolean
+    is redefined;    
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+    returns Boolean
+    is redefined;  
+     
+    D2(me:in  out;  X:Real;  F,  D1,  D2: out Real) 
+    is  static; 
+     
+    DEDT(me :  in  out;  X:Real; 
+         DP, DV  :  Vec; 
+         DF  :  out  Real) 
+    is  static;   
+     
+    D2E(me :  in  out;  X:Real; 
+        DP, D2P  :  Vec;  
+	DV,  D2V :  Vec;
+        DFDT,  D2FDT2,  D2FDTDX :  out  Real) 
+    is  static;     
+    
+fields 
+  myPnt  :  XYZ; 
+  myVec  :  XYZ; 
+  V      :  XYZ; 
+  G      :  Pnt; 
+  myCurve  :  HCurve  from  Adaptor3d;
+end PlanFunc;

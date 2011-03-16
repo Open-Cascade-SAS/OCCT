@@ -1,0 +1,83 @@
+--
+-- File      :  Cylinder.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Cylinder from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Cylinder, Type <154> Form Number <0>
+        --          in package IGESSolid
+        --          This defines a solid cylinder
+
+uses
+
+        Pnt             from gp,
+        Dir             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable Cylinder;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              aHeight : Real;
+              aRadius : Real;
+              aCenter : XYZ;
+              anAxis  : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           Cylinder
+        --       - aHeight : Cylinder height
+        --       - aRadius : Cylinder radius
+        --       - aCenter : First face center coordinates (default (0,0,0))
+        --       - anAxis  : Unit vector in axis direction (default (0,0,1))
+
+
+        Height (me) returns Real;
+        ---Purpose : returns the cylinder height
+
+        Radius (me) returns Real;
+        ---Purpose : returns the cylinder radius
+
+        FaceCenter (me) returns Pnt;
+        ---Purpose : returns the first face center coordinates.
+
+        TransformedFaceCenter (me) returns Pnt;
+        ---Purpose : returns the first face center after applying TransformationMatrix
+
+        Axis (me) returns Dir;
+        ---Purpose : returns the vector in axis direction
+
+        TransformedAxis (me) returns Dir;
+        ---Purpose : returns the vector in axis direction after applying 
+        -- TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_Cylinder
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Cylinder.
+--
+-- Reminder : A Cylinder instance is defined by :
+--            the center of one circular face(Center), a unit vector
+--            (Axis), a height(Height), and a radius (Radius).
+
+        theHeight     : Real;
+            -- the height of the cylinder
+
+        theRadius     : Real;
+            -- the radius of the face of the cylinder
+
+        theFaceCenter : XYZ;
+            -- the center coordinates of the face
+
+        theAxis       : XYZ;
+            -- the unit vector along the axis
+
+end Cylinder;

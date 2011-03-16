@@ -1,0 +1,61 @@
+-- File:	MeshVS_SensitiveMesh.cdl
+-- Created:	Thu Jan 25 2007
+-- Author:	Sergey KOCHETKOV
+---Copyright:	Open CASCADE 2007
+
+class SensitiveMesh from MeshVS inherits SensitiveEntity from Select3D
+
+	---Purpose: This class provides custom mesh sensitive entity used in advanced mesh selection.  
+    	---It provides detection of mesh entities accordingly to activated selection mode 
+
+uses
+  EntityOwner from SelectBasics,
+  Array1OfPnt2d from TColgp, 
+  Box from Bnd, 
+  Box2d from Bnd, 
+  Location from TopLoc, 
+  Lin from gp, 
+  ListOfBox2d from SelectBasics, 
+  Projector from Select3D      
+is
+
+  Create ( theOwner    : EntityOwner from SelectBasics; 
+           theMode     : Integer = 0 )
+    returns mutable SensitiveMesh from MeshVS; 
+      
+  GetMode( me ) returns Integer from Standard;     
+     
+  GetConnected( me: mutable;  aLocation  :  Location from TopLoc )
+    returns SensitiveEntity from Select3D is redefined; 
+     
+  ComputeDepth( me;  EyeLine  :  Lin from gp ) returns Real from Standard 
+    is redefined;     
+     	    
+  Matches( me: mutable;  X,Y : Real from Standard;
+            	    	 aTol: Real from Standard;
+            	    	 DMin: out Real from Standard ) returns Boolean  
+    is redefined;
+ 
+  Matches  ( me: mutable;   XMin, YMin, XMax, YMax  : Real;
+             	    	    aTol                    : Real ) returns Boolean  
+    is redefined;
+
+  Matches  ( me: mutable;   Polyline  :  Array1OfPnt2d from TColgp;
+                            aBox      :  Box2d;  
+    	    	    	    aTol      :  Real ) returns Boolean  
+    is redefined; 
+      
+  Project ( me:mutable; aProjector : Projector from Select3D ) is redefined static;
+     
+  Areas   ( me: mutable ; boxes : in out ListOfBox2d from SelectBasics ) is redefined static;  
+   
+  ProjectOneCorner( me: mutable; aProjector : Projector from Select3D; 
+    	    	    	    	 X,Y,Z      : Real from Standard ) is private;     
+ 
+fields 
+   
+  myMode  : Integer from Standard;          
+  mybox   : Box    from Bnd; 
+  mybox2d : Box2d  from Bnd;   
+ 
+end SensitiveMesh;

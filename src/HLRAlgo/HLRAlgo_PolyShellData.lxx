@@ -1,0 +1,51 @@
+// File:	HLRAlgo_PolyShellData.lxx
+// Created:	Fri May  5 15:58:19 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+#include <TColStd_HArray1OfTransient.hxx>
+
+//=======================================================================
+//function : Hiding
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_PolyShellData::Hiding () const
+{ return !myHPolHi.IsNull(); }
+
+//=======================================================================
+//function : PolyData
+//purpose  : 
+//=======================================================================
+
+inline TColStd_Array1OfTransient &
+HLRAlgo_PolyShellData::PolyData ()
+{ return myPolyg; }
+
+//=======================================================================
+//function : HidingPolyData
+//purpose  : 
+//=======================================================================
+
+inline TColStd_Array1OfTransient &
+HLRAlgo_PolyShellData::HidingPolyData ()
+{ return myHPolHi->ChangeArray1(); }
+
+//=======================================================================
+//function : Edges
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_ListOfBPoint &
+HLRAlgo_PolyShellData::Edges ()
+{ return mySegList; }
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_PolyShellData::Indices ()
+{ return (Standard_Address)myMinMax; }
+

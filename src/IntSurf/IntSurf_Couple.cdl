@@ -1,0 +1,41 @@
+-- File:	Couple.cdl
+-- Created:	Wed Mar 25 15:16:53 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+class Couple from IntSurf
+
+	---Purpose: creation d 'un couple de 2 entiers
+
+is
+
+     Create
+     	returns Couple from IntSurf;
+     	---C++: inline
+
+     Create(Index1, Index2 : Integer from Standard)
+    	---C++: inline
+    	returns Couple from IntSurf;
+	
+     
+     First(me) returns Integer from Standard
+     ---Purpose: returns the first element 
+     ---C++: inline
+     is static;
+
+
+     Second (me) returns Integer from Standard
+     ---Purpose: returns the Second element 
+     ---C++: inline
+     is static;
+
+
+fields
+
+    firstInteger  : Integer from Standard;
+    secondInteger : Integer from Standard;
+
+end Couple;
+
+

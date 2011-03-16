@@ -1,0 +1,31 @@
+-- File:	MeshTest.cdl
+-- Created:	Wed Aug  3 16:41:21 1994
+-- Author:	Modeling
+--		<modeling@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+package MeshTest 
+
+	---Purpose: Provides methods for testing the mesh algorithms.
+
+uses 
+     TColStd,
+     Draw,
+     TopoDS,
+     BRepMesh
+
+is
+
+    class DrawableMesh;
+	---Purpose: Provides a  mesh  object inherited from Drawable3d
+	--          to draw a triangulation.
+
+    Commands(DI : in out Interpretor from Draw);
+	---Purpose: Defines meshing commands 
+
+    PluginCommands(DI : in out Interpretor from Draw);
+    	---Purpose: Defines plugin commands 
+
+end MeshTest;

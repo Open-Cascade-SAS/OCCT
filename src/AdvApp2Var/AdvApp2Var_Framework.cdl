@@ -1,0 +1,89 @@
+-- File:	AdvApp2Var_Framework.cdl
+-- Created:	Wed Apr 10 16:55:58 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Mon Dec  9 10:30:56 1996
+--    by:	Joelle CHAUVET
+--		G1135 : Empty constructor
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+class Framework from AdvApp2Var
+
+uses
+
+    Boolean,Real,NoSuchObject from Standard,
+    HArray1OfReal from TColStd,
+    IsoType from GeomAbs,
+    SequenceOfNode,SequenceOfStrip,Iso,Node from AdvApp2Var
+
+raises NoSuchObject from Standard
+
+is
+
+    Create returns Framework;
+    Create(Frame : SequenceOfNode; 
+           UFrontier, VFrontier : SequenceOfStrip)  
+    returns Framework;
+    
+    FirstNotApprox(me; IndexIso,IndexStrip : out Integer; 
+                       anIso : out Iso) 
+    ---Purpose: search the Index of the first Iso not approximated,
+    --          if all Isos are approximated Standard_False is returned.
+    returns Boolean; 
+
+    FirstNode(me; Type : IsoType; IndexIso,IndexStrip : Integer) 
+    returns Integer;
+    
+    LastNode(me; Type : IsoType; IndexIso,IndexStrip : Integer) returns Integer; 
+    
+    ChangeIso(me: in out; IndexIso,IndexStrip : Integer; anIso : Iso);
+    
+    Node(me; IndexNode : Integer)
+    ---C++: return const&
+    ---C++: inline    
+    returns Node
+    raises NoSuchObject from Standard;
+	
+    Node(me; U,V : Real) 
+    ---C++: return const&
+    returns Node
+    raises NoSuchObject from Standard;
+	
+    IsoU(me; U,V0,V1 : Real) 
+    ---C++: return const&
+    returns Iso
+    raises NoSuchObject from Standard;
+	
+    IsoV(me; U0,U1,V : Real) 
+    ---C++: return const&    
+    returns Iso
+    raises NoSuchObject from Standard;
+	
+    ChangeNode(me: in out; IndexNode : Integer)
+    ---C++: return &
+    ---C++: inline    
+    returns Node;
+
+    
+    UpdateInU(me: in out; CuttingValue : Real);
+    
+    UpdateInV(me: in out; CuttingValue : Real);
+    
+    UEquation(me; IndexIso,IndexStrip : Integer) 
+    ---C++: return const &
+    returns HArray1OfReal; 
+    
+    VEquation(me; IndexIso,IndexStrip : Integer)
+    ---C++: return const & 
+     returns HArray1OfReal;
+ 
+
+fields
+
+    myNodeConstraints    : SequenceOfNode;
+    myUConstraints       : SequenceOfStrip;
+    myVConstraints       : SequenceOfStrip;
+
+end Framework;
+

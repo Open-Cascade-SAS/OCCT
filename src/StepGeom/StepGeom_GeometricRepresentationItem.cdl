@@ -1,0 +1,20 @@
+-- File:        GeometricRepresentationItem.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GeometricRepresentationItem from StepGeom 
+
+inherits RepresentationItem from StepRepr
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable GeometricRepresentationItem;
+	---Purpose: Returns a GeometricRepresentationItem
+
+
+end GeometricRepresentationItem;

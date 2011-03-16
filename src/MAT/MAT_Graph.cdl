@@ -1,0 +1,156 @@
+-- File:	MAT_Graph.cdl
+-- Created:	Thu Apr 29 18:49:39 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Graph from MAT
+
+inherits
+
+    TShared from MMgt
+     
+	---Purpose: The Class Graph permits the exploration of the
+	--          Bisector Locus.
+
+uses BasicElt                  from MAT,
+     Node                      from MAT,
+     Arc                       from MAT,
+     DataMapOfIntegerArc       from MAT,
+     DataMapOfIntegerBasicElt  from MAT,
+     DataMapOfIntegerNode      from MAT,
+     ListOfBisector            from MAT 
+
+is
+
+    Create returns mutable Graph from MAT;
+        --- Purpose : Empty constructor.
+  
+---Category: Computation
+     
+    Perform(me           : mutable ;
+    	    SemiInfinite : Boolean ;
+            TheRoots     : ListOfBisector from MAT;
+            NbBasicElts  : Integer ;
+            NbArcs       : Integer )
+	--- Purpose : Construct <me> from the result of the method
+	--            <CreateMat> of the class <MAT> from <MAT>.
+	--            
+	--            <SemiInfinite> : if some bisector are infinites.
+	--            <TheRoots>     : Set of the bisectors.
+	--            <NbBasicElts>  : Number of Basic Elements.
+	--            <NbArcs>       : Number of Arcs = Number of Bisectors.   
+    is static;
+
+
+---Category: Querying           
+    
+    Arc(me ; Index : Integer) 
+	--- Purpose : Return the Arc of index <Index> in <theArcs>.
+    returns Arc from MAT
+    is static;
+    
+    BasicElt(me ; Index : Integer) 
+	--- Purpose : Return the BasicElt of index <Index> in <theBasicElts>.
+    returns BasicElt from MAT
+    is static;
+
+    Node(me ; Index : Integer) 
+	--- Purpose : Return the Node of index <Index> in <theNodes>.
+    returns Node from MAT
+    is static;
+
+    NumberOfArcs (me) 
+    	--- Purpose : Return the number of arcs of <me>.
+    returns Integer
+    is static;
+    
+    NumberOfNodes (me) 
+    	--- Purpose : Return the number of nodes of <me>.
+    returns Integer
+    is static;
+    
+    NumberOfBasicElts (me) 
+    	--- Purpose : Return the number of basic elements of <me>.
+    returns Integer
+    is static;
+
+    NumberOfInfiniteNodes (me) 
+    	--- Purpose : Return the number of infinites nodes of <me>.
+    returns Integer
+    is static;
+
+---Category: Modification
+
+    FusionOfBasicElts (me            : mutable;
+    	    	       IndexElt1     : Integer from Standard;
+    	    	       IndexElt2     : Integer from Standard;
+                       MergeArc1     : out Boolean from Standard;
+                       GeomIndexArc1 : out Integer from Standard;
+                       GeomIndexArc2 : out Integer from Standard;
+                       MergeArc2     : out Boolean from Standard;
+                       GeomIndexArc3 : out Integer from Standard;
+                       GeomIndexArc4 : out Integer from Standard)
+		       
+	---Purpose: Merge two BasicElts.  The End of the BasicElt Elt1
+	--          of  IndexElt1 becomes The End of the BasicElt Elt2
+	--          of  IndexElt2.   Elt2 is replaced in  the  arcs  by
+	--          Elt1, Elt2 is eliminated.  
+	--          
+	--          <MergeArc1> is True  if the fusion  of the BasicElts  =>  
+	--          a fusion  of two Arcs which separated  the same  elements. 
+	--          In this case <GeomIndexArc1> and  <GeomIndexArc2>  are the
+	--          Geometric  Index of this  arcs.   
+	--          
+	--          If the  BasicElt corresponds to a close line , 
+	--          the StartArc and the EndArc of Elt1 can separate the same 
+	--          elements .
+	--          In this case there is a fusion of this arcs, <MergeArc2> 
+	--          is true and <GeomIndexArc3> and  <GeomIndexArc4>  are the 
+	--          Geometric  Index of this  arcs.  
+
+      
+    is static;					    
+
+    FusionOfArcs (me        : mutable;
+                  Arc1      : mutable Arc from MAT;
+		  Arc2      : mutable Arc from MAT)
+	---Purpose: Merge two Arcs.  the second node of <Arc2> becomes
+	--          the  first node  of <Arc1>.  Update  of the  first
+	--          node and the neighbours of <Arc1>.
+	--          <Arc2> is eliminated.
+    is static private;					    
+
+    CompactArcs (me : mutable )
+    is static ;
+
+    CompactNodes(me : mutable )
+    is static ;
+
+    ChangeBasicElts(me     : mutable ; 
+    	    	    NewMap : DataMapOfIntegerBasicElt  from MAT)
+    is static;
+
+    ChangeBasicElt(me : mutable ; Index : Integer)	
+    returns mutable BasicElt from MAT
+    is static;
+    
+    UpDateNodes(me : mutable ; Index : in out Integer)
+    is static private;
+    
+fields 
+    theArcs               : DataMapOfIntegerArc        from MAT; 
+    theBasicElts          : DataMapOfIntegerBasicElt   from MAT;
+    theNodes              : DataMapOfIntegerNode       from MAT;
+    numberOfArcs          : Integer;
+    numberOfNodes         : Integer;
+    numberOfBasicElts     : Integer;
+    numberOfInfiniteNodes : Integer;
+
+end Graph;
+
+
+
+
+

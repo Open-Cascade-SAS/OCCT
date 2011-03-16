@@ -1,0 +1,159 @@
+-- File:	Contap_ContAna.cdl
+-- Created:	Thu Mar  4 10:51:23 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@form4>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class ContAna from Contap
+
+	---Purpose: This class provides the computation of the contours
+	--          for quadric surfaces.
+
+uses Sphere    from gp,
+     Cylinder  from gp,
+     Cone      from gp,
+     Lin       from gp,
+     Circ      from gp,
+     Pnt       from gp,
+     Dir       from gp,
+     CurveType from GeomAbs
+
+
+raises NotDone     from StdFail,
+       DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+    Create
+    
+    	returns ContAna from Contap;
+	
+	
+    Perform(me: in out; S: Sphere from gp; D: Dir from gp)
+    
+    	is static;
+
+
+    Perform(me: in out; S: Sphere from gp; D  : Dir from gp; 
+                                           Ang: Real from Standard)
+    
+    	is static;
+
+
+    Perform(me: in out; S: Sphere from gp; Eye: Pnt from gp)
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cylinder from gp; D: Dir from gp)
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cylinder from gp; D  : Dir from gp;
+                                             Ang: Real from Standard)
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cylinder from gp; Eye: Pnt from gp)
+    
+	---Purpose: 
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cone from gp; D: Dir from gp)
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cone from gp; D  : Dir from gp;
+                                         Ang: Real from Standard)
+    
+    	is static;
+
+
+    Perform(me: in out; C: Cone from gp; Eye: Pnt from gp)
+    
+	---Purpose: 
+    
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+	
+
+    NbContours(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+
+
+
+    TypeContour(me)
+    
+	---Purpose: Returns GeomAbs_Line or GeomAbs_Circle, when
+	--          IsDone() returns True.
+    
+    	returns CurveType from GeomAbs
+	---C++: inline
+	
+	raises NotDone     from StdFail,
+	       DomainError from Standard
+	
+	is static;
+
+
+    Circle(me)
+    
+    	returns Circ from gp
+	---C++: inline
+	
+	raises NotDone from StdFail,
+	       DomainError from Standard
+
+
+    	is static;
+
+
+    Line(me; Index: Integer from Standard)
+
+    	returns Lin from gp
+	
+	raises NotDone from StdFail,
+	       DomainError from Standard,
+	       OutOfRange  from Standard
+
+        is static;
+
+
+fields
+
+    done  : Boolean   from Standard;
+    nbSol : Integer   from Standard;
+    typL  : CurveType from GeomAbs;
+    pt1   : Pnt       from gp;
+    pt2   : Pnt       from gp;
+    pt3   : Pnt       from gp;
+    pt4   : Pnt       from gp;
+    dir1  : Dir       from gp;
+    dir2  : Dir       from gp;
+    dir3  : Dir       from gp;  
+    dir4  : Dir       from gp;  
+    prm   : Real      from Standard;
+
+end ContAna;

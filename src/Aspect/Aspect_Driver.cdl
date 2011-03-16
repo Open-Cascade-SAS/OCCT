@@ -1,0 +1,422 @@
+
+-- File:	Aspect_Driver.cdl
+-- Created:	Thu Jul 1 09:14:42 1993
+-- Author:	Jean Louis FRENKEL,Gerard GRAS
+--		<gg@sherlox>
+-- Update:      Fri Jan 30 16:05:00 1998
+--              <gg@photox>
+--              Adds <useMFT> parameter in the SetFontMap() method 
+--		and adds the new method UseMFT()
+--              for using MDTV fonts instead system fonts.
+---Copyright:	 Matra Datavision 1993
+
+deferred class Driver from Aspect inherits TShared from MMgt
+
+---Purpose: Defines the common behaviour of the output driver.
+--  Warning: Permits to defines polyline,polygon,marker and text attributes in relation 
+--	    with the SINGLE primitives DrawPolyline(),DrawPolygon(),....
+--	    or the INCREMENTAL primitives BeginPolyline(),BeginPolygon(),...
+--	    or the SET of primitives BeginArcs(),BeginMarkers(),...
+--
+--	    NOTE that :
+--	    The incremental primitives are interesting to used because
+--	    no more arrays are necessary to fill it.
+--	    The set of primitives are interesting to used because this
+--	    increase the drawing performances. 
+
+uses
+
+	ExtendedString		from TCollection,
+	Array1OfShortReal	from TShort,
+	ColorMap		from Aspect,
+	TypeMap			from Aspect,
+	WidthMap		from Aspect,
+	FontMap			from Aspect,
+	MarkMap			from Aspect,
+	TypeOfText		from Aspect,
+	PlaneAngle		from Quantity,
+	Length                  from Quantity,
+	Factor                  from Quantity,
+	Ratio                   from Quantity,
+	Color			from Quantity
+
+raises
+
+        DriverDefinitionError   from Aspect,
+        DriverError             from Aspect,
+        UndefinedMap            from Aspect
+is
+
+	Initialize;
+
+        EndDraw (me: mutable; Synchronize: Boolean = Standard_False) is deferred;
+        ---Purpose: Flush all graphics and Wait after up to date
+        --display when Synchronize is TRUE.
+ 
+	---------------------------------------------
+	-- Category: Methods to define the attributes
+	---------------------------------------------
+
+	SetColorMap(me: mutable;
+			aColorMap: ColorMap from Aspect) 
+		raises DriverError from Aspect is static;
+	---Category: Methods to define the ColorIndexs
+
+	SetTypeMap(me: mutable;
+			aTypeMap: TypeMap from Aspect)
+		raises DriverError from Aspect is static;
+	---Category: Methods to define the TypeIndexs
+
+	SetWidthMap(me: mutable;
+			aWidthMap: WidthMap from Aspect)
+		raises DriverError from Aspect is static;
+	---Category: Methods to define the WidthIndexs
+
+	SetFontMap(me: mutable;
+			aFontMap: FontMap from Aspect;
+			useMFT: Boolean from Standard = Standard_True)
+		raises DriverError from Aspect is static;
+	---Category: Methods to define the FontIndexs
+	---Purpose:
+	-- Sets the current font map to this driver and Enable/Disable
+	-- this driver to use MDTV fonts instead system fonts.
+
+	SetMarkMap(me: mutable;
+			aMarkMap: MarkMap from Aspect)
+		raises DriverError from Aspect is static;
+	---Category: Methods to define the MarkerIndexs
+
+	SetLineAttrib (me: mutable;
+		ColorIndex: Integer from Standard;
+		TypeIndex: Integer from Standard;
+		WidthIndex: Integer from Standard)
+		raises DriverError from Aspect is deferred;
+	---Category: Methods to define the Current Line Attibutes
+
+	SetTextAttrib (me: mutable;
+		ColorIndex: Integer from Standard;
+		FontIndex: Integer from Standard)
+		raises DriverError from Aspect is deferred;
+	---Category: Methods to define the Current Text Attributes
+
+	SetTextAttrib (me: mutable;
+		ColorIndex: Integer from Standard;
+		FontIndex: Integer from Standard;
+                aSlant: PlaneAngle from Quantity;
+                aHScale: Factor from Quantity;
+                aWScale: Factor from Quantity;
+		isUnderlined: Boolean from Standard = Standard_False) 
+		raises DriverError from Aspect is deferred;
+	---Category: Methods to define the Current Extended Text Attributes
+
+	SetPolyAttrib (me: mutable;
+			ColorIndex: Integer from Standard;
+			TileIndex: Integer from Standard;
+			DrawEdge: Boolean from Standard = Standard_False)
+		raises DriverError from Aspect is deferred;	       
+	---Category: Methods to set the poly attributes
+
+	SetMarkerAttrib (me: mutable;
+		ColorIndex: Integer from Standard;
+		WidthIndex: Integer from Standard;
+		FillMarker: Boolean from Standard = Standard_False)
+		raises DriverError from Aspect is deferred;
+	---Category: Methods to define the Current Marker Attributes
+
+        ---Category: Images methods:
+
+        IsKnownImage(me: mutable; anImage: Transient from Standard)
+	returns Boolean from Standard
+	is deferred;
+
+        SizeOfImageFile(me; anImageFile: CString from Standard;
+			    aWidth,aHeight: out Integer from Standard)
+	returns Boolean from Standard
+	is deferred;
+
+	ClearImage (me: mutable; anImageId: Transient from Standard)
+		raises DriverError from Aspect is deferred;
+
+	ClearImageFile (me: mutable; anImageFile: CString from Standard)
+		raises DriverError from Aspect is deferred;
+
+	DrawImage (me: mutable; anImageId: Transient from Standard;
+		aX, aY: ShortReal from Standard)
+		raises DriverError from Aspect is deferred;
+        ---Category: Methods to draw primitives
+
+	DrawImageFile (me: mutable; anImageFile: CString from Standard;
+		aX, aY: ShortReal from Standard;
+		aScale: Factor from Quantity = 1.0)
+		raises DriverError from Aspect is deferred;
+        ---Category: Methods to draw primitives
+
+	FillAndDrawImage (me: mutable; anImageId: Transient from Standard;
+		aX, aY: ShortReal from Standard;
+		aWidth, aHeight: Integer from Standard;
+		anArrayOfPixels: Address from Standard)
+		raises DriverError from Aspect is deferred;
+	---Level: Public
+	---Purpose: Fills a complete Image .
+        ---Category: Methods to draw primitives
+
+	FillAndDrawImage (me: mutable; anImageId: Transient from Standard;
+		aX, aY: ShortReal from Standard;
+		anIndexOfLine, aWidth, aHeight: Integer from Standard;
+		anArrayOfPixels: Address from Standard)
+		raises DriverError from Aspect is deferred;
+	---Level: Public
+	---Purpose: Fills a line of the Image .
+	--  Warning: 0 <= anIndexOfLine < aHeight
+	--	    anIndexOfLine = 0 must be the first call
+        ---Category: Methods to draw primitives
+
+	DrawPolyline (me : mutable;
+		aListX, aListY: Array1OfShortReal from TShort)
+	---Level: Public
+	---Purpose: Draw a polyline depending of the SetLineAttrib() attributes.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if <aListX,aListY> have not the same size.
+        ---Category: Methods to draw primitives
+
+	DrawPolygon (me : mutable;
+		aListX, aListY: Array1OfShortReal from TShort)
+	---Level: Public
+	---Purpose: Draw a polygon depending of the SetPolyAttrib() attributes. 
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if <aListX,aListY> have not the same size.
+        ---Category: Methods to draw primitives
+
+	DrawSegment (me : mutable;
+		X1, Y1: ShortReal from Standard;
+		X2, Y2: ShortReal from Standard)
+	---Level: Public
+	---Purpose: Draw a segment depending of the SetLineAttrib() attributes.
+		raises DriverError from Aspect is deferred;
+        ---Category: Methods to draw primitives
+
+	DrawText (me : mutable;
+		aText: ExtendedString from TCollection;
+		Xpos:  ShortReal from Standard;
+		Ypos:  ShortReal from Standard;
+		anAngle: ShortReal from Standard = 0.0;
+		aType: TypeOfText from Aspect = Aspect_TOT_SOLID)
+        ---Level: Public
+        ---Purpose: Draws a text depending of the SetTextAttrib() attributes.
+        ---Warning: Coordinates must be defined in DWU space.
+        	raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if Text has too many chars (> 1024)
+        ---Category: Methods to draw primitives
+ 
+	DrawPolyText (me : mutable;
+		aText: ExtendedString from TCollection;
+		Xpos:  ShortReal from Standard;
+		Ypos:  ShortReal from Standard;
+		aMarge: Ratio from Quantity = 0.1;
+		anAngle: ShortReal from Standard = 0.0;
+		aType: TypeOfText from Aspect = Aspect_TOT_SOLID)
+        ---Level: Public
+        ---Purpose: Draws an framed text depending of the 
+	-- SetTextAttrib() and SetPolyAttrib() attributes.
+        --  Warning: Coordinates must be defined in DWU space.
+	--	    <aMarge> defines the ratio of the space between the 
+	--	    polygon borders and the bounding box of the text and 
+	--	    depending of the height of the text.
+        	raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if Text has too many chars (> 1024)
+	--	    or <aMarge is < 0 or > 1.
+        ---Category: Methods to draw primitives
+
+	DrawPoint (me : mutable; X, Y: ShortReal from Standard)
+	---Level: Public
+	---Purpose: Draws a 1 PIXEL point depending of the SetMarkerAttrib() 
+	--color attribute or add a point depending of the incremental BeginXxxxxx() 
+	--primitive used.
+		raises DriverError from Aspect is deferred;
+        ---Category: Methods to draw primitives
+
+	DrawMarker (me : mutable;
+		aMarker: Integer from Standard;
+		Xpos:  ShortReal from Standard;
+		Ypos:  ShortReal from Standard;
+		Width: ShortReal from Standard;
+		Height: ShortReal from Standard;
+		Angle: ShortReal from Standard = 0.0)
+        ---Level: Public
+        ---Purpose: Draws the prevously defined marker <aMarker> 
+	--depending of the SetMarkerAttrib() attributes.
+        --  Warning: Coordinates and sizes must be defined in DWU space.
+        --          Angle must be defined in RADIAN.
+        --          A one pixel marker is drawn when aMarker index is undefined.
+		raises DriverError from Aspect is deferred;
+        ---Category: Methods to draw primitives
+ 
+	DrawArc (me : mutable; X,Y : ShortReal from Standard;
+			anXradius,anYradius : ShortReal from Standard;
+			aStartAngle: ShortReal from Standard = 0.0;
+			anOpenAngle: ShortReal from Standard = 6.283185)
+ 							returns Boolean
+        ---Level: Public
+        ---Purpose: Draws an Ellipsoid arc of center <X,Y> and Radius
+	--<anXradius,anYradius> of relative angle <anOpenAngle> from 
+	--the base angle <aStartAngle> and depending of the SetLineAttrib() attributes.
+	--  Warning: Returns FALSE if the hardware can't drawing this
+	--primitive properly,application must to simulate it.
+        	raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if one of <aXradius,aYradius> is <= 0. 
+        ---Category: Methods to draw primitives
+
+	DrawPolyArc (me : mutable; X,Y : ShortReal from Standard;
+			anXradius,anYradius : ShortReal from Standard;
+			aStartAngle: ShortReal from Standard = 0.0;
+			anOpenAngle: ShortReal from Standard = 6.283185)
+ 							returns Boolean
+        ---Level: Public
+        ---Purpose: Draws an filled Ellipsoid arc of center <X,Y> and Radius
+	--<anXradius,anYradius> of relative angle <anOpenAngle> from 
+	--the base angle <aStartAngle> and depending of the SetPolyAttrib() attributes.
+	--  Warning: Returns FALSE if the hardware can't drawing this
+	--primitive properly,application must to simulate it.
+        	raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if one of <aXradius,aYradius> is <= 0. 
+        ---Category: Methods to draw primitives
+
+	BeginPolyline (me : mutable; aNumber : Integer) is deferred;
+	---Level: Public
+	---Purpose: Begin an incremental polyline primitive of <aNumber> of points .
+	--  Warning: Points must be added by the the DrawPoint() method.
+
+	BeginPolygon (me : mutable; aNumber : Integer) is deferred;
+	---Level: Public
+	---Purpose: Begin an incremental polygon primitive of <aNumber> of points .
+	--  Warning: Points must be added by the the DrawPoint() method.
+
+	BeginSegments (me : mutable) is deferred;
+	---Level: Public
+	---Purpose: Begin a set of segments .
+	--  Warning: Segments must be added by the DrawSegment() method.
+
+	BeginArcs (me : mutable) is deferred;
+	---Level: Public
+	---Purpose: Begin a set of circles or ellips .
+	--  Warning: Arcs must be added by the DrawArc() methods.
+
+	BeginPolyArcs (me : mutable) is deferred;
+	---Level: Public
+	---Purpose: Begin a set of polygon circles or ellips .
+	--  Warning: Arcs must be added by the DrawPolyArc() methods.
+
+	BeginMarkers (me : mutable) is deferred;
+	---Level: Public
+	---Purpose: Begin a set of markers .
+	--  Warning: Markers must be added by the DrawMarker() method.
+
+	BeginPoints (me : mutable) is deferred;
+	---Level: Public
+	---Purpose: Begin a set of points .
+	--  Warning: Points must be added by the DrawPoint() method.
+
+	ClosePrimitive (me : mutable)
+	---Level: Public
+	---Purpose: Close the last Begining primitive
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if no primitive have been opened by BeginXxxxxx().
+
+	InitializeColorMap(me: mutable;
+			aColorMap: ColorMap from Aspect) 
+		raises DriverError from Aspect is deferred protected;
+	---Category: Methods to define the ColorIndexs
+
+	InitializeTypeMap(me: mutable;
+			aTypeMap: TypeMap from Aspect)
+		raises DriverError from Aspect is deferred protected;
+	---Category: Methods to define the TypeIndexs
+
+	InitializeWidthMap(me: mutable;
+			aWidthMap: WidthMap from Aspect)
+		raises DriverError from Aspect is deferred protected;
+	---Category: Methods to define the WidthIndexs
+
+	InitializeFontMap(me: mutable;
+			aFontMap: FontMap from Aspect)
+		raises DriverError from Aspect is deferred protected;
+	---Category: Methods to define the FontIndexs
+
+	InitializeMarkMap(me: mutable;
+			aMarkMap: MarkMap from Aspect)
+		raises DriverError from Aspect is deferred protected;
+	---Category: Methods to define the MarkerIndexs
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+	ColorMap(me) returns mutable ColorMap from Aspect 
+        raises UndefinedMap from Aspect is static;
+
+	TypeMap(me) returns  mutable TypeMap from Aspect 
+        raises UndefinedMap from Aspect is static;
+
+	WidthMap(me) returns mutable WidthMap from Aspect 
+        raises UndefinedMap from Aspect is static;
+
+	FontMap(me) returns  mutable FontMap from Aspect
+        raises UndefinedMap from Aspect is static;
+
+	MarkMap(me) returns  mutable MarkMap from Aspect
+        raises UndefinedMap from Aspect is static;
+
+        WorkSpace ( me ; Width,Heigth : out Length from Quantity ) 
+	is deferred;
+	---Level: Public
+        ---Purpose: Returns the Available WorkSpace in DWU coordinates
+        ---Category: Inquire methods
+
+	Convert ( me ; PV : Integer from Standard )
+        	    returns Length from Quantity is deferred;
+	---Level: Public
+        ---Purpose: Returns the DWU value depending of
+        --          the PIXEL value.
+        ---Category: Inquire methods
+
+        Convert ( me ; DV : Length from Quantity )
+            returns Integer from Standard is deferred;
+	---Level: Public
+        ---Purpose: Returns the PIXEL value depending of
+        --          the DWU value.
+        ---Category: Inquire methods
+
+        Convert ( me ; PX, PY : Integer from Standard ;
+                   DX, DY : out Length from Quantity ) is deferred ;
+	---Level: Public
+        ---Purpose: Returns the DWU position depending of
+        --          the PIXEL position .
+        ---Category: Inquire methods
+
+        Convert ( me ; DX, DY : Length from Quantity ;
+                   PX, PY : out Integer from Standard )  is deferred;
+	---Level: Public
+        ---Purpose: Returns the PIXEL position depending of
+        --          the DWU position .
+        ---Category: Inquire methods
+
+	UseMFT ( me ) returns Boolean from Standard is static;
+
+	---Level: Advanced
+	---Purpose: Returns TRUE when the driver must use MDTV fonts
+	--	instead system fonts.
+
+fields
+        myColorMap: ColorMap from Aspect;
+        myTypeMap:  TypeMap from Aspect;
+        myWidthMap: WidthMap from Aspect;
+        myFontMap:  FontMap from Aspect;
+        myMarkMap:  MarkMap from Aspect;
+        myColorMapIsDefined: Boolean from Standard;    
+        myWidthMapIsDefined: Boolean from Standard;    
+        myTypeMapIsDefined: Boolean from Standard;    
+        myFontMapIsDefined: Boolean from Standard;    
+        myMarkMapIsDefined: Boolean from Standard;    
+	myUseMFT: Boolean from Standard;
+    
+end Driver from Aspect;

@@ -1,0 +1,216 @@
+-- File:	IntPolyh_Intersection.cdl
+-- Created:	Wed Mar  3 11:23:52 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+-- Modified by skv - Thu Sep 25 17:57:09 2003 OCC567 
+-- Add two private methods: PerformMaillage(..) and MergeCouples(..) and several 
+-- private fields. Removed field MaillageS.
+-- The method MergeCouples(..) is used 
+-- to remove same couples of interferable triangles from different 
+-- MaillageAffinage's in order to avoid taking them into section lines several 
+-- times.
+
+class Intersection from IntPolyh
+
+
+uses
+
+    Pnt	                from gp,
+    HSurface            from Adaptor3d, 
+    Array1OfReal        from TColStd, 
+    Point               from IntPolyh,    
+    Edge                from IntPolyh,
+    Triangle            from IntPolyh,
+    ArrayOfPoints       from IntPolyh,
+    ArrayOfEdges        from IntPolyh,
+    ArrayOfTriangles    from IntPolyh,
+    PMaillageAffinage   from IntPolyh,
+    SectionLine         from IntPolyh,
+    ArrayOfSectionLines from IntPolyh,
+    --TangentZones from IntPolyh, On utilise la classe StartPoint
+    ArrayOfTangentZones from IntPolyh, 
+    ArrayOfCouples      from IntPolyh
+
+is 
+
+    Create(S1,S2     : HSurface from Adaptor3d); 
+    
+    	---Purpose: Constructor
+    	--          
+    	--          
+
+    Create(S1          : HSurface from Adaptor3d;
+    	   NbSU1,NbSV1 : Integer  from Standard;
+    	   S2          : HSurface from Adaptor3d;
+    	   NbSU2,NbSV2 : Integer  from Standard); 
+	   
+    	---Purpose: NbSU1 ... NbSV2 are used to compute the initial 
+    	--          samples of  the  iso parametric  meshes  on the 
+    	--          surfaces.
+    Create(S1          : HSurface from Adaptor3d;
+    	   anUpars1, aVpars1 : Array1OfReal from TColStd;
+    	   S2          : HSurface from Adaptor3d;
+    	   anUpars2, aVpars2 : Array1OfReal from TColStd); 
+	   
+    	---Purpose: D1,  D2 are used to compute the initial 
+    	--          samples of  the  iso parametric  meshes  on the 
+    	--          surfaces.
+
+    Perform(me: in out)
+    
+	---Purpose: Compute the intersection. 
+
+	is static;
+
+    Perform(me: in out; 
+            Upars1, Vpars1, Upars2, Vpars2 : Array1OfReal from TColStd)
+    
+	---Purpose: Compute the intersection. 
+
+	is static;
+    
+   
+    IsDone(me) 
+    
+    	returns Boolean from Standard
+    	is static;
+	
+    ---------------------------------------------------------------
+	
+    NbSectionLines(me) 
+    
+    	returns Integer from Standard
+    	is static;
+
+
+    NbPointsInLine(me; IndexLine: Integer from Standard)
+    	returns Integer from Standard
+    	is static;
+	
+    GetLinePoint(me; IndexLine,IndexPoint: Integer from Standard;
+                     x,y,z,u1,v1,u2,v2,incidence   : out Real    from Standard)
+	is static;
+	
+    ---------------------------------------------------------------
+	
+    NbTangentZones(me) 
+    
+    	returns Integer from Standard
+    	is static;
+
+
+    NbPointsInTangentZone(me; IndexLine: Integer from Standard)
+    	returns Integer from Standard
+    	is static;
+	
+    GetTangentZonePoint(me; IndexLine,IndexPoint: Integer from Standard;
+                     x,y,z,u1,v1,u2,v2   : out Real    from Standard)
+	is static;
+		
+    -- Modified by skv - Thu Sep 25 17:57:09 2003 OCC567 Begin
+    PerformMaillage(me: in out; 
+    	    	    isFirstFwd     :        Boolean           from Standard;
+    	    	    isSecondFwd    :        Boolean           from Standard;
+    	    	    MaillageS      : in out PMaillageAffinage from IntPolyh)
+	---Purpose: Computes MaillageAffinage
+    	returns  Boolean  from  Standard
+    	is static private;  
+
+    PerformMaillage(me: in out; MaillageS: in out PMaillageAffinage from IntPolyh) 
+    	---Purpose: The method PerformMaillage(..) is used to compute MaillageAffinage. It is 
+-- called four times (two times for each surface) for creation of inscribed 
+-- and circumscribed mesh for each surface. 
+    	returns  Boolean  from  Standard
+    	is static private; 
+
+    -- Modified by skv - Thu Sep 25 17:57:09 2003 OCC567 Begin
+    PerformMaillage(me: in out; 
+    	    	    isFirstFwd     :        Boolean           from Standard;
+    	    	    isSecondFwd    :        Boolean           from Standard;
+		    Upars1, Vpars1, Upars2, Vpars2 : Array1OfReal from TColStd;
+    	    	    MaillageS      : in out PMaillageAffinage from IntPolyh)
+	---Purpose: Computes MaillageAffinage
+    	returns  Boolean  from  Standard
+    	is static private;  
+
+    PerformMaillage(me: in out; Upars1, Vpars1, Upars2, Vpars2 : Array1OfReal from TColStd;
+                                MaillageS: in out PMaillageAffinage from IntPolyh) 
+    	---Purpose: The method PerformMaillage(..) is used to compute MaillageAffinage. It is 
+-- called four times (two times for each surface) for creation of inscribed 
+-- and circumscribed mesh for each surface. 
+    	returns  Boolean  from  Standard
+    	is static private; 
+
+
+    MergeCouples(me;  anArrayFF: in out ArrayOfCouples from IntPolyh;
+    	    	      anArrayFR: in out ArrayOfCouples from IntPolyh;
+    	    	      anArrayRF: in out ArrayOfCouples from IntPolyh;
+    	    	      anArrayRR: in out ArrayOfCouples from IntPolyh) 
+    	---Purpose: This method analyzes arrays to find same couples. If some 
+    	--          are detected it leaves the couple in only one array 
+    	--          deleting from others.
+    is static private;
+    -- Modified by skv - Thu Sep 25 17:57:11 2003 OCC567 End
+    -- ofv from
+    PerformStd(me: in out;
+    	       MaillageS: in out PMaillageAffinage from IntPolyh;
+	       NbCouples: in out Integer           from Standard)
+    	---Purpose: Process default interference
+	returns Boolean from Standard
+	is static private;
+	
+    PerformAdv(me: in out;
+    	       MaillageFF: in out PMaillageAffinage from IntPolyh;
+	       MaillageFR: in out PMaillageAffinage from IntPolyh;
+	       MaillageRF: in out PMaillageAffinage from IntPolyh;
+	       MaillageRR: in out PMaillageAffinage from IntPolyh;
+    	       NbCouples : in out Integer           from Standard)
+    	---Purpose: Process advanced interference
+	returns Boolean from Standard
+	is static private;
+    PerformStd(me: in out;
+    	       Upars1, Vpars1, Upars2, Vpars2 : Array1OfReal from TColStd;
+    	       MaillageS: in out PMaillageAffinage from IntPolyh;
+	       NbCouples: in out Integer           from Standard)
+    	---Purpose: Process default interference
+	returns Boolean from Standard
+	is static private;
+	
+    PerformAdv(me: in out;
+    	       Upars1, Vpars1, Upars2, Vpars2 : Array1OfReal from TColStd;
+    	       MaillageFF: in out PMaillageAffinage from IntPolyh;
+	       MaillageFR: in out PMaillageAffinage from IntPolyh;
+	       MaillageRF: in out PMaillageAffinage from IntPolyh;
+	       MaillageRR: in out PMaillageAffinage from IntPolyh;
+    	       NbCouples : in out Integer           from Standard)
+    	---Purpose: Process advanced interference
+	returns Boolean from Standard
+	is static private;
+    -- ofv to
+    
+
+fields
+
+    done           : Boolean from Standard;
+    nbsectionlines : Integer from Standard;
+    nbtangentzones : Integer from Standard;
+    
+    TSectionLines  : ArrayOfSectionLines from IntPolyh;
+    TTangentZones  : ArrayOfTangentZones from IntPolyh;
+    
+    -- Modified by skv - Thu Sep 25 17:38:57 2003 OCC567 Begin
+    --    MaillageS      : MaillageAffinage from IntPolyh;
+    myNbSU1        : Integer  from Standard;
+    myNbSV1        : Integer  from Standard;
+    myNbSU2        : Integer  from Standard;
+    myNbSV2        : Integer  from Standard;
+    -- Modified by skv - Thu Sep 25 17:38:58 2003 OCC567 End
+    
+    mySurf1        : HSurface from Adaptor3d;
+    mySurf2        : HSurface from Adaptor3d; 
+    
+end Intersection from IntPolyh;
+
+

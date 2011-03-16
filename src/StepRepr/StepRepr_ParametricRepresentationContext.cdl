@@ -1,0 +1,20 @@
+-- File:        ParametricRepresentationContext.cdl
+-- Created:     Fri Dec  1 11:11:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ParametricRepresentationContext from StepRepr 
+
+inherits RepresentationContext from StepRepr 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ParametricRepresentationContext;
+	---Purpose: Returns a ParametricRepresentationContext
+
+
+end ParametricRepresentationContext;

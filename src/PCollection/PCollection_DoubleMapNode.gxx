@@ -1,0 +1,83 @@
+//-Copyright:	 Matra Datavision 1992
+//-Version: 
+
+//-History:
+//  Version	Date         Purpose
+//              14/12/92     Creation   
+
+//-Language     C++2.0
+
+//=======================================================================
+// Function : DoubleMapNode
+//=======================================================================
+
+PCollection_DoubleMapNode::PCollection_DoubleMapNode
+  (
+   const Key &aKey, 
+   const Item &anItem,
+   const Handle(PCollection_DoubleMapNode) &nextKey,
+   const Handle(PCollection_DoubleMapNode) &nextItem ) :
+
+  myKey(aKey), myItem(anItem), myNextKey(nextKey), myNextItem(nextItem)
+
+{
+}
+
+//=======================================================================
+// Function : SetNextKey
+//=======================================================================
+
+void PCollection_DoubleMapNode::SetNextKey
+  ( const Handle(PCollection_DoubleMapNode) &aNode )
+{
+  myNextKey = aNode;
+}
+						      
+//=======================================================================
+// Function : SetNextItem
+//=======================================================================
+
+void PCollection_DoubleMapNode::SetNextItem
+  ( const Handle(PCollection_DoubleMapNode) &aNode )
+{
+  myNextItem = aNode;
+}
+						      
+//=======================================================================
+// Function : GetKey
+//=======================================================================
+
+Key PCollection_DoubleMapNode::GetKey () const
+{
+  return myKey;
+}
+						      
+//=======================================================================
+// Function : GetItem
+//=======================================================================
+
+Item PCollection_DoubleMapNode::GetItem () const
+{
+  return myItem;
+}
+						      
+//=======================================================================
+// Function : NextKey
+//=======================================================================
+
+Handle(PCollection_DoubleMapNode) 
+     PCollection_DoubleMapNode::NextKey() const
+{
+  return myNextKey;
+}
+						      
+//=======================================================================
+// Function : SetNextItem
+//=======================================================================
+
+Handle(PCollection_DoubleMapNode) 
+     PCollection_DoubleMapNode::NextItem() const
+{
+  return myNextItem;
+}
+						      

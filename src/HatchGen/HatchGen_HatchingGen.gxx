@@ -1,0 +1,321 @@
+// File:	HatchGen_HatchingGen.gxx
+// Created:	Wed Nov  3 17:08:32 1993
+// Author:	Jean Marc LACHAUME
+//		<jml@phylox>
+
+#include <HatchGen_PointOnElement.hxx>
+
+#define RAISE_IF_NOSUCHOBJECT 0
+
+#include <Precision.hxx>
+//=======================================================================
+// Function : HatchGen_HatchingGen
+// Purpose  : Constructor.
+//=======================================================================
+
+HatchGen_HatchingGen::HatchGen_HatchingGen () {
+}
+
+//=======================================================================
+// Function : HatchGen_HatchingGen
+// Purpose  : Constructor.
+//=======================================================================
+
+HatchGen_HatchingGen::HatchGen_HatchingGen (const TheHatchingCurve& Curve) :
+       myCurve      (Curve),
+       myTrimDone   (Standard_False),
+       myTrimFailed (Standard_False),
+       myIsDone     (Standard_False),
+       myStatus     (HatchGen_NoProblem)
+{
+}
+
+//=======================================================================
+// Function : Curve
+// Purpose  : Returns the curve associated to the hatching.
+//=======================================================================
+
+const TheHatchingCurve& HatchGen_HatchingGen::Curve () const
+{
+  return myCurve ;
+}
+     
+//=======================================================================
+// Function : ChangeCurve
+// Purpose  : Returns the curve associated to the hatching.
+//=======================================================================
+
+TheHatchingCurve& HatchGen_HatchingGen::ChangeCurve ()
+{
+  return myCurve ;
+}
+     
+//=======================================================================
+// Function : TrimDone
+// Purpose  : Sets the flag about the trimmings computation to the given
+//            value.
+//=======================================================================
+
+void HatchGen_HatchingGen::TrimDone (const Standard_Boolean Flag)
+{
+  myTrimDone = Flag ;
+}
+
+//=======================================================================
+// Function : TrimDone
+// Purpose  : Returns the flag about the trimmings computation.
+//=======================================================================
+
+Standard_Boolean HatchGen_HatchingGen::TrimDone () const
+{
+  return myTrimDone ;
+}
+
+//=======================================================================
+// Function : TrimFailed
+// Purpose  : Sets the flag about the trimmings failure to the given
+//            value.
+//=======================================================================
+
+void HatchGen_HatchingGen::TrimFailed (const Standard_Boolean Flag)
+{
+  myTrimFailed = Flag ;
+  if (myTrimFailed) myStatus = HatchGen_TrimFailure ;
+}
+
+//=======================================================================
+// Function : TrimFailed
+// Purpose  : Returns the flag about the trimmings failure.
+//=======================================================================
+
+Standard_Boolean HatchGen_HatchingGen::TrimFailed () const
+{
+  return myTrimFailed ;
+}
+
+//=======================================================================
+// Function : IsDone
+// Purpose  : Sets the flag about the domains computation to the given
+//            value.
+//=======================================================================
+
+void HatchGen_HatchingGen::IsDone (const Standard_Boolean Flag)
+{
+  myIsDone = Flag ;
+}
+
+//=======================================================================
+// Function : IsDone
+// Purpose  : Returns the flag about the domains computation.
+//=======================================================================
+
+Standard_Boolean HatchGen_HatchingGen::IsDone () const
+{
+  return myIsDone ;
+}
+
+//=======================================================================
+// Function : SetStatus
+// Purpose  : Sets the error status.
+//=======================================================================
+
+void HatchGen_HatchingGen::Status (const HatchGen_ErrorStatus Status)
+{
+  myStatus = Status ;
+}
+
+//=======================================================================
+// Function : Status
+// Purpose  : Returns the error status.
+//=======================================================================
+
+HatchGen_ErrorStatus HatchGen_HatchingGen::Status () const
+{
+  return myStatus ;
+}
+
+//=======================================================================
+// Function : AddPoint
+// Purpose  : Adds an intersection point to the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::AddPoint (const HatchGen_PointOnHatching& Point,
+				     const Standard_Real Confusion)
+{
+  Standard_Integer NbPoints = myPoints.Length () ;
+//for (Standard_Integer IPntH = 1 ; IPntH <= NbPoints ; IPntH++) {
+  Standard_Integer IPntH;
+  for (IPntH = 1 ; IPntH <= NbPoints ; IPntH++) {
+    const HatchGen_PointOnHatching& PntH = myPoints.Value (IPntH) ;
+    if (!PntH.IsLower (Point, Confusion)) break ;
+  }
+  if (IPntH > NbPoints) {
+    myPoints.Append (Point) ;
+  } else {
+    HatchGen_PointOnHatching& PntH = myPoints.ChangeValue (IPntH) ;
+    if (PntH.IsGreater (Point, Confusion)) {
+      myPoints.InsertBefore (IPntH, Point) ;
+    } else {
+      for (Standard_Integer IPntE = 1 ; IPntE <= Point.NbPoints() ; IPntE++) {
+	const HatchGen_PointOnElement& PntE = Point.Point (IPntE) ;
+	PntH.AddPoint (PntE, Confusion) ;
+      }
+    }
+  }
+  if (myIsDone) ClrDomains() ;
+}
+
+//=======================================================================
+// Function : NbPoints
+// Purpose  : Returns the number of intersection points on the hatching.
+//=======================================================================
+
+Standard_Integer HatchGen_HatchingGen::NbPoints () const
+{
+  return myPoints.Length () ;
+}
+     
+//=======================================================================
+// Function : Point
+// Purpose  : Returns the Index-th intersection point on the hatching.
+//=======================================================================
+
+const HatchGen_PointOnHatching& HatchGen_HatchingGen::Point (const Standard_Integer Index) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_Integer NbPoints = myPoints.Length () ;
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > NbPoints, "") ;
+#endif
+  const HatchGen_PointOnHatching& Point = myPoints.Value (Index) ;
+  return Point ;
+}
+     
+//=======================================================================
+// Function : ChangePoint
+// Purpose  : Returns the Index-th intersection point on the hatching.
+//=======================================================================
+
+HatchGen_PointOnHatching& HatchGen_HatchingGen::ChangePoint (const Standard_Integer Index) 
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_Integer NbPoints = myPoints.Length () ;
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > NbPoints, "") ;
+#endif
+  HatchGen_PointOnHatching& Point = myPoints.ChangeValue (Index) ;
+  return Point ;
+}
+     
+//=======================================================================
+// Function : RemPoint
+// Purpose  : Removes the Index-th intersection point of the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::RemPoint (const Standard_Integer Index)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_Integer NbPoints = myPoints.Length () ;
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > NbPoints, "") ;
+#endif
+  if (myIsDone) ClrDomains() ;
+  myPoints.Remove (Index) ;
+}
+
+//=======================================================================
+// Function : ClrPoints
+// Purpose  : Removes all the intersection points of the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::ClrPoints ()
+{
+  if (myIsDone) ClrDomains() ;
+  for (Standard_Integer IPntH = 1 ; IPntH <= myPoints.Length() ; IPntH++) {
+    HatchGen_PointOnHatching& Point = myPoints.ChangeValue (IPntH) ;
+    Point.ClrPoints() ;
+  }
+  myPoints.Clear () ;
+  myTrimDone   = Standard_False ;
+  myTrimFailed = Standard_False ;
+}
+
+//=======================================================================
+// Function : AddDomain
+// Purpose  : Adds a domain to the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::AddDomain (const HatchGen_Domain& Domain)
+{
+  myDomains.Append (Domain) ;
+}
+
+//=======================================================================
+// Function : NbDomains
+// Purpose  : Returns the number of domains on the hatching.
+//=======================================================================
+
+Standard_Integer HatchGen_HatchingGen::NbDomains () const
+{
+  return myDomains.Length () ;
+}
+     
+//=======================================================================
+// Function : Domain
+// Purpose  : Returns the Index-th domain on the hatching.
+//=======================================================================
+
+const HatchGen_Domain& HatchGen_HatchingGen::Domain (const Standard_Integer Index) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_Integer NbDomains = myDomains.Length () ;
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > NbDomains, "") ;
+#endif
+  const HatchGen_Domain& Domain = myDomains.Value (Index) ;
+  return Domain ;
+}
+     
+//=======================================================================
+// Function : RemDomain
+// Purpose  : Removes the Index-th domain of the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::RemDomain (const Standard_Integer Index)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_Integer NbDomains = myDomains.Length () ;
+  Standard_OutOfRange_Raise_if (Index < 1 || Index > NbDomains, "") ;
+#endif
+  myDomains.Remove (Index) ;
+}
+
+//=======================================================================
+// Function : ClrDomains
+// Purpose  : Removes all the domains of the hatching.
+//=======================================================================
+
+void HatchGen_HatchingGen::ClrDomains ()
+{
+  myDomains.Clear () ;
+  myIsDone = Standard_False ;
+}
+
+//=======================================================================
+// Function : ClassificationPoint
+// Purpose  : returns a 2d point on the curve 
+//=======================================================================
+gp_Pnt2d HatchGen_HatchingGen::ClassificationPoint () const { 
+  Standard_Real t,a,b;
+  a = myCurve.FirstParameter();
+  b = myCurve.LastParameter();
+  if(b >= Precision::Infinite()) { 
+    if(a <= -Precision::Infinite()) { 
+      t=0;
+    }
+    else { 
+      t = a;
+    }
+  }
+  else { 
+    t = b; 
+  }
+  return(myCurve.Value(t));
+}
+    

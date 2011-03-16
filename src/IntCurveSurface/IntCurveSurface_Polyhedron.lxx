@@ -1,0 +1,15 @@
+// File:	IntCurveSurface_Polyhedron.lxx
+// Created:	Fri Dec  7 10:07:51 2001
+// Author:	Sergey KHROMOV
+//		<skv@dimox>
+
+
+//=======================================================================
+//function : GetBorderDeflection
+//purpose  : This method returns a border deflection.
+//=======================================================================
+
+inline  Standard_Real IntCurveSurface_Polyhedron::GetBorderDeflection() const
+{
+  return TheBorderDeflection;
+}

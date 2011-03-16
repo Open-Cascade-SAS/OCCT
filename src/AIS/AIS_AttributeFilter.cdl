@@ -1,0 +1,97 @@
+-- File:	AIS_AttributeFilter.cdl
+-- Created:	Tue Mar  4 17:58:52 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+
+class AttributeFilter from AIS inherits Filter from SelectMgr
+
+	---Purpose: Selects Interactive Objects, which have the desired width or color.
+    	-- The filter questions each Interactive Object in local
+    	-- context to determine whether it has an non-null
+    	-- owner, and if so, whether it has the required color
+    	-- and width attributes. If the object returns true in each
+    	-- case, it is kept. If not, it is rejected.
+    	-- This filter is used only in an open local context.
+    	-- In the Collector viewer, you can only locate
+    	-- Interactive Objects, which answer positively to the
+    	-- filters, which are in position when a local context is open.
+
+uses
+    NameOfColor from Quantity,
+    EntityOwner from SelectMgr
+    
+
+is
+
+    Create returns mutable AttributeFilter from AIS;
+    	---Purpose:
+    	-- Constructs an empty attribute filter object.
+    	-- This filter object determines whether selectable
+    	-- interactive objects have a non-null owner.   
+    
+    Create (aCol: NameOfColor from Quantity)
+    returns mutable AttributeFilter from AIS;
+    	---Purpose:
+    	-- Constructs an attribute filter object defined by the
+    	-- color attribute aCol.    
+    Create (aWidth : Real from Standard)
+    returns mutable AttributeFilter from AIS;
+    	---Purpose:
+    	-- Constructs an attribute filter object defined by the line
+    	-- width attribute aWidth.
+
+    HasColor(me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose:
+    	-- Indicates that the Interactive Object has the color
+    	-- setting specified by the argument aCol at construction time.
+        
+    HasWidth(me) returns Boolean from Standard;
+        ---C++: inline
+    	---Purpose:
+    	-- Indicates that the Interactive Object has the width
+    	-- setting specified by the argument aWidth at
+    	-- construction time.
+        
+    SetColor(me:mutable;aCol: NameOfColor from Quantity);
+	---C++: inline
+	---Purpose: Sets the color aCol.
+	-- This must be chosen from the list of colors in Quantity_NameOfColor.
+    
+    SetWidth(me:mutable;aWidth : Real from Standard);
+	---C++: inline
+	---Purpose:  Sets the line width aWidth.
+    
+    UnsetColor(me:mutable);
+    	---C++: inline
+    	---Purpose:
+    	-- Removes the setting for color from the filter.
+    
+    UnsetWidth(me:mutable);
+        ---C++: inline
+    	---Purpose:
+    	-- Removes the setting for width from the filter.
+
+    IsOk(me;anObj : EntityOwner from SelectMgr)
+    returns Boolean from Standard is redefined virtual;
+ 	---Purpose: Indicates that the selected Interactive Object passes
+    	-- the filter. The owner, anObj, can be either direct or
+    	-- user. A direct owner is the corresponding
+    	-- construction element, whereas a user is the
+    	-- compound shape of which the entity forms a part.
+    	-- If the Interactive Object returns Standard_True
+    	-- when detected by the Local Context selector through
+    	-- the mouse, the object is kept; if not, it is rejected.
+
+
+fields
+	
+    myCol : NameOfColor from Quantity;
+    myWid : Real from Standard;
+    hasC,hasW : Boolean from Standard;
+    
+end AttributeFilter;

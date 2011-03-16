@@ -1,0 +1,46 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Directory.cdl
+-- Created:       May 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+-- Updated:       J.P. TIRAULT August 1993
+--                All classes are static class.
+
+
+class Directory from OSD 
+
+ ---Purpose: Management of directories 
+ 
+inherits FileNode 
+
+uses Protection, Path 
+
+is
+ Create returns Directory;
+    ---Purpose: Creates Directory object.
+    --          It is initiliazed to an empty name.
+    ---Level: Public
+
+ Create (Name : Path) returns Directory;
+    ---Purpose: Creates Directory object initialized with Name.
+    ---Level: Public
+
+ Build (me : in out ; Protect : Protection) is static;
+    ---Purpose: Creates (physically) a directory.
+    --          When a directory of the same name already exists, no error is
+    --          returned, and only <Protect> is applied to the existing directory.
+    --
+    --          If Build is used and <me> is instantiated without a name,
+    --          OSDError is raised.
+    ---Level: Public
+
+ BuildTemporary (myclass ) returns Directory;
+    ---Purpose: Creates a temporary Directory in current directory.
+    --          This directory is automatically removed when object dies.
+    ---Level: Public
+                                                    
+end Directory from OSD;
+
+

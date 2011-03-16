@@ -1,0 +1,82 @@
+-- File:        BSplineSurfaceWithKnots.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BSplineSurfaceWithKnots from StepGeom 
+
+inherits BSplineSurface from StepGeom 
+
+uses
+
+	HArray1OfInteger from TColStd, 
+	HArray1OfReal from TColStd, 
+	KnotType from StepGeom, 
+	Integer from Standard, 
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable BSplineSurfaceWithKnots;
+	---Purpose: Returns a BSplineSurfaceWithKnots
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aUMultiplicities : mutable HArray1OfInteger from TColStd;
+	      aVMultiplicities : mutable HArray1OfInteger from TColStd;
+	      aUKnots : mutable HArray1OfReal from TColStd;
+	      aVKnots : mutable HArray1OfReal from TColStd;
+	      aKnotSpec : KnotType from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetUMultiplicities(me : mutable; aUMultiplicities : mutable HArray1OfInteger);
+	UMultiplicities (me) returns mutable HArray1OfInteger;
+	UMultiplicitiesValue (me; num : Integer) returns Integer;
+	NbUMultiplicities (me) returns Integer;
+	SetVMultiplicities(me : mutable; aVMultiplicities : mutable HArray1OfInteger);
+	VMultiplicities (me) returns mutable HArray1OfInteger;
+	VMultiplicitiesValue (me; num : Integer) returns Integer;
+	NbVMultiplicities (me) returns Integer;
+	SetUKnots(me : mutable; aUKnots : mutable HArray1OfReal);
+	UKnots (me) returns mutable HArray1OfReal;
+	UKnotsValue (me; num : Integer) returns Real;
+	NbUKnots (me) returns Integer;
+	SetVKnots(me : mutable; aVKnots : mutable HArray1OfReal);
+	VKnots (me) returns mutable HArray1OfReal;
+	VKnotsValue (me; num : Integer) returns Real;
+	NbVKnots (me) returns Integer;
+	SetKnotSpec(me : mutable; aKnotSpec : KnotType);
+	KnotSpec (me) returns KnotType;
+
+fields
+
+	uMultiplicities : HArray1OfInteger from TColStd;
+	vMultiplicities : HArray1OfInteger from TColStd;
+	uKnots : HArray1OfReal from TColStd;
+	vKnots : HArray1OfReal from TColStd;
+	knotSpec : KnotType from StepGeom; -- an Enumeration
+
+end BSplineSurfaceWithKnots;

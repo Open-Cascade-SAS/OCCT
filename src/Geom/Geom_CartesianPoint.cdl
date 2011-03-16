@@ -1,0 +1,86 @@
+-- File:	Geom_CartesianPoint.cdl
+-- Created:	Wed Mar 10 09:27:52 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class CartesianPoint from Geom inherits Point from Geom
+
+
+        ---Purpose : Describes a point in 3D space. A
+    	-- Geom_CartesianPoint is defined by a gp_Pnt point,
+    	-- with its three Cartesian coordinates X, Y and Z.
+       
+uses Ax1       from gp, 
+     Ax2       from gp,
+     Pnt       from gp,
+     Trsf      from gp,
+     Vec       from gp,
+     Geometry  from Geom
+
+is
+
+  Create (P : Pnt)   returns mutable CartesianPoint;
+        ---Purpose : Returns a transient copy of P.
+
+
+  Create (X, Y, Z : Real)   returns mutable CartesianPoint;
+
+    	---Purpose: Constructs a point defined by its three Cartesian coordinates X, Y and Z.
+
+  SetCoord (me : mutable; X, Y, Z : Real);
+    	---Purpose : Assigns the coordinates X, Y and Z to this point.
+
+
+  SetPnt (me : mutable; P : Pnt);
+        ---Purpose : Set <me> to P.X(), P.Y(), P.Z() coordinates.
+
+
+  SetX (me : mutable; X : Real);
+        ---Purpose : Changes the X coordinate of me.
+
+
+  SetY (me : mutable; Y : Real);
+        ---Purpose : Changes the Y coordinate of me.
+
+ 
+  SetZ (me : mutable; Z : Real);
+        ---Purpose : Changes the Z coordinate of me.
+
+
+  Coord (me; X, Y, Z : out Real);
+        ---Purpose : Returns the coordinates of <me>.
+
+
+  Pnt (me)  returns Pnt;
+        ---Purpose :
+        --  Returns a non transient cartesian point with
+        --  the same coordinates as <me>.
+       
+
+
+  X (me)  returns Real;
+        ---Purpose : Returns the X coordinate of <me>.
+
+
+  Y (me)  returns Real;
+        ---Purpose : Returns the Y coordinate of <me>.
+
+
+  Z (me)  returns Real;
+        ---Purpose : Returns the Z coordinate of <me>.
+
+
+
+  Transform (me : mutable; T : Trsf);
+    	---Purpose: Applies the transformation T to this point.
+
+  Copy (me)  returns mutable like me;
+    	---Purpose:  Creates a new object which is a copy of this point.
+
+fields
+
+    gpPnt : Pnt;
+
+end;

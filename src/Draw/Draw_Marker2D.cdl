@@ -1,0 +1,44 @@
+-- File:	Draw_Marker2D.cdl
+-- Created:	Mon Apr 18 18:07:08 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Marker2D from Draw inherits Drawable2D from Draw
+
+	---Purpose: 
+
+uses
+    Pnt2d from gp,
+    Color from Draw,
+    MarkerShape from Draw,
+    Display from Draw
+
+is
+    Create(P : Pnt2d from gp; T : MarkerShape from Draw; C : Color from Draw; 
+    	Size : Integer = 5) returns mutable Marker2D from Draw;
+	
+    Create(P : Pnt2d from gp; T : MarkerShape from Draw; C : Color from Draw; 
+    	RSize : Real) returns mutable Marker2D from Draw;
+    
+    ChangePos(me : mutable) returns Pnt2d from gp;
+    ---C++: return &
+    ---Purpose: myPos field
+
+    DrawOn(me; dis : in out Display from Draw);
+
+    PickReject(me; X,Y,Prec : Real) returns Boolean
+	---Purpose: Returs always false
+    is redefined;
+    
+
+fields
+    myPos : Pnt2d from gp;
+    myCol : Color from Draw;
+    myTyp : MarkerShape from Draw;
+    mySiz : Integer;
+    myRSiz : Real; 
+    myIsRSiz : Boolean;
+
+end Marker2D;

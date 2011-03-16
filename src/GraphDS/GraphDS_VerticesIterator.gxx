@@ -1,0 +1,117 @@
+// File:	GraphDS_VerticesIterator.gxx
+// Created:	Tue Mar 16 15:43:39 1993
+// Author:	Denis PASCAL
+//		<dp@bravox>
+
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//=======================================================================
+//function : GraphDS_VerticesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_VerticesIterator::GraphDS_VerticesIterator ()
+{
+}
+
+//=======================================================================
+//function : GraphDS_VerticesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_VerticesIterator::GraphDS_VerticesIterator 
+     (const GraphDS_DirectedGraph& DG)
+{
+  Initialize (DG);
+}
+
+
+//=======================================================================
+//function : GraphDS_VerticesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_VerticesIterator::GraphDS_VerticesIterator 
+     (const GraphDS_DirectedGraph& DG,
+      const Handle(GraphDS_Vertex)& V)
+{
+  Initialize (DG,V);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_VerticesIterator::Initialize (const GraphDS_DirectedGraph& DG)
+{
+  myVertices.Initialize(DG.myVertices);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_VerticesIterator::Initialize 
+     (const GraphDS_DirectedGraph& DG,
+      const Handle(GraphDS_Vertex)& V)
+{
+  myMap.Clear();
+  Handle(GraphDS_Edge) E; 
+  TColStd_MapIteratorOfMapOfTransient it(V->GetEdges());
+  for (;it.More();it.Next()) {
+    E =  Handle(GraphDS_Edge)::DownCast(it.Key());
+    if (E->Source() == V) myMap.Add(E->Destination());
+  }
+  myVertices.Initialize(myMap);
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_VerticesIterator::More () const 
+{
+  return myVertices.More();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphDS_VerticesIterator::Next ()  
+{
+  myVertices.Next();
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Vertex)& GraphDS_VerticesIterator::Value () const 
+{  
+  return  *((Handle(GraphDS_Vertex)*)& myVertices.Key());
+  //return Handle(GraphDS_Vertex)::DownCast(myVertices.Key());
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+--
+-- File:    V3d_ColorScaleLayerItem.cdl
+-- Created: March 20 2009
+-- Author:  ABD
+--
+
+private class ColorScaleLayerItem from V3d inherits LayerItem from Visual3d
+
+    ---Version:
+
+    ---Purpose: This class is drawable unit of ColorScale of 2d scene
+    ---Keywords:
+    ---Warning:
+    ---References:
+
+uses
+    ColorScale from V3d
+is
+    -------------------------
+    -- Category: Constructors
+    -------------------------
+
+    Create ( aColorScale: ColorScale from V3d )
+            returns ColorScaleLayerItem;
+    ---Level: Public
+    ---Purpose: Creates a layer item
+    ---Category: Constructors
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+    
+    ComputeLayerPrs( me : mutable )
+            is redefined;   
+    ---Level: Public
+    ---Purpose: virtual function for recompute 2D
+    --        presentation (empty by default)
+
+    RedrawLayerPrs( me : mutable )
+        is redefined;
+    ---Level: Public
+    ---Purpose: virtual function for recompute 2D
+    --        presentation (empty by default)
+
+fields
+    MyColorScale     : ColorScale from V3d;
+
+end ColorScaleLayerItem from V3d;

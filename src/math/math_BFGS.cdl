@@ -1,0 +1,165 @@
+-- File:        BFGS.cdl
+-- Created:     Tue May 14 16:01:21 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class BFGS from math
+    	---Purpose:
+    	-- This class implements the Broyden-Fletcher-Goldfarb-Shanno variant of 
+    	-- Davidson-Fletcher-Powell minimization algorithm of a function of  
+    	-- multiple variables.Knowledge of the function's gradient is required.
+
+uses Vector from math, Matrix from math,
+     MultipleVarFunctionWithGradient from math,
+     Status from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       DimensionError from Standard
+       
+is
+
+
+    Create(F: in out MultipleVarFunctionWithGradient;
+    	   StartingPoint: Vector; Tolerance: Real=1.0e-8;
+	   NbIterations: Integer=200; ZEPS: Real=1.0e-12)
+    	---Purpose:
+    	-- Given the starting point StartingPoint, 
+    	-- the Broyden-Fletcher-Goldfarb-Shanno variant of Davidson-Fletcher-Powell
+    	-- minimization is done on the function F.
+    	-- The tolerance required on F is given by Tolerance.
+    	-- The solution F = Fi is found when :
+    	--   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
+    	-- The maximum number of iterations allowed is given by NbIterations.
+    
+    returns BFGS;
+
+    Create(F: in out MultipleVarFunctionWithGradient;
+    	   Tolerance: Real = 1.0e-8;
+	   NbIterations: Integer = 200;
+	   ZEPS: Real = 1.0e-12)
+    	---Purpose: Initializes the computation of the minimum of F.
+    	-- Warning
+    	-- A call to the Perform method must be made after this
+    	-- initialization to effectively compute the minimum of the
+    	-- function F.
+    returns BFGS;
+
+    
+    Delete(me:out) is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~math_BFGS(){Delete() ; }"
+    
+    Perform(me: in out; F: in out MultipleVarFunctionWithGradient;
+    	    StartingPoint: Vector)
+	 ---Purpose: Is used internally by the constructors.
+
+    is static;
+
+
+    IsSolutionReached(me; F: in out MultipleVarFunctionWithGradient)
+    	---Purpose:
+    	-- This method is called at the end of each iteration to check if the
+    	-- solution is found.
+    	-- It can be redefined in a sub-class to implement a specific test to
+    	-- stop the iterations.
+    
+    returns Boolean
+    is virtual;
+    
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+        ---C++: inline
+
+    returns Boolean
+    is static;
+    
+    
+    Location(me)
+    	---Purpose: returns the location vector of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Location(me; Loc: out Vector)
+    	---Purpose: outputs the location vector of the minimum in Loc.
+        -- Exception NotDone is raised if the minimum was not found.
+        -- Exception DimensionError is raised if the range of Loc is not
+        -- equal to the range of the StartingPoint.
+    	---C++: inline
+	    
+    raises DimensionError,
+    	   NotDone
+    is static;
+    
+    
+    Minimum(me)
+    	---Purpose: returns the value of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me)
+    	---Purpose: Returns the gradient vector at the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    	---C++: return const&  
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me; Grad: out Vector)
+    	---Purpose: Returns the value of the gradient vector at the minimum in Grad.
+        -- Exception NotDone is raised if the minimum was not found.
+        -- Exception DimensionError is raised if the range of Grad is not
+        -- equal to the range of the StartingPoint.
+    	---C++: inline
+    raises DimensionError,
+    	   NotDone
+    is static;
+
+
+    NbIterations(me)
+    	---Purpose: Returns the number of iterations really done in the 
+    	--          calculation of the minimum.
+    	-- The exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:            Boolean;
+TheStatus:       Status  is protected;
+TheLocation:     Vector  is protected;
+TheGradient:     Vector  is protected;
+PreviousMinimum: Real    is protected;
+TheMinimum:      Real    is protected;
+XTol:            Real    is protected;
+EPSZ:            Real    is protected;
+nbiter:          Integer is protected;
+Itermax:         Integer;
+
+end BFGS;

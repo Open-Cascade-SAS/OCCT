@@ -1,0 +1,43 @@
+
+#ifndef STRUCTURE_PXX_INCLUDED
+#define STRUCTURE_PXX_INCLUDED
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_LIMITS
+# include <limits>
+#elif defined (HAVE_LIMITS_H)
+# include <limits.h>
+#endif
+
+#ifdef WNT
+# include <limits>
+#endif
+
+// structure priority : range (do not change this range !)
+// call_togl_displaystructure, CALL_DEF_VIEW, MajView ...
+#define Structure_MAX_PRIORITY 10
+#define Structure_MIN_PRIORITY 0
+
+#include <Graphic3d_StructureManager.pxx>
+
+// structures identifiers : possible range
+	// check the value of View_IDMAX (must be < Structure_IDMIN)
+#define Structure_IDMIN 10001
+// /2 pour eviter les problemes d'overflow
+#define Structure_IDMAX INT_MAX/2
+
+#include <Graphic3d_Group.pxx>
+
+	// check the value of Group_IDMIN (must be > last label value)
+	//				 (today Structure_LABCONNECT)
+#define Structure_GROUPBEGIN	Group_IDMIN-2
+#define Structure_GROUPEND	Group_IDMIN-1
+#define Structure_END		Group_IDMIN-1
+
+#define MyStructureManager ((Graphic3d_StructureManager*) MyPtrStructureManager)
+#define MyFirstStructureManager ((Graphic3d_StructureManager*) MyFirstPtrStructureManager)
+
+#endif

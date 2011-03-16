@@ -1,0 +1,115 @@
+-- File:	Expr.cdl
+-- Created:	Mon Jan 14 15:54:23 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+package Expr
+
+    ---Purpose: This package describes  the data structure  of any 
+    --          expression, relation or function used in mathematics.
+    --          It also describes the assignment of variables. Standard 
+    --          mathematical functions are implemented such as 
+    --          trigonometrics, hyperbolics, and log functions.
+
+
+uses TColStd,TCollection,MMgt,Standard
+
+is
+
+    deferred class GeneralExpression;
+	class NumericValue;
+    	deferred class NamedExpression;
+    	    class NamedConstant;
+    	    class NamedUnknown;
+	deferred class UnaryExpression;
+    	    class Absolute;
+    	    class ArcCosine;
+    	    class ArcSine;
+    	    class ArcTangent;
+    	    class ArgCosh;
+    	    class ArgSinh;
+    	    class ArgTanh;
+    	    class Cosh;
+    	    class Cosine;
+    	    class Exponential;
+    	    class LogOf10;
+    	    class LogOfe;
+    	    class Sign;
+    	    class Sine;
+    	    class Sinh;
+    	    class Square;
+    	    class SquareRoot;
+    	    class Tangent;
+    	    class Tanh;
+    	    class UnaryFunction;
+    	    class UnaryMinus;
+    	deferred class BinaryExpression;
+    	    class BinaryFunction;
+    	    class Difference;
+    	    class Division;
+    	    class Exponentiate;
+    	deferred class PolyExpression;
+    	    class PolyFunction;
+    	    class Product;
+    	    class Sum;
+    class UnknownIterator;
+    deferred class GeneralRelation;
+    	deferred class SingleRelation;
+    	    class Different;
+    	    class Equal;
+    	    class GreaterThan;
+    	    class GreaterThanOrEqual;
+    	    class LessThan;
+    	    class LessThanOrEqual;
+    	class SystemRelation;
+    class RelationIterator;
+    class RUIterator;
+    deferred class GeneralFunction;
+    	class NamedFunction;
+    	class FunctionDerivative;
+
+    exception ExprFailure inherits Failure;
+    exception NotAssigned inherits ExprFailure ;
+    exception InvalidAssignment inherits ExprFailure;
+    exception InvalidFunction inherits ExprFailure;
+    exception InvalidOperand inherits ExprFailure;
+    exception NotEvaluable inherits ExprFailure;
+    
+    class SequenceOfGeneralExpression instantiates 
+    	    Sequence from TCollection(GeneralExpression);
+ 
+    class Array1OfGeneralExpression instantiates 
+    	    Array1 from TCollection(GeneralExpression);
+    
+    class Array1OfNamedUnknown instantiates 
+    	    Array1 from TCollection(NamedUnknown);
+
+    class MapOfNamedUnknown instantiates 
+    	    IndexedMap from TCollection(NamedUnknown,
+    	    	    	    	    	MapTransientHasher from TColStd);
+    
+    class Array1OfSingleRelation instantiates 
+    	    Array1 from TCollection(SingleRelation);
+    
+    class SequenceOfGeneralRelation instantiates 
+    	    Sequence from TCollection(GeneralRelation);
+
+    CopyShare(exp : GeneralExpression)
+    ---Level : Internal
+    returns GeneralExpression;
+    
+    NbOfFreeVariables(exp : GeneralExpression from Expr)
+    ---Level : Internal
+    returns Integer;
+    
+    NbOfFreeVariables(exp : GeneralRelation from Expr)
+    ---Level : Internal
+    returns Integer;
+    
+    Sign(val : Real from Standard)
+    ---Level : Internal
+    returns Real from Standard;
+    
+end Expr;
+

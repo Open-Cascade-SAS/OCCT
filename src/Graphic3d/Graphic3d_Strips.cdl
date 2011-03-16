@@ -1,0 +1,17 @@
+class Strips from Graphic3d
+
+uses
+
+	Array1OfInteger from TColStd,
+	SequenceOfInteger from TColStd
+
+is
+
+	STRIPT_INIT (myclass; NBVERTICES: Integer; TABTRIANGLES: Array1OfInteger from TColStd);
+	STRIPT_GET_STRIP(myclass; NBTRIANGLES, V1, V2: out Integer);
+	STRIPT_GET_VERTEX(myclass; VERTEX, TRIANGLE: out Integer);
+	STRIPQ_INIT(myclass; NBVERTICES, NBQUADRANG: Integer; TABQUADRANGLES: SequenceOfInteger from TColStd);
+	STRIPQ_GET_STRIP(myclass; NBQUAD, V1, V2: out Integer);
+	STRIPQ_GET_NEXT(myclass; VERTEX1, VERTEX2, QUADRANGLE: out Integer);
+
+end Strips;

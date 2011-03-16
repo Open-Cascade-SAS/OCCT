@@ -1,0 +1,30 @@
+-- File:        SurfaceSideStyle.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSurfaceSideStyle from RWStepVisual
+
+	---Purpose : Read & Write Module for SurfaceSideStyle
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SurfaceSideStyle from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSurfaceSideStyle;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SurfaceSideStyle from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : SurfaceSideStyle from StepVisual);
+
+	Share(me; ent : SurfaceSideStyle from StepVisual; iter : in out EntityIterator);
+
+end RWSurfaceSideStyle;

@@ -1,0 +1,218 @@
+// File:	AIS_Relation.lxx
+// Created:	Tue Dec  5 15:09:04 1996
+// Author:	Odile Olivier
+//              <ODL>
+
+#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
+//                      if any in all dimensions.
+
+//=======================================================================
+//function : FirstShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& AIS_Relation::FirstShape() const 
+{
+  return myFShape;
+}
+
+
+//=======================================================================
+//function : SecondShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& AIS_Relation::SecondShape() const 
+{
+  return mySShape;
+}
+
+
+//=======================================================================
+//function : SetBndBox
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetBndBox( const Standard_Real Xmin,
+				     const Standard_Real Ymin,
+				     const Standard_Real Zmin,
+				     const Standard_Real Xmax,
+				     const Standard_Real Ymax,
+				     const Standard_Real Zmax )
+{
+  myBndBox.Update( Xmin, Ymin, Zmin, Xmax, Ymax, Zmax );
+  myIsSetBndBox = Standard_True;
+}				    
+
+inline void AIS_Relation::UnsetBndBox()
+{
+  myIsSetBndBox = Standard_False;
+}
+
+//=======================================================================
+//function : :Plane
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Plane)& AIS_Relation::Plane() const 
+{
+  return myPlane;
+}
+
+//=======================================================================
+//function : SetPlane
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetPlane(const Handle(Geom_Plane)& aPlane)
+{
+  myPlane = aPlane;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real AIS_Relation::Value() const 
+{
+  return myVal;
+}
+
+//=======================================================================
+//function : SetValue
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetValue(const Standard_Real aVal)
+{
+  myVal = aVal;
+}
+
+//=======================================================================
+//function : Position
+//purpose  : 
+//=======================================================================
+
+inline const gp_Pnt& AIS_Relation::Position() const 
+{
+  return myPosition;
+}
+
+
+//=======================================================================
+//function : SetPosition
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetPosition(const gp_Pnt& aPosition)
+{
+  myPosition = aPosition;
+  myAutomaticPosition = Standard_False;
+}
+
+//=======================================================================
+//function : Text
+//purpose  : 
+//=======================================================================
+
+inline const TCollection_ExtendedString& AIS_Relation::Text() const 
+{
+  return myText;
+}
+
+//=======================================================================
+//function : SetText
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetText(const TCollection_ExtendedString& aText)
+{
+  myText = aText;
+}
+
+//=======================================================================
+//function : ArrowSize
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real AIS_Relation::ArrowSize() const 
+{
+  return myArrowSize;
+}
+
+//=======================================================================
+//function : SetArrowSize
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Relation::SetArrowSize(const Standard_Real anArrowSize)
+{
+  myArrowSize = anArrowSize;
+#ifdef BUC60915
+  myArrowSizeIsDefined = Standard_True;
+#endif
+}
+
+//=======================================================================
+//function : SymbolPrs
+//purpose  : 
+//=======================================================================
+
+inline DsgPrs_ArrowSide AIS_Relation::SymbolPrs() const 
+{
+  return mySymbolPrs;
+}
+
+//=======================================================================
+//function : SetSymbolPrs
+//purpose  : 
+//=======================================================================
+inline void AIS_Relation::SetSymbolPrs(const DsgPrs_ArrowSide aSymbolPrs)
+{
+  mySymbolPrs = aSymbolPrs;
+}
+
+
+
+//=======================================================================
+//function : KindOfInteractive
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfInteractive AIS_Relation::Type() const 
+{return AIS_KOI_Relation;}
+
+
+//=======================================================================
+//function : SetExtShape
+//purpose  : 
+//=======================================================================
+inline void AIS_Relation::SetExtShape(const Standard_Integer ExtSh) 
+{myExtShape = ExtSh;}
+
+
+//=======================================================================
+//function : ExtShape
+//purpose  : 
+//=======================================================================
+inline Standard_Integer AIS_Relation::ExtShape() const
+{return myExtShape;}
+
+
+//=======================================================================
+//function : SetAutomaticPosition
+//purpose  : 
+//=======================================================================
+inline void AIS_Relation::SetAutomaticPosition ( const Standard_Boolean aStatus ) 
+{
+  myAutomaticPosition = aStatus ;
+}
+
+//=======================================================================
+//function : AutomaticPosition
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_Relation::AutomaticPosition () const
+{
+  return myAutomaticPosition;
+}

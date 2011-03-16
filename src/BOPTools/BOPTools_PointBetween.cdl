@@ -1,0 +1,70 @@
+-- File:	BOPTools_PointBetween.cdl
+-- Created:	Thu Apr 19 11:05:34 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PointBetween from BOPTools 
+
+    	---Purpose:  
+    	--  class for storing geometry information about  
+    	--  a point between neighbouring paves along 
+	--  an edge 
+      	--- 
+uses 
+    Pnt from gp
+    
+
+
+is 
+    Create  
+    	returns PointBetween from BOPTools;  
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    SetParameter (me:out; 
+    	    T:Real  from  Standard); 
+    	---Purpose:  
+    	--- Modifier 
+    	--- sets value of the point's parameter on the edge  
+    	---
+    SetUV (me:out; 
+    	    U:Real  from  Standard;      
+    	    V:Real  from  Standard);       
+    	---Purpose:  
+    	--- Modifier 
+    	--- sets values of the point's parameter on the face  
+    	---
+    SetPnt (me:out; 
+    	    aP:Pnt from gp); 
+    	---Purpose:  
+    	--- Modifier 
+    	--- sets the 3D-point   
+    	---
+    Parameter (me) 
+    	returns Real  from  Standard ; 
+    	---Purpose:  
+    	--- Selector
+    	---
+    UV  (me; 
+    	   U:out Real  from  Standard;      
+    	   V:out Real  from  Standard);  
+    	---Purpose:  
+    	--- Selector
+    	---
+    Pnt (me) 
+    	returns Pnt from gp; 
+    	---C++:  return const &    	 
+    	---Purpose:  
+    	--- Selector
+    	---
+    
+fields 
+   
+    myT  :  Real  from  Standard;  
+    myU  :  Real  from  Standard;  
+    myV  :  Real  from  Standard;  
+    myPnt:  Pnt   from  gp; 
+     
+end PointBetween;

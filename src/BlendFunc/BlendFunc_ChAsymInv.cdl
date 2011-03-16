@@ -1,0 +1,115 @@
+-- File:      BlendFunc_ChAsymInv.cdl
+-- Created:   Thu Jun  4 09:42:08 1998
+-- Author:    Philippe NOUAILLE
+---Copyright: Matra Datavision 1998
+
+
+class ChAsymInv from BlendFunc 
+
+inherits FuncInv from Blend
+
+uses Vector   from math,
+     Matrix   from math,
+     HCurve2d from Adaptor2d,
+     HCurve   from Adaptor3d,
+     HSurface from Adaptor3d
+
+is
+    Create(S1,S2: HSurface from Adaptor3d; C: HCurve from Adaptor3d)
+    
+    	returns ChAsymInv from BlendFunc;
+	
+    Set(me: in out; OnFirst: Boolean from Standard;
+    	            COnSurf: HCurve2d from Adaptor2d)
+
+    	;
+
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard)
+    
+    	;
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math)
+    
+    	;
+
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    
+    	returns Boolean from Standard
+    
+    	;
+
+
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+    	returns Integer from Standard
+    	is redefined static ;
+
+    ComputeValues(me   : in out;
+                  X    : Vector from math;
+                  DegF : Integer from Standard;
+		  DegL : Integer from Standard)
+    ---Purpose: computes the values <F> of the derivatives for the 
+    --          variable <X> between DegF and DegL.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard
+    is static;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard
+    	is redefined static ;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is redefined static	;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    	is redefined static ;
+
+-- methodes hors template (en plus du create)
+
+    Set(me: in out; 
+        Dist1 : Real from Standard;
+	Angle : Real from Standard;
+        Choix : Integer from Standard)
+
+    is static;
+
+
+fields
+
+    surf1 : HSurface from Adaptor3d;
+    surf2 : HSurface from Adaptor3d;
+    dist1 : Real from Standard;
+    angle : Real from Standard;
+    tgang : Real from Standard;
+    curv  : HCurve from Adaptor3d;
+    csurf : HCurve2d from Adaptor2d;
+    choix : Integer from Standard;
+    first : Boolean from Standard;
+
+    FX       : Vector  from math;
+    DX       : Matrix  from math;
+    
+end ChAsymInv;

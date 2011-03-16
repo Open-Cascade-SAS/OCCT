@@ -1,0 +1,68 @@
+-- File:	IntAna.cdl
+-- Created:	Tue Jun 30 17:11:11 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+  
+
+package IntAna
+
+    ---Purpose: This package provides the intersections between :
+    --          
+    --          - Natural Quadrics when the result is a conic (QuadQuadGeo)
+    --          
+    --          - A natural Quadric and a Quadric defined by its Coefficients
+    --            (IntQuadQuad)
+    --            
+    --          - 3 Pln   (Int3Pln)
+    --          
+    --          - a Line and a Torus   (IntLinTorus)
+    --          
+    --          - a Conic from gp and  a Quadric  defined by its Coefficients
+    --            (IntConicQuad)
+    --            
+
+    ---Level: Public
+    --
+    -- All the methods of the classes of this package are public.
+    --
+
+  
+uses TCollection, math, gp, StdFail, IntAna2d, GeomAbs
+
+is
+
+    enumeration ResultType  is Point,
+                               Line,
+                               Circle,
+                               PointAndCircle,
+                               Ellipse,
+                               Parabola,
+                               Hyperbola,
+                               Empty,
+			       Same,
+                               NoGeometricSolution;
+    
+
+    
+    class QuadQuadGeo;
+    
+    class IntQuadQuad;
+
+    class Int3Pln;
+
+    class IntLinTorus;
+    
+    class IntConicQuad;
+
+    class Curve;
+    
+    class Quadric;
+    --
+    class ListOfCurve  instantiates  
+    	List from TCollection(Curve from IntAna);    
+    --
+end IntAna;
+
+
+ 

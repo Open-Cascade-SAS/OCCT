@@ -1,0 +1,103 @@
+-- File:	MakePlane.cdl
+-- Created:	Mon Sep 28 11:51:13 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakePlane from GC inherits Root from GC
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Plane from gp.
+    --           * Create a Plane parallel to another and passing 
+    --             through a point.
+    --           * Create a Plane passing through 3 points.
+    --           * Create a Plane by its normal
+    --           A MakePlane object provides a framework for:
+    --           -   defining the construction of the plane,
+    --           -   implementing the construction algorithm, and
+    --           -   consulting the results. In particular, the Value
+    --           function returns the constructed plane.
+        
+uses Pnt       from gp,
+     Pln       from gp,
+     Ax2       from gp,
+     Dir       from gp,
+     Plane     from Geom,
+     Ax1       from gp,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A2 : Ax2)    returns MakePlane;
+    --- Purpose :
+    --  Creates a plane located in 3D space with an axis placement
+    --  two axis.  The "ZDirection" of "A2" is the direction normal
+    --  to the plane.  The "Location" point of "A2" is the origin of
+    --  the plane. The "XDirection" and "YDirection" of "A2" define
+    --  the directions of the U isoparametric and V isoparametric
+    --  curves.
+
+Create (Pl : Pln from gp) returns MakePlane;
+    --- Purpose :
+    --  Creates a plane from a non persistent plane from package gp.
+
+Create (P : Pnt from gp; 
+    	V : Dir from gp) returns MakePlane;
+    --- Purpose :
+    --  P is the "Location" point or origin of the plane.
+    --  V is the direction normal to the plane.
+
+Create (A, B, C ,D : Real from Standard) returns MakePlane;
+    --- Purpose :
+    --  Creates a plane from its cartesian equation :
+    --  Ax + By + Cz + D = 0.0
+    --  Status is "BadEquation" if Sqrt (A*A + B*B + C*C) 
+    --  <= Resolution from gp
+
+Create(Pln    :     Pln from gp;
+       Point  :     Pnt from gp) returns MakePlane;
+    ---Purpose : Make a Plane from Geom <ThePlane> parallel to another 
+    --           Pln <Pln> and passing through a Pnt <Point>.
+
+Create(Pln  : Pln  from gp      ;
+       Dist : Real from Standard) returns MakePlane;
+    ---Purpose : Make a Plane from Geom <ThePlane> parallel to another 
+    --           Pln <Pln> at the distance <Dist> which can be greater 
+    --           or lower than zero.
+    --           In the first case the result is at the distance 
+    --           <Dist> to the plane <Pln> in the direction of the 
+    --           normal to <Pln>.
+    --           Otherwize it is in the oposite direction.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp;
+       P3     :     Pnt from gp) returns MakePlane;
+    ---Purpose : Make a Plane from Geom <ThePlane> passing through 3
+    --           Pnt <P1>,<P2>,<P3>.
+    --           It returns false if <P1> <P2> <P3> are confused.
+
+Create(Axis : Ax1 from gp) returns MakePlane;
+    ---Purpose: Make a Plane  passing through the location of <Axis>and 
+    --          normal to the Direction of <Axis>.
+
+Value(me) returns Plane from Geom
+    raises NotDone
+    is static;
+    ---Purpose: Returns the constructed plane.
+    -- Exceptions StdFail_NotDone if no plane is constructed.
+    ---C++: return const&
+
+Operator(me) returns Plane from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_Plane() const;"
+
+fields
+
+    ThePlane : Plane from Geom;
+    --The solution from Geom.
+    
+end MakePlane;
+

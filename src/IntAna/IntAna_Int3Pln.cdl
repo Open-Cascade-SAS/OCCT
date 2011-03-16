@@ -1,0 +1,89 @@
+-- File:	Int3Pln.cdl
+-- Created:	Thu May 16 17:29:06 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+
+class Int3Pln from IntAna 
+
+	---Purpose: Intersection between 3 planes. The algorithm searches
+	--          for an intersection point. If two of the planes are
+	--          parallel or identical, IsEmpty returns TRUE.
+
+uses Pln from gp,
+     Pnt from gp
+
+raises NotDone     from StdFail,
+       DomainError from Standard
+
+is
+
+    Create
+    
+    	returns Int3Pln from IntAna;
+
+
+    Create(P1,P2,P3 : Pln from gp)
+    
+    	---Purpose: Determination of the intersection point between
+    	--          3 planes.
+
+    	returns Int3Pln from IntAna;
+
+
+    Perform(me: in out; P1,P2,P3 : Pln from gp)
+    
+    	---Purpose: Determination of the intersection point between
+    	--          3 planes.
+
+    	is static;
+
+
+    IsDone(me)
+    
+	---Purpose: Returns True if the computation was successful.
+
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns TRUE if there is no intersection POINT.
+    	--          If 2 planes are identical or parallel, IsEmpty
+    	--          will return TRUE.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+	raises NotDone from StdFail
+	--- The exception NotDone is raised when IsDone() returns False.
+	is static;
+
+
+    Value(me)
+    
+    	---Purpose: Returns the intersection point.
+
+    	returns Pnt from gp
+	---C++: inline
+	---C++: return const&
+
+   	raises NotDone     from StdFail,
+               DomainError from Standard
+	--- The exception NotDone is raised when IsDone() returns False.
+	--- The exception Domain is raised when IsEmpty() returns False.
+	
+	is static;
+
+
+fields
+
+    done: Boolean from Standard;
+    empt: Boolean from Standard;
+    pnt : Pnt     from gp;
+
+end Int3Pln;

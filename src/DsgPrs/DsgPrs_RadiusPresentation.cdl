@@ -1,0 +1,83 @@
+-- File:	DsgPrs_RadiusPresentation.cdl
+-- Created:	Wed Mar  1 15:47:49 1995
+-- Author:	Arnaud BOUZY
+--		<adn@houblon>
+---Copyright:	 Matra Datavision 1995
+
+class RadiusPresentation from DsgPrs
+    	---Purpose: A framework to define display of radii.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Circ from gp,
+    Drawer from Prs3d,
+    ArrowSide from DsgPrs,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint : Pnt from gp;
+		  aCircle : Circ from gp;
+		  firstparam : Real;
+		  lastparam : Real;
+		  drawFromCenter : Boolean = Standard_True;
+    	    	  reverseArrow : Boolean = Standard_False);
+	---Purpose: Adds the point AttachmentPoint, the circle aCircle,
+    	-- the text aText, and the parameters firstparam and
+    	-- lastparam to the presentation object aPresentation.
+    	-- The display attributes of these elements is defined by
+    	-- the attribute manager aDrawer.
+    	-- If the Boolean drawFromCenter is false, the
+    	-- arrowhead will point towards the center of aCircle.
+    	-- If the Boolean reverseArrow is true, the arrowhead
+    	-- will point away from the attachment point.
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint : Pnt from gp;
+		  aCircle : Circ from gp;
+		  firstparam : Real;
+		  lastparam : Real;
+	          ArrowSide: ArrowSide from DsgPrs;
+		  drawFromCenter : Boolean = Standard_True;
+    	    	  reverseArrow : Boolean = Standard_False);
+	---Purpose:  Adds the point AttachmentPoint, the circle aCircle,
+    	-- the text aText, and the parameters firstparam and
+    	-- lastparam to the presentation object aPresentation.
+    	-- The display attributes of these elements is defined by
+    	-- the attribute manager aDrawer.
+    	-- The value of the enumeration Arrowside determines
+    	-- the type of arrow displayed: whether there will be
+    	-- arrowheads at both ends or only one, for example.
+    	-- If the Boolean drawFromCenter is false, the
+    	-- arrowhead will point towards the center of aCircle.
+    	-- If the Boolean reverseArrow is true, the arrowhead
+    	-- will point away from the attachment point.
+   
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint : Pnt from gp; 
+		  Center          : Pnt from gp; 
+		  EndOfArrow      : Pnt from gp;  
+	          ArrowSide: ArrowSide from DsgPrs; 
+		  drawFromCenter  : Boolean = Standard_True;
+    	    	  reverseArrow : Boolean = Standard_False);
+	---Purpose:  Adds the circle aCircle, the text aText, the points
+    	-- AttachmentPoint, Center and EndOfArrow to the
+    	-- presentation object aPresentation.
+    	-- The display attributes of these elements is defined by
+    	-- the attribute manager aDrawer.
+    	-- The value of the enumeration Arrowside determines
+    	-- the type of arrow displayed: whether there will be
+    	-- arrowheads at both ends or only one, for example.
+    	-- If the Boolean drawFromCenter is false, the
+    	-- arrowhead will point towards the center of aCircle.
+    	-- If the Boolean reverseArrow is true, the arrowhead
+    	-- will point away from the attachment point.
+    
+     
+end RadiusPresentation;

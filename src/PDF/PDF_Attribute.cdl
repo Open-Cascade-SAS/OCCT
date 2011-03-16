@@ -1,0 +1,21 @@
+-- File:	PDF_Attribute.cdl
+--      	-----------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+deferred class Attribute from PDF
+    inherits Persistent from Standard
+
+	---Purpose: This class is the persistent equivalent of
+	--          Attribute from TDF.
+
+is
+
+end Attribute;
+

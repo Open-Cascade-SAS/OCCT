@@ -1,0 +1,90 @@
+-- File:	IGESToBRep_BRepEntity.cdl
+-- Created:	Wed Sep 28 10:55:01 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class BRepEntity  from IGESToBRep inherits CurveAndSurface from IGESToBRep
+
+    ---Purpose : Provides methods to transfer BRep entities 
+    --           ( VertexList 502, EdgeList 504, Loop 508,
+    --             Face 510, Shell 514, ManifoldSolid 186)
+    --           from IGES to CASCADE.
+
+uses   
+
+    CurveAndSurface  from IGESToBRep,
+    IGESEntity       from IGESData,
+    VertexList       from IGESSolid,
+    EdgeList         from IGESSolid,
+    Loop             from IGESSolid,
+    Face             from IGESSolid,
+    Shell            from IGESSolid,
+    ManifoldSolid    from IGESSolid,
+    Face             from TopoDS,
+    Shape            from TopoDS,
+    Vertex           from TopoDS,
+    Trsf2d           from gp
+
+    
+is
+
+    Create returns BRepEntity;
+    ---Purpose : Creates  a tool BRepEntity  ready  to  run, with
+    --           epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+    --           optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep)  returns BRepEntity;
+    ---Purpose : Creates a tool BRepEntity ready to run and sets its 
+    --           fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean)  returns BRepEntity;
+    ---Purpose : Creates a tool BRepEntity ready to run.
+
+    TransferBRepEntity       (me    : in out; 
+    	    	    	      start : IGESEntity from IGESData)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the BRepEntity" : Face, Shell or ManifoldSolid.
+	
+    TransferVertex           (me    : in out; 
+    	    	    	      start : VertexList from IGESSolid;
+			      index : Integer    from Standard)
+    	returns Vertex from TopoDS;	    
+    ---Purpose : Transfer the entity number "index" of the VertexList "start"    
+	
+    TransferEdge             (me    : in out; 
+    	    	    	      start : EdgeList from IGESSolid;
+			      index : Integer  from Standard)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the entity number "index" of the EdgeList "start".
+	
+    TransferLoop             (me     : in out; 
+    	    	    	      start  : Loop    from IGESSolid;
+                              Face   : Face    from TopoDS;
+    	                      trans  : Trsf2d  from gp;
+    	    	    	      uFact  :Real)		    
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the Loop Entity	
+	
+    TransferFace             (me    : in out; 
+    	    	    	      start : Face from IGESSolid)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the Face Entity		
+
+    TransferShell            (me    : in out; 
+    	    	    	      start : Shell from IGESSolid)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the Shell Entity			
+
+    TransferManifoldSolid    (me    : in out; 
+    	    	    	      start : ManifoldSolid from IGESSolid)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfer the ManifoldSolid Entity			
+
+end BRepEntity;	    

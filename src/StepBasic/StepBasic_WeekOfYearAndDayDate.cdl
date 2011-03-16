@@ -1,0 +1,45 @@
+-- File:        WeekOfYearAndDayDate.cdl
+-- Created:     Fri Dec  1 11:11:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class WeekOfYearAndDayDate from StepBasic 
+
+inherits Date from StepBasic 
+
+uses
+
+	Integer from Standard, 
+	Boolean from Standard
+is
+
+	Create returns mutable WeekOfYearAndDayDate;
+	---Purpose: Returns a WeekOfYearAndDayDate
+
+
+	Init (me : mutable;
+	      aYearComponent : Integer from Standard) is redefined;
+
+	Init (me : mutable;
+	      aYearComponent : Integer from Standard;
+	      aWeekComponent : Integer from Standard;
+	      hasAdayComponent : Boolean from Standard;
+	      aDayComponent : Integer from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetWeekComponent(me : mutable; aWeekComponent : Integer);
+	WeekComponent (me) returns Integer;
+	SetDayComponent(me : mutable; aDayComponent : Integer);
+	UnSetDayComponent (me:mutable);
+	DayComponent (me) returns Integer;
+	HasDayComponent (me) returns Boolean;
+
+fields
+
+	weekComponent : Integer from Standard;
+	dayComponent : Integer from Standard;   -- OPTIONAL can be NULL
+	hasDayComponent : Boolean from Standard;
+
+end WeekOfYearAndDayDate;

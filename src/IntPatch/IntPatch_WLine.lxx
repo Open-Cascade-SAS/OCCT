@@ -1,0 +1,88 @@
+// File:	IntPatch_WLine.lxx
+// Created:	Mon May 27 13:18:45 1991
+// Author:	Isabelle GRIGNON
+// Copyright:	OPEN CASCADE 1991, 1992
+
+#include <Standard_DomainError.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntPatch_Point.hxx>
+
+
+inline void IntPatch_WLine::AddVertex (const IntPatch_Point& Pnt)
+{
+  svtx.Append(Pnt);
+}
+
+inline void IntPatch_WLine::Replace (const Standard_Integer Index,
+				     const IntPatch_Point& Pnt)
+{
+  svtx(Index) = Pnt;
+}
+
+inline void IntPatch_WLine::SetFirstPoint (const Standard_Integer IndFirst)
+{
+  fipt = Standard_True;
+  indf = IndFirst;
+}
+
+inline void IntPatch_WLine::SetLastPoint (const Standard_Integer IndLast)
+{
+  lapt = Standard_True;
+  indl = IndLast;
+}
+
+inline Standard_Integer IntPatch_WLine::NbPnts () const
+{
+  return curv->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntPatch_WLine::Point (const Standard_Integer Index) const
+{
+  return curv->Value(Index);
+}
+
+inline Standard_Boolean IntPatch_WLine::HasFirstPoint () const
+{
+  return fipt;
+}
+
+inline Standard_Boolean IntPatch_WLine::HasLastPoint () const
+{
+  return lapt;
+}
+
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint () const
+{
+  if (!fipt) {Standard_DomainError::Raise();}
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::LastPoint () const
+{
+  if (!lapt) {Standard_DomainError::Raise();}
+  return svtx(indl);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::FirstPoint (Standard_Integer& Indfirst) const
+{
+  if (!fipt) {Standard_DomainError::Raise();}
+  Indfirst = indf;
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_WLine::LastPoint (Standard_Integer& Indlast) const
+{
+  if (!lapt) {Standard_DomainError::Raise();}
+  Indlast = indl;
+  return svtx(indl);
+}
+
+inline Standard_Integer IntPatch_WLine::NbVertex () const
+{
+  return svtx.Length();
+}
+
+inline const IntPatch_Point& IntPatch_WLine::Vertex (const Standard_Integer Index) const
+{
+  return svtx(Index);
+}

@@ -1,0 +1,75 @@
+// File:	IntRes2d_Domain.lxx
+// Created:	Tue Mar 31 09:42:12 1992
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+
+
+
+#include <Standard_DomainError.hxx>
+
+//-------------------------------------------------
+//-- hasfirst <--> status & 1 
+//-- haslast  <--> status & 2 
+//-- closed   <--> status & 4 
+//-------------------------------------------------
+
+
+inline void IntRes2d_Domain::SetEquivalentParameters
+        (const Standard_Real p_first,
+	 const Standard_Real p_last)  {
+  if((status&3)!=3) { Standard_DomainError::Raise(); }
+  status|=4;
+  periodfirst=p_first;
+  periodlast=p_last;
+}
+
+inline Standard_Boolean IntRes2d_Domain::HasFirstPoint () const {
+  return (status & 1) ? Standard_True : Standard_False;
+}
+
+inline Standard_Real IntRes2d_Domain::FirstParameter () const {
+  if(!(status&1)) { Standard_DomainError::Raise(); }
+  return(first_param);
+}
+
+inline const gp_Pnt2d& IntRes2d_Domain::FirstPoint () const {
+  if(!(status&1)) { Standard_DomainError::Raise(); }
+  return(first_point);
+}
+
+inline Standard_Real IntRes2d_Domain::FirstTolerance () const {
+  if(!(status&1)) { Standard_DomainError::Raise(); }
+  return(first_tol);
+}
+
+
+
+inline Standard_Boolean IntRes2d_Domain::HasLastPoint () const {
+  return (status & 2) ? Standard_True : Standard_False;
+}
+
+inline Standard_Real IntRes2d_Domain::LastParameter () const {
+  if(!(status&2)) { Standard_DomainError::Raise(); }
+  return(last_param);
+}
+
+inline const gp_Pnt2d& IntRes2d_Domain::LastPoint () const {
+  if(!(status&2)) { Standard_DomainError::Raise(); }
+  return(last_point);
+}
+
+inline Standard_Real IntRes2d_Domain::LastTolerance () const {
+  if(!(status&2)) { Standard_DomainError::Raise(); }
+  return(last_tol);
+}
+
+inline Standard_Boolean IntRes2d_Domain::IsClosed () const {
+  return (status & 4) ? Standard_True : Standard_False;
+}
+
+inline void IntRes2d_Domain::EquivalentParameters(Standard_Real& p_first,
+						  Standard_Real& p_last) const
+{
+  p_first=periodfirst;
+  p_last=periodlast;
+}

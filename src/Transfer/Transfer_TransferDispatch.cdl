@@ -1,0 +1,57 @@
+-- File:	TransferDispatch.cdl
+-- Created:	Fri Feb  7 11:19:53 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class TransferDispatch  from Transfer  inherits CopyTool
+
+    ---Purpose : A TransferDispatch is aimed to dispatch Entities between two
+    --           Interface Models, by default by copying them, as CopyTool, but
+    --           with more capabilities of adapting : Copy is redefined to
+    --           firstly pass the hand to a TransferProcess. If this gives no
+    --           result, standard Copy is called.
+    --           
+    --           This allow, for instance, to modify the copied Entity (such as
+    --           changing a Name for a VDA Entity), or to do a deeper work
+    --           (such as Substituting a kind of Entity to another one).
+    --           
+    --           For these reasons, TransferDispatch is basically a CopyTool,
+    --           but uses a more sophiscated control, which is TransferProcess,
+    --           and its method Copy is redefined
+
+uses Transient,   InterfaceModel, GeneralLib, Protocol from Interface,
+     TransientProcess
+
+raises InterfaceError
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns TransferDispatch;
+    ---Purpose : Creates a TransferDispatch from a Model. Works with a General
+    --           Service Library, given as an Argument
+    --           A TransferDispatch is created as a CopyTool in which the
+    --           Control is set to TransientProcess
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns TransferDispatch;
+    ---Purpose : Same as above, but Library is defined through a Protocol
+
+    Create (amodel : InterfaceModel) returns TransferDispatch
+    ---Purpose : Same as above, but works with the Active Protocol
+    	raises InterfaceError;
+    --           Error if no Active Protocol is defined
+
+    TransientProcess (me) returns mutable TransientProcess;
+    ---Purpose : Returns the content of Control Object, as a TransientProcess
+
+
+    Copy (me : in out; entfrom : Transient; entto : out mutable Transient;
+    	  mapped : Boolean; errstat : Boolean)
+    	returns Boolean is  redefined;
+    ---Purpose : Copies an Entity by calling the method Transferring from the
+    --           TransferProcess. If this called produces a Null Binder, then
+    --           the standard, inherited Copy is called
+
+end TransferDispatch;

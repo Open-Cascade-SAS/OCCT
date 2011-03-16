@@ -1,0 +1,53 @@
+-- File:	DrawTrSurf_Polygon3D.cdl
+-- Created:	Thu Mar  9 17:00:59 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon3D from DrawTrSurf inherits Drawable3D from Draw
+
+    	---Purpose: Used to display a 3d polygon.
+    	--          
+    	--          Optional display of nodes.
+
+
+uses Polygon3D   from Poly,
+     Display     from Draw,
+     Interpretor from Draw,
+     OStream
+
+is
+
+    Create(P: Polygon3D from Poly)
+    returns mutable Polygon3D from DrawTrSurf;
+    
+    Polygon3D(me) returns Polygon3D from Poly;
+    
+    ShowNodes(me: mutable; B: Boolean);
+    
+    ShowNodes(me) returns Boolean;
+    
+    DrawOn(me; dis: in out Display);
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is redefined;
+	---Purpose: For variable copy.
+
+
+    Dump(me; S : in out OStream)
+    is redefined;
+	---Purpose: For variable dump.
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+
+fields
+
+    myPolygon3D:  Polygon3D from Poly;
+    myNodes:      Boolean;
+
+end Polygon3D;

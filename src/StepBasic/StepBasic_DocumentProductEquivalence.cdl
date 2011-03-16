@@ -1,0 +1,21 @@
+-- File:	StepBasic_DocumentProductEquivalence.cdl
+-- Created:	Tue Jan 28 12:40:35 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class DocumentProductEquivalence from StepBasic
+inherits DocumentProductAssociation from StepBasic
+
+    ---Purpose: Representation of STEP entity DocumentProductEquivalence
+
+uses
+    HAsciiString from TCollection,
+    Document from StepBasic,
+    ProductOrFormationOrDefinition from StepBasic
+
+is
+    Create returns DocumentProductEquivalence from StepBasic;
+	---Purpose: Empty constructor
+
+end DocumentProductEquivalence;

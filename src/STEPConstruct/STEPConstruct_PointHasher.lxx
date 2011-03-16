@@ -1,0 +1,20 @@
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+inline Standard_Integer STEPConstruct_PointHasher::HashCode
+  (const gp_Pnt& point, const Standard_Integer Upper)
+{
+  union 
+    {
+    Standard_Real R[3];
+    Standard_Integer I[6];
+    } U;
+
+  point.Coord(U.R[0],U.R[1],U.R[2]);  
+
+  return ::HashCode(U.I[0]/23+U.I[1]/19+U.I[2]/17+U.I[3]/13+U.I[4]/11+U.I[5]/7,Upper);
+  //  return ::HashCode((U.I[0]>>4)+(U.I[1]>>3)+(U.I[2]>>2)+(U.I[3]>>1)+(U.I[4]>>4)+(U.I[5]>>3),Upper);
+
+}
+

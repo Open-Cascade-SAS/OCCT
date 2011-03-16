@@ -1,0 +1,170 @@
+#!/bin/sh
+# The next line is executed by /bin/sh, but not Tcl \
+  exec tclsh $0 ${1+"$@"}
+
+source $env(DRAWHOME)/Documentation.tcl
+
+#
+# format a documentation for info
+#
+
+proc putText {aText} {
+    global theFile
+    foreach line $aText {puts $theFile $line}
+}
+
+proc infoSection {aSection aText} {
+    global theFile index theTitle
+
+    # check if text is empty
+    set empty 1
+    foreach line $aText {
+	if {![regexp {^[ \t]*$} $line]} {
+	    set empty 0
+	    break
+	}
+    }
+    if $empty return
+
+    if {$aSection == ""} {
+	putText $aText
+	return
+    }
+
+    switch $aSection {
+		
+	.Synopsis  {
+	    puts $theFile "\nSYNOPSIS\n"
+	    putText $aText
+	}
+	
+	.Purpose    {
+	    puts $theFile "\nPURPOSE\n"
+	    putText $aText
+	}
+	
+	.Example    {
+	    puts $theFile "\nEXAMPLE\n"
+	    putText $aText
+	}
+	
+	".See also" {
+	    puts $theFile "\nSEE ALSO\n"
+	    putText $aText
+	}
+	
+	.Warning    {
+	    puts $theFile "\nWARNINGS\n"
+	    putText $aText
+	}
+	
+	.Warning    {
+	    puts "\n"
+	    putText $aText
+	}
+	
+	.Text    {
+	    putText $aText
+	}
+	
+	.Index      {
+	    foreach word $aText {
+		if {$word != ""} {
+		    set index($word) $theTitle
+		}
+	    }
+	}
+    }
+}
+
+proc dumpInfo {title ftitle up prev next} {
+    global theFile subTitles texts
+    global theTitle
+    if {![info exists texts($ftitle)] &&
+    ![info exists subTitles($ftitle)]} return
+
+    set theTitle $title
+    puts $theFile ""
+    puts $theFile "Node: $title,  Prev: $prev,  Next: $next,  Up: $up,"
+    puts $theFile ""
+
+    if [info exists texts($ftitle)] {
+	sectionText $texts($ftitle) infoSection
+    }
+    if [info exists subTitles($ftitle)] {
+	puts $theFile "\n\n* Menu:\n"
+	foreach t $subTitles($ftitle) {
+	    puts $theFile  "* $t::"
+	}
+	puts $theFile ""
+	set p ""
+	set l [lrange $subTitles($ftitle) 1 end]
+	foreach t $subTitles($ftitle) {
+	    dumpInfo $t [concat $ftitle $t] $title $p [lindex $l 0]
+	    set p $t
+	    set l [lrange $l 1 end]
+	}
+    }
+}
+
+# compare without case, used for sorting the index
+proc cmp {s1 s2} {
+    return [string compare [string tolower $s1] [string tolower $s2]]
+}
+
+proc dumpIndex {} {
+    global index theFile
+    
+    puts $theFile ""
+    puts $theFile "Node: Index,  Up: Top,"
+    puts $theFile ""
+    if [info exists index] {
+	set l 0
+	foreach word [array names index] {
+	    set ll [string length $word]
+	    if {$ll > $l} {set l $ll}
+	}
+	incr l 2
+	set letter ""
+	foreach word [lsort -command cmp [array names index]] {
+	    puts -nonewline $theFile $word
+	    for {set ll [string length $word]} {$ll < $l} {incr ll} {
+		puts -nonewline $theFile " "
+	    }
+	    puts $theFile "*Note $index($word)::"
+	}
+    }
+}
+
+#
+# process arguments
+#
+
+if {$argc < 1} {
+    puts "idoc docfile upnode"
+    puts "create an info file form a doc file, upnode is the up node of Top"
+    exit
+}
+
+set file [lindex $argv 0]
+set up ""
+if {$argc > 1} {set up [lindex $argv 1]}
+
+if [file readable $file] {
+    readFile $file
+    set file [file rootname $file]
+    # add a menu for the index
+    lappend subTitles(Top) Index
+    
+    global theFile
+    set theFile [open $file.info "w"] 
+    puts $theFile ""
+    dumpInfo Top Top $up "" ""
+    dumpIndex
+    close $theFile
+    puts "$file.info created"
+} else {
+    puts "Cannot open $file for reading"
+}
+
+

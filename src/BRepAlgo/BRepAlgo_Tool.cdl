@@ -1,0 +1,30 @@
+-- File:	BRepAlgo_Tool.cdl
+-- Created:	Mon Oct 23 14:15:53 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Tool from BRepAlgo
+
+	---Purpose: 
+
+uses
+    Shape                     from TopoDS,
+    MapOfShape                from TopTools
+    
+is
+    
+    Deboucle3D (myclass;
+    	    	S        : in Shape      from TopoDS;
+    	    	Boundary : in MapOfShape from TopTools)
+	---Purpose: Remove the non valid   part of an offsetshape 
+	--          1 - Remove all the free boundary  and the faces 
+	--          connex to such edges.
+	--          2 - Remove all the shapes not  valid in the result
+	--          (according to the side of offseting)
+	--   in this verion only the first point is implemented.
+    returns Shape from TopoDS;
+    
+
+end Tool;

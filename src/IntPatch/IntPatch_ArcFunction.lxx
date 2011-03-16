@@ -1,0 +1,43 @@
+// File:	IntPatch_ArcFunction.lxx
+// Created:	Mon Jun  7 17:39:24 1993
+// Author:	Jacques GOUSSARD
+// Copyright:	OPEN CASCADE 1993
+
+
+inline const gp_Pnt& IntPatch_ArcFunction::Valpoint (const Standard_Integer Index) const
+{
+  return seqpt(Index);
+}
+
+inline void IntPatch_ArcFunction::Set(const Handle(Adaptor2d_HCurve2d)& A)
+{
+  myArc = A;
+  seqpt.Clear();
+}
+
+inline void IntPatch_ArcFunction::Set(const Handle(Adaptor3d_HSurface)& S)
+{
+  mySurf = S;
+  seqpt.Clear();
+}
+
+inline void IntPatch_ArcFunction::SetQuadric(const IntSurf_Quadric& Q)
+{
+  myQuad = Q;
+  seqpt.Clear();
+}
+
+inline const IntSurf_Quadric& IntPatch_ArcFunction::Quadric() const
+{
+  return(myQuad);
+}
+
+inline const Handle(Adaptor2d_HCurve2d)& IntPatch_ArcFunction::Arc() const
+{
+  return(myArc);
+}
+
+inline const Handle(Adaptor3d_HSurface)& IntPatch_ArcFunction::Surface() const
+{
+  return(mySurf);
+}

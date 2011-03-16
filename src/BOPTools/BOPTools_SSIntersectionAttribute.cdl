@@ -1,0 +1,64 @@
+-- File:	BOPTools_SSIntersectionAttribute.cdl
+-- Created:	Mon Mar  4 12:01:34 2002
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2002
+
+class SSIntersectionAttribute from BOPTools
+
+    	---Purpose: Class is a container of three flags used
+	---         by intersection algorithm
+	---
+
+is
+
+    Create(Aproximation : Boolean from Standard = Standard_True;
+    	   PCurveOnS1   : Boolean from Standard = Standard_True;
+    	   PCurveOnS2   : Boolean from Standard = Standard_True)
+    	returns SSIntersectionAttribute from BOPTools;
+	---Purpose:
+	--- Initializes me by flags
+	--- 
+    
+    Approximation(me: in out; theFlag: Boolean from Standard);
+    	---Purpose:
+	--- Modifier
+	---
+    
+    PCurveOnS1(me: in out; theFlag: Boolean from Standard);
+    	---Purpose:
+	--- Modifier
+	---
+    
+    PCurveOnS2(me: in out; theFlag: Boolean from Standard);
+    	---Purpose:
+	--- Modifier
+	---
+
+    Approximation(me)
+    	returns Boolean from Standard;
+	---C++: inline
+	---Purpose:
+	--- Selector
+	---
+    
+    PCurveOnS1(me)
+    	returns Boolean from Standard;
+	---C++: inline
+	---Purpose:
+	--- Selector
+	---
+    
+    PCurveOnS2(me)
+    	returns Boolean from Standard;
+	---C++: inline
+	---Purpose:
+	--- Selector
+	---
+
+fields
+    myApproximation : Boolean from Standard;
+    myPCurve1       : Boolean from Standard;
+    myPCurve2       : Boolean from Standard;
+
+end SSIntersectionAttribute from BOPTools;

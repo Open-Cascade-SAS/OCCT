@@ -1,0 +1,74 @@
+-- File:	TopOpeBRepBuild_PaveClassifier.cdl
+-- Created:	Thu Jun 17 10:13:19 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class PaveClassifier from TopOpeBRepBuild 
+    inherits LoopClassifier from TopOpeBRepBuild 
+
+---Purpose: 
+-- This class compares vertices on an edge. 
+-- 
+-- A vertex V1 is inside a vertex V2 if V1 is on the
+-- part of the curve defined by V2.
+-- 
+-- If V2 is FORWARD V1 must be after V2 on the curve.
+-- If V2 is REVERSED V1 must be before V2 on the curve.
+-- If V2 is INTERNAL V1 is always inside.
+-- If V2 is EXTERNAL V1 is never inside.
+
+uses
+
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Orientation from TopAbs,
+    Loop from TopOpeBRepBuild
+    
+is
+
+    Create(E : Shape from TopoDS) returns PaveClassifier;
+    ---Purpose: Create a Pave classifier to compare vertices on edge <E>.
+
+    Compare(me : in out; L1,L2 : Loop from TopOpeBRepBuild)  
+    returns State from TopAbs;
+    ---Purpose: Returns state of vertex <L1> compared with <L2>.
+
+    SetFirstParameter(me : in out; P : Real from Standard) 
+    is static;
+    ClosedVertices(me : in out; B : Boolean from Standard)
+    is static;
+
+    AdjustCase(myclass;p1:Real;o:Orientation;
+    	    	       first,period:Real;tol:Real;
+    	    	       cas:out Integer) returns Real;
+
+    CompareOnNonPeriodic(me : in out) returns State from TopAbs 
+    is static private;
+    CompareOnPeriodic(me : in out) returns State from TopAbs 
+    is static private;
+    AdjustOnPeriodic(me : in out) 
+    is static private;
+    ToAdjustOnPeriodic(me) returns Boolean from Standard 
+    is static private;
+
+fields
+
+    myEdge : Edge from TopoDS;
+    myEdgePeriodic : Boolean from Standard;
+    myFirst  : Real from Standard;
+    myPeriod : Real from Standard;
+    mySameParameters : Boolean from Standard;
+    myClosedVertices : Boolean from Standard;
+
+    myP1 : Real from Standard;
+    myP2 : Real from Standard;
+    myO1 : Orientation from TopAbs;
+    myO2 : Orientation from TopAbs;
+
+    myCas1 : Integer from Standard;  -- debug
+    myCas2 : Integer from Standard;  -- debug
+
+end PaveClassifier from TopOpeBRepBuild;

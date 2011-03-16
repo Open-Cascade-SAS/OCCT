@@ -1,0 +1,38 @@
+-- File:	VrmlConverter_ShadedShape.cdl
+-- Created:	Fri Feb 21 13:42:51 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+ 
+class ShadedShape from VrmlConverter  
+
+   	---Purpose:  ShadedShape - computes  the  shading presentation of shapes
+    	--           by triangulation algorithms, converts this one into VRML objects 
+        --           and writes (adds) into anOStream.
+        --           All requested properties of the representation including 
+    	--           the maximal chordial deviation  are specify in aDrawer.  
+        --           This  kind  of  the  presentation  is  converted  into
+        --           IndexedFaceSet ( VRML ).
+
+uses 
+ 
+    Drawer       from  VrmlConverter, 
+    Shape        from  TopoDS, 
+    Face         from  TopoDS,
+    Connect      from  Poly, 
+    Array1OfDir  from  TColgp
+
+is      
+     
+    Add(myclass; anOStream  : in out OStream from  Standard;
+    	    	 aShape     :        Shape   from  TopoDS;
+                 aDrawer    :        Drawer  from  VrmlConverter);
+
+        
+    ComputeNormal(myclass; aFace  :        Face        from TopoDS;
+    	    	           pc     : in out Connect     from Poly;
+		           Nor    : out    Array1OfDir from TColgp);
+
+    
+end ShadedShape  from  VrmlConverter;

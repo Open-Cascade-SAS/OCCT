@@ -1,0 +1,42 @@
+-- File:	VrmlAPI.cdl
+-- Created:	Tue May 30 15:49:48 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package VrmlAPI 
+
+	---Purpose: API for writing to VRML 1.0
+
+uses
+    TopoDS,
+    VrmlConverter,
+    Vrml,
+    Quantity
+is
+    enumeration RepresentationOfShape
+    	---Purpose: Identifies the representation of the shape written
+    	-- to a VRML file. The available options are :
+    	-- -      VrmlAPI_ShadedRepresentation :
+    	--    the shape is translated with a shaded representation.
+    	-- -      VrmlAPI_WireFrameRepresentation :
+    	--   the shape is translated with a wireframe representation.
+    	-- -      VrmlAPI_BothRepresentation : the shape is translated
+    	--   to VRML format with both representations : shaded and
+    	--    wireframe. This is the default option.
+        
+    is
+	    ShadedRepresentation,
+	    WireFrameRepresentation,
+	    BothRepresentation
+    end RepresentationOfShape;
+
+    class Writer;
+    	---Purpose: With help of this class user can change parameters of writing.
+    
+    Write(aShape: Shape from TopoDS; aFileName: CString from Standard);
+    	---Purpose: Converts the shape aShape to VRML format and writes it
+    	-- to the file identified by aFileName using default parameters.
+    
+end VrmlAPI;

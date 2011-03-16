@@ -1,0 +1,125 @@
+-- File:	IntCurveSurface.cdl
+-- Created:	Wed Apr  7 10:54:28 1993
+-- Author:	Laurent BUCHARD
+---Copyright:	 Matra Datavision 1993
+
+
+package IntCurveSurface
+
+    ---Purpose: This package provides algorithmes to intersect a Curve 
+    --          and a Surface. 
+    --  Level: Internal
+    --
+    -- All the methods of the classes of this package are Internal.
+    -- except the methods of the classes <Intersection,
+    --                                    IntersectionPoint,
+    --                                    IntersectionSegment>
+    --
+     
+
+uses Standard, TCollection, TColStd, TColgp, gp, 
+     Bnd, Intf, IntAna,
+     IntImp, IntSurf, 
+     GeomAbs, StdFail ,
+     Adaptor3d, Geom,
+     math
+
+is    
+
+    --------------------------------------------------
+    enumeration TransitionOnCurve is
+        Tangent,In,Out;
+    ---Purpose:
+    --     
+    --     
+    --                    
+    --         \ Uo     ^        \ U1     ^
+    --          \       | n       \       | n
+    -- Surf  ====\======|===   ====\======|=== 
+    --            \                 \
+    --             \                 \
+    --          U1  \              Uo \
+    -- 
+    --        
+    --           ( In )            ( Out ) 
+    --
+    --     
+    --     
+    --       \           /
+    --        \         /
+    --         \       /
+    --          \     /
+    -- Surf =====-----=====
+    --                             
+    --       ( Tangent ) 
+    --    Crb and Surf are  C1 
+    --------------------------------------------------
+    deferred class Intersection;
+    --------------------------------------------------    
+    class IntersectionPoint;  
+    --------------------------------------------------    
+    class IntersectionSegment;
+    --------------------------------------------------
+    class SequenceOfPnt instantiates 
+    	Sequence from TCollection(
+	    IntersectionPoint from IntCurveSurface);
+    --------------------------------------------------	    
+    class SequenceOfSeg instantiates 
+    	Sequence from TCollection(
+	    IntersectionSegment from IntCurveSurface);
+    --------------------------------------------------
+    generic class CurveTool;
+    --------------------------------------------------    
+    generic class HCurveTool;
+    --------------------------------------------------
+    generic class SurfaceTool;
+    --------------------------------------------------    
+    generic class Polygon;
+    --------------------------------------------------
+    generic class Polyhedron;
+    --------------------------------------------------
+    generic class PolygonTool;
+    --------------------------------------------------
+    generic class PolyhedronTool;
+    --------------------------------------------------    
+    generic class QuadricCurveFunc;
+    --------------------------------------------------   
+    generic class QuadricCurveExactInter,
+                  TheQuadCurvFunc;
+    --------------------------------------------------
+    generic class Inter, 
+                  ThePolygon,
+                  ThePolygonTool,
+                  ThePolyhedron,
+                  ThePolyhedronTool,
+                  TheInterference,
+		  TheCSFunction,
+                  TheExactInter,
+                  TheQuadCurvExactInter;
+	
+    -------------------------------------------------	
+    
+    --class HCurveTool instantiates 
+    --	CurveTool from IntCurveSurface
+    --        (HCurve     from Adaptor3d); 
+
+    --class HInter instantiates 
+    --    Inter from IntCurveSurface (
+    --        HCurve        from Adaptor3d, 
+    --        HCurveTool    from IntCurveSurface,
+    --        HSurface      from Adaptor3d, 
+    --        HSurfaceTool  from IntCurveSurface);
+
+
+    class TheHCurveTool instantiates 
+    	HCurveTool from IntCurveSurface (
+	    HCurve from Adaptor3d);
+
+    class HInter instantiates 
+        Inter from IntCurveSurface (
+            HCurve        from Adaptor3d,
+            TheHCurveTool from IntCurveSurface,
+            HSurface      from Adaptor3d,
+            HSurfaceTool  from Adaptor3d);
+
+end IntCurveSurface;

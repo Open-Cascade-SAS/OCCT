@@ -1,0 +1,27 @@
+-- File:        Date.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDate from RWStepBasic
+
+	---Purpose : Read & Write Module for Date
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Date from StepBasic
+
+is
+
+	Create returns RWDate;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Date from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : Date from StepBasic);
+
+end RWDate;

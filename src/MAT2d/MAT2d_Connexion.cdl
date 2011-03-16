@@ -1,0 +1,132 @@
+-- File:	MAT2d_Connexion.cdl
+-- Created:	Thu Oct  7 15:40:54 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Connexion from MAT2d 
+     
+inherits  
+
+    TShared from MMgt
+    
+	---Purpose: A Connexion links two lines of items  in a set
+	--          of  lines. It s contains two  points and their paramatric
+	--          definitions on the lines.
+	--          The items can be points or curves.
+
+uses
+    Pnt2d from gp 
+
+is
+
+    Create returns mutable Connexion from MAT2d;
+    
+    Create(LineA        : Integer;
+	   LineB        : Integer;
+           ItemA        : Integer;
+           ItemB        : Integer;
+           Distance     : Real;
+           ParameterOnA : Real;
+           ParameterOnB : Real;
+           PointA       : Pnt2d from gp;
+           PointB       : Pnt2d from gp)
+    returns mutable Connexion from MAT2d;	    	   
+
+    IndexFirstLine(me) returns Integer
+    	---Purpose:  Returns the Index on the first line.
+    is static;
+    
+    IndexSecondLine(me) returns Integer
+    	---Purpose:  Returns the Index on the Second line.
+    is static;
+    
+    IndexItemOnFirst(me) returns Integer
+    	---Purpose: Returns the Index of the item on the first line.
+    is static;
+    
+    IndexItemOnSecond(me) returns Integer
+    	---Purpose: Returns the Index of the item on the second line.
+    is static;
+    
+    ParameterOnFirst(me) returns Real
+    	---Purpose: Returns the parameter of the point on the firstline.
+    is static;
+    
+    ParameterOnSecond(me) returns Real
+    	---Purpose: Returns the parameter of the point on the secondline.
+    is static;
+    
+    PointOnFirst(me) returns Pnt2d from gp
+    	---Purpose: Returns the point on the firstline.
+    is static;
+    
+    PointOnSecond(me) returns Pnt2d from gp
+        ---Purpose: Returns the point on the secondline.
+    is static;
+
+    Distance (me) returns Real
+	---Purpose: Returns the distance between the two points.    
+    is static;
+    
+    IndexFirstLine(me : mutable ; anIndex : Integer)
+    is static;
+    
+    IndexSecondLine(me : mutable ; anIndex : Integer)
+    is static;
+    
+    IndexItemOnFirst(me : mutable ; anIndex : Integer)
+    is static;
+    
+    IndexItemOnSecond(me : mutable ; anIndex : Integer)
+    is static;
+    
+    ParameterOnFirst(me : mutable ; aParameter : Real)
+    is static;
+    
+    ParameterOnSecond(me : mutable ; aParameter : Real)
+    is static;
+    
+    PointOnFirst(me : mutable ; aPoint : Pnt2d from gp)
+    is static;
+    
+    PointOnSecond(me : mutable ; aPoint : Pnt2d from gp)
+    is static;
+
+    Distance (me : mutable ; aDistance : Real)
+    is static;
+
+    Reverse(me)
+       ---Purpose: Returns the reverse connexion of <me>.
+       --          the firstpoint  is the secondpoint.
+       --          the secondpoint is the firstpoint.
+    returns mutable Connexion from MAT2d
+    is static;
+    
+    IsAfter(me ; aConnexion : Connexion from MAT2d ; aSense : Real)
+       ---Purpose: Returns <True> if my firstPoint is on the same line
+       --          than the firstpoint of <aConnexion> and my firstpoint
+       --          is after the firstpoint of <aConnexion> on the line.  
+       --          <aSense> = 1 if <aConnexion> is on the Left of its
+       --          firstline, else <aSense> = -1.
+    returns Boolean from Standard
+    is static;
+    
+    Dump (me; Deep : Integer = 0; Offset : Integer = 0)
+	---Purpose: Print <me>.
+    is static;
+			    
+fields
+
+    lineA        : Integer;
+    lineB        : Integer;
+    itemA        : Integer;
+    itemB        : Integer;
+    distance     : Real;
+    parameterOnA : Real;
+    parameterOnB : Real;
+    pointA       : Pnt2d from gp;
+    pointB       : Pnt2d from gp;
+    
+end Connexion;

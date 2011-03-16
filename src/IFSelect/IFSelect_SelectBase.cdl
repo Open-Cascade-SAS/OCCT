@@ -1,0 +1,21 @@
+-- File:	SelectBase.cdl
+-- Created:	Tue Nov 17 18:47:13 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectBase  from IFSelect  inherits Selection
+
+    ---Purpose : SelectBase works directly from an InterfaceModel : it is the
+    --           first base for other Selections.
+
+uses SelectionIterator
+
+is
+
+    FillIterator (me; iter : in out SelectionIterator);
+    ---Purpose : Puts in an Iterator the Selections from which "me" depends
+    --           This list is empty for all SelectBase type Selections
+
+end SelectBase;

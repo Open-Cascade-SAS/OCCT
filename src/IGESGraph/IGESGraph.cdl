@@ -1,0 +1,157 @@
+--
+-- File      : IGESGraph.cdl
+-- Created   : Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (TCD)
+--
+---Copyright:
+--
+
+package IGESGraph
+
+        ---Purpose : This package contains the group of classes necessary
+        --           to define Graphic data among Structure Entities.
+        --           (e.g., Fonts, Colors, Screen management ...)
+
+uses
+
+        Standard,
+        TCollection,
+        gp,
+	TColgp,
+	TColStd,
+	Message,
+        Interface,
+        IGESData,
+        IGESBasic
+
+is
+
+        class LineFontDefTemplate;
+        -- type <304> form <1>
+        ---Purpose : Line Font Def can be defined as a repetition of Template
+        --           figure that is displayed at regularly spaced locations
+        --           along a planar anchoring curve. The anchoring curve
+        --           itself has no visual purpose.
+
+        class LineFontDefPattern;
+        -- type <304> form <2>
+        ---Purpose : Line Font Def may be defined by repetition of a basic
+        --           pattern of visible-blank(or, on-off) segments
+        --           superimposed on a line or a curve. The line or curve
+        --           is then displayed according to the basic pattern.
+
+        class TextFontDef;
+        -- type <310>
+        ---Purpose : Used to define the appearance of characters in a text
+        --           font. It may be used to describe a complete font or a
+        --           modification to a subset of characters in another font.
+
+        class TextDisplayTemplate;
+        -- type <312> form <0, 1>
+        ---Purpose : Used to set parameters for display of information
+        --           which has been logically included in another entity
+        --           as a parameter value.
+
+        class Color;
+        -- type <314>
+        ---Purpose : The Color Definition Entity is used to communicate the
+        --           relationship of primary colors to the intensity level of
+        --           the respective graphics devices as a percent of full
+        --           intensity range.
+
+        class DefinitionLevel;
+        -- type <406> form <1>
+        ---Purpose : Indicates the no. of levels on which an entity is
+        --           defined.
+
+        class NominalSize;
+        -- type <406> form <13>
+        ---Purpose : Specifies a value, a name, and optionally a
+        --           reference to an engineering standard.
+
+        class DrawingSize;
+        -- type <406> form <16>
+        ---Purpose : Specifies the drawing size in drawing units. The
+        --           origin of the drawing is defined to be (0,0) in
+        --           drawing space.
+
+        class DrawingUnits;
+        -- type <406> form <17>
+        ---Purpose : Specifies the drawing space units as outlined
+        --           in the Drawing entity.
+
+        class IntercharacterSpacing;
+        -- type <406> form <18>
+        ---Purpose : Specifies the gap between letters when fixed-pitch
+        --           spacing is used.
+
+        class LineFontPredefined;
+        -- type <406> form <19>
+        ---Purpose : Provides the ability to specify a line font pattern
+        --           from a predefined list rather than from
+        --           Directory Entry Field 4.
+
+        class HighLight;
+        -- type <406> form <20>
+        ---Purpose : Attaches information that an entity is to be
+        --           displayed in some system dependent manner.
+
+        class Pick;
+        -- type <406> form <21>
+        ---Purpose : Attaches information that an entity may be picked
+        --           by whatever pick device is used in the receiving
+        --           system.
+
+        class UniformRectGrid;
+        -- type <406> form <22>
+        ---Purpose : Stores sufficient information for the creation of
+        --           a uniform rectangular grid within a drawing.
+
+    	--    Tools for Entities    --
+
+        class ToolLineFontDefTemplate;
+        class ToolLineFontDefPattern;
+        class ToolTextFontDef;
+        class ToolTextDisplayTemplate;
+        class ToolColor;
+        class ToolDefinitionLevel;
+        class ToolNominalSize;
+        class ToolDrawingSize;
+        class ToolDrawingUnits;
+        class ToolIntercharacterSpacing;
+        class ToolLineFontPredefined;
+        class ToolHighLight;
+        class ToolPick;
+        class ToolUniformRectGrid;
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    -- The class instantiations :
+
+    class  Array1OfColor  instantiates   Array1 from TCollection (Color);
+    class  Array1OfTextDisplayTemplate instantiates
+    	  Array1 from TCollection (TextDisplayTemplate);
+    class  Array1OfTextFontDef         instantiates
+    	  Array1 from TCollection (TextFontDef);
+
+    class HArray1OfColor  instantiates  HArray1 from TCollection
+    	     (Color,Array1OfColor);
+    class HArray1OfTextDisplayTemplate instantiates HArray1 from TCollection
+    	     (TextDisplayTemplate,Array1OfTextDisplayTemplate);
+    class HArray1OfTextFontDef         instantiates HArray1 from TCollection
+    	     (TextFontDef,Array1OfTextFontDef);
+
+    -- Package Methods
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESGraph;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESGraph;

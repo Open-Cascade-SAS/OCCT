@@ -1,0 +1,324 @@
+-- File:	Blend_Function.cdl
+-- Created:	Mon Sep 13 16:54:05 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Function from Blend
+
+inherits AppFunction from Blend
+
+
+
+    ---Purpose: Deferred class for a function used to compute a blending
+    --          surface between two surfaces, using a guide line.
+    --          The vector <X> used in Value, Values and Derivatives methods
+    --          has to be the vector of the parametric coordinates U1,V1,
+    --          U2,V2, of the extremities of a section on the first and
+    --          second surface.
+
+
+uses Vector from math,
+     Matrix from math,
+     Vec    from gp,
+     Vec2d  from gp,
+     Pnt    from gp,
+     Point  from Blend,
+     Array1OfPnt     from TColgp,
+     Array1OfVec     from TColgp,
+     Array1OfPnt2d   from TColgp,
+     Array1OfVec2d   from TColgp,
+     Array1OfReal    from TColStd,
+     Array1OfInteger from TColStd
+
+raises DomainError from Standard
+
+is
+
+    NbVariables(me)
+	---Purpose: Returns 4.
+    	returns Integer from Standard ;
+
+
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+    	returns Integer from Standard
+	is deferred;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard
+	is deferred;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is deferred;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is deferred;
+
+
+    Set(me: in out; Param: Real from Standard)
+    
+	---Purpose: Sets the value of the parameter along the guide line.
+	--          This determines the plane in which the solution has
+	--          to be found.
+
+    	is deferred;
+
+
+    Set(me: in out; First, Last: Real from Standard)
+    
+	---Purpose: Sets the bounds of the parametric interval on 
+	--          the guide line.
+	--          This determines the derivatives in these values if the
+	--          function is not Cn.
+    	is deferred;    
+
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard)
+    
+	---Purpose: Returns in the vector Tolerance the parametric tolerance
+	--          for each of the 4 variables;
+	--          Tol is the tolerance used in 3d space.
+    
+    	is deferred;
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math)
+    
+	---Purpose: Returns in the vector InfBound the lowest values allowed
+	--          for each of the 4 variables.
+	--          Returns in the vector SupBound the greatest values allowed
+	--          for each of the 4 variables.
+    
+    	is deferred;
+
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    
+	---Purpose: Returns Standard_True if Sol is a zero of the function.
+	--          Tol is the tolerance used in 3d space.
+	--          The computation is made at the current value of
+	--          the parameter on the guide line.
+    
+    	returns Boolean from Standard
+    	is deferred;
+
+
+--- TheFollowing methods are called only when 
+--  IsSolution returns Standard_True.
+
+    Pnt1(me)
+    	---Purpose: Returns the point on the first support.
+	---See Also:  PointOnS1
+	---C++: return const &
+    	returns Pnt from gp 
+    	is redefined static;
+
+    Pnt2(me)
+    	---Purpose: Returns the point on the seconde support.
+    	---See Also:  PointOnS2
+	---C++: return const &
+    	returns Pnt from gp 
+    	is redefined static;
+
+    PointOnS1(me)
+
+	---Purpose: Returns the point on the first surface, at parameter
+	--          Sol(1),Sol(2) (Sol is the vector used in the call of
+	--          IsSolution.
+    
+    	returns Pnt from gp
+	---C++: return const&
+	is deferred;
+
+
+    PointOnS2(me)
+    
+	---Purpose: Returns the point on the second surface, at parameter
+	--          Sol(3),Sol(4) (Sol is the vector used in the call of
+	--          IsSolution.
+    
+    	returns Pnt from gp
+	---C++: return const&
+	is deferred;
+
+
+    IsTangencyPoint(me)
+    
+	---Purpose: Returns True when it is not possible to compute
+	--          the tangent vectors at PointOnS1 and/or PointOnS2.
+    
+    	returns Boolean from Standard
+	is deferred;
+
+
+    TangentOnS1(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS1, in 3d space.
+
+    	returns Vec from gp
+	---C++: return const&
+    	raises DomainError from Standard
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.
+
+	is deferred;
+
+    Tangent2dOnS1(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS1, in the
+	--          parametric space of the first surface.
+
+    	returns Vec2d from gp
+	---C++: return const&
+    	raises DomainError from Standard
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.
+
+	is deferred;
+
+
+    TangentOnS2(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS2, in 3d space.
+
+    	returns Vec from gp
+	---C++: return const&
+    	raises DomainError from Standard
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.
+
+	is deferred;
+
+
+    Tangent2dOnS2(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS2, in the
+	--          parametric space of the second surface.
+
+    	returns Vec2d from gp
+	---C++: return const&
+    	raises DomainError from Standard
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.
+
+	is deferred;
+
+
+    Tangent(me; U1,V1,U2,V2: Real from Standard;
+                TgFirst,TgLast,NormFirst,NormLast: out Vec from gp)
+    
+	---Purpose: Returns the tangent vector at the section,
+	--          at the beginning and the end of the section, and
+	--          returns the normal (of the surfaces) at
+	--          these points.
+
+    	raises DomainError from Standard
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.
+
+	is deferred;
+
+    TwistOnS1(me) 
+    returns Boolean from Standard
+    is virtual;
+
+    TwistOnS2(me) 
+    returns Boolean from Standard
+    is virtual;
+
+-- Methods for the approximation
+-- 
+
+    GetShape(me: in out;
+                 NbPoles   : out Integer from Standard;
+                 NbKnots   : out Integer from Standard;
+                 Degree    : out Integer from Standard;
+                 NbPoles2d : out Integer from Standard)
+    	is deferred;
+		
+
+    GetTolerance(me; 
+    	    	 BoundTol, SurfTol, AngleTol : Real;
+		 Tol3d : out Vector;
+		 Tol1D : out Vector )
+	---Purpose: Returns the tolerance to reach in approximation
+	--          to respecte
+	--          BoundTol error at the Boundary
+	--          AngleTol tangent error at the Boundary
+	--          SurfTol error inside the surface.
+        is deferred;
+
+    Knots(me: in out; TKnots: out Array1OfReal from TColStd)
+
+	is deferred;
+
+
+    Mults(me: in out; TMults: out Array1OfInteger from TColStd)
+
+	is deferred;
+
+
+    Section(me: in out; P: Point from Blend;
+                             Poles    : out Array1OfPnt   from TColgp;
+			     DPoles   : out Array1OfVec   from TColgp;
+    	                     Poles2d  : out Array1OfPnt2d from TColgp;
+			     DPoles2d : out Array1OfVec2d from TColgp;
+			     Weigths  : out Array1OfReal  from TColStd;
+			     DWeigths : out Array1OfReal  from TColStd)
+
+	---Purpose: Used for the first and last section 
+	--          The method returns Standard_True if the derivatives
+	--          are computed, otherwise it returns Standard_False.
+
+    	returns Boolean from Standard
+
+    	is deferred;
+
+
+    Section(me: in out; P: Point from Blend;
+            Poles    : out Array1OfPnt   from TColgp;
+    	    Poles2d  : out Array1OfPnt2d from TColgp;
+	    Weigths  : out Array1OfReal  from TColStd)
+    	is deferred;
+
+
+    Section(me: in out; P: Point from Blend;
+			Poles     : out Array1OfPnt   from TColgp;
+			DPoles    : out Array1OfVec   from TColgp;
+			D2Poles   : out Array1OfVec   from TColgp;
+    	                Poles2d   : out Array1OfPnt2d from TColgp;
+			DPoles2d  : out Array1OfVec2d from TColgp;
+			D2Poles2d : out Array1OfVec2d from TColgp;
+			Weigths   : out Array1OfReal  from TColStd;
+			DWeigths  : out Array1OfReal  from TColStd;
+                        D2Weigths : out Array1OfReal  from TColStd)
+
+	---Purpose: Used for the first and last section 
+	--          The method returns Standard_True if the derivatives
+	--          are computed, otherwise it returns Standard_False
+       
+    	returns Boolean from Standard
+
+    	is redefined; 
+end Function;

@@ -1,0 +1,34 @@
+// File:	BRepFeat_MakeLinearForm.lxx
+// Created:	Tue Apr 15 11:24:18 1997
+// Author:	Olga PILLOT
+//		<opt@langdox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : BRepFeat_MakeLinearForm
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm () {}
+
+
+//=======================================================================
+//function : BRepFeat_MakePrism
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm (const TopoDS_Shape& Sbase,
+							 const TopoDS_Wire& W,
+							 const Handle(Geom_Plane)& P,
+							 const gp_Vec& Direc,
+							 const gp_Vec& Direc1,
+							 const Standard_Integer Fuse,
+							 const Standard_Boolean Modify)
+					       
+{
+  Init(Sbase, W, P, Direc, Direc1, Fuse,Modify);
+}
+
+
+
+

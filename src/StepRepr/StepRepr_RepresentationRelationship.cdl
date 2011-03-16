@@ -1,0 +1,44 @@
+-- File:        RepresentationRelationship.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RepresentationRelationship from StepRepr 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Representation from StepRepr
+is
+
+	Create returns mutable RepresentationRelationship;
+	---Purpose: Returns a RepresentationRelationship
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aRep1 : mutable Representation from StepRepr;
+	      aRep2 : mutable Representation from StepRepr) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+	SetRep1(me : mutable; aRep1 : mutable Representation);
+	Rep1 (me) returns mutable Representation;
+	SetRep2(me : mutable; aRep2 : mutable Representation);
+	Rep2 (me) returns mutable Representation;
+
+fields
+
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	rep1 : Representation from StepRepr;
+	rep2 : Representation from StepRepr;
+
+end RepresentationRelationship;

@@ -1,0 +1,142 @@
+// File:	ShapeAnalysis_FreeBoundData.lxx
+// Created:	Thu Sep 17 18:05:04 1998
+// Author:	data exchange team
+//		<det@nnov.matra-dtv.fr>
+
+#include <TopoDS.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+
+//=======================================================================
+//function : SetFreeBound
+//purpose  : Sets contour
+//=======================================================================
+
+inline void ShapeAnalysis_FreeBoundData::SetFreeBound(const TopoDS_Wire& freebound)
+{
+  myBound = freebound;
+}
+
+//=======================================================================
+//function : SetArea
+//purpose  : Sets area of the contour
+//=======================================================================
+
+inline void ShapeAnalysis_FreeBoundData::SetArea(const Standard_Real area)
+{
+  myArea = area;
+}
+
+//=======================================================================
+//function : SetPerimeter
+//purpose  : Sets perimeter of the contour
+//=======================================================================
+
+inline void ShapeAnalysis_FreeBoundData::SetPerimeter(const Standard_Real perimeter)
+{
+  myPerimeter = perimeter;  
+}
+
+//=======================================================================
+//function : SetRatio
+//purpose  : Sets ratio of average length to average width of the contour
+//=======================================================================
+
+inline void ShapeAnalysis_FreeBoundData::SetRatio(const Standard_Real ratio)
+{
+  myRatio = ratio;
+}
+
+//=======================================================================
+//function : SetWidth
+//purpose  : Sets average width of the contour
+//=======================================================================
+
+inline void ShapeAnalysis_FreeBoundData::SetWidth(const Standard_Real width)
+{
+  myWidth = width;
+}
+
+//=======================================================================
+//function : AddNotch
+//purpose  : Adds notch on free bound with its maximum width
+//=======================================================================
+
+//=======================================================================
+//function : FreeBound
+//purpose  : Returns contour
+//=======================================================================
+
+inline TopoDS_Wire ShapeAnalysis_FreeBoundData::FreeBound() const
+{
+  return myBound;
+}
+
+//=======================================================================
+//function : Area
+//purpose  : Returns area of the contour
+//=======================================================================
+
+inline Standard_Real ShapeAnalysis_FreeBoundData::Area() const
+{
+  return myArea;
+}
+
+//=======================================================================
+//function : Perimeter
+//purpose  : Returns perimeter of the contour
+//=======================================================================
+
+inline Standard_Real ShapeAnalysis_FreeBoundData::Perimeter() const
+{
+  return myPerimeter;
+}
+
+//=======================================================================
+//function : Ratio
+//purpose  : Returns ratio of average length to average width of the contour
+//=======================================================================
+
+inline Standard_Real ShapeAnalysis_FreeBoundData::Ratio() const
+{
+  return myRatio;
+}
+
+//=======================================================================
+//function : Width
+//purpose  : Returns average width of the contour
+//=======================================================================
+
+inline Standard_Real ShapeAnalysis_FreeBoundData::Width() const
+{
+  return myWidth;
+}
+
+//=======================================================================
+//function : NbNotches
+//purpose  : Returns number of notches on the contour
+//=======================================================================
+
+inline Standard_Integer ShapeAnalysis_FreeBoundData::NbNotches() const
+{
+  return myNotches->Length();
+}
+
+//=======================================================================
+//function : Notches
+//purpose  : Returns sequence of notches on the contour
+//=======================================================================
+
+inline Handle_TopTools_HSequenceOfShape ShapeAnalysis_FreeBoundData::Notches() const
+{
+  return myNotches;
+}
+
+//=======================================================================
+//function : Notch
+//purpose  : Returns notch on the contour
+//=======================================================================
+
+inline TopoDS_Wire ShapeAnalysis_FreeBoundData::Notch(const Standard_Integer index) const
+{
+  return TopoDS::Wire(myNotches->Value(index));
+}

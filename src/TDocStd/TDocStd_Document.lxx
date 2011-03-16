@@ -1,0 +1,98 @@
+// File:      TDocStd_Document.lxx
+// Created:   19.11.02 10:19:39
+// Author:    Vladimir ANIKIN
+// Copyright: Open CASCADE 2002
+
+#include <TDF_Data.hxx>
+
+//=======================================================================
+//function : SetNestedTransactionMode
+//purpose  : Sets nested transaction mode if isAllowed == Standard_True
+//=======================================================================
+
+inline void
+  TDocStd_Document::SetNestedTransactionMode (const Standard_Boolean isAllowed)
+{
+  myIsNestedTransactionMode = isAllowed;
+}
+
+//=======================================================================
+//function : SetNestedTransactionMode
+//purpose  : Sets nested transaction mode if isAllowed == Standard_True
+//=======================================================================
+
+inline Standard_Boolean
+  TDocStd_Document::IsNestedTransactionMode () const
+{
+  return myIsNestedTransactionMode;
+}
+
+//=======================================================================
+//function : IsModified
+//purpose  : returns True if document differs from the state of last saving.
+//           this method have to be called only wroking in the transaction mode
+//=======================================================================
+
+inline Standard_Boolean
+  TDocStd_Document::IsChanged () const
+{
+  return myData->Time() != mySaveTime;
+}
+
+//=======================================================================
+//function : SetSaved
+//purpose  : This method have to be called to show document that it has been saved
+//=======================================================================
+
+inline void
+  TDocStd_Document::SetSaved ()
+{
+  mySaveTime = myData->Time();
+}
+
+//=======================================================================
+//function : SetModificationMode
+//purpose  : if theTransactionOnly is True changes is denied outside transactions
+//=======================================================================
+
+inline void TDocStd_Document::SetModificationMode
+  (const Standard_Boolean theTransactionOnly)
+{
+  myOnlyTransactionModification = theTransactionOnly;
+
+  // deny or allow modifications acording to transaction state
+  if(myOnlyTransactionModification) {
+    myData->AllowModification(myUndoTransaction.IsOpen());
+  }
+  else {
+    myData->AllowModification(Standard_True);
+  }
+}
+
+//=======================================================================
+//function : ModificationMode
+//purpose  : returns True if changes allowed only inside transactions
+//=======================================================================
+
+inline Standard_Boolean TDocStd_Document::ModificationMode() const
+{
+  return myOnlyTransactionModification;
+}
+
+//=======================================================================
+//function : SetSavedTime
+//purpose  : Say to document what it is not saved. Use value, returned earlier by GetSavedTime().
+//=======================================================================
+inline void TDocStd_Document::SetSavedTime (const Standard_Integer theTime)
+{
+  mySaveTime = theTime;
+}
+
+//=======================================================================
+//function : GetSavedTime
+//purpose  : Returns value of <mySavedTime> to be used later in SetSavedTime()
+//=======================================================================
+inline Standard_Integer TDocStd_Document::GetSavedTime () const
+{
+  return mySaveTime;
+}

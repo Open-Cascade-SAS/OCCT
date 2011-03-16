@@ -1,0 +1,98 @@
+-- File:	Extrema_FuncExtSS.cdl
+-- Created:	Tue Jan  9 10:08:55 1996
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1996
+
+private class FuncExtSS from Extrema
+
+ inherits FunctionSetWithDerivatives from math
+    ---Purpose: Fonction permettant de rechercher les extrema de la 
+    --          distance entre deux surfaces.
+
+uses    POnSurf           from Extrema,
+	SequenceOfPOnSurf from Extrema,
+	SequenceOfReal    from TColStd,
+	Pnt               from gp,
+	Vector            from math,
+	Matrix            from math,
+	Surface           from Adaptor3d,
+    	SurfacePtr        from Adaptor3d
+
+raises  OutOfRange from Standard
+
+is
+    Create returns FuncExtSS;
+
+    Create (S1, S2: Surface from Adaptor3d) returns FuncExtSS;
+    	---Purpose:
+
+    Initialize(me: in out; S1, S2: Surface from Adaptor3d)
+    	---Purpose: sets the field mysurf of the function.
+    is static;
+    
+    ------------------------------------------------------------
+    -- In all next methods, an exception is raised if the fields 
+    -- were not initialized.
+
+    NbVariables (me) returns Integer;
+
+    NbEquations (me) returns Integer;
+
+    Value (me: in out; UV: Vector; F: out Vector) returns Boolean;
+    	---Purpose: Calcul de Fi(U,V).
+
+    Derivatives (me: in out; UV: Vector; DF: out Matrix)
+    	returns Boolean;
+    	---Purpose: Calcul de Fi'(U,V).
+
+    Values (me: in out; UV: Vector; F: out Vector; DF: out Matrix)
+    	returns Boolean;
+    	---Purpose: Calcul de Fi(U,V) et Fi'(U,V).
+
+    GetStateNumber (me: in out) returns Integer
+    	---Purpose: Memorise l'extremum trouve.
+    	is redefined;
+
+    NbExt (me) returns Integer;
+    	---Purpose: Renvoie le nombre d'extrema trouves.
+
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Renvoie la valeur de la Nieme distance.
+    	raises  OutOfRange;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    PointOnS1 (me; N: Integer) returns POnSurf
+    	---Purpose: Renvoie le Nieme extremum sur S1.
+    	raises  OutOfRange;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    PointOnS2 (me; N: Integer) returns POnSurf
+    	---Purpose: Renvoie le Nieme extremum sur S2.
+    	raises  OutOfRange;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    Bidon(me) returns SurfacePtr from Adaptor3d
+    is static private;
+
+
+fields
+    myS1   : SurfacePtr from Adaptor3d;
+    myS2   : SurfacePtr from Adaptor3d;
+    
+    myP1   : Pnt from gp;
+    myP2   : Pnt from gp;
+
+    myU1    : Real;          -- valeur courante de U sur S1
+    myV1    : Real;          -- valeur courante de V sur S1
+    myU2    : Real;          -- valeur courante de U sur S2
+    myV2    : Real;          -- valeur courante de V sur S2
+
+    mySqDist:  SequenceOfReal    from TColStd;
+    myPoint1: SequenceOfPOnSurf from Extrema;
+    myPoint2: SequenceOfPOnSurf from Extrema;
+    
+    myS1init: Boolean;
+    myS2init: Boolean;
+
+end FuncExtSS;

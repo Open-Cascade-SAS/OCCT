@@ -1,0 +1,17 @@
+
+#ifndef DATASTRUCTURE_PXX_INCLUDED
+#define DATASTRUCTURE_PXX_INCLUDED
+
+#define Graphic3d_DataStructure_Move_Code	1
+#define Graphic3d_DataStructure_Draw_Code	2
+
+#define Graphic3d_DataStructure_Color_Code	3
+#define Graphic3d_DataStructure_Type_Code	4
+#define Graphic3d_DataStructure_Width_Code	5
+
+#define MyProjectionFlag	MyCBitFields.bool1
+#define IAmDisplayed		MyCBitFields.bool2
+#define IAmOpened		MyCBitFields.bool3
+#define MyContainsFacet		MyCBitFields.bool4
+
+#endif

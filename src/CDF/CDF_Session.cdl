@@ -1,0 +1,65 @@
+-- File:	CDF_Session.cdl
+-- Created:	Thu Aug  7 17:28:05 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Session from CDF inherits Transient from Standard
+
+
+uses
+    Directory from CDF,
+    ExtendedString from TCollection,
+    Application from CDF, 
+    MetaDataDriver from CDF, 
+    Writer from PCDM
+raises
+
+    NoSuchObject from Standard,MultiplyDefined from Standard
+
+is
+    Create  returns mutable Session from CDF
+    raises MultiplyDefined from Standard;
+
+    Exists(myclass)
+--- Purpose: returns true if a session has been created.
+    returns Boolean from Standard;
+    
+    CurrentSession(myclass) returns mutable Session from CDF;
+    ---Purpose: returns the only one instance of Session 
+    --          that has been created.
+
+    
+    Directory(me) returns mutable Directory from CDF;
+    ---Purpose: returns the directory of the session;
+    ---Level: Public 
+
+    
+---Category: current application management
+    HasCurrentApplication(me) returns Boolean from Standard;
+    
+    CurrentApplication(me) returns mutable Application from CDF
+    raises NoSuchObject from Standard;
+    
+    SetCurrentApplication(me: mutable; anApplication: Application from CDF);
+    
+    UnsetCurrentApplication(me: mutable);
+
+
+---Category: database related methods
+
+    MetaDataDriver(me) returns MetaDataDriver from CDF
+    raises NoSuchObject from Standard;
+    
+    
+    LoadDriver(me: mutable);
+
+fields
+
+    myDirectory            : Directory from CDF;
+    myCurrentApplication   : Application from CDF;
+    myHasCurrentApplication: Boolean from Standard;
+    myMetaDataDriver       : MetaDataDriver from CDF;
+friends
+    class Application from CDF
+end Session from CDF;

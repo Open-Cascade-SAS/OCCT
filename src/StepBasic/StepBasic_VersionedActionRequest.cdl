@@ -1,0 +1,55 @@
+-- File:	StepBasic_VersionedActionRequest.cdl
+-- Created:	Fri Nov 26 16:26:40 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class VersionedActionRequest from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity VersionedActionRequest
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns VersionedActionRequest from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aId: HAsciiString from TCollection;
+                       aVersion: HAsciiString from TCollection;
+                       aPurpose: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Id (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Id
+    SetId (me: mutable; Id: HAsciiString from TCollection);
+	---Purpose: Set field Id
+
+    Version (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Version
+    SetVersion (me: mutable; Version: HAsciiString from TCollection);
+	---Purpose: Set field Version
+
+    Purpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Purpose
+    SetPurpose (me: mutable; Purpose: HAsciiString from TCollection);
+	---Purpose: Set field Purpose
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+fields
+    theId: HAsciiString from TCollection;
+    theVersion: HAsciiString from TCollection;
+    thePurpose: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    defDescription: Boolean; -- flag "is Description defined"
+
+end VersionedActionRequest;

@@ -1,0 +1,24 @@
+-- File:	StepToGeom_MakeBoundedCurve.cdl
+-- Created:	Mon Jun 21 11:31:39 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeBoundedCurve from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          BoundedCurve from  
+    --          StepGeom which describes a BoundedCurve from 
+    --          prostep and BoundedCurve from  Geom.
+    --          As BoundedCurve is an abstract BoundedCurve this class 
+    --          is an access to the sub-class required.
+  
+uses BoundedCurve from Geom,
+     BoundedCurve from StepGeom
+     
+is 
+
+    Convert ( myclass; SC : BoundedCurve from StepGeom;
+                       CC : out BoundedCurve from Geom )
+    returns Boolean from Standard;
+
+end MakeBoundedCurve;

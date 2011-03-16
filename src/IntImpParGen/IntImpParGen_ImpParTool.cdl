@@ -1,0 +1,66 @@
+-- File:	ImpParTool.cdl
+-- Created:	Mon Mar 30 18:19:14 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class ImpParTool from IntImpParGen (
+        ImpTool      as any; -- as ImpTool from IntImpParGen
+	ParCurve     as any;
+	ParTool      as any) -- as ParTool from IntImpParGen(ParCurve) 
+
+inherits FunctionWithDerivative from math
+
+        ---Purpose: Implements the function  used by FunctionAllRoots
+        --          to find  the areas where  the distance between the
+        --          implicit and the parametric curves  is less than a
+        --          tolerance.
+
+
+uses	Pnt2d           from gp,
+	Vec2d           from gp
+     	
+is
+
+    Create(IT: ImpTool; PC: ParCurve)
+
+	---Purpose: Constructor of the class.
+    
+    	returns ImpParTool from IntImpParGen;
+	
+	
+    Value(me: in out; Param: Real from Standard; F: out Real from Standard)
+    
+	---Purpose: Computes the value of the signed distance between
+	--          the implicit curve and the point at parameter Param
+	--          on the parametrised curve.
+
+    	returns Boolean from Standard
+    	is redefined static;
+	
+	
+    Derivative(me: in out; Param: Real from Standard; 
+               D: out Real from Standard)
+	       
+    	---Purpose: Computes the derivative of the previous function at
+    	--          parameter Param.
+
+    	returns Boolean from Standard
+	is redefined static;
+	
+	
+    Values(me: in out; Param: Real from Standard; F,D: out Real from Standard)
+    
+    	---Purpose: Computes the value and the derivative of the function.
+
+    	returns Boolean from Standard
+    	is redefined static;
+
+fields 
+
+    TheParCurve     : Address from Standard;
+    TheImpTool      : ImpTool;
+		  
+end ImpParTool;
+ 

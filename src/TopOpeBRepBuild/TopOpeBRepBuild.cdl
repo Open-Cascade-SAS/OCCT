@@ -1,0 +1,108 @@
+-- File:	TopOpeBRepBuild.cdl
+-- Created:	Thu Jun 17 09:59:51 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+package TopOpeBRepBuild 
+
+---Purpose: 
+--  This package describes algorithms and dedicated tools
+--  involved in topological operation on BRep shapes.
+--  These "builders" works on a data structure that must have been
+--  previously filled (by a "filler") according to the
+--  topological operation rules defined in class DataStructure
+--  from TopOpeBRepDS.
+--  The DSFiller must be considered as a "linking" tool
+--  dealing with geometric data as an input and a DS as an
+--  output.
+--  These geometric data may be seen as the result of 3D 
+--  intersection between BRep shapes.
+
+uses
+
+    Standard, MMgt, TCollection, TColStd, 
+    gp, Geom, Geom2d, Geom2dInt,
+    TopAbs, TopoDS, TopTools, TopExp,
+    BRepClass, BRep,
+    TopOpeBRepDS, TopOpeBRepTool,  
+    --modified by NIZNHY-PKV Thu Feb 10 11:51:54 2000  f
+    Bnd 
+    --modified by NIZNHY-PKV Thu Feb 10 11:51:57 2000  t
+    
+is
+    
+    class Loop;
+    class ListOfLoop instantiates List from TCollection(Loop);
+    class LoopSet;
+    deferred class LoopClassifier;
+    enumeration LoopEnum is ANYLOOP,BOUNDARY,BLOCK end LoopEnum;
+    class ListOfListOfLoop instantiates List from TCollection(ListOfLoop);
+    class AreaBuilder;
+
+    class Pave;
+    class ListOfPave instantiates List from TCollection(Pave);
+    class PaveSet;
+    class PaveClassifier;
+    class Area1dBuilder;
+    class EdgeBuilder;
+
+    --modified by NIZHNY-MZV  Mon Sep 20 15:43:24 1999 
+    class  Tools;
+--    class  LoopTreeNode; 
+--    class  ListOfLoopTreeNode  instantiates  List  from  TCollection  (LoopTreeNode); 
+--    class  IndexedDataMapOfLoopListOfLoop  instantiates  IndexedDataMap  from  TCollection 
+--    (Transient  from  Standard,  ListOfLoop  from  TopOpeBRepBuild,  MapTransientHasher  from  TColStd);
+
+
+    class ShapeSet;
+    class WireEdgeSet;pointer PWireEdgeSet to WireEdgeSet from TopOpeBRepBuild;
+    class ShellFaceSet;
+
+    class BlockIterator;
+    class BlockBuilder;
+
+    deferred class CompositeClassifier;
+    class WireEdgeClassifier;
+    class ShellFaceClassifier;
+
+    class Area2dBuilder;
+    class FaceAreaBuilder;
+    class FaceBuilder;
+
+    class Area3dBuilder;
+    class SolidAreaBuilder;
+    class SolidBuilder;
+    
+    class ShapeListOfShape;
+    class ListOfShapeListOfShape instantiates List from TCollection(ShapeListOfShape);
+    class DataMapOfShapeListOfShapeListOfShape
+    instantiates DataMap from TCollection
+    (Shape from TopoDS,ListOfShapeListOfShape,ShapeMapHasher from TopTools);
+
+    class GTopo; pointer PGTopo to GTopo from TopOpeBRepBuild;
+    class GIter;
+    class GTool;
+    
+    class Builder; pointer PBuilder to Builder from TopOpeBRepBuild;  
+    --modified by NIZHNY-MZV  Wed Sep 29 09:33:20 1999
+    class Builder1;
+    class BuilderON;
+    
+    class HBuilder;
+    class WireToFace;
+    class ShellToSolid;
+    class FuseFace;
+
+--modified by NIZNHY-PKV Thu Feb 10 11:25:15 2000  from 
+    class  CorrectFace2d; 
+    class  VertexInfo; 
+    class  Tools2d;	     
+    class  IndexedDataMapOfShapeVertexInfo instantiates 
+    	      IndexedDataMap from TCollection (Shape          from TopoDS,
+	                                       VertexInfo     from TopOpeBRepBuild,
+	                                       ShapeMapHasher from TopTools);  
+   		 
+--modified by NIZNHY-PKV Thu Feb 10 11:25:19 2000  to
+
+end TopOpeBRepBuild;

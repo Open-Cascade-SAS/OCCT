@@ -1,0 +1,36 @@
+-- File:	PGeom_SurfaceOfLinearExtrusion.cdl
+-- Created:	Tue Mar  2 11:20:29 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class SurfaceOfLinearExtrusion from PGeom inherits SweptSurface from PGeom
+
+        ---Purpose : Generalised cylinder. This surface is obtained by
+        --         sweeping a curve in a given direction.
+        --         
+	---See Also : SurfaceOfLinearExtrusion from Geom.
+
+uses Dir         from gp,
+     Curve       from PGeom,
+     SurfaceForm from GeomAbs,
+     Shape       from GeomAbs
+
+is
+
+
+  Create returns mutable SurfaceOfLinearExtrusion from PGeom;
+	---Purpose: Creates a SurfaceOfLinearExtrusion with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	    aBasisCurve : Curve from PGeom;
+    	    aDirection  : Dir from gp)
+     returns mutable SurfaceOfLinearExtrusion from PGeom;
+	---Purpose: Creates a SurfaceOfLinearExtrusion with these values.
+    	---Level: Internal 
+
+
+end;  

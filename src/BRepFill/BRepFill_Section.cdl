@@ -1,0 +1,57 @@
+-- File:	BRepFill_Section.cdl
+-- Created:	Wed Jul 22 10:18:13 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class Section from BRepFill 
+
+	---Purpose: To store section definition
+uses 
+    Shape  from TopoDS, 
+    Wire   from TopoDS,
+    Vertex from TopoDS  
+
+is 
+  Create returns Section from BRepFill;  
+   
+  Create (Profile : Shape  from TopoDS;   
+          V       : Vertex from TopoDS; 
+    	  WithContact    :  Boolean ; 
+          WithCorrection :  Boolean) 
+  returns Section from BRepFill;  
+   
+  Set(me  :  in  out;  IsLaw  :  Boolean); 
+   
+  Wire(me)   
+  ---C++: return const & 
+  ---C++: inline    
+  returns  Wire  from  TopoDS; 
+   
+  Vertex(me)   
+  ---C++: return const & 
+  ---C++: inline    
+  returns  Vertex  from  TopoDS;   
+
+  IsLaw(me)   
+   ---C++: inline
+  returns  Boolean; 
+   
+  WithContact(me)  
+   ---C++: inline
+  returns  Boolean; 
+   
+  WithCorrection(me)  
+   ---C++: inline
+  returns  Boolean;  
+   
+     
+
+fields
+    wire    :  Wire  from  TopoDS; 
+    vertex  :  Vertex from TopoDS;       
+    islaw   :  Boolean;
+    contact :  Boolean; 
+    correction:Boolean; 
+end Section;

@@ -1,0 +1,3 @@
+@if ( ( %Station == "ao1" ) && ( %DBMS == "OBJS" ) ) then
+  @string %LDSHR_DBMSOpt += " -taso ";
+@endif;

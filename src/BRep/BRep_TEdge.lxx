@@ -1,0 +1,62 @@
+// File:	BRep_TEdge.lxx
+// Created:	Tue Aug 25 15:44:14 1992
+// Author:	Modelistation
+//		<model@phylox>
+
+
+//=======================================================================
+//function : Tolerance
+//purpose  : 
+//=======================================================================
+
+ inline Standard_Real  BRep_TEdge::Tolerance()const 
+{
+  return myTolerance;
+}
+
+
+//=======================================================================
+//function : Tolerance
+//purpose  : 
+//=======================================================================
+
+ inline void  BRep_TEdge::Tolerance(const Standard_Real T)
+{
+  myTolerance = T;
+}
+
+
+//=======================================================================
+//function : UpdateTolerance
+//purpose  : 
+//=======================================================================
+
+ inline void  BRep_TEdge::UpdateTolerance(const Standard_Real T)
+{
+  if (T > myTolerance) myTolerance = T;
+}
+
+
+
+//=======================================================================
+//function : Curves
+//purpose  : 
+//=======================================================================
+
+ inline const BRep_ListOfCurveRepresentation&  BRep_TEdge::Curves()const 
+{
+  return myCurves;
+}
+
+
+//=======================================================================
+//function : ChangeCurves
+//purpose  : 
+//=======================================================================
+
+ inline BRep_ListOfCurveRepresentation&  BRep_TEdge::ChangeCurves()
+{
+  return myCurves;
+}
+
+

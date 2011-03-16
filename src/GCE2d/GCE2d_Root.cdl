@@ -1,0 +1,37 @@
+-- File:	Root.cdl
+-- Created:	Tue Sep 29 12:29:04 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+private deferred class Root from GCE2d
+
+    ---Purpose : This class implements the common services for
+    --           all classes of gce which report error.
+
+uses 
+
+ErrorType from gce
+
+is
+
+    IsDone(me) returns Boolean
+    	is static;
+    ---C++: inline
+    ---Purpose: Returns true if the construction is successful.
+    
+    Status(me) returns ErrorType from gce
+    	is static;
+    ---C++: inline
+    ---Purpose: Returns the status of the construction
+    -- -   gce_Done, if the construction is successful, or
+    -- -   another value of the gce_ErrorType enumeration
+    --   indicating why the construction failed.
+
+fields
+
+    TheError     : ErrorType from gce is protected;
+    ---Purpose: Enumeration to know why the algorithm didn t succeed.
+
+end Root;
+

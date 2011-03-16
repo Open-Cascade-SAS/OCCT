@@ -1,0 +1,50 @@
+-- File:	StepToTopoDS_TranslateVertexLoop.cdl
+-- Created:	Fri Dec 16 14:48:54 1994
+-- Author:	Frederic MAUPAS
+--		<fma@stylox>
+---Copyright:	 Matra Datavision 1994
+
+class TranslateVertexLoop from StepToTopoDS
+    inherits Root from StepToTopoDS
+    
+    ---Purpose:
+    --         
+
+uses
+
+    VertexLoop               from StepShape,
+    TranslateVertexLoopError from StepToTopoDS,
+    Tool                     from StepToTopoDS,
+    Shape                    from TopoDS,
+    NMTool                   from StepToTopoDS
+
+raises NotDone from StdFail
+
+is
+
+    Create returns TranslateVertexLoop;
+    
+    Create (VL     : VertexLoop    from StepShape;
+            T      : in out Tool   from StepToTopoDS;
+            NMTool : in out NMTool from StepToTopoDS)
+    	returns TranslateVertexLoop;
+	    
+    Init (me     : in out;
+          VL     : VertexLoop    from StepShape;
+          T      : in out Tool   from StepToTopoDS;
+          NMTool : in out NMTool from StepToTopoDS);
+
+    Value (me) returns Shape from TopoDS
+    	raises NotDone
+	is static;
+	---C++: return const &
+
+    Error (me) returns TranslateVertexLoopError from StepToTopoDS;
+    
+fields
+
+    myError  : TranslateVertexLoopError from StepToTopoDS;
+    
+    myResult : Shape                    from TopoDS;
+    
+end TranslateVertexLoop;

@@ -1,0 +1,69 @@
+-- File:	TopOpeBRepTool_ShapeExplorer.cdl
+-- Created:	Thu Jul 13 17:17:04 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ShapeExplorer from TopOpeBRepTool
+
+uses
+
+    Explorer  from TopExp,
+    ShapeEnum from TopAbs,
+    Shape     from TopoDS
+
+is
+
+    Create returns ShapeExplorer from TopOpeBRepTool;
+	---Purpose: Creates an empty explorer, becomes usefull after Init.
+    
+    Create(S       : Shape     from TopoDS;
+    	   ToFind  : ShapeEnum from TopAbs;
+	   ToAvoid : ShapeEnum from TopAbs = TopAbs_SHAPE)
+    returns ShapeExplorer from TopOpeBRepTool;
+	---Purpose: Creates an Explorer on the Shape <S>. 
+	--          
+	--          <ToFind> is the type of shapes to search. 
+	--              TopAbs_VERTEX, TopAbs_EDGE, ...
+	--           
+	--          <ToAvoid>   is the type   of shape to  skip in the
+	--          exploration.   If   <ToAvoid>  is  equal  or  less
+	--          complex than <ToFind> or if  <ToAVoid> is SHAPE it
+	--          has no effect on the exploration.
+	--          
+
+    Init(me : in out; S       : Shape       from TopoDS;
+    	              ToFind  : ShapeEnum from TopAbs;
+	              ToAvoid : ShapeEnum from TopAbs = TopAbs_SHAPE)
+    is static;
+
+    More(me) returns Boolean
+	---Purpose: Returns  True if  there are   more  shapes in  the
+	--          exploration. 
+    is static;
+	
+    Next(me : in out)
+	---Purpose: Moves to the next Shape in the exploration.
+    is static;
+
+    Current(me) returns Shape from TopoDS
+	---Purpose: Returns the current shape in the exploration.
+	---C++: return const &
+    is static;
+
+    -- debug
+    NbShapes(me) returns Integer from Standard is static;
+    Index(me) returns Integer from Standard is static;
+    DumpCurrent(me; OS : in out OStream) returns OStream 
+	---C++: return &
+    is static;
+
+fields
+
+    myExplorer : Explorer from TopExp;
+    myIndex    : Integer from Standard;
+    myNbShapes : Integer from Standard;
+
+end ShapeExplorer from TopOpeBRepTool;
+

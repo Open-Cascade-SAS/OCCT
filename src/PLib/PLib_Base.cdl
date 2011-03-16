@@ -1,0 +1,71 @@
+-- File:	PLib_Base.cdl
+-- Created:	Wed Oct 22 10:33:35 1997
+-- Author:	Philippe MANGIN / Sergey SOKOLOV
+--		<ssv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class Base from PLib inherits TShared from MMgt 
+
+---Purpose: To work with different polynomial's Bases 
+
+uses 
+    Array1OfReal from TColStd
+  
+is  
+    ToCoefficients (me ; Dimension, Degree : Integer;
+                    CoeffinBase  : Array1OfReal from TColStd ;
+                    Coefficients : out Array1OfReal from TColStd) 
+---Purpose:
+--   Convert the polynomial P(t) in the canonical base.
+    is deferred;
+
+    D0 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd) 
+---Purpose: Compute the values of the basis functions in u
+--     
+    is deferred;
+ 
+    D1 (me : mutable; U : Real;  
+      	BasisValue : out Array1OfReal from TColStd; 
+     	BasisD1    : out Array1OfReal from TColStd)
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+    is deferred;
+  
+    D2 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd) 
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+    is deferred;
+
+    D3 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd; 
+        BasisD3    : out Array1OfReal from TColStd)
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+    is deferred; 
+
+    WorkDegree (me)  returns Integer    
+    --- Purpose: returns WorkDegree   
+    is  deferred; 
+
+    ReduceDegree ( me ; Dimension ,  MaxDegree  : Integer ;  Tol : Real ; 
+                   BaseCoeff :  in  out  Real;
+                   NewDegree : out Integer ;
+                   MaxError  : out Real)
+                            
+---Purpose:
+--   Compute NewDegree <= MaxDegree so that MaxError is lower
+--   than Tol. 
+--   MaxError can be greater than Tol if it is not possible
+--   to find a NewDegree <= MaxDegree.
+--   In this case NewDegree = MaxDegree
+-- 
+
+    is  deferred;
+
+end Base;

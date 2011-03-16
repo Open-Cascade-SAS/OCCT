@@ -1,0 +1,71 @@
+-- File:	STEPConstruct_Assembly.cdl
+-- Created:	Tue Jul  7 09:13:40 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Assembly  from STEPConstruct
+
+    ---Purpose : This operator creates an item of an assembly, from its
+    --           basic data : a ShapeRepresentation, a Location ...
+    --           
+    --           Three ways of coding such item from a ShapeRepresentation :
+    --           - do nothing : i.e. informations for assembly are ignored
+    --           - create a MappedItem
+    --           - create a RepresentationRelationship (WithTransformation)
+
+uses
+    Trsf from gp,
+    InterfaceModel from Interface, 
+    Axis2Placement3d from StepGeom,
+    ShapeRepresentation from StepShape,
+    ShapeDefinitionRepresentation from StepShape,
+    NextAssemblyUsageOccurrence from StepRepr,
+    ContextDependentShapeRepresentation from StepShape
+is
+
+    Create returns Assembly from STEPConstruct;
+
+    Init (me: in out; aSR, SDR0: ShapeDefinitionRepresentation from StepShape;
+    	              Ax0, Loc : Axis2Placement3d from StepGeom);
+    ---Purpose : Initialises with starting values
+    --           Ax0 : origin axis (typically, standard XYZ)
+    --           Loc : location to which place the item
+
+--    MakeMappedItem (me: in out);
+    ---Purpose : Makes a MappedItem
+    --           Resulting Value is returned by ItemValue
+
+    MakeRelationship (me: in out);
+    ---Purpose : Make a (ShapeRepresentationRelationship,...WithTransformation)
+    --           Resulting Value is returned by ItemValue
+
+    ItemValue (me) returns Transient;
+    ---Purpose : Returns the Value
+    --           If no Make... has been called, returns the starting SR
+
+    ItemLocation (me) returns Axis2Placement3d from StepGeom;
+    ---Purpose : Returns the location of the item, computed from starting aLoc
+
+    GetNAUO (me) returns NextAssemblyUsageOccurrence from StepRepr;
+    	---Purpose: Returns NAUO object describing the assembly link
+
+    CheckSRRReversesNAUO (myclass; Model: InterfaceModel from Interface; 
+    	    	    	           CDSR : ContextDependentShapeRepresentation from StepShape)
+    returns Boolean;
+    	---Purpose: Checks whether SRR's definition of assembly and component contradicts
+        --          with NAUO definition or not, according to model schema (AP214 or AP203)
+	--          
+	
+fields
+
+    thesdr : ShapeDefinitionRepresentation from StepShape;
+    thesdr0: ShapeDefinitionRepresentation from StepShape;
+    thesr  : ShapeRepresentation from StepShape;
+    thesr0 : ShapeRepresentation from StepShape;
+    theval : Transient;
+    theloc : Axis2Placement3d from StepGeom;
+    theax0 : Axis2Placement3d from StepGeom;
+
+end Assembly;

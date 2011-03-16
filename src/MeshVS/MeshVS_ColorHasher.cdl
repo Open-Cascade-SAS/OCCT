@@ -1,0 +1,19 @@
+-- File     : MeshVS_ColorHasher.cdl
+-- Created  : 5 December 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+
+class ColorHasher from MeshVS inherits MapIntegerHasher from TColStd
+
+	---Purpose: Hasher for using in ColorToIdsMap from MeshVS
+
+uses
+  Color from Quantity
+
+is
+    HashCode ( myclass; K : Color from Quantity; Upper : Integer ) returns Integer;
+
+    IsEqual  ( myclass; K1, K2 : Color from Quantity ) returns Boolean;
+
+end ColorHasher;

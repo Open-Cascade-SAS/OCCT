@@ -1,0 +1,51 @@
+-- File:	BRep_PolygonOnClosedSurface.cdl
+-- Created:	Wed Mar 15 15:09:44 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class PolygonOnClosedSurface from BRep
+
+    inherits PolygonOnSurface from BRep
+    
+    	---Purpose: Representation by two 2d polygons in the parametric
+	--          space of a surface.
+
+uses Polygon2D           from Poly,
+     Surface             from Geom,
+     CurveRepresentation from BRep,
+     Location            from TopLoc
+
+
+
+is
+    Create(P1: Polygon2D from Poly;
+    	   P2: Polygon2D from Poly;
+    	   S:  Surface   from Geom;
+	   L:  Location  from TopLoc)
+    returns mutable PolygonOnClosedSurface from BRep;
+    
+    
+    IsPolygonOnClosedSurface(me) returns Boolean
+    	---Purpose: returns True.
+    is redefined;
+
+    Polygon2(me) returns any Polygon2D from Poly
+    	---C++: return const&
+    is redefined;
+
+    Polygon2(me: mutable; P: Polygon2D from Poly)
+    is redefined;
+    
+    
+    Copy(me) returns mutable CurveRepresentation from BRep
+	---Purpose: Return a copy of this representation.
+    is redefined;
+    
+fields
+
+myPolygon2: Polygon2D from Poly;
+
+end PolygonOnClosedSurface;

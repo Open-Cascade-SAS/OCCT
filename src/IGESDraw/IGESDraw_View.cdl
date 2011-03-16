@@ -1,0 +1,143 @@
+--
+-- File      :  View.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class View from IGESDraw  inherits ViewKindEntity
+
+        ---Purpose : defines IGES View Entity, Type <410> Form <0>
+        --           in package IGESDraw
+        --
+        --           Used to define a framework for specifying a viewing
+        --           orientation of an object in three dimensional model
+        --           space (X,Y,Z). The framework is also used to support
+        --           the projection of all or part of model space onto a
+        --           view volume.
+
+uses
+
+        TransfEntity     from IGESData,
+        Plane            from IGESGeom,
+	XYZ              from gp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable View;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me           : mutable;
+              aViewNum     : Integer;
+              aScale       : Real;
+              aLeftPlane   : Plane;
+              aTopPlane    : Plane;
+              aRightPlane  : Plane;
+              aBottomPlane : Plane;
+              aBackPlane   : Plane;
+              aFrontPlane  : Plane);
+        ---Purpose : This method is used to set fields of the class View
+        --       - aViewNum     : View number
+        --       - aScale       : Scale factor
+        --       - aLeftPlane   : Left   plane of view volume
+        --       - aTopPlane    : Top    plane of view volume
+        --       - aRightPlane  : Right  plane of view volume
+        --       - aBottomPlane : Bottom plane of view volume
+        --       - aBackPlane   : Back   plane of view volume
+        --       - aFrontPlane  : Front  plane of view volume
+
+    	IsSingle (me) returns Boolean;
+	---Purpose : Returns True (for a single view)
+
+    	NbViews (me) returns Integer;
+	---Purpose : Returns 1 (single view)
+
+    	ViewItem (me; num : Integer) returns ViewKindEntity  raises OutOfRange;
+	---Purpose : For a single view, returns <me> whatever <num>
+
+        ViewNumber (me) returns Integer;
+        ---Purpose : returns integer number identifying view orientation
+
+        ScaleFactor (me) returns Real;
+        ---Purpose : returns the scale factor(Default = 1.0)
+
+        HasLeftPlane (me) returns Boolean;
+        ---Purpose : returns False if left side of view volume is not present
+
+        LeftPlane (me) returns Plane;
+        ---Purpose : returns the left side of view volume, or null handle
+
+        HasTopPlane (me) returns Boolean;
+        ---Purpose : returns False if top of view volume is not present
+
+        TopPlane (me) returns Plane;
+        ---Purpose : returns the top of view volume, or null handle
+
+        HasRightPlane (me) returns Boolean;
+        ---Purpose : returns False if right side of view volume is not present
+
+        RightPlane (me) returns Plane;
+        ---Purpose : returns the right side of view volume, or null handle
+
+        HasBottomPlane (me) returns Boolean;
+        ---Purpose : returns False if bottom of view volume is not present
+
+        BottomPlane (me) returns Plane;
+        ---Purpose : returns the bottom of view volume, or null handle
+
+        HasBackPlane (me) returns Boolean;
+        ---Purpose : returns False if back of view volume is not present
+
+        BackPlane (me) returns Plane;
+        ---Purpose : returns the back of view volume, or null handle
+
+        HasFrontPlane (me) returns Boolean;
+        ---Purpose : returns False if front of view volume is not present
+
+        FrontPlane (me) returns Plane;
+        ---Purpose : returns the front of view volume, or null handle
+
+        ViewMatrix (me) returns TransfEntity;
+        ---Purpose : returns the Transformation Matrix
+
+        ModelToView (me; coords : XYZ) returns XYZ;
+        ---Purpose : returns XYZ from the Model space to the View space by
+        -- applying the View Matrix
+
+fields
+
+--
+-- Class    : IGESDraw_View
+--
+-- Purpose  : Declaration of the variables specific to a View.
+--
+-- Reminder : A  View Entity is defined by :
+--                  - a view number for identifying the view orientation
+--                  - a scale factor, and
+--                  - a view volume to control the projection of the view into
+--                    a 2-D drawing space specified by a Drawing Entity.
+--                    The view volume is a rectangular parallelepiped with
+--                    limits specified by Plane Entities.
+--
+
+        theViewNumber  : Integer;
+
+        theScaleFactor : Real;
+
+        theLeftPlane   : Plane;
+
+        theTopPlane    : Plane;
+
+        theRightPlane  : Plane;
+
+        theBottomPlane : Plane;
+
+        theBackPlane   : Plane;
+
+        theFrontPlane  : Plane;
+
+end View;

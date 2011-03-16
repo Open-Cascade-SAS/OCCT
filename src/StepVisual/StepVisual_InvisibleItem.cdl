@@ -1,0 +1,41 @@
+-- File:        InvisibleItem.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class InvisibleItem from StepVisual inherits SelectType from StepData
+
+	-- <InvisibleItem> is an EXPRESS Select Type construct translation.
+	-- it gathers : StyledItem, PresentationLayerAssignment, PresentationRepresentation
+
+uses
+
+	StyledItem,
+	PresentationLayerAssignment,
+	PresentationRepresentation
+is
+
+	Create returns InvisibleItem;
+	---Purpose : Returns a InvisibleItem SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a InvisibleItem Kind Entity that is :
+	--        1 -> StyledItem
+	--        2 -> PresentationLayerAssignment
+	--        3 -> PresentationRepresentation
+	--        0 else
+
+	StyledItem (me) returns any StyledItem;
+	---Purpose : returns Value as a StyledItem (Null if another type)
+
+	PresentationLayerAssignment (me) returns any PresentationLayerAssignment;
+	---Purpose : returns Value as a PresentationLayerAssignment (Null if another type)
+
+	PresentationRepresentation (me) returns any PresentationRepresentation;
+	---Purpose : returns Value as a PresentationRepresentation (Null if another type)
+
+
+end InvisibleItem;
+

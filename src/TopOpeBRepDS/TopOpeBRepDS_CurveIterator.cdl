@@ -1,0 +1,42 @@
+-- File:	TopOpeBRepDS_CurveIterator.cdl
+-- Created:	Thu Jun 17 11:39:29 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveIterator from TopOpeBRepDS 
+    inherits InterferenceIterator from TopOpeBRepDS
+
+uses
+
+    State         from TopAbs,
+    Orientation   from TopAbs,
+    Interference  from TopOpeBRepDS,
+    ListOfInterference  from TopOpeBRepDS,
+    Curve         from Geom2d
+    
+is
+    Create(L : ListOfInterference from TopOpeBRepDS) returns CurveIterator; 
+    ---Purpose: Creates an  iterator on the  curves on surface
+    --          described by the interferences in <L>.
+    
+    MatchInterference(me; I : Interference from TopOpeBRepDS) 
+    returns Boolean from Standard
+    ---Purpose: Returns  True if the Interference <I>  has a 
+    --          GeometryType() TopOpeBRepDS_CURVE
+    --          returns False else.
+    is redefined;
+
+    Current(me) returns Integer from Standard
+    ---Purpose: Index of the curve in the data structure.
+    is static;
+    
+    Orientation(me; S : State from TopAbs) returns Orientation from TopAbs
+    is static;
+    
+    PCurve(me) returns Curve from Geom2d
+    ---C++: return const &
+    is static;
+    
+end CurveIterator from TopOpeBRepDS;

@@ -1,0 +1,52 @@
+-- File:	IGESSelect_AutoCorrect.cdl
+-- Created:	Wed Jun  1 16:18:06 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class AutoCorrect  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Does the absolutely effective corrections on IGES Entity.
+    --           That is to say : regarding the norm in details, some values
+    --           have mandatory values, or set of values with constraints.
+    --           When such values/constraints are univoque, they can be forced.
+    --           Also nullifies items of Directory Part, Associativities, and
+    --           Properties, which are not (or not longer) in <target> Model.
+    --           
+    --           Works by calling a BasicEditor from IGESData
+    --           Works with the specific IGES Services : DirChecker which
+    --           allows to correct data in "Directory Part" of Entities (such
+    --           as required values for status, or references to be null), and
+    --           the specific IGES service OwnCorrect, which is specialised for
+    --           each type of entity.
+    --           
+    --           Remark : this does not comprise the computation of use flag or
+    --           subordinate status according references, which is made by
+    --           the ModelModifier class ComputeStatus.
+    --           
+    --           The Input Selection, when present, designates the entities to
+    --           be corrected. If it is not present, all the entities of the
+    --           model are corrected.
+
+uses AsciiString from TCollection,
+     CopyTool, IGESModel, ContextModif,
+     GeneralLib, SpecificLib, IGESEntity
+
+is
+
+    Create returns mutable AutoCorrect;
+    ---Purpose : Creates an AutoCorrect.
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : corrects entities when it is absolutely
+    --           obvious, i.e. non equivoque (by DirChecker and specific
+    --           service OwnCorrect) : works with a protocol.
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Auto-correction of IGES Entities"
+
+end AutoCorrect;

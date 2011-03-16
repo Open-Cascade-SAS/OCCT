@@ -1,0 +1,87 @@
+-- File:        BezierSurfaceAndRationalBSplineSurface.cdl
+-- Created:     Fri Dec  1 11:11:33 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BezierSurfaceAndRationalBSplineSurface from StepGeom 
+
+inherits BSplineSurface from StepGeom 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+	BezierSurface from StepGeom, 
+	RationalBSplineSurface from StepGeom, 
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData, 
+	HArray2OfReal from TColStd, 
+	Real from Standard
+is
+
+	Create returns mutable BezierSurfaceAndRationalBSplineSurface;
+	---Purpose: Returns a BezierSurfaceAndRationalBSplineSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aBezierSurface : mutable BezierSurface from StepGeom;
+	      aRationalBSplineSurface : mutable RationalBSplineSurface from StepGeom) is virtual;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aWeightsData : mutable HArray2OfReal from TColStd) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBezierSurface(me : mutable; aBezierSurface : mutable BezierSurface);
+	BezierSurface (me) returns mutable BezierSurface;
+	SetRationalBSplineSurface(me : mutable; aRationalBSplineSurface : mutable RationalBSplineSurface);
+	RationalBSplineSurface (me) returns mutable RationalBSplineSurface;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetWeightsData(me : mutable; aWeightsData : mutable HArray2OfReal);
+	WeightsData (me) returns mutable HArray2OfReal;
+	WeightsDataValue (me; num1 : Integer;  num2 : Integer) returns Real;
+	NbWeightsDataI (me) returns Integer;
+	NbWeightsDataJ (me) returns Integer;
+
+fields
+
+	bezierSurface : BezierSurface from StepGeom;
+	rationalBSplineSurface : RationalBSplineSurface from StepGeom;
+
+end BezierSurfaceAndRationalBSplineSurface;

@@ -1,0 +1,26 @@
+-- File:	PXCAFDoc_Centroid.cdl
+-- Created:	Fri Sep  8 18:03:46 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class Centroid from PXCAFDoc inherits Attribute from PDF
+
+	---Purpose: 
+
+uses 
+    
+   Pnt from gp
+is
+    Create returns mutable Centroid from PXCAFDoc;
+    
+    Create (pnt: Pnt from gp) returns mutable Centroid from PXCAFDoc;
+    
+    Set (me: mutable; pnt: Pnt from gp);
+    
+    Get (me) returns Pnt from gp;
+    
+fields
+    myPCentroid : Pnt from gp;
+    
+end Centroid from PXCAFDoc;

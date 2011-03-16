@@ -1,0 +1,30 @@
+-- File:	QANewBRepNaming_TopNaming.cdl
+-- Created:	Fri Sep 24 16:37:51 1999
+-- Author:	Sergey ZARITCHNY
+--		<szy@shamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+deferred class TopNaming from QANewBRepNaming 
+
+    ---Purpose: The root class for all the primitives, features, ...
+
+uses 
+ 
+    Label from TDF
+
+is 
+ 
+    Initialize;
+
+    Initialize(Label : Label from TDF); 
+     
+    ResultLabel(me) returns Label from TDF; 
+    ---C++: inline  
+    ---C++: return const& 
+    ---Purpose : Returns the result label. 
+    
+fields  
+
+    myResultLabel : Label from TDF  is  protected; 
+      
+end TopNaming;

@@ -1,0 +1,34 @@
+-- File:	StepAP214_RepItemGroup.cdl
+-- Created:	Wed May 10 15:09:08 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class RepItemGroup from StepAP214
+inherits Group from StepBasic
+
+    ---Purpose: Representation of STEP entity RepItemGroup
+
+uses
+    HAsciiString from TCollection,
+    RepresentationItem from StepRepr
+
+is
+    Create returns RepItemGroup from StepAP214;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aGroup_Name: HAsciiString from TCollection;
+                       hasGroup_Description: Boolean;
+                       aGroup_Description: HAsciiString from TCollection;
+                       aRepresentationItem_Name: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    RepresentationItem (me) returns RepresentationItem from StepRepr;
+	---Purpose: Returns data for supertype RepresentationItem
+    SetRepresentationItem (me: mutable; RepresentationItem: RepresentationItem from StepRepr);
+	---Purpose: Set data for supertype RepresentationItem
+
+fields
+    theRepresentationItem: RepresentationItem from StepRepr; -- supertype
+
+end RepItemGroup;

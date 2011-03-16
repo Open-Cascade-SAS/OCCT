@@ -1,0 +1,34 @@
+-- File:        PresentationStyleAssignment.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PresentationStyleAssignment from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HArray1OfPresentationStyleSelect from StepVisual, 
+	PresentationStyleSelect from StepVisual
+is
+
+	Create returns mutable PresentationStyleAssignment;
+	---Purpose: Returns a PresentationStyleAssignment
+
+	Init (me : mutable;
+	      aStyles : mutable HArray1OfPresentationStyleSelect from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStyles(me : mutable; aStyles : mutable HArray1OfPresentationStyleSelect);
+	Styles (me) returns mutable HArray1OfPresentationStyleSelect;
+	StylesValue (me; num : Integer) returns PresentationStyleSelect;
+	NbStyles (me) returns Integer;
+
+fields
+
+	styles : HArray1OfPresentationStyleSelect from StepVisual; -- a SelectType
+
+end PresentationStyleAssignment;

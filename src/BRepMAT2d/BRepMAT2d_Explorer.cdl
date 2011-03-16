@@ -1,0 +1,146 @@
+-- File:	BRepMAT2d_Explorer.cdl
+-- Created:	Tue Oct  4 09:03:34 1994
+-- Author:	Yves FRICAUD
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Explorer from BRepMAT2d 
+
+	---Purpose: Construct an explorer from wires, face, set of curves
+	--          from Geom2d to compute the bisecting Locus.
+
+uses
+    SequenceOfCurve             from TColGeom2d,
+    SequenceOfSequenceOfCurve   from MAT2d,
+    SequenceOfBoolean           from TColStd,
+    Curve                       from Geom2d,
+    Wire                        from TopoDS,
+    Face                        from TopoDS,
+    Shape                       from TopoDS,
+    IndexedDataMapOfShapeShape  from TopTools
+
+is
+    Create returns Explorer from BRepMAT2d;
+    
+    Create (aFace : Face from TopoDS) returns Explorer from BRepMAT2d;
+    
+    Clear (me : in out)
+	--- Purpose : Clear the contents of <me>.    
+    is static;   
+    
+---Category: Construction from a face
+    
+    Perform ( me : in out ;aFace : Face from TopoDS)
+    is static;
+    
+-- Modified by Sergey KHROMOV - Tue Nov 26 15:48:41 2002  Begin
+--   Correction of a face. Creation of a new face where all wires are 
+--   connected in 2d.
+
+--    Add  (me : in out; Spine : Wire from TopoDS; aFace : Face from TopoDS)
+--    is static private;
+
+    Add  (me : in out; Spine : Wire from TopoDS; aFace : Face from TopoDS; 
+    	    	       aNewFace:  in  out  Face  from  TopoDS)
+    is static private;
+-- Modified by Sergey KHROMOV - Tue Nov 26 15:48:43 2002  End
+
+    ---Purpose: Construction from a set of cuves from Geom2d.
+    -- 	        Assume  the   orientation  of  the  closed   lines are
+    --          compatible. (ie if A is in B, the orientation of A and B
+    --          has to be different.
+    --          
+    --          Assume the explo contains only lines located in the 
+    --          area where the bisecting locus will be computed.
+    --          
+    --          Assume a line don't cross itself or an other line.
+    --          
+    --          A contour has to be construct in adding each curve in
+    --          respect to the sense of the contour.
+    --          
+    --          afirst point of a curve in a contour is equal to the last
+    --          point of the precedent curve.
+    --          
+    --          No  control of this  rules is done in the construction 
+    --          of the explorer
+    
+-- Modified by Sergey KHROMOV - Tue Nov 26 17:19:09 2002  Begin
+--This method is useless. All its functionality is 
+--in the previous method Add(..) now.
+--    CheckConnection  (me : in out)
+--    is static private;
+-- Modified by Sergey KHROMOV - Tue Nov 26 17:19:09 2002  End
+    
+    NewContour (me : in out)
+    is static  private;
+    
+    Add (me : in out ; aCurve : Curve from Geom2d)
+    	--- Purpose : Add the curve <aCurve> at me.
+    is static private;
+    
+---Category: Querying
+                 
+    NumberOfContours(me) returns Integer
+    	--- Purpose : Returns the Number of contours.
+    is static;
+    
+    NumberOfCurves(me ; IndexContour : Integer) returns Integer
+    	--- Purpose : Returns the Number of Curves in the Contour  number 
+    	--            <IndexContour>.
+    is static;
+    
+    Init(me : in out ; IndexContour : Integer)
+	--- Purpose : Initialisation of  an Iterator on  the curves of
+	--            the Contour number <IndexContour>.           
+    is static;
+    
+    More(me) returns Boolean from Standard
+    	--- Purpose : Return False if there is no more curves on the Contour
+       	--            initialised by the method Init.
+    is static;
+    
+    Next(me : in out)
+	--- Purpose  : Move to the next curve of the current Contour.
+    is static;
+    
+    Value(me) returns Curve from Geom2d
+        --- Purpose : Returns the current curve on the current Contour.
+    is static;
+    
+    Shape (me) returns Shape from TopoDS
+    is static ;	
+	    
+    Contour (me; IndexContour : Integer from Standard) 
+    returns SequenceOfCurve from TColGeom2d
+    ---C++: return const&
+    is static;
+
+-- Modified by Sergey KHROMOV - Tue Nov 26 15:51:56 2002 
+    IsModified(me;  aShape:  Shape  from  TopoDS) 
+    returns  Boolean  from  Standard 
+    is  static;
+
+    ModifiedShape(me;  aShape:  Shape  from  TopoDS) 
+        --- Purpose : If the shape is not modified, returns the shape itself.
+    returns  Shape from TopoDS 
+    is  static;
+
+    GetIsClosed (me) 
+    returns SequenceOfBoolean from TColStd
+    ---C++: return const&
+    is static;
+-- Modified by Sergey KHROMOV - Wed Mar  6 16:05:52 2002
+
+fields
+
+    theCurves      : SequenceOfSequenceOfCurve from MAT2d;
+    current        : Integer;
+    currentContour : Integer;
+    myShape        : Shape from TopoDS; 
+    myIsClosed     : SequenceOfBoolean  from  TColStd; 
+-- Modified by Sergey KHROMOV - Tue Nov 26 15:48:02 2002  Begin
+    myModifShapes  : IndexedDataMapOfShapeShape  from  TopTools;
+-- Modified by Sergey KHROMOV - Tue Nov 26 15:48:03 2002  End
+    
+end Explorer;

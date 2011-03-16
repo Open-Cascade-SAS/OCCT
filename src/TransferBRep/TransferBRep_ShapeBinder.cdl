@@ -1,0 +1,42 @@
+-- File:	TransferBRep_ShapeBinder.cdl
+-- Created:	Mon Oct  3 10:38:43 1994
+-- Author:	Assim
+--		<assim@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ShapeBinder  from TransferBRep  inherits BinderOfShape
+
+    ---Purpose : A ShapeBinder is a BinderOfShape with some additional services
+    --           to cast the Result under various kinds of Shapes
+
+uses  ShapeEnum from TopAbs,  Shape from TopoDS ,
+      Vertex from TopoDS,  Edge  from TopoDS,  Wire  from TopoDS,
+      Face   from TopoDS,  Shell from TopoDS,  Solid from TopoDS,
+      CompSolid from TopoDS,    Compound from TopoDS
+
+raises TypeMismatch from Standard
+
+is
+
+    Create returns mutable ShapeBinder;
+    ---Purpose : Creates an empty ShapeBinder
+
+    Create (res : Shape) returns mutable ShapeBinder;
+    ---Purpose : Creates a ShapeBinder with a result
+
+    ShapeType (me) returns ShapeEnum;
+    ---Purpose : Returns the Type of the Shape Result (under TopAbs form)
+
+    -- different sub-types for the Result. Result returns a Shape
+
+    Vertex    (me) returns Vertex    raises TypeMismatch from Standard;
+    Edge      (me) returns Edge      raises TypeMismatch from Standard;
+    Wire      (me) returns Wire      raises TypeMismatch from Standard;
+    Face      (me) returns Face      raises TypeMismatch from Standard;
+    Shell     (me) returns Shell     raises TypeMismatch from Standard;
+    Solid     (me) returns Solid     raises TypeMismatch from Standard;
+    CompSolid (me) returns CompSolid raises TypeMismatch from Standard;
+    Compound  (me) returns Compound  raises TypeMismatch from Standard;
+
+end ShapeBinder;

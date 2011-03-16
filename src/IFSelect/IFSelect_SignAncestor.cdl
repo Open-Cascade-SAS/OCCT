@@ -1,0 +1,25 @@
+-- File:	IFSelect_SignAncestor.cdl
+-- Created:	Wed Feb 17 17:00:34 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SignAncestor from IFSelect inherits SignType from IFSelect
+
+	---Purpose: 
+
+uses
+    CString,
+    Transient,
+    InterfaceModel,
+    AsciiString
+is
+
+    Create (nopk: Boolean = Standard_False) returns mutable SignAncestor;
+    
+    Matches (me; ent : Transient; model : InterfaceModel;
+    	    	 text : AsciiString; exact : Boolean)
+    returns Boolean  is redefined;
+       
+end SignAncestor;

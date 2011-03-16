@@ -1,0 +1,35 @@
+-- File:        CurveStyleFontPattern.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CurveStyleFontPattern from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	Real from Standard
+is
+
+	Create returns mutable CurveStyleFontPattern;
+	---Purpose: Returns a CurveStyleFontPattern
+
+	Init (me : mutable;
+	      aVisibleSegmentLength : Real from Standard;
+	      aInvisibleSegmentLength : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetVisibleSegmentLength(me : mutable; aVisibleSegmentLength : Real);
+	VisibleSegmentLength (me) returns Real;
+	SetInvisibleSegmentLength(me : mutable; aInvisibleSegmentLength : Real);
+	InvisibleSegmentLength (me) returns Real;
+
+fields
+
+	visibleSegmentLength : Real from Standard;
+	invisibleSegmentLength : Real from Standard;
+
+end CurveStyleFontPattern;

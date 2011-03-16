@@ -1,0 +1,31 @@
+-- File:	StepShape_ValueQualifier.cdl
+-- Created:	Tue Apr 24 14:20:00 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class ValueQualifier  from StepShape    inherits SelectType  from StepData
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    PrecisionQualifier from StepShape,
+    TypeQualifier from StepShape
+
+is
+
+    Create returns ValueQualifier from StepShape;
+
+    CaseNum (me; ent : Transient) returns Integer;
+    ---Purpose : Recognizes a kind of ValueQualifier Select Type :
+    --           1 -> PrecisionQualifier from StepShape
+    --           2 -> TypeQualifier from StepShape
+    --           3 -> UnceraintyQualifier .. not yet implemented
+
+    PrecisionQualifier (me) returns PrecisionQualifier from StepShape;
+    ---Purpose : Returns Value as PrecisionQualifier
+
+    TypeQualifier (me) returns TypeQualifier from StepShape;
+    ---Purpose : Returns Value as TypeQualifier
+
+end ValueQualifier;

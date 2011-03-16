@@ -1,0 +1,60 @@
+-- File:	AdvApprox_PrefCutting.cdl
+-- Created:	Fri Apr  5 17:15:04 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+    ---Purpose : 
+    -- inherits class Cutting; contains a list of preferential points (di)i
+    -- if Cutting is necessary in [a,b], we cut at the di nearest from (a+b)/2.
+    
+class PrefCutting from AdvApprox inherits Cutting from AdvApprox
+
+uses Array1OfReal from TColStd
+    
+is
+    Create(CutPnts : Array1OfReal) returns PrefCutting;
+    
+    Value(me; a,b : Real;
+              cuttingvalue : out Real)
+    returns Boolean 
+    is redefined;
+
+
+fields
+
+    myPntOfCutting : Array1OfReal from TColStd;
+
+
+end PrefCutting;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+-- File:	StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem.cdl
+-- Created:	Tue Apr 24 17:11:07 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class MeasureRepresentationItemAndQualifiedRepresentationItem  from StepShape
+    inherits RepresentationItem  from StepRepr
+
+    ---Purpose : Added for Dimensional Tolerances
+    --           Complex Type between MeasureRepresentationItem and
+    --             QualifiedRepresentationItem
+
+uses
+    HArray1OfValueQualifier from StepShape,
+    ValueQualifier from StepShape,
+    HAsciiString from TCollection,
+    Unit               from StepBasic,
+    MeasureWithUnit    from StepBasic,
+    MeasureValueMember from StepBasic
+ 
+is
+
+    Create returns mutable MeasureRepresentationItemAndQualifiedRepresentationItem;
+
+    Init (me : mutable;
+          aName : mutable HAsciiString from TCollection;
+          aValueComponent : MeasureValueMember from StepBasic;
+          aUnitComponent : Unit from StepBasic;
+    	  qualifiers : HArray1OfValueQualifier from StepShape);
+
+    	--  About MeasureReprItem
+
+    SetMeasure (me: mutable; Measure: MeasureWithUnit from StepBasic);
+    Measure (me) returns MeasureWithUnit from StepBasic;
+
+    	--  About QualifiedReprItem
+
+    Qualifiers (me) returns HArray1OfValueQualifier from StepShape;
+    NbQualifiers (me) returns Integer;
+    SetQualifiers (me : mutable; qualifiers : HArray1OfValueQualifier from StepShape);
+    QualifiersValue (me; num : Integer) returns ValueQualifier from StepShape;
+    SetQualifiersValue (me : mutable; num : Integer; aqualifier : ValueQualifier from StepShape);
+
+fields
+
+    myMeasure: MeasureWithUnit from StepBasic;
+    theQualifiers : HArray1OfValueQualifier from StepShape;
+
+end MeasureRepresentationItemAndQualifiedRepresentationItem;

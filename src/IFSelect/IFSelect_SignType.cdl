@@ -1,0 +1,32 @@
+-- File:	IFSelect_SignType.cdl
+-- Created:	Mon Jan 29 09:13:42 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class SignType  from IFSelect  inherits Signature
+
+    ---Purpose : This Signature returns the cdl Type of an entity, under two
+    --           forms :
+    --           - complete dynamic type (package and class)
+    --           - class type, without package name
+
+uses CString, Transient, InterfaceModel
+
+is
+
+    Create (nopk : Boolean = Standard_False) returns mutable SignType;
+    ---Purpose : Returns a SignType
+    --           <nopk> false (D) : complete dynamic type (name = Dynamic Type)
+    --           <nopk> true : class type without pk (name = Class Type)
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the Signature for a Transient object, as its Dynamic
+    --           Type, with or without package name, according starting option
+
+fields
+
+    thenopk : Boolean;
+
+end SignType;

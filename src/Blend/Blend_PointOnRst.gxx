@@ -1,0 +1,22 @@
+Blend_PointOnRst::Blend_PointOnRst () {}
+
+
+Blend_PointOnRst::Blend_PointOnRst(const TheArc& A,
+				   const Standard_Real Param,
+				   const IntSurf_Transition& TLine,
+				   const IntSurf_Transition& TArc):
+
+       arc(A),traline(TLine),traarc(TArc),prm(Param)
+{}
+
+void Blend_PointOnRst::SetArc(const TheArc& A,
+			      const Standard_Real Param,
+			      const IntSurf_Transition& TLine,
+			      const IntSurf_Transition& TArc)
+{
+  arc     = A;
+  prm     = Param;
+  traline = TLine;
+  traarc  = TArc;
+}
+

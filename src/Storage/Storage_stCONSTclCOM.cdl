@@ -1,0 +1,9 @@
+-- File:	Storage_stCONSTclCOM.cdl
+-- Created:	Thu Jan 30 14:58:05 1997
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class stCONSTclCOM from Storage
+is
+end;

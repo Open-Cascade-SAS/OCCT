@@ -1,0 +1,29 @@
+-- File:	Storage_InternalData.cdl
+-- Created:	Thu Feb  6 16:08:23 1997
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class InternalData from Storage
+
+inherits TShared from MMgt
+
+uses BucketOfPersistent from Storage,
+     HPArray from Storage,
+     MapOfCallBack from Storage         
+is
+    Create returns mutable InternalData from Storage;
+    
+    Clear(me : mutable);
+    
+    fields
+    
+      myPtoA               : BucketOfPersistent from Storage;
+      myObjId              : Integer from Standard;
+      myTypeId             : Integer from Standard;
+      myReadArray          : HPArray from Storage;
+      myTypeBinding        : MapOfCallBack from Storage;      
+      
+    friends class Schema from Storage   
+    
+end;

@@ -1,0 +1,53 @@
+-- File:	GeomFill_LocFunction.cdl
+-- Created:	Mon Feb  2 18:14:53 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class LocFunction from GeomFill 
+
+	---Purpose: 
+
+uses 
+ LocationLaw from GeomFill,
+ Array1OfVec   from TColgp, 
+ Mat  from  gp
+
+is 
+    Create( Law  :  LocationLaw  from  GeomFill) 
+    returns  LocFunction  from  GeomFill; 
+     
+    
+   D0(me : in  out; 
+      Param: Real;
+      First, Last : Real)
+      ---Purpose: compute the section for v = param           
+   returns Boolean; 
+	
+   D1(me : in  out;
+      Param: Real;
+      First, Last : Real)
+      ---Purpose: compute the first  derivative in v direction  of the
+      --           section for v =  param 
+   returns Boolean;
+   
+    D2(me : in  out;
+      Param: Real;
+      First, Last : Real)      
+      ---Purpose: compute the second derivative  in v direction of the
+      --          section  for v = param  
+   returns Boolean; 
+    
+   DN(me  :  in  out;
+      Param       : Real;
+      First, Last : Real; 
+      Order       :  Integer; 
+      Result      :  in  out  Real; 
+      Ier         :  out  Integer); 
+
+fields 
+  myLaw  :  LocationLaw  from  GeomFill;
+  V,  DV,  D2V  :  Array1OfVec  from  TColgp; 
+  M,  DM,  D2M  :  Mat  from  gp;
+end LocFunction;

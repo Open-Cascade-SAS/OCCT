@@ -1,0 +1,70 @@
+-- File:	SelectRange.cdl
+-- Created:	Wed Nov 18 10:20:51 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectRange  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectRange keeps or rejects a sub-set of the input set,
+    --           that is the Entities of which rank in the iteration list
+    --           is in a given range (for instance form 2nd to 6th, etc...)
+
+uses AsciiString from TCollection, InterfaceModel, IntParam
+
+raises DomainError
+
+is
+
+    Create returns mutable SelectRange;
+    ---Purpose : Creates a SelectRange. Default is Take all the input list
+
+    SetRange (me : mutable; rankfrom, rankto : mutable IntParam)
+      raises DomainError;
+    ---Purpose : Sets a Range for numbers, with a lower and a upper limits
+    --           Error if rankto is lower then rankfrom
+
+    SetOne  (me : mutable; rank : mutable IntParam);
+    ---Purpose : Sets a unique number (only one Entity will be sorted as True)
+
+    SetFrom (me : mutable; rankfrom : mutable IntParam);
+    ---Purpose : Sets a Lower limit but no upper limit
+
+    SetUntil (me : mutable; rankto : mutable IntParam);
+    ---Purpose : Sets an Upper limit but no lower limit (equivalent to lower 1)
+
+    HasLower (me) returns Boolean;
+    ---Purpose : Returns True if a Lower limit is defined
+
+    Lower (me) returns mutable IntParam;
+    ---Purpose : Returns Lower limit (if there is; else, value is senseless)
+
+    LowerValue (me) returns Integer;
+    ---Purpose : Returns Value of Lower Limit (0 if none is defined)
+
+    HasUpper (me) returns Boolean;
+    ---Purpose : Returns True if a Lower limit is defined
+
+    Upper (me) returns mutable IntParam;
+    ---Purpose : Returns Upper limit (if there is; else, value is senseless)
+
+    UpperValue (me) returns Integer;
+    ---Purpose : Returns Value of Upper Limit (0 if none is defined)
+
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True for an Entity of which occurence number in the
+    --           iteration is inside the selected Range (considers <rank>)
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : following cases,
+    --           " From .. Until .." or "From .." or "Until .." or "Rank no .."
+
+fields
+
+    thelower : IntParam;
+    theupper : IntParam;
+
+end SelectRange;

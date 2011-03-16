@@ -1,0 +1,64 @@
+-- File:	NLPlate_HPG0Constraint.cdl
+-- Created:	Fri Apr 17 13:49:25 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+class  HPG0Constraint  from  NLPlate  inherits  HGPPConstraint from  NLPlate 
+---Purpose: define a PinPoint G0  Constraint  used to load a Non Linear
+--          Plate
+uses
+     XY from gp,
+     XYZ from gp
+     
+is
+    Create(UV : XY; Value : XYZ) returns mutable HPG0Constraint;
+    -- create a G0 Constraint
+    -- 
+
+    SetUVFreeSliding(me: mutable; UVFree : Boolean) 
+    is  redefined;
+    -- If True, allow the UV value to  be modified during optimization
+    --  this  is meaningless (has  no  effect) on   non G0 Constraints
+    -- default is False
+    -- 
+    -- 
+
+    SetIncrementalLoadAllowed(me: mutable; ILA : Boolean) 
+    is  redefined;
+    -- If True, allow the Constraint to be loaded incrementally during optimization
+    -- default is False
+    -- 
+
+
+    UVFreeSliding(me)  returns  Boolean 
+    is  redefined;
+    -- If True, allow the UV value to be modified during optimization
+    -- default is False
+    -- 
+
+    IncrementalLoadAllowed(me)  returns  Boolean 
+    is redefined;
+    -- If True, allow the Constraint to be loaded incrementally during optimization
+    -- default is False
+    -- 
+
+    ActiveOrder(me)  returns  Integer 
+    is   redefined; 
+    --  returns the constraint active  order, i.e. the maximum between
+    --  -- the initial constraint i.e 0 (for G0 Constraints)
+    --  
+    -- 
+
+    IsG0(me) returns Boolean 
+    is  redefined;
+
+    G0Target(me) returns XYZ 
+    ---C++: return const &
+    is   redefined; 
+
+fields
+    myXYZTarget : XYZ from gp;
+    UVIsFree : Boolean;
+    IncrementalLoadingAllowed : Boolean;
+end;

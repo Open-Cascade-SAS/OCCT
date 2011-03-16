@@ -1,0 +1,103 @@
+-- File:	Conic.cdl
+-- Created:	Tue Feb 11 16:07:09 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Conic from IntAna2d
+
+	---Purpose: Definition of a conic by its implicit quadaratic equation:
+	--          A.X**2 + B.Y**2 + 2.C.X*Y + 2.D.X + 2.E.Y + F = 0.
+
+uses XY        from gp,
+     Ax2d      from gp,
+     Circ2d    from gp,
+     Elips2d   from gp,
+     Parab2d   from gp,
+     Hypr2d    from gp,
+     Lin2d     from gp
+
+is
+
+
+    Create(C: Circ2d from gp)
+    	
+	returns Conic from IntAna2d;
+
+
+    Create(C: Lin2d from gp)
+    	
+	returns Conic from IntAna2d;
+	
+	
+    Create(C: Parab2d from gp)
+    	
+	returns Conic from IntAna2d;
+
+
+    Create(C: Hypr2d from gp)
+    	
+	returns Conic from IntAna2d;
+
+
+    Create(C: Elips2d from gp)
+    	
+	returns Conic from IntAna2d;
+		
+
+    Value(me; X,Y: Real)
+    
+    	---Purpose: value of the function F at the point X,Y.
+    	
+	returns Real
+	
+	is static;
+
+
+    Grad(me; X,Y: Real)
+
+    	---Purpose: returns the value of the gradient of F at the point X,Y.
+
+    	returns XY from gp
+
+    	is static;
+
+
+    ValAndGrad(me; X,Y: Real; Val: out Real; Grd: out XY from gp)
+    
+	---Purpose: Returns the value of the function and its gradient at
+	--          the point X,Y.
+    
+    	is static;
+
+
+    Coefficients(me; A,B,C,D,E,F: out Real)
+
+	---Purpose: returns the coefficients of the polynomial equation
+	--          wich defines the conic:
+	--          A.X**2 + B.Y**2 + 2.C.X*Y + 2.D.X + 2.E.Y + F = 0.
+    
+    	is static;
+
+
+    NewCoefficients(me; A,B,C,D,E,F: in out Real ; Axis: Ax2d from gp)
+	---Purpose: Returns the coefficients of the polynomial equation
+	--          ( written in the natural coordinates system )
+	--          A x x + B y y + 2 C x y + 2 D x + 2 E y + F
+	--          in the local coordinates system defined by Axis
+    
+    	is static;
+   
+fields
+
+a: Real;
+b: Real;
+c: Real;
+d: Real;
+e: Real;
+f: Real;
+
+end Conic;
+
+

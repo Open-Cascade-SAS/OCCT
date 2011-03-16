@@ -1,0 +1,88 @@
+-- File:	TDataXtd_Position.cdl
+-- Created:	Mon Apr  6 18:29:34 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009 
+
+class Position from TDataXtd inherits Attribute from TDF
+
+	---Purpose: Position of a Label
+
+uses
+    RelocationTable     from TDF,
+    GUID                from Standard,
+    Attribute           from TDF,
+    Pnt                 from gp,
+    Label               from TDF
+    
+
+
+is
+
+    Set(myclass; aLabel: Label from TDF; aPos : Pnt from gp);
+    ---Purpose: Create if not found the TDataXtd_Position attribute set its position to <aPos>
+    
+    Set (myclass; aLabel : Label from TDF)  
+    ---Purpose: Find an existing, or create an empty, Position.
+    --            the Position attribute is returned.
+    returns Position from TDataXtd;
+    
+    Get(myclass; aLabel: Label from TDF; aPos : in out Pnt from gp)
+    ---Purpose: Search label <aLabel) for the TDataXtd_Position attribute and get its position
+    --          if found returns True
+    returns Boolean from Standard;
+    
+    Create 
+    returns mutable Position from TDataXtd;
+    
+    ID(me) returns GUID from Standard
+    is redefined static;
+	---Purpose: Returns the ID of the attribute.
+	---C++: return const &
+    
+    GetID(myclass) returns GUID from Standard;
+	---Purpose: Returns the ID of the attribute.
+	---C++: return const &
+
+
+    Restore(me: mutable; anAttribute : Attribute from TDF)
+    is redefined;
+	---Purpose: Restores the contents from <anAttribute> into this
+	--          one. It is used when aborting a transaction.
+	--          
+ 
+    -- Copy use methods
+    -- ----------------
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF
+    is redefined;
+    ---Purpose: Returns an new empty attribute from the good end
+    --          type. It is used by the copy algorithm.
+
+    Paste(me; intoAttribute    : mutable Attribute from TDF;
+    	      aRelocTationable : mutable RelocationTable from TDF)
+    is redefined;
+	---Purpose: This method is different from the "Copy" one,
+	--          because it is used when copying an attribute from
+	--          a source structure into a target structure. This
+	--          method pastes the current attribute to the label
+	--          corresponding to the insertor. The pasted
+	--          attribute may be a brand new one or a new version
+	--          of the previous one.
+
+
+    GetPosition (me)
+    ---C++: return const &
+    returns Pnt from gp;
+    
+    SetPosition (me: mutable ; aPos : Pnt from gp);
+
+fields
+
+    myPosition : Pnt from gp;	
+    
+end Position;
+
+
+

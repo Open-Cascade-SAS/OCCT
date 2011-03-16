@@ -1,0 +1,229 @@
+-- File:	IFSelect.cdl
+-- Created:	Mon Sep 21 11:33:50 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+package IFSelect
+
+    	---Purpose : Gives tools to manage Selecting a group of Entities
+    	--           processed by an Interface, for instance to divide up an
+    	--           original Model (from a File) to several smaller ones
+    	--           They use description of an Interface Model as a graph
+    	--           
+    	--           Remark that this corresponds to the description of a
+    	--           "scenario" of sharing out a File. Parts of this Scenario
+    	--           are intended to be permanently stored. IFSelect provides
+    	--           the Transient, active counterparts (to run the Scenario).
+    	--           But a permanent one (either as Persistent Objects or as
+    	--           interpretable Text) must be provided elsewhere.
+
+uses MMgt, Standard, Message, TCollection, TColStd, 
+     Interface, IFGraph, Dico, MoniTool
+
+is
+
+    deferred class Signature;   -- to select an entity according a string (its signature)
+    class SignMultiple; -- liste of signatures
+    class SignType;     -- signature = type cdl
+    class SignCategory; -- signature = category
+    class SignValidity; -- signature = validity
+    class SignAncestor; -- signature = type cdl + all ancestors
+
+    class ShareOut;
+    class AppliedModifiers;
+
+    class ShareOutResult;
+    class PacketList;
+
+    deferred class Dispatch;
+    	class DispGlobal;         -- takes all result in only ONE group
+	class DispPerOne;         -- defines one group per selected entity
+	class DispPerCount;       -- one group for a count of entities
+	class DispPerSignature;   -- groups given by a SignatureList
+	class DispPerFiles;       -- a determined count of groups
+	--  Other classes can be added for a specific Interface
+
+    class SelectionIterator;
+
+    deferred class Selection;
+
+    	deferred class SelectBase;      -- attached directly to the ShareOut :
+    	    class SelectModelRoots;        -- roots knows as such in the model
+	    class SelectModelEntities;     -- all entities of the model
+	    class SelectEntityNumber;      -- one entity having a given Number
+    	    class SelectPointed;           -- directly pointed items
+
+    	deferred class SelectCombine;   -- algebraic operators
+	    class SelectUnion;          -- "OR" operator between Selections
+	    class SelectIntersection;   -- "AND" operator between Selections
+	deferred class SelectControl;   -- a main list controlled by a second
+	    class SelectDiff;           -- "Minus" operator between Selections
+
+	deferred class SelectDeduct;       -- computed lists :
+	    class SelectShared;            -- directly shared entities
+	    class SelectSharing;           -- directly sharing entities
+	    deferred class SelectAnyList;  -- from a list in an entity
+	    deferred class SelectInList;   -- from a list of single entities
+	    generic class SelectList;      -- from an entity as a list
+	    class SelectSuite;             -- macro-select-deduct
+
+	deferred class SelectExtract;   -- sorted lists (can be inverted) :
+	    class SelectUnknownEntities;
+	    class SelectErrorEntities;
+	    class SelectIncorrectEntities;  -- (according ComputeCheck)
+	    class SelectRoots;          -- roots local in a given group
+	    class SelectRootComps;      -- idem but manages cycles
+	    class SelectRange;          -- range in a list (from i-th to j-th)
+	    deferred class SelectAnyType;  -- type to be precised in sub-class
+	    class SelectType;              -- type given as a parameter
+	    class SelectSignature;         -- signature matching
+            class SelectFlag;              -- flag recorded in the Graph
+	    class SelectSent;              -- sent/remaining entities to file
+	    --  Other classes can be added for a specific Interface
+	    --  (in particular, instantiations of SelectType)
+
+	    --  Other classes can be added for a specific Interface
+	    --  (in particular, instantiations of SelectList)
+	deferred class SelectExplore;
+	    class SelectSignedShared;       -- shared entities  + signature
+	    class SelectSignedSharing;      -- sharing entities + signature
+
+    class IntParam;    -- defines externally accessible integer parameters
+
+    class SignatureList;
+    class CheckCounter;
+    class SignCounter;
+    class GraphCounter;
+
+    deferred class Editor;
+    	class ParamEditor;
+
+    class EditForm;
+    class ListEditor;
+
+    class ContextModif;          -- (set of data used by Modifiers)
+    class ContextWrite;          -- (set of data used by Modifiers)
+    deferred class Transformer;  -- frame for data transformations
+    	class TransformStandard; -- works with Modifiers
+
+    class ModelCopier;           -- performs transfers (to produce files)
+    deferred class GeneralModifier;  -- set of criteria for all Modifiers
+    deferred class Modifier;  -- defines modifying actions on transferred model
+    	class ModifReorder;   -- reorder whole model from roots
+	class ModifEditForm;  -- applies an EditForm
+    deferred generic class FileModifier;    -- defines actions on file sending
+    deferred generic class ModelModifier;   -- specific actions on model
+
+    	-- --    Session Management    -- --
+
+    class WorkSession;           -- a set of useful facilities
+    deferred class WorkLibrary;  -- capability of user extents
+
+    alias Option  is  Option from MoniTool;                -- pre-defined values for a field
+    alias Profile is  Profile from MoniTool;               -- set of options bound/piloted together
+
+    class SessionFile;
+    deferred class SessionDumper;
+    	class BasicDumper;
+
+    deferred class Activator;
+    	class SessionPilot;
+	class Act;
+    primitive ActFunc;
+    class Functions;
+    -- individual functions to be added by Act
+
+    enumeration ReturnStatus is  RetVoid, RetDone, RetError, RetFail, RetStop;
+    ---Purpose : Qualifies an execution status :
+    --           RetVoid  : normal execution which created nothing, or
+    --               no data to process
+    --           RetDone  : normal execution with a result
+    --           RetError : error in command or input data, no execution
+    --           RetFail  : execution was run and has failed
+    --           RetStop  : indicates end or stop (such as Raise)
+
+    enumeration RemainMode   is
+        RemainForget, RemainCompute, RemainDisplay, RemainUndo;
+    --  used to pilot SetRemaining from the WorkSession
+
+    enumeration PrintCount   is  ItemsByEntity, CountByItem,  ShortByItem, ListByItem, EntitiesByItem, CountSummary,
+    	    	    	    	    GeneralInfo, Mapping, ResultCount;
+
+---Purpose:
+-- Lets you choose the manner in which you want to analyze an
+-- IGES or STEP file. Your analysis can be either message-oriented or
+-- entity-oriented. The specific values are as follows:
+-- - ItemsByEntity is a sequential list of all
+-- messages per entity of the defined type
+-- - CountByItem is the number of entities of the defined
+-- type, with their rank number per message
+-- - ShortByItem is the number of entities of the defined
+-- type, with their types per message; displays the rank
+-- numbers of the first five entities of the defined type
+-- per message
+-- - ListByItem is the number of entities of the defined type
+-- per message and the numbers of the entities
+-- - EntitiesByItem is the number of entities of the
+-- defined type, with their types, rank numbers and
+-- Directory Entry numbers per message
+-- - GeneralInfo is general information on transfer such as:
+--    -      number of entities
+--    -      number of roots
+--    -      number of resulting Open CASCADE shapes
+--    -      number of warnings and failures
+--    -      CountSummary summary statistics for counters and signatures
+--    -      ResultCount information that contains the number of
+--       roots in the IGES file and the number of resulting Open CASCADE shapes.
+  --  -       Mapping of the IGES root entities to the resulting Open
+    --   CASCADE shape (including type and form of the IGES entity
+      -- and type of the resulting shape). 
+
+    enumeration PrintFail   is FailOnly, FailAndWarn;
+    ---Purpose: Indicates whether there will
+-- be information on warnings as well as on failures. The
+-- terms of this enumeration have the following semantics:
+-- - IFSelect_FailOnly gives information on failures only
+-- - IFSelect_FailAndWarn gives information on both
+--   failures and warnings. used to pilot PrintCheckList
+    enumeration EditValue    is
+    	Optional, Editable, EditProtected, EditComputed, EditRead, EditDynamic;
+    ---Purpose : Controls access on Values by an Editor
+    --           EditOptional  : normal access, in addition may be removed
+    --           Editable      : normal access, must be present
+    --           EditProtected : access must be validated
+    --           EditComputed  : why write it ?  it will be recomputed
+    --           EditRead      : no way to write it, only for read
+    --           EditDynamic   : not a field, only to be displayed
+
+    	-- --    Instantiations    -- --
+
+    class TSeqOfDispatch  instantiates  Sequence from TCollection (Dispatch);
+    class TSeqOfSelection instantiates  Sequence from TCollection (Selection);
+    class HSeqOfSelection instantiates HSequence from TCollection
+    	(Selection,TSeqOfSelection);
+
+    -- the followings sequences are used by ModelCopier (definition or result)
+    class SequenceOfGeneralModifier  instantiates Sequence from TCollection
+        (GeneralModifier);
+    class SequenceOfInterfaceModel   instantiates Sequence from TCollection
+        (InterfaceModel from Interface);
+    class SequenceOfAppliedModifiers instantiates Sequence from TCollection
+    	(AppliedModifiers);
+
+    	--   Package Methods   --
+
+    SaveSession (WS : any WorkSession; file : CString) returns Boolean;
+    ---Purpose : Saves the state of a WorkSession from IFSelect, by using a
+    --           SessionFile from IFSelect. Returns True if Done, False in
+    --           case of Error on Writing. <file> gives the name of the File
+    --           to be produced (this avoids to export the class SessionFile).
+
+    RestoreSession (WS : mutable WorkSession; file : CString) returns Boolean;
+    ---Purpose : Restore the state of a WorkSession from IFSelect, by using a
+    --           SessionFile from IFSelect. Returns True if Done, False in
+    --           case of Error on Writing. <file> gives the name of the File
+    --           to be used (this avoids to export the class SessionFile).
+
+end IFSelect;

@@ -1,0 +1,33 @@
+-- File:	TopOpeBRepDS_FaceEdgeInterference.cdl
+-- Created:	Fri Oct 28 17:29:07 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class FaceEdgeInterference from TopOpeBRepDS 
+    inherits ShapeShapeInterference from TopOpeBRepDS
+
+uses
+
+    Transition from TopOpeBRepDS,
+    Config     from TopOpeBRepDS,
+    OStream    from Standard    
+    
+is
+
+    Create(T : Transition from TopOpeBRepDS;
+	   S : Integer from Standard;
+	   G : Integer from Standard;
+      	   GIsBound : Boolean from Standard;
+    	   C : Config from TopOpeBRepDS)
+	   
+    	---Purpose: Create an interference of EDGE <G> on FACE <S>.
+
+    returns mutable FaceEdgeInterference from TopOpeBRepDS; 
+	    
+    Dump(me; OS : in out OStream from Standard) returns OStream
+    is redefined;
+    ---C++: return &
+    
+end FaceEdgeInterference from TopOpeBRepDS;

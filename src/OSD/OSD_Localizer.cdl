@@ -1,0 +1,45 @@
+-- File     : OSD_Localizer.cdl
+-- Created  : 27 August 2010
+-- Author   : Paul SUPRYATKIN
+---Copyright: Open CASCADE 2010 
+
+class Localizer from OSD 
+
+	---Purpose:  Define the locale.
+
+is
+ Create ( Category : Integer from Standard;
+          Locale   : CString from Standard);
+    ---Purpose: Set locale
+    ---Level: Public
+
+ Restore( me: in out );
+    ---Purpose: Restore previously locale
+    ---Level: Public     
+
+ SetLocale( me: in out;
+            Category : Integer from Standard;
+            Locale   : CString from Standard);
+    ---Purpose: Set locale
+    ---Level: Public
+ 
+ Locale( me ) 
+   returns CString from Standard;
+    ---Purpose: Get locale
+    ---Level: Public
+
+
+ Category( me ) 
+   returns Integer from Standard;
+    ---Purpose: Get Gategory
+    ---Level: Public
+
+
+fields
+
+   myLocale        : CString from Standard; 
+   myCategory      : Integer from Standard;    
+
+end Localizer from OSD;
+
+

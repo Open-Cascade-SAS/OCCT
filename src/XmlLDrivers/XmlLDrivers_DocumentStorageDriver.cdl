@@ -1,0 +1,65 @@
+-- File:	XmlLDrivers_DocumentStorageDriver.cdl
+-- Created:	Wed Jul 25 16:56:28 2001
+-- Author:	Julia DOROVSKIKH
+--		<jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:	Open Cascade 2001
+
+class DocumentStorageDriver from XmlLDrivers inherits StorageDriver from PCDM
+
+uses
+    AsciiString			from TCollection,
+    ExtendedString		from TCollection,
+    SequenceOfExtendedString	from TColStd,
+    Document			from CDM,
+    Document			from TDocStd,
+    SequenceOfNamespaceDef	from XmlLDrivers,
+    Element			from XmlObjMgt,
+    SRelocationTable		from XmlObjMgt,
+    ADriverTable		from XmlMDF,
+    MessageDriver               from CDM
+
+is
+    Create (theCopyright: ExtendedString from TCollection)
+    	returns mutable DocumentStorageDriver from XmlLDrivers;
+    -- Constructor
+
+    SchemaName(me) returns ExtendedString from TCollection is redefined virtual;
+    -- pure virtual method definition
+
+    Write	      (me: mutable;theDocument: Document       from CDM;
+				   theFileName: ExtendedString from TCollection)
+	is redefined virtual;
+    -- Write <aDocument> to the xml file <theFileName>
+
+    WriteToDomDocument(me:mutable; theDocument: Document from CDM;
+			           thePDoc    : out Element from XmlObjMgt;
+   	    	    	    	   theFileName: ExtendedString from TCollection)
+	returns Boolean from Standard
+	is virtual protected;
+
+    MakeDocument      (me:mutable; theDocument: Document from CDM;
+				   thePDoc    : out Element from XmlObjMgt)
+	returns Integer from Standard
+	is virtual protected;
+
+    AddNamespace      (me:mutable; thePrefix, theURI: AsciiString)
+	is protected;
+
+    IsError	      (me) returns Boolean from Standard;
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from XmlMDF
+	is virtual; 
+	
+    WriteShapeSection (me:mutable; thePDoc    : out Element from XmlObjMgt) 
+        returns Boolean from Standard
+	is virtual protected; 
+	
+fields
+    myDrivers   :	ADriverTable		 from XmlMDF is protected;
+    mySeqOfNS	:	SequenceOfNamespaceDef	 from XmlLDrivers;
+    myCopyright :       ExtendedString           from TCollection;
+    myRelocTable:	SRelocationTable	 from XmlObjMgt  is protected;
+    myIsError   :	Boolean			 from Standard is protected;
+
+end DocumentStorageDriver;

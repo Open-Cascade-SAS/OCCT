@@ -1,0 +1,63 @@
+-- File:	TPrsStd_DriverTable.cdl
+-- Created:	Wed Aug  4 14:02:36 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class DriverTable from TPrsStd inherits TShared from MMgt
+
+    ---Purpose:   This class is   a  container to record  (AddDriver)
+    --          binding between  GUID and  TPrsStd_Driver. 
+        -- You create a new instance of TPrsStd_Driver
+-- and use the method AddDriver to load it into the driver table. the method
+ 
+
+uses Boolean    from Standard,
+     Attribute  from TDF,
+     Label      from TDF,
+     GUID       from Standard,
+     IDList     from TDF,
+     Driver     from TPrsStd,
+     DataMapOfGUIDDriver from TPrsStd
+
+is
+
+    Get (myclass) returns mutable DriverTable from TPrsStd;
+    ---Purpose: Returns the static table.
+    --          If it does not exist, creates it and fills it with standard drivers.
+
+    Create returns mutable DriverTable from TPrsStd;
+    ---Purpose: Default constructor
+
+    InitStandardDrivers (me : mutable);
+    ---Purpose: Fills the table with standard drivers
+
+
+    AddDriver (me : mutable; guid   : GUID   from Standard;
+    	    	    	     driver : Driver from TPrsStd)
+    ---Purpose: Returns true if the driver has been added successfully to the driver table.
+    returns Boolean from Standard;
+
+    FindDriver (me; guid   :     GUID   from Standard;
+	 	    driver : out Driver from TPrsStd)
+    ---Purpose: Returns true if the driver was found.
+    returns Boolean from Standard;
+
+    RemoveDriver (me : mutable; guid : GUID from Standard)
+    ---Purpose:
+-- Removes a driver with the given GUID.
+  --      Returns true if the driver has been removed successfully.
+    returns Boolean from Standard;
+
+    Clear (me : mutable);
+    ---Purpose: Removes all drivers. Returns
+ -- true if the driver has been removed successfully.
+ -- If this method is used, the InitStandardDrivers method should be
+ -- called to fill the table with standard drivers.
+
+fields
+
+    myDrivers : DataMapOfGUIDDriver from TPrsStd;
+
+end DriverTable;

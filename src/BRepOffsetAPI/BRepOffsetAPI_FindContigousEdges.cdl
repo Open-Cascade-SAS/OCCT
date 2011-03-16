@@ -1,0 +1,161 @@
+-- File:	BRepOffsetAPI_FindContigousEdges.cdl
+-- Created:	Tue May  2 11:38:44 1995
+-- Author:	Jing Cheng MEI
+--		<mei@junon>
+---Copyright:	 Matra Datavision 1995
+
+
+class FindContigousEdges from BRepOffsetAPI
+
+	---Purpose: Provides methods to identify contigous boundaries
+	--          for continuity control (C0, C1, ...)
+	--          
+	--          Use this function as following:
+	--            - create an object 
+	--                - default tolerance 1.E-06
+	--                - with analysis of degenerated faces on
+	--                - define if necessary a new tolerance
+	--                - set if necessary analysis of degenerated shapes off
+	--            - add shapes to be controlled -> Add
+	--            - compute -> Perfom
+	--            - output couples of connected edges for control
+	--            - output the problems if any
+
+uses
+    Edge from TopoDS,
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    Sewing from BRepBuilderAPI
+
+raises
+    OutOfRange from Standard,
+    NoSuchObject from Standard
+
+
+is
+    Create(tolerance: Real = 1.0e-06; -- tolerance of connexity
+    	   option:    Boolean = Standard_True) -- option for analysis of degenerated shapes 
+    	---Purpose: Initializes an algorithm for identifying contiguous edges
+    	-- on shapes with tolerance as the tolerance of contiguity
+    	-- (defaulted to 1.0e-6). This tolerance value is used to
+    	-- determine whether two edges or sections of edges are coincident.
+    	-- Use the function Add to define the shapes to be checked.
+    	-- Set option to false. This argument (defaulted to true) will
+    	-- serve in subsequent software releases for performing an
+    	-- analysis of degenerated shapes.
+    returns FindContigousEdges from BRepOffsetAPI;
+  
+    Init(me: in out; tolerance: Real; option: Boolean);
+        ---Purpose: Initializes this algorithm for identifying contiguous edges
+	-- on shapes using the tolerance of contiguity tolerance.
+	-- This tolerance value is used to determine whether two
+	-- edges or sections of edges are coincident.
+	-- Use the function Add to define the shapes to be checked.
+	-- Sets <option> to false.
+
+    Add(me: in out; shape: Shape from TopoDS);
+        ---Purpose: Adds the shape shape to the list of shapes to be
+	-- checked by this algorithm.
+	-- Once all the shapes to be checked have been added,
+	-- use the function Perform to find the contiguous edges
+	-- and the function ContigousEdge to return these edges.
+
+    Perform(me: in out);
+        ---Purpose: Finds coincident parts of edges of two or more shapes
+	-- added to this algorithm and breaks down these edges
+	-- into contiguous and non-contiguous sections on copies
+	-- of the initial shapes.
+	--        The function ContigousEdge returns contiguous
+	-- edges. The function Modified can be used to return
+	-- modified copies of the initial shapes where one or more
+	-- edges were broken down into contiguous and non-contiguous sections.
+	-- Warning
+	-- This function must be used once all the shapes to be
+	-- checked have been added. It is not possible to add
+	-- further shapes subsequently and then to repeat the call to Perform.
+    NbEdges(me) returns Integer;
+	---Purpose: Gives  the number  of edges (free  edges + contigous
+        --          edges  +  multiple edge)
+
+    NbContigousEdges(me) returns Integer;
+        ---Purpose: Returns the number of contiguous edges found by the
+	-- function Perform on the shapes added to this algorithm.
+
+    ContigousEdge(me; index: Integer) returns Edge from TopoDS
+        ---Purpose: Returns the contiguous edge of index index found by
+	-- the function Perform on the shapes added to this algorithm.
+	-- Exceptions
+	-- Standard_OutOfRange if:
+	-- - index is less than 1, or
+	-- - index is greater than the number of contiguous
+	--   edges found by the function Perform on the shapes added to this algorithm.
+   	---C++: return const &
+   raises
+      OutOfRange from Standard;
+ 
+    ContigousEdgeCouple(me; index: Integer) returns ListOfShape from TopTools
+      	---Purpose: Returns a list of edges coincident with the contiguous
+	-- edge of index index found by the function Perform.
+	-- There are as many edges in the list as there are faces
+	-- adjacent to this contiguous edge.
+ 	-- Exceptions
+	-- Standard_OutOfRange if:
+	-- - index is less than 1, or
+	-- - index is greater than the number of contiguous edges
+	--   found by the function Perform on the shapes added to this algorithm.
+  	---C++: return const &
+  raises
+      OutOfRange from Standard;
+
+    SectionToBoundary(me; section: Edge from TopoDS) returns Edge from TopoDS
+        ---Purpose: Returns the edge on the initial shape, of which the
+	-- modified copy contains the edge section.
+	-- section is coincident with a contiguous edge found by
+	-- the function Perform. Use the function
+	-- ContigousEdgeCouple to obtain a valid section.
+	-- This information is useful for verification purposes, since
+	-- it provides a means of determining the surface to which
+	-- the contiguous edge belongs.
+	-- Exceptions
+	-- Standard_NoSuchObject if section is not coincident
+	-- with a contiguous edge. Use the function
+	-- ContigousEdgeCouple to obtain a valid section.
+      	---C++: return const &
+      raises
+      NoSuchObject from Standard;
+
+    NbDegeneratedShapes(me) returns Integer;
+      ---Purpose: Gives the number of degenerated shapes
+
+    DegeneratedShape(me; index: Integer) returns Shape from TopoDS
+      ---Purpose: Gives a degenerated shape
+      ---C++: return const &
+    raises
+      OutOfRange from Standard;
+    	-- raised if index < 1 or > NbDegeneratedShapes
+
+    IsDegenerated(me; shape: Shape from TopoDS) returns Boolean;
+      ---Purpose: Indicates if a input shape is degenerated
+
+    IsModified(me; shape: Shape from TopoDS) returns Boolean;
+      	---Purpose: Returns true if the copy of the initial shape shape was
+	-- modified by the function Perform (i.e. if one or more of
+	-- its edges was broken down into contiguous and non-contiguous sections).
+	-- Warning
+	-- Returns false if shape is not one of the initial shapes
+	-- added to this algorithm.
+
+    Modified(me; shape: Shape from TopoDS) returns Shape from TopoDS
+      ---Purpose: Gives a modifieded shape
+      -- Raises   NoSuchObject if shape has not been modified
+      ---C++: return const &
+    raises
+      NoSuchObject from Standard;
+
+    Dump(me);
+      ---Purpose: Dump properties of resulting shape.
+
+fields
+    mySewing : Sewing from BRepBuilderAPI;
+
+end FindContigousEdges;

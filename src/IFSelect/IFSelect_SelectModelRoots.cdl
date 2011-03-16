@@ -1,0 +1,29 @@
+-- File:	SelectModelRoots.cdl
+-- Created:	Tue Nov 17 18:52:56 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectModelRoots  from IFSelect  inherits SelectBase
+
+    ---Purpose : A SelectModelRoots gets all the Root Entities of an
+    --           InterfaceModel. Remember that a "Root Entity" is defined as
+    --           having no Sharing Entity (if there is a Loop between Entities,
+    --           none of them can be a "Root").
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create  returns mutable SelectModelRoots;
+    ---Purpose : Creates a SelectModelRoot
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities : the Roots of the Model
+    --           (note that this result assures naturally uniqueness)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Model Roots"
+
+end SelectModelRoots;

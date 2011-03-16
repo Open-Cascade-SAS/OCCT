@@ -1,0 +1,118 @@
+-- File     : AIS2D_ProjShape.cdl
+-- Created  : April  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class ProjShape from AIS2D inherits InteractiveObject from AIS2D
+ 
+ ---Purpose: Constructs presentable and selectable projection of 
+ --          TopoDS_Shape on the view plane
+
+uses
+
+  Shape                 from TopoDS,
+  Line                  from Graphic2d,
+  ListOfShape           from TopTools,
+  Projector             from HLRAlgo,
+  Algo                  from HLRBRep,
+  PolyAlgo              from HLRBRep,
+  SetOfSegments         from Graphic2d,
+  SetOfCurves           from GGraphic2d
+
+is 
+
+  Create returns mutable ProjShape from AIS2D;
+  ---Purpose: Initializes the projected shape 
+
+  Create( aProjector: Projector from HLRAlgo; 
+          nbIsos: Integer from Standard = 3;
+          isPolyAlgo: Boolean from Standard = Standard_False; 
+		  visHL: Boolean from Standard = Standard_True ) 
+     returns mutable ProjShape from AIS2D;
+  ---Purpose: Initializes the projected shape with projector <aProjector>, number isolines <nbIsos>
+
+  Add( me: mutable; aShape: Shape from TopoDS );
+  ---Level: Public
+  ---Purpose: Adds <aShape> to the list of projected shapes. 
+
+  SetProjector( me: mutable; aProjector: Projector from HLRAlgo );
+  ---Level: Public
+  ---Purpose: sets the projector <aProjector>
+
+  Projector( me ) returns Projector from HLRAlgo;
+  ---Level: Public
+  ---Purpose: Indicates the projector
+
+  SetNbIsos( me: mutable; aNbIsos: Integer from Standard );
+  ---Level: Internal
+  ---Purpose: 
+
+  SetPolyAlgo( me: mutable; aIsPoly: Boolean from Standard = Standard_False );
+  ---Level: Internal
+  ---Purpose: sets the projection of the shape as a polyhedral 
+  --          simplification of the shape if <aIsPoly> is True
+
+  SetHLMode( me: mutable; aIsHLM: Boolean from Standard = Standard_True );
+  ---Level: Internal
+  ---Purpose: Sets the hidden line mode if <aIsHLM> is True
+
+  IsHLMode( me ) returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Indicates the hidden lines are visible
+
+  GetNbIsos( me ) returns Integer from Standard;
+  ---Level: Public
+  ---Purpose: Indicates the number of isolines
+
+  GetIsPoly( me ) returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Indicates the shape was extracted as Algo or PolyAlgo
+
+  GetPrimitives( me ) returns Line from Graphic2d;
+  ---Level: Internal
+  ---Purpose: Returns the set of primitives are included into Shape, 
+  --          except hidden lines
+
+  GetHLPrimitives( me ) returns Line from Graphic2d;
+  ---Level: Internal
+  ---Purpose: Returns the set of hidden line primitives are included into Shape 
+
+  ShowEdges( me: mutable; 
+   aSharp, aSmooth, aSewn, anOutline, anIsoline: Boolean from Standard = Standard_True ); 
+  ---Level: Public
+  ---Purpose: Sets the flags for display of all types of edges
+
+
+  ----------------------------------------------------------------------------
+  ---Category: Private methods
+ 
+  CreateAlgo( me: mutable ) is private;
+  CreatePolyAlgo( me: mutable ) is private;
+  DrawSegments( me: mutable; aShape: Shape from TopoDS; 
+                aSofS: in out SetOfSegments from Graphic2d ) is private; 
+  DrawCurves( me: mutable; aShape: Shape from TopoDS;
+              aSofC: in out SetOfCurves from GGraphic2d ) is private; 
+   
+  ComputeShape( me: mutable ) is private;
+ 
+fields 
+
+  myListOfShape    : ListOfShape   from TopTools;
+  myProjector      : Projector     from HLRAlgo;
+  myAlgo           : Algo          from HLRBRep;
+  myPolyAlgo       : PolyAlgo      from HLRBRep;
+  myNbIsos         : Integer       from Standard;
+  myIsPolyAlgo     : Boolean       from Standard;
+  myIsHiddenLine   : Boolean       from Standard;
+  myESharp         : Boolean       from Standard;
+  myESmooth        : Boolean       from Standard;
+  myESewn          : Boolean       from Standard;
+  myEOutline       : Boolean       from Standard;
+  myEIsoline       : Boolean       from Standard;
+
+  mySetOfSegments  : SetOfSegments from Graphic2d;
+  myHSetOfSegments : SetOfSegments from Graphic2d;
+  mySetOfCurves    : SetOfCurves   from GGraphic2d;
+  myHSetOfCurves   : SetOfCurves   from GGraphic2d;
+									   
+end ProjShape;

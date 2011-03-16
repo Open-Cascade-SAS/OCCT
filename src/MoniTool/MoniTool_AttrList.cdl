@@ -1,0 +1,120 @@
+-- File:	MoniTool_AttrList.cdl
+-- Created:	Fri Nov  4 10:59:26 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class AttrList  from MoniTool
+
+    ---Purpose : a AttrList allows to record a list of attributes as Transients
+    --           which can be edited, changed ...
+    --           Each one is identified by a name
+
+uses CString, Type, Transient,
+     DictionaryOfTransient from Dico, ValueType from MoniTool
+
+is
+
+    Create returns AttrList;
+    ---Purpose : Creates an AttrList, empty
+
+    Create (other : AttrList) returns AttrList;
+    ---Purpose : Creates an AttrList from another one, definitions are shared
+    --           (calls SameAttributes)
+
+    	-- --    Attributes
+
+
+    SetAttribute (me : in out; name : CString; val : Transient);
+    ---Purpose : Adds an attribute with a given name (replaces the former one
+    --           with the same name if already exists)
+
+    RemoveAttribute (me : in out; name : CString) returns Boolean;
+    ---Purpose : Removes an attribute
+    --           Returns True when done, False if this attribute did not exist
+
+    GetAttribute (me; name : CString; type : Type from Standard;
+    	    	  val : out mutable Transient)  returns Boolean;
+    ---Purpose : Returns an attribute from its name, filtered by a type
+    --           If no attribute has this name, or if it is not kind of this
+    --           type, <val> is Null and returned value is False
+    --           Else, it is True
+
+    Attribute    (me; name : CString) returns Transient;
+    ---Purpose : Returns an attribute from its name. Null Handle if not
+    --           recorded         (whatever Transient, Integer, Real ...)
+    --           Integer is recorded as IntVal
+    --           Real is recorded as RealVal
+    --           Text is recorded as HAsciiString
+
+    AttributeType (me; name : CString) returns ValueType from MoniTool;
+    ---Purpose : Returns the type of an attribute :
+    --           ValueInt , ValueReal , ValueText (String) , ValueIdent (any)
+    --           or ValueVoid (not recorded)
+
+
+    SetIntegerAttribute (me : in out; name : CString; val : Integer);
+    ---Purpose : Adds an integer value for an attribute
+
+    GetIntegerAttribute (me; name : CString; val : out Integer) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as integer
+    --           If no attribute has this name, or not an integer,
+    --           <val> is 0 and returned value is False
+    --           Else, it is True
+
+    IntegerAttribute (me; name : CString) returns Integer;
+    ---Purpose : Returns an integer attribute from its name. 0 if not recorded
+
+    SetRealAttribute    (me : in out; name : CString; val : Real);
+    ---Purpose : Adds a real value for an attribute
+
+    GetRealAttribute    (me; name : CString; val : out Real) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as real
+    --           If no attribute has this name, or not a real
+    --           <val> is 0.0 and returned value is False
+    --           Else, it is True
+
+    RealAttribute       (me; name : CString) returns Real;
+    ---Purpose : Returns a real attribute from its name. 0.0 if not recorded
+
+    SetStringAttribute  (me : in out; name : CString; val : CString);
+    ---Purpose : Adds a String value for an attribute
+
+    GetStringAttribute  (me; name : CString; val : out CString) returns Boolean;
+    ---Purpose : Returns an attribute from its name, as String
+    --           If no attribute has this name, or not a String
+    --           <val> is 0.0 and returned value is False
+    --           Else, it is True
+
+    StringAttribute     (me; name : CString) returns CString;
+    ---Purpose : Returns a String attribute from its name. "" if not recorded
+
+    AttrList     (me) returns DictionaryOfTransient;
+    ---Purpose : Returns the exhaustive list of attributes
+
+    SameAttributes (me : in out; other : AttrList);
+    ---Purpose : Gets the list of attributes from <other>, as such, i.e.
+    --           not copied : attributes are shared, any attribute edited,
+    --           added, or removed in <other> is also in <me> and vice versa
+    --           The former list of attributes of <me> is dropped
+
+    GetAttributes  (me : in out; other : AttrList;
+    	    	    fromname : CString = ""; copied : Boolean = Standard_True);
+    ---Purpose : Gets the list of attributes from <other>, by copying it
+    --           By default, considers all the attributes from <other>
+    --           If <fromname> is given, considers only the attributes with
+    --           name beginning by <fromname>
+    --           
+    --           For each attribute, if <copied> is True (D), its value is also
+    --           copied if it is a basic type (Integer,Real,String), else it
+    --           remains shared between <other> and <me>
+    --           
+    --           These new attributes are added to the existing ones in <me>,
+    --           in case of same name, they replace the existing ones
+
+fields
+
+    theattrib : DictionaryOfTransient;
+
+end AttrList;

@@ -1,0 +1,39 @@
+-- File:	MDataStd_NameStorageDriver.cdl
+-- Created:	Thu Aug  7 17:09:27 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+class NameStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+
+is
+
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable NameStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end NameStorageDriver;
+

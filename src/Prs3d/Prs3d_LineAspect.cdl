@@ -1,0 +1,76 @@
+-- File:	Prs3d_LineAspect.cdl
+-- Created:	Mon Apr 26 16:18:12 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+--   GG  : GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1993
+
+
+class LineAspect from Prs3d inherits BasicAspect from Prs3d
+    	---Purpose: A framework for defining how a line will be displayed
+    	-- in a presentation. Aspects of line display include
+    	-- width, color and type of line.
+    	-- The definition set by this class is then passed to the
+    	-- attribute manager Prs3d_Drawer.
+    	-- Any object which requires a value for line aspect as
+    	-- an argument may then be given the attribute manager
+    	-- as a substitute argument in the form of a field such as myDrawer for example.
+uses 
+
+    AspectLine3d from Graphic3d,
+    NameOfColor from Quantity,
+    Color from Quantity,
+    TypeOfLine from Aspect
+
+is
+
+-- 
+--  Attributes for the lines.
+-- 
+    Create (aColor: NameOfColor from Quantity;
+	    aType: TypeOfLine from Aspect;
+    	    aWidth: Real from Standard)
+	    returns mutable LineAspect from Prs3d;
+    	---Purpose: Constructs a framework for line aspect defined by
+    	-- -   the color aColor
+    	-- -   the type of line aType and
+    	-- -   the line thickness aWidth.
+    	--   Type of line refers to whether the line is solid or dotted, for example.
+        
+    Create (aColor: Color from Quantity;
+	    aType: TypeOfLine from Aspect;
+    	    aWidth: Real from Standard)
+	    returns mutable LineAspect from Prs3d;
+	    
+    SetColor (me: mutable; aColor: Color from Quantity) is static;
+
+    SetColor (me: mutable; aColor: NameOfColor from Quantity) 
+    	---Purpose: Sets the line color defined at the time of construction.
+    	--          Default value: Quantity_NOC_YELLOW
+    is static;
+    
+    SetTypeOfLine (me: mutable; aType: TypeOfLine from Aspect) 
+    	---Purpose: Sets the type of line defined at the time of construction.
+    	-- This could, for example, be solid, dotted or made up of dashes.
+    	--          Default value: Aspect_TOL_SOLID
+    is static;
+    
+    SetWidth  (me: mutable; aWidth: Real from Standard) 
+   	---Purpose: Sets the line width defined at the time of construction.
+    	--          Default value: 1.
+    is static;
+
+    Aspect(me) returns AspectLine3d from Graphic3d 
+    is static;
+    	--- Purpose: Returns the line aspect. This is defined as the set of
+    	-- color, type and thickness attributes.
+        
+    Print( me; s: in out OStream from Standard)
+    is virtual;
+    
+fields
+
+    myAspect: AspectLine3d from Graphic3d;
+
+end LineAspect from Prs3d;

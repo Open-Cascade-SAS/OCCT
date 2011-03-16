@@ -1,0 +1,14 @@
+inline TCollection_SeqNode::TCollection_SeqNode(const TCollection_SeqNodePtr& n,const TCollection_SeqNodePtr& p ) 
+: myNext(n),myPrevious(p)
+{
+}
+
+inline TCollection_SeqNodePtr& TCollection_SeqNode::Next() const
+{
+  return (TCollection_SeqNodePtr&)myNext;
+}
+
+inline TCollection_SeqNodePtr& TCollection_SeqNode::Previous() const
+{
+  return (TCollection_SeqNodePtr&)myPrevious;
+}

@@ -1,0 +1,76 @@
+-- File:	BinaryFunction.cdl
+-- Created:	Mon Jan 14 16:20:04 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class BinaryFunction from Expr
+
+inherits BinaryExpression from Expr
+
+    ---Purpose: Defines the use of a binary function in an expression 
+    --          with given arguments.
+
+uses GeneralFunction from Expr,
+    AsciiString from TCollection,
+    GeneralExpression from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    NamedUnknown from Expr
+
+raises InvalidFunction from Expr, 
+    NumericError from Standard,
+    NotEvaluable from Expr
+
+is
+
+    Create(func : GeneralFunction; exp1,exp2 : GeneralExpression)
+    ---Purpose: Creates <me> as <func> (<exp1>,<exp2>).
+    --          Raises exception if <func> is not binary.
+    returns mutable BinaryFunction
+    raises InvalidFunction;
+
+    Function(me)
+    ---Purpose: Returns the function defining <me>.
+    returns GeneralFunction;
+    
+    ShallowSimplified(me) 
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression
+    raises NumericError;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --          This method does not include any simplification before
+    --          testing.
+    returns Boolean;
+
+    IsLinear(me)
+    returns Boolean;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    returns any GeneralExpression;
+
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    returns Real
+    raises NotEvaluable,NumericError;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+
+fields
+
+    myFunction : GeneralFunction;
+
+end BinaryFunction;

@@ -1,0 +1,40 @@
+-- File:	SelectEntityNumber.cdl
+-- Created:	Wed Nov 18 17:26:53 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectEntityNumber  from IFSelect  inherits SelectBase
+
+    ---Purpose : A SelectEntityNumber gets in an InterfaceModel (through a
+    --           Graph), the Entity which has a specified Number (its rank of
+    --           adding into the Model) : there can be zero (if none) or one.
+    --           The Number is not directly defined as an Integer, but as a
+    --           Parameter, which can be externally controled
+
+uses AsciiString from TCollection, EntityIterator, Graph, IntParam
+
+is
+
+    Create  returns mutable SelectEntityNumber;
+    ---Purpose : Creates a SelectEntityNumber, initially with no specified Number
+
+    SetNumber (me : mutable; num : mutable IntParam);
+    ---Purpose : Sets Entity Number to be taken (initially, none is set : 0)
+
+    Number (me) returns mutable IntParam;
+    ---Purpose : Returns specified Number (as a Parameter)
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities : the Entity having the
+    --           specified Number (this result assures naturally uniqueness)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Entity Number ..."
+
+fields
+
+    thenum : IntParam;
+
+end SelectEntityNumber;

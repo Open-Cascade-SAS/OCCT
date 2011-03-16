@@ -1,0 +1,41 @@
+-- File:        RealRandom.cdl
+-- Created:     Tue May 14 18:31:34 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class RealRandom from math
+    ---Purpose:
+    -- This class implements a real random generator.
+
+
+is
+
+   Create(Lower, Upper: Real)
+    ---Purpose:
+    -- creates a real random generator between the values Lower and Upper.
+
+   returns RealRandom;
+   
+
+   Reset(me: in out)
+    ---Purpose: reinitializes the random generator
+
+   is static;
+   
+   Next(me: in out)
+    ---Purpose: returns the next random number.
+
+   returns Real
+   is static;
+
+
+fields
+
+Dummy:  Integer;
+Low:    Real;
+Up:     Real;
+
+end RealRandom;

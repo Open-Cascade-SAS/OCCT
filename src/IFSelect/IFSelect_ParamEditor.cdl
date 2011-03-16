@@ -1,0 +1,65 @@
+-- File:	IFSelect_ParamEditor.cdl
+-- Created:	Thu Jul 30 15:59:48 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ParamEditor  from IFSelect    inherits Editor  from IFSelect
+
+    ---Purpose : A ParamEditor gives access for edition to a list of TypedValue
+    --           (i.e. of Static too)
+    --           Its definition is made of the TypedValue to edit themselves,
+    --           and can add some constants, which can then be displayed but
+    --           not changed (for instance, system name, processor version ...)
+    --           
+    --           I.E. it gives a way of editing or at least displaying
+    --           parameters as global
+
+uses CString, Transient, AsciiString, HAsciiString, HSequenceOfHAsciiString,
+     InterfaceModel, EditForm, TypedValue
+
+is
+
+    Create (nbmax : Integer = 100; label : CString = "") returns ParamEditor;
+    ---Purpose : Creates a ParamEditor, empty, with a maximum count of params
+    --           (default is 100)
+    --           And a label, by default it will be "Param Editor"
+
+    AddValue (me : mutable; val : TypedValue; shortname : CString = "");
+    ---Purpose : Adds a TypedValue
+    --           By default, its short name equates its complete name, it can
+    --           be explicited
+
+    AddConstantText (me : mutable; val : CString;
+    	    	     shortname : CString; completename : CString = "");
+    ---Purpose : Adds a Constant Text, it will be Read Only
+    --           By default, its long name equates its shortname
+
+
+    Label (me) returns AsciiString;
+
+    Recognize (me; form : EditForm) returns Boolean;
+
+    StringValue (me; form : EditForm;  num : Integer)
+    	returns HAsciiString from TCollection;
+
+    Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+    Apply (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+
+
+    StaticEditor (myclass; list : HSequenceOfHAsciiString;
+    	    	  label : CString = "") returns ParamEditor;
+    ---Purpose : Returns a ParamEditor to work on the Static Parameters of
+    --           which names are listed in <list>
+    --           Null Handle if <list> is null or empty
+
+fields
+
+    thelabel : AsciiString;
+
+end ParamEditor;

@@ -1,0 +1,103 @@
+
+-- 
+-- -- File:	AppDef.cdl
+-- Created:	Mon Dec  2 13:36:09 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+--  06/06/96 : JPI : ajout Variational
+--  
+--  
+
+
+
+package AppDef
+
+    ---Purpose: This package describes all the classes needed to approximate 
+    --          points in Bezier curves. It is used in the package 
+    --          AppParCurves.
+    --          The points of the same range for the approximation are 
+    --          organised in MultiPointConstraints. These MultiPointConstraints
+    --        
+    --            are organized in a MultiLine.
+    --          The corresponding result of a MultiLine approximation is
+    --          a MultiCurve (set of Bezier curves) which has the same 
+    --          structure as a MultiLine: The MultiCurve is a set of 
+    --          MultiPoint.
+    --          A point of a MultiLine can have many significations: the approximation curve
+    --          can go through this point or not, can have a given tangency, or can 
+    --          have a given curvature.
+    --          Note: a CurvaturePoint is also a PassPoint and a TangencyPoint.
+    --          A TangencyPoint is also a PassPoint.
+
+uses AppParCurves, Approx, gp, TColgp, TCollection, Standard, MMgt
+
+
+is
+
+class MultiPointConstraint;  
+    ---Purpose: a MultiPointConstraint is a set of points which have the same range 
+    -- in the MultiLine and the same constraints.
+
+
+class MultiLine;
+    ---Purpose: this is the organized set of points.
+
+class MyLineTool;
+    ---Purpose: example of MultiLine tool corresponding to the tools of the packages
+    -- AppParCurves and Approx. For Approx, the tool will not addd points
+    -- if the algorithms want some.
+
+
+
+
+--- Classes instanciees:
+
+
+class TheLeastSquares instantiates LeastSquare from AppParCurves
+    	    	    	(MultiLine            from AppDef,
+			 MyLineTool           from AppDef);
+			 
+class TheVariational instantiates Variational from AppParCurves 
+                        (MultiLine            from AppDef,
+			 MyLineTool           from AppDef);
+
+class TheResol instantiates ResolConstraint from AppParCurves
+    	    	    	(MultiLine            from AppDef,
+			 MyLineTool           from AppDef);
+
+
+class TheFunction instantiates Function from AppParCurves
+    	    	    	(MultiLine            from AppDef,
+			 MyLineTool           from AppDef,
+    	    	
+    	 TheLeastSquares      from AppDef,
+    	    	    	 TheResol             from AppDef);
+    	    	    	
+
+class TheGradient instantiates Gradient from AppParCurves
+    	    	    	(MultiLine            from AppDef,
+			 MyLineTool           from AppDef);
+
+
+class Compute instantiates ComputeLine from Approx
+    	    	   
+ 	 (MultiLine            from AppDef,
+			  MyLineTool           from AppDef);
+
+
+class BSplineCompute instantiates BSplComputeLine from Approx
+    	    	    	 (MultiLine            from AppDef,
+			  MyLineTool           from AppDef);
+
+
+
+class Array1OfMultiPointConstraint instantiates Array1 from TCollection
+    	    	(MultiPointConstraint);
+
+class HArray1OfMultiPointConstraint instantiates 
+    	    	    HArray1 from TCollection(
+                    MultiPointConstraint,Array1OfMultiPointConstraint);
+
+
+end AppDef;

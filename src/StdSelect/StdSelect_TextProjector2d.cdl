@@ -1,0 +1,58 @@
+-- File:	StdSelect_TextProjector2d.cdl
+-- Created:	Fri Apr 21 16:54:14 1995
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class TextProjector2d from StdSelect inherits Projector from Select2D
+
+	---Purpose: A projector framework specific to texts in 2D views.
+    	-- For a string of text, an insertion point and a font, it
+    	-- calculates the minimum and maximum points of the text box in the view.
+
+uses
+    View   from V2d,
+    Trsf2d from gp,
+    Pnt2d  from gp,
+    ExtendedString from TCollection
+    
+is
+
+    Create(aView: View from V2d) returns mutable TextProjector2d;
+    	---Purpose: Constructs a 2D text projector framework defined by the 2D view aView.
+
+    Set(me:mutable; aView:View from V2d) is static;
+    	---Purpose: Sets the view aView.
+    	---C++: inline
+
+    
+    Set(me:mutable;atrsf:Trsf2d from gp)is static;
+    	---Purpose: Sets the transformation atrsf.
+    	-- This transformation is applied to the attachment point
+    	-- of the text, and takes the size and length of the text
+    	-- into account to give the upper right hand point of the text box.
+    	---C++: inline
+
+
+    Convert(me;aPointIn  : Pnt2d     from gp;
+    	       aPointOut : out Pnt2d from gp) is redefined virtual;
+    	---Level: Public 
+    	---Purpose: applies the stored trsf to aPointIn to get aPointOut
+
+
+    Convert(me;aText: ExtendedString from TCollection;
+    	       XPos,YPos: Real;
+	       MinPoint,MaxPoint: out Pnt2d from gp;
+	       afont    : Integer=-1) is virtual;
+    	---Level: Public 
+    	---Purpose:XPos,YPos is the AttachPoint for the text.First, the stored Trsf is
+    	--         applied to this point, then we get the size and length of text to
+    	--         give the upper point	       
+	       		 
+fields
+
+    myview : View from V2d; --to be replaced by a pointer...
+    
+end TextProjector2d;

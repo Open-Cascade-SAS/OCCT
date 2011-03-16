@@ -1,0 +1,44 @@
+-- File:	BOPTools_VSInterference.cdl
+-- Created:	Tue Nov 21 15:38:48 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class VSInterference from BOPTools 
+    inherits ShapeShapeInterference from BOPTools  
+    
+    	---Purpose:  
+    	--  Class for storing info about an Verex/Face interference
+	--- 
+is
+    Create  
+    	returns  VSInterference from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor  
+    	---
+    Create  (anIndex1:  Integer from Standard;  
+    	     anIndex2:  Integer from Standard; 
+    	     U: Real from Standard;  
+    	     V: Real from Standard)
+    	returns  VSInterference from BOPTools;  
+    	---Purpose:   
+    	--- Constructor  
+    	--- anIndex1,  
+    	--- anIndex2 see BOPTools_ShapeShapeInterference for details      
+    	--- U, V  -  values of parameters on the surface    
+    	---
+    SetUV   (me:out; U, V: Real from Standard); 
+    	---Purpose:  
+    	--- Modifier   
+    	---
+    UV      (me;  U:out Real from Standard;   
+                  V:out Real from Standard);
+    	---Purpose:  
+    	--- Selector  
+    	---
+fields
+    myU:Real from Standard;  
+    myV:Real from Standard;  
+
+end VSInterference;

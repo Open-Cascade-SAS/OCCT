@@ -1,0 +1,41 @@
+-- File:        PDataStd_RealList.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class RealList from PDataStd inherits Attribute from PDF
+
+uses 
+
+    HArray1OfReal from PColStd
+
+is
+
+    Create 
+    returns mutable RealList from PDataStd;
+
+    Init (me : mutable; 
+    	  lower, upper : Integer from Standard);
+
+    SetValue (me: mutable; 
+    	      index : Integer from Standard; 
+    	      value : Real from Standard);
+
+    Value (me;  
+    	   index : Integer from Standard) 
+    returns Real from Standard;
+
+    Lower (me) 
+    returns Integer from Standard;      
+
+    Upper (me) 
+    returns Integer from Standard;   
+
+
+fields
+
+    myValue     :  HArray1OfReal from PColStd;
+
+
+end RealList;

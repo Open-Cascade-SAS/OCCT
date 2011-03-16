@@ -1,0 +1,18 @@
+-- File:	DrawFairCurve.cdl
+-- Created:	Fri Feb 16 14:30:11 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+package DrawFairCurve 
+
+	---Purpose: Batten and MVC to display
+
+uses FairCurve, DrawTrSurf, Draw, gp
+
+is
+class Batten;
+class MinimalVariation;
+
+end DrawFairCurve;

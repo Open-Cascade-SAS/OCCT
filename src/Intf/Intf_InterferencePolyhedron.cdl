@@ -1,0 +1,89 @@
+-- File:	InterferencePolyhedron.cdl
+-- Created:	Tue Sep 29 12:13:15 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class InterferencePolyhedron from Intf
+    (Polyhedron1  as any;
+     ToolPolyhe1  as any;
+     Polyhedron2  as any;
+     ToolPolyhe2  as any)     -- as ToolPolyhedron(Polyhedron)
+    inherits Interference from Intf
+
+	---Purpose: Computes the  interference between two polyhedra or the
+	--          self interference of a polyhedron.
+
+uses    Pnt               from gp,
+    	Box               from Bnd,
+    	SectionPoint      from Intf,
+    	SeqOfSectionPoint from Intf,
+    	SectionLine       from Intf,
+    	SeqOfSectionLine  from Intf,
+    	TangentZone       from Intf,
+    	SeqOfTangentZone  from Intf
+
+is
+
+-- Interface :
+
+    Create          returns InterferencePolyhedron from Intf;
+    ---Purpose: Constructs an empty interference of Polyhedron.
+
+    Create         (Obje1  : in Polyhedron1;
+    	    	    Obje2  : in Polyhedron2) 
+    	            returns InterferencePolyhedron from Intf;
+    ---Purpose: Constructs  and computes  an  interference between  the two
+    --          Polyhedra.
+
+    Create         (Obje   : in Polyhedron1) 
+    	            returns InterferencePolyhedron from Intf;
+    ---Purpose: Constructs  and  computes   the self   interference  of   a
+    --          Polyhedron.
+
+    Perform        (me     : in out;
+    	    	    Obje1  : in Polyhedron1;
+    	    	    Obje2  : in Polyhedron2);
+    ---Purpose: Computes the interference between the two Polyhedra.
+
+    Perform        (me     : in out;
+    	    	    Obje   : in Polyhedron1);
+    ---Purpose: Computes the self interference of a Polyhedron.
+
+-- Implementation :
+
+    Interference   (me     : in out;
+    	    	    Obje1  : in Polyhedron1)
+    	    	    is private;
+    Interference   (me     : in out;
+    	    	    Obje1  : in Polyhedron1;
+     	    	    Obje2  : in Polyhedron2)
+    	    	    is private;
+    ---Purpose: Compares the bounding volumes between the facets of <Obje1>
+    --          and the facets of <Obje2> and intersects the facets when the
+    --          bounding volumes have a common part.
+
+    Intersect      (me     : in out;
+		    TriF   : in Integer from Standard;
+    	    	    Obje1  : in Polyhedron1;
+		    TriS   : in Integer from Standard;
+    	    	    Obje2  : in Polyhedron2)
+    	    	    is private;
+    ---Purpose: Computes  the intersection between    the  facet <Tri1>  of
+    --          <FirstPol> and the facet <Tri2> of <SecondPol>.
+
+    TangentZoneValue
+    	    	   (me;
+    	    	    TheTZ  : in out TangentZone from Intf;
+		    Obje1  : Polyhedron1;
+		    Tri1   : Integer from Standard;
+    	    	    Obje2  : Polyhedron2;
+    	    	    Tri2   : Integer from Standard)
+		    returns Boolean from Standard
+    	    	    is private;
+    ---Purpose: Computes the  zone of tangence between the  facet <Tri1> of
+    --          <FirstPol> and the facet <Tri2> of <SecondPol>.
+
+
+end InterferencePolyhedron;

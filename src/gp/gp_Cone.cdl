@@ -1,0 +1,259 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+
+class Cone   from gp   inherits Storable
+
+
+
+        --- Purpose :
+        --  Defines an infinite conical surface.
+        -- A cone is defined by its half-angle at the apex and
+        -- positioned in space with a coordinate system (a gp_Ax3
+        -- object) and a "reference radius" where:
+        -- -   the "main Axis" of the coordinate system is the axis of   revolution of the cone,
+        -- -   the plane defined by the origin, the "X Direction" and
+        --   the "Y Direction" of the coordinate system is the
+        --   reference plane of the cone; the intersection of the
+        --   cone with this reference plane is a circle of radius
+        --   equal to the reference radius,
+        --   if the half-angle is positive, the apex of the cone is on
+        --   the negative side of the "main Axis" of the coordinate
+        --   system. If the half-angle is negative, the apex is on the   positive side.
+        --   This coordinate system is the "local coordinate system" of the cone.
+        -- Note: when a gp_Cone cone is converted into a
+        -- Geom_ConicalSurface cone, some implicit properties of
+        -- its local coordinate system are used explicitly:
+        -- -   its origin, "X Direction", "Y Direction" and "main
+        --   Direction" are used directly to define the parametric
+        -- directions on the cone and the origin of the parameters,
+        -- -   its implicit orientation (right-handed or left-handed)
+        --   gives the orientation (direct or indirect) of the
+        --   Geom_ConicalSurface cone.
+        -- See Also
+        -- gce_MakeCone which provides functions for more
+        -- complex cone constructions
+        -- Geom_ConicalSurface which provides additional
+        -- functions for constructing cones and works, in particular,
+        -- with the parametric equations of cones gp_Ax3
+
+
+uses Ax1  from gp,
+     Ax2  from gp,
+     Ax3  from gp,
+     Dir  from gp,
+     Pnt  from gp,
+     Trsf from gp,
+     Vec  from gp
+
+raises ConstructionError from Standard
+
+is
+
+  Create   returns Cone;
+        ---C++:inline
+        --- Purpose : Creates an indefinite Cone.
+
+  Create (A3 : Ax3; Ang : Real; Radius : Real)   returns Cone
+        ---C++:inline
+        --- Purpose :
+        --  Creates an infinite conical surface. A3 locates the cone
+        --  in the space and defines the reference plane of the surface.
+        --  Ang is the conical surface semi-angle between 0 and PI/2 radians.
+        --  Radius is the radius of the circle in the reference plane of
+        --  the cone.
+        --- Raises ConstructionError 
+        --  . if Radius is lower than 0.0 
+        --  . Ang < Resolution from gp  or Ang >= (PI/2) - Resolution.
+     raises ConstructionError;
+
+  SetAxis (me : in out; A1 : Ax1)
+        ---C++:inline
+        --- Purpose :  Changes the symmetry axis of the cone.  Raises ConstructionError 
+    	--  the direction of A1 is parallel to the "XDirection"
+        --  of the coordinate system of the cone.
+     raises ConstructionError
+      
+     is static;
+
+  SetLocation (me : in out; Loc : Pnt)   is static;
+        ---C++:inline
+        --- Purpose : Changes the location of the cone.
+
+  SetPosition (me : in out; A3 : Ax3)   is static;
+       ---C++:inline
+       --- Purpose :
+       --  Changes the local coordinate system of the cone.
+       --  This coordinate system defines the reference plane of the cone.
+
+  SetRadius (me : in out; R : Real)
+        ---C++:inline
+        --- Purpose :
+        --  Changes the radius of the cone in the reference plane of
+        --  the cone.
+     raises ConstructionError
+        --- Purpose : Raised if R < 0.0
+     is static;
+
+  SetSemiAngle (me : in out; Ang : Real)
+        ---C++:inline
+        --- Purpose : 
+        --  Changes the semi-angle of the cone.
+        --  Ang is the conical surface semi-angle  ]0,PI/2[.
+        --    Raises ConstructionError if Ang < Resolution from gp or Ang >= PI/2 - Resolution 
+     raises ConstructionError
+       
+     is static;
+
+  Apex (me)  returns Pnt    is static;
+        ---C++:inline
+        --- Purpose :
+        --  Computes the cone's top. The Apex of the cone is on the
+        --  negative side of the symmetry axis of the cone.
+
+  UReverse (me : in out)
+        ---C++:inline
+	---Purpose: Reverses the   U   parametrization of   the  cone
+	--          reversing the YAxis.
+  is static;
+
+  VReverse (me : in out)
+        ---C++:inline
+	---Purpose: Reverses the   V   parametrization of   the  cone  reversing the ZAxis.
+  is static;
+
+  Direct (me) returns Boolean from Standard
+        ---C++:inline
+        ---Purpose: Returns true if the local coordinate system of this cone is right-handed.
+  is static;
+
+  Axis (me)  returns Ax1    is static;
+        ---C++:inline
+        --- Purpose : returns the symmetry axis of the cone.
+    	---C++: return const&
+
+  Coefficients (me; A1, A2, A3, B1, B2, B3, C1, C2, C3, D : out Real)
+     is static;
+       --- Purpose :
+       --  Computes the coefficients of the implicit equation of the quadric
+       --  in the absolute cartesian coordinates system :
+       -- A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) +
+       -- 2.(C1.X + C2.Y + C3.Z) + D = 0.0
+
+  Location (me)  returns Pnt   is static;
+        ---C++:inline
+        --- Purpose : returns the "Location" point of the cone.
+    	---C++: return const&
+
+  Position (me)  returns Ax3   is static;
+        --- Purpose :
+        --  Returns the local coordinates system of the cone.
+        ---C++: inline
+    	---C++: return const&
+  
+  RefRadius (me)   returns Real  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the radius of the cone in the reference plane.
+
+  SemiAngle (me)  returns Real   is static;
+        ---C++: inline
+       ---Purpose: Returns the half-angle at the apex of this cone.
+
+  XAxis (me)  returns Ax1   is static;
+        ---C++:inline
+        --- Purpose : Returns the XAxis of the reference plane.
+
+  YAxis (me)  returns Ax1   is static;
+        ---C++:inline
+        --- Purpose : Returns the YAxis of the reference plane.
+
+  Mirror (me : in out; P : Pnt)            is static;
+
+  Mirrored (me; P : Pnt)  returns Cone is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a cone 
+        --  with respect to the point P which is the center of the 
+        --  symmetry.
+
+                    
+ 
+  Mirror (me : in out; A1 : Ax1)              is static;
+
+  Mirrored (me; A1 : Ax1)   returns Cone  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a cone with
+        --  respect to an axis placement which is the axis of the
+        --  symmetry.
+
+
+ 
+
+  Mirror (me : in out; A2 : Ax2)               is static;
+
+  Mirrored (me; A2 : Ax2)    returns Cone  is static;
+
+       --- Purpose :
+        --  Performs the symmetrical transformation of a cone with respect 
+        --  to a plane. The axis placement A2 locates the plane of the
+        --  of the symmetry : (Location, XDirection, YDirection).
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)           is static;
+        ---C++: inline
+
+  Rotated (me; A1 : Ax1; Ang : Real) returns Cone  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a cone. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+  Scale (me : in out; P : Pnt; S : Real)            is static;
+        ---C++: inline
+
+  Scaled (me; P : Pnt; S : Real)  returns Cone  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a cone. S is the scaling value.
+        --  The absolute value of S is used to scale the cone
+
+
+  Transform (me : in out; T : Trsf)                 is static;
+        ---C++: inline
+
+  Transformed (me; T : Trsf)     returns Cone   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms a cone with the transformation T from class Trsf.
+
+ 
+  Translate (me : in out; V : Vec)            is static;
+        ---C++: inline
+
+  Translated (me; V : Vec)  returns Cone  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a cone in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+
+
+  Translate (me : in out; P1, P2 : Pnt)            is static; 
+        ---C++: inline
+  Translated (me; P1, P2 : Pnt)  returns Cone  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a cone from the point P1 to the point P2.
+
+
+
+
+fields
+
+  pos       : Ax3;
+  radius    : Real;
+  semiAngle : Real;
+
+end;

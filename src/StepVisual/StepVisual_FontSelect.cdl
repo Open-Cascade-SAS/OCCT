@@ -1,0 +1,36 @@
+-- File:        FontSelect.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class FontSelect from StepVisual inherits SelectType from StepData
+
+	-- <FontSelect> is an EXPRESS Select Type construct translation.
+	-- it gathers : PreDefinedTextFont, ExternallyDefinedTextFont
+
+uses
+
+	PreDefinedTextFont,
+	ExternallyDefinedTextFont
+is
+
+	Create returns FontSelect;
+	---Purpose : Returns a FontSelect SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a FontSelect Kind Entity that is :
+	--        1 -> PreDefinedTextFont
+	--        2 -> ExternallyDefinedTextFont
+	--        0 else
+
+	PreDefinedTextFont (me) returns any PreDefinedTextFont;
+	---Purpose : returns Value as a PreDefinedTextFont (Null if another type)
+
+	ExternallyDefinedTextFont (me) returns any ExternallyDefinedTextFont;
+	---Purpose : returns Value as a ExternallyDefinedTextFont (Null if another type)
+
+
+end FontSelect;
+

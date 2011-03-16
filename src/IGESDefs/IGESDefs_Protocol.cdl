@@ -1,0 +1,33 @@
+-- File:	IGESDefs_Protocol.cdl
+-- Created:	Wed May  5 11:30:30 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Protocol  from IGESDefs  inherits  Protocol from IGESData
+
+    ---Purpose : Description of Protocol for IGESDefs
+
+uses Type, Protocol from Interface
+
+is
+
+    Create returns mutable Protocol from IGESDefs;
+
+    NbResources (me) returns Integer  is redefined;
+    ---Purpose : Gives the count of Resource Protocol. Here, one
+    --           (Protocol from IGESGraph)
+
+    Resource (me; num : Integer) returns Protocol from Interface  is redefined;
+    ---Purpose : Returns a Resource, given a rank.
+
+    TypeNumber (me; atype : any Type) returns Integer  is redefined;
+    ---Purpose : Returns a Case Number, specific of each recognized Type
+    --           This Case Number is then used in Libraries : the various
+    --           Modules attached to this class of Protocol must use them
+    --           in accordance (for a given value of TypeNumber, they must
+    --           consider the same Type as the Protocol defines)
+
+end Protocol;

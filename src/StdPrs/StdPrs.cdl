@@ -1,0 +1,152 @@
+-- File:	Prs.cdl
+-- Created:	Wed Aug 26 17:38:18 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+package StdPrs
+    	---Purpose: The StdPrs package provides standard display tools
+	-- for specific geometries and topologies whereas
+	-- Prs3d provides those for generic objects. Among
+	-- these classes are definitions of the display of the
+	-- specific geometry or topology in various display
+	-- modes such as wireframe, shading or hidden line removal mode.
+    	       
+uses
+        Prs3d,
+	Geom,
+	Geom2d,
+	Adaptor3d,
+	Adaptor2d,
+        GeomAdaptor,
+	Geom2dAdaptor,
+        BRepAdaptor,
+	TopTools,
+	TopoDS,
+	TopExp,
+        TopAbs,
+	BRepTools,
+	Bnd,
+        TColStd,
+        HLRAlgo,
+    	HLRBRep,
+        Quantity,
+	BRepMesh,
+	gp,
+	TColgp,
+	Poly,
+	TopLoc, 
+	Graphic3d
+
+is
+   class ToolPoint;
+   class ToolVertex;
+   class ToolRFace;
+   class HLRToolShape;
+   --class ToolSectionShape;
+   class ToolShadedShape;
+   
+   
+   class Point 
+   instantiates Point from Prs3d(Point from Geom, ToolPoint from StdPrs); 
+   
+   class Vertex 
+   instantiates Point from Prs3d(Vertex from TopoDS, ToolVertex from StdPrs); 
+   
+   class PoleCurve;
+	---Purpose: computes the presentation of curves by drawing
+	--          a broken line linking the poles of the curve.
+
+   class Plane;
+   	---Purpose: computes the presentation of a infinite plane.
+
+   class WFPoleSurface;
+   	---Purpose: computes the presentation of surfaces by drawing a
+	--          double network of lines linking the poles of the surface
+	--          in the two parametric direction.
+	
+
+   class DeflectionCurve;		      
+	---Purpose: computes the presentation of objects to be
+	--          seen as curves. The computation will be made
+	--          according to a maximal chordial deviation.
+	          
+	---Category: Wireframe algorithms
+   
+   class WFDeflectionSurface;
+	---Purpose: computes the wireframe presentation of surfaces 
+	--          by displaying a given number of U and/or V isoparametric
+	---         curves. The isoparametric curves are drawn with respect
+	--          to a given maximal chordial deviation.
+
+   class ShadedSurface;
+   	---Purpose: computes the shading presentation of surfaces.
+
+   class ShadedPoleSurface;
+
+
+   -----------------------------------------------
+   --- deflection drawing classes :
+   -----------------------------------------------
+
+   class WFDeflectionRestrictedFace;
+
+
+   class WFDeflectionShape instantiates WFShape from Prs3d
+	 (WFDeflectionRestrictedFace from StdPrs,
+	  DeflectionCurve            from StdPrs,
+    	  Vertex                     from StdPrs);
+		      
+		      
+   -----------------------------------------------
+   --- Instantiations whith no deflection drawing.
+   -----------------------------------------------
+
+   class Curve;
+   	---Purpose: computes the presentation of objects to be
+	--          seen as curves. The computation will be made
+	--          whith a constant number of points.
+
+
+   class WFSurface;
+   	---Purpose: computes the wireframe presentation of surfaces 
+	--          by displaying a given number of U and/or V isoparametric
+	---         curves. The isoparametric curves are drawn with respect
+	--          to a given number of points.
+
+
+   class WFRestrictedFace instantiates WFRestrictedFace from Prs3d  
+    	 (Curve     from StdPrs,
+    	  ToolRFace from StdPrs);
+
+
+   class WFShape instantiates WFShape from Prs3d
+	 (WFRestrictedFace  from StdPrs,
+	  Curve             from StdPrs,
+    	  Vertex            from StdPrs);
+
+
+    class ShadedShape instantiates ShadedShape from Prs3d
+    	  (Shape           from TopoDS,
+	   Face            from TopoDS,
+	   Triangle        from BRepMesh,
+	   Edge            from BRepMesh,
+    	   ToolShadedShape from StdPrs);
+	       	   
+	       
+    class HLRShape instantiates HLRShape from Prs3d 
+    	  (Shape           from TopoDS,
+           HLRToolShape    from StdPrs,
+	   Curve           from BRepAdaptor,
+	   DeflectionCurve from StdPrs);
+			
+    class HLRPolyShape; 
+     
+    imported NListOfSequenceOfPnt from Prs3d; 
+    imported NListIteratorOfListOfSequenceOfPnt from Prs3d;
+    
+			
+end StdPrs;
+
+
+

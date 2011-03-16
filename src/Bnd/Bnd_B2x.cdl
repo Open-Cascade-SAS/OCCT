@@ -1,0 +1,142 @@
+-- File:        Bnd_B2x.cdl
+-- Created:     Thu Sep  8 17:39:16 2005
+-- Author:      Alexander GRIGORIEV
+--              <agv@opencascade.com>
+---Copyright:    Open Cascade 2005
+
+generic class B2x from Bnd (RealType as any)
+
+uses    XY      from gp,
+        Ax2d    from gp,
+        Pnt2d   from gp,
+        Trsf2d  from gp
+
+is
+
+    Create returns B2x from Bnd;
+    ---Purpose: Empty constructor.
+    ---C++: inline
+
+    Create      (theCenter: XY from gp; theHSize : XY from gp)
+        returns B2x from Bnd;
+    ---Purpose: Constructor.
+    ---C++: inline
+
+    IsVoid      (me)
+        returns Boolean from Standard;
+    ---Purpose: Returns True if the box is void (non-initialized).
+    ---C++: inline
+
+    Clear       (me:in out);
+    ---Purpose: Reset the box data.
+    ---C++: inline
+
+    Add         (me:in out; thePnt: XY from gp);
+    ---Purpose: Update the box by a point.
+
+    Add         (me:in out; thePnt: Pnt2d from gp);
+    ---Purpose: Update the box by a point.
+
+    Add         (me:in out; theBox: B2x from Bnd);
+    ---Purpose: Update the box by another box.
+    ---C++: inline
+
+    CornerMin   (me)
+        returns XY from gp;
+    ---Purpose: Query a box corner: (Center - HSize). You must make sure that
+    --          the box is NOT VOID (see IsVoid()), otherwise the method returns
+    --          irrelevant result.
+    ---C++: inline
+
+    CornerMax   (me)
+        returns XY from gp;
+    ---Purpose: Query a box corner: (Center + HSize). You must make sure that
+    --          the box is NOT VOID (see IsVoid()), otherwise the method returns
+    --          irrelevant result.
+    ---C++: inline
+
+    SquareExtent(me)
+        returns Real from Standard;
+    ---Purpose: Query the square diagonal. If the box is VOID (see method IsVoid())
+    --          then a very big real value is returned.
+    ---C++: inline
+
+    Enlarge     (me:in out; theDiff: Real from Standard);
+    ---Purpose: Extend the Box by the absolute value of theDiff.
+    ---C++: inline
+
+    Limit       (me:in out; theOtherBox: B2x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Limit the Box by the internals of theOtherBox.
+    --          Returns True if the limitation takes place, otherwise False
+    --          indicating that the boxes do not intersect. 
+
+    Transformed (me; theTrsf: Trsf2d from gp)
+        returns B2x from Bnd;
+    ---Purpose: Transform the bounding box with the given transformation.
+    --          The resulting box will be larger if theTrsf contains rotation.
+
+    IsOut       (me; thePnt: XY from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given point for the inclusion in the Box.
+    --          Returns True if the point is outside.
+    ---C++: inline
+
+    IsOut       (me; theCenter     : XY from gp;
+                     theRadius     : Real from Standard;
+                     isCircleHollow: Boolean from Standard = Standard_False)
+        returns Boolean from Standard;
+    ---Purpose: Check a circle for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes.
+
+    IsOut       (me; theOtherBox: B2x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Check the given box for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes.
+    ---C++: inline
+
+    IsOut       (me; theOtherBox: B2x from Bnd; theTrsf: Trsf2d from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given box oriented by the given transformation
+    --          for the intersection with the current box.
+    --          Returns True if there is no intersection between boxes.
+
+    IsOut       (me; theLine: Ax2d from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the given Line for the intersection with the current box.
+    --          Returns True if there is no intersection.
+
+    IsOut       (me; theP0, theP1: XY from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check the Segment defined by the couple of input points
+    --          for the intersection with the current box.
+    --          Returns True if there is no intersection.
+
+    IsIn        (me; theBox: B2x from Bnd)
+        returns Boolean from Standard;
+    ---Purpose: Check that the box 'this' is inside the given box 'theBox'. Returns
+    --          True if 'this' box is fully inside 'theBox'.
+    ---C++: inline
+
+    IsIn        (me; theBox: B2x from Bnd; theTrsf: Trsf2d from gp)
+        returns Boolean from Standard;
+    ---Purpose: Check that the box 'this' is inside the given box 'theBox'
+    --          transformed by 'theTrsf'. Returns True if 'this' box is fully
+    --          inside the transformed 'theBox'.
+
+    SetCenter   (me: in out; theCenter: XY from gp);
+    ---Purpose: Set the Center coordinates
+    ---C++: inline
+
+    SetHSize    (me: in out; theHSize: XY from gp);
+    ---Purpose: Set the HSize (half-diagonal) coordinates.
+    --          All components of theHSize must be non-negative.
+    ---C++: inline
+
+
+fields
+
+    myCenter :  RealType[2]     is protected;
+    myHSize  :  RealType[2]     is protected;
+
+end B2x from Bnd;

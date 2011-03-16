@@ -1,0 +1,26 @@
+-- File:	MoniTool_DataInfo.cdl
+-- Created:	Wed Sep  4 10:47:02 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class DataInfo  from MoniTool
+
+    ---Purpose : Gives informations on an object
+    --           Used as template to instantiate Elem, etc
+    --           This class is for Transient
+
+uses CString, Transient, Type
+
+is
+
+    Type (myclass; ent : Transient) returns Type;
+    ---Purpose : Returns the Type attached to an object
+    --           Here, the Dynamic Type of a Transient. Null Type if unknown
+
+    TypeName (myclass; ent : Transient) returns CString;
+    ---Purpose : Returns Type Name (string)
+    --           Allows to name type of non-handled objects
+
+end DataInfo;

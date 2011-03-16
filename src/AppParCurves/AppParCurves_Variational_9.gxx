@@ -1,0 +1,99 @@
+// File:	AppParCurves_Variational_9.gxx
+// Created:	Fri Feb 19 11:09:11 1999
+// Author:	Sergey KHROMOV
+//		<skv@pronox.nnov.matra-dtv.fr>
+
+ static Standard_Boolean NotParallel(gp_Vec& T, gp_Vec& V)
+{
+  V = T;
+  V.SetX(V.X() + 1.);
+  if (V.CrossMagnitude(T) > 1.e-12)
+    return Standard_True;
+  V.SetY(V.Y() + 1.);
+  if (V.CrossMagnitude(T) > 1.e-12)
+    return Standard_True;
+  V.SetZ(V.Z() + 1.);
+  if (V.CrossMagnitude(T) > 1.e-12)
+    return Standard_True;
+  return Standard_False;
+}
+
+ Standard_Boolean AppParCurves_Variational::InitTthetaF(const Standard_Integer ndimen,
+							const AppParCurves_Constraint typcon,
+							const Standard_Integer begin,
+							const Standard_Integer jndex)
+{
+  if ((ndimen < 2)||(ndimen >3))
+    return Standard_False;
+  gp_Vec T, V;
+  gp_Vec theta1, theta2;
+  gp_Vec F;
+  Standard_Real XX, XY, YY, XZ, YZ, ZZ;
+
+  if ((typcon == AppParCurves_TangencyPoint)||(typcon == AppParCurves_CurvaturePoint))
+    {
+      T.SetX(myTabConstraints->Value(jndex));
+      T.SetY(myTabConstraints->Value(jndex + 1));
+      if (ndimen == 3)
+	T.SetZ(myTabConstraints->Value(jndex + 2));
+      else
+	T.SetZ(0.);
+      if (ndimen == 2)
+	{
+	  V.SetX(0.);
+	  V.SetY(0.);
+	  V.SetZ(1.);
+	}
+      if (ndimen == 3)
+	if (!NotParallel(T, V))
+	  return Standard_False;
+      theta1 = V ^ T;
+      theta1.Normalize();
+      myTtheta->SetValue(begin, theta1.X());
+      myTtheta->SetValue(begin + 1, theta1.Y());
+      if (ndimen == 3)
+	{
+	  theta2 = T ^ theta1;
+	  theta2.Normalize();
+	  myTtheta->SetValue(begin + 2, theta1.Z());
+	  myTtheta->SetValue(begin + 3, theta2.X());
+	  myTtheta->SetValue(begin + 4, theta2.Y());
+	  myTtheta->SetValue(begin + 5, theta2.Z());
+	}
+      
+      // Calculation of myTfthet
+      if (typcon == AppParCurves_CurvaturePoint)
+	{
+	  XX = Pow(T.X(), 2);
+	  XY = T.X() * T.Y();
+	  YY = Pow(T.Y(), 2);
+	  if (ndimen == 2) 
+	    {
+	      F.SetX(YY * theta1.X() - XY * theta1.Y());
+	      F.SetY(XX * theta1.Y() - XY * theta1.X());
+	      myTfthet->SetValue(begin, F.X());
+	      myTfthet->SetValue(begin + 1, F.Y());
+	    }
+	  if (ndimen == 3)
+	    {
+	      XZ = T.X() * T.Z();
+	      YZ = T.Y() * T.Z();
+	      ZZ = Pow(T.Z(), 2);
+	      
+	      F.SetX((ZZ + YY) * theta1.X() - XY * theta1.Y() - XZ * theta1.Z());
+	      F.SetY((XX + ZZ) * theta1.Y() - XY * theta1.X() - YZ * theta1.Z());
+	      F.SetZ((XX + YY) * theta1.Z() - XZ * theta1.X() - YZ * theta1.Y());
+	      myTfthet->SetValue(begin, F.X());
+	      myTfthet->SetValue(begin + 1, F.Y());
+	      myTfthet->SetValue(begin + 2, F.Z());
+	      F.SetX((ZZ + YY) * theta2.X() - XY * theta2.Y() - XZ * theta2.Z());
+	      F.SetY((XX + ZZ) * theta2.Y() - XY * theta2.X() - YZ * theta2.Z());
+	      F.SetZ((XX + YY) * theta2.Z() - XZ * theta2.X() - YZ * theta2.Y());
+	      myTfthet->SetValue(begin + 3, F.X());
+	      myTfthet->SetValue(begin + 4, F.Y());
+	      myTfthet->SetValue(begin + 5, F.Z());
+	    }
+	}
+    }
+  return Standard_True;
+}

@@ -1,0 +1,23 @@
+-- File:	TopoDS_Compound.cdl
+-- Created:	Mon Dec 17 11:12:03 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class Compound from TopoDS inherits Shape from TopoDS
+
+	---Purpose: Describes a compound which
+-- - references an underlying compound with the
+--   potential to be given a location and an orientation
+-- - has a location for the underlying compound, giving
+--   its placement in the local coordinate system
+-- - has an orientation for the underlying compound, in
+--   terms of its geometry (as opposed to orientation in
+--   relation to other shapes).
+
+is
+    Create returns Compound from TopoDS;
+    ---C++: inline
+	---Purpose: Constructs an Undefined Compound.
+
+end Compound;

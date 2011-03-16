@@ -1,0 +1,26 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+
+inline Standard_Boolean IntAna_IntQuadQuad::IsDone () const
+{
+  return(done);
+}
+
+inline Standard_Boolean IntAna_IntQuadQuad::IdenticalElements () const { 
+  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
+  return(identical); 
+}
+
+inline Standard_Integer IntAna_IntQuadQuad::NbCurve () const { 
+  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
+  if (identical) {Standard_DomainError::Raise();}
+  return(NbCurves); 
+}
+
+inline Standard_Integer IntAna_IntQuadQuad::NbPnt () const
+{
+  if(!done) {StdFail_NotDone::Raise("IntQuadQuad Not done");}
+  if (identical) {Standard_DomainError::Raise();}
+  return(Nbpoints);
+}
+

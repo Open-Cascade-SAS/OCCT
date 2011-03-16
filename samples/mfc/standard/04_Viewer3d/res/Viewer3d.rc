@@ -1,0 +1,510 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\Common\res\OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Russian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+#ifdef _WIN32
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SETOFFSETS DIALOGEX 442, 45, 187, 60
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Set offsets"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "Slider2",IDC_SLIDER_OFFSETFACTOR,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,39,14,100,15
+    LTEXT           "Factor:",IDC_STATIC,13,17,23,15
+    LTEXT           "Units:",IDC_STATIC,13,35,19,8
+    CONTROL         "Slider3",IDC_SLIDER_OFFSETUNITS,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,39,32,100,15
+    GROUPBOX        "Offset parameters",IDC_STATIC,7,6,173,47
+    EDITTEXT        IDC_EDIT_OFFSETFACTOR,148,14,22,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_EDIT_OFFSETUNITS,148,32,22,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+END
+
+IDD_TRIHEDRON DIALOG DISCARDABLE  0, 0, 138, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Triedron settings"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,21,75,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,73,75,50,14
+    COMBOBOX        IDC_COMBOTRIHEDRPOS,38,8,92,60,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOTRIHEDRCOLOR,38,29,92,78,CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDITTRIHEDRSCALE,38,51,33,12,ES_CENTER | 
+                    ES_AUTOHSCROLL
+    LTEXT           "Color:",IDC_STATIC,8,31,20,8
+    LTEXT           "Position:",IDC_STATIC,8,10,28,8
+    LTEXT           "Scale:",IDC_STATIC,8,53,24,10
+    CONTROL         "Spin1",IDC_SPINTRIHEDRSCALE,"msctls_updown32",
+                    UDS_AUTOBUDDY | UDS_ARROWKEYS,70,51,11,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO MOVEABLE PURE 
+BEGIN
+    IDD_SETOFFSETS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 53
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ZCLIPPING DIALOG DISCARDABLE  0, 0, 180, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "ZClipping"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,13,68,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,68,50,14
+    CONTROL         "Slider1",IDC_SLIDER_ZCLIPPINGDEPTH,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,34,6,97,15
+    LTEXT           "Depth:",IDC_STATIC,13,9,22,8
+    GROUPBOX        "",IDC_STATIC,7,0,166,44
+    EDITTEXT        IDC_EDIT_ZCLIPPINGDEPTH,131,7,34,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CONTROL         "Slider2",IDC_SLIDER_ZCLIPPINGWIDTH,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,34,25,97,15
+    LTEXT           "Width:",IDC_STATIC,13,28,22,8
+    EDITTEXT        IDC_EDIT_ZCLIPPINGWIDTH,131,26,34,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    COMBOBOX        IDC_COMBO_ZCLIPPINGTYPE,39,47,80,55,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Type:",IDC_STATIC,13,49,19,8
+    GROUPBOX        "",IDC_STATIC,7,59,166,29
+END
+
+IDD_ZCUEING DIALOG DISCARDABLE  0, 0, 180, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "ZCueing"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,13,68,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,68,50,14
+    CONTROL         "Slider1",IDC_SLIDER_ZCUEINGDEPTH,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,34,6,97,15
+    LTEXT           "Depth:",-1,13,9,22,8
+    GROUPBOX        "",-1,7,0,166,44
+    EDITTEXT        IDC_EDIT_ZCUEINGDEPTH,131,7,34,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CONTROL         "Slider2",IDC_SLIDER_ZCUEINGWIDTH,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,34,25,97,15
+    LTEXT           "Width:",-1,13,28,22,8
+    EDITTEXT        IDC_EDIT_ZCUEINGWIDTH,131,26,34,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    GROUPBOX        "",-1,7,59,166,29
+    CONTROL         "Cueing ON/OFF",IDC_CHECK_CUEINGONOFF,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,13,49,67,10
+END
+
+IDD_SHADINGMODEL DIALOG DISCARDABLE  0, 0, 60, 66
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ShadingModel"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "COLOR",IDC_SHADINGMODEL_COLOR,7,7,46,16
+    PUSHBUTTON      "FLAT",IDC_SHADINGMODEL_FLAT,7,25,46,15
+    PUSHBUTTON      "GOURAUD",IDC_SHADINGMODEL_GOURAUD,7,43,46,16
+END
+
+IDD_MODELCLIPPING DIALOG DISCARDABLE  0, 0, 180, 74
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Model clipping"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,13,47,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,47,50,14
+    CONTROL         "Slider1",IDC_SLIDER_MODELCLIPPING_Z,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,21,6,97,15
+    LTEXT           "Z:",-1,12,10,8,8
+    GROUPBOX        "",-1,7,0,166,25
+    EDITTEXT        IDC_EDIT_MODELCLIPPING_Z,118,7,34,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    GROUPBOX        "",-1,7,38,166,29
+    CONTROL         "Model clipping ON/OFF",IDC_CHECK_MODELCLIPPINGONOFF,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,28,91,10
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\Common\\res\\OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "..//res//Toolbar.bmp"
+IDR_TB_AIS              BITMAP  MOVEABLE PURE   "..//res//AIS_TB.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR MOVEABLE PURE  20, 20
+BEGIN
+    BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_BOX
+    BUTTON      ID_Cylinder
+    BUTTON      ID_SPHERE
+    SEPARATOR
+    BUTTON      ID_OVERLAPPED_BOX
+    BUTTON      ID_OVERLAPPED_CYLINDER
+    BUTTON      ID_OVERLAPPED_SPHERE
+    BUTTON      ID_POLYGON_OFFSETS
+    SEPARATOR
+    BUTTON      ID_ERASEALL
+    SEPARATOR
+    BUTTON      ID_SPOT_LIGHT
+    BUTTON      ID_POSITIONAL_LIGHT
+    BUTTON      ID_DIRECTIONAL_LIGHT
+    BUTTON      ID_AMBIENT_LIGHT
+    BUTTON      ID_CLEAR_LIGHTS
+    SEPARATOR
+    BUTTON      ID_ZCLIPPING
+    BUTTON      ID_ZCUEING
+    BUTTON      ID_SCALE
+    SEPARATOR
+    BUTTON      ID_SHADINGMODEL
+    BUTTON      ID_ANTIALIASINGONOFF
+    SEPARATOR
+    BUTTON      ID_MODELCLIPPING
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_TB_AIS TOOLBAR MOVEABLE PURE  20, 20
+BEGIN
+    BUTTON      ID_OBJECT_WIREFRAME
+    BUTTON      ID_OBJECT_SHADING
+    BUTTON      ID_OBJECT_COLORED_MESH
+    SEPARATOR
+    BUTTON      ID_OBJECT_COLOR
+    BUTTON      ID_OBJECT_MATERIAL
+    BUTTON      ID_OBJECT_TRANSPARENCY
+    SEPARATOR
+    BUTTON      ID_OBJECT_ERASE
+    BUTTON      ID_OBJECT_DISPLAYALL
+    SEPARATOR
+    BUTTON      ID_OBJECT_REMOVE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Viewer3d...",          ID_APP_ABOUT
+    END
+END
+
+IDR_3DTYPE MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Options"
+    BEGIN
+        POPUP "&Trihedron"
+        BEGIN
+            MENUITEM "&Static Trihedron...",        ID_OPTIONS_TRIHEDRON_STATIC_TRIHEDRON
+
+            MENUITEM "&Dynamic Trihedron",          ID_OPTIONS_TRIHEDRON_DYNAMIC_TRIHEDRON
+
+        END
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Viewer3d...",          ID_APP_ABOUT
+    END
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "Viewer MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "Viewer\0"
+            VALUE "LegalCopyright", "Copyright (C) 1997\0"
+            VALUE "OriginalFilename", "Viewer.EXE\0"
+            VALUE "ProductName", "SampleViewer3d Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "Viewer3d"
+    IDR_3DTYPE              "\nViewer3d\n\n\n\n.Document\n Document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BOX                  "Create and display a box\nBox"
+    ID_Cylinder             "Create and display a cylinder\nCylinder"
+    ID_SPHERE               "Create and display a sphere\nSphere"
+    ID_ERASEALL             "Remove all\nRemove all"
+    ID_AMBIENT_LIGHT        "Create an ambient light source\nAmbient light"
+    ID_DIRECTIONAL_LIGHT    "Create an directional light source\nDirectional light"
+    ID_POSITIONAL_LIGHT     "Create an positional light source\nPositional light"
+    ID_SPOT_LIGHT           "Create an spot light source\nSpot light"
+    ID_LIGHTOFF             "Delete lights\nDelete lights"
+    ID_ZCLIPPING            "ZClipping\nZClipping"
+    ID_ZCUEING              "ZCueing\nZCueing"
+    ID_SHADINGMODEL         "Define shading model\nShadingModel"
+    ID_ANTIALIASINGONOFF    "Antialiasing ON/OFF\nAntialiasing"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_CLEAR_LIGHTS         "Clear all the light sources\nClear lights"
+    ID_MODELCLIPPING        "ModelClipping\nModelClipping"
+    ID_OVERLAPPED_BOX       "Create and display two overlapped boxes\nOverlapped boxes"
+    ID_BUTTON819            "Create and display two overlapped spheres\nOverlapped spheres"
+    ID_OVERLAPPED_SPHERE    "Create and display two overlapped spheres\nOverlapped spheres"
+    ID_BUTTON821            "Create and display two overlapped boxes\nOverlapped boxes"
+    ID_OVERLAPPED_CYLINDER  "Create and display two overlapped cylinders\nOverlapped cylinders"
+    ID_POLYGON_OFFSETS      "Set/unset offsets\nSet/unset offsets"
+    ID_OBJECT_COLORED_MESH  "Puts cylinder in colored mesh\nColored mesh"
+    ID_SCALE                "Scale\nScale"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SCALE DIALOG DISCARDABLE  0, 0, 186, 103
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Heterogeneous Scale"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,13,78,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,78,50,14
+    GROUPBOX        "",IDC_STATIC,7,69,166,29
+    GROUPBOX        "",IDC_STATIC,7,0,166,65
+    CONTROL         "Slider1",IDC_SLIDER_SCALEX,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,34,6,97,15
+    LTEXT           "X:",IDC_STATIC,13,9,8,8
+    EDITTEXT        IDC_EDIT_SCALEX,131,7,34,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Slider2",IDC_SLIDER_SCALEY,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,34,25,97,15
+    LTEXT           "Y:",IDC_STATIC,13,28,8,8
+    EDITTEXT        IDC_EDIT_SCALEY,131,26,34,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Slider2",IDC_SLIDER_SCALEZ,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,34,45,97,15
+    LTEXT           "Z:",IDC_STATIC,13,48,8,8
+    EDITTEXT        IDC_EDIT_SCALEZ,131,46,34,14,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SCALE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 96
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

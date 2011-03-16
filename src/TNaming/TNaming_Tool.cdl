@@ -1,0 +1,215 @@
+-- File:	TNaming_Tool.cdl
+-- Created:	Tue Dec 24 08:50:25 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class Tool from TNaming 
+
+	---Purpose: A tool to get information on the topology of a
+    	-- named shape attribute.
+    	-- This information is typically a TopoDS_Shape object.
+    	--  Using this tool, relations between named shapes
+    	--  are also accessible.
+
+        
+uses 
+    Label            from TDF,
+    LabelList        from TDF,
+    LabelMap         from TDF,
+    NamedShape       from TNaming,	
+    UsedShapes       from TNaming,
+    Evolution        from TNaming,
+    MapOfNamedShape  from TNaming,	
+    ListOfShape      from TopTools,     
+    Shape            from TopoDS,
+    OldShapeIterator from TNaming,
+    MapOfShape       from TopTools
+
+is
+    
+    
+    CurrentShape (myclass ; NS : NamedShape from TNaming)
+    	---Purpose: Returns the last Modification of <NS>.
+        -- Returns the shape CurrentShape contained in
+    	-- the named shape attribute NS.
+    	-- CurrentShape is the current state of the entities
+    	-- if they have been modified in other attributes of the same data structure.
+    	-- Each call to this function creates a new compound.
+    returns Shape from TopoDS;			    
+
+    CurrentShape (myclass ; NS      : NamedShape from TNaming;
+    	    	    	    Updated : LabelMap   from TDF)
+    	---Purpose: Returns the shape CurrentShape contained in
+    	-- the named shape attribute NS, and present in
+    	-- the updated attribute map Updated.
+    	-- CurrentShape is the current state of the entities
+    	-- if they have been modified in other attributes of the same data structure.
+    	-- Each call to this function creates a new compound.
+    	-- Warning
+    	-- Only the contents of Updated are searched.R
+    returns Shape from TopoDS;			    
+
+    
+    
+    CurrentNamedShape (myclass ; NS      : NamedShape from TNaming;
+    	    	    	         Updated : LabelMap   from TDF)
+    	---Purpose: Returns the NamedShape of the last Modification of <NS>.
+    	--          This shape is identified by a label.
+    returns NamedShape from TNaming;
+
+    CurrentNamedShape (myclass ; NS      : NamedShape from TNaming)
+    	---Purpose: Returns NamedShape the last Modification of <NS>.
+    returns NamedShape from TNaming;
+
+    NamedShape (myclass; aShape  : Shape from TopoDS;
+    	    	    	 anAcces : Label from TDF)
+    	---Purpose: Returns the named shape attribute defined by
+    	-- the shape aShape and the label anAccess.
+    	-- This attribute is returned as a new shape.
+    	-- You call this function, if you need to create a
+    	-- topological attribute for existing data.
+    	-- Example
+    	-- class MyPkg_MyClass
+    	--  {
+    	--  public: Standard_Boolean
+    	-- SameEdge(const
+    	-- Handle(OCafTest_Line)& , const
+    	-- Handle(CafTest_Line)& );
+    	-- };
+    	--
+    	-- Standard_Boolean
+    	-- MyPkg_MyClass::SameEdge
+    	-- (const Handle(OCafTest_Line)& L1
+    	-- const Handle(OCafTest_Line)& L2)
+    	-- { Handle(TNaming_NamedShape)
+    	-- NS1 = L1->NamedShape();
+    	--     Handle(TNaming_NamedShape)
+    	-- NS2 = L2->NamedShape();
+    	--
+    	--     return
+    	-- BRepTools::Compare(NS1->Get(),NS2->Get());
+    	-- }
+    	-- In the example above, the function SameEdge is
+    	-- created to compare the edges having two lines
+    	-- for geometric supports. If these edges are found
+    	-- by BRepTools::Compare to be within the same
+    	-- tolerance, they are considered to be the same.
+    	-- Warning
+    	-- To avoid sharing of names, a SELECTED
+    	-- attribute will not be returned. Sharing of names
+    	-- makes it harder to manage the data structure.
+    	-- When the user of the name is removed, for
+    	-- example, it is difficult to know whether the name
+    	-- should be destroyed.
+    returns NamedShape from TNaming;
+
+
+    GetShape     (myclass ; NS : NamedShape from TNaming)
+    	---Purpose: Returns the entities stored in the named shape attribute NS.
+    	-- If there is only one old-new pair, the new shape
+    	-- is returned. Otherwise, a Compound is returned.
+    	-- This compound is made out of all the new shapes found.
+    	-- Each call to this function creates a new compound.
+    returns Shape from TopoDS;	
+    
+    OriginalShape (myclass ; NS : NamedShape from TNaming)
+    	--- Purpose: Returns the shape contained as OldShape in <NS>
+    returns Shape from TopoDS;	
+   
+    GeneratedShape (myclass; S : Shape from TopoDS;
+    	    	    	     Generation : NamedShape from TNaming)
+	---Purpose:  Returns the shape generated from S or by a
+    	-- modification of S and contained in the named
+    	-- shape Generation.
+    returns Shape from TopoDS;
+
+			     
+    Collect (myclass; NS        :     NamedShape      from TNaming;
+    	    	      Labels    : out MapOfNamedShape from TNaming;
+		      OnlyModif :     Boolean    = Standard_True);
+
+    HasLabel(myclass; access :     Label  from TDF;
+    		      aShape :     Shape  from TopoDS) 
+	---Purpose: Returns True if <aShape> appears under a label.(DP)		      
+    returns Boolean from Standard;
+
+    Label (myclass; access   :        Label      from TDF;
+    	    	    aShape   :        Shape      from TopoDS;
+    	    	    TransDef : in out Integer    from Standard) 
+    returns Label from TDF;
+	---Purpose:  Returns  the label  of   the first apparition  of
+	--          <aShape>.  Transdef  is a value of the transaction
+	--          of the first apparition of <aShape>.
+
+    InitialShape (myclass ; aShape  :        Shape      from TopoDS ;
+    	    	    	    anAcces :        Label      from TDF;
+			    Labels  : in out LabelList  from TDF)
+	---Purpose: 
+    	-- Returns the shape created from the shape
+    	-- aShape contained in the attribute anAcces.
+    returns Shape from TopoDS;
+ 
+    
+    
+    ValidUntil (myclass; access : Label      from TDF;
+                         S      : Shape from TopoDS)
+    	---Purpose: Returns the last transaction where the creation of S
+    	--          is valid.
+    returns Integer from Standard;		    		
+
+    FindShape  (myclass;
+    	        Valid    :        LabelMap   from TDF;
+                Forbiden :        LabelMap   from TDF;
+		Arg      :        NamedShape from TNaming;
+		S        : in out Shape      from TopoDS); 
+    ---Purpose: Returns the current shape (a Wire or a Shell) built (in the data framework)  
+    --          from the the shapes of the argument named shape.	 
+    --          It is used for IDENTITY name type computation.		   
+
+
+
+
+    ---Category: private methods
+    --           ===============
+    
+    HasLabel(myclass; Shapes  :     UsedShapes from TNaming;
+    		      aShape  :     Shape      from TopoDS) 
+	---Purpose: Returns True if <aShape> appears under a label.		      
+    returns Boolean from Standard
+    is private;
+    
+
+    ValidUntil (myclass; S  : Shape from TopoDS;
+    	    	         US : UsedShapes  from TNaming)
+    	---Purpose: Returns the last transaction where the creation of S
+    	--          is valid.
+    returns Integer from Standard
+    is private;
+    
+    Label(myclass; Shapes   :        UsedShapes from TNaming;
+    	    	   aShape   :        Shape      from TopoDS;
+    	    	   TransDef : in out Integer    from Standard) 
+    returns Label from TDF
+    is private;
+	---Purpose:  Returns  the label  of   the first apparition  of
+	--          <aShape>.  Transdef  is a value of the transaction
+	--          of the first apparition of <aShape>.  
+
+    FirstOlds (myclass; Shapes :        UsedShapes from TNaming;
+    	                S      :        Shape from TopoDS;
+	                it     : in out OldShapeIterator from TNaming;
+	                MS     : in out MapOfShape from TopTools;
+	                Labels : in out LabelList from TDF)
+    is private;
+
+
+friends
+
+    class Localizer  from TNaming,
+    class NamedShape from TNaming,
+    class OldShapeIterator from TNaming
+	
+end Tool;

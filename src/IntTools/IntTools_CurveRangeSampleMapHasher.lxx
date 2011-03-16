@@ -1,0 +1,14 @@
+// File:	IntTools_CurveRangeSampleMapHasher.lxx
+// Created:	Fri Oct 14 21:00:44 2005
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+inline Standard_Integer IntTools_CurveRangeSampleMapHasher::HashCode(const IntTools_CurveRangeSample& K,
+								     const Standard_Integer Upper) {
+  return (K.GetDepth() % Upper);
+}
+	
+inline Standard_Boolean IntTools_CurveRangeSampleMapHasher::IsEqual(const IntTools_CurveRangeSample& S1,
+								    const IntTools_CurveRangeSample& S2) {
+  return S1.IsEqual(S2);
+}

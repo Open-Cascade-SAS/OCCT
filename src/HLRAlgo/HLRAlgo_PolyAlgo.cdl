@@ -1,0 +1,85 @@
+-- File:	HLRAlgo_PolyAlgo.cdl
+-- Created:	Tue Feb 18 10:36:07 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class PolyAlgo from HLRAlgo inherits TShared from MMgt
+
+	---Purpose: to remove Hidden lines on Triangulations.
+
+uses
+    Address                    from Standard,
+    Boolean                    from Standard,
+    Integer                    from Standard,
+    Real                       from Standard,
+    HArray1OfTransient         from TColStd,
+    Array1OfTransient          from TColStd,
+    ListIteratorOfListOfBPoint from HLRAlgo,
+    EdgeStatus                 from HLRAlgo
+    
+is
+    Create
+    returns mutable PolyAlgo from HLRAlgo;
+    
+    Init(me : mutable; HShell : HArray1OfTransient from TColStd)
+    is static;
+
+    PolyShell(me) returns Array1OfTransient from TColStd
+	---C++: return &
+	---C++: inline
+    is static;
+    
+    Clear(me : mutable)
+    is static;
+    
+    Update(me : mutable)
+	---Purpose: Prepare all the data to process the algo.
+    is static;
+    
+    InitHide(me : mutable)
+	---C++: inline
+    is static;
+
+    MoreHide(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+
+    NextHide(me : mutable)
+    is static;
+
+    Hide(me : mutable; Coordinates : out Address    from Standard;
+                       status      : out EdgeStatus from HLRAlgo;
+		       Index       : out Integer    from Standard;
+                       reg1,regn   : out Boolean    from Standard;
+                       outl,intl   : out Boolean    from Standard)
+	---Purpose: process hiding between <Pt1> and <Pt2>.
+    is static;
+    
+    InitShow(me : mutable)
+	---C++: inline
+    is static;
+
+    MoreShow(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+
+    NextShow(me : mutable)
+    is static;
+
+    Show(me : mutable; Coordinates : out Address from Standard;
+		       Index       : out Integer from Standard;
+                       reg1,regn   : out Boolean from Standard;
+                       outl,intl   : out Boolean from Standard)
+	---Purpose: process hiding between <Pt1> and <Pt2>.
+    is static;
+    
+fields
+    myHShell    : HArray1OfTransient         from TColStd;
+    myRealPtr   : Real                       from Standard[10];
+    mySegListIt : ListIteratorOfListOfBPoint from HLRAlgo;
+    myNbrShell  : Integer                    from Standard;
+    myCurShell  : Integer                    from Standard;
+    myFound     : Boolean                    from Standard;
+
+end PolyAlgo;

@@ -1,0 +1,94 @@
+-- File:	Transfer_ResultFromTransient.cdl
+-- Created:	Thu Nov 16 09:55:56 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ResultFromTransient  from Transfer    inherits  TShared
+
+    ---Purpose : This class, in conjunction with ResultFromModel, allows to
+    --           record the result of a transfer initially stored in a
+    --           TransientProcess.
+    --           
+    --           A ResultFromTransient records a couple (Transient,Binder for
+    --           the result and checks) plus a list of "sub-results", which
+    --           have been recorded in the TrabsientProcess, under scope
+    --           attached to the starting transient.
+
+uses Transient, HSequenceOfTransient, IndexedMapOfTransient,
+     Check, CheckStatus, Binder, TransientProcess
+
+is
+
+    Create returns mutable ResultFromTransient;
+    ---Purpose : Creates a ResultFromTransient, empty
+
+    SetStart  (me : mutable; start  : any Transient);
+    ---Purpose : Sets starting entity
+
+    SetBinder (me : mutable; binder : any Binder);
+    ---Purpose : Sets Binder (for result plus individual check)
+
+    Start (me) returns any Transient;
+    ---Purpose : Returns the starting entity
+
+    Binder (me) returns any Binder;
+    ---Purpose : Returns the binder
+
+    HasResult (me) returns Boolean;
+    ---Purpose : Returns True if a result is recorded
+
+    Check       (me) returns Check;
+    ---Purpose : Returns the check (or an empty one if no binder)
+    ---C++ : return const
+
+    CheckStatus (me) returns CheckStatus;
+    ---Purpose : Returns the check status
+
+
+    ClearSubs (me : mutable);
+    ---Purpose : Clears the list of (immediate) sub-results
+
+    AddSubResult (me : mutable; sub : mutable ResultFromTransient);
+    ---Purpose : Adds a sub-result
+
+    NbSubResults (me) returns Integer;
+    ---Purpose : Returns the count of recorded sub-results
+
+    SubResult    (me; num : Integer) returns mutable ResultFromTransient;
+    ---Purpose : Returns a sub-result, given its rank
+
+    ResultFromKey (me; key : Transient) returns ResultFromTransient;
+    ---Purpose : Returns the ResultFromTransient attached to a given starting
+    --           entity (the key). Returns a null handle if not found
+
+    FillMap (me; map : in out IndexedMapOfTransient);
+    ---Purpose : This method is used by ResultFromModel to collate the list of
+    --           ResultFromTransient, avoiding duplications with a map
+    --           Remark : <me> is already in the map and has not to be bound
+
+
+    Fill (me : mutable; TP : TransientProcess);
+    ---Purpose : Fills from a TransientProcess, with the starting entity which
+    --           must have been set before. It works with scopes, calls Fill
+    --           on each of its sub-results
+
+    Strip (me : mutable);
+    ---Purpose : Clears some data attached to binders used by TransientProcess,
+    --           which become useless once the transfer has been done :
+    --           the list of sub-scoped binders, which is now recorded as
+    --           sub-results
+
+    FillBack (me; TP : mutable TransientProcess);
+    ---Purpose : Fills back a TransientProcess with definition of a
+    --           ResultFromTransient, respectfully to its structuration in
+    --           scopes
+
+fields
+
+    thestart  : Transient;
+    thebinder : Binder;
+    thesubs   : HSequenceOfTransient;
+
+end ResultFromTransient;

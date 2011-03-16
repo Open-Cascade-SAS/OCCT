@@ -1,0 +1,33 @@
+-- File:	Geom2dInt.cdl
+-- Created:	Thu Jun  4 16:06:42 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package Geom2dInt 
+
+	---Purpose: Intersection between two Curves2 from Geom2dAdaptor
+
+        ---Level: Public
+        --
+        -- All the methods of the classes are public.
+        --
+
+
+uses Standard, gp, TColStd, GeomAbs, Geom2d, Adaptor3d,Adaptor2d, IntCurve
+
+is
+
+   generic class CurveTool;
+
+   class Geom2dCurveTool instantiates CurveTool from Geom2dInt
+            (Curve2d      from Adaptor2d);
+    	 
+   class GInter instantiates IntCurveCurveGen from IntCurve
+            (Curve2d         from Adaptor2d,
+             Geom2dCurveTool from Geom2dInt);
+
+end Geom2dInt; 
+ 

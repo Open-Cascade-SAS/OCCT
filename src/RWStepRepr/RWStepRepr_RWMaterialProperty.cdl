@@ -1,0 +1,35 @@
+-- File:	RWStepRepr_RWMaterialProperty.cdl
+-- Created:	Sat Dec 14 11:01:41 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWMaterialProperty from RWStepRepr
+
+    ---Purpose: Read & Write tool for MaterialProperty
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    MaterialProperty from StepRepr
+
+is
+    Create returns RWMaterialProperty from RWStepRepr;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : MaterialProperty from StepRepr);
+	---Purpose: Reads MaterialProperty
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: MaterialProperty from StepRepr);
+	---Purpose: Writes MaterialProperty
+
+    Share (me; ent : MaterialProperty from StepRepr;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWMaterialProperty;

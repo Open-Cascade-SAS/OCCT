@@ -1,0 +1,50 @@
+-- File:	FairCurve.cdl
+-- Created:	Mon Jan 22 15:07:56 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+package FairCurve 
+
+	---Purpose: this  package is  used  to  make  "FairCurve"  by
+	--          no linear optimization.
+	--          - Batten
+	--          - [Curve with] MinimalVariation [of curvature] or "MVC".
+
+uses Standard, math, TColStd, TColgp, gp, Geom2d
+
+is
+    enumeration AnalysisCode is
+    	OK,
+	NotConverged,
+	InfiniteSliding,
+	NullHeight
+    end  AnalysisCode;
+---Purpose:
+-- To deal with different results in the computation of curvatures.
+-- -   FairCurve_OK describes the case where computation is successfully
+--   completed
+-- -   FairCurve_NotConverged describes
+--   the case where the algorithm does not
+--   converge. In this case, you can not be
+--   certain of the result quality and should
+--   resume computation if you want to make use of the curve.
+-- -   FairCurve_InfiniteSliding describes the case where sliding is infinite, and,
+--   consequently, computation stops. The solution is to use an imposed sliding value.
+-- -   FairCurve_NullHeight describes the case where no matter is left at one of the
+--   ends of the curve, and as a result, computation stops. The solution is to
+--   change (increase or reduce) the slope value by increasing or decreasing it.
+        
+    class Batten;
+    class MinimalVariation;                      -- inherit from Batten
+    private class BattenLaw;                     -- inherit from Function
+    deferred class DistributionOfEnergy;         -- inherit from FuctionSet 
+    private class DistributionOfSagging;         -- inherit from DistributionOfEnergy  
+    private class DistributionOfTension;         -- inherit from DistributionOfEnergy 
+    private class DistributionOfJerk;            -- inherit from DistributionOfEnergy 
+    deferred class Energy;                       -- inherit from MultipleVarFunctionWithHessian  
+    private class EnergyOfBatten;                -- inherit from Energy  
+    private class EnergyOfMVC;                   -- inherits from Energy 
+    private class Newton;
+  end FairCurve;

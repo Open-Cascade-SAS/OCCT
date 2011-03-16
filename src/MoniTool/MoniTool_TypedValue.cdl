@@ -1,0 +1,360 @@
+-- File:	MoniTool_TypedValue.cdl
+-- Created:	Mon Feb 23 12:32:29 1998
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class TypedValue  from MoniTool  inherits TShared
+
+    ---Purpose : This class allows to dynamically manage .. typed values, i.e.
+    --           values which have an alphanumeric expression, but with
+    --           controls. Such as "must be an Integer" or "Enumerative Text"
+    --           etc
+    --           
+    --           Hence, a TypedValue brings a specification (type + constraints
+    --           if any) and a value. Its basic form is a string, it can be
+    --           specified as integer or real or enumerative string, then
+    --           queried as such.
+    --           Its string content, which is a Handle(HAsciiString) can be
+    --           shared by other data structures, hence gives a direct on line
+    --           access to its value.
+
+uses CString, Type from Standard,
+     Messenger from Message,
+     AsciiString from TCollection, HAsciiString from TCollection,
+     HArray1OfAsciiString  from TColStd, HSequenceOfAsciiString from TColStd,
+     DictionaryOfInteger from Dico,     DictionaryOfTransient from Dico,
+     ValueType from MoniTool,
+     ValueSatisfies from MoniTool, ValueInterpret from MoniTool
+
+raises ConstructionError
+
+is
+
+    Create (name : CString;
+    	    type : ValueType from MoniTool = MoniTool_ValueText;
+	    init : CString = "")  returns mutable TypedValue;
+    ---Purpose : Creates a TypedValue, with a name
+    --           
+    --           type gives the type of the parameter, default is free text
+    --           Also available : Integer, Real, Enum, Entity (i.e. Object)
+    --           More precise specifications, titles, can be given to the
+    --           TypedValue once created
+    --           
+    --           init gives an initial value. If it is not given, the
+    --           TypedValue begins as "not set", its value is empty
+
+    Create (other : TypedValue) returns mutable TypedValue;
+    ---Purpose : Creates a TypedValue from another one, by duplication
+
+    Internals (me; interp :  out ValueInterpret; satisf : out ValueSatisfies;
+    	       satisname : out CString; enums : out DictionaryOfInteger);
+    ---Purpose : Access to internal data which have no other access
+
+    Name   (me) returns CString;
+    ---Purpose : Returns the name
+
+    ValueType   (me) returns ValueType from MoniTool;
+    ---Purpose : Returns the type of the value
+
+    Definition (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Definition
+    --           By priority, the enforced one, else an automatic one, computed
+    --           from the specification
+
+    SetDefinition (me : mutable; deftext : CString);
+    ---Purpose : Enforces a Definition
+
+    Print  (me; S : Messenger from Message)  is virtual;
+    ---Purpose : Prints definition, specification, and actual status and value
+
+    PrintValue (me; S : Messenger from Message);
+    ---Purpose : Prints only the Value
+
+    	-- --    Additional definitions    -- --
+
+    AddDef   (me : mutable; initext : CString) returns Boolean;
+    ---Purpose : Completes the definition of a TypedValue by command <initext>,
+    --           once created with its type
+    --           Returns True if done, False if could not be interpreted
+    --           <initext> may be :
+    --           imin ival : minimum value for an integer
+    --           imax ival : maximum value for an integer
+    --           rmin rval : minimum value for a real
+    --           rmax rval : maximum value for a real
+    --           unit name : name of unit
+    --           ematch i  : enum from integer value i, match required
+    --           enum   i  : enum from integer value i, match not required
+    --           eval text : add an enumerative value (increments max by 1)
+    --           eval ??   : add a non-authorised enum value (to be skipped)
+    --           tmax   l  : maximum length for a text
+
+    SetLabel (me : mutable; label : CString);
+    ---Purpose : Sets a label, which can then be displayed
+
+    Label    (me) returns CString;
+    ---Purpose : Returns the label, if set; else returns an empty string
+
+
+    SetMaxLength    (me : mutable; max : Integer);
+    ---Purpose : Sets a maximum length for a text (active only for a free text)
+
+    MaxLength    (me) returns Integer;
+    ---Purpose : Returns the maximum length, 0 if not set
+
+    SetIntegerLimit (me : mutable; max : Boolean; val : Integer)
+    ---Purpose : Sets an Integer limit (included) to <val>, the upper limit
+    --           if <max> is True, the lower limit if <max> is False
+    	raises ConstructionError;
+    --           Error for a TypedValue not an Integer
+
+    IntegerLimit (me; max : Boolean; val : out Integer) returns Boolean;
+    ---Purpose : Gives an Integer Limit (upper if <max> True, lower if <max>
+    --           False). Returns True if this limit is defined, False else
+    --           (in that case, gives the natural limit for Integer)
+
+    SetRealLimit (me : mutable; max : Boolean; val : Real)
+    ---Purpose : Sets a Real limit (included) to <val>, the upper limit
+    --           if <max> is True, the lower limit if <max> is False
+    	raises ConstructionError;
+    --           Error for a TypedValue not a Real
+
+    RealLimit (me; max : Boolean; val : out Real) returns Boolean;
+    ---Purpose : Gives an Real Limit (upper if <max> True, lower if <max>
+    --           False). Returns True if this limit is defined, False else
+    --           (in that case, gives the natural limit for Real)
+
+    SetUnitDef (me : mutable; def : CString)
+    ---Purpose : Sets (Clears if <def> empty) a unit definition, as an equation
+    --           of dimensions. TypedValue just records this definition, does
+    --           not exploit it, to be done as required by user applications
+    	raises ConstructionError;
+    --           Error for a TypedValue not a Real
+
+    UnitDef    (me) returns CString;
+    ---Purpose : Returns the recorded unit definition, empty if not set
+
+
+    StartEnum (me : mutable;
+    	       start : Integer = 0; match : Boolean = Standard_True)
+    ---Purpose : For an enumeration, precises the starting value (default 0)
+    --           and the match condition : if True (D), the string value must
+    --           match the definition, else it may take another value : in that
+    --           case, the Integer Value will be  Start - 1.
+    --           (empty value remains allowed)
+    	raises ConstructionError;
+    --           Error for a TypedValue not an Enum
+
+    AddEnum   (me : mutable; v1,v2,v3,v4,v5,v6,v7,v8,v9,v10 : CString = "")
+    ---Purpose : Adds enumerative definitions. For more than 10, several calls
+    	raises ConstructionError;
+    --           Error for a TypedValue not an Enum
+
+    AddEnumValue (me : mutable; val : CString; num : Integer)
+    ---Purpose : Adds an enumeration definition, by its string and numeric
+    --           values. If it is the first setting for this value, it is
+    --           recorded as main value. Else, it is recognized as alternate
+    --           string for this numeric value
+    	raises ConstructionError;
+    --           Error for a TypedValue not an Enum
+
+    EnumDef   (me; startcase, endcase : out Integer; match : out Boolean)
+    	returns Boolean;
+    ---Purpose : Gives the Enum definitions : start value, end value, match
+    --           status. Returns True for an Enum, False else.
+
+    EnumVal   (me; num : Integer) returns CString;
+    ---Purpose : Returns the value of an enumerative definition, from its rank
+    --           Empty string if out of range or not an Enum
+
+    EnumCase  (me; val : CString) returns Integer;
+    ---Purpose : Returns the case number which cooresponds to a string value
+    --           Works with main and additionnal values
+    --           Returns (StartEnum - 1) if not OK, -1 if not an Enum
+
+    SetObjectType (me : mutable; typ : Type)
+    ---Purpose : Sets type of which an Object TypedValue must be kind of
+    	raises ConstructionError;
+    ---Purpose:           Error for a TypedValue not an Object (Entity)
+
+    ObjectType    (me) returns Type;
+    ---Purpose : Returns the type of which an Object TypedValue must be kind of
+    --           Default is Standard_Transient
+    --           Null for a TypedValue not an Object
+
+    SetInterpret  (me : mutable; func : ValueInterpret);
+    ---Purpose : Sets a specific Interpret function
+
+    HasInterpret  (me) returns Boolean  is virtual;
+    ---Purpose : Tells if a TypedValue has an Interpret
+
+    SetSatisfies  (me : mutable; func : ValueSatisfies; name : CString);
+    ---Purpose : Sets a specific Satisfies function : it is added to the
+    --           already defined criteria
+    --           It must match the form :
+    --             statisfies (val : HAsciiString) returns Boolean
+
+    SatisfiesName (me) returns CString;
+    ---Purpose : Returns name of specific satisfy, empty string if none
+
+    	-- --    Value    -- --
+
+    IsSetValue   (me) returns Boolean;
+    ---Purpose : Returns True if the value is set (not empty/not null object)
+
+    CStringValue (me) returns CString;
+    ---Purpose : Returns the value, as a cstring. Empty if not set.
+
+    HStringValue (me) returns mutable HAsciiString;
+    ---Purpose : Returns the value, as a Handle (can then be shared)
+    --           Null if not defined
+
+    Interpret (me; hval : HAsciiString; native : Boolean)
+    	returns HAsciiString  is virtual;
+    ---Purpose : Interprets a value.
+    --           <native> True  : returns a native value
+    --           <native> False : returns a coded  value
+    --           If the Interpret function is set, calls it
+    --           Else, for an Enum, Native returns the Text, Coded returns
+    --             the number
+    --           STANDARD RETURNS : = hval means no specific interpretation
+    --            Null means senseless
+    --           Can also be redefined
+
+    Satisfies (me; hval : HAsciiString) returns Boolean  is virtual;
+    ---Purpose : Returns True if a value statifies the specification
+    --           (remark : does not apply to Entity : see ObjectType, for this
+    --           type, the string is just a comment)
+
+    ClearValue (me : mutable);
+    ---Purpose : Clears the recorded Value : it is now unset
+
+    SetCStringValue (me : mutable;  val : CString)
+    ---Purpose : Changes the value. The new one must satisfy the specification
+    	returns Boolean  is virtual;
+    ---Purpose:           Returns False (and did not set) if the new value
+    --             does not satisfy the specification
+    --           Can be redefined to be managed (in a subclass)
+
+    SetHStringValue (me : mutable; hval : mutable HAsciiString)
+    ---Purpose : Forces a new Handle for the Value
+    --           It can be empty, else (if Type is not free Text), it must
+    --           satisfy the specification.
+    --           Not only the value is changed, but also the way it is shared
+    --           Remark : for Type=Object, this value is not controlled, it can
+    --           be set as a comment
+    	returns Boolean  is virtual;
+    ---Purpose:           Returns False (and did not set) if the new value
+    --             does not satisfy the specification
+    --           Can be redefined to be managed (in a subclass)
+
+    IntegerValue (me) returns Integer;
+    ---Purpose : Returns the value as integer, i.e. :
+    --           For type = Integer, the integer itself; 0 if not set
+    --           For type = Enum, the designated rank (see Enum definition)
+    --             StartEnum - 1 if not set or not in the definition
+    --           Else, returns 0
+
+    SetIntegerValue (me : mutable; ival : Integer)
+    ---Purpose : Changes the value as an integer, only for Integer or Enum
+    	returns Boolean  is virtual;
+    --           Returns False (and did not set) if type is neither Integer
+    --           nor Enum, or if ival is out of range (if a range is specified)
+    --           Can be redefined to be managed (in a subclass)
+
+    RealValue (me) returns Real;
+    ---Purpose : Returns the value as real,  for a Real type TypedValue
+    --           Else, returns 0.
+
+    SetRealValue (me : mutable; rval : Real)
+    ---Purpose : Changes the value as a real, only for Real
+    	returns Boolean  is virtual;
+    --           Returns False (and did not set) if type is not Real or
+    --            out of range (if a range is specified)
+    --           Can be redefined to be managed (in a subclass)
+
+    ObjectValue (me) returns any Transient;
+    ---Purpose : Returns the value as Transient Object, only for Object/Entity
+    --           Remark that the "HString value" is IGNORED here
+    --           Null if not set; remains to be casted
+
+    GetObjectValue (me; val : out Transient);
+    ---Purpose : Same as ObjectValue, but avoids DownCast : the receiving
+    --           variable is directly loaded. It is assumed that it complies
+    --           with the definition of ObjectType ! Otherwise, big trouble
+
+    SetObjectValue (me : mutable; obj : any Transient)
+    	returns Boolean  is virtual;
+    ---Purpose : Changes the value as Transient Object, only for Object/Entity
+    --           Returns False if DynamicType does not satisfy ObjectType
+    --           Can be redefined to be managed (in a subclass)
+
+    ObjectTypeName (me) returns CString;
+    ---Purpose : Returns the type name of the ObjectValue, or an empty string
+    --           if not set
+
+    	-- --    Library of TypedValue as Type Definitions,    -- --
+    	--       accessed by definition name
+    	--       It starts with 3 basic types : "Integer" "Real" "Text"
+
+    AddLib (myclass; tv : TypedValue; def : CString = "") returns Boolean;
+    ---Purpose : Adds a TypedValue in the library.
+    --           It is recorded then will be accessed by its Name
+    --           Its Definition may be imposed, else it is computed as usual
+    --           By default it will be accessed by its Definition (string)
+    --           Returns True if done, False if tv is Null or brings no
+    --           Definition or <def> not defined
+    --           
+    --           If a TypedValue was already recorded under this name, it is
+    --           replaced
+
+    Lib (myclass; def : CString) returns TypedValue;
+    ---Purpose : Returns the TypedValue bound with a given Name
+    --           Null Handle if none recorded
+    --           Warning : it is the original, not duplicated
+
+    FromLib (myclass; def : CString) returns TypedValue;
+    ---Purpose : Returns a COPY of the TypedValue bound with a given Name
+    --           Null Handle if none recorded
+
+    LibList (myclass) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of names of items of the Library of Types
+    	-- --    Library of TypedValue as Valued Parameters,    -- --
+    	--       accessed by parameter name
+    	--       for use by management of Static Parameters
+
+    Stats (myclass) returns DictionaryOfTransient  is protected;
+    ---Purpose : Gives the internal library of static values
+
+    StaticValue (myclass; name : CString) returns TypedValue;
+    ---Purpose : Returns a static value from its name, null if unknown
+
+fields
+
+    thename   : AsciiString;
+    thedef    : AsciiString;
+    thelabel  : AsciiString;
+    thetype   : ValueType from MoniTool;
+    theotyp   : Type from Standard;  -- for object
+
+    thelims   : Integer;  -- status for integer/enum/real limits
+    themaxlen : Integer;
+    theintlow : Integer;
+    theintup  : Integer;
+    therealow : Real;
+    therealup : Real;
+    theunidef : AsciiString;
+
+    theenums  : HArray1OfAsciiString    from TColStd;
+    theeadds  : DictionaryOfInteger;
+
+    theinterp : ValueInterpret;
+    thesatisf : ValueSatisfies;
+    thesatisn : AsciiString;
+
+    theival   : Integer;
+    thehval   : HAsciiString from TCollection;
+    theoval   : Transient;
+
+end TypedValue;

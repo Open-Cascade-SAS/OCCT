@@ -1,0 +1,47 @@
+-- File:	Geom2dToIGES_Geom2dPoint.cdl
+-- Created:	Wed Feb  1 15:37:28 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class Geom2dPoint from Geom2dToIGES inherits Geom2dEntity from Geom2dToIGES
+
+    ---Purpose: This class implements the transfer of the Point Entity from Geom2d
+    --          to IGES . These are :
+    --          . 2dPoint
+    --              * 2dCartesianPoint 
+
+  
+uses
+
+    Point          from Geom2d,
+    CartesianPoint from Geom2d,
+    Point          from IGESGeom,
+    Geom2dEntity   from Geom2dToIGES
+     
+is 
+    
+    Create returns Geom2dPoint from Geom2dToIGES;
+
+
+    Create(G2dE : Geom2dEntity from Geom2dToIGES)  
+    	 returns Geom2dPoint from Geom2dToIGES;
+    ---Purpose : Creates a tool Geom2dPoint ready to run and sets its
+    --         fields as G2dE's.
+
+    Transfer2dPoint            (me    : in out;
+                                start : Point from Geom2d)
+    	 returns mutable Point from IGESGeom;
+    ---Purpose :  Transfert  a  Point from Geom to IGES. If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+    Transfer2dPoint            (me    : in out;
+                                start : CartesianPoint from Geom2d)
+    	 returns mutable Point from IGESGeom;
+    ---Purpose :  Transfert  a  CartesianPoint from Geom to IGES. If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+
+end Geom2dPoint;
+
+

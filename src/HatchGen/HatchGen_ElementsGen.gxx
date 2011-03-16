@@ -1,0 +1,216 @@
+// File:	HatchGen_ElementsGen.gxx
+// Created:	Fri Dec 16 16:26:12 1994
+// Author:	Laurent BUCHARD
+//		<lbr@mastox>
+
+//  Modified by skv - Fri Jul 14 17:03:47 2006 OCC12627
+
+#include <TopAbs_Orientation.hxx>
+#include <gp.hxx>
+#include <gp_Vec2d.hxx>
+
+//HatchGen_ElementsGen::HatchGen_ElementsGen(const HatchGen_ElementsGen& Other) {
+HatchGen_ElementsGen::HatchGen_ElementsGen(const HatchGen_ElementsGen& ) {
+  cout<<" Magic Constructor in HatchGen_ElementsGen:: "<<endl;
+} 
+
+HatchGen_ElementsGen::HatchGen_ElementsGen() { 
+  NumWire = 0;
+  NumEdge = 0;
+  myCurEdge = 1;
+}
+
+void HatchGen_ElementsGen::Clear() { 
+  myMap.Clear();
+}
+
+Standard_Boolean HatchGen_ElementsGen::IsBound(const TheKey& K) const  { 
+  return(myMap.IsBound(K));
+}
+
+Standard_Boolean HatchGen_ElementsGen::UnBind(const TheKey& K) { 
+  return(myMap.UnBind(K));
+}
+
+Standard_Boolean HatchGen_ElementsGen::Bind(const TheKey& K,const TheItem& I) { 
+  return(myMap.Bind(K,I));
+}
+
+const TheItem& HatchGen_ElementsGen::Find(const TheKey& K) const { 
+  return(myMap.Find(K));
+}
+
+TheItem& HatchGen_ElementsGen::ChangeFind(const TheKey& K)  { 
+  return(myMap.ChangeFind(K));
+}
+
+//=======================================================================
+//function : Reject
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  HatchGen_ElementsGen::Reject(const gp_Pnt2d&) const  {
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Segment
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean HatchGen_ElementsGen::Segment(const gp_Pnt2d& P, 
+					             gp_Lin2d& L, 
+					             Standard_Real& Par)
+{
+  myCurEdge = 1;
+
+  return OtherSegment(P, L, Par);
+}
+
+//=======================================================================
+//function : Segment
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean HatchGen_ElementsGen::OtherSegment(const gp_Pnt2d& P, 
+						          gp_Lin2d& L, 
+						          Standard_Real& Par)
+{
+  HatchGen_DataMapIteratorOfMapOfElements Itertemp;
+  Standard_Integer                        i;
+  
+  for(  Itertemp.Initialize(myMap), i = 1; Itertemp.More(); Itertemp.Next(), i++) { 
+    if (i < myCurEdge)
+      continue;
+
+    void *ptrmyMap = (void *)(&myMap);
+    TheItem& Item=((HatchGen_MapOfElements*)ptrmyMap)->ChangeFind(Itertemp.Key());
+    TheCurve& E = Item.ChangeCurve();
+    TopAbs_Orientation Or= Item.Orientation();
+    gp_Pnt2d P2 = E.Value
+      ((E.FirstParameter() + E.LastParameter()) *0.5);
+    if ((Or == TopAbs_FORWARD) ||
+	(Or == TopAbs_REVERSED)) {
+      gp_Vec2d V(P,P2);
+      Par = V.Magnitude();
+      if (Par >= gp::Resolution()) {
+	L = gp_Lin2d(P,V);
+	myCurEdge++;
+	return Standard_True;
+      }
+    }
+  }
+
+  if (i == myCurEdge + 1) {
+    Par = RealLast();
+    L = gp_Lin2d(P,gp_Dir2d(1,0));
+    myCurEdge++;
+
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+//=======================================================================
+//function : InitWires
+//purpose  : 
+//=======================================================================
+
+void  HatchGen_ElementsGen::InitWires()  {
+  NumWire = 0;
+}
+
+//=======================================================================
+//function : RejectWire NYI
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean HatchGen_ElementsGen::RejectWire(const gp_Lin2d& , 
+						   const Standard_Real) const 
+{
+  return Standard_False;
+}
+
+//=======================================================================
+//function : InitEdges
+//purpose  : 
+//=======================================================================
+
+void  HatchGen_ElementsGen::InitEdges()  {
+  NumEdge = 0;
+  Iter.Initialize(myMap);
+}
+
+//=======================================================================
+//function : RejectEdge NYI
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean HatchGen_ElementsGen::RejectEdge(const gp_Lin2d& , 
+						  const Standard_Real ) const 
+{
+  return Standard_False;
+}
+
+
+//=======================================================================
+//function : CurrentEdge
+//purpose  : 
+//=======================================================================
+
+void  HatchGen_ElementsGen::CurrentEdge(TheCurve& E, 
+					TopAbs_Orientation& Or) const 
+{
+  void *ptrmyMap = (void *)(&myMap);
+  TheItem& Item=((HatchGen_MapOfElements*)ptrmyMap)->ChangeFind(Iter.Key());
+
+  E = Item.ChangeCurve();
+  Or= Item.Orientation();
+#if 0 
+  E.Edge() = TopoDS::Edge(myEExplorer.Current());
+  E.Face() = myFace;
+  Or = E.Edge().Orientation();
+#endif
+}
+
+
+//=======================================================================
+//function : MoreWires
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  HatchGen_ElementsGen::MoreWires() const 
+{
+  return (NumWire == 0);
+}
+
+//=======================================================================
+//function : NextWire
+//purpose  : 
+//=======================================================================
+
+void HatchGen_ElementsGen::NextWire()  {
+  NumWire++;
+}
+
+//=======================================================================
+//function : MoreEdges
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  HatchGen_ElementsGen::MoreEdges() const  {
+  return(Iter.More());
+}
+
+//=======================================================================
+//function : NextEdge
+//purpose  : 
+//=======================================================================
+
+void HatchGen_ElementsGen::NextEdge()  {
+  Iter.Next();
+}
+
+
+

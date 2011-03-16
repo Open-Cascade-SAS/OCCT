@@ -1,0 +1,11 @@
+inline TCollection_StackNode::TCollection_StackNode(const Item& I,const TCollection_MapNodePtr& n) 
+: TCollection_MapNode(n)
+{
+  myValue = I;
+}
+
+inline Item& TCollection_StackNode::Value() const
+{
+  return (Item&)myValue;
+}
+

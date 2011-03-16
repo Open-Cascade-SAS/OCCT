@@ -1,0 +1,27 @@
+// File:	TDF_ClosureMode.lxx
+//      	-------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	May 26 1997	Creation
+
+#define DescendantsFlag     1
+#define ReferencesFlag      2
+//#define DummyFlag      4
+
+inline void TDF_ClosureMode::Descendants(const Standard_Boolean aStatus)
+{ myFlags = (aStatus) ? (myFlags | DescendantsFlag) : (myFlags & ~DescendantsFlag);}
+
+inline Standard_Boolean TDF_ClosureMode::Descendants() const
+{ return (myFlags & DescendantsFlag) != 0 ; }
+
+
+inline void TDF_ClosureMode::References(const Standard_Boolean aStatus)
+{ myFlags = (aStatus) ? (myFlags | ReferencesFlag) : (myFlags & ~ReferencesFlag);}
+
+inline Standard_Boolean TDF_ClosureMode::References() const
+{ return (myFlags & ReferencesFlag) != 0 ; }
+

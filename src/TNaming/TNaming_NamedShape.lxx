@@ -1,0 +1,42 @@
+// File:	TNaming_NamedShape.lxx
+// Created:	Tue Feb 18 15:33:45 1997
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : ID
+//purpose  : 
+//=======================================================================
+
+inline const Standard_GUID& TNaming_NamedShape::ID() const
+{ return GetID(); }
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline TNaming_Evolution TNaming_NamedShape::Evolution () const 
+{
+  return myEvolution;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TNaming_NamedShape::Version () const 
+{
+  return myVersion;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline void TNaming_NamedShape::SetVersion (const Standard_Integer v)
+{
+  myVersion = v;
+}

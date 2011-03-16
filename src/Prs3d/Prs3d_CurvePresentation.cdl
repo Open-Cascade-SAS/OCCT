@@ -1,0 +1,73 @@
+-- File:	CurvePresentation.cdl
+-- Created:	Tue Dec 15 18:12:33 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class CurvePresentation from Prs3d 
+    	           ( anyCurve as any; 
+    	             CurveTool as any) -- as CurveTool from Adaptor3d
+
+inherits Root from Prs3d
+
+uses
+    Presentation from Prs3d,
+    Drawer from Prs3d,
+    Length from Quantity
+
+is
+
+    --- Purpose:
+    --  
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve: anyCurve;
+    	    	 aDrawer: Drawer from Prs3d);
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve: anyCurve;
+                 U1,U2 : Real from Standard;
+    	    	 aDrawer: Drawer from Prs3d);
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve: anyCurve;
+    	    	 aDeflection: Real from Standard);
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve: anyCurve;
+                 U1,U2 : Real from Standard;
+    	    	 aDeflection: Real from Standard);
+
+		 
+    Match(myclass; X,Y,Z: Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve: anyCurve;
+    	    	   aDrawer: Drawer from Prs3d) 
+    returns Boolean from Standard;
+
+    Match(myclass; X,Y,Z: Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve: anyCurve;
+                   U1,U2 : Real from Standard;
+    	    	   aDrawer: Drawer from Prs3d)
+    returns Boolean from Standard;
+
+    Match(myclass; X,Y,Z: Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve: anyCurve;
+    	    	   aDeflection: Real from Standard)
+    returns Boolean from Standard;
+
+    Match(myclass; X,Y,Z: Length from Quantity;
+                   aDistance: Length from Quantity;
+        	   aCurve: anyCurve;
+                   U1,U2 : Real from Standard;
+    	    	   aDeflection: Real from Standard)
+    returns Boolean from Standard;
+
+		 
+end CurvePresentation from Prs3d;
+
+
+

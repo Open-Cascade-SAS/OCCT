@@ -1,0 +1,73 @@
+-- File:	BRepFill_ApproxSeewing.cdl
+-- Created:	Thu Sep 21 18:15:15 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+private class ApproxSeewing from BRepFill 
+
+	---Purpose: Evaluate the 3dCurve  and the PCurves described in
+	--          a MultiLine from BRepFill.  The parametrization of
+	--          those curves is  not  imposed by  the Bissectrice.
+	--          The  parametrization  is given  approximatively by
+	--          the abscissa of the curve3d. 
+
+uses
+
+    MultiLine from BRepFill,
+    Curve from Geom,
+    Curve from Geom2d
+    
+raises
+
+    NotDone from StdFail
+    
+is
+    Create returns ApproxSeewing from BRepFill;
+    
+    Create( ML : MultiLine from BRepFill) 
+    returns ApproxSeewing from BRepFill;
+    
+    Perform(me : in out;
+    	    ML : MultiLine from BRepFill)
+    is static;
+    
+    IsDone(me) 
+    returns Boolean from Standard
+    is static;
+    
+    Curve(me) 
+    	---Purpose: returns the approximation of the 3d Curve
+	---C++: return const &
+    returns Curve from Geom
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    CurveOnF1(me) 
+    	---Purpose: returns the  approximation  of the  PCurve  on the
+    	--          first face of the MultiLine
+	---C++: return const &
+    returns Curve from Geom2d
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    CurveOnF2(me) 
+    	---Purpose: returns the  approximation  of the  PCurve  on the
+    	--          first face of the MultiLine
+	---C++: return const &
+    returns Curve from Geom2d
+    raises
+    	NotDone from StdFail
+    is static;
+    
+fields
+    myML      : MultiLine from BRepFill;
+    myIsDone  : Boolean   from Standard;
+    myCurve   : Curve     from Geom;
+    myPCurve1 : Curve     from Geom2d;
+    myPCurve2 : Curve     from Geom2d;
+
+end ApproxSeewing;

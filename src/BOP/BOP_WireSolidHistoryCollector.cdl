@@ -1,0 +1,31 @@
+-- File:	BOP_WireSolidHistoryCollector.cdl
+-- Created:	Thu Apr 24 10:20:16 2003
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Open CASCADE 2003
+
+class WireSolidHistoryCollector from BOP inherits HistoryCollector from BOP
+
+uses
+    Shape from TopoDS,
+    Operation from BOP,
+    PDSFiller from BOPTools,
+    ListOfShape from TopTools
+is
+    Create(theShape1   : Shape from TopoDS;
+    	   theShape2   : Shape from TopoDS;
+	   theOperation: Operation from BOP)
+    	returns WireSolidHistoryCollector from BOP;
+
+    SetResult(me: mutable; theResult: Shape from TopoDS;
+    	    	    	   theDSFiller: PDSFiller from BOPTools)
+    	is redefined virtual;
+
+    --- private
+    FillSection(me: mutable; theDSFiller: PDSFiller from BOPTools)
+    	is private;
+
+    FillEdgeHistory(me: mutable; theDSFiller: PDSFiller from BOPTools)
+    	is private;
+
+end WireSolidHistoryCollector from BOP;

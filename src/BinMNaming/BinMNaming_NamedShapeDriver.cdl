@@ -1,0 +1,64 @@
+-- File:	BinMNaming_NamedShapeDriver.cdl
+-- Created:	Thu Apr  8 15:09:48 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+class NamedShapeDriver from BinMNaming inherits ADriver from BinMDF
+
+	---Purpose: NamedShape  Attribute Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF, 
+    ShapeSet         from BinTools,
+    LocationSet      from BinTools
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable NamedShapeDriver from BinMNaming;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+    
+    ReadShapeSection (me: mutable; theIS: in out IStream from Standard);
+      ---Purpose: Input the shapes from Bin Document file
+
+    WriteShapeSection (me: mutable; theOS: in out OStream from Standard);
+      ---Purpose: Output the shapes into Bin Document file
+
+    Clear (me:mutable);
+      ---Purpose: Clear myShapeSet 
+       
+    SetFormatNb(me: mutable; theFormat : Integer from Standard);  
+    ---C++: inline 
+    ---Purpose: set the format of topology  
+    --          First : does not write CurveOnSurface UV Points into the file
+    --                  on reading calls Check() method.
+    --          Second: stores CurveOnSurface UV Points.
+
+    GetFormatNb(me) returns Integer from Standard; 
+    ---Purpose: get the format of topology  
+    ---C++: inline 
+    
+    GetShapesLocations(me: mutable) returns LocationSet from BinTools; 
+    ---Purpose: get the format of topology  
+    ---C++: return &
+    ---C++: inline 
+    
+fields
+     
+    myShapeSet          : ShapeSet from BinTools; 
+    myFormatNb          : Integer  from Standard;
+end NamedShapeDriver;

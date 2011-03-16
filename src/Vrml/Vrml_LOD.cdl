@@ -1,0 +1,61 @@
+-- File:	Vrml_LOD.cdl
+-- Created:	Mon Feb 10 16:03:59 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class LOD from Vrml inherits  TShared  from  MMgt
+
+	---Purpose: defines a LOD (level of detailization) node of VRML specifying properties  
+    	--          of geometry  and its appearance.
+    	--  This  group  node  is  used  to  allow  applications  to  switch  between 
+	--  various  representations  of  objects  automatically. The  children  of  this   
+	--  node  typically  represent  the  same  object  or  objects  at  the  varying 
+	--  of  Levels  Of  Detail  (LOD),  from  highest  detail  to  lowest.  
+	--   
+	--  The  specified  center  point  of  the  LOD  is  transformed  by  current 
+	--  transformation  into  world  space,  and  yhe  distancefrom  the  transformed   
+    	--  center  to  the  world-space  eye  point  is  calculated. 
+	--  If  thedistance  is  less  than  the  first  value  in  the  ranges  array, 
+	--  than  the  first  child  of  the  LOD  group  is  drawn.  If  between   
+    	--  the  first  and  second  values  in  the  range  array,  the  second  child   
+    	--  is  drawn,  etc.   
+	--  If  there  are  N  values  in  the  range  array,  the  LOD  group  should 
+	--  have  N+1  children. 
+	--  Specifying  too  few  children  will  result  in  the  last  child  being   
+    	--  used  repeatedly  for  the  lowest  lewels  of  detail;  if  too  many  children   
+    	--  are  specified,  the  extra  children  w ll  be  ignored.	 
+	--  Each  value  in  the  ranges  array  should  be  greater  than  the previous 
+	--  value,  otherwise  results  are  undefined.
+	
+uses    
+
+    HArray1OfReal from TColStd,
+    Vec  from  gp
+
+is
+ 
+    Create  returns mutable LOD from Vrml; 
+ 
+    Create  ( aRange  :  HArray1OfReal from TColStd; 
+    	      aCenter :  Vec          from  gp ) 
+         returns mutable LOD from Vrml; 
+	 
+    SetRange ( me : mutable;  aRange  : HArray1OfReal from TColStd ); 
+    Range ( me )  returns  HArray1OfReal from TColStd; 
+
+    SetCenter ( me : mutable;  aCenter  :  Vec  from  gp ); 
+    Center ( me )  returns  Vec  from  gp; 
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+    
+fields
+ 
+    myRange        :  HArray1OfReal from  TColStd;  -- Distance ranges for LOD switching
+    myCenter       :  Vec           from  gp;       -- Center for distance computation
+    myRangeFlag    :  Boolean       from  Standard; 
+      
+end LOD;
+

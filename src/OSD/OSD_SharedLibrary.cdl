@@ -1,0 +1,100 @@
+--Copyright:      Matra Datavision 1994
+
+-- SharedLibrary:         OSD_SharedLibrary.cdl
+-- Created:      August 30, 1994
+-- Author:       J.P. TIRAULT    
+
+class SharedLibrary from OSD 
+
+    ---Purpose: Interface to dynamic library loader.
+uses LoadMode,Function
+is
+
+  Create returns SharedLibrary;
+     ---Purpose: Creates a SharedLibrary object with name NULL.
+     ---Level: Public
+
+  Create (aFilename : CString) returns SharedLibrary;
+     ---Purpose: Creates a SharedLibrary object with name aFilename.
+     ---Level: Public
+
+  SetName (me : out ; aName : CString) 
+     ---Purpose: Sets a name associated to the shared object.
+     ---Level: Public
+  is static;
+
+  Name (me) 
+     ---Purpose: Returns the name associated to the shared object.
+     ---Level: Public
+  returns CString 
+  is static;
+  
+  DlOpen (me : out ; Mode : LoadMode)
+     ---Purpose:   The DlOpen method provides an interface to the 
+     --            dynamic library loader to allow shared libraries 
+     --            to be loaded and called at runtime.  The DlOpen 
+     --            function attempts to load Filename, in the address 
+     --            space of the process, resolving symbols as appropriate.
+     --            Any libraries that Filename depends upon are also loaded.
+     --            If MODE is RTLD_LAZY, then the runtime loader
+     --            does symbol resolution only as needed.  
+     --            Typically, this means that the first call to a function 
+     --            in the newly	loaded library will cause the resolution of
+     --            the	address	of that	function to occur. 
+     --            If Mode is RTLD_NOW, then the runtime loader must do all
+     --            symbol binding during the DlOpen call.  
+     --            The DlOpen method returns a	handle that is used by DlSym 
+     --            or DlClose.  
+     --            If there is an error, Standard_False is returned,
+     --            Standard_True otherwise.
+     --            If a NULL Filename is specified, DlOpen returns a handle
+     --            for the main	executable, which allows access to dynamic
+     --            symbols in the running program.
+     ---Level: Public
+
+     returns Boolean
+     is static;
+
+  DlSymb (me; Name : CString)
+     ---Purpose: The dlsym function returns the address of the
+     --          symbol name found in the shared library.  
+     --          If the symbol is not found, a NULL pointer is 
+     --          returned.
+     ---Level: Public
+
+     returns Function
+     is static;
+
+  DlClose (me)
+     ---Purpose: Deallocates the address space for the library
+     --          corresponding to the shared object.  
+     --          If any user function continues to call a symbol
+     --          resolved in the address space of a library 
+     --          that has been since been deallocated by DlClose, 
+     --          the results are undefined.
+     ---Level: Public
+  is static;
+
+  DlError (me)
+     ---Purpose: The dlerror function returns a string describing
+     --          the last error that occurred from
+     --          a call to DlOpen, DlClose or DlSym.
+     ---Level: Public
+  returns CString
+  is static;
+
+  Destroy (me : in out)
+     ---Level: Public
+     ---Purpose: Frees memory allocated.
+     ---C++: alias ~
+   is static;
+
+
+ fields
+ 
+   myHandle       : Address;
+   myName         : PCharacter;
+
+end SharedLibrary from OSD;
+
+

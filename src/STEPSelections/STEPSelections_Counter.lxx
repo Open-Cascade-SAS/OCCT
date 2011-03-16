@@ -1,0 +1,55 @@
+// File:	STEPSelections_Counter.lxx
+// Created:	Thu Feb 11 18:50:10 1999
+// Author:	Pavel DURANDIN
+//		<pdn@friendox.nnov.matra-dtv.fr>
+
+inline Standard_Integer STEPSelections_Counter::NbInstancesOfFaces() const
+{
+  return myNbFaces;
+}
+
+inline Standard_Integer STEPSelections_Counter::NbInstancesOfShells() const
+{
+  return myNbShells;
+}
+
+inline Standard_Integer STEPSelections_Counter::NbInstancesOfSolids() const
+{
+  return myNbSolids;
+}
+
+inline Standard_Integer STEPSelections_Counter::NbInstancesOfEdges() const
+{
+  return myNbEdges;
+}
+
+inline Standard_Integer STEPSelections_Counter::NbInstancesOfWires() const
+{
+  return myNbWires;
+}
+
+
+inline Standard_Integer STEPSelections_Counter::NbSourceFaces() const
+{
+  return myMapOfFaces.Extent();
+}
+
+inline Standard_Integer STEPSelections_Counter::NbSourceShells() const
+{
+  return myMapOfShells.Extent();
+}
+
+inline Standard_Integer STEPSelections_Counter::NbSourceSolids() const
+{
+  return myMapOfSolids.Extent();
+}
+
+inline Standard_Integer STEPSelections_Counter::NbSourceEdges() const
+{
+  return myMapOfEdges.Extent();
+}
+
+inline Standard_Integer STEPSelections_Counter::NbSourceWires() const
+{
+  return myMapOfWires.Extent();
+}

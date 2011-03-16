@@ -1,0 +1,47 @@
+package PShort 
+
+uses PCollection,
+     TCollection,
+     TShort
+
+is
+
+
+--                             Instantiations de PCollection          --
+--                             *****************************          --
+------------------------------------------------------------------------
+
+--
+--       Instantiations HSequence 
+--       **************************************************
+--       
+class HSequenceOfShortReal instantiates 
+           HSequence from PCollection(ShortReal);
+
+--
+--       Instantiations HArray1
+--       ****************************************************
+--       
+-----
+
+    class HArray1OfShortReal instantiates 
+                        HArray1 from PCollection(ShortReal);
+--    class Array1FromHArray1OfShortReal instantiates 
+--    	  Array1FromHArray1(ShortReal
+--                           ,Array1OfShortReal from TShort
+--                           ,HArray1OfShortReal from PShort);
+
+--
+--       Instantiations HArray2
+--       ****************************************************
+--       
+
+    class HArray2OfShortReal instantiates 
+                        HArray2 from PCollection(ShortReal);
+--    class Array2FromHArray2OfShortReal instantiates 
+--    	  Array2FromHArray2(ShortReal
+--                           ,Array2OfShortReal from TShort
+--                           ,HArray2OfShortReal from PShort);
+
+
+end PShort;

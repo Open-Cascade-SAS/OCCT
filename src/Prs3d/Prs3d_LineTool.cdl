@@ -1,0 +1,18 @@
+-- File:	Prs3d_LineTool.cdl
+-- Created:	Wed Dec 16 13:36:55 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+generic class LineTool from Prs3d ( Line as any)
+uses
+    Length from Quantity
+is  
+    
+    Lower(myclass; aLine: Line) returns Integer from Standard;
+    Upper(myclass; aLine: Line) returns Integer from Standard;
+    Coord(myclass; aLine: Line; 
+    		   Index: Integer from Standard; 
+                   X,Y,Z: out Length from Quantity);
+    
+end LineTool from Prs3d;

@@ -1,0 +1,84 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_OutOfMemory.hxx>
+
+//=======================================================================
+//function : TCollection_HArray2
+//purpose  : 
+//=======================================================================
+
+TCollection_HArray2::TCollection_HArray2 (const Standard_Integer R1, 
+					  const Standard_Integer R2,
+					  const Standard_Integer C1, 
+					  const Standard_Integer C2) :
+       myArray(R1,R2,C1,C2)
+{}
+
+
+//=======================================================================
+//function : TCollection_HArray2
+//purpose  : 
+//=======================================================================
+
+TCollection_HArray2::TCollection_HArray2 (const Standard_Integer R1, 
+					  const Standard_Integer R2,
+					  const Standard_Integer C1, 
+					  const Standard_Integer C2,
+					  const ItemHArray2& V) :
+       myArray(R1,R2,C1,C2)
+{myArray.Init(V);}
+
+//=======================================================================
+//function : TCollection_HArray2
+//purpose  : 
+//=======================================================================
+
+void TCollection_HArray2::Init(const ItemHArray2& V)
+{ myArray.Init(V);}
+
+
+//=======================================================================
+//function : IsSameState
+//purpose  : 
+//=======================================================================
+
+//Standard_Boolean TCollection_HArray2::IsSameState
+//  (const Handle (TCollection_HArray2)& other) const
+//{
+//  const TheArray2 & otherArray = 
+//    Handle(TCollection_HArray2)::DownCast(other)->Array2();
+//  for (Standard_Integer i =  myArray.LowerRow();
+//       i <= myArray.UpperRow();
+//       i++) {
+//    for (Standard_Integer j =  myArray.LowerCol();
+//	 j <= myArray.UpperCol();
+//	 j++) {
+//      if (!(myArray(i,j) == otherArray(i,j))) return Standard_False;
+//    }     
+//  }
+//  return Standard_True;
+//}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const ItemHArray2& TCollection_HArray2::Value(const Standard_Integer Row,
+				       const Standard_Integer Col) const
+{
+  return myArray(Row,Col);
+}
+
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+
+ItemHArray2& TCollection_HArray2::ChangeValue(const Standard_Integer Row,
+				       const Standard_Integer Col)
+{
+  return myArray(Row,Col);
+}

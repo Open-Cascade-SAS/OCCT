@@ -1,0 +1,35 @@
+-- File:	IGESSelect_SelectSingleViewFrom.cdl
+-- Created:	Wed Jun  1 15:46:31 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectSingleViewFrom  from IGESSelect  inherits SelectDeduct
+
+    ---Purpose : This selection gets the Single Views attached to its input
+    --           IGES entities. Single Views themselves or Drawings as passed
+    --           as such (Drawings, for their Annotations)
+
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+raises InterfaceError
+
+is
+
+    Create returns mutable SelectSingleViewFrom;
+    ---Purpose : Creates a SelectSingleViewFrom
+
+    HasUniqueResult (me) returns Boolean  is redefined protected;
+    ---Purpose : Returns True, because selection works with a ViewSorter which
+    --           gives a unique result
+
+    RootResult (me; G : Graph) returns EntityIterator  raises InterfaceError;
+    ---Purpose : Selects the Single Views attached (in Directory Part) to
+    --           input entities
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the label, with is "Single Views attached"
+
+end SelectSingleViewFrom;

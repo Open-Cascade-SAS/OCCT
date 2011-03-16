@@ -1,0 +1,47 @@
+-- File:	PGeom_SphericalSurface.cdl
+-- Created:	Tue Mar  2 10:49:47 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class SphericalSurface from PGeom inherits ElementarySurface from PGeom
+
+        ---Purpose : This class defines the spherical surface.
+        --  
+	---See Also : SphericalSurface from Geom.
+
+
+uses Ax3      from gp
+
+is
+
+
+  Create returns mutable SphericalSurface from PGeom;
+	---Purpose: Creates a SphericalSurface with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition : Ax3 from gp;
+    	  aRadius    : Real from Standard)
+     returns mutable SphericalSurface from PGeom;
+	---Purpose: Creates a SphericalSurface with these values.
+    	---Level: Internal 
+
+
+  Radius (me: mutable; aRadius: Real from Standard);
+        ---Purpose : Set the field radius with <aRadius>.
+    	---Level: Internal 
+
+
+  Radius (me) returns Real from Standard;
+        ---Purpose : Returns the value of the field radius.
+    	---Level: Internal 
+     
+     
+fields 
+
+  radius : Real from Standard;
+
+
+end;

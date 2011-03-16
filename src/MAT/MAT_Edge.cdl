@@ -1,0 +1,79 @@
+-- File:	Edge.cdl
+-- Created:	Wed Oct 14 10:16:07 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Edge from MAT 
+
+	---Purpose: 
+
+inherits
+
+    TShared from MMgt
+    
+uses
+
+    Bisector from MAT,
+    ListOfEdge from MAT
+
+--raises
+
+is
+
+    Create returns mutable Edge from MAT;
+    
+    EdgeNumber(me : mutable ; anumber : Integer)
+
+    is static;
+    
+    FirstBisector(me : mutable ; abisector : any Bisector from MAT)
+
+    is static;
+    
+    SecondBisector(me : mutable ; abisector : any Bisector from MAT)
+
+    is static;
+    
+    Distance(me : mutable ; adistance : Real)
+
+    is static;
+    
+    IntersectionPoint(me : mutable ; apoint : Integer)
+
+    is static;
+
+    EdgeNumber(me) returns Integer
+
+    is static;
+    
+    FirstBisector(me) returns any Bisector from MAT
+
+    is static;
+    
+    SecondBisector(me) returns any Bisector from MAT
+
+    is static;
+    
+    Distance(me) returns Real
+
+    is static;
+    
+    IntersectionPoint(me) returns Integer
+
+    is static;
+
+    Dump(me ; ashift , alevel : Integer)
+    
+    is static;
+    
+fields
+
+    theedgenumber        : Integer;
+    thefirstbisector     : Bisector from MAT;
+    thesecondbisector    : Bisector from MAT;
+    thedistance          : Real;
+    theintersectionpoint : Integer;
+
+end Edge;

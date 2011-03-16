@@ -1,0 +1,30 @@
+-- File:        Approval.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWApproval from RWStepBasic
+
+	---Purpose : Read & Write Module for Approval
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Approval from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWApproval;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Approval from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : Approval from StepBasic);
+
+	Share(me; ent : Approval from StepBasic; iter : in out EntityIterator);
+
+end RWApproval;

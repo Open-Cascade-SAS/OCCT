@@ -1,0 +1,120 @@
+-- File:	BRepFeat_MakeRevol.cdl
+-- Created:	Tue Feb 13 14:24:53 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+class MakeRevol from BRepFeat inherits Form from BRepFeat
+
+	---Purpose: Describes functions to build revolved shells from basis shapes.
+
+uses Shape                     from TopoDS,
+     Face                      from TopoDS,
+     Edge                      from TopoDS,
+     DataMapOfShapeListOfShape from TopTools,
+     Ax1                       from gp,
+     DataMapOfShapeShape       from TopTools,
+     SequenceOfCurve           from TColGeom,
+     Curve                     from Geom,
+     SequenceOfCurve           from TColGeom,
+     StatusError               from BRepFeat
+     
+    raises ConstructionError from Standard
+
+is
+
+
+    Create
+
+    	returns MakeRevol from BRepFeat;
+	---Purpose: initializes the revolved shell class.
+	---C++: inline
+
+
+    Create(Sbase     : Shape   from TopoDS;
+           Pbase     : Shape   from TopoDS;
+           Skface    : Face    from TopoDS;
+	   Axis      : Ax1     from gp;
+           Fuse      : Integer from Standard;
+           Modify    : Boolean from Standard)
+    
+	---Purpose: a face Pbase is selected in the
+    	--   shape Sbase to serve as the basis for the
+    	--   revolved shell. The revolution will be defined
+    	--   by the axis Axis and Fuse offers a choice between:
+    	--   -   removing matter with a Boolean cut using the setting 0
+    	--   -   adding matter with Boolean fusion using the setting 1.
+    	--     The sketch face Skface serves to determine
+    	-- the type of operation. If it is inside the basis
+    	-- shape, a local operation such as glueing can be performed.
+    	---C++: inline
+    	    	returns MakeRevol from BRepFeat;
+
+
+    Init(me: in out; Sbase     : Shape   from TopoDS;
+                     Pbase     : Shape   from TopoDS;
+                     Skface    : Face    from TopoDS;
+                     Axis      : Ax1     from gp;
+	             Fuse      : Integer from Standard;
+                     Modify    : Boolean from Standard)
+    
+    	is static;
+
+
+    Add(me: in out; E: Edge from TopoDS; OnFace: Face from TopoDS)
+
+	---Purpose: Indicates that the edge <E> will slide on the face
+	-- <OnFace>. Raises ConstructionError if the  face does not belong to the
+	-- basis shape, or the edge to the prismed shape.
+    	raises ConstructionError from Standard
+	
+	is static;
+
+
+    Perform(me: in out; Angle: Real from Standard)
+    
+    	is static;
+
+
+    Perform(me: in out; Until: Shape from TopoDS)
+    
+    	is static;
+
+
+    Perform(me: in out; From : Shape from TopoDS;
+                        Until: Shape from TopoDS)
+    
+    	is static;
+    	---Purpose: Reconstructs the feature topologically.
+
+    PerformThruAll(me: in out)
+    
+    	is static;
+    	---Purpose: Builds an infinite shell. The infinite descendants
+    	-- will not be kept in the result.
+
+    PerformUntilAngle(me: in out; Until :  Shape from TopoDS;
+                        Angle :  Real  from Standard)
+    
+    	is static;
+    	---Purpose: Assigns both a limiting shape, Until from
+    	-- TopoDS_Shape, and an angle, Angle at
+    	-- which to stop generation of the revolved shell feature.
+    Curves(me: in out; S : in out SequenceOfCurve from TColGeom);
+    
+
+    BarycCurve(me: in out)    
+    	returns Curve from Geom;
+
+
+fields
+
+    myPbase  : Shape                     from TopoDS;
+    mySlface : DataMapOfShapeListOfShape from TopTools;
+    myAxis   : Ax1                       from gp;
+    myCurves : SequenceOfCurve           from TColGeom;
+    myBCurve : Curve                     from Geom;
+    myStatusError : StatusError          from BRepFeat;
+
+end MakeRevol;

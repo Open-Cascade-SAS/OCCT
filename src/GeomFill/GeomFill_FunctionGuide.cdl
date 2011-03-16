@@ -1,0 +1,131 @@
+-- File:	GeomFill_FunctionGuide.cdl
+-- Created:	Thu Jul  9 09:29:32 1998
+-- Author:	Stephanie HUMEAU
+--		<shu@sun17>
+---Copyright:	 Matra Datavision 1998
+
+private  class FunctionGuide  from  GeomFill   
+inherits  FunctionSetWithDerivatives  from  math 
+
+uses   
+
+    Vector from math,  
+    Matrix from math, 
+    Surface from Geom, 
+    Curve  from  Geom,  
+    HCurve  from  Adaptor3d, 
+    Vec  from  gp, 
+    XYZ  from  gp,     
+    Pnt  from  gp, 
+    SectionLaw  from  GeomFill
+
+is
+ 
+    Create(S  : SectionLaw  from  GeomFill;   
+           Guide  :  HCurve  from  Adaptor3d; 
+           ParamOnLaw  :  Real  =  0.0)   
+    returns FunctionGuide  from  GeomFill ; 
+     
+    SetParam(me  :  in  out;   
+              Param  :  Real;  
+	      Centre :  Pnt  from  gp;
+	      Dir    :  XYZ  from  gp; 
+              XDir   :  XYZ  from  gp)  
+    is  static;
+
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function.
+
+    returns Integer  is  redefined;
+    
+    
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+
+    returns Integer  is redefined;
+    
+    
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean  is redefined;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean  is redefined;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean  is redefined;
+   
+
+    DerivT(me  : in out;   
+           X      : Vector from  math;    
+	   DCentre:  XYZ  from  gp; 
+	   DDir   :  XYZ  from  gp; 
+	   DFDT   :  out Vector) 
+    	---Purpose: returns the values <F> of the T derivatives for
+    	--          the parameter Param .
+    returns Boolean  is static; 
+     
+    DSDT(me; 
+         U,  V  :  Real; 
+         DCentre:  XYZ  from  gp; 
+	 DDir   :  XYZ  from  gp; 
+	 DSDT   :  out  Vec  from  gp)   
+    is  private;    
+ 
+    Deriv2T(me: in out;   
+    	    DCentre:  XYZ  from  gp; 
+	    DDir   :  XYZ  from  gp;
+            DFDT,  D2FT  :  out  Vector)	 
+    	---Purpose: returns the values <F> of the T2 derivatives for
+    	--          the parameter Param .
+    returns Boolean  is static;    
+   
+  
+--    DerivTX(me: in out; 
+--    	    Param  :  Real  from  Standard; 
+--    	    Param0  :  Real  from  Standard; 
+--    	    R  :  Vector  from  math; 
+--    	    X0  :  Vector  from  math;   
+--    	    D: out Matrix)	 
+    	---Purpose: returns the values <D> of  the TX derivatives for
+    	--          the parameter Param .
+--    returns Boolean  is static;        
+   
+      
+--    Deriv2X(me: in out;  
+--    	    X  :  Vector  from  math; 
+--      	    T: out Tensor)	 
+	 ---Purpose: returns the values <T> of  the X2 derivatives for
+    	--          the parameter Param .   
+--    returns Boolean  is static;     
+     
+     
+    
+fields   
+    TheGuide  :  HCurve  from  Adaptor3d; 
+    TheLaw    :  SectionLaw  from  GeomFill; 
+    isconst   :  Boolean; 
+    TheCurve  :  Curve  from  Geom;  
+    TheConst  :  Curve  from  Geom; 
+    TheSurface:  Surface  from  Geom; 
+    First,Last:  Real;   
+    TheUonS   :  Real;     
+    Centre    :  XYZ; 
+    Dir       :  XYZ;
+end  FunctionGuide;

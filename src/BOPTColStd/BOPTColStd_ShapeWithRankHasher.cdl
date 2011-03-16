@@ -1,0 +1,32 @@
+-- File:	BOPTColStd_ShapeWithRankHasher.cdl
+-- Created:	Fri Jun  8 17:30:21 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ShapeWithRankHasher from BOPTColStd 
+
+    ---Purpose: 
+    --  The auxiliary class provides hash code for mapping 
+    --  ShapeWithRank objects
+uses
+    ShapeWithRank from BOPTColStd
+
+
+is 
+    HashCode(myclass;  
+    	    SR : ShapeWithRank from BOPTColStd;  
+    	    Upper : Integer from Standard)  
+    	returns Integer from Standard; 
+    ---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+    --          range 0..Upper.
+    -- 
+    IsEqual(myclass;  
+    	SR1, SR2 : ShapeWithRank from BOPTColStd)  
+    	returns Boolean;	 
+    ---Purpose: Returns True  when the two  keys are the same. Two
+    --          same  keys  must   have  the  same  hashcode,  the
+    --          contrary is not necessary.
+
+end ShapeWithRankHasher;

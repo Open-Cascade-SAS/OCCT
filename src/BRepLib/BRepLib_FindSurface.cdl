@@ -1,0 +1,93 @@
+-- File:	BRepLib_FindSurface.cdl
+-- Created:	Fri Jul 22 11:31:40 1994
+-- Author:	Remi LEQUETTE
+--		<rle@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class FindSurface from BRepLib 
+
+	---Purpose: Provides an  algorithm to find  a Surface  through a
+	--          set of edges.
+	--          
+	--          The edges  of  the  shape  given  as  argument are
+	--          explored if they are not coplanar at  the required
+	--          tolerance  the method Found returns false.
+	--          
+	--          If a null tolerance is given the max of the  edges
+	--          tolerances is used.
+	--          
+	--          The method Tolerance returns the true distance  of
+	--          the edges to the Surface.
+	--          
+	--          The method Surface returns the Surface if found.
+	--          
+	--          The method Existed  returns returns  True  if  the
+	--          Surface was already attached to some of the edges.
+	--          
+	--          When Existed  returns True  the  Surface  may have a
+	--          location given by the Location method.
+
+uses
+    
+    Shape    from TopoDS,
+    Location from TopLoc,
+    Surface    from Geom
+
+raises
+
+    NoSuchObject from Standard
+
+is
+
+    Create returns FindSurface from BRepLib;
+    
+    Create (S         : Shape   from TopoDS; 
+    	    Tol       : Real    from Standard = -1;
+    	    OnlyPlane : Boolean from Standard = Standard_False)
+	---Purpose: Computes the Surface from the edges of  <S> with the
+	--          given tolerance.
+	--          if <OnlyPlane> is true, the computed surface will be
+	--          a plane. If it is not possible to find a plane, the
+	--          flag NotDone will be set.
+    returns FindSurface from BRepLib;
+    
+    Init (me : in out; 
+          S         : Shape   from TopoDS; 
+    	  Tol       : Real    from Standard = -1;
+    	  OnlyPlane : Boolean from Standard = Standard_False)
+	---Purpose: Computes the Surface from the edges of  <S> with the
+	--          given tolerance.
+	--          if <OnlyPlane> is true, the computed surface will be
+	--          a plane. If it is not possible to find a plane, the
+	--          flag NotDone will be set.
+    is static;
+
+    Found(me) returns Boolean
+    is static;
+    
+    Surface(me) returns mutable Surface from Geom
+    is static;
+    
+    Tolerance(me) returns Real
+    is static;
+    
+    ToleranceReached(me) returns Real
+    is static;
+    
+    Existed(me) returns Boolean
+    is static;
+    
+    Location(me) returns Location from TopLoc
+    is static;
+    
+fields
+
+    mySurface    : Surface from Geom;
+    myTolerance  : Real;
+    myTolReached : Real;
+    isExisted    : Boolean;
+    myLocation   : Location from TopLoc;
+
+end FindSurface;

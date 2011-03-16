@@ -1,0 +1,155 @@
+-- File:	DirChecker.cdl
+-- Created:	Tue Nov 10 10:37:47 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class DirChecker  from IGESData
+
+    ---Purpose : This class centralizes general Checks upon an IGES Entity's
+    --           Directory Part. That is : such field Ignored or Required,
+    --           or Required with a given Value (for an Integer field)
+    --           More precise checks can be performed as necessary, by each
+    --           Entity (method OwnCheck).
+    --           
+    --           Each class of Entity defines its DirChecker (method DirChecker)
+    --           and the DirChecker is able to perform its Checks on an Entity
+    --           
+    --           A Required Value or presence of a field causes a Fail Message
+    --           if criterium is not satisfied
+    --           An Ignored field causes a Correction Message if the field is
+    --           not null/zero
+
+uses Integer, Check, IGESEntity, DefType
+
+is
+
+    Create returns DirChecker;
+    ---Purpose : Returns a DirChecker, with no criterium at all to be checked
+
+    Create (atype : Integer) returns DirChecker;
+    ---Purpose : Returns a DirChecker, with no criterium except Required Type
+
+    Create (atype, aform : Integer) returns DirChecker;
+    ---Purpose : Returns a DirChecker, with no criterium except Required values
+    --           for Type and Form numbers
+
+    Create (atype, aform1, aform2 : Integer) returns DirChecker;
+    ---Purpose : Returns a DirChecker, with no criterium except Required values
+    --           for Type number (atype), and Required Range for Form number
+    --           (which must be between aform1 and aform2 included)
+
+    IsSet (me) returns Boolean  is static;
+    ---Purpose : Returns True if at least one criterium has already been set
+    --           Allows user to store a DirChecker (static variable) then ask
+    --           if it has been set before setting it
+
+    SetDefault (me : in out)  is static;
+    ---Purpose : Sets a DirChecker with most current criteria, that is :
+    --           Structure Ignored ( worths call Structure(crit = DefVoid) )
+
+    Structure (me : in out; crit : DefType) is static;
+    ---Purpose : Sets Structure criterium.
+    --           If crit is DefVoid, Ignored : should not be defined
+    --           If crit is DefReference, Required : must be defined
+    --           Other values are not taken in account
+
+    LineFont (me : in out; crit : DefType) is static;
+    ---Purpose : Sets LineFont criterium
+    --           If crit is DefVoid, Ignored : should not be defined
+    --           If crit is DefAny, Required : must be defined (value or ref)
+    --           If crit is DefValue, Required as a Value (error if Reference)
+    --           Other values are not taken in account
+
+    LineWeight (me : in out; crit : DefType) is static;
+    ---Purpose : Sets LineWeight criterium
+    --           If crit is DefVoid, Ignored : should not be defined
+    --           If crit is DefValue, Required
+    --           Other values are not taken in account
+
+    Color (me : in out; crit : DefType) is static;
+    ---Purpose : Sets Color criterium
+    --           If crit is DefVoid, Ignored : should not be defined
+    --           If crit is DefAny, Required : must be defined (value or ref)
+    --           Other values are not taken in account
+
+    GraphicsIgnored (me : in out; hierarchy : Integer = -1) is static;
+    ---Purpose : Sets Graphics data (LineFont, LineWeight, Color, Level, View)
+    --           to be ignored according value of Hierarchy status :
+    --           If hierarchy is not given, they are Ignored any way
+    --             (that is, they should not be defined)
+    --           If hierarchy is given, Graphics are Ignored if the Hierarchy
+    --           status has the value given in argument "hierarchy"
+
+
+    BlankStatusIgnored (me : in out) is static;
+    ---Purpose : Sets Blank Status to be ignored
+    --            (should not be defined, or its value should be 0)
+
+    BlankStatusRequired (me : in out; val : Integer) is static;
+    ---Purpose : Sets Blank Status to be required at a given value
+
+    SubordinateStatusIgnored (me : in out) is static;
+    ---Purpose : Sets Subordinate Status to be ignored
+    --            (should not be defined, or its value should be 0)
+
+    SubordinateStatusRequired (me : in out; val : Integer) is static;
+    ---Purpose : Sets Subordinate Status to be required at a given value
+
+    UseFlagIgnored (me : in out) is static;
+    ---Purpose : Sets Blank Status to be ignored
+    --            (should not be defined, or its value should be 0)
+
+    UseFlagRequired (me : in out; val : Integer) is static;
+    ---Purpose : Sets Blank Status to be required at a given value
+    --           Give -1 to demand UseFlag not zero (but no precise value req.)
+
+    HierarchyStatusIgnored (me : in out) is static;
+    ---Purpose : Sets Hierarchy Status to be ignored
+    --            (should not be defined, or its value should be 0)
+
+    HierarchyStatusRequired (me : in out; val : Integer) is static;
+    ---Purpose : Sets Hierarchy Status to be required at a given value
+
+    	-- --    Checking    -- --
+
+    Check (me; ach : in out Check; ent : IGESEntity) is static;
+    ---Purpose : Performs the Checks on an IGESEntity, according to the
+    --           recorded criteria
+    --           In addition, does minimal Checks, such as admitted range for
+    --           Status, or presence of Error status in some data (Color, ...)
+
+    CheckTypeAndForm (me; ach : in out Check; ent : IGESEntity) is static;
+    ---Purpose : Performs a Check only on Values of Type Number and Form Number
+    --           This allows to do a check on an Entity not yet completely
+    --           filled but of which Type and Form Number have been already set
+
+    Correct (me; ent : mutable IGESEntity) returns Boolean  is static;
+    ---Purpose : Corrects the Directory Entry of an IGES Entity as far as it is
+    --           possible according recorded criteria without any ambiguity :
+    --           - if a numeric Status is required a given value, this value is
+    --             enforced
+    --           - if an item is required to be Void, or if it recorded as
+    --             Erroneous, it is cleared (set to Void)
+    --           - Type Number is enforced
+    --           - finally Form Number is enforced only if one and only Value
+    --             is admitted (no range, see Constructors of DirChecker)
+
+fields
+
+    isitset  : Boolean;  -- allows user to test if a DirChecked is set or not
+    thetype  : Integer;
+    theform1 : Integer;
+    theform2 : Integer;
+    thestructure : DefType;
+    thelinefont  : DefType;
+    thelineweig  : DefType;
+    thecolor     : DefType;
+    thegraphier  : Integer;  -- (graphics/heirarchy)
+    theblankst   : Integer;
+    thesubordst  : Integer;
+    theuseflag   : Integer;
+    thehierst    : Integer;
+
+end DirChecker;

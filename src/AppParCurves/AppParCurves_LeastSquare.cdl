@@ -1,0 +1,381 @@
+-- File:	LeastSquare.cdl
+-- Created:	Thu Jul 25 17:24:41 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+generic class LeastSquare from AppParCurves
+    	    	    (MultiLine   as any;
+		     ToolLine    as any)   -- as ToolLine(MultiLine)
+
+
+    ---Purpose: This class describes the least square fitting of a 
+    --          MultiLine using the Householder method from the
+    --          mathematical package.
+    --          The problem to solve is the following one:
+    --          minimizing the sum(|C(ui)- Qi|)2 where Qi are the points of
+    --          the MultiLine and C(ui) the points of the approximating 
+    --          curves.
+
+
+
+uses  Matrix           from math,
+      Vector           from math,
+      IntegerVector    from math,
+      Constraint       from AppParCurves,
+      MultiCurve       from AppParCurves,
+      MultiBSpCurve    from AppParCurves,
+      Array1OfInteger  from TColStd,
+      Array1OfReal     from TColStd,
+      HArray1OfInteger from TColStd,
+      HArray1OfReal    from TColStd
+
+
+raises NotDone        from StdFail, 
+       OutOfRange     from Standard,
+       DimensionError from Standard,
+       NoSuchObject   from Standard
+
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   FirstCons, LastCons: Constraint; 
+    	   Parameters: Vector from math; NbPol: Integer)
+    	---Purpose: given a MultiLine, this algorithm computes the least 
+    	--          square resolution using the Householder-QR method.
+    	--          If the first and/or the last point is a constraint 
+    	--          point, the value of the tangency or curvature is 
+    	--          computed in the resolution.
+    	--          NbPol is the number of control points wanted 
+    	--          for the approximating curves. 
+    	--          The system to solve is the following:
+    	--          A X = B. 
+    	--          Where A is the Bernstein matrix computed with the
+    	--          parameters, B the points coordinates and X the poles 
+    	--          solutions.
+    	--          The matrix A is the same for each coordinate x, y and z
+    	--          and is also the same for each MultiLine point because 
+    	--          they are approximated in parallel(so with the same
+    	--          parameter, only the vector B changes).
+
+    returns LeastSquare from AppParCurves
+    raises DimensionError from Standard;    
+
+
+    
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   FirstCons, LastCons: Constraint; NbPol: Integer)
+    	---Purpose: Initializes the fields of the object.
+    
+    returns LeastSquare;
+
+
+    Create(SSP: MultiLine; Knots: Array1OfReal; Mults: Array1OfInteger;
+    	   FirstPoint, LastPoint: Integer;
+    	   FirstCons, LastCons: Constraint; 
+    	   Parameters: Vector from math; NbPol: Integer)
+    	---Purpose: given a MultiLine, this algorithm computes the least 
+    	--          square resolution using the Householder-QR method.
+    	--          If the first and/or the last point is a constraint 
+    	--          point, the value of the tangency or curvature is 
+    	--          computed in the resolution.
+    	--          Deg is the degree wanted for the approximating curves. 
+    	--          The system to solve is the following:
+    	--          A X = B. 
+    	--          Where A is the BSpline functions matrix computed with
+    	--          <parameters>, B the points coordinates and X the poles 
+    	--          solutions.
+    	--          The matrix A is the same for each coordinate x, y and z
+    	--          and is also the same for each MultiLine point because 
+    	--          they are approximated in parallel(so with the same
+    	--          parameter, only the vector B changes).
+
+    returns LeastSquare from AppParCurves
+    raises DimensionError from Standard;    
+
+
+    
+    Create(SSP: MultiLine; Knots: Array1OfReal; Mults: Array1OfInteger;
+    	   FirstPoint, LastPoint: Integer;
+    	   FirstCons, LastCons: Constraint; NbPol: Integer)
+    	---Purpose: Initializes the fields of the object.
+    
+    returns LeastSquare;
+
+
+
+    Init(me: in out; SSP: MultiLine; FirstPoint, LastPoint: Integer) 
+        ---Purpose: is used by the constuctors above.
+
+    is static protected;
+
+
+    Perform(me: in out; Parameters: Vector)
+    	---Purpose: Is used after having initialized the fields.
+    	--          The case "CurvaturePoint" is not treated in this method.
+
+    is static;
+
+
+    Perform(me: in out; Parameters: Vector;
+            l1, l2: Real)
+    	---Purpose: Is used after having initialized the fields.
+    
+    is static;
+    
+
+    ----------------------------------------------------------------------
+    --   for the two following methods, vectors <V> must be constructed
+    --   as follow: 
+    --   V(v1x, v1y, v1z, ....., vnx, vny, vnz, v1x, v1y, ....., vmx, vmy)
+    --      3d curve               3d curve     2d curve          2d curve
+    --      
+    --   the length of V must be Nb3dpoints*3 + Nb2dpoints*2
+
+
+    Perform(me: in out; Parameters: Vector;
+    	    V1t, V2t: Vector;
+            l1, l2: Real)
+    	---Purpose: Is used after having initialized the fields.
+    	--- <V1t> is the tangent vector at the first point.
+    	--- <V2t> is the tangent vector at the last point.
+    is static;
+    
+    Perform(me: in out; Parameters: Vector;
+    	    V1t, V2t, V1c, V2c: Vector;
+            l1, l2: Real)
+    	---Purpose: Is used after having initialized the fields.
+    	--- <V1t> is the tangent vector at the first point.
+    	--- <V2t> is the tangent vector at the last point.
+    	--- <V1c> is the tangent vector at the first point.
+    	--- <V2c> is the tangent vector at the last point.
+    
+    is static;
+    
+    
+    -------------------------------
+    --- Result methods:
+    -------------------------------
+    
+
+    IsDone(me)
+    	---Purpose: returns True if all has been correctly done.
+
+    returns Boolean
+    is static;
+    
+    
+    BezierValue(me: in out)
+    	---Purpose: returns the result of the approximation, i.e. all the
+    	--          Curves.
+    	--          An exception is raised if NotDone.
+
+    returns MultiCurve from AppParCurves
+    raises NotDone from StdFail,
+    NoSuchObject   from Standard
+    is static;
+
+
+    BSplineValue(me: in out)
+    	---Purpose: returns the result of the approximation, i.e. all the
+    	--          Curves.
+    	--          An exception is raised if NotDone.
+    	---C++: return const &
+
+    returns MultiBSpCurve from AppParCurves
+    raises NotDone from StdFail,
+    NoSuchObject   from Standard
+    is static;
+
+
+    FunctionMatrix(me)
+    	---Purpose: returns the function matrix used to approximate the 
+    	--          set.
+    	---C++: return const &
+
+    returns Matrix from math
+    raises NotDone from StdFail
+    is static;
+
+
+
+    DerivativeFunctionMatrix(me)
+    	---Purpose: returns the derivative function matrix used 
+    	--          to approximate the set.
+    	---C++: return const &
+
+    returns Matrix from math
+    raises NotDone from StdFail
+    is static;
+
+
+    ErrorGradient(me: in out; Grad: in out Vector; 
+    	    	  F: in out Real; MaxE3d, MaxE2d: in out Real) 
+    	---Purpose: returns the maximum errors between the MultiLine 
+    	--          and the approximation curves. F is the sum of the square
+    	--          distances. Grad is the derivative vector of the 
+    	--          function F.
+	    
+    is static;
+    
+    
+    Distance(me: in out)
+    	---Purpose: returns the distances between the points of the 
+    	--          multiline and the approximation curves.
+    	---C++: return const&
+
+    returns Matrix from math
+    is static;
+    
+    
+    Error(me: in out; F: in out Real; 
+          MaxE3d, MaxE2d: in out Real)
+    	---Purpose: returns the maximum errors between the MultiLine 
+    	--          and the approximation curves. F is the sum of the square
+    	--          distances.
+    
+    is static;
+    
+
+    FirstLambda(me)
+    	---Purpose: returns the value (P2 - P1)/ V1 if the first point
+    	--          was a tangency point.
+    
+    returns Real
+    is static;
+    
+
+    LastLambda(me)
+    	---Purpose: returns the value (PN - PN-1)/ VN if the last point
+    	--          was a tangency point.
+    
+    returns Real
+    is static;
+
+    
+    Points(me)
+    	---Purpose: returns the matrix of points value.
+    	---C++: return const&
+
+    returns Matrix
+    is static;
+    
+
+    Poles(me)
+    	---Purpose: returns the matrix of resulting control points value.
+    	---C++: return const&
+
+    returns Matrix
+    is static;
+    
+    
+    KIndex(me)
+    	---Purpose: Returns the indexes of the first non null values of
+    	--          A and DA.
+    	--          The values are non null from Index(ieme point) +1
+    	--          to Index(ieme point) + degree +1.
+    	---C++: return const&
+    
+    returns IntegerVector
+    is static;
+    
+    
+    
+    -------------------------------
+    --- internal methods:
+    -------------------------------
+    
+    NbBColumns(me; SSP: MultiLine)
+    	---Purpose: returns the number of second member columns. 
+    	--          Is used internally to initialize the fields.
+    returns Integer
+    is static protected;
+
+
+    TheFirstPoint(me; FirstCons: Constraint; FirstPoint: Integer)
+    	---Purpose: returns the first point beeing fitted.
+    returns Integer
+    is static protected;
+
+
+    TheLastPoint(me; LastCons: Constraint; LastPoint: Integer)
+    	---Purpose: returns the last point beeing fitted.
+    returns Integer
+    is static protected;
+    
+
+    Affect(me: in out; SSP: MultiLine; Index: Integer;
+    	   Cons: in out Constraint; Vt, Vc: in out Vector)
+        ---Purpose: Affects the fields in the case of a constraint point.
+    is static protected;
+    
+
+    ComputeFunction(me: in out; Parameters: Vector)
+    	---Purpose:
+    is static protected;
+    
+
+    SearchIndex(me: in out; Index: in out IntegerVector)
+    is static protected;
+
+
+    MakeTAA(me: in out; TheA, TheB: in out Vector)
+    	---Purpose: computes internal matrixes for the resolution
+    is static protected;
+
+    MakeTAA(me: in out; TheA: in out Vector)
+    	---Purpose: computes internal matrixes for the resolution
+    is static protected;
+
+    MakeTAA(me: in out; TheA: in out Vector; TheB: in out Matrix)
+    	---Purpose: computes internal matrixes for the resolution
+    is static protected;
+
+fields
+
+
+FirstConstraint : Constraint       from AppParCurves;
+LastConstraint :  Constraint       from AppParCurves;
+SCU:              MultiBSpCurve    from AppParCurves;
+myknots:          HArray1OfReal    from TColStd;
+mymults:          HArray1OfInteger from TColStd;
+mypoles:          Matrix           from math;
+A:                Matrix           from math;
+DA:               Matrix           from math;
+B2:               Matrix           from math;
+mypoints:         Matrix           from math;
+Vflatknots:       Vector           from math;
+Vec1t:            Vector           from math;
+Vec1c:            Vector           from math;
+Vec2t:            Vector           from math;
+Vec2c:            Vector           from math;
+theError:         Matrix           from math;
+myindex:          IntegerVector    from math;
+
+ERR3d:            Real;
+ERR2d:            Real;
+lambda1:          Real;
+lambda2:          Real; 
+
+FirstP:           Integer;
+LastP:            Integer;
+Nlignes:          Integer;
+Ninc:             Integer;
+NA:               Integer;
+myfirstp:         Integer;
+mylastp:          Integer;
+resinit:          Integer;
+resfin:           Integer;
+nbP2d:            Integer;
+nbP:              Integer; 
+
+nbpoles:          Integer;
+deg:              Integer; 
+
+done:             Boolean; 
+iscalculated  :   Boolean; 
+isready       :   Boolean;
+end LeastSquare;
+

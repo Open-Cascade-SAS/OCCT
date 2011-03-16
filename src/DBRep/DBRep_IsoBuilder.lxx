@@ -1,0 +1,14 @@
+// File:	DBRep_IsoBuilder.lxx
+// Created:	Fri Mar 25 18:24:54 1994
+// Author:	Jean Marc LACHAUME
+//		<jml@phobox>
+
+//=======================================================================
+// Function : NbDomains
+// Purpose  : Returns the total number of domains.
+//=======================================================================
+
+inline Standard_Integer DBRep_IsoBuilder::NbDomains () const
+{
+  return myNbDom ;
+}

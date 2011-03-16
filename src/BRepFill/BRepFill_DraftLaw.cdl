@@ -1,0 +1,29 @@
+-- File:	BRepFill_LocationLaw.cdl
+-- Created:	Wed Jan 14 14:14:49 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+ 
+class DraftLaw from BRepFill  inherits  Edge3DLaw  from  BRepFill 
+
+	---Purpose: Build Location Law, with a  Wire.
+
+uses 
+  LocationDraft  from  GeomFill, 
+  Wire   from TopoDS
+
+is    
+  Create (Path   :  Wire  from  TopoDS; 
+          Law    :  LocationDraft  from  GeomFill)   
+  returns DraftLaw from BRepFill;   
+   
+  CleanLaw(me  :  mutable;  TolAngular  :  Real)  
+    ---Purpose: To clean the little discontinuities.          
+  is  static;    
+    
+end DraftLaw;
+
+
+

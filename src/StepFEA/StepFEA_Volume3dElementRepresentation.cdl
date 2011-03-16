@@ -1,0 +1,54 @@
+-- File:	StepFEA_Volume3dElementRepresentation.cdl
+-- Created:	Thu Dec 12 17:51:08 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class Volume3dElementRepresentation from StepFEA
+inherits ElementRepresentation from StepFEA
+
+    ---Purpose: Representation of STEP entity Volume3dElementRepresentation
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr,
+    HArray1OfNodeRepresentation from StepFEA,
+    FeaModel3d from StepFEA,
+    Volume3dElementDescriptor from StepElement,
+    ElementMaterial from StepElement
+
+is
+    Create returns Volume3dElementRepresentation from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentation_Name: HAsciiString from TCollection;
+                       aRepresentation_Items: HArray1OfRepresentationItem from StepRepr;
+                       aRepresentation_ContextOfItems: RepresentationContext from StepRepr;
+                       aElementRepresentation_NodeList: HArray1OfNodeRepresentation from StepFEA;
+                       aModelRef: FeaModel3d from StepFEA;
+                       aElementDescriptor: Volume3dElementDescriptor from StepElement;
+                       aMaterial: ElementMaterial from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    ModelRef (me) returns FeaModel3d from StepFEA;
+	---Purpose: Returns field ModelRef
+    SetModelRef (me: mutable; ModelRef: FeaModel3d from StepFEA);
+	---Purpose: Set field ModelRef
+
+    ElementDescriptor (me) returns Volume3dElementDescriptor from StepElement;
+	---Purpose: Returns field ElementDescriptor
+    SetElementDescriptor (me: mutable; ElementDescriptor: Volume3dElementDescriptor from StepElement);
+	---Purpose: Set field ElementDescriptor
+
+    Material (me) returns ElementMaterial from StepElement;
+	---Purpose: Returns field Material
+    SetMaterial (me: mutable; Material: ElementMaterial from StepElement);
+	---Purpose: Set field Material
+
+fields
+    theModelRef: FeaModel3d from StepFEA;
+    theElementDescriptor: Volume3dElementDescriptor from StepElement;
+    theMaterial: ElementMaterial from StepElement;
+
+end Volume3dElementRepresentation;

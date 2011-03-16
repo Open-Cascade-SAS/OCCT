@@ -1,0 +1,237 @@
+
+-- File:	Graphic2d_HidingGraphicObject.cdl
+-- Created:	Thu Feb 19 13:16:21 1998
+-- Authors:	Gerard GRAS
+--		<gg@photox>
+---Copyright:	 Matra Datavision 1993
+
+class HidingGraphicObject from Graphic2d inherits GraphicObject from Graphic2d 
+
+	---Version:
+
+	---Purpose: Creates a 2D hiding graphic object in a view.
+	--	    A graphic object is a primitives manager
+	--	    which hide the others graphic objects
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	Drawer                  from Graphic2d,
+	View                    from Graphic2d,
+	Primitive		from Graphic2d,
+        TypeOfFrame		from Graphic2d,
+	Array1OfVertex 		from Graphic2d,
+	HArray1OfVertex 	from Graphic2d,
+	Length                  from Quantity,
+	GTrsf2d			from gp
+
+raises
+	OutOfRange		from Standard
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aView: View from Graphic2d;
+		aFrame: Array1OfVertex from Graphic2d)
+	returns mutable HidingGraphicObject from Graphic2d;
+	---Level: Public
+	---Purpose: Creates an hiding polygon object in the view <aView>
+	--	    This graphic object manages a sequence of primitives.
+	--  <aFrame> describes the hiding polygon geometry
+	--  The frame is created with the default attributes : 
+	--  * the hiding color index : 0 (the same as the view)
+	--  * the frame color index : 1
+	--  * the frame line type index : 0
+	--  * the frame line thickness index : 0
+	--  * the graphic object is :
+	--	    - empty.
+	--	    - plottable.
+	--	    - drawable.
+	--	    - pickable.
+	--	    - not displayed.
+	--	    - not highlighted.
+	--	    - has a relative drawing priority of 0 
+	---Category: Constructors
+
+	Create (aView: View from Graphic2d;
+		aType: TypeOfFrame from Graphic2d =
+				Graphic2d_TOF_RECTANGULAR; 
+		aMargin1,aMargin2: Length from Quantity = 0.0)
+	returns mutable HidingGraphicObject from Graphic2d;
+	---Level: Public
+	---Purpose: Creates an hiding predefined object in the view <aView>.
+	--	    the predefined TypeOfFrame must be one of :
+	--	    TOF_RECTANGULAR,TOF_CIRCULAR.
+	--	    the frame position and geometry is computed
+	--	    automaticaly according to the contents of the
+	--	    graphic object and the <aMargin1>,<aMargin2> parameter. 
+	--	    A graphic object manages a sequence of primitives.
+	--  Warning: The type of frame can be UNKNOWN,in this case the frame is
+	--	   not drawn.
+
+	-----------------------------------------------------
+	-- Category: Methods to manage the drawing attributes 
+	-----------------------------------------------------
+
+	SetFrame (me : mutable; 
+		aFrame: Array1OfVertex from Graphic2d)
+        is static;
+        ---Level: Public
+        ---Purpose: Updates the frame geometry.
+
+	SetFrame (me : mutable; 
+		aFrameType: TypeOfFrame from Graphic2d;
+		aMargin1,aMargin2: Length from Quantity = 0.0)
+        is static;
+        ---Level: Public
+        ---Purpose: Updates & computes the frame geometry 
+	--	    automaticaly according to the contents of the
+	--	    graphic object and the <aMargin> parameter. 
+	--  Warning: The type of frame can be UNKNOWN,in this case the frame is
+	--	   not drawn.
+
+	SetHidingColorIndex (me : mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Updates the hiding color index of the background polygon.
+	
+	SetFrameColorIndex (me : mutable; anIndex: Integer from Standard = 1)
+	is static;
+	---Level: Public
+	---Purpose: Updates the frame color index of the polygon.
+	
+	SetFrameTypeIndex (me : mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Updates the frame line type index of the polygon.
+	
+	SetFrameWidthIndex (me : mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Updates the frame line thickness index of the polygon.
+
+	-------------------------------------------------
+	-- Category: Methods to manage the drawing priority 
+	-------------------------------------------------
+
+	MaxPriority (me) returns Integer from Standard is redefined;
+	---Level: Public
+	---Purpose: Returns the max usable relative priority of the 
+	--         "hiding" graphic object. 	
+
+        ----------------------
+        -- Category: Inquiries
+        ----------------------
+
+        FrameMinMax (me; Minx, Maxx, Miny, Maxy: out Length from Quantity)
+                returns Boolean is static;
+        ---Level: Public
+        ---Purpose: Returns the min max values of the frame of <me>.
+        --  Warning: If <me> is empty
+	--	    returns FALSE
+        --          and Minx = Miny = RealFirst () 
+        --              Maxx = Maxy = RealLast ()
+
+        MinMax (me; Minx, Maxx, Miny, Maxy: out Length from Quantity)
+                returns Boolean is redefined;
+        ---Level: Public
+        ---Purpose: Returns the min max values of <me> including
+	--	the frame and primitives inside.
+        --  Warning: If <me> is empty or not displayed
+	--	    returns FALSE
+        --          and     Minx = Miny = RealFirst ()
+        --                  Maxx = Maxy = RealLast ()
+
+	Frame (me; aFrame: out Array1OfVertex from Graphic2d)
+		returns TypeOfFrame from Graphic2d is static;
+        ---Level: Public
+        ---Purpose: Returns the frame geometry and type of 
+	--   the hiding graphic object.
+	--  Warning: the frame can be NULL.
+
+	HidingColorIndex (me)
+		returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the hiding color index.
+
+	FrameColorIndex (me)
+		returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the frame color index.
+
+	FrameTypeIndex (me)
+		returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the frame line type index.
+
+	FrameWidthIndex (me)
+		returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the frame line thickness index.
+
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+
+        Draw (me: mutable;
+                aDrawer: Drawer from Graphic2d;
+                Reset: Boolean from Standard)
+        is redefined private;
+        ---Level: Internal
+        ---Purpose: Drawn the last Undrawn primitives managed by the
+        --          graphic object <me> in the drawer <aDrawer>.
+        ---Category: Private methods
+
+	Draw (me: mutable;
+		aDrawer: Drawer from Graphic2d;
+		aPrimitive: Primitive from Graphic2d)
+	is redefined private;
+	---Level: Internal
+	---Purpose: Drawn a primitive managed by the
+	--	    graphic object <me> in the drawer <aDrawer>.
+	--	    Called by the method Graphic2d_View::Update (aPrimitive)
+	---Category: Private methods
+
+        Pick (me : mutable; X, Y: Real from Standard;
+                aPrecision: Real from Standard;
+                aDrawer: Drawer from Graphic2d)
+        returns Boolean from Standard
+        is redefined private;
+        ---Level: Internal
+        ---Purpose: Returns Standard_True if the graphic object <me>
+        --          is picked, Standard_False if not.
+        --          Called by the method Graphic2d_View::Pick
+        ---Category: Private methods
+
+        BasePriority (me) returns Integer from Standard is redefined private;
+        ---Level: Internal
+        ---Purpose: Returns the min usable absolute priority of the
+        --         "hiding" graphic object.  
+
+        TransformMinMax (me; aTrsf: GTrsf2d from gp;
+			 Minx, Maxx, Miny, Maxy: out Real from Standard)
+                is static private;
+        ---Level: Internal
+        ---Purpose: Returns the transformed min max values of the frame <me>.
+
+fields
+	myFrame:		HArray1OfVertex from Graphic2d;
+	myTypeOfFrame:		TypeOfFrame from Graphic2d;
+	myHidingColorIndex: 	Integer from Standard;
+	myFrameColorIndex: 	Integer from Standard;
+	myFrameTypeIndex: 	Integer from Standard;
+	myFrameWidthIndex: 	Integer from Standard;
+	myFrameMargin1:		Length from Quantity;
+	myFrameMargin2:		Length from Quantity;
+	myXmin,myYmin: 		Length from Quantity;
+	myXmax,myYmax: 		Length from Quantity;
+	myIsComputed:		Boolean from Standard;
+
+friends
+ 	class View from Graphic2d
+
+end HidingGraphicObject from Graphic2d;

@@ -1,0 +1,9 @@
+#ifndef _TColStd_SequenceOfExtendedString_HeaderFile
+#include <TColStd_SequenceOfExtendedString.hxx>
+#endif
+#ifndef _TDocStd_Document_HeaderFile
+#include <TDocStd_Document.hxx>
+#endif
+#ifndef _TOcaf_Application_HeaderFile
+#include <TOcaf_Application.hxx>
+#endif

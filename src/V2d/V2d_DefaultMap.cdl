@@ -1,0 +1,47 @@
+-- File:	V2d_DefaultMap.cdl
+-- Created:	Fri Feb 10 08:24:42 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+class DefaultMap from V2d
+
+     ---Purpose:  Modifies class definition.
+        
+uses
+    GenericColorMap, TypeMap, WidthMap, FontMap, MarkMap from Aspect
+is
+
+    ColorMap(myclass) 
+    ---Purpose: Returns a indexed color map with the following color
+    --          White, black, red, green, blue1 , yellow, sienna, orange2 
+    --          lightgray,lightseagreen,gray60,gray70. The index are 1 to 12.
+    returns GenericColorMap from Aspect;
+
+
+    TypeMap(myclass)
+    ---Purpose: Returns a indexed type map with the following line types
+    --          SOLID, DASH, DOT, DOTDASH. The index are 1 to 4.
+    returns TypeMap from Aspect;
+    
+    WidthMap(myclass)
+    ---Purpose: Returns a indexed width map with the following width
+    --          0.0001, 0.0006, 0.001, 0.003. The index are 1 to 4.
+    returns WidthMap from Aspect;
+    
+    FontMap(myclass)
+    ---Purpose: Returns a indexed font map with the following font
+    --          "Courier-Bold" 0.01 0.0
+    --          "Helvetica-Bold" 0.01 0.2
+    --          "-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1" 0.003 0.0
+    --          The index are 1 to 2.
+    returns FontMap from Aspect;
+    
+
+    MarkMap(myclass)
+    ---Purpose: Returns a indexed font map with the following width
+    --          Point,Plus,Star,O,X,O_Point,O_Plus,O_STAR,O_X
+    --          BALL,RING1,RING2,RING3
+    returns MarkMap from Aspect;
+   
+end DefaultMap from V2d;

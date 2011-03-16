@@ -1,0 +1,9 @@
+-- File:	DRAWEXE.edl
+-- Author:	Sergey ZARITCHNY
+-- History:	Tue Oct 21 11:20:21 2003
+-- Copyright:	Open CASCADE SA 2003
+
+@if ( %Station == "wnt" ) then
+    @set %LINK_ExeType = "CONSOLE";
+@endif;
+

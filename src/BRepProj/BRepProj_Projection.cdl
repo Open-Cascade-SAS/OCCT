@@ -1,0 +1,94 @@
+-- File:	BRepProj_Projection.cdl
+-- Created:	Fri Nov 13 10:30:37 1998
+-- Author:	Jean-Michel BOULCOURT
+--		<jmb@coulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class Projection from BRepProj
+
+    	---Purpose: The  Projection   class provides  conical  and 
+        --          cylindrical projections of  Edge  or  Wire  on   
+        --          a Shape from TopoDS. The result will be a Edge    
+        --          or  Wire  from  TopoDS. 
+
+uses
+    Dir	                             from gp, 
+    Pnt	                             from gp, 
+    Shape                            from TopoDS,  
+    Edge                             from TopoDS, 
+    Wire                             from TopoDS, 
+    Face                             from TopoDS,     
+    Compound                         from TopoDS,  
+    HSequenceOfShape                 from TopTools
+	      
+raises  
+    NoSuchObject      from Standard, 
+    ConstructionError from Standard,
+    NullObject        from Standard
+
+is 
+ 	 
+    Create(Wire, Shape : Shape from TopoDS; 
+           D : Dir from gp)  
+    returns Projection from BRepProj 
+    raises NullObject        from Standard, 
+           ConstructionError from Standard;
+    ---Purpose: Makes a Cylindrical projection of Wire om Shape
+	 
+    Create(Wire, Shape : Shape from TopoDS; 
+           P : Pnt from gp)  
+    returns Projection from BRepProj     
+    raises NullObject        from Standard, 
+           ConstructionError from Standard;
+    ---Purpose: Makes a Conical projection of Wire om Shape
+     
+
+    IsDone(me)  returns Boolean from Standard 
+        ---Purpose: returns False if the section failed
+	---C++:     inline
+    is static;
+    
+    Init(me : in out)
+    	---Purpose: Resets the iterator by resulting wires.
+	---C++:     inline
+    is static; 
+    
+    More(me)  returns Boolean from Standard
+	---Purpose: Returns True if there is a current result wire
+	---C++:     inline
+    is static;
+    
+    Next(me : in out)
+    	---Purpose: Move to the next result wire.
+	---C++:     inline
+    is static;
+    
+    Current(me)
+    returns Wire from TopoDS
+    	---Purpose: Returns the current result wire.  
+	---C++:     inline
+    is static;
+	 
+    Shape(me)
+    returns Compound from TopoDS
+    	---Purpose: Returns the complete result as compound of wires.
+	---C++:     inline
+    is static;
+	 
+    BuildSection(me: in out; Shape, Tool: Shape from TopoDS)
+    is private;
+        ---Purpose: Performs section of theShape by theTool
+        ---         and stores result in the fields.
+
+fields  
+
+    myIsDone  : Boolean          from Standard; 
+    myLsh     : Shape            from TopoDS;
+    myShape   : Compound         from TopoDS; 
+    mySection : HSequenceOfShape from TopTools; 
+    myItr     : Integer          from Standard; 
+	  
+end Projection;
+

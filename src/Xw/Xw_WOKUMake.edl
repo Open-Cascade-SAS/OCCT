@@ -1,0 +1,14 @@
+-- File:	Xw_WOKUMake.edl
+-- Author:	Atelier CAS2000
+-- History:	Thu Jul 15 17:17:17 1999	Atelier CAS2000	Creation
+-- Copyright:	 Matra Datavision 1999
+sss
+@ifnotdefined ( %Xw_WOKUMake_EDL ) then
+@set %Xw_WOKUMake_EDL = "";
+
+--- Insert your stuff Here
+
+@if ( %Station == "wnt" ) then
+	@set %WOKUMake_Steps = "*src xcpp.fill(src)  xcpp.src(xcpp.fill)  xcpp.header(xcpp.fill) .xcpp.template(xcpp.fill) obj.inc";
+@endif;	
+@endif;

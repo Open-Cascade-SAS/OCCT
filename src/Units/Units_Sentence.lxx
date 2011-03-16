@@ -1,0 +1,55 @@
+// File:	Units_Sentence.lxx
+// Created:	Wed Jun 24 12:49:05 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+
+//=======================================================================
+//function : Sequence
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_TokensSequence) Units_Sentence::Sequence() const
+{
+  return thesequenceoftokens;
+}
+
+//=======================================================================
+//function : Sequence
+
+//purpose  : 
+//=======================================================================
+
+inline void Units_Sentence::Sequence
+  (const Handle(Units_TokensSequence)& asequenceoftokens)
+{
+  thesequenceoftokens=asequenceoftokens;
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Units_Sentence::IsDone() const
+{
+  return thesequenceoftokens->Length()>0;
+}
+
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+inline void Units_Sentence::Dump() const
+{
+  Standard_Integer index;
+  cout<<" UNIT SENTENCE with : "<<endl;
+  for(index=1;index<=thesequenceoftokens->Length();index++)
+    thesequenceoftokens->Value(index)->Dump(1,1);
+}

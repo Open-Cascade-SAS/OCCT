@@ -1,0 +1,115 @@
+-- File:	MoniTool_Timer.cdl
+-- Created:	Tue Dec 13 12:35:33 2001
+-- Author:	Sergey KUUl
+---Copyright:	 Matra Datavision 2001
+
+class Timer from MoniTool inherits TShared from MMgt
+
+    ---Purpose: Provides convenient service on global timers
+    --          accessed by string name, mostly aimed for debugging purposes
+    --          
+    --          As an instance, envelopes the OSD_Timer to have it as Handle
+    --
+    --          As a tool, supports static dictionary of timers
+    --          and provides static methods to easily access them
+
+uses
+    Timer from OSD,
+    DataMapOfTimer from MoniTool
+
+is
+
+    ---Section: Instance methods
+
+    Create returns Timer from MoniTool;
+        ---C++: inline
+	---Purpose: Create timer in empty state
+
+    Timer (me) returns Timer from OSD;
+       	---C++: inline
+        ---C++: return const &
+	
+    Timer (me: mutable) returns Timer from OSD;
+       	---C++: inline
+        ---C++: return &
+        ---Purpose: Return reference to embedded OSD_Timer
+
+    Start (me: mutable);
+       	---C++: inline
+	
+    Stop  (me: mutable);
+       	---C++: inline
+	
+    Reset (me: mutable);
+       	---C++: inline
+        ---Purpose: Start, Stop and reset the timer
+	--          In addition to doing that to embedded OSD_Timer,
+	--          manage also counter of hits
+
+    Count (me) returns Integer;
+       	---C++: inline
+        ---Purpose: Return value of hits counter (count of Start/Stop pairs)
+
+    IsRunning (me) returns Integer;
+       	---C++: inline
+        ---Purpose: Returns value of nesting counter
+
+    CPU (me: mutable) returns Real;
+       	---C++: inline
+        ---Purpose: Return value of CPU time minus accumulated amendment
+
+    Amend (me) returns Real;
+       	---C++: inline
+        ---Purpose: Return value of accumulated amendment on CPU time
+
+    Dump (me: mutable; ostr: in out OStream);
+        ---Purpose: Dumps current state of a timer shortly (one-line output)
+
+    ---Section: Static methods
+
+    Timer (myclass; name: CString from Standard) returns Timer from MoniTool;
+        ---Purpose: Returns a timer from a dictionary by its name
+        --          If timer not existed, creates a new one
+
+    Start (myclass; name: CString from Standard);
+       	---C++: inline
+	
+    Stop  (myclass; name: CString from Standard);
+       	---C++: inline
+        ---Purpose: Inline methods to conveniently start/stop timer by name
+	--          Shortcut to Timer(name)->Start/Stop()
+
+    Dictionary (myclass) returns DataMapOfTimer from MoniTool;
+        ---Purpose: Returns map of timers
+	---C++: return&
+    
+    ClearTimers (myclass);
+        ---Purpose: Clears map of timers
+    
+    DumpTimers (myclass; ostr: in out OStream);
+        ---Purpose: Dumps contents of the whole dictionary
+
+    ComputeAmendments (myclass);
+    	---Purpose: Computes and remembers amendments for times to 
+	--          access, start, and stop of timer, and estimates
+	--          second-order error measured by 10 nested timers
+	
+    GetAmendments (myclass; Access, Internal, External, Error10: out Real);
+    	---Purpose: The computed amendmens are returned (for information only)
+    
+    AmendAccess (myclass) is private;
+    AmendStart  (me: mutable) is private;
+    AmendStop   (me: mutable) is private;
+        ---Purpose: Internal functions to amend other timers to avoid
+	--          side effects of operations with current one
+    
+fields
+
+    myTimer  : Timer from OSD;
+    myCount  : Integer;
+    myNesting: Integer;
+
+    myAmend : Real;
+    myPrev, myNext: Timer from MoniTool; -- chained active timers
+    
+end Timer;

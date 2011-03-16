@@ -1,0 +1,43 @@
+-- File:	PXCAFDoc_DimTol.cdl
+-- Created:	Wed Dec 10 09:50:52 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class DimTol from PXCAFDoc inherits  Attribute from PDF
+
+	---Purpose: 
+uses
+    Integer       from Standard,
+    HAsciiString  from PCollection,
+    HArray1OfReal from PColStd
+is
+    Create returns mutable DimTol from PXCAFDoc;
+
+    Create (theKind : Integer from Standard;
+    	    theVal  : HArray1OfReal from PColStd;
+    	    theName : HAsciiString from PCollection;
+    	    theDescr: HAsciiString from PCollection)
+    returns mutable DimTol from PXCAFDoc;
+    
+    GetKind (me) returns Integer from Standard;
+
+    GetVal (me) returns HArray1OfReal from PColStd;
+
+    GetName (me) returns HAsciiString from PCollection;
+
+    GetDescription (me) returns HAsciiString from PCollection;
+
+    Set (me : mutable; theKind : Integer from Standard;
+    	    	       theVal  : HArray1OfReal from PColStd;
+    	    	       theName : HAsciiString from PCollection;
+    	    	       theDescr: HAsciiString from PCollection);
+    
+fields
+
+    myKind : Integer from Standard;
+    myVal  : HArray1OfReal from PColStd;
+    myName : HAsciiString from PCollection;
+    myDescr: HAsciiString from PCollection;
+
+end DimTol from PXCAFDoc;

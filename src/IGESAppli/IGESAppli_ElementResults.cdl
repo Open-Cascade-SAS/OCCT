@@ -1,0 +1,194 @@
+--
+-- File      :  ElementResults.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ElementResults from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines ElementResults, Type <148>
+        --          in package IGESAppli
+        --          Used to find the results of FEM analysis
+
+uses
+
+        GeneralNote               from IGESDimen,
+        FiniteElement             from IGESAppli,
+        HAsciiString              from TCollection,
+        HArray1OfFiniteElement    from IGESAppli,
+        HArray1OfInteger          from TColStd,
+        HArray1OfReal             from TColStd,
+	HArray1OfHArray1OfInteger from IGESBasic,
+	HArray1OfHArray1OfReal    from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable ElementResults;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                : mutable;
+              aNote             : GeneralNote;
+              aSubCase          : Integer;
+              aTime             : Real;
+              nbResults         : Integer;
+              aResRepFlag       : Integer;
+              allElementIdents  : HArray1OfInteger;
+              allFiniteElems    : HArray1OfFiniteElement;
+              allTopTypes       : HArray1OfInteger;
+              nbLayers          : HArray1OfInteger;
+              allDataLayerFlags : HArray1OfInteger;
+              allnbResDataLocs  : HArray1OfInteger;
+              allResDataLocs    : HArray1OfHArray1OfInteger;
+              allResults        : HArray1OfHArray1OfReal)
+        ---Purpose : This method is used to set the fields of the class
+        --           ElementResults
+        --       - aNote             : GeneralNote Entity describing analysis
+        --       - aSubCase          : Analysis Subcase number
+        --       - aTime             : Analysis time value
+        --       - nbResults         : Number of result values per FEM
+        --       - aResRepFlag       : Results Reporting Flag
+        --       - allElementIdents  : FEM element number for elements
+        --       - allFiniteElems    : FEM element
+        --       - allTopTypes       : Element Topology Types
+        --       - nbLayers          : Number of layers per result data location
+        --       - allDataLayerFlags : Data Layer Flags
+        --       - allnbResDataLocs  : Number of result data report locations
+        --       - allResDataLocs    : Result Data Report Locations
+        --       - allResults        : List of Result data values of FEM analysis
+        raises DimensionMismatch;
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes the FormNumber (which indicates Type of Result)
+	--           Error if not in range [0-34]
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns General Note Entity describing analysis case
+
+        SubCaseNumber (me) returns Integer;
+        ---Purpose : returns analysis Subcase number
+
+        Time (me) returns Real;
+        ---Purpose : returns analysis time value
+
+        NbResultValues (me) returns Integer;
+        ---Purpose : returns number of result values per FEM
+
+        ResultReportFlag (me) returns Integer;
+        ---Purpose : returns Results Reporting Flag
+
+        NbElements (me) returns Integer;
+        ---Purpose : returns number of FEM elements
+
+        ElementIdentifier (me; Index : Integer) returns Integer
+        ---Purpose : returns FEM element number for elements
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        Element (me; Index : Integer) returns FiniteElement
+        ---Purpose : returns FEM element
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        ElementTopologyType (me; Index : Integer) returns Integer
+        ---Purpose : returns element Topology Types
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        NbLayers (me; Index : Integer) returns Integer
+        ---Purpose : returns number of layers per result data location
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        DataLayerFlag (me; Index : Integer) returns Integer
+        ---Purpose : returns Data Layer Flags
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        NbResultDataLocs (me; Index : Integer) returns Integer
+        ---Purpose : returns number of result data report locations
+        raises OutOfRange;
+        -- if Index <= 0 or Index > NbElements()
+
+        ResultDataLoc (me; NElem, NLoc : Integer) returns Integer
+        ---Purpose : returns Result Data Report Locations
+        -- UNFINISHED
+        raises OutOfRange;
+
+        NbResults (me; Index : Integer) returns Integer
+        ---Purpose : returns total number of results
+        raises OutOfRange;
+
+        ResultData (me; NElem, num : Integer) returns Real
+	---Purpose : returns Result data value for an Element, given its
+	--           order between 1 and <NbResults(NElem)> (direct access)
+	--           For a more comprehensive access, see below
+        raises OutOfRange;
+
+    	ResultRank (me; NElem, NVal, NLay, NLoc : Integer) returns Integer
+	---Purpose : Computes, for a given Element <NElem>, the rank of a
+	--           individual Result Data, given <NVal>,<NLay>,<NLoc>
+        raises OutOfRange;
+
+        ResultData (me; NElem, NVal, NLay, NLoc : Integer) returns Real
+        ---Purpose : returns Result data values of FEM analysis, according this
+        --           definition :
+        --           - <NElem> : n0 of the Element to be considered
+        --           - <NVal> : n0 of the Value between 1 and NbResultValues
+        --           - <NLay> : n0 of the Layer for this Element
+        --           - <NLoc> : n0 of the Data Location for this Element
+        --           This gives for each Element, the corresponding rank
+        --           computed by ResultRank, in which the leftmost subscript
+        --           changes most rapidly
+        raises OutOfRange;
+
+    	ResultList (me; NElem : Integer) returns HArray1OfReal
+	---Purpose : Returns in once the entire list of data for an Element,
+	--           addressed as by ResultRank (See above)
+        raises OutOfRange;
+
+fields
+
+--
+-- Class    : IGESAppli_ElementResults
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ElementResults.
+--
+-- Reminder : A ElementResults instance is defined by :
+--            - General Note Entity describing analysis case
+--            - Analysis Subcase number
+--            - Analysis time value
+--            - Number of result values per FEM
+--            - Results Reporting Flag
+--            - Number of FEM elements, then for each one :
+--              - FEM element number identifier
+--              - FEM element
+--              - Element Topology Type
+--              - Number of layers per result data location
+--              - Data Layer Flag
+--              - Number of result data report locations
+--              - Result Data Report Locations
+--              - Total number of result data
+--              - Result data values of FEM analysis
+--                (accessed in "Array3" form for each element)
+
+        theNote                 : GeneralNote;
+        theSubcaseNumber        : Integer;
+        theTime                 : Real;
+        theNbResultValues       : Integer;
+        theResultReportFlag     : Integer;
+        theElementIdentifiers   : HArray1OfInteger;
+        theElements             : HArray1OfFiniteElement;
+        theElementTopologyTypes : HArray1OfInteger;
+        theNbLayers             : HArray1OfInteger;
+        theDataLayerFlags       : HArray1OfInteger;
+        theNbResultDataLocs     : HArray1OfInteger;
+        theResultDataLocs       : HArray1OfHArray1OfInteger;
+        theResultData           : HArray1OfHArray1OfReal;
+
+end ElementResults;

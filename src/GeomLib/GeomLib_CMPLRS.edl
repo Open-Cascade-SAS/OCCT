@@ -1,0 +1,19 @@
+
+@ifnotdefined ( %GeomLib_CMPLRS_EDL ) then
+@set %GeomLib_CMPLRS_EDL= "";
+
+@if ( %Station == "wnt" ) then 
+
+	@if ( %DebugMode == "False" ) then
+	
+		@set %ModeOpt = "-Zi -DNDEBUG -DNo_Exception -O1 -G5 ";
+
+	@endif;
+
+
+@endif;
+
+@endif;
+
+
+

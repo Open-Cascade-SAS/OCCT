@@ -1,0 +1,92 @@
+-- File:	IGESControl_Reader.cdl
+-- Created:	Fri Sep  6 09:18:33 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Reader from IGESControl inherits Reader from XSControl
+
+    	---Purpose : 
+    	-- Reads IGES files, checks them and translates their contents into Open CASCADE models.
+    	-- The IGES data can be that of a whole model or that of a specific list of entities in the model.
+    	-- As in XSControl_Reader, you specify the list using a selection.
+    	-- For translation of iges files it is possible to use the following sequence:
+    	-- To change parameters of translation 
+    	-- class Interface_Static should be used before the beginning of translation
+    	-- (see IGES Parameters and General Parameters)  
+    	-- Creation of reader
+    	--      IGESControl_Reader reader; 
+    	-- To load a file in a model use method:
+    	--      reader.ReadFile("filename.igs") 
+    	-- To check a loading file use method Check:
+    	--      reader.Check(failsonly); where failsonly is equal to Standard_True or
+    	--      Standard_False;
+    	-- To print the results of load:
+    	--      reader.PrintCheckLoad(failsonly,mode) where mode is equal to the value of
+    	--      enumeration IFSelect_PrintCount
+    	-- To transfer entities from a model the following methods can be used:
+    	-- for the whole model
+    	--      reader.TransferRoots(onlyvisible); where onlyvisible is equal to
+    	--      Standard_True or Standard_False; 
+    	-- To transfer a list of entities:
+    	--      reader.TransferList(list);
+    	-- To transfer one entity
+    	--      reader.TransferEntity(ent) or reader.Transfer(num);
+    	-- To obtain a result the following method can be used:
+    	--      reader.IsDone()
+    	--      reader.NbShapes() and reader.Shape(num); or reader.OneShape();
+    	-- To print the results of transfer use method:
+    	--      reader.PrintTransferInfo(failwarn,mode); where printfail is equal to the
+    	--      value of enumeration IFSelect_PrintFail, mode see above.
+    	-- Gets correspondence between an IGES entity and a result shape obtained therefrom.
+    	--      reader.TransientProcess();
+    	-- TopoDS_Shape shape =
+    	-- TransferBRep::ShapeResult(reader.TransientProcess(),ent);
+
+
+uses CString, HSequenceOfTransient from TColStd, 
+     IGESModel from IGESData,
+     PrintFail from IFSelect, 
+     PrintCount from IFSelect, 
+     ReturnStatus from IFSelect,
+     WorkSession from XSControl
+
+is
+
+    Create returns Reader from IGESControl;
+    ---Purpose : Creates a Reader from scratch
+
+    Create (WS : mutable WorkSession from XSControl;
+    	    	 scratch : Boolean = Standard_True)
+    	returns Reader from IGESControl;
+    ---Purpose : Creates a Reader from an already existing Session
+    
+    SetReadVisible(me: in out; ReadRoot: Boolean from Standard);
+    ---Purpose : Set the transion of ALL Roots (if theReadOnlyVisible is False)
+    --           or of Visible Roots (if theReadOnlyVisible is True)
+    ---C++: inline
+    
+    GetReadVisible(me) returns Boolean;
+    ---C++: inline
+    
+    IGESModel (me) returns IGESModel;
+    ---Purpose : Returns the model as a IGESModel.
+    --           It can then be consulted (header, product)
+    
+    
+    NbRootsForTransfer (me : in out) returns Integer is redefined;
+    ---Purpose : Determines the list of root entities from Model which are candidate for
+    --           a transfer to a Shape (type of entities is PRODUCT)
+    --           <theReadOnlyVisible> is taken into account to define roots
+
+    PrintTransferInfo(me; failwarn: PrintFail from IFSelect; mode: PrintCount from IFSelect);
+    ---Purpose : Prints Statistics and check list for Transfer
+
+    	--  other methods are inherited from Reader in IGESToBRep
+
+fields
+
+    theReadOnlyVisible : Boolean from Standard;
+
+end Reader;

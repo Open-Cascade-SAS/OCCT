@@ -1,0 +1,40 @@
+-- File:        Circle.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Circle from StepGeom 
+
+inherits Conic from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement from StepGeom
+is
+
+	Create returns mutable Circle;
+	---Purpose: Returns a Circle
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom;
+	      aRadius : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRadius(me : mutable; aRadius : Real);
+	Radius (me) returns Real;
+
+fields
+
+	radius : Real from Standard;
+
+end Circle;

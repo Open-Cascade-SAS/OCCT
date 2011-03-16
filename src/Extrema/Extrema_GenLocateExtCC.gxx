@@ -1,0 +1,106 @@
+// File:	Extrema_GenLocateExtCC.gxx
+// Created:	Tue Jul 18 17:43:58 1995
+// Author:	Modelistation
+//		<model@metrox>
+
+#include <StdFail_NotDone.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+
+//=============================================================================
+Extrema_GenLocateExtCC::Extrema_GenLocateExtCC (const Curve1& C1,
+					  const Curve2& C2,
+					  const Standard_Real U0, const Standard_Real V0,
+					  const Standard_Real TolU, const Standard_Real TolV)
+/*-----------------------------------------------------------------------------
+Fonction:
+  Recherche du couple de valeurs de parametre (U,V) tel que:
+  - dist(C1(u),C2(v)) passe par un extremum,
+  - (U,V) soit la solution la plus proche de (U0,V0).
+
+Methode:
+  Si (u,v) est solution, alors:
+   { F1(u,v)=(C1(u)-C2(v)).dC1/du(u) = 0.
+   { F2(u,v)=(C1(u)-C2(v)).dC2/dv(v) = 0.
+  Le probleme consiste a rechercher, dans les intervalles de definition
+  des courbes, la racine du systeme la plus proche de (U0,V0).
+  On utilise la classe math_FunctionSetRoot avec les arguments de construction
+  suivants:
+  - F: Extrema_FuncExtCC cree a partir de C1 et C2,
+  - math_Vector(U0,V0),
+  - math_Vector(TolU,TolV),
+  - math_Vector(Uinf,Usup),
+  - math_Vector(Vinf,Vsup),
+  - 100. .
+-----------------------------------------------------------------------------*/
+{
+  myDone = Standard_False;
+
+  Standard_Real Uinf = Tool1::FirstParameter(C1);
+  Standard_Real Usup = Tool1::LastParameter(C1);
+  Standard_Real Uu;
+  if (Uinf>Usup) {
+     Uu=Uinf;
+     Uinf=Usup;
+     Usup =Uu;
+  }
+
+  Standard_Real Vinf = Tool2::FirstParameter(C2);
+  Standard_Real Vsup = Tool2::LastParameter(C2);
+  if (Vinf>Vsup) {
+     Uu=Vinf;
+     Vinf=Vsup;
+     Vsup =Uu;
+  }
+
+  Extrema_CCLocF F (C1,C2);
+  math_Vector Tol(1, 2);
+  Tol(1) = TolU;
+  Tol(2) = TolV;
+  Standard_Real Tolf = 1.e-10;
+
+  math_Vector Start(1,2);
+  math_Vector Uuinf(1,2);
+  math_Vector Uusup(1,2);
+
+  Start(1) = U0;
+  Start(2) = V0;
+
+  Uuinf(1)=Uinf;
+  Uuinf(2)=Vinf;
+  Uusup(1)=Usup;
+  Uusup(2)=Vsup;
+
+  math_FunctionSetRoot S (F,Start,Tol,Uuinf,Uusup);
+  if (S.IsDone() && F.NbExt() > 0) { 
+    mySqDist = F.SquareDistance(1);
+    F.Points(1,myPoint1,myPoint2);
+    Start(1)=myPoint1.Parameter();
+    Start(2)=myPoint2.Parameter();
+    math_Vector Ff(1,2);
+    F.Value(Start,Ff);
+//    cout << "Ff(1) = "<<Ff(1)<<endl;
+//    cout << "Ff(2) = "<<Ff(2)<<endl;
+    if ((Ff(1)<Tolf) && (Ff(2)<Tolf) ) myDone = Standard_True;
+  }
+}
+//=============================================================================
+
+Standard_Boolean Extrema_GenLocateExtCC::IsDone () const { return myDone; }
+//=============================================================================
+
+Standard_Real Extrema_GenLocateExtCC::SquareDistance() const
+{
+  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  return mySqDist;
+}
+//=============================================================================
+
+void Extrema_GenLocateExtCC::Point (POnC& P1, POnC& P2)
+     const
+{
+  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  P1 = myPoint1;
+  P2 = myPoint2;
+}
+//=============================================================================

@@ -1,0 +1,62 @@
+-- File:	IFSelect_DispPerFiles.cdl
+-- Created:	Wed Dec 21 10:58:04 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class DispPerFiles  from IFSelect  inherits Dispatch
+
+    ---Purpose : A DispPerFiles produces a determined count of Packets from the
+    --           input Entities. It divides, as equally as possible, the input
+    --           list into a count of files. This count is the parameter of the
+    --           DispPerFiles. If the input list has less than this count, of
+    --           course there will be one packet per input entity.
+    --           This count is a Parameter of the DispPerFiles, given as an
+    --           IntParam, thus allowing external control of its Value
+
+uses AsciiString from TCollection, Graph, SubPartsIterator, IntParam
+
+raises InterfaceError
+
+is
+
+    Create returns mutable DispPerFiles;
+    ---Purpose : Creates a DispPerFiles with no Count (default value 1 file)
+
+    Count (me) returns mutable IntParam;
+    ---Purpose : Returns the Count Parameter used for splitting
+
+    SetCount (me : mutable; count : mutable IntParam);
+    ---Purpose : Sets a new Parameter for Count
+
+    CountValue (me) returns Integer;
+    ---Purpose : Returns the effective value of the count parameter
+    --           (if Count Parameter not Set or value not positive, returns 1)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "Maximum <count> Files"
+
+    	--  --    Evaluation    --  --
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True, maximum count is given as CountValue
+
+    PacketsCount (me; G : Graph; count : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True (count is easy to know) and count is the minimum
+    --           value between  length of input list and CountValue
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator)
+    	raises InterfaceError;
+    ---Purpose : Computes the list of produced Packets. It defines Packets in
+    --           order to have <Count> Packets, except if the input count of
+    --           Entities is lower. Entities are given by RootResult from the
+    --           Final Selection.
+
+fields
+
+    thecount : IntParam;
+
+end DispPerFiles;

@@ -1,0 +1,36 @@
+-- File:	Vrml_Scale.cdl
+-- Created:	Wed Feb 12 10:02:55 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Scale from Vrml 
+
+	---Purpose: defines a Scale node of VRML specifying transform
+	---          properties.
+    	--  This  node  defines  a  3D  scaling  about  the  origin. 
+    	--  By  default  : 
+	--    myRotation  =  (1 1 1)
+
+uses
+ 
+    Vec  from  gp 
+
+is
+    Create returns Scale from Vrml;
+ 
+    Create  (  aScaleFactor  :  Vec  from  gp ) 
+    	returns Scale from Vrml;
+
+    SetScaleFactor ( me : in out; aScaleFactor : Vec  from  gp );
+    ScaleFactor ( me )  returns   Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myScaleFactor  :  Vec  from  gp;  -- Scale factors in x, y, and z
+
+end Scale;

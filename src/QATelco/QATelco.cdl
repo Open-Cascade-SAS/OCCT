@@ -1,0 +1,22 @@
+-- File:    QATelco.cdl
+-- Created: Mon Mar 18 17:32:07 2002
+-- Author:  QA Admin
+--      <qa@umnox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2002
+
+package QATelco
+     uses Draw,
+          gp,
+          TCollection,
+          Quantity,
+          Graphic3d,
+          PrsMgr,
+          Prs3d,
+          SelectMgr,
+          AIS
+is
+    class MyText;
+    
+    Commands(DI : in out Interpretor from Draw);
+end;
+    

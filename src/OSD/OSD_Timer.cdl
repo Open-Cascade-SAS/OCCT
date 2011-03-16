@@ -1,0 +1,70 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Timer.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+-- Updated:       J.P. TIRAULT Sept,1993
+-- 
+
+class Timer from OSD inherits Chronometer from OSD
+
+ ---Purpose: Working on heterogeneous platforms
+-- we need to use the system call gettimeofday.
+-- This function is portable and it measures ELAPSED
+-- time and CPU time in seconds and microseconds.
+ -- Example: OSD_Timer aTimer;
+ --          aTimer.Start();   // Start  the timers (t1). 
+ --           .....            // Do something.
+ --          aTimer.Stop();    // Stop the timers (t2).
+ --          aTimer.Show();    // Give the elapsed time between t1 and t2.
+ --                            // Give also the process CPU time between 
+ --                            // t1 and t2.
+ 
+
+is
+
+  Create returns Timer from OSD;
+  ---Purpose: Builds a Chronometer initialized and stopped.
+  ---Level: Public
+
+  Reset (me : in out) is redefined;
+  ---Purpose: Stops and reinitializes the timer.
+  ---Level: Public
+
+  Show (me : in out) is redefined;
+  ---Purpose: Shows both the elapsed time and CPU time on the standard output 
+  --          stream <cout>.The chronometer can be running (Lap Time) or
+  --          stopped.
+  ---Level: Public
+
+  Show  (me : in out; os : in out OStream from Standard) is redefined;
+  ---Purpose: Shows both the elapsed time and CPU  time on the  
+  --          output stream <OS>.
+  ---Level: Public
+
+  Show  (me : in out; seconds     : in out Real    from Standard;
+                      minutes     : in out Integer from Standard;
+                      hours       : in out Integer from Standard;
+                      CPUtime     : in out Real    from Standard);
+		      
+  ---Purpose: returns both the elapsed time(seconds,minutes,hours) 
+  --          and CPU  time.
+  ---Level: Public
+    
+  Stop (me : in out) is redefined;
+  ---Purpose: Stops the Timer.
+  ---Level: Public
+
+  Start (me : in out) is redefined;
+  ---Purpose: Starts (after Create or Reset) or restarts (after Stop)
+  --          the Timer.
+  ---Level: Public
+
+fields
+
+  TimeStart : Real;
+  TimeCumul : Real;
+
+end;

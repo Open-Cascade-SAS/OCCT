@@ -1,0 +1,20 @@
+-- File:        BoundedSurface.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BoundedSurface from StepGeom 
+
+inherits Surface from StepGeom 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable BoundedSurface;
+	---Purpose: Returns a BoundedSurface
+
+
+end BoundedSurface;

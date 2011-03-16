@@ -1,0 +1,17 @@
+-- File:	StepBasic_DigitalDocument.cdl
+-- Created:	Tue Jun 30 14:42:56 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class DigitalDocument  from StepBasic    inherits Document  from StepBasic
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable DigitalDocument;
+
+end DigitalDocument;

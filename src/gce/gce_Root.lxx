@@ -1,0 +1,26 @@
+// File:	gce_Root.cxx
+// Created:	Tue Sep 29 12:34:39 1992
+// Author:	Remi GILET
+//		<reg@sdsun2>
+
+inline Standard_Boolean gce_Root::IsDone () const
+{
+  return TheError == gce_Done;
+}
+
+inline gce_ErrorType gce_Root::Status() const
+{ 
+  return TheError;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,139 @@
+-- File:	BRepFeat_SplitShape.cdl
+-- Created:	Mon Sep  4 09:48:52 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class SplitShape from BRepFeat inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: One of the most significant aspects of BRepFeat functionality is the use of local
+    	-- operations as opposed to global ones. In a global operation, you would first construct a
+    	-- form of the type you wanted in your final feature, and then remove matter so that it could
+    	-- fit into your initial basis object. In a local operation, however, you specify the domain of
+    	-- the feature construction with aspects of the shape on which the feature is being created.
+    	-- These semantics are expressed in terms of a member shape of the basis shape from which -
+    	-- or up to which - matter will be added or removed. As a result, local operations make
+    	-- calculations simpler and faster than global operations.
+    	-- In BRepFeat, the semantics of local operations define features constructed from a contour or a
+    	-- part of the basis shape referred to as the tool. In a SplitShape object, wires or edges of a
+    	-- face in the basis shape to be used as a part of the feature are cut out and projected to a plane
+    	-- outside or inside the basis shape. By rebuilding the initial shape incorporating the edges and
+    	-- the faces of the tool, protrusion or depression features can be constructed.
+
+
+uses Spliter           from LocOpe,
+     WiresOnShape      from LocOpe,
+     Shape             from TopoDS,
+     Face              from TopoDS,
+     Wire              from TopoDS,
+     Edge              from TopoDS,
+     Vertex            from TopoDS,
+     ListOfShape       from TopTools,
+     ShapeModification from BRepBuilderAPI
+
+raises NotDone           from StdFail,
+       ConstructionError from Standard,
+       NoSuchObject      from Standard
+
+is
+
+
+    Create
+    	---Purpose: Empty constructor
+    	returns SplitShape from BRepFeat;
+	---C++: inline      
+
+
+    Create(S: Shape from TopoDS)
+	---Purpose: Creates the process  with the shape <S>.
+    	returns SplitShape from BRepFeat;
+	---C++: inline      
+
+
+    Init(me: in out; S: Shape from TopoDS)
+	---Purpose: Initializes the process on the shape <S>.
+	---C++: inline      
+    	is static;
+
+
+    Add(me: in out; W: Wire from TopoDS;
+    	            F: Face from TopoDS)
+	---Purpose: Adds the wire <W> on the face <F>.
+    	-- Raises NoSuchObject  if <F> does not belong to the original shape.
+    	---C++: inline
+    	raises NoSuchObject from Standard,
+	       ConstructionError from Standard
+
+	is static;
+    
+
+
+    Add(me: in out; E: Edge from TopoDS;
+    	            F: Face from TopoDS)
+	---Purpose: Adds the edge <E> on the face <F>.
+	---C++: inline      
+    	raises NoSuchObject from Standard,
+	       -- if <F> does not belong to the original shape.
+	       ConstructionError from Standard
+
+	is static;
+    
+
+
+    Add(me: in out; E  : Edge from TopoDS;
+    	            EOn: Edge from TopoDS)
+	---Purpose: Adds the edge <E> on the existing edge <EOn>.
+	---C++: inline      
+    	raises NoSuchObject from Standard,
+	       -- if <EOn> does not belong to the original shape.
+	       ConstructionError from Standard
+
+	is static;
+	
+	
+    DirectLeft(me)
+	---Purpose: Returns  the faces   which  are the  left of   the
+	--          projected wires.
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	raises NotDone from StdFail
+	--- The exception is raised when IsDone returns <Standard_False>.
+	is static;
+
+
+    Left(me)
+	---Purpose: Returns the faces of the "left" part on the shape.
+	--          (It  is build   from  DirectLeft,  with  the faces
+	--          connected to this set, and so on...).
+    	-- Raises NotDone if IsDone returns <Standard_False>.
+    	---C++: return const&
+    	returns ListOfShape from TopTools
+	raises NotDone from StdFail
+	is static;
+
+
+--- Methods inherited from MakeShape, that must be redefined.
+
+
+    Build(me: in out)
+    
+    	is redefined static;
+    	--- Purpose: Builds the cut and the resulting faces and edges as well. 
+    IsDeleted (me: in out; S : Shape from TopoDS)
+    returns Boolean
+    is redefined;
+    	---Purpose: Returns true if the shape has been deleted.
+    
+    Modified(me: in out; F: Shape from TopoDS)
+    	---Purpose: Returns the list of generated Faces.
+ 	---C++:     return const &
+    returns ListOfShape from TopTools
+    is redefined static;
+    
+fields
+
+    mySShape   : Spliter      from LocOpe;
+    myWOnShape : WiresOnShape from LocOpe;
+
+end SplitShape;

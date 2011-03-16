@@ -1,0 +1,39 @@
+-- File:	TopOpeBRep_PointGeomTool.cdl
+-- Created:	Tue Oct 25 18:20:07 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class PointGeomTool from TopOpeBRep
+
+    ---Purpose: Provide services needed by the Fillers
+
+uses
+
+     VPointInter from TopOpeBRep,         -- Value(), Tolerance()
+     Point2d from TopOpeBRep,             -- Value(), Tolerance()
+     FaceEdgeIntersector from TopOpeBRep, -- Value(), Tolerance()
+     Point from TopOpeBRepDS,
+     Point from TopOpeBRepDS,
+     Shape from TopoDS
+
+is
+
+    Create returns PointGeomTool from TopOpeBRep;
+
+    MakePoint(myclass; IP : VPointInter from TopOpeBRep)
+    returns Point from TopOpeBRepDS;
+
+    MakePoint(myclass; P2D : Point2d from TopOpeBRep)
+    returns Point from TopOpeBRepDS;
+
+    MakePoint(myclass; FEI : FaceEdgeIntersector from TopOpeBRep)
+    returns Point from TopOpeBRepDS;
+
+    MakePoint(myclass; S : Shape from TopoDS)
+    returns Point from TopOpeBRepDS;
+		       
+    IsEqual(myclass; DSP1,DSP2 : Point from TopOpeBRepDS) 
+    returns Boolean from Standard;
+
+end PointGeomTool from TopOpeBRep;

@@ -1,0 +1,46 @@
+-- File:	BRep_PointOnCurve.cdl
+-- Created:	Tue Aug 10 14:15:18 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class PointOnCurve from BRep inherits PointRepresentation from BRep
+
+	---Purpose: 
+
+uses
+    Curve    from Geom,
+    Location from TopLoc
+    
+is
+
+    Create(P : Real;
+    	   C : Curve    from Geom;
+	   L : Location from TopLoc)
+    returns mutable PointOnCurve from BRep;
+    
+    
+    IsPointOnCurve(me)          returns Boolean
+	---Purpose: Returns True
+    is redefined;
+	
+    IsPointOnCurve(me; C : Curve    from Geom;
+    	    	       L : Location from TopLoc)   returns Boolean
+    is redefined;
+	
+
+    Curve(me) returns any Curve from Geom
+	---C++: return const &
+    is redefined;
+	
+    Curve(me : mutable; C : Curve from Geom)
+    is redefined;
+	
+
+fields
+    
+    myCurve : Curve from Geom;
+
+end PointOnCurve;

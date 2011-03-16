@@ -1,0 +1,51 @@
+-- File:	Geom2dToIGES_Geom2dEntity.cdl
+-- Created:	Wed Sep 13 14:27:57 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class Geom2dEntity from Geom2dToIGES
+
+
+    ---Purpose : provides methods to transfer Geom2d entity from CASCADE to IGES.
+
+uses
+
+    Real                     from Standard,
+    IGESEntity               from IGESData,
+    IGESModel                from IGESData
+
+is
+
+    Create 
+    	returns Geom2dEntity from Geom2dToIGES;
+    ---Purpose : Creates a tool Geom2dEntity
+
+    Create(GE : Geom2dEntity from Geom2dToIGES)
+        returns Geom2dEntity from Geom2dToIGES;
+    ---Purpose : Creates a tool ready to run and sets its 
+    --         fields as GE's.
+
+    SetModel(me : in out; model : IGESModel from IGESData);
+    ---Purpose : Set the value of "TheModel"
+
+    GetModel(me) 
+    	returns IGESModel from IGESData;
+    ---Purpose : Returns the value of "TheModel"
+
+    SetUnit(me: in out; unit: Real);
+    ---Purpose : Sets the value of the UnitFlag 
+    
+    GetUnit(me)
+    	returns Real from Standard;
+    ---Purpose : Returns the value of the UnitFlag of the header of the model
+    --           in millimeters.
+    
+fields
+
+    TheModel      : IGESModel from IGESData ;
+
+    TheUnitFactor : Real from Standard;
+	
+end Geom2dEntity;
+

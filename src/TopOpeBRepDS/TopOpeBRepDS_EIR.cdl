@@ -1,0 +1,29 @@
+class EIR from TopOpeBRepDS 
+
+---Purpose:  EdgeInterferenceReducer
+
+uses
+
+    Shape       from TopoDS,
+    Edge        from TopoDS,
+    ListOfShape from TopTools,
+    IndexedMapOfShape from TopTools,
+    Config                            from TopOpeBRepDS,
+    Interference                      from TopOpeBRepDS,
+    ListOfInterference                from TopOpeBRepDS,
+    ListIteratorOfListOfInterference  from TopOpeBRepDS,
+    ListOfShapeOn1State               from TopOpeBRepDS,
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS,
+    HDataStructure                    from TopOpeBRepDS
+
+is
+
+    Create(HDS:HDataStructure) returns EIR from TopOpeBRepDS;
+    ProcessEdgeInterferences(me : in out);
+    ProcessEdgeInterferences(me : in out; I : Integer);
+
+fields
+
+    myHDS : HDataStructure;
+    
+end EIR from TopOpeBRepDS;

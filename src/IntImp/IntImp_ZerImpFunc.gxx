@@ -1,0 +1,124 @@
+//-- File IntImp_ZerImpFunc.gxx 
+
+#define EpsAng  1.e-8
+#define EpsAng2 1.e-16
+#define Tolpetit 1.e-16
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+#define SURF     (*((ThePSurface *)(surf)))
+#define FUNC     (*((TheISurface *)(func)))
+
+
+IntImp_ZerImpFunc::IntImp_ZerImpFunc() :
+       computed(Standard_False),
+       derived(Standard_False)
+{  
+}
+
+IntImp_ZerImpFunc::IntImp_ZerImpFunc(const ThePSurface& PS ,
+				     const TheISurface& IS) :
+       computed(Standard_False),
+       derived(Standard_False)
+{ 
+  surf = (Standard_Address)(&PS);
+  func = (Standard_Address)(&IS);
+}
+
+IntImp_ZerImpFunc::IntImp_ZerImpFunc(const TheISurface& IS) :
+       computed(Standard_False),
+       derived(Standard_False)
+{  
+  func = (Standard_Address)(&IS);
+}
+
+Standard_Integer IntImp_ZerImpFunc::NbVariables() const
+{ 
+  return 2;
+}
+
+Standard_Integer IntImp_ZerImpFunc::NbEquations() const 
+{
+  return 1;
+}
+
+Standard_Boolean IntImp_ZerImpFunc::Value(const math_Vector& X,
+					  math_Vector& F)
+{
+  u = X(1);
+  v = X(2);
+  pntsol = ThePSurfaceTool::Value(SURF, u, v);
+  valf = TheISurfaceTool::Value(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z());
+  F(1) = valf;
+  computed = Standard_False;
+  derived = Standard_False;
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerImpFunc::Derivatives(const math_Vector& X,
+						math_Matrix& D)
+{
+  u = X(1);
+  v = X(2);
+  ThePSurfaceTool::D1(SURF, u, v, pntsol, d1u, d1v);
+  TheISurfaceTool::Gradient(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z(),gradient);
+  D(1,1) = d1u.Dot(gradient);
+  D(1,2) = d1v.Dot(gradient);
+  computed = Standard_False;
+  derived = Standard_True;
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerImpFunc::Values(const math_Vector& X,
+					   math_Vector& F,
+					   math_Matrix& D)
+{
+  u = X(1);
+  v = X(2);
+  ThePSurfaceTool::D1(SURF, u, v, pntsol, d1u, d1v);
+  TheISurfaceTool::ValueAndGradient(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z(), 
+                                    valf, gradient);
+  F(1) = valf;
+  D(1,1) = d1u.Dot(gradient);
+  D(1,2) = d1v.Dot(gradient);
+  computed = Standard_False;
+  derived = Standard_True;
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerImpFunc::IsTangent()
+{
+  if (!computed) {
+    computed = Standard_True;
+    if(!derived) {
+      ThePSurfaceTool::D1(SURF, u, v, pntsol, d1u, d1v);
+      derived = Standard_True;
+    }
+
+    tgdu =  gradient.Dot(d1v);
+    tgdv = -gradient.Dot(d1u);
+    Standard_Real N2grad = gradient.SquareMagnitude();
+    Standard_Real N2grad_EpsAng2 = N2grad * EpsAng2;
+    Standard_Real N2d1u  = d1u.SquareMagnitude();
+    Standard_Real N2d1v  = d1v.SquareMagnitude();
+    tangent =(tgdu * tgdu <= N2grad_EpsAng2 * N2d1v) && 
+             (tgdv * tgdv <= N2grad_EpsAng2 * N2d1u);
+    if(!tangent) {
+      d3d.SetLinearForm(tgdu,d1u,tgdv,d1v);
+      d2d = gp_Dir2d(tgdu, tgdv);
+      if (d3d.Magnitude() <= Tolpetit) {    // jag
+	tangent = Standard_True;
+      }
+    }    
+  }
+  return tangent;
+}
+
+#undef EpsAng
+#undef EpsAng2
+#undef Tolpetit
+#undef FUNC
+#undef SURF

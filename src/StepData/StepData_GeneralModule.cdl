@@ -1,0 +1,44 @@
+-- File:	StepData_GeneralModule.cdl
+-- Created:	Tue Feb  2 19:17:12 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class GeneralModule  from StepData
+         inherits GeneralModule from Interface
+
+    ---Purpose : Specific features for General Services adapted to STEP
+
+uses Transient ,
+     EntityIterator , CopyTool, Check, ShareTool
+
+is
+
+    	--  Reconduction because limitation cdl  --
+
+    FillSharedCase (me; casenum : Integer; ent : Transient;
+    	iter : in out EntityIterator)  is deferred;
+    ---Purpose : Specific filling of the list of Entities shared by an Entity
+    --           <ent>. Can use the internal utility method Share, below
+
+    CheckCase (me; casenum : Integer; ent : Transient; shares : ShareTool;
+    	       ach : in out Check)  is deferred;
+    ---Purpose : Specific Checking of an Entity <ent>
+
+    CopyCase (me; casenum : Integer;
+    	      entfrom : Transient; entto : mutable Transient;
+    	      TC : in out CopyTool)  is deferred;
+    ---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
+    --           by using a TransferControl which provides its working Map.
+    --           Use method Transferred from TransferControl to work
+
+--    ImpliedCase (me; casenum : Integer;
+--    	         entfrom : Transient; entto : mutable Transient;
+--    	         TC : CopyTool);
+    ---Purpose : Specific Copying of Implied References
+    --           A Default is provided which does nothing (must current case !)
+    --           Already copied references (by CopyFrom) must remain unchanged
+    --           Use method Search from TransferControl to work
+
+end GeneralModule;

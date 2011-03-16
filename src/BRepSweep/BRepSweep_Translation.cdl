@@ -1,0 +1,209 @@
+-- File:	BRepSweep_Translation.cdl
+-- Created:	Wed Feb  3 19:33:34 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Translation from BRepSweep inherits Trsf from BRepSweep
+
+	---Purpose: Provides   an  algorithm   to   build  object   by
+	--          translation sweep.
+
+uses
+    Vec         from gp,
+    Location    from TopLoc,
+    Shape       from TopoDS,
+    NumShape    from Sweep,
+    Orientation from TopAbs
+
+raises
+
+    ConstructionError from Standard
+    
+is
+    Create (S : Shape    from TopoDS; 
+    	    N : NumShape from Sweep;
+    	    L : Location from TopLoc;
+    	    V : Vec      from gp; 
+    	    C : Boolean  from Standard;
+            Canonize: Boolean from Standard = Standard_True) 
+    returns Translation  from  BRepSweep
+	---Purpose: Creates  a  topology by  translating <S>  with the
+	--          vector  <V>. If  C  is   true S Sucomponents   are
+	--          copied. If Canonize is true then generated surfaces
+        --          are attempted to be canonized in simple types
+    raises
+    	ConstructionError from Standard; -- if <V> is null
+
+    Delete(me:out) is redefined;
+    ---C++: alias "Standard_EXPORT virtual ~BRepSweep_Translation(){Delete() ; }"
+    
+    -- """"""""""""""""""""""""""""""""""""""""""""""""""""""
+    -- Methods supporting the creation of the geometric part.
+    -- """"""""""""""""""""""""""""""""""""""""""""""""""""""
+    
+    
+    MakeEmptyVertex(me    : in out; 
+    	    	    aGenV : Shape from TopoDS; 
+    	    	    aDirV : NumShape from Sweep)
+	---Purpose: Builds the vertex addressed by [aGenV,aDirV], with its
+	--          geometric part, but without subcomponents.
+    returns Shape from TopoDS; 
+    
+    MakeEmptyDirectingEdge(me    : in out; 
+    	    	    	   aGenV : Shape from TopoDS; 
+    	    	    	   aDirE : NumShape from Sweep)
+	---Purpose: Builds the edge addressed by [aGenV,aDirE], with its
+	--          geometric part, but without subcomponents.
+    returns Shape from TopoDS;
+    
+    MakeEmptyGeneratingEdge(me    : in out; 
+    	    	    	    aGenE : Shape from TopoDS; 
+    	    	    	    aDirV : NumShape from Sweep)
+	---Purpose: Builds the edge addressed by [aGenE,aDirV], with its
+	--          geometric part, but without subcomponents.
+    returns Shape from TopoDS;
+    
+    SetParameters(me         : in out; 
+    	    	  aNewFace   : Shape from TopoDS; 
+    	      	  aNewVertex : in out Shape from TopoDS;
+    	    	  aGenF      : Shape from TopoDS; 
+    	    	  aGenV      : Shape from TopoDS;
+    	    	  aDirV      : NumShape from Sweep);
+	---Purpose: Sets the  parameters of the new  vertex  on the new
+	--          face. The new face and  new vertex where generated
+	--          from aGenF, aGenV and aDirV .
+    
+    SetDirectingParameter(me         : in out; 
+    	    	          aNewEdge   : Shape from TopoDS; 
+    	    	    	  aNewVertex : in out Shape from TopoDS;
+    	    	          aGenV      : Shape from TopoDS;
+    	    	          aDirE      : NumShape from Sweep; 
+    	    	    	  aDirV      : NumShape from Sweep);
+	---Purpose: Sets the  parameter of the new  vertex  on the new
+	--          edge. The new edge and  new vertex where generated
+	--          from aGenV aDirE, and aDirV.
+
+    SetGeneratingParameter(me         : in out; 
+    	    	    	   aNewEdge   : Shape from TopoDS; 
+                           aNewVertex : in out Shape from TopoDS;
+    	    	    	   aGenE      : Shape from TopoDS; 
+                           aGenV      : Shape from TopoDS;
+    	    	    	   aDirV      : NumShape from Sweep);
+	---Purpose: Sets the  parameter of the new  vertex  on the new
+	--          edge. The new edge and  new vertex where generated
+	--          from aGenE, aGenV and aDirV .
+
+    MakeEmptyFace(me       : in out; 
+    	    	  aGenS    : Shape from TopoDS; 
+    	    	  aDirS    : NumShape from Sweep)
+	---Purpose: Builds the  face addressed  by [aGenS,aDirS], with
+	--          its geometric part, but without subcomponents. The
+	--          couple aGenS, aDirS can  be a "generating face and
+	--          a  directing  vertex" or  "a generating edge and a
+	--          directing  edge".
+    returns Shape from TopoDS;
+		  
+    SetPCurve(me       : in out;
+ 	      aNewFace : Shape from TopoDS; 
+              aNewEdge : in out Shape from TopoDS;
+	      aGenF    : Shape from TopoDS; 
+              aGenE    : Shape from TopoDS;
+	      aDirV    : NumShape from Sweep;
+              orien    : Orientation from TopAbs);
+
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenF, aGenE and aDirV.
+    
+    SetGeneratingPCurve(me       : in out;
+    	    	    	aNewFace : Shape from TopoDS; 
+                        aNewEdge : in out Shape from TopoDS;
+			aGenE    : Shape from TopoDS; 
+                        aDirE    : NumShape from Sweep;
+			aDirV    : NumShape from Sweep;
+                        orien    : Orientation from TopAbs);
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenE, aDirE and aDirV.
+    	    
+    SetDirectingPCurve(me       : in out;
+    	    	       aNewFace : Shape from TopoDS; 
+                       aNewEdge : in out Shape from TopoDS;
+		       aGenE    : Shape from TopoDS; 
+		       aGenV    : Shape from TopoDS; 
+                       aDirE    : NumShape from Sweep;
+                       orien    : Orientation from TopAbs);
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenE, aDirE and aGenV.
+    
+    DirectSolid(me       : in out; 
+    	    	aGenS    : Shape from TopoDS; 
+    	    	aDirS    : NumShape from Sweep)
+    returns Orientation from TopAbs;
+	---Purpose: Returns the Orientation of the  shell in the solid
+	--          generated by the face aGenS  with  the edge aDirS.
+	--          It is  REVERSED  if the surface is  swept  in  the
+	--          direction of the normal.
+    
+    GGDShapeIsToAdd (me;
+    	    	     aNewShape    : Shape from TopoDS;
+    	    	     aNewSubShape : Shape from TopoDS;
+      	    	     aGenS        : Shape from TopoDS;
+		     aSubGenS     : Shape from TopoDS;
+    	    	     aDirS        : NumShape from Sweep)
+	---Purpose: Returns   true   if  aNewSubShape    (addressed by
+	--          aSubGenS  and aDirS)  must  be added  in aNewShape
+	--          (addressed by aGenS and aDirS).
+    returns Boolean from Standard;
+    
+    GDDShapeIsToAdd (me;
+    	    	     aNewShape    : Shape from TopoDS;
+    	    	     aNewSubShape : Shape from TopoDS;
+      	    	     aGenS        : Shape from TopoDS;
+    	    	     aDirS        : NumShape from Sweep;
+   	    	     aSubDirS     : NumShape from Sweep)
+	---Purpose: Returns   true   if  aNewSubShape    (addressed by
+	--          aGenS  and aSubDirS)  must  be added  in aNewShape
+	--          (addressed by aGenS and aDirS).
+    returns Boolean from Standard;
+
+    SeparatedWires  (me;
+    	    	     aNewShape    : Shape from TopoDS;
+    	    	     aNewSubShape : Shape from TopoDS;
+      	    	     aGenS        : Shape from TopoDS;
+		     aSubGenS     : Shape from TopoDS;
+    	    	     aDirS        : NumShape from Sweep)
+	---Purpose: In  some  particular  cases  the   topology  of  a
+	--          generated  face must be  composed  of  independant
+	--          closed wires,  in this case  this function returns
+	--          true.
+	--          Here it always returns false. 
+    returns Boolean from Standard;
+
+    HasShape(me; aGenS : Shape from TopoDS; aDirS : NumShape from Sweep) 
+	---Purpose: Returns true   if aDirS   and aGenS  addresses   a
+	--          resulting Shape. In some  specific cases the shape
+	--          can  be    geometrically   inexsistant,  then this
+	--          function returns false.
+    returns Boolean from Standard;
+
+    IsInvariant (me; aGenS : Shape from TopoDS)
+    	---Purpose: Returns  always     false   because    here    the
+    	--          transformation is a translation.
+    returns Boolean from Standard;
+
+    Vec(me) 
+    ---Purpose: Returns the Vector of the Prism,  if it is an infinite
+    --          prism the Vec is unitar.
+    returns Vec from gp
+    is static;
+		  
+fields
+
+    myVec      : Vec from gp;
+    myCanonize : Boolean from Standard;
+
+end Translation;

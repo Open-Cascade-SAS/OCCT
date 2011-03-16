@@ -1,0 +1,42 @@
+-- File:        HalfSpaceSolid.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class HalfSpaceSolid from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	Surface from StepGeom,
+	Boolean from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable HalfSpaceSolid;
+	---Purpose: Returns a HalfSpaceSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBaseSurface : mutable Surface from StepGeom;
+	      aAgreementFlag : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBaseSurface(me : mutable; aBaseSurface : mutable Surface);
+	BaseSurface (me) returns mutable Surface;
+	SetAgreementFlag(me : mutable; aAgreementFlag : Boolean);
+	AgreementFlag (me) returns Boolean;
+
+fields
+
+	baseSurface : Surface from StepGeom;
+	agreementFlag : Boolean from Standard;
+
+end HalfSpaceSolid;

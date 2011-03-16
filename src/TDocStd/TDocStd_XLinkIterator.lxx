@@ -1,0 +1,15 @@
+// File:	TDocStd_XLinkIterator.lxx
+//      	----------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Sep 15 1997	Creation
+
+inline  Standard_Boolean TDocStd_XLinkIterator::More() const
+{ return (myValue != NULL); }
+ 
+inline TDocStd_XLink* TDocStd_XLinkIterator::Value() const
+{ return myValue; }

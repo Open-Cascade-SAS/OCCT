@@ -1,0 +1,73 @@
+-- File:	BRepClass3d_SolidClassifier.cdl
+-- Created:	Wed Mar 30 18:28:29 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+class SolidClassifier from BRepClass3d  inherits SClassifier from BRepClass3d
+     
+     ---Purpose: Provides an algorithm to classify a point in a solid.
+
+
+
+uses 
+    Pnt           from gp,
+    Face          from TopoDS,
+    Shape         from TopoDS,
+    SolidExplorer from BRepClass3d
+
+raises
+
+    DomainError from Standard
+	
+is 
+
+
+    Create
+    	---Purpose : empty constructor
+    returns SolidClassifier from BRepClass3d;
+        
+    Load(me:in out; S   :        Shape from TopoDS)
+    is static;
+    
+
+    Create(S   :        Shape from TopoDS)
+    	---Purpose: Constructor from a Shape.
+    returns SolidClassifier from BRepClass3d;
+    
+    
+    Create(S   :        Shape from TopoDS; 
+           P   :        Pnt from gp;
+	   Tol :        Real from Standard)
+    	---Purpose: Constructor to classify the point P with the 
+    	--          tolerance Tol on the solid S.
+    returns SolidClassifier from BRepClass3d;
+    
+
+    Perform(me: in out;
+            P   :        Pnt from gp;
+	    Tol :        Real from Standard)
+    	---Purpose: Classify the point P with the 
+    	--          tolerance Tol on the solid S.
+    is static;
+
+    PerformInfinitePoint(me: in out;
+			 Tol :        Real from Standard)
+    	---Purpose: Classify an infinite point with the 
+    	--          tolerance Tol on the solid S.
+    	--          Useful for compute the orientation of a solid. 
+    is static;
+    
+    Destroy(me:in out)
+    	---C++: alias ~
+    is static;
+    
+
+fields
+    aSolidLoaded   : Boolean       from Standard;
+    explorer       : SolidExplorer from BRepClass3d;
+    isaholeinspace : Boolean       from Standard;
+end SolidClassifier;

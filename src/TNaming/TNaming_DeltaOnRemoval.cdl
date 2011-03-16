@@ -1,0 +1,30 @@
+-- File:	TNaming_DeltaOnRemoval.cdl
+-- Created:	Wed Dec  3 11:17:05 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class DeltaOnRemoval from TNaming inherits DeltaOnRemoval from TDF
+
+	---Purpose: 
+
+uses
+    DeltaOnModification from TNaming,
+    NamedShape          from TNaming	    
+is
+
+    Create (NS : NamedShape from TNaming)
+    	returns mutable DeltaOnRemoval from TNaming;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+   
+fields
+
+    myDelta : DeltaOnModification from TNaming;
+    
+end DeltaOnRemoval;
+

@@ -1,0 +1,106 @@
+-- File:	DBC_VArray.cdl
+-- Created:	Mon Jan  30 10:15:00 1996
+-- Author:	Kernel
+--		<kernel@ylliox>
+---Copyright:	 Matra Datavision 1996
+
+generic class VArray from DBC (Item as Storable) inherits BaseArray from DBC
+
+	---Purpose: The class VArray represents a unidimensional 
+	--          array of fixed size known at  execution time. 
+	--          The range of the element is user defined and varies
+	--          from 0 to N - 1.
+	--  Warning: Programs client of such a class must be independant
+	--          of the range of the last element. Thus, a C++ "for"
+	--          loop must be written like this
+	--
+	--          for (i = 0; i < A.Size(); i++)
+	--  Implement for ObjectStore and Objectivity
+	--           with the same functionnality           
+    	--  Purpose: New development for OBJY 3.5
+
+uses
+    BaseArray from DBC
+    
+raises NegativeValue, OutOfRange , DimensionMismatch, NullObject
+
+    class VArrayNode from DBC
+      inherits ArrayNode from PStandard
+      is
+      
+      	Create returns mutable VArrayNode from DBC;
+	Create(aValue : Item)  returns mutable VArrayNode from DBC;
+	
+	SetValue(me : mutable; aValue : Item);
+	Value(me) returns Address from Standard;
+	
+      fields
+        myValue : Item;
+      end;
+     
+     ---Purpose: for DFLT profile, we dont need persistent nodes      
+     class VArrayTNode from DBC
+      is
+      	Create returns VArrayTNode from DBC;
+	---C++: inline
+	Create(aValue : Item)  returns VArrayTNode from DBC;
+	---C++: inline
+	SetValue(me : out; aValue : Item);
+	---C++: inline
+	Value(me) returns Address from Standard;
+	---C++: inline
+
+      fields
+        myValue : Item;
+      end;
+      
+is
+
+    	Create returns VArray;
+	    ---Puspose: Creates an array of null size
+	    --          Raise NullOject if there is no
+	    --          default database
+	
+	Create (Size: Integer) returns VArray
+		---Purpose: Creates an array of lower bound 0 and 
+                --          upper bound <Size>-1 . NegativeValue is raised 
+                --          when <Size> is less than 0.
+		raises NegativeValue;
+
+	Create (Varray: VArray) returns VArray;
+		---Purpose: Creates an array which  is the copy of the given
+		--          argument.
+
+
+    	Resize (me : in out; Size: Integer)
+           raises NegativeValue;
+	---Purpose: Change the size of an array with lower 
+        --          bound 0 and upper bound <Size>-1 . NegativeValue 
+        --          is raised when <Size> is less than 0.
+
+    	Assign (me: in out; Other: VArray from DBC)
+	   ---Purpose: copy the contents of <Other> into <me>.
+	   --          <Other> and <me> must have the same dimension.
+	   ---C++: alias operator = 
+	  raises DimensionMismatch from Standard
+	    is static;
+	    
+	SetValue (me : in out; Index: Integer; Value: Item) 
+		---Purpose: Sets the <Index>th element of the array
+		--          to <Value>.
+		raises OutOfRange
+		is static ;
+
+
+	Value (me; Index: Integer) returns Item
+		---Purpose: Returns the value of the <Index>th element
+                --          of the array.
+		---C++: alias operator ()
+		---C++: return &
+		raises OutOfRange
+		is static;
+
+	Destroy(me : in out);
+	---C++: alias ~
+
+end VArray ;

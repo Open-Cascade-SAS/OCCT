@@ -1,0 +1,41 @@
+-- File:	TopOpeBRepBuild_Area2dBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class Area2dBuilder from TopOpeBRepBuild 
+    inherits AreaBuilder from TopOpeBRepBuild
+
+---Purpose: 
+-- The Area2dBuilder algorithm is used to construct Faces from a LoopSet,
+-- where the Loop is the composite topological object of the boundary,
+-- here wire or block of edges.
+-- The LoopSet gives an iteration on Loops.
+-- For each Loop  it indicates if it is on the boundary (wire) or if it
+-- results from  an interference (block of edges).
+-- The result of the Area2dBuilder is an iteration on areas.
+-- An area is described by a set of Loops.
+
+uses
+
+    LoopSet from TopOpeBRepBuild,
+    LoopClassifier from TopOpeBRepBuild
+    
+is
+
+    Create returns Area2dBuilder;
+
+    Create(LS : in out LoopSet; LC : in out LoopClassifier;
+    	   ForceClass : Boolean = Standard_False) returns Area2dBuilder;
+    ---Purpose: Creates a Area2dBuilder to build faces on
+    -- the (wires,blocks of edge) of <LS>, using the classifier <LC>.
+
+    InitAreaBuilder(me : in out;
+    	    	    LS : in out LoopSet; LC : in out LoopClassifier;
+    	    	    ForceClass : Boolean = Standard_False)
+    ---Purpose: Sets a Area1dBuilder to find the areas of
+    -- the shapes described by <LS> using the classifier <LC>.
+    is redefined;
+    
+end Area2dBuilder from TopOpeBRepBuild;

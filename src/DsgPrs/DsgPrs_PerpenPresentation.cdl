@@ -1,0 +1,38 @@
+-- File:	DsgPrs_PerpenPresentation.cdl
+-- Created:	Tue Nov 28 12:13:52 1995
+-- Author:	Jean-Pierre COMBE
+--		<jpi@pdalon>
+---Copyright:	 Matra Datavision 1995
+
+class PerpenPresentation from DsgPrs
+
+        ---Purpose: A framework to define display of perpendicular
+    	-- constraints between shapes.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+    	    	  pAx1:          Pnt from gp;
+		  pAx2:          Pnt from gp;
+                  pnt1:          Pnt from gp;
+		  pnt2:          Pnt from gp;
+		  OffsetPoint:   Pnt from gp;
+    	    	  intOut1:       Boolean from Standard;
+    	    	  intOut2:       Boolean from Standard);
+	---Purpose: Defines the display of elements showing
+    	-- perpendicular constraints between shapes.
+    	-- These include the two axis points pAx1 and pAx2,
+    	-- the two points pnt1 and pnt2, the offset point
+    	-- OffsetPoint and the two Booleans intOut1} and intOut2{.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+
+end PerpenPresentation;

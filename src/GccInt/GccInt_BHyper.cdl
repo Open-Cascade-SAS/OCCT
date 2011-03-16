@@ -1,0 +1,38 @@
+-- File:	BHyper.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BHyper from GccInt  
+
+inherits Bisec from GccInt
+
+     	---Purpose: Describes a hyperbola as a bisecting curve between two
+    	-- 2D geometric objects (such as circles or points).
+
+uses Hypr2d from gp,
+     IType  from GccInt
+
+is
+
+Create(Hyper : Hypr2d from gp) returns mutable BHyper;
+    	---Purpose:
+    	-- Constructs a bisecting curve whose geometry is the 2D hyperbola Hyper.
+        
+Hyperbola(me) returns Hypr2d from gp
+    is redefined;
+    	---Purpose: Returns a 2D hyperbola which is the geometry of this bisecting curve. 
+    
+ArcType(me) returns IType from GccInt
+    is static;
+    	---Purpose: Returns GccInt_Hpr, which is the type of any GccInt_BHyper bisecting curve.
+        
+fields
+
+    hyp : Hypr2d from gp;
+    ---Purpose: The bisecting line.
+
+end BHyper;
+

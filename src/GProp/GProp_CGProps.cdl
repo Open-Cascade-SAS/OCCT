@@ -1,0 +1,38 @@
+-- File:	CGProps.cdl
+-- Created:	Thu Aug 27 10:09:41 1992
+-- Created:	Thu Apr 11 17:30:05 1991
+-- Author:	Michel CHAUVAT
+--              Jean-Claude Vauthier January 1992, September 1992
+---Copyright:	Matra Datavision 1992
+
+
+
+generic class CGProps  from GProp (Curve     as any;
+    	    	    	    	   Tool      as any -- as CurveTool(Curve)
+    	    	    	    	  )
+
+inherits GProps from GProp
+
+	--- Purpose  : 
+	--  Computes the  global properties of bounded curves 
+	--  in 3D space. The curve must have at least a continuity C1. 
+	--  It can be a curve as defined in the template CurveTool from 
+	--  package GProp. This template gives the minimum of methods 
+	--  required to evaluate the global properties of a curve 3D with  
+	--  the algorithmes of GProp.
+
+uses  Pnt   from gp
+       
+is
+
+    Create returns CGProps;
+  
+    Create (C : Curve; CLocation : Pnt)  returns CGProps;
+
+    SetLocation(me : in out;CLocation : Pnt) ;
+
+    Perform(me : in out; C : Curve);
+
+end CGProps;
+
+

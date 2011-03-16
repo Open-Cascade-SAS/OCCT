@@ -1,0 +1,103 @@
+--
+-- File      : DimensionUnits.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DimensionUnits from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines Dimension Units, Type <406>, Form <28>
+        --          in package IGESDimen
+        --          Describes the units and formatting details of the
+        --          nominal value of a dimension.
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable DimensionUnits;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              nbPropVal  : Integer;
+              aSecondPos : Integer;
+              aUnitsInd  : Integer;
+              aCharSet   : Integer;
+              aFormat    : HAsciiString;
+              aFracFlag  : Integer;
+              aPrecision : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           DimensionUnits
+        --       - nbPropVal  : Number of property values, always = 6
+        --       - aSecondPos : Secondary Dimension Position
+        --                          0 = This is the main text
+        --                          1 = Before primary dimension
+        --                          2 = After primary dimension
+        --                          3 = Above primary dimension
+        --                          4 = Below primary dimension
+        --       - aUnitsInd  : Units Indicator
+        --       - aCharSet   : Character Set used
+        --       - aFormat    : Format HAsciiString
+        --                          1 = Standard ASCII
+        --                          1001 = Symbol Font 1
+        --                          1002 = Symbol Font 2
+        --                          1003 = Drafting Font
+        --       - aFracFlag  : Fraction Flag
+        --                          0 = Display values as decimal numbers
+        --                          1 = Display values as fractions
+        --       - aPrecision : Precision Value
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+
+        SecondaryDimenPosition (me) returns Integer;
+        ---Purpose : returns position of secondary dimension w.r.t. primary dimension
+
+        UnitsIndicator (me) returns Integer;
+        ---Purpose : returns the units indicator
+
+        CharacterSet (me) returns Integer;
+        ---Purpose : returns the character set interpretation
+
+        FormatString (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the string used in formatting value
+
+        FractionFlag (me) returns Integer;
+        ---Purpose : returns the fraction flag
+
+        PrecisionOrDenominator (me) returns Integer;
+        ---Purpose : returns the precision/denominator
+        --     number of decimal places when FractionFlag() = 0
+        --     denominator of fraction when FractionFlag() = 1
+
+fields
+
+--
+-- Class    : IGESDimen_DimensionUnits
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DimensionUnits.
+--
+-- Reminder : A DimensionUnits instance is defined by :
+--            - Number of property values, always = 6
+--            - Secondary Dimension Position
+--            - Units Indicator
+--            - Character Set used
+--            - Format HAsciiString
+--            - Fraction Flag
+--            - Precision Value
+
+        theNbPropertyValues       : Integer;
+        theSecondaryDimenPosition : Integer;
+        theUnitsIndicator         : Integer;
+        theCharacterSet           : Integer;
+        theFormatString           : HAsciiString;
+        theFractionFlag           : Integer;
+        thePrecision              : Integer;
+
+end DimensionUnits;

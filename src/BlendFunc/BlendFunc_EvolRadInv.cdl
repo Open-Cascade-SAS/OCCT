@@ -1,0 +1,100 @@
+-- File:      BlendFunc_EvolRadInv.cdl
+-- Created:   Tue Dec 21 18:18:43 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
+
+
+class EvolRadInv from BlendFunc
+
+	---Purpose: 
+
+inherits FuncInv from Blend
+
+uses Vector from math,
+     Matrix from math,
+     HCurve2d from Adaptor2d,
+     HCurve from Adaptor3d,
+     HSurface from Adaptor3d,
+     Function from Law
+
+is
+
+    Create(S1,S2: HSurface from Adaptor3d; C: HCurve from Adaptor3d; Law: Function from Law)
+    
+    	returns EvolRadInv from BlendFunc;
+	
+
+    Set(me: in out; OnFirst: Boolean from Standard;
+    	            COnSurf: HCurve2d from Adaptor2d)
+
+    	;
+
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard)
+    
+    	;
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math)
+    
+    	;
+
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    
+    	returns Boolean from Standard
+    
+    	;
+
+
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+    	returns Integer from Standard;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard;
+
+-- methodes hors template (en plus du create)
+
+    Set(me: in out; Choix: Integer from Standard)
+
+    is static;
+
+
+
+fields
+
+    surf1: HSurface from Adaptor3d;
+    surf2: HSurface from Adaptor3d;
+    curv : HCurve from Adaptor3d;
+    csurf: HCurve2d from Adaptor2d;
+    fevol: Function from Law;
+    sg1  : Real from Standard;
+    sg2  : Real from Standard;
+    choix: Integer from Standard;
+    first: Boolean from Standard;
+
+end EvolRadInv;

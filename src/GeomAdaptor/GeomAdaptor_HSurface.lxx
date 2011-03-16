@@ -1,0 +1,50 @@
+// File:      GeomAdaptor_HSurface.lxx
+// Created:   Fri Aug 25 14:44:25 1995
+// Author:    Remi LEQUETTE
+// Copyright: OPEN CASCADE 1995
+
+
+//=======================================================================
+//function : GeomAdaptor_HSurface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HSurface::GeomAdaptor_HSurface()
+{
+}
+
+//=======================================================================
+//function : GeomAdaptor_HSurface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HSurface::GeomAdaptor_HSurface(const GeomAdaptor_Surface& AS) :
+GeomAdaptor_GHSurface(AS)
+{
+}
+
+//=======================================================================
+//function : GeomAdaptor_HSurface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HSurface::GeomAdaptor_HSurface(const Handle(Geom_Surface)& S)
+{
+  ChangeSurface().Load(S);
+}
+
+//=======================================================================
+//function : GeomAdaptor_HSurface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HSurface::GeomAdaptor_HSurface(const Handle(Geom_Surface)& S, 
+                                                  const Standard_Real UFirst, 
+                                                  const Standard_Real ULast,
+                                                  const Standard_Real VFirst, 
+                                                  const Standard_Real VLast,
+                                                  const Standard_Real TolU,
+                                                  const Standard_Real TolV)
+{
+  ChangeSurface().Load(S,UFirst,ULast,VFirst,VLast,TolU,TolV);
+}

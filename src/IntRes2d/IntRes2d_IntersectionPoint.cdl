@@ -1,0 +1,121 @@
+-- File:	IntersectionPoint.cdl
+-- Created:	Fri Apr  3 14:43:20 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class IntersectionPoint from IntRes2d
+
+    ---Purpose: Definition of an intersection point between two
+    --          2D curves.
+
+
+inherits Storable from Standard
+
+uses Pnt2d      from gp,
+     Transition from IntRes2d
+is
+
+    Create
+
+	---Purpose: Empty constructor.
+
+    	returns IntersectionPoint from IntRes2d;
+
+
+    Create(P: Pnt2d from gp; Uc1,Uc2:Real from Standard;
+           Trans1,Trans2: Transition from IntRes2d;
+           ReversedFlag: Boolean from Standard)
+	   
+	---Purpose: Creates an IntersectionPoint.
+	--          if ReversedFlag is False, the parameter Uc1(resp. Uc2)
+	--          and the Transition Trans1 (resp. Trans2) refer to 
+	--          the first curve (resp. second curve) otherwise Uc1 
+	--          and Trans1 (resp. Uc2 and Trans2) refer to the 
+	--          second curve (resp. the first curve).
+
+      	---C++: inline	   
+
+	returns IntersectionPoint from IntRes2d;
+	
+
+    SetValues(me:in out; P: Pnt2d from gp; Uc1,Uc2:Real from Standard;
+              Trans1,Trans2: Transition from IntRes2d;
+              ReversedFlag: Boolean from Standard)
+
+	---Purpose: Sets the values for an existing intersection 
+	--          point. The meaning of the parameters are the same 
+	--          as for the Create.
+
+	---C++: inline
+
+	is static;
+
+
+
+    Value(me)
+    
+    	---Purpose: Returns the value of the coordinates of the
+    	--          intersection point in the 2D space.
+
+	---C++: inline
+	---C++: return const &
+
+    	returns Pnt2d from gp
+    	is static;
+
+
+    ParamOnFirst(me)
+
+    	---Purpose: Returns the parameter on the first curve.
+
+	---C++: inline
+
+    	returns Real from Standard
+	is static;
+
+
+    ParamOnSecond(me)
+
+    	---Purpose: Returns the parameter on the second curve.
+
+       	---C++: inline
+
+    	returns Real from Standard
+	is static;
+
+
+    TransitionOfFirst(me)
+    
+    	---Purpose: Returns the transition of the 1st curve compared to
+    	--          the 2nd one.
+
+	---C++: inline
+        ---C++: return const &
+    	returns Transition from IntRes2d
+	is static;
+
+
+    TransitionOfSecond(me)
+    
+    	---Purpose: returns the transition of the 2nd curve compared to
+    	--          the 1st one.
+
+	---C++: inline
+        ---C++: return const &
+    	returns Transition from IntRes2d
+	is static;
+
+
+fields
+
+    pt       : Pnt2d      from gp;
+    p1       : Real       from Standard;
+    p2       : Real       from Standard;
+    trans1   : Transition from IntRes2d;
+    trans2   : Transition from IntRes2d;
+
+end IntersectionPoint;
+ 
+

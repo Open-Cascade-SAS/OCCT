@@ -1,0 +1,40 @@
+-- File:        ConversionBasedUnitAndRatioUnit.cdl
+-- Created:     Fri Jun 17 11:43:44 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConversionBasedUnitAndRatioUnit from StepBasic inherits ConversionBasedUnit from StepBasic 
+
+	--- This class is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    RatioUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    HAsciiString from TCollection, 
+    MeasureWithUnit from StepBasic
+    
+is
+
+    Create returns mutable ConversionBasedUnitAndRatioUnit;
+	---Purpose: Returns a ConversionBasedUnitAndRatioUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
+		       aName      : mutable HAsciiString from TCollection;
+		       aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetRatioUnit(me: mutable; aRatioUnit: mutable RatioUnit);
+    
+    RatioUnit (me) returns mutable RatioUnit;
+
+fields
+
+    ratioUnit : RatioUnit from StepBasic;
+
+end ConversionBasedUnitAndRatioUnit;

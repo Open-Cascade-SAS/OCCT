@@ -1,0 +1,32 @@
+-- File:        BinMDataStd_CommentDriver.cdl
+-- Created:     Fri Aug 24 20:16:51 2001
+-- Author:      Alexander GRIGORIEV
+-- Copyright:   Open Cascade 2001
+
+class CommentDriver from BinMDataStd  inherits ADriver from BinMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable CommentDriver from BinMDataStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+
+end CommentDriver;

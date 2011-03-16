@@ -1,0 +1,22 @@
+-- File:	BinXCAFDrivers_DocumentRetrievalDriver.cdl
+-- Created:	Mon Apr 18 17:09:19 2005
+-- Author:	Eugeny NAPALKOV <eugeny.napalkov@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2005
+
+class DocumentRetrievalDriver from BinXCAFDrivers inherits DocumentRetrievalDriver from BinDrivers
+
+uses
+    MessageDriver    from CDM,
+    ADriverTable     from BinMDF
+is
+    -- ===== Public methods =====
+
+    Create returns mutable DocumentRetrievalDriver from BinXCAFDrivers;
+	---Purpose: Constructor
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from BinMDF
+	is redefined virtual;
+
+end;
+

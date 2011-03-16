@@ -1,0 +1,164 @@
+
+-- -- File:        Poly.cdl
+-- Created:     Mon Mar  6 09:38:50 1995
+-- Author:      Laurent PAINNOT
+--              <lpa@metrox>
+---Copyright:   Matra Datavision 1995
+
+
+
+package Poly 
+
+        ---Purpose: This  package  provides  classes  and services  to
+        --          handle :
+        --          
+        --          * 3D triangular polyhedrons.
+        --          
+        --          * 3D polygons.
+        --          
+        --          * 2D polygon.
+        --          
+        --          * Tools to dump, save and restore those objects.
+
+uses
+
+    MMgt,
+    TCollection,
+    TColStd,
+    gp,
+    TColgp, 
+    TShort
+
+is
+
+    class Triangle;
+        ---Purpose: A triangle is  a triplet  of integers (indices  of
+        --          the nodes).
+
+    class Array1OfTriangle
+    instantiates Array1 from TCollection(Triangle from Poly);
+    
+    class HArray1OfTriangle
+    instantiates HArray1 from TCollection(Triangle         from Poly,
+                                          Array1OfTriangle from Poly);
+
+    class Triangulation;
+        ---Purpose: A   Triangulation  is  a   3D  polyhedron made  of
+        --          triangles.  It   is  made  of  a nodes  which  are
+        --          indexed. Nodes  have a 3d  value  and a  2d value.
+        --          Triangles are triplet of node indices.
+        --          
+        --          This is a Transient class.
+
+
+    class Polygon3D;
+        ---Purpose: A Polygon3D is  made of  indexed nodes.
+        --          Nodes have a 3d value.
+
+    class Polygon2D;
+        ---Purpose: A Polygon2D is made of  indexed nodes.
+        --          Nodes have a 2d value.
+
+    class PolygonOnTriangulation;
+        ---Purpose: A polygonOnTriangulation is made of node indices
+        --          referencing a triangulation.
+
+
+    --         
+    -- Tools to use triangulations
+    -- 
+    
+    class Connect;
+        ---Purpose: Computes and  stores  the    link from   nodes  to
+        --          triangles     and from triangles to   neighbouring
+        --          triangles.
+        -- This tool is obsolete, replaced by Poly_CoherentTriangulation
+
+    --
+    --     Data types for the Coherent Triangulation data model
+    --
+    imported CogerentTriangulation;
+    imported CoherentTriangle;
+    imported CoherentNode;
+    imported CoherentLink;
+    imported CoherentTriPtr;
+    imported ListOfTriangulation;
+
+    imported MakeLoops;
+        ---Purpose: Algorithm to make minimal loops in a graph
+
+    --
+    --  Package methods
+    --  
+    
+    Catenate (lstTri: ListOfTriangulation from Poly)
+        returns Triangulation from Poly;
+        ---Purpose: Join several triangulations to one new triangulation object.
+        --          The new triangulation is just a mechanical sum of input
+        --          triangulations, without node sharing. UV coordinates are
+        --          dropped in the result.
+
+    Write(T       : Triangulation from Poly;
+          OS      : in out OStream;
+          Compact : Boolean = Standard_True);
+  
+        ---Purpose: Writes the content of the triangulation <T> on the
+        --          stream <OS>. If <Compact> is true this is a "save"
+        --          format  intended  to  be read back   with the Read
+        --          method. If compact is False  it is a "Dump" format
+        --          intended to be informative.
+
+    Write(P       : Polygon3D from Poly;
+          OS      : in out OStream;
+          Compact : Boolean = Standard_True);
+  
+        ---Purpose: Writes  the  content  of the 3D polygon <P> on the
+        --          stream <OS>. If <Compact> is true this is a "save"
+        --          format  intended  to  be read back   with the Read
+        --          method. If compact is False  it is a "Dump" format
+        --          intended to be informative.
+
+    Write(P       : Polygon2D from Poly;
+          OS      : in out OStream;
+          Compact : Boolean = Standard_True);
+  
+        ---Purpose: Writes the  content  of the 2D polygon  <P> on the
+        --          stream <OS>. If <Compact> is true this is a "save"
+        --          format  intended  to  be read back   with the Read
+        --          method. If compact is False  it is a "Dump" format
+        --          intended to be informative.
+
+
+    Dump(T       : Triangulation from Poly;
+         OS      : in out OStream);
+       ---Purpose: Dumps  the triangulation.  This   is a call to  the
+       --          previous method with Comapct set to False.
+       
+    Dump(P       : Polygon3D from Poly;
+         OS      : in out OStream);
+       ---Purpose: Dumps  the  3D  polygon.  This   is a call to  the
+       --          previous method with Comapct set to False.
+       
+    Dump(P       : Polygon2D from Poly;
+         OS      : in out OStream);
+       ---Purpose: Dumps  the  2D  polygon.  This   is a call to  the
+       --          previous method with Comapct set to False.
+       
+
+    ReadTriangulation(IS : in out IStream)
+    returns Triangulation from Poly;
+        ---Purpose: Reads a triangulation from the stream <IS>.
+  
+    ReadPolygon3D(IS : in out IStream)
+    returns Polygon3D from Poly;
+        ---Purpose: Reads a 3d polygon from the stream <IS>.
+  
+    ReadPolygon2D(IS : in out IStream)
+    returns Polygon2D from Poly;
+        ---Purpose: Reads a 2D polygon from the stream <IS>.
+
+    ComputeNormals(Tri : Triangulation from Poly);
+        ---Purpose: Compute node normals for face triangulation 
+        --  as mean normal of surrounding triangles
+  
+end Poly;

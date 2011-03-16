@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeCylindricalSurface.cdl
+-- Created:	Mon Jun 14 16:09:17 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeCylindricalSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between class
+    --          CylindricalSurface from StepGeom which describes a
+    --          cylindrical_surface from Prostep and CylindricalSurface
+    --          from Geom 
+
+uses CylindricalSurface from Geom,
+     CylindricalSurface from StepGeom
+
+is 
+
+    Convert ( myclass; SS : CylindricalSurface from StepGeom;
+                       CS : out CylindricalSurface from Geom )
+    returns Boolean from Standard;
+
+end MakeCylindricalSurface;

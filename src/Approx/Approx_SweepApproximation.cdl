@@ -1,0 +1,364 @@
+-- File:	Approx_SweepApproximation.cdl
+-- Created:	Tue Jun 24 17:24:35 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class SweepApproximation from Approx 
+
+	---Purpose:  Approximation  of  an  Surface   S(u,v) 
+	--          (and eventually associate  2d Curves) defined
+        --           by section's law.
+	--          
+	--            This surface is defined by a function F(u, v) 
+	--            where Ft(u) = F(u, t) is a bspline curve. 
+	--            To use this algorithme, you  have to implement Ft(u)
+	--            as a derivative class  of Approx_SweepFunction.  
+        --            This algorithm can be used by blending, sweeping...
+	
+       
+
+uses Array2OfReal            from TColStd,
+     HArray2OfReal           from TColStd,
+     Array1OfReal            from TColStd,
+     HArray1OfReal           from TColStd,
+     Array1OfInteger         from TColStd,
+     HArray1OfInteger        from TColStd,
+       
+     Vec                     from gp,
+     Array1OfPnt2d           from TColgp,
+     HArray1OfPnt2d          from TColgp, 
+     HArray1OfPnt            from TColgp, 
+     HArray1OfVec2d          from TColgp, 
+     HArray1OfVec            from TColgp,
+     Array2OfPnt             from TColgp,
+     HArray2OfPnt            from TColgp, 
+       
+     HArray1OfGTrsf2d        from Approx,      
+     SequenceOfArray1OfPnt2d from TColgp, 
+     Shape                   from GeomAbs, 
+     EvaluatorFunction       from AdvApprox,
+     Cutting                 from AdvApprox,     
+     SweepFunction           from Approx
+
+raises NotDone     from StdFail,
+       DomainError,
+       OutOfRange  
+
+is
+    Create(Func :   SweepFunction from Approx)    	 
+    returns SweepApproximation from Approx; 
+
+    Perform(me  :  in  out; 
+            First,  Last  :  Real;
+            Tol3d,  BoundTol,  Tol2d,  TolAngular : Real;
+	    Continuity : Shape = GeomAbs_C0;
+	    Degmax     : Integer = 11;
+            Segmax     : Integer = 50)
+    ---Purpose: Perform the Approximation 
+	   --    [First, Last] : Approx_SweepApproximation.cdl
+	   --    Tol3d : Tolerance to surface approximation
+	   --    Tol2d : Tolerance used to perform curve approximation
+	   --            Normaly the 2d curve are approximated with a 
+           --            tolerance given by the resolution on support surfaces, 
+           --            but if this tolerance is too large Tol2d is used.
+           --    TolAngular : Tolerance (in radian) to control the angle 
+           --                 beetween tangents on the section law and
+           --                 tangent of iso-v on approximed surface
+           --    Continuity : The continuity in v waiting on the surface 
+           --    Degmax     : The maximum degree in v requiered on the surface 
+           --    Segmax     : The maximum number of span in v requiered on 
+           --                 the surface 
+           --   Warning : The continuity ci can be obtained only if Ft is Ci 
+        raises DomainError  from  Standard;
+	-- if <Continuity> not in {C0, C1, C2}
+        -- if <Degmax> < 2 or degmax > Geom_BSplineSurface::MaxDegree()
+        -- if <Segmax> < 1
+        -- if one tolerance is <= 0
+	
+    Approximation(me : in out;
+		  OneDTol,  TwoDTol, ThreeDTol : HArray1OfReal; 
+		  BounTol                      : Real;
+    	          First, Last                  : Real;
+		  Continuity                   : Shape;
+		  Degmax, Segmax               : Integer;
+		  TheApproxFunction  : EvaluatorFunction from AdvApprox;
+		  TheCuttingTool     : Cutting from AdvApprox)
+	    is private;     
+		  
+    Eval(me : in out; 
+         Parameter         : Real;
+    	 DerivativeRequest : Integer;
+	 First, Last       : Real;
+	 Result            : in out  Real)
+    ---Purpose : The EvaluatorFunction from AdvApprox;   
+    returns Integer from Standard; 
+     
+   D0(me : in out; 
+      Param: Real;
+      First, Last : Real;
+      Result:in out Real)
+   returns Boolean  is  private;
+	
+   D1(me : in out;
+      Param: Real;
+      First, Last : Real;
+      Result:in out Real)
+   returns Boolean  is private;
+   
+    D2(me : in out;
+      Param: Real;
+      First, Last : Real;
+      Result:in out Real)
+   returns Boolean  is  private;
+     
+	
+    IsDone(me)
+    ---Purpose : returns if we have an result
+    	returns Boolean from Standard
+	---C++: inline	
+	is static;
+
+
+    SurfShape(me; UDegree,VDegree  : out Integer from Standard;
+                  NbUPoles,NbVPoles: out Integer from Standard;
+                  NbUKnots,NbVKnots: out Integer from Standard)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    Surface(me; TPoles          : out Array2OfPnt from TColgp;
+    	        TWeights        : out Array2OfReal from TColStd;
+		TUKnots,TVKnots : out Array1OfReal from TColStd;
+		TUMults,TVMults : out Array1OfInteger from TColStd)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    UDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    VDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    SurfPoles(me)
+    
+    	returns Array2OfPnt from TColgp
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfWeights(me)
+    
+    	returns Array2OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+	
+    MaxErrorOnSurf (me) 
+    ---Purpose: returns the maximum error in the suface approximation.
+    returns Real; 
+
+    
+    AverageErrorOnSurf(me)
+    ---Purpose: returns the average error in the suface approximation.     
+    returns Real;
+
+
+    NbCurves2d(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    Curves2dShape(me; Degree,NbPoles,NbKnots: out Integer from Standard)
+    
+    	raises NotDone from StdFail,
+	       DomainError from Standard
+
+        is static;
+	
+	
+    Curve2d(me; Index: Integer from Standard;
+                TPoles   : out Array1OfPnt2d from TColgp;
+		TKnots   : out Array1OfReal from TColStd;
+		TMults   : out Array1OfInteger from TColStd)
+		
+    	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+
+    	is static;     
+
+
+    Curves2dDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+	
+	
+    Curve2dPoles(me; Index: Integer from Standard)
+    
+    	returns Array1OfPnt2d from TColgp
+	---C++: inline
+	---C++: return const&
+	
+	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+	is static;
+	
+
+    Curves2dKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+
+
+    Curves2dMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+	
+	
+    Max2dError (me; Index : Integer) 
+    ---Purpose: returns the maximum error of the <Index> 
+    --          2d curve approximation.
+    returns Real; 
+
+    
+    Average2dError(me; Index : Integer )
+    ---Purpose: returns the average error of the <Index> 
+    --          2d curve approximation.
+    returns Real;	 
+     
+    TolCurveOnSurf(me; Index  :  Integer  from Standard) 
+    ---Purpose:  returns the  maximum 3d  error  of the  <Index> 
+    --           2d curve approximation on the Surface.
+    returns  Real from Standard  
+    raises NotDone from StdFail
+    is static;    
+    
+    Dump(me; o: in out OStream);
+    ---Purpose: display information on approximation.
+
+fields
+    myFunc    : SweepFunction           from Approx;
+    done      : Boolean                 from Standard;
+    Num1DSS   : Integer                 from Standard;
+    Num2DSS   : Integer                 from Standard;
+    Num3DSS   : Integer                 from Standard; 
+       
+    udeg      : Integer                 from Standard;
+    vdeg      : Integer                 from Standard;
+    deg2d     : Integer                 from Standard;
+    tabPoles  : HArray2OfPnt            from TColgp;
+    tabWeights: HArray2OfReal           from TColStd;
+    tabUKnots : HArray1OfReal           from TColStd;
+    tabVKnots : HArray1OfReal           from TColStd;
+    tab2dKnots: HArray1OfReal           from TColStd;    
+    tabUMults : HArray1OfInteger        from TColStd;
+    tabVMults : HArray1OfInteger        from TColStd;
+    tab2dMults: HArray1OfInteger        from TColStd;
+    seqPoles2d: SequenceOfArray1OfPnt2d from TColgp;
+    MError1d  : HArray1OfReal           from TColStd;
+    tab2dError: HArray1OfReal           from TColStd;    
+    MError3d  : HArray1OfReal           from TColStd;
+    AError1d  : HArray1OfReal           from TColStd;
+    Ave2dError: HArray1OfReal           from TColStd;
+    AError3d  : HArray1OfReal           from TColStd;
+    AAffin    : HArray1OfGTrsf2d        from Approx;
+    COnSurfErr: HArray1OfReal           from TColStd;
+    Translation  :  Vec                 from gp;
+--    
+--         To  Accelerate  Evaluation  :
+--          
+ myPoles   :  HArray1OfPnt;
+ myPoles2d :  HArray1OfPnt2d;
+ myWeigths :  HArray1OfReal;
+ myDPoles   :  HArray1OfVec;
+ myD2Poles  :  HArray1OfVec;
+ myDPoles2d :  HArray1OfVec2d;
+ myD2Poles2d:  HArray1OfVec2d;
+ myDWeigths :  HArray1OfReal;
+ myD2Weigths:  HArray1OfReal;
+
+ myOrder    :  Integer;
+ myParam    :  Real;
+ first, last:  Real; 
+end SweepApproximation;

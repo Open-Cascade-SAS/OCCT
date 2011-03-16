@@ -1,0 +1,138 @@
+-- File:	IGESData.cdl
+-- Created:	Mon Apr  6 13:53:17 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+package IGESData
+
+    ---Purpose : basic description of an IGES Interface
+
+uses  Standard, MMgt, TCollection, TColStd,
+      LibCtl,   Interface, gp, Message
+      -- gp for Trsf, used by basic notion Transformation Matrix - Location
+
+is
+
+    class Protocol;
+
+    class IGESModel;
+
+    deferred class IGESEntity;  -- includes directory part
+    	-- following classes are used in directory part : effective types of
+    	-- LineFont, Transf, etc... MUST inherit them, because of type checking
+
+    	deferred class LineFontEntity;
+	deferred class LevelListEntity;
+	deferred class TransfEntity;        -- transformation matrix
+    	deferred class ViewKindEntity;      -- single view or list of views
+	deferred class LabelDisplayEntity;
+	deferred class ColorEntity;
+	deferred class NameEntity;          -- possible as property
+	deferred class SingleParentEntity;  -- possible as associativity
+
+    class UndefinedEntity;
+    class FreeFormatEntity;
+
+    class GlobalSection;
+    class DefSwitch;
+
+    class DirChecker;
+
+    class IGESReaderData;
+    class IGESReaderTool;
+    class ParamReader;
+    class ParamCursor;
+    class DirPart;             -- litteral description
+    class IGESType;
+
+    deferred class FileRecognizer  instantiates
+    	Recognizer from Interface (IGESType, IGESEntity);
+
+    class IGESWriter;
+    class IGESDumper;
+    class BasicEditor;
+
+    class ToolLocation;
+
+    deferred class GeneralModule;
+    	class DefaultGeneral;
+    deferred class ReadWriteModule;
+    deferred class SpecificModule;  -- actions specific of IGES (Dump)
+    	class DefaultSpecific;
+    class FileProtocol;
+
+    class WriterLib   instantiates  Library from LibCtl
+    	(IGESEntity, ReadWriteModule, Protocol from IGESData);
+    class SpecificLib instantiates  Library from LibCtl
+    	(IGESEntity, SpecificModule,  Protocol from IGESData);
+
+  	-- --   Enumerations   -- -- 
+    enumeration  Status is 
+       	EntityOK, 
+    	EntityError, 
+    	ReferenceError,
+	TypeError;
+
+    enumeration DefType is DefVoid, DefValue,  DefReference,
+    	    	    	   DefAny,  ErrorVal,  ErrorRef;
+    ---Purpose :  Some fields of an IGES entity may be
+-- - Undefined
+-- - Defined as a positive integer
+-- - Defined as a reference to a specialized entity.
+--  A typical example of this kind of variation is color.
+-- This enumeration allows you to identify which of the above is the case.
+-- The semantics of the terms are as follows:
+-- - DefVoid indicates that the item contained in the field is undefined
+-- - DefValue indicates that the item is defined as an immediate
+--   positive integer value (i.e. not a pointer)
+-- - DefReference indicates that the item is defined as an entity
+-- - DefAny indicates the item could not be determined
+-- - ErrorVal indicates that the item is defined as an integer
+--   but its value is incorrect (it could be out of range, for example)
+-- - ErrorRef indicates that the item is defined as an entity but
+---    is not of the required type.
+
+    enumeration DefList is DefNone, DefOne, DefSeveral, ErrorOne, ErrorSeveral;
+    ---Purpose : Some fields of an IGES entity may be
+-- - Undefined
+-- - Defined as a single item
+-- - Defined as a list of items.
+--   A typical example, which presents this kind of variation,
+-- is a level number.
+-- This enumeration allows you to identify which of the above is the case.
+-- The semantics of the terms is as follows:
+-- - DefNone indicates that the list is empty (there is not
+--   even a single item).
+-- - DefOne indicates that the list contains a single item.
+-- - DefSeveral indicates that the list contains several items.
+-- - ErrorOne indicates that the list contains one item, but
+--   that this item is incorrect
+-- - ErrorSeveral indicates that the list contains several
+--   items, but that at least one of them is incorrect.
+
+    enumeration ReadStage is ReadDir, ReadOwn, ReadAssocs, ReadProps, ReadEnd;
+    ---Purpose : gives successive stages of reading an entity (see ParamReader)
+
+    	-- --   Instantiations   -- --
+
+    class Array1OfDirPart instantiates Array1 from TCollection (DirPart);
+
+    class Array1OfIGESEntity instantiates Array1 from TCollection (IGESEntity);
+
+    class HArray1OfIGESEntity  instantiates
+    	HArray1 from TCollection (IGESEntity,Array1OfIGESEntity); 
+	
+    	--   General Routines   --
+    	-- They encapsulate the general actions required to work with this
+    	-- package. While their use is not mandatory, it makes work easier.
+
+    Init;
+    ---Purpose : Prepares General dynamic data used for IGESData specifically :
+    --           Protocol and Modules, which treat UndefinedEntity
+
+    Protocol  returns Protocol from IGESData;
+    ---Purpose : Returns a Protocol from IGESData (avoids to create it)
+
+end IGESData;

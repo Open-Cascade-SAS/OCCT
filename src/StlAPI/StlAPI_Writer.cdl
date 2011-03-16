@@ -1,0 +1,63 @@
+-- File:	StlAPI_Writer.cdl
+-- Created:	Fri Jun 23 14:36:58 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Writer from StlAPI 
+
+	 ---Purpose: This class creates and writes
+    	 -- STL files from Open CASCADE shapes. An STL file can be
+    	 -- written to an existing STL file or to a new one..
+
+uses
+    Shape from TopoDS,
+    Mesh from StlMesh
+is
+    Create;
+   	 ---Purpose: Creates a writer object with
+   	 -- default parameters: ASCIIMode, RelativeMode, SetCoefficent,
+   	 -- SetDeflection. These parameters may be modified. 
+
+    SetDeflection(me: in out; aDeflection : in Real from Standard);
+    	---Purpose: Sets the deflection of the meshing algorithm. 
+    	--    Deflection is used, only if relative mode is false
+
+    SetCoefficient(me: in out; aCoefficient : in Real from Standard);
+    	---Purpose: Sets the coeffiecient for computation of deflection through 
+    	--          relative size of shape. Default value = 0.001
+
+    RelativeMode(me: in out) returns Boolean;
+       	---C++: return &
+    	---Purpose: Returns the address to the
+    	-- flag defining the relative mode for writing the file.
+    	-- This address may be used to either read or change the flag.
+    	-- If the mode returns True (default value), the
+    	-- deflection is calculated from the relative size of the
+    	-- shape. If the mode returns False, the user defined deflection is used. 
+    	-- Example
+    	-- Read:
+    	-- Standard_Boolean val = Writer.RelativeMode( );
+    	-- Modify:
+    	-- Writer.RelativeMode( ) = Standard_True; 
+        
+    ASCIIMode(me: in out) returns Boolean;
+      	---C++: return &
+    	---Purpose: Returns the address to the
+    	-- flag defining the mode for writing the file. This address
+    	-- may be used to either read or change the flag.
+    	-- If the mode returns True (default value) the generated
+    	-- file is an ASCII file. If the mode returns False, the
+    	-- generated file is a binary file.
+        
+    Write(me : in out; aShape : Shape from TopoDS; aFileName : CString from Standard);
+    	---Purpose: Converts a given shape to STL format and writes it to file with a given filename.
+    
+fields
+    theRelativeMode : Boolean from Standard;
+    theASCIIMode    : Boolean from Standard;
+    theDeflection   : Real from Standard;
+    theCoefficient   : Real from Standard;
+    theStlMesh      : Mesh from StlMesh;
+end Writer;

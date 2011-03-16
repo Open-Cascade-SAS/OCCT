@@ -1,0 +1,57 @@
+// File math_NewtonFunctionSetRoot.lxx
+
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean math_NewtonFunctionSetRoot::IsDone()  const
+                                                    { return Done;}
+
+inline Standard_OStream& operator<<(Standard_OStream& o,
+				    const math_NewtonFunctionSetRoot& N)
+{
+  N.Dump(o);
+  return o;
+}
+
+
+inline const math_Vector& math_NewtonFunctionSetRoot::Root() const{ 
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Sol;
+}
+
+
+inline void math_NewtonFunctionSetRoot::Root(math_Vector& Root) const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  Root = Sol;
+}
+
+
+inline const math_Matrix& math_NewtonFunctionSetRoot::Derivative() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Jacobian;
+}
+
+
+inline  void math_NewtonFunctionSetRoot::Derivative(math_Matrix& Der) const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  Der = Jacobian;
+}
+
+
+inline const math_Vector& math_NewtonFunctionSetRoot::FunctionSetErrors() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return DeltaX;
+}
+
+
+inline  void math_NewtonFunctionSetRoot::FunctionSetErrors(math_Vector& Err) const{ 
+  StdFail_NotDone_Raise_if(!Done, " ");
+  Err = DeltaX;
+}
+
+
+inline  Standard_Integer math_NewtonFunctionSetRoot::NbIterations() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Iter;
+}
+
+

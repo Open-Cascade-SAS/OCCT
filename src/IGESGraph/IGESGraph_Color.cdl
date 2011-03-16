@@ -1,0 +1,98 @@
+--
+-- File      :  Color.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Color from IGESGraph  inherits ColorEntity
+
+        ---Purpose : defines IGESColor, Type <314> Form <0>
+        --           in package IGESGraph
+        --
+        --           The Color Definition Entity is used to communicate the
+        --           relationship of primary colors to the intensity level of
+        --           the respective graphics devices as a percent of full
+        --           intensity range.
+
+uses
+
+            IGESEntity          from IGESData,
+            HAsciiString from TCollection
+
+is
+
+        Create returns mutable Color;
+
+        -- Specific Methods pertaining to class
+
+        Init (me         : mutable;
+              red        : Real;
+              green      : Real;
+              blue       : Real;
+              aColorName : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class Color
+        --       - red        : Red   color intensity (range 0.0 to 100.0)
+        --       - green      : Green color intensity (range 0.0 to 100.0)
+        --       - blue       : Blue  color intensity (range 0.0 to 100.0)
+        --       - aColorName : Name of the color (optional)
+
+        RGBIntensity (me; Red, Green, Blue : out Real);
+        -- returns the RGB intensities in the Red, Green, Blue
+        -- fields respectively
+
+        CMYIntensity (me; Cyan, Magenta, Yellow : out Real);
+        -- returns the CMY equivalents of RGB intensities.
+        --
+        -- The algorithm used for getting CMY from RGB is :
+        --
+        --          C = 100.0 - R       where : R = red     C = cyan
+        --          G = 100.0 - M               G = green   M = magenta
+        --          B = 100.0 - Y               B = blue    Y = yellow
+        --
+
+        HLSPercentage (me; Hue, Lightness, Saturation : out Real);
+        -- returns the HLS equivalents of RGB intensities.
+        --
+        -- The algorithm used for getting HLS from RGB is :
+        --
+        --     H = (1/(2*PI))*ARCTAN((2*R - G - B) / (SQUAREROOT(3)*(G - B)))
+        --     L = (1 / 3)*(R + G + B)
+        --     S = SQUAREROOT(R*R + G*G + B*B - R*G - R*B - B*G)
+        --
+        -- where    H = Hue, L = Lightness, S = Saturation,
+        --          PI = 3.14... (constant)
+        --
+
+        HasColorName (me) returns Boolean;
+        ---Purpose : returns True if optional character string is assigned,
+        --         False otherwise.
+
+        ColorName (me) returns HAsciiString from TCollection;
+        ---Purpose : if HasColorName() is True  returns the Verbal description of
+        -- the Color.
+
+fields
+
+--
+-- Class    : IGESGraph_Color
+--
+-- Purpose  : Declaration of the variables specific to Color
+--
+-- Reminder : A Color is defined by :
+--              - Red   color intensity
+--              - Green color intensity
+--              - Blue  color intensity
+--              - Optional name of the color
+--
+
+        theRed       : Real;
+
+        theGreen     : Real;
+
+        theBlue      : Real;
+
+        theColorName : HAsciiString;
+
+end Color;

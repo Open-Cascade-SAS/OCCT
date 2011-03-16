@@ -1,0 +1,74 @@
+-- File:	Dynamic_Node.cdl
+-- Created:	Mon Sep 19 11:18:30 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class Node from Dynamic (Item as Transient)
+
+	---Purpose: This generic class    is a light  way  to  store a
+	--          persistent   homogeneous  collection  of   objects
+	--          inside another persistent object.
+
+inherits
+
+    TShared from MMgt
+    
+
+is
+
+    Create returns mutable Node from Dynamic;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns an empty instance of this class.
+
+    Create(anitem : any Item) returns mutable Node from Dynamic;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns an instance  of  this class  initialized  with
+    --          <anitem> as object.
+
+    Object(me : mutable ; anitem : any Item)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Sets to <me> the object <anitem>.
+    
+    is static;
+    
+    Object(me) returns any Item
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the object into <me>.
+    
+    is static;
+    
+    Next(me : mutable ; anode : Node from Dynamic)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Links to <me> the node <anode>.
+    
+    is static;
+    
+    Next(me) returns any Node from Dynamic
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the node linked to <me>.
+    
+    is static;
+    
+fields
+
+    thenextnode : Node from Dynamic;
+    theitem     : Item;
+
+end Node;
+
+
+

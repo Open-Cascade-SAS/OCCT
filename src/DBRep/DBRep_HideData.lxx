@@ -1,0 +1,25 @@
+// File:	DBRep_HideData.lxx
+// Created:	Fri Sep 22 16:21:12 1995
+// Author:	Remi LEQUETTE
+//		<rle@mentox>
+
+//=======================================================================
+//function : ViewId
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer DBRep_HideData::ViewId() const
+{
+  return myView;
+}
+
+//=======================================================================
+//function : Angle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real DBRep_HideData::Angle() const
+{
+  return myAngle;
+}
+

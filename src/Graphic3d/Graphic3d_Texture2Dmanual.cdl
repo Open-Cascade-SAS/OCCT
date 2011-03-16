@@ -1,0 +1,29 @@
+-- File:	Texture2Dmanual.cdl
+-- Created:	Mon Jul 28 10:43:06 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+---Copyright:	 Matra Datavision 1997 
+
+class  Texture2Dmanual  from  Graphic3d 
+
+    
+inherits  Texture2D  from  Graphic3d  
+    ---Purpose: This class defined a manual texture 2D
+    -- facets MUST define texture coordinate
+    -- if you want to see somethings on.
+
+uses 
+    NameOfTexture2D  from  Graphic3d, 
+    StructureManager      from  Graphic3d 
+
+
+is 
+    Create(SM  :  StructureManager  from  Graphic3d; 
+    	   FileName  :  CString  from  Standard)  returns  mutable  Texture2Dmanual  from  Graphic3d;
+    ---Purpose: Creates a texture from a file
+	   
+    Create(SM  :  StructureManager  from  Graphic3d; 
+    	   NOT  :  NameOfTexture2D  from  Graphic3d)  returns  mutable  Texture2Dmanual  from  Graphic3d; 
+    ---Purpose: Creates a texture from a predefined texture name set.
+     
+end  Texture2Dmanual;    

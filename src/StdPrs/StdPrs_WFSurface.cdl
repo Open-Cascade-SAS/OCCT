@@ -1,0 +1,31 @@
+-- File:	StdPrs_WFSurface.cdl
+-- Created:	Fri Aug  4 11:30:13 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class WFSurface from StdPrs
+
+inherits Root from Prs3d
+
+uses
+    HSurface      from Adaptor3d,
+    Presentation  from Prs3d,
+    Drawer        from Prs3d
+    	
+is
+    --- Purpose: Draws a surface by drawing the isoparametric curves with respect to 
+    -- a fixed number of points given by the Drawer.
+    -- The number of isoparametric curves to be drawn and their color are
+    -- controlled by the furnished Drawer.
+ 
+    Add(myclass; aPresentation: Presentation from Prs3d;  
+    	    	 aSurface     : HSurface     from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+
+end WFSurface from StdPrs;
+
+
+

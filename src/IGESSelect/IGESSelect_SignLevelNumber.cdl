@@ -1,0 +1,34 @@
+-- File:	IGESSelect_SignLevelNumber.cdl
+-- Created:	Thu Apr  2 10:23:36 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignLevelNumber  from IGESSelect    inherits Signature  from IFSelect
+
+    ---Purpose : Gives D.E. Level Number under two possible forms :
+    --           * for counter : "LEVEL nnnnnnn", " NO LEVEL", " LEVEL LIST"
+    --           * for selection : "/nnn/", "/0/", "/1/2/nnn/"
+    --           
+    --           For matching, giving /nn/ gets any entity attached to level nn
+    --           whatever simple or in a level list
+
+uses CString, Transient, AsciiString, InterfaceModel
+
+is
+
+    Create (countmode : Boolean) returns mutable SignLevelNumber;
+    ---Purpose : Creates a SignLevelNumber
+    --           <countmode> True : values are naturally displayed
+    --           <countmode> False: values are separated by slashes
+    --             in order to allow selection by signature by Draw or C++
+
+    Value   (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the value (see above)
+
+fields
+
+    thecountmode : Boolean;
+
+end SignLevelNumber;

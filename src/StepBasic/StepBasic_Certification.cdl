@@ -1,0 +1,45 @@
+-- File:	StepBasic_Certification.cdl
+-- Created:	Fri Nov 26 16:26:33 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class Certification from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity Certification
+
+uses
+    HAsciiString from TCollection,
+    CertificationType from StepBasic
+
+is
+    Create returns Certification from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       aPurpose: HAsciiString from TCollection;
+                       aKind: CertificationType from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Purpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Purpose
+    SetPurpose (me: mutable; Purpose: HAsciiString from TCollection);
+	---Purpose: Set field Purpose
+
+    Kind (me) returns CertificationType from StepBasic;
+	---Purpose: Returns field Kind
+    SetKind (me: mutable; Kind: CertificationType from StepBasic);
+	---Purpose: Set field Kind
+
+fields
+    theName: HAsciiString from TCollection;
+    thePurpose: HAsciiString from TCollection;
+    theKind: CertificationType from StepBasic;
+
+end Certification;

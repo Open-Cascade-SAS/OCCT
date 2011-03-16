@@ -1,0 +1,98 @@
+-- File:	IntTools_PntOnFace.cdl
+-- Created:	Thu Dec 13 12:06:44 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PntOnFace from IntTools 
+
+	---Purpose: Contains a Face, a 3d point, corresponded UV parameters and a flag
+
+uses
+    Face from TopoDS, 
+    Pnt  from  gp
+--raises
+
+is 
+    Create 
+    	returns PntOnFace from IntTools;  
+	---Purpose:
+	--- Empty constructor
+	---
+
+    Init(me:out;  
+    	 aF: Face from TopoDS; 
+	 aP: Pnt  from  gp; 
+	 U : Real from  Standard;     
+	 V : Real from  Standard); 
+	---Purpose:
+	--- Initializes me by aFace, a 3d point
+	--- and it's UV parameters on face
+	---
+	
+    SetFace(me:out; 
+    	    aF:Face from TopoDS); 
+	---Purpose:
+	--- Modifier
+	---
+	
+    SetPnt (me:out; 
+    	    aP:Pnt  from  gp);
+    	---Purpose:
+	--- Modifier
+	---
+
+    SetParameters (me:out; 
+	    	   U : Real from  Standard;     
+	    	   V : Real from  Standard);
+    	---Purpose:
+	--- Modifier
+	---
+	
+    SetValid(me:out; 
+	     bF : Boolean from Standard); 
+    	---Purpose:
+	--- Modifier
+	---
+	    	 
+    Valid(me) 
+	returns Boolean from Standard; 
+	---Purpose:
+	--- Selector
+	---
+	 
+    Face(me) 
+    	returns Face from TopoDS; 
+    	---C++:  return const & 
+	---Purpose:
+	--- Selector
+	---
+     
+    Pnt (me) 
+    	returns Pnt  from gp; 
+    	---C++:  return const & 
+	---Purpose:
+	--- Selector
+	---
+
+    Parameters (me; 
+	    	U :out Real from Standard;     
+	    	V :out Real from Standard); 
+    	---Purpose:
+	--- Selector
+	---
+	  
+    IsValid(me) 
+	returns Boolean from Standard; 
+	---Purpose:
+	--- Selector
+
+fields  
+
+    myIsValid : Boolean from Standard;    
+    myPnt : Pnt  from  gp; 
+    myU   : Real from  Standard;        
+    myV   : Real from  Standard;        
+    myFace: Face from TopoDS; 
+end PntOnFace;

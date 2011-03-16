@@ -1,0 +1,155 @@
+--
+-- File      :  ViewsVisibleWithAttr.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ViewsVisibleWithAttr from IGESDraw  inherits ViewKindEntity
+
+        ---Purpose : defines IGESViewsVisibleWithAttr, Type <402>, Form <4>
+        --           in package IGESDraw
+        --
+        --           This class is extension of Class ViewsVisible.  It is used
+        --           for those entities that are visible in multiple views, but
+        --           must have a different line font, color number, or
+        --           line weight in each view.
+
+uses
+
+    	IGESEntity              from IGESData,
+        Color                   from IGESGraph,
+        HArray1OfInteger        from TColStd,
+        LineFontEntity          from IGESData,
+        HArray1OfViewKindEntity from IGESDraw,
+        HArray1OfIGESEntity     from IGESData,
+        HArray1OfLineFontEntity from IGESBasic,
+        HArray1OfColor          from IGESGraph
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable ViewsVisibleWithAttr;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                  : mutable;
+              allViewEntities     : HArray1OfViewKindEntity;
+              allLineFonts        : HArray1OfInteger;
+              allLineDefinitions  : HArray1OfLineFontEntity;
+              allColorValues      : HArray1OfInteger;
+              allColorDefinitions : HArray1OfColor;
+              allLineWeights      : HArray1OfInteger;
+              allDisplayEntities  : HArray1OfIGESEntity)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set fields of the class
+        --           ViewsVisibleWithAttr
+        --       - allViewEntities     : All View kind entities
+        --       - allLineFonts        : All Line Font values or zero(0)
+        --       - allLineDefinitions  : Line Font Definition
+        --                               (if Line Font value = 0)
+        --       - allColorValues      : All Color values
+        --       - allColorDefinitions : All Color Definition Entities
+        --       - allLineWeights      : All Line Weight values
+        --       - allDisplayEntities  : Entities which are member of
+        --                               this associativity
+        -- raises exception if Lengths of allViewEntities, allLineFonts,
+        -- allColorValues,allColorDefinitions, allLineWeights are not same
+
+    	InitImplied (me : mutable; allDisplayEntity : HArray1OfIGESEntity);
+	---Purpose : Changes only the list of Displayed Entities (Null allowed)
+
+    	IsSingle (me) returns Boolean;
+	---Purpose : Returns False (for a complex view)
+
+        NbViews (me) returns Integer;
+        ---Purpose : returns the number of Views containing the view visible, line font,
+        -- color number, and line weight information
+
+
+        NbDisplayedEntities (me) returns Integer;
+        ---Purpose : returns the number of entities which have this particular set of
+        -- display characteristic, or zero if no Entities specified
+
+        ViewItem (me; Index : Integer) returns ViewKindEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th ViewKindEntity entity
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        LineFontValue (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Line font value or zero
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        IsFontDefinition (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns True if the Index'th Line Font Definition is specified
+        -- else returns False
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        FontDefinition (me; Index : Integer) returns LineFontEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Line Font Definition Entity or NULL(0)
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        ColorValue (me; Index: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Color number value
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        IsColorDefinition (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns True if Index'th Color Definition is specified
+        -- else returns False
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        ColorDefinition (me; Index : Integer) returns Color
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Color Definition Entity
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        LineWeightItem (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Color Line Weight
+        -- raises exception if Index <= 0 or Index > NbViews()
+
+        DisplayedEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Index'th Display entity with this particular characteristics
+        -- raises exception if Index  <= 0 or Index > NbEntities()
+
+fields
+
+--
+-- Class    : IGESDraw_ViewsVisibleWithAttr
+--
+-- Purpose  : Declaration of the variables specific to a ViewsVisibleWithAttr.
+--
+-- Reminder : A ViewsVisibleWithAttr is defined by :
+--                  - the number of blocks containing Views visible, line font,
+--                    color number, or the line weight in each view
+--                  - Number of Entities which have this characteristics
+--                  - Line Font value or zero(0)
+--                  - Pointer to Line Font Definition if Line Font value = 0
+--                  - Color value or pointer to Color Definition Entity
+--                  - Line Weight value
+--                  - Entities which are member of this associativity
+--
+
+        theViewEntities     : HArray1OfViewKindEntity;
+
+        theLineFonts        : HArray1OfInteger;
+
+        theLineDefinitions  : HArray1OfLineFontEntity;
+
+        theColorValues      : HArray1OfInteger;
+
+        theColorDefinitions : HArray1OfColor;
+
+        theLineWeights      : HArray1OfInteger;
+
+        theDisplayEntities  : HArray1OfIGESEntity;
+
+end ViewsVisibleWithAttr;

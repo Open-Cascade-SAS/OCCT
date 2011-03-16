@@ -1,0 +1,167 @@
+-- File:	HLRBRep_EdgeBuilder.cdl
+-- Created:	Thu Apr 17 20:11:57 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class EdgeBuilder from HLRBRep
+
+uses
+    Integer      from Standard,
+    State        from TopAbs,
+    Orientation  from TopAbs,
+    Intersection from HLRAlgo,
+    AreaLimit    from HLRBRep,
+    VertexList   from HLRBRep
+    
+raises
+    NoMoreObject from Standard,
+    NoSuchObject from Standard,
+    DomainError  from Standard
+    
+is
+    Create (VList : in out VertexList from HLRBRep)
+    returns EdgeBuilder from HLRBRep
+	---Purpose: Creates  an   EdgeBuilder    algorithm.    <VList>
+	--          describes   the edge    and  the    interferences.
+	--          AreaLimits   are   created  from   the   vertices.
+	--          Builds(IN) is automatically called.
+    raises
+    	DomainError from Standard; -- when the VertexList is incoherent
+
+    InitAreas(me : in out)
+	---Purpose: Initialize an iteration on the areas.
+	---Category: Area
+    is static;
+    
+    NextArea(me : in out)
+	---Purpose: Set the current area to the next area.
+	---Category: Area
+    raises
+    	NoSuchObject from Standard -- when there is no next area
+    is static;
+    
+    PreviousArea(me : in out)
+	---Purpose: Set the current area to the previous area.
+	---Category: Area
+    raises
+    	NoSuchObject from Standard -- when there is no previous area
+    is static;
+    
+    HasArea(me) returns Boolean from Standard
+	---Purpose: Returns True if there is a current area.
+	---Category: Area
+    is static;
+    
+    AreaState(me) returns State from TopAbs
+	---Purpose: Returns the state of the current area.
+	---Category: Area
+    is static;
+    
+    AreaEdgeState(me) returns State from TopAbs
+	---Purpose: Returns the edge state of the current area.
+	---Category: Area
+    is static;
+    
+    LeftLimit(me) returns AreaLimit from HLRBRep
+	---Purpose: Returns the  AreaLimit beginning the current area.
+	--          This is a NULL handle when the area is infinite on
+	--          the left.
+	--          
+      	---Category: Area
+    is static;
+    
+    RightLimit(me) returns AreaLimit from HLRBRep
+	---Purpose: Returns the  AreaLimit   ending  the current area.
+	--          This is a NULL handle when the area is infinite on
+	--          the right.
+	--          
+	---Category: Area
+    is static;
+    
+    Builds(me : in out; ToBuild : State from TopAbs)
+	---Purpose: Reinitialize  the results  iteration  to the parts
+	--          with State <ToBuild>. If this method is not called
+	--          after construction the default is <ToBuild> = IN.
+	--          
+	---Category: Edge
+    raises
+    	DomainError from Standard -- when <ToBuild> is UNKNOWN
+    is static;
+    
+    MoreEdges(me) returns Boolean from Standard
+	---Purpose: Returns True if there are more new edges to build.
+    is static;
+    
+    NextEdge(me : in out)
+	---Purpose: Proceeds  to  the  next  edge to  build.  Skip all
+	--          remaining vertices on the current edge.
+	--          
+	---Category: Edge
+    raises
+    	NoMoreObject from Standard -- when MoreEdges would return False.
+    is static;
+    
+    MoreVertices(me) returns Boolean from Standard
+	---Purpose: True if there are more vertices in the current new
+	--          edge.
+	--
+	---Category: Vertex
+    raises
+    	NoSuchObject from Standard -- when there is no current Edge
+    is static;
+    
+    NextVertex(me : in out)
+	---Purpose: Proceeds to the next vertex of the current edge.
+	--
+	---Category: Vertex
+    raises
+    	NoSuchObject from Standard -- when there is no current edge
+    is static;
+    
+    Current(me) returns Intersection from HLRAlgo
+	---Purpose: Returns the current vertex of the current edge.
+	---Category: Vertex
+        ---C++: return const &
+    raises
+    	NoSuchObject from Standard -- when there is no current vertex
+    is static;
+    
+    IsBoundary(me) returns Boolean from Standard
+	---Purpose: Returns True if the  current vertex comes from the
+	--          boundary of the edge.
+	--          
+	---Category: Vertex
+    raises
+    	NoSuchObject from Standard -- when there is no current vertex
+    is static;
+
+    IsInterference(me) returns Boolean from Standard
+	---Purpose: Returns  True if    the  current  vertex  was   an
+	--          interference.
+	--          
+	---Category: Vertex
+    raises
+    	NoSuchObject from Standard -- when there is no current vertex
+    is static;
+
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns the new orientation of the current vertex. 
+	--          
+	---Category: Vertex
+    raises
+    	NoSuchObject from Standard -- when there is no current vertex
+    is static;
+    
+    Destroy(me : in out);
+	---C++: alias ~
+
+fields
+
+    toBuild  : State     from TopAbs;
+    myLimits : AreaLimit from HLRBRep;
+    left     : AreaLimit from HLRBRep;
+    right    : AreaLimit from HLRBRep;
+    current  : Integer   from Standard;
+
+end EdgeBuilder;

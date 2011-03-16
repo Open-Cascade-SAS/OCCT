@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeHyperbola.cdl
+-- Created:	Thu Sep  8 08:24:18 1994
+-- Author:	Frederic MAUPAS
+---Copyright:	 Matra Datavision 1994
+
+class MakeHyperbola from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Hyperbola from StepGeom which describes a Hyperbola from
+    --          Prostep and Hyperbola from Geom.
+
+uses 
+     Hyperbola from Geom,
+     Hyperbola from StepGeom
+
+is 
+
+    Convert ( myclass; SC : Hyperbola from StepGeom;
+                       CC : out Hyperbola from Geom )
+    returns Boolean from Standard;
+
+end MakeHyperbola;

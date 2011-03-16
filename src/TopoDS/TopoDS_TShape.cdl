@@ -1,0 +1,154 @@
+-- File:	TopoDS_TShape.cdl
+-- Created:	Thu Dec 13 15:30:10 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+deferred class TShape from TopoDS inherits TShared from MMgt
+
+	---Purpose: A TShape  is a topological  structure describing a
+	--          set of points in a 2D or 3D space.
+	--          
+	--          TShapes are   defined   by  their  optional domain
+	--          (geometry)  and  their  components  (other TShapes
+	--          with  Locations and Orientations).  The components
+	--          are stored in a List of Shapes.
+	--          
+	--          A   TShape contains  the   following boolean flags :
+	--          
+	--           - Free       : Free or Frozen.
+	--           - Modified   : Has been modified.
+	--           - Checked    : Has been checked.
+	--           - Orientable : Can be oriented.
+	--           - Closed     : Is closed.
+	--           - Infinite   : Is infinite.
+	--           - Convex     : Is convex.
+	--       
+	--          
+    	--          Users have no direct access to the classes derived
+    	--          from TShape.  They  handle them with   the classes
+    	--          derived from Shape.
+
+
+uses
+    ShapeEnum   from TopAbs,
+    ListOfShape from TopoDS
+    
+raises
+    ConstructionError from Standard
+
+is
+    Initialize; 
+    ---C++: inline
+	---Purpose: Constructs an empty TShape.
+	--          Free       : True
+	--          Modified   : True
+	--          Checked    : False
+	--          Orientable : True
+	--          Closed     : False
+	--          Infinite   : False
+	--          Convex     : False
+    
+    Free(me) returns Boolean
+    ---C++: inline
+	---Purpose: Returns the free flag.
+    is static;
+    
+    Free(me : mutable; F : Boolean)
+    ---C++: inline
+	---Purpose: Sets the free flag.
+    is static;
+    
+    Modified(me) returns Boolean
+    ---C++: inline
+	---Purpose: Returns the modification flag.
+    is static;
+    
+    Modified(me : mutable; M : Boolean)
+    ---C++: inline
+	---Purpose: Sets the modification flag.
+    is static;
+    
+    Checked(me) returns Boolean
+    ---C++: inline
+    ---Purpose: Returns the checked flag.
+    is static;
+        
+    Checked(me : mutable; C : Boolean)
+    ---C++: inline
+    ---Purpose: Sets the checked flag.
+    is static;
+        
+    Orientable(me) returns Boolean
+    ---C++: inline
+    ---Purpose: Returns the orientability flag.
+    is static;
+    
+    Orientable(me : mutable; C : Boolean)
+    ---C++: inline
+    ---Purpose: Sets the orientability flag.
+    is static;
+    
+    Closed(me) returns Boolean
+    ---C++: inline
+    ---Purpose: Returns the closedness flag.
+    is static;
+    
+    Closed(me : mutable; C : Boolean)
+    ---C++: inline
+    ---Purpose: Sets the closedness flag.
+    is static;
+    
+    Infinite(me) returns Boolean
+    ---C++: inline
+    ---Purpose: Returns the infinity flag.
+    is static;
+    
+    Infinite(me : mutable; C : Boolean)
+    ---C++: inline
+    ---Purpose: Sets the infinity flag.
+    is static;
+    
+    Convex(me) returns Boolean
+    ---C++: inline
+    ---Purpose: Returns the convexness flag.
+    is static;
+    
+    Convex(me : mutable; C : Boolean)
+    ---C++: inline
+    ---Purpose: Sets the convexness flag.
+    is static;
+    
+    ShapeType(me) returns ShapeEnum from TopAbs
+	---Purpose: Returns the type as a term of the ShapeEnum enum :
+	--          VERTEX, EDGE, WIRE, FACE, ....
+    is deferred;
+    
+    EmptyCopy(me) returns mutable TShape from TopoDS
+	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
+    is deferred;
+    
+    --
+    --     Methods to access the list of shapes
+    --     Used by the Builder and the Iterator
+    --     
+    
+    Shapes(me) returns ListOfShape from TopoDS
+	---C++: return const &
+	---C++: inline
+    is static private;
+
+    ChangeShapes(me : mutable) returns ListOfShape from TopoDS
+	---C++: return &
+	---C++: inline
+    is static private;
+
+fields
+    myShapes   : ListOfShape from TopoDS;
+    myFlags    : Integer     from Standard;
+
+friends
+    class Iterator from TopoDS,
+    class Builder  from TopoDS
+
+end TShape;

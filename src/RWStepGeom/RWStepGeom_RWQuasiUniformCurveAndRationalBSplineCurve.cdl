@@ -1,0 +1,30 @@
+-- File:        QuasiUniformCurveAndRationalBSplineCurve.cdl
+-- Created:     Mon Dec  4 12:02:33 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWQuasiUniformCurveAndRationalBSplineCurve from RWStepGeom
+
+	---Purpose : Read & Write Module for QuasiUniformCurveAndRationalBSplineCurve
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     QuasiUniformCurveAndRationalBSplineCurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWQuasiUniformCurveAndRationalBSplineCurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable QuasiUniformCurveAndRationalBSplineCurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : QuasiUniformCurveAndRationalBSplineCurve from StepGeom);
+
+	Share(me; ent : QuasiUniformCurveAndRationalBSplineCurve from StepGeom; iter : in out EntityIterator);
+
+end RWQuasiUniformCurveAndRationalBSplineCurve;

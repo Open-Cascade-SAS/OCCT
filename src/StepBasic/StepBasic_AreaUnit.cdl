@@ -1,0 +1,16 @@
+-- File:	StepBasic_AreaUnit.cdl
+-- Created:	Mon Oct 11 13:32:20 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class AreaUnit from StepBasic inherits NamedUnit from StepBasic
+
+	---Purpose: 
+
+is
+    
+    Create returns mutable AreaUnit from StepBasic;
+    
+end AreaUnit;

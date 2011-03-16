@@ -1,0 +1,235 @@
+-- File:	GeomAPI_ExtremaCurveCurve.cdl
+-- Created:	Fri Mar 18 10:09:20 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class ExtremaCurveCurve from GeomAPI
+    	---Purpose: Describes functions for computing all the extrema
+    	-- between two 3D curves.
+    	-- An ExtremaCurveCurve algorithm minimizes or
+    	-- maximizes the distance between a point on the first
+    	-- curve and a point on the second curve. Thus, it
+    	-- computes start and end points of perpendiculars
+    	-- common to the two curves (an intersection point is
+    	-- not an extremum unless the two curves are tangential at this point).
+    	-- Solutions consist of pairs of points, and an extremum
+    	-- is considered to be a segment joining the two points of a solution.
+    	-- An ExtremaCurveCurve object provides a framework for:
+    	-- -   defining the construction of the extrema,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results.
+    	-- Warning
+    	-- In some cases, the nearest points between two
+    	-- curves do not correspond to one of the computed
+    	-- extrema. Instead, they may be given by:
+    	-- -   a limit point of one curve and one of the following:
+    	--   -   its orthogonal projection on the other curve,
+    	--   -   a limit point of the other curve; or
+    	--   -   an intersection point between the two curves.
+
+uses
+    Curve     from Geom,
+    Curve     from GeomAdaptor,
+    ExtCC     from Extrema,
+    Pnt       from gp,
+    Length    from Quantity,
+    Parameter from Quantity
+    
+    
+raises
+    OutOfRange from Standard,
+    NotDone    from StdFail
+    
+    
+is
+
+    Create
+	---Purpose: Constructs an empty algorithm for computing
+    	-- extrema between two curves. Use an Init function
+    	-- to define the curves on which it is going to work.
+    returns ExtremaCurveCurve from GeomAPI;
+    
+    
+    Create(C1   , C2    : Curve from Geom)
+	---Purpose: Computes the extrema between the curves C1 and C2.   
+    returns ExtremaCurveCurve from GeomAPI;
+
+
+    Create(C1   , C2    : Curve    from Geom;
+    	   U1min, U1max : Parameter from Quantity;
+    	   U2min, U2max : Parameter from Quantity)
+	---Purpose: Computes   the portion of the curve C1 limited by the two
+    	--    points of parameter (U1min,U1max), and
+    	--  -   the portion of the curve C2 limited by the two
+    	--   points of parameter (U2min,U2max).
+    	--        Warning
+    	-- Use the function NbExtrema to obtain the number
+    	-- of solutions. If this algorithm fails, NbExtrema returns 0.
+    returns ExtremaCurveCurve from GeomAPI;
+
+
+    Init(me : in out;
+    	 C1   , C2    : Curve from Geom)
+	---Purpose: Initializes this algorithm with the given arguments
+    	-- and computes the extrema between the curves C1 and C2          
+    is static;
+
+
+    Init(me : in out;
+    	 C1   , C2    : Curve from Geom;
+    	 U1min, U1max : Parameter from Quantity;
+    	 U2min, U2max : Parameter from Quantity)
+	---Purpose: Initializes this algorithm with the given arguments
+    	-- and computes the extrema between :
+    	--   -   the portion of the curve C1 limited by the two
+    	--    points of parameter (U1min,U1max), and
+    	--   -   the portion of the curve C2 limited by the two
+    	--    points of parameter (U2min,U2max).
+    	--        Warning
+    	-- Use the function NbExtrema to obtain the number
+    	-- of solutions. If this algorithm fails, NbExtrema returns 0.
+           is static;
+
+
+    NbExtrema(me)
+	---Purpose: Returns the number of extrema computed by this algorithm.
+    	-- Note: if this algorithm fails, NbExtrema returns 0.
+    returns Integer from Standard
+	---C++: alias "Standard_EXPORT operator Standard_Integer() const;"
+    is static;
+    
+    
+    Points(me; Index  :     Integer from Standard;
+    	       P1, P2 : out Pnt     from gp )
+        ---Purpose: Returns the points P1 on the first curve and P2 on
+    	-- the second curve, which are the ends of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;	       
+
+
+    Parameters(me; Index  :     Integer   from Standard;
+    	     	   U1, U2 : out Parameter from Quantity)
+       	---Purpose: Returns the parameters U1 of the point on the first
+    	-- curve and U2 of the point on the second curve, which
+    	-- are the ends of the extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    Distance(me; Index : Integer from Standard)
+    returns Length from Quantity
+	---Purpose: Computes the distance between the end points of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    NearestPoints(me; P1, P2 : out Pnt from gp)
+	---Purpose: Returns the points P1 on the first curve and P2 on
+    	-- the second curve, which are the ends of the shortest
+    	-- extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistanceParameters(me;  U1, U2 : out Parameter from Quantity)
+	---Purpose: Returns the parameters U1 of the point on the first
+    	-- curve and U2 of the point on the second curve, which
+    	-- are the ends of the shortest extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistance(me)
+	---Purpose: Computes the distance between the end points of the
+    	-- shortest extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    	---C++: alias "Standard_EXPORT operator Standard_Real() const;"
+  returns Length from Quantity
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    Extrema(me)
+	---Purpose: return the algorithmic object from Extrema
+	---Level: Advanced
+	---C++: return const&
+	---C++: inline      
+    returns ExtCC from Extrema
+    is static;
+    	
+    TotalNearestPoints(me  :  in  out; P1, P2 : out Pnt from gp )
+	---Purpose: set  in  <P1>  and <P2> the couple solution points
+	--          such a the distance [P1,P2] is the minimum. taking  in  account 
+	--          extremity  points  of  curves.
+	---Level: Public          
+    returns  Boolean  from  Standard 
+        --  returns  "true"  if  it  is  possible  to  compute  points  and  "false" 
+	--  if  such  points  do  not  exist, for  ex. - infinite parallel lines
+    is static;
+ 
+    TotalLowerDistanceParameters(me  :  in  out;  U1, U2 : out Parameter from Quantity)
+	---Purpose: set  in <U1> and <U2> the parameters of the couple
+	--          solution   points  which  represents  the  total  nearest
+	--          solution.
+	---Level: Public          
+    returns  Boolean  from  Standard 
+        --  returns  "true"  if  it  is  possible  to  compute  points  and  "false" 
+	--  if  such  points  do  not  exist, for  ex. - infinite parallel lines
+    is static;
+    
+    TotalLowerDistance(me  :  in  out)
+	---Purpose: return the distance of the total  nearest couple solution
+	--          point. 
+	---Level: Public          
+    returns Length from Quantity
+    raises
+    	NotDone from StdFail
+	---Purpose: if <myExtCC> is not done
+    is static;
+    
+    TotalPerform(me  :  in  out) 
+    is static  private;
+     
+	 
+fields
+
+    myIsDone: Boolean from Standard;
+    myIndex : Integer from Standard;    -- index of the nearest solution
+    myExtCC : ExtCC   from Extrema;
+    myC1    : Curve   from GeomAdaptor;
+    myC2    : Curve   from GeomAdaptor;  
+    
+    --  Fields  to  compute  total  min.  dist  with  extremities of  curves
+    myTotalExt  :  Boolean from Standard;  --  indicate  that  total  extr. 
+    	    	    	    	    	   --  has  been  computed  
+    myIsInfinite  : Boolean from Standard;  --  infinite  extremity  points 					   
+    myTotalDist  :  Real  from  Standard;  --  total  min.  dist 
+    myTotalPoints  :  Pnt[2]; 
+    myTotalPars  :  Real[2]; 
+     
+end ExtremaCurveCurve;

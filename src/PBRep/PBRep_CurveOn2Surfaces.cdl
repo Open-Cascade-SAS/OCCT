@@ -1,0 +1,49 @@
+-- File:	PBRep_CurveOn2Surfaces.cdl
+-- Created:	Tue Jul  6 10:22:53 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveOn2Surfaces from PBRep inherits CurveRepresentation from PBRep
+
+	---Purpose: Defines a continuity between two surfaces.
+
+uses
+    Surface  from PGeom,
+    Location from PTopLoc,
+    Shape    from GeomAbs
+    
+raises
+    NullObject from Standard
+    
+is
+
+    Create(S1 , S2  : Surface  from PGeom;
+	   L1 , L2  : Location from PTopLoc;
+	   C        : Shape    from GeomAbs)
+    returns mutable CurveOn2Surfaces from PBRep;
+
+    Surface(me) returns any Surface from PGeom
+    is static;
+
+    Surface2(me) returns any Surface from PGeom
+    is static;
+
+    Location2(me) returns Location from PTopLoc
+    is static;
+
+    Continuity(me) returns Shape from GeomAbs
+    is static;
+    
+    IsRegularity(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+fields
+    mySurface    : Surface  from PGeom;
+    mySurface2   : Surface  from PGeom;
+    myLocation2  : Location from PTopLoc;
+    myContinuity : Shape    from GeomAbs;
+
+end CurveOn2Surfaces;

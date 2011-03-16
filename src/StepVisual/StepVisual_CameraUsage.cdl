@@ -1,0 +1,21 @@
+-- File:        CameraUsage.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CameraUsage from StepVisual 
+
+inherits RepresentationMap from StepRepr 
+
+uses
+
+	RepresentationItem from StepRepr,
+	Representation from StepRepr
+is
+
+	Create returns mutable CameraUsage;
+	---Purpose: Returns a CameraUsage
+
+
+end CameraUsage;

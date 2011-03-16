@@ -1,0 +1,45 @@
+-- File:        ColourRgb.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ColourRgb from StepVisual 
+
+inherits ColourSpecification from StepVisual 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ColourRgb;
+	---Purpose: Returns a ColourRgb
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aRed : Real from Standard;
+	      aGreen : Real from Standard;
+	      aBlue : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRed(me : mutable; aRed : Real);
+	Red (me) returns Real;
+	SetGreen(me : mutable; aGreen : Real);
+	Green (me) returns Real;
+	SetBlue(me : mutable; aBlue : Real);
+	Blue (me) returns Real;
+
+fields
+
+	red : Real from Standard;
+	green : Real from Standard;
+	blue : Real from Standard;
+
+end ColourRgb;

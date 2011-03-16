@@ -1,0 +1,193 @@
+-- File:	Image.cdl
+-- Created:	Tue Jul 27 18:51:28 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+package Image
+
+	---Purpose: The package Image provide PseudoColorImage and ColorImage
+	--		definition and a set of key functions from the fields
+	--		of image.
+
+uses
+
+    TCollection,
+    TColStd,
+    Aspect,
+    Quantity,
+    gp,
+    MMgt
+
+is
+       ------------------------
+        ---Category: The classes
+        ------------------------
+
+    deferred class Image;
+
+    class PixelInterpolation;
+    class AveragePixelInterpolation;
+    class BalancedPixelInterpolation;
+    class PlanarPixelInterpolation;
+    class BilinearPixelInterpolation;
+	---Purpose : Several methods to compute Pixel on non-integer Image
+	--		coordinate.
+    
+    private generic class GPixelField;
+	---Purpose : Generic Image definition . 
+
+    deferred generic class GImage, PixelRow, PixelField;
+	---Purpose : Generic Image definition . 
+
+    deferred class DColorImage 
+	instantiates GImage from Image (ColorPixel from Aspect);
+	---Purpose : instantiates GImage for ColorImage definition . 
+
+    deferred class DIndexedImage 
+	instantiates GImage from Image (IndexPixel from Aspect);
+	---Purpose : instantiates GImage for PseudoColorImage definition . 
+
+    class PseudoColorImage;
+	---Purpose : PseudoColorImage definition . 
+
+    class ColorImage;
+	---Purpose : ColorImage definition . 
+
+    class Convertor;
+    	---Purpose: converts aPseudoColorImage to a ColorImage and vice-versa.
+
+    class ColorPixelMapHasher instantiates 
+	MapHasher from TCollection( ColorPixel from Aspect );
+
+    class ColorPixelDataMap instantiates
+	DataMap   from TCollection ( ColorPixel from Aspect,
+				     Integer    from Standard,
+				     ColorPixelMapHasher from Image ) ;
+
+    class IndexPixelMapHasher instantiates 
+	MapHasher from TCollection( IndexPixel from Aspect );
+
+    class LookupTable instantiates
+	DataMap   from TCollection( IndexPixel from Aspect,
+				    IndexPixel from Aspect,
+				    IndexPixelMapHasher );
+
+    class PixMap;
+    ---Purpose: Aspect_PixMap implementation.
+
+        -----------------------------
+	---Category: Imported types:
+        -----------------------------
+
+	imported PixelAddress;
+
+    imported HPrivateImage;
+
+    imported CRawBufferData;
+
+        -----------------------------
+        ---Category: The Enumerations
+        -----------------------------
+
+    enumeration FlipType is 	FT_HORIZONTAL, 
+				FT_VERTICAL, 
+				FT_MAINDIAGONAL, 
+				FT_ANTIDIAGONAL,
+				FT_CENTER,
+				FT_90,
+				FT_180,
+				FT_270
+    end FlipType ;
+    	---Purpose: Type of orientation in a symmetry.
+    	-- - FT_HORIZONTAL : symmetry with respect to an horizontal axis.
+    	-- - FT_VERTICAL : symmetry with respect to a vertical axis.
+    	-- - FT_MAINDIAGONAL : symmetry with respect to a
+    	--   diagonal oriented at 45 degrees.
+    	-- - FT_ANTIDIAGONAL : symmetry with respect to a
+    	--   diagonal oriented at -45 degrees.
+    	-- - FT_CENTER :
+    	-- - FT_90 : rotation of 90 degrees.
+    	-- - FT_180 : rotation of 180 degrees.
+    	-- - FT_270 : rotation of -90 degrees.
+        
+    enumeration DitheringMethod is	DM_NearestColor,
+					DM_ErrorDiffusion
+    end DitheringMethod ;
+    	---Purpose: Type of dithering method.
+    
+    enumeration TypeOfImage is	TOI_ColorImage,
+                TOI_PseudoColorImage,
+                TOI_RGB,
+                TOI_RGBA,
+                TOI_RGBF,
+                TOI_RGBAF,
+                TOI_FLOAT
+    end TypeOfImage ;
+
+    Zoom     ( aImage         : mutable Image from Image ;
+	       aInterpolation : PixelInterpolation from Image;
+	       aCoefX,aCoefY  : in Real from Standard ) ;
+	---Purpose : Zoom an Image with a specific PixelInterpolation method.
+
+    Zoom     ( aImage         : mutable Image from Image ;
+	       aCoefX,aCoefY  : in Real from Standard ) ;
+	---Purpose : Zoom an Image with the default PixelInterpolation method.
+
+    Rotate   ( aImage         : mutable Image from Image ;
+	       aInterpolation : PixelInterpolation from Image;
+	       aAngle         : in PlaneAngle from Quantity ) ;
+	---Purpose : Rotate an Image with a specific PixelInterpolation method.
+
+    Rotate   ( aImage         : mutable Image from Image ;
+	       aAngle         : in PlaneAngle from Quantity ) ;
+	---Purpose : Rotate an Image with the default PixelInterpolation method.
+
+    Translate( aImage         : mutable Image from Image ;
+	       aInterpolation : PixelInterpolation from Image;
+	       DX, DY         : in Real from Standard ) ;
+	---Purpose : Translate an Image with a specific PixelInterpolation 
+	--		method.
+
+    Translate( aImage         : mutable Image from Image ;
+	       DX, DY         : in Real from Standard ) ;
+	---Purpose : Translate an Image with the default PixelInterpolation 
+	--		method.
+
+    Affine( aImage            : mutable Image from Image ;
+	       aInterpolation : PixelInterpolation from Image;
+	       Trsf           : in GTrsf2d from gp ) ;
+	---Purpose : General transformation of an Image with a specific 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raises an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+
+    Affine( aImage            : mutable Image from Image ;
+	       Trsf           : in GTrsf2d from gp ) ;
+	---Purpose : General transformation of an Image with the default 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raises an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+    Affine( aImage            : mutable Image from Image ;
+	       aInterpolation : PixelInterpolation from Image;
+	       Trsf           : in Trsf from gp ) ;
+	---Purpose : General transformation of an Image with a specific 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raises an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+
+    Affine( aImage            : mutable Image from Image ;
+	       Trsf           : in Trsf from gp ) ;
+	---Purpose : General transformation of an Image with the default 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raises an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+end Image;

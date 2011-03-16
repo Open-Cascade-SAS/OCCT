@@ -1,0 +1,17 @@
+-- File:	StepBasic_VolumeUnit.cdl
+-- Created:	Mon Oct 11 13:34:57 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class VolumeUnit from StepBasic inherits NamedUnit from StepBasic
+
+	---Purpose: 
+
+
+is
+
+   Create returns mutable VolumeUnit from StepBasic;
+
+end VolumeUnit;

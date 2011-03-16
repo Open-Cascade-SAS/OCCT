@@ -1,0 +1,98 @@
+-- File:	Classifier2d.cdl
+-- Created:	Tue Nov 17 11:38:42 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+-- Modified by skv - Wed Jul 12 15:15:38 2006 OCC12627
+
+
+generic class Classifier2d from TopClass 
+    	(TheEdge as any;
+    	 TheIntersector as any)  -- as Intersection2d from TopClass
+
+	---Purpose: 
+
+uses
+    Lin2d           from gp,
+    CurveTransition from TopTrans,
+    Orientation     from TopAbs,
+    State           from TopAbs
+
+raises
+    DomainError
+    
+is
+    Create returns Classifier2d from TopClass;
+	---Purpose: Creates an undefined classifier.
+	
+    Reset(me : in out; L : Lin2d from gp; P : Real; Tol : Real)
+	---Purpose: Starts  a  classification process.   The  point to
+	--          classify is the origin of  the  line <L>.  <P>  is
+	--          the original length of the segment on <L>  used to
+	--          compute  intersections.   <Tol> is the   tolerance
+	--          attached to the line segment in intersections.
+    is static;
+    
+    Compare(me : in out; E   : TheEdge;
+                         Or  : Orientation from TopAbs)
+	---Purpose: Updates  the classification process with  the edge
+	--          <E> from the boundary. 
+    raises
+    	DomainError  -- The classifier has not been set
+    is static;
+
+    Parameter(me) returns Real
+	---Purpose: Returns the current value of the parameter.
+	---C++: inline
+    is static;
+    
+    Intersector(me : in out) returns TheIntersector
+	---Purpose: Returns the intersecting algorithm.
+	--          
+	---C++: inline
+	---C++: return &
+    is static;
+    
+    ClosestIntersection(me) returns Integer
+	---Purpose: Returns  0  if  the   last  compared   edge had no
+	--          relevant intersection.  Else returns  the index of
+	--          this   intersection  in the    last   intersection
+	--          algorithm.
+	--          
+	---C++: inline
+    is static;
+    
+    State(me) returns State from TopAbs
+	---Purpose: Returns the current state of the point.
+	--          
+	---C++: inline
+    is static;
+
+-- Modified by skv - Wed Jul 12 15:15:38 2006 OCC12627 Begin
+    IsHeadOrEnd(me)
+	---Purpose: Returns the Standard_True if the closest intersection point
+        --          represents head or end of the edge. Returns Standard_False
+	--          otherwise.
+	---C++: inline 
+    returns Boolean from Standard
+    is static;
+-- Modified by skv - Wed Jul 12 15:15:38 2006 OCC12627 End
+
+fields
+
+    myIsSet        : Boolean from Standard;
+    myFirstCompare : Boolean from Standard;
+    myFirstTrans   : Boolean from Standard;
+    myLin          : Lin2d from gp;
+    myParam        : Real from Standard;
+    myTolerance    : Real from Standard;
+    myTrans        : CurveTransition from TopTrans;
+    myIntersector  : TheIntersector;
+    myClosest      : Integer from Standard;
+    myState        : State from TopAbs;
+-- Modified by skv - Wed Jul 12 15:15:38 2006 OCC12627 Begin 
+    myIsHeadOrEnd  : Boolean from Standard;
+-- Modified by skv - Wed Jul 12 15:15:38 2006 OCC12627 End
+
+end Classifier2d;

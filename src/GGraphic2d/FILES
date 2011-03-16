@@ -1,0 +1,4 @@
+FILES
+Graphic2d_Curve.hxx
+Graphic2d_CurveDefinitionError.hxx
+Graphic2d_SetOfCurves.hxx

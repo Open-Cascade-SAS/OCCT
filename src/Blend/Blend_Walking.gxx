@@ -1,0 +1,94 @@
+#include <math_FunctionSetRoot.hxx>
+#include <math_Gauss.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfVec.hxx>
+
+#include <IntSurf.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <Precision.hxx>
+
+#ifdef DEB
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <Geom_BSplineCurve.hxx>
+#ifdef DRAW
+#include <Draw.hxx>
+#include <DrawTrSurf_BSplineCurve.hxx>
+#endif
+//POP pour NT
+#include <stdio.h>
+
+static Standard_Boolean sectioncalculee;
+static Standard_Integer IndexOfSection = 0;
+static Standard_Integer IndexOfRejection = 0;
+static Standard_Integer nbcomputedsection;
+extern Standard_Boolean Blend_GettraceDRAWSECT();
+extern Standard_Boolean Blend_GetcontextNOTESTDEFL();
+
+// Pour debug : visualisation de la section
+static void Drawsect(const TheSurface& surf1,
+		     const TheSurface& surf2,
+		     const math_Vector& sol,
+		     const Standard_Real param,
+		     Blend_Function& Func,
+		     const Blend_Status State)
+{
+//  if(!sectioncalculee) return;
+  Blend_Point BP(TheSurfaceTool::Value(surf1,sol(1),sol(2)),
+		 TheSurfaceTool::Value(surf2,sol(3),sol(4)),
+		 param,sol(1),sol(2),sol(3),sol(4));
+  Standard_Integer hp,hk,hd,hp2d;
+  Func.GetShape(hp,hk,hd,hp2d);
+  TColStd_Array1OfReal TK(1,hk);
+  Func.Knots(TK);
+  TColStd_Array1OfInteger TMul(1,hk);
+  Func.Mults(TMul);
+  TColgp_Array1OfPnt TP(1,hp);
+  TColgp_Array1OfPnt2d TP2d(1,hp2d);
+  TColStd_Array1OfReal TW(1,hp);
+  Func.Section(BP,TP,TP2d,TW);
+  Handle(Geom_BSplineCurve) sect = new Geom_BSplineCurve
+    (TP,TW,TK,TMul,hd);
+ 
+  //POP pour NT
+  //char name[100];
+  char* name = new char[100];
+  if ((State==Blend_StepTooLarge) ||(State==Blend_SamePoints)) {
+    IndexOfRejection ++;
+    sprintf(name,"%s_%d","Rejection",IndexOfRejection);
+  }
+  else {
+    IndexOfSection++;
+    sprintf(name,"%s_%d","Section",IndexOfSection);
+  }
+#ifdef DRAW
+  Handle(DrawTrSurf_BSplineCurve) BS 
+    = new (DrawTrSurf_BSplineCurve)(sect);
+  BS->ClearPoles();
+  BS->ClearKnots();
+  if (State==Blend_StepTooLarge) BS->SetColor(Draw_violet);
+  if (State==Blend_SamePoints) BS->SetColor(Draw_rose);
+  Draw::Set(name,BS);
+#endif
+}
+
+static void Drawsect(const TheSurface& surf1,
+		     const TheSurface& surf2,
+		     const math_Vector& sol,
+		     const Standard_Real param,
+		     Blend_Function& Func)
+{
+  Drawsect(surf1, surf2, sol, param, Func, Blend_OK);
+}
+#endif
+
+#include <Blend_Walking_1.gxx>
+#include <Blend_Walking_2.gxx>
+#include <Blend_Walking_3.gxx>
+#include <Blend_Walking_4.gxx>
+
+
+

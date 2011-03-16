@@ -1,0 +1,30 @@
+// File:	BOPTools_SSIntersectionAttribute.lxx
+// Created:	Mon Mar  4 12:05:47 2002
+// Author:	Michael KLOKOV
+//		<mkk@kurox>
+//=======================================================================
+// function:Approximation
+// purpose: 
+//=======================================================================
+inline Standard_Boolean BOPTools_SSIntersectionAttribute::Approximation() const
+{
+  return myApproximation;
+}
+//=======================================================================
+// function:PCurveOnS1
+// purpose: 
+//=======================================================================
+inline Standard_Boolean BOPTools_SSIntersectionAttribute::PCurveOnS1() const
+{
+  return myPCurve1;
+}
+//=======================================================================
+// function:PCurveOnS2
+// purpose: 
+//=======================================================================
+inline Standard_Boolean BOPTools_SSIntersectionAttribute::PCurveOnS2() const
+{
+  return myPCurve2;
+}
+
+ 

@@ -1,0 +1,80 @@
+-- File:        BezierCurveAndRationalBSplineCurve.cdl
+-- Created:     Fri Dec  1 11:11:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BezierCurveAndRationalBSplineCurve from StepGeom 
+
+inherits BSplineCurve from StepGeom 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+	BezierCurve from StepGeom, 
+	RationalBSplineCurve from StepGeom, 
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray1OfCartesianPoint from StepGeom, 
+	BSplineCurveForm from StepGeom, 
+	Logical from StepData, 
+	HArray1OfReal from TColStd, 
+	Real from Standard
+is
+
+	Create returns mutable BezierCurveAndRationalBSplineCurve;
+	---Purpose: Returns a BezierCurveAndRationalBSplineCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aBezierCurve : mutable BezierCurve from StepGeom;
+	      aRationalBSplineCurve : mutable RationalBSplineCurve from StepGeom) is virtual;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aWeightsData : mutable HArray1OfReal from TColStd) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBezierCurve(me : mutable; aBezierCurve : mutable BezierCurve);
+	BezierCurve (me) returns mutable BezierCurve;
+	SetRationalBSplineCurve(me : mutable; aRationalBSplineCurve : mutable RationalBSplineCurve);
+	RationalBSplineCurve (me) returns mutable RationalBSplineCurve;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetWeightsData(me : mutable; aWeightsData : mutable HArray1OfReal);
+	WeightsData (me) returns mutable HArray1OfReal;
+	WeightsDataValue (me; num : Integer) returns Real;
+	NbWeightsData (me) returns Integer;
+
+fields
+
+	bezierCurve : BezierCurve from StepGeom;
+	rationalBSplineCurve : RationalBSplineCurve from StepGeom;
+
+end BezierCurveAndRationalBSplineCurve;

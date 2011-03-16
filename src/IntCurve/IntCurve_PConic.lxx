@@ -1,0 +1,34 @@
+// File:	IntImpPar_PConic.lxx
+// Created:	Tue Mar 31 09:43:07 1992
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+
+
+
+inline Standard_Real IntCurve_PConic::EpsX(void) const {
+  return(TheEpsX);
+}
+
+inline Standard_Real IntCurve_PConic::Param1(void) const {
+  return(prm1);
+}
+
+inline Standard_Real IntCurve_PConic::Param2(void) const {
+  return(prm2);
+}
+ 
+inline const gp_Ax22d& IntCurve_PConic::Axis2(void) const {
+  return(axe);
+}
+
+
+inline GeomAbs_CurveType IntCurve_PConic::TypeCurve(void) const {
+  return(type);
+}
+
+
+inline Standard_Integer IntCurve_PConic::Accuracy(void) const {
+  return(TheAccuracy);
+}
+
+

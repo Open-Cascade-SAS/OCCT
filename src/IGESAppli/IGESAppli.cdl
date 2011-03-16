@@ -1,0 +1,189 @@
+--
+-- File      : IGESAppli.cdl
+-- Created   : Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESAppli
+
+
+        ---Purpose : This package represents collection of miscellaneous
+        --           entities from IGES
+
+uses
+
+        Standard,
+        TCollection,
+        gp,
+	TColgp,
+	TColStd,
+	Message,
+        Interface,
+        IGESBasic,
+        IGESData,
+        IGESDefs,
+        IGESDraw,
+        IGESDimen,
+        IGESGeom,
+        IGESGraph
+
+is
+
+        class Node;
+        -- Type 134,   Form 0
+        ---Purpose : Geometric point used in the definition of a finite 
+        --           element.
+
+        class FiniteElement;
+        -- Type 136,   Form 0
+        ---Purpose : Used to define a finite element with the help of an
+        --           element topology.
+
+        class NodalDisplAndRot;
+        -- Type 138,   Form 0
+        ---Purpose : Used to communicate finite element post processing
+        --           data.
+
+        class NodalResults;
+        -- Type 146
+        ---Purpose : Used to store the Analysis Data results per FEM Node
+
+        class ElementResults;
+        -- Type 148
+        ---Purpose : Used to find the results of FEM analysis
+
+        class Flow;
+        -- Type 402,   Form 18
+        ---Purpose : Represents a single signal or a single fluid flow path
+        --           starting from a starting Connect Point Entity and
+        --           including additional intermediate connect points.
+
+        class PipingFlow;
+        -- Type 402,   Form 20
+        ---Purpose : Represents a single fluid flow path
+
+        class RegionRestriction;
+        -- Type 406,   Form 2
+        ---Purpose : Defines regions to set an application's restriction
+        --           over a region.
+
+        class LevelFunction;
+        -- Type 406,   Form 3
+        ---Purpose : Used to transfer the meaning or intended use of a level
+        --           in the sending system
+
+        class LineWidening;
+        -- Type 406,   Form 5
+        ---Purpose : Defines the characteristics of entities when they are
+        --           used to define locations of items.
+
+        class DrilledHole;
+        -- Type 406,   Form 6
+        ---Purpose : Identifies an entity representing a drilled hole
+        --           through a printed circuit board.
+
+        class ReferenceDesignator;
+        -- Type 406,   Form 7
+        ---Purpose : Used to attach a text string containing the value of
+        --           a component reference designator to an entity being
+        --           used to represent a component.
+
+        class PinNumber;
+        -- Type 406,   Form 8
+        ---Purpose : Used to attach a text string representing a component
+        --           pin number to an entity being used to represent an
+        --           electrical component's pin
+
+        class PartNumber;
+        -- Type 406,   Form 9
+        ---Purpose : Attaches a set of text strings that define the common
+        --           part numbers to an entity being used to represent a
+        --           physical component
+
+        class FlowLineSpec;
+        -- Type 406,   Form 14
+        ---Purpose : Attaches one or more text strings to entities being
+        --           used to represent a flow line
+
+        class LevelToPWBLayerMap;
+        -- Type 406,   Form 24
+        ---Purpose : Used to correlate an exchange file level number with
+        --           its corresponding native level identifier, physical PWB
+        --           layer number and predefined functional level
+        --           identification
+
+        class PWBArtworkStackup;
+        -- Type 406,   Form 25
+        ---Purpose : Used to communicate which exchange file levels are to
+        --           be combined in order to create the artwork for a
+        --           printed wire board (PWB). This property should be
+        --           attached to the entity defining the printed wire
+        --           assembly (PWA) or if no such entity exists, then the
+        --           property should stand alone in the file.
+
+        class PWBDrilledHole;
+        -- Type 406,   Form 26
+        ---Purpose : Used to identify an entity that locates a drilled hole
+        --           and to specify the characteristics of the drilled hole
+
+        class NodalConstraint;
+        -- Type 418,   Form 0
+        ---Purpose : Relates loads and/or constraints to specific nodes in
+        --           the Finite Element Model by creating a relation between
+        --           Node entities and Tabular Data Property that contains
+        --           the load or constraint data
+
+    	    --  Tools for Entities  --
+
+        class ToolNode;
+        class ToolFiniteElement;
+        class ToolNodalDisplAndRot;
+        class ToolNodalResults;
+        class ToolElementResults;
+        class ToolFlow;
+        class ToolPipingFlow;
+        class ToolRegionRestriction;
+        class ToolLevelFunction;
+        class ToolLineWidening;
+        class ToolDrilledHole;
+        class ToolReferenceDesignator;
+        class ToolPinNumber;
+        class ToolPartNumber;
+        class ToolFlowLineSpec;
+        class ToolLevelToPWBLayerMap;
+        class ToolPWBArtworkStackup;
+        class ToolPWBDrilledHole;
+        class ToolNodalConstraint;
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    -- Instantiations :
+
+    class  Array1OfFlow instantiates   Array1 from TCollection (Flow);
+    class  Array1OfNode instantiates   Array1 from TCollection (Node);
+    class  Array1OfFiniteElement instantiates
+    	 Array1 from TCollection (FiniteElement);
+
+    class HArray1OfFlow instantiates  HArray1 from TCollection
+    	 (Flow,Array1OfFlow);
+    class HArray1OfNode instantiates  HArray1 from TCollection
+    	 (Node,Array1OfNode);
+    class HArray1OfFiniteElement instantiates  HArray1 from TCollection
+    	 (FiniteElement,Array1OfFiniteElement);
+
+    -- Package Methods
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESAppli;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESAppli;

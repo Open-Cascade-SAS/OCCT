@@ -1,0 +1,60 @@
+-- File:	Prs3d_AngleAspect.cdl
+-- Created:	Thu Jun  3 09:28:46 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class AngleAspect from Prs3d inherits CompositeAspect from Prs3d 
+
+    	---Purpose: A framework for defining how an angle will be
+    	-- displayed in a presentation. Aspects of angle display include:
+    	-- -   display of the arrow pointing to the angle
+    	-- -   display of the line making up the shaft of the arrow
+    	-- -   display of the text referring to the angle.
+    	--   The definition set by this class is then passed to the
+    	-- attribute manager Prs3d_Drawer.
+    	-- Any object which requires a value for angle aspect as
+    	-- an argument may then be given the attribute manager
+    	-- as a substitute argument in the form of a field such as
+    	-- myDrawer for example.
+        
+uses 
+
+    LineAspect from Prs3d,
+    TextAspect from Prs3d,
+    ArrowAspect from Prs3d
+
+is
+
+-- 
+--  Attributes for the lines.
+-- 
+    Create returns mutable AngleAspect from Prs3d;
+
+    LineAspect(me) returns mutable LineAspect from Prs3d;
+    	--- Purpose: Returns the setting determining how the line making
+    	-- up the shaft of the arrow will be displayed.   
+    
+    SetLineAspect(me: mutable; anAspect: LineAspect from Prs3d);
+    	---Purpose: Sets how the line making up the shaft of an arrow will be displayed.
+    TextAspect(me) returns mutable TextAspect from Prs3d is static;
+    	--- Purpose: Returns the setting determining how text in the
+    	-- presentation of an angle will be displayed.   
+    
+    SetTextAspect(me:mutable; anAspect: TextAspect from Prs3d) is static;
+    	---Purpose: Sets how text in the presentation of an angle will be displayed.
+    ArrowAspect(me) returns mutable ArrowAspect from Prs3d is static;
+    	---Purpose: Returns the setting determining how an arrow head
+    	-- which points to an angle will be displayed.    
+    
+    SetArrowAspect(me: mutable; anAspect: ArrowAspect from Prs3d) is static;
+    	---Purpose: Sets how an arrow head which points to an angle will be displayed.
+    Print(me; s: in out OStream from Standard) is static;
+
+fields
+
+    myLineAspect: LineAspect from Prs3d;
+    myArrowAspect: ArrowAspect from Prs3d;
+    myTextAspect: TextAspect from Prs3d;
+    
+end AngleAspect from Prs3d;

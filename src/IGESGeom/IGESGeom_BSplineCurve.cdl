@@ -1,0 +1,151 @@
+--
+-- File    :  BSplineCurve.cdl
+-- Created :  Sat 9 Jan 1993
+-- Author  :  Kiran
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class BSplineCurve from IGESGeom  inherits IGESEntity
+
+        ---Purpose : defines IGESBSplineCurve, Type <126> Form <0-5>
+        --           in package IGESGeom
+        --           A parametric equation obtained by dividing two summations
+        --           involving weights (which are real numbers), the control
+        --           points, and B-Spline basis functions
+
+uses
+
+        Pnt           from gp,
+        XYZ           from gp,
+        HArray1OfReal from TColStd,
+        HArray1OfXYZ  from TColgp
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable BSplineCurve;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me           : mutable;
+              anIndex      : Integer;
+              aDegree      : Integer;
+              aPlanar      : Boolean;
+              aClosed      : Boolean;
+              aPolynom     : Boolean;
+              aPeriodic    : Boolean;
+              allKnots     : HArray1OfReal;
+              allWeights   : HArray1OfReal;
+              allPoles     : HArray1OfXYZ;
+              aUmin, aUmax : Real;
+              aNorm        : XYZ)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           BSplineCurve. Beware about indexation of arrays
+        --       - anIndex      : Upper index of the sum
+        --       - aDegree      : Degree of basis functions
+        --       - aPlanar      : 0 = nonplanar curve, 1 = planar curve
+        --       - aClosed      : 0 = open curve, 1 = closed curve
+        --       - aPolynom     : 0 = rational, 1 = polynomial
+        --       - aPeriodic    : 0 = nonperiodic, 1 = periodic
+        --       - allKnots     : Knot sequence values [-Degree,Index+1]
+        --       - allWeights   : Array of weights     [0,Index]
+        --       - allPoles     : X, Y, Z coordinates of all control points
+        --                                             [0,Index]
+        --       - aUmin, aUmax : Starting and ending parameter values
+        --       - aNorm        : Unit normal (if the curve is planar)
+        -- raises exception if allWeights & allPoles are not of same size.
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Shape of the Curve)
+	--           Error if not in range [0-5]
+
+
+        UpperIndex(me) returns Integer;
+        ---Purpose : returns the upper index of the sum (see Knots,Poles)
+
+        Degree(me) returns Integer;
+        ---Purpose : returns the degree of basis functions
+
+        IsPlanar(me) returns Boolean;
+        ---Purpose : returns True if the curve is Planar, False if non-planar
+
+        IsClosed(me) returns Boolean;
+        ---Purpose : returns True if the curve is closed, False if open
+
+        IsPolynomial(me; flag : Boolean = Standard_False) returns Boolean;
+        ---Purpose : returns True if the curve is polynomial, False if rational
+        --           <flag> False (D) : computed from the list of weights
+        --             (all must be equal)
+        --           <flag> True : as recorded
+
+        IsPeriodic(me) returns Boolean;
+        ---Purpose : returns True if the curve is periodic, False otherwise
+
+        NbKnots(me) returns Integer;
+        ---Purpose : returns the number of knots (i.e. Degree + UpperIndex + 2)
+
+        Knot(me; anIndex : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the knot referred to by anIndex,
+        --           inside the range [-Degree,UpperIndex+1]
+        -- raises exception if
+        --      anIndex < -Degree() or anIndex > (NbKnots() - Degree())
+        -- Note : Knots are numbered from -Degree (not from 1)
+
+        NbPoles(me) returns Integer;
+        ---Purpose : returns number of poles (i.e. UpperIndex + 1)
+
+        Weight(me; anIndex : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the weight referred to by anIndex, in [0,UpperIndex]
+        -- raises exception if anIndex < 0 or anIndex > UpperIndex()
+
+        Pole(me; anIndex : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the pole referred to by anIndex, in [0,UpperIndex]
+        -- raises exception if anIndex < 0 or anIndex > UpperIndex()
+
+        TransformedPole(me; anIndex : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the anIndex'th pole after applying Transf. Matrix
+        -- raises exception if an Index < 0 or an Index > UpperIndex()
+
+        UMin(me) returns Real;
+        ---Purpose : returns starting parameter value
+
+        UMax(me) returns Real;
+        ---Purpose : returns ending parameter value
+
+        Normal(me) returns XYZ;
+        ---Purpose : if the curve is nonplanar then (0, 0, 0) is returned
+
+fields
+
+--
+-- Class    : IGESGeom_BSplineCurve
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class BSplineCurve.
+--
+-- Reminder : A BSplineCurve instance is defined by :
+--            A parametric equation obtained by dividing two summations
+--            involving weights (which are real numbers), the control
+--            points, and B-Spline basis functions
+
+        theIndex     : Integer;           -- Upper index of the sum
+        theDegree    : Integer;
+        isPlanar     : Boolean;
+        isClosed     : Boolean;
+        isPolynomial : Boolean;
+        isPeriodic   : Boolean;
+        theKnots     : HArray1OfReal;
+        theWeights   : HArray1OfReal;
+        thePoles     : HArray1OfXYZ;
+        theUmin      : Real;              -- Starting parameter value
+        theUmax      : Real;              -- Ending parameter value
+        theNorm      : XYZ;
+
+end BSplineCurve;

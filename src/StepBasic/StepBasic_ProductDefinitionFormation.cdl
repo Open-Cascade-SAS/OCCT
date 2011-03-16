@@ -1,0 +1,40 @@
+-- File:        ProductDefinitionFormation.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ProductDefinitionFormation from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Product from StepBasic
+is
+
+	Create returns mutable ProductDefinitionFormation;
+	---Purpose: Returns a ProductDefinitionFormation
+
+	Init (me : mutable;
+	      aId : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aOfProduct : mutable Product from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetId(me : mutable; aId : mutable HAsciiString);
+	Id (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+	SetOfProduct(me : mutable; aOfProduct : mutable Product);
+	OfProduct (me) returns mutable Product;
+
+fields
+
+	id : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	ofProduct : Product from StepBasic;
+
+end ProductDefinitionFormation;

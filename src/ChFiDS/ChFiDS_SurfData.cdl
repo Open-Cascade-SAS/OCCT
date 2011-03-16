@@ -1,0 +1,223 @@
+-- File:	ChFiDS_SurfData.cdl
+-- Created:	Fri Nov 26 16:43:33 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SurfData from ChFiDS inherits TShared from MMgt
+
+	---Purpose: 
+
+uses 
+    Pnt2d from gp,
+    Surface from Geom,
+    Orientation from TopAbs,
+    FaceInterference from ChFiDS,
+    CommonPoint from ChFiDS
+
+is
+    Create returns mutable SurfData;
+    
+    Copy(me: mutable; Other : SurfData from ChFiDS);
+    
+    IndexOfS1(me) returns Integer is static;
+    ---C++: inline    
+
+    IndexOfS2(me) returns Integer is static;
+    ---C++: inline    
+
+    IsOnCurve1(me) returns Boolean is static;
+    ---C++: inline    
+
+    IsOnCurve2(me) returns Boolean is static;
+    ---C++: inline    
+
+    IndexOfC1(me) returns Integer is static;
+    ---C++: inline    
+
+    IndexOfC2(me) returns Integer is static;
+    ---C++: inline    
+
+    Surf(me) returns Integer is static;
+    ---C++: inline
+
+    Orientation(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    InterferenceOnS1(me) returns  FaceInterference from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &      
+
+    InterferenceOnS2(me) returns  FaceInterference from ChFiDS is static; 
+    ---C++: inline
+    ---C++: return const &      
+
+    VertexFirstOnS1(me) returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &      
+
+    VertexFirstOnS2(me) returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &      
+
+    VertexLastOnS1(me) returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &      
+
+    VertexLastOnS2(me) returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &      
+
+    ChangeIndexOfS1(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeIndexOfS2(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeSurf(me : mutable; Index : Integer )  is static;
+    ---C++: inline
+
+    SetIndexOfC1(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    SetIndexOfC2(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeOrientation(me : mutable) returns Orientation from TopAbs is static;
+    ---C++: inline
+    ---C++: return &
+
+    ChangeInterferenceOnS1(me : mutable) 
+    returns  FaceInterference from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &      
+
+    ChangeInterferenceOnS2(me : mutable) 
+    returns  FaceInterference from ChFiDS is static; 
+    ---C++: inline
+    ---C++: return &      
+
+    ChangeVertexFirstOnS1(me : mutable) 
+    returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &      
+
+    ChangeVertexFirstOnS2(me : mutable) 
+    returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &      
+
+    ChangeVertexLastOnS1(me : mutable) 
+    returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &      
+
+    ChangeVertexLastOnS2(me : mutable) 
+    returns CommonPoint from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &      
+
+    Interference(me; OnS : Integer from Standard) 
+    returns  FaceInterference from ChFiDS is static;
+    ---C++: return const &      
+
+    ChangeInterference(me : mutable; OnS : Integer from Standard) 
+    returns  FaceInterference from ChFiDS is static;
+    ---C++: return &      
+
+    Index(me; OfS : Integer from Standard) 
+    returns Integer from Standard is static;
+
+
+    Vertex(me;
+    	   First : Boolean from Standard;
+           OnS   : Integer from Standard)
+    returns CommonPoint from ChFiDS is static;
+    ---C++: return const    &  
+    ---Purpose: returns one of the four vertices  wether First is true
+    --          or wrong and OnS equals 1 or 2.
+
+    ChangeVertex(me    : mutable;
+    	         First : Boolean from Standard;
+                 OnS   : Integer from Standard)
+    returns CommonPoint from ChFiDS is static;
+    ---C++: return &      
+    ---Purpose: returns one of the four vertices  wether First is true
+    --          or wrong and OnS equals 1 or 2.
+
+    IsOnCurve(me; OnS : Integer from Standard) returns Boolean is static;
+    ---C++: inline    
+
+    IndexOfC(me; OnS : Integer from Standard) returns Integer is static;
+    ---C++: inline    
+
+    FirstSpineParam(me) returns Real from Standard is static; 
+    LastSpineParam(me) returns Real from Standard is static; 
+    FirstSpineParam(me : mutable; Par :Real from Standard) is static; 
+    LastSpineParam(me : mutable; Par :Real from Standard) is static; 
+    
+    FirstExtensionValue(me) returns Real from Standard is static;
+    LastExtensionValue(me)   returns Real from Standard is static;
+    FirstExtensionValue(me:mutable;Extend:Real from Standard) is static;
+    LastExtensionValue(me:mutable;Extend:Real from Standard) is static;
+  
+    Simul(me) returns mutable TShared from MMgt;
+    SetSimul(me : mutable; S : TShared from MMgt);
+    ResetSimul(me : mutable);
+
+    Get2dPoints(me; First : Boolean from Standard; OnS : Integer from Standard) 
+    returns Pnt2d from gp;
+    Get2dPoints(me; P2df1,P2dl1,P2df2,P2dl2 : out Pnt2d from gp); 
+    Set2dPoints(me : mutable; P2df1,P2dl1,P2df2,P2dl2 : Pnt2d from gp); 
+
+    TwistOnS1(me) returns Boolean is static;
+    ---C++: inline    
+
+    TwistOnS2(me) returns Boolean is static;
+    ---C++: inline    
+
+    TwistOnS1(me : mutable; T : Boolean from Standard);
+    ---C++: inline    
+
+    TwistOnS2(me : mutable; T : Boolean from Standard);
+    ---C++: inline    
+
+
+
+fields 
+
+pfirstOnS1       : CommonPoint from ChFiDS;
+plastOnS1        : CommonPoint from ChFiDS; 
+pfirstOnS2       : CommonPoint from ChFiDS; 
+plastOnS2        : CommonPoint from ChFiDS;
+
+intf1            : FaceInterference from ChFiDS;
+intf2            : FaceInterference from ChFiDS;
+
+p2df1            : Pnt2d from gp; -- 2d points to be used as start point  for  simulation.
+p2dl1            : Pnt2d from gp; 
+p2df2            : Pnt2d from gp; 
+p2dl2            : Pnt2d from gp; 
+
+ufspine          : Real from Standard; -- may be uninitialized
+ulspine          : Real from Standard; -- may be uninitialized 
+myfirstextend    : Real from Standard;
+mylastextend     : Real from Standard; 
+
+simul            : TShared from MMgt;  -- free space to store simulating  sections.
+
+indexOfS1        : Integer from Standard;
+indexOfC1        : Integer from Standard;
+indexOfS2        : Integer from Standard;
+indexOfC2        : Integer from Standard;
+indexOfConge     : Integer from Standard;
+
+isoncurv1        : Boolean from Standard; 
+isoncurv2        : Boolean from Standard;
+twistons1        : Boolean from Standard;
+twistons2        : Boolean from Standard; 
+orientation      : Orientation from TopAbs; 
+
+end SurfData;
+

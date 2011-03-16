@@ -1,0 +1,12 @@
+// File:	TopoDS_TEdge.lxx
+// Created:	Thu Apr 11 16:21:48 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TEdge
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TEdge::TopoDS_TEdge() : TopoDS_TShape()
+{
+}

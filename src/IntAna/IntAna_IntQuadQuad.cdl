@@ -1,0 +1,308 @@
+-- File:	IntQuadQuad.cdl
+-- Created:	Wed May 15 14:31:58 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class IntQuadQuad from IntAna 
+
+	---Purpose: This class provides the analytic intersection between a
+	--          cylinder or a cone from gp and another quadric, as defined
+	--          in the class Quadric from IntAna.
+	--          This algorithm is used when the geometric intersection
+	--          (class QuadQuadGeo from IntAna) returns no geometric
+	--          solution.
+	--          The result of the intersection may be
+	--           - Curves as defined in the class Curve from IntAna
+	--           - Points (Pnt from gp)
+
+
+
+uses Cylinder     from gp,
+     Cone         from gp,
+     Quadric      from IntAna,
+     Curve        from IntAna,
+     Pnt          from gp
+
+raises OutOfRange  from Standard,
+       NotDone     from StdFail,
+       DomainError from Standard
+
+is
+
+    Create
+    
+    	---Purpose: Empty Constructor
+    
+    	returns IntQuadQuad from IntAna;
+
+
+
+
+    Create(C: Cylinder from gp; Q: Quadric from IntAna; 
+           Tol: Real from Standard)
+    
+      	---Purpose: Creates the intersection between a cylinder and a quadric .
+      	--          Tol est a definir plus precisemment.
+
+    	returns IntQuadQuad from IntAna;
+
+
+    Create(C: Cone from gp; Q: Quadric from IntAna; 
+           Tol: Real from Standard)
+    
+      	---Purpose: Creates the intersection between a cone and a quadric.
+      	--          Tol est a definir plus precisemment.
+
+    	returns IntQuadQuad from IntAna;
+
+
+
+    Perform(me: in out; C: Cylinder from gp; Q: Quadric from IntAna; 
+            Tol: Real from Standard)
+    
+      	---Purpose: Intersects a cylinder and a quadric .
+      	--          Tol est a definir plus precisemment.
+
+    	is static;
+
+
+    Perform(me: in out; C: Cone from gp; Q: Quadric from IntAna; 
+            Tol: Real from Standard)
+    
+      	---Purpose: Intersects a cone and a quadric.
+      	--          Tol est a definir plus precisemment.
+
+    	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns True if the computation was successful. 
+    	--          
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static;
+
+
+    IdenticalElements(me)
+    
+    	---Purpose: Returns TRUE if the cylinder, the cone or the sphere
+    	--          is identical to the quadric.
+    	--          
+	---C++: inline
+
+    	returns Boolean from Standard
+
+    	raises NotDone from StdFail
+    	--     The exception NotDone is raised if IsDone returns False.
+	
+	is static;
+
+
+    NbCurve(me)
+    
+    	---Purpose: Returns the number of curves solution.
+    	--          
+	---C++: inline
+
+    	returns Integer from Standard
+
+    	raises NotDone     from StdFail,
+               DomainError from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+	
+	is static;
+
+
+    Curve(me; N: Integer from Standard)
+    
+    	---Purpose: Returns the curve of range N.
+    	--          
+	---C++: return const&
+
+    	returns Curve from IntAna
+
+   	raises NotDone     from StdFail,
+               DomainError from Standard,
+               OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbCurve.
+	
+	is static;
+
+
+
+    NbPnt(me)
+    
+    	---Purpose: Returns the number of contact point.
+    	--          
+	---C++: inline
+
+    	returns Integer from Standard
+
+    	raises NotDone     from StdFail,
+               DomainError from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+	
+	is static;
+
+
+    Point(me; N: Integer from Standard)
+    
+    	---Purpose: Returns the point of range N.
+    	--          
+	---C++: return const&
+
+    	returns Pnt from gp
+
+    	raises NotDone     from StdFail,
+               DomainError from Standard,
+               OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbPnt.
+	
+	
+	is static;
+
+
+    Parameters(me; N: Integer from Standard; 
+                   U1,U2: out Real from Standard)
+    
+    	---Purpose: Returns  the paramaters on the  "explicit quadric"
+    	--          (i.e  the cylinder or the  cone, the
+    	--          first argument   given to the constructor)  of the
+    	--          point of  range  N.
+
+    	raises NotDone     from StdFail,
+               DomainError from Standard,
+               OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbPnt.
+	
+	is static;
+
+
+    HasNextCurve(me; I: Integer from Standard) 
+    
+    	---Purpose: Returns True if the Curve I  shares its last bound
+    	--          with another curve.
+
+	returns Boolean from Standard
+	
+    	raises NotDone     from StdFail,
+	       DomainError from Standard,
+	       OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbCurve.
+	       
+        is static;
+
+
+    NextCurve(me; I          : Integer from Standard; 
+                  Opposite   : in out Boolean from Standard)
+    
+    	---Purpose: If  HasNextCurve(I)  returns True,  this  function
+    	--          returns  the  Index J  of the curve  which   has a
+    	--          common bound  with the curve   I.  If  Opposite ==
+    	--          True , then the last parameter of the curve I, and
+    	--          the last parameter of  the curve J  give  the same
+    	--          point. Else the last  parameter of the curve I and
+    	--          the first parameter  of  the curve J are  the same
+    	--          point.
+    	
+	returns Integer from Standard
+	
+    	raises NotDone     from StdFail,
+	       DomainError from Standard,
+       	       OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True. It is also raised when HasNextCurve returns
+    	--     False.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbCurve.
+	       
+        is static;
+
+
+    HasPreviousCurve(me; I: Integer from Standard) 
+    
+    	---Purpose: Returns True if the Curve I shares its first bound
+    	--          with another curve.
+
+    	returns Boolean from Standard
+	
+       	raises NotDone     from StdFail,
+	       DomainError from Standard,
+	       OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbCurve.
+	       
+        is static;
+
+    PreviousCurve(me; I         : Integer from Standard; 
+                      Opposite  : in out Boolean from Standard)
+    
+    	---Purpose: if HasPreviousCurve(I) returns True, this function
+    	--          returns the   Index  J of the   curve  which has a
+    	--          common  bound with the  curve  I.  If Opposite  ==
+    	--          True  , then the  first parameter of  the curve I,
+    	--          and the first parameter of the curve  J  give  the
+    	--          same point. Else the first  parameter of the curve
+    	--          I and the last  parameter  of the curve J  are the
+    	--          same point.
+    	
+	returns Integer from Standard
+	 
+    	raises NotDone     from StdFail,
+	       DomainError from Standard,
+	       OutOfRange  from Standard
+    	--     The exception NotDone is raised if IsDone returns False.
+    	--     The exception DomainError is raised if IdenticalElements 
+    	--     returns True. It is also raised when HasPreviousCurve
+    	--     returns False.
+    	--     The exception OutOfRange is raised if N<=0 or N>NbCurve.
+	       
+        is static;
+
+
+    InternalSetNextAndPrevious(me: in out)
+    
+    	---Purpose: Set the next and previous fields. Private method.
+    	is static protected;
+
+
+fields
+    done          : Boolean from Standard  is protected;
+    identical     : Boolean from Standard is protected;
+    TheCurve      : Curve from IntAna [12] is protected;
+    previouscurve : Integer from Standard [12] is protected;
+    nextcurve     : Integer from Standard [12] is protected;    	    
+    NbCurves      : Integer from Standard is protected;
+    
+    Nbpoints      : Integer from Standard is protected;
+    Thepoints     : Pnt     from gp [2] is protected;
+    -- 
+    myNbMaxCurves : Integer from Standard is protected; 
+    myEpsilon     : Real    from Standard is protected; 
+    myEpsilonCoeffPolyNull : Real    from Standard is protected; 
+	     
+end IntQuadQuad;
+

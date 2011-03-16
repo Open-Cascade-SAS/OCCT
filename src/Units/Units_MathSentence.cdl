@@ -1,0 +1,33 @@
+-- File:	Units_MathSentence.cdl
+-- Created:	Mon Jun 22 17:24:01 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+private class MathSentence from Units 
+
+	---Purpose: This class  defines all the methods to  create and
+	--          compute an algebraic formula.
+
+inherits
+
+    Sentence from Units
+
+--uses
+
+--raises
+
+is
+
+    Create(astring : CString) returns MathSentence from Units;
+
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a  MathSentence object. The string
+    --          <astring>  describes  an algebraic  formula in natural
+    --          language.
+
+--fields
+
+end MathSentence;

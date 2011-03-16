@@ -1,0 +1,70 @@
+-- File:	Interface_ParamList.cdl
+-- Created:	Mon Jan 21 11:04:57 2008
+-- Author:	Galina KULIKOVA
+--		<gka@YADREX>
+---Copyright:	 Open CSCADE 2008
+
+
+class ParamList from Interface inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+    FileParameter from Interface,VectorOfFileParameter from Interface
+
+raises  RangeError from Standard,
+    	OutOfRange from Standard,
+	OutOfMemory from Standard 
+is
+
+    Create( theIncrement : Integer = 256) returns ParamList from Interface;
+    ---Purpose: Creates an vector with size of memmory blok equal to theIncrement
+    
+    
+    Length (me) returns Integer from Standard;
+    	---Purpose: Returns the number of elements of <me>.
+    	--           
+        ---C++: inline
+
+    Lower (me) returns Integer from Standard;
+    	---Purpose:  Returns the lower bound.
+    	-- Warning
+    	--Client programs of the Array1 class must be independent of the first item range.--          
+    	---C++: inline
+	
+    Upper (me) returns Integer from Standard;
+    	---Purpose: Returns the upper bound.
+    	-- Warning
+    	--Client programs of the Array1 class must be independent of the first item range.--          
+    	---C++: inline
+
+    SetValue (me : mutable; Index: Integer from Standard; Value: FileParameter from Interface) 
+    	---Purpose: Assigns the value <Value> to the <Index>-th item of this array.
+    raises OutOfRange from Standard;
+
+    Value (me; Index:Integer from Standard) returns FileParameter from Interface
+    	---Purpose: Return the value of  the  <Index>th element of the
+    	--          array.
+    	---C++: alias operator ()
+    	---C++: return const &
+    raises OutOfRange from Standard;
+    
+    ChangeValue (me: mutable; Index:Integer from Standard) returns FileParameter from Interface
+    	---Purpose: return the value  of the <Index>th element  of the
+    	--          array.
+    	--
+    	---C++: alias operator ()
+    	---C++: return &
+    raises OutOfRange from Standard;
+    
+    Clear(me: mutable);
+    
+
+    
+    
+fields
+
+    	
+  myVector : VectorOfFileParameter;
+
+end ParamList;

@@ -1,0 +1,58 @@
+-- File:	GraphTools_SC.cdl
+-- Created:	Thu Sep 30 15:41:02 1993
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SC from GraphTools inherits TShared from MMgt
+
+    ---Purpose: This  class is used  to  identify a  Strong Component.
+    --          The user has not to used its methods.
+
+uses SCList            from GraphTools,
+     SequenceOfInteger from TColStd
+
+raises OutOfRange   from Standard,
+       NoSuchObject from Standard
+    
+is
+
+    Create returns mutable SC;
+	
+    Reset (me : mutable);
+    ---Level: Public
+
+    AddVertex (me : mutable; V : Integer from Standard); 
+    ---Level: Public
+
+    NbVertices (me) returns Integer from Standard;
+    ---Level: Public
+
+    GetVertex (me; index: Integer from Standard) 
+    ---Level: Public
+    returns Integer from Standard;
+	
+    AddFrontSC (me : mutable; SC : SC from GraphTools);
+    ---Level: Public
+ 
+    GetFrontSC (me) returns SCList from GraphTools;
+    ---Level: Public
+    ---C++: return const & 	
+	
+    AddBackSC (me : mutable; SC : SC from GraphTools);
+    ---Level: Public
+
+    GetBackSC (me) returns SCList from GraphTools;
+    ---Level: Public
+    ---C++: return const & 	
+
+fields
+	
+    myBackSC   : SCList            from GraphTools;
+    myVertices : SequenceOfInteger from TColStd;
+    myFrontSC  : SCList            from GraphTools;
+
+end SC;
+
+

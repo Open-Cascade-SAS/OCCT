@@ -1,0 +1,15 @@
+// File:	TCollection_ListIterator.lxx
+// Created:	Thu Dec 17 18:15:01 1992
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_ListIterator::More() const
+{
+  return current != 0L;
+}
+

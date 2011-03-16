@@ -1,0 +1,51 @@
+-- File:         SGProps.cdl
+-- Created:	 Fri Apr 12 09:43:09 1991
+-- Author:	 Michel CHAUVAT
+--		 Jean-Claude VAUTHIER January 1992
+---Copyright:	 Matra Datavision 1992
+
+
+generic class SGProps from GProp ( Arc      as any;
+    	    	    	    	   Face     as any; --as FaceTool (Arc)
+    	    	    	    	   Domain   as any  --as DomainTool(Arc)
+    	    	    	    	  )
+inherits GProps
+
+    	--- Purpose : 
+        --  Computes the global properties of a face in 3D space. 
+        --  The face 's requirements to evaluate the global properties
+        --  are defined in the template FaceTool from package GProp.
+	
+uses  Pnt  from gp
+is
+
+  Create  returns SGProps;
+
+  Create (S: Face; SLocation: Pnt) returns SGProps;
+  Create (S : in out Face;  D : in out Domain; SLocation : Pnt) returns SGProps; 
+        --- Purpose :
+        --  Builds a SGProps to evaluate the global properties of
+        --  the face <S>. If isNaturalRestriction is true the domain of S is defined  
+    	--  with the natural bounds, else it defined with an iterator
+        --  of Arc (see DomainTool from GProp) 
+  Create (S: in out Face; SLocation: Pnt; Eps: Real) returns SGProps;
+  Create (S: in out Face; D : in out Domain; SLocation: Pnt; Eps: Real) returns SGProps;
+    	--  --"--
+	--  Parameter Eps sets maximal relative error of computed area.
+
+  SetLocation(me: in out; SLocation: Pnt);
+
+  Perform(me: in out; S: Face); 
+  Perform(me : in out; S : in out Face ; D : in out Domain);
+  Perform(me: in out; S: in out Face; Eps: Real) returns Real;
+  Perform(me: in out; S: in out Face; D : in out Domain; Eps: Real) returns Real;
+ 
+  GetEpsilon(me: out) returns Real;
+        --- Purpose :  
+        --  If previously used method contained Eps parameter  
+    	--  get actual relative error of the computation, else return  1.0.
+fields
+
+    myEpsilon: Real from Standard;
+
+end SGProps;

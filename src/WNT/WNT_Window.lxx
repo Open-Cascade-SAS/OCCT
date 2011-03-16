@@ -1,0 +1,38 @@
+// GG RIC120302 Add a NEW HParentWindow method which enable
+//                      to retrieve the parent of the actual Hwindow handle.
+
+inline Standard_Address WNT_Window :: WndProc () const {
+
+ return myWndProc;
+
+}  // end WNT_Window :: WndProc 
+
+inline Standard_Boolean WNT_Window :: DoubleBuffer () const {
+
+ return myDoubleBuffer;
+
+}  // end WNT_Window :: DoubleBuffer
+
+inline Aspect_Handle WNT_Window :: HWindow () const {
+
+ return myHWindow;
+
+}  // end WNT_Window :: HWindow
+
+inline Aspect_Handle WNT_Window :: HParentWindow () const {
+
+ return myHParentWindow;
+
+}  // end WNT_Window :: HWindow
+
+inline Aspect_Handle WNT_Window :: HPixmap () const {
+
+ return myHPixmap;
+
+}  // end WNT_Window :: HPixmap
+
+inline Handle_WNT_ImageManager WNT_Window :: ImageManager () const {
+
+ return myImages;
+
+}  // end WNT_Window :: ImageManager

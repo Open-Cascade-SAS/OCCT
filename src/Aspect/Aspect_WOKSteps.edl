@@ -1,0 +1,6 @@
+-- File:	Aspect_WOKSteps.edl
+-- Author: 	bgn - Creation - 03-06-98
+-- History:	Thu Feb 12 17:23:25 Romance Standard Time 1998
+
+
+@set  %WOKSteps_UseSourceInclude = "";

@@ -1,0 +1,33 @@
+-- File:	StdPrs_ShadedPoleSurface.cdl
+-- Created:	Mon Jul 5 18:12:33 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ShadedPoleSurface from StdPrs
+
+inherits Root from Prs3d
+    	--- Purpose: Draws a surface by drawing the isoparametric curves with respect to 
+    	-- a maximal chordial deviation.
+    	-- The number of isoparametric curves to be drawn and their color are
+    	-- controlled by the furnished Drawer.
+ 
+uses
+    Presentation from Prs3d,
+    Surface      from Adaptor3d,
+    Drawer       from Prs3d
+    	
+is
+  
+ 
+    Add(myclass; aPresentation: Presentation from Prs3d;  
+    	    	 aSurface     : Surface      from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+    	---Purpose: Adds the surface aSurface to the presentation object aPresentation.
+    	-- The surface's display attributes are set in the attribute manager, aDrawer.
+        
+end ShadedPoleSurface;
+
+
+

@@ -1,0 +1,15 @@
+// File:	IntTools_BaseRangeSample.lxx
+// Created:	Wed Oct  5 16:52:18 2005
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+inline void IntTools_BaseRangeSample::SetDepth(const Standard_Integer theDepth) 
+{
+  myDepth = theDepth;
+}
+
+ 
+inline Standard_Integer IntTools_BaseRangeSample::GetDepth() const
+{
+  return myDepth;
+}

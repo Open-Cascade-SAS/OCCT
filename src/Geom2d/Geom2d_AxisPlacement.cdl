@@ -1,0 +1,103 @@
+-- File:	Geom2d_AxisPlacement.cdl
+-- Created:	Wed Mar 24 17:33:01 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+
+class AxisPlacement from Geom2d inherits Geometry from Geom2d
+
+
+        --- Purpose : Describes an axis in 2D space.
+    	-- An axis is defined by:
+    	-- - its origin, also termed the "Location point" of the axis,
+    	-- - its unit vector, termed the "Direction" of the axis.
+    	-- Note: Geom2d_AxisPlacement axes provide the
+    	-- same kind of "geometric" services as gp_Ax2d axes
+    	-- but have more complex data structures. The
+    	-- geometric objects provided by the Geom2d package
+    	-- use gp_Ax2d objects to include axes in their data
+    	-- structures, or to define an axis of symmetry or axis of rotation.
+    	-- Geom2d_AxisPlacement axes are used in a context
+    	-- where they can be shared by several objects
+    	-- contained inside a common data structure.
+
+uses Ax2d   from gp,
+     Dir2d  from gp,
+     Pnt2d  from gp,
+     Trsf2d from gp,
+     Vec2d  from gp
+
+
+is
+
+  Create (A : Ax2d)  returns mutable AxisPlacement;
+        --- Purpose : Constructs an axis by conversion of the gp_Ax2d axis A.
+
+
+  Create (P : Pnt2d; V : Dir2d)  returns mutable AxisPlacement;
+	--- Purpose : Constructs an axis from a given origin P and unit vector V.
+       
+
+  Reverse (me : mutable);
+
+  Reversed (me)  returns mutable AxisPlacement  is static;
+    	---Purpose: Reverses the unit vector of this axis.
+    	-- Note:
+    	-- - Reverse assigns the result to this axis, while
+    	-- - Reversed creates a new one.
+
+  SetAxis (me : mutable; A : Ax2d);
+        --- Purpose : Changes the complete definition of the axis placement.
+
+
+  SetDirection (me : mutable; V : Dir2d);
+        --- Purpose :
+        --  Changes the "Direction" of the axis placement.
+
+
+
+  SetLocation (me : mutable; P : Pnt2d);
+        --- Purpose :
+        --  Changes the "Location" point (origin) of the axis placement.
+
+
+  Angle (me; Other : AxisPlacement)  returns Real;
+        --- Purpose :
+        --  Computes the angle between the "Direction" of 
+        --  two axis placement in radians.
+    	-- The result is comprised between -Pi and Pi.
+
+  Ax2d (me)  returns Ax2d;
+        --- Purpose : Converts this axis into a gp_Ax2d axis.
+
+
+  Direction (me)   returns Dir2d;
+        --- Purpose : Returns the "Direction" of <me>.
+    	-- -C++: return const&
+
+
+  Location (me)  returns Pnt2d;
+      	--- Purpose : 
+      	--  Returns the "Location" point (origin) of the axis placement.
+    	-- -C++: return const&
+
+
+
+
+  Transform (me : mutable; T : Trsf2d);
+
+    	---Purpose: Applies the transformation T to this axis.
+
+
+  Copy (me)  returns mutable like me;
+  
+    	---Purpose: Creates a new object which is a copy of this axis.     
+fields
+
+  axis : Ax2d;
+
+end;

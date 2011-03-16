@@ -1,0 +1,158 @@
+-- File:	BRepAlgo_NormalProjection.cdl
+-- Created:	Mon Oct 13 16:14:20 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class NormalProjection from BRepAlgo
+
+	---Purpose: This class makes the projection  of a wire on a 
+	--           shape.
+
+
+uses Shape from TopoDS, 
+     Edge  from TopoDS, 
+     Shape  from  GeomAbs, 
+     Curve  from  Adaptor3d,      
+     ListOfShape  from  TopTools, 
+     DataMapOfShapeShape  from TopTools, 
+     DataMapOfShapeListOfShape  from TopTools
+      
+
+raises  ConstructionError from Standard, 
+    	NoSuchObject      from Standard,
+        NotDone           from StdFail
+
+is
+ 
+    Create 
+     
+    	returns NormalProjection;
+
+
+    Create(S: Shape from TopoDS) 
+     
+    	returns NormalProjection;
+
+
+    Init(me: in out; S: Shape from TopoDS) 
+     
+	is static;
+ 
+    Add(me: in out; ToProj: Shape from TopoDS) 
+        ---Purpose: Add an edge or a wire to the list of shape to project
+        --          
+        raises ConstructionError from Standard 
+	is static;
+ 
+    SetParams(me  : in out;  Tol3D,  Tol2D  :  Real  from  Standard; 
+                             InternalContinuity  :  Shape  from  GeomAbs;   
+    	    	             MaxDegree  ,  MaxSeg  :  Integer  from  Standard) 
+	---Purpose: Set the parameters  used  for computation 
+        --          Tol3d is the requiered  tolerance between the  3d projected
+	--          curve  and its 2d representation
+	--          InternalContinuity  is the order of constraints
+	--          used for  approximation. 
+        --          MaxDeg and MaxSeg are the maximum degree and the maximum 
+        --          number of segment for BSpline resulting of an approximation.
+	
+    is  static; 
+
+    SetDefaultParams(me  : in out) 
+	---Purpose: Set the parameters  used  for computation 
+        --          in their default values
+	
+    is  static; 
+
+    SetMaxDistance(me: in out; MaxDist: Real from Standard)
+	---Purpose:  Sets the maximum distance between target shape and  
+    	--  shape to project. If this condition is not satisfied then 
+        --  corresponding part of solution is discarded. 
+	--  if MaxDist < 0 then this method does not affect the algorithm
+
+    is  static;     
+
+    Compute3d(me:  in  out;  With3d:  Boolean  from  Standard  =  Standard_True) 
+     	---Purpose:  if  With3d = Standard_False the 3dcurve is not computed 
+	-- the  initial 3dcurve is kept  to  build the  resulting edges. 	 
+    is  static;
+    
+    SetLimit(me : in  out; FaceBoundaries: Boolean  from  Standard  = Standard_True) 
+    	---Purpose:  Manage  limitation  of  projected  edges.   
+    	--By  default  edges  are  limited  by  face  boundaries,   
+    	--else  they  are  limited  by  supporting  surface  boundaries.
+    is  static;
+
+    Build(me: in out); 
+	---Purpose: Builds the result as a  compound. 
+
+    IsDone(me) 
+     
+    	returns Boolean from Standard 
+	is static;
+
+
+    Projection(me) 
+        ---Purpose: returns the result
+    	returns Shape from TopoDS 
+	---C++: return const&  
+    	raises NotDone from StdFail
+	is static;
+ 
+
+    Ancestor(me; E: Edge from TopoDS) 
+	---Purpose: For a resulting edge, returns the corresponding initial edge.
+
+    	returns Shape from TopoDS
+	---C++: return const&
+    	raises NotDone      from StdFail, 
+	       NoSuchObject from Standard
+    	is static;
+ 
+    Couple(me; E: Edge from TopoDS) 
+    ---Purpose: For a projected edge, returns the corresponding initial face.
+
+    	returns Shape from TopoDS
+	---C++: return const&
+    	raises NotDone      from StdFail, 
+	       NoSuchObject from Standard
+    	is static;
+ 
+    Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <S>. 
+        ---C++: return const & 
+    returns ListOfShape from TopTools;
+    
+
+    IsElementary(me; C:  Curve from Adaptor3d) 
+        returns Boolean from Standard 
+    	is static;   
+	 
+    BuildWire(me;  Liste : out  ListOfShape from TopTools)   
+        returns  Boolean  from  Standard 
+	is  static; 
+    --- Purpose : build the result as a list of wire if possible in --
+    --  a first returns a wire only if there is only a wire.
+    --  
+
+
+fields
+ 
+    myShape       : Shape          from TopoDS; 
+    myIsDone      : Boolean        from Standard;
+    myTol3d       : Real           from Standard;  
+    myTol2d       : Real           from Standard;  
+    myMaxDist     : Real           from Standard;
+    myWith3d      : Boolean        from Standard;
+    myContinuity  : Shape          from GeomAbs;	 
+    myMaxDegree   : Integer        from Standard;   
+    myMaxSeg      : Integer        from Standard; 
+    myFaceBounds  : Boolean        from Standard;
+    myToProj      : Shape          from TopoDS;
+    myAncestorMap : DataMapOfShapeShape       from TopTools; 
+    myCorresp     : DataMapOfShapeShape       from TopTools;
+    myDescendants : DataMapOfShapeListOfShape       from TopTools;
+    myRes         : Shape   from TopoDS;
+
+end NormalProjection;

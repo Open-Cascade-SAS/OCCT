@@ -1,0 +1,150 @@
+-- File:	IFSelect_SignCounter.cdl
+-- Created:	Mon Nov  7 09:34:18 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SignCounter  from IFSelect  inherits SignatureList
+
+    ---Purpose : SignCounter gives the frame to count signatures associated
+    --           with entities, deducted from them. Ex.: their Dynamic Type.
+    --           
+    --	         It can sort a set of Entities according a signature, i.e. :
+    --           - list of different values found for this Signature
+    --           - for each one, count and list of entities
+    --           Results are returned as a SignatureList, which can be queried
+    --           on the count (list of strings, count per signature, or list of
+    --           entities per signature)
+    --           
+    --           A SignCounter can be filled, either directly from lists, or
+    --           from the result of a Selection : hence, its content can be
+    --           automatically recomputed as desired
+    --           
+    --           SignCounter works by using a Signature in its method AddSign
+    --           
+    --           Methods can be redefined to, either
+    --           - directly compute the value without a Signature
+    --           - compute the value in the context of a Graph
+
+uses CString, Transient, MapOfTransient, HAsciiString from TCollection,
+     HSequenceOfTransient,
+     InterfaceModel, Graph, Selection, Signature
+
+is
+
+    Create (withmap  : Boolean = Standard_True;
+    	    withlist : Boolean = Standard_False) returns mutable SignCounter;
+    ---Purpose : Creates a SignCounter, without proper Signature
+    --           If <withmap> is True (default), added entities are counted
+    --           only if they are not yet recorded in the map
+    --           Map control can be set off if the input garantees uniqueness
+    --           of data
+    --           <withlist> is transmitted to SignatureList (option to list
+    --           entities, not only to count them).
+
+    Create (matcher  : mutable Signature;
+    	    withmap  : Boolean = Standard_True;
+    	    withlist : Boolean = Standard_False)  returns mutable SignCounter;
+    ---Purpose : Creates a SignCounter, with a predefined Signature
+    --           Other arguments as for Create without Signature.
+
+    Signature (me) returns mutable Signature;
+    ---Purpose : Returns the Signature used to count entities. It can be null.
+
+    SetMap  (me : mutable; withmap  : Boolean);
+    ---Purpose : Changes the control status. The map is not cleared, simply
+    --           its use changes
+
+    AddEntity (me : mutable; ent : Transient; model : InterfaceModel)
+    	returns Boolean  is virtual;
+    ---Purpose : Adds an entity by considering its signature, which is given by
+    --           call to method AddSign
+    --           Returns True if added, False if already in the map (and
+    --           map control status set)
+
+    AddSign   (me : mutable; ent : Transient; model : InterfaceModel)
+    	is virtual;
+    ---Purpose : Adds an entity (already filtered by Map) with its signature.
+    --           This signature can be computed with the containing model.
+    --           Its value is provided by the object Signature given at start,
+    --           if no Signature is defined, it does nothing.
+    --           
+    --           Can be redefined (in this case, see also Sign)
+
+    AddList   (me : mutable; list : HSequenceOfTransient; model : InterfaceModel);
+    ---Purpose : Adds a list of entities by adding each of the items
+
+    AddWithGraph (me : mutable; list : HSequenceOfTransient; graph : Graph)
+    	is virtual;
+    ---Purpose : Adds a list of entities in the context given by the graph
+    --           Default just call basic AddList
+    --           Can be redefined to get a signature computed with the graph
+
+    AddModel  (me : mutable; model : InterfaceModel);
+    ---Purpose : Adds all the entities contained in a Model
+
+    AddFromSelection (me : mutable; sel : Selection; G : Graph);
+    ---Purpose : Adds the result determined by a Selection from a Graph
+    --           Remark : does not impact at all data from SetSelection & Co
+
+    	--    Counting on selection result    --
+
+    SetSelection (me : mutable; sel : Selection);
+    ---Purpose : Sets a Selection as input : this causes content to be cleared
+    --           then the Selection to be ready to compute (but not immediatly)
+
+    Selection    (me) returns Selection;
+    ---Purpose : Returns the selection, or a null Handle
+
+    SetSelMode   (me : mutable; selmode : Integer);
+    ---Purpose : Changes the mode of working with the selection :
+    --           -1 just clears optimisation data and nothing else
+    --           0 clears it   1 inhibits it for computing (but no clearing)
+    --           2 sets it active for computing
+    --           Default at creation is 0, after SetSelection (not null) is 2
+
+    SelMode      (me) returns Integer;
+    ---Purpose : Returns the mode of working with the selection
+
+    ComputeSelected (me : mutable; G : Graph; forced : Boolean=Standard_False)
+    	returns Boolean;
+    ---Purpose : Computes from the selection result, if selection is active
+    --           (mode 2). If selection is not defined (mode 0) or is inhibited
+    --           (mode 1) does nothing.
+    --           Returns True if computation is done (or optimised), False else
+    --           This method is called by ComputeCounter from WorkSession
+    --           
+    --           If <forced> is True, recomputes systematically
+    --           Else (D), if the counter was not cleared and if the former
+    --           computed result started from the same total size of Graph and
+    --           same count of selected entities : computation is not redone
+    --           unless <forced> is given as True
+
+
+    Sign (me; ent : Transient; model : InterfaceModel)
+    	returns HAsciiString  is virtual;
+    ---Purpose : Determines and returns the value of the signature for an
+    --           entity as an HAsciiString. This method works exactly as
+    --           AddSign, which is optimized
+    --           
+    --           Can be redefined, accorded with AddSign
+
+    ComputedSign (me : mutable; ent : Transient; G : Graph) returns CString;
+    ---Purpose : Applies AddWithGraph on one entity, and returns the Signature
+    --           Value which has been recorded
+    --           To do this, Add is called with SignOnly Mode True during the
+    --           call, the returned value is LastValue
+
+fields
+
+    themapstat : Boolean;
+    themap     : MapOfTransient;
+    thematcher : Signature;
+    
+    theselect  : Selection;
+    theselmode : Integer;
+    thenbcomp1 : Integer;
+    thenbcomp2 : Integer;
+
+end SignCounter;

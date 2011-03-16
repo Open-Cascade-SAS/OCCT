@@ -1,0 +1,60 @@
+-- File:	MDocStd.cdl
+-- Created:	Thu Apr 15 13:46:31 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+package MDocStd 
+
+	---Purpose: Drivers for TDocStd_Document
+
+uses TColStd, TCollection, PCollection, PTColStd,
+     CDM, PCDM,  
+     TDF, PDF, MDF,
+     TDocStd, PDocStd
+
+is
+
+    ---Purpose: Standard CAF Document drivers
+    --          =============================
+
+
+    class DocumentStorageDriver;
+     
+    class DocumentRetrievalDriver;
+    
+    
+    ---Purpose: External Reference Attribute  drivers
+    --          =====================================
+
+    class XLinkStorageDriver;
+    
+    class XLinkRetrievalDriver;
+    
+--    class PersistentMap instantiates Map from TCollection( Persistent from Standard,
+--    	                                                   MapPersistentHasher from PTColStd);
+
+--    class DocEntryList instantiates List from TCollection (AsciiString from TCollection);
+    
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage driver(s) to <aDriverSeq>.
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval driver(s) to <aDriverSeq>.
+    
+    
+--    WeightWatcher(aSource : Data from TDF;
+--                  aReloc   : SRelocationTable from MDF;
+--                  aEntry : DocEntryList from MDocStd);
+--    ---Purpose: suppresses the geometries  of the shapes from the XLink
+--    --          associated to  <aEntry>
+
+    ---Purpose: Factory method
+    --          ==============
+    
+    Factory(aGUID: GUID from Standard)
+    returns Transient from Standard;
+
+end MDocStd;

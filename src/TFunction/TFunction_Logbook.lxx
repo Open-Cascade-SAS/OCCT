@@ -1,0 +1,39 @@
+// File:	TFunction_Logbook.lxx
+// Created:	Tue Jul 20 15:27:43 1999
+// Author:	Vladislav ROMASHKO
+//		<vro@flox.nnov.matra-dtv.fr>
+
+inline void TFunction_Logbook::SetTouched(const TDF_Label& L)
+{
+  myTouched.Add(L);
+}
+
+inline const TDF_LabelMap& TFunction_Logbook::GetTouched() const
+{
+  return myTouched;
+}
+
+inline const TDF_LabelMap& TFunction_Logbook::GetImpacted() const
+{
+  return myImpacted;
+}
+
+inline TDF_LabelMap& TFunction_Logbook::ChangeValid()
+{
+  return myValid;
+}
+
+inline const TDF_LabelMap& TFunction_Logbook::GetValid() const
+{
+  return myValid;
+}
+
+inline void TFunction_Logbook::Done(const Standard_Boolean status)
+{
+  isDone = status;
+}
+
+inline Standard_Boolean TFunction_Logbook::IsDone() const
+{
+  return isDone;
+}

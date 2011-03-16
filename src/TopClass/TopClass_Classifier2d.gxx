@@ -1,0 +1,233 @@
+// File:	TopClass_Classifier2d.gxx
+// Created:	Tue Nov 17 17:47:02 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+// Modified:	Mon May 13 15:20:43 1996
+// Author:	Laurent BUCHARD
+//		<lbr@sherlox>
+//-- Reinitialisation des transitions complexes
+
+//  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627
+
+
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <gp_Vec2d.hxx>
+
+//=======================================================================
+//function : TopClass_Classifier2d
+//purpose  : 
+//=======================================================================
+
+TopClass_Classifier2d::TopClass_Classifier2d() :
+       myIsSet(Standard_False),
+       myFirstCompare(Standard_True),
+       myIsHeadOrEnd(Standard_False), // skv OCC12627
+       myState(TopAbs_UNKNOWN)        // skv OCC12627
+
+{
+}
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void TopClass_Classifier2d::Reset(const gp_Lin2d& L,  
+				  const Standard_Real P,
+				  const Standard_Real Tol)
+{
+  myLin = L;
+  myParam = P;
+  myTolerance = Tol;
+  myState = TopAbs_UNKNOWN;
+  myFirstCompare = Standard_True;
+  myFirstTrans = Standard_True;
+  myClosest = 0;
+  myIsSet = Standard_True;
+//  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 Begin
+  myIsHeadOrEnd = Standard_False;
+//  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
+}
+
+//=======================================================================
+//function : Compare
+//purpose  : 
+//=======================================================================
+
+void TopClass_Classifier2d::Compare(const TheEdge& E,
+				    const TopAbs_Orientation Or)
+{
+  // intersect the edge and the segment
+  myClosest = 0;
+  myIntersector.Perform(myLin,myParam,myTolerance,E);
+  if (!myIntersector.IsDone()) return;
+  if ((myIntersector.NbPoints()   == 0)&&
+      (myIntersector.NbSegments() == 0)) return;
+
+  // find the closest point
+  Standard_Integer iPoint, iSegment, nbPoints, nbSegments;
+#ifndef DEB
+  const IntRes2d_IntersectionPoint *PClosest = NULL;
+#else 
+  const IntRes2d_IntersectionPoint *PClosest;
+#endif
+  Standard_Real dMin = RealLast();
+  nbPoints = myIntersector.NbPoints();
+  for (iPoint = 1; iPoint <= nbPoints;  iPoint++)  {
+    const IntRes2d_IntersectionPoint& PInter = myIntersector.Point(iPoint);
+    // test for ON
+    if (PInter.TransitionOfFirst().PositionOnCurve() == IntRes2d_Head) {
+      myClosest = iPoint;
+      myState = TopAbs_ON;
+      return;
+    }
+    Standard_Real paramfirst = PInter.ParamOnFirst();
+    if (paramfirst <  dMin) {
+      myClosest = iPoint;
+      PClosest = &PInter;
+      dMin = paramfirst;
+    }
+  }
+
+  // for the segments we only test the first point
+  nbSegments = myIntersector.NbSegments();
+  for (iSegment = 1; iSegment <= nbSegments;  iSegment++)  {
+    const IntRes2d_IntersectionSegment& SegInter = 
+      myIntersector.Segment(iSegment);
+    const IntRes2d_IntersectionPoint& PInter = SegInter.FirstPoint();
+    if (PInter.TransitionOfFirst().PositionOnCurve() == IntRes2d_Head) {
+      myClosest = nbPoints + iSegment+  iSegment - 1;
+      myState = TopAbs_ON;
+      return;
+    }
+    Standard_Real paramfirst = PInter.ParamOnFirst();
+    if (paramfirst <  dMin) {
+      myClosest = nbPoints + iSegment+iSegment - 1;
+      PClosest = &PInter;
+      dMin = paramfirst;
+    }
+  }
+
+  // if no point was found return
+  if (myClosest == 0) return;
+
+  // if the Edge is INTERNAL or EXTERNAL, no problem
+  if (Or == TopAbs_INTERNAL) {
+    myState = TopAbs_IN;
+    return;
+  }
+  else if (Or == TopAbs_EXTERNAL) {
+    myState = TopAbs_OUT;
+    return;
+  }
+
+
+  if ( ! myFirstCompare ) {
+    Standard_Boolean b = (dMin > myParam);
+    if (b) {
+      // dMin > myParam : le point le plus proche (dMin) trouve dans CETTE
+      // intersection ligne,arete n'est pas le plus proche
+      // de TOUS les points d'intersection avec les autres aretes (myParam).
+      return;
+    }
+  }
+  
+  // process the closest point PClosest, found at dMin on line.
+  myFirstCompare = Standard_False;
+
+  if(myParam > dMin) {  //-- lbr le 13 mai 96 
+    myFirstTrans = Standard_True; 
+  } 
+  
+  myParam = dMin;
+  const IntRes2d_Transition& T2 = PClosest->TransitionOfSecond();
+//  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 Begin
+//   Standard_Boolean isHeadorEnd = (T2.PositionOnCurve() == IntRes2d_Head) ||
+//                                  (T2.PositionOnCurve() == IntRes2d_End);
+  myIsHeadOrEnd = (T2.PositionOnCurve() == IntRes2d_Head) ||
+                  (T2.PositionOnCurve() == IntRes2d_End);
+//  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
+  
+  // transition on the segment
+#ifndef DEB
+  TopAbs_Orientation SegTrans = TopAbs_FORWARD;
+#else
+  TopAbs_Orientation SegTrans;
+#endif
+  const IntRes2d_Transition& T1 = PClosest->TransitionOfFirst();
+  switch (T1.TransitionType()) {
+  case IntRes2d_In :
+    if (Or == TopAbs_REVERSED)   SegTrans = TopAbs_REVERSED;
+    else                         SegTrans = TopAbs_FORWARD;
+    break;
+  case IntRes2d_Out :
+    if (Or == TopAbs_REVERSED)   SegTrans = TopAbs_FORWARD;
+    else                         SegTrans = TopAbs_REVERSED;
+    break;
+  case IntRes2d_Touch :
+    switch (T1.Situation()) {
+    case IntRes2d_Inside :
+      if (Or == TopAbs_REVERSED) SegTrans = TopAbs_EXTERNAL;
+      else                       SegTrans = TopAbs_INTERNAL;
+      break;
+    case IntRes2d_Outside :
+      if (Or == TopAbs_REVERSED) SegTrans = TopAbs_INTERNAL;
+      else                       SegTrans = TopAbs_EXTERNAL;
+      break;
+    case IntRes2d_Unknown :      return;
+    }
+    break;
+  case IntRes2d_Undecided :      return;
+  }
+
+  // are we inside the Edge ?
+  //  const IntRes2d_Transition& T2 = PClosest->TransitionOfSecond();
+  if ( ! myIsHeadOrEnd ) {
+    // PClosest is inside the edge
+    switch (SegTrans) {
+
+    case TopAbs_FORWARD :
+    case TopAbs_EXTERNAL :
+      myState = TopAbs_OUT;
+      break;
+
+    case TopAbs_REVERSED :
+    case TopAbs_INTERNAL :
+      myState = TopAbs_IN;
+      break;
+    }
+  }
+  else {
+    // PClosest is Head or End of the edge : update the complex transition
+    gp_Dir2d Tang2d,Norm2d;
+    Standard_Real Curv;
+    myIntersector.LocalGeometry
+      (E,PClosest->ParamOnSecond(),Tang2d,Norm2d,Curv);
+    gp_Dir Tang(Tang2d.X(),Tang2d.Y(),0.);
+    gp_Dir Norm(Norm2d.X(),Norm2d.Y(),0.);
+    if (myFirstTrans) {
+      gp_Dir D(myLin.Direction().X(),myLin.Direction().Y(),0.);
+      myTrans.Reset(D);
+      myFirstTrans = Standard_False;
+    }
+    
+    TopAbs_Orientation Ort;
+    if (T2.PositionOnCurve() == IntRes2d_Head) Ort = TopAbs_FORWARD;
+    else                                       Ort = TopAbs_REVERSED;
+    myTrans.Compare(RealEpsilon(), Tang, Norm,  Curv, SegTrans, Ort);
+    myState = myTrans.StateBefore();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+// File:	AdvApp2Var_NetWork.lxx
+// Created:	Thu Jun 13 15:44:07 1996
+// Author:	Philippe MANGIN
+//		<pmn@sgi29>
+
+
+//#include <TColStd_HArray1OfReal.hxx>
+
+inline AdvApp2Var_Patch& AdvApp2Var_Network::ChangePatch(const Standard_Integer Index)
+{
+ return  myNet(Index);
+}
+
+inline const AdvApp2Var_Patch& AdvApp2Var_Network::Patch(const Standard_Integer UIndex, 
+							 const Standard_Integer VIndex) const 
+{
+  return myNet( (VIndex-1)*(myUParameters.Length()-1) + UIndex);
+}
+

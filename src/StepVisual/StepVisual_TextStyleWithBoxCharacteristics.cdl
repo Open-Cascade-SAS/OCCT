@@ -1,0 +1,43 @@
+-- File:        TextStyleWithBoxCharacteristics.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TextStyleWithBoxCharacteristics from StepVisual 
+
+inherits TextStyle from StepVisual 
+
+uses
+
+	HArray1OfBoxCharacteristicSelect from StepVisual,
+	BoxCharacteristicSelect from StepVisual,
+	HAsciiString from TCollection, 
+	TextStyleForDefinedFont from StepVisual
+is
+
+	Create returns mutable TextStyleWithBoxCharacteristics;
+	---Purpose: Returns a TextStyleWithBoxCharacteristics
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCharacterAppearance : mutable TextStyleForDefinedFont from StepVisual) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCharacterAppearance : mutable TextStyleForDefinedFont from StepVisual;
+	      aCharacteristics : HArray1OfBoxCharacteristicSelect) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCharacteristics(me : mutable; aCharacteristics :HArray1OfBoxCharacteristicSelect );
+	Characteristics (me) returns HArray1OfBoxCharacteristicSelect;
+	CharacteristicsValue (me; num : Integer) returns BoxCharacteristicSelect;
+	NbCharacteristics (me) returns Integer;
+
+fields
+
+	characteristics : HArray1OfBoxCharacteristicSelect from StepVisual;
+
+end TextStyleWithBoxCharacteristics;

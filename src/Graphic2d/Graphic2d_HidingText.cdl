@@ -1,0 +1,188 @@
+
+-- File:	Graphic2d_HidingText.cdl
+-- Created:	Fri Jun 9 16:36:51 1995
+-- Author:	Gerard GRAS
+--		<gg@azimox>
+
+---Copyright:	 Matra Datavision 1993
+
+class HidingText from Graphic2d inherits Text from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive HidingText
+	--	    is a Text above a surounded hiding polygon.
+	--	    The text foreground color depends of the
+	--	    SetColorIndex() method.
+	--	    The polygon background color of the
+	--	    SetHidingColorIndex() method.
+	--	    The outline frame foreground color and width depends 
+	--	    of the SetFrameColorIndex() & SetFrameWidthIndex() methods.
+
+	---Keywords: Primitive, Text
+	---Warning:
+	---References:
+
+uses
+
+	Drawer		from Graphic2d,
+	GraphicObject	from Graphic2d,
+	PlaneAngle	from Quantity,
+	Ratio		from Quantity,
+	Length		from Quantity,
+	Factor		from Quantity,
+	ExtendedString	from TCollection,
+	TypeOfText	from Aspect,
+	FStream		from Aspect,
+	IFStream	from Aspect
+
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		aText: ExtendedString from TCollection;
+		X, Y: Real from Standard;
+		anAngle: PlaneAngle from Quantity = 0.0;
+		aMargin: Ratio from Quantity = 0.1;
+		aType: TypeOfText from Aspect = Aspect_TOT_SOLID;
+		aScale: Factor from Quantity = 1.0)
+	returns mutable HidingText from Graphic2d;
+	---Level: Public
+	---Purpose: Creates a text in a graphic object <aGraphicObject>
+	--	    The text is <aText>.
+	--	    The reference point is <X>, <Y>.
+	--	    The orientation angle is <anAngle>.
+	--	    The margin ratio is <aMargin>,defines the proportional
+	--	    margin between the text height and the outline frame.
+	--	    The type of text is <aType> and must be one of :
+	--		Aspect_TOT_SOLID,
+	--		Aspect_TOT_OUTLINE
+        --          The scale factor apply to the original font size,
+	--	    Angles are measured counterclockwise with 0 radian
+	--	    at 3 o'clock.
+	--  Warning: a text can be orientable,slantable,zoomable or outlinable
+	-- only when this options are enable regardless of the graphic driver.
+	-- i.e: Xw driver does not,but Xdps or PS driver does.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetFrameColorIndex (me:mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Sets the color index for the frame of the hiding text <me>.
+	--	    default color is 0 (no out line frame is drawn).
+
+	SetFrameWidthIndex (me:mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Sets the width index for the frame of the hiding text <me>.
+	--	    default width is 0 (1 pixel out line frame is drawn).
+
+	SetHidingColorIndex (me:mutable; anIndex: Integer from Standard = 0)
+	is static;
+	---Level: Public
+	---Purpose: Sets the interior color index for the frame of the hiding text <me>.
+	--	    default color is 0 (the current view background color).
+
+        Fit (me:mutable; aWidth,aHeight: Length from Quantity;
+                         Adjust: Boolean from Standard = Standard_True;
+                         Expand: Boolean from Standard = Standard_True)
+                        returns Boolean from Standard is redefined;
+        ---Level: Public
+        ---Purpose: Compute text size depending of a required bounding box,
+        --          Adjust the text position depending of the text origine
+        --          and base line if Adjust is TRUE,
+        --          Expand the text when the Width is smaller that the
+        --          Fit Width if "Expand" is TRUE.
+        --          and returns Standard_True if the current Driver used is
+        --          enable to fit the text size.
+        --  Warning: The fit computation is apply only if the corresponding
+        -- dimension is > 0.
+
+        Trunc (me:mutable; aWidth: Length from Quantity)
+                        returns Boolean from Standard is redefined;
+        ---Level: Public
+        ---Purpose: Trunc the text when the Width of the text is greater
+        --          that the defined Width Max,
+        --          and returns Standard_True if the current Driver used is
+        --          enable to trunc the text size.
+
+	--------------------------
+	-- Category: Draw and Pick
+	--------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is redefined protected;
+	---Level: Internal
+	---Purpose: Draws the text <me>.
+
+	Pick (me : mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard
+	is redefined protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the text <me> is picked,
+	--	    Standard_False if not.
+
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+        TextSize (me; aWidth,aHeight,anXoffset,anYoffset: out Length from Quantity)
+                returns Boolean from Standard is redefined;
+        ---Level: Public
+        ---Purpose: Returns Standard_True if the current Driver used is enabled
+        --         to get the right size and hiding text offsets in the
+        --         world size parameter <aWidth>,<aHeight>,<anXoffset>,<anYoffset>
+        --         depending of the attributes of the text and the current scale
+        --         of the view.
+        --          NOTE that the text offsets defines the relative position of the
+        --         of the text string origin from the lower left corner of the hiding text
+        --         boundary limits.
+        ---Category: Text management
+
+
+	Margin (me) returns Ratio from Quantity is static;
+        ---Level: Public
+        ---Purpose: Returns the text margin.
+ 
+        HidingColorIndex (me) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the text hiding color index.
+
+        FrameColorIndex (me) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the text frame color index.
+
+        FrameWidthIndex (me) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the text frame width index.
+
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+
+        ComputeMinMax (me : mutable)
+                returns Boolean from Standard is redefined private;
+        ---Level: Internal
+        ---Purpose: Computes the MinMax of the text if possible.
+
+       ----------------------------------------------------------------------
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+--	Retrieve( myclass; anIFStream: in out IFStream from Aspect );
+
+fields
+	myHidingColorIndex:	Integer from Standard;
+	myFrameColorIndex:	Integer from Standard;
+	myFrameWidthIndex:	Integer from Standard;
+	myMargin:		ShortReal from Standard;
+
+end HidingText from Graphic2d;

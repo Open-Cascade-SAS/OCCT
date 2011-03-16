@@ -1,0 +1,33 @@
+-- File:        RationalBSplineSurface.cdl
+-- Created:     Mon Dec  4 12:02:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWRationalBSplineSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for RationalBSplineSurface
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     RationalBSplineSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWRationalBSplineSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable RationalBSplineSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : RationalBSplineSurface from StepGeom);
+
+	Share(me; ent : RationalBSplineSurface from StepGeom; iter : in out EntityIterator);
+
+    	Check(me; ent : RationalBSplineSurface from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWRationalBSplineSurface;

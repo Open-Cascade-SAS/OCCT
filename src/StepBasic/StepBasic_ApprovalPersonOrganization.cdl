@@ -1,0 +1,41 @@
+-- File:        ApprovalPersonOrganization.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ApprovalPersonOrganization from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	PersonOrganizationSelect from StepBasic, 
+	Approval from StepBasic, 
+	ApprovalRole from StepBasic
+is
+
+	Create returns mutable ApprovalPersonOrganization;
+	---Purpose: Returns a ApprovalPersonOrganization
+
+	Init (me : mutable;
+	      aPersonOrganization : PersonOrganizationSelect from StepBasic;
+	      aAuthorizedApproval : mutable Approval from StepBasic;
+	      aRole : mutable ApprovalRole from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPersonOrganization(me : mutable; aPersonOrganization : PersonOrganizationSelect);
+	PersonOrganization (me) returns PersonOrganizationSelect;
+	SetAuthorizedApproval(me : mutable; aAuthorizedApproval : mutable Approval);
+	AuthorizedApproval (me) returns mutable Approval;
+	SetRole(me : mutable; aRole : mutable ApprovalRole);
+	Role (me) returns mutable ApprovalRole;
+
+fields
+
+	personOrganization : PersonOrganizationSelect from StepBasic; -- a SelectType
+	authorizedApproval : Approval from StepBasic;
+	role : ApprovalRole from StepBasic;
+
+end ApprovalPersonOrganization;

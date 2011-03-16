@@ -1,0 +1,306 @@
+-- File:	TCollection_List.cdl
+-- Created:	Thu Dec 17 12:04:18 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+---Copyright:	 Matra Datavision 1992
+
+generic class List from TCollection (Item as any)
+    ---Purpose: Ordered lists of non-unique objects which can be
+    -- accessed sequentially using an iterator.
+    -- Item insertion in a list is very fast at any position. But
+    -- searching for items by value may be slow if the list is long,
+    -- because it requires a sequential search.
+    -- List is a generic class which depends on Item, the type of
+    -- element in the structure.
+    -- Use a ListIterator iterator to explore a List structure.
+    -- Notes:
+    -- -   An iterator class is automatically instantiated from the
+    --   TCollection_ListIterator class at the time of
+    --   instantiation of a List structure.
+    -- -   A sequence is a better structure when searching for
+    --   items by value is an important goal for a data structure.
+    -- -   Queues and stacks are other kinds of list with a
+    --   different access to data.
+
+    uses
+    	Address from Standard,
+	Boolean from Standard
+	
+    raises
+    	NoSuchObject from Standard 
+	
+    	class ListNode from TCollection 
+	    inherits MapNode from TCollection
+	    uses MapNodePtr from TCollection
+	    is
+	      Create(I : Item; n : MapNodePtr from TCollection) returns ListNode from TCollection;
+	      ---C++: inline
+      
+	      Value(me) returns Item;
+	      ---C++: return &
+	      ---C++: inline
+
+	 fields  
+	      myValue : Item;
+	 end;
+        
+	class ListIterator
+    	    	---Purpose: Functions used for iterating the contents of a List data structure.
+    	    	-- A ListIterator object can be used to go through a list
+    	    	-- sequentially, and to hold a position in a list as a
+    	    	-- bookmark. It is not an index, however. Each step of the
+    	    	-- iteration gives the current position of the iterator, to
+    	    	-- which corresponds the current item in the list. The
+    	    	-- current position is undefined if the list is empty, or when
+    	    	-- the exploration is finished.
+    	    	-- Note: an iterator class is automatically instantiated from
+    	    	-- this generic class at the time of instantiation of a List
+    	    	-- data structure.	
+	raises
+	    NoMoreObject from Standard,
+	    NoSuchObject from Standard 
+	
+	is
+	
+	    Create returns ListIterator;
+		---Purpose: Constructs an empty iterator for a List data structure. Use
+    	    	-- the function Initialize to define the list to explore.
+	
+	    Create(L : List) returns ListIterator;
+	    	---Purpose: Constructs an iterator on the list list, and positions it on
+    	    	-- the first item of the list list, if it exists.
+    	    	-- The current position is undefined if the list list is empty.
+    	    	-- Use in a loop:
+    	    	-- -   the function More to know if there is a current item,
+    	    	-- -   then the function Value to read the value of the current   item,
+    	    	-- -   then the function Next to position the iterator on the
+    	    	--   next item, if it exists.
+  		
+	    Initialize(me : in out; L : List)
+    	    	---Purpose: Sets, or resets this iterator for the list list, and positions it
+    	    	-- on the first item of the list list, if it exists.
+    	    	-- The current position is undefined if the list list is empty.
+    	    	-- Example
+    	    	-- TColStd_ListOfInteger list;
+    	    	-- TColStd_ListIteratorOfListOfInteger
+    	    	-- pos;
+    	    	-- pos.Initialize(list);
+    	    	-- Use in a loop:
+    	    	-- -   the function More to know if there is a current item,
+    	    	-- -   then the function Value to read the value of the current   item,
+    	    	-- -   then the function Next to position the iterator on the
+    	    	--   next item, if it exists.
+	    is static;
+	    
+	    More(me) returns Boolean from Standard
+	    	---Purpose: Returns true if there is a current item in the list explored
+    	    	-- with this iterator (i.e. when the current position is defined).
+    	    	-- More is false if:
+    	    	-- -   the iterator is not initialized, or
+    	    	-- -   the list is empty, or
+    	    	-- -   the exploration is finished.
+    	    	--  Use:
+    	    	-- -   the function Value to read the current item,
+    	    	-- -   the function Next to position this iterator on the next   item, if it exists.
+    	    	--   Example
+    	    	-- Standard_Integer i;
+    	    	-- TColStd_ListOfInteger s;
+    	    	-- TColStd_ListIteratorOfListOfInteger
+    	    	-- pos(s);
+    	    	-- while(pos.More())
+    	    	-- {
+    	    	-- i = pos.Value();
+    	    	-- pos.Next();
+    	    	-- }
+    	    	---C++: inline
+	    is static;
+	
+	    Next(me : in out)
+	    	---Purpose: Sets this iterator on the next item in the explored list.
+    	    	-- If the current position of this iterator corresponds to the
+    	    	-- last item in the list, it becomes undefined.
+    	    	-- Exceptions
+    	    	-- Standard_NoMoreObject if the current position of this
+    	    	-- iterator is undefined.
+	    raises
+	    	NoMoreObject from Standard
+	    is static;
+	
+	    Value(me) returns any Item
+ 	    	---Purpose: Returns the value of the current item of this iterator in the
+    	    	-- explored list.
+    	    	-- Note: Item is the type of element in the explored List list.
+    	    	-- Example
+    	    	-- TColStd_ListOfInteger          s;
+    	    	-- TColStd_ListIteratorOfListOfInteger
+    	    	-- pos(s);
+    	    	-- s.Append(1);
+    	    	-- assert (pos.Value() == s.First() );
+    	    	-- Exceptions
+    	    	-- Standard_NoSuchObject if the current position of this
+    	    	-- iterator is undefined.
+    	    	---C++: return &
+    	    raises
+	    	NoSuchObject from Standard
+	    is static;
+	    
+	fields
+    	    current  : Address from Standard;
+	    previous : Address from Standard;
+	    
+	friends
+	    class List from TCollection
+	    
+	end ListIterator from TCollection;
+is
+
+    Create returns List from TCollection;
+    	---Purpose: Constructs an empty list.
+    	-- Use:
+    	-- -   the function Append or Prepend to add an item or a
+    	-- collection of items at the end, or at the beginning of the   list,
+    	-- -   a list iterator to explore the list and read its items,
+    	-- -   and in conjunction with this iterator:
+    	--   -   the function InsertAfter or InsertBefore to add an
+    	--    item or a collection of items at any position in the list,
+    	-- -   the function Remove to remove an item at any position in the list.
+    	--    Warning
+    	-- To copy a list, you must explicitly call the assignment operator (operator=).
+
+    Create(Other : List from TCollection) 
+     returns List from TCollection
+     is private;
+	---Purpose: Creation by copy of existing list.
+	--  Warning: This constructor prints a warning message.
+	-- We recommand to use the operator =.
+		
+    Assign(me : in out; Other : List from TCollection)
+	---Purpose: Replace <me> by a copy of <Other>.
+	---C++: alias operator=
+    is static;
+    
+    Extent(me) returns Integer
+	---Purpose: Returns the number of items.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Clears the content of the list <me>.
+    	---C++: alias ~
+    is static;
+	
+    IsEmpty(me) returns Boolean from Standard
+	---Purpose: Returns true if this list is empty.
+	---C++: inline
+    is static;
+
+    Prepend(me : in out; I : Item)    
+	---Level: Public
+    	---Purpose: Insert the Item <I> at the head of the list.
+    is static;
+
+    -- san: 18/04/2003 - addition methods returns ListIterator    
+    Prepend(me : in out; I : Item; theIt : in out ListIterator )
+	---Level: Public
+    	---Purpose: Insert the Item <I> at the head of the list.
+	---         Returns ListIterator pointing to the first Item.
+    is static;
+    
+    Prepend(me : in out; Other : in out List from TCollection)
+	---Level: Public
+    	---Purpose: Insert  the  list <Other>  at  the  head  of <me>.
+    	---         <Other> is cleared.
+    is static;
+
+    Append(me : in out; I : Item)
+	---Level: Public
+    	---Purpose: Insert the Item <I> at the end of the list.
+    is static;
+    
+    -- san: 18/04/2003 - addition methods returns ListIterator    
+    Append(me : in out; I : Item; theIt : in out ListIterator )
+	---Level: Public
+    	---Purpose: Insert the Item <I> at the head of the list.
+	---         Returns ListIterator pointing to the first Item.
+    is static;    
+    
+    Append(me : in out; Other : in out List from TCollection)
+	---Level: Public
+	---Purpose: Append the list <L> at the end of <me>. 
+	---         <Other> is cleared.
+    is static;
+    
+    First(me) returns any Item
+	---Purpose: Returns   the  first  Item in   the  list, may  be modified. 
+	--  Trigger: Raises an exception when the list is empty.
+	---C++: return &
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    Last(me) returns any Item
+	---Purpose: Returns   the  last Item in   the  list, may  be modified. 
+	--  Trigger: Raises an exception when the list is empty.
+	---C++: return &
+    raises
+    	NoSuchObject from Standard 
+    is static;
+    
+    RemoveFirst(me : in out)
+	---Purpose: Removes the first  Item from the  list. Nothing is
+	-- done if the list is empty.
+    is static;
+
+    Remove(me : in out; It : in out ListIterator)
+    	---Purpose: Removes the current  Item of the ListIterator from the
+    	-- List.  The ListIterator current will  be the next Item
+    	-- in the list.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if the current position of the
+    	-- list iterator pos is undefined.
+    raises
+    	NoSuchObject from Standard
+    is static;
+    
+    InsertBefore (me : in out; I : Item; 
+    	    	  It : in out ListIterator)
+	---Level: Public
+	---Purpose: Insert <I> in the List before the current position
+	-- of <It>. It is not change.
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    InsertBefore (me : in out; Other : in out List from TCollection; 
+    	    	  It : in out ListIterator)
+	---Level: Public
+	---Purpose: Insert <Other> in the List before the current position
+	-- of <It>. <It> is not change. <Other> is cleared. 
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    InsertAfter (me : in out; I : Item; 
+                 It : in out ListIterator)
+	---Level: Public
+	---Purpose: Insert <I> in the List after the  current position
+	-- if <It>. <It> is not changed.
+    is static;
+    
+    InsertAfter (me : in out; Other : in out List from TCollection;
+                 It : in out ListIterator)
+	---Level: Public
+	---Purpose: Insert <Other> in the List after the  current position
+	-- if <It>. <It> is not changed. <Other> is cleared.
+    is static;
+    
+fields
+    myFirst : Address from Standard;
+    myLast  : Address from Standard;
+    
+friends
+    class ListIterator from TCollection
+    
+end List;
+	
+
+

@@ -1,0 +1,103 @@
+-- File:	Interface_ShareTool.cdl
+-- Created:	Tue Feb  2 16:04:36 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ShareTool  from Interface
+
+    ---Purpose : Builds the Graph of Dependancies, from the General Service
+    --           "Shared" -> builds for each Entity of a Model, the Shared and
+    --           Sharing Lists, and gives access to them.
+    --           Allows to complete with Implied References (which are not
+    --           regarded as Shared Entities, but are nevertheless Referenced),
+    --           this can be usefull for Reference Checking
+
+uses Type, Transient,
+     Graph, HGraph, InterfaceModel, EntityIterator,
+     Messenger from Message,
+     Protocol from Interface, GeneralLib,  GTool
+
+raises DomainError, InterfaceError
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns ShareTool;
+    ---Purpose : Creates a ShareTool from a Model and builds all required data,
+    --           by calling the General Service Library and Modules
+    --           (GeneralLib given as an argument)
+
+    Create (amodel : InterfaceModel; gtool : GTool from Interface)
+    	returns ShareTool;
+    ---Purpose : Same a above, but GeneralLib is detained by a GTool
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns ShareTool;
+    ---Purpose : Same a above, but GeneralLib is defined through a Protocol
+    --           Protocol is used to build the working library
+
+    Create (amodel : InterfaceModel) returns ShareTool;
+    ---Purpose : Same as above, but works with the GTool of the Model
+
+    Create (agraph : Graph) returns ShareTool;
+    ---Purpose : Creates a ShareTool from an already defined Graph
+    --           Remark that the data of the Graph are copied
+    
+    Create (ahgraph : HGraph) returns ShareTool;
+
+    AddImplied (me : in out; gtool : GTool from Interface);
+    ---Purpose : Completes the Graph by Adding Implied References. Hence, they
+    --           are considered as Sharing References in all the other queries
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model used for Creation (directly or for Graph)
+
+    Graph (me) returns Graph;
+    ---Purpose : Returns the data used by the ShareTool to work
+    --           Can then be used directly (read only)
+    ---C++ : return const &
+
+    RootEntities (me) returns EntityIterator;
+    ---Purpose : Returns the Entities which are not Shared (their Sharing List
+    --           is empty) in the Model
+
+    IsShared (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if <ent> is Shared by other Entities in the Model
+
+    Shareds (me; ent : Transient) returns EntityIterator;
+    ---Purpose : Returns the List of Entities Shared by a given Entity <ent>
+
+    Sharings (me; ent : Transient) returns EntityIterator;
+    ---Purpose : Returns the List of Entities Sharing a given Entity <ent>
+
+    NbTypedSharings (me; ent : Transient; atype : any Type) returns Integer;
+    ---Purpose : Returns the count of Sharing Entities of an Entity, which
+    --           are Kind of a given Type
+
+    TypedSharing (me; ent : Transient; atype : any Type) returns Transient
+    ---Purpose : Returns the Sharing Entity of an Entity, which is Kind of a
+    --           given Type. Allows to access a Sharing Entity of a given type
+    --           when there is one and only one (current case)
+    	raises InterfaceError;
+    --           Error if count of Typed Sharings is zero or more then one
+
+    All (me; ent : Transient; rootlast : Boolean = Standard_True)
+    	returns EntityIterator;
+    ---Purpose : Returns the complete list of entities shared by <ent> at any
+    --           level, including <ent> itself
+    --           If <ent> is the Model, considers the concatenation of
+    --           AllShared for each root
+    --           If <rootlast> is True (D), the list starts with lower level
+    --           entities and ends by the root. Else, the root is first and
+    --           the lower level entities are at end
+
+    Print (me; iter : EntityIterator; S : Messenger from Message);
+    ---Purpose : Utility method which Prints the content of an iterator
+    --           (by their Numbers)
+
+fields
+
+    theHGraph : HGraph;
+
+end ShareTool;

@@ -1,0 +1,38 @@
+-- File:	DsgPrs_ConcentricPresentation.cdl
+-- Created:	Mon Mar 18 16:33:30 1996
+-- Author:	Flore Lantheaume
+--		<fla@filax>
+---Copyright:	 Matra Datavision 1996
+
+
+class ConcentricPresentation from DsgPrs 
+
+	---Purpose: A framework to define display of relations of concentricity.
+
+uses
+
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d
+    
+is
+
+    Add (myclass;
+    	 aPresentation: Presentation from Prs3d;
+    	 aDrawer: Drawer from Prs3d;
+	 aCenter: Pnt    from gp;
+	 aRadius : Real from Standard;
+	 aNorm  : Dir from gp;
+	 aPoint : Pnt from gp);
+	 
+	---Purpose: Defines the display of elements showing relations of
+    	-- concentricity between shapes.
+    	-- These include the center aCenter, the radius
+    	-- aRadius, the direction aNorm and the point aPoint.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+
+end ConcentricPresentation;

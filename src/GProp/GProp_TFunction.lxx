@@ -1,0 +1,57 @@
+// File:	GProp_TFunction.lxx
+// Created:	Wed Dec 21 10:47:36 2005
+// Author:	Sergey KHROMOV
+//		<skv@dimox>
+
+
+//=======================================================================
+//function : SetNbKronrodPoints
+//purpose  : 
+//=======================================================================
+
+inline void GProp_TFunction::SetNbKronrodPoints
+                   (const Standard_Integer theNbPoints)
+{
+  myNbPntOuter = (theNbPoints%2 == 0) ? theNbPoints + 1 : theNbPoints;
+}
+ 
+//=======================================================================
+//function : SetValueType
+//purpose  : 
+//=======================================================================
+
+inline void GProp_TFunction::SetValueType(const GProp_ValueType theType)
+{
+  myValueType = theType;
+  myUFunction.SetValueType(myValueType);
+}
+
+//=======================================================================
+//function : SetTolerance
+//purpose  : 
+//=======================================================================
+
+inline void GProp_TFunction::SetTolerance(const Standard_Real theTolerance)
+{
+  myTolerance = theTolerance;
+}
+
+//=======================================================================
+//function : TolReached
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GProp_TFunction::ErrorReached() const
+{
+  return myErrReached;
+}
+
+//=======================================================================
+//function : ErrorReached
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GProp_TFunction::AbsolutError() const
+{
+  return myAbsError;
+}

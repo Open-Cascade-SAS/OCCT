@@ -1,0 +1,32 @@
+// File:	Approx_SameParameter.lxx
+// Created:	Tue Jun  6 16:38:05 1995
+// Author:	Modelistation
+//		<model@fuegox>
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Approx_SameParameter::IsDone() const 
+{ return myDone ; }
+//=======================================================================
+//function : TolReached
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Approx_SameParameter::TolReached() const 
+{ return myTolReached; }
+//=======================================================================
+//function : IsSameParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Approx_SameParameter::IsSameParameter()  const 
+{ return mySameParameter ; }
+//=======================================================================
+//function : Curve2d
+//purpose  : 
+//=======================================================================
+
+inline Handle(Geom2d_BSplineCurve) Approx_SameParameter::Curve2d() const 
+{ return myCurve2d ; } 

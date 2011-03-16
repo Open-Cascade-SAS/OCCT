@@ -1,0 +1,156 @@
+-- File:	Geom_Vector.cdl
+-- Created:	Wed Mar 10 11:02:36 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Vector from Geom inherits Geometry from Geom
+
+
+        ---Purpose :  The abstract class Vector describes the common
+    	-- behavior of vectors in 3D space.
+    	-- The Geom package provides two concrete classes of
+    	-- vectors: Geom_Direction (unit vector) and Geom_VectorWithMagnitude.
+
+uses Ax1 from gp, 
+     Ax2 from gp,
+     Pnt from gp,
+     Vec from gp
+
+raises ConstructionError       from Standard,
+       DomainError             from Standard,
+       VectorWithNullMagnitude from gp
+
+is
+
+
+  Reverse (me : mutable);
+        ---Purpose : Reverses the vector <me>.
+
+
+  Reversed (me) returns mutable like me
+        ---Purpose : 
+        --  Returns a copy of <me> reversed.
+     is static;
+
+
+  Angle (me; Other : Vector)   returns Real
+    	---Purpose : Computes the angular value, in radians, between this
+    	-- vector and vector Other. The result is a value between 0 and Pi.
+    	-- Exceptions
+    	-- gp_VectorWithNullMagnitude if:
+    	-- - the magnitude of this vector is less than or equal to
+    	--   gp::Resolution(), or
+    	-- - the magnitude of vector Other is less than or equal
+    	--   to gp::Resolution().
+       raises VectorWithNullMagnitude;
+       
+    
+  AngleWithRef (me; Other , VRef : Vector)   returns Real
+    	---Purpose : Computes the angular value, in radians, between this
+    	-- vector and vector Other. The result is a value
+    	-- between -Pi and Pi. The vector VRef defines the
+    	-- positive sense of rotation: the angular value is positive
+    	-- if the cross product this ^ Other has the same
+    	-- orientation as VRef (in relation to the plane defined
+    	-- by this vector and vector Other). Otherwise, it is negative.
+    	-- Exceptions
+    	-- Standard_DomainError if this vector, vector Other
+    	-- and vector VRef are coplanar, except if this vector
+    	-- and vector Other are parallel.
+    	-- gp_VectorWithNullMagnitude if the magnitude of
+    	-- this vector, vector Other or vector VRef is less than
+    	-- or equal to gp::Resolution().
+          raises DomainError,
+                 VectorWithNullMagnitude;
+ 
+  Coord (me; X, Y, Z : out Real);
+        ---Purpose : Returns the coordinates X, Y and Z of this vector.
+
+
+  Magnitude (me)  returns Real
+        ---Purpose : Returns the  Magnitude of <me>.
+     is deferred;
+
+
+  SquareMagnitude (me)  returns Real
+        ---Purpose : Returns the square magnitude of <me>.
+     is deferred;
+
+  
+  X (me)  returns Real;
+        ---Purpose : Returns the X coordinate of <me>.
+
+
+  Y (me)  returns Real;
+        ---Purpose : Returns the Y coordinate of <me>.
+
+
+  Z (me) returns Real;
+        ---Purpose : Returns the Z coordinate of <me>.
+
+
+  Cross (me : mutable; Other : Vector)
+        ---Purpose :
+        --  Computes the cross product between <me> and <Other>.
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if <me> is a "Direction" and if <me> and <Other>
+        --  are parallel because it is not possible to build a 
+        --  "Direction" with null length.
+     is deferred;
+     
+
+  Crossed (me; Other : Vector)  returns mutable like me
+        ---Purpose :
+        --  Computes the cross product between <me> and <Other>.
+        --  A new direction is returned.
+
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if <me> is a "Direction" and if the two vectors 
+        --  are parallel because it is not possible to create a
+        --  "Direction" with null length.
+     is deferred;
+
+
+  CrossCross (me : mutable; V1, V2 : Vector)
+        ---Purpose :
+        --  Computes the triple vector product  <me> ^(V1 ^ V2).
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if <me> is a "Direction" and if V1 and V2 are parallel 
+        --  or <me> and (V1 ^ V2) are  parallel
+     is deferred;
+     
+
+  CrossCrossed (me; V1, V2 : Vector)   returns mutable like me
+        ---Purpose :
+        --  Computes the triple vector product <me> ^(V1 ^ V2).
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if <me> is a direction and if V1 and V2 are 
+        --  parallel or <me> and (V1 ^ V2) are parallel
+     is deferred;
+
+
+  Dot (me; Other : Vector)  returns Real;
+        ---Purpose : Computes the scalar product of this vector and vector Other.
+
+
+  DotCross (me; V1, V2 : Vector)  returns Real;
+        ---Purpose : 
+        --  Computes the triple scalar product. Returns me . (V1 ^ V2)
+
+
+  Vec (me)  returns Vec;
+        ---Purpose : Converts this vector into a gp_Vec vector.
+    	---C++: return const&
+
+
+fields
+
+  gpVec : Vec is protected;
+
+end;

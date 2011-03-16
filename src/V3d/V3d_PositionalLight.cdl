@@ -1,0 +1,142 @@
+-- File:	PositionalLight.cdl
+-- Created:	Wed Jan 22 11:39:37 1992
+-- Author:	GG
+-- Update:	FDA Oct 15 1994
+--		ZOV - Mars 30 1998
+---Copyright:	Matra Datavision 1992
+
+
+class PositionalLight from V3d
+
+        ---Version:
+
+	---Purpose: Creation and modification of an isolated
+	--          light source.
+
+        ---Keywords: Light,Positional 
+
+        ---Warning:
+
+        ---References:
+
+
+inherits PositionLight from V3d
+
+uses 
+
+	Viewer from V3d,
+	Coordinate from V3d,
+	View from V3d,
+	TypeOfRepresentation from V3d,
+	NameOfColor from Quantity,
+	Coefficient from Quantity,
+	Parameter from Quantity,
+	Structure from Graphic3d,
+	Vertex from Graphic3d,
+	Group from Graphic3d
+	
+raises BadValue from Viewer
+
+is
+
+    	Create ( VM : mutable Viewer ; X,Y,Z : Coordinate ;
+		 Color : NameOfColor = Quantity_NOC_WHITE ;
+		 Attenuation1 : Coefficient = 1.0 ; 
+                 Attenuation2 : Coefficient = 0.0 ) 
+				returns mutable PositionalLight 
+        ---Level: Public
+       	---Purpose: Creates an isolated light source X,Y,Z in the viewer.
+    	--          It is also defined by the color Color and
+    	--          two attenuation factors Attenuation1, Attenuation2.
+	--	    The resulting attenuation factor determining the
+	--	    illumination of a surface depends on the following
+	--	    formula :
+	--	    F = 1/(A1 + A2*Length)
+	--		A1,A2 being the two factors of attenuation
+	--	 	Length is the distance of the isolated source
+	--	    from the surface.
+	raises BadValue from Viewer;
+	---Purpose:  Warning!  raises BadValue from Viewer
+	--          if one of the attenuation coefficients is not between 0 et 1.
+
+    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+	         Xp,Yp,Zp : Coordinate;
+		 Color : NameOfColor = Quantity_NOC_WHITE ;
+		 Attenuation1 : Coefficient = 1.0 ; 
+                 Attenuation2 : Coefficient = 0.0 ) 
+		       returns mutable PositionalLight 
+	---Level: Public
+	---Purpose: Creates a light source of the Positional type 
+	--          in the viewer.
+	--          Xt,Yt,Zt : Coordinate of Target light source.
+	--          Xp,Yp,Zp : Coordinate of Position light source.
+	--          The light source is also defined by the color Color
+    	--          and two attenuation factors Attenuation1,
+    	--          Attenuation2 that determine the illumination of a
+    	--          surface using the following formula :
+    	--          F = 1/(A1 + A2*Length) where:
+    	--          -   A1,A2 are the two attenuation factors, and
+    	--          -   Length is the distance from the isolated source.
+	raises BadValue from Viewer;
+	---Purpose:  Warning! raises BadValue from Viewer
+	--          if one of the attenuation coefficients is not between 0 et 1.
+
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Attributes of the Light
+        --------------------------------------------------------
+
+    	SetPosition ( me : mutable; X,Y,Z : Coordinate ) is redefined;
+	---Level: Public
+	---Purpose: Defines the position of the light source.
+
+	    SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from Viewer is static;
+	---Level: Public
+	---Purpose: Defines the attenuation factors.
+	--  Warning: raises BadValue from Viewer
+	--          if one of the attenuation coefficients is not between 0 et 1.
+
+     	---------------------------------------------------
+        ---Category: Displaying methods 
+        ---------------------------------------------------
+
+        Display(me: mutable; aView: View from V3d;
+	        Representation : TypeOfRepresentation)
+	is redefined static;
+	---Level: Public
+	---Purpose: Display the graphic structure of light source
+	--          in the choosen view. We have three type of representation
+	--          - SIMPLE   : Only the light source is displayed.
+	--          - PARTIAL  : The light source and the light space are
+	--                       displayed.
+	--          - COMPLETE : The light source, the light space and the
+	--                       radius of light space are displayed.
+	--          We can choose the "SAMELAST" as parameter of representation
+	--          In this case the graphic structure representation will be 
+	--          the last displayed.
+	
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+    	Position ( me; X,Y,Z : out Coordinate ) is redefined static;
+	---Level: Public
+	---Purpose : Returns the position of the light source.
+
+    	Attenuation ( me; A1,A2 : out Coefficient ) is static;
+	---Level: Public
+	---Purpose : Returns the attenuation factors A1,A2 of the light
+    	-- source used at construction time.
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+                      aView   : View from V3d ) is redefined static private;
+	---Level: Internal
+	---Purpose: Defined the representation of the positional light source.
+
+end PositionalLight;
+
+

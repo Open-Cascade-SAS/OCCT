@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWDocumentProductAssociation.cdl
+-- Created:	Tue Jan 28 12:40:35 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWDocumentProductAssociation from RWStepBasic
+
+    ---Purpose: Read & Write tool for DocumentProductAssociation
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    DocumentProductAssociation from StepBasic
+
+is
+    Create returns RWDocumentProductAssociation from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : DocumentProductAssociation from StepBasic);
+	---Purpose: Reads DocumentProductAssociation
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: DocumentProductAssociation from StepBasic);
+	---Purpose: Writes DocumentProductAssociation
+
+    Share (me; ent : DocumentProductAssociation from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWDocumentProductAssociation;

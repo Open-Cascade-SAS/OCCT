@@ -1,0 +1,554 @@
+-- File:        Builder.cdl
+-- Created:     Mon Jul  1 10:04:42 1991
+-- Author:      Remi LEQUETTE
+---Copyright:    Matra Datavision 1991, 1992
+
+
+class Builder from BRep inherits Builder from TopoDS
+
+        ---Purpose: A framework providing advanced tolerance control.
+	-- If tolerance control is required, you are advised to:
+	-- 1. build a default precision for topology, using the
+	-- classes provided in the BRepAPI package
+	-- 2. update the tolerance of the resulting shape.
+	-- Note that only vertices, edges and faces have
+	-- meaningful tolerance control. The tolerance value
+	-- must always comply with the condition that face
+	-- tolerances are more restrictive than edge tolerances
+	-- which are more restrictive than vertex tolerances. In
+	-- other words: Tol(Vertex) >= Tol(Edge) >= Tol(Face).
+	-- Other rules in setting tolerance include:
+	-- - you can open up tolerance but should never restrict it
+	-- - an edge cannot be included within the fusion of the
+	--   tolerance spheres of two vertices         
+
+uses
+    Location  from TopLoc,
+
+    Shape     from TopoDS,
+    
+    Vertex    from TopoDS,
+    Edge      from TopoDS,
+    Face      from TopoDS,
+    
+    Shape     from GeomAbs,
+    Surface   from Geom,
+    Curve     from Geom,
+    
+    Curve     from Geom2d,
+    
+    Triangulation          from Poly,
+    Polygon3D              from Poly,
+    Polygon2D              from Poly,
+    PolygonOnTriangulation from Poly,
+    
+    HArray1OfInteger from TColStd,
+    HArray1OfReal    from TColStd,
+    
+    Pnt       from gp,
+    Pnt2d     from gp
+    
+raises
+    NullObject  from Standard,
+    DomainError from Standard
+    
+is
+
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Face                          -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+
+
+
+    -------------------------------------------------------
+    -- Construction
+    -------------------------------------------------------
+
+
+    MakeFace(me; F   : out Face    from TopoDS);
+    ---C++: inline
+                 
+        ---Purpose: Makes an undefined Face.
+
+    MakeFace(me; F   : out Face    from TopoDS;
+                 S   :     Surface from Geom;
+                 Tol :     Real)
+                 
+        ---Purpose: Makes a Face with a surface.
+    raises
+        NullObject  from Standard; -- If <S> is null.
+        
+
+    MakeFace(me; F   : out Face     from TopoDS; 
+                 S   :     Surface  from Geom;
+                 L   :     Location from TopLoc;
+                 Tol :     Real)
+                 
+        ---Purpose: Makes a Face with a surface and a location.
+    raises
+        NullObject  from Standard; -- If <S> is null.
+
+    MakeFace(me; F   : out Face      from TopoDS; 
+                 T   : Triangulation from Poly)
+                 
+        ---Purpose: Makes a Face with a triangulation. The triangulation  
+        --          is in the same reference system than the TFace.
+        --          
+    raises
+        NullObject  from Standard; -- If <S> is null.
+
+
+    UpdateFace(me; F   : Face     from TopoDS; 
+                   S   : Surface  from Geom;
+                   L   : Location from TopLoc;
+                   Tol : Real)
+                 
+        ---Purpose: Updates the face F using the tolerance value Tol,
+	-- surface S and location Location.
+    raises
+        NullObject  from Standard; -- If <S> is null.
+
+    UpdateFace(me; F   : Face          from TopoDS; 
+                   T   : Triangulation from Poly)                
+        ---Purpose: Changes a  face triangulation.
+        --          
+        --          A null Triangulation removes the triangulation.
+        --          
+
+    raises
+        NullObject  from Standard; -- If <S> is null.
+
+
+    UpdateFace(me; F   : Face     from TopoDS; 
+                   Tol : Real);
+        ---Purpose: Updates the face Tolerance.
+
+    -------------------------------------------------------
+    -- Face flags
+    -------------------------------------------------------
+
+
+    NaturalRestriction(me; F : Face from TopoDS;
+                           N : Boolean)
+        ---Purpose: Sets the  NaturalRestriction flag of  the face.
+    raises
+        NullObject  from Standard; -- If <F> is null.
+
+    
+    
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Edge                          -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+
+
+    -------------------------------------------------------
+    -- Edge construction
+    -------------------------------------------------------
+
+    MakeEdge(me; E : out Edge from TopoDS);
+
+        ---Purpose: Makes an undefined Edge (no geometry).
+
+    MakeEdge(me; E   : out Edge from TopoDS;
+                 C   : Curve    from Geom;
+                 Tol : Real);
+    ---C++: inline
+
+        ---Purpose: Makes an Edge with a curve.
+
+    MakeEdge(me; E   : out Edge from TopoDS;
+                 C   : Curve    from Geom;
+                 L   : Location from TopLoc;
+                 Tol : Real);
+    ---C++: inline
+
+        ---Purpose: Makes an Edge with a curve and a location.
+
+    MakeEdge(me; E : out Edge  from TopoDS;
+                 P : Polygon3D from Poly);
+    ---C++: inline
+
+        ---Purpose: Makes an Edge with a polygon 3d.
+
+    MakeEdge(me; E : out Edge               from TopoDS;
+                 N : PolygonOnTriangulation from Poly;
+                 T : Triangulation          from Poly);
+    ---C++: inline
+
+        ---Purpose: makes an Edge polygon on Triangulation.
+
+    MakeEdge(me; E : out Edge               from TopoDS;
+                 N : PolygonOnTriangulation from Poly;
+                 T : Triangulation          from Poly;
+                 L : Location               from TopLoc);
+    ---C++: inline
+
+        ---Purpose: makes an Edge polygon on Triangulation.
+
+    -------------------------------------------------------
+    -- Edge update
+    -- 
+    -------------------------------------------------------
+
+    UpdateEdge(me; E   : Edge     from TopoDS;
+                   C   : Curve    from Geom;
+                   Tol : Real);
+    ---C++: inline
+
+        ---Purpose: Sets a 3D curve for the edge.
+        --          If <C> is a null handle, remove any existing 3d curve.
+
+    UpdateEdge(me; E   : Edge     from TopoDS;
+                   C   : Curve    from Geom;
+                   L   : Location from TopLoc;
+                   Tol : Real);
+
+        ---Purpose: Sets a 3D curve for the edge.
+        --          If <C> is a null handle, remove any existing 3d curve.
+
+    UpdateEdge(me; E   : Edge  from TopoDS;
+                   C   : Curve from Geom2d;
+                   F   : Face  from TopoDS;
+                   Tol : Real);
+    ---C++: inline
+
+        ---Purpose: Sets a pcurve for the edge on the face.
+        --          If <C> is a null handle, remove any existing pcurve.
+
+    UpdateEdge(me; E     : Edge  from TopoDS;
+                   C1,C2 : Curve from Geom2d;
+                   F     : Face  from TopoDS;
+                   Tol   : Real);
+    ---C++: inline
+
+        ---Purpose: Sets pcurves for the edge on the  closed face.  If
+        --          <C1> or <C2> is a null handle, remove any existing
+        --          pcurve.
+
+    UpdateEdge(me; E   : Edge     from TopoDS;
+                   C   : Curve    from Geom2d;
+                   S   : Surface  from Geom;
+                   L   : Location from TopLoc;
+                   Tol : Real);
+
+        ---Purpose: Sets a pcurve for the edge on the face.
+        --          If <C> is a null handle, remove any existing pcurve.
+
+    UpdateEdge(me; E     : Edge     from TopoDS;
+                   C     : Curve    from Geom2d;
+                   S     : Surface  from Geom;
+                   L     : Location from TopLoc;
+                   Tol   : Real;
+                   Pf,Pl : Pnt2d    from gp);
+
+        ---Purpose: Sets a pcurve for the edge on the face.
+        --          If <C> is a null handle, remove any existing pcurve.
+        --          Sets UV bounds for curve repsentation
+
+    UpdateEdge(me; E     : Edge     from TopoDS;
+                   C1,C2 : Curve    from Geom2d;
+                   S     : Surface  from Geom;
+                   L     : Location from TopLoc;
+                   Tol   : Real);
+
+        ---Purpose: Sets pcurves for the edge on the closed surface.
+        --          <C1> or <C2> is a null handle, remove any existing
+        --          pcurve.
+
+    UpdateEdge(me; E     : Edge     from TopoDS;
+                   C1,C2 : Curve    from Geom2d;
+                   S     : Surface  from Geom;
+                   L     : Location from TopLoc;
+                   Tol   : Real;
+                   Pf,Pl : Pnt2d    from gp);
+
+        ---Purpose: Sets pcurves for the edge on the closed surface.
+        --          <C1> or <C2> is a null handle, remove any existing
+        --          pcurve.
+        --          Sets UV bounds for curve repsentation
+
+    UpdateEdge(me; E : Edge      from TopoDS;
+                   P : Polygon3D from Poly);
+    ---C++: inline
+
+        ---Purpose: Changes an Edge 3D polygon.
+        --          A null Polygon removes the 3d Polygon.
+
+    UpdateEdge(me; E : Edge      from TopoDS;
+                   P : Polygon3D from Poly;
+                   L : Location  from TopLoc);
+
+        ---Purpose: Changes an Edge 3D polygon.
+        --          A null Polygon removes the 3d Polygon.
+
+    UpdateEdge(me; E : Edge                   from TopoDS;
+                   N : PolygonOnTriangulation from Poly;
+                   T : Triangulation          from Poly);
+    ---C++: inline
+
+        ---Purpose: Changes an Edge polygon on Triangulation.
+
+    UpdateEdge(me; E : Edge                   from TopoDS;
+                   N : PolygonOnTriangulation from Poly;
+                   T : Triangulation          from Poly;
+                   L : Location               from TopLoc);
+
+        ---Purpose: Changes an Edge polygon on Triangulation.
+
+    UpdateEdge(me; E      : Edge                   from TopoDS;
+                   N1, N2 : PolygonOnTriangulation from Poly;
+                   T      : Triangulation          from Poly);
+    ---C++: inline
+
+        ---Purpose: Changes an Edge polygon on Triangulation.
+
+    UpdateEdge(me; E      : Edge                   from TopoDS;
+                   N1, N2 : PolygonOnTriangulation from Poly;
+                   T      : Triangulation          from Poly;
+                   L      : Location               from TopLoc);
+
+        ---Purpose: Changes an Edge polygon on Triangulation.
+
+    UpdateEdge(me; E: Edge      from TopoDS;
+                   P: Polygon2D from Poly;
+                   S: Face      from TopoDS)
+                   
+        ---Purpose: Changes Edge polygon on a face.
+        --          
+        --          
+    raises
+        NullObject  from Standard; -- If <E> is null.
+
+    UpdateEdge(me; E: Edge      from TopoDS;
+                   P: Polygon2D from Poly;
+                   S: Surface   from Geom;
+                   T: Location  from TopLoc)
+                   
+        ---Purpose: Changes Edge polygon on a face.
+        --          
+        --          
+    raises
+        NullObject  from Standard; -- If <E> is null.
+
+    UpdateEdge(me; E     : Edge      from TopoDS;
+                   P1, P2: Polygon2D from Poly;
+                   S     : Face      from TopoDS)
+                   
+        ---Purpose: Changes Edge polygons on a face.
+        --          
+        --          A null Polygon removes the 2d Polygon.
+        --          
+    raises
+        NullObject  from Standard; -- If <E> is null.
+        
+    UpdateEdge(me; E     : Edge      from TopoDS;
+                   P1, P2: Polygon2D from Poly;
+                   S     : Surface   from Geom;
+                   L     : Location  from TopLoc)
+                   
+        ---Purpose: Changes Edge polygons on a face.
+        --          
+        --          A null Polygon removes the 2d Polygon.
+        --          
+    raises
+        NullObject  from Standard; -- If <E> is null.
+        
+    UpdateEdge(me; E      : Edge     from TopoDS;
+                   Tol    : Real);
+
+        ---Purpose: Updates the edge tolerance.
+
+    -------------------------------------------------------
+    -- Edge continuity
+    -------------------------------------------------------
+
+
+    Continuity(me; E      : Edge  from TopoDS;
+                   F1,F2  : Face  from TopoDS;
+                   C      : Shape from GeomAbs)
+        ---Purpose: Sets the geometric continuity on the edge.
+    raises
+        NullObject  from Standard; -- If <E>, <F1> or <F2> is Null
+
+
+    Continuity(me; E      : Edge     from TopoDS;
+                   S1,S2  : Surface  from Geom;
+                   L1,L2  : Location from TopLoc;
+                   C      : Shape    from GeomAbs)
+        ---Purpose: Sets the geometric continuity on the edge.
+    raises
+        NullObject  from Standard; -- If <E>, <F1> or <F2> is Null
+
+
+    -------------------------------------------------------
+    -- Edge flags
+    -------------------------------------------------------
+
+
+    SameParameter(me; E      : Edge  from TopoDS;
+                      S      : Boolean)
+        ---Purpose: Sets the same parameter flag for the edge <E>.
+    raises
+        NullObject  from Standard; -- If <E> is Null
+
+
+    SameRange(me; E      : Edge  from TopoDS;
+                  S      : Boolean)
+        ---Purpose: Sets the same range flag for the edge <E>.
+    raises
+        NullObject  from Standard; -- If <E> is Null
+
+
+    Degenerated(me; E      : Edge  from TopoDS;
+                    D      : Boolean)
+        ---Purpose: Sets the degenerated flag for the edge <E>.
+    raises
+        NullObject  from Standard; -- If <E> is Null
+
+    -------------------------------------------------------
+    -- Edge parameter range
+    -------------------------------------------------------
+    
+    Range(me; E : Edge from TopoDS;
+              First, Last : Real; 
+              Only3d : Boolean from Standard = Standard_False)
+        ---Purpose: Sets the range of the 3d curve if Only3d=TRUE,
+	--          otherwise sets the range to all the representations
+    raises 
+        NullObject  from Standard; -- If <E> is Null
+ 
+    
+    Range(me; E : Edge from TopoDS;
+              S : Surface from Geom;
+              L : Location from TopLoc;
+              First, Last : Real)
+        ---Purpose: Sets the range  of the edge  on the pcurve on  the
+        --          surface.
+    raises 
+        NullObject  from Standard; -- If <E> is Null
+ 
+    
+    Range(me; E : Edge from TopoDS;
+              F : Face from TopoDS;
+              First, Last : Real);
+    ---C++: inline
+        ---Purpose: Sets the range of the edge on the pcurve on the face.
+
+
+    -------------------------------------------------------
+    -- Edge transfer of geometry
+    -------------------------------------------------------
+    
+    Transfert(me; Ein, Eout : Edge from TopoDS)
+        ---Purpose: Add  to <Eout>  the  geometric representations  of
+        --          <Ein>. 
+    raises 
+        NullObject  from Standard; -- If <Ein,Eout> is Null
+
+
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Vertex                        -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+
+
+    -------------------------------------------------------
+    -- Vertex construction from geometry
+    -------------------------------------------------------
+    
+    MakeVertex(me; V   : out Vertex from TopoDS);
+    ---C++: inline
+    
+        ---Purpose: Makes an udefined vertex without geometry.
+
+
+    MakeVertex(me; V   : out Vertex from TopoDS;
+                   P   :     Pnt    from gp;
+                   Tol :     Real);
+    ---C++: inline
+                   
+        ---Purpose: Makes a vertex from a 3D point.
+
+
+    -------------------------------------------------------
+    -- Vertex update
+    -------------------------------------------------------
+
+    UpdateVertex(me; V      : Vertex from TopoDS;
+                     P      : Pnt    from gp;
+                     Tol    : Real)
+                     
+        ---Purpose: Sets a 3D point on the vertex.
+    raises 
+        NullObject  from Standard; -- If <V> is Null
+
+
+
+    UpdateVertex(me; V      : Vertex from TopoDS;
+                     P      : Real;
+                     E      : Edge from TopoDS;
+                     Tol    : Real)
+                     
+        ---Purpose: Sets  the parameter  for the   vertex on the  edge
+        --          curves.
+    raises 
+        NullObject  from Standard, -- If <V> or <E> is Null
+        DomainError from Standard; -- If <V> is not the first or last vertex.
+
+
+    
+    UpdateVertex(me; V      : Vertex from TopoDS;
+                     P      : Real;
+                     E      : Edge from TopoDS;
+                     F      : Face from TopoDS;
+                     Tol    : Real);
+    ---C++: inline
+                     
+        ---Purpose: Sets  the parameter  for the  vertex  on the  edge
+        --          pcurve  on the face.
+
+
+    UpdateVertex(me; V      : Vertex from TopoDS;
+                     P      : Real;
+                     E      : Edge     from TopoDS;
+                     S      : Surface  from Geom;
+                     L      : Location from TopLoc;
+                     Tol    : Real)
+                     
+        ---Purpose: Sets  the parameter  for the  vertex  on the  edge
+        --          pcurve  on the surface.
+    raises 
+        DomainError from Standard; -- If <V> is not the first or last vertex.
+
+
+    UpdateVertex(me; Ve     : Vertex from TopoDS;
+                     U,V    : Real;
+                     F      : Face from TopoDS;
+                     Tol    : Real)
+                     
+        ---Purpose: Sets the parameters for the vertex on the face.
+    raises 
+        NullObject  from Standard, -- If <Ve> or <F> is Null
+        DomainError from Standard; -- If <Ve> is not the first or last vertex.
+
+    UpdateVertex(me; V      : Vertex from TopoDS;
+                     Tol    : Real);
+        ---Purpose: Updates the vertex tolerance.
+    
+    -------------------------------------------------------
+    -- Vertex transfer of parameters
+    -------------------------------------------------------
+
+    Transfert(me; Ein, Eout : Edge   from TopoDS;
+                 Vin, Vout : Vertex from TopoDS)
+        ---Purpose: Transfert the parameters  of   Vin on  Ein as  the
+        --          parameter of Vout on Eout.
+    raises 
+        NullObject  from Standard;
+
+end Builder;

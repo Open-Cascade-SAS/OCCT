@@ -1,0 +1,64 @@
+// File:	Dynamic_Node.gxx
+// Created:	Mon Sep 19 11:27:15 1994
+// Author:	Gilles DEBARBOUILLE
+//		<gde@watson>
+
+
+//=======================================================================
+//function : Dynamic_Node
+//purpose  : 
+//=======================================================================
+
+Dynamic_Node::Dynamic_Node()
+{
+}
+
+//=======================================================================
+//function : Dynamic_Node
+//purpose  : 
+//=======================================================================
+
+Dynamic_Node::Dynamic_Node(const Handle(Item)& anitem)
+{
+  theitem = anitem;
+}
+
+//=======================================================================
+//function : Object
+//purpose  : 
+//=======================================================================
+
+void Dynamic_Node::Object(const Handle(Item)& anitem)
+{
+  theitem = anitem;
+}
+
+//=======================================================================
+//function : Object
+//purpose  : 
+//=======================================================================
+
+Handle(Item) Dynamic_Node::Object() const
+{
+  return theitem;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void Dynamic_Node::Next(const Handle(Dynamic_Node)& anode)
+{
+  thenextnode = anode;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+Handle(Dynamic_Node) Dynamic_Node::Next() const
+{
+  return thenextnode;
+}

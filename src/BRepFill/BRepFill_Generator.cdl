@@ -1,0 +1,78 @@
+-- File:	BRepFill_Generator.cdl
+-- Created:	Mon Mar  7 09:35:05 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+-- Modified:	Thu Jul  2 16:47:35 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		add methods Generated and GeneratedShapes
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+
+class Generator from BRepFill
+
+    	   ---Purpose: Compute a topological surface ( a  shell) using
+    	   --          generating wires. The face of the shell will be
+    	   --          ruled surfaces passing by the wires.
+    	   --          The wires must have the same number of edges.
+						    	
+
+uses
+
+    Wire            from TopoDS,
+    Shell           from TopoDS,
+    Shape           from TopoDS,
+    SequenceOfShape from TopTools,
+    ListOfShape from TopTools, 
+    DataMapOfShapeListOfShape from TopTools
+
+
+is 
+    
+    Create returns Generator from BRepFill;
+    
+    AddWire( me   : in out;
+    	     Wire : in Wire from TopoDS)
+    is static;
+    
+    Perform( me     : in out)
+	---Purpose: Compute the  shell.
+    is static;
+    
+    Shell(me)
+	---C++: return const&
+	---C++: inline      
+    returns Shell from TopoDS
+    is static;
+    
+    Generated (me )
+        ---Purpose: Returns  all   the shapes created 
+        ---C++ : return const &          
+    returns DataMapOfShapeListOfShape from TopTools
+    is static;			 
+    
+    GeneratedShapes (me ;
+    	    	     SSection : Shape from TopoDS)
+        ---Purpose: Returns   the  shapes  created  from   a  subshape
+        --          <SSection>  of a  section.
+        --	
+        ---C++ : return const &          
+    returns ListOfShape from TopTools
+    is static;			 
+    
+
+
+
+fields
+    myWires : SequenceOfShape from TopTools;
+    myShell : Shell           from TopoDS;
+    myMap   : DataMapOfShapeListOfShape from TopTools;  
+
+end Generator;
+
+
+
+

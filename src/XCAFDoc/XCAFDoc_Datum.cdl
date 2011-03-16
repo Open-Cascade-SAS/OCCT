@@ -1,0 +1,59 @@
+-- File:	XCAFDoc_Datum.cdl
+-- Created:	Thu Jan 15 16:30:53 2004
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class Datum from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+    Label from TDF,
+    RelocationTable from TDF,
+    HAsciiString from TCollection
+
+is
+    Create returns Datum from XCAFDoc;
+    
+    ---Category: class methods
+    --           =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+    
+    Set (myclass; label : Label from TDF;
+    	    	  aName : HAsciiString from TCollection;
+    	    	  aDescription : HAsciiString from TCollection;
+    	    	  anIdentification : HAsciiString from TCollection)
+    returns Datum from XCAFDoc;
+
+    Set (me : mutable; aName : HAsciiString from TCollection;
+    	    	       aDescription : HAsciiString from TCollection;
+    	    	       anIdentification : HAsciiString from TCollection);
+	     
+    GetName (me) returns HAsciiString from TCollection;
+
+    GetDescription (me) returns HAsciiString from TCollection;
+
+    GetIdentification (me) returns HAsciiString from TCollection;
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+    myName : HAsciiString from TCollection;
+    myDescription : HAsciiString from TCollection;
+    myIdentification : HAsciiString from TCollection;
+
+end Datum;

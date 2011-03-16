@@ -1,0 +1,35 @@
+-- File:	Vrml_Rotation.cdl
+-- Created:	Wed Feb 12 09:55:51 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Rotation from Vrml 
+
+	---Purpose:  defines a Rotation node of VRML specifying matrix and transform properties.
+    	--  This  node  defines  a  3D  rotation  about  an  arbitrary  axis  through  the  origin. 
+    	--  By  default  :  myRotation  =  (0 0 1 0)
+
+uses
+ 
+    SFRotation  from  Vrml
+
+is
+ 
+    Create returns   Rotation from Vrml;
+
+    Create  (  aRotation  :  SFRotation  from  Vrml ) 
+    	returns   Rotation from Vrml;
+      
+    SetRotation ( me : in out; aRotation : SFRotation  from  Vrml );
+    Rotation ( me )  returns  SFRotation  from  Vrml;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myRotation  :  SFRotation  from  Vrml; -- Rotation
+
+end Rotation;

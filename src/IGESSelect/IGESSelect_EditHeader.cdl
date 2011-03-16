@@ -1,0 +1,37 @@
+-- File:	IGESSelect_EditHeader.cdl
+-- Created:	Fri Jul 31 10:54:50 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EditHeader  from IGESSelect    inherits Editor  from IFSelect
+
+    ---Purpose : This class is aimed to display and edit the Header of an
+    --           IGES Model : Start Section and Global Section
+
+uses Transient, AsciiString, HAsciiString, InterfaceModel, EditForm
+
+is
+
+    Create returns EditHeader;
+
+    Label (me) returns AsciiString;
+
+    Recognize (me; form : EditForm) returns Boolean;
+
+    StringValue (me; form : EditForm;  num : Integer)
+    	returns HAsciiString from TCollection;
+
+    Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+    Update (me; form : mutable EditForm; num : Integer;
+    	    newval : HAsciiString; enforce : Boolean)
+    	returns Boolean  is redefined;
+	-- for dynamically computed values
+
+    Apply (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+end EditHeader;

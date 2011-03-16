@@ -1,0 +1,49 @@
+-- File:	XSAlgo.cdl
+-- Created:	Wed Jan 19 17:35:08 2000
+-- Author:	data exchange team
+--		<det@nnov>
+---Copyright:	 Matra Datavision 2000
+
+
+package XSAlgo 
+
+    ---Purpose: 
+
+uses
+
+    MMgt,
+    Geom,
+    Geom2d,
+    TopoDS,
+    ShapeExtend,
+    ShapeAnalysis,
+    ShapeFix,
+    Transfer
+    
+is
+
+    enumeration Caller is
+    	---Purpose: Identifies the caller of the algorithm
+	DEFAULT,
+	IGES,
+	STEP
+    end Caller;
+
+    class ToolContainer;
+    	---Purpose: Returns tools used by AlgoContainer
+
+    class AlgoContainer;
+    	---Purpose: Provides initerface to the algorithms from Shape Healing
+	--          and others for XSTEP processors.
+
+    
+    Init;
+    	---Purpose: Creates and initializes default AlgoContainer.
+    
+    SetAlgoContainer (aContainer: AlgoContainer from XSAlgo);
+    	---Purpose: Sets default AlgoContainer
+
+    AlgoContainer returns AlgoContainer from XSAlgo;
+    	---Purpose: Returns default AlgoContainer
+
+end XSAlgo;

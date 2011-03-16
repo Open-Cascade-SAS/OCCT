@@ -1,0 +1,41 @@
+-- File:        SurfaceStyleParameterLine.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceStyleParameterLine from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	CurveStyle                    from StepVisual, 
+    	HArray1OfDirectionCountSelect from StepVisual,
+	DirectionCountSelect          from StepVisual,
+	Integer                       from Standard
+is
+
+	Create returns mutable SurfaceStyleParameterLine;
+	---Purpose: Returns a SurfaceStyleParameterLine
+
+	Init (me : mutable;
+	      aStyleOfParameterLines : mutable CurveStyle from StepVisual;
+	      aDirectionCounts : HArray1OfDirectionCountSelect from StepVisual) 
+    	is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStyleOfParameterLines(me : mutable; aStyleOfParameterLines : mutable CurveStyle);
+	StyleOfParameterLines (me) returns mutable CurveStyle;
+	SetDirectionCounts(me : mutable; aDirectionCounts : HArray1OfDirectionCountSelect from StepVisual);
+	DirectionCounts (me) returns HArray1OfDirectionCountSelect from StepVisual;
+	DirectionCountsValue (me; num : Integer) returns DirectionCountSelect from StepVisual;
+	NbDirectionCounts (me) returns Integer;
+
+fields
+
+	styleOfParameterLines : CurveStyle                    from StepVisual;
+	directionCounts       : HArray1OfDirectionCountSelect from StepVisual;
+
+end SurfaceStyleParameterLine;

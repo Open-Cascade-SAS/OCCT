@@ -1,0 +1,25 @@
+-- File:	XCAFDrivers_DocumentRetrievalDriver.cdl
+-- Created:	Wed May 24 11:55:16 2000
+-- Author:	Edward AGAPOV
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DocumentRetrievalDriver from XCAFDrivers 
+inherits DocumentRetrievalDriver from MDocStd
+
+	---Purpose: retrieval driver of a XS document
+
+uses
+    ARDriverTable from MDF,
+    MessageDriver from CDM
+
+is
+    Create returns mutable DocumentRetrievalDriver from XCAFDrivers;    
+
+    AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM)
+    returns ARDriverTable from MDF
+    is redefined;
+
+end DocumentRetrievalDriver;
+

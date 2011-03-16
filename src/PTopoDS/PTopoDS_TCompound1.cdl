@@ -1,0 +1,25 @@
+-- File:	TCompound1.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+class TCompound1 from PTopoDS inherits TShape1 from PTopoDS
+
+	---Purpose: A topological Compound1 object containing shapes.
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TCompound1 from PTopoDS;
+	---Purpose: the new TCompound1 is empty.
+    ---Level: Internal 
+    	
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Level: Internal 
+
+end TCompound1;
+

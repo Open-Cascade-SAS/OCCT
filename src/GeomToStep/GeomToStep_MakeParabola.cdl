@@ -1,0 +1,39 @@
+-- File:	GeomToStep_MakeParabola.cdl
+-- Created:	Thu May  4 17:39:49 1995
+-- Author:	Dieter THIEMANN
+--		<dth@bibox>
+---Copyright:	 Matra Datavision 1995
+
+
+class MakeParabola from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between the class
+    --          Parabola from Geom and the class Parabola from
+    --          StepGeom which describes a Parabola from ProSTEP
+
+
+uses Parabola from Geom,
+     Parabola from Geom2d,
+     Parabola from StepGeom
+     
+raises NotDone from StdFail
+
+is
+
+Create ( C : Parabola from Geom2d) returns MakeParabola;
+
+Create ( C : Parabola from Geom) returns MakeParabola;
+
+
+Value (me) returns Parabola from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+
+fields
+
+    theParabola : Parabola from StepGeom;
+    	-- The solution from StepGeom
+
+end MakeParabola;

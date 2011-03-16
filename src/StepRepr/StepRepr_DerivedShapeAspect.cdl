@@ -1,0 +1,18 @@
+-- File:	StepRepr_DerivedShapeAspect.cdl
+-- Created:	Tue Apr 24 13:45:43 2001
+-- Author:	Cheistian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class DerivedShapeAspect  from StepRepr    inherits ShapeAspect from StepRepr
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    Integer
+
+is
+
+    Create returns mutable DerivedShapeAspect;
+
+end DerivedShapeAspect;

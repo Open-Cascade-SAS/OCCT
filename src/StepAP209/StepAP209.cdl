@@ -1,0 +1,29 @@
+-- File:	STEPConstruct.cdl
+-- Created:	Wed Nov 17 14:13:03 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+package StepAP209
+
+    ---Purpose:
+
+uses
+
+    XSControl,
+    STEPConstruct,
+    StepData,
+    StepShape,
+    StepRepr,
+    StepBasic,
+    StepFEA,
+    StepElement
+    
+is
+
+
+    class Construct;
+    	---Purpose: Basic tool for working with AP209 model
+	
+end StepAP209;

@@ -1,0 +1,12 @@
+inline  void ISession2D_ObjectOwner::SetDumpMessage(const TCollection_AsciiString& aNewDumpMessage) 
+{
+  myDumpMessage = aNewDumpMessage;
+}
+
+ 
+inline  TCollection_AsciiString ISession2D_ObjectOwner::DumpMessage() const
+{
+  return myDumpMessage;
+}
+
+ 

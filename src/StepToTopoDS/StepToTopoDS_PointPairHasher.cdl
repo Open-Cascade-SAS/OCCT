@@ -1,0 +1,21 @@
+-- File:	StepToTopoDS_PointPairHasher.cdl
+-- Created:	Fri Aug  6 12:42:06 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+class PointPairHasher from StepToTopoDS
+
+uses
+    PointPair from StepToTopoDS
+
+is
+    HashCode(myclass; K : PointPair from StepToTopoDS; Upper : Integer) 
+    returns Integer;
+	---Purpose: Returns a HasCode value  for  the  PointPair
+	
+    IsEqual(myclass; K1, K2 : PointPair from StepToTopoDS) returns Boolean;
+	---Purpose: Returns True  when the two  PointPair are the same
+
+end PointPairHasher;

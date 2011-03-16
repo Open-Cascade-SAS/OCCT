@@ -1,0 +1,43 @@
+
+#include <gp_Vec2d.hxx>
+
+
+
+IntImpParGen_ImpParTool::IntImpParGen_ImpParTool(const ImpTool& ITool,
+						 const ParCurve& PC):
+	 TheImpTool(ITool) 
+{  
+  TheParCurve = (Standard_Address)(&PC);
+}
+
+
+Standard_Boolean IntImpParGen_ImpParTool::Value(const Standard_Real Param,
+				   Standard_Real& ApproxDistance) {
+  
+  ApproxDistance = TheImpTool.Distance(ParTool::Value((*((ParCurve *)(TheParCurve))),Param));
+  return(Standard_True);
+}
+
+Standard_Boolean IntImpParGen_ImpParTool::Derivative(const Standard_Real Param,
+					Standard_Real& D_ApproxDistance_DV) {
+  
+  gp_Pnt2d Pt;
+  gp_Vec2d TanParCurve;
+  gp_Vec2d Grad=TheImpTool.GradDistance(ParTool::Value((*((ParCurve *)(TheParCurve))),Param));
+  ParTool::D1((*((ParCurve *)(TheParCurve))),Param,Pt,TanParCurve);
+  D_ApproxDistance_DV = Grad.Dot(TanParCurve);
+  return(Standard_True);
+}
+
+
+Standard_Boolean IntImpParGen_ImpParTool::Values(const Standard_Real Param,
+				    Standard_Real& ApproxDistance,
+				    Standard_Real& Deriv) {
+  
+  this->Value(Param,ApproxDistance);
+  this->Derivative(Param,Deriv);
+  return(Standard_True);
+}
+
+
+

@@ -1,0 +1,30 @@
+// File:	ShapeExtend_MsgRegistrator.lxx
+// Created:	Mon Jan 31 13:17:28 2000
+// Author:	data exchange team
+//		<det@kinox>
+
+#include <ShapeExtend_MsgRegistrator.hxx>
+
+
+//=======================================================================
+//function : MapTransient
+//purpose  : 
+//=======================================================================
+
+inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator::MapTransient() const
+{
+  return myMapTransient;
+}
+
+ 
+//=======================================================================
+//function : MapShape
+//purpose  : 
+//=======================================================================
+
+inline const ShapeExtend_DataMapOfShapeListOfMsg& ShapeExtend_MsgRegistrator::MapShape() const
+{
+  return myMapShape;
+}
+
+ 

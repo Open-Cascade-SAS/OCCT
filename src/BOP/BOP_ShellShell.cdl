@@ -1,0 +1,53 @@
+-- File:	BOP_ShellShell.cdl
+-- Created:	Mon Oct 29 11:28:29 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ShellShell from BOP inherits ShellSolid from BOP
+
+	---Purpose: 
+    	---        Performs  Boolean Operations (BO)  
+    	---        Common,Cut,Fuse for arguments that   
+    	---        are of type shell/shell  
+	---    	 
+
+uses
+ 
+    DSFiller  from BOPTools
+    
+--raises 
+
+is 
+    Create   
+    	returns ShellShell from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_ShellShell(){Destroy();}"   
+    	---Purpose:  
+    	--- Destructor
+    	---
+    BuildResult(me: out)
+    	is redefined; 
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    DoNewFaces(me: out)
+    	is redefined;  
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+
+--fields
+    
+end ShellShell;

@@ -1,0 +1,28 @@
+
+-- -- File:	TWire.cdl
+-- Created:	Mon Dec 17 10:57:10 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+class TWire from PTopoDS  inherits TShape from PTopoDS
+
+	---Purpose: a Topological  Wire is a  structure of Edges.  The
+	--          Edges may have 2D curves stored with them. This is
+	--          a curve in the parametric space of a Surface.
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TWire;
+    	---Level: Internal 
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    	---Level: Internal 
+
+end TWire;
+
+

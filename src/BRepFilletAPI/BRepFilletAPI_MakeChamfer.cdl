@@ -1,0 +1,388 @@
+-- File:	BRepFilletAPI_MakeChamfer.cdl
+-- Created:	Thu Jun 22 12:16:38 1995
+-- Author:	Flore Lantheaume
+--		<fla@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class MakeChamfer from BRepFilletAPI inherits LocalOperation from BRepFilletAPI
+
+    ---Purpose: Describes functions to build chamfers on edges of a shell or solid.
+    --  Chamfered Edge of a Shell or Solid
+    -- A MakeChamfer object provides a framework for:
+    -- -   initializing the construction algorithm with a given shape,
+    -- -   acquiring the data characterizing the chamfers,
+    -- -   building the chamfers and constructing the resulting shape, and
+    -- -   consulting the result.    
+        
+uses
+
+    Vertex            from TopoDS,	
+    Edge              from TopoDS,
+    Face              from TopoDS,
+    Shape             from TopoDS,
+    ChBuilder         from ChFi3d,
+    MapOfShape        from TopTools,
+    ListOfShape       from TopTools,
+    SecHArray1        from ChFiDS,
+    HBuilder          from TopOpeBRepBuild,
+    ShapeModification from BRepBuilderAPI
+    
+    
+    
+    
+raises
+    NotDone     from StdFail
+
+is
+
+
+    Create(S: Shape from TopoDS) returns MakeChamfer from BRepFilletAPI;
+    	---Purpose: Initializes an algorithm for computing chamfers on the shape S.
+    	-- The edges on which chamfers are built are defined using the Add function.
+                            
+    Add(me:in out; E: Edge from TopoDS)
+    	---Purpose: Adds edge E to the table of edges used by this
+    	-- algorithm to build chamfers, where the parameters
+    	--      of the chamfer must be set after the
+    	--contour is added using the function SetDists
+     	-- The Add function results in a contour being built by
+    	-- propagation from the edge E (i.e. the contour contains at
+    	-- least this edge). This contour is composed of edges of
+    	-- the shape which are tangential to one another and
+    	-- which delimit two series of tangential faces, with one
+    	-- series of faces being located on either side of the contour.
+    	-- Warning
+    	-- Nothing is done if edge E or the face F does not belong to the initial shape. 
+    is static; 
+
+    Add(me:in out; 
+    	Dis : Real from Standard; 
+    	E   : Edge from TopoDS; 
+    	F   : Face from  TopoDS)
+    	---Purpose: Adds edge E to the table of edges used by this
+    	-- algorithm to build chamfers, where 
+    	--        the parameters of the chamfer are given by the two
+    	--   distances Dis1 and Dis2; the face F identifies the side
+    	--   where Dis1 is measured.
+	-- The Add function results in a contour being built by
+    	-- propagation from the edge E (i.e. the contour contains at
+    	-- least this edge). This contour is composed of edges of
+    	-- the shape which are tangential to one another and
+    	-- which delimit two series of tangential faces, with one
+    	-- series of faces being located on either side of the contour.
+    	-- Warning
+    	-- Nothing is done if edge E or the face F does not belong to the initial shape. 
+    is static; 
+    
+    
+    SetDist(me: in out; 
+    	     Dis : Real    from Standard; 
+    	     IC  : Integer from Standard;
+    	     F   : Face    from TopoDS)
+    	---Purpose: Sets the distances Dis1 and Dis2 which give the
+    	-- parameters of the chamfer along the contour of index
+    	-- IC generated using the Add function in the internal
+    	-- data structure of this algorithm. The face F identifies
+    	-- the side where Dis1 is measured.
+    	-- Warning
+    	-- Nothing is done if either the edge E or the face F
+    	-- does not belong to the initial shape.
+    is static;
+    
+   
+    GetDist(me;
+   	    IC   : Integer from Standard;
+    	     Dis : out Real from Standard)
+    is static;
+
+    
+    Add(me:in out; 
+    	Dis1, Dis2 : Real; 
+    	E: Edge from TopoDS; 
+    	F: Face from  TopoDS)
+    	---Purpose: Adds a  fillet contour in  the  builder  (builds a
+    	--           contour  of tangent edges to <E> and sets the two 
+    	--           distances <Dis1> and <Dis2> ( parameters of the chamfer ) ).
+    	---Level: Public
+    is static; 
+    
+    
+    SetDists(me: in out; 
+    	     Dis1, Dis2 : Real from Standard; 
+    	     IC : Integer from Standard;
+    	     F : Face from TopoDS)
+    	---Purpose: Sets the distances Dis1 and Dis2 which give the
+    	-- parameters of the chamfer along the contour of index
+    	-- IC generated using the Add function in the internal
+    	-- data structure of this algorithm. The face F identifies
+    	-- the side where Dis1 is measured.
+    	-- Warning
+    	-- Nothing is done if either the edge E or the face F
+    	-- does not belong to the initial shape.
+    is static;
+    
+   
+
+    Dists(me;
+   	  IC         : Integer from Standard;
+    	  Dis1, Dis2 : out Real from Standard)
+    is static;	  
+    	---Purpose: Returns the distances Dis1 and Dis2 which give the
+    	-- parameters of the chamfer along the contour of index IC
+    	-- in the internal data structure of this algorithm.
+    	-- Warning
+    	-- -1. is returned if IC is outside the bounds of the table of contours.
+
+
+    AddDA(me:in out; 
+    	  Dis    : Real from Standard;
+          Angle  : Real from Standard; 
+    	  E      : Edge from TopoDS; 
+    	  F      : Face from  TopoDS)
+    	---Purpose: Adds a  fillet contour in  the  builder  (builds a
+    	--           contour  of tangent edges to <E> and sets the  
+    	--           distance <Dis1> and angle <Angle> ( parameters of the chamfer ) ).
+    	---Level: Public
+    is static; 
+
+    SetDistAngle(me         : in out;
+    		 Dis        : Real    from Standard;
+    	    	 Angle      : Real    from Standard;
+    	    	 IC         : Integer from Standard;
+    	    	 F          : Face    from TopoDS) 
+    	---Purpose: set the distance <Dis> and <Angle> of the fillet 
+	--          contour of index <IC> in the DS with <Dis> on <F>.
+	---Purpose: if the face <F> is not one of common faces
+	--          of an edge of the contour <IC> 
+    is static; 
+
+    
+     GetDistAngle(me ; 
+         	  IC         :        Integer from Standard;
+                  Dis        : in out Real    from Standard;
+    	          Angle      : in out Real    from Standard;
+    	          DisOnFace1 : in out Boolean from Standard)
+     	---Purpose: gives the distances <Dis> and <Angle> of the fillet 
+     	--          contour of index <IC> in the DS 	
+     is static;         
+
+
+    IsSymetric(me;
+               IC     : Integer from Standard) 
+    	---Purpose: return True if chamfer symetric false else.
+    returns Boolean from Standard is static;
+
+
+    IsTwoDistances(me;
+               	   IC     : Integer from Standard) 
+    	---Purpose: return True if chamfer is made with two distances false else.
+    returns Boolean from Standard is static;
+
+   
+    IsDistanceAngle(me;
+               	    IC     : Integer from Standard) 
+    	---Purpose: return True if chamfer is made with distance and angle false else.
+    returns Boolean from Standard is static;
+
+
+    ResetContour(me     : in out; 
+                 IC     : Integer from Standard) 
+   	---Purpose: Erases the chamfer parameters on the contour of
+    	-- index IC in the internal data structure of this algorithm.
+    	-- Use the SetDists function to reset this data.
+    	-- Warning
+    	-- Nothing is done if IC is outside the bounds of the table of contours.
+    is static;
+    
+    NbContours(me) 
+	---Purpose: Returns the number of contours generated using the
+    	-- Add function in the internal data structure of this algorithm.
+    returns Integer from Standard is static;
+    
+    
+    Contour(me; E : Edge from TopoDS )
+    	---Purpose: Returns the index of the contour in the internal data
+    	-- structure of this algorithm, which contains the edge E of the shape.
+    	-- This function returns 0 if the edge E does not belong to any contour.
+    	-- Warning
+    	-- This index can change if a contour is removed from the
+    	-- internal data structure of this algorithm using the function Remove.
+    returns Integer from Standard is static;
+    
+    
+    NbEdges(me; I : Integer from Standard) 
+    	---Purpose: Returns the number of edges in the contour of index I in
+    	-- the internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns 0 if I is outside the bounds of the table of contours.
+    returns Integer from Standard 	
+    is static;
+    
+    
+    Edge(me; I,J : Integer from Standard) 
+        ---Purpose: Returns the edge of index J in the contour of index I in
+    	-- the internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns a null shape if:
+    	-- -   I is outside the bounds of the table of contours, or
+    	-- -   J is outside the bounds of the table of edges of the contour of index I.
+    	---C++: return const &
+    returns Edge from TopoDS 
+    is static;
+    
+    
+    Remove(me : in out; E : Edge from TopoDS) 
+        ---Purpose: Removes the contour in the internal data structure of
+    	-- this algorithm which contains the edge E of the shape.
+    	-- Warning
+    	-- Nothing is done if the edge E does not belong to the
+    	-- contour in the internal data structure of this algorithm.
+    is static;
+  
+     
+    Length(me; IC : Integer from Standard) returns Real from Standard
+    	---Purpose: Returns the length of the contour of index IC in the
+    	-- internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns -1. if IC is outside the bounds of the table of contours.
+    is static; 
+
+
+    FirstVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the first vertex of the contour of index IC
+    	-- in the internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns a null shape if IC is outside the bounds of the table of contours.
+    is static;
+
+
+    LastVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the last vertex of the contour of index IC
+    	-- in the internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns a null shape if IC is outside the bounds of the table of contours.
+    is static;
+
+
+    Abscissa(me; 
+    	     IC : Integer from Standard;
+             V  : Vertex  from TopoDS) 
+    returns Real from Standard
+    	---Purpose: Returns the curvilinear abscissa of the vertex V on the
+    	-- contour of index IC in the internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns -1. if:
+    	-- -   IC is outside the bounds of the table of contours, or
+    	-- -   V is not on the contour of index IC.
+    is static;
+
+
+    RelativeAbscissa(me; 
+    	    	     IC : Integer from Standard;
+                     V  : Vertex  from TopoDS) 
+    returns Real from Standard
+    	---Purpose: Returns the relative curvilinear abscissa (i.e. between 0
+    	-- and 1) of the vertex V on the contour of index IC in the
+    	-- internal data structure of this algorithm.
+    	-- Warning
+    	-- Returns -1. if:
+    	-- -   IC is outside the bounds of the table of contours, or
+    	-- -   V is not on the contour of index IC.
+    is static;
+
+    ClosedAndTangent(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+    	---Purpose: eturns true if the contour of index IC in the internal
+    	-- data structure of this algorithm is closed and tangential at the point of closure.
+    	-- Warning
+    	-- Returns false if IC is outside the bounds of the table of contours.
+    is static; 
+
+    Closed(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+	---Purpose: Returns true if the contour of index IC in the internal
+    	-- data structure of this algorithm is closed.
+    	-- Warning
+    	-- Returns false if IC is outside the bounds of the table of contours.
+    is static; 
+    
+    Build(me: in out)
+    	---Purpose: Builds the chamfers on all the contours in the internal
+    	-- data structure of this algorithm and constructs the resulting shape.
+    	-- Use the function IsDone to verify that the chamfered
+    	-- shape is built. Use the function Shape to retrieve the chamfered shape.
+    	-- Warning
+    	-- The construction of chamfers implements highly complex
+    	-- construction algorithms. Consequently, there may be
+    	-- instances where the algorithm fails, for example if the
+    	-- data defining the parameters of the chamfer is not
+    	-- compatible with the geometry of the initial shape. There
+    	-- is no initial analysis of errors and these only become
+    	-- evident at the construction stage.
+    	-- Additionally, in the current software release, the following
+    	-- cases are not handled:
+    	-- -   the end point of the contour is the point of
+    	--   intersection of 4 or more edges of the shape, or
+    	-- -   the intersection of the chamfer with a face which
+    	--   limits the contour is not fully contained in this face.
+      is redefined;
+    
+    Reset(me : in out)
+    	---Purpose: Reinitializes this algorithm, thus canceling the effects of the Build function.
+    	-- This function allows modifications to be made to the
+    	-- contours and chamfer parameters in order to rebuild the shape.
+    is static;
+    
+    Builder(me) returns HBuilder from TopOpeBRepBuild
+	---Purpose: Returns the internal filleting algorithm.
+    	---Level: Advanced
+    is static;
+
+    -------------------------------------------
+    -- Methods usefull for historical utilities --
+    -------------------------------------------
+    Generated (me: in out; EorV : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <EorV>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined virtual;
+    
+
+    Modified (me: in out; F : Shape from TopoDS)
+    	---Purpose: Returns the list  of shapes modified from the shape
+    	--          <F>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined virtual;
+
+
+    IsDeleted (me: in out; F : Shape from TopoDS)
+    returns Boolean
+    is redefined virtual;
+
+    -------------------------------
+    ---Methods for quick simulation
+    -------------------------------
+
+    Simulate(me : in out; 
+	     IC : Integer from Standard);
+
+    NbSurf(me; IC : Integer from Standard)
+    returns Integer from Standard;
+	 
+    Sect(me; IC, IS : Integer from Standard)
+    returns mutable SecHArray1 from ChFiDS;
+    
+fields
+
+    myBuilder : ChBuilder  from ChFi3d;
+    myMap     : MapOfShape from TopTools;
+    
+end MakeChamfer;
+
+
+

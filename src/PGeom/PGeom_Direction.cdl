@@ -1,0 +1,30 @@
+-- File:	PGeom_Direction.cdl
+-- Created:	Mon Feb 22 17:34:08 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Direction from PGeom inherits Vector from PGeom
+
+        ---Purpose :  The class Direction  specifies a vector that  is
+        --         never null. It is a unit vector.
+        --         
+	---See Also : Direction from Geom.
+
+uses  Vec from gp
+
+is
+
+
+  Create returns mutable Direction from PGeom;
+        --- Purpose : Creates a unit vector with default values.
+    	---Level: Internal 
+
+
+  Create (aVec: Vec from gp) returns mutable Direction from PGeom;
+        ---Purpose : Create a unit vector with <aVec>.
+    	---Level: Internal 
+
+
+end;

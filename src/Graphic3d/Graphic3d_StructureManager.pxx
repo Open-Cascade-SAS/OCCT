@@ -1,0 +1,13 @@
+
+#ifndef STRUCTUREMANAGER_PXX_INCLUDED
+#define STRUCTUREMANAGER_PXX_INCLUDED
+
+//static Standard_Boolean Initialisation = Standard_True;
+
+#define StructureManager_MAX 100
+
+//static int StructureManager_ArrayId[StructureManager_MAX];
+
+//static Standard_Integer StructureManager_CurrentId = 0;
+
+#endif

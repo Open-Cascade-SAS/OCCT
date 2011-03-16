@@ -1,0 +1,86 @@
+-- File:	ShapeFix_Solid.cdl
+-- Created:	Wed Jun  3 12:33:37 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Solid from ShapeFix inherits Root from ShapeFix
+
+    ---Purpose: Provides method to build a solid from a shells and
+    --          orients them in order to have a valid solid with finite volume
+
+uses
+
+    Shell               from TopoDS,
+    Solid               from TopoDS,
+    Shape               from TopoDS,
+    Shell               from ShapeFix,
+    Status              from ShapeExtend,
+    BasicMsgRegistrator from ShapeExtend
+
+is
+    Create returns Solid from ShapeFix;
+    	---Purpose: Empty constructor;
+    
+    Create (solid : Solid from TopoDS) returns Solid from ShapeFix;
+    	---Purpose: Initializes by solid.
+    
+    Init(me: mutable; solid : Solid from TopoDS) is virtual;
+    	---Purpose: Initializes by solid .
+    
+    Perform(me: mutable) returns Boolean is virtual;
+    	---Purpose: Iterates on shells and performs fixes
+	--          (calls ShapeFix_Shell for each subshell)
+    	
+    SolidFromShell (me: mutable; shell: Shell from TopoDS)
+    returns Solid from TopoDS;
+    	---Purpose: Calls MakeSolid and orients the solid to be "not infinite"
+	
+    Status (me; status : Status from  ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status of the last Fix.	
+	
+    Solid (me) returns Shape from TopoDS;
+     ---Purpose: Returns resulting solid.
+     
+    FixShellTool (me) returns Shell from ShapeFix;
+    	---Purpose: Returns tool for fixing shells.
+	---C++:inline
+	  
+    SetMsgRegistrator (me: mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is redefined;
+	---Purpose: Sets message registrator
+	
+    SetPrecision (me: mutable; preci: Real) is redefined;
+    	---Purpose: Sets basic precision value (also to FixShellTool)
+    
+    SetMinTolerance (me: mutable; mintol: Real) is redefined;
+    	---Purpose: Sets minimal allowed tolerance (also to FixShellTool)
+    
+    SetMaxTolerance (me: mutable; maxtol: Real) is redefined;
+    	---Purpose: Sets maximal allowed tolerance (also to FixShellTool)
+	
+    FixShellMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Shell, by default True.
+    CreateOpenSolidMode(me: mutable) returns Boolean;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for creation of solids.
+	--          If mode myCreateOpenSolidMode is equal to true 
+        --          solids are created from open shells 
+        --          else solids are created  from closed shells only.
+        --          ShapeFix_Shell, by default False.
+	Shape(me : mutable) returns Shape from TopoDS;
+    	---Purpose: In case of multiconnexity returns compound of fixed solids
+    	--          else returns one solid.
+fields
+
+    mySolid  : Shape from TopoDS is protected;
+    myFixShell  : Shell  from ShapeFix is protected;
+    myStatus    : Integer is protected;
+    myFixShellMode         : Integer is protected; 
+    myCreateOpenSolidMode : Boolean;
+
+end Solid;

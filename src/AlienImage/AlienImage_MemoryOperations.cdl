@@ -1,0 +1,44 @@
+--
+-- File:	AlienImage_MemoryOperations.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+class MemoryOperations from AlienImage
+
+	---Version: 0.0
+
+	---Level: Public
+	---Purpose: This class defines class method for
+	--          memory mangement .
+	---Keywords:
+	---Warning:
+	---References:
+--uses
+
+raises
+      NullObject
+
+is
+   SwapLong ( myclass ; Data : in Address from Standard
+		      ; Size : in Integer from Standard ) 
+	---Level: Internal
+   ---Purpose: Swap byte in a long word ( 32 Bit )
+   --	       Size is the number of long word to swap
+   --          ex : SwapLong( "abcd". 1 ) gives "dcba"  
+   --          
+	raises NullObject;
+
+   SwapShort( myclass ; Data : in Address from Standard
+		      ; Size : in Integer from Standard )
+	---Level: Internal
+   ---Purpose: Swap byte in a short word ( 16 Bit )
+   --	       Size is the number of short word to swap
+   --          ex : SwapShort( "ab". 1 ) gives "ba"  
+   --          
+	raises NullObject;
+
+end MemoryOperations;
+ 

@@ -1,0 +1,39 @@
+-- File:	PTopLoc_Datum3D.cdl
+-- Created:	Wed Mar  3 16:18:51 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+-- Update:      fma
+---Copyright:	 Matra Datavision 1993
+
+
+class Datum3D from PTopLoc inherits Persistent from Standard
+
+	---Purpose: An  elementary local coordinate system. It  may be
+	--          shared in the Database.
+
+uses
+    Trsf from gp
+
+raises
+    ConstructionError from Standard
+
+is
+    Create(T : Trsf from gp) returns mutable Datum3D from PTopLoc
+	---Purpose: Creates a   local coordinate  system    with   the
+	--          transformation.  An   error   is raised  if    the
+	--          transformation is not rigid.
+	---Level: Internal 
+    raises
+    	ConstructionError from Standard;
+	
+    Transformation(me) returns Trsf from gp
+    	---Purpose: Returns the transformation defining the coordinate
+    	--          system.
+	---Level: Internal 
+    is static;
+    
+fields
+
+    myTrsf : Trsf from gp;
+
+end Datum3D;

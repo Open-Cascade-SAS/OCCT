@@ -1,0 +1,17 @@
+-- File:	OSDriver_DriverFactory.cdl
+-- Created:	Tue Mar  4 14:35:56 1997
+-- Author:	Mister rmi
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class DriverFactory from FWOSDriver inherits MetaDataDriverFactory from CDF
+
+uses MetaDataDriver from CDF, ExtendedString from TCollection
+
+is
+    Create returns mutable DriverFactory from FWOSDriver;
+    
+    Build(me)
+    returns MetaDataDriver from CDF;
+
+end DriverFactory from FWOSDriver;

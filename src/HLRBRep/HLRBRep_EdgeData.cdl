@@ -1,0 +1,204 @@
+-- File:	HLRBRep_EdgeData.cdl
+-- Created:	Thu Apr 17 11:34:54 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class EdgeData from HLRBRep
+
+uses
+    ShortReal  from Standard,
+    Address    from Standard,
+    Integer    from Standard,
+    Boolean    from Standard,
+    ShortReal  from Standard,
+    Dir2d      from gp,
+    EdgeStatus from HLRAlgo,
+    Curve      from HLRBRep,
+    Edge       from TopoDS
+
+is
+    Create returns EdgeData from HLRBRep;
+
+    Set(me : in  out; 
+	Reg1      : Boolean   from Standard;
+	RegN      : Boolean   from Standard;
+        EG        : Edge      from TopoDS;
+        V1, V2    : Integer   from Standard;
+    	Out1,Out2 : Boolean   from Standard;
+    	Cut1,Cut2 : Boolean   from Standard;
+        Start     : Real      from Standard;
+        TolStart  : ShortReal from Standard;
+        End       : Real      from Standard;
+        TolEnd    : ShortReal from Standard)
+    is static;
+    
+    Selected(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Selected(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Rg1Line(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Rg1Line(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    RgNLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    RgNLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Vertical(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Vertical(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Simple(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Simple(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    OutLVSta(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    OutLVSta(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    OutLVEnd(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    OutLVEnd(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    CutAtSta(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    CutAtSta(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    CutAtEnd(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    CutAtEnd(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    VerAtSta(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    VerAtSta(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    VerAtEnd(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    VerAtEnd(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    AutoIntersectionDone(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    AutoIntersectionDone(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Used(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Used(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    HideCount(me) returns Integer from Standard
+        ---C++: inline
+    is static;
+
+    HideCount(me : in out; I : Integer from Standard)
+        ---C++: inline
+    is static;
+
+    VSta(me) returns Integer from Standard
+        ---C++: inline
+    is static;
+
+    VSta(me : in out; I : Integer from Standard)
+        ---C++: inline
+    is static;
+
+    VEnd(me) returns Integer from Standard
+        ---C++: inline
+    is static;
+
+    VEnd(me : in out; I : Integer from Standard)
+        ---C++: inline
+    is static;
+
+    UpdateMinMax(me : in out; TotMinMax : Address from Standard)
+    is static;
+
+    MinMax(me) returns Address from Standard
+	---C++: inline
+    is static;
+
+    Status(me : in out) returns EdgeStatus from HLRAlgo
+        ---C++: inline
+        ---C++: return &
+    is static;
+
+    ChangeGeometry(me : in out) returns Curve from HLRBRep
+        ---C++: inline
+        ---C++: return &
+    is static;
+
+    Geometry(me) returns Curve from HLRBRep
+        ---C++: inline
+        ---C++: return const &
+    is static;
+
+    Curve(me : in out) returns Address from Standard
+        ---C++: inline
+    is static;
+
+    Tolerance(me) returns ShortReal from Standard
+        ---C++: inline
+    is static;
+
+fields
+    myFlags     : Boolean    from Standard;
+    myHideCount : Integer    from Standard;
+    myVSta      : Integer    from Standard;
+    myVEnd      : Integer    from Standard;
+    myMinMax    : Integer    from Standard[16];
+    myStatus    : EdgeStatus from HLRAlgo;
+    myGeometry  : Curve      from HLRBRep;
+    myTolerance : ShortReal  from Standard;
+
+end EdgeData;

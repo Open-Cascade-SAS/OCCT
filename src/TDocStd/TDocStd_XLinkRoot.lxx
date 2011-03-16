@@ -1,0 +1,16 @@
+// File:	TDocStd_XLinkRoot.lxx
+//      	------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Sep 16 1997	Creation
+
+inline void TDocStd_XLinkRoot::First(const TDocStd_XLinkPtr& anXLinkPtr)
+{ myFirst = anXLinkPtr; }
+
+inline TDocStd_XLinkPtr TDocStd_XLinkRoot::First() const
+{ return myFirst; }
+

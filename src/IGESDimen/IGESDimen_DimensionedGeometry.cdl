@@ -1,0 +1,71 @@
+--
+-- File      :  DimensionedGeometry.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+-- 
+---Copyright : MATRA-DATAVISION  1993  
+--
+
+class DimensionedGeometry from IGESDimen   inherits IGESEntity
+     
+    ---Purpose: Defines IGES Dimensioned Geometry, Type <402> Form <13>,
+    --          in package IGESDimen
+    --          This entity has been replaced by the new form of  Dimensioned
+    --          Geometry Associativity Entity (Type 402, Form 21) and should no
+    --          longer be used by preprocessors.
+
+uses
+
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable DimensionedGeometry;
+
+            -- --specific-- --
+
+        Init(me         : mutable; 
+             nbDims     : Integer;
+             aDimension : IGESEntity;
+             entities   : HArray1OfIGESEntity);
+        -- This method sets the fields of the
+        -- class DimensionedGeometry
+        --      - nbDims     : Number of dimensions ( = 1 is required)
+        --      - aDimension : Dimension Entity
+        --      - entities   : List of geometry entities
+            
+        NbDimensions(me) returns Integer;
+        ---Purpose : returns the number of dimensions
+
+        NbGeometryEntities(me) returns Integer;
+        ---Purpose : returns the number of associated geometry entities
+
+        DimensionEntity(me) returns IGESEntity;
+        ---Purpose : returns the Dimension entity
+
+        GeometryEntity(me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the num'th Geometry entity
+        -- raises exception if Index <= 0 or Index > NbGeometryEntities()
+
+fields
+
+--
+-- Class    : IGESDimen_DimensionedGeometry
+-- 
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DimensionedGeometry.
+--
+-- Reminder : A DimensionedGeometry instance is defined by :
+--                - The number of dimensions
+--                - A Dimension Entity
+--                - A single array of Geometry Entities
+--
+
+        theNbDimensions     : Integer;
+        theDimension        : IGESEntity;
+        theGeometryEntities : HArray1OfIGESEntity;
+
+end DimensionedGeometry;

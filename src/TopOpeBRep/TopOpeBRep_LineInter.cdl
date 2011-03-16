@@ -1,0 +1,202 @@
+-- File:      TopOpeBRep_LineInter.cdl
+-- Created:   Wed Nov 10 17:20:37 1993
+-- Author:    Jean Yves LEBEY
+---Copyright: Matra Datavision 1993
+
+class LineInter from TopOpeBRep
+
+uses
+
+    Line from IntPatch,
+    TypeLineCurve from TopOpeBRep,
+    ALine from IntPatch,
+    RLine from IntPatch,
+    WLine from IntPatch,
+    GLine from IntPatch,
+    VPointInter from TopOpeBRep,
+    HArray1OfVPointInter from TopOpeBRep, 
+    WPointInter from TopOpeBRep,
+    Bipoint from TopOpeBRep,
+    Transition from TopOpeBRepDS,
+    Curve from Geom,
+    Surface from BRepAdaptor,
+    Face from TopoDS,
+    TypeTrans from IntSurf, 
+    Situation from IntSurf, 
+    Shape from TopoDS,
+    AsciiString from TCollection
+    
+is
+
+    Create returns LineInter from TopOpeBRep;
+    ---C++: inline
+    
+    SetLine(me:in out; 
+    	    L : Line from IntPatch; 
+    	    S1,S2:Surface from BRepAdaptor)
+    is static;
+ 
+    SetFaces(me:in out;F1,F2:Face from TopoDS);
+    ---C++: inline
+
+    TypeLineCurve(me) returns TypeLineCurve from TopOpeBRep 
+    ---C++: inline
+    is static; 
+
+    NbVPoint(me) returns Integer 
+    ---C++: inline
+    is static;
+	
+    VPoint(me; I : Integer) returns VPointInter from TopOpeBRep 
+    ---C++: return const &
+    is static;
+ 
+    ChangeVPoint(me:in out; I : Integer) 
+    returns VPointInter from TopOpeBRep 
+    ---C++: return &
+    is static;
+
+    SetINL(me : in out); -- Is Null Length
+    INL(me) returns Boolean;
+    ---C++: inline
+
+    SetIsVClosed(me : in out);
+    IsVClosed(me) returns Boolean;
+    ---C++: inline
+
+    SetOK(me : in out; B : Boolean);
+    OK(me) returns Boolean;
+    ---C++: inline
+
+    SetHasVPonR(me : in out)
+    is static;
+
+    HasVPonR(me) returns Boolean  
+    ---C++: inline
+    is static;
+
+    SetVPBounds(me : in out)
+    is static;
+
+    VPBounds(me; f,l,n : out Integer)
+    is static;
+
+    IsPeriodic(me) returns Boolean  
+    is static;
+    
+    Period(me) returns Real  
+    is static;
+    
+    Bounds(me; f,l : out Real)
+    is static;
+    
+    HasVInternal(me : in out) returns Boolean 
+    is static;
+    
+    NbWPoint(me) returns Integer 
+    is static;
+	
+    WPoint(me : in out; I : Integer) returns WPointInter from TopOpeBRep
+    ---C++: return const &
+     is static;
+
+    TransitionOnS1(me) returns TypeTrans from IntSurf -- NYI const&
+    ---C++: inline
+    is static;
+
+    TransitionOnS2(me) returns TypeTrans from IntSurf -- NYI const&
+    ---C++: inline
+    is static;
+
+    SituationS1(me) returns Situation from IntSurf 
+    ---C++: inline
+    is static; 
+
+    SituationS2(me) returns Situation from IntSurf 
+    ---C++: inline
+    is static; 
+
+    Curve(me) returns Curve from Geom 
+    is static;
+
+    Curve(me; parmin,parmax : Real) returns Curve from Geom 
+    is static;
+    
+    Arc(me) returns Shape from TopoDS;
+    ---Purpose: returns the edge of a RESTRICTION line (or a null edge).
+    ---C++: return const &
+    
+    ArcIsEdge(me; I : Integer) returns Boolean;
+    ---Purpose: returns true if Arc() edge (of a RESTRICTION line) is
+    --          an edge of the original face <Index> (1 or 2).
+
+    LineW(me) returns WLine from IntPatch;
+    ---C++: return const &
+    ---C++: inline
+
+    LineG(me) returns GLine from IntPatch;
+    ---C++: return const &
+    ---C++: inline
+
+    LineR(me) returns RLine from IntPatch;
+    ---C++: return const &
+    ---C++: inline
+
+    HasFirstPoint(me) returns Boolean;
+
+    HasLastPoint(me) returns Boolean;
+
+    ComputeFaceFaceTransition(me:in out);
+
+    FaceFaceTransition(me;I:Integer) returns Transition from TopOpeBRepDS;
+    -- transition from face I(1,2) through me with face (2,1) 
+    ---C++: return const &
+
+    Index(me : in out; I : Integer from Standard) is static; -- debug
+    ---C++: inline
+    Index(me) returns Integer from Standard is static; -- debug
+    ---C++: inline
+    DumpType(me) is static; -- debug
+    DumpVPoint(me; I : Integer;
+   	    	   s1,s2 : AsciiString from TCollection) is static; -- debug
+    DumpBipoint(me; B : Bipoint from TopOpeBRep;
+   	    	    s1,s2 : AsciiString from TCollection) is static; -- debug
+
+    SetTraceIndex(me:in out; exF1,exF2 : Integer) is static;    
+    GetTraceIndex(me; exF1,exF2 : out Integer) is static;    
+    -- <exf1,exf2> TopExp_Explorer exploration index of faces
+    -- involved in current line. (trace)
+
+    DumpLineTransitions(me; OS : in out OStream) returns OStream is static;
+    ---C++: return &
+
+fields
+
+    myOK : Boolean;
+    myIndex : Integer; 
+    myNbVPoint : Integer;
+    myIsVClosed : Boolean;
+    myHasVPonR : Boolean;
+    myINL : Boolean;
+    myVPBDefined : Boolean;
+    myVPF : Integer;
+    myVPL : Integer;
+    myVPN : Integer;
+    myTypeLineCurve : TypeLineCurve from TopOpeBRep;
+    myIL : Line from IntPatch;
+    myILA : ALine from IntPatch;    
+    myILR : RLine from IntPatch;    
+    myILW : WLine from IntPatch;    
+    myILG : GLine from IntPatch;    
+    myCurrentWP : WPointInter from TopOpeBRep; 
+    myHAVP : HArray1OfVPointInter from TopOpeBRep;
+    myF1 : Face from TopoDS;
+    myF2 : Face from TopoDS;
+    myLineTonF1 : Transition from TopOpeBRepDS;
+    myLineTonF2 : Transition from TopOpeBRepDS;
+    myNullShape : Shape from TopoDS; --dummy
+    
+    -- trace
+    myexF1,myexF2 : Integer;
+
+end LineInter from TopOpeBRep;

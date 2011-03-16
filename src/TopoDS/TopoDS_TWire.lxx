@@ -1,0 +1,12 @@
+// File:	TopoDS_TWire.lxx
+// Created:	Fri Apr 12 10:23:34 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TWire
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TWire::TopoDS_TWire() : TopoDS_TShape()
+{
+}

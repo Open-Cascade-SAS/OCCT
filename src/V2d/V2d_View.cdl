@@ -1,0 +1,449 @@
+-- File:        V2d_View.cdl
+-- Created:     Tue Jul  6 12:32:02 1993
+-- Author:      Jean Louis FRENKEL
+-- Modified:    EUG - 13/11/97 -> ???????? Plotter management
+--              FMN - 06/01/98 -> BUC60065
+--              stt: 25-02-98: S3558 ajout IfManageStandardEvent
+--              stt: 08-04-98: suppr IfManageStandardEvent
+--              dcb/syl : OCT-98 : ScreenCopy() method.
+--              TCL - 12-06-00 -> Pick( Xmin, Ymin, Xmax, Ymax )	method
+--	            G002 : TCL - 03-10-00 -> new methods for setting up a background 
+--              SAV 14/11/01 Added PickByCircle()
+--    	    	SAV 24/11/01 setting background by Quantity_Color object.
+--    	    	SAV 16/07/02 Added Color( Quantity_Color ) to retrieve background via RGB
+
+---Copyright:    Matra Datavision 1993
+
+
+class View from V2d inherits View from Viewer
+
+    	---Purpose: Defines the application object view for the 2D Viewer,
+    	-- V2d_Viewer. The functions in this framework manage
+    	-- the origin and the size of the scene displayed in the view (zoom, panning, etc.).
+        
+uses
+
+    Viewer                     from V2d,
+    TypeOfWindowResizingEffect from V2d,
+    ViewerPointer              from V2d,
+    DisplayList                from Graphic2d,
+    ViewMapping                from Graphic2d,
+    View                       from Graphic2d,
+    GraphicObject              from Graphic2d,
+    PickMode                   from Graphic2d,
+    Buffer                     from Graphic2d,
+    Length                     from Quantity,
+    Ratio                      from Quantity, 
+    Factor                     from Quantity,
+    WindowDriver               from Aspect,
+    FillMethod                 from Aspect,
+    TypeOfColorSpace           from Aspect,
+    PlotterDriver              from PlotMgt,
+    NameOfColor                from Quantity,
+    Color                      from Quantity
+    
+raises
+    BadValue from Viewer
+is
+    Create( aWindowDriver: WindowDriver from Aspect;
+            aViewer: Viewer from V2d;
+            aXCenter: Length from Quantity = 0;
+            aYCenter: Length from Quantity = 0;
+            aSize:    Length from Quantity = 1000) 
+    returns mutable View from V2d;
+    	---Purpose: Creates a view which represents a portion of the user space.
+    	--          This portion is defined by  the point (aXCenter,aYCenter)
+    	--          which will be represent at the center of the window and by aSize.
+    	--          aWindowDriver defines a window and a driver.
+             
+    SetDefaultPosition(me: mutable;aXCenter: Length from Quantity = 0;
+                             aYCenter: Length from Quantity = 0;
+                             aSize:    Length from Quantity = 1000)
+    	---Purpose: Defines the default position aXCenter, aYCenter and
+    	-- the size aSize used in the Reset function.
+    is static;
+    
+    Fitall (me: mutable) 
+    	---Purpose: Automatic Zoom-Panning. Objects visible in the view are
+    	--      visualised so as to occupy the maximum amount of space
+    	--      while respecting the initial height/width ratio.
+    	--      Updates the view. The resulting space also takes into account a default
+    	--      margin that can be modified with SetFitallRatio. The view is updated.
+    is static;
+    
+    WindowFit(me: mutable; aX1,aY1,aX2,aY2: Integer from Standard)
+    	---Purpose: The point of the graphic view corresponding to the
+    	--          middle of the window aX1,aY1,aX2,aY2 (in pixel coordinates)
+    	--          comes to the center of the window.
+    	--          Updates the view
+    raises BadValue from Viewer
+    	---Purpose:  Warning! raises BadValue from Viewer if aX1 = aX2 or aY1 = aY2;
+    is redefined static;
+
+    
+    Fit(me: mutable; aX1,aY1,aX2,aY2: Length from Quantity;UseMinimum: Boolean from Standard = Standard_True)
+    	---Purpose: The point of the graphic view corresponding to the
+    	--          middle of the window aX1,aY1,aX2,aY2 (in user coordinates)
+    	--          comes to the center of the window.
+    	--          If UseMinimum is true the smallest dimension of the rectangle
+    	--          will be zoom to occupy the view. If not the greatest dimension wiil be used.
+    	--          Updates the view
+    raises BadValue from Viewer
+    	---Purpose:  Warning! raises BadValue from Viewer if aX1 = aX2 or aY1 = aY2;
+    is static;
+
+    SetFitallRatio (me: mutable; aRatio: Ratio from Quantity)
+    	---Purpose: Sets the 10 mm default margin aRatio which is taken
+    	-- into account by the Fitall function.
+    	-- Exceptions
+    	-- Viewer_BadValue if aRatio is less than 0 or greater than or equal to 1.
+    raises BadValue from Viewer
+       is static;
+    
+    Zoom (me:mutable; Zoom: Factor from Quantity)
+    	---Purpose: Increases the size of the portion of user-space 
+    	--          by a factor of Zoom and updates the view.
+    raises BadValue from Viewer
+    	---Purpose:  Warning! raises BadValue from Viewer if aRatio <= 0.
+    is static;
+     
+    Zoom (me:mutable; aX1,aY1,aX2,aY2: Integer from Standard;
+                      aCoefficient:Ratio from Quantity = 0.005 )
+    	---Purpose: Increases the size of the portion of user-space by
+    	-- a zoom factor which is calculated from the two
+    	-- screen points aX1, aY1 and aX2, aY2 so that Z = 1/(1 + C x D) where:
+    	-- -   C is the coefficient aCoefficient and
+    	-- -   D is the distance between the two points aX1,aY1 and aX2,aY2.
+    is static;
+    
+    Zoom (me:mutable; aX, aY: Integer from Standard;
+                      aCoefficient:Ratio from Quantity = 0.005 ) 
+    	---Purpose: Increases the size of the portion of user-space by
+    	-- a zoom factor which is calculated from the current
+    	-- point aX,aY and the screen center. The default factor is 0.005.
+    is static;
+
+    Magnify(me: mutable; anOriginView: View from V2d;
+                         X1,Y1,X2,Y2: Integer from Standard)
+    	---Purpose: Defines the default view mapping from two screen
+    	-- points in a previous view anOriginView. The view is updated.
+    is static;
+                        
+    Translate (me:mutable; dx,dy: Length from Quantity)
+    	---Purpose: Translates the dx,dy center of the objects space.
+    is static;
+    
+    Place (me: mutable; x,y: Integer from Standard;
+                      aZoomFactor: Factor from Quantity = 1)
+    	---Purpose: places the point of the view corresponding
+    	--          at the pixel position x,y at the center of the window
+    	--          and updates the view.
+    is redefined static;
+     
+    ScreenPlace (me:mutable; x,y: Length from Quantity;
+                      aZoomFactor: Factor from Quantity = 1)
+    	---Purpose: Places the center of the object's space in the center
+    	-- of the window according to the zoom factor. The view is updated.
+    is static;
+    
+    Pan (me:mutable; dx,dy: Integer from Standard)
+
+    	---Purpose: Translates the center of the object's space and
+    	-- updates the view. The translation is specified in screen coordinates.
+    is static; 
+
+    Convert (me; V: Integer from Standard) returns Length from Quantity
+    	---Purpose: Converts a screen value into the view space value V.
+    is static;
+
+    Convert (me; X, Y:  Integer from Standard; 
+                 ViewX, ViewY: out Length from Quantity)
+    	---Purpose: Converts the screen space coordinates X, Y into the
+    	-- view space coordinates ViewX, ViewY.
+    is static;
+
+    Convert (me; ViewX, ViewY: Length from Quantity;
+                 X, Y:  out Integer from Standard)
+    	---Purpose: Converts the view space coordinates ViewX, ViewY
+    	-- into the screen space coordinates X, Y.
+    is static;
+    
+    Convert (me; aDriverSize: Length from Quantity)
+    	---Purpose: returns a view size from a driver size.
+    returns Length from Quantity
+    is static;
+    
+    Reset (me: mutable)
+    	---Purpose: Resets the viewmapping of the view and updates the view.
+    is static;
+    
+    Previous(me: mutable)
+    	---Purpose: switches the view to its previous viewmapping
+    	--          and updates the view.
+    is static;
+    
+    DisableStorePrevious(me: mutable)
+    	---Purpose: Disables the Previous function in this framework.
+    is static;
+    
+    EnableStorePrevious(me: mutable)
+    	---Purpose: Enables the Previous function in this framework.
+    is static;
+    
+    Update(me)
+    	---Purpose: Clears the window and redraws all primitives.
+    is redefined static;
+    
+
+    UpdateNew(me)
+    	---Purpose: draws the objects created since the last update.
+    is static;
+ 
+    RestoreArea ( me ;
+                      Xc, Yc : Integer from Standard ;
+                      Width, Height : Integer from Standard )
+    	---Purpose: Restores The Window Area defined by his center
+    	---         and PIXEL size from the BackingStored Window
+        -- Warning
+    	-- This function only works if the window is double-buffered.
+    is static;
+    
+    Restore(me)
+    	---Purpose: Restores the full window area from the backing stored window.
+    	-- Warning
+    	-- This function only works if the window is double-buffered.
+    is static;
+     
+    Dump(me)
+    ---Purpose: 
+    is static;
+    
+	Dump( me; aFileName: CString from Standard );
+    ---Purpose: 
+    
+    
+--    Pick(me; X,Y, aPrecision: Integer from Standard)
+    Pick(me : mutable; X,Y, aPrecision: Integer from Standard)
+        returns DisplayList from Graphic2d
+    	---Purpose: From the X, Y coordinates, returns the list of picked
+    	-- graphic objects within the precision value aPrecision.
+    is static;
+
+    PickByCircle(me : mutable; X, Y, Radius: Integer from Standard)
+        returns DisplayList from Graphic2d
+    ---Purpose: 
+    is static;
+
+	Pick( me: mutable; Xmin, Ymin, Xmax, Ymax: Integer from Standard;
+	      aPickMode: PickMode from Graphic2d = Graphic2d_PM_INCLUDE )
+        returns DisplayList from Graphic2d;
+    	---Purpose: Returns the list of the picked graphic objects.
+    
+    Erase( me: mutable )
+    	---Purpose: Removes all the graphic objects from the view.
+    is static;
+    
+    MustBeResized(me: mutable; anEffect: TypeOfWindowResizingEffect from V2d)
+    	---Purpose: indicates that the window in which the view is drawn has been resized
+    	--          and updates the view. 
+    is static;
+
+    HasBeenMoved(me: mutable)
+    	---Purpose: Indicates whether the window associated with the
+    	-- view has been moved or not.
+    is static;
+        
+    Plot(me; aPlotterDriver: PlotterDriver from PlotMgt;
+             aXCenter: Length from Quantity;
+             aYCenter: Length from Quantity;
+             aScale: Factor from Quantity=1.0) 
+    is static;
+    	---Purpose:    Plots the view to a plotter aPlotterDriver centered
+    	-- through aXCenter, aYCenter with the plotting scale aScale.
+    
+    Plot(me; aPlotterDriver: PlotterDriver from PlotMgt;
+             aScale: Factor from Quantity=1.0) 
+    is static;          
+    	---Purpose: plot a view as on screen.
+    	-- Note:     if <aScale> is zero then plots exactly what is on the screen
+    
+    PlotScreen(me; aPlotterDriver: PlotterDriver from PlotMgt)
+    	---Purpose:Plots the view to a plotter according to the current
+    	-- size and center of the view.
+    is static;
+        
+    ScreenCopy (me: mutable;
+      aPlotterDriver   : PlotterDriver from PlotMgt;
+      fWhiteBackground : Boolean from Standard = Standard_True;
+      aScale           : Factor from Quantity = 1.0
+    ) is static;   
+    	---Purpose: dump the view
+
+    PostScriptOutput(me; aFile: CString from Standard;
+                         aWidth, aHeight: Length from Quantity;
+                         aXCenter, aYCenter: Length from Quantity;
+                         aScale: Factor from Quantity;
+                         aTypeOfColorSpace: TypeOfColorSpace from Aspect)
+    	---Purpose: 
+    	-- Plots the view to the PostScript file aFile according to
+    	-- a paper format specified by the arguments aWidth,
+    	-- aHeight, aXCenter, aYCenter with the scale aScale.
+    is static;
+                         
+    ScreenPostScriptOutput(me; aFile: CString from Standard;
+                               aWidth, aHeight: Length from Quantity;
+                               aTypeOfColorSpace: TypeOfColorSpace from Aspect)
+    	---Purpose: Plots the view to the PostScript file aFile according to
+    	-- the paper format specified by the arguments aWidth,
+    	-- aHeight. This is done by keeping the same view size and center.
+    is static;
+    
+    Hit(me; X,Y: Integer from Standard;
+            gx,gy: out Length from Quantity)
+    	---Purpose: From the X,Y point, returns the nearest point gx,gy
+    	-- on the grid.
+    is static;
+    
+    ShowHit(me: mutable; X,Y: Integer from Standard)
+    	---Purpose: shows the point matching the grid.
+    	--          if the hit has already been shown, it is first erased.
+    	--          Does not update the view.
+    is static;
+    
+    
+    EraseHit(me: mutable)
+    	---Purpose: erases the hit point and updates the view.
+    is static;
+    
+    SetDefaultHighlightColor(me: mutable; aColorIndex: Integer from Standard)
+    is static;
+    	---Purpose: Defines the default override color of objects or 
+    	--		primitives using Highlight() methods.
+    
+    SetDeflection(me: mutable; aDeflection: Length from Quantity)
+    	---Purpose: Updates the drawing precision factor aDeflection for
+    	-- curves and circles.
+    is static;
+        
+---Category: inquire methods
+--           
+    Deflection(me) returns Length from Quantity
+    is static;
+
+    	---Purpose: Returns the current deflection coefficient.
+    
+    View (me) returns mutable View from Graphic2d
+    	---Purpose: Returns the associated Grahic2d view with this view.
+    is static;
+    
+    Viewer (me) returns mutable Viewer from V2d
+    	---Purpose: Returns the parent viewer of this view.
+    is static;
+    
+    Driver(me) returns mutable WindowDriver from Aspect
+    	---Purpose: Returns the window driver handle associated with this view.
+    is static;
+    
+    Zoom(me) returns Factor from Quantity
+    	---Purpose: returns the current zoom factor of the view.
+    is static;
+    
+    Center(me; aX, aY: out Length from Quantity)
+    	---Purpose: returns the current point of the user space
+    	--          being at the center of the view.
+    is static;
+    ---Category: private methods:
+
+    Size(me) returns Length from Quantity
+    is static;
+  
+    	---Purpose: Returns the current size of the view.  
+    
+    Color(me) returns NameOfColor from Quantity
+    	---Purpose: returns the background color of the view.
+    is static;
+
+    Color(me; color : out Color from Quantity)
+    	---Purpose: returns the background color of the view.
+    is static;
+
+    Scroll(me: mutable; XCenter,YCenter,DX,DY: out Integer from Standard)
+    is static;
+    
+    StoreCurrent(me: mutable)
+    ---Purpose: 
+    is static private;
+    
+    MapToCenter(me: mutable)
+    ---Purpose: 
+    is static private; 
+    
+    DefaultHighlightColor(me)
+    returns Integer from Standard is static;
+    	---Purpose: Returns the default override color of objects or 
+    	--		primitives using Highlight() methods.
+    	--  Warning: Returns -1 when the color index is not defined.
+    
+---Category: compatibility.
+
+    Fit(me: mutable; aX1,aY1,aX2,aY2: Integer from Standard)
+    	---Purpose: idem than WindowFit
+    is static;
+
+-------------------------------------------------------------------------
+---Category: Methods to modify the background of this view
+-------------------------------------------------------------------------
+    
+	SetBackground( me: mutable; aNameColor: NameOfColor from Quantity );
+	---Level: Public
+	---Purpose: Defines the color of view's background
+
+	SetBackground( me: mutable; color: Color from Quantity );
+	---Level: Public
+	---Purpose: Defines the color of view's background
+
+	SetBackground( me: mutable; 
+		aNameFile: CString from Standard;
+		aMethod: FillMethod from Aspect = Aspect_FM_CENTERED )
+	returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Loads the view background from an image file <aName>
+	-- defined with a supported format XWD,GIF or BMP
+	-- and returns TRUE if the operation is successfull.
+
+--------------------------------------------------------------------------
+
+fields
+
+    myWindowDriver: WindowDriver from Aspect;
+    myViewer:   ViewerPointer from V2d;
+    myFitallRatio: Real from Standard;
+    myDeflection: Real from Standard;
+    myViewMapping: ViewMapping from Graphic2d;
+    
+-- MapTo definition:
+
+    myXPosition: Real from Standard;
+    myYPosition: Real from Standard;
+    myScale: Real from Standard;
+    
+-- Previous Position:
+
+    myPreviousX: Real from Standard;
+    myPreviousY: Real from Standard;
+    myPreviousSize: Real from Standard;
+    myPreviousXPosition: Real from Standard;
+    myPreviousYPosition: Real from Standard;
+    myPreviousScale: Real from Standard;
+    myEnablePrevious: Boolean from Standard;    
+    myHitPoint: GraphicObject from Graphic2d; 
+    myHitBuf: Buffer from Graphic2d;
+-- Current window size:
+
+    myWidth: Real from Standard;
+    myHeight: Real from Standard;    
+
+-- scrolling managment.
+    pxmin,pymin,pxmax,pymax: Real from Standard;
+    
+end View from V2d;

@@ -1,0 +1,40 @@
+-- File:        SiUnitAndSolidAngleUnit.cdl
+-- Created:     Fri Jun 17 11:43:44 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SiUnitAndSolidAngleUnit from StepBasic inherits SiUnit from StepBasic 
+
+	--- This class is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    SolidAngleUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    SiPrefix from StepBasic, 
+    SiUnitName from StepBasic
+
+is
+
+    Create returns mutable SiUnitAndSolidAngleUnit;
+	---Purpose: Returns a SiUnitAndSolidAngleUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; hasAprefix: Boolean from Standard;
+		       aPrefix   : SiPrefix from StepBasic;
+		       aName     : SiUnitName from StepBasic) is redefined ;
+
+    -- Specific Methods for Field Data Access --
+
+    SetSolidAngleUnit(me: mutable; aSolidAngleUnit: mutable SolidAngleUnit);
+    
+    SolidAngleUnit (me) returns mutable SolidAngleUnit;
+
+fields
+
+    solidAngleUnit : SolidAngleUnit from StepBasic;
+
+end SiUnitAndSolidAngleUnit;

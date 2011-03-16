@@ -1,0 +1,13 @@
+// File:	TopoDS_Wire.lxx
+// Created:	Tue Apr 16 15:58:26 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Wire
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Wire::TopoDS_Wire ()
+{
+}

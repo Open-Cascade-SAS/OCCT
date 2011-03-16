@@ -1,0 +1,42 @@
+-- File:	ShapeUpgrade_SplitCurve2d.cdl
+-- Created:	Thu Mar 12 11:14:13 1998
+-- Author:	Pierre BARRAS
+--		<pbs@sgi84>
+---Copyright:	 Matra Datavision 1998
+
+class SplitCurve2d from ShapeUpgrade inherits SplitCurve from ShapeUpgrade
+
+    	---Purpose: Splits a 2d curve with a criterion.
+    
+uses     
+    Curve          from Geom2d,
+    HArray1OfCurve from TColGeom2d
+   
+is 
+ 
+    Create returns mutable SplitCurve2d from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+
+    Init (me: mutable; C: Curve from  Geom2d);
+       	---Purpose: Initializes with pcurve with its first and last parameters.
+	
+    Init (me: mutable; C          : Curve from  Geom2d;
+    	    	       First, Last: Real);
+       	---Purpose: Initializes with pcurve with its parameters.
+	
+    Build (me: mutable; Segment: Boolean) is redefined;
+       ---Purpose: If Segment is True, the result is composed with
+       --  segments of the curve bounded by the SplitValues.  If
+       --  Segment is False, the result is composed with trimmed
+       --  Curves all based on the same complete curve.
+       --  
+    GetCurves(me) returns HArray1OfCurve from TColGeom2d;
+       ---C++: return const &
+       
+fields 
+ 
+    myCurve          : Curve from Geom2d is protected;
+    myResultingCurves: HArray1OfCurve from TColGeom2d is protected;
+    
+end;
+    

@@ -1,0 +1,33 @@
+-- File:	Prs3d_AnglePresentation.cdl
+-- Created:	Tue Feb 22 15:06:49 1994
+-- Author:	Jean Louis FRENKEL
+--		<jlf@pernox>
+---Copyright:	 Matra Datavision 1994
+
+class AnglePresentation from Prs3d inherits Root from Prs3d
+    	---Purpose: A framework to define the display of angles.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection
+    	
+is  
+    Draw( myclass; aPresentation: Presentation from Prs3d;
+    	    	   aDrawer: Drawer from Prs3d;
+		   aText: ExtendedString from TCollection;
+                   AttachmentPoint1: Pnt from gp;
+		   AttachmentPoint2: Pnt from gp;
+                   AttachmentPoint3: Pnt from gp;
+		   OffsetPoint: Pnt from gp);
+	---Purpose: Defines the representation of the angle between the
+    	-- line defined by the points AttachmentPoint1 and
+    	-- AttachmentPoint2 and the line defined by the points
+    	-- AttachmentPoint1 and AttachmentPoint3.
+    	-- The text aText is displayed at the point OffsetPoint,
+    	-- and the drawer aDrawer specifies the display
+    	-- attributes which angles will have.
+    	-- The presentation object aPresentation stores the
+    	-- information defined in this framework.
+        
+end AnglePresentation from Prs3d;

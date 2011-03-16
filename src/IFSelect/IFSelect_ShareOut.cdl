@@ -1,0 +1,233 @@
+-- File:	ShareOut.cdl
+-- Created:	Tue Nov 17 15:48:30 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class ShareOut  from IFSelect  inherits TShared
+
+    ---Purpose : This class gathers the informations required to produce one or
+    --           several file(s) from the content of an InterfaceModel (passing
+    --           through the creation of intermediate Models).
+    --           
+    --           It can correspond to a complete Divide up of a set of Entities
+    --           intended to be exhaustive and to limit duplications. Or to a
+    --           simple Extraction of some Entities, in order to work on them.
+    --           
+    --           A ShareOut is composed of a list of Dispatches.
+    --           To Each Dispatch in the ShareOut, is bound an Id. Number
+    --           This Id. Number allows to identify a Display inside the
+    --           ShareOut in a stable way (for instance, to attach file names)
+    --           
+    --           ShareOut can be seen as a "passive" description, activated
+    --           through a ShareOutResult, which gives the InterfaceModel on
+    --           which to work, as a unique source. Thus it is easy to change
+    --           it without coherence problems
+    --           
+    --           Services about it are provided by the class ShareOutResult
+    --           which is a service class : simulation (list of files and of
+    --           entities per file; "forgotten" entities; duplicated entities),
+    --           exploitation (generation of derivated Models, each of them
+    --           generating an output file)
+
+uses SequenceOfInteger from TColStd, CString,
+     HAsciiString from TCollection, AsciiString from TCollection,
+     Dispatch, TSeqOfDispatch,
+     GeneralModifier, Modifier, SequenceOfGeneralModifier
+
+raises InterfaceError, OutOfRange
+
+is
+
+    Create returns mutable ShareOut;
+    ---Purpose : Creates an empty ShareOut
+
+    Clear (me : mutable; onlydisp : Boolean);
+    ---Purpose : Removes in one operation all the Dispatches with their Idents
+    --           Also clears all informations about Names, and all Results but
+    --           naming informations which are :
+    --           - kept if <onlydisp> is True.
+    --           - cleared if <onlydisp> is False (complete clearing)
+    --           If <onlydisp> is True, that's all. Else, clears also Modifiers
+
+    ClearResult (me : mutable; alsoname : Boolean);
+    ---Purpose : Clears all data produced (apart from Dispatches, etc...)
+    --           if <alsoname> is True, all is cleared. Else, informations
+    --           about produced Names are kept (to maintain unicity of naming
+    --           across clearings)
+
+    RemoveItem (me : mutable; item : Transient) returns Boolean;
+    ---Purpose : Removes an item, which can be, either a Dispatch (removed from
+    --           the list of Dispatches), or a GeneralModifier (removed from
+    --           the list of Model Modifiers or from the list of File Modifiers
+    --           according to its type).
+    --           Returns True if done, False if has not been found or if it is
+    --           neither a Dispatch, nor a Modifier.
+
+
+    LastRun (me) returns Integer;
+    ---Purpose : Returns the rank of last run item (ClearResult resets it to 0)
+
+    SetLastRun (me : mutable; last : Integer);
+    ---Purpose : Records a new alue for the rank of last run item
+
+    NbDispatches (me) returns Integer;
+    ---Purpose : Returns the count of Dispatches
+
+    DispatchRank (me; disp : Dispatch) returns Integer;
+    ---Purpose : Returns the Rank of a Dispatch, given its Value (Handle).
+    --           Returns 0 if the Dispatch is unknown in the ShareOut
+
+    Dispatch (me; num : Integer) returns mutable Dispatch
+    ---Purpose : Returns a Dispatch, given its rank in the list
+    	raises OutOfRange;
+    --           Error if <num> is out of range
+    ---C++ : return const &
+
+    AddDispatch (me : mutable; disp : mutable Dispatch)
+    ---Purpose : Adds a Dispatch to the list
+    	raises InterfaceError;
+    --           Error if the Dispatch is attached to a ShareOut other than "me"
+
+    RemoveDispatch (me : mutable; rank : Integer) returns Boolean;
+    ---Purpose : Removes a Dispatch, given its rank in the list
+    --           Returns True if done, False if rank is not between
+    --           (LastRun + 1) and (NbDispatches)
+
+    	-- --    Modifiers to be applied    -- --
+
+    AddModifier (me : mutable; modifier : mutable GeneralModifier;
+    	    	atnum : Integer);
+    ---Purpose : Sets a Modifier to be applied on all Dispatches to be run
+    --           If <modifier> is a ModelModifier, adds it to the list of
+    --           Model Modifiers; else to the list of File Modifiers
+    --           By default (atnum = 0) at the end of the list, else at <atnum>
+    --           Each Modifier is used, after each copy of a packet of Entities
+    --           into a Model : its criteria are checked and if they are OK,
+    --           the method Perform of this Modifier is run.
+
+    AddModifier (me : mutable; modifier : mutable GeneralModifier;
+    	    	 dispnum : Integer; atnum : Integer);
+    ---Purpose : Sets a Modifier to be applied on the Dispatch <dispnum>
+    --           If <modifier> is a ModelModifier, adds it to the list of
+    --           Model Modifiers; else to the list of File Modifiers
+    --           This is the same list as for all Dispatches, but the
+    --           Modifier is qualified to be applied to one Dispatch only
+    --           Then, <atnum> refers to the entire list
+    --           By default (atnum = 0) at the end of the list, else at <atnum>
+    --           Remark : if the Modifier was already in the list and if
+    --             <atnum> = 0, the Modifier is not moved, but only qualified
+    --             for a Dispatch
+
+
+    AddModif    (me : mutable;  modifier : mutable GeneralModifier;
+    	    	 formodel : Boolean; atnum : Integer = 0);
+    ---Purpose : Adds a Modifier to the list of Modifiers : Model Modifiers if
+    --           <formodel> is True, File Modifiers else (internal).
+
+    NbModifiers (me; formodel : Boolean) returns Integer;
+    ---Purpose : Returns count of Modifiers (which apply to complete Models) :
+    --           Model Modifiers if <formodel> is True, File Modifiers else
+
+    GeneralModifier (me; formodel : Boolean; num : Integer)
+    	returns mutable GeneralModifier;
+    ---Purpose : Returns a Modifier of the list, given its rank :
+    --           Model Modifiers if <formodel> is True, File Modifiers else
+
+    ModelModifier (me; num : Integer) returns mutable Modifier;
+    ---Purpose : Returns a Modifier of the list of Model Modifiers, duely casted
+
+    ModifierRank (me; modifier : GeneralModifier) returns Integer;
+    ---Purpose : Gives the rank of a Modifier in the list, 0 if not in the list
+    --           Model Modifiers if <modifier> is kind of ModelModifer,
+    --           File Modifiers else
+
+    RemoveModifier (me : mutable; formodel : Boolean; num : Integer)
+    	returns Boolean;
+    ---Purpose : Removes a Modifier, given it rank in the list :
+    --           Model Modifiers if <formodel> is True, File Modifiers else
+    --           Returns True if done, False if <num> is out of range
+
+    ChangeModifierRank (me : mutable; formodel : Boolean; befor,after : Integer)
+    	returns Boolean;
+    ---Purpose : Changes the rank of a modifier in the list :
+    --           Model Modifiers if <formodel> is True, File Modifiers else
+    --           from <before> to <after>
+    --           Returns True if done, False else (before or after out of range)
+
+    	-- --    Names for produced Files   -- --
+
+    SetRootName (me : mutable; num : Integer; name : mutable HAsciiString)
+    	returns Boolean;
+    ---Purpose : Attaches a Root Name to a Dispatch given its rank, as an
+    --           HAsciiString (standard form). A Null Handle resets this name.
+    --           Returns True if OK, False if this Name is already attached,
+    --           for a Dispatch or for Default, or <num> out of range
+
+    HasRootName (me; num : Integer) returns Boolean;
+    ---Purpose : Returns True if the Dispatch of rank <num> has an attached
+    --           Root Name. False else, or if num is out of range
+
+    RootName (me; num : Integer) returns mutable HAsciiString from TCollection;
+    ---Purpose : Returns the Root bound to a Dispatch, given its rank
+    --           Returns a Null Handle if not defined
+
+    RootNumber (me; name : HAsciiString) returns Integer;
+    ---Purpose : Returns an integer value about a given root name :
+    --           - positive : it's the rank of the Dispatch which has this name
+    --           - null : this root name is unknown
+    --           - negative (-1) : this root name is the default root name
+
+    SetPrefix (me : mutable; pref : HAsciiString from TCollection);
+    ---Purpose : Defines or Changes the general Prefix (which is prepended to
+    --           complete file name generated). If this method is not call,
+    --           Prefix remains empty
+
+    SetDefaultRootName (me : mutable; defrt : HAsciiString from TCollection)
+    	returns Boolean;
+    ---Purpose : Defines or Changes the Default Root Name to a new value (which
+    --           is used for dispatches which have no attached root name).
+    --           If this method is not called, DefaultRootName remains empty
+    --           Returns True if OK, False if this Name is already attached,
+    --           for a Dispatch or for Default
+
+    SetExtension (me : mutable; ext : HAsciiString from TCollection);
+    ---Purpose : Defines or Changes the general Extension (which is appended to
+    --           complete file name generated). If this method is not call,
+    --           Extension remains empty
+
+    Prefix (me) returns HAsciiString from TCollection;
+    ---Purpose : Returns the general Prefix. Can be empty.
+
+    DefaultRootName (me) returns HAsciiString from TCollection;
+    ---Purpose : Returns the Default Root Name. Can be empty.
+
+    Extension (me) returns HAsciiString from TCollection;
+    ---Purpose : Returns the general Extension. Can be empty (not recommanded)
+
+    FileName (me : mutable; dnum, pnum : Integer; nbpack : Integer = 0)
+    	returns AsciiString from TCollection;
+    ---Purpose : Computes the complete file name for a Packet of a Dispatch,
+    --           given Dispatch Number (Rank), Packet Number, and Count of
+    --           Packets generated by this Dispatch (0 if unknown)
+    --           
+    --           File Name is made of following strings, concatenated :
+    --           General Prefix, Root Name for Dispatch, Packet Suffix, and
+    --           General Extension. If no Root Name is specified for a
+    --           Dispatch, DefaultRootName is considered (and pnum is not used,
+    --           but <thenbdefs> is incremented and used
+    --           Error if no Root is defined for this <idnum>
+
+fields
+
+    thedisps : TSeqOfDispatch;
+    themodelmodifiers  : SequenceOfGeneralModifier;
+    thefilemodifiers   : SequenceOfGeneralModifier;
+    thepref  : HAsciiString from TCollection;
+    thedefrt : HAsciiString from TCollection;
+    theext   : HAsciiString from TCollection;
+    thenbdefs  : Integer;
+    thelastrun : Integer;
+
+end ShareOut;

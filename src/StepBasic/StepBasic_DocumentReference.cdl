@@ -1,0 +1,31 @@
+-- File:	StepBasic_DocumentReference.cdl
+-- Created:	Tue Jun 30 14:44:51 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+deferred class DocumentReference  from StepBasic    inherits TShared from MMgt
+
+uses
+     Document from StepBasic,
+     HAsciiString from TCollection
+
+is
+
+    Init0 (me : mutable;
+    	   aAssignedDocument : Document;
+	   aSource : HAsciiString);
+
+    AssignedDocument (me) returns Document;
+    SetAssignedDocument (me : mutable; aAssignedDocument : Document);
+
+    Source (me) returns HAsciiString;
+    SetSource (me : mutable; aSource : HAsciiString);
+
+fields
+
+    theAssignedDocument : Document;
+    theSource : HAsciiString;
+
+end DocumentReference;

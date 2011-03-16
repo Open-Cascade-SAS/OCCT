@@ -1,0 +1,49 @@
+-- File:	V2d_RectangularGrid.cdl
+-- Created:	Wed Mar  8 11:57:00 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+-- Modification: DCB 14-07-98
+--    SetColorIndices() method has been added to avoid exception
+--    after V2d_Viewer::SetColorMap() call.
+---Copyright:	 Matra Datavision 1995
+
+private class RectangularGrid from V2d 
+inherits RectangularGrid from Aspect
+
+uses
+    ViewerPointer from V2d,
+    GraphicObject from Graphic2d,
+    RectangularGraphicGrid from V2d,
+    NameOfColor from Quantity
+
+is
+    Create(aViewer: ViewerPointer from V2d;
+           aColorIndex1: Integer from Standard;
+           aColorIndex2: Integer from Standard)
+    returns mutable RectangularGrid from V2d;
+
+    SetColorIndices (me: mutable;
+                     aColorIndex1: Integer from Standard;
+                     aColorIndex2: Integer from Standard);
+
+    Display(me: mutable)
+    is redefined static;
+
+    Erase(me)
+    is redefined static;
+
+    IsDisplayed(me)
+    returns Boolean from Standard
+    is redefined static;
+
+    UpdateDisplay(me:mutable)
+    is redefined static protected;
+
+fields
+    myViewer: ViewerPointer from V2d;
+    myGraphicObject: GraphicObject from Graphic2d;
+    myColorIndex1: Integer from Standard;
+    myColorIndex2: Integer from Standard;
+    myGrid: RectangularGraphicGrid from V2d;
+
+end RectangularGrid from V2d;

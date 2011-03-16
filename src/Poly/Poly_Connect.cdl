@@ -1,0 +1,133 @@
+-- File:	Poly_Connect.cdl
+-- Created:	Mon Mar  6 15:16:16 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Connect from Poly 
+
+	---Purpose: 
+    	-- Provides an algorithm to explore, inside a triangulation, the
+    	-- adjacency data for a node or a triangle.
+    	-- Adjacency data for a node consists of triangles which
+    	-- contain the node.
+    	-- Adjacency data for a triangle consists of:
+    	-- -   the 3 adjacent triangles which share an edge of the triangle,
+    	-- -   and the 3 nodes which are the other nodes of these adjacent triangles.
+    	-- Example
+    	-- Inside a triangulation, a triangle T
+    	-- has nodes n1, n2 and n3.
+    	-- It has adjacent triangles AT1, AT2 and AT3 where:
+    	-- - AT1 shares the nodes n2 and n3,
+    	-- - AT2 shares the nodes n3 and n1,
+    	-- - AT3 shares the nodes n1 and n2.
+    	-- It has adjacent nodes an1, an2 and an3 where:
+    	-- - an1 is the third node of AT1,
+    	-- - an2 is the third node of AT2,
+    	-- - an3 is the third node of AT3.
+    	-- So triangle AT1 is composed of nodes n2, n3 and an1.
+    	-- There are two ways of using this algorithm.
+    	-- -   From a given node you can look for one triangle that
+    	--   passes through the node, then look for the triangles
+    	--   adjacent to this triangle, then the adjacent nodes. You
+    	--   can thus explore the triangulation step by step (functions
+    	--   Triangle, Triangles and Nodes).
+    	-- -   From a given node you can look for all the triangles
+    	--   that pass through the node (iteration method, using the
+    	--   functions Initialize, More, Next and Value).  
+    	-- A Connect object can be seen as a tool which analyzes a
+    	-- triangulation and translates it into a series of triangles. By
+    	-- doing this, it provides an interface with other tools and
+    	-- applications working on basic triangles, and which do not
+    	-- work directly with a Poly_Triangulation.
+
+uses
+
+    Array1OfInteger from TColStd,
+    Triangulation   from Poly
+
+is
+
+    Create (T : Triangulation from Poly) returns Connect from Poly;
+	---Purpose: Constructs an algorithm to explore the adjacency data of
+    	-- nodes or triangles for the triangulation T.
+	
+    Triangulation(me) returns Triangulation from Poly;
+	---Purpose: Returns the triangulation analyzed by this tool.
+	---C++: inline
+
+    Triangle(me; N : Integer) returns Integer;
+	---Purpose: Returns the index of a triangle containing the node at
+    	-- index N in the nodes table specific to the triangulation analyzed by this tool
+	---C++: inline
+
+    Triangles(me; T: Integer; t1, t2, t3: out Integer);
+    	---Purpose: Returns in t1, t2 and t3, the indices of the 3 triangles
+    	-- adjacent to the triangle at index T in the triangles table
+    	-- specific to the triangulation analyzed by this tool.
+    	-- Warning
+    	-- Null indices are returned when there are fewer than 3
+    	-- adjacent triangles.
+
+    Nodes(me; T: Integer; n1, n2, n3: out Integer);
+    	---Purpose: Returns, in n1, n2 and n3, the indices of the 3 nodes
+    	-- adjacent to the triangle referenced at index T in the
+    	-- triangles table specific to the triangulation analyzed by this tool.
+    	-- Warning
+    	-- Null indices are returned when there are fewer than 3 adjacent nodes.
+        
+    Initialize(me: in out; N: Integer);
+    	---Purpose: Initializes an iterator to search for all the triangles
+    	-- containing the node referenced at index N in the nodes
+    	-- table, for the triangulation analyzed by this tool.
+    	-- The iterator is managed by the following functions:
+  	-- -   More, which checks if there are still elements in the iterator
+    	-- -   Next, which positions the iterator on the next element
+    	-- -   Value, which returns the current element.
+    	-- The use of such an iterator provides direct access to the
+    	-- triangles around a particular node, i.e. it avoids iterating on
+    	-- all the component triangles of a triangulation.
+    	-- Example
+    	-- Poly_Connect C(Tr);
+    	-- for
+    	-- (C.Initialize(n1);C.More();C.Next())
+    	-- {
+    	--        t = C.Value();
+    	-- }
+
+    More(me) returns Boolean;
+	---Purpose: Returns true if there is another element in the iterator
+    	-- defined with the function Initialize (i.e. if there is another
+    	-- triangle containing the given node).
+	---C++: inline
+
+
+    Next(me: in out) 
+	---Purpose: Advances the iterator defined with the function Initialize to
+    	-- access the next triangle.
+    	-- Note: There is no action if the iterator is empty (i.e. if the
+    	-- function More returns false).-
+    is static;
+
+
+    Value(me) returns Integer;
+    	---Purpose: Returns the index of the current triangle to which the
+    	-- iterator, defined with the function Initialize, points. This is
+    	-- an index in the triangles table specific to the triangulation
+    	-- analyzed by this tool
+
+
+fields
+
+    myTriangulation : Triangulation from Poly;
+    myTriangles : Array1OfInteger from TColStd;
+    myAdjacents : Array1OfInteger from TColStd;
+    mytr        : Integer from Standard;
+    myfirst     : Integer from Standard;
+    mynode      : Integer from Standard;
+    myothernode : Integer from Standard;
+    mysense     : Boolean from Standard;
+    mymore      : Boolean from Standard;
+    
+end Connect;

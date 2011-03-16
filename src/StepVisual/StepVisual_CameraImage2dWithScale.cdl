@@ -1,0 +1,14 @@
+-- File:	StepVisual_CameraImage2dWithScale.cdl
+-- Created:	Wed Mar 26 15:22:17 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CameraImage2dWithScale  from StepVisual    inherits CameraImage  from StepVisual
+
+is
+
+    Create returns mutable CameraImage2dWithScale;
+
+end CameraImage2dWithScale;

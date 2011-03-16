@@ -1,0 +1,54 @@
+-- File:	Coincidence.cdl
+-- Created:	Thu Aug 20 18:06:13 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Coincidence from HLRAlgo
+
+	---Purpose: The Coincidence class is used in an Inteference to
+	--          store informations on the "hiding" edge.
+	--          
+	--          2D  Data : The  tangent  and the  curvature of the
+	--          projection of the edge  at the intersection point.
+	--          This is necesserary  when the intersection  is  at
+	--          the extremity of the edge.
+	--          
+	--          3D   Data  :  The   state of  the   edge  near the
+	--          intersection   with  the face (before  and after).
+	--          This is necessary  when the  intersection is  "ON"
+	--          the face.
+
+uses
+    Integer from Standard,
+    Real    from Standard,
+    State   from TopAbs
+
+is
+    Create returns Coincidence from HLRAlgo;
+    
+    Set2D(me : in out; FE    : Integer from Standard;
+                       Param : Real    from Standard)
+    	---C++: inline
+    is static;
+    
+    SetState3D(me : in out; stbef,staft : State from TopAbs)
+    	---C++: inline
+    is static;
+
+    Value2D(me; FE    : out Integer from Standard;
+                Param : out Real    from Standard)
+    	---C++: inline
+    is static;
+    
+    State3D(me; stbef,staft : out State from TopAbs)
+    	---C++: inline
+    is static;
+	    
+fields
+    myFE    : Integer from Standard;
+    myParam : Real    from Standard;
+    myStBef : State from TopAbs;
+    myStAft : State from TopAbs;
+
+end Coincidence;

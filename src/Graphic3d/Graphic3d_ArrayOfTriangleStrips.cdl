@@ -1,0 +1,63 @@
+-- File:	Graphic3d_ArrayOfTriangleStrips.cdl
+-- Created:	04/01/01 : GG : G005 : Draw ARRAY primitives
+--
+
+class ArrayOfTriangleStrips from Graphic3d inherits ArrayOfPrimitives from Graphic3d 
+
+is
+
+	-- constructor
+	Create (
+                maxVertexs: Integer from Standard;
+                maxStrips: Integer from Standard = 0;
+                hasVNormals: Boolean from Standard = Standard_False;
+                hasVColors: Boolean from Standard = Standard_False;
+                hasSColors: Boolean from Standard = Standard_False;
+                hasTexels: Boolean from Standard = Standard_False)
+	returns mutable ArrayOfTriangleStrips from Graphic3d;
+        ---Purpose: Creates an array of triangle strips,
+        -- a polygon can be filled as:
+        -- 1) creating a single strip defined with his vertexs.
+        --    i.e:
+        --    myArray = Graphic3d_ArrayOfTriangleStrips(7)
+        --    myArray->AddVertex(x1,y1,z1)
+        --      ....
+        --    myArray->AddVertex(x7,y7,z7)
+        -- 2) creating separate strips defined with a predefined
+        --    number of strips and the number of vertex per strip.
+        --    i.e:
+        --    myArray = Graphic3d_ArrayOfTriangleStrips(8,2)
+        --    myArray->AddBound(4)
+        --    myArray->AddVertex(x1,y1,z1)
+        --      ....
+        --    myArray->AddVertex(x4,y4,z4)
+        --    myArray->AddBound(4)
+        --    myArray->AddVertex(x5,y5,z5)
+        --      ....
+        --    myArray->AddVertex(x8,y8,z8) 
+        --
+        -- <maxVertexs> defined the maximun allowed vertex number in the array.
+        -- <maxStrips> defined the maximun allowed strip number in the array.
+        -- The number of triangle really drawn is :
+        -- VertexNumber()-2*Min(1,BoundNumber())
+        --  Warning:
+        -- When <hasVNormals> is TRUE , you must use one of
+        --      AddVertex(Point,Normal)
+        --  or  AddVertex(Point,Normal,Color)
+        --  or  AddVertex(Point,Normal,Texel) methods.
+        -- When <hasVColors> is TRUE , you must use one of
+        --      AddVertex(Point,Color)
+        --  or  AddVertex(Point,Normal,Color) methods.
+        -- When <hasTexels> is TRUE , you must use one of
+        --      AddVertex(Point,Texel)
+        --  or  AddVertex(Point,Normal,Texel) methods.
+        -- When <hasBColors> is TRUE , <maxBounds> must be > 0 and
+        --      you must use the
+        --      AddBound(number,Color) method.
+        --  Warning:
+        -- the user is responsible about the orientation of the strip
+        -- depending of the order of the created vertex and this
+        -- orientation must be coherent with the vertex normal optionnaly
+        -- given at each vertex (See the Orientate() methods).
+
+end;

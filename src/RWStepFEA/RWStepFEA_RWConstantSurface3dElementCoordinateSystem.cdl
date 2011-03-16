@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWConstantSurface3dElementCoordinateSystem.cdl
+-- Created:	Thu Dec 26 15:06:35 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWConstantSurface3dElementCoordinateSystem from RWStepFEA
+
+    ---Purpose: Read & Write tool for ConstantSurface3dElementCoordinateSystem
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ConstantSurface3dElementCoordinateSystem from StepFEA
+
+is
+    Create returns RWConstantSurface3dElementCoordinateSystem from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ConstantSurface3dElementCoordinateSystem from StepFEA);
+	---Purpose: Reads ConstantSurface3dElementCoordinateSystem
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ConstantSurface3dElementCoordinateSystem from StepFEA);
+	---Purpose: Writes ConstantSurface3dElementCoordinateSystem
+
+    Share (me; ent : ConstantSurface3dElementCoordinateSystem from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWConstantSurface3dElementCoordinateSystem;

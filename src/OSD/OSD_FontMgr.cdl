@@ -1,0 +1,37 @@
+-- Copyright:     OpenCASCADE
+
+-- File:          OSD_FontMgr.cdl
+-- Created:       20.01.2008
+-- Author:        Alexander A. BORODIN
+-- Updated:       
+
+
+class FontMgr from OSD inherits TShared from MMgt
+
+ ---Purpose: Structure for store of Font System Information
+
+uses Path,
+     SystemFont,
+     NListOfSystemFont,
+     AsciiString from TCollection
+is
+ GetInstance(myclass)
+    returns FontMgr;
+    ---Level: Public
+
+ GetAvalableFonts(me)
+    returns NListOfSystemFont;
+
+--- Private methods
+
+ Create returns FontMgr is private;
+    ---Purpose: Creates empty font object
+    ---Level: Private
+
+ InitFontDataBase(me:mutable) is private;
+
+fields
+
+ MyListOfFonts:         NListOfSystemFont;
+
+end FontMgr;

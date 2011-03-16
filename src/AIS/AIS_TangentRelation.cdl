@@ -1,0 +1,112 @@
+-- File:	AIS_TangentRelation.cdl
+-- Created:	Thu Dec  5 10:43:26 1996
+-- Author:	Jean-Pierre COMBE/Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class TangentRelation from AIS inherits Relation from AIS
+    	---Purpose: A framework to display tangency constraints between
+    	-- two or more Interactive Objects of the datum type.
+    	-- The datums are normally faces or edges.
+uses Shape                 from TopoDS,
+     Presentation          from Prs3d,
+     PresentationManager3d from PrsMgr,
+     Selection             from SelectMgr,
+     Pnt                   from gp,
+     Dir                   from gp,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager2d from PrsMgr,
+     GraphicObject         from Graphic2d,    
+     Plane                 from Geom
+
+is
+    Create (aFShape     : Shape          from TopoDS;
+    	    aSShape     : Shape          from TopoDS;
+	    aPlane      : Plane          from Geom;
+    	    anExternRef : Integer        from Standard = 0)
+	    ---Purpose:  TwoFacesTangent or TwoEdgesTangent relation
+    returns mutable TangentRelation from AIS;
+    	---Purpose: Constructs an object to display tangency constraints.
+    	-- This object is defined by the first shape aFShape, the
+    	-- second shape aSShape, the plane aPlane and the index anExternRef.
+    	-- aPlane serves as an optional axis.
+    	-- anExternRef set to 0 indicates that there is no relation.
+    
+    ExternRef(me: mutable) returns Integer from Standard 
+    is static;
+    	---Purpose: Returns the external reference for tangency.
+    	-- The values are as follows:
+    	-- -   0 - there is no connection;
+    	-- -   1 - there is a connection to the first shape;
+    	-- -   2 - there is a connection to the second shape.
+    	--   This reference is defined at construction time.
+    
+    SetExternRef(me: mutable;aRef : Integer from Standard)
+    is static;
+    	---Purpose: Sets the external reference for tangency, aRef.
+    	-- The values are as follows:
+    	-- -   0 - there is no connection;
+    	-- -   1 - there is a connection to the first shape;
+    	-- -   2 - there is a connection to the second shape.
+    	-- This reference is initially defined at construction time.    
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	    
+
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)is private;
+
+
+--
+--     Computation private methods
+--
+
+    ComputeTwoFacesTangent(me: mutable;
+    	    	    	   aPresentation : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoEdgesTangent(me: mutable;
+    	    	    	   aPresentation : mutable Presentation from Prs3d)
+    is private;
+    
+
+fields
+
+    myAttach      : Pnt   from gp;
+    myDir         : Dir   from gp;
+    myLength      : Real  from Standard;
+    myExternRef   : Integer from Standard;  ---purpose: (0  no attachment,1  attachment with first shape, 2  attachment with second shape)
+    
+end TangentRelation;
+

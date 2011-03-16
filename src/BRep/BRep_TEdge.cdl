@@ -1,0 +1,87 @@
+-- File:	TEdge.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TEdge from BRep inherits TEdge from TopoDS
+
+	---Purpose: The TEdge from BRep is  inherited from  the  TEdge
+	--          from TopoDS. It contains the geometric data.
+	--          
+	--          The TEdge contains :
+	--           
+	--           * A tolerance.
+	--           
+	--           * A same parameter flag.
+	--           
+	--           * A same range flag.
+	--           
+	--           * A Degenerated flag.
+	--           
+	--           *  A  list   of curve representation.
+
+uses
+    TShape                    from TopoDS,
+    ListOfCurveRepresentation from BRep
+
+is
+    Create returns mutable TEdge from BRep;
+	---Purpose: Creates an empty TEdge.
+	
+    Tolerance(me) returns Real
+	---C++: inline
+    is static;
+    	
+    Tolerance(me : mutable; T : Real)
+	---C++: inline
+    is static;
+    
+    UpdateTolerance(me : mutable; T : Real)
+	---Purpose: Sets the tolerance  to the   max  of <T>  and  the
+	--          current  tolerance.
+	--          
+	---C++: inline
+    is static;
+    
+    SameParameter(me) returns Boolean
+    is static;
+    
+    SameParameter(me : mutable; S : Boolean)
+    is static;
+    
+    SameRange(me) returns Boolean
+    is static;
+    
+    SameRange(me : mutable; S : Boolean)
+    is static;
+    
+    Degenerated(me) returns Boolean
+    is static;
+    
+    Degenerated(me : mutable; S : Boolean)
+    is static;
+    
+    Curves(me) returns ListOfCurveRepresentation from BRep
+	---C++: return const &
+	---C++: inline
+    is static;
+    
+    ChangeCurves(me : mutable) returns ListOfCurveRepresentation from BRep
+	---C++: return &
+	---C++: inline
+    is static;
+    
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
+    
+fields
+
+    myTolerance     : Real;
+    myFlags         : Integer;
+    myCurves        : ListOfCurveRepresentation from BRep;
+
+end TEdge;

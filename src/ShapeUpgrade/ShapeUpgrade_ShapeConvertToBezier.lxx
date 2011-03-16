@@ -1,0 +1,204 @@
+// File:	ShapeUpgrade_ShapeConvertToBezier.lxx
+// Created:	Tue Jun 22 16:45:19 1999
+// Author:	data exchange team
+//		<det@friendox>
+
+//=======================================================================
+//function : Set2dConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set2dConversion(const Standard_Boolean mode)
+{
+  my2dMode = mode;
+}
+
+//=======================================================================
+//function : Get2dConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get2dConversion() const
+{
+  return my2dMode;
+}
+
+//=======================================================================
+//function : Set3dConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConversion(const Standard_Boolean mode)
+{
+  my3dMode = mode;
+}
+
+//=======================================================================
+//function : Get3dConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConversion() const
+{
+  return my3dMode;
+}
+
+//=======================================================================
+//function : SetSurfaceConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetSurfaceConversion(const Standard_Boolean mode)
+{
+  mySurfaceMode = mode;
+}
+
+//=======================================================================
+//function : GetSurfaceConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetSurfaceConversion() const
+{
+  return mySurfaceMode;
+}
+
+//=======================================================================
+//function : Set3dLineConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dLineConversion(const Standard_Boolean mode)
+{
+  my3dLineMode = mode;
+}
+
+//=======================================================================
+//function : Get3dLineConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dLineConversion() const
+{
+  return my3dLineMode;
+}
+
+//=======================================================================
+//function : Set3dCircleConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dCircleConversion(const Standard_Boolean mode)
+{
+  my3dCircleMode = mode;
+}
+
+//=======================================================================
+//function : Get3dCircleConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dCircleConversion() const
+{
+  return my3dCircleMode;
+}
+
+//=======================================================================
+//function : Set3dConicConversion
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::Set3dConicConversion(const Standard_Boolean mode)
+{
+  my3dConicMode = mode;
+}
+
+//=======================================================================
+//function : Get3dConicConversion
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Get3dConicConversion() const
+{
+  return my3dConicMode;
+}
+
+//=======================================================================
+//function : SetPlaneMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetPlaneMode(const Standard_Boolean mode)
+{
+  myPlaneMode = mode;
+}
+
+//=======================================================================
+//function : GetPlaneMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetPlaneMode() const
+{
+  return myPlaneMode;
+}
+
+//=======================================================================
+//function : SetRevolutionMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetRevolutionMode(const Standard_Boolean mode)
+{
+  myRevolutionMode = mode;
+}
+
+//=======================================================================
+//function : GetRevolutionMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetRevolutionMode() const
+{
+  return myRevolutionMode;
+}
+
+//=======================================================================
+//function : SetExtrusionMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetExtrusionMode(const Standard_Boolean mode)
+{
+  myExtrusionMode = mode;
+}
+
+//=======================================================================
+//function : GetExtrusionMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetExtrusionMode() const
+{
+  return myExtrusionMode;
+}
+
+//=======================================================================
+//function : SetBSplineMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ShapeConvertToBezier::SetBSplineMode(const Standard_Boolean mode)
+{
+  myBSplineMode = mode;
+}
+
+//=======================================================================
+//function : GetBSplineMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::GetBSplineMode() const
+{
+  return myBSplineMode;
+}

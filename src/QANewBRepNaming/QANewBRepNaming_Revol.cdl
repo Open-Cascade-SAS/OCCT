@@ -1,0 +1,52 @@
+-- File:	QANewBRepNaming_Revol.cdl
+-- Created:	Fri Nov  5 15:17:21 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class Revol from QANewBRepNaming inherits TopNaming from QANewBRepNaming 
+
+    ---Purpose: To load the Revol results 
+
+uses 
+ 
+    MakeRevol from BRepPrimAPI, 
+    Shape     from TopoDS,
+    Label     from TDF
+
+is 
+ 
+    Create returns Revol from QANewBRepNaming;
+
+    Create(ResultLabel : Label from TDF) 
+    returns Revol from QANewBRepNaming;
+
+    Init(me : in out; ResultLabel : Label from TDF);
+
+
+    Load (me; mkRevol : in out MakeRevol from BRepPrimAPI;
+	      basis   : in     Shape     from TopoDS);
+    ---Purpose: Loads the revol in the data framework 
+      
+    Start(me)
+    ---Purpose: Returns the insertion label of the start face of the Revol.  
+    returns Label from TDF;
+
+    End(me) 
+    ---Purpose: Returns the insertion label of the end face of the Revol. 
+    returns Label from TDF;
+       
+    Lateral(me) 
+    ---Purpose: Returns the insertion label of the lateral faces of the Revol.
+    returns Label from TDF; 
+    
+    Degenerated(me)
+    ---Purpose: Returns the label of degenerated edges.
+    returns Label from TDF;
+    
+    Content(me)
+    ---Purpose: Returns the label of the content of the result.
+    returns Label from TDF;    
+    
+
+end Revol;

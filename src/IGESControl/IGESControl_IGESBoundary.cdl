@@ -1,0 +1,57 @@
+-- File:	IGESControl_IGESBoundary.cdl
+-- Created:	Sat Feb  5 15:58:02 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class IGESBoundary from IGESControl inherits IGESBoundary from IGESToBRep
+
+    ---Purpose: Translates IGES boundary entity (types 141, 142 and 508)
+    --          in Advanced Data Exchange.
+    --          Redefines translation and treatment methods from inherited
+    --          open class IGESToBRep_IGESBoundary.
+
+uses
+
+    IGESEntity          from IGESData,
+    HArray1OfIGESEntity from IGESData,
+    CurveAndSurface     from IGESToBRep,
+    WireData            from ShapeExtend
+
+is
+
+    Create returns mutable IGESBoundary from IGESControl;
+    	---Purpose: Creates an object and calls inherited constuctor.
+
+    Create (CS: CurveAndSurface from IGESToBRep) returns mutable IGESBoundary from IGESControl;
+    	---Purpose: Creates an object and calls inherited constuctor.
+	
+    Check (me: mutable; result, checkclosure, okCurve3d, okCurve2d: Boolean) is redefined;
+    	---Purpose: Checks result of translation of IGES boundary entities
+    	--          (types 141, 142 or 508).
+	--          Checks consistency of 2D and 3D representations and keeps
+	--          only one if they are inconsistent.
+	--          Checks the closure of resulting wire and if it is not closed,
+    	--          checks 2D and 3D representation and updates the resulting
+    	--          wire to contain only closed representation.
+	---Remark : If resulting representation will be 3D, some edges may still
+    	--          contain pcurves which are consistent with 3D curves for the
+	--          given edge.
+	
+    ---Level: Internal
+		    
+    Transfer (me: mutable; okCurve    : in out Boolean;
+			   okCurve3d  : in out Boolean;
+			   okCurve2d  : in out Boolean;
+    	    	    	   icurve3d   : IGESEntity from IGESData;
+    	    	    	   scurve3d   : WireData from ShapeExtend;
+			   usescurve  : Boolean;
+			   toreverse3d: Boolean;
+			   curves2d   : HArray1OfIGESEntity from IGESData;
+			   toreverse2d: Boolean;
+    	    	    	   number     : Integer;
+    	    	    	   lsewd      : out WireData from ShapeExtend)
+    returns Boolean is redefined protected;
+    
+end IGESBoundary;

@@ -1,0 +1,270 @@
+-- File:	TFunction_Function.cdl
+-- Created:	Thu Jun 10 19:25:22 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class TreeNode from TDataStd inherits Attribute from TDF
+
+    	---Purpose: Allows you to define an explicit tree of labels
+     	-- which you can also edit.
+    	-- Without this class, the data structure cannot be fully edited.
+    	-- This service is required if for presentation
+    	-- purposes, you want to create an application with
+    	-- a tree which allows you to organize and link data
+    	-- as a function of application features.
+        
+uses 
+
+  GUID            from Standard,   
+  OStream         from Standard,
+  Attribute       from TDF, 
+  RelocationTable from TDF,  
+  DataSet         from TDF, 
+  AttributeDelta  from TDF,  
+  Label           from TDF,
+  PtrTreeNode     from TDataStd 
+     
+is  
+
+    ---Purpose: class  methods working on the node 
+    --          ===================================
+
+    Find (myclass; L  : Label from TDF;  
+    	    	   T  : out TreeNode from TDataStd) 
+    ---Purpose:  Returns true if the tree node T is found on the label L.
+    --           Otherwise, false is returned.
+    returns Boolean from Standard;	     
+
+    Set (myclass; L : Label from TDF) 
+    ---Purpose: Finds or Creates a TreeNode attribute on the label <L>
+    --           with  the  default tree  ID,   returned by the method
+    --          <GetDefaultTreeID>.  Returns the created/found     TreeNode
+    --          attribute.
+    returns TreeNode from TDataStd;
+    
+    Set (myclass; L : Label from TDF; ExplicitTreeID : GUID  from Standard)
+    ---Purpose: Finds  or Creates a   TreeNode attribute on  the label
+    --          <L>, with an   explicit tree ID.  <ExplicitTreeID>  is
+    --          the  ID   returned by    <TDF_Attribute::ID>   method.
+    --          Returns the found/created TreeNode attribute.
+    returns TreeNode from TDataStd;
+    
+    GetDefaultTreeID (myclass) 
+    ---Purpose:  returns a default  tree ID.  this  ID is  used by the
+    --          <Set> method without explicit tree ID.  
+    ---C++: return const &
+    returns GUID from Standard;  
+   
+    ---Purpose: Instance methods: 
+    --          ================ 
+     
+    Create returns mutable TreeNode from TDataStd;
+    
+
+    Append (me : mutable; Child : TreeNode from TDataStd)    
+    ---Purpose: Insert the TreeNode <Child> as last  child of <me>. If
+    --         the insertion is successful <me> becomes the Father of <Child>.
+    returns Boolean from Standard;		     
+    
+    Prepend (me : mutable; Child : TreeNode from TDataStd)   
+    ---Purpose:  Insert the   the TreeNode <Child>  as  first child of
+    --          <me>. If the insertion is successful <me> becomes the Father of <Child>
+    returns Boolean from Standard;		     
+
+    InsertBefore (me : mutable; Node : TreeNode from TDataStd)      
+    ---Purpose: Inserts the TreeNode  <Node> before <me>. If insertion is successful <me>
+    --          and <Node> belongs to the same Father.
+    returns Boolean from Standard;		     
+
+    InsertAfter(me : mutable; Node : TreeNode from TDataStd)
+    ---Purpose: Inserts the TreeNode <Node>  after <me>. If insertion is successful  <me>
+    --          and <Node> belongs to the same Father.
+    returns Boolean from Standard;		     
+
+    Remove (me : mutable)
+    ---Purpose: Removes this tree node attribute from its father
+    --          node. The result is that this attribute becomes a root node.
+    returns Boolean from Standard;      
+
+    Depth (me) returns Integer from Standard;
+    ---Purpose:  Returns the depth of this tree node in the overall tree node structure.
+    --           In other words, the number of father tree nodes of this one is returned. 
+
+    NbChildren (me; allLevels : Boolean from Standard = Standard_False) 
+    returns Integer from Standard;
+    ---Purpose:  Returns the number of child nodes. 
+    --           If <allLevels> is true, the method counts children of all levels
+    --           (children of children ...)
+    
+    IsAscendant (me; of : TreeNode from TDataStd)
+    ---Purpose: Returns true if this tree node attribute is an
+    --          ascendant of of. In other words, if it is a father or
+    --          the father of a father of of.
+    returns Boolean from Standard;
+    
+    IsDescendant (me; of : TreeNode from TDataStd)  
+    ---Purpose: Returns true if this tree node attribute is a
+    --          descendant of of. In other words, if it is a child or
+    --          the child of a child of of.
+    returns Boolean from Standard;
+
+    IsRoot(me)
+    ---Purpose: Returns true if this tree node attribute is the
+    --          ultimate father in the tree.
+    returns Boolean; 
+    
+    Root(me)
+    ---Purpose: Returns the ultimate father of this tree node attribute.
+    returns TreeNode from TDataStd;
+
+    IsFather (me; of : TreeNode from TDataStd)  
+    ---Purpose: Returns true if this tree node attribute is a father of of.
+    returns Boolean from Standard;    
+
+    IsChild (me; of : TreeNode from TDataStd)  
+    ---Purpose: Returns true if this tree node attribute is a child of of.
+    returns Boolean from Standard;
+    
+    HasFather(me)
+    ---Purpose: Returns true if this tree node attribute has a father tree node.
+    ---C++: inline
+    returns Boolean;    
+
+    Father (me)
+    ---Purpose: Returns the father TreeNode of <me>. Null if root.
+    returns TreeNode from TDataStd;
+    
+    HasNext(me)
+    ---Purpose: Returns true if this tree node attribute has a next tree node.
+    ---C++: inline
+    returns Boolean; 
+    
+    Next (me)
+    ---Purpose:  Returns the next tree node in this tree node attribute.
+    --           Warning
+    --           This tree node is null if it is the last one in this
+    --           tree node attribute.Returns the next TreeNode of <me>. Null if last.
+    returns TreeNode from TDataStd;
+     
+    HasPrevious(me)
+    ---Purpose: Returns true if this tree node attribute has a previous tree node.
+    ---C++: inline
+    returns Boolean;     
+    
+    Previous (me)
+    ---Purpose: Returns the previous tree node of this tree node attribute.
+    --          Warning
+    --          This tree node is null if it is the first one in this tree node attribute.
+    returns TreeNode from TDataStd;
+     
+    HasFirst (me)
+    ---Purpose: Returns true if this tree node attribute has a first child tree node.
+    ---C++: inline
+    returns Boolean;      
+    
+    First (me)
+    ---Purpose: Returns the first child tree node in this tree node object.
+    returns TreeNode from TDataStd; 
+
+    HasLast (me)
+    ---Purpose: Returns true if this tree node attribute has a last child tree node.
+    ---C++: inline
+    returns Boolean;      
+    
+    Last (me : mutable)
+    ---Purpose: Returns the last child tree node in this tree node object.
+    returns TreeNode from TDataStd;
+
+    FindLast (me : mutable)
+    ---Purpose: Returns the last child tree node in this tree node object.
+    returns TreeNode from TDataStd;
+
+    ---Purpose: to set fields
+    --          =============
+    
+    SetTreeID (me : mutable; explicitID : GUID  from Standard);
+
+    SetFather(me : mutable;F : TreeNode from TDataStd);
+
+    SetNext (me : mutable;F : TreeNode from TDataStd);
+
+    SetPrevious (me : mutable;F : TreeNode from TDataStd);
+
+    SetFirst (me : mutable;F : TreeNode from TDataStd);
+
+    SetLast (me : mutable;F : TreeNode from TDataStd);
+
+    ---Purpose: TreeNode callback: 
+    --          ==================
+
+    AfterAddition(me: mutable)
+    ---Purpose: Connect the TreeNode to its father child list
+    is redefined;
+    
+    BeforeForget(me: mutable)
+    ---Purpose: Disconnect the TreeNode from its Father child list
+    is redefined;
+
+    AfterResume(me: mutable)
+    ---Purpose: Reconnect the TreeNode to its father child list.
+    is redefined;
+
+    BeforeUndo(me: mutable; anAttDelta : AttributeDelta from TDF;
+    	                    forceIt : Boolean from Standard = Standard_False)
+    ---Purpose: Disconnect the TreeNode, if necessary.
+    returns Boolean from Standard
+    is redefined;
+
+    AfterUndo(me: mutable; anAttDelta : AttributeDelta from TDF;
+    	                   forceIt : Boolean from Standard = Standard_False)
+    ---Purpose: Reconnect the TreeNode, if necessary.
+    returns Boolean from Standard
+    is redefined;
+
+     
+    ---Purpose: Implementation of Attribute methods:  
+    --          ===================================  
+     
+    ID (me)
+    ---Purpose: Returns the tree ID (default or explicit one depending
+    --          onthe Set method used).  
+    ---C++: return const &
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF) 
+    is virtual;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF) 
+    is virtual;    
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF
+    is redefined;
+	
+    References(me;
+    	       aDataSet : DataSet from TDF)
+    is redefined;
+	
+    Dump(me; anOS : in out OStream from Standard) 
+    returns OStream from Standard   
+    ---C++: return &
+    is redefined; 
+
+fields
+
+    myFather   : PtrTreeNode from TDataStd;  
+    myPrevious : PtrTreeNode from TDataStd;  
+    myNext     : PtrTreeNode from TDataStd;  
+    myFirst    : PtrTreeNode from TDataStd; 
+    myLast     : PtrTreeNode from TDataStd; 
+    myTreeID   : GUID        from Standard;
+
+friends 
+ 
+    class ChildNodeIterator from TDataStd
+    
+end TreeNode;   

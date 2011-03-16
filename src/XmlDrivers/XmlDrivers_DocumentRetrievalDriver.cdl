@@ -1,0 +1,35 @@
+-- File:	XmlDrivers_DocumentRetrievalDriver.cdl
+-- Created:	Wed Jul 25 16:56:28 2001
+-- Author:	Julia DOROVSKIKH
+--		<jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:	Open Cascade 2001
+
+class DocumentRetrievalDriver from XmlDrivers inherits DocumentRetrievalDriver from XmlLDrivers
+
+uses
+
+    ADriverTable		from XmlMDF, 
+    ADriver                     from XmlMDF, 
+    Element                     from XmlObjMgt,
+    MessageDriver               from CDM
+
+is
+    Create returns mutable DocumentRetrievalDriver from XmlDrivers;
+    -- Constructor
+
+    AttributeDrivers	(me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from XmlMDF
+	is redefined virtual; 
+	 
+    ReadShapeSection (me:mutable; thePDoc  :  Element from XmlObjMgt; 
+                                  theMsgDriver : MessageDriver from CDM) 
+        returns ADriver from XmlMDF
+        is redefined virtual; 
+	 
+    ShapeSetCleaning(me:mutable; theDriver : ADriver from XmlMDF) 
+        is redefined virtual;
+	
+    PropagateDocumentVersion(me:mutable; theDocVersion : Integer from Standard) 
+        is redefined virtual;  
+	 
+end DocumentRetrievalDriver;

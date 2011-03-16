@@ -1,0 +1,72 @@
+-- File:	TopOpeBRepBuild_ShellFaceClassifier.cdl
+-- Created:	Thu Jun 17 10:15:32 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class ShellFaceClassifier from TopOpeBRepBuild
+    inherits CompositeClassifier from TopOpeBRepBuild
+
+---Purpose: 
+-- Classify faces and shells.
+-- shapes are Shells, Elements are Faces.
+
+uses
+    
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Shape from TopoDS,
+    Shell from TopoDS,
+    Pnt from gp,
+    DataMapOfShapeShape from TopTools,
+    Builder from BRep,
+    SolidClassifier from TopOpeBRepTool,
+    BlockBuilder from TopOpeBRepBuild,
+    Loop from TopOpeBRepBuild
+    
+is
+
+    Create(BB : BlockBuilder) returns ShellFaceClassifier;
+    ---Purpose: Creates a classifier in 3D space, to compare : 
+    -- a face with a set of faces
+    -- a shell with a set of faces
+    -- a shell with a shell
+
+    Clear(me : in out) is static;
+    
+    CompareShapes(me : in out; B1,B2 : Shape from TopoDS)
+    ---Purpose: classify shell <B1> with shell <B2>
+    returns State from TopAbs;
+    
+    CompareElementToShape(me : in out; F : Shape; S : Shape)
+    ---Purpose: classify face <F> with shell <S>
+    returns State from TopAbs;
+    
+    ResetShape(me : in out; S : Shape);
+    ---Purpose: prepare classification involving shell <S>
+    -- calls ResetElement on first face of <S>
+    
+    ResetElement(me : in out; F : Shape);
+    ---Purpose: prepare classification involving face <F>
+    -- define 3D point (later used in Compare()) on first vertex of face <F>.
+    
+    CompareElement(me : in out; F : Shape);
+    ---Purpose: Add the face <F> in the set of faces used in 3D point
+    -- classification.
+    
+    State(me : in out) returns State from TopAbs;
+    ---Purpose: Returns state of classification of 3D point, defined by 
+    -- ResetElement, with the current set of faces, defined by Compare.
+
+fields
+    
+    myFirstCompare : Boolean from Standard;
+    myPoint3d : Pnt from gp;
+    myShell : Shell from TopoDS;
+    myBuilder : Builder from BRep;
+    mySolidClassifier : SolidClassifier from TopOpeBRepTool;
+    myFaceShellMap : DataMapOfShapeShape from TopTools; 
+    myShape : Shape from TopoDS;
+   
+end ShellFaceClassifier from TopOpeBRepBuild;
+    

@@ -1,0 +1,163 @@
+-- File:	TopOpeBRepTool_ShapeClassifier.cdl
+-- Created:	Tue Feb  1 17:58:30 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1994
+
+class ShapeClassifier from TopOpeBRepTool
+
+uses
+
+    State from TopAbs,
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    IndexedMapOfShape from TopTools,
+    ListOfShape from TopTools,
+    Pnt2d from gp,
+    Pnt from gp,
+    Plos from TopOpeBRepTool,
+    SolidClassifier from TopOpeBRepTool
+       
+is
+
+    Create returns ShapeClassifier;
+
+    Create(SRef : Shape from TopoDS) returns ShapeClassifier;
+    ---Purpose: 
+    -- SRef is the reference shape.
+    -- StateShapeShape(S) calls will classify S with SRef.
+
+    ClearAll(me : in out) is static;
+    ---Purpose: reset all internal data (SolidClassifier included)
+
+    ClearCurrent(me : in out) is static;
+    ---Purpose: reset all internal data (except SolidClassified)
+    
+    SetReference(me : in out; SRef : Shape from TopoDS)
+    ---Purpose: 
+    -- Set SRef as reference shape
+    -- the next StateShapeReference(S,AvoidS) calls will classify S with SRef.
+    is static;
+
+    StateShapeShape(me : in out; S,SRef : Shape from TopoDS;
+    	    	    	    	 samedomain : Integer = 0)
+    ---Purpose: 
+    --  classify shape S compared with shape SRef.
+    --  samedomain = 0 : S1,S2 are not same domain
+    --  samedomain = 1 : S1,S2 are same domain
+    returns State from TopAbs is static;
+
+    SameDomain(me) returns Integer;
+    
+    SameDomain(me : in out; samedomain : Integer)
+    ---Purpose: 
+    -- set mode for next StateShapeShape call
+    -- 	  samedomain = true --> S,Sref are same domain --> point
+    -- 	  on restriction (ON S) is used to classify S.
+    -- 	  samedomain = false --> S,Sref are not domain --> point
+    -- 	  not on restriction of S (IN S) is used to classify S.
+    -- 	  samedomain value is used only in next StateShapeShape call
+    is static;
+
+    StateShapeShape(me : in out; S : Shape from TopoDS;
+    	    	         	 AvoidS : Shape from TopoDS;
+				 SRef : Shape from TopoDS)
+    ---Purpose: 
+    -- classify shape S compared with shape SRef.
+    -- AvoidS is not used in classification; AvoidS may be IsNull().
+    -- (usefull to avoid ON or UNKNOWN state in special cases)
+    returns State from TopAbs is static;
+
+    StateShapeShape(me : in out; S :Shape from TopoDS;
+                                 LAvoidS : ListOfShape from TopTools;
+                                 SRef : Shape from TopoDS)
+    ---Purpose: 
+    -- classify shape S compared with shape SRef.
+    -- LAvoidS is list of S subshapes to avoid in classification
+    -- AvoidS is not used in classification; AvoidS may be IsNull().
+    -- (usefull to avoid ON or UNKNOWN state in special cases)
+    returns State from TopAbs is static;
+
+    StateShapeReference(me : in out; S,AvoidS : Shape from TopoDS)
+    ---Purpose: 
+    -- classify shape S compared with reference shape.
+    -- AvoidS is not used in classification; AvoidS may be IsNull().
+    -- (usefull to avoid ON or UNKNOWN state in special cases)
+    returns State from TopAbs is static;
+
+    StateShapeReference(me : in out; S : Shape from TopoDS;
+                                     LAvoidS : ListOfShape from TopTools)
+    ---Purpose: 
+    -- classify shape S compared with reference shape.
+    -- LAvoidS is list of S subshapes to avoid in classification
+    -- (usefull to avoid ON or UNKNOWN state in special cases)
+    returns State from TopAbs is static;
+
+    ChangeSolidClassifier(me:in out) returns SolidClassifier from TopOpeBRepTool;
+    ---C++: return &
+
+    --- private
+
+    MapRef(me:in out) is static private;
+
+    FindEdge(me : in out)
+    is static private;
+
+    FindEdge(me : in out; S : Shape from TopoDS)
+    is static private;
+
+    FindFace(me : in out; S : Shape from TopoDS)
+    is static private;
+
+    Perform(me : in out)
+    is static private;
+
+    StateEdgeReference(me : in out)
+    ---Purpose: classify myEdge with myRef
+    is static private;
+
+    StateP2DReference(me : in out; P2D : Pnt2d from gp)
+    ---Purpose: classify point P2D with myRef
+    is static;
+
+    StateP3DReference(me : in out; P3D : Pnt from gp)
+    ---Purpose: classify point P3D with myRef
+    is static;
+
+    State(me)
+    ---Purpose: return field myState 
+    returns State from TopAbs;
+
+    P2D(me) returns Pnt2d from gp
+    ---C++: return const &
+    is static;
+    
+    P3D(me) returns Pnt from gp
+    ---C++: return const &
+    is static;
+
+    HasAvLS(me) returns Boolean from Standard is static private;
+    
+fields
+
+    myS : Shape from TopoDS;
+    myRef : Shape from TopoDS;
+    myAvS : Shape from TopoDS;
+    myPAvLS : Plos from TopOpeBRepTool; -- pointer to ListOfShape
+    myMapAvS : IndexedMapOfShape from TopTools;
+    mymre : IndexedMapOfShape from TopTools;
+    mymren : Integer;
+    mymredone : Boolean;
+    myState : State from TopAbs;
+    myEdge : Edge from TopoDS;
+    myFace : Face from TopoDS;
+    myP3Ddef : Boolean;
+    myP3D : Pnt from gp;
+    myP2Ddef : Boolean;
+    myP2D : Pnt2d from gp;
+
+    mySolidClassifier : SolidClassifier from TopOpeBRepTool;    
+    mySameDomain : Integer; -- -1 undef, 0 not same domain, 1 same domain
+    
+end ShapeClassifier from TopOpeBRepTool;

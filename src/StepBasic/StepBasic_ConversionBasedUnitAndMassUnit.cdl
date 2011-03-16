@@ -1,0 +1,42 @@
+-- File:	StepBasic_ConversionBasedUnitAndMassUnit.cdl
+-- Created:	Thu Feb 10 11:56:15 2003
+-- Author:	Sergey KUUL
+--		<skl@friendox>
+---Copyright:	 Matra Datavision 2003
+
+class ConversionBasedUnitAndMassUnit from StepBasic inherits ConversionBasedUnit from StepBasic 
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    MassUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    HAsciiString from TCollection, 
+    MeasureWithUnit from StepBasic
+    
+is
+
+    Create returns mutable ConversionBasedUnitAndMassUnit;
+	---Purpose: Returns a ConversionBasedUnitAndLengthUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
+	               aName      : mutable HAsciiString from TCollection;
+	               aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetMassUnit(me: mutable; aMassUnit: mutable MassUnit);
+    
+    MassUnit (me) returns mutable MassUnit;
+
+    -- Specific Methods for ANDOR Field Data Access --
+
+fields
+
+    massUnit: MassUnit from StepBasic;
+
+end ConversionBasedUnitAndMassUnit;

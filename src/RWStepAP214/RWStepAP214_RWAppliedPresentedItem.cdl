@@ -1,0 +1,31 @@
+-- File:	RWStepAP214_RWAppliedPresentedItem.cdl
+-- Created:	Fri Mar 12 14:47:25 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RWAppliedPresentedItem from RWStepAP214 
+
+	---Purpose: Read & Write Module for AppliedPresentedItem
+
+uses
+     Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AppliedPresentedItem from StepAP214,
+     EntityIterator from Interface
+
+is
+
+    	Create returns RWAppliedPresentedItem;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AppliedPresentedItem from StepAP214);
+
+	WriteStep (me; SW : in out StepWriter; ent : AppliedPresentedItem from StepAP214);
+
+	Share(me; ent : AppliedPresentedItem from StepAP214; iter : in out EntityIterator);
+
+
+end RWAppliedPresentedItem;

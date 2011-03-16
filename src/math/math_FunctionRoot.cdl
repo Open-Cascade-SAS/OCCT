@@ -1,0 +1,116 @@
+-- File:        FunctionRoot.cdl
+-- Created:     Tue 14 11:02:43 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+--               
+
+class FunctionRoot from math
+     ---Purpose:
+     -- This class implements the computation of a root of a function of
+     -- a single variable which is near an initial guess using a minimization 
+     -- algorithm.Knowledge of the derivative is required. The
+     -- algorithm used is the same as in
+
+uses Vector from math, Matrix from math, 
+     FunctionWithDerivative from math,
+     OStream from Standard
+     
+raises NotDone from StdFail
+
+is
+
+    Create(F: in out FunctionWithDerivative;
+           Guess, Tolerance: Real;
+	   NbIterations: Integer = 100)
+    ---Purpose:
+    -- The Newton-Raphson method is done to find the root of the function F 
+    -- from the initial guess Guess.The tolerance required on
+    -- the root is given by Tolerance. Iterations are stopped if
+    -- the expected solution does not stay in the range A..B.
+    -- The solution is found when abs(Xi - Xi-1) <= Tolerance;
+    -- The maximum number of iterations allowed is given by NbIterations.
+
+    returns FunctionRoot;
+
+    
+    Create(F: in out FunctionWithDerivative;
+           Guess, Tolerance,A,B: Real;
+	   NbIterations: Integer = 100)
+    ---Purpose:
+    -- The Newton-Raphson method is done to find the root of the function F 
+    -- from the initial guess Guess.
+    -- The tolerance required on the root is given by Tolerance.
+    -- Iterations are stopped if the expected solution does not stay in the
+    -- range A..B
+    -- The solution is found when abs(Xi - Xi-1) <= Tolerance;
+    -- The maximum number of iterations allowed is given by NbIterations.
+
+    returns FunctionRoot;
+    
+    
+    IsDone(me)
+      ---Purpose: Returns true if the computations are successful, otherwise returns false.
+      ---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Root(me)
+       ---Purpose: returns the value of the root.
+       -- Exception NotDone is raised if the root was not found.
+      ---C++: inline
+
+    returns Real
+    raises NotDone
+    is static;
+
+
+    Derivative(me)
+    ---Purpose: returns the value of the derivative at the root.
+    -- Exception NotDone is raised if the root was not found.
+      ---C++: inline
+
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Value(me)
+    	---Purpose: returns the value of the function at the root.
+    -- Exception NotDone is raised if the root was not found.
+      ---C++: inline
+
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    NbIterations(me)
+    	---Purpose: returns the number of iterations really done on the 
+    	-- computation of the Root.
+        -- Exception NotDone is raised if the root was not found.
+      ---C++: inline
+
+    returns Integer
+    raises NotDone
+    is static;
+
+
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+    
+	
+fields
+
+Done:           Boolean;
+TheRoot:        Real ;
+TheError:       Real ;
+TheDerivative:  Real ;
+NbIter:         Integer;
+
+end FunctionRoot;

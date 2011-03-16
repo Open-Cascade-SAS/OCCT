@@ -1,0 +1,123 @@
+-- File:	Dynamic_DynamicInstance.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class DynamicInstance from Dynamic
+    
+inherits
+
+    TShared from MMgt
+	---Purpose: A dynamic  instance is a reference  to the dynamic
+	--          class and a  sequence of  parameters which  is the
+	--          complete listing of all the parameters  of all the
+	--          inherited classes.
+
+
+uses
+
+    CString from Standard,
+    Integer from Standard,
+    Real    from Standard,
+    DynamicClass  from Dynamic,
+    Parameter     from Dynamic,
+    ParameterNode from Dynamic 
+
+    
+
+is
+
+    Create returns mutable DynamicInstance from Dynamic;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates an empty instance of this class.
+    
+    Parameter(me : mutable ; aparameter : any Parameter from Dynamic)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Adds  <aparameter> to  the   sequence of parameters of
+    --          <me>.
+    
+    is static;
+    
+    Parameter(me ; aninstance : mutable DynamicInstance from Dynamic)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Adds all the parameters  of <me>,  to the sequence  of
+    --          parameters of <aninstance>.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard; avalue : Integer from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Puts the integer value <avalue> into the parameter 
+    --          object identified by the string <aparameter>.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard ; avalue : Real from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Puts the real value <avalue> into the parameter 
+    --          object identified by the string <aparameter>.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard; avalue : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Puts the string <avalue> into the parameter 
+    --          object identified by the string <aparameter>.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard; avalue : any DynamicInstance from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Puts the dynamic instance <avalue> into the parameter 
+    --          object identified by the string <aparameter>.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard) returns any Parameter from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Searches and returns the parameter object identified 
+    --          by the string <aparameter>.
+    
+    is static;
+    
+    Class(me : mutable ; aclass : any DynamicClass from Dynamic)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Sets the reference of the class.
+    
+    is static;
+    
+    Execute(me ; amethod : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Calls the method identified by the string <amethod>.
+    
+    is static;
+
+fields
+
+    thedynamicclass       : DynamicClass  from Dynamic;
+    thefirstparameternode : ParameterNode from Dynamic;
+
+end ;

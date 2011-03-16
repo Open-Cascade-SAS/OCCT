@@ -1,0 +1,302 @@
+-- File:	MgtGeom2d.cdl
+-- Created:	Wed Apr  7 10:49:28 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+-- Copyright:	 Matra Datavision 1993
+
+
+
+package MgtGeom2d 
+
+	---Purpose: This  package   provides   methods  to   translate
+	--          transient   objects   from  Geom2d   to persistent
+	--          objects from PGeom2d and vice-versa. No track from
+	--          previous translation is kept.
+	--          
+-- Data is not shared:
+-- -   between transient and persistent objects,
+--   or
+-- -   between two successive translations of the same object.
+
+uses
+
+    Geom2d, PGeom2d
+
+is
+
+
+    -- AxisPlacement
+
+
+    Translate(PObj: AxisPlacement from PGeom2d)
+    	returns AxisPlacement from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: AxisPlacement from Geom2d)
+    	returns AxisPlacement from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- BSplineCurve
+
+
+    Translate(PObj: BSplineCurve from PGeom2d)
+    	returns BSplineCurve from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: BSplineCurve from Geom2d)
+    	returns BSplineCurve from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- BezierCurve
+
+
+    Translate(PObj: BezierCurve from PGeom2d)
+    	returns BezierCurve from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: BezierCurve from Geom2d)
+    	returns BezierCurve from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- CartesianPoint
+
+
+    Translate(PObj: CartesianPoint from PGeom2d)
+    	returns CartesianPoint from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: CartesianPoint from Geom2d)
+    	returns CartesianPoint from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Circle
+
+
+    Translate(PObj: Circle from PGeom2d)
+    	returns Circle from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Circle from Geom2d)
+    	returns Circle from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Curve
+
+
+    Translate(PObj: Curve from PGeom2d)
+    	returns Curve     from Geom2d
+    	raises NullObject from Standard;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	--          Raises Null Object if PObj has no mapping
+	---Level: Advanced 
+
+
+    Translate(TObj: Curve from Geom2d)
+    	returns Curve     from PGeom2d
+    	raises NullObject from Standard;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	--          Raises NullObject if TObj has no mapping
+	---Level: Advanced 
+
+
+
+
+    -- Direction
+
+
+    Translate(PObj: Direction from PGeom2d)
+    	returns Direction from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Direction from Geom2d)
+    	returns Direction from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Ellipse
+
+
+    Translate(PObj: Ellipse from PGeom2d)
+    	returns Ellipse from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Ellipse from Geom2d)
+    	returns Ellipse from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Hyperbola
+
+
+    Translate(PObj: Hyperbola from PGeom2d)
+    	returns Hyperbola from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Hyperbola from Geom2d)
+    	returns Hyperbola from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Line
+
+
+    Translate(PObj: Line from PGeom2d)
+    	returns Line from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Line from Geom2d)
+    	returns Line from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- OffsetCurve
+
+
+    Translate(PObj: OffsetCurve from PGeom2d)
+    	returns OffsetCurve from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: OffsetCurve from Geom2d)
+    	returns OffsetCurve from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Parabola
+
+
+    Translate(PObj: Parabola from PGeom2d)
+    	returns Parabola from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Parabola from Geom2d)
+    	returns Parabola from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+    -- Point
+
+
+    Translate(PObj: Point from PGeom2d)
+    	returns Point from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Point from Geom2d)
+    	returns Point from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- Transformation
+
+
+    Translate(PObj: Transformation from PGeom2d)
+    	returns Transformation from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: Transformation from Geom2d)
+    	returns Transformation from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- TrimmedCurve
+
+
+    Translate(PObj: TrimmedCurve from PGeom2d)
+    	returns TrimmedCurve from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: TrimmedCurve from Geom2d)
+    	returns TrimmedCurve from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+
+
+    -- VectorWithMagnitude
+
+
+    Translate(PObj: VectorWithMagnitude from PGeom2d)
+    	returns VectorWithMagnitude from Geom2d;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom2d.
+	---Level: Advanced 
+
+
+    Translate(TObj: VectorWithMagnitude from Geom2d)
+    	returns VectorWithMagnitude from PGeom2d;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom2d.
+	---Level: Advanced 
+
+
+end MgtGeom2d;

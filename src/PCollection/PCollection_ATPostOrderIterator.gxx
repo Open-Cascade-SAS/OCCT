@@ -1,0 +1,105 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_ATPostOrderIterator.gxx
+// Created:	Aug, 13 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+// Purpose: Permits to iterate through an ArbitraryTree beginning by 
+//          the most left leave and its rightSibling, then upward to
+//          its parent, ..
+//          IF theTree is (  A (B (C D E)) F G (H (I J K)))
+//          THEN it will read ( C D E B F I J K H G A)
+
+
+// --------
+// Create
+// --------
+PCollection_ATPostOrderIterator::
+       PCollection_ATPostOrderIterator
+         (const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+   CurrentStack = new PCollection_StackArbitraryTree;			
+   if (ATree.IsNull()) {
+     HasMore = Standard_False;
+   }
+   else {
+     HasMore = Standard_True;
+     RecursiveAppend(ATree);
+     CurrentTree = CurrentStack->Top();
+   }
+}
+
+// --------
+// More
+// --------
+Standard_Boolean PCollection_ATPostOrderIterator::More () const
+{
+  return HasMore;
+}
+
+// --------
+// Value
+// --------
+Handle(PCollection_HArbitraryTree) 
+   PCollection_ATPostOrderIterator::Value () const
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return CurrentTree;
+}
+
+// --------
+// Clear
+// --------
+void PCollection_ATPostOrderIterator::Clear ()
+{
+  CurrentTree.Nullify();
+  CurrentStack.Nullify();
+  HasMore = Standard_False;
+}
+
+// --------
+// Next
+// --------
+void PCollection_ATPostOrderIterator::Next ()
+{
+   if (!HasMore) Standard_NoMoreObject::Raise();
+// ... removes the last tree
+   CurrentStack->Pop();
+   if (CurrentStack->IsEmpty())  {
+     HasMore = Standard_False;
+   }
+   else  {
+//   ... is there still someone on the right ? 
+//   ... if yes, go on to the right
+     Handle(PCollection_HArbitraryTree) Temp = CurrentTree->RightSibling();
+     if (!Temp.IsNull())  { 
+       RecursiveAppend(Temp);
+     }
+     CurrentTree = CurrentStack->Top();
+   }
+}  
+
+// PRIVATE TOOLS TO MANAGE CURRENTSTACK
+
+// --------
+// --------
+void PCollection_ATPostOrderIterator::RecursiveAppend (
+                  const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+   CurrentStack->Push(ATree);    
+// ... is there still some child ?
+   if ( !ATree->IsLeaf()) {
+     RecursiveAppend( ATree->Child(1));
+   }
+}     
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+-- File:	RWStepRepr_RWProductConcept.cdl
+-- Created:	Fri Nov 26 16:26:38 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWProductConcept from RWStepRepr
+
+    ---Purpose: Read & Write tool for ProductConcept
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ProductConcept from StepRepr
+
+is
+    Create returns RWProductConcept from RWStepRepr;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ProductConcept from StepRepr);
+	---Purpose: Reads ProductConcept
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ProductConcept from StepRepr);
+	---Purpose: Writes ProductConcept
+
+    Share (me; ent : ProductConcept from StepRepr;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWProductConcept;

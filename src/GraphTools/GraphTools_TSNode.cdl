@@ -1,0 +1,40 @@
+-- File:	GraphTools_TSNode.cdl
+-- Created:	Tue Sep 28 17:02:15 1993
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class TSNode from GraphTools 
+
+uses SequenceOfInteger from TColStd
+
+is
+
+    Create returns TSNode from GraphTools;
+    
+    Reset (me : in out);
+
+    IncreaseRef  (me : in out);
+
+    DecreaseRef  (me : in out);
+
+    NbRef        (me) returns Integer from Standard;
+
+    AddSuccessor (me : in out; s : Integer from Standard);
+
+    NbSuccessors (me) returns Integer from Standard;
+
+    GetSuccessor (me; index : Integer from Standard)
+    returns Integer from Standard;
+
+fields
+
+    referenceCount : Integer from Standard;
+    mySuccessors   : SequenceOfInteger from TColStd;
+
+end TSNode;
+
+
+
+

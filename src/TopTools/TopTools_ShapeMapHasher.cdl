@@ -1,0 +1,29 @@
+-- File:	TopTools_ShapeMapHasher.cdl
+-- Created:	Thu Jan 14 14:35:23 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ShapeMapHasher from TopTools 
+---Purpose: Hash tool, used for generating maps of shapes in topology.
+uses
+    Shape from TopoDS
+
+is
+
+    HashCode(myclass; S : Shape from TopoDS; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	--
+	---C++: inline
+	
+    IsEqual(myclass; S1, S2 : Shape from TopoDS) returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	--          
+	---C++: inline
+	
+
+end ShapeMapHasher;

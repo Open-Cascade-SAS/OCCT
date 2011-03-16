@@ -1,0 +1,735 @@
+-- File:	Geom_BezierSurface.cdl
+-- Created:	Tue Mar  9 19:51:22 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+-- 
+-- RBD : 15/10/98 ; Suppression de la methode privee coefficientsOK
+-- 
+-- 
+
+
+class BezierSurface from Geom inherits BoundedSurface from Geom
+
+    	---Purpose : Describes a rational or non-rational Bezier surface.
+    	-- - A non-rational Bezier surface is defined by a table
+    	--   of poles (also known as control points).
+    	-- - A rational Bezier surface is defined by a table of
+    	--   poles with varying associated weights.
+    	-- This data is manipulated using two associative 2D arrays:
+    	-- - the poles table, which is a 2D array of gp_Pnt, and
+    	-- - the weights table, which is a 2D array of reals.
+    	--  The bounds of these arrays are:
+    	-- - 1 and NbUPoles for the row bounds, where
+    	--   NbUPoles is the number of poles of the surface
+    	--   in the u parametric direction, and
+    	-- - 1 and NbVPoles for the column bounds, where
+    	--   NbVPoles is the number of poles of the surface
+    	--   in the v parametric direction.
+    	--   The poles of the surface, the "control points", are the
+    	-- points used to shape and reshape the surface. They
+    	-- comprise a rectangular network of points:
+    	-- - The points (1, 1), (NbUPoles, 1), (1,
+    	--   NbVPoles) and (NbUPoles, NbVPoles)
+    	--   are the four parametric "corners" of the surface.
+    	-- - The first column of poles and the last column of
+    	--   poles define two Bezier curves which delimit the
+    	--   surface in the v parametric direction. These are
+    	--   the v isoparametric curves corresponding to
+    	--   values 0 and 1 of the v parameter.
+    	-- - The first row of poles and the last row of poles
+    	--   define two Bezier curves which delimit the surface
+    	--   in the u parametric direction. These are the u
+    	--   isoparametric curves corresponding to values 0
+    	--   and 1 of the u parameter.
+    	--  It is more difficult to define a geometrical significance
+    	-- for the weights. However they are useful for
+    	-- representing a quadric surface precisely. Moreover, if
+    	-- the weights of all the poles are equal, the surface has
+    	-- a polynomial equation, and hence is a "non-rational surface".
+    	-- The non-rational surface is a special, but frequently
+    	-- used, case, where all poles have identical weights.
+    	-- The weights are defined and used only in the case of
+    	-- a rational surface. This rational characteristic is
+    	-- defined in each parametric direction. Hence, a
+    	-- surface can be rational in the u parametric direction,
+    	-- and non-rational in the v parametric direction.
+    	-- Likewise, the degree of a surface is defined in each
+    	-- parametric direction. The degree of a Bezier surface
+    	-- in a given parametric direction is equal to the number
+    	-- of poles of the surface in that parametric direction,
+    	-- minus 1. This must be greater than or equal to 1.
+    	-- However, the degree for a Geom_BezierSurface is
+    	-- limited to a value of (25) which is defined and
+    	-- controlled by the system. This value is returned by the
+    	-- function MaxDegree.
+    	-- The parameter range for a Bezier surface is [ 0, 1 ]
+    	-- in the two parametric directions.
+    	-- A Bezier surface can also be closed, or open, in each
+    	-- parametric direction. If the first row of poles is
+    	-- identical to the last row of poles, the surface is closed
+    	-- in the u parametric direction. If the first column of
+    	-- poles is identical to the last column of poles, the
+    	-- surface is closed in the v parametric direction.
+    	-- The continuity of a Bezier surface is infinite in the u
+    	-- parametric direction and the in v parametric direction.
+    	-- Note: It is not possible to build a Bezier surface with
+    	-- negative weights. Any weight value that is less than,
+    	-- or equal to, gp::Resolution() is considered
+    	-- to be zero. Two weight values, W1 and W2, are
+    	-- considered equal if: |W2-W1| <= gp::Resolution()
+                
+
+uses Array1OfReal      from TColStd,
+     Array2OfReal      from TColStd,
+     HArray2OfReal     from TColStd,
+     Array1OfPnt       from TColgp,
+     Array2OfPnt       from TColgp,
+     Ax1               from gp, 
+     Ax2               from gp,  
+     HArray2OfPnt      from TColgp,
+     Pnt               from gp,
+     Trsf              from gp,
+     Vec               from gp, 
+     Curve             from Geom,
+     Geometry          from Geom,
+     Shape             from GeomAbs
+
+
+raises ConstructionError from Standard,
+       DimensionError    from Standard,
+       RangeError        from Standard,
+       OutOfRange        from Standard
+
+is
+
+ Create (SurfacePoles : Array2OfPnt from TColgp)
+    returns mutable BezierSurface
+        ---Purpose :
+        --  Creates a non-rational Bezier surface with a set of poles.
+        --  Control points representation :
+        --     SPoles(Uorigin,Vorigin) ...................SPoles(Uorigin,Vend)
+        --           .                                     .
+        --           .                                     .
+        --     SPoles(Uend, Vorigin) .....................SPoles(Uend, Vend)
+        --  For the double array the row indice corresponds to the parametric
+        --  U direction and the columns indice corresponds to the parametric
+        --  V direction.
+        --  The weights are defaulted to all being 1.
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if the number of poles of the surface is lower than 2
+        --  or greater than MaxDegree + 1 in one of the two directions 
+        --  U or V.
+
+
+  Create (SurfacePoles : Array2OfPnt  from TColgp;
+    	  PoleWeights  : Array2OfReal from TColStd)
+     returns mutable BezierSurface
+        ---Purpose
+        --  Creates a rational Bezier surface with a set of poles and a
+        --  set of weights.
+        --  For the double array the row indice corresponds to the parametric
+        --  U direction and the columns indice corresponds to the parametric
+        --  V direction.
+        --  If all the weights are identical the surface is considered as 
+        --  non-rational (the tolerance criterion is Resolution from package
+        --  gp).
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if SurfacePoles and PoleWeights have not the same
+        --  Rowlength or have not the same ColLength.
+        --  Raised if PoleWeights (i, j) <= Resolution from gp;
+        --  Raised if the number of poles of the surface is lower than 2
+        --  or greater than MaxDegree + 1 in one of the two directions U or V.
+
+
+  ExchangeUV (me : mutable);
+        ---Purpose : Exchanges the direction U and V on a Bezier surface
+    	-- As a consequence:
+    	-- - the poles and weights tables are transposed,
+    	-- - degrees, rational characteristics and so on are
+    	-- exchanged between the two parametric directions, and
+    	-- - the orientation of the surface is reversed.
+
+  Increase (me : mutable; UDeg, VDeg : Integer)
+        ---Purpose : Increases the degree of this Bezier surface in the two parametric directions.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if UDegree < UDegree <me>  or VDegree < VDegree <me> 
+        --  Raised if the degree of the surface is greater than MaxDegree
+        --  in one of the two directions U or V.
+
+
+  InsertPoleColAfter (me : mutable; VIndex : Integer;
+    	    	      CPoles : Array1OfPnt from TColgp)
+        ---Purpose:
+        --  Inserts a column of poles. If the surface is rational the weights
+        --  values associated with CPoles are equal defaulted to 1.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Vindex < 1 or VIndex > NbVPoles.
+            ConstructionError;
+        ---Purpose:
+        --  raises if VDegree is greater than MaxDegree.
+        --  raises if the Length of CPoles is not equal to NbUPoles
+
+
+  InsertPoleColAfter (me : mutable; VIndex : Integer; 
+                      CPoles : Array1OfPnt from TColgp;
+    	    	      CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :
+        --  Inserts a column of poles and weights.
+        --  If the surface was non-rational it can become rational.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Vindex < 1 or VIndex > NbVPoles.
+            ConstructionError;
+        ---Purpose :  Raised if
+        --  . VDegree is greater than MaxDegree.
+        --  . the Length of CPoles is not equal to NbUPoles
+        --  . a weight value is lower or equal to Resolution from 
+        --    package gp
+
+
+  InsertPoleColBefore (me : mutable; VIndex : Integer;
+    	    	      CPoles : Array1OfPnt from TColgp)
+        ---Purpose:
+        --  Inserts a column of poles. If the surface is rational the weights
+        --  values associated with CPoles are equal defaulted to 1.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Vindex < 1 or VIndex > NbVPoles.
+            ConstructionError;
+        ---Purpose:
+        --  Raised if VDegree is greater than MaxDegree.
+        --  Raised if the Length of CPoles is not equal to NbUPoles
+
+
+
+  InsertPoleColBefore (me : mutable; VIndex : Integer; 
+                       CPoles : Array1OfPnt from TColgp;
+    	    	       CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :
+        --  Inserts a column of poles and weights.
+        --  If the surface was non-rational it can become rational.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Vindex < 1 or VIndex > NbVPoles.
+            ConstructionError;
+        ---Purpose :  Raised if :
+        --  . VDegree is greater than MaxDegree.
+        --  . the Length of CPoles is not equal to NbUPoles
+        --  . a weight value is lower or equal to Resolution from 
+        --    package gp
+
+
+  InsertPoleRowAfter (me : mutable; UIndex : Integer;
+    	    	      CPoles : Array1OfPnt from TColgp)
+        ---Purpose:
+        --  Inserts a row of poles. If the surface is rational the weights
+        --  values associated with CPoles are equal defaulted to 1.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Uindex < 1 or UIndex > NbUPoles.
+            ConstructionError;
+        ---Purpose:
+        --  Raised if UDegree is greater than MaxDegree.
+        --  Raised if the Length of CPoles is not equal to NbVPoles
+
+
+  InsertPoleRowAfter (me : mutable; UIndex : Integer; 
+                      CPoles : Array1OfPnt from TColgp;
+    	    	      CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :
+        --  Inserts a row of poles and weights.
+        --  If the surface was non-rational it can become rational.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Uindex < 1 or UIndex > NbUPoles.
+            ConstructionError;
+        ---Purpose :  Raised if :
+        --  . UDegree is greater than MaxDegree.
+        --  . the Length of CPoles is not equal to NbVPoles
+        --  . a weight value is lower or equal to Resolution from 
+        --    package gp
+
+
+  InsertPoleRowBefore (me : mutable; UIndex : Integer;
+    	    	       CPoles : Array1OfPnt from TColgp)
+        ---Purpose:
+        --  Inserts a row of poles. If the surface is rational the weights
+        --  values associated with CPoles are equal defaulted to 1.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Uindex < 1 or UIndex > NbUPoles.
+            ConstructionError;
+        ---Purpose:
+        --  Raised if UDegree is greater than MaxDegree.
+        --  Raised if the Length of CPoles is not equal to NbVPoles
+
+
+  InsertPoleRowBefore (me : mutable; UIndex : Integer; 
+                       CPoles : Array1OfPnt from TColgp;
+    	    	       CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :
+        --  Inserts a row of poles and weights.
+        --  If the surface was non-rational it can become rational.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Uindex < 1 or UIndex > NbUPoles.
+            ConstructionError;
+        ---Purpose :  Raised if :
+        --  . UDegree is greater than MaxDegree.
+        --  . the Length of CPoles is not equal to NbVPoles
+        --  . a weight value is lower or equal to Resolution from 
+        --    pacakage gp
+
+
+  RemovePoleCol (me : mutable; VIndex : Integer)
+        ---Purpose : Removes a column of poles.
+        --  If the surface was rational it can become non-rational.
+     raises ConstructionError,
+        ---Purpose :
+        --  Raised if NbVPoles <= 2 after removing, a Bezier surface
+        --  must have at least two columns of poles.
+            OutOfRange;
+        ---Purpose : Raised if Vindex < 1 or VIndex > NbVPoles
+
+
+  RemovePoleRow (me : mutable; UIndex : Integer)
+        ---Purpose : Removes a row of poles.
+        --  If the surface was rational it can become non-rational.
+     raises ConstructionError,
+        ---Purpose :
+        --  Raised if NbUPoles <= 2 after removing, a Bezier surface 
+        --  must have at least two rows of poles.
+            OutOfRange;
+        ---Purpose : Raised if Uindex < 1 or UIndex > NbUPoles
+
+
+  Segment (me : mutable; U1, U2, V1, V2 : Real);
+    	---Purpose : Modifies this Bezier surface by segmenting it
+    	-- between U1 and U2 in the u parametric direction,
+    	-- and between V1 and V2 in the v parametric
+    	-- direction. U1, U2, V1, and V2 can be outside the
+    	-- bounds of this surface.
+    	-- - U1 and U2 isoparametric Bezier curves,
+    	-- segmented between V1 and V2, become the two
+    	-- bounds of the surface in the v parametric
+    	-- direction (0. and 1. u isoparametric curves).
+    	-- - V1 and V2 isoparametric Bezier curves,
+    	-- segmented between U1 and U2, become the two
+    	-- bounds of the surface in the u parametric
+    	-- direction (0. and 1. v isoparametric curves).
+    	-- The poles and weights tables are modified, but the
+    	-- degree of this surface in the u and v parametric
+    	-- directions does not change.
+    	-- U1 can be greater than U2, and V1 can be greater
+    	-- than V2. In these cases, the corresponding
+    	-- parametric direction is inverted. The orientation of
+    	-- the surface is inverted if one (and only one)
+    	-- parametric direction is inverted.
+  
+
+ SetPole (me : mutable; UIndex, VIndex : Integer; P : Pnt)
+        ---Purpose : Modifies a pole value.
+        --  If the surface is rational the weight of range (UIndex, VIndex)
+        --  is not modified.
+     raises OutOfRange;
+        ---Purpose : 
+        --  Raised if  UIndex < 1 or UIndex > NbUPoles  or  VIndex < 1
+        --  or VIndex > NbVPoles.
+
+
+ SetPole (me : mutable; UIndex, VIndex : Integer; P : Pnt; Weight : Real)
+        ---Purpose :
+        --  Substitutes the pole and the weight of range UIndex, VIndex.
+        --  If the surface <me> is not rational it can become rational.
+        --  if the surface was rational it can become non-rational.
+     raises OutOfRange,
+        ---Purpose : 
+        --  raises if  UIndex < 1 or UIndex > NbUPoles  or  VIndex < 1
+        --  or VIndex > NbVPoles.
+           ConstructionError;
+        ---Purpose : Raised if Weight <= Resolution from package gp.
+
+
+  SetPoleCol (me : mutable; VIndex : Integer;
+    	      CPoles : Array1OfPnt from TColgp)
+        ---Purpose :  Modifies a column of poles.
+        --  The length of CPoles can be lower but not greater than NbUPoles
+        --  so you can modify just a part of the column.
+     raises OutOfRange,
+        ---Purpose :  Raised if VIndex < 1 or  VIndex > NbVPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles
+
+
+  SetPoleCol (me : mutable; VIndex : Integer;
+    	      CPoles : Array1OfPnt from TColgp;
+              CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :  Modifies a column of poles.
+        --  If the surface was rational it can become non-rational
+        --  If the surface was non-rational it can become rational.
+        --  The length of CPoles can be lower but not greater than NbUPoles 
+        --  so you can modify just a part of the column.
+     raises OutOfRange,
+        ---Purpose :  Raised if VIndex < 1 or  VIndex > NbVPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbUPoles
+        --  Raised if CPoleWeights and CPoles have not the same bounds.
+        --  Raised if one of the weight value CPoleWeights (i) is lower
+        --  or equal to Resolution from package gp.
+
+
+  SetPoleRow (me : mutable; UIndex : Integer;
+    	      CPoles : Array1OfPnt from TColgp)
+        ---Purpose :  Modifies a row of poles.
+        --  The length of CPoles can be lower but not greater than NbVPoles
+        --  so you can modify just a part of the row.
+     raises OutOfRange,
+        ---Purpose :  Raised if UIndex < 1 or  UIndex > NbUPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles
+
+
+
+  SetPoleRow (me : mutable; UIndex : Integer;
+    	      CPoles : Array1OfPnt from TColgp;
+              CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :  Modifies a row of poles and weights.
+        --  If the surface was rational it can become non-rational.
+        --  If the surface was non-rational it can become rational.
+        --  The length of CPoles can be lower but not greater than NbVPoles 
+        --  so you can modify just a part of the row.
+     raises OutOfRange,
+        ---Purpose :  Raised if UIndex < 1 or  UIndex > NbUPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoles.Lower() < 1 or CPoles.Upper() > NbVPoles
+        --  Raised if CPoleWeights and CPoles have not the same bounds.
+        --  Raised if one of the weight value CPoleWeights (i) is lower
+        --  or equal to Resolution from gp.
+
+
+  SetWeight (me : mutable; UIndex, VIndex : Integer; Weight : Real)
+        ---Purpose :
+        --  Modifies the weight of the pole of range UIndex, VIndex.
+        --  If the surface was non-rational it can become rational.
+        --  If the surface was rational it can become non-rational.
+     raises OutOfRange,
+        ---Purpose :
+        --  Raised if UIndex < 1  or  UIndex > NbUPoles or VIndex < 1 or
+        --  VIndex > NbVPoles.
+            ConstructionError;
+	---Purpose : Raised if Weight <= Resolution from package gp.
+
+
+  SetWeightCol (me : mutable; VIndex : Integer;
+    	        CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :  Modifies a column of weights.
+        --  If the surface was rational it can become non-rational.
+        --  If the surface was non-rational it can become rational.
+        --  The length of CPoleWeights can be lower but not greater than
+        --  NbUPoles.
+     raises OutOfRange,
+        ---Purpose :  Raised if VIndex < 1 or  VIndex > NbVPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() >
+        --  NbUPoles
+        --  Raised if one of the weight value CPoleWeights (i) is lower
+        --  or equal to Resolution from package gp.
+
+
+  SetWeightRow (me : mutable; UIndex : Integer;
+    	        CPoleWeights : Array1OfReal from TColStd)
+        ---Purpose :  Modifies a row of weights.
+        --  If the surface was rational it can become non-rational.
+        --  If the surface was non-rational it can become rational.
+        --  The length of CPoleWeights can be lower but not greater than
+        --  NbVPoles.
+     raises OutOfRange,
+        ---Purpose :  Raised if UIndex < 1 or  UIndex > NbUPoles
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if CPoleWeights.Lower() < 1 or CPoleWeights.Upper() >
+        --  NbVPoles
+        --  Raised if one of the weight value CPoleWeights (i) is lower
+        --  or equal to Resolution from package gp.
+
+
+  UReverse (me : mutable);
+        ---Purpose : Changes the orientation of this Bezier surface in the
+    	-- u  parametric direction. The bounds of the
+    	-- surface are not changed, but the given parametric
+    	-- direction is reversed. Hence, the orientation of the surface is reversed.
+
+
+  UReversedParameter (me; U : Real) returns Real;
+	---Purpose: Computes the u (or v) parameter on the modified
+    	-- surface, produced by reversing its u (or v) parametric
+    	-- direction, for any point of u parameter U (or of v
+    	-- parameter V) on this Bezier surface.
+    	-- In the case of a Bezier surface, these functions return respectively:
+    	-- - 1.-U, or 1.-V.
+
+
+  VReverse (me : mutable);
+        ---Purpose : Changes the orientation of this Bezier surface in the
+    	-- v parametric direction. The bounds of the
+    	-- surface are not changed, but the given parametric
+    	-- direction is reversed. Hence, the orientation of the
+    	-- surface is reversed.
+
+
+  VReversedParameter (me; V : Real) returns Real;
+	---Purpose: Computes the u (or v) parameter on the modified
+    	-- surface, produced by reversing its u (or v) parametric
+    	-- direction, for any point of u parameter U (or of v
+    	-- parameter V) on this Bezier surface.
+    	-- In the case of a Bezier surface, these functions return respectively:
+    	-- - 1.-U, or 1.-V.
+  
+
+  Bounds (me; U1, U2, V1, V2 : out Real);
+        ---Purpose : Returns the parametric bounds U1, U2, V1 and V2 of
+    	-- this Bezier surface.
+    	-- In the case of a Bezier surface, this function returns
+    	--        U1 = 0, V1 = 0, U2 = 1, V2 = 1.
+
+
+  Continuity (me)  returns Shape from GeomAbs;
+        ---Purpose :
+        --  Returns the continuity of the surface CN : the order of
+        --  continuity is infinite.
+       
+  D0 (me; U, V : Real; P : out Pnt);
+
+  D1 (me; U, V : Real; P : out Pnt; D1U, D1V : out Vec);
+
+  D2 (me; U, V : Real; P : out Pnt; D1U, D1V, D2U, D2V, D2UV : out Vec);
+
+  D3 (me; U, V : Real;  P : out Pnt;
+      D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV : out Vec);
+    	---Purpose: Computes P, the point of parameters (U, V) of this Bezier surface, and
+    	-- - one or more of the following sets of vectors:
+    	-- - D1U and D1V, the first derivative vectors at this point,
+    	--   - D2U, D2V and D2UV, the second derivative
+    	--    vectors at this point,
+    	--   - D3U, D3V, D3UUV and D3UVV, the third
+    	--    derivative vectors at this point.
+    	-- Note: The parameters U and V can be outside the bounds of the surface.
+        
+  DN (me; U, V : Real; Nu, Nv : Integer)  returns Vec
+        ---Purpose : Computes the derivative of order Nu in the u
+    	--  parametric direction, and Nv in the v parametric
+    	-- direction, at the point of parameters (U, V) of this Bezier surface.
+    	-- Note: The parameters U and V can be outside the bounds of the surface.
+    	-- Exceptions
+    	-- Standard_RangeError if:
+    	-- - Nu + Nv is less than 1, or Nu or Nv is negative.
+     raises RangeError;
+
+  NbUPoles (me)  returns Integer;
+        ---Purpose : Returns the number of poles in the U direction.
+
+  NbVPoles (me)  returns Integer;
+        ---Purpose : Returns the number of poles in the V direction.
+
+
+  Pole (me; UIndex, VIndex : Integer)  returns Pnt
+        ---Purpose : Returns the pole of range UIndex, VIndex
+     raises OutOfRange;
+        ---Purpose : Raised if UIndex < 1 or UIndex > NbUPoles, or
+        --  VIndex < 1 or VIndex > NbVPoles.
+
+ 
+  Poles (me; P : out Array2OfPnt from TColgp)
+        ---Purpose : Returns the poles of the Bezier surface.
+     raises DimensionError;
+        ---Purpose :
+        --  Raised if the length of P in the U an V direction is not equal to
+        --  NbUPoles and NbVPoles.
+
+
+  UDegree (me)   returns Integer;
+        ---Purpose : 
+        --  Returns the degree of the surface in the U direction it is 
+        --  NbUPoles - 1
+
+
+  UIso (me; U : Real)  returns mutable Curve;
+        ---Purpose :
+        --  Computes the U isoparametric curve. For a Bezier surface the
+        --  UIso curve is a Bezier curve.
+
+
+  VDegree (me)  returns Integer;
+        ---Purpose : 
+        --  Returns the degree of the surface in the V direction it is 
+        --  NbVPoles - 1
+
+
+  VIso (me; V : Real)  returns mutable Curve;
+        ---Purpose :
+        --  Computes the V isoparametric curve. For a Bezier surface the
+        --  VIso  curve is a Bezier curve.
+
+
+  Weight (me; UIndex, VIndex : Integer)   returns Real
+        ---Purpose : Returns the weight of range UIndex, VIndex
+     raises OutOfRange;
+        ---Purpose : 
+        --  Raised if UIndex < 1 or UIndex > NbUPoles, or
+        --            VIndex < 1 or VIndex > NbVPoles.
+
+
+  Weights (me; W : out Array2OfReal from TColStd)
+        ---Purpose : Returns the weights of the Bezier surface.
+     raises DimensionError;
+        ---Purpose :
+        --  Raised if the length of W in the U an V direction is not
+        --  equal to NbUPoles and NbVPoles.
+
+  
+  IsUClosed (me)  returns Boolean;
+        ---Purpose :
+        --  Returns True if the first control points row and the 
+        --  last control points row are identical. The tolerance
+        --  criterion is Resolution from package gp.
+
+
+  IsVClosed (me)  returns Boolean;
+        ---Purpose :
+        --  Returns True if the first control points column
+        --  and the last control points column are identical.
+        --  The tolerance criterion is Resolution from package gp.
+
+
+  IsCNu (me; N : Integer) returns Boolean;
+        ---Purpose : Returns True, a Bezier surface is always  CN
+
+
+  IsCNv (me; N : Integer)  returns Boolean;
+        ---Purpose : Returns True, a BezierSurface is always  CN
+
+
+  IsUPeriodic (me)  returns Boolean;
+        ---Purpose : Returns False.
+
+
+  IsVPeriodic (me)  returns Boolean;
+        ---Purpose : Returns False.
+
+
+  IsURational (me)  returns Boolean;
+        ---Purpose :
+        --  Returns False if the weights are identical in the U direction,
+        --  The tolerance criterion is Resolution from package gp.
+        --- Example :
+        --                 |1.0, 1.0, 1.0|
+        --   if Weights =  |0.5, 0.5, 0.5|   returns False
+        --                 |2.0, 2.0, 2.0|
+
+
+  IsVRational (me)  returns Boolean;
+        ---Purpose :
+        --  Returns False if the weights are identical in the V direction,
+        --  The tolerance criterion is Resolution from package gp.
+        --- Example :
+        --                 |1.0, 2.0, 0.5|
+        --   if Weights =  |1.0, 2.0, 0.5|   returns False
+        --                 |1.0, 2.0, 0.5|
+
+
+  Transform (me : mutable; T : Trsf);
+---Purpose: Applies the transformation T to this Bezier surface.
+
+  MaxDegree (myclass)   returns Integer;
+        ---Purpose:
+        --  Returns the value of the maximum polynomial degree of a 
+        --  Bezier surface. This value is 25.
+
+
+  Create (SurfacePoles, SurfaceCoefficients : HArray2OfPnt  from TColgp;
+          PoleWeights, CoefficientWeights   : HArray2OfReal from TColStd;
+	  IsURational, IsVRational          : Boolean)
+     returns mutable BezierSurface
+     is private;
+
+
+  Resolution(me          : mutable; 
+             Tolerance3D :     Real ;
+    	     UTolerance  : out Real ;
+	     VTolerance  : out Real) ;
+    	---Purpose: Computes two tolerance values for this Bezier
+    	-- surface, based on the given tolerance in 3D space
+    	-- Tolerance3D. The tolerances computed are:
+    	-- - UTolerance in the u parametric direction, and
+    	-- - VTolerance in the v parametric direction.
+    	-- If f(u,v) is the equation of this Bezier surface,
+    	-- UTolerance and VTolerance guarantee that:
+      	--          | u1 - u0 | < UTolerance and 
+      	--          | v1 - v0 | < VTolerance 
+      	--          ====> |f (u1,v1) - f (u0,v0)| < Tolerance3D
+
+  
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this Bezier surface.
+
+  Init (me : mutable; Poles   :  HArray2OfPnt  from TColgp;
+    	              Weights :  HArray2OfReal from TColStd) 
+  
+        ---Purpose : Set  poles  to  Poles,  weights to  Weights  (not
+        --         copied). 
+        --         Create the arrays of coefficients.  Poles
+        --         and    Weights  are   assumed   to  have the  first
+        --         coefficient 1.
+        --         
+  raises ConstructionError -- if nbpoles < 2 or nbpoles > MaDegree
+
+  is static private;
+
+  
+  UpdateCoefficients(me : mutable; 
+    	    	     U  : Real from Standard = 0.0;
+    	    	     V  : Real from Standard = 0.0)
+    	---Purpose: Recompute the coeficients.
+  is static private;
+
+
+
+fields
+
+    urational : Boolean;
+    vrational : Boolean;
+    poles     : HArray2OfPnt  from TColgp;
+    weights   : HArray2OfReal from TColStd;
+
+    coeffs    : HArray2OfPnt  from TColgp;
+    wcoeffs   : HArray2OfReal from TColStd;
+
+    ucacheparameter : Real ;
+    vcacheparameter : Real ;
+  -- Parameters at which the Taylor expension is stored in 
+  -- the cache  
+    ucachespanlenght : Real ;
+    vcachespanlenght : Real ;
+  -- Always 1. for the moment.
+    ucachespanindex : Integer ;
+    vcachespanindex : Integer ;
+  -- the span for which the cache is valid if 
+  -- validcache is 1 
+    validcache : Integer ;
+
+  -- usefull to evaluate the parametric resolutions
+    umaxderivinv  : Real from Standard;
+    vmaxderivinv  : Real from Standard;
+    maxderivinvok : Boolean from Standard;
+
+end;

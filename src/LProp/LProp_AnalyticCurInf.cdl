@@ -1,0 +1,26 @@
+-- File:	LProp_AnalyticCurInf.cdl
+-- Created:	Fri Sep  2 15:39:59 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class AnalyticCurInf from LProp 
+
+	---Purpose: Computes the locals extremas of curvature of a gp curve
+	--          Remark : a gp curve has not inflection.
+
+uses
+    CurveType from GeomAbs,
+    CurAndInf from LProp
+is
+    Create;
+    
+    Perform (me     : in out; 
+    	     T      :        CurveType from GeomAbs ;
+             UFirst :        Real      from Standard ;
+	     ULast  :        Real      from Standard ;
+             Result : in out CurAndInf from LProp) 
+    is static;
+    
+end AnalyticCurInf;

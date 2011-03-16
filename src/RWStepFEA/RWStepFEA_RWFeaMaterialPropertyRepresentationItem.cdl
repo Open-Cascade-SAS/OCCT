@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWFeaMaterialPropertyRepresentationItem.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWFeaMaterialPropertyRepresentationItem from RWStepFEA
+
+    ---Purpose: Read & Write tool for FeaMaterialPropertyRepresentationItem
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    FeaMaterialPropertyRepresentationItem from StepFEA
+
+is
+    Create returns RWFeaMaterialPropertyRepresentationItem from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : FeaMaterialPropertyRepresentationItem from StepFEA);
+	---Purpose: Reads FeaMaterialPropertyRepresentationItem
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: FeaMaterialPropertyRepresentationItem from StepFEA);
+	---Purpose: Writes FeaMaterialPropertyRepresentationItem
+
+    Share (me; ent : FeaMaterialPropertyRepresentationItem from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWFeaMaterialPropertyRepresentationItem;

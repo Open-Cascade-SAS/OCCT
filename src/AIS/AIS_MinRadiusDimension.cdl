@@ -1,0 +1,120 @@
+-- File:	AIS_MinRadiusDimension.cdl
+-- Created:	Thu Jan 22 08:58:42 1998
+-- Author:	Sergey ZARITCHNY
+--		<szy@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class MinRadiusDimension from AIS inherits EllipseRadiusDimension from AIS
+
+	---Purpose:--  Ellipse  Min  radius  dimension  of  a  Shape  which   
+    	--  can  be  Edge  or  Face  (planar  or  cylindrical(surface  of   
+    	--  extrusion  or  surface  of  offset)) 	 
+
+uses
+ 
+     Shape                 from TopoDS,
+     Elips                 from gp,
+     Pnt                   from gp, 
+     Pln                   from gp,  
+     Ellipse               from Geom, 
+     Plane                 from Geom, 
+     Surface               from Geom,
+     Presentation          from Prs3d,
+     PresentationManager3d from PrsMgr,
+     Selection             from SelectMgr,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager2d from PrsMgr,
+     GraphicObject         from Graphic2d,    
+     ExtendedString        from TCollection,    
+     ArrowSide             from DsgPrs, 
+     KindOfSurface         from AIS,
+     KindOfDimension       from AIS 
+
+
+raises ConstructionError from Standard
+
+is
+ 
+     
+    Create (aShape      : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)    
+	    ---Purpose: Max  Ellipse  radius dimension 
+	    --  Shape  can  be  edge  ,  planar  face  or  cylindrical  face 
+    	    --  
+    returns mutable MinRadiusDimension from AIS;
+
+    Create (aShape      : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection;	    
+	    aPosition   : Pnt            from gp;
+	    aSymbolPrs  : ArrowSide      from DsgPrs;    
+    	    anArrowSize : Real           from Standard = 0.0)
+	    ---Purpose:  Max  Ellipse  radius dimension with  position
+	    --  Shape  can  be  edge  ,  planar  face  or  cylindrical  face 
+    	    --   
+    returns mutable MinRadiusDimension  from AIS;
+
+
+
+              
+-- Methods from PresentableObject
+
+    Compute(me                  : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation       : mutable Presentation from Prs3d;
+    	    aMode               : Integer from Standard= 0) 
+    is redefined private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    ---Purpose: computes the presentation according to a point of view
+    --          given by <aProjector>. 
+    --          To be Used when the associated degenerated Presentations 
+    --          have been transformed by <aTrsf> which is not a Pure
+    --          Translation. The HLR Prs can't be deducted automatically
+    --          WARNING :<aTrsf> must be applied
+    --           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+
+--
+--     Computation private methods
+--
+
+    ComputeEllipse(me: mutable;
+    	    	     	aPresentation : mutable Presentation from Prs3d)
+    is private; 
+     
+    ComputeArcOfEllipse(me: mutable;
+    	    	     	aPresentation : mutable Presentation from Prs3d  )
+    is private; 
+
+fields 
+
+    myApexP       :  Pnt  from  gp;  
+    myApexN       :  Pnt  from  gp; 
+    myEndOfArrow  :  Pnt  from  gp; 
+    
+end MinRadiusDimension;

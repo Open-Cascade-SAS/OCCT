@@ -1,0 +1,40 @@
+-- File:	BOP_SolidAreaBuilder.cdl
+-- Created:	Mon Jun 25 12:44:00 2001
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2001
+
+class SolidAreaBuilder from BOP inherits Area3dBuilder from BOP
+
+    	---Purpose: 
+    	---   construct Areas for Solids from a Shell Faces Set        
+	---
+uses
+    LoopSet        from BOP,
+    LoopClassifier from BOP
+
+is
+    Create returns SolidAreaBuilder from BOP;
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    Create(LS:out LoopSet from BOP;
+    	   LC:out LoopClassifier from BOP;
+	   ForceClassFlag: Boolean from Standard = Standard_False)
+    	returns SolidAreaBuilder from BOP;
+    	---Purpose:  
+    	--- Creates an  object to build solids on
+    	--- the (shells,  blocks of faces) of <LS>,  
+    	--- using the classifier <LC>.  
+    
+    InitSolidAreaBuilder(me: in out; 
+    	    	    LS:out LoopSet from BOP;
+    	    	    LC:out LoopClassifier from BOP;
+		    ForceClassFlag: Boolean from Standard); 
+    	---Purpose:   
+    	---Purpose:  
+    	--- Initialize the object to find the areas of
+    	--- the shapes described by <LS>, 
+    	--- using the classifier <LC>.   
+    	---
+end SolidAreaBuilder from BOP;

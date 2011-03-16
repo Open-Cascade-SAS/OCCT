@@ -1,0 +1,7 @@
+
+#ifndef VIEWMANAGER_PXX_INCLUDED
+#define VIEWMANAGER_PXX_INCLUDED
+
+#include <Visual3d_View.pxx>
+
+#endif

@@ -1,0 +1,54 @@
+-- File:	TopoDSToStep_MakeStepWire.cdl
+-- Created:	Wed Nov 30 10:19:30 1994
+-- Author:	Frederic MAUPAS
+--		<fma@bibox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class MakeStepWire from TopoDSToStep 
+    inherits Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Wire from TopoDS and TopologicalRepresentationItem from
+    --          StepShape. 
+  
+uses Wire                          from TopoDS,
+     TopologicalRepresentationItem from StepShape,
+     Tool                          from TopoDSToStep,
+     MakeWireError                 from TopoDSToStep,
+     FinderProcess                 from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+    Create returns MakeStepWire;
+    
+    Create (W : Wire from TopoDS;
+    	    T : in out Tool from TopoDSToStep;
+	   FP : mutable FinderProcess from Transfer)
+         returns MakeStepWire;
+    
+    Init(me : in out;
+	 W  : Wire from TopoDS;
+         T  : in out Tool from TopoDSToStep;
+	 FP : mutable FinderProcess from Transfer);
+
+	    
+    Value (me) returns TopologicalRepresentationItem from StepShape
+    	raises NotDone
+    	is static;
+    	---C++: return const&
+        
+    Error(me) returns MakeWireError from TopoDSToStep;
+
+fields
+
+    myResult : TopologicalRepresentationItem from StepShape;
+
+    myError  : MakeWireError from TopoDSToStep;
+    
+end MakeStepWire;
+
+

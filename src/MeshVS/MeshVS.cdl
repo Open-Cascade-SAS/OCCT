@@ -1,0 +1,198 @@
+-- File     : MeshVS.cdl
+-- Created  : 10 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+package MeshVS
+
+    ---Purpose: This  package  provides classes and simple methods of flexible presentation object
+    --          that is responsible for the following tasks:
+    --    1) Displaying mesh ( some mesh elements and nodes may be hidden )
+    --    2) Results of calculations and analysis are shown through the single common interface.
+    --    3) The data can be shown with different visual styles: colors, vectors, texts and deformed mesh.
+    --    4) Selection of mesh entities (except hidden ones)
+
+uses
+  Quantity, AIS, PrsMgr, Prs3d, SelectMgr, TColStd, SelectBasics,
+  Graphic3d, gp, TCollection, Bnd, TColgp, Select3D, TopLoc, Aspect, AlienImage
+
+is
+    ---Purpose: The integer keys for most useful constants attuning mesh presentation appearence
+        -- WARNING: DA_TextExpansionFactor, DA_TextSpace, DA_TextDisplayType have no effect and might be removed
+        --          in the future.
+
+  enumeration DrawerAttribute is
+
+            -- Attributes of AspectFillArea3d
+       DA_InteriorStyle,
+       DA_InteriorColor,
+       DA_BackInteriorColor,
+       DA_EdgeColor,
+       DA_EdgeType,
+       DA_EdgeWidth,
+       DA_HatchStyle,
+       DA_FrontMaterial,
+       DA_BackMaterial,
+            -- Attributes of AspectLine3d
+       DA_BeamType,
+       DA_BeamWidth,
+       DA_BeamColor,
+            -- Attributes of AspectMarker3d
+       DA_MarkerType,
+       DA_MarkerColor,
+       DA_MarkerScale,
+            -- Attributes of AspectText3d
+       DA_TextColor,
+       DA_TextHeight,
+       DA_TextFont,
+       DA_TextExpansionFactor,
+       DA_TextSpace,
+       DA_TextStyle,
+       DA_TextDisplayType,
+       DA_TextTexFont,
+       DA_TextFontAspect,
+                    -- Attributes of vector presentation
+       DA_VectorColor,
+       DA_VectorMaxLength,
+       DA_VectorArrowPart,
+
+            -- Attributes of MeshVS_Mesh
+       DA_IsAllowOverlapped,
+    ---Purpose: Is it allowed to draw beam and face's edge overlapping with this beam.
+
+       DA_Reflection,
+        ---Purpose: Is mesh drawn with reflective material
+    
+       DA_ColorReflection,
+    ---Purpose: Is colored mesh data representation drawn with reflective material
+
+       DA_ShrinkCoeff,
+    ---Purpose: What part of face or link will be shown if shrink mode. It is recommended this coeff to be between 0 and 1.
+
+       DA_MaxFaceNodes,
+    ---Purpose: How many nodes is possible to be in face
+
+       DA_ComputeTime,
+    ---Purpose: If this parameter is true, the compute method CPU time will be displayed in console window
+
+       DA_ComputeSelectionTime,
+    ---Purpose: If this parameter is true, the compute selection method CPU time will be displayed in console window
+
+       DA_DisplayNodes,
+    ---Purpose: If this parameter is false, the nodes won't be shown in viewer, otherwise will be.
+
+       DA_SelectableAuto,
+    ---Purpose: If this parameter is true, the selectable nodes map will be updated automatically when hidden elements change
+
+       DA_ShowEdges,
+    ---Purpose: If this parameter is false, the face's edges are not shown
+    --          Warning: in wireframe mode this parameter is ignored
+
+       DA_SmoothShading,
+    ---Purpose: Is mesh drawing in smooth shading mode
+
+       DA_SupressBackFaces,
+    ---Purpose: Is back faces of volume elements should be supressed
+
+       DA_User
+
+  end DrawerAttribute;
+
+    ---Purpose: this enumeration describe what type of sensitive entity will be built
+    --          in 0-th selection mode (it means that whole mesh is selected )
+  enumeration MeshSelectionMethod is
+
+    MSM_PRECISE,  -- the list of sensitive entities according to nodes and elements (the slowest method)
+    MSM_NODES,    -- only set of sensitive points of nodes
+    MSM_BOX       -- mesh bounding box (the fastest method)
+
+  end MeshSelectionMethod;
+
+  class Mesh;
+  pointer MeshPtr to Mesh from MeshVS;
+  class Drawer;
+  deferred class DataSource;
+  deferred class DataSource3D;
+  class DeformedDataSource;
+
+            ---Category: Presentation builders for some ordinary types of data
+
+  deferred class PrsBuilder;
+  class MeshPrsBuilder;
+  class NodalColorPrsBuilder;
+  class ElementalColorPrsBuilder;
+  class TextPrsBuilder;
+  class VectorPrsBuilder;
+
+            ---Category: Classes for selection: special owner and sensitive entities
+
+  class MeshOwner;
+  class MeshEntityOwner;
+
+  class DummySensitiveEntity; 
+  class SensitiveMesh;
+  class SensitiveFace;
+  class SensitiveSegment;
+  class SensitivePolyhedron;
+
+            ---Category: miscellaneous types: data maps, enumerations and other
+
+  imported EntityType;
+  imported DisplayModeFlags;
+  imported SelectionModeFlags;
+  imported TwoColors;
+  imported BuilderPriority;
+  imported TwoNodes;
+  imported Buffer;
+
+  class Tool;
+
+  class SequenceOfPrsBuilder instantiates Sequence from TCollection ( PrsBuilder );
+
+  class DataMapOfIntegerColor instantiates DataMap from TCollection
+                          ( Integer, Color from Quantity, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerMaterial instantiates DataMap from TCollection
+                          ( Integer, MaterialAspect from Graphic3d, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerBoolean instantiates DataMap from TCollection
+                          ( Integer, Boolean, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerOwner instantiates DataMap from TCollection
+                          ( Integer, EntityOwner from SelectMgr, MapIntegerHasher from TColStd );   
+
+  class DataMapOfIntegerMeshEntityOwner instantiates DataMap from TCollection
+                          ( Integer, MeshEntityOwner from MeshVS, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerAsciiString instantiates DataMap from TCollection
+                          ( Integer, AsciiString from TCollection, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerTwoColors instantiates DataMap from TCollection
+                          ( Integer, TwoColors from MeshVS, MapIntegerHasher from TColStd );
+
+  class DataMapOfIntegerVector instantiates DataMap from TCollection
+                          ( Integer, Vec from gp, MapIntegerHasher from TColStd );
+
+  class TwoColorsHasher   instantiates MapHasher from TCollection( TwoColors );
+
+  class ColorHasher;
+
+  class DataMapOfTwoColorsMapOfInteger instantiates DataMap from TCollection
+                          ( TwoColors from MeshVS, MapOfInteger from TColStd, TwoColorsHasher );
+
+  class DataMapOfColorMapOfInteger  instantiates DataMap from TCollection
+                          ( Color from Quantity, MapOfInteger from TColStd, ColorHasher );
+
+  class Array1OfSequenceOfInteger instantiates Array1 from TCollection( SequenceOfInteger from TColStd );
+
+  class HArray1OfSequenceOfInteger instantiates HArray1 from TCollection
+                          ( SequenceOfInteger from TColStd, Array1OfSequenceOfInteger );
+
+  class DataMapOfHArray1OfSequenceOfInteger instantiates DataMap from TCollection
+                          ( Integer, HArray1OfSequenceOfInteger from MeshVS, MapIntegerHasher from TColStd );
+
+  class TwoNodesHasher   instantiates MapHasher from TCollection( TwoNodes );
+
+  class MapOfTwoNodes instantiates Map from TCollection( TwoNodes, TwoNodesHasher );
+
+end MeshVS;

@@ -1,0 +1,105 @@
+-- File:	Approx_SameParameter.cdl
+-- Created:	Fri Jun  2 17:16:15 1995
+-- Author:	Xavier BENVENISTE
+--		<xab@nonox>
+---Copyright:	 Matra Datavision 1995
+
+class SameParameter from Approx
+
+    ---Purpose: Approximation of a  PCurve  on a surface to  make  its
+    --          parameter be the same that the parameter of a given 3d
+    --          reference curve.
+
+uses     
+         HSurface        from   Adaptor3d,
+         HCurve          from   Adaptor3d,
+         HCurve2d        from   Adaptor2d,
+         Surface         from   Geom,
+         Curve           from   Geom,
+         Curve           from   Geom2d,
+    	 BSplineCurve    from   Geom2d  
+
+raises  OutOfRange        from Standard,
+        ConstructionError from Standard
+
+is  
+
+    Create (C3D  :  Curve    from  Geom; 
+            C2D  :  Curve    from  Geom2d;
+	    S    :  Surface  from  Geom; 
+            Tol  :  Real)   
+
+    returns  SameParameter    from  Approx 
+    ---Purpose: 
+    --  Warning: the C3D and C2D must have the same parametric domain.
+    --           
+    raises ConstructionError; 
+
+
+    Create (C3D  :  HCurve    from  Adaptor3d; 
+            C2D  :  Curve     from  Geom2d;
+	    S    :  HSurface  from  Adaptor3d; 
+            Tol  :  Real)   
+
+    returns  SameParameter    from  Approx 
+    ---Purpose: 
+    --Warning: the C3D and C2D must have the same parametric domain.
+               
+    raises ConstructionError; 
+   
+
+    Create (C3D  :  HCurve    from  Adaptor3d; 
+            C2D  :  HCurve2d  from  Adaptor2d; 
+	    S    :  HSurface  from  Adaptor3d; 
+            Tol  :  Real)   
+
+    returns  SameParameter    from  Approx 
+   ---Purpose: 
+    --  Warning: the C3D and C2D must have the same parametric domain.
+    --           
+    raises ConstructionError; 
+   
+
+    Build (me   : in out;
+           Tol  :  Real from Standard)
+    ---Purpose: Compute the Pcurve (internal use only).
+    is static private;
+
+
+    IsDone(me) returns Boolean from Standard;
+    ---C++: inline
+     
+    TolReached(me) returns Real from Standard;
+    ---C++: inline
+     
+     
+    IsSameParameter(me)  
+    ---C++: inline  
+
+    ---Purpose: Tells whether the original data  had already the  same
+    --          parameter up to  the tolerance :  in that case nothing
+    --          is done.
+    
+    returns  Boolean  from Standard; 
+
+
+    Curve2d(me)   
+    ---C++: inline
+
+    ---Purpose: Returns the 2D  curve that has  the same parameter  as
+    --          the  3D curve once evaluated on  the surface up to the
+    --          specified tolerance
+    returns  BSplineCurve  from  Geom2d;
+
+
+fields  
+
+   mySameParameter  :  Boolean       from Standard;
+   myDone           :  Boolean       from Standard;
+   myTolReached     :  Real          from Standard;
+   myCurve2d        :  BSplineCurve  from Geom2d;
+   myHCurve2d       :  HCurve2d      from Adaptor2d;
+   myC3d            :  HCurve        from Adaptor3d;
+   mySurf           :  HSurface      from Adaptor3d;
+
+end  SameParameter; 

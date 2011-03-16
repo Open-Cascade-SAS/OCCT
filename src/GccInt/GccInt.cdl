@@ -1,0 +1,37 @@
+-- File:	GccInt.cdl
+-- Created:	Fri Mar 22 13:20:33 1991
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+package GccInt
+
+	---Purpose: This package implements the services needed by the 
+	--          toolkit Gcc to use curves other than lines or circles.
+	--          This package is also used for intersections and 
+	--          bisecting curves.
+
+uses gp,
+     MMgt,
+     Standard
+
+is
+
+enumeration IType is Lin, Cir, Ell, Par, Hpr, Pnt;
+
+deferred class Bisec;
+
+class BCirc;
+
+class BElips;
+
+class BLine;
+
+class BParab;
+
+class BPoint;
+
+class BHyper;
+
+end GccInt;

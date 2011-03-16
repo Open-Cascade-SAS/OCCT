@@ -1,0 +1,46 @@
+-- File:	FairCurve_BattenLaw.cdl
+-- Created:	Fri Jan 26 16:13:07 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+private class BattenLaw from FairCurve inherits Function from math
+
+	---Purpose: This class compute the Heigth of an batten 
+
+is
+     Create(Heigth, Slope, Sliding : Real)
+    ---Purpose: Constructor of linear batten with
+    --          Heigth : the Heigth at the middle point
+    --          Slope  : the geometric slope of the batten
+    --          Sliding : Active Length of the batten without extension
+     returns BattenLaw;
+     
+     SetSliding(me : in out; Sliding : Real);
+     ---Purpose: Change the value of sliding
+     ---C++: inline
+     
+     SetHeigth(me : in out; Heigth : Real);
+     ---Purpose: Change the value of Heigth at the middle point.
+     ---C++: inline
+     
+     SetSlope(me : in out; Slope : Real);
+     ---Purpose: Change the value of the geometric slope.
+     ---C++: inline
+     
+    
+     Value(me: in out; T: Real; THeigth: out Real) returns Boolean
+     ---Purpose: computes the value of  the heigth for the parameter T
+     --          on  the neutral fibber
+     ---C++: inline
+     is redefined;
+
+
+
+
+fields
+MiddleHeigth   : Real; -- the Heigth at the middle point
+GeometricSlope : Real; -- the geometric slope of the batten
+LengthSliding  : Real; -- the length of sliding of the batten
+end BattenLaw;

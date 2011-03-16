@@ -1,0 +1,47 @@
+-- File:	GCPnts.cdl
+-- Created:	Fri Feb 22 09:24:30 1991
+-- Author:	Jean Claude Vauthier
+--		<jcv@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+package GCPnts
+        --- Purpose :
+        --  This package  contains the geometric  algorithmes  used to
+        --  compute characteristic points on parametrized curves.
+        --  
+        --  They are  high  level  algorithms based  on  the low level
+        --  algorithms in CPnts.
+    	---Level : Public. 
+    	--  All methods of all  classes will be public.
+
+uses Standard, TCollection, CPnts, Adaptor3d, Adaptor2d  , gp, GeomAbs,
+     TColgp, StdFail, TColStd
+
+is
+
+   enumeration AbscissaType 
+         is LengthParametrized, Parametrized, AbsComposite end;
+	 
+   enumeration DeflectionType 
+         is Linear, Circular, Curved, DefComposite end;
+
+   class AbscissaPoint;
+   
+   class UniformAbscissa;
+   
+   class UniformDeflection;
+
+   class QuasiUniformDeflection;
+
+   class QuasiUniformAbscissa;
+
+   class TangentialDeflection;
+   
+end GCPnts;
+
+
+
+
+

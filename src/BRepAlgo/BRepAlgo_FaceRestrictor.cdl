@@ -1,0 +1,91 @@
+-- File:	BRepAlgo_FaceRestrictor.cdl
+-- Created:	Fri Sep  1 10:45:57 1995 
+-- Author:	Yves FRICAUD
+--		<yfr@nonox>
+---Copyright:	 Matra Datavision 1995
+
+
+class FaceRestrictor from BRepAlgo 
+
+	---Purpose:  Builds all  the faces  limited  with a set of non
+	--                 jointing   and     planars     wires.    if
+	--          <ControlOrientation> is false  The Wires must have
+	--          correct orientations.  Sinon orientation des wires
+    	--          de telle sorte que les faces ne soient pas infinies
+    	--          et qu'elles soient disjointes.
+
+uses
+    Wire                      from TopoDS,
+    Face                      from TopoDS,
+    ListOfShape               from TopTools,	 
+    DataMapOfShapeListOfShape from TopTools
+is
+
+    Create returns FaceRestrictor from BRepAlgo;
+    
+    Init (me                 : in out; 
+    	  F                  : Face    from TopoDS; 
+    	  Proj               : Boolean from Standard = Standard_False;
+    	  ControlOrientation : Boolean from Standard = Standard_False)
+    	---Purpose: the surface of <F> will be the the surface of each new
+    	--          faces built.
+    	--          <Proj> is used to update pcurves on edges if necessary.
+    	--          See Add().
+    is static;
+    
+    Add( me : in out;
+    	 W  : in out Wire  from TopoDS)
+	---Purpose: Add the wire <W> to the set of wires.  
+	--          
+	--  Warning:
+	--          The Wires must be closed.  
+	--          
+	--          The edges of <W> can be modified if they  have not pcurves  
+	--          on the surface <S>  of <F>. In this  case 
+	--          if <Proj> is false the first pcurve of  the edge 
+	--          is positionned on <S>.
+	--          if <Proj> is True ,the Pcurve On <S> is the 
+	--          projection of the  curve 3d on <F>.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Removes all the Wires
+    is static;
+    
+    Perform( me : in out)
+	---Purpose: Evaluate all the faces limited by the set of Wires.
+    is static;
+    
+    IsDone( me)
+    returns Boolean from Standard
+    is static;
+    
+    More( me)
+    returns Boolean from Standard
+    is static;
+    
+    Next( me : in out)
+    is static;
+    
+    Current(me)
+    returns Face from TopoDS
+    is static;
+   
+    PerformWithCorrection( me : in out)
+	---Purpose: Evaluate all the faces limited by the set of Wires.
+    is static private;
+    
+fields
+
+    myDone    : Boolean     from Standard;
+    modeProj  : Boolean     from Standard;
+    myFace    : Face        from TopoDS;
+    wires     : ListOfShape from TopTools;
+    faces     : ListOfShape from TopTools;
+    
+    myCorrection : Boolean     from Standard;
+    keyIsIn      : DataMapOfShapeListOfShape from TopTools;
+    keyContains  : DataMapOfShapeListOfShape from TopTools;
+    
+end FaceRestrictor;
+

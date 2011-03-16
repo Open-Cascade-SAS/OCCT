@@ -1,0 +1,81 @@
+--
+-- File      :  CylindricalSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CylindricalSurface from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines CylindricalSurface, Type <192> Form Number <0,1>
+        --          in package IGESSolid
+
+uses
+
+        Point           from IGESGeom,
+        Direction       from IGESGeom,
+        Pnt             from gp
+
+is
+
+        Create returns mutable CylindricalSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aLocation : Point;
+              anAxis    : Direction;
+              aRadius   : Real;
+              aRefdir   : Direction);
+        ---Purpose : This method is used to set the fields of the class
+        --           CylindricalSurface
+        --       - aLocation : the location of the point on axis
+        --       - anAxis    : the direction of the axis
+        --       - aRadius   : the radius at the axis point
+        --       - aRefdir   : the reference direction (parametrised surface)
+        --                     default NULL (unparametrised surface)
+
+        LocationPoint(me) returns Point;
+        ---Purpose : returns the point on the axis
+
+        Axis(me) returns Direction;
+        ---Purpose : returns the direction on the axis
+
+        Radius(me) returns Real;
+        ---Purpose : returns the radius at the axis point
+
+        IsParametrised(me) returns Boolean;
+        ---Purpose : returns whether the surface is parametrised or not
+
+        ReferenceDir(me) returns Direction;
+        ---Purpose : returns the reference direction only for parametrised surface
+        -- else returns NULL
+
+fields
+
+--
+-- Class    : IGESSolid_CylindricalSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CylindricalSurface.
+--
+-- Reminder : A CylindricalSurface instance is defined by :
+--            a point on the axis of the cylinder(Location), the direction
+--            of the axis of the cylinder(Axis) and a radius(Radius).In case
+--            of parametrised surface, a reference direction (RefDir) is
+--            provided.
+
+        theLocationPoint : Point;
+            -- the location of the point on the axis
+
+        theAxis          : Direction;
+            -- the direction of the axis of the surface
+
+        theRadius        : Real;
+            -- the radius at the cylinder
+
+        theRefDir        : Direction;
+            -- the reference direction (for parametrised surface)
+
+end CylindricalSurface;

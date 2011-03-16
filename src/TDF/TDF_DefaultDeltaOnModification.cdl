@@ -1,0 +1,35 @@
+-- File:	TDF_DefaultDeltaOnModification.cdl
+--      	----------------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct 10 1997	Creation
+
+
+class DefaultDeltaOnModification from TDF
+    inherits DeltaOnModification from TDF
+
+	---Purpose: This class provides a default implementation of a
+	--          TDF_DeltaOnModification.
+
+uses
+
+    Label     from TDF,
+    Attribute from TDF
+
+-- raises
+
+is
+
+    Create(anAttribute : Attribute from TDF);
+	---Purpose: Creates a TDF_DefaultDeltaOnModification.
+	--          <anAttribute> must be the backup copy.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+
+end DefaultDeltaOnModification;

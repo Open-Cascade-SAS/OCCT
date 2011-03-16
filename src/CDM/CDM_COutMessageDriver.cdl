@@ -1,0 +1,11 @@
+-- File:        CDM_COutMessageDriver.cdl
+-- Created:     Thu Aug 30 15:48:11 2001
+-- Author:      Alexander GRIGORIEV
+--Copyright:    Open Cascade 2001
+
+class COutMessageDriver from CDM inherits MessageDriver from CDM
+
+is
+    Write (me:mutable; aString: ExtString from Standard);
+
+end COutMessageDriver from CDM;

@@ -1,0 +1,151 @@
+-- File:	TopOpeBRepDS_Curve.cdl
+-- Created:	Wed Jun 23 12:09:00 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Curve from TopOpeBRepDS
+
+    ---Purpose: A Geom point and a tolerance.
+
+uses
+
+    Shape from TopoDS,
+    Curve from Geom,
+    Curve from Geom2d,
+    Interference from TopOpeBRepDS
+
+is
+
+    Create returns Curve from TopOpeBRepDS; 
+
+    Create(P : Curve from Geom; 
+     	   T : Real from Standard; 
+    	   IsWalk : Boolean from Standard = Standard_False)  
+    returns Curve from TopOpeBRepDS; 
+ 
+    DefineCurve(me : in out; 
+           P : Curve from Geom; 
+     	   T : Real from Standard; 
+    	   IsWalk : Boolean from Standard);
+
+    Tolerance(me : in out; tol : Real)
+    ---Purpose: Update the tolerance
+    is static;
+	
+    SetSCI(me : in out; I1,I2 : Interference from TopOpeBRepDS)
+    ---Purpose: define the interferences face/curve.
+    is static;
+
+    GetSCI1(me) returns any Interference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    GetSCI2(me) returns any Interference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    GetSCI(me; I1,I2 : in out Interference from TopOpeBRepDS)
+    is static;
+
+    SetShapes(me : in out; S1,S2 : Shape from TopoDS)
+    is static; 
+    
+    GetShapes(me; S1,S2 : in out Shape from TopoDS)
+    is static;
+
+    Shape1(me) returns Shape from TopoDS
+    ---C++: return const &
+    is static;
+ 
+    ChangeShape1(me : in out) returns Shape from TopoDS
+    ---C++: return &
+    is static;
+    Shape2(me) returns Shape from TopoDS
+    ---C++: return const &
+    is static;
+
+    ChangeShape2(me : in out) returns Shape from TopoDS
+    ---C++: return &
+    is static;
+
+    Curve(me) returns any Curve from Geom
+    ---C++: return const &
+    is static;
+
+    SetRange(me : in out ; First, Last : Real from Standard)
+    is static;
+    
+    Range(me; First, Last : out Real from Standard) 
+    returns Boolean from Standard
+    is static;
+
+    Tolerance(me) returns Real from Standard
+    is static;
+
+    ChangeCurve(me : in out) returns any Curve from Geom
+    ---C++: return &
+    is static;
+	
+    Curve(me : in out; C3D : Curve from Geom; Tol : Real from Standard)
+    is static;
+    
+    Curve1(me) returns any Curve from Geom2d
+    ---C++: return const &
+    is static;
+
+    Curve1(me : in out; PC1 : Curve from Geom2d)
+    is static;
+    
+    Curve2(me) returns any Curve from Geom2d
+    ---C++: return const &
+    is static;
+
+    Curve2(me : in out; PC2 : Curve from Geom2d)
+    is static;
+    
+    IsWalk(me) returns Boolean from Standard;
+    ChangeIsWalk(me: in out; B : Boolean from Standard);
+
+    Keep(me) returns Boolean from Standard
+    is static;
+    ChangeKeep(me : in out; B : Boolean from Standard)
+    is static;
+
+    Mother(me) returns Integer from Standard
+    is static;
+    ChangeMother(me : in out; I : Integer from Standard)
+    is static;
+
+    DSIndex(me) returns Integer from Standard
+    is static;
+    ChangeDSIndex(me : in out; I : Integer from Standard)
+    is static;
+
+    Dump(me; OS : in out OStream from Standard; 
+    	     index : Integer from Standard;
+             compact : Boolean = Standard_True)
+    ---C++: return &
+    returns OStream from Standard
+    is static;
+	  
+
+fields
+
+    myCurve         : Curve from Geom;
+    myFirst,myLast  : Real from Standard;
+    myRangeDefined  : Boolean from Standard;
+    myTolerance     : Real from Standard;
+    myIsWalk        : Boolean from Standard;
+    
+    myS1    : Shape from TopoDS;
+    myS2    : Shape from TopoDS;
+    mySCI1  : Interference from TopOpeBRepDS;
+    mySCI2  : Interference from TopOpeBRepDS;
+
+    myKeep          : Boolean from Standard;
+    myMother        : Integer;
+    myDSIndex       : Integer;
+    
+end Curve;

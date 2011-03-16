@@ -1,0 +1,115 @@
+-- File:	TopOpeBRepTool_ShapeTool.cdl
+-- Created:	Wed Feb  9 16:13:19 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ShapeTool from TopOpeBRepTool 
+
+    -- as TopOpeInter_ShapeTooltemp(Shape from TopoDS)
+    -- as TopOpeBRepDS_ShapeTooltemp(Shape from TopoDS)
+
+uses
+
+    Shape from TopoDS,    
+    Face from TopoDS,
+    Edge from TopoDS,
+    Pnt from gp,
+    Curve from Geom,
+    Surface from Geom,
+    Surface from BRepAdaptor,
+    Curve from BRepAdaptor,
+    Dir from gp
+
+is
+
+    Tolerance(myclass; S : Shape from TopoDS ) 
+    ---Purpose: Returns the tolerance of the shape <S>.
+    --          If the shape <S> is Null, returns 0.
+    returns Real from Standard;
+
+    Pnt(myclass; S : Shape from TopoDS ) 
+    ---Purpose: Returns 3D point of vertex <S>.
+    returns Pnt from gp;
+
+    BASISCURVE(myclass; C : Curve from Geom)
+    returns Curve from Geom;
+
+    BASISCURVE(myclass; E : Edge from TopoDS)
+    returns Curve from Geom;
+
+    BASISSURFACE(myclass; S : Surface from Geom)
+    returns Surface from Geom;
+
+    BASISSURFACE(myclass; F : Face from TopoDS)
+    returns Surface from Geom;
+
+    UVBOUNDS(myclass; S : Surface from Geom; 
+    	    	       UPeri, VPeri : in out Boolean from Standard;
+    	    	       Umin, Umax, Vmin, Vmax : in out Real from Standard);
+
+    UVBOUNDS(myclass; F : Face from TopoDS;
+    	    	       UPeri, VPeri : in out Boolean from Standard;
+    	    	       Umin, Umax, Vmin, Vmax : in out Real from Standard);
+
+    AdjustOnPeriodic(myclass; S : Shape from TopoDS;
+		              u,v : in out Real from Standard);
+    ---Purpose: ajust u,v values in UVBounds of the domain of the 
+    --          geometric shape <S>, according to Uperiodicity and 
+    --          VPeriodicity of the domain.
+    --          <S> is assumed to be a face.
+    --          u and/or v is/are not modified when the domain is
+    --          not periodic in U and/or V .
+
+    Closed(myclass; S1,S2 : Shape from TopoDS) 
+    ---Purpose: indicates wheter shape S1 is a closing shape on S2 or not.
+    returns Boolean from Standard;
+
+    PeriodizeParameter(myclass;
+    	    	       par : Real from Standard;
+    	    	       EE,FF : Shape from TopoDS)
+    returns Real from Standard;		       
+
+    ShapesSameOriented(myclass; S1,S2 : Shape from TopoDS)
+    returns Boolean from Standard;
+
+    SurfacesSameOriented(myclass; S1,S2 : Surface from BRepAdaptor) 
+    returns Boolean from Standard;
+
+    FacesSameOriented(myclass; F1,F2 : Shape from TopoDS)
+    returns Boolean from Standard;
+
+    CurvesSameOriented(myclass; C1,C2 : Curve from BRepAdaptor) 
+    returns Boolean from Standard;
+
+    EdgesSameOriented(myclass; E1,E2 : Shape from TopoDS)
+    returns Boolean from Standard;
+
+    EdgeData(myclass; BRAC : Curve from BRepAdaptor; P : Real from Standard;
+    	    	      T,N : out Dir from gp;        -- tangent, normal
+    	    	      C   : out Real from Standard) -- curvature
+    ---Purpose : 
+    -- Compute tangent T, normal N, curvature C at point of parameter
+    -- P on curve BRAC. Returns the tolerance indicating if T,N are null.
+    returns Real from Standard;
+
+    EdgeData(myclass; E : Shape from TopoDS; P : Real from Standard;
+    	    	      T,N : out Dir from gp;        -- tangent, normal
+    	    	      C   : out Real from Standard) -- curvature
+    ---Purpose : Same as previous on edge E.
+    returns Real from Standard;
+
+    Resolution3dU(myclass; SU:Surface from Geom; Tol2d : Real from Standard) 
+    returns Real from Standard;
+
+    Resolution3dV(myclass; SU:Surface from Geom; Tol2d : Real from Standard) 
+    returns Real from Standard;
+
+    Resolution3d(myclass; SU:Surface from Geom; Tol2d : Real from Standard)
+    returns Real from Standard;
+
+    Resolution3d(myclass; F:Face from TopoDS; Tol2d : Real from Standard)
+    returns Real from Standard;
+
+end ShapeTool from TopOpeBRepTool;

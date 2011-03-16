@@ -1,0 +1,29 @@
+-- File:	QADBRepNaming.cdl
+-- Created:	Thu Dec  8 10:20:34 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package QANewDBRepNaming
+
+    ---Purpose: To test topological naming
+
+uses 
+ 
+    Draw,
+    TCollection, 
+    TDF,
+    TNaming,
+    TopoDS,
+    gp
+
+is
+
+    AllCommands       (Di : in out Interpretor from Draw);
+
+    PrimitiveCommands (DI : in out Interpretor from Draw);
+--    OffsetCommands    (DI : in out Interpretor from Draw);
+--    FilletCommands    (DI : in out Interpretor from Draw);
+    FeatureCommands   (DI : in out Interpretor from Draw);
+    
+end QADBRepNaming;

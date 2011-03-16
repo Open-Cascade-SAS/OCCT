@@ -1,0 +1,53 @@
+//=======================================================================
+//function : SetCurve
+//purpose  : 
+//=======================================================================
+  inline void IntTools_Curve::SetCurve(const Handle(Geom_Curve)& Curve3d) 
+{
+  my3dCurve = Curve3d;
+}
+
+//=======================================================================
+//function : SetFirstCurve2d
+//purpose  : 
+//=======================================================================
+  inline void IntTools_Curve::SetFirstCurve2d(const Handle(Geom2d_Curve)& FirstCurve2d) 
+{
+  my2dCurve1 = FirstCurve2d;
+}
+//=======================================================================
+//function : SetSecondCurve2d
+//purpose  : 
+//=======================================================================
+  inline void IntTools_Curve::SetSecondCurve2d(const Handle(Geom2d_Curve)& SecondCurve2d) 
+{
+  my2dCurve2 = SecondCurve2d;
+}
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+  inline const Handle(Geom_Curve)& IntTools_Curve::Curve() const
+{
+  return my3dCurve;
+}
+
+//=======================================================================
+//function : FirstCurve2d
+//purpose  : 
+//=======================================================================
+  inline const Handle(Geom2d_Curve)& IntTools_Curve::FirstCurve2d() const
+{
+  return my2dCurve1;
+}
+//=======================================================================
+//function : SecondCurve2d
+//purpose  : 
+//=======================================================================
+  inline const Handle(Geom2d_Curve)& IntTools_Curve::SecondCurve2d() const
+{
+  return my2dCurve2;
+}
+
+

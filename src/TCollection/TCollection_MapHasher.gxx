@@ -1,0 +1,18 @@
+// File:	TCollection_MapHasher.gxx
+// Created:	Thu Jan  7 19:41:51 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+Standard_Integer TCollection_MapHasher::HashCode(const Key& K,
+						 const Standard_Integer Upper)
+{
+  return ::HashCode(K,Upper);
+  //return K->HashCode(Upper);
+}
+
+Standard_Boolean TCollection_MapHasher::IsEqual(const Key& K1,
+						const Key& K2)
+{
+  return K1 == K2;
+}
+

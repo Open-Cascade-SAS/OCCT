@@ -1,0 +1,45 @@
+inline Standard_Boolean& BOP_ArgumentAnalyzer::ArgumentTypeMode() 
+{
+  return myArgumentTypeMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::SelfInterMode() 
+{
+  return mySelfInterMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::SmallEdgeMode() 
+{
+  return mySmallEdgeMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::RebuildFaceMode() 
+{
+  return myRebuildFaceMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::TangentMode() 
+{
+  return myTangentMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::MergeVertexMode() 
+{
+  return myMergeVertexMode;
+}
+
+ 
+inline Standard_Boolean& BOP_ArgumentAnalyzer::MergeEdgeMode() 
+{
+  return myMergeEdgeMode;
+}
+
+// inline Standard_Boolean& BOP_ArgumentAnalyzer::MergeFaceMode() 
+// {
+//   return myMergeFaceMode;
+// }

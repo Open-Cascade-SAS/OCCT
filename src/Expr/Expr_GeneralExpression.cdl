@@ -1,0 +1,148 @@
+-- File:	GeneralExpression.cdl
+-- Created:	Thu Jan 10 11:57:22 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class GeneralExpression from Expr
+    
+inherits TShared from MMgt
+
+    ---Purpose: Defines the general purposes of any expression.
+
+uses NamedUnknown from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection
+
+raises OutOfRange from Standard, 
+    NumericError from Standard,
+    NotEvaluable from Expr,
+    InvalidOperand from Expr
+
+is
+
+    NbSubExpressions(me)
+    ---Purpose: Returns the number of sub-expressions contained
+    --          in <me> ( >= 0)
+    ---Level: Internal
+    returns Integer
+    is deferred;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: Returns the <I>-th sub-expression of <me>
+    --          raises OutOfRange if <I> > NbSubExpressions(me)
+    ---C++: return const &
+    ---Level: Internal 
+    returns any GeneralExpression
+    raises OutOfRange
+    is deferred;
+
+    Simplified(me) 
+    ---Purpose: Returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression and after
+    --          values computation.
+    ---Level: Advanced 
+    returns any GeneralExpression 
+    raises NumericError
+    is deferred;
+
+    ShallowSimplified(me)
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    ---Level: Internal
+    returns any GeneralExpression
+    raises NumericError
+    is deferred;
+    
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and 
+    --          functions. 
+    ---Level: Advanced 
+    returns mutable like me
+    is deferred;
+    
+    ContainsUnknowns(me) 
+    ---Purpose: Tests if <me> contains NamedUnknowns.
+    ---Level: Advanced 
+    returns Boolean
+    is deferred;
+    
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> is contained in <me>.
+    ---Level: Advanced 
+    returns Boolean
+    is deferred;	
+
+    IsLinear(me)
+    ---Purpose: Tests if <me> is linear on every NamedUnknown it 
+    --          contains. 
+    ---Level: Internal
+    returns Boolean
+    is deferred;
+
+    IsShareable(me)
+    ---Purpose: Tests if <me> can be shared by one or more expressions 
+    --          or must be copied. This method returns False as a 
+    --          default value. To be redefined ( especially for 
+    --          NamedUnknown). 
+    ---Level: Internal
+    returns Boolean is virtual;
+    
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --  Warning: This method does not include any simplification before
+    --          testing. It could also be very slow; to be used 
+    --          carefully.
+    ---Level: Internal 
+    returns Boolean
+    is deferred;
+    
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    ---Level: Advanced 
+    returns any GeneralExpression
+    is deferred;
+
+    NDerivative(me; X : NamedUnknown; N : Integer)
+    ---Purpose: Returns the <N>-th derivative on <X> unknown of <me>.
+    --          Raise OutOfRange if N <= 0
+    ---Level: Advanced 
+    returns any GeneralExpression
+    raises OutOfRange is virtual;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression)
+    ---Purpose: Replaces all occurences of <var> with copies of <with> 
+    --          in <me>. Copies of <with> are made with the Copy() method.
+    --          Raises InvalidOperand if <with> contains <me>.
+    ---Level: Internal
+    raises InvalidOperand
+    is deferred;
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    ---Level: Advanced 
+    returns Real
+    raises NotEvaluable,NumericError
+    is deferred;
+    
+    EvaluateNumeric(me)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    ---Level: Internal
+    returns Real
+    raises NotEvaluable,NumericError;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    ---Level: Public 
+    returns AsciiString
+    is deferred;
+    
+end GeneralExpression;
+

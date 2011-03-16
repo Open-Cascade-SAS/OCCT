@@ -1,0 +1,126 @@
+-- File:	ShapeAnalysis_FreeBoundData.cdl
+-- Created:	Tue Aug 25 10:48:55 1998
+-- Author:	Pavel DURANDIN <pdn@nnov.matra-dtv.fr>
+--		Roman LYGIN <rln@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class FreeBoundData from ShapeAnalysis inherits TShared from MMgt
+
+	---Purpose: This class is intended to represent free bound and to store
+        --          its properties.
+	--
+	--          This class is used by ShapeAnalysis_FreeBoundsProperties
+        --          class when storing each free bound and its properties.
+	--
+	--          The properties stored in this class are the following:
+	--          - area of the contour,
+	--          - perimeter of the contour,
+	--          - ratio of average length to average width of the contour,
+	--          - average width of contour,
+	--          - notches (narrow 'V'-like sub-contours) on the contour and
+        --            their maximum width.
+	--
+	--          This class provides methods for setting and getting fields
+        --          only.
+	
+uses
+
+    Wire               from TopoDS,
+    HSequenceOfShape   from TopTools,
+    DataMapOfShapeReal from TopTools
+
+is
+    
+    Create returns mutable FreeBoundData from ShapeAnalysis;
+    	---Purpose: Empty constructor
+     
+    Create (freebound: Wire from TopoDS)
+    returns mutable FreeBoundData from ShapeAnalysis;
+    	---Purpose: Creates object with contour given in the form of TopoDS_Wire
+
+    Clear (me: mutable);
+    	---Purpose: Clears all properties of the contour.
+	--          Contour bound itself is not cleared.
+    
+
+    -- Methods for setting fields
+    
+    SetFreeBound (me: mutable; freebound: Wire from TopoDS);
+    	---Purpose: Sets contour
+	---C++: inline
+    
+    SetArea (me: mutable; area: Real);
+    	---Purpose: Sets area of the contour
+	---C++: inline
+    
+    SetPerimeter (me: mutable; perimeter: Real);
+    	---Purpose: Sets perimeter of the contour
+	---C++: inline
+    
+    SetRatio (me: mutable; ratio: Real);
+    	---Purpose: Sets ratio of average length to average width of the contour
+	---C++: inline
+    
+    SetWidth (me: mutable; width: Real);
+    	---Purpose: Sets average width of the contour
+	---C++: inline
+    
+    AddNotch (me: mutable; notch: Wire from TopoDS; width: Real);
+    	---Purpose: Adds notch on the contour with its maximum width
+    
+    
+    -- Methods for getting fields
+    
+    FreeBound (me) returns Wire from TopoDS;
+    	---Purpose: Returns contour
+	---C++: inline
+    
+    Area (me) returns Real;
+    	---Purpose: Returns area of the contour
+	---C++: inline
+    
+    Perimeter (me) returns Real;
+    	---Purpose: Returns perimeter of the contour
+	---C++: inline
+    
+    Ratio (me) returns Real;
+    	---Purpose: Returns ratio of average length to average width of the contour
+	---C++: inline
+    
+    Width (me) returns Real;
+    	---Purpose: Returns average width of the contour
+	---C++: inline
+    
+    NbNotches (me) returns Integer;
+    	---Purpose: Returns number of notches on the contour
+	---C++: inline
+    
+    Notches (me) returns HSequenceOfShape from TopTools;
+    	---Purpose: Returns sequence of notches on the contour
+	---C++: inline
+    
+    Notch (me; index: Integer) returns Wire from TopoDS;
+    	---Purpose: Returns notch on the contour
+	---C++: inline
+    
+    NotchWidth (me; index: Integer) returns Real;
+    	---Purpose: Returns maximum width of notch specified by its rank number
+    	--          on the contour
+    
+    NotchWidth (me; notch: Wire from TopoDS) returns Real;
+    	---Purpose: Returns maximum width of notch specified as TopoDS_Wire
+    	--          on the contour
+    
+    
+fields
+    
+    myBound        : Wire from TopoDS;
+    myArea         : Real;
+    myPerimeter    : Real;
+    myRatio        : Real;
+    myWidth        : Real;
+    myNotches      : HSequenceOfShape   from TopTools;
+    myNotchesParams: DataMapOfShapeReal from TopTools;
+
+end FreeBoundData;

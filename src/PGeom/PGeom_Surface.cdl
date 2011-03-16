@@ -1,0 +1,17 @@
+-- File:	PGeom_Surface.cdl
+-- Created:	Tue Mar  2 10:07:44 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Surface from PGeom inherits Geometry from PGeom
+
+        ---Purpose : Defines the general class Surface.
+        --  
+	---See Also : Surface from Geom
+
+is
+      
+
+end;

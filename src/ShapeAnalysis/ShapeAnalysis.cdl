@@ -1,0 +1,183 @@
+-- File:	ShapeAnalysis.cdl
+-- Created:	Wed Jun  3 11:59:35 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeAnalysis 
+
+    ---Purpose: This package is intended to analyze geometrical objects
+-- and topological shapes. Analysis domain includes both
+-- exploring geometrical and topological properties of
+-- shapes and checking their conformance to Open CASCADE requirements.
+-- The directions of analysis provided by tools of this package are:
+-- computing quantities of subshapes,  
+-- computing parameters of points on curve and surface,  
+-- computing surface singularities,  
+-- checking edge and wire consistency,  
+-- checking edges order in the wire,  
+-- checking face bounds orientation,  
+-- checking small faces,  
+-- analyzing shape tolerances,  
+-- analyzing of free bounds of the shape.  
+
+uses
+    gp,
+    TColStd,
+    TCollection,
+    TColgp,
+    Bnd,
+    Geom, 
+    Geom2d,
+    GeomAdaptor,
+    Extrema,
+    IntRes2d,
+    TopAbs,
+    TopLoc,
+    TopoDS,
+    TopTools,
+    ShapeExtend,
+    Adaptor3d
+    
+is
+ 
+    class Geom;
+    	---Purpose: Basic analysis on geometry
+    
+    class Curve;
+    	---Purpose: Analysis on 2d and 3d curve (projecting points)
+    
+    class Surface;
+    	---Purpose: Analysis on surface (computing singularities)
+    
+    class Edge;
+    	---Purpose: Analysis on edge (geometrical and topological querying,
+	--          curves consistency, etc.)    
+
+    class Wire;
+    	---Purpose: Comprehensive alysis of the wire lying on the face or surface
+    
+    class WireOrder;
+        ---Purpose: Analysis of the edges order in the wire
+    
+    class WireVertex;
+    	---Purpose: Analysis of the vertex in context of the wire
+	
+    class CheckSmallFace;                                                                                 
+        ---Purpose: Analysis of the face size         
+	
+    class Shell;		    
+        ---Purpose: Checking orientation in the shell                                                                          
+			
+    class ShapeTolerance;
+    	---Purpose: Calculating shape tolerances
+
+    --class OverlapEdges;  now it is in package OverlapShape of Products
+    	---Purpose: Container for keeping information about
+	--          overlapping edges
+
+    --class CheckCoincidenceTool;  now it is in package OverlapShape of Products
+    	---Purpose: Tool for checking coincidence of faces and edges
+
+     -- Class intended for analyzing shape contents
+    
+    class ShapeContents;
+    	---Purpose: Dumps shape contents
+    
+    
+    -- Classes intended for free bounds analysis
+
+    class FreeBounds;                                                                                     
+        ---Purpose: Constructing free bounds of the shape                                                 
+                                                                                                          
+    class FreeBoundData;                                                                                  
+        ---Purpose: Data structure for storing free bound                                                 
+    
+    class FreeBoundsProperties;                                                                           
+        ---Purpose: Analysis of properties of free bounds                                                 
+                                                                                                          
+    class TransferParameters;
+    	---Purpose: Transfers parameters between curve 3d of edge and its pcurves
+	
+	class TransferParametersProj;
+	    ---Purpose: Transfers parameters between curve 3d of edge and its 
+    	    --          pcurves. This algorithm uses projection for not 
+    	    --          sameparameter edges.
+    
+    class SequenceOfFreeBounds instantiates                                                               
+        Sequence  from TCollection (FreeBoundData from ShapeAnalysis);                                    
+                                                                                                          
+    class HSequenceOfFreeBounds instantiates                                                              
+        HSequence from TCollection (FreeBoundData        from ShapeAnalysis,                              
+                                    SequenceOfFreeBounds from ShapeAnalysis);                             
+
+    class DataMapOfShapeListOfReal instantiates
+    	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 ListOfReal     from TColStd,
+                                 ShapeMapHasher from TopTools);
+
+    --class SequenceOfOverlapEdges instantiates 
+    	--Sequence from TCollection (OverlapEdges from ShapeAnalysis); 
+	    -- now it is in package OverlapShape of Products
+	
+    --class IndexedDataMapOfShapeSequenceOfOverlapEdges instantiates
+    	--IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	--SequenceOfOverlapEdges from ShapeAnalysis,
+                                        --ShapeMapHasher from TopTools);
+	    -- now it is in package OverlapShape of Products
+					
+
+    OuterWire (face: Face from TopoDS) returns Wire from TopoDS;
+        ---Purpose: Returns the outer wire on the face <Face>.
+	--          This is replacement of the method BRepTools::OuterWire
+	--          until it works badly.
+	--          Returns the first wire oriented as outer according to
+	--          FClass2d_Classifier. If none, last wire is returned.
+
+    TotCross2D(sewd: WireData from ShapeExtend; aFace: Face from TopoDS)
+    returns Real;
+    	---Purpose: Returns a total area of 2d wire
+	
+    ContourArea(theWire : Wire from TopoDS) returns Real;
+       --sewd: WireData from ShapeExtend) returns Real;
+    	---Purpose: Returns a total area of 3d wire
+	
+    IsOuterBound (face: Face from TopoDS) returns Boolean;
+    	---Purpose: Returns True if <F> has outer bound.
+	---Remarks: This method checks only presence of outer bound, it does not
+	--          check mutual orientation of the bounds on a face
+
+    AdjustByPeriod(Val: Real; ToVal: Real; Period: Real)
+    returns Real;
+    	---Purpose: Returns a shift required to move point
+        --          <Val> to the range [ToVal-Period/2,ToVal+Period/2].
+        --          This shift will be the divisible by Period.
+	--          Intended for adjusting parameters on periodic surfaces.
+	
+    AdjustToPeriod(Val: Real; ValMin: Real; ValMax: Real)
+    returns Real;
+    	---Purpose: Returns a shift required to move point
+        --          <Val> to the range [ValMin,ValMax].
+        --          This shift will be the divisible by Period
+        --          with Period = ValMax - ValMin.
+	--          Intended for adjusting parameters on periodic surfaces.
+
+    FindBounds (shape: Shape  from TopoDS;
+		V1   : in out Vertex from TopoDS;
+		V2   : in out Vertex from TopoDS);
+    	---Purpose: Finds the start and end vertices of the shape
+	--          Shape can be of the following type:
+	--          vertex: V1 and V2 are the same and equal to <shape>,
+	--          edge  : V1 is start and V2 is end vertex (see ShapeAnalysis_Edge
+    	--                  methods FirstVertex and LastVertex),
+	--          wire  : V1 is start vertex of the first edge, V2 is end vertex
+	--                  of the last edge (also see ShapeAnalysis_Edge).
+	--                  If wire contains no edges V1 and V2 are nullified
+	--          If none of the above V1 and V2 are nullified
+	---Remark:  V1 and V2 can be of any orientation
+	
+    GetFaceUVBounds(F: Face from TopoDS; Umin, Umax, Vmin, Vmax: out Real);
+    	---Purpose: Computes exact UV bounds of all wires on the face        
+	
+end ShapeAnalysis;

@@ -1,0 +1,43 @@
+-- File:        PolyLoop.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PolyLoop from StepShape 
+
+inherits Loop from StepShape 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+-- inherits GeometricRepresentationItem from StepShape 
+
+uses
+
+	HArray1OfCartesianPoint from StepGeom,
+	CartesianPoint from StepGeom,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PolyLoop;
+	---Purpose: Returns a PolyLoop
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPolygon : mutable HArray1OfCartesianPoint from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPolygon(me : mutable; aPolygon : mutable HArray1OfCartesianPoint);
+	Polygon (me) returns mutable HArray1OfCartesianPoint;
+	PolygonValue (me; num : Integer) returns mutable CartesianPoint;
+	NbPolygon (me) returns Integer;
+
+fields
+
+	polygon : HArray1OfCartesianPoint from StepGeom;
+
+end PolyLoop;

@@ -1,0 +1,37 @@
+-- File:	GeomToStep_MakeBoundedSurface.cdl
+-- Created:	Tue Jun 22 12:37:10 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeBoundedSurface from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          BoundedSurface from Geom and the class BoundedSurface from 
+    --          StepGeom which describes a BoundedSurface from prostep.
+    --          As BoundedSurface is an abstract BoundedSurface this class 
+    --          is an access to the sub-class required.
+  
+uses BoundedSurface from Geom,
+     BoundedSurface from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( C : BoundedSurface from Geom ) returns MakeBoundedSurface;
+
+Value (me) returns BoundedSurface from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+ 
+fields
+
+    theBoundedSurface : BoundedSurface from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeBoundedSurface;
+
+
+

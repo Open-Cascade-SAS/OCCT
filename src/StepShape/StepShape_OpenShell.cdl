@@ -1,0 +1,21 @@
+-- File:        OpenShell.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OpenShell from StepShape 
+
+inherits ConnectedFaceSet from StepShape 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfFace from StepShape
+is
+
+	Create returns mutable OpenShell;
+	---Purpose: Returns a OpenShell
+
+
+end OpenShell;

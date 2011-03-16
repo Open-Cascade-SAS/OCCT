@@ -1,0 +1,107 @@
+-- File:	GraphTools_SortedStrgCmptsIterator.cdl
+-- Created:	Wed Oct 23 12:07:20 1991
+-- Author:	Denis PASCAL
+--		<dp@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+
+generic class SortedStrgCmptsIterator from GraphTools
+             (Graph      as any;
+    	      Vertex     as any;
+	      GIterator  as any;
+	      SSCIterator as any)
+
+--generic class SortedStrgCmptsIterator from GraphTools
+--            (Graph     as any;
+--    	       Vertex    as any;
+--	       GIterator as GraphIterator  (Graph,Vertex))
+--	       SSCIterator as  SortedStrgCmptsFromIterator
+
+    ---Purposes: This     generic    class        implements       the
+    --           SortedStrgCptsFromIterator  with all  vertices of <G>
+    --           reached by the Tool GIterator.
+     
+raises NoMoreObject from Standard,
+       NoSuchObject from Standard
+    
+is
+
+
+    Create 
+    returns SortedStrgCmptsIterator from GraphTools;
+	---Purpose: Create an empty algorithm.
+    
+    Create (G : Graph) 	
+    	---Purpose: Create the   algorithm setting each vertex  of <G>
+	--          reached by  GIterator tool, as initial conditions.
+	--          Use Perform   method before visting  the result of
+	--          the algorithm.
+    returns SortedStrgCmptsIterator from GraphTools;
+    
+    FromGraph (me : in out; G : Graph);	
+    	---Purpose: Add each vertex of <G>  reached by GIterator  tool
+	--          as   initial  conditions.   Use  Perform  method
+	--          before   visiting the  result  of   the algorithm.
+        ---Level: Public 
+    
+    FromVertex (me : in out; V : Vertex);	
+    	---Purpose: Add  <V>  as  initial  condition.  This method  is
+	--          cumulative.  Use Perform method before visting the
+	--          result of the algorithm.  
+	---Level: Public
+
+    Reset (me : in out);	
+    	---Purpose: Reset the algorithm.  It may   be reused with  new
+    	--          initial conditions.  
+        ---Level: Public
+
+    Perform (me : in out; G : Graph);
+       ---Purpose: Peform the  algorithm  in  <G> from initial  setted
+       --          conditions.  
+       ---Level: Public
+    
+    More(me) returns Boolean from Standard;
+        ---Purpose: returns  True   if  there are   others  strong
+        --          components.
+       ---Level: Public
+
+    Next(me : in out) 
+        ---Purpose: Set the iterator to the next strong component.
+       ---Level: Public
+    raises NoMoreObject from Standard;
+
+    NbVertices (me) returns Integer from Standard
+	---Purpose: Returns number  of vertices of  the current Strong
+	--          Components.
+       ---Level: Public
+    raises NoSuchObject from Standard;
+
+    Value(me; I : Integer from Standard) 
+    returns any Vertex
+	---Purpose: returns  the vertex of  index <I> of  the  current
+	--          Strong Component.
+	---C++: return const &
+       ---Level: Public
+    raises NoSuchObject from Standard;
+
+fields
+
+    myIterator : SSCIterator;
+    
+end SortedStrgCmptsIterator;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

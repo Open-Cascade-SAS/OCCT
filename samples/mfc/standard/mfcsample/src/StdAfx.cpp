@@ -1,0 +1,2 @@
+#include "..\Common\stdafx.h"
+

@@ -1,0 +1,91 @@
+-- File:	PCDM_RetrievalDriver.cdl
+-- Created:	Thu Aug  7 13:56:49 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class RetrievalDriver from PCDM
+inherits Reader from PCDM
+
+
+uses
+    Document from PCDM,  
+    Document from CDM,  
+    ExtendedString from TCollection,  
+    SequenceOfExtendedString from TColStd, 
+    AsciiString from TCollection, 
+    SequenceOfReference from PCDM, 
+    Schema from Storage, 
+    MessageDriver from CDM,
+    Application from CDM
+
+raises NoSuchObject from Standard,  DriverError from PCDM
+
+
+is
+
+    Read(me: mutable; aFileName: ExtendedString from TCollection; 
+                      aNewDocument: mutable Document from CDM;
+		      anApplication: Application from CDM)
+    raises DriverError from PCDM
+    ---Purpose:  Warning -  raises DriverError if an error occurs during inside the
+    --          Make method.
+    is redefined virtual;
+    ---Purpose: retrieves the content of the file into a new Document.
+    --          
+    --          by  default  Read will  use the Schema method to read the file
+    --          into a persistent document. and the Make   method to build a
+    --          transient document.
+    --          
+
+    Make(me : mutable; aPCDM: Document from PCDM; aNewDocument: mutable Document from CDM)
+    raises DriverError from PCDM
+    is deferred;
+
+    SchemaName(me) returns ExtendedString from TCollection
+    is deferred;
+    
+    
+    LoadExtensions(me: mutable; aSchema: Schema from Storage; Extensions: SequenceOfExtendedString from TColStd; theMsgDriver: MessageDriver from CDM)
+    is virtual;
+    
+    ---Category: private methods.
+
+    References(myclass; aFileName: ExtendedString from TCollection; theReferences: out SequenceOfReference from PCDM; theMsgDriver: MessageDriver from CDM)
+    is private;
+    
+    Extensions(myclass; aFileName: ExtendedString from TCollection; theExtensions: in out  SequenceOfExtendedString from TColStd; theMsgDriver: MessageDriver from CDM)
+    is private;
+
+    UserInfo(myclass; aFileName: ExtendedString from TCollection; Start, End: AsciiString from TCollection; theUserInfo:in  out SequenceOfExtendedString from TColStd;  theMsgDriver: MessageDriver from CDM)
+    is private;
+
+    RaiseIfUnknownTypes(myclass; aSchema: Schema from Storage; aFileName: ExtendedString from TCollection);
+    
+    DocumentVersion(myclass; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard;
+
+    ReferenceCounter(myclass; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard;
+    
+    SetFormat (me : mutable; aformat : ExtendedString from TCollection);
+
+    GetFormat (me)
+    returns ExtendedString from TCollection;
+    
+    --friends Init from class ReferenceIterator from PCDM(me: mutable;aMetaData: MetaData from CDM)
+ 
+    
+fields
+
+    myFormat : ExtendedString from TCollection;
+
+
+friends 
+
+    Init from class ReferenceIterator from PCDM(me: mutable;aMetaData: MetaData from CDM)
+    
+    
+end RetrievalDriver from PCDM;
+

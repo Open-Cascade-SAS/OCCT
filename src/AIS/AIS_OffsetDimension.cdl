@@ -1,0 +1,118 @@
+-- File:	AIS_OffsetDimension.cdl
+-- Created:	Tue Mar  4 09:33:10 1997
+-- Author:	Jean-Pierre COMBE
+--		<jpr@chariox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class OffsetDimension from AIS inherits Relation from AIS
+
+	---Purpose: A framework to display dimensions of offsets.
+    	-- The relation between the offset and the basis shape
+    	-- is indicated. This relation is displayed with arrows and
+    	-- text. The text gives the dsitance between the offset
+    	-- and the basis shape.
+        
+uses
+     Shape                 from TopoDS,
+     Presentation          from Prs3d,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager3d from PrsMgr,
+     PresentationManager2d from PrsMgr,
+     Selection             from SelectMgr,
+     GraphicObject         from Graphic2d,
+     Dir                   from gp,
+     Pnt                   from gp,
+     Trsf                  from gp,
+     KindOfDimension       from AIS,
+     ExtendedString        from TCollection     
+     
+is
+    Create (FistShape, SecondShape : Shape          from TopoDS;
+	    aVal                   : Real           from Standard;
+	    aText                  : ExtendedString from TCollection)
+    returns mutable OffsetDimension from AIS;
+    	---Purpose: Constructs the offset display object defined by the
+    	-- first shape aFShape, the second shape aSShape, the
+    	-- dimension aVal, and the text aText.    
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined private;
+
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+
+    KindOfDimension(me)
+   	---Purpose:
+    	-- Indicates that the dimension we are concerned with is an offset.
+        ---C++: inline
+    returns KindOfDimension from AIS 
+    is redefined;
+    
+    IsMovable(me) 
+       ---C++: inline       
+       ---Purpose: Returns true if the offset datum is movable. 
+            returns Boolean from Standard 
+    is redefined;    
+    
+    SetRelativePos (me:mutable; aTrsf: Trsf from gp);
+        ---C++: inline
+    	---Purpose: Sets a transformation aTrsf for presentation and
+    	-- selection to a relative position.
+
+    ComputeTwoFacesOffset(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d;
+    	    	    	  aTrsf         : Trsf from gp)
+    is private;
+    
+    ComputeTwoAxesOffset(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d;
+    	    	    	  aTrsf         : Trsf from gp)
+    is private;
+
+    ComputeAxeFaceOffset(me: mutable;
+    	    	  	  aPresentation : mutable Presentation from Prs3d;
+    	    	    	  aTrsf         : Trsf from gp)
+    is private;
+
+fields
+
+    myFAttach     : Pnt  from gp;
+    mySAttach     : Pnt  from gp;
+    myDirAttach   : Dir  from gp;
+    myDirAttach2  : Dir  from gp;
+    myRelativePos : Trsf from gp;
+
+end OffsetDimension;

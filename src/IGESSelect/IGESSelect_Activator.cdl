@@ -1,0 +1,27 @@
+-- File:	IGESSelect_Activator.cdl
+-- Created:	Fri Jun  3 09:34:52 1994
+-- Author:	Christian CAILLET
+--		<cky@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Activator  from IGESSelect  inherits Activator  from IFSelect
+
+    ---Purpose : Performs Actions specific to IGESSelect, i.e. creation of
+    --           IGES Selections and Dispatches, plus dumping specific to IGES
+
+uses CString, SessionPilot, ReturnStatus
+
+is
+
+    Create returns mutable Activator from IGESSelect;
+
+
+    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    	returns ReturnStatus;
+    ---Purpose : Executes a Command Line for IGESSelect
+
+    Help (me; number : Integer) returns CString;
+    ---Purpose : Sends a short help message for IGESSelect commands
+
+end Activator;

@@ -1,0 +1,166 @@
+-- File:	SectionPoint.cdl
+-- Created:	Tue Jun 18 10:08:56 1991
+-- Author:	Didier PIFFAULT
+--		<dpf@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class SectionPoint from Intf
+
+	---Purpose: Describes an intersection  point between  polygons  and
+	--          polyedra.
+
+uses    Boolean from Standard,
+    	Integer from Standard,
+    	Real from Standard,
+    	Pnt from gp,
+    	Pnt2d from gp,
+    	PIType from Intf
+
+is
+
+-- User Interface :
+
+    Pnt            (me)
+    	    	    returns Pnt from gp is static;
+    ---Purpose: Returns the location of the SectionPoint.
+    ---C++: return const &
+
+
+    ParamOnFirst   (me)
+    	    	    returns Real from Standard is static;
+    ---Purpose: Returns the cumulated  Parameter of the SectionPoint on the
+    --          first element.
+    --          
+    ---C++: inline
+
+    ParamOnSecond  (me)
+    	    	    returns Real from Standard is static;
+    ---Purpose: Returns the cumulated Parameter of the section point on the
+    --          second element.
+    --          
+    ---C++: inline
+
+    TypeOnFirst   (me)
+    	    	    returns PIType is static;
+    ---Purpose: Returns the type of the section point on the first element.
+    --          
+    ---C++: inline
+
+    TypeOnSecond  (me)
+    	    	    returns PIType is static;
+    ---Purpose: Returns  the  type  of the  section  point  on  the  second
+    --          element.
+    --          
+    ---C++: inline
+
+    InfoFirst      (me;
+    	    	    Dim      : out PIType;
+		    Add1     : out Integer;
+		    Add2     : out Integer;
+    	    	    Param    : out Real) is static;
+    InfoFirst      (me;
+    	    	    Dim      : out PIType;
+		    Addr     : out Integer;
+    	    	    Param    : out Real) is static;
+    ---Purpose: Gives the   datas  about   the    first  argument of    the
+    --          Interference.
+
+
+
+    InfoSecond     (me;
+    	    	    Dim      : out PIType;
+		    Add1     : out Integer;
+		    Add2     : out Integer;
+    	    	    Param    : out Real) is static;
+    InfoSecond     (me;
+    	    	    Dim      : out PIType;
+		    Addr     : out Integer;
+    	    	    Param    : out Real) is static;
+    ---Purpose: Gives the   datas  about   the    second  argument of    the
+    --          Interference.
+
+
+    Incidence   (me)
+    	    	    returns Real is static;
+    ---Purpose: Gives the incidence at  this  section point. The  incidence
+    --          between the two triangles is given by the cosine.  The best
+    --          incidence is 0. (PI/2).  The worst is 1. (null angle).
+
+
+    IsEqual        (me;
+    	    	    Other    : in SectionPoint from Intf)  -- in like me);
+    	    	    returns Boolean is static;
+    ---Purpose: Returns True if the two SectionPoint have the  same logical
+    --          informations.
+    --          
+    ---C++: alias operator==
+    ---C++: inline
+
+    IsOnSameEdge   (me;
+    	    	    Other    : in SectionPoint from Intf)  -- in like me);
+    	    	    returns Boolean is static;
+    ---Purpose: Returns True if the two SectionPoints are  on the  same edge
+    --          of the first or the second element.
+
+
+-- Constructor :
+
+
+    Create;
+    
+    Create         (Where    : in Pnt from gp;
+    	    	    DimeO    : in PIType;
+    	    	    AddrO1   : in Integer;
+    	    	    AddrO2   : in Integer;
+		    ParamO   : in Real;
+    	    	    DimeT    : in PIType;
+    	    	    AddrT1   : in Integer;
+    	    	    AddrT2   : in Integer;
+		    ParamT   : in Real;
+    	    	    Incid    : in Real)
+    	    	    returns SectionPoint;
+    ---Purpose: Builds  a  SectionPoint    with the  respective  dimensions
+    --          (vertex edge or face)  of the concerned arguments and their
+    --          addresses in the Topological structure.
+
+    Create         (Where    : in Pnt2d from gp;
+    	    	    DimeO    : in PIType;
+    	    	    AddrO1   : in Integer;
+		    ParamO   : in Real;
+    	    	    DimeT    : in PIType;
+    	    	    AddrT1   : in Integer;
+		    ParamT   : in Real;
+    	    	    Incid    : in Real)
+    	    	    returns SectionPoint;
+    ---Purpose: Builds  a  SectionPoint 2d   with the respective dimensions
+    --          (vertex or  edge)  of  the concerned arguments   and  their
+    --          addresses in the Topological structure.
+
+
+    Merge          (me       : in out;
+    	    	    Other    : in out SectionPoint from Intf) 
+    	    	    	    -- in out like me
+    	    	    is static;
+    ---Purpose: Merges two SectionPoints.
+
+
+-- Test needings :
+
+    Dump           (me;
+    	    	    Indent : in Integer) is static;
+
+fields
+
+    myPnt     : Pnt from gp;
+    DimenObje : PIType from Intf;
+    IndexO1   : Integer from Standard;
+    IndexO2   : Integer from Standard;
+    ParamObje : Real from Standard;
+    DimenTool : PIType from Intf;
+    IndexT1   : Integer from Standard;
+    IndexT2   : Integer from Standard;
+    ParamTool : Real from Standard;
+    Incide    : Real from Standard;
+
+end SectionPoint;

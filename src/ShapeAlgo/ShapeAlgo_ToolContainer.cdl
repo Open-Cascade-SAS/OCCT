@@ -1,0 +1,28 @@
+-- File:	ShapeAlgo_ToolContainer.cdl
+-- Created:	Mon Feb  7 12:24:50 2000
+-- Author:	data exchange team
+--		<det@nnov>
+---Copyright:	 Matra Datavision 2000
+
+
+class ToolContainer from ShapeAlgo inherits TShared from MMgt
+
+    ---Purpose: 
+
+uses
+
+    Shape       from ShapeFix,
+    EdgeProjAux from ShapeFix
+    
+is
+
+    Create returns mutable ToolContainer from ShapeAlgo;
+    	---Purpose: Empty constructor
+	
+    FixShape (me) returns Shape from ShapeFix is virtual;
+    	---Purpose: Returns ShapeFix_Shape
+	
+    EdgeProjAux (me) returns EdgeProjAux from ShapeFix is virtual;
+    	---Purpose: Returns ShapeFix_EdgeProjAux
+	
+end ToolContainer;

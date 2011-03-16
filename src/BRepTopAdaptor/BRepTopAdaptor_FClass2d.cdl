@@ -1,0 +1,68 @@
+-- File:	BRepTopAdaptor_FClass2d.cdl
+-- Created:	Wed Mar 22 09:29:42 1995
+-- Author:	Laurent BUCHARD
+--		<lbr@mastox>
+---Copyright:	 Matra Datavision 1995
+
+
+class FClass2d from BRepTopAdaptor
+
+uses  
+    Pnt2d             from gp,
+    Face              from TopoDS,
+    State             from TopAbs,
+    SequenceOfInteger from TColStd,
+    SeqOfPtr          from BRepTopAdaptor    
+
+is 
+
+    Create(F: Face from TopoDS; Tol: Real from Standard)
+    returns FClass2d from BRepTopAdaptor;
+
+    
+    PerformInfinitePoint(me) 
+    returns State from TopAbs;
+    
+    Perform(me; Puv: Pnt2d from gp; RecadreOnPeriodic: Boolean from Standard  =  Standard_True) 
+    returns State from TopAbs;
+    
+    Destroy(me: in out);
+    	---C++: alias ~
+    
+
+    Copy(me; Other: FClass2d from BRepTopAdaptor)
+    returns FClass2d from BRepTopAdaptor;
+    	---C++: return const &
+      	---C++: alias operator=
+     --Purpose *** Raise if called ***
+
+
+    TestOnRestriction(me; Puv: Pnt2d from gp; 
+                          Tol: Real from Standard;
+                          RecadreOnPeriodic: Boolean from Standard  =  Standard_True) 
+    returns State from TopAbs;
+    ---Purpose: Test a point with +- an offset (Tol) and returns
+    --          On if some points are OUT an some are IN
+    --          (Caution: Internal use . see the code for more details)
+
+
+
+
+fields 
+
+    TabClass    : SeqOfPtr          from BRepTopAdaptor;
+    TabOrien    : SequenceOfInteger from TColStd;
+    Toluv       : Real              from Standard;
+    Face        : Face              from TopoDS;
+    U1          : Real              from Standard;
+    V1          : Real              from Standard;    
+    U2          : Real              from Standard;
+    V2          : Real              from Standard;
+    
+    Umin        : Real              from Standard;  
+    Umax        : Real              from Standard;
+    Vmin        : Real              from Standard;  
+    Vmax        : Real              from Standard;
+
+
+end FClass2d from BRepTopAdaptor;

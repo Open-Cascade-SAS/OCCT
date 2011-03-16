@@ -1,0 +1,45 @@
+-- File:	BOPTest.cdl
+-- Created:	Thu May 18 10:40:44 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+package BOPTest 
+
+	---Purpose: 
+	--          
+uses
+    Draw,
+    TCollection, 
+    gp, 
+    TopoDS,
+    DBRep
+is
+    class  DrawableShape; 
+	 
+    AllCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines all commands. 
+	 
+    MTestCommands(DI : in out Interpretor from Draw);	    		 
+
+    TSTCommands  (DI : in out Interpretor from Draw);	
+
+    EFCommands  (DI : in out Interpretor from Draw);	
+
+    LowCommands (DI : in out Interpretor from Draw);	
+
+    BOPCommands (DI : in out Interpretor from Draw);	
+
+    WSplitCommands(DI : in out Interpretor from Draw);	
+
+    CurveCommands(DI : in out Interpretor from Draw);	
+
+    TolerCommands(DI : in out Interpretor from Draw);	
+
+    CheckCommands(DI : in out Interpretor from Draw);	 
+    
+    Factory (theDI : in out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands for Geometry & Topology. Used for plugin.
+         
+end BOPTest; 
+

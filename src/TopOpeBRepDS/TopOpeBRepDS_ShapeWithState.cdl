@@ -1,0 +1,44 @@
+-- File:	TopOpeBRepDS_ShapeWithState.cdl
+-- Created:	Mon Sep 20 11:28:24 1999
+-- Author:	Peter KURNEV
+--		<pkv@kivox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeWithState from TopOpeBRepDS 
+
+	---Purpose: 
+
+uses
+    Shape from TopoDS, 
+    ListOfShape  from  TopTools,
+    State from TopAbs 
+
+
+is
+    Create returns  ShapeWithState from TopOpeBRepDS ;
+     
+    Part  (me;  aState: State from TopAbs)  returns ListOfShape  from  TopTools ;  
+    ---C++:  return  const& 
+     
+    AddPart (me:out;  aShape:Shape  from  TopoDS;  aState: State from TopAbs);  
+
+    AddParts (me:out; aListOfShape:ListOfShape  from  TopTools;  aState: State from TopAbs);  
+     
+    SetState  (me:out;  aState: State from TopAbs);  
+    
+    State  (me)  returns  State from TopAbs; 
+     
+    SetIsSplitted  (me:out;  anIsSplitted:Boolean  from  Standard); 
+     
+    IsSplitted  (me)  returns  Boolean  from  Standard; 
+    
+fields
+  
+    myPartIn   :  ListOfShape  from  TopTools; 
+    myPartOut  :  ListOfShape  from  TopTools; 
+    myPartOn   :  ListOfShape  from  TopTools; 
+    myState:  State from TopAbs ; 
+    myIsSplitted:  Boolean  from  Standard; 
+     
+end ShapeWithState;

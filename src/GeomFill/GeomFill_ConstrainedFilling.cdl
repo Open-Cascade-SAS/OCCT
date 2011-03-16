@@ -1,0 +1,253 @@
+-- File:	GeomFill_ConstrainedFilling.cdl
+-- Created:	Fri Oct 13 17:38:33 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ConstrainedFilling from GeomFill
+
+	---Purpose: An algorithm for constructing a BSpline surface filled
+    	-- from a series of boundaries which serve as path
+    	-- constraints and optionally, as tangency constraints.
+    	-- The algorithm accepts three or four curves as the
+    	-- boundaries of the target surface.
+    	-- A ConstrainedFilling object provides a framework for:
+    	-- -   defining the boundaries of the surface
+    	-- -   implementing the construction algorithm
+    	-- -   consulting the result.
+    	-- Warning
+    	-- This surface filling algorithm is specifically designed to
+    	-- be used in connection with fillets. Satisfactory results
+    	-- cannot be guaranteed for other uses.
+
+uses
+
+    HArray1OfInteger from TColStd,
+    HArray1OfReal    from TColStd,
+    Pnt              from gp,
+    Vec              from gp,
+    HArray1OfPnt     from TColgp,
+    HArray2OfPnt     from TColgp,
+    CornerState      from GeomFill,
+    Boundary         from GeomFill,
+    BoundWithSurf    from GeomFill,
+    CoonsAlgPatch    from GeomFill,
+    TgtField         from GeomFill,
+    BSplineSurface   from Geom,
+    Function         from Law
+
+is
+
+    Create (MaxDeg, MaxSeg : Integer from Standard)
+    returns ConstrainedFilling from GeomFill;
+    	---Purpose:
+    	-- Constructs an empty framework for filling a surface from boundaries.
+    	-- The boundaries of the surface will be defined, and the
+    	-- surface will be built by using the function Init.
+    	-- The surface will respect the following constraints:
+    	-- -   its degree will not be greater than MaxDeg
+    	-- -   the maximum number of segments MaxSeg which
+    	--   BSpline surfaces can have.   
+ 
+
+    Init(me           : in out;
+    	 B1,B2,B3     : Boundary from GeomFill;
+         NoCheck      : Boolean from Standard = Standard_False);
+
+    Init(me           : in out;
+    	 B1,B2,B3,B4  : Boundary from GeomFill;
+         NoCheck      : Boolean from Standard = Standard_False);
+    	---Purpose: Constructs a BSpline surface filled from the series of
+    	-- boundaries B1, B2, B3 and, if need be, B4, which serve:
+    	-- -   as path constraints
+    	-- -   and optionally, as tangency constraints if they are
+    	--   GeomFill_BoundWithSurf curves.
+    	-- The boundaries may be given in any order: they are
+    	-- classified and if necessary, reversed and reparameterized.
+    	-- The surface will also respect the following constraints:
+    	-- -   its degree will not be greater than the maximum
+    	--   degree defined at the time of construction of this framework, and
+    	-- -   the maximum number of segments MaxSeg which BSpline surfaces can have	 
+    
+
+    SetDomain(me : in out;
+    	      l  : Real from Standard;
+    	      B  : BoundWithSurf from GeomFill);
+    ---Purpose: Allows to modify domain on witch the blending function
+    --          associated to  the constrained boundary B  will propag
+    --          the  influence   of the  field   of  tangency.  Can be
+    --          usefull to  reduce  influence of boundaries  on whitch
+    --          the Coons compatibility  conditions are not respected.
+    --          l is a  relative value of  the parametric range of  B.
+    --          Default value for l is 1 (used in Init).
+    --  Warning: Must be called after  Init with a constrained boundary
+    --          used in the call to Init.
+    
+    ReBuild(me : in out)
+    ---Purpose: Computes the  new poles  of  the surface using the  new
+    --          blending  functions set by several calls to SetDomain.
+    is static;
+
+    --------------------------------------------------------------------
+
+    Boundary(me; I : Integer from Standard) 
+    returns Boundary from GeomFill;
+    ---Purpose: Returns the bound of index i after sort.
+
+    Surface(me) returns BSplineSurface from Geom;
+    ---Purpose: Returns the BSpline surface after computation of the fill by this framework.
+
+    --------------------------------------------------------------------
+
+
+    --------------------------------------------------------------------
+    -- Internal use computation functions 
+    --------------------------------------------------------------------
+
+    Build(me : in out)
+    ---Purpose: Performs the approximation an compute  the poles of the
+    --          surface.
+    is static private;
+    
+    PerformApprox(me : in out)
+    ---Purpose: Performs  the  parallel approximation  on two  oppsite
+    --          bounds
+    is static private;
+    
+    MatchKnots(me : in out)
+    ---Purpose: matches  the nodal vectors  of the  blending functions
+    --          and the results  of the approx   to allow the  surface
+    --          computation.
+    is static private;
+    
+    PerformS0(me : in out)
+    ---Purpose: performs the poles of the partial construction S0.
+    is static private;
+    
+    PerformS1(me : in out)
+    ---Purpose: performs the poles of the partial construction S1.
+    is static private;
+    
+    PerformSurface(me : in out)
+    ---Purpose: performs  the poles of  the  surface using the partial
+    --          constructions S0 and S1.
+    is static private;
+    
+    CheckTgte(me : in out; I : Integer from Standard)
+    ---Purpose: Checks if the field of tangency doesn t twist along the 
+    --          boundary.
+    returns Boolean from Standard
+    is static private;
+
+    MinTgte(me : in out; I : Integer from Standard)
+    ---Purpose: Evaluates  the min magnitude  of  the field of tangency
+    --          along bound  I  to allow a   simple evaluation of  the
+    --          tolerance needed for the approximation of the field of
+    --          tangency.
+    is static private;
+
+    Eval(me;
+         W      : Real         from Standard ;
+    	 Ord    : Integer      from Standard ;
+	 Result : in out  Real from Standard)
+    ---Purpose: Internal use for Advmath approximation call. 
+    returns Integer from Standard;
+    
+    --------------------------------------------------------------------
+    -- Internal use functions for debug :
+    -- The graphic traces are compiled only with -D DEB option,
+    -- can be used only in Draw Appli context. 
+    --------------------------------------------------------------------
+
+    CheckCoonsAlgPatch(me : in out; I : Integer from Standard)
+    ---Purpose: Computes the fields of tangents on 30 points along the
+    --          bound  I, these  are  not the  constraint tangents but
+    --          gives an idea of the coonsAlgPatch regularity.
+    is static;
+
+    CheckTgteField(me : in out; I : Integer from Standard)
+    ---Purpose: Computes  the fields  of tangents  and  normals on  30
+    --          points along the bound  I, draw them, and computes the
+    --          max dot product that must be near than 0.
+    is static;
+
+    CheckApprox(me : in out; I : Integer from Standard)
+    ---Purpose: Computes  values  and normals  along  the bound  I and
+    --          compare  them to the  approx  result curves (bound and
+    --          tgte field) , draw  the normals and tangents.
+    is static;
+
+    
+    CheckResult(me : in out; I : Integer from Standard)
+    ---Purpose: Computes values and normals along the  bound I on both
+    --          constraint  surface    and result  surface,  draw  the
+    --          normals, and  computes the max distance between values
+    --          and the max angle  between normals.
+    is static;
+
+    
+fields
+
+    -- data for approximation.
+    degmax : Integer from Standard;
+    segmax : Integer from Standard;
+
+    -- the algorithmic patch.
+    ptch : CoonsAlgPatch from GeomFill;
+
+    -- the algorithmic tangents fields
+    tgalg :  TgtField from GeomFill[4];
+
+    -- the evaluation  of the min  of the algorithmic  tangents fields
+    -- magnitude.
+    mig : Real from Standard [4];
+    
+    -- data about corners conditionning the existence of solution.
+    stcor : CornerState from GeomFill [4];
+    
+    -- the derivatives on corners.
+    v        : Vec from gp [4];
+
+    -- result curves of aproximation.
+    appdone   : Boolean from Standard;
+    tolapp3d  : Real from Standard[4];
+    tolappang : Real from Standard[4];
+    degree    : Integer from Standard [2];
+    curvpol   : HArray1OfPnt from TColgp [4];
+    tgtepol   : HArray1OfPnt from TColgp [4];
+    mults     : HArray1OfInteger from TColStd [2];
+    knots     : HArray1OfReal from TColStd [2];
+
+    -- the blending functions for  the patial result S0 surface  (only
+    -- bounds)
+    ab  : HArray1OfReal from TColStd [4];
+
+    -- the  blending  functions for  the   patial  result  S1  surface
+    -- (including   tangency constraints)
+    pq  : HArray1OfReal from TColStd [4];
+    dom : Real from Standard [4];
+
+    -- new arrays computed in  order  to match the blending  functions
+    -- nodal vectors and the  approximated curves nodal vectors. these
+    -- data are recomputed at each call to ReBuild method, without any
+    -- new perform of the approx.
+    ncpol : HArray1OfPnt from TColgp [4];
+    ntpol : HArray1OfPnt from TColgp [4];
+    nm    : HArray1OfInteger from TColStd [2];
+    nk    : HArray1OfReal from TColStd [2];
+
+    -- nombre de courbes a approximer pour chaque bord ctr[i]
+    ibound: Integer [2];
+    ctr   : Integer [2]; 
+    nbd3  : Integer;
+
+    -- partial  results of surface poles  computed by blending curvpol
+    -- an tgtepol.
+    S0 : HArray2OfPnt from TColgp;
+    S1 : HArray2OfPnt from TColgp;
+
+    -- the result surface.
+    surf : BSplineSurface from Geom;
+    
+end ConstrainedFilling;

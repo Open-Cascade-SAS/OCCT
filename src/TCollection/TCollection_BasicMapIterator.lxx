@@ -1,0 +1,18 @@
+// File:	TCollection_BasicMapIterator.lxx
+// Created:	Fri Feb 26 15:48:30 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_BasicMapIterator::More() const
+{
+  return myNode != 0L;
+}
+
+
+

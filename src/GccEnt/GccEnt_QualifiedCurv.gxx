@@ -1,0 +1,38 @@
+//File GccEnt_QualifiedCurv.gxx, REG 19/08/91
+
+TheCurve GccEnt_QualifiedCurv::
+   Qualified () const { return TheQualified; }
+
+GccEnt_Position GccEnt_QualifiedCurv::
+   Qualifier () const { return TheQualifier; }
+
+Standard_Boolean GccEnt_QualifiedCurv::
+   IsUnqualified () const {
+     if (TheQualifier == GccEnt_unqualified ) { return Standard_True; }
+     else { return Standard_False; }
+   }
+
+Standard_Boolean GccEnt_QualifiedCurv::
+   IsEnclosing () const {
+     if (TheQualifier == GccEnt_enclosing) { return Standard_True; }
+     else { return Standard_False; }
+   }
+
+Standard_Boolean GccEnt_QualifiedCurv::
+   IsEnclosed () const {
+     if (TheQualifier == GccEnt_enclosed) { return Standard_True; }
+     else { return Standard_False; }
+   }
+
+Standard_Boolean GccEnt_QualifiedCurv::
+   IsOutside () const {
+     if (TheQualifier == GccEnt_outside) { return Standard_True; }
+     else { return Standard_False; }
+   }
+
+GccEnt_QualifiedCurv::
+   GccEnt_QualifiedCurv (const TheCurve&          Curve,
+			 const GccEnt_Position Qualifier) {
+   TheQualified = Curve;
+   TheQualifier = Qualifier;
+ }

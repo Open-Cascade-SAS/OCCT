@@ -1,0 +1,75 @@
+-- File:        AlienImage_GIFAlienData.cdl
+-- Created:     20/10/98
+-- Author:      DCB
+---Copyright:   Matravision 1998
+
+private class GIFAlienData from AlienImage inherits AlienImageData from AlienImage
+
+uses
+  File                    from OSD,
+  AsciiString             from TCollection,
+  PseudoColorImage        from Image,
+  ColorImage              from Image,
+  Image                   from Image
+
+raises
+  OutOfRange      from Standard,
+  TypeMismatch    from Standard
+
+is
+  Create returns mutable GIFAlienData from AlienImage ;
+
+  Clear( me : in out mutable );
+  ---Level: Public
+  ---Purpose: Frees memory allocated by GIFAlienData
+  ---C++: alias ~
+
+  Read ( me : in out mutable ; afile : in out File from OSD )
+  returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Read content of a  GIFAlienData object from a file
+  --          Returns True if file is a GIF file .
+
+  Write( me : in immutable; afile : in out File from OSD )
+  returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Write content of a  GIFAlienData object to a file
+
+  ToImage( me : in  immutable) 
+  returns mutable Image from Image 
+  raises TypeMismatch from Standard ;
+  ---Level: Public
+  ---Purpose : convert a GIFAlienData object to a Image object.
+
+  FromImage( me : in out mutable ; anImage : in Image from Image )
+  raises TypeMismatch from Standard ;
+  ---Level: Public
+  ---Purpose : convert a Image object to a GIFAlienData object.
+
+  ------------------------------------------------------
+  --- Private methods
+  ------------------------------------------------------
+  FromPseudoColorImage (me      : in out mutable; 
+                        anImage : in PseudoColorImage from Image )
+  is private;
+  ---Level: Internal
+  ---Purpose : convert a Image object to a GIFAlienData object.
+
+  FromColorImage (me      : in out mutable;
+                  anImage : in ColorImage from Image)
+  is private;
+  ---Level: Internal
+  ---Purpose : convert a Image object to a GIFAlienData object.
+
+
+fields
+  myRedColors        : Address from Standard;
+  myGreenColors      : Address from Standard;
+  myBlueColors       : Address from Standard;
+
+  myData             : Address from Standard;
+  myWidth            : Integer from Standard;
+  myHeight           : Integer from Standard;
+
+end;
+ 

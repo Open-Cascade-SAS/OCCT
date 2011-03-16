@@ -1,0 +1,113 @@
+-- File:	MAT2d.cdl
+-- Created:	Tue Jul  6 12:14:54 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package MAT2d 
+
+	---Purpose : Package of computation of Bisector locus on a
+        --           Set of geometrys from Geom2d.
+
+uses
+
+    MMgt,
+    gp,
+    Geom2d,
+    TColStd,
+    TCollection,
+    TColgp,
+    TColGeom2d,
+    MAT,
+    Bisector
+
+is
+
+    deferred class SketchExplorer;
+    	---Purpose: SletchExplorer contains an iterator on a set of geometrys 
+	--          from Geom2d. It's use by BisectingLocus.
+     
+    generic class BisectingLocus;
+     	---Purpose: Constuction of the map of the bisector locus on a
+    	--          set of geometrys from Geom2d.
+    
+    class Tool2d;
+    	---Purpose: Tool2d contains  the geometrys of  the map. Tool2d
+   	--          contains the set  of the geometric's methode  used for 
+        --          the map's  computation.
+
+    class Mat2d instantiates Mat from MAT (Tool2d);
+
+    class Connexion;
+    	---Purpose: a Connexion links two lines.  
+
+    class MiniPath;
+        ---Purpose: MiniPath computes one minimum path  to link all the
+        --          lines of a set. 
+				
+    class Circuit;
+    	---Purpose: EquiCircuit gives a Circuit passing by all the lines
+    	--          in a set and all the connexions of the minipath associated.
+	    
+    class CutCurve;   
+    	---Purpose: Cuts a curve at the extremas of curvature
+	--          and at the inflections. Constructs a trimmed
+	--          Curve for each interval.
+
+    class SequenceOfConnexion instantiates Sequence  from TCollection
+    	    	    	    	    	    	     (Connexion from  MAT2d); 
+
+    class DataMapOfIntegerSequenceOfConnexion instantiates DataMap 
+                   from TCollection (Integer              from Standard,
+				     SequenceOfConnexion  from MAT2d,
+				     MapIntegerHasher     from TColStd);
+                                         
+    class Array2OfConnexion  instantiates Array2 from TCollection
+   	    	    	    	    	    	     (Connexion from  MAT2d); 
+               
+
+    class DataMapOfIntegerBisec  instantiates DataMap from TCollection 
+    	                                   (Integer          from Standard,
+					    Bisec            from Bisector,
+					    MapIntegerHasher from TColStd); 
+					    
+    class DataMapOfIntegerPnt2d  instantiates DataMap from TCollection 
+    	                                   (Integer          from Standard,
+					    Pnt2d            from gp,
+					    MapIntegerHasher from TColStd);  
+	    
+    class DataMapOfIntegerVec2d  instantiates DataMap from TCollection 
+    	                                   (Integer          from Standard,
+					    Vec2d            from gp,
+					    MapIntegerHasher from TColStd); 
+
+    class SequenceOfSequenceOfCurve  instantiates Sequence from TCollection 
+    	                                    (SequenceOfCurve from TColGeom2d); 
+					    
+    class SequenceOfSequenceOfGeometry instantiates Sequence from TCollection
+    	                                (SequenceOfGeometry from  TColGeom2d); 
+
+    class DataMapOfIntegerConnexion instantiates DataMap from TCollection 
+    	                                   (Integer          from Standard,
+					    Connexion        from MAT2d,
+					    MapIntegerHasher from TColStd);
+
+    class BiInt;
+	
+    class MapBiIntHasher;
+    
+    class DataMapOfBiIntSequenceOfInteger instantiates DataMap 
+         from TCollection (BiInt               from MAT2d,
+			   SequenceOfInteger   from TColStd,
+			   MapBiIntHasher      from MAT2d);
+        
+    class DataMapOfBiIntInteger instantiates DataMap 
+         from TCollection (BiInt               from MAT2d,
+			   Integer             from Standard,
+			   MapBiIntHasher      from MAT2d);
+end MAT2d;
+
+
+

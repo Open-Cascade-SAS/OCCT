@@ -1,0 +1,205 @@
+-- File:	MAT_TList.cdl
+-- Created:	Tue Jun 23 12:39:10 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class TList from MAT (Item as any)
+
+	---Purpose: 
+
+inherits
+
+    TShared
+    
+--uses
+
+--raises
+
+
+class TListNode from MAT 
+
+	---Purpose: 
+
+inherits
+
+    TShared
+    
+--uses
+
+--raises
+
+is
+
+    Create returns mutable TListNode from MAT;
+
+    ---C++: inline
+    
+    Create(anitem : Item) returns mutable TListNode from MAT;
+
+    ---C++: inline
+    
+    GetItem(me) returns any Item
+    
+    -- C++: return &
+    ---C++: inline
+    
+    is static;
+    
+    Next(me) returns mutable TListNode from MAT
+    
+    ---C++: inline
+
+    is static;
+    
+    Previous(me) returns mutable TListNode from MAT
+    
+    ---C++: inline
+
+    is static;
+    
+    SetItem(me : mutable ; anitem : any Item)
+    
+    ---C++: inline
+
+    is static;
+    
+    Next(me : mutable ; atlistnode : mutable TListNode from MAT)
+    
+    ---C++: inline
+
+    is static;
+    
+    Previous(me : mutable ; atlistnode : mutable TListNode from MAT)
+    
+    ---C++: inline
+
+    is static;
+    
+    Dummy(me)
+    
+    is static;
+    
+fields
+
+    thenext     : TListNode from MAT;
+    theprevious : TListNode from MAT;
+    theitem     : Item;
+
+end TListNode;
+
+is
+
+    Create returns mutable TList from MAT;
+    
+    First(me : mutable)
+    
+    is static;
+    
+    Last(me : mutable)
+    
+    is static;
+    
+    Init(me : mutable ; aniten : any Item)
+    
+    is static;
+    
+    Next(me : mutable)
+    
+    is static;
+    
+    Previous(me : mutable)
+    
+    is static;
+    
+    More(me) returns Boolean
+    
+    is static;
+    
+    Current(me) returns any Item
+    
+    is static;
+    
+    Current(me ; anitem : any Item)
+    
+    is static;
+    
+    FirstItem(me) returns any Item
+    
+    is static;
+    
+    LastItem(me) returns any Item
+    
+    is static;
+    
+    PreviousItem(me) returns any Item
+    
+    is static;
+    
+    NextItem(me) returns any Item
+    
+    is static;
+    
+    Number(me) returns Integer
+    
+    ---C++: inline
+    
+    is static;
+    
+    Index(me) returns Integer
+    
+    ---C++: inline
+    
+    is static;
+    
+    Brackets(me : mutable ; anindex : Integer) returns any Item
+    
+    -- C++: return &
+    ---C++: alias operator()
+    
+    is static;
+
+    Unlink(me : mutable)
+    
+    is static;
+    
+    LinkBefore(me : mutable ; anitem : any Item)
+    
+    is static;
+    
+    LinkAfter(me : mutable ; anitem : any Item)
+    
+    is static;
+    
+    FrontAdd(me : mutable ; anitem : any Item)
+    
+    is static;
+    
+    BackAdd(me : mutable ; anitem : any Item)
+    
+    is static;
+    
+    Permute(me : mutable)
+    
+    is static;
+    
+    Loop(me)
+    
+    is static;
+    
+    IsEmpty(me) returns Boolean
+    
+    is static;
+    
+    Dump(me : mutable ; ashift , alevel : Integer);
+    
+fields
+
+    thefirstnode     : TListNode from MAT;
+    thelastnode      : TListNode from MAT;
+    thecurrentnode   : TListNode from MAT;
+    thecurrentindex  : Integer;
+    thenumberofitems : Integer;
+
+end TList;

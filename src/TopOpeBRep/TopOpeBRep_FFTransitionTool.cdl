@@ -1,0 +1,60 @@
+-- File:	TopOpeBRep_FFTransitionTool.cdl
+-- Created:	Thu Oct 27 11:03:17 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class FFTransitionTool from TopOpeBRep
+
+
+uses
+
+    LineInter from TopOpeBRep,
+    VPointInter from TopOpeBRep,
+    Orientation from TopAbs,
+    Transition from TopOpeBRepDS,
+    Shape from TopoDS
+    
+is
+
+    ProcessLineTransition(myclass;
+    	                  P : VPointInter from TopOpeBRep;
+    	      	    	  Index : Integer from Standard;
+              	    	  EdgeOrientation : Orientation from TopAbs)
+    returns Transition from TopOpeBRepDS;
+
+    ProcessLineTransition(myclass;
+    	      	    	  P : VPointInter from TopOpeBRep;
+    	      	    	  L : LineInter from TopOpeBRep)
+    returns Transition from TopOpeBRepDS;
+
+    ProcessEdgeTransition(myclass;
+    	      	    	  P : VPointInter from TopOpeBRep;
+    	      	    	  Index : Integer from Standard; 
+              	    	  LineOrientation : Orientation from TopAbs)
+    returns Transition from TopOpeBRepDS;
+
+    ProcessFaceTransition(myclass;
+    	      	    	  L : LineInter from TopOpeBRep;
+    	      	    	  Index : Integer from Standard; 
+    	      	    	  FaceOrientation : Orientation from TopAbs)
+    returns Transition from TopOpeBRepDS;
+
+    ProcessEdgeONTransition(myclass;
+    	    	    	    VP : VPointInter from TopOpeBRep;
+			    Index : Integer;       -- index of face <F>
+			    R : Shape from TopoDS; -- edge "IntPatch_Restriction"
+			    E : Shape from TopoDS; -- edge supporting <VP>
+			    F : Shape from TopoDS) -- face <Index> containing E
+    ---Purpose: compute transition on "IntPatch_Restriction line" edge <R>
+    -- when crossing edge <E> of face <F> at point <VP>. 
+    -- VP is given on edge <E> of face <F> of index <Index> (1 or 2).
+    -- <VP> has been classified by FacesFiller as TopAbs_ON an edge <R>
+    -- of the other face than <F> of current (face/face) intersection.
+    -- Transition depends on the orientation of E in F.
+    -- This method should be provided by IntPatch_Line (NYI)
+    returns Transition from TopOpeBRepDS;
+
+    
+end FFTransitionTool from TopOpeBRep;

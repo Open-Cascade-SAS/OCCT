@@ -1,0 +1,56 @@
+-- File:	DsgPrs_XYZAxisPresentation.cdl
+-- Created:	Mon Feb 10 14:50:11 1997
+-- Author:	Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+--  SAV : OCC218 06/03/02 : Add(...) overloaded to take into account arrow & text
+--                          aspects.
+
+class XYZAxisPresentation from DsgPrs
+    	---Purpose: A framework for displaying the axes of an XYZ trihedron.
+uses
+
+    Presentation from Prs3d,
+    LineAspect   from Prs3d,
+    Pnt          from gp,
+    Dir          from gp,
+    ArrowAspect from Prs3d,
+    TextAspect from Prs3d
+
+is
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	anLineAspect : LineAspect from Prs3d;
+    	aDir         : Dir from gp;
+	aVal         : Real from Standard;
+	aText        : CString from Standard;
+    	aPfirst      : Pnt    from gp;
+    	aPlast       : Pnt    from gp);
+	 
+    	---Purpose: Draws each axis of a trihedron displayed in the
+    	-- presentation aPresentation and with lines shown by
+    	-- the values of aLineAspect. Each axis is defined by:
+    	-- -   the first and last points aPfirst and aPlast
+    	-- -   the direction aDir and
+    	-- -   the value aVal which provides a value for length.
+    	--  The value for length is provided so that the trihedron
+    	-- can vary in length relative to the scale of shape display.
+    	-- Each axis will be identified as X, Y, or Z by the text aText.
+
+
+    Add(myclass;
+    	aPresentation : Presentation from Prs3d;
+    	aLineAspect   : LineAspect from Prs3d;
+    	anArrowAspect : ArrowAspect from Prs3d;
+    	aTextAspect   : TextAspect from Prs3d;
+    	aDir          : Dir from gp;
+	aVal          : Real from Standard;
+	aText         : CString from Standard;
+    	aPfirst       : Pnt    from gp;
+    	aPlast        : Pnt    from gp);
+	 
+    	---Purpose: draws the presentation X ,Y ,Z axis
+
+end XYZAxisPresentation;

@@ -1,0 +1,59 @@
+-- File:	IGESDefs_ToolMacroDef.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolMacroDef  from IGESDefs
+
+    ---Purpose : Tool to work on a MacroDef. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses MacroDef from IGESDefs,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolMacroDef;
+    ---Purpose : Returns a ToolMacroDef, ready to work
+
+
+    ReadOwnParams (me; ent : mutable MacroDef;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : MacroDef;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : MacroDef;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a MacroDef <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : MacroDef) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : MacroDef;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : MacroDef; entto : mutable MacroDef;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : MacroDef;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolMacroDef;

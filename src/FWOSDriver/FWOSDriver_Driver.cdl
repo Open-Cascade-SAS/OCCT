@@ -1,0 +1,58 @@
+-- File:	FWOSDriver_Driver.cdl
+-- Created:	Wed Jan 22 16:22:48 1997
+-- Author:	Mister rmi
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Driver from FWOSDriver  inherits MetaDataDriver from CDF
+uses
+    MetaData from CDM,Document from CDM,
+    ExtendedString from TCollection,
+    ExtendedString from TCollection
+is
+    Create
+    returns mutable Driver from FWOSDriver;
+    ---Purpose: initializes the MetaDatadriver with its specific name.
+
+
+    	
+    Find(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    ---Purpose: indicate whether a file exists corresponding to the folder and the name
+    
+    HasReadPermission(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns Boolean from Standard;
+
+    
+    MetaData(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns MetaData from CDM
+    is  private;
+    
+    CreateMetaData(me: mutable; aDocument: Document from CDM;
+    	         aFileName: ExtendedString from TCollection)
+    returns  MetaData from CDM
+    is  private;
+    
+    FindFolder(me: mutable; aFolder: ExtendedString from TCollection)
+    returns Boolean from Standard;
+
+
+   DefaultFolder(me: mutable) returns ExtendedString from TCollection;
+   
+   BuildFileName(me: mutable; aDocument: Document from CDM)
+   returns ExtendedString from TCollection;
+    
+   Concatenate(myclass; aFolder,aName:  ExtendedString from TCollection)
+   returns ExtendedString from TCollection
+   is private;
+
+
+   BuildMetaData(me: mutable; aFileName: ExtendedString from TCollection)
+   returns MetaData from CDM
+   is  private;
+
+   SetName(me: mutable; aDocument: Document from CDM; aName: ExtendedString from TCollection)
+   returns ExtendedString from TCollection
+   is redefined;
+   
+end Driver from FWOSDriver;

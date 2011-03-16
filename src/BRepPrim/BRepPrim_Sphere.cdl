@@ -1,0 +1,54 @@
+-- File:	Sphere.cdl
+-- Created:	Thu Nov  5 18:45:38 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Sphere from BRepPrim inherits Revolution from BRepPrim
+
+	---Purpose: Implements the sphere primitive
+
+uses
+    Face from TopoDS,
+    
+    Pnt from gp,
+    Ax2 from gp    
+
+raises
+    DomainError
+
+is
+
+    Create(Radius : Real)
+    returns Sphere from BRepPrim
+	---Purpose: Creates a Sphere at  origin with  Radius. The axes
+	--          of the sphere are the  reference axes. An error is
+	--          raised if the radius is < Resolution.
+    raises DomainError;
+    
+    Create(Center : Pnt from gp; Radius : Real)
+    returns Sphere from BRepPrim
+	---Purpose: Creates a Sphere with Center and Radius.  Axes are
+	--          the   referrence    axes.   This    is the    STEP
+	--          constructor.
+    raises DomainError;
+    
+    Create(Axes : Ax2 from gp; Radius : Real)
+    returns Sphere from BRepPrim
+	---Purpose: Creates a sphere with given axes system.
+    raises DomainError;
+    
+    MakeEmptyLateralFace(me) returns Face from TopoDS
+	---Purpose: The surface normal should be directed  towards the
+	--          outside.
+    is redefined;
+    
+    SetMeridian(me : in out)
+    is static private;
+    
+fields
+    myRadius : Real;
+
+end Sphere;

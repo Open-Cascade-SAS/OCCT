@@ -1,0 +1,44 @@
+-- File:	MakeRotation.cdl
+-- Created:	Mon Sep 28 11:52:57 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeRotation
+
+from GCE2d
+
+    	---Purpose: This class implements an elementary construction algorithm for
+    	-- a rotation in 2D space. The result is a Geom2d_Transformation transformation.
+    	-- A MakeRotation object provides a framework for:
+    	-- -   defining the construction of the transformation,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses Pnt2d          from gp,
+     Transformation from Geom2d,
+     Real           from Standard
+
+is
+
+Create(Point : Pnt2d  from gp      ;
+       Angle : Real from Standard) returns MakeRotation;
+    	---Purpose: Constructs a rotation through angle Angle about the center Point.
+        
+Value(me) returns Transformation from Geom2d
+    is static;
+      	---C++: return const&
+      	---Purpose:  Returns the constructed transformation.
+
+Operator(me) returns Transformation from Geom2d
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_Transformation() const;"
+
+fields
+
+    TheRotation : Transformation from Geom2d;
+
+end MakeRotation;
+
+

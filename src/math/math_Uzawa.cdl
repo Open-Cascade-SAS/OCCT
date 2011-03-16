@@ -1,0 +1,163 @@
+-- File:	Uzawa.cdl
+-- Created:	Thu Aug 22 10:44:47 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class Uzawa from math
+
+    ---Purpose: This class implements a system resolution C*X = B with
+    --          an approach solution X0. There are no conditions on the 
+    --          number of equations. The algorithm used is the Uzawa 
+    --          algorithm. It is possible to have equal or inequal  (<)
+    --          equations to solve. The resolution is done with a 
+    --          minimization of Norm(X-X0).
+    --          If there are only equal equations, the resolution is directly
+    --          done and is similar to Gauss resolution with an optimisation
+    --          because the matrix is a symmetric matrix.
+    --          (The resolution is done with Crout algorithm)
+
+
+
+uses Matrix from math, 
+     Vector from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       ConstructionError from Standard
+
+is
+
+    Create(Cont: Matrix; Secont, StartingPoint: Vector; 
+    	   EpsLix: Real = 1.0e-06; EpsLic: Real = 1.0e-06;
+	   NbIterations: Integer = 500)
+	    ---Purpose: Given an input matrix Cont, two input vectors Secont
+	    --          and StartingPoint, it solves Cont*X = Secont (only
+	    --          = equations) with a minimization of Norme(X-X0).
+	    --          The maximun iterations number allowed is fixed to 
+	    --          NbIterations.
+	    --          The tolerance EpsLic is fixed for the dual variable 
+	    --          convergence. The tolerance EpsLix is used for the 
+	    --          convergence of X.
+	    --          Exception ConstuctionError is raised if the line number
+	    --          of Cont is different from the length of Secont.
+	  
+    returns Uzawa
+    raises ConstructionError;
+    
+    
+    Create(Cont: Matrix; Secont, StartingPoint: Vector; Nci, Nce: Integer;
+    	   EpsLix: Real = 1.0e-06; EpsLic: Real = 1.0e-06; 
+           NbIterations: Integer = 500)
+	    ---Purpose: Given an input matrix Cont, two input vectors Secont
+	    --          and StartingPoint, it solves Cont*X = Secont (the Nce
+	    --          first equations are equal equations and the Nci last 
+	    --          equations are inequalities <) with a minimization
+	    --          of Norme(X-X0).
+	    --          The maximun iterations number allowed is fixed to 
+	    --          NbIterations.
+	    --          The tolerance EpsLic is fixed for the dual variable 
+	    --          convergence. The tolerance EpsLix is used for the 
+	    --          convergence of X.
+	    --          There are no conditions on Nce and Nci.
+	    --          Exception ConstuctionError is raised if the line number
+	    --          of Cont is different from the length of Secont and from
+	    --          Nce + Nci.
+
+    returns Uzawa
+    raises ConstructionError;
+
+
+    Perform(me: in out; Cont: Matrix; Secont, StartingPoint: Vector; 
+            Nci, Nce: Integer; EpsLix: Real = 1.0e-06; 
+            EpsLic: Real = 1.0e-06; NbIterations: Integer = 500)
+	    ---Purpose: Is used internally by the two constructors above.
+
+    is static protected;
+    
+	
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+      	---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Value(me) 
+    	---Purpose: Returns the vector solution of the system above.
+    	--          An exception is raised if NotDone.
+        ---C++: inline
+    	---C++: return const&    
+    returns Vector
+    raises NotDone
+    is static;
+    
+
+    InitialError(me)
+    	---Purpose: Returns the initial error Cont*StartingPoint-Secont.
+    	--          An exception is raised if NotDone.
+        ---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Duale(me; V : out Vector)
+    	---Purpose: returns the duale variables V of the systeme.
+    
+    raises NotDone
+    is static;
+    
+    
+    Error(me)
+    	---Purpose: Returns the difference between X solution and the 
+    	--          StartingPoint.
+    	--          An exception is raised if NotDone.
+        ---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+     
+     
+    NbIterations(me)
+    	---Purpose: returns the number of iterations really done.
+    	--          An exception is raised if NotDone.
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+    
+    InverseCont(me)
+    	---Purpose: returns the inverse matrix of (C * Transposed(C)).
+    	--          This result is needed for the computation of the gradient
+    	--          when approximating a curve.
+        ---C++: inline
+    	---C++: return const&
+    returns Matrix
+    raises NotDone
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+
+    is static;
+
+
+
+fields
+
+Resul :   Vector;
+Erruza:   Vector;
+Errinit:  Vector;
+Vardua:   Vector;
+CTCinv:   Matrix;
+NbIter :  Integer;
+Done:     Boolean;
+
+end Uzawa;

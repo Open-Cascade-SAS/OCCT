@@ -1,0 +1,63 @@
+-- File:	StepBasic_ProductDefinitionRelationship.cdl
+-- Created:	Mon Jul  3 19:47:51 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class ProductDefinitionRelationship from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ProductDefinitionRelationship
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinition from StepBasic
+
+is
+    Create returns ProductDefinitionRelationship from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aId: HAsciiString from TCollection;
+                       aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aRelatingProductDefinition: ProductDefinition from StepBasic;
+                       aRelatedProductDefinition: ProductDefinition from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Id (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Id
+    SetId (me: mutable; Id: HAsciiString from TCollection);
+	---Purpose: Set field Id
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    RelatingProductDefinition (me) returns ProductDefinition from StepBasic;
+	---Purpose: Returns field RelatingProductDefinition
+    SetRelatingProductDefinition (me: mutable; RelatingProductDefinition: ProductDefinition from StepBasic);
+	---Purpose: Set field RelatingProductDefinition
+
+    RelatedProductDefinition (me) returns ProductDefinition from StepBasic;
+	---Purpose: Returns field RelatedProductDefinition
+    SetRelatedProductDefinition (me: mutable; RelatedProductDefinition: ProductDefinition from StepBasic);
+	---Purpose: Set field RelatedProductDefinition
+
+fields
+    theId: HAsciiString from TCollection;
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theRelatingProductDefinition: ProductDefinition from StepBasic;
+    theRelatedProductDefinition: ProductDefinition from StepBasic;
+    defDescription: Boolean; -- flag "is Description defined"
+
+end ProductDefinitionRelationship;

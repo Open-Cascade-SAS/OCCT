@@ -1,0 +1,63 @@
+-- File:	BRepAdaptor2d_Curve2d.cdl
+-- Created:	Tue Jul 13 10:16:37 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Curve2d from BRepAdaptor inherits Curve from Geom2dAdaptor
+
+	---Purpose: The Curve2d from BRepAdaptor allows to use an Edge
+	--          on   a Face like   a  2d   curve. (curve  in   the
+	--          parametric space).
+	--          
+	--          It  has  the methods    of the class Curve2d  from
+	--          Adpator. 
+	--          
+	--          It  is created or  initialized with a  Face and an
+	--          Edge.  The methods are  inherited from  Curve from
+	--          Geom2dAdaptor. 
+
+uses
+    Face from TopoDS,
+    Edge from TopoDS
+
+raises
+    NullObject from Standard
+
+is
+
+    Create returns Curve2d from BRepAdaptor;
+	---Purpose: Creates an uninitialized curve2d.
+
+    Create(E : Edge from TopoDS; F : Face from TopoDS)
+    returns Curve2d from BRepAdaptor
+	---Purpose: Creates with the pcurve of <E> on <F>.
+    raises
+    	NullObject from Standard; -- if <E> has no pcurve on <F>
+	
+    Initialize(me : in out; E : Edge from TopoDS; F : Face from TopoDS)
+	---Purpose: Initialize with the pcurve of <E> on <F>.
+    raises
+    	NullObject from Standard -- if <E> has no pcurve on <F>
+    is static;
+    
+    Edge(me) returns Edge from TopoDS
+	---Purpose: Returns the Edge.
+	--          
+	---C++: return const &
+    is static;
+
+    Face(me) returns Face from TopoDS
+	---Purpose: Returns the Face.
+	--          
+	---C++: return const &
+    is static;
+
+fields
+
+    myEdge : Edge from TopoDS;
+    myFace : Face from TopoDS;
+	
+end Curve2d;

@@ -1,0 +1,83 @@
+-- File:	HLRBRep_BiPoint.cdl
+-- Created:	Fri Aug 21 17:10:30 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class BiPoint from HLRBRep
+
+    	---Purpose: Contains the colors of a shape.
+
+uses
+    Boolean from Standard,
+    Real    from Standard,
+    Pnt     from gp,
+    Shape   from TopoDS
+    
+is
+    Create
+    returns BiPoint from HLRBRep; 
+    
+    Create(x1,y1,z1,x2,y2,z2   : Real    from Standard;
+           S                   : Shape   from TopoDS;
+           reg1,regn,outl,intl : Boolean from Standard)
+    returns BiPoint from HLRBRep; 
+    
+    P1(me) returns Pnt from gp
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+    P2(me) returns Pnt from gp
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+    Shape(me) returns Shape from TopoDS
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+    Shape(me : in out; S : Shape from TopoDS)
+    	---C++: inline
+    is static;
+
+    Rg1Line(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Rg1Line(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    RgNLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    RgNLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    OutLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    OutLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    IntLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    IntLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+fields
+    myP1    : Pnt     from gp;
+    myP2    : Pnt     from gp;
+    myShape : Shape   from TopoDS;
+    myFlags : Boolean from Standard;
+
+end BiPoint;

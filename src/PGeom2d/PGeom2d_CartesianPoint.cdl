@@ -1,0 +1,44 @@
+-- File:	PGeom2d_CartesianPoint.cdl
+-- Created:	Tue Apr  6 17:15:07 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class CartesianPoint from PGeom2d inherits Point from PGeom2d
+
+        ---Purpose : Point defined  in  3D space with its 3  cartesian
+        --         coordinates X, Y, Z.
+        --         
+    	---See Also : CartesianPoint from Geom2d.
+
+uses Pnt2d from gp
+
+is
+
+
+  Create returns mutable CartesianPoint from PGeom2d;
+        ---Purpose : Returns a CartesianPoint with default values..
+	---Level: Internal 
+
+
+  Create (aPnt2d : Pnt2d from gp) returns mutable CartesianPoint from PGeom2d;
+        ---Purpose : Returns a CartesianPoint built with <aPnt2d>.
+	---Level: Internal 
+
+
+  Pnt (me : mutable; aPnt2d : Pnt2d from gp);
+        ---Purpose : Set the field Pnt2d.
+	---Level: Internal 
+
+
+  Pnt (me)  returns Pnt2d;
+        ---Purpose : Returns the value of the field Pnt2d.
+	---Level: Internal 
+
+
+fields
+
+    pnt : Pnt2d from gp;
+
+end;

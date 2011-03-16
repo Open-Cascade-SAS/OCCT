@@ -1,0 +1,20 @@
+-- File:        SolidModel.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SolidModel from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable SolidModel;
+	---Purpose: Returns a SolidModel
+
+
+end SolidModel;

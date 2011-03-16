@@ -1,0 +1,52 @@
+-- File:	BRepFill_SectionPlacement.cdl
+-- Created:	Wed Feb 11 16:11:25 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class SectionPlacement from BRepFill 
+
+	---Purpose: Place a shape in a local axis coordinate         
+
+uses 
+    LocationLaw  from  BRepFill,
+    Shape        from  TopoDS, 
+    Trsf   from  gp
+
+is 
+   Create(Law             :  LocationLaw  from  BRepFill; 
+          Section         :  Shape        from  TopoDS;  
+          WithContact     :  Boolean  =  Standard_False; 
+          WithCorrection  :  Boolean  =  Standard_False)  
+	   ---Purpose: Automatic placement         
+   returns   SectionPlacement from  BRepFill;   
+    
+   Create(Law             :  LocationLaw  from  BRepFill; 
+          Section         :  Shape        from  TopoDS; 
+	  Vertex          :  Shape        from  TopoDS;   
+          WithContact     :  Boolean  =  Standard_False; 
+          WithCorrection  :  Boolean  =  Standard_False)  
+	   ---Purpose: Placement on vertex       
+   returns   SectionPlacement from  BRepFill;     
+   
+   Perform(me:in  out; 
+           WithContact :  Boolean;  
+           WithCorrection :  Boolean;
+    	   Vertex         :  Shape        from  TopoDS)   
+    is  private; 
+    
+   Transformation(me) 
+   ---C++: return const &    
+   returns  Trsf  from  gp;   
+    
+   AbscissaOnPath(me:in  out)   
+   returns  Real;
+
+fields
+    myLaw :  LocationLaw  from  BRepFill; 
+    mySection  :  Shape from  TopoDS; 
+    myTrsf     :  Trsf  from  gp; 
+    myParam    :  Real; 
+    myIndex    :  Integer;
+end SectionPlacement;

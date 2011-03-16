@@ -1,0 +1,71 @@
+--
+-- File      :  DrawingUnits.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DrawingUnits from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESDrawingUnits, Type <406> Form <17>
+        --          in package IGESGraph
+        --
+        --          Specifies the drawing space units as outlined
+        --          in the Drawing entity
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable DrawingUnits;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              nbProps : Integer;
+              aFlag   : Integer;
+              aUnit   : HAsciiString from TCollection);
+        ---Purpose : This method is used to set the fields of the class
+        --           DrawingUnits
+        --      - nbProps : Number of property values (NP = 2)
+        --      - aFlag   : DrawingUnits Flag
+        --      - aUnit   : DrawingUnits Name
+
+        NbPropertyValues  (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        Flag (me) returns Integer;
+        ---Purpose : returns the drawing space units of <me>
+
+        Unit (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the name of the drawing space units of <me>
+
+    	    --  additionnal information, deducted from Flag
+
+    	UnitValue (me) returns Real;
+	---Purpose : Computes the value of the unit, in meters, according Flag
+	--           (same values as for GlobalSection from IGESData)
+
+fields
+
+--
+-- Class    : IGESGraph_DrawingUnits
+--
+-- Purpose  : Declaration of the variables specific to a Drawing Unit.
+--
+-- Reminder : A Drawing Unit is defined by :
+--                  - Number of property values (NP = 2)
+--                  - Units Flag
+--                  - Units Name
+--
+
+        theNbPropertyValues : Integer;
+
+        theFlag             : Integer;
+
+        theUnit             : HAsciiString from TCollection;
+
+end DrawingUnits;

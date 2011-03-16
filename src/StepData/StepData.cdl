@@ -1,0 +1,100 @@
+-- File:	StepData.cdl
+-- Created:	Tue Feb 11 15:39:51 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+package StepData
+
+    ---Purpose : Gives basic data definition for Step Interface.
+    --           Any class of a data model described in EXPRESS Language
+    --           is candidate to be managed by a Step Interface
+
+uses Standard, MMgt, TCollection, TColStd, Dico, LibCtl, Interface, Message
+
+is
+
+    class StepModel;
+    class UndefinedEntity;
+    deferred class SelectType;
+
+    enumeration Logical  is LFalse, LTrue, LUnknown;
+    ---Purpose : A Standard Definition for STEP (which knows Boolean too)
+
+    class Field;
+    class SelectMember;
+    	class SelectInt;
+	class SelectReal;
+	class SelectNamed;
+	class SelectArrReal;
+
+    class PDescr;
+    class FieldList;    -- basic one (no field)
+    	class FieldList1;
+	class FieldListN;
+	class FieldListD;
+    deferred class EDescr;
+    	class ESDescr;
+	class ECDescr;
+    deferred class Described;
+    	class Simple;
+	class Plex;
+    class FreeFormEntity;
+
+    class Protocol;                     -- basic protocol for Step
+    deferred class GeneralModule;       -- general services
+
+    deferred class FileRecognizer  instantiates
+    	Recognizer from Interface (AsciiString from TCollection, Transient);
+
+    class FileProtocol;
+    class HeaderTool;
+    class EnumTool;
+
+    class DescrProtocol;
+    class DescrGeneral;
+    class DescrReadWrite;
+
+    class StepReaderData;               -- litteral description of Step File
+    class StepReaderTool;
+    deferred class ReadWriteModule;
+    class StepWriter;                   -- idem but in the other sense
+    class StepDumper;
+
+    class WriterLib instantiates  Library from LibCtl
+    	(Transient, ReadWriteModule, Protocol from StepData);
+
+    class DefaultGeneral;     -- Default Module which processes UnknownEntity
+
+
+    	--   General Routines   --
+    	--   HeaderProtocol/AddHeaderProtocol are used to handle Header items :
+    	--   Reading/Writing but also Copying,Checking,Dumping
+    	--   
+    	--   
+    	-- Init & Protocol encapsulate the general actions required to work with
+    	-- this package. While their use is not mandatory, it makes work easier.
+
+    class  Array1OfField  instantiates    Array1 from TCollection
+    	(Field from StepData);
+    class HArray1OfField  instantiates   HArray1 from TCollection
+    	(Field from StepData,Array1OfField from StepData);
+
+    HeaderProtocol  returns Protocol from StepData;
+    ---Purpose : Returns the recorded HeaderProtocol, which can be :
+    --           - a Null Handle if no Header Protocol was yet defined
+    --           - a simple Protocol if only one was defined
+    --           - a FileProtocol if more than one Protocol was yet defined
+
+    AddHeaderProtocol (headerproto : Protocol from StepData);
+    ---Purpose : Adds a new Header Protocol to the Header Definition
+
+    Init;
+    ---Purpose : Prepares General Data required to work with this package,
+    --           which are the Protocol and Modules to be loaded into Libraries
+
+    Protocol  returns Protocol from StepData;
+    ---Purpose : Returns a Protocol from StepData (avoids to create it)
+
+end StepData;

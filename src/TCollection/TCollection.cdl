@@ -1,0 +1,142 @@
+-- File:	TCollection.cdl
+-- Created:	Tue Oct 13 18:49:35 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+-- Updated      J.P. TIRAULT, M. MERCIEN Nov,25 1992
+--              Adding classes 
+--               - Array1Descriptor
+--               - Array2Descriptor
+--               - Array1
+--               - Array2
+-- Updated      R.LEQUETTE Jan 1993
+--              Adding of modifying classes 
+--               - Sequence, HSequence
+--               - Set, HSet
+--               - List, SList
+--               - Stack, Queue
+--               - BasicMap, BasicMapIterator
+--               - Map, DataMap, DoubleMap, IndexedMap, IndexedDataMap
+--               
+---Copyright:	 Matra Datavision 1992
+
+package TCollection
+
+    	---Purpose: The package <TCollection> provides the services for the 
+    	-- transient basic data structures.
+
+uses
+    Standard,
+    MMgt
+is
+    class AsciiString;
+
+    class ExtendedString;
+    
+    class HAsciiString;
+
+    class HExtendedString;
+    
+    deferred class Array1Descriptor;
+    
+    generic class Array1;
+
+    generic class HArray1;
+   
+    deferred class Array2Descriptor;
+    
+    generic class Array2;
+    
+    generic class HArray2;
+    
+    generic class Stack, StackNode, StackIterator;
+	---Purpose: A stack handled by value.
+   
+    generic class Queue, QueueNode;
+	---Purpose: A queue handled by value.
+   
+    generic class List, ListNode, ListIterator;
+	---Purpose: A single list handled by value.
+
+    generic class SList,SListNode;
+	---Purpose: A LISP like sharable list.
+
+    class BaseSequence;
+    class SeqNode;
+    pointer SeqNodePtr to SeqNode from TCollection;
+    generic class Sequence,SequenceNode;
+	---Purpose: An indexed double list handled by value.
+     
+    generic class HSequence;
+	---Purpose: An indexed double list handle by reference.
+
+    generic class Set, SetIterator, SetList;
+	---Purpose: A small set handled by value.
+
+    generic class HSet;
+	---Purpose: A small set handled by reference.
+
+    generic class MapHasher;
+	---Purpose: A Tool to instantiate Maps. Providing HashCode and
+	-- Comparisons on Keys.
+    
+    private deferred class BasicMap;
+    private class MapNode;
+    pointer MapNodePtr to MapNode from TCollection;
+    ---Purpose: Basic class root of all the Maps.
+    
+    private deferred class BasicMapIterator;
+	---Purpose: Basic class root of all the Iterators on Maps.
+    
+    generic class Map, MapIterator,StdMapNode;
+	---Purpose: A Hashed map to store keys.
+
+    generic class DataMap, DataMapIterator,DataMapNode;
+	---Purpose: A Map where data can be stored with the keys.
+	
+    generic class DoubleMap, DoubleMapIterator, DoubleMapNode;
+	---Purpose: A Map to store pair of keys.
+	
+    generic class IndexedMap,IndexedMapNode;
+	---Purpose: A Map where the keys are indexed.
+	
+    generic class IndexedDataMap,IndexedDataMapNode;
+	---Purpose: An Indexed Map where data can be stored with the keys.
+
+    enumeration Side is Left , Right;
+    
+    deferred generic class Compare ;
+        ---Purpose: Defines a comparison operator which can be used by
+        -- any ordered structure.   The  way to compare items
+        -- has  to be described  in  subclasses, which  herit
+        -- from instantiations of Compare.
+
+    private deferred class PrivCompareOfInteger 
+            instantiates Compare from TCollection(Integer from Standard); 
+
+    private deferred class PrivCompareOfReal 
+            instantiates Compare from TCollection(Real from Standard); 
+
+    class CompareOfInteger;
+	
+    class CompareOfReal;
+    
+    class AVLBaseNode;
+    pointer AVLBaseNodePtr to AVLBaseNode from TCollection;
+    generic class AVLSearchTree,AVLNode,AVLList,AVLIterator;
+    
+
+    NextPrimeForMap(I : Integer) returns Integer;
+	---Purpose: Returns a  prime number greater than  <I> suitable
+	-- to dimension a Map.  When  <I> becomes great there
+	-- is  a  limit on  the  result (today  the  limit is
+	-- around 1 000 000). This is not a limit of the number of
+	-- items but a limit in the number  of buckets.  i.e.
+	-- there will be more collisions  in  the map.
+
+end TCollection;
+
+
+
+
+
+

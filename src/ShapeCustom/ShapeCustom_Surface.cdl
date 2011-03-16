@@ -1,0 +1,58 @@
+-- File:	ShapeCustom_Surface.cdl
+-- Created:	Wed Jun  3 12:41:21 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Surface from ShapeCustom 
+
+    ---Purpose: Converts a surface to the analitical form with given 
+    --          precision. Conversion is done only the surface is bspline
+    --          of bezier and this can be approximed by some analytical
+    --          surface with that precision.
+
+uses
+    Surface from Geom
+
+is
+
+    Create returns Surface from ShapeCustom;
+    
+    Create (S: Surface from Geom) returns Surface from ShapeCustom;
+
+    Init (me: in out; S: Surface from Geom);
+
+    Gap (me) returns Real;
+    ---C++: inline
+    	---Purpose: Returns maximal deviation of converted surface from the original 
+	--          one computed by last call to ConvertToAnalytical
+
+    ConvertToAnalytical (me: in out; tol: Real;
+    	    	    	    	     substitute: Boolean)
+    returns Surface from Geom;
+    	---Purpose: Tries to convert the Surface to an Analytic form
+    	--          Returns the result
+    	--          Works only if the Surface is BSpline or Bezier.
+    	--          Else, or in case of failure, returns a Null Handle
+    	--
+    	--          If <substitute> is True, the new surface replaces the actual
+    	--          one in <me>
+    	--
+    	--          It works by analysing the case which can apply, creating the
+    	--          corresponding analytic surface, then checking coincidence
+    	--  Warning: Parameter laws are not kept, hence PCurves should be redone
+	
+    ConvertToPeriodic (me: in out; substitute: Boolean; preci: Real = -1)
+    returns Surface from Geom;
+        ---Purpose: Tries to convert the Surface to the Periodic form
+    	--          Returns the resulting surface
+    	--          Works only if the Surface is BSpline and is closed with 
+        --          Precision::Confusion()
+    	--          Else, or in case of failure, returns a Null Handle
+fields
+
+    mySurf: Surface from Geom;
+    myGap : Real; -- maximal deviation of converted surface from original one
+
+end Surface;

@@ -1,0 +1,88 @@
+-- File:	GeneralFunction.cdl
+-- Created:	Mon Jan 14 10:48:27 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class GeneralFunction from Expr
+   
+inherits TShared from MMgt
+
+    ---Purpose: Defines the general purposes of any function.
+ 
+uses NamedUnknown from Expr,
+    GeneralExpression from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection
+
+raises OutOfRange from Standard,
+    DimensionMismatch from Standard,
+    NumericError from Standard,
+    NotEvaluable from Expr
+
+is
+
+	
+    NbOfVariables(me)
+    ---Purpose: Returns the number of variables of <me>.
+    ---Level: Advanced 
+    returns Integer
+    is deferred;
+
+    Variable(me ; index : Integer)
+    ---Purpose: Returns the variable denoted by <index> in <me>.
+    --          Raises OutOfRange if index > NbOfVariables.
+    ---Level: Advanced 
+    returns NamedUnknown
+    raises OutOfRange
+    is deferred;
+    
+    Copy(me)
+    ---Purpose: Returns a copy of <me> with the same form.
+    ---Level: Advanced 
+    returns mutable like me
+    is deferred;
+    
+    Derivative(me; var : NamedUnknown)
+    ---Purpose: Returns Derivative of <me> for variable <var>.
+    ---Level: Advanced 
+    returns GeneralFunction
+    is deferred;
+    
+    Derivative(me; var : NamedUnknown; deg : Integer)
+    ---Purpose: Returns Derivative of <me> for variable <var> with 
+    --          degree <deg>.
+    ---Level: Advanced 
+    returns GeneralFunction
+    is deferred;
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; 
+    	    	 vals : Array1OfReal)
+    ---Purpose: Computes the value of <me> with the given variables.
+    --          Raises NotEvaluable if <vars> does not match all variables
+    --          of <me>.
+    ---Level: Advanced 
+    returns Real
+    raises NotEvaluable,NumericError,DimensionMismatch
+    is deferred;
+
+    IsIdentical(me; func : GeneralFunction)
+    ---Purpose: Tests if <me> and <func> are similar functions (same 
+    --          name and same used expression).
+    ---Level: Internal
+    returns Boolean
+    is deferred;
+    
+    IsLinearOnVariable(me; index : Integer)
+    ---Purpose: Tests if <me> is linear on variable on range <index>
+    ---Level: Internal 
+    returns Boolean
+    is deferred;
+    
+    GetStringName(me)
+    ---Level: Internal 
+    returns AsciiString
+    is deferred;
+    
+end GeneralFunction;

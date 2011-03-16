@@ -1,0 +1,59 @@
+-- File:	IFSelect_SelectControl.cdl
+-- Created:	Wed Feb 16 10:07:01 1994
+-- Author:	Christian CAILLET
+--		<cky@mastox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class SelectControl  from IFSelect  inherits Selection
+
+    ---Purpose : A SelectControl kind Selection works with two input Selections
+    --           in a dissymmetric way : the Main Input which gives an input
+    --           list of Entities, to be processed, and the Second Input which
+    --           gives another list, to be used to filter the main input.
+    --           
+    --           e.g. : SelectDiff retains the items of the Main Input which
+    --             are not in the Control Input (which acts as Diff Input)
+    --           or a specific selection which retains Entities from the Main
+    --             Input if and only if they are concerned by an entity from
+    --             the Control Input (such as Views in IGES, etc...)
+    --           
+    --           The way RootResult and Label are produced are at charge of
+    --           each sub-class
+
+uses  SelectionIterator
+
+is
+
+    MainInput    (me) returns mutable Selection;
+    ---Purpose : Returns the Main Input Selection
+
+    HasSecondInput (me) returns Boolean;
+    ---Purpose : Returns True if a Control Input is defined
+    --           Thus, Result can be computed differently if there is a
+    --           Control Input or if there is none
+
+    SecondInput (me) returns mutable Selection;
+    ---Purpose : Returns the Control Input Selection, or a Null Handle
+
+    SetMainInput    (me : mutable; sel : mutable Selection);
+    ---Purpose : Sets a Selection to be the Main Input
+
+    SetSecondInput (me : mutable; sel : mutable Selection);
+    ---Purpose : Sets a Selection to be the Control Input
+
+
+    -- RootResult,Label remain to be defined by each class of Selection
+    -- (also HasUniqueResult if it applies)
+
+    FillIterator (me; iter : in out SelectionIterator);
+    ---Purpose : Puts in an Iterator the Selections from which "me" depends
+    --           That is to say, the list of Input Selections
+
+
+fields
+
+    themain   : Selection;
+    thesecond : Selection;
+
+end SelectControl;

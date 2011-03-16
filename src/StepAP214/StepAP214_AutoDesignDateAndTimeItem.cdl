@@ -1,0 +1,37 @@
+-- File:        AutoDesignDateAndTimeItem.cdl
+-- Created:     Fri Dec  1 11:11:10 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class AutoDesignDateAndTimeItem from StepAP214 inherits SelectType from StepData
+
+	-- <AutoDesignDateAndTimeItem> is an EXPRESS Select Type construct translation.
+	-- it gathers : ApprovalPersonOrganization, AutoDesignDateAndPersonAssignment
+
+uses
+
+	ApprovalPersonOrganization from StepBasic,
+	AutoDesignDateAndPersonAssignment from StepAP214,
+	ProductDefinitionEffectivity from StepBasic
+is
+
+	Create returns AutoDesignDateAndTimeItem;
+	---Purpose : Returns a AutoDesignDateAndTimeItem SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a AutoDesignDateAndTimeItem Kind Entity that is :
+	--        1 -> ApprovalPersonOrganization
+	--        2 -> AutoDesignDateAndPersonAssignment
+	--        0 else
+
+	ApprovalPersonOrganization (me) returns any ApprovalPersonOrganization;
+	---Purpose : returns Value as a ApprovalPersonOrganization (Null if another type)
+
+	AutoDesignDateAndPersonAssignment (me) returns any AutoDesignDateAndPersonAssignment;
+	---Purpose : returns Value as a AutoDesignDateAndPersonAssignment (Null if another type)
+
+    	ProductDefinitionEffectivity (me) returns ProductDefinitionEffectivity;
+
+end AutoDesignDateAndTimeItem;

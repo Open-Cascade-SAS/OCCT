@@ -1,0 +1,140 @@
+-- File:	BRepPrimAPI_MakeBox.cdl
+-- Created:	Wed Jul 21 16:07:07 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeBox from BRepPrimAPI  inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Describes functions to build parallelepiped boxes.
+    	-- A MakeBox object provides a framework for:
+    	-- -   defining the construction of a box,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses
+    Ax2   from gp,
+    Pnt   from gp,
+    Face  from TopoDS,	
+    Shell from TopoDS,
+    Solid from TopoDS,
+    Wedge from BRepPrim
+
+raises
+    DomainError from Standard,
+    OutOfRange  from Standard,
+    NotDone     from StdFail
+
+is
+
+    Create(dx, dy, dz : Real)
+    returns MakeBox from BRepPrimAPI
+	---Purpose: Make a box with a corner at 0,0,0 and the other dx,dy,dz
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+    Create(P : Pnt from gp; dx, dy, dz : Real)
+    returns MakeBox from BRepPrimAPI
+	---Purpose: Make a box with a corner at P and size dx, dy, dz.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+
+    Create(P1,P2 : Pnt from gp)
+    returns MakeBox from BRepPrimAPI
+	---Purpose: Make a box with corners P1,P2.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+
+    Create(Axes : Ax2 from gp; dx, dy, dz : Real)
+    returns MakeBox from BRepPrimAPI
+	---Purpose: Ax2 is the left corner and the axis.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+    	---Purpose: Constructs a box such that its sides are parallel to the axes of
+    	-- -   the global coordinate system, or
+    	-- -   the local coordinate system Axis. and
+    	-- -   with a corner at (0, 0, 0) and of size (dx, dy, dz), or
+    	-- -   with a corner at point P and of size (dx, dy, dz), or
+    	-- -   with corners at points P1 and P2.
+    	-- Exceptions
+    	-- Standard_DomainError if: dx, dy, dz are less than or equal to
+    	--   Precision::Confusion(), or
+    	-- -   the vector joining the points P1 and P2 has a
+    	--   component projected onto the global coordinate
+    	--   system less than or equal to Precision::Confusion().
+    	--   In these cases, the box would be flat.   
+
+    Wedge(me : in out) returns Wedge from BRepPrim
+	---Purpose: Returns the internal algorithm.
+	--          
+	---C++: return &
+	---Level: Public
+    is static;
+    
+
+    ----------------------------------------
+    --  Results
+    ----------------------------------------
+
+    Build(me : in out)
+	---Purpose: Stores the solid in myShape.
+	---Level: Public
+    is redefined;
+
+
+    Shell(me : in out) returns Shell from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Shell();"
+    	---Purpose: Returns the constructed box as a shell.
+    is static;
+
+    Solid(me : in out) returns Solid from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Solid();" 
+    	---Purpose: Returns the constructed box as a solid.
+    is static; 
+
+
+    BottomFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns ZMin face
+    	---C++: return const &
+
+
+    BackFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns XMin face
+    	---C++: return const &
+
+
+    FrontFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns XMax face
+    	---C++: return const &
+
+
+    LeftFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns YMin face
+    	---C++: return const &
+
+
+    RightFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns YMax face
+    	---C++: return const &
+
+
+    TopFace (me : in out) returns Face from TopoDS;
+    	---Purpose : Returns ZMax face
+    	---C++: return const &
+
+
+fields
+
+    myWedge : Wedge from BRepPrim;
+
+end MakeBox;

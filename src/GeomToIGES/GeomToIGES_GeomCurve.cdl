@@ -1,0 +1,142 @@
+-- File:	GeomToIGES_GeomCurve.cdl
+-- Created:	Thu Nov 17 10:48:37 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+class GeomCurve from GeomToIGES inherits GeomEntity from GeomToIGES
+
+    ---Purpose: This class implements the transfer of the Curve Entity from Geom
+    --          To IGES. These can be :
+    --          Curve
+    --            . BoundedCurve
+    --               * BSplineCurve
+    --               * BezierCurve
+    --               * TrimmedCurve
+    --            . Conic     
+    --               * Circle
+    --               * Ellipse
+    --               * Hyperbloa
+    --               * Line
+    --               * Parabola
+    --            . OffsetCurve     
+  
+
+uses
+
+    Curve                from Geom,
+    BoundedCurve         from Geom,
+    BSplineCurve         from Geom,
+    BezierCurve          from Geom,
+    TrimmedCurve         from Geom,
+    Conic                from Geom,
+    Circle               from Geom,
+    Ellipse              from Geom,
+    Hyperbola            from Geom,
+    Line                 from Geom,
+    Parabola             from Geom,
+    OffsetCurve          from Geom,
+    IGESEntity           from IGESData,
+    GeomEntity           from GeomToIGES
+    
+    
+is 
+    
+    Create returns GeomCurve from GeomToIGES;
+
+
+    Create(GE : GeomEntity from GeomToIGES)  
+    	 returns GeomCurve from GeomToIGES;
+    ---Purpose : Creates a tool GeomCurve ready to run and sets its
+    --         fields as GE's.
+
+    TransferCurve (me    : in out;
+                   start : Curve from Geom;
+		   Udeb  : Real  from Standard;
+		   Ufin  : Real  from Standard)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert  a  GeometryEntity which  answer True  to  the
+    --            member : BRepToIGES::IsGeomCurve(Geometry).  If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferCurve (me    : in out;
+                   start : BoundedCurve from Geom;
+		   Udeb  : Real         from Standard;
+		   Ufin  : Real         from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : BSplineCurve from Geom;
+		   Udeb  : Real         from Standard;
+		   Ufin  : Real         from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : BezierCurve from Geom;
+          	   Udeb  : Real        from Standard;
+		   Ufin  : Real        from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+	 
+    TransferCurve (me    : in out;
+                   start : TrimmedCurve from Geom;
+          	   Udeb  : Real        from Standard;
+		   Ufin  : Real        from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : Conic from Geom;
+		   Udeb  : Real  from Standard;
+		   Ufin  : Real  from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                    start : Circle from Geom;
+ 		    Udeb  : Real   from Standard;
+		    Ufin  : Real   from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : Ellipse from Geom;
+		   Udeb  : Real    from Standard;
+		   Ufin  : Real    from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : Hyperbola from Geom;
+		   Udeb  : Real      from Standard;
+		   Ufin  : Real      from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : Line from Geom;
+		   Udeb  : Real from Standard;
+		   Ufin  : Real from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : Parabola from Geom;
+	           Udeb  : Real     from Standard;
+		   Ufin  : Real     from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+    TransferCurve (me    : in out;
+                   start : OffsetCurve from Geom;
+ 		   Udeb  : Real        from Standard;
+		   Ufin  : Real        from Standard)
+    	 returns mutable IGESEntity from IGESData;
+
+
+end GeomCurve;
+
+

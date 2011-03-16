@@ -1,0 +1,54 @@
+-- File:	MDocStd_DocumentRetrievalDriver.cdl
+-- Created:	Thu Apr 15 13:46:52 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class DocumentRetrievalDriver from MDocStd inherits RetrievalDriver from PCDM
+
+	---Purpose: retrieval driver of a standard document
+
+uses Document         from TDocStd,
+     Document         from PDocStd,  
+     RRelocationTable from MDF,
+     Document         from PCDM, 
+     Document         from CDM,  
+     MessageDriver    from CDM,
+     ExtendedString   from TCollection,
+     ARDriverTable    from MDF
+
+is
+
+
+    Create
+    returns mutable DocumentRetrievalDriver from MDocStd;    
+
+    Paste (me : mutable; PDOC   : Document from PDocStd;
+                         TDOC   : Document from TDocStd;
+			 aReloc : RRelocationTable from MDF);
+    
+    ---Purpose: deferred methods of RetrievalDriver from PCDM
+    --          =============================================
+
+    Make (me : mutable; aPCDM: Document from PCDM; aCDM : mutable Document from CDM); 
+
+    ---Purpose: virtual methods (may be redefined by specialized application)
+    --          =============================================================
+
+    SchemaName(me) returns ExtendedString from  TCollection
+    is virtual;
+
+    CreateDocument (me: mutable) returns Document from CDM  
+    ---Purpose: returns an empty TDocStd_Document. may be redefined;
+    is virtual;
+    
+    AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM) 
+    returns ARDriverTable from MDF
+    is virtual;
+    
+fields
+
+    myDrivers : ARDriverTable  from MDF;
+
+end DocumentRetrievalDriver;

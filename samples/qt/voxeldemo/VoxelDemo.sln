@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGl", "OpenGl\OpenGl.vcproj", "{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoxelDemo", "VoxelDemo.vcproj", "{2739AAB7-4D99-41F6-9A9C-0C9EB34DEA82}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5} = {CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}.Debug|Win32.Build.0 = Debug|Win32
+		{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}.Release|Win32.ActiveCfg = Release|Win32
+		{CD1C9AFB-8D5D-4A45-ABF5-56DBCED629A5}.Release|Win32.Build.0 = Release|Win32
+		{2739AAB7-4D99-41F6-9A9C-0C9EB34DEA82}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2739AAB7-4D99-41F6-9A9C-0C9EB34DEA82}.Debug|Win32.Build.0 = Debug|Win32
+		{2739AAB7-4D99-41F6-9A9C-0C9EB34DEA82}.Release|Win32.ActiveCfg = Release|Win32
+		{2739AAB7-4D99-41F6-9A9C-0C9EB34DEA82}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

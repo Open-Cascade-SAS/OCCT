@@ -1,0 +1,87 @@
+-- File:	BRepTools_Modifier.cdl
+-- Created:	Thu Aug 25 10:03:36 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Modifier from BRepTools
+
+	---Purpose: 
+
+uses Shape               from TopoDS,
+     Modification        from BRepTools,
+     DataMapOfShapeShape from TopTools
+
+raises NullObject   from Standard,
+       NoSuchObject from Standard
+
+is
+
+    Create returns Modifier from BRepTools;
+	---Purpose: Creates an empty Modifier.
+
+
+    Create(S: Shape from TopoDS)
+      	returns Modifier from BRepTools;
+	---Purpose: Creates a modifier on the shape <S>.
+
+
+    Create(S: Shape from TopoDS; M: Modification from BRepTools)
+    	returns Modifier from BRepTools;
+	---Purpose: Creates a modifier on  the shape <S>, and performs
+	--          the modifications described by <M>.
+
+
+    Init(me: in out; S: Shape from TopoDS)
+    	is static;
+	---Purpose: Initializes the modifier with the shape <S>.
+
+
+    Perform(me: in out; M: Modification from BRepTools)
+	---Purpose: Performs the modifications described by <M>.
+    	raises NullObject from Standard 
+        -- if the modifier has not been initialized with a shape.
+    	is static;
+
+    IsDone(me)
+    
+	---Purpose: Returns Standard_True if the modification has
+	--          been computed successfully.
+	--          
+	---C++: inline
+    	returns Boolean from Standard
+	is static;
+    
+
+    ModifiedShape(me; S: Shape from TopoDS)
+    	returns Shape from TopoDS
+	---Purpose: Returns the modified shape corresponding to <S>.
+	---C++: return const&
+	---C++: inline
+	raises NoSuchObject from Standard
+               -- if S is not the initial shape or a sub-shape
+               -- of the initial shape.
+
+	is static;
+
+		 
+    -- private implementation methods
+
+    Put(me: in out; S: Shape from TopoDS)
+    
+    	is static private;
+
+
+    Rebuild(me: in out; S: Shape from TopoDS; M: Modification from BRepTools) 
+    	returns Boolean from Standard
+    	is static private;
+
+
+fields
+
+    myMap  : DataMapOfShapeShape from TopTools;
+    myShape: Shape               from TopoDS;
+    myDone : Boolean             from Standard;
+
+end Modifier;

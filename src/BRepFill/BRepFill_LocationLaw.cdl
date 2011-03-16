@@ -1,0 +1,164 @@
+-- File:	BRepFill_LocationLaw.cdl
+-- Created:	Wed Jan 14 14:14:49 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+deferred  class LocationLaw from BRepFill  inherits TShared from MMgt
+
+	---Purpose: Location Law on a  Wire.
+	 
+	---Level: Advanced 
+
+uses 
+  LocationLaw from  GeomFill,  
+  HArray1OfLocationLaw from GeomFill,  
+  PipeError        from GeomFill,
+  HArray1OfReal    from TColStd,  
+  Array1OfInteger  from TColStd, 
+  HArray1OfInteger from TColStd, 
+  HArray1OfShape   from  TopTools, 
+  Shape  from TopoDS,
+  Wire   from TopoDS, 
+  Edge   from TopoDS, 
+  Vertex from TopoDS
+  
+raises 
+  OutOfRange  from  Standard
+
+is 
+  Init (me  :  mutable;  Path   :  Wire  from  TopoDS)
+  ---Purpose: Initialize all the fields, this methode have to
+  --          be called by the constructors of Inherited class.  
+  is  protected; 
+
+  GetStatus(me) 
+  ---Purpose: Return a error status, if the  status is not PipeOk then
+  --          it exist a parameter tlike the law is not valuable for t.
+  returns  PipeError  from  GeomFill;
+
+  TransformInG0Law(me  :  mutable)  
+   ---Purpose:  Apply a linear   transformation  on each law, to  have
+   --          continuity of the global law beetween the edges.
+  is virtual; 
+   
+  
+  TransformInCompatibleLaw(me  :  mutable;  
+    	    	    	    AngularTolerance  :  Real)  
+   ---Purpose: Apply a linear transformation on each law, to reduce
+   --           the   dicontinuities  of law at one  rotation.         
+  is virtual;    
+      
+  TangentIsMain(me  :  mutable)  
+    ---Purpose: To preseve if possible  the Tangent in transformations
+           -- It is the default mode.                 
+  is  protected; 
+   
+  NormalIsMain(me  :  mutable)  
+    ---Purpose: To preseve if possible the Normal in transformations          
+  is  protected;    
+   
+  BiNormalIsMain(me  :  mutable)  
+    ---Purpose: To preseve if possible the BiNormal in transformations         
+  is  protected;  
+
+  DeleteTransform(me  :  mutable)   
+  is  static;
+       
+  NbHoles(me:  mutable;  Tol  :  Real  =  1.0e-7)  
+  returns  Integer; 
+   
+  Holes(me; Interval  : out Array1OfInteger  from TColStd);  
+    
+  NbLaw(me)  
+  ---Purpose: Return the number of elementary Law
+  returns  Integer; 
+   
+  Law(me; Index  :  Integer)
+   ---Purpose: Return the elementary Law of rank <Index>
+   --          <Index> have to be in [1, NbLaw()]
+   ---C++: return const &
+    returns LocationLaw from GeomFill   
+    raises OutOfRange;   
+     
+  Wire(me)     
+  ---Purpose: return the path  
+  ---C++: return const &
+  returns  Wire  from  TopoDS;
+     
+  Edge(me; Index  :  Integer) 
+   ---Purpose: Return the Edge of rank <Index> in the path 
+   --          <Index> have to be in [1, NbLaw()] 
+     ---C++: return const &
+    returns Edge from TopoDS   
+    raises OutOfRange;  
+     
+  Vertex(me; Index  :  Integer) 
+        ---Purpose: Return the vertex of rank <Index> in the path 
+        --          <Index> have to be in [0, NbLaw()] 
+    returns Vertex from TopoDS   
+    raises OutOfRange;
+      
+  PerformVertex(me;  Index        :  Integer; 
+    	    	     InputVertex  : Vertex from TopoDS; 
+                     TolMin       : Real; 
+		     OutputVertex :  out  Vertex; 
+                     Location     :  Integer  =  0)  
+        ---Purpose: Compute <OutputVertex> like a transformation of
+        --          <InputVertex>  the  transformation   is given by
+        --          evaluation of the location law   in the vertex of
+        --          rank   <Index>.      
+        --          <Location> is used to manage discontinuities :
+        --   - -1 : The law before the vertex is used.
+        --   -  1 : The law after the vertex is used.
+        --   -  0 : Average of the both laws is used.
+  is  static;      
+							  
+  CurvilinearBounds(me;  Index  :  Integer;   
+                    First,  Last  :out  Real);
+  ---Purpose:Return the Curvilinear Bounds of the <Index> Law
+     
+  IsClosed(me)  returns Boolean;
+    
+  IsG1(me; Index  :  Integer;
+           SpatialTolerance  :  Real  =  1.0e-7; 
+           AngularTolerance  :  Real  =  1.0e-4)  
+  ---Purpose: Compute the Law's continuity beetween 2 edges of the path
+  	-- The result can be : 
+        --  -1 : Case Not connex
+        --  0  : It is connex (G0)
+        --  1  : It is tangent (G1)
+  returns  Integer; 
+
+  D0(me:mutable;  Abscissa  :Real;   
+     Section  :  in  out  Shape  from  TopoDS);       
+  ---Purpose: Apply the Law to a shape, for a given Curnilinear abscissa
+            
+	    
+  Parameter(me:mutable; Abscissa  :Real; 
+            Index  :  out  Integer;   
+            Param  :  out  Real);
+   ---Purpose: Find the  index Law  and the  parmaeter, for  a given
+   --          Curnilinear abscissa
+	     
+	    
+  Abscissa(me:mutable;  Index  :  Integer;   
+           Param  :  Real)  
+  ---Purpose:Return the curvilinear abscissa  corresponding to a point
+  --                 of  the path, defined by  <Index>  of  Edge and a
+  --                parameter on the edge.                      
+  returns  Real;   
+      
+fields  
+  myPath   :  Wire                 from TopoDS   is  protected; 
+  myTol    :  Real                               is  protected;
+  myLaws   :  HArray1OfLocationLaw from GeomFill is  protected;
+  myLength :  HArray1OfReal        from TColStd  is  protected;  
+  myEdges  :  HArray1OfShape       from TopTools is  protected; 
+  myDisc   :  HArray1OfInteger     from TColStd  is  protected; 
+  myType   :  Integer;
+end LocationLaw;
+
+
+

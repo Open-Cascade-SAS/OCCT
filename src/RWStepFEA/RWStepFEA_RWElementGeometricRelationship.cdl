@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWElementGeometricRelationship.cdl
+-- Created:	Tue Feb  4 10:39:08 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWElementGeometricRelationship from RWStepFEA
+
+    ---Purpose: Read & Write tool for ElementGeometricRelationship
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ElementGeometricRelationship from StepFEA
+
+is
+    Create returns RWElementGeometricRelationship from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ElementGeometricRelationship from StepFEA);
+	---Purpose: Reads ElementGeometricRelationship
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ElementGeometricRelationship from StepFEA);
+	---Purpose: Writes ElementGeometricRelationship
+
+    Share (me; ent : ElementGeometricRelationship from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWElementGeometricRelationship;

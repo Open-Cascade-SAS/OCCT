@@ -1,0 +1,20 @@
+-- File:	TopoDS_TVertex.cdl
+-- Created:	Thu Dec 13 16:39:22 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+deferred class TVertex from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Initialize;
+    ---C++: inline
+    ---Purpose: Construct a vertex.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: Returns VERTEX.
+
+end TVertex;

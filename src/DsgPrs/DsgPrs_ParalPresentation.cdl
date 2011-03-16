@@ -1,0 +1,52 @@
+-- File:	DsgPrs_ParalPresentation.cdl
+-- Created:	Tue Nov 28 10:13:06 1995
+-- Author:	Jean-Pierre COMBE
+--		<jpi@pdalon>
+---Copyright:	 Matra Datavision 1995
+
+class ParalPresentation from DsgPrs
+    	---Purpose: A framework to define display of relations of parallelism between shapes.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d,
+    ArrowSide from DsgPrs,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Defines the display of elements showing relations of
+    	-- parallelism between shapes.
+    	-- These include the two points of attachment
+    	-- AttachmentPoint1 and AttachmentPoint1, the
+    	-- direction aDirection, and the offset point OffsetPoint.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection: Dir from gp;
+		  OffsetPoint: Pnt from gp;
+	          ArrowSide: ArrowSide from DsgPrs);
+	---Purpose: Defines the display of elements showing relations of
+    	-- parallelism between shapes.
+    	-- These include the two points of attachment
+    	-- AttachmentPoint1 and AttachmentPoint1, the
+    	-- direction aDirection, the offset point OffsetPoint and
+    	-- the text aText.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+end ParalPresentation;

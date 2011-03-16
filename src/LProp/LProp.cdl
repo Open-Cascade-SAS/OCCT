@@ -1,0 +1,80 @@
+-- File:	LProp.cdl
+-- Created:	Wed Mar 27 16:40:20 1991
+-- Author:	Michel CHAUVAT
+--		<mca@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package LProp
+
+    ---Purpose: Handles local properties of curves and surfaces.
+    --          Given a curve and a parameter value the following computations
+    --          are available :
+    --          - point,
+    --          - derivatives,
+    --          - tangent,
+    --          - normal,
+    --          - curvature,
+    --          - centre of curvature,
+    --          - Locals curvature's extremas,
+    --          - Points of inflection,
+    --          Given a surface and 2 parameters the following computations
+    --          are available :
+    --          - for each parameter:
+    --            - derivatives,
+    --            - tangent line,
+    --            - centre of curvature,
+    --          - point,
+    --          - normal line,
+    --          - maximum and minimum curvatures,
+    --          - principal directions of curvature,
+    --          - mean curvature,
+    --          - Gaussian curvature.
+
+
+    ---Level : Public. 
+    --  All methods of all  classes will be public.
+
+uses Standard, gp, math, TCollection, TColStd, GeomAbs
+
+is
+
+    enumeration Status is Undecided , Undefined, Defined, Computed;
+    enumeration CIType is Inflection, MinCur   , MaxCur;
+    	---Purpose:
+    	-- Identifies the type of a particular point on a curve:
+    	-- - LProp_Inflection: a point of inflection
+    	-- - LProp_MinCur: a minimum of curvature
+    	-- - LProp_MaxCur: a maximum of curvature.
+        
+    exception BadContinuity inherits Failure;
+    exception NotDefined    inherits Failure;
+    
+    deferred generic class CurveTool;
+        ---Purpose: The template class used in CLProps.
+    deferred generic class SurfaceTool;
+        ---Purpose: The template class used in SLProps.
+    
+    generic class CLProps;
+    	---Purpose: Computation of local properties of a curve.
+    generic class SLProps;
+    	---Purpose: Computation of local properties of a surface.
+
+							    
+    class CurAndInf;	
+    	---Purpose: Stores the parameters of a curve 2d or 3d corresponding
+	--          to the curvature's extremas and the inflection's points.
+    
+    class AnalyticCurInf;
+    	---Purpose: Computes the locals extremas of curvature of a gp curve.
+
+    private generic class FuncCurExt;
+    private generic class FuncCurNul;
+    generic class NumericCurInf, FCurExt, FCurNul;    	
+    	---Purpose: Computes the locals extremas of curvature and the 
+    	--          inflections of a bounded curve in 2d.
+
+    private class SequenceOfCIType instantiates Sequence from TCollection 
+						        (CIType  from  LProp); 
+    
+end LProp;    

@@ -1,0 +1,53 @@
+-- File:	TopoDSToStep_MakeStepVertex.cdl
+-- Created:	Wed Nov 30 10:22:50 1994
+-- Author:	Frederic MAUPAS
+--		<fma@bibox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakeStepVertex from TopoDSToStep 
+    inherits Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Vertex from TopoDS and TopologicalRepresentationItem from
+    --          StepShape. 
+  
+uses Vertex                        from TopoDS,
+     TopologicalRepresentationItem from StepShape,
+     Tool                          from TopoDSToStep,
+     MakeVertexError               from TopoDSToStep,
+     FinderProcess                 from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+    Create returns MakeStepVertex;
+    
+    Create (V : Vertex from TopoDS;
+    	    T : in out Tool from TopoDSToStep;
+	   FP : mutable FinderProcess from Transfer)
+         returns MakeStepVertex;
+    
+    Init(me : in out;
+     	 V  : Vertex from TopoDS;
+     	 T  : in out Tool from TopoDSToStep;
+         FP : mutable FinderProcess from Transfer);
+
+	    
+    Value (me) returns TopologicalRepresentationItem from StepShape
+    	raises NotDone
+    	is static;
+    	---C++: return const&
+        
+    Error(me) returns MakeVertexError from TopoDSToStep;
+
+fields
+
+    myResult : TopologicalRepresentationItem from StepShape;
+
+    myError  : MakeVertexError from TopoDSToStep;
+    
+end MakeStepVertex;
+
+

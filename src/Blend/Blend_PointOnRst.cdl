@@ -1,0 +1,109 @@
+-- File:	Blend_PointOnRst.cdl
+-- Created:	Thu Dec  2 16:00:09 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class PointOnRst from Blend
+    (TheArc    as any)
+
+
+	---Purpose: Definition of an intersection point between a line
+	--          and a restriction on a surface.
+	--          Such a point is contains geometrical informations (see
+	--          the Value method) and logical informations.
+
+
+uses Transition from IntSurf
+     
+raises DomainError from Standard
+
+is
+
+
+    Create
+    
+	---Purpose: Empty constructor.
+
+    	returns PointOnRst from Blend;
+
+
+    Create( A: TheArc; Param: Real from Standard;
+            TLine, TArc: Transition from IntSurf)
+
+	---Purpose: Creates the PointOnRst on the arc A, at parameter Param,
+	--          with the transition TLine on the walking line, and
+	--          TArc on the arc A.
+
+    	returns PointOnRst from Blend;
+
+
+
+    SetArc(me: in out; A: TheArc; Param: Real from Standard;
+                       TLine, TArc: Transition from IntSurf)
+
+	---Purpose: Sets the values of a point which is on the arc
+	--          A, at parameter Param.
+
+
+    	is static;
+
+
+
+    Arc(me)
+    
+	---Purpose: Returns the arc of restriction containing the
+	--          vertex.
+
+    	returns any TheArc
+	---C++: return const&
+	---C++: inline
+	
+	is static;
+
+
+    TransitionOnLine(me)
+    
+	---Purpose: Returns the transition of the point on the
+	--          line on surface.
+
+    	returns Transition from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	is static;
+
+
+    TransitionOnArc(me)
+    
+	---Purpose: Returns the transition of the point on the arc
+	--          returned by Arc().
+
+    	returns Transition from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	is static;
+
+
+    ParameterOnArc(me)
+    
+	---Purpose: Returns the parameter of the point on the
+	--          arc returned by the method Arc().
+
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+fields
+
+    arc       : TheArc;
+    traline   : Transition from IntSurf;
+    traarc    : Transition from IntSurf;
+    prm       : Real       from Standard;
+
+end PointOnRst;

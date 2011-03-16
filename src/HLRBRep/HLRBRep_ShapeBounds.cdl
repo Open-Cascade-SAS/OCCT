@@ -1,0 +1,86 @@
+-- File:	HLRBRep_ShapeBounds.cdl
+-- Created:	Thu Apr 17 17:51:44 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class ShapeBounds from HLRBRep
+    ---Purpose: Contains  a Shape and the  bounds of its vertices,
+    --          edges and faces in the DataStructure.
+
+uses
+    Integer  from Standard,
+    OutLiner from HLRTopoBRep,
+    TShared  from MMgt
+
+is
+    Create returns ShapeBounds from HLRBRep; 
+    	---C++: inline
+    
+    Create(S                 : OutLiner from HLRTopoBRep;
+ 	   SData             : TShared  from MMgt;
+           nbIso             : Integer  from Standard;
+           V1,V2,E1,E2,F1,F2 : Integer  from Standard)
+    returns ShapeBounds from HLRBRep; 
+    
+     Create(S                 : OutLiner from HLRTopoBRep;
+    	    nbIso             : Integer  from Standard;
+            V1,V2,E1,E2,F1,F2 : Integer  from Standard)
+    returns ShapeBounds from HLRBRep; 
+    
+    Translate(me : in out; NV,NE,NF : Integer from Standard)
+    is static;
+
+    Shape(me : in out; S : OutLiner from HLRTopoBRep)
+    	---C++: inline
+    is static;
+
+    Shape(me) returns OutLiner from HLRTopoBRep
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+    ShapeData(me : in out; SD : TShared from MMgt)
+    	---C++: inline
+    is static;
+
+    ShapeData(me) returns TShared from MMgt
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+    NbOfIso(me : in out;nbIso : Integer from Standard)
+    	---C++: inline
+    is static;
+
+    NbOfIso(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    Sizes(me; NV,NE,NF : out Integer from Standard)
+    is static;
+
+    Bounds(me; V1,V2,E1,E2,F1,F2 : out Integer from Standard)
+    	is static;
+    
+    UpdateMinMax(me : in out; TotMinMax : Address from Standard)
+    	is static;
+
+    MinMax(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myShape     : OutLiner from HLRTopoBRep;
+    myShapeData : TShared  from MMgt;
+    myNbIso     : Integer  from Standard;
+    myVertStart : Integer  from Standard;
+    myVertEnd   : Integer  from Standard;
+    myEdgeStart : Integer  from Standard;
+    myEdgeEnd   : Integer  from Standard;
+    myFaceStart : Integer  from Standard;
+    myFaceEnd   : Integer  from Standard;
+    myMinMax    : Integer  from Standard[16];
+
+end ShapeBounds from HLRBRep;
+

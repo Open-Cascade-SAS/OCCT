@@ -1,0 +1,159 @@
+-- File:	GProp.cdl
+-- Created:	Mon Aug 24 17:41:08 1992
+-- Created:	Tue Mar 12 17:51:12 1991
+-- Author:	Michel CHAUVAT
+--              JCV - January 1992
+---Copyright:	Matra Datavision 1992
+
+
+
+package GProp
+
+        --- Purpose: 
+        --  This package defines algorithmes to compute the global properties 
+        --  of a set of points, a curve, a surface, a solid (non infinite 
+        --  region of space delimited with geometric entities), a compound
+        --  geometric system (heterogeneous composition of the previous 
+        --  entities).
+        --    
+        --  Global properties are :
+        --  . length, area, volume,
+        --  . centre of mass,
+        --  . axis of inertia,
+        --  . moments of inertia,
+        --  . radius of gyration.
+        --  
+        --  It provides  also a class to  compile the average point or
+        --  line of a set of points.
+
+uses 
+    Standard, 
+    TColStd, 
+    TColgp, 
+    gp, 
+    math, 
+    GeomAbs
+
+is
+
+exception UndefinedAxis inherits DomainError;
+        --- Purpose :  
+        --  This exception is raised when a method makes reference to
+        --  an undefined inertia axis of symmetry.
+        
+
+enumeration EquaType
+    is      Plane, Line, Point, Space, None end;
+
+enumeration ValueType
+    is      Mass,  
+            CenterMassX, CenterMassY, CenterMassZ, 
+            InertiaXX, InertiaYY, InertiaZZ, 
+            InertiaXY, InertiaXZ, InertiaYZ, 
+            Unknown 
+    end;
+
+
+
+        --- Purpose : Algorithmes :
+
+
+  class GProps;
+        --- Purpose :
+        --  Computes the global properties of a compound geometric 
+        --  system in 3d space.  It gives facilities to compose the
+        --  properties of hetegogeneous elements of the system 
+        --  (PGProps, CGProps, SGProps, VGProps or GProps). A density 
+        --  can be associated with each component of the system.
+
+
+       class PGProps;
+           --- Purpose :
+           --  Computes the global properties of a set of points in 3d.
+           --  This class inherits GProps.
+       
+         
+       generic class CGProps;
+           ---Purpose :
+           --   Computes the global properties  of a bounded
+           --   curve in 3d. This class inherits GProps.
+
+       class CelGProps;
+           ---Purpose :
+           --   Computes the global properties  of a gp curve in 3d 
+           --   This class inherits GProps.
+
+       generic class SGProps;
+           ---Purpose :
+           --   Computes the global properties and the area of a bounded
+           --   surface in 3d. This class inherits GProps.
+
+
+       class SelGProps;
+           ---Purpose :
+           --   Computes the global properties and the area of a bounded
+           --   elementary surface in 3d. This class inherits GProps.
+       
+       generic class VGProps;
+           ---Purpose :
+           --   Computes the global properties and the volume of a region
+           --   of space. This class inherits GProps.
+
+       generic class VGPropsGK, UFunction, TFunction;
+           ---Purpose :
+           --   Computes the global properties and the volume of a region
+           --   of space by adaptive Gauss-Kronrod integration.  
+           --   This class inherits GProps.
+
+
+       class VelGProps;
+           ---Purpose :
+           --   Computes the global properties and the volume of a region
+           --   of space. the region of space is defined by an elementary 
+           --   surface. This class inherits GProps.
+
+
+  class PrincipalProps;
+        ---Purpose :
+        --  Returns the principal inertia properties of a GProps. 
+
+
+
+
+        --- Purpose :  
+        --  The following abstract classes define templates
+        --  with the minimum of methods required to implement 
+        --  the computation of the global properties for a curve
+        --  or a surface.
+
+
+  deferred generic class CurveTool;
+
+  deferred generic class FaceTool;
+  
+  deferred generic class DomainTool;  
+  
+  --
+  --   Class to compute the average plane or line of a set of points.
+  --   
+  
+  class PEquation;
+    
+        --- Purpose : methods of package
+ 
+  HOperator (G, Q : Pnt from gp; Mass : Real; Operator : out Mat from gp);
+        --- Purpose : Computes the matrix Operator, referred to as the
+-- "Huyghens Operator" of a geometric system at the
+-- point Q of the space, using the following data :
+-- - Mass, i.e. the mass of the system,
+-- - G, the center of mass of the system.
+--   The "Huyghens Operator" is used to compute
+-- Inertia/Q, the matrix of inertia of the system at
+-- the point Q using Huyghens' theorem :
+--    Inertia/Q = Inertia/G + HOperator (Q, G, Mass)
+-- where Inertia/G is the matrix of inertia of the
+-- system relative to its center of mass as returned by
+-- the function MatrixOfInertia on any GProp_GProps object.
+
+
+end GProp;

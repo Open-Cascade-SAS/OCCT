@@ -1,0 +1,79 @@
+-- File:	QANewModTopOpe_Intersection.cdl
+-- Created:	Mon Dec 25 10:43:35 2000
+-- Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
+-- Copyright:	SAMTECH S.A. 2000
+
+
+-- sccsid[] = "@(#) QANewModTopOpe_Intersection.cdl 4.0-2, 07/01/03@(#)";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       ifv ! Creation                                !25-12-2000! 3.0-00-2!
+-- !       mkk ! History correction                      !19-05-2003! 3.0-00-2!
+-- +---------------------------------------------------------------------------+
+
+class Intersection from QANewModTopOpe inherits BooleanOperation from BRepAlgoAPI 
+
+---Purpose: provides  intersection  of  two  shapes;
+ 
+uses
+
+    Shape from TopoDS, 
+    DataMapOfShapeListOfShape from TopTools,
+    ListOfShape from TopTools
+     
+is 
+  
+    Create(theObject1,  theObject2 : Shape from TopoDS )
+    ---Purpose: 
+    
+    returns Intersection  from QANewModTopOpe;   
+
+    Generated (me: in out; theS : Shape from TopoDS)
+    	---Purpose: Returns the list  of shapes generated from the shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined; 
+
+    HasGenerated (me)
+    	returns Boolean from Standard
+	is redefined;
+    	---Purpose: Returns true if there is at least one generated shape.
+    	---         For use in BRepNaming.
+
+    IsDeleted (me: in out;  
+    	    aS : Shape from TopoDS)
+    	returns Boolean
+    	is redefined;
+
+
+    HasDeleted (me)
+    	returns Boolean from Standard
+	is redefined;
+    	---Purpose: Returns true if there is at least one deleted shape.
+    	---         For use in BRepNaming.
+
+fields
+    
+    myMapGener: DataMapOfShapeListOfShape from TopTools;
+
+end  Intersection;
+
+
+
+-- @@SDM: begin
+
+-- Copyright SAMTECH ..........................................Version    3.0-00
+-- Lastly modified by : mkk                                    Date : 19-05-2003
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       ifv ! Creation                                !25-12-2000! 3.0-00-2!
+-- !       mkk ! History correction                      !19-05-2003! 3.0-00-2!
+-- !  vladimir ! adaptation to CAS 5.0                   !  07/01/03!    4.0-2!
+-- +---------------------------------------------------------------------------+
+--
+-- @@SDM: end

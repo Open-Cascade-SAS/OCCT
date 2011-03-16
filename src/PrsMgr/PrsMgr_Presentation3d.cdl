@@ -1,0 +1,141 @@
+-- File:	P3rsMgr_Presentation3d.cdl
+-- Created:	Thu Oct 21 13:09:32 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+-- Modified by  rob 09-oct-96
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Presentation3d from PrsMgr inherits Presentation from PrsMgr
+
+uses
+    PresentationManager3d from PrsMgr,
+    Presentation from Prs3d,
+    NameOfColor from Quantity,
+    Transformation from Geom,
+    Length from Quantity,
+    ShadingAspect from Prs3d,
+    TypeOfPresentation3d from PrsMgr,
+    DataStructureManager from Graphic3d,
+    Structure from Graphic3d,
+    PresentableObjectPointer from PrsMgr,PresentableObject from PrsMgr,
+    Prs from PrsMgr,
+    Projector from Prs3d,
+    KindOfPrs from PrsMgr
+is
+    Create(aPresentationManager: PresentationManager3d from PrsMgr;
+           aPresentableObject: PresentableObject from PrsMgr)
+    returns mutable Presentation3d  from  PrsMgr
+    is private;
+
+    KindOfPresentation(me) returns KindOfPrs from PrsMgr is redefined static;
+
+    Destroy(me: mutable) is redefined;
+    ---Level: Public
+    ---Purpose: Destructor
+    ---C++:     alias ~
+
+    Display(me: mutable) 
+    is redefined static private;
+    
+    Erase(me) is redefined static private;
+    
+    Highlight(me: mutable) is redefined static private;
+    
+    Unhighlight (me) is redefined static private;
+    
+    IsDisplayed (me) returns Boolean from Standard
+    is redefined static private;
+
+    IsHighlighted (me) returns Boolean from Standard
+    is redefined static private;
+
+
+    DisplayPriority(me) returns Integer from Standard
+    is redefined static private;
+    
+    SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
+    is redefined static private;
+
+    Clear(me:mutable)
+    ---Purpose: removes the whole content of the presentation.
+    --          Does not remove the other connected presentations.
+    --          
+    is redefined static private;
+
+
+    Color(me:mutable; aColor: NameOfColor from Quantity)
+    is static private;
+    
+    BoundBox(me)
+    is static private;
+    
+---Category: references to other presentation.
+
+    Connect(me; anOtherPresentation: Presentation3d from PrsMgr)
+    is static private;
+    
+---Category: Transformation methods.
+
+    Transform (me; aTransformation: Transformation from Geom)
+    is static private;
+
+    Place (me; X,Y,Z: Length from Quantity)
+    is static private;
+
+    Multiply (me; aTransformation: Transformation from Geom)
+    is static private;
+
+    Move (me; X,Y,Z: Length from Quantity)
+    is static private;
+    	
+ ---Category: Global Aspect methods
+
+    SetShadingAspect(me;
+    	             aShadingAspect: ShadingAspect from Prs3d)
+    is static private;
+
+    Presentation (me) returns mutable Presentation from Prs3d
+    is static;
+
+
+	    ---Category:  Computed Structures
+
+    Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
+    returns Structure from Graphic3d
+    is static private;
+
+    Compute(me           : mutable; 
+    	    aProjector   : DataStructureManager from Graphic3d;
+	    TheTrsf      : Transformation from Geom)
+    returns Structure from Graphic3d
+    is static private;
+
+    Compute(me           :  mutable; 
+    	    aProjector   :  DataStructureManager from Graphic3d;
+    	    aGivenStruct :  Structure from Graphic3d)
+    is static private;
+
+    Compute(me           : mutable; 
+    	    aProjector   : DataStructureManager from Graphic3d;
+	    TheTrsf      : Transformation from Geom;
+    	    aGivenStruct : Structure from Graphic3d)
+    is static private;
+
+
+
+    Projector(myclass; aProjector: DataStructureManager from Graphic3d)
+    returns Projector from Prs3d
+    is private;
+    
+fields
+
+    myStructure: Prs from PrsMgr;
+    myDisplayReason: Boolean from Standard;
+    myPresentableObject: PresentableObjectPointer from PrsMgr;
+friends 
+    class PresentationManager3d from PrsMgr,
+    class PresentableObject from PrsMgr,
+    class Prs from PrsMgr
+end Presentation3d from PrsMgr;

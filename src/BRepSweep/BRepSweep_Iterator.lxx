@@ -1,0 +1,40 @@
+// File:	BRepSweep_Iterator.lxx
+// Created:	Wed Jun  9 18:07:23 1993
+// Author:	Laurent BOURESCHE
+//		<lbo@phobox>
+
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  BRepSweep_Iterator::More()const 
+{
+  return myIterator.More();
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape&  BRepSweep_Iterator::Value()const 
+{
+  return myIterator.Value();
+}
+
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation  BRepSweep_Iterator::Orientation()const 
+{
+  return Value().Orientation();
+}
+
+

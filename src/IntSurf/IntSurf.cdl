@@ -1,0 +1,79 @@
+-- File:	IntSurf.cdl
+-- Created:	Mon Aug 24 18:47:01 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+package IntSurf 
+
+	---Purpose: This package provides resources for
+	--          all the packages concerning the intersection
+	--          between surfaces. 
+
+        ---Level: Internal
+        --
+        -- All the methods of all the classes of this package are Internal.
+        -- 
+
+
+uses Standard, MMgt, StdFail, GeomAbs, TCollection, gp, TColgp
+
+is
+
+    class PntOn2S;
+    
+    class SequenceOfPntOn2S instantiates Sequence from TCollection
+    	(PntOn2S from IntSurf);
+	
+    class Couple;
+
+    class SequenceOfCouple instantiates Sequence from TCollection
+                (Couple from IntSurf);
+    
+    
+    class LineOn2S;
+    
+    class Quadric;
+    
+    class QuadricTool;
+    
+    class PathPoint;
+    
+    class SequenceOfPathPoint instantiates Sequence from TCollection
+    	(PathPoint from IntSurf);
+
+    class PathPointTool;
+    
+    class InteriorPoint;
+    
+    class SequenceOfInteriorPoint instantiates Sequence from TCollection
+    	(InteriorPoint from IntSurf);
+    
+    class InteriorPointTool;
+
+    class Transition;    
+
+    --amv    
+    class ListOfPntOn2S instantiates List from TCollection
+    	(PntOn2S from IntSurf);
+    
+    enumeration TypeTrans is In, Out, Touch, Undecided;
+    
+    enumeration Situation is Inside, Outside, Unknown;
+
+
+    MakeTransition(TgFirst,TgSecond: Vec from gp; Normal: Dir from gp;
+                   TFirst,TSecond: out Transition from IntSurf);
+
+	---Purpose: Computes the transition of the intersection point
+	--          between the two lines.
+	--          TgFirst is the tangent vector of the first line.
+	--          TgSecond is the tangent vector of the second line.
+	--          Normal is the direction used to orientate the cross
+	--          product TgFirst^TgSecond.
+	--          TFirst is the transition of the point on the first line.
+	--          TSecond is the transition of the point on the second line.
+
+
+end IntSurf;

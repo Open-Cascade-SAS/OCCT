@@ -1,0 +1,21 @@
+-- File:	StepFEA_NodeDefinition.cdl
+-- Created:	Sun Dec 15 10:59:25 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class NodeDefinition from StepFEA
+inherits ShapeAspect from StepRepr
+
+    ---Purpose: Representation of STEP entity NodeDefinition
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData
+
+is
+    Create returns NodeDefinition from StepFEA;
+	---Purpose: Empty constructor
+
+end NodeDefinition;

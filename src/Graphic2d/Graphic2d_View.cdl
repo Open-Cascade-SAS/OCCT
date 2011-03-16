@@ -1,0 +1,487 @@
+
+-- File:	Graphic2d_View.cdl
+-- Created:	Tue Jul 13 09:19:31 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+--- SAV 14/11/01 Added PickByCircle().
+
+class View from Graphic2d inherits TShared from MMgt
+
+	---Version:
+
+	---Purpose: A View is a graphic object manager.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	Buffer			        from Graphic2d,
+	GraphicObject		    from Graphic2d,
+	Primitive		        from Graphic2d,
+	DisplayList		        from Graphic2d,
+	SequenceOfGraphicObject	from Graphic2d,
+	SequenceOfBuffer     	from Graphic2d,
+	Drawer			        from Graphic2d,
+	ViewMapping		        from Graphic2d,
+	TransientManager	    from Graphic2d,
+    TypeOfDeflection	    from Aspect,
+	Driver			        from Aspect,
+	WindowDriver		    from Aspect,
+	Length			        from Quantity,
+	SequenceOfInteger	    from TColStd,
+	PickMode                from Graphic2d
+
+raises
+
+	OverrideColorError	from Graphic2d
+	
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create
+	returns mutable View from Graphic2d;
+	---Level: Public
+	---Purpose: Creates a view.
+	--	    A view is a set of graphic objects.
+	--	    The view manages this set.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Add (me: mutable;
+		aBuffer: Buffer from Graphic2d)
+	is static private;
+	---Level: Internal
+	---Purpose: Adds the grafic buffer <aBuffer> in the
+	--	    view  <me>.
+	--  Warning: Called by the constructor of <aBuffer>
+	---Category: Methods to modify the class definition
+
+	Add (me: mutable;
+		aGraphicObject: GraphicObject from Graphic2d;
+		anAltitude: Integer from Standard = 1)
+	returns Integer is static private;
+	---Level: Internal
+	---Purpose: Adds the graphic object <aGraphicObject> in the
+	--	    view  <me> at the altitude <anAltitude>.
+	--  and returns the rank of the object in the display-list. 
+	--  Warning: Called by the constructor of <aGraphicObject>
+	---Category: Methods to modify the class definition
+
+	Change (me: mutable;
+		aGraphicObject: GraphicObject from Graphic2d;
+		anAltitude: Integer from Standard)
+	returns Integer is static private;
+	---Level: Internal
+	---Purpose: Changes the altitude <anAltitude> of 
+	--  the graphic object <aGraphicObject>
+	--  and returns the updated rank of the object in the display-list. 
+	---Category: Methods to modify the class definition
+
+	Remove (me: mutable;
+		aGraphicObject: GraphicObject from Graphic2d)
+	returns Integer is static private;
+	---Level: Internal
+	---Purpose: Removes the graphic object <aGraphicObject> from
+	--	    the view <me>.
+	--  and returns the previous rank of the deleted object in the display-list. 
+	---Category: Methods to modify the class definition
+
+	Remove (me: mutable;
+		aBuffer: Buffer from Graphic2d)
+	is static private;
+	---Level: Internal
+	---Purpose: Removes the graphic buffer <aBuffer> from
+	--	    the view <me>.
+	---Category: Methods to modify the class definition
+
+	Remove (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Removes all the graphic objects from the view <me>.
+	---Category: Methods to modify the class definition
+
+	Erase (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Forbids the drawing of all graphic objects in <me>.
+	---Category: Methods to modify the class definition
+
+	Erase (me: mutable;
+		aGraphicObject: GraphicObject from Graphic2d)
+	is static private;
+	---Level: Public
+	---Purpose: Forbids the drawing of the specified graphic object in <me>.
+	---Category: Methods to modify the class definition
+
+	Destroy (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Deletes <me>
+	---Category: Methods to modify the class definition
+	---C++: alias ~
+
+	-------------------
+	-- Category: Update
+	-------------------
+
+	Update (me: mutable;
+		aDriver: Driver from Aspect;
+		aViewMapping: ViewMapping from Graphic2d;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard;
+		ClearBefore: Boolean from Standard = Standard_True)
+	is static;
+	---Level: Public
+	---Purpose: Fully updates the driver <aDriver> in function of
+	--	    modifications of the graphic objects displayed
+	--	    in the view <me>.
+	--	    <aViewMapping> defines the "map from".
+	--	    <aXPosition>, <aYPosition>, <aScale> define the "map to".
+	--	    The entire window which supporting the view will be
+	--	    cleared before if <ClearBefore> flag is TRUE.
+	---Category: Update
+
+	TinyUpdate (me: mutable;
+		aDriver: Driver from Aspect;
+		aViewMapping: ViewMapping from Graphic2d;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard;
+		Reset: Boolean from Standard = Standard_False)
+	is static;
+	---Level: Public
+	---Purpose: Partially updates the driver <aDriver> in function of
+	--	    modifications of the graphic objects displayed
+	--	    in the view <me> with the defined mapping parameters
+	--	    and reset the update pointer if <Reset> is TRUE.
+	--  Warning: Only the new primitives created since the last Update
+	--	    are drawn. All others primitives are in the fixed
+	--	    background.
+	---Category: Update
+
+	Update (me: mutable;
+		aDriver: Driver from Aspect;
+		aGraphicObject: GraphicObject from Graphic2d;
+		aViewMapping: ViewMapping from Graphic2d;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Partially updates the driver <aDriver> with
+	--          the graphic object <aGraphicObject> in the
+	--	    the view <me> with the defined mapping parameters.
+	---Category: Update
+
+	Update (me: mutable;
+		aDriver: Driver from Aspect;
+		aPrimitive: Primitive from Graphic2d;
+		aViewMapping: ViewMapping from Graphic2d;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Partially updates the driver <aDriver> with
+	--          the primitive <aPrimitive> in the
+	--	    the view <me> with the defined mapping parameters.
+	---Category: Update
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	DisplayList (me)
+	returns DisplayList from Graphic2d
+	is static;
+	---Level: Public
+	---Purpose: Returns the list of graphic objects displayed in <me>.
+	---Category: Inquire methods
+
+	IsIn (me; aGraphicObject: GraphicObject from Graphic2d)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the graphic object
+	--	    <aGraphicObject> is displayed in <me>,
+	--	    Standard_False if not.
+	---Category: Inquire methods
+
+	MinMax (me; aList: DisplayList from Graphic2d;
+		Minx, Maxx, Miny, Maxy: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    graphic objects referenced in the list <aList>.
+	--  Warning: All markers are ignored.
+	--  Warning: If <aList> is empty or contains markers and nothing else
+	--	    returns Minx = Miny = RealLast () and
+	--	    returns Maxx = Maxy = RealFirst ()
+	---Category: Inquire methods
+
+	MinMax (me; Minx, Maxx, Miny, Maxy: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    graphic objects displayed in the view <me>.
+	--  Warning: All markers are ignored.
+	--  Warning: If <me> is empty or contains markers and nothing else
+	--	    returns Minx = Miny = RealLast () and
+	--	    returns Maxx = Maxy = RealFirst ()
+	---Category: Inquire methods
+
+	MarkerMinMax (me; aList: DisplayList from Graphic2d;
+		Minx, Maxx, Miny, Maxy: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    markers referenced in the graphic objects referenced
+	--	    in the list <aList>.
+	--  Warning: If <aList> is empty or without markers
+	--	    returns Minx = Miny = RealLast () and
+	--	    returns Maxx = Maxy = RealFirst ()
+	---Category: Inquire methods
+
+	MarkerMinMax (me; Minx, Maxx, Miny, Maxy: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    markers referenced in the graphic objects displayed
+	--	    in the view <me>.
+	--  Warning: If <me> is empty or without markers
+	--	    returns Minx = Miny = RealLast () and
+	--	    returns Maxx = Maxy = RealFirst ()
+	---Category: Inquire methods
+
+	Position (me;
+		aGraphicObject: GraphicObject from Graphic2d)
+	returns Integer is static private;
+	---Level: Internal
+	---Purpose: Returns the rank of 
+	--  the graphic object <aGraphicObject> in the display-list.
+	---Category: Inquire methods
+
+	Altitude (me;
+		aGraphicObject: GraphicObject from Graphic2d)
+	returns Integer is static private;
+	---Level: Internal
+	---Purpose: Returns the altitude of 
+	--  the graphic object <aGraphicObject> in the display-list.
+	---Category: Inquire methods
+
+	-----------------
+	-- Category: Pick
+	-----------------
+
+--	Pick (me; aViewMapping: ViewMapping from Graphic2d;
+	Pick (me : mutable; aViewMapping: ViewMapping from Graphic2d;
+		X, Y, aPrecision: Real from Standard;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard)
+	returns DisplayList from Graphic2d
+	is static;
+	---Level: Internal
+	---Purpose: Returns the list of graphic objects picked.
+
+    	---SAV
+	PickByCircle(me : mutable; aViewMapping : ViewMapping from Graphic2d;
+		                   X, Y, Radius : Real from Standard;
+		                   aXPosition, aYPosition : Real from Standard;
+		                   aScale: Real from Standard)
+	returns DisplayList from Graphic2d
+	is static;
+	---Level: Internal
+	---Purpose: Returns the list of graphic objects picked.
+
+
+    Pick( me: mutable; aViewMapping: ViewMapping from Graphic2d;
+	      Xmin, Ymin, Xmax, Ymax: Real from Standard;
+		  aXPosition, aYPosition: Real from Standard;
+		  aScale: Real from Standard; 
+		  aPickMode: PickMode from Graphic2d = Graphic2d_PM_INCLUDE )
+	returns DisplayList from Graphic2d;
+
+	---Level: Internal
+	---Purpose: Returns Standard_True if the primitive <me> is:
+	--          included in rectangle (<aPickMode = PM_INCLUDE>),
+	--          excluded from rectangle (<aPickMode = PM_EXLUDE>),
+	--          intersected by rectangle (<aPickMode = PM_INTERSECT>),
+	--          defined by Xmin, Ymin, Xmax, Ymax. 
+	--	        Standard_False if not.
+
+	---------------------------------
+	-- Category: Highlight management
+	---------------------------------
+
+	DefaultOverrideColor (me)
+	returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the override color index.
+	---Category: Highlight management
+	---Warning: Raises OverrideColorError if the
+	--          override color index is not defined.
+	raises OverrideColorError from Graphic2d is static;
+
+	IsDefinedColor (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the override color index
+	--	    is defined, Standard_False if not.
+	---Category: Highlight management
+
+	SetDefaultOverrideColor (me: mutable;
+		anIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Sets the override color index.
+	---Category: Highlight management
+
+	----------------------------------
+	-- Category: Deflection Management
+	----------------------------------
+
+	--------------------------------------------------------
+	-- Summary of Chordal Deflection                      --
+	--                                                    --
+	-- All drawings of curves or circles are made with    --
+	-- respect to a maximal chordal deflection.           --
+	--                                                    --
+	-- The absolute deflection is given through the       --
+	-- method: SetDeflection.                             --
+	--                                                    --
+	-- The relative deflection is given through the       --
+	-- method: SetDeflectionCoefficient                   --
+	-- In this case the deflection will be :              --
+	-- SizeOfObject * DeflectionCoefficient               --
+	--                                                    --
+	--------------------------------------------------------
+
+	SetTypeOfDeflection (me: mutable;
+		aTypeOfDeflection: TypeOfDeflection from  Aspect =
+						Aspect_TOD_RELATIVE)
+	is static;
+	---Level: Internal
+	---Purpose: by default: TOD_RELATIVE;
+	--	    However, except for the shapes, the drawing will be
+	--	    made using the absolute deflection.
+	---Category: Deflection Management
+
+   	TypeOfDeflection(me)
+	returns TypeOfDeflection from Aspect
+	is static;
+	---Level: Internal
+	---Purpose: Returns the deflection type.
+	---Category: Deflection Management
+
+	SetDeflection (me: mutable; aDeflection: Length from Quantity = 0.001)
+	is static;
+	---Level: Internal
+	---Purpose: Sets the absolute deflection value.
+	---Category: Deflection Management
+
+	Deflection (me)
+	returns Real from Standard
+	is static;
+	---Level: Internal
+	---Purpose: Returns the absolute deflection value.
+	---Category: Deflection Management
+
+	SetDeflectionCoefficient (me: mutable;
+		aCoefficient: Real from Standard = 0.00033)
+	is static;
+	---Level: Internal
+	---Purpose: Sets the relative deflection coefficient.
+	--	    default value = 0.00033
+	---Category: Deflection Management
+
+	DeflectionCoefficient (me)
+	returns Real from Standard
+	is static;
+	---Level: Internal
+	---Purpose: Returns the relative deflection coefficient.
+	---Category: Deflection Management
+
+ 	SetTextPrecision (me: mutable; aPrecision: Real from Standard = 0.0015)
+ 	is static;
+ 	---Level: Internal
+ 	---Purpose: Sets the MIN viewable text height precision in Device space,
+ 	--	    the texts whose the size is < to this precision
+ 	--	    is drawn at screen with an outlined or filled rectangle. 
+ 	--          The default text precision value is 0.0015
+ 	---Category: Text Management
+ 
+ 	TextPrecision (me)
+ 	returns Real from Standard
+ 	is static;
+ 	---Level: Internal
+ 	---Purpose: Returns the text precision.
+ 	---Category: Text Management
+
+	----------------------------
+	-- Category: Convert methods
+	----------------------------
+
+	Convert (me; aViewMapping: ViewMapping from Graphic2d;
+		aDrawPositionX, aDrawPositionY: Real from Standard;
+		aXPosition, aYPosition: Real from Standard;
+		aScale: Real from Standard;
+		aX,  aY: out Real from Standard)
+	is static;
+	---Level: Internal
+	---Purpose: ????
+	---Category: Convert methods
+
+	Convert (me; aViewMapping: ViewMapping from Graphic2d;
+		aScalar: Real from Standard; aScale: Real from Standard)
+	returns Real from Standard
+	is static;
+	---Level: Internal
+	---Purpose: ????
+	---Category: Convert methods
+
+	----------------------
+	-- Category: Inquiries
+	----------------------
+
+	Drawer(me) returns mutable Drawer from Graphic2d is static;
+	---Level: Internal
+	---Purpose: Returns the attached drawer of this view.
+	---Category: Inquiries 
+
+fields
+	myGraphicObjects:	SequenceOfGraphicObject from Graphic2d;
+	myGraphicAltitudes:	SequenceOfInteger from TColStd;
+	myBuffers:			SequenceOfBuffer from Graphic2d;
+	myPickList:			DisplayList from Graphic2d;
+
+	myDefaultOverrideColor:	Integer from Standard;
+	myOverrideColorIsDef:	Boolean from Standard;
+
+	myDeflection:			 Length from Quantity;
+	myDeflectionCoefficient: Real from Standard;
+	myTypeOfDeflection:		 TypeOfDeflection from Aspect;
+
+--	myDrawer:			Drawer from Graphic2d;
+	myDrawer:			TransientManager from Graphic2d;
+
+	myXCenter:	    ShortReal from Standard;
+	myYCenter:	    ShortReal from Standard;
+	mySize:		    ShortReal from Standard;
+	myXPosition:    ShortReal from Standard;
+	myYPosition:    ShortReal from Standard;
+	myScale:	    ShortReal from Standard;
+	myZoom:		    ShortReal from Standard;
+	myTextPrecision:ShortReal from Standard;
+
+friends
+
+	class GraphicObject from Graphic2d,
+	class Buffer from Graphic2d,
+	class Primitive from Graphic2d
+
+end View from Graphic2d;

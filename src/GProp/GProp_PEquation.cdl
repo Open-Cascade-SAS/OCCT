@@ -1,0 +1,136 @@
+-- File:	GProp_PEquation.cdl
+-- Created:	Wed Jun 16 11:38:18 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class PEquation from GProp 
+
+	---Purpose: A framework to analyze a collection - or cloud
+    	-- - of points and to verify if they are coincident,
+    	-- collinear or coplanar within a given precision. If
+    	-- so, it also computes the mean point, the mean
+    	-- line or the mean plane of the points. If not, it
+    	-- computes the minimal box which includes all the points. 
+
+
+uses Pnt from gp,
+     Pln from gp,
+     Lin from gp,
+     Vec from gp,
+     EquaType from GProp,
+     Array1OfPnt from TColgp
+
+
+raises NoSuchObject from Standard
+
+is
+     
+    Create(Pnts: Array1OfPnt;Tol : Real from Standard) 
+    returns PEquation from GProp;
+    	---Purpose: Constructs a framework to analyze the
+    	-- collection of points Pnts and computes:
+    	-- -   the mean point if the points in question are
+    	--   considered to be coincident within the precision Tol, or
+    	-- -   the mean line if they are considered to be
+    	--   collinear within the precision Tol, or
+    	-- -   the mean plane if they are considered to be
+    	--   coplanar within the precision Tol, or
+    	-- -   the minimal box which contains all the points. Use :
+    	-- -   the functions IsPoint, IsLinear, IsPlanar
+    	--   and IsSpace to find the result of the analysis, and
+    	-- -   the function Point, Line, Plane or Box to
+    	--   access the computed result.
+    
+    IsPlanar(me) returns Boolean
+    	---Purpose: Returns true if, according to the given
+    	-- tolerance, the points analyzed by this framework are  coplanar.
+    	-- Use the function  Plane  to access the computed result.
+    is static;
+    
+    IsLinear(me) returns Boolean
+    	---Purpose:  Returns true if, according to the given
+    	-- tolerance, the points analyzed by this framework are  colinear.
+    	-- Use the function  Line  to access the computed result.
+    is static;
+    
+    IsPoint(me) returns Boolean
+    	---Purpose:  Returns true if, according to the given
+    	-- tolerance, the points analyzed by this framework are  coincident.
+    	--       Use the function  Point  to access the computed result.
+    is static;
+    
+    IsSpace(me) returns Boolean
+    	---Purpose: Returns true if, according to the given
+    	-- tolerance value, the points analyzed by this
+    	-- framework are neither coincident, nor collinear, nor coplanar.
+    	-- Use the function Box to query the smallest box
+    	-- that includes the collection of points.
+    is static;
+    
+    Plane(me) returns Pln from gp
+    raises NoSuchObject
+	---Purpose: Returns the mean plane passing near all the
+    	-- points analyzed by this framework if, according
+    	-- to the given precision, the points are considered to be coplanar.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if, according to the
+    	-- given precision value, the points analyzed by
+    	-- this framework are considered to be:
+    	-- -   coincident, or
+    	-- -   collinear, or
+    	-- -   not coplanar.
+    is static;
+    
+    Line(me) returns Lin from gp
+    raises NoSuchObject
+	---Purpose: Returns the mean line passing near all the
+    	-- points analyzed by this framework if, according
+    	-- to the given precision value, the points are considered to be collinear.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if, according to the
+    	-- given precision, the points analyzed by this
+    	-- framework are considered to be:
+    	-- -   coincident, or
+    	-- -   not collinear.
+    is static;
+    
+    Point(me) returns Pnt from gp
+    raises NoSuchObject
+	---Purpose: Returns the mean point of all the points
+    	-- analyzed by this framework if, according to the
+    	-- given precision, the points are considered to be coincident.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if, according to the
+    	-- given precision, the points analyzed by this
+    	-- framework are not considered to be coincident.
+    is static;
+
+    Box(me; P : out Pnt from gp; V1,V2,V3 : out Vec from gp)
+    	---Purpose: Returns the definition of the smallest box which
+    	-- contains all the points analyzed by this
+    	-- framework if, according to the given precision
+    	-- value, the points are considered to be neither
+    	-- coincident, nor collinear and nor coplanar.
+    	-- This box is centered on the barycenter P of the
+    	-- collection of points. Its sides are parallel to the
+    	-- three vectors V1, V2 and V3, the length of
+    	-- which is the length of the box in the corresponding direction.
+    	-- Note: Vectors V1, V2 and V3 are parallel to
+    	-- the three axes of principal inertia of the system
+    	-- composed of the collection of points where each point is of equal mass.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if, according to the given precision,
+    	-- the points analyzed by this framework are considered to be coincident, collinear or coplanar.
+    is static;
+
+fields
+
+type      : EquaType from GProp;
+g         : Pnt from gp;
+v1        : Vec from gp;
+v2        : Vec from gp;
+v3        : Vec from gp;
+end PEquation;
+

@@ -1,0 +1,248 @@
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+// ----------------------------------------------------------------------
+// 
+// Map implementation:
+// 
+// Last Revision : Jan,8 1993 M. Mercien
+//                 The class SingleList is no more referenced in the 
+//                 implementation of Map.
+// ----------------------------------------------------------------------
+
+//----------------------------------------------------------------- 
+// Constructor 
+//----------------------------------------------------------------- 
+PCollection_HDataMap::PCollection_HDataMap(const Integer NbBuckets,
+                                 const FH& F)
+{
+   Buckets = new PCollection_Array( 1 , NbBuckets);
+   Hash = F;
+}
+
+
+// ------------------------ READING --------------------------------
+
+//----------------------------------------------------------------- 
+// NbBuckets : Return the number of buckets
+//----------------------------------------------------------------- 
+Integer PCollection_HDataMap::NbBuckets() const
+{
+   return Buckets->Length();
+}
+
+//----------------------------------------------------------------- 
+// IsEmpty : Return TRUE if the map is empty
+//----------------------------------------------------------------- 
+Boolean PCollection_HDataMap::IsEmpty() const 
+{
+   Handle(PCollection_MapNode) aNode;
+   Boolean Empty = True;
+   for (Integer i = 1 ; i <= Buckets->Length() ; i++) {
+      aNode = Buckets->Value(i);
+      if ( !aNode.IsNull() ) Empty = False;
+   }
+   return Empty;
+}
+
+//----------------------------------------------------------------- 
+// Extent : Returns the number of couples (item,key) contained in 
+//          the map.
+//----------------------------------------------------------------- 
+Integer PCollection_HDataMap::Extent() const 
+{
+   Integer Number = 0;
+   Handle(PCollection_MapNode) aNode;
+   for (Integer i = 1 ; i <= Buckets->Length() ; i++) {
+     aNode = Buckets->Value(i);
+     while ( !aNode.IsNull() ) {
+        Number++;
+        aNode = aNode->Next();
+     }
+   }
+   return Number;
+}
+
+//----------------------------------------------------------------- 
+// IsBound : Returns TRUE if an element is bounded by K
+//----------------------------------------------------------------- 
+Boolean PCollection_HDataMap::IsBound(const Key& K ) const 
+{
+   Integer Res;
+   Key TheKey;
+   Handle(PCollection_MapNode) aNode;
+   Res = Hash.HashCode (K,Buckets->Length());  
+   aNode = Buckets->Value(Res);
+   while ( !aNode.IsNull() ) {
+     TheKey = aNode->GetKey();
+     if ( Hash.Compare(TheKey,K) ) return True;
+     else aNode = aNode->Next();
+   }
+   return False;
+}
+
+//----------------------------------------------------------------- 
+// Find : Returns the element bounded by K
+//----------------------------------------------------------------- 
+Item PCollection_HDataMap::Find(const Key& K ) const 
+{
+   Integer Res;
+   Key TheKey;
+   Handle(PCollection_MapNode) aNode;
+   Res = Hash.HashCode (K,Buckets->Length());  
+   aNode = Buckets->Value(Res);
+   while ( ! aNode.IsNull() )  {
+     TheKey = aNode->GetKey();
+     if ( Hash.Compare(TheKey,K) ) return aNode->Value();
+     else aNode = aNode->Next();
+   }
+   NoSuchObject::Raise();
+}
+
+// ------------------------ WRITING --------------------------------
+
+//----------------------------------------------------------------- 
+// Clear : Remove all couples (item,key) from the map.
+//----------------------------------------------------------------- 
+void PCollection_HDataMap::Clear() 
+{
+   Handle(PCollection_MapNode) aNode1,aNode2;
+   for (Integer i = 1 ; i <= Buckets->Length() ; i++) {
+     aNode1 = Buckets->Value(i);
+     aNode2.Nullify();
+     Buckets->SetValue(i,aNode2);
+     while ( ! aNode1.IsNull() ) {
+       aNode2 = aNode1->Next();
+       aNode1.Delete();
+       aNode1 = aNode2;
+     }
+   }
+}
+
+//- ---------------------------------------------------------------- 
+// Bind : Add a new couple (Item,Key) in the map. The entry point in 
+//        the map corresponds to the result of Hashcode function (i.e
+//        HashCode (key)).
+//- ---------------------------------------------------------------- 
+void PCollection_HDataMap::Bind(const Key& K , const Item& T)
+{
+   Integer Res ;
+   Key TheKey;
+   Handle(PCollection_MapNode) aNode1,aNode2,pnul;
+   pnul.Nullify();
+   aNode1 = new PCollection_MapNode ( K , T , pnul) ;
+   Res = Hash.HashCode (K,Buckets->Length());         
+   aNode2 = Buckets->Value(Res);
+   if ( ! aNode2.IsNull()) {
+      while ( ! aNode2.IsNull() )  {
+         TheKey = aNode2->GetKey();
+         if ( Hash.Compare(TheKey,K) ) MultiplyDefined::Raise();
+         aNode2 = aNode2->Next();
+      }
+      aNode2 = Buckets->Value(Res);
+      aNode1->SetNext(aNode2);
+   }
+   Buckets->SetValue(Res,aNode1);
+}
+
+//----------------------------------------------------------------- 
+// Rebind : For an existant couple (Key,AnItem) in the map change
+//          le value of the item.
+//          If the couple does not exist raise an exception
+//----------------------------------------------------------------- 
+void PCollection_HDataMap::Rebind(const Key& K , const Item& T)
+{
+   Integer Res ;
+   Key TheKey;
+   Handle(PCollection_MapNode) aNode;
+   Res = Hash.HashCode (K,Buckets->Length());         
+   aNode = Buckets->Value(Res);
+   while ( ! aNode.IsNull() )  {
+      TheKey = aNode->GetKey();
+      if ( Hash.Compare(TheKey,K) ) {
+        aNode->SetValue(T);
+        return;
+      } 
+      else {
+        aNode = aNode->Next();
+      }
+   }
+   NoSuchObject::Raise();
+}
+
+//----------------------------------------------------------------- 
+// Unbind : Remove the couple keyed by K
+//          If the couple does not exist raise an exception
+//----------------------------------------------------------------- 
+void PCollection_HDataMap::Unbind(const Key& K) 
+{
+   Integer Res ;
+   Key TheKey;
+   Handle(PCollection_MapNode) aNode,pnul,previous,next;
+   Res = Hash.HashCode (K,Buckets->Length());  
+   aNode = Buckets->Value(Res);
+   pnul.Nullify();
+   previous.Nullify();
+   while ( ! aNode.IsNull() ) {
+      TheKey = aNode->GetKey();
+      if ( Hash.Compare(TheKey,K) ) {        
+        next = aNode->Next();    
+        if (previous.IsNull() && next.IsNull()) {     // liste de 1 elt
+           Buckets->SetValue(Res,pnul);
+           aNode.Delete();
+
+        } else if (previous.IsNull()) {               // 1er elt de liste
+           Buckets->SetValue(Res,next);
+           aNode.Delete();
+           next.Nullify();
+
+	} else if (next.IsNull()) {                  // dernier de liste      
+           previous->SetNext(pnul);
+           aNode.Delete();
+
+        } else {                                    // milieu de liste
+           previous->SetNext(next);
+           aNode.Delete();
+           next.Nullify();
+        }
+        return;
+      }
+      
+      else {                                      //  pas le bon noeud
+         previous = aNode;
+         aNode = aNode->Next();
+      }   
+   }
+   NoSuchObject::Raise();
+}
+
+//----------------------------------------------------------------- 
+// ShallowCopy : ShallowCopy redefinition
+//----------------------------------------------------------------- 
+Handle(Standard_Persistent) PCollection_HDataMap::ShallowCopy() const
+{
+   PCollection_HDataMap* TheCopy = new PCollection_HDataMap (*this);
+   TheCopy->Buckets = 
+      Handle(PCollection_Array)::DownCast(::ShallowCopy(Buckets));
+   return TheCopy;
+}
+
+//----------------------------------------------------------------- 
+// ShallowDump : ShallowDump redefinition
+//----------------------------------------------------------------- 
+void PCollection_HDataMap::ShallowDump(OStream& S) const
+{
+  S << "begin class Map "<< endl;
+  if (!IsEmpty()) 
+       Buckets->ShallowDump(S);
+  else   
+       S << "Empty Map." << endl;
+  S << "end of class Map." << endl;
+}
+
+
+
+
+
+
+

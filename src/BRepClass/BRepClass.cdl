@@ -1,0 +1,54 @@
+-- File:	BRepClass.cdl
+-- Created:	Wed Nov 18 16:27:04 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package BRepClass 
+
+	---Purpose: The  BRepClass packages provides    classification
+	--          algorithms for the BRep topology.  It instantiates
+	--          the algorithms from the package TopClass.
+
+uses
+    gp,
+    TopAbs,
+    TopoDS,
+    TopExp,
+    BRepTools,
+    Geom2dInt,
+    TopClass,
+---    IntCurveSurface,
+    Bnd
+
+
+
+
+is
+    class Edge;
+	---Purpose: Stores the Edge and the Face.
+
+    class Intersector;
+	---Purpose: Intersect an Edge  with a segment.   This class is
+	--          inherited   from   IntConicCurveOfGInter      from
+	--          Geom2dInt.
+
+    class FacePassiveClassifier instantiates Classifier2d from TopClass
+    	(Edge         from BRepClass,
+	 Intersector  from BRepClass);
+
+    class FaceExplorer;
+	---Purpose: Exploration of a Face to return UV edges.
+
+    class FClassifier instantiates FaceClassifier from TopClass
+    	(FaceExplorer from BRepClass,
+	 Edge         from BRepClass,
+	 Intersector  from BRepClass);
+	 
+    class FaceClassifier;
+	---Purpose: Inherited    from   FClassifier   to   provide   a
+	--          Constructor with a Face.
+
+       
+end BRepClass;

@@ -1,0 +1,120 @@
+-- File:	AIS_MultipleConnectedInteractive.cdl
+-- Created:	Tue Apr 22 17:04:42 1997
+-- Author:	Guest Design
+--		<g_design@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class MultipleConnectedInteractive from AIS inherits InteractiveObject from AIS
+
+    
+    ---Purpose: Defines an Interactive Object by gathering together
+    -- several object presentations. This is done through a
+    -- list of interactive objects. These can also be
+    -- Connected objects. That way memory-costly
+    -- calculations of presentation are avoided.
+        
+        
+uses
+
+
+    TypeOfPresentation3d   from PrsMgr,
+    InteractiveObject      from AIS,
+    Boolean                from Standard,
+    SequenceOfInteractive  from AIS,
+    KindOfInteractive      from AIS,
+    PresentationManager3d  from PrsMgr,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,    
+    Presentation           from Prs3d,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    Integer                from Standard,
+    Selection              from SelectMgr
+
+is 
+    
+
+    Create (aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) 
+    returns  mutable  MultipleConnectedInteractive  from  AIS;
+    ---Purpose: Initializes the Interactive Object with multiple
+    -- presentation connections. If aTypeOfPresentation3d
+    -- does not have the affectation PrsMgr_TOP_AllView,
+    -- it is projector dependent.
+    
+    Connect(me          : mutable; 
+    	    anotherIObj : InteractiveObject from AIS);
+    ---Purpose: Add anotherIObj in the presentation of me
+
+
+    Type(me) returns KindOfInteractive from AIS
+    is redefined virtual;	  
+
+    Signature(me) returns Integer from Standard
+    is redefined virtual;
+
+    HasConnection(me) returns Boolean from Standard;
+    ---Purpose: Returns true if the object is connected to others.
+   
+     ConnectedTo(me) returns SequenceOfInteractive from AIS;
+     ---Purpose:
+     -- Returns the connection references of the previous
+     -- Interactive Objects in view.
+     ---C++: inline
+     ---C++: return const&
+
+    Disconnect(me:mutable;
+    	       anotherIObj : InteractiveObject from AIS);
+    ---Purpose:  Removes the connection anotherIObj to an entity.
+
+    DisconnectAll(me:mutable);
+    ---Purpose: Clears all the connections to objects.
+    
+    Compute(me:mutable;
+            aPresentationManager :         PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation          from Prs3d;
+            aMode                :         Integer               from Standard = 0)
+    ---Level: Internal 
+    ---Purpose: this method is redefined virtual;
+    --          when the instance is connected to another
+    --          InteractiveObject,this method doesn't
+    --          compute anything, but just uses the 
+    --          presentation of this last object, with
+    --          a transformation if there's one stored. 
+    is redefined virtual private;
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined;	
+
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    ---Purpose: computes the presentation according to a point of view
+    --          given by <aProjector>. 
+    --          To be Used when the associated degenerated Presentations 
+    --          have been transformed by <aTrsf> which is not a Pure
+    --          Translation. The HLR Prs can't be deducted automatically
+    --          WARNING :<aTrsf> must be applied
+    --           to the object to display before computation  !!!
+
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined ;     
+
+    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+                                 aMode      :        Integer   from Standard)
+    is redefined virtual private;
+
+
+
+fields
+
+    myReferences         : SequenceOfInteractive from AIS;
+    myPreviousReferences : SequenceOfInteractive from AIS;
+    
+end MultipleConnectedInteractive;

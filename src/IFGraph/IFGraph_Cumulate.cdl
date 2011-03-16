@@ -1,0 +1,62 @@
+-- File:	Cumulate.cdl
+-- Created:	Wed Sep 23 10:36:04 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Cumulate  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class evaluates effect of cumulated sub-parts :
+    	--           overlapping, forgotten entities
+    	--           Results are kept in a Graph, several question can be set
+    	--           Basic Iteration gives entities which are part of Cumulation
+
+uses Transient, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph) returns Cumulate;
+    ---Purpose : creates empty Cumulate, ready to work
+
+    GetFromEntity (me : in out; ent : any Transient);
+    ---Purpose : adds an entity and its shared ones to the list
+
+    GetFromIter (me : in out; iter : EntityIterator);
+    ---Purpose : adds a list of entities (as an iterator) as such, that is,
+    --           without their shared entities (use AllShared to have them)
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value-Entity give all entities taken into the Cumulation
+    	--   other informations are provided, as EntityIterator : hence they
+    	--   are available for other evaluations
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : Evaluates the result of cumulation
+
+    Overlapped (me) returns EntityIterator;
+    ---Purpose : returns entities which are taken several times
+
+    Forgotten (me) returns EntityIterator;
+    ---Purpose : returns entities which are not taken
+
+    PerCount (me; count : Integer = 1) returns EntityIterator;
+    ---Purpose : Returns entities taken a given count of times
+    --           (0 : same as Forgotten, 1 : same as no Overlap : default)
+
+    NbTimes (me; ent : Transient) returns Integer;
+    ---Purpose : returns number of times an Entity has been counted
+    --           (0 means forgotten, more than 1 means overlap, 1 is normal)
+
+    HighestNbTimes (me) returns Integer;
+    ---Purpose : Returns the highest number of times recorded for every Entity
+    --           (0 means empty, 1 means no overlap)
+
+fields
+
+    thegraph : Graph;
+
+end Cumulate;

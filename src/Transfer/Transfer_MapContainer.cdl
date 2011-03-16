@@ -1,0 +1,30 @@
+-- File:	Transfer_MapContainer.cdl
+-- Created:	Mon Sep 10 14:52:25 2001
+-- Author:	Sergey KUUL
+--		<skl@polox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+
+class MapContainer from Transfer inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+
+    DataMapOfTransientTransient from TColStd
+
+is
+
+    Create returns mutable MapContainer from Transfer;
+     
+    SetMapObjects(me : mutable; theMapObjects : in out DataMapOfTransientTransient from TColStd);
+    	---Purposes:Set map already translated geometry objects.
+	
+    GetMapObjects(me: mutable) returns DataMapOfTransientTransient from TColStd;
+    	---Purposes:Get map already translated geometry objects.
+    	---C++:return &
+fields
+
+  myMapObj           : DataMapOfTransientTransient from TColStd;
+  
+end MapContainer;

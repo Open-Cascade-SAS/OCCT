@@ -1,0 +1,78 @@
+--
+-- File      :  SubfigureDef.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SubfigureDef from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines SubfigureDef, Type <308> Form <0>
+        --          in package IGESBasic
+        --          This Entity permits a single definition of a detail to
+        --          be utilized in multiple instances in the creation of
+        --          the whole picture
+
+uses
+
+        HAsciiString from TCollection,
+        Transient        ,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable SubfigureDef;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              aDepth           : Integer;
+              aName            : HAsciiString;
+              allAssocEntities : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --          SubfigureDef
+        --       - aDepth           : It indicates the amount of nesting
+        --       - aName            : the subfigure name
+        --       - allAssocEntities : the associated entities
+
+        Depth (me) returns Integer;
+        ---Purpose : returns depth of the Subfigure
+        -- if theDepth = 0 - No reference to any subfigure instance.
+
+        Name (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the name of Subfigure
+
+        NbEntities (me) returns Integer;
+        ---Purpose : returns number of entities. Is greater than or equal to zero.
+
+        AssociatedEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the specific entity as indicated by Index
+        -- raises exception if Index <= 0 or Index > NbEntities()
+
+        Value (me; Index : Integer) returns Transient
+        raises OutOfRange;
+        ---Purpose : returns the specific entity as indicated by Index
+        -- raises exception if Index <= 0 or Index > NbEntities()
+
+fields
+
+--
+-- Class    : IGESBasic_SubfigureDef
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SubfigureDef.
+--
+-- Reminder : A SubfigureDef instance is defined by :
+--            - indicates the amount of nesting
+--            - the subfigure name
+--            - the associated entities
+
+        theDepth         : Integer;
+        theName          : HAsciiString from TCollection;
+        theAssocEntities : HArray1OfIGESEntity;
+
+end SubfigureDef;

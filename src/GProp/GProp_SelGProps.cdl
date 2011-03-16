@@ -1,0 +1,51 @@
+-- File:	GProp_SelGProps.cdl
+-- Created:	Wed Dec  2 15:46:16 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelGProps from GProp inherits GProps
+
+    	    ---Purpose: 
+    	    --          Computes the global properties of an elementary 
+    	    --          surface (surface of the gp package)
+
+uses  Cylinder from gp,
+      Cone     from gp,
+      Pnt      from gp,
+      Sphere   from gp,
+      Torus    from gp
+
+is
+
+  Create returns SelGProps;
+
+  Create (S : Cylinder; Alpha1, Alpha2, Z1, Z2 : Real; SLocation : Pnt)   
+     returns SelGProps;
+
+
+  Create (S : Cone; Alpha1, Alpha2, Z1, Z2 : Real; SLocation : Pnt)   
+     returns SelGProps;
+
+
+  Create (S : Sphere from gp; Teta1, Teta2, Alpha1, Alpha2 : Real;
+          SLocation : Pnt)   
+     returns SelGProps;
+
+
+  Create (S : Torus from gp; Teta1, Teta2, Alpha1, Alpha2 : Real;
+          SLocation : Pnt)   
+     returns SelGProps;
+
+  SetLocation(me : in out ;SLocation :Pnt);
+
+  Perform(me : in out;S : Cylinder; Alpha1, Alpha2, Z1, Z2 : Real);
+
+  Perform(me : in out;S : Cone; Alpha1, Alpha2, Z1, Z2 : Real);
+
+  Perform(me : in out;S : Sphere; Teta1, Teta2, Alpha1, Alpha2 : Real);
+
+  Perform(me : in out;S : Torus; Teta1, Teta2, Alpha1, Alpha2 : Real);
+
+end SelGProps;

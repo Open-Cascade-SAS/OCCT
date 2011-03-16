@@ -1,0 +1,135 @@
+-- File:	InterferencePolygon3d.cdl
+-- Created:	Tue Sep 29 11:57:14 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class InterferencePolygon3d from Intf 
+    (Polygon3d1 as any;
+     ToolPolygon3d1 as any;         -- as ToolPolygon(Pnt,Polygon3d1,Box)
+     Polygon3d2 as any;
+     ToolPolygon3d2 as any)         -- as ToolPolygon(Pnt,Polygon3d2,Box)
+    inherits Interference from Intf
+    	
+	---Purpose: Computes the  interference between two polygons  or the
+	--          self interference of a polygon in 3 dimensions .  In 3
+	--          dimensions the result can be  a common perpendicular ,
+	--          an  orthogonal  projection or  a  real  intersections.
+	--          There  are two  different  instantiation arguments  to
+	--          authorize an interference  between two  polygons  from
+	--          differents origin.  Ex :  to intersect a curve polygon
+	--          with an  algorithmic   curve   from numerical  walking
+	--          between two surfaces.
+
+uses    Pnt from gp,
+    	SectionPoint      from Intf,
+    	SeqOfSectionPoint from Intf,
+    	SectionLine       from Intf,
+    	SeqOfSectionLine  from Intf
+
+raises  OutOfRange from Standard
+
+
+is
+-- Interface :
+
+    Create          returns InterferencePolygon3d from Intf;
+    ---Purpose: Constructs an empty interference of 3d Polygon.
+
+
+    Create         (Obje1 : in Polygon3d1 ;Obje2 : in Polygon3d2) 
+    	            returns InterferencePolygon3d from Intf;
+    ---Purpose: Constructs and computes an interference between two Polygons.
+
+
+    Create         (Obje : in Polygon3d1) 
+    	            returns InterferencePolygon3d from Intf;
+    ---Purpose: Constructs and computes the self interference of a Polygon.
+
+
+    Perform        (me   : in out;
+    	    	    Obje1 : in Polygon3d1 ;Obje2 : in Polygon3d2);
+    ---Purpose: Computes an interference between two Polygons.
+
+
+    Perform        (me   : in out;
+    	    	    Obje : in Polygon3d1);
+    ---Purpose: Computes the auto interference of a Polygon.
+
+
+    NbResults      (me)
+    	    	    returns Integer is static;
+    ---Purpose: Gives  the number  of common  Perpendiculars or orthogonal
+    --          projections between the two polygons.
+
+    ResultLine     (me;
+    	    	    Index      : in Integer)
+    	    	    returns SectionLine from Intf
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives the  segment of address  <Index> in the interference
+    --          representing    the     perpendicular  or the   orthogonal
+    --          projection .
+    --          
+    ---C++: return const &
+
+
+    ResultValue    (me;
+    	    	    Index      : in Integer)
+    	    	    returns Real from Standard
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives the distance between the two polygons 
+
+
+    MinimalDistance(me)
+    	    	    returns Real from Standard
+    	    	    is static;
+    ---Purpose: Gives   the distance  between  the  two  polygon3d at  the
+    --          perpendicular or projection of minimal length.
+
+
+    MinimalResult  (me)
+    	    	    returns Integer from Standard
+    	    	    is static;
+    ---Purpose: Give the  perpendicular or projection  of minimal  length.
+    --          WARNING : if there  are points of intersection the minimal
+    --          result is one of them and this function is unusuable.
+
+
+-- Implementation :
+
+    Interference   (me         : in out;
+    	    	    Obje1      : in Polygon3d1;
+     	    	    Obje2      : in Polygon3d2)
+    	    	    is private;
+
+    Interference   (me         : in out;
+    	    	    Obje       : in Polygon3d1)
+    	    	    is private;
+
+    CommonPerpen   (me         : in out;
+		    BegO : in Pnt from gp;
+		    EndO : in Pnt from gp;
+		    BegT : in Pnt from gp;
+		    EndT : in Pnt from gp)
+    	    	    is private;
+    ---Purpose: Computes   the common  perpendicular   between the two
+    --          segments <BegO><EndO> and <BegT><EndT>.
+
+    Projections    (me         : in out;
+		    BegO : in Pnt from gp;
+		    EndO : in Pnt from gp;
+		    BegT : in Pnt from gp;
+		    EndT : in Pnt from gp)
+    	    	    is private;
+    ---Purpose: Computes  the    different  orthogonal projections  between
+    --          segment <BegO><EndO> and  points <BegT>,<EndT> and segment
+    --          <BegT><EndT> and points <BegO>,<EndO>.
+
+
+fields  IndexMin    : Integer from Standard;
+    	MinimalDist : Real from Standard;
+
+end InterferencePolygon3d;

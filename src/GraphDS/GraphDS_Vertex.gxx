@@ -1,0 +1,145 @@
+// File:	GraphDS_Vertex.gxx
+// Created:	Tue Mar 16 15:26:55 1993
+// Author:	Denis PASCAL
+//		<dp@bravox>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+
+
+//=======================================================================
+//function : GraphDS_Vertex
+//purpose  : 
+//=======================================================================
+
+GraphDS_Vertex::GraphDS_Vertex (const GraphDS_Item& value) : myItem(value)
+{
+}
+
+
+//=======================================================================
+//function : GetItem
+//purpose  : 
+//=======================================================================
+
+const GraphDS_Item& GraphDS_Vertex::GetItem () const 
+{
+  return myItem;
+}
+
+
+//=======================================================================
+//function : SetItem
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Vertex::SetItem (const GraphDS_Item& Value) 
+{
+  myItem = Value;
+}
+
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Vertex::Contains (const Handle(GraphDS_Edge)& E) const 
+{
+  return myEdges.Contains(E);
+}
+
+
+Standard_Boolean GraphDS_Vertex::IsFront (const Handle(GraphDS_Edge)& ) const 
+{
+  Standard_NotImplemented::Raise();
+  return Standard_False;
+}
+
+
+Standard_Boolean GraphDS_Vertex::IsBack (const Handle(GraphDS_Edge)& ) const 
+{
+  Standard_NotImplemented::Raise();
+  return Standard_False;
+}
+
+
+
+//=======================================================================
+//function : IsRoot
+//purpose  : never destination of an edge
+//=======================================================================
+
+Standard_Boolean GraphDS_Vertex::IsRoot (const Standard_Boolean ignoreselfloop) const 
+{
+  Handle(GraphDS_Vertex) me = this;
+  Handle(GraphDS_Edge) E;
+  TColStd_MapIteratorOfMapOfTransient it;
+  for (it.Initialize(myEdges); it.More(); it.Next()) {
+    E = Handle(GraphDS_Edge)::DownCast(it.Key());    
+    if (ignoreselfloop && E->IsLoop()) continue;
+    if (E->Destination() == me) return Standard_False;
+  }
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : IsLeaf
+//purpose  : never source of an edge
+//=======================================================================
+
+Standard_Boolean GraphDS_Vertex::IsLeaf (const Standard_Boolean ignoreselfloop) const 
+{
+  Handle(GraphDS_Vertex) me = this;
+  Handle(GraphDS_Edge) E;
+  TColStd_MapIteratorOfMapOfTransient it;
+  for (it.Initialize(myEdges); it.More(); it.Next()) {
+    E = Handle(GraphDS_Edge)::DownCast(it.Key());
+    if (ignoreselfloop && E->IsLoop()) continue;
+    if (E->Source() == me) return Standard_False;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : AddEdge
+//purpose  : private
+//=======================================================================
+
+Standard_Boolean GraphDS_Vertex::AddEdge (const Handle(GraphDS_Edge)& E) 
+{
+  return myEdges.Add(E);
+}
+
+
+//=======================================================================
+//function : RemoveEdge
+//purpose  : private 
+//=======================================================================
+
+void GraphDS_Vertex::RemoveEdge (const Handle(GraphDS_Edge)& E) 
+{
+  myEdges.Remove(E);
+}
+       
+
+
+//=======================================================================
+//function : GetEdges
+//purpose  : private
+//=======================================================================
+
+const TColStd_MapOfTransient& GraphDS_Vertex::GetEdges () const 
+{
+  return myEdges;
+}
+
+
+
+
+
+
+
+

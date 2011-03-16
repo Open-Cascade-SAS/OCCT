@@ -1,0 +1,106 @@
+inline  Standard_Integer ISession_Text::NbPossibleSelection() 
+{
+  return 1;
+}
+
+ 
+inline  TCollection_AsciiString ISession_Text::GetText() 
+{
+  return MyText;
+}
+
+ 
+inline  void ISession_Text::SetText(const TCollection_AsciiString& aText) 
+{
+  MyText = aText;
+}
+
+ 
+inline  void ISession_Text::GetCoord(Standard_Real& X,Standard_Real& Y,Standard_Real& Z) 
+{
+  X = MyX;
+  Y = MyY;
+  Z = MyZ;
+}
+
+ 
+inline  void ISession_Text::SetCoord(const Standard_Real X,const Standard_Real Y,const Standard_Real Z) 
+{
+  MyX = X;
+  MyY = Y;
+  MyZ = Z;
+}
+
+ 
+inline  Aspect_TypeOfText ISession_Text::GetTypeOfText() 
+{
+  return MyTypeOfText;
+}
+
+ 
+inline  void ISession_Text::SetTypeOfText(const Aspect_TypeOfText aNewTypeOfText) 
+{
+  MyTypeOfText = aNewTypeOfText;
+}
+
+ 
+inline  Standard_Real ISession_Text::GetAngle() 
+{
+  return MyAngle;
+}
+
+ 
+inline  void ISession_Text::SetAngle(const Standard_Real aNewAngle) 
+{
+  MyAngle = aNewAngle;
+}
+
+ 
+inline  Standard_Real ISession_Text::GetSlant() 
+{
+  return MySlant;
+}
+
+ 
+inline  void ISession_Text::SetSlant(const Standard_Real aNewSlant) 
+{
+  MySlant = aNewSlant;
+}
+
+ 
+inline  Standard_Integer ISession_Text::GetColorIndex() 
+{
+  return MyColorIndex;
+}
+
+ 
+inline  void ISession_Text::SetColorIndex(const Standard_Integer aNewColorIndex) 
+{
+  MyColorIndex = aNewColorIndex;
+}
+
+ 
+inline  Standard_Integer ISession_Text::GetFontIndex() 
+{
+  return MyFontIndex;
+}
+
+ 
+inline  void ISession_Text::SetFontIndex(const Standard_Integer aNewFontIndex) 
+{
+  MyFontIndex = aNewFontIndex;
+}
+
+ 
+inline  Quantity_Factor ISession_Text::GetScale() 
+{
+  return MyScale;
+}
+
+ 
+inline  void ISession_Text::SetScale(const Quantity_Factor aNewScale) 
+{
+  MyScale = aNewScale;
+}
+
+ 

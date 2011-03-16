@@ -1,0 +1,65 @@
+-- File:	XCAFPrs_Style.cdl
+-- Created:	Fri Aug 11 19:29:16 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Style from XCAFPrs 
+
+    ---Purpose: Represents a set of styling settings applicable to 
+    --          a (sub)shape
+
+uses
+    Color from Quantity
+
+is
+
+    Create returns Style from XCAFPrs;  
+
+    IsSetColorSurf (me) returns Boolean;  
+    GetColorSurf (me) returns Color from Quantity;  
+    SetColorSurf (me: in out; col: Color from Quantity);  
+    UnSetColorSurf (me: in out);  
+    	---Purpose: Manage surface color setting
+
+    IsSetColorCurv (me) returns Boolean;  
+    GetColorCurv (me) returns Color from Quantity;  
+    SetColorCurv (me: in out; col: Color from Quantity);  
+    UnSetColorCurv (me: in out);  
+    	---Purpose: Manage curve color setting
+
+    SetVisibility(me: in out; visibility: Boolean from Standard);
+    IsVisible(me) returns Boolean;
+    	---Purpose: Manage visibility
+	--          Note: Setting visibility to False makes colors undefined
+	--          This is necessary for HashCode
+
+    IsEqual (me; other: Style from XCAFPrs) returns Boolean;
+    	---Purpose: Returs True if styles are the same
+	---C++: alias operator ==
+
+    ---Purpose: Methods for using Style as key in maps
+
+    HashCode(myclass; S : Style from XCAFPrs; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	
+    IsEqual(myclass; S1, S2 : Style from XCAFPrs) returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	
+fields
+
+--    defColor:     Boolean;
+    defColorSurf: Boolean;
+    defColorCurv: Boolean;
+    myVisibility: Boolean from Standard;
+
+--    myColor:     Color from Quantity;
+    myColorSurf: Color from Quantity;
+    myColorCurv: Color from Quantity;
+    
+
+end Style;

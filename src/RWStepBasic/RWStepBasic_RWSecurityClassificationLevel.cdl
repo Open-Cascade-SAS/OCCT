@@ -1,0 +1,27 @@
+-- File:        SecurityClassificationLevel.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSecurityClassificationLevel from RWStepBasic
+
+	---Purpose : Read & Write Module for SecurityClassificationLevel
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SecurityClassificationLevel from StepBasic
+
+is
+
+	Create returns RWSecurityClassificationLevel;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SecurityClassificationLevel from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : SecurityClassificationLevel from StepBasic);
+
+end RWSecurityClassificationLevel;

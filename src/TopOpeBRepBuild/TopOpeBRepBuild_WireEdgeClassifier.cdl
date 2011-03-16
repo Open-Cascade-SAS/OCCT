@@ -1,0 +1,70 @@
+-- File:	TopOpeBRepBuild_WireEdgeClassifier.cdl
+-- Created:	Thu Jun 17 10:15:32 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class WireEdgeClassifier from TopOpeBRepBuild
+    inherits CompositeClassifier from TopOpeBRepBuild
+    
+---Purpose: 
+-- Classify edges and wires.
+-- shapes are Wires, Element are Edge.
+
+uses
+    
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Shape from TopoDS,
+    Pnt2d from gp,
+    Edge from BRepClass,
+    FacePassiveClassifier from BRepClass,
+    BlockBuilder from TopOpeBRepBuild,
+    Loop from TopOpeBRepBuild
+    
+is
+
+    Create(F : Shape from TopoDS;
+    	   BB : BlockBuilder) returns WireEdgeClassifier;
+    ---Purpose: Creates a classifier on edge <F>.  
+    -- Used to compare edges and wires on the edge <F>.
+
+    Compare(me : in out; L1,L2 : Loop) returns State from TopAbs
+    is redefined;
+
+    LoopToShape(me : in out; L : Loop)
+    returns Shape from TopoDS;
+
+    CompareShapes(me : in out; B1,B2 : Shape from TopoDS)
+    ---Purpose: classify wire <B1> with wire <B2>
+    returns State from TopAbs;
+    
+    CompareElementToShape(me : in out; E,B : Shape from TopoDS)
+    ---Purpose: classify edge <E> with wire <B>
+    returns State from TopAbs;
+    
+    ResetShape(me : in out; B : Shape from TopoDS);
+    ---Purpose: prepare classification involving wire <B>
+    -- calls ResetElement on first edge of <B>
+    
+    ResetElement(me : in out; E : Shape from TopoDS);
+    ---Purpose: prepare classification involving edge <E>
+    -- define 2D point (later used in Compare()) on first vertex of edge <E>.
+    
+    CompareElement(me : in out; E : Shape from TopoDS);
+    ---Purpose: Add the edge <E> in the set of edges used in 2D point
+    -- classification.
+    
+    State(me : in out) returns State from TopAbs;
+    ---Purpose: Returns state of classification of 2D point, defined by 
+    -- ResetElement, with the current set of edges, defined by Compare.
+
+fields
+    
+    myFirstCompare : Boolean;
+    myPoint2d : Pnt2d from gp;
+    myBCEdge : Edge from BRepClass;
+    myFPC : FacePassiveClassifier from BRepClass; 
+    myShape : Shape from TopoDS;
+    
+end WireEdgeClassifier from TopOpeBRepBuild;

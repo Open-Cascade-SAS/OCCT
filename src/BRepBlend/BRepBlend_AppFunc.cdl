@@ -1,0 +1,40 @@
+-- File:	BRepBlend_AppFunc.cdl
+-- Created:	Mon Nov 25 11:55:09 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class AppFunc from BRepBlend inherits AppFuncRoot from BRepBlend
+
+	---Purpose: Function to approximate by AppSurface
+	---Level: Advanced
+
+uses
+ Line        from BRepBlend,
+ Point       from Blend,
+ AppFunction from Blend,
+ Function    from Blend,
+ Vector      from math
+ 
+raises OutOfRange
+
+is
+   Create(Line : in out Line from BRepBlend;
+    	  Func : in out Function from Blend;
+          Tol3d: Real;
+          Tol2d: Real)
+   ---Warning: The Object Func cannot be killed before me. 
+   returns AppFunc; 
+
+   Point(me;
+    	 Func  : AppFunction from Blend; 
+	 Param : Real;
+	 Sol   : Vector from math;
+	 Pnt   : in out Point from Blend);
+	
+   Vec(me;
+       Sol : in out Vector from math;
+       Pnt : Point from Blend);
+	
+end AppFunc;

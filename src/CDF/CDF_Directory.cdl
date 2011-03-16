@@ -1,0 +1,68 @@
+-- File:	CDF_Directory.cdl
+-- Created:	Thu Aug  7 16:57:46 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Directory from CDF inherits Transient from Standard
+
+
+---Purpose: A directory is a collection of documents. There is only one instance
+--          of a given document in a directory.
+--          put.
+
+uses Document from CDM, ListOfDocument from CDM
+
+raises  NoSuchObject
+    
+is
+    Create 
+    returns mutable Directory from CDF;
+    ---Purpose: Creates an empty directory.
+    
+    
+    Add(me:mutable; aDocument: Document from CDM);
+    ---Purpose: adds a document into the directory.
+    
+    Remove(me: mutable; aDocument: Document from CDM);
+    ---Purpose: removes the document.
+    
+    
+---Category: Inquire Methods
+--           
+
+    Contains(me; aDocument: Document from CDM) 
+    ---Purpose: Returns true if the document aDocument is in the directory
+    returns Boolean from Standard
+    is static;
+
+    Last(me:mutable) returns Document from CDM
+    ---Purpose: returns the last document (if any) which has been added
+    --          in the directory.
+    raises NoSuchObject from Standard
+    ---Warning: if the directory is empty.
+    is static;
+
+    Length(me) returns Integer from Standard
+    ---Purpose: returns the number of documents of the directory.
+    is static;
+
+    IsEmpty(me) returns Boolean from Standard
+    ---Purpose: returns true if the directory is empty.
+    is static;
+    
+---Category: Private methods
+   
+   List(me) returns ListOfDocument from CDM
+   is static private;
+   ---C++: return const &
+   --      
+   
+fields
+
+    myDocuments: ListOfDocument from CDM;
+
+friends    
+    class DirectoryIterator from CDF
+
+end Directory from CDF;

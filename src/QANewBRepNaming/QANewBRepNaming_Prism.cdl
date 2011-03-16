@@ -1,0 +1,56 @@
+-- File:	QANewBRepNaming_Prism.cdl
+-- Created:	Fri Nov  5 14:29:04 1999
+-- Author:	Vladislav ROMASHKO
+--		<v-romashko@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+
+class Prism from QANewBRepNaming inherits TopNaming from QANewBRepNaming
+
+    ---Purpose: To load the Prism results 
+
+uses 
+ 
+    MakePrism from BRepPrimAPI,
+    Label     from TDF,
+    Shape     from TopoDS
+
+is
+ 
+    Create returns Prism from QANewBRepNaming;
+    
+    Create(ResultLabel : Label from TDF) 
+    returns Prism from QANewBRepNaming;
+
+    Init(me : in out; ResultLabel : Label from TDF);
+    
+
+    Load (me; mkPrism : in out MakePrism from BRepPrimAPI;
+	      basis   : in     Shape     from TopoDS);
+    ---Purpose: Loads the prism in the data framework
+
+    Bottom (me)
+    ---Purpose : Returns the insertion label of the bottom face of the Prism.
+    returns Label from TDF;
+
+    Top (me)
+    ---Purpose : Returns  the insertion label of the  top face of the Prism.
+    returns Label  from TDF;
+
+    Lateral (me)
+    ---Purpose: Returns the insertion label of the lateral face of the Prism.
+    returns Label from TDF;
+
+    Degenerated (me)
+    ---Purpose: Returns the insertion label of the degenerated face of the Prism.
+    returns Label from TDF;
+
+    Dangle (me)
+    ---Purpose: Returns the insertion label of the degenerated face of the Prism.
+    returns Label from TDF;
+
+    Content (me)
+    ---Purpose: Returns the insertion label of the degenerated face of the Prism.
+    returns Label from TDF;
+
+end Prism;

@@ -1,0 +1,21 @@
+-- File:	TopoDS_Wire.cdl
+-- Created:	Mon Dec 17 11:12:03 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class Wire from TopoDS inherits Shape from TopoDS
+
+	---Purpose: Describes a wire which
+-- - references an underlying wire with the potential to
+--   be given a location and an orientation
+-- - has a location for the underlying wire, giving its
+--   placement in the local coordinate system
+-- - has an orientation for the underlying wire, in terms
+--   of its geometry (as opposed to orientation in relation to other shapes).
+is
+    Create returns Wire from TopoDS;
+    ---C++: inline
+        ---Purpose: Undefined Wire.
+
+end Wire;

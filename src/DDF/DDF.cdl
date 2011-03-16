@@ -1,0 +1,113 @@
+-- File:	DDF.cdl
+--      	-------
+-- Author:	DAUTRY Philippe
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb 10 1997	Creation
+
+
+
+package DDF 
+
+	---Purpose: Provides facilities to manipulate data framework
+	--          in a Draw-Commands environment.
+
+uses
+
+    Standard,
+    Draw,
+    TCollection,
+    TDF
+
+is
+
+    -- ----------------------------------------------------------------------
+    -- Classes
+    -- ----------------------------------------------------------------------
+
+    class Data;
+    	---Purpose : Encapsulates a data framework from TDF.
+
+    class Browser;
+    	---Purpose : Browses a data framework from TDF.
+
+    class Transaction;
+	---Purpose: Encapsulates a Transaction from TDF.
+
+    class TransactionStack
+    	instantiates Stack from TCollection (Transaction from DDF);
+
+    -- ----------------------------------------------------------------------
+    -- Package methods
+    -- ----------------------------------------------------------------------
+
+
+    GetDF (Name     : in out CString from Standard; 
+           DF       : in out Data    from TDF;
+           Complain : in     Boolean from Standard = Standard_True)
+    returns Boolean;
+   	---Purpose: Search in draw  directory the framewok  identified
+   	--          by its name <Name>. returns True if found. In that
+   	--          case <DF> is setted.
+
+
+    FindLabel (DF      : in     Data    from TDF; 
+    	      Entry    : in     CString from Standard;
+	      Label    : in out Label   from TDF;
+              Complain : in     Boolean from Standard = Standard_True)
+    returns Boolean;
+   	---Purpose: Search in <DF>  the label identified by its  entry
+   	--          <Entry>.  returns  <True> if  found. In  that case
+   	--          <Label> is setted.
+
+    AddLabel (DF      : in     Data    from TDF;
+    	      Entry   : in     CString from Standard; 
+    	      Label   : in out Label   from TDF)
+    returns  Boolean;
+    	---Purpose : Search in <DF> the  label identified by its entry
+    	--         <Entry>.   if label doesn't  exist, create  and add
+    	--         the Label in <DF>. In that case return True.
+
+
+    Find (DF       : in     Data      from TDF;
+          Entry    : in     CString   from Standard;
+    	  ID       : in     GUID      from Standard;
+          A        : in out Attribute from TDF;
+          Complain : Boolean from Standard = Standard_True)
+    returns Boolean;
+    	---Purpose: Search   in <DF> the  attribute  identified by its 
+    	--          <ID> and its <entry>.  returns <True> if found. In
+    	--          that case A is setted. 
+
+
+    ReturnLabel(theCommands : in out Interpretor from Draw; L : Label from TDF)
+    returns Interpretor from Draw;
+    	---C++: return &
+
+    -- ----------------------------------------------------------------------
+    -- Commands
+    -- ----------------------------------------------------------------------
+
+    AllCommands   (theCommands : in out Interpretor from Draw);    
+
+
+    BasicCommands (theCommands : in out Interpretor from Draw);    
+    	---Purpose : Basic commands.
+
+    DataCommands (theCommands : in out Interpretor from Draw);    
+    	---Purpose : Data framework commands 
+    	--           create, clear & copy.
+
+    TransactionCommands (theCommands : in out Interpretor from Draw);    
+    	---Purpose : open commit abort a transaction
+    	--           undo facilities.
+
+    BrowserCommands (theCommands : in out Interpretor from Draw);    
+    	---Purpose : Browser commands .
+
+end DDF;
+
+
+

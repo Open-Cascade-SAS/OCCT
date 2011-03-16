@@ -1,0 +1,62 @@
+-- File:	HLRBRep_SLPropsATool.cdl
+-- Created:	Fri Apr 23 13:56:45 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class SLPropsATool from HLRBRep
+
+uses
+    Address from Standard,
+    Pnt     from gp,
+    Vec     from gp
+
+is
+
+    Value(myclass; A    :     Address from Standard; 
+    	    	   U, V :     Real    from Standard;
+                   P    : out Pnt     from gp);
+    	---Purpose: Computes the point  <P> of 	parameter <U> and <V>
+    	--          on the Surface <A>.
+    	--
+    	---C++: inline
+
+    D1   (myclass; A        : Address from Standard;
+                   U, V     : Real    from Standard;
+                   P        : out Pnt from gp;
+                   D1U, D1V : out Vec from gp);
+    	---Purpose: Computes the point <P>  and first derivative <D1*>
+    	--          of parameter <U> and <V> on the Surface <A>.
+    	--          
+    	---C++: inline
+
+    D2   (myclass; A    : Address from Standard;
+                   U, V : Real    from Standard; 
+              P : out Pnt; D1U, D1V, D2U, D2V, DUV : out Vec);
+    	---Purpose: Computes the point <P>, the first derivative <D1*>
+    	--          and second  derivative <D2*> of parameter  <U> and
+    	--          <V> on the Surface <A>.
+    	--          
+       	---C++: inline
+
+    DN   (myclass; A      : Address from Standard;
+                   U, V   : Real    from Standard;
+		   Nu, Nv : Integer from Standard)
+    returns Vec from gp;
+
+    Continuity(myclass; A : Address from Standard)
+    returns Integer from Standard;
+    	---Purpose: returns the order of   continuity of the   Surface
+    	--          <A>.  returns  1   :  first  derivative    only is
+    	--          computable returns 2 : first and second derivative
+    	--          only are computable.
+    	--          
+       	---C++: inline
+
+    Bounds(myclass; A              :     Address from Standard;
+                    U1, V1, U2, V2 : out Real    from Standard);
+    	---Purpose: returns the bounds of the Surface.
+    	--          
+    	---C++: inline
+
+end SLPropsATool;

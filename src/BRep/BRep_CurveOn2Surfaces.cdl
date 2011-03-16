@@ -1,0 +1,70 @@
+-- File:	BRep_CurveOn2Surfaces.cdl
+-- Created:	Tue Jul  6 10:22:53 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveOn2Surfaces from BRep inherits CurveRepresentation from BRep
+
+	---Purpose: Defines a continuity between two surfaces.
+
+uses
+    Pnt      from gp,
+    Surface  from Geom,
+    Location from TopLoc,
+    Shape    from GeomAbs,
+    CurveRepresentation from BRep
+    
+raises
+    NullObject from Standard
+    
+is
+
+    Create(S1 , S2  : Surface  from Geom;
+	   L1 , L2  : Location from TopLoc;
+	   C        : Shape    from GeomAbs)
+    returns mutable CurveOn2Surfaces from BRep;
+
+    IsRegularity(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+    IsRegularity(me; S1,S2 : Surface from Geom; 
+                     L1,L2 : Location from TopLoc)  
+    returns Boolean
+	---Purpose: A curve on two surfaces (continuity). 
+    is redefined;
+
+    D0(me; U : Real; P : out Pnt from gp);
+	---Purpose: Raises an error.
+    
+    Surface(me) returns any Surface from Geom
+	---C++: return const &
+    is redefined;
+
+    Surface2(me) returns any Surface from Geom
+	---C++: return const &
+    is redefined;
+
+    Location2(me) returns Location from TopLoc
+	---C++: return const &
+    is redefined;
+
+    Continuity(me) returns Shape from GeomAbs
+	---C++: return const &
+    is redefined;
+    
+    Continuity(me : mutable; C : Shape from GeomAbs)
+    is redefined;
+    
+    Copy(me) returns mutable CurveRepresentation from BRep;
+	---Purpose: Return a copy of this representation.
+
+fields
+    mySurface    : Surface from Geom;
+    mySurface2   : Surface from Geom;
+    myLocation2  : Location from TopLoc;
+    myContinuity : Shape from GeomAbs;
+
+end CurveOn2Surfaces;

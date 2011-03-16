@@ -1,0 +1,120 @@
+-- File:	BRepExtrema.cdl
+-- Created:	Fri Dec  3 15:48:19 1993
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+package BRepExtrema
+
+    ---Purpose: This package gives   tools to compute  extrema between
+    --          Shapes from BRep.
+
+uses 
+    Standard,
+    StdFail,
+    TopoDS,
+    GeomAdaptor,
+    BRepAdaptor,
+    gp,
+    Extrema,
+    TColStd,
+    TopTools,
+    TCollection,
+    Bnd
+    
+is
+
+    ----------------------------------------------------------
+    --  Extrema between two Shapes with triangulation.
+    ----------------------------------------------------------
+    class Poly;
+
+
+    ----------------------------------------------------------
+    --  Extrema between a Point and an Edge.
+    ----------------------------------------------------------
+    class ExtPC;
+
+
+    ----------------------------------------------------------
+    --  Extrema between two Edges.
+    ----------------------------------------------------------
+    class ExtCC;
+
+
+    ----------------------------------------------------------
+    --  Extrema between a Point and a Face.
+    ----------------------------------------------------------
+    class ExtPF;
+
+
+    ----------------------------------------------------------
+    --  Extrema between an Edge  and a Face.
+    ----------------------------------------------------------
+    class ExtCF;
+
+
+    ----------------------------------------------------------
+    --  Extrema between two Faces.
+    ----------------------------------------------------------
+    class ExtFF;
+
+
+    ----------------------------------------------------------
+    --  
+    ----------------------------------------------------------
+    exception UnCompatibleShape inherits DomainError;
+
+
+    ----------------------------------------------------------
+    --  enumeration used to describe the type of the support solution:                                         
+    -- 	    IsVertex => The solution is a vertex.
+    -- 	    IsOnEdge => The solution belongs to an Edge.
+    -- 	    IsInFace => The solution is inside a Face.    
+     
+    ----------------------------------------------------------
+    enumeration SupportType is IsVertex, IsOnEdge, IsInFace end SupportType;
+
+
+
+    ----------------------------------------------------------
+    -- This  class gives tools  to  compute the minimum distance value
+    -- between two shapes and  the corresponding couples of solution points.  
+    
+    ----------------------------------------------------------
+    class DistShapeShape;
+
+
+
+
+    ----------------------------------------------------------
+    --  This class is used to store a solution on a Shape. 
+    --  (used only by class DistShapeShape)
+    ----------------------------------------------------------
+    class SolutionElem;          
+
+
+
+    ----------------------------------------------------------
+    -- This sequence is used to store all the solution on each Shape.
+    ----------------------------------------------------------
+    class SeqOfSolution instantiates Sequence from TCollection 
+     	( SolutionElem  from  BRepExtrema); 
+
+
+    
+
+
+    ----------------------------------------------------------
+    -- This class is used to compute minimum distance between two elementary
+    -- Shapes ( Vertex, Edge, Face ) (used only by class DistShapeShape)
+    ----------------------------------------------------------
+      private class DistanceSS from BRepExtrema;
+
+
+
+
+
+
+
+end BRepExtrema;

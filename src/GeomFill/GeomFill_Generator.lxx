@@ -1,0 +1,11 @@
+// File:	GeomFill_Generator.lxx
+// Created:	Fri Feb 25 09:15:58 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+
+inline const Handle(Geom_Surface)& GeomFill_Generator::Surface() const
+{
+  return mySurface;
+}

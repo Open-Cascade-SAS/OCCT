@@ -1,0 +1,54 @@
+-- File:	Geom2dConvert_CompCurveToBSplineCurve.cdl
+-- Created:	Tue Apr 29 11:35:23 1997
+-- Author:	Stagiaire Francois DUMONT
+--		<dum@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CompCurveToBSplineCurve from Geom2dConvert 
+
+	    ---Purpose: Concat sevral curve in an BSplineCurve
+
+uses
+ ParameterisationType from Convert,
+ BoundedCurve from Geom2d,
+ BSplineCurve from Geom2d
+
+--raises
+
+is
+
+    Create (BasisCurve : BoundedCurve from Geom2d; 
+     	    Parameterisation : ParameterisationType from Convert 
+    	    	       =  Convert_TgtThetaOver2)
+	    ---Purpose: Initialize the algorithme with one curve
+	    --        - Parameterisation is used to convert 
+    returns CompCurveToBSplineCurve;
+    
+    Add (me : in out; 
+         NewCurve :  BoundedCurve from Geom2d;
+         Tolerance:  Real from Standard;
+         After      : Boolean from Standard = Standard_False)
+	    ---Purpose: Append a curve in the BSpline
+	    --          Return False if the curve is not G0 with the BSplineCurve.
+	    --          Tolerance is used to check continuity and decrease 
+	    --          Multiplicty at the common Knot 
+	    --          After is usefull if BasisCurve is a closed curve .
+    returns Boolean;
+       
+    
+    Add (me : in out; 
+         FirstCurve : in out BSplineCurve from Geom2d;
+    	 SecondCurve: in out BSplineCurve from Geom2d;
+         After      : Boolean from Standard)
+	    ---Purpose: Concat two BSplineCurves.
+    	is private;    
+    
+    BSplineCurve(me) returns BSplineCurve from Geom2d;
+
+fields
+ myCurve :  BSplineCurve from Geom2d;
+ myTol   :  Real;
+ myType  :  ParameterisationType from Convert;
+
+end CompCurveToBSplineCurve;

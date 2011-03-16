@@ -1,0 +1,47 @@
+-- File:        Product.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Product from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfProductContext from StepBasic, 
+	ProductContext from StepBasic
+is
+
+	Create returns mutable Product;
+	---Purpose: Returns a Product
+
+	Init (me : mutable;
+	      aId : mutable HAsciiString from TCollection;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aFrameOfReference : mutable HArray1OfProductContext from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetId(me : mutable; aId : mutable HAsciiString);
+	Id (me) returns mutable HAsciiString;
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+	SetFrameOfReference(me : mutable; aFrameOfReference : mutable HArray1OfProductContext);
+	FrameOfReference (me) returns mutable HArray1OfProductContext;
+	FrameOfReferenceValue (me; num : Integer) returns mutable ProductContext;
+	NbFrameOfReference (me) returns Integer;
+
+fields
+
+	id : HAsciiString from TCollection;
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	frameOfReference : HArray1OfProductContext from StepBasic;
+
+end Product;

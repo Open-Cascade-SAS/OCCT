@@ -1,0 +1,61 @@
+-- File:	BRepGProp_Domain.cdl
+-- Created:	Fri Nov 27 16:44:12 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+ class Domain from BRepGProp 
+
+	---Purpose: Arc iterator. Returns only Forward and Reversed edges from 
+        --          the face in an undigested order.
+
+uses Face     from TopoDS,
+     Edge     from TopoDS,
+     Explorer from TopExp
+is
+  
+  Create returns Domain;
+        --- Purpose : Empty constructor. 
+	---C++: inline
+  
+  Create (F : Face from TopoDS) returns Domain;
+        --- Purpose : Constructor. Initializes the domain with the face.
+	---C++: inline
+  
+  Init(me : in out;F : Face from TopoDS);
+        --- Purpose : Initializes the domain with the face.
+	---C++: inline
+  
+  More(me : in out)  returns Boolean from Standard
+        --- Purpose :
+        --  Returns True if there is another arc of curve in the list.
+  ---C++: inline
+  is static;
+  
+  Init(me : in out)
+        --- Purpose : Initializes the exploration with the face already set.
+        ---C++: inline
+  is static;
+  
+  Value(me : in out) returns Edge from TopoDS  
+        ---Purpose: Returns the current edge.
+        ---C++: return const &
+	---C++: inline
+  is static;
+  
+  Next(me : in out)  
+        --- Purpose :
+        --  Sets the index of the arc iterator to the next arc of
+        --  curve.
+  is static;
+
+fields
+
+    myExplorer : Explorer from TopExp;
+
+end Domain;
+
+
+
+

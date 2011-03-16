@@ -1,0 +1,223 @@
+-- File     : MeshVS_Mesh.cdl
+-- Created  : 10 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+
+class Mesh from MeshVS inherits InteractiveObject from AIS
+
+	---Purpose: the main class provides interface to create mesh presentation as a whole
+
+uses
+  PackedMapOfInteger from TColStd, 
+  HPackedMapOfInteger from TColStd,
+
+  InteractiveObject from AIS,
+
+  PresentationManager3d from PrsMgr,
+
+  Presentation from Prs3d,
+
+  NameOfColor from Quantity,
+
+  Selection       from SelectMgr,
+  EntityOwner     from SelectMgr,
+  SequenceOfOwner from SelectMgr,
+
+  Boolean from Standard,
+  CString from Standard,
+
+  PrsBuilder                from MeshVS,
+  Drawer                    from MeshVS,
+  DataMapOfIntegerOwner     from MeshVS,
+  DataSource                from MeshVS,
+  SequenceOfPrsBuilder      from MeshVS,
+  MeshSelectionMethod       from MeshVS
+
+is
+
+  Create ( theIsAllowOverlapped : Boolean = Standard_False ) returns mutable Mesh;
+	---Purpose: Constructor.
+        -- theIsAllowOverlapped is Standard_True, if it is allowed to draw edges overlapped with beams
+        --   Its value is stored in drawer
+
+  Destroy( me: mutable ) is virtual;
+    ---C++: alias ~
+
+  Compute ( me : mutable;
+            PM : PresentationManager3d from PrsMgr;
+            Prs : Presentation from Prs3d;
+            DisplayMode : Integer  ) is redefined;
+	---Purpose: Computes presentation using builders added to sequence. Each builder computes
+        -- own part of mesh presentation according to its type.
+
+  ComputeSelection ( me : mutable;
+                     Sel        : Selection from SelectMgr;
+                     SelectMode : Integer ) is redefined;
+	---Purpose: Computes selection according to SelectMode
+
+  HilightSelected  ( me : mutable;
+                     PM     : PresentationManager3d from PrsMgr;
+                     Owners : SequenceOfOwner from SelectMgr ) is redefined;
+	---Purpose: Draw selected owners presentation
+
+  HilightOwnerWithColor ( me : mutable;
+                          PM : PresentationManager3d from PrsMgr;
+                          Color : NameOfColor from Quantity;
+                          Owner : EntityOwner from SelectMgr ) is redefined;
+	---Purpose: Draw hilighted owner presentation
+
+  ClearSelected         ( me : mutable ) is redefined;
+  	---Purpose: Clears internal selection presentation
+
+  GetBuildersCount  ( me ) returns Integer;
+	---Purpose: How many builders there are in sequence
+
+  GetBuilder        ( me; Index : Integer )  returns PrsBuilder from MeshVS;
+	---Purpose: Returns builder by its index in sequence
+
+  GetBuilderById    ( me; Id    : Integer )  returns PrsBuilder from MeshVS;
+	---Purpose: Returns builder by its ID
+
+  GetFreeId         ( me ) returns Integer;
+	---Purpose: Returns the smallest positive ID, not occupied by any builder.
+        -- This method using when builder is created with ID = -1
+
+  AddBuilder        ( me : mutable;
+                      Builder          : PrsBuilder from MeshVS;
+                      TreatAsHilighter : Boolean = Standard_False );
+	---Purpose: Adds builder to tale of sequence.
+        -- PrsBuilder is builder to be added
+        -- If TreatAsHilighter is true, MeshVS_Mesh will use this builder to create
+        -- presentation of hilighted and selected owners.
+        --   Only one builder can be hilighter, so that if you call this method with
+        --   TreatAsHilighter = Standard_True some times, only last builder will be hilighter
+        --   WARNING: As minimum one builder must be added as hilighter, otherwise selection cannot be computed
+
+  SetHilighter      ( me : mutable; Builder    : PrsBuilder from MeshVS );
+	---Purpose: Changes hilighter ( see above )
+
+  SetHilighter      ( me : mutable; Index      : Integer ) returns Boolean;
+	---Purpose: Sets builder with sequence index "Index" as hilighter
+
+  SetHilighterById  ( me : mutable; Id         : Integer ) returns Boolean;
+	---Purpose: Sets builder with identificator "Id" as hilighter
+
+  GetHilighter      ( me ) returns PrsBuilder from MeshVS;
+	---Purpose: Returns hilighter
+
+  RemoveBuilder     ( me : mutable; Index      : Integer );
+	---Purpose: Removes builder from sequence. If it is hilighter, hilighter will be NULL
+        -- ( Don't remember to set it to other after!!! )
+
+  RemoveBuilderById ( me : mutable; Id         : Integer );
+	---Purpose: Removes builder with identificator Id
+
+  FindBuilder       ( me; TypeString : CString )  returns PrsBuilder from MeshVS;
+	---Purpose: Finds builder by its type the string represents
+
+  GetOwnerMaps  ( me : mutable; IsElement : Boolean ) returns DataMapOfIntegerOwner from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of owners.
+
+  GetDataSource  ( me ) returns DataSource from MeshVS;
+	---Purpose: Returns default builders' data source
+
+  SetDataSource  ( me : mutable; aDataSource : DataSource from MeshVS );
+	---Purpose: Sets default builders' data source
+
+  GetDrawer  ( me ) returns Drawer from MeshVS;
+	---Purpose: Returns default builders' drawer
+
+  SetDrawer  ( me: mutable; aDrawer : Drawer from MeshVS );
+	---Purpose: Sets default builders' drawer
+
+  IsHiddenElem ( me; ID: Integer ) returns Boolean;
+	---Purpose: Returns True if specified element is hidden
+	--          By default no elements are hidden
+
+  IsHiddenNode ( me; ID: Integer ) returns Boolean;
+	---Purpose: Returns True if specified node is hidden.
+	--          By default all nodes are hidden
+
+  IsSelectableElem ( me; ID: Integer ) returns Boolean;
+	---Purpose: Returns True if specified element is not hidden
+
+  IsSelectableNode ( me; ID: Integer ) returns Boolean;
+	---Purpose: Returns True if specified node is specified as selectable.
+
+  GetHiddenNodes ( me )
+    returns HPackedMapOfInteger from TColStd;
+	---C++: return const &
+	---Purpose: Returns map of hidden nodes (may be null handle)
+
+  SetHiddenNodes ( me: mutable; Ids : HPackedMapOfInteger from TColStd );
+	---Purpose: Sets map of hidden nodes, which shall not be displayed individually.
+        --          If nodes shared by some elements shall not be drawn, 
+        --          they should be included into that map
+
+  GetHiddenElems ( me )
+    returns HPackedMapOfInteger from TColStd;
+	---C++: return const &
+	---Purpose: Returns map of hidden elements (may be null handle)
+
+  SetHiddenElems ( me: mutable; Ids : HPackedMapOfInteger from TColStd );
+	---Purpose: Sets map of hidden elements
+
+  GetSelectableNodes ( me )
+    returns HPackedMapOfInteger from TColStd;
+	---C++: return const &
+	---Purpose: Returns map of selectable elements (may be null handle)
+
+  SetSelectableNodes ( me: mutable; Ids : HPackedMapOfInteger from TColStd );
+	---Purpose: Sets map of selectable nodes.
+
+  UpdateSelectableNodes ( me: mutable );
+        ---Purpose: Automatically computes selectable nodes; the node is considered 
+        --          as being selectable if it is either not hidden, or is hidden
+        --          but referred by at least one non-hidden element.
+	--          Thus all nodes that are visible (either individually, or as ends or
+	--          corners of elements) are selectable by default.
+
+  GetMeshSelMethod( me ) returns MeshSelectionMethod from MeshVS;
+	---Purpose: Returns set mesh selection method (see MeshVS.cdl)
+
+  SetMeshSelMethod( me: mutable; M : MeshSelectionMethod from MeshVS );
+	---Purpose: Sets mesh selection method (see MeshVS.cdl)
+
+  IsWholeMeshOwner( me; theOwner: EntityOwner from SelectMgr)
+        returns Boolean from Standard
+        is virtual;
+        ---Purpose: Returns True if the given owner represents a whole mesh.
+
+fields
+  myBuilders              : SequenceOfPrsBuilder from MeshVS;
+  myHilighter             : PrsBuilder from MeshVS;
+
+  myHiddenElements        : HPackedMapOfInteger from TColStd;
+  myHiddenNodes           : HPackedMapOfInteger from TColStd;
+  mySelectableNodes       : HPackedMapOfInteger from TColStd;
+
+  myNodeOwners            : DataMapOfIntegerOwner from MeshVS is protected;
+  myElementOwners         : DataMapOfIntegerOwner from MeshVS is protected;
+  my0DOwners              : DataMapOfIntegerOwner from MeshVS is protected;
+  myLinkOwners            : DataMapOfIntegerOwner from MeshVS is protected;
+  myFaceOwners            : DataMapOfIntegerOwner from MeshVS is protected;
+  myVolumeOwners          : DataMapOfIntegerOwner from MeshVS is protected; 
+  myGroupOwners           : DataMapOfIntegerOwner from MeshVS is protected;
+  myMeshOwners            : DataMapOfIntegerOwner from MeshVS is protected;
+
+  myDataSource            : DataSource from MeshVS;
+  myCurrentDrawer         : Drawer from MeshVS is protected;
+  mySelectionDrawer       : Drawer from MeshVS is protected;
+  myHilightDrawer         : Drawer from MeshVS is protected;
+--  mySelectionPrs          : Presentation from Prs3d is protected;
+--  myHilightPrs            : Presentation from Prs3d is protected;
+
+  myWholeMeshOwner        : EntityOwner from SelectMgr  is  protected;
+  mySelectionMethod       : MeshSelectionMethod from MeshVS;
+
+friends
+  class PrsBuilder from MeshVS
+
+end Mesh;

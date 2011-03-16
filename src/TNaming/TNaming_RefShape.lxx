@@ -1,0 +1,62 @@
+// File:	TNaming_RefShape.lxx
+// Created:	Thu Dec 19 16:01:05 1996
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : TNaming_RefShape
+//purpose  : 
+//=======================================================================
+
+inline TNaming_RefShape::TNaming_RefShape() :myFirstUse(0) {}
+
+
+//=======================================================================
+//function : TNaming_RefShape
+//purpose  : 
+//=======================================================================
+
+inline TNaming_RefShape::TNaming_RefShape(const TopoDS_Shape& S) 
+:myShape(S),myFirstUse(0){}
+
+//=======================================================================
+//function : FirstUse
+//purpose  : 
+//=======================================================================
+
+inline void TNaming_RefShape::FirstUse(const TNaming_PtrNode& pdn) 
+{
+  myFirstUse = pdn;
+}
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline void TNaming_RefShape::Shape(const TopoDS_Shape& S) 
+{
+  myShape = S;
+}
+
+//=======================================================================
+//function : FirstUse
+//purpose  : 
+//=======================================================================
+
+inline TNaming_PtrNode TNaming_RefShape::FirstUse() const
+{
+  return myFirstUse;
+}
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& TNaming_RefShape::Shape() const
+{
+  return myShape;
+}
+

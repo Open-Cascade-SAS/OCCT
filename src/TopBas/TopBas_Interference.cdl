@@ -1,0 +1,107 @@
+-- File:	Interference.cdl
+-- Created:	Thu Aug 13 11:25:16 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+generic class Interference from TopBas (TheSubShape as any;
+    	    	    	    	    	TheShape    as any)
+
+	---Purpose: An  Interference  is an   Intersection on a  Shape
+	--          called  the Reference, it contains :
+	--          
+	--          * The  Intersection : The  SubShape describing the
+	--          intersection. For example a Vertex.
+	--          
+	--          * The   Boundary : The  Shape  that  generated the
+	--          intersection with the referrence.  For  example an
+	--          Edge.
+	--          
+	--          *   The  Orientation  :  The  orientation  of  the
+	--          Intersection relative to the Boundary.
+	--          
+	--          * The Transition : How the referrence  crosses the
+	--          Boundary at the Intersection.
+	--          
+	--          * The  BoundaryTransition  : How the Referrence is
+	--          on the boundary at the Intersection.
+	--          
+	--          *    Next : The    Next Interference  on  the same
+	--          Reference. Used to make lists.
+
+
+uses
+    Orientation from TopAbs
+    
+is
+   Create returns Interference;
+
+   Create(Inters : TheSubShape;
+   	  Bound  : TheShape;
+	  Orient : Orientation from TopAbs;
+	  Trans  : Orientation from TopAbs;
+	  BTrans : Orientation from TopAbs) returns Interference; 
+	   
+   Intersection(me : in out; I : TheSubShape)
+    	---C++: inline
+   is static;
+   
+   Boundary(me : in out; B : TheShape)
+    	---C++: inline
+   is static;
+   
+   Orientation(me : in out; O : Orientation from TopAbs)
+    	---C++: inline
+   is static;
+   
+   Transition(me : in out; Tr : Orientation from TopAbs)
+    	---C++: inline
+   is static;
+   
+   BoundaryTransition(me : in out; BTr : Orientation from TopAbs)
+    	---C++: inline
+   is static;
+   
+   Intersection(me) returns TheSubShape
+    	---C++: inline
+	---C++: return const &
+   is static;
+   
+   ChangeIntersection(me : in out) returns TheSubShape
+    	---C++: inline
+	---C++: return &
+   is static;
+   
+   Boundary(me) returns TheShape
+    	---C++: inline
+	---C++: return const &
+   is static;
+   
+   ChangeBoundary(me : in out) returns TheShape
+    	---C++: inline
+	---C++: return &
+   is static;
+   
+   Orientation(me) returns Orientation from TopAbs
+    	---C++: inline
+   is static;
+   
+   Transition(me) returns Orientation from TopAbs
+    	---C++: inline
+   is static;
+   
+   BoundaryTransition(me) returns Orientation from TopAbs
+    	---C++: inline
+   is static;
+   
+fields
+    myIntersection : TheSubShape;
+    myBoundary     : TheShape;
+    myOrientation  : Orientation from TopAbs;
+    myTransition   : Orientation from TopAbs;
+    myBTransition  : Orientation from TopAbs;
+
+end Interference;

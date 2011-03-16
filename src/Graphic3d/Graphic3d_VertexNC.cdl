@@ -1,0 +1,98 @@
+--
+-- File:	Graphic3d_VertexNC.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+-- Modified:	03-02-98 : FMN ; Add Flag Normal
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class VertexNC from Graphic3d inherits VertexN from Graphic3d
+
+	---Version:
+
+	---Purpose: This class allows the creation of a vertex with
+	--	    a colour and a 3D normal.
+
+	---Keywords: Vertex, Normal, Color, Coordinate, Point
+
+	---Warning:
+	---References:
+
+uses
+
+	Color	from Quantity,
+
+	Vector	from Graphic3d,
+	Vertex	from Graphic3d
+
+is
+
+	Create
+		returns VertexNC from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with coordinates 0.0, 0.0, 0.0
+	--	    for which the normal is 0.0, 0.0, 1.0 and
+	--	    the colour is Quantity_NOC_WHITE.
+
+	Create ( AX, AY, AZ	: Real from Standard;
+		 ANX, ANY, ANZ	: Real from Standard;
+		 AColor		: Color from Quantity;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexNC from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with coordinates <AX>, <AY>, <AZ>
+	--	    for which the normal is <ANX>, <ANY>, <ANZ> and
+	--	    the colour is <AColor>.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	Create ( APoint		: Vertex from Graphic3d;
+		 AVector	: Vector from Graphic3d;
+		 AColor		: Color from Quantity;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexNC from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point in <APoint> for which the normal
+	--	    is <AVector> and the colour is <AColor>.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetColor ( me		: in out;
+		   ColorNew	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the colour of the point <me>.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Color ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the colour of the point <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_VertexNC
+--
+-- Purpose	:	Declaration of variables specific to points
+--
+-- Reminder	:	A point is defined by its coordinates, its normal
+--			and its colour.
+
+	-- the colour
+	MyColor		:	Color from Quantity;
+
+end VertexNC;

@@ -1,0 +1,25 @@
+-- File:	TransferBRep_ShapeInfo.cdl
+-- Created:	Wed Sep  4 10:59:16 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class ShapeInfo  from TransferBRep
+
+    ---Purpose : Gives informations on an object, see template DataInfo
+    --           This class is for Shape
+
+uses Type, Shape
+
+is
+
+    Type (myclass; ent : Shape) returns Type;
+    ---Purpose : Returns the Type attached to an object
+    --           Here, TShape (Shape has no Dynamic Type)
+
+    TypeName (myclass; ent : Shape) returns CString;
+    ---Purpose : Returns Type Name (string)
+    --           Here, the true name of the Type of a Shape
+
+end ShapeInfo;

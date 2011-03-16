@@ -1,0 +1,270 @@
+-- File:	IFSelect_SessionFile.cdl
+-- Created:	Wed Nov  3 19:31:56 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class SessionFile  from IFSelect
+
+    ---Purpose : A SessionFile is intended to manage access between a
+    --           WorkSession and an Ascii Form, to be considered as a Dump.
+    --           It allows to write the File from the WorkSession, and later
+    --           read the File to the WorkSession, by keeping required
+    --           descriptions (such as dependances).
+    --           
+    --           The produced File is under an Ascii Form, then it may be
+    --           easily consulted.
+    --           It is possible to cumulate reading of several Files. But in
+    --           case of Names conflict, the newer Names are forgottens.
+    --           
+    --           The Dump supports the description of XSTEP functionnalities
+    --           (Sharing an Interface File, with Selections, Dispatches,
+    --           Modifiers ...) but does not refer to the Interface File
+    --           which is currently loaded.
+    --           
+    --           SessionFile works with a library of SessionDumper type objects
+    --           
+    --           The File is Produced as follows :
+    --           SessionFile produces all general Informations (such as Int and
+    --           Text Parameters, Types and Inputs of Selections, Dispatches,
+    --           Modifiers ...) and calls the SessionDumpers to produce all
+    --           the particular Data : creation arguments, parameters to be set
+    --           It is Read in the same terms :
+    --           SessionFile reads and interprets all general Informations,
+    --           and calls the SessionDumpers to recognize Types and for a
+    --           recognized Type create the corresponding Object with its
+    --           particular parameters as they were written.
+    --           The best way to work is to have one SessionDumper for each
+    --           consistent set of classes (e.g. a package).
+
+uses CString, Character, Transient,
+     AsciiString from TCollection,  SequenceOfAsciiString from TColStd,
+     HArray1OfInteger from TColStd, DictionaryOfInteger,
+     WorkSession
+
+is
+
+    Create (WS : mutable WorkSession) returns SessionFile;
+    ---Purpose : Creates a SessionFile, ready to read Files in order to load
+    --           them into a given WorkSession.
+    --           The following Read Operations must then be called.
+    --           It is also possible to perform a Write, which produces a
+    --           complete File of all the content of the WorkSession.
+
+    Create (WS : WorkSession; filename : CString) returns SessionFile;
+    ---Purpose : Creates a SessionFile which Writes the content of a WorkSession
+    --           to a File (directly calls Write)
+    --           Then, IsDone aknowledges on the result of the Operation.
+    --           But such a SessionFile may not Read a File to a WorkSession.
+
+    ClearLines (me : in out);
+    ---Purpose : Clears the lines recorded whatever for writing or for reading
+
+    NbLines (me) returns Integer;
+    ---Purpose : Returns the count of recorded lines
+
+    Line (me; num : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns a line given its rank in the list of recorded lines
+    ---C++ : return const &
+
+    AddLine (me : in out; line : CString);
+    ---Purpose : Adds a line to the list of recorded lines
+
+    RemoveLastLine (me : in out);
+    ---Purpose : Removes the last line. Can be called recursively.
+    --           Does nothing if the list is empty
+
+    WriteFile (me : in out; name : CString) returns Boolean;
+    ---Purpose : Writes the recorded lines to a file named <name> then clears
+    --           the list of lines.
+    --           Returns False (with no clearing) if the file could not be
+    --           created
+
+    ReadFile  (me : in out; name : CString) returns Boolean;
+    ---Purpose : Reads the recorded lines from a file named <name>, after
+    --           having cleared the list (stops if RecognizeFile fails)
+    --           Returns False (with no clearing) if the file could not be read
+
+    RecognizeFile (me : in out; headerline : CString) returns Boolean;
+    ---Purpose : Recognizes the header line. returns True if OK, False else
+
+
+    Write (me : in out; filename : CString) returns Integer;
+    ---Purpose : Performs a Write Operation from a WorkSession to a File
+    --           i.e. calls WriteSession then WriteEnd, and WriteFile
+    --           Returned Value is : 0 for OK, -1 File could not be created,
+    --            >0 Error during Write (see WriteSession)
+    --           IsDone can be called too (will return True for OK)
+
+    Read  (me : in out; filename : CString) returns Integer;
+    ---Purpose : Performs a Read Operation from a file to a WorkSession
+    --           i.e. calls ReadFile, then ReadSession and ReadEnd
+    --           Returned Value is : 0 for OK, -1 File could not be opened,
+    --            >0 Error during Read  (see WriteSession)
+    --           IsDone can be called too (will return True for OK)
+
+
+    	--  Specific actions : Write and Read the content of a WorkSession  --
+
+    WriteSession (me : in out) returns Integer;
+    ---Purpose : Prepares the Write operation from a WorkSession (IFSelect) to
+    --           a File, i.e. fills the list of lines (the file itself remains
+    --           to be written; or NbLines/Line may be called)
+    --           Important Remark : this excludes the reading of the last line,
+    --           which is performed by WriteEnd
+    --           Returns 0 if OK, status > 0 in case of error
+
+    WriteEnd (me : in out) returns Integer;
+    ---Purpose : Writes the trailing line. It is separate from WriteSession,
+    --           in order to allow to redefine WriteSession without touching
+    --           WriteEnd (WriteSession defines the body of the file)
+    --           WriteEnd fills the list of lines. Returns a status of error,
+    --           0 if OK, >0 else
+
+    WriteLine (me : in out; line : CString; follow : Character = 0);
+    ---Purpose : Writes a line to the File. If <follow> is given, it is added
+    --           at the following of the line. '\n' must be added for the end.
+
+    WriteOwn (me : in out; item : Transient) returns Boolean;
+    ---Purpose : Writes the Parameters own to each type of Item. Uses the
+    --           Library of SessionDumpers
+    --           Returns True if Done, False if <item> could not be treated
+    --           (hence it remains written with no Own Parameter)
+
+    ReadSession (me : in out) returns Integer;
+    ---Purpose : Performs a Read Operation from a File to a WorkSession, i.e.
+    --           reads the list of line (which must have already been loaded,
+    --           by ReadFile or by calls to AddLine)
+    --           Important Remark : this excludes the reading of the last line,
+    --           which is performed by ReadEnd
+    --           Returns 0 for OK, >0 status for Read Error (not a suitable
+    --           File, or WorkSession given as Immutable at Creation Time)
+    --           IsDone can be called too (will return True for OK)
+
+    ReadEnd (me : in out) returns Integer;
+    ---Purpose : Reads the end of a file (its last line). Returns 0 if OK,
+    --           status >0 in case of error (not a suitable end line).
+
+
+    ReadLine (me : in out) returns Boolean;
+    ---Purpose : Reads a Line and splits it into a set of alphanumeric items,
+    --           which can then be queried by NbParams/ParamValue ...
+
+    SplitLine (me : in out; line : CString);
+    ---Purpose : Internal routine which processes a line into words
+    --           and prepares its exploration
+
+    ReadOwn (me : in out; item : out mutable Transient) returns Boolean;
+    ---Purpose : Tries to Read an Item, by calling the Library of Dumpers
+    --           Sets the list of parameters of the line to be read from the
+    --           first own one
+
+    AddItem (me : in out; item : Transient; active : Boolean = Standard_True);
+    ---Purpose : Adds an Item to the WorkSession, taken as Name the first
+    --           item of the read Line. If this Name is not a Name but a Number
+    --           or if this Name is already recorded in the WorkSession, it
+    --           adds the Item but with no Name. Then the Name is recorded
+    --           in order to be used by the method ItemValue
+    --           <active> commands to make <item> active or not in the session
+
+    IsDone (me) returns Boolean;
+    ---Purpose : Returns True if the last Read or Write operation has been
+    --           corectly performed. ELse returns False.
+
+    WorkSession (me) returns WorkSession;
+    ---Purpose : Returns the WorkSession on which a SessionFile works.
+    --           Remark that it is returned as Immutable.
+
+    	--  The following methods are used by SessionDumper to perform
+    	--  their ReadOwn and WriteOwn
+
+    NewItem (me : in out; ident : Integer; par : Transient);
+    ---Purpose : At beginning of writing an Item, writes its basics :
+    --           - either its name in the session if it has one
+    --           - or its relative number of item in the file, else
+    --             (preceeded by a '_')
+    --           - then, its Dynamic Type (in the sense of cdl : pk_class)
+    --           This basic description can be followed by the parameters
+    --           which are used in the definition of the item.
+
+    SetOwn (me : in out; mode : Boolean);
+    ---Purpose : Sets Parameters to be sent as Own if <mode> is True (their
+    --           Name or Number or Void Mark or Text Value is preceeded by a
+    --           Column sign ':') else they are sent normally
+    --           Hence, the Own Parameter are clearly identified in the File
+
+    SendVoid (me : in out);
+    ---Purpose : During a Write action, commands to send a Void Parameter
+    --           i.e. a Parameter which is present but undefined
+    --           Its form will be the dollar sign : $
+
+    SendItem (me : in out; par : Transient);
+    ---Purpose : During a Write action, commands to send the identification of
+    --           a Parameter : if it is Null (undefined) it is send as Void ($)
+    --           if it is Named in the WorkSession, its Name is sent preceeded
+    --           by ':', else a relative Ident Number is sent preceeded by '#'
+    --           (relative to the present Write, i.e. starting at one, without
+    --           skip, and counted part from Named Items)
+
+    SendText (me : in out; text : CString);
+    ---Purpose : During a Write action, commands to send a Text without
+    --           interpretation. It will be sent as well
+
+
+    SetLastGeneral (me : in out; lastgen : Integer);
+    ---Purpose : Sets the rank of Last General Parameter to a new value. It is
+    --           followed by the Fist Own Parameter of the item.
+    --           Used by SessionFile after reading general parameters.
+
+    NbParams (me) returns Integer;
+    ---Purpose : During a Read operation, SessionFile processes sequencially
+    --           the Items to read. For each one, it gives access to the list
+    --           of its Parameters : they were defined by calls to
+    --           SendVoid/SendParam/SendText during Writing the File.
+    --           NbParams returns the count of Parameters for the line
+    --           currently read.
+
+    IsVoid (me; num : Integer) returns Boolean;
+    ---Purpose : Returns True if a Parameter, given its rank in the Own List
+    --           (see NbOwnParams), is Void. Returns also True if <num> is
+    --           out of range (undefined parameters)
+
+    IsText (me; num : Integer) returns Boolean;
+    ---Purpose : Returns True if a Parameter, in the Own List (see NbOwnParams)
+    --           is a Text (between "..."). Else it is an Item (Parameter,
+    --           Selection, Dispatch ...), which can be Void.
+
+    ParamValue (me; num : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns a Parameter (alphanumeric item of a line) as it
+    --           has been read
+    ---C++ : return const &
+
+    TextValue (me; num : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns the content of a Text Parameter (without the quotes).
+    --           Returns an empty string if the Parameter is not a Text.
+
+    ItemValue (me; num : Integer) returns mutable Transient;
+    ---Purpose : Returns a Parameter as an Item. Returns a Null Handle if the
+    --           Parameter is a Text, or if it is defined as Void
+
+    Destroy (me : in out);
+    ---Purpose : Specific Destructor (closes the File if not yet done)
+    ---C++ : alias ~
+
+fields
+
+    themode  : Boolean;   -- Read(False) or Write(True)
+    thesess  : WorkSession  is protected;
+    thenums  : HArray1OfInteger from TColStd  is protected;       -- for Write
+    thenames : DictionaryOfInteger  is protected;                 -- for Read
+    thelist  : SequenceOfAsciiString from TColStd;       -- for the whole File
+    thenl    : Integer  is protected;                    -- line number in File
+    thebuff  : AsciiString from TCollection;
+    theline  : SequenceOfAsciiString from TColStd  is protected;  -- for a Line
+    thelastgen : Integer;
+    thedone    : Boolean;
+    theownflag : Boolean;
+    thenewnum  : Integer;  -- to identify non-named items
+
+end SessionFile;

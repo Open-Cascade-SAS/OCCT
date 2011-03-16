@@ -1,0 +1,15 @@
+// File:	GeomAPI_ProjectPointOnCurve.lxx
+// Created:	Thu Mar 17 15:19:55 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Extrema
+//purpose  : 
+//=======================================================================
+
+inline const Extrema_ExtPC& GeomAPI_ProjectPointOnCurve::Extrema() const
+{
+  return myExtPC;
+}

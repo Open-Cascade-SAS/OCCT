@@ -1,0 +1,43 @@
+-- File:	BinMXCAFDoc.cdl
+-- Created:	Mon Apr 18 17:43:47 2005
+-- Author:	Eugeny NAPALKOV <eugeny.napalkov@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2005
+
+package BinMXCAFDoc
+
+uses
+    BinMDF,
+    BinObjMgt,
+    TopLoc,
+    CDM,
+    TDF,
+    BinTools
+is
+
+    class AreaDriver;
+    
+    class CentroidDriver;
+    
+    class ColorDriver;
+    
+    class GraphNodeDriver;
+    
+    class LocationDriver;
+    
+    class VolumeDriver;
+    
+    class DatumDriver;
+    class DimTolDriver;
+    class MaterialDriver;
+    
+    class ColorToolDriver;
+    class DocumentToolDriver;
+    class LayerToolDriver;
+    class ShapeToolDriver;
+    class DimTolToolDriver;
+    class MaterialToolDriver;
+
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                theMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>.
+end;

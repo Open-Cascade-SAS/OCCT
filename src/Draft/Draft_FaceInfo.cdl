@@ -1,0 +1,102 @@
+-- File:	Draft_FaceInfo.cdl
+-- Created:	Wed Aug 31 14:53:45 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+class FaceInfo from Draft
+
+	---Purpose: 
+
+uses Surface  from Geom,
+     Curve    from Geom,
+     Face     from TopoDS
+
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+    	returns FaceInfo from Draft;
+
+
+    Create(S: Surface from Geom; HasNewGeometry: Boolean from Standard)
+    
+    	returns FaceInfo from Draft;
+
+
+    RootFace(me: in out; F: Face from TopoDS)
+    
+    	is static;
+
+
+    NewGeometry(me)
+    
+    	returns Boolean from Standard
+	is static;
+	
+
+    Add(me: in out; F: Face from TopoDS)
+    
+    	is static;
+
+    FirstFace(me)
+    
+    	returns Face from TopoDS
+	---C++: return const&
+	is static;
+
+
+    SecondFace(me)
+    
+    	returns Face from TopoDS
+	---C++: return const&
+	is static;
+
+
+    Geometry(me)
+    
+    	returns Surface from Geom
+	is static;
+	---C++: return const&
+
+    ChangeGeometry(me: in out)
+    
+    	returns Surface from Geom
+	is static;
+	---C++: return &
+
+    RootFace(me)
+    
+	---C++: return const&
+    	returns Face from TopoDS
+	is static;
+
+    ChangeCurve(me: in out)
+    
+    	returns Curve from Geom
+	---C++: return &
+	is static;
+
+    Curve(me)
+    
+    	returns Curve from Geom
+	---C++: return const&
+	is static;
+
+
+
+
+fields
+
+    myNewGeom : Boolean from Standard;
+    myGeom    : Surface from Geom;
+    myRootFace: Face    from TopoDS;
+    myF1      : Face    from TopoDS;
+    myF2      : Face    from TopoDS;
+    myCurv    : Curve   from Geom;
+
+end FaceInfo;

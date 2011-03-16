@@ -1,0 +1,24 @@
+-- File:	PPrsStd.cdl
+-- Created:	Tue Aug 26 16:29:44 1997
+-- Author:	SMO
+--		<SMO@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package PPrsStd
+
+uses
+
+  Standard,
+  Quantity,
+  PDF,
+  PCollection,
+  gp
+
+is
+    class AISPresentation; 
+    class AISPresentation_1;
+    --class Position; now it is in PDataStd
+    
+end PPrsStd;
+
+

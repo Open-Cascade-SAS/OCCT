@@ -1,0 +1,75 @@
+-- File:	BRepSweep_Builder.cdl
+-- Created:	Thu Jan 14 17:36:55 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Builder from BRepSweep 
+
+	---Purpose: implements the abstract Builder with the BRep Builder
+
+uses
+    Builder from BRep,
+        
+    Shape	from TopoDS,
+    Shell	from TopoDS,
+    Face	from TopoDS,
+    Wire	from TopoDS,
+    Edge	from TopoDS,
+    Vertex	from TopoDS,
+    
+    Orientation from TopAbs
+    
+is
+
+    Create(aBuilder : Builder from BRep) returns Builder from BRepSweep;
+	---Purpose: Creates a Builder.
+	
+    Builder(me) returns Builder from BRep
+	---C++: inline
+	---C++: return const &
+    is static;
+	
+        -- implements the Builder methods
+
+    MakeCompound (me; aCompound : out Shape from TopoDS)
+    	---Purpose: Returns an empty Compound.
+    is static;
+
+    MakeCompSolid (me; aCompSolid : out Shape from TopoDS)
+    	---Purpose: Returns an empty CompSolid.
+    is static;
+
+    MakeSolid (me; aSolid : out Shape from TopoDS)
+    	---Purpose: Returns an empty Solid.
+    is static;
+
+    MakeShell (me; aShell : out Shape from TopoDS)
+    	---Purpose: Returns an empty Shell.
+    is static;
+
+    MakeWire (me; aWire : out Shape from TopoDS)
+    	---Purpose: Returns an empty Wire.
+    is static;
+
+    
+    Add(me; aShape1 : in out Shape from TopoDS; 
+	    aShape2 : in     Shape from TopoDS;
+    	    Orient  : in     Orientation from TopAbs)
+    	---Purpose: Adds the Shape 1 in the Shape 2, set to
+    	--          <Orient> orientation.
+    is static;
+    
+    Add(me; aShape1 : in out Shape from TopoDS; 
+	    aShape2 : in     Shape from TopoDS)
+    	---Purpose: Adds the Shape 1 in the Shape 2.
+    is static;
+
+fields
+
+    myBuilder : Builder from BRep;
+
+end Builder;
+

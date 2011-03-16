@@ -1,0 +1,85 @@
+-- File:	BRepPrim_FaceBuilder.cdl
+-- Created:	Wed Jun 23 13:31:47 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class FaceBuilder from BRepPrim 
+
+	---Purpose: The  FaceBuilder is an algorithm   to build a BRep
+	--          Face from a Geom Surface.
+	--          
+	--          The  face covers  the  whole surface or  the  area
+	--          delimited by UMin, UMax, VMin, VMax
+
+uses
+    Surface from Geom,
+    Face    from TopoDS,
+    Edge    from TopoDS,
+    Vertex  from TopoDS,
+    Builder from BRep
+
+raises
+    ConstructionError from Standard,
+    OutOfRange from Standard
+
+is
+    Create returns FaceBuilder from BRepPrim;
+
+    Create(B : Builder from BRep;
+    	   S : Surface from Geom) returns FaceBuilder from BRepPrim;
+
+    Create(B : Builder from BRep;
+    	   S : Surface from Geom;
+	   UMin, UMax, VMin, VMax : Real) returns FaceBuilder from BRepPrim 
+    raises ConstructionError from Standard; -- if UV are outside the  surface
+    
+    Init(me : in out;
+    	   B : Builder from BRep;
+    	   S : Surface from Geom)
+    is static;
+    
+    Init(me : in out;
+    	   B : Builder from BRep;
+    	   S : Surface from Geom;
+	   UMin, UMax, VMin, VMax : Real)
+    raises ConstructionError from Standard -- if UV are outside the  surface 
+    is static;
+    
+    Face(me) returns Face from TopoDS
+	---C++: return const &
+	--      
+	---C++: alias "Standard_EXPORT operator TopoDS_Face();"
+    is static;
+    
+    Edge(me; I : Integer) returns Edge from TopoDS
+	---Purpose: Returns the edge of index <I>
+	--          1 - Edge VMin
+	--          2 - Edge UMax
+	--          3 - Edge VMax
+	--          4 - Edge UMin
+	--          
+	---C++: return const &
+    raises OutOfRange from Standard -- if I < 1 or I > 4
+    is static;	
+    
+    Vertex(me; I : Integer) returns Vertex from TopoDS
+	---Purpose: Returns the vertex of index <I>
+	--          1 - Vertex UMin,VMin
+	--          2 - Vertex UMax,VMin
+	--          3 - Vertex UMax,VMax
+	--          4 - Vertex UMin,VMax
+	--          
+	---C++: return const &
+    raises OutOfRange from Standard -- if I < 1 or I > 4
+    is static;	
+    
+
+fields
+    myVertex : Vertex from TopoDS [4];
+    myEdges  : Edge   from TopoDS [4];
+    myFace   : Face   from TopoDS;
+
+end FaceBuilder;

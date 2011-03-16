@@ -1,0 +1,36 @@
+-- File:	TopOpeBRepTool_face.cdl
+-- Created:	Thu Jan 14 10:07:21 1999
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class face from TopOpeBRepTool
+
+uses
+    Wire from TopoDS,
+    Face from TopoDS
+is
+    Create returns face from TopOpeBRepTool;
+    Init (me : in out; W : Wire from TopoDS; Fref : Face from TopoDS) 
+    returns Boolean;
+    -- Builds face f for <myW> on <Fref>, 
+    -- updates <myfinite> to true if f is finite,
+    -- <myFfinite> is finite.
+    -- returns false if the compute fails
+    W(me) returns Wire from TopoDS;
+    ---C++: return const &
+    
+    IsDone(me)  returns Boolean;    
+    
+    Finite(me)  returns Boolean;    
+    Ffinite(me) returns Face from TopoDS; 
+    ---C++: return const &   
+    RealF(me)   returns Face from TopoDS;
+    -- Raises if !IsDone
+    
+fields
+    myW       : Wire from TopoDS;
+    myfinite  : Boolean;
+    myFfinite : Face from TopoDS;
+    
+end face;

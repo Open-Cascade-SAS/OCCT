@@ -1,0 +1,76 @@
+-- File:	AppCont_FunctionTool2d.cdl
+-- Created:	Wed Sep  1 15:20:45 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class FunctionTool2d from AppCont
+
+
+uses Function2d      from AppCont,
+     Pnt             from gp,
+     Pnt2d           from gp,
+     Vec             from gp,
+     Vec2d           from gp,
+     Array1OfPnt     from TColgp,
+     Array1OfPnt2d   from TColgp,
+     Array1OfVec     from TColgp,
+     Array1OfVec2d   from TColgp
+
+is
+    
+    FirstParameter(myclass; C: Function2d from AppCont) returns Real;
+    	---Purpose: returns the first parameter of the Function.
+
+    LastParameter(myclass; C: Function2d from AppCont) returns Real;
+    	---Purpose: returns the last parameter of the Function.
+
+    NbP2d(myclass; C: Function2d from AppCont) returns Integer;
+    	---Purpose: Returns 1. (the approximation will be done only for one 
+    	--          function.
+
+
+    NbP3d(myclass; C: Function2d from AppCont) returns Integer;
+    	---Purpose: Returns 0.
+
+    Value(myclass; C: Function2d from AppCont; 
+          U: Real; tabPt: out Array1OfPnt2d);
+    	---Purpose: <tabP> is an array of only 1 element, the point value at
+    	--          the parameter <U>.
+
+
+    D1(myclass; C: Function2d from AppCont; U: Real; tabV: out Array1OfVec2d)
+    returns Boolean;
+    	---Purpose: <tabV> is an array of only 1 element, the derivative 
+    	--          value at the parameter <U>.
+
+
+    ----------------------------------------------------------
+    -- the following methods won t be called by the algorithms
+    -- but the description must exist in the tool.
+    ----------------------------------------------------------
+
+
+
+    Value(myclass; C: Function2d from AppCont;U: Real; 
+    	  tabPt2d: out Array1OfPnt);
+    
+    Value(myclass; C: Function2d from AppCont; U: Real; 
+    	  tabPt: out Array1OfPnt;
+    	  tabPt2d: out Array1OfPnt2d);
+
+
+    D1(myclass;C: Function2d from AppCont;U: Real; 
+    	     tabV2d: out Array1OfVec)
+    returns Boolean;
+
+
+    D1(myclass; C: Function2d from AppCont; U: Real; 
+    	     tabV: out Array1OfVec;
+	     tabV2d: out Array1OfVec2d)
+    returns Boolean;
+
+
+end FunctionTool2d;    
+    

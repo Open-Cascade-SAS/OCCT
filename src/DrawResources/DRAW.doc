@@ -1,0 +1,5532 @@
+
+This document is the reference manual for  the harness Draw, Draw is a
+command  interpreter based on TCL and  a graphical system used to test
+and demonstrate  CAS.CADE  modeling  libraries. In this   document are
+described the basics of the TCL command  language and Draw extensions,
+the commands to do geometry and the commands to do topology.
+
+*Overview
+
+Draw is a test and development harness for CAS.CADE. It is intended to
+provide a flexible and easy-to-use means  of testing and demonstrating
+the CAS.CADE modeling libraries.
+
+Draw can be  used interactively to  create, display and modify objects
+such as curves, surfaces and topological shapes.
+
+Scripts can be written to customize  Draw and perform tests. New types
+of objects  and new commands  can be  added  using the  C++ programing
+language.
+
+Draw is basically made up of 
+
+- a command interpreter based on the TCL command language
+
+- a 3d graphic viewer based on the X system
+
+- a basic set of commands covering scripts, variables and graphics
+
+- a set of geometric  commands, allowing to  create and modify  curves
+and surfaces  and  to use  CAS.CADE  geometry algorithms.  This set of
+commands is optional
+
+- a set of topological commands  to create and  modify BRep shapes and
+to use the CAS.CADE topology algorithms
+
+As a rule  there is an "official"  set  of commands for  each delivery
+unit  in   the modeling   libraries : GEOMETRY,    TOPOLOGY, ADVALGOS,
+GRAPHIC, PRESENTATION
+
+**Contents of the documentation
+
+This documentation describes 
+
+- the command language
+
+- the basic set of commands
+
+- the graphical commands
+
+- the geometry set of commands
+
+- the topology set of commands
+
+This document does  not describe the  other sets of commands  and does
+not explain how to extend Draw using C++.
+
+This document is mainly a  reference manual, it contains  descriptions
+of  commands, all  descriptions have the   same format which is  above
+illustrated with the exit command.
+
+*** exit
+
+.Synopsis
+
+	exit
+
+.Purpose
+
+Terminates the Draw, TCL session. If the commands are read from a file
+using the source command this will terminante reading from the file.
+
+.Example
+
+	# this is a very short example
+	exit
+
+.See also
+
+source
+
+.Index
+exit command
+
+**Getting started
+
+We will now try a simple example. The first thing  to do is to setup a
+Draw executable,  check if the DRAW and  TCL  ULs are visible  in your
+workbench with the wok command "ulinuse". If  DRAW does not appear you
+should check with your workshop manager to install DRAW and TCL.
+
+We will now suppose that you have a DRAW version, at least DRAW-7 (use
+"ulinuse -v" to check so).   You must now find  an executable.  Let us
+try TGEOMETRY.    Just type  TGEOMETRY,  if  you do  not get  a prompt
+"Draw[1]> " you must create an executable by  linking the program from
+the  source example  TestDraw.cxx which   can  be  found  in the   src
+directory of the UL.
+
+Draw displays prompt and waits for commands,  here is a sample session
+:
+
+.Example
+
+# create Two views 2d and axonometric 
+Draw[1]> av2d				
+# create a 2d circle
+Draw[2]> circle c 0 0 1 0 5
+Draw[3]> 2dfit
+
+# trim the circle and dump it
+Draw[4]> trim c c 0 pi/2
+Draw[5]> dump c
+
+
+0*********** Dump of c *************
+Trimmed curve
+Parameters : 0 1.5707963267949
+Basis curve :
+Circle
+  Center :0, 0 
+  XAxis  :1, 0 
+  YAxis  :-0, 1 
+  Radius :5
+
+# make a 3d circle from it, and turn it into a bspline
+
+Draw[6]> to3d c c
+Draw[7]> fit
+Draw[8]> convert c c
+Draw[9]> dump c
+
+
+0*********** Dump of c *************
+BSplineCurve rational
+  Degree 2, 3 Poles, 2  Knots
+Poles :
+
+   1 : 5, 0, 0  1
+   2 : 5, 5, 0  0.707106781186548
+   3 : 3.06161699786838e-16, 5, 0  1
+Knots :
+
+   1 :  0 3
+   2 :  1.5707963267949 3
+
+.Example
+
+# make a surface of revolution from the spline
+Draw[10]> fit
+Draw[11]> help rev
+reverse         : reverse name ... 
+revsurf         : revsurf name curvename x y z dx dy dz
+
+# here you must click on the curve with the mouse
+Draw[12]> revsurf s . 5 5 0 -1 1 0
+Pick an object
+Draw[13]> fit
+
+# rotate the view
+Draw[14]> u
+Draw[15]> erase c
+c 
+
+# make a bspline surface and intersect with a plane
+Draw[20]> convert s s
+Draw[21]> fit
+Draw[22]> plane p 5 5 5 1 1 1 1 0 0
+Draw[23]> intersect c p s
+
+# pick on one of the intersection curves
+# you may get c_2 onstead of c_1
+Draw[24]> whatis .
+Pick an object
+c_1 is a  a 3d curve
+Draw[25]> clear
+Draw[27]> rename c_1 c
+Draw[28]> fit
+
+# save the curve, use any directory where you can write
+Draw[29]> datadir $env(WBCONTAINER)/data/default
+/adv_20/BAG/data/default
+Draw[30]> save c curveinter
+c
+Draw[31]> exit
+
+.Text
+
+In  this example  some geometrical   operations have been   performed,
+objects have been displayed and wrote to files.
+
+
+*The command language
+
+The command language used in Draw is the  TCL command language.  It is
+highly recommended, if you want to use  Draw extensively, to read some
+TCL documentation like "TCL and the  TK Toolkit" by John K. Ousterhout
+(Addison-Wesley).
+
+The following section  is a short outline  of the TCL language and its
+extensions incorporated in Draw. The following topics will be covered.
+
+- syntax of the TCL language
+
+- accessing variables in TCL and Draw
+
+- control structures
+
+- procedures
+
+** Syntax of TCL
+
+.Index
+
+TCL
+script
+command
+word
+substitution
+quoting
+
+.Text
+
+TCL  is an interpreted command    language,  it is  not a   structured
+language like C, Pascal,  LISP or Basic, it is  rather a line oriented
+language like a shell  (csh for example).  However you will  find that
+TCL   is  easier to  use  than  shell  because  control structures and
+procedure are easier to define. TCL is  also faster than shell because
+it does not fork a process for each command.
+
+The  basic program for TCL  is a script. A  script consists  of one or
+more commands. Commands are separated by newlines or semicolons.
+
+.Example
+	set a 24
+	set b 15
+	set a 25; set b 15
+
+.Text
+
+Each command consists of one or more words, the first word is the name
+of a command  and  additional words are  arguments  for that  command.
+Words are separated by spaces  or tabs. In  the preceding example each
+command has three words. There may be any number of words in a command
+and each word is a string of arbitrary length.
+
+The  evaluation of a  command by TCL  follows two steps.  In the first
+step  the    command  is  parsed  and  broken  into   words  and  some
+substitutions are performed. In the  second step the command procedure
+corresponding to  the first  word is called  with  the other words  as
+arguments. In  the first   step there  is only   string  manipulation,
+meaning is given to  the words only in the  second step by the command
+procedure.
+
+The following substitutions are performed by TCL
+
+- Variable substitution is triggered by the $ character (as with csh),
+the content of the variable is substituted,  {} may be  used as in csh
+to enclose the name of the variable.
+
+.Example
+
+	# set a variable value
+	set file documentation
+
+	# a simple substitution, set psfile to documentation.ps
+	set psfile $file.ps
+
+	# another substitution, set pfile to documentationPS
+	set pfile ${file}PS
+
+	# a last one, 
+	# delete files NEWdocumentation and OLDdocumentation
+	foreach prefix {NEW OLD} {rm $prefix$file}
+
+.Text
+
+- Command substitution is triggered by the [] characters. The brackets
+must enclose a valid script, this scrit is evaluated and the result is
+substituted. This is similar to the `command` construction in csh.
+
+.Example
+
+	set degree 30
+	set pi 3.14159265
+
+	# expr is a command evaluating a numeric expression
+	set radian [expr $pi*$degree/180]
+
+.Index
+
+expr command
+
+.Text
+
+- Backslash substitution is  triggered by the backslash character.  It
+is  used  to  insert special characters  like  :   $,[,].  A backslash
+terminated line is continued on the following line.
+
+TCL   uses two  forms of  quoting   to prevent  substitution and  word
+breaking.
+
+- Double quote quoting enables to define  a string with space and tabs
+as a single word, substitutions are still performed inside the "".
+
+.Example
+
+	# set msg to "the price is 12.00$"
+	set price "\$ 12.00"
+	set msg "the price is $price"
+
+.Text
+
+-  Braces  quoting prevent all    the  substitutions. Braces are  also
+nested. The  main use of braces is  to defer evaluation  when defining
+procedures and control structures. Braces are useful to present nicely
+TCL scripts on multiple lines.
+
+.Example
+
+	set x 0
+
+	# this will loop for ever 
+	# because while argument is "0 < 3"
+	while "$x < 3" {set x [expr $x+1]}
+
+	# this will terminate as expected because
+	# while argument is {$x < 3}
+	while {$x < 3} {set x [expr $x+1]}
+
+	# this can be written also
+	while {$x < 3} {
+	   set x [expr $x+1]
+	}
+
+	# the following cannot be written
+	# because while requires two arguments
+	while {$x < 3} 
+	{
+	   set x [expr $x+1]
+	}
+
+.Text
+
+Comments start with a # character as the first  non blank character in
+a command. If  you want to comment at  the end  of  the line you  must
+precede the comment by semi-colon to end the preceding command.
+
+.Example
+
+	# This is a comment
+	set a 1 # this is not a comment
+
+	set b 1; # this is a comment
+
+.Text
+
+Last  but not least thing  to know  about parsing in   TCL is that the
+number of  words is  never changed  by  substitution.  For example the
+result  of a substitution is always  a single word.  This is different
+than csh but it  is very convenient  as the behavior  of the parser is
+more predictable.  Sometimes it  may be necessary  to enforce a second
+round  of evaluation to  reparse, the  eval command  is useful to that
+purpose. This command  concatenates  all its arguments   and evaluates
+this script.
+
+.Example
+
+	# I want to delete two files
+	set files "foo bar"
+
+	# this will fail because rm will receive only one argument
+	# and complain that "foo bar" does not exists
+	exec rm $files
+
+	# a second evaluation will do it
+	eval exec rm $files
+
+.Index
+
+eval command
+exec command	
+
+** Accessing variables in TCL and Draw
+
+TCL variables have only string  values. Note that even numeric  values
+are stored as  string literals and computations  with the expr command
+start by parsing the strings. This approach is not sufficient for Draw
+where  variables  with other kinds   of values are  necessary, such as
+curves, surfaces or topological shapes.
+
+Fortunately  TCL provides a mechanism  to link user data to variables,
+this mechanism is used  with Draw.  Draw  variables are TCL  variables
+with associated data.    The   string value  of  a Draw    variable is
+meaningless, it is usually set to the name  of the variable itself, so
+preceding  a  Draw variable with  a $  do not  change  the result of a
+command.  The content of a  Draw variable is accessed with appropriate
+commands. There are many kinds of Draw variables,  and new ones may be
+added with  C++.  We  will  describe later geometric   and topological
+variables, for the moment we will only describe the numeric variables.
+
+Draw numeric variables  can be used within  an expression whereever  a
+Draw comand requires  a numeric value. The  expr command is useless in
+this  case. Those variables are not  stored as strings but as floating
+point values.
+
+.Example
+
+	# dset is used for numeric variables
+	# pi is a predefined Draw variable
+	
+	dset angle pi/3 radius 10
+	point p radius*cos(angle) radius*sin(angle) 0
+
+.Text
+
+At the beginning the difference between  TCL and Draw variables may be
+confusing but you will be quickly used to it.  My advice is to use TCL
+variable only  for strings and to   use Draw for  numerics  as you can
+avoid the  expr command.  Usually for  geometry and topology  you will
+only need numbers no strings.
+
+.Index
+numeric variables
+Draw variables
+pi
+
+
+*** set, unset
+
+.Synopsis
+
+	set varname [value]
+
+	unset varname [varname varname ...]
+
+.Purpose
+
+Use the set command  to assign a string   value to a variable. If  the
+variable does not exist it is created.
+
+Without the   value argument the  command  returns the content  of the
+variable.
+
+Use the unset command  to destroy the variables. This  is is also used
+to destroy Draw variables.
+
+.Example
+
+	set a "Hello world"
+	set b "Goodbye"
+	set a
+	==> "Hello world"
+	unset a b
+	set a
+	==> Error message....
+
+.Warning
+
+The set command can set only one variable, unlike the dset command.
+
+.See also
+dset, dval
+
+.Index
+set command
+unset command
+
+
+*** dset, dval
+
+.Synopsis
+
+	dset varname expression [varname expression ...]
+
+	dval expression
+
+
+.Purpose
+
+Use the dset  command to assign values  to Draw numeric variables. The
+expression  may be   any numeric  expression  including  Draw  numeric
+variables, as any Draw command expecting a numeric expression there is
+no need for $ or expr. The dset command can  assign many variables, if
+there is an odd number of argument the last  variable will be assigned
+a value of 0. If the variable does not exist it will be created.
+
+Use dval  to evaluate an  expression containing Draw numeric variables
+and return the result as a string, including  a single variable.  This
+not useful for Draw commands as they usually interpret expression, but
+this is useful for TCL basic commands expecting strings.
+
+.Example
+
+	# z is set to 0
+	dset x 10 y 15 z
+	
+	# no $ required for Draw commands
+	point p x y z
+
+	# puts prints a string
+	puts "x = [dval x], cos(x/pi) = [dval cos(x/pi)]"
+
+.Warning
+
+In TCL parentheses are not considered as special characters, so do not
+forget to quote  an expression if it  contains spaces to avoid parsing
+different words.
+
+(a + b) is parsed as three words, "(a + b)" or (a+b) are correct.
+
+.See also
+set, unset
+
+.Index
+dset command
+dval command
+
+** lists
+
+TCL uses  lists a lot, a  list is  only  a string  containing elements
+separated by spaces or tabs. If  the string contains braces the braced
+part count for one element, this allows to put lists in lists.
+
+.Example
+
+	# a list of 3 strings
+	"a b c"
+
+	# a list of two strings the first is a list of 2
+	"{a b} c"
+
+.Text
+
+Many TCL  commands return lists and  the foreach  command is an useful
+way to loop on list elements.
+
+** Control Structures
+
+TCL allows repetition of an  execution using control structures.   The
+control structures are implemented  with commands and their syntax  is
+very similar to their C  counterpart (if, while, switch,..). There are
+two   main differences  with  C. Do    not use parentheses  to enclose
+conditions but  braces, do not  start the script  on the  next line or
+your command will not have enough argument.
+
+
+*** if
+
+.Synopsis
+
+	if condition script [elseif script .... else script]
+
+.Purpose
+
+If evaluate the condition and evaluate the script if the condition is
+true, and so on.
+
+.Example
+
+	# note the position of the braces
+	# even if you find it ugly, you must do it this way
+
+	if {$x > 0} { 
+		puts "positive"
+         } elseif {$x == 0} {
+		puts "null"
+         } else {
+		puts "negative"
+	 }
+
+.Index
+if command
+
+
+*** while, for, foreach
+
+.Synopsis
+
+	while condition script
+
+	for init condition reinit script
+
+	foreach varname list script
+
+.Purpose
+
+The three loop structures are similar to their C or csh equivalent. It
+is important to  use braces to delay  evaluation.  foreach will assign
+the elements of the list to the variable before evaluating the script.
+
+.Example
+
+	# while example
+	dset x 1.1
+	while {[dval x] < 100} {
+		circle c 0 0 x
+		dset x x*x
+	}
+
+	# for example
+	# incr var d, incremente une variable de d (defaut 1)
+	for {set i 0} {$i < 10} {incr i} {
+		dset angle $i*pi/10
+		point p$i cos(angle0 sin(angle) 0
+	}
+
+	# foreach example
+	foreach object {crapo tomson lucas} {display $object}
+
+
+.Index
+while command
+for command
+foreach command
+incr command
+
+.See also
+
+break, continue
+
+
+*** break, continue
+
+.Synopsis
+
+ 	break
+
+ 	continue
+
+.Purpose
+
+Within  loops  the, break and  continue commands  have the same effect
+than in  C. break interrupts the  innermost loop and continue steps to
+the next iteration.
+
+.Example
+
+	# search the index for which t$i has value "secret"
+	for {set i 1} {$i <= 100} {incr i} {
+		if {[set t$i] == "secret"} break;
+	}
+
+.Warning
+
+.See also
+
+.Index
+break command
+continue command
+
+
+
+** Procedures
+
+TCL can be extended by defining procedures using the proc command. The
+proc commandsetup a  context of local  variables, binds  arguments and
+executes a TCL script.
+
+The only confusing point in procedures  is that variables are strictly
+local, and  as they  are   implicitly created  when  used it   may  be
+difficult to detect the errors.
+
+There  are  two means to  access a  variable outside  the scope of the
+current procedure.  The global command may be used to declare a global
+variable (a variable outside all procedures), the upvar command can be
+used to access a variable in the scope of the caller. In TCL arguments
+are always string  values, the only way to  pass Draw variables is  to
+pass by reference, i.e.   passing the name of  the variable  and using
+the upvar command as in the following examples.
+
+TCL is not a  strongly typed language, it  is  thus very difficult  to
+detect programming errors and debugging can be tedious, TCL procedures
+are not designed for large scale  software development but for testing
+and simple command or interactive writing.
+
+*** proc
+
+.Synopsis
+
+	proc arglist script
+
+.Purpose
+
+Use  the proc command  to define a procedure, arglist   is the list of
+arguments, it  must be an  empty list  if there  are no  arguments. An
+argument  may have  a default value,  it  is then a  list  of the form
+{argument value}. The script is the body of the procedure.
+
+The return command is used to give a return value to the procedure.
+
+.Example
+
+	# simple procedure
+	proc hello {} {
+		puts "hello world"
+	}
+
+	# procedure with arguments and default values
+	proc distance {x1 y1 {x2 0} {y2 0}} {
+		set d [expr (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)]
+		return [expr sqrt(d)]
+	}
+
+	# we could not resist the classical one
+	proc fact n {
+		if {$n == 0} {return 1} else {
+			return [expr n*[fact [expr n -1]]]
+		}
+	}
+
+.Warning
+
+.See also
+
+global, upvar
+
+.Index
+proc command
+procedure
+
+
+*** global, upvar
+
+.Synopsis
+
+	global varname [varname ...]
+
+	upvar varname localname [varname localname ...]
+
+.Purpose
+
+Use  the global  command to access   top level variables.  Unlike in C
+global variables are not visible in procedures.
+
+Use the upvar command to give a local name to a variable in the caller
+scope, this is when an argument is the name of a variable instead of a
+value, this  is call by  reference and it is the  only way to use Draw
+variables as arguments.
+
+Note in  the  following examples that   the $ is  always necessary  to
+access the arguments.
+
+.Example
+
+	# convert degree to radian
+	# pi is a global variable
+	proc deg2rad (degree} {
+		global pi
+		return [dval pi*$degree/180.]
+	}
+
+	# create line with a point and an angle
+	proc linang {linename x y angle} {
+		upvar linename l
+		line l $x $y cos($angle) sin($angle)
+        }
+		
+
+.Warning
+
+.See also
+
+.Index
+global command
+upvar command
+reference, call by
+value, call by
+
+
+*Basic commands
+
+We  will now   describe all the  commands  defined  in  the basic Draw
+package. Some of the commands are  TCL commands, but  most of them are
+defined by Draw. Those commands are found in all Draw applications.
+
+The commands are grouped in four sections 
+
+- general commandsused for Draw and TCL management
+
+- variable commands used to manage Draw variables, storing, dumping ...
+
+- graphic commands used to manage the graphic system : views ...
+
+- variables display commands are used to manage the display of objects
+
+**General commands
+
+This section describes some  useful commands, help to get information,
+source to eval a script from a file, spy  to capture the commands in a
+file, cpulimit limit the  process cpu time,  wait to waste some  time,
+chrono to time commands.
+
+***help
+
+.Synopsis
+
+	help [command [helpstring group]]
+
+.Purpose
+
+Provides help or modifies the help information.
+
+help,  without arguments  list all groups    and the commands  in each
+group.
+
+help command, provides information on a command or  a set of commands,
+command  may be a   shell-like regular expression. * is  automatically
+added at the end so that all completing commands match.
+
+
+help command  helpstring group, defines  helpstring to be the help for
+command,  put the command in  the group. The   group defaults to "User
+commands".
+
+.Example
+
+# Gives help on all command starting with a
+help a
+
+# defines help for the help command
+help {help [command [helpstring group = "Use commands"]]} "DRAW Basic Commands"
+
+.Index
+help command
+
+***source
+
+.Synopsis
+
+	source file
+
+.Purpose
+
+Reads and evaluates commands from a file.
+
+The exit command will terminate the file.
+
+.See also
+exit
+
+.Index
+source command
+
+*** spy
+
+.Synopsis
+
+	spy [file]
+
+.Purpose
+
+Save interactive commands in the file.  If there is already spying the
+current file is closed.  spy without  argument closes the current file
+and  stops spying.
+
+If a command returns an error it is saved with a comment mark.
+
+The file created by spy can be played with the source command.
+
+.Example
+
+# from now all commands will be saved in the file "session"
+spy session
+
+# the file "session" is closed and commands are not saved
+spy
+
+.See also
+source
+
+.Index
+
+spy command
+spying session
+
+
+*** cpulimit
+
+.Synopsis
+
+	cpulimit [nbseconds]
+
+.Purpose
+
+The process will be interrupted after nbseconds of cpu, this is useful
+during tests  to   avoid infinite loops.  cpulimit   without arguments
+removes all existing limits.
+
+.Example
+
+	#limit cpu to one hour
+	cpulimit 3600
+
+.Index
+cpulimit command
+
+
+*** wait
+
+.Synopsis
+
+	wait [nbseconds]
+
+.Purpose
+
+Interrupt  execution   for nbseconds, the default    value is ten (10)
+seconds.  This is usefull in a  demo to give people   time to admire a
+nice picture.
+
+.Example
+
+	# You have ten seconds ...
+	wait 
+
+
+.Index
+wait command
+
+
+*** chrono
+
+.Synopsis
+
+	chrono [ name start/stop/reset/show]
+
+.Purpose
+
+The chrono command  has two usages,  without arguments  it toggles the
+timing of commands. When chronometers  are activated each command will
+be timed, i.e. the cpu and user time of the command will be printed.
+
+With arguments the chrono  command is used  to manage chronometers,  a
+chronometer  is  a  special kind  of Draw    variable used to  measure
+time. The following action can be performed on a chronometer.
+
+- start : to run the chronometer.
+
+- stop : to stop the chronometer.
+
+- reset : to reset the chronometer to 0.
+
+- show : to display the current time.
+
+Chronometers  are  useful to print  partial  times as in the following
+example, the timing of the command foreach will only give you the time
+for all the process.
+
+.Example
+
+	# use of a chronometer
+	chrono swatch
+	foreach face {f1 f2 f3 f4 f5} {
+		chrono swatch reset
+		processface $face
+		chrono swatch stop
+		puts "$face is processed"
+		chrono swatch show
+	}
+
+.Index
+chrono command
+
+
+** Variables management commands
+
+We describe now commands used to manage Draw variables. isdraw test if
+a variable  is a draw variable, directory  list draw variables, whatis
+gives the type of a  variable, dump prints  the content of a variable,
+rename and copy  change  the content  of variables,  datadir, save and
+restore are used to put the contents of variables in files.
+
+
+*** isdraw, directory
+
+.Synopsis
+
+	isdraw varname
+
+	directory [pattern]
+
+.Purpose
+
+Use  isdraw to test  if  a variable is   a draw variable, isdraw  will
+return 1 if there is a Draw value attached to the variable.
+
+Use directory to return a list of all Draw global variables matching a
+pattern, like the shell ls command.
+
+.Example
+
+	set a 1
+	isdraw a
+	===> 0
+
+	dset a 1
+	isdraw a
+	===> 1
+
+	circle c 0 0 1 0 5
+	isdraw c
+	===> 1
+
+	# to destroy all Draw objects with name containing curve
+	foreach var [directory *curve*] {unset $var}
+
+.See also
+whatis
+
+.Index
+isdraw command
+directory command
+
+
+*** whatis, dump
+
+.Synopsis
+
+	whatis varname [varname ...]
+
+	dump varname [varname ...]
+	
+.Purpose
+
+Use  whatis to get  a  short information   about a Draw  variable, the
+result depends  on the type of the  object. Usually it  is the name of
+the type.
+
+Use dump to  get a long information about  a Draw variable, the result
+depends on the type of  the object. Usually it is  a full dump (may be
+rather long for geometry or topology).
+
+.Example
+
+	dset x 3
+	whatis x
+	==> x is a numeric
+
+	dump x
+	==> *********** Dump of x *************
+	==> 3
+
+.Warning
+
+The behavior of whatis on other variables (not Draw) is not excellent.
+
+.Index
+whatis command
+dump command
+
+
+*** rename, copy
+
+.Synopsis
+
+	rename varname tovarname  [varname tovarname ...]
+
+	copy varname tovarname  [varname tovarname ...]
+
+.Purpose
+
+Use   rename to change   the name  of   a Draw variable, the  original
+variable  does not  exist  any  more, note   that the content  is  not
+modified, only the name is changed.
+
+Use  copy to make  a new variable   with a copy of   the content of an
+existing variable.   The exact behavior of copy  is type dependent, in
+some cases   the content may  still  be  shared (see  the  topological
+variables for example).
+
+.Example
+
+	circle c1 0 0 1 0 5
+	rename c1 c2
+
+	# curves are copied, c2 will not be modified
+	copy c2 c3
+	2dtranslate c3 10 0
+
+
+.Index
+rename command
+copy command
+
+
+*** datadir, save, restore
+
+.Synopsis
+
+	datadir [data-path]
+
+	save name [filename]
+
+	restore filename [name]
+
+.Purpose
+
+Use save  and restore to  transfert the  content  of Draw variables to
+files,  the files are located  in the  data directory.
+
+Use save to write a file  in the data directory  with the content of a
+variable, by default the name of the file is the name of the variable,
+to give a different name use a second argument.
+
+Use restore to read  the content of a file  in the data directory in a
+local variable, by default the name of the variable if the name of the
+file, to give a different name use a second argument.
+
+The exact  content of  the file is  type  dependent, they are  usually
+ASCII files, so they are architecture independnts.
+
+
+.Example
+
+	# note how TCL access shell environment variables
+	# using $env()
+	datadir $env(WBCONTAINER)/data/default
+	datadir
+	==> /adv_20/BAG/data/default
+
+	box b 10 20 30
+	save b theBox
+	
+	# when TCL does not find a command it tries a shell command
+	ls [datadir]
+	==> theBox
+
+	restore theBox
+	datadir ./bugs
+	datadir
+	==> /adv_20/BAG/data/bugs
+
+	# now the box is saved in both the default and data directories
+	save theBox
+
+
+.Index
+datadir command
+save command
+restore command
+environment variables
+
+
+**Graphic Commands
+
+Graphic  commands  are used to manage  the  Draw graphic system.  Draw
+provides a 2d and a 3d viewer with up to  30 views, views are numbered
+and    the index  of   the view  is  visible  in  the    title of  the
+window. Objects are  displayed  in all 2d views   or in  all  3d views
+depending on their type but never on both.
+
+The view  and delete commands  are the basic view management commands,
+but  useful procedures for screen layout  are defined, axo, left, top.
+
+Commands are provided  to modify the view  parameters, fit,  zoom, pu,
+pd, pl, pr to pan, u,d,l,r to rotate. fu, fd to change the focal.
+
+The  view parameters commands  process all views or  only one view, in
+this case the index of the view must be given as the first argument. A
+command  control 3d views or   2d views, the 2d  views  version of the
+command starts with 2d, for example zoom and 2dzoom.
+
+Colors are numbered from 1  to 15, the  aspect can be changed with the
+color command.
+
+To put some text on the screen use the dtext command.
+
+Postscript drawings  can  be made with  the hardcopy  command and  xwd
+files with the xwd command.
+
+To use the mouse you can use the pick and the wclick commands.
+
+
+*** view, delete
+
+.Synopsis
+
+	view index type [X Y W H]
+
+	delete [index]
+
+.Purpose
+
+view is the basic view  creation command. It  creates a new view  with
+the given   index,  if a  view already   exits with  this index it  is
+destroyed. The view is created with default parameters and X Y W H are
+the  position and dimensions on  the window on the  screen, they are X
+window system coordinates in pixel, 0,0 being the upper left corner of
+the   screen.  Default values are 0,   0, 500, 500  which  is not very
+convenient.
+
+Usually it is far simpler to use the procedures as axo, top, left to
+create views.
+
+delete destroy a view, if no index is given all views are destroyed.
+
+The type is a four letter upper case code among the followings 
+
+- AXON	: Axonometric view
+
+- PERS  : Perspective view
+
+- +X+Y  : View on the two axes (i.e. a top view), other codes are
+	  -X+Y +Y-Z etc...
+
+- -2D- : 2d view
+
+The  index, the  type,  the current zoom are  displayed  in the window
+title.
+
+.Example
+
+	# this is the content of the mu4 procedure
+	proc mu4 {} {
+		delete
+		view 1 +X+Z 320 20 400 400
+		view 2 +X+Y 320 450 400 400
+		view 3 +Y+Z 728 20 400 400
+		view 4 AXON 728 450 400 400
+	}
+
+.See also
+
+axo, pers, top, bottom, left, right, front, back, mu4
+v2d, av2d, smallview
+
+.Index
+view command
+delete command
+window
+
+
+*** axo, pers, top, ...
+
+.Synopsis
+
+	axo
+
+	pers
+
+	...
+
+	smallview type
+
+.Purpose
+
+All these  commands  are  procedures used  to  define  standard screen
+layout, they delete all  existing views and   create some views.   The
+layout usually abides by the european convention, i.e. the top view is
+under the front view.
+
+- axo  : One big axonometric view
+
+- pers : One big perspective view
+
+- top, bottom, left, right, front, back : One big  axis view
+
+-  mu4 : Four views layout with front, left, top and axo
+
+- v2d : One big 2d view
+
+- av2d : Two views, one 2d and one axo
+
+The smallview command creates a view at the right bottom of the screen
+with the given type. See the view command for the type list.
+
+
+.Example
+
+	# just try them !!
+
+	# here we give the body of smallview
+
+	proc smallview {{v AXON}} {
+		delete
+		view 1 $v 728 450 400 400
+	}
+
+.See also
+
+view, delete
+
+.Index
+axo command
+pers command
+top command
+top command
+bottom command
+left command
+right command
+front command
+back command
+mu4 command
+v2d command
+av2d command
+smallview command
+screen layout
+layout of views
+
+*** mu, md, 2dmu, 2dmd, zoom, 2dzoom, wzoom
+
+.Synopsis
+
+	mu [index]
+
+	2dmu [index]
+
+	zoom [index] value
+
+	wzoom
+
+.Purpose
+
+Use mu (magnify up) to increase the zoom in a view or  in all views by
+a factor of  10%. md (magnify down) decrease  the zoom by the  inverse
+factor. 2dmu and 2dmd do the same on one or all 2d views.
+
+Use zoom  or  2dzoom to set the   zoom  factor to  a given  value. The
+current zoom is always displayed in the window title.
+
+Use wzoom (window zoom) to select with the mouse the  area you want to
+zoom in a view. You will be prompted for two graphic selections in the
+same  view and the  rectangle you  defined will  be  set to the  whole
+window of the view.
+
+.Example
+
+	# set a zoom of 2.5 on all 2d views
+	zoom 2.5
+
+	# magnify on 
+	mu 1
+
+
+.See also
+
+fit, 2dfit
+
+.Index
+mu command
+md command
+2dmu command
+2dmd command
+zoom command
+2dzoom command
+wzoom command
+
+*** pu, pd, pl, pr, 2dpu, 2dpd, 2dpl, 2dpr
+
+.Synopsis
+
+	pu [index]
+
+	pd [index]
+
+.Purpose
+
+Use the pu, .. commands to pan the  view, pu and  pd pan vertically up
+and down,  pl and pr pan  horizontally left and   right. The views are
+panned by a quantity of 40 pixels.
+
+.Example
+
+	# pan up the first view
+	pu 1
+
+
+.See also
+fit, 2dfit
+
+.Index
+pu command
+pd command
+pl command
+pr command
+2dpu command
+2dpd command
+2dpl command
+2dpr command
+
+
+*** fit, 2dfit
+
+.Synopsis
+
+	fit [index]
+
+	2dfit [index]
+
+.Purpose
+
+Use the fit command to compute automatically a best zoom and panning on
+the content of the view. The content of the view will be centered and
+fit the whole window.
+
+When fitting all views a unique zoom is computed for all the views, so
+each view is not  best fitted but all views  are on the same scale. To
+compute a best fit on all views fit them one by one.
+
+.Example
+
+	# fit only view 1
+	fit 1
+
+	# fit all 2d views
+	2dfit
+
+.Warning
+
+.See also
+zoom, mu, pu
+
+.Index
+fit command
+2dfit command
+
+
+
+*** u, d, l, r
+
+.Synopsis
+
+	u [index]
+
+	d [index]
+
+	l [index]
+
+	r [index]
+
+.Purpose
+
+Rotate the view in the up, down, left or right direction  by five
+degrees. This is only for axonometric and perspective views.
+
+.Example
+
+	# rotate the view up
+	u
+
+.Index
+u command
+d command
+l command
+r command
+
+
+*** focal, fu, fd
+
+.Synopsis
+
+	focal [index] value
+
+	fu [index]
+
+	fd [index]
+
+.Purpose
+
+Use the  focal method  to change the   focal distance for  perspective
+views. The focal is the distance form the eye to the view point. A low
+focal  increases the perspective  effect, a  high  focal looks like an
+axonometric. The default value is 500.
+
+Use fu and fd to increase or decrease the focal value by 10%. fd makes
+the eye closer to the object.
+
+.Example
+
+	# create a perspective and look closer
+	pers
+	repeat 10 fd
+
+.Warning
+
+A negative or null focal is not a bright idea !!
+
+.See also
+pers
+
+.Index
+focal command
+fu command
+fd command
+
+
+*** color
+
+.Synopsis
+
+	color index name
+
+.Purpose
+
+Set the color to a value, index is the index of the color between 0
+and 15, name is a X window color name. The list can be found in the
+file rgb.txt in the X library directory.
+
+The default value are
+
+0 White
+, 1 Red
+, 2 Green
+, 3 Blue
+, 4 Cyan
+, 5 Gold
+, 6 Magenta
+, 7 Marron
+, 8 Orange
+, 9 Pink
+, 10 Salmon
+, 11 Violet
+, 12 Yellow
+, 13 Khaki
+, 14 Coral
+
+
+.Example
+
+	# change the hue of the blue
+	color 3 "navy blue"
+
+.Warning
+
+The color change will be visible on the next  redraw of the views, for
+example after fit or mu.
+
+.Index
+color command
+
+
+*** dtext
+
+.Synopsis
+
+	dtext [x y [z]] string
+
+.Purpose
+
+Display a string in all 3d or 2d views.  If no coordinates are given a
+graphic selection  is required. If  two coordinates are given the text
+is created in 2d views at  this position, with  3 coordinates the text
+is created in 3d views. The coordinates are real space coordinates.
+
+.Example
+
+	# mark the origins
+	dtext 0 0 "This is the 2d origin"
+	dtext 0 0 0 "This is the 3d origin"
+
+	# write on the views
+	dtext "You just clicked here"
+
+.Index
+dtext command
+text display
+
+
+*** hardcopy, hcolor, xwd
+
+.Synopsis
+
+	hardcopy [index]
+
+	hcolor index width gray
+	
+	xwd [index] filename
+
+.Purpose
+
+The hardcopy   command creates a  postcript file  named post.ps  in the
+current  directory. This file  contains  the postscript description of
+the view index, or of all the views.
+
+The hcolor command   lets you  change   the  aspect of   lines in  the
+postscript file, it allows to specify a width and a gray level for one
+of the 16 colors. width is measured in points, the default value is 1,
+gray is a grey level from 0 = black to 1 = white, the default value is
+0. All colors are bound to the default values at the beginning.
+
+The xwd command  creates an X window xwd  file from a view, by default
+index is 1.   To visualize an  xwd file you  can use the unix  command
+xwud.
+
+.Example
+
+	# all blue lines (color 3) 
+	# will be half-width and grey
+
+	hcolor 3 0.5 
+
+	# make a postscript file and print it
+	hardcopy
+	lpr post.ps
+
+	# make an xwd file and display it
+	xwd theview
+	xwud -in theview
+
+.Warning
+
+There are bugs  when using hardcopy  without index with more than  one
+view.
+
+You need a postscript printer or your harcopy will not look great.
+
+.See also
+color
+
+.Index
+hardcopy command
+hcolor command
+xwd command
+postscript
+dump of image
+xwud
+
+*** wclick, pick
+
+.Synopsis
+
+	wclick
+
+	pick  index X Y Z b [nowait]
+
+.Purpose
+
+Use  the wclick command to wait  until a mouse  button is clicked, the
+message   "just click" is displayed.    This  is useful to let  people
+admire a drawing until they are fed up with it.
+
+Use the pick command to get a graphical input, the arguments must be
+names for variables where the results are stored.
+
+- index : will be the index of the view where the input was made
+
+- X,Y,Z : Are 3d coordinates in real world
+
+- b : b is the mouse button 1,2 or 3
+
+When there is an extra argument its value  is not used and the command
+do not wait for a button click, the value of b  may then be 0 if there
+was no click. This option is useful for tracking the pointer.
+
+Note that the results are stored in Draw numeric variables.
+
+.Example
+
+	# make a circle at mouse location
+	pick index x y z b
+	circle c x y z 0 0 1 1 0 0 0 30
+
+	# make a dynamic circle at mouse location
+	# stop when a button is clicked
+	# (see the repaint command)
+
+	dset b 0
+	while {[dval b] == 0} {
+		pick index x y z b nowait
+		circle c x y z 0 0 1 1 0 0 0 30
+		repaint
+	}
+
+.See also
+repaint
+
+.Index
+wclick command
+pick command
+
+
+
+** Variables display commands
+
+Many Draw objects  can  be displayed,  for example curves,   surfaces,
+shapes.  Draw provides commands to manage the  display of the objects.
+display, donly  are used to display  objects, erase, clear, 2dclear to
+erase them.  The autodisplay command is used   to control if variables
+are displayed as soon as created.
+
+The variable name "." (dot) has a special status within Draw, any draw
+command expecting a Draw  object as argument  can be passed a dot. The
+meaning of the dot is the following.
+
+If the  dot is an input  argument a graphical  selection will be made,
+instead of getting the object  from a variable.  Draw will ask you  to
+select an object on a view.
+
+If the dot is  an output argument, an  unnamed object will be created,
+of  course this will make   sense only for  graphical  objects, if you
+create an  unnamed  number you will not  be  able  to  access it. This
+feature is useful when you want to create objects for display only.
+
+If you do not see what you expected while  executing loops or sourcing
+files you may want to consider the repaint and dflush commands.
+
+.Example
+
+	# use dot to dump an object on the screen
+	dump .
+
+	# display points on a curve c
+	# with dot no variables are created
+	for {set i 0} {$i <= 10} {incr i} {
+		cvalue c $i/10 x y z
+		point . x y z
+	}
+
+	# point p x y z
+	# would have displayed only one point
+	# because the precedent content of a variable is erased
+
+
+	# point p$i x y z
+	# is an other solution, creating variables
+	# p0, p1, p2, ....
+
+	# give a name to a graphic object
+	rename . x
+
+.Index
+
+dot argument
+selection, graphical
+unnamed objects
+
+
+*** autodisplay
+
+.Synopsis
+
+	autodisplay [0/1]
+
+.Purpose
+
+By default Draw displays automatically any graphical object as soon as
+it is created. This behavior known as  autodisplay can be removed with
+this command. Without  arguments, autodisplay  toggles the autodisplay
+mode, the command always returns the current mode.
+
+When autodisplay is off, using the dot return argument is ineffective.
+
+.Example
+
+	# c is dislayed
+	circle c 0 0 1 0 5
+
+	# toggle the mode
+	autodisplay
+	==> 0
+	circle c 0 0 1 0 5
+
+	# c is erased, but not displayed
+	display c
+
+.Warning
+
+.See also
+display
+
+.Index
+autodisplay command
+
+
+
+*** display, donly
+
+.Synopsis
+
+	display varname [varname ...]
+
+	donly  varname [varname ...]
+
+.Purpose
+
+Use display to make objects visible. Use donly to make objects visible
+and erase all other objects, it stands for "display only".
+
+As you  may have  guessed "display ."  is quite  useless, "donly ." is
+very useful to extract one object from a messy screen.
+
+.Example
+
+	# to see everybody
+	foreach var [directory] {display $var}
+
+	# to select two objects and erase the others
+	donly . .
+
+
+.See also
+erase
+
+.Index
+display command
+donly command
+
+
+*** erase, clear, 2dclear
+
+.Synopsis
+
+	erase [varname varname ...]
+
+	clear
+
+	2dclear
+
+.Purpose
+
+Use erase to erase objects from all the views, erase without arguments
+erase everything in 3d and 2d. To erase unnamed objects use "erase .".
+
+Use clear to erase  only 3d objects and 2dclear  for 2d objects, erase
+without arguments is the same thing as "clear; 2dclear".
+
+.Example
+
+	# erase all guys with name starting by c_
+	foreach var [directory c_*] {erase $var}
+
+	# clear 2d views
+	2d clear
+
+.See also
+
+display
+
+.Index
+erase command
+clear command
+2dclear command
+
+
+*** repaint, dflush
+
+.Synopsis
+
+	repaint
+
+	dflush
+
+.Purpose
+
+The repaint command enforces pending repaint  of the views. The dflush
+command flushes the graphic buffers.  These commands are useful within
+loops or in scripts.
+
+A  new object is immediatly displayed,  but when an object is modified
+or erased the whole view must be repainted. To avoid doing it too many
+times, Draw only sets a flag and delays the  repaint to the end of the
+command when the new prompt is issued. Within a script you may want to
+display immediatly  the result of a  modification, the repaint command
+will repaint the views if the flag is raised and clear the flag.
+
+Graphical operations are buffered by Draw (and also  by the X system),
+usually the buffer is flushed   at the end  of  a command and   before
+graphical selection. If  you want to  flush the buffer within a script
+use the dflush command.
+
+.Example
+
+	# See the example with the pick command
+
+.See also
+pick
+
+.Index
+repaint command
+dflush command
+
+*Geometry commands
+
+Draw  provides a set of commands  to test geometry libraries. Geometry
+libraries are provided with the GEOMETRY  UL. These commands are found
+in the TGEOMETRY executable, or in  any Draw executable  as long as it
+includes the GeometryTest commands.
+
+The geometry with Draw includes new  types of variables
+
+- The 2d and 3d point will be referred to as Draw points.
+
+- The 2d curve, it is exactly the same as the Geom2d_Curve class. Will
+be referred to as Draw 2d curve.
+
+- The 3d  curve and the surface,  they are exactly the Geom_Curve  and
+Geom_Surface classes.  Will  be referred  to as  Draw  curve  and Draw
+surface.
+
+Please refer to  the  Geom and Geom2d   packages to learn  more  about
+CAS.CADE geometry.
+
+Draw geometric variables never share their data, the copy command will
+always make a complete copy of the content of the variable.
+
+The following sections cover the topics 
+
+-  crves creation,  the different types  of curves  and how to create
+them.
+
+- surfaces creation, the different types of surfaces and how to create
+them.
+
+- curves and surfaces modification, commands  to modify the definition
+of curves and surfaces, a majority is for bezier and bspline.
+
+- geometric transformations, i.e. translation, rotation, mirror, ...
+
+- analysis  of  curves  and   surfaces, commands to  compute   points,
+derivatives, curvatures.
+
+- intersections of surfaces and curves.
+
+- approximations of set of points to create curves and surfaces.
+
+- construction of 2d circles and lines by constraints like tangency.
+
+- the  last  section describes  commands which control  the display of
+curves and surfaces.
+
+When possible the commands are general, i.e. they process 2d curves 3d
+curves and surfaces, for example the circle command may create a 2d or
+a 3d circle  depending on the number  of  arguments and the  translate
+command will process points, curves or  surfaces depending on the type
+of the argument. So when  you do not find a  command in a section  you
+may look in another section, for example the trim command is described
+in the surface section but it can be used with curves.
+
+
+**Creation of curves
+
+To  create  points use the point   command, to create  curves use the
+command corresponding to the type. The types of curves are :
+
+- Analytical curves : line, circle, ellipse, parabola, hyperbola. 
+
+- Polar curves : beziercurve, bsplinecurve, bspline, bspline2d
+
+-  Trimmed curves and Offset  curves made  from  other curves with the
+trim and offset command.  Note that  the trim  and offset command  are
+described in the surface section, as they work on curves or surfaces.
+
+- Bspline  curves (NURBS) can be  created from other curves  using the
+convert command (see the surface creation).
+
+- Curves can be created from surface isoparametric lines with the uiso
+and viso commands.
+
+- 3d curves  can be created from 2d  curves and the contrary using the
+to3d  and to2d commands. The project   command more generally computes
+the 2d curve on a surface.
+
+Curves are displayed with an arrow to indicate the last parameter.
+
+*** point
+
+.Synopsis
+
+	point name x y [z]
+
+.Purpose
+
+Use the point command to create a 2d or 3d point, depending on the
+number of arguments.
+
+.Example
+
+	# 2d point
+	point p1 1 2
+
+	# 3d point
+	point p2 10 20 -5
+
+
+.Index
+point command
+
+
+
+*** line
+
+.Synopsis
+
+	line name x y [z] dx dy [dz]
+
+.Purpose
+
+Use the line  command  to create a  3d  or 2d line.   x  y z are   the
+coordinates of  the origin of the  line,  dx, dy, dz  is the direction
+vector. Of course the dimension must be  consistent, either line l x y
+dx dy in 2d or line l x y z dx dy dz in 3d.
+
+A  line is parametrised  by the length  starting form the origin along
+the direction vector, the direction vector will be normalised, it must
+not be null. The lines are infinite, but not the drawing.
+
+.Example
+
+	# a 2d line at 45 degrees of the X axis
+	line l2d 0 0 1 1
+
+	# a 3d line trough the point 10 0 0 parallel to Z
+	line l 10 0 0 0 0 1
+
+.See also
+
+.Index
+line command
+
+
+*** circle
+
+.Synopsis
+
+	circle name x y [z [dx dy dz]] [ux uy [uz]] radius
+
+.Purpose
+
+Use this  command to create a 2d  or  a 3d circle,  in  2d x,y are the
+coordinates of the center and ux, uy is the vector in the direction of
+the origin of the parameters, by default this direction is (1,0) the X
+axis. Use another vector to change the origin of parameters.
+
+In 3d x,y,z are the coordinates of the  center, dx,dy,dz is the normal
+vector defining the plane through the center where the circle is, this
+vector is normalised and must  not be null, by  default this vector is
+(0,0,1) i.e. the Z axis.  ux,uy,uz is  the direction of the origin, if
+it is not given a default direction will be computed, this vector must
+not be null or parallel to dx,dy,dz.
+
+The circle is parametrised by the  angle in [0,2*pi] starting from the
+origin. Note  that the specification of origin  direction and plane is
+the same for all analytical curves and surfaces.
+
+.Example
+
+	# A 2d circle of radius 5 centered at 10,-2
+	circle c1 10 -2 5
+
+	# an other 2d circle with a user defined origin
+	# the point of parameter 0 on this circle will be
+	# 1+sqrt(2),1+sqrt(2)
+	circle c2 1 1 1 1 2
+
+	# a 3d circle, center 10 20 -5, axis Z, radius 17
+	circle c3 10 20 -5 17
+
+	# same 3d circle with axis Y
+	circle c4 10 20 -5 0 1 0 17
+
+	# full 3d circle, axis X, origin on Z
+	circle c5 10 20 -5 1 0 0 0 0 1 17
+
+	
+
+.Index
+circle command
+
+
+*** ellipse
+
+.Synopsis
+
+	ellipse name x y [z [dx dy dz]] [ux uy [uz]] firstradius secondradius
+
+.Purpose
+
+Create a 2d or 3d ellipse, the first arguments are the same as for the
+circle to define the center  and the system of  axis. The ellipse will
+have  firstradius on its  X axis and  secondradius  on its Y axis. The
+ellipse is parametrised by [0,2*pi] starting from the  X axis going to
+the Y axis. Note that this is not an  angle, the local parametrisation
+of the ellipse is (firstradius * cos(t), secondradius * sin(t))
+
+.Example
+
+	# default 2d ellipse
+	ellipse e1 10 5 20 10
+
+	# 2d ellipse at angle 60 degree
+	ellipse e2 0 0 1 2 30 5
+
+	# 3d ellipse, in the XY plane
+	ellipse e3 0 0 0 25 5
+
+	# 3d ellipse in the X,Z plane with axis 1, 0 ,1
+	ellipse e4 0 0 0 0 1 0 1 0 1 25 5
+
+
+.See also
+
+circle
+
+.Index
+ellipse command
+
+
+*** hyperbola
+
+.Synopsis
+
+	hyperbola name x y [z [dx dy dz]] [ux uy [uz]] firstradius secondradius
+
+.Purpose
+
+Create a 2d or 3d ellipse, the first arguments are the same as for the
+circle to define the center and the system of axis. The hyperbola will
+have firstradius on its X  axis and secondradius  on its Y axis.  This
+values  are not real  radius but  the  coefficients of  the parametric
+equation, where  the  parameters run    for -infinite  to    +infinite
+(firstradius * ch(t),  secondradius * sh(t)).  Note that the hyperbola
+has only one branch, the one in the X direction.
+
+.Example
+
+	# default 2d hyperbola, with asymptotes 1,1 -1,1
+	hyperbola h1 0 0  30 30
+
+	# 2d hyperbola at angle 60 degree
+	hyperbola h2 0 0 1 2 20 20
+
+	# 3d hyperbola, in the XY plane
+	hyperbola h3 0 0 0 50 50
+
+
+.Warning
+
+.See also
+
+circle
+
+.Index
+hyperbola command
+
+
+*** parabola
+
+.Synopsis
+
+	parabola name x y [z [dx dy dz]] [ux uy [uz]] focal
+
+.Purpose
+
+Create  a 2d or 3d  parabola in the   axis-system defined by the first
+arguments (see  the  circle command),  the origin  is the apex  of the
+parabola and focal  is the coefficient in the  parametric equation : (
+x= t*t / 4*focal, y = t).
+
+.Example
+
+	# 2d parabola
+	parabola p1 0 0 50
+
+	# 2d parabola with convexity +Y
+	parabola p2 0 0 0 1 50
+
+	# 3d parabola in the Y-Z plane, convexity +Z
+	parabola p3 0 0 0 1 0 0 0 0 1 50
+
+.Warning
+
+.See also
+circle
+
+.Index
+parabola command
+
+
+
+*** beziercurve, 2dbeziercurve
+
+.Synopsis
+
+	beziercurve name nbpoles x1 y1 z1 [w1] x2 y2 z2 [w2] ....
+
+	2dbeziercurve name nbpoles x1 y1 z1 [w1] x2 y2 z2 [w2] ....
+
+.Purpose
+
+Use the beziercurve command  to create a 3d curve,  give the number of
+poles then  the   coordinates of  the  poles,   the   degree will   be
+nbpoles-1.  You can give  weights with the poles  to create a rational
+curve, you must give weights for all poles or for none.
+
+Use  2dbeziercurve to create  a 2d curve with   the same conditions as
+above.
+
+.Example
+
+	# a rational 2d bezier curve (arc of circle)
+	2dbeziercurve ci 3 0 0 1 10 0 sqrt(2.)/2. 10 10 1
+
+	# a 3d bezier curve, not rational
+	beziercurve cc 4 0 0 0 10 0 0 10 0 10 10 10 10
+
+.Index
+beziercurve command
+2dbeziercurve command
+
+*** bsplinecurve, 2dbsplinecurve, pbsplinecurve, 2dpbsplinecurve
+
+.Synopsis
+
+	bsplinecurve name degree nbknots k1 m1 ... x1 y1 z1 w1 ...
+
+	2dbsplinecurve name degree nbknots k1 m1 ... x1 y1 w1 ...
+
+	pbsplinecurve name degree nbknots k1 m1 ... x1 y1 z1 w1 ...
+
+	2dpbsplinecurve name degree nbknots k1 m1 ... x1 y1 w1 ...
+
+.Purpose
+
+Use the bsplinecurve commands  to create 3d  or  2d NURBS curves,  the
+pbsplinecurve  and   2dpbsplinecurve commands      create     periodic
+curves. Degree  is the  degree for  the curves,  nbknots the number of
+knots,  then you must  give  the knots with  their multiplicities, the
+knots must  be non decreasing,   if succcessive  knots are  equal  the
+multiplicities will be added, multiplicities must be lower or equal to
+the degree, on non  periodic curves the  first and last multiplicities
+can  be equal to degree+1, this  is even  recommended  if you like the
+curve to go from the first pole to the last pole.  On a periodic curve
+the first and last multiplicity must be equal.
+
+The poles must be given with their weights, use weights of 1 for a non
+rational curve, the number of poles must be
+
+For a non periodic curve, Sum of multiplicities - degree + 1
+
+For a periodic curve, Sum of multiplicities - last multiplicity
+
+.Example
+
+	# a 2d periodic circle (parameter from 0 to 2*pi !!)
+	dset h sqrt(3)/2
+	2dpbsplinecurve c 2 \
+	4 0 2 pi/1.5 2 pi/0.75 2 2*pi 2 \
+	0 -h/3 1 \
+	0.5 -h/3 0.5 \
+	0.25 h/6 1 \
+	0 2*h/3 0.5 \
+	-0.25 h/6 1 \
+	-0.5 -h/3 0.5 \
+	0 -h/3 1 
+
+.Warning
+
+.See also
+
+.Index
+bsplinecurve command
+2dbsplinecurve command
+pbsplinecurve command
+2dpbsplinecurve command
+periodic bsplines
+
+*** bspline, bspline2d
+
+.Synopsis
+
+	bspline name <digitizes ...> <mouse bouton 2>
+
+	bspline2d name <digitizes ...> <mouse bouton 2>
+
+
+.Purpose
+
+Use the bspline commands  to create 3d  or  2d NURBS curves by
+digitizing on the screen. The mouse bouton 2 ends the digitizing
+scheme and constructs a degree 3 curve that is scaled so that it fits
+in box of length 1. The graphic screen is updated when the mouse
+button 2 is pressed.
+
+.Example
+
+        #
+	# a random bspline curve 
+	#
+	bspline mycurve  
+
+
+
+.Warning
+
+.See also
+
+.Index
+bsplinecurve command
+2dbsplinecurve command
+pbsplinecurve command
+2dpbsplinecurve command
+periodic bsplines
+
+
+*** uiso, viso
+
+.Synopsis
+
+	uiso name surface u
+
+	viso name surface u
+
+.Purpose
+
+Use these commands to create a U or V isoparametric curve from a surface.
+
+.Example
+
+	# create a cylinder and extract to iso curves
+	# see the cylinder command
+
+	cylinder c 10
+	uiso c1 c pi/6
+	viso c2 c 5
+
+.Warning
+
+It is not possible to extract isoparametric curves on offset surfaces.
+
+.See also
+
+.Index
+uiso command
+viso command
+isoparametric curves
+
+
+*** to2d, to3d
+
+.Synopsis
+
+	to3d name curve2d [plane]
+
+	to2d name curve3d [plane]
+
+.Purpose
+
+to3d and to2d commands  are used to create a  3d curve from a 2d curve
+and a 2d curve   from a 3d curve.   The  transformation uses  a planar
+surface  to define the  XY plane in  3d, by default  this plane is the
+default OXY plane.  to3d  always gives a correct  result, but to2d may
+surprise you as it is  not a projection.  It is  always correct if the
+curve  is planar and  parallel to the plane  of projection, the points
+defining the  curve  are projected  onto the plane   but a circle will
+remain a circle for example, it will not be changed to an ellipse.
+
+.Example
+
+	# the following commands
+	circle c 0 0 5
+	plane p -2 1 0 1 2 3
+	to3d c c p
+
+	# will create the same circle as
+	circle c -2 1 0 1 2 3 5
+
+.Warning
+
+.See also
+
+project
+
+.Index
+to2d command
+to3d command
+
+
+*** project
+
+.Synopsis
+
+	project name curve3d surface
+
+.Purpose
+
+Computes    the 2d curve  in   the   parametric space  of  the surface
+correponding  to the 3d curve.  This  can be  used  only on analytical
+surface and for curves lying on the surface.
+
+.Example
+
+	# intersect a cylinder and a plane
+	# and project the resulting ellipse on the cylinder
+	# this will create a 2d sinusoid-like bspline
+	cylinder c 5
+	plane p 0 0 0 0 1 1
+	intersect i c p
+	project i2d i c
+
+.Warning
+
+.See also
+
+.Index
+project command
+
+
+**Creation of surfaces
+
+To create surfaces use also the type, types of surfaces are
+
+- Analytical surface : plane, cylinder, cone, sphere, torus.
+
+- Polar surfaces : beziersurf, bsplinesurf
+
+-  Trimmed and Offset surface,  using the commands trim, trimu, trimv,
+offset.
+
+-  Surface of Revolution and  Extrusion, created  from curves with the
+revsurf and extsurf commands.
+
+-  NURBS surface  can be  constructed from   other  surfaces using the
+convert command.
+
+Surfaces are displayed  with isoparametric  lines, a small  parametric
+line is displayed  at 1/10 of U  with a length  1/10 of V to  show the
+parametrisation.
+
+*** plane
+
+.Synopsis
+
+	plane name [x y z [dx dy dz [ux uy uz]]]
+
+.Purpose
+
+Uses  this command to create  an infinite plane, a  plane  is the same
+thing as a 3d  coordinate system, x,y,z is the  origin, dx, dy, dz  is
+the Z direction  and  ux, uy, uz is  the  X direction.  The   plane is
+perpendicular to Z  and X is the  U  parameter. dx,dy,dz and  ux,uy,uz
+must not be  null and not colinear. ux,uy,uz  will  be modified to  be
+orthogonal to  dx,dy,dz. There are  default values for  the coordinate
+system, if no  arguments are given  the  default is the global  system
+(0,0,0), (0,0,1),  (1,0,0), if only the origin  is given the  axis are
+the default  ones (0,0,1), (1,0,0), if the  origin and the Z  axis are
+given the X axis is generated perpendicular to  the Z axis.  Note that
+this definition will be used for all analytical surfaces.
+
+.Example
+
+	# a plane through the point 10,0,0 perpendicular to X
+	# with U direction on Y 
+	plane p1 10 0 0 1 0 0 0 1 0 
+
+	# an horixontal plane with origin 10, -20, -5
+	plane p2 10 -20 -5
+
+.Index
+plane command
+coordinate system
+
+
+*** cylinder
+
+.Synopsis
+
+	cylinder name [x y z [dx dy dz [ux uy uz]]] radius
+
+.Purpose
+
+A cylinder is defined by a coordinate system, just like a plane, and a
+radius. The cylinder is an infinite cylinder  with the Z axis as axis,
+the  U  parameter  is  the angle   starting  from  X going  to   the Y
+direction. The V  coordinate is the  length along the Z  axis starting
+from the origin.
+
+.Example
+
+	# a cylinder on the default Z axis, radius 10
+	cylinder c1 10
+
+	# a cylinder, also with Z axis but with origin 5, 10, -3
+	cylinder c2 5 10 -3 10
+
+	# a cylinder through the origin 
+	# with longitude pi/3 and latitude pi/4 (euler angles)
+	dset lo pi/3. la pi/4.
+	cylinder c3 0 0 0 cos(la)*cos(lo) cos(la)*sin(lo) sin(la) 10
+
+.See also
+plane
+
+.Index
+cylinder command
+longitude and latitude
+euler angles
+
+*** cone
+
+.Synopsis
+
+	cone name [x y z [dx dy dz [ux uy uz]]] semi-angle radius
+
+.Purpose
+
+Creates a cone in the  coordinate system, the radius  is the radius of
+the section of the cone  in the XY plane,  the semi-angle is the angle
+in degree of the cone with the axis, it  should be between -90 and 90,
+both and 0  excluded. The  vertex is on  the Z  axis  in the  negative
+direction at a distance radius/tan(semi-angle) from the origin. If the
+radius is 0 the vertex is the origin.
+
+To parametrise the cone,  U is  the angle  starting  from 0, in  the Y
+direction,   V is the length   along  the the  side  starting from the
+origin, in the local system V = Z / cos(semi-angle).
+
+The definition of the cone may seem redundant but it is very useful to
+disconnect the origin of the V parameter and the apex, mainly for very
+small angle when the cone is  like a cylinder,  the useful part of the
+surface may  be very far from  the  apex and  would require very large
+parameter values.
+
+.Example
+
+	# a cone a 45 degree at the origin on Z
+	cone c1 45 0
+
+	# a cone on axis Z with radius r1 at z1 and r2 at z2
+	cone c2 0 0 z1 180.*atan2(r2-r1,z2-z1)/pi r1
+
+.Warning
+The angle is in degree.
+
+.See also
+plane
+
+.Index
+cone command
+
+
+*** sphere
+
+.Synopsis
+
+	sphere name [x y z [dx dy dz [ux uy uz]]] radius
+
+.Purpose
+
+Creates a  sphere  in a local coordinate  system  defined like for the
+lane command. The   sphere is centered at  the  origin with  the given
+radius. To  parametrise the sphere, U  is the angle from  X to Y, U is
+between o and  2*pi, V is  the angle in the  half-circle at angle U in
+the  plane  containing the Z axis,  V  is between -pi/2  and pi/2. The
+poles  are the points  Z = +/-  radius, their parameters are U,+/-pi/2
+for any U in 0,2*pi.
+
+.Example
+
+	# a sphere at the origin
+	sphere s1 10
+
+	# a sphere at 10 10 10, with poles on the axis 1,1,1
+	sphere s2 10 10 10 1 1 1 10
+
+.Warning
+
+.See also
+plane
+
+.Index
+sphere command
+
+
+*** torus
+
+.Synopsis
+
+	torus name [x y z [dx dy dz [ux uy uz]]] major minor
+
+.Purpose
+
+Creates a torus  in the local coordinate system  with the given  major
+and minor radius, Z is the axis for the major radius. The major radius
+can be lower than the minor one.
+
+To parametrize a torus, U is the angle from X to  Y, V is the angle in
+the plane at angle U from the XY plane to Z. U and V are in 0,2*pi.
+
+.Example
+
+	# a torus at the origin
+	torus t1 20 5
+
+	# a torus in another system
+	torus t2 10 5 -2  2 1 0 20 5
+
+.See also
+plane
+
+.Index
+torus command
+
+
+*** beziersurf
+
+.Synopsis
+
+	beziersurf name nbupoles nbvolpes x y z [w] ....
+
+.Purpose
+
+Use this command to create a bezier surface, rational or not. You must
+first give the numbers  of poles in  the  U and V  directions, degrees
+will be nbupoles-1  and  nbvpoles-1. Then give the   nbupoles*nbvpoles
+poles, starting with U.  i.e.  P(1,1) P(2,1) ,... P(nbupoles,1) P(1,2)
+,... P(nbupoles,nbvpoles).  You can omit weights, but  if you give one
+weight you must give them all.
+
+.Example
+
+	# a non-rational degree 2,3 surface
+	beziersurf s 3 4 \
+	0 0 0  10 0 5  20 0 0 \
+	0 10 2 10 10 3 20 10 2 \
+	0 20 10 10 20 20 20 20 10 \
+	0 30 0 10 30 0 20 30 0
+
+.See also
+beziercurve
+
+.Index
+beziersurf command
+
+
+*** bsplinesurf, upbsplinesurf, vpbsplinesurf, uvpbsplinesurf
+
+.Synopsis
+
+	bsplinesurf name udegree nbuknots uknot umult ... nbvknot  vknot vmult ...  x y z w ...
+
+	upbsplinesurf ...
+
+	vpbsplinesurf ...
+
+	uvpbsplinesurf ...
+		    
+.Purpose
+
+Use  the bsplinesurf     command   to create    NURBS   surfaces,  the
+upbsplinesurf  command to  create  a  NURBS   surface  periodic in  U,
+vpbsplinesurf periodic in V, and uvpbsplinesurf periodic in UV.
+
+The description is similar to the bsplinecurve command, first you give
+the degree in U and the knots in U with their multiplicities, then the
+same in V. The poles follow, the number of poles is the product of the
+number in  U and  the  number in V,  see  bsplinecurve to compute  the
+number of poles,  the poles are first given  in U as in the beziersurf
+command.  Note that  you must give  the  weights, use  1 for  rational
+surface.
+
+.Example
+
+	# create a bspline surface of degree 1 2
+	# with two knots in U and three in V
+
+	bsplinesurf s \
+	1 2 0 2 1 2 \
+	2 3 0 3 1 1 2 3 \
+	0 0 0 1  10 0 5 1  \
+	0 10 2 1 10 10 3 1 \
+	0 20 10 1 10 20 20 1 \
+	0 30 0 1 10 30 0 1
+	
+
+.Warning
+The weights are mandatory.
+
+.See also
+bsplinecurve
+beziersurf
+convert
+
+.Index
+bsplinesurf command
+upbsplinesurf command
+vpbsplinesurf command
+uvpbsplinesurf command
+periodic bsplines
+
+
+
+*** trim, trimu, trimv
+
+.Synopsis
+
+	trim newname name [u1 u2 [v1 v2]]
+
+	trimu newname name [u1 u2]
+
+	trimv newname name [v1 v2]
+
+.Purpose
+
+The trim  commands  are used  to  create  trimmed  curves  or  trimmed
+surfaces.   Note that trimmed  curves and surfaces  are classes of the
+Geom packages. The  trim  command creates a  new trimmed  curve from a
+curve,  or a new trimmed  surface in u  and  v from  a surface.  trimu
+creates  a u  trimmed surface, and  trimv a  vtrimmed surface.  If  no
+parameters are given,   the  command recreates   the  basis curve  and
+surface if the argument is trimmed. The curves can  be either 2d or 3d
+curves.  If  the  trimming  parameters are   decreasing,  direction is
+reversed if the curve or surface is not periodic.
+
+Note that  a  trimmed curve or surface  contains  a copy  of the basis
+geometry, so  modifying it will  not modify the trimmed geometry. Note
+also that trimmig  a trimmed geometry  will not create multiple levels
+of trimming, the basic geometry will be used.
+
+.Example
+
+	# create a 3d circle
+	circle c 0 0 0 10
+
+	# trim it, use the same variable, the original is destroyed
+	trim c c 0 pi/2
+
+	# original can be recovered !
+	trim orc c
+
+	# trim again
+	trim c c pi/4 pi/2
+
+	# original is not the trimmed curve but the basis
+	trim orc c
+
+	# as the circle is periodic the two following commands are identical
+	trim cc c pi/2 0
+	trim cc c pi/2 2*pi
+
+	# trim an infinite cylinder
+	cylinder cy 10
+	trimv cy cy 0 50
+
+.Warning
+
+.See also
+reverse
+
+.Index
+trim command
+trimu command
+trimv command
+
+
+*** offset
+
+.Synopsis
+
+	offset newname name distance [dx dy dz]
+
+.Purpose
+
+Use the offset command to create offset  curve or surface from a basis
+curve or surface at a  given distance, offset  curves and surfaces are
+classes from  the Geom package. The  curve can be  a 2d or a 3d curve,
+for a 3d curve  you must give also  a  vector dx,dy,dz to compute  the
+offsets, usually for a planar  curve this vector is  the normal to the
+plane containing the curve.
+
+The offset curve or  surface copies the   basis geometry which  can be
+modified later.
+
+.Example
+
+	# graphical demonstration that the outline of a torus
+	# is the offset of an ellipse
+	# Please do this in a top view
+
+	smallview +X+Y
+	dset angle pi/6
+	torus t 0 0 0 0 cos(angle) sin(angle) 50 20
+	fit
+	ellipse e 0 0 0 50 50*sin(angle)
+	# note that the distance can be negative
+	offset l1 e 20 0 0 1
+	offset l2 e -20 0 0 1
+	
+	# Admire...
+
+.Index
+offset command
+
+
+*** revsurf
+
+.Synopsis
+
+	revsurf newname curvename x y z dx dy dz
+
+.Purpose
+
+This command creates a surface of revolution  from a 3d curve, this is
+the  class SurfaceOfRevolution from   Geom, x,y,z and dx,dy,dz defines
+the axis  of revolution. To parametrize a  surface of revolution U, is
+the angle around the axis, starting from the curve, V is the parameter
+of the curve.
+
+.Example
+
+	# another way to make a torus like surface
+	circle c 50 0 0 20
+	revsurf s c 0 0 0 0 1 0
+
+.Warning
+
+.See also
+
+.Index
+revsurf command
+
+
+*** extsurf
+
+.Synopsis
+
+	extsurf newname curvename dx dy dz
+
+.Purpose
+
+Use the extsurf command to create a surface of linear extrusion from a
+3d  curve. dx,dy,dz is the  direction of  extrusion.  To parametrize a
+surface of extrusion, U is the parameter on the curve, V is the length
+along the direction of extrusion.
+
+.Example
+
+	# an elliptic cylinder
+	ellipse e 0 0 0 10 5
+	extsurf s e 0 0 1
+	# to make it finite
+	trimv s s 0 10
+
+
+.Index
+extsurf command
+
+
+
+*** convert
+
+.Synopsis
+
+	convert newname name
+
+.Purpose
+
+The convert command creates a NURBS 2d curve, 3d curve or surface from
+any  2d curve, curve,   and  surface. essentially  conics  curves  and
+quadric surfaces are turned to NURBS, it does not process offsets.
+
+.Example
+
+	# turn a 2d arc of circle into a 2d nurbs
+	circle c 0 0 5
+	trim c c 0 pi/3
+	convert c c
+
+	# an easy way to make a planar bspline surface
+	plane p
+	trim p p -1 1 -1 1
+	convert p p
+
+.Warning
+
+Offset curves and surfaces are not processed.
+
+.See also
+bsplinecurve, bsplinesurf
+
+.Index
+convert command
+
+
+
+**Modifications of Curves and surfaces
+
+Draw provides commands to modify curves and surfaces, some of them are
+general, others are restricted to bezier or bsplines.
+
+General modification are
+
+- Reversing the parametrisation : reverse, ureverse, vreverse.
+
+Modifications for bezier and bspline are 
+
+- Exchanging U and V on a surface : exchuv
+
+- segmentation, segment, segsur
+
+- Increasing the degree, incdeg, incudeg, incvdeg
+
+- moving poles, cmovep, movep, movecolp, moverowp
+
+- moving a point on a curve or a surface, cmovepoint, movepoint
+
+Modifications for bezier are 
+
+- adding and removing poles, insertpole, rempole, remcolpole, remrowpole
+
+Modifications for bspline are 
+
+-  inserting  and removing   knots, insertknot,  remknot, insertuknot,
+remuknot, insetvknot, remvknot
+
+- modifying periodic curves and surfaces, setperiodic, setnotperiodic,
+setorigin, setuperiodic,  setunotperiodic,   setuorigin, setvperiodic,
+setvnotperiodic, setvorigin
+
+
+*** reverse, ureverse, vreverse
+
+.Synopsis
+
+	reverse curvename
+
+	ureverse surfacename
+
+	vreverse surfacename
+
+.Purpose
+
+Use the reverse  command to reverse the  parametrisation of a 3d or 2d
+curve, use ureverse  or vreverse to reverse the  U or V parameter of a
+surface.  Note  that the    new  parameters of  the  curve  may change
+according to the type of curve. For example they will change sign on a
+line or stay 0,1 on a bezier.
+
+Reversing a parameter on an analytical surface  may create an indirect
+coordinate system,  i.e. for example Z  is not the  cross product of X
+and Y, because reversing a parameter will reverse only one axis.
+
+.Example
+
+	# reverse a trimmed 2d circle
+	circle c 0 0 5
+	trim c c pi/4 pi/2
+	reverse c
+
+	# dumping c will show that it is now trimmed between
+	# 3*pi/2 and 7*pi/4 i.e. 2*pi-pi/2 and 2*pi-pi/4
+
+.Warning
+
+The geometry has been  modified, if you want  to keep the curve or the
+surface you must copy it before.
+
+.See also
+
+.Index
+reverse command
+ureverse command
+vreverse command
+
+
+*** exchuv
+
+.Synopsis
+
+	exchuv surfacename
+
+.Purpose
+
+For a bezier or bspline surface this command exchange the U and V parameters.
+
+.Example
+
+	# exchanging u and v on a spline (made from a cylinder)
+	# this is impossible on the cylinder
+	cylinder c 5
+	trimv c c 0 10
+	convert c c
+	exchuv c
+
+.Index
+exchuv command
+
+
+*** segment, segsur
+
+.Synopsis
+
+	segment curve ufirst ulast
+
+	segsur surface ufirst ulast vfirst vlast
+
+.Purpose
+
+Use the segment and segsur  commands to segment respectively a  bezier
+or   bspline curve and  surface.  This  command  modifies the curve to
+restrict it  between  the new parameters.   This command  must  not be
+confused with the trim command which creates a new geometry.
+
+.Example
+
+	# segment a bezier curve in half
+	beziercurve c 3 0 0 0 10 0 0 10 10 0
+	segment c 0.5 1
+
+.Warning
+
+.See also
+
+.Index
+segment command
+segsur command
+
+
+*** incdeg, incudeg, incvdeg
+
+.Synopsis
+
+	incdeg curvename newdegree
+
+	incudeg surfacename newdegree
+
+	incvdeg surfacename newdegree
+
+.Purpose
+
+Use the incdeg command to increase the degree of a 2d or 3d bezier or
+bspline curve to a new value higher than the current one. Use incudeg
+and incvdeg to increase the degree in U or V of a surface.
+
+.Example
+
+	# make a planar bspline and increase the degree to 2 3
+	plane p 
+	trim p p -1 1 -1 1
+	convert p p
+	incudeg p 2
+	incvdeg p 3
+
+.Warning
+
+The geometry is modified.
+
+.See also
+
+.Index
+incdeg command
+incudeg command
+incvdeg command
+
+
+*** cmovep, movep, movecolp, moverowp
+
+.Synopsis
+
+	cmovep curve index dx dy [dz]
+
+	movep surface uindex vindex dx dy dz
+
+	movecolp uindex dx dy dz
+
+	moverowp vindex dx dy dz
+
+.Purpose
+
+Use the move methods to translate poles of a bezier or a bspline curve
+or surface. cmovep and movep translate the pole with the given index.
+
+movecolp and moverowp translate a whole column or row of poles.
+
+.Example
+
+	# start with a plane
+	# turn to bspline, raise degree and raise poles
+	plane p
+	trim p p -10 10 -10 10
+	convert p p
+	incud p 2
+	incvd p 2
+	movecolp p 2 0 0 5
+	moverowp p 2 0 0 5
+	movep p 2 2 0 0 5
+
+.Warning
+
+.See also
+
+.Index
+cmovep command
+movep command
+movecolp command
+moverowp command
+
+
+*** cmovepoint, movepoint
+
+.Synopsis
+
+	cmovepoint curve u dx dy [dz]
+
+	movepoint surface u v dx dy dz
+
+.Purpose
+
+Use the cmovepoint command to modify a curve so the point of parameter
+u have a new position translated by dx,dy,dz (no dz in 2d).
+
+Use   the  movepoint command  to modify   a  surface so   the point of
+parameters u,v have a new position translated by dx,dy,dz.
+
+.Example
+
+	# Create a spline curve and move 100 times a point
+
+	bsplinecurve bscurv  \
+	3 2  -1.0 4   1.0 4  0 0 0 1   1 0 0 1   2 0 0 1   3 0 0 1
+
+	incdeg bscurv 10
+	translate bscurv 0 -4 0
+
+	set i 1
+	repeat 100 {cmovepoint bscurv 0.3 0. 0.05 0.0e0 ; incr i 1; repaint}
+	dump bscurv
+
+	set i 1
+	repeat 100 {cmovepoint bscurv 0.3 0. -0.05 0.0e0 ; incr i 1;repaint}
+
+
+.Warning
+
+The geometry is modfied. Do not confuse with cmovep and movep which
+modifies a pole and not a point.
+
+.See also
+
+cmovep, movep
+
+.Index
+cmovepoint command
+movepoint command
+
+
+*** insertpole, rempole, remcolpole, remrowpole
+
+.Synopsis
+
+	insertpole curvename index x y [z] [w]
+
+	rempole curvename index
+
+	remcolpole surfacename index
+
+	remrowpole surfacename index
+
+.Purpose
+
+Use the insertpole command  to insert a new pole  on a 2d or 3d bezier
+curve, you can  add a weight for the  pole, the default value  for the
+weight is 1. The pole is added at the position after the index, use an
+index 0 to insert before the first pole.
+
+Use the rempole command to remove a pole from a 2d or 3d bezier curve,
+you must leave at least two poles in the curves.
+
+Use the remcolpole and remrowpole commands to remove a column or a row
+of poles from a bezier surface.  A column is in the  V direction and a
+row in the U direction, the resulting  degree must be  at least 1, i.e
+there are two rows and two columns.
+
+.Example
+
+	# start with a segment, insert a pole at end
+	# then remove the central pole
+
+	beziercurve c 2 0 0 0 10 0 0
+	insertpole c 2 10 10 0
+	rempole c 2
+
+
+.Index
+insertpole command
+rempole command
+remcolpole command
+remrowpole command
+pole insertion and removal
+
+
+*** insertknot, insertuknot, insertvknot
+
+.Synopsis
+
+	insertknot curvename knot [mult]
+	
+	insertuknot surfacename knot [mult]
+
+	insertvknot surfacename knot [mult]
+
+
+.Purpose
+
+Insert knots in the  knot sequence of  a bspline curve or surface, use
+insertknot for   a curve, you  must  give a  knot   value and a target
+multiplicity, the default multiplicity is  1.  If  there is already  a
+knot with  the given value  its multiplicity will be  raised if  it is
+lower than the target multiplicity. Use insertuknot and insertvknot to
+insert knots in a surface.
+
+.Example
+
+	# create a cylindrical surface and insert a knot
+	cylinder c 10
+	trim c c 0 pi/2 0 10
+	convert c c
+	insertuknot c pi/4 1
+
+.Index
+insertknot command
+insertuknot command
+insertvknot command
+knot insertion
+
+
+*** remknot, remulnot, remvknot
+
+.Synopsis
+
+	remknot index [mult] [tol]
+
+	remuknot index [mult] [tol]
+
+	remvknot index [mult] [tol]
+
+.Purpose
+
+To  remove a knot from the  knot sequence of  a curve or a surface use
+the remknot   commands, give the  index  of the  knot  and  the target
+multiplicity, default is    0 to  remove   the knot,   if the   target
+multiplicity is   not  0,  the  multiplicity  of   the  knot will   be
+lowered. You can give a tolerance value to  control the process as the
+curve  may be modified, if the  tolerance is  low  the removal will be
+done only   if the curve is not   modified. By default  the removal is
+always done.
+
+.Example
+
+	# bspline circle, remove a knot
+	circle c 0 0 5
+	convert c c
+	incd c 5
+	remknot c 2
+
+.Warning
+
+The curve or the surface may be modified.
+
+.See also
+
+.Index
+remknot command
+remulnot command
+remvknot command
+knot removal
+
+
+*** setperiodic, setnotperiodic, setuperiodic, setunotperiodic, setvperiodic, setvnotperiodic
+
+.Synopsis
+
+	setperiodic curve
+
+	setnotperiodic curve
+
+	setuperiodic surface
+
+	setunotperiodic surface
+
+	setvperiodic surface
+
+	setvnotperiodic surface
+
+.Purpose
+
+setperiodic turns a  bspline curve in   a periodic bspline  curve, the
+knot vector is the same and excess poles are  truncated, the curve may
+be  modified   if it   was  not  closed.    setnotperiodic removes the
+periodicity of a periodic curve, poles are duplicated. Note that knots
+are added at  the begining  and  the end  of the  knot vector  and the
+multiplicity are knot set to degree+1 at the start and the end.
+
+.Example
+
+	# a circle deperiodicised
+	circle c 0 0 5
+	convert c c
+	setnotperiodic c
+
+.Index
+setperiodic command
+setnotperiodic command
+setuperiodic command
+setunotperiodic command
+setvperiodic command
+setvnotperiodic command
+
+
+*** setorigin, setuorigin, setvorigin
+
+.Synopsis
+
+	setorigin curvename index
+
+	setuorigin surfacename index
+
+	setuorigin surfacename index
+
+.Purpose
+
+Use these commands to change the origin  of the parameters on periodic
+curves or surfaces, the new origin must be an existing knot. To set an
+origin outside a knot you must first insert a knot with the insertknot
+command.
+
+.Example
+
+	# a torus with new U and V origins
+	torus t 20 5
+	convert t t
+	setuorigin t 2
+	setvorigin t 2
+
+
+.See also
+
+insertknot
+
+.Index
+setorigin command
+setuorigin command
+setvorigin command
+
+
+
+**Transformations
+
+Draw provides commands to apply linear transformations to geometric
+objects, they include translation, rotation, mirror and scale.
+
+
+*** translate, 2dtranslate
+
+.Synopsis
+
+	translate name [name ...] dx dy dz
+
+	2dtranslate name [name ...] dx dy
+
+.Purpose
+
+To translate  3d  points,   curves  and  surfaces use   the  translate
+commands, giving a vector dx,dy,dz.  You  can translate more than  one
+object with the same command.
+
+For 2d points or curves use the 2dtranslate command.
+
+.Example
+
+	# 3d translation
+	point p 10 20 30
+	circle c 10 20 30 5
+	torus t 10 20 30 5 2
+	translate p c t 0 0 15
+
+.Warning
+
+Objects are modified.
+
+.See also
+
+.Index
+translate command
+2dtranslate command
+
+
+*** rotate, 2drotate
+
+.Synopsis
+	
+	rotate name [name ...] x y z dx dy dz angle
+
+	2drotate name [name ...] x y angle
+
+.Purpose
+
+To rotate a 3d point,  curve or surface use   the rotate command.  You
+must give an  axis of rotation with  a point x,y,z, a  vector dx,dy,dz
+and an angle in degree.
+
+For a 2d rotation you must only give the center and the angle. In 3d
+or 2d the angle can be negative.
+
+.Example
+
+	# make an helix of circles
+	circle c0 10 0 0 3
+	for {set i 1} {$i <= 10} {incr i} {
+		copy c[expr $i-1] c$i
+		translate c$i 0 0 3
+		rotate c$i 0 0 0 0 0 1 36
+	}
+
+.Index
+rotate command
+2drotate command
+
+
+*** pmirror, lmirror, smirror, 2dpmirror, 2dlmirror
+
+.Synopsis
+
+	pmirror name [name ...] x y z
+
+	lmirror name [name ...] x y z dx dy dz
+
+	smirror name [name ...] x y z dx dy dz
+
+	2dpmirror name [name ...] x y
+
+	2dlmirror name [name ...] x y dx dy
+
+.Purpose
+
+The  mirrors  command make  a  mirror transformation   of  a 3d or  2d
+geometry. pmirror is the point  mirror, or central symetry, lmirror is
+the  line mirror  or axial symetry,  smirror is  the surface mirror or
+planar symetry, the plane of symetry is perpendicular to dx,dy,dz.
+
+In  2d we  have only 2dpmirror,  the  point symetry, and 2dlmirror the
+axis symetry.
+
+.Example
+
+	# build 3 images of a torus
+
+	torus t 10 10 10 1 2 3 5 1
+	copy t t1
+	pmirror t1 0 0 0
+	copy t t2
+	lmirror t2 0 0 0 1 0 0
+	copy t t3 
+	smirror t3 0 0 0 1 0 0
+
+.Warning
+
+.See also
+
+.Index
+pmirror command
+lmirror command
+smirror command
+2dpmirror command
+2dlmirror command
+
+
+*** pscale, 2dpscale
+
+.Synopsis
+
+	pscale name [name ...] x y z s
+
+	2dpscale name [name ...] x y s
+
+.Purpose
+
+Use  the pscale and  2dpscale commands to  transform  an object with a
+point scaling  (central homotetic).  You must give  the center and the
+scaling factor.  Using a scaling factor of -1 is similar to pmirror.
+
+.Example
+
+	# double the size of a sphere
+	sphere s 0 0 0 10
+	pscale s 0 0 0 2
+
+.Warning
+
+.See also
+
+.Index
+pscale command
+2dpscale command
+
+
+**Analysis of curves and surfaces 
+
+Draw   provides methods to     compute  information about curves   and
+surfaces.
+
+- Use coord to find the coordinates of a point.
+
+- Use cvalue and    2dcvalue to compute  points and    derivatives on
+curves.
+
+- Use svalue to compute points and derivatives on a surface.
+
+- Use localprop   and minmaxcurandif to   compute the curvature  on  a
+curve.
+
+- Use parameters to compute U,V values for a point on a surface.
+
+- Use proj and 2dproj to project a point on a curve or a surface.
+
+- Use surface_radius to compute the curvalture on a surface.
+
+
+*** coord
+
+.Synopsis
+
+	coord point x y [z]
+
+.Purpose
+
+The  coord command will   store in  the   variable x,   y  and  z  the
+coordinates of the point.
+
+.Example
+
+	# translate a point
+	point p 10 5 5
+	translate p 5 0 0
+	coord p x y z
+	# x value is 15
+
+.See also
+point
+
+.Index
+coord command
+
+
+*** cvalue, 2dcvalue
+
+.Synopsis
+
+	cvalue curve u [x y z [d1x d1y d1z [d2x d2y d2z]]] [P]
+
+	2dcvalue curve u [x y [d1x d1y [d2x d2y]]] [P]
+
+.Purpose
+
+Depending on the number of arguments this command  computes on a curve
+at a given parameter : the  coordinates in x,y,z, the first derivative
+in d1x,d1y,d1z, the second derivative in d2x,d2y,d2z  and set in P the
+point of coordinates x,y,z.
+
+.Example
+
+	# on a bezier curve at parameter 0
+	# the point is the first pole
+	# the derivative is the vector first to second pole 
+	# multiplied by the degree
+	# the second derivative is the difference
+	#  first to second pole, second to third pole
+	# multiplied by degree * degree-1
+	2dbeziercurve c 4 0 0 1 1 2 1 3 0
+	2dcvalue c 0 x y d1x d1y d2x d2y P
+
+	# values of x y d1x d1y d2x d2y
+	# are 0 0 3 3 0 -6
+	# and displays the point P(0,0,3)
+
+.Warning
+
+.See also
+
+.Index
+cvalue command
+2dcvalue command
+value on curves
+derivative on curves
+
+*** svalue
+
+.Synopsis
+
+	svalue surface u v [x y z [dux duy duz dvx dvy dvz [d2ux d2uy
+d2uz d2vx d2vy d2vz d2uvx d2uvy d2uvz]]] [P]
+
+.Purpose
+
+Use  the svalue command to compute  point and derivatives on a surface
+at a  pair of parameter  values, the  result depends on  the number of
+arguments. You can compute up  to order two  of derivation and display
+the resulting point.
+
+.Example
+
+	# display points on a sphere
+	sphere s 10
+	for {dset t 0} {[dval t] <= 1} {dset t t+0.01} {
+	   svalue s t*2*pi t*pi-pi/2 x y z
+	   point . x y z
+	}
+
+	# can also be written
+	sphere s 10
+	for {dset t 0} {[dval t] <= 1} {dset t t+0.01} {
+	   svalue s t*2*pi t*pi-pi/2 .
+	}
+
+.Warning
+
+.See also
+
+.Index
+svalue command
+
+
+*** localprop, minmaxcurandif
+
+.Synopsis
+
+	localprop curve u
+	
+	minmaxcurandif curve
+
+.Purpose
+
+The localprop  command computes on a  curve the  curvature and display
+the osculationg circle. The  minmaxcurandif command computes and print
+the parameters where the curvature is minimum or maximum on a curve.
+
+.Example
+
+	# show curvature at the center of a bezier curve
+	beziercurve c 3 0 0 0 10 2 0 20 0 0
+	localprop c 0.5
+
+.See also
+surface_radius
+
+.Index
+localprop command
+minmaxcurandif command
+radius of curvature
+curvature
+
+*** parameters
+
+.Synopsis
+
+	parameters surface x y z u v
+
+.Purpose
+
+The parameters command returns in variables u and  v the parameters on
+the surface of  the 3d point x,y,z. This  command can be used  only on
+analytical surfaces, plane, cylinder, cone, sphere, torus.
+
+.Example
+
+	# Compute parameters on a plane
+	plane p 0 0 10 1 1 0
+	parameters p 5 5 5 u v
+	# the values of u and v are 0 5
+
+.Warning
+
+.See also
+
+.Index
+parameters command
+
+
+*** proj, 2dproj
+
+.Synopsis
+
+	proj name x y z
+
+	2dproj name xy
+
+.Purpose
+
+Use proj to project a point on a  curve or a  surface and 2dproj for a
+2d  curve, the  command  will  compute  and display  all points  at an
+extreme distance. The  lines joining the point  to the projections are
+created with names such as ext_1, ext_2, ...
+
+.Example
+
+	# project point on a torus
+	torus t 20 5
+	proj t 30 10 7
+
+.Warning
+
+.See also
+
+.Index
+proj command
+2dproj command
+
+
+*** surface_radius
+
+.Synopsis
+
+	surface_radius surface u v [c1 c2]
+
+.Purpose
+
+Use the  surface radius command  to compute  the  main curvatures of a
+surface at parameters u,v. If there are extra arguments the curvatures
+are stored in variables c1 and c2.
+
+.Example
+
+	# computes curvatures of a cylinder
+	cylinder c 5
+	surface_radius c pi 3 c1 c2
+
+.Warning
+
+The radii are displayed and the curvatures are returned, the radius is
+the inverse of the curvature.
+
+.See also
+
+.Index
+surface_radius command
+curvature of surfaces
+
+
+**Intersections
+
+To  compute intersections of surfaces,   use the intersect command; to
+compute intersections of 2d curves, use the 2dintersect command.
+
+
+*** intersect
+
+.Synopsis
+
+	intersect name surface1 surface2 [tolerance]
+
+.Purpose
+
+Use the intersect  command to intersect  two surfaces, if there is one
+intersection curve it will be named "name", if there are more than one
+they will be named "name_1", "name_2", ... The precision of the result
+is the given tolerance,  this is important  when a spline is fitted to
+the result curve. The default tolerance is 1e-7.
+
+.Example
+
+	# create an ellipse
+	cone c 45 0
+	plane p 0 0 40 0 1 5
+	intersect e c p
+
+.Warning
+
+.See also
+
+.Index
+intersect command
+
+
+*** 2dintersect
+
+.Synopsis
+
+	2dintersect curve1 curve2
+
+.Purpose
+
+Display the intersection points between two 2d curves.
+
+.Example
+
+	# intersect two 2d ellipses
+	ellipse e1 0 0 5 2
+	ellipse e2 0 0 0 1 5 2
+	2dintersect e1 e2
+
+.Warning
+
+.See also
+
+.Index
+2dintersect command
+
+
+
+**Approximations
+
+Draw   provides   commandd   to  create   curves    and  surfaces   by
+approximations.  2dapprox to fit  a curve through  2d points. appro to
+fit  a curve through  3d points. surfapp and  grilapp to fit a surface
+through 3d points. 2dinterpolate can be used to interpolate a curve.
+
+
+*** appro, 2dapprox, 2dinterpolate
+
+.Synopsis
+
+	appro name nbpoints [curve]
+
+	2dapprox name name nbpoints [curve / x1 y1 x2 y2 ...] 
+
+	2dinterpolate name name nbpoints [curve / x1 y1 x2 y2 ...] 
+
+.Purpose
+
+Fit a curve through a set of points, first  give the number of points,
+then there   are three ways   to  give the points.  Without  arguments
+interactivly click  the points,  with a  curve  argument  computes the
+points on the curve, else give a list of points.
+
+.Example
+
+	# pick ten points and they will be fit
+	2dapprox c 10
+
+.Warning
+
+.See also
+
+.Index
+appro command
+2dapprox command
+approximation
+
+*** surfapp, grilapp
+
+.Synopsis
+
+	surfapp name nbupoints nbvpoints x y z ....
+
+	grilapp name nbupoints nbvpoints xo dx yo dy z11 z12 ...
+
+.Purpose
+
+Use   surfapp   to   fit a    surface  through an    array   of points
+nbupoints*nbvpoints. grilapp do  the same but  the  x,y coordinates of
+the points are on a grid starting at x0,y0 with steps dx,dy.
+
+.See also
+
+.Index
+surfapp command
+grilapp command
+
+
+
+**Constraints
+
+The command cirtang is used to construct 2d  circles tangent to curves
+and lintan to construct 2d lines tangent to curves.
+
+
+*** cirtang
+
+.Synopsis
+
+	cirtang name  c1 c2 c3
+
+.Purpose
+
+The  cirtang  command will build   all  circles satsifying  the  three
+constraints  c1,c2,c3.  The constraints are   either, a curve then the
+circle must be  tangent to that curve,   a point then the  circle must
+pass through that point, a radius for the circle.  Only one constraint
+can  be a radius.  The  solutions will be  stored  in variables called
+name_1, name_2, ...
+
+.Example
+
+	# a point, a line and a radius. 2 solutions
+	point p 0 0
+	line l 10 0 -1 1
+	cirtan c p l 4
+
+.Warning
+
+.See also
+
+.Index
+cirtang command
+tangent circle
+
+*** lintan
+
+.Synopsis
+
+	lintan name curve curve [angle]
+
+.Purpose
+
+
+The lintan command will build all 2d lines tangent to two curves. If a
+third angle  argument  is given the second   curve must be a line  and
+lintan  will build  all lines tangent  to the  first curve  making the
+given angle  with the  line.   The angle  is defined  in  degree.  The
+solutions are named name_1, name_2, ...
+
+.Example
+
+	# lines tangent to 2 circles, 4 solutions
+	circle c1 -10 0 10
+	circle c2 10 0 5
+	lintan l c1 c2
+
+.Warning
+
+.See also
+
+.Index
+lintan command
+tangent line
+
+
+**Display
+
+Draw     provides  commands to   control    the  display of  geometric
+objects. Some  display parameters are used  for all  objects, some are
+valid only for  surfaces, some are  valid only for bezier and bspline,
+and some only for bspline.
+
+On curve and surfaces you can control the display mode (how points are
+computed)  with the dmode  command.  And the   parameters for the mode
+with the defle command and the discr command to control the deflection
+and the discretisation.
+
+On  surfaces you    can control the   number   of isoparametric curves
+displayed on the surface with the nbiso command.
+
+On bezier and bspline curve and surface you can toggle the display of
+the control points with the clpoles and shpoles commands.
+
+On bspline curves and surfaces you can toggle the display of the knots
+with the shknots clknots commands.
+
+.Index
+
+display of curves and surfaces
+
+
+*** dmod, discr, defle
+
+.Synopsis
+
+	dmode name [name ...] u/d
+
+	discr name [name ...] nbintervals
+
+	defle name [name ...] deflection
+
+.Purpose
+
+You can choose   the display mode for a   curve or a  surface with the
+dmode command. The display mode defines how the points are computed to
+create the polygon  to display the  curve or the  surface.
+
+In "u"  mode, known as uniform  deflection, the points are computed to
+keep the  polygon  at a distance  lower  than the deflection  from the
+geometry. The  deflection is set with the  defle command. This mode is
+more computer intensive.
+
+In "d"  mode,  known as  discretisation, a fixed  number of  points is
+computed, this  number  is set  with the discr  command.   This is the
+default mode. On a bspline the fixed  number of points is computed for
+each span of the curve. (A span is the interval between two knots).
+
+If  the   curves  are    not smooth  you  can    either  increase  the
+discretisation  or lower the  deflection,  depending  on the mode   in
+use. This will increase the number of points.
+
+.Example
+
+	# increment the number of points on a big circle
+	circle c 0 0 50 50
+	discr 100
+
+	# change the mode
+	dmode c u
+
+.Warning
+
+.See also
+
+.Index
+dmod command
+discr command
+defle command
+
+
+*** nbiso
+
+.Synopsis
+
+	nbiso surface [surface  ...] nbuiso nbviso
+
+.Purpose
+	
+Use the nbiso  command to change  the  number of  isoparametric curves
+displayed  on a surface  in  the U and V   directions. Note that on  a
+bspline surface  by  default  isoparametrics  are displayed  at  knots
+values, using nbiso will remove this feature.
+
+.Example
+
+	# display 35 meridians and 15 parallels on a sphere
+	sphere s 20
+	nbiso s 35 15
+
+.Warning
+
+.See also
+
+.Index
+nbiso command
+
+
+*** clpoles, shpoles
+
+.Synopsis
+
+	clpoles name
+
+	shpoles name
+
+.Purpose
+
+On bezier and  bspline  curves and   surfaces the control  polygon  is
+displayed by default, you can suppress it with the clpoles command and
+restore it with the shpoles command.
+
+.Example
+
+	# create a bezier curve and erase the poles
+	beziercurve c 3 0 0 0 10 0 0 10 10 0
+	clpoles c
+
+.Warning
+
+.See also
+
+.Index
+clpoles command
+shpoles command
+poles display
+
+*** clknots, shknots
+
+.Synopsis
+
+	clknots name
+
+	shknots name
+
+.Purpose
+
+By default on a  bspline curve and  surface knots are displayed with a
+marker at the points  with a parametric value equal  to the knots. You
+can remove  them with the clknots  commands and restore them  with the
+shknots command.
+
+.Example
+
+	# hide the knots on a circle converted to spline
+	circle c 0 0 5
+	convert c c
+	clknots c
+
+.Warning
+
+.See also
+
+.Index
+clknots command
+shknots command
+knots display
+*Topology commands
+
+Draw  provides a set of commands  to test topology libraries. Topology
+libraries are provided with the  TOPOLOGY UL. Those commnads are found
+in the  TTOPOLOGY  executable   or in any   executable   including the
+BRepTest commands.
+
+The topology adds a new type of  variable in Draw, the shape variable,
+shape is a topological object, it can be a Vertex,  an Edge, a Wire, a
+Face, a Shell, a Solid, a CompSolid or a Compound,  you are invited to
+refer to the topology documentation for more information.
+
+Shapes are usually shared,  i.e. the Draw  copy command will create  a
+new shape sharing its representation with the original, but two shapes
+sharing  their  topology can  be moved independently  (see the section
+about transformations for more details).
+
+The following sections cover the topics
+
+- Basic shape commands, to handle the structure of shapes and control
+the display.
+
+-  Curves  and   surfaces  topology,  methods  to   make topology from
+geometry, or vice versa.
+
+- The profile method to make planar profiles.
+
+- Primitive construction commands. Box, cylinder, ...
+
+- Sweeping of shapes.
+
+- Transformations of shapes. Translation, copy, ....
+
+- Topological operations, also known as booleans.
+
+- Local operations. Features, holes.
+
+- Drafting and blending.
+
+- Analysis of shapes. Length, area, volume....
+
+**Basic topology
+
+The basic  set of  commands  allows simple  operations  on shapes,  or
+stepwise constructions of objects which  may be far from simple.  They
+are useful for analysis of shapes structure.
+
+- Shapes are displayed with isoparametric curves on the faces, this is
+controlled with the isos command. The number of points used to display
+the shapes curves can be modified with the discretisation command.
+
+- To  modify  topological   attributes such  as  the  orientation  use
+orientation, complement and invert.
+
+-  To analyse   the structure  of  a  shape, use  explode,  exwire and
+nbshapes.
+
+- To create   shapes by  stepwise  construction,  use emptycopy,  add,
+compound.
+
+
+*** isos, discretisation
+
+.Synopsis
+
+	isos [name ...] nbisos
+
+	discretisation nbpoints
+
+.Purpose
+
+Shapes are displayed  by a set of curves,  the edges and isoparametric
+curves on the faces.  There is color coding for  the edges, a red edge
+is  an isolated edge (belongs to   no faces), a  green edge  is a free
+boundary edge (belongs  to one face), a  yellow edge is  a shared edge
+(at least two faces).
+
+You can change the number of  isoparametric curves on shapes using the
+isos commands. Nnote that the  same number  is  used for  the U and  V
+directions, if you give no shape arguments the value  you give will be
+the new default value (originally 2), if  you give no arguments at all
+the command prints the current default value.
+
+You can change the default number of points used to display the curves
+with the discretisation command. The original value is 30.
+
+.Example
+
+	# Display only the edges (the wireframe)
+	isos 0
+
+.Warning
+
+Do not get confused with the geometric commands nbisos and discr which
+control the display of geometry.
+
+.See also
+
+.Index
+isos command
+discretisation command
+display of shapes
+free boundary
+
+*** orientation, complement, invert
+
+.Synopsis
+
+	orientation name [name ...] F/R/E/I
+	
+	complement name [name ...]
+
+	invert name
+
+.Purpose
+
+These commands are used to change the orientation of shapes.
+
+The orientation command sets one of the four values, FORWARD, REVERSED,
+INTERNAL, EXTERNAL
+
+The   complement command changes    the   current orientation to   its
+complement, FORWARD <-> REVERSED, INTERNAL <-> EXTERNAL.
+
+The invert command creates a new shape which is a copy of the original
+with all subshapes orientation  reversed. It is  useful for example to
+reverse the normals of a solid.
+
+.Example
+
+	# invert normals of a box
+	box b 10 20 30
+	normals b 5
+	invert b
+	normals b 5
+
+.Index
+orientation command
+complement command
+invert command
+
+
+*** explode, exwire, nbshapes
+
+.Synopsis
+
+	explode name [C/So/Sh/F/W/E/V]
+
+	exwire name
+
+	nbshapes name
+
+.Purpose
+
+The explode command is very useful to extract  subshapes from a shape,
+the subshapes will be named name_1, name_2, ... Note that they are not
+copied but shared with the original.  Without other arguments than the
+shape explode will extract the first sublevel of shapes, the shells of
+a solid, the  edges of a wire for  example.  With  an argument explode
+will extract all subshapes of the given type,  C for compounds, So for
+solids, Sh for shells, F  for faces, W for  wires, E for edges, V  for
+vertices.
+
+The  exwire command  is a  special case  of   explode for  wires which
+extract the edges in an  ordered way  if  possible. i/e/ each edge  is
+connected to the following one by a vertex.
+
+The  nbshapes command counts the  number of shapes  of  each type in a
+shape.
+
+.Example
+
+	# on a box
+	box b 10 20 30
+
+	# whatis returns the type and various information
+	whatis b
+	=> b is a shape SOLID FORWARD Free Modified	
+
+	# make one shell
+	explode b
+	whatis b_1
+	=> b_1 is a shape SHELL REVERSED Modified Orientable Closed
+
+	# extract the edges b_1, ... , b_12
+	explode b e
+	==> b_12
+
+	# count subshapes
+	nbshapes b
+	==>
+	Number of shapes in b
+	 VERTEX    : 8
+	 EDGE      : 12
+	 WIRE      : 6
+	 FACE      : 6
+	 SHELL     : 1
+	 SOLID     : 1
+	 COMPSOLID : 0
+	 COMPOUND  : 0
+	 SHAPE     : 34
+	
+
+.Warning
+
+.See also
+
+.Index
+explode command
+exwire command
+nbshapes command
+exploring a shape
+wire exploration
+
+
+*** emptycopy, add, compound
+
+.Synopsis
+
+	emptycopy [newname] name
+
+	add name toname
+
+	compound [name ...] compoundname
+
+.Purpose
+
+The emptycopy command creates a new shape from an existing one without
+subshapes, only the geometry, if there is one,  is used. The new shape
+is  stored with  the   same  name  if   the newname  argument  is  not
+given. This command is useful to modify a frozen shape, a frozen shape
+is a shape used by an other shape, it cannot be modifed, so it must be
+emptycopied and its subshape may be reinserted with the add command.
+
+The  add command insert a  reference to a shape in   an other one, the
+shapes must be compatible (you cannot insert a face  into an edge) and
+the modified shape must not be  frozen.  (However, using emptycopy and
+add requires caution).
+
+The compound command is very safe, it  creates a compound from shapes,
+if no shapes are given the compound is empty.
+
+.Example
+
+	# a compound with three boxes
+
+	box b1 0 0 0 1 1 1
+	box b2 3 0 0 1 1 1
+	box b3 6 0 0 1 1 1
+	compound b1 b2 b3 c
+
+.Warning
+
+.See also
+
+.Index
+emptycopy command
+add command
+compound command
+
+**Curve and surfaces topology
+
+This group  of commands is used to  create topology from shapes and to
+extract shapes geometry. Note   that these commands are  low-level, to
+create    faces or wires the  profile   command described  in the next
+section is usually more appropriate.
+
+- To create vertices use the vertex command.
+
+- To create edges use the edge, mkedge commands.
+
+- To create wires use the wire, polyline, polyvertex commands.
+
+- To create faces use the mkplane, mkface commands.
+
+- To extract the geometry from edges or faces use the mkcurve and
+mkface commands.
+
+- To extract the 2d curves for edges on faces use the pcurve command.
+
+
+*** vertex
+
+.Synopsis
+
+	vertex name [x y z / p edge]
+
+.Purpose
+
+Creates a vertex at a  3d location, the  location is a x,y,z point  or
+the point at parameter p on an edge.
+
+.Example
+
+	vertex v1 10 20 30
+
+.Warning
+
+.See also
+
+.Index
+vertex command
+
+
+*** edge, mkedge
+
+.Synopsis
+
+	edge name vertex1 vertex2
+
+	mkedge edge curve [surface] [pfirst plast] [vfirst [pfirst] vlast [plast]] 
+
+.Purpose
+
+The edge command creates a straight line edge between two vertices. Of
+course they must not be at the same location.
+
+The mkedge command allows the creation  of edges from  curves, it is a
+quite complete command corresponding to the BRepAPI_MakeEdge class. It
+can create an edge from  a curve, two parameters can  be given for the
+vertices (the default are the first and last parameters of the curve),
+vertices can also be given  with their parameters, this option  allows
+to  inhibate the creation of  new  vertices, if  the parameters of the
+vertices are    not  given they are  computed    by projection on  the
+curve. Instead of a 3d curve a 2d curve and a surface can be given.
+
+.Example
+
+	# straight line edge
+	vertex v1 10 0 0
+	vertex v2 10 10 0
+	edge e1 v1 v2
+
+	# make a circular edge
+	circle c  0 0 0 5
+	mkedge e2 c 0 pi/2
+
+	# the same result may be achieved with a trimmed curve
+	# trimmed curves are recognised removed my mkedge
+	trim c c 0 pi/2
+	mkedge e2 c
+
+.Warning
+
+.See also
+
+.Index
+edge command
+mkedge command
+curve to edge
+edge from curve
+
+*** wire, polyline, polyvertex
+
+.Synopsis
+
+	wire name name1 [name2 ...]
+
+	polyline name x1 y1 z1 x2 y2 z2 ...
+
+	polyvertex name v1 v2 ...
+
+.Purpose
+
+The wire command creates a wire from edges or wires,  the order of the
+elements  must  ensure  that  the  wire  is  connected.   The vertices
+locations  are compared to   detect  connection, if the vertices   are
+differents new  edges are created  to ensure topological connectivity,
+so the original edge may be copied in the wire.
+
+The polyline command creates a polygonal wire from points coordinates,
+to make a closed wire you should repeat the first point at the end.
+
+The polyvertex command creates a polygonal wire from vertices.
+
+.Example
+
+	# create two polygonal wires
+	# and glue them
+
+	polyline w1 0 0 0 10 0 0 10 10 0
+	polyline w2 10 10 0 0 10 0 0 0 0
+	wire w w1 w2	
+
+.Warning
+
+.See also
+
+.Index
+wire command
+polyline command
+polyvertex command
+
+
+*** mkplane, mkface
+
+.Synopsis
+
+	mkplane name wire
+
+	mkface mkface name surface [ufirst ulast vfirst vlast]
+
+.Purpose
+
+Use the mkplane command  to make a face  from a planar wire, the plane
+surface will be  constructed with  an  orientation  to keep  the  face
+inside the wire.
+
+Use the mkface command to make a face from a surface, parameter values
+can be given to trim a rectangular area, the default are the bounds of
+the surface.
+
+.Example
+
+	# make a polygonal face
+	polyline f 0 0 0 20 0 0 20 10 0 10 10 0 10 20 0 0 20 0 0 0 0
+	mkplane f f
+
+	# make a cylindrical face
+	cylinder g 10
+	trim g g -pi/3 pi/2 0 15
+	mkface g g
+
+.Warning
+
+.See also
+
+.Index
+mkplane command
+mkface command
+surface to face
+face from surface
+
+*** mkcurve, mkface
+
+.Synopsis
+
+	mkcurve name edge
+	
+	mksurface name face
+
+.Purpose
+
+Use the mkcurve command  to create a 3d curve  from an edge, the curve
+will be  trimmed to the  edge boundaries, this  is not possible if the
+edge has no 3d curve.
+
+Use the mksurface command to make a surface from a face, the surface
+is not trimmed.
+
+.Example
+
+	# make a line
+	vertex v1 0 0 0
+	vertex v2 10 0 0
+	edge e v1 v2
+	mkcurve l e
+
+.Warning
+
+.See also
+
+.Index
+mkcurve command
+mkface command
+edge to curve
+curve from edge
+
+
+*** pcurve
+
+.Synopsis
+
+	pcurve [name edge] face
+
+.Purpose
+
+The pcurve command extracts the 2d curve of an edge  on a face. If the
+only argument is a face the command extracts all  the curves and color
+them according to their orientation.  This is very  useful to check if
+the edges    in  a face  are   correctly  oriented,  i.e.   they  turn
+counterclockwise.
+
+.Example
+
+	# view the pcurves of a face
+	plane p 
+	trim p p -1 1 -1 1
+	mkface p p
+	av2d; # a 2d view
+	pcurve p
+	2dfit
+
+.Warning
+
+If you do not see anything, may  you forgot to create  a 2d view or to
+fit it woth the 2dfit command.
+
+.See also
+
+.Index
+pcurve command
+
+** Making profiles
+
+The  profile command is  a  powerfull tool  to  create planar faces or
+wires made   of   straight lines an  circles   which  are  current  in
+mechanical applications.
+
+
+*** profile
+
+.Synopsis
+
+	profile name [instruction parameters instruction parameters ....]
+
+.Purpose
+
+The  profile command  creates  a   planar  profile  from   a list   of
+instructions.  The profile  is created in 2d on  a plane starting from
+point 0,0 and  direction X (1,0), some  instructions creates a segment
+of line or   an arc of   circle moving the  point  and setting  a  new
+direction to the tangent of the profile. Other instructions modify the
+current direction, the plane or terminate the profile.
+
+Instructions are one or  two upper or  lowercase letter, followed by a
+fixed number of arguments. The angles are given in degree.
+
+
+- O X Y Z, Set the origin of the plane (default value is 0 0 0)
+
+- P DX DY DZ UX UY UZ, Set the normal and X direction of the plane,
+(default value is 0 0 1 1 0 0, an X Y plane)
+
+- X DX, Move the point along X axis.
+
+- Y DY, Move the point along Y axis.
+
+- L DL, Move the point along the current direction by length DL.
+
+- XX X, Set point X coordinate (absolute value).
+
+- YY Y, Set point Y coordinate (absolute value).
+
+- T DX DY, Translate the point.
+
+- TT X Y, Set the point (absolute coordinates).
+
+- R Angle, Rotate the direction (clockwise).
+
+- RR Angle, Set the direction (absolute angle from X axis).
+
+- D DX DY, Set the direction (DX DY will be normalized).
+
+The instructions starting with I  will   intersect the line defined   by the
+point and the direction with a curve and move to this new point.
+
+- IX X, Intersect with a vertical (absolute X value).
+
+- IY Y, Intersect with an horizontal (absolute X value).
+
+- C Radius Angle, Make an arc of circle tangent to the current direction.
+
+By  default the profile  is closed and a face  is created, to create a
+closed or open   wire  the following instructions  may  be  used.  The
+profile will be terminated.
+
+- W, Make a closed wire.
+
+- WW, Make an open wire.
+
+.Example
+
+	# Make a square with two fillets on the top 
+	# and a half-circle on the bottom
+	
+	profile f x 5 r -90 c 5 180 x 5 y 8 c 2 90 xx 2 c 2 90
+
+.Warning
+
+.See also
+
+.Index
+profile command
+face creation
+
+
+**Primitives
+
+Primitive commands allow the creation of simple shapes.
+
+- box and wedge commands.
+
+- pcylinder, pcone, psphere, ptorus commands.
+
+
+*** box, wedge
+
+.Synopsis
+
+	box name [x y z] dx dy dz
+
+	wedge name dx dy dz ltx / xmin zmin xmax xmax
+
+.Purpose
+
+Use  the box  command to   create a  box   parallel to  the axes  with
+ dx,dy,dz dimensions.  x,y,z  is the corner  of the box, by default it
+is the origin.
+
+Use the wedge  command to create  a wedge, a wedge  has six faces, one
+face in  the OXZ plane has  dimensions dx,dz the  other face is in the
+plane y  = dy.    It  has  dimensions ltx,dz   or  it is    bounded by
+xmin,zmin,xmax,zmax. The other faces are  defined between those faces.
+The face in the y=yd plane may  be degenerated into a  line if ltx = 0
+or a point if xmin =  xmax and ymin  = ymax, in  this case there are 5
+faces. To position the wedge use the ttranslate and trotate commands.
+
+.Example
+
+	# a box at the origin
+	box b1 10 20 30
+	
+	# an other box
+	box b2 30 30 40 10 20 30
+
+	# a wedge
+	wedge w1 10 20 30 5
+
+	# a wedge with a sharp edge (5 faces)
+	wedge w2 10 20 30 0
+
+	# a pyramid
+	wedge w3 20 20 20 10 10 10 10
+
+.Warning
+
+.See also
+
+.Index
+box command
+wedge command
+
+
+*** pcylinder, pcone, psphere, ptorus
+
+.Synopsis
+
+	pcylinder name [plane] radius height [angle]
+
+	pcone name [plane] radius1 radius2 height [angle]
+
+	pcone name [plane] radius1 radius2 height [angle]
+
+	psphere name [plane] radius1 [angle1 angle2] [angle]
+
+	psphere name [plane] radius1 radius2 [angle1 angle2] [angle]
+
+.Purpose
+
+All  these commands create   solids in the default  coordinate system,
+using the Z axis as the axis of revolution and the X axis as origin of
+angles.   To  use  another system  you  can  translate and rotate  the
+resulting solid  or  use a plane  as  the first  argument to specify a
+coordinate  system.   Note that  this is   quite different because the
+translation and  rotation only change  the  coordinate  system of  the
+object.  All  primitives have an optional  last  argument which  is an
+angle  in degree around  the  Z axis, starting from   the X axis.  The
+default is 360.
+
+The  pcylinder command creates a cylindrical   block around with given
+radius and height.
+
+The pcone command creates a truncated cone of given height with radius
+radius1 in  the plane z =  0 and radius2 in the  plane z = heigth. The
+radii must not be negative but one of them can be null.
+
+The psphere command creates a solid sphere  centered at the origin, if
+two angles angle1 and  angle2 are given the solid  will be  limited by
+two planes at latitude angle1 and angle2 in degree. The angles must be
+increasing and in the range -90,90.
+
+The ptorus command creates a solid torus centered at the origin around
+the z axis with given radii, if two increasing angles in degree in the
+range 0 360 are given the solid will be bounded by two planar surfaces
+at these positions on the circle.
+
+.Example
+
+	# make a can
+	pcylinder cy 5 10
+
+	# a quarter of trucated cone
+	pcone co 15 10 10 90
+
+	# three-quarters of sphere
+	psphere sp 10 270
+
+	# half torus
+	ptorus to 20 5 0 90
+
+.Warning
+
+.See also
+
+.Index
+pcylinder command
+pcone command
+psphere command
+ptorus command
+cone solid
+cylinder solid
+sphere solid
+torus solid
+
+**Sweeping
+
+Sweepinf creates shapes by sweeping a shape along a path.
+
+- prism sweeps along a direction.
+
+- revol sweeps around an axis.
+
+- pipe sweeps along a wire.
+
+
+
+*** prism
+
+.Synopsis
+
+	prism name shape dx dy dz ["Copy | Inf | SemiInf]
+
+.Purpose
+
+The  prism command creates  a  new shape by  sweeping  a shape along a
+direction. Any  shape can be swept, a   vertex gives an edge,  en edge
+gives a face, a face gives a solid...
+
+The sweeping is  done along  the vector  dx dy dz.  The original shape
+will be shared in  the result unless   "Copy" is specified. If  Inf is
+specified  the  prism is infinite  in  both directions, if  SemiInf is
+specified  the prism is infinite  in the  dx,dy,dz direction, then the
+length of the vector has no meaning.
+
+.Example
+
+	# sweep a planar face to make a solid
+	polyline f 0 0 0 10 0 0 10 5 0 5 5 0 5 15 0 0 15 0 0 0 0
+	mkplane f f
+	prism p f 0 0 10
+
+.Warning
+
+.See also
+
+.Index
+prism command
+sweeping
+
+*** revol
+
+.Synopsis
+
+	revol name shape x y z dx dy dz angle [Copy]
+
+.Purpose
+
+The revol command creates a new  shape by sweeping  a shape around the
+axis x,y,z dx,dy,dz by  an angle in  degree. As with the prism command
+the shape can be of any type and is not shared if Copy is specified.
+
+.Example
+
+	# shell by wire rotation
+	polyline w 0 0 0 10 0 0 10 5 0 5 5 0 5 15 0 0 15 0 
+	revol s w 20 0 0 0 1 0 90
+
+.Warning
+
+.See also
+
+.Index
+revol command
+
+
+*** pipe
+
+.Synopsis
+
+	pipe name wire shape
+
+.Purpose
+
+The pipe command creates a shape by sweeping a shape known as the
+profile along a wire known as the spine.
+
+.Example
+
+	# sweep a circle along a bezier curve to make a solid pipe
+	beziercurve spine 4 0 0 0 10 0 0 10 10 0 20 10 0
+	mkedge spine spine
+	wire spine spine
+	circle profile 0 0 0 1 0 0 2
+	mkedge profile profile
+	wire profile profile
+	mkplane profile profile
+	pipe p spine profile
+
+.Warning
+
+.See also
+
+.Index
+pipe command
+
+
+**Topology transformation
+
+Transformations are application  of matrices, when the  transformation
+is  non deforming,  like translation or  rotation,  the object is  not
+copied, we use the topology  local coordinate system feature. The copy
+can be enforced with the tcopy command.
+
+- tcopy makes a copy of the structure of a shape.
+
+- ttranslate, trotate, tmove, reset moves a shape.
+
+- tmirror, tscale always modify the shape.
+
+
+*** tcopy
+
+.Synopsis
+
+	tcopy name toname [name toname ...]
+
+.Purpose
+
+Copy the structure of a shape in a new shape, including the geometry.
+
+.Example
+
+	# create an edge from  a curve and copy it
+	beziercurve c 3 0 0 0 10 0 0 20 10 0
+	mkedge e1 c
+	ttranslate e1 0 5 0
+	tcopy e1 e2
+	ttranslate e2 0 5 0
+	
+	# now modify the curve, only e1 will be modified
+	cmovep c 2 0 0 20
+
+.Warning
+
+.See also
+
+.Index
+tcopy command
+copying shapes
+
+*** tmove, treset
+
+.Synopsis
+
+	tmove name [name ...] shape
+
+	reset name [name ...]
+
+.Purpose
+
+The tmove and reset command are used to modify  the location, or local
+coordinate system  of  a shape,  tmove  applies  to some  shapes   the
+location  of a  given shape.  reset  removes the location of  a shape,
+restoring it in its original coordinate system.
+
+.Example
+
+	# create two boxes
+	box b1 10 10 10
+	box b2 20 0 0 10 10 10
+	# translate the first box
+	ttranslate b1 0 10 0
+	# and apply the same location to b2
+	tmove b2 b1
+	# return to original positions
+	reset b1 b2
+
+.Warning
+
+.See also
+
+.Index
+tmove command
+treset command
+location
+
+
+*** ttranslate, trotate
+
+.Synopsis
+
+	ttranslate [name ...] dx dy dz
+
+	trotate [name ...] x y z dx dy dz angle
+
+.Purpose
+
+Use the ttranslate  command to translate a  set  of shapes by  a given
+vector, and the  trotate command to rotate  them  by a given angle  in
+degree around  an axis. Both commands  only modify the location of the
+shape. When transforming multiple shapes the same location is used for
+all the shapes,  when a command is used   for each shape,  even if the
+translation or the rotation are the same, a new location is created.
+
+Locations  are very economic in   the data structure because  multiple
+occurrences of an object share the topological description.
+
+.Example
+
+	# make rotated copy of a sphere and cylinders
+	pcylinder c1 30 5
+	copy c1 c2
+	ttranslate c2 0 0 20
+	psphere s 3
+	ttranslate s 25 0 12.5
+	for {set i 0} {$i < 360} {incr i 20} {
+	  copy s s$i
+	  trotate s$i 0 0 0 0 0 1 $i
+	}
+
+.Warning
+
+.See also
+
+.Index
+ttranslate command
+trotate command
+translating shapes
+rotating shapes
+
+*** tmirror, tscale
+
+.Synopsis
+
+	tmirror name x y z dx dy dz
+	
+	tscale name x y z scale
+
+.Purpose
+
+The tmirror command makes a mirror copy of a shape about a plane x,y,z
+dx,dy,dz, the tscale command applies a central homothety to the shape.
+
+.Example
+
+	# mirror a portion of cylinder about the YZ plane
+	pcylinder c1 10 10 270
+	copy c1 c2	
+	tmirror c2 15 0 0 1 0 0
+	# and scale it
+	tscale c1 0 0 0 0.5
+
+.Warning
+
+.See also
+
+.Index
+tmirror command
+tscale command
+mirroring shapes
+scaling shapes
+
+
+**Topological operations
+
+Topological operations includes the boolean operations, they are using
+intersections.
+
+- fuse, cut, common are the boolean operations.
+
+- section, psection computes sections.
+
+
+*** fuse, cut, common
+
+.Synopsis
+
+	fuse name shape1 shape2
+
+	cut name shape1 shape2
+
+	common name shape1 shape2
+
+.Purpose
+
+Creation  of a new  shape by a  boolean  operation between two shapes,
+fuse is  the union, cut  substract the second to  the first, common is
+the intersection.
+
+.Example
+
+	# the four boolean operations between a box and a cylinder
+
+	box b 0 -10 5 20 20 10
+	pcylinder c 5 20
+
+	fuse s1 b c
+	ttranslate s1 40 0 0
+
+	cut s2 b c
+	ttranslate s2 -40 0 0
+
+	cut s3 c b
+	ttranslate s3 0 40 0
+
+	common s4 b c
+	ttranslate s4 0 -40 0
+
+.Warning
+
+.See also
+
+.Index
+fuse command
+cut command
+common command
+boolean operations
+
+*** section, psection
+
+.Synopsis
+
+	section name shape1 shape2
+
+	psection name shape plane
+
+.Purpose
+
+The section  command creates a  compound  with the  intersection edges
+created from the faces of  two shapes, this is  the section line.  The
+psection command do the same between a shape and  a plane. This is the
+planar section.
+
+.Example
+
+	# section line between a cylinder and a box
+	pcylinder c 10 20
+	box b 0 0 5 15 15 15
+	trotate b 0 0 0 1 1 1 20
+	section s b c
+
+	# planar section of a cone
+	pcone c 10 30 30
+	plane p 0 0 15 1 1 2
+	psection s c p
+
+.Warning
+
+.See also
+
+.Index
+section command
+psection command
+planar section
+
+
+**Local operations
+
+Local operations are boolean operations restricted to some faces of a
+solid.
+
+- localope is the general local operation command, to perform local
+boolean operations.
+
+- hole, firsthole, holend, blindhole are various commands to create
+cylindrical holes.
+
+
+*** localope
+
+.Synopsis
+
+	localope name shape tool F/C face [face ...]
+
+.Purpose
+
+Use the localope command to perform a  local operation on a shape with
+a  tool. The operation   is a fusion or a   cut (use 'F' or  'C'). The
+operation will  be restricted  to  the designates  faces. The  tool is
+intersected only  with the given  faces  and other faces  necessary to
+close the intersection curves.
+
+This operation is the basis for features implementation.
+
+.Example
+
+	# make a box and fuse a cylinder on one side
+	box b 10 10 10
+	pcylinder c 1 20
+	ttranslate c 5 5 -5
+	
+	# click on the top or bottom face and observe the result...
+	localope a b c F .
+
+.Warning
+
+.See also
+
+.Index
+localope command
+features
+
+
+*** hole, firsthole, holend, blindhole, holecontrol
+
+.Synopsis
+
+	hole name shape  Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius [Pfrom Pto]
+
+	firsthole name shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius
+
+	holend name shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius
+
+	blindhole name shape Or.X Or.Y Or.Z Dir.X Dir.Y Dir.Z Radius Length
+
+	holecontrol [0/1]
+
+.Purpose
+
+Use the hole  commands to make a  cylindrical hole in  a solid, in any
+case you must give  an axis  and a  radius  with Or.X Or.Y Or.Z  Dir.X
+Dir.Y Dir.Z Radius. 
+
+- hole will make a hole through  the whole solid or between parameters
+Pfrom and Pto on the axis.
+
+- firsthole will make only the  first possible hole along the positive
+side of the axis.
+
+- holend will make  all possible holes along the  positive side of the
+axis.
+
+- blindhole will make  a blind hole of depth  Length starting from the
+origin of the axis on the positive side.
+
+The holecontrol command  is   used  to set   or display  the   control
+mode. When the value is 1  a check of  validity is performed after all
+the hole commands.
+
+.Example
+
+	# make a hole through a cylinder
+
+	pcylinder c 5 10
+
+	firsthole r c 0 -10 5 0 1 0 1
+
+.Warning
+
+If the axis does not intersect the solid  nothing is done, this is not
+the same as a full boolean operation.
+
+.See also
+
+.Index
+hole command
+firsthole command
+holend command
+blindhole command
+holecontrol command
+
+
+
+**Drafting and blending
+
+Drafting is  the creation  of  a new shape by   tilting faces with  an
+angle, blending is the creation of a new shapes by rounding of edges.
+
+- Use the depouille command for drafting.
+
+- Use the blend command for simple blending.
+
+- Use the chfi2d command for blending or chamfering planar faces.
+
+- Use fubl for a fusion + blending operation.
+
+- Use buildevol, mkevol, updatevol to make varying radius blending.
+
+
+*** depouille
+
+.Synopsis
+
+depouille name shape dirx diry dirz face angle x y x dx dy dz [face angle...]
+
+.Purpose
+
+Use this command to create a  new shape by drafting  faces of a shape,
+you  must  give the shape  to  be drafted  and the  drafting direction
+(think of it  as an unmolding direction), then  faces with  angles and
+axis of rotation.  The faces must  be faces of  the shape, you can use
+the dot syntax to pick the faces.
+
+.Example
+
+	# draft a face of a box
+	box b 10 10 10
+	explode b f
+	depouille a b 0 0 1 b_2 10 0 10 0 1 0 5
+
+.Warning
+
+.See also
+
+.Index
+depouille command
+
+
+*** blend
+
+.Synopsis
+
+	blend name shape radius edge [radius edge ...]
+
+.Purpose
+
+The blend  command creates a new  shape by rounding  edges of a shape,
+you must give the  shape and pairs radius, edge.  The edge must  be in
+the shape, you may use the dot syntax.  Not that the blend is expanded
+to other  edges when  the  faces are tangent.  Blends  are also called
+fillets.
+
+.Example
+
+	# blend a box, click on an edge
+	box b 20 20 20
+	blend b b 2 .
+
+.Warning
+
+.See also
+
+.Index
+blend command
+fillets
+
+
+*** chfi2d
+
+.Synopsis
+
+	chfi2d result face [edge1 edge2 (F radius/CDD d1 d2/CDA d ang) ....]
+
+.Purpose
+
+Creates a  new face name  result from an  existing face adding fillets
+and chamfers. The face must be planar, if  it is a  wire a planar face
+can  be made with the mkplane  command. Multiples fillets and chamfers
+can be built.
+
+edge1 edge2 F radius,   builds a fillet of  the  given radius  on  the
+vertex connecting the two edges.
+
+edge1 edge2 CDD d1  d2, builds a chamfer on the vertex  connecting the
+two edges with distance d1 on edge1 and d2 on edge2.
+
+edge1 edge2 CDA d  ang, builds a chamfer on  the vertex connecting the
+two  edges at distance d  on edge1 making  an  angle ang (degree) with
+edge1.
+
+.Example
+
+	# Make a fillet and the two kinds of vertices 
+	# with graphical selection of the edges
+
+	polyline f 0 0 0 20 0 0 20 10 0 10 10 0 10 30 0 0 30 0 0 0 0
+	mkplane f f
+
+	chfi2d f f . . F 3 . . CDD 1 2 . . CDA 1.5 60
+
+.Warning
+
+.See also
+mkplane
+
+.Index
+chfi2d command
+rounding
+fillet 2d
+chamfer 2d
+
+*** fubl
+
+.Synopsis
+
+	fubl name shape1 shape2 radius
+
+.Purpose
+
+Make a fusion boolean operation between two shapes then blend the
+intersection edges with the radius.
+
+.Example
+
+	# fuse-blend two boxes
+	box b1 20 20 5
+	copy b1 b2
+	ttranslate b2 -10 10 3
+	fubl a b1 b2 1
+
+.Warning
+
+.See also
+fuse
+blend
+
+.Index
+fubl command
+
+
+*** mkevol, updatevol, buildevol
+
+.Synopsis
+
+	mkevol name shape
+
+	updatevol edge u1 radius1 [u2 radius2 ...]
+
+	buildevol
+
+.Purpose
+
+These three commands work   together  to blend shapes  with   evolving
+radius. First you give  the shape and the name  of the result with the
+mkevol  command.    Then you describe  edges   to be blended  with the
+updatevol command., for each edge you give a  set of pairs : parameter
+radius, the  parameters will be  scaled along the  edge and the radius
+function interpolated for  the  whole  edge.  At last  the   buildevol
+command computes the result.
+
+.Example
+
+	# makes an evolved radius on a box
+	box b 10 10 10
+	mkevol b b
+	# click an edge
+	updatevol . 0 1 1 3 2 2
+	buildevol
+
+.Warning
+
+.See also
+
+.Index
+buildevol command
+mkevol command
+updatevol command
+
+
+
+
+**Topology analysis
+
+Analysis of  shapes includes  the  commands  to  compute length,  area
+volumes and inertia properties.
+
+- Use lprops, sprops, vprops to compute properties.
+
+- Use bounding to display the bounding box of a shape.
+
+
+*** lprops, sprops, vprops
+
+.Synopsis
+
+	lprops shape
+
+	sprops shape
+
+	vprops shape
+
+.Purpose
+
+lprops  computes massic properties  of all  edges  in the shape with a
+linear density of 1, sprops of all faces  with a surfacic density of 1
+and vprops of all solids with a density of 1.
+
+The  three commands print the  mass,  which is  either the length, the
+area  or  the volume, the  coordinates of  the center of  gravity, the
+matrix of inertia and  the moments. The center   and the main axis  of
+inertia are displayed.
+
+.Example
+
+	# volume of a cylinder
+	pcylinder c 10 20
+	vprops c
+	==> results
+	Mass : 6283.18529981086
+
+	Center of gravity : 
+	X = 4.1004749224903e-06
+	Y = -2.03392858349861e-16
+	Z = 9.9999999941362
+
+	Matrix of Inertia : 
+	366519.141445068 5.71451850691484e-12 0.257640437382627
+	5.71451850691484e-12 366519.141444962 2.26823064169991e-10
+	0.257640437382627 2.26823064169991e-10 314159.265358863
+
+	Moments : 
+	IX = 366519.141446336
+	IY = 366519.141444962
+	IZ = 314159.265357595
+
+.Warning
+
+.See also
+
+.Index
+lprops command
+sprops command
+vprops command
+length
+area
+volume
+inertia
+
+
+*** bounding
+
+.Synopsis
+
+	bounding shape
+
+.Purpose
+
+Display the bounding box of a shape and returns the string "xmin ymin
+zmin xmax ymax zmax"
+
+.Example
+
+	# bounding box of a torus
+	ptorus t 20 5
+	bounding t
+	==> 
+	-25.000000100000001 -25.000000100000001 -5.0000001000000003 
+	25.000000100000001 25.000000100000001 5.0000001000000003
+
+.Warning
+
+.See also
+
+.Index
+bounding command
+box, bounding

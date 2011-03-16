@@ -1,0 +1,34 @@
+-- File:	StepBasic_ExternalIdentificationAssignment.cdl
+-- Created:	Wed May 10 15:09:06 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class ExternalIdentificationAssignment from StepBasic
+inherits IdentificationAssignment from StepBasic
+
+    ---Purpose: Representation of STEP entity ExternalIdentificationAssignment
+
+uses
+    HAsciiString from TCollection,
+    IdentificationRole from StepBasic,
+    ExternalSource from StepBasic
+
+is
+    Create returns ExternalIdentificationAssignment from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aIdentificationAssignment_AssignedId: HAsciiString from TCollection;
+                       aIdentificationAssignment_Role: IdentificationRole from StepBasic;
+                       aSource: ExternalSource from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Source (me) returns ExternalSource from StepBasic;
+	---Purpose: Returns field Source
+    SetSource (me: mutable; Source: ExternalSource from StepBasic);
+	---Purpose: Set field Source
+
+fields
+    theSource: ExternalSource from StepBasic;
+
+end ExternalIdentificationAssignment;

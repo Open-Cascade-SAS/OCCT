@@ -1,0 +1,51 @@
+-- File:        OffsetCurve3d.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OffsetCurve3d from StepGeom 
+
+inherits Curve from StepGeom 
+
+uses
+
+	Real from Standard, 
+	Logical from StepData, 
+	Direction from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable OffsetCurve3d;
+	---Purpose: Returns a OffsetCurve3d
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisCurve : mutable Curve from StepGeom;
+	      aDistance : Real from Standard;
+	      aSelfIntersect : Logical from StepData;
+	      aRefDirection : mutable Direction from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
+	BasisCurve (me) returns mutable Curve;
+	SetDistance(me : mutable; aDistance : Real);
+	Distance (me) returns Real;
+	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
+	SelfIntersect (me) returns Logical;
+	SetRefDirection(me : mutable; aRefDirection : mutable Direction);
+	RefDirection (me) returns mutable Direction;
+
+fields
+
+	basisCurve : Curve from StepGeom;
+	distance : Real from Standard;
+	selfIntersect : Logical from StepData;
+	refDirection : Direction from StepGeom;
+
+end OffsetCurve3d;

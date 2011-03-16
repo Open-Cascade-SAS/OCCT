@@ -1,0 +1,48 @@
+-- File:	ChFiDS_Map.cdl
+-- Created:	Fri Oct 22 16:23:11 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Map from ChFiDS 
+
+	---Purpose: Encapsulation of IndexedDataMapOfShapeListOfShape.
+
+uses
+
+    Shape from TopoDS,
+    ShapeEnum from TopAbs,
+    ListOfShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools
+
+is
+    Create returns Map from ChFiDS;
+    ---Purpose:  Create an empty Map
+
+    Fill (me : in out; S : Shape from TopoDS; T1,T2 : ShapeEnum from TopAbs)
+    ---Purpose: Fills the map with the subshapes of type T1 as keys
+    --          and the list of ancestors  of type T2 as items.
+    is static;
+
+    Contains(me; S : Shape from TopoDS) 
+    returns Boolean from Standard 
+    is static;
+    
+    FindFromKey(me; S : Shape from TopoDS) 
+    returns ListOfShape from TopTools 
+    ---C++: alias operator()
+    ---C++: return const &
+    is static;
+    
+    FindFromIndex(me; I : Integer from Standard) 
+    returns ListOfShape from TopTools
+    ---C++: alias operator()
+    ---C++: return const &
+    is static;
+
+fields
+
+    myMap : IndexedDataMapOfShapeListOfShape from TopTools;
+
+end Map;

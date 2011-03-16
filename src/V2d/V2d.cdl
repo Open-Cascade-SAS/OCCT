@@ -1,0 +1,56 @@
+-- File:        V2d.cdl
+-- Created:     Tue Jul  6 12:31:15 1993
+-- Author:      Jean Louis FRENKEL
+--              <jlf@stylox>
+-- Modified:    stt: 25-02-98: S3558 ajout ViewStdAdapter
+--              stt: 08-04-98: suppr ViewStdAdapter
+---Copyright:    Matra Datavision 1993
+
+
+package V2d
+---Purpose: this package furnishes the services needed to build a
+--          2d mono-view visualizer on a windowing system.
+uses
+
+    Quantity,
+    Graphic2d,
+    Aspect,
+    PlotMgt,
+    MMgt,
+    TCollection,
+    TColStd,
+    Viewer
+
+is
+
+    class Viewer;
+    private pointer ViewerPointer to Viewer from V2d;
+    
+    class View;
+    ---Purpose: allows the creation of a view in a window driver.
+    ---         describes all the commands available for a view.
+    --          
+    
+    class DefaultMap;
+    ---Purpose: furnishes default color, font, and width map.
+    
+    enumeration TypeOfWindowResizingEffect is TOWRE_ENLARGE_SPACE,
+                                              TOWRE_ENLARGE_OBJECTS
+    ---Purpose: determines the desired type of effect after the resizing
+    --          of a window.
+    end TypeOfWindowResizingEffect;
+
+    ---Purpose: drawing of the grid.
+
+    private class BackgroundGraphicObject;
+
+    private class RectangularGrid;
+    private class CircularGrid;
+
+    private class CircularGraphicGrid;
+    private class RectangularGraphicGrid;
+
+    Draw(aViewer: Viewer from V2d);
+    ---Purpose: Test
+
+end V2d;

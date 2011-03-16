@@ -1,0 +1,300 @@
+-- File:	gp.cdl
+-- Created:	Tue Apr 13 12:42:16 1993
+-- Author:	JCV
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+
+
+package gp 
+
+        --- Purpose :
+        --  The geometric processor package, called gp, provides an 
+        --  implementation of entities used  :
+        --  . for algebraic calculation such as "XYZ" coordinates, "Mat"
+        --    matrix
+        --  . for basis analytic geometry such as Transformations, point,
+        --    vector, line, plane, axis placement, conics, and elementary
+        --    surfaces.
+        --  These entities are defined in 2d and 3d space.
+        --  All the classes of this package are non-persistent.         
+
+uses Standard, TColStd
+
+is
+
+  exception VectorWithNullMagnitude inherits DomainError;
+
+  ---Purpose: Identifies the type of a geometric transformation.
+  enumeration TrsfForm is 
+  Identity, Rotation, Translation, PntMirror, Ax1Mirror, Ax2Mirror, Scale, 
+  CompoundTrsf, Other;
+
+  ---Purpose: Enumerates all 24 possible variants of generalized
+  --          Euler angles, defining general 3d rotation by three 
+  --          rotations around main axes of coordinate system,
+  --          in different possible orders. 
+  --          The name of the enumeration
+  -- 	      corresponds to order of rotations, prefixed by type
+  --          of co-ordinate system used:
+  --          - Intrinsic: rotations are made around axes of rotating 
+  --            co-ordinate system associated with the object
+  --          - Extrinsic: rotations are made around axes of fixed 
+  --            (reference) co-ordinate system
+  --          Two specific values provided for most frequently used 
+  --          conventions: proper Euler angles (intrinsic ZXZ) and
+  --          yaw-pitch-roll (intrinsic ZYX).
+  enumeration EulerSequence is
+    EulerAngles,  -- standard Euler angles, alias to Intrinsic_ZXZ
+    YawPitchRoll, -- Yaw Pitch Roll angles, alias to Intrinsic_ZYX
+
+    -- Tait-Bryan angles (using three different axes)
+    Extrinsic_XYZ, 
+    Extrinsic_XZY, 
+    Extrinsic_YZX, 
+    Extrinsic_YXZ, 
+    Extrinsic_ZXY, 
+    Extrinsic_ZYX, 
+
+    Intrinsic_XYZ, 
+    Intrinsic_XZY, 
+    Intrinsic_YZX, 
+    Intrinsic_YXZ, 
+    Intrinsic_ZXY, 
+    Intrinsic_ZYX, 
+
+    -- proper Euler angles (using two different axes, first and third the same)
+    Extrinsic_XYX, 
+    Extrinsic_XZX, 
+    Extrinsic_YZY, 
+    Extrinsic_YXY, 
+    Extrinsic_ZYZ, 
+    Extrinsic_ZXZ,
+
+    Intrinsic_XYX, 
+    Intrinsic_XZX, 
+    Intrinsic_YZY, 
+    Intrinsic_YXY, 
+    Intrinsic_ZXZ,
+    Intrinsic_ZYZ 
+  ;
+
+  class XYZ;
+        --- Purpose : 3D Cartesian Coordinates {X, Y, Z}
+
+  class Mat;
+        --- Purpose : Matrix 3*3
+
+  class Quaternion;
+        --- Purpose : Quaternion representing 3d rotation
+
+  class Trsf;
+        --- Purpose :
+        --  Elementary geometric transformation. This transformation never 
+        --  change the nature of the objects.
+
+  class GTrsf;
+        --- Purpose :
+        --  General transformation. A GTrsf can be used only to transform
+        --  a point or a triplet of coordinates.
+
+  class Pnt;
+        --- Purpose : Cartesian Point.
+
+  class Vec;
+        --- Purpose : Vector.
+
+  class Dir;
+        --- Purpose : Direction, it is an unitary vector.
+
+  class Ax1;
+        --- Purpose : axis placement (Coordinate system -one axis)
+
+  class Ax2;
+        --- Purpose :  axis  placement (Direct  Coordinate  system two
+        --  axis)
+
+  class Ax3;
+        --- Purpose : axis placement  (Coordinate system two axis, can
+        --  be direct  or indirect)
+
+  class Lin;
+        --- Purpose : Line.
+
+  class Circ;
+        --- Purpose : Circle.
+
+  class Elips;
+        --- Purpose : Ellipse.
+
+  class Hypr;
+        --- Purpose : Hyperbola.
+  
+  class Parab;
+        --- Purpose : Parabola.
+  
+  class Pln;
+        --- Purpose : Plane.
+
+  class Cylinder;
+        --- Purpose : Infinite cylindrical surface  .
+  
+  class Sphere;
+        --- Purpose : Spherical surface.  
+  
+  class Torus;
+        --- Purpose : Toroidal surface.  
+  
+  class Cone;
+        --- Purpose : Conical surface.
+
+
+
+
+        --- Purpose : Geometric entities for 2D.
+
+
+
+  class XY;
+        --- Purpose : 2D cartesian Coordinates {X, Y}
+
+  class Mat2d;
+        --- Purpose : Matrix 2*2
+
+  class Trsf2d;
+        --- Purpose :
+        --  Elementary geometric transformation. This transformation never 
+        --  change the nature of the objects.
+
+  class GTrsf2d;
+        --- Purpose :
+        --  General transformation. A GTrsf can be used only to transform
+        --  a point or a triplet of coordinates.
+
+  class Pnt2d;
+        --- Purpose : Cartesian point.
+
+  class Vec2d;
+        --- Purpose : Vector.
+
+  class Dir2d;
+        --- Purpose : Direction, it is an unitary vector.
+
+  class Ax2d;
+        --- Purpose : axis placement (Coordinate system - one axis)
+
+  class Ax22d;
+        --- Purpose : axis placement (Coordinate system - two axis)
+
+  class Lin2d;
+        --- Purpose : Line.
+
+  class Circ2d;
+        --- Purpose : Circle.
+
+  class Elips2d;
+        --- Purpose : Ellipse.
+
+  class Hypr2d;
+        --- Purpose : Hyperbola.
+
+  class Parab2d;
+        --- Purpose : Parabola.
+  
+
+
+        --- Purpose : Method of package gp 
+
+   Resolution  returns Real;
+        --- Purpose :
+        --  In geometric computations, defines the tolerance criterion
+	-- used to determine when two numbers can be considered equal.
+	-- Many class functions use this tolerance criterion, for
+	-- example, to avoid division by zero in geometric
+	-- computations. In the documentation, tolerance criterion is
+	-- always referred to as gp::Resolution().
+        ---C++: inline
+
+
+  Origin returns Pnt from gp;
+     --- Purpose : Identifies a Cartesian point with coordinates X = Y = Z = 0.0.0
+     ---C++: return const &
+
+  DX returns Dir from gp;
+     ---Purpose: Returns a unit vector with the combination (1,0,0)
+     ---C++: return const &
+        
+  DY returns Dir from gp;
+     ---Purpose: Returns a unit vector with the combination (0,1,0)
+     ---C++: return const &
+        
+  DZ returns Dir from gp;
+     ---Purpose: Returns a unit vector with the combination (0,0,1)
+     ---C++: return const &
+        
+  OX returns Ax1 from gp;
+     --- Purpose :Identifies an axis where its origin is Origin 
+     -- and its unit vector coordinates  X = 1.0,  Y = Z = 0.0
+     ---C++: return const &
+
+  OY returns Ax1 from gp;
+     --- Purpose :Identifies an axis where its origin is Origin 
+     -- and its unit vector coordinates Y = 1.0,  X = Z = 0.0
+     ---C++: return const &
+
+  OZ returns Ax1 from gp;
+     --- Purpose :Identifies an axis where its origin is Origin 
+     -- and its unit vector coordinates Z = 1.0,  Y = X = 0.0
+     ---C++: return const &
+
+
+  XOY returns Ax2 from gp;
+     --- Purpose :Identifies a coordinate system where its origin is Origin,
+     -- and its "main Direction" and "X Direction" coordinates
+     --  Z = 1.0, X = Y =0.0 and X direction coordinates X = 1.0, Y = Z = 0.0
+     ---C++: return const &
+
+  ZOX returns Ax2 from gp;
+     --- Purpose :Identifies a coordinate system where its origin is Origin,
+     -- and its "main Direction" and "X Direction" coordinates
+     --  Y = 1.0, X = Z =0.0 and X direction coordinates Z = 1.0, X = Y = 0.0
+     ---C++: return const &
+    
+  YOZ returns Ax2 from gp;
+     --- Purpose :Identifies a coordinate system where its origin is Origin,
+     -- and its "main Direction" and "X Direction" coordinates
+     --  X = 1.0, Z = Y =0.0 and X direction coordinates Y = 1.0, X = Z = 0.0
+     ---C++: return const &
+
+
+
+     --- Purpose : In 2D space 
+
+  Origin2d returns Pnt2d from gp;
+     --- Purpose : Identifies a Cartesian point with coordinates X = Y = 0.0
+     ---C++: return const &
+  
+  DX2d returns Dir2d from gp;
+     ---Purpose: Returns a unit vector with the combinations (1,0)
+     ---C++: return const &
+  
+  DY2d returns Dir2d from gp;
+     ---Purpose: Returns a unit vector with the combinations (0,1)
+     ---C++: return const &
+  
+  OX2d returns Ax2d from gp;
+     --- Purpose : Identifies an axis where its origin is Origin2d
+     -- and its unit vector coordinates are: X = 1.0,  Y = 0.0
+     ---C++: return const &
+
+  OY2d returns Ax2d from gp;
+     --- Purpose :  Identifies an axis where its origin is Origin2d
+     -- and its unit vector coordinates are Y = 1.0,  X = 0.0
+     ---C++: return const &
+
+end gp;
+
+

@@ -1,0 +1,87 @@
+-- File:	UndefinedEntity.cdl
+-- Created:	Tue Apr  7 15:04:59 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class UndefinedEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : undefined (unknown or error) entity specific of IGES
+    --           DirPart can be correct or not : if it is not, a flag indicates
+    --           it, and each corrupted field has an associated error flag
+
+uses OStream, Check, UndefinedContent, CopyTool,
+     DefType, DefList, IGESReaderData, DirPart, ParamReader, IGESWriter
+
+is
+
+    Create returns mutable UndefinedEntity;
+    ---Purpose : creates an unknown entity
+
+    UndefinedContent (me) returns mutable UndefinedContent;
+    ---Purpose : Returns own data as an UndefinedContent
+
+    ChangeableContent (me : mutable) returns mutable UndefinedContent;
+    ---Purpose : Returns own data as an UndefinedContent, in order to touch it
+
+    SetNewContent (me : mutable; cont : mutable UndefinedContent);
+    ---Purpose : Redefines a completely new UndefinedContent
+    --           Used by a Copy which begins by ShallowCopy, for instance
+
+    IsOKDirPart (me) returns Boolean;
+    ---Purpose : says if DirPart is OK or not (if not, it is erroneous)
+    --           Note that if it is not, Def* methods can return Error status
+
+    DirStatus (me) returns Integer;
+    ---Purpose : returns Directory Error Status (used for Copy)
+
+    SetOKDirPart (me : mutable);
+    ---Purpose : Erases the Directory Error Status
+    --  Warning : Be sure that data are consistent to call this method ...
+
+
+    DefLineFont (me) returns DefType  is redefined;
+    ---Purpose : returns Error status if necessary, else calls original method
+
+    DefLevel    (me) returns DefList  is redefined;
+    ---Purpose : returns Error status if necessary, else calls original method
+
+    DefView     (me) returns DefList  is redefined;
+    ---Purpose : returns Error status if necessary, else calls original method
+
+    DefColor    (me) returns DefType  is redefined;
+    ---Purpose : returns Error status if necessary, else calls original method
+
+    HasSubScriptNumber (me) returns Boolean  is redefined;
+    ---Purpose : returns Error status if necessary, else calls original method
+    --           (that is, if SubScript field is not blank or positive integer)
+
+
+    ReadDir (me : mutable; IR : IGESReaderData; DP : in out DirPart;
+    	     ach : in out Check)
+    	returns Boolean  is virtual;
+    ---Purpose : Computes the Directory Error Status, to be called before
+    --           standard ReadDir from IGESReaderTool
+    --           Returns True if OK (hence, Directory can be loaded),
+    --           Else returns False and the DirPart <DP> is modified
+    --           (hence, Directory Error Status is non null; and standard Read
+    --            will work with an acceptable DirectoryPart)
+
+    ReadOwnParams (me : mutable; IR : IGESReaderData; PR : in out ParamReader)
+    	  is virtual;
+    ---Purpose : reads own parameters from file; PR gives access to them, IR
+    --           detains parameter types and values
+    --           Here, reads all parameters, integers are considered as entity
+    --           reference unless they cannot be; no list interpretation
+    --           No property or associativity list is managed
+
+    WriteOwnParams (me; IW : in out IGESWriter)  is virtual;
+    ---Purpose : writes parameters to IGESWriter, taken from UndefinedContent
+
+fields
+
+    thedstat : Integer;  -- DirPart error bitwise flags (none set -> OK)
+    thecont  : UndefinedContent;
+
+end UndefinedEntity;

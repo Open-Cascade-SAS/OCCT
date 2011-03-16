@@ -1,0 +1,42 @@
+-- File:	WFShape.cdl
+-- Created:	Tue Dec 15 18:12:33 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class WFShape from Prs3d 
+     (FacePresentation   as any;        -- as WFRestrictedFace  from Prs3d
+      CurvePresentation  as any;        -- as Curve             from Prs3d 
+      PointPresentation  as any)        -- as Point             from Prs3d
+
+inherits Root from Prs3d
+
+uses
+    Shape            from TopoDS,
+    HSequenceOfShape from TopTools,
+    Presentation     from Prs3d,
+    Drawer           from Prs3d,
+    Length           from Quantity
+    
+is
+    Add(myclass; aPresentation: Presentation from Prs3d;
+    	    	 aShape       : Shape        from TopoDS;
+                 aDrawer      : Drawer       from Prs3d);
+		 
+
+    PickCurve(myclass; X,Y,Z     : Length from Quantity;
+    	               aDistance : Length from Quantity;
+                       aShape    : Shape  from TopoDS;
+    	               aDrawer   : Drawer from Prs3d)
+    returns HSequenceOfShape from TopTools;
+
+
+    PickPatch(myclass; X,Y,Z     : Length from Quantity;
+    	               aDistance : Length from Quantity;
+                       aShape    : Shape  from TopoDS; 
+    	               aDrawer   : Drawer from Prs3d)
+    returns HSequenceOfShape from TopTools;
+		   
+
+end WFShape from Prs3d;

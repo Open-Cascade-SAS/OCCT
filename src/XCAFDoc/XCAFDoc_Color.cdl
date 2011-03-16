@@ -1,0 +1,84 @@
+-- File:	XCAFDoc_Color.cdl
+-- Created:	Wed Aug 16 11:36:32 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Color from XCAFDoc inherits     Attribute from TDF
+
+	---Purpose: 
+
+uses
+    Color from Quantity,
+    NameOfColor from Quantity,
+    Label from TDF,
+    RelocationTable from TDF
+
+is
+    Create returns Color from XCAFDoc;
+    
+    ---Category: class methods
+    --           =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+    
+    
+    Set (myclass; label : Label from TDF; C : Color from Quantity)
+    returns Color from XCAFDoc;
+
+    Set (myclass; label : Label from TDF; C : NameOfColor from Quantity)
+    returns Color from XCAFDoc;
+
+    Set (myclass; label : Label from TDF; R,G,B : Real from Standard)
+    returns Color from XCAFDoc;
+
+    ---Purpose: Find, or create, a Color attribute and set it's value
+    --          the Color attribute is returned.
+
+    
+    
+    ---Category: Color methods
+    --           ===============
+    
+    Set (me : mutable;  C : Color from Quantity);
+	     
+    Set (me : mutable;  C : NameOfColor from Quantity);
+	     
+    Set (me : mutable;  R,G,B : Real from Standard);
+		    
+    GetColor (me) returns Color from Quantity;
+
+    GetNOC (me) returns NameOfColor from Quantity;
+	     
+    GetRGB (me;  R,G,B : out Real from Standard);
+    
+    --IsCaptured(me) returns Boolean;
+	---Purpose: Returns True if there is a reference on the same label
+
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+--    Dump(me; anOS : in out OStream from Standard)
+--    	returns OStream from Standard
+--    	is redefined;
+--	-C++: return &
+
+fields
+    myColor   : Color from Quantity;
+    
+end Color;

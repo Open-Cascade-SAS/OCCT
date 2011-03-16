@@ -1,0 +1,34 @@
+-- File:	StepShape_Subface.cdl
+-- Created:	Fri Jan  4 17:42:45 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class Subface from StepShape
+inherits Face from StepShape
+
+    ---Purpose: Representation of STEP entity Subface
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfFaceBound from StepShape,
+    Face from StepShape
+
+is
+    Create returns Subface from StepShape;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aFace_Bounds: HArray1OfFaceBound from StepShape;
+                       aParentFace: Face from StepShape);
+	---Purpose: Initialize all fields (own and inherited)
+
+    ParentFace (me) returns Face from StepShape;
+	---Purpose: Returns field ParentFace
+    SetParentFace (me: mutable; ParentFace: Face from StepShape);
+	---Purpose: Set field ParentFace
+
+fields
+    theParentFace: Face from StepShape;
+
+end Subface;

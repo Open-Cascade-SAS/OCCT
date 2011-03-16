@@ -1,0 +1,26 @@
+-- File:	NIS.cdl
+-- Created:	Wed Jul  2 10:23:18 2008
+-- Author:	Alexander GRIGORIEV
+--		<agv@opencascade.com>
+---Copyright:	 Open Cascade 2008
+
+-- Dummy package header
+
+package NIS
+uses
+     V3d,
+     Bnd
+is
+    imported Drawer;
+    imported DrawList;
+    imported InteractiveContext;
+    imported InteractiveObject;
+    imported ObjectsIterator;
+    imported SelectFilter;
+    imported Surface;
+    imported SurfaceDrawer;
+    imported Triangulated;
+    imported TriangulatedDrawer;
+    imported View;
+    
+end NIS;

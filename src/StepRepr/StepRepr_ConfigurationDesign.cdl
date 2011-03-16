@@ -1,0 +1,38 @@
+-- File:	StepRepr_ConfigurationDesign.cdl
+-- Created:	Fri Nov 26 16:26:36 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ConfigurationDesign from StepRepr
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ConfigurationDesign
+
+uses
+    ConfigurationItem from StepRepr,
+    ConfigurationDesignItem from StepRepr
+
+is
+    Create returns ConfigurationDesign from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aConfiguration: ConfigurationItem from StepRepr;
+                       aDesign: ConfigurationDesignItem from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Configuration (me) returns ConfigurationItem from StepRepr;
+	---Purpose: Returns field Configuration
+    SetConfiguration (me: mutable; Configuration: ConfigurationItem from StepRepr);
+	---Purpose: Set field Configuration
+
+    Design (me) returns ConfigurationDesignItem from StepRepr;
+	---Purpose: Returns field Design
+    SetDesign (me: mutable; Design: ConfigurationDesignItem from StepRepr);
+	---Purpose: Set field Design
+
+fields
+    theConfiguration: ConfigurationItem from StepRepr;
+    theDesign: ConfigurationDesignItem from StepRepr;
+
+end ConfigurationDesign;

@@ -1,0 +1,38 @@
+-- File:	ShapeConstruct_Triangulation.cdl
+-- Created:	Mon Dec 20 10:11:02 1999
+-- Author:	data exchange team
+--		<det@pronox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class MakeTriangulation from ShapeConstruct  inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: 
+
+uses
+
+    Array1OfPnt from TColgp,
+    Wire from TopoDS
+
+is
+
+    Create (pnts : Array1OfPnt from TColgp; prec : Real = 0.0)
+    returns MakeTriangulation from ShapeConstruct;
+
+    Create (wire : Wire from TopoDS; prec : Real = 0.0)
+    returns MakeTriangulation from ShapeConstruct;
+
+    Build (me : in out) is redefined;
+
+    IsDone (me) returns Boolean is redefined;
+
+    Triangulate (me : in out; wire : Wire from TopoDS) is private;
+
+    AddFacet (me : in out; wire : Wire from TopoDS) is private;
+
+fields
+
+    myPrecision : Real from Standard;
+    myWire      : Wire from TopoDS;
+
+end MakeTriangulation;

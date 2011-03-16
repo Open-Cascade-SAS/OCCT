@@ -1,0 +1,79 @@
+-- File:        TDataStd_AsciiString.cdl
+-- Created:     Tue Jul 31 12:16:55 2007
+-- Author:      Sergey ZARITCHNY
+--              <szy@popox.nnov.matra-dtv.fr>
+---Copyright:   Open CASCADE SA 2007
+
+
+class AsciiString from TDataStd inherits Attribute from TDF
+
+        ---Purpose: Used to define an AsciiString attribute containing a TCollection_AsciiString
+
+uses 
+    Attribute         from TDF,
+    Label             from TDF,
+    GUID              from Standard,
+    AsciiString       from TCollection,
+    RelocationTable   from TDF
+
+is
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+        ---C++: return const & 
+        ---Purpose: Returns the GUID of the attribute.  
+    returns GUID from Standard;    
+
+    Set (myclass; label : Label from TDF; string  : AsciiString from TCollection)
+    ---Purpose: Finds, or creates an AsciiString attribute and sets the string.
+    --          the AsciiString attribute is returned.
+    returns AsciiString from TDataStd;
+    
+    ---Purpose: AsciiString methods
+    --          ===================
+    
+    Create 
+    returns mutable AsciiString from TDataStd;
+    -- Constructor    
+    
+    Set (me : mutable; S : AsciiString from TCollection);
+    -- Sets the ascii string <S>
+    
+    Get (me)
+    returns AsciiString from TCollection;         
+    -- Returns the AsciiString  <myString>
+    ---C++: return const &
+     
+    IsEmpty(me) 
+    returns Boolean from Standard;
+    -- Returns True if the string of <me> contains zero characters. 
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+        ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+    --  Restores the backuped content from <with> into this one. 
+    
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+    -- Returns an new empty AsciiString attribute. 
+    
+    Paste (me; into : mutable Attribute from TDF;
+               RT   : mutable RelocationTable from TDF);    
+    -- This method is used when copying an attribute from a source structure 
+    -- into a target structure. 
+    
+    Dump(me; anOS : in out OStream from Standard)
+        returns OStream from Standard
+        is redefined;
+        ---C++: return &
+    -- This method dumps the attribute value into the stream
+fields
+    myString : AsciiString from TCollection; 
+    
+end AsciiString;

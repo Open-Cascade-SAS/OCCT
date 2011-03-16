@@ -1,0 +1,111 @@
+// File:	BRepFeat_LocalOperation.lxx
+// Created:	Tue Jun 13 11:50:44 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+
+//=======================================================================
+//function : BRepFeat_LocalOperation
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_LocalOperation::BRepFeat_LocalOperation () 
+{
+}
+
+
+//=======================================================================
+//function : BRepFeat_LocalOperation
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_LocalOperation::BRepFeat_LocalOperation 
+   (const TopoDS_Shape& S) : BRepFeat_Builder(S)
+{
+}
+
+
+//=======================================================================
+//function : BRepFeat_LocalOperation
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_LocalOperation::BRepFeat_LocalOperation
+   (const TopoDS_Shape& S,
+    const TopoDS_Shape& T) : BRepFeat_Builder(S,T)
+{
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_LocalOperation::Perform(const TopoDS_Shape& T,
+					     const TopTools_ListOfShape& L,
+					     const Standard_Boolean Fuse)
+{
+  myBuilder.Perform(T,L,Fuse);
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_LocalOperation::Perform(const TopTools_ListOfShape& LS,
+					     const TopTools_ListOfShape& LT,
+					     const Standard_Boolean Fuse)
+{
+  myBuilder.Perform(LS,LT,Fuse);
+}
+
+
+//=======================================================================
+//function : BuildPartsOfTool
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_LocalOperation::BuildPartsOfTool ()
+{
+  myBuilder.BuildPartsOfTool();
+}
+
+
+//=======================================================================
+//function : PartsOfTool
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& BRepFeat_LocalOperation::
+   PartsOfTool () const
+{
+  return myBuilder.PartsOfTool();
+}
+
+
+//=======================================================================
+//function : RemovePart
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_LocalOperation::RemovePart(const TopoDS_Shape& S)
+{
+  myBuilder.RemovePart(S);
+}
+
+
+//=======================================================================
+//function : ActivatePart
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_LocalOperation::ActivatePart(const TopoDS_Shape& S)
+{
+  myBuilder.ActivatePart(S);
+}
+
+

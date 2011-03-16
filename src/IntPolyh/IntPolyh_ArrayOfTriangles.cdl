@@ -1,0 +1,75 @@
+-- File:	IntPolyh_ArrayOfTriangles.cdl
+-- Created:	Mon Mar  8 08:12:34 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ArrayOfTriangles from IntPolyh
+
+uses
+    
+    Triangle from IntPolyh
+
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    GetN(me)
+    returns Integer from Standard
+    ---C++: return const
+    is static;
+    
+    NbTriangles(me)
+    returns Integer from Standard
+    ---C++: return const
+    is static;
+    
+    SetNbTriangles(me : in out; endaot: Integer from Standard)
+    is static;
+    
+    IncNbTriangles(me: in out)
+    is static;
+    
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &      
+    returns Triangle from IntPolyh
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns Triangle from IntPolyh 
+    is static;
+    
+    Copy(me: in out; Other : ArrayOfTriangles from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns ArrayOfTriangles from IntPolyh
+    is static;
+    
+    Destroy(me:in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+    
+    DumpFleches(me) 
+    is static;
+
+     	
+fields
+
+    n, fintt : Integer from Standard;
+    ptr      : Address from Standard;
+    
+end ArrayOfTriangles from IntPolyh;

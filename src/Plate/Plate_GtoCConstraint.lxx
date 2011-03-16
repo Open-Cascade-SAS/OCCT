@@ -1,0 +1,19 @@
+// File:	Plate_GtoCConstraint.lxx
+// Created:	Mon May 25 09:07:02 1998
+// Author:	Andre LIEUTIER
+//		<alr@sgi63>
+inline const Standard_Integer& Plate_GtoCConstraint::nb_PPC() const
+{
+  return nb_PPConstraints;
+}
+
+ 
+inline const Plate_PinpointConstraint& Plate_GtoCConstraint::GetPPC(const Standard_Integer Index) const
+{
+  return myPPC[Index];
+}
+
+inline const Plate_D1& Plate_GtoCConstraint::D1SurfInit() const
+{
+  return myD1SurfInit;
+}

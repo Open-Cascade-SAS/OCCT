@@ -1,0 +1,37 @@
+-- File:	IGESData_FileProtocol.cdl
+-- Created:	Tue Oct 26 10:24:13 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class FileProtocol  from IGESData    inherits  Protocol  from IGESData
+
+    ---Purpose : This class allows to define complex protocols, in order to
+    --           treat various sub-sets (or the complete set) of the IGES Norm,
+    --           such as Solid + Draw (which are normally independant), etc...
+    --           While it inherits Protocol from IGESData, it admits
+    --           UndefinedEntity too
+
+uses Protocol from Interface
+
+is
+
+    Create returns mutable FileProtocol;
+    ---Purpose : Returns an empty FileProtocol
+
+    Add (me : mutable; protocol : Protocol from IGESData);
+    ---Purpose : Adds a resource
+
+    NbResources (me) returns Integer  is redefined;
+    ---Purpose : Gives the count of Resources : the count of Added Protocols
+
+    Resource (me; num : Integer) returns Protocol from Interface  is redefined;
+    ---Purpose : Returns a Resource, given a rank (rank of call to Add)
+
+fields
+
+    theresource : Protocol from IGESData;
+    thenext     : FileProtocol from IGESData;
+
+end FileProtocol;

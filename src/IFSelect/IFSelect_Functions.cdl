@@ -1,0 +1,60 @@
+-- File:	IFSelect_Functions.cdl
+-- Created:	Wed Jul 28 09:49:21 1993
+-- Author:	Christian CAILLET
+--		<cky@meteox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Functions  from IFSelect
+
+    ---Purpose : Functions gives access to all the actions which can be
+    --           commanded with the resources provided by IFSelect : especially
+    --           WorkSession and various types of Selections and Dispatches
+    --           
+    --           It works by adding functions by method Init
+
+uses CString, HSequenceOfTransient from TColStd,
+     WorkSession from IFSelect , Dispatch from IFSelect
+
+is
+
+    GiveEntity  (myclass; WS : WorkSession; name : CString = "")
+    	returns Transient;
+    ---Purpose : Takes the name of an entity, either as argument, or (if <name>
+    --           is empty) on keybord, and returns the entity
+    --           name can be a label or a number (in alphanumeric), it is
+    --           searched by NumberFromLabel from WorkSession.
+    --           If <name> doesn't match en entity, a Null Handle is returned
+
+    GiveEntityNumber (myclass; WS : WorkSession; name : CString = "")
+    	returns Integer;
+    ---Purpose : Same as GetEntity, but returns the number in the model of the
+    --           entity. Returns 0 for null handle
+
+    GiveList (myclass; WS : WorkSession; first, second : CString = "")
+    	returns HSequenceOfTransient;
+    ---Purpose : Computes a List of entities from a WorkSession and two idents,
+    --           first and second, as follows :
+    --           if <first> is a Number or Label of an entity : this entity
+    --           if <first> is the name of a Selection in <WS>, and <second>
+    --             not defined, the standard result of this Selection
+    --           if <first> is for a Selection and <second> is defined, the
+    --             standard result of this selection from the list computed
+    --             with <second> (an entity or a selection)
+    --           If <second> is erroneous, it is ignored
+
+    GiveDispatch (myclass; WS : WorkSession; name : CString;
+    	    	  mode : Boolean = Standard_True)
+	returns Dispatch from IFSelect;
+    ---Purpose : Evaluates and returns a Dispatch, from data of a WorkSession
+    --           if <mode> is False, searches for exact name of Dispatch in WS
+    --           Else (D), allows a parameter between brackets :
+    --           ex.: dispatch_name(parameter)
+    --           The parameter can be: an integer for DispPerCount or DispPerFiles
+    --           or the name of a Signature for DispPerSignature
+    --           Returns Null Handle if not found not well evaluated
+
+    Init (myclass);
+    ---Purpose : Defines and loads all basic functions (as ActFunc)
+
+end Functions;

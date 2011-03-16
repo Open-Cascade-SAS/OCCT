@@ -1,0 +1,80 @@
+-- File:	Bisector_Inter.cdl
+-- Created:	Fri Jun 24 10:57:59 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phobox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Inter from Bisector 
+
+	---Purpose: Intersection between two <Bisec> from Bisector.
+
+inherits 
+    Intersection from IntRes2d
+    
+uses   
+    Domain  from IntRes2d,
+    Bisec   from Bisector,
+    Curve   from Bisector,
+    BisecCC from Bisector,
+    Curve   from Geom2d,
+    Line    from Geom2d
+    
+raises ConstructionError from Standard
+
+is
+    Create returns Inter from Bisector;
+    
+    Create (C1: Bisec from Bisector; D1: Domain from IntRes2d;
+            C2: Bisec from Bisector; D2: Domain from IntRes2d;
+    	    TolConf,Tol  : Real    from Standard;
+    	    ComunElement : Boolean from Standard) 
+	---Purpose: Intersection between 2 curves.  
+	--          C1 separates the element A and B. 
+	--          C2 separates the elements C et D.
+	--          If B an C have the same geometry. <ComunElement>
+	--          Has to be True. 
+	--          It Permits an optimiztion of the computation.
+
+    returns  Inter from Bisector
+    raises   ConstructionError from Standard;
+
+    
+    Perform (me: in out;
+             C1: Bisec from Bisector; D1: Domain from IntRes2d;
+             C2: Bisec from Bisector; D2: Domain from IntRes2d;
+    	     TolConf,Tol  : Real    from Standard;
+    	     ComunElement : Boolean from Standard) 
+	---Purpose: Intersection between 2 curves.          
+    	--          C1 separates the element A and B. 
+	--          C2 separates the elements C et D.
+	--          If B an C have the same geometry. <ComunElement>
+	--          Has to be True. 
+	--          It Permits an optimiztion of the computation.
+
+    raises   ConstructionError from Standard
+    is static;
+    
+    SinglePerform (me: in out;
+             	   C1: Curve from Geom2d ; D1: Domain from IntRes2d;
+             	   C2: Curve from Geom2d ; D2: Domain from IntRes2d;
+    	           TolConf,Tol  : Real    from Standard;
+    	           ComunElement : Boolean from Standard) 
+	---Purpose: Intersection between 2 curves.          
+    
+    raises   ConstructionError from Standard
+    is static private;
+	
+    NeighbourPerform (me : in out;
+    	    	      C1 : BisecCC from Bisector; D1: Domain from IntRes2d;
+                      C2 : BisecCC from Bisector; D2: Domain from IntRes2d;
+    	              Tol: Real    from Standard)
+    is static private;
+    
+    TestBound (me : in out;
+    	       C1 : Line  from Geom2d  ; D1      : Domain  from IntRes2d;
+    	       C2 : Curve from Geom2d  ; D2      : Domain  from IntRes2d;
+	       Tol: Real  from Standard; Reverse : Boolean from Standard)
+    is static private;
+    
+end Inter;

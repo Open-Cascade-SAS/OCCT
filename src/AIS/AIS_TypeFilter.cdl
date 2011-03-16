@@ -1,0 +1,51 @@
+-- File:	AIS_TypeFilter.cdl
+-- Created:	Thu Mar  6 16:56:36 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class TypeFilter from AIS  inherits Filter from SelectMgr
+
+	---Purpose: Selects Interactive Objects through their types. The
+    	-- filter questions each Interactive Object in local context
+    	-- to determine whether it has an non-null owner, and if
+    	-- so, whether it is of the desired type. If the object
+    	-- returns true in each case, it is kept. If not, it is rejected.
+    	-- By default, the   interactive object has a None   type
+    	-- and a signature of 0. A filter for type specifies a
+    	-- choice of type out of a range at any level enumerated
+    	-- for type or kind. The choice could be for kind of
+    	-- interactive object, of dimension, of unit, or type of axis,
+    	-- plane or attribute.
+    	-- If you want to give a particular type and signature to
+    	-- your Interactive Object, you must redefine two virtual
+    	-- methods:   Type and Signature.
+    	-- This filter is used in both Neutral Point and open local contexts.
+    	-- In the Collector viewer, you can only locate
+    	-- Interactive Objects which answer positively to the
+    	-- positioned filters when a local context is open.
+    	-- Warning
+    	-- When you close a local context, all temporary
+    	-- interactive objects are deleted, all selection modes
+    	-- concerning the context are cancelled, and all content
+    	-- filters are emptied.
+
+uses
+    KindOfInteractive from AIS,
+    EntityOwner from SelectMgr
+
+is
+    Create(aGivenKind      : KindOfInteractive from AIS)
+    returns mutable TypeFilter from AIS;
+    	---Purpose: Initializes filter for type, aGivenKind.
+    IsOk (me;anobj : EntityOwner from SelectMgr)
+    returns Boolean from Standard is redefined virtual;
+    	---Purpose: Returns False if the transient is not an Interactive
+    	-- Object, or if the type of the Interactive Object is not
+    	-- the same as that stored in the filter.
+        
+fields
+    myKind : KindOfInteractive from AIS is protected;
+
+end TypeFilter;

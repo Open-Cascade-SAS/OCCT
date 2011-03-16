@@ -1,0 +1,30 @@
+-- File:        OffsetSurface.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWOffsetSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for OffsetSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     OffsetSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWOffsetSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable OffsetSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : OffsetSurface from StepGeom);
+
+	Share(me; ent : OffsetSurface from StepGeom; iter : in out EntityIterator);
+
+end RWOffsetSurface;

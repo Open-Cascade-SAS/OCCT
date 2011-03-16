@@ -1,0 +1,22 @@
+-- File:        ProductType.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ProductType from StepBasic 
+
+inherits ProductRelatedProductCategory from StepBasic 
+
+uses
+
+	HAsciiString from TCollection, 
+	Boolean from Standard, 
+	HArray1OfProduct from StepBasic
+is
+
+	Create returns mutable ProductType;
+	---Purpose: Returns a ProductType
+
+
+end ProductType;

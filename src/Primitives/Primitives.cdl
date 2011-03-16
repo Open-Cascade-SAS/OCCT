@@ -1,0 +1,45 @@
+-- File:	Primitives.cdl
+-- Created:	Tue Jul 23 11:36:48 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+
+
+package Primitives 
+
+	---Purpose: This  package   describes   algorithms  to   build
+	--          topological primitives.
+	--          
+	--          The algorithms  in  this package  are  generic. It
+	--          contains :
+	--          
+	--           *   The Builder  signature   class. Describes the
+	--           services    required  from    the  Topology  Data
+	--           Structure to build the following primitives.
+	--          
+	--           * The  OneAxis generic class.  Algorithm  used to
+	--           build rotational primitives.
+	--               
+	--           *  The  Wedge  generic  class. Algorithm to build
+	--           boxes and wedges.
+
+uses
+    gp        -- gp provides all geometrical information
+
+is
+
+
+    enumeration Direction is 
+	---Purpose: 
+    	XMin, XMax, YMin, YMax, ZMin, ZMax
+    end Direction;
+
+
+    deferred generic class Builder;
+    
+    deferred generic class OneAxis;
+    	
+    generic class Wedge; 
+    
+end Primitives;

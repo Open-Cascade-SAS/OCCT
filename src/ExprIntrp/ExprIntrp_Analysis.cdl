@@ -1,0 +1,107 @@
+-- File:	Analysis.cdl
+-- Created:	Fri Feb 21 15:48:10 1992
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+private class Analysis from ExprIntrp 
+
+	---Purpose: 
+
+uses Generator from ExprIntrp,
+    GeneralExpression from Expr,
+    GeneralRelation from Expr,
+    GeneralFunction from Expr,
+    StackOfGeneralExpression from ExprIntrp,
+    StackOfGeneralRelation from ExprIntrp,
+    StackOfGeneralFunction from ExprIntrp,
+    StackOfInteger from TColStd,
+    SequenceOfGeneralExpression from Expr,
+    SequenceOfNamedFunction from ExprIntrp,
+    SequenceOfNamedExpression from ExprIntrp,
+    NamedFunction from Expr,
+    NamedExpression from Expr,
+    AsciiString from TCollection,
+    StackOfNames from ExprIntrp
+    
+is
+
+    Create
+    returns Analysis;
+    
+    SetMaster(me : in out; agen : Generator)
+    is static;
+    
+    Push(me : in out; exp : GeneralExpression)
+    is static;
+    
+    PushRelation(me : in out; rel : GeneralRelation)
+    is static;
+    
+    PushName(me : in out; name : AsciiString)
+    is static;
+    
+    PushValue(me : in out; degree : Integer)
+    is static;
+    
+    PushFunction(me : in out; func : GeneralFunction)
+    is static;
+    
+    Pop(me : in out)
+    returns GeneralExpression
+    is static;
+    
+    PopRelation(me : in out)
+    returns GeneralRelation
+    is static;
+    
+    PopName(me : in out)
+    returns AsciiString
+    is static;
+    
+    PopValue(me: in out)
+    returns Integer
+    is static;
+    
+    PopFunction(me: in out)
+    returns GeneralFunction
+    is static;
+    
+    IsExpStackEmpty(me)
+    returns Boolean
+    is static;
+    
+    IsRelStackEmpty(me)
+    returns Boolean
+    is static;
+    
+    ResetAll(me : in out)
+    is static;
+    
+    Use(me : in out; func : NamedFunction)
+    is static;
+
+    Use(me : in out; named : NamedExpression)
+    is static;
+        
+    GetNamed(me : in out; name : AsciiString)
+    returns NamedExpression
+    is static;
+    
+    GetFunction(me : in out; name : AsciiString)
+    returns NamedFunction
+    is static;
+    
+fields
+
+    myGEStack : StackOfGeneralExpression;
+    myGRStack : StackOfGeneralRelation;
+    myGFStack : StackOfGeneralFunction;
+    myNameStack : StackOfNames;
+    myValueStack : StackOfInteger;
+    myFunctions : SequenceOfNamedFunction;
+    myNamed : SequenceOfNamedExpression;
+    myMaster : Generator;
+    
+end Analysis;

@@ -1,0 +1,58 @@
+-- File:	DBC_BaseArray.cdl
+-- Created:	Mon Jan 29 16:29:37 1996
+-- Author:	Kernel
+--		<kernel@ylliox>
+---Copyright:	 Matra Datavision 1996
+
+class BaseArray from DBC
+inherits Storable from Standard
+
+uses DBVArray from DBC
+
+raises NullObject,
+    NegativeValue,
+    DimensionMismatch
+
+is
+    Create returns BaseArray;
+    ---Purpose: Creates an BaseArray of NULL size
+    
+    Create (Size : Integer) returns BaseArray;
+    ---Purpose: Creates  an BaseArray of lower bound 0 and
+    --          upper bound <Size>-1.
+
+    Create (BaseArray: BaseArray) returns BaseArray;
+    ---Purpose: Creates an array which  is the copy of the given
+    --          argument.
+
+    Delete ( me : out ) is redefined;
+    ---C++: alias "Standard_EXPORT virtual ~DBC_BaseArray(){Delete();}"
+
+    Length (me) returns Integer is static ;
+    ---C++: inline
+
+    Upper (me) returns Integer is static;
+    ---Purpose: Returns the upper bound
+    ---C++: inline
+              
+    Lock (me) returns Address is static ;
+    ---Purpose: Locks the array <me> in memory and 
+    --          returns its virtual address
+		
+
+    Unlock (me) is static;
+    ---Purpose: unlocks the array <me> from memory
+		
+    ShallowDump (me; S: in out OStream)
+    --Purpose: Prints the contents at the first level of <me> on
+    --         the stream <s>. The Root version of ShallowDump prints
+    --         the name of the class <me> is an instance of, 
+    --         followed by its memory address.
+    ---C++:  function call
+      is redefined;
+
+
+fields
+    mySize : Integer is protected;
+    myData : DBVArray from DBC is protected;
+end BaseArray;

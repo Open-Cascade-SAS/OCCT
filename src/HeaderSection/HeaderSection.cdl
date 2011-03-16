@@ -1,0 +1,37 @@
+-- File:        HeaderSection.cdl
+-- Created:     Thu Jun 16 18:05:48 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package HeaderSection 
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt
+
+is
+
+
+
+class Protocol;
+
+
+class FileName;
+class FileDescription;
+class FileSchema;
+
+class HeaderRecognizer;
+
+--class Array1OfHAsciiString instantiates Array1(HAsciiString);
+--class HArray1OfHAsciiString instantiates HArray1(HAsciiString,Array1OfHAsciiString from HeaderSection);
+-- already instantiated in package Interface
+
+	Protocol returns Protocol from HeaderSection;
+	---Purpose : creates a Protocol
+
+end HeaderSection;
+

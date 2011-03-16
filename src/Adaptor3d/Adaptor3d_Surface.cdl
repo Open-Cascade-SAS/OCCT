@@ -1,0 +1,319 @@
+-- File:	Adaptor3d_Surface.cdl
+-- Created:	Wed Mar 31 12:12:54 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class Surface from Adaptor3d 
+
+	---Purpose: Root class for surfaces on which geometric algorithms work.
+    	-- An adapted surface is an interface between the
+    	-- services provided by a surface and those required of
+    	-- the surface by algorithms which use it.
+    	-- A derived concrete class is provided:
+    	-- GeomAdaptor_Surface for a surface from the Geom package.
+    	-- The  Surface class describes  the standard behaviour
+	--          of a surface for generic algorithms.
+	--          
+	--          The Surface can  be decomposed in intervals of any
+	--          continuity    in  U    and    V using  the  method
+	--          NbIntervals.  A current interval can be set.  Most
+	--          of the methods apply to the current interval.
+    	--  Warning: All the methods are virtual and implemented with a
+    	--          raise to allow to redefined only the methods realy
+    	--          used.
+uses
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     SurfaceType     from GeomAbs,
+     Vec             from gp,
+     Dir             from gp,
+     Pnt             from gp,
+     Pln             from gp,
+     Cone            from gp,
+     Cylinder        from gp,
+     Sphere          from gp,
+     Torus           from gp,
+     Ax1             from gp,
+     BezierSurface   from Geom,
+     BSplineSurface  from Geom,
+     HSurface        from Adaptor3d,
+     HCurve          from Adaptor3d
+
+raises
+
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+    
+    --
+    --     Global methods - Apply to the whole surface.
+    --     
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~Adaptor3d_Surface(){Delete();}"
+    
+    FirstUParameter(me) returns Real
+    is virtual;
+
+    LastUParameter(me) returns Real
+    is virtual;
+    
+    FirstVParameter(me) returns Real
+    is virtual;
+
+    LastVParameter(me) returns Real
+    is virtual;
+    
+    UContinuity(me) returns Shape from GeomAbs
+    is virtual;
+    
+    VContinuity(me) returns Shape from GeomAbs
+    is virtual;
+    
+    NbUIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of U intervals for  continuity
+	--          <S>. May be one if UContinuity(me) >= <S>
+    is virtual;
+    
+    NbVIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of V intervals for  continuity
+	--          <S>. May be one if VContinuity(me) >= <S>
+    is virtual;
+    
+    UIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) 
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the U direction.
+    raises
+    	OutOfRange from Standard -- if the Length of the array does
+	    	    	         -- have enought slots to accomodate
+	    	    	         -- the result.
+    is virtual;
+
+    VIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) 
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the V direction.
+    raises
+    	OutOfRange from Standard -- if the Length of the array does
+	    	    	         -- have enought slots to accomodate
+	    	    	         -- the result.
+    is virtual;
+    
+    UTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the U direction
+	--           equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is virtual ;
+    
+    VTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the V direction  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is virtual ;
+
+    IsUClosed(me) returns Boolean
+    is virtual;
+     
+    IsVClosed(me) returns Boolean
+    is virtual;
+     
+    IsUPeriodic(me) returns Boolean
+    is virtual;
+    
+    UPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is virtual;
+     
+    IsVPeriodic(me) returns Boolean
+    is virtual;
+    
+    VPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is virtual;
+     
+    Value (me; U, V : Real)  returns Pnt from gp
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is virtual;
+
+    D0 (me; U, V : Real; P : out Pnt from gp)
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is virtual;
+
+    D1 (me; U, V : Real; P : out Pnt from gp; D1U, D1V : out Vec from gp)
+        --- Purpose : Computes the point  and the first derivatives on
+        --  the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised   if  the continuity  of   the  current
+        --  intervals is not C1.
+    is virtual;
+
+    D2 (me; U, V : Real; P : out Pnt from gp; D1U, D1V, D2U, D2V, D2UV : out Vec from gp)
+        --- Purpose  :  Computes   the point,  the  first  and  second
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C2.
+    is virtual;
+
+    D3 (me; U, V : Real; P : out Pnt from gp; 
+    	    D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV : out Vec from gp)
+        --- Purpose : Computes the point,  the first, second and third
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C3.
+    is virtual;
+
+    DN (me; U, V : Real; Nu, Nv : Integer)   returns Vec from gp
+        --- Purpose :  Computes the derivative of order Nu in the direction U and Nv
+        --  in the direction V at the point P(U, V).
+    raises DomainError from Standard,
+        --- Purpose : Raised if the current U  interval is not not CNu
+        --  and the current V interval is not CNv.
+           OutOfRange from Standard
+        --- Purpose : Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
+    is virtual;
+    
+    UResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric U  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is virtual;
+  
+    VResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric V  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is virtual;
+  
+    GetType(me) returns SurfaceType from GeomAbs
+	---Purpose: Returns the type of the surface : Plane, Cylinder,
+	--          Cone,      Sphere,        Torus,    BezierSurface,
+	--          BSplineSurface,               SurfaceOfRevolution,
+	--          SurfaceOfExtrusion, OtherSurface
+    is virtual;
+    
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Plane(me) returns Pln from gp
+      raises NoSuchObject from Standard
+    is virtual;
+    
+    Cylinder(me) returns Cylinder from gp
+      raises NoSuchObject from Standard
+    is virtual;
+    
+    Cone(me) returns Cone from gp
+      raises NoSuchObject from Standard
+    is virtual;
+    
+    Sphere(me) returns Sphere from gp
+      raises NoSuchObject from Standard
+    is virtual;
+    
+    Torus(me) returns Torus from gp
+      raises NoSuchObject from Standard
+    is virtual;
+
+
+    UDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is virtual;
+
+    NbUPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is virtual;
+
+    VDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is virtual;
+
+    NbVPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is virtual;
+    
+    
+    NbUKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is virtual;
+    
+    
+    NbVKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is virtual;
+    
+    
+    IsURational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is virtual;
+    
+    IsVRational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is virtual;
+    
+
+
+    Bezier(me) returns BezierSurface from Geom
+    raises 
+    	NoSuchObject from Standard
+    is virtual;
+    
+    BSpline(me) returns BSplineSurface from Geom
+    raises 
+    	NoSuchObject from Standard
+    is virtual;
+    
+    AxeOfRevolution(me) returns Ax1 from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfRevolution
+    is virtual;
+
+    Direction(me) returns Dir from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfExtrusion
+    is virtual;
+
+    BasisCurve(me) returns HCurve from Adaptor3d
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfExtrusion
+    is virtual;
+
+    BasisSurface(me) returns HSurface from Adaptor3d
+    raises 
+       NoSuchObject from Standard -- only for Offset Surface
+    is virtual;
+
+    OffsetValue(me) returns Real from Standard
+    raises 
+       NoSuchObject from Standard -- only for Offset Surface
+    is virtual;
+	
+end Surface;
+
+
+
+
+
+
+
+

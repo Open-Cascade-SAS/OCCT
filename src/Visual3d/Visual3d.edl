@@ -1,0 +1,10 @@
+--
+-- File:	Visual3d.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:25:43 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %Visual3d_EDL) then
+  @set %Visual3d_EDL = "";
+@endif;

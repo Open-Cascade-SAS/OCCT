@@ -1,0 +1,47 @@
+-- File:	Draw_Chronometer.cdl
+-- Created:	Mon Aug 16 11:36:24 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Chronometer from Draw inherits Drawable3D from Draw
+
+	---Purpose: Class to store chronometer variables.
+
+uses
+
+    Timer from OSD,
+    Display from Draw,
+    Interpretor from Draw
+
+is
+
+    Create returns mutable Chronometer from Draw;
+    
+    
+    Timer(me : mutable) returns Timer from OSD
+	---C++: return &
+    is static;
+
+    DrawOn(me; dis : in out Display);
+	---Purpose: Does nothhing,
+    
+    Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+    is redefined;
+	
+    Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+    is redefined;
+
+    Whatis(me;  I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command.
+    is redefined;
+
+fields
+
+    myTimer : Timer from OSD;
+
+end Chronometer;

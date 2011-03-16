@@ -1,0 +1,73 @@
+-- File:	BOP_EdgeInfo.cdl
+-- Created:	Mon Apr  9 10:22:48 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class EdgeInfo from BOP 
+
+    	---Purpose: 
+    	---  The  auxiliary class to store data about edges 
+    	---  that have common vertex         	 
+	--- 
+uses
+    Edge from TopoDS 
+    
+--raises
+
+is 
+    Create 
+    	returns EdgeInfo from BOP;
+    	---Purpose:  
+    	--- Empty constructor;  
+    	---
+    SetEdge   (me:out; 
+    	        aE:Edge from TopoDS); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetPassed (me:out;   
+    	        aFlag:Boolean from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetAngle  (me:out;   
+    	        anAngle:Real from Standard);  
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetInFlag (me:out;   
+    	        aFlag:Boolean from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    Edge      (me) 
+    	returns Edge from TopoDS; 
+    	---C++:  return const & 
+    	---Purpose: 
+    	--- Selector
+    	---
+    Passed    (me) 
+	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+    Angle     (me) 
+	returns Real from Standard;      
+    	---Purpose: 
+    	--- Selector
+    	---
+    IsIn      (me) 
+    	returns Boolean from Standard;  
+    	---Purpose: 
+    	--- Selector
+    	---
+fields  
+
+    myEdge  : Edge from TopoDS; 
+    myPassed: Boolean from Standard; 
+    myInFlag: Boolean from Standard; 
+    myAngle : Real from Standard;     
+     
+end EdgeInfo;

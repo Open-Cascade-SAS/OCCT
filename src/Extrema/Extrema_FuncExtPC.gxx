@@ -1,0 +1,177 @@
+#include <Standard_TypeMismatch.hxx>
+  
+#define delta 1.e-9
+#define Tol   1.e-20
+
+/*-----------------------------------------------------------------------------
+ Fonction permettant de rechercher une distance extremale entre un point P et
+une courbe C (en partant d'un point approche C(u0)).
+ Cette classe herite de math_FunctionWithDerivative et est utilisee par
+les algorithmes math_FunctionRoot et math_FunctionRoots.
+ Si on note D1c et D2c les derivees premiere et seconde:
+  { F(u) = (C(u)-P).D1c(u)/ ||Du||}
+  { DF(u) = ||Du|| + (C(u)-P).D2c(u)/||Du|| - F(u)*Duu*Du/||Du||**2
+
+
+  { F(u) = (C(u)-P).D1c(u) }
+  { DF(u) = D1c(u).D1c(u) + (C(u)-P).D2c(u)
+          = ||D1c(u)|| ** 2 + (C(u)-P).D2c(u) }
+----------------------------------------------------------------------------*/
+
+
+Extrema_FuncExtPC::Extrema_FuncExtPC():
+myU(0.),
+myD1f(0.) 
+{ 
+  myPinit = Standard_False;
+  myCinit = Standard_False;
+  myD1Init = Standard_False;
+}
+
+//=============================================================================
+
+Extrema_FuncExtPC::Extrema_FuncExtPC (const Pnt& P, 
+				      const Curve& C):
+myU(0.),
+myD1f(0.) 
+{
+  myP = P;
+  myC = (Standard_Address)&C;
+  myPinit = Standard_True;
+  myCinit = Standard_True;
+  myD1Init = Standard_False;
+}
+//=============================================================================
+
+void Extrema_FuncExtPC::Initialize(const Curve& C)
+{
+  myC = (Standard_Address)&C;
+  myCinit = Standard_True;
+  myPoint.Clear();
+  mySqDist.Clear();
+  myIsMin.Clear();
+}
+
+//=============================================================================
+
+void Extrema_FuncExtPC::SetPoint(const Pnt& P)
+{
+  myP = P;
+  myPinit = Standard_True;
+  myPoint.Clear();
+  mySqDist.Clear();
+  myIsMin.Clear();
+}
+
+//=============================================================================
+
+Standard_Boolean Extrema_FuncExtPC::Value (const Standard_Real U, Standard_Real& F)
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  myU = U;
+  Vec D1c;
+  Tool::D1(*((Curve*)myC),myU,myPc,D1c);
+  Standard_Real Ndu = D1c.Magnitude();
+  if (Ndu <= Tol) { // Cas Singulier (PMN 22/04/1998)
+    Pnt P1, P2;
+    P2 = Tool::Value(*((Curve*)myC),myU+delta);
+    P1 = Tool::Value(*((Curve*)myC),myU-delta);
+    Vec V(P1,P2);
+    D1c = V;
+    Ndu = D1c.Magnitude();
+    if (Ndu <= Tol) {
+      return Standard_False;
+    }
+  }
+  Vec PPc (myP,myPc);
+  F = PPc.Dot(D1c)/Ndu;
+  return Standard_True;
+}
+
+//=============================================================================
+
+Standard_Boolean Extrema_FuncExtPC::Derivative (const Standard_Real U, Standard_Real& D1f)
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  Standard_Real F;
+  return Values(U,F,D1f);  /* on fait appel a Values pour simplifier la
+			      sauvegarde de l'etat. */
+}
+//=============================================================================
+
+Standard_Boolean Extrema_FuncExtPC::Values (const Standard_Real U, Standard_Real& F, Standard_Real& D1f)
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  myU = U;
+  Vec D1c,D2c;
+  Tool::D2(*((Curve*)myC),myU,myPc,D1c,D2c);
+
+  Standard_Real Ndu = D1c.Magnitude();
+  if (Ndu <= Tol) {// Cas Singulier (PMN 22/04/1998)
+    Pnt P1, P2;
+    Vec V1;
+    Tool::D1(*((Curve*)myC),myU+delta, P2, V1);
+    Tool::D1(*((Curve*)myC),myU-delta, P1, D2c);
+    Vec V(P1,P2);
+    D1c = V;
+    D2c -= V1;
+    Ndu = D1c.Magnitude();
+    if (Ndu <= Tol) {
+      myD1Init = Standard_False;
+      return Standard_False;
+    }
+  }
+  
+  Vec PPc (myP,myPc);
+  F = PPc.Dot(D1c)/Ndu;
+  D1f = Ndu + (PPc.Dot(D2c)/Ndu) - F*(D1c.Dot(D2c))/(Ndu*Ndu);
+
+  myD1f = D1f;
+  myD1Init = Standard_True;
+  return Standard_True;
+}
+//=============================================================================
+
+Standard_Integer Extrema_FuncExtPC::GetStateNumber ()
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  mySqDist.Append(myPc.SquareDistance(myP));
+  Standard_Integer IntVal;
+  if (!myD1Init) {
+    myD1Init = Standard_True;
+    Standard_Real FF, DD;
+    Values(myU, FF, DD);
+  }
+  if (!myD1Init) IntVal = 0;
+  else {
+    if (myD1f > 0.) { IntVal = 1; }
+    else { IntVal = 0; }
+  }
+  myIsMin.Append(IntVal);
+  myPoint.Append(POnC(myU,myPc));
+  return 0;
+}
+//=============================================================================
+
+Standard_Integer Extrema_FuncExtPC::NbExt () const { return mySqDist.Length(); }
+//=============================================================================
+
+Standard_Real Extrema_FuncExtPC::SquareDistance (const Standard_Integer N) const
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  return mySqDist.Value(N);
+}
+//=============================================================================
+Standard_Boolean Extrema_FuncExtPC::IsMin (const Standard_Integer N) const
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  return (myIsMin.Value(N) == 1);
+}
+//=============================================================================
+POnC Extrema_FuncExtPC::Point (const Standard_Integer N) const
+{
+  if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
+  return myPoint.Value(N);
+}
+//=============================================================================
+

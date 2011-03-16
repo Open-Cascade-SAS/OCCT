@@ -1,0 +1,144 @@
+// --------------------------------------------------------------------
+//
+// HArray2 Implementation :
+//
+// Last Revision : Feb,10 1992 J.P Tirault
+//                 Implementation of ShallowCopy, ShallowDump
+//                 methods.
+// --------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------
+//                            Exceptions raised
+// --------------------------------------------------------------------
+#include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_NotImplemented.hxx>
+
+// --------------------------------------------------------------------
+//                            Constructor 
+// --------------------------------------------------------------------
+PCollection_HArray2::PCollection_HArray2 
+      (const Standard_Integer R1, 
+       const Standard_Integer R2, 
+       const Standard_Integer C1, 
+       const Standard_Integer C2) : Data( (C2-C1+1)*(R2-R1+1) )
+{
+  Standard_RangeError_Raise_if((C2-C1+1 <= 0  || R2-R1+1 <= 0 ),
+		  "Attempt to create a Double Array with negative size");
+
+  myLowerRow = R1;
+  myLowerCol = C1;
+  myUpperRow = R2;
+  myUpperCol = C2;
+
+}
+
+// ----------------------------------------------------------------------
+//                 datas
+// ----------------------------------------------------------------------
+
+Standard_Address PCollection_HArray2::Datas() const
+{
+  return ((Standard_Address)Data.Lock());
+}
+
+
+// --------------------------------------------------------------------
+//                            Constructor 
+// --------------------------------------------------------------------
+PCollection_HArray2::PCollection_HArray2 
+                         (const Standard_Integer R1, 
+                          const Standard_Integer R2,
+                          const Standard_Integer C1, 
+                          const Standard_Integer C2, 
+                          const Item& V) : Data ( (C2-C1+1)*(R2-R1+1) )
+{
+  Standard_RangeError_Raise_if((C2-C1+1 <= 0  || R2-R1+1 <= 0 ),
+		  "Attempt to create a Double Array with negative size");
+
+  myLowerRow = R1;
+  myLowerCol = C1;
+  myUpperRow = R2;
+  myUpperCol = C2;
+  Standard_Integer Size = Data.Length();
+
+  for (Standard_Integer I = 0; I < Size ; I++) Data.SetValue(I,V); 
+}
+
+
+// --------------------------------------------------------------------
+//                            Destructor : Not Implemented
+// --------------------------------------------------------------------
+
+/*
+void PCollection_HArray2::~PCollection_HArray2 () 
+{
+	delete Data ;
+}
+*/
+
+// --------------------------------------------------------------------
+//                            ShallowCopy
+// --------------------------------------------------------------------
+Handle(Standard_Persistent) PCollection_HArray2::ShallowCopy() const
+{
+  PCollection_HArray2* TheCopy = new PCollection_HArray2(*this);
+//  PCollection_FieldOfHArray2 DataCopy (Data);
+//  TheCopy->Data = DataCopy;
+  return TheCopy;
+}
+
+// --------------------------------------------------------------------
+//                            ShallowDump
+// --------------------------------------------------------------------
+void PCollection_HArray2::ShallowDump(Standard_OStream& S) const
+{
+  ::ShallowDump(Data,S);
+}
+
+
+
+
+
+/* Anciens INLINE */
+
+// --------------------------------------------------------------------
+//                            SetValue
+// --------------------------------------------------------------------
+void PCollection_HArray2::SetValue ( const Standard_Integer Row,
+                                         const Standard_Integer Col,
+                                         const Item& Value)
+{
+  Standard_OutOfRange_Raise_if((Row <myLowerRow || Row > myUpperRow ||
+                                Col <myLowerCol || Col > myUpperCol),
+                               "Index out of range in HArray2::SetValue");
+
+  Data.SetValue((Row-myLowerRow)*(myUpperCol-myLowerCol+1)+
+                (Col-myLowerCol), Value) ;
+}
+
+
+// --------------------------------------------------------------------
+//                            Value
+// --------------------------------------------------------------------
+Item PCollection_HArray2::Value (const Standard_Integer Row,
+                                     const Standard_Integer Col) const
+{
+  Standard_OutOfRange_Raise_if((Row <myLowerRow || Row > myUpperRow ||
+                                Col <myLowerCol || Col > myUpperCol),
+                               "Index out of range in HArray2::SetValue");
+
+  return Data((Row-myLowerRow) * (myUpperCol-myLowerCol+1) +
+              (Col-myLowerCol)) ;
+}
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+PCollection_FieldOfHArray2 PCollection_HArray2::Field () const
+{
+  return Data ;
+}
+   

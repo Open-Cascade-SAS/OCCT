@@ -1,0 +1,101 @@
+-- File:	Voxel_Reader.cdl
+-- Created:	Wed Aug 28 17:23:34 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class Reader from Voxel
+
+    ---Purpose: Reads a cube of voxels from disk.
+    --          Beware, a caller of the reader is responsible for deletion of the read voxels.
+
+uses
+
+    BoolDS          from Voxel,
+    ColorDS         from Voxel,
+    FloatDS         from Voxel,
+    ExtendedString  from TCollection
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns Reader from Voxel;
+
+    Read(me : in out;
+    	 file : ExtendedString from TCollection)
+    ---Purpose: Reads the voxels from disk
+    returns Boolean from Standard;
+
+    IsBoolVoxels(me)
+    ---Purpose: Informs the user about the type of voxels he has read.
+    returns Boolean from Standard;
+
+    IsColorVoxels(me)
+    ---Purpose: Informs the user about the type of voxels he has read.
+    returns Boolean from Standard;
+
+    IsFloatVoxels(me)
+    ---Purpose: Informs the user about the type of voxels he has read.
+    returns Boolean from Standard;
+
+    GetBoolVoxels(me)
+    ---Purpose: Returns a pointer to the read 1bit voxels.
+    returns Address from Standard;
+
+    GetColorVoxels(me)
+    ---Purpose: Returns a pointer to the read 4bit voxels.
+    returns Address from Standard;
+
+    GetFloatVoxels(me)
+    ---Purpose: Returns a pointer to the read 4bytes voxels.
+    returns Address from Standard;
+
+
+    ---Private area
+    -- ============
+
+    ReadBoolAsciiVoxels(me : in out;
+    	    	    	file : ExtendedString from TCollection)
+    ---Purpose: Reads 1bit voxels from disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    ReadColorAsciiVoxels(me : in out;
+    	    	     	 file : ExtendedString from TCollection)
+    ---Purpose: Reads 4bit voxels from disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    ReadFloatAsciiVoxels(me : in out;
+    	    	    	 file : ExtendedString from TCollection)
+    ---Purpose: Reads 4bytes voxels from disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    ReadBoolBinaryVoxels(me : in out;
+    	    	    	 file : ExtendedString from TCollection)
+    ---Purpose: Reads 1bit voxels from disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+    ReadColorBinaryVoxels(me : in out;
+    	    	     	  file : ExtendedString from TCollection)
+    ---Purpose: Reads 4bit voxels from disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+    ReadFloatBinaryVoxels(me : in out;
+    	    	    	  file : ExtendedString from TCollection)
+    ---Purpose: Reads 4bytes voxels from disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+
+fields
+
+    myBoolVoxels  : Address from Standard;
+    myColorVoxels : Address from Standard;
+    myFloatVoxels : Address from Standard;
+
+end Reader;

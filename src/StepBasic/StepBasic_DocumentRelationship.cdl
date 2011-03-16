@@ -1,0 +1,43 @@
+-- File:	StepBasic_DocumentRelationship.cdl
+-- Created:	Tue Jun 30 14:53:18 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class DocumentRelationship  from StepBasic    inherits TShared from MMgt
+
+uses
+     Document from StepBasic,
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable DocumentRelationship;
+
+    Init (me : mutable;
+    	    aName : HAsciiString;
+	    aDescription : HAsciiString;
+	    aRelating : Document;
+	    aRelated  : Document);
+
+    Name (me) returns HAsciiString;
+    SetName (me : mutable; aName : HAsciiString);
+
+    Description (me) returns HAsciiString;
+    SetDescription (me : mutable; aDescription : HAsciiString);
+
+    RelatingDocument (me) returns Document;
+    SetRelatingDocument (me : mutable; aRelating : Document);
+
+    RelatedDocument (me) returns Document;
+    SetRelatedDocument (me : mutable; aRelated : Document);
+
+fields
+
+    theName : HAsciiString;
+    theDescription : HAsciiString;
+    theRelating : Document;
+    theRelated  : Document;
+
+end DocumentRelationship;

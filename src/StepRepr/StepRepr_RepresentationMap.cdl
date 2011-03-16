@@ -1,0 +1,36 @@
+-- File:        RepresentationMap.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RepresentationMap from StepRepr 
+
+inherits TShared from MMgt
+
+uses
+
+	RepresentationItem from StepRepr, 
+	Representation from StepRepr
+is
+
+	Create returns mutable RepresentationMap;
+	---Purpose: Returns a RepresentationMap
+
+	Init (me : mutable;
+	      aMappingOrigin : mutable RepresentationItem from StepRepr;
+	      aMappedRepresentation : mutable Representation from StepRepr) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetMappingOrigin(me : mutable; aMappingOrigin : mutable RepresentationItem);
+	MappingOrigin (me) returns mutable RepresentationItem;
+	SetMappedRepresentation(me : mutable; aMappedRepresentation : mutable Representation);
+	MappedRepresentation (me) returns mutable Representation;
+
+fields
+
+	mappingOrigin : RepresentationItem from StepRepr;
+	mappedRepresentation : Representation from StepRepr;
+
+end RepresentationMap;

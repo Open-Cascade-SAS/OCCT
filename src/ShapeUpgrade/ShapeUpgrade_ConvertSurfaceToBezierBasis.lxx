@@ -1,0 +1,84 @@
+// File:	ShapeUpgrade_ConvertSurfaceToBezierBasis.lxx
+// Created:	Tue Oct  5 16:44:16 1999
+// Author:	data exchange team
+//		<det@hotdox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : SetPlaneMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const Standard_Boolean mode)
+{
+  myPlaneMode = mode;
+}
+
+//=======================================================================
+//function : GetPlaneMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode() const
+{
+  return myPlaneMode;
+}
+
+//=======================================================================
+//function : SetRevolutionMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const Standard_Boolean mode)
+{
+  myRevolutionMode = mode;
+}
+
+//=======================================================================
+//function : GetRevolutionMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionMode() const
+{
+  return myRevolutionMode;
+}
+
+//=======================================================================
+//function : SetExtrusionMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const Standard_Boolean mode)
+{
+  myExtrusionMode = mode;
+}
+
+//=======================================================================
+//function : GetExtrusionMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMode() const
+{
+  return myExtrusionMode;
+}
+
+//=======================================================================
+//function : SetBSplineMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const Standard_Boolean mode)
+{
+  myBSplineMode = mode;
+}
+
+//=======================================================================
+//function : GetBSplineMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetBSplineMode() const
+{
+  return myBSplineMode;
+}

@@ -1,0 +1,43 @@
+-- File:        BoxedHalfSpace.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BoxedHalfSpace from StepShape 
+
+inherits HalfSpaceSolid from StepShape 
+
+uses
+
+	BoxDomain from StepShape, 
+	HAsciiString from TCollection, 
+	Surface from StepGeom, 
+	Boolean from Standard
+is
+
+	Create returns mutable BoxedHalfSpace;
+	---Purpose: Returns a BoxedHalfSpace
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBaseSurface : mutable Surface from StepGeom;
+	      aAgreementFlag : Boolean from Standard) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBaseSurface : mutable Surface from StepGeom;
+	      aAgreementFlag : Boolean from Standard;
+	      aEnclosure : mutable BoxDomain from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetEnclosure(me : mutable; aEnclosure : mutable BoxDomain);
+	Enclosure (me) returns mutable BoxDomain;
+
+fields
+
+	enclosure : BoxDomain from StepShape;
+
+end BoxedHalfSpace;

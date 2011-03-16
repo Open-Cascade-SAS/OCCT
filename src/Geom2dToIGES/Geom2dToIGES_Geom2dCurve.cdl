@@ -1,0 +1,64 @@
+-- File:	Geom2dToIGES_Geom2dCurve.cdl
+-- Created:	Wed Feb  1 15:36:03 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Geom2dCurve from Geom2dToIGES inherits Geom2dEntity from Geom2dToIGES
+
+    ---Purpose: This class implements the transfer of the Curve Entity from Geom2d
+    --          To IGES. These can be :
+    --          Curve
+    --            . BoundedCurve
+    --               * BSplineCurve
+    --               * BezierCurve
+    --               * TrimmedCurve
+    --            . Conic     
+    --               * Circle
+    --               * Ellipse
+    --               * Hyperbloa
+    --               * Line
+    --               * Parabola
+    --            . OffsetCurve     
+  
+
+uses
+
+    Curve                from Geom2d,
+    BoundedCurve         from Geom2d,
+    BSplineCurve         from Geom2d,
+    BezierCurve          from Geom2d,
+    TrimmedCurve         from Geom2d,
+    Conic                from Geom2d,
+    Circle               from Geom2d,
+    Ellipse              from Geom2d,
+    Hyperbola            from Geom2d,
+    Line                 from Geom2d,
+    Parabola             from Geom2d,
+    OffsetCurve          from Geom2d,
+    IGESEntity           from IGESData,
+    Geom2dEntity         from Geom2dToIGES
+    
+    
+is 
+    
+    Create returns Geom2dCurve from Geom2dToIGES;
+
+
+    Create(G2dE : Geom2dEntity from Geom2dToIGES)  
+    	 returns Geom2dCurve from Geom2dToIGES;
+    ---Purpose : Creates a tool Geom2dCurve ready to run and sets its
+    --         fields as G2dE's.
+
+    Transfer2dCurve (me    : in out;
+                     start : Curve from Geom2d;
+		     Udeb  : Real  from Standard;
+		     Ufin  : Real  from Standard)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert  an Entity from Geom2d to IGES. If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+end Geom2dCurve;
+
+

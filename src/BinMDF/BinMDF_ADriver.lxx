@@ -1,0 +1,28 @@
+// File:      BinMDF_ADriver.lxx
+// Created:   29.10.02 19:33:46
+// Author:    Michael SAZONOV
+// Copyright: Open CASCADE 2002
+
+#include <TDF_Attribute.hxx>
+
+//=======================================================================
+//function : SourceType
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Standard_Type)& BinMDF_ADriver::SourceType () const
+{
+  return NewEmpty() -> DynamicType();
+}
+
+//=======================================================================
+//function : TypeName
+//purpose  : 
+//=======================================================================
+
+inline const TCollection_AsciiString& BinMDF_ADriver::TypeName () const
+{
+  if (myTypeName.Length() == 0)
+    (TCollection_AsciiString&)myTypeName += SourceType()->Name();
+  return myTypeName;
+}

@@ -1,0 +1,40 @@
+-- File:        SphericalSurface.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SphericalSurface from StepGeom 
+
+inherits ElementarySurface from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement3d from StepGeom
+is
+
+	Create returns mutable SphericalSurface;
+	---Purpose: Returns a SphericalSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aRadius : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRadius(me : mutable; aRadius : Real);
+	Radius (me) returns Real;
+
+fields
+
+	radius : Real from Standard;
+
+end SphericalSurface;

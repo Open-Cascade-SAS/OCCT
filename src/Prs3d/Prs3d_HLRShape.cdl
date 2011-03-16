@@ -1,0 +1,25 @@
+-- File:	Prs3d_HLRShape.cdl
+-- Created:	Tue Mar  9 09:35:13 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+generic class HLRShape from Prs3d (anyShape          as any;
+    	    	    	    	   HLRShapeTool      as any; 
+				   anyCurve          as any;
+				   CurvePresentation as any) -- as Curve from Prs3d
+				 
+inherits Root from Prs3d
+
+uses
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Projector    from Prs3d
+
+is
+    Add(myclass; aPresentation: Presentation from Prs3d;
+    	    	 aShape       : anyShape;
+                 aDrawer      : Drawer       from Prs3d;
+		 aProjector   : Projector    from Prs3d);
+
+end HLRShape from Prs3d;

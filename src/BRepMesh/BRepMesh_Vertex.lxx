@@ -1,0 +1,19 @@
+// File:	BRepMesh_Vertex.lxx
+// Created:	Thu Sep 23 12:49:00 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+inline const gp_XY&  BRepMesh_Vertex::Coord()const
+{
+  return myUV;
+}
+
+inline Standard_Integer  BRepMesh_Vertex::Location3d()const
+{
+  return myLocation;
+}
+
+inline MeshDS_DegreeOfFreedom  BRepMesh_Vertex::Movability()const
+{
+  return myMovability;
+}

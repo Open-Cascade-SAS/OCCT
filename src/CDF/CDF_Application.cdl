@@ -1,0 +1,214 @@
+-- File:	CDF_Application.cdl
+-- Created:	Thu Aug  7 17:47:28 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class Application from CDF inherits Application from CDM
+
+uses  
+    ExtendedString from TCollection,  
+    ExtendedString from TCollection,  
+    Document from CDM,  
+    Manager from Resource, 
+    MetaData from CDM,  
+    RetrievableStatus  from CDF,  
+    GUID from Standard, 
+    Reader from PCDM,  
+    Writer from PCDM, 
+    TypeOfActivation from CDF, 
+    SequenceOfExtendedString from TColStd, 
+    CanCloseStatus from CDM,  
+    AsciiString from TCollection 
+    
+raises NoSuchObject from Standard
+is
+
+
+    Initialize;
+    
+    Load(myclass; aGUID:GUID from Standard)
+    returns  mutable Application from CDF;
+    ---Purpose: plugs an application.
+    
+
+---Category: Open closing of documents
+---Purpose:
+-- Open is used 
+--       - for opening a Document that has been created in an application
+--       - for opening a Document from the database
+--       - for opening a Document from a file.
+--  The Open methods always add the document in the session directory and 
+--  calls the virtual Activate method. The document is considered to be 
+--  opened until Close is used. To be storable, a document must be 
+--  opened by an application since the application resources are 
+--  needed to store it.
+--          
+--          
+--          
+--          
+    Open(me: mutable; aDocument: Document from CDM);
+    ---Purpose: puts the document in the current session directory
+    --          and calls the virtual method Activate on it.
+    
+    
+    CanClose(me: mutable; aDocument: Document from CDM)
+    returns CanCloseStatus from CDM;
+    
+    Close(me: mutable; aDocument: Document from CDM);
+    ---Purpose: removes the document of the current session directory 
+    --          and closes the document;
+    
+    Retrieve (me: mutable; aFolder, aName: ExtendedString from TCollection; UseStorageConfiguration: Boolean from Standard = Standard_True)
+    returns Document from CDM;
+    ---Purpose: This method retrieves a document from the database. 
+    --          If the Document references other documents which have
+    --          been updated, the latest version of these documents will 
+    --          be used if {UseStorageConfiguration} is Standard_True.
+   --           The content of {aFolder}, {aName} and {aVersion} depends on 
+   --           the Database Manager system. If the DBMS is only based on 
+   --           the OS, {aFolder} is a directory and {aName} is the name of a 
+   --           file. In this case the use of the syntax with {aVersion} 
+   --           has no sense. For example: 
+--
+-- Handle(CDM_Document) theDocument=myApplication->Retrieve("/home/cascade","box.dsg");
+--              If the DBMS is EUCLID/Design Manager, {aFolder}, {aName} 
+--              have the form they have in EUCLID/Design Manager. For example:
+--              
+-- Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box"); 
+-- 
+-- Since  the version is not specified in  this syntax, the  latest wil be used.
+--  A link is kept with the database through an instance of CDM_MetaData
+
+
+    Retrieve (me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection; UseStorageConfiguration: Boolean from Standard = Standard_True)
+    returns Document from CDM;
+    ---Purpose:  This method retrieves  a  document from the database.
+    --          If the  Document references other documents which have
+    --          been  updated, the  latest version of  these documents
+    --           will    be   used  if   {UseStorageConfiguration}  is
+    --          Standard_True.  --  If the DBMS is  only  based on the
+    --           OS, this syntax  should not be used.
+    --           
+--              If the DBMS is EUCLID/Design Manager, {aFolder}, {aName} 
+--              and  {aVersion} have the form they have in 
+--              EUCLID/Design Manager. For example:
+--              
+-- Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box","2");
+--             A link is kept with the database through an instance 
+--             of CDM_MetaData
+
+
+    CanRetrieve(me: mutable; aFolder, aName: ExtendedString from TCollection)
+    ---Purpose:
+    returns RetrievableStatus from CDF;
+    
+    CanRetrieve(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    ---Purpose:
+    returns RetrievableStatus from CDF;
+       
+    Formats(me: mutable; Formats: out SequenceOfExtendedString from TColStd) 
+    is deferred;
+---Category: CurrentDocument methods.
+--           
+
+    GetRetrieveStatus(me) returns RetrievableStatus from CDF; 
+    ---C++: inline     
+    ---Purpose: Checks  status  after  Retrieve 
+     
+   ---Category: Store&Retrieve virtuals methods
+
+    Activate(me: mutable; aDocument: Document from CDM; aTypeOfActivation: TypeOfActivation from CDF)
+    is virtual private;
+    ---Purpose: Informs the  application that aDocument has  been
+    --          activated. A document is activated when it is created or 
+    --          retrieved.
+    --    aTypeOfActivation will be:
+    --            - CDF_TOA_New if the document is a new one 
+    --              (even empty or retrieved from the database for 
+    --              the first time).
+    --            - CDF_TOA_Unchanged if the document was already 
+    --              retrieved but had no changes since the previous retrieval.
+    --            - CDF_TOA_Modified if the document was already 
+    --              retrieved and modified since the previous retrieval.
+    --  You do not need to call <Activate>, but you should  redefine 
+    --  this method to implement application specific behavior.
+
+
+ ---Category:  methods to get storage/retrieval driver.
+ --           
+ --           
+    FindReader(me: mutable; aFileName: ExtendedString from TCollection)
+    returns Boolean from Standard;
+
+
+    Reader(me: mutable; aFileName: ExtendedString from TCollection) 
+    returns Reader from PCDM
+    raises NoSuchObject from Standard;
+    
+    FindReaderFromFormat(me: mutable; aFormat: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    
+    ReaderFromFormat(me: mutable; aFormat: ExtendedString from TCollection) 
+    returns Reader from PCDM
+    raises NoSuchObject from Standard;
+
+    ---Purpose: 
+
+    Format (me : mutable; aFileName :     ExtendedString from TCollection; 
+                          theFormat : out ExtendedString from TCollection)
+    ---Purpose: try to  retrieve a Format  directly in the  file or in
+    --           application   resource  by using   extension. returns
+    --          True if found;
+    returns Boolean from Standard;
+    
+
+
+---Category: Default Storage folder
+--           
+    DefaultFolder(me: mutable) returns ExtString from Standard;
+    
+    SetDefaultFolder(me: mutable; aFolder: ExtString from Standard)
+    returns Boolean from Standard;
+    
+    DefaultExtension(me: mutable) returns ExtString from Standard;
+    
+---Category: private methods
+    Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard)
+    returns mutable Document from CDM
+    is private;
+
+    Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard; IsComponent: Boolean from Standard)
+    returns mutable Document from CDM
+    is private;
+
+    DocumentVersion(me: mutable; theMetaData: MetaData from CDM)
+    returns Integer from Standard
+    is private;
+
+    FindReader(me: mutable; aFileName: ExtendedString from TCollection; PluginIn: out GUID from Standard; ResourceName: out ExtendedString from TCollection)
+    returns Boolean from Standard
+    is private;
+    
+
+    FindReaderFromFormat(me: mutable; aFormat: ExtendedString from TCollection; PluginIn: out GUID from Standard; ResourceName: out ExtendedString from TCollection)
+    returns Boolean from Standard
+    is private;
+    
+    TypeOfActivation(me: mutable; aMetaData: MetaData from CDM)
+    returns TypeOfActivation from CDF
+    is private;
+
+    CanRetrieve(me: mutable; aMetaData: MetaData from CDM)
+    returns RetrievableStatus from CDF
+    is private;
+fields
+
+    myDefaultFolder: ExtendedString from TCollection; 
+    myRetrievableStatus :  RetrievableStatus from CDF  is protected; 
+    
+friends 
+    class Session from CDF--,
+    --class CheckDocumentToStore from CDF 
+
+end Application from CDF;

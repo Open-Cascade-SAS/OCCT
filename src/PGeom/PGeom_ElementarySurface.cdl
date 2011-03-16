@@ -1,0 +1,50 @@
+-- File:	PGeom_ElementarySurface.cdl
+-- Created:	Tue Mar  2 10:11:08 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class ElementarySurface from PGeom inherits Surface from PGeom
+
+        ---Purpose :  This class defines  the general behaviour of the
+        --         following    elementary      surfaces    :   Plane,
+        --         CylindricalSurface,                 ConicalSurface,
+        --         SphericalSurface, ToroidalSurface.
+        --  
+        --  All these entities are located in 3D space with an axis
+        --  placement (Location point, XAxis, YAxis, ZAxis). It is 
+        --  their local coordinate system.
+        --  
+	---See Also : ElementarySurface from Geom.
+
+uses Ax3     from gp
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+    	---Level: Internal 
+
+
+    Initialize(aPosition : Ax3 from gp);
+	---Purpose: Initializes the fields with these values.
+    	---Level: Internal 
+
+
+  Position (me: mutable; aPosition : Ax3 from gp);
+       ---Purpose :  Set the field position with <aPosition>.
+    	---Level: Internal 
+
+
+  Position (me)  returns Ax3 from gp;
+        --- Purpose : Returns the value of the field position.
+    	---Level: Internal 
+
+
+fields
+
+  position               : Ax3     from gp      is protected;
+
+end;

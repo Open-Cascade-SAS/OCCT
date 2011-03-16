@@ -1,0 +1,218 @@
+-- File:	BRepOffset_MakeOffset.cdl
+-- Created:	Thu Oct 26 18:06:41 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+-- Modified by skv - Tue Mar 15 16:17:37 2005
+-- Add methods for supporting history.
+
+class MakeOffset from BRepOffset 
+
+	---Purpose: 
+
+uses
+    Image                from BRepAlgo,
+    AsDes                from BRepAlgo,
+    Analyse              from BRepOffset,
+    Mode                 from BRepOffset,
+    DataMapOfShapeOffset from BRepOffset, 
+    Error                from BRepOffset,
+    Inter3d              from BRepOffset,
+    DataMapOfShapeReal   from TopTools,
+    Shape                from TopoDS,
+    JoinType             from GeomAbs,
+    Face                 from TopoDS,
+    Edge                 from TopoDS,
+    MapOfShape           from TopTools, 
+    ListOfShape          from TopTools,
+    MakeLoops            from BRepOffset
+
+is
+
+    Create;
+    
+    Create ( S            : Shape    from TopoDS;
+             Offset       : Real     from Standard;
+	     Tol          : Real     from Standard;
+	     Mode         : Mode     from BRepOffset = BRepOffset_Skin;
+    	     Intersection : Boolean  from Standard   = Standard_False;
+	     SelfInter    : Boolean  from Standard   = Standard_False;
+             Join         : JoinType from GeomAbs    = GeomAbs_Arc;
+	     Thickening   : Boolean  from Standard   = Standard_False)
+    returns MakeOffset from BRepOffset;	     
+	     
+---Category: Initialization.
+
+    Initialize (me : in out;
+    	        S            : Shape    from TopoDS;
+                Offset       : Real     from Standard;
+		Tol          : Real     from Standard;
+	        Mode         : Mode     from BRepOffset = BRepOffset_Skin;
+    	        Intersection : Boolean  from Standard   = Standard_False;
+		SelfInter    : Boolean  from Standard   = Standard_False;
+                Join         : JoinType from GeomAbs    = GeomAbs_Arc; 
+		Thickening   : Boolean  from Standard   = Standard_False)
+    is static;
+    
+    Clear (me : in out) 
+    is static;
+
+    AddFace (me : in out; F  : Face from TopoDS) is static;
+    	---Purpose: Add Closing Faces,  <F>  has to be  in  the initial
+    	--          shape S.
+      
+    SetOffsetOnFace (me  : in out; 
+    	    	     F   : Face from TopoDS;
+    	    	     Off : Real from Standard) is static;
+    	---Purpose: set the offset <Off> on the Face <F> 
+
+    
+---Category: Computation.
+    
+    MakeOffsetShape (me : in out) is static;
+    
+    MakeThickSolid  (me : in out) is static;
+    
+---Category: Querying.
+           
+    GetAnalyse(me) 
+    	---C++: return const &
+    returns Analyse from BRepOffset
+    is static;
+
+    IsDone (me) returns Boolean from Standard
+    is static;
+    
+    Shape (me) 
+    	---C++: return const &
+    returns Shape from TopoDS
+    is static;
+
+    Error (me) returns Error from BRepOffset;
+    	---Purpose: returns information if IsDone() = FALSE.
+ 			    
+
+    OffsetFacesFromShapes (me)
+	---Purpose: Returns <Image> containing links between initials
+ 	--          shapes and offset faces.
+ 	---C++: return const &
+    returns Image from BRepAlgo
+    is static;    
+    
+-- Modified by skv - Tue Mar 15 16:17:37 2005 Begin
+-- Query offset join type.
+
+    GetJoinType(me) 
+    	---Purpose: Returns myJoin.
+    returns JoinType from GeomAbs 
+    is static;
+ 
+-- Add methods for supporting history.
+
+    OffsetEdgesFromShapes (me)
+	---Purpose: Returns <Image> containing links between initials
+ 	--          shapes and offset edges.
+ 	---C++: return const &
+    returns Image from BRepAlgo
+    is static;    
+    
+-- Modified by skv - Tue Mar 15 16:17:37 2005 End
+
+    ClosingFaces (me)   
+    	---Purpose: Returns the list of closing faces stores by AddFace 
+	---C++: return const &
+    returns MapOfShape from TopTools
+    is static;
+
+---Category: private methods
+
+    BuildOffsetByArc ( me : in out )
+    is static private; 
+    
+    BuildOffsetByInter ( me : in out )
+    is static private;
+       
+    SelfInter  (me    : in out ; 
+    	        Modif : in out MapOfShape from TopTools)
+    is static private;		
+    
+    Intersection3D (me        : in out;
+    	    	    Inter     : in out Inter3d from BRepOffset)
+    is static private;		    
+		    
+    Intersection2D ( me       : in out ;
+                     Modif    : MapOfShape from TopTools;
+		     NewEdges : MapOfShape from TopTools)
+    is static private;
+    
+    MakeLoops ( me    : in out ;
+                Modif : in out MapOfShape from TopTools)
+    is static private;
+
+    MakeLoopsOnContext ( me    : in out ;
+                         Modif : in out MapOfShape from TopTools)
+    is static private;
+    
+    MakeFaces ( me    : in out ;
+                Modif : in out MapOfShape from TopTools)
+    is static private;
+    
+    MakeShells (me    : in out )
+    is static private;
+
+    SelectShells (me : in out)
+    is static private;
+	
+    EncodeRegularity( me : in out)
+    is static private;
+
+    MakeSolid (me : in out)
+    is static private;
+    
+    ToContext (me    : in out;
+    	       MapSF : in out DataMapOfShapeOffset from BRepOffset)
+    is static private;	
+    
+    UpdateFaceOffset (me: in out) 
+	---Purpose: Private method use to update the map face<->offset
+    is static private; 
+     
+    CorrectConicalFaces (me: in out)
+	---Purpose: Private method used to correct degenerated edges on conical faces
+    is static private; 
+
+    MakeMissingWalls (me: in out)
+	---Purpose: Private method used to build walls for thickening the shell
+    is static private; 
+
+fields
+
+    myOffset         : Real       from Standard;
+    myTol            : Real       from Standard;
+    myShape          : Shape      from TopoDS;     -- Initial
+    myMode           : Mode       from BRepOffset;
+    myInter          : Boolean    from Standard;
+    mySelfInter      : Boolean    from Standard;
+    myJoin           : JoinType   from GeomAbs; 
+    myThickening     : Boolean    from Standard;
+     
+    myFaceOffset     : DataMapOfShapeReal from TopTools;
+    
+    myFaces          : MapOfShape from TopTools;
+    myAnalyse        : Analyse	  from BRepOffset;
+    
+    myOffsetShape    : Shape       from TopoDS;       -- Result
+    myInitOffsetFace : Image       from BRepAlgo;
+    myInitOffsetEdge : Image       from BRepAlgo;
+    myImageOffset    : Image       from BRepAlgo; 
+    myWalls          : ListOfShape from TopTools;
+    myAsDes          : AsDes       from BRepAlgo;
+ 
+    myDone           : Boolean  from Standard;
+    myError          : Error    from BRepOffset;
+    
+    myMakeLoops      : MakeLoops from BRepOffset;
+    
+end MakeOffset;

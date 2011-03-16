@@ -1,0 +1,133 @@
+-- File:	StdPrs_WFDeflectionRestrictedFace.cdl
+-- Created:	Mon Aug  7 10:18:39 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class WFDeflectionRestrictedFace from StdPrs
+	  
+inherits Root from Prs3d
+	 
+
+	---Purpose: A framework to provide display of U and V
+    	-- isoparameters of faces, while allowing you to impose
+    	-- a deflection on them.
+
+uses
+    HSurface             from BRepAdaptor,
+    Presentation         from Prs3d,
+    Drawer               from Prs3d,
+    Length               from Quantity, 
+    NListOfSequenceOfPnt from Prs3d
+
+    
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+        	 aFace        : HSurface     from BRepAdaptor;
+    	    	 aDrawer      : Drawer       from Prs3d);
+	---Purpose: Defines a display featuring U and V isoparameters.
+    	-- Adds the surface aFace to the
+    	-- StdPrs_WFRestrictedFace algorithm. This face is
+    	-- found in a shape in the presentation object
+    	-- aPresentation, and its display attributes - in
+    	-- particular, the number of U and V isoparameters - are
+    	-- set in the attribute manager aDrawer.
+    	-- aFace is BRepAdaptor_HSurface surface created
+    	-- from a face in a topological shape.   which is passed
+    	-- as an argument through the
+    	-- BRepAdaptor_HSurface surface created from it.
+    	-- This is what allows the topological face to be treated
+    	-- as a geometric surface.	 
+    
+    AddUIso(myclass; aPresentation: Presentation from Prs3d; 
+        	     aFace        : HSurface     from BRepAdaptor;
+    	    	     aDrawer      : Drawer       from Prs3d);
+    	---Purpose:	Defines a display featuring U isoparameters
+    	-- respectively. Add the surface aFace to the
+    	-- StdPrs_WFRestrictedFace algorithm. This face
+    	-- is found in a shape in the presentation object
+    	-- aPresentation, and its display attributes - in
+    	-- particular, the number of U isoparameters -
+    	-- are set in the attribute manager aDrawer.
+    	-- aFace is BRepAdaptor_HSurface surface
+    	-- created from a face in a topological shape.   which
+    	-- is passed to the function as an argument through
+    	-- the BRepAdaptor_HSurface surface created from
+    	-- it. This is what allows the topological face to be
+    	-- treated as a geometric surface.
+        
+    AddVIso(myclass; aPresentation: Presentation from Prs3d; 
+        	     aFace        : HSurface     from BRepAdaptor;
+    	    	     aDrawer      : Drawer       from Prs3d);
+    	---Purpose:	Defines a display featuring V isoparameters
+    	-- respectively. Add the surface aFace to the
+    	-- StdPrs_WFRestrictedFace algorithm. This face
+    	-- is found in a shape in the presentation object
+    	-- aPresentation, and its display attributes - in
+    	-- particular, the number of V isoparameters -
+    	-- are set in the attribute manager aDrawer.
+    	-- aFace is BRepAdaptor_HSurface surface
+    	-- created from a face in a topological shape.   which
+    	-- is passed to the function as an argument through
+    	-- the BRepAdaptor_HSurface surface created from
+    	-- it. This is what allows the topological face to be
+    	-- treated as a geometric surface.
+    
+    Add(myclass;  aPresentation: Presentation from Prs3d; 
+    	          aFace        : HSurface     from BRepAdaptor;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  Deflection   : Length       from Quantity;
+		  NBUiso,NBViso: Integer      from Standard;
+		  aDrawer      : Drawer       from Prs3d; 
+    	    	  Curves       : out NListOfSequenceOfPnt from Prs3d);
+	---Purpose: Defines a display of a delection-specified face. The
+    	-- display will feature U and V isoparameters.
+    	-- Adds the topology aShape to the
+    	-- StdPrs_WFRestrictedFace algorithm. This shape is
+    	-- found in the presentation object aPresentation, and
+    	-- its display attributes - except the number of U and V
+    	-- isoparameters - are set in the attribute manager aDrawer.
+    	-- The function sets the number of U and V
+    	-- isoparameters, NBUiso and NBViso, in the shape. To
+    	-- do this, the arguments DrawUIso and DrawVIso must be true.
+    	-- aFace is BRepAdaptor_HSurface surface created
+    	-- from a face in a topological shape.   which is passed
+    	-- as an argument through the
+    	-- BRepAdaptor_HSurface surface created from it.
+    	-- This is what allows the topological face to be treated
+    	-- as a geometric surface.  
+	-- Curves give a sequence of face curves, it is used if the PrimitiveArray  
+        -- visualization approach is activated (it is activated by default).
+        
+    Match(myclass; X,Y,Z    : Length   from Quantity;
+                   aDistance: Length   from Quantity;
+        	   aFace    : HSurface from BRepAdaptor;
+    	    	   aDrawer  : Drawer   from Prs3d)
+    returns Boolean from Standard;
+		 
+    MatchUIso(myclass; X,Y,Z    : Length   from Quantity;
+                       aDistance: Length   from Quantity;
+        	       aFace    : HSurface from BRepAdaptor;
+    	    	       aDrawer  : Drawer   from Prs3d)
+    returns Boolean from Standard;
+		 
+    MatchVIso(myclass; X,Y,Z    : Length   from Quantity;
+                       aDistance: Length   from Quantity;
+         	       aFace    : HSurface from BRepAdaptor;
+    	    	       aDrawer  : Drawer   from Prs3d)
+    returns Boolean from Standard;
+		 
+
+    Match(myclass;X,Y,Z        : Length       from Quantity;
+                  aDistance    : Length       from Quantity;
+    	          aFace        : HSurface     from BRepAdaptor; 
+    	    	  aDrawer      : Drawer       from Prs3d;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  aDeflection  : Length       from Quantity;
+		  NBUiso,NBViso: Integer      from Standard)
+
+    returns Boolean from Standard;	  
+		   
+end WFDeflectionRestrictedFace;
+

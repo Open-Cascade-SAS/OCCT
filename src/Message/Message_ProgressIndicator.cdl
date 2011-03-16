@@ -1,0 +1,182 @@
+-- File:	Message_ProgressIndicator.cdl
+-- Created:	Wed Feb 20 13:43:47 2002
+-- Author:	Andrey BETENEV
+--		<abv@doomox>
+---Copyright:	Open CASCADE SA 2002
+
+
+deferred class ProgressIndicator from Message inherits TShared from MMgt
+
+    ---Purpose: Defines abstract interface from program to the "user".
+    --          That includes progress indication and user break mechanisms
+    --
+    --          The interface to progress indicator represents it as a scale 
+    --          for each range and step can be defined by the program that uses it.
+    --          The scale can be made "infinite", which means it will grow
+    --          non-linearly, end of scale will be approached asymptotically at
+    --          infinite number of steps. In that case value of scale range 
+    --          gives a number of steps corresponding to position at 1/2 of scale.
+    --          The current position can be either set directly (in a range from
+    --          current position to maximum scale value), or incremented step 
+    --          by step.
+    --
+    --          Progress indication mechanism is adapted for convenient
+    --          usage in hiererchical processes that require indication of
+    --          progress at several (sub)levels of the process. 
+    --          For that purpose, it is possible to create restricted sub-scope of
+    --          indication by specifying part of a current scale that is to be 
+    --          used by the subprocess.
+    --          When subprocess works with progress indicator in the restricted
+    --          scope, it has the same interface to a scale, while actually it 
+    --          deals only with part of the whole scale. 
+    --
+    --          NOTE: 
+    --             Currently there is no support for concurrent progress 
+    --             indicator that could be useful in multithreaded applications.
+    --             The main reason for this is that such implementation would be 
+    --             too complex regarding forecasted lack of real need for such 
+    --             support.
+    --             To support this it would require that ProgressScale keep its
+    --             own position and take care of incrementing main ProgressIndicator
+    --             in destructor. This would also require having cross-references
+    --             between nested instances of ProgressScale, ie. potential 
+    --             problems with memory management.
+    --             In case of need of concurrent progress indicator two things can
+    --             be suggested: either creation of single spane with summary number
+    --             of steps, or usage of infinite scale.
+    --
+    --          The user break is implemented as virtual function that might 
+    --          return True in case if break signal from the user is obtained.
+    --
+    --          The derived classes should take care of visualisation of the
+    --          progress indicator (e.g. show total position at the graphical bar,
+    --          and/or print all scopes in text mode), and for implementation
+    --          of user break mechanism (if defined).
+
+uses
+    HAsciiString            from TCollection,
+    ProgressScale           from Message,
+    SequenceOfProgressScale from Message
+is
+
+    ---Scope: Initialisations
+    
+    Initialize returns mutable ProgressIndicator from Message;
+    	---Purpose: Constructor, just calls own Reset() (not yet redefined)
+
+    Reset (me: mutable) is virtual;
+    	---Purpose: Drops all scopes and sets scale from 0 to 100, step 1
+	--          This scale has name "Step"
+
+    ---Scope: Program API
+    
+    ------------------------------------------------------------------
+    -- Management of current scale
+    
+    SetName (me: mutable; name: CString); 
+    	---C++: inline
+    SetName (me: mutable; name: HAsciiString from TCollection);
+    	---C++: inline
+    	---Purpose: Set (optional) name for scale
+	
+    SetRange (me: mutable; min, max: Real); 
+    	---C++: inline
+    	---Purpose: Set range for current scale
+	
+    SetStep (me: mutable; step: Real); 
+    	---C++: inline
+    	---Purpose: Set step for current scale
+	
+    SetInfinite (me: mutable; isInf: Boolean = Standard_True); 
+    	---C++: inline
+    	---Purpose: Set or drop infinite mode for the current scale
+    
+    SetScale (me: mutable; name: CString; min, max, step: Real; isInf: Boolean = Standard_False); 
+    	---C++: inline
+    SetScale (me: mutable; min, max, step: Real; isInf: Boolean = Standard_False); 
+    	---Purpose: Set all parameters for current scale
+    
+    GetScale (me; min, max, step: out Real; isInf: out Boolean); 
+    	---Purpose: Returns all parameters for current scale
+	
+    ------------------------------------------------------------------
+    -- Management of current progress value
+    
+    SetValue (me: mutable; val: Real);
+    GetValue (me) returns Real;
+    	---Purpose: Set and get progress value at current scale
+	--          If the value to be set is more than currently set one, or out
+        --          of range for the current scale, it is limited by that range
+    
+    Increment (me: mutable);
+    	---C++: inline
+    Increment (me: mutable; step: Real);
+    	---C++: inline
+    	---Purpose: Increment the progress value by the default of specified step
+    
+    ------------------------------------------------------------------
+    -- Management of scopes
+
+    NewScope (me: mutable; name: CString = 0) returns Boolean;
+    	---C++: inline
+    NewScope (me: mutable; name: HAsciiString from TCollection) returns Boolean;
+    	---C++: inline
+    NewScope (me: mutable; span: Real; name: CString = 0) returns Boolean;
+    	---C++: inline
+    NewScope (me: mutable; span: Real; name: HAsciiString from TCollection) returns Boolean;
+    	---Purpose: Creates new scope on a part of a current scale from current
+	--          position with span either equal to default step, or specified
+	--          The scale for the new scope will have specified name and
+        --          ranged from 0 to 100 with step 1
+	--          Returns False if something is wrong in arguments or in current
+        --          position of progress indicator; scope is opened anyway
+
+    EndScope (me: mutable) returns Boolean;
+    	---Purpose: Close the current scope and thus return to previous scale
+	--          Updates position to be at the end of the closing scope
+	--          Returns False if no scope is opened
+    
+    NextScope (me: mutable; name: CString = 0) returns Boolean;
+    	---C++: inline
+    NextScope (me: mutable; span: Real; name: CString = 0) returns Boolean;
+    	---Purpose: Optimized version of { return EndScope() && NewScope(); }
+	
+    ------------------------------------------------------------------
+    -- User break mechanism
+    
+    UserBreak (me: mutable) returns Boolean is virtual;
+    	---Purpose: Should return True if user has send a break signal.
+	--          Default implementation returns False.
+
+    
+    ---Scope: Deferred methods to be defined by descendants
+    
+    Show (me: mutable; force: Boolean = Standard_True) returns Boolean is deferred;
+    	---Purpose: Update presentation of the progress indicator
+	--          Called when progress position is changed
+	--          Flag force is intended for forcing update in case if it is
+	--          optimized; all internal calls from ProgressIndicator are 
+        --          done with this flag equal to False
+    
+    ---Scope: Methods to request state of progress indicator (mainly for descendants)
+    
+    GetPosition (me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns total progress position on the basic scale 
+        --          ranged from 0. to 1.
+	
+    GetNbScopes (me) returns Integer;
+    	---Purpose: Returns current number of opened scopes
+	--          This number is always >=1 as top-level scale is always present
+    
+    GetScope (me; index: Integer) returns ProgressScale from Message;
+    	---C++: return const &
+    	---Purpose: Returns data for scale of index-th scope 
+	--          The first scope is current one, the last is the top-level one
+    
+fields
+
+    myPosition: Real;
+    myScopes: SequenceOfProgressScale from Message;
+
+end ProgressIndicator;

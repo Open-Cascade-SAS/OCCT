@@ -1,0 +1,94 @@
+-- File:	GeomFill_BezierCurves.cdl
+-- Created:	Wed Oct  6 10:30:09 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+class BezierCurves from GeomFill
+
+	---Purpose: This class provides an algorithm for constructing a Bezier surface filled from
+    	-- contiguous Bezier curves which form its boundaries.
+    	-- The algorithm accepts two, three or four Bezier curves
+    	-- as the boundaries of the target surface.
+    	-- A range of filling styles - more or less rounded, more or less flat - is available.
+    	-- A BezierCurves object provides a framework for:
+    	-- -   defining the boundaries, and the filling style of the surface
+    	-- -   implementing the construction algorithm
+    	-- -   consulting the result.
+    	-- Warning
+    	-- Some problems may show up with rational curves.
+
+uses
+    BezierCurve    from Geom,
+    BezierSurface  from Geom,
+    FillingStyle  from GeomFill
+
+raises
+    ConstructionError from Standard
+
+is
+    Create;
+    	--- Purpose: Constructs an empty framework for building a Bezier
+    	-- surface from contiguous Bezier curves.
+    	-- You use the Init function to define the boundaries of the surface.   
+    Create( C1, C2, C3, C4 : BezierCurve   from Geom;
+    	    Type           : FillingStyle from GeomFill)
+    returns BezierCurves from GeomFill;
+    	---Purpose: Constructs a framework for building a Bezier surface
+    	-- from the four contiguous Bezier curves, C1, C2, C3 and C4
+    	-- Raises Standard_ConstructionError if the curves are not contiguous.   
+    
+    Create( C1, C2, C3 : BezierCurve   from Geom;
+    	    Type       : FillingStyle from GeomFill)
+    returns BezierCurves from GeomFill;
+    	---Purpose: Constructs a framework for building a Bezier surface
+    	-- from the three contiguous Bezier curves, C1, C2 and C3
+    	-- Raises Standard_ConstructionError if the curves are not contiguous.     
+    Create( C1, C2 : BezierCurve   from Geom;
+    	    Type   : FillingStyle from GeomFill)
+    returns BezierCurves from GeomFill;
+    	---Purpose: Constructs a framework for building a Bezier surface
+    	-- from the two contiguous Bezier curves, C1 and C2
+    	-- Raises Standard_ConstructionError if the curves are not contiguous.        
+    Init( me : in out;
+    	  C1, C2, C3, C4 : BezierCurve   from Geom;
+    	  Type           : FillingStyle from GeomFill)
+    raises
+    	ConstructionError from Standard
+	---Purpose: if the curves cannot be joined
+    is static;
+    
+    Init( me : in out;
+          C1, C2, C3 : BezierCurve   from Geom;
+    	  Type       : FillingStyle from GeomFill)
+    raises
+    	ConstructionError from Standard
+	---Purpose: if the curves cannot be joined
+    is static;
+    
+    Init( me : in out;
+          C1, C2 : BezierCurve   from Geom;
+          Type   : FillingStyle from GeomFill)
+    is static;
+    	---Purpose: Initializes or reinitializes this algorithm with two, three,
+    	-- or four curves - C1, C2, C3, and C4 - and Type, one
+    	-- of the following filling styles:
+    	-- -   GeomFill_Stretch - the style with the flattest patch
+    	-- -   GeomFill_Coons - a rounded style of patch with
+    	--   less depth than that of Curved
+    	-- -   GeomFill_Curved - the style with the most rounded patch.
+    	--  Exceptions
+    	-- Standard_ConstructionError if the curves are not contiguous.    
+    Surface(me) returns BezierSurface from Geom
+    	---Purpose: Returns the Bezier surface resulting from the
+    	-- computation performed by this algorithm.
+    	---C++: return const&
+    	---C++: inline
+    is static;
+    
+fields
+
+    mySurface : BezierSurface from Geom;
+    
+end BezierCurves;

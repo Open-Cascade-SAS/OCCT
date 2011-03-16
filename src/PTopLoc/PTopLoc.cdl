@@ -1,0 +1,48 @@
+-- File:	PTopLoc.cdl
+-- Created:	Wed Mar  3 15:51:14 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+-- Update:      fma
+---Copyright:	 Matra Datavision 1993
+
+
+package PTopLoc 
+
+	---Purpose: The  PTopLoc     package      describes persistent
+	--          structures for 3D local coordinate systems.
+	--          
+	--          The  class Datum3D describes  an  elementary local
+	--          coordinate system.   It is a linear transformation
+	--          (Trsf  from  gp).   The  transformation  is  rigid
+	--          (Rotation +  Translation).
+	--          
+	--          The private    class  ItemLocation represents   an
+	--          elementary  local   coordinate   system  (Datum3D)
+	--          raised to  an Integer power  elevation. It is used
+	--          to link coordinate systems in a Location.
+	--          
+	--          The  class Location  describes a local  coordinate
+	--          system.   It   is  a  chain   of  elementary local
+	--          coordinate systems raised to power elevations. The
+	--          Location keeps track  of how the coordinate system
+	--          was built.
+
+uses
+
+    Standard,
+    gp
+
+is
+    class Datum3D;
+    -- inherits Persistent from Standard
+	---Purpose: Persistent elementary local coordinate system.
+	
+    private class ItemLocation;
+    -- inherits Persistent from Standard
+	---Purpose: Persistent class  used to  implement Locations.
+	
+    class Location;
+    -- inherits Storable from Standard
+	---Purpose: Storable composite local coordinate system.
+
+end PTopLoc;

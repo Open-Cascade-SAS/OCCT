@@ -1,0 +1,299 @@
+//-Copyright:	 Matra Datavision 1992
+//-Version: 
+
+//-History:
+//  Version	Date         Purpose
+//              14/12/92     Creation   
+
+//-Language     C++2.0
+
+//-Declarations
+#include <Standard_OutOfRange.hxx>
+
+//=======================================================================
+// Function : PCollection_HIndexedDataMap
+// Purpose  : 
+//=======================================================================
+
+PCollection_HIndexedDataMap::PCollection_HIndexedDataMap
+  (const Standard_Integer NbBuckets, const KeyHash &fhKey) 
+{
+  myNumber = 0;
+  myArrayKey = new PCollection_ArrayIndexedDataMap(1,NbBuckets);
+  myArrayIndices = new PCollection_ArrayIndexedDataMap(0,NbBuckets-1);
+  myKeyHash = fhKey;
+}
+
+//=======================================================================
+// Function : NbBuckets
+// Purpose  : 
+//=======================================================================
+
+Standard_Integer PCollection_HIndexedDataMap::NbBuckets() const
+{
+  return myArrayKey->Length();
+}
+
+//=======================================================================
+// Function : NbKeys
+// Purpose  : 
+//=======================================================================
+
+Standard_Integer PCollection_HIndexedDataMap::NbKeys() const
+{
+  return myNumber;
+}
+
+//=======================================================================
+// Function : Bind
+// Purpose  : 
+//=======================================================================
+
+Standard_Integer PCollection_HIndexedDataMap::Bind(const Key& aKey,
+				   const Item& anItem,
+				   const Standard_Boolean OverWrite)
+{
+  Standard_Integer theSize = myArrayKey->Length();
+
+  Standard_Integer hcode = myKeyHash.HashCode(aKey,theSize);
+  Handle(PCollection_IndexedDataMapNode) theNode = myArrayKey->Value(hcode);
+  while (! theNode.IsNull()) {
+    if ( myKeyHash.Compare(theNode->GetKey(),aKey)) {
+      // if the Key already exists, update the item and  return the index
+      if (OverWrite) {
+	theNode->SetItem(anItem);
+      }
+      return theNode->Index();
+    }
+   else {
+      theNode = theNode->NextKey();
+    }
+  }
+  
+  // the Key was not Found, create a new Elem
+  myNumber++;
+  Standard_Integer hint = myNumber % theSize;
+  Handle(PCollection_IndexedDataMapNode) theNewNode = 
+   new PCollection_IndexedDataMapNode(aKey, myNumber, anItem,
+	 		            myArrayKey->Value(hcode),
+				    myArrayIndices->Value(hint));
+  myArrayKey->SetValue(hcode,theNewNode);
+  myArrayIndices->SetValue(hint,theNewNode);
+
+  return myNumber;
+}
+
+//=======================================================================
+// Function : FindIndex
+// Purpose  : returns the Index of the Key, 0 if the Key is not stored
+//=======================================================================
+
+Standard_Integer PCollection_HIndexedDataMap::FindIndex(const Key& aKey) const
+{
+  Standard_Integer ResHash;
+  Handle(PCollection_IndexedDataMapNode) theKeyNode;
+
+  // search the Key in the map
+  ResHash = myKeyHash.HashCode(aKey,myArrayKey->Length());
+  theKeyNode = myArrayKey->Value(ResHash);
+  while (! theKeyNode.IsNull()) {
+    if ( myKeyHash.Compare(theKeyNode->GetKey(),aKey))
+      // if the Key already exists stop the search
+      return theKeyNode->Index();
+
+    else
+      // go to next element
+      theKeyNode = theKeyNode->NextKey();
+  }
+  // not found, return 0
+  return 0;
+}
+
+//=======================================================================
+// Function : FindKey
+// Purpose  : 
+//=======================================================================
+
+Key PCollection_HIndexedDataMap::FindKey(const Standard_Integer Index) const
+{
+  // search the index
+  Handle(PCollection_IndexedDataMapNode) theNode = LocateIndex(Index);
+  // get the Key
+  return theNode->GetKey();
+}
+
+//=======================================================================
+// Function : FindItemFromKey
+// Purpose  : return the Item stored with the  Key
+//=======================================================================
+
+Item PCollection_HIndexedDataMap::FindItemFromKey(const Key& aKey) const
+{
+  // find the Key
+  Handle(PCollection_IndexedDataMapNode) theNode = LocateKey(aKey);
+
+  // get the Item
+  return theNode->GetItem();
+}
+
+//=======================================================================
+// Function : FindItemFromIndex
+// Purpose  : Find an Item from the index
+//=======================================================================
+
+Item PCollection_HIndexedDataMap::FindItemFromIndex
+  (const Standard_Integer Index) const
+{
+  // search the index
+  Handle(PCollection_IndexedDataMapNode) theNode = LocateIndex(Index);
+  // get the Item
+  return theNode->GetItem();
+}
+
+//=======================================================================
+// Function : FindIndexAndItem
+// Purpose  : find the index and the Item for a key
+//=======================================================================
+
+void PCollection_HIndexedDataMap::FindIndexAndItem(const Key& aKey,
+					      Standard_Integer& Index,
+					      Item& theItem) const
+{
+  // find the Key
+  Handle(PCollection_IndexedDataMapNode) theNode = LocateKey(aKey);
+
+  // get Index and Item
+  theNode->IndexAndItem(Index,theItem);
+}
+
+//=======================================================================
+// Function : FindKeyAndItem
+// Purpose  : find the Key and the Item for an Index
+//=======================================================================
+
+void PCollection_HIndexedDataMap::FindKeyAndItem(const Standard_Integer Index,
+					    Key& theKey, 
+					    Item& theItem) const
+{
+  // find the index
+  Handle(PCollection_IndexedDataMapNode) TheNode = LocateIndex(Index);
+
+  // get Key and Item
+  TheNode->KeyAndItem(theKey,theItem);
+}
+
+//=======================================================================
+// Function : SetItemToKey
+// Purpose  : change the Item stored with a Key
+//=======================================================================
+
+void PCollection_HIndexedDataMap::SetItemToKey(const Key& aKey,
+					  const Item& anItem)
+{
+  // find the Key
+  Handle(PCollection_IndexedDataMapNode) TheNode = LocateKey(aKey);
+
+  // set the Item
+  TheNode->SetItem(anItem);
+}
+
+//=======================================================================
+// Function : SetItemToIndex
+// Purpose  : change the Item stored with an Index
+//=======================================================================
+
+void PCollection_HIndexedDataMap::SetItemToIndex(const Standard_Integer Index,
+					    const Item& anItem)
+{
+  // find the Key
+  Handle(PCollection_IndexedDataMapNode) TheNode = LocateIndex(Index);
+
+  // set the Item
+  TheNode->SetItem(anItem);
+}
+
+//=======================================================================
+// Function : Clear
+// Purpose  : 
+//=======================================================================
+
+void PCollection_HIndexedDataMap::Clear()
+{
+  Handle(PCollection_IndexedDataMapNode) nullNode,theNode,delNode;
+  Standard_Integer I;
+
+  myNumber = 0;
+
+  for ( I = 0 ; I < myArrayKey->Length() ; I++ ) {
+    theNode = myArrayKey->Value(I+1);
+    myArrayKey->SetValue(I+1,nullNode);
+    myArrayIndices->SetValue(I,nullNode);
+    while ( !theNode.IsNull() ) {
+      delNode = theNode;
+      theNode = theNode->NextKey();
+      delNode->SetNextKey(nullNode);
+      delNode->SetNextIndex(nullNode);
+      delNode.Delete();
+    }
+  }
+}
+
+//=======================================================================
+// Function : IsBound
+// Purpose  : Standard_True if the Map  contains  the Key
+//=======================================================================
+
+Standard_Boolean PCollection_HIndexedDataMap::IsBound(const Key& aKey) const
+{
+  return (FindIndex(aKey) != 0);
+}
+
+//=======================================================================
+// Function : LocateKey
+// Purpose  : find the Map Element containing a Shape, Null if none
+//=======================================================================
+
+Handle(PCollection_IndexedDataMapNode) 
+     PCollection_HIndexedDataMap::LocateKey(const Key& aKey) const
+{
+  Standard_Integer ResHash = myKeyHash.HashCode(aKey,myArrayKey->Length());
+  // search the Key in the map
+  Handle(PCollection_IndexedDataMapNode) theNode = myArrayKey->Value(ResHash);
+  while (! theNode.IsNull()) {
+    if ( myKeyHash.Compare(aKey,theNode->GetKey()))
+      // if the Key already exists stop the search
+      return theNode;
+    else
+      // go to next element
+      theNode = theNode->NextKey();
+  }
+
+  // raises Standard_OutOfRange
+  Standard_OutOfRange::Raise("HIndexedDataMap : Key not in Map");
+  return theNode;
+}
+
+//=======================================================================
+// Function : LocateIndex
+// Purpose  : find the Map Element containing an Index, check bounds
+//=======================================================================
+
+Handle(PCollection_IndexedDataMapNode) PCollection_HIndexedDataMap::LocateIndex
+       (const Standard_Integer Index) const
+{
+  // check bounds
+  if ((Index < 1)||(Index > myNumber))
+  Standard_OutOfRange::Raise("HIndexedDataMap : Bad Index");
+  // search the Index in the map
+  Handle(PCollection_IndexedDataMapNode) theNode = 
+    myArrayIndices->Value(Index % myArrayIndices->Length());
+  // the Index  SHOULD be in the list, so no NULL checking
+  while (theNode->Index() != Index)
+    theNode = theNode->NextIndex();
+
+  // return the element
+  return theNode;
+}
+
+
+

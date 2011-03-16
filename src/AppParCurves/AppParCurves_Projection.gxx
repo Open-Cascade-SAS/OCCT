@@ -1,0 +1,223 @@
+// File AppParCurves_Projection.gxx
+// lpa, le 11/09/91
+
+
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+#include <AppParCurves_Constraint.hxx>
+#include <StdFail_NotDone.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_Array1OfVec2d.hxx>
+#include <PLib.hxx>
+#include <BSplCLib.hxx>
+
+
+
+
+
+AppParCurves_Projection::
+   AppParCurves_Projection(const MultiLine& SSP,
+         const Standard_Integer FirstPoint,
+         const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+         math_Vector& Parameters,
+         const Standard_Integer Deg,
+	 const Standard_Real Tol3d,
+	 const Standard_Real Tol2d,
+	 const Standard_Integer NbIterations):
+	 ParError(FirstPoint, LastPoint,0.0) {
+
+  Standard_Boolean grad = Standard_True;
+  Standard_Integer i, j, k, i2, l;
+  Standard_Real UF, DU, Fval = 0.0, FU, DFU;
+  Standard_Real MErr3d=0.0, MErr2d=0.0, 
+                Gain3d = Tol3d, Gain2d=Tol2d;
+  Standard_Real EC, ECmax = 1.e10, Errsov3d, Errsov2d;
+  Standard_Integer nbP3d = ToolLine::NbP3d(SSP);
+  Standard_Integer nbP2d = ToolLine::NbP2d(SSP);
+  Standard_Integer mynbP3d=nbP3d, mynbP2d=nbP2d;
+  Standard_Integer nbP = nbP3d + nbP2d;
+  gp_Pnt Pt, P1, P2;
+  gp_Pnt2d Pt2d, P12d, P22d;
+  gp_Vec V1, V2, MyV;
+  gp_Vec2d V12d, V22d, MyV2d;
+  
+  if (nbP3d == 0) mynbP3d = 1;
+  if (nbP2d == 0) mynbP2d = 1;
+  TColgp_Array1OfPnt TabP(1, mynbP3d);
+  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
+  TColgp_Array1OfVec TabV(1, mynbP3d);
+  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+
+  // Calcul de la fonction F= somme(||C(ui)-Ptli||2):
+  // Appel a une fonction heritant de MultipleVarFunctionWithGradient
+  // pour calculer F et grad_F.
+  // ================================================================
+
+  AppParCurves_ProFunction MyF(SSP, FirstPoint,LastPoint, TheConstraints, Parameters, Deg);
+
+
+  ECmax = 0.0;
+  // Projection:
+  // ===========
+  MyF.Value(Parameters, Fval);
+  SCU = MyF.CurveValue();
+  Standard_Integer deg = SCU.Degree();
+  TColgp_Array1OfPnt   TabPole(1, deg+1),   TabCoef(1, deg+1);
+  TColgp_Array1OfPnt2d TabPole2d(1, deg+1), TabCoef2d(1, deg+1);
+  TColgp_Array1OfPnt    TheCoef(1, (deg+1)*mynbP3d);
+  TColgp_Array1OfPnt2d  TheCoef2d(1, (deg+1)*mynbP2d);
+
+  
+  for (i = 1; i <= NbIterations; i++) {
+
+    // Stockage des Poles des courbes:
+    // ===============================
+    i2 = 0;
+    for (k = 1; k <= nbP3d; k++) {
+      SCU.Curve(k, TabPole);
+      BSplCLib::PolesCoefficients(TabPole, PLib::NoWeights(),
+				  TabCoef, PLib::NoWeights());
+      for (j=1; j<=deg+1; j++) TheCoef(j+i2) = TabCoef(j);
+      i2 += deg+1;
+    }
+    i2 = 0;
+    for (k = 1; k <= nbP2d; k++) {
+      SCU.Curve(nbP3d+k, TabPole2d);
+      BSplCLib::PolesCoefficients(TabPole2d, PLib::NoWeights(), 
+				  TabCoef2d, PLib::NoWeights());
+      for (j=1; j<=deg+1; j++) TheCoef2d(j+i2) = TabCoef2d(j);
+      i2 += deg+1;
+    }
+    for (j = FirstPoint+1; j <= LastPoint-1; j++) {
+      UF = Parameters(j);
+      if (nbP != 0 && nbP2d != 0) ToolLine::Value(SSP, j, TabP, TabP2d);
+      else if (nbP2d != 0)        ToolLine::Value(SSP, j, TabP2d);
+      else                        ToolLine::Value(SSP, j, TabP);
+      
+      FU = 0.0;
+      DFU = 0.0;
+      i2 = 0;
+      for (k = 1; k <= nbP3d; k++) {
+	for (l=1; l<=deg+1; l++) TabCoef(l) = TheCoef(l+i2);
+	i2 += deg+1;
+	BSplCLib::CoefsD2(UF, TabCoef, PLib::NoWeights(), Pt, V1, V2);
+	MyV = gp_Vec(Pt, TabP(k));
+	FU += MyV*V1;
+	DFU += V1.SquareMagnitude() + MyV*V2;
+      }
+      i2 = 0;
+      for (k = 1; k <= nbP2d; k++) {
+	for (l=1; l<=deg+1; l++) TabCoef2d(l) = TheCoef2d(l+i2);
+	i2 += deg+1;
+	BSplCLib::CoefsD2(UF, TabCoef2d, PLib::NoWeights(), Pt2d, V12d, V22d);
+	MyV2d = gp_Vec2d(Pt2d, TabP2d(k));
+	FU += MyV2d*V12d;
+	DFU += V12d.SquareMagnitude() + MyV2d*V22d;
+      }
+
+      if (DFU <= RealEpsilon()) {
+	// Verification du parametrage:
+	EC = Abs(Parameters(j) - UF);
+	if (EC > ECmax) ECmax = EC;
+	break;
+      }
+
+      DU = -FU/DFU;
+      DU = Sign(Min(5.e-02, Abs(DU)), DU);
+      UF += DU;
+      Parameters(j) = UF;
+    }
+
+    // Test de progression:
+    // ====================
+    Errsov3d = MErr3d;
+    Errsov2d = MErr2d;
+
+    MyF.Value(Parameters, Fval);
+    SCU = MyF.CurveValue();
+    MErr3d = MyF.MaxError3d();
+    MErr2d = MyF.MaxError2d();
+
+    if (MErr3d< Tol3d && MErr2d < Tol2d) {
+      Done = Standard_True;
+      break;
+    }
+    if (MErr3d > 100.0*Tol3d || MErr2d > 100.0*Tol2d) {
+      Done = Standard_False;
+      grad = Standard_False;
+      break;
+    }
+    if (i >= 2) {
+      Gain3d = Abs(Errsov3d-MErr3d);
+      Gain2d = Abs(Errsov2d-MErr2d);
+      if ((MErr3d-Gain3d*(NbIterations-i)*0.5) > Tol3d ||
+	  (MErr2d-Gain2d*(NbIterations-i)*0.5) > Tol2d) {
+	if (Gain3d < Tol3d/(2*NbIterations) &&
+	    Gain2d < Tol2d/(2*NbIterations)) {
+	  break;
+	}
+      }
+    }
+
+  }
+
+
+
+  AvError = 0.;
+  for (j = FirstPoint; j <= LastPoint; j++) {  
+    // Recherche des erreurs maxi et moyenne a un index donne:
+    for (k = 1; k <= nbP; k++) {
+      ParError(j) = Max(ParError(j), MyF.Error(j, k));
+    }
+    AvError += ParError(j);
+  }
+  AvError = AvError/(LastPoint-FirstPoint+1);
+
+
+  MError3d = MyF.MaxError3d();
+  MError2d = MyF.MaxError2d();
+  if (MError3d < Tol3d && MError2d < Tol2d) {
+    Done = Standard_True;
+  }
+
+}
+
+
+
+AppParCurves_MultiCurve AppParCurves_Projection::Value() const {
+  return SCU;
+}
+
+
+Standard_Boolean AppParCurves_Projection::IsDone() const {
+  return Done;
+}
+
+
+Standard_Real AppParCurves_Projection::Error(const Standard_Integer Index) const {
+  return ParError(Index);
+}
+
+Standard_Real AppParCurves_Projection::AverageError() const {
+  return AvError;
+}
+
+Standard_Real AppParCurves_Projection::MaxError3d() const {
+  return MError3d;
+}
+
+Standard_Real AppParCurves_Projection::MaxError2d() const {
+  return MError2d;
+}
+
+

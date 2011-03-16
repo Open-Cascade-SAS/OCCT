@@ -1,0 +1,261 @@
+-- File:	Bisector_BisecPC.cdl
+-- Created:	Mon Jan 10 11:49:47 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class BisecPC from Bisector 
+
+inherits
+
+    Curve from Bisector
+	---Purpose: Provides the bisector between a point and a curve.
+	--          the curvature on the curve has to be monoton.
+	--          the point can't be on the curve exept at the extremitys.
+	--          
+
+uses
+    Shape             from GeomAbs,
+    CurveType         from GeomAbs,
+    Curve             from Geom2d,
+    Geometry          from Geom2d, 
+    Pnt2d             from gp,
+    Vec2d             from gp,
+    SequenceOfReal    from TColStd,
+    Trsf2d            from gp
+
+        
+raises DomainError    from Standard,
+       RangeError        from Standard
+is
+    
+    Create returns mutable BisecPC;
+
+    Create  (Cu      : Curve from Geom2d;
+	     P       : Pnt2d from gp    ;
+             Side    : Real             ;
+    	     DistMax : Real = 500       )
+	     
+    	---Purpose: Constructs the bisector between the point <P> and
+    	--          the curve <Cu>.
+    	--          <Side> = 1. if the bisector curve is on the Left of <Cu>
+    	--          else <Side> = -1.
+    	--          <DistMax> is used to trim the bisector.The distance
+    	--          between the points of the bisector and <Cu> is smaller
+    	--          than <DistMax>.
+    	--          
+    returns mutable BisecPC from Bisector;	
+    
+    Create  (Cu      : Curve from Geom2d;
+	     P       : Pnt2d from gp    ;
+             Side    : Real             ;
+	     UMin    : Real             ;	
+    	     UMax    : Real             )
+	     
+    	---Purpose: Constructs the bisector between the point <P> and
+    	--          the curve <Cu> Trimmed by <UMin> and <UMax>    	
+    	--          <Side> = 1. if the bisector curve is on the Left of <Cu>
+    	--          else <Side> = -1.
+    	--  Warning: the bisector is supposed all over defined between
+    	--          <UMin> and <UMax>. 
+
+    returns mutable BisecPC from Bisector;
+    
+    Perform (me      : mutable          ;
+    	     Cu      : Curve from Geom2d;
+	     P       : Pnt2d from gp    ;
+             Side    : Real             ;
+    	     DistMax : Real = 500       )    	
+	     
+    	---Purpose: Construct the bisector between the point <P> and
+    	--          the curve <Cu>.
+    	--          <Side> = 1. if the bisector curve is on the Left of <Cu>
+    	--          else <Side> = -1.  
+    	--          <DistMax> is used to trim the bisector.The distance
+    	--          between the points of the bisector and <Cu> is smaller
+    	--          than <DistMax>.
+	     
+    is static;	     
+
+
+
+    IsExtendAtStart (me) returns Boolean from Standard
+	---Purpose: Returns True if the bisector is extended at start.         
+    is static;
+    
+    IsExtendAtEnd   (me) returns Boolean from Standard
+	---Purpose: Returns True if the bisector is extended at end.    
+    is static;
+    
+    Reverse (me : mutable)
+   	--- Purpose :
+        --  Changes the direction of parametrization of <me>. 
+        --  The orientation  of the curve is modified. If the curve
+        --  is bounded the StartPoint of the initial curve becomes the
+        --  EndPoint of the reversed curve  and the EndPoint of the initial
+        --  curve becomes the StartPoint of the reversed curve.
+    is static;
+    
+    ReversedParameter(me; U : Real) returns Real	
+    	---Purpose: Returns the  parameter on the  reversed  curve for
+	--          the point of parameter U on <me>.
+    is static;
+    
+    Copy (me)  returns mutable like me   
+    is static;
+    
+    Transform (me : mutable; T : Trsf2d) 
+        --- Purpose :
+        --  Transformation of a geometric object. This tansformation 
+        --  can be a translation, a rotation, a symmetry, a scaling
+        --  or a complex transformation obtained by combination of
+        --  the previous elementaries transformations.
+    is static;
+    
+    IsCN (me; N : Integer)  returns Boolean
+        --- Purpose : Returns the order of continuity of the curve. 
+     raises RangeError
+        --- Purpose : Raised if N < 0. 
+    is static;
+    
+    FirstParameter(me) returns Real
+    	--- Purpose : Value of the first parameter.
+    is static;
+
+    LastParameter(me) returns Real
+    	--- Purpose : Value of the last parameter.    	
+    is static;     
+
+    Continuity(me) returns Shape from GeomAbs
+    is static;
+
+    NbIntervals(me ) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <C1>.    And  returns   the number   of
+	--          intervals. 
+    is static;
+
+    IntervalFirst(me ; Index : Integer from Standard ) returns Real
+       ---Purpose: Returns  the  first  parameter    of  the  current
+       --          interval. 
+    is static;
+    
+    IntervalLast (me ; Index : Integer from Standard ) returns Real
+       ---Purpose: Returns  the  last  parameter    of  the  current
+       --          interval. 
+    is static;
+    
+    IntervalContinuity(me) returns Shape from GeomAbs
+    is static;
+    
+    IsClosed(me) returns Boolean
+    is static;
+    
+    IsPeriodic(me) returns Boolean
+    is static;
+
+    Values (me                  ; 
+            U   : Real          ; 
+            N   : Integer       ; 
+            P   : in out Pnt2d  ;
+	    V1  : in out Vec2d  ;
+	    V2  : in out Vec2d  ;   	    
+            V3  : in out Vec2d  )
+    is static private;		    
+    
+    Distance (me; U : Real) returns Real
+	---Purpose: Returns   the   distance   between  the  point  of
+	--          parameter U on <me> and my point or my curve.
+    is static;
+    
+    D0 (me; U : Real; P : out Pnt2d)
+    is static;
+    
+    D1 (me; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
+    is static ;
+    
+    D2 (me; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp) 
+    is static;
+
+    D3 (me; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp) 
+    is static;
+        
+    DN (me; U : Real; N : Integer)
+    returns Vec2d from gp
+    is static;
+    
+    Dump (me; Deep : Integer = 0; Offset : Integer = 0) is static;
+    
+    LinkBisCurve (me ; U : Real) returns Real from Standard
+    	---Purpose: Returns the parameter on the curve1 of the projection
+    	--          of the point of parameter U on <me>.
+    is static;
+    
+    LinkCurveBis (me ; U : Real) returns Real from Standard
+    	---Purpose: Returns the reciproque of LinkBisCurve.
+    is static;
+    
+    Extension (me                  ; 
+               U   : Real          ; 
+               P   : in out Pnt2d  ;
+	       V1  : in out Vec2d  ;
+	       V2  : in out Vec2d  ;   	    
+               V3  : in out Vec2d  )
+    is static private;	
+
+    Parameter ( me ; P : Pnt2d from gp) returns Real
+	---Purpose: Returns the parameter on <me> corresponding to <P>.
+    is static;
+    
+    IsEmpty (me) returns Boolean from Standard
+    	---Purpose: Returns <True> if the bisector is empty.
+    is static;
+
+    ComputeIntervals (me : mutable) 
+    	---Purpose: Computes the interval where the bisector is defined.
+    is static private;
+
+    CuspFilter (me : mutable)
+    is static private;
+
+    SearchBound( me ; U1,U2 : Real) returns Real
+    is static private;
+    
+    Init (me             : mutable;     
+    	  Curve          : Curve             from Geom2d;
+          Point          : Pnt2d             from gp;
+          Sign           : Real              from Standard;
+          StartIntervals : SequenceOfReal    from TColStd;
+          EndIntervals   : SequenceOfReal    from TColStd;
+          BisInterval    : Integer           from Standard; 	
+          CurrentInterval: Integer           from Standard;
+          ShiftParameter : Real              from Standard;
+	  DistMax        : Real              from Standard;
+          IsEmpty        : Boolean           from Standard;
+          IsConvex       : Boolean           from Standard;
+          ExtensionStart : Boolean           from Standard;
+          ExtensionEnd   : Boolean           from Standard;
+          PointStartBis  : Pnt2d             from gp;
+          PointEndBis    : Pnt2d             from gp)
+    is static private;
+    
+fields
+
+    curve          : Curve             from Geom2d;
+    point          : Pnt2d             from gp;
+    sign           : Real              from Standard;
+    startIntervals : SequenceOfReal    from TColStd;
+    endIntervals   : SequenceOfReal    from TColStd;
+    bisInterval    : Integer           from Standard; 	
+    currentInterval: Integer           from Standard;
+    shiftParameter : Real              from Standard;
+    distMax        : Real              from Standard;
+    isEmpty        : Boolean           from Standard;
+    isConvex       : Boolean           from Standard;
+    extensionStart : Boolean           from Standard;
+    extensionEnd   : Boolean           from Standard;
+    pointStartBis  : Pnt2d             from gp;
+    pointEndBis    : Pnt2d             from gp;
+    
+end BisecPC;

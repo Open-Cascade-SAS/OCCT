@@ -1,0 +1,143 @@
+-- File:	TDataStd_IntPackedMap.cdl
+-- Created:	Tue Jul 31 15:30:36 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class IntPackedMap from TDataStd inherits Attribute from TDF
+
+	---Purpose: Attribute for storing TColStd_PackedMapOfInteger
+
+uses
+    Attribute           from TDF,
+    Label               from TDF,
+    GUID                from Standard, 
+    PackedMapOfInteger  from TColStd,
+    HPackedMapOfInteger from TColStd, 
+    DeltaOnModification from TDF,
+    RelocationTable     from TDF
+
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+  	---C++: return const & 
+    	---Purpose: Returns the GUID of the attribute.  
+    returns GUID from Standard;    
+
+    Set (myclass; label : Label from TDF; isDelta : Boolean from Standard = Standard_False)
+    ---Purpose: Finds or creates an integer map attribute on the given label. 
+    -- If <isDelta> == False, DefaultDeltaOnModification is used. 
+    -- If <isDelta> == True, DeltaOnModification of the current attribute is used. 
+    -- If attribute is already set, input parameter <isDelta> is refused and the found
+    -- attribute returned.
+    returns IntPackedMap from TDataStd;
+    
+    ---Purpose: Attribute methods
+    --          ===================
+    
+    Create 
+    returns mutable IntPackedMap from TDataStd;
+    -- Constructor    
+    
+    ChangeMap (me : mutable; theMap : HPackedMapOfInteger from TColStd)
+    -- Sets the inner map to theMap. If the content of theMap is the same as myMap, 
+    -- it does nothing and return false. Else full backup is performed.
+    returns Boolean from Standard; 
+    
+    GetMap (me)
+    returns PackedMapOfInteger from TColStd; 
+    ---C++: inline       
+    ---C++: return const &     
+    -- Access to the const interface of the map  
+     
+    GetHMap (me)
+    returns HPackedMapOfInteger from TColStd; 
+    ---C++: inline       
+    ---C++: return const &     
+    -- Access to the handle of the map. 
+    -- WARNING! do not use the handle returned by this method to modify the map, 
+    -- otherwise undo/redo mechanism will be failed.
+     
+    Clear(me : mutable) 
+    returns Boolean from Standard;
+    -- Clears the inner map. Returns false if map is alredy empty. 
+
+    Add(me : mutable; theKey : Integer from Standard) 
+    returns Boolean from Standard;     
+    -- Adds a new key to the map. Returns false if this key already exists.  
+
+    Remove(me : mutable; theKey : Integer from Standard) 
+    returns Boolean from Standard;     
+    -- Removes the key from the map. Returns false if this key was not found. 
+     
+    Contains(me; theKey : Integer from Standard) 
+    returns Boolean from Standard;     
+    -- Returns true if the key contains in the map, false otherwise
+     
+    Extent(me) 
+    ---C++: inline    
+    returns Integer from Standard;   
+    -- Returns the size of the map 
+     
+    IsEmpty(me)  
+    ---C++: inline    
+    returns Boolean from Standard;  
+     
+    GetDelta(me) returns Boolean from Standard;  
+    ---C++: inline  
+    
+    SetDelta(me : mutable; isDelta : Boolean from Standard);     
+    ---C++: inline  
+    ---Purpose: for  internal  use  only!       
+     
+    RemoveMap(me  : mutable) is private;      
+    ---C++: inline     
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+    --  Restores the backuped content from <with> into this one. 
+    
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+    -- Returns an new empty AsciiString attribute. 
+    
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    -- This method is used when copying an attribute from a source structure 
+    -- into a target structure. 
+    
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+    -- This method dumps the attribute value into the stream  
+    
+    ---Category: methods to be added for using in DeltaOn Modification  
+    --           =====================================================
+    DeltaOnModification(me; anOldAttribute : Attribute from TDF)
+    	returns DeltaOnModification from TDF
+    	---Purpose : Makes a DeltaOnModification between <me> and
+    	--         <anOldAttribute>.  
+    	is redefined virtual;  
+	
+    
+fields 
+
+    myMap : HPackedMapOfInteger from TColStd; 
+    myIsDelta : Boolean from Standard; 
+
+friends   
+
+    class DeltaOnModificationOfIntPackedMap from TDataStd   
+    
+end IntPackedMap;

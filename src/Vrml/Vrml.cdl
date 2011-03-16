@@ -1,0 +1,330 @@
+-- File:	Vrml.cdl
+-- Created:	Mon Dec 23 10:38:06 1996
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+package Vrml 
+
+	---Purpose: Vrml package  implements the specification  of the
+	--          VRML ( Virtual  Reality Modeling Language ).  VRML
+	--          is a standard  language for describing interactive
+	--          3-D objects and  worlds delivered across Internet.
+	--          Actual version of Vrml package have made for objects 
+	--          of VRML version 1.0.  
+        --          This package is used by VrmlConverter package.   
+    	--          The developer should  already be familiar with VRML 
+        --          specification before using this package.
+
+    	--                     Coordinate System
+
+    	--  VRML uses a Cartesian, right-handed, 3-dimensional coordinate system.  
+    	--  By default, objects are projected onto a 2-dimensional device by projecting  
+    	--  them in the direction of the positive Z axis, with the positive X axis to  
+    	--  the right and the positive Y axis up. A camera or modeling transformation  
+    	--  may be used to alter this default  projection. 
+    	--  The standard unit for lengths and distances specified is meters.  
+    	--  The standard unit for angles is radians.
+
+    	--                           Fields
+
+    	--  There are two general classes of fields; fields that contain a single value  
+    	--  (where a value may be a single number, a vector, or even an image), and fields that  
+    	--  contain multiple values. Single-valued fields all have names that begin with "SF",  
+    	--  multiple-valued fields have names that begin with "MF". Each field type defines  
+    	--  the format for the values it writes.  
+
+    	--                            Nodes
+
+    	--  VRML defines several different classes of nodes. Most of the nodes can be classified  
+    	--  into one of three categories;  shape, property or group. Shape nodes define the geometry  
+    	--  in the world. Conceptually, they are the only nodes  that draw anything. Property nodes  
+    	--  affect the way shapes are drawn. And grouping nodes gather other nodes together, allowing  
+    	--  collections of nodes to be treated as a single object. Some group nodes also control  
+    	--  whether or not their children are drawn. 
+    	--  Nodes may contain zero or more fields. Each node type defines the type, name, and default  
+    	--  value for each of its fields. The default value for the field is used if a value for  
+    	--  the field is not specified in the VRML file. 
+
+    	--                             Instancing
+
+	--  A node may be the child of more than one group. This is called "instancing" (using the same  
+    	--  instance of a node multiple times, called "aliasing" or "multiple references" by other  
+    	--  systems), and is accomplished by using the "USE" and  "DEF  keywords. 
+
+uses
+
+    TColStd,
+    TColgp, 
+    MMgt,
+    Quantity, 
+    gp, 
+    TCollection
+
+is
+    
+
+    	---Category: Classes of VRML field types.
+	---Purpose: qualifies all types of VRML fields.
+
+
+   --  Notes: 
+   --         SFBitMask  VRML type == enumeration
+   --         SFBool     VRML type == Boolean                from  Standard 
+   --         SFColor    VRML type == Color                  from  Quantity
+   --         SFEnum     VRML type == enumeration 
+   --         SFFloat    VRML type == Real                   from  Standard 
+   --         SFLong     VRML type == Integer                from  Standard
+   --         SFMatrix   VRML type == Trsf                   from  gp
+   --         SFString   VRML type == AsciiSting             from  TCollection 
+   --         SFVec2f    VRML type == Vec2d                  from  gp
+   --         SFVec3f    VRML type == Vec                    from  gp
+   --         MFColor    VRML type == HArray1OfColor         from  Quantity
+   --         MFLong     VRML type == HArray1OfInteger       from  TColStd
+   --         MFFloat    VRML type == HArray1OfReal          from  TColStd  
+   --         MFString   VRML type == HArray1OfAsciiString   from  TColStd  
+   --         MFVec2f    VRML type == HArray1OfVec2d         from  TColgp
+   --         MFVec3f    VRML type == HArray1OfVec           from  TColgp
+
+
+  ---Purpose:  defines SFImage type of VRML field types.
+    class SFImage;
+  ---Purpose:  defines SFRotation type of VRML field types.
+    class SFRotation;
+ 
+
+    -- Enumeration for field representating a number of components 
+    -- in the image per pixel for a SFImage type
+    --  
+  
+    -- One-component  image  will  have  one-bite  hexadecimal  values 
+    -- presenting  the  intensity  of  the  image 
+    -- Ex:  0xFF  is full  intensity,  0x00 is  no  intensity   
+
+    -- A  two-component  image  puts  the  intensity  in  the  first (hight)  byte 
+    -- and  the  transparency  in  the  second  (low)  byte 
+
+    -- Pixels  in  a  three-component  image  have  the  red  component  in  the  first (hight)  byte, 
+    -- followed by  green  and  blue  components.  Ex:  0xFF0000  is  red.
+
+    -- Four-component  images  put  transparency  byte  after  red/green/blue 
+    -- Ex:  0x0000FF80  is  semi-transparent  blue.  A  value  of  1.0  is  completely transparent,  
+    -- 0.0  is  completely  opaque.
+    
+    enumeration SFImageNumber  
+      is  	  
+      	 NULL,
+         ONE,    
+         TWO,
+         THREE,
+         FOUR  
+    end SFImageNumber;
+
+
+    	---Category: Classes of VRML nodes specifying geometry shapes.
+	---Purpose: qualifies VRML geometry shapes.
+
+
+    --  a SFBitMask type for Parts field of a Cone node
+    enumeration ConeParts 
+      is 
+    	    ConeSIDES,       -- The conical part
+    	    ConeBOTTOM,      -- The bottom circular face
+    	    ConeALL          -- All parts
+
+    end ConeParts;
+
+
+    --  a SFEnum VRML type for Justification field of a AsciiText node
+    enumeration AsciiTextJustification 
+      is  
+    	    LEFT,      -- Align left edge of text to origin
+   	    CENTER,    -- Align center of text to origin
+   	    RIGHT      -- Align right edge of text to origin  
+
+    end AsciiTextJustification;
+
+
+    --  a SFBitMask type for Parts field of a Cylinder node
+    enumeration CylinderParts 
+      is 
+    	    CylinderSIDES,   -- The tubular part
+    	    CylinderTOP,     -- The top circular face 
+    	    CylinderBOTTOM,  -- The bottom circular face
+    	    CylinderALL      -- All parts
+   
+    end CylinderParts;
+
+    class AsciiText;
+    class Cone;
+    class Cube;
+    class Cylinder;
+    class IndexedFaceSet;
+    class IndexedLineSet;
+    class PointSet;
+    class Sphere;
+
+
+	---Category: Classes of VRML nodes specifying properties of geometry
+	---          and its appearance. 
+	---Purpose: qualifies properties of geometry and its appearance.
+
+
+
+    --  a SFBitMask type for Family field of a FontStyle node
+    enumeration FontStyleFamily 
+      is 
+            SERIF,	     -- Serif style (such as TimesRoman)
+            SANS,	     -- Sans-serif style (such as Helvetica)
+	    TYPEWRITER	     -- Fixed pitch style (such as Courier) 
+
+    end FontStyleFamily;
+
+
+    --  a SFEnum VRML type for Style field of a FontStyle node
+    enumeration FontStyleStyle 
+      is  
+
+  	    NONE,			-- No modifications to family
+	    BOLD,			-- Embolden family
+	    ITALIC 			-- Italicize or slant family
+ 
+    end FontStyleStyle; 
+     
+    
+    --  a SFEnum VRML type for Value field of a MaterialBinding  
+    --        and NormalBinding  nodes
+    enumeration MaterialBindingAndNormalBinding 
+      is  
+    	    DEFAULT,
+	    OVERALL,
+	    PER_PART,
+	    PER_PART_INDEXED,
+	    PER_FACE,
+	    PER_FACE_INDEXED,
+	    PER_VERTEX,
+	    PER_VERTEX_INDEXED
+
+    end MaterialBindingAndNormalBinding;
+
+
+    --  a SFEnum VRML type for wrapS and wrapT fields  of a Texture2 node
+    enumeration Texture2Wrap   --Texture wrap type
+     is 
+	  REPEAT,     -- Repeats texture outside 0-1 texture coordinate range
+	  CLAMP       -- Clamps texture coordinates  to lie within 0-1 range
+     
+    end Texture2Wrap;
+
+     --  a SFEnum VRML type for VertexOrdering field of a ShapeHints node
+    enumeration VertexOrdering
+      is 
+	UNKNOWN_ORDERING,
+	CLOCKWISE,
+	COUNTERCLOCKWISE
+
+    end  VertexOrdering;
+
+
+     --  a SFEnum VRML type for ShapeType field of a ShapeHints node
+    enumeration ShapeType
+      is 
+	UNKNOWN_SHAPE_TYPE,
+	SOLID
+
+    end  ShapeType;
+
+     --  a SFEnum VRML type for FaceType field of a ShapeHints node
+    enumeration FaceType
+      is 
+	UNKNOWN_FACE_TYPE,
+	CONVEX
+
+    end  FaceType;
+
+    class Coordinate3;
+    class FontStyle;
+    class Info;
+    class LOD;
+    class Material;
+    class MaterialBinding;
+    class Normal;
+    class NormalBinding;
+    class Texture2;
+    class Texture2Transform;
+    class TextureCoordinate2;
+    class ShapeHints;
+
+
+
+	---Category: Classes of VRML nodes specifying matrix and transform
+	---          properties. 
+	---Purpose: qualifies matrix and transform properties.  
+
+    class MatrixTransform;
+    class Rotation;
+    class Scale;
+    class Transform;
+    class Translation;
+
+
+	---Category: Classes of VRML nodes specifying properties of cameras
+	---          and lights. 
+	---Purpose: qualifies properties of cameras and lights. 
+
+    class OrthographicCamera;
+    class PerspectiveCamera;
+    class DirectionalLight;
+    class PointLight;
+    class SpotLight;
+
+        
+	---Category: Classes of VRML nodes specifying group properties. 
+	---Purpose: qualifies group properties.
+
+
+
+     --  a SFEnum VRML type for RenderCulling field of a Separator node-
+     enumeration SeparatorRenderCulling  -- Possible values for culling
+      is 
+	OFF,			-- Never cull
+	ON,			-- Always cull
+	AUTO			-- Decide based on some heuristic
+     end  SeparatorRenderCulling;
+
+    
+      --  a SFEnum VRML type for Map field of a WWWAnchor node
+    enumeration  WWWAnchorMap
+      is 
+	MAP_NONE,	  -- Leave URL name alone
+	POINT	          -- Add object coords to URL name
+
+    end WWWAnchorMap;
+
+
+    class Group;
+    class Separator;
+    class Switch;
+    class TransformSeparator;
+    class WWWAnchor;
+    class WWWInline; 
+
+    class Instancing; 
+    
+	---Category: Methods to write commentaries in anOStream (VRML file).
+
+        ---Purpose: Writes a header in anOStream (VRML file).
+    	
+    VrmlHeaderWriter  ( anOStream: in out OStream from Standard )
+    	    returns OStream from Standard;
+    ---C++:  return  & 
+    	
+        ---Purpose: Writes one line of commentary in  anOStream (VRML file).
+
+    CommentWriter  ( aComment   :        CString from Standard;   
+    	    	     anOStream  : in out OStream from Standard )
+    	    returns OStream from Standard;
+    ---C++:  return  & 
+    	        	
+end Vrml;

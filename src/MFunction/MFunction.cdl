@@ -1,0 +1,28 @@
+-- File:	MFunction.cdl
+-- Created:	Thu Jun 17 11:48:50 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+package MFunction 
+
+uses 
+ 
+    PDF, 
+    CDM,
+    MDF,
+    TDF
+
+is 
+ 
+    class FunctionStorageDriver;
+    class FunctionRetrievalDriver; 
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the function storage driver to <aDriverSeq>.
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the function retrieval driver to <aDriverSeq>.
+    
+end MFunction;
+   

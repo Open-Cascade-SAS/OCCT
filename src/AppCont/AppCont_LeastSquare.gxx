@@ -1,0 +1,494 @@
+// File:	AppCont_LeastSquare.gxx
+// Created:	Tue Mar 14 14:09:22 1995
+// Author:	Modelistation
+//		<model@phobox>
+
+
+#ifndef DEB
+#define No_Standard_OutOfRange
+#define No_Standard_RangeError
+#endif
+
+
+
+#include <math.hxx>
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_Array1OfVec2d.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <AppCont_ContMatrices.hxx>
+#include <PLib.hxx>
+
+
+
+
+//=======================================================================
+//function : AppCont_LeastSquare
+//purpose  : 
+//=======================================================================
+
+AppCont_LeastSquare::AppCont_LeastSquare
+                          (const MultiLine&              SSP,
+			   const Standard_Real           U0,
+			   const Standard_Real           U1,
+			   const AppParCurves_Constraint FirstCons,
+			   const AppParCurves_Constraint LastCons,
+			   const Standard_Integer        Deg,
+			   const Standard_Integer        NbPoints):
+                           SCU(Deg+1),
+                           Points(1, NbPoints, 1, NbBColumns(SSP)),
+                           Poles(1, Deg+1, 1, NbBColumns(SSP), 0.0),
+                           myParam(1, NbPoints),
+                           VB(1, Deg+1, 1, NbPoints)
+
+{
+  Done = Standard_False;
+  Degre = Deg;
+  math_Matrix InvM(1, Deg+1, 1, Deg+1);
+  Standard_Integer i, j, k, c, i2;
+  Standard_Integer classe = Deg+1, cl1 = Deg;
+  Standard_Real U, dU, Coeff, Coeff2;
+  Standard_Real IBij, IBPij;
+
+  Standard_Integer FirstP = 1, LastP = NbPoints;
+  Standard_Integer nbcol = NbBColumns(SSP);
+  math_Matrix B(1, classe, 1, nbcol, 0.0);
+  Standard_Integer bdeb = 1, bfin = classe;
+  AppParCurves_Constraint myFirstC = FirstCons, myLastC = LastCons;
+  nbP = LineTool::NbP3d(SSP);
+  nbP2d = LineTool::NbP2d(SSP);
+  Standard_Integer mynbP = nbP, mynbP2d = nbP2d;
+  if (nbP == 0) mynbP = 1;
+  if (nbP2d == 0) mynbP2d = 1;
+
+  Standard_Integer i2plus1, i2plus2;
+  Nbdiscret = NbPoints;
+  TColgp_Array1OfPnt TabP(1, mynbP);
+  TColgp_Array1OfVec TabV(1, mynbP);
+  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
+  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+
+  Standard_Boolean Ok;
+  if (myFirstC == AppParCurves_TangencyPoint) {
+    if (nbP != 0 && nbP2d != 0) Ok=LineTool::D1(SSP, U0, TabV, TabV2d);
+    else if (nbP != 0)          Ok=LineTool::D1(SSP, U0, TabV);
+    else                        Ok=LineTool::D1(SSP, U0, TabV2d);
+    if (!Ok) myFirstC = AppParCurves_PassPoint;
+  }
+
+  if (myLastC == AppParCurves_TangencyPoint) {
+    if (nbP != 0 && nbP2d != 0) Ok=LineTool::D1(SSP, U1, TabV, TabV2d);
+    else if (nbP != 0)          Ok=LineTool::D1(SSP, U1, TabV);
+    else                        Ok=LineTool::D1(SSP, U1, TabV2d);
+    if (!Ok) myLastC = AppParCurves_PassPoint;
+  }
+
+  math_Vector GaussP(1, NbPoints), GaussW(1, NbPoints);
+  math::GaussPoints(NbPoints, GaussP);
+  math::GaussWeights(NbPoints, GaussW);
+
+  math_Vector TheWeights(1, NbPoints), VBParam(1, NbPoints);
+
+  dU = 0.5*(U1-U0);
+
+  // calcul et mise en ordre des parametres et des poids:
+  for (i = FirstP; i <= LastP; i++) {
+    U  = 0.5*(U1+U0) + dU*GaussP(i);
+    if (i <=  (NbPoints+1)/2) {
+      myParam(LastP-i+1)  = U;
+      VBParam(LastP-i+1)  = 0.5*(1 + GaussP(i));
+      TheWeights(LastP-i+1) = 0.5*GaussW(i);
+    }
+    else {
+      VBParam(i-(NbPoints+1)/2)  = 0.5*(1 + GaussP(i));
+      myParam(i-(NbPoints+1)/2) = U;
+      TheWeights(i-(NbPoints+1)/2) = 0.5*GaussW(i);
+    }
+  }
+
+
+  for (i = FirstP; i <= LastP; i++) {
+    U = myParam(i);
+    if (nbP != 0 && nbP2d != 0) LineTool::Value(SSP, U, TabP, TabP2d);
+    else if (nbP != 0)          LineTool::Value(SSP, U, TabP);
+    else                        LineTool::Value(SSP, U, TabP2d);
+
+    i2 = 1;
+    for (j = 1; j <= nbP; j++) {
+      (TabP(j)).Coord(Points(i, i2), Points(i, i2+1), Points(i, i2+2));
+      i2 += 3;
+    }
+    for (j = 1; j <= nbP2d; j++) {
+      (TabP2d(j)).Coord(Points(i, i2), Points(i, i2+1));
+      i2 += 2;
+    }
+  }
+
+  // Calcul du VB ( Valeur des fonctions de Bernstein):
+  
+//  for (i = 1; i <= classe; i++) {
+//    for (j = 1; j <= NbPoints; j++) {
+//    VB(i,j)=PLib::Binomial(cl1,i-1)*Pow((1-VBParam(j)),classe-i)*
+//      Pow(VBParam(j),i-1);
+//   }
+//  }
+
+  VBernstein(classe, NbPoints, VB);
+
+  // Traitement du second membre:
+
+  Standard_Real *tmppoints, *tmpbis;
+  tmppoints = new Standard_Real[nbcol];
+
+  for (c = 1; c <= classe; c++) {
+    tmpbis = tmppoints;
+    for (k = 1; k <= nbcol; k++, tmpbis++) {
+      *tmpbis = 0.0;
+    }
+    for (i = 1; i <= NbPoints; i++) {
+      Coeff = TheWeights(i)*VB(c, i);
+      tmpbis = tmppoints;
+      for (j = 1; j <= nbcol; j++, tmpbis++) {
+	*tmpbis += Points(i, j)*Coeff;
+	//B(c, j) += Points(i, j)*Coeff;
+      }
+    }
+    tmpbis = tmppoints;
+    for (k = 1; k <= nbcol; k++, tmpbis++) {
+      B(c, k) += *tmpbis;
+    }
+  }
+
+  delete [] tmppoints;
+
+  if (myFirstC == AppParCurves_NoConstraint &&
+      myLastC  == AppParCurves_NoConstraint) {
+
+    math_Matrix InvM(1, classe, 1, classe);
+    InvMMatrix(classe, InvM);
+    // Calcul direct des poles:
+
+    for (i = 1; i <= classe; i++) {
+      for (j = 1; j <= classe; j++) {
+	IBij = InvM(i, j);
+	for (k = 1; k <= nbcol; k++) {
+	  Poles(i, k)   += IBij * B(j, k);
+	}
+      }
+    }
+  }
+
+
+  else {
+    math_Matrix M(1, classe, 1, classe);
+    MMatrix(classe, M);
+
+    if (myFirstC == AppParCurves_PassPoint ||
+        myFirstC == AppParCurves_TangencyPoint) {
+
+      if (nbP != 0 && nbP2d != 0) LineTool::Value(SSP, U0, TabP, TabP2d);
+      else if (nbP != 0)          LineTool::Value(SSP, U0, TabP);
+      else                        LineTool::Value(SSP, U0, TabP2d);
+      i2 =1;
+      for (k = 1; k<= nbP; k++) {
+	(TabP(k)).Coord(Poles(1, i2), Poles(1, i2+1), Poles(1, i2+2));
+	i2 += 3;
+      }
+      for (k = 1; k<= nbP2d; k++) {
+	(TabP2d(k)).Coord(Poles(1, i2), Poles(1, i2+1));
+	i2 += 2;
+      }
+
+    }
+
+    if (myLastC == AppParCurves_PassPoint || 
+	myLastC == AppParCurves_TangencyPoint) {
+
+      i2 = 1;
+      if (nbP != 0 && nbP2d != 0) LineTool::Value(SSP, U1, TabP, TabP2d);
+      else if (nbP != 0)          LineTool::Value(SSP, U1, TabP);
+      else                        LineTool::Value(SSP, U1, TabP2d);
+      for (k = 1; k<= nbP; k++) {
+	(TabP(k)).Coord(Poles(classe,i2),
+			Poles(classe,i2+1),
+			Poles(classe,i2+2));
+	i2 += 3;
+      }
+      for (k = 1; k<= nbP2d; k++) {
+	(TabP2d(k)).Coord(Poles(classe, i2), Poles(classe, i2+1));
+	i2 += 2;
+      }
+    }
+
+
+
+    if (myFirstC == AppParCurves_PassPoint) {
+      bdeb = 2;
+      // mise a jour du second membre:
+      for (i = 1; i <= classe; i++) {
+	Coeff = M(i, 1);
+	for (k = 1; k <= nbcol; k++) {
+	  B(i, k) -= Poles(1, k)*Coeff;
+	}
+      }
+    }
+
+      
+    if (myLastC == AppParCurves_PassPoint) {
+      bfin = cl1;
+      for (i = 1; i <= classe; i++) {
+	Coeff = M(i, classe);
+	for (k = 1; k <= nbcol; k++) {
+	  B(i, k) -= Poles(classe, k)*Coeff;
+	}
+      }
+    }
+
+
+    if (myFirstC == AppParCurves_TangencyPoint) {
+      // On fixe le second pole::
+      bdeb = 3;
+      if (nbP != 0 && nbP2d != 0) LineTool::D1(SSP, U0, TabV, TabV2d);
+      else if (nbP != 0)          LineTool::D1(SSP, U0, TabV);
+      else                        LineTool::D1(SSP, U0, TabV2d);
+      i2 = 1;
+      Coeff = (U1-U0)/Degre;
+      for (k = 1; k<= nbP; k++) {
+	i2plus1 = i2+1; i2plus2 = i2+2;
+	Poles(2, i2)      = Poles(1, i2)      + TabV(k).X()*Coeff;
+	Poles(2, i2plus1) = Poles(1, i2plus1) + TabV(k).Y()*Coeff;
+	Poles(2, i2plus2) = Poles(1, i2plus2) + TabV(k).Z()*Coeff;
+	i2 += 3;
+      }
+      for (k = 1; k<= nbP2d; k++) {
+	i2plus1 = i2+1;
+	Poles(2, i2)      = Poles(1, i2)      + TabV2d(k).X()*Coeff;
+	Poles(2, i2plus1) = Poles(1, i2plus1) + TabV2d(k).Y()*Coeff;
+	i2 += 2;
+      }
+
+
+      for (i = 1; i <= classe; i++) {
+	Coeff = M(i, 1); Coeff2 = M(i, 2);
+	for (k = 1; k <= nbcol; k++) {
+	  B(i, k) -= Poles(1, k)*Coeff+Poles(2, k)*Coeff2;
+	}
+      }
+    }
+
+    if (myLastC == AppParCurves_TangencyPoint) {
+      bfin = classe-2;
+
+      if (nbP != 0 && nbP2d != 0) LineTool::D1(SSP, U1, TabV, TabV2d);
+      else if (nbP != 0)          LineTool::D1(SSP, U1, TabV);
+      else                        LineTool::D1(SSP, U1, TabV2d);
+      i2 = 1;
+      Coeff = (U1-U0)/Degre;
+      for (k = 1; k<= nbP; k++) {
+	i2plus1 = i2+1; i2plus2 = i2+2;
+	Poles(cl1,i2)      = Poles(classe, i2)      - TabV(k).X()*Coeff;
+	Poles(cl1,i2plus1) = Poles(classe, i2plus1) - TabV(k).Y()*Coeff;
+	Poles(cl1,i2plus2) = Poles(classe, i2plus2) - TabV(k).Z()*Coeff;
+	i2 += 3;
+      }
+      for (k = 1; k<= nbP2d; k++) {
+	i2plus1 = i2+1; 
+	Poles(cl1,i2)      = Poles(classe, i2)      - TabV2d(k).X()*Coeff;
+	Poles(cl1,i2plus1) = Poles(classe, i2plus1) - TabV2d(k).Y()*Coeff;
+	i2 += 2;
+      }
+
+      for (i = 1; i <= classe; i++) {
+	Coeff = M(i, classe); Coeff2 = M(i, cl1);
+	for (k = 1; k <= nbcol; k++) {
+	  B(i, k) -= Poles(classe, k)*Coeff + Poles(cl1, k)*Coeff2;
+	}
+      }
+    }
+      
+    if (bdeb <= bfin) {
+      math_Matrix B2(bdeb, bfin, 1, B.UpperCol(), 0.0);
+      
+      for (i = bdeb; i <= bfin; i++) {
+	for (j = 1; j <= classe; j++) {
+	  Coeff = M(i, j);
+	  for (k = 1; k <= nbcol; k++) {
+	    B2(i, k) += B(j, k)*Coeff;
+	  }
+	}
+      }
+      
+      
+      // Resolution:
+      // ===========
+      math_Matrix IBP(bdeb, bfin, bdeb, bfin);
+      
+      // dans IBPMatrix at IBTMatrix ne sont stockees que les resultats pour
+      // une classe inferieure ou egale a 26 (pour l instant du moins.)
+      
+      if (bdeb == 2 && bfin == classe-1 && classe <= 26) {
+	IBPMatrix(classe, IBP);
+      }
+      else if (bdeb == 3 && bfin == classe-2 && classe <= 26) {
+	IBTMatrix(classe, IBP);
+      }
+      else {
+	math_Matrix MP(1, classe, bdeb, bfin);
+	
+	for (i = 1; i <= classe; i++) {
+	  for (j = bdeb; j <= bfin; j++) {
+	    MP(i, j) = M(i, j);
+	  }
+	}
+	math_Matrix IBP1(bdeb, bfin, bdeb, bfin);
+	IBP1 = MP.Transposed()*MP;
+	IBP = IBP1.Inverse();
+      }
+      
+      
+      Done = Standard_True;
+      for (i = bdeb; i <= bfin; i++) {
+	for (j = bdeb; j <= bfin; j++) {
+	  IBPij = IBP(i, j);;
+	  for (k = 1; k<= nbcol; k++) {
+	    Poles(i, k)   += IBPij * B2(j, k);
+	  }
+	}
+      }
+    }
+  }
+}
+
+
+
+
+//=======================================================================
+//function : NbBColumns
+//purpose  : 
+//=======================================================================
+
+Standard_Integer AppCont_LeastSquare::NbBColumns(
+		                     const MultiLine& SSP) const
+{
+  Standard_Integer BCol;
+  BCol = (LineTool::NbP3d(SSP))*3 +
+         (LineTool::NbP2d(SSP))*2;
+  return BCol;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const AppParCurves_MultiCurve& AppCont_LeastSquare::Value() 
+{
+
+  Standard_Integer i, j, j2;
+  gp_Pnt Pt;
+  gp_Pnt2d Pt2d;
+  Standard_Integer ideb = 1, ifin = Degre+1;
+
+  // On met le resultat dans les curves correspondantes
+  for (i = ideb; i <= ifin; i++) {
+    j2 = 1;
+    AppParCurves_MultiPoint MPole(nbP, nbP2d);
+    for (j = 1; j <= nbP; j++) {
+      Pt.SetCoord(Poles(i, j2), Poles(i, j2+1), Poles(i,j2+2));
+      MPole.SetPoint(j, Pt);
+      j2 += 3;
+    }
+    for (j = nbP+1;j <= nbP+nbP2d; j++) {
+      Pt2d.SetCoord(Poles(i, j2), Poles(i, j2+1));
+      MPole.SetPoint2d(j, Pt2d);
+      j2 += 2;
+    }
+    SCU.SetValue(i, MPole);
+  }
+  return SCU;
+}
+
+
+
+//=======================================================================
+//function : Error
+//purpose  : 
+//=======================================================================
+
+void AppCont_LeastSquare::Error(Standard_Real& F, 
+				Standard_Real& MaxE3d,
+				Standard_Real& MaxE2d) const
+{
+  Standard_Integer i, j, k, c, i2, classe = Degre+1;
+//  Standard_Real Coeff, val = 0.0, err3d = 0.0, err2d =0.0;
+  Standard_Real Coeff, err3d = 0.0, err2d =0.0;
+  Standard_Integer ncol = Points.UpperCol()-Points.LowerCol()+1;
+  
+  math_Matrix MyPoints(1, Nbdiscret, 1, ncol);
+  MyPoints = Points;
+
+  MaxE3d = MaxE2d = F = 0.0;
+
+  Standard_Real *tmppoles, *tmpbis;
+  tmppoles = new Standard_Real[ncol];
+
+  for (c = 1; c <= classe; c++) {
+    tmpbis = tmppoles;
+    for (k = 1; k <= ncol; k++, tmpbis++) {
+      *tmpbis = Poles(c, k);
+    }
+    for (i = 1; i <= Nbdiscret; i++) {
+      Coeff = VB(c, i);
+      tmpbis = tmppoles;
+      for (j = 1; j <= ncol; j++, tmpbis++) {
+	MyPoints(i, j) -= (*tmpbis)*Coeff;  // Poles(c, j)*Coeff;
+      }
+    }
+  }
+  delete [] tmppoles;
+
+  Standard_Real e1, e2, e3;
+  for (i = 1; i <= Nbdiscret; i++) {
+    i2 = 1;
+    for (j = 1; j<= nbP; j++) {
+      e1 = MyPoints(i, i2);
+      e2 = MyPoints(i, i2+1);
+      e3 = MyPoints(i, i2+2);
+      err3d = e1*e1+e2*e2+e3*e3;
+      MaxE3d = Max(MaxE3d, err3d);
+      F += err3d;
+      i2 += 3;
+    }
+    for (j = 1; j<= nbP2d; j++) {
+      e1 = MyPoints(i, i2);
+      e2 = MyPoints(i, i2+1);
+      err2d = e1*e1+e2*e2;
+      MaxE2d = Max(MaxE2d, err2d);
+      F += err2d;
+      i2 += 2;
+    }
+  }
+
+  MaxE3d = Sqrt(MaxE3d);
+  MaxE2d = Sqrt(MaxE2d);
+
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean AppCont_LeastSquare::IsDone() const
+{
+  return Done;
+}

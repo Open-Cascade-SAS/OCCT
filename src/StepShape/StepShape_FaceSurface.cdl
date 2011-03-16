@@ -1,0 +1,48 @@
+-- File:        FaceSurface.cdl
+-- Created:     Fri Dec  1 11:11:20 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FaceSurface from StepShape 
+
+inherits Face from StepShape 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+-- inherits GeometricRepresentationItem from StepShape 
+
+uses
+
+	Surface from StepGeom, 
+	Boolean from Standard, 
+	HAsciiString from TCollection, 
+	HArray1OfFaceBound from StepShape
+is
+
+	Create returns mutable FaceSurface;
+	---Purpose: Returns a FaceSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBounds : mutable HArray1OfFaceBound from StepShape) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBounds : mutable HArray1OfFaceBound from StepShape;
+	      aFaceGeometry : mutable Surface from StepGeom;
+	      aSameSense : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetFaceGeometry(me : mutable; aFaceGeometry : mutable Surface);
+	FaceGeometry (me) returns mutable Surface;
+	SetSameSense(me : mutable; aSameSense : Boolean);
+	SameSense (me) returns Boolean;
+
+fields
+
+	faceGeometry : Surface from StepGeom;
+	sameSense : Boolean from Standard;
+
+end FaceSurface;

@@ -1,0 +1,38 @@
+-- File:	TopOpeBRepTool_AncestorsTool.cdl
+-- Created:	Thu Aug 12 16:35:21 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+class AncestorsTool from TopOpeBRepTool
+
+	-- as AncestorsTool from TopOpeInter 
+	--  (Shape from TopoDS,
+	--   IndexedDataMapOfShapeListOfShape from TopTools)
+	
+	---Purpose: Describes the ancestors tool needed by 
+	--          the class DSFiller from TopOpeInter.
+	--          
+	-- This class has been created because it is not possible
+	-- to instantiate the argument TheAncestorsTool (of
+	-- DSFiller from TopOpeInter) with a  package (TopExp)
+	-- giving services as package methods.
+
+uses
+
+    Shape from TopoDS,
+    ShapeEnum from TopAbs,
+    IndexedDataMapOfShapeListOfShape from TopTools
+
+is
+
+    MakeAncestors(myclass;
+    	    	  S  : Shape from TopoDS;
+		  TS : ShapeEnum from TopAbs;
+		  TA : ShapeEnum from TopAbs;
+		  M  : in out IndexedDataMapOfShapeListOfShape from TopTools); 
+		  
+	---Purpose: same as package method TopExp::MapShapeListOfShapes()
+		  
+      		      
+end AncestorsTool;

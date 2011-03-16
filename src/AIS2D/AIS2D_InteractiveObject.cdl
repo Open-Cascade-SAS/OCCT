@@ -1,0 +1,266 @@
+-- File     : AIS2D_InteractiveObject.cdl
+-- Created  : 07 April  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class InteractiveObject from AIS2D inherits GraphicObject from Graphic2d
+
+   ---Purpose: Class Interactive Object defines a class of objects
+   --          with display and selection services. 
+   -- Using visualization and selection machanisms,
+   -- interactive objects are used to display datum, curves,
+   -- shapes, markers, dimensions, etc. Interactive objects
+   -- also provide links to the interactive context.
+
+uses
+
+   Primitive             from Graphic2d,
+   TypeOfDetection       from AIS2D,
+   KindOfIO              from AIS2D,
+   InteractiveContext    from AIS2D,
+   Drawer                from Prs2d,
+   AspectRoot            from Prs2d,
+   AspectName            from Prs2d,
+   DataMapOfPrimAspects  from AIS2D,
+   HSequenceOfPrimArchit from AIS2D,
+   AsciiString           from TCollection,
+   FStream               from Aspect,
+   IFStream              from Aspect
+
+is
+
+   Create returns mutable InteractiveObject from AIS2D;
+   ---Purpose: Initialize the Interactive Object
+
+   --------------------------------------------------------------------
+   ---Category: Methods for attributes management
+
+   Attributes( me ) returns Drawer from Prs2d;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the attributes settings
+   
+   SetAttributes( me: mutable; aDrawer: Drawer from Prs2d ) is virtual;
+   ---Level: Public
+   ---Purpose: Initializes the drawing tool <aDrawer>
+
+   UnsetAttributes( me: mutable ) is virtual;
+   ---Level: Public
+   ---Purpose: Clears settings provided by the drawing tool <aDrawer>
+
+   SetAspect( me: mutable; anAspect: AspectRoot from Prs2d );
+   ---Level: Public
+   ---Purpose: Sets the attributes from Aspect <anAspect>
+   --          to all primitives appropriate this Aspect.
+
+   SetAspect( me: mutable; anAspect: AspectRoot from Prs2d;
+              aPrimitive: Primitive from Graphic2d );
+   ---Level: Public
+   ---Purpose: Sets the attributes from Aspect <anAspect>
+   --          to primitive <aPrimitive>
+   --          Method works only for objects are linked
+   --          with InteractiveContext
+
+   GetAspect( me; aPrimitive: Primitive from Graphic2d ) 
+         returns AspectRoot from Prs2d;
+   ---Level: Public
+   ---Purpose: Returns Aspect for primitive <aPrimitive> 
+   --          Method works only for objects are linked
+   --          with InteractiveContext
+
+   HasAspect( me; aPrimitive: Primitive from Graphic2d ) 
+               returns Boolean from Standard;
+   ---Level: Public;
+   ---Purpose: Returns true if primitive <aPrimitive> 
+   --          is linked with an aspect
+   --------------------------------------------------------------------
+   ---Category: Link To InteractiveContext
+
+   HasInteractiveContext( me ) returns Boolean from Standard;
+   ---Level: Public
+   ---Purpose: Indicates whether the Interactive Object has a pointer 
+   --          to an interactive context.
+    
+   GetContext( me ) returns InteractiveContext from AIS2D;
+   ---Level: Public
+   ---Purpose: Returns the context pointer to the interactive context.
+    
+   SetContext( me:mutable; aCntx : InteractiveContext from AIS2D ) is virtual;
+   ---Level: Public
+   ---Purpose: Places a link to <aCnTx>. The drawer of AIS2D_InteractiveObject 
+   --          is connected to the Default Drawer Of <aCntx>.
+   --          That Means that this method has to be redefined if
+   --          computations depend on drawer values.
+
+       
+   --------------------------------------------------------------------
+   ---Category: Methods for display modes management
+
+   DisplayMode( me ) returns Integer;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Indicates the display mode of the Interactive Object
+
+   HasDisplayMode ( me ) returns Boolean from Standard;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns True if the Interactive Object has 
+   --          a display mode setting. Otherwise, it is 
+   --          displayed in Neutral Point.
+
+   SetDisplayMode( me: mutable; aMode: Integer from Standard );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Allows to provide a setting <aMode> for an 
+   --          Interactive Object's display mode.
+
+   UnsetDisplayMode( me: mutable );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Removes display mode settings from the Interactive object
+
+   DefaultDisplayMode( me ) returns Integer from Standard is virtual;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the default display mode. This method is to be 
+   --          implemented when the main mode is not mode 0.
+
+   AcceptDisplayMode( me; aMode: Integer from Standard ) returns Boolean from  Standard is virtual;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns true if the class of objects accepts the display mode <aMode>
+ 
+   --------------------------------------------------------------------
+   ---Category: Methods for highlight modes management
+
+   HighlightMode( me ) returns TypeOfDetection from AIS2D;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the setting for highlight mode.
+
+   HasHighlightMode( me ) returns Boolean from Standard;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns true if the Interactive Object is in highlight mode
+
+   SetHighlightMode( me: mutable; aMode: TypeOfDetection from AIS2D );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Allows to provide settings for highlight mode.
+
+   UnsetHighlightMode( me: mutable );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Removes settings for highlight mode
+
+   DefaultHighlightMode( me ) returns TypeOfDetection from AIS2D is virtual;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the default highlight mode
+  
+   --------------------------------------------------------------------
+   ---Category: Methods for selection modes management
+   --------------------------------------------------------------------
+
+   SelectionMode( me ) returns Integer from Standard;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Indicates the selection mode of the Interactive Object
+
+   HasSelectionMode( me ) returns Boolean from Standard;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Allows you to change the selection mode of an Interactive Object
+
+   SetSelectionMode( me: mutable; aMode: Integer from Standard );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Allows to provide a setting <aMode> for an 
+   --          Interactive Object's selection mode.
+
+   UnsetSelectionMode( me: mutable );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Removes settings for selection mode
+
+   DefaultSelectionMode( me ) returns Integer from Standard is virtual;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the default selection mode
+
+   PrimitiveExist( me; aName: AspectName from Prs2d ) 
+        returns Boolean from Standard is private;
+   ---Level: Internal
+
+   State( me ) returns Integer from Standard; 
+   ---C++: inline
+   ---Level: Internal
+   ---Purpose: 
+
+   SetState( me: mutable; aState: Integer from Standard );
+   ---C++: inline
+   ---Level: Internal
+   ---Purpose: 
+
+   SelectPrimitive (me : mutable; anIndex: Integer from Standard;   
+    	    	    	    	  append:  Boolean  from  Standard );
+   ---Level: Public
+   ---Purpose:  Selects primitive  with  index( TOD_PRIMITIVE  mode  only  )  
+ 
+   AddDetectPrim( me: mutable; aPrim: Primitive from Graphic2d; 
+                               anInd: Integer from Standard ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   AddSelectPrim( me: mutable; aPrim: Primitive from Graphic2d; 
+                               anInd: Integer from Standard ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   RemoveSelectPrim( me: mutable; aPrim: Primitive from Graphic2d; 
+                     anInd: Integer from Standard ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   SetSelSeqPrim( me: mutable; aSeq: HSequenceOfPrimArchit from AIS2D ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   ClearSeqDetPrim( me: mutable ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   ClearSeqSelPrim( me: mutable ) is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   GetDetectSeqPrim( me ) returns HSequenceOfPrimArchit from AIS2D is private;
+   ---Level: Internal
+   ---Purpose: 
+
+   GetSelectedSeqPrim( me ) returns HSequenceOfPrimArchit from AIS2D  is private;
+   ---Level: Internal
+   ---Purpose:
+
+   --------------------------------------------------------------------
+   
+   Save(me; aFStream: in out FStream from Aspect) is virtual;
+   Retrieve(me; anIFStream: in out IFStream from Aspect) is virtual;
+
+fields
+
+   myICTX              : InteractiveContext    from AIS2D;
+   myDrawer            : Drawer                from Prs2d is protected;
+   myDisplayMode       : Integer               from Standard;
+   myHighlightMode     : TypeOfDetection       from AIS2D is protected;
+   mySelectionMode     : Integer               from Standard;
+   myAspects           : DataMapOfPrimAspects  from AIS2D;
+   myState             : Integer               from Standard;
+   myDetectedPrimSeq   : HSequenceOfPrimArchit from AIS2D;
+   mySelectedPrimSeq   : HSequenceOfPrimArchit from AIS2D;
+   
+friends
+
+  class InteractiveContext from AIS2D
+
+end InteractiveObject; 

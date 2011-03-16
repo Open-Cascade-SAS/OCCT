@@ -1,0 +1,23 @@
+-- File     : AIS2D_PrimitiveArchit.cdl
+-- Created  : June  2000
+-- Author   : TCL
+---Copyright: Matra Datavision 2000
+
+private class PrimitiveArchit from AIS2D inherits TShared from MMgt
+ 
+uses 
+
+    Primitive         from Graphic2d
+is
+
+   Create( aPrim: Primitive from Graphic2d; ind: Integer from Standard ) 
+      returns mutable PrimitiveArchit from AIS2D;
+   GetPrimitive( me ) returns Primitive from Graphic2d;
+   GetIndex( me ) returns Integer from Standard;
+
+fields
+
+    myPrimitive  : Primitive         from Graphic2d;
+    myInd        : Integer           from Standard;
+
+end PrimitiveArchit;

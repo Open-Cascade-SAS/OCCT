@@ -1,0 +1,41 @@
+-- File:	PTopLoc_ItemLocation.cdl
+-- Created:	Wed Mar  3 16:24:05 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+private class ItemLocation from PTopLoc inherits Persistent
+
+	---Purpose: Provides  support  for  the implementation  of the
+	--          class Location.
+
+uses
+    Datum3D  from PTopLoc,
+    Location from PTopLoc
+
+is
+    Create(D : Datum3D from PTopLoc; 
+    	   P : Integer from Standard;
+	   N : Location from PTopLoc) 
+    returns mutable ItemLocation from  PTopLoc;
+	---Level: Internal 
+    
+    Datum3D(me) returns Datum3D from PTopLoc
+    is static;
+	---Level: Internal 
+
+    Power(me)   returns Integer from Standard
+    is static;
+	---Level: Internal 
+    
+    Next(me)    returns Location from PTopLoc
+    is static;
+	---Level: Internal 
+    
+fields
+    myDatum : Datum3D  from PTopLoc;
+    myPower : Integer  from Standard;
+    myNext  : Location from PTopLoc;
+
+end ItemLocation;

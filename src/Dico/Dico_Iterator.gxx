@@ -1,0 +1,134 @@
+//#include <Dico_Iterator.ixx>
+#include <Standard_NoSuchObject.hxx>
+
+
+
+    Dico_Iterator::Dico_Iterator (const Handle(Dico_Dictionary)& acell)
+{
+  thenb = 0;  // Clear initial
+  thebase = acell;  thename.Clear();
+  Start();
+}
+
+    Dico_Iterator::Dico_Iterator
+      (const Handle(Dico_Dictionary)& acell,
+       const TCollection_AsciiString& basename)
+{
+  thenb = 0;  // Clear initial
+  if (basename.Length() == 0) {
+    thename.Clear();
+    thebase = acell;
+  } else {
+    thename = basename;
+    Standard_Integer reslev,stat;
+    acell->SearchCell(basename.ToCString(),basename.Length(),basename.Value(1),
+		      1, thebase,reslev,stat);
+    if (stat != 0 || reslev != 0) thebase.Nullify();    // loupe
+  }
+  Start();
+}
+
+// Idem, mais avec une CString
+    Dico_Iterator::Dico_Iterator
+      (const Handle(Dico_Dictionary)& acell,
+       const Standard_CString basename)
+{
+  thenb = 0;  // Clear initial
+  if (basename[0] == '\0') {
+    thename.Clear();
+    thebase = acell;
+  } else {
+    thename.AssignCat(basename);
+    Standard_Integer reslev,stat;
+    acell->SearchCell (basename,thename.Length(),basename[0],1,
+  thebase,reslev,stat);
+    if (stat != 0 || reslev != 0) thebase.Nullify();    // loupe
+  }
+  Start();
+}
+
+
+    void Dico_Iterator::Start ()
+{
+  thenb = 0;  thelast.Nullify();    // Clear apres coup
+  themore = thenext = Standard_False;  theinit = Standard_True;
+  if (thebase.IsNull()) return;
+  if (thebase->CellChar() == '\0') thebase = thebase->Next();  // 1re fois
+  if (!thebase.IsNull()) AppendStack(thebase);
+}
+
+    Standard_Boolean Dico_Iterator::More ()
+{
+  themore = Standard_True;
+  if (thenb == 0) return Standard_False;  // fini
+  Handle(Dico_Dictionary) acell = thelast->Value();
+  if (theinit) {
+    theinit = Standard_False;
+    if (acell->HasIt()) return Standard_True;   // c est bon
+  }
+
+  if (!thenext && acell->HasSub()) {
+    thenext = Standard_False; theinit = Standard_True;
+    AppendStack(acell->Sub());
+  }
+  else if (acell->HasNext()) {  // fin de liste : remonter ...
+    thenext = Standard_False; theinit = Standard_True;
+    thelast->SetValue(acell->Next());
+  } else {
+    thenext = Standard_True;  theinit = Standard_False;
+    thelast = thelast->Previous();  // Null si pas de Previous ... sinon boum
+    thenb --;
+  }
+  if (thenb == 1 && thename.Length() != 0) {  thenb = 0;  thelast.Nullify();  }
+//    ceci pour une sous-racine : ne pas regarder ses suivantes !
+  return More();  // reevaluation sur cette nouvelle tete de liste
+}
+
+
+    void Dico_Iterator::Next ()
+{
+  if (!themore)
+    More();
+  themore = Standard_False;
+}
+
+    const TheItem& Dico_Iterator::Value () const
+{
+  if (thenb == 0) Standard_NoSuchObject::Raise ("DicIter : no current value");
+  return thelast->Value()->It();
+}
+
+    TCollection_AsciiString Dico_Iterator::Name () const
+{
+  Standard_Integer nlen = thename.Length();
+
+//  On calcule le nom donne par la pile en cours
+//  if (thenb == 0) return TCollection_AsciiString();  // String vide
+  TCollection_AsciiString name(thenb,' ');
+  if (thenb > 0) {
+    Standard_Integer i = thenb;
+    Handle(Dico_StackItem) anitem = thelast;
+    while (!anitem.IsNull()) {
+      name.SetValue (i,anitem->Value()->CellChar());  // i-1 TString
+      i --;
+      anitem = anitem->Previous();
+    }
+  }
+
+  if (nlen < 2) return name;
+  TCollection_AsciiString basename(thename);
+  basename.Remove(nlen);
+  return basename.Cat(name);
+}
+
+
+//    Appele deux fois, mis en commun
+    void Dico_Iterator::AppendStack (const Handle(Dico_Dictionary)& val)
+{
+  Handle(Dico_StackItem) newlast;
+  if (thelast.IsNull()) newlast = new Dico_StackItem;
+  else newlast = new Dico_StackItem(thelast);
+  thelast = newlast;
+  thelast->SetValue(val);
+  thenb ++;
+}

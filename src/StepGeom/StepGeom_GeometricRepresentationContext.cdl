@@ -1,0 +1,39 @@
+-- File:        GeometricRepresentationContext.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GeometricRepresentationContext from StepGeom
+
+inherits RepresentationContext from StepRepr
+
+uses
+
+	Integer from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable GeometricRepresentationContext;
+	---Purpose: Returns a GeometricRepresentationContext
+
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aCoordinateSpaceDimension : Integer from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCoordinateSpaceDimension(me : mutable; aCoordinateSpaceDimension : Integer);
+	CoordinateSpaceDimension (me) returns Integer;
+
+fields
+
+	coordinateSpaceDimension : Integer from Standard;
+
+end GeometricRepresentationContext;

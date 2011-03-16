@@ -1,0 +1,118 @@
+
+-- File:	Graphic2d_ViewMapping.cdl
+-- Created:	Tue Jul 13 09:19:31 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class ViewMapping from Graphic2d inherits TShared from MMgt
+
+	---Version:
+
+	---Purpose: A ViewMapping defines a square region of the model
+	--	    space from an origin point and a size in meters.
+	--	    This square region is called the "map from".
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	Length from Quantity,
+	Factor from Quantity
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create
+	returns mutable ViewMapping from Graphic2d;
+	---Level: Public
+	---Purpose: Creates a view mapping with the following default
+	--	    values :
+	--		XCenter	= 0.
+	--		YCenter	= 0.
+	--		Size	= 1.
+	---Category: Constructors
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetViewMapping (me: mutable;
+		aXCenter, aYCenter: Length from Quantity;
+		aSize: Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Sets new values for the view mapping <me>.
+	---Category: Methods to modify the class definition
+
+	SetCenter (me: mutable;
+		aXCenter, aYCenter: Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Sets new values for the view mapping center.
+	---Category: Methods to modify the class definition
+
+	SetSize (me: mutable;
+		aSize: Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Sets new value for the view mapping size.
+
+	SetViewMappingDefault (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Saves the current mapping which will be the
+	--	    reference value for the reset of the mapping
+	--	    done by the ViewmappingReset method.
+	---Category: Methods to modify the class definition
+
+	ViewMappingReset (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Sets the value of the mapping to be the same as
+	--	    the mapping saved by the SetViewMappingDefault method.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	ViewMapping (me; XCenter, YCenter, Size: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the current mapping of the view <me>.
+	---Category: Inquire methods
+
+	Center (me; XCenter, YCenter: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the current center of the view <me>.
+	---Category: Inquire methods
+
+	ViewMappingDefault (me;
+		XCenter, YCenter, Size: out Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Returns the current reset mapping of the view <me>.
+	---Category: Inquire methods
+
+	Zoom (me)
+	returns Factor from Quantity
+	is static;
+	---Level: Public
+	---Purpose: Returns the zoom factor (CurrentSize/InitialSize).
+	---Category: Inquire methods
+
+fields
+	myXCenter:	Length from Quantity;
+	myYCenter:	Length from Quantity;
+	mySize:		Length from Quantity;
+
+	myInitialXCenter:	Length from Quantity;
+	myInitialYCenter:	Length from Quantity;
+	myInitialSize:		Length from Quantity;
+
+end ViewMapping from Graphic2d;

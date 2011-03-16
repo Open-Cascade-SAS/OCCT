@@ -1,0 +1,331 @@
+--
+-- File      :  NewGeneralNote.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NewGeneralNote from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines NewGeneralNote, Type <213> Form <0>
+        --          in package IGESDimen
+        --          Further attributes for formatting text strings
+
+uses
+
+        Pnt                   from gp,
+        XYZ                   from gp,
+        HArray1OfHAsciiString from Interface,
+        HAsciiString          from TCollection,
+        HArray1OfReal         from TColStd,
+        HArray1OfInteger      from TColStd,
+        HArray1OfXYZ          from TColgp,
+        HArray1OfIGESEntity   from IGESData
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable NewGeneralNote;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                         : mutable;
+              width, height              : Real;
+              justifyCode                : Integer;
+              areaLoc                    : XYZ;
+              areaRotationAngle          : Real;
+              baseLinePos                : XYZ;
+              normalInterlineSpace       : Real;
+              charDisplays               : HArray1OfInteger;
+              charWidths, charHeights    : HArray1OfReal;
+              interCharSpc, interLineSpc : HArray1OfReal;
+              fontStyles                 : HArray1OfInteger;
+              charAngles                 : HArray1OfReal;
+              controlCodeStrings         : HArray1OfHAsciiString;
+              nbChars                    : HArray1OfInteger;
+              boxWidths, boxHeights      : HArray1OfReal;
+              charSetCodes               : HArray1OfInteger;
+              charSetEntities            : HArray1OfIGESEntity;
+              slAngles, rotAngles        : HArray1OfReal;
+              mirrorFlags, rotateFlags   : HArray1OfInteger;
+              startPoints                : HArray1OfXYZ;
+              texts                      : HArray1OfHAsciiString)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           NewGeneralNote
+        --       - width                : Width of text containment area
+        --       - height               : Height of text containment area
+        --       - justifyCode          : Justification code
+        --       - areaLoc              : Text containment area location
+        --       - areaRotationAngle    : Text containment area rotation
+        --       - baseLinePos          : Base line position
+        --       - normalInterlineSpace : Normal interline spacing
+        --       - charDisplays         : Character display type
+        --       - charWidths           : Character width
+        --       - charHeights          : Character height
+        --       - interCharSpc         : Intercharacter spacing
+        --       - interLineSpc         : Interline spacing
+        --       - fontStyles           : Font style
+        --       - charAngles           : Character angle
+        --       - controlCodeStrings   : Control Code string
+        --       - nbChars              : Number of characters in string
+        --       - boxWidths            : Box width
+        --       - boxHeights           : Box height
+        --       - charSetCodes         : Character Set Interpretation
+        --       - charSetEntities      : Character Set Font
+        --       - slAngles             : Slant angle of text in radians
+        --       - rotAngles            : Rotation angle of text in radians
+        --       - mirrorFlags          : Type of mirroring
+        --       - rotateFlags          : Rotate internal text flag
+        --       - startPoints          : Text start point
+        --       - texts                : Text strings
+        -- raises exception if there is mismatch between the various 
+        -- Array Lengths.
+
+        TextWidth (me) returns Real;
+        ---Purpose : returns width of text containment area of all strings in the note
+
+        TextHeight (me) returns Real;
+        ---Purpose : returns height of text containment area of all strings in the note
+
+        JustifyCode (me) returns Integer;
+        ---Purpose : returns Justification code of all strings within the note
+        --      0 = no justification
+        --      1 = right justified
+        --      2 = center justified
+        --      3 = left justified
+
+        AreaLocation (me) returns Pnt;
+        ---Purpose : returns Text containment area Location point
+
+        TransformedAreaLocation (me) returns Pnt;
+        ---Purpose : returns Text containment area Location point after Transformation
+
+        ZDepthAreaLocation (me) returns Real;
+        ---Purpose : returns distance from the containment area plane
+
+        AreaRotationAngle (me) returns Real;
+        ---Purpose : returns rotation angle of text containment area in radians
+
+        BaseLinePosition (me) returns Pnt;
+        ---Purpose : returns position of first base line
+
+        TransformedBaseLinePosition (me) returns Pnt;
+        ---Purpose : returns position of first base line after Transformation
+
+        ZDepthBaseLinePosition (me) returns Real;
+        ---Purpose : returns distance from the Base line position plane
+
+        NormalInterlineSpace (me) returns Real;
+        ---Purpose : returns Normal Interline Spacing
+
+        NbStrings (me) returns Integer;
+        ---Purpose : returns number of text HAsciiStrings
+
+        CharacterDisplay (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Fixed/Variable width character display of string
+        --      0 = Fixed
+        --      1 = Variable
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        IsVariable (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns False if Character display width is Fixed
+        -- optional method, if required
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        CharacterWidth (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Character Width of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        CharacterHeight (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Character Height of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        InterCharacterSpace (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Inter-character spacing of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        InterlineSpace (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Interline spacing of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        FontStyle (me ; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns FontStyle of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        CharacterAngle (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns CharacterAngle of string
+        -- Angle returned will be between 0 and 2PI
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        ControlCodeString (me ; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns ControlCodeString of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        NbCharacters (me ; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns number of characters in string or zero
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        BoxWidth (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Box width of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        BoxHeight (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Box height of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        IsCharSetEntity (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns False if Value, True if Pointer (Entity)
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        CharSetCode (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Character Set Interpretation (default = 1) of string
+        -- returns 0 if IsCharSetEntity () is True
+        --      1 = Standard ASCII
+        --      1001 = Symbol Font1
+        --      1002 = Symbol Font2
+        --      1003 = Symbol Font3
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        CharSetEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Character Set Interpretation of string
+        -- returns a Null Handle if IsCharSetEntity () is False
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        SlantAngle (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Slant angle of string in radians
+        -- default value = PI/2
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        RotationAngle (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Rotation angle of string in radians
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        MirrorFlag (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Mirror Flag of string
+        --      0 = no mirroring
+        --      1 = mirror axis is perpendicular to the text base line
+        --      2 = mirror axis is text base line
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        IsMirrored (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns False if MirrorFlag = 0. ie. no mirroring
+        -- else returns True
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        RotateFlag (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Rotate internal text Flag of string
+        --      0 = text horizontal
+        --      1 = text vertical
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        StartPoint (me ; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns text start point of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        TransformedStartPoint (me ; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns text start point of string after Transformation
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        ZDepthStartPoint (me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns distance from the start point plane
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        Text (me ; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns text string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+fields
+
+--
+-- Class    : IGESDimen_NewGeneralNote
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class NewGeneralNote.
+--
+-- Reminder : A NewGeneralNote instance is defined by :
+--            - Width of text containment area
+--            - Height of text containment area
+--            - Justification code
+--            - Text containment area location
+--            - Text containment area rotation
+--            - Base line position
+--            - Normal interline spacing
+--            - Character display type
+--            - Character width
+--            - Character height
+--            - Intercharacter spacing
+--            - Interline spacing
+--            - Font style
+--            - Character angle
+--            - Control Code string
+--            - Number of characters in string
+--            - Box width
+--            - Box height
+--            - Character Set Interpretation
+--            - Character Set Font
+--            - Slant angle of text in radians
+--            - Rotation angle of text in radians
+--            - Type of mirroring
+--            - Rotate internal text flag
+--            - Text start point
+--            - Text strings
+-- A NewGeneralNote Entity consists of sequence of strings within the
+-- defined "imaginary" text containment area. It assumes all text strings
+-- to be related and coplanar. Each text string contains text, a start
+-- point, a text size, and an angle of rotation of the text.
+
+        theWidth                : Real;
+        theHeight               : Real;
+        theJustifyCode          : Integer;
+        theAreaLoc              : XYZ;
+        theAreaRotationAngle    : Real;
+        theBaseLinePos          : XYZ;
+        theNormalInterlineSpace : Real;
+        theCharDisplays         : HArray1OfInteger;
+        theCharWidths           : HArray1OfReal;
+        theCharHeights          : HArray1OfReal;
+        theInterCharSpaces      : HArray1OfReal;
+        theInterlineSpaces      : HArray1OfReal;
+        theFontStyles           : HArray1OfInteger;
+        theCharAngles           : HArray1OfReal;
+        theControlCodeStrings   : HArray1OfHAsciiString;
+        theNbChars              : HArray1OfInteger;
+        theBoxWidths            : HArray1OfReal;
+        theBoxHeights           : HArray1OfReal;
+        theCharSetCodes         : HArray1OfInteger;
+        theCharSetEntities      : HArray1OfIGESEntity;
+        theSlantAngles          : HArray1OfReal;
+        theRotationAngles       : HArray1OfReal;
+        theMirrorFlags          : HArray1OfInteger;
+        theRotateFlags          : HArray1OfInteger;
+        theStartPoints          : HArray1OfXYZ;
+        theTexts                : HArray1OfHAsciiString;
+
+end NewGeneralNote;

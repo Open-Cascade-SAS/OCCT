@@ -1,0 +1,111 @@
+--
+-- File      :  NodalDisplAndRot.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NodalDisplAndRot from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines NodalDisplAndRot, Type <138> Form <0>
+        --          in package IGESAppli
+        --          Used to communicate finite element post processing
+        --          data.
+
+uses
+
+        GeneralNote           from IGESDimen,
+        Node                  from IGESAppli,
+        HArray1OfGeneralNote  from IGESDimen,
+        HArray1OfNode         from IGESAppli,
+        HArray1OfReal         from TColStd,
+        XYZ                   from gp,
+        HArray1OfInteger      from TColStd,
+        HArray1OfXYZ          from TColgp,
+        HArray1OfHArray1OfXYZ from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable NodalDisplAndRot;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me             : mutable;
+              allNotes       : HArray1OfGeneralNote;
+              allIdentifiers : HArray1OfInteger;
+              allNodes       : HArray1OfNode;
+              allRotParams   : HArray1OfHArray1OfXYZ;
+              allTransParams : HArray1OfHArray1OfXYZ)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           NodalDisplAndRot
+        --       - allNotes       : Used to store the general note describing
+        --                          the analysis cases
+        --       - allIdentifiers : Used to store the node number
+        --                          identifier for the nodes
+        --       - allNodes       : Used to store the nodes
+        --       - allRotParams   : Used to store the rotation for the nodes
+        --       - allTransParams : Used to store the incremental
+        --                          displacements for the nodes
+        -- raises exception if Lengths of allIdentifiers, allNodes,
+        -- allRotParams, and allTransParams are not same  
+        -- or if length of allNotes and size of each element of allRotParams
+        -- and allTransParam are not same
+
+        NbCases (me) returns Integer;
+        ---Purpose : returns the number of analysis cases
+
+        NbNodes (me) returns Integer;
+        ---Purpose : returns the number of nodes
+
+        Note (me; Index : Integer) returns GeneralNote
+        raises OutOfRange;
+        ---Purpose : returns the General Note that describes the Index analysis case
+        -- raises exception if Index <= 0 or Index > NbCases
+
+        NodeIdentifier (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the node identifier as specified by the Index
+        -- raises exception if Index <= 0 or Index > NbNodes
+
+        Node (me; Index : Integer) returns Node
+        raises OutOfRange;
+        ---Purpose : returns the node as specified by the Index
+        -- raises exception if Index <= 0 or Index > NbNodes
+
+        TranslationParameter (me; NodeNum, CaseNum : Integer) returns XYZ
+        raises OutOfRange;
+        ---Purpose : returns the Translational Parameters for the particular Index
+        -- Exception raised if NodeNum <= 0 or NodeNum > NbNodes()
+        -- or CaseNum <= 0 or CaseNum > NbCases()
+
+        RotationalParameter (me; NodeNum, CaseNum : Integer) returns XYZ
+        raises OutOfRange;
+        ---Purpose : returns the Rotational Parameters for Index
+        -- Exception raised if NodeNum <= 0 or NodeNum > NbNodes()
+        -- or CaseNum <= 0 or CaseNum > NbCases()
+
+fields
+
+--
+-- Class    : IGESAppli_NodalDisplAndRot
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class NodalDisplAndRot.
+--
+-- Reminder : A NodalDisplAndRot instance is defined by :
+--            - the general note describing the analysis cases
+--            - the node number identifier for the nodes
+--            - the nodes
+--            - the incremental displacements and rotation for the nodes
+
+        theNotes           : HArray1OfGeneralNote;
+        theNodeIdentifiers : HArray1OfInteger;
+        theNodes           : HArray1OfNode;
+        theTransParam      : HArray1OfHArray1OfXYZ;
+        theRotParam        : HArray1OfHArray1OfXYZ;
+
+end NodalDisplAndRot;

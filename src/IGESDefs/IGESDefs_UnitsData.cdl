@@ -1,0 +1,78 @@
+--
+-- File      :  UnitData.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class UnitsData from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES UnitsData Entity, Type <316> Form <0>
+        --          in package IGESDefs
+        --          This class stores data about a model's fundamental units.
+
+uses
+
+        HAsciiString  from TCollection,
+        HArray1OfReal from TColStd,
+        HArray1OfHAsciiString from Interface
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable UnitsData;
+
+        -- Specific methods for the entity
+
+        Init (me         : mutable;
+              unitTypes  : HArray1OfHAsciiString;
+              unitValues : HArray1OfHAsciiString;
+              unitScales : HArray1OfReal)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           UnitsData
+        --       - unitTypes  : Types of the units being defined
+        --       - unitValues : Unit Values of the units
+        --       - unitScales : Multiplicative Scale Factors
+        -- raises exception if lengths of unitTypes, unitValues and
+        -- unitScale are not same
+
+        NbUnits(me) returns Integer;
+        ---Purpose : returns the Number of units defined by this entity
+
+        UnitType(me ; UnitNum : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns the Type of the UnitNum'th unit being defined
+        -- raises exception if UnitNum <= 0 or UnitNum > NbUnits()
+
+        UnitValue(me ; UnitNum : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns the Units of the UnitNum'th unit being defined
+        -- raises exception if UnitNum <= 0 or UnitNum > NbUnits()
+
+        ScaleFactor(me ; UnitNum : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the multiplicative scale factor to be apllied to the
+        -- UnitNum'th unit being defined
+        -- raises exception if UnitNum <= 0 or UnitNum > NbUnits()
+
+fields
+
+--
+--  Class    : IGESDefs_UnitsData
+--
+--  Purpose  : Declaration of variables specific to UnitsData
+--
+--  Reminder : An UnitsData Entity stores data about a model's
+--             fundamental units. It consists of no. of data strings.
+--             The entity then contains records, each of which
+--             contains a pair of string variables and a real
+--             scale factor.
+
+        theUnitTypes  : HArray1OfHAsciiString;
+        theUnitValues : HArray1OfHAsciiString;
+        theUnitScales : HArray1OfReal;
+
+end UnitsData;

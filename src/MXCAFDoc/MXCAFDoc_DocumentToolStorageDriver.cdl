@@ -1,0 +1,41 @@
+-- File:	MXCAFDoc_DocumentToolStorageDriver.cdl
+-- Created:	Tue Aug 15 15:15:59 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DocumentToolStorageDriver from MXCAFDoc inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses
+    SRelocationTable  from MDF,
+    Attribute         from TDF,
+    Attribute         from PDF,
+    MessageDriver from CDM
+
+is
+
+--    Create  -- Version 0
+--    returns mutable DocumentToolStorageDriver from MXCAFDoc;
+    Create (theMsgDriver : MessageDriver from CDM)
+    returns mutable DocumentToolStorageDriver from MXCAFDoc;
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: XCAFDoc_Color.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end DocumentToolStorageDriver;

@@ -1,0 +1,529 @@
+-- File:	MgtGeom.cdl
+-- Created:	Fri Mar  5 12:33:04 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package MgtGeom 
+
+	---Purpose: This  package   provides   methods  to   translate
+	--          transient objects from Geom to  persistent objects
+	--          from PGeom and vice-versa. No  track from previous
+	--          translation is kept.
+	--          
+--	Data is not shared:
+-- -   between transient and persistent objects, or
+-- -   between two successive translations of the
+--   same object.
+    
+uses
+
+    Geom, PGeom
+    
+is
+
+
+    -- Axis1Placement
+
+
+    Translate(PObj: Axis1Placement from PGeom)
+    	returns Axis1Placement from Geom;
+       	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Axis1Placement from Geom)
+    	returns Axis1Placement from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Axis2Placement
+
+
+    Translate(PObj: Axis2Placement from PGeom)
+    	returns Axis2Placement from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Axis2Placement from Geom)
+    	returns Axis2Placement from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- BSplineCurve
+
+
+    Translate(PObj: BSplineCurve from PGeom)
+    	returns BSplineCurve from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: BSplineCurve from Geom)
+    	returns BSplineCurve from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- BSplineSurface
+
+
+    Translate(PObj: BSplineSurface from PGeom)
+    	returns BSplineSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: BSplineSurface from Geom)
+    	returns BSplineSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- BezierCurve
+
+
+    Translate(PObj: BezierCurve from PGeom)
+    	returns BezierCurve from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: BezierCurve from Geom)
+    	returns BezierCurve from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- BezierSurface
+
+
+    Translate(PObj: BezierSurface from PGeom)
+    	returns BezierSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: BezierSurface from Geom)
+    	returns BezierSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- CartesianPoint
+
+
+    Translate(PObj: CartesianPoint from PGeom)
+    	returns CartesianPoint from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: CartesianPoint from Geom)
+    	returns CartesianPoint from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Circle
+
+
+    Translate(PObj: Circle from PGeom)
+    	returns Circle from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Circle from Geom)
+    	returns Circle from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- ConicalSurface
+
+
+    Translate(PObj: ConicalSurface from PGeom)
+    	returns ConicalSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: ConicalSurface from Geom)
+    	returns ConicalSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+    -- -----
+    -- Curve
+    -- -----
+
+
+    Translate(PObj: Curve from PGeom)
+    	returns Curve     from Geom
+    	raises NullObject from Standard;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	--          Raises NullObject if the PObj type has no mapping
+	---Level: Advanced 
+
+
+    Translate(TObj: Curve from Geom)
+    	returns Curve     from PGeom
+    	raises NullObject from Standard;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	--          Raises NullObject if the TObj type has no mapping
+	---Level: Advanced 
+
+
+
+
+    -- CylindricalSurface
+
+
+    Translate(PObj: CylindricalSurface from PGeom)
+    	returns CylindricalSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: CylindricalSurface from Geom)
+    	returns CylindricalSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Direction
+
+
+    Translate(PObj: Direction from PGeom)
+    	returns Direction from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Direction from Geom)
+    	returns Direction from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Ellipse
+
+
+    Translate(PObj: Ellipse from PGeom)
+    	returns Ellipse from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Ellipse from Geom)
+    	returns Ellipse from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Hyperbola
+
+
+    Translate(PObj: Hyperbola from PGeom)
+    	returns Hyperbola from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Hyperbola from Geom)
+    	returns Hyperbola from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Line
+
+
+    Translate(PObj: Line from PGeom)
+    	returns Line from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Line from Geom)
+    	returns Line from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- OffsetCurve
+
+
+    Translate(PObj: OffsetCurve from PGeom)
+    	returns OffsetCurve from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: OffsetCurve from Geom)
+    	returns OffsetCurve from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- OffsetSurface
+
+
+    Translate(PObj: OffsetSurface from PGeom)
+    	returns OffsetSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: OffsetSurface from Geom)
+    	returns OffsetSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Parabola
+
+
+    Translate(PObj: Parabola from PGeom)
+    	returns Parabola from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Parabola from Geom)
+    	returns Parabola from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Plane
+
+
+    Translate(PObj: Plane from PGeom)
+    	returns Plane from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Plane from Geom)
+    	returns Plane from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+    -- Point
+
+
+    Translate(PObj: Point from PGeom)
+    	returns Point from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Point from Geom)
+    	returns Point from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+    -- RectangularTrimmedSurface
+
+
+    Translate(PObj: RectangularTrimmedSurface from PGeom)
+    	returns RectangularTrimmedSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: RectangularTrimmedSurface from Geom)
+    	returns RectangularTrimmedSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- SphericalSurface
+
+
+    Translate(PObj: SphericalSurface from PGeom)
+    	returns SphericalSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: SphericalSurface from Geom)
+    	returns SphericalSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+    -- -------
+    -- Surface
+    -- -------
+
+
+    Translate(PObj: Surface from PGeom)
+    	returns Surface   from Geom
+    	raises NullObject from Standard;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	--          Raises NullObject if the PObj type has no mapping
+	---Level: Advanced 
+
+
+    Translate(TObj: Surface from Geom)
+    	returns Surface   from PGeom
+    	raises NullObject from Standard;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	--          Raises NullObject if the TObj type has no mapping
+	---Level: Advanced 
+
+
+
+
+    -- SurfaceOfLinearExtrusion
+
+
+    Translate(PObj: SurfaceOfLinearExtrusion from PGeom)
+    	returns SurfaceOfLinearExtrusion from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: SurfaceOfLinearExtrusion from Geom)
+    	returns SurfaceOfLinearExtrusion from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- SurfaceOfRevolution
+
+
+    Translate(PObj: SurfaceOfRevolution from PGeom)
+    	returns SurfaceOfRevolution from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: SurfaceOfRevolution from Geom)
+    	returns SurfaceOfRevolution from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- ToroidalSurface
+
+
+    Translate(PObj: ToroidalSurface from PGeom)
+    	returns ToroidalSurface from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: ToroidalSurface from Geom)
+    	returns ToroidalSurface from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- Transformation
+
+
+    Translate(PObj: Transformation from PGeom)
+    	returns Transformation from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: Transformation from Geom)
+    	returns Transformation from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- TrimmedCurve
+
+
+    Translate(PObj: TrimmedCurve from PGeom)
+    	returns TrimmedCurve from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: TrimmedCurve from Geom)
+    	returns TrimmedCurve from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+
+
+    -- VectorWithMagnitude
+
+
+    Translate(PObj: VectorWithMagnitude from PGeom)
+    	returns VectorWithMagnitude from Geom;
+	---Purpose: Translate <PObj> to its Transient equivalent from Geom.
+	---Level: Advanced 
+
+
+    Translate(TObj: VectorWithMagnitude from Geom)
+    	returns VectorWithMagnitude from PGeom;
+	---Purpose: Translate <TObj> to its Persistent equivalent from PGeom.
+	---Level: Advanced 
+
+
+end MgtGeom;

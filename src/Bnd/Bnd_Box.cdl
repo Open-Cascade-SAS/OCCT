@@ -1,0 +1,290 @@
+-- File:	Box.cdl
+-- Created:	Mon Jan 28 11:51:08 1991
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+-- Modified :   by Maria Pumborios at fri Apr 26  
+--              add  the method distance 		
+---Copyright:	 Matra Datavision 1991, 1992          	 
+
+
+class Box from Bnd 
+
+	---Purpose: Describes a bounding box in 3D space.
+    	-- A bounding box is parallel to the axes of the coordinates
+    	-- system. If it is finite, it is defined by the three intervals:
+    	-- -   [ Xmin,Xmax ],
+    	-- -   [ Ymin,Ymax ],
+    	-- -   [ Zmin,Zmax ].
+    	-- A bounding box may be infinite (i.e. open) in one or more
+    	-- directions. It is said to be:
+    	-- -   OpenXmin if it is infinite on the negative side of the   "X Direction";
+    	-- -   OpenXmax if it is infinite on the positive side of the "X Direction";
+    	-- -   OpenYmin if it is infinite on the negative side of the   "Y Direction";
+    	-- -   OpenYmax if it is infinite on the positive side of the "Y Direction";
+    	-- -   OpenZmin if it is infinite on the negative side of the   "Z Direction";
+    	-- -   OpenZmax if it is infinite on the positive side of the "Z Direction";
+    	-- -   WholeSpace if it is infinite in all six directions. In this
+    	--   case, any point of the space is inside the box;
+    	-- -   Void if it is empty. In this case, there is no point included in the box.
+    	--   A bounding box is defined by:
+    	-- -   six bounds (Xmin, Xmax, Ymin, Ymax, Zmin and
+    	--   Zmax) which limit the bounding box if it is finite,
+    	-- -   eight flags (OpenXmin, OpenXmax, OpenYmin,
+    	--   OpenYmax, OpenZmin, OpenZmax,
+    	--   WholeSpace and Void) which describe the
+    	--   bounding box if it is infinite or empty, and
+    	-- -   a gap, which is included on both sides in any direction
+    	--   when consulting the finite bounds of the box.
+ 
+
+uses    Pnt    from gp,
+    	Lin    from gp,
+    	Dir    from gp, 
+    	Trsf   from gp,
+	Pln    from gp
+
+raises
+    ConstructionError from Standard
+
+is
+
+    Create returns Box from Bnd;
+	---Purpose: Creates an empty Box.
+    	-- The constructed box is qualified Void. Its gap is null.
+
+    SetWhole(me : in out)    is static;
+	---Purpose: Sets this bounding box so that it  covers the whole of 3D space.
+	--        It is infinitely  long in all directions.
+    
+    SetVoid(me : in out)    is static;
+	---Purpose: Sets this bounding box so that it is empty. All points are outside a void box. 
+
+    Set(me : in out; P : Pnt)    is static;
+	---Purpose: Sets this bounding box so that it bounds
+    	-- -   the point P. This involves first setting this bounding box
+    	--   to be void and then adding the point P.
+
+    Set(me : in out; P : Pnt; D : Dir)    is static;
+	---Purpose: Sets this bounding box so that it bounds
+    	---   the half-line defined by point P and direction D, i.e. all
+    	--   points M defined by M=P+u*D, where u is greater than
+    	--   or equal to 0, are inside the bounding volume. This
+    	--   involves first setting this box to be void and then adding   the half-line.	
+
+    Update(me : in out; aXmin, aYmin, aZmin, aXmax, aYmax, aZmax : Real)
+	---Purpose: Enlarges this bounding box, if required, so that it
+    	--          contains at least:
+    	--   -   interval [ aXmin,aXmax ] in the "X Direction",
+    	--   -   interval [ aYmin,aYmax ] in the "Y Direction",
+    	--   -   interval [ aZmin,aZmax ] in the "Z Direction"; 
+    is static;
+
+    Update(me : in out; X,Y,Z : Real)
+	---Purpose:  Adds a point of coordinates (X,Y,Z) to this bounding box.
+    is static;
+
+    GetGap(me) returns Real
+	---Purpose: Returns the gap of this bounding box. 
+    is static;
+
+    SetGap(me : in out; Tol : Real)
+	---Purpose: Set the gap of this bounding box to abs(Tol).
+    is static;
+
+    Enlarge(me : in out; Tol : Real)
+	---Purpose: Enlarges the      box    with    a   tolerance   value.
+	--          (minvalues-Abs(<tol>) and maxvalues+Abs(<tol>))
+    	--	This means that the minimum values of its X, Y and Z
+    	-- intervals of definition, when they are finite, are reduced by
+    	-- the absolute value of Tol, while the maximum values are
+    	-- increased by the same amount. 
+    is static;
+
+    Get(me; aXmin, aYmin, aZmin, aXmax, aYmax, aZmax : out Real)
+	---Purpose: Returns the bounds of this bounding box. The gap is included.
+    	-- If this bounding box is infinite (i.e. "open"), returned values
+    	-- may be equal to +/- Precision::Infinite().
+    raises ConstructionError -- if IsVoid()
+    is static;
+    
+    OpenXmin(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Xmin
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    OpenXmax(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Xmax
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    OpenYmin(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Ymin
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    OpenYmax(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Ymax
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    OpenZmin(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Zmin
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    OpenZmax(me : in out)
+	---Purpose: The   Box will be   infinitely   long  in the Zmax
+	--          direction.
+	---Level: Public 
+    is static;
+    
+    IsOpenXmin(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Xmin direction.  
+    is static;
+    
+    IsOpenXmax(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Xmax direction.  
+    is static;
+    
+    IsOpenYmin(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Ymix direction.  
+    is static;
+    
+    IsOpenYmax(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Ymax direction. 
+    is static;
+    
+    IsOpenZmin(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Zmin direction. 
+    is static;
+    
+    IsOpenZmax(me) returns Boolean
+	---Purpose: Returns true if this bounding box is open in the  Zmax  direction.  
+     is static;
+   
+    IsWhole(me) returns Boolean
+	--- Purpose: Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag). 
+    is static;
+    
+    IsVoid(me) returns Boolean
+	---Purpose: Returns true if this bounding box is empty (Void flag).
+    is static;
+    
+    IsXThin(me; tol : Real) returns Boolean
+	---Purpose: true if xmax-xmin < tol.
+	---Level: Public 
+    is static;
+    
+    IsYThin(me; tol : Real) returns Boolean
+	---Purpose: true if ymax-ymin < tol.
+	---Level: Public 
+    is static;
+    
+    IsZThin(me; tol : Real) returns Boolean
+	---Purpose: true if zmax-zmin < tol.
+	---Level: Public 
+    is static;
+    
+    IsThin(me; tol : Real) returns Boolean
+	---Purpose: Returns true if IsXThin, IsYThin and IsZThin are all true,
+    	-- i.e. if the box is thin in all three dimensions.
+	---Level: Public 
+    is static;
+    
+    Transformed(me; T : Trsf from gp)
+	---Purpose: Returns a bounding box which is the result of applying the
+    	-- transformation T to this bounding box.
+    	-- Warning
+    	-- Applying a geometric transformation (for example, a
+    	-- rotation) to a bounding box generally increases its
+    	-- dimensions. This is not optimal for algorithms which use it.
+    returns Box from Bnd
+    is static;
+    
+    Add(me : in out; Other : Box)
+    is static;
+	---Purpose: Adds the box <Other> to <me>.
+	---Level: Public 
+    
+    Add(me : in out; P : Pnt)
+    is static;
+	---Purpose: Adds a Pnt to the box.
+	---Level: Public 
+
+    Add(me : in out; P : Pnt; D : Dir)
+    is static;
+	---Purpose: Extends  <me> from the Pnt <P> in the direction <D>.
+	---Level: Public 
+    
+    Add(me : in out; D : Dir)
+    is static;
+	---Purpose: Extends the Box  in the given Direction, i.e. adds
+	--          an  half-line. The   box  may become   infinite in
+	--          1,2 or 3 directions.
+	---Level: Public 
+    
+    IsOut(me; P : Pnt from gp) returns Boolean
+	---Purpose: Returns True if the Pnt is out the box.
+	---Level: Public 
+    is static;
+    
+    IsOut(me; L : Lin from gp) returns Boolean
+	---Purpose: Returns False if the line intersects the box.
+	---Level: Public 
+    is static;
+    
+    IsOut(me; P : Pln from gp) returns Boolean
+	---Purpose: Returns False if the plane intersects the box.
+	---Level: Public 
+    is static;
+    
+    IsOut(me; Other : Box) returns Boolean
+    is static;
+	---Purpose: Returns False if the <Box> intersects or is inside <me>.
+	---Level: Public 
+
+    IsOut(me; Other : Box; T : Trsf from gp) returns Boolean
+    is static;
+	---Purpose: Returns False if  the transformed <Box> intersects
+	--          or  is inside <me>.
+	---Level: Public 
+
+    IsOut(me; T1 : Trsf from gp; Other : Box; T2 : Trsf from gp)
+    returns Boolean
+    is static;
+	---Purpose: Returns False  if the transformed <Box> intersects
+	--          or  is inside the transformed box <me>.
+	---Level: Public 
+    
+    IsOut(me; P1, P2: Pnt from gp; D: Dir from gp)
+    returns Boolean
+    is static;
+	---Purpose: Returns False  if the flat band lying between two parallel 
+    	--    	    lines represented by their reference points <P1>, <P2> and
+    	--          direction <D> intersects the box.
+	---Level: Public 
+	
+    Distance (me; Other : Box)   returns Real        is static;
+        --- Purpose : Computes the minimum distance between two boxes.
+
+    Dump (me)    is static;
+
+    SquareExtent(me) returns Real;
+    	--- Purpose : Computes the squared diagonal of me.
+        ---C++: inline
+
+fields  Xmin : Real; 
+    	Xmax : Real; 
+    	Ymin : Real; 
+    	Ymax : Real; 
+    	Zmin : Real;
+    	Zmax : Real;
+	Gap  : Real;
+    	Flags : Integer;  -- 8 flags
+	
+end Box ;

@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWPlacedDatumTargetFeature.cdl
+-- Created:	Wed Jun  4 13:34:33 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWPlacedDatumTargetFeature from RWStepDimTol
+
+    ---Purpose: Read & Write tool for PlacedDatumTargetFeature
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    PlacedDatumTargetFeature from StepDimTol
+
+is
+    Create returns RWPlacedDatumTargetFeature from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : PlacedDatumTargetFeature from StepDimTol);
+	---Purpose: Reads PlacedDatumTargetFeature
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: PlacedDatumTargetFeature from StepDimTol);
+	---Purpose: Writes PlacedDatumTargetFeature
+
+    Share (me; ent : PlacedDatumTargetFeature from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWPlacedDatumTargetFeature;

@@ -1,0 +1,29 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Open Cascade Application Framework: Definition of attributes from TPrsStd
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TPrsStd.xsd
+  </documentation>
+</annotation>
+
+<element name="TPrsStd_AISPresentation" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="guid" type="ocaf:GuidType" use="required"/>
+        <attribute name="isdisplayed" type="boolean" default="false"/>
+        <attribute name="color" type="int"/>
+        <attribute name="material" type="int"/>
+        <attribute name="transparency" type="double"/>
+        <attribute name="width" type="double"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

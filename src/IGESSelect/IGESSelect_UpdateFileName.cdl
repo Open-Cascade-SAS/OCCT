@@ -1,0 +1,36 @@
+-- File:	IGESSelect_UpdateFileName.cdl
+-- Created:	Thu Feb 23 18:36:47 1995
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class UpdateFileName  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Sets the File Name in Header to be the actual name of the file
+    --           If new file name is unknown, the former one is kept
+    --           Remark : this works well only when it is Applied and send time
+    --           If it is run immediately, new file name is unknown and nothing
+    --           is done
+    --           The Selection of the Modifier is not used : it simply acts as
+    --           a criterium to select IGES Files to touch up
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create returns mutable UpdateFileName;
+    ---Purpose : Creates an UpdateFileName, which uses the system Date
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : only <target> is used : the system Date
+    --           is set to Global Section Item n0 18.
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Updates IGES File Name to new current one"
+
+end UpdateFileName;

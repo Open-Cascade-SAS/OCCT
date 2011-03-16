@@ -1,0 +1,110 @@
+-- File:	Surface.cdl
+-- Created:	Thu May 21 19:22:42 1992
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+
+class Surface from DrawTrSurf
+     
+inherits Drawable 
+
+        ---Purpose:  This class defines a drawable surface.
+        -- With this class you can draw a general surface from 
+        -- package Geom.
+
+uses Surface     from Geom,
+     Display     from Draw,
+     Color       from Draw,
+     Drawable3D  from Draw,
+     Interpretor from Draw 
+
+is
+
+  Create (S : Surface from Geom)
+        --- Purpose : default drawing mode
+        --  Just the middle isoparametric curves are drawn.
+        --  The boundaries are yellow, the isoparametric curves are blues.
+        --  For the discretisation 50 points are computed in each parametric
+        --  direction.
+     returns mutable Surface from DrawTrSurf;
+
+
+
+  Create (S : Surface from Geom;
+          Nu, Nv : Integer;
+          BoundsColor, IsosColor : Color from Draw;
+          Discret : Integer;
+          Deflection : Real;
+          DrawMode  : Integer)
+     returns mutable Surface from DrawTrSurf;
+
+
+  BoundsColor (me) returns Color from Draw
+        ---C++: inline
+     is static;
+
+
+  ClearIsos (me : mutable) is virtual;
+        --- Purpose : rub out all the isoparametric curves.
+     
+
+  DrawOn (me; dis : in out Display from Draw);
+
+
+  DrawOn (me; dis : in out Display from Draw;
+              Iso : Boolean from Standard)
+       ---Purpose: Iso = True : Draw the isos, the boundaries, the UVMarker.
+       --          Iso = False: Only Draw the boundary and the UVMarker.
+  is static;
+  
+  
+  GetSurface (me) returns any Surface from Geom
+        ---C++: inline
+     is static;
+
+
+  IsosColor (me) returns Color from Draw
+        ---C++: inline
+     is static;
+
+
+  NbIsos (me; Nu, Nb : in out Integer)
+        ---C++: inline
+     is static;
+     
+
+  SetBoundsColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+
+  SetIsosColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+
+  ShowIsos (me : mutable; Nu, Nv : Integer) is virtual;
+        --- Purpose : change the number of isoparametric curves to be drawn.
+
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+  
+  Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+  is redefined;
+  
+  Whatis(me; I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command.
+  is redefined;
+
+fields
+
+  surf        : Surface from Geom is protected;
+  boundsLook  : Color from Draw   is protected;
+  isosLook    : Color from Draw   is protected;
+  nbUIsos     : Integer           is protected;
+  nbVIsos     : Integer           is protected;
+
+end Surface;

@@ -1,0 +1,112 @@
+-- File:	GccEnt.cdl
+-- Created:	Tue Mar  5 12:06:03 1991
+-- Author:	Remy GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+package GccEnt
+
+    ---Purpose: This package provides an implementation of the qualified
+    --          entities useful to create 2d entities with geometric 
+    --          constraints. The qualifier explains which subfamily of
+    --          solutions we want to obtain. It uses the following law: the
+    --          matter/the interior side is at the left of the line, if we go
+    --          from the beginning to the end.
+    --          The qualifiers are:
+    --            Enclosing   : the solution(s) must enclose the argument.
+    --            Enclosed    : the solution(s) must be enclosed in the
+    --                          argument.
+    --            Outside     : both the solution(s) and the argument must be
+    --                          outside to each other.
+    --            Unqualified : the position is undefined, so give all the
+    --                          solutions.
+    --          The use of a qualifier is always required if such 
+    --          subfamilies exist. For example, it is not used for a point.
+    -- Note:    the interior of a curve is defined as the left-hand
+    --          side of the curve in relation to its orientation.
+uses gp,
+     Standard,
+     TCollection
+
+is
+
+    --- Level : Public  
+    --  All methods of all  classes will be public.
+
+
+    -- General deferred classes of geometric qualifiers:
+
+    exception BadQualifier inherits DomainError from Standard;
+
+    class QualifiedLin;
+
+    class QualifiedCirc;
+
+    generic class QualifiedCurv;
+
+    enumeration Position is 
+    	unqualified, enclosing, enclosed, outside, noqualifier;
+    	---Purpose:
+    	-- Qualifies the position of a solution of a construction
+    	-- algorithm with respect to one of its arguments. This is one of the following:
+    	-- -   GccEnt_unqualified: the position of the solution
+    	--   is undefined with respect to the argument,
+    	-- -   GccEnt_enclosing: the solution encompasses the argument,
+    	-- -   GccEnt_enclosed: the solution is encompassed by the argument,
+    	-- -   GccEnt_outside: the solution and the argument
+    	--   are external to one another,
+    	-- -   GccEnt_noqualifier: the value returned during a
+    	--   consultation of the qualifier when the argument is
+    	--   defined as GccEnt_unqualified.
+    	-- Note: the interior of a line or any open curve is
+    	-- defined as the left-hand side of the line or curve in
+    	-- relation to its orientation.
+        
+    class Array1OfPosition instantiates 
+    	Array1 from TCollection (Position from GccEnt);
+
+    Unqualified(Obj : Lin2d from gp) returns QualifiedLin;
+    	---Purpose: Constructs a qualified line,
+    	-- so that the relative position to the circle or line of the
+    	-- solution computed by a construction algorithm using the
+    	-- qualified circle or line is not qualified, i.e. all solutions apply.
+    Unqualified(Obj : Circ2d from gp) returns QualifiedCirc;
+    	---Purpose: Constructs a qualified circle
+    	-- so that the relative position to the circle or line of the
+    	-- solution computed by a construction algorithm using the
+    	-- qualified circle or line is not qualified, i.e. all solutions apply.
+
+
+    Enclosing(Obj : Circ2d from gp) returns QualifiedCirc;
+    	---Purpose:
+    	-- Constructs such a qualified circle that the solution
+    	-- computed by a construction algorithm using the qualified
+    	-- circle encloses the circle.
+
+
+    Enclosed(Obj : Lin2d from gp) returns QualifiedLin;
+    	---Purpose: Constructs a qualified line,
+    	-- so that the solution computed by a construction
+    	-- algorithm using the qualified circle or line is enclosed by
+    	-- the circle or line.
+    Enclosed(Obj : Circ2d from gp) returns QualifiedCirc;
+    	---Purpose: Constructs a qualified circle
+    	-- so that the solution computed by a construction
+    	-- algorithm using the qualified circle or line is enclosed by
+    	-- the circle or line.
+
+
+    Outside(Obj : Lin2d from gp) returns QualifiedLin;
+    	---Purpose: Constructs a qualified line,
+    	-- so that the solution computed by a construction
+    	-- algorithm using the qualified circle or line and the circle
+    	-- or line are external to one another.
+    Outside(Obj : Circ2d from gp) returns QualifiedCirc;
+    	---Purpose: Constructs a qualified circle
+    	-- so that the solution computed by a construction
+    	-- algorithm using the qualified circle or line and the circle
+    	-- or line are external to one another.
+
+end GccEnt;
+
+

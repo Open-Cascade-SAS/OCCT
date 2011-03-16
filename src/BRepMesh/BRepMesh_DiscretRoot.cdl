@@ -1,0 +1,65 @@
+-- File:	BRepMesh_DiscretRoot.cdl
+-- Created:	Thu Apr 10 09:57:55 2008
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2008
+
+
+deferred class DiscretRoot from BRepMesh  
+	 
+    ---Purpose: 
+
+uses
+    Shape from TopoDS 
+    
+--raises
+
+is 
+    
+    Initialize 
+    	returns DiscretRoot from BRepMesh;  
+	      
+    SetDeflection(me: out; 
+    	    theDeflection : Real from Standard); 
+    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretRoot();" 
+    
+    Deflection(me) 
+    	returns Real from Standard; 
+
+    SetAngle(me: out; 
+    	    theAngle: Real from Standard); 
+	     
+    Angle(me) 
+    	returns Real from Standard;     
+     
+    SetShape(me: out; 
+    	    theShape: Shape from TopoDS); 
+
+    Shape(me) 
+    	returns Shape from TopoDS; 
+    ---C++: return const &    	     
+
+    Perform(me: out) 
+    	is deferred; 
+
+    IsDone(me) 
+    	returns Boolean from Standard;   
+
+    -- 
+    --  Protected methods 
+    --     
+    SetDone(me:out) 
+    	is protected;  
+	
+    SetNotDone(me:out) 
+    	is protected; 
+     
+    Init(me:out) 
+    	is virtual protected;  
+fields 
+    myDeflection : Real from Standard is protected; 
+    myAngle      : Real from Standard is protected;
+    myShape      : Shape from TopoDS  is protected; 
+    myIsDone     : Boolean from Standard is protected;  
+    
+end DiscretRoot;

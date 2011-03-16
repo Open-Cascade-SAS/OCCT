@@ -1,0 +1,16 @@
+-- File:	PDataStd_Point.cdl
+-- Created:	Wed Apr  9 13:43:41 1997
+-- Author:	VAUTHIER Jean-Claude 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+class Point from PDataXtd inherits Attribute from PDF
+
+	---Purpose: 
+
+is
+
+    Create returns mutable Point from PDataXtd;
+
+end Point;

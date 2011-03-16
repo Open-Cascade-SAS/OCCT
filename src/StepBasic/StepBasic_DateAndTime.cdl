@@ -1,0 +1,36 @@
+-- File:        DateAndTime.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DateAndTime from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Date from StepBasic, 
+	LocalTime from StepBasic
+is
+
+	Create returns mutable DateAndTime;
+	---Purpose: Returns a DateAndTime
+
+	Init (me : mutable;
+	      aDateComponent : mutable Date from StepBasic;
+	      aTimeComponent : mutable LocalTime from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDateComponent(me : mutable; aDateComponent : mutable Date);
+	DateComponent (me) returns mutable Date;
+	SetTimeComponent(me : mutable; aTimeComponent : mutable LocalTime);
+	TimeComponent (me) returns mutable LocalTime;
+
+fields
+
+	dateComponent : Date from StepBasic;
+	timeComponent : LocalTime from StepBasic;
+
+end DateAndTime;

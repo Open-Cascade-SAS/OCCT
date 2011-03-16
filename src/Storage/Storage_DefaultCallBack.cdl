@@ -1,0 +1,25 @@
+-- File:	Storage_DefaultCallBack.cdl
+-- Created:	Mon Mar  3 09:25:19 1997
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class DefaultCallBack from Storage
+
+inherits CallBack from Storage
+
+uses Schema from Storage,
+     BaseDriver from Storage
+     
+is
+   Create returns DefaultCallBack from Storage;
+    
+   New(me) returns mutable Persistent;
+
+   Add(me; aPers : Persistent from Standard; aSchema : Schema from Storage);
+   
+   Write(me; aPers : Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage);
+   
+   Read(me; aPers : mutable Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage);
+   
+end;

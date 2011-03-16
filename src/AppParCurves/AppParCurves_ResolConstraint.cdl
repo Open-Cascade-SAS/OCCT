@@ -1,0 +1,132 @@
+-- File:	ResolConstraint.cdl
+-- Created:	Thu Jul 25 16:56:48 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+ generic class ResolConstraint from AppParCurves
+    	    	    (MultiLine   as any;
+		     ToolLine    as any)   -- as ToolLine(MultiLine)
+    	    	
+					       
+    ---Purpose: This classe describes the algorithm to find the approximate
+    --          solution of a MultiLine with constraints. The resolution
+    --          algorithm is the Uzawa method. See the math package
+    --          for more information.
+    --          All the tangencies of  MultiPointConstraint's points
+    --          will be colinear.
+    --	        Be careful of the curvature: it is possible to have some
+    --	        curvAature points only for one curve. In this case, the Uzawa
+    --	        method is used with a non-linear resolution, much more longer.
+
+
+uses Matrix                    from math,
+     Vector                    from math,
+     Array1OfInteger           from TColStd,
+     MultiCurve                from AppParCurves,
+     HArray1OfConstraintCouple from AppParCurves
+
+
+raises OutOfRange from Standard
+
+is
+
+    Create(SSP: MultiLine; SCurv: in out MultiCurve; 
+    	   FirstPoint, LastPoint: Integer;
+    	   Constraints: HArray1OfConstraintCouple;
+    	   Bern, DerivativeBern: Matrix; Tolerance: Real = 1.0e-10)
+    	---Purpose: Given a MultiLine SSP with constraints points, this
+    	--          algorithm finds the best curve solution to approximate it.
+    	--          The poles from SCurv issued for example from the least
+    	--          squares are used as a guess solution for the uzawa
+    	--          algorithm. The tolerance used in the Uzawa algorithms 
+    	--          is Tolerance.
+    	--          A is the Bernstein matrix associated to the MultiLine 
+    	--          and DA is the derivative bernstein matrix.(They can come 
+    	--          from an approximation with ParLeastSquare.)
+    	--          The MultiCurve is modified. New MultiPoles are given.
+
+
+    returns ResolConstraint from AppParCurves;
+    
+
+    IsDone(me)
+    	---Purpose: returns True if all has been correctly done.
+
+    returns Boolean
+    is static;
+
+    
+    Error(me)
+        ---Purpose: returns the maximum difference value between the curve 
+        --          and the given points.
+	
+    returns Real
+    is static;
+    
+    
+    ConstraintMatrix(me)
+    	---Purpose:
+        ---C++: return const&
+
+    returns Matrix
+    is static;
+    
+
+    Duale(me)
+    	---Purpose: returns the duale variables of the system.
+    	---C++: return const&
+    returns Vector
+    is static;
+
+    
+    ConstraintDerivative(me: in out; SSP: MultiLine; Parameters: Vector;
+    	    	    	 Deg: Integer; DA: Matrix)
+        ---Purpose: Returns the derivative of the constraint matrix.
+        ---C++: return const&
+    returns Matrix
+    is static;
+    
+    
+    InverseMatrix(me)
+    	---Purpose: returns the Inverse of Cont*Transposed(Cont), where
+    	--          Cont is the constraint matrix for the algorithm.
+        ---C++: return const&
+
+    returns Matrix
+    is static;
+    
+    NbConstraints(me; SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	    	  TheConstraints: HArray1OfConstraintCouple)
+    	    ---Purpose: is used internally to create the fields.
+
+    returns Integer
+    is static protected;
+    
+    
+    NbColumns(me; SSP: MultiLine; Deg: Integer)
+    	---Purpose: is internally used for the fields creation.
+
+    returns Integer
+    is static protected;
+    
+
+fields
+
+Done:    Boolean;
+Err:     Real;
+Cont:    Matrix;
+DeCont:  Matrix;
+Secont:  Vector;
+CTCinv:  Matrix;
+Vardua:  Vector;
+IncPass: Integer;
+IncTan:  Integer;
+IncCurv: Integer;
+IPas:    Array1OfInteger;
+ITan:    Array1OfInteger;
+ICurv:   Array1OfInteger;
+
+end ResolConstraint;

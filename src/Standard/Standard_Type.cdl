@@ -1,0 +1,201 @@
+-- File:	Standard_Type.cdl
+-- Created:	Fri Sep  6 09:38:56 1991
+-- Author:	jean pierre TIRAULT
+--		<jpt@topsn1>
+---Copyright:	 Matra Datavision 1991
+
+class Type from Standard 
+
+   ---Purpose: 
+   --   The class <Type> provides services to find out information
+   --   about a type defined in CDL.
+   --
+   --   Note that multiple inheritance is not supported by the moment;
+   --   the array of ancestors accepted by constructors is assumed to
+   --   represent hierarchy of ancestors up to the root.
+   --   However, only first element is actually used by SubType method,
+   --   higher level ancestors are requested recursively.
+   --
+   --  Warning:
+   --   The information given by <Type> is about the type from which
+   --   it is created and not about the <Type> itself. 
+   --
+
+inherits
+   Transient from Standard
+
+uses 
+     Boolean from Standard,
+     Integer from Standard,
+     CString from Standard,
+     KindOfType from Standard,
+     AncestorIterator from Standard
+
+raises 
+   TypeMismatch from Standard,
+   NoSuchObject from Standard,
+   OutOfRange   from Standard
+
+is
+	
+   ---------------------------------------------------------------------
+   ---Category: The general information about a type.
+   ---------------------------------------------------------------------   
+
+   Name(me) returns CString;
+   ---Purpose: 
+   --   Returns the type name of <me>.
+   ---Level: Advanced
+
+   Size(me) returns Integer;
+   ---Purpose: 
+   --   Returns the size of <me> in bytes.
+   ---Level: Advanced
+  
+   ---------------------------------------------------------------------
+   ---Category: The Constructor of Type 
+   ---------------------------------------------------------------------
+   Create(aName           : CString;
+	  aSize		  : Integer) 
+   ---Purpose:
+   --   The constructor for a imported type.
+   ---Level: Advanced
+   returns mutable Type;
+
+   Create(aName           : CString;
+	  aSize		  : Integer;
+	  aNumberOfParent : Integer;
+	  aAncestors      : Address) 
+   ---Purpose:
+   --   The constructor for a primitive.
+   ---Level: Advanced
+   returns mutable Type;
+
+   Create(aName           : CString;
+	  aSize		  : Integer;
+	  aNumberOfElement: Integer;
+	  aNumberOfParent : Integer;
+	  anAncestors     : Address;
+          aElements       : Address)
+   ---Purpose:
+   --   The constructor for an enumeration.
+   ---Level: Advanced
+   returns mutable Type;
+
+   Create(aName           : CString;
+	  aSize		  : Integer;
+	  aNumberOfParent : Integer;
+	  anAncestors     : Address;
+          aFields         : Address) 
+   ---Purpose:
+   --   The constructor for a class.
+   ---Level: Advanced
+   returns mutable Type;
+
+   ---------------------------------------------------------------------
+   ---Category: Comparison between types
+   ---------------------------------------------------------------------
+   SubType(me; aOther: Type) returns Boolean;
+   ---Purpose:
+   --   Returns "True", if <me> is the same as <aOther>,
+   --   or inherits from <aOther>.
+   --   Note that multiple inheritance is not supported.
+   ---Level: Advanced
+   
+   SubType(me; theName: CString) returns Boolean;
+   ---Purpose:
+   --   Returns "True", if <me> or one of its ancestors has the name 
+   --   equal to theName.
+   --   Note that multiple inheritance is not supported.
+   ---Level: Advanced
+   
+   ---------------------------------------------------------------------
+   ---Category: Information about nature of the type.	
+   ---------------------------------------------------------------------
+
+   IsImported(me) returns Boolean;
+   ---Purpose: 
+   --   Returns "True", if the type is imported.
+   ---Level: Advanced
+
+   IsPrimitive(me) returns Boolean;
+   ---Purpose: 
+   --   Returns "True", if the type is a primitive.
+   ---Level: Advanced
+
+   IsEnumeration(me) returns Boolean;
+   ---Purpose: 
+   --   Returns "True", if the type is an "Enumeration".
+   ---Level: Advanced
+
+   IsClass(me) returns Boolean;
+   ---Purpose: 
+   --   Returns "True", if the type is a "Class".
+   ---Level: Advanced
+
+   ---------------------------------------------------------------------
+   ---Category: The information about the ancestors of a type.
+   ---------------------------------------------------------------------
+
+   NumberOfParent(me) returns Integer;
+   ---Purpose: 
+   --   Returns the number of direct parents of the class.
+   --   
+   ---Level: Advanced
+
+   NumberOfAncestor(me) returns Integer;
+   ---Purpose: 
+   --   Returns the number of ancestors of the class.
+   --  
+   ---Level: Advanced
+
+   Ancestors(me) returns Address is private;
+   ---Purpose: 
+   --   Returns the address of the ancestors array. It can be used only by 
+   --   AncestorIterator.
+   ---Level: Advanced
+
+   ShallowDump (me);
+   ---Purpose: 
+   --   Prints the Information about type. 
+   ---C++:  function call
+   ---Level: Advanced
+   
+   ShallowDump (me; S: in out OStream);
+   ---Purpose: 
+   --   Prints the Information about type. 
+   ---C++:  function call
+   ---Level: Advanced
+   
+   Print (me; s: in out OStream);
+   ---Purpose: 
+   --   Prints on the stream <s> the name of Type.
+   --  Warning:
+   --   The operator "OStream& operator<< (Standard_OStream&,
+   --                                      Handle(Standard_Type)&)"
+   --   is implemented. (This operator uses the method Print)
+   --   
+   ---Level: Advanced  	
+   ---C++: alias "Standard_EXPORT     void operator<<(Standard_OStream& s) const  {  Print(s); }  "
+ 
+   InLineDummy(me) is static private;
+   ---Purpose:
+   --    Just for inline.
+   --    
+   ---Level: Advanced   
+   ---C++: inline
+    
+fields
+
+   myName	      : CString;
+   mySize             : Integer;   
+   myKind	      : KindOfType;
+   myNumberOfParent   : Integer;
+   myNumberOfAncestor : Integer;
+   myAncestors	      : Address;
+
+friends
+
+   class AncestorIterator from Standard
+
+end Type from Standard;

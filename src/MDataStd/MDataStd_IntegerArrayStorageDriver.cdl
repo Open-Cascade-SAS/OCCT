@@ -1,0 +1,38 @@
+-- File:	MDataStd_IntegerArrayStorageDriver.cdl
+-- Created:	Tue Jun 15 16:56:00 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+class IntegerArrayStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
+    returns mutable IntegerArrayStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: IntegerArray from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end IntegerArrayStorageDriver;
+

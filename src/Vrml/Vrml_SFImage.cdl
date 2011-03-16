@@ -1,0 +1,81 @@
+-- File:	Vrml_SFImage.cdl
+-- Created:	Thu May 25 10:59:23 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+-- File:	Vrml_SFImage.cdl
+-- Created:	Mon Dec 23 15:17:14 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SFImage from Vrml inherits  TShared  from  MMgt
+
+  ---Purpose:  defines SFImage type of VRML field types.
+
+    --  SFImage  is  presented  as  three  integers  representing 
+    --  the  width,  height  and  number of components in the image per pixel, 
+    --  followed  by  width*height  hexadecimal  values  representing  the  pixels 
+    --  in  the  image,  which  is  located  in myArray .  
+    --  myArray : Array1OfInteger has  (width*height)  size.
+
+    --  Number of components in the image per pixel is enumeration SFImageNumber  from  Vrml  
+    --  One-component  image  will  have  one-bite  hexadecimal  values 
+    --  presenting  the  intensity  of  the  image 
+    --  Ex:  0xFF  is full  intensity,  0x00 is  no  intensity   
+
+    --  A  two-component  image  puts  the  intensity  in  the  first (hight)  byte 
+    --  and  the  transparency  in  the  second  (low)  byte 
+
+    --  Pixels  in  a  three-component  image  have  the  red  component  in  the  first (hight)   
+    --  byte, followed by  green  and  blue  components.  Ex:  0xFF0000  is  red.
+    --  Four-component  images  put  transparency  byte  after  red/green/blue 
+    --  Ex:  0x0000FF80  is  semi-transparent  blue.  A  value  of  1.0  is  completely transparent,  
+    --  0.0  is  completely  opaque.
+    --  
+
+    --  Each  pixel  is  actually  read  as  a  single  unsigned  number,  so  a  3-component 
+    --  pixel  with  value  "0x0000FF"  can  also  be  written  as  "0xFF"  or  "255"  (decimal).
+    --  Pixels  are  specified  from  left   to  right,  bottom  to  top 
+    --  SetValueOfPixel  sets  value for  the  pixel.  
+
+uses
+ 
+    HArray1OfInteger from TColStd, 
+    SFImageNumber   from Vrml
+
+is
+ 
+    Create returns mutable SFImage from Vrml; 
+
+    Create ( aWidth, aHeight : Integer         from Standard; 
+             aNumber         : SFImageNumber   from Vrml; 
+    	     anArray         : HArray1OfInteger from TColStd)
+        returns  mutable SFImage from Vrml; 
+
+    SetWidth ( me : mutable; aWidth : Integer from Standard );
+    Width ( me )  returns Integer from Standard;
+
+    SetHeight ( me : mutable; aHeight : Integer from Standard );
+    Height ( me )  returns  Integer from Standard;
+
+    SetNumber ( me : mutable; aNumber : SFImageNumber from Vrml );
+    Number ( me )  returns SFImageNumber from Vrml;
+
+    SetArray ( me : mutable; anArray  : HArray1OfInteger from TColStd ) ;
+    Array ( me ) returns HArray1OfInteger from TColStd; 
+
+    ArrayFlag ( me ) returns Boolean from Standard; 
+
+fields
+
+    myWidth      : Integer           from Standard;
+    myHeight     : Integer           from Standard;
+    myNumber     : SFImageNumber     from Vrml;
+    myArray      : HArray1OfInteger  from TColStd;
+    myArrayFlag  : Boolean           from Standard; 
+
+end SFImage;

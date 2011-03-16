@@ -1,0 +1,23 @@
+-- File:	TopoDS_Vertex.cdl
+-- Created:	Thu Dec 13 16:46:37 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class Vertex from TopoDS inherits Shape from TopoDS
+
+	---Purpose: Describes a vertex which
+-- - references an underlying vertex with the potential
+--   to be given a location and an orientation
+-- - has a location for the underlying vertex, giving its
+--   placement in the local coordinate system
+-- - has an orientation for the underlying vertex, in
+--   terms of its geometry (as opposed to orientation in
+--   relation to other shapes).
+
+is    
+    Create returns Vertex from TopoDS;
+    ---C++: inline
+        ---Purpose: Undefined Vertex.
+
+end Vertex;

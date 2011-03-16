@@ -1,0 +1,139 @@
+-- File:	ShapeUpgrade_ShapeConvertToBezier.cdl
+-- Created:	Fri May 14 09:41:42 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeConvertToBezier from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
+
+	---Purpose: API class for performing conversion of 3D, 2D curves to bezier curves
+	--          and surfaces to bezier based surfaces (
+	--           bezier surface,
+	--           surface of revolution based on bezier curve,
+	--           offset surface based on any previous type).
+
+uses
+
+    Shape from TopoDS,
+    FaceDivide from ShapeUpgrade
+    
+is
+
+    Create returns ShapeConvertToBezier from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    Create (S: Shape from TopoDS)
+    returns ShapeConvertToBezier from ShapeUpgrade;
+    	---Purpose: Initialize by a Shape.
+	
+    Set2dConversion(me:in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion 2D curves to bezier.
+    	---C++:inline
+    
+    Get2dConversion(me) returns Boolean;
+    	---Purpose: Returns the 2D conversion mode.
+    	---C++:inline
+    
+    Set3dConversion(me: in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion 3d curves to bezier.
+    	---C++:inline
+    
+    Get3dConversion(me) returns Boolean;
+    	---Purpose: Returns the 3D conversion mode.
+    	---C++:inline
+    
+    SetSurfaceConversion(me:in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion surfaces curves to 
+    	--          bezier basis.
+    	---C++:inline
+    
+    GetSurfaceConversion(me) returns Boolean;
+    	---Purpose: Returns the surface conversion mode.
+    	---C++:inline
+    
+    --Remark: The following "Set.." functions affects only if 3D 
+    --        conversion mode is True.
+    
+    Set3dLineConversion(me:in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Line to bezier.
+    	---C++:inline
+    
+    Get3dLineConversion(me) returns Boolean;
+    	---Purpose: Returns the Geom_Line conversion mode.
+    	---C++:inline
+    
+    Set3dCircleConversion(me:in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Circle to bezier.
+    	---C++:inline
+    
+    Get3dCircleConversion(me) returns Boolean;
+    	---Purpose: Returns the Geom_Circle conversion mode.
+    	---C++:inline
+    
+    Set3dConicConversion(me:in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Conic to bezier.
+    	---C++:inline
+    
+    Get3dConicConversion(me) returns Boolean;
+    	---Purpose: Returns the Geom_Conic conversion mode.
+    	---C++:inline
+    
+    --Remark: The following "Set.." functions affects only if Surface 
+    --        conversion mode is True.
+
+    SetPlaneMode(me: in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Plane to Bezier
+	---C++: inline
+    
+    GetPlaneMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_Pline conversion mode.
+    	---C++: inline
+    
+    SetRevolutionMode(me: in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_SurfaceOfRevolution to Bezier
+	---C++: inline
+    
+    GetRevolutionMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_SurfaceOfRevolution conversion mode.
+    	---C++: inline
+    
+    SetExtrusionMode(me: in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_SurfaceOfLinearExtrusion to Bezier
+	---C++: inline
+    
+    GetExtrusionMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_SurfaceOfLinearExtrusion conversion mode.
+    	---C++: inline
+    
+    SetBSplineMode(me: in out; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_BSplineSurface to Bezier
+	---C++: inline
+    
+    GetBSplineMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_BSplineSurface conversion mode.
+    	---C++: inline
+    
+    Perform(me: in out; newContext: Boolean = Standard_True) 
+    returns Boolean is redefined;
+    	---Purpose: Performs converting and computes the resulting shape
+    
+    GetSplitFaceTool(me) returns FaceDivide from ShapeUpgrade
+    is redefined protected;
+    	---Purpose: Returns the tool for dividing faces.
+    
+fields
+
+    my2dMode        : Boolean;
+    my3dMode        : Boolean;
+    mySurfaceMode   : Boolean;
+    my3dLineMode    : Boolean;
+    my3dCircleMode  : Boolean;
+    my3dConicMode   : Boolean;
+    myPlaneMode     : Boolean;
+    myRevolutionMode: Boolean;
+    myExtrusionMode : Boolean;
+    myBSplineMode   : Boolean;
+    myLevel         : Integer;
+
+end ShapeConvertToBezier;

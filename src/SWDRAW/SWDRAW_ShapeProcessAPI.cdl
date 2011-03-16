@@ -1,0 +1,20 @@
+-- File:	SWDRAW_ShapeProcessAPI.cdl
+-- Created:	Sat Jun 19 15:26:38 1999
+-- Author:	data exchange team
+--		<det@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeProcessAPI from SWDRAW
+
+	---Purpose: Contains commands to activate package ShapeProcessAPI
+	
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeProcessAPI
+
+end ShapeProcessAPI;

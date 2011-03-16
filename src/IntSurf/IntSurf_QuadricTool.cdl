@@ -1,0 +1,57 @@
+-- File:	QuadricTool.cdl
+-- Created:	Wed Sep 30 12:42:33 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class QuadricTool from IntSurf
+
+	---Purpose: This class provides a tool on a quadric that can be
+	--          used to instantiates the Walking algorithmes (see
+	--          package IntWalk) with a Quadric from IntSurf
+	--          as implicit surface.
+
+uses Quadric from IntSurf,
+     Vec     from gp
+
+is
+
+    Value(myclass; Quad: Quadric from IntSurf;
+          X, Y, Z: Real from Standard)
+	  
+    	---Purpose: Returns the value of the function.
+    
+    	returns Real from Standard;
+	
+	---C++: inline
+    
+    
+    Gradient(myclass; Quad: Quadric from IntSurf;
+             X, Y, Z: Real from Standard ; V : out Vec from gp);
+	     
+    	---Purpose: Returns the gradient of the function.
+
+	---C++: inline
+    
+
+
+    ValueAndGradient(myclass; Quad: Quadric from IntSurf;
+                     X, Y, Z: Real from Standard;
+                     Val: out Real from Standard; Grad: out Vec from gp);
+		     
+    	---Purpose: Returns the value and the gradient.
+
+	---C++: inline
+    
+
+    Tolerance(myclass; Quad: Quadric from IntSurf )
+    
+	---Purpose: returns the tolerance of the zero of the implicit function
+
+    	returns Real from Standard; 
+
+
+end QuadricTool;
+
+

@@ -1,0 +1,468 @@
+-- File:	PCollection_HAsciiString.cdl
+-- Created:	Wed Feb 10 18:03:38 1993
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1993
+
+
+class HAsciiString from PCollection 
+	    
+	 inherits Persistent
+    
+	 ---Purpose: Describes a persistent ASCII character string of variable length.
+
+    uses   VArrayOfCharacter from DBC,
+           HExtendedString from PCollection,
+           AsciiString from TCollection 
+
+    raises OutOfRange from Standard, 
+           NegativeValue from Standard,
+    	   NumericError from Standard
+is
+
+
+	Create(S : CString) 
+            returns mutable HAsciiString from PCollection;
+	---Purpose: Creation and initialization with the string S.
+
+	Create(S : AsciiString from TCollection) 
+            returns mutable HAsciiString from PCollection;
+	---Purpose: Creation and initialization with the string S from TCollection.
+
+	Create(C : Character from Standard)
+            returns mutable HAsciiString from PCollection;
+	---Purpose: Creation and initialization with the character C.
+
+	Create(S : HAsciiString from PCollection;
+    	       FromIndex, ToIndex : Integer from Standard) 
+	    returns mutable HAsciiString from PCollection
+	    raises NegativeValue from Standard;
+        ---Purpose: Creation of a sub-string of the string S.
+        -- The sub-string starts at the index FromIndex and ends
+        -- at the index ToIndex
+        ---Trigger: Raises an exception if ToIndex is less than FromIndex .
+        ---Example: before
+        -- S = "abcdefg", FromIndex=3, ToIndex=6
+        -- after
+        -- S = "abcdefg"
+        -- returns
+        -- "cdef"
+
+        Create(S : HExtendedString from PCollection)
+            returns mutable HAsciiString from PCollection
+	    raises OutOfRange from Standard;
+	---Purpose: Creation by converting an extended string to a normal
+	-- string. Raises OutOfRange if the String is not in the "Ascii range".
+	  
+	Create(R : Real from Standard ; F : CString = "%f") 
+            returns mutable HAsciiString from PCollection;
+	---Purpose: Creation and initialization by converting the real 
+	-- value into a string. 
+	-- F describes a format using "C" conventions.
+
+	Create(I : Integer from Standard ; F : CString = "%d")
+            returns mutable HAsciiString from PCollection;
+	---Purpose: Creation and initialization by converting the Integer
+	-- value into a string.
+	-- F describes a format using "C" conventions.
+
+	Append(me : mutable; S : HAsciiString from PCollection);
+        ---Level: Public
+	---Purpose: Pushing a string at the end of the string me
+        ---Example:
+        -- before
+        --   me = "abcd" , S = "ef"
+        -- after
+        --   me = "abcdef" , S = "ef"
+
+	Capitalize(me : mutable);
+        ---Level: Public
+        ---Purpose: Converts the first character into its corresponding 
+        -- upper-case character and the other characters into lowercase
+        ---Example: before
+        --   me = "hellO "
+        -- after
+        --   me = "Hello "
+
+	Center(me : mutable; 
+               Width : Integer from Standard;
+               Filler : Character from Standard) 
+	raises NegativeValue from Standard;
+        ---Level: Public
+	---Purpose: center
+	-- Length becomes equal to Width and the new characters are
+	-- equal to Filler
+	-- Raises an exception if Width is less than zero
+	-- if Width < Length nothing happens
+	---Example: before
+	-- me = "abcdef" , Width = 9 , Filler = ' '
+	-- after
+	-- me = "  abcdef " 
+
+	ChangeAll(me : mutable; 
+                  C, NewC : Character from Standard; 
+		  CaseSensitive : Boolean from Standard);
+        ---Level: Public
+        ---Purpose: Substitutes all the characters equal to C by NewC in the
+        -- string <me>.The substition can be case sensitive.
+        ---Example: before
+        -- me = "HetTo" , C = 't' , NewC = 'l' , 
+        -- CaseSensitive = True
+        -- after
+        -- me = "HelTo"
+
+	Clear(me : mutable);
+        ---Level: Public
+	---Purpose: Remove all characters in the string <me>.
+        -- Length is equal to zero now.
+
+        Convert(me) returns AsciiString from TCollection;
+        ---Level: Public
+        ---Purpose: Converts a persistent HAsciiString to a non
+        -- persistent AsciiString.
+
+	FirstLocationInSet(me; Set : HAsciiString from PCollection;
+                                 FromIndex : Integer from Standard; 
+                                 ToIndex   : Integer from Standard)
+    	    	returns Integer
+		raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Returns the index of the first character of <Set> founded in <me>.
+        -- The search begins to the index FromIndex and ends to the
+        -- the index ToIndex.
+        -- Returns zero if failure.
+        -- Raises an exception if FromIndex or ToIndex is out of range.
+        ---Example: before 
+        --   me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7
+        -- after
+        --   me = "aabAcAa"
+        -- returns
+        --   4
+
+	FirstLocationNotInSet(me; Set : HAsciiString from PCollection;
+                                     FromIndex : Integer; 
+                                     ToIndex   : Integer) returns Integer
+		raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Returns the index of the first character of <me> 
+        -- that is not present in the set <Set>.
+        -- The search begins to the index FromIndex and ends to the
+        -- the index ToIndex in <me>.
+        -- Returns zero if failure.
+        -- Raises an exception if FromIndex or ToIndex is out of range.
+        ---Example: before 
+        --  me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7
+        -- after
+        --   me = "aabAcAa"
+        -- returns
+        --   3
+
+	InsertAfter(me : mutable; Index : Integer; 
+                    S : HAsciiString from PCollection)
+	raises OutOfRange from Standard;
+        ---Level: Public
+	---Purpose: Pushing a string after a specific index in the string <me>.
+	-- Raises an exception if Index is out of bounds.
+	---Example: before
+	-- me = "cde" , Index = 0 , S = "ab"  
+	-- after
+	-- me = "abcde" , S = "ab"
+
+	InsertBefore(me : mutable; Index : Integer; 
+                     S : HAsciiString from PCollection)
+        raises OutOfRange from Standard;
+        ---Level: Public
+	---Purpose: Pushing a string before a specific index in the string <me>
+	-- Raises an exception if Index is out of bounds
+	---Example: before
+	-- me = "cde" , Index = 1 , S = "ab"  
+	-- after
+	-- me = "abcde" , S = "ab"
+
+	IntegerValue(me) returns Integer 
+	raises NumericError from Standard;
+        ---Level: Public
+        ---Purpose: Returns the integer value corresponding to the string <me>
+        -- Raises an exception if the string does not correspond to
+        -- an integer value.
+        ---Example: me = "   10       " -> 10
+
+        IsDifferent (me ; other : HAsciiString) returns Boolean;
+        ---Level: Public
+        ---Purpose: Test if characters are different 
+        -- between <me> and <other>.
+   
+	IsEmpty(me) returns Boolean from Standard;
+        ---Level: Public
+	---Purpose:  Returns True if the string <me> contains zero character
+
+        IsGreater (me ; other : HAsciiString) returns Boolean;
+        ---Level: Public
+        ---Purpose: Returns TRUE if <me> is 'ASCII' greater than <other>.
+
+	IsIntegerValue(me) returns Boolean from Standard; 
+        ---Level: Public
+        ---Purpose: Returns True if the string contains an integer value.
+	---Example: me = "3.14 " -> False 
+        -- me = "123"   -> True
+
+        IsLess (me ; other : HAsciiString) returns Boolean;
+        ---Level: Public
+        ---Purpose: Returns TRUE if <me> is 'ASCII' less than <other>.
+
+	IsRealValue(me) returns Boolean from Standard; 
+        ---Level: Public
+        ---Purpose: Returns True if the string contains an Real value.
+	---Example: me = "3.14 " -> True
+        -- me = "123"   -> True
+        -- me = "3.14a" -> False
+
+	IsSameString(me ; S : HAsciiString from PCollection)
+        ---Level: Public
+	---Purpose: Returns True if two strings are equal.
+	-- The comparison is case sensitive.
+	returns Boolean from Standard;
+
+	IsSameString(me; S : HAsciiString from PCollection;
+    	    	     CaseSensitive : Boolean from Standard) 
+	returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if two strings are equal.
+        -- The comparison is case sensitive if the flag is set.
+  
+	LeftAdjust(me : mutable);
+        ---Level: Public
+        ---Purpose: Removes all space characters in the begining of the 
+        -- string.
+
+	LeftJustify(me : mutable; Width : Integer; 
+                    Filler : Character from Standard) 
+	raises NegativeValue from Standard;
+        ---Level: Public
+	---Purpose: Left justify.
+	-- Length becomes equal to Width and the new characters are
+	-- equal to Filler.
+	-- If Width < Length nothing happens.
+	-- Raises an exception if Width is less than zero.
+	---Example: before
+	--   me = "abcdef" , Width = 9 , Filler = ' '
+	-- after
+	--   me = "abcdef   " 
+
+	Length(me) returns Integer;
+        ---Level: Public
+	---Purpose: Number of characters of the String.
+
+	Location(me; N : Integer; C : Character from Standard; 
+                    FromIndex : Integer; 
+                    ToIndex   : Integer) 
+        returns Integer
+	raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Returns the index of the nth occurence of the character C
+        -- in the string <me> from the starting index FromIndex to the
+        -- ending index ToIndex.
+        -- Returns zero if failure.
+        -- Raises an exception if FromIndex or ToIndex is out of range.
+        ---Example: before 
+        --   me = "aabAa", N = 3, C = 'a', FromIndex = 1, ToIndex = 5
+        -- after
+        --   me = "aabAa"
+        -- returns
+        --   5
+
+	Location(me; S : HAsciiString from PCollection;
+                    FromIndex : Integer; 
+                    ToIndex   : Integer) 
+        returns Integer
+	raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Returns an index in the string <me> of the first occurence
+        -- of the string S in the string <me> from the starting index
+        -- FromIndex to the ending index ToIndex
+        -- returns zero if failure
+        -- Raises an exception if FromIndex or ToIndex is out of range.
+        ---Example: before 
+        --   me = "aabAaAa", S = "Aa", FromIndex = 1, ToIndex = 7
+        -- after
+        --   me = "aabAaAa"
+        -- returns
+        --   4
+
+	Lowercase(me : mutable);
+        ---Level: Public
+        ---Purpose: Converts any upper-case character to its corresponding
+        -- lower-case character in the string <me>. If there is no
+        -- corresponding lower-case character, the character is
+        -- unchanged
+        -- before
+        -- me = "aBAcd123"
+        -- after
+        -- me = "abacd123"
+
+	Prepend(me : mutable; S : HAsciiString from PCollection);
+        ---Level: Public
+	---Purpose: Pushing a string at the begining of the string <me>
+	-- before
+	--  me = "cde" , S = "ab"
+	-- after
+	--  me = "abcde" , S = "ab"
+
+	Print(me ; S : in out OStream);
+        ---Level: Public
+	---Purpose: Prints the content of <me> on the stream S.
+
+	RealValue(me) returns Real from Standard 
+	raises NumericError from Standard;
+        ---Level: Public
+        ---Purpose: Returns the real value corresponding to the string <me>.
+        -- Raises an exception if the string does not correspond to a real value.
+        ---Example: me = "   10       " returns 10.0
+
+	Remove(me : mutable; Index : Integer) 
+        ---Level: Public
+	---Purpose: Removes the character located at the index Index in the string.
+        -- Raises an exception if Index is out of bounds.
+	raises OutOfRange from Standard;
+
+	Remove(me : mutable; FromIndex, ToIndex : Integer) 
+        ---Level: Public
+	---Purpose: Removes all the characters from the index FromIndex to the
+        -- index ToIndex.
+        -- Raises an exception if FromIndex or ToIndex is out of bounds.
+        raises OutOfRange from Standard;
+
+	RemoveAll(me : mutable; C : Character from Standard;
+                  CaseSensitive : Boolean from Standard);
+        ---Level: Public
+        ---Purpose: Removes all the occurences of the character C in the string
+        ---Example: before
+        --  me = "HellLLo", C = 'L' , CaseSensitive = True
+        -- after
+        --  me = "Hello"
+
+	RightAdjust(me : mutable);
+        ---Level: Public
+        ---Purpose: Removes all space characters at the end of the string.
+
+	RightJustify(me : mutable; 
+                     Width : Integer;
+    	    	     Filler : Character from Standard) 
+	raises NegativeValue from Standard;
+        ---Level: Public
+	---Purpose: Right justify.
+	-- Length becomes equal to Width and the new characters are
+	-- equal to Filler.
+	-- If Width < Length nothing happens.
+	-- Raises an exception if Width is less than zero.
+	---Example: before
+	--  me = "abcdef" , Width = 9 , Filler = ' '
+	-- after
+	--  me = "   abcdef" 
+
+	SetValue(me : mutable; Index : Integer; C : Character from Standard) 
+	raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Substitutes the character located to the position Index
+        -- by the character C.
+        -- Raises an exception if the Index is out of bounds.
+        ---Example: before
+        --  me = "Helll" , Index = 5 , C = 'o'
+        -- after
+        --  me = "Hello"
+
+	SetValue(me : mutable; Index : Integer;
+                 S : HAsciiString from PCollection) 
+	raises OutOfRange from Standard;
+        ---Level: Public
+        ---Purpose: Substitutes from the index Index to the end by the string S.
+        -- Raises an exception if Index is out of bounds.
+        ---Example: before
+        --  me = "abcde" , Index = 3 , S = "wxyz"
+        --  after
+        -- me = "abwxyz" , S = "wxyz"
+
+	Split(me : mutable; Index  : Integer) 
+        ---Level: Public
+        ---Purpose: Splits a string of characters into two sub-strings.
+	returns mutable HAsciiString from PCollection
+	raises OutOfRange from Standard;
+
+	SubString(me; FromIndex, ToIndex : Integer) 
+        ---Level: Public
+        ---Purpose: Creation of a sub-string of the string <me>.
+        -- The sub-string starts to the index Fromindex and ends
+        -- to the index ToIndex.
+        -- Raises an exception if ToIndex or FromIndex is out of bounds.
+        ---Example: before
+        --   me = "abcdefg", ToIndex=3, FromIndex=6
+        -- after
+        --   me = "abcdefg"
+        -- returns
+        --   "cdef"
+	returns mutable HAsciiString from PCollection
+	raises OutOfRange from Standard;
+
+        Token (me ; separators : CString=" \t" ; whichone : Integer=1) 
+                 returns mutable HAsciiString from PCollection;
+        ---Level: Public
+        ---Purpose: Extracts <aString> token from <me>.
+        -- The token extracted is the indice number <num>.
+
+	Uppercase(me : mutable);
+        ---Level: Public
+        ---Purpose: Transforms all the characters into upper-case.
+        -- If there is no corresponding upper-case character, the 
+        -- character is unchanged.
+        ---Example: before
+        --  me = "aBAcd"
+        -- after
+        --  me = "ABACD"
+
+	UsefullLength(me) returns Integer;
+        ---Level: Public
+        ---Purpose: Length of the string ignoring all spaces (' ') and the 
+        -- control character at the end.
+
+	Value(me ; Index : Integer) returns Character from Standard 
+	raises OutOfRange from Standard;
+        ---Level: Public
+	---Purpose: Returns the character of index Index of the string 
+        ---Example: me = "abcd", Index = 2, Value returns 'b'.
+
+     	ShallowDump (me; s: in out OStream) 
+            	is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+	Assign(me : mutable ;TheData : VArrayOfCharacter) is private;
+                ---Level: Internal
+	    	---Purpose : Assigns the field of the current structure with
+	    	-- the given value.Private method.
+
+
+fields
+   Data : VArrayOfCharacter from DBC;
+end HAsciiString;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

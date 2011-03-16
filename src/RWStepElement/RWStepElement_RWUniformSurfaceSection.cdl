@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWUniformSurfaceSection.cdl
+-- Created:	Thu Dec 12 17:29:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWUniformSurfaceSection from RWStepElement
+
+    ---Purpose: Read & Write tool for UniformSurfaceSection
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    UniformSurfaceSection from StepElement
+
+is
+    Create returns RWUniformSurfaceSection from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : UniformSurfaceSection from StepElement);
+	---Purpose: Reads UniformSurfaceSection
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: UniformSurfaceSection from StepElement);
+	---Purpose: Writes UniformSurfaceSection
+
+    Share (me; ent : UniformSurfaceSection from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWUniformSurfaceSection;

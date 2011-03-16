@@ -1,0 +1,118 @@
+-- File:	GeomFill_Darboux.cdl
+-- Created:	Wed Mar  4 11:57:03 1998
+-- Author:	Roman BORISOV
+--		<rbv@ecolox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Darboux from GeomFill 
+              inherits TrihedronLaw  from  GeomFill 
+	 
+          ---Purpose: Defines Darboux case of Frenet Trihedron Law
+
+uses
+
+ HSurface from  Adaptor3d,
+ Shape  from  GeomAbs, 
+ Array1OfReal   from TColStd, 
+ Vec    from  gp,  
+ HArray1OfReal from TColStd, 
+ CurveOnSurface from Adaptor3d 
+ 
+raises
+ OutOfRange,  ConstructionError
+
+is  
+   Create  
+      returns Darboux from GeomFill 
+      raises  ConstructionError; 
+    
+   Copy(me)   
+   returns  TrihedronLaw  from  GeomFill          
+   is  redefined;
+     
+-- 
+-- 
+--========== To compute Location and derivatives Location
+--              
+   D0(me : mutable; 
+      Param: Real; 
+      Tangent    : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon on curve at parameter <Param>         
+   returns Boolean  is  redefined;
+	
+   D1(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon and  derivative Trihedron  on curve
+      --          at parameter <Param>                
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   is  redefined; 
+   
+   D2(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      D2Tangent  : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      D2Normal   : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp; 
+      D2BiNormal : out  Vec  from  gp)    
+      ---Purpose: compute  Trihedron on curve          
+      --          first and seconde  derivatives.
+      --  Warning : It used only for C2 aproximation
+   returns Boolean
+   is  redefined; 
+--
+--  =================== Management  of  continuity  ===================
+--                 
+   NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  redefined;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined;  
+     
+	  
+--  ===================  To help   computation of  Tolerance   ===============	 
+    GetAverageLaw(me  :  mutable;
+      ATangent    : out  Vec  from  gp; 
+      ANormal     : out  Vec  from  gp; 
+      ABiNormal   : out  Vec  from  gp) 
+     ---Purpose: Get average value of Tangent(t) and Normal(t) it is usfull to 
+     --          make fast approximation of rational  surfaces.        
+  is  redefined;
+
+--   =================== To help Particular case   ===============	
+   
+    IsConstant(me) 
+    ---Purpose: Say if the law is Constant.        
+    returns  Boolean   
+    is redefined;
+ 
+   IsOnlyBy3dCurve(me) 
+     ---Purpose: Return False.        
+    returns  Boolean   
+    is redefined;  
+
+end Darboux;

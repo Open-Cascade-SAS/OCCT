@@ -1,0 +1,43 @@
+-- File:	Plate_PinpointConstraint.cdl
+-- Created:	Thu Oct 19 17:24:04 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+
+class PinpointConstraint from Plate
+---Purpose : define a constraint on the Plate
+--         
+
+uses 
+   XY from gp, 
+   XYZ from gp
+
+is
+    Create returns PinpointConstraint;
+    Create(point2d : XY ; ImposedValue : XYZ ;
+           iu : Integer = 0; iv : Integer = 0) returns PinpointConstraint;
+
+     -- Accessors :
+    Pnt2d(me) returns XY from gp;
+    ---C++: inline 
+    ---C++: return const  &
+    
+    Idu(me) returns  Integer;
+    ---C++: inline
+    ---C++: return const &
+    
+    Idv(me) returns Integer;
+    ---C++: inline
+    ---C++: return const &
+    
+    Value(me) returns XYZ from gp;
+    ---C++: inline
+    ---C++: return const &
+  
+fields
+    
+    value : XYZ ;  
+    pnt2d : XY ; 
+    idu,idv : Integer;
+   
+end;

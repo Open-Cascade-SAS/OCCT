@@ -1,0 +1,44 @@
+-- File:	PGeom_CartesianPoint.cdl
+-- Created:	Mon Feb 22 17:20:17 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class CartesianPoint from PGeom inherits Point from PGeom
+
+        ---Purpose : Point defined  in  3D space with its 3  cartesian
+        --         coordinates X, Y, Z.
+        --         
+    	---See Also : CartesianPoint from Geom.
+
+uses Pnt from gp
+
+is
+
+
+  Create returns mutable CartesianPoint from PGeom;
+        ---Purpose : Returns a CartesianPoint with default values..
+    	---Level: Internal 
+
+
+  Create (aPnt : Pnt from gp) returns mutable CartesianPoint from PGeom;
+        ---Purpose : Returns a CartesianPoint built with <aPnt>.
+    	---Level: Internal 
+
+
+  Pnt (me : mutable; aPnt : Pnt from gp);
+        ---Purpose : Set the field pnt.
+    	---Level: Internal 
+
+
+  Pnt (me)  returns Pnt;
+        ---Purpose : Returns the value of the field pnt.
+    	---Level: Internal 
+
+
+fields
+
+    pnt : Pnt from gp;
+
+end;

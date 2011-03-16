@@ -1,0 +1,106 @@
+-- File:	MakeParabola.cdl
+-- Created:	Mon Sep 28 11:49:29 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeParabola from GCE2d inherits Root from GCE2d
+
+    	---Purpose :This class implements the following algorithms used to 
+    	--          create Parabola from Geom2d.
+    	--          * Create an Parabola from two apex  and the center.
+    	--  Defines the parabola in the parameterization range  :
+    	--  ]-infinite,+infinite[
+    	--  The vertex of the parabola is the "Location" point of the 
+    	--  local coordinate system "XAxis" of the parabola. 
+    	--  The "XAxis" of the parabola is its axis of symmetry.
+    	--  The "Xaxis" is oriented from the vertex of the parabola to the 
+    	--  Focus of the parabola.
+    	--  The equation of the parabola in the local coordinate system is
+    	--  Y**2 = (2*P) * X
+    	--  P is the distance between the focus and the directrix of the 
+   	--  parabola called Parameter). 
+    	--  The focal length F = P/2 is the distance between the vertex 
+    	--  and the focus of the parabola.
+
+uses Pnt2d    from gp,
+     Parab2d  from gp,
+     Ax2d     from gp,
+     Ax22d    from gp,
+     Parabola from Geom2d
+
+raises NotDone from StdFail
+
+is
+
+Create (Prb : Parab2d from gp) returns MakeParabola;
+    	--- Purpose : Creates a parabola from a non persistent one.
+
+Create (Axis       : Ax22d from gp        ; 
+    	Focal      : Real from Standard   ) returns MakeParabola;
+    	--- Purpose : Creates a parabola with its local coordinate system and it's focal 
+	--  length "Focal".
+    	--  The "Location" point of "Axis" is the vertex of the parabola
+    	--- Status is "NegativeFocusLength" if Focal < 0.0
+
+Create (MirrorAxis : Ax2d    from gp      ; 
+    	Focal      : Real    from Standard;
+    	Sense      : Boolean from Standard) returns MakeParabola;
+    	--- Purpose : Creates a parabola with its "MirrorAxis" and it's focal length "Focal".
+    	--  MirrorAxis is the axis of symmetry of the curve, it is the
+    	--  "XAxis". The "YAxis" is parallel to the directrix of the
+    	--  parabola. The "Location" point of "MirrorAxis" is the vertex of the parabola
+    	--- Status is "NegativeFocusLength" if Focal < 0.0
+
+Create (D     : Ax22d from gp  ; 
+    	F     : Pnt2d from gp  ) returns MakeParabola;
+    	--- Purpose : Creates a parabola with the local coordinate system and the focus point.
+    	--  The sense of parametrization is given by Sense.
+
+Create (D     : Ax2d  from gp                        ; 
+    	F     : Pnt2d from gp                        ;
+    	Sense : Boolean from Standard = Standard_True) returns MakeParabola;
+        --- Purpose :
+        --  D is the directrix of the parabola and F the focus point.
+        --  The symmetry axis "XAxis" of the parabola is normal to the
+        --  directrix and pass through the focus point F, but its
+        --  "Location" point is the vertex of the parabola.
+        --  The "YAxis" of the parabola is parallel to D and its "Location"
+        --  point is the vertex of the parabola.
+
+Create(S1,O  : Pnt2d from gp) returns MakeParabola;
+    	---Purpose: Make a parabola with focal point S1 and 
+    	--          center O
+    	--          The branch of the parabola returned will have <S1> as
+    	--          focal point
+    	-- The implicit orientation of the parabola is:
+    	-- -   the same one as the parabola Prb,
+    	-- -   the sense defined by the coordinate system Axis or the directrix D,
+    	-- -   the trigonometric sense if Sense is not given or is true, or
+    	-- -   the opposite sense if Sense is false.
+    	-- Warning
+    	-- The MakeParabola class does not prevent the
+    	-- construction of a parabola with a null focal distance.
+    	-- If an error occurs (that is, when IsDone returns
+	-- false), the Status function returns:
+    	-- -   gce_NullFocusLength if Focal is less than 0.0, or
+    	-- -   gce_NullAxis if points S1 and O are coincident.
+        
+Value(me) returns Parabola from Geom2d
+    raises NotDone
+    is static;
+    	---C++: return const&
+    	---Purpose: Returns the constructed parabola.
+    	-- Exceptions StdFail_NotDone if no parabola is constructed.
+    
+Operator(me) returns Parabola from Geom2d
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_Parabola() const;"
+
+fields
+
+    TheParabola : Parabola from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeParabola;

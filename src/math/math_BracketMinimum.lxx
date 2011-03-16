@@ -1,0 +1,10 @@
+// math_BracketMinimum.lxx
+
+inline Standard_Boolean math_BracketMinimum::IsDone() const { return Done; }
+
+inline Standard_OStream& operator<<(Standard_OStream& o, 
+				    const math_BracketMinimum& Br)
+{
+  Br.Dump(o);
+  return o;
+}

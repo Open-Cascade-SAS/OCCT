@@ -1,0 +1,422 @@
+-- File:	PCollection_HSequence.cdl
+-- Created:	Fri Sep 11 17:34:39 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class HSequence from PCollection (Item as Storable) inherits Persistent 
+
+        ---Purpose: Definition of a sequence of elements indexed by
+        -- an Integer in range of 1..n
+
+raises
+    NoSuchObject from Standard,
+    OutOfRange from Standard
+
+
+    private class SeqNode inherits PManaged 
+    is
+    	
+    	---Purpose: This class provides tools to manipulate a Sequence node.
+    
+    	Create( TheLast: SeqNode ; TheItem: Item)
+	    returns mutable SeqNode from PCollection;
+
+    	Create( TheItem: Item ; TheFirst: SeqNode )
+	    returns mutable SeqNode from PCollection;
+
+    	Create( ThePrevious: SeqNode ; TheNext: SeqNode ; TheItem: Item )
+	    returns mutable SeqNode from PCollection;
+
+    	Value(me) returns any Item;
+        ---Level: Internal
+	    ---Purpose: Returns MyItem.
+	
+    	Next(me) returns mutable SeqNode;
+        ---Level: Internal
+	    ---Purpose: Returns MyNext.
+
+    	Previous(me) returns mutable SeqNode;
+        ---Level: Internal
+	    ---Purpose: Returns MyPrevious.
+
+    	SetValue( me:mutable; AnItem: Item);
+        ---Level: Internal
+	    ---Purpose: Modifies the value of MyItem.
+
+    	SetNext( me:mutable; ANode: SeqNode);
+        ---Level: Internal
+	    ---Purpose: Modifies the value of MyNext.
+
+    	SetPrevious( me:mutable; ANode: SeqNode);
+        ---Level: Internal 
+	---Purpose: Modifies the value of MyPrevious.
+
+    fields
+        MyPrevious : SeqNode;
+	MyItem     : Item;
+	MyNext     : SeqNode;
+
+    friends class HSequence    from PCollection,
+            class SeqExplorer from PCollection
+    
+    end;
+	
+    class SeqExplorer 
+    	    	    	    	    	   
+        ---Purpose: To explore a Sequence in an optimized way.
+
+    raises NoSuchObject from Standard,
+           OutOfRange from Standard
+
+    is      
+     	Create(S : HSequence from PCollection) 
+    	returns SeqExplorer from PCollection;
+        ---Purpose: Creates an explorer on the sequence S.
+        -- Sets the explorer at the BEGINNING(index 1)
+        -- of the sequence S.
+                                   
+	Value(me : in out ; Index : Integer) 
+          returns any Item 
+    	  raises OutOfRange from Standard;
+                ---Level: Public
+    		---Purpose: Value of the element indexed by Index in the 
+		-- sequence <S>.
+
+	Contains(me : in out ; T : Item) returns Boolean;
+                ---Level: Public
+		---Purpose: Returns True if the sequence <S> contains the element T.
+
+	Location(me : in out ; N : Integer; 
+                 T : Item; FromIndex : Integer; 
+                 ToIndex   : Integer) 
+          returns Integer
+	  raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Returns the index of the nth occurence of the element T
+		-- in the sequence <S>. The search starts from the index
+		-- FromIndex to the index ToIndex.
+		-- Returns 0 if the element is not present in the sub-sequence.
+		-- Raises an exception if the index is out of bounds.
+
+	Location(me : in out ; N : Integer; T : Item) 
+          returns Integer
+	  raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Returns the index of the nth occurence of the element T
+		-- in the sequence <S>. The search starts from the beginning
+		-- to the end of the sequence.
+		-- Returns 0 if the element is not present in the sub-sequence.
+		-- Raises an exception if the index is out of bounds.
+
+    fields
+         CurrentItem 	: SeqNode;
+         CurrentIndex 	: Integer;
+         TheSequence    : HSequence from PCollection;
+    end;
+
+
+is 
+
+
+	Create returns mutable HSequence;
+		---Purpose: Creation of an empty sequence.
+
+
+	IsEmpty(me) returns Boolean;
+                ---Level: Public
+		---Purpose: Returns True if the sequence <me> contains no elements.
+
+	Length(me)  returns Integer;
+                ---Level: Public
+		---Purpose: Returns the number of element(s) in the sequence.
+		-- Returns zero if the sequence is empty.
+
+	First(me) returns any Item 
+             raises NoSuchObject from Standard;
+                ---Level: Public
+		---Purpose: Returns the first element of the sequence <me>.
+		-- Raises an exception if the sequence is empty.
+		---Example: before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C)
+		-- returns A
+
+	Last(me)  returns any Item 
+             raises NoSuchObject from Standard ;
+                ---Level: Public
+		---Purpose: Returns the last element of the sequence <me>.
+		-- Raises an exception if the sequence is empty
+		---Example: before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C)
+		-- returns C
+
+	Clear(me : mutable);
+                ---Level: Public
+		---Purpose: Removes all element(s) of the sequence <me>.
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = ()
+
+	Append(me : mutable; T : Item);
+                ---Level: Public
+		---Purpose: Pushes an element T at the end of the sequence <me>, thus
+		-- creating a new node.
+		---Example: before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C T)
+
+	Append(me : mutable; S : HSequence from PCollection);
+                ---Level: Public
+		---Purpose: Pushes a sequence S at the end of the sequence <me>.
+		-- There is a concatenation of the two sequences by copying S.
+		---Example: before
+		--   me = (A B C)
+		--   S  = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = (D E F)
+
+	Prepend(me : mutable; T : Item);
+                ---Level: Public
+		---Purpose: Pushes an element T at the beginning of the sequence <me>,
+		-- thus creating a new node.
+		---Example: before
+		--   me = (A B C)
+		-- after
+		--   me = (T A B C )
+
+
+	Prepend(me : mutable; S : HSequence from PCollection);
+                ---Level: Public
+		---Purpose: Pushes a sequence S at the begining of the sequence <me>.
+		-- There is a concatenation of two sequences with a copy of S.
+		---Example: before
+		--   me = (A B C)
+		--   S  = (D E F)
+		-- after
+		--   me = (D E F A B C)
+		--   S  = (D E F)
+
+	Reverse(me : mutable);
+                ---Level: Public
+		---Purpose: Reverses the order of the sequence <me>.
+		---Example: before
+		--   me = (A B C)
+		-- after
+		--   me = (C B A)
+
+	InsertBefore(me : mutable; Index : Integer; T : Item) 
+					       raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Pushes an element before a specific index in the 
+		-- sequence <me>.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--   me = (A B D), Index = 3, T = C
+		-- after
+		--   me = (A B C D )
+
+	InsertBefore(me : mutable ; Index : Integer; 
+                     S  : HSequence from PCollection) 
+		   raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Pushes a sequence before a specific index in 
+		-- the sequence <me> by copying S.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--   me = (A B F), Index = 3, S = (C D E)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = (C D E)
+
+	InsertAfter(me : mutable; Index : Integer; T : Item) 
+	       raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Pushes an element after a specific index in the 
+		-- sequence <me>.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--   me = (A B C), Index = 3, T = D
+		-- after
+		--   me = (A B C D )
+
+	InsertAfter(me : mutable ; Index : Integer; 
+                    S : HSequence from PCollection) 
+	       raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Pushes a sequence after a specific index in 
+		-- the sequence <me> by copying S.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--   me = (A B C), Index = 3, S = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = (D E F)
+
+	Exchange(me : mutable; I, J : Integer) raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Swaps elements which are located in positions I and J
+		-- in the sequence <me>.
+		-- Raises an exception if the index I or J is out of bounds.
+		---Example: before
+		--   me = (A B C), I = 1, J = 3            
+		-- after
+		--   me = (C B A)           
+
+	SubSequence(me; FromIndex, ToIndex : Integer) 
+		         		returns mutable HSequence
+					raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Creation a sub-sequence with the elements from the 
+		-- starting index I to the last index J
+		-- there is a partial copy of the sequence <me>
+		-- Raises an exception if the index is out of bounds or if 
+		-- <ToIndex> is less than <FromIndex>.
+		---Example: before
+		--  me = (A B C D E), I = 2, J = 4
+		-- after
+		--  me = (A B C D E)
+		-- returns
+		--  (B C D)
+              
+	Split(me : mutable; Index : Integer) 
+    	    returns mutable HSequence 
+            raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Split a sequence into two sub-sequences.
+		---Example: before
+		--   me = (A B C D) ,Index = 3
+		-- after
+		--   me = (A B)
+		-- returns
+		--   (C D)
+
+	SetValue(me : mutable; Index : Integer; T : Item) 
+						   raises OutOfRange;
+                ---Level: Public
+		---Purpose: Modification of the element indexed by Index in 
+		-- the sequence <me>.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before 
+		--   me = (A B D), Index = 3, T = C
+		-- after
+		--   me = (A B C)
+
+	Value(me; Index : Integer) returns any Item 
+    	    raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Value of the element indexed by Index in the 
+		-- sequence <me>.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before 
+		--   me = (A B C), Index = 1
+		-- after
+		--   me = (A B C)
+		-- returns 
+		--   A
+
+	Contains(me; T : Item) returns Boolean;
+                ---Level: Public
+		---Purpose: Returns True if the sequence <me> contains the element T
+
+	Location(me; N : Integer; 
+                     T : Item; FromIndex : Integer; 
+                     ToIndex   : Integer) returns Integer
+						   raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Returns the index of the nth occurence of the element T
+		-- in the sequence <me>. The search starts from the index FromIndex to 
+		-- the index ToIndex.
+		-- Returns 0 if the element is not present in the sub-sequence.
+		-- Raises an exception if the index is out of bounds or if
+		-- <ToIndex> is less than <FromIndex>.
+		---Example: before
+		--  me = (A B C B D E B H), N = 2, T = B, FromIndex = 3
+		--  ToIndex = 8
+		-- after
+		--  me = (A B C B D E B H)
+		-- returns 7
+
+	Location(me; N : Integer; T : Item) returns Integer
+				raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Returns the index of the nth occurence of the element T
+		-- in the sequence <me>. The search starts from the beginning
+		-- to the end of the sequence.
+		-- Returns 0 if the element is not present in the sub-sequence.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--  me = (A B C B D E B H), N = 3, T = B
+		-- after
+		--  me = (A B C B D E B H)
+		-- returns 7
+
+	Remove(me : mutable; Index : Integer) 
+    	    raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Removes the element indexed by Index in the
+		-- sequence <me>.
+		-- Raises an exception if the index is out of bounds.
+		---Example: before
+		--   me = (A B C), Index = 3
+		-- after
+		--   me = (A B)
+
+	Remove(me : mutable; FromIndex, ToIndex : Integer) 
+      	     raises OutOfRange from Standard;
+                ---Level: Public
+		---Purpose: Removes the elements from the index FromIndex to the
+		-- index ToIndex in the sequence <me>.
+		-- Raises an exception if the indexes are out of bounds 
+		---Example: before
+		--   me = (A B C D E F), FromIndex = 1 ToIndex = 3
+		-- after
+		--   me = (D E F)
+
+        GetFirst(me)
+               ---Level: Internal
+	       ---Purpose: Returns "FirstItem" field.
+           returns SeqNode
+           is private;
+
+        GetLast(me)
+               ---Level: Internal
+	       ---Purpose: Returns "LastItem" field 
+	   returns SeqNode
+	   is private;
+
+    	ShallowCopy(me) 
+                returns mutable like me 
+                is redefined;
+                ---Level: Advanced
+	    	---C++: function call
+
+
+    	ShallowDump (me; s: in out OStream) 
+                is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+
+    	Destroy(me : mutable);
+	---C++: alias ~
+       
+fields 
+  FirstItem 	: SeqNode;
+  LastItem  	: SeqNode;
+  Size 		: Integer;
+    
+friends class SeqExplorer from PCollection
+
+end;
+
+
+
+

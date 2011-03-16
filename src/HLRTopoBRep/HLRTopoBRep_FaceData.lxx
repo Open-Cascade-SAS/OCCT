@@ -1,0 +1,56 @@
+// File:	HLRTopoBRep_FaceData.lxx
+// Created:	Mon Mar 27 15:20:29 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : FaceIntL
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape & 
+HLRTopoBRep_FaceData::FaceIntL () const
+{ return myIntL; }
+
+//=======================================================================
+//function : FaceOutL
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape & 
+HLRTopoBRep_FaceData::FaceOutL () const
+{ return myOutL; }
+
+//=======================================================================
+//function : FaceIsoL
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape & 
+HLRTopoBRep_FaceData::FaceIsoL () const
+{ return myIsoL; }
+
+//=======================================================================
+//function : AddIntL
+//purpose  : 
+//=======================================================================
+
+inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddIntL ()
+{ return myIntL; }
+
+//=======================================================================
+//function : AddOutL
+//purpose  : 
+//=======================================================================
+
+inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddOutL ()
+{ return myOutL; }
+
+//=======================================================================
+//function : AddIsoL
+//purpose  : 
+//=======================================================================
+
+inline TopTools_ListOfShape & HLRTopoBRep_FaceData::AddIsoL ()
+{ return myIsoL; }
+

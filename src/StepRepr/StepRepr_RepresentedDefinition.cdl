@@ -1,0 +1,47 @@
+-- File:	StepRepr_RepresentedDefinition.cdl
+-- Created:	Thu Dec 12 16:02:14 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RepresentedDefinition from StepRepr
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type RepresentedDefinition
+
+uses
+    GeneralProperty from StepBasic,
+    PropertyDefinition from StepRepr,
+    PropertyDefinitionRelationship from StepRepr,
+    ShapeAspect from StepRepr,
+    ShapeAspectRelationship from StepRepr
+
+is
+    Create returns RepresentedDefinition from StepRepr;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of RepresentedDefinition select type
+	--          1 -> GeneralProperty from StepBasic
+	--          2 -> PropertyDefinition from StepRepr
+	--          3 -> PropertyDefinitionRelationship from StepRepr
+	--          4 -> ShapeAspect from StepRepr
+	--          5 -> ShapeAspectRelationship from StepRepr
+	--          0 else
+
+    GeneralProperty (me) returns GeneralProperty from StepBasic;
+	---Purpose: Returns Value as GeneralProperty (or Null if another type)
+
+    PropertyDefinition (me) returns PropertyDefinition from StepRepr;
+	---Purpose: Returns Value as PropertyDefinition (or Null if another type)
+
+    PropertyDefinitionRelationship (me) returns PropertyDefinitionRelationship from StepRepr;
+	---Purpose: Returns Value as PropertyDefinitionRelationship (or Null if another type)
+
+    ShapeAspect (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns Value as ShapeAspect (or Null if another type)
+
+    ShapeAspectRelationship (me) returns ShapeAspectRelationship from StepRepr;
+	---Purpose: Returns Value as ShapeAspectRelationship (or Null if another type)
+
+end RepresentedDefinition;

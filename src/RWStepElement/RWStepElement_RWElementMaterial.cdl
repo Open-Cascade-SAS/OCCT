@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWElementMaterial.cdl
+-- Created:	Thu Dec 12 17:29:01 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWElementMaterial from RWStepElement
+
+    ---Purpose: Read & Write tool for ElementMaterial
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ElementMaterial from StepElement
+
+is
+    Create returns RWElementMaterial from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ElementMaterial from StepElement);
+	---Purpose: Reads ElementMaterial
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ElementMaterial from StepElement);
+	---Purpose: Writes ElementMaterial
+
+    Share (me; ent : ElementMaterial from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWElementMaterial;

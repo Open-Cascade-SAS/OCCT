@@ -1,0 +1,17 @@
+
+Extrema_Point::Extrema_Point () { }
+
+
+Extrema_Point::Extrema_Point (const Standard_Real U, const Pnt& P)
+{
+  myU = U;
+  myP = P;
+}
+
+void Extrema_Point::SetValues(const Standard_Real U, const Pnt& P)
+{
+  myU = U;
+  myP = P;
+}
+
+

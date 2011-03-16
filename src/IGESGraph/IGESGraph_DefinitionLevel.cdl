@@ -1,0 +1,60 @@
+--
+-- File      :  DefinitionLevel.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DefinitionLevel from IGESGraph  inherits LevelListEntity
+
+        ---Purpose: defines IGESDefinitionLevel, Type <406> Form <1>
+        --          in package IGESGraph
+        --
+        --          Indicates the no. of levels on which an entity is
+        --          defined
+
+uses
+
+        IGESEntity       from IGESData,
+        HArray1OfInteger from TColStd
+
+raises OutOfRange
+
+is
+
+        Create returns mutable DefinitionLevel;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me              : mutable;
+              allLevelNumbers : HArray1OfInteger);
+        ---Purpose : This method is used to set the fields of the class
+        --           DefinitionLevel
+        --       - allLevelNumbers : Values of Level Numbers
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        NbLevelNumbers (me) returns Integer;
+        ---Purpose : Must return the count of levels (== NbPropertyValues)
+
+        LevelNumber (me; LevelIndex : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Level Number of <me> indicated by <LevelIndex>
+        -- raises an exception if LevelIndex is <= 0 or
+        -- LevelIndex > NbPropertyValues
+
+fields
+
+--
+-- Class    : IGESGraph_DefinitionLevel
+--
+-- Purpose  : Declaration of the variables specific to a Definition Level.
+--
+-- Reminder : A Definition Level is defined by :
+--              - Level Numbers
+
+        theLevelNumbers : HArray1OfInteger;
+
+end DefinitionLevel;

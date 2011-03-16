@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWCommonDatum.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCommonDatum from RWStepDimTol
+
+    ---Purpose: Read & Write tool for CommonDatum
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CommonDatum from StepDimTol
+
+is
+    Create returns RWCommonDatum from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CommonDatum from StepDimTol);
+	---Purpose: Reads CommonDatum
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CommonDatum from StepDimTol);
+	---Purpose: Writes CommonDatum
+
+    Share (me; ent : CommonDatum from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCommonDatum;

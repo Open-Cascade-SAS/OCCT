@@ -1,0 +1,236 @@
+-- File:	IGESToBRep_CurveAndSurface.cdl
+-- Created:	Mon Mar 14 14:02:21 1994
+-- Authors:	Christophe GUYOT & Frederic UNTEREINER
+--		<fun@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class CurveAndSurface  from IGESToBRep
+
+    ---Purpose: Provides methods to transfer CurveAndSurface from IGES to CASCADE.
+
+uses   
+
+    Integer          from Standard,
+    Real             from Standard,
+    Boolean          from Standard,
+    Shape            from TopoDS,
+    IGESEntity       from IGESData,
+    IGESModel        from IGESData,
+    CString          from Standard,
+    TransientProcess from Transfer,
+    Surface          from Geom,
+    Msg	             from Message
+is
+
+    Create returns CurveAndSurface;
+    	---Purpose: Creates  a tool CurveAndSurface  ready  to  run, with
+    	--         epsilons  set  to  1.E-04,  myModeTopo  to  True,  the
+    	--         optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep)  returns  CurveAndSurface;
+    	---Purpose: Creates a tool CurveAndSurface ready to run and sets its 
+    	--         fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean) returns CurveAndSurface;
+    	---Purpose: Creates a tool CurveAndSurface ready to run.
+
+    Init(me: in out);
+    	---Purpose: Initializes the field of the tool CurveAndSurface with 
+    	--        default creating values. 
+
+    SetEpsilon(me: in out; eps : Real);
+    	---C++: inline
+    	---Purpose: Changes the value of "myEps"
+    
+    GetEpsilon(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of "myEps"
+    
+    SetEpsCoeff(me: in out; eps : Real);
+    	---C++: inline
+    	---Purpose: Changes the value of "myEpsCoeff" 
+    
+    GetEpsCoeff(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of "myEpsCoeff" 
+    
+    SetEpsGeom(me: in out; eps : Real);
+    	---Purpose: Changes the value of "myEpsGeom"
+    
+    GetEpsGeom(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of "myEpsGeom" 
+    
+    SetMinTol(me: in out; mintol: Real);
+    	---C++: inline
+    	---Purpose: Changes the value of "myMinTol"
+    
+    SetMaxTol(me: in out; maxtol: Real);
+    	---C++: inline
+    	---Purpose: Changes the value of "myMaxTol"
+    
+    UpdateMinMaxTol(me: in out);
+    	---Purpose: Sets values of "myMinTol" and "myMaxTol" as follows
+    	--           myMaxTol = Max ("read.maxprecision.val", myEpsGeom * myUnitFactor)
+    	--           myMinTol = Precision::Confusion()
+    	--  Remark:   This method is automatically invoked each time the values
+    	--           of "myEpsGeom" or "myUnitFactor" are changed
+    
+    GetMinTol(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of "myMinTol"
+    
+    GetMaxTol(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of "myMaxTol" 
+    
+    SetModeApprox(me: in out; mode : Boolean);
+    	---C++: inline
+    	---Purpose: Changes the value of "myModeApprox"
+    
+    GetModeApprox(me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Returns the value of "myModeApprox" 
+    
+    SetModeTransfer(me: in out; mode : Boolean);
+    	---C++: inline
+    	---Purpose: Changes the value of "myModeIsTopo"
+    
+    GetModeTransfer(me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Returns the value of "myModeIsTopo"
+    
+    SetOptimized(me: in out; optimized : Boolean);
+    	---C++: inline
+    	---Purpose: Changes the value of "myContIsOpti"
+    
+    GetOptimized(me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Returns the value of "myContIsOpti"
+    
+    GetUnitFactor(me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns the value of " myUnitFactor"
+
+    SetSurfaceCurve(me: in out; ival : Integer);
+    	---C++: inline
+    	---Purpose: Changes the value of "mySurfaceCurve"
+    
+    GetSurfaceCurve(me) returns Integer;
+    	---C++: inline
+    	---Purpose: Returns the value of  " mySurfaceCurve" 0 = value in
+    	--          file , 2  = kepp 2d   and compute 3d   3 = keep 3d and
+     	--         compute 2d
+
+    SetModel(me: in out; model : IGESModel from IGESData);
+    	---Purpose: Set the value of "myModel"
+
+    GetModel(me) returns IGESModel from IGESData;
+    	---C++: inline
+    	---Purpose: Returns the value of "myModel"
+
+    SetContinuity(me: in out; continuity : Integer);
+    	---C++: inline
+    	---Purpose: Changes the value of "myContinuity"
+    	--           if continuity = 0 do nothing else 
+    	--           if continuity = 1 try C1
+    	--           if continuity = 2 try C2
+	    
+    GetContinuity(me) returns Integer;
+    	---C++: inline
+    	---Purpose: Returns the value of "myContinuity" 
+    
+    SetTransferProcess(me: in out; TP: TransientProcess from Transfer);
+    	---C++: inline
+    	---Purpose: Set the value of "myMsgReg"
+    
+    GetTransferProcess(me) returns TransientProcess from Transfer;
+    	---C++: inline
+    	---Purpose: Returns the value of "myMsgReg"
+
+    TransferCurveAndSurface(me: in out; start : IGESEntity from IGESData)
+    returns Shape from TopoDS;
+    	---Purpose: Returns the result of the transfert of any IGES Curve
+    	--         or Surface Entity.  If  the transfer has  failed,  this
+    	--         member return a NullEntity.
+
+    TransferGeometry(me: in out; start : IGESEntity from IGESData)
+    returns Shape from TopoDS;
+    	---Purpose: Returns the result of the transfert the geometry of
+    	--           any IGESEntity.  If  the transfer has  failed,  this
+    	--           member return a NullEntity.
+
+
+    SendFail    (me: in out; start: IGESEntity from IGESData; amsg: Msg from Message);
+    	---C++: inline
+    	---Purpose: Records a new Fail message
+
+
+    SendWarning (me: in out; start: IGESEntity from IGESData; amsg: Msg from Message);
+    	---C++: inline
+    	---Purpose: Records a new Warning message
+
+    SendMsg     (me: in out; start: IGESEntity from IGESData; amsg: Msg from Message);
+    	---C++: inline
+    	---Purpose: Records a new Information message from the definition
+    	--           of a Msg (Original+Value)
+
+
+    HasShapeResult (me; start : IGESEntity from IGESData) returns Boolean;
+    	---Purpose: Returns True if start was already treated and has a result in "myMap"    
+    	--           else returns False.
+    
+    GetShapeResult (me; start : IGESEntity from IGESData) returns Shape from TopoDS;
+    	---Purpose: Returns the result of the transfer of the IGESEntity "start" contained
+    	--           in "myMap" . (if HasShapeResult is True).	
+	
+    SetShapeResult (me: in out; start : IGESEntity from IGESData; result : Shape from TopoDS);
+    	---Purpose: set in "myMap" the result of the transfer of the IGESEntity "start".
+	
+    NbShapeResult (me; start : IGESEntity from IGESData) returns Integer;
+    	---Purpose: Returns the number of shapes results contained in "myMap" for the 
+    	--           IGESEntity start ( type VertexList or EdgeList).
+    
+    GetShapeResult (me; start: IGESEntity from IGESData; num: Integer) returns Shape from TopoDS;
+    	---Purpose: Returns the numth result of the IGESEntity start (type VertexList or 
+    	--           EdgeList) in "myMap". (if NbShapeResult is not null).	
+	
+    AddShapeResult (me: in out; start: IGESEntity from IGESData; result: Shape from TopoDS);
+    	---Purpose: set in "myMap" the result of the transfer of the entity of the 
+    	--           IGESEntity start ( type VertexList or EdgeList).
+
+    SetSurface(me: in out; theSurface: Surface from Geom);
+    
+    Surface(me) returns Surface from Geom;
+    
+    GetUVResolution(me: in out) returns Real;
+    
+fields
+
+    myEps          : Real;
+    myEpsCoeff     : Real;
+    myEpsGeom      : Real;
+    myMinTol       : Real; -- Minimum tolerance used by translation algorithms
+    myMaxTol       : Real; -- Maximum tolerance used by translation algorithms
+    myModeIsTopo   : Boolean;
+    myModeApprox   : Boolean;
+    myContIsOpti   : Boolean;
+    myUnitFactor   : Real; 
+    mySurfaceCurve : Integer;    
+    myContinuity   : Integer;
+    
+    mySurface      : Surface from Geom;
+    myUVResolution : Real;
+    myIsResolCom   : Boolean;
+    
+
+    myModel        : IGESModel from IGESData ;
+    myTP           : TransientProcess from Transfer;
+
+end CurveAndSurface;

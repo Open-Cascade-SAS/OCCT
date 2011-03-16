@@ -1,0 +1,108 @@
+// File:	GraphDS_EdgesIterator.gxx
+// Created:	Tue Mar 16 15:48:48 1993
+// Author:	Denis PASCAL
+//		<dp@bravox>
+
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+//=======================================================================
+//function : GraphDS_EdgesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EdgesIterator::GraphDS_EdgesIterator ()
+{
+}
+
+
+//=======================================================================
+//function : GraphDS_EdgesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EdgesIterator::GraphDS_EdgesIterator 
+   (const GraphDS_DirectedGraph& G)
+{
+  Initialize (G);
+}
+
+
+//=======================================================================
+//function : GraphDS_EdgesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EdgesIterator::GraphDS_EdgesIterator 
+   (const GraphDS_DirectedGraph& G,
+    const Handle(GraphDS_Vertex)& V) 
+{
+  Initialize (G,V);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EdgesIterator::Initialize
+   (const GraphDS_DirectedGraph& G)
+{
+  myEdges.Initialize(G.myEdges);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EdgesIterator::Initialize
+   (const GraphDS_DirectedGraph&,
+    const Handle(GraphDS_Vertex)& V) 
+{
+  myEdges.Initialize(V->GetEdges());
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_EdgesIterator::More () const 
+{
+  return myEdges.More();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EdgesIterator::Next ()  
+{
+  myEdges.Next();
+}
+
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Edge)& GraphDS_EdgesIterator::Value () const 
+{ 
+  return  *((Handle(GraphDS_Edge)*)& myEdges.Key());
+  //return Handle(GraphDS_Edge)::DownCast(myEdges.Key());
+}
+
+
+
+
+
+

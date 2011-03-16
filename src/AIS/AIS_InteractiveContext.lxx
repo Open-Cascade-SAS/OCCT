@@ -1,0 +1,118 @@
+inline const Handle(V3d_Viewer)& AIS_InteractiveContext::CurrentViewer() const 
+{
+  return myMainVwr;
+}
+
+inline const Handle(V3d_Viewer)& AIS_InteractiveContext::Collector() const 
+{
+ return  myCollectorVwr;
+}
+
+inline Quantity_NameOfColor AIS_InteractiveContext::HilightColor() const 
+{ 
+  return myHilightColor;
+}
+
+inline Quantity_NameOfColor AIS_InteractiveContext::SelectionColor() const 
+{
+  return mySelectionColor;
+}
+
+inline Quantity_NameOfColor AIS_InteractiveContext::PreSelectionColor() const 
+{
+  return  myPreselectionColor;
+}
+
+inline Quantity_NameOfColor AIS_InteractiveContext::DefaultColor() const 
+{  return myDefaultColor;
+}
+inline Standard_Boolean AIS_InteractiveContext::IsCollectorClosed() const 
+{return myIsCollClosed;}
+
+inline void AIS_InteractiveContext::CloseCollector()
+{myIsCollClosed = Standard_True;}
+
+
+inline Quantity_NameOfColor AIS_InteractiveContext::SubIntensityColor() const 
+{
+  return  mySubIntensity;
+}
+inline void AIS_InteractiveContext::SetHilightColor(const Quantity_NameOfColor aHiCol)
+{
+  myHilightColor = aHiCol;
+}
+
+inline void AIS_InteractiveContext::SelectionColor(const Quantity_NameOfColor aCol)
+{
+  mySelectionColor = aCol;
+}
+
+inline void AIS_InteractiveContext::SetPreselectionColor(const Quantity_NameOfColor aCol)
+{
+  myPreselectionColor = aCol;
+}
+
+inline void AIS_InteractiveContext::SetSubIntensityColor(const Quantity_NameOfColor aCol)
+{
+  mySubIntensity = aCol;
+}
+
+inline Standard_Integer AIS_InteractiveContext::DisplayMode() const 
+{
+  return myDisplayMode;
+}
+
+inline const Handle(Prs3d_Drawer)& AIS_InteractiveContext::DefaultDrawer() const 
+{return myDefaultDrawer;}
+inline const Handle(SelectMgr_SelectionManager)& AIS_InteractiveContext::SelectionManager() const 
+{return mgrSelector ;}
+
+inline const Handle(PrsMgr_PresentationManager3d)& AIS_InteractiveContext::MainPrsMgr() const 
+{return myMainPM  ;}
+
+inline const Handle(PrsMgr_PresentationManager3d)& AIS_InteractiveContext::CollectorPrsMgr() const 
+{return myCollectorPM ;}
+
+
+inline Standard_Boolean AIS_InteractiveContext::HasOpenedContext() const 
+{return myCurLocalIndex != 0;}
+
+inline const TCollection_AsciiString& AIS_InteractiveContext::CurrentName() const 
+{return myCurrentName;} 
+
+inline  Standard_Boolean AIS_InteractiveContext::WasCurrentTouched() const 
+{return myCurrentTouched;}
+
+inline void  AIS_InteractiveContext::SetOkCurrent()
+{myCurrentTouched= Standard_False;}
+
+
+inline const Handle(StdSelect_ViewerSelector3d)& AIS_InteractiveContext::MainSelector() const 
+{return myMainSel;}
+
+inline const Handle(StdSelect_ViewerSelector3d)& AIS_InteractiveContext::CollectorSelector() const
+{return myCollectorSel;}
+
+inline void AIS_InteractiveContext::SetToHilightSelected(const Standard_Boolean toHilight)
+{
+  myToHilightSelected = toHilight;
+}
+
+inline Standard_Boolean AIS_InteractiveContext::ToHilightSelected() const
+{
+  return myToHilightSelected;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

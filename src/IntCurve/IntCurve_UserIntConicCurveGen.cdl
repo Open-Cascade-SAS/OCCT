@@ -1,0 +1,249 @@
+-- File:	UserIntConicCurveGen.cdl
+-- Created:	Tue Nov 24 12:33:33 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class UserIntConicCurveGen from IntCurve (
+             TheImpTool        as any; -- as ImpTool from IntImpParGen
+             ThePCurve         as any;
+             ThePCurveTool     as any; -- as CurveTool from IntCurve(ThePCurve)
+    	     TheIntConicCurve  as any) -- as IntConicCurveGen from IntCurve (
+                                        --  TheImpTool as ImpTool from IntImpParGen
+                                        --  ThePCurve      as any;
+                                        --  ThePCurveTool  as ParTool from IntImpParGen(ThePCurve)
+	     
+ 
+inherits Intersection from IntRes2d
+		       
+
+	---Purpose: Generic algorithm to intersect a conic from gp and
+	--          a parametric  curve.  This class  uses   the class
+	--          IConicTool    from  IntCurve,    and  Domain  from
+	--          IntCurve. 
+	--          
+	--          The template class for the  PCurveTool is given in
+	--          the package IntCurve  (CurveTool).   
+	--          
+	--          The methods  used to  know   the result   of   the
+	--          intersection   are   inherited  from  the    class
+	--          Intersection from IntRes2d.
+	-- 
+	-- Note: The  exception  ConstructionError  is  raised   in
+	--          constructors or in  Perform  methods when a domain
+	--          (Domain from IntRes2d) is not correct, i-e  when a
+	--          Circle (Circ2d from gp) or an Ellipse (i-e Elips2d
+	--          from  gp)  do not  have  a closed  domain (use the
+	--          SetEquivalentParameters for  a domain on  a circle
+	--          or an ellipse)  or the domain  of the ThePCurve is
+	--          not bounded   (HasFirstPoint()   && HasLastPoint()
+	--          return True.)
+        ---Level: Internal
+
+uses IConicTool from IntCurve,
+     Lin2d   from gp,
+     Circ2d  from gp,
+     Elips2d from gp,
+     Parab2d from gp,
+     Hypr2d  from gp,
+     Domain  from IntRes2d,
+     IntConicConic from IntCurve
+
+
+raises ConstructionError from Standard
+
+is
+
+    Create
+    
+	---Purpose: Empty constructor.
+
+    	returns UserIntConicCurveGen from IntCurve;
+
+
+    Create (L: Lin2d from gp; D1: Domain from IntRes2d;
+            PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a line and a parametric curve.
+
+    	returns UserIntConicCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+    Create (C: Circ2d from gp; D1: Domain from IntRes2d;
+            PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a line and a parametric curve.
+
+    	returns UserIntConicCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Create (E: Elips2d from gp; D1: Domain from IntRes2d;
+            PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between an ellipse and a parametric curve.
+
+    	returns UserIntConicCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Create (Prb: Parab2d from gp; D1: Domain from IntRes2d;
+            PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a parabola and a parametric curve.
+
+    	returns UserIntConicCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Create (H: Hypr2d from gp; D1: Domain from IntRes2d;
+            PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between the main branch of an hyperbola
+	--          and a parametric curve.
+
+    	returns UserIntConicCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Perform (me: in out;
+             L: Lin2d from gp; D1: Domain from IntRes2d;
+             PCurve:   ThePCurve; D2: Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a line and a parametric curve.
+
+	raises ConstructionError from Standard
+    	is static;
+
+
+    Perform (me: in out;
+             C: Circ2d from gp; D1: Domain from IntRes2d;
+             PCurve:   ThePCurve; D2: Domain from IntRes2d;
+       	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a line and a parametric curve.
+
+	raises ConstructionError from Standard
+    	is static;
+
+
+    Perform (me: in out;
+             E: Elips2d from gp; D1: Domain from IntRes2d;
+             PCurve:   ThePCurve; D2: Domain from IntRes2d;
+       	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between an ellipse and a parametric curve.
+
+	raises ConstructionError from Standard
+    	is static;
+
+
+    Perform (me: in out;
+             Prb: Parab2d from gp; D1: Domain from IntRes2d;
+             PCurve:   ThePCurve; D2: Domain from IntRes2d;
+       	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between a parabola and a parametric curve.
+
+	raises ConstructionError from Standard
+    	is static;
+ 
+
+    Perform (me: in out; 
+             H: Hypr2d from gp; D1: Domain from IntRes2d;
+             PCurve:   ThePCurve; D2: Domain from IntRes2d;
+       	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between the main branch of an hyperbola
+	--          and a parametric curve.
+
+	raises ConstructionError from Standard
+    	is static;
+
+
+
+-------------------------------- p r i v a t e    f u n c t i o n s 
+    InternalPerform (me         : in out; 
+                     Lin1       : Lin2d  from gp;
+                     D1         : Domain from IntRes2d;
+                     PCurve     :   ThePCurve;
+                     D2         : Domain from IntRes2d;
+       	             TolConf,Tol: Real from Standard;
+    	    	     Composite  : Boolean from Standard)
+
+    	is static private;
+
+
+    InternalPerform (me         : in out; 
+                     Circ1      : Circ2d  from gp;
+                     D1         : Domain from IntRes2d;
+                     PCurve     :   ThePCurve;
+                     D2         : Domain from IntRes2d;
+       	             TolConf,Tol: Real from Standard;
+    	    	     Composite  : Boolean from Standard)
+
+    	is static private;
+
+
+    InternalPerform (me         : in out; 
+                     Eli1       : Elips2d  from gp;
+                     D1         : Domain from IntRes2d;
+                     PCurve     :   ThePCurve;
+                     D2         : Domain from IntRes2d;
+       	             TolConf,Tol: Real from Standard;
+    	    	     Composite  : Boolean from Standard)
+
+    	is static private;
+
+
+    InternalPerform (me         : in out; 
+                     Prb1       : Parab2d  from gp;
+                     D1         : Domain from IntRes2d;
+                     PCurve     :   ThePCurve;
+                     D2         : Domain from IntRes2d;
+       	             TolConf,Tol: Real from Standard;
+    	    	     Composite  : Boolean from Standard)
+
+    	is static private;
+
+
+    InternalPerform (me         : in out; 
+                     Hpr1       : Hypr2d  from gp;
+                     D1         : Domain from IntRes2d;
+                     PCurve     :   ThePCurve;
+                     D2         : Domain from IntRes2d;
+       	             TolConf,Tol: Real from Standard;
+    	    	     Composite  : Boolean from Standard)
+
+    	is static private;
+
+fields 
+
+    param1inf   : Real            from Standard;
+    param1sup   : Real            from Standard;
+    param2inf   : Real            from Standard;
+    param2sup   : Real            from Standard;
+    
+    intconiconi : IntConicConic   from IntCurve;
+    intconicurv : TheIntConicCurve;    
+
+    
+
+end UserIntConicCurveGen;
+
+
+
+

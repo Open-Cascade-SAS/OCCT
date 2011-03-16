@@ -1,0 +1,117 @@
+-- File:	Bisector_Bisec.cdl
+-- Created:	Mon Oct 19 10:06:35 1992
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1992
+
+class Bisec from Bisector
+
+    --- Purpose : Bisec  provides the bisecting line between two  elements
+    --  This line is trimed by a point <P> and it's contained in the domain 
+    --  defined by the two vectors <V1>, <V2> and <Sense>.
+    --  
+    --  Definition of  the domain:  
+    --  if <Sense>  is  true the bisecting line is contained in the sector 
+    --  defined by <-V1> and <-V2> in the sense indirect.
+    --  if <Sense>  is  false the bisecting line is contained in the sector 
+    --  defined by <-V1> and <-V2> in the sense direct.
+    --
+    --  <Tolerance> is used to define degenerate bisector.
+    --  if the bisector is an hyperbola and one of this radius is smaller
+    --     than <Tolerance>, the bisector is replaced by a line or semi_line
+    --     corresponding to one of hyperbola's axes.
+    --  if the bisector is a parabola on the focal length is smaller than
+    --     <Tolerance>, the bisector is replaced by a semi_line corresponding
+    --     to the axe of symetrie of the parabola.
+    --  if the bisector is an ellipse  and the minor radius is smaller than
+    --     <Tolerance>, the bisector is replaced by a segment corresponding
+    --     to the great axe of the ellipse.     
+
+uses
+
+    TrimmedCurve from Geom2d  ,
+    Curve        from Geom2d  ,
+    Curve        from Bisector,
+    Point        from Geom2d  ,
+    Pnt2d        from gp      ,
+    Vec2d        from gp      ,
+    Integer      from Standard
+
+is
+    Create returns Bisec from Bisector;
+
+    Perform(me        : in out                                 ;
+            Cu1       : Curve   from Geom2d                    ;
+            Cu2       : Curve   from Geom2d                    ;
+            P         : Pnt2d   from gp                        ;
+            V1        : Vec2d   from gp                        ;
+            V2        : Vec2d   from gp                        ;
+            Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard                  ;
+    	    oncurve   : Boolean from Standard = Standard_True  );
+	   
+    	--- Purpose : Performs  the bisecting line  between the  curves
+    	--            <Cu1> and <Cu2>. 
+    	--            <oncurve> is True if the point <P> is common to <Cu1>
+    	--            and <Cu2>.
+    	
+    Perform(me        : in out                               ;
+    	    Cu        : Curve   from Geom2d                  ;
+    	    Pnt       : Point   from Geom2d                  ;
+    	    P         : Pnt2d   from gp                      ; 
+    	    V1        : Vec2d   from gp                      ;
+    	    V2        : Vec2d   from gp                      ; 
+    	    Sense     : Real    from Standard                ;
+    	    Tolerance : Real    from Standard                ;
+    	    oncurve   : Boolean from Standard = Standard_True);
+
+    	--- Purpose : Performs  the bisecting line  between the  curve
+    	--            <Cu1> and the point <Pnt>. 
+    	--            <oncurve> is True if the point <P> is the point <Pnt>.
+
+    Perform(me        : in out                                 ;
+    	    Pnt       : Point   from Geom2d                    ;
+    	    Cu        : Curve   from Geom2d                    ;
+    	    P         : Pnt2d   from gp                        ;
+    	    V1        : Vec2d   from gp                        ;
+    	    V2        : Vec2d   from gp                        ; 
+    	    Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard                  ;
+    	    oncurve   : Boolean from Standard = Standard_True  );
+
+    	--- Purpose : Performs  the bisecting line  between the  curve
+    	--            <Cu> and the point <Pnt>. 
+    	--            <oncurve> is True if the point <P> is the point <Pnt>.
+
+    Perform(me        : in out                                 ;
+    	    Pnt1      : Point   from Geom2d                    ;
+            Pnt2      : Point   from Geom2d                    ;
+            P         : Pnt2d   from gp                        ;
+    	    V1        : Vec2d   from gp                        ;
+      	    V2        : Vec2d   from gp                        ; 
+            Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard = 0.0            ;
+    	    oncurve   : Boolean from Standard = Standard_True  ) ;
+
+    	--- Purpose : Performs  the bisecting line  between the two points
+    	--            <Pnt1>  and <Pnt2>. 
+    
+
+    Value(me) returns TrimmedCurve from Geom2d
+   	 --- Purpose : Returns the Curve of <me>.  
+    	 ---C++: return const & 
+    is static;
+    
+    ChangeValue (me : in out) returns mutable TrimmedCurve from Geom2d
+   	 --- Purpose : Returns the Curve of <me>.  
+   	 --  
+    	 ---C++: return const & 
+    is static;
+    
+fields
+	    
+    thebisector     : TrimmedCurve from Geom2d;
+    
+end Bisec;
+
+

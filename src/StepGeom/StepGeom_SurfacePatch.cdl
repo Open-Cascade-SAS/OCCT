@@ -1,0 +1,49 @@
+-- File:        SurfacePatch.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfacePatch from StepGeom 
+
+inherits TShared from MMgt
+
+uses
+
+	BoundedSurface from StepGeom, 
+	TransitionCode from StepGeom, 
+	Boolean from Standard
+is
+
+	Create returns mutable SurfacePatch;
+	---Purpose: Returns a SurfacePatch
+
+	Init (me : mutable;
+	      aParentSurface : mutable BoundedSurface from StepGeom;
+	      aUTransition : TransitionCode from StepGeom;
+	      aVTransition : TransitionCode from StepGeom;
+	      aUSense : Boolean from Standard;
+	      aVSense : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetParentSurface(me : mutable; aParentSurface : mutable BoundedSurface);
+	ParentSurface (me) returns mutable BoundedSurface;
+	SetUTransition(me : mutable; aUTransition : TransitionCode);
+	UTransition (me) returns TransitionCode;
+	SetVTransition(me : mutable; aVTransition : TransitionCode);
+	VTransition (me) returns TransitionCode;
+	SetUSense(me : mutable; aUSense : Boolean);
+	USense (me) returns Boolean;
+	SetVSense(me : mutable; aVSense : Boolean);
+	VSense (me) returns Boolean;
+
+fields
+
+	parentSurface : BoundedSurface from StepGeom;
+	uTransition : TransitionCode from StepGeom; -- an Enumeration
+	vTransition : TransitionCode from StepGeom; -- an Enumeration
+	uSense : Boolean from Standard;
+	vSense : Boolean from Standard;
+
+end SurfacePatch;

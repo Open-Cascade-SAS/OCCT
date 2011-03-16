@@ -1,0 +1,59 @@
+-- File:	IGESGeom_ToolSplineCurve.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolSplineCurve  from IGESGeom
+
+    ---Purpose : Tool to work on a SplineCurve. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses SplineCurve from IGESGeom,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolSplineCurve;
+    ---Purpose : Returns a ToolSplineCurve, ready to work
+
+
+    ReadOwnParams (me; ent : mutable SplineCurve;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : SplineCurve;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : SplineCurve;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a SplineCurve <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : SplineCurve) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : SplineCurve;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : SplineCurve; entto : mutable SplineCurve;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : SplineCurve;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolSplineCurve;

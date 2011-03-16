@@ -1,0 +1,40 @@
+-- File:	StepBasic_SiUnitAndThermodynamicTemperatureUnit.cdl
+-- Created:	Sun Dec 15 14:53:40 2002
+-- Author:	data exchange team
+--		<det@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+class SiUnitAndThermodynamicTemperatureUnit from StepBasic inherits SiUnit from StepBasic 
+
+	--- This class is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    ThermodynamicTemperatureUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    SiPrefix from StepBasic, 
+    SiUnitName from StepBasic
+
+is
+
+    Create returns mutable SiUnitAndThermodynamicTemperatureUnit;
+	---Purpose: Returns a SiUnitAndThermodynamicTemperatureUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; hasAprefix: Boolean from Standard;
+		       aPrefix   : SiPrefix from StepBasic;
+		       aName     : SiUnitName from StepBasic) is redefined ;
+
+    -- Specific Methods for Field Data Access --
+
+    SetThermodynamicTemperatureUnit(me: mutable; aThermodynamicTemperatureUnit: mutable ThermodynamicTemperatureUnit);
+    
+    ThermodynamicTemperatureUnit (me) returns mutable ThermodynamicTemperatureUnit;
+
+fields
+
+    thermodynamicTemperatureUnit : ThermodynamicTemperatureUnit from StepBasic;
+
+end SiUnitAndSolidAngleUnit;

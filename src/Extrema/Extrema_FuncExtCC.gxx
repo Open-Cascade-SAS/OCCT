@@ -1,0 +1,187 @@
+//Modified by MPS : 21-05-97   PRO 7598 
+//                  Le nombre de solutions rendu est mySqDist.Length() et non
+//                  mySqDist.Length()/2
+//                  ajout des valeurs absolues dans le test d'orthogonalite de
+//                  GetStateNumber()
+
+/*-----------------------------------------------------------------------------
+ Fonctions permettant de rechercher une distance extremale entre 2 courbes
+C1 et C2 (en partant de points approches C1(u0) et C2(v0)).
+ Cette classe herite de math_FunctionSetWithDerivatives et est utilisee par
+l'algorithme math_FunctionSetRoot.
+ Si on note Du et Dv, les derivees en u et v, les 2 fonctions a annuler sont:
+  { F1(u,v) = (C2(v)-C1(u)).Du(u)/||Du|| }
+  { F2(u,v) = (C2(v)-C1(u)).Dv(v)||Dv|| }
+ Si on note Duu et Dvv, les derivees secondes de C1 et C2, les derivees de F1
+et F2 sont egales a:
+  { Duf1(u,v) = -||Du|| + C1C2.Duu/||Du||- F1(u,v)*Duu*Du/||Du||**2
+  { Dvf1(u,v) = Dv.Du/||Du|| 
+  { Duf2(u,v) = -Du.Dv/||Dv||
+  { Dvf2(u,v) = ||Dv|| + C2C1.Dvv/||Dv||- F2(u,v)*Dv*Dvv/||Dv||**2
+
+----------------------------------------------------------------------------*/
+//=============================================================================
+
+#define Tol  1.e-20
+#define delta 1.e-9
+
+Extrema_FuncExtCC::Extrema_FuncExtCC(const Standard_Real thetol) : myC1 (0), myC2 (0), myTol (thetol)
+{
+}
+
+Extrema_FuncExtCC::Extrema_FuncExtCC (const Curve1& C1,
+				      const Curve2& C2,
+				      const Standard_Real thetol) :
+				        myC1 ((Standard_Address)&C1), myC2 ((Standard_Address)&C2),
+				        myTol (thetol)
+{
+}
+
+Standard_Boolean Extrema_FuncExtCC::Value (const math_Vector& UV, 
+					   math_Vector&       F)
+{
+  
+  Vec Du, Dv;
+
+  myU = UV(1);
+  myV = UV(2);
+  Tool1::D1(*((Curve1*)myC1), myU,myP1,Du);
+  Tool2::D1(*((Curve2*)myC2), myV,myP2,Dv);
+  Vec P1P2 (myP1,myP2);
+
+  Standard_Real Ndu = Du.Magnitude();
+  if (Ndu <= Tol) {
+    Pnt P1, P2;
+    P1 = Tool1::Value(*((Curve1*)myC1), myU-delta);
+    P2 = Tool1::Value(*((Curve1*)myC1), myU+delta);
+    Vec V(P1,P2);
+    Du = V;
+    Ndu = Du.Magnitude();
+    if (Ndu <= Tol) {
+      return Standard_False;
+    }
+  }
+
+  Standard_Real Ndv = Dv.Magnitude();
+  if (Ndv <= Tol) { 
+    // Traitement des singularite, on approche la Tangente
+    // par une corde
+    Pnt P1, P2;
+    P1 = Tool2::Value(*((Curve2*)myC2), myV-delta);
+    P2 = Tool2::Value(*((Curve2*)myC2), myV+delta);
+    Vec V(P1,P2);
+    Dv = V;
+    Ndv = Dv.Magnitude();
+    if (Ndv <= Tol) {
+      return Standard_False;
+    }
+  }
+
+  F(1) = P1P2.Dot(Du)/Ndu;
+  F(2) = P1P2.Dot(Dv)/Ndv;
+  return Standard_True;
+}
+//=============================================================================
+
+Standard_Boolean Extrema_FuncExtCC::Derivatives (const math_Vector& UV, 
+						 math_Matrix& Df)
+{
+  math_Vector F(1,2);
+  return Values(UV,F,Df);
+}
+//=============================================================================
+
+Standard_Boolean Extrema_FuncExtCC::Values (const math_Vector& UV, 
+					    math_Vector& F,
+					    math_Matrix& Df)
+{
+  myU = UV(1);
+  myV = UV(2);
+  Vec Du, Dv, Duu, Dvv;
+  Tool1::D2(*((Curve1*)myC1), myU,myP1,Du,Duu);
+  Tool2::D2(*((Curve2*)myC2), myV,myP2,Dv,Dvv);
+
+  Vec P1P2 (myP1,myP2);
+
+  Standard_Real Ndu = Du.Magnitude();
+  if (Ndu <= Tol) {
+      Pnt P1, P2;
+    Vec V1;
+    Tool1::D1(*((Curve1*)myC1),myU+delta, P2, Duu);
+    Tool1::D1(*((Curve1*)myC1),myU-delta, P1, V1);
+    Vec V(P1,P2);
+    Du = V;
+    Duu -= V1;
+    Ndu = Du.Magnitude();
+    if (Ndu <= Tol) {
+      return Standard_False;
+    }  
+  }
+
+  Standard_Real Ndv = Dv.Magnitude();
+ if (Ndv <= Tol) {
+    Pnt P1, P2;
+    Vec V1;
+    Tool2::D1(*((Curve2*)myC2),myV+delta, P2, Dvv);
+    Tool2::D1(*((Curve2*)myC2),myV-delta, P1, V1);
+    Vec V(P1,P2);
+    Dv = V;
+    Dvv -= V1;
+    Ndv = Dv.Magnitude();
+    if (Ndv <= Tol) {
+      return Standard_False;
+    }  
+  }
+  
+  F(1) = P1P2.Dot(Du)/Ndu;
+  F(2) = P1P2.Dot(Dv)/Ndv;
+  
+  Df(1,1) = - Ndu + (P1P2.Dot(Duu)/Ndu) - F(1)*(Du.Dot(Duu)/(Ndu*Ndu));
+  Df(1,2) = Dv.Dot(Du)/Ndu;
+  Df(2,1) = -Du.Dot(Dv)/Ndv;
+  Df(2,2) = Ndv + (P1P2.Dot(Dvv)/Ndv) - F(2)*(Dv.Dot(Dvv)/(Ndv*Ndv));
+  return Standard_True;
+
+}
+//=============================================================================
+
+Standard_Integer Extrema_FuncExtCC::GetStateNumber ()
+{
+  Vec Du, Dv;
+  Pnt P1, P2;
+  Tool1::D1(*((Curve1*)myC1), myU, P1, Du);
+  Tool2::D1(*((Curve2*)myC2), myV, P2, Dv);
+  Vec P1P2 (P1, P2);
+  Standard_Real mod = Du.Magnitude();
+  if(mod > Tol) {
+    Du /= mod;
+  }
+  mod = Dv.Magnitude();
+  if(mod > Tol) {
+    Dv /= mod;
+  }
+
+  if (Abs(P1P2.Dot(Du)) <= myTol && Abs(P1P2.Dot(Dv)) <= myTol) {
+    mySqDist.Append(myP1.SquareDistance(myP2));
+    myPoints.Append(POnC(myU, myP1));
+    myPoints.Append(POnC(myV, myP2));
+  }
+  return 0;
+}
+//=============================================================================
+
+void Extrema_FuncExtCC::Points (const Standard_Integer N,
+				POnC& P1,
+				POnC& P2) const
+{
+  P1 = myPoints.Value(2*N-1);
+  P2 = myPoints.Value(2*N);
+}
+//=============================================================================
+
+
+
+
+
+
+

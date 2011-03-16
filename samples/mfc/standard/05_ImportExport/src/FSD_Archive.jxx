@@ -1,0 +1,30 @@
+#ifndef _Storage_StreamTypeMismatchError_HeaderFile
+#include <Storage_StreamTypeMismatchError.hxx>
+#endif
+#ifndef _Storage_StreamFormatError_HeaderFile
+#include <Storage_StreamFormatError.hxx>
+#endif
+#ifndef _Storage_StreamWriteError_HeaderFile
+#include <Storage_StreamWriteError.hxx>
+#endif
+#ifndef _Storage_StreamExtCharParityError_HeaderFile
+#include <Storage_StreamExtCharParityError.hxx>
+#endif
+#ifndef _TCollection_AsciiString_HeaderFile
+#include <TCollection_AsciiString.hxx>
+#endif
+#ifndef _TCollection_ExtendedString_HeaderFile
+#include <TCollection_ExtendedString.hxx>
+#endif
+#ifndef _TColStd_SequenceOfAsciiString_HeaderFile
+#include <TColStd_SequenceOfAsciiString.hxx>
+#endif
+#ifndef _TColStd_SequenceOfExtendedString_HeaderFile
+#include <TColStd_SequenceOfExtendedString.hxx>
+#endif
+#ifndef _Storage_BaseDriver_HeaderFile
+#include <Storage_BaseDriver.hxx>
+#endif
+#ifndef _FSD_Archive_HeaderFile
+#include <FSD_Archive.hxx>
+#endif

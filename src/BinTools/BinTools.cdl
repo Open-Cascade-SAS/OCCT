@@ -1,0 +1,61 @@
+-- File:	BinTools.cdl
+-- Created:	Tue May 11 18:02:29 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+package BinTools 
+
+	---Purpose: Tool to keep shapes in binary format
+
+uses 
+    Geom2d, 
+    Geom,
+    TColStd,
+    TopoDS, 
+    TopAbs, 
+    TopLoc,
+    BRep,
+    BRepTools, 
+    TopTools
+is
+    
+    class  ShapeSet; 
+
+    class  Curve2dSet; 
+
+    class  CurveSet;  
+
+    class  SurfaceSet; 
+     
+    class  LocationSet;
+    
+    pointer LocationSetPtr to LocationSet from BinTools;
+
+
+    PutReal (OS : out OStream from Standard; theValue : Real from Standard) returns OStream; 
+    ---C++: return & 
+    
+    PutInteger (OS : out OStream from Standard; theValue : Integer from Standard) returns OStream;
+    ---C++: return &  
+
+    PutBool (OS : out OStream from Standard; theValue : Boolean from Standard) returns OStream;
+    ---C++: return &  
+
+    PutExtChar (OS : out OStream from Standard; theValue : ExtCharacter from Standard) returns OStream;
+    ---C++: return &
+
+    GetReal (IS : out IStream from Standard; theValue : out Real from Standard) returns IStream; 
+    ---C++: return & 
+
+    GetInteger (IS : out IStream from Standard; theValue : out Integer from Standard) returns IStream; 
+    ---C++: return &  
+     
+    GetBool (IS : out IStream from Standard; theValue : out Boolean from Standard) returns IStream; 
+    ---C++: return & 
+     
+    GetExtChar (IS : out IStream from Standard; theValue : out ExtCharacter from Standard) returns IStream; 
+    ---C++: return &
+
+end BinTools;
+

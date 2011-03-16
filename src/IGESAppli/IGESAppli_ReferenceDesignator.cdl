@@ -1,0 +1,57 @@
+--
+-- File      :  ReferenceDesignator.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ReferenceDesignator from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines ReferenceDesignator, Type <406> Form <7>
+        --          in package IGESAppli
+        --          Used to attach a text string containing the value of
+        --          a component reference designator to an entity being
+        --          used to represent a component.
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable ReferenceDesignator;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable; 
+              nbPropVal : Integer; 
+              aText     : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           ReferenceDesignator
+        --       - nbPropVal : Number of property values = 1
+        --       - aText     : Reference designator text
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+        -- is always 1
+
+        RefDesignatorText (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the Reference designator text
+
+fields
+
+--
+-- Class    : IGESAppli_ReferenceDesignator
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ReferenceDesignator.
+--
+-- Reminder : A ReferenceDesignator instance is defined by :
+--            - Number of property values (always = 1)
+--            - Reference designator text
+
+        theNbPropertyValues : Integer;
+        theRefDesigText     : HAsciiString;
+
+end ReferenceDesignator;

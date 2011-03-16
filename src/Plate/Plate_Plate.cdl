@@ -1,0 +1,143 @@
+-- File:	Plate_Plate.cdl
+-- Created:	Wed Oct 18 12:44:50 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+-- 26-Mar-96 : xab non inlinage des methodes
+-- 19-Fev-97 : jct ajout des methodes UVBox et UVConstraints pour l'etude G1134
+-- 24-Mar-98 : alr prise en compte nouveaux types de contraintes (Linear..Constraint)
+--           	 
+class Plate from Plate
+---Purpose: This class implement a variationnal spline algorithm able
+--          to define a two variable function satisfying some constraints
+--          and minimizing an energy like criterion.
+
+uses 
+     SequenceOfPinpointConstraint from Plate, 
+     SequenceOfLinearXYZConstraint from Plate, 
+     SequenceOfLinearScalarConstraint from Plate, 
+     PinpointConstraint from Plate, 
+     LinearXYZConstraint  from  Plate, 
+     LinearScalarConstraint  from  Plate,
+     GtoCConstraint from Plate,
+     FreeGtoCConstraint from Plate,
+     GlobalTranslationConstraint from Plate,
+     LineConstraint from Plate,
+     PlaneConstraint from Plate,
+     SampledCurveConstraint from Plate,
+     XY from gp,
+     XYZ from gp,
+     SequenceOfXY from TColgp,
+     Matrix  from  math, 
+     HArray2OfXYZ  from  TColgp
+
+
+is
+
+    Create returns Plate;
+    Create (Ref : Plate  from Plate) returns Plate;
+
+    Copy(me: in out; Ref: Plate)
+    ---C++: alias operator= 
+    ---C++: return & 
+    returns Plate;
+-- basics Constraints
+-- 
+-- 	    
+    Load (me : in out;  PConst : PinpointConstraint);
+    Load (me : in out;  LXYZConst : LinearXYZConstraint); 
+    Load (me : in out;  LScalarConst : LinearScalarConstraint); 
+-- Geometric Constraints
+-- 
+    Load (me : in out;  GTConst : GlobalTranslationConstraint);
+    Load (me : in out;  LConst : LineConstraint);
+    Load (me : in out;  PConst : PlaneConstraint);
+    Load (me : in out;  SCConst : SampledCurveConstraint);
+-- Specific  Geometric Constraints
+-- 
+    Load (me : in out;  GtoCConst : GtoCConstraint);
+    Load (me : in out;  FGtoCConst : FreeGtoCConstraint);
+
+    SolveTI(me : in out; ord : Integer = 4; anisotropie : Real = 1.0);
+
+    IsDone(me)
+        ---Purpose: returns True if all has been correctly done.
+    returns Boolean;
+
+    destroy(me : in out);
+     ---C++: alias ~
+ 
+    
+    Init(me: in out );
+    	---Purpose: reset the Plate in the initial state
+    	--           ( same as after Create())
+    
+    Evaluate(me ; point2d : XY from gp )  
+    returns XYZ from gp ; 
+    
+    EvaluateDerivative(me; point2d: XY  from gp;  
+                       iu,iv  : Integer)  
+     returns XYZ from gp ; 
+         
+    CoefPol(me;  Coefs: out HArray2OfXYZ  from  TColgp);  
+     
+    SetPolynomialPartOnly(me  :  in  out;  PPOnly  :  Boolean  =  Standard_True);
+     
+    Continuity(me)  returns  Integer;
+
+        -- private methods :
+    -- 
+    SolEm (me ;  point2d : XY from gp; iu,iv  : Integer)
+    returns Real is private;  
+    
+    Polm (me;  point2d : XY from gp; iu,iv,idu,idv : Integer)
+    ---C++: inline
+
+    returns Real is private;  
+    
+    Deru(me; index : Integer)
+
+    ---C++: inline
+    ---C++: return &
+    returns Integer is private;
+    
+    Derv(me; index : Integer)
+
+    ---C++: inline
+    ---C++: return &
+    returns Integer is private;
+    
+    Solution(me; index : Integer)
+
+    ---C++: inline
+    ---C++: return &
+    returns XYZ is private;
+    
+    Points(me; index : Integer)
+
+    ---C++: inline
+    ---C++: return &
+    returns XY is private;
+    
+    UVBox(me ; UMin,UMax,VMin,VMax : out Real );
+    UVConstraints(me; Seq : out SequenceOfXY from TColgp );
+    SolveTI1(me : in out;  IterationNumber :  Integer) is private;
+    SolveTI2(me : in out;  IterationNumber :  Integer) is private;
+    SolveTI3(me : in out;  IterationNumber :  Integer) is private; 
+    fillXYZmatrix(me;  mat  :  in  out  Matrix  from  math;i0,j0,ncc1,ncc2  :  Integer)  is  private;
+
+
+
+fields
+    order : Integer;
+    n_el, n_dim  : Integer;
+    solution, points, deru, derv : Address ;
+    OK : Boolean;
+    myConstraints : SequenceOfPinpointConstraint; 
+    myLXYZConstraints  :  SequenceOfLinearXYZConstraint; 
+    myLScalarConstraints  : SequenceOfLinearScalarConstraint; 
+    ddu : Real[10];
+    ddv : Real[10];
+    maxConstraintOrder : Integer; 
+    PolynomialPartOnly  :  Boolean;
+end;

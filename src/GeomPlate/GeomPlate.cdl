@@ -1,0 +1,109 @@
+-- File:	GeomPlate.cdl<2>
+-- Created:	Thu Mar  7 15:02:41 1996
+-- Author:	Stagiaire Frederic CALOONE
+--		<cfc@stylox>
+-- Modified:	Wed Mar  5 09:45:42 1997
+--    by:	Joelle CHAUVET
+--              G1134 : convertion of a GeomPlate_Surface to a Geom_BSplineSurface
+--                      by approximation with G0 or G1 criterion
+--              + no more reference to TopoDS
+---Copyright:	 Matra Datavision 1996
+
+package GeomPlate
+ 
+uses gp,
+     Adaptor3d,
+     Adaptor2d,
+     Law,
+     GeomFill,
+     TColgp,
+     Plate,
+     Geom,
+     math,
+     TColGeom,
+     TColGeom2d,
+     GeomAbs,
+     TCollection,
+     ElSLib,
+     StdFail,   
+     ProjLib,
+     TColStd,
+     AdvApp2Var, 
+     Geom2d, 
+     Extrema, 
+     GeomLProp
+     
+     
+is
+
+    class BuildPlateSurface ; 
+    ---Purpose:
+    -- this class computes the plate surface corresponding to the constraints.
+    
+     
+    class Array1OfHCurveOnSurface  
+	instantiates Array1 from TCollection ( HCurveOnSurface from Adaptor3d);     
+     
+    class HArray1OfHCurveOnSurface
+    	instantiates HArray1 from TCollection (HCurveOnSurface from Adaptor3d,  Array1OfHCurveOnSurface  from  GeomPlate);
+     
+    class  CurveConstraint; 
+     
+    class  PointConstraint;  
+     
+     
+    class Array1OfSequenceOfReal instantiates
+    Array1 from TCollection (SequenceOfReal from TColStd);
+
+    class HArray1OfSequenceOfReal instantiates
+    HArray1 from TCollection (SequenceOfReal from TColStd,
+    	    	    	      Array1OfSequenceOfReal from GeomPlate);
+
+    class  SequenceOfCurveConstraint 
+        instantiates  Sequence  from  TCollection  (CurveConstraint  from  GeomPlate); 
+     
+    class  SequenceOfPointConstraint 
+        instantiates  Sequence  from  TCollection  (PointConstraint  from  GeomPlate); 
+	
+    class  HSequenceOfCurveConstraint 
+        instantiates  HSequence  from  TCollection  (CurveConstraint  from  GeomPlate,  SequenceOfCurveConstraint from  GeomPlate );
+    
+    class  HSequenceOfPointConstraint  
+        instantiates  HSequence  from  TCollection  (PointConstraint  from  GeomPlate,  SequenceOfPointConstraint from  GeomPlate );  
+
+
+    class BuildAveragePlane;
+    --- Purpose:
+    --  this class computes the initial surface (average plane) in the cases when the initial surface is not 
+    --  given.
+
+    class Surface;
+    ---Purpose:
+    -- this class describes the characteristics of the plate surface
+    
+    class MakeApprox;
+    ---Purpose:
+    -- this class converts a GeomPlate_Surface to a Geom_BSplineSurface
+
+    class PlateG0Criterion;
+    ---Purpose:
+    -- inherits class Criterion from AdvApp2Var ;
+    -- this class contains a specific G0 criterion for GeomPlate_MakeApprox
+
+    class PlateG1Criterion;
+    ---Purpose:
+    -- inherits class Criterion from AdvApp2Var ;
+    -- this class contains a specific G1 criterion for GeomPlate_MakeApprox
+
+    class Aij;
+
+    class SequenceOfAij instantiates
+    	Sequence from TCollection (Aij from GeomPlate);
+    
+end;
+
+
+
+
+
+

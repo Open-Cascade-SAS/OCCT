@@ -1,0 +1,12 @@
+-- File:	PXCAFDoc_LayerTool.cdl
+-- Created:	Tue Oct  3 14:56:50 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class LayerTool from PXCAFDoc inherits Attribute from PDF
+
+is
+    Create returns LayerTool from PXCAFDoc;
+    
+end LayerTool;

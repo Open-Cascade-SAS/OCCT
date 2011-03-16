@@ -1,0 +1,54 @@
+-- File:	PGeom_SurfaceOfRevolution.cdl
+-- Created:	Tue Mar  2 11:30:57 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class SurfaceOfRevolution from PGeom inherits SweptSurface from PGeom
+
+        ---Purpose :  This  class defines    a   complete   surface of
+        --         revolution.  The surface is  obtained by rotating a
+        --         curve  a  complete revolution  about an axis.   The
+        --         curve and the axis must be in the same plane.
+        --         
+	---See Also : SurfaceOfRevolution from Geom.
+
+uses Dir         from gp,
+     Pnt         from gp,
+     Curve       from PGeom,
+     SurfaceForm from GeomAbs,
+     Shape       from GeomAbs
+
+is
+
+
+  Create returns mutable SurfaceOfRevolution from PGeom;
+	---Purpose: Creates a SurfaceOfRevolution with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	    aBasisCurve : Curve from PGeom;
+    	    aDirection  : Dir from gp;
+	    aLocation   : Pnt from gp)
+     returns mutable SurfaceOfRevolution from PGeom;
+	---Purpose: Creates a SurfaceOfRevolution with these values.
+    	---Level: Internal 
+
+
+  Location (me : mutable; aLocation : Pnt from gp);
+        ---Purpose : Set the value of the field location with <aLocation>.
+    	---Level: Internal 
+
+
+  Location (me) returns Pnt from gp;
+        ---Purpose : Returns the value of the field location.
+    	---Level: Internal 
+
+
+fields
+
+  location  : Pnt from gp;
+
+end;

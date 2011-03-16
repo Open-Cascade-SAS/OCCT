@@ -1,0 +1,26 @@
+-- File:	StepSelect_StepDerived.cdl
+-- Created:	Thu Feb 18 12:29:17 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectDerived from STEPSelections inherits StepType from StepSelect
+
+	---Purpose: 
+
+uses
+    CString,
+    AsciiString from TCollection,
+    Protocol from Interface,
+    InterfaceModel,
+    Protocol from StepData
+    
+is
+    Create returns mutable SelectDerived;
+    
+    Matches (me; ent : Transient; model : InterfaceModel;
+    	    	 text : AsciiString; exact : Boolean)
+    returns Boolean  is redefined;
+
+end SelectDerived;

@@ -1,0 +1,19 @@
+-- File:	Resource_KeyComparator.cdl
+-- Created:	Fri Dec  4 15:14:36 1998
+-- Author:	DUSUZEAU Louis
+--		<ld@dekpon.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class LexicalCompare from Resource
+
+uses
+    AsciiString from TCollection
+is
+
+    Create ;
+    
+    IsLower (me; Left, Right: AsciiString)
+	---Purpose: Returns True if <Left> is lower than <Right>.
+    	returns Boolean ;
+
+end;

@@ -1,0 +1,249 @@
+-- File:       FunctionSetRoot.cdl
+-- Created:    Tue May 14 14:32:21 1991
+-- Author:     Laurent PAINNOT
+--             <lpa@topsn3>
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class FunctionSetRoot from math
+    ---Purpose: The math_FunctionSetRoot class calculates the root
+    -- of a set of N functions of M variables (N<M, N=M or N>M). Knowing
+    -- an initial guess of the solution and using a minimization algorithm, a search
+    -- is made in the Newton direction and then in the Gradient direction if there
+    -- is no success in the Newton direction. This algorithm can also be
+    -- used for functions minimization. Knowledge of all the partial 
+    -- derivatives (the Jacobian) is required.
+
+
+uses Vector                     from math, 
+     Matrix                     from math,
+     IntegerVector              from math,
+     FunctionSetWithDerivatives from math,
+     OStream                    from Standard
+    
+raises NotDone        from StdFail,
+       DimensionError from Standard
+
+is    
+    
+    Create(F: in out FunctionSetWithDerivatives; 
+           Tolerance : Vector;
+    	   NbIterations: Integer = 100)
+    ---Purpose: is used in a sub-class to initialize correctly all the fields
+    --          of this class.
+    --          The range (1, F.NbVariables()) must be especially
+    --          respected for all vectors and matrix declarations.
+
+    returns FunctionSetRoot from math;
+    
+
+
+    Create(F: in out FunctionSetWithDerivatives;
+    	   NbIterations: Integer = 100)
+    ---Purpose: is used in a sub-class to initialize correctly all the fields
+    --          of this class.
+    --          The range (1, F.NbVariables()) must be especially
+    --          respected for all vectors and matrix declarations.
+    --          The method SetTolerance must be called after this
+    --          constructor.
+
+    returns FunctionSetRoot from math;
+	   
+	   
+	   
+    Create(F: in out FunctionSetWithDerivatives; StartingPoint: Vector;
+    	   Tolerance: Vector; NbIterations: Integer = 100)
+    ---Purpose: is used to improve the root of the function F
+    --          from the initial guess StartingPoint.
+    --          The maximum number of iterations allowed is given by 
+    --          NbIterations. 
+    --          In this case, the solution is found when:
+    --          abs(Xi - Xi-1)(j) <= Tolerance(j) for all unknowns.
+    
+    returns FunctionSetRoot from math;
+    
+    
+
+    Create(F: in out FunctionSetWithDerivatives; StartingPoint: Vector;
+    	   Tolerance: Vector; infBound, supBound: Vector;
+	   NbIterations: Integer = 100)
+       ---Purpose: is used to improve the root of the function F
+       --          from the initial guess StartingPoint.
+       --          The maximum number of iterations allowed is given 
+       --          by NbIterations.
+       --          In this case, the solution is found when:
+       --          abs(Xi - Xi-1) <= Tolerance for all unknowns.
+
+    returns FunctionSetRoot from math;
+
+
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_FunctionSetRoot(){Delete();}"
+    
+    SetTolerance(me: in out; Tolerance: Vector)
+    	---Purpose: Initializes the tolerance values.
+
+    is static;
+
+    
+    
+    Perform(me: in out; F: in out FunctionSetWithDerivatives;
+    	    StartingPoint: Vector;
+    	    infBound, supBound: Vector)
+       ---Purpose: Improves the root of function F from the initial guess
+       -- StartingPoint. infBound and supBound may be given to constrain the solution.
+       -- Warning
+       -- This method is called when computation of the solution is
+       -- not performed by the constructors.
+
+    is static;
+    
+
+    IsSolutionReached(me: in out; F: in out FunctionSetWithDerivatives)
+    	---Purpose: This routine is called at the end of each iteration 
+    	--          to check if the solution was found. It can be redefined
+    	--          in a sub-class to implement a specific test to stop the 
+    	--          iterations.
+    	--          In this case, the solution is found when:
+    	--          abs(Xi - Xi-1) <= Tolerance for all unknowns.
+
+    returns Boolean is virtual;
+
+
+    IsDone(me)
+    	---Purpose: 
+    	-- Returns true if the computations are successful, otherwise returns false.
+        ---C++: inline
+      returns Boolean
+      is static;
+
+
+    NbIterations(me)
+    	---Purpose: Returns the number of iterations really done
+    	--          during the computation of the root.
+    	--          Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+    
+    StateNumber(me)
+    	---Purpose: returns the stateNumber (as returned by 
+    	--          F.GetStateNumber()) associated to the root found.
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+    
+    Root(me)
+    	---Purpose: Returns the value of the root of function F.
+    	--          Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone,
+    	   DimensionError
+    is static;
+
+
+    Root(me; Root: out Vector)
+    	---Purpose: Outputs the root vector in Root.
+    	--          Exception NotDone is raised if the root was not found.
+    	--          Exception DimensionError is raised if the range of Root
+    	--          is not equal to the range of the StartingPoint.
+
+    raises NotDone from StdFail
+    is static;
+    
+
+    Derivative(me)
+    	---Purpose: Returns the matrix value of the derivative at the root.
+    	--          Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    	---C++: return const&
+
+    returns Matrix
+    raises NotDone
+    is static;
+
+
+    Derivative(me; Der: out Matrix)
+    	---Purpose: outputs the matrix value of the derivative
+    	--          at the root in Der.
+    	--          Exception NotDone is raised if the root was not found.
+    	--          Exception DimensionError is raised if the column range 
+    	--          of <Der> is not equal to the range of the startingPoint.
+    	---C++: inline
+
+    raises NotDone,
+           DimensionError
+    is static;
+    
+    
+    
+    FunctionSetErrors(me)
+    	---Purpose: returns the vector value of the error done
+    	--          on the functions at the root.
+    	--          Exception NotDone is raised if the root was not found.    
+    	---C++: inline
+    	---C++: return const&
+
+    returns Vector
+    raises NotDone
+    is static;
+
+
+    FunctionSetErrors(me; Err: out Vector)
+    	---Purpose: outputs the vector value of the error done
+    	--          on the functions at the root in Err.
+    	--          Exception NotDone is raised if the root was not found.
+    	--          Exception DimensionError is raised if the range of Err 
+    	--          is not equal to the range of the StartingPoint.
+
+    raises NotDone,
+    	   DimensionError
+    is static;
+
+
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+    
+fields
+
+Done             : Boolean;
+Delta            : Vector is protected;
+Sol              : Vector is protected;
+DF               : Matrix is protected;
+Kount            : Integer;
+State            : Integer;
+Tol              : Vector is protected;
+Itermax          : Integer;
+
+-- working tables
+
+InfBound         : Vector;
+SupBound         : Vector;
+
+SolSave          : Vector;
+GH               : Vector;
+DH               : Vector;
+DHSave           : Vector;
+FF               : Vector;
+PreviousSolution : Vector;
+Save             : Vector;
+Constraints      : IntegerVector;
+Temp1            : Vector;
+Temp2            : Vector;
+Temp3            : Vector;
+Temp4            : Vector;
+
+end FunctionSetRoot;

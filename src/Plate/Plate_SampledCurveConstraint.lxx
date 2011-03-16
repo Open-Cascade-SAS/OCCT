@@ -1,0 +1,8 @@
+// File:	Plate_SampledCurveConstraint.lxx
+// Created:	Mon May 25 09:18:23 1998
+// Author:	Andre LIEUTIER
+//		<alr@sgi63>
+inline const Plate_LinearXYZConstraint& Plate_SampledCurveConstraint::LXYZC() const
+{
+  return myLXYZC;
+}

@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolConeFrustum.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolConeFrustum  from IGESSolid
+
+    ---Purpose : Tool to work on a ConeFrustum. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses ConeFrustum from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolConeFrustum;
+    ---Purpose : Returns a ToolConeFrustum, ready to work
+
+
+    ReadOwnParams (me; ent : mutable ConeFrustum;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : ConeFrustum;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : ConeFrustum;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a ConeFrustum <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : ConeFrustum) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : ConeFrustum;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : ConeFrustum; entto : mutable ConeFrustum;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : ConeFrustum;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolConeFrustum;

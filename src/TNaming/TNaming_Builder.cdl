@@ -1,0 +1,92 @@
+-- File:	TNaming_Builder.cdl
+-- Created:	Mon Dec 16 17:54:15 1996
+-- Author:	Remi Lequette
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Builder from TNaming  
+
+	---Purpose: A tool to create and maintain topological
+    	-- attributes. 
+    	-- Constructor creates an empty
+    	-- TNaming_NamedShape attribute at the given
+    	-- label. It allows adding "old shape" and "new
+    	-- shape" pairs with the specified evolution to this
+    	-- named shape. One evolution type per one
+    	-- builder must be used.
+        
+uses
+    Shape                        from TopoDS,
+    Label                        from TDF,
+    Data                         from TDF, 
+    NamedShape                   from TNaming,	
+    PtrNode                      from TNaming,	
+    PtrAttribute                 from TNaming,	
+    PtrDataMapOfShapePtrRefShape from TNaming
+    
+raises
+    ConstructionError            from Standard
+is
+
+	Create (aLabel : Label from TDF) returns Builder from TNaming;
+	    ---Purpose:  Create an   Builder.   
+	    --  Warning:  Before Addition copies the current Value, and clear 
+    	
+
+	---Category: To Load Shape Evolution
+	--           =======================
+      
+    	Generated(me : in out; newShape : Shape from TopoDS);
+	    ---Purpose:  Records the shape newShape which was
+    	    -- generated during a topological construction.
+    	    --  As an example, consider the case of a face
+    	    --  generated in construction of a box.
+	    
+	Generated(me : in out; oldShape, newShape : Shape from TopoDS);
+	    ---Purpose: Records the shape newShape which was
+    	    --  generated from the shape oldShape during a topological construction.
+    	    -- As an example, consider the case of a face
+    	    -- generated from an edge in construction of a prism.
+    
+
+	---Category: Load Modifications.
+
+	Delete(me : in out; oldShape : Shape from TopoDS);
+	    ---Purpose:  Records the shape oldShape which was deleted from the current label.
+    	    -- As an example, consider the case of a face removed by a Boolean operation.
+	    
+	Modify(me : in out; oldShape, newShape : Shape from TopoDS);
+	    ---Purpose:  Records the shape newShape which is a
+    	    -- modification of the shape oldShape.
+    	    -- As an example, consider the case of a face split
+    	    --  or merged in a Boolean operation.
+	    --          
+	
+	---Category: Load changes
+	--           
+    	Replace (me : in out; oldShape, newShape : Shape from TopoDS);
+	    ---Purpose: Records the shape newShape which is a
+    	    -- modification of the shape oldShape but has a
+    	    -- different geometry as a result of the construction operation.
+    	    -- As an example, consider the case of a face
+    	    -- resulting from construction of a draft in a box or prism.
+	
+
+    	---Category: Load Selection.
+    	Select (me : in out; aShape, inShape : Shape from TopoDS);
+	    ---Purpose:   Add a  Shape to the current label ,  This Shape is
+	    --          unmodified.  Used for example  to define a set
+	    --          of shapes under a label.
+			      
+
+        ---Category: Querying
+
+    	NamedShape(me) returns NamedShape from TNaming;
+	    ---Purpose: Returns the NamedShape which has been build or is under construction.
+
+fields
+    
+    myMap         : PtrDataMapOfShapePtrRefShape from TNaming; 
+    myAtt         : PtrAttribute                 from TNaming;
+end Builder;

@@ -1,0 +1,19 @@
+
+#ifndef GROUP_PXX_INCLUDED
+#define GROUP_PXX_INCLUDED
+
+#include <Graphic3d_Structure.pxx>
+
+// groups identifiers : possible range
+#define Group_IDMIN 100
+// /2 pour eviter les problemes d'overflow
+#define Group_IDMAX INT_MAX/2
+
+#define MyIsEmpty			MyCBitFields.bool1
+#define MyContainsFacet			MyCBitFields.bool2
+#define MyNotUsed1			MyCBitFields.bool3
+#define MyNotUsed2			MyCBitFields.bool4
+
+#define MyStructure	((Graphic3d_Structure *) MyPtrStructure)
+
+#endif

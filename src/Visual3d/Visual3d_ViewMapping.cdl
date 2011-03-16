@@ -1,0 +1,291 @@
+--
+-- File:	Visual3d_ViewMapping.cdl
+-- Created:	Mercredi 12 Juin 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class ViewMapping from Visual3d
+
+	---Version:
+
+    	---Purpose: This class allows the definition of a projection and
+	--	    a system of coordinates called NPC.
+	--	    (Normalized Projection Coordinates).
+    	--	    The projection can be parallel or perspective.
+	--  References: The definitions are Phigs oriented.
+    	--  Keywords: View, Mapping, Window, View Plane, Front Plane,
+	--    BackPlane, Projection Type, Reset, Projection
+	-- Summary of 3D View Mapping                   --
+	-- The view mapping transformation  defines the --
+	-- window-to-viewport mapping of View Reference --
+	-- Coordinates (VRC)  to Normalized  Projection --
+	-- Coordinates (NPC).                           --
+	-- CAS.CADE supports two kinds of projection :  --
+	-- 	Parallel :                              --
+	--	The Projection Reference Point (PRP)    --
+	--	determines the direction of projection. --
+	-- 	Perspective :                           --
+	--	The projector lines converge at the     --
+	--	Projection Reference Point (PRP).       --
+	-- To define a  view mapping transformation you --
+	-- must define :                                --
+	--	The Projection Type                     --
+	--	The Projection Reference Point (PRP)    --
+	--	The Distance from Back Plane (BPD)      --
+	--	The Distance from Front Plane (FPD)     --
+	--	The Distance from View Plane (VPD)      --
+	--	The Window in the View Plane.           --
+	
+
+uses
+
+	Vertex			from Graphic3d,
+	
+	HArray2OfReal            from TColStd,
+
+	TypeOfProjection	from Visual3d
+
+raises
+
+	ViewMappingDefinitionError	from Visual3d
+
+is
+
+	
+
+	Create
+		returns ViewMapping from Visual3d;
+	---Level: Public
+	---Purpose: Creates a projection.
+	--
+	--	TypeOfProjection		= TOP_PARALLEL
+	--	PRP : Projection Reference Point= (0.5, 0.5, 2.0)
+	--	BPD : Distance from Back Plane	= 0.0
+	--	FPD : Distance from Front Plane	= 1.0
+	--	VPD : Distance from View Plane	= 1.0
+	--	WUmin	= 0.0
+	--	WUmax	= 1.0
+	--	WVmin	= 0.0
+	--	WVmax	= 1.0
+
+	Create ( AType		: TypeOfProjection from Visual3d;
+		 PRP		: Vertex from Graphic3d;
+		 BPD, FPD, VPD	: Real from Standard;
+		 WUmin,WVmin	: Real from Standard;
+		 WUmax,WVmax	: Real from Standard )
+		returns ViewMapping from Visual3d
+	---Level: Public
+	---Purpose: Creates a projection.
+	--
+	--	TypeOfProjection : TOP_PERSPECTIVE
+	--			   TOP_PARALLEL
+	--	PRP : Projection Reference Point with respect to
+	--	      coordinate system VRC, defined by the
+	--	      class ViewOrientation.
+	--	BPD : Distance from Back Plane.
+	--	FPD : Distance from Front Plane.
+	--	VPD : Distance from View Plane.
+	--	These three values are with respect to VRP, according to
+	--	the N axis of the VRC coordinate system, defined by the class
+	--	ViewOrientation.
+	--	WUmin,WUmax,WVmin,WVmax : Visible part of the plane of
+	--	projection defined with respect to the UV axes of coordinate
+	--	system VRC.
+	--	   That's what allows modification of the zoom/panning.
+	--	The mapping of the visible part of the plane of projection
+	--	on the screen is done in the window.
+	--	   That's why multiple views on the same window is not allowed.
+	--  Warning: Raises ViewMappingDefinitionError
+	--	    if the specified window is invalid.
+	--	    if <PRP> is between the front and back planes.
+	--	    if <PRP> is positioned on the view plane.
+	--	    if the back plane is in front of the front plane.
+	raises ViewMappingDefinitionError from Visual3d;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetBackPlaneDistance ( me	: in out;
+			       BPD	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the back clipping plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewMappingDefinitionError
+	--	    if <PRP> is between the front and back planes.
+	--	    if <PRP> is positioned on the view plane.
+	--	    if the back plane is in front of the front plane.
+	raises ViewMappingDefinitionError from Visual3d is static;
+
+	SetFrontPlaneDistance ( me	: in out;
+				FPD	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the front clipping plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewMappingDefinitionError
+	--	    if <PRP> is between the front and back planes.
+	--	    if <PRP> is positioned on the view plane.
+	--	    if the back plane is in front of the front plane.
+	raises ViewMappingDefinitionError from Visual3d is static;
+
+	SetProjection ( me	: in out;
+			AType	: TypeOfProjection from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the type of projection.
+	--
+	--	    TypeOfProjection : TOP_PERSPECTIVE
+	--			       TOP_PARALLEL
+	--
+	---Category: Methods to modify the class definition
+
+	SetProjectionReferencePoint ( me	: in out;
+				      PRP	: Vertex from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the PRP.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewMappingDefinitionError
+	--	    if <PRP> is between the front and back planes.
+	--	    if <PRP> is positioned on the view plane.
+	raises ViewMappingDefinitionError from Visual3d is static;
+
+	SetViewPlaneDistance ( me	: in out;
+			       VPD	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the distance of the view plane of projection.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewMappingDefinitionError
+	--	    if <PRP> is positioned on the view plane.
+	raises ViewMappingDefinitionError from Visual3d is static;
+
+	SetWindowLimit ( me			: in out;
+			Umin,Vmin,Umax,Vmax	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the visible part of the projection plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewMappingDefinitionError if the
+	--	    specified window is invalid.
+	raises ViewMappingDefinitionError from Visual3d is static;
+
+	SetCustomProjectionMatrix( me : in out;
+			Mat : HArray2OfReal from TColStd ) is static;
+	---Level: Public
+	---Purpose: Sets custom PROJECTION matrix for the OpenGl context
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	BackPlaneDistance ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the distance from the back clipping plane
+	-- of this view mapping.
+        ---Category: Inquire methods
+
+	FrontPlaneDistance ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the distance from the front clipping plane
+	-- of this view mapping.
+	---Category: Inquire methods
+
+	Projection ( me )
+		returns TypeOfProjection from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the type of projection.
+	---Category: Inquire methods
+
+	ProjectionReferencePoint ( me )
+		returns Vertex from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the PRP.
+	---Category: Inquire methods
+
+	ViewPlaneDistance ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the distance from the projection plane.
+	---Category: Inquire methods
+
+	WindowLimit ( me;
+		      Umin,Vmin,Umax,Vmax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the visible part of the projection plane.
+	---Category: Inquire methods
+
+	IsCustomMatrix( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns whether the custom PROJECTION matrix is used.
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Assign ( me	: in out;
+		 Other	: ViewMapping from Visual3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Copies the content of <Other> into <me>.
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ViewMapping
+--
+-- Purpose	:	Declaration of variables specific to
+--			the mapping of views.
+--
+-- Reminder	:	A view mapping is defined by :
+--			- the reference point of projection
+--			- the type of projection
+--			- a distance from the Back Plane
+--			- a distance from the Front Plane
+--			- a distance from the Projection Plane
+--			- the definition of the visible part of the
+--			plane of projection
+--
+
+	-- the reference point of projection
+	MyReferencePoint		:	Vertex from Graphic3d;
+
+	-- the type of projection
+	MyProjectionType		:	TypeOfProjection from Visual3d;
+
+	-- the distance from the Back Plane
+	MyBackPlaneDistance		:	Real from Standard;
+
+	-- the distance from the Front Plane
+	MyFrontPlaneDistance		:	Real from Standard;
+
+	-- the distance from the Projection Plane
+	MyViewPlaneDistance		:	Real from Standard;
+
+	-- the limits of the visible part of the plane
+	-- MyWindowLimits[0] = u left lower corner.
+	-- MyWindowLimits[1] = v left lower corner.
+	-- MyWindowLimits[2] = u right upper corner.
+	-- MyWindowLimits[3] = v right upper corner.
+	MyWindowLimits			:	Real[4];
+
+	-- the custom PROJECTION matrix to set directly to OpenGl context
+	MyProjectionMatrix      :   HArray2OfReal from TColStd;
+
+friends
+
+	class View from Visual3d
+
+end ViewMapping;

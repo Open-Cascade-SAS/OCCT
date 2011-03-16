@@ -1,0 +1,27 @@
+-- File:        Surface.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for Surface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Surface from StepGeom
+
+is
+
+	Create returns RWSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Surface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Surface from StepGeom);
+
+end RWSurface;

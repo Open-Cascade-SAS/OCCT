@@ -1,0 +1,69 @@
+-- File:	BRep_PolygonOnSurface.cdl
+-- Created:	Tue Mar 14 18:30:24 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnSurface from BRep inherits CurveRepresentation from BRep 
+
+    	---Purpose: Representation of a 2D polygon in the parametric
+    	--          space of a surface.
+
+
+uses
+    Polygon2D           from Poly,
+    Surface             from Geom,
+    CurveRepresentation from BRep,
+    Location            from TopLoc
+
+
+raises DomainError from Standard
+
+
+is
+
+    Create(P: Polygon2D from Poly;
+    	   S: Surface   from Geom;
+	   L: Location  from TopLoc)
+    returns mutable PolygonOnSurface from BRep;
+
+
+    IsPolygonOnSurface(me)          returns Boolean
+    	---Purpose: A   2D polygon  representation  in the  parametric
+    	--          space of a surface.
+    is redefined;
+
+
+    IsPolygonOnSurface(me; S: Surface from Geom; L: Location from TopLoc) 
+    returns Boolean
+    	---Purpose: A   2D polygon  representation  in the  parametric
+    	--          space of a surface.
+    is redefined;
+
+
+    Surface(me) returns any Surface from Geom
+    	---C++: return const&
+    is redefined;
+
+
+    Polygon(me) returns any Polygon2D from Poly
+    	---C++: return const &
+    is redefined;
+
+    Polygon(me: mutable; P: Polygon2D from Poly)
+    is redefined;
+
+
+    Copy(me) returns mutable CurveRepresentation from BRep
+	---Purpose: Return a copy of this representation.
+    is redefined;
+
+
+fields
+
+myPolygon2D: Polygon2D from Poly;
+mySurface  : Surface   from Geom;
+
+
+end PolygonOnSurface;

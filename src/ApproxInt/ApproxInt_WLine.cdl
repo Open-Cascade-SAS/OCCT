@@ -1,0 +1,50 @@
+-- File:	ApproxInt_WLine.cdl
+-- Created:	Mon Nov  8 10:44:58 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class WLine from ApproxInt ( 
+    TheCurve        as any;
+    TheCurveTool    as any;
+    TheCurve2d      as any;
+    TheCurveTool2d  as any)
+    
+    inherits TShared from MMgt
+    
+   
+uses PntOn2S           from IntSurf,
+     LineOn2S          from IntSurf
+     
+is 
+     
+     Create(CurveXYZ: TheCurve;
+            CurveUV1: TheCurve2d;
+	    CurveUV2: TheCurve2d)
+	
+	 returns mutable WLine from ApproxInt;
+
+     Create(lin: LineOn2S from IntSurf;  Tang: Boolean from Standard)
+     
+	 returns mutable WLine from ApproxInt;
+	 
+     NbPnts(me) 
+     
+         returns Integer from Standard
+	 is static;
+	 
+     Point(me: mutable; Index: Integer from Standard)
+     
+         returns PntOn2S from IntSurf
+	 is static;
+	 
+fields 
+
+    curvxyz  : TheCurve;
+    curvuv1  : TheCurve2d;
+    curvuv2  : TheCurve2d;
+    pnton2s  : PntOn2S    from IntSurf;
+    linon2s  : LineOn2S   from IntSurf;
+end WLine;
+

@@ -1,0 +1,127 @@
+// File:	HLRBRep_Data.lxx
+// Created:	Thu Apr 17 16:56:27 1997
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : EDataArray
+//purpose  : 
+//=======================================================================
+
+inline HLRBRep_Array1OfEData & HLRBRep_Data::EDataArray ()
+{ return myEData; }
+
+//=======================================================================
+//function : FDataArray
+//purpose  : 
+//=======================================================================
+
+inline HLRBRep_Array1OfFData & HLRBRep_Data::FDataArray ()
+{ return myFData; }
+
+//=======================================================================
+//function : Tolerance
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_Data::Tolerance (const Standard_ShortReal tol)
+{ myToler = tol; }
+
+//=======================================================================
+//function : Tolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_ShortReal HLRBRep_Data::Tolerance () const
+{ return myToler; }
+
+//=======================================================================
+//function : Projector
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Projector & HLRBRep_Data::Projector ()
+{ return myProj; }
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer HLRBRep_Data::NbVertices () const
+{ return myNbVertices; }
+
+//=======================================================================
+//function : NbEdges
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer HLRBRep_Data::NbEdges () const
+{ return myNbEdges; }
+
+//=======================================================================
+//function : NbFaces
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer HLRBRep_Data::NbFaces () const
+{ return myNbFaces; }
+
+//=======================================================================
+//function : EdgeMap
+//purpose  : 
+//=======================================================================
+
+inline TopTools_IndexedMapOfShape & HLRBRep_Data::EdgeMap ()
+{ return myEMap; }
+
+//=======================================================================
+//function : FaceMap
+//purpose  : 
+//=======================================================================
+
+inline TopTools_IndexedMapOfShape & HLRBRep_Data::FaceMap ()
+{ return myFMap; }
+
+//=======================================================================
+//function : SimpleHidingFace
+//purpose  : 
+//=======================================================================
+       
+inline Standard_Boolean HLRBRep_Data::SimpleHidingFace () const
+{ return iFaceSimp; }
+
+//=======================================================================
+//function : HidingTheFace
+//purpose  : 
+//=======================================================================
+       
+inline Standard_Boolean HLRBRep_Data::HidingTheFace () const
+{ return iFaceTest; }
+
+//=======================================================================
+//function : MoreInterference
+//purpose  : 
+//=======================================================================
+       
+inline Standard_Boolean HLRBRep_Data::MoreInterference () const
+{ return (iInterf <= myNbPoints + 2*myNbSegments); }
+
+//=======================================================================
+//function : Interference
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Interference & HLRBRep_Data::Interference ()
+{ return myIntf; }
+
+//=======================================================================
+//function :EdgeOfTheHidingFace
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean 
+HLRBRep_Data::EdgeOfTheHidingFace (const Standard_Integer E,
+				   const HLRBRep_EdgeData& ED) const
+{ return ED.HideCount() == myHideCount-1; }
+

@@ -1,0 +1,12 @@
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean Blend_CSWalking::IsDone () const
+{
+  return done;
+}
+
+inline const Handle(TheLine)& Blend_CSWalking::Line () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return line;
+}

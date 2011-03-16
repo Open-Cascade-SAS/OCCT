@@ -1,0 +1,15 @@
+// File:	GeomAPI_ProjectPointOnSurf.lxx
+// Created:	Thu Mar 17 16:15:24 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Extrema
+//purpose  : 
+//=======================================================================
+
+inline const Extrema_ExtPS& GeomAPI_ProjectPointOnSurf::Extrema() const
+{
+  return myExtPS;
+}

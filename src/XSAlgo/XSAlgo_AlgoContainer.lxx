@@ -1,0 +1,26 @@
+// File:	XSAlgo_AlgoContainer.lxx
+// Created:	Fri Jan 28 16:53:48 2000
+// Author:	data exchange team
+//		<det@nnov>
+
+#include <XSAlgo_AlgoContainer.hxx>
+
+//=======================================================================
+//function : SetToolContainer
+//purpose  : 
+//=======================================================================
+
+inline  void XSAlgo_AlgoContainer::SetToolContainer(const Handle(XSAlgo_ToolContainer)& TC) 
+{
+  myTC = TC;
+}
+
+//=======================================================================
+//function : ToolContainer
+//purpose  : 
+//=======================================================================
+
+inline  Handle(XSAlgo_ToolContainer) XSAlgo_AlgoContainer::ToolContainer() const
+{
+  return myTC;
+}

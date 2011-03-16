@@ -1,0 +1,548 @@
+// File:	Extrema_GExtCC2d.gxx
+// Created:	Wed Jul  6 15:08:36 1994
+// Author:	Laurent PAINNOT
+//		<lpa@metrox>
+
+
+#include Extrema_ECC2d_hxx
+#include <Extrema_ExtElC2d.hxx>
+#include <StdFail_NotDone.hxx>
+#include <Extrema_ExtElC.hxx>
+#include <ElCLib.hxx>
+#include <Standard_Failure.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Precision.hxx>
+
+
+Extrema_GExtCC2d::Extrema_GExtCC2d() {}
+
+
+Extrema_GExtCC2d::Extrema_GExtCC2d(const Curve1&       C1, 
+				   const Curve2&       C2,
+				   const Standard_Real TolC1, 
+				   const Standard_Real TolC2)
+{
+  Initialize(C2, Tool2::FirstParameter(C2), Tool2::LastParameter(C2), TolC1, TolC2);
+  Perform(C1, Tool1::FirstParameter(C1), Tool1::LastParameter(C1));
+}
+
+Extrema_GExtCC2d::Extrema_GExtCC2d(const Curve1&        C1, 
+				   const Curve2&        C2,
+				   const Standard_Real  U1,
+				   const Standard_Real  U2,
+				   const Standard_Real  V1,
+				   const Standard_Real  V2,
+				   const Standard_Real  TolC1,
+				   const Standard_Real  TolC2)
+{
+  Initialize(C2, V1, V2, TolC1, TolC2);
+  Perform(C1, U1, U2);
+}
+
+
+
+void Extrema_GExtCC2d::Initialize(const Curve2&        C2,
+				  const Standard_Real  V1,
+				  const Standard_Real  V2,
+				  const Standard_Real  TolC1,
+				  const Standard_Real  TolC2)
+{
+  myC = (Standard_Address)&C2;
+  myv1 = V1;
+  myv2 = V2;
+  mytolc1 = TolC1;
+  mytolc2 = TolC2;
+}
+
+
+
+void Extrema_GExtCC2d::Perform (const Curve1&       C1,
+				const Standard_Real U1,
+				const Standard_Real U2)
+{
+  mypoints.Clear();
+  mySqDist.Clear();
+  Standard_Integer NbU = 32, NbV = 32;
+  GeomAbs_CurveType type1 = Tool1::GetType(C1), type2 = Tool2::GetType(*((Curve2*)myC));
+  Standard_Real U11, U12, U21, U22, Tol = Min(mytolc1, mytolc2);
+//  Extrema_POnCurv2d P1, P2;
+  mynbext = 0;
+  inverse = Standard_False;
+  myIsPar = Standard_False;
+
+  U11 = U1;
+  U12 = U2;
+  U21 = myv1;
+  U22 = myv2;
+  P1f = Tool1::Value(C1, U11);
+  P1l = Tool1::Value(C1, U12);
+  P2f = Tool2::Value(*((Curve2*)myC), U21);
+  P2l = Tool2::Value(*((Curve2*)myC), U22);
+
+
+  switch(type1) {
+    //
+    //  La premiere courbe est un cercle:
+    //
+  case GeomAbs_Circle: {
+
+    switch(type2) {
+      case GeomAbs_Circle: {
+	Extrema_ExtElC2d Xtrem(Tool1::Circle(C1), Tool2::Circle(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 2*PI);
+        }
+	break;
+      case GeomAbs_Ellipse: {
+	Extrema_ExtElC2d Xtrem(Tool1::Circle(C1), Tool2::Ellipse(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 2*PI );
+        }
+	break;
+      case GeomAbs_Parabola: {
+	Extrema_ExtElC2d Xtrem(Tool1::Circle(C1), Tool2::Parabola(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 0.);
+      }
+	break;
+      case GeomAbs_Hyperbola: {
+	Extrema_ExtElC2d Xtrem(Tool1::Circle(C1), Tool2::Hyperbola(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 0. );
+      }
+	break;
+      case GeomAbs_BezierCurve:
+      case GeomAbs_OtherCurve:
+      case GeomAbs_BSplineCurve: {
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Standard_Real Period2 = 0.;
+	if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+	Results(Xtrem, C1, U11, U12, U21, U22, 2*PI,Period2);
+        }
+	break;
+      case GeomAbs_Line: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Line(*((Curve2*)myC)), Tool1::Circle(C1), Tol);
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 0.);
+        }
+	break;
+      };  // switch(type2)
+    }
+    break;
+
+    //
+    // La premiere courbe est une ellipse:
+    //
+  case GeomAbs_Ellipse: {
+
+    switch(type2) {
+      case GeomAbs_Circle: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Circle(*((Curve2*)myC)), Tool1::Ellipse(C1));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 2*PI);
+        }
+	break;
+      case GeomAbs_Ellipse: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Ellipse(C1), Tool2::Ellipse(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22,2*PI, 2*PI);
+        }
+	break;
+      case GeomAbs_Parabola: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Ellipse(C1), Tool2::Parabola(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 2*PI, 0.);
+      }
+	break;
+      case GeomAbs_Hyperbola: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Ellipse(C1), Tool2::Hyperbola(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 2*PI, 0.);
+      }
+	break;
+      case GeomAbs_BezierCurve:
+      case GeomAbs_OtherCurve:
+      case GeomAbs_BSplineCurve: {
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);	
+	Standard_Real Period2 = 0.;
+	if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+	Results(Xtrem, C1, U11, U12, U21, U22, 2*PI,Period2);
+        }
+	break;
+      case GeomAbs_Line: {
+        inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Line(*((Curve2*)myC)), Tool1::Ellipse(C1));
+	Results(Xtrem, U11, U12, U21, U22, 2*PI, 0.);
+        }
+	break;
+      };  // switch(type2)
+    }
+    break;
+
+    //
+    // La premiere courbe est une parabole: 
+    //
+  case GeomAbs_Parabola: {
+
+    switch(type2) {
+      case GeomAbs_Circle: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Circle(*((Curve2*)myC)), Tool1::Parabola(C1));
+	Results(Xtrem, U11, U12, U21, U22, 0., 2*PI);
+        }
+	break;
+      case GeomAbs_Ellipse: {
+	//inverse = Standard_True;
+	//Extrema_ExtElC2d Xtrem(Tool2::Ellipse(*((Curve2*)myC)), Tool1::Parabola(C1));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 2*PI);
+        }
+	break;
+      case GeomAbs_Parabola: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Parabola(C1), Tool2::Parabola(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_Hyperbola: {
+	//inverse = Standard_True;
+	//Extrema_ExtElC2d Xtrem(Tool2::Hyperbola(*((Curve2*)myC)), Tool1::Parabola(C1));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_BezierCurve:
+      case GeomAbs_OtherCurve:
+      case GeomAbs_BSplineCurve: {
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Standard_Real Period2 = 0.;
+	if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., Period2);
+        }
+	break;
+      case GeomAbs_Line: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Line(*((Curve2*)myC)), Tool1::Parabola(C1));
+	Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+        }
+	break;
+      };  // switch(type2)
+    }
+    break;
+
+    //
+    // La premiere courbe est une hyperbole:
+    //
+  case GeomAbs_Hyperbola: {
+
+    switch(type2) {
+      case GeomAbs_Circle: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Circle(*((Curve2*)myC)), Tool1::Hyperbola(C1));
+	Results(Xtrem, U11, U12, U21, U22, 0., 2*PI);
+        }
+	break;
+      case GeomAbs_Ellipse: {
+	//inverse = Standard_True;
+	//Extrema_ExtElC2d Xtrem(Tool2::Ellipse(*((Curve2*)myC)), Tool1::Hyperbola(C1));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 2*PI );
+        }
+	break;
+      case GeomAbs_Parabola: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Hyperbola(C1), Tool2::Parabola(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_Hyperbola: {
+	//Extrema_ExtElC2d Xtrem(Tool1::Hyperbola(C1), Tool2::Hyperbola(*((Curve2*)myC)));
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_OtherCurve:
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve: {
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC)
+			    , NbU, NbV, mytolc1, mytolc2);
+	Standard_Real Period2 = 0.;
+	if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., Period2);
+        }
+	break;
+      case GeomAbs_Line: {
+	inverse = Standard_True;
+	Extrema_ExtElC2d Xtrem(Tool2::Line(*((Curve2*)myC)), Tool1::Hyperbola(C1));
+	Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+        }
+	break;
+      };  // switch(type2)
+    }
+    break;
+
+    //
+    // La premiere courbe est une BezierCurve ou une BSplineCurve:
+    //
+  case GeomAbs_BezierCurve:
+  case GeomAbs_OtherCurve:
+  case GeomAbs_BSplineCurve: {
+    Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			NbU, NbV, mytolc1, mytolc2);
+    Standard_Real Period1 = 0.;
+    if (Tool1::IsPeriodic(C1)) Period1 = Tool1::Period(C1);
+    Standard_Real Period2 = 0.;
+    if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+    Results(Xtrem, C1, U11, U12, U21, U22, Period1, Period2);
+  }
+  break;
+
+    //
+    // La premiere courbe est une Line:
+    //
+  case GeomAbs_Line: {
+
+    switch(type2) {
+      case GeomAbs_Circle: {
+  	Extrema_ExtElC2d Xtrem(Tool1::Line(C1), Tool2::Circle(*((Curve2*)myC)), Tol);
+	Results(Xtrem, U11, U12, U21, U22, 0., 2*PI);
+        }
+	break;
+      case GeomAbs_Ellipse: {
+	Extrema_ExtElC2d Xtrem(Tool1::Line(C1), Tool2::Ellipse(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 0., 2*PI);
+        }
+	break;
+      case GeomAbs_Parabola: {
+	Extrema_ExtElC2d Xtrem(Tool1::Line(C1), Tool2::Parabola(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_Hyperbola: {
+	Extrema_ExtElC2d Xtrem(Tool1::Line(C1), Tool2::Hyperbola(*((Curve2*)myC)));
+	Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+      }
+	break;
+      case GeomAbs_BezierCurve:
+      case GeomAbs_OtherCurve:
+      case GeomAbs_BSplineCurve: {
+	Extrema_ECC2d Xtrem(C1, *((Curve2*)myC), 
+			    NbU, NbV, mytolc1, mytolc2);
+	Standard_Real Period2 = 0.;
+	if (Tool2::IsPeriodic(*((Curve2*)myC))) Period2 = Tool2::Period(*((Curve2*)myC));
+	Results(Xtrem, C1, U11, U12, U21, U22, 0., Period2);
+        }
+	break;
+      case GeomAbs_Line: {
+	Extrema_ExtElC2d Xtrem(Tool1::Line(C1), Tool2::Line(*((Curve2*)myC)), Tol);
+	Results(Xtrem, U11, U12, U21, U22, 0., 0.);
+        } 
+	break;
+      };  // switch(type2)
+    }
+    break;
+
+  };
+    
+}
+
+
+Standard_Boolean Extrema_GExtCC2d::IsDone() const
+{
+  return myDone;
+}
+
+
+Standard_Real Extrema_GExtCC2d::SquareDistance(const Standard_Integer N) const 
+{
+  if(!myDone) StdFail_NotDone::Raise();
+  if ((N <= 0) || (N > mynbext)) Standard_OutOfRange::Raise();
+  return mySqDist.Value(N);
+}
+
+
+Standard_Integer Extrema_GExtCC2d::NbExt() const
+{
+  if(!myDone) StdFail_NotDone::Raise();
+  return mynbext;
+}
+
+
+void Extrema_GExtCC2d::Points(const Standard_Integer N, 
+			      Extrema_POnCurv2d& P1,
+			      Extrema_POnCurv2d& P2) const
+{
+  if(!myDone) StdFail_NotDone::Raise();
+  if ((N <= 0) || (N > mynbext)) Standard_OutOfRange::Raise();
+  P1 = mypoints.Value(2*N-1);
+  P2 = mypoints.Value(2*N);
+}
+
+
+
+void Extrema_GExtCC2d::TrimmedSquareDistances(Standard_Real& dist11,
+					Standard_Real& dist12,
+					Standard_Real& dist21,
+					Standard_Real& dist22,
+					gp_Pnt2d&      P11,
+					gp_Pnt2d&      P12,
+					gp_Pnt2d&      P21,
+					gp_Pnt2d&      P22) const 
+{
+  dist11 = mydist11;
+  dist12 = mydist12;
+  dist21 = mydist21;
+  dist22 = mydist22;
+  P11 = P1f;
+  P12 = P1l;
+  P21 = P2f;
+  P22 = P2l;
+}
+
+
+
+void Extrema_GExtCC2d::Results(const Extrema_ExtElC2d&  AlgExt,
+			       const Standard_Real      Ut11,
+			       const Standard_Real      Ut12,
+			       const Standard_Real      Ut21,
+			       const Standard_Real      Ut22,
+			       const Standard_Real      Period1,
+			       const Standard_Real      Period2)
+{
+  Standard_Integer i, NbExt;
+  Standard_Real Val, U, U2;
+  Extrema_POnCurv2d P1, P2;
+  
+  myDone = AlgExt.IsDone();
+  myIsPar = AlgExt.IsParallel();
+  if (myDone) {
+    if (!myIsPar) {
+      NbExt = AlgExt.NbExt();
+      for (i = 1; i <= NbExt; i++) {
+	// Verification de la validite des parametres pour le cas trimme:
+	AlgExt.Points(i, P1, P2);
+	if (!inverse) {
+	  U = P1.Parameter();
+	  if (Period1 != 0.0) U = ElCLib::InPeriod(U,Ut11,Ut11+Period1);
+	  U2 = P2.Parameter();
+	  if (Period2 != 0.0) U2 = ElCLib::InPeriod(U2,Ut21,Ut21+Period2);
+	}
+	else {
+	  U2 = P1.Parameter();
+	  if (Period2 != 0.0) U2 = ElCLib::InPeriod(U2,Ut21,Ut21+Period2);
+	  U = P2.Parameter();
+	  if (Period1 != 0.0) U = ElCLib::InPeriod(U,Ut11,Ut11+Period1);
+	}
+	if ((U  >= Ut11 - Precision::PConfusion())  && 
+	    (U  <= Ut12 + Precision::PConfusion())  &&
+	    (U2 >= Ut21 - Precision::PConfusion())  &&
+	    (U2 <= Ut22 + Precision::PConfusion())) {
+	  mynbext++;
+	  Val = AlgExt.SquareDistance(i);
+	  mySqDist.Append(Val);
+	  if (!inverse) {
+	    P1.SetValues(U, P1.Value());
+	    P2.SetValues(U2, P2.Value());
+	    mypoints.Append(P1);
+	    mypoints.Append(P2);
+	  }
+	  else {
+	    P1.SetValues(U2, P1.Value());
+	    P2.SetValues(U, P2.Value());
+	    mypoints.Append(P2);
+	    mypoints.Append(P1);
+	  }
+	}
+      }
+    }
+
+    mydist11 = P1f.SquareDistance(P2f);
+    mydist12 = P1f.SquareDistance(P2l);
+    mydist21 = P1l.SquareDistance(P2f);
+    mydist22 = P1l.SquareDistance(P2l);
+  }
+}
+
+
+void Extrema_GExtCC2d::Results(const Extrema_ECC2d& AlgExt,
+//  modified by NIZHNY-EAP Wed Feb 23 14:51:24 2000 ___BEGIN___
+			       const Curve1&        C1,
+//  modified by NIZHNY-EAP Wed Feb 23 14:51:26 2000 ___END___
+			       const Standard_Real  Ut11,
+			       const Standard_Real  Ut12,
+			       const Standard_Real  Ut21,
+			       const Standard_Real  Ut22,
+			       const Standard_Real  Period1,
+			       const Standard_Real  Period2)
+{
+  Standard_Integer i, NbExt;
+  Standard_Real Val, U, U2;
+  Extrema_POnCurv2d P1, P2;
+  
+  myDone = AlgExt.IsDone();
+  if (myDone) {
+    if (!myIsPar) {
+      NbExt = AlgExt.NbExt();
+      for (i = 1; i <= NbExt; i++) {
+	// Verification de la validite des parametres pour le cas trimme:
+	AlgExt.Points(i, P1, P2);
+	U = P1.Parameter();
+	if (Period1 != 0.0) U = ElCLib::InPeriod(U,Ut11,Ut11+Period1);
+	U2 = P2.Parameter();
+	if (Period2 != 0.0) U2 = ElCLib::InPeriod(U2,Ut21,Ut21+Period2);
+
+	if ((U  >= Ut11 - Precision::PConfusion())  && 
+	    (U  <= Ut12 + Precision::PConfusion())  &&
+	    (U2 >= Ut21 - Precision::PConfusion())  &&
+	    (U2 <= Ut22 + Precision::PConfusion())) {
+//  modified by NIZHNY-EAP Thu Jan 27 16:40:55 2000 ___BEGIN___
+	  // to be sure that it's a real extrema
+	  gp_Pnt2d p;
+	  gp_Vec2d v1, v2;
+	  Tool1::D1(C1,U,p, v1);
+	  Tool2::D1(*((Curve2*)myC),U2,p, v2);
+	  if (v1.IsParallel(v2, Precision::Angular())) {
+	    mynbext++;
+	    Val = AlgExt.SquareDistance(i);
+	    P1.SetValues(U, P1.Value());
+	    P2.SetValues(U2, P2.Value());
+	    mySqDist.Append(Val);
+	    mypoints.Append(P1);
+	    mypoints.Append(P2);
+	  }
+//  modified by NIZHNY-EAP Thu Jan 27 16:41:00 2000 ___END___
+	}
+      }
+    }
+
+    mydist11 = P1f.SquareDistance(P2f);
+    mydist12 = P1f.SquareDistance(P2l);
+    mydist21 = P1l.SquareDistance(P2f);
+    mydist22 = P1l.SquareDistance(P2l);
+  }
+}
+
+
+Standard_Boolean Extrema_GExtCC2d::IsParallel() const
+{
+  if (!myDone) StdFail_NotDone::Raise();
+  return myIsPar;
+}

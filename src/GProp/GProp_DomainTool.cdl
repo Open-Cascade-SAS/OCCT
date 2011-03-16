@@ -1,0 +1,29 @@
+-- File:	GProp_DomainTool.cdl
+-- Created:	Fri Nov 27 16:44:12 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred generic class DomainTool from GProp (Arc as any)
+
+	---Purpose: Arc iterator
+
+
+is
+  
+  Init(me : in out); 
+        ---Purpose: Initializes the exploration with the parameters already set.
+
+  More(me : in out)  returns Boolean from Standard;
+        --- Purpose :
+        --  Returns True if there is another arc of curve in the list.
+
+  Value(me : in out) returns Arc ;
+  
+  Next(me : in out) ; 
+        --- Purpose :
+        --  Sets the index of the arc iterator to the next arc of
+        --  curve.
+
+end DomainTool;

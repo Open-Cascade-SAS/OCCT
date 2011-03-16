@@ -1,0 +1,30 @@
+-- File:        BSplineSurface.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWBSplineSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for BSplineSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     BSplineSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWBSplineSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable BSplineSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : BSplineSurface from StepGeom);
+
+	Share(me; ent : BSplineSurface from StepGeom; iter : in out EntityIterator);
+
+end RWBSplineSurface;

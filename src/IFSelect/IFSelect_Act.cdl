@@ -1,0 +1,73 @@
+-- File:	IFSelect_Act.cdl
+-- Created:	Tue Mar  5 09:44:33 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Act  from IFSelect  inherits Activator
+
+    ---Purpose : Act gives a simple way to define and add functions to be ran
+    --           from a SessionPilot, as follows :
+    --           
+    --           Define a function as
+    --             static IFSelect_RetStatus myfunc
+    --               (const Standard_CString name,
+    --                const Handle(IFSelect_SessionPilot)& pilot)
+    --             { ... }
+    --           When ran, it receives the exact name (string) of the called
+    --           function, and the SessionPilot which brings other infos
+    --           
+    --           Add it by
+    --             IFSelect_Act::AddFunc (name,help,myfunc);
+    --               for a normal function, or
+    --             IFSelect_Act::AddFSet (name,help,myfunc);
+    --               for a function which is intended to create a control item
+    --           name and help are given as CString
+    --           
+    --           Then, it is available for run
+
+uses  CString, AsciiString, SessionPilot, ActFunc, ReturnStatus
+
+raises DomainError
+
+is
+
+    Create (name, help : CString; func : ActFunc) returns mutable Act;
+    ---Purpose : Creates an Act with a name, help and a function
+    --           mode (Add or AddSet) is given when recording
+
+    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    	returns ReturnStatus;
+    ---Purpose : Execution of Command Line. remark that <number> is senseless
+    --           because each Act brings one and only one function
+
+    Help (me; number : Integer) returns CString;
+    ---Purpose : Short Help for commands : returns the help given to create
+
+    	--  to record functions
+
+    SetGroup (myclass; group : CString; file : CString = "");
+    ---Purpose : Changes the default group name for the following Acts
+    --           group empty means to come back to default from Activator
+    --           Also a file name can be precised (to query by getsource)
+
+    AddFunc (myclass; name, help : CString; func : ActFunc)
+    ---Purpose : Adds a function with its name and help : creates an Act then
+    --           records it as normal function
+    	raises DomainError;
+    --           Error if <name> already recorded (see Activator)
+
+    AddFSet (myclass; name, help : CString; func : ActFunc)
+    ---Purpose : Adds a function with its name and help : creates an Act then
+    --           records it as function for XSET (i.e. to create control item)
+    	raises DomainError;
+    --           Error if <name> already recorded (see Activator)
+
+fields
+
+    thename : AsciiString;
+    thehelp : AsciiString;
+    thefunc : ActFunc;
+
+end Act;

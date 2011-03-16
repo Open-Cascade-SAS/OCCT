@@ -1,0 +1,39 @@
+-- File:	StepFEA_FeaSecantCoefficientOfLinearThermalExpansion.cdl
+-- Created:	Thu Dec 12 17:51:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaSecantCoefficientOfLinearThermalExpansion from StepFEA
+inherits FeaMaterialPropertyRepresentationItem from StepFEA
+
+    ---Purpose: Representation of STEP entity FeaSecantCoefficientOfLinearThermalExpansion
+
+uses
+    HAsciiString from TCollection,
+    SymmetricTensor23d from StepFEA
+
+is
+    Create returns FeaSecantCoefficientOfLinearThermalExpansion from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aFeaConstants: SymmetricTensor23d from StepFEA;
+                       aReferenceTemperature: Real);
+	---Purpose: Initialize all fields (own and inherited)
+
+    FeaConstants (me) returns SymmetricTensor23d from StepFEA;
+	---Purpose: Returns field FeaConstants
+    SetFeaConstants (me: mutable; FeaConstants: SymmetricTensor23d from StepFEA);
+	---Purpose: Set field FeaConstants
+
+    ReferenceTemperature (me) returns Real;
+	---Purpose: Returns field ReferenceTemperature
+    SetReferenceTemperature (me: mutable; ReferenceTemperature: Real);
+	---Purpose: Set field ReferenceTemperature
+
+fields
+    theFeaConstants: SymmetricTensor23d from StepFEA;
+    theReferenceTemperature: Real;
+
+end FeaSecantCoefficientOfLinearThermalExpansion;

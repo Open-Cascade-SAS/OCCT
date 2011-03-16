@@ -1,0 +1,111 @@
+-- File:	IGESData_BasicEditor.cdl
+-- Created:	Fri Aug 25 15:09:44 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class BasicEditor  from IGESData
+
+    ---Purpose : This class provides various functions of basic edition,
+    --           such as :
+    --           - setting header unit (WARNING : DOES NOT convert entities)
+    --           - computation of the status (Subordinate, UseFlag) of entities
+    --             of IGES Entities on a whole model
+    --           - auto correction of IGES Entities, defined both by DirChecker
+    --             and by specific service AutoCorrect
+    --             (this auto correction performs non-ambigious, rather logic,
+    --              editions)
+
+uses GeneralLib, SpecificLib,
+     IGESModel, IGESEntity, Protocol from IGESData
+
+is
+
+    Create (protocol : Protocol from IGESData)  returns BasicEditor;
+    ---Purpose : Creates a Basic Editor, with a new IGESModel, ready to run
+
+    Create (model : IGESModel; protocol : Protocol from IGESData)
+    	returns BasicEditor;
+    ---Purpose : Creates a Basic Editor for IGES Data, ready to run
+
+    Model  (me) returns mutable IGESModel;
+    ---Purpose : Returns the designated model
+
+    SetUnitFlag  (me : in out; flag : Integer) returns Boolean;
+    ---Purpose : Sets a new unit from its flag (param 14 of Global Section)
+    --           Returns True if done, False if <flag> is incorrect
+
+    SetUnitValue (me : in out; val  : Real)    returns Boolean;
+    ---Purpose : Sets a new unit from its value in meters (rounded to the
+    --           closest one, max gap 1%)
+    --           Returns True if done, False if <val> is too far from a
+    --           suitable value
+
+    SetUnitName  (me : in out; name : CString) returns Boolean;
+    ---Purpose : Sets a new unit from its name (param 15 of Global Section)
+    --           Returns True if done, False if <name> is incorrect
+    --           Remark : if <flag> has been set to 3 (user defined), <name>
+    --           is then free
+
+    ApplyUnit    (me : in out; enforce : Boolean = Standard_False);
+    ---Purpose : Applies unit value to convert header data : Resolution,
+    --           MaxCoord, MaxLineWeight
+    --           Applies unit only once after SetUnit... has been called,
+    --           if <enforce> is given as True.
+    --           It can be called just before writing the model to a file,
+    --           i.e. when definitive values are finally known
+
+    ComputeStatus (me : in out);
+    ---Purpose : Performs the re-computation of status on the whole model
+    --           (Subordinate Status and Use Flag of each IGES Entity), which
+    --           can have required values according the way they are referenced
+    --           (see definitions of Logical use, Physical use, etc...)
+
+    AutoCorrect (me : in out; ent : mutable IGESEntity) returns Boolean;
+    ---Purpose : Performs auto-correction on an IGESEntity
+    --           Returns True if something has changed, False if nothing done.
+    --           
+    --           Works with the specific IGES Services : DirChecker which
+    --           allows to correct data in "Directory Part" of Entities (such
+    --           as required values for status, or references to be null), and
+    --           the specific IGES service OwnCorrect, which is specialised for
+    --           each type of entity.
+
+    AutoCorrectModel (me : in out) returns Integer;
+    ---Purpose : Performs auto-correction on the whole Model
+    --           Returns the count of modified entities
+
+
+
+    UnitNameFlag (myclass; name : CString) returns Integer;
+    ---Purpose : From the name of unit, computes flag number, 0 if incorrect
+    --           (in this case, user defined entity remains possible)
+
+    UnitFlagValue (myclass; flag : Integer) returns Real;
+    ---Purpose : From the flag of unit, determines value in MM, 0 if incorrect
+
+    UnitFlagName  (myclass; flag : Integer) returns CString;
+    ---Purpose : From the flag of unit, determines its name, "" if incorrect
+
+    IGESVersionName  (myclass; flag : Integer) returns CString;
+    ---Purpose : From the flag of IGES version, returns name, "" if incorrect
+
+    IGESVersionMax   (myclass) returns Integer;
+    ---Purpose : Returns the maximum allowed value for IGESVersion Flag
+
+    DraftingName  (myclass; flag : Integer) returns CString;
+    ---Purpose : From the flag of drafting standard, returns name, "" if incorrect
+
+    DraftingMax   (myclass) returns Integer;
+    ---Purpose : Returns the maximum allowed value for Drafting Flag
+
+fields
+
+    theunit  : Boolean;
+    theproto : Protocol from IGESData;
+    themodel : IGESModel;
+    theglib  : GeneralLib;
+    theslib  : SpecificLib;
+
+end BasicEditor;

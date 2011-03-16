@@ -1,0 +1,48 @@
+// File:	TopoDS_Iterator.lxx
+// Created:	Thu Jan 21 09:09:14 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+#include <Standard_NoSuchObject.hxx>
+
+//=======================================================================
+//function : TopoDS_Iterator
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Iterator::TopoDS_Iterator()
+{}
+
+//=======================================================================
+//function : TopoDS_Iterator
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Iterator::TopoDS_Iterator(const TopoDS_Shape& S,
+                                        const Standard_Boolean cumOri,
+                                        const Standard_Boolean cumLoc)
+{
+  Initialize(S,cumOri,cumLoc);
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopoDS_Iterator::More() const
+{
+  return myShapes.More();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& TopoDS_Iterator::Value() const
+{
+  Standard_NoSuchObject_Raise_if(!More(),"TopoDS_Iterator::Value");  
+  return myShape;
+}

@@ -1,0 +1,26 @@
+if (!($?CCHOME))   setenv CCHOME   "/opt/DEV5_1/SUNWspro/bin/CC "
+if (!($?CCFLAGS))  setenv CCFLAGS  " -PIC  -xchip=ultra -xarch=v8 -Usun -DSOLARIS -DNO_CXX_EXCEPTION -vdelx -DCSFDB -O2 -DNo_Exception +w   "
+
+if (!($?CCINC))   setenv CCINC    "/opt/DEV5_1/SUNWspro/SC4.2/include/CC"
+
+if (!($?STLPortHome)) then
+    setenv STLPortInclude	"."
+else
+    if (!($?STLPortInclude))	setenv STLPortInclude	"$STLPortHome/stlport"
+endif
+
+if (!(-e ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni)) mkdir -p ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni
+if (!(-e ${SAMPLE_ROOT}/${STATION}/obj/.tmp))       mkdir -p ${SAMPLE_ROOT}/${STATION}/obj/.tmp
+if (!(-e ${SAMPLE_ROOT}/${STATION}/lib))            mkdir -p ${SAMPLE_ROOT}/${STATION}/lib
+
+
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_AIS_InteractiveContext_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_AIS_InteractiveContext_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_ISession2D_InteractiveContext_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_ISession2D_InteractiveContext_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_SampleGeometryPackage_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_SampleGeometryPackage_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_TCollection_AsciiString_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_TCollection_AsciiString_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_V2d_Viewer_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V2d_Viewer_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_V2d_View_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V2d_View_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_V3d_Viewer_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V3d_Viewer_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_V3d_View_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V3d_View_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_Viewer_Viewer_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_Viewer_Viewer_java.o
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC}  -I${JAVAHOME}/include -I${JAVAHOME}/include/solaris -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/SampleGeometryJni/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/drv/SampleGeometryJni/SampleGeometryJni_Viewer_View_java.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_Viewer_View_java.o

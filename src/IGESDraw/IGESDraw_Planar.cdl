@@ -1,0 +1,79 @@
+--
+-- File      :  Planar.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Planar from IGESDraw  inherits IGESEntity
+
+        ---Purpose: defines IGESPlanar, Type <402> Form <16>
+        --          in package IGESDraw
+        --
+        --          Indicates that a collection of entities is coplanar.The
+        --          entities may be geometric, annotative, and/or structural.
+
+uses
+
+        TransformationMatrix    from IGESGeom,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable Planar;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                    : mutable;
+              nbMats                : Integer;
+              aTransformationMatrix : TransformationMatrix;
+              allEntities           : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class Planar
+        --       - nbMats                : Number of Transformation matrices
+        --       - aTransformationMatrix : Pointer to the Transformation matrix
+        --       - allEntities           : Pointers to the entities specified
+
+        NbMatrices (me) returns Integer;
+        ---Purpose : returns the number of Transformation matrices in <me>
+
+        NbEntities (me) returns Integer;
+        ---Purpose : returns the number of Entities in the plane pointed to by this
+        -- associativity
+
+        IsIdentityMatrix (me) returns Boolean;
+        ---Purpose : returns True if TransformationMatrix is Identity Matrix,
+        -- i.e:- No Matrix defined.
+
+        TransformMatrix (me) returns TransformationMatrix;
+        ---Purpose : returns the Transformation matrix moving data from the XY plane
+        -- into space or zero
+
+        Entity (me; EntityIndex : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Entity on the specified plane, indicated by EntityIndex
+        -- raises an exception if EntityIndex <= 0 or
+        -- EntityIndex > NbEntities()
+
+fields
+
+--
+-- Class    : IGESDraw_Planar
+--
+-- Purpose  : Declaration of the variables specific to a Planar Entity.
+--
+-- Reminder : A Planar Entity is defined by :
+--                    - Number of Transformation matrices
+--                    - Pointer to the Transformation matrix
+--                    - Pointers to the entities specified
+--
+
+        theNbMatrices           : Integer;
+
+        theTransformationMatrix : TransformationMatrix;
+
+        theEntities             : HArray1OfIGESEntity;
+
+end Planar;

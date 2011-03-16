@@ -1,0 +1,18 @@
+-- File:	XDEDRAW_Colors.cdl
+-- Created:	Fri Aug  4 14:39:39 2000
+-- Author:	Pavel TELKOV
+--		<ptv@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class Colors from XDEDRAW 
+
+    ---Purpose: Contains commands to work with colors
+
+uses
+    Interpretor from Draw
+    
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+	
+end Colors;

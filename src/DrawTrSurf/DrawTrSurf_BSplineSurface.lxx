@@ -1,0 +1,39 @@
+
+
+  inline void DrawTrSurf_BSplineSurface::SetKnotsColor (
+  const Draw_Color& aColor) {
+
+    knotsLook = aColor;
+  }
+
+
+  inline void DrawTrSurf_BSplineSurface::SetKnotsShape (
+  const Draw_MarkerShape Shape) {
+
+    knotsForm = Shape;
+  }
+
+
+  inline void DrawTrSurf_BSplineSurface::SetPolesColor (
+  const Draw_Color& aColor) {
+
+    polesLook = aColor;
+  }
+
+
+  inline Draw_MarkerShape DrawTrSurf_BSplineSurface::KnotsShape () const {
+
+    return knotsForm;
+  }
+
+
+  inline Draw_Color DrawTrSurf_BSplineSurface::KnotsColor () const {
+
+    return knotsLook;
+  }
+
+
+  inline Draw_Color DrawTrSurf_BSplineSurface::PolesColor () const {
+
+    return polesLook;
+  }

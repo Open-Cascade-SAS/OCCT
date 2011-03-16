@@ -1,0 +1,161 @@
+#include <Precision.hxx>
+#include <Standard_Failure.hxx>
+
+void Compute(const Standard_Real P1,
+	     const Standard_Real P2,
+	     const Standard_Real Ra,
+	     const Standard_Real Rb,
+	     const Coord& Xd,
+	     const Coord& Yd,
+	     const Coord& O,
+	     Bound& B) {
+
+  Standard_Real Teta1;
+  Standard_Real Teta2;
+  if (P2<P1) { 
+    Teta1 = P2;
+    Teta2 = P1;
+  }
+  else {
+    Teta1 = P1;
+    Teta2 = P2;
+  }
+  Standard_Real Delta =Abs(Teta2-Teta1); 
+
+  if (Delta > 2. * PI) {
+    Teta1 = 0.;
+    Teta2 = 2. * PI;
+  }
+  else {
+ 
+    if (Teta1 < 0.) {
+      do { Teta1+=2.*PI;} while (Teta1< 0.);
+    }
+    else if (Teta1> 2.*PI) {
+      do { Teta1-=2.*PI;} while (Teta1> 2.*PI);
+    }
+    Teta2 = Teta1 + Delta;
+
+  }
+
+// One places already both ends
+  Standard_Real Cn1,Sn1,Cn2,Sn2;
+  Cn1 = Cos(Teta1); Sn1 = Sin(Teta1);
+  Cn2 = Cos(Teta2); Sn2 = Sin(Teta2);
+  B.Add(Point(O +Ra*Cn1*Xd +Rb*Sn1*Yd));  
+  B.Add(Point(O +Ra*Cn2*Xd +Rb*Sn2*Yd));  
+  
+  Standard_Real Ram,Rbm;
+  if (Delta > PI/8.) {
+    // Main radiuses to take into account only 8 points (/cos(Pi/8.))
+    Ram=Ra/0.92387953251128674;
+    Rbm=Rb/0.92387953251128674;
+  }
+  else {
+    // Main radiuses to take into account the arrow
+    Standard_Real tc=cos(Delta/2);
+    Ram=Ra/tc;
+    Rbm=Rb/tc;
+  }
+  B.Add(Point(O +Ram*Cn1*Xd +Rbm*Sn1*Yd));  
+  B.Add(Point(O +Ram*Cn2*Xd +Rbm*Sn2*Yd));  
+  
+
+// cos or sin PI/4.
+#define PI4 0.70710678118654746
+
+// 8 points of the polygon
+#define addP0 B.Add(Point(O +Ram*Xd ))
+#define addP1 B.Add(Point(O +Ram*PI4*Xd +Rbm*PI4*Yd))
+#define addP2 B.Add(Point(O +Rbm*Yd))
+#define addP3 B.Add(Point(O -Ram*PI4*Xd +Rbm*PI4*Yd))
+#define addP4 B.Add(Point(O -Ram*Xd ))
+#define addP5 B.Add(Point(O -Ram*PI4*Xd -Rbm*PI4*Yd))
+#define addP6 B.Add(Point(O -Rbm*Yd)); 
+#define addP7 B.Add(Point(O +Ram*PI4*Xd -Rbm*PI4*Yd))
+
+  Standard_Integer deb = (Standard_Integer )( Teta1/(PI/4.));
+  Standard_Integer fin = (Standard_Integer )( Teta2/(PI/4.));
+  deb++;
+
+  if (deb>fin) return;
+
+  switch (deb) {
+  case 1 : 
+    {
+      addP1;
+      if (fin <= 1) break;
+    }
+  case 2 :  
+    {
+      addP2;
+      if (fin <= 2) break;
+    }
+  case 3 :  
+    {
+      addP3;
+      if (fin <= 3) break;
+    }
+  case 4 :  
+    {
+      addP4;
+      if (fin <= 4) break;
+    }
+  case 5 :  
+    {
+      addP5;
+      if (fin <= 5) break;
+    }
+  case 6 :  
+    {
+      addP6;
+      if (fin <= 6) break;
+    }
+  case 7 :  
+    {
+      addP7;
+      if (fin <= 7) break;
+    }
+  case 8 :  
+    {
+      addP0;
+      if (fin <= 8) break;
+    }
+  case 9 :  
+    {
+      addP1;
+      if (fin <= 9) break;
+    }  
+  case 10 :  
+    {
+      addP2;
+      if (fin <= 10) break;
+    }
+  case 11:  
+    {
+      addP3;
+      if (fin <= 11) break;
+    }  
+  case 12:  
+    {
+      addP4;
+      if (fin <= 12) break;
+    }  
+  case 13:  
+    {
+      addP5;
+      if (fin <= 13) break;
+    }
+  case 14:  
+    {
+      addP6;
+      if (fin <= 14) break;
+    }
+  case 15:  
+    {
+      addP7;
+      if (fin <= 15) break;
+    }
+  }
+}
+

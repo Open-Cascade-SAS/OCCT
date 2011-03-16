@@ -1,0 +1,144 @@
+-- File:	Geom.cdl
+-- Created:	Tue Mar  9 18:50:59 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+package Geom 
+
+        --- Purpose :
+        --  This package contains the definition of the geometric objects 
+        --  such as point, vector, axis placement, curves, surfaces and the
+        --  description of the geometric transformations available for these
+        --  objects.
+        --  All these entities are defined in 3D space.
+        --  This package gives the possibility :
+        --     . to create geometric objects,
+        --     . to have information about them,
+        --     . to modify these objects.
+        --  This package uses the services of the package gp (Geometric
+        --  processor) which describes non-persistent objects for algebraic
+        --  calculus and basic analytic geometry. The purpose of this package
+        --  is to create persistent geometric objects and to read geometric
+        --  information about these objects. Complexes geometric algorithmes
+        --  are not described in this package.     At construction time,
+        --  elementary verifications are done to verify that the objects
+        --  are coherents, but some verifications which require complex
+        --  algorithmes (for example to check that a curve has not null
+        --  length or does not self-intersect) must be done before the 
+        --  construction of the geometric objects. 
+
+uses  
+    MMgt,  
+    Standard,
+    GeomAbs, 
+    TCollection,
+    TColStd, 
+    gp, 
+    TColgp 
+
+--, Plate
+
+is 
+
+
+
+        ---Group:  Exceptions 
+
+exception UndefinedDerivative inherits DomainError  from  Standard;
+exception UndefinedValue inherits DomainError from  Standard;
+
+    class SequenceOfBSplineSurface 
+    	instantiates Sequence from TCollection (BSplineSurface from Geom);
+    class HSequenceOfBSplineSurface 
+    	instantiates HSequence from TCollection (BSplineSurface from Geom,
+    	    	    	    	SequenceOfBSplineSurface from Geom);
+--    class SequenceOfBoundedSurface 
+--    	instantiates Sequence from TCollection (BoundedSurface from Geom); 
+
+    class SequenceOfSurface 
+    	instantiates Sequence from TCollection (Surface from Geom);
+	
+    class HSequenceOfSurface 
+    	instantiates HSequence from TCollection (Surface from Geom,
+    	    	    	    	SequenceOfSurface from Geom);
+				
+--    class HSequenceOfBoundedSurface 
+--    	instantiates HSequence from TCollection (BoundedSurface from Geom,
+--    	    	    	    	SequenceOfBoundedSurface from Geom);
+--  class SequenceNodeOfSequenceOfSurface
+--    	instantiates SeqNode from TCollection (Surface from Geom);
+--  class HSequenceOfSurface 
+--    	instantiates HSequence from TCollection (Surface from Geom,
+--    	    	    	    	SequenceOfSurface from Geom);
+
+        ---Group: Geometric entities 
+
+  class Transformation;
+
+
+  deferred class Geometry;
+
+
+     deferred class Point;
+              class  CartesianPoint;
+
+
+     deferred class Vector;
+              class Direction;
+              class VectorWithMagnitude;
+     
+
+     deferred class AxisPlacement;
+              class Axis1Placement;
+              class Axis2Placement;
+
+
+     deferred class Curve;
+
+              class Line;
+
+              deferred class Conic;
+                       class Circle;
+                       class Ellipse;
+                       class Hyperbola;
+                       class Parabola;
+
+              deferred class BoundedCurve;
+                       class BezierCurve;
+                       class BSplineCurve;
+                       class TrimmedCurve;
+
+              class  OffsetCurve;
+
+
+     deferred class Surface;
+
+              deferred class ElementarySurface;
+                       class Plane;
+                       class ConicalSurface;
+                       class CylindricalSurface;
+                       class SphericalSurface;
+                       class ToroidalSurface;
+
+              deferred class SweptSurface;
+                       class SurfaceOfLinearExtrusion;
+                       class SurfaceOfRevolution;
+
+              deferred class BoundedSurface;
+                       class BezierSurface;
+                       class BSplineSurface;
+                       class RectangularTrimmedSurface;
+               
+              
+              class OffsetSurface;
+	      
+private       class OsculatingSurface;
+
+--    	      class PlateSurface ;
+end Geom;
+
+
+
+

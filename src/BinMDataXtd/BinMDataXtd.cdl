@@ -1,0 +1,46 @@
+-- File:	BinMDataXtd.cdl
+-- Created:	Wed Oct 30 14:49:06 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr> 
+-- modified     Sergey Zaritchny 
+---Copyright:	 Matra Datavision 2002
+
+package BinMDataXtd 
+
+        ---Purpose: Storage and Retrieval drivers for modelling attributes.
+
+uses BinMDF,
+     BinObjMgt,
+     TDF,
+     CDM
+
+is
+        ---Purpose: Storage/Retrieval drivers for TDataXtd attributes
+        --          =======================================
+
+    class PointDriver; 
+    
+    class AxisDriver; 
+     
+    class PlaneDriver;    
+
+    class GeometryDriver;
+
+    class ConstraintDriver;
+
+    class PlacementDriver;
+
+    class PatternStdDriver;
+
+    class ShapeDriver; 
+     
+
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>. 
+	 
+    SetDocumentVersion (DocVersion  : Integer from Standard); 
+    
+    DocumentVersion returns Integer from Standard; 
+    
+end BinMDataXtd;

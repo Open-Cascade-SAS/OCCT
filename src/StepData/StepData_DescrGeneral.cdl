@@ -1,0 +1,39 @@
+-- File:	StepData_DescrGeneral.cdl
+-- Created:	Wed May 21 15:15:08 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DescrGeneral  from StepData    inherits GeneralModule  from StepData
+
+    ---Purpose : Works with a Protocol by considering its entity descriptions
+
+
+uses Transient,
+     EntityIterator from Interface,
+     ShareTool      from Interface,
+     Check          from Interface,
+     CopyTool       from Interface,
+     Protocol  from StepData
+
+is
+
+    Create (proto : Protocol from StepData) returns DescrGeneral;
+
+    FillSharedCase (me; CN : Integer; ent : Transient;
+        iter : in out EntityIterator);
+
+    CheckCase (me; CN : Integer; ent : Transient; shares : ShareTool;
+    	ach : in out Check);
+
+    CopyCase (me; CN : Integer; entfrom : Transient; entto : mutable Transient;
+    	TC : in out CopyTool);
+
+    NewVoid (me; CN : Integer; ent : out mutable Transient) returns Boolean;
+
+fields
+
+    theproto : Protocol from StepData;
+
+end DescrGeneral;

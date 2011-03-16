@@ -1,0 +1,82 @@
+-- File:	Law_Linear.cdl
+-- Created:	Thu Jan 12 10:36:44 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class Linear from Law inherits Function from Law
+
+	---Purpose: Describes an linear evolution law. 
+uses
+    Array1OfReal    from TColStd,
+    Shape           from GeomAbs
+      
+raises OutOfRange from Standard
+
+is
+
+    Create
+    
+    	returns mutable Linear from Law;
+    	---Purpose: Constructs an empty linear evolution law.
+
+    Set(me: mutable; Pdeb,Valdeb,Pfin,Valfin: Real from Standard)
+    	---Purpose:
+    	-- Defines this linear evolution law by assigning both:
+    	-- -   the bounds Pdeb and Pfin of the parameter, and
+    	-- -   the values Valdeb and Valfin of the function at these
+    	--   two parametric bounds.   
+    	is static;
+    Continuity(me) returns Shape from GeomAbs
+    	---Purpose: Returns GeomAbs_CN
+    is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  1
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+
+
+
+    Value(me: mutable; X: Real from Standard)
+    
+    	returns Real from Standard;
+	---Purpose: Returns the value of this function at the point of parameter X.
+
+    D1(me: mutable; X: Real from Standard; F,D: out Real from Standard); 
+    	---Purpose:
+    	-- Returns the value F and the first derivative D of this
+    	-- function at the point of parameter X.    
+    D2(me: mutable; X: Real from Standard; 
+       F,D, D2: out Real from Standard);
+    	---Purpose: Returns the value, first and second derivatives 
+    	--          at parameter X.
+    
+    Trim(me; PFirst, PLast, Tol :Real from Standard) returns Function
+    
+    	---Purpose:   Returns a  law equivalent of  <me>  between
+	--        parameters <First>  and <Last>. <Tol>  is used  to
+	--        test for 3d points confusion.
+	--        It is usfule to determines the derivatives 
+	--        in these values <First> and <Last> if 
+        --        the Law is not Cn.          
+    	is redefined static;
+
+    Bounds(me: mutable; PFirst,PLast: out Real from Standard);
+    	---Purpose: Returns the parametric bounds of the function.    
+
+fields
+
+    valdeb  : Real from Standard;
+    valfin  : Real from Standard;
+    pdeb    : Real from Standard;
+    pfin    : Real from Standard;
+
+end Linear;

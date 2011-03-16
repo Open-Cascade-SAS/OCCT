@@ -1,0 +1,17 @@
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean IntAna_QuadQuadGeo::IsDone() const {
+  return(done);
+}
+
+
+inline IntAna_ResultType IntAna_QuadQuadGeo::TypeInter()  const {
+  if(!done) {StdFail_NotDone::Raise();}
+  return(typeres);
+}
+
+inline Standard_Integer IntAna_QuadQuadGeo::NbSolutions() const {
+  if(!done) {StdFail_NotDone::Raise();}
+  return(nbint);
+}
+

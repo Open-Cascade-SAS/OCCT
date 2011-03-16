@@ -1,0 +1,186 @@
+--
+-- File      : IGESBasic.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Arun MENON)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESBasic
+
+
+        ---Purpose : This package represents basic entities from IGES
+
+uses
+
+        Standard,
+        TCollection,
+        gp,
+	TColgp,
+	TColStd,
+	Message,
+        Interface,
+        IGESData
+
+is
+
+        class SubfigureDef;
+        -- Type 308,    Form 0
+        ---Purpose : Permits a single definition of a detail to be 
+        --           utilized in multiple instances in the creation 
+        --           of the whole picture.
+
+        class Group;
+        -- Type 402,    Form 1
+        ---Purpose : Allows a collection of a set of entities to be 
+        --           maintained as a single entity.
+
+        class GroupWithoutBackP;
+        -- Type 402,    Form 7
+        ---Purpose : Allows a collection of a set of entities to be 
+        --           maintained as a single entity, but without back 
+        --           pointers.
+
+        class SingleParent;
+        -- Type 402,    Form 9
+        ---Purpose : Defines a logical structure of one independent
+        --           (parent) entity and one or more subordinate 
+        --           (children) entities.
+
+        class ExternalRefFileIndex;
+        -- Type 402,    Form 12
+        ---Purpose : Contains a list of the symbolic names used by the
+        --           referencing files and the DE pointers to the
+        --           corresponding definitions within the referenced file
+
+        class OrderedGroup;
+        -- Type 402,    Form 14
+        ---Purpose : Allows a collection of a set of entities to be
+        --           maintained as a single entity, but the group is 
+        --           ordered.
+
+        class OrderedGroupWithoutBackP;
+        -- Type 402,    Form 15
+        ---Purpose : Allows a collection of a set of entities to be 
+        --           maintained as a single entity, but the group is 
+        --           ordered and there are no back pointers.
+
+        class Hierarchy;
+        -- Type 406,    Form 10
+        ---Purpose : Provides an ability to control the hierarchy of each
+        --           directory entry attribute.
+
+        class ExternalReferenceFile;
+        -- Type 406,    Form 12
+        ---Purpose : References definitions residing in another file.
+
+        class Name;
+        -- Type 406,    Form 15
+        ---Purpose : Used to specify an user defined name.
+
+        class AssocGroupType;
+        -- Type 406,    Form 23
+        ---Purpose : Used to assign an unambiguous identification to 
+        --           a Group Associativity.
+
+        class SingularSubfigure;
+        -- Type 408,    Form 0
+        ---Purpose : Defines the occurrence of a single instance of the 
+        --           defined Subfigure.
+
+        class ExternalRefFileName;
+        -- Type 416,    Form 0-2
+        ---Purpose : Used when single definition from the reference file is
+        --           required or for external logical references where an
+        --           entity in one file relates to an entity in another file
+
+        class ExternalRefFile;
+        -- Type 416,    Form 1
+        ---Purpose : Used when entire reference file is to be instanced
+
+        class ExternalRefName;
+        -- Type 416,    Form 3
+        ---Purpose : Used when it is assumed that a copy of the subfigure
+        --           exists in native form on the receiving system
+
+        class ExternalRefLibName;
+        -- Type 416,    Form 4
+        ---Purpose : Used when it is assumed that a copy of the subfigure
+        --           exists in native form in a library on the receiving 
+        --           system
+
+    	--    Tools for Entities    --
+
+        class ToolSubfigureDef;
+        class ToolGroup;
+        class ToolGroupWithoutBackP;
+        class ToolSingleParent;
+        class ToolExternalRefFileIndex;
+        class ToolOrderedGroup;
+        class ToolOrderedGroupWithoutBackP;
+        class ToolHierarchy;
+        class ToolExternalReferenceFile;
+        class ToolName;
+        class ToolAssocGroupType;
+        class ToolSingularSubfigure;
+        class ToolExternalRefFileName;
+        class ToolExternalRefFile;
+        class ToolExternalRefName;
+        class ToolExternalRefLibName;
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    -- The class instantiations :
+
+--    class Array1OfHArray1OfInteger instantiates 
+--        Array1 from TCollection (HArray1OfInteger from TColStd);
+--    class Array1OfHArray1OfReal    instantiates 
+--        Array1 from TCollection (HArray1OfReal from TColStd);
+--    class Array1OfHArray1OfXY      instantiates 
+--        Array1 from TCollection (HArray1OfXY   from TColgp);
+--    class Array1OfHArray1OfXYZ     instantiates 
+--        Array1 from TCollection (HArray1OfXYZ  from TColgp);
+    class Array2OfHArray1OfReal    instantiates 
+        Array2 from TCollection (HArray1OfReal from TColStd);
+--    class Array1OfHArray1OfIGESEntity instantiates 
+--        Array1 from TCollection (HArray1OfIGESEntity from IGESData);
+    class Array1OfLineFontEntity instantiates
+        Array1 from TCollection (LineFontEntity from IGESData);
+
+    class HArray1OfHArray1OfInteger instantiates
+    -- HArray1 from TCollection (HArray1OfInteger from TColStd,Array1OfHArray1OfInteger);
+    	JaggedArray from Interface (HArray1OfInteger     from TColStd);
+    class HArray1OfHArray1OfReal    instantiates
+    -- HArray1 from TCollection (HArray1OfReal from TColStd,Array1OfHArray1OfReal);
+    	JaggedArray from Interface (HArray1OfReal        from TColStd);
+    class HArray1OfHArray1OfXY      instantiates
+    -- HArray1 from TCollection (HArray1OfXY   from TColgp, Array1OfHArray1OfXY);
+    	JaggedArray from Interface (HArray1OfXY          from TColgp);
+    class HArray1OfHArray1OfXYZ     instantiates
+    -- HArray1 from TCollection (HArray1OfXYZ  from TColgp, Array1OfHArray1OfXYZ);
+    	JaggedArray from Interface (HArray1OfXYZ         from TColgp);
+
+    class HArray2OfHArray1OfReal    instantiates HArray2 from TCollection
+    	 (HArray1OfReal from TColStd,Array2OfHArray1OfReal);
+
+    class HArray1OfHArray1OfIGESEntity instantiates
+    -- HArray1 from TCollection (HArray1OfIGESEntity from IGESData,Array1OfHArray1OfIGESEntity);
+    	JaggedArray from Interface (HArray1OfIGESEntity  from IGESData);
+
+    class HArray1OfLineFontEntity   instantiates HArray1 from TCollection
+    	 (LineFontEntity from IGESData,Array1OfLineFontEntity);
+
+    --  Package methods 
+
+    Init;
+    ---Purpose : Prepares dynqmic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESBasic;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESBasic;

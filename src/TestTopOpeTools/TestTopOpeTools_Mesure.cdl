@@ -1,0 +1,49 @@
+-- File:	TestTopOpeTools_Mesure.cdl
+-- Created:	Wed Mar 19 09:07:20 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Mesure from TestTopOpeTools
+
+uses
+
+    AsciiString from TCollection,
+    Array1OfPnt from TColgp,
+    HArray1OfPnt from TColgp,
+    Pnt from gp
+
+is
+
+    Create returns Mesure from TestTopOpeTools;
+
+    Create(name : AsciiString from TCollection)
+    returns Mesure from TestTopOpeTools;
+
+    Create(Pnts : HArray1OfPnt from TColgp)
+    returns Mesure from TestTopOpeTools;
+
+    Add(me :in out; n : in Integer from Standard; t : in Real from Standard);
+
+    SetName(me : in out; Name : AsciiString from TCollection);
+
+    Name(me) returns AsciiString from TCollection;
+    ---C++: return const&
+
+    Pnts(me) returns Array1OfPnt from TColgp;
+    ---C++: return const&
+
+    Pnt(me; I : in Integer) returns Pnt from gp;
+    ---C++: return const&
+
+    NPnts(me) returns Integer from Standard;
+
+    Clear(me : in out);
+
+fields
+
+    myName  : AsciiString from TCollection;
+    myPnts  : HArray1OfPnt from TColgp;
+    myNPnts : Integer from Standard;
+
+end Mesure from TestTopOpeTools;

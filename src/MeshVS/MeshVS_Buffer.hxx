@@ -1,0 +1,72 @@
+// File:      MeshVS_Buffer.hxx
+// Created:   07.03.07 15:53:17
+// Author:    msv@EUCLIDEX
+// Copyright: Open CASCADE 2007
+
+#ifndef MeshVS_Buffer_HeaderFile
+#define MeshVS_Buffer_HeaderFile
+
+#include <Standard.hxx>
+
+/**
+ * General purpose buffer that is allocated on the stack with a
+ * constant size MeshVS_BufSize, or is allocated dynamically if the requested
+ * size exceeds the standard one.
+ * It is useful when an allocation of an array of unknown size is needed,
+ * and most often the array is small enough to allocate as automatic C array.
+ */
+
+//! define the constant to the size of 10 points
+#define MeshVS_BufSize 10*3*sizeof(double)
+
+class MeshVS_Buffer 
+{
+public:
+  //! Constructor of the buffer of the requested size
+  MeshVS_Buffer (const Standard_Size theSize)
+    : myDynData (0)
+  {
+    if (theSize > MeshVS_BufSize)
+      myDynData = Standard::Allocate (theSize);
+  }
+
+  //! Destructor
+  ~MeshVS_Buffer()
+  {
+    if (myDynData)
+    {
+      Standard::Free (myDynData);
+      myDynData = 0;
+    }
+  }
+
+  //! Cast the buffer to the void pointer
+  operator void* ()
+  {
+    return myDynData ? myDynData : (void*) myAutoData;
+  }
+
+  //! Interpret the buffer as a reference to double
+  operator Standard_Real& ()
+  {
+    return * (myDynData ? (Standard_Real*) myDynData : (Standard_Real*) myAutoData);
+  }
+
+  //! Interpret the buffer as a reference to int
+  operator Standard_Integer& ()
+  {
+    return * (myDynData ? (Standard_Integer*) myDynData : (Standard_Integer*) myAutoData);
+  }
+
+private:
+  //! Deprecate copy constructor
+  MeshVS_Buffer(const MeshVS_Buffer&) {}
+
+  //! Deprecate copy operation
+  MeshVS_Buffer& operator=(const MeshVS_Buffer&) {return *this;}
+
+  char  myAutoData[ MeshVS_BufSize ];
+  void* myDynData;
+};
+
+#endif

@@ -1,0 +1,40 @@
+-- File:        CompositeText.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CompositeText from StepVisual 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	HArray1OfTextOrCharacter from StepVisual, 
+	TextOrCharacter from StepVisual, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable CompositeText;
+	---Purpose: Returns a CompositeText
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCollectedText : mutable HArray1OfTextOrCharacter from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCollectedText(me : mutable; aCollectedText : mutable HArray1OfTextOrCharacter);
+	CollectedText (me) returns mutable HArray1OfTextOrCharacter;
+	CollectedTextValue (me; num : Integer) returns TextOrCharacter;
+	NbCollectedText (me) returns Integer;
+
+fields
+
+	collectedText : HArray1OfTextOrCharacter from StepVisual; -- a SelectType
+
+end CompositeText;

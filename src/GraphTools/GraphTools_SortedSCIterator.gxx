@@ -1,0 +1,78 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_SortedSCIterator.cxx
+// Created:	Wed Oct 23 16:28:16 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//=======================================================================
+//function : GraphTools_SortedSCIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_SortedSCIterator::GraphTools_SortedSCIterator ()
+{
+}
+
+
+//=======================================================================
+//function : GraphTools_SortedSCIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_SortedSCIterator::GraphTools_SortedSCIterator 
+  (const GraphTools_ReducedGraph& RG)
+{
+  Initialize (RG);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedSCIterator::Initialize
+  (const GraphTools_ReducedGraph& RG)
+{
+  myIterator.Initialize(RG.mySort);
+}
+
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_SortedSCIterator::More() const
+{
+  return myIterator.More();
+} 
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedSCIterator::Next()
+{
+  myIterator.Next();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Handle(GraphTools_SC) GraphTools_SortedSCIterator::Value () const
+{
+  return myIterator.Value();
+} 
+
+
+

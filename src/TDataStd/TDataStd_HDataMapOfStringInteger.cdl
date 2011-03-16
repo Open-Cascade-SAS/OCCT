@@ -1,0 +1,37 @@
+-- File:	TDataStd_HDataMapOfStringInteger.cdl
+-- Created:	Fri Aug 17 16:13:55 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@popox.nnov.matra-dtv.fr>
+---Copyright:	Open CasCade SA 2007
+
+
+class HDataMapOfStringInteger from TDataStd inherits TShared from MMgt 
+
+	---Purpose: Extension of TColStd_DataMapOfStringInteger class  
+    	--    	    to be manipulated by handle. 
+
+uses
+    DataMapOfStringInteger from TColStd 
+    
+is
+    Create( NbBuckets: Integer from Standard = 1 )  
+    returns mutable HDataMapOfStringInteger from TDataStd;    
+     
+    Create( theOther:  DataMapOfStringInteger from TColStd)  
+    returns mutable HDataMapOfStringInteger from TDataStd;
+     
+    Map( me ) returns DataMapOfStringInteger from TColStd
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns DataMapOfStringInteger from TColStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields
+    
+    myMap : DataMapOfStringInteger from TColStd ;  
+   
+end HDataMapOfStringInteger;

@@ -1,0 +1,84 @@
+// File:	MAT_TListNode.lxx
+// Created:	Wed Jun 24 12:47:58 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+//=======================================================================
+//function : MAT_TListNode
+//purpose  : 
+//=======================================================================
+
+inline MAT_TListNode::MAT_TListNode() {}
+
+//=======================================================================
+//function : MAT_TListNode
+//purpose  : 
+//=======================================================================
+
+inline MAT_TListNode::MAT_TListNode(const Item& anitem)
+{
+  theitem = anitem;
+}
+
+//=======================================================================
+//function : GetItem
+//purpose  : 
+//=======================================================================
+
+inline Item MAT_TListNode::GetItem() const
+{
+  return theitem;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline Handle(MAT_TListNode) MAT_TListNode::Next() const
+{
+  return thenext;
+}
+
+//=======================================================================
+//function : Previous
+//purpose  : 
+//=======================================================================
+
+inline Handle(MAT_TListNode) MAT_TListNode::Previous() const
+{
+  return theprevious;
+}
+
+//=======================================================================
+//function : SetItem
+//purpose  : 
+//=======================================================================
+
+inline void MAT_TListNode::SetItem(const Item& anitem)
+{
+  theitem=anitem;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void MAT_TListNode::Next
+  (const Handle(MAT_TListNode)& atlistnode)
+{
+  thenext=atlistnode;
+}
+
+//=======================================================================
+//function : Previous
+//purpose  : 
+//=======================================================================
+
+inline void MAT_TListNode::Previous
+  (const Handle(MAT_TListNode)& atlistnode)
+{
+  theprevious=atlistnode;
+}

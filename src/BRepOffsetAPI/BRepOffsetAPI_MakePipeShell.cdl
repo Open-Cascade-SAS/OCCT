@@ -1,0 +1,314 @@
+-- File:	BRepOffsetAPI_MakePipeShell.cdl
+-- Created:	Wed Apr  8 11:52:57 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class MakePipeShell from BRepOffsetAPI inherits MakeSweep from BRepPrimAPI
+
+	---Purpose: This class provides for a framework to construct a shell
+    	-- or a solid along a spine consisting in a wire.
+    	-- To produce a solid, the initial wire must be closed.
+    	-- Two approaches are used:
+    	-- - definition by section
+    	--   - by a section and a scaling law
+    	--   - by addition of successive intermediary sections
+    	-- - definition by sweep mode.
+    	--   - pseudo-Frenet
+    	--  - constant
+    	--  - binormal constant
+    	--  - normal defined by a surface support
+    	--  - normal defined by a guiding contour.
+    	--  The two global approaches can also be combined.
+    	--  You can also close the surface later in order to form a solid.
+        --  Warning: In this version some limitation exist
+        --   -- We can add only 1 Section (else Standard_NotImplemented is raised
+        --   -- Mode with auxilary spine is incompatible with hometetic laws
+        --   -- Mode with auxilary spine and keep contact produce only CO surface.
+        --   -- Transition treatement is implemented only with the option <BRepBuilderAPI_Transformed>
+        --  Normaly all these limitations have to be deleted in mext version.
+uses  
+ Dir  from  gp,
+ Ax2  from  gp, 
+ Function from Law,  
+ ListOfShape  from  TopTools,
+ Shape from  TopoDS,
+ Wire  from  TopoDS,
+ Vertex  from  TopoDS, 
+ TransitionMode  from  BRepBuilderAPI,  
+ PipeError       from  BRepBuilderAPI,
+ PipeShell       from  BRepFill
+
+raises
+ DomainError from Standard, 
+ NotDone  from  StdFail
+
+is    
+    Create( Spine   : Wire  from TopoDS)
+	--- Purpose: Constructs the shell-generating framework defined by the wire Spine.
+    returns MakePipeShell from BRepOffsetAPI;
+
+    	---Purpose: Sets an sweep's mode
+    	--         If no mode are setted, the mode use in MakePipe is used
+    	---See Also: GeomFill_IsCorrectedFrenet  
+
+    SetMode(me  :  in  out; IsFrenet :  Boolean  = Standard_False);
+    	---Purpose: Sets a Frenet or a CorrectedFrenet trihedron  
+        --          to  perform  the  sweeping 
+    	--	 If IsFrenet is false, a corrected Frenet trihedron is used.
+    
+    SetMode(me  :  in  out;  Axe  :  Ax2  from  gp); 
+    	---Purpose: Sets  a  fixed  trihedron  to  perform  the  sweeping 
+        --         all sections will be parallel.
+    
+
+    SetMode(me  :  in  out;  BiNormal  :  Dir  from  gp); 
+   	---Purpose: Sets a fixed BiNormal  direction to perform the --
+   	--             sweeping.   Angular   relations   beetween  the
+   	--          section(s) and <BiNormal> will be constant
+          
+   	
+    SetMode(me  :  in  out;  SpineSupport : Shape  from  TopoDS) 
+   	---Purpose: Sets support to the spine to define the BiNormal of
+   	--          the trihedron, like the normal  to the surfaces.          
+   	--  Warning:  To be effective, Each  edge of the <spine> must
+   	--          have an representaion on one face of<SpineSupport>
+    returns  Boolean;
+
+    SetMode(me  :  in  out;   
+        AuxiliarySpine  :  Wire  from  TopoDS; 
+        CurvilinearEquivalence :  Boolean; 
+        KeepContact  : Boolean  =  Standard_False );
+
+	---Purpose: Sets  an  auxiliary  spine  to  define  the Normal
+        --  For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
+        --    on  <AuxiliarySpine>           
+        -- If <CurvilinearEquivalence>  
+        --   Q split <AuxiliarySpine> with  the  same  length ratio
+        --   than P split  <Spline>. 
+        -- Else  the  plan  define  by  P  and  the  tangent  to  the  <Spine> 
+        --       intersect <AuxiliarySpine> in Q.
+        -- If <KeepContact> the  Normal  is  defined to  assume like  the  sweeped 
+        --                  section is  in  contact to  the  <AuxiliarySpine>
+        -- Else  the  Normal  is  defined  by the vector  PQ. 
+
+        ---Level: Public
+
+-- =================================
+--  Methodes to define section(s)
+-- ================================= 
+  ---Purpose: Give section to sweep.
+   -- Possibilities are :
+   --	- Give one or sevral section
+   --     - Give one profile and an homotetic law.
+   --     - Automatic compute of correspondance beetween spine, and section 
+   --                 on the sweeped shape
+   --     - correspondance beetween spine, and section on the sweeped shape
+   --       defined by a vertex of the spine
+
+   -- Option is : 
+   --  -"WithContact"  : The section is translated to be in
+   -- contact  with the spine  
+
+   --    -"WithCorrection" The section is  rotated to have a Normal --
+   --     parallel   to  the  trihedron's    normal and   have tangent
+   --    perpendicular to the trihedron's  tangent.
+    
+
+    Add(me:in  out; 
+    	Profile  : Shape  from TopoDS; 
+        WithContact    :  Boolean  =  Standard_False; 
+        WithCorrection :  Boolean  =  Standard_False ); 
+    	---Purpose: Adds the section Profile to this framework. First and last
+    	-- sections may be punctual, so the shape Profile may be
+    	-- both wire and vertex. Correspondent point on spine is
+    	-- computed automatically.
+    	-- If WithContact is true, the section is translated to be in
+    	-- contact with the spine. 
+    	--  If WithCorrection is true, the section is rotated to be
+    	-- orthogonal to the spine?s tangent in the correspondent
+    	-- point. This option has no sense if the section is punctual
+    	-- (Profile is of type TopoDS_Vertex).
+    
+    Add(me:in  out; 
+    	Profile : Shape  from TopoDS;   
+        Location  :  Vertex from  TopoDS; 
+    	WithContact    :  Boolean =  Standard_False; 
+        WithCorrection :  Boolean =  Standard_False) 
+    	---Purpose: Adds the section Profile to this framework.
+    	-- Correspondent point on the spine is given by Location.
+    	-- Warning:
+    	-- To be effective, it is not recommended to combine methods Add and SetLaw.
+    raises DomainError; 
+
+    SetLaw(me  :in  out; 
+	   Profile  :  Shape  from TopoDS; 
+    	   L : Function from Law; 
+           WithContact    :  Boolean =  Standard_False; 
+           WithCorrection :  Boolean  =  Standard_False);
+    	---Purpose: Sets the evolution law defined by the wire Profile with
+    	-- its position (Location, WithContact, WithCorrection
+    	-- are the same options as in methods Add) and a
+    	-- homotetic law defined by the function L.
+    	-- Warning: 
+    	-- To be effective, it is not recommended to combine methods Add and SetLaw.
+
+
+    SetLaw(me  :in  out; 
+	   Profile  :  Shape  from TopoDS; 
+    	   L : Function from Law; 
+	   Location  :  Vertex from  TopoDS; 
+           WithContact    :  Boolean =  Standard_False; 
+           WithCorrection :  Boolean  =  Standard_False);
+    	---Purpose: Sets the evolution law defined by the wire Profile with
+    	-- its position (Location, WithContact, WithCorrection
+    	-- are the same options as in methods Add) and a
+    	-- homotetic law defined by the function L.
+    	-- Warning: 
+    	-- To be effective, it is not recommended to combine methods Add and SetLaw.
+ 
+    Delete(me  :  in  out;  Profile  :  Shape) ;  
+     	---Purpose: Removes the section Profile from this framework.
+     
+--  ======================================== 
+--  Methodes  to perform  and  read   shape
+--  ========================================
+    IsReady(me)
+     	---Purpose: Returns true if this tool object is ready to build the
+    	-- shape, i.e. has a definition for the wire section Profile.
+    returns  Boolean;   
+     
+    GetStatus(me) 
+    	---Purpose: Get a status, when Simulate or Build failed.       It can be 
+    	--      BRepBuilderAPI_PipeDone, 
+    	--      BRepBuilderAPI_PipeNotDone, 
+    	--      BRepBuilderAPI_PlaneNotIntersectGuide, 
+    	--      BRepBuilderAPI_ImpossibleContact.
+    returns  PipeError  from  BRepBuilderAPI; 
+     
+    
+    SetTolerance(me  :  in  out; 
+    	         Tol3d  :  Real  =  1.0e-4; 
+		 BoundTol   : Real  =  1.0e-4;
+		 TolAngular : Real  =  1.0e-2); 
+	---Purpose: Sets the following tolerance values
+    	-- - 3D tolerance Tol3d
+    	-- - boundary tolerance BoundTol
+    	-- - angular tolerance TolAngular.
+        
+    SetTransitionMode(me  :  in  out;  
+    	              Mode  :TransitionMode  from  BRepBuilderAPI  =  BRepBuilderAPI_Transformed)  
+	---Purpose: Sets the transition mode to manage discontinuities on
+    	-- the swept shape caused by fractures on the spine. The
+    	-- transition mode can be BRepBuilderAPI_Transformed
+    	-- (default value), BRepBuilderAPI_RightCorner,
+    	-- BRepBuilderAPI_RoundCorner:
+    	--      -              RepBuilderAPI_Transformed:
+    	--           discontinuities are treated by
+    	--           modification of the sweeping mode. The
+    	--           pipe is "transformed" at the fractures of
+    	--           the spine. This mode assumes building a
+    	--           self-intersected shell.
+    	-- -              BRepBuilderAPI_RightCorner:
+    	--           discontinuities are treated like right
+    	--           corner. Two pieces of the pipe
+    	--           corresponding to two adjacent
+    	--           segments of the spine are extended
+    	--           and intersected at a fracture of the spine.
+    	-- -              BRepBuilderAPI_RoundCorner:
+    	--           discontinuities are treated like round
+    	--           corner. The corner is treated as rotation
+    	--           of the profile around an axis which
+    	--           passes through the point of the spine?s
+    	--           fracture. This axis is based on cross
+    	--           product of directions tangent to the
+    	--      adjacent segments of the spine at their common point.
+    	-- Warnings
+    	-- The mode BRepBuilderAPI_RightCorner provides a
+    	-- valid result if intersection of two pieces of the pipe
+    	-- (corresponding to two adjacent segments of the spine)
+    	-- in the neighborhood of the spine?s fracture is
+    	-- connected and planar. This condition can be violated if
+    	-- the spine is non-linear in some neighborhood of the
+    	-- fracture or if the profile was set with a scaling law.
+    	-- The last mode, BRepBuilderAPI_RoundCorner, will
+    	-- assuredly provide a good result only if a profile was set
+    	-- with option WithCorrection = True, i.e. it is strictly
+    	-- orthogonal to the spine.           
+        
+    is  static; 
+	
+    Simulate(me : in out;   
+             NumberOfSection  :  Integer; 
+             Result  :  out ListOfShape from TopTools)
+        ---Purpose: Simulates the resulting shape by calculating its
+    	-- cross-sections. The spine is devided by this
+    	-- cross-sections into (NumberOfSection - 1) equal
+    	-- parts, the number of cross-sections is
+    	-- NumberOfSection. The cross-sections are wires and
+    	-- they are returned in the list Result.
+    	-- This gives a rapid preview of the resulting shape,
+    	-- which will be obtained using the settings you have provided.    
+    	-- Raises  NotDone if  <me> it is not Ready
+    raises  NotDone;  
+						       
+    Build(me : in out)
+	---Purpose: Builds the resulting shape (redefined from MakeShape).
+	---Level: Public
+    raises  NotDone  --  If  <me> it is not Ready
+    is redefined;
+     
+    MakeSolid(me :  in  out) 
+	 ---Purpose: Transforms the sweeping Shell in Solid. 
+	 --          If a propfile is not closed returns False
+        returns  Boolean 
+    raises  NotDone;   
+    
+    FirstShape (me : in out)
+    	---Purpose: Returns the  TopoDS  Shape of the bottom of the sweep.
+    returns Shape from TopoDS
+    is  redefined;
+
+    LastShape (me : in out)
+    	---Purpose: Returns the TopoDS Shape of the top of the sweep.
+    returns Shape from TopoDS   
+    is  redefined; 
+     
+    Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns a list of new shapes generated from the shape
+    	-- S by the shell-generating algorithm.
+    	-- This function is redefined from BRepOffsetAPI_MakeShape::Generated.
+    	-- S can be an edge of the given Spine (see Constructor),
+    	-- it can be an edge or a boundary vertex of a shape
+    	-- returned by the method FirstShape(), it can also be a
+    	-- Profile (see method Add()) closest to the beginning or
+    	-- the end of the Spine.
+    	-- If S is an edge of the given Spine, then method
+    	-- Generated() returns a list of generated faces and a list
+    	-- of edges from a free boundary (if it exists) of the
+    	-- resulting shell.
+    	-- If S is an edge of the start shape (see FirstShape()),
+    	-- method Generated() returns a list of faces generated
+    	-- along the whole spine from the given edge.
+    	-- If S is a boundary vertex of the start shape (see
+    	-- FirstShape()), method Generated() returns a list of
+    	-- edges from the free boundary of the resulting shell,
+    	-- generated along the whole spine.
+    	-- If S is a Profile closest to the beginning of the Spine,
+    	-- method Generated() returns the start shape, that can
+    	-- also be obtained by method FirstShape().
+    	-- If S is a Profile closest to the end of the Spine, method
+    	-- Generated() returns the end shape, that can also be
+    	-- obtained by method LastShape().
+        ---C++: return const &
+    returns ListOfShape from TopTools
+    is redefined; 
+     
+fields 
+  myPipe  :  PipeShell  from  BRepFill;
+
+end MakePipeShell;
+
+
+

@@ -1,0 +1,21 @@
+-- File:	StepToGeom_MakeRectangularTrimmedSurface.cdl
+-- Created:	Thu Jan 25 11:59:46 1996
+-- Author:	Frederic MAUPAS
+---Copyright:	 Matra Datavision 1996
+
+class MakeRectangularTrimmedSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes
+    --          RectangularTrimmedSurface from StepGeom 
+    --          and class RectangularTrimmedSurface from Geom
+
+uses RectangularTrimmedSurface from Geom,
+     RectangularTrimmedSurface from StepGeom     
+
+is 
+
+    Convert ( myclass; SS : RectangularTrimmedSurface from StepGeom;
+                       CS : out RectangularTrimmedSurface from Geom )
+    returns Boolean from Standard;
+
+end MakeRectangularTrimmedSurface;

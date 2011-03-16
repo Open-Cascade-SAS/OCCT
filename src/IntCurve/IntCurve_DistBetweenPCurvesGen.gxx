@@ -1,0 +1,91 @@
+// File:	IntCurve_DistBetweenPCurvesGen.gxx
+// Created:	Wed Oct 21 17:39:03 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+
+#include <gp_Vec2d.hxx>
+#include <gp_Pnt2d.hxx>
+
+
+#define THECURVE1 (*((TheCurve *)thecurve1))
+#define THECURVE2 (*((TheCurve *)thecurve2))
+
+//======================================================================
+IntCurve_DistBetweenPCurvesGen::IntCurve_DistBetweenPCurvesGen( const TheCurve& C1
+							       ,const TheCurve& C2) {
+  thecurve1 = (Standard_Address) (&C1); 
+  thecurve2 = (Standard_Address )(&C2);
+}
+//======================================================================
+Standard_Integer IntCurve_DistBetweenPCurvesGen::NbVariables(void) const {
+  return(2);
+}
+//======================================================================
+Standard_Integer IntCurve_DistBetweenPCurvesGen::NbEquations(void) const {
+  return(2);
+}
+//======================================================================
+Standard_Boolean IntCurve_DistBetweenPCurvesGen::Value
+  (const math_Vector& X
+   ,math_Vector& F)  
+{
+  gp_Pnt2d P1,P2;
+  TheCurveTool::D0(THECURVE1,X(1),P1);
+  TheCurveTool::D0(THECURVE2,X(2),P2);
+  F(1) = P1.X() - P2.X();
+  F(2) = P1.Y() - P2.Y();
+  return(Standard_True);
+}
+//======================================================================
+Standard_Boolean IntCurve_DistBetweenPCurvesGen::Derivatives
+  (const math_Vector& X
+   ,math_Matrix& D) 
+{
+  gp_Vec2d T;
+  gp_Pnt2d P;
+  TheCurveTool::D1(THECURVE1,X(1),P,T);
+  D.Value(1,1) = T.X();
+  D.Value(2,1) = T.Y();
+ 
+  TheCurveTool::D1(THECURVE2,X(2),P,T);
+  D.Value(1,2) = -(T.X());
+  D.Value(2,2) = -(T.Y());
+
+return(Standard_True);
+}
+//======================================================================
+Standard_Boolean IntCurve_DistBetweenPCurvesGen::Values
+  (const math_Vector& X
+   ,math_Vector& F
+   ,math_Matrix& D) 
+{
+
+  gp_Vec2d T;
+  gp_Pnt2d P1,P2;
+  
+  TheCurveTool::D1(THECURVE1,X(1),P1,T);
+  D.Value(1,1) = T.X();
+  D.Value(2,1) = T.Y();
+ 
+  TheCurveTool::D1(THECURVE2,X(2),P2,T);
+  D.Value(1,2) = -(T.X());
+  D.Value(2,2) = -(T.Y());
+
+  F.Value(1) = P1.X() - P2.X();
+  F.Value(2) = P1.Y() - P2.Y();
+
+return(Standard_True);
+}
+//======================================================================  
+					       

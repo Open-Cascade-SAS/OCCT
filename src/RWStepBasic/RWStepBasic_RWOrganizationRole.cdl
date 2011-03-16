@@ -1,0 +1,27 @@
+-- File:        OrganizationRole.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWOrganizationRole from RWStepBasic
+
+	---Purpose : Read & Write Module for OrganizationRole
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     OrganizationRole from StepBasic
+
+is
+
+	Create returns RWOrganizationRole;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable OrganizationRole from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : OrganizationRole from StepBasic);
+
+end RWOrganizationRole;

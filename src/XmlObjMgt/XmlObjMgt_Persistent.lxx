@@ -1,0 +1,51 @@
+// File:      XmlObjMgt_Persistent.lxx
+// Created:   01.08.01 11:23:22
+// Author:    Alexander GRIGORIEV
+// Copyright: Open Cascade 2001
+
+//=======================================================================
+//function : Element
+//purpose  : 
+//=======================================================================
+inline const XmlObjMgt_Element& XmlObjMgt_Persistent::Element() const
+{
+  return myElement;
+}
+
+//=======================================================================
+//function : Element
+//purpose  : 
+//=======================================================================
+inline XmlObjMgt_Element& XmlObjMgt_Persistent::Element()
+{
+  return myElement;
+}
+
+//=======================================================================
+//function : operator XmlObjMgt_Element
+//purpose  : 
+//=======================================================================
+
+inline XmlObjMgt_Persistent::operator const XmlObjMgt_Element&() const
+{
+  return myElement;
+}
+
+//=======================================================================
+//function : operator XmlObjMgt_Element
+//purpose  : 
+//=======================================================================
+
+inline XmlObjMgt_Persistent::operator XmlObjMgt_Element&()
+{
+  return myElement;
+}
+
+//=======================================================================
+//function : Id
+//purpose  : 
+//=======================================================================
+inline Standard_Integer XmlObjMgt_Persistent::Id() const
+{
+  return myID;
+}

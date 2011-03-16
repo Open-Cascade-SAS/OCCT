@@ -1,0 +1,130 @@
+-- File:	BRepFill_OffsetWire.cdl
+-- Created:	Wed Apr 19 14:28:26 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class OffsetWire from BRepFill
+
+	---Purpose: Constructs a Offset Wire to a spine (wire or face) 
+	--          on the left of spine.
+
+uses
+
+    Face        from TopoDS,
+    Shape       from TopoDS,
+    JoinType    from GeomAbs,
+    ListOfShape from TopTools,
+    DataMapOfShapeShape               from TopTools,
+    DataMapOfOrientedShapeListOfShape from BRepFill,  
+    BisectingLocus                    from BRepMAT2d, 
+    LinkTopoBilo                      from BRepMAT2d
+    
+raises
+    ConstructionError from Standard,
+    NoSuchObject      from Standard
+
+is
+
+    Create returns OffsetWire from BRepFill;
+
+    Create ( Spine : Face     from TopoDS; 
+    	     Join  : JoinType from GeomAbs  =  GeomAbs_Arc)
+    returns OffsetWire from BRepFill;
+
+    Init ( me    : in out;
+    	   Spine : Face     from TopoDS; 
+    	   Join  : JoinType from GeomAbs  =  GeomAbs_Arc)
+	---Purpose: Initialize the evaluation of Offseting.
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    Perform (me : in out; 
+    	     Offset : Real from Standard;
+    	     Alt    : Real from Standard = 0.0)
+	---Purpose: Performs  an OffsetWire at  an altitude <Alt> from
+	--          the  face ( According  to  the orientation of  the
+	--          face)
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    PerformWithBiLo (me      : in out; 
+    	    	     WSP     :        Face            from TopoDS;
+    	     	     Offset  :        Real            from Standard;
+ 		     Locus   :        BisectingLocus  from BRepMAT2d; 
+		     Link    : in out LinkTopoBilo    from BRepMAT2d; 
+    	             Join    :        JoinType  from GeomAbs  =  GeomAbs_Arc; 
+    	    	     Alt     :        Real      from Standard = 0.0)
+	---Purpose: Performs an  OffsetWire 
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    IsDone ( me) 
+    returns Boolean from Standard
+    is static;
+
+    Spine(me) 
+    returns Face from TopoDS
+	---C++: return const &
+    is static;
+
+
+    Shape(me) returns Shape from TopoDS
+	---Purpose: returns the generated shape.
+	---C++ : return const &
+    is static;
+    
+    GeneratedShapes (me : in out ; SpineShape : Shape from TopoDS)
+        ---Purpose: Returns   the  shapes  created  from   a  subshape
+        --          <SpineShape> of the spine.
+        --          Returns the last computed Offset.   
+        --          
+        ---C++ : return const &          
+    returns ListOfShape from TopTools
+    is static;			 
+
+    JoinType (me) returns JoinType from GeomAbs
+    is static;
+    
+    Generated (me : in out )
+    	---C++: return &
+    returns DataMapOfOrientedShapeListOfShape from BRepFill
+    is static private;
+    
+    PrepareSpine (me : in out)
+	---Purpose: Prepare the spine as follow
+	--          - Cut the spine-Edges at the extrema of curvature and
+	--            at the inflexion points.
+    is static private;
+
+    Add(me : in out; Other : OffsetWire from BRepFill)
+	---Purpose: Add the OffsetWire <Other> to <me> and update <myMap>
+    is static private;
+    
+    MakeWires (me : in  out)
+	---Purpose: Constructs the wires with the trimmed offset edges.
+    is static private;
+    
+    FixHoles (me : in  out)
+	---Purpose: Fix holes between open wires where it is possible
+    is static private; 
+    
+fields
+
+    mySpine     : Face      from TopoDS;
+    myWorkSpine : Face      from TopoDS;
+    myOffset    : Real      from Standard; -- >0 ;
+    myShape     : Shape     from TopoDS;
+    myIsDone    : Boolean   from Standard;
+    myJoinType  : JoinType  from GeomAbs;	    
+    myMap       : DataMapOfOrientedShapeListOfShape from BRepFill; 
+    myBilo      : BisectingLocus                    from BRepMAT2d;
+    myLink      : LinkTopoBilo                      from BRepMAT2d;
+    myMapSpine  : DataMapOfShapeShape               from TopTools;
+    myCallGen   : Boolean                           from Standard;	    
+
+end OffsetWire;

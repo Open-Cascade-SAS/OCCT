@@ -1,0 +1,56 @@
+-- File:	IFSelect_DispPerSignature.cdl
+-- Created:	Wed Dec 21 10:41:37 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class DispPerSignature  from IFSelect  inherits Dispatch
+
+    ---Purpose : A DispPerSignature sorts input Entities according to a
+    --           Signature : it works with a SignCounter to do this.
+
+uses AsciiString from TCollection, Graph, SubPartsIterator, SignCounter
+
+raises InterfaceError
+
+is
+
+    Create returns mutable DispPerSignature;
+    ---Purpose : Creates a DispPerSignature with no SignCounter (by default,
+    --           produces only one packet)
+
+    SignCounter (me) returns mutable SignCounter;
+    ---Purpose : Returns the SignCounter used for splitting
+
+    SetSignCounter (me : mutable; sign : mutable SignCounter);
+    ---Purpose : Sets a SignCounter for sort
+    --           Remark : it is set to record lists of entities, not only counts
+
+    SignName (me) returns CString;
+    ---Purpose : Returns the name of the SignCounter, which caracterises the
+    --           sorting criterium for this Dispatch
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File per Signature <name>"
+
+    	--  --    Evaluation    --  --
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True, maximum count is given as <nbent>
+
+--    PacketsCount (me; G : Graph; count : out Integer) returns Boolean
+--    	is not redefined : Packets must be first determined before counting
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator)
+    	raises InterfaceError;
+    ---Purpose : Computes the list of produced Packets. It defines Packets from
+    --           the SignCounter, which sirts the input Entities per Signature
+    --           (specific of the SignCounter).
+
+fields
+
+    thesign : SignCounter;
+
+end DispPerSignature;

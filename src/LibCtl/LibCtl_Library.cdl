@@ -1,0 +1,179 @@
+-- File:	LibCtl_Library.cdl
+-- Created:	Fri Jan 29 15:48:51 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Library  from LibCtl
+    	(TheObject   as any;
+    	 TheModule   as Transient;
+	 TheProtocol as Transient)    -- must comply with Protocol template
+
+    ---Purpose : Manages a list of Execution Modules attached to Protocols
+    --           to perform a specific set of functionnalities.
+    --           
+    --           Each instantiated class of Library has a global set a Modules.
+    --           These Modules are put in this set before working, for instance
+    --           by static construction (using method SetGlobal). One Module
+    --           is bound which each Protocol (considered as a class).
+    --           
+    --           To work, a Library is created by taking the Modules which
+    --           comply with a Protocol (bound with its class and the classes
+    --           of its Resources), given as parameter of its creation.
+    --           
+    --           Thus, any tool can use it to get the suitable Modules
+    ---Warning : The order of the Modules in the Library has assumed to be
+    --           useless, and is not managed.
+
+raises NoSuchObject
+
+    	-- --    Nested class : Node of Module    -- --
+
+    private class GlobalNode  inherits Transient
+    ---Purpose : Manages a (possibly static) Global List of Modules bound to
+    --           Protocols.
+    --           Remark that it requires independance from Memory Management
+    --           (because a Global List of Modules can be build through static
+    --           declarations, i.e. before any sequential execution)
+    --           Remark there will not be many many GlobalNodes created
+
+    is
+    
+    	Create returns mutable GlobalNode;
+	---Purpose : Creates an empty GlobalNode, with no Next
+
+    	Add (me : mutable; amodule : TheModule; aprotocol : TheProtocol)
+    	    is static;
+	---Purpose : Adds a Module bound with a Protocol to the list : does
+	--           nothing if already in the list, THAT IS, Same Type (exact
+	--           match) and Same State (that is, IsEqual is not required)
+	--           Once added, stores its attached Protocol in correspondance
+
+    	Module (me) returns any TheModule  is static;
+	---Purpose : Returns the Module stored in a given GlobalNode
+    	---C++ : return const &
+
+    	Protocol (me) returns any TheProtocol  is static;
+	---Purpose : Returns the attached Protocol stored in a given GlobalNode
+    	---C++ : return const &
+
+    	Next (me) returns any GlobalNode  is static;
+	---Purpose : Returns the Next GlobalNode. If none is defined, returned
+	--           value is a Null Handle
+    	---C++ : return const &
+
+    fields
+
+    	themod  : TheModule;
+	theprot : TheProtocol;
+	thenext : GlobalNode;
+
+    end GlobalNode;
+
+
+    private class Node  inherits TShared
+
+    ---Purpose : Manages a list of Modules for a Library (as an instance) :
+    --           Designates a GlobalNode (couple Module-Protocol)
+
+    is
+
+    	Create returns mutable Node;
+	---Purpose : Creates an empty Node, with no Next
+
+    	AddNode (me : mutable; anode : any GlobalNode)  is static;
+	---Purpose : Adds a couple (Module,Protocol), that is, stores it into
+	--           itself if not yet done, else creates a Next Node to do it
+
+    	Module (me) returns any TheModule  is static;
+	---Purpose : Returns the Module designated by a precise Node
+    	---C++ : return const &
+
+    	Protocol (me) returns any TheProtocol  is static;
+	---Purpose : Returns the Protocol designated by a precise Node
+    	---C++ : return const &
+
+    	Next (me) returns mutable Node  is static;
+	---Purpose : Returns the Next Node. If none was defined, returned value
+	--           is a Null Handle
+    	---C++ : return const &
+
+    fields
+
+    	thenode : GlobalNode;
+	thenext : Node;
+
+    end Node;
+
+
+is
+
+    SetGlobal (myclass; amodule : TheModule; aprotocol : TheProtocol);
+    ---Purpose : Adds a couple (Module-Protocol) into the global definition set
+    --           for this class of Library.
+
+    Create (aprotocol : TheProtocol) returns Library;
+    ---Purpose : Creates a Library which complies with a Protocol, that is :
+    --           Same class (criterium IsInstance)
+    --           This creation gets the Modules from the global set, those
+    --           which are bound to the given Protocol and its Resources
+
+    Create returns Library;
+    ---Purpose : Creates an empty Library : it will later by filled by method
+    --           AddProtocol
+
+    AddProtocol (me : in out; aprotocol : Transient)  is static;
+    ---Purpose : Adds a couple (Module-Protocol) to the Library, given the
+    --           class of a Protocol. Takes Resources into account.
+    --           (if <aprotocol> is not of type TheProtocol, it is not added)
+
+    Clear (me : in out)  is static;
+    ---Purpose : Clears the list of Modules of a library (can be used to
+    --           redefine the order of Modules before action : Clear then
+    --           refill the Library by calls to AddProtocol)
+
+    SetComplete (me : in out);
+    ---Purpose : Sets a library to be defined with the complete Global list
+    --           (all the couples Protocol/Modules recorded in it)
+
+
+    Select (me; obj : any TheObject; module : out any TheModule; CN : out Integer)
+    	returns Boolean;
+    ---Purpose : Selects a Module from the Library, given an Object.
+    --           Returns True if Select has succeeded, False else.
+    --           Also Returns (as arguments) the selected Module and the Case
+    --           Number determined by the associated Protocol.
+    --           If Select has failed, <module> is Null Handle and CN is zero.
+    --           (Select can work on any criterium, such as Object DynamicType)
+
+
+    Start (me : in out)  is static;
+    ---Purpose : Starts Iteration on the Modules (sets it on the first one)
+
+    More (me) returns Boolean  is static;
+    ---Purpose : Returns True if there are more Modules to iterate on
+
+    Next (me : in out)  is static;
+    ---Purpose : Iterates by getting the next Module in the list
+    --           If there is none, the exception will be raised by Value
+
+    Module (me) returns any TheModule
+    ---Purpose : Returns the current Module in the Iteration
+    	raises NoSuchObject  is static;
+    --           Error if there is no current Module to iterate on
+    ---C++ : return const &
+
+    Protocol (me) returns any TheProtocol
+    ---Purpose : Returns the current Protocol in the Iteration
+    	raises NoSuchObject  is static;
+    --           Error if there is no current Protocol to iterate on
+    ---C++ : return const &
+
+fields
+
+    thelist  : Node;
+    thecurr  : Node;         -- for iteration
+    -- there are also "class variables" which describe global set
+
+end Library;

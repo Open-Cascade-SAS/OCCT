@@ -1,0 +1,92 @@
+-- File     : AIS_Triangulation.cdl
+-- Created  : 10 December 2009
+-- Author   : Paul SUPRYATKIN
+---Copyright: Open CASCADE 2009
+
+class Triangulation from AIS inherits InteractiveObject from AIS
+
+
+    ---Purpose: Interactive object that draws data from  Poly_Triangulation, optionally with colors associated
+    --          with each triangulation vertex. For maximum efficiency colors are represented as 32-bit integers
+    --          instead of classic Quantity_Color values.
+    --          Interactive selection of triangles and vertices is not yet implemented.
+
+
+uses 
+    Triangulation         from Poly,
+    HArray1OfInteger      from TColStd,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    Selection             from SelectMgr 
+
+is 
+
+    Create(aTriangulation : Triangulation from Poly) 
+    returns Triangulation from AIS;   
+    ---Purpose: Constructs the Triangulation display object    
+
+-- -- Methods from PresentableObject
+
+    Compute(me                    : mutable;
+            aPresentationManager  : PresentationManager3d from PrsMgr;
+            aPresentation         : mutable Presentation from Prs3d;
+            aMode                 : Integer from Standard = 0) 
+    is redefined private;
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+                     aSelection : mutable Selection from SelectMgr;
+                     aMode      : Integer from Standard) 
+    is redefined private;
+    --- Empty implementation, does nothing
+
+    SetColors(me      : mutable;
+              aColor  : HArray1OfInteger from TColStd);  
+    ---Level: Public
+    ---Purpose:
+    -- Set the color for each node.
+    -- Each 32-bit color is Alpha << 24 + Blue << 16 + Green << 8 + Red
+    -- Order of color components is essential for further usage by OpenGL
+
+    GetColors(me)
+    ---Level: Public 
+    ---Purpose:
+    -- Get the color for each node.
+    -- Each 32-bit color is Alpha << 24 + Blue << 16 + Green << 8 + Red
+
+    returns HArray1OfInteger from TColStd;
+ 
+
+    SetTriangulation( me             : mutable;
+                      aTriangulation : Triangulation from Poly);
+    ---Level: Public
+
+
+    GetTriangulation( me )  
+    returns Triangulation from Poly;
+    ---Level: Public 
+    ---Purpose: Returns Poly_Triangulation .
+
+    AttenuateColor( me          : mutable;
+                    aColor      : Integer from Standard;
+                    aComponent  : Real from Standard )
+    returns Integer from Standard
+    is private;
+    ---Level: Private
+    ---Purpose: Attenuates 32-bit color by a given attenuation factor (0...1):
+    -- aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
+    -- All color components are multiplied by aComponent, the result is then packed again as 32-bit integer.
+    -- Color attenuation is applied to the vertex colors in order to have correct visual result 
+    -- after glColorMaterial(GL_AMBIENT_AND_DIFFUSE). Without it, colors look unnatural and flat.
+
+
+fields
+
+    myTriangulation : Triangulation from Poly;
+    myColor         : HArray1OfInteger from TColStd;
+    myFlagColor     : Integer from Standard;
+    myNbNodes       : Integer from Standard;
+    myNbTriangles   : Integer from Standard;
+
+end Triangulation;

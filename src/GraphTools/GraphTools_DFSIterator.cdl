@@ -1,0 +1,72 @@
+-- File:	GraphTools_DFSIterator.cdl
+-- Created:	Thu Sep 24 15:57:35 1992
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1992
+
+generic class DFSIterator from GraphTools 
+	                 (Graph     as any;
+                          Vertex    as any;
+			  VHasher   as any;
+                          VIterator as any)
+
+    ---Purpose: This generic  class implement  the Depth  First Search
+    --          algorithm from  a  Vertex with an iterator  to reached
+    --          adjacent vertices of a  given  one.  The  interface of
+    --          this algorithm is made as an iterator.
+
+--generic class DFSIterator from GraphTools
+--            (Graph     as any;
+--    	       Vertex    as any;
+--    	       VHasher   as MapHasher from TCollection (Vertex);
+--	       VIterator as VertexIterator (Graph,Vertex))
+
+raises NoMoreObject from Standard,
+       NoSuchObject from Standard
+
+    class DFSMap   instantiates IndexedMap from TCollection (Vertex,VHasher); 
+    
+is
+
+    Create
+    returns DFSIterator;
+	---Purpose: Create an empty iterator.
+
+    Perform (me : in out; G : Graph; V : Vertex);
+	---Purpose: Initializes the research from <V> member vertex of
+	--          <G>.
+        ---Level: Public
+
+    More (me) returns Boolean from Standard;
+	---Purpose: Returns True if there are other vertices.
+        ---Level: Public
+
+    Next(me : in out) 
+    	---Purpose: Set the iterator to the next vertex.
+        ---Level: Public
+    raises NoMoreObject from Standard;
+
+    Value (me) returns any Vertex 
+	---Purpose: returns the vertex  value for the current position
+	--          of the iterator.
+	---C++: return const &
+        ---Level: Public
+    raises NoSuchObject from Standard;
+
+
+fields
+
+    myVisited      : DFSMap from GraphTools;
+    myCurrentIndex : Integer from Standard;
+
+end DFSIterator;
+    
+    
+
+
+
+
+
+
+
+

@@ -1,0 +1,86 @@
+-- File:	ImpTool.cdl
+-- Created:	Thu Mar 26 14:24:05 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+deferred class ImpTool from IntImpParGen
+
+	---Purpose: Template class for an implicit curve.
+
+
+uses Pnt2d    from gp,
+     Vec2d    from gp
+
+is
+
+
+    Value (me; U: Real from Standard)
+    
+    	--Purpose: Computes the point at parameter U on the 
+    	--         Implicit Curve.
+    	
+    	returns Pnt2d from gp
+        is static;
+
+
+    D1 (me; U: Real from Standard ; P: out Pnt2d; T: out Vec2d)
+    
+    	--Purpose: Computes the first derivative and the point on the 
+    	--         implicit curve at parameter U.
+
+    	is static;
+
+
+    D2 (me; U: Real from Standard ; P: out Pnt2d; T,N: out Vec2d)
+    
+    	--Purpose: Computes the first, the second derivatives
+    	--         and the point on the implicit curve at parameter U.    
+
+    	is static;
+
+
+    Distance(me; P: Pnt2d from gp)
+    
+	---Purpose: Computes the value of the signed distance between 
+	--          the point P and the implicit curve.    
+	--          
+
+    	returns Real from Standard
+        is static;
+	
+	
+    GradDistance(me; P: Pnt2d from gp)
+    
+    	---Purpose: Computes the Gradient of the Signed Distance 
+    	--          between a point and the implicit curve, at the 
+    	--          point P.
+    	--          
+
+        returns Vec2d from gp 
+	is static;
+	
+	 
+    FindParameter(me; P: Pnt2d from gp)
+    
+    	---Purpose: Returns the parameter U of the point on the 
+    	--          implicit curve corresponding to the point P.
+    	--          The correspondance between P and the point P(U) on 
+    	--          the implicit curve must be coherent with the way 
+    	--          of determination of the signed distance.
+
+        returns Real from Standard
+        is static;
+	
+
+end ImpTool;
+
+
+
+
+
+
+
+

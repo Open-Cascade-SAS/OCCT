@@ -1,0 +1,160 @@
+-- File:	AppParCurves.cdl
+-- Created:	Thu Apr 11 11:42:01 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+package AppParCurves 
+
+    ---Purpose: Parallel Approximation in n curves.
+    -- This package gives all the algorithms used to approximate a MultiLine
+    -- described by the tool MLineTool. 
+    -- The result of the approximation will be a MultiCurve. 
+    
+uses  math, FEmTool,  gp, TColgp, StdFail, TColStd, TCollection, Standard, MMgt, GeomAbs, 
+      PLib
+
+is
+
+    enumeration Constraint is
+    	NoConstraint,
+	PassPoint,
+        TangencyPoint,
+        CurvaturePoint
+    end Constraint;
+---Purpose:
+-- -   NoConstraint: this point has no constraints.
+-- -   PassPoint: the approximation curve passes through this point.
+-- -   TangencyPoint: this point has a tangency constraint.
+-- -   CurvaturePoint: this point has a curvature constraint.
+
+
+
+
+    deferred generic class MLineTool;    --- Template
+
+
+    class MultiPoint;
+
+    class MultiCurve;
+
+    class MultiBSpCurve;
+
+    class ConstraintCouple;
+
+
+-- Algorithms:
+    
+    
+    generic class LeastSquare;
+     	---Purpose: computes in parallel the least square resolution of a 
+     	--          set of points (MultiLine). The result is a 
+     	--          set of Bezier curves (MultiCurve).
+ 
+    generic class ResolConstraint;
+    	---Purpose: computes the approximating resolution with constraints
+    	--          starting from a guess solution issued, for example, 
+    	--          from the least squares.
+    	--          It uses the Uzawa method from the mathematical package.
+
+
+    generic class Function;
+
+
+    generic class BSpFunction;
+    
+
+    generic class Gradient,  Gradient_BFGS, ParLeastSquare, ResConstraint, ParFunction;
+    	---Purpose: computes the approximation of a MultiLine by the
+    	--          search for a new parameters to minimize the 
+    	--          sum||C(ui)-Qi||2 with a gradient method.
+
+
+
+    generic class BSpGradient, BSpGradient_BFGS,  BSpParLeastSquare, BSpParFunction;
+    	---Purpose: computes the approximation of a MultiLine by the
+    	--          search for a new parameters to minimize the 
+    	--          sum||C(ui)-Qi||2 with a gradient method.
+    	--          The Result is a Bspline set.
+
+
+    generic class Projection, ProLeastSquare, ProConstraint, ProFunction;
+     	---Purpose: computes the approximation of a Multiline by
+     	--          searching for a new parameter with a projection
+     	--          method.
+      
+    deferred  class  SmoothCriterion;
+    generic  class  LinearCriteria; 
+
+    class  MyCriterion;
+         ---Level: Internal
+                 
+    generic class Variational;
+     	---Purpose: computes the approximation of a Multiline by
+     	--          Variational optimization.
+
+
+
+    --- instantiate classes:
+    --  
+
+    class Array1OfConstraintCouple instantiates Array1 from TCollection
+            (ConstraintCouple);
+
+    class HArray1OfConstraintCouple instantiates HArray1 from TCollection
+    	    (ConstraintCouple,Array1OfConstraintCouple);
+
+
+
+    class Array1OfMultiPoint instantiates Array1 from TCollection
+    	    (MultiPoint);
+	    
+    class HArray1OfMultiPoint instantiates HArray1 from TCollection
+    	     (MultiPoint,Array1OfMultiPoint);
+
+
+    class Array1OfMultiCurve instantiates Array1 from TCollection
+    	     (MultiCurve);
+
+    class HArray1OfMultiCurve instantiates HArray1 from TCollection
+    	     (MultiCurve, Array1OfMultiCurve);
+
+    class SequenceOfMultiCurve instantiates Sequence from TCollection
+    	     (MultiCurve);
+
+
+    class Array1OfMultiBSpCurve instantiates Array1 from TCollection
+    	     (MultiBSpCurve);
+
+    class HArray1OfMultiBSpCurve instantiates HArray1 from TCollection
+    	     (MultiBSpCurve, Array1OfMultiBSpCurve);
+
+    class SequenceOfMultiBSpCurve instantiates Sequence from TCollection
+    	     (MultiBSpCurve);
+     
+    
+     BernsteinMatrix(NbPoles: in Integer    from Standard;
+    	       	     U      : in Vector     from math;
+                     A      : in out Matrix from math);
+     
+
+     Bernstein(NbPoles: in Integer    from Standard;
+    	       U      : in Vector     from math;
+               A      : in out Matrix from math; 
+    	       DA     : in out Matrix from math);
+
+    
+     SecondDerivativeBernstein(U: Real; DDA: in out Vector from math);
+
+
+     SplineFunction(NbPoles    : in     Integer        from Standard;
+     	            Degree     : in     Integer        from Standard;
+     	            Parameters : in     Vector         from math;
+		    FlatKnots  : in     Vector         from math;
+		    A          : in out Matrix         from math;
+		    DA         : in out Matrix         from math;
+                    Index      : in out IntegerVector  from math);
+		    
+end AppParCurves;

@@ -1,0 +1,28 @@
+-- File:	XCAFPrs_Driver.cdl
+-- Created:	Fri Aug 11 16:30:58 2000
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 2000
+
+
+class Driver from XCAFPrs inherits Driver from TPrsStd
+
+    ---Purpose: Implements a driver for presentation of shapes in DECAF 
+    --          document. Its the only purpose is to initialize and return 
+    --          XCAFPrs_AISObject object on request
+
+uses
+    Label             from TDF,
+    InteractiveObject from AIS
+
+is
+
+    Update (me : mutable ; L   :        Label from TDF;
+	                   ais : in out InteractiveObject from AIS)
+    returns Boolean from Standard is redefined;
+
+    GetID (myclass) returns GUID;
+    	---Purpose: returns GUID of the driver
+	---C++: return const &
+    
+end Driver;

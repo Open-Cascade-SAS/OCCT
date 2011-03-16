@@ -1,0 +1,13 @@
+// File:	BRepFeat_LF.lxx
+// Created:	Wed Oct  8 12:48:27 1997
+// Author:	Olga KOULECHOVA
+//		<opt@cleox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : BRepFeatForm
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_RibSlot::BRepFeat_RibSlot () 
+{}

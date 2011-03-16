@@ -1,0 +1,126 @@
+-- File:	Viewer2dTest.cdl
+
+package Viewer2dTest
+
+	---Purpose:
+
+uses
+    Draw,
+    TCollection,
+    TColStd,
+    TopAbs,
+    TopTools,
+    TopoDS,
+    V2d,
+    AIS2D,
+    AIS,
+    Graphic2d
+
+is
+
+    class EventManager;
+    ---Purpose: used to manage mouse event (move,select,shiftselect)
+    --          By default the events are transmitted to interactive context.
+
+    class DoubleMapOfInteractiveAndName instantiates DoubleMap
+    	from TCollection (InteractiveObject  from AIS2D,
+    	    	    	  AsciiString        from TCollection,
+    	    	    	  MapTransientHasher from TColStd,
+    	    	    	  AsciiString        from TCollection);
+
+    class DataMapOfText instantiates DataMap
+    	from TCollection (AsciiString from TCollection,
+    	    	    	  Text from Graphic2d,
+    	    	    	  AsciiString from TCollection);
+
+    ---Category: Create the viewer....
+
+    ViewerInit ( thePxLeft,    thePxTop : Integer from Standard = 0;
+                thePxWidth, thePxHeight : Integer from Standard = 0);
+	---Purpose:
+	--          implemented in Viewer2dTest_ViewerCommands.cxx
+
+
+    ---Category: Selection in the viewer....
+
+    PickShape  (aType      : ShapeEnum from TopAbs;
+    	    	MaxPick    : Integer from Standard = 5) returns Shape from TopoDS;
+    ---Purpose:  waits until a shape of type <aType> is picked in the AIS2D Viewer and returns it.
+    -- if <aType> == TopAbs_Shape, any shape can be picked...
+    -- MaxPick  is the Max number before exiting, if no pick is successfull
+
+    PickShapes (aType      : ShapeEnum from TopAbs;
+	        thepicked  : in out HArray1OfShape from TopTools;
+    	        MaxPick    : Integer from Standard = 5)
+		returns Boolean from Standard;
+    ---Purpose: wait until the array is filled with picked shapes.
+    --          returns True if the array is filled.
+    --          exit if number of unsuccesfull picks =  <MaxPick>
+
+    PickObject(Type      : KindOfInteractive from AIS = AIS_KOI_None;
+    	       Signature : Integer from Standard = -1;
+    	       MaxPick   : Integer from Standard = 5)
+    returns InteractiveObject from AIS2D;
+    ---Purpose: waits until an interactive object of a given Type
+    --          and signature is picked (defaut values authorize
+    --          selection of any Interactive Object)
+    --          exit if number of unsuccesfull picks =  <MaxPick>
+
+    PickObjects(thepicked : in out HArray1OfTransient from TColStd;
+    	    	Type      : KindOfInteractive from AIS = AIS_KOI_None;
+    	        Signature : Integer from Standard = -1;
+    	        MaxPick   : Integer from Standard = 5)
+    returns Boolean from Standard;
+    ---Purpose: selection of several interactive objects. Number is given
+    --          by the size of <thepicked>
+    --          exit if number of unsuccesfull picks =  <MaxPick>
+
+
+    GetMousePosition(xpix,ypix: out Integer from Standard);
+
+    GetViewerFromContext returns Viewer from V2d;
+
+    GetCollectorFromContext returns Viewer from V2d;
+
+    GetAIS2DContext returns InteractiveContext from AIS2D;
+
+    SetAIS2DContext (aContext: InteractiveContext from AIS2D);
+
+    CurrentView returns View from V2d;
+
+    CurrentView (aViou:View from V2d);
+
+    Clear ;
+
+    ---Category: Change behaviour on move,select,... events.
+
+    SetEventManager    (aMgr:EventManager from Viewer2dTest);
+    ---Purpose:      puts  <aMgr>   as     current  eventmanager  (the
+    --          move,select,...will be applied to <aMgr>
+
+    UnsetEventManager;
+    ---Purpose: removes the last EventManager from the list.
+
+    ResetEventManager;
+    ---Purpose: clear the list of EventManagers and
+    --          sets the default EventManager as current
+
+    CurrentEventManager returns EventManager from Viewer2dTest;
+
+
+    ---Category: privateMethods...
+
+    RemoveSelected;
+
+    StandardModeActivation (Mode : Integer from Standard);
+
+    ---Category: Draw Commands
+
+    Commands (theCommands : in out Interpretor from Draw);
+    MyCommands (theCommands : in out Interpretor from Draw);   --  My  Own  Com-s
+    GeneralCommands (theCommands :in out Interpretor from Draw);
+    ViewerCommands  (theCommands :in out Interpretor from Draw);
+    DisplayCommands (theCommands : in out Interpretor from Draw);
+    ObjectCommands  (theCommands :in out Interpretor from Draw);
+
+end;

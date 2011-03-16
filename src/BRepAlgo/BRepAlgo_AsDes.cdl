@@ -1,0 +1,92 @@
+-- File:	BRepAlgo_AsDes.cdl
+-- Created:	Thu Oct 26 10:56:35 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class AsDes from BRepAlgo inherits TShared from MMgt
+
+	---Purpose: SD to store descendants and ascendants of Shapes.
+
+uses
+    DataMapOfShapeListOfShape from TopTools,
+    ListOfShape               from TopTools,
+    Shape                     from TopoDS
+
+raises
+    ConstructionError from Standard 
+
+is
+    Create returns mutable AsDes from BRepAlgo;
+	---Purpose: Creates an empty AsDes.
+    
+    Clear(me : mutable);
+    
+    Add  (me : mutable ; S  : Shape from TopoDS;
+    	    	         SS : Shape from TopoDS)
+       ---Purpose: Stores <SS> as a futur subshape of <S>. 
+    is static;		       
+
+    Add (me : mutable ; S  : Shape from TopoDS;
+    	    	        SS : ListOfShape from TopTools)
+       ---Purpose: Stores <SS> as futurs SubShapes of <S>. 		       
+    is static;		       
+
+    HasAscendant(me; S : Shape from TopoDS)
+    returns Boolean from Standard;
+
+    HasDescendant(me; S : Shape from TopoDS)
+    returns Boolean from Standard;
+		       
+    Ascendant (me; S : Shape from TopoDS)
+    	---Purpose: Returns the Shape containing <S>. 
+    	---C++: return const &
+    returns ListOfShape from TopTools;
+
+    Descendant (me; S : Shape from TopoDS)
+	---Purpose: Returns futur subhapes of <S>.
+    	---C++: return const &
+    returns ListOfShape from TopTools;
+    
+    ChangeDescendant (me : mutable; S : Shape from TopoDS)
+	---Purpose: Returns futur subhapes of <S>.
+    	---C++: return &
+    returns ListOfShape from TopTools;
+    
+    Replace ( me : mutable; OldS, NewS : Shape from TopoDS)
+    	---Purpose: Replace <OldS> by <NewS>.
+    	--          <OldS> disapear from <me>.
+    is static;
+        
+    Remove  (me  :  mutable; 
+    	     S   :  Shape  from  TopoDS) 
+    	---Purpose: Remove <S> from me.
+    raises 
+	ConstructionError -- if <S> HasDescendant.    
+    is static; 
+     
+    HasCommonDescendant  (me ;   
+    	    	    	  S1 :           Shape        from  TopoDS;   
+			  S2 :           Shape        from  TopoDS;  
+    	    	    	  LC :  in  out  ListOfShape  from  TopTools)  
+	 ---Purpose: Returns  True if (S1> and <S2>  has  common 
+	 --           Descendants.  Stores in <LC> the Commons Descendants.
+    returns  Boolean  from  Standard; 
+     
+    BackReplace ( me : mutable; 
+    	    	  OldS : Shape       from TopoDS;
+    	    	  NewS : Shape       from TopoDS;
+    	    	  L    : ListOfShape from TopTools;
+		  InUp : Boolean     from Standard)  
+    	---Purpose: Replace <OldS> by <NewS>.
+    	--          <OldS> disapear from <me>.
+    is static private; 
+     
+	     
+fields
+
+    up   : DataMapOfShapeListOfShape from TopTools;
+    down : DataMapOfShapeListOfShape from TopTools;
+
+end AsDes;

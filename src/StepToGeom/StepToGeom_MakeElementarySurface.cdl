@@ -1,0 +1,23 @@
+-- File:	StepToGeom_MakeElementarySurface.cdl
+-- Created:	Tue Jun 22 14:24:10 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeElementarySurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          ElementarySurface from StepGeom which describes 
+    --          a ElementarySurface from Step and ElementarySurface from
+    --          Geom. As ElementarySurface is an abstract Surface this
+    --          class is an access to the sub-class required.
+
+uses ElementarySurface from Geom,
+     ElementarySurface from StepGeom
+
+is 
+
+    Convert ( myclass; SS : ElementarySurface from StepGeom;
+                       CS : out ElementarySurface from Geom )
+    returns Boolean from Standard;
+
+end MakeElementarySurface;

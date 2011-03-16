@@ -1,0 +1,140 @@
+-- File:	TopOpeBRep.cdl
+-- Created:	Thu Jun 17 09:59:51 1993
+-- Author:	Jean Yves LEBEY
+---Copyright:	 Matra Datavision 1993
+
+package TopOpeBRep 
+
+	---Purpose: This package provides  the topological  operations
+	--          on the BRep data structure.
+
+uses
+
+    Standard,
+    MMgt,
+    TColStd,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TopExp,
+    gp,
+    Geom,
+    Geom2d,
+    GeomAbs,
+    Geom2dAdaptor,
+    Bnd,
+    BRep,
+    BRepClass,
+    BRepAdaptor,
+    BRepTopAdaptor,
+    ProjLib,
+    IntRes2d,
+    Geom2dInt,    
+    
+    IntSurf,
+    IntPatch,
+
+    GeomAdaptor,
+    IntCurveSurface,
+    BRepIntCurveSurface,
+
+    TopOpeBRepDS,
+    TopOpeBRepTool,
+    TCollection
+    
+is
+
+    enumeration TypeLineCurve is
+    	ANALYTIC,RESTRICTION,WALKING,
+        LINE,CIRCLE,ELLIPSE,PARABOLA,HYPERBOLA,
+	OTHERTYPE
+    end TypeLineCurve;
+
+    class VPointInter;
+
+    class Array1OfVPointInter instantiates Array1 from TCollection
+    	(VPointInter from TopOpeBRep);
+
+    class HArray1OfVPointInter instantiates HArray1 from TCollection
+    	(VPointInter from TopOpeBRep, Array1OfVPointInter from TopOpeBRep);
+
+    pointer PThePointOfIntersection to Point from IntPatch;
+    class VPointInterIterator;
+
+    pointer PPntOn2S to PntOn2S from IntSurf;
+    class WPointInter;
+    
+    class WPointInterIterator;
+	 
+    class LineInter;
+    pointer PLineInter to LineInter from TopOpeBRep;
+	
+    class Array1OfLineInter instantiates Array1 from TCollection
+    	(LineInter from TopOpeBRep);
+
+    class HArray1OfLineInter instantiates HArray1 from TCollection
+    	(LineInter from TopOpeBRep, Array1OfLineInter from TopOpeBRep);
+
+    class DataMapOfTopolTool instantiates DataMap from TCollection 
+    	(Shape          from TopoDS,
+     	 TopolTool from BRepTopAdaptor,
+     	 ShapeMapHasher from TopTools);
+
+    pointer PIntRes2d_IntersectionPoint to IntersectionPoint from IntRes2d;
+    class Hctxff2d;
+    class Hctxee2d;
+
+    enumeration P2Dstatus is
+    	P2DUNK,P2DINT,P2DSGF,P2DSGL,P2DNEW 
+    end P2Dstatus;
+    
+    class Point2d;
+    class SequenceOfPoint2d instantiates Sequence from TCollection(Point2d from TopOpeBRep);
+    
+    class PointClassifier;
+
+    class VPointInterClassifier;
+
+    class GeomTool;
+     
+    class FacesIntersector;
+    ---Purpose: Describes the intersection of two faces.
+    pointer PFacesIntersector to FacesIntersector from TopOpeBRep;
+	
+    class EdgesIntersector;
+    ---Purpose: Describes the intersection of two edges on the same surface
+    pointer PEdgesIntersector to EdgesIntersector from TopOpeBRep;
+
+    class FaceEdgeIntersector;
+    ---Purpose: Describes the intersection of a face and an edge.
+	
+    class ShapeScanner;
+
+    class ShapeIntersector;
+
+    class ShapeIntersector2d;
+
+    class PointGeomTool;
+    
+    class FFTransitionTool;
+
+    class Bipoint;
+    class ListOfBipoint instantiates List from TCollection(Bipoint);
+    
+    class FacesFiller;
+    pointer PFacesFiller to FacesFiller from TopOpeBRep;
+    class FFDumper;
+
+    class EdgesFiller;
+
+    class FaceEdgeFiller;
+
+    class DSFiller;
+
+    Print(TLC  : TypeLineCurve from TopOpeBRep; OS  : in out OStream) 
+    ---C++: return &
+    returns OStream;
+    ---Purpose: Prints the name  of  <TLC>  as  a String  on the
+    --          Stream <S> and returns <S>.
+
+end TopOpeBRep;

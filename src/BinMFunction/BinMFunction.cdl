@@ -1,0 +1,25 @@
+-- File:	BinMFunction.cdl
+-- Created:	Thu May 13 14:40:40 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+package BinMFunction 
+
+        ---Purpose: Storage and Retrieval drivers for TFunction modelling attributes.
+
+uses BinMDF,
+     BinObjMgt,
+     TDF, 
+     TFunction,
+     CDM
+
+is
+    class FunctionDriver; 
+    class GraphNodeDriver; 
+    class ScopeDriver; 
+
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>.
+
+end BinMFunction;

@@ -1,0 +1,257 @@
+-- File:	Domain.cdl
+-- Created:	Thu Mar  5 09:45:19 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Domain from IntRes2d 
+
+
+	---Purpose: Definition of the domain of parameter on a 2d-curve.
+	--          Most of the time, a domain is defined by two extremities.
+	--          An extremity is made of :
+	--           - a point in 2d-space (Pnt2d from gp),
+	--           - a parameter on the curve,
+	--           - a tolerance in the 2d-space.
+	--          Sometimes, it can be made of 0 or 1 point ( for an infinite
+	--          or semi-infinite line for example).
+	--          
+    	--          For Intersection algorithms, Ellipses and Circles 
+    	--          Domains must be closed.
+    	--          So, SetEquivalentParameters(.,.) method must be called
+    	--          after initializing the first and the last bounds.
+
+
+
+uses Pnt2d from gp
+
+raises DomainError from Standard
+
+is
+
+
+   Create
+   
+	---Purpose: Creates an infinite Domain (HasFirstPoint = False
+	--          and HasLastPoint = False).
+	   
+	  returns Domain from IntRes2d;
+
+
+    Create(Pnt1: Pnt2d  from gp;
+           Par1: Real   from Standard;
+           Tol1: Real   from Standard;
+    	   Pnt2: Pnt2d  from gp;
+	   Par2: Real   from Standard;
+    	   Tol2: Real   from Standard)
+	   
+    	---Purpose: Creates a bounded Domain.
+	   
+	returns Domain from IntRes2d;	   
+
+
+    Create(Pnt:    Pnt2d   from gp;
+           Par:    Real    from Standard;
+	   Tol:    Real    from Standard;
+	   First:  Boolean from Standard)
+
+	---Purpose: Creates a semi-infinite Domain. If First is set to 
+	--          True, the given point is the first point of the domain,
+	--          otherwise it is the last point.
+
+        returns Domain from IntRes2d;	   
+	  
+
+    SetValues(me:   in out;
+              Pnt1: Pnt2d  from gp;
+              Par1: Real   from Standard;
+              Tol1: Real   from Standard;
+    	      Pnt2: Pnt2d  from gp;
+	      Par2: Real   from Standard;
+    	      Tol2: Real   from Standard)
+    
+	---Purpose: Sets the values for a bounded domain.
+    	
+	is static;
+
+
+    SetValues(me: in out)
+    
+    	---Purpose : Sets the values for an infinite domain.
+    	
+	 is static;	  
+
+
+    SetValues(me: in out;
+              Pnt:   Pnt2d   from gp;
+              Par:   Real    from Standard;
+	      Tol:   Real    from Standard;
+              First: Boolean from Standard)
+
+	---Purpose: Sets the values for a semi-infinite domain.
+    	
+    	is static;
+
+
+    SetEquivalentParameters(me: in out; zero,period: Real from Standard)
+
+    	---Purpose: Defines a closed domain.
+
+    	---C++: inline
+	    
+    	is static;
+
+
+    HasFirstPoint(me)
+
+	---Purpose: Returns True if the domain has a first point, i-e
+	--          a point defining the lowest admitted parameter on the
+	--          curve.
+
+	---C++: inline	
+
+    	returns Boolean from Standard
+    	is static;
+
+
+    FirstParameter(me)
+    
+    	---Purpose: Returns the parameter of the first point of the domain
+    	--          The exception DomainError is raised if HasFirstPoint
+    	--          returns False.
+
+	---C++: inline    
+
+    	returns Real        from Standard
+	raises  DomainError from Standard
+	is static;
+	
+    
+    FirstPoint(me)
+
+    	---Purpose: Returns the first point of the domain.
+    	--          The exception DomainError is raised if HasFirstPoint
+    	--          returns False.
+
+	---C++: inline
+    	---C++: return const &
+    
+    	returns Pnt2d       from gp
+	raises  DomainError from Standard
+	is static;
+	
+    
+    FirstTolerance(me)
+
+    	---Purpose: Returns the tolerance of the first (left) bound.
+    	--          The exception DomainError is raised if HasFirstPoint
+    	--          returns False.
+
+	---C++: inline
+
+    	returns Real        from Standard
+        raises  DomainError from Standard
+    	is static;
+    
+
+    HasLastPoint(me)
+
+	---Purpose: Returns True if the domain has a last point, i-e
+	--          a point defining the highest admitted parameter on the
+	--          curve.
+
+	---C++: inline    
+
+    	returns Boolean from Standard
+	is static;
+
+
+    LastParameter(me)
+
+    	---Purpose: Returns the parameter of the last point of the domain.
+    	--          The exception DomainError is raised if HasLastPoint
+    	--          returns False.
+
+	---C++: inline    
+    
+    	returns Real        from Standard
+	raises  DomainError from Standard
+	is static;
+	
+    
+    LastPoint(me)
+    
+    	---Purpose: Returns the last point of the domain.
+    	--          The exception DomainError is raised if HasLastPoint
+    	--          returns False.
+
+	---C++: inline
+    	---C++: return const &
+    	
+    	returns Pnt2d       from gp
+	raises  DomainError from Standard
+	is static;
+	
+    
+    LastTolerance(me)
+    
+    	---Purpose: Returns the tolerance of the last (right) bound.
+    	--          The exception DomainError is raised if HasLastPoint
+    	--          returns False.
+
+	---C++: inline
+
+    	returns Real        from Standard
+        raises  DomainError from Standard
+    	is static;
+
+
+    IsClosed(me)
+    
+    	---Purpose: Returns True if the domain is closed.
+
+	---C++: inline    
+
+    	returns Boolean from Standard
+	is static;
+	
+    
+    EquivalentParameters(me; zero,zeroplusperiod:out Real from Standard)
+    
+    	---Purpose: Returns Equivalent parameters if the domain is closed.
+    	--          Otherwise, the exception DomainError is raised.
+
+	---C++: inline    
+
+        raises DomainError from Standard
+    	is static;
+
+    
+fields 
+
+    status      : Integer     from Standard; 
+    ----------------------------------------
+    -- Bit 0 :   HasFist
+    -- Bit 1 :   HasLast
+    -- Bit 2 :   Closed
+    ----------------------------------------
+
+    first_param : Real        from Standard;
+    last_param  : Real        from Standard;
+
+    first_tol   : Real        from Standard;
+    last_tol    : Real        from Standard;
+
+    first_point : Pnt2d       from gp;
+    last_point  : Pnt2d       from gp;
+    
+    periodfirst : Real        from Standard;
+    periodlast  : Real        from Standard;
+    
+end Domain;
+
+
+
+
+

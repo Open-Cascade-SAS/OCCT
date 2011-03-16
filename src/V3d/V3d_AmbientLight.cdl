@@ -1,0 +1,35 @@
+-- File:	AmbientLight.cdl
+-- Created:	Tue Jan 21 18:24:40 1992
+-- Author:	GG
+-- Update: 	FDA Oct 15 1994, 
+--		ZOV - Mars 30 1998
+---Copyright:	Matra Datavision 1992
+
+
+class AmbientLight from V3d
+
+    	---Purpose: Creation of an ambient light source in a viewer.
+
+
+inherits Light from V3d
+
+uses 
+
+	Viewer from V3d,
+        TypeOfRepresentation from V3d,
+	NameOfColor from Quantity,
+	View from V3d,
+	Coordinate from V3d,
+	Structure from Graphic3d,
+	Vertex from Graphic3d,
+	Group from Graphic3d
+
+is
+
+    	Create ( VM : mutable Viewer ;
+		 Color : NameOfColor = Quantity_NOC_WHITE ) 
+				returns mutable AmbientLight;
+	---Purpose: Constructs an ambient light source in the viewer VM.
+    	-- The default Color of this light source is WHITE.
+
+end AmbientLight;

@@ -1,0 +1,27 @@
+
+-- File:	Aspect_GraphicDevice.cdl
+-- Created:	Tue Oct 19 09:19:10 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred class GraphicDevice from Aspect inherits TShared from MMgt
+
+uses
+
+	GraphicDriver	from Aspect
+
+raises
+
+        GraphicDeviceDefinitionError   from Aspect,
+        BadAccess from Aspect
+
+is
+
+        Initialize;
+
+	GraphicDriver ( me )
+		returns GraphicDriver from Aspect
+		is deferred;
+
+end GraphicDevice from Aspect;

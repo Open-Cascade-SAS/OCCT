@@ -1,0 +1,59 @@
+-- File:	Selection.cdl
+-- Created:	Tue Nov 17 12:05:52 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class Selection  from IFSelect  inherits TShared
+
+    ---Purpose : A Selection allows to define a set of Interface Entities.
+    --           Entities to be put on an output file should be identified in
+    --           a way as independant from such or such execution as possible.
+    --           This permits to handle comprehensive criteria, and to replay
+    --           them when a new variant of an input file has to be processed.
+    --         
+    --           Its input can be, either an Interface Model (the very source),
+    --           or another-other Selection(s) or any other ouput. All list
+    --           computations start from an input Graph (from IFGraph)
+
+uses AsciiString from TCollection, EntityIterator, Graph, SelectionIterator
+
+raises InterfaceError
+
+is
+
+    RootResult (me; G : Graph) returns EntityIterator
+    	raises InterfaceError  is deferred;
+    ---Purpose : Returns the list of selected entities, computed from Input
+    --           given as a Graph. Specific to each class of Selection
+    --           Note that uniqueness of each entity is not required here
+    --           This method can raise an exception as necessary
+
+    HasUniqueResult (me) returns Boolean  is virtual protected;
+    ---Purpose : Returns True if RootResult guarantees uniqueness for each
+    --           Entity. Called by UniqueResult.
+    --           Default answer is False. Can be redefined.
+
+    UniqueResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities, each of them beeing
+    --           unique. Default definition works from RootResult. According
+    --           HasUniqueResult, UniqueResult returns directly RootResult,
+    --           or build a Unique Result from it with a Graph.
+
+    CompleteResult (me; G : Graph) returns EntityIterator  is virtual;
+    ---Purpose : Returns the list of entities involved by a Selection, i.e.
+    --           UniqueResult plus the shared entities (directly or not)
+
+
+    FillIterator (me; iter : in out SelectionIterator)  is deferred;
+    ---Purpose : Puts in an Iterator the Selections from which "me" depends
+    --           (there can be zero, or one, or a list).
+    --           Specific to each class of Selection
+
+    Label (me) returns AsciiString from TCollection  is deferred;
+    ---Purpose : Returns a text which defines the criterium applied by a
+    --           Selection (can be used to be printed, displayed ...)
+    --           Specific to each class
+
+end Selection;

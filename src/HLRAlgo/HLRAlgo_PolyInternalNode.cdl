@@ -1,0 +1,29 @@
+-- File:	HLRAlgo_PolyInternalNode.cdl
+-- Created:	Fri Jan 10 22:23:38 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class PolyInternalNode from HLRAlgo inherits TShared from MMgt
+
+uses
+    Address from Standard,
+    Integer from Standard
+    
+is
+    Create returns mutable PolyInternalNode from HLRAlgo; 
+    	---C++: inline
+    
+    Indices(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+    RValues(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices : Integer from Standard[4];
+    myRValues : Real    from Standard[11];
+    
+end PolyInternalNode;

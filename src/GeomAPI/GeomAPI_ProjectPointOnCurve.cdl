@@ -1,0 +1,194 @@
+-- File:	GeomAPI_ProjectPointOnCurve.cdl
+-- Created:	Thu Mar 17 10:13:44 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class ProjectPointOnCurve from GeomAPI
+    	---Purpose:
+    	-- This class implements methods for  computing all the orthogonal
+    	--  projections of a 3D point onto a  3D curve.
+
+uses
+    Curve     from Geom,
+    Curve     from GeomAdaptor,
+    ExtPC     from Extrema,
+    Pnt       from gp,
+    Length    from Quantity,
+    Parameter from Quantity
+
+raises
+    OutOfRange from Standard,
+    NotDone    from StdFail
+    
+    
+is
+    Create
+	---Purpose: Creates an empty object. Use an
+    	-- Init function for further initialization.         
+    returns ProjectPointOnCurve from GeomAPI;
+    
+    
+    Create(P          : Pnt   from gp;
+    	   Curve      : Curve from Geom)
+        ---Purpose: Create the projection  of a  point  <P> on a curve
+        --          <Curve> 
+	---Level: Public          
+    returns ProjectPointOnCurve from GeomAPI;
+    
+
+    Create(P          : Pnt       from gp;
+    	   Curve      : Curve     from Geom;
+    	   Umin, Usup : Parameter from Quantity)
+        ---Purpose: Create  the projection  of a point <P>  on a curve
+        --          <Curve> limited by the two points of parameter Umin and Usup.          
+    returns ProjectPointOnCurve from GeomAPI;
+    
+
+    Init(me : in out;
+    	 P          : Pnt   from gp;
+	 Curve      : Curve from Geom)
+        ---Purpose: Init the projection  of a  point  <P> on a curve
+        --          <Curve> 
+	---Level: Public          
+    is static;
+
+
+    Init(me : in out;
+    	 P          : Pnt       from gp;
+	 Curve      : Curve     from Geom;
+    	 Umin, Usup : Parameter from Quantity)
+        ---Purpose: Init  the  projection  of a  point <P>  on a curve
+        --          <Curve> limited by the two points of parameter Umin and Usup.          
+    is static;
+
+--modified by NIZNHY-PKV Wed Apr  3 17:47:28 2002  f 
+    Init(me : in out;
+	 Curve      : Curve     from Geom;
+    	 Umin, Usup : Parameter from Quantity)
+        ---Purpose: Init  the  projection  of a  point <P>  on a curve
+        --          <Curve> limited by the two points of parameter Umin and Usup.          
+    is static;
+ 
+    Perform (me: in out; P: Pnt from gp)
+    	---Purpose: Performs the projection of a point on the current curve.
+    	---Level : Public.
+    is static;
+--modified by NIZNHY-PKV Wed Apr  3 17:47:30 2002  t
+
+
+
+    NbPoints(me)
+	---Purpose: Returns the number of computed
+    	-- orthogonal projection points.
+    	-- Note: if this algorithm fails, NbPoints returns 0.
+    returns Integer from Standard
+	---C++: alias "Standard_EXPORT operator Standard_Integer() const;"
+    is static;
+
+    
+    Point(me; Index : Integer from Standard)
+	---Purpose: Returns the orthogonal projection
+    	-- on the curve. Index is a number of a computed point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of solution points.         
+    returns Pnt from gp
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+    
+    
+    Parameter(me; Index : Integer from Standard)
+	---Purpose: Returns the parameter on the curve
+    	-- of the point, which is the orthogonal projection. Index is a
+    	-- number of a computed point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of solution points.
+    returns Parameter from Quantity
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+    
+    
+    Parameter(me; Index :     Integer   from Standard;
+                  U     : out Parameter from Quantity)
+	---Purpose: Returns the parameter on the curve
+    	-- of the point, which is the orthogonal projection. Index is a
+    	-- number of a computed point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of solution points.-
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+    
+    
+    Distance(me; Index : Integer from Standard)
+    returns Length from Quantity
+	---Purpose: Computes the distance between the
+    	-- point and its orthogonal projection on the curve. Index is a number of a computed point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of solution points.          
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+
+
+    NearestPoint(me)
+	---Purpose: Returns the nearest orthogonal
+    	-- projection of the point on the curve.
+    	-- Exceptions: StdFail_NotDone if this algorithm fails.
+    returns Pnt from gp
+    	---C++: alias "Standard_EXPORT operator gp_Pnt() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistanceParameter(me)
+	---Purpose: Returns the parameter on the curve
+    	-- of the nearest orthogonal projection of the point.
+    	-- Exceptions: StdFail_NotDone if this algorithm fails.
+    returns Parameter from Quantity
+    raises
+    	NotDone from StdFail
+    is static;
+
+
+    LowerDistance(me)
+	---Purpose: Computes the distance between the
+    	-- point and its nearest orthogonal projection on the curve.
+    	-- Exceptions: StdFail_NotDone if this algorithm fails.
+    returns Length from Quantity
+ 	---C++: alias "Standard_EXPORT operator Standard_Real() const;"
+   raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    Extrema(me)
+	---Purpose: return the algorithmic object from Extrema
+	---Level: Advanced
+	---C++: return const&
+	---C++: inline      
+    returns ExtPC from Extrema
+    is static;
+	    
+
+fields
+
+    myIsDone: Boolean from Standard;
+    myIndex : Integer from Standard;    -- index of the nearest solution
+    myExtPC : ExtPC   from Extrema;
+    myC     : Curve   from GeomAdaptor;
+
+end ProjectPointOnCurve;

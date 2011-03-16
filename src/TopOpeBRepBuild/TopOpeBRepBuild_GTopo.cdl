@@ -1,0 +1,69 @@
+-- File:	TopOpeBRepBuild_GTopo.cdl
+-- Created:	Tue Feb 13 16:13:56 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+class GTopo from TopOpeBRepBuild
+
+uses
+
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Config from TopOpeBRepDS
+
+is
+
+  Create returns GTopo;
+
+  Create(II,IN,IO,NI,NN,NO,OI,ON,OO : Integer;
+    	 t1,t2 : ShapeEnum from TopAbs;
+    	 C1,C2 : Config from TopOpeBRepDS) returns GTopo;
+
+  Reset(me : in out) is static;
+  Set(me : in out; II,IN,IO,NI,NN,NO,OI,ON,OO : Boolean) is static;
+  
+  Type(me; t1,t2 : out ShapeEnum from TopAbs) is static;
+  ChangeType(me : in out; t1,t2 : ShapeEnum from TopAbs) is static;
+
+  Config1(me) returns Config from TopOpeBRepDS is static;
+  Config2(me) returns Config from TopOpeBRepDS is static;
+  ChangeConfig(me : in out; C1,C2 : Config from TopOpeBRepDS) is static;
+
+  Value(me; s1,s2 : State from TopAbs) returns Boolean is static;
+  Value(me; I1,I2 : Integer) returns Boolean is static;
+  Value(me; II : Integer) returns Boolean is static;
+  ChangeValue(me : in out; i1,i2 : Integer; b : Boolean) is static;
+  ChangeValue(me : in out; s1,s2 : State from TopAbs; b : Boolean) is static;
+  GIndex(me; S : State from TopAbs) returns Integer is static;
+  GState(me; I : Integer) returns State from TopAbs is static;
+  Index(me; II : Integer; i1,i2 : in out Integer) is static;
+
+  DumpVal(me; OS : in out OStream; s1,s2 : State from TopAbs) is static;
+  DumpType(me; OS : in out OStream) is static;
+  DumpSSB(myclass; OS : in out OStream; s1,s2:State from TopAbs; b : Boolean);
+  Dump(me; OS : in out OStream; s : Address = NULL) is virtual;
+    	    	
+  StatesON(me; s1,s2 : out State from TopAbs) is static;
+  IsToReverse1(me) returns Boolean is static;
+  IsToReverse2(me) returns Boolean is static;
+
+  SetReverse(me : in out; rev : Boolean) is static;
+  Reverse(me) returns Boolean is static;
+
+  CopyPermuted(me) returns GTopo is static;
+  
+fields
+  
+  mycases : Boolean from Standard[3,3]; 
+  --     IN ON OUT
+  -- IN  ii in io
+  -- ON  ni nn no
+  -- OUT oi on oo
+  myt1,myt2 : ShapeEnum from TopAbs;
+  myConfig1,myConfig2 : Config from TopOpeBRepDS;
+  myReverseForce : Boolean;
+  myReverseValue : Boolean;
+  
+end GTopo;
+

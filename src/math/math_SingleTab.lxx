@@ -1,0 +1,26 @@
+#include <Standard_OutOfRange.hxx>
+#include <math_Memory.hxx>
+
+inline Item& math_SingleTab::Value(const Standard_Integer Index) const
+{
+  return ((Item*)Addr)[Index];
+}
+
+
+inline void math_SingleTab::Copy(math_SingleTab& Other) const
+{
+  memmove((void*) (((Item*)Other.Addr) + Other.First),
+	  (const void*) (((Item*)Addr) + First),
+	  (size_t)(Last - First + 1) * sizeof(Item));
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,34 @@
+-- File:	PBRep_Polygon3D.cdl
+-- Created:	Mon Oct 23 15:41:40 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon3D from PBRep inherits CurveRepresentation from PBRep
+
+	---Purpose: 
+
+uses
+    Polygon3D           from PPoly,
+    CurveRepresentation from PBRep,
+    Location            from PTopLoc
+
+is
+
+    Create(P: Polygon3D from PPoly;
+    	   L: Location  from PTopLoc) 
+    	---Purpose:
+    returns mutable Polygon3D from PBRep;
+        
+    IsPolygon3D(me) returns Boolean
+    	---Purpose: Returns True.
+    is redefined;
+    
+    Polygon3D(me) returns any Polygon3D from PPoly;
+
+fields
+
+    myPolygon3D: Polygon3D from PPoly;
+
+end Polygon3D;

@@ -1,0 +1,47 @@
+-- File:	StepElement_CurveElementPurpose.cdl
+-- Created:	Tue Dec 10 18:12:56 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementPurpose from StepElement
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type CurveElementPurpose
+
+uses
+    SelectMember from StepData,
+    EnumeratedCurveElementPurpose from StepElement,
+    HAsciiString from TCollection
+
+is
+    Create returns CurveElementPurpose from StepElement;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of CurveElementPurpose select type
+	--          return 0 
+
+    CaseMem (me; ent: SelectMember from StepData) returns Integer is redefined;
+	---Purpose: Recognizes a items of select member CurveElementPurposeMember
+	--          1 -> EnumeratedCurveElementPurpose
+	--          2 -> ApplicationDefinedElementPurpose
+	--          0 else
+
+
+     NewMember(me) returns SelectMember from StepData is redefined;
+	---Purpose: Returns a new select member the type CurveElementPurposeMember
+
+    SetEnumeratedCurveElementPurpose(me: in out; aVal :EnumeratedCurveElementPurpose from StepElement);
+	---Purpose: Set Value for EnumeratedCurveElementPurpose
+
+    EnumeratedCurveElementPurpose (me) returns EnumeratedCurveElementPurpose from StepElement;
+	---Purpose: Returns Value as EnumeratedCurveElementPurpose (or Null if another type)
+
+    SetApplicationDefinedElementPurpose(me: in out; aVal :HAsciiString from TCollection);
+	---Purpose: Set Value for ApplicationDefinedElementPurpose
+
+    ApplicationDefinedElementPurpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns Value as ApplicationDefinedElementPurpose (or Null if another type)
+
+end CurveElementPurpose;

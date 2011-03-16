@@ -1,0 +1,120 @@
+-- File:	MakeCirc.cdl
+-- Created:	Wed Aug 26 14:31:09 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCirc from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create Circ from gp.
+    --           
+    --           * Create a Circ coaxial to another and passing 
+    --             though a point.
+    --           * Create a Circ coaxial to another at the distance 
+    --             Dist.
+    --           * Create a Circ passing through 3 points.
+    --           * Create a Circ with its center and the normal of its 
+    --             plane and its radius.
+    --           * Create a Circ with its center and its plane and its 
+    --             radius.
+    --           * Create a Circ with its axis and radius.
+    --           * Create a Circ with two points giving its axis and 
+    --             its radius.
+    --           * Create a Circ with is Ax2 and its Radius.
+
+uses Pnt  from gp,
+     Circ from gp,
+     Dir  from gp,
+     Ax1  from gp,
+     Ax2  from gp,
+     Pln  from gp,
+     Real from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A2     : Ax2  from gp      ;
+        Radius : Real from Standard)  returns MakeCirc;
+    --- Purpose : 
+    --  A2 locates the circle and gives its orientation in 3D space.
+    --- Warnings :
+    --  It is not forbidden to create a circle with Radius = 0.0
+    --- The status is "NegativeRadius" if Radius < 0.0
+
+Create(Circ : Circ from gp      ;
+       Dist : Real   from Standard) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> coaxial to another 
+    --           Circ <Circ> at a distance <Dist>.
+    --           If Dist is greater than zero the result is encloses 
+    --           the circle <Circ>, else the result is enclosed by the 
+    --           circle <Circ>.
+
+Create(Circ    :     Circ from gp;
+       Point   :     Pnt  from gp) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> coaxial to another 
+    --           Circ <Circ> and passing through a Pnt2d <Point>.
+
+Create(P1,P2,P3 : Pnt  from gp) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> passing through 3 
+    --           Pnt2d <P1>,<P2>,<P3>.
+
+Create(Center  : Pnt  from gp      ;
+       Norm    : Dir  from gp      ;
+       Radius  : Real from Standard) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> with its center 
+    --           <Center> and the normal of its plane <Norm> and 
+    --           its radius <Radius>.
+
+Create(Center  : Pnt  from gp      ;
+       Plane   : Pln  from gp      ;
+       Radius  : Real from Standard) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> with its center 
+    --           <Center> and the normal of its plane <Plane> and 
+    --           its radius <Radius>.
+
+Create(Center  : Pnt  from gp      ;
+       Ptaxis  : Pnt  from gp      ;
+       Radius  : Real from Standard) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> with its center 
+    --           <Center> and a point <Ptaxis> giving the normal 
+    --           of its plane <Plane> and its radius <Radius>.
+
+Create(Axis   : Ax1  from gp      ;
+       Radius : Real from Standard) returns MakeCirc;
+    ---Purpose : Makes a Circ from gp <TheCirc> with its center 
+    --           <Center> and its radius <Radius>.
+    -- Warning
+    -- The MakeCirc class does not prevent the
+    -- construction of a circle with a null radius.
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_Negative Radius if:
+    --   -   Radius is less than 0.0, or
+    --   -   Dist is less than 0.0 and the absolute value of
+    --    Dist is greater than the radius of Circ;
+    -- -   gce_IntersectionError if the points P1, P2 and
+    --   P3 are collinear, and the three are not coincident;
+    -- -   gce_ConfusedPoints if two of the three points
+    --   P1, P2 and P3 are coincident; or
+    -- -   gce_NullAxis if Center and Ptaxis are coincident.
+        
+Value(me) returns Circ from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed circle.
+    -- Exceptions StdFail_NotDone if no circle is constructed.
+
+Operator(me) returns Circ from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Circ() const;"
+
+fields
+
+    TheCirc : Circ from gp;
+    --The solution from gp.
+    
+end MakeCirc;

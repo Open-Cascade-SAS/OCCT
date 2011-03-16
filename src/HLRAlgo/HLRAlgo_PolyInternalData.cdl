@@ -1,0 +1,127 @@
+-- File:	HLRAlgo_PolyInternalData.cdl
+-- Created:	Fri Oct 29 15:19:08 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class PolyInternalData from HLRAlgo inherits TShared from MMgt
+
+uses
+    Address          from Standard,
+    Integer          from Standard,
+    Boolean          from Standard,
+    Real             from Standard,
+    HArray1OfTData   from HLRAlgo,
+    HArray1OfPISeg   from HLRAlgo,
+    HArray1OfPINod   from HLRAlgo,
+    Array1OfTData    from HLRAlgo,
+    Array1OfPISeg    from HLRAlgo,
+    Array1OfPINod    from HLRAlgo
+
+is
+    Create(nbNod, nbTri : Integer from Standard)
+    returns mutable PolyInternalData from HLRAlgo;
+    
+    UpdateLinks(me    : mutable;
+                TData : out Address from Standard;
+                PISeg : out Address from Standard;
+                PINod : out Address from Standard)
+    is static;
+
+    AddNode(me            : mutable;
+            Nod1RValues   :     Address       from Standard;
+            Nod2RValues   :     Address       from Standard;
+            PINod1,PINod2 : out Address       from Standard;
+	    coef1         :     Real          from Standard;
+	    X3,Y3,Z3      :     Real          from Standard)
+    returns Integer from Standard
+    is static;
+    
+    UpdateLinks(me            : mutable;
+                ip1,ip2,ip3   :     Integer from Standard;
+                TData1,TData2 : out Address from Standard;
+                PISeg1,PISeg2 : out Address from Standard;	
+                PINod1,PINod2 : out Address from Standard)	
+    is static;
+    
+    Dump(me)
+    is static;
+
+    IncTData(me : mutable; TData1,TData2 : out Address from Standard)
+    is static;
+
+    IncPISeg(me : mutable; PISeg1,PISeg2 : out Address from Standard)
+    is static;
+
+    IncPINod(me : mutable; PINod1,PINod2 : out Address from Standard)
+    is static;
+
+    DecTData(me : mutable)
+    	---C++: inline
+    is static;
+
+    DecPISeg(me : mutable)
+    	---C++: inline
+    is static;
+
+    DecPINod(me : mutable)
+    	---C++: inline
+    is static;
+
+    NbTData(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    NbPISeg(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    NbPINod(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    Planar(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Planar(me : mutable; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    IntOutL(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    IntOutL(me : mutable; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    TData (me)  returns Array1OfTData from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    PISeg (me)  returns Array1OfPISeg from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    PINod (me)  returns Array1OfPINod from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+fields
+    myNbTData : Integer        from Standard;
+    myNbPISeg : Integer        from Standard;
+    myNbPINod : Integer        from Standard;
+    myMxTData : Integer        from Standard;
+    myMxPISeg : Integer        from Standard;
+    myMxPINod : Integer        from Standard;
+    myIntOutL : Boolean        from Standard;
+    myPlanar  : Boolean        from Standard;
+    myTData   : HArray1OfTData from HLRAlgo;
+    myPISeg   : HArray1OfPISeg from HLRAlgo;
+    myPINod   : HArray1OfPINod from HLRAlgo;
+
+end PolyInternalData;

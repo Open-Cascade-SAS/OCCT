@@ -1,0 +1,19 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	Select2D_SensitiveCircle.lxx
+// Created:	Tue Jan 31 10:40:17 1995
+// Author:	Mister rmi
+//		<rmi>
+
+
+
+inline const gp_Circ2d& 
+Select2D_SensitiveCircle::Circle()
+const {return myCirc;}
+
+inline void Select2D_SensitiveCircle::
+SetTypeOfSelection(const Select2D_TypeOfSelection theType)
+{mytype = theType;}
+
+inline Select2D_TypeOfSelection 
+Select2D_SensitiveCircle::Selection()
+{return mytype;} 

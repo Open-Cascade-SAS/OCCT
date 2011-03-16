@@ -1,0 +1,56 @@
+-- File:	BRepToIGES_BRShell.cdl
+-- Created:	Fri Jan 27 11:28:57 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class BRShell from BRepToIGES inherits BREntity from BRepToIGES
+
+    ---Purpose: This class implements the transfer of Shape Entities from Geom
+    --          To IGES. These can be :
+    --            . Vertex
+    --            . Edge
+    --            . Wire
+  
+
+uses
+
+    Shape                from TopoDS,
+    Face                 from TopoDS,
+    Shell                from TopoDS,
+    IGESEntity           from IGESData,
+    BREntity             from BRepToIGES    
+    
+is 
+    
+    Create 
+    	returns BRShell from BRepToIGES;
+    
+    Create (BR : BREntity from BRepToIGES)
+    	returns BRShell from BRepToIGES;    
+
+
+    TransferShell (me    : in out;
+                   start : Shape from TopoDS)
+    	returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Shape entity from TopoDS to IGES
+    --            This entity must be a Face or a Shell.
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferShell (me    : in out;
+                   start : Shell from TopoDS)
+    	returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Shell entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferFace (me    : in out;
+                  start : Face from TopoDS)
+    	returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Face entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+end BRShell;

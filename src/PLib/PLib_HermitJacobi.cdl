@@ -1,0 +1,160 @@
+-- File:	PLib_HermitJacobi.cdl
+-- Created:	Wed Oct 22 10:52:48 1997
+-- Author:	Philippe MANGIN
+--		<ssv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class HermitJacobi from PLib  
+     
+inherits Base  from PLib 
+  
+--- Purpose: This class provides method  to work with Jacobi Polynomials
+--  relativly to an order of constraint
+--  q = myWorkDegree-2*(myNivConstr+1) 
+--  Jk(t) for k=0,q compose the Jacobi Polynomial base relativly to the weigth W(t)
+--  iorder is the integer  value for the constraints:
+--   iorder = 0 <=> ConstraintOrder = GeomAbs_C0 
+--   iorder = 1 <=> ConstraintOrder = GeomAbs_C1
+--   iorder = 2 <=> ConstraintOrder = GeomAbs_C2
+--   P(t) = H(t) + W(t) * Q(t) Where W(t) = (1-t**2)**(2*iordre+2)
+--   the coefficients JacCoeff represents P(t) JacCoeff are stored as follow:
+--       
+--            c0(1)      c0(2) ....       c0(Dimension)
+--            c1(1)      c1(2) ....       c1(Dimension)
+--           
+--         
+--         
+--            cDegree(1) cDegree(2) ....  cDegree(Dimension)
+--         
+--   The coefficients  
+--           c0(1)                  c0(2) ....            c0(Dimension) 
+--           c2*ordre+1(1)                ...          c2*ordre+1(dimension)
+--          
+--   represents the  part  of the polynomial in  the
+--   Hermit's base: H(t) 
+--   H(t) = c0H00(t) + c1H01(t) + ...c(iordre)H(0 ;iorder)+ c(iordre+1)H10(t)+...
+--   The following coefficients represents the part of the
+--   polynomial in the Jacobi base ie Q(t)
+--   Q(t) = c2*iordre+2  J0(t) + ...+ cDegree JDegree-2*iordre-2
+
+uses  
+    Array2OfReal  from TColStd,
+    Array1OfReal  from TColStd,
+    Shape  from GeomAbs,
+    Matrix from  math, 
+    JacobiPolynomial from PLib 
+
+raises
+     ConstructionError from Standard
+
+is
+
+     Create ( WorkDegree      : Integer ; 
+              ConstraintOrder : Shape from GeomAbs)
+     returns HermitJacobi from PLib
+
+
+---Purpose:
+--   Initialize the polynomial class
+--   Degree has to be <= 30
+--   ConstraintOrder has to be GeomAbs_C0
+--                             GeomAbs_C1
+--                             GeomAbs_C2
+                                                                                      
+     raises ConstructionError from Standard;
+--   if Degree or ConstraintOrder is non valid
+
+      
+--
+--   Work in HermitJacobi base
+    
+     MaxError ( me ; Dimension : Integer ;
+                HermJacCoeff : in  out  Real;
+                NewDegree : Integer )
+     returns Real;
+    
+---Purpose:
+--   This  method computes the  maximum  error on the polynomial
+--   W(t) Q(t) obtained by missing the coefficients of JacCoeff from
+--   NewDegree +1 to Degree
+
+     ReduceDegree ( me ; Dimension ,  MaxDegree  : Integer ;  Tol : Real ; 
+                    HermJacCoeff :  in  out  Real;
+                    NewDegree : out Integer ;
+                    MaxError  : out Real);
+                            
+---Purpose:
+--   Compute NewDegree <= MaxDegree so that MaxError is lower
+--   than Tol. 
+--   MaxError can be greater than Tol if it is not possible
+--   to find a NewDegree <= MaxDegree.
+--   In this case NewDegree = MaxDegree
+-- 
+     AverageError ( me ; Dimension : Integer ;
+                    HermJacCoeff : in  out  Real;
+                    NewDegree : Integer )
+--   This method computes the average error on the polynomial W(t)Q(t)
+--   obtained  by missing  the
+--   coefficients JacCoeff  from  NewDegree +1 to Degree
+     returns Real;
+
+
+     ToCoefficients ( me ; Dimension,  Degree : Integer ;
+                      HermJacCoeff : Array1OfReal from TColStd ;
+                      Coefficients : out Array1OfReal from TColStd );
+   
+---Purpose:
+--   Convert the polynomial P(t) = H(t) + W(t) Q(t) in the canonical base.
+-- 
+
+    D0123 (me : mutable; NDerive : Integer; U : Real;  
+    	   BasisValue : out Array1OfReal from TColStd; 
+	   BasisD1    : out Array1OfReal from TColStd; 
+    	   BasisD2    : out Array1OfReal from TColStd; 
+           BasisD3    : out Array1OfReal from TColStd)
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u 
+    is private;
+ 
+    D0 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd); 
+---Purpose: Compute the values of the basis functions in u
+--     
+ 
+    D1 (me : mutable; U : Real;  
+      	BasisValue : out Array1OfReal from TColStd; 
+     	BasisD1    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+  
+    D2 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+
+    D3 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd; 
+        BasisD3    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+
+     WorkDegree (me)      
+    --- Purpose: returns WorkDegree   
+    ---C++: inline
+    returns Integer;
+
+     NivConstr (me)  
+    ---Purpose: returns NivConstr 
+    ---C++: inline
+    returns Integer;
+    
+fields 
+     myH       : Matrix from math; 
+     myJacobi  : JacobiPolynomial from PLib; 
+     myWCoeff  : Array1OfReal;  -- The cannonical Coefficients of W(t).
+
+end HermitJacobi;

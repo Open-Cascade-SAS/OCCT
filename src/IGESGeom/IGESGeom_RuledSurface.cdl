@@ -1,0 +1,87 @@
+--
+-- File      :  RuledSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class RuledSurface from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESRuledSurface, Type <118> Form <0-1>
+        --          in package IGESGeom
+        --          A ruled surface is formed by moving a line connecting points
+        --          of equal relative arc length or equal relative parametric
+        --          value on two parametric curves from a start point to a
+        --          terminate point on the curves. The parametric curves may be
+        --          points, lines, circles, conics, rational B-splines,
+        --          parametric splines or any parametric curve defined in
+        --          the IGES specification.
+
+uses
+
+        Pnt         from gp
+
+is
+
+        Create returns mutable RuledSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                   : mutable;
+              aCurve, anotherCurve : IGESEntity;
+              aDirFlag, aDevFlag   : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           RuledSurface
+        --       - aCurve       : First parametric curve
+        --       - anotherCurve : Second parametric curve
+        --       - aDirFlag     : Direction Flag
+        --                        0 = Join first to first, last to last
+        --                        1 = Join first to last, last to first
+        --       - aDevFlag     : Developable Surface Flag
+        --                        1 = Developable
+        --                        0 = Possibly not
+
+    	SetRuledByParameter (me : mutable; mode : Boolean);
+	---Purpose : Sets <me> to be Ruled by Parameter (Form 1) if <mode> is
+	--           True, or Ruled by Length (Form 0) else
+
+    	IsRuledByParameter (me) returns Boolean;
+	---Purpose : Returns True if Form is 1
+
+
+        FirstCurve (me) returns IGESEntity;
+        ---Purpose : returns the first curve
+
+        SecondCurve (me) returns IGESEntity;
+        ---Purpose : returns the second curve
+
+        DirectionFlag (me) returns Integer;
+        ---Purpose : return the sense of direction
+        -- 0 = Join first to first, last to last
+        -- 1 = Join first to last, last to first
+
+        IsDevelopable (me) returns Boolean;
+        ---Purpose : returns True if developable else False
+
+fields
+
+--
+-- Class    : IGESGeom_RuledSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class RuledSurface.
+--
+-- Reminder : A RuledSurface instance is defined by :
+--            Two parametric curves, and a flag indicating direction
+--            (whether first point of one curve is joined to first
+--            point of another or last point of one curve is joined
+--            to the first point of another), and a flag indicating
+--            whether the surface is developable or not.
+
+        theCurve1  : IGESEntity;
+        theCurve2  : IGESEntity;
+        theDirFlag : Integer;
+        theDevFlag : Integer;
+
+end RuledSurface;

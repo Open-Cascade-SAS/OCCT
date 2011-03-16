@@ -1,0 +1,266 @@
+-- File:	GeomToIGES_GeomSurface.cdl
+-- Created:	Thu Nov 17 15:30:03 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+class GeomSurface from GeomToIGES inherits GeomEntity from GeomToIGES
+
+
+    ---Purpose: This class implements the transfer of the Surface Entity from Geom
+    --          To IGES. These can be :
+    --          . BoundedSurface
+    --               * BSplineSurface
+    --               * BezierSurface
+    --               * RectangularTrimmedSurface
+    --          . ElementarySurface  
+    --               * Plane
+    --               * CylindricalSurface
+    --               * ConicalSurface
+    --               * SphericalSurface
+    --               * ToroidalSurface
+    --          . SweptSurface     
+    --               * SurfaceOfLinearExtrusion
+    --               * SurfaceOfRevolution
+    --          . OffsetSurface
+
+  
+uses
+
+    Real                      from Standard,
+    Surface                   from Geom, 
+    BoundedSurface            from Geom,
+    BSplineSurface            from Geom,
+    BezierSurface             from Geom,
+    RectangularTrimmedSurface from Geom,
+    ElementarySurface         from Geom,
+    Plane                     from Geom, 
+    CylindricalSurface        from Geom,
+    ConicalSurface            from Geom,
+    SphericalSurface          from Geom,
+    ToroidalSurface           from Geom,
+    SweptSurface              from Geom,
+    SurfaceOfLinearExtrusion  from Geom,
+    SurfaceOfRevolution       from Geom,
+    OffsetSurface             from Geom,
+    IGESEntity                from IGESData,
+    GeomEntity                from GeomToIGES    
+    
+    
+is 
+    
+    Create returns GeomSurface from GeomToIGES;
+
+
+    Create(GE : GeomEntity from GeomToIGES)  
+    returns GeomSurface from GeomToIGES;
+    	---Purpose: Creates a tool GeomSurface ready to run and sets its
+    	--          fields as GE's.
+
+    TransferSurface        (me    : in out;
+                            start : Surface from Geom;
+			    Udeb  : Real    from Standard;
+			    Ufin  : Real    from Standard;
+			    Vdeb  : Real    from Standard;
+			    Vfin  : Real    from Standard)
+    returns mutable IGESEntity from IGESData;
+    	---Purpose: Transfert  a  GeometryEntity which  answer True  to  the
+    	--          member : BRepToIGES::IsGeomSurface(Geometry).  If this
+    	--          Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferSurface        (me    : in out;
+                            start : BoundedSurface from Geom;
+			    Udeb  : Real           from Standard;
+			    Ufin  : Real           from Standard;
+			    Vdeb  : Real           from Standard;
+			    Vfin  : Real           from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : BSplineSurface from Geom;
+			    Udeb  : Real           from Standard;
+			    Ufin  : Real           from Standard;
+			    Vdeb  : Real           from Standard;
+			    Vfin  : Real           from Standard)
+    returns mutable IGESEntity from IGESData;
+
+    TransferSurface        (me    : in out;
+                            start : BezierSurface from Geom;
+			    Udeb  : Real          from Standard;
+			    Ufin  : Real          from Standard;
+			    Vdeb  : Real          from Standard;
+			    Vfin  : Real          from Standard)
+    returns mutable IGESEntity from IGESData;
+
+    TransferSurface        (me    : in out;
+                            start : RectangularTrimmedSurface from Geom;
+			    Udeb  : Real                      from Standard;
+			    Ufin  : Real                      from Standard;
+			    Vdeb  : Real                      from Standard;
+			    Vfin  : Real                      from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : ElementarySurface from Geom;
+		            Udeb  : Real              from Standard;
+		            Ufin  : Real              from Standard;
+		            Vdeb  : Real              from Standard;
+		            Vfin  : Real              from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : Plane from Geom;
+		            Udeb  : Real  from Standard;
+          		    Ufin  : Real  from Standard;
+		            Vdeb  : Real  from Standard;
+		            Vfin  : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+    
+
+    TransferSurface        (me    : in out;
+                            start : CylindricalSurface from Geom;
+		            Udeb  : Real               from Standard;
+		            Ufin  : Real               from Standard;
+		            Vdeb  : Real               from Standard;
+		            Vfin  : Real               from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : ConicalSurface from Geom;
+			    Udeb  : Real           from Standard;
+			    Ufin  : Real           from Standard;
+			    Vdeb  : Real           from Standard;
+			    Vfin  : Real           from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : SphericalSurface from Geom;
+  		            Udeb  : Real             from Standard;
+		            Ufin  : Real             from Standard;
+		            Vdeb  : Real             from Standard;
+		            Vfin  : Real             from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : ToroidalSurface from Geom;
+			    Udeb  : Real            from Standard;
+			    Ufin  : Real            from Standard;
+		            Vdeb  : Real            from Standard;
+		            Vfin  : Real            from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : SweptSurface from Geom;
+		            Udeb  : Real         from Standard;
+			    Ufin  : Real         from Standard;
+			    Vdeb  : Real         from Standard;
+			    Vfin  : Real         from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : SurfaceOfLinearExtrusion from Geom;
+	                    Udeb  : Real                     from Standard;
+	   	    	    Ufin  : Real                     from Standard;
+	         	    Vdeb  : Real                     from Standard;
+		            Vfin  : Real                     from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : SurfaceOfRevolution from Geom;
+			    Udeb  : Real                from Standard;
+			    Ufin  : Real                from Standard;
+			    Vdeb  : Real                from Standard;
+			    Vfin  : Real                from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferSurface        (me    : in out;
+                            start : OffsetSurface from Geom;
+			    Udeb  : Real          from Standard;
+			    Ufin  : Real          from Standard;
+			    Vdeb  : Real          from Standard;
+			    Vfin  : Real          from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    -- Methods for translating sufraces in BRep IGES
+
+    
+    TransferPlaneSurface   (me    : in out;
+                            start : Plane from Geom;
+		            Udeb  : Real  from Standard;
+          		    Ufin  : Real  from Standard;
+		            Vdeb  : Real  from Standard;
+		            Vfin  : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+
+
+    TransferCylindricalSurface(me   : in out;
+    	    	    	       start: CylindricalSurface from Geom;
+			       Udeb : Real  from Standard;
+          		       Ufin : Real  from Standard;
+		               Vdeb : Real  from Standard;
+		               Vfin : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+    
+    
+    TransferConicalSurface(me   : in out;
+    	    	    	   start: ConicalSurface from Geom;
+			   Udeb : Real  from Standard;
+          		   Ufin : Real  from Standard;
+		           Vdeb : Real  from Standard;
+		           Vfin : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+    
+    
+    TransferSphericalSurface(me   : in out;
+    	    	    	     start: SphericalSurface from Geom;
+			     Udeb : Real  from Standard;
+          		     Ufin : Real  from Standard;
+		             Vdeb : Real  from Standard;
+		             Vfin : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+    
+    
+    TransferToroidalSurface(me   : in out;
+    	    	    	    start: ToroidalSurface from Geom;
+			    Udeb : Real  from Standard;
+          		    Ufin : Real  from Standard;
+		            Vdeb : Real  from Standard;
+		            Vfin : Real  from Standard)
+    returns mutable IGESEntity from IGESData;
+
+    -- Methods for setting and obtaining fields.
+    
+    Length(me) returns Real;
+    	---Purpose: Returns the value of "TheLength" 
+    
+    GetBRepMode(me) returns Boolean from Standard;
+    	---Purpose: Returns Brep mode flag.
+	
+    SetBRepMode(me: in out; flag: Boolean from Standard);
+    	---Purpose: Sets BRep mode flag.
+    
+    GetAnalyticMode(me) returns Boolean from Standard;
+    	---Purpose: Returns flag for writing elementary surfaces
+    
+    SetAnalyticMode(me: in out; flag: Boolean from Standard);
+    	---Purpose: Setst flag for writing elementary surfaces
+    
+fields
+
+    TheLength : Real from Standard;
+    myBRepMode: Boolean from Standard;
+    myAnalytic: Boolean from Standard;
+    
+end GeomSurface;

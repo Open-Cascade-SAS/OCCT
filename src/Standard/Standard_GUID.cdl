@@ -1,0 +1,117 @@
+-- File:	Standard_GUID.cdl
+-- Created:	Thu Jun 19 10:44:42 1997
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class GUID from Standard 
+
+inherits Storable from Standard
+
+is
+    Create returns GUID from Standard;
+    
+    Create(aGuid : CString from Standard)
+    	returns GUID from Standard;
+    ---Purpose: build a GUID from an ascii string with the
+    --          following format:
+    --          Length : 36 char
+    --          "00000000-0000-0000-0000-000000000000"
+
+    Create(aGuid : ExtString from Standard)
+    	returns GUID from Standard;
+    ---Purpose: build a GUID from an unicode string with the
+    --          following format:
+    --          
+    --          "00000000-0000-0000-0000-000000000000"
+
+    
+    Create(a32b : Integer from Standard;
+    	   a16b1 : ExtCharacter from Standard;
+	   a16b2 : ExtCharacter from Standard;
+	   a16b3 : ExtCharacter from Standard;
+	   a8b1 : Byte from Standard;
+	   a8b2 : Byte from Standard;
+	   a8b3 : Byte from Standard;
+	   a8b4 : Byte from Standard;
+	   a8b5 : Byte from Standard;
+	   a8b6 : Byte from Standard)
+    	returns GUID from Standard;
+	
+    Create(aGuid : UUID from Standard)
+    	returns GUID from Standard;
+
+    Create(aGuid : GUID from Standard)
+    	returns GUID from Standard;
+
+    ToUUID(me)
+    	returns UUID from Standard ;
+
+    ToCString(me; aStrGuid : PCharacter from Standard);
+    ---Purpose: translate the GUID into ascii string
+    --          the aStrGuid is allocated by user.
+    --          the guid have the following format:
+    --          
+    --          "00000000-0000-0000-0000-000000000000"
+      
+    ToExtString(me; aStrGuid : PExtCharacter from Standard);
+    ---Purpose: translate the GUID into unicode string
+    --          the aStrGuid is allocated by user.
+    --          the guid have the following format:
+    --          
+    --          "00000000-0000-0000-0000-000000000000"
+      
+    IsSame(me; uid : GUID from Standard)
+    	    returns Boolean from Standard;
+    ---C++: alias operator ==	   
+ 
+    IsNotSame(me; uid : GUID from Standard)
+    	    returns Boolean from Standard;
+    ---C++: alias operator !=	
+		    
+    Assign(me : out; uid : GUID from Standard);
+    ---C++: alias operator =
+
+    Assign(me : out; uid : UUID from Standard);
+    ---C++: alias operator =
+		    
+    ShallowDump(me; aStream : in out OStream from Standard) is redefined;
+    ---Purpose: Display the GUID with the following format:
+    --          
+    --          "00000000-0000-0000-0000-000000000000"
+
+    CheckGUIDFormat(myclass; aGuid : CString from Standard)
+    	returns Boolean from Standard;
+    ---Purpose: Check the format of a GUID string.
+    --          It checks the size, the position of the '-' and the correct size of fields.
+
+    Hash(me; Upper : Integer)
+    returns Integer;
+    ---Level: Internal
+    ---Purpose: Hash function for GUID.
+    
+    HashCode(myclass ; aguid : GUID from Standard; Upper : Integer)
+    returns Integer;
+    ---Level: Internal
+    ---Purpose: H method used by collections.
+
+    IsEqual(myclass ; string1 : GUID from Standard; 
+            string2 : GUID from Standard)
+    returns Boolean;
+    ---Level: Internal
+    ---Purpose: Returns True  when the two GUID are the same. 
+
+    fields
+
+    	 my32b : Integer;
+	 my16b1 : ExtCharacter;
+	 my16b2 : ExtCharacter;
+	 my16b3 : ExtCharacter;
+	 my8b1 : Byte;
+	 my8b2 : Byte;
+	 my8b3 : Byte;
+	 my8b4 : Byte;
+	 my8b5 : Byte;
+	 my8b6 : Byte; 
+    	
+end;

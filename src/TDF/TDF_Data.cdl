@@ -1,0 +1,228 @@
+-- File:        TDF_Data.cdl
+--              ------------
+-- Author:      DAUTRY Philippe
+--              <fid@fox.paris1.matra-dtv.fr>
+---Copyright:    MATRA DATAVISION 1997
+
+---Version:     0.0
+---History:     Version Date            Purpose
+--              0.0     Feb  4 1997     Creation
+
+class Data from TDF inherits TShared from MMgt
+
+        ---Purpose: This class is used to manipulate a complete
+        --          independant, self sufficient data structure and
+        --          its services:
+        --          
+        --          Access to the root label;
+        --          
+        --          Opens, aborts, commits a transaction;
+        --          
+        --          Generation and use of Delta, depending on the time.
+-- This class uses a special allocator
+-- (see LabelNodeAllocator() method)
+--  for more efficient allocation of
+--  objects in memory.
+uses
+
+    Attribute              from TDF,
+    Label                  from TDF,
+    LabelNodePtr           from TDF,
+    Delta                  from TDF,
+    IDFilter               from TDF,
+    StackOfInteger         from TColStd,
+    HAllocator             from TDF
+
+raises
+
+    NoMoreObject from Standard
+    
+is
+
+    Create returns mutable Data from TDF;
+        ---Purpose: A new and empty Data structure.
+    
+    -- -----------------------------------------------------------------------
+
+    Root(me) returns Label from TDF;
+        ---Purpose: Returns the root label of the Data structure.
+        --          
+        ---C++: inline
+        ---C++: return const
+        
+    -- -----------------------------------------------------------------------
+
+    -- Important notice: For a more secure use of Open/Commit/Abort
+    -- transactions, see class Transaction from TDF.
+
+    Transaction(me) returns Integer;
+        ---Purpose: Returns the current transaction number.
+    
+    OpenTransaction(me : mutable) returns Integer
+        is private;
+        ---Purpose: Increments the transaction number and returns it.
+                
+    CommitTransaction(me : mutable;
+                      withDelta : Boolean from Standard = Standard_False)
+        returns Delta from TDF
+        raises NoMoreObject from Standard
+        is private;
+        ---Purpose: Decrements the transaction number and commits the
+        --          modifications.
+        --          
+        --          Raises if there is no current transaction.
+        --          
+        --          Optionnal <withDelta> set to True indiquates a
+        --          Delta must be generated.
+                
+    CommitUntilTransaction(me : mutable;
+                           untilTransaction : Integer from Standard;
+                           withDelta : Boolean from Standard = Standard_False)
+        returns Delta from TDF
+        is private;
+        ---Purpose: Decrements the transaction number and commits the
+        --          modifications until AND including the transaction
+        --          <untilTransaction>.
+                
+    AbortTransaction(me : mutable)
+        raises NoMoreObject from Standard
+        is private;
+        ---Purpose: Decrements the transaction number and forgets the
+        --          modifications.
+        --          
+        --          Raises if there is no current transaction.
+                
+    AbortUntilTransaction(me : mutable;
+                          untilTransaction : Integer from Standard)
+        is private;
+        ---Purpose: Decrements the transaction number and forgets the
+        --          modifications until AND including the transaction
+        --          <untilTransaction>.
+                
+    -- -----------------------------------------------------------------------
+
+    Time(me) returns Integer from Standard;
+        ---Purpose: Returns the current tick. It is incremented each Commit.
+        --          
+        ---C++: inline
+
+    IsApplicable (me;
+                  aDelta : Delta from TDF)
+        returns Boolean from Standard;
+        ---Purpose: Returns true if <aDelta> is applicable HERE and NOW.
+
+
+    Undo(me : mutable;
+         aDelta : Delta from TDF;
+         withDelta : Boolean from Standard = Standard_False)
+        returns Delta from TDF;
+        ---Purpose: Apply <aDelta> to undo a set of attribute
+        --          modifications.
+        --          
+        --          Optionnal <withDelta> set to True indiquates a
+        --          Delta Set must be generated. (See above)
+
+    -- -----------------------------------------------------------------------
+
+    Destroy(me : mutable);
+        ---C++: alias ~
+
+
+    -- Private internal use methods ------------------------------------------
+
+    CommitTransaction(me : mutable;
+                      aLabel : Label from TDF;
+                      aDelta : Delta from TDF;
+                      withDelta : Boolean from Standard)
+        returns Integer from Standard
+        is private;
+        ---Purpose: Decrements the transaction number and commits the
+        --          modifications. Used to implement the recursif
+        --          commit process. The returned boolean says how many
+        --          attributes (new, modified or deleted) has been
+        --          committed from the previous transaction into the
+        --          current one.
+
+
+    -- Miscelleaneous
+    -- --------------
+
+    NotUndoMode(me) returns Boolean from Standard;
+        ---Purpose: Returns the undo mode status.
+        --          
+        ---C++: inline
+
+
+    Dump(me; anOS : in out OStream from Standard)
+        returns OStream from Standard;
+        ---Purpose: Dumps the Data on <aStream>.
+        --          
+        ---C++: return &
+        ---C++: alias operator<<
+
+    --  methods for check modifications outside the transaction -----------
+
+    AllowModification(me: mutable; isAllowed : Boolean from Standard );
+        ---Purpose: Sets modification mode.
+        --          
+        ---C++: inline
+
+    IsModificationAllowed(me) returns Boolean from Standard;
+        ---Purpose: returns modification mode.
+        --          
+        ---C++: inline
+
+    LabelNodeAllocator(me) returns HAllocator from TDF;
+    	---Purpose: Returns TDF_HAllocator, which is an
+-- incremental allocator used by
+-- TDF_LabelNode.
+--      This allocator is used to
+--      manage TDF_LabelNode objects,
+--      but it can also be used for
+--      allocating memory to
+--      application-specific data (be
+--      careful because this
+--      allocator does not release
+--      the memory).
+--      The benefits of this
+--      allocation scheme are
+--      noticeable when dealing with
+--      large OCAF documents, due to:
+-- 1.    Very quick allocation of
+--   objects (memory heap is not
+--   used, the algorithm that
+--   replaces it is very simple).
+-- 2.    Very quick destruction of
+--   objects (memory is released not
+--   by destructors of TDF_LabelNode,
+--   but rather by the destructor of
+--   TDF_Data).
+-- 3.  TDF_LabelNode objects do not
+--   fragmentize the memory; they are
+--   kept compactly in a number of
+--   arrays of 16K each.
+-- 4.    Swapping is reduced on large
+--   data, because each document now
+--   occupies a smaller number of
+--   memory pages.
+    	---C++:  inline
+    	---C++:  return const &
+
+fields
+
+    myRoot              : LabelNodePtr          from TDF;
+    myTransaction       : Integer               from Standard;
+    myNbTouchedAtt      : Integer               from Standard;
+    myNotUndoMode       : Boolean               from Standard;
+    myTime              : Integer               from Standard;
+    myTimes             : StackOfInteger        from TColStd;
+    myLabelNodeAllocator: HAllocator            from TDF;
+    myAllowModification : Boolean               from Standard;
+
+friends
+
+    class Transaction from TDF,
+    class LabelNode   from TDF
+
+
+end Data;

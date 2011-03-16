@@ -1,0 +1,16 @@
+-- File:	CDM_LogFileDriver.cdl
+-- Created:	Thu Oct 29 08:19:54 1998
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class NullMessageDriver from CDM inherits MessageDriver from CDM
+
+is
+    Create returns mutable NullMessageDriver from CDM;
+    
+    
+    Write(me: mutable; aString: ExtString from Standard);
+
+    
+end NullMessageDriver from CDM;

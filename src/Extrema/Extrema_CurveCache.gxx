@@ -1,0 +1,121 @@
+// File     : Extrema_CurveCache.gxx
+// Created  : Sun Dec 28 2008
+// Author   : Roman Lygin
+//            roman.lygin@gmail.com
+// Copyright: Roman Lygin, Open CASCADE 2008
+
+#include <Precision.hxx>
+
+//=======================================================================
+//function : Extrema_CurveCache
+//purpose  : 
+//=======================================================================
+
+Extrema_CurveCache::Extrema_CurveCache(const Curve& theC,
+                                   const Standard_Real theUFirst,
+                                   const Standard_Real theULast,
+                                   const Standard_Integer theNbSamples,
+                                   const Standard_Boolean theToCalculate) :
+    myC (0), myNbSamples (-1), myIsArrayValid (Standard_False)
+{
+  SetCurve (theC, theUFirst, theULast, theNbSamples, theToCalculate);
+}
+
+//=======================================================================
+//function : Extrema_CurveCache
+//purpose  : 
+//=======================================================================
+
+Extrema_CurveCache::Extrema_CurveCache() : myC (0), myNbSamples (-1),
+    myIsArrayValid (Standard_False)
+{
+}
+
+//=======================================================================
+//function : SetCurve
+//purpose  : 
+//=======================================================================
+
+void Extrema_CurveCache::SetCurve (const Curve& theC,
+                                   const Standard_Integer theNbSamples,
+                                   const Standard_Boolean theToCalculate)
+{
+  myC = (Standard_Address)&theC;
+  myNbSamples = theNbSamples;
+  myIsArrayValid = Standard_False;
+  myPntArray.Nullify();
+  if (theToCalculate) {
+    CalculatePoints();
+  }
+}
+
+//=======================================================================
+//function : SetCurve
+//purpose  : 
+//=======================================================================
+
+void Extrema_CurveCache::SetCurve (const Curve& theC,
+                                   const Standard_Real theUFirst,
+                                   const Standard_Real theULast,
+                                   const Standard_Integer theNbSamples,
+                                   const Standard_Boolean theToCalculate)
+{
+  SetCurve (theC, theNbSamples, Standard_False); //no calculation
+  SetRange (theUFirst, theULast, theToCalculate);
+}
+
+//=======================================================================
+//function : SetRange
+//purpose  : 
+//=======================================================================
+
+void Extrema_CurveCache::SetRange (const Standard_Real theUFirst,
+                                   const Standard_Real theULast,
+                                   const Standard_Boolean theToCalculate)
+{
+  //myTrimFirst and myTrimLast are used to compute values on unlimited curves
+  myTrimFirst = myFirst = theUFirst;
+  if (Precision::IsInfinite(myTrimFirst)){
+    myTrimFirst = -1.0e+10;
+  }
+  myTrimLast = myLast = theULast;
+  if (Precision::IsInfinite(myTrimLast)){
+    myTrimLast = 1.0e+10;
+  }
+
+  myIsArrayValid = Standard_False;
+  myPntArray.Nullify();
+  if (theToCalculate) {
+    CalculatePoints();
+  }
+}
+
+//=======================================================================
+//function : CalculatePoints
+//purpose  : 
+//=======================================================================
+
+void Extrema_CurveCache::CalculatePoints()
+{
+  if (myIsArrayValid) return; //no need to recalculate if nothing has changed
+  const Curve& aCurve = *((Curve*)myC);
+
+  // compute myNbSamples point along the [myTrimFirst, myTrimLast] range
+
+  Standard_Real aDelta = myTrimLast - myTrimFirst;
+  Standard_Real aPar0 = aDelta / myNbSamples / 100.;
+  aDelta = (aDelta - aPar0) / (myNbSamples - 1);
+  aPar0 = myTrimFirst + (aPar0/2.);
+
+  //Cache points
+
+  myPntArray = new ArrayOfPnt (1, myNbSamples);
+
+  Standard_Integer i;
+  Standard_Real aPar;
+  for (i = 1, aPar = aPar0; i <= myNbSamples; i++, aPar += aDelta) {
+    myPntArray->SetValue (i, aCurve.Value (aPar));
+  }
+
+  myIsArrayValid = Standard_True; //cache is available now
+}

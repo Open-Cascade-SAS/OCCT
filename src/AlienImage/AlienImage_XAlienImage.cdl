@@ -1,0 +1,62 @@
+--
+-- File:	AlienImage_XAlienImage.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	Matravision 1993
+--
+
+class XAlienImage from AlienImage inherits AlienUserImage from AlienImage
+
+    	---Purpose: Defines an X11 Alien image, i.e. an image file to be
+    	-- used with X11 xwd utility.
+
+uses
+	File 			from OSD,
+	AsciiString 		from TCollection,
+	ColorImage 		from Image,
+	PseudoColorImage 	from Image,
+	Image			from Image,
+	X11XWDAlienData 	from AlienImage
+
+is
+	Create returns mutable XAlienImage from AlienImage;
+    	---Purpose: Constructs an empty X11 alien image.
+	Clear( me : in out mutable) ;
+	---Level: Public
+	---Purpose: Frees memory allocated by XAlienImage
+	---C++: alias ~
+
+	SetName( me : in out mutable;
+		 aName : in AsciiString from TCollection) ;
+	---Purpose: Sets the Image name for the Name function.
+
+	Name( me : in immutable ) returns AsciiString from TCollection ;
+	---C++: return const &
+        ---Purpose: Returns the Image name.
+
+	ToImage( me : in immutable ) 
+	  returns mutable Image from Image ;
+	---Level: Public
+	---Purpose : Converts an XAlienImage object to a Image object.
+
+	FromImage( me : in out mutable ; anImage : in Image from Image ) ;
+	---Level: Public
+	---Purpose : Converts an Image object to a XAlienImage object.
+
+	Read ( me : in out mutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	---Purpose: Reads the content of a  XAlienImage object from a file .
+	--          Returns True if file is a XWD file .
+
+	Write( me : in immutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	---Purpose: Writes the content of a  XAlienImage object to a file .
+
+fields
+	myData : X11XWDAlienData  from  AlienImage;
+
+end ;
+ 

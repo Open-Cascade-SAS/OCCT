@@ -1,0 +1,26 @@
+// SortTools_StraightInsertionSort.gxx
+// cree le 04/11/91 par ASI
+// Reference : Software Conponents with ADA, Grady Booch.
+
+void SortTools_StraightInsertionSort::Sort(Array& TheArray,
+					   const Comparator& Comp) 
+{      
+  Item    TempItem;
+  Standard_Integer J;
+
+  for(Standard_Integer I = TheArray.Lower() + 1; I <= TheArray.Upper(); I++) {
+    TempItem = TheArray(I);
+    J = I;
+    while (Comp.IsLower(TempItem, TheArray(J - 1))) {
+      TheArray(J) = TheArray(J - 1);
+      J = J - 1;
+      if (J == TheArray.Lower()) break;
+    }
+    TheArray(J) = TempItem;
+  }
+}
+
+
+
+
+

@@ -1,0 +1,249 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_ReducedGraph.cxx
+// Created:	Wed Oct 23 16:28:16 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <GraphTools_RGNode.hxx>
+#include <GraphTools_ListIteratorOfSCList.hxx>
+
+static Standard_Boolean ContainsBack (const Handle(GraphTools_SC)& SC1,
+			       const Handle(GraphTools_SC)& SC2)
+{
+  GraphTools_ListIteratorOfSCList it (SC1->GetBackSC());
+  for (;it.More();it.Next()) {
+    if (it.Value() == SC2) return Standard_True;
+  }
+  return Standard_False;
+}
+
+static Standard_Boolean ContainsFront (const Handle(GraphTools_SC)& SC1,
+				const Handle(GraphTools_SC)& SC2)
+{
+  GraphTools_ListIteratorOfSCList it (SC1->GetFrontSC());
+  for (;it.More();it.Next()) {
+    if (it.Value() == SC2) return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : GraphTools_ReducedGraph
+//purpose  : 
+//=======================================================================
+
+GraphTools_ReducedGraph::GraphTools_ReducedGraph () 
+{
+  performed = Standard_False;
+}
+
+
+//=======================================================================
+//function : GraphTools_ReducedGraph
+//purpose  : 
+//=======================================================================
+
+GraphTools_ReducedGraph::GraphTools_ReducedGraph 
+  (const Graph& G) 
+{
+  FromGraph(G);
+  Perform(G);
+}
+
+
+//=======================================================================
+//function : FromGraph
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ReducedGraph::FromGraph (const Graph& G) 
+{
+  performed = Standard_False;
+  for (GIterator itG (G); itG.More(); itG.Next() ) {
+    GraphTools_RGNode newnode;
+    myVertices.Add (itG.Value(),newnode);
+  }
+}
+
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ReducedGraph::FromVertex (const Vertex& V) 
+{
+  performed = Standard_False;
+  GraphTools_RGNode newnode;
+  myVertices.Add(V,newnode);
+}
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ReducedGraph::Perform (const Graph& G)
+{
+  performed = Standard_True;
+  myNowIndex = 0;
+  myStack.Clear();
+  mySort.Clear();
+  Standard_Integer visited;
+  Standard_Integer index = 1;
+  while  (index <= myVertices.Extent()) {
+    visited = myVertices(index).GetVisited();
+    if (visited == 0) Visit(index,G);
+    index++;
+  }
+  // front and back strong components  of a given one : Update
+  Standard_Integer curV,nbV,adjV,nbadjV;
+  Handle(GraphTools_SC) curSC,adjSC;
+  GraphTools_ListIteratorOfSCList it;
+  for (it.Initialize(mySort); it.More(); it.Next()) {
+    curSC = it.Value();
+    nbV   = curSC->NbVertices();
+    for (Standard_Integer j = 1; j <= nbV; j++) {
+      curV  = curSC->GetVertex(j);
+      nbadjV = myVertices(curV).NbAdj();
+      for (Standard_Integer k = 1; k <= nbadjV; k++) {
+	adjV  = myVertices(curV).GetAdj(k);
+	adjSC = myVertices(adjV).GetSC();
+        if (adjSC != curSC) {
+	  if (!ContainsFront(curSC,adjSC)) curSC->AddFrontSC (adjSC);
+	  if (!ContainsBack(adjSC,curSC))  adjSC->AddBackSC  (curSC);
+	}
+      }
+    }
+  }
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ReducedGraph::Reset ()
+{
+  performed = Standard_False;
+  myVertices.Clear();
+  myNowIndex = 0;
+  myStack.Clear();
+  mySort.Clear();
+}
+
+
+//=======================================================================
+//function : IsRoot
+//purpose  : 
+//=======================================================================
+Standard_Boolean GraphTools_ReducedGraph::IsRoot
+  (const Handle(GraphTools_SC)& SC) const
+{
+  return (SC->GetBackSC().IsEmpty()); 
+}                       
+
+
+//=======================================================================
+//function : IsLeaf
+//purpose  : 
+//=======================================================================
+Standard_Boolean GraphTools_ReducedGraph::IsLeaf
+  (const Handle(GraphTools_SC)& SC) const
+{
+  return (SC->GetFrontSC().IsEmpty());
+} 
+
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphTools_ReducedGraph::NbVertices
+  (const Handle(GraphTools_SC)& SC) const
+{
+  return SC->NbVertices();
+}
+
+
+//=======================================================================
+//function : GetVertex
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_ReducedGraph::GetVertex
+  (const Handle(GraphTools_SC)& SC,
+   const Standard_Integer index) const
+{
+  return myVertices.FindKey(SC->GetVertex(index));
+}
+
+
+//=======================================================================
+//function : GetSC
+//purpose  : 
+//=======================================================================
+Handle(GraphTools_SC) GraphTools_ReducedGraph::GetSC 
+       (const Vertex& V) const
+{
+  if (!performed) Standard_DomainError::Raise();
+  return myVertices.FindFromKey(V).GetSC();
+}
+
+ 
+//=======================================================================
+//function : Visit
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphTools_ReducedGraph::Visit 
+  (const Standard_Integer k, const Graph& G) 
+{
+  Standard_Integer MIN;
+  Standard_Integer M;
+  myNowIndex++; 
+  myVertices(k).SetVisited(myNowIndex);
+  MIN = myNowIndex;
+  myStack.Push(k);
+  Standard_Integer currentVisited;
+  currentVisited = myVertices(k).GetVisited();
+  Standard_Integer adjacentIndex;
+  Standard_Integer adjacentVisited;
+  for (VIterator itV (G,myVertices.FindKey(k)); itV.More(); itV.Next()) { 
+    adjacentIndex = myVertices.FindIndex(itV.Value());
+    if (adjacentIndex == 0) {
+      GraphTools_RGNode newnode;
+      adjacentIndex   = myVertices.Add (itV.Value(),newnode);
+      adjacentVisited = 0;
+    }
+    else  adjacentVisited = myVertices(adjacentIndex).GetVisited();
+    myVertices(k).AddAdj(adjacentIndex);
+    if (adjacentVisited == 0) M = Visit (adjacentIndex,G);
+    else M = adjacentVisited;
+    if (M < MIN) MIN = M;
+  }
+  if (MIN == currentVisited) {
+    Handle(GraphTools_SC) SC = new GraphTools_SC();
+    Standard_Boolean more;
+    do {
+      SC->AddVertex(myStack.Top());
+      myVertices(myStack.Top()).SetVisited(IntegerLast());
+      myVertices(myStack.Top()).SetSC(SC);
+      more = myStack.Top() != k;
+      myStack.Pop() ; 
+    }
+    while (more);
+    mySort.Prepend(SC);  
+  }
+  return MIN;
+}
+
+
+
+
+
+

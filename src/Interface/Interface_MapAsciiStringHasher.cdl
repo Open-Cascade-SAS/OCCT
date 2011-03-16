@@ -1,0 +1,24 @@
+-- File:	Interface_MapAsciiStringHasher.cdl
+-- Created:	Tue May  6 10:31:46 2003
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+
+class MapAsciiStringHasher from Interface 
+
+	---Purpose: 
+
+uses
+    AsciiString from TCollection
+
+
+is
+    
+    
+    HashCode(myclass; K : AsciiString from TCollection ; Upper : Integer) returns Integer;
+    IsEqual(myclass; K1, K2 : AsciiString from TCollection) returns Boolean;
+    
+
+
+end MapAsciiStringHasher;

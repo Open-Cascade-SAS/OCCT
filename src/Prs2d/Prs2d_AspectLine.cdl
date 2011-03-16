@@ -1,0 +1,145 @@
+-- File     : Prs2d_AspectLine.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class AspectLine from Prs2d inherits AspectRoot from Prs2d
+ 
+ ---Purpose: defines the attributes when drawing a line presentation
+
+uses
+  
+   Color                from Quantity,
+   NameOfColor          from Quantity,
+   TypeOfLine           from Aspect,
+   WidthOfLine          from Aspect,
+   TypeOfPolygonFilling from Graphic2d
+   
+is
+
+	Create returns mutable AspectLine from Prs2d;
+	---Purpose: default constructor 
+			 
+    Create( aColor      : NameOfColor from Quantity;
+            aType       : TypeOfLine from Aspect;
+            aWidth      : WidthOfLine from Aspect;
+	    	aInterColor : NameOfColor from Quantity = Quantity_NOC_YELLOW;
+	        aTypeFill   : TypeOfPolygonFilling from Graphic2d = Graphic2d_TOPF_EMPTY;
+            aTiled      : Integer from Standard = 0;
+            aDrawEdge   : Boolean from Standard = Standard_True )
+	returns mutable AspectLine from Prs2d;
+    ---Purpose: Initializes the AspectLine defined values
+
+    Create( aColor         : Color from Quantity;
+            aType          : TypeOfLine from Aspect;
+            aWidth         : WidthOfLine from Aspect;
+		    aInterColor    : Color from Quantity;
+	        aTypeFill      : TypeOfPolygonFilling from Graphic2d = Graphic2d_TOPF_EMPTY;
+            aTileInd       : Integer from Standard = 0;
+            aDrawEdge      : Boolean from Standard = Standard_True)
+	returns mutable AspectLine from Prs2d;
+	---Purpose: Initializes the AspectLine defined values
+
+    ---------------------------------------------------------------------
+	---Category: Modifications of the class properties
+
+    SetColor( me: mutable; aColor: NameOfColor from Quantity );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a color
+
+    SetColor( me: mutable; aColor: Color from Quantity );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a color
+
+    SetType( me: mutable; aType: TypeOfLine from Aspect );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a type of line
+
+    SetWidth( me: mutable; aWidth: WidthOfLine from Aspect );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a width of line
+
+   	SetInterColor( me: mutable; aColor: NameOfColor from Quantity );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a interior color
+
+    SetInterColor( me: mutable; aColor: Color from Quantity );
+    ---Level: Public
+    ---Purpose: Modifies the Aspect by redefining a interior color
+	
+	SetTypeOfFill( me: mutable; aType: TypeOfPolygonFilling from Graphic2d );
+	---Level: Public
+    ---Purpose: Modifies the Aspect Polygon by redefining its type of polygon filling
+
+    SetTile( me: mutable; aTile: Integer from Standard);
+    ---Level: Public
+    ---Purpose: Sets the tile of the Aspect Polygon
+	 
+    SetDrawEdge( me: mutable; aDrawEdge: Boolean from Standard);
+    ---Level: Public
+    ---Purpose: Sets the flag <aDrawEdge>
+    
+
+    ValuesOfLine( me;
+	              aColor: out Color from Quantity;
+                  aType:  out TypeOfLine from Aspect;
+                  aWidth: out WidthOfLine from Aspect);
+    ---Level: Public
+    ---Purpose: Return the current values of this line
+   
+    ValuesOfPoly( me;
+	            aColor   : out Color from Quantity;
+		        aTypeFill: out TypeOfPolygonFilling from Graphic2d;
+                aTile    : out Integer from Standard;
+                aDrawEdge: out Boolean from Standard );
+    ---Level: Public
+    ---Purpose: Returns the current values of this closed line
+    	
+    ColorIndex( me ) returns Integer from Standard;
+    ---Level: Internal
+    ---Purpose: Returns current color index according to the color aspect
+	
+    TypeIndex( me ) returns Integer from Standard;
+    ---Level: Internal
+    ---Purpose: Returns current type index according to the type aspect
+	
+    WidthIndex( me ) returns Integer from Standard;
+    ---Level: Internal
+    ---Purpose: Returns current width index according to the width aspect
+	
+	InterColorIndex( me ) returns Integer from Standard;
+    ---Level: Internal
+    ---Purpose: Returns current color index according to the color aspect
+	
+	SetColorIndex( me: mutable; anInd: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Sets current color index according to the color aspect
+	
+    SetTypeIndex( me: mutable; anInd: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Sets current type index according to the type aspect
+	
+    SetWidthIndex( me: mutable; anInd: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Sets current width index according to the width aspect
+	
+	SetIntColorInd( me: mutable; anInd: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: Sets current color index according to the color aspect
+			 
+fields
+
+	myColor       : Color                from Quantity;
+	myType        : TypeOfLine           from Aspect;
+	myWidth       : WidthOfLine          from Aspect;
+	myInterColor  : Color                from Quantity;
+	myFillType    : TypeOfPolygonFilling from Graphic2d; 
+	myTile        : Integer              from Standard;
+	myDrawEdge    : Boolean              from Standard;
+
+    myColorIndex  : Integer 	         from Standard;
+	myTypeIndex   : Integer 	         from Standard;
+	myWidthIndex  : Integer 	         from Standard;
+    myIntColorInd : Integer              from Standard;
+
+end AspectLine from Prs2d;

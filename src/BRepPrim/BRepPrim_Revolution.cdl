@@ -1,0 +1,68 @@
+-- File:	BRepPrim_Revolution.cdl
+-- Created:	Thu Nov  5 18:17:00 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Revolution from BRepPrim inherits OneAxis from BRepPrim
+
+	---Purpose: Implement  the OneAxis algoritm   for a revolution
+	--          surface.
+
+uses
+    Face from TopoDS,
+    Edge from TopoDS,
+    
+    Curve from Geom,
+    Curve from Geom2d,
+    
+    Ax2   from gp,
+    Pnt2d from gp
+
+is
+    Create(A : Ax2 from gp;
+           VMin, VMax : Real from  Standard;
+    	   M  : Curve from Geom;
+    	   PM : Curve from Geom2d) returns Revolution from BRepPrim;
+	---Purpose: Create a  revolution body <M>  is the  meridian nd
+	--          must   be in the XZ  plane   of <A>. <PM>  is  the
+	--          meridian in the XZ plane.
+
+    Create(A : Ax2 from gp;
+           VMin, VMax : Real from  Standard) returns Revolution from BRepPrim
+	---Purpose: Create a  revolution   body.  The meridian  is set
+	--          later. Reserved for derivated classes.
+    is protected;
+    
+    Meridian(me : in out; M : Curve from Geom; PM : Curve from Geom2d)
+    is protected;
+
+    MakeEmptyLateralFace(me) returns Face from TopoDS
+	---Purpose: The surface normal should be directed  towards the
+	--          outside.
+    is virtual;
+    
+    MakeEmptyMeridianEdge(me; Ang : Real) returns Edge from TopoDS
+	---Purpose: Returns  an  edge with  a 3D curve   made from the
+	--          meridian  in the XZ  plane rotated by <Ang> around
+	--          the Z-axis. Ang may be 0 or myAngle.
+    is virtual;
+    
+    MeridianValue(me; V : Real) returns Pnt2d from gp
+	---Purpose: Returns the meridian point at parameter <V> in the
+	--          plane XZ.
+    is virtual;
+    
+    SetMeridianPCurve(me; E : in out Edge from TopoDS; F : Face from TopoDS)
+	---Purpose: Sets the  parametric urve of  the edge <E>  in the
+	--          face <F>   to be  the  2d  representation  of  the
+	--          meridian.
+    is virtual;
+
+fields
+    myMeridian  : Curve from Geom;
+    myPMeridian : Curve from Geom2d;
+
+end Revolution;

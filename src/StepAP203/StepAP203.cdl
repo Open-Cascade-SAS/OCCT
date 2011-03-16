@@ -1,0 +1,91 @@
+-- File:	StepAP203.cdl
+-- Created:	Tue Nov  9 16:00:14 1999
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 1999
+
+
+package StepAP203 
+
+    ---Purpose: Contains implementation of STEP entities specific for AP203
+
+uses
+    TCollection,
+    StepBasic,
+    StepRepr
+
+is
+
+    class ApprovedItem;
+    class CcDesignApproval;
+    class CcDesignCertification;
+    class CcDesignContract;
+    class CcDesignDateAndTimeAssignment;
+    class CcDesignPersonAndOrganizationAssignment;
+    class CcDesignSecurityClassification;
+    class CcDesignSpecificationReference;
+    class CertifiedItem;
+    class Change;
+    class ChangeRequest;
+    class ChangeRequestItem;
+    class ClassifiedItem;
+    class ContractedItem;
+    class DateTimeItem;
+    class PersonOrganizationItem;
+    class SpecifiedItem;
+    class StartRequest;
+    class StartRequestItem;
+    class StartWork;
+    class WorkItem;
+
+    class Array1OfApprovedItem instantiates 
+    	  Array1 from TCollection (ApprovedItem);
+    class HArray1OfApprovedItem instantiates 
+    	  HArray1 from TCollection (ApprovedItem, Array1OfApprovedItem);
+
+    class Array1OfCertifiedItem instantiates 
+    	  Array1 from TCollection (CertifiedItem);
+    class HArray1OfCertifiedItem instantiates 
+    	  HArray1 from TCollection (CertifiedItem, Array1OfCertifiedItem);
+
+    class Array1OfClassifiedItem instantiates 
+    	  Array1 from TCollection (ClassifiedItem);
+    class HArray1OfClassifiedItem instantiates 
+    	  HArray1 from TCollection (ClassifiedItem, Array1OfClassifiedItem);
+
+    class Array1OfContractedItem instantiates 
+    	  Array1 from TCollection (ContractedItem);
+    class HArray1OfContractedItem instantiates 
+    	  HArray1 from TCollection (ContractedItem, Array1OfContractedItem);
+
+    class Array1OfDateTimeItem instantiates 
+    	  Array1 from TCollection (DateTimeItem);
+    class HArray1OfDateTimeItem instantiates 
+    	  HArray1 from TCollection (DateTimeItem, Array1OfDateTimeItem);
+
+    class Array1OfPersonOrganizationItem instantiates 
+    	  Array1 from TCollection (PersonOrganizationItem);
+    class HArray1OfPersonOrganizationItem instantiates 
+    	  HArray1 from TCollection (PersonOrganizationItem, Array1OfPersonOrganizationItem);
+
+    class Array1OfSpecifiedItem instantiates 
+    	  Array1 from TCollection (SpecifiedItem);
+    class HArray1OfSpecifiedItem instantiates 
+    	  HArray1 from TCollection (SpecifiedItem, Array1OfSpecifiedItem);
+
+    class Array1OfWorkItem instantiates 
+    	  Array1 from TCollection (WorkItem);
+    class HArray1OfWorkItem instantiates 
+    	  HArray1 from TCollection (WorkItem, Array1OfWorkItem);
+
+    class Array1OfChangeRequestItem instantiates 
+    	  Array1 from TCollection (ChangeRequestItem);
+    class HArray1OfChangeRequestItem instantiates 
+    	  HArray1 from TCollection (ChangeRequestItem, Array1OfChangeRequestItem);
+
+    class Array1OfStartRequestItem instantiates 
+    	  Array1 from TCollection (StartRequestItem);
+    class HArray1OfStartRequestItem instantiates 
+    	  HArray1 from TCollection (StartRequestItem, Array1OfStartRequestItem);
+
+end StepAP203;

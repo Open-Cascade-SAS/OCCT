@@ -1,0 +1,256 @@
+-- File:        PrsMgr_PresentableObject.cdl
+-- Created:     Wed Jan 25 09:23:00 1995
+-- Author:      Jean-Louis Frenkel
+-- Modified by  Rob (18/12/96) -> information about modes to update.
+--              Rob (04/07/97) ->   TypeOfPresentation3d () Method 
+--                                  changed to Public Method.
+--                             -> Option Projector Dependant/Independant
+--                                may be set at any time , not only in
+--                                the constructor or the presentable.
+--                               ->Insert Locations Methods...
+--              Rob (16/12/97) -> Get the list of modes to be updated
+--                             -> Flags all the Prs to be updated...                 
+--              GG IMP020200   -> Presentations() method become protected
+--                              and no more private.
+--              SAN (22/03/04) -> OCC4895 High-level interface for controlling 
+--                              polygon offsets: Fill() made protected virtual.
+--
+---Copyright:    Matra Datavision 1995
+
+deferred class PresentableObject from PrsMgr inherits TShared from MMgt
+
+
+    	---Purpose: A framework to supply the Graphic2d or Graphic3d
+    	-- structure of the object to be presented. On the first
+    	-- display request, this structure is created by calling the
+    	-- appropriate algorithm and retaining this frameworkfor
+    	-- further display.
+    	-- This abstract framework is inherited in Application
+    	-- Interactive Services (AIS), notably in:
+    	-- -   AIS_InteractiveObject
+    	-- -   AIS_ConnectedInteractive
+    	-- -   AIS_MultipleConnectedInteractive
+    	-- -   AIS_Shape
+    	--   Consequently, 3D presentation should be handled by
+    	-- the relevant daughter classes and their member
+    	-- functions in AIS. This is particularly true in the
+    	-- creation of new interactive objects.
+
+uses
+    Presentation          from PrsMgr,
+    Presentation          from Prs3d,
+    GraphicObject         from Graphic2d,
+    Presentations         from PrsMgr,
+    PresentationManager   from PrsMgr,
+    PresentationManager2d from PrsMgr,
+    PresentationManager3d from PrsMgr,
+    TypeOfPresentation3d  from PrsMgr,
+    DataStructureManager  from Graphic3d,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    ListOfInteger         from TColStd,
+    Location              from TopLoc, 
+    --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+    TransModeFlags        from Graphic3d, 
+    Pnt                   from gp, 
+    CTransPersStruct      from  Graphic3d      
+    --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+
+raises
+    NotImplemented from Standard
+is
+
+
+    Initialize(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView);
+    
+---Category: deferred methods.
+--           
+    Compute(me:mutable;
+                aPresentationManager: PresentationManager2d from PrsMgr;
+                aPresentation: mutable GraphicObject from Graphic2d;
+                aMode: Integer from Standard = 0)
+    	---Purpose: Calculates the 2D view aPresentation and its
+    	-- updates. The latter are managed by aPresentationManager.
+    	-- aPresentableObject has the display mode aMode;
+    	-- this has the default value of 0, that is, the wireframe display mode.
+    	-- Note that this syntax is not used in AIS as that
+    	-- package only concerns 3D display.
+                
+    raises NotImplemented from Standard
+    is virtual protected;
+    
+    Compute(me:mutable;
+                aPresentationManager: PresentationManager3d from PrsMgr;
+                aPresentation: mutable Presentation from Prs3d;
+                aMode: Integer from Standard = 0)
+    	---Purpose: Calculates the 3D view aPresentation and its
+    	-- updates. The latter are managed by aPresentationManager.
+    	-- aPresentableObject has the display mode aMode;
+    	-- this has the default value of 0, that is, the wireframe display mode.
+    raises NotImplemented from Standard
+    is virtual protected;
+    
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aPresentation  : mutable Presentation from Prs3d)
+    	---Purpose: Calculates the 3D view aPresentation and its
+    	-- updates. The latter are managed by
+    	-- aPresentationManager. Each of the views in the
+    	-- viewer and every modification such as rotation, for
+    	-- example, entails recalculation.
+    	-- It must be redefined to implement hidden line removal
+    	-- for the object. The user never calls this method
+    	-- himself. This is done via the InteractiveContext object
+    	-- and is dependent on the point of view from which the
+    	-- object is displayed.
+    raises NotImplemented from Standard
+    is virtual protected;
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is virtual protected;
+    	---Purpose: Calculates the 3D view aPresentation and its
+    	-- updates. The latter are managed by
+    	-- aPresentationManager. A point of view is provided
+    	-- by the projector aProjector, and the geometric
+    	-- transformation which has transformed associated
+    	-- presentable objects is specified by aTrsf.
+    	-- This function is to be used in case where a hidden
+    	-- line removal display cannot be calculated
+    	-- automatically. This occurs   when associated
+    	-- presentable objects have been transformed
+    	-- geometrically, but not translated.
+    	-- Warning
+    	-- The transformation aTrsf must be applied to the
+    	-- object before computation.
+
+    Update(me: mutable;AllModes: Boolean=Standard_False)
+    	---Purpose: recomputes all presentations of the object.
+    	---Level: Public 
+    is protected;
+
+    Update(me: mutable; aMode: Integer from Standard; ClearOther: Boolean from Standard)
+    	---Purpose: Recomputes the presentation in the given mode.
+    	--          If ClearOther is true, other presentation will be cleared.
+    is protected;
+    
+    Fill(me: mutable; 
+                aPresentationManager: PresentationManager from PrsMgr;
+                aPresentation: mutable Presentation from PrsMgr;
+                aMode: Integer from Standard = 0)
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+    is virtual protected;
+    	--- Purpose: High-level interface for controlling polygon offsets
+        
+        -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+
+    
+    -- Presentations(me: mutable) returns Presentations from PrsMgr
+    -- is static private;
+    
+    Presentations(me : mutable) returns Presentations from PrsMgr
+    is static protected;
+    	---C++: return &
+            
+   TypeOfPresentation3d(me) returns TypeOfPresentation3d from PrsMgr
+   is static;
+    	---Purpose: Returns information on whether the object accepts display in HLR mode or not.
+    
+   --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) 
+   SetTransformPersistence(  me     :  mutable; 
+   			     aFlag  :  TransModeFlags  from  Graphic3d; 
+    	    	    	     APoint :  Pnt from gp )
+   is virtual; 
+   ---Level:    Public 
+   ---Purpose:  Sets up Transform Persistence Mode for this object.
+   -- This function used to lock in object position, rotation and / or zooming relative to camera position.
+   -- Object will be drawn in the origin setted by APoint parameter (except Graphic3d_TMF_TriedronPers flag
+   -- - see description later). aFlag should be:
+   -- -   Graphic3d_TMF_None - no persistence attributes (reset);
+   -- -   Graphic3d_TMF_PanPers - object doesn't move;
+   -- -   Graphic3d_TMF_ZoomPers - object doesn't resize;
+   -- -   Graphic3d_TMF_RotatePers - object doesn't rotate;
+   -- -   Graphic3d_TMF_FullPers - pan, zoom and rotate transform persistence;
+   -- -   Graphic3d_TMF_TriedronPers - object behaves like trihedron;
+   -- -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_ZoomPers);
+   -- -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_RotatePers);
+   -- -   combination (Graphic3d_TMF_ZoomPers | Graphic3d_TMF_RotatePers).
+   -- If Graphic3d_TMF_TriedronPers persistence mode selected APoint coordinates X and Y means:
+   -- -   X = 0.0, Y = 0.0 - center of view window;
+   -- -   X > 0.0, Y > 0.0 - right upper corner of view window;
+   -- -   X > 0.0, Y < 0.0 - right lower corner of view window;
+   -- -   X < 0.0, Y > 0.0 - left  upper corner of view window;
+   -- -   X < 0.0, Y < 0.0 - left  lower corner of view window.
+   -- And Z coordinate defines the gap from border of view window (except center position).
+   ---Category: Graphic attributes management  
+   
+   SetTransformPersistence(  me     :  mutable; 
+   			     aFlag  :  TransModeFlags  from  Graphic3d ) 
+   is  static; 
+   ---Level:    Public 
+   ---Purpose:  Calls previous method  with  point  (0,0,0)
+   ---Category: Graphic attributes management 
+   
+    
+   GetTransformPersistenceMode( me )  returns  TransModeFlags  from  Graphic3d  is  static;
+    
+   ---Level:    Public 
+   ---Purpose:  Gets  Transform  Persistence Mode  for  this  object 
+   ---Category: Graphic attributes management
+
+   GetTransformPersistencePoint( me )  returns  Pnt  from  gp  is  static;
+    
+   ---Level:    Public 
+   ---Purpose:  Gets  point  of  transform  persistence for  this  object 
+   ---Category: Graphic attributes management
+    
+   --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+    
+   SetTypeOfPresentation(me:mutable; aType: TypeOfPresentation3d from PrsMgr);    
+
+   SetToUpdate    (me:mutable;aMode:Integer from Standard);
+   ---Purpose: flags the Prs of mode <AMode> to be Updated.
+   --          the Update will be done when needed.
+   
+   SetToUpdate(me:mutable); 
+   ---Purpose: flags all the Presentations to be Updated.
+    
+   ToBeUpdated(me;ListOfMode : out ListOfInteger from TColStd);
+   ---Purpose: gives the list of modes which are flagged "to be updated".
+    
+   SetLocation(me:mutable;aLoc:Location from TopLoc) is virtual;
+    
+   HasLocation(me) returns Boolean from Standard;
+   
+   Location(me) returns any Location from TopLoc;
+   ---C++: inline
+   ---C++: return const&
+   
+   ResetLocation(me:mutable)  is virtual;
+
+   UpdateLocation(me:mutable) is virtual;
+    
+   UpdateLocation(me:mutable;P : mutable Presentation from Prs3d) is virtual;
+    
+    
+    
+fields
+    myPresentations: Presentations from PrsMgr is protected;
+    myTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr is protected;
+    myLocation  : Location from TopLoc is protected; 
+    --myTransformPersistence  :  TransModeFlags  from  Graphic3d; 
+    myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
+
+friends
+    class PresentationManager from PrsMgr,
+    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d),
+    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                          aGivenStruct :  Structure from Graphic3d),
+    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                          TheTrsf   : Transformation from Geom),
+    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                          TheTrsf      : Transformation from Geom;
+                                                          aGivenStruct : Structure from Graphic3d)
+end PresentableObject from PrsMgr;

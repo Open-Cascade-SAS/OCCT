@@ -1,0 +1,64 @@
+-- File:	LocOpe_BuildWires.cdl
+-- Created:	Tue May 27 10:50:38 1997
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+-- Modified by skv - Mon May 31 12:26:27 2004 OCC5865
+
+
+private class BuildWires from LocOpe 
+
+	---Purpose: 
+
+-- Modified by skv - Mon May 31 12:53:04 2004 OCC5865 Begin
+uses ListOfShape from TopTools,
+     ProjectedWires from LocOpe
+-- Modified by skv - Mon May 31 12:53:05 2004 OCC5865 End
+
+raises NotDone from StdFail
+
+is
+
+    Create
+    
+    	returns BuildWires from LocOpe;
+
+
+-- Modified by skv - Mon May 31 12:54:10 2004 OCC5865 Begin
+    Create(Ledges: ListOfShape from TopTools;
+    	   PW    : ProjectedWires  from  LocOpe)
+-- Modified by skv - Mon May 31 12:54:11 2004 OCC5865 End
+    
+    	returns BuildWires from LocOpe;
+
+
+-- Modified by skv - Mon May 31 12:54:10 2004 OCC5865 Begin
+    Perform(me: in out; Ledges: ListOfShape from TopTools; 
+    	    	        PW    : ProjectedWires  from  LocOpe)
+-- Modified by skv - Mon May 31 12:54:11 2004 OCC5865 End
+    
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    Result(me)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const&
+    	raises NotDone from StdFail
+	is static;
+
+
+
+fields
+
+    myDone : Boolean from Standard;
+    myRes  : ListOfShape from TopTools;
+
+end BuildWires;

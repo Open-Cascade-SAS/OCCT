@@ -1,0 +1,98 @@
+// Copyright: 	Matra-Datavision 1993
+// File:	PCollection_MapNode.gxx
+// Created:	Mon Jan 11 10:38:53 1993
+// Author:	Mireille MERCIEN
+
+//----------------------------------------------------------------- 
+// Constructor 
+//----------------------------------------------------------------- 
+PCollection_MapNode::PCollection_MapNode(const Key& aKey,
+                         const Item& anItem,
+                         const Handle(PCollection_MapNode)& aNext)
+{
+   myKey  = aKey;
+   myItem = anItem;
+   myNext = aNext;
+}
+
+//----------------------------------------------------------------- 
+// GetKey
+//----------------------------------------------------------------- 
+Key PCollection_MapNode::GetKey() const 
+{
+   return myKey;
+} 
+
+//----------------------------------------------------------------- 
+// Value
+//----------------------------------------------------------------- 
+Item PCollection_MapNode::Value() const 
+{
+   return myItem;
+} 
+
+//----------------------------------------------------------------- 
+// Next
+//----------------------------------------------------------------- 
+Handle(PCollection_MapNode) PCollection_MapNode::Next() const 
+{
+   return myNext;
+} 
+
+
+//----------------------------------------------------------------- 
+// SetKey
+//----------------------------------------------------------------- 
+void PCollection_MapNode::SetKey(const Key& aKey)  
+{
+   myKey = aKey;
+} 
+
+
+//----------------------------------------------------------------- 
+// SetValue
+//----------------------------------------------------------------- 
+void PCollection_MapNode::SetValue(const Item& anItem) 
+{
+   myItem = anItem;
+} 
+
+//----------------------------------------------------------------- 
+// SetNext
+//----------------------------------------------------------------- 
+void PCollection_MapNode::SetNext
+                       (const Handle(PCollection_MapNode)& aNext)
+{
+   myNext = aNext;
+} 
+
+//----------------------------------------------------------------- 
+// ShallowCopy : ShallowCopy redefinition
+//----------------------------------------------------------------- 
+Handle(Standard_Persistent) PCollection_MapNode::ShallowCopy() const
+{
+   Handle(PCollection_MapNode) TheCopy;
+   TheCopy = new PCollection_MapNode(myKey,myItem,myNext);
+   return TheCopy;
+}
+
+//----------------------------------------------------------------- 
+// ShallowDump : ShallowDump redefinition
+//----------------------------------------------------------------- 
+void PCollection_MapNode::ShallowDump(Standard_OStream& S) const
+{
+  S << "begin class MapNode "<< endl;
+  Handle(PCollection_MapNode) anode;
+  anode = this;
+  ::ShallowDump(anode->GetKey(),S);
+  ::ShallowDump(anode->Value(),S);
+  if (!myNext.IsNull()) myNext->ShallowDump(S);
+  S << "end of class MapNode." << endl;
+}
+
+
+
+
+
+
+

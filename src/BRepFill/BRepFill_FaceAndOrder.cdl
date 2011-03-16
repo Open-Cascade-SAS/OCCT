@@ -1,0 +1,35 @@
+-- File:	BRepFill_FaceAndOrder.cdl
+-- Created:	Thu Sep  3 17:00:40 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+private class FaceAndOrder from BRepFill
+
+	---Purpose: A structure containing Face and Order of constraint
+
+uses
+    Face from TopoDS, 
+    Shape from GeomAbs
+is
+    Create returns FaceAndOrder from BRepFill;
+    
+    Create( aFace   : Face from TopoDS; 
+    	    anOrder : Shape from GeomAbs )
+    returns FaceAndOrder from BRepFill;
+
+    --Face(me : in out) returns Face from TopoDS;
+    -- ---C++: return &
+    --Order(me : in out) returns Integer from Standard;
+    -- ---C++: return &
+
+fields
+
+    myFace  : Face from TopoDS;
+    myOrder : Shape from GeomAbs;
+
+friends
+    class Filling from BRepFill
+
+end FaceAndOrder;

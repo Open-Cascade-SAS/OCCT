@@ -1,0 +1,21 @@
+-- File:	StepToGeom_MakePolyline2d.cdl
+-- Created:	Mon Feb 15 15:01:21 1999
+-- Author:	Andrey BETENEV
+---Copyright:	 Matra Datavision 1999
+
+class MakePolyline2d from StepToGeom
+
+    ---Purpose: Translates Polyline entity into Geom2d_BSpline
+    --          In case if Polyline has more than 2 points bspline will be C0
+
+uses
+    Polyline     from StepGeom,
+    BSplineCurve from Geom2d
+
+is
+
+    Convert ( myclass; SPL : Polyline from StepGeom;
+                       CC : out BSplineCurve from Geom2d )
+    returns Boolean from Standard;
+
+end MakePolyline2d;

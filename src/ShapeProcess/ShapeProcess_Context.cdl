@@ -1,0 +1,97 @@
+-- File:	ShapeProcess_Context.cdl
+-- Created:	Mon Aug 21 19:11:11 2000
+-- Author:	Andrey BETENEV
+--		<abv@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Context from ShapeProcess inherits TShared from MMgt
+
+    ---Purpose: Provides convenient interface to resource file
+    --          Allows to load resource file and get values of
+    --          attributes starting from some scope, for example
+    --          if scope is defined as "ToV4" and requested parameter
+    --          is "exec.op", value of "ToV4.exec.op" parameter from
+    --          the resource file will be returned
+
+uses
+
+    Manager from Resource,
+    AsciiString from TCollection,
+    HSequenceOfHAsciiString from TColStd,
+    Messenger from Message
+
+is
+
+    Create;
+    	---Purpose: Creates an empty tool
+
+    Create (file: CString; scope: CString = "");
+    	---Purpose: Creates a new tool and initialises by name of
+	--          resource file and (if specified) starting scope
+	--          Calls method Init()
+
+    Init (me: mutable; file: CString; scope: CString = "")
+    returns Boolean;
+    	---Purpose: Initialises a tool by loading resource file and 
+        --          (if specified) sets starting scope
+	--          Returns False if resource file not found
+
+    LoadResourceManager(me: mutable; file: CString) returns Manager from Resource;
+    	---Purpose: Loading Resource_Manager object if this object not
+	--          equal internal static Resource_Manager object or
+	--          internal static Resource_Manager object is null
+
+    ResourceManager (me) returns Manager from Resource;
+    	---Purpose: Returns internal Resource_Manager object
+	---C++: return const &
+
+    SetScope (me: mutable; scope: CString);
+    	---Purpose: Set a new (sub)scope
+
+    UnSetScope (me: mutable);
+    	---Purpose: Go out of current scope
+
+    IsParamSet (me; param: CString) returns Boolean;
+    	---Purpose: Returns True if parameter is defined in the resource file
+
+    GetReal    (me; param: CString; val: out Real   ) returns Boolean;
+    GetInteger (me; param: CString; val: out Integer) returns Boolean;
+    GetBoolean (me; param: CString; val: out Boolean) returns Boolean;
+    GetString  (me; param: CString; val: out AsciiString from TCollection) returns Boolean;
+    	---Purpose: Get value of parameter as being of specific type
+	--          Returns False if parameter is not defined or has a wrong type
+
+    RealVal    (me; param: CString; def: Real   ) returns Real;
+    IntegerVal (me; param: CString; def: Integer) returns Integer;
+    BooleanVal (me; param: CString; def: Boolean) returns Boolean;
+    StringVal  (me; param: CString; def: CString) returns CString;
+    	---Purpose: Get value of parameter as being of specific type
+	--          If parameter is not defined or does not have expected
+        --          type, returns default value as specified
+
+    SetMessenger (me: mutable; messenger: Messenger from Message);
+    ---Purpose : Sets Messenger used for outputting messages.
+
+    Messenger (me) returns Messenger from Message;
+    ---Purpose : Returns Messenger used for outputting messages.
+
+    SetTraceLevel (me: mutable; tracelev: Integer);
+    ---Purpose : Sets trace level used for outputting messages
+    --           - 0: no trace at all
+    --           - 1: errors
+    --           - 2: errors and warnings
+    --           - 3: all messages
+    --           Default is 1 : Errors traced
+
+    TraceLevel (me) returns Integer;
+    ---Purpose : Returns trace level used for outputting messages.
+
+fields
+
+    myRC:      Manager from Resource;
+    myScope:   HSequenceOfHAsciiString from TColStd;
+    myMessenger: Messenger from Message;
+    myTraceLev : Integer;
+
+end Context;

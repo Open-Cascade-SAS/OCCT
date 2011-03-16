@@ -1,0 +1,156 @@
+-- File:	IntPolyPolyGen.cdl
+-- Created:	Mon Oct 19 12:03:29 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class IntPolyPolyGen from IntCurve (
+    TheCurve       as any;
+    TheCurveTool   as any; -- as CurveTool from IntCurve (TheCurve)
+    TheProjPCur    as any) -- as ProjPCurGen from IntCurve
+    
+inherits Intersection from IntRes2d
+
+
+
+    ---Level: Internal
+
+uses Domain       from IntRes2d  
+
+
+    class ThePolygon2d instantiates Polygon2dGen from IntCurve
+    	    	    	    	   (TheCurve,
+				    TheCurveTool);
+				    
+    class ThePolygon2dTool instantiates ToolPolygon from IntCurve
+                                   (Pnt2d from gp,
+				    ThePolygon2d,
+				    Box2d from Bnd);
+
+    class InterferencePoly2d instantiates InterferencePolygon2d from Intf 
+                                   (ThePolygon2d,
+                                    ThePolygon2dTool,
+    	    	    	    	    ThePolygon2d,
+                                    ThePolygon2dTool);
+
+    class TheDistBetweenPCurves instantiates DistBetweenPCurvesGen
+    	                           (TheCurve,
+				    TheCurveTool);
+
+
+    class  ExactIntersectionPoint 
+
+    	uses  Vector        from  math , 
+	      ThePolygon2d  from  IntCurve  
+    	is  
+    	    Create  ( C1  :  TheCurve; 
+	    	      C2  :  TheCurve;  
+    	    	      Tol :   Real  from  Standard ) 
+		returns  ExactIntersectionPoint from  IntCurve    ; 
+    	    
+    	    Perform ( me: in out ;
+    	    	      Poly1       :  ThePolygon2d  from  IntCurve  ; 
+	    	      Poly2       :  ThePolygon2d  from  IntCurve  ;  
+		      NumSegOn1   :  out  Integer  from  Standard  ; 
+		      NumSegOn2   :  out  Integer  from  Standard  ; 
+		      ParamOnSeg1 :  out  Real     from  Standard  ; 
+		      ParamOnSeg2 :  out  Real     from  Standard );
+
+    	    Perform (  me: in out ;
+    	    	       Uo  :  Real  from  Standard  ; 
+	    	       Vo  :  Real  from  Standard  ; 
+		       UInf  :  Real  from  Standard  ; 
+		       VInf  :  Real  from  Standard  ;  
+		       USup  :  Real  from  Standard  ;   
+		       VSup  :  Real  from  Standard  );
+		       
+    	    NbRoots  ( me )  
+    	    	returns  Integer  from  Standard  ;
+
+    	    Roots  (  me  : in out ; 
+    	    	      U   : out  Real from  Standard  ; 
+    	    	      V   : out  Real from  Standard  ) ;
+    	
+	    MathPerform  ( me : in out )  is  private ; 
+	    
+    	    AnErrorOccurred  (  me  ) 
+	     	returns  Boolean                from  Standard  ;
+	    	
+    	    fields 
+	     
+	    	done             :  Boolean                from  Standard  ; 
+		nbroots          :  Integer                from  Standard  ;  
+		myTol            :  Real                   from  Standard  ;  
+		FctDist          :  TheDistBetweenPCurves  from  IntCurve  ; 
+		ToleranceVector  :  Vector                 from  math  ; 
+		BInfVector       :  Vector                 from  math  ;  
+		BSupVector       :  Vector                 from  math  ; 
+		StartingPoint    :  Vector                 from  math  ;  
+		Root             :  Vector                 from  math  ;  
+    	        anErrorOccurred  :  Boolean                from  Standard  ;
+	     end ExactIntersectionPoint from  IntCurve; 	
+
+
+is
+
+    Create  
+	returns IntPolyPolyGen from IntCurve;
+    
+    
+    Perform(me: in out;
+           Curve1 :    TheCurve;
+           Domain1:    Domain      from IntRes2d;
+	   Curve2 :    TheCurve;
+           Domain2:    Domain      from IntRes2d;
+	   TolConf:    Real        from Standard;
+	   Tol    :    Real        from Standard)
+	   
+           is static; 
+
+    Perform(me: in out;
+           Curve1 :    TheCurve;
+           Domain1:    Domain      from IntRes2d;
+	   TolConf:    Real        from Standard;
+	   Tol    :    Real        from Standard)
+	   
+           is static; 
+
+
+    Perform(me: in out;
+           Curve1 :    TheCurve;
+           Domain1:    Domain      from IntRes2d;
+	   Curve2 :    TheCurve;
+           Domain2:    Domain      from IntRes2d;
+	   TolConf:    Real        from Standard;
+	   Tol    :    Real        from Standard;
+           NbIter :    Integer     from Standard;
+           DeltaU :    Real        from Standard;
+           DeltaV :    Real        from Standard)
+	   
+           is static protected;    
+
+
+    Perform(me: in out;
+           Curve1 :    TheCurve;
+           Domain1:    Domain      from IntRes2d;
+	   TolConf:    Real        from Standard;
+	   Tol    :    Real        from Standard;
+           NbIter :    Integer     from Standard;
+           DeltaU :    Real        from Standard;
+           DeltaV :    Real        from Standard)
+	   
+           is static protected;    
+    
+fields    
+
+     DomainOnCurve1 : Domain from IntRes2d;      
+     DomainOnCurve2 : Domain from IntRes2d;      
+	  
+end IntPolyPolyGen;
+
+
+
+
+

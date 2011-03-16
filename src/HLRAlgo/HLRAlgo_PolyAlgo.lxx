@@ -1,0 +1,53 @@
+// File:	HLRAlgo_PolyAlgo.lxx
+// Created:	Tue Jun 20 11:50:07 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+#include <TColStd_HArray1OfTransient.hxx>
+
+//=======================================================================
+//function : PolyShell
+//purpose  : 
+//=======================================================================
+
+inline TColStd_Array1OfTransient & HLRAlgo_PolyAlgo::PolyShell () const
+{ return myHShell->ChangeArray1(); }
+
+//=======================================================================
+//function : InitHide
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_PolyAlgo::InitHide ()
+{
+  myCurShell = 0;
+  NextHide();
+}
+
+//=======================================================================
+//function : MoreHide
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_PolyAlgo::MoreHide () const
+{ return myFound; }
+
+//=======================================================================
+//function : InitShow
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_PolyAlgo::InitShow ()
+{
+  myCurShell = 0;
+  NextShow();
+}
+
+//=======================================================================
+//function : MoreShow
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_PolyAlgo::MoreShow () const
+{ return myFound; }
+

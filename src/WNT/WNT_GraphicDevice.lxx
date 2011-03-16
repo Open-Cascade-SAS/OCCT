@@ -1,0 +1,41 @@
+inline Aspect_Handle WNT_GraphicDevice :: HPalette () const {
+
+ return myPalette;
+
+}  // end WNT_GraphicDevice :: HPalette
+
+inline void WNT_GraphicDevice :: DisplaySize (
+                                  Standard_Integer& aWidth, Standard_Integer& aHeight
+                                 ) const {
+
+ aWidth  = myWidth;
+ aHeight = myHeight;
+
+}  // end WNT_GraphicDevice :: DisplaySize 
+
+inline void WNT_GraphicDevice :: DisplaySize (
+                                  Quantity_Length& aWidth, Quantity_Length& aHeight
+                                 ) const {
+ aWidth  = myMWidth;
+ aHeight = myMHeight;
+
+}  // end WNT_GraphicDevice :: DisplaySize
+
+inline Standard_Boolean WNT_GraphicDevice :: IsPaletteDevice () const {
+
+ return ( myPalette != 0 );
+
+}  // end WNT_GraphicDevice :: IsPaletteDevice 
+
+inline Standard_Integer WNT_GraphicDevice :: NumColors () const {
+
+ return myNumColors;
+
+}  // end WNT_GraphicDevice :: NumColors
+
+inline WNT_ColorRef WNT_GraphicDevice :: HighlightColor () const {
+
+ return myHighlightColor;
+
+}  // end WNT_GraphicDevice :: HighlightColor
+

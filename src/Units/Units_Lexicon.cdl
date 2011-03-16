@@ -1,0 +1,96 @@
+-- File:	Units_Lexicon.cdl
+-- Created:	Mon Jun 22 16:49:16 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Lexicon from Units 
+
+inherits
+
+    TShared from MMgt 
+
+	---Purpose: This class defines a lexicon useful to analyse and
+	--          recognize the  different key words  included  in a
+	--          sentence.  The lexicon is stored  in a sequence of
+	--          tokens.
+
+uses
+
+    HAsciiString   from TCollection,
+    AsciiString    from TCollection,
+    TokensSequence from Units
+
+is
+
+    Create returns mutable Lexicon from Units;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates an empty instance of Lexicon.
+    
+    Creates(me : mutable ; afilename : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Reads the file <afilename> to create a sequence  of tokens
+    --          stored in <thesequenceoftokens>.
+    
+    is static;
+    
+    Sequence(me) returns any TokensSequence from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the first item of the sequence of tokens.
+    
+    is static;
+    
+    FileName(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns in a AsciiString from TCollection the name of the file.
+    
+    is static;
+    
+    UpToDate(me) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns true if  the  file has not  changed  since the
+    --          creation   of   the  Lexicon   object.   Returns false
+    --          otherwise.
+
+    is virtual;
+    
+    AddToken(me : mutable ; aword , amean : CString ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Adds to the lexicon a new token with <aword>, <amean>,
+    --          <avalue>  as  arguments.  If there is  already a token
+    --          with   the  field  <theword>  equal    to <aword>, the
+    --          existing token is updated.
+    
+    is static;
+    
+    Dump(me)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    ---Purpose: Useful for debugging.
+
+    is virtual;
+    
+fields
+
+    thefilename         : HAsciiString from TCollection;
+    thetime             : Integer;
+    thesequenceoftokens : TokensSequence from Units;
+
+end Lexicon;

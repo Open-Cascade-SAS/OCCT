@@ -1,0 +1,146 @@
+// File:	STEPCAFControl_ExternFile.lxx
+// Created:	Thu Sep 28 16:38:15 2000
+// Author:	Andrey BETENEV
+//		<abv@doomox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : SetWS
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetWS (const Handle(XSControl_WorkSession) &WS)
+{
+  myWS = WS;
+}
+
+//=======================================================================
+//function : GetWS
+//purpose  : 
+//=======================================================================
+
+inline Handle(XSControl_WorkSession) STEPCAFControl_ExternFile::GetWS () const
+{
+  return myWS;
+}
+
+//=======================================================================
+//function : SetLoadStatus
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetLoadStatus (const IFSelect_ReturnStatus stat)
+{
+  myLoadStatus = stat;
+}
+
+//=======================================================================
+//function : GetLoadStatus
+//purpose  : 
+//=======================================================================
+
+inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetLoadStatus () const
+{
+  return myLoadStatus;
+}
+
+//=======================================================================
+//function : SetTransferStatus
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetTransferStatus (const Standard_Boolean isok)
+{
+  myTransferStatus = isok;
+}
+
+//=======================================================================
+//function : GetTransferStatus
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean STEPCAFControl_ExternFile::GetTransferStatus () const
+{
+  return myTransferStatus;
+}
+
+//=======================================================================
+//function : SetWriteStatus
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetWriteStatus (const IFSelect_ReturnStatus stat)
+{
+  myWriteStatus = stat;
+}
+
+//=======================================================================
+//function : GetWriteStatus
+//purpose  : 
+//=======================================================================
+
+inline IFSelect_ReturnStatus STEPCAFControl_ExternFile::GetWriteStatus () const
+{
+  return myWriteStatus;
+}
+
+//=======================================================================
+//function : SetName
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetName (const Handle(TCollection_HAsciiString) &name)
+{
+  myName = name;
+}
+
+//=======================================================================
+//function : GetName
+//purpose  : 
+//=======================================================================
+
+inline Handle(TCollection_HAsciiString) STEPCAFControl_ExternFile::GetName () const
+{
+  return myName;
+}
+
+/*
+//=======================================================================
+//function : SetShape
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetShape (const TopoDS_Shape &Shape)
+{
+  myShape = Shape;
+}
+
+//=======================================================================
+//function : GetShape
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape STEPCAFControl_ExternFile::GetShape () const
+{
+  return myShape;
+}
+*/
+
+//=======================================================================
+//function : SetLabel
+//purpose  : 
+//=======================================================================
+
+inline void STEPCAFControl_ExternFile::SetLabel (const TDF_Label &Label)
+{
+  myLabel = Label;
+}
+
+//=======================================================================
+//function : GetLabel
+//purpose  : 
+//=======================================================================
+
+inline TDF_Label STEPCAFControl_ExternFile::GetLabel () const
+{
+  return myLabel;
+}

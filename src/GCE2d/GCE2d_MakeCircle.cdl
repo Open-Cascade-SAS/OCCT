@@ -1,0 +1,109 @@
+-- File:	MakeCircle.cdl
+-- Created:	Mon Sep 28 11:49:17 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCircle from GCE2d inherits Root from GCE2d
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create Cirlec from Geom2d.
+    --           
+    --           * Create a Circle parallel to another and passing 
+    --             though a point.
+    --           * Create a Circle parallel to another at the distance 
+    --             Dist.
+    --           * Create a Circle passing through 3 points.
+    --           * Create a Circle with its center and the normal of its 
+    --             plane and its radius.
+    --           * Create a Circle with its axis and radius.
+
+uses Pnt2d     from gp,
+     Circ2d    from gp,
+     Ax2d      from gp,
+     Ax22d     from gp,
+     Circle    from Geom2d,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (C : Circ2d from gp)   returns MakeCircle;
+    --- Purpose :  creates a circle from a non persistent one.
+
+Create (A      : Ax2d from gp                         ;
+        Radius : Real from Standard                   ;
+        Sense  : Boolean from Standard = Standard_True)  returns MakeCircle;
+    --- Purpose :
+    --  A is the "XAxis" of the circle which defines the origin
+    --  of parametrization.
+    --  It is not forbidden to create a circle with Radius = 0.0
+    --  The status is "NegativeRadius" if Radius < 0.
+
+Create (A      : Ax22d from gp      ;
+        Radius : Real from Standard )  returns MakeCircle;
+    --- Purpose :
+    --  A is the local coordinate system of the circle which defines 
+    --  the origin of parametrization.
+    --  It is not forbidden to create a circle with Radius = 0.0
+    --  The status is "NegativeRadius" if Radius < 0.
+
+Create(Circ : Circ2d from gp      ;
+       Dist : Real   from Standard) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom2d <TheCirc> parallel to another 
+    --           Circ <Circ> with a distance <Dist>.
+    --           If Dist is greater than zero the result is enclosing 
+    --           the circle <Circ>, else the result is enclosed by the 
+    --           circle <Circ>.
+
+Create(Circ    :     Circ2d from gp;
+       Point   :     Pnt2d  from gp) returns MakeCircle;
+    ---Purpose : Make a Circle from Geom2d <TheCirc> parallel to another 
+    --           Circ <Circ> and passing through a Pnt <Point>.
+
+Create(P1,P2,P3 : Pnt2d from gp) returns MakeCircle;
+    ---Purpose : Make a Circ from gp <TheCirc> passing through 3 
+    --           Pnt2d <P1>,<P2>,<P3>.
+
+Create(P      : Pnt2d   from gp                      ;
+       Radius : Real    from Standard                ;
+       Sense  : Boolean from Standard = Standard_True) returns MakeCircle;
+    ---Purpose : Make a Circ from geom2d <TheCirc> by its center an radius.
+
+Create(Center : Pnt2d   from gp                      ;
+       Point  : Pnt2d   from gp                      ;
+       Sense  : Boolean from Standard = Standard_True)
+    returns MakeCircle;
+    ---Purpose : Makes a Circle from geom2d <TheCirc> with its center 
+    --           <Center> and a point giving the radius.
+    --           If Sense is true the local coordinate system of 
+    --           the solution is direct and non direct in the other case.
+    -- Warning
+    -- The MakeCircle class does not prevent the
+    -- construction of a circle with a null radius.
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_NegativeRadius if Radius is less than 0.0, or
+    -- -   gce_IntersectionError if points P1, P2 and P3
+    --   are collinear and the three are not coincident.
+    
+Value(me) returns Circle from Geom2d
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed circle.
+    -- Exceptions StdFail_NotDone if no circle is constructed.
+
+Operator(me) returns Circle from Geom2d
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom2d_Circle() const;"
+
+fields
+
+    TheCircle : Circle from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeCircle;
+

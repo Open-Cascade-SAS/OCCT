@@ -1,0 +1,106 @@
+-- File:	VrmlAPI_Writer.cdl
+-- Created:	Tue Jun 20 18:00:44 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Writer from VrmlAPI 
+
+	---Purpose: Creates and writes VRML files from Open
+    	-- CASCADE shapes. A VRML file can be written to
+    	-- an existing VRML file or to a new one.
+
+uses
+    Shape from TopoDS,
+    Drawer from VrmlConverter,
+    Projector from VrmlConverter,
+    Material from Vrml,
+    Length from Quantity,
+    HArray1OfColor from Quantity,
+    RepresentationOfShape from VrmlAPI
+is
+    Create returns Writer from VrmlAPI;
+    	---Purpose: Creates a writer object with default parameters.
+    ResetToDefaults(me : in out);
+    	---Purpose: Resets all parameters (representation, deflection)
+    	-- to their default values..
+	
+    Drawer(me) returns 	Drawer from VrmlConverter;  
+    	---Purpose: Returns drawer object
+    
+    SetDeflection(me : in out; aDef : Real from Standard);
+    	---Purpose: Sets the deflection aDef of
+    	-- the mesh algorithm which is used to compute the shaded
+    	-- representation of the translated shape. The default
+    	-- value is -1. When the deflection value is less than
+    	-- 0, the deflection is calculated from the relative
+    	-- size of the shaped.
+    
+    SetRepresentation(me : in out; aRep : RepresentationOfShape from VrmlAPI);
+    	---Purpose: Sets the representation of the
+    	-- shape aRep which is written to the VRML file. The three options are :
+    	-- -      shaded
+    	-- -      wireframe
+    	-- -      both shaded and wireframe (default)
+    	-- defined through the VrmlAPI_RepresentationOfShape enumeration.
+        
+    SetTransparencyToMaterial(me : in out; aMaterial : in out Material from Vrml;
+    	    	    	     aTransparency : Real  from  Standard);
+	---Purpose: Set transparency to given material		
+    
+    SetShininessToMaterial(me : in out; aMaterial : in out Material from Vrml;
+    	    	    	      aShininess : Real  from  Standard);
+    SetAmbientColorToMaterial(me : in out ; aMaterial : in out Material from Vrml;
+    	    	    	     Color : HArray1OfColor  from  Quantity);
+    SetDiffuseColorToMaterial(me : in out ; aMaterial : in out Material from Vrml;
+    	    	    	     Color : HArray1OfColor  from  Quantity);
+    SetSpecularColorToMaterial(me : in out; aMaterial : in out Material from Vrml;
+    	    	    	     Color : HArray1OfColor  from  Quantity);
+    SetEmissiveColorToMaterial(me : in out ; aMaterial : in out Material from Vrml;
+    	    	    	     Color : HArray1OfColor  from  Quantity);
+    ----------------- Returns fields of class --------------------------------------			     
+    GetRepresentation(me) returns RepresentationOfShape from VrmlAPI;
+    	---Purpose: Returns the representation of the shape which is
+    	-- written to the VRML file. Types of representation are set through the
+    	-- VrmlAPI_RepresentationOfShape enumeration.
+    GetFrontMaterial(me) returns Material from Vrml;
+    GetPointsMaterial(me) returns Material from Vrml;
+    GetUisoMaterial(me) returns Material from Vrml;
+    GetVisoMaterial(me) returns Material from Vrml;
+    GetLineMaterial(me) returns Material from Vrml;
+    GetWireMaterial(me) returns Material from Vrml;
+    GetFreeBoundsMaterial(me) returns Material from Vrml;
+    GetUnfreeBoundsMaterial(me) returns Material from Vrml;
+    
+    Write(me; aShape : Shape from TopoDS; aFile : CString from Standard);
+    	---Purpose: Converts the shape aShape to
+    	-- VRML format and writes it to the file identified by aFile.
+        
+fields
+    myRepresentation : RepresentationOfShape from VrmlAPI;
+    myDrawer : Drawer from VrmlConverter;
+    myDeflection : Real from Standard;
+    myPerespectiveCamera : Projector from VrmlConverter;
+    myOrthographicCamera : Projector from VrmlConverter;
+    myTransparency : Real;
+    myShininess : Real;
+    myFrontMaterial : Material from Vrml;
+    myPointsMaterial : Material from Vrml;
+    myUisoMaterial : Material from Vrml;
+    myVisoMaterial : Material from Vrml;
+    myLineMaterial : Material from Vrml;
+    myWireMaterial : Material from Vrml;
+    myFreeBoundsMaterial : Material from Vrml;
+    myUnfreeBoundsMaterial : Material from Vrml;
+    --Projection Vector
+    DX : Length from Quantity;
+    DY : Length from Quantity;
+    DZ : Length from Quantity;
+    --High Point Direction
+    XUp : Length from Quantity;
+    YUp : Length from Quantity;
+    ZUp : Length from Quantity;
+    --Focus
+    Focus : Length from Quantity;
+end Writer;

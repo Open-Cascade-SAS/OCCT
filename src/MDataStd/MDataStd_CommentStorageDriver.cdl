@@ -1,0 +1,43 @@
+-- File:	MDataStd_CommentStorageDriver.cdl
+-- Created:	Thu Jan 15 11:21:00 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class CommentStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM, 
+     MessageDriver    from CDM
+
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM) 
+    returns mutable CommentStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end CommentStorageDriver;
+

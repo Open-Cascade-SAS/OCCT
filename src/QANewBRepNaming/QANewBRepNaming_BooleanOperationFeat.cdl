@@ -1,0 +1,148 @@
+-- File:	QANewBRepNaming_BooleanOperationFeat.cdl
+-- Created:	Mon Sep 27 12:46:26 1999
+-- Author:	Open CASCADE Support
+--		<support@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+ 
+deferred class BooleanOperationFeat from QANewBRepNaming inherits TopNaming from QANewBRepNaming
+
+	---Purpose: To load the BooleanOperationFeat results
+	
+uses BooleanOperation from BRepAlgoAPI,
+     Label            from TDF, 
+     Builder          from TNaming,
+     Shape            from TopoDS, 
+     ShapeEnum        from TopAbs
+is
+     
+    Initialize returns BooleanOperationFeat from QANewBRepNaming;
+
+    Initialize(ResultLabel : Label from TDF) 
+    returns BooleanOperationFeat from QANewBRepNaming;
+
+    Init(me : in out; ResultLabel : Label from TDF);
+
+    ModifiedFaces (me)
+    	---Purpose : Returns the label to insert modified faces of an Object.
+    returns Label from TDF;  
+    
+    ModifiedEdges (me)
+    	---Purpose : Returns the label to insert modified edges of an Object.
+    returns Label from TDF;  
+
+    DeletedFaces (me)
+    	---Purpose : Returns the label to insert deleted faces of an Object.
+    returns Label from TDF; 
+     
+    DeletedEdges (me)
+    	---Purpose : Returns the label to insert deleted edges of an Object.
+    returns Label from TDF; 
+     
+    DeletedVertices (me)
+    	---Purpose : Returns the label to insert deleted vertices of an Object.
+    returns Label from TDF; 
+     
+    NewShapes (me)
+    	---Purpose : Returns the label to insert added shapes to an Object
+    	-- (given from tool).
+    returns Label from TDF; 
+
+    Content (me)
+    	---Purpose : 
+    returns Label from TDF; 
+     
+    DeletedDegeneratedEdges (me)
+    	---Purpose : 
+    returns Label from TDF; 
+
+    IsResultChanged(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: Returns true if the result is not the same as the object shape.
+    returns Boolean from Standard;   
+     
+
+    ShapeType(myclass; theShape : Shape from TopoDS) 
+    ---Purpose: If the shape is a compound the method  
+    --          returns the underlying shape type.
+    returns ShapeEnum from TopAbs;      
+
+ 
+    IsWRCase(myclass; theMS : BooleanOperation from BRepAlgoAPI)  
+    ---Purpose: Returns true if workaround case identified
+    returns Boolean from Standard;       
+    
+    IsWRCase2(myclass; theMS : BooleanOperation from BRepAlgoAPI)  
+    ---Purpose: Returns true if workaround case identified
+    returns Boolean from Standard;       
+    
+      
+    ---Category: Protected methods
+     
+    GetShape(me; theShape : Shape from TopoDS) 
+    ---Purpose: If the shape is a compound the method  
+    --          returns the underlying shape.
+    returns Shape from TopoDS
+    is protected;
+
+    LoadWire(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: A default implementation for naming of a wire as an object of
+    --          a boolean operation.
+    is protected;
+
+    LoadShell(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: A default implementation for naming of a shell as an object of
+    --          a boolean operation.
+    is protected;
+
+    LoadContent(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: Loads the content of the result.
+    is protected;
+
+    LoadResult(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: Loads the result.
+    is protected;
+    LoadDegenerated(me; MakeShape : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose: Loads the deletion of the degenerated edges.
+    is protected; 
+    
+    LoadModified1n(me; theMS : in out BooleanOperation from BRepAlgoAPI;  
+    	    	     theShapeIn : Shape from TopoDS; theKindOfShape : ShapeEnum from TopAbs) 
+    ---Purpose: To process special cases with evolution 1 to n
+    is protected; 
+     
+    Load1nFaces(me; theMS : in out BooleanOperation from BRepAlgoAPI;  
+    	    	    theShapeIn : Shape from TopoDS)
+    ---Purpose: used inside LoadModified1n
+    is private; 
+     
+    LoadModified11(me; theMS : in out BooleanOperation from BRepAlgoAPI;  
+    	    	       theShapeIn : Shape from TopoDS; theKindOfShape : ShapeEnum from TopAbs) 
+    ---Purpose: To process special cases with evolution 1 to 1
+    is protected;
+     
+    LoadSymmetricalEdges(me; theMS : in out BooleanOperation from BRepAlgoAPI)  
+    ---Purpose: To process special case when result has symmetrical edges
+    is protected; 
+
+    LoadWRCase(me; theMS : in out BooleanOperation from BRepAlgoAPI)
+    ---Purpose:    
+    is protected;
+
+
+end BooleanOperationFeat;
+
+-- @@SDM: begin
+
+-- Lastly modified by : szy                                    Date : 27-09-1999
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       szy ! Creation                                !27-09-1999!3.0-00-4! 
+-- !       vro ! Class became deffered                   !31-10-2000!3.0-00-4!
+-- !       vro ! Redesign                                !13-12-2000! 3.0-00-4!
+-- !       vro ! Result control                          !07-03-2001! 3.0-00-4!
+-- +---------------------------------------------------------------------------+
+
+-- @@SDM: end

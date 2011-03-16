@@ -1,0 +1,273 @@
+-- File:	Adaptor3d_TopolTool.cdl
+-- Created:	Thu Mar 24 12:02:07 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+class TopolTool from Adaptor3d 
+
+	---Purpose: This class provides a default topological tool,
+	--          based on the Umin,Vmin,Umax,Vmax of an HSurface
+	--          from Adaptor3d.
+	--          All methods and fields may be redefined when
+	--          inheriting from this class.
+	--          This class is used to instantiate algorithmes
+	--          as Intersection, outlines,...
+
+
+inherits TShared from MMgt
+
+uses HSurface    from Adaptor3d,
+     HCurve2d    from Adaptor2d,
+     HVertex     from Adaptor3d,
+     HLine2d     from Adaptor2d,
+     Pnt2d       from gp,
+     Pnt         from gp,
+     State       from TopAbs,
+     Orientation from TopAbs,
+     HArray1OfReal from TColStd,
+     Array1OfReal from TColStd
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+    	returns mutable TopolTool from Adaptor3d;
+
+
+    Create(Surface: HSurface from Adaptor3d)
+    
+    	returns mutable TopolTool from Adaptor3d;
+
+
+    Initialize(me: mutable)
+    is virtual;
+    
+    Initialize(me: mutable; S: HSurface from Adaptor3d)
+    is virtual;
+    
+
+    Initialize(me: mutable; Curve: HCurve2d from Adaptor2d)
+    is virtual;
+    
+
+
+--- Arc iterator
+
+
+    Init(me: mutable)
+    is virtual;
+
+
+    More(me: mutable)
+    
+    	returns Boolean from Standard
+    is virtual;
+
+
+    Value(me: mutable)
+    
+    	returns mutable HCurve2d from Adaptor2d
+        raises DomainError from Standard
+    is virtual;
+	
+
+    Next(me: mutable)
+    is virtual;
+
+    
+--- Vertex iterator
+
+
+    InitVertexIterator(me: mutable)
+    is virtual;
+    
+
+    MoreVertex(me: mutable)
+    
+    	returns Boolean from Standard
+    is virtual;
+
+
+    Vertex(me: mutable)
+    
+    	returns mutable HVertex from Adaptor3d
+	raises DomainError from Standard
+    is virtual;
+
+
+    NextVertex(me: mutable)
+    is virtual;
+
+
+--- Other methods
+
+    Classify(me: mutable;
+             P: Pnt2d from gp; 
+             Tol: Real from Standard;
+             ReacdreOnPeriodic: Boolean from Standard = Standard_True)
+    
+    	returns State from TopAbs
+    is virtual;
+
+    IsThePointOn(me: mutable;
+                 P: Pnt2d from gp; 
+                 Tol: Real from Standard;
+                 ReacdreOnPeriodic: Boolean from Standard = Standard_True)
+    
+    	returns Boolean from Standard
+    is virtual;
+
+
+    Orientation(me: mutable; C: HCurve2d from Adaptor2d)
+
+    	---Purpose: If the function returns the orientation of the arc.
+    	--          If the orientation is FORWARD or REVERSED, the arc is
+    	--          a "real" limit of the surface.
+    	--          If the orientation is INTERNAL or EXTERNAL, the arc is
+    	--          considered as an arc on the surface.
+
+    	returns Orientation from TopAbs
+    is virtual;
+
+
+    Orientation(me: mutable; V: HVertex from Adaptor3d)
+    
+	---Purpose: Returns the orientation of the vertex V.
+	--          The vertex has been found with an exploration on
+	--          a given arc. The orientation is the orientation
+	--          of the vertex on this arc.
+    
+    	returns Orientation from TopAbs
+    is virtual;
+
+
+    Identical(me: mutable; V1,V2: HVertex from Adaptor3d)
+    
+	---Purpose: Returns True if the vertices V1 and V2 are identical.
+	--          This method does not take the orientation of the
+	--          vertices in account.
+
+    	returns Boolean from Standard
+    is virtual;
+
+
+    Has3d(me)
+	---Purpose: answers if arcs and vertices may have 3d representations,
+	--          so that we could use Tol3d and Pnt methods.
+	returns Boolean from Standard
+    is virtual;
+
+
+    Tol3d(me; C: HCurve2d from Adaptor2d)
+	---Purpose: returns 3d tolerance of the arc C
+	returns Real from Standard
+	raises DomainError from Standard
+    is virtual;
+
+
+    Tol3d(me; V: HVertex from Adaptor3d)
+	---Purpose: returns 3d tolerance of the vertex V
+	returns Real from Standard
+	raises DomainError from Standard
+    is virtual;
+
+
+    Pnt(me; V: HVertex from Adaptor3d)
+	---Purpose: returns 3d point of the vertex V
+	returns Pnt from gp
+	raises DomainError from Standard
+    is virtual;
+
+
+--- sample points  tools
+
+    ComputeSamplePoints(me: mutable)
+    is virtual;
+    
+
+    NbSamplesU(me: mutable) 
+    	---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is virtual;
+    
+    NbSamplesV(me: mutable) 
+    	---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is virtual;
+    
+    NbSamples(me: mutable)
+        ---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is virtual;
+     
+    UParameters(me; theArray: out Array1OfReal from TColStd);
+        ---Purpose: return the set of U parameters on the surface 
+	--  obtained by the method SamplePnts
+    
+    VParameters(me; theArray: out Array1OfReal from TColStd);
+        ---Purpose: return the set of V parameters on the surface 
+	--  obtained by the method SamplePnts
+    
+    SamplePoint(me: mutable; Index: Integer from Standard;
+                             P2d  : out Pnt2d   from gp;
+                             P3d  : out Pnt     from gp)
+    is virtual;
+    
+    DomainIsInfinite(me: mutable)
+        	returns Boolean from Standard
+    is virtual;
+
+    --modified by NIZNHY-PKV Mon Apr 23 15:54:51 2001 f
+    Edge  (me) 
+    	returns Address from Standard 
+    	is virtual;   
+    --modified by NIZNHY-PKV Mon Apr 23 15:54:46 2001  t  
+    
+    --modified by NIZNHY-IFV Mon Sep 16 16:01:38 2005 f
+    
+    SamplePnts(me: mutable; theDefl:  Real  from  Standard; theNUmin, theNVmin: Integer from Standard)
+        ---Purpose: compute the sample-points for the intersections algorithms
+	-- by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
+	-- is the same as in method ComputeSamplePoints(), but only fill arrays of U
+	-- and V sample parameters;
+	-- theDefl is a requred deflection
+	-- theNUmin, theNVmin are minimal nb points for U and V.
+    is virtual;
+    
+    BSplSamplePnts(me: mutable; theDefl: Real  from  Standard; theNUmin, theNVmin: Integer from Standard)
+        ---Purpose: compute the sample-points for the intersections algorithms
+	-- by adaptive algorithm for BSpline surfaces  -  is  used  in  SamplePnts
+	-- theDefl is a requred deflection
+	-- theNUmin, theNVmin are minimal nb points for U and V.
+    is virtual;
+
+    IsUniformSampling(me)
+        ---Purpose: Returns true if provide uniform sampling of points.
+    returns Boolean from Standard
+    is virtual;
+
+fields
+
+    nbRestr : Integer from Standard;
+    idRestr : Integer from Standard;
+    Uinf    : Real    from Standard;
+    Usup    : Real    from Standard;
+    Vinf    : Real    from Standard;
+    Vsup    : Real    from Standard;
+    myRestr : HLine2d from Adaptor2d [4];
+    nbVtx   : Integer from Standard;
+    idVtx   : Integer from Standard;
+    myVtx   : HVertex from Adaptor3d [2];
+    
+    myS          : HSurface from Adaptor3d is protected;
+    myNbSamplesU : Integer  from Standard  is protected;
+    myNbSamplesV : Integer  from Standard  is protected; 
+     
+    myUPars      : HArray1OfReal from TColStd is protected; 
+    myVPars      : HArray1OfReal from TColStd is protected; 
+
+end TopolTool;

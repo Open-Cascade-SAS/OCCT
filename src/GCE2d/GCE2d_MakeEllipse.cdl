@@ -1,0 +1,90 @@
+-- File:	MakeEllipse.cdl
+-- Created:	Mon Sep 28 11:49:44 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeEllipse from GCE2d inherits Root from GCE2d
+
+    ---Purpose :This class implements the following algorithms used to 
+    --          create Ellipse from gp.           
+    --          * Create an Ellipse from two apex  and the center.
+    --  Defines an ellipse in 2D space. 
+    --  The parametrization range is [0,2*PI].
+    --  The ellipse is a closed and periodic curve.
+    --  The center of the ellipse is the "Location" point of its 
+    --  axis placement "XAxis".
+    --  The "XAxis" of the ellipse defines the origin of the
+    --  parametrization, it is the major axis of the ellipse.
+    --  The YAxis is the minor axis of the ellipse.
+
+uses Pnt2d     from gp,
+     Ellipse   from Geom2d,
+     Elips2d   from gp,
+     Ax22d     from gp,
+     Ax2d      from gp
+
+raises NotDone from StdFail
+
+is
+
+Create (E : Elips2d from gp)  returns MakeEllipse;
+    --- Purpose :
+    --  Creates an ellipse from a non persistent one from package gp
+
+Create (MajorAxis   : Ax2d    from gp                       ; 
+    	MajorRadius : Real    from Standard                 ;
+        MinorRadius : Real    from Standard                 ;
+    	Sense       : Boolean from Standard = Standard_True )
+     returns MakeEllipse;
+    --- Purpose :
+    --  MajorAxis is the local coordinate system of the ellipse.
+    --  It is the "XAxis". The minor axis  is the YAxis of the
+    --  ellipse.
+    --  Sense give the sense of parametrization of the Ellipse.
+    --  It is not forbidden to create an ellipse with MajorRadius =
+    --  MinorRadius.
+    --  The status is "InvertRadius" if MajorRadius < MinorRadius or 
+    --  "NegativeRadius" if MinorRadius < 0.
+
+Create (Axis                     : Ax22d from gp     ; 
+    	MajorRadius, MinorRadius : Real from Standard)
+     returns MakeEllipse;
+    --- Purpose :
+    --  Axis is the local coordinate system of the ellipse.
+    --  It is not forbidden to create an ellipse with MajorRadius =
+    --  MinorRadius.
+    --  The status is "InvertRadius" if MajorRadius < MinorRadius or 
+    --  "NegativeRadius" if MinorRadius < 0.
+
+        
+Create(S1,S2  : Pnt2d from gp;
+       Center : Pnt2d from gp) returns MakeEllipse;
+    ---Purpose: Make an Ellipse centered on the point Center, where
+    --   -   the major axis of the ellipse is defined by Center and S1,
+    --   -   its major radius is the distance between Center and S1, and
+    --   -   its minor radius is the distance between S2 and the major axis.
+    -- The implicit orientation of the ellipse is:
+    -- -   the sense defined by Axis or E,
+    -- -   the sense defined by points Center, S1 and S2,
+    -- -   the trigonometric sense if Sense is not given or is true, or
+    -- -   the opposite sense if Sense is false.
+    
+Value(me) returns Ellipse from Geom2d
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed ellipse.
+    -- Exceptions StdFail_NotDone if no ellipse is constructed.
+    
+Operator(me) returns Ellipse from Geom2d
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom2d_Ellipse() const;"
+
+fields
+
+    TheEllipse : Ellipse from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeEllipse;

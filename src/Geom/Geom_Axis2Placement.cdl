@@ -1,0 +1,149 @@
+-- File:	Geom_Axis2Placement.cdl
+-- Created:	Tue Mar  9 19:26:23 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Axis2Placement from Geom inherits AxisPlacement from Geom
+
+        ---Purpose :  Describes a right-handed coordinate system in 3D space.
+    	-- A coordinate system is defined by:
+    	-- - its origin, also termed the "Location point" of the coordinate system,
+    	-- - three orthogonal unit vectors, termed respectively
+    	--   the "X Direction", "Y Direction" and "Direction" (or
+    	--   "main Direction") of the coordinate system.
+    	-- As a Geom_Axis2Placement coordinate system is
+    	-- right-handed, its "Direction" is always equal to the
+    	-- cross product of its "X Direction" and "Y Direction".
+    	-- The "Direction" of a coordinate system is called the
+    	-- "main Direction" because when this unit vector is
+    	-- modified, the "X Direction" and "Y Direction" are
+    	-- recomputed, whereas when the "X Direction" or "Y
+    	-- Direction" is changed, the "main Direction" is
+    	-- retained. The "main Direction" is also the "Z Direction".
+    	-- Note: Geom_Axis2Placement coordinate systems
+    	-- provide the same kind of "geometric" services as
+    	-- gp_Ax2 coordinate systems but have more complex
+    	-- data structures. The geometric objects provided by
+    	-- the Geom package use gp_Ax2 objects to include
+    	-- coordinate systems in their data structures, or to
+    	-- define the geometric transformations, which are applied to them.
+    	-- Geom_Axis2Placement coordinate systems are
+    	-- used in a context where they can be shared by
+    	-- several objects contained inside a common data structure.
+
+
+uses Ax1      from gp,
+     Ax2      from gp,
+     Dir      from gp,
+     Pnt      from gp,
+     Trsf     from gp,
+     Geometry from Geom
+
+raises ConstructionError from Standard
+
+is
+
+
+  Create (A2 : Ax2)  returns mutable Axis2Placement;
+        ---Purpose : Returns a transient copy of A2.
+
+
+  Create (P : Pnt; N, Vx : Dir)   returns mutable Axis2Placement
+	---Purpose :
+        --  P is the origin of the axis placement, N is the main
+        --  direction of the axis placement and Vx is the "XDirection".
+        --  If the two directions N and Vx are not orthogonal the 
+        --  "XDirection" is computed as follow :
+        --  XDirection = N ^ (Vx ^ N). 
+     raises ConstructionError;
+        ---Purpose : Raised if N and Vx are parallel.
+
+
+ 
+
+  SetAx2 (me : mutable; A2 : Ax2);
+        ---Purpose : Assigns the origin and the three unit vectors of A2 to
+    	-- this coordinate system.
+      
+
+
+  SetDirection (me : mutable; V : Dir)
+        ---Purpose :
+        --  Changes the main direction of the axis placement.
+        --  The "Xdirection" is modified :
+        --  New XDirection = V ^ (Previous_Xdirection ^ V).
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if V and the previous "XDirection" are parallel 
+        --  because it is impossible to calculate the new "XDirection"
+        --  and the new "YDirection".
+
+
+  SetXDirection (me : mutable; Vx : Dir)
+        ---Purpose :
+        --  Changes the "XDirection" of the axis placement, Vx is the 
+        --  new "XDirection". If Vx is not normal to the main direction
+        --  then "XDirection" is computed as follow : 
+        --  XDirection = Direction ^ ( Vx ^ Direction).
+        --  The main direction is not modified.
+     raises ConstructionError;
+        ---Purpose :  Raised if Vx and "Direction"  are parallel.
+
+
+  SetYDirection (me : mutable; Vy : Dir)
+        ---Purpose :
+        --  Changes the "YDirection" of the axis placement, Vy is the 
+        --  new "YDirection". If Vy is not normal to the main direction
+        --  then "YDirection" is computed as follow : 
+        --  YDirection = Direction ^ ( Vy ^ Direction).
+        --  The main direction is not modified. The "XDirection" is
+        --  modified.
+     raises ConstructionError;
+        ---Purpose : Raised if Vy and the main direction are parallel.
+
+
+  Ax2 (me)  returns Ax2;
+        ---Purpose : Returns a non transient copy of <me>.
+
+
+  XDirection (me)   returns Dir;
+   	---Purpose : Returns the "XDirection". This is a unit vector.
+    	---C++: return const&
+
+
+  YDirection (me)  returns Dir;
+  	---Purpose : Returns the "YDirection". This is a unit vector.
+    	---C++: return const&
+
+
+
+
+  Transform (me : mutable; T : Trsf);
+        ---Purpose :  
+        --  Transforms an axis placement with a Trsf.
+        --  The "Location" point, the "XDirection" and the
+        --  "YDirection" are transformed with T.  The resulting
+        --  main "Direction" of <me> is the cross product between 
+        --  the "XDirection" and the "YDirection" after transformation.
+
+
+
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this coordinate system.
+
+
+  Create (P : Pnt; Vz, Vx, Vy : Dir)   returns mutable Axis2Placement
+     is private;
+
+
+fields
+
+  vxdir : Dir;
+  vydir : Dir;
+
+
+end;
+
+

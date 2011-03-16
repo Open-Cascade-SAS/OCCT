@@ -1,0 +1,23 @@
+-- File:	TopoDS_TFace.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class TFace from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TFace from TopoDS;
+    ---C++: inline
+    ---Purpose: Creates an empty TFace.
+    	
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: returns FACE.
+
+    EmptyCopy(me) returns mutable TShape from TopoDS is virtual;
+    ---Purpose: Returns an empty TFace.
+
+end TFace;

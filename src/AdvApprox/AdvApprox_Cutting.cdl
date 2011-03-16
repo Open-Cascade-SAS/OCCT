@@ -1,0 +1,21 @@
+-- File:	AdvApprox_Cutting.cdl
+-- Created:	Fri Apr  5 15:58:26 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+
+    ---Purpose: to choose the way of cutting in approximation
+
+
+deferred class Cutting from AdvApprox
+is
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~AdvApprox_Cutting(){Delete();}"
+    
+     Value(me; a,b : Real; 
+    	   cuttingvalue : out Real)
+     returns Boolean 
+     is deferred; 
+     
+end Cutting;
+

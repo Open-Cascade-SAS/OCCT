@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWCcDesignSpecificationReference.cdl
+-- Created:	Fri Nov 26 16:26:33 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCcDesignSpecificationReference from RWStepAP203
+
+    ---Purpose: Read & Write tool for CcDesignSpecificationReference
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CcDesignSpecificationReference from StepAP203
+
+is
+    Create returns RWCcDesignSpecificationReference from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CcDesignSpecificationReference from StepAP203);
+	---Purpose: Reads CcDesignSpecificationReference
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CcDesignSpecificationReference from StepAP203);
+	---Purpose: Writes CcDesignSpecificationReference
+
+    Share (me; ent : CcDesignSpecificationReference from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCcDesignSpecificationReference;

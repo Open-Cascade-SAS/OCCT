@@ -1,0 +1,165 @@
+-- File:	MDF.cdl
+--      	---------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+package MDF
+
+	---Purpose: This package provides classes and methods to
+	--          translate a transient DF into a persistent one and
+	--          vice versa.
+	--          
+	--          Driver
+	--          
+	--          A driver is a tool used to translate a transient
+	--          attribute into a persistent one and vice versa.
+	--          
+	--          Relocation Table
+	--          
+	--          A relocation table is a tool who provides services
+	--          to relocate transient objects into persistent ones
+	--          (or vice versa). It uses a map system to keep the
+	--          sharing. This service is used by the drivers.
+	--          
+	--          Driver Table
+	--          
+	--          A driver table is an object building links between
+	--          object types and object drivers. In the
+	--          translation process, a driver table is asked to
+	--          give a translation driver for each current object
+	--          to be translated.
+
+uses
+
+    Standard,
+    MMgt,
+    TCollection,
+    TColStd,
+    PColStd,
+    PTColStd,
+    TDF, 
+    CDM,
+    PDF
+
+is
+
+    ---Category: Classes
+    --           =============================================================
+
+    deferred class ASDriver; -- Attribute Storage Driver.
+
+    deferred class ARDriver; -- Attribute Retrieval Driver.
+
+    generic class RelocationTable; -- Relocation Table.
+
+    generic class DriverTable,
+    	DriverList,
+    	TypeDriverListMap; -- Driver Table.
+
+    class Tool from MDF;
+
+
+    ---Purpose: Storage and Retrieval attributes drivers
+    --          ========================================
+	
+    class TagSourceStorageDriver;
+    
+    class TagSourceRetrievalDriver;    
+
+    class ReferenceStorageDriver;
+    
+    class ReferenceRetrievalDriver;
+
+     ---Category: Instantiations
+     --           =============================================================
+
+    class ASDriverSequence instantiates Sequence from TCollection
+    	(ASDriver from MDF);
+
+    class ASDriverHSequence instantiates HSequence from TCollection
+    	(ASDriver from MDF,
+	 ASDriverSequence from MDF);
+
+    class ARDriverSequence instantiates Sequence from TCollection
+    	(ARDriver from MDF);
+
+    class ARDriverHSequence instantiates HSequence from TCollection
+    	(ARDriver from MDF,
+	 ARDriverSequence from MDF);
+
+    -- Storage Relocation Table (Transient->Persistent)
+    class SRelocationTable instantiates RelocationTable from MDF
+    	(Attribute  from TDF,
+	 Attribute  from PDF,
+	 Transient  from Standard,
+	 Persistent from Standard,
+    	 TransientPersistentMap from PTColStd);
+
+    -- Retrieval Relocation Table (Persistent->Transient)
+    class RRelocationTable instantiates RelocationTable from MDF
+    	(Attribute  from PDF,
+	 Attribute  from TDF,
+	 Persistent from Standard,
+	 Transient  from Standard,
+    	 PersistentTransientMap from PTColStd);
+
+    -- Map (Type, ASDriver)
+    class TypeASDriverMap instantiates DataMap from TCollection
+    	(Type from Standard,
+	 ASDriver from MDF,
+	 MapTransientHasher from TColStd);
+
+    -- Map (Type, ARDriver)
+    class TypeARDriverMap instantiates DataMap from TCollection
+    	(Type from Standard,
+	 ARDriver from MDF,
+	 MapTransientHasher from TColStd);
+
+    -- Attribute Storage Driver Table.
+    class ASDriverTable instantiates DriverTable from MDF
+    	(ASDriver from MDF,
+	 ASDriverHSequence from MDF,
+    	 TypeASDriverMap from MDF);
+
+    -- Attribute Retrieval Driver Table.
+    class ARDriverTable instantiates DriverTable from MDF
+    	(ARDriver from MDF,
+	 ARDriverHSequence from MDF,
+    	 TypeARDriverMap from MDF);
+
+
+
+    -- From Source To Target Object...
+    -- ===============================
+
+
+    FromTo(aSource  : Data from TDF;
+    	   aTarget  : in out Data from PDF;
+	   aDriverTable : ASDriverTable from MDF;
+	   aReloc   : SRelocationTable from MDF;
+    	   aVersion : Integer from Standard = 0);
+	---Purpose: Translates a transient <aSource> into a persistent
+	--          <aTarget>.
+
+    FromTo(aSource  : Data from PDF;
+    	   aTarget  : in out Data from TDF;
+	   aDriverTable : ARDriverTable from MDF;
+	   aReloc   : RRelocationTable from MDF);
+	---Purpose: Translates a persistent <aSource> into a transient
+	--          <aTarget>.
+    
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverSeq>.
+
+
+end MDF;

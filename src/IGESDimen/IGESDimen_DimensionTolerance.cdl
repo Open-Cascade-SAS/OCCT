@@ -1,0 +1,124 @@
+--
+-- File      : DimensionTolerance.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DimensionTolerance from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines Dimension Tolerance, Type <406>, Form <29>
+        --          in package IGESDimen
+        --          Provides tolerance information for a dimension which
+        --          can be used by the receiving system to regenerate the
+        --          dimension.
+
+uses  Integer, Real, Boolean  -- no one specific type
+
+
+is
+
+        Create returns mutable DimensionTolerance;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              nbPropVal     : Integer;
+              aSecTolFlag   : Integer;
+              aTolType      : Integer;
+              aTolPlaceFlag : Integer;
+              anUpperTol    : Real;
+              aLowerTol     : Real;
+              aSignFlag     : Boolean;
+              aFracFlag     : Integer;
+              aPrecision    : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           DimensionTolerance
+        --       - nbPropVal     : Number of property values, default = 8
+        --       - aSecTolFlag   : Secondary Tolerance Flag
+        --                             0 = Applies to primary dimension
+        --                             1 = Applies to secondary dimension
+        --                             2 = Display values as fractions
+        --       - aTolType      : Tolerance Type
+        --                             1  = Bilateral
+        --                             2  = Upper/Lower
+        --                             3  = Unilateral Upper
+        --                             4  = Unilateral Lower
+        --                             5  = Range - min before max
+        --                             6  = Range - min after max
+        --                             7  = Range - min above max
+        --                             8  = Range - min below max
+        --                             9  = Nominal + Range - min above max
+        --                             10 = Nominal + Range - min below max
+        --       - aTolPlaceFlag : Tolerance Placement Flag
+        --                             1 = Before nominal value
+        --                             2 = After nominal value
+        --                             3 = Above nominal value
+        --                             4 = Below nominal value
+        --       - anUpperTol    : Upper Tolerance
+        --       - aLowerTol     : Lower Tolerance
+        --       - aSignFlag     : Sign Suppression Flag
+        --       - aFracFlag     : Fraction Flag
+        --                             0 = Display values as decimal numbers
+        --                             1 = Display values as mixed fractions
+        --                             2 = Display values as fractions
+        --       - aPrecision    : Precision Value
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values, always = 8
+
+        SecondaryToleranceFlag (me) returns Integer;
+        ---Purpose : returns the Secondary Tolerance Flag
+
+        ToleranceType (me) returns Integer;
+        ---Purpose : returns the Tolerance Type
+
+        TolerancePlacementFlag (me) returns Integer;
+        ---Purpose : returns the Tolerance Placement Flag, default = 2
+
+        UpperTolerance (me) returns Real;
+        ---Purpose : returns the Upper or Bilateral Tolerance Value
+
+        LowerTolerance (me) returns Real;
+        ---Purpose : returns the Lower Tolerance Value
+
+        SignSuppressionFlag (me) returns Boolean;
+        ---Purpose : returns the Sign Suppression Flag
+
+        FractionFlag (me) returns Integer;
+        ---Purpose : returns the Fraction Flag
+
+        Precision (me) returns Integer;
+        ---Purpose : returns the Precision for Value Display
+
+fields
+
+--
+-- Class    : IGESDimen_DimensionTolerance
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DimensionTolerance.
+--
+-- Reminder : A DimensionTolerance instance is defined by :
+--            - Number of property values, always = 8
+--            - Secondary Tolerance Flag
+--            - Tolerance Type
+--            - Tolerance Placement Flag
+--            - Upper Tolerance
+--            - Lower Tolerance
+--            - Sign Suppression Flag
+--            - Fraction Flag
+--            - Precision Value
+
+        theNbPropertyValues       : Integer;
+        theSecondaryToleranceFlag : Integer;
+        theToleranceType          : Integer;
+        theTolerancePlacementFlag : Integer;
+        theUpperTolerance         : Real;
+        theLowerTolerance         : Real;
+        theSignSuppressionFlag    : Boolean;
+        theFractionFlag           : Integer;
+        thePrecision              : Integer;
+
+end DimensionTolerance;

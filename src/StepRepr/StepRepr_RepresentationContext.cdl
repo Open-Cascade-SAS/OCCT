@@ -1,0 +1,35 @@
+-- File:        RepresentationContext.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RepresentationContext from StepRepr 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable RepresentationContext;
+	---Purpose: Returns a RepresentationContext
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetContextIdentifier(me : mutable; aContextIdentifier : mutable HAsciiString);
+	ContextIdentifier (me) returns mutable HAsciiString;
+	SetContextType(me : mutable; aContextType : mutable HAsciiString);
+	ContextType (me) returns mutable HAsciiString;
+
+fields
+
+	contextIdentifier : HAsciiString from TCollection;
+	contextType : HAsciiString from TCollection;
+
+end RepresentationContext;

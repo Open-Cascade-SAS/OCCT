@@ -1,0 +1,50 @@
+-- File:	ShapeFix_ShapeTolerance.cdl
+-- Created:	Wed Jul 22 17:46:14 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ShapeTolerance from ShapeFix 
+
+	---Purpose: Modifies tolerances of sub-shapes (vertices, edges, faces)
+
+uses
+
+    Shape     from TopoDS,
+    ShapeEnum from TopAbs
+
+is
+    
+    Create returns ShapeTolerance from ShapeFix;
+
+    LimitTolerance (me; shape: Shape from TopoDS;
+    	    	        tmin  : Real;
+    	    	        tmax  : Real = 0.0;
+    	    	        styp : ShapeEnum from TopAbs = TopAbs_SHAPE)
+    returns Boolean;
+    	---Purpose: Limits tolerances in a shape as follows :
+    	--          tmin = tmax -> as SetTolerance (forces)
+    	--          tmin = 0   -> maximum tolerance will be <tmax>
+    	--          tmax = 0 or not given (more generally, tmax < tmin) ->
+    	--             <tmax> ignored, minimum will be <tmin>
+    	--          else, maximum will be <max> and minimum will be <min>
+    	--          styp = VERTEX : only vertices are set
+    	--          styp = EDGE   : only edges are set
+    	--          styp = FACE   : only faces are set
+    	--          styp = WIRE   : to have edges and their vertices set
+    	--          styp = other value : all (vertices,edges,faces) are set
+    	--          Returns True if at least one tolerance of the sub-shape has
+    	--          been modified
+
+    SetTolerance (me; shape: Shape from TopoDS;
+    	    	      preci: Real;
+    	    	      styp : ShapeEnum from TopAbs = TopAbs_SHAPE);
+    	---Purpose: Sets (enforces) tolerances in a shape to the given value
+    	--          styp = VERTEX : only vertices are set
+    	--          styp = EDGE   : only edges are set
+    	--          styp = FACE   : only faces are set
+    	--          styp = WIRE   : to have edges and their vertices set
+    	--          styp = other value : all (vertices,edges,faces) are set
+
+end ShapeTolerance;

@@ -1,0 +1,56 @@
+-- File:	StepRepr_ShapeAspectRelationship.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ShapeAspectRelationship from StepRepr
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ShapeAspectRelationship
+
+uses
+    HAsciiString from TCollection,
+    ShapeAspect from StepRepr
+
+is
+    Create returns ShapeAspectRelationship from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aRelatingShapeAspect: ShapeAspect from StepRepr;
+                       aRelatedShapeAspect: ShapeAspect from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    RelatingShapeAspect (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns field RelatingShapeAspect
+    SetRelatingShapeAspect (me: mutable; RelatingShapeAspect: ShapeAspect from StepRepr);
+	---Purpose: Set field RelatingShapeAspect
+
+    RelatedShapeAspect (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns field RelatedShapeAspect
+    SetRelatedShapeAspect (me: mutable; RelatedShapeAspect: ShapeAspect from StepRepr);
+	---Purpose: Set field RelatedShapeAspect
+
+fields
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theRelatingShapeAspect: ShapeAspect from StepRepr;
+    theRelatedShapeAspect: ShapeAspect from StepRepr;
+    defDescription: Boolean; -- flag "is Description defined"
+
+end ShapeAspectRelationship;

@@ -1,0 +1,104 @@
+--
+-- File      :  TrimmedSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class TrimmedSurface from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESTrimmedSurface, Type <144> Form <0>
+        --          in package IGESGeom
+        --          A simple closed curve  in Euclidean plane  divides the
+        --          plane in to two disjoint, open connected components; one
+        --          bounded, one unbounded. The bounded one is called the
+        --          interior region to the curve. Unbounded component is called
+        --          exterior region to the curve. The domain of the trimmed
+        --          surface is defined as the interior of the outer boundaries
+        --          and exterior of the inner boundaries and includes the
+        --          boundary curves.
+
+uses
+
+        CurveOnSurface          from IGESGeom,
+        HArray1OfCurveOnSurface from IGESGeom
+
+raises OutOfRange
+
+is
+
+        Create returns mutable TrimmedSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aSurface  : IGESEntity;
+              aFlag     : Integer;
+              anOuter   : CurveOnSurface;
+              allInners : HArray1OfCurveOnSurface);
+        ---Purpose : This method is used to set the fields of the class
+        --           TrimmedSurface
+        --       - aSurface  : Surface to be trimmed
+        --       - aFlag     : Outer boundary type
+        --                     False = The outer boundary is the boundary of
+        --                             rectangle D which is the domain of the
+        --                             surface to be trimmed
+        --                     True  = otherwise
+        --       - anOuter   : Closed curve which constitutes outer boundary
+        --       - allInners : Array of closed curves which constitute the
+        --                     inner boundary
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the surface to be trimmed
+
+        HasOuterContour (me) returns Boolean;
+        ---Purpose : returns True if outer contour exists
+
+        OuterContour (me) returns CurveOnSurface;
+        ---Purpose : returns the outer contour of the trimmed surface
+
+        OuterBoundaryType(me) returns Integer;
+        ---Purpose : returns the outer contour type of the trimmed surface
+        -- 0  : The outer boundary is the boundary of D
+        -- 1  : otherwise
+
+        NbInnerContours(me) returns Integer;
+        ---Purpose : returns the number of inner boundaries
+
+        InnerContour (me; Index : Integer) returns CurveOnSurface
+        raises OutOfRange;
+        ---Purpose : returns the Index'th inner contour
+        -- raises exception if Index <= 0 or Index > NbInnerContours()
+
+fields
+
+--
+-- Class    : IGESGeom_TrimmedSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class TrimmedSurface.
+--
+-- Reminder : A TrimmedSurface instance is defined by :
+--            The surface which is to be trimmed, an array of closed
+--            inner boundary curves, an outer boundary and a flag
+--            indicating the outer boundary
+--            - aSurface  : Surface to be trimmed
+--            - aFlag     : Outer boundary type
+--                          False = The outer boundary is the boundary of
+--                                  rectangle D which is the domain of the
+--                                  surface to be trimmed. The rectangle D
+--                                  consists of those points (u, v) such
+--                                  that a <= u <= b; c <= v <= d for given
+--                                  constants a, b, c, d with a < b, c < d.
+--                          True  = otherwise
+--            - anOuter   : Closed curve which constitutes outer boundary
+--            - allInners : Array of closed curves which constitute the
+--                          inner boundary
+
+        theSurface     : IGESEntity;
+        theFlag        : Integer;
+        theOuterCurve  : CurveOnSurface;
+        theInnerCurves : HArray1OfCurveOnSurface;
+
+end TrimmedSurface;

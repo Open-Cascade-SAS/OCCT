@@ -1,0 +1,42 @@
+-- File:        Line.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Line from StepGeom 
+
+inherits Curve from StepGeom 
+
+uses
+
+	CartesianPoint from StepGeom, 
+	Vector from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Line;
+	---Purpose: Returns a Line
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPnt : mutable CartesianPoint from StepGeom;
+	      aDir : mutable Vector from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPnt(me : mutable; aPnt : mutable CartesianPoint);
+	Pnt (me) returns mutable CartesianPoint;
+	SetDir(me : mutable; aDir : mutable Vector);
+	Dir (me) returns mutable Vector;
+
+fields
+
+	pnt : CartesianPoint from StepGeom;
+	dir : Vector from StepGeom;
+
+end Line;

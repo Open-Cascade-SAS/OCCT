@@ -1,0 +1,74 @@
+-- File:	IntTools_PntOn2Faces.cdl
+-- Created:	Thu Dec 13 12:00:07 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PntOn2Faces from IntTools 
+
+	---Purpose: Contains two points PntOnFace from IntTools and a flag
+
+uses
+    PntOnFace from IntTools
+---raises
+
+is 
+    Create 
+    	returns PntOn2Faces from IntTools; 
+	---Purpose:
+	--- Empty constructor
+	---
+	 
+    Create(aP1:	PntOnFace from IntTools;
+           aP2:	PntOnFace from IntTools);
+    	---Purpose:
+	--- Initializes me by two points aP1 and aP2
+	---
+	    
+    SetP1 (me:out; 
+    	aP1: PntOnFace from IntTools);
+	---Purpose:
+	--- Modifier
+	---
+	 
+    SetP2 (me:out; 
+    	aP2: PntOnFace from IntTools);
+	---Purpose:
+	--- Modifier
+	---
+
+    SetValid(me:out; 
+	bF : Boolean from Standard); 
+	---Purpose:
+	--- Modifier
+	---
+     
+    P1(me) 
+    	returns PntOnFace from IntTools; 
+    	---C++:  return const &  
+	---Purpose:
+	--- Selector
+	---
+     
+    P2(me) 
+    	returns PntOnFace from IntTools; 
+    	---C++:  return const & 
+	---Purpose:
+	--- Selector
+	---
+
+    IsValid(me) 
+	returns Boolean from Standard; 
+	---Purpose:
+	--- Selector
+	---
+
+fields
+  
+    myIsValid : Boolean from Standard;    
+    myPnt1    : PntOnFace from IntTools;
+    myPnt2    : PntOnFace from IntTools;
+    
+     
+end PntOn2Faces;

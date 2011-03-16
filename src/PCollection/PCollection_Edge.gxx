@@ -1,0 +1,103 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_Edge.gxx
+// Created:	Thu May 30 10:40:42 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_Edge::
+     PCollection_Edge(const Handle(PCollection_Vertex)& Source, 
+                     const Handle(PCollection_Vertex)& Destination, 
+                     const Attribute& Value) 
+{
+  MyAttribute   = Value;
+  MySource      = Source;
+  MyDestination = Destination;
+}
+
+//---------------------------------------------------------------------------
+// GetAttribute
+//---------------------------------------------------------------------------
+Attribute PCollection_Edge::GetAttribute () const 
+{
+  return MyAttribute;
+}
+
+//---------------------------------------------------------------------------
+// SetAttribute
+//---------------------------------------------------------------------------
+void PCollection_Edge::SetAttribute (const Attribute& Value) 
+{
+  MyAttribute = Value;
+}
+
+//---------------------------------------------------------------------------
+// Source
+//---------------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_Edge::Source () const 
+{
+  return MySource;
+}
+
+//---------------------------------------------------------------------------
+// Destination
+//---------------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_Edge::Destination () const 
+{
+  return MyDestination;
+}
+
+
+//---------------------------------------------------------------------------
+// SetSource
+//---------------------------------------------------------------------------
+void PCollection_Edge::SetSource (const Handle(PCollection_Vertex)& V)  
+{
+  MySource = V;
+}
+
+//---------------------------------------------------------------------------
+// SetDestination
+//---------------------------------------------------------------------------
+void PCollection_Edge::SetDestination (const Handle(PCollection_Vertex)& V) 
+{
+  MyDestination = V;
+}
+
+//---------------------------------------------------------------------------
+// Reverse
+//---------------------------------------------------------------------------
+void PCollection_Edge::Reverse () 
+{
+  Handle(PCollection_Edge) me = this;
+  MyDestination->RemoveBackEdge(me);
+  MySource->RemoveFrontEdge(me);
+  MyDestination->AddFrontEdge(me);
+  MySource->AddBackEdge(me);
+  Handle (PCollection_Vertex) temp = MyDestination;
+  MyDestination = MySource;
+  MySource = temp;
+}
+
+//---------------------------------------------------------------------------
+// IsLoop
+//---------------------------------------------------------------------------
+Boolean PCollection_Edge::IsLoop () const 
+{
+  return (MyDestination == MySource);
+}
+
+
+
+
+
+
+
+

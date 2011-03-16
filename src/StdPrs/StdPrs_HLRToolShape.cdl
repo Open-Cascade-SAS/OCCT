@@ -1,0 +1,37 @@
+-- File:	StdPrs_HLRToolShape.cdl
+-- Created:	Tue Mar  9 09:41:16 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class HLRToolShape from StdPrs
+
+uses 
+    Shape          from TopoDS,
+    Curve          from BRepAdaptor,
+    Data           from HLRBRep,
+    EdgeIterator   from HLRAlgo,
+    Projector      from HLRAlgo
+
+is
+    Create (TheShape    : Shape     from TopoDS;
+            TheProjector: Projector from HLRAlgo) 
+    	    returns HLRToolShape from StdPrs;
+    NbEdges(me) returns Integer from Standard;
+    InitVisible(me: in out; EdgeNumber: Integer from Standard);
+    MoreVisible(me) returns Boolean from Standard;
+    NextVisible(me: in out);
+    Visible(me: in out ; TheEdge : out Curve from BRepAdaptor;
+                U1,U2   : out Real from Standard);
+    InitHidden(me:in out; EdgeNumber: Integer from Standard);
+    MoreHidden(me) returns Boolean from Standard;
+    NextHidden(me: in out);
+    Hidden(me: in out; TheEdge : out Curve from BRepAdaptor; 
+                U1,U2  : out Real from Standard);
+
+fields
+    MyData              : Data         from HLRBRep;
+    myEdgeIterator      : EdgeIterator from HLRAlgo;
+    MyCurrentEdgeNumber : Integer      from Standard;
+
+end HLRToolShape from StdPrs;

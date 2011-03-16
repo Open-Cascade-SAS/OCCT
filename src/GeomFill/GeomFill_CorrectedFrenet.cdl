@@ -1,0 +1,164 @@
+-- File:	GeomFill_CorrectedFrenet.cdl
+-- Created:	Fri Dec 19 11:57:52 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class CorrectedFrenet from GeomFill  
+    inherits TrihedronLaw  from  GeomFill 
+
+	---Purpose:  Defined an Corrected Frenet  Trihedron  Law It is
+	--          like Frenet with an Torsion's minimization          
+
+uses 
+ Frenet from  GeomFill,
+ HCurve from  Adaptor3d, 
+ Shape  from  GeomAbs, 
+ Array1OfReal   from TColStd, 
+ Function  from  Law, 
+ Vec    from  gp,
+ ---OCC78
+ HArray1OfReal  from TColStd, 
+ SequenceOfReal from TColStd, 
+ HArray1OfVec   from TColgp, 
+ SequenceOfVec  from TColgp
+ 
+raises
+ OutOfRange,  ConstructionError
+is  
+
+   Create returns CorrectedFrenet from GeomFill;
+
+   Copy(me)   
+   returns  TrihedronLaw  from  GeomFill          
+   is  redefined;
+ 
+   Init(me: mutable)   
+   is  static  private; 
+ 
+   InitInterval(me; First, Last, Step: Real;   
+    	    	startAng: in out Real;  
+                prevTangent, prevNormal, aT, aN: out Vec from gp;  
+                FuncInt: out Function from Law; 
+                SeqPoles:   out SequenceOfReal from TColStd; 
+                SeqAngle:   out SequenceOfReal from TColStd; 
+                SeqTangent: out SequenceOfVec from TColgp; 
+                SeqNormal:  out SequenceOfVec from TColgp) 
+   returns Boolean 
+   --- Purpose:  Computes BSpline representation of Normal evolution at one  
+   --- interval of continuity of Frenet. Returns True if FuncInt = 0
+   is private;
+     
+   --- OCC78 
+   CalcAngleAT(me; Tangent, Normal, prevTangent, prevNormal: in Vec from gp)
+   returns Real
+   --- Purpose:  Computes angle of Normal evolution of Frenet between any two points on the curve.
+   is private;
+   GetAngleAT(me; P: in Real) 
+   returns Real
+   --- Purpose:  Get corrected value of angle of Normal evolution of Frenet
+   is private;
+
+   SetCurve(me : mutable;  C  :  HCurve  from  Adaptor3d) 
+   is  redefined;
+ 
+   SetInterval(me: mutable; First, Last: Real) 
+   is  redefined;   
+-- 
+-- 
+--========== To compute Location and derivatives Location
+--              
+   D0(me : mutable; 
+      Param: Real; 
+      Tangent    : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon on curve at parameter <Param>         
+   returns Boolean  is  redefined;
+	
+   D1(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon and  derivative Trihedron  on curve
+      --          at parameter <Param>                
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   is  redefined; 
+   
+   D2(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      D2Tangent  : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      D2Normal   : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp; 
+      D2BiNormal : out  Vec  from  gp)    
+      ---Purpose: compute  Trihedron on curve          
+      --          first and seconde  derivatives.
+      --  Warning : It used only for C2 aproximation
+   returns Boolean
+   is  redefined; 
+--
+--  =================== Management  of  continuity  ===================
+--                 
+   NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  redefined;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined;  
+     
+	  
+--  ===================  To help   computation of  Tolerance   ===============	 
+    GetAverageLaw(me  :  mutable;
+      ATangent    : out  Vec  from  gp; 
+      ANormal     : out  Vec  from  gp; 
+      ABiNormal   : out  Vec  from  gp) 
+     ---Purpose: Get average value of Tangent(t) and Normal(t) it is usfull to 
+     --          make fast approximation of rational  surfaces.        
+  is  redefined;
+
+--   =================== To help Particular case   ===============	
+   
+    IsConstant(me) 
+    ---Purpose: Say if the law is Constant.        
+    returns  Boolean   
+    is redefined;
+ 
+   IsOnlyBy3dCurve(me) 
+     ---Purpose: Return True.       
+    returns  Boolean   
+    is redefined;
+
+fields 
+   frenet         : Frenet           from  GeomFill; 
+   EvolAroundT    : Function         from  Law; 
+   TLaw           : Function         from  Law; 
+   AT,  AN        : Vec              from  gp;
+   isFrenet       : Boolean; 
+   ---OCC78
+   HArrPoles      : HArray1OfReal    from  TColStd;
+   HArrAngle      : HArray1OfReal    from  TColStd;
+   HArrTangent    : HArray1OfVec     from  TColgp;
+   HArrNormal     : HArray1OfVec     from  TColgp; 
+   
+end CorrectedFrenet;

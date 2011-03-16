@@ -1,0 +1,51 @@
+-- File:	Geom2d_Point.cdl
+-- Created:	Wed Mar 24 18:22:36 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+deferred class Point from Geom2d inherits Geometry from Geom2d
+
+        --- Purpose : The abstract class Point describes the common
+    	-- behavior of geometric points in 2D space.
+    	-- The Geom2d package also provides the concrete
+    	-- class Geom2d_CartesianPoint.
+
+uses Pnt2d from gp
+
+is
+
+
+  Coord (me; X, Y : out Real) 
+        --- Purpose : returns the Coordinates of <me>.
+     is deferred;
+
+
+  Pnt2d (me)  returns Pnt2d
+        --- Purpose : returns a non persistent copy of <me>
+     is deferred;
+
+
+  X (me)  returns Real
+        --- Purpose : returns the X coordinate of <me>.
+     is deferred;
+
+
+  Y (me)  returns Real
+        --- Purpose : returns  the Y coordinate of <me>.
+     is deferred;
+
+
+
+  Distance (me; Other : Point)  returns Real;
+        --- Purpose : computes the distance between <me> and <Other>.
+
+  
+  SquareDistance (me; Other : Point)  returns Real;
+        --- Purpose : computes the square distance between <me> and <Other>.
+
+end;
+

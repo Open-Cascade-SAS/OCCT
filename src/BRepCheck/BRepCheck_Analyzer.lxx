@@ -1,0 +1,40 @@
+// File:	BRepCheck_Analyzer.lxx
+// Created:	Fri Dec  8 16:11:47 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : BRepCheck_Analyzer
+//purpose  : 
+//=======================================================================
+
+inline BRepCheck_Analyzer::BRepCheck_Analyzer (const TopoDS_Shape& S,
+					       const Standard_Boolean B)
+{
+  Init(S,B);
+}
+
+
+
+//=======================================================================
+//function : Result
+//purpose  : 
+//=======================================================================
+
+inline const Handle(BRepCheck_Result)& BRepCheck_Analyzer::Result
+   (const TopoDS_Shape& S) const
+{
+  return myMap(S);
+}
+
+//=======================================================================
+//function : IsValid
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepCheck_Analyzer::IsValid() const
+{
+  return IsValid(myShape);
+}
+

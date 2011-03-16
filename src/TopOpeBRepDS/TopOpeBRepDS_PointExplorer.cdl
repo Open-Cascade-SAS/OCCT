@@ -1,0 +1,52 @@
+-- File:	TopOpeBRepDS_PointExplorer.cdl
+-- Created:	Fri Dec  8 19:30:36 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class PointExplorer from TopOpeBRepDS
+
+uses
+
+    DataStructure from TopOpeBRepDS,
+    Point from TopOpeBRepDS
+    
+is
+
+    Create returns PointExplorer from TopOpeBRepDS;
+    Create(DS : DataStructure from TopOpeBRepDS;
+           FindOnlyKeep : Boolean from Standard = Standard_True)
+    returns PointExplorer from TopOpeBRepDS;
+    Init(me : in out; DS : DataStructure from TopOpeBRepDS;
+         FindOnlyKeep : Boolean from Standard = Standard_True) is static;
+    More(me) returns Boolean  is static;
+    Next(me : in out) is static;
+    Point(me) returns Point from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    IsPoint(me; I : Integer ) 
+    returns Boolean  is static;
+    IsPointKeep(me; I : Integer ) returns Boolean  is static;
+    Point(me; I : Integer ) 
+    returns Point from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+    NbPoint(me : in out) returns Integer
+    is static;
+
+    Index(me) returns Integer 
+    is static;
+
+    Find(me : in out) is static private;
+        
+fields
+
+    myIndex   : Integer ;
+    myMax     : Integer ;
+    myDS      : Address ; -- (TopOpeBRepDS_DataStructure*)
+    myFound   : Boolean ;
+    myEmpty   : Point from TopOpeBRepDS;
+    myFindKeep : Boolean;
+    
+end PointExplorer from TopOpeBRepDS;

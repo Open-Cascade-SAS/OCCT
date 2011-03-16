@@ -1,0 +1,80 @@
+-- File:	TDF_ClosureTool.cdl
+--      	-------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1998
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep  8 1998	Creation
+
+class ClosureTool from TDF
+
+	---Purpose: This class provides services to build the closure
+	--          of an information set.
+	--          
+	--          You can set closure options by using IDFilter
+	--          (to select or exclude specific attribute IDs) and
+	--          CopyOption objects and by giving to Closure
+	--          method.
+	--          
+
+
+uses
+
+    Boolean             from Standard,
+    Label               from TDF,
+    Attribute           from TDF,
+    DataSet             from TDF,
+    RelocationTable     from TDF,
+    AttributeMap        from TDF,
+    LabelMap            from TDF,
+    IDFilter            from TDF,
+    ClosureMode         from TDF
+
+-- raises
+
+is
+
+    Closure(myclass;
+    	aDataSet : mutable DataSet from TDF);
+	---Purpose: Builds the transitive closure of label and
+	--          attribute sets into <aDataSet>.
+
+    Closure(myclass;
+    	aDataSet : mutable DataSet from TDF;
+    	aFilter  : IDFilter from TDF;
+    	aMode    : ClosureMode from TDF);
+	---Purpose: Builds the transitive closure of label and
+	--          attribute sets into <aDataSet>. Uses <aFilter> to
+	--          determine if an attribute has to be taken in
+	--          account or not. Uses <aMode> for various way of
+	--          closing.
+
+
+    -- ----------------------------------------------------------------------
+    -- 
+    -- Private methods
+    -- 
+    -- ----------------------------------------------------------------------
+
+    Closure(myclass;
+    	    aLabel   : Label        from TDF;
+	    aLabMap  : in out LabelMap     from TDF;
+	    anAttMap : in out AttributeMap from TDF;
+    	    aFilter  : IDFilter     from TDF;
+    	    aMode    : ClosureMode  from TDF);
+	---Purpose: Builds the transitive closure of <aLabel>.
+
+
+    LabelAttributes(myclass;
+    	    	    aLabel   : Label        from TDF;
+		    aLabMap  : in out LabelMap     from TDF;
+		    anAttMap : in out AttributeMap from TDF;
+    	    	    aFilter  : IDFilter     from TDF;
+    	    	    aMode    : ClosureMode  from TDF)
+    	is private;
+	---Purpose: Adds label attributes and dependences.
+
+
+end ClosureTool;

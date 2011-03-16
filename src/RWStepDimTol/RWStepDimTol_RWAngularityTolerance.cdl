@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWAngularityTolerance.cdl
+-- Created:	Wed Jun  4 13:34:33 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWAngularityTolerance from RWStepDimTol
+
+    ---Purpose: Read & Write tool for AngularityTolerance
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    AngularityTolerance from StepDimTol
+
+is
+    Create returns RWAngularityTolerance from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : AngularityTolerance from StepDimTol);
+	---Purpose: Reads AngularityTolerance
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: AngularityTolerance from StepDimTol);
+	---Purpose: Writes AngularityTolerance
+
+    Share (me; ent : AngularityTolerance from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWAngularityTolerance;

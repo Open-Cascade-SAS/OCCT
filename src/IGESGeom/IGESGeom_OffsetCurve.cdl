@@ -1,0 +1,160 @@
+--
+-- File      :  OffsetCurve.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class OffsetCurve from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESOffsetCurve, Type <130> Form <0>
+        --          in package IGESGeom
+        --          An OffsetCurve entity contains the data necessary to
+        --          determine the offset of a given curve C. This entity
+        --          points to the base curve to be offset and contains
+        --          offset distance and other pertinent information.
+
+uses
+
+        Vec         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable OffsetCurve;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                 : mutable;
+              aBaseCurve         : IGESEntity;
+              anOffsetType       : Integer;
+              aFunction          : IGESEntity;
+              aFunctionCoord     : Integer;
+              aTaperedOffsetType : Integer;
+              offDistance1       : Real;
+              arcLength1         : Real;
+              offDistance2       : Real;
+              arcLength2         : Real;
+              aNormalVec         : XYZ;
+              anOffsetParam      : Real;
+              anotherOffsetParam : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           OffsetCurve
+        --       - aBaseCurve         : The curve entity to be offset
+        --       - anOffsetType       : Offset distance flag
+        --                              1 = Single value, uniform distance
+        --                              2 = Varying linearly
+        --                              3 = As a specified function
+        --       - aFunction          : Curve entity, one coordinate of which
+        --                              describes offset as a function of its
+        --                              parameter (0 unless OffsetType = 3)
+        --       - aFunctionCoord     : Particular coordinate of curve
+        --                              describing offset as function of its
+        --                              parameters. (used if OffsetType = 3)
+        --       - aTaperedOffsetType : Tapered offset type flag
+        --                              1 = Function of arc length
+        --                              2 = Function of parameter
+        --                              (Only used if OffsetType = 2 or 3)
+        --       - offDistance1       : First offset distance
+        --                              (Only used if OffsetType = 1 or 2)
+        --       - arcLength1         : Arc length or parameter value of
+        --                              first offset distance
+        --                              (Only used if OffsetType = 2)
+        --       - offDistance2       : Second offset distance
+        --       - arcLength2         : Arc length or parameter value of
+        --                              second offset distance
+        --                              (Only used if OffsetType = 2)
+        --       - aNormalVec         : Unit vector normal to plane containing
+        --                              curve to be offset
+        --       - anOffsetParam      : Start parameter value of offset curve
+        --       - anotherOffsetParam : End parameter value of offset curve
+
+        BaseCurve (me) returns IGESEntity;
+        ---Purpose : returns the curve to be offset
+
+        OffsetType (me) returns Integer;
+        ---Purpose : returns the offset distance flag
+        -- 1 = Single value offset (uniform distance)
+        -- 2 = Offset distance varying linearly
+        -- 3 = Offset distance specified as a function
+
+        Function (me) returns IGESEntity;
+        ---Purpose : returns the function defining the offset if at all the offset
+        -- is described as a function or Null Handle.
+
+        HasFunction (me) returns Boolean;
+        ---Purpose : returns True if function defining the offset is present.
+
+        FunctionParameter (me) returns Integer;
+        ---Purpose : returns particular coordinate of the curve which describes offset
+        -- as a function of its parameters. (only used if OffsetType() = 3)
+
+        TaperedOffsetType (me) returns Integer;
+        ---Purpose : returns tapered offset type flag (only used if OffsetType() = 2 or 3)
+        -- 1 = Function of arc length
+        -- 2 = Function of parameter
+
+        FirstOffsetDistance (me) returns Real;
+        ---Purpose : returns first offset distance (only used if OffsetType() = 1 or 2)
+
+        ArcLength1 (me) returns Real;
+        ---Purpose : returns arc length or parameter value (depending on value of
+        -- offset distance flag) of first offset distance
+        -- (only used if OffsetType() = 2)
+
+        SecondOffsetDistance (me) returns Real;
+        ---Purpose : returns the second offset distance
+
+        ArcLength2 (me) returns Real;
+        ---Purpose : returns arc length or parameter value (depending on value of
+        -- offset distance flag) of second offset distance
+        -- (only used if OffsetType() = 2)
+
+        NormalVector (me) returns Vec;
+        ---Purpose : returns unit vector normal to plane containing curve to be offset
+
+        TransformedNormalVector (me) returns Vec;
+        ---Purpose : returns unit vector normal to plane containing curve to be offset
+        -- after applying Transf. Matrix
+
+        Parameters (me; StartParam, EndParam : out Real);
+        -- returns start and end parameter values of the offset curve
+
+    	StartParameter (me) returns Real;
+	---Purpose : returns Start Parameter value of the offset curve
+
+    	EndParameter (me)   returns Real;
+	---Purpose : returns End   Parameter value of the offset curve
+
+fields
+
+--
+-- Class    : IGESGeom_OffsetCurve
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class OffsetCurve.
+--
+-- Reminder : A OffsetCurve instance is defined by :
+--            The curve to be offset, the offset type (indicating
+--            whether the offset is single valued, or varies linearly
+--            or is a function), the curve representing the function
+--            in case offset is specified as a function, the offset
+--            distances, unit vector normal to the plane containing
+--            offset curve, the starting and ending parameters of offset
+--            curve
+
+        theBaseCurve         : IGESEntity;
+        theOffsetType        : Integer;
+        theFunction          : IGESEntity;
+        theFunctionCoord     : Integer;
+        theTaperedOffsetType : Integer;
+        theOffsetDistance1   : Real;
+        theArcLength1        : Real;
+        theOffsetDistance2   : Real;
+        theArcLength2        : Real;
+        theNormalVector      : XYZ;
+        theOffsetParam1      : Real;
+        theOffsetParam2      : Real;
+
+end OffsetCurve;

@@ -1,0 +1,30 @@
+-- File:	Cycles.cdl
+-- Created:	Wed Sep 23 14:28:44 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Cycles  from IFGraph  inherits SubPartsIterator
+
+    	---Purpose : determines strong componants in a graph which are Cycles
+
+uses Graph, StrongComponants
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns Cycles;
+    ---Purpose : creates with a Graph, and will analyse :
+    --           whole True  : all the contents of the Model
+    --           whole False : sub-parts which will be given later
+
+    Create (subparts : in out StrongComponants);
+    ---Purpose : creates from a StrongComponants which was already computed
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the computation. Cycles are StrongComponants which are
+    --           not Single
+
+    	-- --   Iteration : More-Next-etc... will give Cycles
+
+end Cycles;

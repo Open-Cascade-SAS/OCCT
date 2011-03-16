@@ -1,0 +1,64 @@
+-- File:	ShapeFix_WireVertex.cdl
+-- Created:	Wed Jun  3 12:33:04 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class WireVertex from ShapeFix 
+
+    ---Purpose: Fixes vertices in the wire on the basis of pre-analysis
+    --          made by ShapeAnalysis_WireVertex (given as argument).
+    --          The Wire has formerly been loaded in a ShapeExtend_WireData.
+
+uses 
+    Wire from TopoDS,
+    WireData from ShapeExtend,
+    WireVertex from ShapeAnalysis
+
+is
+
+    Create returns WireVertex from ShapeFix;
+
+    Init (me: in out; wire: Wire from TopoDS; preci: Real);
+    	---Purpose: Loads the wire, ininializes internal analyzer
+	--          (ShapeAnalysis_WireVertex) with the given precision,
+	--          and performs analysis
+
+    Init (me: in out; sbwd: WireData from ShapeExtend; preci: Real);
+    	---Purpose: Loads the wire, ininializes internal analyzer
+	--          (ShapeAnalysis_WireVertex) with the given precision,
+	--          and performs analysis
+
+    Init (me: in out; sawv: WireVertex from ShapeAnalysis);
+    	---Purpose: Loads all the data on wire, already analysed by 
+	--          ShapeAnalysis_WireVertex
+
+    Analyzer (me) returns WireVertex from ShapeAnalysis;
+    	---C++: return const &
+    	---Purpose: returns internal analyzer
+
+    WireData (me) returns WireData from ShapeExtend;
+    	---C++: return const &
+    	---Purpose: returns data on wire (fixed)
+	---Remark : calls Analyzer().WireData()
+
+    Wire (me) returns Wire from TopoDS;
+    	---Purpose: returns resulting wire (fixed)
+	---Remark : calls Analyzer().WireData()->Wire()
+
+    FixSame (me: in out) returns Integer;
+    	---Purpose: Fixes "Same" or "Close" status (same vertex may be set,
+    	--          without changing parameters)
+    	--          Returns the count of fixed vertices, 0 if none
+
+    Fix (me: in out) returns Integer;
+    	---Purpose: Fixes all statuses except "Disjoined", i.e. the cases in which a
+    	--          common value has been set, with or without changing parameters
+    	--          Returns the count of fixed vertices, 0 if none
+
+fields
+
+    myAnalyzer: WireVertex from ShapeAnalysis;
+
+end WireVertex;

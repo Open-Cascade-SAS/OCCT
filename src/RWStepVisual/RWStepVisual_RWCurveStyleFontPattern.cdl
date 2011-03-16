@@ -1,0 +1,27 @@
+-- File:        CurveStyleFontPattern.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWCurveStyleFontPattern from RWStepVisual
+
+	---Purpose : Read & Write Module for CurveStyleFontPattern
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     CurveStyleFontPattern from StepVisual
+
+is
+
+	Create returns RWCurveStyleFontPattern;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable CurveStyleFontPattern from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : CurveStyleFontPattern from StepVisual);
+
+end RWCurveStyleFontPattern;

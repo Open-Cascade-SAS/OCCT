@@ -1,0 +1,88 @@
+-- File:	Image_BalancedPixelInterpolation.cdl
+-- Created:	Tue Jul 27 18:47:06 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+class BalancedPixelInterpolation from Image inherits PixelInterpolation from Image
+
+	---Purpose: The class BalancedPixelInterpolation is used to compute a  
+	--            SubPixel value on non integer Image coordinate
+	--          BalancedPixelInterpolation redefined a new method to compute
+	--	      a SubPixel value .
+	--	    The value is the proportional to the distance of the 
+	--	      four nearest Image Pixel.
+	--			A          B
+	--			  SubPixel
+	--			C          D
+	--	    If VA, VB, VC, VD is the value of the four nearest Image 
+	--	      Pixel, if ColDelta and RowDelta is the distance from non 
+	--	      integer coordinate (FX,FY) to the upper left nearest Image
+	--	      Pixel , then :
+	--		ColDelta = FX - XA ;
+	--		RowDelta = FY - YA ;
+	--		CAB = ColDelta*( VB - VA ) + VA 
+	--		CCD = ColDelta*( VD - VC ) + VD
+	--		V =  RowDelta*( CCD - CAB ) + CAB
+	--	      is the Image SubPixel value on non integer 
+	--	      coordinate (FX,FY).
+
+
+uses
+
+    Image 		from Image,
+    Pixel       	from Aspect,
+    ColorPixel       	from Aspect,
+    IndexPixel       	from Aspect,
+    DColorImage 	from Image,
+    DIndexedImage 	from Image
+
+is
+
+    	Create returns BalancedPixelInterpolation from Image ;
+	---Level: Public
+    	---Purpose: Create a BalancedPixelInterpolation  object.
+
+	Interpolate( me ; aImage   : Image from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out Pixel from Aspect ) 
+		returns Boolean from Standard is redefined ;
+	---Level: Public
+    	---Purpose: Redefined the method to compute SubPixel's value 
+	--	      on non integer Image coordinate.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate FX,FY is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DColorImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out ColorPixel from Aspect ) 
+		returns Boolean from Standard  is redefined;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DColorImage and ColorPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate FX,FY is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DIndexedImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out IndexPixel from Aspect ) 
+		returns Boolean from Standard  is redefined;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DIndexedImage and IndexPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate X,Y is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+end BalancedPixelInterpolation from Image;

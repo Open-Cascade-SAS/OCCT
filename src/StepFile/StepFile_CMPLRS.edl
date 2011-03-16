@@ -1,0 +1,15 @@
+-- File:	StepFile_CMPLRS.edl
+-- Author:	admin of IED Factory
+-- History:	Wed Sep 13 18:37:16 2000	admin of IED Factory	Creation
+-- Copyright:	 Matra Datavision 2000
+
+@ifnotdefined ( %StepFile_CMPLRS_EDL) then
+@set %StepFile_CMPLRS_EDL = "";
+
+--- Insert your stuff Here
+
+@if ( %Station == "hp" ) then
+	@string %CMPLRS_C_Options += " -Aa "; -- usage of ANSI mode
+@endif;
+
+@endif;

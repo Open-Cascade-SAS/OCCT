@@ -1,0 +1,26 @@
+-- File:	StepBasic_DocumentType.cdl
+-- Created:	Tue Jun 30 15:03:22 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class DocumentType  from StepBasic    inherits TShared from MMgt
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable DocumentType;
+
+    Init (me : mutable; apdt : HAsciiString);
+
+    ProductDataType (me) returns HAsciiString;
+    SetProductDataType (me : mutable; apdt : HAsciiString);
+
+fields
+
+    thepdt : HAsciiString;
+
+end DocumentType;

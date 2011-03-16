@@ -1,0 +1,93 @@
+-- File:	MAT_Node.cdl
+-- Created:	Fri Apr 30 18:39:46 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Node from MAT
+
+	---Purpose : 
+
+inherits 
+
+    TShared from MMgt
+ 
+uses
+
+    Arc                 from MAT,
+    BasicElt            from MAT,
+    SequenceOfArc       from MAT,
+    SequenceOfBasicElt  from MAT,
+    Address             from Standard
+is
+    Create (GeomIndex     : Integer;
+            LinkedArc     : Arc from MAT;
+    	    Distance      : Real)
+    returns mutable Node from MAT;
+    
+    GeomIndex (me)
+	---Purpose: Returns the index associated of the geometric 
+	--            representation of <me>.
+    returns Integer
+    is static;
+
+    Index (me)
+	---Purpose: Returns the index associated of the node 
+    returns Integer
+    is static;
+    
+    LinkedArcs (me ; S : in out SequenceOfArc)
+    	---Purpose: Returns in <S> the Arcs linked to <me>.
+    is static;
+    
+    NearElts (me ; S : in out SequenceOfBasicElt)
+	---Purpose: Returns  in <S> the BasicElts equidistant 
+	--          to <me>.
+    is static;
+
+    Distance (me)
+	--Purpose: Returns the distance between <me> and the figure.
+    returns Real
+    is static;
+    
+    PendingNode (me)
+	--- Purpose:Returns True if <me> is a pending Node.
+	--          (ie : the number of Arc Linked = 1)
+    returns Boolean from Standard
+    is static;
+    
+    OnBasicElt (me)
+	---Purpose: Returns True if <me> belongs to the figure.
+    returns Boolean from Standard
+    is static;
+
+    Infinite (me)
+	---Purpose: Returns True if the distance of <me> is Infinite
+    returns Boolean from Standard
+    is static;
+    
+    SetIndex (me : mutable ; anIndex : Integer from Standard)
+	--- Purpose : Set the index associated of the node 
+    is static;
+
+    SetLinkedArc(me : mutable ; anArc : Arc from MAT)
+    is static;	
+	    
+
+fields
+
+   nodeIndex        : Integer  from Standard;
+   geomIndex        : Integer  from Standard;
+   aLinkedArc       : Address  from Standard;
+   distance         : Real     from Standard;
+
+end Node;
+
+
+
+
+
+
+
+

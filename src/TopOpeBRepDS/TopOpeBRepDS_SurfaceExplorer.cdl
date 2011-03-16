@@ -1,0 +1,55 @@
+-- File:	TopOpeBRepDS_SurfaceExplorer.cdl
+-- Created:	Thu Oct 17 13:16:34 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class SurfaceExplorer from TopOpeBRepDS
+
+uses
+
+    DataStructure from TopOpeBRepDS,
+    Surface from TopOpeBRepDS
+    
+is
+
+    Create returns SurfaceExplorer from TopOpeBRepDS;
+    Create(DS : DataStructure from TopOpeBRepDS;
+           FindOnlyKeep : Boolean from Standard = Standard_True)
+    returns SurfaceExplorer from TopOpeBRepDS;
+    
+    Init(me : in out;
+    	 DS : DataStructure from TopOpeBRepDS;
+         FindOnlyKeep : Boolean from Standard = Standard_True);
+    
+    More(me) returns Boolean  is static;
+    Next(me : in out) is static;
+    Surface(me) returns Surface from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    IsSurface(me; I : Integer ) 
+    returns Boolean  is static;
+    IsSurfaceKeep(me; I : Integer ) returns Boolean  is static;
+    Surface(me; I : Integer ) 
+    returns Surface from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+    NbSurface(me : in out) returns Integer
+    is static;
+
+    Index(me) returns Integer 
+    is static;
+
+    Find(me : in out) is static private;
+        
+fields
+
+    myIndex   : Integer ;
+    myMax     : Integer ;
+    myDS      : Address ; -- (TopOpeBRepDS_DataStructure*)
+    myFound   : Boolean ;
+    myEmpty   : Surface from TopOpeBRepDS;
+    myFindKeep : Boolean;
+    
+end SurfaceExplorer from TopOpeBRepDS;

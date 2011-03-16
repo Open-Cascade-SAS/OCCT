@@ -1,0 +1,46 @@
+-- File:        OffsetSurface.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OffsetSurface from StepGeom 
+
+inherits Surface from StepGeom 
+
+uses
+
+	Real from Standard, 
+	Logical from StepData, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable OffsetSurface;
+	---Purpose: Returns a OffsetSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisSurface : mutable Surface from StepGeom;
+	      aDistance : Real from Standard;
+	      aSelfIntersect : Logical from StepData) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisSurface(me : mutable; aBasisSurface : mutable Surface);
+	BasisSurface (me) returns mutable Surface;
+	SetDistance(me : mutable; aDistance : Real);
+	Distance (me) returns Real;
+	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
+	SelfIntersect (me) returns Logical;
+
+fields
+
+	basisSurface : Surface from StepGeom;
+	distance : Real from Standard;
+	selfIntersect : Logical from StepData;
+
+end OffsetSurface;

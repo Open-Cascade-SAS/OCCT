@@ -1,0 +1,45 @@
+-- File:	ChFiDS_Regul.cdl
+-- Created:	Tue Mar 21 10:47:55 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Regul from ChFiDS 
+
+	---Purpose: Storage of  a curve  and its 2 faces or surfaces of  support.
+
+is
+
+    Create returns Regul from ChFiDS;
+    
+    SetCurve(me : in out; IC : Integer from Standard)
+    is static;
+    
+    SetS1(me     : in out; 
+    	  IS1    : Integer from Standard;
+	  IsFace : Boolean from Standard = Standard_True)
+    is static;
+	  
+    SetS2(me     : in out; 
+    	  IS2    : Integer from Standard;
+	  IsFace : Boolean from Standard = Standard_True)
+    is static;
+	  
+    IsSurface1(me) returns Boolean from Standard is static;
+
+    IsSurface2(me) returns Boolean from Standard is static;
+    
+    Curve(me) returns Integer from Standard is static;
+
+    S1(me) returns Integer from Standard is static;
+
+    S2(me) returns Integer from Standard is static;
+
+fields
+
+    icurv : Integer from Standard;
+    is1   : Integer from Standard;
+    is2   : Integer from Standard;
+
+end Regul;

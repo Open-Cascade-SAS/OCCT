@@ -1,0 +1,111 @@
+-- File:        TDataStd_ReferenceArray.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class ReferenceArray from TDataStd inherits Attribute from TDF
+
+    ---Purpose: Contains an array of references to the labels.
+
+uses 
+
+    Attribute from TDF,
+    GUID from Standard,
+    Label from TDF,
+    DataSet from TDF,
+    RelocationTable from TDF,
+    HLabelArray1 from TDataStd
+
+is 
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const & 
+    ---Purpose: Returns the ID of the array of references (labels) attribute.
+    returns GUID from Standard;
+
+    Set (myclass; 
+    	 label : Label from TDF; 
+    	 lower, upper : Integer from Standard)
+    ---Purpose: Finds or creates an array of reference values (labels) attribute.
+    returns ReferenceArray from TDataStd;
+
+    
+    ---Category: ReferenceArray methods
+    --           ======================
+    
+    Init (me : mutable; 
+    	  lower, upper : Integer from Standard);
+    ---Purpose: Initialize the inner array with bounds from <lower> to <upper>  
+
+    SetValue (me : mutable; 
+    	      index :Integer from Standard; 
+    	      value : Label from TDF);
+    ---Purpose: Sets the <Index>th element of the array to <Value>
+
+    Value (me; 
+    	   Index : Integer from Standard)
+    ---Purpose: Returns the value of the <Index>th element of the array.
+    ---C++: alias operator ()
+    returns Label from TDF;
+
+    Lower (me) 
+    ---Purpose: Returns the lower boundary of the array.
+    returns Integer from Standard;      
+
+    Upper (me) 
+    ---Purpose: Returns the upper boundary of the array.
+    returns Integer from Standard;
+    
+    Length (me) 
+    ---Purpose: Returns the number of elements in the array.
+    returns Integer from Standard;    
+
+    
+    ---Category: Advanced area
+    --           =============
+
+    InternalArray (me)
+    ---C++: return const &
+    returns HLabelArray1 from TDataStd;
+    
+    SetInternalArray (me : mutable;
+    	    	      values : HLabelArray1 from TDataStd);
+
+
+    ---Category: Methodes of TDF_Attribute
+    --           =========================
+    
+    Create
+    returns mutable ReferenceArray from TDataStd; 
+
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    References (me; DS : DataSet from TDF) 
+    is redefined;
+    
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myArray : HLabelArray1 from TDataStd;
+
+
+end ReferenceArray;

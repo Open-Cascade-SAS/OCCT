@@ -1,0 +1,33 @@
+-- File:	DsgPrs_ShadedPlanePresentation.cdl
+-- Created:	Fri Dec  5 16:04:08 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ShadedPlanePresentation from DsgPrs 
+
+	---Purpose: A framework to define display of shaded planes.
+ 
+uses
+
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Pnt          from gp
+
+is
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer      : Drawer from Prs3d;
+    	aPt1         : Pnt    from gp;
+    	aPt2         : Pnt    from gp;
+    	aPt3         : Pnt    from gp);
+	 
+    	---Purpose: Adds the points aPt1, aPt2 and aPt3 to the
+    	-- presentation object, aPresentation.
+    	-- The display attributes of the shaded plane are
+    	-- defined by the attribute manager aDrawer.
+
+
+end ShadedPlanePresentation;

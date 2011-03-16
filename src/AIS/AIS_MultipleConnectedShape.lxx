@@ -1,0 +1,16 @@
+// File:	AIS_MultipleConnectedShape.lxx
+// Created:	Tue Apr 22 17:46:40 1997
+// Author:	Guest Design
+//		<g_design>
+
+inline void AIS_MultipleConnectedShape::Set(const TopoDS_Shape& ashap)
+{
+  myShape = ashap;
+}
+
+inline const TopoDS_Shape& 
+AIS_MultipleConnectedShape::Shape() const 
+{
+  return myShape;
+}
+

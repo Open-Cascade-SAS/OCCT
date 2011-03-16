@@ -1,0 +1,23 @@
+-- File:        SeamCurve.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SeamCurve from StepGeom 
+
+inherits SurfaceCurve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Curve from StepGeom, 
+	HArray1OfPcurveOrSurface from StepGeom, 
+	PreferredSurfaceCurveRepresentation from StepGeom
+is
+
+	Create returns mutable SeamCurve;
+	---Purpose: Returns a SeamCurve
+
+
+end SeamCurve;

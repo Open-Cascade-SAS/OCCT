@@ -1,0 +1,157 @@
+-- File:	Select3D_SensitiveEntity.cdl
+-- Created:	Tue Jan 24 09:30:34 1995
+-- Author:	Rob
+-- modified by rob jul/ 21/ 97 : inserting locations ...		
+-- modified by rob jan/ 29/ 98 : Sort by deph-> add a field to be able
+--                               to compute a depth 
+--                               -> Virtual methods rather than
+--                               Deferred for Project
+--                               WARNING : Must be redefined for 
+--                               each kind of sensitive entity
+--                             
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class SensitiveEntity from Select3D inherits 
+    SensitiveEntity from SelectBasics
+
+    	---Purpose:  Abstract framework to define 3D sensitive entities.
+    	-- As the selection process uses the principle of a
+    	-- projection of 3D shapes onto a 2D view where
+   	-- nearness to a rectangle determines whether a shape
+    	-- is picked or not, all 3D shapes need to be converted
+    	-- into 2D ones in order to be selected.
+
+
+uses
+
+    Projector   from Select3D,
+    EntityOwner from SelectBasics,
+    Location    from TopLoc,
+    Lin         from gp,
+    Box2d       from Bnd, 
+    Array1OfPnt2d from TColgp
+
+is
+
+    Initialize(OwnerId : EntityOwner from SelectBasics);
+
+    NeedsConversion(me) returns Boolean is redefined static;
+    ---Level: Public 
+    ---Purpose: Returns true if this framework needs conversion.
+    ---C++: inline
+    
+    Is3D(me) returns Boolean from Standard is redefined static;
+    ---Purpose: Returns true if this framework provides 3D information.
+
+    Project (me:mutable;aProjector : Projector from Select3D) is virtual;
+    ---Level: Public 
+    	---Purpose:Returns the projector aProjector.
+    	--	 In classes inheriting this framework, you must
+    	-- redefine this function in order to get a sensitive 2D
+    	-- rectangle from a 3D entity. This rectangle is the
+    	-- sensitive zone which makes the 3D entity selectable. 
+
+
+    MaxBoxes(me) returns Integer is redefined virtual;
+    ---Level: Public 
+    ---Purpose: Returns the max number of sensitive areas returned 
+    --          by this class is 1 by default. 
+    --          Else on must redefine this method.
+
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is virtual;
+    ---Purpose: Returns the sensitive entity found at the location  aLocation.
+    -- You must redefine this function for any type of
+    -- sensitive entity which can accept another connected
+    -- sensitive entity.//can be connected to another sensitive entity.
+   
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean is redefined virtual;
+    ---Purpose: Matches the coordinates X, Y with the entity found at
+    -- that point within the tolerance aTol and the minimum depth DMin.
+    -- You must redefine this function for every inheriting entity.
+    -- You will have to call this framework inside the redefined function.
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard)
+    returns Boolean from Standard is redefined virtual;
+    ---Purpose: Matches the box defined by the coordinates Xmin,
+    -- Ymin, Xmax, Ymax with the entity found at that point
+    -- within the tolerance aTol.
+    -- Xmin, YMin define the minimum point in the lower left
+    -- hand corner of the box, and   XMax, YMax define the
+    -- maximum point in the upper right hand corner of the box.
+    -- You must redefine this function for every inheriting entity.
+    -- You will have to call this framework inside the redefined function.
+    
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard)
+    returns Boolean from Standard is redefined virtual;
+    ---Purpose: prevents from hiding virtual methods...
+
+
+    GetEyeLine(me; X,Y : Real from Standard) returns Lin from gp;
+    ---Purpose: Returns the eye line for the point defined by the coordinates X,Y.
+    
+    ComputeDepth(me;EyeLine : Lin from gp) returns Real from Standard 
+    is deferred;
+    ---Purpose: Returns the depth of this object on the line EyeLine.
+    -- EyeLine goes through the eye towards a point
+    -- defined by the coordinates X,Y in the function GetEyeLine.
+    ---Purpose: gives an abcissa on <aLin> .
+    --          <aLin> represents the line going through 
+    --          the eye towards an X,Y point on the screen. This Method
+    --          must return a mean Depth on this line.
+
+
+    Depth(me) returns Real from Standard is redefined;
+
+    ---Category: Location of sensitive entities...
+    --           Default implementations of HasLocation() and Location() rely on 
+    --           location obtained from the entity owner, to minimize memory usage.
+    --           SetLocation() and ResetLocation() do nothing by default.
+
+    HasLocation(me) returns Boolean from Standard is virtual;
+    ---Purpose: Returns true if this framework has a location defined.
+
+    Location(me) returns Location from TopLoc is virtual;
+    ---C++: return const&
+
+    ResetLocation(me:mutable) is virtual;
+    ---Purpose: sets the location to Identity
+
+    SetLocation(me:mutable;aLoc :Location from TopLoc) is virtual;
+
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is virtual;
+    ---Purpose: 2 options :
+    --          <FullDump> = False -> general information
+    --	        <FullDump> = True  -> whole informtion 3D +2d ...
+    
+    DumpBox(myclass; S: in out OStream;abox:Box2d from Bnd) ;
+
+    UpdateLocation(me:mutable;aLoc:Location from TopLoc);
+
+
+    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is virtual;
+
+    SetLastDepth(me:mutable; aDepth: Real from Standard) is protected;
+
+fields
+    
+    mylastprj     : Address   from Standard  is protected;
+    mylastdepth   : ShortReal from Standard;
+end SensitiveEntity;
+
+
+
+
+
+

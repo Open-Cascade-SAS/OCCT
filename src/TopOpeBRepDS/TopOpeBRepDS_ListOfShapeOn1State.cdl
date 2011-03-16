@@ -1,0 +1,39 @@
+-- File:	TopOpeBRepDS_ListOfShapeOn1State.cdl
+-- Created:	Mon Jun 12 10:23:56 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1995
+
+class ListOfShapeOn1State from TopOpeBRepDS
+
+---Purpose: represent a list of shape
+
+uses
+    
+    ListOfShape from TopTools,
+    Shape from TopoDS
+    
+is
+
+    Create returns ListOfShapeOn1State from TopOpeBRepDS;
+
+    ListOnState(me)
+    returns ListOfShape from TopTools is static;
+    ---C++: return const &
+
+    ChangeListOnState(me : in out)
+    returns ListOfShape from TopTools is static;
+    ---C++: return &
+
+    IsSplit(me)
+    returns Boolean from Standard is static;
+
+    Split(me : in out; B : Boolean = Standard_True) is static;
+    Clear(me : in out) is static;	    
+
+fields
+
+    myList : ListOfShape from TopTools;
+    mySplits : Integer from Standard;
+
+end ListOfShapeOn1State from TopOpeBRepDS;

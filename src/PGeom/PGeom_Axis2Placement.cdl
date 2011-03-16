@@ -1,0 +1,46 @@
+-- File:	PGeom_Axis2Placement.cdl
+-- Created:	Mon Feb 22 16:16:43 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Axis2Placement from PGeom inherits AxisPlacement from PGeom
+
+	---Purpose : This class describes an  axis two placement built
+	--         with a point and two directions.
+	--          
+	---See Also : Axis2Placement from Geom.
+
+uses Ax1      from gp,
+     Dir      from gp
+
+is
+
+
+  Create returns mutable Axis2Placement from PGeom;
+        ---Purpose : Returns an Axis2Placement with default values.
+    	---Level: Internal 
+
+
+  Create (aAxis : Ax1 from gp; aXDirection: Dir from gp)
+    returns mutable Axis2Placement from PGeom;
+        ---Purpose : Creates an Axis2Placement with <A2>.
+    	---Level: Internal 
+
+
+  XDirection (me : mutable; aXDirection : Dir from gp);
+        ---Purpose : Set the value of the field xDirection with <aXDirection>.
+    	---Level: Internal 
+
+
+  XDirection (me) returns Dir from gp;
+   	---Purpose : Returns the "XDirection". This is a unit vector.
+    	---Level: Internal 
+
+
+fields
+
+  xDirection : Dir from gp;
+
+end;

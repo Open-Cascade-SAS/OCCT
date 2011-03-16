@@ -1,0 +1,96 @@
+-- File:	Extrema_ExtPRevS.cdl
+-- Created:	Tue Sep 21 15:42:54 1999
+-- Author:	Edward AGAPOV
+--		<eap@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ExtPRevS from Extrema 
+		    
+	---Purpose: It calculates all the extremum (minimum and
+	--          maximum) distances between a point and a surface
+	--          of revolution.
+		    
+uses
+    POnSurf from Extrema,
+    GenExtPS from Extrema,
+
+    SurfaceOfRevolution from Adaptor3d,
+    SurfacePtr from Adaptor3d,
+    
+    Ax2 from gp,
+    Pnt from gp
+
+raises 
+    NotDone from StdFail,
+    OutOfRange
+
+
+is
+
+    Create returns ExtPRevS from Extrema;
+
+    Create (P: Pnt; S: SurfaceOfRevolution from Adaptor3d;
+		    Umin, Usup, Vmin, Vsup: Real; 
+		    TolU,TolV: Real) 
+		    returns ExtPRevS from Extrema;
+    ---Purpose: It calculates all the distances between a point 
+    --          from gp and a SurfacePtr from Adaptor3d.
+    
+    Create (P: Pnt; S: SurfaceOfRevolution from Adaptor3d; 
+		    TolU,TolV: Real) 
+		    returns ExtPRevS from Extrema;
+    ---Purpose: It calculates all the distances between a point 
+    --          from gp and a SurfacePtr from Adaptor3d.
+    
+    Initialize(me: in out; S: SurfaceOfRevolution from Adaptor3d; 
+			   Umin, Usup, Vmin, Vsup: Real; 
+			   TolU,TolV: Real)
+		    is static;
+    
+    Perform (me: in out; P: Pnt)
+		    is static;
+    
+    IsDone (me) returns Boolean
+    ---Purpose: Returns True if the distances are found.
+    		    is static;
+    
+    NbExt (me) returns Integer
+    ---Purpose: Returns the number of extremum distances.
+    		    raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    		    is static;
+
+    SquareDistance (me; N: Integer) returns Real
+    ---Purpose: Returns the value of the Nth resulting square distance.
+    		    raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    		    is static;
+
+    Point (me; N: Integer) returns POnSurf
+    ---Purpose: Returns the point of the Nth resulting distance.
+    		    raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    		    is static;
+
+fields
+    myS      : SurfacePtr from Adaptor3d;
+    myvinf   : Real       from Standard;
+    myvsup   : Real       from Standard;
+    mytolv   : Real       from Standard;
+    
+    myPosition  : Ax2      from gp;
+    myExtPS     : GenExtPS from Extrema;
+    
+    myIsAnalyticallyComputable : Boolean  from Standard;
+
+    myDone : Boolean;
+    myNbExt: Integer;
+    mySqDist: Real [6];
+    myPoint: POnSurf from Extrema [6];
+
+end ExtPRevS;

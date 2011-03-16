@@ -1,0 +1,71 @@
+
+// File:	HLRAlgo_PolyData.lxx
+// Created:	Mon Jan 11 13:58:26 1993
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#include <TColgp_HArray1OfXYZ.hxx>
+#include <HLRAlgo_HArray1OfTData.hxx>
+#include <HLRAlgo_HArray1OfPHDat.hxx>
+
+//=======================================================================
+//function : FaceIndex
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRAlgo_PolyData::FaceIndex (const Standard_Integer I)
+{ myIndices[0] = I; }
+
+//=======================================================================
+//function : FaceIndex
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+HLRAlgo_PolyData::FaceIndex () const
+{ return myIndices[0]; }
+
+//=======================================================================
+//function : Nodes
+//purpose  : 
+//=======================================================================
+
+inline TColgp_Array1OfXYZ &
+HLRAlgo_PolyData::Nodes () const
+{ return myHNodes->ChangeArray1(); }
+
+//=======================================================================
+//function : TData
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Array1OfTData &
+HLRAlgo_PolyData::TData () const
+{ return myHTData->ChangeArray1(); }
+
+//=======================================================================
+//function : PHDat
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Array1OfPHDat &
+HLRAlgo_PolyData::PHDat () const
+{ return myHPHDat->ChangeArray1(); }
+
+//=======================================================================
+//function : Hiding
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_PolyData::Hiding () const
+{ return !myHPHDat.IsNull(); }
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_PolyData::Indices ()
+{ return (Standard_Address)myIndices; }
+

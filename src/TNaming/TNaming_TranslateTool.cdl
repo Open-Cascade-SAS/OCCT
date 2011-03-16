@@ -1,0 +1,114 @@
+-- File:	TNaming_TranslateTool.cdl
+-- Created:	Thu Jun 24 16:46:18 1999
+-- Author:	Sergey ZARITCHNY
+--		<szy@philipox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class TranslateTool from TNaming inherits  TShared from MMgt
+
+	---Purpose: The TranslateTool class is provided to support the          
+        --          translation of topological data structures  Transient 
+    	--  .       to  Transient.
+
+uses 
+     Shape                  from TopoDS, 
+     IndexedDataMapOfTransientTransient  from TColStd 
+      
+raises
+
+    TypeMismatch from Standard 
+    
+is
+
+    Add(me;
+    	S1 : in out Shape from TopoDS;
+    	S2 :        Shape from TopoDS)
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    --
+    --       The Make methods should create a new empty  object of the
+    --       given type with  the given Model.   They should raise the
+    --       TypeMismatch   exception  if  the Model   is  not of  the
+    --       expected type.
+    --       
+
+
+    MakeVertex(me; 
+    	       S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeEdge(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeWire(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeFace(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeShell(me; 
+    	      S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeSolid(me; 
+    	      S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompSolid(me; 
+    	    	  S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompound(me; 
+    	    	 S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    --
+    --     The Update methods should transfer the data from  the first
+    --     shape to the second.
+    --     
+    
+    UpdateVertex(me;
+    	         S1 :         Shape                  from TopoDS;
+		 S2 : in out  Shape                  from TopoDS;
+		 M  : in out  IndexedDataMapOfTransientTransient  from TColStd);
+	---Level: Internal 
+        
+    UpdateEdge  (me;
+    	         S1 :         Shape                  from TopoDS;
+	         S2 : in out  Shape                  from TopoDS;
+	         M  : in out  IndexedDataMapOfTransientTransient  from TColStd);
+	---Level: Internal 
+    
+    UpdateFace  (me;
+    	         S1 :         Shape                  from TopoDS;
+	         S2 : in out  Shape                  from TopoDS;
+	         M  : in out  IndexedDataMapOfTransientTransient  from TColStd);
+	---Level: Internal  
+    UpdateShape (me; 
+    	    	 S1 :         Shape                  from TopoDS;
+	         S2 : in out  Shape                  from TopoDS); 
+	---Level: Internal 
+	     
+end TranslateTool;

@@ -1,0 +1,243 @@
+-- File:	IntPatch_Polyhedron.cdl
+-- Created:	Wed Feb  3 11:24:14 1993
+-- Author:	Laurent BUCHARD
+---Copyright:	 Matra Datavision 1993
+
+
+class Polyhedron from IntPatch
+   
+   ---Purpose: This class provides a linear approximation of the PSurface.
+  --- preview a constructor on a zone of  a surface
+
+uses
+        HSurface from Adaptor3d,
+        XYZ from gp,
+    	Pnt from gp,
+    	Array2OfPnt  from TColgp,
+	Array2OfReal from TColStd,
+	Box          from Bnd,
+	HArray1OfBox from Bnd
+
+
+raises  OutOfRange from Standard
+
+
+is
+        Create         (Surface   : HSurface from Adaptor3d;
+                        nbdU,nbdV : Integer)
+			
+    	    	    	returns Polyhedron from IntPatch;
+			
+    	---Purpose: MaTriangle constructor with an double array of pnt for the 
+    	--          representation of a double array of triangles.
+
+
+    	Create          (Surface  : HSurface from Adaptor3d)
+	    	    	returns Polyhedron from IntPatch;
+
+	Destroy(me:in out);
+	    ---C++: alias ~
+	
+	Perform        (me:in out; Surface  : HSurface from Adaptor3d;
+	                           nbdU,nbdV: Integer)
+
+                        is static;
+				   
+
+    	DeflectionOverEstimation
+    	    	       (me : in out; flec : Real from Standard)
+		    	is static;
+
+    	DeflectionOnTriangle
+    	    	       (me; 
+		       	Surface : HSurface from Adaptor3d;
+                        Index : Integer from Standard)
+			
+		        returns Real from Standard
+		    	is static;
+
+    	UMinSingularity
+    	    	       (me : in out; Sing : Boolean from Standard)
+		    	is static;
+
+    	UMaxSingularity
+    	    	       (me : in out; Sing : Boolean from Standard)
+		    	is static;
+
+    	VMinSingularity
+    	    	       (me : in out; Sing : Boolean from Standard)
+		    	is static;
+
+    	VMaxSingularity
+    	    	       (me : in out; Sing : Boolean from Standard)
+		    	is static;
+
+    	Size           (me;
+    	    	    	nbdu, nbdv : in out Integer)
+		    	is static;
+	---Purpose: Get the size of the MaTriangle. 
+
+
+    	NbTriangles    (me)
+    	    	    	returns Integer
+		    	is static;
+    	---Purpose: Give the number of triangles in this double array of 
+    	--          triangles (nbdu*nbdv*2).
+
+
+    	Triangle       (me;
+    	    	    	Index    : in Integer;
+    	    	    	P1,P2,P3 : out Integer)
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+    	---Purpose: Give the 3 points of the triangle of addresse Index in 
+    	--          the double array of triangles. 
+
+
+
+    	TriConnex      (me;
+    	    	    	Triang      : in Integer;
+    	            	Pivot,Pedge : in Integer;
+		    	TriCon      : out Integer;
+		    	OtherP      : out Integer)
+		    	returns Integer from Standard
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+    	---Purpose: Give the addresse Tricon of the triangle connexe to the 
+    	--          triangle of address Triang by the edge Pivot Pedge and
+    	--          the third point of this connexe triangle. When we are 
+    	--          on a free edge TriCon==0 but the function return the 
+    	--          value of the triangle in the other side of Pivot on 
+    	--          the free edge. Used to turn around a vertex.
+
+
+    	NbPoints       (me)
+    	    	    	returns Integer from Standard
+		    	is static;
+    	---Purpose: Give the number of point in the double array of 
+    	--          triangles ((nbdu+1)*(nbdv+1)).
+
+    	Point          (me       : in out ;
+    	    		thePnt   : in Pnt from gp;
+    	    	    	lig, col : in Integer;
+    	                U,V      : in Real from Standard)
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+	---Purpose: Set the value of a field of the double array of 
+    	--          points. 
+
+    
+    	Point          (me;
+    	    	    	Index : in Integer;
+                        U,V   : out Real from Standard)
+    	    	    	returns Pnt from gp
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+    	---Purpose: Give the point of index i in the MaTriangle. 
+    	---C++: return const &
+
+    	Point          (me;
+    	    	    	Index : in Integer)
+    	    	    	returns Pnt from gp
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+    	---Purpose: Give the point of index i in the MaTriangle. 
+    	---C++: return const &
+
+
+    	Point          (me;
+    	    	    	Index : in Integer;
+    	    	    	P : out Pnt from gp)
+    	    	    	raises OutOfRange from Standard
+		    	is static;
+    	---Purpose: Give the point of index i in the MaTriangle. 
+
+
+    	Bounding       (me)
+    	    	    	returns Box from Bnd
+		    	is static;
+    	---Purpose: Give the bounding box of the MaTriangle. 
+        ---C++: return const &
+
+    	FillBounding   (me : in out)
+		    	is static;
+    	---Purpose: Compute the array of boxes. The box <n> corresponding 
+    	--          to the triangle <n>.
+
+
+    	ComponentsBounding
+       	    	       (me)
+    	    	    	returns HArray1OfBox from Bnd
+		    	is static;
+    	---Purpose: Give the array of boxes. The box <n> corresponding 
+    	--          to the triangle <n>.
+        ---C++: return const &
+
+
+    	DeflectionOverEstimation
+    	    	       (me)
+		    	returns Real from Standard
+		    	is static;
+
+    	HasUMinSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasUMaxSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasVMinSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasVMaxSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    PlaneEquation  (me;
+		    Triang	  : in Integer from Standard;
+		    NormalVector  : out XYZ from gp;
+		    PolarDistance : out Real from Standard)
+		    raises OutOfRange from Standard
+		    is static;
+    ---Purpose: Give the plane equation of the triangle of addresse Triang.
+
+
+    Contain	   (me;
+		    Triang	  : in Integer from Standard;
+		    ThePnt	  : in Pnt from gp)
+		    returns Boolean
+		    raises OutOfRange from Standard
+		    is static;
+    ---Purpose: Give the plane equation of the triangle of addresse Triang.
+
+    Parameters(me; Index :       Integer from Standard;
+                   U,V   :  out  Real from Standard) 
+    	raises OutOfRange from Standard
+	is static;
+
+ -- Test needings :   
+
+     	    Dump       (me)
+		    	is static;
+
+fields
+            TheBnd          : Box               from Bnd;
+    	    TheComponentsBnd: HArray1OfBox      from Bnd;
+    	    TheDeflection   : Real              from Standard;
+     	    nbdeltaU        : Integer           from Standard;
+     	    nbdeltaV        : Integer           from Standard;
+     	    C_MyPnts        : Address           from Standard;
+	    C_MyU           : Address           from Standard;
+    	    C_MyV           : Address           from Standard;
+	    UMinSingular    : Boolean from Standard;
+	    UMaxSingular    : Boolean from Standard;
+	    VMinSingular    : Boolean from Standard;
+	    VMaxSingular    : Boolean from Standard;
+
+end Polyhedron;

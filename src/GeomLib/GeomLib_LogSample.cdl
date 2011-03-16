@@ -1,0 +1,32 @@
+-- File:	GeomLib_LogSample.cdl
+-- Created:	Wed Sep 23 16:50:25 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class LogSample from GeomLib inherits FunctionSample  from  math
+
+	---Purpose: 
+raises 
+   OutOfRange  from  Standard
+is 
+ 
+  Create(A,B: Real; N: Integer)
+  returns LogSample from GeomLib; 
+   
+  GetParameter(me; Index: Integer)
+    
+	---Purpose: Returns the value of parameter of the point of 
+	--          range Index : A + ((Index-1)/(NbPoints-1))*B.
+	--          An exception is raised if Index<=0 or Index>NbPoints.
+
+    returns Real
+    raises OutOfRange
+    is redefined;
+
+fields 
+  myF    :  Real; 
+  myexp  :  Real;
+
+end LogSample;

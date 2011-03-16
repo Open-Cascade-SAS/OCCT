@@ -1,0 +1,79 @@
+-- File:	Law_BSpFunc.cdl
+-- Created:	Wed Nov 15 16:16:24 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class BSpFunc from Law inherits Function from Law
+
+	---Purpose: Law Function based on a BSpline curve 1d.  Package
+	--          methods and classes are implemented in package Law
+	--          to    construct  the  basis    curve with  several
+	--          constraints.
+
+uses
+    BSpline from Law,
+    Array1OfReal    from TColStd,
+    Shape           from GeomAbs
+      
+raises OutOfRange from Standard   
+
+is
+
+    Create returns mutable BSpFunc from Law;
+    
+    Create(C  : BSpline from Law; First, Last: Real) 
+    returns mutable BSpFunc from Law;
+    
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+
+    Value(me: mutable; X: Real from Standard)
+    returns Real from Standard;
+	
+    D1(me: mutable; X: Real from Standard; F,D: out Real from Standard); 
+    
+    D2(me: mutable; X: Real from Standard; 
+       F,D, D2: out Real from Standard);
+    
+
+    Trim(me; PFirst, PLast, Tol :Real from Standard) returns Function
+    
+    ---Purpose:   Returns a  law equivalent of  <me>  between
+	--        parameters <First>  and <Last>. <Tol>  is used  to
+	--        test for 3d points confusion.
+	--        It is usfule to determines the derivatives 
+	--        in these values <First> and <Last> if 
+        --        the Law is not Cn.          
+    	is redefined static;    
+    
+    Bounds(me: mutable; PFirst,PLast: out Real from Standard);
+    
+    Curve(me) returns mutable BSpline from Law;
+
+    SetCurve(me : mutable; 
+             C  : BSpline from Law);
+
+fields
+    curv : BSpline from Law; -- is protected;To force Curve() and 
+                             -- SetCurve() to  be  used.  
+    first  : Real;
+    last   : Real;
+end BSpFunc;

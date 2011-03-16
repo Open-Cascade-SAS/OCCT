@@ -1,0 +1,58 @@
+-- File:	ToolPolygon.cdl
+-- Created:	Fri Aug  2 08:18:37 1991
+-- Author:	Didier PIFFAULT
+--		<dpf@sdsun2>
+---Copyright:	 Matra Datavision 1991
+
+
+generic class ToolPolygon from IntCurve (Point as any; 
+    	    				 Polygon as any;
+    	    	    	    	    	 BoundingBox as any)
+
+	---Purpose: Describe a polyline  as  a topology to compute the
+	--          interference beetween two polylines.
+
+
+        ---Level: Internal
+
+raises  OutOfRange from Standard
+
+
+is  Bounding       (myclass; thePolygon : Polygon)
+    	    	    returns BoundingBox;
+    ---Purpose: Give the bounding box of the polygon.
+    ---C++: inline 
+    ---C++: return const &
+
+    DeflectionOverEstimation
+    	    	   (myclass; thePolygon : Polygon)
+    		   ---C++: inline
+		   returns Real from Standard;
+
+    Closed         (myclass; thePolygon : Polygon)
+    	            ---C++: inline
+    	    	    returns Boolean from Standard;
+
+    NbSegments     (myclass; thePolygon : Polygon)
+                    ---C++: inline
+    	    	    returns Integer;
+    ---Purpose: Give the number of Segments in the polyline.
+    
+    BeginOfSeg     (myclass; thePolygon : Polygon;
+    	    	    Index : in Integer)
+		    ---C++: inline
+    	    	    returns Point
+    	    	    raises OutOfRange from Standard;
+                    ---C++: return const &
+    ---Purpose: Give the point of range Index in the Polygon. 
+
+    EndOfSeg       (myclass; thePolygon : Polygon;
+    	    	    Index : in Integer)
+		    ---C++: inline
+    	    	    returns Point
+    	    	    raises OutOfRange from Standard;
+		    ---C++: return const &
+    ---Purpose: Give the point of range Index in the Polygon. 
+
+		 
+end ToolPolygon;

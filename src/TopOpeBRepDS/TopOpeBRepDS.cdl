@@ -1,0 +1,237 @@
+-- File:	TopOpeBRepDS.cdl
+-- Created:	Thu Jun 17 09:59:51 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+package TopOpeBRepDS
+
+    ---Purpose: This package provides services used by the TopOpeBRepBuild
+    --          package performing topological operations on the BRep
+    --          data structure.
+
+uses
+
+    MMgt,
+    Standard,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TCollection,
+    TColStd,
+    TopExp,
+    gp,
+    BRep,
+    Geom,
+    Geom2d,
+    TopOpeBRepTool,
+    
+    -- for HDataStructure and relevant classes 
+    TopTrans
+    
+is
+    enumeration Kind is 
+    POINT,CURVE,SURFACE,VERTEX,EDGE,WIRE,FACE,SHELL,SOLID,COMPSOLID,COMPOUND,UNKNOWN
+    end Kind;
+    ---Purpose: different types of objects in DataStructure
+
+    enumeration Config is
+    UNSHGEOMETRY, SAMEORIENTED, DIFFORIENTED
+    end Config;
+
+    enumeration CheckStatus is
+    OK,NOK
+    end CheckStatus;
+
+    class DataMapOfCheckStatus 
+    instantiates DataMap from TCollection 
+    (Integer from Standard,
+     CheckStatus from TopOpeBRepDS,
+     MapIntegerHasher from TColStd);
+
+    class Interference;
+    class ListOfInterference instantiates List from TCollection 
+    (Interference from TopOpeBRepDS);
+    class InterferenceIterator;
+    class DataMapOfInterferenceListOfInterference instantiates
+    DataMap from TCollection
+    (Interference       from TopOpeBRepDS,
+     ListOfInterference from TopOpeBRepDS,
+     MapTransientHasher from TColStd);
+
+    class DataMapOfInterferenceShape instantiates
+    DataMap from TCollection
+    (Interference       from TopOpeBRepDS,
+     Shape              from TopoDS,
+     MapTransientHasher from TColStd);
+
+    class DataMapOfIntegerListOfInterference instantiates
+    DataMap from TCollection
+    (Integer from Standard,
+     ListOfInterference from TopOpeBRepDS,
+     MapIntegerHasher from TColStd);
+    
+    class Array1OfDataMapOfIntegerListOfInterference
+    instantiates Array1 from TCollection
+    (DataMapOfIntegerListOfInterference from TopOpeBRepDS);
+
+    class HArray1OfDataMapOfIntegerListOfInterference
+    instantiates HArray1 from TCollection
+    (DataMapOfIntegerListOfInterference from TopOpeBRepDS,
+     Array1OfDataMapOfIntegerListOfInterference from TopOpeBRepDS);
+        
+    class TKI;
+    class Transition;
+
+    class CurvePointInterference;
+    ---Purpose: Interference + a parameter.
+    class SurfaceCurveInterference;
+    ---Purpose: Interference + a pcurve.
+    class SolidSurfaceInterference;
+    ---Purpose: Interference
+    class ShapeShapeInterference;
+    ---Purpose: Interference
+    class EdgeVertexInterference;
+    ---Purpose: ShapeShapeInterference
+    class FaceEdgeInterference;
+    ---Purpose: ShapeShapeInterference
+	
+    class Surface; ---Purpose:A surface and a tolerance.
+    class Curve;   ---Purpose:A curve and a tolerance.
+    class Point;   ---Purpose:A point and a tolerance.
+    	
+    class IndexedDataMapOfVertexPoint instantiates IndexedDataMap from TCollection
+    (Shape from TopoDS,
+     Point from TopOpeBRepDS,
+     ShapeMapHasher from TopTools);
+
+    class GeometryData;
+    
+    class SurfaceData;
+    class MapOfSurface instantiates DataMap from TCollection
+    (Integer from Standard,
+     SurfaceData from TopOpeBRepDS,
+     MapIntegerHasher from TColStd);
+
+    class CurveData;
+    class MapOfCurve instantiates DataMap from TCollection
+    (Integer from Standard, 
+     CurveData from TopOpeBRepDS,
+     MapIntegerHasher from TColStd);
+
+    class PointData;
+    class MapOfPoint instantiates DataMap from TCollection
+    (Integer from Standard, 
+     PointData from TopOpeBRepDS,
+     MapIntegerHasher from TColStd);
+
+    class ShapeData;
+    class MapOfShapeData instantiates IndexedDataMap from TCollection
+    (Shape from TopoDS, 
+     ShapeData from TopOpeBRepDS, 
+     ShapeMapHasher from TopTools);
+
+    class ShapeSurface instantiates DataMap from TCollection
+    (Shape from TopoDS,
+     Surface from Geom,
+     ShapeMapHasher from TopTools);
+    
+    class DoubleMapOfIntegerShape instantiates DoubleMap from TCollection
+    (Integer from Standard,
+     Shape from TopoDS,
+     MapIntegerHasher from TColStd,
+     ShapeMapHasher from TopTools); -- for DSS
+
+    class MapOfIntegerShapeData instantiates DataMap from TCollection
+    (Integer from Standard,
+     ShapeData from TopOpeBRepDS,
+     MapIntegerHasher from TColStd); -- for DSS
+
+    class DSS; -- (DataStructure Shape) NYI
+    
+    class DataStructure;
+    pointer PDataStructure to DataStructure from TopOpeBRepDS; 
+    
+    class SurfaceIterator;
+    class CurveIterator;
+    class PointIterator;
+
+    class SurfaceExplorer;
+    class CurveExplorer;
+    class PointExplorer;
+    
+    class InterferenceTool;
+    class BuildTool;    
+    class Dumper;
+    class Marker;
+    
+    class HDataStructure;
+    class EdgeInterferenceTool;
+    class Edge3dInterferenceTool;
+    class FaceInterferenceTool;
+
+    class Filter;
+    class Reducer;
+    class TOOL;
+    class FIR;
+    class EIR;
+    class Check;
+    
+    class GapFiller;
+    class GapTool;
+    class Association;
+    
+    class ListOfShapeOn1State;
+    class DataMapOfShapeListOfShapeOn1State 
+    instantiates DataMap from TCollection
+    (Shape from TopoDS,ListOfShapeOn1State,ShapeMapHasher from TopTools);
+
+    class Explorer;
+
+--modified by NIZNHY-PKV Mon Sep 20 11:49:15 1999  f 
+	 
+    class  ShapeWithState; 
+    class  IndexedDataMapOfShapeWithState  instantiates 
+      IndexedDataMap from TCollection  (Shape          from TopoDS, 
+    	    	    	                ShapeWithState from TopOpeBRepDS, 
+			                ShapeMapHasher from TopTools); 
+
+    class  DataMapOfShapeState  instantiates 
+      DataMap from TCollection(Shape                   from TopoDS,
+      			       State                   from TopAbs,
+		               ShapeMapHasher          from TopTools);
+        	 
+--modified by NIZNHY-PKV Mon Sep 20 11:49:20 1999  t	     
+    
+
+
+
+
+    SPrint(S:State from TopAbs) 
+    returns AsciiString from TCollection; ---Purpose: IN OU ON UN
+    Print(S:State from TopAbs; OS:in out OStream) returns OStream; ---C++: return &
+
+    SPrint(K:Kind) returns AsciiString from TCollection; ---Purpose: <K>
+    SPrint(K:Kind;I:Integer;
+    	   B:AsciiString from TCollection = "";A:AsciiString from TCollection = "")
+    returns AsciiString from TCollection; ---Purpose: S1(<K>,<I>)S2
+    Print(K:Kind;S:in out OStream) returns OStream; ---C++: return &
+    Print(K:Kind;I:Integer;S:in out OStream;
+    	  B:AsciiString from TCollection = "";A:AsciiString from TCollection = "")
+    returns OStream; ---C++: return &
+
+    SPrint(T:ShapeEnum from TopAbs) returns AsciiString from TCollection;
+    SPrint(T:ShapeEnum from TopAbs;I:Integer) 
+    returns AsciiString from TCollection; ---Purpose: (<T>,<I>)
+    Print(T:ShapeEnum from TopAbs;I:Integer;S:in out OStream) returns OStream; ---C++: return &
+
+    SPrint(O:Orientation from TopAbs) returns AsciiString from TCollection;
+    SPrint(C:Config) returns AsciiString from TCollection;
+    Print(C:Config;S:in out OStream) returns OStream; ---C++: return &
+
+    IsGeometry(K:Kind) returns Boolean;
+    IsTopology(K:Kind) returns Boolean;
+    KindToShape(K:Kind) returns ShapeEnum from TopAbs;
+    ShapeToKind(S:ShapeEnum from TopAbs) returns Kind;
+
+end TopOpeBRepDS;

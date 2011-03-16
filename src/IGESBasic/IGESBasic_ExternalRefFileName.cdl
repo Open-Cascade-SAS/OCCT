@@ -1,0 +1,58 @@
+--
+-- File      :  ExternalRefFileName.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ExternalRefFileName from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines ExternalRefFileName, Type <416> Form <0-2>
+        --          in package IGESBasic
+        --          Used when single definition from the reference file is
+        --          required or for external logical references where an
+        --          entity in one file relates to an entity in another file
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable ExternalRefFileName;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aFileIdent, anExtName : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           ExternalRefFileName
+        --       - aFileIdent : External Reference File Identifier
+        --       - anExtName  : External Reference Entity Symbolic Name
+
+    	SetForEntity (me : mutable; mode : Boolean);
+	---Purpose : Changes FormNumber to be 2 if <mode> is True (For Entity)
+	--           or 0 if <mode> is False (For Definition)
+
+        FileId (me) returns HAsciiString from TCollection;
+        ---Purpose : returns External Reference File Identifier
+
+        ReferenceName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns External Reference Entity Symbolic Name
+
+fields
+
+--
+-- Class    : IGESBasic_ExternalRefFileName
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ExternalRefFileName.
+--
+-- Reminder : A ExternalRefFileName instance is defined by :
+--            - External Reference File Identifier
+--            - External Reference Entity Symbolic Name
+
+        theExtRefFileIdentifier : HAsciiString from TCollection;
+        theExtRefEntitySymbName : HAsciiString from TCollection;
+
+end ExternalRefFileName;

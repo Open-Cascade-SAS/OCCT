@@ -1,0 +1,45 @@
+-- File:	PGeom2d_Vector.cdl
+-- Created:	Tue Apr  6 17:21:36 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Vector from PGeom2d inherits Geometry from PGeom2d
+
+        ---Purpose :  Defines a vector in 3D space.
+        --  It can be a Direction (unitary vector) or a vector
+        --  with magnitude.
+        --  
+	---See Also : Vector from Geom2d.
+
+uses Vec2d from gp
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+	---Level: Advanced 
+
+
+    Initialize(aVec: Vec2d from gp);
+	---Purpose: Initializes the field vec with <aVec>.
+	---Level: Advanced 
+
+
+  Vec (me: mutable; aVec: Vec2d from gp);
+        ---Purpose : Set the field vec.
+	---Level: Advanced 
+
+
+  Vec (me)  returns Vec2d from gp;
+        ---Purpose : Returns the value of the field vec.
+	---Level: Advanced 
+
+
+fields
+
+  vec : Vec2d from gp is protected;
+
+end;

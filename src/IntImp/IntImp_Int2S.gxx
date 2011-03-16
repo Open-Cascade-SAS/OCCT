@@ -1,0 +1,235 @@
+//-- File IntImp_Int2S.gxx
+
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+#include <IntImp_ComputeTangence.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <IntImp_ConstIsoparametric.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Precision.hxx>
+  
+
+//Standard_IMPORT extern IntImp_ConstIsoparametric   *ChoixRef;
+
+
+IntImp_Int2S::IntImp_Int2S() { 
+  Standard_ConstructionError::Raise(" Empty Constructor : IntImp_Int2S");
+}
+
+
+IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
+			   const ThePSurface& surf2,
+			   const Standard_Real TolTangency ) :
+       done(Standard_True),
+       empty(Standard_True),
+       myZerParFunc(surf1,surf2),
+       tol(TolTangency*TolTangency)
+{
+  ua0 = ThePSurfaceTool::FirstUParameter(surf1); //-- ThePSurfaceTool::UIntervalFirst(surf1);
+  va0 = ThePSurfaceTool::FirstVParameter(surf1); //-- ThePSurfaceTool::VIntervalFirst(surf1);
+  ua1 = ThePSurfaceTool::LastUParameter(surf1);  //-- ThePSurfaceTool::UIntervalLast(surf1);
+  va1 = ThePSurfaceTool::LastVParameter(surf1);  //-- ThePSurfaceTool::VIntervalLast(surf1);
+  
+  ub0 = ThePSurfaceTool::FirstUParameter(surf2); //-- ThePSurfaceTool::UIntervalFirst(surf2);
+  vb0 = ThePSurfaceTool::FirstVParameter(surf2); //-- ThePSurfaceTool::VIntervalFirst(surf2);
+  ub1 = ThePSurfaceTool::LastUParameter(surf2);  //-- ThePSurfaceTool::UIntervalLast(surf2);
+  vb1 = ThePSurfaceTool::LastVParameter(surf2);  //-- ThePSurfaceTool::VIntervalLast(surf2);
+  
+  ures1 = ThePSurfaceTool::UResolution(surf1,Precision::Confusion());
+  vres1 = ThePSurfaceTool::VResolution(surf1,Precision::Confusion());
+  
+  ures2 = ThePSurfaceTool::UResolution(surf2,Precision::Confusion());
+  vres2 = ThePSurfaceTool::VResolution(surf2,Precision::Confusion());
+}
+
+
+IntImp_Int2S::IntImp_Int2S(const TColStd_Array1OfReal& Param,
+			   const ThePSurface& surf1,
+			   const ThePSurface& surf2,
+			   const Standard_Real TolTangency ) :
+       done(Standard_True),
+       empty(Standard_True),
+       myZerParFunc(surf1,surf2),
+       tol(TolTangency*TolTangency)
+{
+  math_FunctionSetRoot Rsnld(myZerParFunc,15);    //-- Modif lbr 18 MAI ?????????????
+  ua0 = ThePSurfaceTool::FirstUParameter(surf1); //-- ThePSurfaceTool::UIntervalFirst(surf1);
+  va0 = ThePSurfaceTool::FirstVParameter(surf1); //-- ThePSurfaceTool::VIntervalFirst(surf1);
+  ua1 = ThePSurfaceTool::LastUParameter(surf1);  //-- ThePSurfaceTool::UIntervalLast(surf1);
+  va1 = ThePSurfaceTool::LastVParameter(surf1);  //-- ThePSurfaceTool::VIntervalLast(surf1);
+  
+  ub0 = ThePSurfaceTool::FirstUParameter(surf2); //-- ThePSurfaceTool::UIntervalFirst(surf2);
+  vb0 = ThePSurfaceTool::FirstVParameter(surf2); //-- ThePSurfaceTool::VIntervalFirst(surf2);
+  ub1 = ThePSurfaceTool::LastUParameter(surf2);  //-- ThePSurfaceTool::UIntervalLast(surf2);
+  vb1 = ThePSurfaceTool::LastVParameter(surf2);  //-- ThePSurfaceTool::VIntervalLast(surf2);
+  
+  ures1 = ThePSurfaceTool::UResolution(surf1,Precision::Confusion());
+  vres1 = ThePSurfaceTool::VResolution(surf1,Precision::Confusion());
+  
+  ures2 = ThePSurfaceTool::UResolution(surf2,Precision::Confusion());
+  vres2 = ThePSurfaceTool::VResolution(surf2,Precision::Confusion());
+  Perform(Param,Rsnld);
+} 
+
+IntImp_ConstIsoparametric IntImp_Int2S:: 
+                           Perform(const TColStd_Array1OfReal& Param,
+				   math_FunctionSetRoot& Rsnld,
+                                   const IntImp_ConstIsoparametric ChoixIso ) 
+{
+  static math_Vector BornInf(1,3),BornSup(1,3),Tolerance(1,3),UVap(1,3);
+  static TColStd_Array1OfReal Uvres(1,4);
+  IntImp_ConstIsoparametric BestChoix;
+  myZerParFunc.ComputeParameters(ChoixIso,Param,UVap,
+				 BornInf,BornSup,Tolerance);
+  Rsnld.SetTolerance(Tolerance);
+  Rsnld.Perform(myZerParFunc,UVap,BornInf,BornSup);
+  BestChoix = ChoixIso;
+  if (Rsnld.IsDone()) {
+    if (Abs(myZerParFunc.Root()) <= tol) { //distance des 2 points
+      // dans la tolerance
+      Rsnld.Root(UVap);
+      empty = Standard_False;
+      tangent = myZerParFunc.IsTangent(UVap,Uvres,BestChoix);
+      pint.SetValue(myZerParFunc.Point(),Uvres(1),Uvres(2),Uvres(3),Uvres(4));
+      if (!tangent) {
+	d3d  = myZerParFunc.Direction();
+	d2d1 = myZerParFunc.DirectionOnS1();
+	d2d2 = myZerParFunc.DirectionOnS2();
+      }
+    }
+    else {
+      empty = Standard_True;
+    }
+  }
+  else { 
+    empty = Standard_True;
+  }
+  return BestChoix;
+}
+
+IntImp_ConstIsoparametric IntImp_Int2S:: Perform(
+	   const TColStd_Array1OfReal& Param,
+	   math_FunctionSetRoot& Rsnld) 
+{
+  gp_Vec DPUV[4];
+  gp_Pnt P1,P2;
+  Standard_Real Epsuv[4];
+  static TColStd_Array1OfReal Duv(1,4);
+  Standard_Real UVd[4],UVf[4];
+  IntImp_ConstIsoparametric ChoixIso[4];
+  IntImp_ConstIsoparametric BestChoix=ChoixRef[0];
+  const ThePSurface& Caro1 = myZerParFunc.AuxillarSurface1();
+  const ThePSurface& Caro2 = myZerParFunc.AuxillarSurface2();
+
+  ThePSurfaceTool::D1(Caro1, Param(1),Param(2),P1,DPUV[0],DPUV[1]);
+  ThePSurfaceTool::D1(Caro2, Param(3),Param(4),P2,DPUV[2],DPUV[3]);
+
+  Epsuv[0] = ThePSurfaceTool::UResolution(Caro1,Precision::Confusion());
+  Epsuv[1] = ThePSurfaceTool::VResolution(Caro1,Precision::Confusion());
+
+  Epsuv[2] = ThePSurfaceTool::UResolution(Caro2,Precision::Confusion());
+  Epsuv[3] = ThePSurfaceTool::VResolution(Caro2,Precision::Confusion());
+
+  for (Standard_Integer j=0;j<=3;j++) UVd[j] = Param(j+1);
+
+  empty = Standard_True;
+
+  Standard_Boolean Tangent = IntImp_ComputeTangence(DPUV,Epsuv,UVd,ChoixIso);
+  if (Tangent) return BestChoix;
+  Standard_Integer i=0;
+  IntImp_ConstIsoparametric CurrentChoix = BestChoix;   //-- Modif 17 Mai 93 
+  while (empty &&  i<= 3) {
+    CurrentChoix = Perform(Param,Rsnld,ChoixIso[i]);
+    if(!empty) { 
+      BestChoix = CurrentChoix; 
+    }
+    i++;
+  }
+  if (!empty) { // verifier que l on ne deborde pas les frontieres
+    pint.Parameters(Duv(1),Duv(2),Duv(3),Duv(4));
+    
+    UVd[0] = ua0; //-- ThePSurfaceTool::UIntervalFirst(Caro1);
+    UVd[1] = va0; //-- ThePSurfaceTool::VIntervalFirst(Caro1);
+    UVf[0] = ua1; //-- ThePSurfaceTool::UIntervalLast(Caro1);
+    UVf[1] = va1; //-- ThePSurfaceTool::VIntervalLast(Caro1);
+
+    UVd[2] = ub0; //-- ThePSurfaceTool::UIntervalFirst(Caro2);
+    UVd[3] = vb0; //-- ubThePSurfaceTool::VIntervalFirst(Caro2);
+    UVf[2] = ub1; //-- ThePSurfaceTool::UIntervalLast(Caro2);
+    UVf[3] = vb1; //-- ThePSurfaceTool::VIntervalLast(Caro2);
+    
+    Standard_Integer Nc,Iiso;
+    if (Duv(1) <= UVd[0]-Epsuv[0]) {
+      Duv(1) = UVd[0];
+      Nc =0;
+      Iiso=0;
+    }
+    else if (Duv(1) >= UVf[0]+ Epsuv[0]) {
+      Duv(1) = UVf[0];
+      Nc =0;
+      Iiso=0; 
+    }
+    else if (Duv(2) <= UVd[1] -Epsuv[1]) {
+      Duv(2) = UVd[1];
+      Nc =0;
+      Iiso=1; 
+    }
+    else if (Duv(2) >= UVf[1]+Epsuv[1]) {
+      Duv(2) = UVf[1];
+      Nc =0;
+      Iiso=1; 
+    }
+    else if (Duv(3) <= UVd[2]-Epsuv[2]) {
+      Duv(3) = UVd[2];
+      Nc =2;
+      Iiso = 2;
+    }
+    else if (Duv(3) >= UVf[2]+Epsuv[2]) {
+      Duv(3) = UVf[2];
+      Nc =2;
+      Iiso = 2;
+    }
+    else if (Duv(4) <= UVd[3]-Epsuv[3]) {
+      Duv(4) = UVd[3];
+      Nc =2;
+      Iiso = 3;
+    }
+    else if (Duv(4) >= UVf[3]+Epsuv[3]) {
+      Duv(4) = UVf[3];
+      Nc =2;
+      Iiso =3;
+    }
+    else return BestChoix; // on a gagne
+    empty = Standard_True;
+    BestChoix = ChoixRef[Iiso]; //en attendant
+    BestChoix = Perform(Duv,Rsnld,BestChoix);
+    if (!empty) { // verification si l on ne deborde pas sur le carreau 
+      // reciproque
+      Nc =3-Nc;
+      if (Duv(Nc) <= UVd[Nc-1]-Epsuv[Nc-1]) Duv(Nc)=UVd[Nc-1];
+      else if (Duv(Nc) >=UVf[Nc-1]+Epsuv[Nc-1]) Duv(Nc)=UVf[Nc-1];
+      else if (Duv(Nc+1) <= UVd[Nc]) {
+	Nc = Nc +1;
+	Duv(Nc)=UVd[Nc-1];
+      }
+      else if (Duv(Nc+1) >=UVf[Nc]) {
+	Nc = Nc +1;
+	Duv(Nc)=UVf[Nc-1];
+      } 
+      else return BestChoix;
+      empty = Standard_True;
+      BestChoix = ChoixRef[Nc]; //en attendant
+      BestChoix = Perform(Duv,Rsnld,BestChoix);
+    }
+  }
+  return BestChoix;   
+}
+
+
+

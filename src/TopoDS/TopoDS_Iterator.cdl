@@ -1,0 +1,89 @@
+-- File:	TopoDS_Iterator.cdl
+-- Created:	Thu Jan 21 08:53:01 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Iterator from TopoDS 
+
+	---Purpose: Iterates on the underlying shape underlying a given
+	-- TopoDS_Shape object, providing access to its
+	-- component sub-shapes. Each component shape is
+	-- returned as a TopoDS_Shape with an orientation,
+	-- and a compound of the original values and the relative values.
+
+uses
+    Shape                     from TopoDS,
+    ListIteratorOfListOfShape from TopoDS,
+    Location                  from TopLoc,
+    Orientation               from TopAbs
+
+raises
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+    Create returns Iterator from TopoDS;
+    ---C++: inline
+	---Purpose: Creates an empty Iterator.
+
+
+    Create(S : Shape from TopoDS;
+    	   cumOri : Boolean = Standard_True;
+    	   cumLoc : Boolean = Standard_True) returns Iterator from TopoDS;
+    ---C++: inline
+	---Purpose: Creates an Iterator on <S> sub-shapes.
+	--      Note:
+	-- - If cumOri is true, the function composes all
+	--   sub-shapes with the orientation of S.
+	-- - If cumLoc is true, the function multiplies all
+	--   sub-shapes by the location of S, i.e. it applies to
+	--   each sub-shape the transformation that is associated with S.
+
+    Initialize(me : in out; S      : Shape from TopoDS;
+    	                    cumOri : Boolean = Standard_True;
+    	                    cumLoc : Boolean = Standard_True)
+	---Purpose: Initializes this iterator with shape S.
+	-- Note:
+	-- - If cumOri is true, the function composes all
+	--   sub-shapes with the orientation of S.
+	-- - If cumLoc is true, the function multiplies all
+	--   sub-shapes by the location of S, i.e. it applies to
+	--   each sub-shape the transformation that is associated with S.
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns true if there is another sub-shape in the
+	-- shape which this iterator is scanning.
+    ---C++: inline
+    is static;
+    
+    Next(me : in out)
+	---Purpose: Moves on to the next sub-shape in the shape which
+	-- this iterator is scanning.
+	-- Exceptions
+	-- Standard_NoMoreObject if there are no more sub-shapes in the shape.
+    raises
+    	NoMoreObject from Standard
+    is static;
+    
+    Value(me) returns Shape from TopoDS
+	---Purpose: Returns the current sub-shape in the shape which
+	-- this iterator is scanning.
+	-- Exceptions
+	-- Standard_NoSuchObject if there is no current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: return const &
+    ---C++: inline
+    is static;
+
+    
+fields
+    myShape       : Shape                     from TopoDS;
+    myShapes      : ListIteratorOfListOfShape from TopoDS;
+    myOrientation : Orientation               from TopAbs;
+    myLocation    : Location                  from TopLoc;
+
+end Iterator;

@@ -1,0 +1,13 @@
+-- File:	PXCAFDoc_ColorTool.cdl
+-- Created:	Thu Aug 31 14:50:46 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ColorTool from PXCAFDoc inherits Attribute from PDF
+
+is
+    Create returns ColorTool from PXCAFDoc;
+
+end ColorTool;

@@ -1,0 +1,63 @@
+-- File:	IGESAppli_ToolDrilledHole.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolDrilledHole  from IGESAppli
+
+    ---Purpose : Tool to work on a DrilledHole. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses DrilledHole from IGESAppli,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolDrilledHole;
+    ---Purpose : Returns a ToolDrilledHole, ready to work
+
+
+    ReadOwnParams (me; ent : mutable DrilledHole;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : DrilledHole;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : DrilledHole;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a DrilledHole <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable DrilledHole) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a DrilledHole
+    --           (NbPropertyValues forced to 5, Level cleared if Subordinate != 0)
+
+    DirChecker (me; ent : DrilledHole) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : DrilledHole;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : DrilledHole; entto : mutable DrilledHole;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : DrilledHole;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolDrilledHole;

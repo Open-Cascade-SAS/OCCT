@@ -1,0 +1,163 @@
+-- File:	TCollection_Map.cdl
+-- Created:	Thu Jan  7 14:39:40 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Map from TCollection (TheKey as any;
+    	    	    	    	    Hasher as any) -- as MapHasher(TheKey)
+inherits BasicMap from TCollection
+
+	---Purpose: Basic  hashed Map. This  Map is used  to store and
+	-- retrieve keys in linear time.
+	-- 
+	-- The MapIterator class can be  used to explore  the
+	-- content of the map. It is not  wise to iterate and
+	-- modify a map in parallel.
+	-- 
+	-- The  Hasher  argument is    used to   computes the
+	-- hashcode of key and compare two keys.
+	-- 
+	-- The performance of  a Map is conditionned  by  its
+	-- number of buckets that  should be kept greater  to
+	-- the number   of keys.  This  map has  an automatic
+	-- management of the number of buckets. It is resized
+	-- when  the number of Keys  becomes greater than the
+	-- number of buckets.
+	-- 
+	-- If you have a fair  idea of the number of  objects
+	-- you  can save on automatic   resizing by giving  a
+	-- number of buckets  at creation or using the ReSize
+	-- method. This should be  consider only for  crucial
+	-- optimisation issues.
+    	-- An entry of a Map is composed of the key only. No data is
+    	-- attached to the key. A Map is typically used by an
+    	-- algorithm to know if some action is still performed on
+    	-- components of a complex data structure.
+    	-- Map is a generic class which depends on two parameters:
+    	-- -   Key is the type of key in the map,
+    	-- -   Hasher is the type of hasher on keys.
+    	--   Use a MapIterator iterator to explore a Map map.
+    	-- Notes:
+    	-- -   An iterator class is automatically instantiated from the
+    	--   TCollection_MapIterator class at the time of
+    	--   instantiation of a Map map.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required for a Hasher object.
+  
+raises
+    DomainError from Standard
+    
+ 
+    class StdMapNode from TCollection 
+    inherits MapNode from TCollection
+    uses MapNodePtr from TCollection
+    is
+      Create(K : TheKey; n : MapNodePtr from TCollection) returns StdMapNode from TCollection;
+      ---C++: inline
+      
+      Key(me) returns TheKey;
+      ---C++: return &
+      ---C++: inline
+
+    fields  
+    	myKey : TheKey;
+    end;
+    
+    class MapIterator inherits BasicMapIterator from TCollection
+    
+	---Purpose: Provides iteration on  the content of  a map.  The
+	-- iteration    methods    are  inherited   from  the
+	-- BasicMapIterator.
+	-- Note: an iterator class is automatically instantiated from
+    	-- this generic class at the time of instantiation of a <Map>.
+    	-- Warning
+    	-- -   A map is a non-ordered data structure. The order in
+    	--   which entries of a map are explored by the iterator
+    	-- depends on its contents, and changes when the map is edited.
+    	-- -   It is not recommended to modify the contents of a map
+    	--   during iteration: the result is unpredictable.
+    
+    raises NoSuchObject from Standard
+    is
+       	Create returns MapIterator from TCollection;
+	    ---Purpose: Creates an empty iterator for a Map map; use the function
+    	    --   Initialize to define the map to explore; 
+	
+	Create (aMap : Map from TCollection) 
+    	returns MapIterator from TCollection;
+	    ---Purpose: Creates an Iterator on the map <aMap>.
+	
+	Initialize(me : in out; aMap : Map from TCollection)
+	    ---Purpose: Sets or resets the Iterator in the map <aMap>.
+	is static;
+	
+	Key(me) returns any TheKey
+	    ---Purpose: Returns the current Key. An error is raised if
+	    -- the iterator is empty (More returns False).
+    	    -- Note: Key is the type of key for an entry in the explored <Map>.
+    	    -- Exceptions
+    	    -- Standard_NoSuchObject if this iterator is empty (i.e.
+    	    -- when the function More returns false).
+	    ---C++: return const &
+    raises
+	    NoSuchObject from Standard
+	is static;
+
+    end MapIterator from TCollection;
+
+is
+
+    Create(NbBuckets : Integer = 1) returns Map from TCollection;
+	---Purpose: Constructs a Map with NbBuckets (defaulted to 1) buckets.
+    	-- Note that the map will be automatically redimensioned
+    	-- during its use if the number of entries becomes too large.
+    	-- Use:
+    	-- -   the function Add to add a new key in the map,
+    	-- -   the function Remove to remove a key from the map,
+    	-- -   and a map iterator to explore the map.
+    
+
+    Create(Other : Map from TCollection) returns Map from TCollection
+	---Purpose: As  copying  Map  is an expensive  operation it is
+	-- incorrect  to  do  it implicitly. This constructor
+	-- will raise an  error if the Map  is not  empty. To
+	-- copy the content of a  Map use the  Assign  method (operator =).
+    raises DomainError from Standard
+    is private;
+    
+    Assign(me : in out; Other : Map from TCollection) 
+    returns Map from TCollection
+	---Purpose: Replace the content of this map by  the content of
+	-- the map <Other>.
+	---C++: alias operator =
+	---C++: return &
+    is static;
+    
+    ReSize(me : in out; NbBuckets : Integer)
+	---Purpose: Changes the  number    of  buckets of  <me>  to be
+	-- <NbBuckets>. The keys  already  stored in  the map are kept.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Removes all keys in the map.
+	---C++: alias ~
+    is static;
+    
+    Add(me : in out; aKey : TheKey) returns Boolean
+	---Purpose: Adds the Key <aKey> to  the Map <me>. Returns True
+	-- if the Key was not already in the Map.
+    is static;
+
+    Contains(me; aKey : TheKey) returns Boolean
+	---Purpose: Returns True  if the key  <aKey> is stored  in the
+	-- map <me>.
+    is static;
+    
+    Remove(me : in out; aKey : TheKey) returns Boolean
+	---Purpose: Removes the Key <aKey> from the  map. Returns True
+	-- if the Key was in the Map.
+    is static;
+    
+end Map;

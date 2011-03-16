@@ -1,0 +1,44 @@
+-- File:	GeomToStep_MakeDirection.cdl
+-- Created:	Mon Jun 14 14:53:21 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeDirection from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Direction from Geom, Geom2d and Dir, Dir2d from gp, and the
+    --          class Direction from StepGeom which describes a direction
+    --          from Prostep. 
+  
+uses Dir from gp,
+     Dir2d from gp,
+     Direction from Geom,
+     Direction from Geom2d,
+     Direction from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( D : Dir from gp ) returns MakeDirection;
+
+Create ( D : Dir2d from gp ) returns MakeDirection;
+
+Create ( D : Direction from Geom ) returns MakeDirection;
+
+Create ( D : Direction from Geom2d ) returns MakeDirection;
+
+Value (me) returns Direction from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+    
+fields
+
+    theDirection : Direction from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeDirection;
+
+

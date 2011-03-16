@@ -1,0 +1,100 @@
+-- File:	Units_ShiftedUnit.cdl
+-- Created:	Wed Nov  4 17:32:57 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+private class ShiftedUnit from Units  
+
+inherits
+
+    Unit from Units
+
+	---Purpose: This class is useful   to describe  units  with  a
+	--          shifted origin in relation to another unit. A well
+	--          known example  is the  Celsius degrees in relation
+	--          to Kelvin degrees. The shift of the Celsius origin
+	--          is 273.15 Kelvin degrees.
+
+
+uses
+
+    Quantity from Units,
+    Token from Units
+
+is
+
+    Create(aname , asymbol : CString ;
+           avalue , amove : Real ;
+           aquantity : Quantity from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and  returns a  shifted unit.   <aname> is the
+    --          name of the unit,  <asymbol> is the usual abbreviation
+    --          of the unit, <avalue> is the  value in relation to the
+    --          International System of Units, and <amove>  is the gap
+    --          in relation to another unit.
+    --          
+    --          For  example Celcius   dregee   of temperature  is  an
+    --          instance of ShiftedUnit  with <avalue> equal to 1. and
+    --          <amove> equal to 273.15.
+    
+    returns mutable ShiftedUnit from Units;
+    
+    Create(aname , asymbol : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
+    --          the  unit, <asymbol> is the  usual abbreviation of the
+    --          unit.
+    
+    returns mutable ShiftedUnit from Units;
+    
+    Create(aname : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
+    --          the  unit.
+    
+    returns mutable ShiftedUnit from Units;
+    
+    Move(me : mutable ; amove : Real)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Sets the field <themove> to <amove>
+    
+    is static;
+    
+    Move(me) returns Real
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns the shifted value <themove>.
+    
+    is static;
+    
+    Token(me) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: This redefined method returns a ShiftedToken object.
+    
+    is redefined;
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    ---Level: Internal 
+    
+    is redefined;
+
+fields
+
+    themove : Real;
+
+end ShiftedUnit;

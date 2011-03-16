@@ -1,0 +1,161 @@
+-- File:	ExtElCS.cdl
+-- Created:	Wed Jul 22 10:23:51 1992
+-- Author:	Laurent PAINNOT
+--		<lpa@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class   ExtElCS from Extrema
+    	---Purpose: It calculates all the distances between a curve and
+    	--          a surface.
+    	--          These distances can be maximum or minimum.
+
+uses   	POnCurv              from Extrema,
+     	POnSurf              from Extrema,
+	HArray1OfPOnCurv     from Extrema,
+	HArray1OfPOnSurf     from Extrema,
+     	Circ                 from gp,
+     	Cone                 from gp,
+     	Cylinder             from gp,
+     	Lin                  from gp,
+     	Hypr                 from gp,
+     	Pln                  from gp,
+     	Sphere               from gp,
+     	Torus                from gp,
+	HArray1OfReal        from TColStd
+
+raises  InfiniteSolutions  from StdFail,
+    	NotDone            from StdFail,
+    	OutOfRange         from Standard
+
+is
+    
+    Create  returns ExtElCS;
+    
+    Create (C: Lin; S: Pln) returns ExtElCS;
+        ---Purpose: Calculates the distances between a line and a 
+        --          plane. The line can be on the plane or on a parallel
+        --          plane.
+
+    Perform(me: in out; C: Lin; S: Pln)
+    is static ;
+
+    Create (C: Lin; S: Cylinder) returns ExtElCS;
+        ---Purpose: Calculates the distances between a line and a
+        --          cylinder.
+    Perform(me: in out; C: Lin; S: Cylinder)
+    is static ;
+
+    Create (C: Lin; S: Cone) returns ExtElCS;
+        ---Purpose: Calculates the distances between a line and a cone.
+
+    Perform(me: in out; C: Lin; S: Cone)
+    is static ;
+
+    Create (C: Lin; S: Sphere) returns ExtElCS;
+        ---Purpose: Calculates the distances between a line and a 
+        --          sphere.
+
+    Perform(me: in out; C: Lin; S: Sphere)
+    is static ;
+
+
+    Create (C: Lin; S: Torus) returns ExtElCS;
+        ---Purpose: Calculates the distances between a line and a 
+        --          torus.
+
+    Perform(me: in out; C: Lin; S: Torus)
+    is static ;
+
+    Create (C: Circ; S: Pln) returns ExtElCS;
+        ---Purpose: Calculates the distances between a circle and a 
+        --          plane.
+
+    Perform(me: in out; C: Circ; S: Pln)
+    is static ;
+
+    Create (C: Circ; S: Cylinder) returns ExtElCS;
+        ---Purpose: Calculates the distances between a circle and a
+        --          cylinder.
+
+    Perform(me: in out; C: Circ; S: Cylinder)
+    is static ;
+
+    Create (C: Circ; S: Cone) returns ExtElCS;
+        ---Purpose: Calculates the distances between a circle and a 
+        --          cone.
+
+    Perform(me: in out; C: Circ; S: Cone)
+    is static ;
+
+    Create (C: Circ; S: Sphere) returns ExtElCS;
+        ---Purpose: Calculates the distances between a circle and a 
+        --          sphere.
+
+    Perform(me: in out; C: Circ; S: Sphere)
+    is static ;
+
+    Create (C: Circ; S: Torus) returns ExtElCS;
+        ---Purpose: Calculates the distances between a circle and a 
+        --          torus.
+
+    Perform(me: in out; C: Circ; S: Torus)
+    is static ;
+
+    Create (C: Hypr; S: Pln) returns ExtElCS;
+        ---Purpose: Calculates the distances between a hyperbola and a 
+        --          plane.
+
+    Perform(me: in out; C: Hypr; S: Pln)
+    is static ;
+
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the curve is on a parallel surface.
+    	raises  NotDone from StdFail
+    	    	-- if IsDone(me)=False.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True.
+    	is static;
+    
+    SquareDistance (me; N: Integer =1) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    	raises  OutOfRange from Standard,
+    	    	-- if N < 1 or N > NbPoints(me).
+    	    	NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True and N<>1.
+    	is static;
+
+    Points (me; N: Integer; P1: out POnCurv; P2: out POnSurf)
+    	---Purpose: Returns the points of the Nth extremum distance.
+    	--          P1 is on the curve, P2 on the surface.
+    	raises  OutOfRange from Standard,
+    	    	-- if N < 1 or N > NbPoints(me).
+    	    	NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True and N<>1.
+    	is static;
+
+fields
+    myDone  : Boolean;
+    myNbExt : Integer;
+    myIsPar : Boolean;
+    mySqDist: HArray1OfReal    from TColStd;
+    myPoint1: HArray1OfPOnCurv from Extrema;
+    myPoint2: HArray1OfPOnSurf from Extrema;
+
+end ExtElCS;

@@ -1,0 +1,50 @@
+-- File:	TCollection_MapHasher.cdl
+-- Created:	Thu Jan  7 15:58:43 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class MapHasher from TCollection (Key as any)
+
+	---Purpose: A hasher on the keys of a map instantiated from the
+    	-- Collections component.
+    	-- A hasher provides two functions:
+    	-- -   The hashing function (HashCode) transforms a key
+    	--   into a bucket index in the map. The number of values
+    	--   that can be computed by the hashing function is equal
+    	--   to the number of buckets in the map.
+    	-- -   IsEqual is the equality test between two keys.
+    	--   Hashers are used as parameters in generic maps
+    	-- provided by the Collections component.
+    	-- MapHasher is a generic class which depends on the type
+    	-- of keys, provided that Key is a type from the Standard
+    	-- package. In such cases MapHasher may be directly
+    	-- instantiated with Key. Note that the package TColStd
+    	-- provides some of these instantiations.
+    	-- But if Key is not a type from the Standard package you
+    	-- must consider MapHasher as a template and build a class
+    	-- which includes its functions, in order to use it as a hasher
+    	-- in a map instantiated from the Collections component.
+    	-- Note that TCollection_AsciiString and
+    	-- TCollection_ExtendedString classes correspond to
+    	-- these specifications, in consequence they may be used as
+    	-- hashers: when Key is one of these two types you may just
+    	-- define the hasher as the same type at the time of
+    	-- instantiation of your map.
+
+is
+    HashCode(myclass; K : Key; Upper : Integer) returns Integer;
+	---Level: Public
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	-- range 0..Upper.
+	-- Default ::HashCode(K,Upper)
+	
+    IsEqual(myclass; K1, K2 : Key) returns Boolean;
+	---Level: Public
+	---Purpose: Returns True  when the two  keys are the same. Two
+	-- same  keys  must   have  the  same  hashcode,  the
+	-- contrary is not necessary.
+	-- Default K1 == K2
+	
+end MapHasher;

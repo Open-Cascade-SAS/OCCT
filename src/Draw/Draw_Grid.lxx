@@ -1,0 +1,44 @@
+// File:	Draw_Grid.lxx
+// Created:	Thu Feb  3 15:30:54 1994
+// Author:	Jean Marc LACHAUME
+//		<jml@phylox>
+
+//=======================================================================
+// Function : StepX
+// Purpose  : Returns the step along the X axis.
+//=======================================================================
+
+inline Standard_Real Draw_Grid::StepX () const
+{
+  return myStepX ;
+}
+
+//=======================================================================
+// Function : StepY
+// Purpose  : Returns the step along the Y axis.
+//=======================================================================
+
+inline Standard_Real Draw_Grid::StepY () const
+{
+  return myStepY ;
+}
+
+//=======================================================================
+// Function : StepZ
+// Purpose  : Returns the step along the Z axis.
+//=======================================================================
+
+inline Standard_Real Draw_Grid::StepZ () const
+{
+  return myStepZ ;
+}
+
+//=======================================================================
+// Function : IsActive
+// Purpose  : Returns if the grid is active or not.
+//=======================================================================
+
+inline Standard_Boolean Draw_Grid::IsActive () const
+{
+  return myIsActive ;
+}

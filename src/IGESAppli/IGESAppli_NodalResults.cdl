@@ -1,0 +1,115 @@
+--
+-- File      :  NodalResults.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun  MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NodalResults from IGESAppli  inherits IGESEntity
+
+
+        ---Purpose: defines NodalResults, Type <146>
+        --          in package IGESAppli
+        --          Used to store the Analysis Data results per FEM Node
+
+uses
+
+        HArray1OfReal    from TColStd,
+        HArray1OfInteger from TColStd,
+        Node             from IGESAppli,
+        HArray1OfNode    from IGESAppli,
+        GeneralNote      from IGESDimen,
+        HArray2OfReal    from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable NodalResults;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                : mutable;
+              aNote             : GeneralNote;
+              aNumber           : Integer;
+              aTime             : Real;
+              allNodeIdentifiers: HArray1OfInteger;
+              allNodes          : HArray1OfNode;
+              allData           : HArray2OfReal)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           NodalResults
+        --       - aNote              : General Note that describes the
+        --                              analysis case
+        --       - aNumber            : Analysis Subcase number
+        --       - aTime              : Analysis time
+        --       - allNodeIdentifiers : Node identifiers for the nodes
+        --       - allNodes           : List of FEM Node Entities
+        --       - allData            : Values of the Finite Element analysis
+        --                              result data
+        -- raises exception if Lengths of allNodeIdentifiers, allNodes and
+        -- allData (Cols) are not same
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes the FormNumber (which indicates Type of Result)
+	--           Error if not in range [0-34]
+
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns the General Note Entity that describes the analysis case
+
+        SubCaseNumber (me) returns Integer;
+        ---Purpose : returns zero if there is no subcase
+
+        Time (me) returns Real;
+        ---Purpose : returns the Analysis time value for this subcase. It is the time
+        -- at which transient analysis results occur in the mathematical
+        -- FEM model.
+
+        NbData (me) returns Integer;
+        ---Purpose : returns number of real values in array V for a FEM node
+
+        NbNodes (me) returns Integer;
+        ---Purpose : returns number of FEM nodes for which data is to be read.
+
+        NodeIdentifier (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns FEM node number identifier for the (Index)th node
+        -- raises exception if Index <= 0 or Index > NbNodes
+
+        Node (me; Index : Integer) returns Node
+        raises OutOfRange;
+        ---Purpose : returns the node as specified by the Index
+        -- raises exception if Index <= 0 or Index > NbNodes
+
+        Data (me; NodeNum, DataNum : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the finite element analysis result value
+        -- raises exception if (NodeNum <= 0 or NodeNum > NbNodes()) or
+        -- if (DataNum <=0 or DataNum > NbData())
+
+fields
+
+--
+-- Class    : IGESAppli_NodalResults
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class NodalResults.
+--
+-- Reminder : A NodalResults instance is defined by :
+--            - General Note that describes the analysis case
+--            - Analysis Subcase number
+--            - Analysis time
+--            - Node identifiers for the nodes
+--            - List of FEM Node Entities
+--            - Values of the Finite Element analysis result data
+
+        theNote            : GeneralNote;
+        theSubCaseNum      : Integer;
+        theTime            : Real;
+        theNodeIdentifiers : HArray1OfInteger;
+        theNodes           : HArray1OfNode;
+        theData            : HArray2OfReal;
+
+end NodalResults;

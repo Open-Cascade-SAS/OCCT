@@ -1,0 +1,105 @@
+-- File:      XmlMDF.cdl
+-- Created:   Mon Jul  9 12:29:49 MSK DST 2001
+-- Author:    Julia DOROVSKIKH
+---Copyright: MATRA DATAVISION 2001
+
+package XmlMDF
+
+        ---Purpose: This package provides classes and methods to
+        --          translate a transient DF into a persistent one and
+        --          vice versa.
+        --          
+        --          Driver
+        --          
+        --          A driver is a tool used to translate a transient
+        --          attribute into a persistent one and vice versa.
+        --          
+        --          Driver Table
+        --          
+        --          A driver table is an object building links between
+        --          object types and object drivers. In the
+        --          translation process, a driver table is asked to
+        --          give a translation driver for each current object
+        --          to be translated.
+
+uses
+    TCollection,
+    TColStd,
+    TDF,
+    CDM,
+    XmlObjMgt
+
+is
+    ---Category: Classes
+    --           =============================================================
+
+    deferred class ADriver; -- Attribute Storage/Retrieve Driver.
+
+    private class MapOfDriver
+        instantiates DataMap from TCollection (AsciiString    from TCollection,
+                                               ADriver        from XmlMDF, 
+                                               AsciiString    from TCollection);
+
+    ---Purpose: Storage and Retrieval attributes drivers
+    --          ========================================
+
+    class TagSourceDriver;
+
+    class ReferenceDriver;
+
+     ---Category: Instantiations
+     --           =============================================================
+
+    -- Map (Type, ADriver)
+    class TypeADriverMap instantiates DataMap from TCollection
+        (Type from Standard,
+         ADriver from XmlMDF,
+         MapTransientHasher from TColStd);
+
+    -- Attribute Storage Driver Table.
+    class ADriverTable;
+
+
+    -- Package methods
+
+    FromTo(aSource  : Data from TDF;
+           aTarget  : in out Element from XmlObjMgt;
+           aReloc   : in out SRelocationTable from XmlObjMgt;
+           aDrivers : ADriverTable from XmlMDF);
+        ---Purpose: Translates a transient <aSource> into a persistent
+        --          <aTarget>.
+
+    WriteSubTree(theLabel   : Label from TDF;
+                 theElement : in out Element from XmlObjMgt;
+                 aReloc     : in out SRelocationTable from XmlObjMgt;
+                 aDrivers   : ADriverTable from XmlMDF)
+        returns Integer from Standard
+            is private;
+        ---Purpose: 
+
+    FromTo(aSource  : Element from XmlObjMgt;
+           aTarget  : in out Data from TDF;
+           aReloc   : in out RRelocationTable from XmlObjMgt;
+           aDrivers : ADriverTable from XmlMDF)
+        returns Boolean from Standard;
+        ---Purpose: Translates a persistent <aSource> into a transient
+        --          <aTarget>.
+        --          Returns True if completed successfully (False on error)
+    
+    ReadSubTree (theElement : Element                   from XmlObjMgt;
+                 theLabel   : Label                     from TDF;
+                 aReloc     : in out RRelocationTable   from XmlObjMgt;
+                 aDrivers   : MapOfDriver               from XmlMDF)
+        returns Integer from Standard
+            is private;
+        ---Purpose: 
+    
+    AddDrivers (aDriverTable    : ADriverTable  from XmlMDF;
+                theMessageDriver: MessageDriver from CDM);
+        ---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+    CreateDrvMap (aDriverTable    : ADriverTable    from XmlMDF;
+                  anAsciiDriverMap: out MapOfDriver from XmlMDF)
+        is private;
+                  
+end XmlMDF;

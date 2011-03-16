@@ -1,0 +1,35 @@
+-- File:	BinMFunction_FunctionDriver.cdl
+-- Created:	Thu May 13 14:43:39 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+class FunctionDriver from BinMFunction inherits ADriver from BinMDF
+
+        ---Purpose:  Function attribute Driver.
+
+uses
+    MessageDriver    from CDM,
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable FunctionDriver from BinMFunction;
+
+    NewEmpty (me)  returns mutable Attribute from TDF
+    	is redefined;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard is redefined;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt)
+    	is redefined;
+
+end FunctionDriver;
+

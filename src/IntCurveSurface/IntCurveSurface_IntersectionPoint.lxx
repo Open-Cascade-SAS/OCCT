@@ -1,0 +1,26 @@
+//  ---- File:	IntCurveSurface_IntersectionPoint.lxx
+//  -- Created:	Wed Apr  7 16:35:02 1993
+//  -- Author:	Laurent BUCHARD
+//  --		<lbr@sdsun2>
+//  ---Copyright:	 Matra Datavision 1993
+
+
+inline const gp_Pnt& IntCurveSurface_IntersectionPoint::Pnt() const { 
+  return(myP);
+}
+
+inline Standard_Real IntCurveSurface_IntersectionPoint::U() const { 
+  return(myUSurf);
+}
+
+inline Standard_Real IntCurveSurface_IntersectionPoint::V() const { 
+  return(myVSurf);
+}
+
+inline Standard_Real IntCurveSurface_IntersectionPoint::W() const { 
+  return(myUCurv);
+}
+
+inline IntCurveSurface_TransitionOnCurve IntCurveSurface_IntersectionPoint::Transition() const { 
+  return(myTrOnCurv);
+}

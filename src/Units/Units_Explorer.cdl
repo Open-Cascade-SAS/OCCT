@@ -1,0 +1,185 @@
+-- File:	Units_Explorer.cdl
+-- Created:	Mon May  9 16:39:22 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Explorer from Units
+
+	---Purpose: This class provides all the services to explore 
+	--          UnitsSystem or UnitsDictionary.
+
+uses
+
+    UnitsSystem        from Units,
+    UnitsDictionary    from Units,
+    QuantitiesSequence from Units,
+    UnitsSequence      from Units,
+    HSequenceOfInteger from TColStd,
+    AsciiString        from TCollection
+    
+--raises
+
+is
+
+    Create returns Explorer from Units;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Empty contructor of the class.
+    
+    Create(aunitssystem : UnitsSystem from Units) returns Explorer from Units;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Creates a new instance of the class, initialized with 
+    --          the UnitsSystem <aunitssystem>.
+    
+    Create(aunitsdictionary : UnitsDictionary from Units) returns Explorer from Units;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Creates a new instance of the class, initialized with 
+    --          the UnitsDictionary <aunitsdictionary>.
+    
+    Create(aunitssystem : UnitsSystem from Units ; aquantity : CString)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Creates a new instance of the class, initialized with 
+    --          the UnitsSystem <aunitssystem> and positioned at the 
+    --          quantity <aquantity>.
+    
+    returns Explorer from Units;
+    
+    Create(aunitsdictionary : UnitsDictionary from Units ; aquantity : CString)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Creates a  new instance of the class,  initialized with
+    --          the  UnitsDictionary <aunitsdictionary> and positioned
+    --          at the quantity <aquantity>.
+    
+    returns Explorer from Units;
+    
+    Init(me : in out ; aunitssystem : UnitsSystem from Units)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Initializes  the  instance  of  the  class  with  the
+    --          UnitsSystem <aunitssystem>.
+    
+    is static;
+    
+    Init(me : in out ; aunitsdictionary : UnitsDictionary from Units)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Initializes  the  instance  of  the  class  with  the
+    --          UnitsDictionary <aunitsdictionary>.
+    
+    is static;
+    
+    Init(me : in out ; aunitssystem : UnitsSystem from Units ; aquantity : CString)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Initializes  the  instance  of  the   class  with  the
+    --          UnitsSystem  <aunitssystem>  and   positioned  at  the
+    --          quantity <aquantity>.
+    
+    is static;
+    
+    Init(me : in out ; aunitsdictionary : UnitsDictionary from Units ; aquantity : CString)
+
+    ---Level: Advanced 
+    
+    ---Purpose: Initializes  the  instance   of  the  class  with  the
+    --          UnitsDictionary  <aunitsdictionary> and positioned  at
+    --          the quantity <aquantity>.
+    
+    is static;
+    
+    MoreQuantity(me) returns Boolean
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns True if there is another Quantity to explore, 
+    --          False otherwise.
+    
+    is static;
+
+    NextQuantity(me : in out)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Sets the next Quantity current.
+    
+    is static;
+    
+    Quantity(me) returns AsciiString from TCollection
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the name of the current Quantity.
+    
+    is static;
+
+    MoreUnit(me) returns Boolean
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns True if there is another Unit to explore, 
+    --          False otherwise.
+    
+    is static;
+
+    NextUnit(me : in out)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Sets the next Unit current.
+    
+    is static;
+    
+    Unit(me) returns AsciiString from TCollection
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the name of the current unit.
+    
+    is static;
+    
+    IsActive(me) returns Boolean
+    
+    ---Level: Advanced 
+    
+    ---Purpose: If the  units system  to  explore  is  a user  system,
+    --          returns True  if  the  current unit  is  active, False
+    --          otherwise.
+    --          
+    --          If   the   units  system  to  explore  is   the  units
+    --          dictionary,  returns True if the  current unit is  the
+    --          S.I. unit.
+    
+    is static;
+
+fields
+
+    thecurrentquantity     : Integer;
+    thequantitiessequence  : QuantitiesSequence from Units;
+    thecurrentunit         : Integer;
+    theunitssequence       : UnitsSequence      from Units;
+    theactiveunitssequence : HSequenceOfInteger from TColStd;
+
+end Explorer;
+
+
+
+
+
+
+
+
+

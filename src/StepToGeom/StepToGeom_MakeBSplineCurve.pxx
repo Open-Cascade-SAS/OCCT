@@ -1,0 +1,92 @@
+// File:	StepToGeom_MakeBSplineCurve.pxx
+// Created:	Fri Jul  2 15:16:54 1993
+// Author:	Martine LANGLOIS
+
+{
+  Handle(StepGeom_BSplineCurveWithKnots)   BSCW;
+  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) BSCWR;
+
+  if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
+    BSCWR = 
+      Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
+	::DownCast(SC);
+    BSCW = 
+      Handle(StepGeom_BSplineCurveWithKnots)
+	::DownCast(BSCWR->BSplineCurveWithKnots());
+  }
+  else
+    BSCW = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(SC);
+
+  const Standard_Integer Deg = BSCW->Degree();
+  const Standard_Integer NbPoles = BSCW->NbControlPointsList();
+  //aControlPointsList = new StepGeom_HArray1OfCartesianPoint(1,NbPoles);
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList = BSCW->ControlPointsList();
+  Array1OfPnt_gen Poles(1,NbPoles);
+
+  Standard_Integer i;
+  CartesianPoint_gen P;
+  for (i=1; i<=NbPoles; i++)
+  {
+    if (StepToGeom_MakeCartesianPoint_gen::Convert(aControlPointsList->Value(i),P))
+      Poles.SetValue(i,P->Pnt_fonc());
+    else
+      return Standard_False;
+  }
+  
+  const Standard_Integer NbKnots = BSCW->NbKnotMultiplicities();
+
+  //aKnotMultiplicities = new TColStd_HArray1OfInteger(1,NbKnots);
+  const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities = BSCW->KnotMultiplicities();
+  TColStd_Array1OfInteger Mult(1,NbKnots);
+  for (i=1; i<=NbKnots; i++) {
+    Mult.SetValue(i,aKnotMultiplicities->Value(i));
+  }
+  
+  //aKnots = new TColStd_HArray1OfReal(1,NbKnots);
+  const Handle(TColStd_HArray1OfReal)& aKnots = BSCW->Knots();
+  TColStd_Array1OfReal Kn(1,NbKnots);
+  for (i=1; i<=NbKnots; i++) {
+    Kn.SetValue(i,aKnots->Value(i));
+  }
+  
+  // --- Does the Curve descriptor LOOKS like a periodic descriptor ? ---
+
+  Standard_Integer SumMult = 0;
+  for (i=1; i<=NbKnots; i++) {
+    SumMult += aKnotMultiplicities->Value(i);
+  }
+  
+  Standard_Boolean shouldBePeriodic;
+  if (SumMult == (NbPoles + Deg + 1)) {
+    shouldBePeriodic = Standard_False;
+  }
+  else if ((aKnotMultiplicities->Value(1) == 
+	    aKnotMultiplicities->Value(NbKnots)) &&
+	   ((SumMult - aKnotMultiplicities->Value(1)) == NbPoles)) {
+    shouldBePeriodic = Standard_True;
+  }
+  else {  // --- What is that ??? ---
+    shouldBePeriodic = Standard_False;
+    //cout << "Strange BSpline Curve Descriptor" << endl;
+  }
+
+  if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
+    const Handle(TColStd_HArray1OfReal)& aWeight = BSCWR->WeightsData();
+    TColStd_Array1OfReal W(1,NbPoles);
+    for (i=1; i<=NbPoles; i++)
+      W.SetValue(i,aWeight->Value(i));
+    CC = new BSplineCurve_gen(Poles, W, Kn, Mult, Deg, shouldBePeriodic);
+  }
+  else
+    CC = new BSplineCurve_gen(Poles, Kn, Mult, Deg, shouldBePeriodic);
+
+  // abv 04.07.00 CAX-IF TRJ4: trj4_k1_top-md-203.stp #716 (face #581):
+  // force periodicity on closed curves
+  if ( SC->ClosedCurve() && CC->Degree() >1 && CC->IsClosed() ) {
+    CC->SetPeriodic();
+//#ifdef DEB
+//    cout << "Warning: "__FILE__": Closed curve made periodic" << endl;
+//#endif
+  }
+  return Standard_True;
+}

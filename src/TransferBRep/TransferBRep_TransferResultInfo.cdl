@@ -1,0 +1,66 @@
+-- File:	TransferBRep_TransferResultInfo.cdl
+-- Created:	Wed Aug 11 09:53:43 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox>
+---Copyright:	 Matra Datavision 1999
+
+
+class TransferResultInfo from TransferBRep inherits TShared from MMgt 
+
+    ---Purpose: Data structure for storing information on transfer result.
+    --          At the moment it dispatches information for the following types:
+    --          - result,
+    --          - result + warning(s),
+    --          - result + fail(s),
+    --          - result + warning(s) + fail(s)
+    --          - no result,
+    --          - no result + warning(s),
+    --          - no result + fail(s),
+    --          - no result + warning(s) + fail(s),
+
+is
+
+    Create returns TransferResultInfo from TransferBRep;
+    	---Purpose: Creates object with all fields nullified.
+	
+    Clear (me: mutable);
+    	---Purpose: Resets all the fields.
+	
+    Result (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    ResultWarning (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    ResultFail (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    ResultWarningFail (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    NoResult (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    NoResultWarning (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    NoResultFail (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+    NoResultWarningFail (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+	
+fields
+
+    myR,  myRW,  myRF,  myRWF,
+    myNR, myNRW, myNRF, myNRWF: Integer;
+    
+end TransferResultInfo;

@@ -1,0 +1,217 @@
+-- File:	Line.cdl
+-- Created:	Wed May  6 15:54:48 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+deferred class Line from IntPatch 
+
+inherits TShared from MMgt
+
+	---Purpose: Definition of an intersection line between two
+	--          surfaces.
+	--          A line may be either geometric : line, circle, ellipse,
+	--          parabola, hyperbola, as defined in the class GLine,
+	--          or analytic, as defined in the class ALine, or defined
+	--          by a set of points (coming from a walking algorithm) as
+	--          defined in the class WLine.
+
+
+uses TypeTrans          from IntSurf,
+     Situation          from IntSurf,
+     IType              from IntPatch,
+     Lin                from gp,
+     Circ               from gp,
+     Parab              from gp,
+     Elips              from gp,
+     Hypr               from gp,
+     Pnt                from gp,
+     Vec                from gp
+
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+    Initialize(Tang: Boolean from Standard;
+               Trans1,Trans2: TypeTrans from IntSurf);
+    
+	---Purpose: To initialize the fields, when the transitions
+	--          are In or Out.
+
+
+    Initialize(Tang: Boolean from Standard;
+               Situ1,Situ2: Situation from IntSurf);
+    
+	---Purpose: To initialize the fields, when the transitions
+	--          are Touch.
+
+
+    Initialize(Tang: Boolean from Standard);
+    
+	---Purpose: To initialize the fields, when the transitions
+	--          are Undecided.
+
+
+    SetValue(me: mutable; Uiso1,Viso1,Uiso2,Viso2: Boolean from Standard)
+    
+	---Purpose: To set the values returned by IsUIsoS1,....
+	--          The default values are False.
+
+	---C++: inline
+
+    	is static;
+
+
+    ArcType (me)
+    
+        ---Purpose: Returns the type of geometry 3d (Line, Circle, Parabola,
+        --          Hyperbola, Ellipse, Analytic, Walking, Restriction)
+
+    	returns IType from IntPatch
+	---C++: inline
+	
+	is static;
+
+
+    IsTangent(me)
+    
+	---Purpose: Returns TRUE if the intersection is a line of tangency
+	--          between the 2 patches.
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    TransitionOnS1(me)
+    
+	---Purpose: Returns the type of the transition of the line
+	--          for the first surface. The transition is "constant"
+	--          along the line.
+	--          The transition is IN if the line is oriented in such
+	--          a way that the system of vector (N1,N2,T) is right-handed,
+	--          where N1 is the normal to the first surface at a point P,
+	--                N2 is the normal to the second surface at a point P,
+	--                T  is the tangent to the intersection line at P.
+	--          If the system of vector is left-handed, the transition
+	--          is OUT.
+	--          When N1 and N2 are colinear all along the intersection
+	--          line, the transition will be
+	--           - TOUCH, if it is possible to use the 2nd derivatives
+	--             to determine the position of one surafce compared
+	--             to the other (see Situation)
+	--           - UNDECIDED otherwise.
+	--           
+	--          If one of the transition is TOUCH or UNDECIDED, the other
+	--          one has got the same value.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+
+	is static;
+
+
+    TransitionOnS2(me)
+    
+	---Purpose: Returns the type of the transition of the line
+	--          for the second surface. The transition is "constant"
+	--          along the line.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+	
+	is static;
+
+
+    SituationS1(me)
+    
+	---Purpose: Returns the situation (INSIDE/OUTSIDE/UNKNOWN) of
+	--          the first patch compared to the second one, when
+	--          TransitionOnS1 or TransitionOnS2 returns TOUCH.
+	--          Otherwise, an exception is raised.
+
+    	returns Situation from IntSurf
+	---C++: inline
+
+	raises DomainError from Standard
+	
+	is static;
+
+
+    SituationS2(me)
+    
+	---Purpose: Returns the situation (INSIDE/OUTSIDE/UNKNOWN) of
+	--          the second patch compared to the first one, when
+	--          TransitionOnS1 or TransitionOnS2 returns TOUCH.
+	--          Otherwise, an exception is raised.
+
+    	returns Situation from IntSurf
+	---C++: inline
+
+	raises DomainError from Standard
+	
+	is static;
+
+
+    IsUIsoOnS1(me)
+    
+	---Purpose: Returns TRUE if the intersection is a U isoparametric curve
+	--          on the first patch.
+	
+	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    IsVIsoOnS1(me)
+    
+	---Purpose: Returns TRUE if the intersection is a V isoparametric curve
+	--          on the first patch.
+	
+	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    IsUIsoOnS2(me)
+    
+	---Purpose: Returns TRUE if the intersection is a U isoparametric curve
+	--          on the second patch.
+	
+	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    IsVIsoOnS2(me)
+    
+	---Purpose: Returns TRUE if the intersection is a V isoparametric curve
+	--          on the second patch.
+	
+	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+fields
+
+    typ  : IType     from IntPatch is protected;
+    tg   : Boolean   from Standard;
+    tS1  : TypeTrans from IntSurf;
+    tS2  : TypeTrans from IntSurf;
+    sit1 : Situation from IntSurf;
+    sit2 : Situation from IntSurf;
+    uS1  : Boolean   from Standard;
+    vS1  : Boolean   from Standard;
+    uS2  : Boolean   from Standard;
+    vS2  : Boolean   from Standard;
+
+end Line;

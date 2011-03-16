@@ -1,0 +1,103 @@
+-- File:	BRepLib_MakeShape.cdl
+-- Created:	Wed Jul 21 18:15:13 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class MakeShape from BRepLib inherits Command from BRepLib
+
+	---Purpose: This    is  the  root     class for     all  shape
+	--          constructions.  It stores the result.
+	--          
+	--          It  provides deferred methods to trace the history
+	--          of sub-shapes.
+
+uses
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    ShapeModification from BRepLib,
+    ListOfShape       from TopTools
+    
+    
+raises
+    NotDone           from StdFail
+
+is
+    Initialize;
+    
+    Build(me : in out);
+	---Purpose: This is  called by  Shape().  It does  nothing but
+	--          may be redefined.
+	---Level: Public
+	
+    Shape(me) returns Shape from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Shape() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+
+
+    -----------------------------------------------------------
+    --- the following methods do nothing and must be redefined
+    --- for faces creations.
+
+    FaceStatus(me; F: Face from TopoDS) 
+    	---Purpose: returns the status of the Face after
+    	--          the shape creation. 
+	---Level: Public
+    returns ShapeModification from BRepLib
+    is virtual;
+    
+    
+    HasDescendants(me; F: Face from TopoDS)
+    	---Purpose: Returns True if the Face generates new topology.
+	---Level: Public
+    returns Boolean from Standard
+    is virtual;
+
+
+    DescendantFaces(me: in out; F: Face from TopoDS)
+    	---Purpose: returns the list of generated Faces.
+    	---C++:     return const &
+	---Level: Public
+    returns ListOfShape from TopTools
+    is virtual;
+    
+    
+    NbSurfaces(me)
+    	---Purpose: returns the number of surfaces
+    	--          after the shape creation.
+	---Level: Public
+    returns Integer from Standard
+    is virtual;
+
+
+    NewFaces(me: in out; I: Integer from Standard) 
+    	---Purpose: Return the faces created for surface I.
+    	---C++:     return const &
+	---Level: Public
+    returns ListOfShape from TopTools
+    is virtual;
+
+
+    FacesFromEdges(me: in out; E: Edge from TopoDS)
+    	---Purpose: returns a list of the created faces
+    	--          from the edge <E>.
+    	---C++:     return const &
+	---Level: Public
+    returns ListOfShape from TopTools
+    is virtual;
+
+    
+fields
+ 
+    myShape   : Shape         from TopoDS   is protected;
+    myGenFaces: ListOfShape   from TopTools is protected;
+    myNewFaces: ListOfShape   from TopTools is protected;
+    myEdgFaces: ListOfShape   from TopTools is protected;
+    
+end MakeShape;

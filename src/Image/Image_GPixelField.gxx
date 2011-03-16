@@ -1,0 +1,79 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_OutOfMemory.hxx>
+
+#ifdef TRACE
+static int GPixelFieldCount = 0 ;
+#endif
+
+//=======================================================================
+//function : Image_GPixelField
+//purpose  : 
+//=======================================================================
+
+Image_GPixelField::Image_GPixelField (const Standard_Integer Width,
+				      const Standard_Integer Height) :
+	myWidth(Width),
+	myHeight(Height),
+	myDeletable(Standard_True)
+{
+
+  Standard_Integer Size = myWidth * myHeight;
+ 
+  Standard_RangeError_Raise_if(( myWidth <= 0  || myHeight <= 0 ),
+			       "Image_GPixelField::Create");
+
+#ifdef TRACE
+  cout << form("\tCreate a new GPixelField ( Count : %d )\n",++GPixelFieldCount)
+       << flush ;
+#endif
+
+  myData = new Item [Size];
+}
+
+//=======================================================================
+//function : Image_GPixelField
+//purpose  : 
+//=======================================================================
+
+Image_GPixelField::Image_GPixelField (const Standard_Integer Width,
+				      const Standard_Integer Height,
+					const Item& V) :
+	myWidth(Width),
+	myHeight(Height),
+	myDeletable(Standard_True)
+{
+
+  Standard_Integer Size = myWidth * myHeight;
+ 
+  Standard_RangeError_Raise_if(( myWidth <= 0  || myHeight <= 0 ),
+			       "Image_GPixelField::Create");
+
+#ifdef TRACE
+  cout << form("\tCreate a new GPixelField ( Count : %d )\n",++GPixelFieldCount)
+       << flush ;
+#endif
+
+  myData = new Item [Size];
+  
+  for (Standard_Integer I = 0; I < Size ; I++) ((Item *)myData)[I] = V;
+}
+
+//=======================================================================
+//function : Destroy
+//purpose  : 
+//=======================================================================
+
+void Image_GPixelField::Destroy () 
+{
+#ifdef TRACE
+  cout << form("\t\tDelete a GPixelField ( Count : %d )\n", --GPixelFieldCount )
+       << flush ;
+#endif
+
+  if(myDeletable) {
+    delete [] (Item *) myData;
+  }
+}
+

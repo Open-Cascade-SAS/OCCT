@@ -1,0 +1,141 @@
+-- File:	Transfer_Binder.cdl
+-- Created:	Wed Jun  9 10:41:08 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Binder  from Transfer  inherits TShared
+
+    ---Purpose : A Binder is an auxiliary object to Map the Result of the
+    --           Transfer of a given Object : it records the Result of the
+    --           Unitary Transfer (Resulting Object), status of progress and
+    --           error (if any) of the Process
+    --           
+    --           The class Binder itself makes no definition for the Result :
+    --           it is defined by sub-classes : it can be either Simple (and
+    --           has to be typed : see generic class SimpleBinder) or Multiple
+    --           (see class MultipleBinder).
+    --           
+    --           In principle, for a Transfer in progress, Result cannot be
+    --           accessed : this would cause an exception raising. 
+    --           This is controlled by the value if StatusResult : if it is
+    --           "Used", the Result cannot be changed. This status is normally
+    --           controlled by TransferProcess but can be directly (see method
+    --           SetAlreadyUsed)
+    --           
+    --           Checks can be completed by a record of cases, as string which
+    --           can be used as codes, but not to be printed
+    --           
+    --           In addition to the Result, a Binder can bring a list of
+    --           Attributes, which are additional data, each of them has a name
+
+uses CString, Type, HArray1OfInteger,
+     HSequenceOfTransient from TColStd, DictionaryOfTransient from Dico,
+     Check, ParamType, StatusResult, StatusExec
+
+raises TransferFailure
+
+is
+
+    Initialize;
+    ---Purpose : Sets fields at initial values
+
+    Merge (me : mutable; other : Binder);
+    ---Purpose : Merges basic data (Check, ExecStatus) from another Binder but
+    --           keeps its result. Used when a binder is replaced by another
+    --           one, this allows to keep messages
+
+    IsMultiple (me) returns Boolean  is virtual;
+    ---Purpose : Returns True if a Binder has several results, either by itself
+    --           or because it has next results
+    --           Can be defined by sub-classes.
+
+    ResultType (me) returns Type  is deferred;
+    ---Purpose : Returns the Type which characterizes the Result (if known)
+
+    ResultTypeName (me) returns CString  is deferred;
+    ---Purpose : Returns the Name of the Type which characterizes the Result
+    --           Can be returned even if ResultType itself is unknown
+
+    AddResult (me : mutable; next : Binder);
+    ---Purpose : Adds a next result (at the end of the list)
+    --           Remark : this information is not processed by Merge
+
+    CutResult (me : mutable; next : Binder)  is private;
+    ---Purpose : Called by AddResult, to keep unicity of each item in the list
+
+    NextResult (me) returns Binder;
+    ---Purpose : Returns the next result, Null if none
+
+    	-- --  Mapping management internal services  -- --
+
+    SetResultPresent (me : mutable)
+    ---Purpose : Used to declare that a result is recorded for an individual
+    --           transfer (works by setting StatusResult to Defined)
+    --           
+    --           This Method is to be called once a Result is really recorded
+    --           (see sub-classes of Binder, especially SimpleBinder) : it is
+    --           senseless if called isolately
+    	raises TransferFailure  is protected;
+    --           Error if Result is already set and used
+
+    HasResult (me) returns Boolean;
+    ---Purpose : Returns True if a Result is available (StatusResult = Defined)
+    --           A Unique Result will be gotten by Result (which must be
+    --           defined in each sub-class according to result type)
+    --           For a Multiple Result, see class MultipleBinder
+    --           For other case, specific access has to be forecast
+
+    SetAlreadyUsed (me : mutable);
+    ---Purpose : Declares that result is now used by another one, it means that
+    --           it cannot be modified (by Rebind)
+
+    Status (me) returns StatusResult;
+    ---Purpose : Returns status, which can be Initial (not yet done), Made (a
+    --           result is recorded, not yet shared), Used (it is shared and
+    --           cannot be modified)
+
+    	-- --    Check Management    -- --
+
+    StatusExec (me) returns StatusExec;
+    ---Purpose : Returns execution status
+
+    SetStatusExec (me : mutable; stat : StatusExec);
+    ---Purpose : Modifies execution status; called by TransferProcess only
+    --           (for StatusError, rather use SetError, below)
+
+    AddFail    (me : mutable; mess : CString; orig : CString = "");
+    ---Purpose : Used to declare an individual transfer as beeing erroneous
+    --           (Status is set to Void, StatusExec is set to Error, <errmess>
+    --           is added to Check's list of Fails)
+    --           It is possible to record several messages of error
+    --           
+    --           It has same effect for TransferProcess as raising an exception
+    --           during the operation of Transfer, except the Transfer tries to
+    --           continue (as if ErrorHandle had been set)
+
+    AddWarning (me : mutable; mess : CString; orig : CString = "");
+    ---Purpose : Used to attach a Warning Message to an individual Transfer
+    --           It has no effect on the Status
+
+    Check (me) returns Check;
+    ---Purpose : Returns Check which stores Fail messages
+    --           Note that no Entity is associated in this Check
+    ---C++ : return const
+
+    CCheck (me : mutable) returns Check;
+    ---Purpose : Returns Check which stores Fail messages, in order to modify
+    --           it (adding messages, or replacing it)
+
+
+fields
+
+--    REMEMBER : The Result itself is brought by sub-classes of Binder
+--        (specific to each kind of Result)
+    thestatus : StatusResult;  -- enum : Void, Defined, Used
+    theexecst : StatusExec;    -- enum : Initial, Run, Done, Error, Loop
+    thecheck  : Check;
+    thenextr  : Binder;
+
+end Binder;

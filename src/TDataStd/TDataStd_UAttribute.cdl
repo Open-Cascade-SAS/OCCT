@@ -1,0 +1,63 @@
+-- File:	TDataStd_UAttribute.cdl
+-- Created:	Fri Jun 11 13:59:31 1999
+-- Author:	Sergey RUIN
+--		<s-ruin@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class UAttribute from TDataStd inherits Attribute from TDF
+
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is    
+
+
+    ---Purpose: api class methods
+    --          =============
+    
+    Set (myclass ; label : Label from TDF; LocalID : GUID from Standard)
+    ---Purpose: Find, or create, a UAttribute attribute with <LocalID> as Local GUID.
+    -- The UAttribute attribute is returned.
+    returns UAttribute from TDataStd ;    
+
+
+    ---Purpose: UAttribute methods
+    --          ============
+
+    Create
+    returns mutable UAttribute from TDataStd;
+    
+    SetID (me: mutable; LocalID : GUID from Standard);
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+    
+    ---Category: methodes of TDF_Attribute
+    --           =========================
+ 
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);       
+
+    References (me; DS : DataSet from TDF) is redefined;   
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+     is redefined;
+	---C++: return &
+fields
+   
+   myID:    GUID from Standard;
+	
+end UAttribute;

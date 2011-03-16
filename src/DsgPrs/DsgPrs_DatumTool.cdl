@@ -1,0 +1,17 @@
+-- File:	DsgPrs_DatumTool.cdl
+-- Created:	Mon Oct 10 16:14:47 1994
+-- Author:	Arnaud BOUZY
+--		<adn@houblon>
+---Copyright:	 Matra Datavision 1994
+
+class DatumTool from DsgPrs
+    	---Purpose: A generic framework for defining display of datums. Instantiates Prs3d_Datum.
+uses Ax2 from gp
+   
+is
+
+    Ax2 ( myclass; aDatum: Ax2 from gp ) returns Ax2 from gp;
+
+end DatumTool from DsgPrs;
+
+

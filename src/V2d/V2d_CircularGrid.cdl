@@ -1,0 +1,48 @@
+-- File:	V2d_CircularGrid.cdl
+-- Created:	Fri Mar 17 08:46:09 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+-- Modification: DCB 14-07-98
+--    SetColorIndices() method has been added to avoid exception
+--    after V2d_Viewer::SetColorMap() call.
+---Copyright:	 Matra Datavision 1995
+
+private class CircularGrid from V2d inherits CircularGrid from Aspect
+
+uses
+    ViewerPointer from V2d,
+    View from V2d,
+    GraphicObject from Graphic2d,
+    CircularGraphicGrid from V2d,
+    NameOfColor from Quantity
+is
+    Create(aViewer: ViewerPointer from V2d;
+           aColorIndex1: Integer from Standard;
+           aColorIndex2: Integer from Standard)
+    returns mutable CircularGrid from V2d;
+
+    SetColorIndices (me: mutable;
+                     aColorIndex1: Integer from Standard;
+                     aColorIndex2: Integer from Standard);
+
+    Display(me: mutable)
+    is redefined static;
+
+    Erase(me)
+    is redefined static;
+
+    IsDisplayed(me)
+    returns Boolean from Standard
+    is redefined static;
+
+    UpdateDisplay(me:mutable)
+    is redefined static protected;
+
+fields
+    myViewer: ViewerPointer from V2d;
+    myGraphicObject: GraphicObject from Graphic2d;
+    myColorIndex1: Integer from Standard;
+    myColorIndex2: Integer from Standard;
+    myGrid: CircularGraphicGrid from V2d;
+
+end CircularGrid from V2d;

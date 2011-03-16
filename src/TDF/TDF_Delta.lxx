@@ -1,0 +1,32 @@
+// File:	TDF_Delta.lxx
+//      	-------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Sep  8 1997	Creation
+
+
+inline Standard_Boolean TDF_Delta::IsEmpty() const
+{ return myAttDeltaList.IsEmpty(); }
+
+inline Standard_Boolean TDF_Delta::IsApplicable
+(const Standard_Integer aCurrentTime) const
+{ return (myEndTime     == aCurrentTime); }
+
+inline Standard_Integer TDF_Delta::BeginTime () const
+{ return myBeginTime; }
+
+inline Standard_Integer TDF_Delta::EndTime () const
+{ return myEndTime; }
+
+inline const TDF_AttributeDeltaList& TDF_Delta::AttributeDeltas () const
+{ return myAttDeltaList; }
+
+inline void TDF_Delta::SetName (const TCollection_ExtendedString& theName)
+{ myName = theName; }
+
+inline TCollection_ExtendedString TDF_Delta::Name () const
+{ return myName; }

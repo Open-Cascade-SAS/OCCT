@@ -1,0 +1,36 @@
+-- File:	GeomToStep_MakePolyline.cdl
+-- Created:	Mon Jul 12 16:32:27 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakePolyline from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between an Array1 of points
+    --          from gp and a Polyline from StepGeom.
+  
+uses Array1OfPnt from TColgp,
+     Array1OfPnt2d from TColgp,
+     Polyline from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( P : Array1OfPnt from TColgp ) returns MakePolyline;
+
+Create ( P : Array1OfPnt2d from TColgp ) returns MakePolyline;
+
+Value (me) returns Polyline from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    thePolyline : Polyline from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakePolyline;
+
+

@@ -1,0 +1,354 @@
+-- File:        StepVisual.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package StepVisual 
+
+    ---Purpose: Collects definitions of STEP entities for visual 
+    --          presentations from Part 46 of ISO10303
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt,
+	StepBasic, StepRepr, StepGeom
+
+is
+
+
+
+enumeration CentralOrParallel is
+
+	copCentral,
+	copParallel
+end;
+
+enumeration MarkerType is   -- reordered from CC1-Rev2 to Rev4
+
+	mtDot,
+	mtX,
+	mtPlus,
+	mtAsterisk,
+	mtRing,
+	mtSquare,
+	mtTriangle
+end;
+
+enumeration SurfaceSide is
+
+	ssNegative,
+	ssPositive,
+	ssBoth
+end;
+
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :enumeration TextPath
+
+enumeration TextPath is
+ 
+        tpUp,
+        tpRight,
+        tpDown,
+        tpLeft
+end;
+
+-- Removed from CC1-Rev2 to Rev4, re-added CC2-Rev4 : -- FMA made Select Type
+class BoxCharacteristicSelect;
+
+class DirectionCountSelect; -- FMA made Select Type for
+    	-- UDirectionCount (Integer)
+    	-- VDirectionCount (Integer)
+
+class AreaOrView;		-- Select Type for
+
+	-- PresentationArea
+	-- PresentationView
+
+
+
+-- Removed from CC1-Rev2 to Rev4 :class CurveOrAnnotationCurveOccurrence; Select Type
+
+
+class CurveStyleFontSelect;		-- Select Type for
+
+	-- CurveStyleFont
+	-- PreDefinedCurveFont
+	-- ExternallyDefinedCurveFont
+
+
+-- Removed from CC1-Rev2 to Rev4 :class DefinedSymbolSelect;	-- Select Type
+
+-- Removed from CC1-Rev2 to Rev4 :class DraughtingCalloutElement;	-- Select Type
+
+class FillStyleSelect;		-- Select Type for
+
+	-- FillAreaStyleColour
+	-- ExternallyDefinedTileStyle
+	-- FillAreaStyleTiles
+	-- ExternallyDefinedHatchStyle
+	-- FillAreaStyleHatching
+
+
+-- Removed from CC1-Rev2 to CC1-Rev4 , re-added CC2-Rev4
+class FontSelect;		-- Select Type
+        -- PreDefinedTextFont
+        -- ExternallyDefinedTextFont
+
+-- Removed from CC1-Rev2 to Rev4 :class HidingOrBlankingSelect;	-- Select Type
+
+class InvisibilityContext;		-- Select Type for
+
+	-- PresentationRepresentation
+	-- PresentationSet
+
+
+class InvisibleItem;		-- Select Type for
+
+	-- StyledItem
+	-- PresentationLayerAssignment
+	-- PresentationRepresentation
+
+
+class LayeredItem;		-- Select Type for
+
+	-- PresentationRepresentation
+	-- RepresentationItem
+
+
+class MarkerSelect;		-- Select Type for
+
+class MarkerMember;             -- Select Type for MarkerSelect (just one enum)
+
+
+class PresentationRepresentationSelect;		-- Select Type for
+
+	-- PresentationRepresentation
+	-- PresentationSet
+
+
+class PresentationSizeAssignmentSelect;		-- Select Type for
+
+	-- PresentationView
+	-- PresentationArea
+	-- AreaInSet
+
+
+class PresentationStyleSelect;		-- Select Type for
+
+	-- PointStyle
+	-- CurveStyle
+	-- SurfaceStyleUsage
+	-- SymbolStyle
+	-- FillAreaStyle
+	-- TextStyle
+
+class StyleContextSelect;		-- Select Type for
+
+	-- Representation
+	-- RepresentationItem
+	-- PresentationSet
+
+
+class SurfaceStyleElementSelect;		-- Select Type for
+
+	-- SurfaceStyleFillArea
+	-- SurfaceStyleBoundary
+	-- SurfaceStyleSilhouette
+	-- SurfaceStyleSegmentationCurve
+	-- SurfaceStyleControlGrid
+	-- SurfaceStyleParameterLine
+
+
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+class TextOrCharacter;		-- Select Type
+
+
+--class Protocol;
+
+
+class AreaInSet;
+class Colour;
+	class BackgroundColour;
+	class ColourSpecification;
+		class ColourRgb;
+class CurveStyle;
+class CurveStyleFont;
+class CurveStyleFontPattern;
+-- Removed from CC1-Rev2 to Rev4 :class DrawingDefinition;
+--moved to StepBasic: class ExternalSource;
+--moved to StepBasic: class ExternallyDefinedItem;
+	class ExternallyDefinedCurveFont;
+-- Removed from CC1-Rev2 to Rev4 :	class ExternallyDefinedHatchStyle;
+-- Removed from CC1-Rev2 to Rev4 :	class ExternallyDefinedSymbol;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 (for FontSelect)
+	class ExternallyDefinedTextFont;
+-- Removed from CC1-Rev2 to Rev4 :	class ExternallyDefinedTileStyle;
+class FillAreaStyle;
+class FillAreaStyleColour;
+class Invisibility;
+	class ContextDependentInvisibility;
+class PointStyle;
+class PreDefinedItem;
+	class PreDefinedColour;
+		class DraughtingPreDefinedColour;
+	class PreDefinedCurveFont;
+		class DraughtingPreDefinedCurveFont;
+class DraughtingModel; -- added for CAX-IF TR3
+-- Removed from CC1-Rev2 to Rev4 :	class PreDefinedSymbol;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
+	class PreDefinedTextFont;
+
+class PresentationLayerAssignment;
+class PresentationSet;
+-- Removed from CC1-Rev2 to Rev4 :	class DrawingRevision;
+class PresentationSize;
+class PresentationStyleAssignment;
+	class PresentationStyleByContext;
+deferred class PresentedItem;
+--class Representation;
+	class PresentationRepresentation;
+		class MechanicalDesignGeometricPresentationRepresentation;
+		class PresentationArea;
+-- Removed from CC1-Rev2 to Rev4 :		class AutoDesignViewArea;
+			class MechanicalDesignGeometricPresentationArea;
+-- Removed from CC1-Rev2 to Rev4 :		class MechanicalDesignPresentationArea;
+		class PresentationView;
+-- Removed from CC1-Rev2 to Rev4 :	class ProductDataRepresentationView;
+-- Removed from CC1-Rev2 to Rev4 :	class SymbolRepresentation;
+-- Removed from CC1-Rev2 to Rev4 :	class DraughtingSubfigureRepresentation;
+-- Removed from CC1-Rev2 to Rev4 :	class DraughtingSymbolRepresentation;
+	class Template;
+--class RepresentationItem;
+-- Removed from CC1-Rev2 to Rev4 :		class AnnotationFillArea;
+		class CameraModel;
+			class CameraModelD2;
+			class CameraModelD3;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+	class CompositeText;
+-- Removed from CC1-Rev2 to Rev4 :	    class CompositeTextWithAssociatedCurves;
+-- Removed from CC1-Rev2 to Rev4 :		class CompositeTextWithBlankingBox;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+		class CompositeTextWithExtent;
+-- Removed from CC1-Rev2 to Rev4 :		class DefinedSymbol;
+-- Removed from CC1-Rev2 to Rev4 :		class DraughtingCallout;
+-- Removed from CC1-Rev2 to Rev4 :		class FaceBasedSurfaceModel;
+-- Removed from CC1-Rev2 to Rev4 :		class FillAreaStyleHatching;
+-- Removed from CC1-Rev2 to Rev4 :		class FillAreaStyleTileSymbolWithStyle;
+-- Removed from CC1-Rev2 to Rev4 :		class FillAreaStyleTiles;
+-- Removed from CC1-Rev2 to Rev4 :		class OneDirectionRepeatFactor;
+-- Removed from CC1-Rev2 to Rev4 :			class TwoDirectionRepeatFactor;
+		class PlanarExtent;
+			class PlanarBox;
+-- Removed from CC1-Rev2 to Rev4 :	class SymbolTarget;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+	class TextLiteral;
+-- Removed from CC1-Rev2 to Rev4 :		class TextLiteralWithAssociatedCurves;
+-- Removed from CC1-Rev2 to Rev4 :		class TextLiteralWithBlankingBox;
+-- Removed from CC1-Rev2 to Rev4 :		class TextLiteralWithDelineation;
+-- Removed from CC1-Rev2 to Rev4 :			class DraughtingTextLiteralWithDelineation;
+-- Removed from CC1-Rev2 to Rev4 :		class TextLiteralWithExtent;
+-- Removed from CC1-Rev2 to Rev4 :	class AnnotationSymbol;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 (for TextOrCharacter) :
+	class AnnotationText;
+
+		class CameraImage;
+		class TemplateInstance;
+	class StyledItem;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
+	    class AnnotationOccurrence;
+-- Removed from CC1-Rev2 to Rev4 :		class AnnotationCurveOccurrence;
+-- Removed from CC1-Rev2 to Rev4 :			class DimensionCurve;
+-- Removed from CC1-Rev2 to Rev4 :		class AnnotationFillAreaOccurrence;
+-- Removed from CC1-Rev2 to Rev4 :		class AnnotationSymbolOccurrence;
+-- Removed from CC1-Rev2 to Rev4 :			class AnnotationSubfigureOccurrence;
+-- Removed from CC1-Rev2 to Rev4 :			class TerminatorSymbol;
+-- Removed from CC1-Rev2 to Rev4 :			class DimensionCurveTerminator;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
+		class AnnotationTextOccurrence;
+		class DraughtingAnnotationOccurrence;
+
+		class OverRidingStyledItem;
+			class ContextDependentOverRidingStyledItem;
+--class RepresentationMap;
+	class CameraUsage;
+-- Removed from CC1-Rev2 to Rev4 :	class SymbolRepresentationMap;
+class SurfaceSideStyle;
+class SurfaceStyleBoundary;
+class SurfaceStyleControlGrid;
+class SurfaceStyleFillArea;
+class SurfaceStyleParameterLine;
+class SurfaceStyleSegmentationCurve;
+class SurfaceStyleSilhouette;
+class SurfaceStyleUsage;
+-- Removed from CC1-Rev2 to Rev4 :class SymbolColour;
+-- Removed from CC1-Rev2 to Rev4 :class SymbolStyle;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
+class TextStyle;
+	class TextStyleWithBoxCharacteristics;
+-- Removed from CC1-Rev2 to Rev4 :	class TextStyleWithMirror;
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+class TextStyleForDefinedFont;
+
+class ViewVolume;
+
+    -- Added from CC1-Rev2 to Rev4
+class CameraImage2dWithScale;
+class CameraImage3dWithScale;
+class PresentedItemRepresentation;
+class PresentationLayerUsage;
+
+
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
+class Array1OfTextOrCharacter instantiates Array1 from TCollection (TextOrCharacter);
+class HArray1OfTextOrCharacter instantiates HArray1 from TCollection (TextOrCharacter,Array1OfTextOrCharacter from StepVisual);
+
+class Array1OfStyleContextSelect instantiates Array1 from TCollection (StyleContextSelect);
+class HArray1OfStyleContextSelect instantiates HArray1 from TCollection (StyleContextSelect,Array1OfStyleContextSelect from StepVisual);
+
+class Array1OfCurveStyleFontPattern instantiates Array1 from TCollection (CurveStyleFontPattern);
+class HArray1OfCurveStyleFontPattern instantiates HArray1 from TCollection (CurveStyleFontPattern,Array1OfCurveStyleFontPattern from StepVisual);
+
+-- Removed from CC1-Rev2 to Rev4 :class HArray1OfDraughtingCalloutElement and Array
+
+class Array1OfFillStyleSelect instantiates Array1 from TCollection (FillStyleSelect);
+class HArray1OfFillStyleSelect instantiates HArray1 from TCollection (FillStyleSelect,Array1OfFillStyleSelect from StepVisual);
+
+-- Removed from CC1-Rev2 to Rev4 :class HArray1OfFillAreaStyleTileSymbolWithStyle
+
+class Array1OfInvisibleItem instantiates Array1 from TCollection (InvisibleItem);
+class HArray1OfInvisibleItem instantiates HArray1 from TCollection (InvisibleItem,Array1OfInvisibleItem from StepVisual);
+
+class Array1OfLayeredItem instantiates Array1 from TCollection (LayeredItem);
+class HArray1OfLayeredItem instantiates HArray1 from TCollection (LayeredItem,Array1OfLayeredItem from StepVisual);
+
+class Array1OfPresentationStyleSelect instantiates Array1 from TCollection (PresentationStyleSelect);
+class HArray1OfPresentationStyleSelect instantiates HArray1 from TCollection (PresentationStyleSelect,Array1OfPresentationStyleSelect from StepVisual);
+
+class Array1OfPresentationStyleAssignment instantiates Array1 from TCollection (PresentationStyleAssignment);
+class HArray1OfPresentationStyleAssignment instantiates HArray1 from TCollection (PresentationStyleAssignment,Array1OfPresentationStyleAssignment from StepVisual);
+
+class Array1OfSurfaceStyleElementSelect instantiates Array1 from TCollection (SurfaceStyleElementSelect);
+class HArray1OfSurfaceStyleElementSelect instantiates HArray1 from TCollection (SurfaceStyleElementSelect,Array1OfSurfaceStyleElementSelect from StepVisual);
+
+-- Instantiated class made by FMA
+
+class Array1OfDirectionCountSelect instantiates Array1 from TCollection (DirectionCountSelect);
+class HArray1OfDirectionCountSelect 
+    instantiates HArray1 from TCollection (DirectionCountSelect, 
+    	    	    	 Array1OfDirectionCountSelect from StepVisual);
+
+-- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
+class Array1OfBoxCharacteristicSelect 
+    instantiates Array1 from TCollection (BoxCharacteristicSelect);
+class HArray1OfBoxCharacteristicSelect
+    instantiates HArray1 from TCollection (BoxCharacteristicSelect,
+                         Array1OfBoxCharacteristicSelect);
+
+--	Protocol returns Protocol from StepVisual;
+	---Purpose : creates a Protocol
+
+end StepVisual;
+

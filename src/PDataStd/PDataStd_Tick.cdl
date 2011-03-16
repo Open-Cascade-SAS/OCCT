@@ -1,0 +1,14 @@
+-- File:        PDataStd_Tick.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class Tick from PDataStd inherits Attribute from PDF
+
+is
+
+    Create 
+    returns mutable Tick from  PDataStd;
+
+end Tick;

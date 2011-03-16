@@ -1,0 +1,323 @@
+-- File:	Adaptor3d_SurfaceOfLinearExtrusion.cdl
+-- Created:	Wed Apr 21 12:39:17 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SurfaceOfLinearExtrusion from Adaptor3d inherits Surface from Adaptor3d 
+
+	--- Purpose: Generalised cylinder. This surface is obtained  by sweeping a  curve in  a given
+	--  direction. The parametrization range  for the parameter U is defined 
+	--  with referenced the curve.  
+	--  The parametrization range for the parameter V is ]-infinite,+infinite[	 
+	--  The  position of  the   curve gives  the origin for    the
+	--  parameter V.	
+	--  The continuity of the surface is CN in the V direction.
+
+uses
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     SurfaceType     from GeomAbs,
+     Vec             from gp,
+     Pnt             from gp,
+     Pln             from gp,
+     Cone            from gp,
+     Cylinder        from gp,
+     Sphere          from gp,
+     Torus           from gp,
+     Ax1             from gp,
+     Dir             from gp,
+     BezierSurface   from Geom,
+     BSplineSurface  from Geom,
+     HSurface        from Adaptor3d,
+     HCurve          from Adaptor3d
+     
+raises
+
+    OutOfRange       from Standard,
+    NoSuchObject     from Standard,
+    DomainError      from Standard
+ 
+is
+    --      
+    --      Methods specific of SurfaceOfLinearExtrusion.
+    --      
+
+    Create returns SurfaceOfLinearExtrusion from Adaptor3d;
+    
+    
+    Create(C : HCurve from Adaptor3d) 
+    returns SurfaceOfLinearExtrusion from Adaptor3d; 
+    	---Purpose: The Curve is loaded.
+    
+    Create(C : HCurve from Adaptor3d; V : Dir from gp)
+    returns SurfaceOfLinearExtrusion  from  Adaptor3d; 
+    	---Purpose: Thew Curve and the Direction are loaded.
+
+    
+    Load( me : in out ; C : HCurve from Adaptor3d)
+    	---Purpose: Changes the Curve
+    is static;
+
+    Load( me : in out ; V : Dir from gp)
+    	---Purpose: Changes the Direction
+    is static;
+
+    
+    --     
+    --       Implementation of Surface from Adaptor3d methods.
+    --       
+    
+    --
+    --     Global methods - Apply to the whole surface.
+    --     
+    
+    FirstUParameter(me) returns Real
+    is redefined static;
+
+    LastUParameter(me) returns Real
+    is redefined static;
+    
+    FirstVParameter(me) returns Real
+    is redefined static;
+
+    LastVParameter(me) returns Real
+    is redefined static;
+    
+    UContinuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    VContinuity(me) returns Shape from GeomAbs
+    	---Purpose: Return CN.
+    is redefined static;
+    
+    NbUIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of U intervals for  continuity
+	--          <S>. May be one if UContinuity(me) >= <S>
+    is redefined static;
+    
+    NbVIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns the number of V intervals for  continuity
+	--          <S>. May be one if VContinuity(me) >= <S>
+    is redefined static;
+    
+    UIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs )
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the U direction.
+
+    raises
+    	OutOfRange from Standard -- if Index < 1 or Index > NbIntervals
+    is redefined static;
+
+    VIntervals(me; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) 
+	---Purpose: Returns the  intervals with the requested continuity
+	--          in the V direction.
+    raises
+    	OutOfRange from Standard -- if Index < 1 or Index > NbIntervals
+    is redefined static;
+
+    UTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the U direction
+	--           equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static ;
+    
+    VTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d
+	---Purpose: Returns    a  surface trimmed in the V direction  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static ;
+    
+    IsUClosed(me) returns Boolean
+    is redefined static;
+     
+    IsVClosed(me) returns Boolean
+    is redefined static;
+     
+    IsUPeriodic(me) returns Boolean
+    is redefined static;
+    
+    UPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    IsVPeriodic(me) returns Boolean
+    is redefined static;
+    
+    VPeriod(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value (me; U, V : Real)  returns Pnt from gp
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is redefined static;
+
+    D0 (me; U, V : Real; P : out Pnt from gp)
+        --- Purpose : Computes the point of parameters U,V on the surface.
+    is redefined static;
+
+    D1 (me; U, V : Real; P : out Pnt from gp; D1U, D1V : out Vec from gp)
+        --- Purpose : Computes the point  and the first derivatives on
+        --  the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised   if  the continuity  of   the  current
+        --  intervals is not C1.
+    is redefined static;
+
+    D2 (me; U, V : Real; P : out Pnt from gp; D1U, D1V, D2U, D2V, D2UV : out Vec from gp)
+        --- Purpose  :  Computes   the point,  the  first  and  second
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C2.
+    is redefined static;
+
+    D3 (me; U, V : Real; P : out Pnt from gp; 
+    	    D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV : out Vec from gp)
+        --- Purpose : Computes the point,  the first, second and third
+        --  derivatives on the surface.
+    raises DomainError from Standard
+        --- Purpose   : Raised  if   the   continuity   of the current
+        --  intervals is not C3.
+    is redefined static;
+
+    DN (me; U, V : Real; Nu, Nv : Integer)   returns Vec from gp
+        --- Purpose :  Computes the derivative of order Nu in the direction U and Nv
+        --  in the direction V at the point P(U, V).
+    raises DomainError from Standard,
+        --- Purpose : Raised if the current U  interval is not not CNu
+        --  and the current V interval is not CNv.
+           OutOfRange from Standard
+        --- Purpose : Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
+    is redefined static;
+  
+    UResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric U  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;
+  
+    VResolution(me; R3d : Real ) returns Real
+         ---Purpose :  Returns the parametric V  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;
+  
+    GetType(me) returns SurfaceType from GeomAbs
+	---Purpose: Returns the type of the surface : Plane, Cylinder,
+	--          Cone,      Sphere,        Torus,    BezierSurface,
+	--          BSplineSurface,               SurfaceOfRevolution,
+	--          SurfaceOfExtrusion, OtherSurface
+    is redefined static;
+    
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Plane(me) returns Pln from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Cylinder(me) returns Cylinder from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Cone(me) returns Cone from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Sphere(me) returns Sphere from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+    
+    Torus(me) returns Torus from gp
+      raises NoSuchObject from Standard
+    is redefined static;
+
+
+    UDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    NbUPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    VDegree(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+
+    NbVPoles(me) returns Integer
+     raises NoSuchObject from Standard
+    is redefined static;
+    
+    
+    NbUKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is redefined static;
+    
+    
+    NbVKnots(me) returns Integer
+    raises 
+       NoSuchObject from Standard
+    is redefined static;
+    
+    
+    IsURational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    IsVRational(me) returns Boolean
+    raises
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    
+
+    Bezier(me) returns BezierSurface from Geom
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    BSpline(me) returns BSplineSurface from Geom
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    AxeOfRevolution(me) returns Ax1 from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfRevolution
+    is redefined static;
+
+    Direction(me) returns Dir from gp
+    raises 
+       NoSuchObject from Standard -- only for SurfaceOfExtrusion
+    is redefined static;
+
+    BasisCurve(me) returns HCurve from Adaptor3d
+    raises 
+       NoSuchObject from Standard 
+       -- Only for SurfaceOfExtrusion and SurfaceOfRevolution
+    is redefined static;
+
+fields
+
+    myBasisCurve  : HCurve from Adaptor3d;
+    myDirection   : Dir from gp;
+
+
+
+end SurfaceOfLinearExtrusion;

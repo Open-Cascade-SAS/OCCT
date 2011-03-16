@@ -1,0 +1,11 @@
+-- File:	QAMitutoyoUS.cdl
+-- Created:	Mon Mar 18 19:03:39 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QAMitutoyoUS
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

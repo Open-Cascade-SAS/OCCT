@@ -1,0 +1,159 @@
+-- File:	BRepOffsetAPI_NormalProjection.cdl
+-- Created:	Mon Oct 13 16:14:20 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class NormalProjection from BRepOffsetAPI  inherits  MakeShape  from  BRepBuilderAPI
+
+	---Purpose: A framework to define projection onto a shape
+    	-- according to the normal from each point to be projected.
+    	-- The target shape is a face, and the source shape is an edge or a wire.
+    	-- The target face is considered to be a 2D surface.
+
+
+uses Shape from TopoDS, 
+     Edge  from TopoDS, 
+     Shape  from  GeomAbs, 
+     NormalProjection  from  BRepAlgo,
+     ListOfShape  from  TopTools
+      
+
+raises  ConstructionError from Standard, 
+    	NoSuchObject      from Standard,
+        NotDone           from StdFail
+
+is
+ 
+    Create 
+     	---Purpose: Constructs an empty framework to define projection on
+    	-- a shape according to the normal from each point to be
+    	-- projected to the shape.
+        returns NormalProjection;
+
+
+    Create(S: Shape from TopoDS) 
+     
+    	returns NormalProjection;
+    	---Purpose:  Constructs a framework to define projection onto the
+    	-- basis shape S according to the normal from each point
+    	-- to be projected from the shape added to this framework by Add.
+    	-- Default parameters of the algorithm: Tol3D = 1.e-04, Tol2D =sqr(tol3d)
+    	-- , InternalContinuity = GeomAbs_C2, MaxDegree = 14, MaxSeg = 16.
+
+    Init(me: in out; S: Shape from TopoDS) 
+    	---Purpose: Initializes the empty constructor framework with the shape S.  
+	is static;
+ 
+    Add(me: in out; ToProj: Shape from TopoDS) 
+        ---Purpose: Adds the shape ToProj to the framework for calculation
+    	-- of the projection by Compute3d.
+    	-- ToProj is an edge or a wire and will be projected onto the basis shape.
+    	-- Exceptions
+    	-- Standard_ConstructionError if ToProj is not added.
+        raises ConstructionError from Standard 
+	is static;
+ 
+    SetParams(me  :  in  out;  Tol3D,  Tol2D  :  Real  from  Standard; 
+              InternalContinuity  :  Shape  from  GeomAbs;   
+    	    	MaxDegree  ,  MaxSeg  :  Integer  from  Standard) 
+	---Purpose:  Sets the parameters  used  for computation 
+        --          Tol3 is the requiered  tolerance between the  3d projected
+	--          curve  and     its    2d    representation
+	--          InternalContinuity  is the order of constraints
+	--          used for  approximation 
+        --          MaxDeg and MaxSeg are the maximum degree and the maximum 
+        --          number of segment for BSpline resulting of an approximation.
+	
+    is  static; 
+    
+    SetMaxDistance(me: in out; MaxDist: Real from Standard)
+	---Purpose:  Sets the maximum distance between target shape and  
+    	--  shape to project. If this condition is not satisfied then corresponding 
+	--  part of solution is discarded. 
+	--  if MaxDist < 0 then this method does not affect the algorithm
+    is  static;     
+
+    SetLimit(me : in  out; FaceBoundaries: Boolean  from  Standard  = Standard_True) 
+    	---Purpose:  Manage  limitation  of  projected  edges.   
+    	--By  default  edges  are  limited  by  face  boundaries,   
+    	--else  they  are  limited  by  supporting  surface  boundaries.
+    is  static;
+  
+    Compute3d(me:  in  out;  With3d:  Boolean  from  Standard  =  Standard_True) 
+     	---Purpose:  Returns true if a 3D curve is computed. If not, false is
+    	-- returned and an initial 3D curve is kept to build the resulting edges.
+    is  static;
+
+    Build(me: in out) 
+    is  redefined; 
+	---Purpose:  Builds the result of the projection as a compound of
+    	-- wires. Tries to build oriented wires.
+	       
+
+    IsDone(me) 
+     	---Purpose:
+    	returns Boolean from Standard 
+	is redefined static;
+    	---Purpose: Returns true if the object was correctly built by the shape
+    	-- construction algorithm.
+    	-- If at the construction time of the shape, the algorithm
+    	-- cannot be completed, or the original data is corrupted,
+    	-- IsDone returns false and therefore protects the use of
+    	-- functions to access the result of the construction
+    	-- (typically the Shape function).
+
+    Projection(me) 
+        ---Purpose: Performs the projection.
+    	-- The construction of the result is performed by Build.
+    	-- Exceptions
+    	-- StdFail_NotDone if the projection was not performed.
+    	returns Shape from TopoDS 
+	---C++: return const&  
+    	raises NotDone from StdFail
+	is static;
+ 
+    Couple(me; E: Edge from TopoDS) 
+    	---Purpose: Returns the initial face corresponding to the projected edge E.
+    	-- Exceptions
+    	-- StdFail_NotDone if no face was found.
+    	-- Standard_NoSuchObject if if a face corresponding to
+    	-- E has already been found.
+    	returns Shape from TopoDS
+    	---C++: return const&
+    	raises NotDone      from StdFail, 
+	       NoSuchObject from Standard
+    	is static;
+ 
+    Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools 
+    is redefined;
+
+
+    Ancestor(me; E: Edge from TopoDS) 
+	---Purpose: Returns the initial edge corresponding to the edge E
+    	-- resulting from the computation of the projection.
+    	-- Exceptions
+    	-- StdFail_NotDone if no edge was found.
+    	-- Standard_NoSuchObject if an edge corresponding to
+    	-- E has already been found.
+        returns Shape from TopoDS	
+    	---C++: return const&
+    	raises NotDone      from StdFail, 
+	       NoSuchObject from Standard
+    	is static;
+ 
+    BuildWire(me;  Liste : out  ListOfShape from TopTools)   
+        returns  Boolean  from  Standard 
+	is  static; 
+    	--- Purpose : build the result as a list of wire if possible in --
+    	--  a first returns a wire only if there is only a wire.
+fields
+ 
+  myNormalProjector  :  NormalProjection  from  BRepAlgo;
+
+end NormalProjection;

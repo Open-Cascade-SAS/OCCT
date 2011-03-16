@@ -1,0 +1,30 @@
+-- File:        ConversionBasedUnitAndSolidAngleUnit.cdl
+-- Created:     Fri Jun 17 11:44:51 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWConversionBasedUnitAndSolidAngleUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for ConversionBasedUnitAndSolidAngleUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ConversionBasedUnitAndSolidAngleUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWConversionBasedUnitAndSolidAngleUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ConversionBasedUnitAndSolidAngleUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ConversionBasedUnitAndSolidAngleUnit from StepBasic);
+
+	Share(me; ent : ConversionBasedUnitAndSolidAngleUnit from StepBasic; iter : in out EntityIterator);
+
+end RWConversionBasedUnitAndSolidAngleUnit;

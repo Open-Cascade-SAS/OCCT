@@ -1,0 +1,156 @@
+-- File:	Units_UnitsSystem.cdl
+-- Created:	Fri Oct 22 11:40:29 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@meteox>
+---Copyright:	 Matra Datavision 1993
+
+
+class UnitsSystem from Units 
+inherits
+
+        TShared from MMgt  
+	---Purpose: This class  allows  the  user  to  define his  own
+	--          system of units.
+  
+uses
+
+    AsciiString        from TCollection,
+    HSequenceOfInteger from TColStd,
+    QuantitiesSequence from Units
+    
+
+
+	
+raises NoSuchUnit from Units,NoSuchType from Units
+
+is
+
+    Create returns mutable UnitsSystem from Units;
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns an instance of UnitsSystem initialized to the 
+    --          S.I. units system.
+
+    Create(aName: CString from Standard;Verbose: Boolean from Standard = Standard_False)
+    returns mutable UnitsSystem from Units;
+
+    ---Level: Public 
+
+    ---Purpose: Returns an instance of UnitsSystem initialized to the 
+    --          S.I. units system upgraded by the base system units decription
+    --	 	file.
+    --          Attempts to find the four following files:
+    --          $CSF_`aName`Defaults/.aName
+    --          $CSF_`aName`SiteDefaults/.aName
+    --          $CSF_`aName`GroupDefaults/.aName
+    --          $CSF_`aName`UserDefaults/.aName
+    --		See : Resource_Manager for the description of this file.
+ 
+    QuantitiesSequence(me) returns QuantitiesSequence from Units;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns the sequence of refined quantities.
+    
+    ActiveUnitsSequence(me) returns HSequenceOfInteger from TColStd;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns a sequence of integer in correspondance with 
+    --          the sequence of quantities, which indicates, for each 
+    --          redefined quantity, the index into the sequence of 
+    --          units, of the active unit.
+    
+    Specify(me : mutable ; aquantity , aunit : CString)
+    raises NoSuchType from Units
+    ---Level: Public 
+    
+    ---Purpose: Specifies for <aquantity> the unit <aunit> used.
+
+    is static;
+    
+    Remove(me : mutable ; aquantity , aunit : CString)
+    
+    ---Level: Public 
+    
+    ---Purpose: Removes for <aquantity> the unit <aunit> used.
+
+    is static;
+    
+    Activate(me : mutable ; aquantity , aunit : CString)
+    
+    ---Level: Public 
+    
+    ---Purpose: Specifies for <aquantity> the unit <aunit> used.
+
+    is static;
+
+    Activates(me : mutable)
+    
+    ---Level: Public 
+    
+    ---Purpose: Activates the first unit of all defined system quantities
+
+    is static;
+    
+    ActiveUnit(me ; aquantity : CString) returns AsciiString from TCollection
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns for <aquantity> the active unit.
+
+    is static;
+    
+    ConvertValueToUserSystem(me ; aquantity : CString ;
+                                  avalue    : Real ;
+                                  aunit     : CString) returns Real
+    
+    ---Level: Public 
+    
+    ---Purpose: Converts a real value <avalue> from the unit <aunit> 
+    --          belonging to the physical dimensions <aquantity> to 
+    --          the corresponding unit of the user system.
+
+    is static;
+    
+    ConvertSIValueToUserSystem(me ; aquantity : CString ; avalue : Real) returns Real
+    
+    ---Level: Public 
+    
+    ---Purpose: Converts the real value <avalue> from the S.I. system 
+    --          of units to the user system of units. <aquantity> is 
+    --          the physical dimensions of the measurement.
+
+    is static;
+    
+    ConvertUserSystemValueToSI(me ; aquantity : CString ; avalue : Real) returns Real
+
+    ---Level: Public 
+    
+    ---Purpose: Converts the real value <avalue> from the user system 
+    --          of units to the S.I. system of units. <aquantity> is 
+    --          the physical dimensions of the measurement.
+
+    is static;
+    
+    Dump(me)
+
+    ---Level: Internal
+    
+    is static;
+
+    IsEmpty(me) returns Boolean from Standard
+    
+    ---Level: Internal
+    
+    ---Purpose: Returns TRUE if no units has been defined in the system. 
+
+    is static;
+
+fields
+
+    thequantitiessequence  : QuantitiesSequence from Units;
+    theactiveunitssequence : HSequenceOfInteger from TColStd;
+
+end UnitsSystem;

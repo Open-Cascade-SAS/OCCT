@@ -1,0 +1,33 @@
+-- File:	AIS_C0RegularityFilter.cdl
+-- Created:	Wed Feb  4 17:46:39 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@orthodox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class C0RegularityFilter from AIS inherits Filter from SelectMgr 
+
+	---Purpose: 
+
+uses
+    EntityOwner       from SelectMgr,
+    Shape             from TopoDS,
+    ShapeEnum         from TopAbs,
+    MapOfShape        from TopTools
+
+is
+    Create( aShape : Shape from TopoDS )
+    returns mutable C0RegularityFilter from AIS;
+    
+    ActsOn( me; aType : ShapeEnum from TopAbs )
+    returns Boolean from Standard
+    is redefined;
+    
+    IsOk( me; EO : EntityOwner from SelectMgr )
+    returns Boolean from Standard is redefined virtual;
+
+fields
+
+    myMapOfEdges : MapOfShape from TopTools;
+
+end C0RegularityFilter;

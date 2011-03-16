@@ -1,0 +1,23 @@
+-- File:	Prs3d_SectionShapeTool.cdl
+-- Created:	Wed Oct 20 12:58:38 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class SectionShapeTool from Prs3d ( anyShape as any; 
+                                            anyEdge as any)
+
+uses
+    Pln from gp
+is
+
+    Create ( TheShape: anyShape ) returns SectionShapeTool from Prs3d;
+    Load(me: in out; aPlane: Pln from gp);
+
+    InitEdge (me);
+    MoreEdge (me) returns Boolean from Standard;
+    NextEdge (me);
+    GetEdge(me) returns anyEdge;
+    
+end SectionShapeTool from Prs3d;

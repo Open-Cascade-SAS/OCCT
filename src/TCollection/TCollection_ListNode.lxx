@@ -1,0 +1,11 @@
+inline TCollection_ListNode::TCollection_ListNode(const Item& I,const TCollection_MapNodePtr& n) 
+: TCollection_MapNode(n)
+{
+  myValue = I;
+}
+
+inline Item& TCollection_ListNode::Value() const
+{
+  return (Item&)myValue;
+}
+

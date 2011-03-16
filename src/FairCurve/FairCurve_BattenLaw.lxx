@@ -1,0 +1,23 @@
+// File:	FairCurve_EnergyOfBatten.cxx
+// Created:	Thu Feb  1 17:08:55 1996
+// Author:	Philippe MANGIN
+
+inline void FairCurve_BattenLaw::SetSliding(const Standard_Real Sliding)
+{
+   LengthSliding = Sliding;
+}
+
+inline void FairCurve_BattenLaw::SetHeigth(const Standard_Real Heigth)
+{
+   MiddleHeigth = Heigth;
+}
+
+inline void FairCurve_BattenLaw::SetSlope(const Standard_Real Slope)
+{
+   GeometricSlope = Slope;
+}
+inline Standard_Boolean FairCurve_BattenLaw::Value(const Standard_Real T, Standard_Real& THeigth)
+{
+   THeigth = MiddleHeigth + (T - 0.5)*GeometricSlope*LengthSliding;
+   return (THeigth > 0);
+}

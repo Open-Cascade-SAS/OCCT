@@ -1,0 +1,25 @@
+-- File:	StdFail.cdl
+-- Created:	Thu May  7 16:47:43 1992
+-- Author:	Modelistation
+--		<model@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package StdFail 
+
+uses Standard
+
+is
+
+    exception NotDone inherits Failure from Standard;
+    exception Undefined inherits Failure from Standard;
+    exception UndefinedDerivative inherits DomainError from Standard;
+    exception UndefinedValue inherits DomainError from Standard;
+    exception InfiniteSolutions inherits Failure from Standard;
+
+end StdFail;
+
+    
+
+

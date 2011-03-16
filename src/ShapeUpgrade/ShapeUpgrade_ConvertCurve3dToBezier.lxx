@@ -1,0 +1,64 @@
+// File:	ShapeUpgrade_ConvertCurve3dToBezier.lxx
+// Created:	Tue Jun 22 17:02:49 1999
+// Author:	data exchange team
+//		<det@friendox>
+
+//=======================================================================
+//function : SetLineMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertCurve3dToBezier::SetLineMode(const Standard_Boolean mode)
+{
+  myLineMode = mode;
+}
+
+//=======================================================================
+//function : GetLineMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetLineMode() const
+{
+  return myLineMode;
+}
+
+//=======================================================================
+//function : SetCircleMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertCurve3dToBezier::SetCircleMode(const Standard_Boolean mode)
+{
+  myCircleMode = mode;
+}
+
+//=======================================================================
+//function : GetCircleMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetCircleMode() const
+{
+  return myCircleMode;
+}
+
+//=======================================================================
+//function : SetConicMode
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_ConvertCurve3dToBezier::SetConicMode(const Standard_Boolean mode)
+{
+  myConicMode = mode;
+}
+
+//=======================================================================
+//function : GetConicMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_ConvertCurve3dToBezier::GetConicMode() const
+{
+  return myConicMode;
+}

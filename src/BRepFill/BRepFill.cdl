@@ -1,0 +1,257 @@
+-- File:	BRepFill.cdl
+-- Created:	Thu Mar  3 10:02:58 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+-- Modified:	Mon Nov  3 10:24:07 1997
+-- Author:	Joelle CHAUVET
+--		new class CurveConstraint
+-- Modified:	Mon Jan 12 10:46:37 1998
+-- Author:	Joelle CHAUVET
+--		new method Organize
+-- Modified:	Mon Feb 23 09:28:33 1998
+-- Author:	Joelle CHAUVET
+--		new methods SameNumber, ComputeACR, InsertACR
+--		for sections with different number of elements
+-- Modified:	Thu Apr 30 15:27:04 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		methods Organize and SameNumber are dispatched in
+--		new methods SearchOrigin and SameNumberByACR for open wires
+--		and SameNumberByPolarMethod and ComputeOrigin for closed wires
+-- Modified:	Tue Nov  3 10:41:06 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		add classe CompatibleWires
+---Copyright:	 Matra Datavision 1994
+
+
+package BRepFill
+
+
+uses
+    MMgt,
+    TCollection,
+    TColStd,
+    GeomAbs,
+    gp, 
+    Bnd,
+    TopLoc,
+    TColgp,
+    MAT,
+    Geom2d,
+    TColGeom2d,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    Geom,
+    TColGeom,
+    Geom2dAdaptor,
+    Approx,
+    Bisector,
+    BRep,
+    BRepTools,
+    BRepAlgo,
+    BRepSweep,
+    GeomFill,
+    BRepMAT2d,
+    StdFail, 
+    GeomPlate, 
+    Adaptor3d, 
+    Law, 
+    GeomLProp
+
+is
+    enumeration TransitionStyle 
+    is Modified, Right, Round end; 
+    
+--    private class FilledPair;
+    	---Purpose: A pair of bound shapes with the result.
+
+    
+    class Generator;
+    	   ---Purpose: Compute a topological surface ( a  shell) using
+    	   --          generating wires. The face of the shell will be
+    	   --          ruled surfaces through the wires.
+    	   --          The wires must have the same number of edges.
+       
+    deferred class SectionLaw; 
+    	class ShapeLaw; 
+    	class NSections; 
+          
+    class  Draft;
+     
+    deferred  class LocationLaw;  
+    	class DraftLaw;
+   	class Edge3DLaw; 
+	class EdgeOnSurfLaw;
+   	class ACRLaw; 
+
+    class Pipe;
+	  ---Purpose: Computes  a   topological  shape  using  a  wire
+	  --          (spine) and a shape (profile).
+    class PipeShell; 
+          ---Purpose: Computes a topological shell using some wires --
+          --          (spines and profiles) and diplacement option
+          
+
+    class Evolved;
+	  ---Purpose: Computes  an evolved  volum using  a  generating
+	  --          wire and a profile.
+
+    class Sweep; 
+          ---Purpose: Computes an  Sweep  shell using a  generating
+          --          wire, an SectionLaw and an LocationLaw.
+
+ 
+    class CompatibleWires;
+	---Purpose: Computes Wires with good orientation and origin in order
+          --        to generate a shell not twisted.
+
+
+    class OffsetWire;
+	---Purpose: Computes the offset of a Wire or the Wires contained
+	--          in a Face.
+	--          The Wire or the Face must be planar.
+
+    class OffsetAncestors;
+
+
+    class ListOfOffsetWire instantiates 
+    	List from TCollection (OffsetWire from BRepFill);
+    private class ApproxSeewing;
+
+    private class MultiLine;
+   
+    private class MultiLineTool;
+    
+    private class ComputeCLine instantiates 
+    	ComputeCLine from Approx ( MultiLine, MultiLineTool);
+	
+
+    private class TrimSurfaceTool;
+	  ---Purpose: Compute the Pcurves and  the 3d curves resulting
+	  --          of the trimming of a face by an extruded surface.
+
+    private class TrimEdgeTool;
+	  ---Purpose: Geometric Tool using to construct Offset Wires.
+     
+    private class  SectionPlacement;  
+     
+    private class  Section;  
+
+    --class  TrimCorner;
+
+--modified by NIZHNY-MKK  Tue Oct 21 17:43:15 2003
+    class TrimShellCorner;
+			     
+    private  class  SequenceOfSection  instantiates   
+    	Sequence  from TCollection (Section); 
+	
+    class DataMapOfNodeDataMapOfShapeShape instantiates 
+    	DataMap from TCollection (Node                from MAT,
+    	    	    	    	  DataMapOfShapeShape from TopTools,    	    	    	    	  MapTransientHasher  from TColStd );
+   
+    class DataMapOfNodeShape instantiates 
+    	DataMap from TCollection (Node                from MAT,
+    	    	    	    	  Shape               from TopoDS,
+   	    	    	    	  MapTransientHasher  from TColStd );
+				  
+    class DataMapOfShapeDataMapOfShapeListOfShape instantiates
+    	DataMap from TCollection (Shape                      from TopoDS,
+    	    	    	    	  DataMapOfShapeListOfShape  from TopTools,
+    	    	    	    	  ShapeMapHasher             from TopTools ); 
+				  
+    class DataMapOfShapeSequenceOfReal	instantiates
+        	DataMap from TCollection (Shape          from TopoDS,
+    	    	    	    	          SequenceOfReal from TColStd,
+    	    	    	    	          ShapeMapHasher from TopTools );
+
+    class DataMapOfShapeSequenceOfPnt	instantiates
+        	DataMap from TCollection (Shape          from TopoDS,
+    	    	    	    	          SequenceOfPnt  from TColgp,
+    	    	    	    	          ShapeMapHasher from TopTools ); 
+
+    class DataMapOfOrientedShapeListOfShape instantiates
+	    DataMap from TCollection (Shape                  from TopoDS,
+		    	    	      ListOfShape            from TopTools,  
+    	    	    	    	      OrientedShapeMapHasher from TopTools); 
+
+    class CurveConstraint ;
+	---Purpose: same as CurveConstraint from GeomPlate
+	--          with BRepAdaptor_Surface instead of 
+	--          GeomAdaptor_Surface 
+	-- inherits CurveConstraint  from  GeomPlate         
+				      
+    class Filling; 
+	---Purpose: N-Side Filling
+	--  This algorithm avoids to build a face from:
+	--  * a set of edges defining the bounds of the face and some
+	--    constraints the surface of the face has to satisfy
+	--  * a set of edges and points defining some constraints
+	--    the support surface has to satisfy
+	--  * an initial surface to deform for satisfying the constraints
+	--  * a set of parameters to control the constraints.   
+    
+    private class FaceAndOrder;
+    
+    private class EdgeFaceAndOrder;
+    
+    private class SequenceOfFaceAndOrder instantiates
+    	Sequence from TCollection (FaceAndOrder from BRepFill);
+    
+    private class SequenceOfEdgeFaceAndOrder instantiates
+    	Sequence from TCollection (EdgeFaceAndOrder from BRepFill);
+				      
+    Face( Edge1 : Edge from TopoDS;
+    	  Edge2 : Edge from TopoDS )
+	  ---Purpose: Computes a ruled surface between two edges.
+    returns Face from TopoDS;
+
+    Shell( Wire1 : Wire from TopoDS;
+    	   Wire2 : Wire from TopoDS )
+	   ---Purpose: Computes a ruled surface between two wires.
+	   --          The wires must have the same number of edges.
+    returns Shell from TopoDS;    
+    
+    Axe (Spine       :        Shape   from TopoDS; 
+    	 Profile     :        Wire    from TopoDS; 
+    	 AxeProf     : in out Ax3     from  gp;
+    	 ProfOnSpine : in out Boolean from Standard;
+    	 Tol         :        Real    from Standard);
+	   ---Purpose: Computes  <AxeProf>  as Follow. <Location> is 
+	   --          the Position of the nearest vertex V  of <Profile>
+	   --          to <Spine>.<XDirection> is confused with the tangent
+	   --          to <Spine> at the projected point of V on the Spine.
+	   --          <Direction> is normal to <Spine>.
+	   --          <Spine> is a plane wire or a plane face.
+
+	   --          <ProfOnSpine> is <False> if the distance
+	   --          between <Profile> and <Spine> is high to <Tol>.
+    	   
+      
+    SearchOrigin( W : in out Wire from TopoDS; 
+                  P : Pnt  from  gp; 
+                  V : Vec  from  gp; 
+    	    	  Tol  :  Real)  is  private;
+	   ---Purpose: Computes origins and orientation on a closed wire
+          
+    	   
+    ComputeACR( wire : Wire from TopoDS; 
+    	    	ACR  : out  Array1OfReal from TColStd );
+	   ---Purpose:  Compute ACR on a  wire
+    	   
+    InsertACR( wire     : Wire from TopoDS; 
+    	       ACRcuts  : Array1OfReal from TColStd; 
+    	       prec     : Real  from  Standard )
+	   ---Purpose:  Insert ACR on a  wire
+    returns Wire from TopoDS;    	   
+    	   
+
+end BRepFill;
+
+
+
+
+
+
+

@@ -1,0 +1,49 @@
+// File:	BRep_PointRepresentation.lxx
+// Created:	Tue Aug 10 14:53:17 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : Location
+//purpose  : 
+//=======================================================================
+
+inline const TopLoc_Location&  BRep_PointRepresentation::Location()const 
+{
+  return myLocation;
+}
+
+
+//=======================================================================
+//function : Location
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_PointRepresentation::Location(const TopLoc_Location& L)
+{
+  myLocation = L;
+}
+
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real  BRep_PointRepresentation::Parameter()const 
+{
+  return myParameter;
+}
+
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_PointRepresentation::Parameter(const Standard_Real P)
+{
+  myParameter = P;
+}
+
+

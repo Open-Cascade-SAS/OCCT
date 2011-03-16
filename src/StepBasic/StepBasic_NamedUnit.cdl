@@ -1,0 +1,39 @@
+-- File:        NamedUnit.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class NamedUnit from StepBasic 
+
+inherits TShared from MMgt
+
+
+  -- N.B : EXPRESS Complexe SUBTYPE Declaration :
+
+  -- ANDOR ( ONEOF ( si_unit conversion_based_unit ) ONEOF ( length_unit plane_angle_unit ) ) 
+
+uses
+
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable NamedUnit;
+	---Purpose: Returns a NamedUnit
+
+	Init (me : mutable;
+	      aDimensions : mutable DimensionalExponents from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) 
+    	is virtual;
+
+	Dimensions (me) returns mutable DimensionalExponents
+    	is virtual;
+
+fields
+
+	dimensions : DimensionalExponents from StepBasic;
+
+end NamedUnit;

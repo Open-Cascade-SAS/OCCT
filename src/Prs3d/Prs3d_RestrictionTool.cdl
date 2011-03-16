@@ -1,0 +1,30 @@
+-- File:	Prs3d_RestrictionTool.cdl
+-- Created:	Mon Feb 15 11:20:54 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1993
+
+generic class RestrictionTool from Prs3d ( Patch as any; Curve2d as any) 
+
+    uses
+    	Orientation from TopAbs
+is
+
+    Create returns RestrictionTool;    
+    Create ( ThePatch: Patch ) returns RestrictionTool;
+    
+    IsOriented (me) returns Boolean from Standard;
+    
+    Init(me: in out); 
+
+    More(me) returns Boolean from Standard;
+
+    Next(me: in out);
+
+    Value(me) returns Curve2d;
+
+    Orientation(me) returns Orientation from TopAbs;
+    
+end RestrictionTool from Prs3d;
+
+

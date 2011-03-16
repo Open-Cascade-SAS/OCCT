@@ -1,0 +1,21 @@
+-- File:	StepBasic_MassMeasureWithUnit.cdl
+-- Created:	Wed Feb 11 11:24:48 2004
+-- Author:	Sergey KUUL
+--		<skl@doomox>
+---Copyright:	 Matra Datavision 2004
+
+class MassMeasureWithUnit from StepBasic 
+
+inherits MeasureWithUnit from StepBasic 
+
+uses
+
+	Real from Standard, 
+	NamedUnit from StepBasic
+is
+
+	Create returns mutable MassMeasureWithUnit;
+	---Purpose: Returns a MassMeasureWithUnit
+
+
+end MassMeasureWithUnit;

@@ -1,0 +1,34 @@
+-- File:	BRepMesh_BiPoint.cdl
+-- Created:	Thu Sep 18 10:33:17 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class BiPoint from BRepMesh
+
+uses
+    Address from Standard,
+    Real    from Standard,
+    Integer from Standard
+    
+is
+    Create
+    returns BiPoint from BRepMesh; 
+    	---C++: inline
+    
+    Create(X1,Y1,X2,Y2 : Real    from Standard)
+    returns BiPoint from BRepMesh; 
+    
+    Indices(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+    Coordinates(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices     : Integer from Standard[2];
+    myCoordinates : Real    from Standard[6];
+    
+end BiPoint;

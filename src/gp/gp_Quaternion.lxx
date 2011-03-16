@@ -1,0 +1,338 @@
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion()
+: x(0.0), y(0.0), z(0.0), w(1.0) 
+{
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const Standard_Real x, const Standard_Real y, 
+                                     const Standard_Real z, const Standard_Real w)
+: x(x), y(y), z(z), w(w) 
+{
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const gp_Quaternion& theToCopy)
+: x(theToCopy.x), y(theToCopy.y), z(theToCopy.z), w(theToCopy.w) 
+{
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const gp_Vec& theVecFrom, const gp_Vec& theVecTo)
+{
+  SetRotation (theVecFrom, theVecTo);
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const gp_Vec& theVecFrom, const gp_Vec& theVecTo, const gp_Vec& theHelpCrossVec)
+{
+  SetRotation (theVecFrom, theVecTo, theHelpCrossVec);
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const gp_Vec& theAxis, const Standard_Real theAngle)
+{
+  SetVectorAndAngle (theAxis, theAngle);
+}
+
+//=======================================================================
+//function : gp_Quaternion
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion::gp_Quaternion (const gp_Mat& theMat)
+{
+  SetMatrix (theMat);
+}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Set (Standard_Real x, Standard_Real y, 
+                                Standard_Real z, Standard_Real w)
+{
+  this->x = x; 
+  this->y = y; 
+  this->z = z; 
+  this->w = w;
+}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Set (const gp_Quaternion& theQuaternion)
+{
+  x = theQuaternion.x; 
+  y = theQuaternion.y; 
+  z = theQuaternion.z; 
+  w = theQuaternion.w;
+}
+
+//=======================================================================
+//function : X
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::X() const
+{
+    return x;
+}
+
+//=======================================================================
+//function : Y
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::Y() const
+{
+  return y;
+}
+
+//=======================================================================
+//function : Z
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::Z() const
+{
+  return z;
+}
+
+//=======================================================================
+//function : W
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::W() const
+{
+  return w;
+}
+
+//=======================================================================
+//function : SetIdent
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::SetIdent()
+{
+  x = y = z = 0.0; 
+  w = 1.0;
+}
+
+//=======================================================================
+//function : Reverse
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Reverse()
+{
+  x = -x; 
+  y = -y; 
+  z = -z;
+}
+
+//=======================================================================
+//function : Reversed
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Reversed() const
+{
+  return gp_Quaternion (-x, -y, -z, w);
+}
+
+//=======================================================================
+//function : Scale
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Scale (const Standard_Real theScale)
+{
+  x *= theScale; 
+  y *= theScale; 
+  z *= theScale; 
+  w *= theScale;
+}
+
+//=======================================================================
+//function : Scaled
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Scaled (const Standard_Real theScale) const
+{
+  return gp_Quaternion (x * theScale, y * theScale, z * theScale, w * theScale);
+}
+
+//=======================================================================
+//function : SquareNorm
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::SquareNorm() const
+{
+  return x * x + y * y + z * z + w * w;
+}
+
+//=======================================================================
+//function : Norm
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::Norm() const
+{
+  return Sqrt (SquareNorm());
+}
+
+//=======================================================================
+//function : Invert
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Invert()
+{
+  Standard_Real in = 1.0 / SquareNorm();
+  Set (-x * in, -y * in, -z * in, w * in);
+}
+
+//=======================================================================
+//function : Inverted
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Inverted() const
+{
+  Standard_Real in = 1.0 / SquareNorm();
+  return gp_Quaternion (-x * in, -y * in, -z * in, w * in);
+}
+
+//=======================================================================
+//function : Normalized
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Normalized() const
+{
+  gp_Quaternion aNormilizedQ (*this);
+  aNormilizedQ.Normalize();
+  return aNormilizedQ;
+}
+
+//=======================================================================
+//function : Negated
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Negated () const
+{
+  return gp_Quaternion (-x, -y, -z, -w);
+}
+
+//=======================================================================
+//function : Added
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Added (const gp_Quaternion& theQ) const
+{
+  return gp_Quaternion (x + theQ.x, y + theQ.y, z + theQ.z, w + theQ.w);
+}
+
+//=======================================================================
+//function : Subtracted
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Subtracted (const gp_Quaternion& theQ) const
+{
+  return gp_Quaternion (x - theQ.x, y - theQ.y, z - theQ.z, w - theQ.w);
+}
+
+//=======================================================================
+//function : Multiplied
+//purpose  : 
+//=======================================================================
+
+inline gp_Quaternion gp_Quaternion::Multiplied (const gp_Quaternion& theQ) const
+{
+  return gp_Quaternion (w * theQ.x + x * theQ.w + y * theQ.z - z * theQ.y,
+			w * theQ.y + y * theQ.w + z * theQ.x - x * theQ.z,
+			w * theQ.z + z * theQ.w + x * theQ.y - y * theQ.x,
+			w * theQ.w - x * theQ.x - y * theQ.y - z * theQ.z);
+  // 16 multiplications    12 addidtions    0 variables
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Add (const gp_Quaternion& theQ)
+{
+  x += theQ.x; 
+  y += theQ.y; 
+  z += theQ.z; 
+  w += theQ.w;
+}
+
+//=======================================================================
+//function : Subtract
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Subtract (const gp_Quaternion& theQ)
+{
+  x -= theQ.x; 
+  y -= theQ.y; 
+  z -= theQ.z; 
+  w -= theQ.w;
+}
+
+//=======================================================================
+//function : Multiply
+//purpose  : 
+//=======================================================================
+
+inline void gp_Quaternion::Multiply (const gp_Quaternion& theQ)
+{
+  (*this) = Multiplied (theQ);  // have no optimization here
+}
+
+//=======================================================================
+//function : Dot
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real gp_Quaternion::Dot (const gp_Quaternion& theQ) const
+{
+  return x * theQ.x + y * theQ.y + z * theQ.z + w * theQ.w;
+}
+

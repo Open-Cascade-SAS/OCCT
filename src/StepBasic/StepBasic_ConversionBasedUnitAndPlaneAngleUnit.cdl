@@ -1,0 +1,40 @@
+-- File:        ConversionBasedUnitAndPlaneAngleUnit.cdl
+-- Created:     Fri Dec  1 11:11:34 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConversionBasedUnitAndPlaneAngleUnit from StepBasic inherits ConversionBasedUnit from StepBasic 
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    PlaneAngleUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    HAsciiString from TCollection, 
+    MeasureWithUnit from StepBasic
+    
+is
+
+    Create returns mutable ConversionBasedUnitAndPlaneAngleUnit;
+	---Purpose: Returns a ConversionBasedUnitAndPlaneAngleUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
+		       aName      : mutable HAsciiString from TCollection;
+		       aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetPlaneAngleUnit(me: mutable; aPlaneAngleUnit: mutable PlaneAngleUnit);
+    
+    PlaneAngleUnit (me) returns mutable PlaneAngleUnit;
+
+fields
+
+    planeAngleUnit: PlaneAngleUnit from StepBasic;
+
+end ConversionBasedUnitAndPlaneAngleUnit;

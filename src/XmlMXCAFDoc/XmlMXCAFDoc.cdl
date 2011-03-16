@@ -1,0 +1,46 @@
+-- File:      XmlMXCAFDoc.cdl
+-- Created:   11.09.01 09:29:57
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+package XmlMXCAFDoc
+
+        ---Purpose: Storage and Retrieval drivers for modelling attributes.
+        --          Transient attributes are defined in package XCAFDoc
+
+uses TopLoc,
+     XmlMDF,
+     XmlObjMgt,
+     TDF,
+     CDM,
+     TopTools
+
+is
+    class AreaDriver;
+
+    class CentroidDriver;
+
+    class ColorDriver;
+
+    class GraphNodeDriver;
+
+    class LocationDriver;
+
+    class VolumeDriver;
+
+    class DatumDriver;
+    class DimTolDriver;
+    class MaterialDriver;
+
+    class ColorToolDriver;
+    class DocumentToolDriver;
+    class LayerToolDriver;
+    class ShapeToolDriver;
+    class DimTolToolDriver;
+    class MaterialToolDriver;
+
+    AddDrivers (aDriverTable : ADriverTable  from XmlMDF;
+                anMsgDrv     : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <aDriverTable>.
+
+end XmlMXCAFDoc;

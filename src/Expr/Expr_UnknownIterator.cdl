@@ -1,0 +1,47 @@
+-- File:	UnknownIterator.cdl
+-- Created:	Wed Sep 18 09:56:26 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class UnknownIterator from Expr 
+
+	---Purpose: Describes an iterator on NamedUnknowns contained 
+	--          in any GeneralExpression.
+        ---Level : Internal
+
+uses GeneralExpression from Expr,
+    NamedUnknown from Expr,
+    MapOfNamedUnknown from Expr
+
+raises NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create(exp : GeneralExpression)
+    returns UnknownIterator;
+    
+    Perform(me: in out; exp : GeneralExpression)
+    is static private;
+    
+    More(me)
+    returns Boolean
+    is static;
+    
+    Next(me : in out)
+    raises NoMoreObject
+    is static;
+    
+    Value(me)
+    returns NamedUnknown
+    raises NoSuchObject
+    is static;
+
+fields
+
+    myMap : MapOfNamedUnknown;
+    myCurrent : Integer;
+
+end UnknownIterator;

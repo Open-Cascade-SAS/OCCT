@@ -1,0 +1,51 @@
+-- File:	GenRel.cdl
+-- Created:	Tue Aug 18 11:32:35 1992
+-- Author:	Arnaud BOUZY
+--		<adn@bravox>
+---Copyright:	 Matra Datavision 1992
+
+class GenRel from ExprIntrp inherits Generator from ExprIntrp
+
+	---Purpose: Implements an interpreter for equations or system 
+	--          of equations made of expressions of package Expr.
+
+uses GeneralRelation from Expr,
+    AsciiString from TCollection
+
+raises NoSuchObject
+
+is
+
+    Create
+    ---Purpose: Creates an empty generator
+    ---Level: Advanced
+    returns mutable GenRel is private;
+
+    Create( myclass ) returns GenRel;
+    
+    Process(me : mutable; str : AsciiString)
+    ---Purpose: Processes given string.
+    ---Level: Advanced 
+    is static;
+
+    IsDone(me)
+    ---Purpose: Returns false if any syntax error has occurred during 
+    --          process. 
+    ---Level: Advanced 
+    returns Boolean
+    is static;
+	    
+    Relation(me)
+    ---Purpose: Returns relation generated. Raises an exception if 
+    --          IsDone answers false.
+    ---Level: Advanced 
+    returns mutable GeneralRelation
+    raises NoSuchObject
+    is static;
+    
+fields
+
+    done : Boolean;
+    myRelation : GeneralRelation;
+    
+end GenRel;

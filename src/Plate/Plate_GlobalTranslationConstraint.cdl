@@ -1,0 +1,36 @@
+-- File:	Plate_GlobalTranslationConstraint.cdl
+-- Created:	Thu Mar 26 13:13:17 1998
+-- Author:	# Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+class GlobalTranslationConstraint from Plate
+---Purpose: force a set of UV points to translate without deformation
+--          
+--          
+uses 
+ XY from gp, 
+ SequenceOfXY from  TColgp,
+ LinearXYZConstraint from Plate
+
+is
+    Create(SOfXY  :  SequenceOfXY) returns GlobalTranslationConstraint;
+    --  SofXY is  a set of UV parametres  for which The Plate function
+    --  will give the same value 
+    --  
+    --  The Sequence length have to be at least 2.
+
+      
+    --      
+    -- Accessors :
+    LXYZC(me) returns LinearXYZConstraint;
+    ---C++: inline 
+    ---C++: return const &
+
+
+fields
+    myLXYZC : LinearXYZConstraint;
+    
+end;
+
+

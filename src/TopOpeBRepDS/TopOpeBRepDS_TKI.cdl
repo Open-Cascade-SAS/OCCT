@@ -1,0 +1,76 @@
+-- File:	TopOpeBRepDS_TKI.cdl
+-- Created:	Wed Sep 17 11:00:34 1997
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class TKI from TopOpeBRepDS
+
+uses
+
+    Kind from TopOpeBRepDS,
+    HArray1OfDataMapOfIntegerListOfInterference from TopOpeBRepDS,
+    DataMapIteratorOfDataMapOfIntegerListOfInterference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS,
+    AsciiString from TCollection
+    
+is
+
+    Create returns TKI;
+    Reset(me:in out) is private;
+    Clear(me:in out);
+    FillOnGeometry(me:in out;L:ListOfInterference);
+    FillOnSupport(me:in out;L:ListOfInterference);
+    IsBound(me;K:Kind;G:Integer) returns Boolean;
+    Interferences(me;K:Kind;G:Integer) ---C++: return const &
+    returns ListOfInterference from TopOpeBRepDS;
+    ChangeInterferences(me:in out;K:Kind;G:Integer) ---C++: return &
+    returns ListOfInterference from TopOpeBRepDS;
+    HasInterferences(me;K:Kind;G:Integer) returns Boolean;
+    Add(me:in out;K:Kind;G:Integer);
+    Add(me:in out;K:Kind;G:Integer;HI:Interference from TopOpeBRepDS);
+    DumpTKI(me;s1:AsciiString="";s2:AsciiString="");
+    DumpTKI(me;K:Kind;s1:AsciiString="";s2:AsciiString = "");
+    DumpTKI(me;K:Kind;G:Integer;s1:AsciiString="";s2:AsciiString="");
+    DumpTKI(me;K:Kind;G:Integer;L:ListOfInterference;
+    	       s1:AsciiString="";s2:AsciiString="");
+    DumpTKIIterator(me:in out;s1:AsciiString="";s2:AsciiString="");
+
+    -- iteration on added K,G
+    Init(me:in out);
+    More(me) returns Boolean;
+    Next(me:in out);
+    Value(me;K:out Kind;G:out Integer) ---C++: return const &
+    returns ListOfInterference;
+    ChangeValue(me:in out;K:out Kind;G:out Integer) ---C++: return &
+    returns ListOfInterference;
+
+    -- private
+    MoreTI(me) returns Boolean is private;
+    NextTI(me:in out) is private;
+    MoreITM(me) returns Boolean is private;
+    FindITM(me:in out) is private;
+    NextITM(me:in out) is private;
+    Find(me:in out) is private;
+    KindToTableIndex(me;K:Kind) returns Integer is private;
+    TableIndexToKind(me;TI:Integer) returns Kind is private;
+    IsValidTI(me;TI:Integer) returns Boolean is private;
+    IsValidK(me;K:Kind) returns Boolean is private;
+    IsValidG(me;G:Integer) returns Boolean is private;
+    IsValidKG(me;K:Kind;G:Integer) returns Boolean is private;
+
+fields 
+
+    mydelta : Integer;
+    myT : HArray1OfDataMapOfIntegerListOfInterference;
+    myTI : Integer;
+    myG : Integer;
+    myITM : DataMapIteratorOfDataMapOfIntegerListOfInterference;
+    myK : Kind;
+    myEmptyLOI : ListOfInterference from TopOpeBRepDS; 
+    myDummyAsciiString : AsciiString from TCollection; -- bug WOK
+    
+end TKI from TopOpeBRepDS;

@@ -1,0 +1,108 @@
+-- File:	TopOpeBRepDS_Transition.cdl
+-- Created:	Thu May 26 17:35:11 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+class Transition from TopOpeBRepDS 
+
+uses
+
+    State from TopAbs,
+    Orientation from TopAbs,
+    ShapeEnum from TopAbs,
+    OStream from Standard
+
+is
+
+    Create returns Transition from TopOpeBRepDS;
+
+    Create(StateBefore,StateAfter : State from TopAbs;
+    	   ShapeBefore : ShapeEnum from TopAbs = TopAbs_FACE;
+    	   ShapeAfter  : ShapeEnum from TopAbs = TopAbs_FACE) 
+    returns Transition from TopOpeBRepDS;
+
+    Create(O : Orientation from TopAbs)
+    returns Transition from TopOpeBRepDS;
+
+    Set(me : in out; 
+    	StateBefore, StateAfter : State from TopAbs;
+	ShapeBefore : ShapeEnum from TopAbs = TopAbs_FACE;
+    	ShapeAfter  : ShapeEnum from TopAbs = TopAbs_FACE);
+
+    StateBefore(me : in out; S : State from TopAbs);
+    StateAfter(me : in out; S : State from TopAbs);
+    ShapeBefore(me : in out; SE : ShapeEnum from TopAbs);
+    ShapeAfter(me : in out; SE : ShapeEnum from TopAbs);
+    Before(me : in out; S : State from TopAbs;ShapeBefore : ShapeEnum from TopAbs = TopAbs_FACE);
+    After(me : in out; S : State from TopAbs;ShapeAfter : ShapeEnum from TopAbs = TopAbs_FACE);
+
+    Index(me : in out; I : Integer);
+    IndexBefore(me : in out; I : Integer);
+    IndexAfter(me : in out; I : Integer);
+
+    Before(me) returns State from TopAbs;
+    ONBefore(me) returns ShapeEnum from TopAbs;
+    After(me) returns State from TopAbs;
+    ONAfter(me) returns ShapeEnum from TopAbs;
+    ShapeBefore(me) returns ShapeEnum from TopAbs;
+    ShapeAfter(me) returns ShapeEnum from TopAbs;
+    Index(me) returns Integer; -- index of ShapeBefore (may be null)
+    IndexBefore(me) returns Integer; -- index of ShapeBefore (may be null)
+    IndexAfter(me) returns Integer;  -- index of ShapeAfter (may be null)
+
+    Set(me : in out; O : Orientation from TopAbs);
+    ---Purpose: set the transition corresponding to orientation <O>
+    --
+    --       O       Before  After
+    --       
+    --   FORWARD       OUT    IN 
+    --   REVERSED      IN     OUT
+    --   INTERNAL      IN     IN
+    --   EXTERNAL      OUT    OUT
+    -- 
+
+    Orientation(me; S : State from TopAbs;
+    	    	    T : ShapeEnum from TopAbs = TopAbs_FACE) 
+
+    ---Purpose: returns the orientation corresponding to state <S> 
+    -- 
+    -- Before and After not equal TopAbs_ON :
+    -- --------------------------------------                   
+    -- Before  After   Computed orientation
+    -- 
+    --  S      not S   REVERSED (we leave state S)
+    --  not S  S       FORWARD  (we enter state S)
+    --  S      S       INTERNAL (we stay in state S)
+    --  not S  not S   EXTERNAL (we stay outside state S)
+    returns Orientation from TopAbs;
+
+    OrientationON(me; S : State from TopAbs;
+    	    	      T : ShapeEnum from TopAbs) 
+
+    ---Purpose: returns the orientation corresponding to state <S> 
+    --          (if one at least of the internal states is ON)
+    returns Orientation from TopAbs
+    is static private;
+
+    Complement(me) returns Transition from TopOpeBRepDS;
+
+    IsUnknown(me) returns Boolean from Standard;
+    ---Purpose: returns True if both states are UNKNOWN
+    
+    DumpA(me; OS : in out OStream from Standard) returns OStream; 
+    ---C++: return &
+
+    DumpB(me; OS : in out OStream from Standard) returns OStream;
+    ---C++: return &
+
+    Dump(me; OS : in out OStream from Standard) returns OStream;    
+    ---C++: return &
+        
+fields
+
+    myStateBefore, myStateAfter : State from TopAbs;
+    myShapeBefore, myShapeAfter : ShapeEnum from TopAbs;
+    myIndexBefore, myIndexAfter : Integer from Standard;
+    
+end Transition from TopOpeBRepDS;

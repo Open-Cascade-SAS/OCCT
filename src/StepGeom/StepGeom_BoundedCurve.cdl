@@ -1,0 +1,20 @@
+-- File:        BoundedCurve.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BoundedCurve from StepGeom 
+
+inherits Curve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable BoundedCurve;
+	---Purpose: Returns a BoundedCurve
+
+
+end BoundedCurve;

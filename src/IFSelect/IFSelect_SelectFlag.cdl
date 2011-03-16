@@ -1,0 +1,49 @@
+-- File:	IFSelect_SelectFlag.cdl
+-- Created:	Tue Sep  5 16:56:11 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class SelectFlag  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectFlag queries a flag noted in the bitmap of the Graph.
+    --           The Flag is designated by its Name. Flag Names are defined
+    --           by Work Session and, as necessary, other functional objects
+    --           
+    --           WorkSession from IFSelect defines flag "Incorrect"
+    --           Objects which control application running define some others
+
+uses AsciiString from TCollection, InterfaceModel, Graph, EntityIterator
+
+is
+
+    Create (flagname : CString) returns mutable SelectFlag;
+    ---Purpose : Creates a Select Flag, to query a flag designated by its name
+
+    FlagName (me) returns CString;
+    ---Purpose : Returns the name of the flag
+
+    RootResult (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns the list of selected entities. It is redefined to
+    --           work on the graph itself (not queried by sort)
+    --           
+    --           An entity is selected if its flag is True on Direct mode,
+    --           False on Reversed mode
+    --           
+    --           If flag does not exist for the given name, returns an empty
+    --           result, whatever the Direct/Reversed sense
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+        returns Boolean;
+    ---Purpose : Returns always False because RootResult has done the work
+
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium, includes the flag name
+
+fields
+
+    thename : AsciiString from TCollection;
+
+end SelectFlag;

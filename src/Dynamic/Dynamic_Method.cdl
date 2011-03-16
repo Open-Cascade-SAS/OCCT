@@ -1,0 +1,113 @@
+-- File:	Dynamic_Method.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class Method from Dynamic
+
+inherits
+
+    TShared from MMgt
+
+	---Purpose: This class  is  a  root class  available   for the
+	--          definition of  methods and  also  for  using  them
+	--          throughout method  instances. The logical name of
+	--          the method and   the signature as  a collection of
+	--          variables is stored in it.
+   
+uses
+
+    CString from Standard,
+    Boolean from Standard,
+    OStream from Standard,
+    ModeEnum     from Dynamic,
+    Variable     from Dynamic,
+    VariableNode from Dynamic,
+    Parameter    from Dynamic,
+    AsciiString  from TCollection
+
+is
+
+    Initialize;
+    
+    ---Level: Internal 
+    
+    ---Purpose: It is the constructor of this deferred class
+    
+    Type(me) returns AsciiString from TCollection
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the type  of object which is  the  name of the
+    --          function definition.
+    
+    is deferred;
+    
+    FirstVariableNode(me) returns VariableNode from Dynamic
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the  first variable node   of the Method which
+    --          contains a variable.
+    
+    is static;
+    
+    Variable(me ; avariable : CString from Standard) returns Boolean from Standard
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns true if there is a variable with <avariable> 
+    --          as name, false otherwise.
+    
+    is static;
+    
+    Variable(me : mutable ; avariable : Variable from Dynamic)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Adds another  variable <avariable>  to the sequence of
+    --          variable definitions.
+    
+    is static;
+    
+    Value(me ; aname      : CString from Standard
+    	     ; aparameter : out any Parameter from Dynamic 
+    	     ; amode      : out ModeEnum from Dynamic) returns Boolean from Standard
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns  True,   if there  is   a variable <avariable>
+    --          previously  stored in the  instance  <me> and there is
+    --          the corresponding parameter    value   in the   output
+    --          argument <aparameter>, False otherwise.
+    
+    is static;
+    
+    Value(me ; aname     : CString from Standard
+    	     ; avariable : out any Variable from Dynamic) returns Boolean from Standard
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns True, if  there  is a variable   named <aname>
+    --          previously stored in the  instance of <me> and returns
+    --          the   corresponding variable  in  the output  argument
+    --          <avariable>, False otherwise.
+    
+    is static;
+    
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+    is virtual;
+    
+fields
+
+    thefirstvariablenode : VariableNode from Dynamic;
+
+end Method;

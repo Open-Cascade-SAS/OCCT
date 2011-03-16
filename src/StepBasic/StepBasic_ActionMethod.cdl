@@ -1,0 +1,55 @@
+-- File:	StepBasic_ActionMethod.cdl
+-- Created:	Fri Nov 26 16:26:29 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ActionMethod from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ActionMethod
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns ActionMethod from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aConsequence: HAsciiString from TCollection;
+                       aPurpose: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    Consequence (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Consequence
+    SetConsequence (me: mutable; Consequence: HAsciiString from TCollection);
+	---Purpose: Set field Consequence
+
+    Purpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Purpose
+    SetPurpose (me: mutable; Purpose: HAsciiString from TCollection);
+	---Purpose: Set field Purpose
+
+fields
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theConsequence: HAsciiString from TCollection;
+    thePurpose: HAsciiString from TCollection;
+    defDescription: Boolean; -- flag "is Description defined"
+
+end ActionMethod;

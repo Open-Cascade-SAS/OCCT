@@ -1,0 +1,32 @@
+// File:	AIS_MidPointRelation.lxx
+// Created:	Fri Oct 20 16:00:58 2000
+// Author:	Julia DOROVSKIKH
+//		<jfa@androx.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : SetTool
+//purpose  : 
+//=======================================================================
+inline void AIS_MidPointRelation::SetTool(const TopoDS_Shape& aMidPointTool)
+{
+  myTool = aMidPointTool;
+}
+
+//=======================================================================
+//function : GetTool
+//purpose  : 
+//=======================================================================
+inline const TopoDS_Shape& AIS_MidPointRelation::GetTool() const 
+{
+  return myTool;
+}
+
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_MidPointRelation::IsMovable() const 
+{
+  return Standard_True;
+}

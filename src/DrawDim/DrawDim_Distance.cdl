@@ -1,0 +1,39 @@
+-- File:	DrawDim_Distance.cdl
+-- Created:	Mon Apr 21 13:30:11 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+class Distance from DrawDim inherits Dimension from DrawDim
+
+	---Purpose: 
+
+uses Face    from TopoDS,
+     Display from Draw
+
+is
+
+    Create (plane1 : Face from TopoDS; plane2 : Face from TopoDS)
+    returns mutable Distance from DrawDim;
+
+    Create (plane1 : Face from TopoDS)
+    returns mutable Distance from DrawDim;
+    
+    Plane1 (me) returns Face from TopoDS;
+	---C++: return const&
+
+    Plane1 (me : mutable; face : Face from TopoDS);    
+
+    Plane2 (me) returns Face from TopoDS;
+	---C++: return const&
+
+    Plane2 (me : mutable; face : Face from TopoDS);
+    
+    DrawOn (me; dis : in out Display);
+    
+fields
+
+    myPlane1 : Face  from TopoDS;
+    myPlane2 : Face  from TopoDS;
+    
+end Distance;

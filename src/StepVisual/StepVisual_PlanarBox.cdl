@@ -1,0 +1,42 @@
+-- File:        PlanarBox.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PlanarBox from StepVisual 
+
+inherits PlanarExtent from StepVisual 
+
+uses
+
+	Axis2Placement from StepGeom, 
+	HAsciiString from TCollection, 
+	Real from Standard
+is
+
+	Create returns mutable PlanarBox;
+	---Purpose: Returns a PlanarBox
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSizeInX : Real from Standard;
+	      aSizeInY : Real from Standard) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSizeInX : Real from Standard;
+	      aSizeInY : Real from Standard;
+	      aPlacement : Axis2Placement from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPlacement(me : mutable; aPlacement : Axis2Placement);
+	Placement (me) returns Axis2Placement;
+
+fields
+
+	placement : Axis2Placement from StepGeom; -- a SelectType
+
+end PlanarBox;

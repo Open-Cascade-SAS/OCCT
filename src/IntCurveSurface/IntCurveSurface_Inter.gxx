@@ -1,0 +1,2421 @@
+// File:	IntCurveSurface_Inter.gxx
+// Created:	Fri  Apr 9 15:05:43 1993
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+#define  TOLTANGENCY         0.00000001
+#define  TOLERANCE_ANGULAIRE 0.00000001
+#define  TOLERANCE           0.00000001
+
+#define NBSAMPLESONCIRCLE  32
+#define NBSAMPLESONELLIPSE 32
+#define NBSAMPLESONPARAB   16
+#define NBSAMPLESONHYPR    32
+
+#include <ElSLib.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <Intf_TangentZone.hxx>
+#include <Intf_Tool.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <IntCurveSurface_IntersectionSegment.hxx>
+#include <IntAna_IntConicQuad.hxx>
+#include <IntAna_Quadric.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
+#include <Precision.hxx>
+#include <IntAna_IntLinTorus.hxx>
+
+#include <GeomAbs_Shape.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Lin.hxx>
+#include <GProp_PEquation.hxx>
+#include <GProp_PGProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <Extrema_ExtElC.hxx>
+#include <Extrema_POnCurv.hxx>
+
+#if 0
+//-- jgv patch (from)
+#include <Extrema_ExtPS.hxx>
+//-- jgv patch (to)
+#endif
+
+#include <ProjLib_Plane.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <gp_Lin2d.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <gp_Parab2d.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <gp_Hypr2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+
+#if 0
+//-- jgv patch (from)
+#include <BndLib_Add3dCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+//-- jgv patch (to)
+#endif
+
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <ElCLib.hxx>
+
+//================================================================================
+static void EstLimForInfExtr(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Boolean IsOffSurf,
+			     const Standard_Integer nbsu, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection);
+
+//================================================================================
+static void EstLimForInfRevl(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection);
+
+//================================================================================
+static void EstLimForInfOffs(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Integer nbsu, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection);
+
+//================================================================================
+static void EstLimForInfSurf(Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new);
+
+//================================================================================
+static void SectionPointToParameters(const Intf_SectionPoint& Sp,
+				     const IntCurveSurface_ThePolyhedron& Surf,
+				     const IntCurveSurface_ThePolygon&    Curv,
+				     Standard_Real& u,
+				     Standard_Real& v,
+				     Standard_Real& w);
+//================================================================================
+static void IntCurveSurface_ComputeTransitions(const TheCurve& curve,
+					       const Standard_Real w,
+					       IntCurveSurface_TransitionOnCurve&   TransOnCurve,
+					       const TheSurface& surface,
+					       const Standard_Real u,
+					       const Standard_Real v);
+//================================================================================
+static void IntCurveSurface_ComputeParamsOnQuadric(const TheSurface& surface,
+						   const gp_Pnt& P,
+						   Standard_Real& u,
+						   Standard_Real& v);
+//================================================================================
+#if 0
+static Handle(Geom_Curve) GetCurve(const Handle(Adaptor3d_HCurve) AdCurve);
+//================================================================================
+static Handle(Geom_Surface) GetSurface(const Handle(Adaptor3d_HSurface) AdSurface);
+#endif
+//================================================================================
+//==
+IntCurveSurface_Inter::IntCurveSurface_Inter() { 
+}
+
+static Standard_Boolean DoTrim(const TheCurve& curve,
+                               const TheSurface& surface)
+{
+  Standard_Boolean isAnaCurve = Standard_False, isAnaSurface = Standard_False;
+  GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
+  switch (CurveType) {
+  case GeomAbs_Line:
+  case GeomAbs_Circle:
+  case GeomAbs_Ellipse:
+  case GeomAbs_Hyperbola:
+  case GeomAbs_Parabola: isAnaCurve = Standard_True; break;
+  default: break;
+  }
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch (SurfaceType) {
+  case GeomAbs_Plane:
+  case GeomAbs_Cylinder:
+  case GeomAbs_Cone:
+  case GeomAbs_Sphere:
+  case GeomAbs_Torus: isAnaSurface = Standard_True; break;
+  default: break;
+  }
+  Standard_Boolean result = (isAnaCurve && isAnaSurface) ? Standard_False : Standard_True;
+  if(result) {
+    Standard_Boolean isUClosed = (TheSurfaceTool::IsUClosed(surface) || TheSurfaceTool::IsUPeriodic(surface));
+    Standard_Boolean isVClosed = (TheSurfaceTool::IsVClosed(surface) || TheSurfaceTool::IsVPeriodic(surface));
+    if(isUClosed && isVClosed)
+      result = Standard_False;
+  }
+  return result;
+}
+
+// modified by NIZHNY-MKK  Tue Jul 26 14:41:59 2005
+// static void DoSurface(const TheSurface&   surface,
+void IntCurveSurface_Inter::DoSurface(const TheSurface&   surface,
+				      const Standard_Real u0,
+				      const Standard_Real u1,
+				      const Standard_Real v0,
+				      const Standard_Real v1,
+				      TColgp_Array2OfPnt& pntsOnSurface,
+				      Bnd_Box&            boxSurface,
+				      Standard_Real&      gap)
+{
+  Standard_Integer iU = 0, iV = 0;
+  Standard_Real U = 0., V = 0;
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:45 2005
+//   Standard_Real dU = fabs(u1-u0)/50., dV = fabs(v1-v0)/50.;
+  Standard_Real dU = (u1-u0)/50., dV = (v1-v0)/50.;
+  gp_Pnt aPnt;
+
+  for(iU = 0; iU < 50; iU++) {
+    
+    if(iU == 0)
+      U = u0;
+    else if(iU == 49)
+      U = u1;
+    else 
+      U = u0 + dU * ((Standard_Real)iU);
+    
+    for(iV = 0; iV < 50; iV++) {
+
+      if(iV == 0)
+        V = v0;
+      else if(iV == 49)
+        V = v1;
+      else
+        V = v0 + dV * ((Standard_Real)iV);
+
+      TheSurfaceTool::D0(surface,U,V,aPnt);
+      boxSurface.Add(aPnt);
+      pntsOnSurface.SetValue(iU+1,iV+1,aPnt);
+    }
+  }
+  Standard_Real Ures = TheSurfaceTool::UResolution(surface,dU);
+  Standard_Real Vres = TheSurfaceTool::VResolution(surface,dV);
+  gap = Max(Ures,Vres);
+}
+
+static void DoCurve(const TheCurve& curve,
+                    Bnd_Box&        boxCurve)
+{
+  Standard_Real CF = TheCurveTool::FirstParameter(curve);
+  Standard_Real CL = TheCurveTool::LastParameter(curve);
+  Standard_Real C = 0., dC = fabs(CL-CF)/50.;
+  Standard_Integer iC = 0;
+  gp_Pnt aPnt;
+
+  for(iC = 0; iC < 50; iC++) {
+    if(iC == 0)
+      C = CF;
+    else if(iC == 49)
+      C = CL;
+    else
+      C = CF + dC *((Standard_Real)iC);
+      
+    TheCurveTool::D0(curve,C,aPnt);
+    boxCurve.Add(aPnt);
+  }
+}
+static void DoCommon(TColStd_Array1OfReal& Coords,
+                     Standard_Real&        Cmin,
+                     Standard_Real&        Cmax)
+{
+  Standard_Integer i = 0, j = 0;
+  for(i = 1; i <= 4; i++) {
+    for(j = i+1; j <= 4; j++) {
+      if(Coords(j) > Coords(i)) {
+        Standard_Real c = Coords(i);
+        Coords.SetValue(i,Coords(j));
+        Coords.SetValue(j,c);
+      }
+    }
+  }
+  Cmax = Coords(2);
+  Cmin = Coords(3);
+}
+
+static void DoCommonBox(const Bnd_Box&        boxSurface,
+                        const Bnd_Box&        boxCurve,
+                        TColStd_Array1OfReal& X,
+                        TColStd_Array1OfReal& Y,
+                        TColStd_Array1OfReal& Z)
+{
+  Standard_Real SBXmin = 0., SBYmin = 0., SBZmin = 0.;
+  Standard_Real SBXmax = 0., SBYmax = 0., SBZmax = 0.;
+  boxSurface.Get(SBXmin,SBYmin,SBZmin,SBXmax,SBYmax,SBZmax);
+
+  Standard_Real CBXmin = 0., CBYmin = 0., CBZmin = 0.;
+  Standard_Real CBXmax = 0., CBYmax = 0., CBZmax = 0.;
+  boxCurve.Get(CBXmin,CBYmin,CBZmin,CBXmax,CBYmax,CBZmax);
+
+  TColStd_Array1OfReal Coord(1,4);
+
+  Coord(1) = SBXmin; Coord(2) = SBXmax; Coord(3) = CBXmin; Coord(4) = CBXmax;
+  Standard_Real CXmin = SBXmin, CXmax = SBXmax;
+  DoCommon(Coord,CXmin,CXmax);
+  
+  Coord(1) = SBYmin; Coord(2) = SBYmax; Coord(3) = CBYmin; Coord(4) = CBYmax;
+  Standard_Real CYmin = SBYmin, CYmax = SBYmax;
+  DoCommon(Coord,CYmin,CYmax);
+  
+  Coord(1) = SBZmin; Coord(2) = SBZmax; Coord(3) = CBZmin; Coord(4) = CBZmax;
+  Standard_Real CZmin = SBZmin, CZmax = SBZmax;
+  DoCommon(Coord,CZmin,CZmax);
+
+  X.SetValue(1,CXmin); X.SetValue(2,CXmax);
+  Y.SetValue(1,CYmin); Y.SetValue(2,CYmax);
+  Z.SetValue(1,CZmin); Z.SetValue(2,CZmax);
+}
+
+// modified by NIZHNY-MKK  Tue Jul 26 14:41:42 2005
+void IntCurveSurface_Inter::DoNewBounds(
+// static void DoNewBounds(
+					const TheSurface&           surface,
+					const Standard_Real         u0,
+					const Standard_Real         u1,
+					const Standard_Real         v0,
+					const Standard_Real         v1,
+					const TColgp_Array2OfPnt&   pntsOnSurface,
+					const TColStd_Array1OfReal& X,
+					const TColStd_Array1OfReal& Y,
+					const TColStd_Array1OfReal& Z,
+					TColStd_Array1OfReal&       Bounds)
+{
+  Bounds.SetValue(1,u0);
+  Bounds.SetValue(2,u1);
+  Bounds.SetValue(3,v0);
+  Bounds.SetValue(4,v1);
+
+  Standard_Boolean isUClosed = (TheSurfaceTool::IsUClosed(surface) || TheSurfaceTool::IsUPeriodic(surface));
+  Standard_Boolean isVClosed = (TheSurfaceTool::IsVClosed(surface) || TheSurfaceTool::IsVPeriodic(surface));
+  Standard_Boolean checkU = (isUClosed) ? Standard_False : Standard_True;
+  Standard_Boolean checkV = (isVClosed) ? Standard_False : Standard_True;
+
+  Standard_Integer i = 0, j = 0, k = 0, iU = 0, iV = 0;
+  Standard_Integer iUmin = 50, iVmin = 50, iUmax = 1, iVmax = 1;
+
+  for(i = 1; i <= 2; i++) {
+    for(j = 1; j <= 2; j++) {
+      for(k = 1; k <= 2; k++) {
+        gp_Pnt aPoint(X(i),Y(j),Z(k));
+        Standard_Real DistMin = 1.e+100;
+        Standard_Integer diU = 0, diV = 0;
+        for(iU = 1; iU <= 50; iU++) {
+          for(iV = 1; iV <= 50; iV++) {
+            const gp_Pnt aP = pntsOnSurface.Value(iU,iV);
+            Standard_Real dist = aP.SquareDistance(aPoint);
+            if(dist < DistMin) {
+              DistMin = dist;
+              diU = iU;
+              diV = iV;
+            }
+          }
+        }
+        if(diU > 0 && diU < iUmin) iUmin = diU;
+        if(diU > 0 && diU > iUmax) iUmax = diU;
+        if(diV > 0 && diV < iVmin) iVmin = diV;
+        if(diV > 0 && diV > iVmax) iVmax = diV;
+      }
+    }
+  }
+
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:43 2005
+//   Standard_Real dU = fabs(u1-u0)/50., dV = fabs(v1-v0)/50.;
+  Standard_Real dU = (u1-u0)/50., dV = (v1-v0)/50.;
+
+  Standard_Real USmin = u0 + dU * ((Standard_Real)(iUmin - 1));
+  Standard_Real USmax = u0 + dU * ((Standard_Real)(iUmax - 1));
+  Standard_Real VSmin = v0 + dV * ((Standard_Real)(iVmin - 1));
+  Standard_Real VSmax = v0 + dV * ((Standard_Real)(iVmax - 1));
+
+  if(USmin > USmax) {
+    Standard_Real tmp = USmax;
+    USmax = USmin;
+    USmin = tmp;
+  }
+  if(VSmin > VSmax) {
+    Standard_Real tmp = VSmax;
+    VSmax = VSmin;
+    VSmin = tmp;
+  }
+
+  USmin -= 1.5*dU;
+  if(USmin < u0) USmin = u0;
+  USmax += 1.5*dU;
+  if(USmax > u1) USmax = u1;
+  VSmin -= 1.5*dV;
+  if(VSmin < v0) VSmin = v0;
+  VSmax += 1.5*dV;
+  if(VSmax > v1) VSmax = v1;
+
+  if(checkU) {
+    Bounds.SetValue(1,USmin);
+    Bounds.SetValue(2,USmax);
+  }
+  if(checkV) {
+    Bounds.SetValue(3,VSmin);
+    Bounds.SetValue(4,VSmax);
+  }
+}
+
+//================================================================================
+//==          P e r f o r m     g e n e r a l   
+//==  
+//==          Decompose la surface si besoin est 
+//================================================================================
+void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
+				    const TheSurface& surface) {
+  ResetFields();
+  done = Standard_True;
+  Standard_Integer NbUOnS = TheSurfaceTool::NbUIntervals(surface,GeomAbs_C2);
+  Standard_Integer NbVOnS = TheSurfaceTool::NbVIntervals(surface,GeomAbs_C2);
+#ifdef DEB
+  Standard_Integer NbOnC  = TheCurveTool::NbIntervals(curve,GeomAbs_C2);
+#else
+  TheCurveTool::NbIntervals(curve,GeomAbs_C2);
+#endif
+  Standard_Real U0,U1,V0,V1; 
+  
+  if(NbUOnS > 1) { 
+    TColStd_Array1OfReal TabU(1,NbUOnS+1);
+    TheSurfaceTool::UIntervals(surface,TabU,GeomAbs_C2);
+    for(Standard_Integer iu = 1;iu <= NbUOnS; iu++) {
+      U0 = TabU.Value(iu);
+      U1 = TabU.Value(iu+1);
+      if(NbVOnS > 1) { 
+	TColStd_Array1OfReal TabV(1,NbVOnS+1);
+	TheSurfaceTool::VIntervals(surface,TabV,GeomAbs_C2);
+	for(Standard_Integer iv = 1;iv <= NbVOnS; iv++) {
+	  V0 = TabV.Value(iv);
+	  V1 = TabV.Value(iv+1);
+	  Perform(curve,surface,U0,V0,U1,V1);
+	}
+      }
+      else { //------ composite en U     non composite en V
+	V0 = TheSurfaceTool::FirstVParameter(surface);
+	V1 = TheSurfaceTool::LastVParameter(surface);
+	Perform(curve,surface,U0,V0,U1,V1);
+      }
+    }
+  }
+  else if(NbVOnS > 1) { //---------- non composite en U  composite en V
+    U0 = TheSurfaceTool::FirstUParameter(surface);
+    U1 = TheSurfaceTool::LastUParameter(surface);   
+    TColStd_Array1OfReal TabV(1,NbVOnS+1);
+    TheSurfaceTool::VIntervals(surface,TabV,GeomAbs_C2);
+    for(Standard_Integer iv = 1;iv <= NbVOnS; iv++) {
+      V0 = TabV.Value(iv);
+      V1 = TabV.Value(iv+1);
+      Perform(curve,surface,U0,V0,U1,V1);
+    }
+  } 
+  else {
+    V0 = TheSurfaceTool::FirstVParameter(surface);
+    V1 = TheSurfaceTool::LastVParameter(surface);
+    U0 = TheSurfaceTool::FirstUParameter(surface);
+    U1 = TheSurfaceTool::LastUParameter(surface); 
+
+    //-- ofv: begin
+    Standard_Boolean doTrim = DoTrim(curve,surface);
+    if(doTrim) {
+      TColgp_Array2OfPnt aPS(1,50,1,50);
+      Bnd_Box SB;
+      Standard_Real g = 1.e-7;
+      DoSurface(surface,U0,U1,V0,V1,aPS,SB,g);
+      Bnd_Box CB;
+      DoCurve(curve,CB);
+      CB.Enlarge(g);
+      TColStd_Array1OfReal X(1,2), Y(1,2), Z(1,2);
+      DoCommonBox(SB,CB,X,Y,Z);
+      TColStd_Array1OfReal B(1,4);
+      DoNewBounds(surface,U0,U1,V0,V1,aPS,X,Y,Z,B);
+      U0 = B(1); U1 = B(2); V0 = B(3); V1 = B(4);
+    }
+    //-- ofv: end
+
+#if 0
+    //-- jgv patch (from)
+    //Computing of local bounds
+    Standard_Real LocalU0 = U0, LocalU1 = U1, LocalV0 = V0, LocalV1 = V1;
+    Standard_Real Umin = RealLast(), Vmin = RealLast(), Umax = RealFirst(), Vmax = RealFirst();
+    Bnd_Box CurveBox;
+    Standard_Integer i, j, k;
+    //Making GeomAdaptor_Curve
+    Standard_Real f = TheCurveTool::FirstParameter(curve);
+    Standard_Real l = TheCurveTool::LastParameter(curve);
+    GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
+    Handle(Geom_Curve) theCurve;
+    switch (CurveType)
+      {
+      case GeomAbs_Line:
+	theCurve = new Geom_Line( TheCurveTool::Line(curve) );
+	break;
+      case GeomAbs_Circle:
+	theCurve = new Geom_Circle( TheCurveTool::Circle(curve) );
+	break;
+      case GeomAbs_Ellipse:
+	theCurve = new Geom_Ellipse( TheCurveTool::Ellipse(curve) );
+	break;
+      case GeomAbs_Hyperbola:
+	theCurve = new Geom_Hyperbola( TheCurveTool::Hyperbola(curve) );
+	break;
+      case GeomAbs_Parabola:
+	theCurve = new Geom_Parabola( TheCurveTool::Parabola(curve) );
+	break;
+      case GeomAbs_BezierCurve:
+	theCurve = TheCurveTool::Bezier(curve);
+	break;
+      case GeomAbs_BSplineCurve:
+	theCurve = TheCurveTool::BSpline(curve);
+	break;
+      }
+    if (!theCurve.IsNull())
+      {
+	GeomAdaptor_Curve GACurve( theCurve, f, l );
+	BndLib_Add3dCurve::Add( GACurve, Precision::Confusion(), CurveBox );
+      }
+    else
+      {
+	Standard_Integer nbp = TheCurveTool::NbSamples(curve,f,l);
+	Standard_Real delta = (f-l)/nbp;
+	for (i = 0; i <= nbp; i++)
+	  {
+	    gp_Pnt aPnt = TheCurveTool::Value(curve, f + i*delta);
+	    CurveBox.Add(aPnt);
+	  }
+      }
+    Standard_Real X[2], Y[2], Z[2];
+    CurveBox.Get( X[0], Y[0], Z[0], X[1], Y[1], Z[1] );
+    Standard_Real Ures = TheSurfaceTool::UResolution(surface, Precision::Confusion());
+    Standard_Real Vres = TheSurfaceTool::VResolution(surface, Precision::Confusion());
+    //Making GeomAdaptor_Surface
+    GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+    Handle(Geom_Surface) theSurface;
+    switch (SurfaceType)
+      {
+      case GeomAbs_Plane:
+	theSurface = new Geom_Plane( TheSurfaceTool::Plane(surface) );
+	break;
+      case GeomAbs_Cylinder:
+	theSurface = new Geom_CylindricalSurface( TheSurfaceTool::Cylinder(surface) );
+	break;
+      case GeomAbs_Cone:
+	theSurface = new Geom_ConicalSurface( TheSurfaceTool::Cone(surface) );
+	break;
+      case GeomAbs_Torus:
+	theSurface = new Geom_ToroidalSurface( TheSurfaceTool::Torus(surface) );
+	break;
+      case GeomAbs_Sphere:
+	theSurface = new Geom_SphericalSurface( TheSurfaceTool::Sphere(surface) );
+	break;
+      case GeomAbs_BezierSurface:
+	theSurface = TheSurfaceTool::Bezier(surface);
+	break;
+      case GeomAbs_BSplineSurface:
+	theSurface = TheSurfaceTool::BSpline(surface);
+	break;
+      case GeomAbs_SurfaceOfRevolution:
+	{
+	  gp_Ax1 Axis = TheSurfaceTool::AxeOfRevolution(surface);
+	  Handle(Adaptor3d_HCurve) AdBC = TheSurfaceTool::BasisCurve(surface);
+	  Handle(Geom_Curve) BC = GetCurve(AdBC);
+	  if (!BC.IsNull())
+	    theSurface = new Geom_SurfaceOfRevolution( BC, Axis );
+	  break;
+	}
+      case GeomAbs_SurfaceOfExtrusion:
+	{
+	  gp_Dir Direction = TheSurfaceTool::Direction(surface);
+	  Handle(Adaptor3d_HCurve) AdBC = TheSurfaceTool::BasisCurve(surface);
+	  Handle(Geom_Curve) BC = GetCurve(AdBC);
+	  if (!BC.IsNull())
+	    theSurface = new Geom_SurfaceOfLinearExtrusion( BC, Direction );
+	  break;
+	}
+      case GeomAbs_OffsetSurface:
+	{
+	  Standard_Real OffsetValue = TheSurfaceTool::OffsetValue(surface);
+	  Handle(Adaptor3d_HSurface) AdBS = TheSurfaceTool::BasisSurface(surface);
+	  Handle(Geom_Surface) BS = GetSurface(AdBS);
+	  if (!BS.IsNull())
+	    theSurface = new Geom_OffsetSurface( BS, OffsetValue );
+	  break;
+	}
+      }
+    if (!theSurface.IsNull())
+      {
+	GeomAdaptor_Surface GASurface( theSurface );
+	Extrema_ExtPS Projector;
+	Projector.Initialize( GASurface, U0, U1, V0, V1, Ures, Vres );
+	for (i = 0; i <= 1; i++)
+	  for (j = 0; j <= 1; j++)
+	    for (k = 0; k <= 1; k++)
+	      {
+		gp_Pnt aPoint( X[i], Y[j], Z[k] );
+		Projector.Perform( aPoint );
+		if (Projector.IsDone() && Projector.NbExt() > 0)
+		  {
+		    Standard_Real mindist = RealLast();
+		    Standard_Integer minind, ind;
+		    for (ind = 1; ind <= Projector.NbExt(); ind++)
+		      {
+			Standard_Real dist = Projector.Value(ind);
+			if (dist < mindist)
+			  {
+			    mindist = dist;
+			    minind  = ind;
+			  }
+		      }
+		    Extrema_POnSurf pons = Projector.Point(minind);
+		    Standard_Real U, V;
+		    pons.Parameter( U, V );
+		    if (U < Umin) Umin = U;
+		    if (U > Umax) Umax = U;
+		    if (V < Vmin) Vmin = V;
+		    if (V > Vmax) Vmax = V;
+		  }
+	      }
+	Umin -= Ures; Umax += Ures; Vmin -= Vres; Vmax += Vres;
+	if (Umin > U0 && Umin <= U1) LocalU0 = Umin;
+	if (Umax < U1 && Umax >= U0) LocalU1 = Umax;
+	if (Vmin > V0 && Vmin <= V1) LocalV0 = Vmin;
+	if (Vmax < V1 && Vmax >= V0) LocalV1 = Vmax;
+	U0 = LocalU0; U1 = LocalU1; V0 = LocalV0; V1 = LocalV1;
+      }
+    //-- jgv patch (to)
+#endif
+    Perform(curve,surface,U0,V0,U1,V1);
+  }
+}
+//================================================================================
+//================================================================================
+void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
+				    const TheSurface& surface,
+				    const Standard_Real U1,const Standard_Real V1,
+				    const Standard_Real U2,const Standard_Real V2) { 
+
+  GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
+  
+  switch(CurveType) { 
+  case GeomAbs_Line:  
+    { 
+      PerformConicSurf(TheCurveTool::Line(curve),curve,surface,U1,V1,U2,V2);
+      break;
+    }
+  case GeomAbs_Circle: 
+    { 
+      PerformConicSurf(TheCurveTool::Circle(curve),curve,surface,U1,V1,U2,V2);
+      break;
+    }
+  case GeomAbs_Ellipse: 
+    { 
+      PerformConicSurf(TheCurveTool::Ellipse(curve),curve,surface,U1,V1,U2,V2);
+      break;
+    }    
+  case GeomAbs_Parabola:  
+    {
+      PerformConicSurf(TheCurveTool::Parabola(curve),curve,surface,U1,V1,U2,V2);
+      break;
+    }
+  case GeomAbs_Hyperbola: 
+    {
+      PerformConicSurf(TheCurveTool::Hyperbola(curve),curve,surface,U1,V1,U2,V2);
+      break;
+    }
+  default:    
+    {
+      Standard_Integer nbIntervalsOnCurve = TheCurveTool::NbIntervals(curve,GeomAbs_C2);
+      GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+      if(   (SurfaceType != GeomAbs_Plane) 
+	 && (SurfaceType != GeomAbs_Cylinder)
+	 && (SurfaceType != GeomAbs_Cone) 
+	 && (SurfaceType != GeomAbs_Sphere)) { 
+	
+	if(nbIntervalsOnCurve > 1) { 
+	  TColStd_Array1OfReal TabW(1,nbIntervalsOnCurve+1);
+	  TheCurveTool::Intervals(curve,TabW,GeomAbs_C2);
+	  for(Standard_Integer i = 1; i<=nbIntervalsOnCurve; i++) { 
+	    Standard_Real u1,u2;
+	    u1 = TabW.Value(i);
+	    u2 = TabW.Value(i+1);
+
+	    Handle(TColStd_HArray1OfReal) aPars;
+	    Standard_Real defl = 0.1;
+	    Standard_Integer NbMin = 10;
+	    TheCurveTool::SamplePars(curve, u1, u2, defl, NbMin, aPars);
+
+// 	    IntCurveSurface_ThePolygon  polygon(curve,u1,u2,TheCurveTool::NbSamples(curve,u1,u2));
+	    IntCurveSurface_ThePolygon  polygon(curve, aPars->Array1());
+	    InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+	  }
+	}
+	else {
+	  Standard_Real u1,u2;
+	  u1 = TheCurveTool::FirstParameter(curve);
+	  u2 = TheCurveTool::LastParameter(curve);
+
+	  Handle(TColStd_HArray1OfReal) aPars;
+	  Standard_Real defl = 0.1;
+	  Standard_Integer NbMin = 10;
+	  TheCurveTool::SamplePars(curve, u1, u2, defl, NbMin, aPars);
+
+// 	  IntCurveSurface_ThePolygon       polygon(curve,TheCurveTool::NbSamples(curve,u1,u2));
+	  IntCurveSurface_ThePolygon  polygon(curve, aPars->Array1());
+	  InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+	}
+      }
+      else {   //-- la surface est une quadrique 
+	InternalPerformCurveQuadric(curve,surface);
+      }
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
+				    const IntCurveSurface_ThePolygon& polygon,
+				    const TheSurface& surface) {
+  ResetFields();
+  done = Standard_True;
+  Standard_Real u1,v1,u2,v2;
+  u1 = TheSurfaceTool::FirstUParameter(surface);
+  v1 = TheSurfaceTool::FirstVParameter(surface);
+  u2 = TheSurfaceTool::LastUParameter(surface);
+  v2 = TheSurfaceTool::LastVParameter(surface);
+  Standard_Integer nbsu,nbsv;
+  nbsu = TheSurfaceTool::NbSamplesU(surface,u1,u2);
+  nbsv = TheSurfaceTool::NbSamplesV(surface,v1,v2);
+  if(nbsu>40) nbsu=40;
+  if(nbsv>40) nbsv=40;
+  IntCurveSurface_ThePolyhedron    polyhedron(surface,nbsu,nbsv,u1,v1,u2,v2);
+  Perform(curve,polygon,surface,polyhedron);
+}
+//================================================================================
+void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
+				    const TheSurface& surface,
+				    const IntCurveSurface_ThePolyhedron& polyhedron) {
+  ResetFields();
+  done = Standard_True;
+  Standard_Real u1 = TheCurveTool::FirstParameter(curve);
+  Standard_Real u2 = TheCurveTool::LastParameter(curve);
+  IntCurveSurface_ThePolygon polygon(curve,TheCurveTool::NbSamples(curve,u1,u2));
+  Perform(curve,polygon,surface,polyhedron);
+}
+//================================================================================
+void IntCurveSurface_Inter::Perform(const TheCurve&       curve,
+				    const IntCurveSurface_ThePolygon&     polygon,
+				    const TheSurface&     surface,
+				    const IntCurveSurface_ThePolyhedron&  polyhedron) {
+  ResetFields();
+  done = Standard_True;
+  Standard_Real u1,v1,u2,v2;
+  u1 = TheSurfaceTool::FirstUParameter(surface);
+  v1 = TheSurfaceTool::FirstVParameter(surface);
+  u2 = TheSurfaceTool::LastUParameter(surface);
+  v2 = TheSurfaceTool::LastVParameter(surface);
+  InternalPerform(curve,polygon,surface,polyhedron,u1,v1,u2,v2);
+}
+
+void IntCurveSurface_Inter::Perform(const TheCurve&       curve,
+				    const IntCurveSurface_ThePolygon&     polygon,
+				    const TheSurface&     surface,
+				    const IntCurveSurface_ThePolyhedron&  polyhedron,
+				    Bnd_BoundSortBox& BndBSB) {
+  ResetFields();
+  done = Standard_True;
+  Standard_Real u1,v1,u2,v2;
+  u1 = TheSurfaceTool::FirstUParameter(surface);
+  v1 = TheSurfaceTool::FirstVParameter(surface);
+  u2 = TheSurfaceTool::LastUParameter(surface);
+  v2 = TheSurfaceTool::LastVParameter(surface);
+  InternalPerform(curve,polygon,surface,polyhedron,u1,v1,u2,v2,BndBSB);
+}
+//================================================================================
+//==          C a l c u l   d u   p o i n t   a p p r o c h e                   ==
+//==              p u i s   d u   p o i n t   E x a c t                         ==
+//================================================================================
+void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
+					    const IntCurveSurface_ThePolygon&     polygon,
+					    const TheSurface&     surface,
+					    const IntCurveSurface_ThePolyhedron&  polyhedron,
+					    const Standard_Real u0,
+					    const Standard_Real v0,
+					    const Standard_Real u1, 
+					    const Standard_Real v1,
+					    Bnd_BoundSortBox& BSB) {
+  IntCurveSurface_TheInterference  interference(polygon,polyhedron,BSB);
+  IntCurveSurface_TheCSFunction    theicsfunction(surface,curve);
+  IntCurveSurface_TheExactInter    intersectionExacte(theicsfunction,TOLTANGENCY);
+  math_FunctionSetRoot rsnld(intersectionExacte.Function());
+
+//  Standard_Real    u,v,w,winit;
+  Standard_Real    u,v,w;
+  gp_Pnt P;
+  Standard_Real winf = polygon.InfParameter();
+  Standard_Real wsup = polygon.SupParameter();
+  Standard_Integer NbSectionPoints = interference.NbSectionPoints();
+  Standard_Integer NbTangentZones  = interference.NbTangentZones();
+
+
+  //-- Les interferences renvoient parfois de nombreuses fois (>20) les memes points 
+  
+  Standard_Integer i,NbStartPoints=NbSectionPoints;
+  for(i=1; i<= NbTangentZones; i++) {
+    const Intf_TangentZone& TZ = interference.ZoneValue(i);
+    Standard_Integer nbpnts = TZ.NumberOfPoints();
+    NbStartPoints+=nbpnts;
+  }
+  
+  if(NbStartPoints) { 
+    Standard_Real *TabU = new Standard_Real [NbStartPoints+1];
+    Standard_Real *TabV = new Standard_Real [NbStartPoints+1];
+    Standard_Real *TabW = new Standard_Real [NbStartPoints+1];
+    Standard_Integer IndexPoint=0;
+    
+    for(i=1; i<= NbSectionPoints; i++) {
+      const Intf_SectionPoint& SP = interference.PntValue(i);
+      SectionPointToParameters(SP,polyhedron,polygon,u,v,w);
+      TabU[IndexPoint]=u;
+      TabV[IndexPoint]=v;
+      TabW[IndexPoint]=w;
+      IndexPoint++;
+    }
+    for(i=1; i<= NbTangentZones; i++) {
+      const Intf_TangentZone& TZ = interference.ZoneValue(i);
+      Standard_Integer nbpnts = TZ.NumberOfPoints();
+      for(Standard_Integer j=1; j<=nbpnts; j++) { 
+	const Intf_SectionPoint& SP = TZ.GetPoint(j);
+	SectionPointToParameters(SP,polyhedron,polygon,u,v,w);  
+	TabU[IndexPoint]=u;
+	TabV[IndexPoint]=v;
+	TabW[IndexPoint]=w;
+	IndexPoint++;
+      }
+    }
+    
+    //-- Tri
+    Standard_Real su=0,sv=0,sw=0,ptol;
+    ptol = 10*Precision::PConfusion();
+    
+    //-- Tri suivant la variable W 
+    Standard_Boolean Triok;
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+	if(TabW[i] < TabW[im1]) { 
+	  Standard_Real t=TabW[i]; TabW[i]=TabW[im1]; TabW[im1]=t;
+	  t=TabU[i]; TabU[i]=TabU[im1]; TabU[im1]=t;
+	  t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	  Triok=Standard_False;
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    //-- On trie pour des meme W suivant U
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:49 2005
+// 	if(Abs(TabW[i]-TabW[im1])<ptol) { 
+	if((TabW[i]-TabW[im1])<ptol) { 
+	  TabW[i]=TabW[im1];
+	  if(TabU[i] < TabU[im1]) { 
+	    Standard_Real t=TabU[i]; TabU[i]=TabU[im1]; TabU[im1]=t;
+	    t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	    Triok=Standard_False;
+	  }
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    //-- On trie pour des meme U et W suivant V
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:52 2005
+// 	if((Abs(TabW[i]-TabW[im1])<ptol) && (Abs(TabU[i]-TabU[im1])<ptol)) { 
+	if(((TabW[i]-TabW[im1])<ptol) && ((TabU[i]-TabU[im1])<ptol)) { 
+	  TabU[i]=TabU[im1];
+	  if(TabV[i] < TabV[im1]) { 
+	    Standard_Real t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	    Triok=Standard_False;
+	  }
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    
+    for(i=0;i<NbStartPoints; i++) { 
+      u=TabU[i]; v=TabV[i]; w=TabW[i];
+      if(i==0) {
+	su=u-1; 
+      }
+      if(Abs(u-su)>ptol || Abs(v-sv)>ptol || Abs(w-sw)>ptol) { 
+	intersectionExacte.Perform(u,v,w,rsnld,u0,u1,v0,v1,winf,wsup);
+	if(intersectionExacte.IsDone()) { 
+	  if(!intersectionExacte.IsEmpty()) { 
+	    P=intersectionExacte.Point();
+	    w=intersectionExacte.ParameterOnCurve();
+	    intersectionExacte.ParameterOnSurface(u,v);
+	    AppendPoint(curve,w,surface,u,v);
+	  }
+	}
+      }
+      su=TabU[i]; sv=TabV[i]; sw=TabW[i];
+    }
+    delete [] TabW;
+    delete [] TabV;
+    delete [] TabU;
+  }
+}
+
+void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
+					    const IntCurveSurface_ThePolygon&     polygon,
+					    const TheSurface&     surface,
+					    const IntCurveSurface_ThePolyhedron&  polyhedron,
+					    const Standard_Real u0,
+					    const Standard_Real v0,
+					    const Standard_Real u1, 
+					    const Standard_Real v1) { 
+  IntCurveSurface_TheInterference  interference(polygon,polyhedron);
+  IntCurveSurface_TheCSFunction    theicsfunction(surface,curve);
+  IntCurveSurface_TheExactInter    intersectionExacte(theicsfunction,TOLTANGENCY);
+  math_FunctionSetRoot rsnld(intersectionExacte.Function());
+
+//  Standard_Real    u,v,w,winit;
+  Standard_Real    u,v,w;
+  gp_Pnt P;
+  Standard_Real winf = polygon.InfParameter();
+  Standard_Real wsup = polygon.SupParameter();
+  Standard_Integer NbSectionPoints = interference.NbSectionPoints();
+  Standard_Integer NbTangentZones  = interference.NbTangentZones();
+
+
+  //-- Les interferences renvoient parfois de nombreuses fois (>20) les memes points 
+  
+  Standard_Integer i,NbStartPoints=NbSectionPoints;
+  for(i=1; i<= NbTangentZones; i++) {
+    const Intf_TangentZone& TZ = interference.ZoneValue(i);
+    Standard_Integer nbpnts = TZ.NumberOfPoints();
+    NbStartPoints+=nbpnts;
+  }
+  
+  if(NbStartPoints) { 
+    Standard_Real *TabU = new Standard_Real [NbStartPoints+1];
+    Standard_Real *TabV = new Standard_Real [NbStartPoints+1];
+    Standard_Real *TabW = new Standard_Real [NbStartPoints+1];
+    Standard_Integer IndexPoint=0;
+    
+    for(i=1; i<= NbSectionPoints; i++) {
+      const Intf_SectionPoint& SP = interference.PntValue(i);
+      SectionPointToParameters(SP,polyhedron,polygon,u,v,w);
+      TabU[IndexPoint]=u;
+      TabV[IndexPoint]=v;
+      TabW[IndexPoint]=w;
+      IndexPoint++;
+    }
+    for(i=1; i<= NbTangentZones; i++) {
+      const Intf_TangentZone& TZ = interference.ZoneValue(i);
+      Standard_Integer nbpnts = TZ.NumberOfPoints();
+      for(Standard_Integer j=1; j<=nbpnts; j++) { 
+	const Intf_SectionPoint& SP = TZ.GetPoint(j);
+	SectionPointToParameters(SP,polyhedron,polygon,u,v,w);  
+	TabU[IndexPoint]=u;
+	TabV[IndexPoint]=v;
+	TabW[IndexPoint]=w;
+	IndexPoint++;
+      }
+    }
+    
+    //-- Tri
+    Standard_Real su=0,sv=0,sw=0,ptol;
+    ptol = 10*Precision::PConfusion();
+    
+    //-- Tri suivant la variable W 
+    Standard_Boolean Triok;
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+	if(TabW[i] < TabW[im1]) { 
+	  Standard_Real t=TabW[i]; TabW[i]=TabW[im1]; TabW[im1]=t;
+	  t=TabU[i]; TabU[i]=TabU[im1]; TabU[im1]=t;
+	  t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	  Triok=Standard_False;
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    //-- On trie pour des meme W suivant U
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:56 2005
+// 	if(Abs(TabW[i]-TabW[im1])<ptol) { 
+	if((TabW[i]-TabW[im1])<ptol) { 
+	  TabW[i]=TabW[im1];
+	  if(TabU[i] < TabU[im1]) { 
+	    Standard_Real t=TabU[i]; TabU[i]=TabU[im1]; TabU[im1]=t;
+	    t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	    Triok=Standard_False;
+	  }
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    //-- On trie pour des meme U et W suivant V
+    do { 
+      Triok=Standard_True;
+      Standard_Integer im1;
+      for(i=1,im1=0;i<NbStartPoints;im1++,i++) {       
+// modified by NIZHNY-MKK  Mon Oct  3 17:38:58 2005
+// 	if((Abs(TabW[i]-TabW[im1])<ptol) && (Abs(TabU[i]-TabU[im1])<ptol)) { 
+	if(((TabW[i]-TabW[im1])<ptol) && ((TabU[i]-TabU[im1])<ptol)) { 
+	  TabU[i]=TabU[im1];
+	  if(TabV[i] < TabV[im1]) { 
+	    Standard_Real t=TabV[i]; TabV[i]=TabV[im1]; TabV[im1]=t;
+	    Triok=Standard_False;
+	  }
+	}
+      }
+    }
+    while(Triok==Standard_False);
+    
+    
+    for(i=0;i<NbStartPoints; i++) { 
+      u=TabU[i]; v=TabV[i]; w=TabW[i];
+      if(i==0) {
+	su=u-1; 
+      }
+      if(Abs(u-su)>ptol || Abs(v-sv)>ptol || Abs(w-sw)>ptol) { 
+	intersectionExacte.Perform(u,v,w,rsnld,u0,u1,v0,v1,winf,wsup);
+	if(intersectionExacte.IsDone()) { 
+	  if(!intersectionExacte.IsEmpty()) { 
+	    P=intersectionExacte.Point();
+	    w=intersectionExacte.ParameterOnCurve();
+	    intersectionExacte.ParameterOnSurface(u,v);
+	    AppendPoint(curve,w,surface,u,v);
+	  }
+	}
+      }
+      su=TabU[i]; sv=TabV[i]; sw=TabW[i];
+    }
+    delete [] TabW;
+    delete [] TabV;
+    delete [] TabU;
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::InternalPerformCurveQuadric(const TheCurve&                 curve,
+							const TheSurface&               surface) { 
+  IntCurveSurface_TheQuadCurvExactInter QuadCurv(surface,curve);  
+  if(QuadCurv.IsDone()) { 
+    Standard_Integer NbRoots = QuadCurv.NbRoots();
+#ifdef DEB
+    Standard_Integer NbInter = QuadCurv.NbIntervals();
+#else
+    QuadCurv.NbIntervals();
+#endif
+    Standard_Real u,v,w;
+    for(Standard_Integer i = 1; i<= NbRoots; i++) { 
+      w = QuadCurv.Root(i); 
+      IntCurveSurface_ComputeParamsOnQuadric(surface,TheCurveTool::Value(curve,w),u,v);
+      AppendPoint(curve,w,surface,u,v); 
+    }
+    //-- Intervals non traites .............................................
+  }
+}
+
+//================================================================================
+void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
+					    const IntCurveSurface_ThePolygon&  polygon,
+					    const TheSurface&     surface,
+					    const Standard_Real U1,
+					    const Standard_Real V1,
+					    const Standard_Real U2,
+					    const Standard_Real V2) {
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  if(   (SurfaceType != GeomAbs_Plane) 
+     && (SurfaceType != GeomAbs_Cylinder)
+     && (SurfaceType != GeomAbs_Cone) 
+     && (SurfaceType != GeomAbs_Sphere) ) {
+    if(SurfaceType != GeomAbs_BSplineSurface) {
+      Standard_Integer nbsu,nbsv;
+      nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
+      nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
+      if(nbsu>40) nbsu=40;
+      if(nbsv>40) nbsv=40;
+      IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1,V1,U2,V2);
+      InternalPerform(curve,polygon,surface,polyhedron,U1,V1,U2,V2); 
+    }
+    else {
+      Handle(Adaptor3d_HSurface) aS = TheSurfaceTool::UTrim(surface, U1, U2, 1.e-9);
+      aS = aS->VTrim(V1, V2, 1.e-9);
+      Handle(Adaptor3d_TopolTool) aTopTool = new Adaptor3d_TopolTool(aS);
+      Standard_Real defl = 0.1;
+      aTopTool->SamplePnts(defl, 10, 10);
+
+      Standard_Integer nbpu = aTopTool->NbSamplesU();
+      Standard_Integer nbpv = aTopTool->NbSamplesV();
+      TColStd_Array1OfReal Upars(1, nbpu), Vpars(1, nbpv);
+      aTopTool->UParameters(Upars);
+      aTopTool->VParameters(Vpars);
+
+      IntCurveSurface_ThePolyhedron polyhedron(surface,Upars, Vpars);
+      InternalPerform(curve,polygon,surface,polyhedron,U1,V1,U2,V2); 
+    }
+  }
+  else {
+    IntCurveSurface_TheQuadCurvExactInter QuadCurv(surface,curve);  
+    if(QuadCurv.IsDone()) { 
+      Standard_Integer NbRoots = QuadCurv.NbRoots();
+#ifdef DEB
+      Standard_Integer NbInter = QuadCurv.NbIntervals();
+#else
+      QuadCurv.NbIntervals();
+#endif
+      Standard_Real u,v,w;
+      for(Standard_Integer i = 1; i<= NbRoots; i++) { 
+	w = QuadCurv.Root(i); 
+	IntCurveSurface_ComputeParamsOnQuadric(surface,TheCurveTool::Value(curve,w),u,v);
+	AppendPoint(curve,w,surface,u,v); 
+      }
+      //-- Intervalles non traites .............................................
+    }
+  } //-- Fin : la Surface  est une quadrique
+}
+//================================================================================
+void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
+					     const TheCurve&       curve,
+					     const TheSurface&     surface,
+					     const Standard_Real U1,
+					     const Standard_Real V1,
+					     const Standard_Real U2,
+					     const Standard_Real V2) {
+  
+
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      IntAna_IntConicQuad LinPlane(Line,TheSurfaceTool::Plane(surface),TOLERANCE_ANGULAIRE);
+      AppendIntAna(curve,surface,LinPlane);
+      break;
+    }
+  case GeomAbs_Cylinder:
+    {
+      IntAna_IntConicQuad LinCylinder(Line,TheSurfaceTool::Cylinder(surface));
+      AppendIntAna(curve,surface,LinCylinder);
+      break;
+    }
+  case GeomAbs_Sphere:
+    {
+      IntAna_IntConicQuad LinSphere(Line,TheSurfaceTool::Sphere(surface));
+      AppendIntAna(curve,surface,LinSphere);
+      break;
+    }
+  case GeomAbs_Torus: 
+    {
+      IntAna_IntLinTorus intlintorus(Line,TheSurfaceTool::Torus(surface));
+      if(intlintorus.IsDone()) { 
+	Standard_Integer nbp = intlintorus.NbPoints();
+	Standard_Real fi,theta,w;
+	for(Standard_Integer i = 1; i<= nbp; i++) { 
+#ifndef DEB
+	  gp_Pnt P;
+	  P = intlintorus.Value(i);
+#else
+	  gp_Pnt P(intlintorus.Value(i));
+#endif
+	  w = intlintorus.ParamOnLine(i);
+	  intlintorus.ParamOnTorus(i,fi,theta);
+	  AppendPoint(curve,w,surface,fi,theta);
+	}
+	break;
+      }
+    }  //-- Si Done retourne False, On passe dans Default !! 
+  case GeomAbs_Cone:
+    {
+      //OCC516(apo)->
+      static Standard_Real correction = 1.E+5*Precision::Angular();
+      gp_Cone cn = TheSurfaceTool::Cone(surface);
+      if(Abs(cn.SemiAngle()) < PI/2.0 - correction){
+	IntAna_IntConicQuad LinCone(Line,cn);
+	AppendIntAna(curve,surface,LinCone);
+	break;
+      }//<-OCC516(apo)
+    }   
+  default: 
+    {
+      Standard_Integer nbsu,nbsv;
+      nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
+      nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
+
+      Standard_Boolean U1inf = Precision::IsInfinite(U1);
+      Standard_Boolean U2inf = Precision::IsInfinite(U2);
+      Standard_Boolean V1inf = Precision::IsInfinite(V1);
+      Standard_Boolean V2inf = Precision::IsInfinite(V2);
+
+      Standard_Real U1new=U1, U2new=U2, V1new=V1, V2new=V2;
+
+      Standard_Boolean NoIntersection = Standard_False;
+
+      if(U1inf || U2inf || V1inf || V2inf ) {
+
+	if(SurfaceType == GeomAbs_SurfaceOfExtrusion) {
+
+	  EstLimForInfExtr(Line, surface, Standard_False, nbsu, 
+			   U1inf, U2inf, V1inf, V2inf, 
+			   U1new, U2new, V1new, V2new, NoIntersection);
+
+	} 
+	else if(SurfaceType == GeomAbs_SurfaceOfRevolution) {
+
+	  EstLimForInfRevl(Line, surface,  
+			   U1inf, U2inf, V1inf, V2inf, 
+			   U1new, U2new, V1new, V2new, NoIntersection);
+
+	} 
+	else if(SurfaceType == GeomAbs_OffsetSurface) {
+
+	  EstLimForInfOffs(Line, surface, nbsu,  
+			   U1inf, U2inf, V1inf, V2inf, 
+			   U1new, U2new, V1new, V2new, NoIntersection);
+	}
+	else {
+	    
+	  EstLimForInfSurf(U1new, U2new, V1new, V2new);
+	}
+
+      }
+
+
+      if(NoIntersection) return;
+
+
+      // modified by NIZHNY-OFV  Mon Aug 20 14:56:47 2001 (60963 begin)
+      if(nbsu<20) nbsu=20;
+      if(nbsv<20) nbsv=20;
+      // modified by NIZHNY-OFV  Mon Aug 20 14:57:06 2001 (60963 end)
+      IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1new,V1new,U2new,V2new);
+      Intf_Tool                         bndTool;
+      Bnd_Box                          boxLine;
+      bndTool.LinBox(Line,polyhedron.Bounding(),boxLine);
+      for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
+	Standard_Real pinf = bndTool.BeginParam(nbseg);
+	Standard_Real psup = bndTool.EndParam(nbseg);
+	if((psup - pinf)<1e-10) { pinf-=1e-10; psup+=1e-10; } 
+	IntCurveSurface_ThePolygon polygon(curve, pinf,psup,2);
+	InternalPerform(curve,polygon,surface,polyhedron,U1new,V1new,U2new,V2new);
+      }
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::PerformConicSurf(const gp_Circ&        Circle,
+					     const TheCurve&       curve,
+					     const TheSurface&     surface,
+					     const Standard_Real U1,
+					     const Standard_Real V1,
+					     const Standard_Real U2,
+					     const Standard_Real V2) { 
+  
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      IntAna_IntConicQuad CircPlane(Circle,TheSurfaceTool::Plane(surface),TOLERANCE_ANGULAIRE,TOLERANCE);
+      AppendIntAna(curve,surface,CircPlane);
+      break;
+    }
+  case GeomAbs_Cylinder:
+    {
+      IntAna_IntConicQuad CircCylinder(Circle,TheSurfaceTool::Cylinder(surface));
+      AppendIntAna(curve,surface,CircCylinder);
+      break;
+    }
+  case GeomAbs_Cone:
+    {
+      IntAna_IntConicQuad CircCone(Circle,TheSurfaceTool::Cone(surface));
+      AppendIntAna(curve,surface,CircCone);
+      break;
+    }   
+  case GeomAbs_Sphere:
+    {
+      IntAna_IntConicQuad CircSphere(Circle,TheSurfaceTool::Sphere(surface));
+      AppendIntAna(curve,surface,CircSphere);
+      break;
+    }
+  default: 
+    {
+      IntCurveSurface_ThePolygon polygon(curve,NBSAMPLESONCIRCLE);
+      InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::PerformConicSurf(const gp_Elips&       Ellipse,
+					     const TheCurve&       curve,
+					     const TheSurface&     surface,
+					     const Standard_Real U1,
+					     const Standard_Real V1,
+					     const Standard_Real U2,
+					     const Standard_Real V2) { 
+
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      IntAna_IntConicQuad EllipsePlane(Ellipse,TheSurfaceTool::Plane(surface),TOLERANCE_ANGULAIRE,TOLERANCE);
+      AppendIntAna(curve,surface,EllipsePlane);
+      break;
+    }
+  case GeomAbs_Cylinder:
+    {
+      IntAna_IntConicQuad EllipseCylinder(Ellipse,TheSurfaceTool::Cylinder(surface));
+      AppendIntAna(curve,surface,EllipseCylinder);
+      break;
+    }
+  case GeomAbs_Cone:
+     {
+      IntAna_IntConicQuad EllipseCone(Ellipse,TheSurfaceTool::Cone(surface));
+      AppendIntAna(curve,surface,EllipseCone);
+      break;
+    }   
+  case GeomAbs_Sphere:
+    {
+      IntAna_IntConicQuad EllipseSphere(Ellipse,TheSurfaceTool::Sphere(surface));
+      AppendIntAna(curve,surface,EllipseSphere);
+      break;
+    }
+  default: 
+    {
+      IntCurveSurface_ThePolygon polygon(curve,NBSAMPLESONELLIPSE);
+      InternalPerform(curve,polygon,surface,U1,V1,U2,V2);
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::PerformConicSurf(const gp_Parab&       Parab,
+					     const TheCurve&       curve,
+					     const TheSurface&     surface,
+					     const Standard_Real U1,
+					     const Standard_Real V1,
+					     const Standard_Real U2,
+					     const Standard_Real V2) { 
+
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      IntAna_IntConicQuad ParabPlane(Parab,TheSurfaceTool::Plane(surface),TOLERANCE_ANGULAIRE);
+      AppendIntAna(curve,surface,ParabPlane);
+      break;
+    }
+  case GeomAbs_Cylinder:
+    {
+      IntAna_IntConicQuad ParabCylinder(Parab,TheSurfaceTool::Cylinder(surface));
+      AppendIntAna(curve,surface,ParabCylinder);
+      break;
+    }
+  case GeomAbs_Cone:
+     {
+      IntAna_IntConicQuad ParabCone(Parab,TheSurfaceTool::Cone(surface));
+      AppendIntAna(curve,surface,ParabCone);
+      break;
+    }   
+  case GeomAbs_Sphere:
+    {
+      IntAna_IntConicQuad ParabSphere(Parab,TheSurfaceTool::Sphere(surface));
+      AppendIntAna(curve,surface,ParabSphere);
+      break;
+    }
+  default: 
+    {
+      Standard_Integer nbsu,nbsv;
+      nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
+      nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
+      if(nbsu>40) nbsu=40;
+      if(nbsv>40) nbsv=40;
+      IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1,V1,U2,V2);
+      Intf_Tool                         bndTool;
+      Bnd_Box                          boxParab;
+      bndTool.ParabBox(Parab,polyhedron.Bounding(),boxParab);
+      for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
+	IntCurveSurface_ThePolygon polygon(curve,
+					   bndTool.BeginParam(nbseg),
+					   bndTool.EndParam(nbseg),
+					   NBSAMPLESONPARAB);
+	InternalPerform(curve,polygon,surface,polyhedron,U1,V1,U2,V2);
+      }
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::PerformConicSurf(const gp_Hypr&        Hypr,
+					     const TheCurve&       curve,
+					     const TheSurface&     surface,
+					     const Standard_Real U1,
+					     const Standard_Real V1,
+					     const Standard_Real U2,
+					     const Standard_Real V2) {
+ 
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      IntAna_IntConicQuad HyprPlane(Hypr,TheSurfaceTool::Plane(surface),TOLERANCE_ANGULAIRE);
+      AppendIntAna(curve,surface,HyprPlane);
+      break;
+    }
+  case GeomAbs_Cylinder:
+    {
+      IntAna_IntConicQuad HyprCylinder(Hypr,TheSurfaceTool::Cylinder(surface));
+      AppendIntAna(curve,surface,HyprCylinder);
+      break;
+    }
+  case GeomAbs_Cone:
+     {
+      IntAna_IntConicQuad HyprCone(Hypr,TheSurfaceTool::Cone(surface));
+      AppendIntAna(curve,surface,HyprCone);
+      break;
+    }   
+  case GeomAbs_Sphere:
+    {
+      IntAna_IntConicQuad HyprSphere(Hypr,TheSurfaceTool::Sphere(surface));
+      AppendIntAna(curve,surface,HyprSphere);
+      break;
+    }
+  default: 
+    {
+      Standard_Integer nbsu,nbsv;
+      nbsu = TheSurfaceTool::NbSamplesU(surface,U1,U2);
+      nbsv = TheSurfaceTool::NbSamplesV(surface,V1,V2);
+      if(nbsu>40) nbsu=40;
+      if(nbsv>40) nbsv=40;
+      IntCurveSurface_ThePolyhedron polyhedron(surface,nbsu,nbsv,U1,V1,U2,V2);
+      Intf_Tool                         bndTool;
+      Bnd_Box                          boxHypr;
+      bndTool.HyprBox(Hypr,polyhedron.Bounding(),boxHypr);
+      for(Standard_Integer nbseg=1; nbseg<= bndTool.NbSegments(); nbseg++) { 
+	IntCurveSurface_ThePolygon polygon(curve,
+					   bndTool.BeginParam(nbseg),
+					   bndTool.EndParam(nbseg),
+					   NBSAMPLESONHYPR);
+	InternalPerform(curve,polygon,surface,polyhedron,U1,V1,U2,V2);
+      }
+    }
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
+					 const TheSurface& surface,
+					 const IntAna_IntConicQuad& intana_ConicQuad) {
+  if(intana_ConicQuad.IsDone()) { 
+    if(intana_ConicQuad.IsInQuadric()) { 
+      //-- cout<<" Courbe Dans la Quadrique !!! Non Traite !!!"<<endl;
+    }
+    else if(intana_ConicQuad.IsParallel()) { 
+      //-- cout<<" Courbe // a la Quadrique !!! Non Traite !!!"<<endl;
+    }
+    else { 
+      Standard_Integer nbp = intana_ConicQuad.NbPoints();
+      Standard_Real u,v,w;
+      for(Standard_Integer i = 1; i<= nbp; i++) { 
+	gp_Pnt P(intana_ConicQuad.Point(i));
+	w = intana_ConicQuad.ParamOnConic(i);
+	IntCurveSurface_ComputeParamsOnQuadric(surface,P,u,v);
+	AppendPoint(curve,w,surface,u,v);
+      }
+    }
+  }
+  else { 
+    //-- cout<<" IntAna Conic Quad Not Done  "<<endl;
+  }
+}
+//================================================================================
+void IntCurveSurface_Inter::AppendPoint(const TheCurve& curve,
+					const Standard_Real lw,
+					const TheSurface& surface,
+					const Standard_Real su,
+					const Standard_Real sv) {
+ 
+  Standard_Real W0 = TheCurveTool::FirstParameter(curve);
+  Standard_Real W1 = TheCurveTool::LastParameter(curve);
+  Standard_Real U0 = TheSurfaceTool::FirstUParameter(surface);
+  Standard_Real U1 = TheSurfaceTool::LastUParameter(surface);
+  Standard_Real V0 = TheSurfaceTool::FirstVParameter(surface);
+  Standard_Real V1 = TheSurfaceTool::LastVParameter(surface);
+  //-- Test si la courbe est periodique
+  Standard_Real w = lw, u = su, v = sv;
+
+  GeomAbs_CurveType aCType = TheCurveTool::GetType(curve);
+
+  if(TheCurveTool::IsPeriodic(curve) 
+     || aCType == GeomAbs_Circle 
+     || aCType == GeomAbs_Ellipse) {
+    w = ElCLib::InPeriod(w, W0, W0 + TheCurveTool::Period(curve));
+  }
+
+  if((W0 - w) >= TOLTANGENCY || (w - W1) >= TOLTANGENCY) return;
+
+  GeomAbs_SurfaceType aSType = TheSurfaceTool::GetType(surface);
+  if (TheSurfaceTool::IsUPeriodic(surface)
+      || aSType == GeomAbs_Cylinder
+      || aSType == GeomAbs_Cone
+      || aSType == GeomAbs_Sphere) {
+    u = ElCLib::InPeriod(u, U0, U0 + TheSurfaceTool::UPeriod(surface));
+  }
+
+  if (TheSurfaceTool::IsVPeriodic(surface)) {
+    v = ElCLib::InPeriod(v, V0, V0 + TheSurfaceTool::VPeriod(surface));
+  }
+
+  if((U0 - u) >= TOLTANGENCY || (u - U1) >= TOLTANGENCY) return;
+  if((V0 - v) >= TOLTANGENCY || (v - V1) >= TOLTANGENCY) return;
+
+  IntCurveSurface_TransitionOnCurve   TransOnCurve;
+  IntCurveSurface_ComputeTransitions(curve,w,TransOnCurve,
+				     surface,u,v);
+  gp_Pnt P(TheCurveTool::Value(curve,w));
+  IntCurveSurface_IntersectionPoint IP(P,u,v,w,TransOnCurve);
+  Append(IP); //-- invoque la methode de IntCurveSurface_Intersection.
+  
+}
+
+//================================================================================
+void IntCurveSurface_Inter::AppendSegment(const TheCurve& ,
+					  const Standard_Real ,
+					  const Standard_Real ,
+					  const TheSurface& ) { 
+  cout<<" !!! Not Yet Implemented    IntCurveSurface_Inter::Append(const IntCurveSurf ...)"<<endl;
+}
+
+//================================================================================
+//== P o i n t   d   i n t e r f e r e n c e   - - >     U , V       e t   W    ==
+//================================================================================
+void SectionPointToParameters(const Intf_SectionPoint&              Sp,
+			      const IntCurveSurface_ThePolyhedron&  Polyhedron,
+			      const IntCurveSurface_ThePolygon&     Polygon,
+			      Standard_Real& U,
+			      Standard_Real& V,
+			      Standard_Real& W) {
+  
+  Intf_PIType       typ;
+  Standard_Integer  Adr1,Adr2;
+  Standard_Real     Param,u,v;
+  gp_Pnt P(Sp.Pnt());
+  
+  Standard_Integer Pt1,Pt2,Pt3;
+  Standard_Real u1,v1,param;
+  //----------------------------------------------------------------------
+  //--          Calcul des parametres approches sur la surface          --
+  //----------------------------------------------------------------------
+  
+  Sp.InfoSecond(typ,Adr1,Adr2,Param);
+  switch(typ) { 
+  case Intf_VERTEX:   //-- Adr1 est le numero du vertex
+    {
+      Polyhedron.Parameters(Adr1,u1,v1);
+      break;
+    }
+  case Intf_EDGE:
+    {
+      Polyhedron.Parameters(Adr1,u1,v1);    
+      Polyhedron.Parameters(Adr2,u,v);
+      u1+= Param * (u-u1);
+      v1+= Param * (v-v1);
+      break;
+    }
+  case Intf_FACE:
+    {
+      Standard_Real ua,va,ub,vb,uc,vc,ca,cb,cc,cabc;
+      Polyhedron.Triangle(Adr1,Pt1,Pt2,Pt3);
+      gp_Pnt PA(Polyhedron.Point(Pt1));
+      gp_Pnt PB(Polyhedron.Point(Pt2));
+      gp_Pnt PC(Polyhedron.Point(Pt3));
+      Polyhedron.Parameters(Pt1,ua,va);
+      Polyhedron.Parameters(Pt2,ub,vb);
+      Polyhedron.Parameters(Pt3,uc,vc);
+      gp_Vec Normale(gp_Vec(PA,PB).Crossed(gp_Vec(PA,PC)));
+      cc = (gp_Vec(PA,PB).Crossed(gp_Vec(PA,P))).Dot(Normale);
+      ca = (gp_Vec(PB,PC).Crossed(gp_Vec(PB,P))).Dot(Normale);
+      cb = (gp_Vec(PC,PA).Crossed(gp_Vec(PC,P))).Dot(Normale);
+      cabc = ca + cb + cc;
+      
+      ca/=cabc;     cb/=cabc;       cc/=cabc;
+      
+      u1 = ca * ua + cb * ub + cc * uc;
+      v1 = ca * va + cb * vb + cc * vc;
+      break;
+    }
+  default: 
+    {
+      cout<<" Default dans SectionPointToParameters "<<endl;
+      break;
+    }
+  }
+  //----------------------------------------------------------------------
+  //--                Calcul du point approche sur la Curve             --
+  //----------------------------------------------------------------------
+  Standard_Integer SegIndex;
+
+  Sp.InfoFirst(typ,SegIndex,param);
+  W = Polygon.ApproxParamOnCurve(SegIndex,param);
+  if(param>1.0 || param<0.0) { 
+    //-- IntCurveSurface_ThePolyhedronTool::Dump(Polyhedron);
+    //-- IntCurveSurface_ThePolygonTool::Dump(Polygon);
+    }
+  U = u1;
+  V = v1;
+}
+//================================================================================
+void IntCurveSurface_ComputeTransitions(const TheCurve& curve,
+					const Standard_Real w,
+					IntCurveSurface_TransitionOnCurve&   TransOnCurve,
+					const TheSurface& surface,
+					const Standard_Real u,
+					const Standard_Real v) { 
+  
+  gp_Vec NSurf,D1U,D1V;//TgCurv;
+  gp_Pnt Psurf;
+  Standard_Real CosDir;
+  
+  
+  TheSurfaceTool::D1(surface,u,v,Psurf,D1U,D1V);
+  NSurf = D1U.Crossed(D1V);
+  TheCurveTool::D1(curve,w,Psurf,D1U);
+  Standard_Real Norm = NSurf.Magnitude();
+  if(Norm>TOLERANCE_ANGULAIRE) { 
+    D1U.Normalize();
+    CosDir = NSurf.Dot(D1U);
+    CosDir/=Norm;
+    if( -CosDir > TOLERANCE_ANGULAIRE) { 
+      //--  --Curve--->    <----Surface----
+      TransOnCurve   = IntCurveSurface_In;
+    }
+    else if(CosDir > TOLERANCE_ANGULAIRE) { 
+      //--  --Curve--->  ----Surface-->
+      TransOnCurve   = IntCurveSurface_Out;
+    }	  
+    else { 
+      TransOnCurve   = IntCurveSurface_Tangent;
+    }
+  }
+  else { 
+    TransOnCurve   = IntCurveSurface_Tangent;
+  }
+}
+//================================================================================
+void IntCurveSurface_ComputeParamsOnQuadric(const TheSurface& surface,
+					    const gp_Pnt& P,
+					    Standard_Real& u,
+					    Standard_Real& v) { 
+  GeomAbs_SurfaceType SurfaceType = TheSurfaceTool::GetType(surface);
+  switch(SurfaceType) { 
+  case GeomAbs_Plane: 
+    {
+      ElSLib::Parameters(TheSurfaceTool::Plane(surface),P,u,v);
+	break;
+      }
+  case GeomAbs_Cylinder:
+    {
+      ElSLib::Parameters(TheSurfaceTool::Cylinder(surface),P,u,v);
+	break;
+      }
+  case GeomAbs_Cone:
+    {
+      ElSLib::Parameters(TheSurfaceTool::Cone(surface),P,u,v);
+	break;
+      }   
+  case GeomAbs_Sphere:
+    {
+      ElSLib::Parameters(TheSurfaceTool::Sphere(surface),P,u,v);
+	break;
+      }
+#ifndef DEB
+  default: 	break;      
+#endif
+  }
+}
+//================================================================================
+
+
+
+
+/* 
+
+  Standard_Real u1,v1,u2,v2;
+  u1 = TheSurfaceTool::FirstUParameter(surface);
+  v1 = TheSurfaceTool::FirstVParameter(surface);
+  u2 = TheSurfaceTool::LastUParameter(surface);
+  v2 = TheSurfaceTool::LastVParameter(surface);
+  Standard_Integer nbsu,nbsv;
+  nbsu = TheSurfaceTool::NbSamplesU(surface,u1,u2);
+  nbsv = TheSurfaceTool::NbSamplesV(surface,v1,v2);
+  IntCurveSurface_ThePolyhedron    polyhedron(surface,nbsu,nbsv,u1,v1,u2,v2);
+
+*/
+//====================================================================================
+// Estimation of limits for infinite surfaces
+//====================================================================================
+
+//================================================================================
+static void EstLimForInfExtr(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Boolean IsOffSurf,
+			     const Standard_Integer nbsu, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection)
+
+{
+
+  NoIntersection = Standard_False;
+
+  Handle(Adaptor3d_HSurface) aBasSurf; 
+
+  if(IsOffSurf) aBasSurf = TheSurfaceTool::BasisSurface(surface);
+
+  gp_Dir aDirOfExt;
+
+  if(IsOffSurf) aDirOfExt = aBasSurf->Direction();
+  else aDirOfExt = TheSurfaceTool::Direction(surface);
+
+  Standard_Real tolang = TOLERANCE_ANGULAIRE;
+
+  if(aDirOfExt.IsParallel(Line.Direction(), tolang)) {
+    NoIntersection = Standard_True;
+    return;
+  }
+
+  if((V1inf || V2inf) && !(U1inf || U2inf)) {
+
+    Standard_Real vmin = RealLast(), vmax = -vmin;
+    gp_Lin aL;
+    Standard_Real step = (U2new - U1new) / nbsu;
+    Standard_Real u = U1new, v;
+    gp_Pnt aP;
+    Extrema_POnCurv aP1, aP2;
+    Standard_Integer i;
+
+    for(i = 0; i <= nbsu; i++) {
+
+      TheSurfaceTool::D0(surface, u, 0., aP);
+      aL.SetLocation(aP);
+      aL.SetDirection(aDirOfExt);
+
+      Extrema_ExtElC aExtr(aL, Line, tolang);
+      
+      if(!aExtr.IsDone()) return;
+
+      if(aExtr.IsParallel()) {
+	NoIntersection = Standard_True;
+	return;
+      }
+
+      aExtr.Points(1, aP1, aP2);
+      v = aP1.Parameter();
+      vmin = Min(vmin, v);
+      vmax = Max(vmax, v);
+
+      u += step;
+
+    }
+
+    vmin = vmin - Abs(vmin) - 10.;
+    vmax = vmax + Abs(vmax) + 10.;
+
+    V1new = Max(V1new, vmin);
+    V2new = Min(V2new, vmax);
+
+  }
+  else if(U1inf || U2inf) {
+
+    Standard_Real umin = RealLast(), umax = -umin;
+    Standard_Real u0 = Min(Max(0., U1new), U2new);
+    Standard_Real v0 = Min(Max(0., V1new), V2new);
+    gp_Pnt aP;
+    TheSurfaceTool::D0(surface, u0, v0, aP);
+    gp_Pln aRefPln(aP, aDirOfExt);
+
+    Handle(Adaptor3d_HCurve) aBasCurv;
+
+    if(IsOffSurf) aBasCurv = aBasSurf->BasisCurve();
+    else aBasCurv = TheSurfaceTool::BasisCurve(surface);
+
+    ProjLib_Plane Projector(aRefPln);
+
+    Projector.Project(Line);
+
+    if(!Projector.IsDone()) return;
+
+    gp_Lin2d Line2d = Projector.Line();
+
+    GeomAbs_CurveType aCurvTyp = aBasCurv->GetType();
+
+    if(aCurvTyp == GeomAbs_Line) {
+      
+      Projector.Project(aBasCurv->Line());
+
+      if(!Projector.IsDone()) return;
+
+      gp_Lin2d aL2d = Projector.Line();
+
+      IntAna2d_AnaIntersection anInter(Line2d, aL2d);
+
+      if(!anInter.IsDone()) return;
+
+      if(anInter.IsEmpty() || anInter.IdenticalElements() || 
+	                      anInter.ParallelElements()     ) {
+	NoIntersection = Standard_True;
+	return;
+      }
+
+      const IntAna2d_IntPoint& anIntPnt = anInter.Point(1);
+      umin = umax = anIntPnt.ParamOnSecond();
+    }
+    else if(aCurvTyp == GeomAbs_Parabola || aCurvTyp == GeomAbs_Hyperbola) {
+
+      IntAna2d_Conic aCon(Line2d);
+      IntAna2d_AnaIntersection anInter;
+      
+      if(aCurvTyp == GeomAbs_Parabola) {
+	Projector.Project(aBasCurv->Parabola());
+	if(!Projector.IsDone()) return;
+
+	const gp_Parab2d& aP2d = Projector.Parabola();
+
+	anInter.Perform(aP2d, aCon);
+      }
+      else {
+	Projector.Project(aBasCurv->Hyperbola());
+	if(!Projector.IsDone()) return;
+
+	const gp_Hypr2d& aH2d = Projector.Hyperbola();
+	anInter.Perform(aH2d, aCon);
+      }
+
+      if(!anInter.IsDone()) return;
+
+      if(anInter.IsEmpty()) {
+	NoIntersection = Standard_True;
+	return;
+      }
+
+      Standard_Integer i, nbint = anInter.NbPoints();
+      for(i = 1; i <= nbint; i++) {
+
+	const IntAna2d_IntPoint& anIntPnt = anInter.Point(i);
+
+	umin = Min(anIntPnt.ParamOnFirst(), umin);
+	umax = Max(anIntPnt.ParamOnFirst(), umax);
+ 
+      }
+
+    }
+    else {
+      return;
+    }
+      
+    umin = umin - Abs(umin) - 10;
+    umax = umax + Abs(umax) + 10;
+
+    U1new = Max(U1new, umin);
+    U2new = Min(U2new, umax);
+    
+    if(V1inf || V2inf) {
+      EstLimForInfExtr(Line, surface, IsOffSurf, nbsu, 
+		       Standard_False, Standard_False, V1inf, V2inf,
+		       U1new, U2new, V1new, V2new, NoIntersection);
+    }
+  }
+    
+  return;
+  
+}
+
+//================================================================================
+//=======================================================================
+//function : ProjectIntersectAndEstLim
+//purpose  : project <theLine> and it's X-axe symmetric line to <thePln> and
+//           intersect resulting curve with <theBasCurvProj>.
+//           Then estimate max and min parameters of intersection on
+//           <theBasCurvProj>.
+//           Is called from EstLimForInfRevl()
+//=======================================================================
+
+static void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
+				      const gp_Pln&        thePln,
+				      const ProjLib_Plane& theBasCurvProj,
+				      Standard_Real&       theVmin,
+				      Standard_Real&       theVmax,
+				      Standard_Boolean&    theNoIntersection)
+{
+  ProjLib_Plane aLineProj( thePln, theLine );
+  if (!aLineProj.IsDone()) {
+#ifdef DEB
+    cout
+      << "Info: IntCurveSurface_Inter::ProjectIntersectAndEstLim(), !aLineProj.IsDone()"
+	<< endl;
+#endif
+    return;
+  }
+  gp_Lin2d aLin2d = aLineProj.Line();
+
+  // make a second line X-axe symmetric to the first one 
+  gp_Pnt2d aP1 = aLin2d.Location();
+  gp_Pnt2d aP2 (aP1.XY() + aLin2d.Direction().XY());
+  gp_Pnt2d aP1sym (aP1.X(), -aP1.Y());
+  gp_Pnt2d aP2sym (aP2.X(), -aP2.Y());
+  gp_Lin2d aLin2dsym (aP1sym, gp_Vec2d(aP1sym,aP2sym));
+  
+  // intersect projections
+  IntAna2d_Conic aCon    (aLin2d);
+  IntAna2d_Conic aConSym (aLin2dsym);
+  IntAna2d_AnaIntersection anIntersect;
+  IntAna2d_AnaIntersection anIntersectSym;
+  
+  switch (theBasCurvProj.GetType()) {
+  case GeomAbs_Line:
+    anIntersectSym.Perform(theBasCurvProj.Line(), aConSym); 
+    anIntersect.Perform(theBasCurvProj.Line(), aCon); break;
+  case GeomAbs_Hyperbola:			  
+    anIntersectSym.Perform(theBasCurvProj.Hyperbola(), aConSym); 
+    anIntersect.Perform(theBasCurvProj.Hyperbola(), aCon); break;
+  case GeomAbs_Parabola:			  
+    anIntersectSym.Perform(theBasCurvProj.Parabola(), aConSym); 
+    anIntersect.Perform(theBasCurvProj.Parabola(), aCon); break;
+  default:
+    return; // not infinite curve
+  }
+
+  // retrieve params of intersections
+  Standard_Integer aNbIntPnt = anIntersect.IsDone() ? anIntersect.NbPoints() : 0;
+  Standard_Integer aNbIntPntSym = anIntersectSym.IsDone() ? anIntersectSym.NbPoints() : 0;
+  Standard_Integer iPnt, aNbPnt = Max (aNbIntPnt, aNbIntPntSym);
+  
+  if (aNbPnt == 0) {
+    theNoIntersection = Standard_True;
+    return;
+  }
+  Standard_Real aParam;
+  for (iPnt = 1; iPnt <= aNbPnt; iPnt++)
+  {
+    if (iPnt <= aNbIntPnt) {
+      const IntAna2d_IntPoint& aIntPnt = anIntersect.Point(iPnt);
+      aParam = aIntPnt.ParamOnFirst();
+      theVmin = Min (theVmin, aParam );
+      theVmax = Max (theVmax, aParam );
+    }
+    if (iPnt <= aNbIntPntSym) {
+      const IntAna2d_IntPoint& aIntPnt = anIntersectSym.Point(iPnt);
+      aParam = aIntPnt.ParamOnFirst();
+      theVmin = Min (theVmin, aParam );
+      theVmax = Max (theVmax, aParam );
+    }
+  }
+
+  return;
+}
+//=======================================================================
+//function : EstLimForInfRevl
+//purpose  : Estimate V1 and V2 to pass to InternalPerform() if they are
+//           infinite for Surface of Revolution
+//           Algo: intersect projections of Line and basis curve on the
+//           plane passing through revolution axe
+//=======================================================================
+
+static void EstLimForInfRevl(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection)
+{
+
+  NoIntersection = Standard_False;
+
+  if (U1inf || U2inf) {
+    if (U1inf)
+      U1new = Max (0., U1new);
+    else
+      U2new = Min (2 * PI, U2new);
+    if (! V1inf && !V2inf) return;
+  }
+
+  Handle(Adaptor3d_HCurve) aBasisCurve = TheSurfaceTool::BasisCurve(surface);
+  gp_Ax1 aRevAx = TheSurfaceTool::AxeOfRevolution(surface);
+  gp_Vec aXVec = aRevAx.Direction();
+  Standard_Real aTolAng = Precision::Angular();
+
+  // make plane to project a basis curve
+  gp_Pnt O = aRevAx.Location();
+  Standard_Real aU = 0.;
+  gp_Pnt P = aBasisCurve->Value(aU);
+  while (O.SquareDistance(P) <= Precision::PConfusion() ||
+	 aXVec.IsParallel( gp_Vec(O,P), aTolAng)) {
+    aU += 1.;
+    P = aBasisCurve->Value(aU);
+    if (aU > 3)
+      // basis curve is a line coinciding with aXVec, P is any not on aXVec
+      P = gp_Pnt(aU, aU+1, aU+2);
+  }
+  gp_Vec aNVec = aXVec ^ gp_Vec(O,P);
+  gp_Pln aPln (gp_Ax3 (O, aNVec ,aXVec));
+
+  // project basic curve
+  ProjLib_Plane aBasCurvProj(aPln);
+  switch (aBasisCurve->GetType()) {
+  case GeomAbs_Line:
+    aBasCurvProj.Project(aBasisCurve->Line     ()); break;
+  case GeomAbs_Hyperbola:			
+    aBasCurvProj.Project(aBasisCurve->Hyperbola()); break;
+  case GeomAbs_Parabola:			
+    aBasCurvProj.Project(aBasisCurve->Parabola ()); break;
+  default:
+    return; // not infinite curve
+  }
+  if (!aBasCurvProj.IsDone()) {
+#ifdef DEB
+    cout << "Info: IntCurveSurface_Inter::EstLimForInfRevl(), !aBasCurvProj.IsDone()" << endl;
+#endif
+    return;
+  }
+  // make plane to project Line
+  if (aXVec.IsParallel( Line.Direction(), aTolAng)) {
+    P = Line.Location();
+    while (O.SquareDistance(P) <= Precision::PConfusion()) {
+      aU += 1.;
+      P = gp_Pnt(aU, aU+1, aU+2); // any not on aXVec
+    }
+    aNVec = aXVec ^ gp_Vec(O,P);
+  } else
+    aNVec = aXVec.Crossed( Line.Direction() );
+  
+  aPln  = gp_Pln (gp_Ax3 (O, aNVec ,aXVec));
+
+  // make a second plane perpendicular to the first one, rotated around aXVec
+  gp_Pln aPlnPrp = aPln.Rotated (gp_Ax1 (O,aXVec), PI/2.);
+  
+  // project Line and it's X-axe symmetric one to plane and intersect
+  // resulting curve with projection of Basic Curev
+  Standard_Real aVmin = RealLast(), aVmax = -aVmin;
+  Standard_Boolean aNoInt1 = Standard_False, aNoInt2 = Standard_False;
+  ProjectIntersectAndEstLim (Line, aPln,    aBasCurvProj, aVmin, aVmax, aNoInt1);
+  ProjectIntersectAndEstLim (Line, aPlnPrp, aBasCurvProj, aVmin, aVmax, aNoInt2);
+
+  if (aNoInt1 && aNoInt2) {
+    NoIntersection = Standard_True;
+    return;
+  }
+  
+  aVmin = aVmin - Abs(aVmin) - 10;
+  aVmax = aVmax + Abs(aVmax) + 10;
+
+  if (V1inf) V1new = aVmin;
+  if (V2inf) V2new = aVmax;
+
+  //cout << "EstLimForInfRevl: Vmin " << V1new << " Vmax " << V2new << endl;
+  
+  return;
+}
+
+//================================================================================
+static void EstLimForInfOffs(const gp_Lin&   Line,
+			     const TheSurface& surface, 
+			     const Standard_Integer nbsu, 
+			     const Standard_Boolean U1inf, 
+			     const Standard_Boolean U2inf, 
+			     const Standard_Boolean V1inf, 
+			     const Standard_Boolean V2inf, 
+			     Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new, 
+			     Standard_Boolean& NoIntersection)
+{
+
+  NoIntersection = Standard_False;
+
+  const Handle(Adaptor3d_HSurface)& aBasSurf = TheSurfaceTool::BasisSurface(surface);
+  Standard_Real anOffVal = TheSurfaceTool::OffsetValue(surface);
+
+  GeomAbs_SurfaceType aTypeOfBasSurf = aBasSurf->GetType();
+
+  //  case for plane, cylinder and cone - make equivalent surface;
+  if(aTypeOfBasSurf == GeomAbs_Plane) {
+
+    gp_Pln aPln = aBasSurf->Plane();
+    gp_Vec aT = aPln.Position().XDirection()^aPln.Position().YDirection();
+    aT *= anOffVal;
+    aPln.Translate(aT);
+    IntAna_IntConicQuad LinPlane(Line,aPln,TOLERANCE_ANGULAIRE);
+
+    if(!LinPlane.IsDone()) return;
+
+    if(LinPlane.IsParallel() || LinPlane.IsInQuadric()) {
+
+      NoIntersection = Standard_True;
+      return;
+
+    }
+    
+    Standard_Real u, v;
+    ElSLib::Parameters(aPln, LinPlane.Point(1), u, v);
+    U1new = Max(U1new, u - 10.);
+    U2new = Min(U2new, u + 10.);
+    V1new = Max(V1new, v - 10.);
+    V2new = Min(V2new, v + 10.);
+
+  }
+  else if(aTypeOfBasSurf == GeomAbs_Cylinder) {
+
+    gp_Cylinder aCyl = aBasSurf->Cylinder();
+
+    Standard_Real aR = aCyl.Radius();
+    gp_Ax3 anA = aCyl.Position();
+
+    if (anA.Direct()) 
+      aR += anOffVal;
+    else 
+      aR -= anOffVal;
+
+    if ( aR >= TOLTANGENCY ) {
+      aCyl.SetRadius(aR);
+    }
+    else if ( aR <= -TOLTANGENCY ){
+      anA.Rotate(gp_Ax1(anA.Location(), anA.Direction()), PI);
+      aCyl.SetPosition(anA);
+// modified by NIZHNY-MKK  Mon Oct  3 17:37:54 2005
+//       aCyl.SetRadius(Abs(aR));
+      aCyl.SetRadius(-aR);
+    }
+    else {
+
+      NoIntersection = Standard_True;
+      return;
+      
+    }
+
+    IntAna_IntConicQuad LinCylinder(Line, aCyl);
+
+    if(!LinCylinder.IsDone()) return;
+
+    if(LinCylinder.IsParallel() || LinCylinder.IsInQuadric()) {
+
+      NoIntersection = Standard_True;
+      return;
+
+    }
+    
+    Standard_Integer i, nbp = LinCylinder.NbPoints();
+    Standard_Real vmin = RealLast(), vmax = -vmin, u, v;
+
+    for(i = 1; i <= nbp; i++) {
+
+      ElSLib::Parameters(aCyl, LinCylinder.Point(i), u, v);
+      vmin = Min(vmin, v);
+      vmax = Max(vmax, v);
+
+    } 
+
+    V1new = Max(V1new, vmin - Abs(vmin) - 10.);
+    V2new = Min(V2new, vmax + Abs(vmax) + 10.);
+
+  }
+  else if(aTypeOfBasSurf == GeomAbs_Cone) {
+
+    gp_Cone aCon = aBasSurf->Cone();
+    Standard_Real anAng = aCon.SemiAngle();
+    Standard_Real aR = aCon.RefRadius() + anOffVal * Cos(anAng);
+    gp_Ax3 anA = aCon.Position();
+    if ( aR >= 0.) {
+
+      gp_Vec aZ( anA.Direction());
+      aZ *= - anOffVal * Sin(anAng);
+      anA.Translate(aZ);
+      aCon.SetPosition(anA);
+      aCon.SetRadius(aR);
+      aCon.SetSemiAngle(anAng);
+
+    }
+    else {
+
+      return;
+
+    }
+
+    IntAna_IntConicQuad LinCone(Line, aCon);
+
+    if(!LinCone.IsDone()) return;
+
+    if(LinCone.IsParallel() || LinCone.IsInQuadric()) {
+
+      NoIntersection = Standard_True;
+      return;
+
+    }
+    
+    Standard_Integer i, nbp = LinCone.NbPoints();
+    Standard_Real vmin = RealLast(), vmax = -vmin, u, v;
+
+    for(i = 1; i <= nbp; i++) {
+
+      ElSLib::Parameters(aCon, LinCone.Point(i), u, v);
+      vmin = Min(vmin, v);
+      vmax = Max(vmax, v);
+
+    } 
+
+    V1new = Max(V1new, vmin - Abs(vmin) - 10.);
+    V2new = Min(V2new, vmax + Abs(vmax) + 10.);
+
+  }
+  else if(aTypeOfBasSurf == GeomAbs_SurfaceOfExtrusion) {
+
+    Standard_Real anU1 = U1new, anU2 = U2new;
+
+    EstLimForInfExtr(Line, surface, Standard_True, nbsu, 
+		     U1inf, U2inf, V1inf, V2inf, 
+		     U1new, U2new, V1new, V2new, NoIntersection);
+
+    if(NoIntersection) return;
+
+    if(U1inf || U2inf) {
+
+      GeomAbs_CurveType aBasCurvType = aBasSurf->BasisCurve()->GetType();
+      if(aBasCurvType == GeomAbs_Line) {
+	U1new = Max(anU1, -1.e10);
+	U2new = Min(anU2,  1.e10);
+      }	
+      else if(aBasCurvType == GeomAbs_Parabola) {
+	gp_Parab aPrb  = aBasSurf->BasisCurve()->Parabola();
+	Standard_Real aF = aPrb.Focal();
+	Standard_Real dU = 2.e5 * Sqrt(aF);
+	U1new = Max(anU1, -dU);
+	U2new = Min(anU2,  dU);
+      }
+      else if(aBasCurvType == GeomAbs_Hyperbola) {
+	U1new = Max(anU1, -30.);
+	U2new = Min(anU2,  30.);
+      }
+      else {
+	U1new = Max(anU1, -1.e10);
+	U2new = Min(anU2,  1.e10);
+      }	
+
+    }
+
+  }
+  else if(aTypeOfBasSurf == GeomAbs_SurfaceOfRevolution) {
+
+    GeomAbs_CurveType aBasCurvType = aBasSurf->BasisCurve()->GetType();
+    if(aBasCurvType == GeomAbs_Line) {
+      V1new = Max(V1new, -1.e10);
+      V2new = Min(V2new,  1.e10);
+    }	
+    else if(aBasCurvType == GeomAbs_Parabola) {
+      gp_Parab aPrb  = aBasSurf->BasisCurve()->Parabola();
+      Standard_Real aF = aPrb.Focal();
+      Standard_Real dV = 2.e5 * Sqrt(aF);
+      V1new = Max(V1new, -dV);
+      V2new = Min(V2new,  dV);
+    }
+    else if(aBasCurvType == GeomAbs_Hyperbola) {
+     V1new  = Max(V1new, -30.);
+     V2new  = Min(V2new,  30.);
+    }
+    else {
+     V1new  = Max(V1new, -1.e10);
+     V2new  = Min(V2new,  1.e10);
+    }	
+
+  }
+  else {
+
+    V1new = Max(V1new, -1.e10);
+    V2new = Min(V2new,  1.e10);
+
+  }
+
+}
+
+//================================================================================
+static void EstLimForInfSurf(Standard_Real& U1new, 
+			     Standard_Real& U2new, 
+			     Standard_Real& V1new, 
+			     Standard_Real& V2new)
+{
+    U1new = Max(U1new, -1.e10);
+    U2new = Min(U2new,  1.e10);
+    V1new = Max(V1new, -1.e10);
+    V2new = Min(V2new,  1.e10);
+}
+
+#if 0
+//-- jgv patch (from)
+static Handle(Geom_Curve) GetCurve(const Handle(Adaptor3d_HCurve) AdCurve)
+{
+  Handle(Geom_Curve) theCurve;
+  GeomAbs_CurveType CurveType = AdCurve->GetType();
+  switch (CurveType)
+    {
+    case GeomAbs_Line:
+      theCurve = new Geom_Line( AdCurve->Line() );
+      break;
+    case GeomAbs_Circle:
+      theCurve = new Geom_Circle( AdCurve->Circle() );
+      break;
+    case GeomAbs_Ellipse:
+      theCurve = new Geom_Ellipse( AdCurve->Ellipse() );
+      break;
+    case GeomAbs_Hyperbola:
+      theCurve = new Geom_Hyperbola( AdCurve->Hyperbola() );
+      break;
+    case GeomAbs_Parabola:
+      theCurve = new Geom_Parabola( AdCurve->Parabola() );
+      break;
+    case GeomAbs_BezierCurve:
+      theCurve = AdCurve->Bezier();
+      break;
+    case GeomAbs_BSplineCurve:
+      theCurve = AdCurve->BSpline();
+      break;
+    }
+  if (!theCurve.IsNull())
+    {
+      Standard_Real f = AdCurve->FirstParameter();
+      Standard_Real l = AdCurve->LastParameter();
+      theCurve = new Geom_TrimmedCurve( theCurve, f, l );
+    }
+  return theCurve;
+}
+
+static Handle(Geom_Surface) GetSurface(const Handle(Adaptor3d_HSurface) AdSurface)
+{
+  Handle(Geom_Surface) theSurface;
+  GeomAbs_SurfaceType SurfaceType = AdSurface->GetType();
+  switch (SurfaceType)
+    {
+    case GeomAbs_Plane:
+      theSurface = new Geom_Plane( AdSurface->Plane() );
+      break;
+    case GeomAbs_Cylinder:
+      theSurface = new Geom_CylindricalSurface( AdSurface->Cylinder() );
+      break;
+    case GeomAbs_Cone:
+      theSurface = new Geom_ConicalSurface( AdSurface->Cone() );
+      break;
+    case GeomAbs_Torus:
+      theSurface = new Geom_ToroidalSurface( AdSurface->Torus() );
+      break;
+    case GeomAbs_Sphere:
+      theSurface = new Geom_SphericalSurface( AdSurface->Sphere() );
+      break;
+    case GeomAbs_BezierSurface:
+      theSurface = AdSurface->Bezier();
+      break;
+    case GeomAbs_BSplineSurface:
+      theSurface = AdSurface->BSpline();
+      break;
+    case GeomAbs_SurfaceOfRevolution:
+      {
+	gp_Ax1 Axis = AdSurface->AxeOfRevolution();
+	Handle(Adaptor3d_HCurve) AdBC = AdSurface->BasisCurve();
+	Handle(Geom_Curve) BC = GetCurve(AdBC);
+	if (!BC.IsNull())
+	  theSurface = new Geom_SurfaceOfRevolution( BC, Axis );
+	break;
+      }
+    case GeomAbs_SurfaceOfExtrusion:
+      {
+	gp_Dir Direction = AdSurface->Direction();
+	Handle(Adaptor3d_HCurve) AdBC = AdSurface->BasisCurve();
+	Handle(Geom_Curve) BC = GetCurve(AdBC);
+	if (!BC.IsNull())
+	  theSurface = new Geom_SurfaceOfLinearExtrusion( BC, Direction );
+	break;
+      }
+    }
+  if (!theSurface.IsNull())
+    {
+      Standard_Real uf = AdSurface->FirstUParameter();
+      Standard_Real ul = AdSurface->LastUParameter();
+      Standard_Real vf = AdSurface->FirstVParameter();
+      Standard_Real vl = AdSurface->LastVParameter();
+      theSurface = new Geom_RectangularTrimmedSurface( theSurface, uf, ul, vf, vl );
+    }
+  return theSurface;
+}
+//-- jgv patch (to)
+#endif

@@ -1,0 +1,54 @@
+-- File:	Geom2dToIGES_Geom2dVector.cdl
+-- Created:	Wed Feb  1 15:38:00 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class Geom2dVector from Geom2dToIGES inherits Geom2dEntity from Geom2dToIGES
+
+    ---Purpose: This class implements the transfer of the Vector from Geom2d
+    --          to IGES . These can be :
+    --          . Vector
+    --              * Direction
+    --              * VectorWithMagnitude
+  
+uses
+ 
+    Vector               from Geom2d,
+    VectorWithMagnitude  from Geom2d,
+    Direction            from Geom2d,
+    Direction            from IGESGeom,
+    Geom2dEntity         from Geom2dToIGES
+
+     
+is 
+    
+    Create returns Geom2dVector from Geom2dToIGES;
+
+
+    Create(G2dE : Geom2dEntity from Geom2dToIGES)  
+    	 returns Geom2dVector from Geom2dToIGES;
+    ---Purpose : Creates a tool Geom2dVector ready to run and sets its
+    --         fields as G2dE's.
+
+    Transfer2dVector   (me    : in out;
+                        start : Vector from Geom2d)
+    	 returns mutable Direction from IGESGeom;
+    ---Purpose :  Transfert  a  GeometryEntity which  answer True  to  the
+    --            member : BRepToIGES::IsGeomVector(Geometry).  If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+
+    Transfer2dVector   (me    : in out;
+                        start : VectorWithMagnitude from Geom2d)
+    	 returns mutable Direction from IGESGeom;
+
+
+    Transfer2dVector   (me    : in out;
+                        start : Direction from Geom2d)
+    	 returns mutable Direction from IGESGeom;
+
+
+end Geom2dVector;
+
+

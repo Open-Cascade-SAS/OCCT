@@ -1,0 +1,53 @@
+-- File:	IGESBasic_GeneralModule.cdl
+-- Created:	Mon May 10 15:00:51 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class GeneralModule  from IGESBasic     inherits  GeneralModule  from IGESData
+
+    ---Purpose : Definition of General Services for IGESBasic (specific part)
+    --           This Services comprise : Shared & Implied Lists, Copy, Check
+
+uses OStream,
+     Check, ShareTool, EntityIterator, CopyTool,
+     IGESEntity, DirChecker
+
+is
+
+    Create returns mutable GeneralModule from IGESBasic;
+    ---Purpose : Creates a GeneralModule from IGESBasic and puts it into GeneralLib
+
+    OwnSharedCase  (me; CN : Integer; ent : IGESEntity;
+    	    	    iter : in out EntityIterator);
+    ---Purpose : Lists the Entities shared by a given IGESEntity <ent>, from
+    --           its specific parameters : specific for each type
+
+    DirChecker (me; CN : Integer; ent : IGESEntity) returns DirChecker;
+    ---Purpose : Returns a DirChecker, specific for each type of Entity
+    --           (identified by its Case Number) : this DirChecker defines
+    --           constraints which must be respected by the DirectoryPart
+
+    OwnCheckCase (me; CN : Integer; ent : IGESEntity; shares : ShareTool;
+    	          ach    : in out Check);
+    ---Purpose : Performs Specific Semantic Check for each type of Entity
+
+
+    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : Specific creation of a new void entity
+
+    OwnCopyCase (me; CN : Integer;
+    	         entfrom : IGESEntity; entto : mutable IGESEntity;
+    	         TC : in out CopyTool);
+    ---Purpose : Copies parameters which are specific of each Type of Entity
+
+    CategoryNumber (me; CN : Integer; ent : Transient; shares : ShareTool)
+    	returns Integer  is redefined;
+    ---Purpose : Returns a category number which characterizes an entity
+    --           Structure for Groups, Figures & Co
+    --           Description for External Refs
+    --           Auxiliary for other
+
+end GeneralModule;

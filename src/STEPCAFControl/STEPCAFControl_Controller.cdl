@@ -1,0 +1,28 @@
+-- File:	STEPCAFControl_Controller.cdl
+-- Created:	Thu Oct  5 18:49:55 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Controller from STEPCAFControl inherits Controller from STEPControl
+
+    ---Purpose: Extends Controller from STEPControl in order to provide
+    --          ActorWrite adapted for writing assemblies from DECAF
+    --          Note that ActorRead from STEPControl is used for reading
+    --          (inherited automatically)
+
+uses
+    ActorWrite from STEPCAFControl
+
+is
+
+    Create returns mutable Controller;
+    ---Purpose : Initializes the use of STEP Norm (the first time)
+
+    Init (myclass) returns Boolean;
+    ---Purpose : Standard Initialisation. It creates a Controller for STEP-XCAF
+    --           and records it to various names, available to select it later
+    --           Returns True when done, False if could not be done
+
+end Controller;

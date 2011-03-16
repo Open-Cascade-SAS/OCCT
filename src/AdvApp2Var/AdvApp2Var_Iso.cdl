@@ -1,0 +1,80 @@
+-- File:	AdvApp2Var_Iso.cdl
+-- Created:	Tue Apr  9 17:11:20 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+class Iso from AdvApp2Var
+
+uses
+
+    Boolean,Integer,Real from Standard,
+    HArray1OfReal from TColStd,
+    HArray2OfReal from TColStd,    
+    HArray1OfPnt from TColgp,
+    IsoType from GeomAbs,
+    EvaluatorFunc2Var,Context,Node from AdvApp2Var
+    
+
+is
+
+    Create  returns Iso;
+    Create(type : IsoType from GeomAbs; iu, iv  :  Integer) returns Iso;
+    Create(type : IsoType from GeomAbs; cte : Real; 
+           Ufirst, Ulast, Vfirst,  Vlast : Real;
+           pos, iu, iv  :  Integer) returns Iso;
+    Create(Other : Iso) returns Iso is private;
+    IsApproximated(me) returns Boolean;
+    HasResult(me) returns Boolean;
+    MakeApprox(me: in out;  Conditions : Context;
+    	    	    	    a,b,c,d : Real;
+    	    	    	    func : EvaluatorFunc2Var;
+    	    	    	    NodeBegin,  NodeEnd : in out  Node  from AdvApp2Var ); 
+    ChangeDomain(me: in out; a,b : Real);
+    ChangeDomain(me: in out; a,b,c,d : Real);
+    SetConstante(me: in out; newcte : Real);
+    SetPosition(me: in out; newpos : Integer);
+    ResetApprox(me: in out);
+    OverwriteApprox(me: in out);
+    Type(me) returns IsoType;
+    Constante(me) returns Real;
+    T0(me) returns Real;
+    T1(me) returns Real;    
+    U0(me) returns Real;
+    U1(me) returns Real;
+    V0(me) returns Real;
+    V1(me) returns Real;
+    UOrder(me) returns Integer;
+    VOrder(me) returns Integer;
+    Position(me) returns Integer;
+    NbCoeff(me) returns Integer;
+    Polynom(me) 
+    ---C++: return const & 
+    returns HArray1OfReal;
+    SomTab(me) returns HArray1OfReal;
+    DifTab(me) returns HArray1OfReal;
+    MaxErrors(me) returns HArray2OfReal;
+    MoyErrors(me) returns HArray2OfReal;
+   
+
+fields
+
+    myType        : IsoType from GeomAbs;
+    myConstPar    : Real;
+    myU0, myU1    : Real;
+    myV0, myV1    : Real;
+    myPosition    : Integer;
+    myExtremOrder : Integer;
+    myDerivOrder  : Integer;
+    myNbCoeff     : Integer;
+    myApprIsDone  : Boolean;
+    myHasResult   : Boolean;
+    myEquation    : HArray1OfReal;
+    myMaxErrors   : HArray2OfReal;
+    myMoyErrors   : HArray2OfReal;   
+    mySomTab      : HArray1OfReal;
+    myDifTab      : HArray1OfReal;
+
+end Iso;
+

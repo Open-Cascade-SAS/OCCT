@@ -1,0 +1,86 @@
+--
+-- File:	Xw_PixMap.cdl
+-- Created:	14 October 1999
+-- Author:	VKH
+-- Updated:     GG IMP100701 Add the "depth" field and method
+--              to the pixmap object.
+--
+---Copyright:	MatraDatavision 1999
+
+class PixMap from Xw
+
+    ---Version:
+
+    ---Purpose: This class defines a X11 pixmap
+
+    ---Keywords: Bitmap, Pixmap, X11
+
+inherits
+    PixMap                from Aspect
+uses
+    Handle                from Aspect,
+    Color                 from Quantity,
+    Window                from Aspect,
+    Window                from Xw
+raises
+    PixmapDefinitionError from Aspect,
+    PixmapError           from Aspect
+is
+    Create ( aWindow          : Window from Aspect;
+             aWidth, anHeight : Integer from Standard;
+             aDepth           : Integer from Standard = 0 )
+    returns mutable PixMap from Xw
+    raises PixmapDefinitionError from Aspect;
+    ---Level: Public
+    ---Purpose:  Warning! When <aDepth> is NULL , the pixmap is created
+    -- with the SAME depth than the window <aWindow>
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    Destroy ( me : mutable )
+    ---Level: Advanced
+    ---Purpose: Destroies the Pixmap
+    --  Trigger: Raises if Pixmap is not defined properly
+    raises PixmapError from Aspect is virtual;
+
+    Dump ( me ; aFilename : CString from Standard;
+           aGammaValue: Real from Standard = 1.0 )
+    returns Boolean
+    is virtual;
+    ---Level: Advanced
+    ---Purpose:
+    -- Dumps the Bitmap to an image file with
+    -- an optional gamma correction value
+    -- and returns TRUE if the dump occurs normaly.
+    ---Category: Methods to modify the class definition
+
+    PixelColor ( me         : in;
+                 theX, theY : in Integer from Standard )
+    returns Color from Quantity
+    is virtual;
+    ---Purpose:
+    -- Returns the pixel color.
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    PixmapID ( me ) returns Handle from Aspect is virtual;
+    ---Level: Advanced
+    ---Purpose: Returns the ID of the just created pixmap
+    ---Category: Inquire methods
+
+    ----------------------------
+    -- Category: Private methods
+    ----------------------------
+
+    PreferedDepth( me ; aWindow : Window from Aspect;
+                   aDepth : Integer from Standard)
+    returns Integer from Standard is private;
+
+fields
+    myPixmap : Handle from Aspect is protected;
+    myWindow : Window from Xw;
+end PixMap;

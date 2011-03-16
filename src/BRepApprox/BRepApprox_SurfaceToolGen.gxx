@@ -1,0 +1,28 @@
+// File:	BRepApprox_SurfaceToolGen.gxx
+// Created:	Thu Jul 20 15:43:10 1995
+// Author:	Modelistation
+//		<model@meteox>
+
+
+#include TheSurface_hxx
+
+
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU(const TheSurface& S) { 
+  return(10);
+}
+
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV(const TheSurface& S) { 
+  return(10);
+}
+
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU(const TheSurface& S,
+						  const Standard_Real u1,
+						  const Standard_Real u2) { 
+  return(10);
+}
+
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV(const TheSurface& S,
+						  const Standard_Real v1,
+						  const Standard_Real v2) { 
+  return(10);
+}

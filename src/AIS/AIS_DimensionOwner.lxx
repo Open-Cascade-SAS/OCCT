@@ -1,0 +1,22 @@
+// File:	AIS_DimensionOwner.lxx
+// Created:	Mon Mar  3 15:16:06 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : SetShape
+//purpose  : 
+//=======================================================================
+inline void AIS_DimensionOwner::SetShape(const TopoDS_Shape& aShape)
+{
+  myFixedShape = aShape;
+}
+    
+//=======================================================================
+//function : FixedShape
+//purpose  : 
+//=======================================================================
+inline const TopoDS_Shape& AIS_DimensionOwner::FixedShape() const
+{
+  return myFixedShape;
+}

@@ -1,0 +1,41 @@
+-- File:	Edge.cdl
+-- Created:	Thu Nov 19 12:37:51 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Edge from BRepClass 
+
+	---Purpose: This class  is used to send  the  description of an
+	--          Edge to the classifier. It  contains  an Edge and a
+	--          Face. So the PCurve of the Edge can be found.
+
+uses
+    Edge from TopoDS,
+    Face from TopoDS
+
+is
+    Create returns Edge from BRepClass;
+    
+    Create (E : Edge from TopoDS; F : Face from TopoDS)
+    returns Edge from BRepClass;
+
+    Edge(me : in out) returns Edge from TopoDS
+	---C++: inline
+	---C++: return &
+	---C++: alias "const TopoDS_Edge& Edge() const;"
+    is static;
+    
+    Face(me : in out) returns Face from TopoDS
+	---C++: inline
+	---C++: return &
+	---C++: alias "const TopoDS_Face& Face() const;"
+    is static;
+
+fields
+    myEdge : Edge from TopoDS;
+    myFace : Face from TopoDS;
+
+end Edge;

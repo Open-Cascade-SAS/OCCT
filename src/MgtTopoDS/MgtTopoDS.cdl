@@ -1,0 +1,104 @@
+-- File:	MgtTopoDS.cdl
+-- Created:	Tue Mar  9 11:56:38 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package MgtTopoDS 
+
+	---Purpose: The  package  MgtTopoDS  provides methods to store
+	--          and  retrieve Topological  Data  Structure objects
+	--          from the Database.
+	--          
+	--          The  objects are  translated  between  a transient
+	--          topology and a persitent topology.
+	--          
+	--          *   The TopoDS  package   describes  the transient
+	--          topology.
+	--          
+	--          *  The  PTopoDS  package describes  the persistent
+	--          topology.
+	--          
+	--          As the topological data structure may be completed
+	--          by  inheritance  the  MgtTopoDS package provides a
+	--          mechanism to support  the translation of inherited
+	--          data structure. This mechanism is supported by the
+	--          TranslateTool class.
+	--          
+	--          An error is  raised if  the TranslateTool does not
+	--          match with  the DataStructure  to  translate. This
+	--          check is done with the type of the Model.
+	--          
+	--          This   package   does   not  provides  methods  to
+	--          translate directly Shapes from TopoDS  and PTopoDS
+	--          because the   data structures  are  deferred.   It
+	--          provides methods to support  the implementation of
+	--          Translate methods in the inherited DataStructures.
+	--          
+	--          In  an   inherited data  structure  the  Translate
+	--          method must :
+	--          
+	--          * Create a TranslateTool of the correct type.
+	--          
+	--          * Call the Translate method of MgtTopoDS with this
+	--          Tool.
+
+uses
+
+    TopoDS,
+    TopTools,
+    PTopoDS,
+    PTColStd,
+    MMgt
+
+is
+
+    deferred class TranslateTool;
+	---Purpose: Supports   the translation of   inherited parts of
+	--          classes. Root of all translation tools.
+
+    deferred class TranslateTool1;
+	---Purpose: Supports   the translation of   inherited parts of
+	--          classes. Root of all translation tools.
+
+
+    ---Category: Old translate methods.
+    --           ======================
+
+    Translate(S : Shape                         from TopoDS;  
+    	      T : TranslateTool                 from MgtTopoDS;
+    	      M : in out TransientPersistentMap from PTColStd)
+    	returns HShape from PTopoDS
+    	raises TypeMismatch from Standard;
+    	---Purpose: Translates a Transient Shape onto a Persistent Shape
+
+    Translate(S  : HShape                        from PTopoDS; 
+    	      T  : TranslateTool                 from MgtTopoDS;
+    	      M  : in out PersistentTransientMap from PTColStd;
+    	      Sh : in out Shape from TopoDS) 
+    	raises TypeMismatch from Standard;
+    	---Purpose: Translates a Persistent Shape onto a Transient Shape
+
+
+    ---Category: New translate methods.
+    --           ======================
+
+    Translate1(aShape : Shape from TopoDS;  
+    	       T : TranslateTool1 from MgtTopoDS;
+    	       M : in out TransientPersistentMap from PTColStd;
+    	       aPShape : in out Shape1 from PTopoDS)
+    	raises TypeMismatch from Standard;
+    	---Purpose: Translates a Transient Shape onto a Persistent Shape
+
+    Translate1(aPShape : Shape1 from PTopoDS; 
+    	       T : TranslateTool1 from MgtTopoDS;
+    	       M : in out PersistentTransientMap from PTColStd;
+    	       aShape : in out Shape from TopoDS) 
+    	raises TypeMismatch from Standard;
+    	---Purpose: Translates a Persistent Shape onto a Transient Shape
+
+end MgtTopoDS;

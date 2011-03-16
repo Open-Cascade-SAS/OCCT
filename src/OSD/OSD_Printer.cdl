@@ -1,0 +1,59 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Printer.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+class Printer from OSD 
+
+ ---Purpose: Selects a printer.
+
+uses Error, AsciiString from TCollection
+raises ConstructionError, NullObject, OSDError
+
+is
+  Create (Name : AsciiString) returns Printer
+   ---Purpose: Initializes printer to use with its name.
+   --          The string must contain only ASCII characters
+   --          between ' ' and '~'; this means no control character 
+   --          and no extended ASCII code. If it is not the case the
+   --          exception ConstructionError is raised.
+   ---Level: Advanced
+  raises ConstructionError;
+
+  SetName (me : in out; Name : AsciiString)
+  ---Purpose: Changes name of printer to use.
+  ---Level: Advanced
+  raises ConstructionError, NullObject is static;
+
+  Name (me ;Name : out AsciiString) is static;
+  ---Purpose: Returns name of current printer
+  ---Level: Advanced
+
+ Failed (me) returns Boolean is static;
+  ---Purpose: Returns TRUE if an error occurs
+  ---Level: Advanced
+
+ Reset (me : in out) is static;
+  ---Purpose: Resets error counter to zero
+  ---Level: Advanced
+      
+ Perror (me : in out) 
+  ---Level: Advanced
+  ---Purpose: Raises OSD_Error
+   raises OSDError is static;
+
+ Error (me) returns Integer is static;
+  ---Purpose: Returns error number if 'Failed' is TRUE.
+  ---Level: Advanced
+
+fields
+
+  myName  : AsciiString;
+  myError : Error;
+end Printer from OSD;
+
+

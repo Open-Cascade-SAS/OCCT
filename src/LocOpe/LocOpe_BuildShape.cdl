@@ -1,0 +1,49 @@
+-- File:	LocOpe_BuildShape.cdl
+-- Created:	Mon Sep 16 09:27:16 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class BuildShape from LocOpe
+
+	---Purpose: 
+
+uses Shape       from TopoDS,
+     ListOfShape from TopTools
+
+
+is
+
+    Create
+    	returns BuildShape from LocOpe;
+	---C++: inline
+
+
+    Create(L: ListOfShape from TopTools)
+	---Purpose: Builds shape(s) from  the list <L>.  Uses only the
+	--          faces of <L>.
+	---C++: inline
+    
+    	returns BuildShape from LocOpe;
+
+
+    Perform(me: in out; L: ListOfShape from TopTools)
+	---Purpose: Builds shape(s) from  the list <L>.  Uses only the
+	--          faces of <L>.
+    
+    	is static;
+
+    Shape(me)
+    
+	---C++: inline
+	---C++: return const&
+    	returns Shape from TopoDS
+	is static;
+
+
+fields
+
+    myRes : Shape from TopoDS;
+
+end BuildShape;

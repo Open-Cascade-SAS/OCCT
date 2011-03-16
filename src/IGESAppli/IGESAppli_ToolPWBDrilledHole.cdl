@@ -1,0 +1,63 @@
+-- File:	IGESAppli_ToolPWBDrilledHole.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolPWBDrilledHole  from IGESAppli
+
+    ---Purpose : Tool to work on a PWBDrilledHole. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses PWBDrilledHole from IGESAppli,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolPWBDrilledHole;
+    ---Purpose : Returns a ToolPWBDrilledHole, ready to work
+
+
+    ReadOwnParams (me; ent : mutable PWBDrilledHole;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : PWBDrilledHole;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : PWBDrilledHole;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a PWBDrilledHole <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable PWBDrilledHole) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a PWBDrilledHole
+    --           (NbPropertyValues forced to 3)
+
+    DirChecker (me; ent : PWBDrilledHole) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : PWBDrilledHole;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : PWBDrilledHole; entto : mutable PWBDrilledHole;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : PWBDrilledHole;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolPWBDrilledHole;

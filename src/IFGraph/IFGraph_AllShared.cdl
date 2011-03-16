@@ -1,0 +1,48 @@
+-- File:	AllShared.cdl
+-- Created:	Wed Sep 30 18:30:42 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class AllShared  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class determines all Entities shared by some specific
+    	--           ones, at any level (those which will be lead in a Transfer
+    	--           for instance)
+
+uses Transient, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph) returns AllShared;
+    ---Purpose : creates an AllShared from a graph, empty ready to be filled
+
+    Create (agraph : Graph; ent : any Transient)
+    	returns AllShared;
+    ---Purpose : creates an AllShared which memrizes Entities shared by a given
+    --           one, at any level, including itself
+
+    GetFromEntity (me : in out; ent : any Transient);
+    ---Purpose : adds an entity and its shared ones to the list (allows to
+    --           cumulate all Entities shared by some ones)
+
+    GetFromIter (me : in out; iter : EntityIterator);
+    ---Purpose : Adds Entities from an EntityIterator and all their shared
+    --           ones at any level
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value give all entities noted as shared,
+    	--   including the entities given for construction or to GetFromEntity
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the specific evaluation (shared entities atall levels)
+
+fields
+
+    thegraph : Graph;
+
+end AllShared;

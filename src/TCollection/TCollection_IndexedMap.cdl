@@ -1,0 +1,147 @@
+-- File:	TCollection_IndexedMap.cdl
+-- Created:	Fri Jan  8 17:35:39 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class IndexedMap from TCollection (TheKey as any;
+    	    	    	    	           Hasher as any) -- as MapHasher(TheKey)
+inherits BasicMap from TCollection
+
+	---Purpose: An indexed map is used to  store  keys and to bind
+	-- an index to them. An index is assigned to each new key stored in the map.
+    	-- Indexes incremented as keys are stored in the map. A key
+    	-- can be found by the index, and an index by the key. No key
+    	-- except for the last can be removed, so the indexes are in
+    	-- the range 1..Upper where Upper is the number of
+    	-- keys stored in the map.
+    	-- An entry of an IndexedMap is composed of both the key
+    	-- and the index. An IndexedMap is an ordered map, which
+    	-- allows a linear iteration on its contents. But no data is
+    	-- attached to the key. An IndexedMap is typically used by
+    	-- an algorithm to know if some action is still performed on
+    	-- components of a complex data structure.
+    	-- IndexedMap is a generic class which depends on two parameters:
+    	-- -   Key is the type of key for an entry in the map,
+    	-- -   Hasher is the type of hasher on keys.
+    	-- Notes:
+    	-- -   It is not recommended to explore an IndexedMap map
+    	--   with an iterator: you just use indexes.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required for a Hasher object.
+    	-- -   TCollection_IndexedDataMap is a similar map with
+    	--   an item as a new feature.
+ 
+raises
+    DomainError from Standard,
+    OutOfRange  from Standard
+    
+    class IndexedMapNode from TCollection 
+    inherits MapNode from TCollection
+    uses MapNodePtr from TCollection
+    is
+      Create(K1 : TheKey; K2 : Integer; n1,n2 : MapNodePtr from TCollection) returns IndexedMapNode from TCollection;
+      ---C++: inline
+      
+      Key1(me) returns TheKey;
+      ---C++: return &
+      ---C++: inline
+
+      Key2(me) returns Integer;
+      ---C++: return &
+      ---C++: inline
+
+      Next2(me) returns MapNodePtr from TCollection;
+      ---C++: return &
+      ---C++: inline
+      
+    fields  
+    	myKey1 : TheKey;
+	myKey2 : Integer from Standard;
+	myNext2 : MapNodePtr from TCollection;
+    end;
+    
+is
+
+    Create(NbBuckets : Integer = 1) returns IndexedMap from TCollection;
+	---Purpose: Constructs an IndexedMap with NbBuckets (defaulted to 1) buckets.
+    	-- Note that the map will be automatically redimensioned
+    	-- during its use if the number of entries becomes too large.
+    	-- Use:
+    	-- -   the function Add to add a new entry (key, index) to the map,
+    	-- -   operator() to read a key from an index,
+    	-- -   the function FindIndex to read an index from a key,
+    	-- -   the function RemoveLast to remove the last entry from the map.
+
+    Create(Other : IndexedMap from TCollection)
+    returns IndexedMap from TCollection
+	---Purpose: As  copying  Map  is an expensive  operation it is
+	-- incorrect  to  do  it implicitly. This constructor
+	-- will raise an  error if the Map  is not  empty. To
+	-- copy the content of a  Map use the  Assign  method (operator =).
+    raises DomainError from Standard
+    is private;
+    
+    
+    Assign(me : in out; Other : IndexedMap from TCollection) 
+    returns IndexedMap from TCollection
+	---Purpose: Replace the content of this map by  the content of
+	-- the map <Other>.
+	---C++: alias operator =
+	---C++: return &
+    is static;
+    
+    ReSize(me : in out; NbBuckets : Integer)
+	---Purpose: Changes the  number    of  buckets of  <me>  to be
+	-- <NbBuckets>. The keys  already  stored in  the map are kept.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Removes all keys in the map.
+	---C++: alias ~
+    is static;
+    
+    Add(me : in out; K : TheKey) returns Integer
+	---Purpose: Adds  the Key <K> to   the Map <me>.  Returns  the
+	-- index  of the Key.  The key is new  in the map  if Extent 
+	-- has been incremented.
+    is static;
+    
+    Substitute(me : in out; I : Integer; K : TheKey)
+	---Purpose: Substitutes the Key  at index  <I>  with <K>. 
+	-- <I> must be a valid index, <K> must be a new key.
+        -- Trigger: Raises OutOfRange if I < 1 or I > Extent
+        -- Raises DomainError if Contains(K)
+    raises
+    	OutOfRange  from Standard,  
+	DomainError from Standard   
+    is static;
+    
+    RemoveLast(me : in out)
+	---Purpose: Removes  the last key entered  in the map, i.e the
+	-- key of index Extent().
+        -- Trigger: Raises OutOfRange if Extent() == 0
+    raises
+    	OutOfRange  from Standard 
+    is static;
+
+    Contains(me; K : TheKey) returns Boolean
+	---Level: Public
+	---Purpose: Returns True if the key <K>  is stored  in the map <me>. 
+    is static;
+    
+    FindKey(me; I : Integer) returns any TheKey
+	---Purpose: Returns the Key of index <I>.
+        -- Trigger: Raises OutOfRange if I < 1 or I > Extent
+    	---C++: alias operator ()
+	---C++: return const & 
+    raises OutOfRange from Standard 
+    is static;
+    
+    FindIndex(me; K : TheKey) returns Integer
+	---Purpose: Returns the index of the key <K> Returns 0 if K is
+	-- not in the map.
+    is static;
+    
+end IndexedMap;

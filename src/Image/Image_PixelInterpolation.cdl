@@ -1,0 +1,88 @@
+--
+-- File:	Image_PixelInterpolation.cdl
+-- Created:	Tue Jul 27 18:47:06 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+
+class PixelInterpolation from Image
+
+	---Purpose: The class PixelInterpolation is used to compute a Pixel 
+	--            value on non-integer Image coordinate. This Pixel type
+	--	      is called SubPixel .
+	--          PixelInterpolation is the default and is the simplest one,
+	--	      SubPixel value on non-integer Image coordinate is the 
+	--	      value of the nearest Pixel at integer coordinate.
+	--	    The user can create a new kind of PixelInterpolation with a
+	--	      new algorithm by creating a new derived PixelInterpolation
+	--	      class and redefined Interpolate() method.
+	--	    If V1  is the value of the nearest Image Pixel
+	--		V = V1 is the Image SubPixel value on non-integer 
+	--	      coordinate (FX,FY)
+
+uses
+
+    Pixel       	from Aspect,
+    Image	    	from Image,
+    ColorPixel       	from Aspect,
+    IndexPixel       	from Aspect,
+    DColorImage 	from Image,
+    DIndexedImage 	from Image
+
+is
+
+    	Create returns PixelInterpolation from Image ;
+	---Level: Public
+    	---Purpose: Create a PixelInterpolation  object.
+
+	Interpolate( me ; aImage   : Image from Image ;
+		          X,Y      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out Pixel from Aspect ) 
+		returns Boolean from Standard
+		is virtual ;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non-integer Image coordinate.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	    to check if the SubPixel coordinate X,Y is outside of image.
+	--          Return True  if Interpolation Succes.
+	--	    Retrun False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DColorImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out ColorPixel from Aspect ) 
+		returns Boolean from Standard
+		is virtual ;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non-integer Image coordinate for
+	--	      DColorImage and ColorPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate FX,FY is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+
+	Interpolate( me ; aImage   : DIndexedImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out IndexPixel from Aspect ) 
+		returns Boolean from Standard
+		is virtual ;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non-integer Image coordinate for
+	--	      DIndexedImage and IndexPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's use
+	--	    check if the SubPixel coordinate X,Y is outside of image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	DoInterpolate( me ; aImage   : Image from Image ;
+		            X,Y      : Real  from Standard ;
+			    LowerX,LowerY,UpperX,UpperY: Integer from Standard ;
+		            RetPixel : in out Pixel from Aspect ) 
+		returns Boolean from Standard is static private ;
+
+end PixelInterpolation from Image;

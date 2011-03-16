@@ -1,0 +1,47 @@
+-- File:	Bisector_FunctionH.cdl
+-- Created:	Tue Apr  5 14:05:05 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+private class FunctionH from Bisector 
+
+inherits FunctionWithDerivative from math
+     
+             --                                  2           2 
+	---Purpose: H(v) = (T1  .P2(v) - P1) * ||T(v)||  -
+	--                                  2         2
+	--                 (T(v).P2(v) - P1) * ||T1|| 
+	
+uses 
+    Curve from Geom2d,
+    Pnt2d from gp, 
+    Vec2d from gp  
+
+is
+
+    Create (C2 : Curve from Geom2d ;
+            P1 : Pnt2d from gp     ;
+            T1   : Vec2d from gp   ) 
+    returns FunctionH from Bisector;
+    
+    Value(me : in out; X : Real; F : out Real) 
+    	---Purpose: Computes the values of the Functions for the variable <X>.
+    returns Boolean;
+    
+    Derivative(me : in out; X : Real; D : out Real) 
+    returns Boolean;
+
+    Values(me : in out ; X  : Real; F  : out Real; D  : out Real)    
+    	---Purpose: Returns the values of the functions and the derivatives
+    	--          for the variable <X>.
+    returns Boolean;
+
+fields
+    
+    curve2 : Curve from Geom2d;
+    p1     : Pnt2d from gp;
+    t1     : Vec2d from gp;
+    
+end FunctionH;

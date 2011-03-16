@@ -1,0 +1,39 @@
+-- File:	IGESSelect_SignColor.cdl
+-- Created:	Tue Mar  6 17:37:04 2001
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+
+class SignColor  from IGESSelect    inherits Signature  from IFSelect
+
+    ---Purpose : Gives Color attached to an entity
+    --           Several forms are possible, according to <mode>
+    --           1 : number : "Dnn" for entity, "Snn" for standard, "(none)" for 0
+    --           2 : name : Of standard color, or of the color entity, or "(none)"
+    --               (if the color entity has no name, its label is taken)
+    --           3 : RGB values, form R:nn,G:nn,B:nn
+    --           4 : RED value   : an integer
+    --           5 : GREEN value : an integer
+    --           6 : BLUE value  : an integer
+    --           Other computable values can be added if needed :
+    --           CMY values, Percentages for Hue, Lightness, Saturation
+
+uses CString, Transient, AsciiString, InterfaceModel
+
+is
+
+    Create (mode : Integer) returns SignColor;
+    ---Purpose : Creates a SignColor
+    --           mode : see above for the meaning
+    --           modes 4,5,6 give a numeric integer value
+    --           Name is initialised according to the mode
+
+    Value   (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the value (see above)
+
+fields
+
+    themode : Integer;
+
+end SignColor;

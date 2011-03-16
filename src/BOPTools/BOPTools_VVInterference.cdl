@@ -1,0 +1,28 @@
+-- File:	BOPTools_VVInterference.cdl
+-- Created:	Tue Nov 21 15:44:47 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class VVInterference from BOPTools 
+    inherits ShapeShapeInterference from BOPTools  
+    
+    	---Purpose: class for storing  an Verex/Vertex 
+    	---         interference  
+is 
+    
+    Create  
+    	returns  VVInterference from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor  
+    	---
+    Create  (anIndex1, anIndex2:  Integer from Standard)
+    	returns  VVInterference from BOPTools; 
+    	---Purpose:  
+    	--- Constructor   
+    	--- anIndex1,  
+    	--- anIndex2 see BOPTools_ShapeShapeInterference for details   
+    	---
+    
+end VVInterference;

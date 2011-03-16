@@ -1,0 +1,76 @@
+--
+-- File      :  MacroDef.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class MacroDef from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES Macro Definition Entity, Type <306> Form <0>
+        --          in package IGESDefs
+        --          This Class specifies the action of a specific MACRO.
+        --          After specification MACRO can be used as necessary
+        --          by means of MACRO class instance entity.
+
+uses
+
+        HAsciiString          from TCollection,
+        HArray1OfHAsciiString from Interface
+
+raises OutOfRange
+
+is
+
+        Create returns mutable MacroDef;
+
+        -- Specific methods for the entity
+
+        Init (me             : mutable;
+              macro          : HAsciiString;
+              entityTypeID   : Integer;
+              langStatements : HArray1OfHAsciiString;
+              endMacro       : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           MacroDef
+        --       - macro          : MACRO
+        --       - entityTypeID   : Entity Type ID
+        --       - langStatements : Language Statements
+        --       - endMacro       : END MACRO
+
+        NbStatements(me) returns Integer;
+        ---Purpose : returns the number of language statements
+
+        MACRO(me) returns HAsciiString from TCollection;
+        ---Purpose : returns the MACRO(Literal)
+
+        EntityTypeID(me) returns Integer;
+        ---Purpose : returns the Entity Type ID
+
+        LanguageStatement(me ; StatNum : Integer) 
+        returns HAsciiString from TCollection
+        raises OutOfRange;
+        -- returns the StatNum'th statement
+        -- raises exception if StatNum <= 0 or StatNum > NbStatements()
+
+        ENDMACRO(me) returns HAsciiString from TCollection;
+        ---Purpose : returns the ENDM(Literal)
+
+fields
+
+--
+--  Class    : IGESDefs_MacroDef
+--
+--  Purpose  : Declaration of variables specific to MacroDef
+--
+--  Reminder : An MacroDef Entity specifies the action of a
+--             specific MACRO. It consists of only language
+--             statements in the parameter data.
+
+        theMACRO          : HAsciiString;
+        theEntityTypeID   : Integer;
+        theLangStatements : HArray1OfHAsciiString;
+        theENDMACRO       : HAsciiString;
+
+end MacroDef;

@@ -1,0 +1,32 @@
+-- File:	GeomFill_Stretch.cdl
+-- Created:	Tue Sep 28 16:18:35 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+class Stretch from GeomFill inherits Filling from GeomFill
+
+uses
+    Array1OfPnt  from TColgp,
+    Array1OfReal from TColStd
+
+is
+    Create;
+    
+    Create(P1, P2, P3, P4 : Array1OfPnt from TColgp)
+    returns Stretch from GeomFill;
+    
+    Create(P1, P2, P3, P4 : Array1OfPnt  from TColgp;
+    	   W1, W2, W3, W4 : Array1OfReal from TColStd)
+    returns Stretch from GeomFill;
+    
+    Init(me : in out;
+    	 P1, P2, P3, P4 : Array1OfPnt from TColgp)
+    is static;
+
+    Init(me : in out;
+    	 P1, P2, P3, P4 : Array1OfPnt from TColgp;
+    	 W1, W2, W3, W4 : Array1OfReal from TColStd)
+    is static;
+
+end Stretch;

@@ -1,0 +1,62 @@
+-- File:        GeometricRepresentationContextAndParametricRepresentationContext.cdl
+-- Created:     Thu Dec  7 14:29:18 1995
+-- Author:      FMA
+-- Copyright:   Matra-Datavision 1995
+
+
+class GeometricRepresentationContextAndParametricRepresentationContext from StepGeom 
+
+inherits RepresentationContext from StepRepr
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+	--  
+	--  Hand made by FMA - 1995 Feb 9th
+uses
+
+	GeometricRepresentationContext from StepGeom, 
+	ParametricRepresentationContext from StepRepr, 
+	HAsciiString from TCollection, 
+	Integer from Standard
+
+is
+
+	Create returns mutable GeometricRepresentationContextAndParametricRepresentationContext;
+	---Purpose: empty constructor
+
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aGeometricRepresentationContext : mutable GeometricRepresentationContext from StepGeom;
+	      aParametricRepresentationContext : mutable ParametricRepresentationContext from StepRepr) is virtual;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aCoordinateSpaceDimension : Integer from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetGeometricRepresentationContext(me : mutable; aGeometricRepresentationContext : mutable GeometricRepresentationContext);
+	GeometricRepresentationContext (me) returns mutable GeometricRepresentationContext;
+	SetParametricRepresentationContext(me : mutable; aParametricRepresentationContext : mutable ParametricRepresentationContext);
+	ParametricRepresentationContext (me) returns mutable ParametricRepresentationContext;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetCoordinateSpaceDimension(me : mutable; aCoordinateSpaceDimension : Integer);
+	CoordinateSpaceDimension (me) returns Integer;
+
+
+fields
+
+	geometricRepresentationContext : GeometricRepresentationContext from StepGeom;
+	parametricRepresentationContext : ParametricRepresentationContext from StepRepr;
+
+end GeometricRepresentationContextAndParametricRepresentationContext;

@@ -1,0 +1,107 @@
+-- File:	ShapeCustom_SweptToElementary.cdl
+-- Created:	Wed Dec 10 17:04:23 2003
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+private class SweptToElementary from ShapeCustom inherits Modification from BRepTools 
+
+	---Purpose: implements a modification for the BRepTools
+	--          Modifier algortihm. Converts all elementary
+	--          surfaces into surfaces of revolution.
+	
+uses
+    Vertex   from TopoDS,
+    Edge     from TopoDS,
+    Face     from TopoDS,
+    Location from TopLoc,
+     
+    Shape    from GeomAbs,
+     
+    Pnt      from gp,
+    Curve    from Geom,
+    Curve    from Geom2d,
+    Surface  from Geom
+
+is
+
+    Create returns mutable SweptToElementary from ShapeCustom;
+
+    NewSurface(me: mutable; F  :     Face     from TopoDS;
+                            S  : out Surface  from Geom;
+		            L  : out Location from TopLoc;
+		            Tol: out Real     from Standard;
+                            RevWires : out Boolean from Standard;
+                            RevFace  : out Boolean from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Returns Standard_True if the face <F> has  been
+	--          modified. In this case, <S> is the new geometric
+	--          support of the face, <L> the new location,  <Tol>
+	--          the new tolerance.  Otherwise, returns
+	--          Standard_False, and <S>, <L>, <Tol> are  not
+	--          significant.
+	
+    NewCurve(me: mutable; E  :     Edge     from TopoDS;
+                          C  : out Curve    from Geom;
+		          L  : out Location from TopLoc;
+		          Tol: out Real     from Standard)
+    returns Boolean from Standard;
+	---Purpose: Returns Standard_True  if  the edge  <E> has  been
+	--          modified.  In this case,  <C> is the new geometric
+	--          support of the  edge, <L> the  new location, <Tol>
+	--          the         new    tolerance.   Otherwise, returns
+	--          Standard_False,    and  <C>,  <L>,   <Tol> are not
+	--          significant.
+
+    NewPoint(me: mutable; V  :     Vertex   from TopoDS;
+                          P  : out Pnt      from gp;
+		          Tol: out Real     from Standard)
+    returns Boolean from Standard;
+	---Purpose: Returns  Standard_True if the  vertex <V> has been
+	--          modified.  In this  case, <P> is the new geometric
+	--          support of the vertex,   <Tol> the new  tolerance.
+	--          Otherwise, returns Standard_False, and <P>,  <Tol>
+	--          are not significant.
+
+    NewCurve2d(me: mutable; E    :     Edge     from TopoDS;
+                            F    :     Face     from TopoDS;
+                            NewE :     Edge     from TopoDS;
+                            NewF :     Face     from TopoDS;
+                            C    : out Curve    from Geom2d;
+		            Tol  : out Real     from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Returns Standard_True if  the edge  <E> has a  new
+	--          curve on surface on the face <F>.In this case, <C>
+	--          is the new geometric support of  the edge, <L> the
+	--          new location, <Tol> the new tolerance.
+	--          
+	--          Otherwise, returns  Standard_False, and <C>,  <L>,
+	--          <Tol> are not significant.
+	--          
+	--          <NewE> is the new  edge created from  <E>.  <NewF>
+	--          is the new face created from <F>. They may be usefull.
+
+    NewParameter(me: mutable; V  :     Vertex from TopoDS;
+                              E  :     Edge   from TopoDS;
+                              P  : out Real   from Standard;
+  		              Tol: out Real   from Standard)
+    returns Boolean from Standard;
+	---Purpose: Returns Standard_True if the Vertex  <V> has a new
+	--          parameter on the  edge <E>. In  this case,  <P> is
+	--          the parameter,    <Tol>  the     new    tolerance.
+	--          Otherwise, returns Standard_False, and <P>,  <Tol>
+	--          are not significant.
+
+    Continuity(me: mutable; E          : Edge from TopoDS;
+    	                    F1,F2      : Face from TopoDS;
+			    NewE       : Edge from TopoDS;
+			    NewF1,NewF2: Face from TopoDS)
+    returns Shape from GeomAbs;
+	---Purpose: Returns the  continuity of  <NewE> between <NewF1>
+	--          and <NewF2>.
+	--          
+	--          <NewE> is the new  edge created from <E>.  <NewF1>
+	--          (resp. <NewF2>) is the new  face created from <F1>
+	--          (resp. <F2>).
+
+end SweptToElementary;

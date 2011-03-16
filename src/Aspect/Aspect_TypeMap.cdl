@@ -1,0 +1,69 @@
+--
+-- File:	Aspect_TypeMap.cdl
+-- Created:	07/09/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class TypeMap from Aspect inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a TypeMap object.
+	---Keywords:
+	---Warning:
+	---References:
+uses
+	LineStyle		from Aspect,
+	TypeMapEntry 		from Aspect,
+	SequenceOfTypeMapEntry 	from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+	Create returns mutable TypeMap from Aspect;
+
+        AddEntry (me : mutable; AnEntry : TypeMapEntry from Aspect)
+	---Level: Public
+        ---Purpose: Adds an entry in the type map <me>.
+        --  Warning: Raises BadAccess if TypeMap size is exceeded.
+        raises BadAccess from Aspect;
+
+        AddEntry (me : mutable; aStyle : LineStyle from Aspect)
+                                        returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical type style entry in the type map <me>
+        -- and returns the TypeMapEntry Index if exist.
+        -- Or add a new entry and returns the computed TypeMapEntry index used.
+ 
+        Size( me ) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the Allocated typemap Size
+ 
+        Index( me ; aTypemapIndex : Integer ) returns Integer from Standard
+        ---Level: Public
+        ---Purpose: Returns the TypeMapEntry.Index of the TypeMap
+        --          at rank <aTypemapIndex> .
+        raises BadAccess from Aspect is static;
+        ---Trigger: Raises BadAccess if the index less than 1 or
+        --          greater than Size.
+ 
+	Dump( me ) ;
+
+	Entry ( me ;
+		AnIndex : Integer from Standard )
+	returns TypeMapEntry from Aspect
+	---Level: Public
+	---Purpose: Returns the Type map entry with the index <AnIndex>.
+	--  Warning: Raises BadAccess if the index less than 1 or
+	--	    greater than Size.
+	raises BadAccess from Aspect is static;
+	---C++: return const &
+
+fields
+
+	mydata	    : 	SequenceOfTypeMapEntry from Aspect is protected;
+
+end TypeMap ;

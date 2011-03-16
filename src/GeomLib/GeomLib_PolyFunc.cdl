@@ -1,0 +1,48 @@
+-- File:	GeomLib_PolyFunc.cdl
+-- Created:	Tue Sep 22 16:24:52 1998
+-- Author:	Philippe MANGINGeomLib_PolyFunc.c
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+private  class PolyFunc from GeomLib inherits  FunctionWithDerivative from math
+
+	---Purpose: Polynomial  Function        
+
+uses 
+  Vector  from  math
+
+is 
+ 
+    Create(Coeffs:Vector) returns  PolyFunc from GeomLib;  
+    
+    Value(me: in out; X: Real; F: out Real)
+        ---Purpose: computes the value <F>of the function for the variable <X>.
+    	--          Returns True if the calculation were successfully done, 
+    	--          False otherwise.
+
+    returns Boolean
+    is redefined;
+ 
+    Derivative(me: in out; X: Real; D: out Real)
+         ---Purpose: computes the derivative <D> of the function 
+         --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+
+    returns Boolean
+    is redefined;    
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+
+    returns Boolean
+    is redefined; 
+    
+fields 
+  myCoeffs  :  Vector;
+
+end PolyFunc;

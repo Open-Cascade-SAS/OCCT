@@ -1,0 +1,184 @@
+-- File:	TransferBRep_Reader.cdl
+-- Created:	Mon Oct  3 10:22:40 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Reader  from TransferBRep
+
+    ---Purpose : This class offers a simple, easy to call, way of transferring
+    --           data from interface files to Shapes from CasCade
+    --           It must be specialized according to each norm/protocol, by :
+    --           - defining how to read a file (specific method with protocol)
+    --           - definig transfer, by providing an Actor
+
+uses CString, Transient, HSequenceOfTransient from TColStd,
+     Shape from TopoDS, HSequenceOfShape from TopTools,
+     InterfaceModel, Protocol from Interface, CheckIterator,
+     TransientProcess from Transfer, ActorOfTransientProcess from Transfer
+
+raises OutOfRange
+
+is
+
+    Create returns Reader;
+    ---Purpose : Initializes a non-specialised Reader. Typically, for each norm
+    --           or protocol, is will be required to define a specific Create
+    --           to load a file and transfer it
+
+    SetProtocol (me : in out; protocol : Protocol from Interface);
+    ---Purpose : Records the protocol to be used for read and transfer roots
+
+    Protocol (me) returns Protocol from Interface  is virtual;
+    ---Purpose : Returns the recorded Protocol
+
+    SetActor (me : in out; actor : ActorOfTransientProcess from Transfer);
+    ---Purpose : Records the actor to be used for transfers
+
+    Actor (me) returns ActorOfTransientProcess  is virtual;
+    ---Purpose : Returns the recorded Actor
+
+
+    SetFileStatus (me : in out; status : Integer);
+    ---Purpose : Sets File Status to be interpreted as follows :
+    --           = 0 OK
+    --           < 0 file not found
+    --           > 0 read error, no Model could be created
+
+    FileStatus (me) returns Integer;
+    ---Purpose : Returns the File Status
+
+    FileNotFound (me) returns Boolean;
+    ---Purpose : Returns True if FileStatus is for FileNotFound
+
+    SyntaxError (me) returns Boolean;
+    ---Purpose : Returns True if FileStatus is for Error during read
+    --           (major error; for local error, see CheckModel)
+
+    SetModel (me : in out; model : InterfaceModel);
+    ---Purpose : Specifies a Model to work on
+    --           Also clears the result and Done status
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model to be worked on
+
+    Clear (me : in out);
+    ---Purpose : clears the result and Done status. But not the Model.
+
+    CheckStatusModel (me; withprint : Boolean) returns Boolean;
+    ---Purpose : Checks the Model. Returns True if there is NO FAIL at all
+    --           (regardless Warnings)
+    --           If <withprint> is True, also sends Checks on standard output
+
+    CheckListModel (me) returns CheckIterator;
+    ---Purpose : Checks the Model (complete : syntax + semantic) and returns
+    --           the produced Check List
+
+    ModeNewTransfer (me : in out) returns Boolean;
+    ---Purpose : Returns (by Reference, hence can be changed) the Mode for new
+    --           Transfer : True (D) means that each new Transfer produces a
+    --           new TransferProcess. Else keeps the original one but each
+    --           Transfer clears its (former results are not kept)
+    ---C++ : return &
+
+    BeginTransfer   (me : in out)  returns Boolean;
+    ---Purpose : Initializes the Reader for a Transfer (one,roots, or list)
+    --           Also calls PrepareTransfer
+    --           Returns True when done, False if could not be done
+
+    EndTransfer     (me : in out);
+    ---Purpose : Ebds a Transfer (one, roots or list) by recording its result
+
+    PrepareTransfer (me : in out)  is virtual;
+    ---Purpose : Prepares the Transfer. Also can act on the Actor or change the
+    --           TransientProcess if required.
+    --           Should not set the Actor into the TransientProcess, it is done
+    --           by caller. The provided default does nothing.
+
+    TransferRoots (me : in out)  is virtual;
+    ---Purpose : Transfers all Root Entities which are recognized as Geom-Topol
+    --           The result will be a list of Shapes.
+    --           This method calls user redefinable PrepareTransfer
+    --           Remark : former result is cleared
+
+    Transfer (me : in out; num : Integer) returns Boolean  is virtual;
+    ---Purpose : Transfers an Entity given its rank in the Model (Root or not)
+    --           Returns True if it is recognized as Geom-Topol.
+    --           (But it can have failed : see IsDone)
+
+    TransferList (me : in out; list : HSequenceOfTransient)  is virtual;
+    ---Purpose : Transfers a list of Entities (only the ones also in the Model)
+    --           Remark : former result is cleared
+
+    IsDone (me) returns Boolean;
+    ---Purpose : Returns True if the LAST Transfer/TransferRoots was a success
+
+    NbShapes (me) returns Integer;
+    ---Purpose : Returns the count of produced Shapes (roots)
+
+    Shapes (me) returns HSequenceOfShape;
+    ---Purpose : Returns the complete list of produced Shapes
+
+    Shape (me; num : Integer = 1) returns Shape from TopoDS
+    ---Purpose : Returns a Shape given its rank, by default the first one
+    	raises OutOfRange;
+    --           Error if num < 1 or num > NbShapes
+    ---C++ : return const &
+
+    ShapeResult (me; ent : Transient) returns Shape from TopoDS;
+    ---Purpose : Returns a Shape produced from a given entity (if it was
+    --           individually transferred or if an intermediate result is
+    --           known). If no Shape is bound with <ent>, returns a Null Shape
+    --  Warning : Runs on the last call to Transfer,TransferRoots,TransferList
+
+    OneShape (me) returns Shape from TopoDS;
+    ---Purpose : Returns a unique Shape for the result :
+    --           - a void Shape (type = SHAPE) if result is empty
+    --           - a simple Shape if result has only one : returns this one
+    --           - a Compound if result has more than one Shape
+
+    NbTransients (me) returns Integer;
+    ---Purpose : Returns the count of produced Transient Results (roots)
+
+    Transients (me) returns HSequenceOfTransient;
+    ---Purpose : Returns the complete list of produced Transient Results
+
+    Transient  (me; num : Integer = 1) returns any Transient
+    ---Purpose : Returns a Transient Root Result, given its rank (by default
+    --           the first one)
+    	raises OutOfRange;
+    --           Error if num < 1 or num > NbShapes
+
+
+    CheckStatusResult (me; withprints : Boolean) returns Boolean;
+    ---Purpose : Checks the Result of last Transfer (individual or roots, no
+    --           cumulation on several transfers). Returns True if NO fail
+    --           occured during Transfer (queries the TransientProcess)
+
+    CheckListResult (me) returns CheckIterator;
+    ---Purpose : Checks the Result of last Transfer (individual or roots, no
+    --           cumulation on several transfers) and returns the produced list
+
+    TransientProcess (me) returns TransientProcess;
+    ---Purpose : Returns the TransientProcess. It records informations about
+    --           the very last transfer done. Null if no transfer yet done.
+    --           Can be used for queries more accurate than the default ones.
+
+    Destroy (me: in out) is virtual;
+    ---C++ : alias "Standard_EXPORT virtual ~TransferBRep_Reader() { Destroy(); }"
+
+
+fields
+
+    theProto  : Protocol from Interface;
+    theActor  : ActorOfTransientProcess from Transfer;
+    theModel  : InterfaceModel;
+    theFilest : Integer;
+    theDone   : Boolean  is protected;
+    theNewpr  : Boolean;
+    theProc   : TransientProcess  is protected;
+    theShapes : HSequenceOfShape;
+    theTransi : HSequenceOfTransient;
+
+end Reader;

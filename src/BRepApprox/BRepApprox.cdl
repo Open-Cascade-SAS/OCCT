@@ -1,0 +1,47 @@
+-- File:	BRepApprox.cdl
+-- Created:	Tue Jun  6 16:58:22 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+package BRepApprox 
+
+	---Purpose: This package provides services on intersection curves
+	--          dealt by topological operations on BRep objects.
+	--          Services are approximation services.
+
+
+uses
+
+    MMgt,
+    TColStd,
+    gp,
+    GeomAbs,
+    Adaptor3d,
+    Geom,
+    Geom2d,
+    BRepAdaptor,
+    IntSurf,
+    ApproxInt
+    
+is
+
+    generic class ApproxLineGen;
+    
+    class ApproxLine instantiates ApproxLineGen from BRepApprox
+    	(BSplineCurve from Geom,
+     	 BSplineCurve from Geom2d);
+
+    generic class SurfaceToolGen;
+
+    class SurfaceTool instantiates SurfaceToolGen from BRepApprox 
+    	(Surface from BRepAdaptor);
+    
+    class Approx instantiates Approx from ApproxInt
+    	(Surface                 from BRepAdaptor,
+	 SurfaceTool             from BRepApprox,
+	 Quadric                 from IntSurf,
+	 QuadricTool             from IntSurf,
+	 ApproxLine              from BRepApprox);
+
+end BRepApprox;

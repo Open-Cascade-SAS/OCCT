@@ -1,0 +1,30 @@
+-- File:        AutoDesignSecurityClassificationAssignment.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWAutoDesignSecurityClassificationAssignment from RWStepAP214
+
+	---Purpose : Read & Write Module for AutoDesignSecurityClassificationAssignment
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AutoDesignSecurityClassificationAssignment from StepAP214,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWAutoDesignSecurityClassificationAssignment;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AutoDesignSecurityClassificationAssignment from StepAP214);
+
+	WriteStep (me; SW : in out StepWriter; ent : AutoDesignSecurityClassificationAssignment from StepAP214);
+
+	Share(me; ent : AutoDesignSecurityClassificationAssignment from StepAP214; iter : in out EntityIterator);
+
+end RWAutoDesignSecurityClassificationAssignment;

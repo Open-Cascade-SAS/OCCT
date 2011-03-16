@@ -1,0 +1,188 @@
+-- File:	Circ2dTanCen.cdl
+-- Created:	Tue Oct 20 16:24:19 1992
+-- Author:	Remi GILET
+--		<reg@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Circ2dTanCen from Geom2dGcc
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles tangent to a curve and 
+	--          centered on a point. 
+	--          The arguments of all construction methods are :
+	--             - The qualified element for the tangency constrains 
+	--             (QualifiedCurv).
+	--             -The center point Pcenter.
+	--             - A real Tolerance.
+	--          Tolerance is only used in the limits cases.
+    	--          For example : 
+    	--          We want to create a circle tangent to an EnclosedCurv C1
+    	--          with a tolerance Tolerance.
+    	--          If we did not used Tolerance it is impossible to 
+    	--          find a solution in the the following case : Pcenter is
+    	--          outside C1.
+    	--          With Tolerance we will give a solution if the distance
+    	--          between C1 and Pcenter is lower than or equal Tolerance/2.
+
+-- inherits Entity from Standard
+
+uses QualifiedCurve  from Geom2dGcc,
+     Pnt2d           from gp,
+     Point           from Geom2d,
+     Circ2d          from gp,
+     Array1OfInteger from TColStd,
+     Array1OfReal    from TColStd,
+     Array1OfPnt2d   from TColgp,
+     Array1OfCirc2d  from TColgp,
+     Boolean         from Standard,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt
+
+raises OutOfRange   from Standard,
+       BadQualifier from GccEnt,
+       NotDone      from StdFail
+
+is
+
+Create( Qualified1 : QualifiedCurve from Geom2dGcc;
+        Pcenter    : Point          from Geom2d   ;
+        Tolerance  : Real           from Standard ) returns Circ2dTanCen
+raises BadQualifier;
+    	---Purpose: Constructs one or more 2D circles tangential to the
+    	-- curve Qualified1 and centered on the point Pcenter.
+    	-- Tolerance is a tolerance criterion used by the algorithm
+    	-- to find a solution when, mathematically, the problem
+    	-- posed does not have a solution, but where there is
+    	-- numeric uncertainty attached to the arguments.
+    	-- Tolerance is only used in these algorithms in very
+    	-- specific cases where the center of the solution is very
+    	-- close to the circle to which it is tangential, and where the
+    	-- solution is thus a very small circle.
+    	-- Exceptions
+    	-- GccEnt_BadQualifier if a qualifier is inconsistent with
+    	-- the argument it qualifies (for example, enclosing for a line).
+
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the construction algorithm does not fail
+    	-- (even if it finds no solution).
+    	-- Note: IsDone protects against a failure arising from a
+    	-- more internal intersection algorithm, which has reached
+    	-- its numeric limits.
+    
+NbSolutions(me) returns Integer from Standard
+raises NotDone
+is static;
+    	---Purpose: Returns the number of circles, representing solutions
+    	-- computed by this algorithm.
+    	-- Exceptions
+    	-- StdFail_NotDone if the construction fails.
+        
+ThisSolution(me ; Index : Integer from Standard) returns Circ2d from gp
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns a circle, representing the solution of index
+    	-- Index computed by this algorithm.
+    	-- Warning
+    	-- This indexing simply provides a means of consulting the
+    	-- solutions. The index values are not associated with
+    	-- these solutions outside the context of the algorithm object.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns the qualifier Qualif1 of the tangency argument
+    	-- for the solution of index Index computed by this algorithm.
+    	-- The returned qualifier is:
+    	-- -   that specified at the start of construction when the
+    	--   solutions are defined as enclosed, enclosing or
+    	--   outside with respect to the argument, or
+    	-- -   that computed during construction (i.e. enclosed,
+    	--   enclosing or outside) when the solutions are defined
+    	--   as unqualified with respect to the argument.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails. 
+
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose:  Returns informations about the tangency point between the 
+    	-- result number Index and the first argument.
+    	-- ParSol is the intrinsic parameter of the point PntSol on the solution curv.
+    	-- ParArg is the intrinsic parameter of the point PntSol on the argument curv.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+        
+IsTheSame1(me                            ;
+           Index : Integer  from Standard) returns Boolean from Standard
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns true if the solution of index Index and the first
+    	-- argument of this algorithm are the same (i.e. there are 2
+    	-- identical circles).
+    	-- If Rarg is the radius of the first argument, Rsol is the
+    	-- radius of the solution and dist is the distance between
+    	-- the two centers, we consider the two circles to be
+    	-- identical if |Rarg - Rsol| and dist are less than
+    	-- or equal to the tolerance criterion given at the time of
+    	-- construction of this algorithm.
+        --          NotDone is raised if the construction algorithm didn't succeed.
+        --          OutOfRange is raised if Index is greater than the 
+        --          number of solutions.
+
+fields
+
+    WellDone : Boolean from Standard;
+    -- True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    -- Number of solutions.
+
+    cirsol   : Array1OfCirc2d from TColgp;
+    
+    qualifier1 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the first argument.
+
+    TheSame1 : Array1OfInteger from TColStd;
+    -- 1 if the solution and the first argument are the same (2 circles).
+    -- if R1 is the radius of the first argument and Rsol the radius 
+    -- of the solution and dist the distance between the two centers,
+    -- we concider the two circles are identical if R1+dist-Rsol is 
+    -- less than Tolerance.
+    -- 0 in the other cases.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the first argument on 
+    -- the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the 
+    -- first argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the first 
+    -- argument on the first argument.
+
+
+--    CircAna  : Circ2d2TanRad from GccAna;
+--    CircGeo  : Circ2d2TanRad from GccGeo;
+--    TypeAna  : Boolean;
+
+end Circ2dTanCen;
+
+
+

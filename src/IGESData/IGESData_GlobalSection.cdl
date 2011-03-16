@@ -1,0 +1,240 @@
+-- File:	GlobalSection.cdl
+-- Created:	Mon Apr  6 14:59:45 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class GlobalSection  from IGESData
+
+    ---Purpose : Description of a global section (corresponds to file header)
+    --           used as well in IGESModel, IGESReader and IGESWriter
+    --           Warning : From IGES-5.1, a parameter is added : LastChangeDate (concerns
+    --           transferred set of data, not the file itself)
+    --           Of course, it can be absent if read from earlier versions
+    --           (a default is then to be set to current date)
+    --           From 5.3, one more : ApplicationProtocol (optional)
+
+uses Integer, Character, Real, HAsciiString from TCollection,
+     XYZ from gp, ParamSet, Check
+
+is
+
+    Create returns GlobalSection;
+    ---Purpose : Creates an empty GlobalSection, ready to be filled,
+    --  Warning : No default value is provided
+
+    Init (me : in out; params : ParamSet; ach : in out Check)  is static;
+    ---Purpose : Fills GlobalSection from a ParamSet (i.e. taken from file)
+    --           undefined parameters do not change default values when defined
+    --           Fills Check about Corrections or Fails
+
+    CopyRefs (me : in out)  is static;
+    ---Purpose : Copies data referenced by Handle (that is, Strings)
+    --           usefull to "isolate" a GlobalSection after copy by "="
+    --           (from a Model to another Model for instance)
+
+    Params (me) returns ParamSet  is static;
+    ---Purpose : Returns all contained data in the form of a ParamSet
+    --           Remark : Strings are given under Hollerith form
+
+    TranslatedFromHollerith (me; astr : HAsciiString from TCollection)
+    	returns HAsciiString from TCollection  is static;
+    ---Purpose : Returns a string withpout its Hollerith marks (nnnH ahead).
+    --           Remark : all strings stored in GlobalSection are expurged
+    --           from Hollerith informations (without nnnH)
+    --           If <astr> is not Hollerith form, it is simply copied
+
+    	-- --   Specific Queries   -- --
+
+    Separator        (me) returns Character  is static;   
+    --- Purpose: Returns the parameter delimiter character.   
+    
+    EndMark          (me) returns Character  is static;   
+    ---Purpose:  Returns the record delimiter character.    
+
+    SendName         (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the name of the sending system.    
+    
+    FileName         (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the name of the IGES file.    
+    
+    SystemId         (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the Native System ID of the system that created the IGES file.    
+    
+    InterfaceVersion (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the name of the pre-processor used to write the IGES file.
+        
+    IntegerBits      (me) returns Integer                         is static;
+    ---Purpose: Returns the number of binary bits for integer representations.    
+    
+    MaxPower10Single (me) returns Integer                         is static;
+    ---Purpose: Returns the maximum power of a decimal representation of a
+    --          single-precision floating point number in the sending system.
+       
+    
+    MaxDigitsSingle  (me) returns Integer                         is static;
+    MaxPower10Double (me) returns Integer                         is static;
+ 
+    --- Purpose: Returns the maximum power of a decimal representation of a
+    --           double-precision floating point number in the sending system.
+            
+    MaxDigitsDouble  (me) returns Integer                         is static;
+
+    ReceiveName      (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the name of the receiving system.
+    Scale            (me) returns Real                            is static;
+    ---Purpose: Returns the scale used in the IGES file.    
+    
+    UnitFlag         (me) returns Integer                         is static;
+    ---Purpose: Returns the unit flag that was used to write the IGES file.    
+    UnitName         (me) returns HAsciiString from TCollection   is static;
+    --- Purpose: Returns the name of the unit the IGES file was written in.   
+    
+    LineWeightGrad   (me) returns Integer                         is static;
+    ---Purpose: Returns the maximum number of line weight gradations.    
+    
+    MaxLineWeight    (me) returns Real                            is static;
+    ---Purpose: Returns the of maximum line weight width in IGES file units.    
+    
+    Date             (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the IGES file creation date.    
+    
+    Resolution       (me) returns Real                            is static;
+     ---Purpose: Returns the resolution used in the IGES file.   
+    
+    MaxCoord         (me) returns Real                            is static;
+    ---Purpose: Returns the approximate maximum coordinate value found in the model.   
+    
+    HasMaxCoord      (me) returns Boolean                         is static;
+    ---Purpose: Returns True if the approximate maximum coordinate value found in
+    --          the model is greater than 0.
+    
+    AuthorName       (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the name of the IGES file author.    
+    
+    CompanyName      (me) returns HAsciiString from TCollection   is static;
+    --- Purpose: Returns the name of the company where the IGES file was written.   
+    
+    IGESVersion      (me) returns Integer                         is static;
+    ---Purpose: Returns the IGES version that the IGES file was written in.    
+    
+    DraftingStandard (me) returns Integer                         is static;
+
+    LastChangeDate   (me) returns HAsciiString from TCollection   is static;
+    ---Purpose: Returns the date and time when the model was created or last
+    --          modified (for IGES 5.1 and later).
+    
+    HasLastChangeDate  (me) returns Boolean  is static; 
+    --- Purpose: Returns True if the date and time when the model was created or
+    --           last modified are specified, i.e. not defaulted to NULL.   
+    
+    SetLastChangeDate  (me : in out)  is static;     
+    
+    ApplicationProtocol (me) returns HAsciiString from TCollection;
+    HasApplicationProtocol (me) returns Boolean;
+
+    NewDateString (myclass; year,month,day,hour,minut,second : Integer;
+    	    	   mode : Integer = -1)
+    	returns mutable HAsciiString from TCollection;
+    ---Purpose : Returns a string built from year,
+    --           month, day, hour, minute and second values. The form of the
+    --           resulting string is defined as follows:
+    --           -      -1: YYMMDD.HHNNSS,
+    --           -       0: YYYYMMDD.HHNNSS,
+    -- 		 -       1: YYYY-MM-DD:HH-NN-SS, where:
+    -- - YYYY or YY is 4 or 2 digit year,
+    -- - HH is hour (00-23),
+    -- - MM is month (01-12),
+    -- - NN is minute (00-59)
+    -- - DD is day (01-31),
+    -- - SS is second (00-59).
+
+    NewDateString (myclass; date : HAsciiString from TCollection;
+    	    	   mode : Integer = 1)
+    	returns mutable HAsciiString from TCollection;
+    ---Purpose : Converts the string given in the
+    --           form YYMMDD.HHNNSS or YYYYMMDD.HHNNSS to either
+    --           YYMMDD.HHNNSS, YYYYMMDD.HHNNSS or YYYY-MM-DD:HH-NN-SS.
+        
+    UnitValue (me) returns Real  is static;
+    ---Purpose : Returns the unit value (in
+-- meters) that the IGES file was written in.
+
+
+    SetSeparator        (me : in out; val : Character) is static;
+    SetEndMark          (me : in out; val : Character) is static;
+
+    SetSendName         (me : in out; val : HAsciiString from TCollection)   is static;
+    SetFileName         (me : in out; val : HAsciiString from TCollection)   is static;
+    SetSystemId         (me : in out; val : HAsciiString from TCollection)   is static;
+    SetInterfaceVersion (me : in out; val : HAsciiString from TCollection)   is static;
+
+    SetIntegerBits      (me : in out; val : Integer)   is static;
+    SetMaxPower10Single (me : in out; val : Integer)   is static;
+    SetMaxDigitsSingle  (me : in out; val : Integer)   is static;
+    SetMaxPower10Double (me : in out; val : Integer)   is static;
+    SetMaxDigitsDouble  (me : in out; val : Integer)   is static;
+
+    SetReceiveName      (me : in out; val : HAsciiString from TCollection)   is static;
+
+    SetScale            (me : in out; val : Real)      is static;
+    SetUnitFlag         (me : in out; val : Integer)   is static;
+    SetUnitName         (me : in out; val : HAsciiString from TCollection)   is static;
+    SetLineWeightGrad   (me : in out; val : Integer)   is static;
+    SetMaxLineWeight    (me : in out; val : Real)      is static;
+    SetDate             (me : in out; val : HAsciiString from TCollection)   is static;
+    SetResolution       (me : in out; val : Real)      is static;
+    SetMaxCoord         (me : in out; val : Real = 0.0) is static;
+    --  Without Argument : resets MaxCoord. Argument positive : sets MaxCoord
+
+    MaxMaxCoord         (me : in out; val : Real = 0.0);
+    --  Sets MaxCoord to the max of <actual MaxCoord> , Abs(val)
+    MaxMaxCoords        (me : in out; xyz : XYZ from gp);
+    --  MaxMaxCoord on X,Y,Z of <xyz>
+
+    SetAuthorName       (me : in out; val : HAsciiString from TCollection)   is static;
+    SetCompanyName      (me : in out; val : HAsciiString from TCollection)   is static;
+    SetIGESVersion      (me : in out; val : Integer)   is static;
+    SetDraftingStandard (me : in out; val : Integer)   is static;
+
+    SetLastChangeDate   (me : in out; val : HAsciiString from TCollection)   is static;
+    SetApplicationProtocol (me : in out; val : HAsciiString from TCollection);
+
+fields
+
+    theSeparator        : Character;     -- default is ','
+    theEndMark          : Character;     -- default is ';'
+
+    theSendName         : HAsciiString from TCollection;
+    theFileName         : HAsciiString from TCollection;
+    theSystemId         : HAsciiString from TCollection;
+    theInterfaceVersion : HAsciiString from TCollection;
+
+    theIntegerBits      : Integer;
+    theMaxPower10Single : Integer;
+    theMaxDigitsSingle  : Integer;
+    theMaxPower10Double : Integer;
+    theMaxDigitsDouble  : Integer;
+
+    theReceiveName      : HAsciiString from TCollection;
+
+    theScale            : Real;
+    theUnitFlag         : Integer;
+    theUnitName         : HAsciiString from TCollection;
+    theLineWeightGrad   : Integer;
+    theMaxLineWeight    : Real;
+    theDate             : HAsciiString from TCollection;
+    theResolution       : Real;
+    theMaxCoord         : Real;
+    hasMaxCoord         : Boolean;
+
+    theAuthorName       : HAsciiString from TCollection;
+    theCompanyName      : HAsciiString from TCollection;
+    theIGESVersion      : Integer;
+    theDraftingStandard : Integer;
+
+    theLastChangeDate   : HAsciiString from TCollection;  -- only from IGES-5.1
+    theAppliProtocol    : HAsciiString from TCollection;  -- only from IGES-5.3
+
+end GlobalSection;

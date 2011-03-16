@@ -1,0 +1,135 @@
+-- File:	BooleanOperations_ShapeAndInterferences.cdl
+-- Created:	Mon Jul 24 18:27:49 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapeAndInterferences from BooleanOperations 
+
+	---Purpose: 
+
+uses
+    Box from Bnd,
+    Shape from TopoDS,
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs,
+    StateOfShape from BooleanOperations,
+--modified by NIZNHY-PKV Wed Feb  2 14:45:12 2005f 
+    
+--    InterferencesList from BooleanOperations,
+--    InterferenceResult from BooleanOperations, 
+--modified by NIZNHY-PKV Wed Feb  2 14:45:40 2005t
+    AncestorsAndSuccessors from BooleanOperations
+   
+
+--raises
+
+is
+    Create returns ShapeAndInterferences;
+
+    --------------------
+    -- INLINE METHODS --
+    -------------------- 
+    
+    GetShape (me)  
+    	returns Shape from TopoDS;
+    ---C++: inline
+    ---C++: return const &
+
+    GetShapeType (me)  
+    	returns ShapeEnum from TopAbs;
+    ---C++: inline
+    
+    GetState (me)  
+    	returns StateOfShape from BooleanOperations;
+    ---C++: inline
+     
+    SetState (me:in out;  
+    	    theState: StateOfShape);
+    ---C++: inline
+    
+    GetBoundingBox (me)  
+    	returns Box from Bnd;
+    ---C++: inline
+    ---C++: return const &
+
+    NumberOfAncestors(me)  
+    	returns Integer from Standard;
+    ---C++: inline
+     
+    NumberOfSuccessors(me)  
+    	returns Integer from Standard;
+    ---C++: inline
+    
+    GetAncestor     (me; index:Integer)  
+    	returns Integer from Standard;
+    ---C++: inline
+     
+    GetSuccessor    (me; index:Integer)  
+    	returns Integer from Standard;
+    ---C++: inline
+     
+    GetAncestors    (me;  
+    	    theArrayOfAncestors: out Address;  
+    	    AncestorsSize:out Integer from Standard);
+    ---C++: inline 
+    
+    GetSuccessors   (me;  
+    	    theArrayOfSuccessors:out Address; 
+    	    SuccessorsSize:out Integer from Standard);
+    ---C++: inline  
+
+    GetOrientation  (me;  
+    	    index:Integer)  
+    	returns Orientation from TopAbs;
+    ---C++: inline 
+    
+    GetOrientations (me;  
+    	theArrayOfOrientations:out Address; 
+    	OrientationsSize:out Integer from Standard);
+    ---C++: inline 
+
+--modified by NIZNHY-PKV Thu Feb  3 11:13:49 2005f
+--    GetInterference (me; index:Integer) returns InterferenceResult;
+--    --C++: inline
+--    --C++: return const &  
+--    NumberOfInterferences (me) returns Integer;
+      --C++: inline 
+--    GetIntersectionResult (me; index:Integer) returns Integer;
+--    --C++: inline         
+--    GetIntersectedShape   (me; index:Integer) returns Integer;
+--    --C++: inline
+    ------------------
+    -- MAIN METHODS --
+    ------------------ 
+--    SetInterference (me:in out; Interf: InterferenceResult);
+    ---Purpose: sets an interference in <myInterferencesList>.
+
+--    Dump (me);
+    ---Purpose: to display the fields.
+--modified by NIZNHY-PKV Wed Feb  2 12:55:39 2005t
+ 
+fields
+    myBoundingBox : Box  from Bnd;
+    ---Purpose: the bounding box of <myShape>.
+
+    myAncestorsAndSuccessors : AncestorsAndSuccessors from BooleanOperations;
+    ---Purpose: the shapes that contain <myShape> and/or containded by <myShape>.
+
+    myShape : Shape;
+    ---Purpose: can be a  shape of the Object, of  the Tool or created  by
+    --          intersecting both of them. 
+     
+    myState : StateOfShape;
+    ---Purpose: the state of <myShape>.
+
+--modified by NIZNHY-PKV Wed Feb  2 12:53:22 2005f
+    --myInterferencesList : InterferencesList; 
+--modified by NIZNHY-PKV Wed Feb  2 12:53:40 2005t    
+    ---Purpose: all the shapes whose intersection with  <myShape> is not empty.
+
+friends
+    class ShapesDataStructure from BooleanOperations
+
+end ShapeAndInterferences;

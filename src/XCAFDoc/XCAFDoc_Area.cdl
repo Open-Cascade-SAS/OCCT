@@ -1,0 +1,65 @@
+-- File:	XCAFDoc_Area.cdl
+-- Created:	Fri Sep  8 10:54:04 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Area from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+     Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Real            from Standard,
+     RelocationTable from TDF
+   
+is
+    Create returns Area from XCAFDoc;
+    
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)
+    	---C++: return const &  
+    returns GUID from Standard;
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Set (me: mutable; vol: Real from Standard);
+    	---Purpose: Sets a value of volume
+
+    Set (myclass ; label : Label from TDF; area: Real from Standard)
+    returns Area from XCAFDoc;
+        ---Purpose: Find, or create, an Area attribute and set its value
+    
+    Get (me)
+    returns Real from Standard;
+
+    Get (myclass ; label : Label from TDF; area: in out Real from Standard)
+    returns Boolean from Standard;
+        ---Purpose: Returns volume of area as argument and succes status
+	--          returns false if no such attribute at the <label>
+	
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myValue     : Real     from Standard;
+
+end Area from XCAFDoc;

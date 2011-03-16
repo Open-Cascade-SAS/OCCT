@@ -1,0 +1,39 @@
+-- File:        CurveStyleFont.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CurveStyleFont from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfCurveStyleFontPattern from StepVisual, 
+	CurveStyleFontPattern from StepVisual
+is
+
+	Create returns mutable CurveStyleFont;
+	---Purpose: Returns a CurveStyleFont
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPatternList : mutable HArray1OfCurveStyleFontPattern from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetPatternList(me : mutable; aPatternList : mutable HArray1OfCurveStyleFontPattern);
+	PatternList (me) returns mutable HArray1OfCurveStyleFontPattern;
+	PatternListValue (me; num : Integer) returns mutable CurveStyleFontPattern;
+	NbPatternList (me) returns Integer;
+
+fields
+
+	name : HAsciiString from TCollection;
+	patternList : HArray1OfCurveStyleFontPattern from StepVisual;
+
+end CurveStyleFont;

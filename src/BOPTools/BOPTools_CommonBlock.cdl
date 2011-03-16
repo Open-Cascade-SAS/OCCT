@@ -1,0 +1,94 @@
+-- File:	BOPTools_CommonBlock.cdl
+-- Created:	Thu Feb 15 12:03:13 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class CommonBlock from BOPTools 
+
+	---Purpose:  
+    	--  The class hold a structure  for storing info about a couple  
+    	--  of pave blocks that are considered as common
+
+uses
+    PaveBlock from BOPTools
+
+
+is 
+    Create  
+    	returns CommonBlock from BOPTools; 
+    	---Purpose: 
+    	--- Empty constructor 
+    	---
+    Create (aPB1:PaveBlock from BOPTools; 
+            aPB2:PaveBlock from BOPTools); 
+    	---Purpose:  
+    	--- Constructor that uses couple of pave blocks
+    	---
+    Create (aPB1:PaveBlock from BOPTools; 
+            aF:Integer from  Standard); 
+    	---Purpose:  
+    	--- Constructor that uses a pave block and a face  
+    	---
+    SetPaveBlock1  (me:out;  aPB1:PaveBlock from BOPTools);	     
+    	---Purpose:  
+    	--- Modifier  
+    	--- Sets first block 
+    	---
+    SetPaveBlock2  (me:out;  aPB2:PaveBlock from BOPTools);	     
+    	---Purpose:  
+    	--- Modifier  
+    	--- Sets second block  
+    	---
+    SetFace  (me:out; aF: Integer from Standard);
+    	---Purpose:  
+    	--- Modifier  
+    	--- Sets DS-index of the face (if it exists) with which the  
+    	--- CommonBlock is common. 0 is  default value   
+    	---
+    PaveBlock1  (me) 
+    	returns  PaveBlock from BOPTools; 
+    	---C++:  return const &		 
+    	---Purpose:  
+    	--- Selector  
+    	--- Always returns first block myPB1    
+    	---
+    PaveBlock1  (me:out; anIndex: Integer from  Standard) 
+    	returns  PaveBlock from BOPTools; 
+    	---C++:  return  &	 
+    	---Purpose:  
+    	--- Selector  
+    	--- Returns block that belongs to the original edge with 
+    	--- DS-index=anIndex    
+    	---
+    PaveBlock2  (me) 
+    	returns  PaveBlock from BOPTools; 
+    	---C++:  return const  &	
+    	---Purpose:  
+    	--- Selector  
+    	--- Always returns first block myPB2  
+    	---
+    PaveBlock2  (me:out; anIndex: Integer from  Standard)  
+    	returns  PaveBlock from BOPTools; 
+    	---C++:  return &	 
+    	---Purpose:  
+    	--- Selector  
+    	--- Returns block that does not belong to the original edge with 
+    	--- DS-index=anIndex    
+    	---
+    Face(me) 
+    	returns Integer from  Standard; 
+    	---Purpose:  
+    	--- Selector
+    	--- Returns  the DS-index of the face (if exists)  
+    	--- with which the CommonBlock is common.   
+    	--- Otherwise it returns 0.
+	---
+
+fields
+    myPB1  : PaveBlock from BOPTools;  
+    myPB2  : PaveBlock from BOPTools; 
+    myFace : Integer   from Standard; 
+      
+end CommonBlock;

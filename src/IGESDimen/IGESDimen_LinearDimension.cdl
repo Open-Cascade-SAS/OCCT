@@ -1,0 +1,95 @@
+--
+-- File      :  LinearDimension.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LinearDimension from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines LinearDimension, Type <216> Form <0>
+        --          in package IGESDimen
+        --          Used for linear dimensioning
+
+uses
+
+        GeneralNote     from IGESDimen,
+        WitnessLine     from IGESDimen,
+        LeaderArrow     from IGESDimen
+
+raises OutOfRange
+
+is
+
+        Create returns mutable LinearDimension;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me             : mutable;
+              aNote          : GeneralNote;
+              aLeader        : LeaderArrow;
+              anotherLeader  : LeaderArrow;
+              aWitness       : WitnessLine;
+              anotherWitness : WitnessLine);
+        ---Purpose : This method is used to set the fields of the class
+        --           LinearDimension
+        --       - aNote          : General Note Entity
+        --       - aLeader        : First Leader Entity
+        --       - anotherLeader  : Second Leader Entity
+        --       - aWitness       : First Witness Line Entity or a Null
+        --                          Handle
+        --       - anotherWitness : Second Witness Line Entity or a Null
+        --                          Handle
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Nature of the Dimension
+	--           Unspecified, Diameter or Radius)
+	--           Error if not in range [0-2]
+
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns General Note Entity
+
+        FirstLeader (me) returns LeaderArrow;
+        ---Purpose : returns first Leader Entity
+
+        SecondLeader (me) returns LeaderArrow;
+        ---Purpose : returns second Leader Entity
+
+        HasFirstWitness (me) returns Boolean;
+        ---Purpose : returns False if no first witness line
+
+        FirstWitness (me) returns WitnessLine;
+        ---Purpose : returns first Witness Line Entity or a Null Handle
+
+        HasSecondWitness (me) returns Boolean;
+        ---Purpose : returns False if no second witness line
+
+        SecondWitness (me) returns WitnessLine;
+        ---Purpose : returns second Witness Line Entity or a Null Handle
+
+fields
+
+--
+-- Class    : IGESDimen_LinearDimension
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class LinearDimension.
+--
+-- Reminder : A LinearDimension instance is defined by :
+--            - General Note Entity
+--            - First Leader Entity
+--            - Second Leader Entity
+--            - First Witness Line Entity or a Null Handle
+--            - Second Witness Line Entity or a Null Handle
+-- An LinearDimension Entity consists of a general note, two leaders and
+-- zero, one or two witness lines.
+
+        theNote          : GeneralNote;
+        theFirstLeader   : LeaderArrow;
+        theSecondLeader  : LeaderArrow;
+        theFirstWitness  : WitnessLine;
+        theSecondWitness : WitnessLine;
+
+end LinearDimension;

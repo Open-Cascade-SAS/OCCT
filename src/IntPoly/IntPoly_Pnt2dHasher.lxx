@@ -1,0 +1,32 @@
+// File:	IntPoly_Pnt2dHasher.lxx
+// Created:	Thu Jul 20 10:20:04 1995
+// Author:	Stagiaire Alain JOURDAIN
+//		<ajo@phobox>
+
+#include <IntPoly_IndexedMapOfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <TColStd_MapRealHasher.hxx>
+#include <Precision.hxx>
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer IntPoly_Pnt2dHasher::HashCode(const gp_Pnt2d& Point,
+						      const Standard_Integer upper)
+{
+  return TColStd_MapRealHasher::HashCode(Point.X()+Point.Y(),upper);
+}
+
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean IntPoly_Pnt2dHasher::IsEqual(const gp_Pnt2d& Point1,
+						     const gp_Pnt2d& Point2)
+{
+  return ((Point1.X() == Point2.X()) && (Point1.Y() == Point2.Y()));
+}

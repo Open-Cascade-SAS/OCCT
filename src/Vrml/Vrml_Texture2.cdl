@@ -1,0 +1,61 @@
+-- File:	Vrml_Texture2.cdl
+-- Created:	Tue Feb 11 10:59:10 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Texture2 from Vrml 
+
+	---Purpose: defines a Texture2 node of VRML specifying properties of geometry
+	--          and its appearance.
+    	--  This  property  node  defines  a  texture  map  and  parameters  for  that  map   
+	--  The  texture  can  be  read  from  the  URL  specified  by  the  filename  field. 
+	--  To  turn  off  texturing,  set  the  filename  field  to  an  empty  string  ("").
+    	--  Textures  can  alsobe  specified  inline  by  setting  the  image  field   
+	--  to  contain  the  texture  data.  
+    	--  By  default  : 
+	--    myFilename ("")
+	--    myImage (0 0 0)
+	--    myWrapS (Vrml_REPEAT)
+	--    myWrapT (Vrml_REPEAT) 
+
+uses
+ 
+    SFImage      from  Vrml, 
+    Texture2Wrap from  Vrml, 
+    AsciiString  from  TCollection
+
+is
+ 
+    Create  returns  Texture2 from Vrml;
+ 
+    Create  (  aFilename : AsciiString from TCollection; 
+    	       aImage    : SFImage      from  Vrml; 
+    	       aWrapS    : Texture2Wrap from  Vrml; 
+    	       aWrapT    : Texture2Wrap from  Vrml) 
+    	returns  Texture2 from Vrml;
+
+    SetFilename   ( me : in out; aFilename : AsciiString from TCollection );
+    Filename   ( me )  returns  AsciiString from TCollection;
+ 
+    SetImage   ( me : in out; aImage : SFImage  from  Vrml );
+    Image   ( me )  returns SFImage  from  Vrml;
+
+    SetWrapS   ( me : in out; aWrapS : Texture2Wrap from  Vrml );
+    WrapS   ( me )  returns  Texture2Wrap from  Vrml;
+
+    SetWrapT   ( me : in out; aWrapT : Texture2Wrap from  Vrml );
+    WrapT   ( me )  returns  Texture2Wrap from  Vrml;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myFilename  :  AsciiString  from  TCollection;	-- file to read texture from
+    myImage     :  SFImage      from  Vrml;      	-- The texture
+    myWrapS     :  Texture2Wrap from  Vrml;
+    myWrapT     :  Texture2Wrap from  Vrml;
+
+end Texture2;

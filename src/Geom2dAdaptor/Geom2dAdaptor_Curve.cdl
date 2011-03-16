@@ -1,0 +1,240 @@
+-- File:	Geom2dAdaptor_Curve.cdl
+-- Created:	Thu Jun  3 18:51:05 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class Curve from Geom2dAdaptor inherits Curve2d from Adaptor2d
+
+        ---Purpose: An interface between the services provided by any
+    	-- curve from the package Geom2d and those required
+    	-- of the curve by algorithms which use it.
+        
+uses Vec2d                  from gp,
+     Pnt2d                  from gp,
+     Circ2d                 from gp,
+     Elips2d                from gp,
+     Hypr2d                 from gp,
+     Parab2d                from gp,
+     Lin2d                  from gp,
+     Array1OfReal           from TColStd,
+     Curve                  from Geom2d,
+     BezierCurve            from Geom2d,
+     BSplineCurve           from Geom2d,
+     CurveType              from GeomAbs,
+     Shape                  from GeomAbs,
+     HCurve2d               from Adaptor2d
+     
+     
+raises NoSuchObject from Standard,
+       ConstructionError from Standard,
+       OutOfRange  from Standard,
+       DomainError from Standard
+
+
+is
+
+    Create returns Curve from Geom2dAdaptor;
+
+    Create(C : Curve from Geom2d) returns Curve from Geom2dAdaptor;
+
+    Create(C : Curve from Geom2d; UFirst,ULast : Real)
+    returns Curve from Geom2dAdaptor
+    raises 
+    	ConstructionError from Standard;
+    	---Purpose: ConstructionError is raised if Ufirst>Ulast
+   
+    Load(me : in out; C : Curve from Geom2d);
+   
+    Load(me : in out; C : Curve from Geom2d; UFirst,ULast : Real)
+    raises 
+    	ConstructionError from Standard;
+    	---Purpose: ConstructionError is raised if Ufirst>Ulast
+
+    Curve(me) returns Curve from Geom2d
+        ---C++: return const& 
+    	---C++: inline
+    is static;
+
+
+
+    FirstParameter(me) returns Real
+	---C++: inline
+    is redefined static;
+
+    LastParameter(me) returns Real
+	---C++: inline
+    is redefined static;     
+
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <S>.    And  returns   the number   of
+	--          intervals.
+    is redefined static;
+
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve2d from Adaptor2d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static;
+    
+    IsClosed(me) returns Boolean
+    is redefined static;
+    
+    IsPeriodic(me) returns Boolean
+    is redefined static;
+
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+
+    
+    Value(me; U : Real) returns Pnt2d from gp
+        --- Purpose : Computes the point of parameter U on the curve 
+    is redefined static;
+
+    D0 (me; U : Real; P : out Pnt2d from gp)
+        --- Purpose : Computes the point of parameter U.
+    is redefined static;
+
+    D1 (me; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the curve with its
+        --  first derivative.
+
+    raises 
+       DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is redefined static;
+    
+    D2 (me; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+    raises 
+       DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+    is redefined static;
+
+    D3 (me; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+    is redefined static;
+        
+    DN (me; U : Real; N : Integer)   returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+    is redefined static;
+
+
+    Resolution(me; Ruv :Real) returns Real
+        ---Purpose : returns the parametric resolution
+    is redefined static;   
+   
+
+    GetType(me) returns CurveType from GeomAbs
+    	---C++: inline
+    is redefined static;
+
+    Line(me) returns Lin2d from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+   
+    Circle(me) returns Circ2d from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+    Ellipse(me) returns Elips2d from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+    Hyperbola(me) returns  Hypr2d from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+    Parabola(me) returns Parab2d from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+  
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;     
+          
+
+
+    Bezier(me) returns BezierCurve from Geom2d
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    BSpline(me) returns BSplineCurve from Geom2d
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    LocalContinuity(me; U1, U2 : Real) returns Shape from GeomAbs 
+    is static private;
+   
+fields 
+
+  myCurve             : Curve            from Geom2d ;
+  myTypeCurve         : CurveType        from GeomAbs ;
+  myFirst             : Real             from Standard ;
+  myLast              : Real             from Standard;
+  
+end Curve;
+

@@ -1,0 +1,181 @@
+-- File:	TCollection_Set.cdl
+-- Created:	Tue Mar  2 11:06:03 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Set from TCollection (Item as any)
+
+    	---Purpose:  A set is an  unordered  collection  of items without
+    	-- duplications. To test for duplications the operators == and !=
+    	-- are used on the items.
+    	-- Use a SetIterator to explore a Set.
+    	-- Warning
+    	-- A set generates the same result as a map. A map is
+    	-- more effective; therefore it is advisable to use maps instead of sets.
+    	-- Set is a generic class which consists of Items, types of elements in a set.
+raises   
+    NoSuchObject from Standard
+    
+    private class SetList instantiates List from TCollection(Item);
+
+    class SetIterator from TCollection 				      
+        ---Purpose: Functions used for iterating the contents of a Set.
+    	-- Note: an iterator class is automatically instantiated from
+    	-- this generic class at the time of instantiation of a Set.
+    	-- Warning
+    	-- -   A set is a non-ordered data structure. The order in
+    	--   which entries of a set are explored by the iterator
+    	--   depends on its contents, and changes when the set is edited.
+    	-- -   It is not recommended to modify the contents of a set
+    	--   during iteration: the result is unpredictable.
+  
+
+    raises NoSuchObject from Standard
+    is     
+    	Create returns SetIterator from TCollection;
+	    ---Purpose: Creates an empty iterator for a Set;
+    	    -- use the function Initialize to define the set to explore;.
+ 
+     	Create(S : Set from TCollection) returns SetIterator from TCollection;
+            ---Purpose: Creates an iterator on the set <S>.
+	    
+	Initialize(me : in out; S : Set from TCollection)
+    	    ---Purpose: Sets or resets the iterator on the set <S>.
+	is static;
+
+     	More(me) returns Boolean from Standard
+            ---Purpose: Returns True if there are other items.
+	    ---C++: inline	    
+	is static;
+
+     	Next(me: in out)
+	    ---Purpose: Positions the iterator to the next item.
+	    ---C++: inline
+	is static;
+	    	
+     	Value(me) returns any Item 
+    	raises NoSuchObject from Standard
+	    ---Purpose: Returns the item   value corresponding to  the
+	    -- current position of the iterator.
+	    ---C++: return const &
+	    ---C++: inline
+	is static;
+
+    fields
+    	myIterator : ListIteratorOfSetList;
+	
+    end SetIterator from TCollection;
+
+
+is
+
+    Create returns Set from TCollection;
+        ---Purpose: Creation of an empty set.
+	
+    Create(Other : Set from TCollection) 
+    returns Set from TCollection 
+    is private;
+	---Purpose: Creates by copying an existing Set.
+	--  Warning: Prints a message when  other is not  empty.  It is
+	-- recommanded to use Assign (operator =).
+    
+    Extent(me) returns Integer from Standard
+        ---Level: Public
+        ---Purpose: Returns the number of items in the set.
+	---C++: inline
+    is static;
+
+    IsEmpty(me) returns Boolean from Standard
+        ---Level: Public
+        ---Purpose: Returns    True   if    the  set  is   empty. i.e.
+        -- Extent() == 0.
+	---C++: inline
+    is static;
+
+    Clear(me : in out)
+        ---Level: Public
+	---Purpose: Removes all items from the set.
+	---C++: inline
+    is static;
+
+    Add(me : in out; T : Item) returns Boolean from Standard
+        ---Level: Public
+	---Purpose: Adds the  item <T>  in   the set if  it does   not
+	-- already exist.Returns  False if the item T already exists.
+	--  Example:          
+        -- before
+        --   me = {a,b,c,d}, T = y
+        -- after
+        --   me = {a,b,c,d,y} returns True
+    is static;
+
+    Remove(me : in out; T : Item) returns Boolean from Standard
+        ---Level: Public
+        ---Purpose: Removes the item <T> from the set. Returns True if
+        -- the item was in the set.
+        --  Example:         
+        -- before
+        --   me = {a,b,c,d}, T = a
+        -- after
+        --   me = {b,c,d} returns True
+    is static;
+ 
+    Union(me : in out; B : Set from TCollection)
+        ---Level: Public
+        ---Purpose: Add to <me> all the items of the set <B> 
+        -- which are not in <me>.
+        --  Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c,d,f}, B = {d,a,f}
+    is static;
+
+    Intersection(me : in out; B : Set from TCollection)
+        ---Level: Public
+        ---Purpose: Removes from <me> all the items which are not in <B>.
+        --  Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a}, B = {d,a,f}
+    is static;
+
+    Difference(me : in out; B: Set from TCollection)
+        ---Level: Public
+        ---Purpose: Removes from <me> all the items which are in <B>.
+        --  Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {b,c}, B = {d,a,f}
+    is static;
+
+    Contains(me; T : Item) returns Boolean from Standard
+        ---Level: Public
+        ---Purpose: Returns True if the item <T> is in the set.
+    is static;
+
+    IsASubset(me; S : Set from TCollection) returns Boolean from Standard
+        ---Level: Public
+        ---Purpose: returns True if <S> is a subset  of <me>. i.e. all
+        -- elements of <S> are in <me>.
+    is static;
+
+    IsAProperSubset(me; S : Set from TCollection) 
+    returns Boolean from Standard
+        ---Level: Public
+        ---Purpose: returns True if <S> is strictly contained in <me>.
+        -- i.e <S> is a subset and its extent is not equal to
+        -- the extent of <me>.
+    is static;
+
+fields
+    myItems : SetList;
+    
+friends
+    class SetIterator from TCollection
+    
+end Set from TCollection;

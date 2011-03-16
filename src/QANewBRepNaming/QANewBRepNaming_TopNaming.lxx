@@ -1,0 +1,14 @@
+// File:	QANewBRepNaming_TopNaming.lxx
+// Created:	Mon Oct 25 12:31:27 1999
+// Author:	Sergey ZARITCHNY
+//		<szy@philipox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : ResultLabel
+//purpose  : 
+//=======================================================================
+
+inline const TDF_Label& QANewBRepNaming_TopNaming::ResultLabel() const
+{
+  return myResultLabel;
+}

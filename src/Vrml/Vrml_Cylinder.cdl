@@ -1,0 +1,46 @@
+-- File:	Vrml_Cylinder.cdl
+-- Created:	Wed Dec 25 15:07:51 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Cylinder from Vrml 
+
+	---Purpose: defines a Cylinder node of VRML specifying geometry shapes.
+    	-- This  node  represents  a  simple  capped  cylinder  centred  around the  y-axis. 
+    	-- By  default ,  the  cylinder  is  centred  at  (0,0,0) 
+	-- and  has  size  of  -1  to  +1  in  the  all  three  dimensions. 
+	-- The  cylinder  has  three  parts: 
+	-- the  sides,  the  top  (y=+1)  and  the  bottom (y=-1)
+
+uses
+ 
+    CylinderParts from Vrml
+
+is
+
+    Create ( aParts  : CylinderParts from Vrml  = Vrml_CylinderALL;
+    	     aRadius : Real          from Standard = 1;
+	     aHeight : Real          from Standard = 2 )
+        returns Cylinder from Vrml;
+
+    SetParts ( me : in out; aParts : CylinderParts from Vrml );
+    Parts ( me  )  returns CylinderParts from Vrml;
+    
+    SetRadius ( me : in out; aRadius : Real from Standard );
+    Radius ( me )  returns Real  from  Standard;
+  
+    SetHeight ( me : in out; aHeight : Real from Standard );
+    Height ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+
+    myParts  : CylinderParts from Vrml; -- Visible parts of cylinder
+    myRadius : Real from Standard;      -- Radius in x and z dimensions
+    myHeight : Real from Standard;      -- Size in y dimension
+    
+end Cylinder;

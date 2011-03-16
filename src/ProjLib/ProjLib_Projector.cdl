@@ -1,0 +1,159 @@
+-- File:	ProjLib_Projector.cdl
+-- Created:	Wed Aug 11 17:34:28 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Projector from ProjLib 
+
+	---Purpose: Root class for projection algorithms, stores the result.
+
+uses
+    CurveType  	   from GeomAbs,
+    Lin        	   from gp,
+    Circ       	   from gp,
+    Elips      	   from gp,
+    Parab      	   from gp,
+    Hypr       	   from gp,
+    Lin2d      	   from gp,
+    Circ2d         from gp,
+    Elips2d        from gp,
+    Parab2d        from gp,
+    Hypr2d         from gp,
+    BezierCurve    from Geom2d,
+    BSplineCurve   from Geom2d
+
+raises
+    NoSuchObject   from Standard,
+    NotImplemented from Standard
+
+is
+
+     Create ;
+	---Purpose: Sets the type to OtherCurve
+	
+     Delete(me:out) is virtual;
+     ---C++: alias "Standard_EXPORT virtual ~ProjLib_Projector(){Delete() ; }"
+    
+     IsDone(me) returns Boolean from Standard
+     is static;
+     
+     Done(me : in out) 
+	---Purpose: Set isDone = Standard_True;
+     is static;
+     
+     GetType(me) returns CurveType from GeomAbs
+     is static;
+     
+     SetBSpline(me : in out; C : BSplineCurve from Geom2d)
+     is static;
+     
+     SetBezier(me : in out; C : BezierCurve from Geom2d)
+     is static;
+     
+     SetType(me : in out; Type : CurveType from GeomAbs)
+     is static;
+    
+     IsPeriodic(me) 
+     returns Boolean from Standard
+     is static;
+     
+     SetPeriodic(me: in out)
+     is static;
+    
+     Line(me) returns Lin2d from gp
+	---C++: return const &
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     Circle(me) returns Circ2d from gp
+	---C++: return const &
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     Ellipse(me) returns Elips2d from gp
+	---C++: return const &
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     Hyperbola(me) returns  Hypr2d from gp
+	---C++: return const &
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     Parabola(me) returns Parab2d from gp
+	---C++: return const &
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     Bezier(me) returns BezierCurve  from Geom2d
+     raises 
+    	NoSuchObject from Standard
+     is static;
+     
+     
+     BSpline(me) returns BSplineCurve from Geom2d
+     raises
+     	NoSuchObject from Standard
+     is static;
+
+     Project(me : in out;
+     	     L  : Lin from gp)
+     is virtual;
+ 
+     Project(me : in out;
+     	     C  : Circ from gp)
+     is virtual;
+ 
+     Project(me : in out;
+     	     E  : Elips from gp)
+     is virtual;
+ 
+     Project(me : in out;
+     	     P  : Parab from gp)
+     is virtual;
+ 
+     Project(me : in out;
+     	     H  : Hypr from gp)
+     is virtual;
+	     
+     UFrame(me : in out;
+     	    CFirst, CLast  : Real from Standard; -- Bounds of the curve
+	    UFirst, Period : Real from Standard) -- UBounds of the surface 
+	    
+	---Purpose: Translates the 2d curve 
+	--          to set the part of the curve [CFirst, CLast]
+	--          in the range [ UFirst, UFirst + Period [
+     is static;
+
+     VFrame(me : in out;
+     	    CFirst, CLast  : Real from Standard; -- Bounds of the curve
+	    VFirst, Period : Real from Standard) -- VBounds of the surface 
+	    
+	---Purpose: Translates the 2d curve 
+	--          to set the part of the curve [CFirst, CLast]
+	--          in the range [ VFirst, VFirst + Period [
+     is static;
+
+
+fields
+
+    myType       : CurveType    from GeomAbs  is protected;
+    myLin        : Lin2d        from gp       is protected;
+    myCirc       : Circ2d       from gp       is protected;
+    myElips      : Elips2d      from gp       is protected;
+    myHypr       : Hypr2d       from gp       is protected;
+    myParab      : Parab2d      from gp       is protected;
+    myBSpline    : BSplineCurve from Geom2d   is protected;
+    myBezier     : BezierCurve  from Geom2d   is protected;
+    myIsPeriodic : Boolean      from Standard is protected;
+    isDone       : Boolean      from Standard is protected;
+
+end Projector;

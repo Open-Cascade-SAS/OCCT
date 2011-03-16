@@ -1,0 +1,46 @@
+// File:	BRepClass_FaceExplorer.lxx
+// Created:	Mon Jan 25 19:12:49 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : MoreWires
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  BRepClass_FaceExplorer::MoreWires()const 
+{
+  return myWExplorer.More();
+}
+
+//=======================================================================
+//function : NextWire
+//purpose  : 
+//=======================================================================
+
+inline void BRepClass_FaceExplorer::NextWire()
+{
+  myWExplorer.Next();
+}
+
+//=======================================================================
+//function : MoreEdges
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  BRepClass_FaceExplorer::MoreEdges()const 
+{
+  return myEExplorer.More();
+}
+
+//=======================================================================
+//function : NextEdge
+//purpose  : 
+//=======================================================================
+
+inline void BRepClass_FaceExplorer::NextEdge()
+{
+  myEExplorer.Next();
+}
+
+

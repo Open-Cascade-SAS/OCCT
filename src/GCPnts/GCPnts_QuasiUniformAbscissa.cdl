@@ -1,0 +1,171 @@
+-- File:	GCPnts_QuasiUniformAbscissa.cdl
+-- Created:	Thu Aug 22 15:49:19 1996
+-- Author:	Stagiaire Mary FABIEN
+--		<fbi@zozox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class QuasiUniformAbscissa from GCPnts 
+
+
+    ---Purpose: This class provides an algorithm to compute a uniform abscissa
+    -- distribution of points on a curve, i.e. a sequence of
+    -- equidistant points. The distance between two
+    -- consecutive points is measured along the curve.
+    -- The distribution is defined:
+    -- -   either by the curvilinear distance between two consecutive points
+    -- -   or by a number of points.
+uses 
+    Curve        from Adaptor3d,
+    Curve2d      from Adaptor2d,
+    HArray1OfReal from TColStd
+
+    
+raises DomainError       from Standard, 
+       ConstructionError from Standard,
+       OutOfRange        from Standard,
+       NotDone           from StdFail
+
+is
+        
+    Create 
+    	---Purpose: Constructs an empty algorithm. To define the problem
+        -- to be solved, use the function Initialize.
+    	returns QuasiUniformAbscissa from GCPnts;
+
+    Create(C : in out Curve from Adaptor3d ; NbPoints : Integer)
+        --- Purpose : Computes a uniform abscissa distribution of points
+        -- -   on the curve C where Abscissa is the curvilinear distance between
+	-- two consecutive points of the distribution.
+    	returns QuasiUniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve from Adaptor3d ; NbPoints : Integer; U1, U2 : Real)
+        --- Purpose : Computes a uniform abscissa distribution of points
+	--   on the part of curve C limited by the two parameter values U1 and U2,
+	--     where Abscissa is the curvilinear distance between
+	-- two consecutive points of the distribution.
+	-- The first point of the distribution is either the origin of
+	-- curve C or the point of parameter U1. The following
+	-- points are computed such that the curvilinear
+	-- distance between two consecutive points is equal to Abscissa.
+	-- The last point of the distribution is either the end
+	-- point of curve C or the point of parameter U2.
+	-- However the curvilinear distance between this last
+	-- point and the point just preceding it in the distribution
+	-- is, of course, generally not equal to Abscissa.
+	-- Use the function IsDone to verify that the
+	-- computation was successful, the function NbPoints
+	-- to obtain the number of points of the computed
+	-- distribution, and the function Parameter to read the
+	-- parameter of each point.
+	-- Warning
+	-- The roles of U1 and U2 are inverted if U1 > U2 .
+	-- Warning
+	-- C is an adapted curve, that is, an object which is an
+	-- interface between:
+	-- -   the services provided by either a 2D curve from
+	--   the package Geom2d (in the case of an
+	--   Adaptor2d_Curve2d curve) or a 3D curve from
+	--   the package Geom (in the case of an Adaptor3d_Curve curve),
+	-- -   and those required on the curve by the computation algorithm.
+        returns QuasiUniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+  
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; NbPoints : Integer)
+    	---Purpose: Initialize the algoritms with <C>, <NbPoints> and 
+     	raises ConstructionError
+	is static;
+
+
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; NbPoints : Integer; U1, U2 : Real)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>.
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+    Create(C : in out Curve2d from Adaptor2d ; NbPoints : Integer)
+        --- Purpose : Computes a uniform abscissa distribution of points on 
+        --  the Curve2d <C>. 
+        --  <NbPoints> defines the nomber of desired points. 
+    	returns QuasiUniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve2d from Adaptor2d ; NbPoints : Integer; U1, U2 : Real)
+        --- Purpose : Computes a Uniform abscissa distribution of points 
+        --  on a part of the Curve2d <C>. 
+     	returns QuasiUniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; NbPoints : Integer)
+    	---Purpose: Initialize the algoritms with <C>, <NbPoints> and 
+     	raises ConstructionError
+	is static;
+
+
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; NbPoints : Integer; U1, U2 : Real)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>.
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+	       
+    IsDone(me) returns Boolean 
+	---C++: inline
+	---Purpose: Returns true if the computation was successful.
+	-- IsDone is a protection against:
+	-- -   non-convergence of the algorithm
+	-- -   querying the results before computation.
+    	is static;
+
+	       
+    NbPoints(me) returns Integer
+	---C++: inline
+	---Purpose:
+	-- Returns the number of points of the distribution
+	-- computed by this algorithm.
+	-- This value is either:
+	-- -   the one imposed on the algorithm at the time of
+	--   construction (or initialization), or
+	-- -   the one computed by the algorithm when the
+	--   curvilinear distance between two consecutive
+	--   points of the distribution is imposed on the
+	--   algorithm at the time of construction (or initialization).
+	--   Exceptions
+	-- StdFail_NotDone if this algorithm has not been
+	-- initialized, or if the computation was not successful.
+    	 is static;
+  
+    Parameter(me; Index : Integer) returns Real 
+	---C++: inline
+        ---Purpose : Returns the parameter of the point of index Index in
+	-- the distribution computed by this algorithm.
+	-- Warning
+	-- Index must be greater than or equal to 1, and less
+	-- than or equal to the number of points of the
+	-- distribution. However, pay particular attention as this
+	-- condition is not checked by this function.
+	-- Exceptions
+	-- StdFail_NotDone if this algorithm has not been
+	-- initialized, or if the computation was not successful.
+    	is static;
+   
+fields
+
+    myDone       : Boolean;
+    myNbPoints   : Integer ;
+    -- stores the number of points computed with the 
+    -- requested Abscissa else stores the requested
+    -- number of points 
+    myAbscissa   : Real;
+    myParams     : HArray1OfReal from TColStd ;
+    -- the size of this array will be be bigger than myNbPoints
+    --  by one or two 
+
+end QuasiUniformAbscissa;

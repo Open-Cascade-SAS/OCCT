@@ -1,0 +1,80 @@
+// File:	AIS_Drawer.lxx
+// Created:	Thu Dec 19 15:49:32 1996
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline Standard_Boolean AIS_Drawer::WasLastLocal() const
+{return Standard_False;}
+
+inline Standard_Boolean AIS_Drawer::HasLocalAttributes() const 
+{return hasLocalAttributes;}
+
+inline Standard_Real AIS_Drawer::PreviousDeviationCoefficient ()  const 
+{return  (myhasOwnDeviationCoefficient) ? myPreviousDeviationCoefficient : 0.0;}
+
+inline Standard_Real AIS_Drawer::PreviousHLRDeviationCoefficient ()  const 
+{return  (myhasOwnHLRDeviationCoefficient) ? myPreviousHLRDeviationCoefficient : 0.0;}
+
+inline Standard_Real AIS_Drawer::PreviousDeviationAngle ()  const 
+{return  (myhasOwnDeviationAngle) ? myPreviousDeviationAngle : 0.0;}
+
+inline Standard_Real AIS_Drawer::PreviousHLRDeviationAngle ()  const 
+{return  (myhasOwnHLRDeviationAngle) ? myPreviousHLRDeviationAngle : 0.0;}
+
+inline void AIS_Drawer::Link ( const Handle(Prs3d_Drawer)& aDrawer) 
+{ myLink = aDrawer;}
+
+inline Standard_Boolean AIS_Drawer::HasLink() const
+{ return ! myLink.IsNull();}
+
+inline void AIS_Drawer::SetDeviationCoefficient ()
+{ myhasOwnDeviationCoefficient    = Standard_False; }
+
+inline void AIS_Drawer::SetHLRDeviationCoefficient () 
+{ myhasOwnHLRDeviationCoefficient    = Standard_False; }
+
+inline void AIS_Drawer::SetDeviationAngle () 
+{ myhasOwnDeviationAngle    = Standard_False;}
+
+inline void AIS_Drawer::SetHLRAngle () 
+{ myhasOwnHLRDeviationAngle    = Standard_False;}
+
+inline Standard_Boolean AIS_Drawer::IsOwnDeviationCoefficient ()  const 
+{ return  myhasOwnDeviationCoefficient;}
+
+inline Standard_Boolean AIS_Drawer::IsOwnDeviationAngle ()  const 
+{ return  myhasOwnDeviationAngle;}
+
+inline Standard_Boolean AIS_Drawer::IsOwnHLRDeviationCoefficient ()  const 
+{ return  myhasOwnHLRDeviationCoefficient;}
+
+inline Standard_Boolean AIS_Drawer::IsOwnHLRDeviationAngle ()  const 
+{ return  myhasOwnHLRDeviationAngle;}
+
+inline Standard_Boolean AIS_Drawer::HasTextAspect ()  const 
+{ return (!myTextAspect.IsNull());}
+
+inline Standard_Boolean AIS_Drawer::HasWireAspect ()  const 
+{ return (!myWireAspect.IsNull());}
+
+inline Standard_Boolean AIS_Drawer::HasLineAspect ()  const 
+{return !myLineAspect.IsNull(); }
+
+inline Standard_Boolean AIS_Drawer::HasShadingAspect ()  const 
+{  return !myShadingAspect.IsNull();}
+
+inline Standard_Boolean AIS_Drawer::HasPointAspect ()  const 
+{ return !myPointAspect.IsNull();}
+
+inline Standard_Boolean AIS_Drawer::HasAngleAspect ()  const 
+{ return !myAngleAspect.IsNull();}
+
+inline Standard_Boolean AIS_Drawer::HasDatumAspect ()  const 
+{ return !myDatumAspect.IsNull();}
+
+inline Standard_Boolean AIS_Drawer::HasPlaneAspect ()  const 
+{ return !myPlaneAspect.IsNull();}
+
+inline Standard_Boolean AIS_Drawer::HasLengthAspect ()  const 
+{ return !myLengthAspect.IsNull();}
+

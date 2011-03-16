@@ -1,0 +1,143 @@
+-- File:	Geom_ElementarySurface.cdl
+-- Created:	Wed Mar 10 09:41:01 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class ElementarySurface from Geom inherits Surface from Geom
+
+        ---Purpose : Describes the common behavior of surfaces which
+    	-- have a simple parametric equation in a local
+    	-- coordinate system. The Geom package provides
+    	-- several implementations of concrete elementary surfaces:
+    	-- - the plane, and
+    	-- - four simple surfaces of revolution: the cylinder, the
+    	--   cone, the sphere and the torus.
+    	-- An elementary surface inherits the common behavior
+    	-- of Geom_Surface surfaces. Furthermore, it is located
+    	-- in 3D space by a coordinate system (a gp_Ax3
+    	-- object) which is also its local coordinate system.
+    	-- Any elementary surface is oriented, i.e. the normal
+    	-- vector is always defined, and gives the same
+    	-- orientation to the surface, at any point on the surface.
+    	-- In topology this property is referred to as the "outside
+    	-- region of the surface". This orientation is related to
+    	-- the two parametric directions of the surface.
+    	-- Rotation of a surface around the "main Axis" of its
+    	-- coordinate system, in the trigonometric sense given
+    	-- by the "X Direction" and the "Y Direction" of the
+    	-- coordinate system, defines the u parametric direction
+    	-- of that elementary surface of revolution. This is the
+    	-- default construction mode.
+    	-- It is also possible, however, to change the orientation
+    	-- of a surface by reversing one of the two parametric
+    	-- directions: use the UReverse or VReverse functions
+    	-- to change the orientation of the normal at any point on the surface.
+    	-- Warning
+    	-- The local coordinate system of an elementary surface
+    	-- is not necessarily direct:
+    	-- - if it is direct, the trigonometric sense defined by its
+    	-- "main Direction" is the same as the trigonometric
+    	--  sense defined by its two vectors "X Direction" and "Y Direction":
+    	--   "main Direction" = "X Direction" ^ "Y Direction"
+    	-- - if it is indirect, the two definitions of trigonometric
+    	--   sense are opposite:
+    	-- "main Direction" = - "X Direction" ^ "Y Direction"
+        
+uses Ax1     from gp,
+     Ax2     from gp,
+     Ax3     from gp,
+     Pnt     from gp, 
+     Vec     from gp,
+     Shape   from GeomAbs
+
+raises ConstructionError from Standard
+
+is
+
+  SetAxis (me : mutable; A1 : Ax1)
+        ---Purpose : 
+        --  Changes the main axis (ZAxis) of the elementary surface.
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if the direction of A1 is parallel to the XAxis of the
+        --  coordinate system of the surface.
+
+
+  SetLocation (me : mutable; Loc : Pnt);
+        ---Purpose :
+        --  Changes the location of the local coordinates system of the 
+        --  surface.
+
+
+  SetPosition (me : mutable; A3 : Ax3);
+       ---Purpose :
+       --  Changes the local coordinates system of the surface.
+
+
+  Axis (me)  returns Ax1;  
+        ---Purpose :
+        --  Returns the main axis of the surface (ZAxis).
+
+
+  Location (me)  returns Pnt;
+        ---Purpose :
+        --  Returns the location point of the local coordinate system of the 
+        --  surface.
+
+
+  Position (me)  returns Ax3;
+        ---Purpose : Returns the local coordinates system of the surface.
+    	---C++: return const&
+
+
+  UReverse (me : mutable)
+        ---Purpose : 
+        --  Reverses the U parametric direction of the surface.
+    is virtual;
+
+  UReversedParameter (me; U : Real) returns Real
+	---Purpose: Return the  parameter on the  Ureversed surface for
+	--          the point of parameter U on <me>.
+	--          
+	--          me->UReversed()->Value(me->UReversedParameter(U),V)
+	--            is the same point as
+	--          me->Value(U,V)
+     is deferred;
+
+
+  VReverse (me : mutable)
+        ---Purpose :
+        --  Reverses the V parametric direction of the surface.
+    is virtual;
+    
+
+  VReversedParameter (me; V : Real) returns Real
+	---Purpose: Return the  parameter on the  Vreversed surface for
+	--          the point of parameter V on <me>.
+	--          
+	--          me->VReversed()->Value(U,me->VReversedParameter(V))
+	--            is the same point as
+	--          me->Value(U,V)
+     is deferred;
+
+
+  Continuity (me)  returns Shape from GeomAbs;
+        ---Purpose : Returns GeomAbs_CN, the global continuity of any elementary surface.
+
+
+  IsCNu (me; N : Integer)  returns Boolean;
+        ---Purpose : Returns True.
+
+
+  IsCNv (me; N : Integer)  returns Boolean;
+        ---Purpose : Returns True.
+
+
+
+fields
+
+  pos           : Ax3 is protected;
+
+end;

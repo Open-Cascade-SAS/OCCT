@@ -1,0 +1,67 @@
+-- File:        AlienImage_AlienUserImage.cdl
+-- Created:     23/03/93
+-- Author:      BBL,JLF
+--
+-- Modified:    DCB (20-OCT-98)
+--              Define ToImage()/FromName() as deferred.
+--
+---Copyright:   Matravision 1993
+
+deferred class AlienUserImage from AlienImage inherits AlienImage
+
+        ---Version: 0.0
+
+        ---Purpose: This class defines an Alien user image.
+        -- Alien Image is X11 .xwd image or SGI .rgb image for examples
+
+        ---Keywords:
+        ---Warning:
+        ---References:
+
+uses
+        Image   from Image,
+        File    from OSD
+
+raises
+        TypeMismatch    from Standard
+
+is
+        Initialize ;
+
+        Read ( me : in out mutable ; afile : in out File from OSD )
+          returns Boolean from Standard is deferred;
+        ---Level: Public
+        ---Purpose: Read content of a  UserAlienImage object from a file .
+        --         Returns True if sucess .
+
+        Read ( me : in out mutable ; afile : in CString from Standard )
+          returns Boolean from Standard ;
+        ---Level: Public
+        ---Purpose: Read content of a UserAlienImage object from a file .
+        --          Returns True if file is a AlienImage file .
+
+        Write ( me : in immutable ; afile : in out File from OSD )
+          returns Boolean from Standard is deferred ;
+        ---Level: Public
+        ---Purpose: Write content of a UserAlienImage object to a file .
+
+        Write ( me : in immutable ; afile : in CString from Standard )
+          returns Boolean from Standard ;
+        ---Level: Public
+        ---Purpose: Write content of a UserAlienImage object to a file .
+
+        ToImage ( me : in  immutable )
+        returns mutable Image from Image 
+        raises TypeMismatch from Standard
+        is deferred;
+        ---Level: Public
+        ---Purpose : convert a AidaAlienData object to a Image object.
+
+        FromImage ( me : in out mutable ; anImage : in Image from Image )
+        raises TypeMismatch from Standard
+        is deferred;
+        ---Level: Public
+        ---Purpose : convert a Image object to a AidaAlienData object.
+
+end AlienUserImage;
+ 

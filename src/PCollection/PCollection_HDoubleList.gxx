@@ -1,0 +1,170 @@
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                      HDoubleList                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+
+
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                                                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+PCollection_HDoubleList::PCollection_HDoubleList ( ){
+}
+
+
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                                                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+Handle(PCollection_HDoubleList) 
+   PCollection_HDoubleList::Construct(const Item& T)
+{
+
+ Handle(PCollection_HDoubleList) me , L ;
+ me = this;
+ L  = new PCollection_HDoubleList;
+ L->ChangeForwardPointer ( me );  // Pointeur avant de L sur me.
+ Before = L;                      // Pointer arriere de me sur L.
+ L->SetValue ( T );               // Mettre la valeur de l'item.
+ return L;                        // C'est L qui est retourne.
+}
+
+
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                                                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+Handle(Standard_Persistent) PCollection_HDoubleList::ShallowCopy() const
+{
+  
+  Handle(PCollection_HDoubleList) TheList,          // Traversal depth of <this>
+                                TheCopy,          // The list returned
+                                Pred,             // Backward pointer
+                                Succ,             // Forward pointer
+                                Last;             // Last cell
+
+  TheCopy = new PCollection_HDoubleList;            // Initialization of the list
+                                                  // that will be returned
+  Standard_Boolean FirstTime = Standard_True;                 
+
+  TheList = this;                                 // Start at the beginning
+  Pred = Succ = TheCopy;
+  
+  while ( ! TheList->IsEmpty() ) {                // Append each item at the
+    Succ = Succ->Construct(TheList->Value());     // end of the list
+    if ( FirstTime ){
+      FirstTime = Standard_False;
+      TheCopy   = Succ;
+    }
+    else{
+      Pred->ChangeForwardPointer(Succ);           // Make the link between 
+      Succ->ChangeBackPointer(Pred);              // Pred and Succ
+    }
+    Pred = Succ;
+    Succ = Succ->Tail();
+    TheList = TheList->Tail();                   
+  }
+  return TheCopy;                                // Returns the header
+}
+
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                                                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+void PCollection_HDoubleList::ShallowDump(Standard_OStream& S) const
+{
+  Handle(PCollection_HDoubleList) TheList;
+  TheList = this;
+  S << "begin class HDoubleList " << endl;
+  while ( ! TheList->IsEmpty() ) {                
+    ::ShallowDump(TheList->Value(), S);
+    TheList = TheList->Tail();
+  }
+  S << "end of HDoubleList." << endl;
+}
+
+
+/* Anciens INLINE */
+
+
+void PCollection_HDoubleList::ChangeForwardPointer
+   (const Handle(PCollection_HDoubleList)& L)
+{
+     Next = L;
+}
+
+void PCollection_HDoubleList::ChangeBackPointer
+   (const Handle(PCollection_HDoubleList)& L)
+{
+    Before  = L;
+}
+
+
+void PCollection_HDoubleList::SetValue(const Item& T)
+{
+  Standard_NoSuchObject_Raise_if (IsEmpty(),
+                                  "Empty Element in HDoubleList::SetValue");
+  Data = T;
+}
+
+
+Item PCollection_HDoubleList::Value() const {
+  Standard_NoSuchObject_Raise_if(IsEmpty(),
+                                    "Empty Element in HDoubleList::Value");
+  return Data;
+}
+
+Handle(PCollection_HDoubleList) PCollection_HDoubleList::Previous() const {
+  Standard_NoSuchObject_Raise_if((IsEmpty() && Before.IsNull()),
+                                 "Empty Element in HDoubleList::Previous");
+  return Before;
+}
+
+
+Standard_Boolean PCollection_HDoubleList::IsEmpty()const
+{
+  return Next.IsNull();
+}
+
+
+Handle(PCollection_HDoubleList) PCollection_HDoubleList::Tail() const {
+  Standard_NoSuchObject_Raise_if(IsEmpty(),
+                                 "Empty Element in HDoubleList::Previous");
+  return Next;
+}
+
+// -----------------------------------------------------------------------
+// -                                                                     -
+// -                                                                     -
+// -                                                                     -
+// -----------------------------------------------------------------------
+void PCollection_HDoubleList::SwapTail(Handle(PCollection_HDoubleList)&
+                                            WithList)
+{
+ // Exception si liste vide
+  Standard_NoSuchObject_Raise_if(IsEmpty(),
+                                 "Empty Element in HDoubleList::SwapTail") ;
+
+  Handle(PCollection_HDoubleList) L  = Next;
+  Handle(PCollection_HDoubleList) me ;
+  me = this;
+  WithList->ChangeBackPointer(me);
+  Next = WithList;
+  WithList = L;
+}
+
+void PCollection_HDoubleList::Destroy()
+{
+#ifdef CSFDB 
+  Next.Nullify();
+#endif
+}

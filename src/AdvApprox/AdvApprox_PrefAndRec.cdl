@@ -1,0 +1,44 @@
+-- File:	AdvApprox_PrefAndRec.cdl
+-- Created:	Thu Nov 14 11:29:36 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class PrefAndRec from AdvApprox inherits Cutting from AdvApprox
+
+    ---Purpose : 
+    -- inherits class Cutting; contains a list of preferential points (pi)i
+    -- and a list of Recommended points used in cutting management.
+    
+
+uses Array1OfReal from TColStd
+
+raises DomainError from Standard
+    
+is
+    Create(RecomendedCut : Array1OfReal;
+           PrefferedCut  : Array1OfReal;
+           Weight        : Real = 5 ) 
+    returns PrefAndRec 
+    raises DomainError;  -- if  Weight <= 1
+    
+    Value(me; a,b : Real;
+              cuttingvalue : out Real)
+    returns Boolean 
+    ---Purpose: 
+    --     cuting value is
+    --    - the recommended point nerest of (a+b)/2 
+    --      if pi is in ]a,b[ or else
+    --   -  the preferential point nearest of (a+b) / 2
+    --     if pi is in ](r*a+b)/(r+1) , (a+r*b)/(r+1)[ where r = Weight
+    --   -  or (a+b)/2 else.
+    is redefined;
+
+
+fields
+    myRecCutting : Array1OfReal from TColStd;
+    myPrefCutting: Array1OfReal from TColStd;
+    myWeight     : Real;
+end PrefAndRec;

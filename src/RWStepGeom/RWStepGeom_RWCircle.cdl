@@ -1,0 +1,30 @@
+-- File:        Circle.cdl
+-- Created:     Mon Dec  4 12:02:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWCircle from RWStepGeom
+
+	---Purpose : Read & Write Module for Circle
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Circle from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWCircle;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Circle from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Circle from StepGeom);
+
+	Share(me; ent : Circle from StepGeom; iter : in out EntityIterator);
+
+end RWCircle;

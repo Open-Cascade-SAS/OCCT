@@ -1,0 +1,36 @@
+-- File:	StepAP214_AutoDesignDocumentReference.cdl
+-- Created:	Tue Aug  4 09:54:56 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class AutoDesignDocumentReference  from StepAP214    inherits DocumentReference
+
+    -- introduced in STEP214 CC2
+
+uses
+     Document from StepBasic,
+     HAsciiString from TCollection,
+     AutoDesignReferencingItem from StepAP214,
+     HArray1OfAutoDesignReferencingItem from StepAP214
+
+is
+
+    Create returns AutoDesignDocumentReference;
+
+    Init (me : mutable;
+           aAssignedDocument : Document;
+           aSource : HAsciiString;
+    	   aItems  : HArray1OfAutoDesignReferencingItem);
+
+    Items (me) returns HArray1OfAutoDesignReferencingItem;
+    SetItems (me : mutable; aItems : HArray1OfAutoDesignReferencingItem);
+    ItemsValue (me; num : Integer) returns AutoDesignReferencingItem;
+    NbItems (me) returns Integer;
+
+fields
+
+    items : HArray1OfAutoDesignReferencingItem;
+
+end AutoDesignDocumentReference;

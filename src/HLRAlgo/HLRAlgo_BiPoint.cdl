@@ -1,0 +1,107 @@
+-- File:	HLRAlgo_BiPoint.cdl
+-- Created:	Thu Jun 22 12:28:58 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class BiPoint from HLRAlgo
+
+uses
+    Address from Standard,
+    Boolean from Standard,
+    Integer from Standard
+    
+is
+    Create
+    returns BiPoint from HLRAlgo; 
+    	---C++: inline
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2       : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2 : Real    from Standard;
+           Index                   : Integer from Standard;
+           reg1,regn,outl,intl     : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2       : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2 : Real    from Standard;
+           Index                   : Integer from Standard;
+           flag                    : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2       : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2 : Real    from Standard;
+           Index,i1,i1p1,i1p2      : Integer from Standard;
+           reg1,regn,outl,intl     : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2       : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2 : Real    from Standard;
+           Index,i1,i1p1,i1p2      : Integer from Standard;
+           flag                    : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2               : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2         : Real    from Standard;
+           Index,i1,i1p1,i1p2,i2,i2p1,i2p2 : Integer from Standard;
+           reg1,regn,outl,intl             : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Create(X1,Y1,Z1,X2,Y2,Z2               : Real    from Standard;
+           XT1,YT1,ZT1,XT2,YT2,ZT2         : Real    from Standard;
+           Index,i1,i1p1,i1p2,i2,i2p1,i2p2 : Integer from Standard;
+           flag                            : Boolean from Standard)
+    returns BiPoint from HLRAlgo; 
+    
+    Rg1Line(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Rg1Line(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    RgNLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    RgNLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    OutLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    OutLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    IntLine(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    IntLine(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Hidden(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Hidden(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Indices(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+    Coordinates(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices     : Integer from Standard[10];
+    myCoordinates : Real    from Standard[12];
+    
+end BiPoint;

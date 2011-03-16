@@ -1,0 +1,68 @@
+-- File:        GeometricRepresentationContextAndGlobalUnitAssignedContext.cdl
+-- Created:     Thu Dec  7 14:29:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GeometricRepresentationContextAndGlobalUnitAssignedContext from StepGeom 
+
+inherits RepresentationContext from StepRepr
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+	GeometricRepresentationContext from StepGeom, 
+	GlobalUnitAssignedContext from StepRepr, 
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray1OfNamedUnit from StepBasic,
+	NamedUnit from StepBasic
+is
+
+	Create returns mutable GeometricRepresentationContextAndGlobalUnitAssignedContext;
+	---Purpose: Returns a GeometricRepresentationContextAndGlobalUnitAssignedContext
+
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aGeometricRepresentationContext : mutable GeometricRepresentationContext from StepGeom;
+	      aGlobalUnitAssignedContext : mutable GlobalUnitAssignedContext from StepRepr) is virtual;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aCoordinateSpaceDimension : Integer from Standard;
+	      aUnits : mutable HArray1OfNamedUnit from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetGeometricRepresentationContext(me : mutable; aGeometricRepresentationContext : mutable GeometricRepresentationContext);
+	GeometricRepresentationContext (me) returns mutable GeometricRepresentationContext;
+	SetGlobalUnitAssignedContext(me : mutable; aGlobalUnitAssignedContext : mutable GlobalUnitAssignedContext);
+	GlobalUnitAssignedContext (me) returns mutable GlobalUnitAssignedContext;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetCoordinateSpaceDimension(me : mutable; aCoordinateSpaceDimension : Integer);
+	CoordinateSpaceDimension (me) returns Integer;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetUnits(me : mutable; aUnits : mutable HArray1OfNamedUnit);
+	Units (me) returns mutable HArray1OfNamedUnit;
+	UnitsValue (me; num : Integer) returns mutable NamedUnit;
+	NbUnits (me) returns Integer;
+
+fields
+
+	geometricRepresentationContext : GeometricRepresentationContext from StepGeom;
+	globalUnitAssignedContext : GlobalUnitAssignedContext from StepRepr;
+
+end GeometricRepresentationContextAndGlobalUnitAssignedContext;

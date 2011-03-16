@@ -1,0 +1,27 @@
+inline TCollection_AVLBaseNode::TCollection_AVLBaseNode(const TCollection_AVLBaseNodePtr& L, const TCollection_AVLBaseNodePtr& R) 
+: myLeft(L),myRight(R),myCount(1)
+{
+}
+
+inline void TCollection_AVLBaseNode::SetChild(const TCollection_AVLBaseNodePtr& theNode, const TCollection_Side theSide) 
+     // According to the side changes a child by another
+{
+  if (theSide == TCollection_Left) {myLeft = theNode;}
+  else {myRight = theNode;}
+}
+
+inline TCollection_AVLBaseNodePtr& TCollection_AVLBaseNode::Right() const
+{
+  return (TCollection_AVLBaseNodePtr&)myRight;
+}
+
+inline TCollection_AVLBaseNodePtr& TCollection_AVLBaseNode::Left() const
+{
+  return (TCollection_AVLBaseNodePtr&)myLeft;
+}
+
+inline Standard_Integer& TCollection_AVLBaseNode::Count() const
+{
+  return (Standard_Integer&)myCount;
+}
+

@@ -1,0 +1,163 @@
+-- File:	Extrema_Curve2dTool.cdl
+-- Created:	Tue Jul 18 14:54:37 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Curve2dTool from Extrema
+
+uses
+     Curve2d         from Adaptor2d,
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     CurveType       from GeomAbs,
+     Vec2d           from gp,
+     Pnt2d           from gp,
+     Circ2d          from gp,
+     Elips2d         from gp,
+     Hypr2d          from gp,
+     Parab2d         from gp,
+     Lin2d           from gp,
+     BezierCurve     from Geom2d,
+     BSplineCurve    from Geom2d,
+     HCurve2d        from Adaptor2d
+
+is
+
+    FirstParameter(myclass; C : Curve2d from Adaptor2d) returns Real
+    	---C++: inline
+    ;
+
+    LastParameter(myclass; C : Curve2d from Adaptor2d) returns Real
+    	---C++: inline
+    ;
+    
+    Continuity(myclass; C : Curve2d from Adaptor2d) returns Shape from GeomAbs
+    	---C++: inline
+    ;
+    
+    NbIntervals(myclass; C : Curve2d from Adaptor2d; S : Shape from GeomAbs) returns Integer
+	---Purpose: If necessary,   breaks the curve  in  intervals of
+	--          continuity <S>.     And   returns  the  number  of
+	--          intervals.
+    	---C++: inline
+    ;
+    
+    Intervals(myclass; C : Curve2d               from Adaptor2d;
+    	    	       T : in out Array1OfReal from TColStd; 
+    	               S : Shape               from GeomAbs);
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+    	---C++: inline
+
+
+    IsClosed(myclass; C : Curve2d from Adaptor2d) returns Boolean
+    	---C++: inline
+    ;
+     
+    IsPeriodic(myclass; C : Curve2d from Adaptor2d) returns Boolean
+    	---C++: inline
+    ;
+    
+    Period(myclass; C : Curve2d from Adaptor2d) returns Real
+    	---C++: inline
+    ;
+     
+    Value(myclass; C : Curve2d from Adaptor2d; U : Real) returns Pnt2d from gp
+         --- Purpose : Computes the point of parameter U on the curve.
+    	---C++: inline
+    ;
+    
+    D0 (myclass; C : Curve2d from Adaptor2d; U : Real; P : out Pnt2d from gp)
+         --- Purpose : Computes the point of parameter U on the curve.
+    	---C++: inline
+    ;
+    
+    D1 (myclass; C : Curve2d from Adaptor2d; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
+         --- Purpose : Computes the point of parameter U on the curve with its
+         --  first derivative.
+    	---C++: inline
+    ;
+    
+    D2 (myclass; C : Curve2d from Adaptor2d; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     	---C++: inline
+    ;
+
+    D3 (myclass; C : Curve2d from Adaptor2d; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     	---C++: inline
+    ;
+        
+    DN (myclass; C : Curve2d from Adaptor2d; U : Real; N : Integer)   returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     	---C++: inline
+    ;
+
+    Resolution(myclass; C : Curve2d from Adaptor2d ; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    	---C++: inline
+    ;   
+        
+    GetType(myclass; C : Curve2d from Adaptor2d) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    	---C++: inline
+    ;
+
+
+     Line(myclass; C : Curve2d from Adaptor2d) returns Lin2d from gp
+     	---C++: inline
+    ;
+     
+     Circle(myclass; C : Curve2d from Adaptor2d) returns Circ2d from gp
+     	---C++: inline
+    ;
+     
+     Ellipse(myclass; C : Curve2d from Adaptor2d) returns Elips2d from gp
+     	---C++: inline
+    ;
+     
+     Hyperbola(myclass; C : Curve2d from Adaptor2d) returns  Hypr2d from gp
+     	---C++: inline
+    ;
+     
+     Parabola(myclass; C : Curve2d from Adaptor2d) returns Parab2d from gp
+     	---C++: inline
+    ;
+     
+     Degree(myclass; C : Curve2d from Adaptor2d) returns Integer
+     	---C++: inline
+    ;
+     
+     IsRational(myclass; C : Curve2d from Adaptor2d) returns Boolean
+     	---C++: inline
+    ;
+     
+     NbPoles(myclass; C : Curve2d from Adaptor2d) returns Integer
+     	---C++: inline
+    ;
+     
+     NbKnots(myclass; C : Curve2d from Adaptor2d) returns Integer
+     	---C++: inline
+    ;
+     
+     Bezier(myclass; C : Curve2d from Adaptor2d) returns BezierCurve from  Geom2d
+     	---C++: inline
+    ;
+     
+     BSpline(myclass; C : Curve2d from Adaptor2d) returns BSplineCurve from  Geom2d
+     	---C++: inline
+    ;
+
+
+end Curve2dTool;

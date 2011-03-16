@@ -1,0 +1,140 @@
+-- File:	BRepMesh.cdl
+-- Created:	Wed Sep 22 17:34:57 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@zerox>
+---Copyright:	 Matra Datavision 1993, 1994
+ 
+
+package BRepMesh 
+
+	---Purpose: Instantiated   package for the   class of packages
+	--          MeshAlgo, and so on ...
+
+        ---Level : Advanced.  
+        --  All methods of all  classes will be advanced.
+
+
+uses    Standard,
+    	gp,
+	Bnd,
+    	TColStd,
+	TColgp,
+	GCPnts,
+	BRepAdaptor,
+	BRepTopAdaptor,
+	MeshDS,
+	MeshAlgo,
+	TCollection,
+	MMgt,
+    	TopoDS,
+    	TopAbs,
+    	TopExp,
+	TopTools,
+	Poly,
+	Geom2d,
+	GeomAbs,
+        GeomAdaptor
+
+
+is 
+
+    	enumeration Status  is 
+	    ---Purpose: Discribes the wires discretisation.
+	    NoError,
+	    OpenWire,
+	    SelfIntersectingWire,
+	    Failure,
+	    ReMesh
+	    
+	end Status;
+    	 
+	enumeration FactoryError is 
+      	    FE_NOERROR,  
+	    FE_LIBRARYNOTFOUND,
+	    FE_FUNCTIONNOTFOUND,
+	    FE_CANNOTCREATEALGO
+    	end FactoryError;   
+    	
+        class Vertex;
+
+        class Edge;
+
+	class Triangle;
+
+	class ShapeTool;
+	
+    	deferred class DiscretRoot; 
+	class DiscretFactory;
+	--
+    	pointer PDiscretRoot to DiscretRoot from BRepMesh;
+    	--
+
+    	class Delaun instantiates Delaunay from MeshAlgo(Vertex   from BRepMesh,
+	    	    	    	    	    	    	 Edge     from BRepMesh,
+							 Triangle from BRepMesh);
+
+    	class DataMapOfVertexInteger instantiates DataMap from TCollection
+	  (Vertex from TopoDS, Integer from Standard, ShapeMapHasher from TopTools);
+
+    	class ListOfVertex instantiates List from TCollection 
+    	    (Vertex from  BRepMesh);
+
+        class ListOfXY instantiates List from TCollection (XY from gp);
+
+    	class DataMapOfIntegerListOfXY  instantiates DataMap from TCollection
+	   (Integer from Standard, ListOfXY from BRepMesh, MapIntegerHasher from TColStd);
+
+
+     	class  VertexHasher  instantiates   MapHasher  from  TCollection(Vertex  from  BRepMesh);
+
+    	class IndexedMapOfVertex instantiates IndexedMap from TCollection 
+    	    (Vertex from  BRepMesh,  VertexHasher from  BRepMesh);
+
+
+    	class DataMapOfShapeReal instantiates DataMap from TCollection
+					      (Shape          from TopoDS,
+					       Real           from Standard,
+					       ShapeMapHasher from TopTools);
+
+    	class BiPoint;
+	
+	class Array1OfBiPoint    instantiates Array1  from TCollection
+	                                      (BiPoint from BRepMesh);
+
+	class FastDiscret;
+	
+	class FaceAttribute;
+	
+    	class DataMapOfFaceAttribute instantiates DataMap from TCollection
+					      (Face           from TopoDS,
+					       FaceAttribute  from BRepMesh,
+					       ShapeMapHasher from TopTools);
+
+        private class FastDiscretFace;
+					    
+    	private class Classifier;
+	imported ClassifierPtr; -- smart pointer on Classifier
+
+    	class IncrementalMesh from BRepMesh;
+	---Purpose: meshes faces from a Shape only if necessary.
+
+      	 ---- classes moved from MeshShape
+    	class GeomTool;
+
+    	class DataMapOfIntegerPnt instantiates
+    	    DataMap from TCollection   (Integer          from Standard,
+    	    	    	    	    	Pnt              from gp,
+    	    	    	    	    	MapIntegerHasher from TColStd);
+
+    	class PairOfPolygon;
+
+        class DataMapOfShapePairOfPolygon instantiates 
+	    DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	     PairOfPolygon  from BRepMesh,
+				     ShapeMapHasher from TopTools);
+
+	Mesh(S: Shape from TopoDS; d: Real from Standard);
+	---Purpose: call to incremental mesh.
+
+	
+end BRepMesh;

@@ -1,0 +1,73 @@
+-- File:	IntPolyh_ArrayOfEdges.cdl
+-- Created:	Tue Mar  9 17:53:12 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class ArrayOfEdges from IntPolyh
+
+uses
+    
+    Edge from IntPolyh
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    GetN(me)
+    returns Integer from Standard
+    ---C++: return const
+    is static;
+
+    NbEdges(me)
+    returns Integer from Standard
+    ---C++: return const
+    is static;
+
+    SetNbEdges(me: in out; endaof: Integer from Standard)
+    is static;
+
+    IncNbEdges(me: in out)
+    is static;
+
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &      
+    returns Edge from IntPolyh
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns Edge from IntPolyh 
+    is static;
+    
+    Copy(me: in out; Other : ArrayOfEdges from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns ArrayOfEdges from IntPolyh
+    is static;
+    
+    Destroy(me:in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+
+     	
+fields
+
+    n,finte : Integer from Standard;
+    ptr : Address from Standard;
+    
+end ArrayOfEdges from IntPolyh;
+
+
+

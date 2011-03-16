@@ -1,0 +1,101 @@
+--
+-- File      :  Plane.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Plane from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESPlane, Type <108> Form <-1,0,1>
+        --          in package IGESGeom
+        --          A plane entity can be used to represent unbounded plane,
+        --          as well as bounded portion of a plane. In either of the
+        --          above cases the plane is defined within definition space
+        --          by means of coefficients A, B, C, D where at least one of
+        --          A, B, C is non-zero and  A * XT + B * YT + C * ZT = D
+
+uses
+
+        Pnt         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable Plane;
+
+        -- Specific Methods pertaining to the class
+
+        Init(me         : mutable;
+             A, B, C, D : Real; 
+             aCurve     : IGESEntity;
+             attach     : XYZ; 
+             aSize      : Real);
+        -- This method is used to set the fields of the
+        -- class Plane
+        --       - A, B, C, D : Coefficients in the planar equation
+        --       - aCurve     : Bounding curve of the plane, if any
+        --       - attach     : Location of the display symbol if one exists,
+        --                      else (0, 0, 0)
+        --       - aSize      : Size of the display symbol if one exists else 0
+
+    	SetFormNumber (me : mutable; form : Integer);
+	---Purpose : Changes FormNumber (indicates the Type of Bound :
+	--           0 no Bound, 1 (External) Bound, -1 Hole)
+	--           Remark that Init keeps this Value and must be consistent :
+	--           aCurve Null if FormNumber = 0, Non-Null else
+	--           Error if not in ranges [0-1] or [10-12]
+
+
+        Equation(me; A, B, C, D : out Real);
+        -- returns the basic equation describing the plane
+        -- A, B, C, D are the coefficients of plane.
+
+        TransformedEquation(me; A, B, C, D : out Real);
+        -- returns basic equation describing plane after applying Location()
+
+        HasBoundingCurve(me) returns Boolean;
+        ---Purpose : returns True if there exists a bounding curve
+
+        HasBoundingCurveHole(me) returns Boolean;
+        ---Purpose : returns True if bounding curve exists and bounded portion is negative
+
+        BoundingCurve(me) returns IGESEntity;
+        ---Purpose : returns Optional Bounding Curve, can be positive (normal clipping)
+        -- or negative (hole) according to Form Number
+
+        HasSymbolAttach(me) returns Boolean;
+        ---Purpose : returns True if SymbolSize() > 0, False if SymbolSize() = 0
+
+        SymbolAttach(me) returns Pnt;
+        ---Purpose : returns (X, Y, Z) if symbol exists else returns (0, 0, 0)
+
+        TransformedSymbolAttach(me) returns Pnt;
+        ---Purpose : returns (X, Y, Z) if symbol exists after applying Transf. Matrix
+        -- else returns (0, 0, 0)
+
+        SymbolSize(me) returns Real;
+        ---Purpose : Size of optional display symbol
+
+fields
+
+--
+-- Class    : IGESGeom_Plane
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Plane.
+--
+-- Reminder : A Plane instance is defined by :
+--            The plane cooefficients, the bounding curve if any,
+--            the size of an optional display symbol.
+
+        theA       : Real;
+        theB       : Real;
+        theC       : Real;
+        theD       : Real;
+        theCurve   : IGESEntity;
+        theAttach  : XYZ;            -- The display symbol
+        theSize    : Real;
+
+end Plane;

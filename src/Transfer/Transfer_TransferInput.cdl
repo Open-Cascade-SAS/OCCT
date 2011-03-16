@@ -1,0 +1,73 @@
+-- File:	TransferInput.cdl
+-- Created:	Tue Feb  4 14:57:17 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class TransferInput  from Transfer
+
+    ---Purpose : A TransferInput is a Tool which fills an InterfaceModel with
+    --           the result of the Transfer of CasCade Objects, once determined
+    --           The Result comes from a TransferProcess, either from
+    --           Transient (the Complete Result is considered, it must contain
+    --           only Transient Objects)
+
+uses InterfaceModel, EntityIterator, Protocol from Interface,
+     TransferIterator, TransientProcess, FinderProcess
+
+raises TransferFailure
+
+is
+
+    Create returns TransferInput;
+    ---Purpose : Creates a TransferInput ready to use
+
+    Entities (me; list : in out TransferIterator) returns EntityIterator
+    ---Purpose : Takes the transient items stored in a TransferIterator
+    	raises TransferFailure;
+    --           Error if one of the Resulting Objects is defined not Transient
+
+
+    FillModel (me; proc   : TransientProcess;
+    	    	   amodel : mutable InterfaceModel)
+    ---Purpose : Fills an InterfaceModel with the Complete Result of a Transfer
+    --           stored in a TransientProcess (Starting Objects are Transient)
+    --           The complete result is exactly added to the model
+    	raises TransferFailure;
+    --           Error if one of the Resulting Objects is defined not Transient
+
+    FillModel (me; proc   : TransientProcess;
+    	    	   amodel : mutable InterfaceModel;
+		   proto  : Protocol from Interface;
+		   roots  : Boolean = Standard_True)
+    ---Purpose : Fills an InterfaceModel with results of the Transfer recorded
+    --           in a TransientProcess (Starting Objects are Transient) :
+    --           Root Result if <roots> is True (Default), Complete Result else
+    --           The entities added to the model are determined from the result
+    --           by by adding the referenced entities
+    	raises TransferFailure;
+    --           Error if one of the Resulting Objects is defined not Transient
+
+
+    FillModel (me; proc   : FinderProcess;
+    	    	   amodel : mutable InterfaceModel)
+    ---Purpose : Fills an InterfaceModel with the Complete Result of a Transfer
+    --           stored in a TransientProcess (Starting Objects are Transient)
+    --           The complete result is exactly added to the model
+    	raises TransferFailure;
+    --           Error if one of the Resulting Objects is defined not Transient
+
+    FillModel (me; proc   : FinderProcess;
+    	    	   amodel : mutable InterfaceModel;
+		   proto  : Protocol from Interface;
+		   roots  : Boolean = Standard_True)
+    ---Purpose : Fills an InterfaceModel with results of the Transfer recorded
+    --           in a TransientProcess (Starting Objects are Transient) :
+    --           Root Result if <roots> is True (Default), Complete Result else
+    --           The entities added to the model are determined from the result
+    --           by by adding the referenced entities
+    	raises TransferFailure;
+    --           Error if one of the Resulting Objects is defined not Transient
+
+end TransferInput;

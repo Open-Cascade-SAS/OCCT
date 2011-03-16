@@ -1,0 +1,47 @@
+-- File:	Vrml_FontStyle.cdl
+-- Created:	Mon Feb 10 15:31:09 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class FontStyle from Vrml 
+
+	---Purpose: defines a FontStyle node of VRML of properties of geometry
+	--  and its appearance. 
+	--  The  size  field  specifies  the  height  (in  object  space  units) 
+    	--  of  glyphs  rendered  and  determines  the  vertical  spacing  of 
+	--  adjacent  lines  of  text.
+
+uses
+ 
+    FontStyleFamily from Vrml, 
+    FontStyleStyle  from Vrml
+  
+is
+ 
+    Create  (  aSize    :  Real            from Standard  =  10;
+    	       aFamily  :  FontStyleFamily from Vrml      =  Vrml_SERIF;
+    	       aStyle   :  FontStyleStyle  from Vrml      =  Vrml_NONE  ) 
+	returns  FontStyle from Vrml;
+
+    SetSize ( me : in out; aSize    :  Real from Standard  );
+    Size ( me )  returns Real  from  Standard;
+
+    SetFamily ( me : in out;  aFamily  :  FontStyleFamily from Vrml  ); 
+    Family ( me )  returns FontStyleFamily from Vrml; 
+     
+    SetStyle ( me : in out;  aStyle   :  FontStyleStyle from Vrml ); 
+    Style ( me )  returns  FontStyleStyle from Vrml; 
+    
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+
+fields
+ 
+    mySize    :  Real            from Standard;  -- Font size
+    myFamily  :  FontStyleFamily from Vrml;      -- Font family
+    myStyle   :  FontStyleStyle  from Vrml;      -- Font style modifications to family
+
+end FontStyle;

@@ -1,0 +1,119 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_ATPreOrderIterator.gxx
+// Created:	Aug, 13 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+// Purpose: Permits to  iterate through  an ArbitraryTree so that,
+//          from the   root, it reads each   element  on the left,
+//          until  the first leave, then  goes to its rightSibling
+//          and upward.  
+//          IF theTree is ( A (B (C D E)) F G (H (I J K))) 
+//          THEN it will read ( A B C D E F G H I J K)
+
+// -----------
+// constructor :
+// -----------
+PCollection_ATPreOrderIterator::
+       PCollection_ATPreOrderIterator
+         (const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+   CurrentStack = new PCollection_StackArbitraryTree;
+   if (ATree.IsNull()) {
+     HasMore = Standard_False;
+   }
+   else {
+     HasMore = Standard_True;
+     CurrentTree = ATree;
+     CurrentStack->Push(ATree);
+   }           
+} 
+
+// --------
+// More
+// --------
+Standard_Boolean PCollection_ATPreOrderIterator::More() const
+{
+  return HasMore;
+}
+
+// --------
+// Value 
+// --------
+Handle(PCollection_HArbitraryTree) 
+   PCollection_ATPreOrderIterator::Value() const
+{
+   if (!HasMore) Standard_NoSuchObject::Raise();
+   return CurrentTree;
+}
+
+// --------
+// Clear 
+// --------
+void PCollection_ATPreOrderIterator::Clear() 
+{
+   CurrentTree.Nullify();
+   CurrentStack.Nullify();
+   HasMore = Standard_False;
+}
+
+// --------
+// Next
+// --------
+void PCollection_ATPreOrderIterator::Next() 
+{
+   if (!HasMore) Standard_NoMoreObject::Raise();
+   Handle(PCollection_HArbitraryTree) Temp;
+   if (CurrentTree->IsLeaf()) {
+//   ... no child, so go upward, then to the right 
+     Temp = RecursiveRemove( CurrentTree);
+//   ... and adds the right neighbour of the last removed tree
+      if ( HasMore) {
+        CurrentTree = Temp->RightSibling();
+        CurrentStack->Push(CurrentTree);      
+      }
+   }
+   else {
+// ... just go down for one step
+   CurrentTree = CurrentTree->Child(1);
+   CurrentStack->Push(CurrentTree); 
+   }
+}
+
+
+// PRIVATE TOOLS TO MANAGE CURRENTSTACK
+
+Handle(PCollection_HArbitraryTree) 
+       PCollection_ATPreOrderIterator::RecursiveRemove(
+                      const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+  Handle(PCollection_HArbitraryTree) Temp;
+  CurrentStack->Pop();
+  if ( CurrentStack->IsEmpty()) {
+    HasMore = Standard_False;
+    Temp = ATree;                             // ... to be returned
+  }
+  else { 
+//  ... is there somebody to the right ?  if yes, stop removing
+//  ... if not, go on removing
+    Temp = ATree->RightSibling();
+    if (!Temp.IsNull()) {
+      Temp = ATree;                      // ... to be returned
+    }
+    else {
+      Temp = CurrentStack->Top();     
+      Temp = RecursiveRemove( Temp);
+    }
+  }
+  return Temp;
+}
+
+
+
+
+

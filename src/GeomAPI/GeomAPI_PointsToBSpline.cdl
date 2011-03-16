@@ -1,0 +1,193 @@
+-- File:	GeomAPI_PointsToBSpline.cdl
+-- Created:	Mon Mar 21 11:09:36 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class PointsToBSpline from GeomAPI
+
+    	---Purpose: This  class  is  used  to  approximate a  BsplineCurve
+    	--          passing  through an  array  of points,  with  a  given Continuity. 
+    	--   Describes functions for building a 3D BSpline
+    	-- curve which approximates a set of points.
+    	-- A PointsToBSpline object provides a framework for:
+    	-- -   defining the data of the BSpline curve to be built,
+    	-- -   implementing the approximation algorithm, and consulting the results.       
+
+
+
+uses
+    Array1OfPnt  from TColgp,
+    Array1OfReal from TColStd,
+    Shape        from GeomAbs, 
+    ParametrizationType from Approx,
+    BSplineCurve from Geom
+
+raises
+    NotDone    from StdFail,
+    OutOfRange from Standard
+
+is
+    Create
+	---Purpose: Constructs an empty approximation algorithm.
+    	-- Use an Init function to define and build the BSpline curve.
+    returns PointsToBSpline from GeomAPI;
+    
+    Create(Points       : Array1OfPnt from TColgp;
+    	   DegMin       : Integer     from Standard = 3;
+	   DegMax       : Integer     from Standard = 8;
+	   Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol3D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    returns PointsToBSpline from GeomAPI;
+	   
+    Create(Points       : Array1OfPnt from TColgp; 
+    	   ParType      : ParametrizationType from Approx;
+    	   DegMin       : Integer     from Standard = 3;
+	   DegMax       : Integer     from Standard = 8;
+	   Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol3D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    returns PointsToBSpline from GeomAPI;
+	   
+    Create(Points       : Array1OfPnt  from TColgp;
+           Parameters   : Array1OfReal from TColStd;
+    	   DegMin       : Integer      from Standard = 3;
+	   DegMax       : Integer      from Standard = 8;
+	   Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	   Tol3D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate  a  BSpline  Curve  passing through an
+        --          array of Point,  which parameters are given by the
+        --           array <Parameters>. 
+        --          The resulting  BSpline   will have the   following
+        --          properties:
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+        ---Level: Public
+    returns PointsToBSpline from GeomAPI
+    raises OutOfRange from Standard;
+	   
+
+    Create(Points       : Array1OfPnt  from TColgp;
+           Weight1      : Real         from Standard;
+           Weight2      : Real         from Standard;
+           Weight3      : Real         from Standard;
+	   DegMax       : Integer      from Standard = 8;
+	   Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	   Tol3D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate a BSpline Curve  passing through an
+        --          array of Point using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion 
+        ---Level: Public
+    returns PointsToBSpline from GeomAPI;
+
+    Init(me : in out;
+         Points       : Array1OfPnt from TColgp;
+    	 DegMin       : Integer     from Standard = 3;
+	 DegMax       : Integer     from Standard = 8;
+         Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol3D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    is static;
+	 
+
+    Init(me : in out;
+         Points       : Array1OfPnt from TColgp;
+    	 ParType      : ParametrizationType from Approx;
+    	 DegMin       : Integer     from Standard = 3;
+	 DegMax       : Integer     from Standard = 8;
+         Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol3D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    is static;
+	 
+    
+    Init(me : in out;
+         Points       : Array1OfPnt  from TColgp;
+         Parameters   : Array1OfReal from TColStd;
+    	 DegMin       : Integer      from Standard = 3;
+	 DegMax       : Integer      from Standard = 8;
+         Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	 Tol3D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate  a  BSpline  Curve  passing through an
+        --          array of Point,  which parameters are given by the
+        --           array <Parameters>.
+        --          The resulting  BSpline   will have the   following
+        --          properties:
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    is static;
+	 
+    
+    Init(me : in out;
+         Points       : Array1OfPnt  from TColgp;
+         Weight1      : Real         from Standard;
+         Weight2      : Real         from Standard;
+         Weight3      : Real         from Standard;
+	 DegMax       : Integer      from Standard = 8;
+	 Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	 Tol3D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate a BSpline Curve  passing through an
+        --          array of Point using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion 
+        ---Level: Public
+    is  static;
+
+    Curve(me) 
+	---Purpose: Returns the computed BSpline curve.
+    	-- Raises StdFail_NotDone if the curve is not built.
+    returns BSplineCurve from Geom
+	---C++: return const &
+	---C++: alias "Standard_EXPORT  operator Handle(Geom_BSplineCurve)() const;"
+    raises
+    	NotDone from StdFail
+    is static; 
+     
+    IsDone(me) 
+    returns  Boolean  from  Standard 
+    is  static;
+	    
+	    
+fields
+    myIsDone : Boolean      from Standard;
+    myCurve  : BSplineCurve from Geom;
+
+
+end PointsToBSpline;

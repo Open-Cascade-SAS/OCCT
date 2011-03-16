@@ -1,0 +1,214 @@
+
+
+-- File:        PLib_JacobiPolynomial.cdl
+-- Created:     Tue Oct  8 11:03:16 1996
+-- Author:      Jeannine PANTIATICI
+--              <jpi@sgi64>
+---Copyright:    Matra Datavision 1996
+
+class JacobiPolynomial from PLib 
+    
+inherits Base from PLib
+
+--- Purpose: This class provides method  to work with Jacobi  Polynomials
+--  relativly to   an order of constraint
+--  q  = myWorkDegree-2*(myNivConstr+1) 
+--  Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relativly  to  the weigth W(t)
+--  iorder is the integer  value for the constraints:
+--   iorder = 0 <=> ConstraintOrder  = GeomAbs_C0 
+--   iorder = 1 <=>  ConstraintOrder = GeomAbs_C1
+--   iorder = 2 <=> ConstraintOrder = GeomAbs_C2
+--   P(t) = R(t) + W(t) * Q(t) Where W(t) = (1-t**2)**(2*iordre+2)
+--   the coefficients JacCoeff represents P(t) JacCoeff are stored as follow:
+--       
+--            c0(1)      c0(2) ....       c0(Dimension)
+--            c1(1)      c1(2) ....       c1(Dimension)
+--           
+--         
+--         
+--            cDegree(1) cDegree(2) ....  cDegree(Dimension)
+--         
+--   The coefficients  
+--           c0(1)                  c0(2) ....            c0(Dimension) 
+--           c2*ordre+1(1)                ...          c2*ordre+1(dimension)
+--          
+--   represents the  part  of the polynomial in  the
+--   canonical base: R(t)
+--   R(t) = c0 + c1   t + ...+ c2*iordre+1 t**2*iordre+1
+--   The following coefficients represents the part of the
+--   polynomial in the Jacobi base ie Q(t)
+--   Q(t) = c2*iordre+2  J0(t) + ...+ cDegree JDegree-2*iordre-2
+
+uses 
+    
+    Array2OfReal  from TColStd,
+    Array1OfReal  from TColStd,
+    HArray1OfReal from TColStd,
+    Shape         from GeomAbs 
+
+raises
+     ConstructionError from Standard
+   
+is
+
+--     Create returns JacobiPolynomial from PLib;
+
+     Create ( WorkDegree      : Integer ; 
+              ConstraintOrder : Shape from GeomAbs)
+     returns JacobiPolynomial from PLib
+
+
+---Purpose:
+--   Initialize the polynomial class
+--   Degree has to be <= 30
+--   ConstraintOrder has to be GeomAbs_C0
+--                             GeomAbs_C1
+--                             GeomAbs_C2
+                                                                                      
+     raises ConstructionError from Standard;
+--   if Degree or ConstraintOrder is non valid
+    
+--     
+--   Jacobi characteristics
+--  
+     Points ( me ; NbGaussPoints : Integer ;
+              TabPoints : out Array1OfReal from TColStd )
+---Purpose:  
+--   returns  the  Jacobi  Points   for  Gauss  integration ie
+--   the positive values of the Legendre roots by increasing values
+--   NbGaussPoints is the number of   points choosen for the  integral
+--   computation.
+--   TabPoints (0,NbGaussPoints/2)
+--   TabPoints (0) is loaded only for the odd values of NbGaussPoints
+--   The possible values for NbGaussPoints are : 8, 10,
+--   15, 20, 25, 30, 35, 40, 50, 61
+--   NbGaussPoints must be greater than Degree
+     
+      raises ConstructionError from Standard;
+--   Invalid NbGaussPoints
+                    
+     Weights (me ; NbGaussPoints : Integer ;
+              TabWeights : out Array2OfReal from TColStd )
+                   
+--- Purpose:
+--  returns the Jacobi weigths for Gauss integration only for
+--  the positive    values of the  Legendre roots   in the order they
+--- are given by the method Points
+--  NbGaussPoints   is the number of points choosen   for  the integral 
+--  computation.
+--  TabWeights  (0,NbGaussPoints/2,0,Degree) 
+--  TabWeights (0,.) are only loaded for the odd values of NbGaussPoints
+--  The possible values for NbGaussPoints are : 8 , 10 , 15 ,20 ,25 , 30,
+--  35 , 40 , 50 , 61 NbGaussPoints must be greater than Degree
+
+     raises ConstructionError from Standard;
+--   Invalid NbGaussPoints
+         
+   MaxValue ( me ; TabMax : out Array1OfReal from TColStd );
+---Purpose:            
+--   this method loads for k=0,q the maximum value of
+--   abs ( W(t)*Jk(t) )for t bellonging to [-1,1]
+--   This values are loaded is the array TabMax(0,myWorkDegree-2*(myNivConst+1))
+--   MaxValue ( me ; TabMaxPointer : in  out  Real );
+    
+--
+--   Work in Jacobi base
+    
+     MaxError ( me ; Dimension : Integer ;
+                JacCoeff : in  out  Real;
+                NewDegree : Integer )
+     returns Real;
+    
+---Purpose:
+--   This  method computes the  maximum  error on the polynomial
+--   W(t) Q(t)  obtained  by   missing  the   coefficients of  JacCoeff   from
+--   NewDegree +1 to Degree
+
+     ReduceDegree ( me ; Dimension ,  MaxDegree  : Integer ;  Tol : Real ; 
+                    JacCoeff : in  out  Real;
+                    NewDegree : out Integer ;
+                    MaxError  : out Real);
+                            
+---Purpose:
+--   Compute NewDegree <= MaxDegree  so that MaxError is lower
+--   than Tol. 
+--   MaxError can be greater than Tol  if it is not possible
+--   to find a NewDegree <= MaxDegree.
+--   In this case NewDegree = MaxDegree
+-- 
+     AverageError ( me ; Dimension : Integer ;
+                     JacCoeff : in  out  Real;
+                     NewDegree : Integer )
+--   This method computes the average error on the polynomial W(t)Q(t)
+--   obtained  by missing  the
+--   coefficients JacCoeff  from  NewDegree +1 to Degree
+     returns Real;
+
+
+     ToCoefficients ( me ; Dimension,  Degree : Integer ;
+                      JacCoeff : Array1OfReal from TColStd ;
+                      Coefficients : out Array1OfReal from TColStd );
+   
+---Purpose:
+--   Convert the polynomial P(t) = R(t) + W(t) Q(t) in the canonical base.
+-- 
+
+    D0123 (me : mutable; NDerive : Integer; U : Real;  
+    	   BasisValue : out Array1OfReal from TColStd; 
+	   BasisD1    : out Array1OfReal from TColStd; 
+    	   BasisD2    : out Array1OfReal from TColStd; 
+           BasisD3    : out Array1OfReal from TColStd)
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u 
+    is private;
+
+    D0 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd);
+---Purpose: Compute the values of the basis functions in u
+--     
+ 
+    D1 (me : mutable; U : Real;  
+      	BasisValue : out Array1OfReal from TColStd; 
+     	BasisD1    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+  
+    D2 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+
+    D3 (me : mutable; U : Real;  
+    	BasisValue : out Array1OfReal from TColStd; 
+	BasisD1    : out Array1OfReal from TColStd; 
+    	BasisD2    : out Array1OfReal from TColStd; 
+        BasisD3    : out Array1OfReal from TColStd);
+---Purpose: Compute the values and the derivatives values of
+--          the basis functions in u
+     
+     WorkDegree (me)      
+---Purpose: returns WorkDegree 
+    ---C++: inline
+    returns Integer;
+
+     NivConstr (me)  
+---Purpose: returns NivConstr 
+    ---C++: inline
+    returns Integer;
+    
+fields
+     myWorkDegree  : Integer;
+     myNivConstr   : Integer;
+     myDegree      : Integer; 
+       
+     -- the following arrays are used for an optimization of computation in D0-D3
+     myTNorm : HArray1OfReal from TColStd; 
+     myCofA  : HArray1OfReal from TColStd; 
+     myCofB  : HArray1OfReal from TColStd; 
+     myDenom : HArray1OfReal from TColStd; 
+     
+end;
+
+

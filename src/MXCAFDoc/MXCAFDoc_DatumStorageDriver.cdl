@@ -1,0 +1,36 @@
+-- File:	MXCAFDoc_DimTolStorageDriver.cdl
+-- Created:	Wed Dec 10 09:05:14 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class DatumStorageDriver from MXCAFDoc inherits ASDriver from MDF
+
+	---Purpose: 
+uses
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF,
+    MessageDriver    from CDM
+
+is
+
+    Create (theMsgDriver : MessageDriver from CDM)
+    returns mutable DatumStorageDriver from MXCAFDoc;
+	---Purpose: Returns mutable DatumStorageDriver from MXCAFDoc;
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: XCAFDoc_Datum.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+end DatumStorageDriver;

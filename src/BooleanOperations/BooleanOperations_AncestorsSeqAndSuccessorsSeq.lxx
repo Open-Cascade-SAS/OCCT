@@ -1,0 +1,85 @@
+// File:	BooleanOperations_AncestorsSeqAndSuccessorsSeq.lxx
+// Created:	Thu Aug 17 10:16:26 2000
+// Author:	Vincent DELOS
+//		<vds@bulox.paris1.matra-dtv.fr>
+
+
+//===========================================================================
+//function : GetAncestor
+//purpose  : 
+//===========================================================================
+  inline  Standard_Integer BooleanOperations_AncestorsSeqAndSuccessorsSeq::GetAncestor
+    (const Standard_Integer AncestorIndex) const
+{
+  return myAncestors.Value(AncestorIndex);
+}
+
+
+//===========================================================================
+//function : GetSuccessor
+//purpose  : 
+//===========================================================================
+  inline  Standard_Integer BooleanOperations_AncestorsSeqAndSuccessorsSeq::GetSuccessor
+    (const Standard_Integer SuccessorIndex) const
+{
+  return mySuccessors.Value(SuccessorIndex);
+}
+
+
+//===========================================================================
+//function : GetOrientation
+//purpose  : 
+//===========================================================================
+  inline  TopAbs_Orientation BooleanOperations_AncestorsSeqAndSuccessorsSeq::GetOrientation
+    (const Standard_Integer OrientationIndex) const
+{
+  return (TopAbs_Orientation)myOrientations.Value(OrientationIndex);
+}
+
+//===========================================================================
+//function : NumberOfSuccessors
+//purpose  : 
+   //===========================================================================
+  inline  Standard_Integer BooleanOperations_AncestorsSeqAndSuccessorsSeq::NumberOfSuccessors() const
+{
+  return mySuccessors.Length();
+}
+
+//===========================================================================
+//function : NumberOfAncestors
+//purpose  : 
+//===========================================================================
+  inline  Standard_Integer BooleanOperations_AncestorsSeqAndSuccessorsSeq::NumberOfAncestors() const
+{
+  return myAncestors.Length();
+}
+
+//===========================================================================
+//function : SetNewAncestor
+//purpose  : 
+//===========================================================================
+  inline  void BooleanOperations_AncestorsSeqAndSuccessorsSeq::SetNewAncestor
+    (const Standard_Integer AncestorNumber)
+{
+  myAncestors.Append(AncestorNumber);
+}
+
+//===========================================================================
+//function : SetNewSuccessor
+//purpose  : 
+//===========================================================================
+  inline  void BooleanOperations_AncestorsSeqAndSuccessorsSeq::SetNewSuccessor
+    (const Standard_Integer SuccessorNumber)
+{
+  mySuccessors.Append(SuccessorNumber);
+}
+
+//===========================================================================
+//function : SetNewOrientation
+//purpose  : 
+//===========================================================================
+  inline  void BooleanOperations_AncestorsSeqAndSuccessorsSeq::SetNewOrientation
+    (const TopAbs_Orientation OrientationNumber)
+{
+  myOrientations.Append((Standard_Integer)OrientationNumber);
+}

@@ -1,0 +1,86 @@
+-- File:	MakeArcOfCircle.cdl
+-- Created:	Mon Sep 28 11:50:14 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeArcOfCircle from GCE2d inherits Root from GCE2d
+    	---Purpose: Implements construction algorithms for an arc of
+    	-- circle in the plane. The result is a Geom2d_TrimmedCurve curve.
+    	-- A MakeArcOfCircle object provides a framework for:
+    	-- -   defining the construction of the arc of circle,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results. In particular, the Value
+    	--   function returns the constructed arc of circle.
+        
+uses Pnt2d        from gp,
+     Circ2d       from gp,
+     Vec2d       from gp,
+     Real         from Standard,
+     Boolean      from Standard,
+     TrimmedCurve from Geom2d
+
+raises NotDone from StdFail
+
+is
+
+Create(Circ           : Circ2d  from gp                      ;
+       Alpha1, Alpha2 : Real    from Standard                ;
+       Sense          : Boolean from Standard = Standard_True) 
+    returns MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d) from 
+    	--          a circle between two parameters Alpha1 and Alpha2.
+    	--          The two parameters are angles. The parameters are 
+    	--          in radians.
+
+Create(Circ  : Circ2d  from gp                      ;
+       P     : Pnt2d   from gp                      ;
+       Alpha : Real    from Standard                ;
+       Sense : Boolean from Standard = Standard_True) 
+    returns MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d) from 
+    	--          a circle between point <P> and the parameter
+        --          Alpha. Alpha is given in radians.
+
+Create(Circ  : Circ2d  from gp                      ;
+       P1    : Pnt2d   from gp                      ;
+       P2    : Pnt2d   from gp                      ;
+       Sense : Boolean from Standard = Standard_True) 
+    returns MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d) from 
+    	--          a circle between two points P1 and P2.
+
+Create(P1    : Pnt2d   from gp       ;
+       P2    : Pnt2d   from gp       ;
+       P3    : Pnt2d   from gp       ) 
+    returns MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d) from 
+    	--          three points P1,P2,P3 between two points P1 and P3,
+    	--          and passing through the point P2.
+
+Create(P1    : Pnt2d   from gp       ;
+       V     : Vec2d   from gp       ;
+       P2    : Pnt2d   from gp       )
+    returns MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d) from 
+    	--          two points P1,P2 and the tangente to the solution at 
+    	--          the point P1.
+
+Value(me) returns TrimmedCurve from Geom2d
+    raises NotDone
+    is static;
+    	---C++: return const&
+    	---Purpose: Returns the constructed arc of circle.
+    	-- Exceptions StdFail_NotDone if no arc of circle is constructed.
+
+Operator(me) returns TrimmedCurve from Geom2d
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_TrimmedCurve() const;"
+
+fields
+
+    TheArc : TrimmedCurve from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeArcOfCircle;

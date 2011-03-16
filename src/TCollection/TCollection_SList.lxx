@@ -1,0 +1,80 @@
+// File:	TCollection_SList.lxx
+// Created:	Fri Feb 26 14:42:52 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_SList::IsEmpty() const
+{
+  return myNode.IsNull();
+}
+
+//=======================================================================
+//function : Construct
+//purpose  : 
+//=======================================================================
+
+//=======================================================================
+//function : Construct
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_SList::Construct(const Item& anItem)
+{
+  Assign(TCollection_SList(anItem,*this));
+}
+
+//=======================================================================
+//function : Constructed
+//purpose  : 
+//=======================================================================
+
+inline TCollection_SList TCollection_SList::Constructed(const Item& anItem) const
+{
+  return TCollection_SList(anItem,*this);
+}
+
+//=======================================================================
+//function : ToTail
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_SList::ToTail()
+{
+  Assign(Tail());
+}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_SList::Initialize(const TCollection_SList& aList)
+{
+  Assign(aList);
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_SList::More() const
+{
+  return !IsEmpty();
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_SList::Next()
+{
+  ToTail();
+}

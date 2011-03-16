@@ -1,0 +1,14 @@
+
+
+
+@ifnotdefined ( %Standard_WOKSteps_EDL ) then
+
+@set %Standard_WOKSteps_EDL = "";
+
+@string %WOKSteps_XcppGroup += " xcpp.copy ";
+
+@set %WOKSteps_xcpp_copy = "Standard_Copy(xcpp.header)";
+
+@set %WOKSteps_toolkit_ListWith = "obj.comp obj.idep ";
+
+@endif;

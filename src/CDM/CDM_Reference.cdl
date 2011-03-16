@@ -1,0 +1,83 @@
+-- File:	CDM_Reference.cdl
+-- Created:	Wed Oct 22 14:36:28 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class Reference from CDM  inherits Transient from Standard
+
+uses Document from CDM, DocumentPointer from CDM, Application from CDM, MetaData from CDM
+
+is
+
+    Create(aFromDocument: Document from CDM; aToDocument: Document from CDM; aReferenceIdentifier: Integer from Standard; aToDocumentVersion: Integer from Standard)
+    returns mutable Reference from CDM
+    is private;
+
+    Create(aFromDocument: Document from CDM; aMetaData: MetaData from CDM; aReferenceIdentifier: Integer from Standard; anApplication: Application from CDM; aToDocumentVersion: Integer from Standard; UseStorageConfiguration: Boolean from Standard)
+    returns mutable Reference from CDM
+    is private;
+    
+
+    
+
+    FromDocument(me: mutable) returns Document from CDM;
+
+    ToDocument(me: mutable) returns Document from CDM;
+	    
+    ReferenceIdentifier(me: mutable) returns Integer from Standard;
+    
+    
+---Category: methods to modifiy the reference.
+
+
+    Update(me: mutable; aMetaData: MetaData from CDM)
+    is private;
+
+    IsUpToDate(me) returns Boolean from Standard
+    is private;
+    ---Purpose: compares the actual document version with the 
+    --          document version at the creation of the reference
+    SetIsUpToDate(me: mutable)
+    is private;
+
+    UnsetToDocument(me: mutable; aMetaData: MetaData from CDM; anApplication: Application from CDM) is private;
+    
+    IsOpened(me) returns Boolean from Standard is private;
+    ---Purpose: returns  true if the  ToDocument has been retrieved
+    --          and opened.
+
+    DocumentVersion(me) returns Integer from Standard;
+    
+    IsReadOnly(me) returns Boolean from Standard;
+
+    Document(me) returns Document from CDM
+    is private;
+
+    MetaData(me) returns MetaData from CDM
+    is private;
+    
+    Application(me) returns Application from CDM
+    is private;
+
+    UseStorageConfiguration(me) returns Boolean from Standard
+    is private;
+    
+    IsInSession(me) returns Boolean from Standard
+    is private;
+    
+    IsStored(me) returns Boolean from Standard
+    is private;
+    
+fields
+
+    myToDocument: Document from CDM;
+    myFromDocument: DocumentPointer from CDM;
+    myReferenceIdentifier: Integer from Standard;
+    
+    myApplication: Application from CDM;
+    myMetaData: MetaData from CDM;
+    myDocumentVersion: Integer from Standard;    
+    myUseStorageConfiguration: Boolean from Standard;
+friends class Document from CDM
+end Reference from CDM;

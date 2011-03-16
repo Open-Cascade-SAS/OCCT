@@ -1,0 +1,226 @@
+-- File:	XSControl_WorkSession.cdl
+-- Created:	Thu Jun  1 15:46:28 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+class WorkSession  from XSControl    inherits WorkSession  from IFSelect
+
+    ---Purpose : This WorkSession completes the basic one, by adding :
+    --           - use of Controller, with norm selection...
+    --           - management of transfers (both ways) with auxiliary classes
+    --             TransferReader and TransferWriter
+    --            -> these transfers may work with a Context List : its items
+    --               are given by the user, according to the transfer to be
+    --               i.e. it is interpreted by the Actors
+    --               Each item is accessed by a Name
+
+uses CString, Transient, DictionaryOfTransient,
+     InterfaceModel,   CheckIterator,
+     TransientProcess, FinderProcess,
+     TransferReader, TransferWriter, Controller, Vars, ReturnStatus,
+     Messenger from Message,
+     Shape from TopoDS
+
+is
+
+    Create returns mutable WorkSession from XSControl;
+
+    ClearData (me : mutable; mode : Integer) is redefined;
+    ---Purpose : In addition to basic ClearData, clears Transfer and Management
+    --           for interactive use, for mode = 0,1,2 and over 4
+    --           Plus : mode = 5 to clear Transfers (both ways) only
+    --                  mode = 6 to clear enforced results
+    --                  mode = 7 to clear transfers, results
+
+
+    	--  Norm Management  --
+
+    SelectNorm (me : mutable; normname : CString; profile : CString = "")
+    	returns Boolean;
+    ---Purpose : Selects a Norm defined by its name.
+    --           A Norm is described and handled by a Controller
+    --           Returns True if done, False if <normname> is unknown
+    --           
+    --           A Profile may be set too. If no Profile is provided, the
+    --           current Profile for this Norm is taken
+    --           If the asked Profile is not defined for this Norm, it remains
+    --           in current Profile, returned value is True
+
+    SelectProfile (me : mutable; profile : CString) returns Boolean;
+    ---Purpose : Sets a Profile as current for the current Norm
+    --           Returns True if done, False if <profile> is unknown for this norm
+    --           
+    --           For more infos on Profile, query the Profile of the Controller
+
+    SetController (me : mutable; ctl : mutable Controller);
+    ---Purpose : Selects a Norm defined by its Controller itself
+
+    AdaptNorm  (me : mutable) is virtual;
+    ---Purpose : This method is called once a new norm has been successfully
+    --           selected. It can be redefined, default does nothing
+
+    SelectedNorm (me; rsc : Boolean = Standard_False) returns CString;
+    ---Purpose : Returns the name of the last Selected Norm. If none is
+    --           defined, returns an empty string
+    --           By default, returns the complete name of the norm
+    --           If <rsc> is True, returns the short name used for resource
+
+    NormAdaptor (me) returns mutable Controller;
+    ---Purpose : Returns the norm controller itself
+
+    	--  Context used for Transfer : it is a DictionaryOfTransient (no control here)
+
+    Context (me) returns DictionaryOfTransient;
+    ---Purpose : Returns the current Context List, Null if not defined
+    --           The Context is given to the TransientProcess for TransferRead
+
+    SetAllContext (me : mutable; context : DictionaryOfTransient);
+    ---Purpose : Sets the current Context List, as a whole
+    --           Sets it to the TransferReader
+
+    ClearContext (me : mutable);
+    ---Purpose : Clears the whole current Context (nullifies it)
+
+    	--  Management and Actions of Transfer (Read)  --
+    	--  performed by TransferReader
+    	--  WorkSession adds some useful accesses
+    	--  It is actually oriented to shapes and transient objects
+
+    PrintTransferStatus (me; num : Integer; wri : Boolean; S : Messenger from Message)
+    	returns Boolean;
+    ---Purpose : Prints the transfer status of a transferred item, as beeing
+    --           the Mapped n0 <num>, from MapWriter if <wri> is True, or
+    --           from MapReader if <wri> is False
+    --           Returns True when done, False else (i.e. num out of range)
+
+    InitTransferReader (me : mutable; mode : Integer);
+    ---Purpose : Sets a Transfer Reader, by internal ways, according mode :
+    --           0 recreates it clear,  1 clears it (does not recreate)
+    --           2 aligns Roots of TransientProcess from final Results
+    --           3 aligns final Results from Roots of TransientProcess
+    --           4 begins a new transfer (by BeginTransfer)
+    --           5 recreates TransferReader then begins a new transfer
+
+    SetTransferReader (me : mutable; TR : mutable TransferReader);
+    ---Purpose : Sets a Transfer Reader, which manages transfers on reading
+
+    TransferReader (me) returns mutable TransferReader;
+    ---Purpose : Returns the Transfer Reader, Null if not set
+
+    MapReader      (me) returns mutable TransientProcess;
+    ---Purpose : Returns the TransientProcess(internal data for TransferReader)
+
+    SetMapReader   (me : mutable; TP : mutable TransientProcess) returns Boolean;
+    ---Purpose : Changes the Map Reader, i.e. considers that the new one
+    --           defines the relevant read results (forgets the former ones)
+    --           Returns True when done, False in case of bad definition, i.e.
+    --           if Model from TP differs from that of Session
+
+    Result (me; ent : Transient; mode : Integer)
+    	 returns mutable Transient;
+    ---Purpose : Returns the result attached to a starting entity
+    --           If <mode> = 0, returns Final Result
+    --           If <mode> = 1, considers Last Result
+    --           If <mode> = 2, considers Final, else if absent, Last
+    --             returns it as Transient, if result is not transient returns
+    --             the Binder
+    --           <mode> = 10,11,12 idem but returns the Binder itself
+    --             (if it is not, e.g. Shape, returns the Binder)
+    --           <mode> = 20, returns the ResultFromModel
+
+    TransferReadOne (me : mutable; ents : Transient) returns Integer;
+    ---Purpose : Commands the transfer of, either one entity, or a list
+    --           I.E. calls the TransferReader after having analysed <ents>
+    --           It is cumulated from the last BeginTransfer
+    --           <ents> is processed by GiveList, hence :
+    --           - <ents> a Selection : its SelectionResult
+    --           - <ents> a HSequenceOfTransient : this list
+    --           - <ents> the Model : in this specific case, all the roots,
+    --             with no cumulation of former transfers (TransferReadRoots)
+
+    TransferReadRoots (me : mutable) returns Integer;
+    ---Purpose : Commands the transfer of all the root entities of the model
+    --           i.e. calls TransferRoot from the TransferReader with the Graph
+    --           No cumulation with former calls to TransferReadOne
+
+--  Other actions : see the class TransferReader
+
+--    BeginTransferRead (me : mutable) returns Boolean;      and
+--    RecognizeRead   (me : mutable; ent : Transient)    see TransferReader
+--    TransferReadOne (me : mutable; ents : Transient) ->  TransferOne/List
+--    TransferReadRoots (me : mutable) returns Integer;
+--    TransferReadCheckList (me) returns CheckIterator;  -> LastCheckList
+--    TransferReadCheckOne (me; ent : Transient; level : Integer = 0)
+--  -> CheckList avec en plus level = -1 (last)
+--    TransferredReadList (me; ents : Transient;  -> CheckedList
+--     	withcheck : Integer = 0; level : Integer = 0)  withcheck a change
+--    TransferReadClear (me : mutable; ents : Transient; level : Integer = 0);
+--    ShapeResultList (me : mutable) returns HSequenceOfShape from TopTools;
+--      + rec : Boolean (recorded/last)
+
+
+    	--  Management of Transfer (Write)  --
+    	--  It is actually oriented to shapes
+
+    NewModel (me : mutable) returns mutable InterfaceModel from Interface;
+    ---Purpose : produces and returns a new Model well conditionned
+    --           It is produced by the Norm Controller
+    --           It can be Null (if this function is not implemented)
+
+    TransferWriter (me) returns mutable TransferWriter;
+    ---Purpose : Returns the Transfer Reader, Null if not set
+
+    MapWriter      (me) returns mutable FinderProcess;
+    ---Purpose : Returns the FinderProcess (internal data for TransferWriter)
+
+    SetMapWriter   (me : mutable; FP : mutable FinderProcess) returns Boolean;
+    ---Purpose : Changes the Map Reader, i.e. considers that the new one
+    --           defines the relevant read results (forgets the former ones)
+    --           Returns True when done, False if <FP> is Null
+
+    SetModeWriteShape (me : mutable; mode : Integer);
+    ---Purpose : Sets a mode to transfer Shapes from CasCade to entities of the
+    --           current norm, which interprets it (see various Controllers)
+    --           This call form could be later replaced by a more general one
+
+    ModeWriteShape (me) returns Integer;
+    ---Purpose : Records the current Mode to Write Shapes
+
+    TransferWriteShape (me : mutable; shape : Shape from TopoDS;
+    	    	    	     compgraph : Boolean = Standard_True)
+    returns ReturnStatus;
+    ---Purpose : Transfers a Shape from CasCade to a model of current norm,
+    --           according to the last call to SetModeWriteShape
+    --           Returns status :Done if OK, Fail if error during transfer,
+    --             Error if transfer badly initialised
+
+    TransferWriteCheckList (me) returns CheckIterator;
+    ---Purpose : Returns the check-list of last transfer (write)
+    --           It is recorded in the FinderProcess, but it must be bound with
+    --           resulting entities (in the resulting file model) rather than
+    --           with original objects (in fact, their mappers)
+
+
+    Vars (me) returns Vars;
+
+    SetVars (me : mutable; newvars : Vars);
+
+    ClearBinders (me : mutable);
+    ---Purpose : Clears binders
+
+    Destroy(me: mutable)
+    ---C++: alias ~
+    	is static;
+
+fields
+
+    theController     : Controller;
+    theTransferRead   : TransferReader from XSControl;
+    theTransferWrite  : TransferWriter from XSControl;
+    theContext        : DictionaryOfTransient;
+    theModeWriteShape : Integer;
+    theVars           : Vars;
+
+end WorkSession;

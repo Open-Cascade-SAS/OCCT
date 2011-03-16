@@ -1,0 +1,35 @@
+-- File:	DsgPrs_EqualRadiusPresentation.cdl
+-- Created:	Sat Jan 17 14:13:23 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@orthodox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EqualRadiusPresentation from DsgPrs 
+
+	---Purpose: A framework to define display of equality in radii.
+
+uses
+    Presentation from Prs3d,
+    Drawer from Prs3d,
+    Pnt from gp,
+    Plane from Geom
+    
+is
+    Add( myclass; aPresentation : Presentation from Prs3d;
+    	    	  aDrawer       : Drawer from Prs3d;
+		  FirstCenter   : Pnt from gp;
+		  SecondCenter  : Pnt from gp;
+		  FirstPoint    : Pnt from gp;
+		  SecondPoint   : Pnt from gp; 
+		  Plane         : Plane from Geom );
+	---Purpose: Adds the points FirstCenter, SecondCenter,
+    	-- FirstPoint, SecondPoint, and the plane Plane to the
+    	-- presentation object aPresentation.
+    	-- The display attributes of these elements is defined by
+    	-- the attribute manager aDrawer.
+    	-- FirstCenter and SecondCenter are the centers of the
+    	-- first and second shapes respectively, and FirstPoint
+    	-- and SecondPoint are the attachment points of the radii to arcs.
+    	    	    
+end EqualRadiusPresentation;

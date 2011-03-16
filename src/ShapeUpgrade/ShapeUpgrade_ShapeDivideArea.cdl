@@ -1,0 +1,40 @@
+-- File:	ShapeUpgrade_ShapeDivideArea.cdl
+-- Created:	Tue Aug  8 11:40:33 2006
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Open CASCADE 2006
+
+
+class ShapeDivideArea from ShapeUpgrade  inherits ShapeDivide from ShapeUpgrade
+
+	---Purpose: Divides faces from sprcified shape  by max area criterium.
+
+uses
+
+    Shape from TopoDS,
+    FaceDivide from ShapeUpgrade
+
+is
+     Create returns ShapeDivideArea from ShapeUpgrade;
+    	---Purpose:
+    
+    Create (S: Shape from TopoDS)
+    returns ShapeDivideArea from ShapeUpgrade;
+    	---Purpose: Initialize by a Shape.
+	
+    GetSplitFaceTool (me) returns FaceDivide from ShapeUpgrade
+    is redefined protected;
+    	---Purpose: Returns the tool for splitting faces. 
+	
+
+     MaxArea(me: in out) returns Real;
+    ---C++: inline
+    ---C++: return &
+    ---Purpose:Set max area allowed for faces 	
+
+    
+fields
+
+    myMaxArea : Real;
+
+end ShapeDivideArea;

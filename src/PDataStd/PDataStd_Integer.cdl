@@ -1,0 +1,33 @@
+-- File:	PDataStd_Integer.cdl
+-- Created:	Wed Apr  9 11:26:37 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+class Integer from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses Integer from Standard
+
+is
+
+
+    Create returns mutable Integer from PDataStd;
+
+
+    Create (V : Integer from Standard)
+    returns mutable Integer from PDataStd;
+    
+    
+    Get (me) returns Integer from Standard;
+
+
+    Set (me : mutable; V : Integer from Standard);
+    
+
+fields
+
+    myValue : Integer from Standard;
+
+end Integer;

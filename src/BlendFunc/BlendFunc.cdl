@@ -1,0 +1,88 @@
+-- File:	BlendFunc.cdl
+-- Created:	Fri Dec  3 15:43:52 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package BlendFunc
+
+    ---Purpose: This package provides a set of generic functions, that can
+    --          instantiated to compute blendings between two surfaces
+    --          (Constant radius, Evolutive radius, Ruled surface).
+
+
+uses Blend, Adaptor2d, Adaptor3d, math, gp, Convert, TColgp, TColStd, GeomAbs, Law
+
+is
+
+    class ConstRad;
+
+    class ConstRadInv;
+
+    class Ruled;
+
+    class RuledInv;
+
+    class EvolRad;
+
+    class EvolRadInv;
+    
+    class CSConstRad;
+
+    class CSCircular;
+
+    class Corde;
+
+    class Chamfer;
+
+    class ChamfInv;
+    
+    class ChAsym;
+    
+    class ChAsymInv;
+    
+    class Tensor;
+
+    enumeration SectionShape is
+    	Rational,         -- default in algoritmes
+	QuasiAngular,
+	Polynomial,
+	Linear            -- for chamfers ??
+    end SectionShape;
+
+
+    GetShape(SectShape: SectionShape from BlendFunc; 
+             MaxAng:    Real         from  Standard;
+	     NbPoles,NbKnots,Degree : out Integer from Standard;
+             TypeConv : out ParameterisationType from Convert);
+
+    Knots(SectShape: SectionShape from BlendFunc; 
+    	  TKnots: out Array1OfReal from TColStd);
+
+    Mults(SectShape: SectionShape from BlendFunc; 
+    	  TMults: out Array1OfInteger from TColStd);
+
+    GetMinimalWeights(SectShape: SectionShape from BlendFunc;
+    	              TConv      : ParameterisationType from Convert;
+    	              AngleMin   : Real;
+		      AngleMax   : Real;
+		      Weigths    : out Array1OfReal  from TColStd);	      
+	      
+    NextShape(S : Shape from GeomAbs)
+	      ---Purpose: Used  to obtain the next level of continuity.
+	      ---Level: Internal
+	      returns Shape from GeomAbs;
+
+    ComputeNormal(Surf : HSurface from Adaptor3d;
+                  p2d : Pnt2d from gp;
+                  Normal : out Vec from gp)
+    returns Boolean from Standard;
+
+    ComputeDNormal(Surf : HSurface from Adaptor3d;
+                   p2d : Pnt2d from gp;
+                   Normal, DNu, DNv : out Vec from gp)
+    returns Boolean from Standard;
+	      
+end BlendFunc;

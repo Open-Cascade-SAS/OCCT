@@ -1,0 +1,26 @@
+-- File:	IntPoly_Pnt2dHasher.cdl
+-- Created:	Thu Jul 20 10:19:06 1995
+-- Author:	Stagiaire Alain JOURDAIN
+--		<ajo@phobox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Pnt2dHasher from IntPoly
+
+uses  Pnt2d from gp
+
+is    HashCode(myclass; Point : Pnt2d from gp;
+                        Upper : Integer)
+      returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	---C++: inline
+	
+      IsEqual(myclass; Point1,Point2 : Pnt2d from gp)
+      returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	---C++: inline
+	
+end Pnt2dHasher;

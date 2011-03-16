@@ -1,0 +1,167 @@
+// File:	TopClass_FaceClassifier.gxx
+// Created:	Wed Nov 18 12:21:14 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//  Modified by skv - Thu Jul 13 18:00:34 2006 OCC12627
+// The method Perform is totally rewroted.
+
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+
+//=======================================================================
+//function : TopClass_FaceClassifier
+//purpose  : 
+//=======================================================================
+
+TopClass_FaceClassifier::TopClass_FaceClassifier()
+{
+}
+
+//=======================================================================
+//function : TopClass_FaceClassifier
+//purpose  : 
+//=======================================================================
+
+TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer& FExp,
+						 const gp_Pnt2d& P,
+						 const Standard_Real Tol)
+{
+  Perform(FExp,P,Tol);
+}
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
+				      const gp_Pnt2d& P,
+				      const Standard_Real Tol)
+{
+  // Test for rejection.
+  rejected = Fexp.Reject(P);
+
+  if (rejected)
+    return;
+
+  gp_Lin2d                   aLine;
+  Standard_Real              aParam;
+  Standard_Boolean           IsValidSegment = Fexp.Segment(P, aLine, aParam);
+  TheEdge                    anEdge;
+  TopAbs_Orientation         anEdgeOri;
+  Standard_Integer           aClosestInd;
+  IntRes2d_IntersectionPoint aPInter;
+  TopAbs_State               aState;
+  Standard_Boolean           IsWReject;
+  Standard_Boolean           IsEReject;
+
+  nowires = Standard_True;
+
+  while (IsValidSegment) {
+    myClassifier.Reset(aLine, aParam, Tol);
+
+    for (Fexp.InitWires(); Fexp.MoreWires(); Fexp.NextWire()) {
+      nowires   = Standard_False;
+      IsWReject = Fexp.RejectWire(aLine, myClassifier.Parameter());
+
+      if (!IsWReject) {
+	// test this wire
+	for (Fexp.InitEdges(); Fexp.MoreEdges(); Fexp.NextEdge()) {
+	  IsEReject = Fexp.RejectEdge(aLine, myClassifier.Parameter());
+
+	  if (!IsEReject) {
+	    // test this edge
+	    Fexp.CurrentEdge(anEdge, anEdgeOri);
+
+	    if (anEdgeOri == TopAbs_FORWARD || anEdgeOri == TopAbs_REVERSED) {
+	      myClassifier.Compare(anEdge, anEdgeOri);
+	      aClosestInd = myClassifier.ClosestIntersection();
+
+	      if (aClosestInd != 0) {
+		// save the closest edge
+		TheIntersection2d &anIntersector = myClassifier.Intersector();
+		Standard_Integer   aNbPnts       = anIntersector.NbPoints();
+
+		myEdge = anEdge;
+
+		if (aClosestInd <= aNbPnts) {
+		  aPInter = anIntersector.Point(aClosestInd);
+		} else {
+		  aClosestInd -= aNbPnts;
+
+		  if (aClosestInd&1) {
+		    aPInter =  anIntersector.
+		      Segment((aClosestInd + 1)/2).FirstPoint();
+		  } else {
+		    aPInter =  anIntersector.
+		      Segment((aClosestInd + 1)/2).LastPoint();
+		  }
+		}
+
+		myPosition      = aPInter.
+		                  TransitionOfSecond().PositionOnCurve();
+		myEdgeParameter = aPInter.ParamOnSecond();
+	      }
+	      // if we are ON, we stop
+	      aState = myClassifier.State();
+	    
+	      if (aState == TopAbs_ON)
+		return;
+	    }
+	  }
+	}
+
+	// if we are out of the wire we stop
+	aState = myClassifier.State();
+
+	if (aState == TopAbs_OUT)
+	  return;
+      }
+    }
+
+    if (!myClassifier.IsHeadOrEnd())
+      break;
+
+    // Bad case for classification. Trying to get another segment.
+    IsValidSegment = Fexp.OtherSegment(P, aLine, aParam);
+  }
+}
+
+//=======================================================================
+//function : State
+//purpose  : 
+//=======================================================================
+
+TopAbs_State TopClass_FaceClassifier::State() const
+{
+  if (rejected)     return TopAbs_OUT;
+  else if (nowires) return TopAbs_IN;
+  else              return  myClassifier.State();
+}
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+const TheEdge& TopClass_FaceClassifier::Edge() const
+{
+  Standard_DomainError_Raise_if(rejected,
+				"TopClass_FaceClassifier::Edge:rejected");
+  return myEdge;
+}
+
+
+//=======================================================================
+//function : EdgeParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Real TopClass_FaceClassifier::EdgeParameter() const
+{
+  Standard_DomainError_Raise_if(rejected,
+				"TopClass_FaceClassifier::EdgeParameter:rejected");
+  return myEdgeParameter;
+}
+

@@ -1,0 +1,12 @@
+// File:	AIS_ParallelRelation.lxx
+// Created:	Fri Feb 28 14:38:46 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_ParallelRelation::IsMovable() const 
+{
+  return Standard_True;
+}

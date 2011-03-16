@@ -1,0 +1,23 @@
+// File:	TDataStd_ChildNodeIterator.lxx
+// Created:	Fri Feb 11 15:17:58 2000
+// Author:	Vladislav ROMASHKO
+//		<vro@flox.nnov.matra-dtv.fr>
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TDataStd_ChildNodeIterator::More() const
+{ 
+  return !myNode.IsNull();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Handle(TDataStd_TreeNode) TDataStd_ChildNodeIterator::Value() const
+{ 
+  return myNode;
+}

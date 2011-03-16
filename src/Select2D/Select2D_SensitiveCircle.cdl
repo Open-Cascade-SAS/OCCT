@@ -1,0 +1,71 @@
+-- File:	Select2D_SensitiveCircle.cdl
+-- Created:	Mon Jan 30 16:13:58 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class SensitiveCircle from Select2D 
+inherits SensitiveEntity from Select2D
+
+	---Purpose: A framework to define sensitive Areas for a Circle
+	--           Radius and center, or a geometric circle is given.
+
+uses
+
+    Circ2d from gp,
+    TypeOfSelection,
+    EntityOwner from SelectBasics,
+    ListOfBox2d from SelectBasics
+is
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    TheCirc      : Circ2d from gp;
+    	    TheType      : TypeOfSelection = Select2D_TOS_BOUNDARY)
+    returns mutable SensitiveCircle ;
+    	--- Purpose: Constructs a sensitive circle object defined by the
+    	-- owner OwnerId, the circle Circle, and the selection type Type.
+    	-- Type can be:
+    	-- -   interior
+    	-- -   boundary.   
+    
+    Areas (me:mutable ; aresul : in out ListOfBox2d from SelectBasics) is static;
+    	---Level: Public 
+    	---Purpose: returns the sensitive areas for a circle...    
+    
+    Matches (me  : mutable ;
+             X,Y : Real from Standard;
+             aTol: Real from Standard;
+             DMin: out Real from Standard) 
+    returns Boolean is static;     
+    	---Purpose: Returns true if the minimum distance DMin
+    	--          between the postion x,y and the circle is less than aTol..
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+		     
+
+
+    Circle(me) returns Circ2d from gp;
+    	---Purpose: Returns the circle used at the time of construction of this object.
+        ---C++: inline
+        ---C++: return const&
+
+    SetTypeOfSelection(me:mutable;aType : TypeOfSelection);
+    	---Purpose: Sets the selection type.
+        ---C++: inline
+
+    Selection(me:mutable) returns TypeOfSelection from Select2D;
+    	---Purpose: Returns the selection type used at the time of construction of this object.
+        ---C++: inline
+
+fields
+
+    myCirc  : Circ2d from gp;
+    mytype  : TypeOfSelection;   
+
+end SensitiveCircle;

@@ -1,0 +1,45 @@
+-- File:	GccGeo.cdl
+-- Created:	Thu Apr  4 14:30:49 1991
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+package GccGeo
+
+
+    ---Purpose :
+    -- This package provides an implementation of analytic algorithms
+    -- (using only non-persistant entities) used to create 2d lines or
+    -- circles with geometric constraints.
+
+uses GccEnt,
+     GccInt,
+     IntCurve,
+     GeomAbs,
+     TColStd,
+     Standard,
+     StdFail,
+     TColgp,
+     gp
+
+is
+
+generic class CurvePGTool;
+
+generic class ParGenCurve;
+
+generic class Circ2dTanCen;
+    -- Create a 2d circle TANgent to a 2d entity and CENtered on a 2d point.
+
+generic class Circ2d2TanRad;
+    -- Create a 2d circle TANgent to 2 2d entities with the given RADius.
+
+generic class Circ2dTanOnRad;
+    -- Create a 2d circle TANgent to a 2d entity and centered ON a 2d 
+    -- entity (not a point) with the given radius.
+
+generic class Circ2d2TanOn;
+    -- Create a 2d circle TANgent to 2 2d entities (circle, line or point) 
+    -- and centered ON a 2d curve.
+
+end GccGeo;

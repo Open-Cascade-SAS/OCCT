@@ -1,0 +1,48 @@
+-- File:	PGeom2d_Parabola.cdl
+-- Created:	Tue Apr  6 17:32:29 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Parabola from PGeom2d  
+inherits Conic from PGeom2d
+
+        --- Purpose :
+        --  Defines the parabola in the parameterization range  :
+        --  ]-infinite,+infinite[
+        --  See Also : Parabola from Geom2d.
+
+uses  Ax22d from gp 
+
+is
+
+
+  Create returns mutable Parabola from PGeom2d;
+        ---Purpose : Creates a parabola with default values.
+	---Level: Internal 
+
+
+  Create (aPosition : Ax22d from gp; aFocalLength : Real)
+    returns mutable Parabola from PGeom2d;
+	---Purpose : Creates a Parabola with <aPosition> and <aFocalLength>
+	--         as field values.
+	---Level: Internal 
+
+
+  FocalLength (me : mutable; aFocalLength : Real);
+        ---Purpose :   Set the value  of   the  field focalLength with
+        --         <aFocalLength>.
+	---Level: Internal 
+
+
+  FocalLength (me)  returns Real;
+	---Purpose : Retruns the value of the field focalLength.
+	---Level: Internal 
+
+
+fields
+
+  focalLength : Real;
+
+end;

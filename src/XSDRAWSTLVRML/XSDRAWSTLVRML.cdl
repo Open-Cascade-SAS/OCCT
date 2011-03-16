@@ -1,0 +1,32 @@
+-- File:	XSDRAWSTLVRML.cdl
+-- Created:	Tue May 30 17:29:00 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package XSDRAWSTLVRML
+
+	---Purpose:
+
+uses Draw, MeshVS, StlMesh, TColStd, TCollection, Standard
+
+is
+
+    class DataSource;
+
+    class DrawableMesh;
+
+    class ElemNodesMap instantiates DataMap from TCollection
+            ( Integer from Standard, DataMapOfIntegerInteger from TColStd, MapIntegerHasher from TColStd );
+
+    class CoordsMap instantiates DataMap from TCollection
+            ( Integer from Standard, DataMapOfIntegerReal from TColStd, MapIntegerHasher from TColStd );
+
+    InitCommands (theCommands : in out Interpretor from Draw);
+    ---Purpose : Inits commands for writing to STL and VRML formats
+
+    Factory (theDI : out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands of TKXSDRAW. Used for plugin.
+
+end XSDRAWSTLVRML;

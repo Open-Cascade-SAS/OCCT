@@ -1,0 +1,31 @@
+-- File:	TPrsStd_GeometryDriver.cdl
+-- Created:	Fri Aug  1 11:21:30 1997
+-- Author:	SMO
+---Copyright:	 Matra Datavision 1997
+
+class GeometryDriver from TPrsStd inherits Driver from TPrsStd
+---Purpose:
+-- This method is an implementation of TPrsStd_Driver for geometries.
+uses
+
+  GUID               from Standard,
+  Label              from TDF,
+  InteractiveObject  from AIS
+is
+
+    Create
+    returns mutable GeometryDriver from TPrsStd;
+---Purpose: Constructs an empty geometry driver.    
+    Update (me : mutable ;
+           aLabel      : Label from TDF;
+	   anAISObject : in out InteractiveObject from AIS)
+    returns Boolean from Standard
+    is  redefined virtual;
+    --- Purpose: Build the AISObject (if null) or update it.
+    --           No compute is done.
+    --           Returns <True> if informations was found
+    --           and AISObject updated. 
+	   
+
+end GeometryDriver;
+

@@ -1,0 +1,45 @@
+-- File:	StepData_DescrReadWrite.cdl
+-- Created:	Wed May 21 15:26:13 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DescrReadWrite  from StepData    inherits ReadWriteModule  from StepData
+
+uses Transient,
+     SequenceOfAsciiString    from TColStd,
+     AsciiString              from TCollection,
+     Check                    from Interface,
+     StepReaderData           from StepData,
+     StepWriter               from StepData,
+     Protocol                 from StepData
+
+is
+
+    Create (proto : Protocol from StepData) returns DescrReadWrite from StepData;
+
+    CaseStep (me; atype : AsciiString from TCollection) returns Integer;
+
+    CaseStep(me; types : SequenceOfAsciiString from TColStd) returns Integer
+    	is redefined;
+
+    IsComplex (me; CN : Integer) returns Boolean is redefined;
+
+    StepType (me; CN : Integer) returns AsciiString from TCollection;
+    ---C++ : return const &
+
+    ComplexType (me; CN : Integer;
+            	 types : in out SequenceOfAsciiString from TColStd)
+        returns Boolean  is redefined;
+
+    ReadStep (me; CN : Integer; data : StepReaderData; num : Integer;
+               ach : in out Check; ent : mutable Transient);
+
+    WriteStep (me; CN : Integer; SW : in out StepWriter; ent : Transient);
+
+fields
+
+    theproto : Protocol from StepData;
+
+end DescrReadWrite;

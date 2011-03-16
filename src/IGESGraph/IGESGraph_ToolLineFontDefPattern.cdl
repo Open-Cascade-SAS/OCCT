@@ -1,0 +1,59 @@
+-- File:	IGESGraph_ToolLineFontDefPattern.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolLineFontDefPattern  from IGESGraph
+
+    ---Purpose : Tool to work on a LineFontDefPattern. Called by various
+    --           Modules (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses LineFontDefPattern from IGESGraph,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolLineFontDefPattern;
+    ---Purpose : Returns a ToolLineFontDefPattern, ready to work
+
+
+    ReadOwnParams (me; ent : mutable LineFontDefPattern;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : LineFontDefPattern;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : LineFontDefPattern;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a LineFontDefPattern <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : LineFontDefPattern) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : LineFontDefPattern;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : LineFontDefPattern; entto : mutable LineFontDefPattern;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : LineFontDefPattern;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolLineFontDefPattern;

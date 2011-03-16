@@ -1,0 +1,125 @@
+--
+-- File      :  TabularData.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class TabularData from IGESDefs  inherits IGESEntity
+
+        ---Purpose: Defines IGES Tabular Data, Type <406> Form <11>,
+        --          in package IGESDefs
+        --          This Class is used to provide a Structure to accomodate
+        --          point form data.
+
+uses
+
+        HArray1OfInteger       from TColStd,
+        HArray1OfReal          from TColStd,
+        HArray1OfHArray1OfReal from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable TabularData;
+
+        -- Specific methods for the entity
+
+        Init (me          : mutable;
+              nbProps     : Integer;
+              propType    : Integer;
+              typesInd    : HArray1OfInteger;
+              nbValuesInd : HArray1OfInteger;
+              valuesInd   : HArray1OfHArray1OfReal;
+              valuesDep   : HArray1OfHArray1OfReal)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           TabularData
+        --       - nbProps     : Number of property values
+        --       - propType    : Property Type
+        --       - typesInd    : Type of independent variables
+        --       - nbValuesInd : Number of values of independent variables
+        --       - valuesInd   : Values of independent variables
+        --       - valuesDep   : Values of dependent variables
+        -- raises exception if lengths of typeInd and nbValuesInd are not same
+
+        NbPropertyValues(me) returns Integer;
+        ---Purpose : returns the number of property values (recorded)
+
+    	ComputedNbPropertyValues (me) returns Integer;
+	---Purpose : determines the number of property values required
+
+    	OwnCorrect (me : mutable) returns Boolean;
+	---Purpose : checks, and correct as necessary, the number of property
+	--           values. Returns True if corrected, False if already OK
+
+        PropertyType(me) returns Integer;
+        ---Purpose : returns the property type
+
+        NbDependents(me) returns Integer;
+        ---Purpose : returns the number of dependent variables
+
+        NbIndependents(me) returns Integer;
+        ---Purpose : returns the number of independent variables
+
+        TypeOfIndependents(me; num: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the type of the num'th independent variable
+        -- raises exception if num <= 0 or num > NbIndependents()
+
+        NbValues(me; num : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the number of different values of the num'th indep. variable
+        -- raises exception if num <= 0 or num > NbIndependents()
+
+        IndependentValue(me; variablenum : Integer; valuenum : Integer)
+        returns Real
+        raises OutOfRange;
+        -- returns valuenum'th value of the variablenum'th independent variable
+        -- raises exception if
+        --         variablenum <= 0 or variablenum > NbIndependents()
+        --         valuenum <= 0 or valuenum > NbValues(variablenum)
+
+    	DependentValues (me; num : Integer) returns HArray1OfReal from TColStd
+        raises OutOfRange;
+	--  returns the entire list of recorded Dependent Values
+	--  UNRESOLVED. Temporarily, all dependent values are attached to
+	--  <num> = 1, the other values remain undefined
+
+        DependentValue(me; variablenum: Integer; valuenum: Integer)
+        returns Real
+        raises OutOfRange;
+        -- RESERVED, unresolved
+        -- valuenum'th value of the variablenum'th dependent variable
+        -- raises exception if
+        --         variablenum <= 0 or variablenum > NbIndependents()
+        --         valuenum <= 0 or valuenum > NbValues(variablenum)
+
+fields
+
+--
+-- Class    : IGESDefs_TabularData
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class TabularData.
+--
+-- Reminder : A TabularData instance is defined by :
+--            - The number of properties
+--            - The property type, an integer
+--            - The property type, an integer
+--            - The number of dependent variables
+--            - The type of independent variables, a single array of Int
+--            - The single array of integer values
+--            - The single array of independent values
+--            - The single array of dependent values
+
+        theNbPropertyValues           : Integer;
+        thePropertyType               : Integer;
+        theTypeOfIndependentVariables : HArray1OfInteger;
+        theNbValues                   : HArray1OfInteger;
+        theIndependentValues          : HArray1OfHArray1OfReal;
+        theDependentValues            : HArray1OfHArray1OfReal;
+
+end TabularData;

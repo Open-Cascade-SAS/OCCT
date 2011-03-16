@@ -1,0 +1,21 @@
+// File:	GeomToStep_MakeAxis1Placement.gxx
+// Created:	Wed Jun 23 10:33:06 1993
+// Author:	Martine LANGLOIS
+//		<mla@mastox>
+
+
+  Handle(StepGeom_Axis1Placement) Axe = new StepGeom_Axis1Placement;
+  Handle(StepGeom_CartesianPoint) P;
+  Handle(StepGeom_Direction) D;
+
+  GeomToStep_MakeCartesianPoint MkPoint(A.Location());
+  GeomToStep_MakeDirection      MkDir(A.Direction());
+
+  P = MkPoint.Value();
+  D = MkDir.Value();
+  Axe->SetLocation(P);
+  Axe->SetAxis(D);
+  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  Axe->SetName(name);
+  theAxis1Placement = Axe;
+  done = Standard_True;

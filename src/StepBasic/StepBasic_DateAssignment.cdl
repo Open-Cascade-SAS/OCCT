@@ -1,0 +1,33 @@
+-- File:        DateAssignment.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class DateAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Date from StepBasic, 
+	DateRole from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedDate : mutable Date from StepBasic;
+	      aRole : mutable DateRole from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedDate(me : mutable; aAssignedDate : mutable Date);
+	AssignedDate (me) returns mutable Date;
+	SetRole(me : mutable; aRole : mutable DateRole);
+	Role (me) returns mutable DateRole;
+
+fields
+
+	assignedDate : Date from StepBasic;
+	role : DateRole from StepBasic;
+
+end DateAssignment;

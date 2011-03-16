@@ -1,0 +1,696 @@
+-- File:	PCollection_HDirectedGraph.cdl
+-- Created:	Wed Apr 24 16:53:50 1991
+-- Author:	Denis PASCAL
+--		<dp@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+---Copyright:	 Matra Datavision 1991
+-- Revised:	 Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class HDirectedGraph from PCollection (
+               Item as Storable ; 
+               Attribute as Storable)
+
+     ---Purpose: Definition of a generic  directed graph for a type of
+     -- Item associated to a vertex, and  a type of Attribute
+     -- associated to an   Edge.    A Directed   Graph   is a
+     -- collection that includes a set of Vertices  and a set
+     -- of Edges.  A vertex, also called a  "Node", forms the
+     -- basic  structural element  of  the graph.  Each edge,
+     -- also called an "Arc" defines an oriented link between
+     -- two vertices.  In the scheme A->B, vertex A is called
+     -- the SOURCE  of the link, B  its DESTINATION, and B is
+     -- ADJACENT to A.  If there is no edge  which destinates
+     -- to a vertex, this vertex is a ROOT of the graph.   If
+     -- there is no edge which originates from a vertex, this
+     -- vertex is a LEAF of the graph.
+
+    ---Keywords: SOURCE vertex,  DESTINATION Vertex, ROOT vertex, LEAF
+    --  vertex, ADJACENT vertex. Depth-first search, breadth, first Search.
+
+    ---References: Software Components with ADA (The Benjamin/Cummings
+    --    Company, Inc.  1986).
+
+
+
+inherits Persistent 
+raises NoSuchObject from Standard,
+       NoMoreObject from Standard
+
+
+    class Edge inherits Persistent
+    
+    	---Purpose: Defines nested class Edge of a Directed Graph.
+    	-- An Edge is an oriented link between  two vertices.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+
+    	Create (Source,Destination : Vertex; Value : Attribute) 
+	    ---Purpose: Creates an oriented link  between <source> and
+	    -- <destination> with an associated attribute. To
+	    -- be  used only   by  DirectedGraph  methods  to
+	    -- create and add an edge to a given graph.
+    	returns mutable Edge; 
+
+    	GetAttribute (me) 
+            ---Level: Public
+	    ---Purpose: Returns attribute associated to <me>.
+            returns Attribute;
+
+    	SetAttribute (me : mutable; Value : Attribute)
+            ---Level: Internal
+	    ---Purpose: To associate an attribute to <me>.
+	is private;
+
+    	Source (me) 
+            ---Level: Public
+	    ---Purpose: Returns the vertex which originates from <me>.
+            returns mutable Vertex;
+	    
+    	SetSource (me :mutable; V: Vertex) 
+            ---Level: Internal
+	    ---Purpose: Sets the vertex which originates from <me>.
+        is private;
+
+    	Destination (me) 
+            ---Level: Public
+    	    ---Purpose: Returns the vertex which destinates to <me>.
+            returns mutable Vertex;
+
+    	SetDestination (me :mutable ; V: Vertex) 
+            ---Level: Internal
+    	    ---Purpose: Sets the vertex which destinates to <me>.
+            is private;
+
+    	Reverse (me : mutable);
+            ---Level: Public
+	    ---Purpose: Reverse  the orientation of   <me>.
+	    -- The source vertex becomes the  destination vertex, and
+	    -- the destination becomes the source.
+
+    	IsLoop (me) returns Boolean from Standard;
+            ---Level: Public
+	    ---Purpose: Returns True if the fields <MyDestination> and 
+	    -- <Mysource> are equal.
+ 
+    fields
+    	MyAttribute   : Attribute;
+    	MySource      : Vertex;
+    	MyDestination : Vertex;
+
+    friends class HDirectedGraph from PCollection,
+            class Vertex        from PCollection 
+    
+    end;
+
+    class SetOfEdge instantiates HSet from PCollection(Edge);
+	---Purpose: Defines nested class SetOfEdge used  as  field of
+	-- Vertex and DirectedGraph.
+
+    class SetOfVertex instantiates HSet from PCollection(Vertex);
+	---Purpose: Defines nested class SetOfVertex used as field of a
+	-- DirectedGraph.
+
+    class StackOfVertex instantiates HStack from PCollection(Vertex);
+	---Purpose: Defines nested class StackOfVertex used  as  field of
+	-- DepthFirstIterator class.
+
+
+    class QueueOfVertex instantiates HQueue from PCollection(Vertex);
+	---Purpose: Defines nested class QueueOfVertex used  as  field of
+	-- BreadthFirstIterator.
+
+    class FrontEdgesIterator	
+    	---Purpose: Defines nested class  FrontEdgesIterator, to  visit
+    	-- every edge that originates from a given vertex.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+
+    	Create (aVertex : Vertex) returns FrontEdgesIterator;
+
+    	More (me) 
+            ---Level: Public
+    	    ---Purpose: Returns TRUE if there are other edges.
+        returns Boolean from Standard; 
+
+    	Next (me : in out) raises NoMoreObject from Standard;  
+            ---Level: Public
+	    ---Purpose: Set the iterator to the next Edge.
+
+    	Value (me) 
+            ---Level: Public
+    	    ---Purpose: Returns the edge value for the current
+    	    -- position of the iterator.
+        returns any Edge
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+	    ---Purpose: To clear the iterator before having visiting all edges.
+
+    fields
+    	MyEdgeIterator : SetIteratorOfSetOfEdge;
+        HasMore        : Boolean from Standard;    
+    end;
+	
+    class BackEdgesIterator 
+	---Purpose: Defines  nested class BackEdgesIterator, to  visit
+	-- every edge that destinates to a given vertex.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aVertex : Vertex) returns BackEdgesIterator;
+
+    	More (me) 
+            ---Level: Public
+    	    ---Purpose: Returns TRUE if there are other edges.
+        returns Boolean from Standard;
+	
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+    	    ---Purpose: Sets the iterator to the next edge.
+	
+    	Value (me) 
+            ---Level: Public
+    	    ---Purpose: Returns   the  edge value   for   the  current
+    	    -- position of the iterator.
+        returns any Edge
+        raises NoSuchObject from Standard;     
+	
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting all edges.
+
+    fields
+    	MyEdgeIterator : SetIteratorOfSetOfEdge;
+    	HasMore        : Boolean from Standard;
+    end;
+
+    class DepthFirstIterator
+    	---Purpose: Defines nested class  DepthFirstIterator, to  visit
+    	-- every vertex that depends  of a given  one.  Depth
+    	-- First Search  is functionnally the equivalent of a
+    	-- preorder tree   traversal.  We start  at  a  given
+    	-- Vertex  V  and   recursively  visit  all  adjacent
+    	-- unvisited Vertices.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    
+    	Create (aVertex : Vertex) returns DepthFirstIterator;
+
+    	More (me) 
+            ---Level: Public
+    	    ---Purpose: Returns TRUE if there are other vertices.
+        returns Boolean from Standard;
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+    	    ---Purpose: Sets the iterator to the next vertex.
+
+    	Value (me)  
+            ---Level: Public
+    	    ---Purpose: Returns  the vertex  value  for  the   current
+    	    -- position of the iterator.
+	returns any Vertex
+        raises NoSuchObject from Standard;
+	
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting
+            -- all vertices.
+
+    fields
+    	Visited : SetOfVertex;
+    	Ready   : StackOfVertex;
+    	HasMore : Boolean from Standard;
+    end;
+
+    class BreadthFirstIterator
+    	---Purpose: Defines nested class BreadthFirstIterator, to visit
+    	-- every vertex that depends of a given one. We start
+    	-- at    a  given vertex  V,  visit  all its adjacent
+    	-- vertices, and then recursively visit the unvisited
+    	-- adjacent vertices of these previous ones.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+
+    	Create (aVertex : Vertex) returns BreadthFirstIterator;
+
+    	More (me) 
+            ---Level: Public
+    	    ---Purpose: Returns TRUE if there are other vertices.
+        returns Boolean from Standard;
+	
+       	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+    	    ---Purpose: Sets the iterator to the next vertex.
+
+    	Value (me) 
+            ---Level: Public
+    	    ---Purpose: Returns  the  vertex  value for  the   current
+    	    -- position of the iterator.
+        returns any Vertex
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting
+            -- all vertices.
+
+    fields
+    	Visited : SetOfVertex;
+    	Ready   : QueueOfVertex;
+    	HasMore : Boolean from Standard;
+    end;
+
+    class AdjacentVerticesIterator 
+
+    	---Purpose: Defines nested class AdjacentVerticesIterator, to
+    	-- visit  every  adjacent vertex    of a   given  one
+    	-- (Destination vertices of its front edges).
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aVertex : Vertex) returns AdjacentVerticesIterator;
+
+    	More (me) 
+            ---Level: Public
+	    ---Purpose: Returns TRUE if there are other vertices.
+        returns Boolean from Standard;
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+	    ---Purpose: Sets the iterator to the next vertex.
+
+    	Value (me) 
+            ---Level: Public
+	    ---Purpose: Returns the  vertex  value for the current
+	    -- position of the iterator.
+        returns any Vertex
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To clear the iterator before having visiting all vertices.
+
+    fields
+    	MyEdgeIterator : SetIteratorOfSetOfEdge;
+    	HasMore        : Boolean from Standard;
+    end;
+
+----------------------- Class Vertex ----------------------------------
+
+    class Vertex inherits Persistent
+	---Purpose: Defines nested class vertex of a DirectedGraph. The
+	-- Vertex is the basic element of a graph.
+  
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+
+    	Create (Value : Item ; InGraph : HDirectedGraph) 
+	    ---Purpose: Creates a vertex  with an  associated item. To
+	    -- be  used  only  by   DirectedGraph methods  to
+	    -- create and add a vertex to a given  graph.
+        returns mutable Vertex;
+
+    	GetItem (me) 
+            ---Level: Public
+	    ---Purpose: Returns item associated to <me>.
+            returns any Item;
+
+    	SetItem (me : mutable; value : Item)
+            ---Level: Internal
+	    ---Purpose: Associates an item to <me>.
+            is private;
+
+    	GetGraph (me) 
+            ---Level: Public
+	    ---Purpose: Returns the HDirectedGraph which owns <me>.
+            returns HDirectedGraph;
+
+    	AddFrontEdge (me : mutable; anEdge : Edge) 
+            ---Level: Internal
+	    ---Purpose: To add an edge that destinates to <me>. 
+	    -- To be used only by editing methods of a DirectedGraph. 
+	    -- Returns  False  if  the edge already exists.
+        returns Boolean from Standard
+    	is private;
+
+    	RemoveFrontEdge (me : mutable; anEdge : Edge)
+            ---Level: Internal
+	    ---Purpose: To remove  an edge that  originates from <me>.
+	    -- To be   used  only  by  editing  methods  of a DirectedGraph. 
+	    -- An  exception is  raised  if <anEdge> doesn't belong to 
+	    -- myFrontEdges field.
+    	raises NoSuchObject from Standard
+    	is private;
+    
+    	NbFrontEdges (me) returns Integer;
+            ---Level: Public
+	    ---Purpose: Returns the number of edges which originates from <me>.
+
+    	GetFrontEdges (me) 
+            ---Level: Public
+    	    ---Purpose: Returns "myFrontEdges" Field for Iterator.
+    	returns SetOfEdge 
+    	is private;
+    
+    	AddBackEdge (me : mutable; anEdge : Edge) 
+            ---Level: Internal
+	    ---Purpose: To add an edge that destinates  to <me>. To be
+	    -- used     only   by   editing    methods  of  a
+	    -- DirectedGraph,  to    update     it      after
+	    -- modifications.   Returns   False if the   edge already exists.
+	returns Boolean from Standard
+    	is private;
+
+    	RemoveBackEdge (me : mutable; anEdge : Edge)
+            ---Level: Internal
+	    ---Purpose: To remove an edge  that destinates to <me>. To
+	    -- be   used   only by   editing   methods   of a
+	    -- DirectedGraph,      to     update    it  after
+	    -- modifications.   An   exception  is raised  if
+	    -- <anEdge> doesn't belong to myBackEdges field.
+	raises NoSuchObject from Standard
+    	is private;
+
+    	NbBackEdges (me) 
+            ---Level: Public
+	    ---Purpose: Returns the number   of  edge which  destinates to <me>.
+	    returns Integer from Standard;
+
+    	GetBackEdges (me)
+            ---Level: Internal
+    	    ---Purpose: Returns "myBackEdges" field for Iterator.
+    	returns SetOfEdge
+    	is private;
+
+    	IsRoot (me) 
+            ---Level: Public
+	    ---Purpose: Returns TRUE if NbBackEdges = 0.
+        returns Boolean from Standard;
+
+    	IsLeaf (me) 
+            ---Level: Public
+	    ---Purpose: Returns TRUE if NbFrontEdges = 0.
+        returns Boolean from Standard;
+
+    	IsDestination (me; aVertex : Vertex) 
+            ---Level: Public
+	    ---Purpose: Returns   TRUE if   it  exists  an  edge which
+	    -- originates     from <me>   and  destinates  to <aVertex>.
+        returns Boolean from Standard;
+
+    	IsSource (me; aVertex : Vertex) 
+            ---Level: Public
+	    ---Purpose: Returns  TRUE  if  it   exists an  edge  which
+	    -- originates  from  <aVertex>  and destinates to <me>.
+        returns Boolean from Standard;
+	
+    fields
+    	MyItem       : Item;
+	MyGraph      : HDirectedGraph;
+    	MyFrontEdges : SetOfEdge;
+    	MyBackEdges  : SetOfEdge;
+
+    friends class HDirectedGraph            from PCollection,
+            class Edge                     from PCollection,
+            class BackEdgesIterator        from PCollection,
+            class FrontEdgesIterator       from PCollection,
+            class DepthFirstIterator       from PCollection,
+            class BreadthFirstIterator     from PCollection,
+            class AdjacentVerticesIterator from PCollection                   
+    end;
+ 
+
+    class VerticesIterator  
+	---Purpose: Defines nested  class  VerticesIterator,   to visit
+	-- every vertex of a given directed graph.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aGraph : HDirectedGraph) returns VerticesIterator;
+
+    	More (me) 
+            ---Level: Public
+	    ---Purpose: Returns  TRUE  if  there are other vertices.
+        returns Boolean from Standard;
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+	    ---Purpose: Sets the iterator to the next vertex.
+
+    	Value (me) 
+            ---Level: Public
+	    ---Purpose: Returns the vertex  value  for   the current
+	    -- position of the iterator.
+        returns any Vertex 
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To clear the  iterator before having visiting
+            -- all vertices.
+
+    fields
+    	MyVertexIterator : SetIteratorOfSetOfVertex;
+    	HasMore          : Boolean from Standard;
+    end;
+
+    class RootsIterator 
+	---Purpose: Defines  nested class RootsIterator, to visit every
+	-- "root" vertex of a directed graph.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aGraph : HDirectedGraph) returns RootsIterator;
+
+    	More (me)
+            ---Level: Public
+	    ---Purpose: Returns TRUE if there are other vertices.
+        returns Boolean from Standard;
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+	    ---Purpose: Sets the iterator to the next vertex.
+
+    	Value (me) 
+            ---Level: Public
+	    ---Purpose: Returns  the  vertex  value  for the   current
+	    -- position of the iterator.
+        returns any Vertex 
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting
+            -- all vertices.
+
+    fields
+    	MyVertexIterator : SetIteratorOfSetOfVertex;
+    	HasMore          : Boolean from Standard;
+    end;
+
+    class LeavesIterator
+	---Purpose: Defines nested class LeavesIterator, to visit every
+	-- "leaf" vertex of a directed graph.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aGraph : HDirectedGraph) returns LeavesIterator;
+
+    	More (me) 
+            ---Level: Public
+   	    ---Purpose: Returns TRUE if  there are other vertices.
+        returns Boolean from Standard;
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+	    ---Purpose: Set the iterator to the next vertex.
+
+    	Value (me) 
+            ---Level: Public
+	    ---Purpose: Returns  the  vertex  value for   the  current
+	    -- position of the iterator.
+        returns any Vertex 
+        raises NoSuchObject from Standard;
+	
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting
+            -- all vertices.
+
+    fields
+    	MyVertexIterator : SetIteratorOfSetOfVertex;
+    	HasMore          : Boolean from Standard;
+    end;
+
+    class EdgesIterator
+	---Purpose: Defines nested class  EdgesIterator, to visit every
+	-- edge of a directed graph.
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is
+    	Create (aGraph : HDirectedGraph) returns EdgesIterator;
+
+    	More (me) returns Boolean from Standard;
+            ---Level: Public
+	    ---Purpose: Returns TRUE if there are other edges.
+
+    	Next (me : in out) raises NoMoreObject from Standard; 
+            ---Level: Public
+	    ---Purpose: Sets the iterator to the next edge.
+
+	Value (me)  
+            ---Level: Public
+	    ---Purpose: Returns  the  edge    value  for  the  current
+	    -- position of the iterator.
+        returns any Edge
+        raises NoSuchObject from Standard;
+
+    	Clear (me : in out);
+            ---Level: Public
+            ---Purpose: To  clear the  iterator before having visiting all edges.
+
+    fields
+    	MyEdgeIterator : SetIteratorOfSetOfEdge;
+    	HasMore        : Boolean from Standard;
+    end;
+
+--------------------- class HDirectedGraph -----------------------------
+
+is
+
+    Create returns mutable HDirectedGraph;
+	---Purpose: Creates an empty Directed Graph.
+
+    NumberOfVertices (me) returns Integer from Standard;
+        ---Level: Public
+
+    NumberOfEdges (me) returns Integer from Standard;
+        ---Level: Public
+
+    NumberOfLeaves (me) returns Integer from Standard;
+        ---Level: Public
+	---Purpose: Returns the number   of "leaf" vertices  of  <me>.
+
+    NumberOfRoots (me) returns Integer from Standard;
+        ---Level: Public
+	---Purpose: Returns  the number of  "root"  vertices  of <me>.
+
+    IsEmpty (me) returns Boolean from Standard;
+        ---Level: Public
+    
+    Clear (me : mutable);
+        ---Level: Public
+	---Purpose: Removes all edges and vertices of <me>.
+    
+    IsMember (me; aVertex : Vertex) returns Boolean from Standard;
+        ---Level: Public
+
+    IsMember (me; anEdge : Edge) returns Boolean from Standard;    
+        ---Level: Public
+
+    Add (me : mutable; Value : Item)
+        ---Level: Public
+	---Purpose: Creates and  Adds  a vertex,   with a given  value
+	-- <value>, to <me>. Of  course this new  Vertex is a
+	-- "root" and "leaf" vertex of <me> because it has no
+	-- connexion  with other  vertices of  the   directed graph.
+    returns mutable Vertex;
+
+    Remove (me : mutable; aVertex : mutable Vertex)
+        ---Level: Public
+	---Purpose: Removes <aVertex> from <me>.  Removes also all the
+	-- edges of  <me>  which reference <aVertex>; Updates
+	-- Source and Destination  vertices of each  of these
+	-- edges  . Raises an exception  if  <aVertex> is not
+	-- member of <me>.
+    raises NoSuchObject from Standard;
+
+    Add (me : mutable; Source : mutable Vertex; 
+         Destination : mutable Vertex; Value : Attribute)
+        ---Level: Public
+	---Purpose: Creates and   adds  an  edge   from    <source> to
+	-- <destination>, with   the  attribute  <value>,  to
+	-- <me>.  Updates Source and Destination  Vertices of
+	-- this new edge.  Raises an exception if <source> or
+	-- <destination> are not members of <me>.
+    returns mutable Edge
+    raises NoSuchObject from Standard;
+
+    Remove (me : mutable; AnEdge : mutable Edge)
+        ---Level: Public
+	---Purpose: Removes  <anEdge>  from <me>.  And  Updates Source
+	-- and Destination  Vertices  of  <anEdge>. Raises an
+	-- exception if <Edge> is not member of <me>.
+    raises NoSuchObject from Standard;
+
+    GetVertices (me) 
+        ---Level: Internal
+	---Purpose: Returns "myVertices" field for Iterator.
+    returns SetOfVertex 
+    is private;
+    
+    GetEdges (me) 
+        ---Level: Internal
+	---Purpose: Returns "myEdges" field for Iterator.
+    returns SetOfEdge
+    is private;
+
+    ShallowCopy(me) returns mutable like me 
+       is redefined;
+        ---Level: Advanced
+	---C++: function call
+
+
+    ShallowDump (me; s: in out OStream) 
+        is redefined;
+        ---Level: Advanced
+    	---C++: function call
+
+
+fields
+    MyVertices : SetOfVertex;
+    MyEdges    : SetOfEdge;
+
+    friends class VerticesIterator from PCollection,
+            class RootsIterator from PCollection,
+            class LeavesIterator from PCollection,
+            class EdgesIterator from PCollection    
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

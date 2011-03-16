@@ -1,0 +1,63 @@
+-- File:	PrsMgr.cdl
+-- Created:	Wed Jan 25 08:44:01 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+package PrsMgr
+    	---Purpose: The PrsMgr package provides low level services
+    	-- and is only to be used when you do not want to use
+    	-- the services provided by AIS.
+    	-- PrsMgr manages display through the following services:
+    	-- -   supplying a graphic structure for the object to be presented
+    	-- -   recalculating presentations when required, e.g. by
+    	--   moving the object or changing its color
+    	-- -   defining the display mode of the object to be
+    	--   presented; in the case of AIS_Shape, for example,
+    	--   this determines whether the object is to be displayed in:
+    	--   -   wireframe 0
+    	--   -   shading 1.
+    	-- Note that each new Interactive Object must have all its display modes defined.
+        
+uses
+
+    MMgt,TCollection,
+    Graphic2d,
+    TopLoc,
+    Prs3d,Graphic3d,
+    Quantity,Geom,
+    Viewer, 
+    TColStd, 
+    gp
+ 
+is
+
+    enumeration KindOfPrs is KOP_2D,KOP_3D
+    end KindOfPrs;
+
+    enumeration TypeOfPresentation3d is TOP_AllView, TOP_ProjectorDependant
+    end TypeOfPresentation3d;
+    	---Purpose: To declare the type of presentation as follows
+    	-- -   AllView for display involving no recalculation for
+    	--   new projectors (points of view)in hidden line removal mode
+    	-- -   ProjectorDependant for display in hidden line
+    	--   removal mode, where every new point of view
+    	--   entails recalculation of the display.
+
+    deferred class PresentationManager;
+    deferred class Presentation;
+    deferred class PresentableObject;
+    
+    class PresentationManager2d;
+    class PresentationManager3d;
+    
+    class Prs;
+    class Presentation2d;
+    class Presentation3d;
+
+    class ModedPresentation;
+    class Presentations  instantiates Sequence from TCollection
+    	(ModedPresentation from PrsMgr);
+    pointer Presentation3dPointer to Presentation3d from PrsMgr;
+    pointer PresentableObjectPointer to PresentableObject from PrsMgr;
+end PrsMgr;

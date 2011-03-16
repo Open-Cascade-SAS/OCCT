@@ -1,0 +1,41 @@
+-- File:        PersonOrganizationSelect.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class PersonOrganizationSelect from StepBasic inherits SelectType from StepData
+
+	-- <PersonOrganizationSelect> is an EXPRESS Select Type construct translation.
+	-- it gathers : Person, Organization, PersonAndOrganization
+
+uses
+
+	Person,
+	Organization,
+	PersonAndOrganization
+is
+
+	Create returns PersonOrganizationSelect;
+	---Purpose : Returns a PersonOrganizationSelect SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a PersonOrganizationSelect Kind Entity that is :
+	--        1 -> Person
+	--        2 -> Organization
+	--        3 -> PersonAndOrganization
+	--        0 else
+
+	Person (me) returns any Person;
+	---Purpose : returns Value as a Person (Null if another type)
+
+	Organization (me) returns any Organization;
+	---Purpose : returns Value as a Organization (Null if another type)
+
+	PersonAndOrganization (me) returns any PersonAndOrganization;
+	---Purpose : returns Value as a PersonAndOrganization (Null if another type)
+
+
+end PersonOrganizationSelect;
+

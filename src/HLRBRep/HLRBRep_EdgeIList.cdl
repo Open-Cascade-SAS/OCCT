@@ -1,0 +1,26 @@
+-- File:	HLRBRep_EdgeIList.cdl
+-- Created:	Thu Apr 17 19:56:30 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class EdgeIList from HLRBRep
+
+uses
+    Orientation          from TopAbs,
+    Interference         from HLRAlgo,
+    InterferenceList     from HLRAlgo,
+    EdgeInterferenceTool from HLRBRep
+is
+    AddInterference(myclass;
+                    IL : in out InterferenceList     from HLRAlgo;
+    	            I  :        Interference         from HLRAlgo;
+                    T  :        EdgeInterferenceTool from HLRBRep);
+	---Purpose: Add the interference <I> to the list <IL>.
+    
+    ProcessComplex(myclass;
+                   IL : in out InterferenceList     from HLRAlgo;
+                   T  :        EdgeInterferenceTool from HLRBRep);
+	---Purpose: Process complex transitions on the list IL.
+    
+end EdgeIList;

@@ -1,0 +1,145 @@
+-- File:	XCAFDoc.cdl
+-- Created:	Tue Aug  8 13:10:20 2000
+-- Author:	data exchange team
+--  		<det@doomox>
+---Copyright:	 Matra Datavision 2000
+
+
+package XCAFDoc 
+
+    ---Purpose: Definition of general structure of DECAF document
+    --          and tools to work with it
+    --
+    --          The document is composed of sections, each section
+    --          storing its own kind of data and managing by corresponding
+    --          tool
+    --          Some properties can be attached directly to shapes. These properties are:
+    --          * Name (the standard definition from OCAF) - class TDataStd_Name
+    --          * Centroid (for the validation of transfer) - class XCAFDoc_Centroid
+    --          * Volume (for the validation of transfer) - class XCAFDoc_Volume
+    --          * Area (for the validation of transfer) - class XCafDoc_Area
+    --          Management of these attributes is realized by OCAF. For getting
+    --          the attributes attached to a label the method class
+    --          TDF_Label::FindAttribute() should be used.
+        
+uses
+    Quantity,
+    TCollection,
+    TColStd,
+    TopLoc,
+    TopoDS,
+    TopTools,
+    TDF,
+    TDocStd,
+    TDataStd,
+    gp
+    
+is
+
+    enumeration ColorType is
+	---Purpose: Defines types of color assignments
+    	ColorGen,   -- simple color
+	ColorSurf,  -- color of surfaces
+	ColorCurv   -- color of curves
+    end ColorType;
+
+        
+    class DocumentTool;
+    	---Purpose: Defines sections structure of an XDE document.
+    	--          attribute marking CAF document as being DECAF document.
+    	--          Creates the sections structure of the document.
+    
+    class Location;
+    	---Purpose: attribute to store TopLoc_Location
+    
+    class Color;
+    	---Purpose: attribute to store color
+    
+    class DimTol;
+    	---Purpose: attribute to store dimension and tolerance
+    
+    class Datum;
+    	---Purpose: attribute to store datum
+    
+    class Material;
+    	---Purpose: attribute to store material
+    
+    class Volume;
+    	---Purpose: attribute to store volume
+
+    class Area;
+    	---Purpose: attribute to store area
+
+    class Centroid;
+    	---Purpose: attribute to store centroid
+
+    class ShapeTool;
+    	---Purpose: attribute containing Shapes section of DECAF document.
+    	--          Provide tools for management of Shapes section.
+
+    class ShapeMapTool;
+    	---Purpose: attribute containing map of sub shapes
+
+    class ColorTool;
+    	---Purpose: attribute containing Colors section of DECAF document.
+    	--          Provide tools for management of Colors section of document.
+    
+    class DimTolTool;
+    	---Purpose: attribute containing DimTol section of DECAF document.
+    	--          Provide tools for management of DimTol section of document.
+    
+    class LayerTool;
+    	---Purpose: attribute containing Layers section og DECAF document.
+	--    	    Provide tools for management of Layers section of document.
+
+    class MaterialTool;
+    	---Purpose: attribute containing Materials section og DECAF document.
+	--    	    Provide tools for management of Materialss section of document.
+
+    class GraphNode;
+	---Purpose: attribute containg sequence of father's and chaild's labels.
+	--          Provide create and work with Graph in XCAFDocument.
+	
+    class GraphNodeSequence instantiates Sequence from TCollection
+    	(GraphNode from XCAFDoc);
+    	---Purpose: class for containing GraphNodes.
+	    	
+    class DataMapOfShapeLabel instantiates
+    	  DataMap from TCollection (Shape from TopoDS,
+	    	    	    	    Label from TDF,
+				    ShapeMapHasher from TopTools);
+
+		
+  	---Package methods: definition of GUIDs
+
+    AssemblyGUID returns GUID from Standard;
+    	---Purpose: Returns GUID for UAttribute identifying assembly 
+    
+    ShapeRefGUID returns GUID from Standard;
+    	---Purpose: Returns GUID for TreeNode representing assembly link
+    
+    ColorRefGUID (type: ColorType from XCAFDoc) returns GUID from Standard;
+    	---Purpose: Return GUIDs for TreeNode representing specified types of colors
+	
+    DimTolRefGUID returns GUID from Standard;
+    	---Purpose: Return GUIDs for TreeNode representing specified types of DGT
+	
+    DatumRefGUID returns GUID from Standard;
+    	---Purpose: Return GUIDs for TreeNode representing specified types of datum
+	
+    DatumTolRefGUID returns GUID from Standard;
+    	---Purpose: Return GUIDs for TreeNode representing connections Datum-Toler
+	
+    LayerRefGUID returns GUID from  Standard;
+
+    MaterialRefGUID returns GUID from  Standard;
+
+    InvisibleGUID returns GUID from Standard;
+    
+    ExternRefGUID returns GUID from Standard;
+    	---Purpose: Returns GUID for UAttribute identifying external reference on no-step file
+    
+    SHUORefGUID returns GUID from  Standard;
+    	---Purpose: Returns GUID for UAttribute identifying specified higher usage occurrence
+    
+end XCAFDoc;

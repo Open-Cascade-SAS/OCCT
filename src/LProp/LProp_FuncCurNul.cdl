@@ -1,0 +1,36 @@
+-- File:	LProp_FuncCurNul.cdl
+-- Created:	Fri Sep  2 16:32:55 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+private generic class FuncCurNul from LProp (Curve as any;
+                                             Vec   as any; -- as Vec or Vec2d
+		     	                     Pnt   as any; -- as Pnt or Pnt2d
+		   	                     Dir   as any; -- as Dir or Dir2d Vec  
+    	    	    	    	    	     Tool  as any) -- as Tool(Curve, Pnt, Vec)
+inherits FunctionWithDerivative from math
+	---Purpose: Function used to find the inflections in 2d. 
+
+is
+    Create ( C : Curve) returns FuncCurNul from LProp;
+    
+    Value (me : in out; X : Real; F : out Real)
+    	---Purpose: Returns the value for the variable <X>.
+    returns Boolean;
+    
+    Derivative(me : in out; X : Real; D : out Real)
+        ---Purpose: Returns the derivative for the variable <X>
+    returns Boolean;
+
+    Values(me : in out ; X  : Real; F  : out Real; D  : out Real)    
+    	---Purpose: Returns the value of the function and the derivative
+    	--          for the variable <X>.
+    returns Boolean;    
+
+fields
+    theCurve : Curve;
+    
+end FuncCurNul;
+

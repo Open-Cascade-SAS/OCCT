@@ -1,0 +1,136 @@
+-- File:	Lin2dBisec.cdl
+-- Created:	Wed Apr  3 11:29:37 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class Lin2dBisec
+
+from GccAna
+
+	---Purpose: Describes functions for building bisecting lines between two 2D lines.
+    	--          A bisecting line between two lines is such that each of its
+    	--          points is at the same distance from the two lines.
+    	--          If the two lines are secant, there are two orthogonal
+    	--          bisecting lines which share the angles made by the two
+    	--          straight lines in two equal parts. If D1 and D2 are the
+    	--          unit vectors of the two straight lines, those of the two
+    	--          bisecting lines are collinear with the following vectors:
+    	--          -   D1 + D2 for the "internal" bisecting line,
+    	--          -   D1 - D2 for the "external" bisecting line.
+    	--          If the two lines are parallel, the (unique) bisecting line is
+    	--          the straight line equidistant from the two straight lines. If
+    	--          the two straight lines are coincident, the algorithm
+    	--          returns the first straight line as the solution.
+    	--          A Lin2dTanObl object provides a framework for:
+    	--          -   defining the construction of the bisecting lines,
+    	--          -   implementing the construction algorithm, and
+    	--          -   consulting the result.
+        
+uses Lin2d           from gp,
+     Pnt2d           from gp,
+     Array1OfReal    from TColStd,
+     Array1OfLin2d   from TColgp,
+     Array1OfPnt2d   from TColgp
+     
+raises OutOfRange        from Standard,
+       NotDone           from StdFail
+
+is
+
+Create(Lin1    : Lin2d from gp ;
+       Lin2    : Lin2d from gp ) returns Lin2dBisec;
+
+    	---Purpose: Constructs bisecting lines between the two lines Lin1 and Lin2.
+        
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns True when the algorithm succeded.
+
+NbSolutions(me) returns Integer from Standard
+raises NotDone
+is static;
+    	---Purpose: Returns the number of solutions and raise NotDone if 
+    	--          the constructor wasn't called before.
+
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Lin2d 
+    	---Purpose :Returns the solution number Index .
+    	--          The first solution is the inside one and the second is the
+    	--          outside one.
+    	--          For the first solution the direction is D1+D2 (D1 is 
+    	--          the direction of the first argument and D2 the 
+    	--          direction of the second argument).
+    	--          For the second solution the direction is D1-D2.
+    	-- Raises NotDone if the construction algorithm 
+    	--          didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+    	--          number of solutions.
+raises OutOfRange, NotDone
+is static;
+  
+Intersection1 (me                                     ;
+               Index         : Integer   from Standard;
+    	       ParSol,ParArg : out Real  from Standard;
+               PntSol        : out Pnt2d from gp      )
+    	---Purpose: Returns informations about the intersection point between 
+    	--          the result number Index and the first argument.
+    	-- Raises NotDone if the construction algorithm  didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+        --          number of solutions.
+    raises OutOfRange, NotDone
+is static;
+  
+
+Intersection2 (me                                     ;
+               Index         : Integer   from Standard;
+    	       ParSol,ParArg : out Real  from Standard;
+               PntSol        : out Pnt2d from gp      )
+    	---Purpose: Returns informations about the intersection point between 
+    	--          the result number Index and the second argument.
+    	--    Raises NotDone if the construction algorithm 
+    	--          didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+    	--          number of solutions.
+raises OutOfRange, NotDone
+is static;
+   
+
+fields
+
+    WellDone : Boolean from Standard; 
+    	---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    	---Purpose: The number of possible solutions. We have to decide about the
+    	--          status of the multiple solutions...
+
+    linsol   : Array1OfLin2d from TColgp;
+    	---Purpose : The solutions.
+
+    pntint1sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the 
+    	--          first argument on the solution.
+
+    pntint2sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the 
+    	--          second argument on the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the first argument on the solution.
+
+    par2sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the second argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the first argument on the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the second argument on the second argument.
+
+end Lin2dBisec;

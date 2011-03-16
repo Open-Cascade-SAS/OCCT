@@ -1,0 +1,81 @@
+-- File:	ParamSet.cdl
+-- Created:	Thu Oct 29 19:03:55 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class ParamSet  from Interface  inherits TShared
+
+    	---Purpose : Defines an ordered set of FileParameters, in a way to be
+    	--           efficient as in memory requirement or in speed
+
+uses CString, ParamList, FileParameter, ParamType
+
+raises OutOfRange
+
+is
+
+    Create (nres : Integer; nst : Integer = 1)  returns mutable ParamSet;
+    ---Purpose : Creates an empty ParamSet, beginning at number "nst" and of
+    --           initial reservation "nres" : the "nres" first parameters
+    --           which follow "ndeb" (included) will be put in an Array
+    --           (a ParamList). The remainders are set in Next(s) ParamSet(s)
+
+    Append (me : mutable; val : CString; lnval : Integer; typ : ParamType;
+    	    nument : Integer)
+    	returns Integer  is static;
+    ---Purpose : Adds a parameter defined as its Value (CString and length) and
+    --           Type. Optionnal EntityNumber (for FileReaderData) can be given
+    --           Allows a better memory management than Appending a
+    --           complete FileParameter
+    --           If <lnval> < 0, <val> is assumed to be managed elsewhere : its
+    --           adress is stored as such. Else, <val> is copied in a locally
+    --           (quickly) managed Page of Characters
+    --           Returns new count of recorded Parameters
+
+    Append (me : mutable; FP : FileParameter)  returns Integer  is static;
+    ---Purpose : Adds a parameter at the end of the ParamSet (transparent
+    --           about reservation and "Next")
+    --           Returns new count of recorded Parameters
+
+    NbParams (me) returns Integer  is static;
+    ---Purpose : Returns the total count of parameters (including nexts)
+
+    Param (me; num : Integer) returns FileParameter
+    ---Purpose : Returns a parameter identified by its number
+    	raises OutOfRange  is static;
+    --           Error if num < 1 or num > NbParams
+    ---C++ : return const &
+
+    ChangeParam (me : mutable; num : Integer) returns FileParameter
+    ---Purpose : Same as above, but in order to be modified on place
+    	raises OutOfRange  is static;
+    --           Error if num < 1 or num > NbParams
+    ---C++ : return &
+
+    SetParam (me : mutable; num : Integer; FP : FileParameter)
+    	 raises OutOfRange  is static;
+    ---Purpose : Changes a parameter identified by its number
+
+    Params (me; num,nb : Integer) returns ParamList
+    	raises OutOfRange is static;
+    ---Purpose : Builds and returns the sub-list correspinding to parameters,
+    --           from "num" included, with count "nb"
+    --           If <num> and <nb> are zero, returns the whole list
+
+    Destroy (me : mutable)  is static;
+    ---Purpose : Destructor (waiting for transparent memory management)
+    ---C++ : alias ~
+
+fields
+
+    theval   : PCharacter;
+    thelnval : Integer;
+    thelnres : Integer;
+    thenbpar : Integer;
+    themxpar : Integer;
+    thelist  : ParamList;
+    thenext  : ParamSet;
+
+end ParamSet;

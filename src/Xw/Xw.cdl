@@ -1,0 +1,142 @@
+--
+-- File:        Xw.cdl
+-- Created:     Jeudi 24 JUIN 1993
+-- Author:      GG
+--
+---Copyright:   MatraDatavision 1993
+--
+
+package Xw
+
+        ---Version:
+
+        ---Purpose: This package contains the common X graphic interface.
+        --  Warning: All the interface is described by a set of C routines.
+        --          All these C routines are stored in the library
+        --          of this package.
+
+        ---References:
+
+uses
+
+        TCollection,
+        TShort,
+        Aspect,
+        Quantity,
+        Image,
+        TColQuantity,
+        MFT,
+	TColStd
+
+is
+
+        --------------------
+        -- Category: Classes
+        --------------------
+
+        class Driver;
+        ---Purpose: Creates the X driver.
+        --          Activates the c routines of the X interface.
+        ---Category: Classes
+
+        class Window;
+        ---Purpose: Creates the X Window drawable.
+        ---Category: Classes
+
+        class PixMap;
+        ---Purpose: Creates a X pixmap
+        ---Category: Classes
+
+        class ColorMap;
+        ---Purpose: Creates the X Colormap
+        ---Category: Classes
+
+        class TypeMap;
+        ---Purpose: Creates the X Typemap
+        ---Category: Classes
+
+        class WidthMap;
+        ---Purpose: Creates the X Widthmap
+        ---Category: Classes
+
+        class FontMap;
+        ---Purpose: Creates the X Fontmap
+        ---Category: Classes
+
+        class MarkMap;
+        ---Purpose: Creates the X Markmap
+        ---Category: Classes
+
+        class GraphicDevice;
+        ---Purpose: Creates the X Device (Connexion & Visual)
+        ---Category: Classes
+
+        class IconBox;
+        ---Purpose: Creates the X Icon Box
+        ---Category: Classes
+
+        class TextManager;
+        ---Purpose: Creates a text manager for MFT fonts.
+        ---Category: Classes
+
+        -------------------------
+        -- Category: Enumerations
+        -------------------------
+
+        enumeration WindowQuality is    WQ_3DQUALITY,
+                                        WQ_PICTUREQUALITY,
+                                        WQ_DRAWINGQUALITY,
+                                        WQ_SAMEQUALITY,
+                                        WQ_TRANSPARENT,
+                                        WQ_OVERLAY
+        end WindowQuality ;
+        ---Purpose: Definition of the Window graphic quality
+
+        enumeration TypeOfVisual is     TOV_STATICGRAY,
+                                        TOV_GRAYSCALE,
+                                        TOV_STATICCOLOR,
+                                        TOV_PSEUDOCOLOR,
+                                        TOV_TRUECOLOR,
+                                        TOV_DIRECTCOLOR,
+                                        TOV_DEFAULT,
+                                        TOV_PREFERRED_PSEUDOCOLOR,
+                                        TOV_PREFERRED_TRUECOLOR,
+                                        TOV_PREFERRED_OVERLAY,
+                                        TOV_OVERLAY
+        end TypeOfVisual from Xw;
+        ---Purpose: Definition of the visual type
+
+        enumeration TypeOfMapping is    TOM_HARDRAMP,
+                                        TOM_SIMPLERAMP,
+                                        TOM_BESTRAMP,
+                                        TOM_COLORCUBE,
+                                        TOM_READONLY
+        end TypeOfMapping from Xw;
+        ---Purpose: Definition of the colormap type
+
+        ---------------------------------
+        -- Category: Instantiated classes
+        ---------------------------------
+
+        class ListOfMFTFonts instantiates
+                Array1 from TCollection (FontManager from MFT);
+        class HListOfMFTFonts instantiates
+                HArray1 from TCollection (FontManager from MFT, ListOfMFTFonts);
+
+        -----------------------------
+        -- Category: Trace management
+        -----------------------------
+
+        SetTrace( TraceLevel,ErrorLevel : Integer ) ;
+        ---Purpose: Global Trace Level for Maintenance Only
+        ---Category: Trace management
+
+        TraceLevel returns Integer is private ;
+        ---Purpose: Return current global Trace level .
+        ---Category: Trace management
+
+        ErrorLevel returns Integer is private ;
+        ---Purpose: Return current global Error level .
+        ---Category: Trace management
+
+end Xw;

@@ -1,0 +1,167 @@
+-- File:	Storage.cdl
+-- Created:	Tue Apr 30 14:18:44 1996
+-- Author:	cle
+--		<cle@ilebon>
+---Copyright:	 Matra Datavision 1996
+
+package Storage
+    
+    	---Purpose: Storage package is used to write and read persistent objects.
+    	--     These objects are read and written by a retrieval or storage
+    	--  algorithm (Storage_Schema object) in a container (disk, memory,
+    	-- network ...). Drivers (FSD_File objects) assign a physical
+    	-- container for data to be stored or retrieved.
+    	-- The standard procedure for an application in
+    	-- reading a container is the following:
+    	-- -   open the driver in reading mode,
+    	-- -   call the Read function from the schema,
+    	--   setting the driver as a parameter. This   function returns 
+    	-- an instance of the   Storage_Data class which contains the   data being read,
+    	-- -   close the driver.
+    	-- The standard procedure for an application in writing a container is the following:
+    	-- -   open the driver in writing mode,
+    	-- -   create an instance of the Storage_Data   class, then
+    	--    add the persistent data to write   with the function AddRoot,
+    	-- -   call the function Write from the schema,
+    	--   setting the driver and the Storage_Data   instance as parameters,
+    	-- -      close the driver. 
+   
+uses TCollection,
+     TColStd,
+     MMgt
+is
+    exception StreamModeError inherits Failure from Standard;
+    exception StreamFormatError inherits Failure from Standard;
+    exception StreamWriteError inherits Failure from Standard;
+    exception StreamReadError inherits Failure from Standard;
+	    exception StreamUnknownTypeError inherits StreamReadError from Storage;
+    	    exception StreamTypeMismatchError inherits StreamReadError from Storage;
+	    exception StreamExtCharParityError inherits StreamReadError from Storage;
+	    
+    enumeration Error
+    is
+      VSOk,                 -- no problem
+      VSOpenError,          -- while opening the stream
+      VSModeError,          -- the stream is opened with a wrong mode for operation 
+      VSCloseError,         -- while closing the stream
+      VSAlreadyOpen,        -- stream is already opened
+      VSNotOpen,            -- stream not opened
+      VSSectionNotFound,    -- the section is not found
+      VSWriteError,         -- error during writing
+      VSFormatError,        -- wrong format error occured while reading
+      VSUnknownType,        -- try to read an unknown type
+      VSTypeMismatch,       -- try to read a wrong primitive type (read a char while expecting a real)
+      VSInternalError,      -- internal error
+      VSExtCharParityError, -- problem with 16bit characters, may be a 8bit character is inserted inside 16bit string
+      VSWrongFileDriver     -- we try to read a file with a wrong driver (occured while reading header section)
+    end;
+     	---Purpose: Error codes returned by the ErrorStatus
+    	-- function on a Storage_Data set of data during a
+    	-- storage or retrieval operation :
+    	-- -   Storage_VSOk : no problem has been detected
+    	-- -   Storage_VSOpenError : an error has
+    	--  occurred when opening the driver
+    	-- -   Storage_VSModeError : the driver has not
+    	--  been opened in the correct mode
+    	-- -   Storage_VSCloseError : an error has
+    	--   occurred when closing the driver
+    	-- -   Storage_VSAlreadyOpen : the driver is   already open
+    	-- -   Storage_VSNotOpen : the driver is not   open
+    	-- -   Storage_VSSectionNotFound : a section
+    	--   has not been found in the driver
+    	-- -   Storage_VSWriteError : an error occurred when writing the driver
+    	-- -   Storage_VSFormatError : the file format is wrong
+    	-- -   Storage_VSUnknownType : a type is not known from the schema
+    	-- -   Storage_VSTypeMismatch : trying to read   a wrong type
+    	-- -   Storage_VSInternalError : an internal error  has been detected
+    	-- -   Storage_VSExtCharParityError : an error
+    	--   has occurred while reading 16 bit characte   
+ 
+    enumeration OpenMode
+    is
+        VSNone,
+    	VSRead,
+	VSWrite,
+	VSReadWrite
+    end;
+    	---Purpose:
+    	-- Specifies opening modes for a file:
+    	-- -   Storage_VSNone : no mode is specified
+    	-- -   Storage_VSRead : the file is open for  reading operations
+    	-- -   Storage_VSWrite : the file is open for writing operations
+    	-- -   Storage_VSReadWrite : the file is open
+    	--   for both reading and writing operations.
+
+    enumeration SolveMode
+    is
+    	AddSolve,
+	WriteSolve,
+	ReadSolve
+    end;
+    
+    primitive Container inherits Storable from Standard;
+    
+    imported BucketOfPersistent;
+    
+    imported Position; -- typedef long
+    
+    deferred class BaseDriver;
+    ---Purpose: base class for storage drivers
+
+    deferred class CallBack;
+      class DefaultCallBack;
+	  
+    class HeaderData;
+          class Data;
+	  
+    class TypeData;
+
+    class RootData;
+    class Root;
+    
+    class Schema;
+        
+    class SeqOfRoot instantiates Sequence from TCollection(Root from Storage);
+    
+    class HSeqOfRoot instantiates HSequence from TCollection(Root from Storage,SeqOfRoot);
+
+    -- PRIVATE
+    
+    private class InternalData;
+    private class stCONSTclCOM;
+
+    private class TypedCallBack;
+    private class SeqOfPersistent instantiates Sequence from TCollection(Persistent from Standard);
+    private class HSeqOfPersistent instantiates HSequence from TCollection(Persistent from Standard,SeqOfPersistent);
+    private class MapPSDHasher  instantiates MapHasher from TCollection(Persistent from Standard);
+    
+    private class PType instantiates IndexedDataMap from TCollection(AsciiString from TCollection, 
+    				     		     	     Integer from Standard, 
+    	                                              	     AsciiString from TCollection);			
+
+    private class MapOfPers instantiates DataMap from TCollection(AsciiString from TCollection, 
+    	    	    	    	    	    	    	    	  Root from Storage,
+    	    	    	    	    	    	    	    	  AsciiString from TCollection);
+        
+    private class MapOfCallBack instantiates DataMap from TCollection(AsciiString from TCollection, 
+    	    	    	    				              TypedCallBack from Storage,
+    	    	    	    	    	    	    	    	      AsciiString from TCollection);
+  							  
+    private class ArrayOfCallBack instantiates Array1 from TCollection(CallBack from Storage);
+    private class HArrayOfCallBack instantiates HArray1 from TCollection(CallBack from Storage,ArrayOfCallBack from Storage);
+ 
+    class ArrayOfSchema instantiates Array1 from TCollection(Schema from Storage);
+    class HArrayOfSchema instantiates HArray1 from TCollection(Schema from Storage,ArrayOfSchema from Storage);
+    
+    private class SeqOfCallBack instantiates Sequence from TCollection(CallBack from Storage);
+    private class HSeqOfCallBack instantiates HSequence from TCollection(CallBack from Storage,SeqOfCallBack from Storage);
+
+    private class PArray instantiates Array1 from TCollection(Persistent from Standard);  
+    private class HPArray instantiates HArray1 from TCollection(Persistent from Standard, PArray from Storage);
+    
+    -- METHODS
+    
+    Version returns AsciiString from TCollection;
+    ---Purpose: returns the version of Storage's read/write routines
+
+end;

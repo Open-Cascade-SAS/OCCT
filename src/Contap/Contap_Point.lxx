@@ -1,0 +1,115 @@
+#include <Standard_DomainError.hxx>
+
+
+inline void Contap_Point::SetValue (const gp_Pnt& Pt,
+				    const Standard_Real U,
+				    const Standard_Real V)
+{
+  pt = Pt;
+  uparam = U;
+  vparam = V;
+  onarc = Standard_False;
+  isvtx = Standard_False;
+  ismult= Standard_False;
+  myInternal = Standard_False;
+}
+
+inline void Contap_Point::SetParameter (const Standard_Real Para) {
+
+  paraline = Para;
+}
+ 
+inline void Contap_Point::SetVertex(const TheVertex& V) {
+
+  isvtx = Standard_True;
+  vtx   = V;
+}
+
+inline void Contap_Point::SetArc (const TheArc& A,
+				  const Standard_Real Param,
+				  const IntSurf_Transition& TLine,
+				  const IntSurf_Transition& TArc) {
+
+  onarc   = Standard_True;
+  arc     = A;
+  prmarc  = Param;
+  traline = TLine;
+  traarc  = TArc;
+}
+
+inline void Contap_Point::SetMultiple ()
+{
+  ismult = Standard_True;
+}
+
+inline void Contap_Point::SetInternal ()
+{
+  myInternal = Standard_True;
+}
+
+
+inline Standard_Boolean Contap_Point::IsMultiple () const
+{
+  return ismult;
+}
+
+inline Standard_Boolean Contap_Point::IsInternal () const
+{
+  return myInternal;
+}
+
+inline const gp_Pnt& Contap_Point::Value () const {
+
+  return pt;
+}
+
+inline Standard_Real Contap_Point::ParameterOnLine () const {
+
+  return paraline;
+}
+
+inline void Contap_Point::Parameters (Standard_Real& U1,
+				      Standard_Real& V1) const {
+
+  U1 = uparam;
+  V1 = vparam;
+}
+
+inline Standard_Boolean Contap_Point::IsOnArc () const{
+  return onarc;
+}
+
+inline const TheArc& Contap_Point::Arc () const {
+
+  if (!onarc) {Standard_DomainError::Raise();}
+  return arc;
+}
+
+inline const IntSurf_Transition& Contap_Point::TransitionOnLine () const {
+
+  if (!onarc) {Standard_DomainError::Raise();}
+  return traline;
+}
+
+inline const IntSurf_Transition& Contap_Point::TransitionOnArc () const {
+
+  if (!onarc) {Standard_DomainError::Raise();}
+  return traarc;
+}
+
+inline Standard_Real Contap_Point::ParameterOnArc () const {
+
+  if (!onarc) {Standard_DomainError::Raise();}
+  return prmarc;
+}
+
+inline Standard_Boolean Contap_Point::IsVertex () const {
+  return isvtx;
+}
+
+inline const TheVertex& Contap_Point::Vertex () const {
+
+  if (!isvtx) {Standard_DomainError::Raise();}
+  return vtx;
+}
+

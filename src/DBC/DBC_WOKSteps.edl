@@ -1,0 +1,13 @@
+
+@ifnotdefined(%DBC_WOKSteps_EDL) then
+
+@set %DBC_WOKSteps_EDL = "";
+
+@if ( %DBMS == "OBJS" ) then
+
+@string %WOKSteps_XcppGroup += " xcpp.copy ";
+@set  %WOKSteps_xcpp_copy = "DBC_Copy(xcpp.header)";
+
+@endif;
+
+@endif;

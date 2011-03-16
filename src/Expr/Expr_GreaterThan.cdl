@@ -1,0 +1,46 @@
+-- File:	GreaterThan.cdl
+-- Created:	Mon Jan 14 09:56:16 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class GreaterThan from Expr
+
+inherits SingleRelation from Expr
+
+uses GeneralExpression from Expr,
+    GeneralRelation from Expr,
+    AsciiString from TCollection
+
+raises NumericError from Standard
+
+is
+
+    Create(exp1 : GeneralExpression ; exp2 : GeneralExpression)
+    ---Purpose: Creates the relation <exp1> > <exp2>.
+    returns mutable GreaterThan;
+
+    IsSatisfied(me)
+    returns Boolean;
+
+    Simplified(me)
+    ---Purpose: Returns a GeneralRelation after replacement of
+    --          NamedUnknowns by an associated expression, and after
+    --          values computation.
+    returns mutable GeneralRelation
+    raises NumericError;
+    
+    Simplify(me : mutable)
+    ---Purpose: Replaces NamedUnknowns by associated expressions,
+    --          and computes values in <me>.
+    raises NumericError;
+    
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+
+end GreaterThan;

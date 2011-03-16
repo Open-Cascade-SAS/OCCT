@@ -1,0 +1,23 @@
+-- File:	Prs3d_HLRShapeTool.cdl
+-- Created:	Tue Mar  9 09:41:16 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+generic class HLRShapeTool from Prs3d ( Shape as any ; Curve as any)
+uses
+    Projector from HLRAlgo
+is
+    Create (TheShape: Shape; TheProjector: Projector from HLRAlgo) 
+    	    returns HLRShapeTool from Prs3d;
+    NbEdges(me) returns Integer from Standard;
+    InitVisible(me; EdgeNumber: Integer from Standard);
+    MoreVisible(me) returns Boolean from Standard;
+    NextVisible(me);
+    Visible(me; TheCurve: out Curve; U1,U2: out Real from Standard);
+    InitHidden(me; EdgeNumber: Integer from Standard);
+    MoreHidden(me) returns Boolean from Standard;
+    NextHidden(me);
+    Hidden(me; TheCurve: out Curve; U1,U2: out Real from Standard);
+    
+end HLRShapeTool from Prs3d;

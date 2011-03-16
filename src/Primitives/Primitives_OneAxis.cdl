@@ -1,0 +1,485 @@
+-- File:	OneAxis.cdl
+-- Created:	Tue Jul 23 14:01:59 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+deferred generic class OneAxis from Primitives(
+    TheShell           as any;
+    TheFace            as any;
+    TheWire            as any;
+    TheEdge            as any;
+    TheVertex          as any;
+    TheBuilder         as any)  -- as Builder          from Primitives;
+    
+	---Purpose: Algorithm to  build  primitives with  one  axis of
+	--          revolution. 
+	--          
+	--          The revolution  body is described by :
+	--          
+	--          A coordinate  system (Ax2 from  gp). The Z axis is
+	--          the rotational axis.
+	--          
+	--          An Angle around the Axis, When  the Angle  is 2*PI
+	--          the primitive is not limited  by planar faces. The
+	--          U parameter range from 0 to Angle.
+	--          
+	--          A parameter range VMin, VMax on the meridian.
+	--          
+	--          A meridian : The  meridian is a curve described by
+	--          a set of deferred methods.
+	--          
+	--         
+	--         The  topology consists of  A shell,  Faces,  Wires,
+	--         Edges and Vertices.  Methods  are provided to build
+	--         all the elements.  Building an element  implies the
+	--         automatic building  of  all its  sub-elements.
+	--         
+	--         So building the shell builds everything.
+	--         
+	--         There are at most 5 faces :
+	--         
+	--         - The LateralFace.
+	--         
+	--         - The TopFace and the BottomFace.
+	--         
+	--         - The StartFace and the EndFace.
+	--         
+
+
+
+uses
+    Ax2   from gp,
+    Pnt2d from gp
+    
+raises
+    DomainError,
+    OutOfRange
+
+is
+    Delete(me:out) is virtual ;
+    ---C++: alias ~
+    
+    Initialize(B : TheBuilder; 
+    	       A : Ax2 from gp; 
+    	       VMin, VMax : Real from  Standard);
+	---Purpose: Creates a OneAxis algorithm.  <B> is used to build
+	--          the Topology. The angle defaults to 2*PI.
+
+
+    SetMeridianOffset(me: in out;MeridianOffset : Real from Standard = 0)
+	---Purpose: The MeridianOffset is added  to the  parameters on
+	--          the meridian curve and  to  the  V values  of  the
+	--          pcurves. This is  used for the sphere for example,
+	--          to give a range on the meridian  edge which is not
+	--          VMin, VMax.
+    is static;
+
+    Axes(me) returns Ax2 from gp
+	---Purpose: Returns the Ax2 from <me>.
+	---C++: return const &
+    is static;
+
+    Axes(me : in out; A : Ax2 from gp)
+    raises DomainError -- when some topology has been built or A > 2*PI
+    is static;
+
+    Angle(me) returns Real
+    is static;
+    
+    Angle(me : in out; A : Real)
+    raises DomainError -- when some topology has been built or A > 2*PI
+    is static;
+    
+    VMin(me) returns Real
+    is static;
+    
+    VMin(me : in out; V : Real)
+    raises DomainError -- when some topology has been built
+    is static;
+    
+    VMax(me) returns Real
+    is static;
+    
+    VMax(me : in out; V : Real)
+    raises DomainError -- when some topology has been built
+    is static;
+    
+    --
+    --     Methods to describe the meridian
+    --     They should be redefined in inherited classes
+    --     
+    
+    MakeEmptyLateralFace(me) returns TheFace
+	---Purpose: Returns a face with  no edges.  The surface is the
+	--          lateral surface with normals pointing outward. The
+	--          U parameter is the angle with the  origin on the X
+	--          axis. The  V parameter is   the  parameter of  the
+	--          meridian.
+    is deferred;
+    
+    MakeEmptyMeridianEdge(me; Ang : Real) returns TheEdge
+	---Purpose: Returns  an  edge with  a 3D curve   made from the
+	--          meridian  in the XZ  plane rotated by <Ang> around
+	--          the Z-axis. Ang may be 0 or myAngle.
+    is deferred;
+    
+    SetMeridianPCurve(me; E : in out TheEdge; F : TheFace)
+	---Purpose: Sets the  parametric curve of the  edge <E> in the
+	--          face  <F> to be  the   2d representation  of   the
+	--          meridian.
+    is deferred;
+    
+    MeridianValue(me; V : Real) returns Pnt2d from gp
+	---Purpose: Returns the meridian point at parameter <V> in the
+	--          plane XZ.
+    is deferred;
+    
+    MeridianOnAxis(me; V : Real) returns Boolean
+	---Purpose: Returns True if the point of  parameter <V> on the
+	--          meridian is on the Axis. Default implementation is
+	--          Abs(MeridianValue(V).X()) < Precision::Confusion()
+    is virtual;
+    
+    MeridianClosed(me) returns Boolean
+	---Purpose: Returns True  if the  meridian is  closed. Default
+	--          implementation                                  is
+	--          MeridianValue(VMin).IsEqual(MeridianValue(VMax),
+	--                                      Precision::Confusion()) 
+    is virtual;
+    
+    VMaxInfinite(me) returns Boolean
+	---Purpose: Returns  True   if  VMax    is  infinite.  Default
+	--          Precision::IsPositiveInfinite(VMax);
+    is virtual;
+	
+    VMinInfinite(me) returns Boolean
+	---Purpose: Returns  True   if  VMin    is  infinite.  Default
+	--          Precision::IsNegativeInfinite(VMax);
+    is virtual;
+	
+    
+    -- Usefull booleans
+    
+    HasTop(me) returns Boolean
+	---Purpose: Returns True if  there is  a top  face.
+	--          
+	--          That is neither : VMaxInfinite()   
+	--                            MeridianClosed()
+	--                            MeridianOnAxis(VMax)
+    is virtual;
+     
+    HasBottom(me) returns Boolean
+	---Purpose: Returns   True if there is   a bottom  face.
+	--          
+	--          That is neither : VMinInfinite()   
+	--                            MeridianClosed()
+	--                            MeridianOnAxis(VMin)
+    is virtual;
+     
+    HasSides(me) returns Boolean
+	---Purpose: Returns True if  there are Start   and  End faces.
+	--          
+	--          That is : 2*PI  - Angle > Precision::Angular()
+    is virtual;
+
+
+    --
+    -- Methods to get the Topology of:
+    -- 
+
+    -- the shell
+    Shell(me : in out) returns TheShell
+	---Purpose: Returns the Shell containing all the  Faces of the
+	--          primitive.
+	--          
+	---C++: return const &
+    is static;
+
+    -- the Faces
+
+    LateralFace(me : in out) returns TheFace
+	---Purpose: Returns  the lateral Face.   It is oriented toward
+	--          the outside of the primitive.
+	--          
+	---C++: return const &
+    is static;
+
+    TopFace(me : in out) returns TheFace
+	---Purpose: Returns the   top planar  Face.    It  is Oriented
+	--          toward the +Z axis (outside).
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasTop()
+    is static;
+    
+    BottomFace(me : in out) returns TheFace
+	---Purpose: Returns  the Bottom planar Face.   It is  Oriented
+	--          toward the -Z axis (outside).
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasBottom()
+    is static;
+    
+    StartFace(me : in out) returns TheFace
+	---Purpose: Returns  the  Face   starting   the slice, it   is
+	--          oriented toward the exterior of the primitive.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides()
+    is static;
+
+    EndFace(me : in out) returns TheFace
+	---Purpose: Returns the Face ending the slice, it  is oriented
+	--          toward the exterior of the primitive.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides()
+    is static;
+    
+    -- Wires
+
+    LateralWire(me : in out) returns TheWire
+	---Purpose: Returns  the wire in the lateral face.
+	--          
+	---C++: return const &
+    raises DomainError -- if VMinInfinite() && VMaxInfinite()
+    is static;
+    
+    LateralStartWire(me : in out) returns TheWire
+	---Purpose: Returns the   wire in the   lateral  face with the
+	--          start edge.
+	--          
+	---C++: return const &
+    raises DomainError -- if ! (VMinInfinite() && VMaxInfinite())
+    is static;
+    
+    LateralEndWire(me : in out) returns TheWire
+	---Purpose: Returns the wire with in lateral face with the end
+	--          edge.
+	--          
+	---C++: return const &
+    raises DomainError -- if ! (VMinInfinite() && VMaxInfinite())
+    is static;
+    
+    TopWire(me : in out) returns TheWire
+	---Purpose: Returns the wire in the top face.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasTop()
+    is static;
+     
+    BottomWire(me : in out) returns TheWire
+	---Purpose: Returns the wire in the bottom face.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasBottom()
+    is static;
+    
+    StartWire(me : in out) returns TheWire
+	---Purpose: Returns the wire  in the  start face.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides()
+    is static;
+
+    AxisStartWire(me : in out) returns TheWire
+	---Purpose: Returns  the wire   in the  start   face  with the
+	--          AxisEdge.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides() ! (VMinInfinite() && VMaxInfinite())
+    is static;
+
+    EndWire(me : in out) returns TheWire
+	---Purpose: Returns the Wire in   the end face.
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides()
+    is static;
+
+    AxisEndWire(me : in out) returns TheWire
+	---Purpose: Returns  the Wire  in  the   end   face  with  the
+	--          AxisEdge. 
+	--          
+	---C++: return const &
+    raises DomainError -- if !HasSides() ! (VMinInfinite() && VMaxInfinite())
+    is static;
+
+
+    -- Edges
+
+    AxisEdge(me : in out) returns TheEdge
+	---Purpose: Returns the Edge built along the Axis and oriented
+	--          on +Z of the Axis.
+	--          
+	---C++: return const &
+    raises DomainError -- if ! (MeridianOnAxis(VMin) || MeridianOnAxis(VMax))
+    is static;
+    
+    StartEdge(me : in out) returns TheEdge
+	---Purpose: Returns the   Edge at angle 0.
+	--          
+	---C++: return const &
+    is static;
+
+    EndEdge(me : in out) returns TheEdge
+	---Purpose: Returns the  Edge at  angle Angle.  If !HasSides()
+	--          the StartEdge and the EndEdge are the same edge.
+	--          
+	---C++: return const &
+    is static;
+
+    StartTopEdge(me : in out) returns TheEdge
+	---Purpose: Returns the linear Edge between start Face and top
+	--          Face.
+	--          
+	---C++: return const &
+    raises DomainError -- if ! (HasTop() && HasSides())
+    is static;
+
+    StartBottomEdge(me : in out) returns TheEdge
+	---Purpose: Returns the linear  Edge between  start  Face  and
+	--          bottom Face.
+	--          
+	---C++: return const &
+     raises DomainError -- if ! (HasBottom() && HasSides())
+    is static;
+
+    EndTopEdge(me : in out) returns TheEdge
+	---Purpose: Returns the linear Edge  between end Face and  top
+	--          Face.
+	--          
+	---C++: return const &
+    raises DomainError -- if ! (HasTop() && HasSides())
+    is static;
+
+    EndBottomEdge(me : in out) returns TheEdge
+	---Purpose: Returns  the  linear  Edge  between end  Face  and
+	--          bottom Face.
+	--          
+	---C++: return const &
+     raises DomainError -- if ! (HasBottom() && HasSides())
+    is static;
+
+    TopEdge(me : in out) returns TheEdge
+	---Purpose: Returns the edge at VMax. If  MeridianClosed() the
+	--          TopEdge and the BottomEdge are the same edge.
+	--          
+	---C++: return const &
+    raises DomainError -- if VMaxInfinite()
+    is static;
+
+    BottomEdge(me : in out) returns TheEdge
+	---Purpose: Returns the edge  at VMin. If MeridianClosed() the
+	--          TopEdge and the BottomEdge are the same edge.
+	--          
+	---C++: return const &
+    raises DomainError -- if VMinInfinite()
+    is static;
+
+    -- Vertices
+
+    AxisTopVertex(me : in out) returns TheVertex
+	---Purpose: Returns the Vertex at the Top altitude on the axis.
+	--          
+	---C++: return const &
+    raises DomainError -- if !MeridianOnAxis(VMax)
+    is static;
+
+    AxisBottomVertex(me : in out) returns TheVertex
+	---Purpose: Returns the Vertex  at the Bottom  altitude on the
+	--          axis.
+	--          
+	---C++: return const &
+    raises DomainError -- if !MeridianOnAxis(VMin)
+    is static;
+
+    TopStartVertex(me : in out) returns TheVertex
+	---Purpose: Returns the vertex (0,VMax)
+	--          
+	---C++: return const &
+    raises DomainError -- if VMaxInfinite()
+    is static;
+
+    TopEndVertex(me : in out) returns TheVertex
+	---Purpose: Returns the vertex (angle,VMax)
+	--          
+	---C++: return const &
+    raises DomainError -- if VMaxInfinite()
+    is static;
+
+    BottomStartVertex(me : in out) returns TheVertex
+	---Purpose: Returns the vertex (0,VMin)
+	--          
+	---C++: return const &
+    raises DomainError -- if VMinInfinite()
+    is static;
+
+    BottomEndVertex(me : in out) returns TheVertex
+	---Purpose: Returns the vertex (angle,VMax)
+	--          
+	---C++: return const &
+    raises DomainError -- if VMinInfinite()
+    is static;
+
+fields
+    myBuilder  : TheBuilder   is protected;  
+    myAxes     : Ax2 from gp;
+
+    myAngle    : Real from Standard;
+    myVMin     : Real from Standard;
+    myVMax     : Real from Standard;
+    myMeridianOffset : Real from Standard;
+
+    -- the Topology
+
+    myShell    : TheShell;
+    ShellBuilt : Boolean;
+
+    myVertices : TheVertex [6];
+    -- 0 : Vertex on top    of the axis
+    -- 1 :        on bottom of the axis
+    -- 2 :        top, start
+    -- 3 :        top, end
+    -- 4 :        bottom, start
+    -- 5 :        bottom, end
+    VerticesBuilt : Boolean [6];
+    
+    myEdges : TheEdge [9];
+    -- 0 : Edge on the Axis
+    -- 1 :        Start Edge
+    -- 2 :        End Edge
+    -- 3 :        Start Top
+    -- 4 :        Start Bottom
+    -- 5 :        End Top
+    -- 6 :        End Bottom
+    -- 7 :        Top
+    -- 8 :        Bottom
+    EdgesBuilt : Boolean [9];
+    
+    myWires : TheWire [9];
+    -- 0 : wire     Lateral
+    -- 1 :          Lateral Start
+    -- 2 :          Lateral End
+    -- 3 :          Top
+    -- 4 :          Bottom
+    -- 5 :          Start
+    -- 6 :          Axis Start
+    -- 7 :          End
+    -- 8 :          Axis End
+    WiresBuilt : Boolean [9];
+    
+    myFaces : TheFace [5];
+    -- 0 : Lateral Face
+    -- 1 : Top
+    -- 2 : Bottom
+    -- 3 : Start
+    -- 4 : End
+    FacesBuilt : Boolean [5];
+    
+
+end OneAxis;

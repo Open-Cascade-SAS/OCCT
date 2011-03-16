@@ -1,0 +1,109 @@
+// File:	IntPatch_RLine.lxx
+// Created:	Mon Apr  6 11:17:45 1992
+// Author:	Jacques GOUSSARD
+// Copyright:	 Matra Datavision 1992
+
+#include <Standard_DomainError.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntPatch_Point.hxx>
+
+
+inline const Handle(Adaptor2d_HCurve2d)& IntPatch_RLine::ArcOnS1() const
+{
+  return theArcOnS1;
+}
+
+inline const Handle(Adaptor2d_HCurve2d)& IntPatch_RLine::ArcOnS2() const
+{
+  return theArcOnS2;
+}
+
+//-- Il faut mettre cet include ici , car l include fait un define Handle(Adaptor2d_HCurve2d) ...
+//-- et en fin de fichier un undef Handle(Adaptor2d_HCurve2d) ... 
+
+inline void IntPatch_RLine::AddVertex (const IntPatch_Point& Pnt)
+{
+  svtx.Append(Pnt);
+}
+
+inline void IntPatch_RLine::Replace (const Standard_Integer Index,
+				     const IntPatch_Point& Pnt)
+{
+  svtx(Index) = Pnt;
+}
+
+inline void IntPatch_RLine::SetFirstPoint (const Standard_Integer IndFirst)
+{
+  fipt = Standard_True;
+  indf = IndFirst;
+}
+
+inline void IntPatch_RLine::SetLastPoint (const Standard_Integer IndLast)
+{
+  lapt = Standard_True;
+  indl = IndLast;
+}
+
+inline void IntPatch_RLine::Add(const Handle(IntSurf_LineOn2S)& L)
+{
+  curv = L;
+}
+
+inline Standard_Boolean IntPatch_RLine::IsArcOnS1() const
+{
+  return onS1;
+}
+
+inline Standard_Boolean IntPatch_RLine::IsArcOnS2() const
+{
+  return onS2;
+}
+
+inline Standard_Boolean IntPatch_RLine::HasFirstPoint () const
+{
+  return fipt;
+}
+
+inline Standard_Boolean IntPatch_RLine::HasLastPoint () const
+{
+  return lapt;
+}
+
+inline const IntPatch_Point& IntPatch_RLine::FirstPoint () const
+{
+  if (!fipt) {Standard_DomainError::Raise();}
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_RLine::LastPoint () const
+{
+  if (!lapt) {Standard_DomainError::Raise();}
+  return svtx(indl);
+}
+
+inline Standard_Integer IntPatch_RLine::NbVertex () const
+{
+  return svtx.Length();
+}
+
+inline const IntPatch_Point& IntPatch_RLine::Vertex (const Standard_Integer Index) const
+{
+  return svtx(Index);
+}
+
+inline Standard_Boolean IntPatch_RLine::HasPolygon () const
+{
+  return (!curv.IsNull());
+}
+
+inline Standard_Integer IntPatch_RLine::NbPnts () const
+{
+  if (curv.IsNull()) {Standard_DomainError::Raise();}
+  return curv->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntPatch_RLine::Point (const Standard_Integer Index) const
+{
+  if (curv.IsNull()) {Standard_DomainError::Raise();}
+  return curv->Value(Index);
+}

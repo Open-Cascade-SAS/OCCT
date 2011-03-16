@@ -1,0 +1,185 @@
+-- File:	TopoDS.cdl
+-- Created:	Tue Dec 11 17:08:03 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+package TopoDS 
+
+    ---Purpose: Provides methods to cast objects of class
+-- TopoDS_Shape to be onjects of more specialized
+-- sub-classes. Types are verified, thus in the example
+-- below, the first two blocks are correct but the third is
+-- rejected by the compiler.
+
+uses
+    MMgt,
+    TCollection,
+    TopAbs,      -- basic enumerations : ShapeEnum, Orientation
+    TopLoc       -- the Location (Local Coordinate System)
+
+is
+
+    -- exceptions
+
+    exception FrozenShape inherits DomainError;
+	---Purpose: An  attempt was  made to   modify  a Shape  already
+	--          shared or protected.
+	
+    exception UnCompatibleShapes inherits DomainError;
+	---Purpose: An incorrect insertion was attempted.
+	
+    -- classes
+
+    class Shape;
+	---Purpose: A reference to a Topological shape with Location,
+	--          Orientation.
+
+    class HShape;
+    	---Purpose: Class to manipulate a Shape with  handle.
+
+    class ListOfShape instantiates List from TCollection (Shape from TopoDS);
+	---Purpose: Used to implement the TShape.
+
+    deferred class TShape;
+	---Purpose: A topological shape is a structure made from other
+	--          shapes.  This is a deferred class  used to support
+	--          topological objects.
+
+    deferred class TVertex;
+	---Purpose: A  Vertex is a topological  point in  two or three
+	--          dimensions.
+
+    class Vertex;
+	---Purpose: A TVertex with a localisation and  an orientation.
+
+    deferred class TEdge;
+	---Purpose: A topological part  of a  curve  in 2D or 3D,  the
+	--          boundary    is   a   set  of oriented    Vertices.
+
+    class Edge;
+	---Purpose: A TEdge with a localisation and an orientation.
+
+    class TWire;
+	---Purpose: A set of edges connected by their vertices.
+
+    class Wire;
+	---Purpose: A TWire with a localisation and an orientation.
+
+    class TFace;
+	---Purpose: A  topological part  of a surface   or  of the  2D
+	--          space.  The  boundary  is  a   set of  wires   and
+	--          vertices.
+
+    class Face;
+	---Purpose: A TFace with a localisation and an orientation.
+
+    class TShell;
+	---Purpose: A set of faces connected by their edges.
+
+    class Shell;
+	---Purpose: A TShell with a localisation and an orientation.
+
+    class TSolid;
+	---Purpose: A Topological part of 3D space, bounded by shells, 
+	--          edges and vertices.
+
+    class Solid;
+	---Purpose: A Solid with a localisation and an orientation.
+
+    class TCompSolid;
+	---Purpose: A set of solids connected by their faces.
+
+    class CompSolid;
+	---Purpose: A    TCompSolid   with   a  localisation and    an 
+	--          orientation. Casts shape S to the more specialized return type, CompSolid.
+
+    class TCompound;
+	---Purpose: A TCompound is an all-purpose set of Shapes.
+
+    class Compound;
+	---Purpose: A    TCompound  with  a    localisation   and   an
+	--          orientation.
+	-- Casts shape S to the more specialized return type, Compound.
+
+    class Builder;
+	---Purpose: A builder is an object  used to create and  modify
+	--          Data Structures. It   is the root  of  the Builder
+	--          class hierarchy.
+
+    class Iterator;
+	---Purpose: Basic tool to access the data structure.
+
+    Vertex(S : Shape from TopoDS) returns Vertex from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Vertex& Vertex(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Vertex.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Edge(S : Shape from TopoDS) returns Edge from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Edge& Edge(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Edge
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Wire(S : Shape from TopoDS) returns Wire from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Wire& Wire(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Wire.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Face(S : Shape from TopoDS) returns Face from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Face& Face(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Face.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Shell(S : Shape from TopoDS) returns Shell from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Shell& Shell(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Shell.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Solid(S : Shape from TopoDS) returns Solid from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Solid& Solid(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Solid.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    CompSolid(S : Shape from TopoDS) returns CompSolid from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_CompSolid& CompSolid(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, CompSolid.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+    Compound(S : Shape from TopoDS) returns Compound from TopoDS
+	---C++: inline
+	---C++: return const &
+	---C++: alias "inline static TopoDS_Compound& Compound(TopoDS_Shape&);"
+    ---Purpose: Casts shape S to the more specialized return type, Compound.
+    -- Exceptions
+    -- Standard_TypeMismatch if S cannot be cast to this return type.
+    raises TypeMismatch from Standard;
+
+end TopoDS;

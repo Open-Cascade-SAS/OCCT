@@ -1,0 +1,16 @@
+// Copyright: 	Matra-Datavision 1994
+// File:	Expr_BinaryExpression.lxx
+// Created:	Wed Jan  5 15:28:12 1994
+// Author:	Arnaud BOUZY
+//		<adn>
+
+inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::FirstOperand() const
+{   
+  return myFirstOperand;
+}
+
+inline const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SecondOperand () const
+{
+  return mySecondOperand;
+}
+

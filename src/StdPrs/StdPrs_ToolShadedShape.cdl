@@ -1,0 +1,29 @@
+-- File:	StdPrs_ToolShadedShape.cdl
+-- Created:	Wed Oct 27 09:26:37 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolShadedShape from StdPrs inherits ShapeTool from BRepMesh 
+
+uses
+    Shape         from TopoDS,
+    Face          from TopoDS,
+    Array1OfDir   from TColgp,
+    Connect       from Poly,
+    Triangulation from Poly,
+    Location      from TopLoc
+is
+
+    IsClosed(myclass; aShape: Shape from TopoDS) returns Boolean from Standard; 
+    
+    Triangulation(myclass; aFace: Face from TopoDS;
+    	    	    	   loc  : out Location from TopLoc) 
+    returns Triangulation from Poly;
+    
+    Normal(myclass; aFace: Face            from TopoDS;
+    	    	    PC   : in out Connect  from Poly;
+		    Nor  : out Array1OfDir from TColgp);
+    
+end ToolShadedShape from StdPrs;

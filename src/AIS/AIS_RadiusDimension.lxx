@@ -1,0 +1,36 @@
+// File:	AIS_RadiusDimension.lxx
+// Created:	Fri Feb 28 10:17:37 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : KindOfDimension
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfDimension AIS_RadiusDimension::KindOfDimension() const 
+{
+  return AIS_KOD_RADIUS;
+}
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_RadiusDimension::IsMovable() const 
+{
+  return Standard_True;
+}
+
+//=======================================================================
+//function : DrawFromCenter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean AIS_RadiusDimension::DrawFromCenter() const 
+{
+  return mydrawFromCenter;
+}
+
+inline void AIS_RadiusDimension::SetDrawFromCenter(const Standard_Boolean drawfromcenter)
+{
+  mydrawFromCenter = drawfromcenter;
+}

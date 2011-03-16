@@ -1,0 +1,211 @@
+-- File:	AdvApp2Var.cdl
+-- Created:	Tue Mar  5 14:52:05 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Wed Jan 15 09:45:42 1997
+--    by:	Joelle CHAUVET
+--		G1135 : Approximation with criterion
+--                      class Criterion and enumeration CriterionType
+--		G1134 : Approximation with regular cuttings
+--                      enumeration CriterionRepartition
+---Copyright:	 Matra Datavision 1996
+
+
+
+package AdvApp2Var 
+
+     ---Purpose: This  package provides algorithms  to  approximate  a
+     --          function of 2 variables that can be multidimensional;
+     --          the result is a BSpline function with the required continuity
+     --  Warning: only one 3D BSpline for the moment          
+     --          
+
+
+
+uses 
+     gp,
+     Geom,
+     GeomAbs,
+     TColStd, 
+     TColgp,
+     TColGeom,
+     TCollection,
+     AdvApprox,
+     Standard
+ 
+is
+
+    enumeration CriterionType is
+	---Purpose: influency of the criterion on cutting process
+       	Absolute,
+	    ---Purpose: cutting when criterion is not satisfied
+	    --          desactivation of the compute of the error max
+    	Relative
+	    ---Purpose: cutting when error max is not good or if error
+	    --          max is good and criterion is not satisfied
+	
+    end CriterionType;
+    
+
+    enumeration CriterionRepartition is
+	---Purpose: way of cutting process
+       	Regular,
+	    ---Purpose: all new cutting points at each step of cutting
+	    --          process : (a+i(b-a)/N)i at step N,
+	    --                    (a+i(b-a)/(N+1))i at step N+1,...
+	    --                    where (a,b) is the global interval 
+    	Incremental
+	    ---Purpose: add one new cutting point at each step
+	    --          of cutting process
+	
+    end CriterionRepartition;
+    --
+    --     
+    --  public classes
+    --  
+    --  
+
+    class ApproxAFunc2Var from AdvApp2Var ;
+    ---Purpose:
+    -- this class approximates a given function of 2 variables
+
+    imported EvaluatorFunc2Var ;
+    ---Purpose:
+    --  typedef  void (*EvaluatorFunc2Var)  (
+    --  Standard_Integer *     -- dimension
+    --  Standard_Real    *     -- first and last parameters in U
+    --  Standard_Real    *     -- first and last parameters in V
+    --  Standard_Integer *     -- choice of constante, 1 for U, 2 for V
+    --  Standard_Real    *     -- value of constant parameter
+    --  Standard_Integer *     -- number of parameters
+    --  Standard_Real    *     -- values of parameters
+    --  Standard_Integer *     -- order of derivation in U
+    --  Standard_Integer *     -- order of derivation in V
+    --  Standard_Real    *     -- evaluation
+    --  Standard_Integer *     -- error code
+    --  ) ;
+
+    deferred class Criterion from AdvApp2Var ;
+    ---Purpose:
+    -- this class contains a given criterion to be satisfied
+
+
+    -- 
+    -- 
+    -- private classes for Data
+    -- 
+    -- 
+    -- Basic Data
+
+    class Context from AdvApp2Var;
+    ---Purpose :
+    -- contains  all the  parameters  for approximation
+    --         ( tolerancy, computing option, ...)
+    --        
+
+    class Node from AdvApp2Var;
+    ---Purpose :
+    -- used to store constraints on a (Ui,Vj) point
+    -- 
+
+    class Iso from AdvApp2Var;
+    ---Purpose :
+    -- used to store constraints on a line U = Ui or V = Vj
+    -- 
+
+    class Patch from AdvApp2Var;
+    ---Purpose :
+    -- used to store results on a domain [Ui,Ui+1]x[Vj,Vj+1]
+    -- 
+
+    class Strip from AdvApp2Var instantiates
+     	    	    Sequence from TCollection (Iso from  AdvApp2Var); 
+    ---Purpose :
+    -- set of constraints along a same type of Iso on the same level
+
+    -- 
+    --  
+    --  Structured Data
+
+    class SequenceOfNode from AdvApp2Var instantiates
+    	    	    	 Sequence from TCollection (Node  from  AdvApp2Var); 
+    class SequenceOfPatch from AdvApp2Var instantiates
+    	    	    	 Sequence from TCollection (Patch from  AdvApp2Var); 
+    class SequenceOfStrip from AdvApp2Var instantiates
+    	    	    	 Sequence from TCollection (Strip from  AdvApp2Var);
+
+    --
+    --
+    --  Final Data
+
+    class Network from AdvApp2Var;
+    --  contains all the result patches and the associated parameters U and V
+    --  
+
+    class Framework from AdvApp2Var;
+    --  contains all the constraints (Nodes and Isos)
+    --  
+
+    
+end AdvApp2Var;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

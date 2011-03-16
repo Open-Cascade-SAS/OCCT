@@ -1,0 +1,63 @@
+--
+-- File      :  Pick.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Pick from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESPick, Type <406> Form <21>
+        --          in package IGESGraph
+        --
+        --          Attaches information that an entity may be picked
+        --          by whatever pick device is used in the receiving
+        --          system
+
+uses  Integer  -- no one specific type
+
+
+is
+
+        Create returns mutable Pick;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              nbProps     : Integer;
+              aPickStatus : Integer);
+        ---Purpose : This method is used to set the fields of the class Pick
+        --      - nbProps     : Number of property values (NP = 1)
+        --      - aPickStatus : Pick Flag
+
+        -- Specific Access Methods : According to each type of Entity
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>.
+
+        PickFlag(me) returns Integer;
+        ---Purpose : returns 0 if <me> is pickable(default),
+        --         1 if <me> is not pickable.
+
+        IsPickable(me) returns Boolean;
+        ---Purpose : returns True if thePick is 0.
+
+fields
+
+--
+-- Class    : IGESGraph_Pick
+--
+-- Purpose  : Declaration of the variables specific to a Pick property.
+--
+-- Reminder : A Pick property is defined by :
+--            - Number of property values
+--            - Flag 0 = entity is pickable(default)
+--                   1 = entity is not pickable
+--
+
+        theNbPropertyValues : Integer;
+
+        thePick             : Integer;
+
+end Pick;

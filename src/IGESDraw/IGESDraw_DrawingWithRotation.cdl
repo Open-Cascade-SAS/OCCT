@@ -1,0 +1,121 @@
+--
+-- File      :  DrawingWithRotation.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DrawingWithRotation from IGESDraw  inherits IGESEntity
+
+        ---Purpose: defines IGESDrawingWithRotation, Type <404> Form <1>
+        --          in package IGESDraw
+        --
+        --          Permits rotation, in addition to transformation and
+        --          scaling, between the view and drawing coordinate systems
+
+uses
+
+        HArray1OfIGESEntity     from IGESData,
+        HArray1OfReal           from TColStd,
+        ViewKindEntity          from IGESData,
+        HArray1OfViewKindEntity from IGESDraw,
+        Pnt2d                   from gp,
+        XYZ                     from gp,
+        XY                      from gp,
+        HArray1OfXY             from TColgp
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable DrawingWithRotation;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                   : mutable;
+              allViews             : HArray1OfViewKindEntity;
+              allViewOrigins       : HArray1OfXY;
+              allOrientationAngles : HArray1OfReal;
+              allAnnotations       : HArray1OfIGESEntity)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           DrawingWithRotation
+        --      - allViews             : Pointers to View entities
+        --      - allViewOrigins       : Origin coords of transformed views
+        --      - allOrientationAngles : Orientation angles of transformed views
+        --      - allAnnotations       : Pointers to Annotation entities
+        -- raises exception if Lengths of allViews, allViewOrigins and
+        -- allOrientationAngles are not same.
+
+        NbViews (me) returns Integer;
+        ---Purpose : returns the number of view pointers in <me>
+
+        ViewItem (me; Index : Integer) returns ViewKindEntity
+        raises OutOfRange;
+        ---Purpose : returns the View entity indicated by Index
+        -- raises an exception if Index <= 0 or Index > NbViews().
+
+        ViewOrigin (me; Index : Integer) returns Pnt2d
+        raises OutOfRange;
+        ---Purpose : returns the Drawing space coordinates of the origin of the
+        -- Transformed view indicated by Index
+        -- raises an exception if Index <= 0 or Index > NbViews().
+
+        OrientationAngle (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the Orientation angle for the Transformed view
+        -- indicated by Index
+        -- raises an exception if Index <= 0 or Index > NbViews().
+
+        NbAnnotations (me) returns Integer;
+        ---Purpose : returns the number of Annotation entities in <me>
+
+        Annotation (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Annotation entity in this Drawing, indicated by Index
+        -- raises an exception if Index <= 0 or Index > NbAnnotations().
+
+    	    --  infered informations
+
+        ViewToDrawing(me; NumView : Integer; ViewCoords : XYZ)
+        returns XY;
+        -- returns the Transformation of a View from View space to Drawing
+        -- space.
+
+    	DrawingUnit (me; value : out Real) returns Boolean;
+	---Purpose : Returns the Drawing Unit Value if it is specified (by a
+	--           specific property entity)
+	--           If not specified, returns False, and val as zero :
+	--           unit to consider is then the model unit in GlobalSection
+
+    	DrawingSize (me; X,Y : out Real) returns Boolean;
+	---Purpose : Returns the Drawing Size if it is specified (by a
+	--           specific property entity)
+	--           If not specified, returns False, and X,Y as zero :
+	--           unit to consider is then the model unit in GlobalSection
+
+fields
+
+--
+-- Class    : IGESDraw_DrawingWithRotation
+--
+-- Purpose  : Declaration of the variables specific to a
+--            DrawingWithRotation Entity.
+--
+-- Reminder : A DrawingWithRotation Entity is defined by :
+--                    - Pointers to View entities
+--                    - Origin coordinates of transformed views
+--                    - Orientation angles of transformed views
+--                    - Pointers to Annotation entities
+--
+
+        theViews             : HArray1OfViewKindEntity;
+
+        theViewOrigins       : HArray1OfXY;
+
+        theOrientationAngles : HArray1OfReal;
+
+        theAnnotations       : HArray1OfIGESEntity;
+
+end DrawingWithRotation;

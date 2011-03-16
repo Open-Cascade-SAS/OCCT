@@ -1,0 +1,331 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class Elips   from gp  inherits Storable
+        --- Purpose :
+        --      Describes an ellipse in 3D space.
+        -- An ellipse is defined by its major and minor radii and
+        -- positioned in space with a coordinate system (a gp_Ax2 object) as follows:
+        -- -   the origin of the coordinate system is the center of the ellipse,
+        -- -   its "X Direction" defines the major axis of the ellipse, and
+        -- - its "Y Direction" defines the minor axis of the ellipse.
+        -- Together, the origin, "X Direction" and "Y Direction" of
+        -- this coordinate system define the plane of the ellipse.
+        -- This coordinate system is the "local coordinate system"
+        -- of the ellipse. In this coordinate system, the equation of
+        -- the ellipse is:
+        -- X*X / (MajorRadius**2) + Y*Y / (MinorRadius**2) = 1.0
+        -- The "main Direction" of the local coordinate system gives
+        -- the normal vector to the plane of the ellipse. This vector
+        -- gives an implicit orientation to the ellipse (definition of the
+        -- trigonometric sense). We refer to the "main Axis" of the
+        -- local coordinate system as the "Axis" of the ellipse.
+        -- See Also
+        -- gce_MakeElips which provides functions for more
+        -- complex ellipse constructions
+        -- Geom_Ellipse which provides additional functions for
+        -- constructing ellipses and works, in particular, with the
+        -- parametric equations of ellipses
+
+uses  Ax1  from gp,
+      Ax2  from gp,
+      Pnt  from gp,
+      Trsf from gp,
+      Vec  from gp
+
+raises ConstructionError from Standard
+
+is
+
+
+  Create  returns Elips;
+        ---C++:inline
+        --- Purpose : Creates an indefinite ellipse.
+ 
+
+  Create (A2 : Ax2; MajorRadius, MinorRadius : Real)   returns Elips
+        ---C++: inline
+	--- Purpose :
+        --  The major radius of the ellipse is on the "XAxis" and the
+        --  minor radius is on the "YAxis" of the ellipse. The "XAxis"
+        --  is defined with the "XDirection" of A2 and the "YAxis" is
+        --  defined with the "YDirection" of A2.
+        -- Warnings :
+        --  It is not forbidden to create an ellipse with MajorRadius =
+        --  MinorRadius.  
+        --  Raises ConstructionError if MajorRadius < MinorRadius or MinorRadius < 0. 
+     raises ConstructionError;
+	 
+
+
+  SetAxis (me : in out; A1 : Ax1)
+        ---C++:inline
+        --- Purpose : 
+        --  Changes the axis normal to the plane of the ellipse.
+        --  It modifies the definition of this plane.
+        --  The "XAxis" and the "YAxis" are recomputed.
+        -- The local coordinate system is redefined so that:
+        -- -   its origin and "main Direction" become those of the
+        --   axis A1 (the "X Direction" and "Y Direction" are then
+        --   recomputed in the same way as for any gp_Ax2), or
+        --  Raises ConstructionError if the direction of A1
+        -- is parallel to the direction of the "XAxis" of the ellipse.
+    raises ConstructionError
+      
+     is static;
+
+
+  SetLocation (me : in out; P : Pnt)   is static;
+        ---C++: inline
+        --- Purpose :Modifies this ellipse, by redefining its local coordinate
+        -- so that its origin becomes P.
+
+
+  SetMajorRadius (me : in out; MajorRadius : Real)
+        ---C++: inline
+        --- Purpose :
+        --  The major radius of the ellipse is on the "XAxis" (major axis)
+        --  of the ellipse.  
+        --  Raises ConstructionError if MajorRadius < MinorRadius.
+     raises ConstructionError
+     is static;
+
+
+  SetMinorRadius (me : in out; MinorRadius : Real)
+        ---C++: inline
+        --- Purpose :
+        --  The minor radius of the ellipse is on the "YAxis" (minor axis)
+        --  of the ellipse.
+        --  Raises ConstructionError if MinorRadius > MajorRadius or MinorRadius < 0.
+     raises ConstructionError
+	
+     is static;
+
+
+  SetPosition (me : in out; A2 : Ax2)   is static;
+        ---C++: inline
+        --- Purpose : Modifies this ellipse, by redefining its local coordinate
+        -- so that it becomes A2e.
+
+
+  Area (me)   returns Real   is static;
+ 	--- Purpose : Computes the area of the Ellipse.
+        ---C++: inline
+
+
+  Axis (me)  returns Ax1   is static;
+        ---C++: inline
+        --- Purpose:
+        --  Computes the axis normal to the plane of the ellipse.
+    	---C++: return const&
+
+
+  Directrix1 (me)  returns Ax1
+        ---C++:inline
+        --- Purpose : Computes the first or second directrix of this ellipse.
+        -- These are the lines, in the plane of the ellipse, normal to
+        -- the major axis, at a distance equal to
+        -- MajorRadius/e from the center of the ellipse, where
+        -- e is the eccentricity of the ellipse.
+        -- The first directrix (Directrix1) is on the positive side of
+        -- the major axis. The second directrix (Directrix2) is on
+        -- the negative side.
+        -- The directrix is returned as an axis (gp_Ax1 object), the
+        -- origin of which is situated on the "X Axis" of the local
+        -- coordinate system of this ellipse.
+        -- Exceptions
+        -- Standard_ConstructionError if the eccentricity is null
+        -- (the ellipse has degenerated into a circle).
+
+     raises ConstructionError
+	
+     is static;
+
+
+  Directrix2 (me)    returns Ax1
+        ---C++:inline
+        --- Purpose :
+        --  This line is obtained by the symmetrical transformation 
+        --  of "Directrix1" with respect to the "YAxis" of the ellipse.
+        -- Exceptions
+        -- Standard_ConstructionError if the eccentricity is null
+        -- (the ellipse has degenerated into a circle).
+    raises ConstructionError
+	
+     is static;
+
+
+  Eccentricity (me)   returns Real
+        ---C++:inline
+	--- Purpose :
+	--  Returns the eccentricity of the ellipse  between 0.0 and 1.0
+	--  If f is the distance between the center of the ellipse and
+	--  the Focus1 then the eccentricity e = f / MajorRadius.   
+        --   Raises ConstructionError if MajorRadius = 0.0
+     raises ConstructionError
+     is static;
+
+
+  Focal (me)   returns Real   is static;
+        ---C++:inline
+	--- Purpose :
+	--  Computes the focal distance. It is the distance between the
+        --  two focus focus1 and focus2 of the ellipse.
+
+
+  Focus1( me)   returns Pnt   is static;
+        ---C++:inline
+	--- Purpose :
+	--  Returns the first focus of the ellipse. This focus is on the
+        --  positive side of the "XAxis" of the ellipse.
+
+
+  Focus2 (me)  returns Pnt  is static;
+        ---C++:inline
+        --- Purpose :
+	--  Returns the second focus of the ellipse. This focus is on the
+        --  negative side of the "XAxis" of the ellipse.
+
+
+  Location (me)  returns Pnt   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Returns the center of the ellipse. It is the "Location"
+        --  point of the coordinate system of the ellipse.
+    	---C++: return const&
+
+
+  MajorRadius (me)   returns Real   is static;
+	--- Purpose : Returns the major radius of the ellipse.
+        ---C++: inline
+
+
+  MinorRadius (me)   returns Real  is static;
+	--- Purpose : Returns the minor radius of the ellipse.
+        ---C++: inline
+
+
+  Parameter (me)   returns Real   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns p = (1 - e * e) * MajorRadius where e is the eccentricity 
+        --  of the ellipse.
+	--  Returns 0 if MajorRadius = 0
+  
+
+  Position (me)    returns Ax2    is static;
+        --- Purpose : Returns the coordinate system of the ellipse.
+        ---C++: inline
+        ---C++: return const&
+ 
+
+  XAxis (me)  returns Ax1   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Returns the "XAxis" of the ellipse whose origin
+        -- is the center of this ellipse. It is the major axis of the
+        --  ellipse.
+
+
+  YAxis (me)  returns Ax1   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Returns the "YAxis" of the ellipse whose unit vector is the "X Direction" or the "Y Direction"
+        --  of the local coordinate system of this ellipse.
+        -- This is the minor axis of the ellipse.
+
+
+  Mirror (me : in out; P : Pnt)  
+	is static;
+
+  Mirrored (me; P : Pnt)   returns Elips  is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of an ellipse with 
+        --  respect to the point P which is the center of the symmetry.
+
+
+  Mirror (me : in out; A1 : Ax1)
+           is static;
+
+  Mirrored (me; A1 : Ax1)   returns Elips  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of an ellipse with
+        --  respect to an axis placement which is the axis of the symmetry.
+
+     
+  Mirror (me : in out; A2 : Ax2) 
+         is static;
+
+  Mirrored (me; A2 : Ax2)  returns Elips  is static;
+
+   --- Purpose :
+        --  Performs the symmetrical transformation of an ellipse with
+        --  respect to a plane. The axis placement A2 locates the plane
+        --  of the symmetry (Location, XDirection, YDirection).
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)
+        ---C++: inline
+         is static;
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns Elips  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates an ellipse. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+
+   
+       
+  Scale (me : in out; P : Pnt; S : Real)          is static;
+        ---C++: inline
+
+  Scaled (me; P : Pnt; S : Real)   returns Elips  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Scales an ellipse. S is the scaling value.
+
+     
+
+  Transform (me : in out; T : Trsf)           is static;
+        ---C++: inline
+
+  Transformed (me; T : Trsf)   returns Elips  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms an ellipse with the transformation T from class Trsf.
+
+
+
+  Translate (me : in out; V : Vec)
+        ---C++: inline
+          is static;
+
+  Translated (me; V : Vec)  returns Elips   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates an ellipse in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+     
+
+  Translate (me : in out; P1, P2 : Pnt) 
+        ---C++: inline
+         is static;
+
+  Translated (me; P1, P2 : Pnt)   returns Elips  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates an ellipse from the point P1 to the point P2. 
+
+fields
+
+     pos         : Ax2;
+     majorRadius : Real;
+     minorRadius : Real;
+
+end;
+

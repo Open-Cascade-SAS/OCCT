@@ -1,0 +1,236 @@
+#!/bin/sh
+# The next line is executed by /bin/sh, but not Tcl \
+  exec tclsh $0 ${1+"$@"}
+
+
+
+#
+#  suite au passage a tk4.1 on a plus besoin des references
+#  a TCL-1-1
+#
+# batch test command
+##########################################################
+#
+#  initialisation de  env(STATION)  
+#                     env(WBCONTAINER)
+#                     env(WBROOT)      
+#
+
+#package require Tk
+
+puts $env(DRAWHOME)
+source $env(DRAWHOME)/InitEnvironment.tcl
+
+source $env(DRAWHOME)/Tests.tcl
+
+# xab : 22/11/96  : on a encore besoin des 3 variables d'environement
+#                   WBCONTAINER
+#                   WBROOT
+#                   STATION
+#   usage
+#
+proc help {} {
+    global resultRoot masterRoot testRoot
+    puts {mdltest -h -hc -c -l -x executable -t testdir -r resultdir -m masterdir UL function test}
+    puts ""
+    puts "Run & compare modeling team tests."
+    puts ""
+    puts "-hc help on comparisons"
+    puts "-l  only list the tests"
+    puts "-c  performs only the comparisons"
+    puts "-o  executable is run once for all tests"
+    puts ""
+    puts "-x executable : to run the test"
+    puts "   none        use the executable TUL for each UL"
+    puts "   -x compare  performs only the comparisons"
+    puts "   -x list     only list the tests"
+    puts ""
+    puts "-t testdir   : root of the test hierarchy"
+    puts "   default   : $testRoot"
+    puts ""
+    puts "-r resultdir : to store the results, or source for comparisons"
+    puts "   default   : $resultRoot"
+    puts "   must be a writable directory"
+    puts ""
+    puts "-m masterdir : reference results for comparisons"
+    puts "   default   : $masterRoot"
+    puts ""
+    puts "UL function test : performs this test"
+    puts "UL function      : performs all tests for this function"
+    puts "UL               : performs all tests for all functions of this UL"
+    puts "                 : performs all test"
+    puts ""
+    puts "UL function Test can be patterns (quote to protect from csh)"
+    puts "example : mdltest -l '*' '*curve*'"
+    puts ""
+    exit
+}
+proc helpcomp {} {
+    global theErrors
+    puts ""
+    puts "Result of comparisons"
+    puts "====================="
+    puts ""
+    puts "For each test a status line is displayed of the following format"
+    puts ""
+    puts "xUL Function Test     Result Log XWD"
+    puts ""
+    puts "x is a single caracter : "
+    puts "  ' ' : means no problem"
+    puts "  '-' : means no result fro the test"
+    puts "  '*' : means error detected or difference with the master"
+    puts ""
+    puts "Result is the status of the log file analysis : "
+    foreach err $theErrors {
+	puts "  [lindex $err 1] : means [lindex $err 2]"
+    }
+    puts ""
+    puts "Log is the result of the logfile comparisons"
+    puts "  OK    : means no differences"
+    puts "  NO    : means no master logfile to compare with"
+    puts "  DIFF  : means differences"
+    puts ""
+    puts "XWD is the result of the image comparisons"
+    puts "  OK    : means no differences"
+    puts "  NO    : means no master images to compare with"
+    puts "  DIFF  : means differences"
+
+
+    exit
+}
+
+# analyze arguments
+
+set more 1
+while {$more} {
+    set more 1
+    set shift 2
+    switch -exact a[lindex $argv 0] {
+	"a-x"     {set theExec    [lindex $argv 1]}
+	"a-t"     {set testRoot   [lindex $argv 1]}
+	"a-r"     {set resultRoot [lindex $argv 1]}
+	"a-m"     {set masterRoot [lindex $argv 1]}
+	"a-l"     {set theExec "list"; set shift 1;}
+	"a-c"     {set theExec "compare"; set shift 1;}
+	"a-o"     {set themode "samedraw"; set shift 1;}
+	"a-hc"    {helpcomp}
+	"a-h"     {help}
+	default   {set more 0}
+    }
+    if $more {set argv [lrange $argv $shift end]}
+}
+
+puts ""
+puts "Executable       : $theExec"
+puts "Test   Directory : $testRoot"
+puts "Result Directory : $resultRoot"
+puts "Master Directory : $masterRoot"
+
+if {![file isdirectory $resultRoot]} {
+    puts "$resultRoot is not a directory"
+    exit
+}
+
+set UL       "*"  
+set Function "*"
+set Test     "*"
+
+if {[llength $argv] >= 1} {set UL       [lindex $argv 0]}
+if {[llength $argv] >= 2} {set Function [lindex $argv 1]}
+if {[llength $argv] >= 3} {set Test     [lindex $argv 2]}
+
+puts ""
+puts "UL       : $UL"
+puts "Function : $Function"
+puts "Test     : $Test"
+
+init
+
+# used to compute length for formatting the result
+set l 0
+
+if { $themode == "samedraw" } {
+    set theDraw     ""
+    set FILTRE      "/tmp/FILTRE[pid]"
+    set DIFF        "/tmp/DIFF[pid]"
+    set RESULT      "/tmp/RESULT[pid]"
+    set PREVIOUS    "/tmp/PREVIOUS[pid]"
+    set TEMP        "/tmp/TEMP[pid]"
+    #on compile le Diff et le Filtre a Diff
+    if { [catch { eval "exec $env(MDLTEST_COMPIL) $env(DRAWHOME)/Filtre.c -c -o ${FILTRE}.o" } mes] } { puts $mes }
+    if { [catch { eval "exec $env(MDLTEST_COMPIL) ${FILTRE}.o -o $FILTRE" } mes] } { puts $mes }
+    if { [catch { eval "exec $env(MDLTEST_COMPIL) $env(DRAWHOME)/DIFF.c -c -o ${DIFF}.o" } mes] } { puts $mes }
+    if { [catch { eval "exec $env(MDLTEST_COMPIL) ${DIFF}.o -o $DIFF" } mes] } { puts $mes }
+}
+
+while {$theUL != ""} {
+    if {! [string match $UL $theUL] }            {nextUL; continue;}
+    if {! [string match $Function $theFunction]} {nextFunction; continue;}
+    if {[string match $Test $theTest]} {
+	if [file readable $testRoot/$theUL/$theFunction/$theTest] {
+	    if {$theExec == "list"} {
+		puts "$theUL $theFunction $theTest"
+	    } else {
+		if {$theExec != "compare"} runTest
+		set l2 [string length "$theUL $theFunction $theTest"]
+		if {$l2 > $l} {set l $l2}
+	    }
+	} else {
+	    puts "Test does not exist : $theUL $theFunction $theTest"
+	}
+    }
+    nextTest
+}
+
+# Pour les tests effectues dans 1 seul exe, on sort!!
+if { $themode == "samedraw" } { 
+    catch { send $theDraw "exit" } 
+}
+
+
+# do the comparisons
+
+
+if {$theExec    == "list"} exit
+if {$masterRoot == ""}     exit
+
+set count 1
+incr l 4
+
+init
+
+puts ""
+while {$theUL != ""} {
+    if {! [string match $UL $theUL] }            {nextUL; continue;}
+    if {! [string match $Function $theFunction]} {nextFunction; continue;}
+    if {[string match $Test $theTest]} {
+	if [file readable $testRoot/$theUL/$theFunction/$theTest] {
+	    if {$count == 1} {
+		set s "  UL Function Test"
+		puts -nonewline $s
+		for {set i [string length $s]} {$i <= $l} {incr i} {puts -nonewline " "}
+		puts $theStatusHeader
+	    }
+	    incr count
+	    set s "$theStatus $theUL $theFunction $theTest :"
+	    puts -nonewline $s
+	    for {set i [string length $s]} {$i <= $l} {incr i} {puts -nonewline " "}
+	    puts $theStatusLine
+	}
+    }
+    nextTest
+}
+
+# destruction de la petite fenetre merdique.
+catch { destroy . }
+
+#on vire le Diff et le Filtre a Diff
+if { $themode == "samedraw" } {
+    catch { unlink $FILTRE } 
+    catch { unlink ${FILTRE}.o } 
+    catch { unlink $DIFF } 
+    catch { unlink ${DIFF}.o } 
+    catch { unlink $RESULT } 
+    catch { unlink $PREVIOUS } 
+    catch { unlink $TEMP } 
+}

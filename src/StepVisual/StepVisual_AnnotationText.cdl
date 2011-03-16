@@ -1,0 +1,22 @@
+-- File:        AnnotationText.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class AnnotationText from StepVisual 
+
+inherits MappedItem from StepRepr 
+
+uses
+
+	HAsciiString from TCollection, 
+	RepresentationMap from StepRepr, 
+	RepresentationItem from StepRepr
+is
+
+	Create returns mutable AnnotationText;
+	---Purpose: Returns a AnnotationText
+
+
+end AnnotationText;

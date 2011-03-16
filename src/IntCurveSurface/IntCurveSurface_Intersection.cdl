@@ -1,0 +1,111 @@
+-- File:	IntCurveSurface_Intersection.cdl
+-- Created:	Wed Apr  7 16:18:57 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Intersection from IntCurveSurface
+
+    ---Level: Public
+
+uses 
+    IntersectionPoint   from IntCurveSurface,
+    IntersectionSegment from IntCurveSurface,
+    SequenceOfPnt       from IntCurveSurface,
+    SequenceOfSeg       from IntCurveSurface
+
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+
+is 
+
+    Initialize
+    	---Purpose: Empty Constructor;
+        is protected;
+	
+    IsDone(me) 
+    	---Purpose: returns the <done> field.
+    	returns Boolean from Standard is static;
+
+    NbPoints(me)
+    	---Purpose: returns the number of IntersectionPoint
+    	--          if IsDone returns True.
+    	--          else NotDone is raised.
+    	returns Integer from Standard 
+        raises  NotDone from StdFail 
+        is static;
+	
+    Point(me; Index: Integer from Standard) 
+    	---Purpose: returns the IntersectionPoint of range <Index>
+    	--          raises NotDone if the computation has failed or if 
+    	--          the computation has not been done
+    	--          raises OutOfRange if Index is not in the range <1..NbPoints>
+        ---C++: return const &
+    	returns IntersectionPoint from IntCurveSurface
+	raises  NotDone           from StdFail,
+	        OutOfRange        from Standard
+	is static;
+	
+    NbSegments(me)
+    	---Purpose: returns the number of IntersectionSegment
+    	--          if IsDone returns True.
+    	--          else NotDone is raised.
+    	returns Integer from Standard 
+        raises  NotDone from StdFail 
+        is static;
+	
+    Segment(me; Index: Integer from Standard) 
+        ---Purpose: returns the IntersectionSegment of range <Index>
+    	--          raises NotDone if the computation has failed or if 
+    	--          the computation has not been done
+    	--          raises OutOfRange if Index is not in the range <1..NbSegment>
+    	---C++: return const &
+    	returns IntersectionSegment from IntCurveSurface
+	raises  NotDone             from StdFail,
+	        OutOfRange          from Standard
+	is static;
+	
+    SetValues(me:in out; Inter: Intersection from IntCurveSurface)
+    	---Purpose: Internal method
+    	--          copy the <Inter> fields to <me>
+        is static protected;
+    
+    Append(me:in out; Inter: Intersection from IntCurveSurface;
+           FirstParamOnCurve: Real from Standard;
+	   LastParamOnCurve : Real from Standard)
+	---Purpose: Internal method
+	--          Append the IntersectionPoints and 
+	--          IntersectionSegments of <Inter> to <me>.
+	is static protected;
+     
+    Append(me:in out; Pt: IntersectionPoint from IntCurveSurface)
+    	---Purpose: Internal method
+    	--          Append the IntersectionPoints of <Inter> to <me>
+        is static protected;
+    
+    Append(me:in out; Seg: IntersectionSegment from IntCurveSurface)
+	---Purpose: Internal method
+    	--          Append the IntersectionPoints of <Inter> to <me>
+        is static protected;
+    
+    ResetFields(me:in out)
+    	---Purpose: Internal method
+    	--          Reset all the fields of <me>
+    	--          Clear the sequences of IntersectionPoints and Segments
+    	--          Set the field <done> to Standard_False.
+        is static protected;
+
+    Dump(me)
+    	---Purpose: Dump all the fields.
+        is static;
+
+
+fields 
+     done      : Boolean        from Standard           is protected;
+     lpnt      : SequenceOfPnt  from IntCurveSurface;
+     lseg      : SequenceOfSeg  from IntCurveSurface;
+end Intersection;
+

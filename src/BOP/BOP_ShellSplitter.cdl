@@ -1,0 +1,97 @@
+-- File:	BOP_WireSplitter.cdl
+-- Created:	Mon Apr  9 10:50:36 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ShellSplitter from BOP 
+
+	---Purpose:  
+    	---  the algorithm to split (multiconnexed)   
+    	---  shells on a solid onto biconnexed shells 
+	---  when each edge is shared by only two or one  
+    	--   faces       
+
+uses 
+
+    Shell  from TopoDS,
+    ListOfShape from  TopTools, 
+    
+    ListOfListOfShape from BOPTColStd, 
+    
+    EdgeInfo                         from BOP,
+    IndexedDataMapOfEdgeListFaceInfo from BOP
+
+ --raises
+
+is 
+    Create   
+    	returns ShellSplitter from BOP; 
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    DoWithListOfEdges(me:out; 
+    	    	aLE:ListOfShape from  TopTools); 
+    	---Purpose:  
+    	--- Perform the algorithm using the  list of shapes <aLE> as data  
+    	---
+    SetShell    (me:out; 
+		aShell:Shell from TopoDS);    	     
+    	---Purpose:  
+    	--- Modifier
+    	---
+    Shell    (me) 
+	returns Shell from TopoDS; 
+    	---C++:  return const &	 
+    	---Purpose:  
+    	--- Selector
+    	---
+    DoWithShell (me:out); 
+    	---Purpose:  
+    	--- Perform the algorithm using the shell as data  
+    	---
+    Do          (me:out) 
+    	is private;  
+    	---Purpose:  
+    	--- Perform the algorithm 
+    	---
+    IsNothingToDo (me) 
+    	returns  Boolean from Standard;
+    	---Purpose: 
+    	--- Returns TRUE if the source shell is valid and      
+    	--- there  is  nothing to correct 
+    	---
+    IsDone (me) 
+    	returns  Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns TRUE if the algorithm was performed  
+    	--- successfuly 
+	---
+    Shapes (me) 
+    	returns  ListOfListOfShape from BOPTColStd;
+    	---C++:  return const &	    		 
+    	---Purpose:  
+    	--- Selector
+    	---
+    
+	
+fields  
+    myShell      :  Shell from TopoDS;
+    myIsDone     :  Boolean from Standard;
+    myNothingToDo:  Boolean from Standard;
+    myShapes     :  ListOfListOfShape from BOPTColStd; 
+    mySmartMap   :  IndexedDataMapOfEdgeListFaceInfo from BOP;  
+    myFaces      :  ListOfShape from  TopTools; 
+    
+end ShellSplitter;
+
+
+
+
+
+
+
+
+
+

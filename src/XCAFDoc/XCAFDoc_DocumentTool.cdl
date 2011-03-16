@@ -1,0 +1,103 @@
+-- File:	XCAFDoc_DocumentTool.cdl
+-- Created:	Wed Aug 30 15:14:59 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DocumentTool from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: Defines sections structure of an XDE document.
+
+uses
+    Label from TDF,
+    Document from TDocStd,
+    RelocationTable from TDF,
+    ShapeTool from XCAFDoc,
+    ColorTool from XCAFDoc,
+    LayerTool from XCAFDoc,
+    DimTolTool from XCAFDoc,
+    MaterialTool from XCAFDoc
+    
+is
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;    
+    
+    Set (myclass; L: Label from TDF; 
+		  IsAcces: Boolean from Standard = Standard_True)
+    ---Purpose: Create (if not exist) DocumentTool attribute 
+    --          on 0.1 label if <IsAcces> is true, else 
+    --          on <L> label.
+    --          This label will be returned by DocLabel();
+    --          If the attribute is already set it won't be reset on
+    --          <L> even if <IsAcces> is false.
+    --          ColorTool and ShapeTool attributes are also set by this method.
+    returns DocumentTool from XCAFDoc;
+    
+    IsXCAFDocument(myclass; Doc : Document from TDocStd)
+		    returns Boolean from Standard;
+    
+    
+    
+    ---Category: methods defining document structure
+    
+    DocLabel(myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns label where the DocumentTool attribute is or
+    --          0.1 if DocumentTool is not yet set.
+
+    ShapesLabel (myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns sub-label of DocLabel() with tag 1.
+    
+    ColorsLabel (myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns sub-label of DocLabel() with tag 2.
+    
+    LayersLabel (myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns sub-label of DocLabel() with tag 3.
+    
+    DGTsLabel (myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns sub-label of DocLabel() with tag 4.
+    
+    MaterialsLabel (myclass; acces: Label from TDF) returns Label from TDF;
+    ---Purpose: Returns sub-label of DocLabel() with tag 5.
+    
+    
+    ShapeTool (myclass; acces: Label from TDF) returns ShapeTool from XCAFDoc;
+    ---Purpose: Creates (if it does not exist) ShapeTool attribute on ShapesLabel().
+    
+    ColorTool(myclass; acces: Label from TDF) returns ColorTool from XCAFDoc;
+    ---Purpose: Creates (if it does not exist) ColorTool attribute on ColorsLabel().
+    
+    LayerTool(myclass; acces: Label from TDF) returns LayerTool from XCAFDoc;
+    ---Purpose: Creates (if it does not exist) LayerTool attribute on LayersLabel().
+        
+    DimTolTool(myclass; acces: Label from TDF) returns DimTolTool from XCAFDoc;
+    ---Purpose: Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
+        
+    MaterialTool(myclass; acces: Label from TDF) returns MaterialTool from XCAFDoc;
+    ---Purpose: Creates (if it does not exist) DimTolTool attribute on DGTsLabel().
+        
+    
+    Create 
+    returns mutable DocumentTool from XCAFDoc;
+
+    Init(me);
+    ---Purpose: to be called when reading this attribute from file
+    
+        ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    
+end DocumentTool;

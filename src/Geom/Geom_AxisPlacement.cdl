@@ -1,0 +1,103 @@
+-- File:	Geom_AxisPlacement.cdl
+-- Created:	Tue Mar  9 19:28:24 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class AxisPlacement from Geom inherits Geometry from Geom
+
+        ---Purpose : The abstract class AxisPlacement describes the
+    	-- common behavior of positioning systems in 3D space,
+    	-- such as axis or coordinate systems.
+    	-- The Geom package provides two implementations of
+    	-- 3D positioning systems:
+    	-- - the axis (Geom_Axis1Placement class), which is defined by:
+    	--   - its origin, also termed the "Location point" of the  axis,
+    	--   - its unit vector, termed the "Direction" or "main
+    	--    Direction" of the axis;
+    	-- - the right-handed coordinate system
+    	--   (Geom_Axis2Placement class), which is defined by:
+    	-- - its origin, also termed the "Location point" of the coordinate system,
+    	-- - three orthogonal unit vectors, termed
+    	--    respectively the "X Direction", the "Y Direction"
+    	--    and the "Direction" of the coordinate system. As
+    	--    the coordinate system is right-handed, these
+    	--    unit vectors have the following relation:
+    	--    "Direction" = "X Direction" ^
+    	--    "Y Direction". The "Direction" is also
+    	--    called the "main Direction" because, when the
+    	--    unit vector is modified, the "X Direction" and "Y
+    	--    Direction" are recomputed, whereas when the "X
+    	--    Direction" or "Y Direction" is modified, the "main Direction" does not change.
+    	--     The axis whose origin is the origin of the positioning
+    	-- system and whose unit vector is its "main Direction" is
+    	-- also called the "Axis" or "main Axis" of the positioning system.
+       
+
+uses Ax1 from gp,
+     Dir from gp,
+     Pnt from gp,
+     Vec from gp
+
+raises ConstructionError from Standard
+
+is
+
+  SetAxis (me : mutable; A1 : Ax1);
+        ---Purpose : Assigns A1 as the "main Axis" of this positioning system. This modifies
+    	-- - its origin, and
+    	-- - its "main Direction".
+    	--  If this positioning system is a
+    	-- Geom_Axis2Placement, then its "X Direction" and
+    	-- "Y Direction" are recomputed.
+    	-- Exceptions
+    	-- For a Geom_Axis2Placement:
+    	-- Standard_ConstructionError if A1 and the
+    	-- previous "X Direction" of the coordinate system are parallel.
+     
+  SetDirection (me : mutable; V : Dir)
+        ---Purpose :
+        --  Changes the direction of the axis placement.
+        --  If <me> is an axis placement two axis the main "Direction"
+        --  is modified and the "XDirection" and "YDirection" are
+        --  recomputed.
+    	--    Raises ConstructionError only for an axis placement two axis if V and the 
+        --  previous "XDirection" are parallel because it is not possible
+        --  to calculate the new "XDirection" and the new "YDirection".
+     raises ConstructionError
+            is deferred;
+
+
+  SetLocation (me : mutable; P : Pnt);
+        ---Purpose :
+        --  Assigns the point P as the origin of this positioning  system.
+
+  Angle (me; Other : AxisPlacement)  returns Real;
+        ---Purpose : Computes the angular value, in radians, between the
+    	-- "main Direction" of this positioning system and that
+    	-- of positioning system Other. The result is a value between 0 and Pi.
+
+
+  Axis (me)  returns Ax1;
+        ---Purpose : Returns the main axis of the axis placement.
+        --  For an "Axis2placement" it is the main axis (Location, Direction ).
+        --  For an "Axis1Placement" this method returns a copy of <me>.
+    	---C++: return const&
+
+
+  Direction (me)   returns Dir;
+        ---Purpose :
+        --  Returns the main "Direction" of an axis placement.
+
+
+  Location (me)  returns Pnt;
+      	---Purpose : 
+      	--  Returns the Location point (origin) of the axis placement.
+
+
+fields
+
+  axis : Ax1 is protected;
+
+end;

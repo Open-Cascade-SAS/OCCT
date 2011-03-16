@@ -1,0 +1,41 @@
+-- File:	TCollection_Array1Descriptor.cdl
+-- Created:	Wed Nov 25 10:02:32 1992
+-- Author:	Jean Pierre TIRAULT
+--		<jpt@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+deferred class Array2Descriptor from TCollection
+
+uses 
+    Integer from Standard,
+    Address from Standard
+
+is
+    Initialize (aLowerRow: Integer; aUpperRow: Integer; 
+    	    	aLowerCol: Integer; aUpperCol: Integer;
+    	    	anAddress: Address);
+
+    UpperRow (me) returns Integer;
+    ---Level: Advanced
+    
+    LowerRow (me) returns Integer;
+    ---Level: Advanced
+
+    UpperCol (me) returns Integer;
+    ---Level: Advanced
+    
+    LowerCol (me) returns Integer;
+    ---Level: Advanced
+
+    Address(me) returns Address;
+    ---Level: Advanced
+
+fields
+    myAddress     : Address;
+    myLowerRow    : Integer;
+    myLowerCol    : Integer;
+    myUpperRow    : Integer;
+    myUpperCol    : Integer;
+
+    
+end;    

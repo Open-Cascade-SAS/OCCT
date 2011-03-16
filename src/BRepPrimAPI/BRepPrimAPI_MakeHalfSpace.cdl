@@ -1,0 +1,63 @@
+-- File:	BRepPrimAPI_MakeHalfSpace.cdl
+-- Created:	Wed Mar 08 10:07:07 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeHalfSpace from BRepPrimAPI  inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Describes functions to build half-spaces.
+    	-- A half-space is an infinite solid, limited by a surface. It
+    	-- is built from a face or a shell, which bounds it, and with
+    	-- a reference point, which specifies the side of the
+    	-- surface where the matter of the half-space is located.
+    	-- A half-space is a tool commonly used in topological
+    	-- operations to cut another shape.
+    	-- A MakeHalfSpace object provides a framework for:
+    	-- -   defining and implementing the construction of a half-space, and
+    	-- -   consulting the result.
+
+uses
+    Shape      from TopoDS,
+    Vertex     from TopoDS,
+    Face       from TopoDS,
+    Shell      from TopoDS,
+    Solid      from TopoDS,
+    Pnt        from gp, 
+    MakeShape from BRepBuilderAPI
+
+raises
+    NotDone from StdFail
+is
+
+    Create(Face   : Face from TopoDS;
+    	   RefPnt : Pnt  from gp)
+    returns MakeHalfSpace from BRepPrimAPI;
+	---Purpose: Make a HalfSpace defined with a Face and a Point.
+	---Level: Public
+
+    Create(Shell  : Shell from TopoDS;
+    	   RefPnt : Pnt   from gp)
+    returns MakeHalfSpace from BRepPrimAPI;
+	---Purpose: Make a HalfSpace defined with a Shell and a Point.
+	---Level: Public
+
+
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    Solid(me) returns Solid from TopoDS
+	---Purpose: Returns the constructed half-space as a solid.
+    	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Solid() const;" 
+    raises
+    	NotDone from StdFail
+    is static; 
+
+fields
+
+    mySolid : Solid from TopoDS;
+
+end MakeHalfSpace;

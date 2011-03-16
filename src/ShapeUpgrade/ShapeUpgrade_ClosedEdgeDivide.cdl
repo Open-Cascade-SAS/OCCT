@@ -1,0 +1,24 @@
+-- File:	ShapeUpgrade_ClosedEdgeDivide.cdl
+-- Created:	Thu May 25 10:17:39 2000
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2000
+
+
+class ClosedEdgeDivide from ShapeUpgrade inherits EdgeDivide from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+
+    Edge from TopoDS
+
+is
+
+    Create returns ClosedEdgeDivide from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    Compute(me: mutable; anEdge: Edge from TopoDS)
+    returns Boolean is redefined;
+    
+end ClosedEdgeDivide;

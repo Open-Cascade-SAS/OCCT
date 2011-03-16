@@ -1,0 +1,65 @@
+-- File:	BRepToIGES_BRSolid.cdl
+-- Created:	Fri Jan 27 11:31:31 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class BRSolid from BRepToIGES inherits BREntity from BRepToIGES
+
+    ---Purpose: This class implements the transfer of Shape Entities from Geom
+    --          To IGES. These can be :
+    --            . Vertex
+    --            . Edge
+    --            . Wire
+  
+
+uses
+
+    Shape                from TopoDS,
+    Solid                from TopoDS,
+    CompSolid            from TopoDS,
+    Compound             from TopoDS,
+    IGESEntity           from IGESData,
+    BREntity             from BRepToIGES    
+    
+is 
+    
+    Create returns BRSolid from BRepToIGES;
+
+
+    Create (BR : BREntity from BRepToIGES)
+    	returns BRSolid from BRepToIGES;    
+
+
+    TransferSolid (me    : in out;
+                   start : Shape from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Shape entity from TopoDS to IGES 
+    --            this entity must be a Solid or a CompSolid or a Compound. 
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferSolid (me    : in out;
+                   start : Solid from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Solid entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferCompSolid (me    : in out;
+                       start : CompSolid from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an CompSolid entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferCompound (me    : in out;
+                      start : Compound from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Compound entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+end BRSolid;
+
+

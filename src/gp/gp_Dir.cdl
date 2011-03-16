@@ -1,0 +1,307 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+class Dir   from gp  inherits Storable
+        ---Purpose:
+        -- Describes a unit vector in 3D space. This unit vector is also called "Direction".
+        -- See Also
+        -- gce_MakeDir which provides functions for more complex
+        -- unit vector constructions
+        -- Geom_Direction which provides additional functions for
+        -- constructing unit vectors and works, in particular, with the
+        -- parametric equations of unit vectors.
+
+uses  Ax1  from gp,
+      Ax2  from gp,
+      Trsf from gp,
+      Vec  from gp,
+      XYZ  from gp
+
+raises ConstructionError from Standard,
+       DomainError       from Standard,
+       OutOfRange        from Standard
+
+is
+
+
+  Create  returns Dir;
+        ---C++:inline
+        --- Purpose : Creates a direction corresponding to X axis.
+   
+
+  Create (V : Vec)  returns Dir
+        ---C++:inline
+        --- Purpose : Normalizes the vector V and creates a direction. Raises ConstructionError if V.Magnitude() <= Resolution.
+
+     raises ConstructionError;
+
+  Create (Coord : XYZ)   returns Dir
+        ---C++:inline
+        --- Purpose : Creates a direction from a triplet of coordinates. Raises ConstructionError if Coord.Modulus() <= Resolution from gp.
+
+     raises ConstructionError;
+  
+  Create ( Xv, Yv, Zv : Real)  returns Dir
+        ---C++:inline  
+        --- Purpose : Creates a direction with its 3 cartesian coordinates. Raises ConstructionError if Sqrt(Xv*Xv + Yv*Yv + Zv*Zv) <= Resolution
+     raises ConstructionError;
+ 
+        --- Purpose : Modification of the direction's coordinates
+        --  If Sqrt (X*X + Y*Y + Z*Z) <= Resolution from gp where 
+        --  X, Y ,Z are the new coordinates it is not possible to 
+        --  construct the direction and the method raises the 
+        --  exception ConstructionError.
+
+
+  SetCoord (me: in out; Index : Integer; Xi : Real)
+        ---C++:inline
+        ---Purpose:
+    	-- For this unit vector,  assigns the value Xi to:
+    	--   -   the X coordinate if Index is 1, or
+    	--   -   the Y coordinate if Index is 2, or
+    	--   -   the Z coordinate if Index is 3, 
+    	--   and then normalizes it.
+    	-- Warning
+    	-- Remember that all the coordinates of a unit vector are
+    	-- implicitly modified when any single one is changed directly.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not 1, 2, or 3.
+    	-- Standard_ConstructionError if either of the following
+    	-- is less than or equal to gp::Resolution():
+    	-- -   Sqrt(Xv*Xv + Yv*Yv + Zv*Zv), or
+    	-- -   the modulus of the number triple formed by the new
+    	--   value Xi and the two other coordinates of this vector
+    	--   that were not directly modified.      
+        
+     raises OutOfRange,
+           ConstructionError
+     is static;
+
+  SetCoord (me : in out; Xv, Yv, Zv : Real) raises ConstructionError is static;
+          ---C++:inline
+    	---Purpose: For this unit vector,  assigns the values Xv, Yv and Zv to its three coordinates. 
+    	-- Remember that all the coordinates of a unit vector are
+    	-- implicitly modified when any single one is changed directly.
+
+
+  SetX (me: in out; X : Real)      raises ConstructionError  is static;
+        ---C++:inline
+    	---Purpose: Assigns the given value to the X coordinate of this   unit vector.
+
+  SetY (me: in out; Y : Real)      raises ConstructionError  is static;
+        ---C++:inline
+    	---Purpose: Assigns the given value to the Y coordinate of this   unit vector.
+
+  SetZ (me: in out; Z : Real)      raises ConstructionError  is static;
+        ---C++:inline
+    	---Purpose: Assigns the given value to the Z  coordinate of this   unit vector.
+
+  SetXYZ (me: in out; Coord : XYZ) raises ConstructionError  is static;
+        ---C++:inline
+	---Purpose: Assigns the three coordinates of Coord to this unit vector. 
+
+  Coord (me; Index : Integer)   returns Real
+        ---C++:inline
+        --- Purpose :
+        --  Returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+        --  Index = 3 => Z is returned
+    	-- Exceptions
+        -- Standard_OutOfRange if Index is not 1, 2, or 3.
+    raises OutOfRange
+      is static;
+
+  Coord (me; Xv, Yv, Zv : out Real) is static;
+        ---C++:inline  
+    	---Purpose: Returns for the  unit vector  its three coordinates Xv, Yv, and Zv.
+    
+  X (me)  returns Real              is static;
+        ---C++:inline
+    	---Purpose: Returns the X coordinate for a  unit vector.
+
+  Y (me)  returns Real              is static;
+        ---C++:inline
+    	---Purpose: Returns the Y coordinate for a  unit vector.
+
+  Z (me)  returns Real              is static;
+        ---C++:inline
+    	---Purpose: Returns the Z coordinate for a  unit vector.
+
+  XYZ (me)  returns XYZ             is static;
+        ---C++: inline
+    	---C++: return const&
+    	--- Purpose : for this unit vector, returns  its three coordinates as a number triplea.
+
+  IsEqual (me; Other : Dir; AngularTolerance : Real)     returns Boolean
+     is static;
+       ---C++:inline
+       --- Purpose : 
+       --  Returns True if the angle between the two directions is
+       --  lower or equal to AngularTolerance.
+
+
+  IsNormal(me; Other : Dir; AngularTolerance : Real)     returns Boolean
+     is static;
+        ---C++: inline                  
+        --- Purpose :
+        --  Returns True if  the angle between this unit vector and the unit vector Other is equal to Pi/2 (normal).
+
+  IsOpposite (me; Other : Dir; AngularTolerance : Real)  returns Boolean
+     is static;
+        ---C++: inline     
+        --- Purpose:
+	--  Returns True if  the angle between this unit vector and the unit vector Other is equal to  Pi (opposite).
+
+
+  IsParallel (me; Other : Dir; AngularTolerance : Real)  returns Boolean
+     is static;
+        ---C++: inline     
+        --- Purpose :
+        -- Returns true if the angle between this unit vector and the
+    	-- unit vector Other is equal to 0 or to Pi.
+    	-- Note: the tolerance criterion is given by AngularTolerance.
+
+  Angle (me; Other : Dir)   returns Real   is static;
+        --- Purpose :
+    	--  Computes the angular value in radians between <me> and
+    	--  <Other>. This value is always positive in 3D space.
+    	--  Returns the angle in the range [0, PI]
+
+
+  AngleWithRef (me; Other, VRef : Dir)  returns Real
+        --- Purpose :
+        --  Computes the angular value between <me> and <Other>.
+        --  <VRef> is the direction of reference normal to <me> and <Other>
+        --  and its orientation gives the positive sense of rotation.
+        --  If the cross product <me> ^ <Other> has the same orientation 
+        --  as <VRef> the angular value is positive else negative.
+        --  Returns the angular value in the range -PI and PI (in radians). Raises  DomainError if <me> and <Other> are not parallel this exception is raised
+        --  when <VRef> is in the same plane as <me> and <Other>
+        --  The tolerance criterion is Resolution from package gp.
+     raises  DomainError
+  
+     is static;
+
+
+
+  Cross (me : in out; Right : Dir)        raises ConstructionError  is static;
+        --- Purpose : Computes the cross product between two directions
+        --  Raises the exception ConstructionError if the two directions
+        --  are parallel because the computed vector cannot be normalized
+        --  to create a direction.    
+        ---C++: inline
+	---C++: alias operator ^=
+	
+  Crossed (me; Right : Dir)  returns Dir  raises ConstructionError  is static;
+    --- Purpose : Computes the triple vector product.
+        --  <me> ^ (V1 ^ V2)
+        --  Raises the exception ConstructionError if V1 and V2 are parallel 
+        --  or <me> and (V1^V2) are parallel because the computed vector 
+        --  can't be normalized to create a direction.
+        ---C++: inline
+        ---C++: alias operator ^
+
+  CrossCross (me : in out; V1, V2 : Dir)  raises ConstructionError  is static;
+    	--- Propose:  Computes the double vector product this ^ (V1 ^ V2).
+    	--   CrossCross assigns the result to this unit vector 
+    	-- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- -   V1 and V2 are parallel, or
+    	-- -   this unit vector and (V1 ^ V2) are parallel.
+    	-- This is because, in these conditions, the computed vector
+    	-- is null and cannot be normalized.
+	---C++: inline
+	
+  CrossCrossed (me; V1, V2 : Dir)  returns Dir  raises ConstructionError
+     is static;
+	--- Purpose:  Computes the double vector product this ^ (V1 ^ V2).
+    	--  -   CrossCrossed creates a new unit vector. 
+    	-- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- -   V1 and V2 are parallel, or
+    	-- -   this unit vector and (V1 ^ V2) are parallel.
+    	-- This is because, in these conditions, the computed vector
+    	-- is null and cannot be normalized.
+        ---C++: inline
+
+  Dot (me; Other : Dir)   returns Real   is static;
+        --- Purpose : Computes the scalar product
+        ---C++: inline
+        ---C++: alias operator *
+
+
+  DotCross (me; V1, V2 : Dir)  returns Real   is static;
+        --- Purpose : 
+        --  Computes the triple scalar product <me> * (V1 ^ V2).
+        -- Warnings :
+        --  The computed vector V1' = V1 ^ V2 is not normalized
+        --  to create a unitary vector. So this method never 
+        --  raises an exception even if V1 and V2 are parallel.
+        ---C++: inline
+
+  Reverse (me : in out)        is static;
+        ---C++: inline
+	
+  Reversed (me)  returns Dir   is static;
+        --- Purpose : Reverses the orientation of a direction
+        ---C++: inline
+        ---C++: alias operator -
+
+
+	--- Purpose : geometric transformations
+        --  Performs the symmetrical transformation of a direction
+        --  with respect to the direction V which is the center of 
+        --  the  symmetry.]
+	
+  Mirror (me : in out; V : Dir)         is static;
+
+  Mirrored (me; V : Dir)  returns Dir   is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a direction
+        --  with respect to the direction V which is the center of 
+        --  the  symmetry.
+
+
+  Mirror (me : in out; A1 : Ax1)        is static;
+
+  Mirrored (me; A1 : Ax1)  returns Dir  is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a direction
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry.
+
+ 
+  Mirror (me : in out; A2 : Ax2)        is static;
+
+  Mirrored (me; A2 : Ax2)  returns Dir  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a direction
+        --  with respect to a plane. The axis placement A2 locates 
+        --  the plane of the symmetry : (Location, XDirection, YDirection).
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)         is static;
+        ---C++: inline  
+  
+  Rotated (me; A1 : Ax1; Ang : Real)   returns Dir   is static;
+        ---C++: inline  
+        --- Purpose :
+        --  Rotates a direction. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+ Transform   (me : in out; T : Trsf)      is static;
+
+  Transformed (me; T : Trsf)  returns Dir  is static;
+    	--- Purpose : 
+        --  Transforms a direction with a "Trsf" from gp.
+        -- Warnings :
+        --  If the scale factor of the "Trsf" T is negative then the
+        --  direction <me> is reversed.
+        ---C++: inline
+
+      
+fields
+
+    coord : XYZ;
+
+end;

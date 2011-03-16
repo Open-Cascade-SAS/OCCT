@@ -1,0 +1,36 @@
+-- File:	MAT2d_BiInt.cdl
+-- Created:	Fri Nov 19 11:56:44 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class BiInt from MAT2d 
+
+	---Purpose: BiInt is a set of two integers.
+is
+
+    Create ( I1,I2 : Integer) returns BiInt from MAT2d;
+    
+    FirstIndex(me) returns Integer
+    is static;
+    
+    SecondIndex(me) returns Integer
+    is static;
+    
+    FirstIndex(me : in out ; I1 : Integer)
+    is static;
+    
+    SecondIndex(me : in out ; I2 : Integer)
+    is static;
+    
+    IsEqual (me ;B : BiInt from MAT2d) returns Boolean
+    	---C++: alias operator ==
+    is static;
+    
+fields
+
+    i1 : Integer;
+    i2 : Integer;
+    
+end BiInt;

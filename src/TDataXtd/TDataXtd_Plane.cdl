@@ -1,0 +1,76 @@
+-- File:	TDataXtd_Plane.cdl
+-- Created:	Mon Apr  6 18:22:10 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009 
+
+class Plane from TDataXtd inherits Attribute from TDF
+
+    	
+	---Purpose: The basis to define a plane attribute.
+    	--  Warning:  Use TDataXtd_Geometry  attribute  to retrieve  the
+	--          gp_Pln of the Plane attribute
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Label           from TDF,
+     Plane           from Geom,
+     Pln             from gp,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is    
+
+    ---Purpose: class methods
+    --          =============
+   
+    GetID (myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;
+    	---Purpose:
+    	-- Returns the GUID for plane attributes.
+
+    Set (myclass ; label : Label from TDF)    
+    	---Purpose:  Finds or creates the plane attribute defined by
+    	-- the label label.
+    	-- Warning
+    	-- If you are creating the attribute with this syntax, a
+    	-- planar face should already be associated with label.
+    returns Plane from TDataXtd;    
+
+    Set (myclass ; label : Label from TDF; P : Pln from gp)
+    	---Purpose: Finds,  or creates,  a Plane  attribute  and sets <P>  as
+    	--          generated the associated NamedShape.
+    returns Plane from TDataXtd;    
+
+
+    ---Purpose: Plane methods
+    --         =============    
+
+    Create
+    returns mutable Plane from TDataXtd;  
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);  
+
+    Dump (me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+end Plane;
+
+

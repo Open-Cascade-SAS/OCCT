@@ -1,0 +1,30 @@
+-- File:        Invisibility.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWInvisibility from RWStepVisual
+
+	---Purpose : Read & Write Module for Invisibility
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Invisibility from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWInvisibility;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Invisibility from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : Invisibility from StepVisual);
+
+	Share(me; ent : Invisibility from StepVisual; iter : in out EntityIterator);
+
+end RWInvisibility;

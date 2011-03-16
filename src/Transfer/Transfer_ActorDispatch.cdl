@@ -1,0 +1,64 @@
+-- File:	Transfer_ActorDispatch.cdl
+-- Created:	Tue May 24 13:44:29 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ActorDispatch  from Transfer  inherits ActorOfTransientProcess
+
+    ---Purpose : This class allows to work with a TransferDispatch, i.e. to
+    --          transfer entities from a data set to another one defined by
+    --          the same interface norm, with the following features :
+    --          - ActorDispatch itself acts as a default actor, i.e. it copies
+    --            entities with the general service Copy, as CopyTool does
+    --          - it allows to add other actors for specific ways of transfer,
+    --            which may include data modifications, conversions ...
+    --          - and other features from TransferDispatch (such as mapping
+    --            other than one-one)
+
+uses Transient,        InterfaceModel,   GeneralLib, Protocol from Interface,
+     TransferDispatch, TransientProcess, Binder
+
+raises InterfaceError
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib)
+    	 returns mutable ActorDispatch;
+    ---Purpose : Creates an ActorDispatch from a Model. Works with a General
+    --           Service Library, given as an Argument
+    --           This causes TransferDispatch and its TransientProcess to be
+    --           created, with default actor <me>
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns mutable ActorDispatch;
+    ---Purpose : Same as above, but Library is defined through a Protocol
+
+    Create (amodel : InterfaceModel) returns mutable ActorDispatch
+    ---Purpose : Same as above, but works with the Active Protocol
+    	raises InterfaceError;
+    --           Error if no Active Protocol is defined
+
+    AddActor (me : mutable; actor : mutable ActorOfTransientProcess from Transfer);
+    ---Purpose : Utility which adds an actor to the default <me> (it calls
+    --           SetActor from the TransientProcess)
+
+    TransferDispatch (me : mutable) returns TransferDispatch;
+    ---Purpose : Returns the TransferDispatch, which does the work, records
+    --           the intermediate data, etc...
+    --           See TransferDispatch & CopyTool, to see the available methods
+    ---C++ : return &
+
+
+    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
+    	returns mutable Binder  is redefined;
+    ---Purpose : Specific action : it calls the method Transfer from CopyTool
+    --           i.e. the general service Copy, then returns the Binder
+    --           produced by the TransientProcess
+
+fields
+
+    thetool : TransferDispatch;
+
+end ActorDispatch;

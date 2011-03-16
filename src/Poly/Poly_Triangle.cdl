@@ -1,0 +1,64 @@
+-- File:	Poly_Triangle.cdl
+-- Created:	Mon Mar  6 09:50:53 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Triangle from Poly 
+
+	---Purpose: Describes a component triangle of a triangulation
+    	-- (Poly_Triangulation object).
+    	-- A Triangle is defined by a triplet of nodes. Each node is an
+    	-- index in the table of nodes specific to an existing
+    	-- triangulation of a shape, and represents a point on the surface.
+
+raises
+    OutOfRange from Standard
+
+is
+
+    Create returns Triangle from Poly;
+	---Purpose: Constructs a triangle and sets all indices to zero.
+	
+    Create(N1,N2,N3 : Integer)
+    returns Triangle from Poly;
+    	---Purpose: Constructs a triangle and sets its three indices 
+   	-- to N1, N2 and N3 respectively, where these node values
+   	--   are indices in the table of nodes specific to an existing
+    	--   triangulation of a shape.
+    Set(me : in out; N1,N2,N3 : Integer);
+    	---Purpose: Sets the value of  the three nodes of this triangle to N1, N2 and N3   respectively.    
+   
+ Set(me : in out; Index, Node : Integer)
+	---Purpose: Sets the value of  the Indexth node of this triangle to Node. 
+ 	-- Raises OutOfRange if Index is not in 1,2,3
+    raises
+    OutOfRange from Standard;
+	---C++: inline
+
+    Get(me; N1,N2,N3 : in out Integer);
+    	--- Purpose: Returns the node indices of this triangle in N1, N2 and N3.   
+  
+    Value(me; Index : Integer) returns Integer
+	---Purpose: Get the node of given Index.
+	-- Raises OutOfRange from Standard if Index is not in 1,2,3
+    raises
+    OutOfRange from Standard;
+	---C++: inline
+	---C++: alias operator()
+
+    ChangeValue(me : in out; Index : Integer) returns Integer
+	---Purpose: Get the node of given Index.
+    	-- Raises OutOfRange if Index is not in 1,2,3
+    raises
+    OutOfRange from Standard;
+    	---C++: inline
+	---C++: return &
+	---C++: alias operator()
+	
+fields
+
+    myNodes : Integer [3];
+
+end Triangle;

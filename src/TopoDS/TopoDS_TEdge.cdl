@@ -1,0 +1,20 @@
+-- File:	TopoDS_TEdge.cdl
+-- Created:	Mon Dec 17 09:53:25 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+deferred class TEdge from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Initialize ; 
+    ---C++: inline
+    ---Purpose: Construct an edge.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: Returns  EDGE.
+
+end TEdge;

@@ -1,0 +1,33 @@
+-- File:	IFSelect_SignValidity.cdl
+-- Created:	Fri Jan 26 18:15:50 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class SignValidity  from IFSelect  inherits Signature
+
+    ---Purpose : This Signature returns the Validity Status of an entity, as
+    --           deducted from data in the model : it can be
+    --           "OK" "Unknown" "Unloaded" "Syntactic Fail"(but loaded)
+    --           "Syntactic Warning" "Semantic Fail" "Semantic Warning"
+
+
+uses CString, Transient, InterfaceModel
+
+is
+
+    Create returns mutable SignValidity;
+    ---Purpose : Returns a SignValidity
+
+    CVal  (myclass; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the Signature for a Transient object, as a validity
+    --           deducted from data (reports) stored in the model.
+    --           Class method, can be called by any one
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the Signature for a Transient object, as a validity
+    --           deducted from data (reports) stored in the model
+    --           Calls the class method CVal
+
+end SignValidity;

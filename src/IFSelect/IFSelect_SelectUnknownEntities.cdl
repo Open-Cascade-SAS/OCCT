@@ -1,0 +1,29 @@
+-- File:	SelectUnknownEntities.cdl
+-- Created:	Wed Nov 18 09:55:55 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectUnknownEntities  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectUnknownEntities sorts the Entities which are qualified
+    --           as "Unknown" (their Type has not been recognized)
+
+uses AsciiString from TCollection, InterfaceModel
+
+is
+
+    Create returns mutable SelectUnknownEntities;
+    ---Purpose : Creates a SelectUnknownEntities
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True for an Entity which is qualified as "Unknown",
+    --           i.e. if <model> known <ent> (through its Number) as Unknown
+
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Recognized Entities"
+
+end SelectUnknownEntities;

@@ -1,0 +1,63 @@
+-- File:	SelectMgr_SortCriterion.cdl
+-- Created:	Thu Mar 26 16:01:22 1998
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+private class SortCriterion from SelectMgr 
+
+    ---Purpose: This class provides data and criterion for sorting candidate
+    --          entities in the process of interactive selection by mouse click
+
+is
+    Create returns SortCriterion from SelectMgr;
+
+    Create(thePriority: Integer from Standard;
+    	   theDepth, theMinDist, theTol: Real from Standard;
+    	   PreferClosest: Boolean from Standard)
+    returns SortCriterion from SelectMgr;
+    ---Purpose: Defines parameters of selection criterion:
+    -- - Priority: selection priority
+    -- - Depth: distance from the view plane to the entity
+    -- - MinDist: distance from the clicked point to the entity on the view plane
+    -- - Tol: tolerance used for selecting candidates
+    -- - PreferClosest: specify whether closest object is preferred even if 
+    --                  if has less priority
+
+    SetPriority (me : in out; P:Integer from Standard);
+    ---C++: inline
+    SetDepth    (me : in out; D:Real from Standard);
+    ---C++: inline
+    SetMinDist  (me : in out; D:Real from Standard);
+    ---C++: inline
+    SetTol (me : in out; T:Real from Standard);
+    ---C++: inline
+
+    Priority(me) returns Integer from Standard;
+    ---C++: inline
+    Depth(me) returns Real from Standard;
+    ---C++: inline
+    MinDist(me) returns Real from Standard;
+    ---C++: inline
+    Tol(me) returns Real from Standard;
+    ---C++: inline
+
+
+    IsGreater(me;anOtherCriterion:SortCriterion from SelectMgr)
+    returns Boolean from Standard;
+    ---C++: alias operator >
+
+    IsLower(me;anOtherCriterion:SortCriterion from SelectMgr)
+    returns Boolean from Standard;
+    ---C++: alias operator <
+
+
+fields
+    myPrior: Integer from Standard;
+    myDepth: Real    from Standard;
+    myDist : Real    from Standard;
+    myTol  : Real    from Standard;
+    myPreferClosest: Boolean from Standard;
+    
+end SortCriterion;

@@ -1,0 +1,376 @@
+// File AppParCurves_BSpGradient.gxx
+// lpa, le 11/09/91
+
+
+// Application de la methode du gradient corrige pour minimiser 
+// F  = somme(||C(ui, Poles(ui)) - ptli||2.
+// La methode de gradient conjugue est programmee dans la bibliotheque 
+// mathematique: math_BFGS.
+
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <math_BFGS.hxx>
+#include <StdFail_NotDone.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_Array1OfVec2d.hxx>
+
+#include <OSD_Chronometer.hxx>
+
+static OSD_Chronometer chr1;
+
+
+static Standard_Boolean islambdadefined = Standard_False;
+
+
+
+static AppParCurves_Constraint FirstConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer FirstPoint)
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == FirstPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+static AppParCurves_Constraint LastConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer LastPoint)
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == LastPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+
+
+
+AppParCurves_BSpGradient::
+   AppParCurves_BSpGradient(const MultiLine& SSP,
+         const Standard_Integer FirstPoint,
+         const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+         math_Vector& Parameters,
+	 const TColStd_Array1OfReal& Knots,
+	 const TColStd_Array1OfInteger& Mults,
+         const Standard_Integer Deg,
+	 const Standard_Real Tol3d,
+	 const Standard_Real Tol2d,
+	 const Standard_Integer NbIterations):
+	 ParError(FirstPoint, LastPoint,0.0) 
+{
+  Perform(SSP, FirstPoint, LastPoint, TheConstraints, Parameters, 
+	  Knots, Mults, Deg, Tol3d, Tol2d, NbIterations);
+}
+
+
+AppParCurves_BSpGradient::
+   AppParCurves_BSpGradient(const MultiLine& SSP,
+         const Standard_Integer FirstPoint,
+         const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+         math_Vector& Parameters,
+	 const TColStd_Array1OfReal& Knots,
+	 const TColStd_Array1OfInteger& Mults,
+         const Standard_Integer Deg,
+	 const Standard_Real Tol3d,
+	 const Standard_Real Tol2d,
+	 const Standard_Integer NbIterations,
+	 const Standard_Real lambda1,
+	 const Standard_Real lambda2):
+	 ParError(FirstPoint, LastPoint,0.0) 
+{
+  mylambda1 = lambda1;
+  mylambda2 = lambda2;
+  islambdadefined = Standard_True;
+  Perform(SSP, FirstPoint, LastPoint, TheConstraints, Parameters, 
+	  Knots, Mults, Deg, Tol3d, Tol2d, NbIterations);
+}
+
+
+
+
+
+
+
+void AppParCurves_BSpGradient::
+  Perform(const MultiLine& SSP,
+         const Standard_Integer FirstPoint,
+         const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+         math_Vector& Parameters,
+	 const TColStd_Array1OfReal& Knots,
+	 const TColStd_Array1OfInteger& Mults,
+         const Standard_Integer Deg,
+	 const Standard_Real Tol3d,
+	 const Standard_Real Tol2d,
+	 const Standard_Integer NbIterations)
+{
+
+//  Standard_Boolean grad = Standard_True;
+  Standard_Integer i, j, k, i2, l;
+  Standard_Real UF, DU, Fval = 0.0, FU, DFU;
+  Standard_Integer nbP3d = ToolLine::NbP3d(SSP);
+  Standard_Integer nbP2d = ToolLine::NbP2d(SSP);
+  Standard_Integer mynbP3d=nbP3d, mynbP2d=nbP2d;
+  Standard_Integer nbP = nbP3d + nbP2d;
+//  gp_Pnt Pt, P1, P2;
+  gp_Pnt Pt;
+//  gp_Pnt2d Pt2d, P12d, P22d;
+  gp_Pnt2d Pt2d;
+//  gp_Vec V1, V2, MyV;
+  gp_Vec V1, MyV;
+//  gp_Vec2d V12d, V22d, MyV2d;
+  gp_Vec2d V12d, MyV2d;
+  Done = Standard_False;
+  
+  if (nbP3d == 0) mynbP3d = 1;
+  if (nbP2d == 0) mynbP2d = 1;
+  TColgp_Array1OfPnt TabP(1, mynbP3d);
+  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
+  TColgp_Array1OfVec TabV(1, mynbP3d);
+  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+
+  // Calcul de la fonction F= somme(||C(ui)-Ptli||2):
+  // Appel a une fonction heritant de MultipleVarFunctionWithGradient
+  // pour calculer F et grad_F.
+  // ================================================================
+
+  Standard_Integer nbpoles = -Deg -1;
+  for (i = Mults.Lower() ;i <= Mults.Upper(); i++) {
+    nbpoles += Mults(i);
+  }
+
+  TColgp_Array1OfPnt   TabPole(1, nbpoles);
+  TColgp_Array1OfPnt2d TabPole2d(1, nbpoles);
+  TColgp_Array1OfPnt    ThePoles(1, (nbpoles)*mynbP3d);
+  TColgp_Array1OfPnt2d  ThePoles2d(1, (nbpoles)*mynbP2d);
+
+
+  AppParCurves_Constraint 
+    FirstCons = FirstConstraint(TheConstraints, FirstPoint), 
+    LastCons  = LastConstraint(TheConstraints, LastPoint);
+
+
+  AppParCurves_BSpParFunction MyF(SSP, FirstPoint,LastPoint, TheConstraints, 
+				  Parameters, Knots, Mults, nbpoles);
+
+
+
+  if (FirstCons >= AppParCurves_TangencyPoint ||
+      LastCons >= AppParCurves_TangencyPoint) {
+
+    if (!islambdadefined) {
+      AppParCurves_BSpParLeastSquare thefitt(SSP, Knots, Mults, FirstPoint,
+					     LastPoint, FirstCons, LastCons, 
+					     Parameters, nbpoles);
+      if (FirstCons >= AppParCurves_TangencyPoint) {
+	mylambda1 = thefitt.FirstLambda();
+	MyF.SetFirstLambda(mylambda1);
+      }
+      if (LastCons >= AppParCurves_TangencyPoint) {
+	mylambda2 = thefitt.LastLambda();
+	MyF.SetLastLambda(mylambda2);
+      }
+    }
+    else {
+      MyF.SetFirstLambda(mylambda1);
+      MyF.SetLastLambda(mylambda2);
+    }
+  }
+
+
+  MyF.Value(Parameters, Fval);
+  MError3d = MyF.MaxError3d();
+  MError2d = MyF.MaxError2d();
+  SCU = MyF.CurveValue();
+
+  if (MError3d > Tol3d || MError2d > Tol2d) {
+
+    // Stockage des Poles des courbes pour projeter:
+    // ============================================
+    i2 = 0;
+    for (k = 1; k <= nbP3d; k++) {
+      SCU.Curve(k, TabPole);
+      for (j=1; j<=nbpoles; j++) ThePoles(j+i2) = TabPole(j);
+      i2 += nbpoles;
+    }
+    i2 = 0;
+    for (k = 1; k <= nbP2d; k++) {
+      SCU.Curve(nbP3d+k, TabPole2d);
+      for (j=1; j<=nbpoles; j++) ThePoles2d(j+i2) = TabPole2d(j);
+      i2 += nbpoles;
+    }
+    
+    //  Une iteration rapide de projection est faite par la methode de 
+    //  Rogers & Fog 89, methode equivalente a Hoschek 88 qui ne necessite pas
+    //  le calcul de D2.
+    
+    const math_Matrix& A = MyF.FunctionMatrix();
+    const math_Matrix& DA = MyF.DerivativeFunctionMatrix();
+    const math_IntegerVector& Index = MyF.Index();
+    Standard_Real aa, da, a, b, c, d , e , f, px, py, pz;
+    Standard_Integer indexdeb, indexfin;
+
+    for (j = FirstPoint+1; j <= LastPoint-1; j++) {
+      
+      UF = Parameters(j);
+      if (nbP3d != 0 && nbP2d != 0) ToolLine::Value(SSP, j, TabP, TabP2d);
+      else if (nbP2d != 0)          ToolLine::Value(SSP, j, TabP2d);
+      else                          ToolLine::Value(SSP, j, TabP);
+      
+      FU = 0.0;
+      DFU = 0.0;
+      i2 = 0;
+      
+      indexdeb = Index(j) + 1;
+      indexfin = indexdeb + Deg;
+
+      for (k = 1; k <= nbP3d; k++) {
+	a = b = c = d = e = f = 0.0;
+	for (l = indexdeb; l <= indexfin; l++) {
+	  Pt = ThePoles(l+i2); 
+	  px = Pt.X(); py = Pt.Y(); pz = Pt.Z();
+	  aa = A(j, l); da = DA(j, l);
+	  a += aa* px; d += da* px;
+	  b += aa* py; e += da* py;
+	  c += aa* pz; f += da* pz;
+	}
+	Pt.SetCoord(a, b, c);
+	V1.SetCoord(d, e, f);
+	i2 += nbpoles;
+
+	MyV = gp_Vec(Pt, TabP(k));
+	FU += MyV*V1;
+	DFU += V1.SquareMagnitude();
+      }
+      i2 = 0;
+      for (k = 1; k <= nbP2d; k++) {
+	a = b = d = e = 0.0;
+	for (l = indexdeb; l <= indexfin; l++) {
+	  Pt2d = ThePoles2d(l+i2); 
+	  px = Pt2d.X(); py = Pt2d.Y();
+	  aa = A(j, l); da = DA(j, l);
+	  a += aa* px; d += da* px;
+	  b += aa* py; e += da* py;
+	}
+	Pt2d.SetCoord(a, b);
+	V12d.SetCoord(d, e);
+	i2 += nbpoles;
+
+	MyV2d = gp_Vec2d(Pt2d, TabP2d(k));
+	FU += MyV2d*V12d;
+	DFU += V12d.SquareMagnitude();
+      }
+      
+      if (DFU >= RealEpsilon()) {
+	DU = FU/DFU;
+	DU = Sign(Min(5.e-02, Abs(DU)), DU);
+	UF += DU;
+	Parameters(j) = UF;
+      }
+    }
+    
+    MyF.Value(Parameters, Fval);
+    MError3d = MyF.MaxError3d();
+    MError2d = MyF.MaxError2d();
+  }
+
+
+  if (MError3d<= Tol3d && MError2d <= Tol2d) {
+    Done = Standard_True;
+  }
+  else if (NbIterations != 0) {
+    // NbIterations de gradient conjugue:
+    // =================================
+    Standard_Real Eps = 1.e-07;
+    AppParCurves_BSpGradient_BFGS FResol(MyF, Parameters, Tol3d, 
+					 Tol2d, Eps, NbIterations);
+  }
+
+  SCU = MyF.CurveValue();
+
+
+  AvError = 0.;
+  for (j = FirstPoint; j <= LastPoint; j++) {  
+    Parameters(j) = MyF.NewParameters()(j);
+    // Recherche des erreurs maxi et moyenne a un index donne:
+    for (k = 1; k <= nbP; k++) {
+      ParError(j) = Max(ParError(j), MyF.Error(j, k));
+    }
+    AvError += ParError(j);
+  }
+  AvError = AvError/(LastPoint-FirstPoint+1);
+
+
+  MError3d = MyF.MaxError3d();
+  MError2d = MyF.MaxError2d();
+  if (MError3d <= Tol3d && MError2d <= Tol2d) {
+    Done = Standard_True;
+  }
+
+}
+
+
+
+AppParCurves_MultiBSpCurve AppParCurves_BSpGradient::Value() const {
+  return SCU;
+}
+
+
+Standard_Boolean AppParCurves_BSpGradient::IsDone() const {
+  return Done;
+}
+
+
+Standard_Real AppParCurves_BSpGradient::Error(const Standard_Integer Index) const {
+  return ParError(Index);
+}
+
+Standard_Real AppParCurves_BSpGradient::AverageError() const {
+  return AvError;
+}
+
+Standard_Real AppParCurves_BSpGradient::MaxError3d() const {
+  return MError3d;
+}
+
+Standard_Real AppParCurves_BSpGradient::MaxError2d() const {
+  return MError2d;
+}
+
+

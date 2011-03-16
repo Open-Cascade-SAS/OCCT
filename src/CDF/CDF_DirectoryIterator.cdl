@@ -1,0 +1,40 @@
+-- File:	CDF_DirectoryIterator.cdl
+-- Created:	Wed Aug 13 13:53:20 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class DirectoryIterator from CDF
+
+uses
+    Directory from CDF,
+    Document from CDM,
+    ListIteratorOfListOfDocument from CDM
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create
+    returns DirectoryIterator from CDF;
+    ---Purpose: creates an Iterator with the directory 
+    --          of the current CDF.
+
+    Create(aDirectory: Directory from CDF) 
+    returns  DirectoryIterator from CDF;
+
+    MoreDocument (me: in out) returns Boolean from Standard;
+    ---Purpose : Returns True if there are more entries to return
+    
+    NextDocument (me: in out);
+    ---Purpose : Go to the next entry
+    --           (if there is not, Value will raise an exception)
+    
+    Document (me: in out) returns Document from CDM
+    ---Purpose : Returns item value of current entry
+    raises NoSuchObject  from Standard;
+
+fields
+
+    myIterator: ListIteratorOfListOfDocument from CDM;
+end DirectoryIterator from CDF;

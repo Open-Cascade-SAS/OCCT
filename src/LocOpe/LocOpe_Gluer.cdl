@@ -1,0 +1,150 @@
+-- File:	LocOpe_Gluer.cdl
+-- Created:	Tue Jan 30 11:14:18 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+
+class Gluer from LocOpe 
+
+	---Purpose: 
+
+uses Shape               from TopoDS,
+     Face                from TopoDS,
+     Edge                from TopoDS,
+     Orientation         from TopAbs,
+
+     Operation           from LocOpe,
+
+     ListOfShape                from TopTools,
+     IndexedDataMapOfShapeShape from TopTools,
+     DataMapOfShapeShape        from TopTools,
+     DataMapOfShapeListOfShape  from TopTools
+
+raises NotDone           from StdFail,
+       NoSuchObject      from Standard,
+       ConstructionError from Standard
+
+is
+
+    Create
+    
+    	returns Gluer from LocOpe;
+	---C++: inline
+	
+    Create(Sbase: Shape from TopoDS;
+           Snew : Shape from TopoDS)
+	   
+	returns Gluer from LocOpe;
+	---C++: inline
+
+	
+    Init(me: in out; Sbase: Shape from TopoDS;
+                     Snew : Shape from TopoDS)
+		     
+	is static;
+
+
+    Bind(me: in out; Fnew  : Face from TopoDS;
+    	             Fbase : Face from TopoDS)
+
+	is static;
+
+
+    Bind(me: in out; Enew : Edge from TopoDS;
+                     Ebase: Edge from TopoDS)
+
+    	is static;
+
+
+
+    OpeType(me)
+    
+    	returns Operation from LocOpe
+	---C++: inline
+	is static;
+
+
+    Perform(me: in out)
+
+	raises ConstructionError from Standard
+	-- The exception is raised if OpeType returns <LocOpe_INVALID>.
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    ResultingShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+    	raises NotDone from StdFail
+	is static;
+    
+
+    DescendantFaces(me; F: Face from TopoDS)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const&
+    	raises NotDone from StdFail,
+	--- The exception is raised when IsDone returns <Standard_False>.
+	       NoSuchObject from Standard
+	--- The exception is   raised   when <F> belongs  neither   to
+	--  <Sbase>  nor to <Snew>.
+	is static;
+    
+
+    BasisShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+	is static;
+
+
+    GluedShape(me)
+
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+	is static;
+
+    Edges(me)
+
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	is static;
+	
+    TgtEdges(me)
+
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	is static;
+	
+    AddEdges(me: in out)
+        is static private;
+
+
+fields
+
+    myDone : Boolean                    from Standard;
+    mySb   : Shape                      from TopoDS;
+    mySn   : Shape                      from TopoDS;
+    myRes  : Shape                      from TopoDS;
+    myOri  : Orientation                from TopAbs;
+    myOpe  : Operation                  from LocOpe;
+    myMapEF: IndexedDataMapOfShapeShape from TopTools;
+    myMapEE: DataMapOfShapeShape        from TopTools;
+    myDescF: DataMapOfShapeListOfShape  from TopTools;
+    myEdges: ListOfShape                from TopTools;
+    myTgtEdges: ListOfShape             from TopTools;
+    
+end Gluer;

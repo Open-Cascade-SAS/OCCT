@@ -1,0 +1,78 @@
+-- File:	MgtTopLoc.cdl
+-- Created:	Wed Mar  3 18:39:33 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+package MgtTopLoc 
+
+	---Purpose: The package  MgtTopLoc provides methods   to store
+	--          and retrieve local    coordinate    systems.  i.e.
+	--          translationg them from Persistent to Transient and
+	--          vice-versa. 
+	--          
+	--          * Persistent local coordinate systems are provided
+	--          by the package PTopLoc.
+	--          
+	--          * Transient local  coordinate systems are provided
+	--          by the package TopLoc.
+	--          
+	--          This package keeps  track of previous translations
+	--          to preserve the incremental  feature of coordinate
+	--          systems. i.e.  once a  data  has  been translated,
+	--          translating it back will give the original data.
+	--          
+	--          Two kinds of objects are managed :
+	--          
+	--          *   Datum3D :  A  Datum3D   is an elementary local
+	--          coordinate system handled by reference.
+	--          
+	--          *  Location   : A Location   is  a  complex  local
+	--          coordinate system   made   by  linking  elementary
+	--          coordinate systems  (Datum3D).  If  a Location  is
+	--          translated twice only the local coordinate systems
+	--          will be the same.  This  is not a problem  as  the
+	--          comparison of Locations is based on the comparison
+	--          of local coordinate systems.
+
+uses
+
+    TopLoc,
+    PTopLoc,
+    PTColStd
+    
+is
+    Translate(D : Datum3D from TopLoc;
+    	      M : in out TransientPersistentMap from PTColStd) 
+    returns Datum3D from PTopLoc;
+	---Purpose: Translate a  transient   Datum3D to  a  persistant
+	--          Datum3D.
+	---Level: Internal 
+	
+    Translate(D : Datum3D from PTopLoc;
+    	      M : in out PersistentTransientMap from PTColStd)
+    returns Datum3D from TopLoc;
+	---Purpose: Translate a  persistant   Datum3D to  a  transient
+	--          Datum3D.
+	---Level: Internal 
+	
+	
+    Translate(L : Location from TopLoc;
+    	      M : in out TransientPersistentMap from PTColStd)  
+    returns Location from PTopLoc;
+	---Purpose: Translate a non  storable  Location to  a storable
+	--          Location.
+	---Level: Internal 
+	
+    Translate(L : Location from PTopLoc;
+    	      M : in out PersistentTransientMap from PTColStd)   
+    returns Location from TopLoc;
+	---Purpose: Translate a storable  Location  to a non  storable
+	--          Location.
+	---Level: Internal 	
+    
+
+end MgtTopLoc;

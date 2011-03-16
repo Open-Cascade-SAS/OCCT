@@ -1,0 +1,64 @@
+// File:	STEPSelections_AssemblyLink.lxx
+// Created:	Wed Mar 24 16:11:23 1999
+// Author:	data exchange team
+//		<det@friendox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : GetNAUO
+//purpose  : 
+//=======================================================================
+
+inline Handle(StepRepr_NextAssemblyUsageOccurrence) STEPSelections_AssemblyLink::GetNAUO() const
+{
+  return myNAUO;
+}
+
+//=======================================================================
+//function : GetSDSR
+//purpose  : 
+//=======================================================================
+
+inline Handle(Standard_Transient) STEPSelections_AssemblyLink::GetItem() const
+{
+  return myItem;
+}
+
+//=======================================================================
+//function : GetComponent
+//purpose  : 
+//=======================================================================
+
+inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyLink::GetComponent() const
+{
+  return myComponent;
+}
+
+//=======================================================================
+//function : SetNAUO
+//purpose  : 
+//=======================================================================
+
+inline void STEPSelections_AssemblyLink::SetNAUO(const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo)
+{
+  myNAUO = nauo;
+}
+
+//=======================================================================
+//function : SetCDSR
+//purpose  : 
+//=======================================================================
+
+inline void STEPSelections_AssemblyLink::SetItem(const Handle(Standard_Transient)& item)
+{
+  myItem = item;
+}
+
+//=======================================================================
+//function : SetComponent
+//purpose  : 
+//=======================================================================
+
+inline void STEPSelections_AssemblyLink::SetComponent(const Handle(STEPSelections_AssemblyComponent)& part)
+{
+  myComponent = part;
+}

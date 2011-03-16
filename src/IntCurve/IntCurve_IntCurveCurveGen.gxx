@@ -1,0 +1,978 @@
+// File:	IntCurve_IntCurveCurveGen.gxx
+// Created:	Mon Oct 12 17:17:30 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+
+#include <GeomAbs_CurveType.hxx>
+
+
+#include <IntCurve_IntConicConic.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <Precision.hxx>
+
+#include <TColStd_Array1OfReal.hxx>
+
+
+void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C,
+					const Standard_Real TolConf,
+					const Standard_Real Tol) { 
+  IntRes2d_Domain D1;
+  Standard_Real TolDomain = Tol;
+  if(Tol<TolConf) TolDomain = TolConf;
+  GeomAbs_CurveType typ = TheCurveTool::TheType(C);
+  switch(typ) { 	
+  case GeomAbs_Ellipse:	
+  case GeomAbs_Circle:
+  case GeomAbs_Parabola:
+  case GeomAbs_Hyperbola:
+  case GeomAbs_Line:
+    ResetFields(); 
+    done = Standard_True;
+    return;
+  
+  default:
+    {
+      Standard_Real paraminf = TheCurveTool::FirstParameter(C);
+      Standard_Real paramsup = TheCurveTool::LastParameter(C);
+      if(paraminf>-Precision::Infinite()) { 
+	if(paramsup<Precision::Infinite()) { 
+	  //--         paraminf-----------paramsup
+	  D1.SetValues(TheCurveTool::Value(C,paraminf),
+		       paraminf,
+		       TolDomain,
+		       TheCurveTool::Value(C,paramsup),
+		       paramsup,
+		       TolDomain);
+	}
+	else { 
+	  //--        paraminf------------...
+	  D1.SetValues(TheCurveTool::Value(C,paraminf),
+		       paraminf,
+		       TolDomain,
+		       Standard_True);
+	}
+      }
+      else { 
+	if(paramsup<Precision::Infinite()) { 
+	  //--    ...-----------------paramsup
+	  D1.SetValues(TheCurveTool::Value(C,paramsup),
+		       paramsup,
+		       TolDomain,
+		       Standard_False);
+	}
+      }
+      this->ResetFields();
+      intcurvcurv.SetReversedParameters(Standard_False);    
+      intcurvcurv.Perform(C,D1,TolConf,Tol);
+      this->SetValues(intcurvcurv);
+      done = Standard_True;
+    }
+  }
+}
+
+
+void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C,
+					const IntRes2d_Domain& D,
+					const Standard_Real TolConf,
+					const Standard_Real Tol) { 
+  GeomAbs_CurveType typ = TheCurveTool::TheType(C);
+  switch(typ) { 	
+  case GeomAbs_Ellipse:	
+  case GeomAbs_Circle:
+  case GeomAbs_Parabola:
+  case GeomAbs_Hyperbola:
+  case GeomAbs_Line:
+    ResetFields(); 
+    done = Standard_True;
+    return;
+  
+  default:
+    {
+      this->ResetFields();
+      intcurvcurv.SetReversedParameters(Standard_False);    
+      intcurvcurv.Perform(C,D,TolConf,Tol);
+      this->SetValues(intcurvcurv);
+      done = Standard_True;
+    }
+  }
+}
+
+
+
+
+//----------------------------------------------------------------------
+IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
+							 const Standard_Real TolDomain) const { 
+  IntRes2d_Domain D1;
+
+  GeomAbs_CurveType typ = TheCurveTool::TheType(C1);
+  switch(typ) { 
+    
+  case GeomAbs_Ellipse: 
+  case GeomAbs_Circle: {
+    //---------------------------------------------------------------
+    //-- if the curve is a trimmed curve, first and last parameters
+    //-- will be the parameters used to buid the domain
+    //--
+    Standard_Real firstparameter = TheCurveTool::FirstParameter(C1);
+    Standard_Real lastparameter  = TheCurveTool::LastParameter(C1);  
+
+    gp_Pnt2d P1(TheCurveTool::Value(C1,firstparameter));
+    gp_Pnt2d P2(TheCurveTool::Value(C1,lastparameter));
+    D1.SetValues(P1,firstparameter  ,TolDomain,
+		 P2,lastparameter   ,TolDomain);
+    D1.SetEquivalentParameters(firstparameter,firstparameter+PI+PI);
+    break; 
+  }
+  default: { 
+    Standard_Real paraminf = TheCurveTool::FirstParameter(C1);
+    Standard_Real paramsup = TheCurveTool::LastParameter(C1);
+    if(paraminf>-Precision::Infinite()) { 
+      if(paramsup<Precision::Infinite()) { 
+	//--         paraminf-----------paramsup
+	D1.SetValues(TheCurveTool::Value(C1,paraminf),
+		     paraminf,
+		     TolDomain,
+		     TheCurveTool::Value(C1,paramsup),
+		     paramsup,
+		     TolDomain);
+      }
+      else { 
+	//--        paraminf------------...
+	D1.SetValues(TheCurveTool::Value(C1,paraminf),
+		     paraminf,
+		     TolDomain,
+		     Standard_True);
+      }
+    }
+    else { 
+      if(paramsup<Precision::Infinite()) { 
+	//--    ...-----------------paramsup
+	D1.SetValues(TheCurveTool::Value(C1,paramsup),
+		     paramsup,
+		     TolDomain,
+		     Standard_False);
+      }
+    }
+    break;
+  }
+  }
+  return(D1);
+}
+//----------------------------------------------------------------------
+//-- Perform : Si Une des courbes est Composite Alors decompose les appels
+//----------------------------------------------------------------------
+void IntCurve_IntCurveCurveGen::Perform (const TheCurve& C1,
+					 const IntRes2d_Domain& D1,
+					 const TheCurve& C2,
+					 const IntRes2d_Domain& D2,
+					 const Standard_Real TolConf,
+					 const Standard_Real Tol) {
+  this->ResetFields();
+  Standard_Integer nbi1 = TheCurveTool::NbIntervals(C1);
+  if(nbi1 > 1) { 
+    param1inf = TheCurveTool::FirstParameter(C1);
+    param1sup = TheCurveTool::LastParameter(C1);
+  }
+  else {
+    param1inf = (D1.HasFirstPoint())? (D1.FirstParameter()) : -Precision::Infinite();
+    param1sup = (D1.HasLastPoint()) ? (D1.LastParameter())  : Precision::Infinite();
+  }
+  Standard_Integer nbi2 = TheCurveTool::NbIntervals(C2);
+  if(nbi2 > 1) { 
+    param2inf = TheCurveTool::FirstParameter(C2);
+    param2sup = TheCurveTool::LastParameter(C2);
+  }
+  else {
+    param2inf = (D2.HasFirstPoint())? (D2.FirstParameter()) : -Precision::Infinite();
+    param2sup = (D2.HasLastPoint()) ? (D2.LastParameter())  : Precision::Infinite();
+  }
+  if(nbi1>1 || nbi2>1) { 
+    TColStd_Array1OfReal Tab1(1,nbi1+1);
+    TColStd_Array1OfReal Tab2(1,nbi2+1);
+    TheCurveTool::Intervals(C1,Tab1);
+    TheCurveTool::Intervals(C2,Tab2);
+    InternalCompositePerform(C1,D1,1,nbi1,Tab1,
+			     C2,D2,1,nbi2,Tab2,
+			     TolConf,Tol,Standard_True);
+    return;
+  }
+  else {
+    InternalPerform(C1,D1,C2,D2,TolConf,Tol,Standard_False);
+  }
+}
+
+//----------------------------------------------------------------------
+//-- InternalPerform 
+//-- Suppose des Courbes Lin...Other 
+//-- Si Composite == True 
+//--     Les Resultats sont Ajoutes 
+//-- Sinon
+//--     Les Resultats sont Copies
+//----------------------------------------------------------------------
+void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
+						 const IntRes2d_Domain& D1,
+						 const TheCurve& C2,
+						 const IntRes2d_Domain& D2,
+						 const Standard_Real TolConf,
+						 const Standard_Real Tol,
+						 const Standard_Boolean Composite) {
+
+  GeomAbs_CurveType typ1 = TheCurveTool::TheType(C1);
+  GeomAbs_CurveType typ2 = TheCurveTool::TheType(C2);
+
+
+  switch (typ1) {
+
+  case GeomAbs_Line:
+    {
+      switch (typ2) {
+
+      case GeomAbs_Line:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Line(C1),D1,
+			      TheCurveTool::Line(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Line(C1),D1,
+			      TheCurveTool::Circle(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Line(C1),D1,
+			      TheCurveTool::Ellipse(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Line(C1),D1,
+			      TheCurveTool::Parabola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Line(C1),D1,
+			      TheCurveTool::Hyperbola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve: 
+	{
+	  intconicurv.SetReversedParameters(Standard_False);
+	  intconicurv.Perform(TheCurveTool::Line(C1),D1,
+			      C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+      }
+    break;  
+      
+
+    case GeomAbs_Circle:
+      
+      switch (typ2) {
+	
+      case GeomAbs_Line:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Line(C2),D2,
+			      TheCurveTool::Circle(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Circle(C1),D1,
+			      TheCurveTool::Circle(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Circle(C1),D1,
+			      TheCurveTool::Ellipse(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Circle(C1),D1,
+			      TheCurveTool::Parabola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Circle(C1),D1,
+			      TheCurveTool::Hyperbola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+	{
+	  intconicurv.SetReversedParameters(Standard_False);
+	  intconicurv.Perform(TheCurveTool::Circle(C1),D1,
+			      C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      }
+    break;
+
+    case GeomAbs_Ellipse:
+      
+      switch (typ2) {
+	
+      case GeomAbs_Line:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Line(C2),D2,
+			      TheCurveTool::Ellipse(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Circle(C2),D2,
+			      TheCurveTool::Ellipse(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Ellipse(C1),D1,
+			      TheCurveTool::Ellipse(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Ellipse(C1),D1,
+			      TheCurveTool::Parabola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Ellipse(C1),D1,
+			      TheCurveTool::Hyperbola(C2),D2,
+			      TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+	{
+	  intconicurv.SetReversedParameters(Standard_False);
+	  intconicurv.Perform(TheCurveTool::Ellipse(C1),D1,
+			      C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+      }
+    break;
+
+
+    case GeomAbs_Parabola:
+      
+      switch (typ2) {
+	
+      case GeomAbs_Line:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Line(C2),D2,
+			      TheCurveTool::Parabola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Circle(C2),D2,
+			      TheCurveTool::Parabola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Ellipse(C2),D2,
+			      TheCurveTool::Parabola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Parabola(C1),D1,
+			      TheCurveTool::Parabola(C2),D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Parabola(C1),D1,
+			      TheCurveTool::Hyperbola(C2),D2,
+			      TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+	{
+	  intconicurv.SetReversedParameters(Standard_False);
+	  intconicurv.Perform(TheCurveTool::Parabola(C1),D1,
+			      C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+      }
+    break;
+
+
+    case GeomAbs_Hyperbola:
+      
+      switch (typ2) {
+	
+      case GeomAbs_Line:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Line(C2),D2,
+			      TheCurveTool::Hyperbola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Circle(C2),D2,
+			      TheCurveTool::Hyperbola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Ellipse(C2),D2,
+			      TheCurveTool::Hyperbola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconiconi.SetReversedParameters(Standard_True);
+	  intconiconi.Perform(TheCurveTool::Parabola(C2),D2,
+			      TheCurveTool::Hyperbola(C1),D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconiconi.SetReversedParameters(Standard_False);
+	  intconiconi.Perform(TheCurveTool::Hyperbola(C1),D1,
+			      TheCurveTool::Hyperbola(C2),D2,
+			      TolConf,Tol);
+	  if(Composite)    { this->Append(intconiconi,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconiconi); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+	{
+	  intconicurv.SetReversedParameters(Standard_False);
+	  intconicurv.Perform(TheCurveTool::Hyperbola(C1),D1,
+			      C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+      }
+    break;
+
+
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+    case GeomAbs_OtherCurve:
+      
+      switch (typ2) {
+	
+      case GeomAbs_Line:
+	{
+	  intconicurv.SetReversedParameters(Standard_True);
+	  intconicurv.Perform(TheCurveTool::Line(C2),D2,  C1,D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      case GeomAbs_Circle:
+	{
+	  intconicurv.SetReversedParameters(Standard_True);
+	  intconicurv.Perform(TheCurveTool::Circle(C2),D2, C1,D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      case GeomAbs_Ellipse:
+	{
+	  intconicurv.SetReversedParameters(Standard_True);
+	  intconicurv.Perform(TheCurveTool::Ellipse(C2),D2, C1,D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      case GeomAbs_Parabola:
+	{
+	  intconicurv.SetReversedParameters(Standard_True);
+	  intconicurv.Perform(TheCurveTool::Parabola(C2),D2,C1,D1,TolConf,Tol);
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      case GeomAbs_Hyperbola:
+	{
+	  intconicurv.SetReversedParameters(Standard_True);
+	  intconicurv.Perform(TheCurveTool::Hyperbola(C2),D2,C1,D1,
+			      TolConf,Tol); 
+	  if(Composite)    { this->Append(intconicurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intconicurv); }
+	}
+	break;
+
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+	{
+	  intcurvcurv.SetReversedParameters(Standard_False);    
+	  intcurvcurv.Perform(C1,D1, C2,D2,TolConf,Tol);
+	  if(Composite)    { this->Append(intcurvcurv,
+					  param1inf,
+					  param1sup,
+					  param2inf,
+					  param2sup);  }
+	  else             { this->SetValues(intcurvcurv); }
+	  done = Standard_True;
+	}
+	break;
+      }
+      break;
+    }
+  }
+}
+
+
+
+
+//-- C1 ou C2 sont des courbes composites 
+//-- 
+
+void 
+IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve& C1,
+						    const IntRes2d_Domain& D1,
+						    const Standard_Integer XXXNumInterC1,
+						    const Standard_Integer NbInterC1,
+						    const TColStd_Array1OfReal& Tab1,
+						    const TheCurve& C2,
+						    const IntRes2d_Domain& D2,
+						    const Standard_Integer XXXNumInterC2,
+						    const Standard_Integer NbInterC2,
+						    const TColStd_Array1OfReal& Tab2,
+						    const Standard_Real TolConf,
+						    const Standard_Real Tol,
+						    const Standard_Boolean RecursOnC2) {
+  
+  Standard_Integer NumInterC2=XXXNumInterC2;
+  Standard_Integer NumInterC1=XXXNumInterC1;
+
+
+//  Standard_Boolean Arret=Standard_False;
+
+  if(NumInterC2<=NbInterC2) {
+    if(RecursOnC2) {
+      for(Standard_Integer i=NumInterC1 ; i<=NbInterC1; i++) {
+	NumInterC1=i;
+	InternalCompositePerform(C2,D2,NumInterC2,NbInterC2,Tab2,
+				 C1,D1,NumInterC1,NbInterC1,Tab1,
+				 TolConf,Tol,
+				 Standard_False);
+      }
+      if(NumInterC2<NbInterC2) {
+	NumInterC2++;
+	NumInterC1=1;
+	InternalCompositePerform(C1,D1,NumInterC1,NbInterC1,Tab1,
+				 C2,D2,NumInterC2,NbInterC2,Tab2,
+				 TolConf,Tol,
+				 Standard_True);
+      }
+    }
+    else {
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      //~~~~~~~~~~~~~~~~ I n t e r s e c t i o  n   ~~~~~~~~~~~~~~~~
+      //~~~~~~~~~~~~~~~~      de C2[NumInterC2]     ~~~~~~~~~~~~~~~~
+      //~~~~~~~~~~~~~~~~      et C1[NumInterC1]     ~~~~~~~~~~~~~~~~
+      //~~~~~~~~~~~~~~~~  (pour respecter l ordre)  ~~~~~~~~~~~~~~~~
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
+      IntRes2d_Domain DomainC1NumInter;
+      IntRes2d_Domain DomainC2NumInter;
+
+      //----------------------------------------------------------------------
+      //-- Creation du domaine associe a la portion de C1
+      //----------------------------------------------------------------------
+      Standard_Boolean DomainIsOK = Standard_True;
+      Standard_Real ParamInf,ParamSup;
+      
+      if(NbInterC1>1) {
+	TheCurveTool::GetInterval(C1,NumInterC1,Tab1,ParamInf,ParamSup);
+	//--------------------------------------------------------------
+	//-- Verification : Domaine Inclu dans Intervalle de Definition
+	//--------------------------------------------------------------
+	Standard_Real u;
+	
+	u = D1.FirstParameter();
+	if(ParamInf < u) { ParamInf = u; }
+	  
+	u = D1.LastParameter();
+	if(ParamSup > u) { ParamSup = u; }
+	
+	if((ParamSup - ParamInf) > 1e-10) { 
+	  DomainC1NumInter.SetValues(TheCurveTool::Value(C1,ParamInf),
+				     ParamInf,
+				     D1.FirstTolerance(),
+				     TheCurveTool::Value(C1,ParamSup),
+				     ParamSup,
+				     D1.LastTolerance());
+	}
+	else {
+	  DomainIsOK = Standard_False;
+	}
+      }
+      else {
+	DomainC1NumInter = D1;
+      }
+      
+      //----------------------------------------------------------------------
+      //-- Creation du domaine associe a la portion de C2
+      //----------------------------------------------------------------------
+      if(NbInterC2 > 1) {
+	TheCurveTool::GetInterval(C2,NumInterC2,Tab2,ParamInf,ParamSup);
+	//--------------------------------------------------------------
+	//-- Verification : Domaine Inclu dans Intervalle de Definition
+	//--------------------------------------------------------------
+	Standard_Real u;
+	
+	u = D2.FirstParameter();
+	if(ParamInf < u) { ParamInf = u; }
+	
+	u = D2.LastParameter();
+	if(ParamSup > u) { ParamSup = u; }
+	
+	if((ParamSup - ParamInf) > 1e-10) { 
+	  DomainC2NumInter.SetValues(TheCurveTool::Value(C2,ParamInf),
+				     ParamInf,
+				     D2.FirstTolerance(),
+				     TheCurveTool::Value(C2,ParamSup),
+				     ParamSup,
+				     D2.LastTolerance());
+	}
+	else {
+	  DomainIsOK = Standard_False;
+	}
+      }
+      else {
+	DomainC2NumInter = D2;
+      }
+      
+      if(DomainIsOK) { 
+	InternalPerform(C2,DomainC2NumInter,
+			C1,DomainC1NumInter,
+			TolConf,Tol,
+			Standard_True);
+      }
+    }
+  }
+}
+
+	
+	
+	
+	
+
+
+
+	
+	
+	
+
+
+//----------------------------------------------------------------------
+//--   InterComposite ( C1 , Num1 , C2 , Num2 , Recursion_sur_C2 )
+//--    
+//--       Boolean Arret = False
+//--
+//--       Si C2.Type() == Composite   Max2 = C2.GetIntervals() Sinon Max2=2
+//-- 
+//--       Si C1.Type() == Composite   Max1 = C1.GetIntervals() Sinon Max1=2
+//--
+//--       Si Num2 > Max2  RETURN; 
+//--
+//--       Sinon
+//--
+//--          Si Recursion_sur_C2 == True 
+//--
+//--               for i = Num1  -->  Max1
+//--
+//--                   Num1 = i
+//--
+//--                   InterComposite(C2,Num2,C1,Num1,False);
+//-- 
+//--               Si Num2 < Max2
+//--
+//--                    Num2++ 
+//--
+//--                    Num1 = 1 
+//--
+//--                    InterComposite(C1,Num1,C2,Num2,True);
+//--
+//--          Sinon
+//--
+//--               *** INTERSECTION ENTRE C2[num2] et C1[Num1] ***
+//--
+//--      Fin
+//--
+//--
+//-- (( Appel avec C1 , 1 , C2 , 1 , True))
+//--
+//--  Exemple :     C1 = ABCD   C2= 12
+//-- 
+//--             donne :      A,1  B,1  C,1  D,1   A,2  B,2  C,2  D,2  
+//----------------------------------------------------------------------

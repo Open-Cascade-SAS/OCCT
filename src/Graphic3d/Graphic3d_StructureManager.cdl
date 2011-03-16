@@ -1,0 +1,484 @@
+--
+-- File:	Graphic3d_StructureManager.cdl
+-- Created:	Jeudi 5 Septembre 1991
+-- Author:	NW,JPB,CAL
+--              11/97 ; CAL : gestion du GraphicClear
+--              05/98 ; CAL : gestion du GraphicConnect et Disconnect
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994
+--
+
+deferred class StructureManager from Graphic3d inherits TShared
+
+	---Version:
+
+	---Purpose: This class allows the definition of a manager to
+	--	    which the graphic objects are associated.
+	--	    It allows them to be globally manipulated.
+	--	    It defines the global attributes.
+	--  Keywords: Structure, Structure Manager, Update Mode,
+	--     Destroy, Highlight, Visible, Detectable
+
+	---Warning:
+	---References:
+
+uses
+
+	Array2OfReal		from TColStd,
+
+	GenId			from Aspect,
+	GraphicDevice           from Aspect,
+	TypeOfHighlightMethod	from Aspect,
+	TypeOfUpdate		from Aspect,
+
+	DataStructureManager	from Graphic3d,
+	AspectFillArea3d	from Graphic3d,
+	AspectLine3d		from Graphic3d,
+	AspectMarker3d		from Graphic3d,
+	AspectText3d		from Graphic3d,
+	Structure		from Graphic3d,
+	MapOfStructure		from Graphic3d,
+	SequenceOfStructure	from Graphic3d
+
+raises
+
+	InitialisationError	from Graphic3d
+
+is
+
+	Initialize ( aDevice	: GraphicDevice from Aspect )
+	---Level: Public
+	---Purpose: Initialise the constructor of the ViewManager.
+	--  Warning: Raises InitialisationError if the initialisation
+	--	    of the ViewManager failed.
+	raises InitialisationError from Graphic3d;
+	-- if the initialisation of the ViewManager failed.
+
+	Destroy ( me     : mutable )
+		is virtual;
+	---Level: Public
+	---Purpose: Deletes the manager <me>.
+	---C++: alias ~
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectLine3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for lines
+	--	    in the visualiser.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectFillArea3d from Graphic3d)
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for faces
+	--	    in the visualiser.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectText3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for text
+	--	    in the visualiser.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectMarker3d from Graphic3d)
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for markers
+	--	    in the visualiser.
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Summary of Dynamic Operations and Update Mode --
+	--                                               --
+	-- Use SetUpdateMode  to control when changes to --
+	-- the display are made.                         --
+	--                                               --
+	-- Use one of the  following functions to update --
+	-- one or more views :                           --
+	--                                               --
+	--	Update all views of the viewer :         --
+	--	Visual3d_ViewManager::Update ()          --
+	--                                               --
+	--	Update one view of the viewer            --
+	--	Visual3d_View::Update ()                 --
+	--                                               --
+	-- Use one of the  following functions to update --
+	-- the entire display :                          --
+	--                                               --
+	--	Redraw all structures in all views :     --
+	--	Visual3d_ViewManager::Redraw ()          --
+	--                                               --
+	--	Redraw all structures in one view :      --
+	--	Visual3d_View::Redraw ()                 --
+	---------------------------------------------------
+
+	SetUpdateMode ( me	: mutable;
+			AType	: TypeOfUpdate from Aspect )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the screen update mode.
+	--
+	--	    TOU_ASAP	as soon as possible
+	--	    TOU_WAIT	on demand (with the Update function)
+    	--  Note : Dynamic Operations and Update Mode
+    	-- Use SetUpdateMode to control when changes to
+    	-- the display are made.   Use one of the   following
+    	-- functions to update one or more views:
+	-- -   Update all views of the viewer:   Visual3d_ViewManager::Update ()
+    	-- -   Update one view of the viewer:   Visual3d_View::Update () Use one of
+    	--   the   following functions to update the entire display:
+    	-- -   Redraw all structures in all views:   Visual3d_ViewManager::Redraw ()
+    	-- -   Redraw all structures in one view:   Visual3d_View::Redraw ()  Update)
+
+	Update ( me )
+		is deferred;
+	---Purpose: Updates screen in function of modifications of
+	--	    the structures.
+	-- Warning: Not necessary if the update mode is TOU_ASAP.
+
+	---------------------------------------------
+	-- Category: Inquire methods, MapOfStructure
+	---------------------------------------------
+
+	DisplayedStructures ( me; SG: in out MapOfStructure  from Graphic3d)
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of structures displayed in
+	--	    visualiser <me>.
+	---Category: Inquire methods, MapOfStructure
+
+	NumberOfDisplayedStructures ( me )
+		returns Integer from Standard
+		is static protected;
+	---Level: Internal
+	---Purpose: Returns the number of structures displayed in
+	--	    visualiser <me>.
+
+	--DisplayedStructure ( me;
+		--	     AnIndex	: Integer from Standard )
+		--returns Structure from Graphic3d
+		--is static protected;
+	---Level: Internal
+	---Purpose: Returns the structure displayed in visualiser <me>.
+
+	HighlightedStructures ( me; SG: in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of highlighted structures
+	--	    in a visualiser <me>.
+	---Category: Inquire methods, MapOfStructure
+
+	PickStructures ( me; SG: in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of detectable structures
+	--	    in a visualiser <me>.
+	---Category: Inquire methods, MapOfStructure
+
+	VisibleStructures ( me; SG: in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of visible structures
+	--	    in a visualiser <me>.
+	---Category: Inquire methods, MapOfStructure
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	FillArea3dAspect ( me )
+		returns AspectFillArea3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Limit ( myclass )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Returns maximum number of managers defineable.
+	---Category: Inquire methods
+
+	Line3dAspect ( me )
+		returns AspectLine3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Marker3dAspect ( me )
+		returns AspectMarker3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	MinMaxValues ( me;
+		       XMin, YMin, ZMin	: out Real from Standard;
+		       XMax, YMax, ZMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    structures displayed in the manager <me>.
+	---Category: Inquire methods
+
+	PrimitivesAspect ( me;
+			   CTXL	: out AspectLine3d from Graphic3d;
+			   CTXT	: out AspectText3d from Graphic3d;
+			   CTXM	: out AspectMarker3d from Graphic3d;
+			   CTXF	: out AspectFillArea3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Text3dAspect ( me )
+		returns AspectText3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	UpdateMode ( me )
+		returns TypeOfUpdate from Aspect
+		is static;
+	---Level: Public
+	---Purpose: Returns the screen update mode.
+	--
+	--	    TOU_ASAP	as soon as possible
+	--	    TOU_WAIT	on demand (Update)
+	--
+	---Category: Inquire methods
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	ChangeDisplayPriority ( me		: mutable;
+				AStructure	: Structure from Graphic3d;
+				OldPriority	: Integer from Standard;
+				NewPriority	: Integer from Standard )
+		is deferred;
+	---Level: Internal
+	---Purpose: Changes the display priority of the structure <AStructure>.
+	---Category: Private methods
+
+	CurrentId ( myclass )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Returns a current identifier available.
+	---Category: Private methods
+
+	ReCompute ( me		: mutable;
+		    AStructure	: Structure from Graphic3d )
+		is deferred;
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <AStructure>
+	--	    if <AStructure> is displayed and TOS_COMPUTED.
+	---Category: Private methods
+
+	ReCompute ( me		: mutable;
+		    AStructure	: Structure from Graphic3d;
+		    AProjector	: DataStructureManager from Graphic3d )
+		is deferred;
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <AStructure>
+	--	    if <AStructure> is displayed in <AProjector> and TOS_COMPUTED.
+	---Category: Private methods
+
+	Detectable ( me		: mutable;
+		     AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Sets detectable the structure <AStructure>.
+	---Category: Private methods
+
+	Clear ( me		: mutable;
+		AStructure	: Structure from Graphic3d;
+		WithDestruction	: Boolean from Standard )
+		is deferred;
+	---Level: Internal
+	---Purpose: Clears the structure <AStructure>.
+	---Category: Private methods
+
+	Connect ( me		: mutable;
+		  AMother	: Structure from Graphic3d;
+		  ADaughter	: Structure from Graphic3d )
+		is deferred;
+	---Level: Internal
+	---Purpose: Connects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Disconnect ( me		: mutable;
+		     AMother	: Structure from Graphic3d;
+		     ADaughter	: Structure from Graphic3d )
+		is deferred;
+	---Level: Internal
+	---Purpose: Disconnects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Display ( me		: mutable;
+		  AStructure	: Structure from Graphic3d )
+		is deferred;
+	---Level: Internal
+	---Purpose: Display the structure <AStructure>.
+	---Category: Private methods
+
+	Erase ( me		: mutable;
+		AStructure	: Structure from Graphic3d )
+		is deferred;
+	---Level: Internal
+	---Purpose: Erases the structure <AStructure>.
+	---Category: Private methods
+
+	Highlight ( me		: mutable;
+		    AStructure	: Structure from Graphic3d;
+		    AMethod	: TypeOfHighlightMethod from Aspect )
+		is deferred;
+	---Level: Internal
+	---Purpose: Highlights the structure <AStructure>.
+	---Category: Private methods
+
+	SetTransform ( me		: mutable;
+		       AStructure	: Structure from Graphic3d;
+		       ATrsf		: Array2OfReal from TColStd )
+		is deferred;
+	---Level: Internal
+	---Purpose: Transforms the structure <AStructure>.
+	---Category: Private methods
+
+	GraphicDevice ( me )
+		returns GraphicDevice from Aspect;
+	---Level: Internal
+	---Purpose: Returns the graphic device of <me>.
+	---Category: Private methods
+
+	Invisible ( me		: mutable;
+		    AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Sets invisible the structure <AStructure>.
+	---Category: Private methods
+
+	Identification ( me )
+		returns Integer from Standard
+		is virtual;
+	---Level: Internal
+	---Purpose: Returns the identification number of the manager.
+	---Category: Private methods
+
+	Identification ( me;
+			 AId	: Integer from Standard )
+		returns Structure from Graphic3d
+		is virtual;
+	---Level: Internal
+	---Purpose: Returns the structure with the identification number <AId>.
+	---Warning: Returns a null structure if the identification number
+	--	    is not a structure identifier.
+	---Category: Private methods
+
+	NewIdentification ( me	: mutable )
+		returns Integer from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns a new identification number for a new structure
+	--	    in the manager.
+	---Category: Private methods
+
+	Remove ( me	: mutable;
+	 	 AnId	: Integer from Standard )
+	 	is static private;
+	---Level: Internal
+	---Purpose: Frees the identifieur <AnId>.
+	---Category: Private methods
+
+	Undetectable ( me		: mutable;
+		       AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Sets no detectable the structure <AStructure>.
+	---Category: Private methods
+
+	UnHighlight ( me		: mutable )
+		is deferred;
+	---Level: Internal
+	---Purpose: Suppresses the highlighting on all the structures in <me>.
+	---Category: Private methods
+
+	UnHighlight ( me		: mutable;
+		      AStructure	: Structure from Graphic3d )
+		is deferred;
+	---Level: Internal
+	---Purpose: Suppress the highlighting on the structure <AStructure>.
+	---Category: Private methods
+
+	Visible ( me		: mutable;
+		  AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Sets visible the structure <AStructure>.
+	--	    in the manager.
+	---Category: Private methods
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_StructureManager
+--
+-- Purpose	:	Declaration of variables specific to managers
+--
+-- Reminder	:	A manager manipulates a group of structures
+
+	-- the identifier of the manager
+	MyId			:	Integer from Standard is protected;
+
+	-- the update display mode
+	MyUpdateMode		:	TypeOfUpdate from Aspect is protected;
+
+	-- the different contexts for primitives
+	MyAspectLine3d		:	AspectLine3d from Graphic3d
+								is protected;
+	MyAspectText3d		:	AspectText3d from Graphic3d
+								is protected;
+	MyAspectMarker3d	:	AspectMarker3d from Graphic3d
+								is protected;
+	MyAspectFillArea3d	:	AspectFillArea3d from Graphic3d
+								is protected;
+
+	-- the displayed structures
+	MyDisplayedStructure	:	MapOfStructure from Graphic3d
+								is protected;
+
+	-- the highlighted structures
+	MyHighlightedStructure	:	MapOfStructure from Graphic3d
+								is protected;
+
+	-- the visible structures
+	MyVisibleStructure	:	MapOfStructure from Graphic3d
+								is protected;
+
+	-- the pickable structures
+	MyPickStructure		:	MapOfStructure from Graphic3d
+								is protected;
+
+	-- the structure identifier generator
+	MyStructGenId		:	GenId from Aspect is protected;
+
+
+	MyGraphicDevice		:	GraphicDevice from Aspect is protected;
+
+friends
+
+	class Structure from Graphic3d
+
+end StructureManager;

@@ -1,0 +1,277 @@
+-- File:	MoniTool_CaseData.cdl
+-- Created:	Wed Apr  1 14:00:26 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class CaseData  from MoniTool    inherits TShared  from MMgt
+
+    ---Purpose : This class is intended to record data attached to a case to be
+    --           exploited.
+    --           Cases can be :
+    --           * internal, i.e. for immediate debug
+    --             for instance, on an abnormal exception, fill a CaseData
+    --             in a DB (see class DB) then look at its content by XSDRAW
+    --           * to record abnormal situation, which cause a warning or fail
+    --             message, for instance during a transfer
+    --             This will allow, firstly to build a more comprehensive
+    --             message (with associated data), secondly to help seeing
+    --             "what happened"
+    --           * to record data in order to fix a problem
+    --             If a CASE is well defined and its fix is well known too,
+    --             recording a CaseData which identifies the CASE will allow
+    --             to furstherly call the appropriate fix routine
+    --           
+    --           A CaseData is defined by
+    --           * an optional CASE identifier
+    --             If it is defined, this will allow systematic exploitation
+    --             such as calling a fix routine
+    --           * an optional Check Status, Warning or Fail, else it is Info
+    --           * a NAME : it just allows to identify where this CaseData was
+    --             created (help to debug)
+    --           * a LIST OF DATA
+    --           
+    --           Each Data has a type (integer, real etc...) and can have a name
+    --           Hence, each data may be identified by :
+    --           * its absolute rank (from 1 to NbData)
+    --           * its name if it has one (exact matching)
+    --           * else, an interpreted identifier, which gives the type and
+    --             the rank in the type (for instance, first integer; etc)
+    --             (See NameRank)
+
+uses CString, Transient, Type from Standard,
+     AsciiString from TCollection,
+     SequenceOfAsciiString from TColStd,
+     SequenceOfTransient from TColStd, SequenceOfInteger from TColStd,
+     Shape from TopoDS, XY from gp, XYZ from gp,
+     Msg from Message
+
+is
+
+    Create (caseid : CString = ""; name : CString = "")  returns CaseData;
+    ---Purpose : Creates a CaseData with a CaseId and a Name
+    --           (by default not defined)
+
+    SetCaseId (me : mutable; caseid : CString);
+    ---Purpose : Sets a CaseId
+
+    SetName   (me : mutable; name : CString);
+    ---Purpose : Sets a Name
+
+    CaseId (me) returns CString;
+    ---Purpose : Returns the CaseId
+
+    Name   (me) returns CString;
+    ---Purpose : Returns the Name
+
+    IsCheck   (me) returns Boolean;
+    ---Purpose : Tells if <me> is Check (Warning or Fail), else it is Info
+
+    IsWarning (me) returns Boolean;
+    ---Purpose : Tells if <me> is Warning
+
+    IsFail    (me) returns Boolean;
+    ---Purpose : Tells if <me> is Fail
+
+    ResetCheck (me : mutable);
+    ---Purpose : Resets Check Status, i.e. sets <me> as Info
+
+    SetWarning (me : mutable);
+    ---Purpose : Sets <me> as Warning
+
+    SetFail    (me : mutable);
+    ---Purpose : Sets <me> as Fail
+
+    	--  Setting Data
+
+    SetChange  (me : mutable);
+    ---Purpose : Sets the next Add... not to add but to change the data item
+    --           designated by its name.
+    --           If next Add... is not called with a name, SetChange is ignored
+    --           Reset by next Add... , whatever <num> is correct or not
+
+    SetReplace (me : mutable; num : Integer);
+    ---Purpose : Sets the next Add... not to add but to replace the data item
+    --           <num>, if <num> is between 1 and NbData.
+    --           Reset by next Add... , whatever <num> is correct or not
+
+    AddData   (me : mutable; val : Transient; kind : Integer; name : CString = "");
+    ---Purpose : Unitary adding a data; rather internal
+
+    AddRaised (me : mutable; name : CString = "");
+    ---Purpose : Adds the currently caught exception
+
+    AddShape  (me : mutable; sh : Shape from TopoDS; name : CString = "");
+    ---Purpose : Adds a Shape (recorded as a HShape)
+
+    AddXYZ    (me : mutable; aXYZ : XYZ from gp; name : CString = "");
+    ---Purpose : Adds a XYZ
+
+    AddXY     (me : mutable; aXY  : XY  from gp; name : CString = "");
+    ---Purpose : Adds a XY
+
+    AddReal   (me : mutable; val  : Real; name : CString = "");
+    ---Purpose : Adds a Real
+
+    AddReals  (me : mutable; v1,v2 : Real; name : CString = "");
+    ---Purpose : Adds two reals (for instance, two parameters)
+
+    AddCPU    (me : mutable; lastCPU : Real; curCPU : Real = 0; name : CString = "");
+    ---Purpose : Adds the CPU time between lastCPU and now
+    --           if <curCPU> is given, the CPU amount is  curCPU-lastCPU
+    --           else it is currently measured CPU - lastCPU
+    --           lastCPU has been read by call to GetCPU
+    --           See GetCPU to get amount, and LargeCPU to test large amount
+
+    GetCPU    (me) returns Real;
+    ---Purpose : Returns the current amount of CPU
+    --           This allows to laterly test and record CPU amount
+    --           Its value has to be given to LargeCPU and AddCPU
+
+    LargeCPU   (me; maxCPU, lastCPU : Real; curCPU : Real = 0) returns Boolean;
+    ---Purpose : Tells if a CPU time amount is large
+    --           <maxCPU>  gives the amount over which an amount is large
+    --           <lastCPU> gives the start CPU amount
+    --           if <curCPU> is given, the tested CPU amount is curCPU-lastCPU
+    --           else it is currently measured CPU - lastCPU
+
+    AddGeom   (me : mutable; geom : Transient; name : CString = "");
+    ---Purpose : Adds a Geometric as a Transient (Curve, Surface ...)
+
+    AddEntity (me : mutable; ent  : Transient; name : CString = "");
+    ---Purpose : Adds a Transient, as an Entity from an InterfaceModel for
+    --           instance : it will then be printed with the help of a DBPE
+
+    AddText   (me : mutable; text : CString; name : CString = "");
+    ---Purpose : Adds a Text (as HAsciiString)
+
+    AddInteger(me : mutable; val  : Integer; name : CString = "");
+    ---Purpose : Adds an Integer
+
+    AddAny    (me : mutable; val  : Transient; name : CString = "");
+    ---Purpose : Adds a Transient, with no more meaning
+
+    RemoveData (me : mutable; num : Integer);
+    ---Purpose : Removes a Data from its rank. Does nothing if out of range
+
+    	-- Querying Data
+
+    NbData (me) returns Integer;
+    ---Purpose : Returns the count of data recorded to a set
+
+    Data   (me; nd : Integer) returns Transient;
+    ---Purpose : Returns a data item (n0 <nd> in the set <num>)
+
+    GetData (me; nd : Integer; type : Type from Standard; val : out Transient)
+    	returns Boolean;
+    ---Purpose : Returns a data item, under control of a Type
+    --           If the data item is kind of this type, it is returned in <val>
+    --           and the returned value is True
+    --           Else, <val> is unchanged and the returned value is False
+
+    Kind   (me; nd : Integer) returns Integer;
+    ---Purpose : Returns the kind of a data :
+    --         KIND TYPE      MEANING
+    --           0  ANY       any (not one of the followings)
+    --           1  EX        raised exception
+    --           2  EN        entity
+    --           3  G         geom
+    --           4  SH        shape
+    --           5  XYZ       XYZ
+    --           6  XY or UV  XY
+    --           7  RR        2 reals
+    --           8  R         1 real
+    --           9  CPU       CPU (1 real)
+    --           10 T         text
+    --           11 I         integer
+    --           
+    --           For NameNum, these codes for TYPE must be given exact
+    --           i.e. SH for a Shape, not S nor SHAPE nor SOLID etc
+
+    Name   (me; nd : Integer) returns AsciiString;
+    ---Purpose : Returns the name of a data. If it has no name, the string is
+    --           empty (length = 0)
+    ---C++ : return const &
+
+    NameNum (me; name : CString) returns Integer;
+    ---Purpose : Returns the first suitable data rank for a given name
+    --           Exact maching (exact case, no completion) is required
+    --           Firstly checks the recorded names
+    --           If not found, considers the name as follows :
+    --           Name = "TYPE" : search for the first item with this TYPE
+    --           Name = "TYPE:nn" : search for the nn.th item with this TYPE
+    --           See allowed values in method Kind
+
+    Shape  (me; nd : Integer) returns Shape from TopoDS;
+    ---Purpose : Returns a data as a shape, Null if not a shape
+
+    XYZ    (me; nd : Integer; val : out XYZ from gp) returns Boolean;
+    ---Purpose : Returns a data as a XYZ (i.e. Geom_CartesianPoint)
+    --           Returns False if not the good type
+
+    XY     (me; nd : Integer; val : out XY  from gp) returns Boolean;
+    ---Purpose : Returns a data as a XY  (i.e. Geom2d_CartesianPoint)
+    --           Returns False if not the good type
+
+    Reals  (me; nd : Integer; v1,v2 : out Real) returns Boolean;
+    ---Purpose : Returns a couple of reals  (stored in Geom2d_CartesianPoint)
+
+    Real   (me; nd : Integer; val : out Real) returns Boolean;
+    ---Purpose : Returns a real or CPU amount (stored in Geom2d_CartesianPoint)
+    --           (allows an Integer converted to a Real)
+
+    Text   (me; nd : Integer; text : out CString) returns Boolean;
+    ---Purpose : Returns a text (stored in TCollection_HAsciiString)
+
+    Integer (me; nd : Integer; val : out Integer) returns Boolean;
+    ---Purpose : Returns an Integer
+
+    	--  Binding with messages and status
+    	--  a CaseData may have a default check status according to its code
+    	--  it can also have a default attached message
+
+    Msg (me) returns Msg from Message;
+    ---Purpose : Returns a Msg from a CaseData : it is build from DefMsg, which
+    --           gives the message code plus the designation of items of the
+    --           CaseData to be added to the Msg
+    --           Empty if no message attached
+    --           
+    --           Remains to be implemented
+
+
+    SetDefWarning (myclass; acode : CString);
+    ---Purpose : Sets a Code to give a Warning
+
+    SetDefFail    (myclass; acode : CString);
+    ---Purpose : Sets a Code to give a Fail
+
+    DefCheck (myclass; acode : CString) returns Integer;
+    ---Purpose : Returns Check Status for a Code : 0 non/info (default),
+    --           1 warning, 2 fail
+    --           
+    --           Remark : DefCheck is used to set the check status of a
+    --           CaseData when it is attached to a case code, it can be changed
+    --           later (by SetFail, SetWarning, ResetCheck)
+
+    SetDefMsg     (myclass; casecode : CString; mesdef : CString);
+    ---Purpose : Attaches a message definition to a case code
+    --           This definition includes the message code plus designation of
+    --           items of the CaseData to be added to the message (this part
+    --           not yet implemented)
+
+    DefMsg        (myclass; casecode : CString) returns CString;
+    ---Purpose : Returns the message definition for a case code
+    --           Empty if no message attached
+
+fields
+
+    thecheck : Integer;
+    thesubst : Integer;
+    thecase : AsciiString;
+    thename : AsciiString;
+    thedata : SequenceOfTransient;
+    thekind : SequenceOfInteger;
+    thednam : SequenceOfAsciiString;
+
+end CaseData;

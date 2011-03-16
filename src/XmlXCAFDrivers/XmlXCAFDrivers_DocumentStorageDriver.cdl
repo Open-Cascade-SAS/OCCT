@@ -1,0 +1,24 @@
+-- File:      XmlXCAFDrivers_DocumentStorageDriver.cdl
+-- Created:   11.09.01 11:50:20
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+
+class DocumentStorageDriver from XmlXCAFDrivers 
+inherits DocumentStorageDriver from XmlDrivers
+                    
+        ---Purpose: storage driver of a  XS document
+                    
+uses
+    ExtendedString from TCollection,
+    ADriverTable    from XmlMDF,
+    MessageDriver   from CDM
+
+is
+    Create (theCopyright: ExtendedString from TCollection)
+        returns mutable DocumentStorageDriver from XmlXCAFDrivers;
+
+    AttributeDrivers(me : mutable; theMsgDriver: MessageDriver from CDM)
+    returns ADriverTable from XmlMDF is redefined;
+
+end DocumentStorageDriver;

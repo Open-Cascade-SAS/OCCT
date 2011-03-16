@@ -1,0 +1,72 @@
+-- File:	ShapeAnalysis_Shell.cdl
+-- Created:	Wed Jun  3 12:06:44 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Shell from ShapeAnalysis 
+
+     ---Purpose: This class provides operators to analyze edges orientation
+     --          in the shell.
+
+uses
+    Shape    from TopoDS,
+    Compound from TopoDS,
+    IndexedMapOfShape from TopTools
+
+is
+
+    Clear (me : in out);
+    	---Purpose: Clears data about loaded shells and performed checks
+
+    LoadShells (me : in out; shape : Shape from TopoDS);
+    	---Purpose: Adds shells contained in the <shape> to the list of loaded shells
+
+    CheckOrientedShells (me : in out; shape   : Shape from TopoDS;
+    	    	    	              alsofree: Boolean = Standard_False;
+    	    	    	    	      checkinternaledges: Boolean = Standard_False)
+    returns Boolean;
+    	---Purpose: Checks if shells fulfill orientation condition, i.e. if each
+    	--          edge is, either present once (free edge) or twice (connected
+    	--          edge) but with different orientations (FORWARD/REVERSED)
+    	--          Edges which do not fulfill these conditions are bad
+    	--          
+    	--          If <alsofree> is True free edges are considered.
+    	--          Free edges can be queried but are not bad
+
+    IsLoaded (me; shape : Shape from TopoDS) returns Boolean;
+    	---Purpose: Tells if a shape is loaded (only shells are checked)
+
+    NbLoaded (me)  returns Integer;
+    	---Purpose: Returns the actual number of loaded shapes (i.e. shells)
+
+    Loaded (me; num : Integer) returns Shape from TopoDS;
+    	---Purpose: Returns a loaded shape specified by its rank number.
+    	--          Returns null shape if <num> is out of range
+
+    HasBadEdges (me) returns Boolean;
+    	---Purpose: Tells if at least one edge is recorded as bad
+
+    BadEdges (me) returns Compound from TopoDS;
+    	---Purpose: Returns the list of bad edges as a Compound
+    	--          It is empty (not null) if no edge are recorded as bad
+ 
+    HasFreeEdges (me) returns Boolean;
+    	---Purpose: Tells if at least one edge is recorded as free (not connected)
+
+    FreeEdges (me) returns Compound from TopoDS;
+    	---Purpose: Returns the list of free (not connected) edges as a Compound
+    	--          It is empty (not null) if no edge are recorded as free
+
+    HasConnectedEdges (me) returns Boolean;
+   	---Purpose: Tells if at least one edge is connected (shared twice or more)
+
+fields
+
+    myShells: IndexedMapOfShape from TopTools;
+    myBad   : IndexedMapOfShape from TopTools;
+    myFree  : IndexedMapOfShape from TopTools;
+    myConex : Boolean;  -- are there or not
+
+end Shell;

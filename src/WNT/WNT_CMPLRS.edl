@@ -1,0 +1,1 @@
+@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -D_AFXDLL ";

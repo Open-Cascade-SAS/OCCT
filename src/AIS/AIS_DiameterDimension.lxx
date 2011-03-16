@@ -1,0 +1,44 @@
+// File:	AIS_DiameterDimension.lxx
+// Created:	Fri Feb 28 10:14:18 1997
+// Modified     Mon 12-january-98
+// Author:	Jean-Pierre COMBE, Serguei ZARITCHNY
+//		<jpr>              <szy>
+
+//=======================================================================
+//function : KindOfDimension
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfDimension AIS_DiameterDimension::KindOfDimension() const 
+{
+  return AIS_KOD_DIAMETER;
+}
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_DiameterDimension::IsMovable() const 
+{
+  return Standard_True;
+}
+
+//=======================================================================
+//function : DiamSymbol
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean AIS_DiameterDimension::DiamSymbol()
+{
+  return myDiamSymbol;
+}
+
+
+//=======================================================================
+//function : SetDiamSymbol
+//purpose  : 
+//=======================================================================
+
+inline void AIS_DiameterDimension::SetDiamSymbol(const Standard_Boolean aDiamSymbol)
+{
+  myDiamSymbol = aDiamSymbol;
+}

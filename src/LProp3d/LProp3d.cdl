@@ -1,0 +1,34 @@
+-- File:        LProp3d.cdl
+-- Created:     Fri Aug  2 17:10:21 2002
+-- Author:      Alexander KARTOMIN  (akm)
+--              <a-kartomin@opencascade.com>
+-- NB:          This originates from BRepLProp being abstracted of BRep.
+---Copyright:   Matra Datavision 2002
+
+package LProp3d
+
+    ---Purpose: Handles local properties of curves and surfaces from the 
+    --          package Adaptor3d.
+    -- SeeAlso: Package LProp.
+
+uses Standard, gp, Adaptor3d, GeomAbs, LProp
+
+is
+    
+    class CurveTool;
+    class SurfaceTool;
+    
+                                            
+    class CLProps from LProp3d 
+            instantiates CLProps from LProp(HCurve     from Adaptor3d,
+                                            Vec        from gp,
+                                            Pnt        from gp,
+                                            Dir        from gp,
+                                            CurveTool  from LProp3d);
+
+    class SLProps from LProp3d 
+            instantiates SLProps from LProp(HSurface    from Adaptor3d,
+                                            SurfaceTool from LProp3d);
+
+    
+end LProp3d;    

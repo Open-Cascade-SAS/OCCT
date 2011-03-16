@@ -1,0 +1,30 @@
+-- File:        Path.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPath from RWStepShape
+
+	---Purpose : Read & Write Module for Path
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Path from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPath;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Path from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : Path from StepShape);
+
+	Share(me; ent : Path from StepShape; iter : in out EntityIterator);
+
+end RWPath;

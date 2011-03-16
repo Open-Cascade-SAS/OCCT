@@ -1,0 +1,180 @@
+--
+-- File      :  PerspectiveView.cdl
+-- Created   :  Wed 3 Feb 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PerspectiveView from IGESDraw  inherits ViewKindEntity
+
+        ---Purpose: defines IGESPerspectiveView, Type <410> Form <1>
+        --          in package IGESDraw
+        --
+        --          Supports a perspective view.
+        --          Any geometric projection is defined by a view plane
+        --          and the projectors that pass through the view plane.
+        --          Projectors can be visualized as rays of light that
+        --          form an image by passing through the viewed object
+        --          and striking the view plane.
+        --          The projectors are defined via a point called the
+        --          Centre-of-Projection or the eye-point.
+        --          A perspective view is formed by all projectors that
+        --          emanate from the Centre-of-Projection and pass
+        --          through the view plane.
+
+uses
+
+        TransfEntity            from IGESData,
+        Vec                     from gp,
+        XY                      from gp,
+        XYZ                     from gp,
+        Pnt2d                   from gp,
+        Pnt                     from gp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable PerspectiveView;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                  : mutable;
+              aViewNumber         : Integer;
+              aScaleFactor        : Real;
+              aViewNormalVector   : XYZ;
+              aViewReferencePoint : XYZ;
+              aCenterOfProjection : XYZ;
+              aViewUpVector       : XYZ;
+              aViewPlaneDistance  : Real;
+              aTopLeft            : XY;
+              aBottomRight        : XY;
+              aDepthClip          : Integer;
+              aBackPlaneDistance  : Real;
+              aFrontPlaneDistance : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           PerspectiveView
+        --       - aViewNumber         : The desired view
+        --       - aScaleFactor        : Scale factor
+        --       - aViewNormalVector   : View plane normal vector (model space)
+        --       - aViewReferencePoint : View reference point     (model space)
+        --       - aCenterOfProjection : Center Of Projection     (model space)
+        --       - aViewUpVector       : View up vector           (model space)
+        --       - aViewPlaneDistance  : View plane distance      (model space)
+        --       - aTopLeft            : Top-left point of clipping window
+        --       - aBottomRight        : Bottom-right point of clipping window
+        --       - aDepthClip          : Depth clipping indicator
+        --       - aBackPlaneDistance  : Distance of back clipping plane
+        --       - aFrontPlaneDistance : Distance of front clipping plane
+
+    	IsSingle (me) returns Boolean;
+	---Purpose : Returns True (for a single view)
+
+    	NbViews (me) returns Integer;
+	---Purpose : Returns 1 (single view)
+
+    	ViewItem (me; num : Integer) returns ViewKindEntity  raises OutOfRange;
+	---Purpose : For a single view, returns <me> whatever <num>
+
+        ViewNumber (me) returns Integer;
+        ---Purpose : returns the view number associated with <me>
+
+        ScaleFactor (me) returns Real;
+        ---Purpose : returns the scale factor associated with <me>
+
+        ViewNormalVector (me) returns Vec;
+        ---Purpose : returns the View plane normal vector (model space)
+
+        ViewReferencePoint (me) returns Pnt;
+        ---Purpose : returns the View reference point (model space)
+
+        CenterOfProjection (me) returns Pnt;
+        ---Purpose : returns the Center Of Projection (model space)
+
+        ViewUpVector (me) returns Vec;
+        ---Purpose : returns the View up vector (model space)
+
+        ViewPlaneDistance (me) returns Real;
+        ---Purpose : returns the View plane distance (model space)
+
+        TopLeft (me) returns Pnt2d;
+        ---Purpose : returns the top left point of the clipping window
+
+        BottomRight (me) returns Pnt2d;
+        ---Purpose : returns the bottom right point of the clipping window
+
+        DepthClip (me) returns Integer;
+        ---Purpose : returns the Depth clipping indicator
+        --     0 = No depth clipping
+        --     1 = Back clipping plane ON
+        --     2 = Front clipping plane ON
+        --     3 = Back and front clipping planes ON
+
+        BackPlaneDistance (me) returns Real;
+        ---Purpose : returns the View coordinate denoting the location of
+        -- the back clipping plane
+
+        FrontPlaneDistance (me) returns Real;
+        ---Purpose : returns the View coordinate denoting the location of
+        -- the front clipping plane
+
+        ViewMatrix (me) returns TransfEntity;
+        ---Purpose : returns the Transformation Matrix
+
+        ModelToView (me; coords : XYZ) returns XYZ;
+        ---Purpose : returns XYX from the Model space to the View space by
+        -- applying the View Matrix
+
+fields
+
+--
+-- Class    : IGESDraw_PerspectiveView
+--
+-- Purpose  : Declaration of the variables specific to a
+--            PerspectiveView Entity.
+--
+-- Reminder : A PerspectiveView Entity is defined by :
+--                    -  The desired view
+--                    -  Scale factor
+--                    -  View plane normal vector (model space)
+--                    -  View reference point (model space)
+--                    -  Center Of Projection (model space)
+--                    -  View up vector (model space)
+--                    -  View plane distance (model space)
+--                    -  Top-left point of clipping window
+--                    -  Bottom-right point of clipping window
+--                    -  Depth clipping indicator
+--                         0 = No depth clipping
+--                         1 = Back clipping plane ON
+--                         2 = Front clipping plane ON
+--                         3 = Back and front clipping planes ON
+--                    -  Distance of back clipping plane
+--                    -  Distance of front clipping plane
+--
+
+        theViewNumber           : Integer;
+
+        theScaleFactor          : Real;
+
+        theViewNormalVector     : XYZ;
+
+        theViewReferencePoint   : XYZ;
+
+        theCenterOfProjection   : XYZ;
+
+        theViewUpVector         : XYZ;
+
+        theViewPlaneDistance    : Real;
+
+        theTopLeft              : XY;
+
+        theBottomRight          : XY;
+
+        theDepthClip            : Integer;
+
+        theBackPlaneDistance    : Real;
+
+        theFrontPlaneDistance   : Real;
+
+end PerspectiveView;

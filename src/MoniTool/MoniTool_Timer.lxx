@@ -1,0 +1,128 @@
+//=======================================================================
+//function : MoniTool_Timer
+//purpose  : 
+//=======================================================================
+
+inline MoniTool_Timer::MoniTool_Timer() : myCount(0), myNesting(0), myAmend(0)
+{
+}
+
+//=======================================================================
+//function : Timer
+//purpose  : 
+//=======================================================================
+
+inline OSD_Timer& MoniTool_Timer::Timer()
+{
+  return myTimer;
+}
+
+//=======================================================================
+//function : Timer
+//purpose  : 
+//=======================================================================
+
+inline const OSD_Timer& MoniTool_Timer::Timer() const
+{
+  return myTimer;
+}
+
+//=======================================================================
+//function : Start
+//purpose  : 
+//=======================================================================
+
+inline void MoniTool_Timer::Start()
+{
+//  AmendStart();
+  if ( ! myNesting ) myTimer.Start();
+  myCount++;
+  myNesting++;
+}
+
+//=======================================================================
+//function : Stop
+//purpose  : 
+//=======================================================================
+
+inline void MoniTool_Timer::Stop()
+{
+  myNesting--;
+  if ( ! myNesting ) myTimer.Stop();
+//  AmendStop();
+}
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+inline void MoniTool_Timer::Reset()
+{
+  myTimer.Reset();
+  myCount = myNesting = 0;
+  myAmend = 0;
+}
+
+//=======================================================================
+//function : Count
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer MoniTool_Timer::Count() const
+{
+  return myCount;
+}
+
+//=======================================================================
+//function : IsRunning
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer MoniTool_Timer::IsRunning() const
+{
+  return myNesting;
+}
+
+//=======================================================================
+//function : Amend
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real MoniTool_Timer::Amend() const
+{
+  return myAmend;
+}
+
+//=======================================================================
+//function : CPU
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real MoniTool_Timer::CPU() 
+{
+  Standard_Integer minutes, hours;
+  Standard_Real seconds, cpu;
+  myTimer.Show(seconds,minutes,hours,cpu);
+  return cpu - myAmend;
+}
+
+//=======================================================================
+//function : Start
+//purpose  : 
+//=======================================================================
+
+inline void MoniTool_Timer::Start(const Standard_CString name) 
+{
+  Timer(name)->Start();
+}
+
+//=======================================================================
+//function : Stop
+//purpose  : 
+//=======================================================================
+
+inline void MoniTool_Timer::Stop(const Standard_CString name) 
+{
+  Timer(name)->Stop();
+}

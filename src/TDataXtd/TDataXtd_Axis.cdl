@@ -1,0 +1,81 @@
+-- File:	TDataXtd_Axis.cdl
+-- Created:	Mon Apr  6 17:29:46 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009 
+
+class Axis from TDataXtd inherits Attribute from TDF
+
+
+	---Purpose: The basis to define an axis attribute.
+	--          
+	--  Warning: Use TDataXtd_Geometry  attribute  to retrieve  the
+	--          gp_Lin of the Axis attribute
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Line            from Geom,
+     Lin             from gp,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+
+
+
+is    
+
+   ---Purpose: class methods
+    --         =============
+    
+    GetID(myclass)    
+ 	---C++: return const & 
+    	---Purpose: 	Returns the GUID for an axis. 
+    returns GUID from Standard;
+
+    
+    Set (myclass ; label : Label from TDF) 
+    ---Purpose: Finds or creates an axis attribute defined by the  label.
+-- In the case of a creation of an axis, a compatible
+-- named shape should already be associated with label.
+-- Exceptions
+-- Standard_NullObject if no compatible named
+-- shape is associated with the label.
+    returns Axis from TDataXtd;    
+
+    Set (myclass ; label :  Label from TDF; L : Lin from gp) 
+    ---Purpose: Find,  or create,  an Axis  attribute  and set <P>  as
+    --          generated in the associated NamedShape.
+    returns Axis from TDataXtd;    
+
+
+    ---Purpose: Axis methods
+    --          ============     
+
+    Create
+    returns mutable Axis from TDataXtd;  
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID(me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore(me: mutable; with : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);  
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+end Axis;
+
+
+

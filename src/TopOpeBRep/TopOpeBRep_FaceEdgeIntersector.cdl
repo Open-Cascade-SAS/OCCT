@@ -1,0 +1,152 @@
+-- File:	TopOpeBRep_FaceEdgeIntersector.cdl
+-- Created:	Thu Oct 13 11:19:34 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class FaceEdgeIntersector from TopOpeBRep
+
+	---Purpose: 
+
+uses
+
+    Shape from TopoDS,
+    Face from TopoDS,
+    Edge from TopoDS,
+    Vertex from TopoDS,
+    Transition from TopOpeBRepDS,
+    Inter from BRepIntCurveSurface,
+    SequenceOfPnt from IntCurveSurface,
+    SequenceOfInteger from TColStd,
+    Curve from GeomAdaptor,
+    Pnt from gp,
+    Pnt2d from gp,
+    Orientation from TopAbs,
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Explorer from TopExp
+	    
+is
+
+    Create returns FaceEdgeIntersector from TopOpeBRep;
+
+    Perform(me : in out; F,E : Shape from TopoDS)
+    is static;
+
+    IsEmpty(me : in out) returns Boolean from Standard
+    is static;
+
+    Shape(me; Index : Integer from Standard) returns Shape from TopoDS
+    	---Purpose: returns intersected face or edge according to
+    	--          value of <Index> = 1 or 2
+	---C++: return const &
+    is static;
+
+    -- 
+    
+    ForceTolerance(me : in out; tol : Real from Standard) 
+    is static; 
+    	---Purpose : 
+    	-- Force the tolerance values used by the next Perform(S1,S2) call.
+
+    Tolerance(me) returns Real from Standard is static;
+    	---Purpose : 
+    	-- Return the tolerance value used in the last Perform() call
+    	-- If ForceTolerance() has been called, return the given value.
+	-- If not, return value extracted from shapes.
+
+    --
+
+    NbPoints(me) returns Integer from Standard is static;
+
+    InitPoint(me : in out) is static;
+
+    MorePoint(me) returns Boolean from Standard is static;
+
+    NextPoint(me : in out) is static;
+    
+    --- Methods on current Point
+
+    Value(me)
+    returns Pnt from gp
+    ---Purpose: return the 3D point of the current intersection point.
+    is static;
+
+    Parameter(me)
+    ---Purpose : parametre de Value() sur l'arete
+    returns Real from Standard is static;
+    
+    UVPoint(me;	P : out Pnt2d from gp)
+    ---Purpose : parametre de Value() sur la face
+    is static;
+
+    State(me) returns State from TopAbs
+    ---Purpose : IN ou ON / a la face. Les points OUT ne sont pas retournes.
+    is static;
+    
+    --  <Index> = 1 means on face
+    --  <Index> = 2 means on edge
+    
+    Transition(me; Index : Integer from Standard;
+    	    	   FaceOrientation : Orientation from TopAbs)
+    ---Purpose: 
+    -- Index = 1 transition par rapport a la face, en cheminant sur l'arete
+    returns Transition from TopOpeBRepDS is static;
+    
+
+    IsVertex(me : in out; S : Shape from TopoDS;
+    	    	    	  P : Pnt from gp;
+    	    	          Tol : Real from Standard;
+    	    	          V : out Vertex from TopoDS)
+    returns Boolean is static;
+
+    IsVertex(me : in out; I : Integer from Standard;
+    	                  V : out Vertex from TopoDS)
+    returns Boolean is static;
+
+    Index(me)
+    ---Purpose: trace only
+    returns Integer from Standard is static;
+
+    -- -------
+    -- private
+    -- -------
+
+    ResetIntersection(me : in out) 
+    is static private;
+
+    ShapeTolerances(me : in out; S1,S2 : Shape from TopoDS) is static private;
+	---Purpose: extract tolerance values from shapes <S1>,<S2>,
+	--          in order to perform intersection between <S1> and <S2>
+	--          with tolerance values "fitting" the shape tolerances.
+       	-- (called by Perform() by default, when ForceTolerances() has not 
+	--  been called)
+
+    ToleranceMax(me; S : Shape from TopoDS; T : ShapeEnum from TopAbs)
+    returns Real from Standard is static private;
+    	---Purpose : returns the max tolerance of sub-shapes of type <T>
+    	--           found in shape <S>. If no such sub-shape found, return
+    	--           Precision::Intersection()
+        -- (called by ShapeTolerances())
+
+fields
+
+    myFace : Face from TopoDS;
+    myEdge : Edge from TopoDS;
+    
+    myTol : Real from Standard;
+    myForceTolerance : Boolean from Standard;
+    myCurve : Curve from GeomAdaptor;
+    myIntersectionDone : Boolean from Standard;
+    
+    mySequenceOfPnt : SequenceOfPnt from IntCurveSurface;
+    mySequenceOfState : SequenceOfInteger from TColStd; -- 0 = IN, 1 =  ON
+    myPointIndex : Integer;    	
+    myNbPoints   : Integer;    	
+    
+    myVertexExplorer : Explorer from TopExp;
+    myNullShape : Shape from TopoDS; -- dummy
+    myNullVertex : Vertex from TopoDS; -- dummy
+    
+end FaceEdgeIntersector from TopOpeBRep;

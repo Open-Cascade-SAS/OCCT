@@ -1,0 +1,72 @@
+-- File:	PTopoDS_Shape1.cdl
+--      	------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1998
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb  4 1998	Creation
+
+
+class Shape1 from PTopoDS inherits Storable from Standard
+
+    ---Purpose: The PTopoDS_Shape1 is the Persistent view of a TopoDS_Shape.
+    --          
+    --  a  Shape1 contains :
+    --          
+    --          - a reference to a TShape1.
+    --          
+    --          - a Location  to put the TShape1 in  a local coordinate
+    --          system.
+    --          
+    --          - an Orientation.
+    --          
+    --          It inherits from ExternShareable, so that it can be shared
+    --          by other objects located outside the container.
+    
+uses
+
+    Orientation   from TopAbs,
+    TShape1       from PTopoDS,
+    Location      from PTopLoc
+    
+is
+    Create returns Shape1 from PTopoDS;
+    ---Level: Internal 
+
+    Nullify(me : in out)
+    is static;
+
+    TShape(me) returns any TShape1 from PTopoDS
+    ---Level: Internal 
+    ---C++: return const &
+    is static;
+
+    TShape(me : in out; T : TShape1 from PTopoDS)
+    ---Level: Internal 
+    is static;
+
+    Location(me) returns Location from PTopLoc
+    ---Level: Internal 
+    is static;
+	
+    Location(me : in out; L : Location from PTopLoc)
+    ---Level: Internal 
+    is static;
+	
+    Orientation(me) returns Orientation from TopAbs
+    ---Level: Internal 
+    is static;
+
+    Orientation(me: in out; O : Orientation from TopAbs)
+    ---Level: Internal 
+    is static;
+    
+fields
+
+    myTShape   : TShape1     from PTopoDS;
+    myLocation : Location    from PTopLoc;
+    myOrient   : Orientation from TopAbs;
+
+end Shape1;

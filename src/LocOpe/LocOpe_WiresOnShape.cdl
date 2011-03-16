@@ -1,0 +1,127 @@
+-- File:	LocOpe_WiresOnShape.cdl
+-- Created:	Thu Jan 11 11:26:44 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class WiresOnShape from LocOpe inherits ProjectedWires from LocOpe
+
+	---Purpose: 
+
+uses Shape               from TopoDS,
+     Face                from TopoDS,
+     Wire                from TopoDS,
+     Edge                from TopoDS,
+     Vertex              from TopoDS,
+     DataMapOfShapeShape from TopTools,
+--     DataMapIteratorOfDataMapOfShapeShape from TopTools
+     IndexedDataMapOfShapeShape from TopTools
+
+
+is
+
+    Create(S: Shape from TopoDS)
+
+    	returns mutable WiresOnShape from LocOpe;
+
+
+    Init(me: mutable; S: Shape from TopoDS)
+    
+    	is static;
+
+
+    Bind(me: mutable; W: Wire from TopoDS;
+                      F: Face from TopoDS)
+		     
+	is static;
+
+
+    Bind(me: mutable; E: Edge from TopoDS;
+                      F: Face from TopoDS)
+		      
+    	is static;
+
+
+    Bind(me: mutable; EfromW: Edge from TopoDS;
+    	              EonFace: Edge from TopoDS)
+		      
+	is static;
+
+
+    BindAll(me: mutable)
+    
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    InitEdgeIterator(me: mutable)
+    
+    	;
+
+
+    MoreEdge(me: mutable)
+    	returns Boolean from Standard
+	;
+
+
+    Edge(me: mutable)
+    	returns Edge from TopoDS
+	;
+
+
+    OnFace(me: mutable)
+	---Purpose: Returns the face of the shape on which the current
+	--          edge is projected.
+    	returns Face from TopoDS
+	;
+
+    
+    OnEdge(me: mutable; E: out Edge from TopoDS)
+	---Purpose: If the   current  edge is  projected  on  an edge,
+	--          returns <Standard_True> and sets the value of <E>.
+	--          Otherwise, returns <Standard_False>.
+    	returns Boolean from Standard
+	;
+
+
+    NextEdge(me: mutable)
+    
+    	;
+
+
+    OnVertex(me: mutable; Vwire :     Vertex from TopoDS;
+    	                  Vshape: out Vertex from TopoDS)
+			  
+	returns Boolean from Standard
+	;
+
+
+    OnEdge(me: mutable; V: Vertex from TopoDS;
+                        E: out Edge from TopoDS;
+			P: out Real from Standard)
+	---Purpose: If the vertex <V> lies on  an edge of the original
+	--          shape,  returns     <Standard_True> and   sets the
+	--          concerned edge in  <E>,  and the parameter on  the
+	--          edge in <P>.
+	--          Else returns <Standard_False>.
+	returns Boolean from Standard
+	;
+
+
+fields
+
+    myShape : Shape                      from TopoDS;
+    myMapEF : IndexedDataMapOfShapeShape from TopTools;
+    myMap   : DataMapOfShapeShape        from TopTools;
+    myDone  : Boolean                    from Standard;
+    myIndex : Integer                    from Standard;
+
+end WiresOnShape;

@@ -1,0 +1,99 @@
+// File:	LocOpe_Builder.lxx
+// Created:	Wed May 10 11:48:27 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <StdFail_NotDone.hxx>
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_Builder::IsDone () const
+{
+  return myDone;
+}
+
+
+//=======================================================================
+//function : IsInvDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_Builder::IsInvDone () const
+{
+  return myInvDone;
+}
+
+
+//=======================================================================
+//function : OriginalShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Builder::OriginalShape () const
+{
+  return myShape;
+}
+
+
+//=======================================================================
+//function : Tool
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Builder::Tool () const
+{
+  return myTool;
+}
+
+
+
+//=======================================================================
+//function : ResultingShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Builder::ResultingShape () const
+{
+  if (!myDone) {StdFail_NotDone::Raise();}
+  return myResult;
+}
+
+
+//=======================================================================
+//function : Builder
+//purpose  : 
+//=======================================================================
+
+inline const Handle(BOP_HistoryCollector)& LocOpe_Builder::History() const
+{
+  return myAlgo.History();
+}
+
+
+//=======================================================================
+//function : Edges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& LocOpe_Builder::Edges() const
+{
+  return myEdges;
+}
+
+
+//=======================================================================
+//function : TgtEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& LocOpe_Builder::TgtEdges() const
+{
+  return myTgtEdges;
+}
+
+
+

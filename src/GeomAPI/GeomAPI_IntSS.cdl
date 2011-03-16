@@ -1,0 +1,97 @@
+-- File:	GeomAPI_IntSS.cdl
+-- Created:	Tue Mar 14 09:59:04 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class IntSS from GeomAPI 
+
+	---Purpose: This class implements methods for
+    	--   computing the intersection curves   between two surfaces.
+  	--       The result is curves from Geom.  The "domain" used for
+	--       a surface   is the natural  parametric domain
+	--       unless the surface is a  RectangularTrimmedSurface
+	--       from Geom.
+
+
+uses IntSS from GeomInt,
+     Surface from Geom,
+     Curve   from Geom
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+is
+
+    Create
+	---Purpose: Constructs an empty object. Use the
+    	-- function Perform for further initialization algorithm by two surfaces.
+    	returns IntSS from GeomAPI;
+	---C++: inline
+
+
+    Create(S1,S2: Surface from Geom; Tol: Real from Standard)
+	---Purpose: Computes the intersection curves
+    	-- between the two surfaces S1 and S2. Parameter Tol defines the precision
+    	-- of curves computation. For most cases the value 1.0e-7 is recommended to use.
+    	-- Warning
+    	-- Use the function IsDone to verify that the intersections are successfully computed.I
+    	---C++: inline
+returns IntSS from GeomAPI;
+
+		
+    Perform(me: in out;S1,S2: Surface from Geom; Tol: Real from Standard)
+	---Purpose: Initializes an algorithm with the
+    	-- given arguments and computes the intersection curves between the two surfaces S1 and S2.
+    	-- Parameter Tol defines the precision of curves computation. For most
+    	-- cases the value 1.0e-7 is recommended to use.
+    	-- Warning
+    	-- Use function IsDone to verify that the intersections are successfully computed.
+    	---C++: inline
+is static;
+
+
+    IsDone(me)
+	---Purpose: Returns True if the intersection was successful.
+    	returns Boolean from Standard
+    	---C++: inline
+	is static;
+
+
+    NbLines(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+    	---Purpose: Returns the number of computed intersection curves.
+    	-- Exceptions
+    	-- StdFail_NotDone if the computation fails.
+	raises NotDone from StdFail
+	
+	is static;
+	
+
+    Line(me; Index: Integer from Standard)
+	---Purpose: Returns the computed intersection curve of index Index.
+    	-- Exceptions
+    	-- StdFail_NotDone if the computation fails.
+    	-- Standard_OutOfRange if Index is out of range [1, NbLines] where NbLines
+    	-- is the number of computed intersection curves.
+    	returns any Curve from Geom
+	---C++: return const&
+	---C++: inline
+	raises NotDone from StdFail,
+	      
+	       OutOfRange from Standard
+	      
+	is static;
+
+
+
+
+fields
+
+    myIntersec : IntSS from GeomInt;
+
+end IntSS;

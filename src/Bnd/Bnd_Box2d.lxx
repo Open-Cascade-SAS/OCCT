@@ -1,0 +1,223 @@
+// File:	Bnd_Box2d.lxx
+// Created:	Thu Nov 27 11:12:34 1997
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+#define VoidMask  0x01
+#define XminMask  0x02
+#define XmaxMask  0x04
+#define YminMask  0x08
+#define YmaxMask  0x10
+#define WholeMask 0x1e
+
+#include <gp_Pnt2d.hxx>
+
+//=======================================================================
+//function : Bnd_Box2d
+//purpose  : 
+//=======================================================================
+
+inline Bnd_Box2d::Bnd_Box2d()
+     : Xmin(0.), Xmax(0.), Ymin(0.), Ymax(0.), Gap(0.), Flags (VoidMask)
+{
+}
+
+//=======================================================================
+//function : SetWhole
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::SetWhole ()
+{ Flags = WholeMask; }
+
+//=======================================================================
+//function : SetVoid
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::SetVoid ()
+{
+  Flags = VoidMask;
+  Gap=0.;
+}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::Set(const gp_Pnt2d& P)
+{
+  Flags = VoidMask;
+  Gap=0.;
+  Add(P);
+}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::Set(const gp_Pnt2d& P, const gp_Dir2d& D)
+{
+  Flags = VoidMask;
+  Gap=0.;
+  Add(P,D);
+}
+
+//=======================================================================
+//function : GetGap
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Bnd_Box2d::GetGap () const
+{
+  return Gap;
+}
+
+//=======================================================================
+//function : SetGap
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::SetGap (const Standard_Real Tol)
+{
+  Gap = Tol;
+}
+
+//=======================================================================
+//function : Enlarge
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::Enlarge (const Standard_Real Tol)
+{
+  Standard_Real t = Tol;
+  if (t < 0) t = - t;
+  if (Gap < t) Gap = t;
+}
+
+//=======================================================================
+//function : OpenXmin
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::OpenXmin ()
+{ Flags |= XminMask; }
+
+//=======================================================================
+//function : OpenXmax
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::OpenXmax ()
+{ Flags |= XmaxMask; }
+
+//=======================================================================
+//function : OpenYmin
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::OpenYmin ()
+{ Flags |= YminMask; }
+
+//=======================================================================
+//function : OpenYmax
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::OpenYmax ()
+{ Flags |= YmaxMask; }
+
+//=======================================================================
+//function : IsOpenXmin
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOpenXmin () const
+{ return Flags & XminMask; }
+
+//=======================================================================
+//function : IsOpenXmax
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOpenXmax () const
+{ return Flags & XmaxMask; }
+
+//=======================================================================
+//function : IsOpenYmin
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOpenYmin () const
+{ return Flags & YminMask; }
+
+//=======================================================================
+//function : IsOpenYmax
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOpenYmax () const
+{ return Flags & YmaxMask; }
+
+//=======================================================================
+//function : IsWhole
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsWhole () const
+{ return (Flags & WholeMask) == WholeMask; }
+
+//=======================================================================
+//function : IsVoid
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsVoid () const
+{ return Flags & VoidMask; }
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::Add (const gp_Pnt2d& P)
+{
+  Update(P.X(),P.Y());
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void Bnd_Box2d::Add (const gp_Pnt2d& P, const gp_Dir2d& D)
+{
+  Add(P);
+  Add(D);
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOut (const Bnd_Box2d& Other, 
+				   const gp_Trsf2d& T) const
+{
+  return IsOut(Other.Transformed(T));
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Bnd_Box2d::IsOut (const gp_Trsf2d& T1,
+					  const Bnd_Box2d& Other, 
+					  const gp_Trsf2d& T2) const
+{ 
+  return Transformed(T1).IsOut (Other.Transformed(T2));
+}
+

@@ -1,0 +1,69 @@
+-- File:	Sweep_NumShapeTool.cdl
+-- Created:	Wed Jun  2 12:31:51 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class NumShapeTool from Sweep  -- as Tool from Sweep
+
+    ---Purpose: This class provides  the indexation and  type analysis
+    --          services required by  the NumShape Directing Shapes of
+    --          Swept Primitives.
+    --          
+
+uses
+    NumShape from Sweep,
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs
+    
+raises
+
+    OutOfRange from Standard
+is
+
+    Create(aShape: NumShape from Sweep);
+	---Purpose: Create a new NumShapeTool with <aShape>.  The Tool
+	--          must prepare an indexation  for  all the subshapes
+	--          of this shape.
+
+    NbShapes(me) returns Integer
+	---Purpose: Returns the number of subshapes in the shape.
+    is static;
+
+    Index(me; aShape : NumShape from Sweep) returns Integer
+	---Purpose: Returns the index of <aShape>.
+    is static;
+    
+    Shape(me; anIndex : Integer from Standard) returns NumShape from Sweep
+	---Purpose: Returns the Shape at index anIndex
+    is static;
+    
+    Type(me; aShape : NumShape from Sweep) returns ShapeEnum from TopAbs
+	---Purpose: Returns the type of <aShape>.
+    is static;
+
+    Orientation(me; aShape : NumShape from Sweep) 
+    returns Orientation from TopAbs
+	---Purpose: Returns the orientation of <aShape>.
+    is static;
+
+    HasFirstVertex(me) returns Boolean from Standard
+	---Purpose: Returns true if there is a First Vertex in the Shape.
+    is static;
+
+    HasLastVertex(me) returns Boolean from Standard
+	---Purpose: Returns true if there is a Last Vertex in the Shape.
+    is static;
+
+    FirstVertex(me) returns NumShape from Sweep
+	---Purpose: Returns the first vertex.
+    is static;
+
+    LastVertex(me) returns NumShape from Sweep
+	---Purpose: Returns the last vertex.
+    is static;
+fields
+
+    myNumShape : NumShape from Sweep;
+    
+end NumShapeTool from Sweep;

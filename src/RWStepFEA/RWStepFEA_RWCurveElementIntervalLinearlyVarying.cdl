@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWCurveElementIntervalLinearlyVarying.cdl
+-- Created:	Wed Jan 22 17:31:43 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCurveElementIntervalLinearlyVarying from RWStepFEA
+
+    ---Purpose: Read & Write tool for CurveElementIntervalLinearlyVarying
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CurveElementIntervalLinearlyVarying from StepFEA
+
+is
+    Create returns RWCurveElementIntervalLinearlyVarying from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CurveElementIntervalLinearlyVarying from StepFEA);
+	---Purpose: Reads CurveElementIntervalLinearlyVarying
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CurveElementIntervalLinearlyVarying from StepFEA);
+	---Purpose: Writes CurveElementIntervalLinearlyVarying
+
+    Share (me; ent : CurveElementIntervalLinearlyVarying from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCurveElementIntervalLinearlyVarying;

@@ -1,0 +1,317 @@
+-- File:	IWLine.cdl
+-- Created:	Wed Mar 25 15:16:53 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class IWLine from IntWalk
+    (TheStartPoint as any)
+
+inherits TShared from MMgt     
+
+    ---Purpose: Definition of a polyline resulting of the IWalking algoritm.
+    --          Each point verifies :
+    --          F(x(u,v),y(u,v),z(u,v))=0, F=implicit function.
+    --          (x(u,v),y(u,v),z(u,v)) point on a parametric surface.
+    --          This polyline is computed marching from a starting a point 
+    --          located on the surface 's boundary or inside the surface
+    --          domain.
+    --          a marching status is returned:
+    --               ok --> the polyline starts and ends on a marching
+    --                 point
+    --               tangent --> the polyline ends on a tangent point
+    --               outside the boundaries --> the polyline is outside the 
+    --                 surface 's boundaries .it ends on the natural boundaries
+    --                 because no marching points where found to stop
+    --               beware  : the directions are not oriented.
+
+uses Couple           from IntSurf,
+     SequenceOfCouple from IntSurf,
+     PntOn2S          from IntSurf,
+     LineOn2S         from IntSurf,
+     Vec              from gp
+
+     
+raises OutOfRange  from Standard,
+       DomainError from Standard
+
+
+is
+
+    Create
+    
+    	returns mutable IWLine;
+
+
+    Reverse(me : mutable)
+    	---Purpose: reverse the points in the line. Hasfirst, HasLast are kept.
+    	is static;
+    
+    Cut(me : mutable; Index : Integer from Standard)
+    	---Purpose: Cut the line at the point of rank Index.
+    	---C++: inline
+    	is static;
+
+    AddPoint(me : mutable; P : PntOn2S from IntSurf)
+    	---Purpose: Add a point in the line.
+    	---C++: inline
+    	is static;
+
+    AddStatusFirst(me : mutable; Closed, HasFirst : Boolean from Standard)
+    	---Purpose: 
+    	---C++: inline
+    	is static;
+    
+    AddStatusFirst(me : mutable; Closed, HasLast : Boolean from Standard;
+                                 Index : Integer from Standard; 
+                                 P     : TheStartPoint)
+    	---Purpose: 
+    	---C++: inline
+    	is static;
+
+
+    AddStatusFirstLast(me : mutable;
+                       Closed, HasFirst, HasLast: Boolean from Standard)
+    	---Purpose: 
+    	---C++: inline
+    	is static;
+
+    AddStatusLast(me : mutable; HasLast : Boolean from Standard)
+        ---Purpose: 
+    	---C++: inline
+    	is static;
+
+    AddStatusLast(me : mutable; HasLast : Boolean from Standard;
+                                Index   : Integer from Standard;
+                                P       : TheStartPoint)
+    	---Purpose: 
+    	---C++: inline
+    	is static;
+
+    AddIndexPassing(me : mutable; Index : Integer from Standard)
+    
+       ---Purpose: associer a l 'indice du point sur la ligne l'indice du point
+       --          passant dans l'iterateur de depart
+
+    	---C++: inline
+    	is static;
+
+
+    SetTangentVector(me: mutable; V: Vec from gp;
+                                  Index: Integer from Standard)
+				  
+    	---C++: inline
+	is static;
+
+    SetTangencyAtBegining(me: mutable; IsTangent: Boolean from Standard)
+    
+    	---C++: inline
+    	is static;
+
+    SetTangencyAtEnd(me: mutable; IsTangent: Boolean from Standard)
+    
+    	---C++: inline
+    	is static;
+
+
+    NbPoints(me)
+    
+    	---Purpose: Returns the number of points of the line (including first
+    	--          point and end point : see HasLastPoint and HasFirstPoint).
+
+    	returns Integer from Standard
+    	---C++: inline
+
+    	is static;
+
+
+    Value(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index.
+    	--          If index <= 0 or Index > NbPoints, an exception is raised.
+
+    	returns PntOn2S from IntSurf
+	---C++: return const&
+    	---C++: inline
+
+    	raises OutOfRange from Standard
+
+    	is static;
+
+
+    Line(me)
+    
+	---Purpose: Returns the LineOn2S contained in the walking line.
+    
+    	returns mutable LineOn2S from IntSurf
+	---C++: return const&
+    	---C++: inline
+	
+	is static;
+
+
+    IsClosed(me)
+    
+    	---Purpose: Returns True if the line is closed.
+
+    	returns Boolean from Standard
+    	---C++: inline
+
+    	is static;
+
+
+    HasFirstPoint(me)
+    
+    	---Purpose: Returns True if the first point of the line is a
+    	--          marching point . when is HasFirstPoint==False ,the line
+    	--          begins on the natural bound of the surface.the line can be
+    	--          too long 
+
+    	returns Boolean from Standard
+    	---C++: inline
+
+    	is static;
+
+
+    HasLastPoint(me)
+    
+    	---Purpose: Returns True if the end point of the line is a
+    	--          marching point (Point from IntWS).
+        --          when is HasFirstPoint==False ,the line ends
+    	--          on the natural bound of the surface.the line can be
+    	--          too long.
+
+    	returns Boolean from Standard
+    	---C++: inline
+
+    	is static;
+
+
+    FirstPoint(me)
+    
+    	---Purpose: Returns the first point of the line when it is a
+    	--          marching point.
+    	--          An exception is raised if HasFirstPoint returns False.
+
+    	returns any TheStartPoint
+	---C++: return const&
+    	---C++: inline
+
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    FirstPointIndex(me)
+    
+    	---Purpose: Returns the Index of first point of the line when it is a
+    	--          marching point.This index is the index in the 
+    	--          PointStartIterator.
+    	--          An exception is raised if HasFirstPoint returns False.
+
+    	returns Integer from Standard
+   	---C++: inline
+
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    LastPoint(me)
+    
+    	---Purpose: Returns the last point of the line when it is a
+    	--          marching point.
+    	--          An exception is raised if HasLastPoint returns False.
+
+    	returns any TheStartPoint
+	---C++: return const&
+    	---C++: inline
+
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    LastPointIndex(me)
+    
+    	---Purpose: Returns the index of last point of the line when it is a
+    	--          marching point.This index is the index in the 
+    	--          PointStartIterator.
+    	--          An exception is raised if HasLastPoint returns False.
+
+    	returns Integer from Standard
+    	---C++: inline
+
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    NbPassingPoint(me)
+    
+    	---Purpose: returns the number of points belonging to Pnts1 which are 
+    	--          passing point.
+
+    	returns Integer from Standard
+    	---C++: inline
+
+    	is static;
+
+
+    PassingPoint(me; Index: Integer from Standard;
+                     IndexLine, IndexPnts : out Integer from Standard)
+		     
+    	---Purpose: returns the index of the point belonging to the line which
+    	--          is associated to the passing point belonging to Pnts1
+    	--          an exception is raised if Index > NbPassingPoint() 
+
+    	raises OutOfRange from Standard
+    	---C++: inline
+
+        is static;    
+
+
+
+    TangentVector(me; Index: out Integer from Standard)
+    
+    	returns Vec from gp
+	---C++: return const&
+    	---C++: inline
+	
+	is static;
+
+
+    IsTangentAtBegining(me)
+    
+    	returns Boolean from Standard
+    	---C++: inline
+	
+	is static;
+
+
+    IsTangentAtEnd(me)
+    
+    	returns Boolean from Standard
+    	---C++: inline
+	
+	is static;
+
+
+fields
+
+    line          : LineOn2S         from IntSurf;
+    couple        : SequenceOfCouple from IntSurf;
+    closed        : Boolean          from Standard;
+    hasFirst      : Boolean          from Standard;
+    hasLast       : Boolean          from Standard;
+    firstIndex    : Integer          from Standard;
+    lastIndex     : Integer          from Standard;
+    theFirstPoint : TheStartPoint;
+    theLastPoint  : TheStartPoint;
+    indextg       : Integer          from Standard;
+    vcttg         : Vec              from gp;
+    istgtbeg      : Boolean          from Standard;
+    istgtend      : Boolean          from Standard;
+  
+end IWLine;

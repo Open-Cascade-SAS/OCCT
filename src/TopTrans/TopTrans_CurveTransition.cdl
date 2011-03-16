@@ -1,0 +1,124 @@
+-- File:	CurveTransition.cdl
+-- Created:	Thu Jan 30 12:10:21 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class CurveTransition from TopTrans 
+
+	---Purpose: This algorithm  is used to  compute the transition
+	--          of a Curve intersecting a curvilinear boundary.
+	--          
+	--          The geometric  elements  are described locally  at
+	--          the   intersection   point  by    a   second order
+	--          development.
+	--          
+	--          The curve is described  by the intersection point,
+	--          the tangent vector and the curvature.
+	--          
+	--          The  boundary  is described  by   a set  of  curve
+	--          elements, a curve element is either :
+	--          
+	--          - A curve.
+	--          
+	--          - A curve and an orientation  called a half-curve,
+	--          the boundary  of the curve is  before or after the
+	--          intersection point depending on the orientation.
+	--          
+
+uses
+
+    Boolean from Standard,
+    Real from Standard,
+    
+    Pnt from gp,
+    Dir from gp,
+    
+    State from TopAbs,
+    Orientation from TopAbs
+
+is
+
+    Create returns CurveTransition from TopTrans;
+	---Purpose: Create an empty  Curve Transition.
+
+
+    Reset( me   : in out;
+    	   Tgt  : in Dir from gp;        -- Tangent at this point      
+    	   Norm : in Dir from gp;        -- Normal vector at this point
+    	   Curv : in Real from Standard);-- Curvature at this point     
+	---Purpose: Initialize a Transition with the local description
+	--          of a Curve.
+    
+    Reset( me   : in out;
+    	   Tgt  : in Dir from gp);       -- Tangent at this point      
+	---Purpose: Initialize a Transition with the local description
+	--          of a straigth line.
+    
+    Compare(me : in out;
+    	    Tole : in Real from Standard;    -- Cosine tolerance
+    	    Tang : in Dir from gp;           -- Tangent on curve for this point
+   	    Norm : in Dir from gp;           -- Normal vector at this point
+    	    Curv : in Real from Standard;    -- Curvature at this point    
+    	    S  : in Orientation from TopAbs; -- transition locale    
+    	    Or : in Orientation from TopAbs);-- orientation de la tangente
+	---Purpose: Add  a curve element to the  boundary.    If Or is
+	--          REVERSED  the curve  is   before the intersection,
+	--          else if  Or  is FORWARD  the   curv  is after  the
+	--          intersection   and    if   Or  is   INTERNAL   the
+	--          intersection is in the middle of the curv.
+
+    StateBefore(me) returns State from TopAbs;
+	---Purpose: returns   the  state   of  the   curve  before the
+	--          intersection, this is the position relative to the
+	--          boundary of a point very close to the intersection
+	--          on the negative side of the tangent.
+	
+    StateAfter(me) returns State from TopAbs;
+	---Purpose: returns  the    state of  the  curve   after   the
+	--          intersection, this is the position relative to the
+	--          boundary of a point very close to the intersection
+	--          on the positive side of the tangent.
+
+
+---Implementation functions :
+
+    IsBefore(   me;
+    	    	Tole : in Real from Standard;
+    	    	Angl : in Real from Standard;
+    	    	Nor1 : in Dir from gp;
+    	    	Cur1 : in Real from Standard;
+    	    	Nor2 : in Dir from gp;
+    	    	Cur2 : in Real from Standard) 
+    	    	returns Boolean from Standard is private;
+    	---Purpose: Compare two curvature and return true  if N1,C1 is
+    	--          before N2,C2 in the edge orientation
+
+    Compare(me;
+    	    Ang1 : in Real from Standard;
+    	    Ang2 : in Real from Standard;
+    	    Tole : in Real from Standard)
+    	    returns Integer from Standard is private;
+    	---Purpose: Compare two angles at tolerance Tole
+	    
+	    
+fields
+
+    myTgt  : Dir from gp;     -- Tangent at this point      
+    myNorm : Dir from gp;     -- Normal vector at this point
+    myCurv : Real;            -- Curvature at this point    
+    
+    Init   : Boolean;
+
+    TgtFirst  : Dir from gp;  -- Elements to determine the state
+    NormFirst : Dir from gp;  -- 
+    CurvFirst : Real;         -- before the intersection
+    TranFirst : Orientation from TopAbs;
+
+    TgtLast  : Dir from gp;   -- Elements to determine the state
+    NormLast : Dir from gp;   -- 
+    CurvLast : Real;          -- After the intersection
+    TranLast : Orientation from TopAbs;
+
+end CurveTransition;

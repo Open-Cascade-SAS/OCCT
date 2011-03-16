@@ -1,0 +1,31 @@
+-- File:	IntAna2d.cdl
+-- Created:	Wed Feb 20 14:31:39 1991
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+package IntAna2d
+
+
+    ---Purpose: This package defines the intersection between two elements of
+    --          the geometric processor : Line, Circle, Ellipse, Parabola and
+    --          Hyperbola; One of these elements is known with his real type,
+    --          the other one is known by an implicit quadratic equation (see
+    --          class Conic).
+    --          A particular case has been made for the intersection between
+    --          two Lin2d, two Circ2d, a Lin2d and a Circ2d.
+
+uses
+
+    Standard, TCollection, gp, StdFail
+
+is
+
+    class Conic;
+
+    class AnaIntersection;
+
+    class IntPoint;
+     
+end IntAna2d;

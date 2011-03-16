@@ -1,0 +1,146 @@
+-- File:	IFSelect_TransformStandard.cdl
+-- Created:	Fri May 27 17:13:48 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TransformStandard  from IFSelect  inherits Transformer
+
+    ---Purpose : This class runs transformations made by Modifiers, as
+    --           the ModelCopier does when it produces files (the same set
+    --           of Modifiers can then be used, as to transform the starting
+    --           Model, as at file sending time).
+    --           
+    --           First, considering the resulting model, two options :
+    --           - modifications are made directly on the starting model
+    --             (OnTheSpot option), or
+    --           - data are copied by the standard service Copy, only the
+    --             remaining (not yet sent in a file) entities are copied
+    --             (StandardCopy option)
+    --           
+    --           If a Selection is set, it forces the list of Entities on which
+    --           the Modifiers are applied. Else, each Modifier is considered
+    --           its Selection. By default, it is for the whole Model
+    --           
+    --           Then, the Modifiers are sequentially applied
+    --           If at least one Modifier "May Change Graph", or if the option
+    --           StandardCopy is selected, the graph will be recomputed
+    --           (by the WorkSession, see method RunTransformer)
+    --           
+    --           Remark that a TransformStandard with option StandardCopy
+    --           and no Modifier at all has the effect of computing the
+    --           remaining data (those not yet sent in any output file).
+    --           Moreover, the Protocol is not changed
+
+uses AsciiString from TCollection,
+     CheckIterator, Graph, Protocol from Interface, InterfaceModel,
+     CopyTool, CopyControl,
+     Selection, Modifier, SequenceOfGeneralModifier
+
+
+is
+
+    Create returns mutable TransformStandard;
+    ---Purpose : Creates a TransformStandard, option StandardCopy, no Modifier
+
+    	--  Description  --
+
+    SetCopyOption (me : mutable; option : Boolean);
+    ---Purpose : Sets the Copy option to a new value :
+    --           - True for StandardCopy  - False for OnTheSpot
+
+    CopyOption (me) returns Boolean;
+    ---Purpose : Returns the Copy option
+
+    SetSelection (me : mutable; sel : Selection);
+    ---Purpose : Sets a Selection (or unsets if Null)
+    --           This Selection then defines the list of entities on which the
+    --           Modifiers will be applied
+    --           If it is set, it has priority on Selections of Modifiers
+    --           Else, for each Modifier its Selection is evaluated
+    --           By default, all the Model is taken
+
+    Selection (me) returns Selection;
+    ---Purpose : Returns the Selection, Null by default
+
+    NbModifiers (me) returns Integer;
+    ---Purpose : Returns the count of recorded Modifiers
+
+    Modifier (me; num : Integer) returns mutable Modifier;
+    ---Purpose : Returns a Modifier given its rank in the list
+
+    ModifierRank (me; modif : Modifier) returns Integer;
+    ---Purpose : Returns the rank of a Modifier in the list, 0 if unknown
+
+    AddModifier (me : mutable; modif : mutable Modifier; atnum : Integer = 0)
+    	returns Boolean;
+    ---Purpose : Adds a Modifier to the list :
+    --           - <atnum> = 0 (default) : at the end of the list
+    --           - <atnum> > 0 : at rank <atnum>
+    --           Returns True if done, False if <atnum> is out of range
+
+    RemoveModifier (me : mutable; modif : Modifier) returns Boolean;
+    ---Purpose : Removes a Modifier from the list
+    --           Returns True if done, False if <modif> not in the list
+
+    RemoveModifier (me : mutable; num : Integer) returns Boolean;
+    ---Purpose : Removes a Modifier from the list, given its rank
+    --           Returns True if done, False if <num> is out of range
+
+    	--    Action    --
+
+    Perform (me : mutable; G : Graph; protocol : Protocol from Interface;
+             checks : in out CheckIterator;
+    	     newmod : out mutable InterfaceModel)  returns Boolean;
+    ---Purpose : Performs the Standard Transformation, by calling Copy then
+    --           ApplyModifiers (which can return an error status)
+
+    Copy         (me; G : Graph; TC : in out CopyTool;
+    	    	  newmod : out mutable InterfaceModel);
+    ---Purpose : This the first operation. It calls StandardCopy or OnTheSpot
+    --           according the option
+
+    StandardCopy (me; G : Graph; TC : in out CopyTool;
+    	    	  newmod : out mutable InterfaceModel);
+    ---Purpose : This is the standard action of Copy : its takes into account
+    --           only the remaining entities (noted by Graph Status positive)
+    --           and their proper dependances of course. Produces a new model.
+
+    OnTheSpot    (me; G : Graph; TC : in out CopyTool;
+    	    	  newmod : out mutable InterfaceModel);
+    ---Purpose : This is the OnTheSpot action : each entity is bound with ...
+    --           itself. The produced model is the same as the starting one.
+
+    ApplyModifiers (me;  G : Graph;  protocol : Protocol from Interface;
+    	    	    TC : in out CopyTool; checks : in out CheckIterator;
+    	    	    newmod : out mutable InterfaceModel) returns Boolean;
+    ---Purpose : Applies the modifiers sequencially.
+    --           For each one, prepares required data (if a Selection is
+    --           associated as a filter).
+    --           For the option OnTheSpot, it determines if the graph may be
+    --           changed and updates <newmod> if required
+    --           If a Modifier causes an error (check "HasFailed"),
+    --           ApplyModifier stops : the following Modifiers are ignored
+
+    Updated (me; entfrom : Transient; entto : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : This methods allows to know what happened to a starting
+    --           entity after the last Perform. It reads result from the map
+    --           which was filled by Perform.
+
+    	--    Others    --
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which defines the way a Transformer works :
+    --           "On the spot edition" or "Standard Copy" followed by
+    --           "<nn> Modifiers"
+
+fields
+
+    thecopy   : Boolean;
+    thesel    : Selection;
+    themodifs : SequenceOfGeneralModifier;
+    themap    : CopyControl;
+
+end TransformStandard;

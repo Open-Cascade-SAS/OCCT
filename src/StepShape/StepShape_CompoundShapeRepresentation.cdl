@@ -1,0 +1,21 @@
+-- File:	StepShape_CompoundShapeRepresentation.cdl
+-- Created:	Fri Dec 28 16:01:59 2001 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class CompoundShapeRepresentation from StepShape
+inherits ShapeRepresentation from StepShape
+
+    ---Purpose: Representation of STEP entity CompoundShapeRepresentation
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr
+
+is
+    Create returns CompoundShapeRepresentation from StepShape;
+	---Purpose: Empty constructor
+
+end CompoundShapeRepresentation;

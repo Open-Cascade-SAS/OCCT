@@ -1,0 +1,15 @@
+// File:	BRepPrim_Builder.lxx
+// Created:	Fri Nov  6 10:29:44 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : Builder
+//purpose  : 
+//=======================================================================
+
+inline const BRep_Builder& BRepPrim_Builder::Builder() const
+{
+  return myBuilder;
+}

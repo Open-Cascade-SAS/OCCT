@@ -1,0 +1,56 @@
+-- File:	TestTopOpeDraw_DrawableSUR.cdl
+-- Created:	Tue Sep 10 18:10:40 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class DrawableSUR from TestTopOpeDraw inherits Surface from DrawTrSurf
+
+uses 
+    
+    Surface     from Geom,
+    Color           from Draw,
+    Display         from Draw,
+    Text3D          from Draw,
+    CString         from Standard,
+    Pnt             from gp,
+    Pnt2d           from gp
+
+is 
+
+    Create (S : Surface from Geom; IsoColor : Color from Draw)
+    returns mutable DrawableSUR from TestTopOpeDraw;
+
+    Create (S : Surface from Geom; IsoColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw)
+    returns mutable DrawableSUR from TestTopOpeDraw;
+
+    Create (S : Surface from Geom; IsoColor : Color from Draw;
+            BoundColor,NormalColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw;
+	    Nu,Nv : Integer;
+    	    Discret : Integer; Deflection : Real; DrawMode : Integer;
+    	    DispOrigin : Boolean from Standard = Standard_True)
+    returns mutable DrawableSUR from TestTopOpeDraw;
+
+    Pnt(me) returns Pnt from gp
+    is static;
+
+    Pnt2d(me) returns Pnt2d from gp
+    is static;
+    
+    DrawOn(me; dis : in out Display from Draw)
+    is redefined;
+
+    NormalColor(me : mutable; NormalColor : Color from Draw)
+    is static;
+
+    DrawNormale(me; dis : in out Display from Draw)
+    is static;
+    
+fields
+
+    myText : Text3D from Draw;
+    myNormalColor : Color from Draw;
+    
+end DrawableSUR;

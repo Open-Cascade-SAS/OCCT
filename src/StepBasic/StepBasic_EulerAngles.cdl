@@ -1,0 +1,30 @@
+-- File:	StepBasic_EulerAngles.cdl
+-- Created:	Thu Dec 12 15:38:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class EulerAngles from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity EulerAngles
+
+uses
+    HArray1OfReal from TColStd
+
+is
+    Create returns EulerAngles from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAngles: HArray1OfReal from TColStd);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Angles (me) returns HArray1OfReal from TColStd;
+	---Purpose: Returns field Angles
+    SetAngles (me: mutable; Angles: HArray1OfReal from TColStd);
+	---Purpose: Set field Angles
+
+fields
+    theAngles: HArray1OfReal from TColStd;
+
+end EulerAngles;

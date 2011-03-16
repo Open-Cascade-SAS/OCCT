@@ -1,0 +1,48 @@
+-- File:	Interface_CopyMap.cdl
+-- Created:	Tue Mar 16 12:19:37 1993
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CopyMap  from Interface  inherits CopyControl
+
+    ---Purpose : Manages a Map for the need of single Transfers, such as Copies
+    --           In such transfer, Starting Entities are read from a unique
+    --           Starting Model, and each transferred Entity is bound to one
+    --           and only one Result, which cannot be changed later.
+
+uses Transient,  Array1OfTransient from TColStd,    InterfaceModel
+
+raises InterfaceError
+
+is
+
+    Create (amodel : InterfaceModel) returns mutable CopyMap;
+    ---Purpose : Creates a CopyMap adapted to work from a Model
+
+    Clear (me : mutable);
+    ---Purpose : Clears Transfer List. Gets Ready to begin another Transfer
+
+    Model (me) returns InterfaceModel  is static;
+    ---Purpose : Returns the InterfaceModel used at Creation time
+
+    Bind (me : mutable; ent : Transient; res : mutable Transient)
+    ---Purpose : Binds a Starting Entity identified by its Number <num> in the
+    --           Starting Model, to a Result of Transfer <res>
+    	raises InterfaceError;
+    --           Error if <num> is already bound to a result, or is out of range
+
+    Search (me; ent : Transient; res : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : Search for the result of a Starting Object (i.e. an Entity,
+    --           identified by its Number <num> in the Starting Model)
+    --           Returns True  if a  Result is Bound (and fills <res>)
+    --           Returns False if no result is Bound (and nullifies <res>)
+
+fields
+
+    themod : InterfaceModel;       -- Starting Model
+    theres : Array1OfTransient;    -- list of bound Results
+
+end CopyMap;

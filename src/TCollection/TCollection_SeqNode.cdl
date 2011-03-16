@@ -1,0 +1,25 @@
+-- File:	TCollection_SeqNode.cdl
+-- Created:	Wed Jan 21 11:55:52 1998
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class SeqNode from TCollection
+inherits TShared from MMgt
+uses SeqNodePtr from TCollection
+is
+    Create(n,p : SeqNodePtr from TCollection) returns SeqNode from TCollection;
+    ---C++: inline
+
+    Next(me) returns SeqNodePtr from TCollection;
+    ---C++: inline
+    ---C++: return &
+
+    Previous(me) returns SeqNodePtr from TCollection;
+    ---C++: inline
+    ---C++: return &
+    
+    fields
+    	myNext : SeqNodePtr from TCollection;
+	myPrevious : SeqNodePtr from TCollection;
+end;

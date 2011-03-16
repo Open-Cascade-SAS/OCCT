@@ -1,0 +1,30 @@
+-- File:        DegenerateToroidalSurface.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDegenerateToroidalSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for DegenerateToroidalSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DegenerateToroidalSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWDegenerateToroidalSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DegenerateToroidalSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : DegenerateToroidalSurface from StepGeom);
+
+	Share(me; ent : DegenerateToroidalSurface from StepGeom; iter : in out EntityIterator);
+
+end RWDegenerateToroidalSurface;

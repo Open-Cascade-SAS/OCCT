@@ -1,0 +1,38 @@
+-- File:        XmlLDrivers.cdl
+-- Created:     Wed Jul 25 16:50:11 2001
+-- Author:      Julia DOROVSKIKH
+--              <jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2001
+
+package XmlLDrivers
+
+uses
+    Standard,
+    TDF,
+    TDocStd,
+    TCollection,
+    TColStd,
+    CDM,
+    PCDM,
+    XmlObjMgt,
+    XmlMDF
+
+is
+    class DocumentStorageDriver;
+    class DocumentRetrievalDriver;
+
+    private class NamespaceDef;
+    
+    private class SequenceOfNamespaceDef
+        instantiates Sequence from TCollection (NamespaceDef from XmlLDrivers);
+
+    Factory (theGUID : GUID from Standard) returns Transient from Standard;
+
+    CreationDate returns AsciiString from TCollection;
+
+    AttributeDrivers (theMsgDriver: MessageDriver from CDM)
+        returns ADriverTable from XmlMDF; 
+	
+    StorageVersion returns AsciiString from TCollection; 
+    
+end XmlLDrivers;

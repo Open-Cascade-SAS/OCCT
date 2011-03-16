@@ -1,0 +1,22 @@
+// File:	AIS_AttributeFilter.lxx
+// Created:	Tue Mar  4 18:10:08 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline void AIS_AttributeFilter::SetColor(const Quantity_NameOfColor aCol)
+{myCol = aCol;hasC = Standard_True;}
+
+inline void AIS_AttributeFilter::SetWidth(const Standard_Real aWid)
+{myWid=aWid;hasW = Standard_True;}
+
+inline void AIS_AttributeFilter::UnsetColor()
+{hasC = Standard_False;}
+
+inline void AIS_AttributeFilter::UnsetWidth()
+{hasW = Standard_False;}
+
+inline Standard_Boolean AIS_AttributeFilter::HasColor() const 
+{return hasC;}
+
+inline Standard_Boolean AIS_AttributeFilter::HasWidth() const 
+{return hasW;}

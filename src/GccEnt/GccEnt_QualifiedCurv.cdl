@@ -1,0 +1,60 @@
+-- File:	QualifiedCurv.cdl
+-- Created:	Mon Apr 15 15:34:24 1991
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+---Copyright:	 Matra Datavision 1991
+
+generic class QualifiedCurv from GccEnt (TheCurve as any)
+
+	---Purpose: Creates a qualified 2d line.
+
+uses Position from GccEnt
+
+is
+
+Create(Curve     : TheCurve                ;
+       Qualifier : Position from GccEnt ) 
+returns QualifiedCurv from GccEnt;
+-- is private;
+
+Qualified(me) returns TheCurve
+is static;
+
+Qualifier(me) returns Position from GccEnt
+is static;
+
+IsUnqualified(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution is unqualified and false in the 
+    	--          other cases.
+
+IsEnclosing(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution is Enclosing the Curv and false in 
+    	--          the other cases.
+
+IsEnclosed(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution is Enclosed in the Curv and false in 
+    	--          the other cases.
+
+IsOutside(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution is Outside the Curv and false in 
+    	--          the other cases.
+
+fields
+
+TheQualifier : Position from GccEnt;
+TheQualified : TheCurve;
+
+-- friends
+
+-- Unqualified(Obj : Curv2d) from GccEnt,
+-- Enclosing  (Obj : Curv2d) from GccEnt,
+-- Enclosed   (Obj : Curv2d) from GccEnt,
+-- Outside    (Obj : Curv2d) from GccEnt
+
+end QualifiedCurv;
+
+

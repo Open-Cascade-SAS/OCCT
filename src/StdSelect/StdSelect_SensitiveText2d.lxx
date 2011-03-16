@@ -1,0 +1,12 @@
+// File:	StdSelect_SensitiveText2d.lxx
+// Created:	Fri Apr 21 15:45:25 1995
+// Author:	Robert COUBLANC
+//		<rob@fidox>
+
+
+ inline Standard_Boolean StdSelect_SensitiveText2d::NeedsConversion() const 
+{
+  return Standard_True;
+}
+
+

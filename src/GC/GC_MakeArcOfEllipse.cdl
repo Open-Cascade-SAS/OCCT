@@ -1,0 +1,71 @@
+-- File:	MakeArcOfEllipse.cdl
+-- Created:	Mon Sep 28 11:50:29 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeArcOfEllipse from GC inherits Root from GC
+        
+    	---Purpose: Implements construction algorithms for an arc
+    	-- of ellipse in 3D space. The result is a Geom_TrimmedCurve curve.
+    	-- A MakeArcOfEllipse object provides a framework for:
+    	-- -   defining the construction of the arc of ellipse,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results. In particular, the
+    	--   Value function returns the constructed arc of ellipse.
+        
+uses Pnt         from gp,
+     Elips       from gp,
+     Dir         from gp,
+     Ax1         from gp,
+     Real        from Standard,
+     TrimmedCurve from Geom
+
+raises NotDone from StdFail
+
+is
+
+Create(Elips          : Elips   from gp       ;
+       Alpha1, Alpha2 : Real    from Standard ;
+       Sense          : Boolean from Standard ) returns MakeArcOfEllipse;
+    	---Purpose: Constructs an arc of Ellipse (TrimmedCurve from Geom) from 
+    	--          a Ellipse between two parameters Alpha1 and Alpha2.
+
+Create(Elips : Elips   from gp       ;
+       P     : Pnt     from gp       ;
+       Alpha : Real    from Standard ;
+       Sense : Boolean from Standard ) returns MakeArcOfEllipse;
+    	---Purpose: Constructs an arc of Ellipse (TrimmedCurve from Geom) from 
+    	--          a Ellipse between point <P> and the angle Alpha 
+    	--          given in radians.
+
+Create(Elips : Elips   from gp ;
+       P1    : Pnt     from gp ;
+       P2    : Pnt     from gp ;
+       Sense : Boolean from Standard ) returns MakeArcOfEllipse;
+    	---Purpose: Constructs an arc of Ellipse (TrimmedCurve from Geom) from 
+    	--          a Ellipse between two points P1 and P2.
+    	-- The orientation of the arc of ellipse is:
+    	-- -   the sense of Elips if Sense is true, or
+    	-- -   the opposite sense if Sense is false.
+    	-- Notes:
+    	-- -   Alpha1, Alpha2 and Alpha are angle values, given in radians.
+    	-- -   IsDone always returns true.
+        
+Value(me) returns TrimmedCurve from Geom
+    raises NotDone
+    is static;
+    	---C++: return const&
+    	---Purpose: Returns the constructed arc of ellipse.
+
+Operator(me) returns TrimmedCurve from Geom
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom_TrimmedCurve() const;"
+
+fields
+
+    TheArc : TrimmedCurve from Geom;
+    --The solution from Geom.
+    
+end MakeArcOfEllipse;

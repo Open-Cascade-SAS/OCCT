@@ -1,0 +1,75 @@
+-- File:	BRepTools_Substitution.cdl
+-- Created:	Tue Mar 28 09:17:56 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Substitution from BRepTools 
+
+	---Purpose: A tool to substitute subshapes by other shapes.
+	--          
+    	--          
+    	--          The user use the method Substitute to define the
+    	--          modifications. 
+    	--          A set of shapes is designated to replace a initial
+    	--          shape. 
+    	--
+    	--          The method Build reconstructs a new Shape with the
+    	--          modifications.The Shape and the new shape are 
+    	--          registered.
+    	--          
+
+uses
+    Shape                     from TopoDS,
+    ListOfShape               from TopTools,	
+    DataMapOfShapeListOfShape from TopTools
+    
+raises
+    
+    NoSuchObject from Standard
+is
+    
+    Create returns Substitution from BRepTools;
+    
+    Clear ( me : in out)
+    	---Purpose: Reset all the fields.
+    is static;
+
+    Substitute (me : in out; 
+    	    	OldShape  : Shape from TopoDS;
+    	    	NewShapes : ListOfShape from TopTools)
+    	---Purpose: <Oldshape> will be replaced by <NewShapes>.
+    	--          
+    	--          <NewShapes> can be empty , in this case <OldShape>
+    	--          will disparate from its ancestors.
+    	--          
+    	--          if an item of <NewShapes> is oriented FORWARD.
+    	--          it will be oriented as <OldShape> in its ancestors.
+    	--          else it will be reversed.
+    is static;
+    
+    
+    Build (me : in out; S : Shape from TopoDS)
+	---Purpose: Build NewShape from <S> if its subshapes has modified.
+	--          
+	--          The methods <IsCopied> and <Copy> allows you to keep
+	--          the resul of <Build>
+    is static;	    
+    
+    IsCopied(me; S : Shape from TopoDS) returns Boolean
+	---Purpose: Returns   True if <S> has   been  replaced .
+    is static;
+    
+    Copy(me; S : Shape from TopoDS) returns ListOfShape from TopTools
+	---Purpose: Returns the set of shapes  substitued to <S> .
+	---C++: return const &
+    raises
+    	NoSuchObject from Standard -- if ! IsCopied(S)
+    is static;
+    
+fields
+
+    myMap    : DataMapOfShapeListOfShape from TopTools;
+    
+end Substitution;

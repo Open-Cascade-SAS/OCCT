@@ -1,0 +1,20 @@
+-- File:	FWOSDriver.cdl
+-- Created:	Wed Jan 22 16:22:16 1997
+-- Author:	Mister rmi
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package FWOSDriver
+
+uses
+    CDM,CDF,TCollection
+
+is
+    class Driver;
+    class DriverFactory;
+
+    
+    Factory(aGUID: GUID from Standard)
+    returns Transient from Standard;
+    ---Purpose: returns a DriverFactory.
+end FWOSDriver;

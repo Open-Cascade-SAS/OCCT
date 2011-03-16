@@ -1,0 +1,22 @@
+-- File:        Protocol.cdl
+-- Created:     Thu Jun 16 18:05:53 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class Protocol from HeaderSection inherits Protocol from StepData
+	---Purpose : Protocol for HeaderSection Entities
+	--           It requires HeaderSection as a Resource
+
+uses Protocol from Interface,
+     CString from Standard
+
+is
+	Create returns mutable Protocol from HeaderSection;
+	TypeNumber (me; atype : any Type) returns Integer is redefined;
+	---Purpose :Returns a Case Number for each of the HeaderSection Entities
+	SchemaName(me) returns CString from Standard is redefined;
+	-- was C++ : return const
+
+end Protocol;

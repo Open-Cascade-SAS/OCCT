@@ -1,0 +1,118 @@
+// File:	HLRBRep_BiPnt2D.lxx
+// Created:	Tue Aug 25 10:43:05 1992
+// Author:	Christophe MARION
+//		<cma@sdsun2>
+
+#define EMskRg1Line  ((Standard_Boolean)1)
+#define EMskRgNLine  ((Standard_Boolean)2)
+#define EMskOutLine  ((Standard_Boolean)4)
+#define EMskIntLine  ((Standard_Boolean)8)
+
+//=======================================================================
+//function : P1
+//purpose  : 
+//=======================================================================
+
+inline const gp_Pnt2d & HLRBRep_BiPnt2D::P1 () const
+{ return myP1; }
+
+//=======================================================================
+//function : P2
+//purpose  : 
+//=======================================================================
+
+inline const gp_Pnt2d & HLRBRep_BiPnt2D::P2 () const
+{ return myP2; }
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape & HLRBRep_BiPnt2D::Shape () const
+{ return myShape; }
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_BiPnt2D::Shape (const TopoDS_Shape& S)
+{ myShape = S; }
+
+//=======================================================================
+//function : Rg1Line
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_BiPnt2D::Rg1Line () const
+{ return (myFlags & EMskRg1Line) != 0; }
+
+//=======================================================================
+//function : Rg1Line
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_BiPnt2D::Rg1Line (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMskRg1Line;
+  else   myFlags &= ~EMskRg1Line;
+}
+
+//=======================================================================
+//function : RgNLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_BiPnt2D::RgNLine () const
+{ return (myFlags & EMskRgNLine) != 0; }
+
+//=======================================================================
+//function : RgNLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_BiPnt2D::RgNLine (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMskRgNLine;
+  else   myFlags &= ~EMskRgNLine;
+}
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_BiPnt2D::OutLine () const
+{ return (myFlags & EMskOutLine) != 0; }
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_BiPnt2D::OutLine (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMskOutLine;
+  else   myFlags &= ~EMskOutLine;
+}
+
+//=======================================================================
+//function : IntLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_BiPnt2D::IntLine () const
+{ return (myFlags & EMskIntLine) != 0; }
+
+//=======================================================================
+//function : IntLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_BiPnt2D::IntLine (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMskIntLine;
+  else   myFlags &= ~EMskIntLine;
+}
+

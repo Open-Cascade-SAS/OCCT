@@ -1,0 +1,53 @@
+-- File:	CPnts.cdl
+-- Created:	Fri Feb 22 09:24:30 1991
+-- Author:	Jean Claude Vauthier
+--		<jcv@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+package CPnts 
+
+        --- Purpose :  
+        --  This package  contains   the definition  of  the geometric
+        --  algorithms   used to  compute  characteristic  points   on
+        --  parametrized curves in 3d or 2d space. 
+        --  This package defines the external geometric entities, with
+        --  their requirements, used in the algorithms.
+
+uses math, gp, StdFail, Adaptor3d  ,  Adaptor2d
+
+is
+
+
+   imported RealFunction;
+    ---Purpose: typedef Standard_Real (*CPnts_RealFunction)
+    --          (const Standard_Real, const Standard_Address)
+    --          
+    --          A pointer on a function for MyGaussFunction
+
+   private class MyGaussFunction;
+       ---Purpose: for implementation, compute values for Gauss
+
+   private class MyRootFunction;
+       ---Purpose: for implementation,  compute Length  and Derivative
+       --          of the curve for Newton.
+
+   class  AbscissaPoint;
+       ---Purpose:  
+       -- This algorithm computes a point and its parameter 
+       -- as the distance between this and a given point is the abscissa
+
+   class UniformDeflection;
+        --- Purpose : This Algorithm computes a distribution of points 
+        --  with a given chordal deviation on a parametrized curve.
+
+end CPnts;
+
+
+
+
+
+
+
+

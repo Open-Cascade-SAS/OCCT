@@ -1,0 +1,49 @@
+-- File:	BRepBuilderAPI_Collect.cdl
+-- Created:	Tue Apr  9 10:14:16 1996
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Collect from BRepBuilderAPI 
+
+	---Purpose: 
+
+uses
+    Shape                     from TopoDS,
+    DataMapOfShapeListOfShape from TopTools,
+    MapOfShape                from TopTools,
+    MakeShape                 from BRepBuilderAPI
+    
+is
+
+    Create returns Collect from BRepBuilderAPI;
+    
+    Add  (me : in out; SI  : Shape            from TopoDS  ;
+		       MKS : in out MakeShape from BRepBuilderAPI );
+    	---Purpose: 
+   
+    AddGenerated  (me : in out; S   : Shape from TopoDS  ;  
+		                 Gen : Shape from TopoDS  );
+       ---Purpose:
+
+    AddModif  (me : in out; S      : Shape from TopoDS  ;  
+		             Mod    : Shape from TopoDS  ); 
+       ---Purpose: 
+		   
+    Filter     (me : in out; SF : Shape from TopoDS  );
+	---Purpose: 
+
+    Modification (me) returns DataMapOfShapeListOfShape from TopTools;
+    ---C++: return const &
+
+    Generated    (me) returns DataMapOfShapeListOfShape from TopTools;
+    ---C++: return const &
+    
+    
+fields
+    myInitialShape : Shape from TopoDS;
+    myDeleted      : MapOfShape from TopTools;
+    myMod          : DataMapOfShapeListOfShape from TopTools;
+    myGen          : DataMapOfShapeListOfShape from TopTools;
+end Collect;

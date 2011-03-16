@@ -1,0 +1,39 @@
+-- File:	BRepOffset_MakeLoops.cdl
+-- Created:	Thu Sep  5 14:45:25 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class MakeLoops from BRepOffset 
+
+	---Purpose: 
+
+uses
+    ListOfShape from TopTools,
+    AsDes       from BRepAlgo,
+    Analyse     from BRepOffset,
+    Image       from BRepAlgo,
+    DataMapOfShapeShape from TopTools
+    
+is
+    Create;
+    
+    Build         (me: in out; LF    :        ListOfShape from TopTools;
+    	 	    	       AsDes :        AsDes       from BRepAlgo;
+		    	       Image : in out Image       from BRepAlgo);	 
+
+    BuildOnContext(me: in out; LContext :        ListOfShape from TopTools;
+    	    	    	       Analyse  :        Analyse     from BRepOffset;
+    	    	    	       AsDes    :        AsDes       from BRepAlgo;
+		    	       Image    : in out Image       from BRepAlgo; 
+    	    	    	       InSide   :        Boolean     from Standard);
+
+    BuildFaces    (me: in out; LF    :        ListOfShape from TopTools;
+    	    	    	       AsDes :        AsDes       from BRepAlgo;
+		    	       Image : in out Image       from BRepAlgo);
+
+fields 
+    myVerVerMap  : DataMapOfShapeShape from TopTools; 
+		     	
+end MakeLoops;

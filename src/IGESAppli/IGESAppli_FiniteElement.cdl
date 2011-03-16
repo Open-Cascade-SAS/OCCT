@@ -1,0 +1,71 @@
+--
+-- File      :  FiniteElement.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class FiniteElement from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines FiniteElement, Type <136> Form <0>
+        --          in package IGESAppli
+        --          Used to define a finite element with the help of an
+        --          element topology.
+
+uses
+
+        HAsciiString  from TCollection,
+        Node          from IGESAppli,
+        HArray1OfNode from IGESAppli
+
+raises OutOfRange
+
+is
+
+        Create returns mutable FiniteElement;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me       : mutable;
+              aType    : Integer;
+              allNodes : HArray1OfNode;
+              aName    : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           FiniteElement
+        --       - aType    : Indicates the topology type
+        --       - allNodes : List of Nodes defining the element
+        --       - aName    : Element type name
+
+        Topology (me) returns Integer;
+        ---Purpose : returns Topology type
+
+        NbNodes (me) returns Integer;
+        ---Purpose : returns the number of nodes defining the element
+
+        Node (me; Index : Integer) returns Node
+        raises OutOfRange;
+        ---Purpose : returns Node defining element entity
+        -- raises exception if Index <= 0 or Index > NbNodes()
+
+        Name (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Element Type Name
+
+fields
+
+--
+-- Class    : IGESAppli_FiniteElement
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class FiniteElement.
+--
+-- Reminder : A FiniteElement instance is defined by :
+--            - the topology type
+--            - List of Nodes defining the element
+--            - Element type name
+
+        theTopology : Integer;
+        theNodes    : HArray1OfNode;
+        theName     : HAsciiString;
+
+end FiniteElement;

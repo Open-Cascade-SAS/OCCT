@@ -1,0 +1,70 @@
+// File:	Units_Unit.lxx
+// Created:	Wed Jun 24 12:49:16 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+#include <stdio.h>
+#include <string.h>
+#include <Standard_Stream.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+
+//=======================================================================
+//function : Name
+//purpose  : 
+//=======================================================================
+
+inline TCollection_AsciiString Units_Unit::Name() const
+{
+  return thename->String();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Unit::Value() const
+{
+  return thevalue;
+}
+
+//=======================================================================
+//function : Quantity
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_Quantity) Units_Unit::Quantity() const
+{
+  return thequantity;
+}
+
+//=======================================================================
+//function : SymbolsSequence
+//purpose  : 
+//=======================================================================
+
+inline Handle(TColStd_HSequenceOfHAsciiString) Units_Unit::SymbolsSequence() const
+{
+  return thesymbolssequence;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline void Units_Unit::Value(const Standard_Real avalue)
+{
+  thevalue = avalue;
+}
+
+//=======================================================================
+//function : Quantity
+//purpose  : 
+//=======================================================================
+
+inline void Units_Unit::Quantity(const Handle(Units_Quantity)& aquantity)
+{
+  thequantity = aquantity;
+}

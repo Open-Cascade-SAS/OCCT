@@ -1,0 +1,15 @@
+
+#ifndef GRAPHICOBJECT_PXX_INCLUDED
+#define GRAPHICOBJECT_PXX_INCLUDED
+
+#define Plottable			myCBitFields.bool1
+#define Drawable			myCBitFields.bool2
+#define Pickable			myCBitFields.bool3
+#define myIsDisplayed	myCBitFields.bool4
+
+#define myIsHighlighted	myCBitFields.bool5
+#define myNotUsed1		myCBitFields.bool6
+#define myNotUsed2		myCBitFields.bool7
+#define myNotUsed3		myCBitFields.bool8
+
+#endif

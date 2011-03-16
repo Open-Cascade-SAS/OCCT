@@ -1,0 +1,5 @@
+
+
+void IntCurveSurface_PolyhedronTool::Dump(const ThePolyhedron& polyh) {
+  polyh.Dump();
+}

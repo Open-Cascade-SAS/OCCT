@@ -1,0 +1,134 @@
+-- File:	ShapeAlgo_AlgoContainer.cdl
+-- Created:	Mon Feb  7 12:19:51 2000
+-- Author:	data exchange team
+--		<det@nnov>
+---Copyright:	 Matra Datavision 2000
+
+
+class AlgoContainer from ShapeAlgo inherits TShared from MMgt
+
+    ---Purpose: 
+
+uses
+
+    Curve                   from Geom2d,
+    BSplineCurve            from Geom2d,
+    BSplineCurve            from Geom,
+    BSplineSurface          from Geom,
+    Surface                 from Geom,
+    SequenceOfCurve         from TColGeom,
+    HSequenceOfBoundedCurve from TColGeom,
+    SequenceOfCurve         from TColGeom2d,
+    HSequenceOfBoundedCurve from TColGeom2d,
+    Shape                   from TopoDS,
+    Edge                    from TopoDS,
+    Wire                    from TopoDS,
+    Face                    from TopoDS,
+    ToolContainer           from ShapeAlgo,
+    WireData                from ShapeExtend,
+    Wire                    from ShapeAnalysis,
+    Curve                   from Geom,
+    Shape                   from GeomAbs
+
+is
+
+    Create returns mutable AlgoContainer from ShapeAlgo;
+    	---Purpose: Empty constructor
+
+    SetToolContainer (me: mutable; TC: ToolContainer from ShapeAlgo);
+    	---C++    : inline
+    	---Purpose: Sets ToolContainer
+
+    ToolContainer (me) returns ToolContainer from ShapeAlgo;
+    	---C++    : inline
+    	---Purpose: Returns ToolContainer
+
+    
+    	--- Algorithms
+
+    ConnectNextWire (me; saw        : Wire from ShapeAnalysis;
+    	    	         nextsewd   : WireData from ShapeExtend;
+		         maxtol     : Real;
+		         distmin    : out Real;
+		         revsewd    : out Boolean;
+		         revnextsewd: out Boolean)
+    returns Boolean is virtual;
+    	---Purpose: Finds the best way to connect and connects <nextsewd> to already
+    	--          built <sewd> (in <saw>).
+    	--          Returns False if <nextsewd> cannot be connected, otherwise - True.
+    	--          <maxtol> specifies the maximum tolerance with which <nextsewd> can
+    	--          be added.
+    	--          <distmin> is used to receive the minimum distance between <nextsewd>
+    	--          and <sewd>.
+    	--          <revsewd>   is True if <sewd>     has been reversed before connecting.
+    	--          <revnextwd> is True if <nextsewd> has been reversed before connecting.
+	--          Uses functionality of ShapeAnalysis_Wire.
+
+    ApproxBSplineCurve (me; bspline: BSplineCurve from Geom; seq: out SequenceOfCurve from TColGeom)
+    is virtual;
+    	---Purpose:
+
+    ApproxBSplineCurve (me; bspline: BSplineCurve from Geom2d; seq: out SequenceOfCurve from TColGeom2d)
+    is virtual;
+    	---Purpose:
+
+    C0BSplineToSequenceOfC1BSplineCurve (me; BS   : BSplineCurve from Geom;
+    	    	    	    	             seqBS: out HSequenceOfBoundedCurve from TColGeom)
+    returns Boolean is virtual;
+
+    C0BSplineToSequenceOfC1BSplineCurve (me; BS   : BSplineCurve from Geom2d;
+    	    	    	    	             seqBS: out HSequenceOfBoundedCurve from TColGeom2d)
+    returns Boolean is virtual;
+    	---Purpose: Converts C0 B-Spline curve into sequence of C1 B-Spline curves.
+	--          Calls ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve.
+
+    C0ShapeToC1Shape (me; shape: Shape from TopoDS; tol: Real)
+    returns Shape from TopoDS is virtual;
+    	---Purpose: Converts a shape on C0 geometry into the shape on C1 geometry.
+	---Remark : Uses ShapeUpgrade_ShapeDivide.
+
+    ConvertSurfaceToBSpline(me; surf       : Surface from Geom;
+    			    	UF,UL,VF,VL: Real)
+    returns BSplineSurface from Geom is virtual;
+    	---Purpose: Converts a surface to B-Spline.
+	--          Uses ShapeConstruct.
+
+    HomoWires (me; wireIn1 : Wire from TopoDS;
+              	   wireIn2 : Wire from TopoDS;
+              	   wireOut1: out Wire from TopoDS;
+              	   wireOut2: out Wire from TopoDS;
+	      	   byParam : Boolean from Standard)
+    returns Boolean is virtual;
+	---Purpose: Return 2 wires with the same number of edges. The both Edges
+    	--          number i of these wires have got the same ratio between
+    	--          theirs parameter lengths and their wire parameter lengths.
+
+    OuterWire (me; face: Face from TopoDS) returns Wire from TopoDS is virtual;
+        ---Purpose: Returns the outer wire on the face <Face>.
+
+    ConvertToPeriodic (me; surf: Surface from Geom)
+    returns Surface from Geom is virtual;
+    	---Purpose: Converts surface to periodic form.
+	--          Calls ShapeCustom_Surface.
+
+    GetFaceUVBounds (me; F: Face from TopoDS; Umin, Umax, Vmin, Vmax: out Real)
+    is virtual;
+    	---Purpose: Computes exact UV bounds of all wires on the face
+	---Remark : Calls ShapeAnalysis::GetFaceUVBounds.
+
+    ConvertCurveToBSpline(me;C3D        : Curve from Geom;
+    	    	    	  First      : Real;
+			  Last       : Real;
+    	    	    	  Tol3d      : Real; 
+			  Continuity : Shape from GeomAbs; 
+    	    	    	  MaxSegments: Integer;
+			  MaxDegree  : Integer)
+    returns BSplineCurve from Geom is virtual;	
+       	---Purpose: Convert Geom_Curve to Geom_BSplineCurve
+	---Remark : Calls ShapeConstruct::CurveCurveToBSplineCurve.
+
+fields
+
+    myTC : ToolContainer from ShapeAlgo;
+
+end AlgoContainer;

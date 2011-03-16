@@ -1,0 +1,104 @@
+-- File:	BRepAlgo_BooleanOperation.cdl
+-- Created:	Thu Oct 14 18:14:43 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred class BooleanOperation from BRepAlgo inherits MakeShape from BRepBuilderAPI
+
+    	---Purpose:  The abstract class BooleanOperation is the root
+    	-- class of Boolean operations.
+    	-- A BooleanOperation object stores the two shapes in
+    	-- preparation for the Boolean operation specified in
+    	-- one of the classes inheriting from this one. These include:
+    	-- - Common
+    	-- - Cut
+    	-- - Fuse
+    	-- - Section.
+
+uses
+
+    State from TopAbs,
+    Shape from TopoDS,
+    Face from TopoDS,
+    Edge from TopoDS,
+    MapOfShape from TopTools,
+    DataMapOfShapeShape from TopTools,
+    ListOfShape from TopTools,
+    HBuilder from TopOpeBRepBuild,
+    ShapeModification from BRepBuilderAPI
+    
+is
+
+    Initialize (S1,S2 : Shape from TopoDS);
+    ---Purpose: Prepares the operations for S1 and S2.
+
+--modified by NIZNHY-PKV Sun Dec 15 17:16:48 2002  f     
+    Delete(me:  out)   
+    	is  redefined  virtual; 
+    ---C++:  alias  "Standard_EXPORT virtual ~BRepAlgo_BooleanOperation() {Delete();}"
+--modified by NIZNHY-PKV Sun Dec 15 17:16:51 2002  t
+
+    PerformDS(me : in out)
+    ---Purpose: 
+    ---Level: Public
+    is static;
+
+    Perform(me : in out; St1,St2 : State from TopAbs)
+    ---Level: Public
+    is static;
+    
+    Builder(me) returns HBuilder from TopOpeBRepBuild
+    ---Level: Advanced
+    is static;
+    
+    Shape1(me) returns Shape from TopoDS
+    ---Purpose: Returns the first shape involved in this Boolean operation.
+    ---C++: return const &
+    ---Level: Public
+    is static;
+
+    Shape2(me) returns Shape from TopoDS
+    ---Purpose: Returns the second shape involved in this Boolean operation.
+    ---C++: return const &
+    ---Level: Public
+    is static;
+    
+    BuilderCanWork(me : in out; B : Boolean from Standard)
+    is protected;
+    
+    BuilderCanWork(me) returns Boolean from Standard
+    is protected;
+    
+       
+    InitParameters(me : out)
+    ---Purpose: 
+    ---Level: Private
+    is virtual protected;
+
+---Category: Querying
+
+    Modified (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the list  of shapes modified from the shape
+    	--          <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined virtual;
+
+
+    IsDeleted (me: in out; S : Shape from TopoDS)
+    returns Boolean
+    is redefined virtual;
+
+
+fields
+
+    myHBuilder : HBuilder    from TopOpeBRepBuild is protected;
+    myS1 : Shape from TopoDS is protected;
+    myS2 : Shape from TopoDS is protected;
+    myMap : MapOfShape from TopTools;
+    myBuilderCanWork : Boolean from Standard;    
+    topToSew      : DataMapOfShapeShape from TopTools;
+    
+end BooleanOperation;

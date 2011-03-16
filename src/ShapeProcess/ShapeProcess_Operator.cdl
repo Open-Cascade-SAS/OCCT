@@ -1,0 +1,24 @@
+-- File:	ShapeProcess_Operator.cdl
+-- Created:	Tue Aug 22 12:06:13 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+deferred class Operator from ShapeProcess inherits TShared from MMgt
+
+    ---Purpose: Abstract Operator class providing a tool to
+    --          perform an operation on Context
+
+uses
+
+    Context from ShapeProcess
+
+is
+
+    Perform (me: mutable; context: Context from ShapeProcess)
+    returns Boolean is deferred;
+    	---Purpose: Performs operation and eventually records 
+        --          changes in the context
+
+end Operator;

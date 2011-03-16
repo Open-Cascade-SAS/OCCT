@@ -1,0 +1,61 @@
+-- File:	HLRAlgo_PolyShellData.cdl
+-- Created:	Fri Oct 29 15:19:08 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class PolyShellData from HLRAlgo inherits TShared from MMgt
+
+uses
+    Address            from Standard,
+    Boolean            from Standard,
+    Integer            from Standard,
+    Array1OfTransient  from TColStd,
+    HArray1OfTransient from TColStd,
+    ListOfBPoint       from HLRAlgo
+
+is
+    Create(nbFace : Integer from Standard)
+    returns mutable PolyShellData from HLRAlgo;
+
+    UpdateGlobalMinMax(me        : mutable;
+                       TotMinMax : Address from Standard)
+    is static;
+    
+    UpdateHiding(me       : mutable;
+  	         nbHiding : Integer from Standard)
+    is static;
+
+    Hiding(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+
+    PolyData(me : mutable) 
+	---C++: return &
+	---C++: inline
+    returns Array1OfTransient from TColStd
+    is static;
+
+    HidingPolyData(me : mutable) 
+	---C++: return &
+	---C++: inline
+    returns Array1OfTransient from TColStd
+    is static;
+
+    Edges(me : mutable) 
+	---C++: return &
+	---C++: inline
+    returns ListOfBPoint from HLRAlgo
+    is static;
+
+    Indices(me : mutable) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myMinMax    : Integer            from Standard[2];
+    myPolyg     : Array1OfTransient  from TColStd;
+    myHPolHi    : HArray1OfTransient from TColStd;
+    mySegList   : ListOfBPoint       from HLRAlgo;
+
+end PolyShellData;

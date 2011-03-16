@@ -1,0 +1,32 @@
+-- File:	RWStepAP214_RWAppliedSecurityClassificationAssignment.cdl
+-- Created:	Fri Mar 12 15:24:20 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RWAppliedSecurityClassificationAssignment from RWStepAP214 
+
+	---Purpose: 
+
+uses
+
+     Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AppliedSecurityClassificationAssignment from StepAP214,
+     EntityIterator from Interface
+
+is
+    	Create returns RWAppliedSecurityClassificationAssignment;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AppliedSecurityClassificationAssignment from StepAP214);
+
+	WriteStep (me; SW : in out StepWriter; ent : AppliedSecurityClassificationAssignment from StepAP214);
+
+	Share(me; ent : AppliedSecurityClassificationAssignment from StepAP214; iter : in out EntityIterator);
+
+
+
+end RWAppliedSecurityClassificationAssignment;

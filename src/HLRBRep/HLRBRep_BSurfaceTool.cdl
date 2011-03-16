@@ -1,0 +1,277 @@
+-- File:	HLRBRep_BSurfaceTool.cdl
+-- Created:	Fri Jul  2 16:59:47 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class BSurfaceTool from HLRBRep
+				 
+uses 
+   Shape          from GeomAbs,
+   SurfaceType    from GeomAbs,
+   Pln            from gp,
+   Cone           from gp,
+   Cylinder       from gp,
+   Sphere         from gp,
+   Torus          from gp, 
+   Pnt            from gp,
+   Vec            from gp,
+   Array1OfReal   from TColStd,
+   BezierSurface  from Geom,
+   BSplineSurface from Geom,
+   HSurface       from Adaptor3d,
+   HCurve         from Adaptor3d,
+   Surface        from BRepAdaptor,
+   Ax1            from gp,
+   Dir            from gp
+
+raises 
+   NoSuchObject from Standard,
+   OutOfRange   from Standard
+
+is 
+    FirstUParameter(myclass; S: Surface from BRepAdaptor)
+    returns Real from Standard;
+        ---C++: inline
+	
+    FirstVParameter(myclass; S: Surface from BRepAdaptor)
+    returns Real from Standard;
+        ---C++: inline
+
+    LastUParameter(myclass; S: Surface from BRepAdaptor)
+    returns Real from Standard;
+        ---C++: inline
+
+    LastVParameter(myclass; S: Surface from BRepAdaptor)
+    returns Real from Standard;
+        ---C++: inline
+
+    NbUIntervals(myclass; S  : Surface from BRepAdaptor;
+    	    	          Sh : Shape   from GeomAbs)
+    	---C++: inline
+    	returns Integer from Standard;
+
+    NbVIntervals(myclass; S  : Surface from BRepAdaptor;
+    	    	    	  Sh : Shape   from GeomAbs) 
+    returns Integer from Standard;
+    	---C++: inline 
+
+    UIntervals(myclass; S  :        Surface      from BRepAdaptor;
+    	    	    	T  : in out Array1OfReal from TColStd; 
+    	    	    	Sh :        Shape        from GeomAbs);
+    	---C++: inline
+
+    VIntervals(myclass; S  :        Surface      from BRepAdaptor;
+    	    	    	T  : in out Array1OfReal from TColStd; 
+    	    	    	Sh :        Shape        from GeomAbs);
+    	---C++: inline 
+
+    UTrim(myclass; S : Surface from BRepAdaptor;
+                  First, Last, Tol : Real) 
+    returns HSurface from Adaptor3d
+    raises OutOfRange from Standard;
+	---Purpose: If <First> >= <Last> 
+	---C++: inline
+    
+    VTrim(myclass; S                : Surface from BRepAdaptor;
+                   First, Last, Tol : Real    from Standard) 
+    returns HSurface from Adaptor3d
+    raises OutOfRange from Standard;
+	---Purpose: If <First> >= <Last> 
+	---C++: inline
+
+    IsUClosed(myclass; S: Surface from BRepAdaptor) 
+    returns Boolean from Standard;
+    	---C++: inline
+
+    IsVClosed(myclass; S: Surface from BRepAdaptor) 
+    returns Boolean from Standard;
+    	---C++: inline
+    
+    IsUPeriodic(myclass; S: Surface from BRepAdaptor) 
+    returns Boolean from Standard;
+    	---C++: inline
+
+    UPeriod(myclass; S: Surface from BRepAdaptor) 
+    returns Real from Standard;
+    	---C++: inline
+	
+    IsVPeriodic(myclass; S: Surface from BRepAdaptor) 
+    returns Boolean from Standard;
+    	---C++: inline
+    
+    VPeriod(myclass; S: Surface from BRepAdaptor) 
+    returns Real from Standard;
+    	---C++: inline
+
+    Value(myclass; S   : Surface from BRepAdaptor;
+    	           u,v : Real    from Standard)
+	---C++: inline
+	returns Pnt from gp;
+
+    D0(myclass; S   :     Surface from BRepAdaptor; 
+                u,v :     Real    from Standard;
+		P   : out Pnt     from gp);
+    	---C++: inline 
+
+    D1(myclass; S      :     Surface from BRepAdaptor; 
+                u,v    :     Real    from Standard; 
+                P      : out Pnt     from gp;
+                D1u,D1v: out Vec     from gp); 
+    	---C++: inline 
+    	
+    D2(myclass; S              :     Surface from BRepAdaptor; 
+                u,v            :     Real    from Standard; 
+                P              : out Pnt     from gp;
+                D1U, D1V       : out Vec     from gp; 
+                D2U, D2V, D2UV : out Vec     from gp); 
+    	---C++: inline 
+    	
+    D3(myclass; S              :     Surface from BRepAdaptor; 
+                u,v            :     Real    from Standard; 
+                P              : out Pnt     from gp;
+                D1U, D1V       : out Vec     from gp; 
+                D2U, D2V, D2UV : out Vec     from gp; 
+                D3U, D3V       : out Vec     from gp; 
+                D3UUV, D3UVV   : out Vec     from gp); 
+    	---C++: inline 
+    	
+    DN(myclass; S      : Surface from BRepAdaptor; 
+                u,v    : Real    from Standard; 
+                Nu,Nv  : Integer from Standard)
+    	---C++: inline 
+    returns Vec from gp;
+	
+    UContinuity(myclass; S:Surface from BRepAdaptor)
+    returns Shape from GeomAbs;
+    	---C++:inline
+    
+    VContinuity(myclass; S:Surface from BRepAdaptor)
+    returns Shape from GeomAbs;
+    	---C++:inline
+
+    UDegree(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard 
+    raises NoSuchObject from Standard;
+    	---C++:inline
+
+    NbUPoles(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard
+    raises  NoSuchObject from Standard;
+	---C++:inline
+
+    NbUKnots(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard
+    raises  NoSuchObject from Standard;
+	---C++:inline       
+
+    IsURational(myclass; S:Surface from BRepAdaptor)
+    returns Boolean from Standard
+    raises
+    	NoSuchObject from Standard;
+	---C++:inline	
+
+    VDegree(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard
+    raises NoSuchObject from Standard;
+	---C++:inline    
+
+    NbVPoles(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard
+    raises NoSuchObject from Standard;
+	---C++:inline     
+
+    NbVKnots(myclass; S:Surface from BRepAdaptor)
+    returns Integer from Standard
+    raises NoSuchObject from Standard;
+	---C++:inline       
+
+    IsVRational(myclass; S:Surface from BRepAdaptor)
+    returns Boolean from Standard
+    raises NoSuchObject from Standard;
+	---C++:inline	
+	    
+    UResolution(myclass; S   : Surface from BRepAdaptor;
+                         R3d : Real    from Standard) 
+    returns Real from Standard;
+        ---C++: inline
+
+    VResolution(myclass; S  : Surface from BRepAdaptor;
+                         R3d: Real    from Standard)
+    returns Real from Standard;
+        ---C++: inline
+
+    GetType(myclass; S: Surface from BRepAdaptor)
+    returns SurfaceType from GeomAbs;
+    	---C++: inline
+
+    Plane(myclass; S: Surface from BRepAdaptor) 
+    returns Pln from gp;
+    	---C++: inline
+        
+    Cylinder(myclass; S : Surface from BRepAdaptor)
+    returns Cylinder from gp
+    raises NoSuchObject from Standard;
+    	---C++: inline
+    
+    Cone(myclass; S : Surface from BRepAdaptor)
+    returns Cone from gp
+    raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Torus(myclass; S : Surface from BRepAdaptor)
+    returns Torus from gp    
+    raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Sphere(myclass; S : Surface from BRepAdaptor)
+    returns Sphere from gp
+    raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Bezier(myclass; S : Surface from BRepAdaptor)
+    returns BezierSurface from Geom
+    raises NoSuchObject from Standard;
+    	---C++: inline
+
+    BSpline(myclass; S : Surface from BRepAdaptor)
+    returns BSplineSurface from Geom
+    raises NoSuchObject from Standard;
+    	---C++: inline
+    
+    AxeOfRevolution(myclass; S: Surface from BRepAdaptor)
+    returns Ax1 from gp 
+    raises NoSuchObject from Standard;
+        ---C++: inline
+
+    Direction(myclass; S: Surface from BRepAdaptor)
+    returns Dir from gp
+    raises NoSuchObject from Standard;
+        ---C++: inline
+
+    BasisCurve(myclass; S:Surface from BRepAdaptor)
+    returns HCurve from Adaptor3d 
+    raises NoSuchObject from Standard;
+        ---C++: inline
+  
+    Axis(myclass; S:Surface from BRepAdaptor)
+    returns Ax1 from gp
+    raises NoSuchObject from Standard;
+    	---C++:inline
+    
+    NbSamplesU(myclass; S : Surface from BRepAdaptor)
+    returns Integer from Standard; 
+       
+    NbSamplesV(myclass; S : Surface from BRepAdaptor)
+    returns Integer from Standard;    
+
+    NbSamplesU(myclass; S    : Surface from BRepAdaptor;
+                        u1,u2: Real    from Standard)
+    returns Integer from Standard; 
+       
+    NbSamplesV(myclass; S    : Surface from BRepAdaptor;
+                        v1,v2: Real from Standard)
+    returns Integer from Standard;    
+
+end BSurfaceTool;

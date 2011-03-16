@@ -1,0 +1,54 @@
+-- File:	ShapeUpgrade_RemoveLocations.cdl
+-- Created:	Wed Nov 13 11:48:40 2002
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+
+class RemoveLocations from ShapeUpgrade inherits TShared from MMgt
+
+	---Purpose: Removes all locations sub-shapes of specified shape
+
+uses
+    ShapeEnum from TopAbs,
+    Shape from TopoDS,
+    MapOfShape from TopTools,
+    DataMapOfShapeShape from TopTools
+is
+    Create returns RemoveLocations from ShapeUpgrade;
+    	---Purpose:Empy constructor
+    
+    Remove(me : mutable;theShape : Shape from TopoDS) returns Boolean;
+    	---Purpose:Removes all location correspodingly to RemoveLevel.
+    
+    MakeNewShape(me : mutable;theShape , theAncShape: Shape from TopoDS; 
+    	    	 theNewShape:in out Shape from TopoDS;theRemoveLoc : Boolean) 
+    	    	     returns Boolean is private;
+    
+    GetResult(me) returns Shape from TopoDS;
+    	---Purpose:Returns shape with removed locatins.
+    	---C++: inline
+	
+    SetRemoveLevel(me: mutable; theLevel : ShapeEnum from TopAbs);
+    	---Purpose:sets level starting with that location will be removed, 
+    	--         by default TopAbs_SHAPE. In this case locations will be kept for specified shape
+    	--         and if specified shape is TopAbs_COMPOUND for sub-shapes of first level.
+    	---C++: inline
+	
+    RemoveLevel(me) returns ShapeEnum from TopAbs;
+    	---Purpose:sets level starting with that location will be removed.Value of level can be set to
+    	--         TopAbs_SHAPE,TopAbs_COMPOUND,TopAbs_SOLID,TopAbs_SHELL,TopAbs_FACE.By default TopAbs_SHAPE.
+	--         In this case location will be removed for all shape types for exception of compound.
+    	---C++: inline
+    
+	
+    ModifiedShape (me; theInitShape : Shape from TopoDS) returns Shape from TopoDS;
+    	---Purpose: Returns modified shape obtained from initial shape. 
+	---C++: inline
+    
+fields
+    myLevelRemoving : ShapeEnum from TopAbs;
+    myShape : Shape from TopoDS;
+    myMapNewShapes : DataMapOfShapeShape from TopTools;
+    
+end RemoveLocations;

@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWCcDesignContract.cdl
+-- Created:	Fri Nov 26 16:26:31 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCcDesignContract from RWStepAP203
+
+    ---Purpose: Read & Write tool for CcDesignContract
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CcDesignContract from StepAP203
+
+is
+    Create returns RWCcDesignContract from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CcDesignContract from StepAP203);
+	---Purpose: Reads CcDesignContract
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CcDesignContract from StepAP203);
+	---Purpose: Writes CcDesignContract
+
+    Share (me; ent : CcDesignContract from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCcDesignContract;

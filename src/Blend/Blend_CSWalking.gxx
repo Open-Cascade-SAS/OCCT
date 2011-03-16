@@ -1,0 +1,63 @@
+#include <math_FunctionSetRoot.hxx>
+#include <math_Gauss.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <IntSurf.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Precision.hxx>
+
+#ifdef DEB
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <Geom_BSplineCurve.hxx>
+#ifdef DRAW
+#include <DrawTrSurf.hxx>
+#endif
+//POP pour NT
+#include <stdio.h>
+
+static Standard_Integer IndexOfSection = 0;
+extern Standard_Boolean Blend_GettraceDRAWSECT(); 
+
+// Pour debug : visualisation de la section
+
+static void Drawsect(const TheSurface& surf,
+		     const TheCurve& curv,
+		     const Standard_Real param,
+		     Blend_CSFunction& Func)
+{
+  gp_Pnt2d p2d = Func.Pnt2d();
+  Standard_Real pc = Func.ParameterOnC();
+  Blend_Point BP(TheSurfaceTool::Value(surf,p2d.X(),p2d.Y()),
+		 TheCurveTool::Value(curv,pc),
+		 param,p2d.X(),p2d.Y(),pc);
+
+  Standard_Integer hp,hk,hd,hp2d;
+  Func.GetShape(hp,hk,hd,hp2d);
+  TColStd_Array1OfReal TK(1,hk);
+  Func.Knots(TK);
+  TColStd_Array1OfInteger TMul(1,hk);
+  Func.Mults(TMul);
+  TColgp_Array1OfPnt TP(1,hp);
+  TColgp_Array1OfPnt2d TP2d(1,hp2d);
+  TColStd_Array1OfReal TW(1,hp);
+  Func.Section(BP,TP,TP2d,TW);
+  Handle(Geom_BSplineCurve) sect = new Geom_BSplineCurve
+    (TP,TW,TK,TMul,hd);
+  IndexOfSection++;
+
+  //POP pour NT
+  //char name[100];
+  char* name = new char[100];
+  sprintf(name,"%s_%d","Section",IndexOfSection);
+#ifdef DRAW
+  DrawTrSurf::Set(name,sect);
+#endif
+}
+
+#endif
+
+#include <Blend_CSWalking_1.gxx>
+#include <Blend_CSWalking_2.gxx>
+#include <Blend_CSWalking_3.gxx>
+#include <Blend_CSWalking_4.gxx>

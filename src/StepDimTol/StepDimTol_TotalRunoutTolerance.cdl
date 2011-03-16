@@ -1,0 +1,22 @@
+-- File:	StepDimTol_TotalRunoutTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class TotalRunoutTolerance from StepDimTol
+inherits GeometricToleranceWithDatumReference from StepDimTol
+
+    ---Purpose: Representation of STEP entity TotalRunoutTolerance
+
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr,
+    HArray1OfDatumReference from StepDimTol
+
+is
+    Create returns TotalRunoutTolerance from StepDimTol;
+	---Purpose: Empty constructor
+
+end TotalRunoutTolerance;

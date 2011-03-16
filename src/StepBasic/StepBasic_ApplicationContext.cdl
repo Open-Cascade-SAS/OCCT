@@ -1,0 +1,31 @@
+-- File:        ApplicationContext.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ApplicationContext from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ApplicationContext;
+	---Purpose: Returns a ApplicationContext
+
+	Init (me : mutable;
+	      aApplication : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetApplication(me : mutable; aApplication : mutable HAsciiString);
+	Application (me) returns mutable HAsciiString;
+
+fields
+
+	application : HAsciiString from TCollection;
+
+end ApplicationContext;

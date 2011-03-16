@@ -1,0 +1,35 @@
+-- File:	StepVisual_PresentedItemRepresentation.cdl
+-- Created:	Wed Mar 26 14:52:06 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class PresentedItemRepresentation  from StepVisual    inherits TShared
+
+    ---Purpose : Added from StepVisual Rev2 to Rev4
+
+uses
+     PresentationRepresentationSelect from StepVisual,
+     PresentedItem from StepVisual
+
+is
+
+    Create returns mutable PresentedItemRepresentation;
+
+    Init (me : mutable;
+    	  aPresentation : PresentationRepresentationSelect from StepVisual;
+	  aItem : PresentedItem from StepVisual);
+
+    SetPresentation (me : mutable; aPresentation : PresentationRepresentationSelect from StepVisual);
+    Presentation (me) returns PresentationRepresentationSelect from StepVisual;
+
+    SetItem (me : mutable; aItem : PresentedItem from StepVisual);
+    Item (me) returns PresentedItem from StepVisual;
+
+fields
+
+    thePresentation : PresentationRepresentationSelect from StepVisual;
+    theItem : PresentedItem from StepVisual;
+
+end PresentedItemRepresentation;

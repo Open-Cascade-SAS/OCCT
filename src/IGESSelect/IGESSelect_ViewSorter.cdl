@@ -1,0 +1,106 @@
+-- File:	IGESSelect_ViewSorter.cdl
+-- Created:	Tue May 31 14:56:09 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ViewSorter  from IGESSelect  inherits TShared
+
+    ---Purpose : Sorts IGES Entities on the views and drawings.
+    --           In a first step, it splits a set of entities according the
+    --           different views they are attached to.
+    --           Then, packets according single views (+ drawing frames), or
+    --           according drawings (which refer to the views) can be determined
+    --           
+    --           It is a TShared, hence it can be a workomg field of a non-
+    --           mutable object (a Dispatch for instance)
+
+uses Transient, HSequenceOfTransient,
+     IndexedMapOfTransient, SequenceOfInteger,
+     EntityIterator, InterfaceModel, Graph,
+     PacketList,     IGESEntity,  IGESModel
+
+is
+
+    Create returns mutable ViewSorter;
+    ---Purpose : Creates a ViewSorter, empty. SetModel remains to be called
+
+    SetModel (me : mutable; model : IGESModel);
+    ---Purpose : Sets the Model (for PacketList)
+
+    Clear (me : mutable);
+    ---Purpose : Clears recorded data
+
+    Add      (me : mutable; ent : any Transient) returns Boolean;
+    ---Purpose : Adds an item according its type : AddEntity,AddList,AddModel
+
+    AddEntity (me : mutable; igesent : any IGESEntity) returns Boolean;
+    ---Purpose : Adds an IGES entity. Records the view it is attached to.
+    --           Records directly <ent> if it is a ViewKindEntity or a Drawing
+    --           Returns True if added, False if already in the map
+
+    AddList   (me : mutable; list : HSequenceOfTransient);
+    ---Purpose : Adds a list of entities by adding each of the items
+
+    AddModel  (me : mutable; model : InterfaceModel);
+    ---Purpose : Adds all the entities contained in a Model
+
+    NbEntities (me) returns Integer;
+    ---Purpose : Returns the count of already recorded
+
+    	--  Preparations  --
+
+    SortSingleViews (me : mutable; alsoframes : Boolean);
+    ---Purpose : Prepares the result to keep only sets attached to Single Views
+    --           If <alsoframes> is given True, it keeps also the Drawings as
+    --           specific sets, in order to get their frames.
+    --           Entities attached to no single view are put in Remaining List.
+    --           
+    --           Result can then be read by the methods NbSets,SetItem,SetList,
+    --           RemainingList(final = True)
+
+    SortDrawings (me : mutable; G : Graph);
+    ---Purpose : Prepares the result to the sets attached to Drawings :
+    --           All the single views referenced by a Drawing become bound to
+    --           the set for this Drawing
+    --           
+    --           Entities or Views which correspond to no Drawing are put into
+    --           the Remaining List.
+    --           
+    --           Result can then be read by the methods NbSets,SetItem,SetList,
+    --           RemainingList(final = True)
+
+    	--  Queries  --
+
+    NbSets (me; final : Boolean) returns Integer;
+    ---Purpose : Returns the count of sets recorded, one per distinct item.
+    --           The Remaining List is not counted.
+    --           If <final> is False, the sets are attached to distinct views
+    --           determined by the method Add.
+    --           If <final> is True, they are the sets determined by the last
+    --           call to, either SortSingleViews, or SortDrawings.
+    --           
+    --  Warning : Drawings directly recorded are also counted as sets, because
+    --           of their Frame (which is made of Annotations)
+
+    SetItem (me; num : Integer; final : Boolean) returns any IGESEntity;
+    ---Purpose : Returns the Item which is attached to a set of entities
+    --           For <final> and definition of sets, see method NbSets.
+    --           This item can be a kind of View or a Drawing
+
+    Sets (me; final : Boolean) returns PacketList;
+    ---Purpose : Returns the complete content of the determined Sets, which
+    --           include Duplicated and Remaining (duplication 0) lists
+    --           For <final> and definition of sets, see method NbSets.
+
+fields
+
+    themodel   : IGESModel;
+    themap     : IndexedMapOfTransient;
+    theitems   : IndexedMapOfTransient;
+    thefinals  : IndexedMapOfTransient;
+    theinditem : SequenceOfInteger;
+    theindfin  : SequenceOfInteger;
+
+end ViewSorter;

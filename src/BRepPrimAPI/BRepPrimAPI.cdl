@@ -1,0 +1,130 @@
+-- File:	BRepPrimAPI.cdl
+-- Created:	Tue Jul  6 17:29:03 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package BRepPrimAPI 
+
+	---Purpose: The  BRepBuilderAPI  package   provides  an   Application
+	--          Programming Interface  for the BRep  topology data
+	--          structure.
+	--          
+	--          The API is a set of classes aiming to provide :
+	--          
+	--          * High level and simple calls  for the most common
+	--          operations. 
+	--          
+	--          *    Keeping   an   access  on    the    low-level
+	--          implementation of high-level calls.
+	--          
+	--          * Examples  of programming of high-level operations
+	--          from low-level operations.
+	--          
+	--          * A complete coverage of modelling :
+	--          
+	--             - Creating vertices ,edges, faces, solids.
+	--             
+	--             - Sweeping operations.
+	--             
+	--             - Boolean operations.
+	--             
+	--             - Global properties computation.
+	--
+	-- 	    
+	-- 	    The API provides  classes to  build  objects:
+	-- 	    
+	-- 	    * The  constructors  of the classes  provides  the
+	-- 	    different constructions methods.
+	-- 	    
+	-- 	    * The  class keeps as fields the   different tools
+	-- 	    used to build the object.
+	-- 	    
+	-- 	    *   The class  provides  a  casting  method to get
+	-- 	    automatically the  result  with  a   function-like
+	-- 	    call. 
+	-- 	    
+	-- 	    For example to make a  vertex <V> from a point <P>
+	-- 	    one can writes :
+	-- 	    
+	-- 	    V = BRepBuilderAPI_MakeVertex(P);
+	-- 	    
+	-- 	    or
+	-- 	    
+	-- 	    BRepBuilderAPI_MakeVertex MV(P);
+	-- 	    V = MV.Vertex();
+	-- 	    
+	-- 	    
+	-- 	    For tolerances  a default precision is  used which
+	-- 	    can    be   changed    by    the   packahe  method
+	-- 	    BRepBuilderAPI::Precision. 
+	-- 	    
+	-- 	    For error handling the BRepBuilderAPI commands raise only
+	-- 	    the NotDone error. When Done is false on a command
+	-- 	    the error description can be asked to the command.
+	-- 	    
+	-- 	    In  theory  the  comands can be    called with any
+	-- 	    arguments, argument  checking  is performed by the
+	-- 	    command.
+	
+	
+
+uses
+    StdFail,
+    gp,
+    TColgp,
+    Geom2d,
+    Geom,
+    GeomAbs,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TopLoc,
+    BRep,
+    BRepLib,
+    BRepTools,
+    BRepPrim,
+    BRepBuilderAPI, 
+    BRepSweep
+
+is
+    
+    --
+    --  Primitives
+    --  
+    
+    class MakeHalfSpace;           ---  inherits MakeShape from BRepBuilderAPI
+
+    class MakeBox;                 ---  inherits MakeShape from BRepBuilderAPI
+    
+    class MakeWedge;               ---  inherits MakeShape from BRepBuilderAPI
+    
+    deferred class MakeOneAxis;    ---  inherits MakeShape from BRepBuilderAPI
+	---Purpose: Root class for rotational primitives.
+    
+    class MakeCylinder;            ---  inherits MakeShape from BRepBuilderAPI
+    
+    class MakeCone;                ---  inherits MakeShape from BRepBuilderAPI
+    
+    class MakeSphere;              ---  inherits MakeOneAxis from BRepPrimAPI 
+    
+    class MakeTorus;               ---  inherits MakeOneAxis from BRepPrimAPI
+    
+    class MakeRevolution;          ---  inherits MakeOneAxis from BRepPrimAPI
+
+    --
+    -- Sweeping
+    -- 
+
+    deferred class MakeSweep;      ---  inherits MakeShape from BRepBuilderAPI
+
+    class MakePrism;               ---  inherits MakeSweep from BRepPrimAPI
+    
+    class MakeRevol;               ---  inherits MakeSweep from BRepPrimAPI
+    
+ 
+
+
+end BRepPrimAPI;

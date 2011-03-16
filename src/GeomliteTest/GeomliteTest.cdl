@@ -1,0 +1,45 @@
+-- File:	GeometryTest.cdl
+-- Created:	Mon Jun 24 11:23:25 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+-- modified by jct (15/04/97)  add of  ModificationCommands
+---Copyright:	 Matra Datavision 1991
+
+
+
+
+package GeomliteTest 
+
+	---Purpose: this  package  provides  elementary commands for  curves  and
+	--          surface.
+uses
+    Draw,
+    Standard
+
+is
+
+    AllCommands(I : in out Interpretor from Draw);
+	---Purpose: defines all geometric commands.
+    
+    CurveCommands(I : in out Interpretor from Draw);
+	---Purpose: defines curve commands.
+    
+    SurfaceCommands(I : in out Interpretor from Draw);
+	---Purpose: defines surface commands.
+    
+    API2dCommands(I : in out Interpretor from Draw);
+	---Purpose: defines commands to test the Geom2dAPI
+	--          - Intersection
+	--          - Extrema
+	--          - Projection
+	--          - Approximation, interpolation 
+    ApproxCommands(I : in out Interpretor from Draw);
+	---Purpose: defines constrained curves commands.
+
+    ModificationCommands(I : in out Interpretor from Draw);
+	---Purpose: defines curves and surfaces modification commands.
+	--          - Curve extension to point
+	--          - Surface extension by length
+    
+    
+end GeomliteTest;

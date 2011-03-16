@@ -1,0 +1,464 @@
+// File:	Sweep_LinearRegularSweep.gxx
+// Created:	Thu Jul  2 13:55:17 1992
+// Author:	Philippe DAUTRY
+//		<fid@phylox>
+// 		Copyright Matra Datavision 1992
+
+
+#include <Standard_RangeError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_DomainError.hxx>
+
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs.hxx>
+
+//=======================================================================
+//function : Sweep_LinearRegularSweep
+//purpose  : Create a Regular Sweep.
+//=======================================================================
+
+Sweep_LinearRegularSweep::Sweep_LinearRegularSweep
+  (const TheBuilder& aBuilder,
+   const TheGenShape& aGenShape,
+   const TheDirShape& aDirShape):
+
+  myBuilder(aBuilder),
+  myGenShape(aGenShape),
+  myDirWire(aDirShape),
+
+  myGenShapeTool(aGenShape),
+  myDirShapeTool(aDirShape),
+
+  // *****************************************************************
+  // Les Tableaux
+  // *****************************************************************
+
+  myShapes(1,myGenShapeTool.NbShapes(),
+	   1,myDirShapeTool.NbShapes()),
+  myBuiltShapes(1,myGenShapeTool.NbShapes(),
+		1,myDirShapeTool.NbShapes())
+{
+  myBuiltShapes.Init(Standard_False); 
+}
+
+void Sweep_LinearRegularSweep::Delete()
+{}
+
+//=======================================================================
+//function : Shape
+//purpose  : Returns the global Shape.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::Shape () 
+{
+  if (HasShape(myGenShape,myDirWire)) return Shape(myGenShape,myDirWire);
+  else {
+    TheShape bidon;
+    return bidon;
+  }
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : Returns the Shape generated with aGenS.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS) 
+{
+  if (myGenShapeTool.Index(aGenS) != 0 &&
+      HasShape(aGenS,myDirWire)) return Shape(aGenS,myDirWire);
+  else {
+    TheShape bidon;
+    return bidon;
+  }
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : Returns the Shape indexed by the arguments.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS, 
+					  const TheDirShape& aDirS)
+{
+  Standard_Integer iGenS = myGenShapeTool.Index(aGenS);
+  Standard_Integer iDirS = myDirShapeTool.Index(aDirS);
+  if (!myBuiltShapes(iGenS,iDirS)){
+    TheShape newShape;
+    TheGenShape bGenS,cGenS,subGenS,subsubGenS;
+    TheDirShape bDirS,subDirS;
+    TheGenShapeIterator It;
+    TheDirShapeIterator Kt;
+    TheShapeIterator Lt;
+    TopAbs_Orientation Or,Pr;
+    if (myDirShapeTool.Type(aDirS)==TopAbs_VERTEX){
+      //Ici on construit les "planchers" du Shape.
+      TopAbs_ShapeEnum aGenSType = myGenShapeTool.Type(aGenS);
+      switch (aGenSType){
+      case TopAbs_VERTEX : 
+	myShapes(iGenS,iDirS)=MakeEmptyVertex(aGenS,aDirS);
+	break;
+      case TopAbs_EDGE :
+	myShapes(iGenS,iDirS)=MakeEmptyGeneratingEdge(aGenS,aDirS);
+	break;
+      case TopAbs_WIRE :
+	myBuilder.MakeWire(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_FACE :
+	myShapes(iGenS,iDirS)=MakeEmptyFace(aGenS,aDirS);
+	break;
+      case TopAbs_SHELL :
+	myBuilder.MakeShell(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_SOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPSOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPOUND :
+	myBuilder.MakeCompound(myShapes(iGenS,iDirS));
+	break;
+      default:
+	Standard_NoSuchObject::Raise("Unknown Shape");	
+	break;
+      }
+      bGenS = aGenS;
+      myGenShapeTool.SetOrientation(bGenS,TopAbs_FORWARD);
+      for (It.Init(bGenS);It.More();It.Next()){
+	subGenS = It.Value();
+	Or = It.Orientation();
+	if(HasShape(subGenS,aDirS)){
+	  newShape = Shape(subGenS,aDirS);
+	  if (GGDShapeIsToAdd(myShapes(iGenS,iDirS),newShape,
+			      aGenS,subGenS,aDirS)){
+	    //Les "planchers" doivent etre construits par les 
+	    //fonctions de construcion geometrique identiquement 
+	    //au shape generateur.
+	    //On leur recolle juste une orientation pour etre bien 
+            //sur.
+
+	    myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	    TopAbs_ShapeEnum subGenSType = myGenShapeTool.Type(subGenS);
+	    if (aGenSType==TopAbs_FACE){   
+	      if(subGenSType==TopAbs_VERTEX){
+		SetParameters(myShapes(iGenS,iDirS),
+			      newShape,aGenS,subGenS,aDirS);
+	      }
+	      else if(subGenSType==TopAbs_EDGE){
+		SetPCurve(myShapes(iGenS,iDirS),newShape,
+			  aGenS,subGenS,aDirS,Or);
+	      }	    
+	      else if(subGenSType==TopAbs_WIRE){
+		TheGenShapeIterator Jt;
+		cGenS = subGenS;
+		myGenShapeTool.SetOrientation(cGenS,TopAbs_FORWARD);
+		for (Jt.Init(cGenS);Jt.More();Jt.Next()){
+		  subsubGenS = Jt.Value();
+		  Pr = Jt.Orientation();
+		  if(HasShape(subsubGenS,aDirS)){
+		    TheShape newsubEdge = Shape(subsubGenS,aDirS);
+		    SetPCurve(myShapes(iGenS,iDirS),newsubEdge,
+			      aGenS,subsubGenS,aDirS,Pr);
+		  }
+		}
+	      }
+	    }
+	    else if(aGenSType==TopAbs_EDGE){
+	      SetGeneratingParameter(myShapes(iGenS,iDirS),
+				     newShape,bGenS,subGenS,aDirS);
+	    }
+	  }
+	}
+      }
+    }
+    else if (myDirShapeTool.Type(aDirS)==TopAbs_EDGE){
+      //Ici on construit les murs du Shape.
+      TopAbs_ShapeEnum aGenSType = myGenShapeTool.Type(aGenS);
+      TheShape newWire,newShell;
+      Sweep_SequenceOfShapes WireSeq;
+      Standard_Boolean sepwires = Standard_False;
+      switch (aGenSType){
+      case TopAbs_VERTEX : 
+	myShapes(iGenS,iDirS)=MakeEmptyDirectingEdge(aGenS,aDirS);
+	break;
+      case TopAbs_EDGE :
+	//On cree un wire intermediaire qui contient tous les edges
+	//du montant (face) du Shape pour le cas standard, et une 
+	//sequence de wires pour les cas merdiques necessitant des
+	//wires independants.
+	myBuilder.MakeWire(newWire);
+	myShapes(iGenS,iDirS)=MakeEmptyFace(aGenS,aDirS);
+	break;
+      case TopAbs_WIRE :
+	myBuilder.MakeShell(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_FACE :
+	//On cree un shell intermediaire dans lequel on jette toutes 
+	//les faces en direct, pour eviter les empilages compliques 
+	//de shells et sous shells dans la structure du solide.
+	myBuilder.MakeShell(newShell);
+	myBuilder.MakeSolid(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_SHELL :
+	myBuilder.MakeCompSolid(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_SOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPSOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPOUND :
+	myBuilder.MakeCompound(myShapes(iGenS,iDirS));
+	break;
+      default:
+	Standard_NoSuchObject::Raise("Unknown Shape");	
+	break;
+      }
+      bGenS = aGenS;
+      myGenShapeTool.SetOrientation(bGenS,TopAbs_FORWARD);
+      for (It.Init(bGenS);It.More();It.Next()){
+	subGenS = It.Value();
+	if(HasShape(subGenS,aDirS)){
+	  newShape = Shape(subGenS,aDirS);
+	  if (GGDShapeIsToAdd(myShapes(iGenS,iDirS),newShape,
+			      aGenS,subGenS,aDirS)){
+	    TopAbs_ShapeEnum subGenSType = myGenShapeTool.Type(subGenS);
+	    if (aGenSType==TopAbs_EDGE){   
+	      Or = It.Orientation();
+	      if (SeparatedWires(myShapes(iGenS,iDirS),newShape,
+				 aGenS,subGenS,aDirS)){
+		sepwires = Standard_True;
+		TheShape wi;
+		myBuilder.MakeWire(wi);
+		myBuilder.Add(wi,newShape,Or);
+		WireSeq.Append(wi);
+	      }
+	      else{
+		myBuilder.Add(newWire,newShape,Or);
+	      }
+	      SetDirectingPCurve (myShapes(iGenS,iDirS),
+				  newShape,bGenS,subGenS,aDirS,Or);
+	    }
+	    else if (aGenSType==TopAbs_WIRE){
+	      Or = It.Orientation();
+	      myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	    }
+	    else if (aGenSType==TopAbs_FACE){
+	      Or = It.Orientation();
+	      if(subGenSType == TopAbs_WIRE) {
+		for (Lt.Init(newShape);Lt.More();Lt.Next()){
+		  myBuilder.Add(newShell,Lt.Value(),
+				TopAbs::Compose(Lt.Orientation(),Or));
+		}
+	      }
+	      else if(subGenSType == TopAbs_EDGE) {
+		myBuilder.Add(newShell,newShape,Or);
+	      }
+	    }
+	    else if(aGenSType == TopAbs_SHELL){
+	      Or = TopAbs_FORWARD;
+	      myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	    }
+	    else if(aGenSType == TopAbs_COMPOUND){
+	      Or = TopAbs_FORWARD;
+	      myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	    }
+	    else{
+	      Or = It.Orientation();
+	      myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	    }
+	  }
+	}
+      }
+      bDirS = aDirS;
+      for (Kt.Init(bDirS);Kt.More();Kt.Next()){
+	subDirS = Kt.Value();
+	if(HasShape(aGenS,subDirS)){
+	  newShape = Shape(aGenS,subDirS);
+	  if (GDDShapeIsToAdd(myShapes(iGenS,iDirS),newShape,
+			      aGenS,aDirS,subDirS)){
+	    if (aGenSType==TopAbs_EDGE){   
+	      Or = TopAbs::Reverse(Kt.Orientation());
+	      myBuilder.Add(newWire,newShape,Or);
+	      SetGeneratingPCurve
+		(myShapes(iGenS,iDirS),newShape,aGenS,aDirS,subDirS,Or);
+	    }
+	    else if(aGenSType==TopAbs_VERTEX){
+	      Or = Kt.Orientation();
+	      myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	      SetDirectingParameter
+		(myShapes(iGenS,iDirS),newShape,aGenS,aDirS,subDirS);
+	    }
+	    else if(aGenSType==TopAbs_FACE){
+	      Or = Kt.Orientation();
+	      myBuilder.Add(newShell,newShape,Or);
+	    }
+	  }
+	}
+      }
+      if (aGenSType==TopAbs_EDGE){
+	if (sepwires){
+	  for(Standard_Integer ij = 1;ij <= WireSeq.Length();ij++){
+	    myBuilder.Add(myShapes(iGenS,iDirS),WireSeq.Value(ij));
+	  }
+	}
+	else{
+	  myBuilder.Add(myShapes(iGenS,iDirS),newWire);
+	}
+	myBuiltShapes(iGenS,iDirS) = Standard_True;
+	SetContinuity(aGenS,aDirS);
+      }
+      if (aGenSType==TopAbs_WIRE){
+	SetContinuity(aGenS,aDirS);
+      }	
+      if (aGenSType==TopAbs_FACE){
+	TheShape temp = SplitShell(newShell);
+	TopAbs_Orientation Or = DirectSolid(aGenS,aDirS);
+	Lt.Init(temp);
+	if(Lt.More()) Lt.Next();
+	if(Lt.More()){
+	  for (Lt.Init(temp);Lt.More();Lt.Next()){
+	    myBuilder.Add(myShapes(iGenS,iDirS),Lt.Value(),Or);
+	  }
+	}
+	else myBuilder.Add(myShapes(iGenS,iDirS),newShell,Or);
+      }
+    }
+    else if (myDirShapeTool.Type(aDirS)==TopAbs_WIRE){
+      TopAbs_ShapeEnum aGenSType = myGenShapeTool.Type(aGenS);
+      switch (aGenSType){
+      case TopAbs_VERTEX : 
+	myBuilder.MakeWire(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_EDGE :
+	myBuilder.MakeShell(myShapes(iGenS,iDirS));
+ 	break;
+      case TopAbs_WIRE :
+	myBuilder.MakeShell(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_FACE :
+	myBuilder.MakeCompSolid(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_SHELL :
+	myBuilder.MakeCompSolid(myShapes(iGenS,iDirS));
+	break;
+      case TopAbs_SOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPSOLID :
+	Standard_NoSuchObject::Raise("Solids are not Processed");
+	break;
+      case TopAbs_COMPOUND :
+	myBuilder.MakeCompound(myShapes(iGenS,iDirS));
+	break;
+      default:
+	Standard_NoSuchObject::Raise("Unknown Shape");	
+	break;
+      }
+      bDirS = aDirS;
+      for (Kt.Init(aDirS);Kt.More();Kt.Next()){
+	subDirS = Kt.Value();
+	if(HasShape(aGenS,subDirS)){
+	  Or = Kt.Orientation();
+	  newShape = Shape(aGenS,subDirS);
+	  myBuilder.Add(myShapes(iGenS,iDirS),newShape,Or);
+	}
+      }
+    }
+    myBuiltShapes(iGenS,iDirS) = Standard_True;
+  }
+  return myShapes(iGenS,iDirS);
+}
+
+
+//=======================================================================
+//function : FirstShape
+//purpose  : Returns the Shape indexed by the arguments.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::FirstShape ()
+{
+  TheShape result;
+  if (myDirShapeTool.HasFirstVertex()){
+    if(HasShape(myGenShape,myDirShapeTool.FirstVertex()))
+      result = Shape(myGenShape,myDirShapeTool.FirstVertex());
+  }
+  return result;
+}
+
+
+//=======================================================================
+//function : LastShape
+//purpose  : Returns the Shape indexed by the arguments.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::LastShape ()
+{
+  TheShape result;
+  if (myDirShapeTool.HasLastVertex()){
+    if(HasShape(myGenShape,myDirShapeTool.LastVertex()))
+      result = Shape(myGenShape,myDirShapeTool.LastVertex());
+  }
+  return result;
+}
+
+
+//=======================================================================
+//function : FirstShape
+//purpose  : Returns the Shape indexed by the arguments.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::FirstShape (const TheGenShape& aGenS)
+{
+  TheShape result;
+  if (myDirShapeTool.HasFirstVertex()){
+    if(HasShape(aGenS,myDirShapeTool.FirstVertex()))
+      result = Shape(aGenS,myDirShapeTool.FirstVertex());
+  }
+  return result;
+}
+
+
+//=======================================================================
+//function : LastShape
+//purpose  : Returns the Shape indexed by the arguments.
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::LastShape (const TheGenShape& aGenS)
+{
+  TheShape result;
+  if (myDirShapeTool.HasLastVertex()){
+    if(HasShape(aGenS,myDirShapeTool.LastVertex()))
+      result = Shape(aGenS,myDirShapeTool.LastVertex());
+  }
+  return result;
+}
+
+//=======================================================================
+//function : Closed
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Sweep_LinearRegularSweep::Closed()const 
+{
+  return myDirWire.Closed();
+}
+
+//=======================================================================
+//function : SplitShell
+//purpose  : 
+//=======================================================================
+
+TheShape Sweep_LinearRegularSweep::SplitShell(const TheShape& aNewShape)const 
+{
+  TheShape comp;
+  myBuilder.MakeCompound(comp);
+  myBuilder.Add(comp,aNewShape);
+  return comp;
+}
+

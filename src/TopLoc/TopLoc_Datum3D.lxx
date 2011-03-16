@@ -1,0 +1,14 @@
+// File:	TopLoc_Datum3D.lxx
+// Created:	Mon Mar  1 18:00:24 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : Transformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_Trsf& TopLoc_Datum3D::Transformation() const
+{
+  return myTrsf;
+}

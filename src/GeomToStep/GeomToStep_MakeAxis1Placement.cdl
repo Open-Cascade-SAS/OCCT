@@ -1,0 +1,45 @@
+-- File:	GeomToStep_MakeAxis1Placement.cdl
+-- Created:	Mon Jun 14 11:05:20 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeAxis1Placement from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Axis1Placement from Geom and Ax1 from gp, and the class
+    --          Axis1Placement from StepGeom which describes an
+    --          Axis1Placement from Prostep. 
+    --         
+  
+uses Ax1 from gp,
+     Ax2d from gp,
+     Axis1Placement from Geom,
+     AxisPlacement from Geom2d,
+     Axis1Placement from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( A : Ax1 from gp ) returns MakeAxis1Placement;
+
+Create ( A : Ax2d from gp ) returns MakeAxis1Placement;
+
+Create ( A : Axis1Placement from Geom ) returns MakeAxis1Placement;
+
+Create ( A : AxisPlacement from Geom2d ) returns MakeAxis1Placement;
+
+Value (me) returns Axis1Placement from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theAxis1Placement : Axis1Placement from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeAxis1Placement;
+
+

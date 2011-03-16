@@ -1,0 +1,33 @@
+-- File:	Transfer_VoidBinder.cdl
+-- Created:	Mon Jun 27 16:12:08 1994
+-- Author:	Design
+--		<design@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class VoidBinder  from Transfer  inherits Binder
+
+    ---Purpose : a VoidBinder is used to bind a starting item with a status,
+    --           error or warning messages, but no result
+    --           It is interpreted by TransferProcess, which admits a
+    --           VoidBinder to be over-written, and copies its check to the
+    --           new Binder
+
+uses CString, Type
+
+is
+
+    Create returns mutable VoidBinder;
+
+--    IsMultiple (me) returns Boolean;
+    ---Purpose : a VoidBinder is not Multiple (Remark : it is not Simple too)
+    --           But it can bring next results ...
+
+    ResultType (me) returns Type;
+    ---Purpose : while a VoidBinder admits no Result, its ResultType returns
+    --           the type of <me>
+
+    ResultTypeName (me) returns CString;
+    ---Purpose : Returns "(void)"
+
+end VoidBinder;

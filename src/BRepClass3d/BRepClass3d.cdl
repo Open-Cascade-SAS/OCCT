@@ -1,0 +1,52 @@
+-- File:	BRepClass3d.cdl
+-- Created:	Mon Apr 18 09:56:10 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+package BRepClass3d 
+
+uses  
+    gp,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TCollection,
+    TopExp,
+    TopClass,
+    BRepClass,
+    Geom2dInt,
+    IntCurveSurface,
+    IntCurvesFace,
+    Bnd,
+    BRepAdaptor
+
+
+is
+
+    class Intersector3d;
+
+    class MapOfInter instantiates  
+       DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	Address        from Standard,
+                                ShapeMapHasher from TopTools);
+				
+
+    class SolidExplorer;
+        
+    class SolidPassiveClassifier instantiates Classifier3d from TopClass
+    	(Intersector3d  from BRepClass3d);
+
+    ---class SClassifier instantiates SolidClassifier from TopClass
+    ---   (SolidExplorer from BRepClass3d,
+    ---	Intersector3d from BRepClass3d);
+     
+    
+    class SClassifier;       
+
+    class SolidClassifier;
+    
+       
+       
+end BRepClass3d;

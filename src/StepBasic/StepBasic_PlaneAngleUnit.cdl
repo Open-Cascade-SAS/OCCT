@@ -1,0 +1,20 @@
+-- File:        PlaneAngleUnit.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PlaneAngleUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable PlaneAngleUnit;
+	---Purpose: Returns a PlaneAngleUnit
+
+
+end PlaneAngleUnit;

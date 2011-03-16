@@ -1,0 +1,99 @@
+-- File:	TColGeom.cdl
+-- Created:	Tue Mar  9 17:38:13 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+package TColGeom 
+
+        ---Purpose : This package  is used to  instantiate of  several
+        --         generic classes from  the package  TCollection with
+        --         objects from the package Geom.
+
+uses TCollection, Geom
+
+is
+
+
+
+    class Array1OfCurve 
+    	instantiates Array1 from TCollection (Curve from Geom);
+    class Array1OfBoundedCurve 
+    	instantiates Array1 from TCollection (BoundedCurve from Geom);
+    class Array1OfBezierCurve 
+    	instantiates Array1 from TCollection (BezierCurve from Geom);
+    class Array1OfBSplineCurve 
+    	instantiates Array1 from TCollection (BSplineCurve from Geom);
+    class Array1OfSurface 
+    	instantiates Array1 from TCollection (Surface from Geom);
+    class Array1OfBoundedSurface 
+    	instantiates Array1 from TCollection (BoundedSurface from Geom);
+
+    class HArray1OfCurve
+    	instantiates HArray1 from TCollection (Curve from Geom,
+    	    	    	    	Array1OfCurve from TColGeom);
+    class HArray1OfBoundedCurve 
+    	instantiates HArray1 from TCollection (BoundedCurve from Geom,
+    	    	    	    	Array1OfBoundedCurve from TColGeom);
+    class HArray1OfBezierCurve  
+    	instantiates HArray1 from TCollection (BezierCurve from Geom,
+    	    	    	    	Array1OfBezierCurve from TColGeom);
+    class HArray1OfBSplineCurve 
+    	instantiates HArray1 from TCollection (BSplineCurve from Geom,
+    	    	    	    	Array1OfBSplineCurve from TColGeom);
+    class HArray1OfSurface  
+    	instantiates HArray1 from TCollection (Surface from Geom,
+    	    	    	    	Array1OfSurface from TColGeom);
+    class HArray1OfBoundedSurface 
+    	instantiates HArray1 from TCollection (BoundedSurface from Geom,
+    	    	    	    	Array1OfBoundedSurface from TColGeom);
+
+
+    class Array2OfSurface 
+    	instantiates Array2 from TCollection (Surface from Geom);
+    class Array2OfBoundedSurface 
+    	instantiates Array2 from TCollection (BoundedSurface from Geom);
+    class Array2OfBezierSurface 
+    	instantiates Array2 from TCollection (BezierSurface from Geom);
+    class Array2OfBSplineSurface 
+    	instantiates Array2 from TCollection (BSplineSurface from Geom);
+
+    class HArray2OfSurface        
+    	instantiates HArray2 from TCollection (Surface from Geom,
+    	    	    	    	Array2OfSurface from TColGeom);
+    class HArray2OfBoundedSurface 
+    	instantiates HArray2 from TCollection (BoundedSurface from Geom,
+    	    	    	    	Array2OfBoundedSurface from TColGeom);
+    class HArray2OfBezierSurface  
+    	instantiates HArray2 from TCollection (BezierSurface from Geom,
+    	    	    	    	Array2OfBezierSurface from TColGeom);
+    class HArray2OfBSplineSurface 
+    	instantiates HArray2 from TCollection (BSplineSurface from Geom,
+    	    	    	    	Array2OfBSplineSurface from TColGeom);
+
+
+    class SequenceOfCurve  
+    	instantiates Sequence from TCollection (Curve from Geom);
+    class SequenceOfBoundedCurve  
+    	instantiates Sequence from TCollection (BoundedCurve from Geom);
+    class SequenceOfSurface 
+    	instantiates Sequence from TCollection (Surface from Geom);
+    class SequenceOfBoundedSurface 
+    	instantiates Sequence from TCollection (BoundedSurface from Geom);
+
+    class HSequenceOfCurve  
+    	instantiates HSequence from TCollection (Curve from Geom,
+    	    	    	    	SequenceOfCurve from TColGeom);
+    class HSequenceOfBoundedCurve  
+    	instantiates HSequence from TCollection (BoundedCurve from Geom,
+    	    	    	    	SequenceOfBoundedCurve from TColGeom);
+    class HSequenceOfSurface 
+    	instantiates HSequence from TCollection (Surface from Geom,
+    	    	    	    	SequenceOfSurface from TColGeom);
+    class HSequenceOfBoundedSurface 
+    	instantiates HSequence from TCollection (BoundedSurface from Geom,
+    	    	    	    	SequenceOfBoundedSurface from TColGeom);
+
+
+end TColGeom;

@@ -1,0 +1,142 @@
+-- File:	SelectMgr_EntityOwner.cdl
+-- Created:	Tue May 23 10:01:09 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+--Modified by rob October 25 97 store locations...
+--         
+--                jun 17 98 : Add virtual methods HasShape, GetShape.
+--                            by default return False and Null Shape...		
+---Copyright:	 Matra Datavision 1995
+
+
+
+
+class EntityOwner from SelectMgr inherits EntityOwner from SelectBasics
+
+	---Purpose: A framework to define classes of owners of sensitive primitives.
+    	-- The owner is the link between application and
+    	-- selection data structures.
+    	-- For the application to make its own objects selectable,
+    	-- it must define owner classes inheriting this framework.
+	--           
+
+uses
+    SelectableObject       from SelectMgr,
+    SOPtr                  from SelectMgr,
+    NameOfColor            from Quantity,
+    Location               from TopLoc,
+    PresentationManager    from PrsMgr,
+    PresentationManager3d  from PrsMgr
+
+raises
+    NoSuchObject from Standard
+is
+
+    Create (aPriority: Integer = 0) returns mutable EntityOwner from SelectMgr;
+	--- Purpose: Initializes the selection priority aPriority.  
+    Create (aSO      : SelectableObject;
+            aPriority : Integer=0)
+    returns mutable EntityOwner from SelectMgr;
+    	---Purpose: Constructs a framework with the selectable object
+    	-- anSO being attributed the selection priority aPriority.
+	
+    HasSelectable(me) returns Boolean from Standard;
+    	---Purpose: Returns true if there is a selectable object to serve as an owner.
+
+    Selectable(me) returns any SelectableObject from SelectMgr
+        ---Purpose: Returns a selectable object detected in the working context.
+    raises NoSuchObject from Standard
+    is static;
+    
+    Set(me:mutable; aSO : SelectableObject) is static;    
+        ---Purpose: Sets the selectable object anSO to be used by the
+    	-- second constructor above.
+
+	    ---Category: hilight of the owner when detected...
+	    --           the following virtual methods have a default
+	    --           implementation which acts on stored selectable
+	    --           if it exists. else does nothing.
+	    --           WARNING: if methods are redefined in inheriting
+	    --           classes :
+	    --            if the hilight methods don't use presentable objects
+	    --            YOU MUST :
+	    --            1) ask The presentationManager if it is in
+	    --               immediate mode
+	    --            2) if it is, add your presentation to 
+	    --               the immediate list of presentation manager.
+	    --           
+
+    Hilight(me:mutable) is virtual;    
+    	---Purpose: Provides a framework to highlight any selectable
+    	-- object found subsequently which can serve as an
+    	-- owner of a sensitive primitive.
+    IsHilighted (me  ;
+      	         aPM   : PresentationManager from PrsMgr;
+                 aMode : Integer  from  Standard  =0)
+    returns Boolean from Standard is virtual;    
+        ---Purpose: Returns true if the presentation manager aPM
+    	-- highlights selections corresponding to the selection mode aMode.
+
+    Hilight(me    : mutable;
+    	    aPM   : PresentationManager from PrsMgr;
+            aMode : Integer  from  Standard  =0) is virtual;    
+      ---Purpose: Highlights the owner of a detected selectable object in
+      -- the presentation manager aPM. This object could be
+      -- the owner of a sensitive primitive.
+      -- The display mode for the highlight is aMode; this has
+      -- the default value of 0, that is, wireframe mode.  
+    
+    HilightWithColor  (me    : mutable;
+    	               aPM   : PresentationManager3d from PrsMgr;
+	               aColor: NameOfColor from Quantity;
+                       aMode : Integer  from  Standard  =0) is virtual;    
+
+    Unhilight(me    : mutable;
+    	      aPM   : PresentationManager from PrsMgr;
+              aMode : Integer  from  Standard  =0) is virtual;    
+    	---Purpose: Removes highlighting from the owner of a detected
+    	-- selectable object in the presentation manager aPM.
+    	-- This object could be the owner of a sensitive primitive.
+    	-- The display mode for the highlight is aMode; this has
+    	-- the default value of 0, that is, wireframe mode. 
+	
+    Clear(me: mutable;  
+          aPM   : PresentationManager from PrsMgr;
+          aMode : Integer  from  Standard  =0) is virtual;    
+        ---Purpose: Clears the owners matching the value of the selection
+    	-- mode aMode from the presentation manager object aPM.
+
+    ---Category: internal methods for location on  objects...
+    --           Default implementations of HasLocation() and Location() rely on 
+    --           location obtained from <mySelectable> field, to minimize memory usage.
+    --           SetLocation() and ResetLocation() do nothing by default.
+    HasLocation(me) returns Boolean from Standard is redefined;
+    SetLocation(me:mutable; aLoc : Location from TopLoc) is redefined;
+    ResetLocation(me:mutable) is redefined;
+    Location(me) returns Location from TopLoc is redefined;
+    ---C++: return const&
+    
+    
+
+    --very Internal method (to be used in selection process only...)
+
+    State(me:mutable;aStatus:Integer from Standard);
+    	---C++: inline
+    State(me)  returns Integer from Standard;
+    	---C++: inline
+
+    IsAutoHilight ( me ) returns Boolean from Standard is virtual; 
+    ---Purpose: if owner is not auto hilighted, for group contains many such owners 
+    --          will be called one method HilightSelected of SelectableObject 
+     
+    IsForcedHilight ( me ) returns Boolean from Standard is virtual; 
+    ---Purpose: if this method returns TRUE the owner will allways call method
+    --          Hilight for SelectableObject when the owner is detected. By default 
+    --          it always return FALSE.  
+    
+fields
+
+    mySelectable        : SOPtr;
+    mystate             : Integer from Standard;
+
+end EntityOwner;

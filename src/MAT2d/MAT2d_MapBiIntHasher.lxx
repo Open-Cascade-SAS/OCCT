@@ -1,0 +1,45 @@
+// File:	MAT2d_MapBiIntHasher.lxx
+// Created:	Fri Nov 19 12:26:47 1993
+// Author:	Yves FRICAUD
+//		<yfr@phylox>
+
+#include <MAT2d_BiInt.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+//#ifndef WNT
+//inline  static Standard_Integer  MAT2d_MapBiIntHasher::HashCode
+//(const MAT2d_BiInt& Key1, const Standard_Integer upper)
+//{
+//  return TColStd_MapIntegerHasher::HashCode(Key1.FirstIndex(),upper);
+//}
+//#else
+inline Standard_Integer  MAT2d_MapBiIntHasher::HashCode
+(const MAT2d_BiInt& Key1, const Standard_Integer upper)
+{
+  return TColStd_MapIntegerHasher::HashCode(Key1.FirstIndex(),upper);
+}
+//#endif
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+//#ifndef WNT
+//inline  static Standard_Boolean  MAT2d_MapBiIntHasher::IsEqual
+//  (const MAT2d_BiInt& Key1,
+//   const MAT2d_BiInt& Key2)
+//{
+//  return (Key1 == Key2);
+//}
+//#else
+inline Standard_Boolean  MAT2d_MapBiIntHasher::IsEqual
+(const MAT2d_BiInt& Key1,
+ const MAT2d_BiInt& Key2)
+{
+  return (Key1 == Key2);
+}
+//#endif

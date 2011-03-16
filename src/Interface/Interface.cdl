@@ -1,0 +1,150 @@
+-- File:	Interface.cdl
+-- Created:	Mon Feb  3 10:34:50 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+package Interface
+
+    ---Purpose : defines a general frame for interface data
+    --           used to manipulate results of normalized Interface outputs
+    --           (i.e. files), also as a basis to define transfer operations
+    --           (in other packages : see package Transfer)
+
+uses LibCtl, TCollection, TColStd, MMgt, Standard, Dico, MoniTool, Message
+
+is
+
+    deferred class InterfaceModel;
+
+    	-- --   Data Definitions   -- --
+
+    class UndefinedContent;
+    class ReportEntity;
+
+    class EntityList;             -- for an (ordered) little list of Entities
+    private class EntityCluster;  -- ancillary class for the former
+    generic class JaggedArray;    -- to turn arround limitation on Array(Array)
+
+    	-- --   Auxiliary Classes (results, working data)   -- --
+
+    class IntVal;
+    class EntityIterator;
+
+    class Graph;
+    class GraphContent;
+    class HGraph;
+    class IntList;
+    class BitMap;
+
+    class Check;
+    class CheckIterator;
+
+    	-- --   General Services   -- --
+
+    deferred class Protocol;         -- manages also Active Protocol
+    deferred class GeneralModule;    -- (Shareds,Check,Copy,Trace)
+    class GeneralLib instantiates Library from LibCtl
+    	(Transient, GeneralModule, Protocol from Interface);
+
+    class GTool;
+
+    class ShareTool;
+    class ShareFlags;
+    class CheckTool;
+
+    class CopyTool;
+    deferred class CopyControl;
+    class CopyMap;
+
+    class Category;
+    deferred class SignType;
+    class SignLabel;
+
+    class TypedValue;
+    class Static;
+    imported ValueSatisfies;
+    -- (val : HAsciiString) returns Boolean,  see Satisfies from TypedValue
+    imported ValueInterpret;
+    -- (typval : TypedValue; hval : HAsciiString; native : Boolean)
+    --   returns HAsciiString,  see Interpret from TypedValue
+    imported StaticSatisfies;
+    -- Function to be added to a Static for specific Satisfies
+
+    deferred generic class Recognizer;  -- aimed to create Interface Entities
+
+    	-- --   File Access (Read & Write)   -- --
+
+    deferred class ReaderModule;
+    class ReaderLib instantiates  Library from LibCtl
+    	(Transient, ReaderModule, Protocol from Interface);
+    
+    imported VectorOfFileParameter;
+    class FileParameter;
+    class ParamSet;          -- see also ParamList
+    class ParamList;
+    deferred class FileReaderData;
+    deferred class FileReaderTool;
+
+    class LineBuffer;
+    class FloatWriter;
+
+    class MSG;
+    class STAT;
+
+    	-- --   Enumerations   -- --
+
+    enumeration ParamType is
+    	ParamMisc, ParamInteger, ParamReal, ParamIdent, ParamVoid,   ParamText,
+    	ParamEnum, ParamLogical, ParamSub,  ParamHexa,  ParamBinary;
+
+    enumeration DataState is
+    	StateOK, LoadWarning, LoadFail, DataWarning, DataFail,
+    	StateUnloaded, StateUnknown;
+    ---Purpose : validity state of anentity's content (see InterfaceModel)
+
+    enumeration CheckStatus is
+    	CheckOK, CheckWarning, CheckFail, CheckAny, CheckMessage, CheckNoFail;
+    ---Purpose : Classifies checks
+    --           OK : check is empty  Warning : Warning, no Fail   Fail : Fail
+    --           Others to query :
+    --           Any : any status   Message : Warning/Fail  NoFail : Warning/OK
+
+    	-- --  Exceptions  -- --
+
+    exception InterfaceError inherits Failure;
+    exception InterfaceMismatch inherits InterfaceError;
+    exception CheckFailure      inherits InterfaceError;
+
+    	-- --  Instantiations  -- --
+
+    private class  SequenceOfCheck  instantiates           -- for HSequence
+    	 Sequence from TCollection (Check);
+    private class HSequenceOfCheck  instantiates           -- Transient
+    	HSequence from TCollection (Check,SequenceOfCheck);
+
+    class Array1OfFileParameter instantiates               -- for ParamList :
+        Array1 from TCollection    (FileParameter);
+--    class HArray1OfFileParameter instantiates                           -- Array, Transient
+--        HArray1 from TCollection   (FileParameter,Array1OfFileParameter);
+
+    --  Useful Instantiations to define Data
+
+    class  DataMapOfTransientInteger  instantiates  DataMap  from TCollection
+    	(Transient, Integer,MapTransientHasher from TColStd);
+
+    class  Array1OfHAsciiString instantiates   Array1  from TCollection
+    	(HAsciiString from TCollection);
+
+    class HArray1OfHAsciiString instantiates  HArray1  from TCollection
+    	(HAsciiString from TCollection,Array1OfHAsciiString);
+
+--  ==============IndexedMapOfAsciiString===================
+class MapAsciiStringHasher;    -- instantiates MapHasher from TCollection;
+
+class IndexedMapOfAsciiString instantiates IndexedMap  from TCollection(AsciiString from TCollection,MapAsciiStringHasher from Interface);
+
+-- ==================================
+
+end Interface;

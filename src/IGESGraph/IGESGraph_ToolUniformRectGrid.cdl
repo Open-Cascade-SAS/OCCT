@@ -1,0 +1,63 @@
+-- File:	IGESGraph_ToolUniformRectGrid.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolUniformRectGrid  from IGESGraph
+
+    ---Purpose : Tool to work on a UniformRectGrid. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses UniformRectGrid from IGESGraph,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolUniformRectGrid;
+    ---Purpose : Returns a ToolUniformRectGrid, ready to work
+
+
+    ReadOwnParams (me; ent : mutable UniformRectGrid;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : UniformRectGrid;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : UniformRectGrid;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a UniformRectGrid <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable UniformRectGrid) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a UniformRectGrid
+    --           (NbPropertyValues forced to 9)
+
+    DirChecker (me; ent : UniformRectGrid) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : UniformRectGrid;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : UniformRectGrid; entto : mutable UniformRectGrid;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : UniformRectGrid;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolUniformRectGrid;

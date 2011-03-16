@@ -1,0 +1,58 @@
+--
+-- File      :  FlowLineSpec.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class FlowLineSpec from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines FlowLineSpec, Type <406> Form <14>
+        --          in package IGESAppli
+        --          Attaches one or more text strings to entities being
+        --          used to represent a flow line
+
+uses
+
+        HAsciiString          from TCollection,
+        HArray1OfHAsciiString from Interface
+
+raises OutOfRange
+
+is
+
+        Create returns mutable FlowLineSpec;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; allProperties : HArray1OfHAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           FlowLineSpec
+        --       - allProperties : primary flow line specification and modifiers
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+
+        FlowLineName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns primary flow line specification name
+
+        Modifier (me; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns specified modifier element
+        -- raises exception if Index <= 1 or Index > NbPropertyValues
+
+fields
+
+--
+-- Class    : IGESAppli_FlowLineSpec
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class FlowLineSpec.
+--
+-- Reminder : A FlowLineSpec instance is defined by :
+--            - primary flow line specification name and modifiers
+
+        theNameAndModifiers : HArray1OfHAsciiString;
+
+end FlowLineSpec;

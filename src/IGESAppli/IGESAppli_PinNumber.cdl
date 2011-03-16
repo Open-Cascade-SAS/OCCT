@@ -1,0 +1,57 @@
+--
+-- File      :  PinNumber.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PinNumber from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines PinNumber, Type <406> Form <8>
+        --          in package IGESAppli
+        --          Used to attach a text string representing a component
+        --          pin number to an entity being used to represent an
+        --          electrical component's pin
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable PinNumber;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              nbPropVal : Integer;
+              aValue    : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           PinNumber
+        --       - nbPropVal : Number of property values (always = 1)
+        --       - aValue    : Pin Number value
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+        -- is always 1
+
+        PinNumberVal (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the pin number value
+
+fields
+
+--
+-- Class    : IGESAppli_PinNumber
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PinNumber.
+--
+-- Reminder : A PinNumber instance is defined by :
+--            - Number of property values (always = 1)
+--            - Pin Number value
+
+        theNbPropertyValues : Integer;
+        thePinNumber        : HAsciiString;
+
+end PinNumber;

@@ -1,0 +1,126 @@
+-- File:	BRepExtrema_SolutionElem.cdl
+-- Created:	Thu Apr 18 10:00:04 1996
+-- Author:	Maria PUMBORIOS
+-- Author:	Herve LOUESSARD
+--		<jpi@sgi64>
+---Copyright:	 Matra Datavision 1996
+
+class SolutionElem from BRepExtrema
+
+  ---Purpose: This class is used to store information relative to the
+  -- minimum distance between two shapes. 
+
+uses
+  Real        from Standard,
+  Pnt         from gp, 
+  Vertex      from TopoDS,
+  Face        from TopoDS,
+  Edge        from TopoDS,
+  SupportType from BRepExtrema
+
+
+is
+ 
+  Create returns SolutionElem from BRepExtrema; 
+   
+  Create( d: Real from Standard; 
+          Pt: Pnt from gp; 
+          SolType:  SupportType from BRepExtrema ;  
+          vertex:  Vertex  from TopoDS) returns SolutionElem from BRepExtrema;
+  --- Purpose: initialisation of the fields  
+  --  This creator is used when the solution of a distance is a Vertex.
+  --  The different initialized fields are: _ the distance d
+  --                                        _ the solution point
+  --                                        _ the type of solution
+  --                                        _ and the Vertex.    
+
+
+  Create( d: Real from Standard; 
+          Pt: Pnt from gp; 
+          SolType:  SupportType from BRepExtrema ;  	  
+          edge:  Edge  from TopoDS;  
+          t:  Real  from  Standard  ) returns SolutionElem from BRepExtrema; 
+  ---Purpose: initialisation of  the fiels.    
+  -- This constructor is used when the  solution of distance is on
+  -- an Edge. The different initialized fields are:
+  --            _ the distance d,
+  --            _ the solution point,
+  --            _ the type of solution,
+  --            _ the Edge,
+  --            _ and the parameter t to locate the solution.
+                                        
+
+  Create( d: Real from Standard; 
+          Pt: Pnt from gp; 
+          SolType:  SupportType from BRepExtrema ;
+          face:  Face  from TopoDS;  
+          u:  Real  from  Standard;  
+          v:  Real  from  Standard ) returns SolutionElem from BRepExtrema;
+  --- Purpose: initialisation of the fields  
+  -- This constructor is used when the  solution of distance is in
+  -- a Face. The different initialized fields are:
+  --            _ the distance d,
+  --            _ the solution point,
+  --            _ the type of solution,
+  --            _ the Face,
+  --            _ and the parameter u et v to locate the solution.
+  
+  Dist(me) returns Real from Standard;
+  --- Purpose: 
+  --  returns the value of the minimum distance.
+  --  
+  Point(me) returns Pnt from gp;
+  --- Purpose: 
+  --  returns the solution point.
+  --    
+ 
+ SupportKind(me) returns SupportType from BRepExtrema;
+  --- Purpose:
+  --  returns the Support type :
+  --	    IsVertex => The solution is a vertex.
+  -- 	    IsOnEdge => The solution belongs to an Edge.
+  -- 	    IsInFace => The solution is inside a Face.
+ 
+  Vertex(me) returns Vertex from TopoDS;
+  --- Purpose:  
+  --  returns the vertex if the solution is a Vertex. 
+ 
+  Edge(me) returns Edge from TopoDS;
+  --- Purpose: 
+  --   returns the vertex if the solution is an Edge. 
+  
+  Face(me) returns Face from TopoDS;
+  --- Purpose: 
+  --  returns the vertex if the solution is an Face.   
+  
+  EdgeParameter(me; par1:out  Real from Standard);
+  --- Purpose: 
+  --  returns the parameter t if the solution is on Edge. 
+ 
+  FaceParameter(me; par1: out Real from Standard; par2:out  Real from Standard); 
+  --- Purpose: 
+  --  returns the parameters u et v if the solution is in a Face.
+
+fields
+  myDist      : Real        from Standard;
+  myPoint     : Pnt         from gp;
+  mySupType   : SupportType from BRepExtrema;  
+  myVertex    : Vertex      from TopoDS;
+  myEdge      : Edge        from TopoDS;
+  myFace      : Face        from TopoDS;
+  myPar1      : Real        from Standard;   
+  myPar2      : Real        from Standard;
+  
+end;
+
+
+
+
+
+
+
+
+
+
+
+

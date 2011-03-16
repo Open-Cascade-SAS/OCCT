@@ -1,0 +1,49 @@
+-- File:	IGESSelect_SelectLevelNumber.cdl
+-- Created:	Tue May 31 17:57:12 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectLevelNumber  from IGESSelect  inherits SelectExtract
+
+    ---Purpose : This selection looks at Level Number of IGES Entities :
+    --           it considers items attached, either to a single level with a
+    --           given value, or to a level list which contains this value
+    --           
+    --           Level = 0  means entities not attached to any level
+    --           
+    --           Remark : the class CounterOfLevelNumber gives informations
+    --             about present levels in a file.
+
+uses AsciiString from TCollection, Transient, InterfaceModel, IntParam
+
+is
+
+    Create returns mutable SelectLevelNumber;
+    ---Purpose : Creates a SelectLevelNumber, with no Level criterium : see
+    --           SetLevelNumber. Empty, this selection filters nothing.
+
+    SetLevelNumber (me : mutable; levnum : mutable IntParam);
+    ---Purpose : Sets a Parameter as Level criterium
+
+    LevelNumber (me) returns mutable IntParam;
+    ---Purpose : Returns the Level criterium. NullHandle if not yet set
+    --           (interpreted as Level = 0 : no level number attached)
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True if <ent> is an IGES Entity with Level Number
+    --           admits the criterium (= value if single level, or one of the
+    --           attached level numbers = value if level list)
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Selection criterium :
+    --           "IGES Entity, Level Number admits <nn>" (if nn > 0) or
+    --           "IGES Entity attached to no Level" (if nn = 0)
+
+fields
+
+    thelevnum : IntParam;
+
+end SelectLevelNumber;

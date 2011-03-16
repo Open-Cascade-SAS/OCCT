@@ -1,0 +1,32 @@
+// File:	AIS_OffsetDimension.lxx
+// Created:	Tue Mar  4 10:04:53 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+
+//=======================================================================
+//function : KindOfDimension
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfDimension AIS_OffsetDimension::KindOfDimension() const 
+{
+  return AIS_KOD_OFFSET;
+}
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_OffsetDimension::IsMovable() const 
+{
+  return Standard_True;
+}
+
+//=======================================================================
+//function : SetRelativePos
+//purpose  : 
+//=======================================================================
+inline void AIS_OffsetDimension::SetRelativePos(const gp_Trsf& aTrsf)
+{
+  myRelativePos = aTrsf;
+}

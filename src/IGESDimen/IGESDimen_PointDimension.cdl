@@ -1,0 +1,81 @@
+--
+-- File      :  PointDimension.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PointDimension from IGESDimen  inherits IGESEntity
+
+
+        ---Purpose: defines IGES Point Dimension, Type <220> Form <0>,
+        --          in package IGESDimen
+        --          A Point Dimension Entity consists of a leader, text, and
+        --          an optional circle or hexagon enclosing the text
+        --          IGES specs for this entity mention SimpleClosedPlanarCurve
+        --          Entity(106/63)which is not listed in LIST.Text In the sequel
+        --          we have ignored this & considered only the other two entity
+        --          for representing the hexagon or circle enclosing the text.
+
+uses
+
+        LeaderArrow    from IGESDimen,
+        GeneralNote    from IGESDimen,
+        CircularArc    from IGESGeom,
+        CompositeCurve from IGESGeom
+
+is
+
+        Create returns mutable PointDimension;
+
+            -- --specific-- --
+        Init(me      : mutable;
+             aNote   : GeneralNote;
+             anArrow : LeaderArrow;
+             aGeom   : IGESEntity);
+        -- This method is used to set fields of the
+        -- class PointDimension
+        --       - aNote   : Note for the dimension
+        --       - anArrow : Leader arrow used for the dimensioning
+        --       - aGeom   : The enclosing geometric entity
+
+        Note(me) returns GeneralNote;
+
+        LeaderArrow(me) returns LeaderArrow;
+
+        GeomCase(me) returns Integer;
+        ---Purpose : returns the type of geometric entity.
+        -- 0 if no hexagon or circle encloses the text
+        -- 1 if CircularArc
+        -- 2 if CompositeCurve
+        -- 3 otherwise
+
+        Geom(me) returns IGESEntity;
+        ---Purpose : returns the Geometry Entity, Null handle if GeomCase(me) .eq. 0
+
+        CircularArc(me) returns CircularArc;
+        ---Purpose : returns Null handle if GeomCase(me) .ne. 1
+
+        CompositeCurve(me) returns CompositeCurve;
+        ---Purpose : returns Null handle if GeomCase(me) .ne. 2
+
+fields
+
+--
+-- Class    : IGESDimen_PointDimension
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PointDimension.
+--
+-- Reminder : A PointDimension instance is defined by :
+--                - A General Note
+--                - A Leader Arrow
+--                - A Geometry Entity
+--
+
+            theNote  : GeneralNote;
+            theLeader: LeaderArrow;
+            theGeom  : IGESEntity;
+
+end PointDimension;

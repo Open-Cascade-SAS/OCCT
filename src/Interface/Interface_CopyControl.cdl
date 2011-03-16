@@ -1,0 +1,39 @@
+-- File:	Interface_CopyControl.cdl
+-- Created:	Thu Apr  8 11:28:45 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class CopyControl  from Interface  inherits TShared
+
+    ---Purpose : This deferred class describes the services required by
+    --           CopyTool to work. They are very simple and correspond
+    --           basically to the management of an indexed map.
+    --           But they can be provided by various classes which can
+    --           control a Transfer. Each Starting Entity have at most
+    --           one Result (Mapping one-one)
+
+uses Transient
+
+raises InterfaceError
+
+is
+
+    Clear  (me : mutable) is deferred;
+    ---Purpose : Clears List of Copy Results. Gets Ready to begin another Copy
+    --           Process.
+
+    Bind (me : mutable; ent : Transient; res : mutable Transient)
+    ---Purpose : Bind a Result to a Starting Entity identified by its Number
+    	raises InterfaceError  is deferred;
+    --           Error if <num> is already bound or is out of range
+
+    Search (me; ent : Transient; res : out mutable Transient)
+    	returns Boolean  is deferred;
+    ---Purpose : Searches for the Result bound to a Startingf Entity identified
+    --           by its Number.
+    --           If Found, returns True and fills <res>
+    --           Else, returns False and nullifies <res>
+
+end CopyControl;

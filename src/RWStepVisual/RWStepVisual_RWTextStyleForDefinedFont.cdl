@@ -1,0 +1,30 @@
+-- File:        TextStyleForDefinedFont.cdl
+-- Created:     Mon Dec  4 12:02:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWTextStyleForDefinedFont from RWStepVisual
+
+	---Purpose : Read & Write Module for TextStyleForDefinedFont
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     TextStyleForDefinedFont from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWTextStyleForDefinedFont;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable TextStyleForDefinedFont from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : TextStyleForDefinedFont from StepVisual);
+
+	Share(me; ent : TextStyleForDefinedFont from StepVisual; iter : in out EntityIterator);
+
+end RWTextStyleForDefinedFont;

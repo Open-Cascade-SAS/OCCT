@@ -1,0 +1,138 @@
+-- File:	BRepClass3d_Intersector3d.cdl
+-- Created:	Fri Apr  1 09:14:28 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Intersector3d from BRepClass3d 
+    
+    
+uses 
+    Lin               from gp,
+    Pnt               from gp,
+    Face              from TopoDS,
+    Shape             from TopoDS,
+    State             from TopAbs,
+    TransitionOnCurve from IntCurveSurface
+    
+is
+
+    Create returns Intersector3d from BRepClass3d;
+    	---Purpose: Empty constructor.
+    	          
+    Perform(me: in out;  L    : Lin     from gp;
+    	                 Prm  : Real    from Standard;
+			 Tol  : Real    from Standard;
+			 F    : Face    from TopoDS) 
+	---Purpose: Perform the intersection between the 
+	--          segment L(0) ... L(Prm) and the Shape <Sh>.
+	--          
+	--          Only the point with the smallest parameter on the 
+	--          line is returned. 
+	--          
+	--          The Tolerance <Tol> is used to determine if the 
+	--          first point of the segment is near the face. In 
+	--          that case, the parameter of the intersection point 
+	--          on the line can be a negative value (greater than -Tol).
+    is static;
+    
+    
+    IsDone(me)  
+    	---Purpose: True is returned when the intersection have been computed.
+    	---C++: inline
+    returns Boolean from Standard
+    is static;
+    
+    
+    HasAPoint(me) 
+    	---Purpose: True is returned if a point has been found.
+    	---C++: inline
+    returns Boolean from Standard
+    is static;
+    
+	 
+    UParameter(me) 
+    	---Purpose: Returns the U parameter of the intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    VParameter(me) 
+    	---Purpose: Returns the V parameter of the intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    WParameter(me) 
+    	---Purpose: Returns the parameter of the intersection point 
+    	--          on the line.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+
+    Pnt(me)
+	---Purpose: Returns the geometric point of the intersection 
+	--          between the line and the surface.
+    	---C++: inline
+	---C++: return const &
+    returns Pnt from gp
+    is static;
+    
+    
+    Transition(me) 
+    	---Purpose: Returns the transition of the line on the surface.
+    	---C++: inline
+    returns TransitionOnCurve from IntCurveSurface
+    is static;
+    
+
+    State(me) 
+    	---Purpose: Returns the state of the point on the face.
+    	--          The values can be either TopAbs_IN 
+    	--             ( the point is in the face)
+    	--           or TopAbs_ON
+    	--             ( the point is on a boudary of the face).
+    	---C++: inline
+       
+    returns State from TopAbs
+    is static;
+    
+    Face(me) 
+    	---Purpose: Returns the significant face used to determine
+    	--          the intersection. 
+    	--          
+    	---C++: inline
+    	---C++: return const &
+    returns Face from TopoDS
+    is static;
+    
+    
+	---------------------- Local Geometry avec courbureS dans une 
+	--                     direction et la direction normale     
+
+fields
+
+    pnt                :  Pnt                 from gp;
+    U                  :  Real                from Standard;
+    V                  :  Real                from Standard;
+    W                  :  Real                from Standard;
+    transition         :  TransitionOnCurve   from IntCurveSurface;
+    done               :  Boolean             from Standard;
+    hasapoint          :  Boolean             from Standard;
+    state              :  State               from TopAbs;
+    face               :  Face                from TopoDS;
+
+end Intersector3d;
+
+   
+
+
+
+
+
+

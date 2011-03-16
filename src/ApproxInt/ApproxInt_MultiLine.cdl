@@ -1,0 +1,139 @@
+-- File:	ApproxInt_MultiLine.cdl
+-- Created:	Thu Mar 18 12:40:05 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class MultiLine from ApproxInt (
+    TheLine           as Transient;
+    TheSvSurfaces     as any)
+
+uses Array1OfPnt      from TColgp,
+     Array1OfPnt2d    from TColgp,
+     Array1OfVec      from TColgp,
+     Array1OfVec2d    from TColgp,
+     Status           from Approx,
+     Trsf             from gp,
+     Trsf2d           from gp
+
+
+is 
+
+    Create(line               : TheLine; 
+           PtrSvSurfaces      : Address from Standard;
+           NbP3d              : Integer from Standard;
+    	   NbP2d              : Integer from Standard;
+           xo,ax,yo,ay,zo,az  : Real from Standard;
+           u1o,a1u,v1o,a1v    : Real from Standard;
+           u2o,a2u,v2o,a2v    : Real from Standard;
+	   P2DOnFirst         : Boolean from Standard;
+    	   IndMin             : Integer from Standard = 0;
+    	   IndMax             : Integer from Standard = 0) 
+	   
+	   
+    returns MultiLine from ApproxInt; 
+
+       	---Purpose:  The  class   SvSurfaces     is used   when    the
+    	--          approximation algorithm needs some extra points on
+    	--          the line <line>. A New line  is then created which
+    	--          shares  the    same  surfaces    and    functions.
+    	--          
+    	--          SvSurfaces is   a  deferred   class  which  allows
+    	--          several implementations of  this  algorithm   with
+    	--          different surfaces   (bi-parametric     ones,   or
+    	--          implicit and biparametric ones)
+
+    Create(line               : TheLine; 
+           NbP3d              : Integer from Standard;
+    	   NbP2d              : Integer from Standard;
+           xo,ax,yo,ay,zo,az  : Real from Standard;
+           u1o,a1u,v1o,a1v    : Real from Standard;
+           u2o,a2u,v2o,a2v    : Real from Standard;
+	   P2DOnFirst         : Boolean from Standard;
+           IndMin             : Integer from Standard = 0;
+           IndMax             : Integer from Standard = 0) 
+
+    	---Purpose: No Extra points will be added on the current line
+    	--          
+    returns MultiLine from ApproxInt; 
+
+
+    FirstPoint(me)   returns Integer from Standard is static;
+    
+    LastPoint(me)    returns Integer from Standard is static;
+    
+    NbP2d(me) returns Integer is static;
+    	---Purpose: Returns the number of 2d points of a TheLine.
+    	--          
+
+    NbP3d(me) returns Integer is static;
+    	---Purpose: Returns the number of 3d points of a TheLine.
+    	--          
+
+    WhatStatus(me)     returns Status from Approx is static;
+
+    Value(me;  MPointIndex: Integer; tabPt: out Array1OfPnt) is static;
+    	---Purpose: returns the 3d points of the multipoint <MPointIndex>
+    	--          when only 3d points exist.
+
+    Value(me;  MPointIndex: Integer; 
+          tabPt2d: out Array1OfPnt2d) is static;
+    	---Purpose: returns the 2d points of the multipoint <MPointIndex>
+    	--          when only 2d points exist.
+
+    Value(me;  MPointIndex: Integer; 
+          tabPt: out Array1OfPnt; tabPt2d: out Array1OfPnt2d from TColgp) is static;
+    	---Purpose: returns the 3d and 2d points of the multipoint 
+    	--          <MPointIndex>.
+
+    Tangency(me;  MPointIndex: Integer; tabV: out Array1OfVec from TColgp)
+    returns Boolean is static;
+    	---Purpose: returns the 3d points of the multipoint <MPointIndex>
+    	--          when only 3d points exist.
+
+    Tangency(me;  MPointIndex: Integer; 
+          tabV2d: out Array1OfVec2d)
+    returns Boolean is static;
+    	---Purpose: returns the 2d tangency points of the multipoint 
+    	--          <MPointIndex> only when 2d points exist.
+
+    Tangency(me;  MPointIndex: Integer; 
+             tabV: out Array1OfVec from TColgp; tabV2d: out Array1OfVec2d from TColgp)
+    returns Boolean is static;
+    	---Purpose: returns the 3d and 2d points of the multipoint 
+    	--          <MPointIndex>.
+    	--          
+
+    MakeMLBetween(me; Low,High,NbPointsToInsert: Integer from Standard) 
+    	returns MultiLine from ApproxInt is static;
+
+--------------------------------------------------------------------------------
+
+fields
+    PtrOnmySvSurfaces :   Address from Standard;
+    myLine            :   TheLine;
+    indicemin         :   Integer from Standard;
+    indicemax         :   Integer from Standard;
+    nbp3d             :   Integer from Standard;
+    nbp2d             :   Integer from Standard;
+    p2donfirst        :   Boolean from Standard;
+    
+    
+    --- The Points of the line <TheLine> are transformed 
+    --  as follow :
+    --  Modified_X  = Xo  + Ax  * TheLine.Point().X() 
+    --  Modified_Y  = Yo  + Ay  * TheLine.Point().Y()
+    --  Modified_Z  = Zo  + Az  * TheLine.Point().Z()
+    --  Modified_U1 = U1o + A1u * TheLine.Point().u1()
+    --  Modified_V1 = V1o + A1v * TheLine.Point().v1()
+    --  Modified_U2 = U2o + A2u * TheLine.Point().u2()
+    --  Modified_V2 = V2o + A2v * TheLine.Point().v2()
+    
+    Xo,Ax,Yo,Ay,Zo,Az :   Real from Standard;
+    U1o,A1u,V1o,A1v   :   Real from Standard;
+    U2o,A2u,V2o,A2v   :   Real from Standard;
+    
+end MultiLine;
+
+

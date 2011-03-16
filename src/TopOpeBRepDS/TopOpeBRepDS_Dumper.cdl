@@ -1,0 +1,130 @@
+-- File:	TopOpeBRepDS_Dumper.cdl
+-- Created:	Thu Aug  4 19:26:53 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1994
+
+class Dumper from TopOpeBRepDS 
+
+uses
+
+    OStream from Standard,
+    Curve from Geom,
+    BSplineCurve from Geom,
+    Pnt from gp,
+    Curve from Geom2d,
+    BSplineCurve from Geom2d,
+    Pnt2d from gp,
+    AsciiString from TCollection,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    Shape from TopoDS,
+    Kind from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    ListOfShape from TopTools,
+    ShapeEnum from TopAbs
+    
+is
+
+    Create(HDS:HDataStructure)returns Dumper;
+    PrintType(myclass;C:Curve from Geom;S:in out OStream) 
+    	---C++: return &
+        returns OStream; 
+    PrintType(myclass;C:Curve from Geom2d;S:in out OStream) 
+    	---C++: return &
+        returns OStream; 
+    Print(myclass;P:Pnt from gp;S:in out OStream) 
+	    ---C++: return &
+            returns OStream; 
+    Print(myclass;P:Pnt2d from gp;S:in out OStream) 
+ 	   ---C++: return &
+           returns OStream; 
+    Print(myclass;C:BSplineCurve from Geom; 
+                  S:in out OStream;c:Boolean = Standard_True) 
+	---C++: return &
+        returns OStream; 
+    Print(myclass;C:BSplineCurve from Geom2d;
+    	    	  S:in out OStream;c:Boolean = Standard_True) 
+    	---C++: return &
+        returns OStream; 
+    Print(myclass;C:Curve from Geom;
+    	    	  S:in out OStream;c:Boolean = Standard_True) 
+    	---C++: return &
+        returns OStream; 
+    Print(myclass;C:Curve from Geom2d;
+    	    	  S:in out OStream;c:Boolean = Standard_True) 
+    	---C++: return &
+        returns OStream; 
+
+    ---  
+    --- Dump methods of HDataStructure
+    ---  
+
+    Dump(me;OS:in out OStream;fk:Boolean = Standard_False;
+	    	     	      ct:Boolean = Standard_True)
+    ---C++: return &
+    returns OStream; 
+
+    DumpGeometry(me;OS:in out OStream;fk:Boolean = Standard_False;
+			     	      ct:Boolean = Standard_True)
+    ---C++: return &
+    returns OStream; 
+    
+    DumpGeometry(me;K:Kind;OS:in out OStream;fk:Boolean = Standard_False;
+				    	     ct:Boolean = Standard_True)
+    ---C++: return &
+    returns OStream; 
+    
+    DumpGeometry(me;K:Kind;I:Integer;OS:in out OStream;fk:Boolean = Standard_False;
+						       ct:Boolean = Standard_True)
+    ---C++: return &
+    returns OStream; 
+
+    DumpTopology(me;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpTopology(me;K:Kind;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpTopology(me;T:ShapeEnum;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpTopology(me;K:Kind;I:Integer;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpTopology(me;T:ShapeEnum;I:Integer;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpSectionEdge(me;K:Kind;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpSectionEdge(me;K:Kind;I:Integer;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+
+    SDumpRefOri(me;K:Kind;I:Integer)returns AsciiString;
+    SDumpRefOri(me;S:Shape)returns AsciiString;
+    DumpRefOri(me;K:Kind;I:Integer;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+    DumpRefOri(me;S:Shape from TopoDS;OS:in out OStream) 
+    ---C++: return &
+    returns OStream; 
+
+    DumpLOI(me;L:ListOfInterference;O:in out OStream;s:AsciiString) 
+    ---C++: return &
+    returns OStream; 
+    DumpI(me;I:Interference;O:in out OStream;s1,s2:AsciiString) 
+    ---C++: return &
+    returns OStream; 
+
+    SPrintShape(me;I:Integer) returns AsciiString;
+    SPrintShape(me;S:Shape) returns AsciiString;
+    SPrintShapeRefOri(me;S:Shape;B:AsciiString  = "") returns AsciiString;
+    SPrintShapeRefOri(me;L:ListOfShape;B:AsciiString = "") returns AsciiString;
+
+fields
+    
+    myHDS:HDataStructure;
+    
+end Dumper from TopOpeBRepDS;

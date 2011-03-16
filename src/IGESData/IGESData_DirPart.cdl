@@ -1,0 +1,42 @@
+-- File:	DirPart.cdl
+-- Created:	Mon Apr  6 14:27:54 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class DirPart  from IGESData  inherits Storable    -- for Array
+
+    ---Purpose : litteral/numeric description of an entity's directory section,
+    --           taken from file
+
+uses Integer, Character, IGESType
+
+is
+
+    Create returns DirPart;
+    ---Purpose : creates an empty DirPart, ready to be filled by Init
+
+    Init (me : in out;
+      i1,i2,i3,i4,i5,i6,i7,i8,i9,i19,i11,i12,i13,i14,i15,i16,i17 : Integer;
+      res1,res2,label,subscript : CString)  is static;
+    ---Purpose : fills DirPart with consistant data read from file
+
+    Values (me;
+      i1,i2,i3,i4,i5,i6,i7,i8,i9,i19,i11,i12,i13,i14,i15,i16,i17 : out Integer;
+      res1,res2,label,subscript : CString)  is static;
+    ---Purpose : returns values recorded in DirPart
+    --           (content of cstrings are modified)
+
+    Type (me) returns IGESType  is static;
+    ---Purpose : returns "type" and "form" info, used to recognize the entity
+
+fields
+
+    thevals : Integer[17];
+    theres1 : Character[10];
+    theres2 : Character[10];
+    thelabl : Character[10];
+    thesubs : Character[10];
+
+end DirPart;

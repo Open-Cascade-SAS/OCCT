@@ -1,0 +1,10 @@
+--
+-- File:	PS.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:25:43 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %PS_EDL) then
+  @set %PS_EDL = "";
+@endif;

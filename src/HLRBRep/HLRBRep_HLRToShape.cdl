@@ -1,0 +1,168 @@
+-- File:	HLRBRep_HLRToShape.cdl
+-- Created:	Mon Oct 11 16:45:31 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class HLRToShape from HLRBRep
+    	---Purpose: A framework for filtering the computation
+    	-- results of an HLRBRep_Algo algorithm by extraction.
+    	-- From the results calculated by the algorithm on
+    	-- a shape, a filter returns the type of edge you
+    	-- want to identify. You can choose any of the following types of output:
+    	-- -   visible sharp edges
+    	-- -   hidden sharp edges
+    	-- -   visible smooth edges
+    	-- -   hidden smooth edges
+    	-- -   visible sewn edges
+    	-- -   hidden sewn edges
+    	-- -   visible outline edges
+    	-- -   hidden outline edges.
+    	-- -   visible isoparameters and
+    	-- -   hidden isoparameters.
+    	-- Sharp edges present a C0 continuity (non G1).
+    	-- Smooth edges present a G1 continuity (non G2).
+    	-- Sewn edges present a C2 continuity.
+    	-- The result is composed of 2D edges in the
+    	-- projection plane of the view which the
+    	-- algorithm has worked with. These 2D edges
+    	-- are not included in the data structure of the visualized shape.
+    	-- In order to obtain a complete image, you must
+    	-- combine the shapes given by each of the chosen filters.
+    	-- The construction of the shape does not call a
+    	-- new computation of the algorithm, but only
+    	-- reads its internal results.
+        -- The methods of this shape are almost identic to those of the HLRBrep_PolyHLRToShape class.
+uses
+    Boolean  from Standard,
+    Integer  from Standard,
+    Real     from Standard,
+    Shape    from TopoDS,
+    Edge     from TopoDS,
+    Curve    from HLRBRep,
+    Algo     from HLRBRep,
+    Data     from HLRBRep,
+    EdgeData from HLRBRep
+
+is
+    Create(A : Algo from HLRBRep)
+    returns HLRToShape from HLRBRep;
+    	---Purpose: Constructs a framework for filtering the
+    	--- results of the HLRBRep_Algo algorithm, A.
+    	-- Use the extraction filters to obtain the results you want for A.
+    VCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    VCompound(me : in out;
+              S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    Rg1LineVCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    Rg1LineVCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    RgNLineVCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    RgNLineVCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    OutLineVCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    OutLineVCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    IsoLineVCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    IsoLineVCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    HCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    HCompound(me : in out;
+              S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    Rg1LineHCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    Rg1LineHCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    RgNLineHCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    RgNLineHCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    OutLineHCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    OutLineHCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
+    IsoLineHCompound(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+    
+    IsoLineHCompound(me : in out;
+                     S  : Shape from TopoDS) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+    
+    InternalCompound(me : in out; typ     : Integer from Standard;
+                                  visible : Boolean from Standard;
+                                  S       : Shape   from TopoDS)
+    returns Shape from TopoDS
+    is static private;
+    
+    DrawFace(me; visible :     Boolean from Standard;
+                 typ     :     Integer from Standard;
+                 iface   :     Integer from Standard;
+                 DS      : out Data    from HLRBRep;
+                 Result  : out Shape   from TopoDS;
+                 added   : out Boolean from Standard)
+    is static private;
+    
+    DrawEdge(me; visible :     Boolean  from Standard;
+                 inFace  :     Boolean  from Standard;
+                 typ     :     Integer  from Standard;
+                 ed      : out EdgeData from HLRBRep;
+                 Result  : out Shape    from TopoDS;
+                 added   : out Boolean  from Standard)
+    is static private;
+    
+fields
+    myAlgo : Algo from HLRBRep;
+
+end HLRToShape;

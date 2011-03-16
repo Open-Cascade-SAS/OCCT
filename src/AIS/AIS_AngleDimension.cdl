@@ -1,0 +1,280 @@
+-- File:	AIS_AngleDimension.cdl
+-- Created:	Tue Dec  3 17:37:06 1996
+-- Author:	Arnaud BOUZY/Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class AngleDimension from AIS inherits Relation from AIS
+
+      
+	 ---Purpose: A framework to define display of angles.
+    	 -- These displays are particularly useful in viewing draft prisms.
+    	 -- The angle displayed may define an intersection
+    	 -- can be between two edges or two faces of a shape
+    	 -- or a plane. The display consists of arrows and text.
+
+uses Shape                 from TopoDS,
+     Presentation          from Prs3d,
+     PresentationManager3d from PrsMgr,
+     Selection             from SelectMgr,
+     Pnt                   from gp,
+     Dir                   from gp,
+     Circ                  from gp,
+     Line                  from Geom,
+     Ax1                   from gp,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager2d from PrsMgr,
+     GraphicObject         from Graphic2d,
+     Plane                 from Geom,
+     Surface               from Geom,
+     ExtendedString        from TCollection,
+     ArrowSide             from DsgPrs,
+     KindOfDimension       from AIS,   
+     Edge                  from TopoDS,    
+     Face                  from TopoDS	  
+is
+
+    Create (aFirstEdge       : Edge           from TopoDS;
+    	    aSecondEdge      : Edge           from TopoDS;
+	    aPlane           : Plane          from Geom;
+	    aVal             : Real           from Standard;
+	    aText            : ExtendedString from TCollection)    
+	 ---Purpose:  Constructs the angle display object defined by the
+    	 -- shapes aFShape, aSShape, the plane aPlane, the
+    	 -- value aVal and the text aText.
+    	 -- aFShape and aSShape are edges.
+    returns mutable AngleDimension from AIS;
+    
+ 
+    Create (aFirstEdge       : Edge           from TopoDS;
+    	    aSecondEdge      : Edge           from TopoDS;
+	    aPlane           : Plane          from Geom;
+	    aVal             : Real           from Standard;
+	    aText            : ExtendedString from TCollection;    
+	    aPosition        : Pnt            from gp;
+	    aSymbolPrs       : ArrowSide      from DsgPrs;    
+    	    anArrowSize      : Real           from Standard = 0.0)
+	 ---Purpose: Constructs the angle display object defined by the
+    	 -- shapes aFShape, aSShape, the plane aPlane, the
+    	 -- value aVal, the text aText, the point aPosition, the
+    	 -- type of arrow aSymbolPrs, and the arrow length anArrowSize.
+    	 -- aFShape and aSShape are edges.
+    returns mutable AngleDimension from AIS;
+
+    Create (aCone       : Face           from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)    
+	 ---Purpose:  Angle of cone  
+    returns mutable AngleDimension from AIS;
+    
+   
+    Create (aCone            : Face           from TopoDS;
+	    aVal             : Real           from Standard;
+	    aText            : ExtendedString from TCollection;
+            aPosition        : Pnt            from gp;
+	    aSymbolPrs       : ArrowSide      from DsgPrs;    
+    	    anArrowSize      : Real           from Standard = 0.01 )    
+	 ---Purpose:  Angle of cone  
+    returns mutable AngleDimension from AIS;
+ --===================================================================       
+    
+    Create (aFirstFace  : Face           from TopoDS;
+    	    aSecondFace : Face           from TopoDS;
+	    anAxis      : Ax1            from gp;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)    
+	  ---Purpose:  TwoPlanarFaceAngle dimension
+    returns mutable AngleDimension from AIS;
+
+    Create (aFirstFace  : Face           from TopoDS;
+    	    aSecondFace : Face           from TopoDS;
+	    anAxis      : Ax1            from gp;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection;	    
+	    aPosition   : Pnt            from gp;
+	    aSymbolPrs  : ArrowSide      from DsgPrs;    
+    	    anArrowSize : Real           from Standard = 0.0)
+	  ---Purpose: TwoPlanarFacesAngle dimension  with   position
+	  --           and text Face  can be Plane or Extrusion of line
+	  --           or Offset of  those
+    returns mutable AngleDimension from AIS;
+
+
+    Create (aFFace      : Face           from TopoDS;
+    	    aSFace      : Face           from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)    
+	  ---Purpose:  Angle dimension between two curvilinear faces
+	  --           Warning:
+	  --           Requaired 0 <= aVal < PI,
+	  --                     aVal must be defined exactly.
+    returns mutable AngleDimension from AIS;
+
+    Create (aFFace      : Face           from TopoDS;
+    	    aSFace      : Face           from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection;	    
+	    aPosition   : Pnt            from gp;
+	    aSymbolPrs  : ArrowSide      from DsgPrs;    
+    	    anArrowSize : Real           from Standard = 0.001)
+	 ---Purpose:  Angle dimension between two curvilinear faces
+	 --           with position and text. Face can be Cone, Cylinder
+	 --           Offset of Cone, Offset of Cylinder 
+    returns mutable AngleDimension from AIS;
+
+
+    Axis (me) 
+	 ---Purpose:
+	 -- Returns the axis set by the SetAxis method, which
+	 -- serves to locate the angle between two faces.
+	 ---C++: return const &
+	 ---C++: inline 
+    returns Ax1 from gp 
+    is static;
+
+    SetAxis(me: mutable;anAxis : Ax1 from gp)
+	 ---C++: inline
+	 ---Purpose:
+	 -- Sets the axis, anAxis, which serves to locate the
+	 -- angle between two faces.
+    is static;
+
+    SetConeFace( me: mutable; aConeFace : Face from TopoDS )
+    is  static;
+
+    SetFirstShape( me: mutable; aFShape : Shape from TopoDS )
+    is redefined static;
+
+    SetSecondShape( me: mutable; aSShape : Shape from TopoDS )
+    is redefined static;
+
+
+    KindOfDimension(me) 
+	 ---Purpose: Returns PLANEANGLE as the kind of dimension.
+	 ---C++: inline
+    returns KindOfDimension from AIS 
+    is redefined;
+
+    IsMovable(me) returns Boolean from Standard 
+	 ---C++: inline    
+	 ---Purpose: Returns true if the angle dimension is movable.
+        
+    is redefined;
+    
+  -- Methods from PresentableObject
+
+    Compute(me            : mutable;
+            aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+	 ---Purpose: Computes the presentation according to a point of view
+	 --          given by <aProjector>. 
+	 --          This method should be used when the associated degenerated Presentations 
+	 --          have been transformed by <aTrsf> which is not a Pure
+	 --          Translation. The HLR Prs can't be deducted automatically
+	 --          WARNING :<aTrsf> must be applied
+	 --           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+
+    
+--
+--     Computation private methods
+--
+
+    ComputeConeAngle(me: mutable; 
+                        aPresentation : mutable Presentation from Prs3d)
+    is private;
+
+    ComputeTwoFacesAngle(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoPlanarFacesAngle(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoCurvilinearFacesAngle(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d)
+    is private;
+    
+    ComputeTwoEdgesAngle(me: mutable;
+    	    	    	  aPresentation : mutable Presentation from Prs3d)
+    is private;
+    ComputeTwoEdgesNullAngle(me: mutable;
+    	    	    	    aPresentation : mutable Presentation from Prs3d;  
+			    l1    : Line from Geom;
+			    l2    : Line from Geom;
+			    ptat11 : Pnt from gp;
+			    ptat12 : Pnt from gp;
+                            ptat21 : Pnt from gp;
+			    ptat22 : Pnt from gp;
+ 			    isInf1 : Boolean from Standard;
+ 			    isInf2 : Boolean from Standard )			    
+    is private;
+    
+    ComputeTwoEdgesNotNullAngle(me: mutable;
+    	    	    	    aPresentation : mutable Presentation from Prs3d;  
+			    l1    : Line from Geom;
+			    l2    : Line from Geom;
+			    ptat11 : Pnt from gp;
+			    ptat12 : Pnt from gp;
+                            ptat21 : Pnt from gp;
+			    ptat22 : Pnt from gp;
+ 			    isInf1 : Boolean from Standard;
+ 			    isInf2 : Boolean from Standard )			    
+    is private;
+
+    Compute3DSelection(me         : mutable;
+    	    	       aSelection : mutable Selection from SelectMgr)
+    is private;
+    
+    Compute2DSelection(me         : mutable;
+    	    	       aSelection : mutable Selection from SelectMgr)
+    is private;
+    ComputeNull2DSelection(me         : mutable;
+    	    	           aSelection : mutable Selection from SelectMgr; 
+    	    	    	   distFS     : Real from Standard)
+    is private;
+
+    ComputeConeAngleSelection(me         : mutable;
+    	    	    	      aSelection : mutable Selection from SelectMgr)
+    is private;    
+
+fields
+
+    myNbShape  : Integer from Standard;
+    myCenter   : Pnt     from gp;
+    myFAttach  : Pnt     from gp;
+    mySAttach  : Pnt     from gp;
+    myFDir     : Dir     from gp;
+    mySDir     : Dir     from gp;
+    myAxis     : Ax1     from gp;
+    myCone     : Face    from TopoDS;
+   
+end AngleDimension;

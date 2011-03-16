@@ -1,0 +1,45 @@
+-- File:	IGESSelect_DispPerDrawing.cdl
+-- Created:	Tue May 31 17:40:19 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class DispPerDrawing  from IGESSelect  inherits Dispatch
+
+    ---Purpose : This type of dispatch defines sets of entities attached to
+    --           distinct drawings. This information is taken from attached
+    --           views which appear in the Directory Part. Also Drawing Frames
+    --           are considered when Drawings are part of input list.
+    --           
+    --           Remaining data concern entities not attached to a drawing.
+
+uses AsciiString from TCollection, EntityIterator, Graph, SubPartsIterator,
+     ViewSorter
+
+is
+
+    Create returns mutable DispPerDrawing;
+    ---Purpose : Creates a DispPerDrawing
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File per Drawing"
+
+    	    -- --    Evaluation    -- --
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator);
+    ---Purpose : Computes the list of produced Packets. Packets are computed
+    --           by a ViewSorter (SortDrawings with also frames).
+
+    CanHaveRemainder (me) returns Boolean  is redefined;
+    ---Purpose : Returns True, because of entities attached to no view.
+
+    Remainder (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns Remainder which is a set of Entities.
+    --           It is supposed to be called once Packets has been called.
+
+fields
+
+    thesorter : ViewSorter;
+
+end DispPerDrawing;

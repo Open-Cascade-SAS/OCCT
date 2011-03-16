@@ -1,0 +1,50 @@
+// File:	MeshAlgo_PntComparator.gxx
+// Created:	Fri Jun 18 17:04:44 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+//=======================================================================
+//function : MeshAlgo_PntComparator
+//purpose  : 
+//=======================================================================
+
+MeshAlgo_PntComparator::MeshAlgo_PntComparator(const Direction& theDir,
+					       const Standard_Real theTol)
+     : DirectionOfSort(theDir), Tolerance(theTol)
+{}
+
+//=======================================================================
+//function : IsLower
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_PntComparator::IsLower(const Point& Left,
+						 const Point& Right) const
+{
+  return (Left.Coord()*DirectionOfSort) <
+         (Right.Coord()*DirectionOfSort);
+}
+
+//=======================================================================
+//function : IsGreater
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_PntComparator::IsGreater(const Point& Left,
+						   const Point& Right) const
+{
+  return (Left.Coord()*DirectionOfSort) >
+         (Right.Coord()*DirectionOfSort);
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_PntComparator::IsEqual(const Point& Left,
+						 const Point& Right) const
+{
+  return Left.IsEqual(Right);
+}
+

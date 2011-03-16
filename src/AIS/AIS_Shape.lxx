@@ -1,0 +1,18 @@
+// File:	AIS_Shape.lxx
+// Created:	Wed Jan  8 10:17:34 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+
+inline void AIS_Shape::Set(const TopoDS_Shape& ashap)
+{
+  myshape = ashap;
+  myCompBB = Standard_True;
+}
+
+inline const TopoDS_Shape& 
+AIS_Shape::Shape() const 
+{
+  return myshape;
+}
+

@@ -1,0 +1,124 @@
+-- File     : MeshVS_NodalColorPrsBuilder.cdl
+-- Created  : 12 November 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class NodalColorPrsBuilder from MeshVS inherits PrsBuilder from MeshVS
+
+	---Purpose: This class provides methods to create presentation of nodes with assigned color.
+	-- There are two ways of presentation building 
+	-- 1. Without using texture.
+	-- In this case colors of nodes are specified with DataMapOfIntegerColor and presentation 
+	-- is built with gradient fill between these nodes (default behaviour)
+	-- 2. Using texture.
+	-- In this case presentation is built with spectrum filling between nodes. For example, if 
+	-- one node has blue color and second one has violet color, parameters of this class may be 
+	-- set to fill presentation between nodes with solar spectrum.
+	-- Methods:
+	-- UseTexture - activates/deactivates this way
+	-- SetColorMap - sets colors used for generation of texture
+	-- SetColorindices - specifies correspondence between node IDs and indices of colors from color map
+
+uses
+  Presentation from Prs3d,
+
+  Boolean                 from Standard,
+  Integer                 from Standard,
+
+  DisplayModeFlags        from MeshVS,
+  Mesh                    from MeshVS,
+  MeshPtr                 from MeshVS,
+  DataSource              from MeshVS,
+  DataMapOfIntegerColor   from MeshVS,
+  BuilderPriority         from MeshVS,
+  SequenceOfColor         from Aspect,
+  Color                   from Quantity,
+  DataMapOfIntegerReal    from TColStd,
+  Texture2D               from Graphic3d,
+  PackedMapOfInteger      from TColStd
+  
+is
+
+  Create  ( Parent   : Mesh from MeshVS;
+            Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_NodalColorDataPrs;
+            DS       : DataSource from MeshVS = 0;
+            Id       : Integer = -1;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_NodalColor )
+     returns mutable NodalColorPrsBuilder from MeshVS;
+
+  Build   ( me; Prs      : Presentation from Prs3d;
+            IDs          : PackedMapOfInteger;
+            IDsToExclude : in out PackedMapOfInteger;
+            IsElement    : Boolean;
+            DisplayMode  : Integer ) is virtual;
+	---Purpose: Builds presentation of nodes with assigned color.
+
+
+  GetColors ( me ) returns DataMapOfIntegerColor from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of colors assigned to nodes.
+
+  SetColors ( me : mutable;
+              Map : DataMapOfIntegerColor from MeshVS );
+	---Purpose: Sets map of colors assigned to nodes.
+
+  HasColors ( me )     returns Boolean;
+	---Purpose: Returns true, if map isn't empty
+
+  GetColor  ( me; ID        : Integer;
+              theColor      : out Color from Quantity )   returns Boolean;
+	---Purpose: Returns color assigned to single node
+
+  SetColor  ( me : mutable;
+              ID            : Integer;
+              theColor      : Color from Quantity );
+	---Purpose: Sets color assigned to single node
+	
+  UseTexture ( me : mutable; theToUse : Boolean );
+	---Purpose: Specify whether texture must be used to build presentation
+	
+  IsUseTexture( me ) returns Boolean;
+	---Purpose: Verify whether texture is used to build presentation  
+
+  SetColorMap ( me : mutable; theColors : SequenceOfColor from Aspect );
+	---Purpose: Set colors to be used for texrture presentation 
+	--- theColors - colors for valid coordinates (laying in range [0, 1])
+	
+  GetColorMap ( me ) returns SequenceOfColor from Aspect;
+	---C++: return const &
+	---Purpose: Return colors used for texrture presentation
+
+  SetInvalidColor ( me : mutable; theInvalidColor : Color from Quantity );
+	---Purpose: Set color representing invalid texture coordinate
+	---        (laying outside range [0, 1])
+	
+  GetInvalidColor ( me ) returns Color from Quantity;
+	---Purpose: Return color representing invalid texture coordinate 
+	---        (laying outside range [0, 1])
+
+  SetTextureCoords ( me : mutable; theMap : DataMapOfIntegerReal from TColStd );
+	---Purpose: Specify correspondence between node IDs and texture coordinates (range [0, 1])
+	
+  GetTextureCoords ( me ) returns DataMapOfIntegerReal from TColStd;
+	---C++: return const &
+	---Purpose: Get correspondence between node IDs and texture coordinates (range [0, 1])
+	
+  SetTextureCoord ( me : mutable; theID : Integer; theCoord : Real );
+	---Purpose: Specify correspondence between node ID and texture coordinate (range [0, 1])
+	
+  GetTextureCoord ( me : mutable; theID : Integer) returns Real;
+	---Purpose: Return correspondence between node IDs and texture coordinate (range [0, 1])
+	
+  CreateTexture ( me ) returns Texture2D from Graphic3d
+	---Purpose: Create texture in accordance with myTextureColorMap
+  is static private;
+	
+
+fields
+  myNodeColorMap    : DataMapOfIntegerColor from MeshVS;
+  myUseTexture      : Boolean from Standard;
+  myTextureColorMap : SequenceOfColor from Aspect;
+  myTextureCoords   : DataMapOfIntegerReal from TColStd;
+  myInvalidColor    : Color from Quantity;
+
+end NodalColorPrsBuilder;

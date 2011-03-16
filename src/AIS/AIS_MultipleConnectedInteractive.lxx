@@ -1,0 +1,13 @@
+// File:	AIS_MultipleConnectedInteractive.lxx
+// Created:	Wed Apr 23 14:34:14 1997
+// Author:	Guest Design
+//		<g_design>
+//=======================================================================
+//function : ConnectedTo
+//purpose  : 
+//=======================================================================
+
+inline const AIS_SequenceOfInteractive& AIS_MultipleConnectedInteractive::ConnectedTo() const 
+{
+  return myReferences;
+}

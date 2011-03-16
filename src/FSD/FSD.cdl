@@ -1,0 +1,22 @@
+-- File:	FSD.cdl
+-- Created:	Fri Nov 29 13:02:36 1996
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+package FSD
+uses Storage,
+     TColStd,
+     TCollection,
+     OSD
+is
+
+    class File;
+    class BinaryFile;
+    class CmpFile;
+    
+    imported FStream;
+    imported BStream;
+    imported FileHeader;
+    
+end;

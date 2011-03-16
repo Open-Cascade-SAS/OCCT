@@ -1,0 +1,44 @@
+-- File:	ExternalSources.cdl
+-- Created:	Wed Sep 23 11:10:40 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class ExternalSources  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class gives entities which are Source of entities of
+    	--           a sub-part, but are not contained by this sub-part
+
+uses Transient, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph) returns ExternalSources;
+    ---Purpose : creates empty ExternalSources, ready to work
+
+    GetFromEntity (me : in out; ent : any Transient);
+    ---Purpose : adds an entity and its shared ones to the list
+
+    GetFromIter (me : in out; iter : EntityIterator);
+    ---Purpose : adds a list of entities (as an iterator) with shared ones
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value give External Source entities
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : Evaluates external sources of a set of entities
+
+    IsEmpty(me : in out) returns Boolean;
+    ---Purpose : Returns True if no External Source are found
+    --           It means that we have a "root" set
+    --           (performs an Evaluation as necessary)
+
+fields
+
+    thegraph : Graph;
+
+end ExternalSources;

@@ -1,0 +1,284 @@
+-- File:	BRepBuilderAPI_MakeEdge2d.cdl
+-- Created:	Tue Jul  6 18:57:30 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class MakeEdge2d from BRepBuilderAPI  inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Provides methods to build edges.
+	--          
+	--          The   methods have  the  following   syntax, where
+	--          TheCurve is one of Lin2d, Circ2d, ...
+	--          
+	--          Create(C : TheCurve)
+	--            
+	--            Makes an edge on  the whole curve.  Add vertices
+	--            on finite curves.
+	--            
+	--          Create(C : TheCurve; p1,p2 : Real)
+	--          
+	--            Make an edge  on the curve between parameters p1
+	--            and p2. if p2 < p1 the edge will be REVERSED. If
+	--            p1  or p2 is infinite the  curve will be open in
+	--            that  direction. Vertices are created for finite
+	--            values of p1 and p2.
+	--            
+	--          Create(C : TheCurve; P1, P2 : Pnt2d from gp)
+	--          
+	--            Make an edge on the curve  between the points P1
+	--            and P2. The  points are projected on   the curve
+	--            and the   previous method is  used. An  error is
+	--            raised if the points are not on the curve.
+	--            
+	--          Create(C : TheCurve; V1, V2 : Vertex from TopoDS)
+	--          
+	--            Make an edge  on the curve  between the vertices
+	--            V1 and V2. Same as the  previous but no vertices
+	--            are created. If a vertex is  Null the curve will
+	--            be open in this direction.
+
+uses
+    EdgeError  from BRepBuilderAPI,
+    Edge       from TopoDS,
+    Vertex     from TopoDS,
+    Pnt2d      from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Hypr2d     from gp,
+    Parab2d    from gp,
+    Curve      from Geom2d,
+    MakeEdge2d from BRepLib
+    
+raises
+    NotDone from StdFail
+    
+is
+
+    ----------------------------------------
+    -- Points
+    ----------------------------------------
+
+    Create(V1, V2 : Vertex from TopoDS)                    
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(P1, P2 : Pnt2d from gp)                           
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+
+    ----------------------------------------
+    -- Lin
+    ----------------------------------------
+	
+    Create(L : Lin2d from gp)                                
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Lin2d from gp; p1,p2 : Real)                  
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Lin2d from gp; P1,P2 : Pnt2d from gp)           
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Lin2d from gp; V1, V2 : Vertex from TopoDS)   
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    ----------------------------------------
+    -- Circ
+    ----------------------------------------
+	
+    Create(L : Circ2d from gp)                               
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Circ2d from gp; p1,p2 : Real)                 
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Circ2d from gp; P1,P2 : Pnt2d from gp)          
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Circ2d from gp; V1, V2 : Vertex from TopoDS)  
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+	
+    ----------------------------------------
+    -- Elips
+    ----------------------------------------
+
+    Create(L : Elips2d from gp)                               
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Elips2d from gp; p1,p2 : Real)                 
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Elips2d from gp; P1,P2 : Pnt2d from gp)          
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Elips2d from gp; V1, V2 : Vertex from TopoDS)  
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    ----------------------------------------
+    -- Hypr
+    ----------------------------------------
+
+    Create(L : Hypr2d from gp)                               
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Hypr2d from gp; p1,p2 : Real)                 
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Hypr2d from gp; P1,P2 : Pnt2d from gp)          
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Hypr2d from gp; V1, V2 : Vertex from TopoDS)  
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    ----------------------------------------
+    -- Parab
+    ----------------------------------------
+
+    Create(L : Parab2d from gp)                               
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Parab2d from gp; p1,p2 : Real)                 
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Parab2d from gp; P1,P2 : Pnt2d from gp)          
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Parab2d from gp; V1, V2 : Vertex from TopoDS)  
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    ----------------------------------------
+    -- Curve
+    ----------------------------------------
+
+    Create(L : Curve from Geom2d)                               
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Curve from Geom2d; p1,p2 : Real)                 
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Curve from Geom2d; 
+    P1,P2 : Pnt2d from gp)                        
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Curve from Geom2d; 
+    V1, V2 : Vertex from TopoDS)
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Curve from Geom2d; 
+    P1,P2 : Pnt2d from gp; p1,p2 : Real)                        
+	---Level: Public
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    Create(L : Curve from Geom2d; 
+    V1, V2 : Vertex from TopoDS;
+    p1, p2 :Real) 
+	---Level: Public                                            
+    returns MakeEdge2d from BRepBuilderAPI;
+
+    ----------------------------------------
+    --  Auxiliary methods
+    ----------------------------------------
+
+    Init(me : in out; C      : Curve from Geom2d)
+	---Level: Public
+    is static;
+    
+    Init(me : in out; C      : Curve from Geom2d;
+		      p1, p2 : Real)
+	---Level: Public
+    is static;		      
+	
+    Init(me : in out; C      : Curve from Geom2d;
+    	    	      P1, P2 : Pnt2d from gp)
+	---Level: Public
+    is static;		      
+	
+    Init(me : in out; C      : Curve  from Geom2d;
+    	              V1, V2 : Vertex from TopoDS)
+	---Level: Public
+    is static;
+	
+    Init(me : in out; C      : Curve from Geom2d;
+    	    	      P1, P2 : Pnt2d from gp;
+		      p1, p2 : Real)
+	---Level: Public
+    is static;		      
+	
+    Init(me : in out; C      : Curve  from Geom2d;
+    	              V1, V2 : Vertex from TopoDS;
+		      p1, p2 : Real)
+	---Level: Public
+    is static;
+	
+
+    ----------------------------------------
+    --  Results
+    ----------------------------------------
+
+    IsDone(me) returns Boolean
+	---Level: Public
+    is redefined;
+
+    Error(me)
+	 returns EdgeError from BRepBuilderAPI
+	---Purpose: Returns the error description when NotDone.
+	---Level: Public	
+    is static;
+
+    Edge(me) returns Edge from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Edge() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    Vertex1(me) returns Vertex from TopoDS
+	---Purpose: Returns the first vertex of the edge. May be Null.
+	--          
+	---C++: return const &
+	---Level: Public
+    is static;
+    
+    Vertex2(me) returns Vertex from TopoDS
+	---Purpose: Returns the second vertex of the edge. May be Null.
+	--          
+	---C++: return const &
+	---Level: Public
+    is static;
+     
+fields
+
+    myMakeEdge2d : MakeEdge2d from BRepLib;
+
+end MakeEdge2d;

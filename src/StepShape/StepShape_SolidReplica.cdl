@@ -1,0 +1,41 @@
+-- File:        SolidReplica.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SolidReplica from StepShape 
+
+inherits SolidModel from StepShape 
+
+uses
+
+	CartesianTransformationOperator3d from StepGeom,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable SolidReplica;
+	---Purpose: Returns a SolidReplica
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aParentSolid : mutable SolidModel from StepShape;
+	      aTransformation : mutable CartesianTransformationOperator3d from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetParentSolid(me : mutable; aParentSolid : mutable SolidModel);
+	ParentSolid (me) returns mutable SolidModel;
+	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator3d);
+	Transformation (me) returns mutable CartesianTransformationOperator3d;
+
+fields
+
+	parentSolid : SolidModel from StepShape;
+	transformation : CartesianTransformationOperator3d from StepGeom;
+
+end SolidReplica;

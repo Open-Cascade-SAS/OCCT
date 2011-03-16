@@ -1,0 +1,49 @@
+-- File:	PDocStd_XLink.cdl
+--      	--------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep 17 1997	Creation
+
+
+class XLink from PDocStd inherits Attribute from PDF
+
+	---Purpose: This attribute define a persistant external link.
+
+uses
+
+    HAsciiString from PCollection
+
+-- raises
+
+is
+
+    Create
+    returns XLink from PDocStd;
+    ---Purpose: Returns an empty persistent external reference.
+
+
+    DocumentEntry(me : mutable; aDocEntry : HAsciiString from PCollection);
+    ---Purpose: Sets the field <myDocEntry> with <aDocEntry>.
+    
+    DocumentEntry(me)
+    returns HAsciiString from PCollection;
+    ---Purpose: Returns the contents of the field <myDocEntry>.
+
+    LabelEntry(me : mutable; aLabEntry : HAsciiString from PCollection);
+    ---Purpose: Sets the field <myLabEntry> with <aLabEntry>.
+
+    LabelEntry(me)
+    returns HAsciiString from PCollection;
+    ---Purpose: Returns the contents of the field <myLabEntry>.
+
+
+fields
+
+    myDocEntry       : HAsciiString from PCollection;
+    myLabEntry       : HAsciiString from PCollection;
+
+end XLink from PDocStd;

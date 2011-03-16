@@ -1,0 +1,33 @@
+-- File:	ShapeUpgrade_SplitSurfaceAngle.cdl
+-- Created:	Thu May  6 10:45:05 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SplitSurfaceAngle from ShapeUpgrade inherits SplitSurface from ShapeUpgrade
+
+	---Purpose: Splits a surfaces of revolution, cylindrical, toroidal, 
+    	--          conical, spherical so that each resulting segment covers 
+	--          not more than defined number of degrees. 
+
+is
+
+    Create (MaxAngle: Real)  returns mutable SplitSurfaceAngle from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    SetMaxAngle (me: mutable; MaxAngle: Real);
+    	---Purpose: Set maximal angle 
+    
+    MaxAngle (me) returns Real;
+    	---Purpose: Returns maximal angle 
+    
+    Compute(me: mutable; Segment: Boolean) is redefined;
+    	---Purpose: Performs splitting of the supporting surface(s).
+	---         First defines splitting values, then calls inherited method.
+
+fields
+
+    myMaxAngle: Real;
+
+end SplitSurfaceAngle;

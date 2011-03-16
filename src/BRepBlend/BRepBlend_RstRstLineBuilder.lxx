@@ -1,0 +1,81 @@
+// File:	BRepBlend_RstRstLineBuilder.lxx
+// Created:	Fri Jan 24 10:47:10 1997
+// Author:	Laurent BOURESCHE
+//		<lbo@pomalox.paris1.matra-dtv.fr>
+
+#include <StdFail_NotDone.hxx>
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
+{
+  return done;
+}
+
+//=======================================================================
+//function : Line
+//purpose  : 
+//=======================================================================
+
+inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return line;
+}
+
+
+//=======================================================================
+//function : Decroch1Start
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
+{
+  if (decrochdeb == Blend_DecrochRst1 
+      || decrochdeb == Blend_DecrochBoth)  return Standard_True;
+
+  return Standard_False; 
+}
+
+
+//=======================================================================
+//function : Decroch1End
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
+{
+  if (decrochfin == Blend_DecrochRst1 
+      || decrochfin == Blend_DecrochBoth)  return Standard_True;
+
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Decroch2Start
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
+{
+  if (decrochdeb == Blend_DecrochRst2 
+      || decrochdeb == Blend_DecrochBoth)  return Standard_True;
+
+  return Standard_False; 
+}
+
+
+//=======================================================================
+//function : Decroch2End
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2End() const
+{
+  if (decrochfin == Blend_DecrochRst2 
+      || decrochfin == Blend_DecrochBoth)  return Standard_True;
+
+  return Standard_False;
+}

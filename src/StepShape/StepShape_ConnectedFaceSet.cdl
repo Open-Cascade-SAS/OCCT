@@ -1,0 +1,44 @@
+-- File:        ConnectedFaceSet.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConnectedFaceSet from StepShape 
+
+inherits TopologicalRepresentationItem from StepShape 
+
+uses
+
+	HArray1OfFace from StepShape, 
+	Face from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ConnectedFaceSet;
+	---Purpose: Returns a ConnectedFaceSet
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCfsFaces : mutable HArray1OfFace from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCfsFaces(me : mutable; aCfsFaces : mutable HArray1OfFace)
+    	is virtual;
+	CfsFaces (me) returns mutable HArray1OfFace
+    	is virtual;
+	CfsFacesValue (me; num : Integer) returns mutable Face
+    	is virtual;
+	NbCfsFaces (me) returns Integer
+    	is virtual;
+
+fields
+
+	cfsFaces : HArray1OfFace from StepShape;
+
+end ConnectedFaceSet;

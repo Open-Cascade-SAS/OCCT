@@ -1,0 +1,12 @@
+Contap_Point::Contap_Point ():
+       onarc(Standard_False),isvtx(Standard_False),ismult(Standard_False),
+       myInternal(Standard_False)
+{}
+
+Contap_Point::Contap_Point (const gp_Pnt& Pt,
+			    const Standard_Real U,
+			    const Standard_Real V):
+       pt(Pt),uparam(U),vparam(V),onarc(Standard_False),isvtx(Standard_False),
+       ismult(Standard_False),myInternal(Standard_False)
+{}
+

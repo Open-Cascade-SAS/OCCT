@@ -1,0 +1,49 @@
+// File:	Geom2dAdaptor_Curve.lxx
+// Created:	Fri Jun  4 11:03:44 1993
+// Author:	Bruno DUMORTIER
+//		<dub@topsn3>
+
+
+#include <gp_Pnt2d.hxx>
+#include <Geom2d_Curve.hxx>
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Geom2dAdaptor_Curve::FirstParameter() const
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Geom2dAdaptor_Curve::LastParameter() const
+{
+  return myLast;
+}
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom2d_Curve)& Geom2dAdaptor_Curve::Curve() const 
+{ 
+  return myCurve;
+}
+
+//=======================================================================
+//function : GetType
+//purpose  : 
+//=======================================================================
+
+inline GeomAbs_CurveType Geom2dAdaptor_Curve::GetType() const
+{
+  return myTypeCurve;
+}
+

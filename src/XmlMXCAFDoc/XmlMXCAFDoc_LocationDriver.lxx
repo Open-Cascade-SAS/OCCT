@@ -1,0 +1,16 @@
+// File:	XmlMXCAFDoc_LocationDriver.lxx
+// Created:	Thu Feb  10 14:31:30 2011
+// Author:	Oleg AGASHIN
+//		<oan@opencascade.com>
+
+//=======================================================================
+//function : SetSharedLocations
+//purpose  : 
+//=======================================================================
+inline void XmlMXCAFDoc_LocationDriver::SetSharedLocations(const TopTools_LocationSetPtr& theLocations)
+{ 
+  if( myLocations != theLocations )
+  {
+    myLocations = theLocations;
+  }
+}

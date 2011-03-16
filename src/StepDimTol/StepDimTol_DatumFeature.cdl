@@ -1,0 +1,21 @@
+-- File:	StepDimTol_DatumFeature.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class DatumFeature from StepDimTol
+inherits ShapeAspect from StepRepr
+
+    ---Purpose: Representation of STEP entity DatumFeature
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData
+
+is
+    Create returns DatumFeature from StepDimTol;
+	---Purpose: Empty constructor
+
+end DatumFeature;

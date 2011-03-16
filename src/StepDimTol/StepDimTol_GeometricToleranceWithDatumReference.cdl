@@ -1,0 +1,37 @@
+-- File:	StepDimTol_GeometricToleranceWithDatumReference.cdl
+-- Created:	Wed Jun  4 13:34:35 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class GeometricToleranceWithDatumReference from StepDimTol
+inherits GeometricTolerance from StepDimTol
+
+    ---Purpose: Representation of STEP entity GeometricToleranceWithDatumReference
+
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr,
+    HArray1OfDatumReference from StepDimTol
+
+is
+    Create returns GeometricToleranceWithDatumReference from StepDimTol;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aGeometricTolerance_Name: HAsciiString from TCollection;
+                       aGeometricTolerance_Description: HAsciiString from TCollection;
+                       aGeometricTolerance_Magnitude: MeasureWithUnit from StepBasic;
+                       aGeometricTolerance_TolerancedShapeAspect: ShapeAspect from StepRepr;
+                       aDatumSystem: HArray1OfDatumReference from StepDimTol);
+	---Purpose: Initialize all fields (own and inherited)
+
+    DatumSystem (me) returns HArray1OfDatumReference from StepDimTol;
+	---Purpose: Returns field DatumSystem
+    SetDatumSystem (me: mutable; DatumSystem: HArray1OfDatumReference from StepDimTol);
+	---Purpose: Set field DatumSystem
+
+fields
+    theDatumSystem: HArray1OfDatumReference from StepDimTol;
+
+end GeometricToleranceWithDatumReference;

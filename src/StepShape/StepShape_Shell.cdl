@@ -1,0 +1,36 @@
+-- File:        Shell.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class Shell from StepShape inherits SelectType from StepData
+
+	-- <Shell> is an EXPRESS Select Type construct translation.
+	-- it gathers : OpenShell, ClosedShell
+
+uses
+
+	OpenShell,
+	ClosedShell
+is
+
+	Create returns Shell;
+	---Purpose : Returns a Shell SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a Shell Kind Entity that is :
+	--        1 -> OpenShell
+	--        2 -> ClosedShell
+	--        0 else
+
+	OpenShell (me) returns any OpenShell;
+	---Purpose : returns Value as a OpenShell (Null if another type)
+
+	ClosedShell (me) returns any ClosedShell;
+	---Purpose : returns Value as a ClosedShell (Null if another type)
+
+
+end Shell;
+

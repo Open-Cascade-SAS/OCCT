@@ -1,0 +1,31 @@
+-- File:	IntImp_CurveTool.cdl
+-- Created:	Tue Jan 26 11:34:54 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class CurveTool from IntImp (Curve as any)
+
+	---Purpose: Template class for the methods on a curve.
+	--          It is possible to implement this class with
+	--          an instantiation of the CurveTool from Adaptor3d.
+
+uses Pnt from gp,
+     Vec from gp
+
+
+is
+
+    FirstParameter(myclass;C : Curve ) returns Real;
+    
+    LastParameter(myclass;C : Curve ) returns Real;
+
+    Resolution(myclass; C : Curve; Tol3d: Real from Standard)
+    
+        ---Purpose :  Returns the parametric  resolution corresponding
+        --         to the space resolution Tol3d.
+
+    	returns Real from Standard;
+
+end CurveTool;

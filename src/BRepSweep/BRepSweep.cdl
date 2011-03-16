@@ -1,0 +1,72 @@
+-- File:	BRepSweep.cdl
+-- Created:	Tue Jan 12 15:19:24 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+package BRepSweep
+
+    ---Purpose: This package implements the package Sweep for the BRep
+    --          structure.
+
+uses
+
+    Standard,
+    Quantity,
+    TCollection, 
+    TColStd,
+    gp, 
+    Geom,
+    TopAbs, 
+    TopLoc, 
+    TopTools, 
+    TopoDS, 
+    TopExp, 
+    BRep,
+    Sweep
+
+is
+
+    class Builder;
+	---Purpose: Implements the Builder required for Sweep.
+
+    class Tool;
+	---Purpose: Provides an indexation of the subShapes of a Shape
+	--          from TopoDS.
+	
+    class Iterator;
+	---Purpose: Iterator on the subShapes of a shape.
+	
+
+    deferred class NumLinearRegularSweep
+    	instantiates LinearRegularSweep from Sweep(
+    	Shape              from TopoDS,     -- Resulting topological objects.
+    	Shape              from TopoDS,     -- Generating Shape.
+    	NumShape           from Sweep,      -- Directing Wire.
+    	Builder            from BRepSweep,
+    	Tool               from BRepSweep,  -- GenTool
+	NumShapeTool       from Sweep,      -- DirTool
+    	Iterator           from BRepSweep,  -- Resulting objects Iterator
+    	Iterator           from BRepSweep,  -- GenIterator
+	NumShapeIterator   from Sweep);     -- DirSubEdgeIterator
+
+    deferred class Trsf;
+    --- This class is inherited  from LinearRegularSweep to  implement
+    --  the simple swept primitives built moving a Shape with a Trsf.
+
+    class Translation;
+    --- This class is inherited from Trsf to implement the translation
+    --  sweep.
+
+    class Rotation;
+    --- This class is  inherited  from Trsf to implement  the rotation
+    --  sweep.
+
+    class Prism;
+    --- This class provides simple methods to build prism.
+
+    class Revol;
+    --- This class provides simple methods to build Revol.
+
+end BRepSweep;

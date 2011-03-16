@@ -1,0 +1,58 @@
+-- File:	Vrml_DirectionalLight.cdl
+-- Created:	Wed Feb 12 11:06:15 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DirectionalLight from Vrml 
+
+	---Purpose:defines a directional  light node of VRML specifying
+	--         properties of lights. 
+    	--  This  node  defines  a  directional  light  source  that  illuminates   
+    	--  along  rays  parallel  to  a  given  3-dimentional  vector
+    	--  Color is  written  as  an  RGB  triple.
+    	--  Light intensity must be in the range 0.0 to 1.0, inclusive.  
+
+uses
+ 
+    Color   from Quantity, 
+    Vec     from gp
+is
+                                                    --  defaults  :
+    Create returns DirectionalLight from Vrml; 
+    	    	    	    	    	    	    --  myOnOff(Standard_TRUE)
+ 						    --  myIntensity(1)
+						    --  myColor(1 1 1)
+						    --  myDirection(0 0 -1)
+ 
+ 
+    Create  (  aOnOff     :   Boolean from  Standard; 
+    	       aIntensity :   Real    from  Standard; 
+    	       aColor     :   Color   from  Quantity; 
+    	       aDirection :   Vec     from  gp ) 
+    	returns DirectionalLight from Vrml; 
+     
+    SetOnOff ( me : in out;  aOnOff : Boolean from  Standard );
+    OnOff ( me )  returns Boolean  from  Standard;
+
+    SetIntensity ( me : in out;  aIntensity : Real from  Standard );
+    Intensity ( me )  returns Real  from  Standard;
+
+    SetColor ( me : in out;  aColor :  Color   from  Quantity );
+    Color ( me )  returns  Color   from  Quantity;
+
+    SetDirection ( me : in out;  aDirection : Vec  from  gp );
+    Direction ( me )  returns Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myOnOff     :   Boolean from  Standard; -- Whether light is on
+    myIntensity :   Real    from  Standard; -- Source intensity (0 to 1)
+    myColor     :   Color   from  Quantity; -- RGB source color
+    myDirection :   Vec     from  gp;       -- Illumination direction vector
+
+end DirectionalLight;

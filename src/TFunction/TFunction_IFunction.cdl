@@ -1,0 +1,138 @@
+-- File:	TFunction_IFunction.cdl
+-- Created:	Mon Jan 21 16:23:29 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class IFunction from TFunction
+
+    ---Purpose: Interface class for usage of Function Mechanism
+
+uses
+
+    Label           from TDF,
+    GUID            from Standard,
+    ExecutionStatus from TFunction,
+    Driver          from TFunction,
+    GraphNode       from TFunction,
+    Logbook         from TFunction,
+    LabelList       from TDF,
+    DoubleMapOfIntegerLabel from TFunction
+
+is
+
+    ---Category: Static methods
+    --           ==============
+
+    NewFunction (myclass;
+    	    	 L : Label from TDF;
+    	    	 ID : GUID from Standard)
+    ---Purpose: Sets a new function attached to a label <L> with <ID>.
+    --          It creates a new TFunction_Function attribute initialized by the <ID>,
+    --          a new TFunction_GraphNode with an empty list of dependencies and
+    --          the status equal to TFunction_ES_WrongDefinition.
+    --          It registers the function in the scope of functions for this document.
+    returns Boolean from Standard;
+
+    DeleteFunction (myclass;
+    	    	    L : Label from TDF)
+    ---Purpose: Deletes a function attached to a label <L>.
+    --          It deletes a TFunction_Function attribute and a TFunction_GraphNode.
+    --          It deletes the functions from the scope of function of this document.
+    returns Boolean from Standard;
+    
+    UpdateDependencies (myclass;
+    	    	    	Access : Label from TDF)
+    ---Purpose: Updates dependencies for all functions of the scope.
+    --          It returns false in case of an error.
+    returns Boolean from Standard;
+
+    
+    ---Category: Instant methods
+    --           ===============
+
+    Create
+    ---Purpose: An empty constructor.
+    returns IFunction from TFunction;
+
+    Create (L : Label from TDF)
+    ---Purpose: A constructor.
+    --          Initializes the interface by the label of function.
+    returns IFunction from TFunction;
+
+    Init (me : in out;
+    	  L : Label from TDF);
+    ---Purpose: Initializes the interface by the label of function.
+    
+    Label (me)
+    ---C++: return const &
+    ---Purpose: Returns a label of the function.
+    returns Label from TDF;
+
+    UpdateDependencies (me)
+    ---Purpose: Updates the dependencies of this function only.
+    returns Boolean from Standard;
+
+
+    ---Category: Driver methods
+    --           ==============
+
+    Arguments (me; args : out LabelList from TDF);
+    ---Purpose: The method fills-in the list by labels, 
+    --          where the arguments of the function are located.
+ 
+    Results (me; res : out LabelList from TDF);
+    ---Purpose: The method fills-in the list by labels,
+    --          where the results of the function are located.
+    
+
+    ---Category: Graph node methods
+    --           ==================
+
+    GetPrevious (me; prev : out LabelList from TDF);
+    ---Purpose: Returns a list of previous functions.
+
+    GetNext (me; prev : out LabelList from TDF);
+    ---Purpose: Returns a list of next functions.
+
+    GetStatus (me)
+    ---Purpose: Returns the execution status of the function.
+    returns ExecutionStatus from TFunction;
+
+    SetStatus (me; status : ExecutionStatus from TFunction);
+    ---Purpose: Defines an execution status for a function.
+
+
+    ---Category: Scope methods
+    --           =============
+
+    GetAllFunctions (me)
+    ---Purpose: Returns the scope of all functions.
+    ---C++: return const &
+    returns DoubleMapOfIntegerLabel from TFunction;
+
+    GetLogbook (me)
+    ---Purpose: Returns the Logbook - keeper of modifications.
+    ---C++: return &
+    returns Logbook from TFunction;
+
+
+
+    ---Categery: Internal methods (direct access)
+    --           ================================
+
+    GetDriver (me; thread : Integer from Standard = 0)
+    ---Purpose: Returns a driver of the function.
+    returns Driver from TFunction;
+
+    GetGraphNode (me)
+    ---Purpose: Returns a graph node of the function.
+    returns GraphNode from TFunction;
+
+
+fields
+
+    myLabel : Label from TDF;
+    
+    
+end IFunction;

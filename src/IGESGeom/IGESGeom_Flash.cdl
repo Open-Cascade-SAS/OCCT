@@ -1,0 +1,96 @@
+--
+-- File      :  Flash.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Flash from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESFlash, Type <125> Form <0 - 4>
+        --          in package IGESGeom
+        --          A flash entity is a point in the ZT=0 plane that locates
+        --          a particular closed area. That closed area can be defined
+        --          in one of two ways. First, it can be an arbitrary closed
+        --          area defined by any entity capable of defining a closed
+        --          area. The points of this entity must all lie in the ZT=0
+        --          plane. Second, it can be a member of a predefined set of
+        --          flash shapes.
+
+uses
+
+        Pnt         from gp,
+        Pnt2d       from gp,
+        XY          from gp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable Flash;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aPoint     : XY;
+              aDim       : Real;
+              anotherDim : Real;
+              aRotation  : Real;
+              aReference : IGESEntity);
+        ---Purpose : This method is used to set the fields of the class Flash
+        --       - aPoint     : Reference of flash
+        --       - aDim       : First flash sizing parameter
+        --       - anotherDim : Second flash sizing parameter
+        --       - aRotation  : Rotation of flash about reference point
+        --                      in radians
+        --       - aReference : Pointer to the referenced entity or Null
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Nature of the Flash :
+	--           0 Unspecified, then given by Reference, 1->4 various
+	--           Specialisations (Circle,Rectangle, etc...) )
+	--           Error if not in range [0-4]
+
+
+        ReferencePoint (me) returns Pnt2d;
+        ---Purpose : returns the referenced point, Z = 0 always
+
+        TransformedReferencePoint (me) returns Pnt;
+        ---Purpose : returns the referenced point after applying Transf. Matrix
+
+        Dimension1 (me) returns Real;
+        ---Purpose : returns first flash sizing parameter
+
+        Dimension2 (me) returns Real;
+        ---Purpose : returns second flash sizing parameter
+
+        Rotation (me) returns Real;
+        ---Purpose : returns the angle in radians of the rotation of flash about the
+        -- reference point
+
+        ReferenceEntity (me) returns IGESEntity;
+        ---Purpose : returns the referenced entity or Null handle.
+
+        HasReferenceEntity (me) returns Boolean;
+        ---Purpose : returns True if referenced entity is present.
+
+fields
+
+--
+-- Class    : IGESGeom_Flash
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Flash.
+--
+-- Reminder : A Flash instance is defined by :
+--            A reference position, sizing and orientation parameters
+--            and an optional referenced entity
+
+        thePoint     : XY;
+        theDim1      : Real;
+        theDim2      : Real;
+        theRotation  : Real;
+        theReference : IGESEntity;
+
+end Flash;

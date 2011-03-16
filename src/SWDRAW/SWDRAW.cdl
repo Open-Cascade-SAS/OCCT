@@ -1,0 +1,64 @@
+-- File:	SWDRAW.cdl
+-- Created:	Wed May  6 13:34:18 1998
+-- Author:	Christian CAILLET
+--		<cky@paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package SWDRAW
+
+    ---Purpose: Provides DRAW interface to the functionalities of Shape Healing
+    --          toolkit (SHAPEWORKS Delivery Unit).
+    --          
+    --          Classes prefixed with Shape* corresponds to the packages of
+    --          Shape Healing.
+
+uses  TCollection, TColStd, TopoDS, TopTools, Draw, ShapeProcessAPI
+
+is
+
+    class ShapeTool;
+    	---Purpose: Contains commands to activate Topology/Geometry not
+    	--          Shape Healing
+
+    class ShapeAnalysis;
+    	---Purpose: Contains commands to activate package ShapeAnalysis
+
+    class ShapeBuild;
+    	---Purpose: Contains commands to activate package ShapeBuild
+
+    class ShapeConstruct;
+    	---Purpose: Contains commands to activate package ShapeConstruct
+
+    class ShapeCustom;
+    	---Purpose: Contains commands to activate package ShapeCustom
+
+    class ShapeExtend;
+    	---Purpose: Contains commands to activate package ShapeExtend
+
+    class ShapeFix;
+    	---Purpose: Contains commands to activate package ShapeFix
+
+    class ShapeUpgrade;
+    	---Purpose: Contains commands to activate package ShapeUpgrade
+
+    class ShapeProcess;
+    	---Purpose: Contains commands to activate package ShapeProcess
+    
+    class ShapeProcessAPI;
+    	---Purpose: Contains commands to activate package ShapeProcessAPI
+	
+    class ToVRML;
+    	---Purpose: A utility which writes a Shape to VRML format
+    	---Remark : It can be placed elsewhere, while it depends on
+    	--          only BRepMesh i.e. TOPOLOGY
+
+    Init (theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in SWDRAW
+
+    GroupName returns CString is private;
+    	---Purpose: Returns the name of the DRAW group accumulating the
+    	--          commands from the classes prefixed with Shape*.
+	--          Returns "Shape Healing".
+	
+end SWDRAW;

@@ -1,0 +1,110 @@
+// File:	GraphDS_Edge.gxx
+// Created:	Tue Mar 16 15:37:56 1993
+// Author:	Denis PASCAL
+//		<dp@bravox>
+
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//=======================================================================
+//function : GraphDS_Edge
+//purpose  : 
+//=======================================================================
+
+GraphDS_Edge::GraphDS_Edge
+  (const Handle(GraphDS_Vertex)& source, 
+   const Handle(GraphDS_Vertex)& destination, 
+   const GraphDS_Attribute& value) : myAttribute (value)
+{
+  mySource      = source;
+  myDestination = destination;
+}
+
+
+//=======================================================================
+//function : GetAttribute
+//purpose  : 
+//=======================================================================
+
+const GraphDS_Attribute& GraphDS_Edge::GetAttribute () const 
+{
+  return myAttribute;
+}
+
+
+//=======================================================================
+//function : SetAttribute
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Edge::SetAttribute (const GraphDS_Attribute& Value) 
+{
+  myAttribute = Value;
+}
+
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Edge::Contains (const Handle(GraphDS_Vertex)& V) const 
+{
+  return (mySource == V || myDestination == V);
+}
+
+//=======================================================================
+//function : Source
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Vertex)& GraphDS_Edge::Source () const 
+{
+  return mySource;
+}
+
+
+//=======================================================================
+//function : Destination
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Vertex)& GraphDS_Edge::Destination () const 
+{
+  return myDestination;
+}
+
+
+//=======================================================================
+//function : Reverse
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Edge::Reverse () 
+{
+  Handle (GraphDS_Vertex) temp = myDestination;
+  myDestination = mySource;
+  mySource = temp;
+}
+
+
+//=======================================================================
+//function : IsLoop
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Edge::IsLoop () const 
+{
+  return (myDestination == mySource);
+}
+
+
+
+
+
+
+
+
+
+

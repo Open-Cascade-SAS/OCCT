@@ -1,0 +1,31 @@
+-- File:        TextStyleForDefinedFont.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TextStyleForDefinedFont from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	Colour from StepVisual
+is
+
+	Create returns mutable TextStyleForDefinedFont;
+	---Purpose: Returns a TextStyleForDefinedFont
+
+	Init (me : mutable;
+	      aTextColour : mutable Colour from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetTextColour(me : mutable; aTextColour : mutable Colour);
+	TextColour (me) returns mutable Colour;
+
+fields
+
+	textColour : Colour from StepVisual;
+
+end TextStyleForDefinedFont;

@@ -1,0 +1,215 @@
+-- File:	Lin2dTanObl.cdl
+-- Created:	Tue Oct 20 16:24:34 1992
+-- Author:	Remi GILET
+--		<reg@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Lin2dTanObl from Geom2dGcc
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d line tangent to a curve QualifiedCurv and 
+	--          doing an angle Angle with a line TheLin.
+	--          The angle must be in Radian.
+    	-- Describes functions for building a 2D line making a given
+    	-- angle with a line and tangential to a curve.
+    	-- A Lin2dTanObl object provides a framework for:
+    	-- -   defining the construction of 2D line(s),
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result(s).
+        
+-- inherits Entity from Standard
+
+uses Lin2d            from gp,
+     Pnt2d            from gp,
+     Array1OfInteger  from TColStd,
+     Array1OfReal     from TColStd,
+     Array1OfPnt2d    from TColgp,
+     Array1OfLin2d    from TColgp,
+     QualifiedCurve   from Geom2dGcc,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt,
+     Curve            from Geom2dAdaptor,
+     MyL2dTanObl      from Geom2dGcc
+
+raises BadQualifier from GccEnt,
+       NotDone      from StdFail,
+       IsParallel   from GccIter,
+       OutOfRange   from Standard
+
+is
+
+-- Modified by Sergey KHROMOV - Wed Oct 16 11:40:57 2002  Begin 
+
+    --  Add constructor without initial parameter Param1 which 
+    --  calculate all solutions.
+
+Create (Qualified1 : QualifiedCurve    from Geom2dGcc   ;
+    	TheLin     : Lin2d             from gp          ;
+    	TolAng     : Real              from Standard    ;
+        Angle      : Real              from Standard    )
+returns Lin2dTanObl from Geom2dGcc
+raises BadQualifier from GccEnt;
+	---Purpose: This class implements the algorithm used to 
+	--          create 2d line tangent to a curve and doing an 
+	--          angle Angle with the line TheLin.
+	--          Angle must be in Radian.
+	--          Tolang is the angular tolerance.
+
+-- Modified by Sergey KHROMOV - Thu Oct 17 10:34:00 2002  End 
+
+Create (Qualified1 : QualifiedCurve    from Geom2dGcc   ;
+    	TheLin     : Lin2d             from gp          ;
+    	TolAng     : Real              from Standard    ;
+    	Param1     : Real              from Standard    ;
+        Angle      : Real              from Standard    )
+returns Lin2dTanObl from Geom2dGcc
+raises BadQualifier from GccEnt;
+	---Purpose: This class implements the algorithm used to 
+	--          create 2d line tangent to a curve and doing an 
+	--          angle Angle with the line TheLin.
+	--          Angle must be in Radian.
+	--          Param2 is the initial guess on the curve QualifiedCurv.
+	--          Tolang is the angular tolerance.
+    	-- Warning
+    	-- An iterative algorithm is used if Qualified1 is more
+    	-- complex than a line or a circle. In such cases, the
+    	-- algorithm constructs only one solution.
+    	-- Exceptions
+    	-- GccEnt_BadQualifier if a qualifier is inconsistent with
+    	-- the argument it qualifies (for example, enclosed for a circle).
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the construction algorithm does not fail
+    	-- (even if it finds no solution).
+    	-- Note: IsDone protects against a failure arising from a
+    	-- more internal intersection algorithm, which has reached its numeric limits.
+        
+NbSolutions(me) returns Integer  from Standard
+raises NotDone from StdFail
+is static;
+    	---Purpose: Returns the number of lines, representing solutions computed by this algorithm.
+    	-- Exceptions
+    	-- StdFail_NotDone if the construction fails.
+
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Lin2d from gp
+raises OutOfRange,NotDone
+is static;
+    	---Purpose: Returns a line, representing the solution of index Index
+    	-- computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    
+    	---Purpose: Returns the qualifier Qualif1 of the tangency argument
+    	-- for the solution of index Index computed by this algorithm.
+    	-- The returned qualifier is:
+    	-- -   that specified at the start of construction when the
+    	--  solutions are defined as enclosing or outside with
+    	--  respect to the argument, or
+    	-- -   that computed during construction (i.e. enclosing or
+    	--   outside) when the solutions are defined as unqualified
+    	--   with respect to the argument, or
+    	-- -   GccEnt_noqualifier if the tangency argument is a point.
+    	--   Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails. 
+
+Tangency1(me                                     ;
+    	  Index         :   Integer from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises OutOfRange,NotDone
+is static;
+    	---Purpose: Returns informations about the tangency point between the 
+    	--          result and the first argument.
+    	--          ParSol is the intrinsic parameter of the point PntSol on 
+    	--          the solution curv.
+    	--          ParArg is the intrinsic parameter of the point PntSol on 
+   	--          the argument curv.
+
+Intersection2 (me                                     ;
+               Index         :   Integer from Standard;
+               ParSol,ParArg : out Real  from Standard;
+               PntSol        : out Pnt2d from gp      )
+raises NotDone from StdFail, IsParallel from GccIter, OutOfRange from Standard
+is static;
+    	---Purpose: Returns the point of intersection PntSol between the
+    	-- solution of index Index and the second argument (the line) of this algorithm.
+    	-- ParSol is the parameter of the point PntSol on the
+    	-- solution. ParArg is the parameter of the point PntSol on the second argument (the line).
+    	-- Exceptions
+    	-- StdFail_NotDone if the construction fails.
+    	-- GccIter_IsParallel if the solution and the second
+    	-- argument (the line) are parallel.
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+
+IsParallel2(me) returns Boolean from Standard
+raises NotDone from StdFail
+is static;
+    	---Purpose: Returns true if the line and the solution are parallel. This
+    	-- is the case when the angle given at the time of
+    	-- construction is equal to 0 or Pi.
+    	-- Exceptions StdFail_NotDone if the construction fails.
+
+-- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  Begin 
+    Add(me:  in  out;  theIndex:  Integer      from  Standard; 
+                       theLin  :  MyL2dTanObl  from  Geom2dGcc; 
+                       theTol  :  Real         from  Standard; 
+    	    	       theC1   :  Curve        from  Geom2dAdaptor) 
+    returns  Boolean  from  Standard 
+    is  private;
+-- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  End
+
+fields
+
+    WellDone : Boolean from Standard;
+    -- True if the algorithm succeeded.
+
+    Paral2 : Boolean from Standard;
+    -- True if the solution is parallel to the second argument (Angle = 0).
+
+    NbrSol   : Integer from Standard;
+    ---Purpose: number of solutions.
+
+    linsol   : Array1OfLin2d from TColgp;
+    ---Purpose : The solution.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the first argument.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the first argument on 
+    -- the solution.
+
+    pntint2sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the second argument on 
+    -- the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the 
+    -- first argument on the solution.
+
+    par2sol   : Array1OfReal from TColStd;
+    -- The parameter of the intersection point between the solution and the 
+    -- second argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the first 
+    -- argument on the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    -- The parameter of the intersection point between the solution and 
+    -- the second argument on the second argument.
+
+end Lin2dTanObl;

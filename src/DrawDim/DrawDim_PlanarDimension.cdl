@@ -1,0 +1,46 @@
+-- File:	DrawDim_PlanarDimension.cdl
+-- Created:	Tue Jan  9 16:44:39 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+deferred class PlanarDimension from DrawDim inherits Dimension from DrawDim
+
+	---Purpose: 
+
+uses Face from TopoDS
+
+is
+
+    SetPlane (me : mutable; plane : Face from TopoDS);
+    
+    GetPlane (me)
+    returns Face from TopoDS;
+
+
+--    Point (myclass; s : Shape from TopoDS; p : in out Pnt from gp)
+
+--    returns Boolean from Standard;    
+
+
+--    Line (myclass; s : Shape from TopoDS; l : in out Lin from gp)
+
+--    returns Boolean from Standard;    
+
+
+--    Circle (myclass; s : Shape from TopoDS; c : in out Circ from gp)
+
+--    returns Boolean from Standard;    
+
+
+--    Ellipse (myclass; s : Shape from TopoDS; c : in out Elips from gp)
+
+--    returns Boolean from Standard;
+
+
+fields
+
+    myPlane : Face from TopoDS  is protected;
+    
+end PlanarDimension;

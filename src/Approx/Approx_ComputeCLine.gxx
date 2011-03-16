@@ -1,0 +1,322 @@
+// File Approx_ComputeCLine.gxx
+
+//  modified by Edward AGAPOV (eap) Tue Apr 2 2002 (occ265)
+//  -- stop cutting an interval to approximate if next decisions
+//  -- get worse on and on
+
+
+
+#include <Approx_ParametrizationType.hxx>
+#include Approx_MyLeastSquare_hxx
+#include <TColStd_Array1OfReal.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <Approx_Status.hxx>
+
+//=======================================================================
+//function : Approx_ComputeCLine
+//purpose  : The MultiLine <Line> will be approximated until tolerances
+//           will be reached.
+//           The approximation will be done from degreemin to degreemax
+//           with a cutting if the corresponding boolean is True.
+//=======================================================================
+
+Approx_ComputeCLine::Approx_ComputeCLine
+                    (const MultiLine& Line,
+		     const Standard_Integer degreemin,
+		     const Standard_Integer degreemax,
+		     const Standard_Real Tolerance3d,
+		     const Standard_Real Tolerance2d,
+		     const Standard_Boolean cutting,
+		     const AppParCurves_Constraint FirstC,
+		     const AppParCurves_Constraint LastC)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d = Tolerance3d;
+  mytol2d = Tolerance2d;
+  mycut = cutting;
+  myfirstC = FirstC;
+  mylastC = LastC;
+  alldone = Standard_False;
+  Perform(Line);
+}
+
+//=======================================================================
+//function : Approx_ComputeCLine
+//purpose  : Initializes the fields of the algorithm.
+//=======================================================================
+
+Approx_ComputeCLine::Approx_ComputeCLine
+                    (const Standard_Integer degreemin,
+		     const Standard_Integer degreemax,
+		     const Standard_Real Tolerance3d,
+		     const Standard_Real Tolerance2d,
+		     const Standard_Boolean cutting,
+		     const AppParCurves_Constraint FirstC,
+		     const AppParCurves_Constraint LastC)
+{
+  alldone = Standard_False;
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d = Tolerance3d;
+  mytol2d = Tolerance2d;
+  mycut = cutting;
+  myfirstC = FirstC;
+  mylastC = LastC;
+}
+
+//=======================================================================
+//function : Perform
+//purpose  : runs the algorithm after having initialized the fields.
+//=======================================================================
+
+void Approx_ComputeCLine::Perform(const MultiLine& Line)
+{
+    
+
+  Standard_Real UFirst, ULast;
+  Standard_Boolean Finish = Standard_False, 
+          begin = Standard_True, Ok = Standard_False;
+  Standard_Real thetol3d, thetol2d;
+  UFirst = LineTool::FirstParameter(Line);
+  ULast  = LineTool::LastParameter(Line);
+  Standard_Real TolU = (ULast-UFirst)*1.e-05;
+  Standard_Real myfirstU = UFirst; 
+  Standard_Real mylastU = ULast;
+
+  if (!mycut) {
+    alldone = Compute(Line, UFirst, ULast, thetol3d, thetol2d);
+    if (!alldone) {
+      tolreached = Standard_False;
+      myfirstparam.Append(UFirst);
+      mylastparam.Append(ULast);
+      myMultiCurves.Append(TheMultiCurve);
+      Tolers3d.Append(currenttol3d);
+      Tolers2d.Append(currenttol2d);
+    }
+  }
+  else {
+
+    // previous decision to be taken if we get worse with next cut (eap)
+    AppParCurves_MultiCurve KeptMultiCurve;
+    Standard_Real KeptUfirst, KeptUlast, KeptT3d, KeptT2d;
+    Standard_Integer NbWorseDecis = 0, NbAllowedBadDecis = 10;
+    
+    KeptT3d = RealLast(); KeptT2d = 0;
+    
+    while (!Finish) {
+      
+      // Gestion du decoupage de la multiline pour approximer:
+      if (!begin) {
+	if (Ok) {
+	  // Calcul de la partie a approximer.
+	  myfirstU = mylastU;
+	  mylastU  = ULast;
+	  if (Abs(ULast-myfirstU) <= RealEpsilon()) {
+	    Finish = Standard_True;
+	    alldone = Standard_True;
+	    return;
+	  }
+	  KeptT3d = RealLast(); KeptT2d = 0; 
+	  NbWorseDecis = 0;
+	}
+	else {
+	  // keep best decison
+	  if ((thetol3d + thetol2d) < (KeptT3d + KeptT2d)) {
+	    KeptMultiCurve = TheMultiCurve;
+	    KeptUfirst     = myfirstU;
+	    KeptUlast      = mylastU;
+	    KeptT3d        = thetol3d;
+	    KeptT2d        = thetol2d;
+	  }
+	  
+	  // cut an interval
+	  mylastU = (myfirstU + mylastU)/2;
+	}
+      }
+
+      if (Abs(myfirstU-mylastU) <= TolU) /*break;*/ // pour ne pas planter
+	NbAllowedBadDecis /= 2;                     // la station.
+      
+      // Calcul des parametres sur ce nouvel intervalle.
+      Ok = Compute(Line, myfirstU, mylastU, thetol3d, thetol2d);
+
+      //cout << myfirstU << " - " << mylastU << "  tol : " << thetol3d << " " << thetol2d << endl;
+
+      // is new decision better?
+      if ( !Ok && (thetol3d + thetol2d) > (KeptT3d + KeptT2d) )
+      {
+	NbWorseDecis++;
+
+	if (NbWorseDecis > NbAllowedBadDecis) {
+	  
+	  Ok = Standard_True; // stop interval cutting, approx the rest part
+	  mylastU = KeptUlast;
+	  
+	  tolreached = Standard_False; // helas
+	  myMultiCurves.Append(KeptMultiCurve);
+	  Tolers3d.Append     (KeptT3d);
+	  Tolers2d.Append     (KeptT2d);
+	  myfirstparam.Append (KeptUfirst);
+	  mylastparam.Append  (KeptUlast);
+	}
+      }
+
+      begin = Standard_False;
+    } // while (!Finish)
+  }
+}
+
+//=======================================================================
+//function : NbMultiCurves
+//purpose  : Returns the number of MultiCurve doing the approximation
+//           of the MultiLine.
+//=======================================================================
+
+Standard_Integer Approx_ComputeCLine::NbMultiCurves()const
+{
+  return myMultiCurves.Length();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : returns the approximation MultiCurve of range <Index>.
+//=======================================================================
+
+AppParCurves_MultiCurve Approx_ComputeCLine::Value(const Standard_Integer Index)
+const
+{
+  return myMultiCurves.Value(Index);
+}
+
+//=======================================================================
+//function : Compute
+//purpose  : is internally used by the algorithms.
+//=======================================================================
+
+Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine& Line,
+					     const Standard_Real Ufirst,
+					     const Standard_Real Ulast,
+					     Standard_Real&   TheTol3d,
+					     Standard_Real&   TheTol2d)
+{
+
+
+  Standard_Integer deg, NbPoints = 24;
+  Standard_Boolean mydone;
+  Standard_Real Fv;
+
+  for (deg = mydegremin; deg <= mydegremax; deg++) {
+
+    AppParCurves_MultiCurve mySCU(deg+1);
+    Approx_MyLeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, 
+			         deg, NbPoints);
+    mydone = LSquare.IsDone();
+    if (mydone) {
+      LSquare.Error(Fv, TheTol3d, TheTol2d);
+      if (TheTol3d <= mytol3d && TheTol2d <= mytol2d) {
+	mySCU = LSquare.Value();
+	// Stockage de la multicurve approximee.
+	tolreached = Standard_True;
+	myMultiCurves.Append(mySCU);
+	myfirstparam.Append(Ufirst);
+	mylastparam.Append(Ulast);
+	Tolers3d.Append(TheTol3d);
+	Tolers2d.Append(TheTol2d);
+ 	return Standard_True;
+      }
+    }
+    if (deg == mydegremax) {
+      TheMultiCurve = LSquare.Value();
+      currenttol3d = TheTol3d;
+      currenttol2d = TheTol2d;
+    }
+    
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Parameters
+//purpose  : returns the first and last parameters of the 
+//           <Index> MultiCurve.
+//=======================================================================
+
+void Approx_ComputeCLine::Parameters(const Standard_Integer Index,
+				     Standard_Real& firstpar,
+				     Standard_Real& lastpar) const
+{
+  firstpar = myfirstparam.Value(Index);
+  lastpar  = mylastparam.Value(Index);
+}
+
+//=======================================================================
+//function : SetDegrees
+//purpose  : changes the degrees of the approximation.
+//=======================================================================
+
+void Approx_ComputeCLine::SetDegrees(const Standard_Integer degreemin,
+				     const Standard_Integer degreemax)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+}
+
+//=======================================================================
+//function : SetTolerances
+//purpose  : Changes the tolerances of the approximation.
+//=======================================================================
+
+void Approx_ComputeCLine::SetTolerances(const Standard_Real Tolerance3d,
+				       const Standard_Real Tolerance2d)
+{
+  mytol3d = Tolerance3d;
+  mytol2d = Tolerance2d;
+}
+
+//=======================================================================
+//function : SetConstraints
+//purpose  : Changes the constraints of the approximation.
+//=======================================================================
+
+void Approx_ComputeCLine::SetConstraints(const AppParCurves_Constraint FirstC,
+				         const AppParCurves_Constraint LastC)
+{
+  myfirstC = FirstC;
+  mylastC  = LastC;
+}
+
+//=======================================================================
+//function : IsAllApproximated
+//purpose  : returns False if at a moment of the approximation,
+//           the status NoApproximation has been sent by the user
+//           when more points were needed.
+//=======================================================================
+
+Standard_Boolean Approx_ComputeCLine::IsAllApproximated()
+const {
+  return alldone;
+}
+
+//=======================================================================
+//function : IsToleranceReached
+//purpose  : returns False if the status NoPointsAdded has been sent.
+//=======================================================================
+
+Standard_Boolean Approx_ComputeCLine::IsToleranceReached()
+const {
+  return tolreached;
+}
+
+//=======================================================================
+//function : Error
+//purpose  : returns the tolerances 2d and 3d of the <Index> MultiCurve.
+//=======================================================================
+
+void Approx_ComputeCLine::Error(const Standard_Integer Index,
+			       Standard_Real& tol3d,
+			       Standard_Real& tol2d) const
+{
+  tol3d = Tolers3d.Value(Index);
+  tol2d = Tolers2d.Value(Index);
+}

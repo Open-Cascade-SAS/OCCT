@@ -1,0 +1,129 @@
+-- File     : MeshVS_PrsBuilder.cdl
+-- Created  : 10 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+
+deferred class PrsBuilder from MeshVS inherits TShared from MMgt
+
+	---Purpose: This class is parent for all builders using in MeshVS_Mesh.
+        -- It provides base fields and methods all buildes need.
+
+uses
+  Integer from Standard,
+  Boolean from Standard,
+
+  Presentation from Prs3d,
+
+  EntityOwner     from SelectBasics,
+  SensitiveEntity from SelectBasics,
+
+  DisplayModeFlags        from MeshVS,
+  Mesh                    from MeshVS,
+  MeshPtr                 from MeshVS,
+  DataSource              from MeshVS,
+  Drawer                  from MeshVS,
+  BuilderPriority         from MeshVS,
+  PresentationManager3d   from PrsMgr,
+  PackedMapOfInteger      from TColStd
+
+is
+
+  Initialize ( Parent   : Mesh from MeshVS;
+               Flags    : DisplayModeFlags from MeshVS;
+               DS       : DataSource from MeshVS;
+               Id       : Integer;
+               Priority : BuilderPriority from MeshVS = MeshVS_BP_Default );
+	---Purpose: Constructor
+        -- Parent is pointer to MeshVS_Mesh object
+        -- Flags is set of display modes corresponding to this builder
+        -- DS is data source object, from which builder will pick geometry and topological information
+        -- Id is numeric identificator of builder. You must set it to positive integer, but if
+        -- you set it to -1, constructor will select the smallest integer, not occupied by other builders
+        -- Priority is numerical priority constant. As priority bigger, as sooner builder starts during
+        -- presentation construction
+
+  Build   ( me; Prs     : Presentation from Prs3d;
+            IDs         : PackedMapOfInteger;
+            IDsToExclude: in out PackedMapOfInteger;
+            IsElement   : Boolean;
+            DisplayMode : Integer    ) is deferred;
+	---Purpose: Builds presentation of certain type of data.
+        -- Prs is presentation object which this method constructs.
+        -- IDs is set of numeric identificators forming object appearance.
+        -- IDsToExclude is set of IDs to exclude from processing. If some entity
+        -- has been excluded, it is not processed by other builders.
+        -- IsElement indicates, IDs is identificators of nodes or elements.
+        -- DisplayMode is numeric constant describing display mode (see MeshVS_DisplayModeFlags.hxx)
+
+  CustomBuild ( me; Prs     : Presentation from Prs3d;
+                IDs         : PackedMapOfInteger;
+                IDsToExclude: in out PackedMapOfInteger;
+                DisplayMode : Integer ) is virtual;
+	---Purpose: This method is called to build presentation of custom elements (they have MeshVS_ET_0D type).
+        -- IDs is set of numeric identificators of elements for custom building.
+        -- IDsToExclude is set of IDs to exclude from processing. If some entity
+        -- has been excluded, it is not processed by other builders.
+        -- DisplayMode is numeric constant describing display mode (see MeshVS_DisplayModeFlags.hxx)
+
+  CustomSensitiveEntity ( me; Owner  : EntityOwner from SelectBasics;
+                          SelectMode : Integer ) returns SensitiveEntity from SelectBasics is virtual;
+	---Purpose: This method is called to build sensitive of custom elements ( they have MeshVS_ET_0D type )
+
+  GetFlags  ( me ) returns Integer;
+	---Purpose: Returns flags, assigned with builder during creation
+
+  TestFlags ( me; DisplayMode : Integer ) returns Boolean is virtual;
+	---Purpose: Test whether display mode has flags assigned with this builder.
+        -- This method has default implementation and can be redefined for advance behavior
+        -- Returns Standard_True only if display mode is appropriate for this builder
+
+  GetId     ( me ) returns Integer;
+	---Purpose: Returns builder ID
+
+  GetPriority ( me ) returns Integer;
+	---Purpose: Returns priority; as priority bigger, as soon builder will be called.
+
+  GetDataSource ( me ) returns DataSource from MeshVS;
+	---Purpose: Returns custom data source or default ( from MeshVS_Mesh ) if custom is NULL
+
+  DataSource    ( me ) returns DataSource from MeshVS is protected;
+	---Purpose: Returns only custom data source
+
+  SetDataSource ( me : mutable; newDS : DataSource from MeshVS );
+	---Purpose: Change custom data source
+
+  GetDrawer ( me ) returns Drawer from MeshVS;
+	---Purpose: Returns custom drawer or default ( from MeshVS_Mesh ) if custom is NULL
+
+  Drawer    ( me ) returns Drawer from MeshVS is protected;
+	---Purpose: Returns only custom drawer
+
+  SetDrawer ( me : mutable; newDr : Drawer from MeshVS );
+	---Purpose: Change custom drawer
+
+  SetExcluding  ( me : mutable; state : Boolean );
+	---Purpose: Set excluding state. If it is Standard_True, the nodes or elements, processed by current builder
+        -- will be noted and next builder won't process its.
+
+  IsExcludingOn ( me ) returns Boolean;
+	---Purpose: Read excluding state
+
+  SetPresentationManager( me : mutable; thePrsMgr : PresentationManager3d from PrsMgr );
+	---Purpose: Set presentation manager for builder
+	
+  GetPresentationManager ( me ) returns PresentationManager3d from PrsMgr;
+	---Purpose: Get presentation manager of builder
+
+fields
+  myIsExcluding      : Boolean;
+  myParentMesh       : MeshPtr from MeshVS is protected;
+  myDataSource       : DataSource from MeshVS;
+  myDrawer           : Drawer from MeshVS;
+  myFlags            : Integer;
+  myId               : Integer;
+  myPriority         : Integer;
+  myPrsMgr           : PresentationManager3d from PrsMgr;
+
+end PrsBuilder;
+

@@ -1,0 +1,40 @@
+-- File:	MDataXtd_AxisRetrievalDriver.cdl
+-- Created:	Thu Aug  7 17:16:50 1997
+-- Author:	VAUTHIER Jean-Claude 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+
+class AxisRetrievalDriver from MDataXtd  inherits ARDriver from MDF
+
+	---Purpose: 
+
+uses RRelocationTable from MDF,
+     Attribute        from PDF,
+     Attribute        from TDF, 
+     MessageDriver    from CDM
+
+is
+
+
+    Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
+    returns mutable AxisRetrievalDriver from MDataXtd;
+    
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Axis from PDataXtd.
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable  from MDF);
+
+end AxisRetrievalDriver;

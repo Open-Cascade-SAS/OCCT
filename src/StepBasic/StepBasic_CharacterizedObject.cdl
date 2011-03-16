@@ -1,0 +1,41 @@
+-- File:	StepBasic_CharacterizedObject.cdl
+-- Created:	Thu May 11 16:38:00 2000 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class CharacterizedObject from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity CharacterizedObject
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns CharacterizedObject from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+fields
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    defDescription: Boolean; -- flag "is Description defined"
+
+end CharacterizedObject;

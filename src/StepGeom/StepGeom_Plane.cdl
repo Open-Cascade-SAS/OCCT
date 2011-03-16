@@ -1,0 +1,21 @@
+-- File:        Plane.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Plane from StepGeom 
+
+inherits ElementarySurface from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Axis2Placement3d from StepGeom
+is
+
+	Create returns mutable Plane;
+	---Purpose: Returns a Plane
+
+
+end Plane;

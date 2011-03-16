@@ -1,0 +1,32 @@
+inline void Prs2d_Angle::CalcTxtPos(const Standard_Boolean theFromAbs) {
+
+  if (!theFromAbs) {
+    
+    gp_Pnt2d P1 = gp_Pnt2d( myCentX + ( myRad ) * Cos(myFAngle),
+                            myCentY + ( myRad ) * Sin(myFAngle) );
+  
+    gp_Pnt2d P2 = gp_Pnt2d( myCentX + ( myRad ) * Cos(mySAngle),
+                            myCentY + ( myRad ) * Sin(mySAngle) );
+  
+
+    gp_Pnt2d theCent(myCentX, myCentY);
+    gp_Vec2d V1( theCent, P1), V2( theCent, P2), VX(1., 0.), theVecI, theVecJ;
+    Standard_Real delta = V1.Angle(V2);
+    gp_Vec2d textV1 = V1.Rotated( delta/2 );
+
+    theVecJ = textV1/myRad;
+    theVecI = textV1.Rotated(-PI/2.)/myRad;
+        
+   
+    gp_Pnt2d pntText = 
+      ((theCent.Translated(textV1)).Translated(theVecI*myTextPosH)).Translated(theVecJ*myTextPosV);
+    
+    Standard_ShortReal txtAngle = 
+    Standard_ShortReal(VX.Angle(theVecI.Rotated(myTextAngle)));
+    
+    myAbsAngle=txtAngle;
+    myAbsX=pntText.X();
+    myAbsY=pntText.Y();
+  }
+  
+}

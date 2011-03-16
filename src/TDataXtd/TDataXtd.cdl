@@ -1,0 +1,137 @@
+-- File:	TDataXtd.cdl
+-- Created:	Thu May 29 14:35:52 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+package TDataXtd 
+
+	---Purpose: This  package  defines  extension of standard attributes for
+	--          modelling  (mainly for work with geometry).  
+	 
+	---  Category: GUID - AttributeID 
+	 
+        --           2a96b602-ec8b-11d0-bee7-080009dc3333	TDataXtd_Constraint  
+        --           2a96b618-ec8b-11d0-bee7-080009dc3333	TDataXtd_Pattern  
+        --           2a96b61b-ec8b-11d0-bee7-080009dc3333	TDataXtd_PatternStd 
+        --           2a96b620-ec8b-11d0-bee7-080009dc3333       TDataXtd_Shape
+        --           2a96b60d-ec8b-11d0-bee7-080009dc3333	TDataXtd_Point	  
+	--           2a96b601-ec8b-11d0-bee7-080009dc3333	TDataXtd_Axis  
+	--           2a96b60c-ec8b-11d0-bee7-080009dc3333	TDataXtd_Plane	  
+        --           2a96b604-ec8b-11d0-bee7-080009dc3333	TDataXtd_Geometry 
+	--	     2a96b60b-ec8b-11d0-bee7-080009dc3333       TDataXtd_Placement
+uses Standard,
+     TCollection,
+     TColStd,
+     gp,
+     BRep,
+     Geom,
+     TopoDS,
+     TDF, 
+     TDataStd,      
+     TNaming
+
+is
+    enumeration ConstraintEnum is 
+        --- Purpose:  The terms of this enumeration define the types
+        -- of  available constraint.
+        -- ==================
+      RADIUS,
+      DIAMETER,
+      MINOR_RADIUS,
+      MAJOR_RADIUS,
+      TANGENT,
+      PARALLEL,
+      PERPENDICULAR,
+      CONCENTRIC,
+      COINCIDENT,
+      DISTANCE, 
+      ANGLE,
+      EQUAL_RADIUS,
+      SYMMETRY,
+      MIDPOINT,      
+      EQUAL_DISTANCE,
+      FIX, 
+      RIGID,
+    
+      -- placement constraints
+      -- =====================
+      FROM,
+      AXIS,
+      MATE,
+      ALIGN_FACES,
+      ALIGN_AXES,
+      AXES_ANGLE,
+      FACES_ANGLE,
+      ROUND,
+      OFFSET           
+    end ConstraintEnum; 
+     
+    enumeration GeometryEnum is
+ 	---Purpose:
+	-- The terms of this enumeration define the types of geometric shapes available.    
+      ANY_GEOM,
+      POINT,
+      LINE,
+      CIRCLE,
+      ELLIPSE,
+      SPLINE,
+      PLANE,
+      CYLINDER
+    end GeometryEnum;
+
+    ---Category: Basic attributes for geometry
+    --           =============================
+
+    class Position;  
+
+    class Constraint;    
+
+    class Placement;
+
+    class Geometry;
+    	
+    class Point;
+    
+    class Axis;
+    
+    class Plane;
+    
+    deferred class Pattern;
+	
+        class PatternStd;
+	        ---Purpose: LinearPattern, CircularPattern, RectangularPattern, 
+	        --          RadialCircularPattern, MirrorPattern
+   
+    class Shape;         
+    
+    ---Purpose: tools
+    --          =====
+
+    class Array1OfTrsf instantiates Array1 from TCollection (Trsf from gp);
+       	
+    class HArray1OfTrsf instantiates HArray1 from TCollection (Trsf         from gp,
+                                                               Array1OfTrsf from TDataXtd);       	 
+							       
+    IDList (anIDList : in out IDList from TDF);
+	---Purpose: Appends to <anIDList> the list of the attributes
+	--          IDs of this package. CAUTION: <anIDList> is NOT
+	--          cleared before use.
+  
+    ---Purpose: Print of TDataExt enumeration
+    --          =============================
+
+    Print (GEO : GeometryEnum from TDataXtd; S : in out OStream) 
+    	---Purpose: Prints the name of the geometry dimension <GEO> as a String on
+    	--          the Stream <S> and returns <S>.
+    	---C++: return &		
+    returns OStream;  
+
+    Print (CTR : ConstraintEnum from TDataXtd; S : in out OStream) 
+    	---Purpose: Prints the name of the constraint <CTR> as a String on
+    	--          the Stream <S> and returns <S>.
+    	---C++: return &		
+    returns OStream; 
+        
+end TDataXtd;

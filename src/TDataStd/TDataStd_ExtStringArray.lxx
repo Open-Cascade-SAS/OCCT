@@ -1,0 +1,43 @@
+// File:	TDataStd_ExtStringArray.lxx
+// Created:	Tue Dec  4 17:05:05 2007
+// Author:	Sergey ZARITCHNY
+//		<sergey.zaritchny@opencascade.com>
+
+#include <TColStd_HArray1OfExtendedString.hxx>
+
+//=======================================================================
+//function : Array
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TColStd_HArray1OfExtendedString) TDataStd_ExtStringArray::Array(void) const
+{
+  return myValue; 
+}
+
+//=======================================================================
+//function : RemoveArray
+//purpose  : 
+//=======================================================================
+inline void TDataStd_ExtStringArray::RemoveArray(void) 
+{
+  myValue.Nullify(); 
+}
+
+
+//=======================================================================
+//function : SetDelta
+//purpose  : 
+//=======================================================================
+inline void TDataStd_ExtStringArray::SetDelta(const Standard_Boolean isDelta) 
+{
+  myIsDelta = isDelta;
+}
+//=======================================================================
+//function : GetDelta
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TDataStd_ExtStringArray::GetDelta(void)  const
+{
+  return myIsDelta;
+}

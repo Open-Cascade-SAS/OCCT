@@ -1,0 +1,336 @@
+-- File:	TDocStd_Document.cdl
+-- Created:	Wed Apr  7 11:01:48 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Document from TDocStd inherits Document from CDM
+	
+    	---Purpose: The contents of a TDocStd_Application, a
+    	-- document is a container for a data framework
+    	-- composed of labels and attributes. As such,
+    	-- TDocStd_Document is the entry point into the data framework.
+    	-- To gain access to the data, you create a document as follows:
+    	-- Handle(TDocStd_Document) MyDF = new TDocStd_Document
+    	-- The document also allows you to manage:
+    	-- -   modifications, providing Undo and Redo functions.
+    	-- -   command transactions.          
+    	--  Warning: The only data saved is the framework (TDF_Data)
+
+	---Purpose: 
+
+uses Data           from TDF,
+     Label          from TDF,
+     LabelMap       from TDF,
+     ExtendedString from TCollection,
+     AsciiString    from TCollection,
+     Context        from TDocStd,
+     Delta          from TDF,
+     DeltaList      from TDF,
+     Transaction    from TDF,
+     CompoundDelta  from TDocStd
+
+is
+   
+    --Destroy (me : mutable);
+    ---Purpose: Will Abort any execution, and commit the Undo transaction
+    -----C++: alias ~
+
+    Get (myclass; L : Label from TDF)
+    	---Purpose: returns the    document which contains <L>.  raises  an
+    	--          exception if the document is not found. 
+    returns Document from TDocStd;
+
+    Create (astorageformat : ExtendedString from TCollection)
+    returns mutable Document from TDocStd;
+    	---Purpose: Constructs a document object defined by the
+    	-- string astorageformat.
+             
+    
+    IsSaved (me)
+    	---Purpose: the document is saved in a file.
+    returns Boolean from Standard;    
+
+    IsChanged (me)
+    returns Boolean from Standard;
+    	---Purpose: returns True if document differs from the state of last saving.
+    	--          this method have to be called only wroking in the transaction mode
+    	---C++: inline
+    
+    SetSaved (me : mutable);
+    	---Purpose: This method have to be called to show document that it has been saved
+    	---C++: inline
+    
+    SetSavedTime (me : mutable; theTime : Integer from Standard);
+    ---Purpose: Say to document what it is not saved.
+    --          Use value, returned earlier by GetSavedTime().
+    ---C++: inline
+    
+    GetSavedTime (me)
+    ---Purpose: Returns value of <mySavedTime> to be used later in SetSavedTime()
+    ---C++: inline
+    returns Integer from Standard;      
+    
+    GetName (me)
+    ---Purpose: raise if <me> is not saved.
+    returns ExtendedString from TCollection;      
+
+    GetPath (me)
+    ---Purpose: returns the OS  path of the  file, in wich one <me> is
+    --          saved. Raise an exception if <me> is not saved.
+    returns ExtendedString from TCollection;   
+
+    ---Category: Data Framework
+    --           ==============
+
+    SetData (me : mutable ; data : Data from TDF);
+
+    GetData (me)
+    returns Data from TDF;
+      
+    Main (me)
+    	---Purpose: Returns the main label in this data framework.
+    	-- By definition, this is the label with the entry 0:1.
+    returns Label from TDF;
+    
+    IsEmpty(me)
+    ---Purpose: Returns True if the main label has no attributes
+    returns Boolean from Standard;
+    
+    ---Category: Durty Flag and Modified labels
+    --           ==============================
+
+    IsValid(me) returns Boolean;
+    	---Purpose:  Returns False if the  document has been modified
+    	-- but not recomputed.
+
+    SetModified (me : mutable; L : Label from TDF);
+    ---Purpose: Notify the label as modified, the Document becomes UnValid.    
+
+    --IsModified (me; L : Label from TDF)
+    --returns Boolean from Standard;
+    ---Purpose: returns True if <L> has been notified as modified.
+    
+    PurgeModified (me : mutable);
+    ---Purpose: Remove all modifications. After this call The document
+    --          becomesagain Valid.
+    
+    GetModified (me)
+    	---Purpose: Returns the labels which have been modified in
+    	-- this document.
+    ---C++: return const&
+    returns LabelMap from TDF;
+        
+    ---Category: COMMAND Transaction and UNDO/REDO
+    --           =================================
+
+    NewCommand (me : mutable);
+    ---Purpose: Launches a new command. This command may be undone.
+
+    HasOpenCommand  (me)
+    ---Purpose: returns True if a Command transaction is open in the curret .
+    returns Boolean from Standard;
+
+    OpenCommand (me : mutable);
+    	---Purpose: Opens a new command transaction in this document.
+    	-- You can use HasOpenCommand to see whether a command is already open.
+    	-- Exceptions
+    	-- Standard_DomainError if a command is already open in this document.
+
+    CommitCommand (me : mutable) returns Boolean;
+    	---Purpose: Commits documents transactions and fills the
+    	-- transaction manager with documents that have
+    	-- been changed during the transaction.
+    	-- If no command transaction is open, nothing is done.
+    	-- Returns True if a new delta has been added to myUndos.
+    
+    AbortCommand (me : mutable);   
+    	---Purpose: Abort the  Command  transaction. Does nothing If there is
+    	--          no Command transaction open.
+
+    GetUndoLimit(me) returns Integer;
+    	---Purpose: The current limit on the number of undos
+    
+    SetUndoLimit(me : mutable; L : Integer);
+    	---Purpose: Set the  limit on  the number of  Undo Delta  stored 0
+    	--          will disable  Undo  on the  document A negative  value
+    	--          means no limit. Note that by default Undo is disabled.
+    	--          Enabling  it will  take effect with  the next  call to
+    	--          NewCommand. Of course this limit is the same for Redo
+
+    ClearUndos(me : mutable);
+	---Purpose: Remove all stored Undos and Redos
+    
+    ClearRedos(me : mutable);
+	---Purpose: Remove all stored Redos
+
+    GetAvailableUndos (me) returns Integer;
+	---Purpose: Returns the number of undos stored in this
+    	-- document. If this figure is greater than 0, the method Undo
+    	-- can be used.
+
+    Undo (me:mutable) returns Boolean;
+	---Purpose: Will UNDO  one step, returns  False if no undo was
+	--          done (Undos == 0).
+	-- Otherwise, true is returned and one step in the
+    	-- list of undoes is undone.
+    
+    GetAvailableRedos (me) returns Integer;
+	---Purpose: Returns the number of redos stored in this
+    	-- document. If this figure is greater than 0, the method Redo
+    	--  can be used.
+    
+    Redo (me : mutable) returns Boolean;
+	---Purpose: Will REDO  one step, returns  False if no redo was
+	--          done (Redos == 0). 
+    	-- Otherwise, true is returned, and one step in the list of redoes is done again.
+	
+    GetUndos (me)
+    ---C++: return const &
+    returns DeltaList from TDF;
+    
+    GetRedos (me) 
+    ---C++: return const &
+    returns DeltaList from TDF;
+
+    RemoveFirstUndo (me : mutable);
+    ---Purpose: Removes the first undo in the list of document undos.
+    --          It is used in the application when the undo limit is exceed.
+
+
+    InitDeltaCompaction(me : mutable)
+    ---Purpose: Initializes the procedure of delta compaction
+    --          Returns false if there is no delta to compact    
+    --          Marks the last delta as a "from" delta
+    returns Boolean from Standard;
+
+    PerformDeltaCompaction(me : mutable)
+    ---Purpose: Performs the procedure of delta compaction
+    --          Makes all deltas starting from "from" delta
+    --          till the last one to be one delta. 
+    returns Boolean from Standard;
+
+    ---Category: External references
+    --           ===================
+
+    UpdateReferences (me : mutable; aDocEntry : AsciiString from TCollection);
+    ---Purpose: Set   modifications on  labels  impacted  by  external
+    --          references to the entry.  The document becomes invalid
+    --          and must be recomputed.
+
+    Recompute (me : mutable);
+    ---Purpose: Recompute if the document was  not valid and propagate
+    --          the reccorded modification.
+
+    ---Category: deferred methods CDM_Document 
+    --           =============================
+
+    Update (me: mutable; aToDocument          : Document from CDM;
+    	    	    	 aReferenceIdentifier : Integer from Standard;
+			 aModifContext        : Address from Standard)
+    is redefined;
+    
+    --Update(me:mutable; ErrorString: out ExtendedString from TCollection)
+    --returns Boolean from Standard
+    ---Purpose: This method Update   will be called
+    --          to signal the end   of the modified references list.
+    --          The    document     should    be  recomputed     and
+    --          UpdateFromDocuments  should be called.  Update should
+    --          returns True in case  of success, false otherwise.  In
+    --          case of Failure, additional information can be given in
+    --          ErrorString.
+    --is redefined;
+    
+    --Update (me: mutable)
+    --is redefined;
+
+    ---Purpose: Update the document by propagation
+    --          ==================================
+
+    --Propagate (me: mutable);
+    ---Purpose:   Update   the    document    from   internal   stored
+    --            modifications.   If   you   want  to   undoing  this
+    --           operation, please call NewCommand before.
+    
+
+    ---Purpose: to change format (advanced programming)
+    --          ================
+
+    StorageFormat(me) 
+    returns ExtendedString from  TCollection
+    is virtual;
+
+    ChangeStorageFormat(me : mutable; newStorageFormat : ExtendedString from TCollection)
+    is virtual;
+
+
+    ---Purpose: methods for the nested transaction mode
+
+    SetNestedTransactionMode(me : mutable; isAllowed : Boolean = Standard_True);
+    ---Purpose: Sets nested transaction mode if isAllowed == Standard_True
+
+    IsNestedTransactionMode (me)
+    returns Boolean from Standard;
+    ---Purpose: Returns Standard_True if mode is set
+    ---C++: inline
+
+    AppendDeltaToTheFirst (myclass;
+    	    	    	   theDelta1 : CompoundDelta from TDocStd;
+    	    	    	   theDelta2 : Delta         from TDF) is private;
+    ---Purpose: Appends delta to the first delta in the myUndoFILO
+
+
+    ---Purpose: private methods
+    --          ===============
+
+    CommitTransaction (me : mutable) returns Boolean
+        is virtual protected;
+    ---Purpose: Returns Standard_True done
+    
+    AbortTransaction (me : mutable)
+        is virtual protected;
+
+    OpenTransaction (me : mutable)
+        is virtual protected;
+
+    ---Purpose: methods for protection of changes outside transactions
+
+    SetModificationMode (me : mutable; theTransactionOnly : Boolean from Standard);
+    ---Purpose: if theTransactionOnly is True changes is denied outside transactions
+    ---C++: inline
+    
+    ModificationMode (me) returns Boolean from Standard;
+    ---Purpose: returns True if changes allowed only inside transactions
+    ---C++: inline
+    
+fields
+
+    ---Purpose: storage format 
+
+    myStorageFormat   : ExtendedString from  TCollection is protected;
+
+    ---Purpose: data framework
+    myData            : Data         from TDF;    
+    myUndoLimit       : Integer      from Standard;
+    myUndoTransaction : Transaction  from TDF;
+    myUndos           : DeltaList    from TDF;
+    myRedos           : DeltaList    from TDF;
+
+    myFromUndo        : Delta        from TDF;
+    myFromRedo        : Delta        from TDF;
+
+    mySaveTime        : Integer      from Standard;
+
+    ---Purpose: data for the nested transactions
+
+    myIsNestedTransactionMode : Boolean   from Standard;
+    myUndoFILO                : DeltaList from TDF;
+    
+    ---Purpose: data for protection of changes outside transactions
+
+    myOnlyTransactionModification : Boolean from Standard;
+    
+end Document;
+

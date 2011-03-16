@@ -1,0 +1,69 @@
+--
+-- File      :  ExternalRefFileIndex.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ExternalRefFileIndex from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines ExternalRefFileIndex, Type <402> Form <12>
+        --          in package IGESBasic
+        --          Contains a list of the symbolic names used by the
+        --          referencing files and the DE pointers to the
+        --          corresponding definitions within the referenced file
+
+uses
+
+        HAsciiString from TCollection,
+        HArray1OfHAsciiString     from Interface,
+        HArray1OfIGESEntity from IGESData
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable ExternalRefFileIndex;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aNameArray : HArray1OfHAsciiString;
+              allEntities : HArray1OfIGESEntity)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           ExternalRefFileIndex
+        --       - aNameArray  : External Reference Entity symbolic names
+        --       - allEntities : External Reference Entities
+        -- raises exception if array lengths are not equal
+        -- if size of aNameArray is not equal to size of allEntities
+
+        NbEntries (me) returns Integer;
+        ---Purpose : returns number of index entries
+
+        Name (me; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns the External Reference Entity symbolic name
+        -- raises exception if Index <= 0 or Index > NbEntries()
+
+        Entity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the internal entity
+        -- raises exception if Index <= 0 or Index > NbEntries()
+
+fields
+
+--
+-- Class    : IGESBasic_ExternalRefFileIndex
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ExternalRefFileIndex.
+--
+-- Reminder : A ExternalRefFileIndex instance is defined by :
+--            - External Reference Entity symbolic names
+--            - External Reference Entities
+
+        theNames    : HArray1OfHAsciiString;
+        theEntities : HArray1OfIGESEntity;
+
+end ExternalRefFileIndex;

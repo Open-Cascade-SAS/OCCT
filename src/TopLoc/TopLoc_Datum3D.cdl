@@ -1,0 +1,49 @@
+-- File:	Datum3D.cdl
+-- Created:	Wed Jan 23 12:53:35 1991
+-- Author:	Christophe MARION
+--		<cma@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+
+class Datum3D from TopLoc inherits TShared from MMgt
+
+	---Purpose: Describes a coordinate transformation, i.e. a change
+-- to an elementary 3D coordinate system, or position in 3D space.
+-- A Datum3D is always described relative to the default datum.
+-- The default datum is described relative to itself: its
+-- origin is (0,0,0), and its axes are (1,0,0) (0,1,0) (0,0,1).
+
+uses
+    Trsf   from gp
+
+raises
+    ConstructionError from Standard
+    
+is
+    Create returns mutable Datum3D;
+    	---Purpose: Constructs a default Datum3D.
+
+    Create(T : Trsf from gp) returns mutable Datum3D from TopLoc
+	---Purpose: Constructs a Datum3D form a Trsf from gp. An error is
+	--          raised if the Trsf is not a rigid transformation.
+    raises 
+    	ConstructionError from Standard;
+    
+    Transformation(me) returns Trsf from gp
+    	---Purpose: Returns a gp_Trsf which, when applied to this datum,
+    	-- produces the default datum.
+    	---C++: inline
+    	---C++: return const &
+    	is static;
+    
+    ShallowDump(me; S : in out OStream);
+	--- Purpose:
+    	-- Writes the contents of this Datum3D to the stream S.
+	---C++: function call
+
+fields
+
+    myTrsf : Trsf from gp;
+
+end Datum3D;

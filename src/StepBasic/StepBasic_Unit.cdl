@@ -1,0 +1,31 @@
+-- File:	StepBasic_Unit.cdl
+-- Created:	Wed Sep  8 13:38:07 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Unit from StepBasic inherits SelectType from StepData
+
+    ---Purpose: Implements a select type unit (NamedUnit or DerivedUnit)
+
+uses
+    NamedUnit from StepBasic,
+    DerivedUnit from StepBasic
+
+is
+    Create returns Unit;
+    	---Purpose: Creates empty object
+	
+    CaseNum (me; ent : Transient) returns Integer;
+	---Purpose : Recognizes a type of Unit Entity
+        --        1 -> NamedUnit
+        --        2 -> DerivedUnit
+
+    NamedUnit (me) returns any NamedUnit from StepBasic;
+        ---Purpose : returns Value as a NamedUnit (Null if another type)
+
+    DerivedUnit (me) returns any DerivedUnit from StepBasic;
+        ---Purpose : returns Value as a DerivedUnit (Null if another type)
+
+end Unit;

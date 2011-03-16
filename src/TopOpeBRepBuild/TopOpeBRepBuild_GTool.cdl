@@ -1,0 +1,31 @@
+-- File:	TopOpeBRepBuild_GTool.cdl
+-- Created:	Tue Feb 13 17:36:03 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+class GTool from TopOpeBRepBuild
+
+uses
+
+    GTopo from TopOpeBRepBuild,
+    ShapeEnum from TopAbs,
+    OStream from Standard
+    
+is
+
+    GFusUnsh(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GFusSame(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GFusDiff(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+
+    GCutUnsh(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GCutSame(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GCutDiff(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+
+    GComUnsh(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GComSame(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+    GComDiff(myclass; s1,s2 : ShapeEnum from TopAbs) returns GTopo;
+
+    Dump(myclass; OS : in out OStream from Standard);
+    
+end GTool;

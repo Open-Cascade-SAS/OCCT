@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWFeaModelDefinition.cdl
+-- Created:	Sun Dec 15 10:59:25 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWFeaModelDefinition from RWStepFEA
+
+    ---Purpose: Read & Write tool for FeaModelDefinition
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    FeaModelDefinition from StepFEA
+
+is
+    Create returns RWFeaModelDefinition from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : FeaModelDefinition from StepFEA);
+	---Purpose: Reads FeaModelDefinition
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: FeaModelDefinition from StepFEA);
+	---Purpose: Writes FeaModelDefinition
+
+    Share (me; ent : FeaModelDefinition from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWFeaModelDefinition;

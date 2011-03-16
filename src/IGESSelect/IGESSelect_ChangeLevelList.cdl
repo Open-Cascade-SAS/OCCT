@@ -1,0 +1,78 @@
+-- File:	IGESSelect_ChangeLevelList.cdl
+-- Created:	Thu Aug 25 15:44:24 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class  ChangeLevelList  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Changes Level List (in directory part) to a new single value
+    --           Only entities attached to a LevelListEntity are considered
+    --           If OldNumber is defined, only entities whose LevelList
+    --           contains its Value are processed. Else all LevelLists are.
+    --           
+    --           Remark : this concerns the Directory Part only. The Level List
+    --           Entities themselves (their content) are not affected.
+    --           
+    --           If NewNumber is defined (positive or zero), it gives the new
+    --           value for Level Number. Else, the first value of the LevelList
+    --           is set as new LevelNumber
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif, IntParam
+
+is
+
+    Create returns mutable ChangeLevelList;
+    ---Purpose : Creates a ChangeLevelList, not yet defined
+    --           (see SetOldNumber and SetNewNumber)
+
+    HasOldNumber (me) returns Boolean;
+    ---Purpose : Returns True if OldNumber is defined : then, only entities
+    --           which have a LevelList which contains the value are processed.
+    --           Else, all entities attached to a LevelList are.
+
+    OldNumber (me) returns mutable IntParam;
+    ---Purpose : Returns the parameter for OldNumber. If not defined (Null
+    --           Handle), it will be interpreted as "all level lists"
+
+    SetOldNumber (me : mutable; param : mutable IntParam);
+    ---Purpose : Sets a parameter for OldNumber
+
+    HasNewNumber (me) returns Boolean;
+    ---Purpose : Returns True if NewNumber is defined : then, it gives the new
+    --           value for Level Number. Else, the first value of the LevelList
+    --           is used as new Level Number.
+
+    NewNumber (me) returns mutable IntParam;
+    ---Purpose : Returns the parameter for NewNumber. If not defined (Null
+    --           Handle), it will be interpreted as "new value 0"
+
+    SetNewNumber (me : mutable; param : mutable IntParam);
+    ---Purpose : Sets a parameter for NewNumber
+
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : considers selected target entities :
+    --           If OldNumber is not defined, all entities attached to a
+    --             Level List
+    --           If OldNumber is defined (value not negative), entities with a
+    --             Level List which contains this value
+    --           Attaches all these entities to value given by NewNumber, or
+    --             the first value of the Level List
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which begins by
+    --           "Changes Level Lists containing <old>", or
+    --           "Changes all Level Lists in D.E.", and ends by
+    --           " to Number <new>"  or  " to Number = first value in List"
+
+fields
+
+    theold : IntParam;
+    thenew : IntParam;
+
+end ChangeLevelList;

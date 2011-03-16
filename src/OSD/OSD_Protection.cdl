@@ -1,0 +1,125 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Protection.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+
+class Protection from OSD 
+
+  ---Purpose: This  class provides data to manage file protection
+  --  Example:These rights are treated in a system dependent manner :
+  --          On UNIX you have User,Group and Other rights
+  --          On VMS  you have Owner,Group,World and System rights
+  --          An automatic conversion is done between OSD and UNIX/VMS.
+  --           
+  --          OSD	VMS	UNIX
+  --          User     Owner   User
+  --          Group    Group   Group
+  --          World    World   Other
+  --          System   System  (combined with Other)
+  -- 
+  --          When you use System protection on UNIX you must know that
+  --          Other rights and System rights are inclusively "ORed". 
+  --          So Other with only READ access and System with WRITE access
+  --          will produce on UNIX Other with READ and WRITE access.
+  --
+  --          This choice comes from the fact that ROOT can't be considered
+  --          as member of the group nor as user. So it is considered as Other.
+
+
+ uses SingleProtection, AsciiString from TCollection
+
+
+ is
+  Create returns Protection;
+   ---Purpose: Initializes global access rights as follows
+   --
+   --          User   : Read Write
+   --          System : Read Write
+   --          Group  : Read
+   --          World  : Read
+   ---Level: Public
+  
+  Create (System , 
+    User , Group , World : SingleProtection) returns Protection;
+    ---Purpose: Sets values of fields
+    ---Level: Public
+
+  Values (me : in out; 
+    System , User , Group , World : out SingleProtection) is static;
+    ---Purpose: Retrieves values of fields
+    ---Level: Public
+
+  SetValues (me : in out;  
+    System , User , Group , World : SingleProtection) is static;
+    ---Purpose: Sets values of fields
+    ---Level: Public
+
+  SetSystem(me : in out; priv : SingleProtection) is static;
+    ---Purpose: Sets protection of 'System'
+    ---Level: Public
+
+  SetUser(me : in out; priv : SingleProtection) is static;
+    ---Purpose: Sets protection of 'User'
+    ---Level: Public
+
+  SetGroup(me : in out; priv : SingleProtection) is static;
+    ---Purpose: Sets protection of 'Group'
+    ---Level: Public
+
+  SetWorld(me : in out; priv : SingleProtection) is static;
+    ---Purpose: Sets protection of 'World'
+    ---Level: Public
+
+  System(me ) returns SingleProtection is static;
+    ---Purpose: Gets protection of 'System'
+    ---Level: Public
+
+  User(me ) returns SingleProtection is static;
+    ---Purpose: Gets protection of 'User'
+    ---Level: Public
+
+  Group(me ) returns SingleProtection is static;
+    ---Purpose: Gets protection of 'Group'
+    ---Level: Public
+
+  World(me ) returns SingleProtection is static;
+    ---Purpose: Gets protection of 'World'
+    ---Level: Public
+
+  Internal (me) returns Integer  is static private;
+    ---Purpose: Returns System dependent access rights
+    --          this is a private method.
+    ---Level: Public
+
+  Add (me : in out ;
+    aProt : in out SingleProtection ;aRight : SingleProtection) is static;
+    ---Purpose: Add a right to a single protection.
+    --          ex: aProt = RWD
+    --              me.Add(aProt,X)  ->  aProt = RWXD
+    ---Level: Public
+
+  Sub (me : in out ;
+    aProt : in out SingleProtection ;aRight : SingleProtection) is static;
+   ---Purpose: Subtract a right to a single protection.
+   --           ex: aProt = RWD
+   --               me.Sub(aProt,RW) ->  aProt = D
+   --               But me.Sub(aProt,RWX) is also valid and gives same result.
+   ---Level: Public
+
+
+ fields
+  s : SingleProtection;  -- System right
+  u : SingleProtection;  -- User right
+  g : SingleProtection;  -- Group right
+  w : SingleProtection;  -- World right
+
+friends class FileNode, class File, class Directory
+
+end Protection from OSD;
+
+

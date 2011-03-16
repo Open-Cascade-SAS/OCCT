@@ -1,0 +1,81 @@
+-- File:	DDataStd_DrawDisplay.cdl
+-- Created:	Mon Sep  7 10:35:02 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class DrawDriver from DDataStd inherits TShared from MMgt
+
+    ---Purpose: priority rule to display standard attributes is :   
+    --          * 1 Constraint
+    --          * 2 Object     
+    --          * 3 Datum      (Point,Axis,Plane)    
+    --          * 4 Geometry   
+    --          * 5 NamedShape 
+
+
+
+uses ColorKind  from Draw,
+     Drawable3D from Draw,
+     Label      from TDF,
+     Attribute  from TDF,
+     Integer    from TDataStd,
+     Real       from TDataStd,
+     Point      from TDataXtd,
+     Axis       from TDataXtd,
+     Plane      from TDataXtd,
+     Geometry   from TDataXtd,
+     Constraint from TDataXtd,
+     NamedShape from TNaming,  
+     Shape      from TopoDS
+ 
+is
+
+    ---Purpose: access to the current DrawDriver
+    --          ================================
+
+
+    Set (myclass; DD : DrawDriver from DDataStd);  
+
+    Get (myclass)
+    returns DrawDriver from DDataStd;
+
+
+    Create 
+    returns DrawDriver from DDataStd;
+
+
+    ---Purpose: next method is called by DrawPresentation (may be redefined)
+    --          ============================================================
+
+    Drawable (me; L : Label from TDF)
+    returns Drawable3D from Draw
+    is virtual;
+
+    
+    ---Purpose: reusable methods (may used when redefined <Drawable>)
+    --          =====================================================
+
+    DrawableConstraint (me; C : Constraint from TDataXtd)
+    returns Drawable3D from Draw;    
+   
+    DrawableShape (me; L       : Label from TDF;
+                       color   : ColorKind from Draw;
+                       current : Boolean from Standard = Standard_True)
+    returns Drawable3D from Draw;    
+    
+    DrawableShape (myclass; s     : Shape     from TopoDS;
+                            color : ColorKind from Draw) 
+    ---Purpose: May be used for temporary display of a shape
+    returns Drawable3D from Draw;
+			
+end DrawDriver;
+
+
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+-- File:        ApprovalPersonOrganization.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWApprovalPersonOrganization from RWStepBasic
+
+	---Purpose : Read & Write Module for ApprovalPersonOrganization
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ApprovalPersonOrganization from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWApprovalPersonOrganization;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ApprovalPersonOrganization from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ApprovalPersonOrganization from StepBasic);
+
+	Share(me; ent : ApprovalPersonOrganization from StepBasic; iter : in out EntityIterator);
+
+end RWApprovalPersonOrganization;

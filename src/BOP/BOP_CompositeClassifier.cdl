@@ -1,0 +1,88 @@
+-- File:	BOP_CompositeClassifier.cdl
+-- Created:	Fri Jan  5 15:16:22 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+deferred class CompositeClassifier from BOP inherits LoopClassifier from BOP
+
+    ---Purpose:  
+    --  The Root class for algorithms  
+    --  to   classify composite Loops, i.e, Loops that  
+    --  can be either a Shape, or a block of Elements.
+    --   
+    
+uses
+    
+    ShapeEnum from TopAbs,
+    Shape     from TopoDS,
+    State     from TopAbs,
+     
+    Loop         from BOP,
+    BlockBuilder from BOP
+    
+is
+
+    Initialize(BB : BlockBuilder from BOP);
+    	---Purpose:  
+    	--- Initializing the object with BlockBuilder;   
+    	---
+    Compare(me :out;  
+    	L1 : Loop from BOP;  
+    	L2 : Loop from BOP)  
+    	returns State from TopAbs
+    	is redefined;
+    	---Purpose:  
+    	--- Classify loop <L1> with  <L2>  
+    	---
+    CompareShapes(me :out;  
+    	B1 : Shape from TopoDS;
+    	B2 : Shape from TopoDS)
+    	---Purpose:  
+    	--- Classify shape <B1> with shape <B2>
+    	---
+	returns State from TopAbs  
+    	is deferred;
+    
+    CompareElementToShape(me :out;  
+    	E : Shape from TopoDS;
+    	B : Shape from TopoDS) 
+    	returns State from TopAbs  
+    	is deferred;
+    	---Purpose:  
+    	--- Classify element <E> with shape <B>
+    	---
+    ResetShape(me :out;  
+    	B : Shape from TopoDS)  
+    	is deferred;
+    	---Purpose:  
+    	--- Prepare classification involving shape <B>
+    	--- Calls ResetElement on first element of <B>
+	---
+    
+    ResetElement(me :out;  
+    	E : Shape from TopoDS)  
+    	is deferred;
+    	---Purpose:  
+    	--- Prepare classification involving element <E>.
+    	---
+    CompareElement(me :out;  
+    	E : Shape from TopoDS)  
+    	is deferred;
+    	---Purpose:  
+    	--- Add element <E> in the set of elements used in classification.
+    	---
+    State(me :out)  
+    	returns State from TopAbs  
+    	is deferred;
+    	---Purpose:  
+    	--- Returns state of classification of 2D point, defined by 
+    	--- ResetElement, with the current set of elements,  
+    	--- defined by Compare.
+    	---
+fields
+
+    myBlockBuilder : Address  
+    	is protected; 
+
+end CompositeClassifier;

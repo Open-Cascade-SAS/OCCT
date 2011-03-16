@@ -1,0 +1,79 @@
+-- File:	ProjLib_Cylinder.cdl
+-- Created:	Tue Aug 24 11:11:01 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class Cylinder from ProjLib inherits Projector from ProjLib
+
+	---Purpose: Projects elementary curves on a cylinder.
+
+uses
+    CurveType  from GeomAbs,
+    Cylinder   from gp,
+    Lin        	   from gp,
+    Circ       	   from gp,
+    Elips      	   from gp,
+    Parab      	   from gp,
+    Hypr       	   from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Parab2d    from gp,
+    Hypr2d     from gp
+
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create returns Cylinder from ProjLib;
+	---Purpose: Undefined projection.
+
+    Create(Cyl : Cylinder from gp) returns Cylinder from ProjLib;
+	---Purpose: Projection on the cylinder <Cyl>.
+
+    Create(Cyl : Cylinder from gp;
+           L   : Lin from gp) returns Cylinder from ProjLib;
+	---Purpose: Projection of the line <L> on the cylinder <Cyl>.
+
+    Create(Cyl : Cylinder  from gp;
+           C   : Circ from gp) returns Cylinder from ProjLib;
+	---Purpose: Projection of the circle <C> on the cylinder <Cyl>.
+
+    Create(Cyl : Cylinder  from gp;
+           E   : Elips from gp) returns Cylinder from ProjLib;
+	---Purpose: Projection of the ellipse <E> on the cylinder <Cyl>.
+
+
+
+    Init(me  : in out;
+    	 Cyl : Cylinder from gp)
+    is static;
+	 
+    Project(me : in out;
+    	    L  : Lin from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    C  : Circ from gp)
+    is redefined;
+
+    Project(me : in out;
+    	    E  : Elips from gp)
+    is redefined;
+
+     Project(me : in out;
+     	     P  : Parab from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     H  : Hypr from gp)
+     is redefined;
+	     
+
+fields
+
+    myCylinder : Cylinder from gp;
+
+end Cylinder;

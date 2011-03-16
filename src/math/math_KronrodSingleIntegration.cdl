@@ -1,0 +1,135 @@
+-- File:	math_KronrodSingleIntegration.cdl
+-- Created:	Thu Dec  8 14:44:35 2005
+-- Author:	Sergey KHROMOV
+--		<skv@dimox>
+---Copyright:	 Matra Datavision 2005
+
+class KronrodSingleIntegration from math 
+        ---Purpose: This class implements the Gauss-Kronrod method of 
+        --          integral computation.
+
+uses 
+ 
+    Function from math, 
+    Vector   from math,     
+    Real     from Standard, 
+    Integer  from Standard, 
+    Boolean  from Standard
+
+raises 
+ 
+    NotDone from StdFail
+
+is 
+ 
+    Create 
+        ---Purpose: An empty constructor.
+    returns KronrodSingleIntegration;
+
+    Create(theFunction : in out Function from math; 
+           theLower    :        Real     from Standard; 
+           theUpper    :        Real     from Standard; 
+           theNbPnts   :        Integer  from Standard) 
+        ---Purpose: Constructor. Takes the function, the lower and upper bound 
+        --          values, the initial number of Kronrod points
+    returns KronrodSingleIntegration;
+
+    Create(theFunction : in out Function from math; 
+           theLower    :        Real     from Standard; 
+           theUpper    :        Real     from Standard; 
+           theNbPnts   :        Integer  from Standard; 
+           theTolerance:        Real     from Standard; 
+           theMaxNbIter:        Integer  from Standard) 
+        ---Purpose: Constructor. Takes the function, the lower and upper bound 
+        --          values, the initial number of Kronrod points, the 
+        --          tolerance value and the maximal number of iterations as 
+        --          parameters.
+    returns KronrodSingleIntegration;
+
+    Perform(me: in out; theFunction : in out Function from math; 
+                        theLower    :        Real     from Standard; 
+                        theUpper    :        Real     from Standard; 
+                        theNbPnts   :        Integer  from Standard);
+        ---Purpose: Computation of the integral. Takes the function, 
+        --          the lower and upper bound values, the initial number 
+        --          of Kronrod points, the relative tolerance value and the 
+        --          maximal number of iterations as parameters. 
+	--          theNbPnts should be odd and greater then or equal to 3. 
+
+    Perform(me: in out; theFunction : in out Function from math; 
+                        theLower    :        Real     from Standard; 
+                        theUpper    :        Real     from Standard; 
+                        theNbPnts   :        Integer  from Standard; 
+                        theTolerance:        Real     from Standard; 
+                        theMaxNbIter:        Integer  from Standard);
+        ---Purpose: Computation of the integral. Takes the function, 
+        --          the lower and upper bound values, the initial number 
+        --          of Kronrod points, the relative tolerance value and the 
+        --          maximal number of iterations as parameters. 
+	--          theNbPnts should be odd and greater then or equal to 3. 
+        --          Note that theTolerance is relative, i.e. the criterion of 
+        --          solution reaching is: 
+        --          Abs(Kronrod - Gauss)/Abs(Kronrod) < theTolerance. 
+        --          theTolerance should be positive.
+
+    IsDone(me)
+     	---Purpose: Returns Standard_True if computation is performed 
+        --          successfully.
+    	---C++: inline
+    returns Boolean from Standard;
+
+    Value(me)
+     	---Purpose: Returns the value of the integral.
+    	---C++: inline
+    returns Real from Standard
+    raises NotDone;
+
+    ErrorReached(me)
+     	---Purpose: Returns the value of the relative error reached.
+    	---C++: inline
+    returns Real from Standard
+    raises NotDone;
+
+    AbsolutError(me)
+     	---Purpose: Returns the value of the relative error reached.
+    	---C++: inline
+    returns Real from Standard
+    raises NotDone;
+
+    OrderReached(me) 
+     	---Purpose: Returns the number of Kronrod points 
+        --          for which the result is computed.
+    	---C++: inline
+    returns Integer from Standard
+    raises NotDone;
+
+    NbIterReached(me) 
+     	---Purpose: Returns the number of iterations 
+        --          that were made to compute result.
+    	---C++: inline
+    returns Integer from Standard
+    raises NotDone;
+
+    GKRule(myclass;  
+           theFunction : in out Function from math; 
+           theLower    :        Real     from Standard; 
+           theUpper    :        Real     from Standard;  
+	   theGaussP   :        Vector   from math;
+	   theGaussW   :        Vector   from math; 
+	   theKronrodP :        Vector   from math;
+	   theKronrodW :        Vector   from math; 
+	   theValue    : in out Real     from Standard;	   
+	   theError    : in out Real     from Standard) 
+	    
+	   returns Boolean from Standard;
+
+fields 
+ 
+    myIsDone       : Boolean from Standard;
+    myValue        : Real    from Standard; 
+    myErrorReached : Real    from Standard; 
+    myAbsolutError : Real    from Standard; 
+    myNbPntsReached: Integer from Standard; 
+    myNbIterReached: Integer from Standard;
+ 
+end KronrodSingleIntegration; 

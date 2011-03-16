@@ -1,0 +1,102 @@
+-- File:	PCollection_HSingleList.cdl
+-- Created:	Wed Feb 19 14:24:56 1992
+-- Author:	Jean Pierre TIRAULT
+--		<jpt@topsn1>
+generic class HSingleList from PCollection (Item as Storable) 
+inherits PManaged 
+
+raises
+    NoSuchObject from Standard
+
+is
+
+	---Purpose: Definition of a single linked list.
+
+	Create returns mutable HSingleList;
+		---Creation of an empty list.
+
+	IsEmpty(me) returns Boolean from Standard;
+                ---Level: Public
+		---Purpose: Returns True if the list contains no element.
+
+
+	Construct(me; T : Item) returns mutable 
+		HSingleList;
+                ---Level: Public
+		---Purpose: add T at the begining of me
+		---Example: before
+		--   me = (A B C) 
+                -- after
+		--   me = (A B C)
+		-- returns 
+		--   (T A B C)
+
+	Value(me) returns any Item
+                raises NoSuchObject from Standard;
+                ---Level: Public
+		---Purpose: Returns the value of the first node of me.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C) 
+                -- after
+		--   me = (A B C)
+		-- returns 
+		--   A
+
+	Tail(me) returns any HSingleList
+                raises NoSuchObject from Standard;
+                ---Level: Public
+		---Purpose: End of the list me.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C) 
+                -- after
+		--   me = (A B C)
+		-- returns 
+		--   (B C)
+
+	SwapTail(me : mutable; WithList : in out any HSingleList)
+	   	raises NoSuchObject from Standard;
+                ---Level: Public
+		---Purpose: Exchanges the end of <me> with the list WithList.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C)
+		--   WithList = (D E)
+		-- after
+		--   me = (A D E)
+		--   WithList = (B C)
+		
+	SetValue(me : mutable; T : Item)
+                raises NoSuchObject from Standard ;
+                ---Level: Public
+		---Purpose: Changes the value of the first node of me.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C) 
+                -- after
+		--   me = (T B C)
+
+	ChangeForwardPointer(me : mutable; ForwardPointer : HSingleList);
+                ---Level: Public
+		---Purpose: Modification of the node link.
+
+    	ShallowCopy(me) 
+                returns mutable like me 
+                is redefined;
+                ---Level: Advanced
+	    	---C++: function call
+
+
+    	ShallowDump (me; s: in out OStream) 
+                is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+
+
+fields 
+           Data : 	Item;
+           Next : 	HSingleList;
+
+end HSingleList;

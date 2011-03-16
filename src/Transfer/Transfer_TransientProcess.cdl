@@ -1,0 +1,93 @@
+-- File:	Transfer_TransientProcess.cdl
+-- Created:	Wed Sep  4 09:08:47 1996
+-- Author:	Christian CAILLET
+--		<cky@helioxfidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class TransientProcess  from Transfer  inherits ProcessForTransient
+
+    ---Purpose : Adds specific features to the generic definition :
+    --           TransientProcess is intended to work from an InterfaceModel
+    --           to a set of application objects.
+    --           
+    --           Hence, some informations about starting entities can be gotten
+    --           from the model : for Trace, CheckList, Integrity Status
+
+uses Transient, Type,
+     DictionaryOfTransient,
+     InterfaceModel, HGraph, Graph, EntityIterator,
+     HSequenceOfTransient from TColStd,
+     Messenger from Message
+
+is
+
+    Create (nb : Integer = 10000) returns mutable TransientProcess;
+    ---Purpose : Sets TransientProcess at initial state, with an initial size
+
+    SetModel (me : mutable; model : InterfaceModel);
+    ---Purpose : Sets an InterfaceModel, used by StartTrace, CheckList, queries
+    --           on Integrity, to give informations significant for each norm.
+ 
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model used for StartTrace
+
+    SetGraph (me : mutable; HG : HGraph);
+    ---Purpose : Sets a Graph : superseedes SetModel if already done
+
+    HasGraph (me) returns Boolean;
+    HGraph   (me) returns HGraph;
+    Graph    (me) returns Graph;
+    ---C++ : return const &
+
+    SetContext (me : mutable; name : CString; ctx : Transient);
+    ---Purpose : Sets a Context : according to receiving appli, to be
+    --           interpreted by the Actor
+
+    GetContext (me; name : CString; type : Type; ctx : out Transient)
+    	returns Boolean;
+    ---Purpose : Returns the Context attached to a name, if set and if it is
+    --           Kind of the type, else a Null Handle
+    --           Returns True if OK, False if no Context
+
+    Context    (me : mutable) returns DictionaryOfTransient;
+    ---Purpose : Returns (modifiable) the whole definition of Context
+    --           Rather for internal use (ex.: preparing and setting in once)
+    ---C++ : return &
+
+    PrintTrace (me; start : Transient; S : Messenger from Message)  is redefined;
+    ---Purpose : Specific printing to trace an entity : prints label and type
+    --           (if model is set)
+
+    CheckNum   (me; ent : Transient) returns Integer  is redefined;
+    ---Purpose : Specific number of a starting object for check-list : Number
+    --           in model
+
+    TypedSharings (me; start : Transient; type : Type) returns EntityIterator;
+    ---Purpose : Returns the list of sharings entities, AT ANY LEVEL, which are
+    --           kind of a given type. Calls TypedSharings from Graph
+    --           Returns an empty list if the Graph has not been aknowledged
+
+    IsDataLoaded  (me; ent : Transient) returns Boolean;
+    ---Purpose : Tells if an entity is well loaded from file (even if its data
+    --           fail on checking, they are present). Mostly often, answers
+    --           True. Else, there was a syntactic error in the file.
+    --           A non-loaded entity MAY NOT BE transferred, unless its Report
+    --           (in the model) is interpreted
+
+    IsDataFail    (me; ent : Transient) returns Boolean;
+    ---Purpose : Tells if an entity fails on data checking (load time,
+    --           syntactic, or semantic check). Normally, should answer False.
+    --           It is not prudent to try transferring an entity which fails on
+    --           data checking
+
+    PrintStats (me; mode : Integer; S : Messenger from Message);
+    ---Purpose : Prints statistics on a given output, according mode
+    RootsForTransfer(me : mutable) returns HSequenceOfTransient from TColStd;
+fields
+
+    themodel : InterfaceModel;
+    thegraph : HGraph;
+    thectx   : DictionaryOfTransient;
+    thetrroots : HSequenceOfTransient from TColStd;
+end TransientProcess;

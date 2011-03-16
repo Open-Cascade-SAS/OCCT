@@ -1,0 +1,151 @@
+-- File:	IGESToBRep_IGESBoundary.cdl
+-- Created:	Wed Dec 16 16:27:16 1998
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class IGESBoundary from IGESToBRep inherits TShared from MMgt
+
+    ---Purpose: This class is intended to translate IGES boundary entity
+    --          (142-CurveOnSurface, 141-Boundary or 508-Loop) into the wire.
+    --          Methods Transfer are virtual and are redefined in Advanced
+    --          Data Exchange to optimize the translation and take into
+    --          account advanced parameters.
+
+uses
+
+    Trsf2d              from gp,
+    Face                from TopoDS,
+    IGESEntity          from IGESData,
+    HArray1OfIGESEntity from IGESData,
+    CurveAndSurface     from IGESToBRep,
+    WireData            from ShapeExtend
+
+is
+
+    Create returns mutable IGESBoundary from IGESToBRep;
+    	---Purpose: Empty constructor
+
+    Create (CS: CurveAndSurface from IGESToBRep) returns mutable IGESBoundary from IGESToBRep;
+    	---Purpose: Empty constructor
+	
+    Init (me: mutable; CS            : CurveAndSurface from IGESToBRep;
+    	    	       entity        : IGESEntity from IGESData;
+    	    	       face          : Face   from TopoDS;
+		       trans         : Trsf2d from gp;
+                       uFact         : Real;
+		       filepreference: Integer);
+    	---Purpose: Inits the object with parameters common for all
+    	--          types of IGES boundaries.
+	--          <CS>: object to be used for retrieving translation parameters
+	--                and sending messages,
+	--          <entity>: boundary entity to be processed,
+	--          <face>, <trans>, <uFact>: as for IGESToBRep_TopoCurve
+	--          <filepreference>: preferred representation (2 or 3) given
+    	--                            in the IGES file
+	
+    WireData (me) returns WireData from ShapeExtend;
+     	---Purpose: Returns the resulting wire
+	---C++: inline
+	
+    WireData3d (me) returns WireData from ShapeExtend;
+     	---Purpose: Returns the wire from 3D curves (edges contain 3D curves
+    	--          and may contain pcurves)
+	---C++: inline
+
+    WireData2d (me) returns WireData from ShapeExtend;
+     	---Purpose: Returns the the wire from 2D curves (edges contain pcurves
+    	--          only)
+	---C++: inline
+	
+    Transfer (me: mutable; okCurve    : in out Boolean;
+			   okCurve3d  : in out Boolean;
+			   okCurve2d  : in out Boolean;
+    	    	    	   curve3d    : IGESEntity from IGESData;
+			   toreverse3d: Boolean;
+			   curves2d   : HArray1OfIGESEntity from IGESData;
+    	    	    	   number     : Integer)
+    returns Boolean;
+    	---Purpose: Translates 141 and 142 entities.
+	--          Returns True if the curve has been successfully translated,
+	--          otherwise returns False.
+	--          <okCurve..>: flags that indicate whether corresponding
+    	--                       representation has been successfully translated
+	--                       (must be set to True before first call),
+	--          <curve3d>: model space curve for 142 and current model space
+    	--                     curve for 141,
+	--          <toreverse3d>: False for 142 and current orientation flag
+    	--                         for 141,
+	--          <curves2d>: 1 parameter space curve for 142 or list of
+    	--                      them for current model space curves for 141,
+	--          <number>: 1 for 142 and rank number of model space curve for 141.
+			   
+    Transfer (me: mutable; okCurve    : in out Boolean;
+			   okCurve3d  : in out Boolean;
+			   okCurve2d  : in out Boolean;
+    	    	    	   curve3d    : WireData from ShapeExtend;
+		           curves2d   : HArray1OfIGESEntity from IGESData;
+			   toreverse2d: Boolean;
+    	    	    	   number     : Integer;
+    	    	    	   lsewd      : out WireData from ShapeExtend)
+    returns Boolean;
+     	---Purpose: Translates 508 entity.
+	--          Returns True if the curve has been successfully translated,
+	--          otherwise returns False.
+	--          Input object IGESBoundary must be created and initialized
+    	--          before.
+	--          <okCurve..>: flags that indicate whether corresponding
+    	--                       representation has been successfully translated
+	--                       (must be set to True before first call),
+	--          <curve3d>: result of translation of current edge,
+	--          <curves2d>: list of parameter space curves for edge,
+	--          <toreverse2d>: orientation flag of current edge in respect
+	--                         to its model space curve,
+	--          <number>: rank number of edge,
+	--          <lsewd>: returns the result of translation of current edge.
+	
+    Check (me: mutable; result, checkclosure, okCurve3d, okCurve2d: Boolean) is virtual;
+    	---Purpose: Checks result of translation of IGES boundary entities
+    	--          (types 141, 142 or 508).
+	--          Checks consistency of 2D and 3D representations and keeps
+	--          only one if they are inconsistent.
+	--          <result>: result of translation (returned by Transfer),
+	--          <checkclosure>: False for 142 without parent 144 entity,
+    	--                          otherwise True,
+	--          <okCurve3d>, <okCurve2d>: those returned by Transfer.
+	---Remark : Empty method for Open CASCADE and implemented for Advanced
+	--          Data Exchange.
+    ---Level: Internal
+		    
+    Transfer (me: mutable; okCurve    : in out Boolean;
+			   okCurve3d  : in out Boolean;
+			   okCurve2d  : in out Boolean;
+    	    	    	   icurve3d   : IGESEntity from IGESData;
+    	    	    	   scurve3d   : WireData from ShapeExtend;
+			   usescurve  : Boolean;
+			   toreverse3d: Boolean;
+			   curves2d   : HArray1OfIGESEntity from IGESData;
+			   toreverse2d: Boolean;
+    	    	    	   number     : Integer;
+    	    	    	   lsewd      : out WireData from ShapeExtend)
+    returns Boolean is virtual protected;
+     	---Purpose: Methods called by both Transfer methods.
+	
+    ReverseCurves3d (myclass; sewd: WireData from ShapeExtend) is protected;
+    ReverseCurves2d (myclass; sewd: WireData from ShapeExtend;
+    	    	    	      face: Face from TopoDS) is protected;
+
+fields
+
+    myCS            : CurveAndSurface from IGESToBRep is protected;
+    myentity        : IGESEntity from IGESData is protected;
+    mysewd          : WireData from ShapeExtend is protected; -- resulting wire
+    mysewd3d        : WireData from ShapeExtend is protected; -- wire from 3D curves (edges contain 3D curves and may contain pcurves)
+    mysewd2d        : WireData from ShapeExtend is protected; -- wire from 2D curves (edges contain pcurves only)
+    myface          : Face     from TopoDS is protected;
+    mytrsf          : Trsf2d   from gp is protected;
+    myuFact         : Real is protected;
+    myfilepreference: Integer is protected;
+
+end IGESBoundary;

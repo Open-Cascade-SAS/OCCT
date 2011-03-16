@@ -1,0 +1,93 @@
+-- File:        TDataStd_BooleanList.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class BooleanList from TDataStd inherits Attribute from TDF
+
+    ---Purpose: Contains a list of bolleans.
+
+uses 
+
+    Attribute from TDF,
+    GUID from Standard,
+    Label from TDF,
+    RelocationTable from TDF,
+    ListOfByte from TDataStd
+
+is 
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const & 
+    ---Purpose: Returns the ID of the list of booleans attribute.
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF)
+    ---Purpose: Finds or creates a list of boolean values attribute.
+    returns BooleanList from TDataStd;
+
+    
+    ---Category: BooleanList methods
+    --           ===================
+
+    Create
+    returns mutable BooleanList from TDataStd; 
+
+    IsEmpty (me)
+    returns Boolean from Standard;
+    
+    Extent (me)
+    returns Integer from Standard;
+    
+    Prepend (me : mutable;
+    	     value : Boolean from Standard);
+
+    Append (me : mutable;
+    	    value : Boolean from Standard);
+    
+    Clear (me : mutable);
+    
+    First (me)
+    returns Boolean from Standard;
+    
+    Last (me)
+    returns Boolean from Standard;
+
+    List (me)
+    ---C++: return const &
+    ---Purpose: 1 - means TRUE,
+    --          0 - means FALSE.
+    returns ListOfByte from TDataStd;
+    
+    
+    ---Category: Methodes of TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myList : ListOfByte from TDataStd;
+
+
+end BooleanList;

@@ -1,0 +1,42 @@
+-- File:        GlobalUncertaintyAssignedContext.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GlobalUncertaintyAssignedContext from StepRepr 
+
+inherits RepresentationContext from StepRepr 
+
+uses
+
+	HArray1OfUncertaintyMeasureWithUnit from StepBasic, 
+	UncertaintyMeasureWithUnit from StepBasic, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable GlobalUncertaintyAssignedContext;
+	---Purpose: Returns a GlobalUncertaintyAssignedContext
+
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aUncertainty : mutable HArray1OfUncertaintyMeasureWithUnit from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetUncertainty(me : mutable; aUncertainty : mutable HArray1OfUncertaintyMeasureWithUnit);
+	Uncertainty (me) returns mutable HArray1OfUncertaintyMeasureWithUnit;
+	UncertaintyValue (me; num : Integer) returns mutable UncertaintyMeasureWithUnit;
+	NbUncertainty (me) returns Integer;
+
+fields
+
+	uncertainty : HArray1OfUncertaintyMeasureWithUnit from StepBasic;
+
+end GlobalUncertaintyAssignedContext;

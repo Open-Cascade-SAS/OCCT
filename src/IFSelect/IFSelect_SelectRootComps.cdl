@@ -1,0 +1,44 @@
+-- File:	SelectRootComps.cdl
+-- Created:	Wed Dec  2 14:50:51 1992
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectRootComps  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectRootComps sorts the Entities which are part of Strong
+    --           Componants, local roots of a set of Entities : they can be
+    --           Single Componants (containing one Entity) or Cycles
+    --           This class gives a more secure result than SelectRoots (which
+    --           considers only Single Componants) but is longer to work : it
+    --           can be used when there can be or there are cycles in a Model
+    --           For each cycle, one Entity is given arbitrarily
+    --           Reject works as for SelectRoots : Strong Componants defined in
+    --           the input list which are not local roots are given
+
+uses AsciiString from TCollection, InterfaceModel, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectRootComps;
+    ---Purpose : Creates a SelectRootComps
+
+    RootResult (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns the list of local root strong componants, by one
+    --           Entity par componant. It is redefined for a purpose of
+    --           effeciency : calling a Sort routine for each Entity would
+    --           cost more ressource than to work in once using a Map
+    --           RootResult takes in account the Direct status
+
+    HasUniqueResult (me) returns Boolean  is redefined protected;
+    ---Purpose : Returns True, RootResult assuring uniqueness
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns always True, because RootResult has done work
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Local Root Componants"
+
+end SelectRootComps;

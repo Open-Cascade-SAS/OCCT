@@ -1,0 +1,12 @@
+deferred class ExternShareable from ObjMgt 
+
+inherits Persistent from Standard
+
+uses HAsciiString from PCollection
+
+is
+fields
+
+    myEntry: HAsciiString ;
+
+end ExternShareable;

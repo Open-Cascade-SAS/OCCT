@@ -1,0 +1,112 @@
+-- File:	BRepSweep_Revol.cdl
+-- Created:	Tue Jun 22 16:59:31 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Revol from BRepSweep
+
+---Purpose: Provides natural constructors to build BRepSweep 
+--          rotated swept Primitives.
+
+uses
+
+    PlaneAngle  from Quantity,
+    NumShape    from Sweep,
+    Rotation    from BRepSweep,
+    Location    from TopLoc,
+    Shape       from TopoDS,
+    Ax1         from gp
+
+raises
+    ConstructionError from Standard
+
+is
+    Create (S : Shape from TopoDS;
+    	    A : Ax1 from gp;
+    	    D : PlaneAngle from Quantity;
+    	    C : Boolean from Standard = Standard_False)
+    ---Purpose: Builds the Revol of meridian S axis A  and angle D. If
+    --          C is true S is copied.
+    returns Revol from BRepSweep;
+
+    Create (S : Shape from TopoDS;
+    	    A : Ax1 from gp;
+    	    C : Boolean from Standard = Standard_False)
+    ---Purpose: Builds the Revol of meridian S  axis A and angle 2*Pi.
+    --          If C is true S is copied.
+    returns Revol from BRepSweep;
+
+    Shape (me :in out)
+    ---Purpose: Returns the TopoDS Shape attached to the Revol.
+    returns Shape from TopoDS
+    is static;
+
+
+    Shape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns    the  TopoDS  Shape   generated  with  aGenS
+    --          (subShape  of the generating shape).
+    returns Shape from TopoDS
+    is static;
+
+    FirstShape (me : in out)
+    ---Purpose: Returns the first shape of the revol  (coinciding with
+    --          the generating shape).
+    returns Shape from TopoDS
+    is static;
+
+    FirstShape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns the first shape of the revol  (coinciding with
+    --          the generating shape).
+    returns Shape from TopoDS
+    is static;
+
+    LastShape (me : in out)
+    ---Purpose: Returns the TopoDS Shape of the top of the prism.
+    returns Shape from TopoDS
+    is static;
+
+    LastShape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns the  TopoDS  Shape of the top  of  the  prism.
+    --          generated  with  aGenS  (subShape  of  the  generating
+    --          shape).
+    returns Shape from TopoDS
+    is static;
+
+    
+    Axe(me)
+    returns Ax1 from gp
+    ---Purpose: returns the axis
+    is static;
+
+    Angle(me)
+    returns PlaneAngle from Quantity
+    ---Purpose: returns the angle.
+    is static;
+
+    NumShape(me; D : Real from Standard) 
+    returns NumShape from Sweep
+    ---Purpose: builds the NumShape.
+    is static private;
+    
+    Location(me; Ax : Ax1 from gp; D : Real from Standard)
+    returns Location from TopLoc
+    ---Purpose: Builds the Location
+    is static private;
+    
+    Axe(me; Ax : Ax1 from gp; D : Real from Standard)
+    returns Ax1 from gp
+    ---Purpose: Builds the axis
+    is static private;
+
+    Angle(me; D : Real from Standard)
+    returns Real from Standard
+    ---Purpose: computes the angle.
+    is static private;
+    
+fields
+
+    myRotation : Rotation from BRepSweep;
+
+end Revol from BRepSweep;

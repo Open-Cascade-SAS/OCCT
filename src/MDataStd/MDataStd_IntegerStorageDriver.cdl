@@ -1,0 +1,39 @@
+-- File:	MDataStd_IntegerStorageDriver.cdl
+-- Created:	Wed Apr  9 16:53:16 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+class IntegerStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+is
+
+
+    Create (theMessageDriver : MessageDriver from CDM) -- Version 0
+    returns mutable IntegerStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end IntegerStorageDriver;

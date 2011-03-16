@@ -1,0 +1,126 @@
+-- File:	Voxel_FastConverter.cdl
+-- Created:	Mon May 30 12:14:12 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class FastConverter from Voxel
+
+    ---Purpose: Converts a shape to voxel representation.
+    --          It does it fast, but with less precision.
+    --          Also, it doesn't fill-in volumic part of the shape.
+
+uses
+
+    Pnt     from gp,
+    Pln     from gp,
+    Shape   from TopoDS,
+    BoolDS  from Voxel,
+    ColorDS from Voxel,
+    ROctBoolDS from Voxel
+
+is
+
+    Create(shape  :     Shape   from TopoDS;
+    	   voxels : out BoolDS  from Voxel;
+    	   delfection : Real    from Standard = 0.1;
+	   nbx    :     Integer from Standard = 10;
+    	   nby    :     Integer from Standard = 10;
+    	   nbz    :     Integer from Standard = 10;
+    	   nbthreads :  Integer from Standard = 1)
+    ---Purpose: A constructor for conversion of a shape into a cube of boolean voxels.
+    --          It allocates the voxels in memory.
+    --          "nbthreads" defines the number of threads used to convert the shape.
+    returns FastConverter from Voxel;
+
+    Create(shape  :     Shape   from TopoDS;
+    	   voxels : out ColorDS from Voxel;
+    	   delfection : Real    from Standard = 0.1;
+	   nbx    :     Integer from Standard = 10;
+    	   nby    :     Integer from Standard = 10;
+    	   nbz    :     Integer from Standard = 10;
+    	   nbthreads :  Integer from Standard = 1)
+    ---Purpose: A constructor for conversion of a shape into a cube of colored voxels.
+    --          It allocates the voxels in memory.
+    --          "nbthreads" defines the number of threads used to convert the shape.
+    returns FastConverter from Voxel;
+
+    Create(shape  :     Shape   from TopoDS;
+    	   voxels : out ROctBoolDS from Voxel;
+    	   delfection : Real    from Standard = 0.1;
+	   nbx    :     Integer from Standard = 10;
+    	   nby    :     Integer from Standard = 10;
+    	   nbz    :     Integer from Standard = 10;
+    	   nbthreads :  Integer from Standard = 1)
+    ---Purpose: A constructor for conversion of a shape into a cube of boolean voxels
+    --          split into 8 sub-voxels recursively.
+    --          It allocates the voxels in memory.
+    --          "nbthreads" defines the number of threads used to convert the shape.
+    returns FastConverter from Voxel;
+
+    Convert(me : in out;
+    	    progress : out Integer from Standard;
+    	    ithread : Integer from Standard = 1)
+    ---Purpose: Converts a shape into a voxel representation.
+    --          It sets to 0 the outside volume of the shape and
+    --          1 for surfacic part of the shape.
+    --          "ithread" is the index of the thread for current call of ::Convert().
+    --          Start numeration of "ithread" with 1, please.
+    returns Boolean from Standard;
+
+    FillInVolume(me : in out;
+    	    	 inner : Byte from Standard;
+    	    	 ithread : Integer from Standard = 1)
+    ---Purpose: Fills-in volume of the shape by a value.
+    returns Boolean from Standard;
+
+
+    ---Category: Private area
+    --           ============
+
+    Destroy(me : in out);
+    ---C++: alias ~
+    ---Purpose: A destructor.
+
+    Init(me : in out)
+    is private;
+
+    GetBndBox(me;
+    	      p1   : Pnt      from gp;
+    	      p2   : Pnt      from gp;
+    	      p3   : Pnt      from gp;
+	      xmin : out Real from Standard;
+	      ymin : out Real from Standard;
+	      zmin : out Real from Standard;
+	      xmax : out Real from Standard;
+	      ymax : out Real from Standard;
+	      zmax : out Real from Standard)
+    is private;
+
+    ComputeVoxelsNearTriangle(me;
+    	    	       	      plane :     Pln           from gp;
+			      p1    :     Pnt           from gp;
+			      p2    :     Pnt           from gp;
+			      p3    :     Pnt           from gp;
+		       	      hdiag :     Real          from Standard;
+		       	      ixmin :     Integer       from Standard;
+		       	      iymin :     Integer       from Standard;
+		       	      izmin :     Integer       from Standard;
+		       	      ixmax :     Integer       from Standard;
+		       	      iymax :     Integer       from Standard;
+		              izmax :     Integer       from Standard)
+    is private;
+
+fields
+
+    myShape       : Shape   from TopoDS;
+    myVoxels      : Address from Standard;
+    myDeflection  : Real    from Standard;
+    myIsBool      : Integer from Standard; -- 0 - ColorDS, 1 - BoolDS, 2 - ROctBoolDS
+    myNbX         : Integer from Standard;
+    myNbY         : Integer from Standard;
+    myNbZ         : Integer from Standard;
+    myNbThreads   : Integer from Standard;
+    myNbTriangles : Integer from Standard;
+
+end FastConverter;

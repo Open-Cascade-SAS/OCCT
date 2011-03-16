@@ -1,0 +1,192 @@
+-- File:       SolidExplorer.cdl
+-- Created:	Thu Mar 10 14:02:10 1994
+-- Author:      Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+-- Modified by skv - Thu Sep  4 12:19:22 2003 OCC578 
+-- Add the method GetFaceSegmentIndex() which is used to obtain the index of 
+-- the face for which last segment is calculated.
+
+class SolidExplorer from BRepClass3d 
+
+	---Purpose: Provide an   exploration of a  BRep Shape   for the
+	--          classification.
+
+uses
+    Orientation  from TopAbs,
+    Pnt          from gp,
+    Pnt2d        from gp,    
+    Lin          from gp,
+    Face         from TopoDS,
+    Shell        from TopoDS,
+    Shape        from TopoDS,
+    Explorer     from TopExp,
+    Edge         from BRepClass,
+    Box          from Bnd,
+    State        from TopAbs,
+    Intersector  from IntCurvesFace,
+    MapOfInter   from BRepClass3d,
+    HSurface     from BRepAdaptor
+is
+
+    Create returns SolidExplorer from BRepClass3d;
+
+    Create (Oth: SolidExplorer from BRepClass3d) 
+    	---Purpose: Raise if called. 
+    returns SolidExplorer from BRepClass3d;
+
+    Create (S : Shape  from TopoDS) returns SolidExplorer from BRepClass3d;
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~BRepClass3d_SolidExplorer(){Destroy() ; }"
+    
+    InitShape(me : in out; S : Shape from TopoDS) is static ;
+        
+    Reject(me;  P : Pnt from gp) returns Boolean is virtual ;
+    ---Purpose: Should return True if P outside of bounding vol. of the shape
+    
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 P: out Pnt from gp;
+    	    	    	    	 Param: out Real from Standard) 
+    ---Purpose : compute a point P in the face  F. Param is a Real in
+    --         ]0,1[ and   is  used to  initialise  the algorithm. For
+    --         different values , different points are returned. 
+    returns Boolean from Standard;
+
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 P: out Pnt from gp;
+    	    	    	    	 u,v: out Real from Standard;
+    	    	    	    	 Param: out Real from Standard) 
+    returns Boolean from Standard;
+
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 P: out Pnt from gp;
+    	    	    	    	 u,v: out Real from Standard)
+    returns Boolean from Standard;
+
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 P: out Pnt from gp)
+    returns Boolean from Standard;
+
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 u,v: out Real from Standard) 
+    returns Boolean from Standard;
+                                                                         
+    -----------------------------------------------------------------------
+
+    PointInTheFace(me;      F: Face from TopoDS; 
+    			    P: out Pnt from gp;
+    	    	    	    u,v: out Real from Standard;
+    	    	    	    Param: out Real from Standard;
+    	    	    	    Index: out Integer from Standard) 
+    returns Boolean from Standard is static ;
+
+
+    PointInTheFace(me;      F: Face from TopoDS; 
+    			    P: out Pnt from gp;
+    	    	    	    u,v: out Real from Standard;
+    	    	    	    Param: out Real from Standard;
+    	    	    	    Index: out Integer from Standard;
+			    surf: HSurface  from BRepAdaptor;
+    	    	    	    u1,v1,u2,v2: Real from Standard) 
+    returns Boolean from Standard is static ;
+    ---Purpose: <Index> gives point index  to  search from and returns
+    --          point index of succeseful search
+
+
+
+    InitShell(me: in out) is static ;
+    ---Purpose: Starts an exploration of the shells.
+    MoreShell(me) returns Boolean from Standard is static ;
+    ---Purpose: Returns True if there is a current shell. 
+    NextShell(me: in out) is static ;
+    ---Purpose: Sets the explorer to the next shell.
+    CurrentShell(me) returns Shell from TopoDS is static ;
+    ---Purpose: Returns the current shell.
+    
+    RejectShell(me; L: Lin from gp) returns Boolean from Standard is virtual;
+    ---Purpose: Returns True if the Shell is rejected.
+    
+    InitFace(me: in out) is static ;
+    ---Purpose: Starts an exploration of the faces of the current shell.
+    MoreFace(me) returns Boolean from Standard is static ;
+    ---Purpose: Returns True if current face in current shell. 
+    NextFace(me: in out) is static ;
+    ---Purpose: Sets the explorer to the next Face of the current shell.
+    CurrentFace(me) returns Face from TopoDS is static ;
+    ---Purpose: Returns the current face.
+    
+    RejectFace(me; L: Lin from gp) returns Boolean from Standard is virtual;
+    ---Purpose: returns True if the face is rejected.
+    
+    ----------------------------------------------------------------------
+
+    Segment(me: in out;  P :  Pnt from gp;
+    	                 L : out Lin from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the  shape  boundary  to
+	 --          compute  intersections. 
+	 --    
+ --modified by NIZNHY-PKV Thu Nov 14 12:20:17 2002  f 
+    returns  Integer from Standard  
+--modified by NIZNHY-PKV Thu Nov 14 12:20:21 2002  t 
+    is static;
+
+    OtherSegment(me: in out;  P :  Pnt from gp;
+    	                      L : out Lin from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the  shape  boundary  to
+	 --          compute  intersections. 
+	 --          
+	 --          The First Call to this method returns a line which
+	 --          point to a point of the first face of the shape.
+	 --          The Second Call provide a line to the second face
+	 --          and so on. 
+	 --          
+--modified by NIZNHY-PKV Thu Nov 14 12:20:17 2002  f 
+    returns  Integer from Standard  
+--modified by NIZNHY-PKV Thu Nov 14 12:20:21 2002  t    
+    is static;
+    
+-- Modified by skv - Thu Sep  4 12:19:22 2003 OCC578 Begin
+    GetFaceSegmentIndex(me) 
+    	---Purpose: Returns the index of face for which 
+    	--          last segment is calculated.
+    returns Integer from Standard 
+    is static;
+-- Modified by skv - Thu Sep  4 12:19:23 2003 OCC578 End
+    --------------------------------------------------------------------
+
+    --- Dump method
+
+    DumpSegment(me; P : Pnt from gp; L : Lin from gp; 
+    	    	    Par : Real from Standard; S : State from TopAbs) is  virtual;
+
+    
+    Box(me) 
+    	---C++: return  const &
+    	returns Box from Bnd
+        is static;
+    
+    Intersector(me; F : Face from TopoDS) 
+    	---C++: return  &
+	returns Intersector from IntCurvesFace is static;
+
+    Destroy(me: in out)
+    	--C++: alias ~
+    is static;
+    
+fields
+
+    myBox           : Box      from Bnd;
+    myShape         : Shape    from TopoDS;
+    myReject        : Boolean  from Standard;
+    myFirstFace     : Integer  from Standard;
+    myParamOnEdge   : Real     from Standard;
+    myShellExplorer : Explorer from TopExp;
+    myFaceExplorer  : Explorer from TopExp;
+
+    myMapOfInter    : MapOfInter from BRepClass3d;
+
+end SolidExplorer;

@@ -1,0 +1,5 @@
+Resource_CMPLRS.edl
+Resource_ConvertUnicode.c
+Resource_ConvertUnicode.hxx
+Resource_Shiftjis.h
+Resource_gb2312.h

@@ -1,0 +1,70 @@
+-- File:	Units_UnitSentence.cdl
+-- Created:	Mon Jun 22 17:59:59 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+private class UnitSentence from Units
+
+	---Purpose: This   class describes   all    the  facilities to
+	--          manipulate and compute units contained in a string
+	--          expression.
+
+inherits
+
+    Sentence from Units
+
+uses
+
+    QuantitiesSequence from Units
+
+--raises
+
+is
+
+    Create(astring : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates   and   returns a   UnitSentence.   The string
+    --          <astring> describes in natural  language the  unit  or
+    --          the composed unit to be analysed.
+    
+    returns UnitSentence from Units;
+    
+    Create(astring : CString ; aquantitiessequence : QuantitiesSequence from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns    a  UnitSentence.  The   string
+    --          <astring> describes in natural language the unit to be
+    --          analysed.   The    sequence     of physical quantities
+    --          <asequenceofquantities>   describes    the   available
+    --          dictionary of units you want to use.
+    
+    returns UnitSentence from Units;
+    
+    Analyse(me : in out)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Analyzes   the sequence  of   tokens  created  by  the
+    --          constructor to  find  the true significance   of  each
+    --          token.
+    
+    is static;
+    
+    SetUnits(me : in out ; aquantitiessequence : QuantitiesSequence from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: For each token which  represents a unit, finds  in the
+    --          sequence    of    physical   quantities      all   the
+    --          characteristics of the unit found.
+    
+    is static;
+
+--fields
+
+end UnitSentence;

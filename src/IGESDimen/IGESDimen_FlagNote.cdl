@@ -1,0 +1,108 @@
+--
+-- File      :  FlagNote.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class FlagNote from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines FlagNote, Type <208> Form <0>
+        --          in package IGESDimen
+        --          Is label information formatted in different ways
+
+uses
+
+        GeneralNote          from IGESDimen,
+        LeaderArrow          from IGESDimen,
+        Pnt                  from gp,
+        XYZ                  from gp,
+        HArray1OfLeaderArrow from IGESDimen
+
+raises OutOfRange
+
+is
+
+        Create returns mutable FlagNote;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              leftCorner  : XYZ;
+              anAngle     : Real;
+              aNote       : GeneralNote;
+              someLeaders : HArray1OfLeaderArrow);
+        ---Purpose : This method is used to set the fields of the class
+        --           FlagNote
+        --       - leftCorner  : Lower left corner of the Flag
+        --       - anAngle     : Rotation angle in radians
+        --       - aNote       : General Note Entity
+        --       - someLeaders : Leader Entities
+
+        LowerLeftCorner (me) returns Pnt;
+        ---Purpose : returns Lower Left coordinate of Flag as Pnt from package gp
+
+        TransformedLowerLeftCorner (me) returns Pnt;
+        ---Purpose : returns Lower Left coordinate of Flag as Pnt from package gp
+        -- after Transformation.
+
+        Angle (me) returns Real;
+        ---Purpose : returns Rotation angle in radians
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns General Note Entity
+
+        NbLeaders (me) returns Integer;
+        ---Purpose : returns number of Arrows (Leaders) or zero
+
+        Leader (me; Index : Integer) returns LeaderArrow
+        raises OutOfRange;
+        ---Purpose : returns Leader Entity
+        -- raises exception if Index <= 0 or Index > NbLeaders()
+
+        -- The below provided methods do not have corresponding fields.
+        -- They are provided as mentioned in the IGES specs.
+
+        Height (me) returns Real;
+        ---Purpose : returns Height computed by the formula :
+        -- Height = 2 * CH   where CH is from theNote
+
+        CharacterHeight (me) returns Real;
+        ---Purpose : returns the Character Height (from General Note)
+
+        Length (me) returns Real;
+        ---Purpose : returns Length computed by the formula :
+        -- Length = TW + 0.4*CH  where CH is from theNote
+        --                         and TW is from theNote
+
+        TextWidth (me) returns Real;
+        ---Purpose : returns the Text Width (from General Note)
+
+        TipLength (me) returns Real;
+        ---Purpose : returns TipLength computed by the formula :
+        -- TipLength = 0.5 * H / tan 35(deg)  where H is Height()
+
+fields
+
+--
+-- Class    : IGESDimen_FlagNote
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class FlagNote.
+--
+-- Reminder : A FlagNote instance is defined by :
+--            - Lower left corner of the Flag
+--            - Rotation angle in radians
+--            - General Note Entity
+--            - Leader Entities
+-- A FlagNote Entity is label information formatted. The rotation angle and
+-- Lower Left Corner override the General Note Entity rotation angle and
+-- placement.
+
+        theLowerLeftcorner : XYZ;
+        theAngle           : Real;
+        theNote            : GeneralNote;
+        theLeaders         : HArray1OfLeaderArrow;
+
+end FlagNote;

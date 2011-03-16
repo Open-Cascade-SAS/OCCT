@@ -1,0 +1,112 @@
+-- File:	Blend_FuncInv.cdl
+-- Created:	Thu Dec  2 18:28:48 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class FuncInv from Blend
+
+
+inherits FunctionSetWithDerivatives from math
+
+
+    ---Purpose: Deferred class for a function used to compute a blending
+    --          surface between two surfaces, using a guide line.
+    --          This function is used to find a solution on a restriction
+    --          of one of the surface.
+    --          The vector <X> used in Value, Values and Derivatives methods
+    --          has to be the vector of the parametric coordinates t,w,U,V 
+    --          where t is the parameter on the curve on surface,
+    --                w is the parameter on the guide line,
+    --                U,V are the parametric coordinates of a point on the
+    --                partner surface.
+
+uses Vector from math,
+     Matrix from math,
+     HCurve2d from Adaptor2d
+
+is
+
+    NbVariables(me)
+	---Purpose: Returns 4.
+    	returns Integer from Standard
+	is static;
+
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+    	returns Integer from Standard
+	is deferred;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard
+	is deferred;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is deferred;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is deferred;
+
+
+    Set(me: in out; OnFirst: Boolean from Standard;
+    	            COnSurf: HCurve2d from Adaptor2d)
+
+	---Purpose: Sets the CurveOnSurface on which a solution has
+	--          to be found. If <OnFirst> is set to Standard_True,
+	--          the curve will be on the first surface, otherwise the
+	--          curve is on the second one.
+
+    	is deferred;
+
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard)
+    
+	---Purpose: Returns in the vector Tolerance the parametric tolerance
+	--          for each of the 4 variables;
+	--          Tol is the tolerance used in 3d space.
+    
+    	is deferred;
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math)
+    
+	---Purpose: Returns in the vector InfBound the lowest values allowed
+	--          for each of the 4 variables.
+	--          Returns in the vector SupBound the greatest values allowed
+	--          for each of the 4 variables.
+    
+    	is deferred;
+
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    
+	---Purpose: Returns Standard_True if Sol is a zero of the function.
+	--          Tol is the tolerance used in 3d space.
+    
+    	returns Boolean from Standard
+    
+    	is deferred;
+
+
+end FuncInv;

@@ -1,0 +1,25 @@
+-- File:	BinMDocStd.cdl
+-- Created:	Thu May 13 15:25:28 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+package BinMDocStd
+
+        ---Purpose: Storage and Retrieval drivers for TDocStd modelling attributes.
+
+uses BinMDF,
+     BinObjMgt,
+     TDF, 
+     TDocStd,
+     CDM
+
+is
+    class XLinkDriver; 
+     
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>.
+
+end BinMDocStd;
+
+

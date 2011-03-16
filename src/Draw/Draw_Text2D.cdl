@@ -1,0 +1,40 @@
+-- File:	Draw_Text2D.cdl
+-- Created:	Mon Apr 18 18:10:20 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+class Text2D from Draw inherits Drawable2D from Draw
+
+	---Purpose: 
+
+uses Pnt2d from gp,
+    Color from Draw,
+    Display from Draw,
+    AsciiString from TCollection
+
+is
+
+    Create(p : Pnt2d; T : CString; col : Color)
+    returns mutable Text2D from Draw;
+    
+    Create(p : Pnt2d; T : CString; col : Color;
+    	   moveX : Integer; moveY : Integer)
+    returns mutable Text2D from Draw;
+    
+    SetPnt2d(me : mutable; p : Pnt2d);
+
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myPoint : Pnt2d        from gp;
+    myColor : Color        from Draw;
+    myText  : AsciiString  from TCollection;
+    mymoveX : Integer      from Standard;
+    mymoveY : Integer      from Standard;
+    
+end Text2D;

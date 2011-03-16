@@ -1,0 +1,169 @@
+-- File:	HatchGen_PointOnHatching.cdl
+-- Created:	Fri Oct 29 15:21:47 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:	Matra Datavision 1993
+
+class PointOnHatching from HatchGen
+
+
+inherits IntersectionPoint from HatchGen
+
+
+uses
+    PointOnElement    from HatchGen ,
+    PointsOnElement   from HatchGen ,
+    IntersectionPoint from IntRes2d
+
+raises
+    OutOfRange from Standard
+    
+    
+is
+
+
+    Create
+    
+    	---Purpose: Creates an empty point.
+
+      	---Category: PointOnHatching
+
+    	returns PointOnHatching from HatchGen ;
+
+
+
+    Create (Point : PointOnHatching from HatchGen)
+    
+    	---Purpose: Creates a point from an other.
+
+      	---Category: PointOnHatching
+
+    	returns PointOnHatching from HatchGen ;
+
+
+    Create (Point : IntersectionPoint from IntRes2d)
+    
+    	---Purpose: Creates a point from an intersection point.
+
+      	---Category: PointOnHatching
+
+    	returns PointOnHatching from HatchGen ;
+
+
+    Delete (me : out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~HatchGen_PointOnHatching(){Delete();}"
+    ---Purpose: linux porting      
+   
+    AddPoint (me : in out ; Point     : PointOnElement from HatchGen ;
+    	    	    	    Confusion : Real           from Standard)
+    
+    	---Purpose: Adds a point on element to the point.
+
+    	---Category: PointOnHatching
+
+    	is static ;
+
+
+    NbPoints (me)
+    
+    	---Purpose: Returns the number of elements intersecting the
+    	--          hatching at this point.
+
+    	---Category: PointOnHatching
+
+    	returns Integer from Standard
+	is static ;
+
+
+    Point (me; Index : Integer from Standard)
+    
+    	---Purpose: Returns the Index-th point on element of the point.
+    	--          The exception OutOfRange is raised if
+    	--          Index > NbPoints.
+
+    	---Category: PointOnHatching
+
+    	---C++: return const &
+
+    	returns PointOnElement from HatchGen
+	raises OutOfRange from Standard
+	is static ;
+
+
+    RemPoint (me : in out ; Index : Integer from Standard)
+    
+    	---Purpose: Removes the Index-th point on element of the point.
+    	--          The exception OutOfRange is raised if
+    	--          Index > NbPoints.
+
+    	---Category: PointOnHatching
+
+    	raises OutOfRange from Standard
+	is static ;
+
+
+    ClrPoints (me : in out)
+    
+    	---Purpose: Removes all the points on element of the point.
+
+    	---Category: PointOnHatching
+
+    	is static ;
+
+
+    IsLower (me; Point     : PointOnHatching from HatchGen ;
+    	    	 Confusion : Real            from Standard)
+    
+      	---Purpose: Tests if the point is lower than an other.
+      	--          A point on hatching P1 is said to be lower than an
+      	--          other P2 if :
+      	--            P2.myParam - P1.myParam > Confusion
+
+      	---Category: PointOnHatching
+
+        returns Boolean from Standard
+        is static ;
+	
+
+    IsEqual (me; Point     : PointOnHatching from HatchGen ;
+    	    	 Confusion : Real            from Standard)
+    
+
+      	---Purpose: Tests if the  point is equal to an other.
+      	--          A  point on hatching P1 is said to be equal to an
+      	--          other P2 if :
+        --            | P2.myParam - P1.myParam | <= Confusion
+
+      	---Category: PointOnHatching
+
+	returns Boolean from Standard
+  	is static ;
+
+
+    IsGreater (me; Point     : PointOnHatching from HatchGen ;
+                   Confusion : Real            from Standard)
+    
+    
+      	---Purpose: Tests if the point is greater than an other.
+      	--          A point on hatching P1 is said to be greater than an
+      	--          other P2 if :
+      	--            P1.myParam - P2.myParam > Confusion
+
+      	---Category: PointOnHatching
+
+        returns Boolean from Standard
+        is static ;
+
+
+    Dump (me; Index : Integer from Standard = 0)
+    
+    	---Purpose: Dump of the point.
+
+    	is static ;
+	
+
+fields
+
+    myPoints : PointsOnElement from HatchGen is protected ;
+
+end PointOnHatching from HatchGen ;

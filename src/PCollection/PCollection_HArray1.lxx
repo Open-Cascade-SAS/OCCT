@@ -1,0 +1,33 @@
+#include <Standard_OutOfRange.hxx>
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray1::Length () const 
+{
+	return UpperBound-LowerBound+1 ;
+}
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray1::Lower () const
+{
+	return LowerBound ;
+}
+
+
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+inline Standard_Integer PCollection_HArray1::Upper () const
+{
+	return UpperBound ;
+}
+
+
+

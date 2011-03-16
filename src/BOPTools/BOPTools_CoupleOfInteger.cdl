@@ -1,0 +1,74 @@
+-- File:	BOPTools_CoupleOfInteger.cdl
+-- Created:	Mon Apr  1 10:16:21 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class CoupleOfInteger from BOPTools 
+
+	---Purpose:  
+	--  Auxiliary class providing structure to  
+	--  store info about a couple of integers 
+	 
+--uses
+--raises
+
+is
+    Create 
+    	returns CoupleOfInteger from BOPTools; 
+    	---Purpose: 
+    	--- Empty Constructor
+    	---
+    Create(aFirst  : Integer from Standard; 
+    	   aSecond : Integer from Standard) 
+    	returns CoupleOfInteger from BOPTools; 
+    	---Purpose: 
+    	--- Constructor
+    	---
+    SetCouple(me:out; 
+	   aFirst  : Integer from Standard; 
+    	   aSecond : Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetFirst(me:out; 
+	   aFirst  : Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetSecond(me:out; 
+	   aSecond : Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    Couple   (me; 
+    	   aFirst  :out Integer from Standard; 
+    	   aSecond :out Integer from Standard); 	   
+    	---Purpose: 
+    	--- Selector
+    	---
+    First(me) 
+    	returns Integer from Standard;
+    	---Purpose: 
+    	--- Selector
+    	---
+    Second(me) 
+    	returns Integer from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+  
+    IsEqual(me; 
+    	    aOther:like me) 
+	returns Boolean from Standard;     
+
+    HashCode(me; 
+	    Upper : Integer  from Standard)  
+    	returns Integer from Standard;  
+	
+fields 
+    myFirst  : Integer from Standard; 
+    mySecond : Integer from Standard;   
+
+end CoupleOfInteger;

@@ -1,0 +1,7 @@
+// File:	StdSelect_ShapeTypeFilter.lxx
+// Created:	Thu Mar  6 14:07:18 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline TopAbs_ShapeEnum StdSelect_ShapeTypeFilter::Type() const 
+{return myType;}

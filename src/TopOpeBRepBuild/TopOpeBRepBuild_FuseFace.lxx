@@ -1,0 +1,121 @@
+// File:	TopOpeBRepBuild_FuseFace.lxx
+// Created:	Thu Jul 30 14:06:57 1998
+// Author:	LECLERE Florence
+//		<flo@partox.paris1.matra-dtv.fr>
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : TopOpeBRepBuild_FuseFace
+//purpose  : 
+//=======================================================================
+
+inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace ():myDone(Standard_False)
+{}
+
+
+//=======================================================================
+//function : TopOpeBRepBuild_FuseFace
+//purpose  : 
+//=======================================================================
+
+inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace (
+				    const TopTools_ListOfShape& LIF,
+				    const TopTools_ListOfShape& LRF,
+				    const Standard_Integer CXM)
+{
+  Init(LIF,LRF,CXM);
+}
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRepBuild_FuseFace::IsDone() const
+{
+  return myDone;
+}
+
+
+//=======================================================================
+//function : IsModified
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRepBuild_FuseFace::IsModified() const
+{
+  return myModified;
+}
+
+
+//=======================================================================
+//function : ListOfFusionnedFaces
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LFuseFace() const
+{
+  return myLFF;
+}
+
+
+//=======================================================================
+//function : ListOfInternalEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternEdge() const
+{
+  return myLIE;
+}
+
+//=======================================================================
+//function : ListOfExternalEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LExternEdge() const
+{
+  return myLEE;
+}
+
+//=======================================================================
+//function : ListOfModifiedEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LModifEdge() const
+{
+  return myLME;
+}
+
+//=======================================================================
+//function : ListOfInternalVertex
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LInternVertex() const
+{
+  return myLIV;
+}
+
+//=======================================================================
+//function : ListOfExternalVertex
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LExternVertex() const
+{
+  return myLEV;
+}
+
+//=======================================================================
+//function : ListOfModifiedVertex
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& TopOpeBRepBuild_FuseFace::LModifVertex() const
+{
+  return myLMV;
+}

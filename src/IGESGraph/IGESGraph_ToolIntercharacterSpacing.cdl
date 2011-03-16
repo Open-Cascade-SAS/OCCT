@@ -1,0 +1,63 @@
+-- File:	IGESGraph_ToolIntercharacterSpacing.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolIntercharacterSpacing  from IGESGraph
+
+    ---Purpose : Tool to work on a IntercharacterSpacing. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses IntercharacterSpacing from IGESGraph,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolIntercharacterSpacing;
+    ---Purpose : Returns a ToolIntercharacterSpacing, ready to work
+
+
+    ReadOwnParams (me; ent : mutable IntercharacterSpacing;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : IntercharacterSpacing;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : IntercharacterSpacing;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a IntercharacterSpacing <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable IntercharacterSpacing) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a IntercharacterSpacing
+    --           (NbPropertyValues forced to 1)
+
+    DirChecker (me; ent : IntercharacterSpacing) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : IntercharacterSpacing;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : IntercharacterSpacing; entto : mutable IntercharacterSpacing;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : IntercharacterSpacing;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolIntercharacterSpacing;

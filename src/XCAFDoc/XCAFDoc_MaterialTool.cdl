@@ -1,0 +1,104 @@
+-- File:	XCAFDoc_MaterialTool.cdl
+-- Created:	Wed Mar  5 16:40:41 2003
+-- Author:	Sergey KUUL
+--		<skl@friendox>
+---Copyright:	 Matra Datavision 2003
+
+class MaterialTool from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: Provides tools to store and retrieve attributes (materials)
+	--          of TopoDS_Shape in and from TDocStd_Document
+	--          A Document is intended to hold different 
+	--          attributes of ONE shape and it's sub-shapes
+
+uses
+    Shape from TopoDS,
+    Label from TDF,
+    LabelSequence from TDF,
+    Document from TDocStd,
+    ShapeTool from XCAFDoc,
+    RelocationTable from TDF,
+    HAsciiString from TCollection
+
+is
+    Create returns MaterialTool from XCAFDoc;
+
+    Set (myclass; L : Label from TDF) returns MaterialTool from XCAFDoc;
+    	---Purpose: Creates (if not exist) MaterialTool.
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    
+    ---API: General structure
+    
+    BaseLabel(me) returns Label from TDF;
+    	---Purpose: returns the label under which colors are stored
+    
+    ShapeTool (me: mutable) returns ShapeTool from XCAFDoc;
+    	---Purpose: Returns internal XCAFDoc_ShapeTool tool
+	---C++: return const &
+
+
+    -- Methods for Material:
+
+    IsMaterial (me; lab: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label belongs to a material table and
+        --          is a Material definition 
+    
+    GetMaterialLabels (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of materials currently stored 
+        --          in the material table
+    
+    AddMaterial (me; aName : HAsciiString from TCollection;
+    	    	     aDescription : HAsciiString from TCollection;
+    	    	     aDensity : Real from Standard;
+    	    	     aDensName : HAsciiString from TCollection;
+    	    	     aDensValType : HAsciiString from TCollection)
+    returns Label from TDF;
+    	---Purpose: Adds a Material definition to a table and returns its label
+
+    SetMaterial (me; L: Label from TDF;
+		     MatL: Label from TDF);
+    	---Purpose: Sets a link with GUID
+    
+    SetMaterial (me; L: Label from TDF; aName : HAsciiString from TCollection;
+    	    	     aDescription : HAsciiString from TCollection;
+    	    	     aDensity : Real from Standard;
+    	    	     aDensName : HAsciiString from TCollection;
+    	    	     aDensValType : HAsciiString from TCollection);
+    	---Purpose: Sets a link with GUID
+    	--          Adds a Material as necessary
+    
+    GetMaterial (me; MatL: Label from TDF; aName : out HAsciiString from TCollection;
+    	    	     aDescription : out HAsciiString from TCollection;
+    	    	     aDensity : out Real from Standard;
+    	    	     aDensName : out HAsciiString from TCollection;
+    	    	     aDensValType : out HAsciiString from TCollection) returns Boolean;
+        ---Purpose: Returns Material assigned to <MatL>
+    	--          Returns False if no such Material is assigned
+    
+    GetDensityForShape (myclass; ShapeL: Label from TDF) returns Real from Standard;
+        ---Purpose: Find referred material and return density from it
+	--          if no material --> return 0
+
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+
+    myShapeTool: ShapeTool from XCAFDoc;
+    
+end MaterialTool;
+

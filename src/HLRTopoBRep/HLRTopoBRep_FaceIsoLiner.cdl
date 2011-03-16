@@ -1,0 +1,44 @@
+-- File:	HLRTopoBRep_FaceIsoLiner.cdl
+-- Created:	Fri Jan  6 10:41:01 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class FaceIsoLiner from HLRTopoBRep
+
+uses
+    Integer from Standard,
+    Real    from Standard,
+    Pnt     from gp,
+    Line    from Geom2d,
+    Face    from TopoDS,
+    Edge    from TopoDS,
+    Vertex  from TopoDS,
+    Data    from HLRTopoBRep
+
+is
+    Perform( myclass;
+             FI     :        Integer from Standard;
+             F      :        Face    from TopoDS;
+    	     DS     : in out Data    from HLRTopoBRep;
+	     nbIsos :        Integer from Standard);
+
+    MakeVertex( myclass;
+                E   :        Edge from TopoDS;
+                P   :        Pnt  from gp;
+                Par :        Real from Standard;
+                Tol :        Real from Standard;
+    	        DS  : in out Data from HLRTopoBRep)
+    returns Vertex from TopoDS; 
+
+    MakeIsoLine( myclass;
+             F   :        Face   from TopoDS;
+	     Iso :        Line   from Geom2d;	
+             V1  : in out Vertex from TopoDS;
+             V2  : in out Vertex from TopoDS;
+             U1  :        Real   from Standard;
+             U2  :        Real   from Standard;
+             Tol :        Real   from Standard;
+             DS  : in out Data   from HLRTopoBRep);
+
+end FaceIsoLiner;

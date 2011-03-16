@@ -1,0 +1,55 @@
+-- File:	Sweep.cdl
+-- Created:	Fri Jan  8 15:16:39 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+package Sweep
+
+    ---Purpose: This package contains generic classes usefull to create
+    --          swept 3D primitives.
+
+uses
+
+    Standard, 
+    TCollection, 
+    TColStd,
+    TopAbs
+
+is
+
+    deferred generic class Tool;
+    -- signature  class. Required by  the LinearRegularSweep, defining
+    -- the indexation type analysis services uppon shapes.
+    
+    deferred generic class Iterator;
+    -- signature  class. Required by  the LinearRegularSweep, defining
+    -- the iteration services uppon shapes.
+    
+    deferred generic class Builder;
+    -- signature class. Required by the LinearRegularSweep.
+    
+    deferred generic class LinearRegularSweep,
+    	Array2OfShapes,
+        SequenceOfShapes;
+	
+	
+    --
+    --     The following classes provides a directing topology for the
+    --     LinearRegularSweep. This  is  the  topology of an  open  or
+    --     closed loop of edges.
+    --     
+
+    class NumShape;
+	---Purpose: A shape represented by an index.
+    
+    class NumShapeTool;
+	---Purpose: Tool for NumShapes.
+    
+    class NumShapeIterator;
+	---Purpose: Iterator for NumShapes.
+    
+end Sweep;
+
+

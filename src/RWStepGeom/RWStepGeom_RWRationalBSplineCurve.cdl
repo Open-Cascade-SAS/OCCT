@@ -1,0 +1,33 @@
+-- File:        RationalBSplineCurve.cdl
+-- Created:     Mon Dec  4 12:02:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWRationalBSplineCurve from RWStepGeom
+
+	---Purpose : Read & Write Module for RationalBSplineCurve
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     RationalBSplineCurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWRationalBSplineCurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable RationalBSplineCurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : RationalBSplineCurve from StepGeom);
+
+	Share(me; ent : RationalBSplineCurve from StepGeom; iter : in out EntityIterator);
+
+    	Check(me; ent : RationalBSplineCurve from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWRationalBSplineCurve;

@@ -1,0 +1,357 @@
+-- File:	VStream_VDriverBase.cdl
+-- Created:	Mon Nov 25 10:50:21 1996
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+deferred class BaseDriver from Storage
+    	---Purpose: Root class for drivers. A driver assigns a physical container 
+    	-- to data to be stored or retrieved, for instance a file.
+    	-- The FSD package provides two derived concrete classes :
+    	-- -   FSD_File is a general driver which defines a
+    	--   file as the container of data.
+uses Position    from Storage,
+     AsciiString from TCollection,
+     OpenMode    from Storage,
+     Error       from Storage,
+     ExtendedString from TCollection,
+     SequenceOfAsciiString from TColStd,
+     SequenceOfExtendedString from TColStd
+     
+raises StreamTypeMismatchError from Storage,
+       StreamFormatError from Storage,
+       StreamWriteError from Storage,
+       StreamExtCharParityError from Storage
+       
+is
+    Delete ( me : out ) ;
+    ---C++: alias "Standard_EXPORT virtual ~Storage_BaseDriver(){Delete();}"
+
+    Initialize;
+    
+    Open(me : in out; aName : AsciiString from TCollection; aMode : OpenMode from Storage) returns Error from Storage is deferred;
+
+    Name(me) returns AsciiString from TCollection; 
+    ---C++: inline
+        
+    OpenMode(me) returns OpenMode from Storage;
+    ---C++: inline
+
+    IsEnd(me : in out) returns Boolean from Standard is deferred;
+    ---Purpose: returns True if we are at end of the stream    
+
+    Tell( me : in out ) returns Position from Storage is deferred;
+        ---Purpose: return position in the file. Return -1 upon error.
+    
+    
+    --	INFO SECTION
+    --	write
+    --	
+    BeginWriteInfoSection(me : in out) returns Error from Storage is deferred;    
+    
+    WriteInfo(me : in out; nbObj : Integer from Standard; 
+    	    	    	   dbVersion : AsciiString from TCollection;
+    	    	    	   date : AsciiString from TCollection;
+    	    	    	   schemaName : AsciiString from TCollection;
+    	    	    	   schemaVersion : AsciiString from TCollection;
+    	    	    	   appName : ExtendedString from TCollection;
+    	    	    	   appVersion : AsciiString from TCollection;
+	      		   objectType : ExtendedString from TCollection;
+    	    	    	   userInfo : SequenceOfAsciiString from TColStd) 
+    raises StreamWriteError 
+    is deferred;
+			   
+    EndWriteInfoSection(me : in out) returns Error from Storage is deferred;
+    
+    -- read
+    -- 
+    BeginReadInfoSection(me : in out) returns Error from Storage
+    is deferred;
+    
+    ReadInfo(me : in out; nbObj : in out Integer from Standard; 
+    	    	    	  dbVersion : in out AsciiString from TCollection;
+    	    	    	  date : in out AsciiString from TCollection;
+    	    	    	  schemaName : in out AsciiString from TCollection;
+    	    	    	  schemaVersion : in out AsciiString from TCollection;
+    	    	    	  appName  : in out ExtendedString from TCollection;
+    	    	    	  appVersion : in out AsciiString from TCollection;
+			  objectType : in out ExtendedString from TCollection;
+    	    	    	  userInfo : in out SequenceOfAsciiString from TColStd) 
+    raises StreamTypeMismatchError,StreamExtCharParityError
+    is deferred;
+    
+    EndReadInfoSection(me : in out) returns Error from Storage 
+    is deferred;
+
+    --	COMMENTS SECTION
+    --	write
+    --	
+    BeginWriteCommentSection(me : in out) returns Error from Storage is deferred;    
+    
+    WriteComment(me : in out; userComments : SequenceOfExtendedString from TColStd)
+    raises StreamWriteError is deferred;
+			   
+    EndWriteCommentSection(me : in out) returns Error from Storage is deferred;
+    
+    -- read
+    -- 
+    BeginReadCommentSection(me : in out) returns Error from Storage is deferred;
+    
+    ReadComment(me : in out;  userComments : in out SequenceOfExtendedString from TColStd)
+    raises StreamTypeMismatchError,StreamExtCharParityError
+    is deferred;
+    
+    EndReadCommentSection(me : in out) returns Error from Storage is deferred;
+
+
+    -- TYPE SECTION
+    -- write
+    -- 
+    BeginWriteTypeSection(me : in out) returns Error from Storage is deferred;    
+    
+    SetTypeSectionSize(me : in out; aSize : Integer from Standard) 
+    raises StreamWriteError 
+    is deferred;
+    
+    WriteTypeInformations(me : in out; typeNum : Integer from Standard; typeName : AsciiString from TCollection) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWriteTypeSection(me : in out) returns Error from Storage is deferred;
+       
+    -- read
+    -- 	 
+    BeginReadTypeSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    TypeSectionSize(me : in out) returns Integer from Standard 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    ReadTypeInformations(me : in out; typeNum : in out Integer from Standard; typeName : in out AsciiString from TCollection) 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    EndReadTypeSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    -- ROOT SECTION
+    -- write
+    -- 
+    BeginWriteRootSection(me : in out) returns Error from Storage is deferred;    
+    
+    SetRootSectionSize(me : in out; aSize : Integer from Standard) 
+    raises StreamWriteError
+    is deferred;
+    
+    WriteRoot(me : in out; rootName : AsciiString from TCollection; aRef : Integer from Standard; aType :  AsciiString from TCollection) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWriteRootSection(me : in out) returns Error from Storage is deferred;
+
+    -- read
+    -- 
+    BeginReadRootSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    RootSectionSize(me : in out) returns Integer from Standard 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    ReadRoot(me : in out; rootName : in out AsciiString from TCollection; aRef : in out Integer from Standard; aType : in out AsciiString from TCollection) 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    EndReadRootSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    -- REF SECTION
+    -- write
+    -- 
+    BeginWriteRefSection(me : in out) returns Error from Storage is deferred;
+    
+    SetRefSectionSize(me : in out; aSize : Integer from Standard)
+    raises StreamWriteError 
+    is deferred;
+    
+    WriteReferenceType(me : in out; reference : Integer from Standard; typeNum : Integer from Standard) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWriteRefSection(me : in out) returns Error from Storage is deferred;
+
+    -- read
+    -- 
+    BeginReadRefSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    RefSectionSize(me : in out) returns Integer from Standard 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    ReadReferenceType(me : in out; reference : in out Integer from Standard; typeNum : in out Integer from Standard) 
+    raises StreamTypeMismatchError
+    is deferred;
+    
+    EndReadRefSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    -- DATA SECTION
+    -- write
+    -- 
+    BeginWriteDataSection(me : in out) returns Error from Storage is deferred;    
+    
+    WritePersistentObjectHeader(me : in out; aRef : Integer from Standard; aType : Integer from Standard) 
+    raises StreamWriteError 
+    is deferred;
+    
+    BeginWritePersistentObjectData(me : in out) 
+    raises StreamWriteError 
+    is deferred;
+    
+    BeginWriteObjectData(me : in out) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWriteObjectData(me : in out) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWritePersistentObjectData(me : in out) 
+    raises StreamWriteError 
+    is deferred;
+    
+    EndWriteDataSection(me : in out) returns Error from Storage is deferred;
+    
+    -- read
+    -- 
+    BeginReadDataSection(me : in out) returns Error from Storage 
+    is deferred;
+    
+    ReadPersistentObjectHeader(me : in out; aRef : in out Integer from Standard; aType : in out Integer from Standard) 
+    raises StreamTypeMismatchError,StreamFormatError
+    is deferred;
+    
+    BeginReadPersistentObjectData(me : in out)
+    raises StreamFormatError
+    is deferred;
+    
+    BeginReadObjectData(me : in out) 
+    raises StreamFormatError
+    is deferred;
+    
+    EndReadObjectData(me : in out) 
+    raises StreamFormatError
+    is deferred;
+    
+    EndReadPersistentObjectData(me : in out) 
+    raises StreamFormatError
+    is deferred;
+    
+    EndReadDataSection(me : in out) returns Error from Storage 
+    is deferred;
+  
+    -- jump to the next object to read
+    -- 
+    SkipObject(me : in out) is deferred;
+    
+    -- 
+
+    PutReference(me : in out; aValue : Integer from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: return &
+
+    PutCharacter(me : in out; aValue : Character from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+
+    PutExtCharacter(me : in out; aValue : ExtCharacter from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutInteger(me : in out; aValue : Integer from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutBoolean(me : in out; aValue : Boolean from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutReal(me : in out; aValue : Real from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutShortReal(me : in out; aValue : ShortReal from Standard) returns BaseDriver from Storage 
+    raises StreamWriteError 
+    is deferred;
+    ---C++: alias operator <<
+    ---C++: return &
+
+    GetReference(me : in out; aValue : in out Integer from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: return &
+
+    GetCharacter(me : in out; aValue : in out Character from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    GetExtCharacter(me : in out; aValue :in out  ExtCharacter from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    GetInteger(me : in out; aValue : in out Integer from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetBoolean(me : in out; aValue : in out Boolean from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetReal(me : in out; aValue :in out Real from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetShortReal(me : in out; aValue : in out ShortReal from Standard) returns BaseDriver from Storage 
+    	raises StreamTypeMismatchError
+    	is deferred;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    Close(me : in out) returns Error from Storage is deferred;
+
+    -- PROTECTED
+
+    SetName(me : in out; aName : AsciiString from TCollection) is protected;
+    ---C++: inline
+    
+    SetOpenMode(me : in out; aMode : OpenMode from Storage) is protected;
+    ---C++: inline
+    
+    fields
+    
+    	myOpenMode : OpenMode from Storage;
+	myName     : AsciiString from TCollection;
+end;

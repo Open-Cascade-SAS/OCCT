@@ -1,0 +1,87 @@
+-- File:	TNaming_Name.cdl
+-- Created:	Wed Mar 19 17:42:18 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr> 
+-- Modified     by  SZY  Wed  Aug  18  1999
+---Copyright:	 Matra Datavision 1997
+
+
+class Name from TNaming 
+    
+uses
+
+    NameType         from TNaming,
+    NamedShape       from TNaming,
+    ListOfNamedShape from TNaming,
+    ShapeEnum        from TopAbs, 
+    Shape            from TopoDS,
+    Label            from TDF, 
+    LabelMap         from TDF,
+    RelocationTable  from TDF 
+
+is
+
+    ---Category: Construction
+    --           ============
+    
+    Create returns Name from TNaming;
+    
+    Type           (me : in out; aType : NameType  from TNaming);
+    
+    ShapeType      (me : in out; aType : ShapeEnum from TopAbs);
+     
+    Shape          (me : in out; theShape : Shape from TopoDS);
+    
+    Append         (me : in out; arg : NamedShape  from TNaming);
+    
+    StopNamedShape (me : in out; arg : NamedShape  from TNaming);
+    
+    Index          (me : in out; I : Integer   from Standard);  
+     
+    ContextLabel   (me : in out; theLab : Label from TDF);  
+     
+
+   ---Category: Queriyng
+   --           ========
+
+    Type (me) returns NameType from TNaming;
+    
+    ShapeType (me)  returns ShapeEnum from TopAbs;  
+    
+    Shape     (me)   returns Shape from TopoDS; 
+    
+    Arguments (me) returns ListOfNamedShape from TNaming;
+    ---Purpose: 
+    ---C++: return const&
+
+    StopNamedShape (me) returns NamedShape from TNaming ;
+    
+    Index          (me) returns Integer    from Standard; 
+         
+    ContextLabel   (me) returns Label from TDF;  
+    ---C++: return const&  
+    
+
+    ---Category: Resolution
+    --           ==========
+    
+    Solve(me; 
+    	  aLab   : Label        from TDF;
+    	  Valid  : LabelMap     from TDF)
+    returns Boolean from Standard;		    	    	  
+	    	
+    Paste (me; 
+    	   into : in out  Name from TNaming; 
+    	   RT   : mutable RelocationTable from TDF);
+    	    	
+fields
+
+    myType      : NameType         from TNaming;
+    myShapeType : ShapeEnum        from TopAbs; 
+    myArgs      : ListOfNamedShape from TNaming;
+    myStop      : NamedShape       from TNaming;    
+    myIndex     : Integer          from Standard; 
+    myShape     : Shape            from TopoDS;
+    myContextLabel : Label         from TDF;
+    
+end Name;

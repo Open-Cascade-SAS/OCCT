@@ -1,0 +1,146 @@
+
+package StepFEA
+
+
+uses
+    TCollection,
+    TColStd,
+    StepData,
+    StepBasic,
+    StepGeom,
+    StepRepr,
+    StepElement
+
+is 
+
+    enumeration ElementVolume is 
+	Volume
+    end;
+
+    enumeration CurveEdge is 
+	ElementEdge
+    end;
+
+    enumeration CoordinateSystemType is 
+	Cartesian,
+	Cylindrical,
+	Spherical
+    end;
+    
+    enumeration EnumeratedDegreeOfFreedom is 
+	XTranslation,
+	YTranslation,
+	ZTranslation,
+	XRotation,
+	YRotation,
+	ZRotation,
+	Warp
+    end;
+
+    enumeration UnspecifiedValue is 
+	Unspecified
+    end;
+    
+    class AlignedCurve3dElementCoordinateSystem;
+    class ArbitraryVolume3dElementCoordinateSystem;
+    class Curve3dElementProperty;
+    class Curve3dElementRepresentation;
+    class CurveElementEndCoordinateSystem;
+    class CurveElementEndOffset;
+    class CurveElementEndRelease;
+    class CurveElementInterval;
+      class CurveElementIntervalConstant;
+      class CurveElementIntervalLinearlyVarying; -- added 23.01.2003
+    class CurveElementLocation;
+    class DummyNode;
+    class ElementGeometricRelationship;
+    class ElementGroup;
+    class ElementRepresentation;
+    class FeaAreaDensity;
+    class FeaAxis2Placement3d;
+    class FeaGroup;
+    class FeaLinearElasticity;
+    class FeaMassDensity;
+    class FeaMaterialPropertyRepresentation;
+    class FeaMaterialPropertyRepresentationItem;
+    class FeaModel;
+    class FeaModel3d;
+    class FeaMoistureAbsorption;
+    class FeaParametricPoint;
+    class FeaRepresentationItem;
+    class FeaSecantCoefficientOfLinearThermalExpansion;
+    class FeaShellBendingStiffness;
+    class FeaShellMembraneBendingCouplingStiffness;
+    class FeaShellMembraneStiffness;
+    class FeaShellShearStiffness;
+    class FeaTangentialCoefficientOfLinearThermalExpansion;
+    class GeometricNode;
+    class Node;
+    class NodeGroup;
+    class NodeRepresentation;
+    class NodeSet;
+    class NodeWithSolutionCoordinateSystem;
+    class NodeWithVector;
+    class ParametricCurve3dElementCoordinateDirection;
+    class ParametricCurve3dElementCoordinateSystem;
+    class ParametricSurface3dElementCoordinateSystem;
+    class Surface3dElementRepresentation;
+    class SymmetricTensor22d;
+    class SymmetricTensor23d;
+    	class SymmetricTensor23dMember;
+    class SymmetricTensor42d;
+    class SymmetricTensor43d;
+    	class SymmetricTensor43dMember;
+    class Volume3dElementRepresentation;
+    class FeaModelDefinition;
+    class DegreeOfFreedom;
+    	class DegreeOfFreedomMember;
+    class FreedomsList;
+    class FreedomAndCoefficient;
+    class NodeDefinition;
+    class AlignedSurface3dElementCoordinateSystem;
+    class ConstantSurface3dElementCoordinateSystem;
+    class FeaCurveSectionGeometricRelationship;   -- added 23.01.2003
+    class FeaSurfaceSectionGeometricRelationship; -- added 23.01.2003
+    class ElementOrElementGroup;  -- added 04.02.2003
+    
+   
+class Array1OfNodeRepresentation instantiates Array1 from TCollection (NodeRepresentation);
+class HArray1OfNodeRepresentation instantiates HArray1 from TCollection (NodeRepresentation, Array1OfNodeRepresentation from StepFEA);
+
+class Array1OfCurveElementInterval instantiates Array1 from TCollection (CurveElementInterval);
+class HArray1OfCurveElementInterval instantiates HArray1 from TCollection (CurveElementInterval, Array1OfCurveElementInterval from StepFEA);
+
+class Array1OfCurveElementEndOffset instantiates Array1 from TCollection (CurveElementEndOffset);
+class HArray1OfCurveElementEndOffset instantiates HArray1 from TCollection (CurveElementEndOffset, Array1OfCurveElementEndOffset from StepFEA);
+
+class Array1OfCurveElementEndRelease instantiates Array1 from TCollection (CurveElementEndRelease);
+class HArray1OfCurveElementEndRelease instantiates HArray1 from TCollection (CurveElementEndRelease, Array1OfCurveElementEndRelease from StepFEA);
+
+class Array1OfElementRepresentation instantiates Array1 from TCollection (ElementRepresentation);
+class HArray1OfElementRepresentation instantiates HArray1 from TCollection (ElementRepresentation, Array1OfElementRepresentation from StepFEA);
+
+class Array1OfDegreeOfFreedom instantiates Array1 from TCollection (DegreeOfFreedom);
+class HArray1OfDegreeOfFreedom instantiates HArray1 from TCollection (DegreeOfFreedom, Array1OfDegreeOfFreedom from StepFEA);
+
+class SequenceOfElementRepresentation instantiates Sequence
+     from TCollection (ElementRepresentation);
+class HSequenceOfElementRepresentation instantiates HSequence
+     from TCollection (ElementRepresentation, SequenceOfElementRepresentation from StepFEA);
+
+class SequenceOfElementGeometricRelationship instantiates Sequence 
+    from TCollection (ElementGeometricRelationship);
+class HSequenceOfElementGeometricRelationship instantiates HSequence
+     from TCollection (ElementGeometricRelationship, SequenceOfElementGeometricRelationship from StepFEA);
+
+class SequenceOfNodeRepresentation instantiates Sequence
+     from TCollection (NodeRepresentation);
+class HSequenceOfNodeRepresentation instantiates HSequence
+     from TCollection (NodeRepresentation, SequenceOfNodeRepresentation from StepFEA);
+
+class SequenceOfCurve3dElementProperty instantiates Sequence
+     from TCollection (Curve3dElementProperty);
+class HSequenceOfCurve3dElementProperty instantiates HSequence
+     from TCollection (Curve3dElementProperty, SequenceOfCurve3dElementProperty from StepFEA);
+
+end;

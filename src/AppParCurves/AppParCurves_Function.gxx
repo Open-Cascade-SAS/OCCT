@@ -1,0 +1,609 @@
+// File AppParCurves_Function.gxx
+// Lpa, le 20/09/91
+
+
+// Calcul de la valeur de F et grad_F, connaissant le parametrage.
+// Cette fonction, appelee par le gradient conjugue, calcul F et 
+// DF(ui, Poles(ui)) ce qui implique un calcul des nouveaux poles 
+//  a chaque appel.
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+
+
+#include <AppParCurves_MultiCurve.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+
+AppParCurves_Function::
+  AppParCurves_Function(const MultiLine& SSP,
+	 const Standard_Integer FirstPoint,
+	 const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+	 const math_Vector& Parameters,
+	 const Standard_Integer Deg) :
+         MyMultiLine(SSP),
+         MyMultiCurve(Deg+1),          
+         myParameters(Parameters.Lower(), Parameters.Upper()),
+         ValGrad_F(FirstPoint, LastPoint),
+         MyF(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLX(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLY(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLZ(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         A(FirstPoint, LastPoint, 1, Deg+1),
+         DA(FirstPoint, LastPoint, 1, Deg+1),
+         MyLeastSquare(SSP, FirstPoint, LastPoint, 
+		       FirstConstraint(TheConstraints, FirstPoint),
+		       LastConstraint(TheConstraints, LastPoint), Deg+1)
+{
+  Standard_Integer i;
+  for (i=Parameters.Lower(); i<=Parameters.Upper();i++)
+    myParameters(i)=Parameters(i);
+  FirstP = FirstPoint;
+  LastP = LastPoint;
+  myConstraints = TheConstraints;
+  NbP = LastP-FirstP+1;
+  Adeb = FirstP;
+  Afin = LastP;
+  Degre = Deg;
+  Contraintes = Standard_False;
+  Standard_Integer myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == FirstP) {
+      if (Cons >= 1) Adeb = Adeb+1;
+    }
+    else if (myindex == LastP) {
+      if (Cons >= 1) Afin = Afin-1;
+    }
+    else {
+      if (Cons >= 1) Contraintes = Standard_True;
+    }
+  }
+
+  Standard_Integer nb3d = ToolLine::NbP3d(SSP);
+  Standard_Integer nb2d = ToolLine::NbP2d(SSP);
+  Standard_Integer mynb3d= nb3d, mynb2d=nb2d;
+  if (nb3d == 0) mynb3d = 1;
+  if (nb2d == 0) mynb2d = 1;
+
+  NbCu = nb3d+nb2d;
+  tabdim = new TColStd_HArray1OfInteger(0, NbCu-1);
+
+  if (Contraintes) {
+    for (i = 1; i <= NbCu; i++) {
+      if (i <= nb3d) tabdim->SetValue(i-1, 3);
+      else tabdim->SetValue(i-1, 2);
+    }
+
+    TColgp_Array1OfPnt TabP(1, mynb3d);
+    TColgp_Array1OfPnt2d TabP2d(1, mynb2d);
+    
+    for ( i = FirstP; i <= LastP; i++) {
+      if (nb3d != 0 && nb2d != 0) ToolLine::Value(SSP, i, TabP, TabP2d);
+      else if (nb3d != 0)         ToolLine::Value(SSP, i, TabP);
+      else                        ToolLine::Value(SSP, i, TabP2d);
+      for (Standard_Integer j = 1; j <= NbCu; j++) {
+	if (tabdim->Value(j-1) == 3) {
+	  TabP(j).Coord(PTLX(i, j), PTLY(i, j),PTLZ(i, j));
+	}
+	else {
+	  TabP2d(j).Coord(PTLX(i, j), PTLY(i, j));
+	}
+      }
+    }
+  }
+}
+
+
+AppParCurves_Constraint AppParCurves_Function::FirstConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer FirstPoint) const
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == FirstPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+AppParCurves_Constraint AppParCurves_Function::LastConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer LastPoint) const
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == LastPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+
+
+Standard_Boolean AppParCurves_Function::Value (const math_Vector& X, 
+					       Standard_Real& F) {
+
+  myParameters = X;
+
+  // Resolution moindres carres:
+  // ===========================
+  MyLeastSquare.Perform(myParameters);
+  if (!(MyLeastSquare.IsDone())) { 
+    Done = Standard_False;
+    return Standard_False;
+  }
+  if (!Contraintes) {
+    MyLeastSquare.Error(FVal, ERR3d, ERR2d);
+    F = FVal;
+  }
+
+  // Resolution avec contraintes:
+  // ============================
+  else { 
+    Standard_Integer Npol = Degre+1;
+//    Standard_Boolean Ext = Standard_True;
+    Standard_Integer Ci, i, j, dimen;
+    Standard_Real AA, BB, CC, AIJ, FX, FY, FZ, Fi;
+    math_Vector PTCXCI(1, Npol), PTCYCI(1, Npol), PTCZCI(1, Npol);
+    ERR3d = ERR2d = 0.0;
+    
+    MyMultiCurve = MyLeastSquare.BezierValue();
+
+    A = MyLeastSquare.FunctionMatrix();
+    ResolCons Resol(MyMultiLine, MyMultiCurve, FirstP, LastP, myConstraints,
+		    A, MyLeastSquare.DerivativeFunctionMatrix());
+    if (!Resol.IsDone()) {
+      Done = Standard_False;
+      return Standard_False;
+    }
+
+    // Calcul de F = Sum||C(ui)-Ptli||2  sur toutes les courbes :
+    // ========================================================================
+    FVal = 0.0;
+    
+    for (Ci = 1; Ci <= NbCu; Ci++) {
+      dimen = tabdim->Value(Ci-1);
+      for (j = 1; j <= Npol; j++) {
+	if (dimen == 3){ 
+	  MyMultiCurve.Value(j).Point(Ci).Coord(PTCXCI(j),PTCYCI(j),PTCZCI(j));
+	}
+	else{ 
+	  MyMultiCurve.Value(j).Point2d(Ci).Coord(PTCXCI(j), PTCYCI(j));
+	}
+      }
+      
+      // Calcul de F:
+      // ============
+      for (i = Adeb; i <= Afin; i++) {
+	AA = 0.0; BB = 0.0; CC = 0.0;
+	for (j = 1; j <= Npol; j++) {
+	  AIJ = A(i, j);
+	  AA += AIJ*PTCXCI(j);
+	  BB += AIJ*PTCYCI(j);
+	  if (dimen == 3) { 
+	    CC += AIJ*PTCZCI(j);
+	  }
+	}
+	FX = AA-PTLX(i, Ci);
+	FY = BB-PTLY(i, Ci);
+	MyF(i,Ci) = FX*FX + FY*FY;
+	if (dimen == 3) {
+	  FZ = CC-PTLZ(i,Ci);
+	  MyF(i, Ci) += FZ*FZ;
+	  Fi = MyF(i, Ci);
+	  if (Sqrt(Fi) > ERR3d) ERR3d = Sqrt(Fi);
+	}
+	else {
+	  Fi = MyF(i, Ci);
+	  if (Sqrt(Fi) > ERR2d) ERR2d = Sqrt(Fi);
+	}
+	FVal += Fi;
+      }
+    }
+    F = FVal;
+  }  
+  return Standard_True;
+}
+
+
+
+
+void AppParCurves_Function::Perform(const math_Vector& X) {
+  Standard_Integer j;
+
+  myParameters = X;
+  // Resolution moindres carres:
+  // ===========================
+  MyLeastSquare.Perform(myParameters);
+
+  if (!(MyLeastSquare.IsDone())) { 
+    Done = Standard_False;
+    return;
+  }
+
+  for(j = myParameters.Lower(); j <= myParameters.Upper(); j++) {
+    ValGrad_F(j) = 0.0;
+  }
+
+  if (!Contraintes) {
+    MyLeastSquare.ErrorGradient(ValGrad_F, FVal, ERR3d, ERR2d);
+  }
+  else {
+    Standard_Integer Pi, Ci, i, k, dimen;
+    Standard_Integer  Npol = Degre+1;
+    Standard_Real Scal, AA, BB, CC, DAA, DBB, DCC;
+    Standard_Real FX, FY, FZ, AIJ, DAIJ, px, py, pz, Fi;
+    AppParCurves_Constraint Cons=AppParCurves_NoConstraint;
+    math_Matrix Grad_F(FirstP, LastP, 1, NbCu, 0.0);
+    math_Vector PTCXCI(1, Npol), PTCYCI(1, Npol), PTCZCI(1, Npol);
+    math_Vector PTCOXCI(1, Npol), PTCOYCI(1, Npol), PTCOZCI(1, Npol);
+//    Standard_Boolean Ext = Standard_True;
+    ERR3d = ERR2d = 0.0;
+
+    math_Matrix PTCOX(1, Npol, 1, NbCu), PTCOY(1, Npol, 1, NbCu), 
+                PTCOZ(1, Npol,1, NbCu);
+    math_Matrix PTCX(1, Npol, 1, NbCu), PTCY(1, Npol, 1, NbCu), 
+                PTCZ(1, Npol,1, NbCu);
+    Standard_Integer Inc;
+
+    MyMultiCurve = MyLeastSquare.BezierValue();
+
+    for (Ci =1; Ci <= NbCu; Ci++) {
+      dimen = tabdim->Value(Ci-1);
+      for (j = 1; j <= Npol; j++) {
+	if (dimen == 3){ 
+	  MyMultiCurve.Value(j).Point(Ci).Coord(PTCOX(j, Ci),
+						PTCOY(j, Ci),
+						PTCOZ(j, Ci));
+	}
+	else{ 
+	  MyMultiCurve.Value(j).Point2d(Ci).Coord(PTCOX(j, Ci), PTCOY(j, Ci));
+	  PTCOZ(j, Ci) = 0.0;
+	}
+      }
+    }
+
+    A = MyLeastSquare.FunctionMatrix();
+    DA = MyLeastSquare.DerivativeFunctionMatrix();
+    
+    // Resolution avec contraintes:
+    // ============================
+    
+    ResolCons Resol(MyMultiLine, MyMultiCurve, FirstP, LastP, 
+		    myConstraints, A, DA);
+    if (!Resol.IsDone()) {
+      Done = Standard_False;
+      return;
+    }
+    
+    
+    // Calcul de F = Sum||C(ui)-Ptli||2 et du gradient non contraint de F pour
+    // chaque point PointIndex.
+    // ========================================================================
+    FVal = 0.0;
+    for(j = FirstP; j <= LastP; j++) {
+      ValGrad_F(j) = 0.0;
+    }
+
+    math_Matrix TrA(A.LowerCol(), A.UpperCol(), A.LowerRow(), A.UpperRow());
+    math_Matrix TrDA(DA.LowerCol(), DA.UpperCol(), DA.LowerRow(), DA.UpperRow());
+    math_Matrix RESTM(A.LowerCol(), A.UpperCol(), A.LowerCol(), A.UpperCol());
+
+    const math_Matrix& K = Resol.ConstraintMatrix();
+    const math_Matrix& DK = Resol.ConstraintDerivative(MyMultiLine, X, Degre, DA);
+    math_Matrix TK(K.LowerCol(), K.UpperCol(), K.LowerRow(), K.UpperRow());
+    TK = K.Transposed();
+    const math_Vector& Vardua = Resol.Duale();
+    math_Matrix KK(K.LowerCol(), K.UpperCol(), Vardua.Lower(), Vardua.Upper());
+    KK = (K.Transposed())*(Resol.InverseMatrix());
+    math_Matrix DTK(DK.LowerCol(), DK.UpperCol(), DK.LowerRow(), DK.UpperRow());
+    DTK = DK.Transposed();
+    TrA = A.Transposed();
+    TrDA = DA.Transposed();
+    RESTM = ((A.Transposed()*A).Inverse());
+
+    math_Vector DPTCO(1, K.ColNumber());
+    math_Matrix DPTCO1(FirstP, LastP, 1, K.ColNumber());
+    math_Vector DKPTC(1, K.RowNumber());
+
+
+
+
+    FVal = 0.0;
+    for (Ci = 1; Ci <= NbCu; Ci++) {
+      dimen = tabdim->Value(Ci-1);
+      for (j = 1; j <= Npol; j++) {
+	if (dimen == 3){ 
+	  MyMultiCurve.Value(j).Point(Ci).Coord(PTCX(j, Ci), 
+						PTCY(j, Ci), 
+						PTCZ(j, Ci));
+	}
+	else{ 
+	  MyMultiCurve.Value(j).Point2d(Ci).Coord(PTCX(j, Ci), PTCY(j,Ci));
+	  PTCZ(j, Ci) = 0.0;
+	}
+      }
+    }
+
+    
+    // Calcul du gradient sans contraintes:
+    // ====================================
+
+    for (Ci = 1; Ci <= NbCu; Ci++) {
+      dimen = tabdim->Value(Ci-1);
+      for (i = Adeb; i <= Afin; i++) {
+	AA = 0.0; BB = 0.0; CC = 0.0; DAA = 0.0; DBB = 0.0; DCC = 0.0;
+	for (j = 1; j <= Npol; j++) {
+	  AIJ = A(i, j); DAIJ = DA(i, j);
+	  px = PTCX(j, Ci); py = PTCY(j, Ci);
+	  AA += AIJ*px;  BB += AIJ*py;
+	  DAA += DAIJ*px;  DBB += DAIJ*py;
+	  if (dimen == 3) { 
+	    pz = PTCZ(j, Ci);
+	    CC += AIJ*pz;  DCC += DAIJ*pz;
+	  }
+	}
+	FX = AA-PTLX(i, Ci);
+	FY = BB-PTLY(i, Ci);
+	MyF(i,Ci) = FX*FX + FY*FY;
+	Grad_F(i, Ci) = 2.0*(DAA*FX + DBB*FY);
+	if (dimen == 3) {
+	  FZ = CC-PTLZ(i,Ci);
+	  MyF(i, Ci) += FZ*FZ;
+	  Grad_F(i, Ci) += 2.0*DCC*FZ;
+	  Fi = MyF(i, Ci);
+	  if (Sqrt(Fi) > ERR3d) ERR3d = Sqrt(Fi);
+	}
+	else {
+	  Fi = MyF(i, Ci);
+	  if (Sqrt(Fi) > ERR2d) ERR2d = Sqrt(Fi);
+	}
+	FVal += Fi;
+	ValGrad_F(i) += Grad_F(i, Ci);
+      }
+    }
+
+
+    // Calcul de DK*PTC:
+    // =================
+    for (i = 1; i <= K.RowNumber(); i++) {
+      Inc = 0;
+      for (Ci = 1; Ci <= NbCu; Ci++) {
+	dimen = tabdim->Value(Ci-1);
+	DKPTC(i) = 0.0;
+	for (j = 1; j <= Npol; j++) {
+	  DKPTC(i) += DK(i, j+Inc)*PTCX(j, Ci)+ DK(i, j+Inc+Npol)*PTCY(j, Ci);
+	  if (dimen == 3) {
+	    DKPTC(i) += DK(i, j+Inc+2*Npol)*PTCZ(j, Ci);
+	  }
+	}
+	if (dimen == 3) Inc = Inc +3*Npol;
+	else Inc = Inc +2*Npol;
+      }
+    }
+    
+    math_Vector DERR(DTK.LowerRow(), DTK.UpperRow());
+    DERR = (DTK)*Vardua-KK* ((DKPTC) + K*(DTK)*Vardua);
+
+    // rajout du gradient avec contraintes:
+    // ====================================
+    // dPTCO1/duk = [d(TA)/duk*[A*PTCO-PTL] + TA*dA/duk*PTCO]
+
+
+    Inc = 0;
+
+    math_Vector Errx(A.LowerRow(), A.UpperRow());
+    math_Vector Erry(A.LowerRow(), A.UpperRow());
+    math_Vector Errz(A.LowerRow(), A.UpperRow());
+    math_Vector Scalx(DA.LowerRow(), DA.UpperRow());
+    math_Vector Scaly(DA.LowerRow(), DA.UpperRow());
+    math_Vector Scalz(DA.LowerRow(), DA.UpperRow());
+    math_Vector Erruzax(PTCXCI.Lower(), PTCXCI.Upper());
+    math_Vector Erruzay(PTCYCI.Lower(), PTCYCI.Upper());
+    math_Vector Erruzaz(PTCZCI.Lower(), PTCZCI.Upper());
+    math_Vector TrDAPI(TrDA.LowerRow(), TrDA.UpperRow());
+    math_Vector TrAPI(TrA.LowerRow(), TrA.UpperRow());
+
+    for (Ci = 1; Ci <= NbCu; Ci++) {
+      dimen = tabdim->Value(Ci-1);
+      PTCOXCI = PTCOX.Col(Ci);
+      PTCOYCI = PTCOY.Col(Ci);
+      PTCOZCI = PTCOZ.Col(Ci);
+      PTCXCI = PTCX.Col(Ci);
+      PTCYCI = PTCY.Col(Ci);
+      PTCZCI = PTCZ.Col(Ci);
+
+
+      Errx = (A*PTCOXCI - PTLX.Col(Ci));
+      Erry = (A*PTCOYCI - PTLY.Col(Ci));
+      Errz = (A*PTCOZCI - PTLZ.Col(Ci));
+      Scalx = (DA*PTCOXCI);   // Scal = DA * PTCO
+      Scaly = (DA*PTCOYCI);
+      Scalz = (DA*PTCOZCI);
+      Erruzax = (PTCXCI - PTCOXCI);
+      Erruzay = (PTCYCI - PTCOYCI);
+      Erruzaz = (PTCZCI - PTCOZCI);
+      
+      for (Pi = FirstP; Pi <= LastP; Pi++) {
+	TrDAPI = (TrDA.Col(Pi));
+	TrAPI = (TrA.Col(Pi));
+	Standard_Real Taa = TrAPI*A.Row(Pi);
+	Scal = 0.0;
+	for (j = 1; j <= Npol; j++) {
+	  DPTCO1(Pi, j + Inc) = (TrDAPI*Errx(Pi)+TrAPI*Scalx(Pi))(j);
+	  DPTCO1(Pi, j + Inc+ Npol) = (TrDAPI*Erry(Pi)+TrAPI*Scaly(Pi))(j);
+	  Scal += DPTCO1(Pi, j+Inc)* Taa*Erruzax(j) + DPTCO1(Pi, j+Inc+Npol)*Taa*Erruzay(j);
+	  if (dimen == 3) {
+	    DPTCO1(Pi, j + Inc+ 2*Npol) = (TrDAPI*Errz(Pi)+TrAPI*Scalz(Pi))(j);
+	    Scal += DPTCO1(Pi, j+Inc+2*Npol)*Taa*Erruzaz(j);
+	  }
+	}
+	ValGrad_F(Pi) = ValGrad_F(Pi) - 2*Scal;
+      }
+      if (dimen == 3) Inc = Inc + 3*Npol;
+      else Inc = Inc +2*Npol;
+    }
+
+
+    // on calcule DPTCO = - RESTM * DPTCO1:
+    
+    // Calcul de DPTCO/duk:
+    // dPTCO/duk = -Inv(T(A)*A)*[d(TA)/duk*[A*PTCO-PTL] + TA*dA/duk*PTCO]
+
+    Standard_Integer low=myConstraints->Lower(), upp=myConstraints->Upper();
+    Inc = 0;
+    for (Pi = FirstP; Pi <= LastP; Pi++) {
+      for (i = low; i <= upp; i++) {
+	if (myConstraints->Value(i).Index() == Pi) {
+	  Cons = myConstraints->Value(i).Constraint();
+	  break;
+	}
+      }
+      if (Cons >= 1) {
+	Inc = 0;
+	for (Ci = 1; Ci <= NbCu; Ci++) {
+	  dimen = tabdim->Value(Ci-1);
+	  for (j = 1; j <= Npol; j++) {
+	    DPTCO(j+Inc) = 0.0;
+	    DPTCO(j+Inc+Npol) = 0.0;
+	    if (dimen == 3) DPTCO(j+Inc+2*Npol) = 0.0;
+	    for (k = 1; k <= Npol; k++) {
+	      DPTCO(j+Inc) = DPTCO(j+Inc) -RESTM(j, k) * DPTCO1(Pi, j+Inc);
+	      DPTCO(j+Inc+Npol)=DPTCO(j+Inc+Npol)-RESTM(j, k)*DPTCO1(Pi,j+Inc+Npol);
+	      if (dimen == 3) {
+		DPTCO(j+Inc+2*Npol) = DPTCO(j+Inc+2*Npol) 
+		  -RESTM(j, k) * DPTCO1(Pi, j+Inc+2*Npol);
+	      }
+	    }
+	  }
+	  if (dimen == 3) Inc += 3*Npol;
+	  else Inc += 2*Npol;
+	}
+	
+	DERR = DERR-KK*K*DPTCO;
+	
+	Inc = 0;
+	for (Ci = 1; Ci <= NbCu; Ci++) {
+	  dimen = tabdim->Value(Ci-1);
+	  PTCOXCI = PTCOX.Col(Ci);
+	  PTCOYCI = PTCOY.Col(Ci);
+	  PTCOZCI = PTCOZ.Col(Ci);
+	  PTCXCI = PTCX.Col(Ci);
+	  PTCYCI = PTCY.Col(Ci);
+	  PTCZCI = PTCZ.Col(Ci);
+	  Erruzax = (PTCXCI - PTCOXCI);
+	  Erruzay = (PTCYCI - PTCOYCI);
+	  Erruzaz = (PTCZCI - PTCOZCI);
+	  Scal = 0.0;
+	  
+	  for (j = 1; j <= Npol ; j++) {
+	    Scal = (A(Pi, j)*Erruzax(j)) * (A(Pi, j)*DERR(j+Inc)) + 
+	      (A(Pi, j)*Erruzay(j)) * (A(Pi, j)*DERR(j+Inc+Npol));
+	    if (dimen == 3) {
+	      Scal += (A(Pi, j)*Erruzax(j)) * (A(Pi, j)*DERR(j+Inc+2*Npol)); 
+	    }
+	  }
+	  
+	  ValGrad_F(Pi) = ValGrad_F(Pi) + 2*Scal;
+	  if (dimen == 3) Inc = Inc +3*Npol;
+	  else Inc = Inc + 2*Npol;
+	}
+      }
+    }
+    
+  }
+}
+
+
+Standard_Integer AppParCurves_Function::NbVariables() const{ 
+  return NbP;
+}
+
+
+Standard_Boolean AppParCurves_Function::Gradient (const math_Vector& X,
+						  math_Vector& G) {
+
+  Perform(X);
+  G = ValGrad_F;
+
+  return Standard_True;
+}
+
+
+Standard_Boolean AppParCurves_Function::Values (const math_Vector& X, 
+						Standard_Real& F, 
+						math_Vector& G) {
+
+
+  Perform(X);
+  F = FVal;
+  G = ValGrad_F;
+  return Standard_True;
+}
+
+
+const AppParCurves_MultiCurve& AppParCurves_Function::CurveValue() {
+  if (!Contraintes)  MyMultiCurve = MyLeastSquare.BezierValue();
+  return MyMultiCurve;
+}
+
+
+Standard_Real AppParCurves_Function::Error(const Standard_Integer IPoint,
+				     const Standard_Integer CurveIndex) const {
+  return Sqrt(MyF(IPoint, CurveIndex));
+}
+
+Standard_Real AppParCurves_Function::MaxError3d() const
+{
+  return ERR3d;
+}
+
+Standard_Real AppParCurves_Function::MaxError2d() const
+{
+  return ERR2d;
+}
+
+
+
+const math_Vector& AppParCurves_Function::NewParameters() const
+{
+  return myParameters;
+}

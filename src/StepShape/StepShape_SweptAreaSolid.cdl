@@ -1,0 +1,37 @@
+-- File:        SweptAreaSolid.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SweptAreaSolid from StepShape 
+
+inherits SolidModel from StepShape 
+
+uses
+
+	CurveBoundedSurface from StepGeom,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable SweptAreaSolid;
+	---Purpose: Returns a SweptAreaSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable CurveBoundedSurface from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSweptArea(me : mutable; aSweptArea : mutable CurveBoundedSurface);
+	SweptArea (me) returns mutable CurveBoundedSurface;
+
+fields
+
+	sweptArea : CurveBoundedSurface from StepGeom;
+
+end SweptAreaSolid;

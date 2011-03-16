@@ -1,0 +1,54 @@
+-- File:	Select2D.cdl
+-- Created:	Thu Jan 26 11:43:23 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+package Select2D 
+
+	---Purpose: Dynamic Selection Tools;
+	--          description of sensitive primitives for 3D Objects
+	--          
+
+
+uses
+    gp,
+    Bnd,
+    SelectBasics, 
+    TColgp,
+    MMgt
+is
+
+
+    enumeration TypeOfSelection is TOS_BOUNDARY,TOS_INTERIOR
+    end TypeOfSelection;
+    	---Purpose: for closed geometries  (Circle ,Ellipse)
+    	--          one can use the same sensitive entity to represent
+    	--          a face or a boundary ...
+    
+
+    deferred class SensitiveEntity;
+    
+
+    class SensitivePoint;
+    
+    class SensitiveSegment;
+    
+    class SensitiveCircle;
+    
+    class SensitiveArc;
+
+    class SensitiveBox;
+
+    
+        
+    deferred class Projector;
+    
+end Select2D;
+
+
+
+
+

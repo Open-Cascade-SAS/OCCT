@@ -1,0 +1,137 @@
+-- File:	TDF_ComparisonTool.cdl
+--      	----------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep  4 1997	Creation
+
+
+class ComparisonTool from TDF
+
+	---Purpose: This class provides services to compare sets of
+	--          information. The use of this tool can works after
+	--          a copy, acted by a CopyTool.
+	--          
+	--          * Compare(...) compares two DataSet and returns
+	--          the result.
+	--          
+	--          * SourceUnbound(...) builds the difference between
+	--          a relocation dictionnary and a source set of
+	--          information.
+	--          
+	--          * TargetUnbound(...) does the same between a
+	--          relocation dictionnary and a target set of
+	--          information.
+	--          
+	--          * Cut(aDataSet, anLabel) removes a set of
+	--          attributes.
+	--          
+	--          * IsSelfContained(...) returns true if all the
+	--          labels of the attributes of the given DataSet are
+	--          descendant of the given label.
+
+uses
+
+    Boolean             from Standard,
+    Label               from TDF,
+    Attribute           from TDF,
+    DataSet             from TDF,
+    RelocationTable     from TDF,
+    AttributeMap        from TDF,
+    IDFilter            from TDF
+
+-- raises
+
+is
+
+    Compare(myclass;
+    	    aSourceDataSet   : DataSet from TDF;
+    	    aTargetDataSet   : DataSet from TDF;
+    	    aFilter          : IDFilter from TDF;
+	    aRelocationTable : mutable RelocationTable from TDF);
+	---Purpose: Compares <aSourceDataSet> with <aTargetDataSet>,
+	--          updating <aRelocationTable> with labels and
+	--          attributes found in both sets.
+
+    SourceUnbound(myclass;
+    	    	  aRefDataSet      : DataSet from TDF;
+		  aRelocationTable : RelocationTable from TDF;
+    	          aFilter          : IDFilter from TDF;
+    	    	  aDiffDataSet     : mutable DataSet from TDF;
+    	    	  anOption         : Integer from Standard = 2)
+    	returns Boolean from Standard;
+	---Purpose: Finds from <aRefDataSet> all the keys not bound
+	--          into <aRelocationTable> and put them into
+	--          <aDiffDataSet>. Returns True if the difference
+	--          contains at least one key. (A key is a source
+	--          object).
+	--          
+	--          <anOption> may take the following values:
+	--          1 : labels treatment only;
+	--          2 : attributes treatment only (default value);
+	--          3 : both labels & attributes treatment.
+
+    TargetUnbound(myclass;
+    	    	  aRefDataSet      : DataSet from TDF;
+		  aRelocationTable : RelocationTable from TDF;
+    	          aFilter          : IDFilter from TDF;
+    	    	  aDiffDataSet     : mutable DataSet from TDF;
+    	    	  anOption         : Integer from Standard = 2)
+    	returns Boolean from Standard;
+	---Purpose: Substracts from <aRefDataSet> all the items bound
+	--          into <aRelocationTable>. The result is put into
+	--          <aDiffDataSet>. Returns True if the difference
+	--          contains at least one item. (An item is a target
+	--          object).
+	--          
+	--          <anOption> may take the following values:
+	--          1 : labels treatment only;
+	--          2 : attributes treatment  only(default value);
+	--          3 : both labels & attributes treatment.
+
+    Cut(myclass;
+    	aDataSet : DataSet from TDF);
+	---Purpose: Removes attributes from <aDataSet>.
+
+
+    IsSelfContained(myclass;
+    	    	    aLabel   : Label from TDF;
+    	    	    aDataSet : DataSet from TDF)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if all the labels of <aDataSet> are
+	--          descendant of <aLabel>.
+
+    -- ----------------------------------------------------------------------
+    -- 
+    -- Private methods
+    -- 
+    -- ----------------------------------------------------------------------
+
+    Compare(myclass;
+    	    aSrcLabel : Label from TDF;
+    	    aTrgLabel : Label from TDF;
+    	    aSourceDataSet   : DataSet from TDF;
+    	    aTargetDataSet   : DataSet from TDF;
+    	    aFilter          : IDFilter from TDF;
+	    aRelocationTable : mutable RelocationTable from TDF)
+    	is private;
+	---Purpose: Internal comparison method used by Compare(...).
+
+
+    Unbound(myclass;
+    	    aRefDataSet      : DataSet from TDF;
+	    aRelocationTable : RelocationTable from TDF;
+    	    aFilter          : IDFilter from TDF;
+    	    aDiffDataSet     : mutable DataSet from TDF;
+    	    anOption         : Integer from Standard;
+    	    theSource        : Boolean from Standard)
+    	returns Boolean from Standard
+    	is private;
+	---Purpose: Internal function used by SourceUnbound() and
+	--          TargetUnbound().
+
+
+end ComparisonTool;

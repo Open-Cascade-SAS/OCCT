@@ -1,0 +1,27 @@
+-- File:	DsgPrs_TangentPresentation.cdl
+-- Created:	Tue Jan 16 14:27:16 1996
+-- Author:	Jean-Pierre COMBE
+--		<jpi@clipox>
+---Copyright:	 Matra Datavision 1996
+
+class TangentPresentation from DsgPrs
+    	---Purpose: A framework to define display of tangents.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d
+    	
+is  
+    Add (myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  OffsetPoint: Pnt from gp;
+		  aDirection: Dir from gp;
+    	    	  aLength : Real from Standard);
+
+	---Purpose: Adds the point OffsetPoint, the direction aDirection
+    	-- and the length aLength to the presentation object aPresentation.
+    	-- The display attributes of the tangent are defined by
+    	-- the attribute manager aDrawer.
+
+end TangentPresentation;

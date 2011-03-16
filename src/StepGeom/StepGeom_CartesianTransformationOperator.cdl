@@ -1,0 +1,67 @@
+-- File:        CartesianTransformationOperator.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CartesianTransformationOperator from StepGeom 
+
+inherits GeometricRepresentationItem from StepGeom 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+-- inherits FunctionallyDefinedTransformation from StepGeom 
+
+uses
+
+	Direction from StepGeom, 
+	CartesianPoint from StepGeom, 
+	Real from Standard, 
+	Boolean from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable CartesianTransformationOperator;
+	---Purpose: Returns a CartesianTransformationOperator
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAaxis1 : Boolean from Standard;
+	      aAxis1 : mutable Direction from StepGeom;
+	      hasAaxis2 : Boolean from Standard;
+	      aAxis2 : mutable Direction from StepGeom;
+	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      hasAscale : Boolean from Standard;
+	      aScale : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAxis1(me : mutable; aAxis1 : mutable Direction);
+	UnSetAxis1 (me:mutable);
+	Axis1 (me) returns mutable Direction;
+	HasAxis1 (me) returns Boolean;
+	SetAxis2(me : mutable; aAxis2 : mutable Direction);
+	UnSetAxis2 (me:mutable);
+	Axis2 (me) returns mutable Direction;
+	HasAxis2 (me) returns Boolean;
+	SetLocalOrigin(me : mutable; aLocalOrigin : mutable CartesianPoint);
+	LocalOrigin (me) returns mutable CartesianPoint;
+	SetScale(me : mutable; aScale : Real);
+	UnSetScale (me:mutable);
+	Scale (me) returns Real;
+	HasScale (me) returns Boolean;
+
+fields
+
+	axis1 : Direction from StepGeom;   -- OPTIONAL can be NULL
+	axis2 : Direction from StepGeom;   -- OPTIONAL can be NULL
+	localOrigin : CartesianPoint from StepGeom;
+	scale : Real from Standard;   -- OPTIONAL can be NULL
+	hasAxis1 : Boolean from Standard;
+	hasAxis2 : Boolean from Standard;
+	hasScale : Boolean from Standard;
+
+end CartesianTransformationOperator;

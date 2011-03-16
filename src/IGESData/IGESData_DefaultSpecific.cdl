@@ -1,0 +1,26 @@
+-- File:	IGESData_DefaultSpecific.cdl
+-- Created:	Wed Sep  8 16:47:25 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class DefaultSpecific  from IGESData  inherits SpecificModule
+
+    ---Purpose : Specific IGES Services for UndefinedEntity, FreeFormatEntity
+
+uses IGESEntity, IGESDumper,
+     Messenger from Message
+
+is
+
+    Create returns mutable DefaultSpecific;
+    ---Purpose : Creates a DefaultSpecific and puts it into SpecificLib
+
+    OwnDump (me; CN : Integer; ent : IGESEntity;
+    	      dumper : IGESDumper;  S : Messenger from Message; own : Integer);
+    ---Purpose : Specific Dump for UndefinedEntity : it concerns only
+    --           own parameters, the general data (Directory Part, Lists) are
+    --           taken into account by the IGESDumper
+
+end DefaultSpecific;

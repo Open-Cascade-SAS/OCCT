@@ -1,0 +1,35 @@
+-- File:	PBRep_PointOnCurve.cdl
+-- Created:	Wed Aug 11 11:37:31 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class PointOnCurve from PBRep inherits PointRepresentation from PBRep
+
+uses
+    Curve    from PGeom,
+    Location from PTopLoc
+
+is
+    Create(P : Real;
+    	   C : Curve    from PGeom;
+	   L : Location from PTopLoc)
+    returns mutable PointOnCurve from PBRep;
+    	---Level: Internal 
+    
+
+    Curve(me) returns any Curve from PGeom
+    is static;
+    	---Level: Internal 
+
+    IsPointOnCurve(me) returns Boolean from Standard
+    	---Purpose: Returns True;
+    is redefined;
+    
+fields
+
+    myCurve : Curve from PGeom;
+
+end PointOnCurve;

@@ -1,0 +1,64 @@
+-- File:	math_MultipleVarFunctionWithHessian.cdl
+-- Created:	Wed Feb 28 10:03:11 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+deferred class MultipleVarFunctionWithHessian from math 
+      inherits MultipleVarFunctionWithGradient  from math
+
+	---Purpose: 
+
+uses Matrix from math,
+     Vector from math
+
+is
+
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function.
+
+    returns Integer
+    is deferred;
+
+
+    Value(me: in out; X: Vector; F: out Real)
+    	---Purpose: computes the values of the Functions <F> for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Gradient(me: in out; X: Vector; G: out Vector)
+    	---Purpose:computes the gradient <G> of the functions for the 
+    	--         variable <X>.
+    	--         Returns True if the computation was done successfully, 
+    	--         False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Values(me: in out; X: Vector; F: out Real; G: out Vector)
+    	---Purpose: computes the value <F> and the gradient <G> of the 
+    	--          functions for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    Values(me: in out; X: Vector; F: out Real; G: out Vector; H: out Matrix)
+    	---Purpose: computes the value  <F>, the gradient <G> and  the
+    	--          hessian   <H> of  the functions  for the  variable <X>.
+    	--          Returns  True  if  the computation  was  done
+    	--          successfully, False otherwise.
+
+    returns Boolean
+    is deferred;
+
+
+end MultipleVarFunctionWithHessian;

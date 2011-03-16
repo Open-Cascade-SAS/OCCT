@@ -1,0 +1,656 @@
+-- File:    Graphic3d_ArrayOfPrimitives.cdl
+-- Created: 16/06/2000 : ATS/GG : G005 : Draw ARRAY primitives
+
+deferred class ArrayOfPrimitives from Graphic3d inherits TShared 
+
+        ---Purpose: This class furnish services to defined and fill an
+        --      array of primitives compatible with the use of
+        --      the OPENGl glDrawArrays() or glDrawElements() functions.
+        --      NOTE that the main goal of this kind of primitive
+        --      is to avoid multiple copies of datas between
+        --      each layer of the software.
+        --      So the array datas exist only one time and the use
+        --      of SetXxxxxx() methods enable to change dynamically
+        --      the aspect of this primitive.
+        --
+        --      Advantages are :
+        --      1) Decrease strongly the loading time.
+        --      2) Decrease strongly the display time using optimized Opengl
+        --         primitives.
+        --      3) Enable to change dynamically the components of the primitive
+        --         (vertice,normal,color,texture coordinates).
+        --      4) Add true triangle and quadrangle strips or fans capabilities.
+
+uses
+
+    TypeOfPrimitiveArray    from Graphic3d,
+    PrimitiveArray      from Graphic3d,
+    Color           from Quantity,
+    Pnt         from gp,
+    Pnt2d           from gp,
+    Dir         from gp
+
+raises
+    OutOfRange from Standard,
+    InitialisationError from Graphic3d
+
+is
+
+    -- constructor
+    Initialize (
+        aType: TypeOfPrimitiveArray from Graphic3d;
+                maxVertexs: Integer from Standard;
+                maxBounds: Integer from Standard;
+                maxEdges: Integer from Standard;
+                hasVNormals: Boolean from Standard;
+                hasVColors: Boolean from Standard;
+                hasBColors: Boolean from Standard;
+                hasTexels: Boolean from Standard;
+            hasEdgeInfos: Boolean from Standard)
+    returns mutable ArrayOfPrimitives from Graphic3d
+        raises  InitialisationError from Graphic3d;
+    ---Purpose:  Warning
+    -- You must use a coherent set of AddVertex() methods according to the
+    -- <hasVNormals>,<hasVColors>,<hasVTexels>,<hasBColors>
+    -- User is responsible of confuse vertex and bad normal orientation. 
+    -- You must use AddBound() method only if the <maxBounds>
+    -- constructor parameter is > 0.
+    -- You must use AddEdge() method only if the <maxEdges>
+    -- constructor parameter is > 0.
+    -- You must use a coherent set of AddEdge() methods according to the
+    -- <hasEdgeInfos> constructor parameter.
+
+    Destroy( me: mutable);
+    -- destructor
+    ---C++: alias ~
+
+    -- -------------------------------------------------------------------
+    --      Methods to fill array 
+    -- -------------------------------------------------------------------
+
+    AddVertex( me:mutable;
+           aVertice: Pnt from gp)
+    returns Integer from Standard
+    ---Level: Public 
+    ---Purpose: Adds a vertice in the array.
+    -- returns the actual vertex number.
+    raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+           X,Y,Z: Real from Standard)
+    returns Integer from Standard
+    ---Level: Public 
+    ---Purpose: Adds a vertice in the array.
+    -- returns the actual vertex number.
+    raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+        AddVertex( me:mutable;
+                   aVertice: Pnt from gp;
+                   aColor: Color from Quantity)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice and vertex color in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aColor> is ignored when the <hasVColors>
+    -- constructor parameter is FALSE
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me       : mutable;
+               aVertice : Pnt from gp;
+               aColor   : Integer from Standard)
+        returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice and vertex color in the vertex array.
+    -- returns the actual vertex number.
+    -- Warning: <aColor> is ignored when the <hasVColors>
+    -- constructor parameter is FALSE
+    -- aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
+    -- On all architecture proccers type (x86 or SPARC) you can 
+    -- use this byte order.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+
+    AddVertex( me       :mutable;
+                   aVertice : Pnt from gp;
+                   aNormal  : Dir from gp)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice and vertex normal in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+           X,Y,Z: Real from Standard;
+           NX,NY,NZ: Real from Standard)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice and vertex normal in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+                   aVertice: Pnt from gp;
+                   aNormal: Dir from gp;
+                   aColor: Color from Quantity)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice,vertex normal and color in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+    --          <aColor> is ignored when the <hasVColors>
+    -- constructor parameter is FALSE
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me       : mutable;
+               aVertice : Pnt from gp;
+               aNormal  : Dir from gp;
+               aColor   : Integer from Standard)
+        returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice,vertex normal and color in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+    --          <aColor> is ignored when the <hasVColors>
+    -- constructor parameter is FALSE
+    -- aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
+    -- On all architecture proccers type (x86 or SPARC) you can 
+    -- use this byte order.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+                                                         
+
+    AddVertex( me:mutable;
+                   aVertice: Pnt from gp;
+                   aTexel: Pnt2d from gp)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice and vertex texture in the vertex array.
+    -- returns the actual vertex number.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+           X,Y,Z: Real from Standard;
+           TX,TY: Real from Standard)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice and vertex texture coordinates in the vertex array.
+    -- returns the actual vertex number.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+                   aVertice: Pnt from gp;
+                   aNormal: Dir from gp;
+                   aTexel: Pnt2d from gp)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice,vertex normal and texture in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddVertex( me:mutable;
+           X,Y,Z: Real from Standard;
+           NX,NY,NZ: Real from Standard;
+           TX,TY: Real from Standard)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a vertice,vertex normal and texture in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+
+    AddBound( me:mutable;
+               edgeNumber: Integer from Standard)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a bound of length <edgeNumber> in the bound array
+    -- returns the actual bounds number.
+        raises OutOfRange from Standard;
+    -- if the actual Bound number is >= <maxBounds>
+
+    AddBound( me:mutable;
+                edgeNumber: Integer from Standard;
+                aBColor: Color from Quantity)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a bound of length <edgeNumber> and bound color 
+    -- <aBColor> in the bound array.
+    -- returns the actual bounds number.
+    --  Warning: <aBColor> is ignored when the <hasBColors>
+    -- constructor parameter is FALSE
+        raises OutOfRange from Standard;
+    -- if the actual Bound number is >= <maxBounds>
+
+    AddBound( me:mutable;
+                edgeNumber: Integer from Standard;
+                R,G,B: Real from Standard)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds a bound of length <edgeNumber> and bound color 
+    -- coordinates in the bound array.
+    -- returns the actual bounds number.
+    --  Warning: <R,G,B> are ignored when the <hasBColors>
+    -- constructor parameter is FALSE
+        raises OutOfRange from Standard;
+    -- if the actual Bound number is >= <maxBounds>
+
+    AddEdge( me:mutable;
+         vertexIndex: Integer from Standard;
+         isVisible: Boolean from Standard = Standard_True)
+        returns Integer from Standard
+        ---Level: Public
+    ---Purpose: Adds an edge in the range [1,VertexNumber()] in the array,
+    -- if <isVisible> is FALSE the edge between <vertexIndex> and
+    -- the next edge will not be visible even if the SetEdgeOn() method
+    -- is activated in Graphic3d_AspectFillArea3d class.
+    -- returns the actual edges number.
+    --  Warning: <isVisible> is ignored when the <hasEdgeInfos>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual edge number is >= <maxEdges>
+
+    -- -------------------------------------------------------------------
+    --      Methods to modify the array
+    -- -------------------------------------------------------------------
+
+    Orientate( me:mutable; 
+        aNormal: Dir from gp)
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Orientate correctly all vertexs & normals of this array 
+    -- according to the <aNormal> parameter and
+    -- returns TRUE when something has change in the array.
+    --  Warning: When the array has edges this method is apply
+    -- on edge sub array instead on vertex sub array.
+
+    Orientate( me:mutable;
+        aVertexIndex: Integer from Standard;
+        aVertexNumber: Integer from Standard;
+        aNormal: Dir from gp)
+    returns Boolean from Standard
+    ---Level: Internal 
+    ---Purpose: Orientate correctly a set of vertexs & normal
+    -- from <aVertexIndex> to <aVertexIndex>+<aVertexNumber>-1 
+    -- according to the <aNormal> parameter and
+    -- returns TRUE when something has change in the array.
+    --  Warning: When the array has edges this method is apply
+    -- on edge sub array instead on vertex sub array.
+        raises OutOfRange from Standard is private;
+    -- if the <aVertexIndex> parameter is < 1 or > VertexNumber() or
+    -- EdgeNumber()
+
+    Orientate( me:mutable;
+        aBoundIndex: Integer from Standard;
+        aNormal: Dir from gp)
+    returns Boolean from Standard
+    ---Level: Public 
+    ---Purpose: Orientate correctly all vertexs & normal of the bound <aBound> 
+    -- according to the <aNormal> parameter and
+    -- returns TRUE when something has change in the array.
+    --  Warning: When the array has edges this method is apply
+    -- on edge sub array instead on vertex sub array.
+    -- When this array has no bound, <aBoundIndex> design the item number
+        raises OutOfRange from Standard;
+    -- if the <aBoundIndex> parameter is < 1 or > BoundNumber()
+    -- or if the <aBoundIndex> parameter is < 1 or > ItemNumber()
+
+    SetVertice( me:mutable;
+         anIndex: Integer from Standard;
+                 aVertice: Pnt from gp)
+        ---Level: Public
+        ---Purpose: Change the vertice of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+
+    SetVertice( me:mutable;
+         anIndex: Integer from Standard;
+                 X,Y,Z: Real from Standard)
+        ---Level: Public
+        ---Purpose: Change the vertice of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+        ---C++: inline
+
+    SetVertexColor( me      : mutable;
+                    anIndex : Integer from Standard;
+                    aColor  : Color from Quantity)
+        ---Level: Public
+        ---Purpose: Change the vertex color of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+
+    SetVertexColor( me      : mutable;
+                    anIndex : Integer from Standard;
+                    R,G,B   : Real from Standard)
+        ---Level: Public
+        ---Purpose: Change the vertex color of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+        ---C++: inline
+
+    SetVertexColor( me      : mutable;
+                    anIndex : Integer from Standard;
+                    aColor  : Integer from Standard)
+        ---Level: Public
+        ---Purpose: Change the vertex color of rank <anIndex> in the array.
+        -- aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
+        -- On all architecture proccers type (x86 or SPARC) you can 
+        -- use this byte order.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+
+
+    SetVertexNormal( me      : mutable;
+                     anIndex : Integer from Standard;
+                     aNormal : Dir from gp)
+        ---Level: Public
+        ---Purpose: Change the vertex normal of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+
+    SetVertexNormal( me      : mutable;
+                     anIndex : Integer from Standard;
+                     NX,NY,NZ: Real from Standard)
+        ---Level: Public
+        ---Purpose: Change the vertex normal of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+        ---C++: inline
+
+    SetVertexTexel( me:mutable;
+         anIndex: Integer from Standard;
+                 aTexel: Pnt2d from gp)
+        ---Level: Public
+        ---Purpose: Change the vertex texel of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+
+    SetVertexTexel( me:mutable;
+         anIndex: Integer from Standard;
+                 TX,TY: Real from Standard)
+        ---Level: Public
+        ---Purpose: Change the vertex texel of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > VertexNumber()
+        ---C++: inline
+
+    SetBoundColor( me:mutable;
+         anIndex: Integer from Standard;
+                 aColor: Color from Quantity)
+        ---Level: Public
+        ---Purpose: Change the bound color of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > BoundNumber()
+
+    SetBoundColor( me:mutable;
+         anIndex: Integer from Standard;
+                 R,G,B: Real from Standard)
+        ---Level: Public
+        ---Purpose: Change the bound color of rank <anIndex> in the array.
+        raises OutOfRange from Standard;
+        -- if the index is <1 or > BoundNumber()
+        ---C++: inline
+
+    -------------------------------------------------------------------
+    -- Category Inquiries on array
+    -------------------------------------------------------------------
+
+    Array( me ) 
+    returns PrimitiveArray from Graphic3d;
+    ---Level: Internal
+    ---Purpose: Returns the array address. 
+    ---C++: inline
+
+    Type( me )
+    returns TypeOfPrimitiveArray from Graphic3d;
+    ---Level: Public 
+    ---Purpose: Returns the type of this primitive
+    ---C++: inline
+
+    StringType( me )
+    returns CString from Standard;
+    ---Level: Public 
+    ---Purpose: Returns the string type of this primitive
+
+    HasVertexNormals( me )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when vertex normals array is defined. 
+    ---C++: inline
+
+    HasVertexColors( me )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when vertex colors array is defined. 
+    ---C++: inline
+
+    HasVertexTexels( me )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when vertex texels array is defined. 
+    ---C++: inline
+
+    VertexNumber( me ) 
+    returns Integer from Standard;  
+    ---Level: Public 
+    ---Purpose: Returns the number of defined vertex 
+    ---C++: inline
+
+    Vertice( me ; aRank: Integer from Standard)
+    returns Pnt from gp
+    ---Level: Public 
+    ---Purpose: Returns the vertice at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+
+    Vertice( me ; aRank: Integer from Standard;
+        X,Y,Z: out Real from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the vertice coordinates at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+    ---C++: inline
+
+    VertexColor( me ; aRank: Integer from Standard)
+    returns Color from Quantity
+    ---Level: Public 
+    ---Purpose: Returns the vertex color at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+
+    VertexColor( me ; aRank   : Integer from Standard;
+                      R, G, B : out Real from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the vertex color values at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+    ---C++: inline
+
+    VertexColor( me ; aRank: Integer from Standard;
+                 aColor: out Integer from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the vertex color values at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+    ---C++: inline
+
+
+    VertexNormal( me ; aRank: Integer from Standard)
+    returns Dir from gp
+    ---Level: Public 
+    ---Purpose: Returns the vertex normal at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+
+    VertexNormal( me ; aRank: Integer from Standard;
+        NX,NY,NZ: out Real from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the vertex normal coordinates at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+    ---C++: inline
+        
+    VertexTexel( me ; aRank: Integer from Standard)
+    returns Pnt2d from gp
+    ---Level: Public 
+    ---Purpose: Returns the vertex texture at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+        
+    VertexTexel( me ; aRank: Integer from Standard;
+        TX,TY: out Real from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the vertex texture coordinates at rank <aRank>
+    -- from the vertex table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > VertexNumber().
+    ---C++: inline
+
+    HasEdgeInfos( me )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when edge visibillity array is defined. 
+    ---C++: inline
+
+    EdgeNumber( me ) 
+    returns Integer from Standard;  
+    ---Level: Public 
+    ---Purpose: Returns the number of defined edges
+    ---C++: inline
+
+    Edge( me ; aRank: Integer from Standard)
+    returns Integer from Standard   
+    ---Level: Public 
+    ---Purpose: Returns the vertex index at rank <aRank>
+    -- in the range [1,VertexNumber()]
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > EdgeNumber() 
+    ---C++: inline
+
+    EdgeIsVisible( me ; aRank: Integer from Standard)
+    returns Boolean from Standard   
+    ---Level: Public 
+    ---Purpose: Returns TRUE when the edge at rank <aRank>
+    -- is visible. 
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > EdgeNumber() 
+    ---C++: inline
+
+    HasBoundColors( me )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when bound colors array is defined. 
+    ---C++: inline
+
+    BoundNumber( me ) 
+    returns Integer from Standard;  
+    ---Level: Public 
+    ---Purpose: Returns the number of defined bounds
+    ---C++: inline
+
+    Bound( me ; aRank: Integer from Standard)
+    returns Integer from Standard   
+    ---Level: Public 
+    ---Purpose: Returns the edge number at rank <aRank>.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > BoundNumber() 
+    ---C++: inline
+
+    BoundColor( me ; aRank: Integer from Standard)
+    returns Color from Quantity
+    ---Level: Public 
+    ---Purpose: Returns the bound color at rank <aRank>
+    -- from the bound table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > BoundNumber() 
+
+    BoundColor( me ; aRank: Integer from Standard;
+            R,G,B: out Real from Standard)
+    ---Level: Public 
+    ---Purpose: Returns the bound color values at rank <aRank>
+    -- from the bound table if defined.
+    raises OutOfRange from Standard;
+    -- when the rank is < 1 or > BoundNumber() 
+
+    ItemNumber( me )
+    returns Integer from Standard;  
+    ---Level: Public 
+    ---Purpose: Returns the number of total items according to
+    --  the array type. 
+
+    -------------------------------------------------------------------
+    -- Category Miscellaneous 
+    -------------------------------------------------------------------
+
+    Enable( myclass );
+    ---Level: Public 
+    ---Purpose: Enable to use the arrays of primitives
+    --  Warning: Updates the current value of the environment symbol 
+    --  CSF_USE_ARRAY_OF_PRIMITIVES
+
+    Disable( myclass );
+    ---Level: Public 
+    ---Purpose: Disable to use the arrays of primitives
+    --  Warning: Updates the current value of the environment symbol 
+    --  CSF_USE_ARRAY_OF_PRIMITIVES
+
+    IsEnable( myclass )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when the arrays are enable to use.
+    --  Warning: The initial value can be defined seting the symbol
+    --  CSF_USE_ARRAY_OF_PRIMITIVES to "Yes" or "No"
+
+    IsValid( me:mutable )
+    returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE only when the contains of this array is
+    -- available. 
+
+    ComputeVNormals( me:mutable ; fromIndex,toIndex: Integer from Standard)
+    is private;
+
+fields
+    myPrimitiveArray:   PrimitiveArray from Graphic3d;
+    myMaxBounds:        Integer from Standard;
+    myMaxVertexs:       Integer from Standard;
+    myMaxEdges:     Integer from Standard;
+
+friends
+    class Group from Graphic3d
+end;

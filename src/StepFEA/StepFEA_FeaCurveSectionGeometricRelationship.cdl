@@ -1,0 +1,38 @@
+-- File:	StepFEA_FeaCurveSectionGeometricRelationship.cdl
+-- Created:	Wed Jan 22 17:31:43 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaCurveSectionGeometricRelationship from StepFEA
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity FeaCurveSectionGeometricRelationship
+
+uses
+    CurveElementSectionDefinition from StepElement,
+    AnalysisItemWithinRepresentation from StepElement
+
+is
+    Create returns FeaCurveSectionGeometricRelationship from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aSectionRef: CurveElementSectionDefinition from StepElement;
+                       aItem: AnalysisItemWithinRepresentation from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    SectionRef (me) returns CurveElementSectionDefinition from StepElement;
+	---Purpose: Returns field SectionRef
+    SetSectionRef (me: mutable; SectionRef: CurveElementSectionDefinition from StepElement);
+	---Purpose: Set field SectionRef
+
+    Item (me) returns AnalysisItemWithinRepresentation from StepElement;
+	---Purpose: Returns field Item
+    SetItem (me: mutable; Item: AnalysisItemWithinRepresentation from StepElement);
+	---Purpose: Set field Item
+
+fields
+    theSectionRef: CurveElementSectionDefinition from StepElement;
+    theItem: AnalysisItemWithinRepresentation from StepElement;
+
+end FeaCurveSectionGeometricRelationship;

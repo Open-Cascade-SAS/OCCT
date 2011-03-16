@@ -1,0 +1,99 @@
+-- File:	NamedConstant.cdl
+-- Created:	Thu Jan 10 12:07:34 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+class NamedConstant from Expr
+
+inherits NamedExpression from Expr 
+
+    ---Purpose: Describes any numeric constant known by a special name 
+    --          (as PI, e,...).
+
+uses NamedUnknown from Expr,
+    GeneralExpression from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection
+
+raises OutOfRange from Standard
+
+is
+
+    Create(name : AsciiString; value : Real)
+    ---Purpose: Creates a constant value of name <name> and value <value>.
+    returns mutable NamedConstant;
+
+    GetValue(me)
+    ---C++: inline
+    returns Real
+    is static;
+
+    NbSubExpressions(me)
+    ---Purpose: returns the number of sub-expressions contained
+    --          in <me> (always returns zero)
+    returns Integer
+    is static;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: returns the <I>-th sub-expression of <me>
+    --          raises OutOfRange 
+    ---C++: return const &
+    returns any GeneralExpression
+    raises OutOfRange
+    is static;
+
+    Simplified(me) 
+    ---Purpose: returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression and after
+    --          values computation.
+    returns any GeneralExpression ;
+
+    ShallowSimplified(me)
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    ContainsUnknowns(me) 
+    ---Purpose: Tests if <me> contains NamedUnknown.
+    --          (returns always False)
+    returns Boolean;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> is contained in <me>.
+    returns Boolean
+    is static;
+
+    IsLinear(me)
+    returns Boolean
+    is static;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    returns any GeneralExpression;
+
+    NDerivative(me; X : NamedUnknown; N : Integer)
+    ---Purpose: Returns the <N>-th derivative on <X> unknown of <me>.
+    --          Raises OutOfRange if <N> <= 0
+    returns any GeneralExpression
+    raises OutOfRange
+    is redefined;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression);
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    returns Real;
+
+fields
+
+    myValue : Real;
+
+end NamedConstant;

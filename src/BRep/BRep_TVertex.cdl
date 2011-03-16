@@ -1,0 +1,68 @@
+-- File:	TVertex.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TVertex from BRep inherits TVertex from TopoDS
+
+	---Purpose: The TVertex from  BRep inherits  from  the TVertex
+	--          from TopoDS. It contains the geometric data.
+	--          
+	--          The  TVertex contains a 3d point and a tolerance.
+	--            
+uses
+    Pnt    from gp,
+    TShape from TopoDS,
+    ListOfPointRepresentation from BRep
+
+is
+    Create returns mutable TVertex from BRep;
+
+    Tolerance(me) returns Real
+	---C++: inline
+    is static;
+    
+    Tolerance(me : mutable; T : Real)
+	---C++: inline
+    is static;
+    
+    UpdateTolerance(me : mutable; T : Real)
+	---Purpose: Sets the tolerance  to the   max  of <T>  and  the
+	--          current  tolerance.
+	--          
+	---C++: inline
+    is static;
+
+    Pnt(me) returns Pnt from gp
+	---C++: inline
+	---C++: return const &
+    is static;
+    
+    Pnt(me : mutable; P : Pnt from gp)
+	---C++: inline
+    is static;
+    
+    Points(me) returns ListOfPointRepresentation from BRep
+	---C++: inline
+	---C++: return const &
+    is static;
+    
+    ChangePoints(me : mutable) returns ListOfPointRepresentation from BRep
+	---C++: inline
+	---C++: return &
+    is static;
+    
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
+    
+fields
+
+    myPnt       : Pnt from gp;
+    myTolerance : Real;
+    myPoints    : ListOfPointRepresentation from BRep;
+
+end TVertex;

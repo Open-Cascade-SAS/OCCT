@@ -1,0 +1,111 @@
+-- File:    Prs3d_TextAspect.cdl
+-- Created: Tue Sep 14 12:56:09 1993
+-- Author:  Jean-Louis FRENKEL
+--      <jlf@stylox>
+--   GG  : GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--                     the restricted NameOfColor.
+---Copyright:    Matra Datavision 1993
+
+class TextAspect from Prs3d inherits BasicAspect from Prs3d
+
+        ---Purpose: Defines the attributes when displaying a text.
+          
+          
+uses
+    NameOfColor from Quantity, 
+    Color   from Quantity,
+    AspectText3d from Graphic3d,  
+    PlaneAngle from Quantity, 
+    HorizontalTextAlignment  from  Graphic3d, 
+    VerticalTextAlignment  from  Graphic3d, 
+    TextPath from Graphic3d,
+    Length from Quantity
+    
+is
+    Create returns mutable TextAspect from Prs3d;  
+        --- Purpose: Constructs an empty framework for defining display attributes of text.   
+
+    SetColor(me: mutable; aColor:  Color  from  Quantity);
+ 
+    SetColor(me: mutable; aColor:  NameOfColor  from  Quantity);
+        --- Purpose: Sets the color of the type used in text display.
+
+    SetFont(me: mutable; aFont:  CString  from  Standard);
+        --- Purpose: Sets the font used in text display.  
+    
+    SetHeightWidthRatio(me:  mutable;  aRatio:  Real  from  Standard);
+        --- Purpose: Returns the height-width ratio, also known as the expansion factor.  
+    SetSpace(me :mutable; aSpace:  Length  from  Quantity); 
+        ---Purpose: Sets the length of the box which text will occupy.
+    
+    SetHeight(me: mutable;  aHeight:  Real  from  Standard);  
+        --- Purpose: Sets the height of the text.  
+    
+    SetAngle(me: mutable;  anAngle:  PlaneAngle  from  Quantity); 
+        --- Purpose: Sets the angle  
+    
+    Height(me) returns Real  from  Standard; 
+        ---Purpose: Returns the height of the text box.    
+    
+    Angle(me) returns PlaneAngle  from  Quantity; 
+        ---Purpose: Returns the angle    
+    
+    SetHorizontalJustification(me:  mutable;  aJustification:  HorizontalTextAlignment  from  Graphic3d);
+        --- Purpose: Sets horizontal alignment of text.  
+    
+    SetVerticalJustification(me:  mutable;  aJustification:  VerticalTextAlignment  from  Graphic3d);
+        --- Purpose: Sets the vertical alignment of text.
+    
+    SetOrientation(me: mutable;  anOrientation:  TextPath  from  Graphic3d); 
+        ---Purpose: Sets the orientation of text. 
+    
+    HorizontalJustification(me)  returns  HorizontalTextAlignment  from  Graphic3d; 
+        --- Purpose: Returns the horizontal alignment of the text.
+        -- The range of values includes:
+        -- -   left
+        -- -   center
+        -- -   right, and
+        -- -   normal (justified).  
+     
+    VerticalJustification(me)  returns  VerticalTextAlignment  from  Graphic3d; 
+        --- Purpose: Returns the vertical alignment of the text.
+        -- The range of values includes:
+        -- -   normal
+        -- -   top
+        -- -   cap
+        -- -   half
+        -- -   base
+        -- -   bottom 
+    
+    Orientation(me) returns  TextPath  from  Graphic3d; 
+        --- Purpose: Returns the orientation of the text.
+        -- Text can be displayed in the following directions:
+        -- -   up
+        -- -   down
+        -- -   left, or
+        -- -   right   
+    
+    Aspect(me) returns AspectText3d  from  Graphic3d;  
+        ---Purpose: Returns the purely textual attributes used in the display of text.
+        -- These include:
+        -- -   color
+        -- -   font
+        -- -   height/width ratio, that is, the expansion factor, and
+        -- -   space between characters.    
+    Print( me; s: in out OStream from Standard);
+    
+fields
+    myTextAspect: AspectText3d  from  Graphic3d; 
+    myAngle: PlaneAngle from  Quantity;  
+    myHeight: Real from Standard;
+    myHorizontalJustification:  HorizontalTextAlignment  from  Graphic3d; 
+    myVerticalJustification:  VerticalTextAlignment  from  Graphic3d; 
+    myOrientation: TextPath  from  Graphic3d; 
+    
+end TextAspect from Prs3d;
+
+
+
+
+
+

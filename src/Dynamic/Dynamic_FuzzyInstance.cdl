@@ -1,0 +1,109 @@
+-- File:	Dynamic_FuzzyInstance.cdl
+-- Created:	Thu Dec 23 17:26:53 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@mastox>
+---Copyright:	 Matra Datavision 1993
+
+generic class FuzzyInstance from Dynamic (Dictionary as Transient)
+
+inherits
+
+    FuzzyClass from Dynamic
+
+	---Purpose: This class  describes the  facilities available to
+	--          manipulate fuzzy  objects. It  is a  generic class
+	--          because the creation of a FuzzyInstance requests a
+	--          specific dictionary of definitions.
+
+uses
+
+    CString from Standard,
+    Integer from Standard,
+    Real    from Standard,
+    Boolean from Standard,
+    OStream from Standard,
+    FuzzyDefinition from Dynamic,
+    Parameter       from Dynamic,
+    AsciiString     from TCollection
+
+is
+
+    Create(atype : CString from Standard) returns mutable FuzzyInstance from Dynamic;
+    --- Purpose: Creates  a   FuzzyInstance    object  of   the   type
+    --  <atype>. If  <atype>  is not defined  in the   dictionary, the
+    --  object created will have no definition.
+
+    Create(afuzzyinstance : FuzzyInstance from Dynamic) returns mutable FuzzyInstance from Dynamic;
+    --- Purpose: Creates a  FuzzyInstance with as definition the fuzzy
+    --           instance <afuzzyinstance>.
+
+    Type(me) returns AsciiString from TCollection is redefined;
+    ---Purpose: Returns the type of object read in the definition.
+    
+    Definition(me) returns FuzzyClass from Dynamic is static;
+    ---Purpose: Returns   a    reference to  the   definition   of the
+    --          FuzzyInstance.
+    
+    Parameter(me : mutable ; aparameter : CString from Standard; avalue : Boolean from Standard) is redefined;
+    ---Purpose: Adds to the  instance <me> the parameter  <aparameter>
+    --          with the boolean value <avalue>.
+    
+    Parameter(me : mutable ; aparameter : CString from Standard; avalue : Integer from Standard) is redefined;
+    ---Purpose: Adds  to the instance <me>  the parameter <aparameter>
+    --          with the integer value <avalue>.
+    
+    Parameter(me : mutable ; aparameter : CString from Standard ; avalue : Real from Standard) is redefined;
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the real value <avalue>.
+    
+    Parameter(me : mutable ; aparameter : CString from Standard; astring : CString from Standard) is redefined;
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the string <astring>.
+    
+    Parameter(me : mutable ; aparameter : CString from Standard ; anobject : any Transient) is redefined;
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the object value <anobject>.
+    
+    Value(me ; aparameter : CString from Standard ; avalue : out Boolean from Standard)  
+    returns Boolean from Standard is redefined;   
+    ---Purpose: Returns True, if   there is a parameter   <aparameter>
+    --          previously  stored in the  instance <me>  and there is
+    --          the corresponding boolean value in the output argument
+    --          <avalue>, False otherwise.
+     
+    Value(me ; aparameter : CString from Standard ; avalue : out Integer from Standard)  
+    returns Boolean from Standard is redefined;    
+    ---Purpose: Returns True,  if  there  is a  parameter <aparameter>
+    --          previously stored  in the instance   <me> and there is
+    --          the corresponding integer value in the output argument
+    --          <avalue>, False otherwise.
+    
+    Value(me ; aparameter : CString from Standard ; avalue : out Real from Standard)  
+    returns Boolean from Standard is redefined;   
+    ---Purpose: Returns  True,  if there is  a  parameter <aparameter>
+    --          previously  stored in the instance  <me>  and there is
+    --          the corresponding real  value  in the output  argument
+    --          <avalue>, False otherwise.
+    
+    Value(me ; aparameter : CString from Standard ; avalue : out AsciiString from TCollection)  
+    returns Boolean from Standard is redefined; 
+    ---Purpose: Returns True,  if  there is  a parameter  <aparameter>
+    --          previously  stored in the instance   <me> and there is
+    --          the   corresponding string   in  the  output  argument
+    --          <avalue>, False otherwise.
+    
+    Value(me ; aparameter : CString from Standard ; avalue : out any Transient)  
+    returns Boolean from Standard is redefined;   
+    ---Purpose: Returns  True,  if  there is  a   parameter <aparameter>
+    --          previously stored  in the instance <me> and   there is
+    --          the corresponding object value  in  the output argument
+    --          <avalue>, False otherwise.
+    
+    Dump(me ; astream : in out OStream from Standard) is redefined;
+    ---Purpose: Useful for debugging.
+    
+fields
+
+    thedefinition : FuzzyClass from Dynamic;
+
+end FuzzyInstance;

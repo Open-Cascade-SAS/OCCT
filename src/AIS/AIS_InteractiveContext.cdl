@@ -1,0 +1,2197 @@
+-- File:	AIS_InteractiveContext.cdl
+-- Created:	Wed Dec 18 10:11:30 1996
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+--		
+--Modified by   
+--   rob : Dec 17 1997 -> Update Method Added + Use in Deviation Angle...
+--   
+--   rob : Feb 05 1998 -> UpdateOnlySelection, UpdateOnlyPrs
+--   
+--         Apr 02 1998 -> Select Methods has been added a boolean updateviewer.
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible i
+--	    Quantity_Color instead the restricted NameOfColor.
+--          Add SetCurrentFacingModel() methods
+--   EUG :  G003 05/11/1999 Degeneration mode support
+--              Add SetDegenerateModel() methods
+--   GG  : IMP140200 Add SetSelectedAspect() method
+--   GG  : 25/05/00 BUC60688 Add SetSensitivity() methods 
+--   VSV : 22/05/01 Add Selection by polygon
+--   SAV :  Add DisplayFromCollector() method
+--   GG  : IMP150501 CADPAK_V2 Add Drag() method
+--   ZSV : IMP160701 Add InitDetected(),MoreDetected(),NextDetected(),
+--	   	         DetectedCurrentShape(),DetectedCurrentObject()
+--			 methods
+--   GG  : IMP051001 Add SetZDetection() and ZDetection() methods
+--   SAV : OCC172 : Delete() redefined to remove selection objects from
+--                  the static map.
+--   SAN : OCC4895 22/03/04 High-level interface for controlling polygon offsets
+--
+--   SLN : SetToHilightSelected method added
+
+---Copyright:	 Matra Datavision 1996
+
+
+class InteractiveContext from AIS inherits TShared from MMgt
+
+    	---Purpose: The Interactive Context allows you to manage
+    	-- graphic behavior and selection of Interactive Objects
+    	-- in one or more viewers. Class methods make this
+    	-- highly transparent.
+    	-- It is essential to remember that an Interactive Object
+    	-- which is already known by the Interactive Context
+    	-- must be modified using Context methods. You can
+    	-- only directly call the methods available for an
+    	-- Interactive Object if it has not been loaded into an
+    	-- Interactive Context.
+    	-- You must distinguish two states in the Interactive Context:
+    	-- -   No Open Local Context, also known as the Neutral Point.
+    	-- -   One or several open local contexts, each
+    	--   representing a temporary state of selection and presentation.
+    	--   Some methods can only be used in open Local
+    	-- Context; others in closed Local Context; others do
+    	-- not have the same behavior in one state as in the other.
+    	-- The possiblities of use for local contexts are
+    	-- numerous depending on the type of operation that
+    	-- you want to perform, for example:
+    	-- -   working on all visualized interactive objects,
+    	-- -   working on only a few objects,
+    	-- -   working on a single object.
+    	--   1. When you want ot work on one type of entity, you
+    	-- should open a local context with the option
+    	-- UseDisplayedObjects set to false. DisplayedObjects
+    	-- allows you to recover the visualized Interactive
+    	-- Objects which have a given Type and
+    	-- Signature   from Neutral Point.
+    	-- 2. You must keep in mind the fact that when you open
+    	-- a Local Context with default options:
+    	-- -   The Interactive Objects visualized at Neutral Point
+    	--   are activated with their default selection mode. You
+    	--   must deactivate those which you do not want ot use.
+    	-- -   The Shape type Interactive Objects are
+    	--   automatically decomposed into sub-shapes when
+    	--   standard activation modes are launched.
+    	-- -   The "temporary" Interactive Objects present in the
+    	--   Local Contexts are not automatically taken into
+    	--   account. You have to load them manually if you
+    	--  want to use them.
+    	-- -   The stages could be the following:
+    	--   -   Open a Local Context with the right options;
+    	--   -   Load/Visualize the required complementary
+    	--    objects with the desired activation modes.
+    	--   -   Activate Standard modes if necessary
+    	-- - Create its filters and add them to the Local Context
+    	--   -   Detect/Select/recover the desired entities
+    	--   -   Close the Local Context with the adequate index.
+    	-- -   It is useful to create an interactive editor, to which
+    	--   you pass the Interactive Context. This will take care
+    	--   of setting up the different contexts of
+    	--   selection/presentation according to the operation
+    	--   which you want to perform.
+
+uses
+    Address               from Standard,
+    Viewer                from V3d,
+    View                  from V3d,
+    NameOfColor           from Quantity,
+    Color		  from Quantity,
+    Ratio		  from Quantity,
+    Drawer                from Prs3d,
+    ExtendedString        from TCollection,
+    AsciiString           from TCollection,
+    Shape                 from TopoDS,
+    SelectionManager      from SelectMgr,
+    PresentationManager3d from PrsMgr,
+    ViewerSelector3d      from StdSelect,
+    MapOfInteractive      from AIS,
+    InteractiveObject     from AIS,
+    DisplayMode           from AIS,
+    Drawer                from AIS,
+    NameOfMaterial        from Graphic3d,
+    --NameOfPhysicalMaterial  from Graphic3d,
+    Filter                from SelectMgr,
+    ListOfFilter          from SelectMgr,
+    OrFilter              from SelectMgr, 
+    IndexedMapOfOwner     from SelectMgr,
+    ShapeEnum             from TopAbs,
+    ListOfInteractive     from AIS,
+    SequenceOfInteractive from AIS,
+    ListOfInteger         from TColStd,
+    DataMapOfIOStatus     from AIS,
+    LocalContext          from AIS,
+    DisplayStatus         from AIS,
+    DataMapOfILC          from AIS, 
+    ClearMode             from AIS,
+    KindOfInteractive     from AIS,
+    TypeOfIso             from AIS,
+    StatusOfDetection     from AIS,
+    StatusOfPick          from AIS,
+    LineAspect            from Prs3d,
+    BasicAspect 		  from Prs3d,
+    Location              from TopLoc,
+    EntityOwner           from SelectMgr,
+    TypeOfFacingModel 	  from Aspect,
+    TypeOfDegenerateModel from Aspect,
+    Array1OfPnt2d         from TColgp,
+    Transformation 	  from Geom
+
+is
+
+    Create(MainViewer:Viewer from V3d) 
+    returns mutable InteractiveContext from  AIS;
+    	---Purpose:
+    	-- Constructs the interactive context object defined by
+    	-- the principal viewer MainViewer.    
+    
+    Create(MainViewer,Collector: Viewer from V3d)
+    returns mutable InteractiveContext from  AIS;
+    	---Purpose:
+    	-- Constructs the interactive context object defined by
+    	-- the principal viewer MainViewer and the collector
+    	-- (or trash) viewer.
+	   
+
+    Delete(me) is redefined;
+
+    IsCollectorClosed(me) returns Boolean from Standard;
+    ---C++: inline
+    CloseCollector(me:mutable);
+    ---C++: inline
+    OpenCollector(me:mutable);
+
+
+
+		    ---Category: General DISPLAY SERVICES
+    SetAutoActivateSelection( me: mutable; Auto : Boolean from Standard ); 
+    GetAutoActivateSelection( me ) returns Boolean from Standard;
+
+
+    Display(me                 : mutable;
+    	    anIobj             : InteractiveObject from AIS;
+    	    updateviewer       : Boolean from Standard = Standard_True); 
+    	    ---Purpose: Controls the choice between the using the display
+	    -- and selection modes of open local context which you
+	    -- have defined and activating those available by default.
+    -- If a local context is open and if updateviewer equals
+    -- Standard_False, the Interactive Object anIobj is
+    -- displayed in the default active mode. This will be the
+    	-- object's default display mode, if there is one.
+    	-- Otherwise, it will be the context mode. The Interactive
+    	-- Object's default selection mode is activated. In
+    	-- general, this is 0.
+    	-- This syntax has the same behavior as local context,
+    	-- open or closed. If you want to view the object in open
+    	-- local context without selection, use the syntax below,
+    	-- setting aSelectionMode to -1.
+
+    Display(me                 : mutable;
+    	    anIobj             : InteractiveObject from AIS;
+    	    amode              : Integer from Standard ;
+	    aSelectionMode     : Integer from Standard ;
+    	    updateviewer       : Boolean from Standard = Standard_True;
+    	    allowdecomposition : Boolean from Standard = Standard_True);
+    	---Purpose: Controls the choice between the using the display
+    	-- and selection modes of open local context which you
+    	-- have defined and activating those available by default.
+    	-- If no Local Context is opened. and the Interactive
+    	-- Object aniobj has no display mode of its own, the
+    	-- default display mode, 0, is used. Likewise, if aniobj
+    	-- has no selection mode of its own, the default one, 0, is used.
+    	-- If a local context is open and if updateviewer equals
+    	-- Standard_False, the presentation of the Interactive
+    	-- Object activates the selection mode; the object is
+    	-- displayed but no viewer will be updated.
+    	-- If aSelectionMode equals -1, anIobj will not be
+    	-- activated: it will be displayed but will not be selectable.
+    	-- Use this if you want to view the object in open local
+    	-- context without selection. Note: This option is only
+    	-- available in Local Context.
+    	-- If allowDecomposition equals true, anIObj can have
+    	-- subshapes detected by selection mechanisms. anIObj
+    	-- must be able to give a shape selection modes which
+    	-- fit the AIS_Shape selection modes:
+    	-- -   vertices: 1
+    	-- -   edges: 2
+    	-- -   wires: 3.
+        
+    Load(me:mutable;
+    	 aniobj : InteractiveObject from AIS;
+	 SelectionMode : Integer from Standard = -1;
+	 AllowDecomp   : Boolean from Standard = Standard_False);
+	 ---Purpose: Allows you to load the Interactive Object aniobj
+    	 -- with a given selection mode SelectionMode, and/or
+-- with the desired decomposition option, whether the
+-- object is visualized or not. If AllowDecomp =
+-- Standard_True and, if the interactive object is of
+-- the "Shape" type, these "standard" selection
+-- modes will be automatically activated as a function
+-- of the modes present in the Local Context.
+-- The loaded objects will be selectable but
+-- displayable in highlighting only when detected by the Selector.
+-- This method is available only when Local Contexts are open.
+
+
+    Erase(me             : mutable; 
+    	  aniobj         : InteractiveObject from AIS;
+	  updateviewer   : Boolean from Standard = Standard_True;
+    	  PutInCollector : Boolean from Standard = Standard_False);
+---Purpose: To erase presentations in current local context, or
+-- failing that, in other local contexts which allow erasing.
+--
+-- If putinCollector is True, the object is erased with graphical status Erased,
+-- and put into the Collector. These objects can be retrieved
+-- from Interactive Context by ObjectsInCollector method.
+-- If putinCollector is False, the objects erased with graphical status FullErased,
+-- and not put into the Collector. These objects can be retrieved
+-- from Interactive Context by ErasedObjects method.
+--
+-- Note: objects that are put into the Collector recomute their presentation
+-- for Collector Presentation Manager.
+--
+-- If a local context is open and if updateviewer is
+-- False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    EraseMode(me             : mutable;
+	      aniobj         : InteractiveObject from AIS;
+	      aMode          : Integer from Standard;
+	      updateviewer   : Boolean from Standard = Standard_True); 
+    ---Purpose: Updates viewer contents and returns the display
+-- mode of each aniobj object. Use only if more than
+-- one display mode is active in the main viewer.
+-- This method works only on presentation modes other
+-- than the default mode. Nothing is done if aMode is
+-- the default presentation mode.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+
+
+    EraseAll(me:mutable;
+    	     PutInCollector : Boolean from Standard = Standard_False;
+    	     updateviewer   : Boolean from Standard = Standard_True);
+    ---Purpose: Every erased object goes into the Collector viewer,
+    --          depending on PutInCollector value.
+
+    DisplayAll(me                : mutable;
+    	       OnlyFromCollector : Boolean from Standard = Standard_False;
+    	       updateviewer      : Boolean from Standard = Standard_True);
+    ---Purpose: Displays all erased objects or display all objects from collector
+
+    DisplayFromCollector(me	 : mutable;
+			  anIObj          :  InteractiveObject from AIS;
+			  updateviewer    : Boolean from Standard = Standard_True);
+    ---Purpose: display anIObj from the collector.
+
+    EraseSelected(me:mutable;
+    	    	  PutInCollector:Boolean from Standard=Standard_False; 
+    	    	  updateviewer:Boolean from Standard = Standard_True);
+	---Purpose:
+-- Erases selected objects if there is no open active local context.
+-- If there is no local context activated and if
+-- updateviewer equals Standard_False, the
+-- presentation of the Interactive Object activates the
+-- selection mode; the object is displayed but no viewer
+-- will be updated.
+-- If a local context is open, this method is neutral.
+    
+    DisplaySelected(me:mutable;updateviewer:Boolean from Standard = Standard_True);
+    ---Purpose: Displays selected objects if a local context is open.
+-- Displays current objects if there is no active local context.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation   of the Interactive
+-- Object activates   the   selection   mode; the   object is
+-- displayed but no viewer will be updated.
+
+
+    KeepTemporary(me          :  mutable; 
+    	    	  anIObj      :  InteractiveObject from AIS; 
+    	    	  InWhichLocal:  Integer  from  Standard  =  -1)
+    returns  Boolean  from  Standard;
+---Purpose: Changes the status of a temporary object. It will be
+-- kept at the neutral point, i.e. put in the list of
+-- displayed   objects along withwith   its temporary
+-- attributes. These include display mode and
+-- selection   mode, for example.
+-- Returns true if done.
+-- inWhichLocal gives the local context in which anIObj
+-- is displayed. By default, the index -1 refers to the last
+-- Local Context opened.
+ 
+    Clear(me : mutable;
+    	  aniobj         : InteractiveObject from AIS;
+	  updateviewer   : Boolean from Standard = Standard_True);
+---Purpose: Removes the interactive object aniobj from all viewers.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    ClearPrs( me           :mutable;
+    	      aniobj       : InteractiveObject from AIS;
+	      aMode        : Integer from Standard = 0;
+	      updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: Empties the graphic presentation of the mode
+-- indexed by aMode.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+-- Warning
+-- Removes anIobj. anIobj is still active if it was
+-- previously activated.
+
+    Remove(me:mutable;
+    	  aniobj         : InteractiveObject from AIS;
+	  updateviewer   : Boolean from Standard = Standard_True);
+    ---Purpose: Removes aniobj from every viewer. aniobj is no
+-- longer referenced in the Context.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation   of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    RemoveAll(me:mutable;
+    	  updateviewer   : Boolean from Standard = Standard_True);
+    ---Purpose: Removes all the objects from all opened Local Contexts
+    --          and from the Neutral Point
+
+
+    Hilight(me:mutable;
+    	    aniobj : InteractiveObject from AIS;
+	    updateviewer: Boolean from Standard = Standard_True);
+	---Purpose:
+-- Updates the display in the viewer to take dynamic
+-- detection into account. On dynamic detection by the
+-- mouse cursor, sensitive primitives are highlighted.
+-- The highlight color of entities detected by mouse
+-- movement is white by default.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    HilightWithColor(me:mutable;
+    	    aniobj :InteractiveObject from AIS;
+	    aCol   : NameOfColor from Quantity;
+	    updateviewer: Boolean from Standard = Standard_True); 
+---Purpose:
+-- Changes the color of all the lines of the object in view,
+-- aniobj. It paints these lines the color passed as the
+-- argument, aCol.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    Unhilight(me:mutable;
+    	    aniobj : InteractiveObject from AIS;
+	    updateviewer: Boolean from Standard = Standard_True);
+---Purpose:
+-- Removes hilighting from the entity aniobj. Updates the viewer.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    SetDisplayPriority(me:mutable;
+    	    	       anIobj: InteractiveObject from AIS;
+		       aPriority : Integer from Standard);
+    ---Purpose: Sets the display priority aPriority of the seen parts
+-- presentation of the entity anIobj.
+
+    Redisplay(me     : mutable;
+    	      aniobj : InteractiveObject from AIS;
+	      updateviewer : Boolean from Standard = Standard_True;
+    	      allmodes : Boolean from Standard = Standard_False);
+    ---Purpose: Recomputes the seen parts presentation of the entity
+-- aniobj. If allmodes equals true, all presentations are
+-- present in the object even if unseen.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    Redisplay(me           : mutable;
+    	      aTypeOfObject: KindOfInteractive from AIS;
+	      Signature    : Integer from Standard =-1;
+    	      updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: Recomputes the Prs/Selection of displayed objects of
+    --          a given type and a given signature.
+    --          if signature = -1  doesnt take signature criterion.
+
+
+    RecomputePrsOnly(me:mutable;
+    	    	     anIobj       : InteractiveObject from AIS;
+	             updateviewer : Boolean from Standard = Standard_True;
+    	             allmodes     : Boolean from Standard = Standard_False);
+    ---Purpose: Recomputes the displayed presentations, flags the others
+    --          Doesn't update presentations
+    
+    
+
+    RecomputeSelectionOnly(me:mutable;
+    	    	           anIObj : InteractiveObject from AIS);
+    ---Purpose: Recomputes the active selections, flags the others
+    --          Doesn't update presentations
+
+    Update(me       : mutable;
+    	   anIobj   : InteractiveObject from AIS;
+	   updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: Checks which presentations are flagged "to be recomputed"
+    --          and recomputes them if they are displayed.
+    --          This method doesn't force any Computation.
+    --          Recomputes Flagged selections if they are activated.
+
+
+			
+
+    SetDisplayMode(me     : mutable;
+    	           aniobj : InteractiveObject from AIS;
+		   aMode  : Integer from Standard;
+    	    	   updateviewer: Boolean from Standard = Standard_True);
+    
+---Purpose:
+-- Sets the display mode of seen Interactive Objects.
+-- aMode provides the display mode index of the entity aniobj.
+-- If updateviewer equals Standard_True, the
+-- predominant mode aMode will overule the context mode.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object returns to the default selection mode; the
+-- object is displayed but no viewer will be updated.
+-- Note that display mode 3 is only used if you have an
+-- AIS_Textured Shape.    
+    
+    
+    UnsetDisplayMode(me     : mutable;
+    	    	     aniobj : InteractiveObject from AIS;
+    	    	     updateviewer: Boolean from Standard = Standard_True);
+---Purpose:
+-- Unsets the display mode of seen Interactive Objects.
+-- aMode provides the display mode index of the entity aniobj.
+-- If updateviewer equals Standard_True, the
+-- predominant mode aMode will overule the context mode.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object returns to the default selection mode; the
+-- object is displayed but no viewer will be updated.		     
+    SetSelectionMode(me:mutable;
+    	    	     aniobj:InteractiveObject from AIS;
+		     aMode :Integer from Standard);
+---Purpose:
+-- Sets the selection mode of Interactive Objects.
+-- aMode provides the selection mode index of the entity aniobj.		     
+    UnsetSelectionMode(me     : mutable;
+    	    	     aniobj : InteractiveObject from AIS);
+---Purpose:
+-- Removes selection mode from Interactive Objects.
+-- aMode provides the selection mode index of the entity aniobj.
+    
+    SetSensitivity(me:mutable;
+			aPrecision: Real from Standard);
+    ---Level: Public
+    ---Purpose: Sets the sensitivity aPrecision
+-- according to the view size for the current context or local
+-- context if any is activated. 
+--   Sets the sensitivity aPrecision in pixels for the current context
+-- or local context if any is activated. By default, this
+-- sensitivity is equal to 4 pixels.
+--   When a local context is open, the defined sensitivity applies to
+-- this local context instead of the main context.
+
+    SetSensitivity(me:mutable;
+			aPrecision: Integer from Standard = 4);
+    ---Level: Public
+    ---Purpose: Define the current selection pixel sensitivity
+    --		for this context or local context if any one is activated.
+    --  Warning: When a local context is open the sensitivity is apply on it 
+    --          instead on the main context.
+
+		   ---Category: put locations on objects....
+		   --           
+
+    SetLocation(me:mutable;
+    	    	aniobj : InteractiveObject from AIS;
+		aLocation : Location from TopLoc);
+---Purpose: Puts the location aLocation on the initial graphic
+-- representation and the selection for the entity aniobj.
+-- In other words, aniobj is visible and selectable at a
+-- position other than initial position.
+-- Graphic and selection primitives are not recomputed.
+-- To clean the view correctly, you must reset the previous location.
+
+    ResetLocation(me     : mutable;
+    	    	  aniobj : InteractiveObject from AIS);
+    ---Purpose: Puts the entity aniobj back into its initial position.
+
+    
+
+    HasLocation(me;
+    	        aniobj : InteractiveObject from AIS)
+    returns Boolean from Standard;
+---Purpose:
+-- Returns true if the entity aniobj has a location.
+        
+    Location(me;
+    	     aniobj : InteractiveObject from AIS)
+    returns Location from TopLoc;
+    	---Purpose:
+    	-- Returns the location of the entity aniobj.
+    	---C++: return const&
+
+
+
+    SetCurrentFacingModel(me: mutable;
+    	     aniobj  : InteractiveObject from AIS;
+             aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE);
+    ---Purpose: change the current facing model apply on polygons for
+    -- SetColor(), SetTransparency(), SetMaterial() methods
+    -- default facing model is Aspect_TOFM_TWO_SIDE. This mean that attributes is
+    -- applying both on the front and back face.
+
+    SetColor(me      : mutable;
+    	     aniobj  : InteractiveObject from AIS;
+   	     aColor  : NameOfColor from Quantity;
+    	     updateviewer : Boolean from Standard = Standard_True);
+
+    SetColor(me      : mutable;
+    	     aniobj  : InteractiveObject from AIS;
+	     aColor  : Color from Quantity;
+    	     updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Sets the color of the selected entity.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation   of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    UnsetColor(me     :mutable;
+    	      aniobj  : InteractiveObject from AIS;
+    	     updateviewer : Boolean from Standard = Standard_True);
+--- Purpose: Removes the color selection for the selected entity.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.	     
+        
+    SetWidth(me:mutable; 
+    	     aniobj  : InteractiveObject from AIS;
+    	     aValue:Real from Standard;
+    	     updateviewer : Boolean from Standard = Standard_True) is virtual;
+---Purpose:
+-- Sets the width of the entity aniobj.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+    
+    UnsetWidth(me:mutable; 
+    	     aniobj  : InteractiveObject from AIS;
+    	     updateviewer : Boolean from Standard = Standard_True) is virtual;
+---Purpose:
+-- Removes the width setting of the entity aniobj.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    SetMaterial(me:mutable;
+     	       aniobj  : InteractiveObject from AIS;
+    	    	aName:NameOfMaterial from Graphic3d;
+    	    	--aName:NameOfPhysicalMaterial from Graphic3d;
+    	        updateviewer : Boolean from Standard = Standard_True); 
+---Purpose:
+-- Provides the type of material setting for the view of
+-- the entity aniobj.
+-- The range of settings includes: BRASS, BRONZE,
+-- GOLD, PEWTER, SILVER, STONE.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    UnsetMaterial(me    : mutable;
+    	    	  anObj : InteractiveObject from AIS;
+    	          updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Removes the type of material setting for viewing the
+-- entity aniobj.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    SetTransparency(me:mutable;
+         	    aniobj  : InteractiveObject from AIS;
+    	    	    aValue : Real from Standard=0.6;
+    	            updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: Provides the transparency settings for viewing the
+-- entity aniobj. The transparency value aValue may be
+-- between 0.0, opaque, and 1.0, fully transparent.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    UnsetTransparency(me       : mutable;
+     	              aniobj  : InteractiveObject from AIS;
+    	     updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Removes   the transparency settings for viewing the
+-- entity aniobj. The transparency value aValue may be
+-- between 0.0, opaque, and 1.0, fully transparent.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    SetDegenerateModel ( me : mutable;
+         	aniobj  : InteractiveObject from AIS;
+                aModel  : TypeOfDegenerateModel from Aspect =
+                                                Aspect_TDM_WIREFRAME;
+                aRatio : Ratio from Quantity = 0.0);
+    ---Level: Public
+    ---Purpose: Sets the model of degeneration for the shaded representation
+    --   of the object <aniobj>
+    --   according to the degenerate ratio >= 0. & <= 1. where :
+    --   <aRatio> = 0. indicate that all polygons of the object
+    --      will be displayed.
+    --   <aRatio> = 1. indicate that no polygons will be displayed !!
+    --   When <ARatio> is > 0 & < 1. the corresponding amount
+    --   of object polygons will be displayed with a random method.
+    --  Warning: the degenerate structure is shown only when
+    -- the animation and degenerate flags are set to TRUE
+    -- in V3d_View::SetAnimationMode(..)
+    ---Category: Methods to manage the object degeneration
+
+    SetDegenerateModel (
+     me         : mutable;
+     aModel     : TypeOfDegenerateModel from Aspect;
+     aSkipRatio : Ratio                 from Quantity = 0.0
+    ) is static;
+    ---Purpose: Defines the degenerate method to apply on the shaded 
+    --  representation of all objects.
+
+    SetLocalAttributes(me      : mutable; 
+    	    	       aniobj  : InteractiveObject from AIS;
+    	    	       aDrawer : Drawer from AIS;
+    	     updateviewer : Boolean from Standard = Standard_True); 
+--- Purpose:
+-- Sets the attributes of the interactive object aniobj by
+-- plugging the attribute manager aDrawer into the local
+-- context. The graphic attributes of aDrawer such as
+-- visualization mode, color, and material, are then used
+-- to display aniobj.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    UnsetLocalAttributes(me     : mutable;
+    	    	          anObj : InteractiveObject from AIS;
+    	                 updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Removes the settings for local attributes of the entity
+-- anObj   and returns to the Neutral Point attributes or
+-- those of the previous local context.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    
+    SetPolygonOffsets ( me : mutable;
+		anObj        : InteractiveObject from AIS;
+		aMode        : Integer from Standard;
+		aFactor      : Real from Standard = 1.0;
+		aUnits       : Real from Standard = 0.0;
+    	updateviewer : Boolean from Standard = Standard_True ) is static;
+    ---Purpose: Sets up polygon offsets for the given AIS_InteractiveObject.
+    --          It simply calls anObj->SetPolygonOffsets() 
+
+    
+    HasPolygonOffsets ( me; 
+		 anObj   : InteractiveObject from AIS ) 
+		 returns Boolean from Standard 
+		 is static;
+    ---Level: Public
+    ---Purpose: simply calls anObj->HasPolygonOffsets() 
+    ---Category: Inquire methods
+
+    PolygonOffsets ( me;
+		anObj   : InteractiveObject from AIS;
+		aMode   : out Integer from Standard;
+		aFactor : out Real from Standard;
+		aUnits  : out Real from Standard ) is static;
+    ---Level: Public
+    ---Purpose: Retrieves current polygon offsets settings for <anObj>.
+    ---Category: Inquire methods
+
+
+    SetTrihedronSize(me:mutable;aSize:Real from Standard;updateviewer: Boolean from Standard = Standard_True);
+    ---Purpose: Sets the size aSize of the trihedron.
+-- Is used to change the default value 100 mm for
+-- display of trihedra.
+-- Use of this function in one of your own interactive
+-- objects requires a call to the Compute function of the
+-- new class. This will recalculate the presentation for
+-- every trihedron displayed.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    TrihedronSize(me) returns Real from Standard;
+    ---Purpose: returns the current value of trihedron size.
+
+    
+    SetPlaneSize(me:mutable;aSizeX,aSizeY:Real from Standard;updateviewer: Boolean from Standard = Standard_True);
+---Purpose:
+-- Sets the plane size defined by the length in the X
+-- direction XSize and that in the Y direction YSize.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    SetPlaneSize(me:mutable;aSize:Real from Standard;updateviewer: Boolean from Standard = Standard_True);
+---Purpose:
+-- Sets the plane size aSize.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+-- May be used if PlaneSize returns true.
+        
+    PlaneSize(me; XSize,YSize:out Real from Standard) returns Boolean from Standard;
+    ---Purpose: Returns true if the length in the X direction XSize is
+-- the same as that in the Y direction YSize.
+
+    DisplayStatus (me; anIobj: InteractiveObject from AIS)
+    returns DisplayStatus from AIS;
+    ---Purpose: Returns the display status of the entity anIobj.
+-- This will be one of the following:
+-- -   DS_Displayed   displayed in main viewer
+-- -   DS_Erased   erased in the Collector
+-- -   DS_FullErased   erased everywhere but in the Collector
+-- -   DS_Temporary   temporarily displayed
+-- -   DS_None   nowhere displayed.
+
+    DisplayedModes (me;aniobj: InteractiveObject from AIS)
+    returns ListOfInteger from TColStd;
+        ---C++: return const &
+    	---Purpose:
+    	-- Returns the list of active display modes for the entity aniobj.
+
+    IsDisplayed(me; anIobj:InteractiveObject from AIS) returns Boolean from Standard;
+    ---Purpose: Returns true if anIobj is displayed in the interactive context.  
+    
+    IsDisplayed(me;
+    	        aniobj: InteractiveObject from AIS;
+    	    	aMode : Integer from Standard) 
+    returns Boolean  from  Standard;
+
+    IsHilighted(me;aniobj : InteractiveObject from AIS)
+    returns Boolean from Standard;
+
+    IsHilighted(me;
+    	    	anIobj   : InteractiveObject from AIS;
+		WithColor: out Boolean from Standard;
+    	    	theHiCol : out NameOfColor from Quantity)
+    returns Boolean from Standard;
+    ---Purpose: if <anIObj> is hilighted with a specific color
+    --          <WithColor> will be returned TRUE
+    --          <theHiCol> gives the name of the hilightcolor
+
+    IsInCollector(me;anIObj:InteractiveObject from AIS)
+    returns Boolean from Standard;
+---Purpose:
+-- Returns true if the entity anIobj is in the Collector viewer.
+    
+    DisplayPriority(me;anIobj: InteractiveObject from AIS)
+    returns Integer from Standard;
+---Purpose:
+-- Returns the display priority of the entity anIobj. This
+-- will be display   mode of anIobj if it is in the main
+-- viewer, and the highlight mode if it is in the Collector viewer.
+
+    HasColor(me; aniobj: InteractiveObject from AIS)
+    returns Boolean from Standard;
+---Purpose:
+-- Returns true if a view of the Interactive Object aniobj has color.    
+    Color(me;aniobj:InteractiveObject from AIS)
+    returns NameOfColor from Quantity;
+
+    Color(me; aniobj: InteractiveObject from AIS;
+		  acolor: out Color from Quantity);     
+---Purpose:
+-- Returns the color Color of the entity aniobj in the interactive context.    
+    Width(me;
+          aniobj  : InteractiveObject from AIS) 
+     returns Real from Standard is virtual;
+---Purpose:
+-- Returns the width of the Interactive Object aniobj in
+-- the interactive context.    
+
+    Status(me;
+     	   anObj : InteractiveObject from AIS;
+    	   astatus : in out ExtendedString from TCollection);
+---Purpose:
+-- Returns the status astatus of the Interactive Context
+-- for the view of the Interactive Object anObj.
+
+    UpdateCurrentViewer(me:mutable);
+ ---Purpose:
+-- Updates the current viewer, the viewer in Neutral Point.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.   
+
+    UpdateCollector(me:mutable);
+---Purpose: Updates the Collector viewer.
+
+
+
+    	    	    ---Category: General Attributes for the session
+
+    DisplayMode(me)        returns Integer     from Standard;
+        ---C++: inline
+    	---Purpose: Returns the display mode setting.
+    	-- Note that mode 3 is only used.
+    
+    HilightColor(me)       returns NameOfColor from Quantity; -- dynamic  selection
+        ---C++: inline
+    	---Purpose:
+    	-- Returns the name of the color used to show
+    	-- highlighted entities, that is, entities picked out by the mouse.
+    
+    SelectionColor(me)     returns NameOfColor from Quantity; 
+     ---C++: inline
+     ---Purpose:
+     -- Returns the name of the color used to show selected entities.
+     -- By default, this is Quantity_NOC_GRAY80.
+    
+    PreSelectionColor(me)  returns NameOfColor from Quantity;
+      ---C++: inline
+      ---Purpose: Returns the name of the color used to show preselection.
+      -- By default, this is Quantity_NOC_GREEN.
+    
+    DefaultColor(me)       returns NameOfColor from Quantity;
+        ---C++: inline
+    	---Purpose:
+    	-- Returns the name of the color used by default.
+    	-- By default, this is Quantity_NOC_GOLDENROD. 
+    
+    SubIntensityColor(me)       returns NameOfColor from Quantity;    
+        ---C++: inline
+    	---Purpose:
+    	-- Returns the name of the color used to show that an
+    	-- object is not currently selected.
+    	-- By default, this is Quantity_NOC_GRAY40.
+
+    SetHilightColor(me:mutable;aHiCol:NameOfColor from Quantity);
+        ---C++: inline
+    	---Purpose:
+    	-- Sets the color used to show highlighted entities, that
+    	-- is, entities picked by the mouse.
+    	-- By default, this is Quantity_NOC_CYAN1.
+    
+    SelectionColor(me:mutable;aCol:NameOfColor from Quantity);
+	    ---C++: inline
+	    ---Purpose:
+    	    -- Sets the color used to show selected entities.
+    	    -- By default, this is Quantity_NOC_GRAY80.
+    
+    SetPreselectionColor(me:mutable;aCol:NameOfColor from Quantity);
+        ---C++: inline    
+    	---Purpose:
+    	-- Allows you to set the color used to show preselection.
+    	-- By default, this is Quantity_NOC_GREEN.
+    	-- A preselected entity is one which has been selected
+    	-- as the domain of application of a function such as a fillet. 
+    
+    SetSubIntensityColor(me:mutable;aCol:NameOfColor from Quantity);
+        ---C++: inline    
+    	---Purpose:
+    	-- Sets the color used to show that an object is not currently selected.
+    	-- By default, this is Quantity_NOC_GRAY40.
+    
+    SetDisplayMode(me:mutable;AMode: DisplayMode from AIS;
+    	    	   updateviewer: Boolean from Standard = Standard_True);
+    ---Purpose:
+    -- Sets the display mode of seen Interactive Objects.
+    -- aMode provides the display mode index of the entity aniobj.
+    -- If updateviewer equals Standard_True, the
+    -- predominant mode aMode will overule the context mode.
+    -- If a local context is open and if updateviewer equals
+    -- Standard_False, the presentation of the Interactive
+    -- Object returns to the default selection mode; the
+    -- object is displayed but no viewer will be updated.
+    -- Note that display mode 3 is only used if you have an
+    -- AIS_Textured Shape.
+    
+    
+    SetDeviationCoefficient(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     aCoefficient : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+    --- Purpose:
+    -- Sets the deviation coefficient aCoefficient.
+    -- Drawings of curves or patches are made with respect
+    -- to a maximal chordal deviation. A Deviation coefficient
+    -- is used in the shading display mode. The shape is
+    -- seen decomposed into triangles. These are used to
+    -- calculate reflection of light from the surface of the
+    -- object. The triangles are formed from chords of the
+    -- curves in the shape. The deviation coefficient
+    -- aCoefficient gives the highest value of the angle with
+    -- which a chord can deviate from a tangent to a   curve.
+    -- If this limit is reached, a new triangle is begun.
+    -- This deviation is absolute and is set through the
+    -- method: SetMaximalChordialDeviation. The default
+    -- value is 0.001.
+    -- In drawing shapes, however, you are allowed to ask
+    -- for a relative deviation. This deviation will be:
+    -- SizeOfObject * DeviationCoefficient.
+    -- default 0.001
+        
+    SetDeviationAngle(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     anAngle      : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+	     
+    SetAngleAndDeviation(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     anAngle      : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: Calls the AIS_Shape SetAngleAndDeviation to set
+    --          both Angle and Deviation coefficients
+    SetHLRDeviationCoefficient(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     aCoefficient : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Sets the deviation coefficient aCoefficient for
+-- removal of hidden lines created by different
+-- viewpoints in different presentations. The Default value is 0.02.    
+
+    SetHLRDeviationAngle(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     anAngle      : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+	     
+
+    SetHLRAngleAndDeviation(me      : mutable;
+    	     aniobj       : InteractiveObject from AIS;
+    	     anAngle      : Real from Standard ;
+    	     updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose : Computes a HLRAngle and a
+-- HLRDeviationCoefficient by means of the angle
+-- anAngle and sets the corresponding methods in the
+-- default drawing tool with these values.
+    --         
+        
+    SetDeviationCoefficient(me: mutable; aCoefficient: Real from Standard);
+    ---Purpose: Sets the deviation coefficient aCoefficient.
+-- Drawings of curves or patches are made with respect
+-- to a maximal chordal deviation. A Deviation coefficient
+-- is used in the shading display mode. The shape is
+-- seen decomposed into triangles. These are used to
+-- calculate reflection of light from the surface of the
+-- object. The triangles are formed from chords of the
+-- curves in the shape. The deviation coefficient
+-- aCoefficient gives the highest value of the angle with
+-- which a chord can deviate from a tangent to a   curve.
+-- If this limit is reached, a new triangle is begun.
+-- This deviation is absolute and is set through the
+-- method: SetMaximalChordialDeviation. The default
+-- value is 0.001.
+-- In drawing shapes, however, you are allowed to ask
+-- for a relative deviation. This deviation will be:
+-- SizeOfObject * DeviationCoefficient.
+-- default 0.001
+        
+    DeviationCoefficient(me) returns Real from Standard ;
+---Purpose: Returns the deviation coefficient.
+-- Drawings of curves or patches are made with respect
+-- to a maximal chordal deviation. A Deviation coefficient
+-- is used in the shading display mode. The shape is
+-- seen decomposed into triangles. These are used to
+-- calculate reflection of light from the surface of the
+-- object. The triangles are formed from chords of the
+-- curves in the shape. The deviation coefficient gives
+-- the highest value of the angle with which a chord can
+-- deviate from a tangent to a   curve. If this limit is
+-- reached, a new triangle is begun.
+-- This deviation is absolute and is set through
+-- AIS_Drawer::SetMaximalChordialDeviation. The
+-- default value is 0.001.
+-- In drawing shapes, however, you are allowed to ask
+-- for a relative deviation. This deviation will be:
+-- SizeOfObject * DeviationCoefficient.
+        
+    SetDeviationAngle(me : mutable; anAngle : Real from Standard) ;
+    ---Purpose: default 6degrees 
+    DeviationAngle(me) returns Real from Standard ;
+    
+    SetHLRDeviationCoefficient(me: mutable; aCoefficient: Real from Standard);
+    ---Purpose:  Sets the deviation coefficient aCoefficient for
+-- removal of hidden lines created by different
+-- viewpoints in different presentations. The Default value is 0.02.
+    HLRDeviationCoefficient(me) returns Real from Standard ;
+---Purpose:
+-- Returns the real number value of the hidden line
+-- removal deviation coefficient.
+-- A Deviation coefficient is used in the shading display
+-- mode. The shape is seen decomposed into triangles.
+-- These are used to calculate reflection of light from the
+-- surface of the object.
+-- The triangles are formed from chords of the curves in
+-- the shape. The deviation coefficient give the highest
+-- value of the angle with which a chord can deviate
+-- from a tangent to a curve. If this limit is reached, a
+-- new triangle is begun.
+-- To find the hidden lines, hidden line display mode
+-- entails recalculation of the view at each different
+-- projector perspective.
+-- Because hidden lines entail calculations of more than
+-- usual complexity to decompose them into these
+-- triangles, a deviation coefficient allowing greater
+-- tolerance is used. This increases efficiency in calculation.
+-- The Default value is 0.02.
+    
+    SetHLRAngle(me: mutable; anAngle: Real from Standard);
+    ---Purpose: Sets the HLR angle anAngle.
+    HLRAngle(me) returns Real from Standard 
+    is static;
+--- Purpose:
+-- Returns the real number value of the deviation angle
+-- in hidden line removal views in this interactive context.
+-- The default value is 20*PI/180.
+    
+    SetHLRAngleAndDeviation(me: mutable; anAngle: Real from Standard);
+    ---Purpose: compute with anangle a HLRAngle and a HLRDeviationCoefficient 
+    --          and set them in myHLRAngle and in myHLRDeviationCoefficient
+    --          of myDefaultDrawer ;
+    --          anAngle is in radian ; ( 1 deg < angle in deg < 20 deg)
+    
+    HiddenLineAspect(me) returns mutable LineAspect from Prs3d
+    ---Purpose: Initializes hidden line aspect in the default drawing tool, or Drawer.
+-- The default values are:
+    --          Color: Quantity_NOC_YELLOW
+    --          Type of line: Aspect_TOL_DASH
+    --          Width: 1.
+    is static;
+
+    SetHiddenLineAspect(me; anAspect: LineAspect from Prs3d) 
+    is static;
+--- Purpose:
+-- Sets the hidden line aspect anAspect.
+-- anAspect defines display attributes for hidden lines in
+-- HLR projections.
+        
+    DrawHiddenLine(me) returns Boolean from Standard 
+    ---Purpose: returns Standard_True if the hidden lines are to be drawn.
+    --          By default the hidden lines are not drawn.
+    is static;
+    
+    EnableDrawHiddenLine(me)
+    ---Purpose: 
+    is static;
+
+    DisableDrawHiddenLine(me)
+    ---Purpose: 
+    is static;
+
+
+    SetIsoNumber(me         : mutable; 
+    	         NbIsos     : Integer from Standard;
+      	         WhichIsos  : TypeOfIso from AIS = AIS_TOI_Both);  
+---Purpose: Sets the number of U and V isoparameters displayed.
+    
+        IsoNumber(me         : mutable; 
+              WhichIsos  : TypeOfIso from AIS = AIS_TOI_Both)
+    returns Integer from Standard;
+---Purpose: Returns the number of U and V isoparameters displayed.
+
+
+    IsoOnPlane(me:mutable; SwitchOn :Boolean from Standard);
+---Purpose: Returns True if drawing isoparameters on planes is enabled.        
+    IsoOnPlane(me) returns Boolean from Standard;
+---Purpose: Returns True if drawing isoparameters on planes is enabled.
+        
+    ---Purpose: if <forUIsos> = False, 
+
+    SetSelectedAspect ( me : mutable; anAspect: any BasicAspect from Prs3d;
+                     globalChange: Boolean from Standard = Standard_True;
+                     updateViewer: Boolean from Standard = Standard_True)
+        is static;
+    ---Level: Public
+    ---Purpose: Sets the graphic basic aspect to the current presentation of
+    --		ALL selected objects.
+    --          When <globalChange> is TRUE , the full object presentation
+    --          is changed.
+    --          When <globalChange> is FALSE , only the current group
+    --          of the object presentation is changed.
+    --	  	Updates the viewer or collector when <updateViewer> is TRUE
+    ---Category: Graphic attributes management
+
+	    ---Category: GRAPHIC DETECTION  / SELECTION
+
+
+    MoveTo(me:mutable;XPix,YPix:Integer from Standard;aView:View from V3d)
+    returns StatusOfDetection from AIS;
+---Purpose: Relays mouse position in pixels XPix and YPix to the
+-- interactive context selectors. This is done by the view
+-- aView passing this position to the main viewer and updating it.
+-- Functions in both Neutral Point and local contexts.
+
+
+    HasNextDetected(me) returns Boolean from Standard;
+    ---Purpose: returns True  if other entities  were detected  in the
+    --          last mouse detection
+
+    HilightNextDetected(me:mutable;aView:View from V3d) 
+    returns Integer from Standard;
+    ---Purpose: if more than 1 object is detected by the selector,
+    --          only the "best" owner is hilighted at the mouse position.
+    --          This Method allows the user to hilight one after another
+    --          the other detected entities.
+    --          if The method select is called, the selected entity
+    --          will be the hilighted one!
+    --          returns the Rank of hilighted entity 
+    --          WARNING : Loop Method. When all the detected entities 
+    --                    have been hilighted , the next call will hilight
+    --                    the first one again 
+
+    HilightPreviousDetected(me:mutable;aView:View from V3d)
+    returns Integer from Standard;
+    ---Purpose: Same as previous methods in reverse direction...
+
+    Select(me:mutable;XPMin,YPMin,XPMax,YPMax:Integer from Standard;aView:View from V3d;
+    	   updateviewer: Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: Selects everything found in the bounding rectangle
+-- defined by the pixel minima and maxima, XPMin,
+-- YPMin, XPMax, and YPMax in the view, aView
+-- The objects detected are passed to the main viewer,
+-- which is then updated.
+
+    Select(me:mutable; Polyline:Array1OfPnt2d from TColgp;aView:View from V3d;
+    	   updateviewer: Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: polyline selection; clears the previous picked list
+
+    Select(me          : mutable;
+    	   updateviewer: Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: Stores  and hilights the previous detected; Unhilights
+    --          the previous picked.
+
+    ShiftSelect(me           : mutable;
+    	    	updateviewer : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: adds the last detected to the list of previous picked.
+    --          if the last detected was already declared as picked,
+    --          removes it from the Picked List.
+
+    ShiftSelect( me : mutable; Polyline : Array1OfPnt2d from TColgp; aView : View from V3d;
+    			 updateviewer : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: adds the last detected to the list of previous picked.
+    --          if the last detected was already declared as picked,
+    --          removes it from the Picked List.
+
+    
+    ShiftSelect(me:mutable;XPMin,YPMin,XPMax,YPMax:Integer from Standard;aView:View from V3d;
+    	       updateviewer : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: rectangle  of selection  ; adds new detected entities into the
+    --          picked list, removes the detected entities that were already stored...
+
+    SetToHilightSelected(me: mutable; toHilight: Boolean from Standard);
+    ---C++: inline 
+    ---Purpose: Specify whether selected object must be hilighted when mouse cursor
+    --- is moved above it (in MoveTo method). By default this value is false and
+    --- selected object is not hilighted in this case.
+
+    ToHilightSelected(me) returns Boolean from Standard;
+    ---C++: inline 
+    ---Purpose: Return value specified whether selected object must be hilighted 
+    --- when mouse cursor is moved above it
+    
+
+    	    	    ---Category: non interactive actions about Selection
+    	    	    --           2 categories are distinct:
+    	    	    --           - Current Objects 
+    	    	    --           - Selected Objects
+    	    	    --           a Current object is the object picked
+    	    	    --           at neutral Point.
+    	    	    --           The Selected objects are objects picked
+    	    	    --           when a local context is opened
+
+
+    SetCurrentObject(me:mutable;
+    	    	     aniobj: InteractiveObject from AIS;
+    	    	     updateviewer : Boolean from Standard = Standard_True);
+--- Purpose:
+-- Updates the view of the current object in open context.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    AddOrRemoveCurrentObject(me:mutable;
+    	    	             aniobj : InteractiveObject from AIS;
+    	    	             updateviewer : Boolean from Standard = Standard_True);
+---Purpose:
+-- Allows you to add a current object to the list of current
+-- objects or remove it from that list.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.			     
+    UpdateCurrent (me:mutable);
+    ---Purpose: Updates the list of current objects, i.e. hilights new
+-- current objects, removes hilighting from former current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+    --          
+
+    WasCurrentTouched(me) returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns the current selection touched by the cursor.
+    	-- Objects selected when there is no open local context
+    	-- are called current objects; those selected in open
+    	-- local context, selected objects.
+ 	---C++: inline
+    
+    SetOkCurrent(me:mutable);
+    ---C++: inline
+
+    IsCurrent(me;aniobj: InteractiveObject from AIS) returns Boolean  from  Standard;
+--- Purpose:
+-- Returns true if there is a non-null interactive object in Neutral Point.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.  
+    
+    InitCurrent(me:mutable);
+--- Purpose:
+-- Initializes a scan of the current selected objects in
+-- Neutral Point.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.   
+    
+    MoreCurrent(me) returns Boolean from Standard;
+--- Purpose:
+-- Returns true if there is another object found by the
+-- scan of the list of current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.   
+    
+    NextCurrent(me:mutable);
+---Purpose:
+-- Continues the scan to the next object in the list of
+-- current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.    
+    
+    Current(me) returns InteractiveObject from AIS;
+---Purpose:
+-- Returns the current interactive object.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.    
+    
+    NbCurrents(me:mutable) returns Integer from Standard;
+    
+    FirstCurrentObject(me:mutable) returns InteractiveObject from AIS;
+---Purpose:
+-- Returns the first current object in the list of current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+        
+    HilightCurrents(me : mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+ ---Purpose:
+--- Highlights current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.   
+    
+    UnhilightCurrents(me : mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+---Purpose:
+-- Removes highlighting from current objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    ClearCurrents(me:mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+---Purpose:
+-- Empties previous current objects in order to get the
+-- current objects detected by the selector using
+-- UpdateCurrent.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+
+    SetSelected(me:mutable;aniObj: InteractiveObject from AIS; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose: Puts the interactive object aniObj in the list of
+    -- selected objects.
+    -- If a local context is open and if updateviewer equals
+    -- Standard_False, the presentation of the Interactive
+    -- Object activates the selection mode; the object is
+    -- displayed but no viewer will be updated.
+
+    SetSelectedCurrent(me:mutable);
+    ---Purpose: puts the selected list in the current objects List. 
+    UpdateSelected(me:mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose: updates the list of selected objects
+    --          i.e. hilights the new selected
+    --          unhilights old selected objects
+    AddOrRemoveSelected(me:mutable;
+    	    	    	aniobj : InteractiveObject from AIS; 
+    	                updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose:Allows you to add a selected object to the list of
+-- selected objects or remove it from that list. This entity
+-- can be an Interactive Object aniobj or its owner
+-- aShape as can be seen in the two syntaxes above.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated. 
+
+    HilightSelected(me : mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+---Purpose:
+-- Highlights selected objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    UnhilightSelected(me : mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+---Purpose:
+-- Removes highlighting from selected objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    ClearSelected(me:mutable; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+---Purpose:
+-- Empties previous selected objects in order to get the
+-- selected objects detected by the selector using
+-- UpdateSelected.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    AddOrRemoveSelected(me:mutable;aShape:Shape from TopoDS; 
+    	            updateviewer : Boolean from Standard=Standard_True);
+     ---Purpose:  No right to Add a selected Shape (Internal Management 
+     --           of shape Selection).
+     --           A Previous selected shape may only be removed.
+    
+    
+    AddOrRemoveSelected(me:mutable;anOwner : EntityOwner from SelectMgr;
+    	    	        updateviewer: Boolean from Standard=Standard_True);
+    ---Purpose: allows to add/remove in the selected list the entities
+    --          represented by <anOwner> in the selection process.
+  
+		    ---Category: Selection Process
+    
+    IsSelected(me;aniobj: InteractiveObject from AIS) returns Boolean  from  Standard;
+   --- Purpose:
+-- Finds the selected object aniobj in local context and
+-- returns its name.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+--  local context, selected objects.
+    
+    InitSelected(me:mutable);
+---Purpose:
+-- Initializes a scan of the selected objects in local context.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.    
+    
+    MoreSelected(me) returns Boolean from Standard;
+---Purpose:
+-- Returns true if there is another object found by the
+-- scan of the list of selected objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.    
+  
+    
+    NextSelected(me:mutable);
+---Purpose:
+-- Continues the scan to the next object in the list of
+-- selected objects.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.    
+    
+    NbSelected(me:mutable) returns Integer from Standard;
+    
+    HasSelectedShape(me) returns Boolean from Standard;
+--- Purpose:
+-- Returns true if the interactive context has a shape
+-- selected in it which results from the decomposition of
+-- another entity in local context.
+-- If HasSelectedShape returns true, SelectedShape
+-- returns the shape which has been shown to be
+-- selected. Interactive returns the Interactive Object
+-- from which the shape has been selected.
+-- If HasSelectedShape returns false, Interactive
+-- returns the interactive entity selected by the click of the mouse.   
+    
+    SelectedShape(me) returns Shape from TopoDS;	
+---Purpose:
+--        Returns the selected shape in the open local context.
+-- Objects selected when there is no open local context
+-- are called current objects; those selected in open
+-- local context, selected objects.  
+        
+    SelectedOwner(me) returns EntityOwner from SelectMgr;
+---Purpose:
+-- Returns the owner of the selected entity resulting
+-- from the decomposition of another entity in local context. 
+     
+    EntityOwners(me;  theOwners :  out IndexedMapOfOwner from SelectMgr; 
+    	    	      theIObj   :  InteractiveObject from AIS; 
+    	    	      theMode   :  Integer from Standard = -1); 
+    ---Purpose: Returns a collection containing all entity owners  
+    ---         created for the interactive object <theIObj> in  
+    ---         the selection mode theMode (in all active modes  
+    ---         if the Mode == -1) 
+    
+    Interactive(me) returns  InteractiveObject from AIS;
+    ---Purpose: Returns the location of the selected Interactive Object.
+    SelectedInteractive(me) returns InteractiveObject from AIS;
+    
+    HasApplicative(me) returns Boolean from Standard;
+--- Purpose:
+-- Returns true if the applicative object has an owner
+-- from Interactive attributed to it.   
+    
+    Applicative(me) returns Transient from Standard;
+---Purpose:
+-- Returns the owner of the applicative entity detected
+-- in interactive context. The owner can be a shape for
+-- a set of sub-shapes or a sub-shape for sub-shapes
+-- which it is composed of.
+
+		    ---Category: information about detection...
+    
+    HasDetected     (me) returns Boolean from Standard;
+---Purpose:
+-- Returns true if there is a mouse-detected entity in local context.
+-- If there is no open local context, the objects selected
+-- are called current objects; selected objects if there is
+-- one. Iterators allow entities to be recovered in either
+-- case. This method is one of a set which allows you to
+-- manipulate the objects which have been placed in these two lists.    
+    
+    HasDetectedShape(me) returns Boolean from Standard;
+---Purpose:
+-- Returns true if there is a detected shape in local context.
+-- If there is no open local context, the objects selected
+-- are called current objects; selected objects if there is
+-- one. Iterators allow entities to be recovered in either
+-- case. This method is one of a set which allows you to
+-- manipulate the objects which have been placed in these two lists.    
+    
+    DetectedShape   (me) returns Shape from TopoDS;
+     ---Purpose:
+     -- Returns the shape detected in local context.
+     -- If there is no open local context, the objects selected
+     -- are called current objects; selected objects if there is
+     -- one. Iterators allow entities to be recovered in either
+     -- case. This method is one of a set which allows you to
+     -- manipulate the objects which have been placed in these two lists.
+     ---C++: return const &
+       
+    DetectedInteractive(me) returns InteractiveObject from AIS;
+---Purpose:
+-- Returns the interactive objects last detected in open context.
+-- If there is no open local context, the objects selected
+-- are called current objects; selected objects if there is
+-- one. Iterators allow entities to be recovered in either
+-- case. This method is one of a set which allows you to
+-- manipulate the objects which have been placed in these two lists.    
+    
+    DetectedOwner(me)    returns EntityOwner from SelectMgr;
+    ---Purpose: returns the owner of the detected sensitive primitive.
+
+    InitDetected(me: mutable);
+    
+    MoreDetected(me) returns Boolean from Standard;
+    NextDetected(me: mutable);
+    DetectedCurrentShape(me) returns Shape from TopoDS;
+    ---C++: return const &
+    DetectedCurrentObject(me) returns InteractiveObject from AIS;
+
+		    ---Category:  SPECIFIC LOCAL CONTEXT ACTIONS.
+    
+    
+    
+    OpenLocalContext(me                      : mutable;
+    	             UseDisplayedObjects     : Boolean from Standard = Standard_True; 
+    	    	     AllowShapeDecomposition : Boolean from Standard = Standard_True;
+		     AcceptEraseOfObjects    : Boolean from Standard = Standard_False;
+    	    	     BothViewers             : Boolean from Standard = Standard_False)
+    returns Integer from Standard;
+    ---Purpose: 
+-- Opens local contexts and specifies how this is to be
+-- done. The options listed above function in the following manner:
+-- -   UseDisplayedObjects -allows you to load or not
+--   load the interactive objects visualized at Neutral
+--   Point in the local context which you open. If false,
+--   the local context is empty after being opened. If
+--   true, the objects at Neutral Point are loaded by their
+--   default selection mode.
+-- -   AllowShapeDecomposition -AIS_Shape allows or
+--   prevents decomposition in standard shape location
+--   mode of objects at Neutral Point which are
+--   type-"privileged". This Flag is only taken into
+--   account when UseDisplayedObjects is true.
+-- -   AcceptEraseOfObjects -authorises other local
+--   contexts to erase the interactive objects present in
+--   this context. This option is rarely used.
+-- -   BothViewers - Has no use currently defined.
+--   This method returns the index of the created local
+-- context. It should be kept and used to close the context.
+-- Opening a local context allows you to prepare an
+-- environment for temporary presentations and
+-- selections which will disappear once the local context is closed.
+-- You can open several local contexts, but only the last
+-- one will be active.
+	
+
+
+    CloseLocalContext(me:mutable;
+    	    	      Index : Integer from Standard = -1;
+    	    	      updateviewer:Boolean from Standard=Standard_True);		      
+    ---Purpose: Allows you to close local contexts. For greater
+-- security, you should close the context with the
+-- index Index given on opening.
+-- When you close a local context, the one before,
+-- which is still on the stack,   reactivates. If none is
+-- left, you return to Neutral Point.
+-- If a local context is open and if updateviewer
+-- equals Standard_False, the presentation of the
+-- Interactive Object activates the selection mode; the
+-- object is displayed but no viewer will be updated.
+-- Warning
+-- When the index isn't specified, the current context
+-- is closed. This option can be dangerous, as other
+-- Interactive Functions can open local contexts
+-- without necessarily warning the user.
+    
+    IndexOfCurrentLocal(me) returns Integer from Standard;
+    ---Purpose: returns -1 if no opened local context.
+
+    CloseAllContexts (me:mutable;updateviewer:Boolean from Standard = Standard_True);
+---Purpose:
+-- Allows you to close all local contexts at one go and
+-- return to Neutral Point.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    ResetOriginalState(me:mutable;updateviewer:Boolean from Standard = Standard_True);
+    ---Level:  Internal 
+    ---Purpose: to   be  used only with no  opened
+    --        local context..  displays and activates objects in their
+    --        original state before local contexts were opened...
+
+    ClearLocalContext(me:mutable;TheMode : ClearMode from AIS =  AIS_CM_All);
+    ---Purpose: clears Objects/Filters/Activated Modes list in the current opened
+    --          local context.
+
+
+    UseDisplayedObjects(me:mutable);
+    NotUseDisplayedObjects(me:mutable);
+    ---Purpose: when a local Context is opened, one is able to
+    --          use/not use the displayed objects at neutral point
+    --          at anytime.
+
+
+
+        ---Category: Immediate Mode :  Used For Simulation
+        --           
+        --           CAUTION
+        --           1] NO UPDATE OF   VIEWER  MUST BE DONE
+        --              BETWEEN BeginImmediateDraw() and EndImmediateDraw()
+        --           2] Available only Inside Opened Local Contexts.
+        --           3} During the Immediate Mode Displays, no Selection
+        --              is available.
+        --           
+        --           How To Use It?
+        --           
+        --           1. BeginImmediateDraw()
+        --           2. ImmediateAdd (Iobj,mode)
+        --           
+        --           4.EndImmediateDraw()      draws all the stored objects...
+        --           
+
+    BeginImmediateDraw (me:mutable)  returns Boolean from Standard;
+    ---Purpose: initializes the list of presentations to be displayed
+    --          returns False if No Local COnte
+
+    ImmediateAdd (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    returns Boolean from Standard;
+    ---Purpose: returns True if <anIObj> has been stored in the list.
+
+    ImmediateRemove (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    returns Boolean from Standard;
+    ---Purpose: returns True if <anIObj> has been removed from the list.
+
+    EndImmediateDraw(me:mutable;aView : View from V3d;DoubleBuf:Boolean from Standard=Standard_False)
+    returns Boolean from Standard;
+    ---Purpose: returns True if the immediate display has been done.
+    EndImmediateDraw(me:mutable;DoubleBuf:Boolean from Standard=Standard_False)
+    returns Boolean from Standard;
+    ---Purpose: Uses the First Active View of Main Viewer!!!
+    --          returns True if the immediate display has been done.
+
+    IsImmediateModeOn(me) returns Boolean from Standard;
+
+    Drag ( me : mutable;
+                aView: View from V3d;
+                anObject: InteractiveObject from AIS;
+                aTranformation: Transformation from Geom;
+                postConcatenate: Boolean from Standard = Standard_False;
+                update: Boolean from Standard = Standard_False;
+                zBuffer: Boolean from Standard = Standard_False)
+    is static;
+    ---Level: Public
+    ---Purpose: Transforms the current presentation of the object <anObject>
+    --          using the transient graphic space of the view <aView> in
+    --          immediat mode graphics.
+    ---Warning: When  <update> is TRUE, then the view is redrawn with ALL
+    --          transformed presentations.
+    --          When <zBuffer> is TRUE  all transient graphic are drawn
+    --          using zbuffer activity.
+    --          Note that when <update> is TRUE the view is cleared and redrawn
+    --          and soforth the Z buffer is always activated therefore the <zBuffer>
+    --          parameter is ignored in this case.
+
+
+	    ---Category: Activation/Deactivation of Selection Modes.
+
+
+    SetAutomaticHilight(me:mutable;aStatus:Boolean);
+---Purpose:
+-- Sets the highlighting status aStatus of detected and
+-- selected entities.
+-- Whether you are in Neutral Point or local context, this
+-- is automatically managed by the Interactive Context.
+-- This function allows you to disconnect the automatic mode.    
+    AutomaticHilight(me) returns Boolean from Standard;
+---Purpose:
+-- Returns true if the automatic highlight mode is active
+-- in an open context.
+    
+    SetZDetection(me:mutable; aStatus:Boolean = Standard_False);
+    ---Purpose: Enables/Disables the Z detection.
+    --		If TRUE the detection echo can be partially hidden by the 
+    --		detected object.
+    ---Warning: The hidden part of the object is not visible but
+    --          stay selectable.
+
+    ZDetection(me) returns Boolean;
+    ---Purpose: Retrieves the Z detection state.
+
+    Activate(me     : mutable;
+    	     anIobj : InteractiveObject from AIS;
+    	     aMode  : Integer from Standard = 0);
+    ---Purpose: Activates the selection mode aMode whose index is
+-- given, for the given interactive entity anIobj.
+
+
+    Deactivate(me     :mutable;
+    	       anIObj : InteractiveObject from AIS);
+    ---Purpose: Deactivates all the activated selection modes
+    --          of an object. 
+	       
+    Deactivate(me     : mutable;
+    	       anIobj : InteractiveObject from AIS;
+    	       aMode  : Integer from Standard);
+---Purpose:
+-- Deactivates all the activated selection modes of the
+-- interactive object anIobj with a given selection mode aMode.
+        
+    ActivatedModes(me;
+    	           anIobj : InteractiveObject from AIS;
+		   theList  : in out ListOfInteger from TColStd);
+---Purpose:
+-- Returns the list of activated selection modes in an open context.
+        
+    SetShapeDecomposition( me:mutable;
+	       	           anIobj : InteractiveObject from AIS;
+			   aStatus: Boolean from Standard);
+    ---Purpose: to be Used only with opened local context and
+    --          if <anIobj> is of type shape...
+    --          if <aStatus> = True <anIobj> will be sensitive to 
+    --                         shape selection modes activation.
+    --                       = False, <anIobj> will not be senstive
+    --                       any more.
+    --                       
+
+    SetTemporaryAttributes(me      : mutable;
+    	    	    	   anObj   : InteractiveObject from AIS;
+			   aDrawer : Drawer from Prs3d;
+			   updateviewer : Boolean = Standard_True);
+	
+---Purpose:
+-- Sets the temporary graphic attributes of the entity
+-- anObj. These are provided by the attribute manager
+-- aDrawer and are valid for a particular local context only.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.    
+    
+    SubIntensityOn(me           : mutable;
+    	    	   aniobj       : InteractiveObject from AIS;
+		   updateviewer : Boolean from Standard =Standard_True);
+---Purpose:
+-- Highlights, and removes highlights from, the displayed
+-- object aniobj which is displayed at Neutral Point with
+-- subintensity color; available only for active local
+-- context. There is no effect if there is no local context.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    SubIntensityOff(me           : mutable;
+    	    	    aniobj       : InteractiveObject from AIS;
+		    updateviewer : Boolean from Standard =Standard_True);
+---Purpose:
+-- Removes the subintensity option for the entity aniobj.
+-- If a local context is open and if updateviewer equals
+-- Standard_False, the presentation of the Interactive
+-- Object activates the selection mode; the object is
+-- displayed but no viewer will be updated.
+        
+    SubIntensityOn(me:mutable;
+    	    	   updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: hilights/unhilights displayed objects which are displayed at
+    --          neutral state with subintensity color;
+    --          available only for active local context.
+    --          No effect if no local context.
+
+
+    SubIntensityOff(me:mutable;
+    	    	   updateviewer : Boolean from Standard = Standard_True);
+    ---Purpose: removes subintensity option for all objects.
+		   		   
+
+
+    
+    
+    
+    
+ 	      	   ---Category: FILTERS 
+ 	      	   --           
+ 	      	   --           
+ 	      	   --           
+    
+    AddFilter(me       :mutable;  aFilter : Filter from SelectMgr);
+    ---Purpose: Allows you to add the filter aFilter to Neutral Point or
+-- to a local context if one or more selection modes have been activated.
+-- Only type filters may be active in Neutral Point.
+
+    RemoveFilter(me:mutable;aFilter  : Filter from SelectMgr);
+
+---Purpose:
+-- Removes a filter from Neutral Point or a local context
+-- if one or more selection modes have been activated.
+-- Only type filters are activated in Neutral Point.
+    
+    RemoveFilters(me:mutable);
+    ---Purpose: Remove a filter to Neutral Point or a local context if
+-- one or more selection modes have been activated.
+-- Only type filters are active in Neutral Point.
+
+    ActivateStandardMode(me:mutable; aStandardActivation : ShapeEnum from TopAbs);
+    ---Purpose: Provides an alternative to the Display methods when
+-- activating specific selection modes. This has the
+-- effect of activating the corresponding selection mode
+-- aStandardActivation for all objects in Local Context
+-- which accept decomposition into sub-shapes.
+-- Every new Object which has been loaded into the
+-- interactive context and which answers these
+-- decomposition criteria is automatically activated
+-- according to these modes.
+-- Warning
+-- If you have opened a local context by loading an
+-- object with the default options
+-- (<AllowShapeDecomposition >= Standard_True), all
+-- objects of the "Shape" type are also activated with
+-- the same modes. You can act on the state of these
+-- "Standard" objects by using SetShapeDecomposition(Status).
+
+
+    DeactivateStandardMode (me:mutable; aStandardActivation : ShapeEnum from TopAbs);
+---Purpose:
+-- Provides an alternative to the Display methods when
+-- deactivating specific selection modes. This has the
+-- effect of deactivating the corresponding selection
+-- mode aStandardActivation for all objects in Local
+-- Context which accept decomposition into sub-shapes.
+    
+    ActivatedStandardModes(me) returns ListOfInteger from TColStd;
+    	---Purpose:
+    	-- Returns the list of activated standard selection modes
+    	-- available in a local context.
+    	---C++: return const&
+
+    Filters(me) returns ListOfFilter from SelectMgr;
+    	---Purpose:
+    	-- Returns the list of filters active in a local context.
+   	---C++: return const&
+
+
+	    ---Category: INFORMATION METHODS - GET FIELDS
+
+    DefaultDrawer(me) returns any Drawer from Prs3d;
+    	---Purpose:
+    	-- Returns the default attribute manager.
+    	-- This contains all the color and line attributes which
+    	-- can be used by interactive objects which do not have
+    	-- their own attributes.
+    	---C++: inline
+  	---C++: return const &
+    
+    CurrentViewer(me) returns any Viewer from V3d;
+    	---C++: return const &
+    	---C++: inline
+    	---Purpose: Returns the current viewer.
+
+    DisplayedObjects(me;
+    	    	     aListOfIO       : in out ListOfInteractive from AIS;
+    	    	     OnlyFromNeutral : Boolean from Standard = Standard_False);
+    ---Purpose: Returns the list of displayed objects of a particular
+    -- Type WhichKind and Signature WhichSignature. By
+    -- Default, WhichSignature equals -1. This means that
+    -- there is a check on type only.
+
+    DisplayedObjects(me;
+    	    	     WhichKind :KindOfInteractive from AIS; 
+		     WhichSignature :Integer from Standard;
+                     aListOfIO : in out ListOfInteractive from AIS;
+    	    	     OnlyFromNeutral : Boolean from Standard = Standard_False);
+    ---Purpose: gives the list of displayed objects of a particular
+    --          Type and signature.
+    --          by Default, <WhichSignature> = -1 means 
+    --          control only on <WhichKind>.
+
+    Collector(me) returns any Viewer from V3d;
+    ---C++: return const &
+    ---C++: inline
+    
+    ObjectsInCollector (me;aListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose:
+    -- Returns the list aListOfIO of erased objects of a
+    -- particular Type WhichKind and Signature WhichSignature.
+    -- By Default, WhichSignature equals 1. This means
+    -- that there is a check on type only.
+
+    ObjectsInCollector (me;
+    	    	        WhichKind :KindOfInteractive from AIS; 
+		        WhichSignature :Integer from Standard;
+                        aListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose: gives the list of erased objects of a particular
+    --          Type and signature
+    --          by Default, <WhichSignature> = -1 means 
+    --          control only on <WhichKind>.
+
+    
+    ErasedObjects (me;theListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose:
+    -- Returns the list theListOfIO of erased objects (but not placed into collecter)
+    -- particular Type WhichKind and Signature WhichSignature.
+    -- By Default, WhichSignature equals 1. This means
+    -- that there is a check on type only.
+
+    ErasedObjects (me;
+    	    	        WhichKind :KindOfInteractive from AIS; 
+		        WhichSignature :Integer from Standard;
+                        theListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose: gives the list of erased objects (but not placed into collecter)
+    --          Type and signature
+    --          by Default, <WhichSignature> = -1 means 
+    --          control only on <WhichKind>.
+
+    ObjectsByDisplayStatus (me;theStatus : DisplayStatus from AIS;
+                               theListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose:
+    -- Returns the list theListOfIO of objects with indicated display status
+    -- particular Type WhichKind and Signature WhichSignature.
+    -- By Default, WhichSignature equals 1. This means
+    -- that there is a check on type only.
+
+    ObjectsByDisplayStatus (me;
+    	    	        WhichKind :KindOfInteractive from AIS; 
+		        WhichSignature :Integer from Standard;
+			theStatus : DisplayStatus from AIS;
+                        theListOfIO : in out ListOfInteractive from AIS);
+    ---Purpose: gives the list of objects with indicated display status
+    --          Type and signature
+    --          by Default, <WhichSignature> = -1 means 
+    --          control only on <WhichKind>.
+
+    ObjectsInside(me;
+    	    	 aListOfIO      : in out ListOfInteractive from AIS;
+    	    	 WhichKind      : KindOfInteractive from AIS = AIS_KOI_None; 
+		 WhichSignature : Integer from Standard = -1);
+    ---Purpose: fills <aListOfIO> with objects of a particular
+    --          Type and Signature with no consideration of display status.
+    --          by Default, <WhichSignature> = -1 means 
+    --          control only on <WhichKind>.
+    --          if <WhichKind> = AIS_KOI_None and <WhichSignature> = -1,
+    --          all the objects are put into the list.
+
+
+    HasOpenedContext(me) returns Boolean from Standard;
+    ---Purpose: Returns true if there is an open context.
+    ---C++: inline
+
+    CurrentName(me)  returns AsciiString from TCollection;
+    	---Purpose:
+    	-- Returns the name of the current selected entity in Neutral Point.
+    	-- Objects selected when there is no open local context
+    	-- are called current objects; those selected in open
+    	-- local context, selected objects.
+  	---C++: inline
+ 	---C++: return const&
+
+    SelectionName(me) returns AsciiString from TCollection;
+    	---Purpose:
+    	-- Returns the name of the current selected entity in
+    	-- open local context.
+    	-- Objects selected when there is no open local context
+    	-- are called current objects; those selected in open
+    	-- local context, selected objects.
+        ---C++: return const&
+
+    DomainOfMainViewer(me) returns CString from Standard;
+    ---Purpose: Returns the domain name of the main viewer.
+    DomainOfCollector(me) returns CString from Standard;
+    ---Purpose: Returns the domain name of the Collector viewer.
+    
+	    ---Category: Internal
+
+    SelectionManager(me) returns any SelectionManager from SelectMgr;
+    ---C++: inline
+    ---C++: return const &
+
+    MainPrsMgr     (me) returns any PresentationManager3d from PrsMgr;
+    ---C++: inline
+    ---C++: return const &
+    CollectorPrsMgr(me) returns any PresentationManager3d from PrsMgr;
+    ---C++: inline
+    ---C++: return const &
+
+
+    MainSelector(me) returns any ViewerSelector3d from StdSelect;
+    ---C++: inline
+    ---C++: return const &
+    LocalSelector(me) returns any ViewerSelector3d from StdSelect;
+
+
+    CollectorSelector(me)  returns any ViewerSelector3d from StdSelect;
+    ---C++: inline
+    ---C++: return const &   
+
+
+
+    PurgeDisplay(me:mutable;CollectorToo:Boolean from Standard = Standard_False) 
+    returns Integer from Standard;
+    ---Level: Internal 
+    ---Purpose: Clears all the structures which don't
+    --          belong to objects displayed at neutral point
+    --          only effective when no Local Context is opened...
+    --          returns the number of removed  structures from the viewers.
+
+
+    HighestIndex(me)  returns  Integer  from  Standard;
+
+    DisplayActiveAreas(me:mutable;aView:View from V3d) ;
+
+    ClearActiveAreas (me   :mutable;
+    	    	aView: View from V3d) is static;
+    ---Level: Internal 
+    
+    DisplayActiveSensitive(me:mutable;aView : View from V3d) is static; 
+    
+    ClearActiveSensitive(me:mutable;aView:View from V3d) is static;
+
+
+
+    DisplayActiveSensitive(me:mutable;
+    	    	           anObject: InteractiveObject from AIS;
+			   aView   : View from V3d) is static;
+    DisplayActiveAreas(me:mutable;
+    	    	           anObject: InteractiveObject from AIS;
+			   aView   : View from V3d) is static;
+
+    GetDefModes(me;
+    	        anIobj              : InteractiveObject from AIS;
+    	        Dmode,HiMod,SelMode : in out  Integer  from  Standard) is static private;
+
+
+    EraseGlobal(me             : mutable;
+    	        anObj          : InteractiveObject from AIS;
+		updateviewer   : Boolean from Standard = Standard_True;
+    	        PutInCollector : Boolean from Standard = Standard_False) is static private;
+		
+    ClearGlobal(me             : mutable;
+    	        anObj          : InteractiveObject from AIS;
+		updateviewer   : Boolean from Standard = Standard_True) is static private;
+		
+    ClearGlobalPrs(me             : mutable;
+    	           anObj          : InteractiveObject from AIS;
+		   aMode          : Integer from Standard;
+		   updateviewer   : Boolean from Standard = Standard_True) is static private;
+
+
+    ---Category: Private Methods
+
+    IsInLocal(me;
+    	      anObject   : InteractiveObject from AIS;
+   	      TheIndex   : in out Integer from Standard)
+    returns Boolean from Standard;
+    ---Purpose: returns if possible,
+    --          the first local context where the object is seen
+
+
+    InitAttributes(me:mutable) is static private;
+
+
+    PurgeViewer(me:mutable;Vwr:Viewer from V3d) 
+    returns Integer from Standard is static private;
+
+fields
+
+    myObjects    : DataMapOfIOStatus from AIS;
+
+    -- the viewers, prsmgr, selectors
+    mgrSelector  : SelectionManager from SelectMgr;
+
+    myMainPM     : PresentationManager3d from PrsMgr;
+    myMainVwr    : Viewer from V3d;
+    myMainSel    : ViewerSelector3d from StdSelect;
+
+    myCollectorPM  : PresentationManager3d from PrsMgr;  
+    myCollectorVwr : Viewer from V3d;
+    myCollectorSel : ViewerSelector3d from StdSelect;
+
+    myIsCollClosed : Boolean from Standard;
+
+    -- the selection and current objects.
+
+    mySelectionName : AsciiString from TCollection;
+    myCurrentName   : AsciiString from TCollection;
+
+    myLastPicked    : InteractiveObject from AIS;    
+    myLastinMain    : InteractiveObject from AIS;
+    myLastinColl    : InteractiveObject from AIS;
+    
+    
+    myWasLastMain       : Boolean from Standard;
+    myCurrentTouched    : Boolean from Standard;
+    mySelectedTouched   : Boolean from Standard;
+    myToHilightSelected : Boolean from Standard;
+
+    -- the neutral point filter...
+
+    myFilters : OrFilter from SelectMgr;
+
+    -- the attributes of session...
+
+    myDefaultDrawer     : Drawer from Prs3d;
+    myDefaultColor      : NameOfColor from Quantity; -- for shading....
+    myHilightColor      : NameOfColor from Quantity;
+    mySelectionColor    : NameOfColor from Quantity;
+    myPreselectionColor : NameOfColor from Quantity;
+    mySubIntensity      : NameOfColor from Quantity;
+    myDisplayMode       : Integer     from Standard;
+
+    -- The Local Context...
+
+    myLocalContexts      : DataMapOfILC from AIS;
+    myCurLocalIndex      : Integer      from  Standard; 
+    mylastmoveview       : View         from V3d;
+
+     -- the detected objects.
+    myAISDetectedSeq : SequenceOfInteractive from AIS;
+    myAISCurDetected : Integer from Standard;
+    -- This variables is used by following functions:
+    -- InitDetected(), MoreDetected(), NextDetected(), DetectedCurrentShape(), DetectedCurrentObject().
+    myZDetectionFlag:	Boolean from Standard;
+    -- This variables is used by SetZDetection() and ZDetection() methods
+
+    -- abd:
+    myIsAutoActivateSelMode : Boolean from Standard;
+    
+friends
+    class LocalContext from AIS
+    
+end InteractiveContext;

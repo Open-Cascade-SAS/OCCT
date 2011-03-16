@@ -1,0 +1,62 @@
+// File:	StepToTopoDS_Root.cxx
+// Created:	Wed Jul 28 11:57:52 1993
+// Author:	Martine LANGLOIS
+//		<mla@mastox>
+
+#include <StepToTopoDS_Root.hxx>
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean StepToTopoDS_Root::IsDone () const
+{
+  return done; 
+}
+
+//=======================================================================
+//function : Precision
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real StepToTopoDS_Root::Precision() const
+{
+  return myPrecision;
+  
+}
+
+//=======================================================================
+//function : SetPrecision
+//purpose  : 
+//=======================================================================
+
+inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci) 
+{
+  myPrecision = preci;
+  
+}
+
+//=======================================================================
+//function : MaxTol
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real StepToTopoDS_Root::MaxTol() const
+{
+  return myMaxTol;
+  
+}
+
+
+//=======================================================================
+//function : SetMaxTol
+//purpose  : 
+//=======================================================================
+
+inline void StepToTopoDS_Root::SetMaxTol(const Standard_Real maxpreci) 
+{
+  myMaxTol = maxpreci;
+}
+
+

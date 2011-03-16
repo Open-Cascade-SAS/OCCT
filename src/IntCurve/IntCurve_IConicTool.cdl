@@ -1,0 +1,100 @@
+-- File:	IConicTool.cdl
+-- Created:	Thu Mar 26 14:24:05 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+class IConicTool from IntCurve
+
+	---Purpose: Implementation of the ImpTool from IntImpParGen
+	--          for conics of gp.
+
+        ---Level: Internal
+
+uses 
+     Pnt2d      from gp,
+     Vec2d      from gp,
+     Ax22d      from gp,
+     Lin2d      from gp,
+     Elips2d    from gp,
+     Circ2d     from gp,
+     Parab2d    from gp,
+     Hypr2d     from gp,
+     Trsf2d     from gp,
+     CurveType  from GeomAbs
+
+
+is
+
+    Create  returns IConicTool from IntCurve;
+
+    Create(IT: IConicTool from IntCurve)    returns IConicTool from IntCurve;
+
+    Create(E: Elips2d from gp) 	returns IConicTool from IntCurve;
+
+    Create(L: Lin2d from gp)   	returns IConicTool from IntCurve;
+
+    Create(C: Circ2d from gp)  	returns IConicTool from IntCurve;
+
+    Create(P: Parab2d from gp) 	returns IConicTool from IntCurve;
+
+    Create(H: Hypr2d from gp) 	returns IConicTool from IntCurve;
+
+
+
+    Value (me; X: Real from Standard)
+    
+    	returns Pnt2d from gp
+    	is static;
+
+
+    D1 (me; U: Real from Standard ; P: out Pnt2d; T: out Vec2d)
+    	is static;
+
+
+    D2 (me; U: Real from Standard ; P: out Pnt2d; T,N: out Vec2d)
+    	is static;
+
+
+    Distance(me; P: Pnt2d)
+	---Purpose: Computes the value of the signed  distance between
+	--          the point P and the implicit curve.
+    	returns Real from Standard
+    	is static;
+	
+	
+    GradDistance(me; P: Pnt2d)
+    	---Purpose: Computes  the   Gradient  of  the  Signed Distance
+    	--          between  a  point and  the  implicit curve, at the
+    	--          point P.
+        returns Vec2d from gp
+    	is static;
+	
+	
+    FindParameter(me; P: Pnt2d)
+    	---Purpose: Returns the   parameter  U of   the point  on  the
+    	--          implicit curve corresponding to  the point P.  The
+    	--          correspondance between P and the point P(U) on the
+    	--          implicit curve must be coherent  with the  way  of
+    	--          determination of the signed distance.
+        returns Real from Standard
+    	is static;
+	
+fields
+    prm1          : Real      from Standard;
+    prm2          : Real      from Standard;
+    prm3          : Real      from Standard;
+    Axis          : Ax22d     from gp;
+    type          : CurveType from GeomAbs;    
+    Abs_To_Object : Trsf2d    from gp;
+
+end IConicTool; 
+
+
+
+
+
+
+
+

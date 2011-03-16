@@ -1,0 +1,107 @@
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_OutOfMemory.hxx>
+#include <Standard.hxx>
+
+// ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
+
+//=======================================================================
+//function : TCollection_Array1
+//purpose  : 
+//=======================================================================
+
+TCollection_Array1::TCollection_Array1 (const Standard_Integer Low,
+					const Standard_Integer Up) :
+       myLowerBound(Low),
+       myUpperBound(Up),
+       isAllocated(Standard_True)
+{
+  Standard_RangeError_Raise_if(Up < Low,"TCollection_Array1::Create");
+
+  Array1Item* p = 0;
+#ifdef __OPTIM_ARRAY
+  //  p = new char [(Up-Low+1)*sizeof (Array1Item)];
+  p =  (Array1Item *)Standard::Allocate((Up-Low+1)*sizeof (Array1Item));
+#else
+  p = new Array1Item[Up-Low+1];
+#endif
+
+  if (!p) Standard_OutOfMemory::Raise("Array1 : Allocation failed");
+  myStart = (void*)(p - myLowerBound);
+}
+
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void TCollection_Array1::Init (const Array1Item& V) {
+  Array1Item* p = &ChangeValue(myLowerBound);
+  Standard_Integer i;
+  for(i = myLowerBound; i <= myUpperBound; i++) {
+    *p++ = V;
+  }
+}
+
+//=======================================================================
+//function : TCollection_Array1
+//purpose  : C Array constructor
+//=======================================================================
+
+TCollection_Array1::TCollection_Array1(const Array1Item& AnItem,
+				       const Standard_Integer Low,
+				       const Standard_Integer Up) :
+       myLowerBound(Low),
+       myUpperBound(Up),
+       isAllocated(Standard_False)
+{
+
+  Standard_RangeError_Raise_if(Up < Low,"Array1::CArray");
+  myStart = (void*)( &AnItem - Low ); 
+}
+
+//=======================================================================
+//function : Destroy
+//purpose  : 
+//=======================================================================
+
+void TCollection_Array1::Destroy() 
+{
+  if (isAllocated) {
+#ifdef __OPTIM_ARRAY
+    Standard_Address it = (Standard_Address)&((Array1Item *)myStart)[myLowerBound];
+    Standard::Free(it);
+#else
+    delete [] &ChangeValue(myLowerBound);
+#endif
+  }
+}
+
+//=======================================================================
+//function : Assign
+//purpose  : 
+//=======================================================================
+
+const TCollection_Array1& TCollection_Array1::Assign 
+  (const TCollection_Array1& Right)
+{
+  if (&Right != this) {
+    Standard_Integer max = Length() ;
+    Standard_DimensionMismatch_Raise_if(max != Right.Length(),
+					"DimensionMismatch in Array1::Operator=");
+    
+    Array1Item* p       = &ChangeValue(myLowerBound);
+    const Array1Item* q = &Right.Value(Right.Lower());
+    for (Standard_Integer i=0; i<max; i++){
+      *p++ = *q++;
+    }
+  }
+  return *this;
+}
+
+
+
+
+

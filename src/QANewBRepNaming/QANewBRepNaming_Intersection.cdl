@@ -1,0 +1,45 @@
+-- File:	QANewBRepNaming_Intersection.cdl
+-- Created:	Tue Oct 31 15:01:54 2000
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+-- sccsid[] = "@(#) 3.0-00-3, 01/10/01@(#)";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       vro ! Redesign                                !13-12-2000! 3.0-00-3!
+-- +---------------------------------------------------------------------------+
+
+class Intersection from QANewBRepNaming inherits BooleanOperationFeat from QANewBRepNaming
+
+uses
+ 
+    Label from TDF, 
+    BooleanOperation from BRepAlgoAPI
+
+is
+ 
+    Create returns Intersection from QANewBRepNaming;
+
+    Create(ResultLabel : Label from TDF) 
+    returns Intersection from QANewBRepNaming;
+
+    Load (me; MakeShape : in out BooleanOperation from BRepAlgoAPI);
+
+
+end Intersection;
+
+-- @@SDM: begin
+
+-- Lastly modified by : vro                                    Date : 31-10-2000
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       vro ! Creation                                !31-10-2000!3.0-00-3!
+-- !       vro ! Redesign                                !13-12-2000! 3.0-00-3!
+-- +---------------------------------------------------------------------------+
+
+-- @@SDM: end

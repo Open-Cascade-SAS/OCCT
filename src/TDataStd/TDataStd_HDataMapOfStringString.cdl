@@ -1,0 +1,38 @@
+-- File:	TDataStd_HDataMapOfStringString.cdl
+-- Created:	Fri Aug 17 16:50:27 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@popox.nnov.matra-dtv.fr>
+---Copyright:	Open CasCade SA 2007
+
+
+class HDataMapOfStringString from TDataStd inherits TShared from MMgt 
+
+	---Purpose: Extension of TDataStd_DataMapOfStringString class  
+    	--          to be manipulated by handle.
+
+uses
+    DataMapOfStringString from TDataStd 
+    
+is
+    Create( NbBuckets: Integer from Standard = 1 )  
+    returns mutable HDataMapOfStringString from TDataStd;    
+     
+    Create( theOther:  DataMapOfStringString from TDataStd)  
+    returns mutable HDataMapOfStringString from TDataStd;
+     
+    Map( me ) returns DataMapOfStringString from TDataStd
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns DataMapOfStringString from TDataStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields
+    
+    myMap : DataMapOfStringString from TDataStd ;  
+   
+
+end HDataMapOfStringString;

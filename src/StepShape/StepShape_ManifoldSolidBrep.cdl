@@ -1,0 +1,37 @@
+-- File:        ManifoldSolidBrep.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ManifoldSolidBrep from StepShape 
+
+inherits SolidModel from StepShape 
+
+uses
+
+	ClosedShell from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ManifoldSolidBrep;
+	---Purpose: Returns a ManifoldSolidBrep
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aOuter : mutable ClosedShell from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetOuter(me : mutable; aOuter : mutable ClosedShell);
+	Outer (me) returns mutable ClosedShell;
+
+fields
+
+	outer : ClosedShell from StepShape;
+
+end ManifoldSolidBrep;

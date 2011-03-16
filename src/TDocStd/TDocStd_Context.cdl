@@ -1,0 +1,23 @@
+-- File:	TDocStd_Context.cdl
+-- Created:	Mon Jun  8 14:54:03 1998
+-- Author:	Isabelle GRIGNON
+--		<isg@bigbox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Context from TDocStd 
+
+	---Purpose: 
+
+is
+    Create returns Context from TDocStd;
+    
+    SetModifiedReferences(me :in out ; Mod : Boolean from Standard);
+    
+    ModifiedReferences(me) returns Boolean from Standard;
+    
+fields
+
+   modifiedRef : Boolean from Standard;
+
+end Context;

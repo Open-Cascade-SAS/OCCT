@@ -1,0 +1,481 @@
+-- File:	ParamReader.cdl
+-- Created:	Mon Apr  6 17:15:18 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class ParamReader  from IGESData
+
+    ---Purpose : access to a list of parameters, with management of read stage
+    --           (owned parameters, properties, associativities) and current
+    --           parameter number, read errors (which feed a Check), plus
+    --           convenient facilities to read parameters, in particular :
+    --           - first parameter is ignored (it repeats entity type), hence
+    --             number 1 gives 2nd parameter, etc...
+    --           - lists are not explicit, list-reading methods are provided
+    --             which manage a current param. number
+    --           - interpretation is made as possible (texts, reals, entities ...)
+    --             (in particular, Reading a Real accepts an Integer)
+
+uses Integer,    Boolean,    Real,    CString,  
+     HAsciiString from TCollection,   XY, XYZ,
+     HArray1OfInteger from TColStd,   HArray1OfReal from TColStd,
+     HArray1OfHAsciiString from Interface,  HArray1OfIGESEntity,
+     EntityList,   ParamType,  ParamList,      Check,
+     IGESEntity,   ReadStage,  IGESReaderData, ParamCursor, Msg from Message, 
+     Status  from  IGESData
+
+raises InterfaceError
+
+is
+
+    Create (list : ParamList; ach : Check;
+    	    base : Integer = 1; nbpar : Integer = 0; num : Integer = 0)
+    	returns ParamReader;
+    ---Purpose : Prepares a ParamReader, stage "Own", current param = 1
+    --           It considers a part of the list, from <base> (excluded) for
+    --           <nbpar> parameters; <nbpar> = 0 commands to take list length.
+    --           Default is (1 to skip type) 
+
+    EntityNumber (me) returns Integer;
+    ---Purpose : Returns the entity number in the file
+
+    	-- --   State management   -- --
+
+    Clear (me : in out);
+    ---Purpose : resets state (stage, current param number, check with no fail)
+
+    CurrentNumber (me) returns Integer;
+    ---Purpose : returns the current parameter number
+    --           This notion is involved by the organisation of an IGES list of
+    --           parameter : it can be ended by two lists (Associativities and
+    --           Properties), which can be empty, or even absent. Hence, it is
+    --           necessary to know, at the end of specific reading, how many
+    --           parameters have been read : the optionnal lists follow
+    ---See Also : methods Current, CurrentList and Read...
+
+    SetCurrentNumber (me : in out; num : Integer);
+    ---Purpose : sets current parameter number to a new value
+    --           must be done at end of each step : set on first parameter
+    --           following last read one; is done by some Read... methods
+    --           (must be done directly if these method are not used)
+    --           num greater than NbParams means that following lists are empty
+    --           If current num is not managed, it remains at 1, which probably
+    --           will cause error when successive steps of reading are made
+
+    Stage (me) returns ReadStage;
+    ---Purpose : gives current stage (Own-Props-Assocs-End, begins at Own)
+
+    NextStage (me : in out);
+    ---Purpose : passes to next stage (must be linked with setting Current)
+
+    EndAll (me : in out);
+    ---Purpose : passes directly to the end of reading process
+
+    	-- --   Queries on Parameters   -- --
+
+    NbParams (me) returns Integer;
+    ---Purpose : returns number of parameters (minus the first one)
+    --           following method skip the first parameter (1 gives the 2nd)
+
+    ParamType (me; num : Integer) returns ParamType;
+    ---Purpose : returns type of parameter; note that "Ident" or "Sub" cannot
+    --           be encountered, they correspond to "Integer", see also below
+
+    ParamValue (me; num : Integer) returns CString;
+    ---Purpose : returns litteral value of a parameter, as it was in file
+    ---C++ : return const
+
+       	-- --   Adapted Helps for Reading   -- --
+
+    IsParamDefined (me; num : Integer) returns Boolean;
+    ---Purpose : says if a parameter is defined (not void)
+    --           See also DefinedElseSkip
+
+    IsParamEntity (me; num : Integer) returns Boolean;
+    ---Purpose : says if a parameter can be regarded as an entity reference
+    --           (see Prepare from IGESReaderData for more explanation)
+    --           Note that such a parameter can seen as be a plain Integer too
+
+    ParamNumber (me; num : Integer) returns Integer;
+    ---Purpose : returns entity number corresponding to a parameter if there is
+    --           otherwise zero (according criterium IsParamEntity)
+
+    ParamEntity (me : in out; IR : IGESReaderData; num : Integer)
+    	returns mutable IGESEntity
+    ---Purpose : directly returns entity referenced by a parameter
+    	raises InterfaceError;
+    --           Error if <num> cannot be regarded as an Entity reference
+    --           (causes recording fail into check and raising an exception) 
+    	--  More complete ways of reading    -- --
+    	-- The following methods (Read...) allow to read data, manage errors,
+    	-- and manage Current number (through a ParamCursor)
+    	-- Managing error is done as follows :
+    	-- - the Check (contained in the ParamReader) is filled with a Fail
+    	--    message, composed with "mess" given as argument
+    	-- - returned Value is False
+    	-- - Finally, if it is not precise enough, status for last call to a
+    	--   method Read.. can be asked (but not ParamEntity or IsParamDefined)
+    	-- If a Correction occurs, returned Value is True, as a normal read
+    	--  (but a Warning message is recorded and LastStatus is different)
+    	--
+    	-- Params are identified through a ParamCursor, which allows :
+    	-- - basically, to designate a Parameter by its Number
+    	-- - also, to designate several ones (that is, a list)
+    	-- - and more, to define lists of complex items (involving interlaced
+    	--   lists for each term)
+    	-- - optionnally to work with the Current Number (this is the default):
+    	--   - Number of parameter (first one for a list) is Current Number;
+    	--   - after Reading, Current Number will follow the last paameter read
+    	--     Hence, SetCurrentNumber has not to be called
+    	--   - Except a Defined Parameter, else Skip Current Parameter if it is Void
+    	-- Options provided by methods Current and CurrentList
+    	-- Remark : If Read... receives directly an Integer value, it will be
+    	--  converted into a ParamCursor by the C++ compiler
+
+    Current (me) returns ParamCursor;
+    ---Purpose : Creates a ParamCursor from the Current Number, to read one
+    --           parameter, and to advance Current Number after reading
+
+    CurrentList (me; nb : Integer; size : Integer = 1) returns ParamCursor;
+    ---Purpose : Creates a ParamCursor from the Current Number, to read a list
+    --           of "nb" items, and to advance Current Number after reading
+    --           By default, each item is made of one parameter
+    --           If size is given, it precises the number of params per item
+
+  -- For Message    
+   PrepareRead (me : in out; PC : ParamCursor; several : Boolean; size : Integer = 1)
+    	returns Boolean  is private;
+
+
+    PrepareRead (me : in out; PC : ParamCursor; mess : CString;
+    	    	 several : Boolean; size : Integer = 1)
+    	returns Boolean  is private;
+    ---Purpose : Prepares work for Read... methods which call it to begin
+    --           The required count of parameters must not overpass NbParams.
+    --           If several is given False, PC count must be one.
+    --           If size is given, the TermSize from ParmCursor must be a
+    --           multiple count of this size.
+    --           If one of above condition is not satisfied, a Fail Message is
+    --           recorded into Check, using the root "mess" and return is False
+
+    FirstRead (me : in out; nb : Integer = 1) returns Integer  is static private;
+    ---Purpose : Gets the first parameter number to be read, determined from
+    --           ParamCursor data read by PrepareRead (Start + Offset)
+    --           Then commands to skip 1 parameter (default) or nb if given
+
+    NextRead (me : in out; nb : Integer = 1) returns Integer  is static private;
+    ---Purpose : Gets the next parameter number to be read. Skips to next Item
+    --           if TermSize has been read.
+    --           Then commands to skip 1 parameter (default) or nb if given
+
+    DefinedElseSkip (me : in out) returns Boolean;
+    ---Purpose : Allows to simply process a parameter which can be defaulted.
+    --           Waits on the Current Number a defined parameter or skips it :
+    --           If the parameter <num> is defined, changes nothing and returns True
+    --           Hence, the next reading with current cursor will concern <num>
+    --           If it is void, advances Current Position by one, and returns False
+    --           The next reading will concern <num+1> (except if <num> = NbParams)
+    --           
+    --           This allows to process Default values as follows (C++) :
+    --           if (PR.DefinedElseSkip()) {
+    --             .. PR.Read... (current parameter);
+    --           } else {
+    --             <current parameter> = default value
+    --             .. nothing else to do with ParamReader
+    --           }
+ -- For Message
+    ReadInteger (me : in out; PC : ParamCursor;
+    	val : out Integer)  returns Boolean;
+
+    ReadInteger (me : in out; PC : ParamCursor; mess : CString;
+    	val : out Integer)  returns Boolean;
+    ---Purpose : Reads an Integer value designated by PC
+    --           The method Current designates the current parameter and
+    --           advances the Current Number by one after reading
+    --           Note that if a count (not 1) is given, it is ignored
+    --           If it is not an Integer, fills Check with a Fail (using mess)
+    --           and returns False
+
+ -- For Message
+    ReadBoolean (me : in out; PC : ParamCursor; amsg : Msg from Message;
+   	val : out Boolean; exact : Boolean = Standard_True)  returns Boolean;
+
+    ReadBoolean (me : in out; PC : ParamCursor; mess : CString;
+    	val : out Boolean; exact : Boolean = Standard_True)  returns Boolean;
+    ---Purpose : Reads a Boolean value from parameter "num"
+    --           A Boolean is given as an Integer value 0 (False) or 1 (True)
+    --           Anyway, an Integer is demanded (else, Check is filled)
+    --           If exact is given True, those precise values are demanded
+    --           Else, Correction is done, as False for 0 or <0, True for >0
+    --           (with a Warning error message, and return is True)
+    --           In case of error (not an Integer, or not 0/1 and exact True),
+    --           Check is filled with a Fail (using mess) and return is False
+
+ -- For Message
+    ReadReal    (me : in out; PC : ParamCursor; 
+    	val : out Real)  returns Boolean;
+
+    ReadReal    (me : in out; PC : ParamCursor; mess : CString;
+    	val : out Real)  returns Boolean;
+    ---Purpose : Reads a Real value from parameter "num"
+    --           An Integer is accepted (Check is filled with a Warning
+    --           message) and causes return to be True (as normal case)
+    --           In other cases, Check is filled with a Fail and return is False
+
+ -- For Message
+   ReadXY      (me : in out; PC : ParamCursor;amsg : out Msg from Message ;
+        val : out XY)  returns Boolean;
+
+    ReadXY      (me : in out; PC : ParamCursor; mess : CString;
+    	val : out XY)  returns Boolean;
+    ---Purpose : Reads a couple of Real values (X,Y) from parameter "num"
+    --           Integers are accepted (Check is filled with a Warning
+    --           message) and cause return to be True (as normal case)
+    --           In other cases, Check is filled with a Fail and return is False
+
+ -- For Message
+    ReadXYZ     (me : in out; PC : ParamCursor; amsg : out Msg from Message;
+        val : out XYZ)  returns Boolean;
+
+    ReadXYZ     (me : in out; PC : ParamCursor; mess : CString;
+    	val : out XYZ)  returns Boolean;
+    ---Purpose : Reads a triplet of Real values (X,Y,Z) from parameter "num"
+    --           Integers are accepted (Check is filled with a Warning
+    --           message) and cause return to be True (as normal case)
+    --           In other cases, Check is filled with a Fail and return is False
+-- For Message
+    ReadText    (me : in out; PC : ParamCursor; amsg : Msg from Message;
+        val : out HAsciiString from TCollection)  returns Boolean;
+
+    ReadText    (me : in out; PC : ParamCursor; mess : CString;
+    	val : out HAsciiString from TCollection)  returns Boolean;
+    ---Purpose : Reads a Text value from parameter "num", as a String from
+    --           Collection, that is, Hollerith text without leading "nnnH"
+    --           If it is not a String, fills Check with a Fail (using mess)
+    --           and returns False
+
+-- For Message
+    ReadEntity  (me : in out; IR : IGESReaderData;  
+    	    	    	      PC : ParamCursor;  
+    	    	    	      aStatus: in out Status from IGESData; 
+    	    	    	      val : out mutable IGESEntity;  
+    	    	    	      canbenul : Boolean = Standard_False) 
+    returns Boolean;
+
+    ReadEntity  (me : in out; IR : IGESReaderData; PC : ParamCursor; mess : CString;
+    	val : out mutable IGESEntity; canbenul : Boolean = Standard_False)  returns Boolean;
+    ---Purpose : Reads an IGES entity from parameter "num"
+    --           An Entity is known by its reference, which has the form of an
+    --           odd Integer Value (a number in the Directory)
+    --           If <canbenul> is given True, a Reference can also be Null :
+    --           in this case, the result is a Null Handle with no Error
+    --           If <canbenul> is False, a Null Reference causes an Error
+    --           If the parameter cannot refer to an entity (or null), fills
+    --           Check with a Fail (using mess) and returns False
+
+ 
+-- For Message
+    ReadEntity  (me : in out; IR : IGESReaderData; 
+    	    	    	      PC : ParamCursor;  
+	        	      aStatus: in out Status from IGESData; 
+            	    	      type : Type from Standard; 
+    	    	    	      val : out mutable IGESEntity; 
+    	    	    	      canbenul : Boolean = Standard_False)  returns Boolean;
+
+    ReadEntity  (me : in out; IR : IGESReaderData;  
+                              PC : ParamCursor; 
+    	    	    	      mess : CString;
+    	                      type : Type from Standard; 
+                              val : out mutable IGESEntity;
+        canbenul : Boolean = Standard_False)  returns Boolean;
+    ---Purpose : Works as ReadEntity without Type, but in addition checks the
+    --           Type of the Entity, which must be "kind of" a given <type>
+    --           Then, gives the same fail cases as ReadEntity without Type,
+    --           plus the case "Incorrect Type"
+    --           (in such a case, returns False and givel <val> = Null)
+
+-- For Message
+    ReadInts  (me : in out; PC : ParamCursor; amsg : Msg from Message;
+    	val : out HArray1OfInteger from TColStd; index : Integer = 1)  returns Boolean;
+
+    ReadInts  (me : in out; PC : ParamCursor; mess : CString;
+    	val : out HArray1OfInteger from TColStd; index : Integer = 1)  returns Boolean;
+    ---Purpose : Reads a list of Integer values, defined by PC (with a count of
+    --           parameters). PC can start from Current Number and command it
+    --           to advance after reading (use method CurrentList to do this)
+    --           The list is given as a HArray1, numered from "index"
+    --           If all params are not Integer, Check is filled (using mess)
+    --           and return value is False
+
+-- For Message
+   ReadReals (me : in out; PC : ParamCursor;amsg : out Msg from Message;
+        val : out HArray1OfReal from TColStd; index : Integer = 1) returns Boolean;
+
+    ReadReals (me : in out; PC : ParamCursor; mess : CString;
+    	val : out HArray1OfReal from TColStd; index : Integer = 1) returns Boolean;
+    ---Purpose : Reads a list of Real values defined by PC
+    --           Same conditions as for ReadInts, for PC and index
+    --           An Integer parameter is accepted, if at least one parameter is
+    --           Integer, Check is filled with a "Warning" message
+    --           If all params are neither Real nor Integer, Check is filled
+    --           (using mess) and return value is False
+
+-- For Message
+   ReadTexts  (me : in out; PC : ParamCursor; amsg : Msg from Message;
+        val : out HArray1OfHAsciiString; index : Integer = 1)  returns Boolean;
+
+    ReadTexts  (me : in out; PC : ParamCursor; mess : CString;
+    	val : out HArray1OfHAsciiString; index : Integer = 1)  returns Boolean;
+    ---Purpose : Reads a list of Hollerith Texts, defined by PC
+    --           Texts are read as Hollerith texts without leading "nnnH"
+    --           Same conditions as for ReadInts, for PC and index
+    --           If all params are not Text, Check is filled (using mess)
+    --           and return value is False
+
+-- For Message
+    ReadEnts  (me : in out; IR : IGESReaderData; PC : ParamCursor;amsg : Msg from Message;
+      val : out HArray1OfIGESEntity; index : Integer = 1) returns Boolean;
+
+    ReadEnts  (me : in out; IR : IGESReaderData; PC : ParamCursor; mess : CString;
+      val : out HArray1OfIGESEntity; index : Integer = 1) returns Boolean;
+    ---Purpose : Reads a list of Entities defined by PC
+    --           Same conditions as for ReadInts, for PC and index
+    --           The list is given as a HArray1, numered from "index"
+    --           If all params cannot be read as Entities, Check is filled
+    --           (using mess) and return value is False
+    --           Remark : Null references are accepted, they are ignored
+    --             (negative pointers too : they provoke a Warning message)
+    --           If the caller wants to check them, a loop on ReadEntity should
+    --           be used
+
+
+-- For Message
+   ReadEntList (me : in out; IR : IGESReaderData; PC : ParamCursor;amsg : in out Msg from Message;
+        val : in out EntityList; ord : Boolean = Standard_True) returns Boolean;
+
+    ReadEntList (me : in out; IR : IGESReaderData; PC : ParamCursor; mess : CString;
+    	val : in out EntityList; ord : Boolean = Standard_True) returns Boolean;
+    ---Purpose : Reads a list of Entities defined by PC
+    --           Same conditions as for ReadEnts, for PC
+    --           The list is given as an EntityList
+    --            (index has no meaning; the EntityList starts from clear)
+    --           If "ord" is given True (default), entities will be added to
+    --           the list in their original order
+    --           Remark : Negative or Null Pointers are ignored
+    --           Else ("ord" False), order is not garanteed (faster mode)
+    --           If all params cannot be read as Entities, same as above
+    --  Warning  Give "ord" to False ONLY if order is not significant
+
+-- For Message
+  ReadingReal (me : in out; num : Integer; 
+        val : out Real)  returns Boolean;
+
+    ReadingReal (me : in out; num : Integer; mess : CString;
+    	val : out Real)  returns Boolean;
+    ---Purpose : Routine which reads a Real parameter, given its number
+    --           Same conditions as ReadReal for mess, val, and return value
+
+-- For Message
+  ReadingEntityNumber (me : in out; num : Integer; 
+        val : out Integer)  returns Boolean;
+
+    ReadingEntityNumber (me : in out; num : Integer; mess : CString;
+    	val : out Integer)  returns Boolean;
+    ---Purpose : Routine which reads an Entity Number (which allows to read the
+    --           Entity in the IGESReaderData by BoundEntity), given its number
+    --           in the list of Parameters
+    --           Same conditions as ReadEntity for mess, val, and return value
+    --           In particular, returns True and val to zero means Null Entity,
+    --           and val not zero means Entity read by BoundEntity
+
+
+    -- --   Check management for Message   -- --
+
+    SendFail (me : in out; amsg : Msg from Message)
+        is static;
+
+
+    SendWarning (me : in out; amsg :Msg from Message)
+        is static;
+
+
+
+
+    	-- --   Check management   -- --
+
+    AddFail (me : in out; idm : CString; af,bf : HAsciiString from TCollection)
+        is static private;
+    ---Purpose : internal method which builds a Fail message from an
+    --           identification "idm" and a diagnostic ("afail")
+    --           Also feeds LastReadStatus
+    --           <af> for final message, bf (can be different) for original
+
+    AddFail (me : in out; idm, afail : CString; bfail : CString)
+    	is static private;
+    ---Purpose : Same as above but with CString
+    --           <bf> empty means = <af>
+
+    AddWarning (me : in out; idm : CString; aw,bw : HAsciiString from TCollection)
+    	is static private;
+    ---Purpose : internal method which builds a Warning message from an
+    --           identification "idm" and a diagnostic
+    --           <aw> is final message, bw is original (can be different)
+    --           Also feeds LastReadStatus
+
+    AddWarning (me : in out; idm, aw : CString; bw : CString)
+    	is static private;
+    ---Purpose : Same as above but with CString
+    --           <bw> empty means = <aw>
+
+    AddFail (me : in out; afail : CString; bfail : CString = "")  is static;
+    AddFail (me : in out; af,bf : HAsciiString from TCollection)    is static;
+    ---Purpose : feeds the Check with a new fail (as a String or as a CString)
+
+    AddWarning (me : in out; awarn : CString; bwarn : CString = "")  is static;
+    AddWarning (me : in out; aw,bw : HAsciiString from TCollection) is static;
+    ---Purpose : feeds the Check with a new Warning message
+
+    Mend (me : in out; pref : CString = "");
+    --Purpose : Mends the Fail messages, by calling Mend from Check
+
+    HasFailed (me) returns Boolean  is static;
+    ---Purpose : says if fails have been recorded into the Check 
+
+    Check (me) returns Check  is static;
+    ---Purpose : returns the Check
+    --           Note that any error signaled above is also recorded into it
+    ---C++ : return const&
+
+    CCheck (me : in out) returns Check  is static;
+    ---Purpose : returns the check in a way which allows to work on it directly
+    --         (i.e. messages added to the Check are added to ParamReader too)
+    ---C++ : return &
+
+
+    IsCheckEmpty (me) returns Boolean  is static;
+    ---Purpose : Returns True if the Check is Empty
+    --           Else, it has to be recorded with the Read Entity
+
+fields
+
+    theparams : ParamList;
+    thecheck  : Check;
+    thebase   : Integer;
+    thenbpar  : Integer;
+    thecurr   : Integer;
+    thestage  : ReadStage;    -- following organisation of an IGESEntity
+    thelast   : Boolean;      -- LastReadStatus
+    theindex  : Integer;      -- data to manage Read... process
+    thenbitem : Integer;
+    theitemsz : Integer;
+    theoffset : Integer;
+    thetermsz : Integer;
+    themaxind : Integer;
+    thenbterm : Integer;
+    pbrealint  : Integer;
+    pbrealform : Integer;
+    thenum     : Integer;
+
+end ParamReader;

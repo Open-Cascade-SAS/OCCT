@@ -1,0 +1,40 @@
+-- File:	StepVisual_DirectionCountSelect.cdl
+-- Created:	Wed Dec  6 09:37:04 1995
+-- Author:	Frederic MAUPAS
+--		<fma@anion>
+---Copyright:	 Matra Datavision 1995
+
+class DirectionCountSelect from StepVisual
+
+    -- a Select Type (hand generated)
+
+uses
+
+    Integer from Standard
+    
+is
+
+    Create returns DirectionCountSelect;
+    
+    SetTypeOfContent(me : in out; aTypeOfContent : Integer);
+
+    TypeOfContent(me) returns Integer;
+	--        1 -> UDirectionCount
+	--        2 -> VDirectionCount
+
+    UDirectionCount(me) returns Integer from Standard;
+    
+    SetUDirectionCount(me : in out; aUDirectionCount : Integer from Standard);
+    
+    VDirectionCount(me) returns Integer from Standard;
+    
+    SetVDirectionCount(me : in out; aUDirectionCount : Integer from Standard);
+
+
+fields
+
+    theUDirectionCount : Integer from Standard;
+    theVDirectionCount : Integer from Standard;
+    theTypeOfContent   : Integer from Standard;
+
+end DirectionCountSelect;

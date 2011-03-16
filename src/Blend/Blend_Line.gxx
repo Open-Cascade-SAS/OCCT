@@ -1,0 +1,31 @@
+Blend_Line::Blend_Line ():
+  tras1(IntSurf_Undecided),tras2(IntSurf_Undecided),
+  hass1(Standard_False),hass2(Standard_False)
+{}
+
+
+void Blend_Line::Clear ()
+{
+  seqpt.Clear();
+  hass1 = Standard_False;
+  hass2 = Standard_False;
+  tras1 = IntSurf_Undecided;
+  tras2 = IntSurf_Undecided;
+}
+
+void Blend_Line::Set(const IntSurf_TypeTrans TranS1,
+			    const IntSurf_TypeTrans TranS2)
+{
+  hass1 = Standard_True;
+  hass2 = Standard_True;
+  tras1 = TranS1;
+  tras2 = TranS2;
+}
+
+void Blend_Line::Set(const IntSurf_TypeTrans Trans)
+{
+  hass1 = Standard_True;
+  hass2 = Standard_False;
+  tras1 = Trans;
+}
+

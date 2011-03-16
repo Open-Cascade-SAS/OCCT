@@ -1,0 +1,177 @@
+---Copyright:   Matra Datavision 1991
+
+class Pnt2d   from gp   inherits Storable
+
+        --- Purpose :  Defines  a non-persistent 2D cartesian point.
+	
+uses Ax2d   from gp,
+     Trsf2d from gp,
+     Vec2d  from gp, 
+     XY     from gp
+
+raises OutOfRange from Standard
+
+is
+
+  Create   returns Pnt2d;
+        ---C++: inline
+        ---Purpose : Creates a point with zero coordinates.
+
+  Create (Coord : XY)   returns Pnt2d;
+    	---C++: inline
+        --- Purpose : Creates a point with a doublet of coordinates.
+  
+  Create (Xp, Yp : Real)   returns Pnt2d;
+        ---C++: inline
+        --- Purpose :
+        --  Creates a  point with its 2 cartesian's coordinates : Xp, Yp.
+
+  SetCoord (me : in out; Index : Integer; Xi : Real)
+    	---C++:inline  
+        --- Purpose :
+        --  Assigns the value Xi to the coordinate that corresponds to Index:
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified
+    	-- Raises OutOfRange if Index != {1, 2}.
+     raises OutOfRange
+     is static;
+
+  SetCoord (me : in out; Xp, Yp : Real)
+    	---C++: inline 
+    	---Purpose: For this point, assigns the values Xp and Yp to its two coordinates
+    is static;
+
+  SetX (me : in out; X : Real)          
+    	---C++: inline  
+    	---Purpose: Assigns the given value to the X  coordinate of this point.
+    is static;
+
+  SetY (me : in out; Y : Real)
+    	---C++: inline
+    	---Purpose: Assigns the given value to the Y  coordinate of this point.
+    is static;
+
+  SetXY (me : in out; Coord : XY)       
+    	---C++: inline
+    	---Purpose: Assigns the two coordinates of Coord to this point.
+    is static;
+
+  Coord (me; Index : Integer)  returns Real
+        --- Purpose :
+        --  Returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned  
+    	-- Raises OutOfRange if Index != {1, 2}.
+     raises OutOfRange
+     is static;
+
+  Coord (me; Xp, Yp : out Real)  
+    	---C++:inline
+	---Purpose: For this point returns its two coordinates as a number pair.
+    is static;
+
+  X (me)   returns Real          
+    	---C++:inline
+    	---Purpose: For this point, returns its X  coordinate.
+    is static;
+
+  Y (me)   returns Real          
+    	---C++:inline
+    	---Purpose: For this point, returns its Y coordinate.
+    is static;
+
+  XY (me)  returns XY            
+        ---C++: inline
+    	---C++: return const&
+    	---Purpose: For this point, returns its two coordinates as a number pair.   
+    is static;
+
+  Coord (me)  returns XY         
+        ---C++: inline
+    	---C++: return const&
+	---Purpose: For this point, returns its two coordinates as a number pair. 
+    is static;
+
+
+  ChangeCoord (me: in out)  returns XY         
+        ---C++: inline
+    	---C++: return &
+    	---Purpose:
+    	-- Returns the coordinates of this point.
+    	-- Note: This syntax allows direct modification of the returned value.
+    is static;
+
+  IsEqual (me; Other : Pnt2d; LinearTolerance : Real)   returns Boolean
+     is static;
+        ---C++: inline
+        --- Purpose : Comparison
+        --  Returns True if the distance between the two
+        --  points is lower or equal to LinearTolerance.
+
+  Distance (me; Other : Pnt2d)   returns Real       is static;
+        ---C++: inline
+    	--- Purpose : Computes the distance between two points.
+ 
+  SquareDistance (me; Other : Pnt2d)   returns Real is static;
+        ---C++: inline
+    	--- Purpose : Computes the square distance between two points.
+ 
+  Mirror (me : in out; P : Pnt2d)           is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a point
+        --  with respect to the point P which is the center of 
+        --  the  symmetry.
+
+  Mirrored (me; P : Pnt2d)   returns Pnt2d  is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a point
+        --  with respect to an axis placement which is the axis
+
+  Mirror (me : in out; A : Ax2d)            is static;
+
+  Mirrored (me; A : Ax2d)  returns Pnt2d    is static;
+        --- Purpose :
+        --  Rotates a point. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+  Rotate (me : in out; P : Pnt2d; Ang : Real)         is static;
+        ---C++: inline
+
+  Rotated (me; P : Pnt2d; Ang : Real)  returns Pnt2d  is static;
+        ---C++: inline
+        --- Purpose : Scales a point. S is the scaling value.
+
+  Scale (me : in out; P : Pnt2d; S : Real)         is static;
+        ---C++: inline
+	
+  Scaled (me; P : Pnt2d; S : Real)  returns Pnt2d  is static;
+        ---C++: inline  
+    	--- Purpose : Transforms a point with the transformation T.
+
+  Transform (me : in out; T : Trsf2d)              is static;
+
+  Transformed (me; T : Trsf2d)   returns Pnt2d     is static;
+        ---C++: inline  
+        --- Purpose : 
+        --  Translates a point in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+  Translate (me : in out; V : Vec2d)               is static;
+        ---C++: inline
+
+  Translated (me; V : Vec2d)   returns Pnt2d       is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a point from the point P1 to the point P2.
+
+  Translate (me : in out; P1, P2 : Pnt2d)          is static;
+        ---C++: inline
+
+  Translated (me; P1, P2 : Pnt2d)   returns Pnt2d  is static;
+        ---C++: inline
+
+fields
+
+  coord : XY;
+
+end;

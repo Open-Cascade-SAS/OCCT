@@ -1,0 +1,315 @@
+-- File:	BOP_ShellSolid.cdl
+-- Created:	Fri Nov  2 10:04:04 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ShellSolid from BOP inherits Builder from BOP
+
+	---Purpose: 
+    	--- Performs  Boolean Operations  (BO) 
+    	--  Common,Cut,Fuse for arguments of 
+    	--  shell/solid type   
+	---
+uses
+ 
+    DSFiller  from BOPTools, 
+     
+    WireEdgeSet  from BOP,   
+    ShellFaceSet from BOP, 
+    Operation    from BOP, 
+    HistoryCollector from BOP,
+     
+    Shape from TopoDS,
+    Edge  from TopoDS,
+    Face  from TopoDS, 
+    Shell from TopoDS,
+    
+    ListOfShape                      from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools, 
+    IndexedMapOfShape                from TopTools, 
+    DataMapOfShapeInteger            from TopTools,
+    
+    IndexedMapOfInteger from TColStd,
+
+    StateOfShape        from BooleanOperations, 
+    State               from TopAbs,
+    --modified by NIZHNY-MKK  Tue Sep  7 11:37:57 2004
+    ShapeEnum           from TopAbs,
+    
+    Orientation         from TopAbs 
+    
+is 
+    
+    Create   
+    	returns  ShellSolid from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    Do  (me:out) 
+    	is  redefined; 	 
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_ShellSolid(){Destroy();}"   
+    	---Purpose:  
+    	--- Destructor
+    	---
+    BuildResult (me:out) 
+	is redefined ;	
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    DoNewFaces(me: in out)
+    	is  virtual; 
+    	---Purpose:  
+    	--- see base  classes, please
+    	---
+    Prepare(me:out)  
+    --modified by NIZNHY-PKV Wed Sep 11 17:55:29 2002  f
+   	 is virtual;--protected;   
+    --modified by NIZNHY-PKV Wed Sep 11 17:55:32 2002  t		  
+    	---Purpose: 
+    	--- Provides some preparing steps of algorithm     
+    	--- 1.  Compute the 3D-States 
+    	--- 2.  Compute P-Curves for section- and split- edges      
+    	--- 3.  Treat degenerated edges 
+    	--- 4   Detect Same Domain faces   
+    	---
+    DetectSDFaces  (me:out) 
+    	is protected; 
+    	---Purpose:  
+    	--- The algo to find SameDomain Faces    
+    	--- among interferred ones 
+    	---
+    ---------------------------------------------- 
+    --     
+    --         W E S  C O M P O N E N T S  
+    --     
+    --            (for internal usage)    
+    --     
+    --     
+    AddSplitPartsINOUT (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected;   
+    --- 
+    ---  WES components for an argument of SHELL type  
+    --- 
+    AddSectionPartsSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected ;  
+	 
+    AddSplitPartsONSh (me:out; 
+    	    nF1  :Integer from Standard;  
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected;   
+
+    AddPartsEFSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected; 	  	
+ 	 
+    AddINON2DPartsSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected;   	 
+     
+    AddINON2DPartsSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP; 
+    	    anEMap  : out  IndexedMapOfShape from TopTools) 
+    	is protected;    
+    --		   
+    AddPartsEFNonSDSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected;    
+	 
+    AddPartsEENonSDSh (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP) 
+    	is protected;    	 
+    --- 
+    ---  WES components for an argument of SOLID type  
+    ---  
+    AddSectionPartsSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP)  
+	is protected;     
+	 
+    AddSplitPartsON3DSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP)  
+	 is protected;    
+     
+    AddSplitPartsONSo(me:out; 
+    	    nF1  :Integer from Standard;  
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aWES :out WireEdgeSet from BOP)  
+	is protected;    
+	 
+    AddPartsEFSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools; 
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP)  
+	is protected;    
+	 
+    AddINON2DPartsSo (me:out; 
+    	    iFF  :Integer from Standard; 
+    	    nF1  :Integer from Standard; 
+    	    nF2  :Integer from Standard; 
+    	    aWES :out WireEdgeSet from BOP)  
+	 is protected;    
+	 
+    AddPartsEFSDSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aWES :out WireEdgeSet from BOP) 
+	 is protected;  	 
+	  
+    AddPartsEFNonSDSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools;  
+	    aFFInMap:IndexedMapOfInteger from TColStd;
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP) 
+	 is protected; 
+	 
+    AddPartsEENonSDSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools;  
+	    aFFInMap:IndexedMapOfInteger from TColStd;
+	    anEMap  : out  IndexedMapOfShape from TopTools;	    	    			 
+    	    aWES :out WireEdgeSet from BOP)   
+    	 is protected;  
+
+    AddPartsEESDSo (me:out; 
+    	    nF1  :Integer from Standard; 
+    	    iFF  :Integer from Standard; 
+    	    aMEFObj :IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    aMEFTool:IndexedDataMapOfShapeListOfShape from TopTools;  
+    	    aWES :out WireEdgeSet from BOP)   
+    	 is protected;  
+
+--modified by NIZHNY-MKK  Tue Sep  7 11:38:00 2004
+    CheckArgTypes(myclass; theType1, theType2: ShapeEnum from TopAbs;
+    	    	    	   theOperation: Operation from BOP) 
+	 returns Boolean from Standard;  
+    	---Purpose: 
+    	--- Check the types of arguments.      
+    	--- Returns  FALSE if types of arguments     
+    	--- are non-valid to be  treated by the         
+    	--- agorithm 
+    
+    CheckArgTypes(me) 
+	 returns Boolean from Standard;  
+    	---Purpose: 
+    	--- Check the types of arguments.      
+    	--- Returns  FALSE if types of arguments     
+    	--- are non-valid to be  treated by the         
+    	--- agorithm 
+    	---
+    Path(myclass; 
+   	    aE:Shape from TopoDS; 
+            aEFMap:  IndexedDataMapOfShapeListOfShape from TopTools;  
+	    aFaces:  out IndexedMapOfShape from TopTools; 
+	    aProcE:  out IndexedMapOfShape from TopTools) 
+    	is protected; 
+    	---Purpose: 
+    	--- Internal usage  
+    	---
+    Orientation(myclass;  
+    	    aE:  Edge from TopoDS; 
+	    aF:  Face from TopoDS) 
+	returns Orientation from TopAbs    
+    	is protected;  
+    	---Purpose: 
+    	--- Internal usage
+    	---
+    OrientFacesOnShell (myclass; 
+    	    aShell: Shell from TopoDS;  
+	    aShellNew: out Shell from TopoDS) 
+    	is protected; 
+    	---Purpose: 
+    	---
+    	--- Internal usage 
+    	---
+    DoInternalVertices (me:out;   
+    	    nF1:Integer  from  Standard; 
+    	    aFaces: ListOfShape from TopTools) 
+	is  protected;	 
+    	---Purpose: 
+    	--- Internal usage 
+    	---
+    Internals(me) 
+	returns ListOfShape from TopTools   
+    	is  protected; 
+    	---C++: return const & 
+    	---Purpose: 
+    	--- Internal usage 
+    	---
+    CollectInternals(me:out) 
+	is  protected;     
+    	---Purpose: 
+    	--- Internal usage 
+    	---
+
+    FillSectionEdges(me:out) 
+	is  protected; 
+    	---Purpose: 
+    	--- Internal usage 
+    	---
+
+
+    SplitFace(me; theFaceIndex: Integer from Standard;
+    	    	  theMapOfEdgeIndex: out DataMapOfShapeInteger from TopTools;
+    	    	  theListOfFace: out ListOfShape from TopTools)
+    	returns Boolean from Standard;
+
+    SetHistoryCollector(me: in out; theHistory: HistoryCollector from BOP)
+    	is redefined virtual;
+
+fields 
+ 
+    myFace      : Face from TopoDS            
+    	is  protected;  
+    myNewFaces  : ListOfShape from TopTools   
+    	is  protected;  
+    myInternals : ListOfShape from TopTools   
+    	is  protected; 
+    myRank      : Integer from Standard 
+    	is  protected; 
+		      	     
+end ShellSolid;

@@ -1,0 +1,116 @@
+--
+-- File      : NewDimensionedGeometry.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NewDimensionedGeometry from IGESDimen  inherits IGESEntity
+
+        ---Purpose : defines New Dimensioned Geometry, Type <402>, Form <21>
+        --           in package IGESDimen
+        --           Links a dimension entity with the geometry entities it
+        --           is dimensioning, so that later, in the receiving
+        --           database, the dimension can be automatically recalculated
+        --           and redrawn should the geometry be changed.
+
+uses
+
+        Pnt                 from gp,
+        XYZ                 from gp,
+        HArray1OfIGESEntity from IGESData,
+        HArray1OfXYZ        from TColgp,
+        HArray1OfReal       from TColStd,
+        HArray1OfInteger    from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable NewDimensionedGeometry;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              nbDimens      : Integer;
+              aDimen        : IGESEntity;
+              anOrientation : Integer;
+              anAngle       : Real;
+              allEntities   : HArray1OfIGESEntity;
+              allLocations  : HArray1OfInteger;
+              allPoints     : HArray1OfXYZ)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           NewDimensionedGeometry
+        --       - nbDimen       : Number of Dimensions, default = 1
+        --       - aDimen        : Dimension Entity
+        --       - anOrientation : Dimension Orientation Flag
+        --       - anAngle       : Angle Value
+        --       - allEntities   : Geometric Entities
+        --       - allLocations  : Dimension Location Flags
+        --       - allPoints     : Points on the Geometry Entities
+        -- exception raised if lengths of entities, locations, points
+        -- are not the same
+
+        NbDimensions (me) returns Integer;
+        ---Purpose : returns the number of dimensions
+
+        NbGeometries (me) returns Integer;
+        ---Purpose : returns the number of associated geometry entities
+
+        DimensionEntity (me) returns IGESEntity;
+        ---Purpose : returns the dimension entity
+
+        DimensionOrientationFlag (me) returns Integer;
+        ---Purpose : returns the dimension orientation flag
+
+        AngleValue (me) returns Real;
+        ---Purpose : returns the angle value
+
+        GeometryEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th geometry entity
+        -- raises exception if Index <= 0 or Index > NbGeometries()
+
+        DimensionLocationFlag (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th geometry entity's dimension location flag
+        -- raises exception if Index <= 0 or Index > NbGeometries()
+
+        Point (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : coordinate of point on Index'th geometry entity
+        -- raises exception if Index <= 0 or Index > NbGeometries()
+
+        TransformedPoint (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : coordinate of point on Index'th geometry entity after Transformation
+        -- raises exception if Index <= 0 or Index > NbGeometries()
+
+fields
+
+--
+-- Class    : IGESDimen_NewDimensionedGeometry
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class NewDimensionedGeometry.
+--
+-- Reminder : A NewDimensionedGeometry instance is defined by :
+--            - Number of Dimensions, default = 1
+--            - Dimension Entity
+--            - Dimension Orientation Flag
+--            - Angle Value
+--            - Geometric Entities
+--            - Dimension Location Flags
+--            - Points on the Geometry Entities
+
+        theNbDimensions             : Integer;
+        theDimensionEntity          : IGESEntity;
+        theDimensionOrientationFlag : Integer;
+        theAngleValue               : Real;
+        theGeometryEntities         : HArray1OfIGESEntity;
+        theDimensionLocationFlags   : HArray1OfInteger;
+        thePoints                   : HArray1OfXYZ;
+
+end NewDimensionedGeometry;

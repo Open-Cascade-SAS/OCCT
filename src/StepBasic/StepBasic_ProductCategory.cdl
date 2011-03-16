@@ -1,0 +1,40 @@
+-- File:        ProductCategory.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ProductCategory from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Boolean from Standard
+is
+
+	Create returns mutable ProductCategory;
+	---Purpose: Returns a ProductCategory
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAdescription : Boolean from Standard;
+	      aDescription : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	UnSetDescription (me:mutable);
+	Description (me) returns mutable HAsciiString;
+	HasDescription (me) returns Boolean;
+
+fields
+
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	hasDescription : Boolean from Standard;
+
+end ProductCategory;

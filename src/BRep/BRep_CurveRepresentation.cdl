@@ -1,0 +1,287 @@
+-- File:	BRep_CurveRepresentation.cdl
+-- Created:	Mon Jul  5 19:27:07 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class CurveRepresentation from BRep inherits TShared from MMgt
+
+	---Purpose: Root class for the curve representations. Contains
+	--          a location.
+
+uses
+    Pnt      from gp,
+    Pnt2d    from gp,
+    Shape    from GeomAbs,
+    Curve    from Geom2d,
+    Surface  from Geom,
+    Curve    from Geom,
+    Location from TopLoc,
+    
+    Polygon3D              from Poly,
+    Polygon2D              from Poly,
+    Triangulation          from Poly,
+    PolygonOnTriangulation from Poly
+    
+raises
+    DomainError from Standard
+
+is
+
+    Initialize(L : Location from TopLoc);
+    
+    -------------------------------------------------
+    -- What kind of representation
+    -------------------------------------------------
+
+    IsCurve3D(me)                                     returns Boolean
+	 ---Purpose: A 3D curve representation.
+    is virtual;
+
+    IsCurveOnSurface(me)                              returns Boolean
+	---Purpose: A curve in the parametric space of a surface.
+    is virtual;
+
+    IsRegularity(me)                                  returns Boolean
+	---Purpose: A continuity between two surfaces.
+    is virtual;
+    
+    IsCurveOnClosedSurface(me)                        returns Boolean
+	---Purpose: A curve with two parametric   curves  on the  same
+	--          surface. 
+    is virtual;
+    
+    IsCurveOnSurface(me; S : Surface from Geom; 
+                         L : Location from TopLoc)    returns Boolean
+	---Purpose: Is it a curve in the parametric space  of <S> with
+	--          location <L>.
+    is virtual;
+    
+    IsRegularity(me; S1,S2 : Surface from Geom; 
+    	    	     L1,L2 : Location from TopLoc)    returns Boolean
+	---Purpose: Is it  a  regularity between  <S1> and   <S2> with
+	--          location <L1> and <L2>.
+    is virtual;
+
+    IsPolygon3D(me)                   returns Boolean
+    	---Purpose: A 3D polygon representation.
+    is virtual;
+
+
+    IsPolygonOnTriangulation(me)    returns Boolean
+    	---Purpose: A representation by an array of nodes on a 
+    	--          triangulation.
+    is virtual;
+
+
+    IsPolygonOnTriangulation(me; T : Triangulation from Poly;
+                            	 L : Location from TopLoc)    returns Boolean
+	---Purpose: Is it a polygon in the definition of <T> with
+	--          location <L>.
+    is virtual;
+
+
+    IsPolygonOnClosedTriangulation(me)    returns Boolean
+    	---Purpose: A representation by two arrays of nodes on a 
+    	--          triangulation.
+    is virtual;
+
+
+    IsPolygonOnSurface(me)          returns Boolean
+	---Purpose: A polygon in the parametric space of a surface.
+    is virtual;
+
+    IsPolygonOnSurface(me;S : Surface  from Geom; 
+                          L : Location from TopLoc)   returns Boolean
+	---Purpose: Is it a polygon in the parametric space  of <S> with
+	--          location <L>.
+    is virtual;
+
+
+    IsPolygonOnClosedSurface(me)          returns Boolean
+    	---Purpose: Two   2D polygon  representations  in the  parametric
+    	--          space of a surface.
+    is virtual;
+
+    -------------------------------------------------
+    -- Location
+    -------------------------------------------------
+
+    Location(me) returns Location from TopLoc
+	---C++: return const &
+	---C++: inline
+    is static;
+		
+    Location(me : mutable; L : Location from TopLoc)
+	---C++: inline
+    is static;
+		
+    -------------------------------------------------
+    -- 3d curve
+    -------------------------------------------------
+
+    Curve3D(me) returns any Curve from Geom
+	---C++: return const &
+    raises
+    	DomainError from Standard -- if !IsCurve3D
+    is virtual;
+	
+    Curve3D(me : mutable; C : Curve from Geom)
+    raises
+    	DomainError from Standard -- if !IsCurve3D
+    is virtual;
+	
+    -------------------------------------------------
+    -- curve on surface
+    -------------------------------------------------
+	
+    Surface(me) returns any Surface from Geom
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    PCurve(me) returns any Curve from Geom2d
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+    
+    PCurve(me : mutable; C : Curve from Geom2d)
+    raises
+    	DomainError from Standard
+    is virtual;
+    
+    -------------------------------------------------
+    -- curve on closed surface
+    -------------------------------------------------
+	
+    PCurve2(me) returns any Curve from Geom2d
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+    
+    PCurve2(me : mutable; C : Curve from Geom2d)
+    raises
+    	DomainError from Standard
+    is virtual;
+    
+    
+    -------------------------------------------------
+    -- polygon3d    
+    -------------------------------------------------
+
+    Polygon3D(me) returns any Polygon3D from Poly
+    	---C++: return const&
+    is virtual;
+
+    Polygon3D(me: mutable;P: Polygon3D from Poly)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    -------------------------------------------------
+    -- polygon on surface
+    -------------------------------------------------
+
+    Polygon(me) returns any Polygon2D from Poly
+    	---C++: return const&
+    is virtual;
+
+
+    Polygon(me: mutable;P: Polygon2D from Poly)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    -------------------------------------------------
+    -- polygon on closed surface
+    -------------------------------------------------
+
+    Polygon2(me) returns any Polygon2D from Poly
+    	---C++: return const&
+    is virtual;
+
+
+    Polygon2(me: mutable;P: Polygon2D from Poly)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    -------------------------------------------------
+    -- polygon on triangulation
+    -------------------------------------------------
+    
+    Triangulation(me) returns any Triangulation from Poly
+    	---C++: return const&
+    is virtual;
+    
+
+    PolygonOnTriangulation(me) returns any PolygonOnTriangulation from Poly
+    	---C++: return const&
+    raises
+    	DomainError from Standard
+    is virtual;
+
+
+    PolygonOnTriangulation(me: mutable; P: PolygonOnTriangulation from Poly)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    -------------------------------------------------
+    -- polygon on closed triangulation
+    -------------------------------------------------
+
+    PolygonOnTriangulation2(me) returns any PolygonOnTriangulation from  Poly
+    	---C++: return const&
+    raises
+    	DomainError from Standard
+    is virtual;
+    
+    
+    PolygonOnTriangulation2(me: mutable; P2: PolygonOnTriangulation from  Poly)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    -------------------------------------------------
+    -- continuity
+    -------------------------------------------------
+	
+    Surface2(me) returns any Surface from Geom
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    Location2(me) returns Location from TopLoc
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    Continuity(me) returns Shape from GeomAbs
+	---C++: return const &
+    raises
+    	DomainError from Standard
+    is virtual;
+
+    Continuity(me : mutable; C : Shape from GeomAbs)
+    raises
+    	DomainError from Standard
+    is virtual;
+
+
+    Copy(me) returns mutable CurveRepresentation from BRep
+	---Purpose: Return a copy of this representation.
+    is deferred;
+    
+fields
+    
+    myLocation : Location from TopLoc is protected;
+
+end CurveRepresentation;

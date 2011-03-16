@@ -1,0 +1,110 @@
+-- File:	AppParCurves_SmoothCriterion.cdl
+-- Created:	Thu Sep 11 18:06:06 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class SmoothCriterion from AppParCurves
+inherits  TShared  from MMgt
+
+	---Purpose: defined criterion to smooth  points in  curve
+                             
+
+uses
+   Vector  from  math, 
+   Matrix  from  math, 
+   Curve   from  FEmTool, 
+   HAssemblyTable    from  FEmTool,  
+   HArray2OfInteger  from TColStd, 
+   HArray1OfReal    from TColStd,
+   Array1OfReal    from TColStd 
+    
+raises 
+  NotImplemented,   
+  DomainError 
+   
+ 
+
+is 
+    SetParameters(me  :  mutable;  Parameters  : HArray1OfReal) 
+    is  deferred; 
+
+    SetCurve(me  :  mutable;  C  :Curve from FEmTool) 
+    is  deferred; 
+     
+    GetCurve(me;  C  :  out  Curve  from FEmTool) 
+    is  deferred; 
+     
+    SetEstimation(me  :  mutable;  E1,  E2,  E3  :  Real)   
+    is  deferred; 
+     
+    EstLength(me  :  mutable)   
+    ---C++: return &
+    returns  Real  is  deferred;     
+     
+    GetEstimation(me;  E1,  E2,  E3  : out Real)   
+    is  deferred; 
+     
+    AssemblyTable(me)  
+    returns HAssemblyTable  from  FEmTool   
+    is  deferred; 
+     
+    DependenceTable(me)  
+    returns  HArray2OfInteger  from TColStd   
+    is  deferred;  
+    
+    QualityValues  (me : mutable; J1min,  J2min,  J3min  :  Real; 
+    	    	    	    	  J1,  J2,  J3  :  out  Real)
+    returns  Integer  is  deferred;
+     
+    ErrorValues(me  :  mutable;   
+                MaxError,  QuadraticError,  AverageError  :  out  Real) 
+    is  deferred;
+     
+    Hessian(me  :  mutable ;  
+            Element    :  Integer; 
+	    Dimension1  :  Integer; 
+	    Dimension2  :  Integer;
+            H  :  out  Matrix  from  math)  
+     raises  DomainError -- If DependenceTable(Dimension1,Dimension2) is False 
+     is  deferred;  
+   
+    
+    Gradient(me  :  mutable;  
+             Element  :  Integer; 
+	     Dimension  :  Integer;
+             G  :  out  Vector  from  math) 
+    is  deferred; 
+    
+    InputVector(me  :  mutable;  X : Vector from math;   
+                                 AssTable  :  HAssemblyTable  from  FEmTool)  
+    ---Purpose: Convert the assembly Vector in an Curve;
+    --          
+    raises  DomainError  is  deferred; 
+     
+    SetWeight(me:  mutable;  
+              QuadraticWeight,  QualityWeight  :  Real; 
+	      percentJ1,  percentJ2,  percentJ3  :  Real) 
+    is  deferred;  
+     
+    GetWeight(me;  QuadraticWeight,  QualityWeight  :  out  Real)  
+    is  deferred;  
+     
+    SetWeight(me:  mutable;  
+              Weight  :  Array1OfReal)
+    is  deferred;
+          
+end SmoothCriterion;
+
+
+
+
+
+
+
+
+
+
+
+

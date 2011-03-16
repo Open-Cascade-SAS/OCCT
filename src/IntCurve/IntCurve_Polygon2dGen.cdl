@@ -1,0 +1,186 @@
+-- File:	Polygon2dGen.cdl
+-- Created:	Mon Oct 19 11:51:16 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Polygon2dGen from IntCurve ( 
+    TheCurve         as any;
+    TheCurveTool     as any) -- as CurveTool from IntCurve(TheCurve)
+
+	---Purpose: Describe a polyline  as  a topology to compute the
+	--          interference beetween two polylines 2 dimension.
+	          
+
+        ---Level: Internal
+
+uses    Pnt2d              from gp,
+    	Box2d              from Bnd,
+    	Array1OfPnt2d      from TColgp,
+	Array1OfReal       from TColStd,
+	Array1OfInteger    from TColStd,
+	Domain             from IntRes2d
+
+
+raises  OutOfRange from Standard
+
+
+is  
+
+    Create         (Curve       : TheCurve;
+    	    	    NbPnt       : Integer  from Standard;
+		    Domain      : Domain   from IntRes2d;
+    	    	    Tol         : Real     from Standard) 
+		    
+		    ---Purpose: Compute a polygon on the domain of the curve.
+		    
+		    
+    	    	    returns Polygon2dGen from IntCurve;
+
+    Create         (Curve       : TheCurve;
+    	    	    NbPnt       : Integer  from Standard;
+		    Domain      : Domain   from IntRes2d;
+    	    	    Tol         : Real     from Standard;
+		    OtherBox    : Box2d    from Bnd)
+		    
+		    ---Purpose: Compute a polygon on the domain of the
+		    --          curve.   parameters of  the  begin and
+		    --          end of the curve (and its polygon) are
+		    --          adjusted to lie in the OtherBox.
+		    
+    	    	    returns Polygon2dGen from IntCurve;
+
+
+    ComputeWithBox(me       : in out; 
+                   Curve    : TheCurve;
+		   OtherBox : Box2d  from Bnd)
+		   
+		   ---Purpose: The current polygon is modified if most
+		   --          of the  points of the  polygon  are are
+		   --          outside  the  box  <OtherBox>.  In this
+		   --          situation, bounds are computed to build
+		   --          a polygon inside or near the OtherBox.
+                   is static;
+
+    Bounding       (me)
+    	    	    returns Box2d from Bnd
+    	    	    is static;
+    ---C++: return const &
+    ---C++: inline
+    ---Purpose: Give the bounding box of the polygon.
+
+    DeflectionOverEstimation(me)
+		   returns Real from Standard
+		   ---C++: inline
+		   is static;
+
+    SetDeflectionOverEstimation(me: in out; x:Real from Standard)
+                    ---C++: inline
+		    is static;
+
+    Closed         (me : in out; clos : Boolean from Standard)
+    	            ---C++: inline
+		    is static;
+
+    Closed         (me)
+    	    	    returns Boolean from Standard
+    	            ---C++: inline		    
+		    is static;
+
+    NbSegments     (me)
+    	    	    returns Integer
+		    ---C++: inline
+    	    	    is static;
+    ---Purpose: Give the number of Segments in the polyline.
+    
+    BeginOfSeg     (me;
+    	    	    Index : in Integer)
+    	    	    returns Pnt2d from gp
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Give the point of range Index in the Polygon. 
+    ---C++: inline
+    ---C++: return const &
+
+    EndOfSeg       (me;
+    	    	    Index : in Integer)
+    	    	    returns Pnt2d from gp
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Give the point of range Index in the Polygon. 
+    ---C++: inline
+    ---C++: return const &
+
+-- Implementation : 
+
+
+   InfParameter(me) 
+   
+    	---Purpose: Returns the parameter (On the curve)
+    	--          of the first point of the Polygon
+   
+    	returns Real from Standard
+	---C++: inline
+	is static;
+
+   SupParameter(me) 
+
+       	---Purpose: Returns the parameter (On the curve)
+    	--          of the last point of the Polygon
+   
+    	returns Real from Standard
+	---C++: inline
+	is static;
+
+
+   AutoIntersectionIsPossible(me) 
+       returns Boolean from Standard
+       is static;
+
+   ApproxParamOnCurve(me; 
+                      Index       : in  Integer from Standard;
+		      ParamOnLine : in  Real    from Standard)
+    	    	      
+                      returns Real      from Standard
+    	    	     
+		      raises OutOfRange from Standard
+    	    	      is static;
+
+            ---Purpose: Give an approximation of the parameter on the curve 
+            --          according to the discretization of the Curve.
+
+     
+    CalculRegion  (me; 
+    	    	   x  :  Real  from  Standard  ; 
+		   y  :  Real  from  Standard  ;
+    	    	   x1 :  Real  from  Standard  ; 
+    	    	   x2 :  Real  from  Standard  ; 
+		   y1 :  Real  from  Standard  ;
+		   y2 :  Real  from  Standard  ) 
+	returns  Integer  from  Standard  ;	   
+	---C++: inline
+		 	
+    Dump           (me)
+    	is static;
+
+
+fields  TheBnd        : Box2d                from Bnd;
+    	TheDeflection : Real                 from Standard;
+    	NbPntIn       : Integer              from Standard;
+	TheMaxNbPoints: Integer              from Standard;
+    	ThePnts       : Array1OfPnt2d        from TColgp;
+	TheParams     : Array1OfReal         from TColStd;
+	TheIndex      : Array1OfInteger      from TColStd;
+	ClosedPolygon : Boolean              from Standard;
+	
+	--- To compute an approximate parameter on the Curve
+	--  
+	Binf          : Real                 from Standard;
+	Bsup          : Real                 from Standard;
+	
+
+end Polygon2dGen;
+
+
+

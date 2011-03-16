@@ -1,0 +1,30 @@
+-- File:	ApproxInt.cdl
+-- Created:	Fri Apr 23 15:59:20 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1993
+
+package ApproxInt
+
+uses 
+     Standard,TCollection,math,gp,TColStd,TColgp,
+     IntImp,IntSurf,
+     AppParCurves,StdFail,Approx,MMgt
+     
+is
+
+
+    generic class WLine; -- Only on curves with ->NbPoles, ->IsNull and  ->Pole  Methods
+    deferred class SvSurfaces;     
+    generic class PrmPrmSvSurfaces,TheInt2S;
+    generic class ImpPrmSvSurfaces,TheZerImpFunc;
+    generic class MultiLine;
+    generic class MultiLineTool;
+    generic class Approx,ThePrmPrmSvSurfaces,
+                         TheImpPrmSvSurfaces,
+                         TheMultiLine,
+                         TheMultiLineTool,
+			 TheComputeLine,
+                         TheComputeLineBezier;
+
+end ApproxInt;

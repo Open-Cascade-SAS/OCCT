@@ -1,0 +1,401 @@
+---Copyright:   Matra Datavision 1991
+
+class Vec   from gp   inherits Storable 
+
+        --- Purpose :
+        --  Defines a non-persistent vector in 3D space.
+
+
+uses Ax1  from gp, 
+     Ax2  from gp, 
+     Dir  from gp, 
+     Pnt  from gp,
+     Trsf from gp,
+     XYZ  from gp
+
+raises ConstructionError        from Standard,
+       DomainError              from Standard,
+       OutOfRange               from Standard,
+       VectorWithNullMagnitude  from gp
+
+is
+ 
+  Create   returns Vec;
+        ---C++: inline
+        --- Purpose : Creates a zero vector.
+
+
+  Create (V : Dir)  returns Vec;
+        ---C++: inline
+        --- Purpose : Creates a unitary vector from a direction V.
+
+  Create (Coord : XYZ)  returns Vec;
+        ---C++: inline
+        --- Purpose : Creates a vector with a triplet of coordinates.
+
+  Create (Xv, Yv, Zv : Real)  returns Vec;
+        ---C++: inline
+        --- Purpose : Creates a point with its three cartesian coordinates.
+
+  Create (P1, P2 : Pnt)  returns Vec;
+        ---C++: inline
+        --- Purpose :
+        --  Creates a vector from two points. The length of the vector
+        --  is the distance between P1 and P2
+
+  SetCoord(me: in out; Index : Integer; Xi : Real)
+    	---C++: inline
+        --- Purpose : Changes the coordinate of range Index 
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified
+        --  Index = 3 => Z is modified
+     raises OutOfRange
+        --- Purpose : Raised if Index != {1, 2, 3}.
+     is static;
+
+  SetCoord (me : in out; Xv, Yv, Zv : Real)   is static;
+        ---C++: inline  
+        ---Purpose: For this vector, assigns
+    	-- -   the values Xv, Yv and Zv to its three coordinates.
+
+  SetX (me: in out; X : Real)                 is static;
+        ---Purpose: Assigns the given value to the X coordinate of this vector.
+        ---C++: inline
+	
+  SetY (me: in out; Y : Real)                 is static;
+        ---Purpose: Assigns the given value to the X coordinate of this vector.  
+        ---C++: inline
+	
+  SetZ (me: in out; Z : Real)                 is static;
+         ---Purpose: Assigns the given value to the X coordinate of this vector. 
+        ---C++: inline
+	
+  SetXYZ (me: in out; Coord : XYZ)            is static;
+        ---Purpose: Assigns the three coordinates of Coord to this vector.
+        ---C++: inline
+	
+  Coord (me; Index : Integer)   returns Real
+        ---C++: inline
+        --- Purpose :
+        --  Returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+        --  Index = 3 => Z is returned
+      raises OutOfRange
+        --- Purpose : Raised if Index != {1, 2, 3}.
+      is static;
+
+  Coord (me; Xv, Yv, Zv : out Real)   is static;
+        ---Purpose: For this vector returns its three coordinates Xv, Yv, and Zvinline
+        ---C++: inline
+	
+  X (me)  returns Real                is static;
+        ---Purpose: For this vector, returns its X coordinate.
+        ---C++: inline
+	
+  Y (me)  returns Real                is static;
+	---Purpose: For this vector, returns its Y coordinate.
+        ---C++: inline 
+	
+  Z (me)  returns Real                is static;
+    	---Purpose: For this vector, returns its Z  coordinate.
+        ---C++: inline   
+	
+  XYZ (me)  returns XYZ               is static;
+    	---Purpose:    For this vector, returns
+    	-- -   its three coordinates as a number triple  
+        ---C++: inline
+    	---C++: return const&
+ 
+  IsEqual (me; Other : Vec; LinearTolerance, AngularTolerance : Real)
+     returns Boolean
+       --- Purpose :
+       --  Returns True if the two vectors have the same magnitude value
+       --  and the same direction. The precision values are LinearTolerance
+       --  for the magnitude and AngularTolerance for the direction.
+     is static;
+
+  IsNormal (me; Other : Vec; AngularTolerance : Real)     returns Boolean
+        --- Purpose :
+        --  Returns True if abs(<me>.Angle(Other) - PI/2.) <= AngularTolerance 
+    	--   Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp
+	---C++: inline  
+     raises VectorWithNullMagnitude
+     
+     is static;
+
+  IsOpposite (me; Other : Vec; AngularTolerance : Real)   returns Boolean
+        --- Purpose :
+        --  Returns True if PI - <me>.Angle(Other) <= AngularTolerance 
+    	--  Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp
+    	---C++: inline    
+     raises VectorWithNullMagnitude
+      
+     is static;
+
+  IsParallel (me; Other : Vec; AngularTolerance : Real)   returns Boolean
+        --- Purpose :
+        --  Returns True if Angle(<me>, Other) <= AngularTolerance or
+        --  PI - Angle(<me>, Other) <= AngularTolerance
+        --  This definition means that two parallel vectors cannot define
+        --  a plane but two vectors with opposite directions are considered
+        --  as parallel. Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
+        --  Other.Magnitude() <= Resolution from gp
+        ---C++: inline  
+     raises VectorWithNullMagnitude
+     
+     is static;
+
+  Angle (me; Other : Vec)  returns Real
+        --- Purpose :
+        --  Computes the angular value between <me> and <Other>
+        --  Returns the angle value between 0 and PI in radian.
+    	--    Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution from gp or
+        --  Other.Magnitude() <= Resolution because the angular value is
+        --  indefinite if one of the vectors has a null magnitude.
+        ---C++: inline  
+     raises VectorWithNullMagnitude
+       
+     is static;
+
+
+  AngleWithRef (me; Other , VRef : Vec)   returns Real
+        ---C++: inline  
+        --- Purpose : Computes the angle, in radians, between this vector and
+    	-- vector Other. The result is a value between -Pi and Pi.
+    	-- For this, VRef defines the positive sense of rotation: the
+    	-- angular value is positive, if the cross product this ^ Other
+    	-- has the same orientation as VRef relative to the plane
+    	-- defined by the vectors this and Other. Otherwise, the
+    	-- angular value is negative.
+    	-- Exceptions
+    	-- gp_VectorWithNullMagnitude if the magnitude of this
+    	-- vector, the vector Other, or the vector VRef is less than or
+    	-- equal to gp::Resolution().
+    	-- Standard_DomainError if this vector, the vector Other,
+    	-- and the vector VRef are coplanar, unless this vector and
+    	-- the vector Other are parallel.
+       
+     raises VectorWithNullMagnitude,
+          
+            DomainError
+       
+     is static;
+
+  Magnitude (me)   returns Real        is static;
+        ---Purpose: Computes the magnitude of this vector.
+        ---C++: inline
+	
+  SquareMagnitude (me)   returns Real  is static;
+         ---Purpose: Computes the square magnitude of this vector.
+	 ---C++: inline
+
+        --- Purpose : Adds two vectors
+
+  Add (me : in out; Other : Vec)          is static;
+        ---C++: inline
+        ---C++: alias operator +=
+
+  Added (me; Other : Vec)  returns Vec    is static;
+        ---C++: inline
+        ---C++: alias operator +
+  --- Purpose : Adds two vectors
+        --- Purpose : Subtracts two vectors
+
+  Subtract (me : in out; Right : Vec)       is static;
+        ---C++: inline
+        ---C++: alias operator -=
+
+  Subtracted (me; Right : Vec)  returns Vec  is static;
+        ---C++: inline
+        ---C++: alias operator -
+	--- Purpose : Subtracts two vectors
+        --- Purpose : Multiplies a vector by a scalar
+
+  Multiply (me : in out; Scalar : Real)           is static;
+        ---C++: inline  
+        ---C++: alias operator *=
+
+  Multiplied (me; Scalar : Real)   returns Vec   is static;
+        ---C++: inline  
+        ---C++: alias operator *
+    --- Purpose : Multiplies a vector by a scalar
+        --- Purpose : Divides a vector by a scalar
+
+  Divide (me : in out; Scalar : Real)             is static;
+        ---C++: inline  
+        ---C++: alias operator /=
+
+  Divided (me; Scalar : Real)   returns Vec      is static;
+        ---C++: inline  
+        ---C++: alias operator /
+        --- Purpose : Divides a vector by a scalar
+
+        --- Purpose : computes the cross product between two vectors
+   
+  Cross (me : in out; Right : Vec)                     is static;
+        ---C++: inline  
+        ---C++: alias operator ^=
+
+  Crossed (me; Right : Vec)  returns Vec               is static;
+        --- Purpose : computes the cross product between two vectors
+        ---C++: inline  
+        ---C++: alias operator ^
+	
+  CrossMagnitude (me; Right : Vec) returns Real        is static;
+        --- Purpose :
+        --  Computes the magnitude of the cross 
+        --  product between <me> and Right. 
+        --  Returns || <me> ^ Right ||
+        ---C++: inline
+	
+  CrossSquareMagnitude (me; Right : Vec) returns Real  is static;
+        --- Purpose :
+        --  Computes the square magnitude of
+        --  the cross product between <me> and Right.
+        --  Returns || <me> ^ Right ||**2
+        ---C++: inline
+
+        --- Purpose : Computes the triple vector product.
+        --  <me> ^ (V1 ^ V2)
+
+  CrossCross (me : in out; V1, V2 : Vec)          is static;
+        ---C++: inline  
+
+  CrossCrossed (me; V1, V2 : Vec)   returns Vec   is static;
+        ---C++: inline  
+
+        --- Purpose : Computes the triple vector product.
+        --  <me> ^ (V1 ^ V2)
+    
+  Dot (me; Other : Vec)  returns Real            is static;
+        ---C++: inline  
+        ---C++: alias operator *
+        --- Purpose : computes the scalar product
+
+  DotCross (me; V1, V2 : Vec)  returns Real      is static;
+        ---C++: inline  
+        --- Purpose : Computes the triple scalar product <me> * (V1 ^ V2).
+
+
+        --- Purpose : normalizes a vector
+        --  Raises an exception if the magnitude of the vector is 
+        --  lower or equal to Resolution from gp.
+
+  Normalize (me : in out)       raises ConstructionError   is static;
+        ---C++: inline  
+
+  Normalized (me)  returns Vec  raises ConstructionError   is static;
+    	--- Purpose : normalizes a vector
+        --  Raises an exception if the magnitude of the vector is 
+        --  lower or equal to Resolution from gp.
+        ---C++: inline
+	
+        --- Purpose : Reverses the direction of a vector
+
+  Reverse (me : in out)        is static;
+        ---C++: inline  
+
+  Reversed (me)  returns Vec   is static;
+        --- Purpose : Reverses the direction of a vector
+        ---C++: inline  
+    	---C++: alias operator -
+
+   SetLinearForm (me : in out;
+                 A1 : Real; V1 : Vec; A2 : Real; V2 : Vec;
+                 A3 : Real; V3 : Vec; V4 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form :
+        --  A1 * V1 + A2 * V2 + A3 * V3 + V4
+        ---C++: inline
+
+  SetLinearForm (me : in out; 
+                 A1 : Real; V1 : Vec; A2 : Real; V2 : Vec; A3 : Real; V3 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form :
+        --  A1 * V1 + A2 * V2 + A3 * V3
+        ---C++: inline
+
+  SetLinearForm (me : in out;
+                 A1 : Real; V1 : Vec; A2 : Real; V2 : Vec; V3 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form :
+        --  A1 * V1 + A2 * V2 + V3
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; V1 : Vec; A2 : Real; V2 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form :
+        --  A1 * V1 + A2 * V2
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; V1, V2 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form : A1 * V1 + V2
+        ---C++: inline
+
+  SetLinearForm (me : in out; V1, V2 : Vec)
+     is static;
+        --- Purpose :
+        --  <me> is setted to the following linear form : V1 + V2
+        ---C++: inline 
+
+  Mirror (me : in out; V : Vec)          is static;
+
+  Mirrored (me; V : Vec) returns Vec     is static;
+    	--- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to the vector V which is the center of 
+        --  the  symmetry.
+       
+  Mirror (me : in out; A1 : Ax1)         is static;
+
+  Mirrored (me; A1 : Ax1)  returns Vec   is static;
+	--- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry.
+      
+  Mirror (me : in out; A2 : Ax2)         is static;
+
+  Mirrored (me; A2 : Ax2)   returns Vec  is static;
+ --- Purpose :
+        --  Performs the symmetrical transformation of a vector
+        --  with respect to a plane. The axis placement A2 locates 
+        --  the plane of the symmetry : (Location, XDirection, YDirection).
+
+     
+  Rotate (me : in out; A1 : Ax1; Ang : Real)       is static;
+       ---C++: inline
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns Vec  is static;
+    	--- Purpose :
+        --  Rotates a vector. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+        ---C++: inline
+       
+    Scale (me : in out; S : Real)       is static;
+       ---C++: inline
+       
+    Scaled (me; S : Real)  returns Vec  is static;
+    	--- Purpose : Scales a vector. S is the scaling value.
+       	---C++: inline
+        --- Purpose : Transforms a vector with the transformation T.
+
+  Transform (me : in out; T : Trsf)         is static;
+
+  Transformed (me; T : Trsf)   returns Vec  is static;
+       ---C++: inline  
+       --- Purpose : Transforms a vector with the transformation T.      
+fields
+
+  coord : XYZ;
+
+end;

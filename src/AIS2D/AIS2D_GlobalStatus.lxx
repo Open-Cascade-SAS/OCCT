@@ -1,0 +1,47 @@
+inline void AIS2D_GlobalStatus::SetGraphicStatus( const AIS2D_DisplayStatus aStat ) {
+  myStatus = aStat;
+}
+
+inline void AIS2D_GlobalStatus::SetLayerIndex( const Standard_Integer AnIndex ) {
+  myLayerIndex=AnIndex;
+}
+
+inline void AIS2D_GlobalStatus::SetHighlightStatus( const Standard_Boolean aStat ) {
+  myIsHighl = aStat;
+}
+
+inline void AIS2D_GlobalStatus::SetHighlightColor( const Quantity_NameOfColor aCol ) {
+	myHiCol = aCol;
+}
+
+inline Standard_Boolean  AIS2D_GlobalStatus::IsSubIntensityOn() const {
+  return mySubInt;
+}
+
+inline void AIS2D_GlobalStatus::SubIntensityOn() {
+  mySubInt = Standard_True;
+}
+inline void AIS2D_GlobalStatus::SubIntensityOff() {
+  mySubInt = Standard_False;
+}
+
+inline AIS2D_DisplayStatus AIS2D_GlobalStatus::GraphicStatus() const {
+  return myStatus;
+}
+
+inline AIS2D_PToListOfInt AIS2D_GlobalStatus::DisplayedModes() {
+  return & myDispModes;
+}
+
+inline AIS2D_PToListOfInt AIS2D_GlobalStatus::SelectionModes() {
+  return & mySelModes;
+}
+
+inline Standard_Boolean AIS2D_GlobalStatus::IsHighlight() const {
+  return myIsHighl;
+}
+
+inline Quantity_NameOfColor AIS2D_GlobalStatus::HighlightColor() const {
+	return myHiCol;
+}
+

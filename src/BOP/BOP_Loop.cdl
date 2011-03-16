@@ -1,0 +1,62 @@
+-- File:	BOP_Loop.cdl
+-- Created:	Tue Dec 19 19:44:23 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class Loop from BOP inherits TShared from MMgt
+
+    ---Purpose: 
+    --         A Loop is an existing shape (Shell,Wire) or a set
+    --         of shapes (Faces,Edges) which are connex.
+    --         a set of connex shape is represented by a BlockIterator
+
+uses
+
+    Shape from TopoDS,
+    BlockIterator from BOP,
+    ShapeEnum from TopAbs
+
+is
+
+    Create(S : Shape from TopoDS)  
+    	returns mutable Loop;
+    	---Purpose:  
+    	--- Creates the object using the  shape S;  
+    	---
+    Create(BI : BlockIterator from BOP)  
+    	returns mutable Loop;
+    	---Purpose:  
+    	--- Creates the object using the BlockIterator BI;  
+    	---
+    IsShape(me)  
+    	returns Boolean from Standard  
+    	is virtual;
+    	---Purpose:  
+    	--- Returns TRUE if the object was created using shape    
+    	---
+    Shape(me)  
+    	returns Shape from TopoDS  
+    	is virtual;
+    	---C++: return const & 
+    	---Purpose: 
+    	--- Returns Shape from which  the object was created
+    	--- Valid only when IsShape() is TRUE
+    	---
+    BlockIterator(me)  
+    	returns BlockIterator  
+    	is static;
+    	---C++: return const & 
+    	--- Returns BlockIterator from which the object was created
+    	--- Valid only when IsShape() is FALSE
+    	---
+
+fields
+    myIsShape       : Boolean from Standard   
+    	is protected;
+    myShape         : Shape from TopoDS       
+    	is protected;
+    myBlockIterator : BlockIterator from BOP  
+    	is protected;
+
+end Loop from BOP;

@@ -1,0 +1,13 @@
+// File:	HLRAlgo_WiresBlock.lxx
+// Created:	Tue Sep  5 15:11:36 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : MinMax
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_WiresBlock::MinMax () const
+{ return (Standard_Address)&myMinMax; }
+

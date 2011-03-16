@@ -1,0 +1,289 @@
+-- File:	Adaptor3d_IsoCurve.cdl
+-- Created:	Thu Mar 11 17:15:21 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@bravox>
+--		modified 01-1994 by rob (time comsumption)
+---Copyright:	 Matra Datavision 1993
+
+
+class IsoCurve from Adaptor3d inherits Curve from Adaptor3d
+	
+	---Purpose: Defines an isoparametric curve on  a surface.  The
+	--          type  of isoparametric curve  (U  or V) is defined
+	--          with the   enumeration  IsoType from   GeomAbs  if
+	--          NoneIso is given an error is raised.
+
+uses
+     Array1OfReal    from TColStd,
+     IsoType    from GeomAbs,
+     Shape      from GeomAbs,
+     CurveType  from GeomAbs,
+     Vec        from gp,
+     Pnt        from gp,
+     Circ       from gp,
+     Elips      from gp,
+     Hypr       from gp,
+     Parab      from gp,
+     Lin        from gp,
+     BezierCurve     from Geom,
+     BSplineCurve    from Geom,
+     HCurve          from Adaptor3d,
+     HSurface        from Adaptor3d
+     
+raises
+    NoSuchObject from Standard,
+    OutOfRange   from Standard,
+    DomainError  from Standard
+     
+is
+
+    --
+    --      Methods specific of IsoCurve
+    --      
+
+    Create returns IsoCurve from Adaptor3d;
+	---Purpose: The iso is set to NoneIso.
+    
+    Create(S : HSurface from Adaptor3d) returns IsoCurve from Adaptor3d;
+	---Purpose: The surface is loaded. The iso is set to NoneIso.
+    
+    Create(S : HSurface from Adaptor3d; 
+           Iso : IsoType from GeomAbs; Param : Real)
+    returns IsoCurve from Adaptor3d;
+	   ---Purpose: Creates  an  IsoCurve curve.   Iso  defines the
+	   --          type (isoU or  isoU) Param defines the value of
+	   --          the iso. The bounds  of  the iso are the bounds
+	   --          of the surface.
+
+    Create(S : HSurface from Adaptor3d; 
+    	   Iso : IsoType from GeomAbs; Param : Real; WFirst,WLast : Real)
+    returns IsoCurve from Adaptor3d;
+	   ---Purpose: Create an IsoCurve curve.  Iso defines the type
+	   --          (isoU or isov).  Param defines the value of the
+	   --          iso. WFirst,WLast define the bounds of the iso.
+
+
+    Load( me:in out ;S : HSurface from Adaptor3d) 
+	    ---Purpose: Changes  the surface.  The  iso  is  reset  to
+	    --          NoneIso.
+    is static;
+    
+    Load (me : in out ; Iso : IsoType from GeomAbs; Param : Real)
+	---Purpose: Changes the iso on the current surface.
+    is static;
+
+    Load (me : in out ; 
+          Iso : IsoType from GeomAbs; Param : Real; WFirst,WLast : Real)
+	---Purpose: Changes the iso on the current surface.
+    is static;
+    
+    Surface(me) returns HSurface from Adaptor3d
+	---C++: inline
+	---C++: return const &
+    is static;
+    
+    Iso(me) returns IsoType from GeomAbs
+	---C++: inline
+    is static;
+    
+    Parameter(me) returns Real
+	---C++: inline
+    is static;
+    
+    --
+    --      Implementation of Curve from Adaptor3d methods
+    --      
+
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    FirstParameter(me) returns Real
+	---C++: inline
+    is redefined static;
+
+    LastParameter(me) returns Real
+	---C++: inline
+    is redefined static;
+    
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    NbIntervals(me:in out; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is redefined static;
+
+    Intervals(me:in out; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static;
+
+    
+    IsClosed(me) returns Boolean
+    is redefined static;
+     
+    IsPeriodic(me) returns Boolean
+    is redefined static;
+    
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value(me; U : Real) returns Pnt from gp
+         --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D0 (me; U : Real; P : out Pnt from gp)
+         --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+         --- Purpose : Computes the point of parameter U on the curve with its
+         --  first derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is redefined static;
+    
+    D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+     is redefined static;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+     is redefined static;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+     is redefined static;
+
+    Resolution(me; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;   
+        
+    GetType(me) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    is redefined static;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+     Line(me) returns Lin from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Circle(me) returns Circ from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Ellipse(me) returns Elips from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Hyperbola(me) returns  Hypr from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Parabola(me) returns Parab from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+  
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;     
+          
+
+     
+
+
+     Bezier(me) returns BezierCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+    
+     BSpline(me) returns BSplineCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+    
+    
+fields
+
+    mySurface    : HSurface from Adaptor3d;
+    myIso        : IsoType from GeomAbs; 
+    myFirst      : Real;
+    myLast       : Real;
+    myParameter  : Real;
+end IsoCurve;
+
+
+
+
+

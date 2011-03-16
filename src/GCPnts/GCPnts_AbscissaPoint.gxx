@@ -1,0 +1,471 @@
+// File:	GCPnts_AbscissaPoint.gxx
+// Created:	Fri May  5 09:46:56 1995
+// Author:	Modelistation
+//		<model@fuegox>
+
+//
+// Dimension independant used to implement GCPnts_AbscissaPoint
+//
+
+// compute the type 
+// and the length ratio if GCPnts_LengthParametrized
+#include <GCPnts_AbscissaType.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <BSplCLib.hxx>
+
+static GCPnts_AbscissaType computeType( TheCurve& C,
+				       Standard_Real& Ratio)
+{
+  GCPnts_AbscissaType LocalType ;
+
+  if (C.NbIntervals(GeomAbs_CN) > 1)
+    return GCPnts_AbsComposite;
+
+  switch (C.GetType()) {
+    
+  case GeomAbs_Line:
+    Ratio = 1.0e0 ;
+    return GCPnts_LengthParametrized;
+
+  case GeomAbs_Circle:
+    Ratio = C.Circle().Radius();
+    return GCPnts_LengthParametrized;
+
+  case GeomAbs_BezierCurve:
+    {
+      Handle_TheBezierCurve Bz = C.Bezier();
+      if ((Bz->NbPoles() == 2) && !(Bz->IsRational())) {
+	Ratio = Bz->DN(0,1).Magnitude();
+	LocalType =  GCPnts_LengthParametrized;
+      }
+      else
+	LocalType = GCPnts_Parametrized;
+      return LocalType ;
+    }
+  case GeomAbs_BSplineCurve:
+    {
+      Handle_TheBSplineCurve Bs = C.BSpline();
+      if ((Bs->NbPoles() == 2) && !(Bs->IsRational())) {
+	Ratio = Bs->DN(Bs->FirstParameter(),1).Magnitude();
+	LocalType = GCPnts_LengthParametrized;
+      }
+      else
+	LocalType = GCPnts_Parametrized;
+      return LocalType ; 
+    }
+    default:
+      return GCPnts_Parametrized;
+    
+  }
+}
+
+// compute a point at distance Abscis from parameter U0
+// using Ui as initial guess
+
+static void Compute(CPnts_AbscissaPoint& theComputer,
+                    TheCurve& C,
+                    Standard_Real& Abscis,
+		    Standard_Real& U0,
+		    Standard_Real& Ui,
+		    const Standard_Real EPSILON) 
+{
+  // test for easy solution
+  if (Abs(Abscis) <= Precision::Confusion()) {
+    theComputer.SetParameter(U0);
+    return;
+  }
+
+  Standard_Real Ratio;
+  GCPnts_AbscissaType Type = computeType(C,Ratio);
+
+  switch (Type) {
+  case GCPnts_LengthParametrized : 
+    theComputer.SetParameter(U0 + Abscis / Ratio);
+    return;
+
+  case GCPnts_Parametrized : 
+    theComputer.Init(C);
+    theComputer.Perform(Abscis, U0, Ui, EPSILON);
+    return;
+
+  case GCPnts_AbsComposite : 
+    {
+      Standard_Integer NbIntervals = C.NbIntervals(GeomAbs_CN);
+      TColStd_Array1OfReal TI(1,NbIntervals+1);
+      C.Intervals(TI,GeomAbs_CN);
+      Standard_Real L = 0.0, sign = 1.;
+      Standard_Integer Index = 1;
+      BSplCLib::Hunt(TI,U0,Index);
+      Standard_Integer Direction = 1;
+      if (Abscis < 0) {
+	Direction = 0;
+	Abscis = -Abscis;
+	sign = -1.;
+      }
+
+      while ((Index >= 1) && (Index <= NbIntervals)) {
+
+	L = CPnts_AbscissaPoint::Length(C, U0, TI(Index+Direction));
+	if (Abs(L - Abscis) <= Precision::Confusion()) {
+	  theComputer.SetParameter(TI(Index+Direction));
+	  return;
+	}
+	if(L > Abscis) {
+	  if ((Ui < TI(Index)) || (Ui > TI(Index+1))) {
+	    Ui = (Abscis / L) * (TI(Index+1) - U0);
+	    if (Direction)
+	      Ui = U0 + Ui;
+	    else
+	      Ui = U0 - Ui;
+	  }
+	  theComputer.Init(C,TI(Index),TI(Index+1));
+	  theComputer.Perform(sign*Abscis, U0, Ui, EPSILON);
+	  return;
+	}
+	else {
+	  U0 = TI(Index+Direction);
+	  Abscis -= L;
+	}
+	if (Direction)
+	  Index++;
+	else
+	  Index--;
+      }
+
+      // Push a little bit outside the limits (hairy !!!)
+      Ui = U0 + 0.1;
+      theComputer.Init(C,U0,U0+0.2);
+      theComputer.Perform(sign*Abscis, U0, Ui, EPSILON);
+      return;
+    }
+    break;
+  }
+
+}
+
+// introduced by rbv for curvilinear parametrization
+// performs more apropriate tolerance managment
+
+static void AdvCompute(CPnts_AbscissaPoint& theComputer,
+                    TheCurve& C,
+                    Standard_Real& Abscis,
+		    Standard_Real& U0,
+		    Standard_Real& Ui,
+		    const Standard_Real EPSILON) 
+{
+  // test for easy solution
+  if (Abs(Abscis) <= EPSILON) {
+    theComputer.SetParameter(U0);
+    return;
+  }
+  
+  Standard_Real Ratio;
+  GCPnts_AbscissaType Type = computeType(C,Ratio);
+
+  switch (Type) {
+  case GCPnts_LengthParametrized : 
+    theComputer.SetParameter(U0 + Abscis / Ratio);
+    return;
+
+  case GCPnts_Parametrized : 
+//    theComputer.Init(C);
+    theComputer.Init(C, EPSILON); //rbv's modification
+//
+    theComputer.AdvPerform(Abscis, U0, Ui, EPSILON);
+    return;
+
+  case GCPnts_AbsComposite : 
+    {
+      Standard_Integer NbIntervals = C.NbIntervals(GeomAbs_CN);
+      TColStd_Array1OfReal TI(1,NbIntervals+1);
+      C.Intervals(TI,GeomAbs_CN);
+      Standard_Real L = 0.0, sign = 1.;
+      Standard_Integer Index = 1;
+      BSplCLib::Hunt(TI,U0,Index);
+	
+      Standard_Integer Direction = 1;
+      if (Abscis < 0) {
+	Direction = 0;
+	Abscis = -Abscis;
+	sign = -1.;
+      }
+
+      if(Index == 0 && Direction > 0) {
+	L = CPnts_AbscissaPoint::Length(C, U0, TI(Index+Direction), EPSILON);
+	if (Abs(L - Abscis) <= /*Precision::Confusion()*/EPSILON) {
+	  theComputer.SetParameter(TI(Index+Direction));
+	  return;
+	}
+	if(L > Abscis) {
+	  if ( Ui > TI(Index+1) ) {
+	    Ui = (Abscis / L) * (TI(Index+1) - U0);
+	    Ui = U0 + Ui;
+	  }
+	  theComputer.Init(C,U0,TI(Index+1), EPSILON);
+	  theComputer.AdvPerform(sign*Abscis, U0, Ui, EPSILON);
+	  return;
+	}
+	else {
+	  U0 = TI(Index+Direction);
+	  Abscis -= L;
+	}
+	Index++;
+      }
+	  
+
+      while ((Index >= 1) && (Index <= NbIntervals)) {
+
+	L = CPnts_AbscissaPoint::Length(C, U0, TI(Index+Direction), EPSILON);
+	if (Abs(L - Abscis) <= /*Precision::Confusion()*/EPSILON) {
+	  theComputer.SetParameter(TI(Index+Direction));
+	  return;
+	}
+	if(L > Abscis) {
+	  if ((Ui < TI(Index)) || (Ui > TI(Index+1))) {
+	    Ui = (Abscis / L) * (TI(Index+1) - U0);
+	    if (Direction)
+	      Ui = U0 + Ui;
+	    else
+	      Ui = U0 - Ui;
+	  }
+	  theComputer.Init(C,TI(Index),TI(Index+1), EPSILON);
+	  theComputer.AdvPerform(sign*Abscis, U0, Ui, EPSILON);
+	  return;
+	}
+	else {
+	  U0 = TI(Index+Direction);
+	  Abscis -= L;
+	}
+	if (Direction) {
+	  Index++;
+
+	}
+	else {
+	  Index--;
+
+	}
+      }
+
+      // Push a little bit outside the limits (hairy !!!)
+
+      Standard_Boolean nonperiodic = !C.IsPeriodic();
+      Ui = U0 + sign*0.1;
+      Standard_Real U1 = U0 + sign*.2;
+      if(nonperiodic) {
+	if(sign > 0) {
+	  Ui = Min(Ui,C.LastParameter());
+          U1 = Min(U1, C.LastParameter());
+	}
+	else {
+	  Ui = Max(Ui,C.FirstParameter());
+          U1 = Max(U1, C.FirstParameter());
+	}
+      }
+	  
+      theComputer.Init(C, U0, U1, EPSILON);
+      theComputer.AdvPerform(sign*Abscis, U0, Ui, EPSILON);
+      return;
+    }
+    break;
+  }
+
+}
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C)
+{
+  return GCPnts_AbscissaPoint::Length(C,C.FirstParameter(), 
+				      C.LastParameter());
+}
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+					   const Standard_Real Tol)
+{
+  return GCPnts_AbscissaPoint::Length(C,C.FirstParameter(), 
+				      C.LastParameter(),Tol);
+}
+
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+					   const Standard_Real U1,
+					   const Standard_Real U2)
+{
+  Standard_Real Ratio;
+  GCPnts_AbscissaType Type = computeType(C,Ratio);
+  switch (Type) {
+
+  case GCPnts_LengthParametrized: 
+    return Abs(U2-U1) * Ratio;
+                
+  case GCPnts_Parametrized: 
+    return CPnts_AbscissaPoint::Length(C, U1, U2);
+
+  case GCPnts_AbsComposite: 
+    {
+      Standard_Integer NbIntervals = C.NbIntervals(GeomAbs_CN);
+      TColStd_Array1OfReal TI(1,NbIntervals+1);
+      C.Intervals(TI,GeomAbs_CN);
+      Standard_Real UU1 = Min(U1, U2);
+      Standard_Real UU2 = Max(U1, U2);
+      Standard_Real L = 0.0;
+      for(Standard_Integer Index = 1; Index <= NbIntervals; Index++) {
+	if (TI(Index)   > UU2) break;
+	if (TI(Index+1) < UU1) continue;
+	L += CPnts_AbscissaPoint::Length(C, 
+					 Max(TI(Index),UU1),
+					 Min(TI(Index+1),UU2));
+      }
+      return L;
+    }
+  }
+  return RealLast();
+}
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+Standard_Real GCPnts_AbscissaPoint::Length(TheCurve& C,
+					   const Standard_Real U1,
+					   const Standard_Real U2,
+					   const Standard_Real Tol)
+{
+  Standard_Real Ratio;
+  GCPnts_AbscissaType Type = computeType(C,Ratio);
+  switch (Type) {
+
+  case GCPnts_LengthParametrized: 
+    return Abs(U2-U1) * Ratio;
+                
+  case GCPnts_Parametrized: 
+    return CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
+
+  case GCPnts_AbsComposite: 
+    {
+      Standard_Integer NbIntervals = C.NbIntervals(GeomAbs_CN);
+      TColStd_Array1OfReal TI(1,NbIntervals+1);
+      C.Intervals(TI,GeomAbs_CN);
+      Standard_Real UU1 = Min(U1, U2);
+      Standard_Real UU2 = Max(U1, U2);
+      Standard_Real L = 0.0;
+      for(Standard_Integer Index = 1; Index <= NbIntervals; Index++) {
+	if (TI(Index)   > UU2) break;
+	if (TI(Index+1) < UU1) continue;
+	L += CPnts_AbscissaPoint::Length(C, 
+					 Max(TI(Index),UU1),
+					 Min(TI(Index+1),UU2),
+					 Tol);
+      }
+      return L;
+    }
+  }
+  return RealLast();
+}
+
+
+//=======================================================================
+//function : GCPnts_AbscissaPoint
+//purpose  : 
+//=======================================================================
+
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
+                                  (TheCurve& C,
+				   const Standard_Real   Abscissa,
+				   const Standard_Real   U0)
+{
+  Standard_Real L = GCPnts_AbscissaPoint::Length(C);
+  if (L < Precision::Confusion()) {
+    Standard_ConstructionError::Raise();
+  } 
+  Standard_Real Abscis = Abscissa;
+  Standard_Real UU0 = U0;
+  Standard_Real UUi = U0 + 
+    (Abscis / L) * (C.LastParameter() - C.FirstParameter());
+  Compute(myComputer, C, Abscis, UU0, UUi,
+	  C.Resolution(Precision::Confusion()));  
+}
+
+//=======================================================================
+//function : GCPnts_AbscissaPoint
+//purpose  : rbv for curvilinear parametrization
+//=======================================================================
+
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
+                                  (const Standard_Real Tol,
+				   TheCurve& C,
+				   const Standard_Real   Abscissa,
+				   const Standard_Real   U0)
+{
+  Standard_Real L = GCPnts_AbscissaPoint::Length(C, Tol);
+/*  if (L < Precision::Confusion()) {
+    cout<<"FirstParameter = "<<C.FirstParameter()<<endl;
+    cout<<"LastParameter = "<<C.LastParameter()<<endl;
+    Standard_ConstructionError::Raise("GCPnts_AbscissaPoint::GCPnts_AbscissaPoint");
+  } 
+*/
+  Standard_Real Abscis = Abscissa;
+  Standard_Real UU0 = U0;
+  Standard_Real UUi;
+  if (L >= Precision::Confusion()) 
+    UUi= U0 + 
+      (Abscis / L) * (C.LastParameter() - C.FirstParameter());
+  else UUi = U0;
+
+  AdvCompute(myComputer, C, Abscis, UU0, UUi, Tol);  
+}
+
+//=======================================================================
+//function : GCPnts_AbscissaPoint
+//purpose  : 
+//=======================================================================
+
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
+                                  (TheCurve& C,
+				   const Standard_Real   Abscissa,
+				   const Standard_Real   U0,
+				   const Standard_Real   Ui)
+{
+  Standard_Real Abscis = Abscissa;
+  Standard_Real UU0 = U0;
+  Standard_Real UUi = Ui;
+  Compute(myComputer, C, Abscis, UU0, UUi, 
+	  C.Resolution(Precision::Confusion()));
+}
+
+//=======================================================================
+//function : GCPnts_AbscissaPoint
+//purpose  : rbv for curvilinear parametrization
+//=======================================================================
+
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint
+                                  (TheCurve& C,
+				   const Standard_Real   Abscissa,
+				   const Standard_Real   U0,
+				   const Standard_Real   Ui,
+				   const Standard_Real   Tol)
+{
+  Standard_Real Abscis = Abscissa;
+  Standard_Real UU0 = U0;
+  Standard_Real UUi = Ui;
+  AdvCompute(myComputer, C, Abscis, UU0, UUi, Tol);
+}

@@ -1,0 +1,21 @@
+-- File:        LengthMeasureWithUnit.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class LengthMeasureWithUnit from StepBasic 
+
+inherits MeasureWithUnit from StepBasic 
+
+uses
+
+	Real from Standard, 
+	NamedUnit from StepBasic
+is
+
+	Create returns mutable LengthMeasureWithUnit;
+	---Purpose: Returns a LengthMeasureWithUnit
+
+
+end LengthMeasureWithUnit;

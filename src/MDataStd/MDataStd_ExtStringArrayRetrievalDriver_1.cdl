@@ -1,0 +1,41 @@
+-- File:	MDataStd_ExtStringArrayRetrievalDriver_1.cdl
+-- Created:	Fri Mar 28 11:24:36 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008 
+
+
+class ExtStringArrayRetrievalDriver_1 from MDataStd inherits ARDriver from MDF
+
+	---Purpose: Retrieval  driver of ExtStringArray attribute supporting 
+	--          delta mechanism by default 
+
+uses
+    RRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)
+    returns mutable ExtStringArrayRetrievalDriver_1 from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 1.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: ExtStringArray from PDataStd.
+
+    NewEmpty (me) returns mutable Attribute from TDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable from MDF);
+
+end ExtStringArrayRetrievalDriver_1;
+
+

@@ -1,0 +1,77 @@
+--
+-- File      :  BasicDimension.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+-- 
+---Copyright : MATRA-DATAVISION  1993  
+--
+
+class BasicDimension from IGESDimen   inherits IGESEntity
+     
+    ---Purpose: Defines IGES Basic Dimension, Type 406, Form 31,
+    --          in package IGESDimen
+    --          The basic Dimension Property indicates that the referencing 
+    --          dimension entity is to be displayed with a box around text. 
+
+uses
+
+        Pnt2d       from gp,
+        XY          from gp
+
+is
+
+        Create returns mutable BasicDimension;
+
+            -- --specific-- --
+
+        Init(me                    : mutable; 
+             nbPropVal             : Integer;
+             lowerLeft, lowerRight : XY;
+             upperRight, upperLeft : XY); 
+        -- This method is used to set the fields of the
+        -- class BasicDimension
+        --       - nbPropVal  : Number of property values
+        --       - lowerLeft  : Coordinates of lower left corner
+        --       - lowerRight : Coordinates of lower right corner
+        --       - upperRight : Coordinates of upper right corner
+        --       - upperLeft  : Coordinates of upper left corner
+
+        NbPropertyValues(me) returns Integer;
+        ---Purpose : returns the number of properties = 8
+
+        LowerLeft(me) returns Pnt2d;
+        ---Purpose : returns coordinates of lower left corner
+
+        LowerRight(me) returns Pnt2d;
+        ---Purpose : returns coordinates of lower right corner
+
+        UpperRight(me) returns Pnt2d;
+        ---Purpose : returns coordinates of upper right corner
+
+        UpperLeft(me) returns Pnt2d;
+        ---Purpose : returns coordinates of upper left corner
+
+fields
+
+--
+-- Class    : IGESDimen_BasicDimension
+-- 
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class BasicDimension.
+--
+-- Reminder : A BasicDimension instance is defined by :
+--                - The number of property values, always 8
+--                - Coordinates of lower left corner
+--                - Coordinates of lower right corner
+--                - Coordinates of upper right corner
+--                - Coordinates of upper left corner
+--
+--
+
+        theNbPropertyValues : Integer;
+        theLowerLeft        : XY;
+        theLowerRight       : XY;
+        theUpperRight       : XY;
+        theUpperLeft        : XY;
+
+end BasicDimension;

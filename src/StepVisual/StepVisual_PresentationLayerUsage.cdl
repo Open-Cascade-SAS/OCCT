@@ -1,0 +1,35 @@
+-- File:	StepVisual_PresentationLayerUsage.cdl
+-- Created:	Wed Mar 26 15:00:19 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class PresentationLayerUsage  from StepVisual    inherits TShared
+
+    ---Purpose : Added from StepVisual Rev2 to Rev4
+
+uses
+     PresentationLayerAssignment from StepVisual,
+     PresentationRepresentation from StepVisual
+
+is
+
+    Create returns PresentationLayerUsage;
+
+    Init (me : mutable;
+    	  aAssignment : PresentationLayerAssignment from StepVisual;
+	  aPresentation : PresentationRepresentation from StepVisual);
+
+    SetAssignment (me : mutable; aAssignment : PresentationLayerAssignment from StepVisual);
+    Assignment (me) returns PresentationLayerAssignment from StepVisual;
+
+    SetPresentation (me : mutable; aPresentation : PresentationRepresentation from StepVisual);
+    Presentation (me) returns PresentationRepresentation from StepVisual;
+
+fields
+
+    theAssignment : PresentationLayerAssignment from StepVisual;
+    thePresentation : PresentationRepresentation from StepVisual;
+
+end PresentationLayerUsage;

@@ -1,0 +1,30 @@
+-- File:        ToleranceValue.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWToleranceValue from RWStepShape
+
+	---Purpose : Read & Write Module for ToleranceValue
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ToleranceValue from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWToleranceValue;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ToleranceValue from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : ToleranceValue from StepShape);
+
+	Share(me; ent : ToleranceValue from StepShape; iter : in out EntityIterator);
+
+end RWToleranceValue;

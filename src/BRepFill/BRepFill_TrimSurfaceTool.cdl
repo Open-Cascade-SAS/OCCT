@@ -1,0 +1,83 @@
+-- File:	BRepFill_TrimSurfaceTool.cdl
+-- Created:	Fri Oct 21 11:45:39 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+private class TrimSurfaceTool from BRepFill 
+
+	---Purpose:
+
+uses
+
+    Curve         from Geom2d,
+    Curve         from Geom,
+    Pnt2d         from gp,
+    Face          from TopoDS,
+    Edge          from TopoDS,
+    SequenceOfPnt from TColgp,
+    Shape         from GeomAbs	
+    
+raises
+    NoSuchObject from Standard
+    
+is
+
+    Create(Bis   : Curve    from Geom2d;
+    	   Face1 : Face     from TopoDS;
+    	   Face2 : Face     from TopoDS;
+    	   Edge1 : Edge     from TopoDS;
+    	   Edge2 : Edge     from TopoDS;
+           Inv1  : Boolean  from Standard;
+	   Inv2  : Boolean  from Standard)
+    returns TrimSurfaceTool from BRepFill;
+
+
+    IntersectWith(me; EdgeOnF1 : in     Edge          from TopoDS;
+    	    	      EdgeOnF2 : in     Edge          from TopoDS;
+    	    	      Points   : in out SequenceOfPnt from TColgp )
+	---Purpose: Intersect <Bis>  with the  projection of the edges
+	--          <EdgeOnFi> and returns the intersecting parameters 
+	--          on Bis and on the edges
+	--          P.X() : Parameter on Bis
+	--          P.Y() : Parameter on EdgeOnF1 
+	--          P.Z() : Parameter on EdgeOnF2
+    raises
+    	NoSuchObject from Standard
+	---Purpose: raises if <Edge> is not a edge of Face1 or Face2.
+    is static;
+
+
+    IsOnFace(me; Point : Pnt2d from gp)
+    returns Boolean from Standard
+	---Purpose: returns True if the Line (P, DZ) intersect the Faces
+    is static;
+
+    ProjOn(me; Point : Pnt2d from gp;
+    	       Edge  : Edge  from TopoDS)
+    returns Real from Standard
+	---Purpose: returns the parameter of the  point <Point> on the
+	--          Edge <Edge>, assuming that the point is on the edge.
+    is static;
+
+
+    Project(me;
+    	    U1, U2           :     Real  from Standard;
+	    Curve            : out Curve from Geom;
+	    PCurve1, PCurve2 : out Curve from Geom2d;
+	    myCont           : out Shape from GeomAbs)
+	---Purpose: 
+    is static;
+
+fields
+
+    myFace1       : Face    from TopoDS;
+    myFace2       : Face    from TopoDS;
+    myEdge1       : Edge    from TopoDS;
+    myEdge2       : Edge    from TopoDS;
+    myInv1        : Boolean from Standard;	
+    myInv2        : Boolean from Standard;	
+    myBis         : Curve   from Geom2d;
+    
+end TrimSurfaceTool;

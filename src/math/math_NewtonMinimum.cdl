@@ -1,0 +1,180 @@
+-- File:	math_NewtonMinimum.cdl
+-- Created:	Wed Feb 28 11:31:04 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class NewtonMinimum from math 
+
+	---Purpose: 
+
+uses Vector from math,
+     Matrix from math,
+     Status from math,
+     MultipleVarFunctionWithHessian from math,
+     NotDone from StdFail
+
+raises NotDone, DimensionError
+
+is
+ 
+    Create(F: in out MultipleVarFunctionWithHessian;
+    	   StartingPoint: Vector; 
+           Tolerance: Real=1.0e-7;
+	   NbIterations: Integer=40; 
+           Convexity: Real=1.0e-6; 
+           WithSingularity  :  Boolean = Standard_True)
+    ---Purpose: -- Given the  starting   point  StartingPoint,
+    --            The tolerance  required on  the  solution is given  by
+    --            Tolerance.  
+    --             Iteration are  stopped if  
+    --             (!WithSingularity)  and H(F(Xi)) is not definite
+    --             positive  (if the smaller eigenvalue of H < Convexity)
+    --            or IsConverged() returns True for 2 successives Iterations.
+    --  Warning: Obsolete Constructor (because IsConverged can not be redefined
+    --           with this. )
+    returns  NewtonMinimum;
+
+    Create(F: in out MultipleVarFunctionWithHessian;
+           Tolerance: Real=1.0e-7;
+	   NbIterations: Integer=40; 
+           Convexity: Real=1.0e-6; 
+           WithSingularity  :  Boolean = Standard_True)
+    ---Purpose:
+    --            The tolerance  required on  the  solution is given  by
+    --            Tolerance.  
+    --             Iteration are  stopped if  
+    --             (!WithSingularity)  and H(F(Xi)) is not definite
+    --             positive  (if the smaller eigenvalue of H < Convexity)
+    --            or IsConverged() returns True for 2 successives Iterations.
+    --  Warning: This constructor do not computation 
+    returns  NewtonMinimum;
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_NewtonMinimum(){Delete();}"
+    
+    Perform(me: in out; F: in out MultipleVarFunctionWithHessian;
+    	    StartingPoint: Vector)
+	 ---Purpose: Search the solution.
+    is static;
+
+    
+    IsConverged(me)
+    	---Purpose:  This method is  called    at the end  of   each
+    	--            iteration to  check the convergence :
+    	--            || Xi+1 - Xi || < Tolerance 
+    	--            or || F(Xi+1) - F(Xi)|| < Tolerance * || F(Xi) ||
+    	--            It can be  redefined in a sub-class to implement a specific  test.
+    
+    returns Boolean
+    is virtual;
+    
+    
+    IsDone(me)
+    	---Purpose: Tests if an error has occured.
+    	---C++: inline
+    
+    returns Boolean
+    is static;
+    
+    IsConvex(me)
+    	---Purpose: Tests if the Function is convexe during optimization.
+    	---C++: inline    
+    returns Boolean
+    is static;    
+    
+    Location(me)
+    	---Purpose: returns the location vector of the minimum.
+        -- Exception NotDone is raised if an error has occured.
+    	---C++: inline
+    	---C++: return const&
+    
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Location(me; Loc: out Vector)
+    	---Purpose: outputs the location vector of the minimum in Loc.
+        -- Exception NotDone is raised if an error has occured.
+        -- Exception DimensionError is raised if the range of Loc is not
+        -- equal to the range of the StartingPoint.
+    	---C++: inline
+	    
+    raises DimensionError,
+    	   NotDone
+    is static;
+    
+    
+    Minimum(me)
+    	---Purpose: returns the value of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me)
+    	---Purpose: returns the gradient vector at the minimum.
+        -- Exception NotDone is raised if an error has occured.the minimum was not found.
+    	---C++: inline
+    	---C++: return const&
+    
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me; Grad: out Vector)
+    	---Purpose: outputs the gradient vector at the minimum in Grad.
+        -- Exception NotDone is raised if the minimum was not found.
+        -- Exception DimensionError is raised if the range of Grad is not
+        -- equal to the range of the StartingPoint.
+    	---C++: inline
+
+    raises DimensionError,
+    	   NotDone
+    is static;
+
+
+    NbIterations(me)
+    	---Purpose: returns the number of iterations really done in the 
+    	--          calculation of the minimum.
+    	-- The exception NotDone is raised if an error has occured.
+    	---C++: inline
+
+    returns Integer
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+Done:            Boolean;
+TheStatus:       Status  is protected;
+TheLocation:     Vector  is protected;
+TheGradient:     Vector  is protected;
+TheStep:         Vector  is protected;
+TheHessian :     Matrix  is protected;
+PreviousMinimum: Real    is protected;
+TheMinimum:      Real    is protected;
+MinEigenValue:   Real    is protected;
+XTol:            Real    is protected;
+CTol:            Real    is protected;
+nbiter:          Integer is protected;
+NoConvexTreatement: Boolean is protected;
+Convex           : Boolean is protected;
+Itermax:         Integer;
+
+
+end NewtonMinimum;

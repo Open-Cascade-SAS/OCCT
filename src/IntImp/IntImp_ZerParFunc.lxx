@@ -1,0 +1,46 @@
+#include <StdFail_UndefinedDerivative.hxx>
+
+#ifndef gp_Pnt_HeaderFile
+#include <gp_Pnt.hxx>
+#endif
+#ifndef gp_Dir2d_HeaderFile
+#include <gp_Dir2d.hxx>
+#endif
+#ifndef gp_Dir_HeaderFile
+#include <gp_Dir.hxx>
+#endif
+
+
+inline Standard_Real IntImp_ZerParFunc::Root() const {
+
+  return f[0]*f[0]+f[1]*f[1]+f[2]*f[2];
+}
+
+
+inline gp_Pnt IntImp_ZerParFunc::Point() const {
+  return  gp_Pnt((pntsol1.XYZ()+ pntsol2.XYZ())/2.);
+}
+
+inline gp_Dir IntImp_ZerParFunc::Direction() const {
+  if (tangent ) StdFail_UndefinedDerivative::Raise();
+  return gp_Dir(tgduv[0]*dpuv[0].XYZ() + tgduv[1]*dpuv[1].XYZ());
+}
+
+inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS1() const {
+  if (tangent ) StdFail_UndefinedDerivative::Raise();       
+  return gp_Dir2d(tgduv[0],tgduv[1]);
+}
+
+inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS2() const {
+  if (tangent ) StdFail_UndefinedDerivative::Raise();       
+  return gp_Dir2d(tgduv[2],tgduv[3]);
+}
+
+inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface1() const { 
+  return  (*((const ThePSurface * const)(surf1)));
+}
+
+inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface2() const {
+  return  (*((const ThePSurface * const)(surf2)));
+}
+

@@ -1,0 +1,32 @@
+-- File:	BOPTools_CoupleOfIntegerMapHasher.cdl
+-- Created:	Fri Dec  5 10:01:40 2003
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2003
+
+
+class CoupleOfIntegerMapHasher from BOPTools 
+
+	---Purpose: 
+
+uses 
+    CoupleOfInteger from BOPTools
+
+--raises
+
+is 
+    HashCode(myclass;  
+    	    aPKey : CoupleOfInteger from BOPTools;  
+    	    Upper : Integer from Standard)  
+    	returns Integer from Standard;
+	
+	
+    IsEqual(myclass;  
+    	    aPKey1 : CoupleOfInteger from BOPTools;  
+    	    aPKey2 : CoupleOfInteger from BOPTools)  
+    	returns Boolean from Standard;
+
+
+--fields
+
+end CoupleOfIntegerMapHasher;

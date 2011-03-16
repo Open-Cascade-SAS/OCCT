@@ -1,0 +1,81 @@
+-- File:	Dynamic_MethodDefinition.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class MethodDefinition from Dynamic
+
+inherits
+
+    Method from Dynamic
+    
+	---Purpose: This  inherited class   is   for  describing   the
+	--          definition  of    a  method.   This  definition is
+	--          composed by its name which is readable by the type
+	--          function   and a  collection   of  variables which
+	--          defines the signature  of the method definition in
+	--          term of arguments passed  to the function and also
+	--          the useful  internal or constant  variables if the
+	--          function is a composite method. This class is also
+	--          a  deferred  class and can   not be  used directly
+	--          because it is  necessary to specify if the  method
+	--          is compiled, interpreted or composite.
+
+uses
+
+    CString from Standard,
+    OStream from Standard,
+    HAsciiString from TCollection,
+    AsciiString  from TCollection,
+    Parameter    from Dynamic,
+    ModeEnum     from Dynamic
+
+
+is
+
+    Initialize(aname : CString from Standard);
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates a MethodDefinition with <aname> as type.
+    
+    Type(me) returns AsciiString from TCollection
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the name of the method definition.
+    
+    is redefined;
+    
+    AddVariable(me : mutable ; aparameter : Parameter from Dynamic ;
+                               amode      : ModeEnum  from Dynamic ;
+                               agroup     : Boolean = Standard_False)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Adds  a  new  variable   created from    the parameter
+    --          <aparameter>, which  defines the  name of the variable
+    --          its type and if necessary its  default value, the mode
+    --          <amode> which  precise  if it is  an  in,  out, inout,
+    --          internal or   constant variable and the  flag <agroup>
+    --          for accepting  a  set of homogeneous variables.   with
+    --          the parameter value <aparameter>.
+    
+    is static;
+    
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+
+    is redefined;
+    
+fields
+
+    thename : HAsciiString from TCollection;
+
+end MethodDefinition;

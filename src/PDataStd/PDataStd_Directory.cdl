@@ -1,0 +1,15 @@
+-- File:	PDataStd_Directory.cdl
+-- Created:	Fri Jun 25 13:59:31 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Directory from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+is
+
+    Create returns mutable Directory from  PDataStd;
+
+end Directory;

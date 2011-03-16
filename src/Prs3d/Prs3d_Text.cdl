@@ -1,0 +1,47 @@
+-- File:	Prs3d_Text.cdl
+-- Created:	Tue Sep 14 12:58:46 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class Text from Prs3d inherits Root from Prs3d
+
+    	--- Purpose: A framework to define the display of texts.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Drawer from Prs3d,
+    TextAspect from Prs3d,
+    ExtendedString from TCollection
+    
+is
+    Draw(myclass; aPresentation: Presentation from Prs3d;
+    	          aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint: Pnt from gp);
+    	---Purpose: Defines the display of the text aText at the point AttachmentPoint.
+    	-- The drawer aDrawer specifies the display attributes which texts will have.
+    	-- The presentation object aPresentation stores the
+    	-- information defined in this framework.
+    	-- static void Draw (const Handle(Prs3d_Presentation)&
+    	-- aPresentation, const Handle(Prs3d_TextAspect)&
+    	-- anAspect, const TCollection_ExtendedString& aText,
+    	-- const gp_Pnt& AttachmentPoint);    
+
+    Draw(myclass; aPresentation: Presentation from Prs3d;
+    	          anAspect: TextAspect from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint: Pnt from gp);
+    
+    	---Purpose: Defines the display of the text aText at the point
+    	-- AttachmentPoint.
+    	-- The text aspect object anAspect specifies the display
+    	-- attributes which texts will have.
+	-- The presentation object aPresentation stores the
+    	-- information defined in this framework.
+    	-- This syntax could be used if you had not already
+    	-- defined text display attributes in a drawer or if you
+    	-- wanted to exceptionally overide the definition
+    	-- provided in your drawer.    
+		  
+end Text from Prs3d;

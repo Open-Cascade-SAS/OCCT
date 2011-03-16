@@ -1,0 +1,31 @@
+-- File:	PBRep_PointsOnSurface.cdl
+-- Created:	Wed Aug 11 11:39:57 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class PointsOnSurface from PBRep inherits PointRepresentation from PBRep
+
+uses
+
+    Surface  from PGeom,
+    Location from PTopLoc
+
+is
+
+    Initialize (P : Real;
+    	    	S : Surface  from PGeom;
+    	        L : Location from PTopLoc);
+    	---Level: Internal 
+		
+
+    Surface(me) returns Surface from PGeom
+    is static;
+    	---Level: Internal 
+    
+fields
+
+    mySurface : Surface from PGeom;
+
+end PointsOnSurface;

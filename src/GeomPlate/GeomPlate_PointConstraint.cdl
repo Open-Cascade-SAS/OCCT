@@ -1,0 +1,163 @@
+-- File:	GeomPlate_PointConstraint.cdl
+-- Created:	Mon May  5 13:32:19 1997
+-- Author:	Jerome LEMONIER
+--		<jlr@sgi64>
+---Copyright:	 Matra Datavision 1997
+class  PointConstraint  from  GeomPlate  inherits TShared from MMgt
+    	---Purpose:
+    	-- Defines points as constraints to be used to deform a surface.
+uses 
+   Pnt  from  gp, 
+   Pnt2d  from  gp, 
+   Surface  from  Geom,
+   Vec   from  gp, 
+   SLProps from GeomLProp  
+
+raises   
+   ConstructionError  from  Standard 
+
+is
+Create (Pt  :  Pnt  from  gp;
+              Order: Integer from Standard ;
+              TolDist : Real from Standard = 0.0001)
+        returns  PointConstraint  from  GeomPlate 
+     	raises   ConstructionError  from  Standard;
+    	---Purpose: Constructs a point constraint object defined by  Pt, a 3D point
+    	--   Order gives the order of constraint, one of:
+    	-- -   -1 i.e. none, or 0 i.e.G0 when assigned to Pt
+    	-- -   -1 i.e. none, 0 i.e. G0, 1 i.e. G1, 2 i.e. G2 when
+    	--   assigned to U, V and Surf.
+    	-- In this constructor, only TolDist is given.
+    	-- Distance tolerance represents the greatest distance
+    	-- allowed between the constraint and the target surface.
+    	-- Angular tolerance represents the largest angle allowed
+    	-- between the constraint and the target surface. Curvature
+    	-- tolerance represents the greatest difference in curvature
+    	-- allowed between the constraint and the target surface. 
+    	-- Raises   ConstructionError if Order  is  not  0  or  -1 
+
+Create (U,V   :  Real from Standard;
+              Surf   : Surface from Geom;
+              Order: Integer from Standard;
+              TolDist : Real from Standard=0.0001;
+               TolAng : Real from Standard=0.01;
+               TolCurv: Real from Standard=0.1)
+        returns  PointConstraint  from  GeomPlate; 
+
+    	---Purpose: Constructs a point constraint object defined by
+    	-- the intersection point of U and V on the surface Surf.
+    	--   Order gives the order of constraint, one of:
+    	-- -   -1 i.e. none, or 0 i.e.G0 when assigned to Pt
+    	-- -   -1 i.e. none, 0 i.e. G0, 1 i.e. G1, 2 i.e. G2 when
+    	--   assigned to U, V and Surf.
+    	-- In this constructor the surface to be generated must
+    	-- respect several tolerance values only:
+    	-- -   the distance tolerance TolDist
+    	-- -   the angular tolerance TolAng
+    	-- -   the curvature tolerance, TolCurv.
+    	-- Distance tolerance represents the greatest distance
+    	-- allowed between the constraint and the target surface.
+    	-- Angular tolerance represents the largest angle allowed
+    	-- between the constraint and the target surface. Curvature
+    	-- tolerance represents the greatest difference in curvature
+    	-- allowed between the constraint and the target surface.Creates a punctual constraint.
+
+SetOrder(me : mutable ; Order: Integer from Standard);
+
+Order(me) returns  Integer from Standard;
+    	---Purpose:
+    	-- Returns the order of constraint: G0, G1, and G2,
+    	-- controlled respectively by G0Criterion G1Criterion and G2Criterion.
+    
+SetG0Criterion(me : mutable; TolDist  : Real  from  Standard) ;
+        --- Purpose:
+        -- Allows you to set the G0 criterion. This is the law
+        -- defining the greatest distance allowed between the
+        -- constraint and the target surface. If this criterion is not
+        -- set, {TolDist, the distance tolerance from the constructor, is used 
+
+SetG1Criterion(me : mutable; TolAng   : Real  from  Standard)  
+raises   ConstructionError  from  Standard;
+        ---Purpose:
+    	-- Allows you to set the G1 criterion. This is the law
+    	-- defining the greatest angle allowed between the
+    	-- constraint and the target surface. If this criterion is not
+    	-- set, TolAng, the angular tolerance from the constructor, is used.
+    	-- Raises   ConstructionError  if  the  point  is  not  on  the  surface    
+    
+SetG2Criterion(me : mutable; TolCurv  : Real  from  Standard)
+raises   ConstructionError  from  Standard;
+    	---Purpose:
+    	-- Allows you to set the G2 criterion. This is the law
+    	-- defining the greatest difference in curvature allowed
+    	-- between the constraint and the target surface. If this
+    	-- criterion is not set, TolCurv, the curvature tolerance from
+    	-- the constructor, is used.
+    	-- Raises   ConstructionError if  the  point  is  not  on  the  surface    
+    
+G0Criterion(me)  returns  Real  from  Standard ; 
+    	---Purpose:
+    	-- Returns the G0 criterion. This is the greatest distance
+    	-- allowed between the constraint and the target surface.
+    
+G1Criterion(me)  returns  Real  from  Standard
+raises   ConstructionError  from  Standard;
+    	---Purpose:
+    	-- Returns the G1 criterion. This is the greatest angle
+    	-- allowed between the constraint and the target surface.
+    	-- Raises   ConstructionError if  the  point  is  not  on  the  surface.  
+    
+G2Criterion(me)  returns  Real  from  Standard
+raises   ConstructionError  from  Standard;
+    	---Purpose:
+    	-- Returns the G2 criterion. This is the greatest difference
+    	-- in curvature allowed between the constraint and the target surface.
+    	-- Raises   ConstructionError if  the  point  is  not  on  the  surface 
+    
+D0(me ;P :  out  Pnt) ; 
+
+D1(me ;P :  out  Pnt;  V1,  V2  :  out  Vec )  
+raises   ConstructionError  from  Standard;
+--if  the  point  is  not  on  the  surface
+
+D2(me ;P :  out  Pnt;  V1,  V2  ,  V3,  V4,  V5  :  out  Vec)   
+raises   ConstructionError  from  Standard;
+--if  the  point  is  not  on  the  surface
+
+ 
+HasPnt2dOnSurf(me)  returns  Boolean;
+
+SetPnt2dOnSurf(me : mutable; Pnt :Pnt2d  from  gp);
+
+Pnt2dOnSurf (me)  returns  Pnt2d  from  gp;
+
+LPropSurf  (me  :  mutable)   
+---C++: return &
+returns SLProps from GeomLProp
+raises  ConstructionError; 
+--if  the  curve  is  not  on  a  surface
+
+
+fields 
+myLProp  :   SLProps from GeomLProp; 
+myPoint  :  Pnt  from  gp;  
+myPt2d   :  Pnt2d  from  gp;  
+mySurf   :  Surface  from  Geom;
+myD11    :  Vec  from  gp; 
+myD12    :  Vec  from  gp; 
+myD21    :  Vec  from  gp; 
+myD22    :  Vec  from  gp; 
+myD23    :  Vec  from  gp; 
+myU  :  Real  from  Standard; 
+myV  :  Real  from  Standard;  
+myTolDist  :  Real  from  Standard; 
+myTolAng  :  Real  from  Standard; 
+myTolCurv  :  Real  from  Standard; 
+myOrder  :  Integer  from  Standard  is  protected;  
+hasPnt2dOnSurf  :  Boolean; 
+end;
+
+
+
+
+

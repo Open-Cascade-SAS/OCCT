@@ -1,0 +1,110 @@
+-- File:	Bnd_BoundSortBox2d.cdl
+-- Created:	Fri Mar  5 15:45:24 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class BoundSortBox2d from Bnd 
+
+	---Purpose: A tool to compare a 2D bounding box with a set of 2D
+    	-- bounding boxes. It sorts the set of bounding boxes to give
+    	-- the list of boxes which intersect the element being compared.
+    	-- The boxes being sorted generally bound a set of shapes,
+    	-- while the box being compared bounds a shape to be
+    	-- compared. The resulting list of intersecting boxes therefore
+    	-- gives the list of items which potentially intersect the shape to be compared.
+
+
+uses    Integer from Standard,
+    	Real from Standard,
+    	ListOfInteger from TColStd,
+    	Box2d from Bnd,
+    	HArray1OfBox2d from Bnd,
+	DataMapOfIntegerInteger from TColStd,
+	HArray1OfListOfInteger from TColStd
+
+
+raises  NullValue from Standard, MultiplyDefined from Standard
+
+
+is      Create      returns BoundSortBox2d from Bnd;
+	---Purpose: Constructs an empty comparison algorithm for 2D bounding boxes.
+    	-- The bounding boxes are then defined using the Initialize function.
+
+        Initialize (me : in out;
+    	    	    CompleteBox : Box2d from Bnd; 
+    	    	    SetOfBox    : HArray1OfBox2d from Bnd)
+		    is static;
+	---Purpose: Initializes this comparison algorithm with
+    	-- -   the set of 2D bounding boxes SetOfBox
+
+    	Initialize (me : in out;
+    	    	    SetOfBox    : HArray1OfBox2d from Bnd)
+		    is static;
+	---Purpose: Initializes this comparison algorithm with
+    	-- -   the set of 2D bounding boxes SetOfBox, where
+    	--  CompleteBox is given as the global bounding box of   SetOfBox.
+    	SortBoxes  (me : in out)
+		    raises NullValue from Standard is static private;
+	---Purpose: Prepares BoundSortBox2d and sorts the rectangles of
+	--          <SetOfBox> .
+
+
+
+    	Initialize (me : in out;
+    	    	    CompleteBox : Box2d from Bnd; 
+    	    	    nbComponents : Integer from Standard)
+		    raises NullValue from Standard is static;
+	---Purpose: Initializes this comparison algorithm, giving it only
+    	-- -   the maximum number nbComponents, and
+    	-- -   the global bounding box CompleteBox,
+    	-- of the 2D bounding boxes to be managed. Use the Add
+    	-- function to define the array of bounding boxes to be sorted by this algorithm.
+
+    	Add        (me          : in out;
+    	    	    theBox      : Box2d from Bnd;
+    	    	    boxIndex    : Integer from Standard)
+		    raises MultiplyDefined from Standard is static;
+	---Purpose: Adds the 2D bounding box theBox at position boxIndex in
+    	-- the array of boxes to be sorted by this comparison algorithm.
+    	-- This function is used only in conjunction with the third
+    	-- syntax described in the synopsis of Initialize.
+    	-- Exceptions
+    	-- -   Standard_OutOfRange if boxIndex is not in the
+    	--   range [ 1,nbComponents ] where
+    	--   nbComponents is the maximum number of bounding
+    	--   boxes declared for this comparison algorithm at
+    	--   initialization.
+    	-- -   Standard_MultiplyDefined if a box still exists at
+    	--   position boxIndex in the array of boxes to be sorted by
+    	--   this comparison algorithm.
+  
+
+    	Compare    (me : in out;
+    	    	    theBox      : Box2d from Bnd)
+	    	    returns ListOfInteger from TColStd
+		    ---C++: return const &
+		    raises NullValue from Standard is static;
+    	---Purpose:
+    	-- Compares the 2D bounding box theBox with the set of
+    	-- bounding boxes to be sorted by this comparison algorithm,
+    	-- and returns the list of intersecting bounding boxes as a list
+    	-- of indexes on the array of bounding boxes used by this algorithm.
+    	Dump       (me) is static;
+
+
+fields  myBox           : Box2d from Bnd;
+    	myBndComponents : HArray1OfBox2d from Bnd;
+    	Xmin            : Real from Standard;
+    	Ymin            : Real from Standard;
+	deltaX          : Real from Standard;
+    	deltaY          : Real from Standard;
+    	discrX          : Integer from Standard;
+    	discrY          : Integer from Standard;
+	axisX           : HArray1OfListOfInteger from TColStd;
+	axisY           : HArray1OfListOfInteger from TColStd;
+    	theFound        : Integer from Standard;
+	Crible          : DataMapOfIntegerInteger from TColStd;
+	lastResult      : ListOfInteger from TColStd;
+
+end BoundSortBox2d;

@@ -1,0 +1,110 @@
+-- File:	ShapeCustom.cdl
+-- Created:	Wed Jun  3 12:40:02 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeCustom 
+
+    ---Purpose:  This package is intended to
+-- convert geometrical objects and topological. The
+-- modifications of one geometrical object to another
+-- (one) geometrical object are provided. The supported
+-- modifications are the following: 
+--    conversion of BSpline and Bezier surfaces to analytical form, 
+--     conversion of indirect elementary surfaces (with left-handed
+--      coordinate systems) into  direct ones, 
+--  conversion of elementary surfaces to surfaces of revolution, 
+--  conversion of surface of linear extrusion, revolution, offset
+--   surface to bspline, 
+-- modification of parameterization, degree, number of segments of bspline
+  -- surfaces,  scale the shape. 
+  
+uses
+
+    gp,
+    GeomAbs,
+    Geom,
+    Geom2d,
+    TopLoc,
+    TopoDS,
+    BRepTools,
+    TopTools,
+    TColgp,
+    Precision
+
+is
+
+    class Surface;
+    
+    class Curve;
+
+    class Curve2d;
+
+    class RestrictionParameters;
+
+    class DirectModification;
+
+    private class TrsfModification;
+    private class BSplineRestriction;
+    private class ConvertToRevolution;
+    private class SweptToElementary;
+    private class ConvertToBSpline;
+
+    ApplyModifier(S      : Shape from TopoDS;
+     	    	  M      : Modification from BRepTools;
+		  context: in out DataMapOfShapeShape from TopTools;
+		  MD     : in out Modifier from BRepTools)
+		   
+    returns Shape from TopoDS;
+    	---Purpose: Applies modifier to shape and checks sharing in the case assemblies.
+
+    DirectFaces(S: Shape from TopoDS) returns Shape from TopoDS;
+    	---Purpose: Returns a new shape without indirect surfaces.
+	
+    ScaleShape (S: Shape from TopoDS; scale: Real) returns Shape from TopoDS;
+    	---Purpose: Returns a new shape which is scaled original
+	
+    BSplineRestriction(S                         : Shape from TopoDS;
+                       Tol3d, Tol2d              : Real; 
+                       MaxDegree, MaxNbSegment   : Integer;
+                       Continuity3d, Continuity2d: Shape from GeomAbs;
+                       Degree                    : Boolean;
+    	    	       Rational                  : Boolean;
+		       aParameters               : RestrictionParameters from ShapeCustom)
+    returns Shape from TopoDS;  
+    	---Purpose: Returns a new shape with all surfaces, curves and pcurves
+    	--          which type is BSpline/Bezier or based on them converted
+    	--          having Degree less than <MaxDegree> or number of spans less
+    	--          than <NbMaxSegment> in dependence on parameter priority <Degree>.
+    	--          <GmaxDegree> and <GMaxSegments> are maximum possible degree
+    	--          and number of spans correspondingly.
+    	--          These values will be used in those cases when approximation with
+    	--          specified parameters is impossible and one of GmaxDegree or
+    	--          GMaxSegments is selected in dependence on priority.
+    	--          Note that even if approximation is impossible with <GMaxDegree>
+	--          then number of spans can exceed specified <GMaxSegment>
+	--          <Rational> specifies if to convert Rational BSpline/Bezier into
+	--          polynomial B-Spline.
+	--          If flags ConvOffSurf,ConvOffCurve3d,ConvOffCurve2d are Standard_True there are means
+	--          that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline
+	--          correspondingly.
+	
+    ConvertToRevolution (S: Shape from TopoDS) returns Shape from TopoDS;
+    	---Purpose: Returns a new shape with all elementary periodic surfaces converted
+	--          to Geom_SurfaceOfRevolution
+	
+    SweptToElementary (S: Shape from TopoDS) returns Shape from TopoDS;
+    	---Purpose: Returns a new shape with all surfaces of revolution and linear extrusion
+        --          convert to elementary periodic surfaces
+	
+    ConvertToBSpline (S         : Shape from TopoDS;
+    	    	      extrMode  : Boolean; revolMode: Boolean;
+                      offsetMode: Boolean; planeMode: Boolean = Standard_False)
+    returns Shape from TopoDS;
+    	---Purpose: Returns a new shape with all surfaces of linear extrusion, revolution,
+    	--          offset, and planar surfaces converted according to flags to 
+    	--          Geom_BSplineSurface (with same parameterisation).
+
+end ShapeCustom;

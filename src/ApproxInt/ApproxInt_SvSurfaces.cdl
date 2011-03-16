@@ -1,0 +1,50 @@
+-- File:	ApproxInt_SvSurfaces.cdl
+-- Created:	Wed Mar 17 12:19:46 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+deferred class SvSurfaces from ApproxInt
+
+uses 
+    Pnt     from gp,
+    Pnt2d   from gp,
+    Vec     from gp,
+    Vec2d   from gp
+
+is 
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~ApproxInt_SvSurfaces(){Delete() ; }"
+    
+    Compute(me: in out; 
+            u1,v1,u2,v2: in out Real from Standard;
+	    Pt: out Pnt from gp;
+	    Tg: out Vec from gp;
+	    Tguv1,Tguv2: out Vec2d from gp)
+	    ---Purpose: returns True if Tg,Tguv1 Tguv2 can be computed.
+       returns Boolean from Standard is deferred;
+
+    Pnt(me: in out;
+    	u1,v1,u2,v2: in Real from Standard;
+    	P: out Pnt from gp)  is deferred;
+
+    Tangency(me: in out;
+    	     u1,v1,u2,v2: in Real from Standard;
+	     Tg: out Vec from gp)
+       returns Boolean from Standard is deferred;
+
+    TangencyOnSurf1(me: in out;
+    	            u1,v1,u2,v2: in Real from Standard;
+	            Tg: out Vec2d from gp)
+       returns Boolean from Standard is deferred;
+
+    TangencyOnSurf2(me: in out;
+    	            u1,v1,u2,v2: in Real from Standard;
+	            Tg: out Vec2d from gp)
+       returns Boolean from Standard is deferred;   
+    
+end SvSurfaces;
+
+
+

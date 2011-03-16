@@ -1,0 +1,197 @@
+---Copyright:	 Matra Datavision 1992
+---Version: 
+
+---History:
+--  Version	Date         Purpose
+--              10/12/92     Creation   
+
+
+generic class HDoubleMap from PCollection ( Key as Storable ;
+                                          Item as Storable ;
+                                          KeyHash as Hash(Key) ;
+                                          ItemHash as Hash(Item) )
+
+---Purpose: A double map is a Collection of bindings between two objects.
+-- It can be retrieved either by its Key or its Item;a hash code
+-- value must be computed for both.
+
+inherits Persistent from Standard
+
+raises
+
+    MultiplyDefined from Standard,
+    NoMoreObject    from Standard,
+    NoSuchObject    from Standard
+
+
+class DoubleMapNode from PCollection inherits PManaged from PMMgt
+---Purpose: Class used in the implementation of the DoubleMap class. It stores
+-- Key and Item and two references to DoubleMapNode, one used to make Hashed 
+-- list for Key , the other to make Hashed list for Item.
+
+is
+
+    Create( aKey : Key ; anItem : Item ; nextKey : DoubleMapNode ; 
+    	nextItem : DoubleMapNode ) returns mutable DoubleMapNode;
+    ---Purpose: Creates a DoubleMapNode.
+
+    SetNextKey ( me : mutable ; aNode : DoubleMapNode ) is static;
+    ---Level: Internal
+    ---Purpose: Sets the next node of Key hashed list. 
+
+    SetNextItem ( me : mutable ; aNode : DoubleMapNode ) is static;
+    ---Level: Internal
+    ---Purpose: Sets the next node of Item hashed list. 
+    
+    GetKey ( me ) returns any Key is static;
+    ---Level: Internal
+    ---Purpose: Returns the key.
+
+    GetItem ( me ) returns any Item is static;
+    ---Level: Internal
+    ---Purpose: Returns the item.
+
+    NextKey ( me ) returns any DoubleMapNode is static;
+    ---Level: Internal
+    ---Purpose: Returns the next node of Key hashed list.
+
+    NextItem ( me ) returns any DoubleMapNode is static;
+    ---Level: Internal
+    ---Purpose: Returns the next node of Item hashed list.
+
+fields
+
+    myKey      : Key;
+    myItem     : Item;
+    myNextKey  : DoubleMapNode;
+    myNextItem : DoubleMapNode;
+    
+end DoubleMapNode;
+
+class ArrayDoubleMap instantiates HArray1 from PCollection (DoubleMapNode);
+
+
+class DoubleMapIterator
+
+---Purpose: This class provides services to iterate on all bindings of
+-- a DoubleMap.
+
+raises
+    
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+    
+is
+
+    Create ( aDoubleMap : HDoubleMap from PCollection) 
+                               returns DoubleMapIterator;
+    ---Purpose: Creates an iterator of <aDoubleMap>.
+
+    More ( me ) returns Boolean;
+    ---Level: Public
+    ---Purpose: Returns True if there are others couples (Item,Key).
+
+    Next ( me : in out )
+    ---Level: Public
+    ---Purpose: Sets the iterator to the next couple (Item,Key).
+    raises NoMoreObject from Standard;
+
+    KeyValue ( me ) returns Key
+    ---Level: Public
+    ---Purpose: Returns the Key value corresponding to the current position 
+    -- of the iterator.
+    raises NoSuchObject from Standard;
+
+    ItemValue ( me ) returns Item
+    ---Level: Public
+    ---Purpose: Returns the Item value corresponding to the current position 
+    -- of the iterator.
+    raises NoSuchObject from Standard;
+
+fields
+
+    myBuckets      : ArrayDoubleMap;
+    myCurrentIndex : Integer;
+    myCurrentNode  : DoubleMapNode;
+    
+end DoubleMapIterator;
+    
+is
+
+    Create ( NbBuckets : Integer; fhKey : KeyHash; fhItem : ItemHash )
+    	returns mutable HDoubleMap;
+    ---Purpose: Creates a double map of <NbBuckets> entries.
+	
+    NbBuckets ( me ) returns Integer;
+    ---Level: Public
+    ---Purpose: Returns the number of entries in the double map <me>.
+    
+    Extent ( me ) returns Integer;
+    ---Level: Public
+    ---Purpose: Returns the number of couples (<Key>,<Item>) stored in <me>.
+    
+    Bind ( me : mutable ; aKey : Key; anItem : Item )
+    ---Level: Public
+    ---Purpose: Adds the pair (<aKey>,<anItem>) to <me>.
+    ---Trigger: Raises an exception if the binding already exists.
+    raises MultiplyDefined from Standard;
+    
+    FindItem ( me ; aKey : Key ) returns any Item
+    ---Level: Public
+    ---Purpose: Returns the item bounded by <aKey>.
+    ---Trigger: Raises an exception if the binding does not exist.
+    raises NoSuchObject from Standard;
+    
+    FindKey ( me ; anItem : Item ) returns any Key
+    ---Level: Public
+    ---Purpose: Returns the key bounded by <anItem>.
+    raises NoSuchObject from Standard;
+    ---Trigger: Raises if the binding does not exist.
+    
+    UnbindKey ( me : mutable ; aKey : Key )
+    ---Level: Public
+    ---Purpose: Unbinds the couple keyed by <aKey>.
+    raises NoSuchObject from Standard;
+    ---Trigger: Raises if the binding does not exist.
+    
+    UnbindItem ( me : mutable ; anItem : Item )
+    ---Level: Public
+    ---Purpose: Unbinds the couple keyed by <anItem>.
+    raises NoSuchObject from Standard;
+    ---Trigger: Raises if the binding does not exist.
+    
+    Clear ( me : mutable );
+    ---Level: Public
+    ---Purpose: Clears the double map.
+    
+    IsBoundByKey ( me ; aKey : Key ) returns Boolean;
+    ---Level: Public
+    ---Purpose: Returns True if an element is bound by <aKey>.
+    
+    IsBoundByItem ( me ; anItem : Item ) returns Boolean;
+    ---Level: Public
+    ---Purpose: Returns True if an element is bound by <anItem>.
+
+    IsEmpty ( me ) returns Boolean;
+    ---Level: Public
+    ---Purpose: Returns True if the DoubleMap <me> is empty.
+
+    GetArrayKey ( me ) returns ArrayDoubleMap is static private;
+    ---Level: Internal
+    ---Purpose: Returns the ArrayDoubleMap for Key.
+
+fields
+
+    myNumber    : Integer;  -- Number of couples
+    myArrayKey  : ArrayDoubleMap;   
+    myArrayItem : ArrayDoubleMap;   
+    myKeyHash   : KeyHash;
+    myItemHash  : ItemHash;
+    
+friends
+
+    class DoubleMapIterator from PCollection
+    
+end HDoubleMap;
+
+

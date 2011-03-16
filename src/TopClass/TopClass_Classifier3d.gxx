@@ -1,0 +1,72 @@
+// File:	TopClass_Classifier3d.gxx
+// Created:	Wed Mar 30 09:54:56 1994
+// Author:      Laurent BUCHARD
+//		<lbr@fuegox>
+
+
+
+//======================================================================
+TopClass_Classifier3d::TopClass_Classifier3d() : isSet(Standard_False)
+{
+}
+
+//======================================================================
+void TopClass_Classifier3d::Reset(const gp_Lin&       L,
+				 const Standard_Real Param,
+				 const Standard_Real Tol) { 
+  myLin       = L;
+  myParam     = RealLast();
+  myTolerance = Tol;
+  myState     = TopAbs_UNKNOWN;
+  isSet       = Standard_True;
+}
+//======================================================================
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <IntCurveSurface_TransitionOnCurve.hxx>
+
+void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
+				    const TopAbs_Orientation  Orientation) {  
+  if(!isSet) { 
+    cout<<" Call to TopClass_Classifier3d::Compare  without a Reset ! ";
+    return;
+  }
+
+  hasIntersect = Standard_False;
+  myIntersector.Perform(myLin,myParam,myTolerance,Face);
+  if(myIntersector.IsDone()) { 
+    if(myIntersector.HasAPoint()) { 
+      hasIntersect = Standard_True;
+      if(myIntersector.WParameter() < myParam) { 
+	myParam = myIntersector.WParameter();
+	myFace  = myIntersector.Face(); 
+	if(Abs(myParam)<=myTolerance) { 
+	  //-- #########################################
+	  cout<<" myParam = "<<myParam<<" ds TopClass_Classifier3d.gxx  "<<endl;
+	  //-- #########################################
+	  myState = TopAbs_ON;
+	}
+	else { 
+	  //-- The intersection point between the line and a face F of the solid 
+	  //-- is in the face F or On a boundary of the face 
+	  if(myIntersector.Transition() == IntCurveSurface_Out) { 
+	    //-- The line is going from inside the solid to outside the solid.
+	    myState = TopAbs_IN;
+	  }
+	  else if(myIntersector.Transition() == IntCurveSurface_In) { 
+	    myState = TopAbs_OUT;
+	  }
+	  else { 
+	    cout<<" -------- Probleme ds TopClass_Classifier3d.gxx "<<endl;
+	  }
+	}
+      }
+      else { 
+	//-- No point has been found by the myIntersector.
+	//-- Or a Point has been found with a greater parameter.
+      }
+    } //-- myIntersector Has a point 
+    else { 
+      //-- The myIntersector failed.
+    } 
+  } //-- Face has not been rejected
+}

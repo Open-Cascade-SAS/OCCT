@@ -1,0 +1,123 @@
+-- File:	BRepToIGES_BREntity.cdl
+-- Created:	Tue Nov 15 17:07:36 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+
+class BREntity from BRepToIGES
+
+
+    ---Purpose : provides methods to transfer BRep entity from CASCADE to IGES.
+
+uses
+    Geometry                 from Geom,
+    Shape                    from TopoDS,
+    IGESEntity               from IGESData,
+    IGESModel                from IGESData,
+    FinderProcess            from Transfer
+
+is
+
+    Create 
+    	returns BREntity from BRepToIGES;
+    ---Purpose : Creates a tool BREntity
+
+    Init(me : in out);
+    ---Purpose : Initializes the field of the tool BREntity with 
+    --        default creating values. 
+
+    SetModel(me : in out; model : IGESModel from IGESData);
+    ---Purpose : Set the value of "TheModel"
+
+    GetModel(me) 
+    	returns IGESModel from IGESData;
+    ---Purpose : Returns the value of "TheModel"
+
+    GetUnit(me)
+    	returns Real from Standard;
+    ---Purpose : Returns the value of the UnitFlag of the header of the model
+    --           in meters.
+
+    SetTransferProcess(me : in out; TP : FinderProcess from Transfer);
+    ---Purpose : Set the value of "TheMap"
+    
+    GetTransferProcess(me) 
+    	returns FinderProcess from Transfer;
+    ---Purpose : Returns the value of "TheMap"
+
+    TransferShape(me : in out; start : Shape from TopoDS)
+    	returns IGESEntity from IGESData is virtual;
+    ---Purpose : Returns the result of the transfert of any Shape
+    --           If  the transfer has  failed, this member return a NullEntity.
+	
+    AddFail (me : in out; start : Shape from TopoDS; amess : CString)  
+    	is static;
+    ---Purpose : Records a new Fail message
+
+    AddWarning (me : in out; start : Shape from TopoDS; amess : CString)  
+    	is static;
+    ---Purpose : Records a new Warning message
+
+    AddFail (me : in out; start : Transient from Standard; amess : CString)  
+    	is static;
+    ---Purpose : Records a new Fail message
+
+    AddWarning (me : in out; start : Transient from Standard; amess : CString)  
+    	is static;
+    ---Purpose : Records a new Warning message
+
+    HasShapeResult (me ; start : Shape from TopoDS)
+    	returns Boolean;
+    ---Purpose : Returns True if start was already treated and has a result in "TheMap"    
+    --           else returns False.
+    
+    GetShapeResult (me ; start : Shape from TopoDS)
+    	returns Transient from Standard;
+    ---Purpose : Returns the result of the transfer of the Shape "start" contained
+    --           in "TheMap" . (if HasShapeResult is True).	
+	
+    SetShapeResult (me     : in out; 
+                    start  : Shape from TopoDS;
+                    result : Transient from Standard); 
+    ---Purpose : set in "TheMap" the result of the transfer of the Shape "start".
+	
+
+    HasShapeResult (me ; start : Transient from Standard)
+    	returns Boolean;
+    ---Purpose : Returns True if start was already treated and has a result in "TheMap"    
+    --           else returns False.
+    
+    GetShapeResult (me ; start : Transient from Standard)
+    	returns Transient from Standard;
+    ---Purpose : Returns the result of the transfer of the Transient "start" contained
+    --           in "TheMap" . (if HasShapeResult is True).	
+	
+    SetShapeResult (me     : in out;
+    	    	    start  : Transient from Standard; 
+                    result : Transient from Standard); 
+    ---Purpose : set in "TheMap" the result of the transfer of the Transient "start".
+	
+    GetConvertSurfaceMode (me) returns Boolean;
+    	---Purpose: Returns mode for conversion of surfaces
+	--          (value of parameter write.convertsurface.mode)
+	    
+    GetPCurveMode (me) returns Boolean;
+    	---Purpose: Returns mode for writing pcurves
+	--          (value of parameter write.surfacecurve.mode)
+    
+    Delete (me:out) is virtual; 
+    	---C++: alias "Standard_EXPORT virtual ~BRepToIGES_BREntity() { Delete(); }" 	    
+
+fields
+
+    TheModel      : IGESModel from IGESData ;
+	
+    TheUnitFactor : Real from Standard;
+
+    myConvSurface : Boolean;
+    myPCurveMode  : Boolean;
+
+    TheMap        : FinderProcess from Transfer;
+
+end BREntity;

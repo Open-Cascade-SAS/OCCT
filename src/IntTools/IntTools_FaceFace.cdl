@@ -1,0 +1,155 @@
+-- File:	IntTools_FaceFace.cdl
+-- Created:	Thu Nov 23 14:52:53 2000
+-- Author:	Michael KLOKOV
+--		<mkk@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class FaceFace from IntTools
+
+    	---Purpose: This class provides the intersection of 
+    	---	    face's underlying surfaces.
+
+uses
+
+    Face from TopoDS,
+    SequenceOfCurves from IntTools,
+    Intersection    from IntPatch,
+    LineConstructor from IntTools,
+    HSurface        from GeomAdaptor,
+    TopolTool       from Adaptor3d,
+    SequenceOfPntOn2Faces from IntTools,
+    --amv
+    ListOfPntOn2S from IntSurf
+
+raises NotDone from StdFail
+is
+
+    Create 
+    	returns FaceFace from IntTools;
+    	---Purpose: 
+    	--- Empty constructor.
+	---
+
+
+    SetParameters(me: in out;  
+    	    	    ApproxCurves    : Boolean from Standard;
+    	    	    ComputeCurveOnS1: Boolean from Standard;
+    	    	    ComputeCurveOnS2: Boolean from Standard;
+    	    	    ApproximationTolerance: Real from Standard);
+    	---Purpose:
+	--- Modifier
+	---
+
+    Perform(me: in out;  
+    	    	    F1: Face from TopoDS;
+    	    	    F2: Face from TopoDS);
+    	---Purpose: 
+    	--- Intersects underliing surfaces of F1 and F2
+	--- Use sum of tolerance of F1 and F2 as intersection
+	--- criteria
+	---
+	
+    IsDone(me)
+    	returns Boolean from Standard;
+    	---Purpose: 
+    	--- Returns True if the intersection was successful
+	---
+
+    Lines(me)
+    	returns SequenceOfCurves from IntTools;
+    	---C++: return const&	
+    	---Purpose: 
+    	--- Returns sequence of 3d curves as result of intersection
+	---
+	 
+    Points(me)
+    	returns  SequenceOfPntOn2Faces from IntTools;
+    	---C++: return const&	 
+    	---Purpose: 
+    	--- Returns sequence of 3d curves as result of intersection
+	---
+
+    TolReached3d(me)  
+    	returns Real from Standard;
+	---Purpose:
+	--- Returns tolerance reached during approximation.
+	--- If approximation was not done, returns zero.
+	---
+
+    TolReached2d(me)  
+    	returns Real from Standard;
+	---Purpose:
+    	--- Returns tolerance reached during approximation.
+	--- If approximation was not done, returns zero.
+	---
+	     
+    Face1  (me) 
+    	returns  Face  from  TopoDS; 
+	---C++: return const& 
+	---Purpose:
+	--- Returns first of processed faces
+	---
+	 
+    Face2  (me) 
+    	returns  Face  from  TopoDS; 
+	---C++: return const& 
+	---Purpose:
+	--- Returns second of processed faces
+	---
+     
+    TangentFaces  (me)
+    	returns Boolean from Standard; 
+	---Purpose:
+	--- Returns True if faces are tangent
+	---
+
+    PrepareLines3D (me:out);
+    	---Purpose: 
+    	--- Provides post-processing the result lines,
+	--- which includes spliting closed curves.
+	---
+    --amv
+    SetList (me: in out; ListOfPnts: in out ListOfPntOn2S from IntSurf);
+    
+    ----------------------------------------------------------
+    --                  private  block
+    ----------------------------------------------------------
+    MakeCurve(me: in out; Index   : Integer from Standard;
+    	                  D1      : TopolTool from Adaptor3d;
+    	                  D2      : TopolTool from Adaptor3d)
+	is protected; 
+	
+    --modified by NIZNHY-PKV Tue Jul 10 10:01:27 2007f
+    ComputeTolReached3d(me:out) 
+    	is  protected; 
+    --modified by NIZNHY-PKV Tue Jul 10 10:01:30 2007t	
+
+fields 
+ 
+    myIsDone       : Boolean         from Standard;
+    myIntersector  : Intersection    from IntPatch;
+    myLConstruct   : LineConstructor from IntTools;
+    myHS1          : HSurface        from GeomAdaptor;
+    myHS2          : HSurface        from GeomAdaptor;
+    myNbrestr      : Integer         from Standard;
+
+    myTolReached2d : Real            from Standard;
+    myTolReached3d : Real            from Standard;
+    
+    myApprox       : Boolean         from Standard;
+    myApprox1      : Boolean         from Standard;
+    myApprox2      : Boolean         from Standard;
+    myTolApprox    : Real            from Standard;
+    
+    mySeqOfCurve : SequenceOfCurves from IntTools;
+
+    myTangentFaces: Boolean         from Standard; 
+    myFace1       : Face from TopoDS;  
+    myFace2       : Face from TopoDS;  
+    myPnts        : SequenceOfPntOn2Faces from IntTools;
+    
+    --amv    
+    myListOfPnts  : ListOfPntOn2S from IntSurf;
+
+end FaceFace from IntTools;
+

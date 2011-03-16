@@ -1,0 +1,8 @@
+// File:	Plate_GlobalTranslationConstraint.lxx
+// Created:	Mon May 25 09:16:59 1998
+// Author:	Andre LIEUTIER
+//		<alr@sgi63>
+inline const Plate_LinearXYZConstraint& Plate_GlobalTranslationConstraint::LXYZC() const
+{
+  return myLXYZC;
+}

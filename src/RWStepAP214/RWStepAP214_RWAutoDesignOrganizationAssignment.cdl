@@ -1,0 +1,30 @@
+-- File:        AutoDesignOrganizationAssignment.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWAutoDesignOrganizationAssignment from RWStepAP214
+
+	---Purpose : Read & Write Module for AutoDesignOrganizationAssignment
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AutoDesignOrganizationAssignment from StepAP214,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWAutoDesignOrganizationAssignment;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AutoDesignOrganizationAssignment from StepAP214);
+
+	WriteStep (me; SW : in out StepWriter; ent : AutoDesignOrganizationAssignment from StepAP214);
+
+	Share(me; ent : AutoDesignOrganizationAssignment from StepAP214; iter : in out EntityIterator);
+
+end RWAutoDesignOrganizationAssignment;

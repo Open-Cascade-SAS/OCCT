@@ -1,0 +1,35 @@
+-- File:	Voxel_SplitData.cdl
+-- Created:	Sun Sep 01 10:36:25 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+private class SplitData from Voxel
+
+    ---Purpose: A container of split information.
+    --          An instance of this class is used as a slice 
+    --          in inner representation of recursive octtree voxels.
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns SplitData from Voxel;
+
+    GetValues(me : in out)
+    ---Purpose: Gives access to the values.
+    ---C++: return &
+    returns Address from Standard;
+
+    GetSplitData(me : in out)
+    ---Purpose: Gives access to the next split data.
+    ---C++: return &
+    returns Address from Standard;
+
+fields
+
+    myValues    : Address from Standard;
+    mySplitData : Address from Standard;
+    
+end SplitData;
+

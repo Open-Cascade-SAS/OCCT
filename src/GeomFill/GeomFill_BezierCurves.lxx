@@ -1,0 +1,22 @@
+// File:	GeomFill_BezierCurves.lxx
+// Created:	Wed Oct  6 15:57:04 1993
+// Author:	Bruno DUMORTIER
+//		<dub@sdsun1>
+
+
+
+
+//=======================================================================
+//function : Surface
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_BezierSurface)&  GeomFill_BezierCurves::Surface() 
+     const 
+{
+  return mySurface;
+}
+
+
+
+

@@ -1,0 +1,53 @@
+-- File:        FunctionTanCuPnt.cdl
+-- Created:     Thu Feb 20 7:33:43 1992
+-- Author:      Remy GILET
+--              <reg@topsn3>
+---Copyright:    Matra Datavision 1992
+
+
+generic class FunctionTanCuPnt from GccIter (
+    TheCurve     as any ;
+    TheCurveTool as any ) 
+
+inherits FunctionWithDerivative from math
+         
+    ---Purpose: This abstract class describes a Function of 1 Variable 
+    --          used to find a line tangent to a curve and passing 
+    --          through a point.
+
+uses Pnt2d from gp    
+
+is
+
+Create (C      : TheCurve         ;
+        Point  : Pnt2d    from gp ) returns FunctionTanCuPnt from GccIter;
+
+Value (me : in out      ;
+       X  :        Real ;
+       F  :    out Real ) returns Boolean;
+    ---Purpose: Computes the value of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Derivative (me    : in out      ;
+            X     :        Real ;
+            Deriv :    out Real ) returns Boolean;
+    ---Purpose: Computes the derivative of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Values (me    : in out      ;
+        X     :        Real ;
+        F     : out    Real ;
+        Deriv : out    Real ) returns Boolean;
+    ---Purpose: Computes the value and the derivative of the function F 
+    --          for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+fields
+
+TheCurv      : TheCurve;
+ThePoint     : Pnt2d from gp;
+
+end FunctionTanCuPnt;

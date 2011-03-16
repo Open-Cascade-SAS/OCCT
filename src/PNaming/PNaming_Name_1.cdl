@@ -1,0 +1,63 @@
+-- File:	PNaming_Name_1.cdl
+-- Created:	Fri Aug 15 17:46:09 2008
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+class Name_1 from PNaming inherits Persistent from Standard
+
+	---Purpose: 
+uses
+   NamedShape          from PNaming,
+   HArray1OfNamedShape from PNaming, 
+   HAsciiString        from PCollection
+
+is
+    Create returns mutable Name_1 from PNaming;
+    
+    Type      (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    ShapeType (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    Arguments (me :mutable ; Args : HArray1OfNamedShape from PNaming);
+    ---C++: inline
+
+    StopNamedShape (me : mutable; arg : NamedShape  from PNaming);
+    ---C++: inline
+ 
+    Type      (me) returns Integer from Standard;
+    ---C++: inline
+    
+    ShapeType (me) returns Integer from Standard;
+    ---C++: inline
+
+    Arguments (me) returns HArray1OfNamedShape from PNaming;
+    ---C++: inline
+
+    StopNamedShape (me) returns NamedShape  from PNaming;
+     ---C++: inline
+
+    Index(me : mutable; I : Integer from Standard);
+    ---C++: inline
+
+    Index(me) returns Integer from Standard;
+    ---C++: inline
+
+    ContextLabel   (me) returns HAsciiString from PCollection;
+    ---C++: return const&
+    ---C++: inline 
+    
+    ContextLabel   (me : mutable; theLab : HAsciiString from PCollection);
+    ---C++: inline 
+    
+fields 
+
+    myType         : Integer             from Standard;
+    myShapeType    : Integer             from Standard;
+    myArgs         : HArray1OfNamedShape from PNaming;
+    myStop         : NamedShape          from PNaming;
+    myIndex        : Integer             from Standard;
+    myContextLabel : HAsciiString        from PCollection;  
+
+end Name_1;

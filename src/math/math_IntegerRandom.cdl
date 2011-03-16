@@ -1,0 +1,39 @@
+-- File:        IntegerRandom.cdl
+-- Created:     Mon May 27 14:15:45 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class IntegerRandom from math
+   ---Purpose:
+   -- This class implements an integer random number generator.
+
+is
+
+   Create(Lower, Upper: Integer)
+   ---Purpose:
+   -- creates a Integer random generator between the values Lower and Upper.
+    
+   returns IntegerRandom;
+   
+    
+   Reset(me:in out)
+    	---Purpose: reinitializes the random generator
+
+   is static;
+
+   Next(me: in out)
+    ---Purpose: returns the next random number.
+
+   returns Integer
+   is static;
+   
+fields
+
+Low:    Integer;
+Up:     Integer;
+Dummy:  Integer;
+
+end IntegerRandom;

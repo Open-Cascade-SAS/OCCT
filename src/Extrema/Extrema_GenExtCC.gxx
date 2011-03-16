@@ -1,0 +1,306 @@
+// File:	Extrema_GenExtCC.gxx
+// Created:	Tue Jul 18 17:42:19 1995
+// Author:	Modelistation
+//		<model@metrox>
+
+#include <StdFail_NotDone.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
+#include <TColStd_Array2OfInteger.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Precision.hxx>
+
+Extrema_GenExtCC::Extrema_GenExtCC () : myDone (Standard_False)
+{
+}
+
+Extrema_GenExtCC::Extrema_GenExtCC (const Curve1& C1,
+			      const Curve2& C2,
+			      const Standard_Integer NbU, 
+			      const Standard_Integer NbV,
+			      const Standard_Real TolU, 
+			      const Standard_Real TolV) : myF (C1,C2, Min(TolU, TolV)), myDone (Standard_False)
+{
+  SetCurveCache (1, new Cache (C1, C1.FirstParameter(), C1.LastParameter(), NbU, Standard_True));
+  SetCurveCache (2, new Cache (C2, C2.FirstParameter(), C2.LastParameter(), NbV, Standard_True));
+  Perform();
+}
+
+
+Extrema_GenExtCC::Extrema_GenExtCC (const Curve1& C1,
+			      const Curve2& C2,
+			      const Standard_Real Uinf,
+			      const Standard_Real Usup,
+			      const Standard_Real Vinf,
+			      const Standard_Real Vsup,
+			      const Standard_Integer NbU, 
+			      const Standard_Integer NbV,
+			      const Standard_Real TolU, 
+			      const Standard_Real TolV) : myF (C1,C2), myDone (Standard_False)
+{
+  SetCurveCache (1, new Cache (C1, Uinf, Usup, NbU, Standard_True));
+  SetCurveCache (2, new Cache (C2, Vinf, Vsup, NbV, Standard_True));
+  Perform();
+}
+
+void Extrema_GenExtCC::SetCurveCache (const Standard_Integer theRank,
+                                      const Handle(Cache)& theCache)
+{
+  Standard_OutOfRange_Raise_if (theRank < 1 || theRank > 2, "Extrema_GenExtCC::SetCurveCache()")
+  myF.SetCurve (theRank, *(Curve1*)theCache->CurvePtr());
+  Standard_Integer anInd = theRank - 1;
+  myCache[anInd] = theCache;
+}
+
+void Extrema_GenExtCC::SetTolerance (const Standard_Real Tol)
+{
+  myF.SetTolerance (Tol);
+}
+
+
+//=============================================================================
+void Extrema_GenExtCC::Perform ()
+/*-----------------------------------------------------------------------------
+Fonction:
+   Recherche de toutes les distances extremales entre les courbes C1 et C2.
+  a partir de 2 echantillonnages (NbU,NbV).
+
+Methode:
+   L'algorithme part de l'hypothese que les echantillonnages sont suffisamment
+  fins pour que, s'il existe N distances extremales entre les 2 courbes,
+  alors il existe aussi N extrema entre les 2 ensembles de points.
+  Ainsi, l'algorithme consiste a partir des extrema des echantillons
+  pour trouver les extrema des courbes.
+   Les extrema sont calcules par l'algorithme math_FunctionSetRoot avec les
+  arguments suivants:
+  - myF: Extrema_FuncExtCC cree a partir de C1 et C2,
+  - UV: math_Vector dont les composantes sont les parametres des points de
+    l'extremum sur les ensembles de points,
+  - Tol: Min(TolU,TolV), (Prov.:math_FunctionSetRoot n'autorise pas un vecteur)
+  - UVinf: math_Vector dont les composantes sont les bornes inferieures de u et
+    v,
+  - UVsup: math_Vector dont les composantes sont les bornes superieures de u et
+    v.
+
+Traitement:
+  a- Constitution du tableau des square distances (TbDist2(0,NbU+1,0,NbV+1)):
+      Le tableau est volontairement etendu; les lignes 0 et NbU+1 et les
+     colonnes 0 et NbV+1 seront initialisees a RealFirst() ou RealLast()
+     pour simplifier les tests effectues dans l'etape b
+     (on n'a pas besoin de tester si le point est sur une extremite).
+  b- Calcul des extrema:
+      On recherche d'abord les minima et ensuite les maxima. Ces 2 traitements
+     se passent de facon similaire:
+  b.a- Initialisations:
+      - des 'bords' du tableau TbDist2 (a RealLast() dans le cas des minima
+        et a RealLast() dans le cas des maxima),
+      - du tableau TbSel(0,NbU+1,0,NbV+1) de selection des points pour un
+        calcul d'extremum local (a 0). Lorsqu'un couple de points sera
+	selectionne, il ne sera plus selectionnable, ainsi que les couples
+	adjacents (8 au maximum).
+	Les adresses correspondantes seront mises a 1.
+  b.b- Calcul des minima (ou maxima):
+       On boucle sur toutes les square distances du tableau TbDist2:
+      - recherche d'un minimum (ou maximum) sur les echantillons,
+      - calcul de l'extremum sur les courbes,
+      - mise a jour du tableau TbSel.
+-----------------------------------------------------------------------------*/
+{
+  myDone = Standard_False;
+
+  const Handle(Cache)& aCache1 = myCache[0];
+  const Handle(Cache)& aCache2 = myCache[1];
+  Standard_NullObject_Raise_if ((aCache1.IsNull() || aCache2.IsNull()),
+    "Extrema_GenExtCC::Perform()")
+
+  Standard_Integer aNbU = aCache1->NbSamples(), aNbV = aCache2->NbSamples();
+  Standard_OutOfRange_Raise_if ((aNbU < 2 ||aNbV < 2), "Extrema_GenExtCC::Perform()")
+
+/*
+a- Constitution du tableau des distances (TbDist2(0,NbU+1,0,NbV+1)):
+   ---------------------------------------------------------------
+*/
+
+  //ensure that caches have been calculated
+  if (!aCache1->IsValid())
+    aCache1->CalculatePoints();
+  if (!aCache2->IsValid())
+    aCache2->CalculatePoints();
+
+// Calcul des distances
+  //initialization of variables in the same way as in CalculatePoints()
+  Standard_Real PasU = aCache1->TrimLastParameter() - aCache1->TrimFirstParameter();
+  Standard_Real PasV = aCache2->TrimLastParameter() - aCache2->TrimFirstParameter();
+  Standard_Real U0 = PasU / aNbU / 100.;
+  Standard_Real V0 = PasV / aNbV / 100.;
+  PasU = (PasU - U0) / (aNbU - 1);
+  PasV = (PasV - V0) / (aNbV - 1);
+  U0 = aCache1->TrimFirstParameter() + (U0/2.);
+  V0 = aCache2->TrimFirstParameter() + (V0/2.);
+
+  const Curve1& aCurve1 = *((Curve1*)(myF.CurvePtr (1)));
+  const Curve2& aCurve2 = *((Curve1*)(myF.CurvePtr (2)));
+  const Handle(ArrayOfPnt)& aPntArray1 = aCache1->Points();
+  const Handle(ArrayOfPnt)& aPntArray2 = aCache2->Points();
+  Standard_Integer NoU, NoV;
+  TColStd_Array2OfReal TbDist2(0, aNbU + 1, 0, aNbV + 1);
+  for (NoU = 1; NoU <= aNbU; NoU++) {
+    const Pnt& P1 = aPntArray1->Value (NoU);
+    for (NoV = 1; NoV <= aNbV; NoV++) {
+      const Pnt& P2 = aPntArray2->Value (NoV);
+      TbDist2(NoU,NoV) = P1.SquareDistance(P2);
+    }
+  }
+
+/*
+b- Calcul des minima:
+   -----------------
+   b.a) Initialisations:
+*/
+//     - generales
+  math_Vector Tol(1, 2);
+  Tol(1) = myF.Tolerance();
+  Tol(2) = myF.Tolerance();
+  math_Vector UV(1,2), UVinf(1,2), UVsup(1,2);
+  UVinf(1) = aCache1->TrimFirstParameter();
+  UVinf(2) = aCache2->TrimFirstParameter();
+  UVsup(1) = aCache1->TrimLastParameter();
+  UVsup(2) = aCache2->TrimLastParameter();
+
+//     - des 'bords' du tableau TbDist2
+  for (NoV = 0; NoV <= aNbV+1; NoV++) {
+    TbDist2(0,NoV) = RealLast();
+    TbDist2(aNbU+1,NoV) = RealLast();
+  }
+  for (NoU = 1; NoU <= aNbU; NoU++) {
+    TbDist2(NoU,0) = RealLast();
+    TbDist2(NoU,aNbV+1) = RealLast();
+  }
+
+//     - du tableau TbSel(0,aNbU+1,0,aNbV+1) de selection des points
+  TColStd_Array2OfInteger TbSel(0,aNbU+1,0,aNbV+1);
+  TbSel.Init(0);
+
+/*
+   b.b) Calcul des minima:
+*/
+//     - recherche d un minimum sur la grille
+  Standard_Integer Nu, Nv;
+  Standard_Real Dist2;
+  for (NoU = 1; NoU <= aNbU; NoU++) {
+    for (NoV = 1; NoV <= aNbV; NoV++) {
+      if (TbSel(NoU,NoV) == 0) {
+	Dist2 = TbDist2(NoU,NoV);
+	if ((TbDist2(NoU-1,NoV-1) >= Dist2) &&
+	    (TbDist2(NoU-1,NoV  ) >= Dist2) &&
+	    (TbDist2(NoU-1,NoV+1) >= Dist2) &&
+	    (TbDist2(NoU  ,NoV-1) >= Dist2) &&
+	    (TbDist2(NoU  ,NoV+1) >= Dist2) &&
+	    (TbDist2(NoU+1,NoV-1) >= Dist2) &&
+	    (TbDist2(NoU+1,NoV  ) >= Dist2) &&
+	    (TbDist2(NoU+1,NoV+1) >= Dist2)) {
+
+//     - calcul de l extremum sur la surface:
+	  UV(1) = U0 + (NoU - 1) * PasU;
+	  UV(2) = V0 + (NoV - 1) * PasV;
+
+
+	  math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup);
+
+      
+//     - mise a jour du tableau TbSel 	  
+	  for (Nu = NoU-1; Nu <= NoU+1; Nu++) {
+	    for (Nv = NoV-1; Nv <= NoV+1; Nv++) {
+	      TbSel(Nu,Nv) = 1;
+	    }
+	  }
+	}
+      } // if (TbSel(NoU,NoV)
+    } // for (NoV = 1; ...
+  } // for (NoU = 1; ...
+/*
+c- Calcul des maxima:
+   -----------------
+   c.a) Initialisations:
+*/
+//     - des 'bords' du tableau TbDist2
+  for (NoV = 0; NoV <= aNbV+1; NoV++) {
+    TbDist2(0,NoV) = RealFirst();
+    TbDist2(aNbU+1,NoV) = RealFirst();
+  }
+  for (NoU = 1; NoU <= aNbU; NoU++) {
+    TbDist2(NoU,0) = RealFirst();
+    TbDist2(NoU,aNbV+1) = RealFirst();
+  }
+
+//     - du tableau TbSel(0,aNbU+1,0,aNbV+1) de selection des points
+  TbSel.Init(0);
+  /*for (NoU = 0; NoU <= aNbU+1; NoU++) {
+    for (NoV = 0; NoV <= aNbV+1; NoV++) {
+      TbSel(NoU,NoV) = 0;
+    }
+  }*/
+/*
+   c.b) Calcul des maxima:
+*/
+//     - recherche d un maximum sur la grille
+  for (NoU = 1; NoU <= aNbU; NoU++) {
+    for (NoV = 1; NoV <= aNbV; NoV++) {
+      if (TbSel(NoU,NoV) == 0) {
+	Dist2 = TbDist2(NoU,NoV);
+	if ((TbDist2(NoU-1,NoV-1) <= Dist2) &&
+	    (TbDist2(NoU-1,NoV  ) <= Dist2) &&
+	    (TbDist2(NoU-1,NoV+1) <= Dist2) &&
+	    (TbDist2(NoU  ,NoV-1) <= Dist2) &&
+	    (TbDist2(NoU  ,NoV+1) <= Dist2) &&
+	    (TbDist2(NoU+1,NoV-1) <= Dist2) &&
+	    (TbDist2(NoU+1,NoV  ) <= Dist2) &&
+	    (TbDist2(NoU+1,NoV+1) <= Dist2)) {
+
+//     - calcul de l extremum sur la surface:
+	  UV(1) = U0 + (NoU - 1) * PasU;
+	  UV(2) = V0 + (NoV - 1) * PasV;
+
+	  math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup);
+      
+//     - mise a jour du tableau TbSel 	  
+	  for (Nu = NoU-1; Nu <= NoU+1; Nu++) {
+	    for (Nv = NoV-1; Nv <= NoV+1; Nv++) {
+	      TbSel(Nu,Nv) = 1;
+	    }
+	  }
+	}
+      } // if (TbSel(NoU,NoV))
+    } // for (NoV = 1; ...)
+  } // for (NoU = 1; ...)
+  myDone = Standard_True;
+}
+//=============================================================================
+
+Standard_Boolean Extrema_GenExtCC::IsDone () const { return myDone; }
+//=============================================================================
+
+Standard_Integer Extrema_GenExtCC::NbExt () const
+{
+  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::NbExt()")
+  return myF.NbExt();
+}
+//=============================================================================
+
+Standard_Real Extrema_GenExtCC::SquareDistance (const Standard_Integer N) const
+{
+  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::SquareDistance()")
+  Standard_OutOfRange_Raise_if ((N < 1 || N > NbExt()), "Extrema_GenExtCC::SquareDistance()")
+  return myF.SquareDistance(N);
+}
+//=============================================================================
+
+void Extrema_GenExtCC::Points (const Standard_Integer N,
+			    POnC& P1, POnC& P2) const
+{
+  StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::SquareDistance()")
+  Standard_OutOfRange_Raise_if ((N < 1 || N > NbExt()), "Extrema_GenExtCC::SquareDistance()")
+  myF.Points(N,P1,P2);
+}

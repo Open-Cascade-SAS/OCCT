@@ -1,0 +1,57 @@
+-- File:	Dynamic_FuzzyDefinition.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class FuzzyDefinition from Dynamic
+inherits
+
+    FuzzyClass from Dynamic
+    
+	---Purpose: It  is the class  useful for  setting a particular
+	--          definition   of  an   object.  This  definition is
+	--          caracterized by  a  collection of parameters. Each
+	--          parameter  is identified by its  name, the type of
+	--          its referenced   value and if  necessary a default
+	--          value.
+
+uses
+
+    OStream from Standard,
+    CString from Standard,
+    HAsciiString from TCollection,
+    AsciiString  from TCollection
+
+
+is
+
+    Create(aname : CString from Standard) returns mutable FuzzyDefinition from Dynamic;
+    
+    ---Level: Public 
+    
+    ---Purpose: Creates a FuzzyDefinition with <aname> as type.
+    
+    Type(me) returns AsciiString from TCollection
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns the type of object.
+    
+    is redefined;
+    
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+
+    is redefined;
+    
+fields
+
+    thename : HAsciiString from TCollection;
+
+end FuzzyDefinition;

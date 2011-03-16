@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeCartesianPoint2d.cdl
+-- Created:	Tue Jul  6 16:30:29 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeCartesianPoint2d from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          CartesianPoint from StepGeom which describes a point from
+    --          Prostep and CartesianPoint from Geom2d.
+  
+uses 
+     CartesianPoint from Geom2d,
+     CartesianPoint from StepGeom
+     
+is 
+
+    Convert ( myclass; SP : CartesianPoint from StepGeom;
+                       CP : out CartesianPoint from Geom2d )
+    returns Boolean from Standard;
+ 
+end MakeCartesianPoint2d;

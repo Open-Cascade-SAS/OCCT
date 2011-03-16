@@ -1,0 +1,13 @@
+// File:	AIS_IdenticRelation.lxx
+// Created:	Tue Mar  4 09:41:04 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_IdenticRelation::IsMovable() const 
+{
+  return Standard_True;
+}

@@ -1,0 +1,203 @@
+-- File:	GeomFill_EvolvedSection.cdl
+-- Created:	Mon Aug 17 15:45:13 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class EvolvedSection from GeomFill inherits SectionLaw  from  GeomFill 
+
+	---Purpose: Define an Constant Section Law          
+
+uses 
+ Curve            from  Geom,
+ BSplineSurface   from Geom,  
+ BSplineCurve     from Geom,   
+ Function         from Law, 
+ Shape            from GeomAbs,
+ Pnt              from gp,
+ Array1OfPnt      from TColgp,
+ Array1OfVec      from TColgp, 
+ Array1OfInteger  from TColStd,
+ Array1OfReal     from TColStd   
+
+
+raises
+ OutOfRange 
+ 
+is 
+   Create(C  :  Curve  from  Geom; 
+	  L  :   Function from Law) 
+       ---Purpose: Make an SectionLaw with a Curve and a real  Law.
+                   
+    returns  EvolvedSection from GeomFill; 
+    
+-- 
+--========== To compute Sections and derivatives Sections
+--      
+
+   D0(me : mutable; 
+      Param: Real;
+      Poles    : out Array1OfPnt   from TColgp;
+      Weigths  : out Array1OfReal  from TColStd)
+      ---Purpose: compute the section for v = param           
+   returns Boolean  is  redefined;
+	
+   D1(me : mutable;
+      Param: Real;
+      Poles    : out Array1OfPnt   from TColgp;
+      DPoles   : out Array1OfVec   from TColgp;
+      Weigths  : out Array1OfReal  from TColStd;
+      DWeigths : out Array1OfReal  from TColStd)
+      ---Purpose: compute the first  derivative in v direction  of the
+      --           section for v =  param 
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   is  redefined; 
+   
+    D2(me : mutable;
+      Param: Real; 
+      Poles     : out Array1OfPnt   from TColgp;
+      DPoles    : out Array1OfVec   from TColgp;
+      D2Poles   : out Array1OfVec   from TColgp;
+      Weigths   : out Array1OfReal  from TColStd;
+      DWeigths  : out Array1OfReal  from TColStd;
+      D2Weigths : out Array1OfReal  from TColStd)      
+      ---Purpose: compute the second derivative  in v direction of the
+      --          section  for v = param  
+      --  Warning : It used only for C2 aproximation
+   returns Boolean  
+   is  redefined; 
+    
+   BSplineSurface(me) 
+   ---Purpose: give if possible an bspline Surface, like iso-v are the
+   --          section.  If it is  not possible  this methode have  to
+   --          get an Null Surface.  Is it the default implementation.
+   returns BSplineSurface  from  Geom
+   is  redefined;
+
+    SectionShape(me; NbPoles   : out Integer from Standard;
+                     NbKnots   : out Integer from Standard;
+                     Degree    : out Integer from Standard) 
+	---Purpose: get the format of an  section
+    is  redefined;  
+    
+    Knots(me; TKnots: out Array1OfReal from TColStd)
+	---Purpose: get the Knots of the section 
+	is redefined;
+
+    Mults(me; TMults: out Array1OfInteger from TColStd)
+	---Purpose: get the Multplicities of the section          
+	is redefined;   
+
+    IsRational(me)
+	---Purpose: Returns if the sections are rationnal or not         
+    returns Boolean  is redefined; 
+     
+    IsUPeriodic(me)  
+        ---Purpose: Returns if the sections are periodic or not       
+    returns Boolean  is redefined;   
+
+    IsVPeriodic(me)  
+        ---Purpose: Returns if the law  isperiodic or not         
+    returns Boolean  is redefined;  
+--
+--  =================== Management  of  continuity  ===================
+--                 
+    NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  redefined;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined;  
+     
+    	
+   SetInterval(me: mutable; First, Last: Real from Standard)    
+	---Purpose: Sets the bounds of the parametric interval on 
+	--          the function
+	--          This determines the derivatives in these values if the
+	--          function is not Cn.
+   is redefined; 
+   
+   GetInterval(me; First, Last: out Real from Standard)
+	---Purpose: Gets the bounds of the parametric interval on 
+	--          the function
+   is redefined;  
+     
+   GetDomain(me; First, Last: out  Real from Standard)  
+    	---Purpose: Gets the bounds of the function parametric domain.
+    	--  Warning: This domain it is  not modified by the
+    	--          SetValue method         
+   is  redefined;    
+      
+--  ===================== To  help  computation  of  Tolerance ======
+--      Evaluation of error, in 2d space, or on rational function, is
+--      difficult.  The following methods can help the approximation to
+--      make good evaluation and use good tolerances.
+--      
+--       It is not necessary for the following informations to be very
+--       precise. A fast evaluation is sufficient.
+      
+  GetTolerance(me;  
+    	       BoundTol, SurfTol, AngleTol : Real;
+	       Tol3d : out Array1OfReal)
+	---Purpose: Returns the tolerances associated at each poles to
+	--          reach  in approximation, to satisfy: BoundTol error
+	--          at the   Boundary  AngleTol tangent error  at  the
+	--          Boundary  (in radian)  SurfTol   error inside the
+	--          surface.
+  is  redefined; 
+   
+  BarycentreOfSurf(me) 
+   ---Purpose:  Get the barycentre of Surface.   
+   --          An   very  poor estimation is sufficent. 
+   --          This information is usefull to perform well 
+   --          conditioned rational approximation.
+   --  Warning: Used only if <me> IsRational         
+   returns Pnt from gp      
+   is  redefined;
+      
+	
+   MaximalSection(me) returns Real
+    	---Purpose: Returns the   length of the greater section. This
+    	--          information is usefull to G1's control.
+        --  Warning: With an little value, approximation can be slower.
+   is redefined;
+    
+   GetMinimalWeight(me; Weigths  : out Array1OfReal  from TColStd)
+    	---Purpose: Compute the minimal value of weight for each poles
+    	--          in all  sections.  
+        --          This information is  usefull to control error
+    	--          in rational approximation.
+        --  Warning: Used only if <me> IsRational          
+   is redefined; 
+    
+ 
+    IsConstant(me;  Error  :  out  Real)   
+	---Purpose: return True If the Law isConstant         
+    returns  Boolean   
+    is  redefined;
+
+    ConstantSection(me)  
+     	---Purpose: Return the constant Section if <me>  IsConstant.
+     	--          
+    returns  Curve  from  Geom 
+    is  redefined;  
+
+fields     
+  First,  Last : Real;
+  mySection  :  Curve  from  Geom;  
+  myLaw      :  Function from Law; 
+  TLaw       :  Function from Law; 
+  myCurve    :  BSplineCurve  from  Geom; 
+end EvolvedSection;

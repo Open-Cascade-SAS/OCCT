@@ -1,0 +1,12 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	SelectBasics_EntityOwner.lxx
+// Created:	Thu Feb 23 11:50:49 1995
+// Author:	Mister rmi
+//		<rmi>
+
+
+inline void SelectBasics_EntityOwner::Set (const Standard_Integer aPriority)
+{mypriority = aPriority;}
+
+inline Standard_Integer SelectBasics_EntityOwner::Priority() const
+{return mypriority;}

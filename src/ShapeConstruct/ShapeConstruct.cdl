@@ -1,0 +1,121 @@
+-- File:	ShapeConstruct.cdl
+-- Created:	Tue Jul 14 09:34:35 1998
+-- Author:	data exchange team
+--		<det@pronox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeConstruct 
+
+	---Purpose: This package provides new algorithms for constructing
+-- new geometrical objects and topological shapes. It
+-- complements and extends algorithms available in Open
+-- CASCADE topological and geometrical toolkist.
+-- The functionality provided by this package are the
+-- following: 
+  --    projecting curves on surface, 
+--      adjusting curve to have given start and end points. P
+uses
+    gp,
+    Geom,
+    GeomAbs,
+    Geom2d,
+    TColgp,
+    TColStd,
+    ShapeExtend,
+    ShapeAnalysis,
+    Convert,
+    BRepBuilderAPI,
+    TopoDS,
+    TopAbs,
+    TopTools
+
+is
+
+    class Curve;
+    	---Purpose: Tool for adjusting 3d and 2d curve
+
+    class ProjectCurveOnSurface;
+    	---Purpose: Tool for computing pcurve by projecting 3d curve on a surface
+    ---WARNING: The following two classes are just a copy of those from GEOMLITE
+    --          They must be removed as soon as bug in them is fixed	
+
+    class CompBezierCurvesToBSplineCurve;
+    	---Purpose: Converts a list of connecting BezierCurves
+	--          into a B-spline curve.
+
+    class CompBezierCurves2dToBSplineCurve2d;
+	---Purpose: Converts a list of connecting BezierCurves
+	--          into a B-spline curve.	
+
+    class MakeTriangulation;
+    	---Purpose: Tool for wire triangulation
+
+    ConvertCurveToBSpline(C3D        : Curve from Geom;
+    	    	    	  First      : Real;
+			  Last       : Real;
+    	    	    	  Tol3d      : Real; -- this and following parameters are used only if approximator have to be used.
+			  Continuity : Shape from GeomAbs; 
+    	    	    	  MaxSegments: Integer;
+			  MaxDegree  : Integer)
+    returns BSplineCurve from Geom;
+    
+    ConvertCurveToBSpline(C2D        : Curve from Geom2d;
+    	    	    	  First      : Real;
+			  Last       : Real;
+    	    	    	  Tol2d      : Real; -- this and following parameters are used only if approximator have to be used.
+			  Continuity : Shape from GeomAbs; 
+    	    	    	  MaxSegments: Integer;
+			  MaxDegree  : Integer)
+    returns BSplineCurve from Geom2d;
+    
+    ConvertSurfaceToBSpline(surf       : Surface from Geom;
+    			   UF,UL,VF,VL: Real;
+			   Tol3d      : Real; -- this and following parameters are used only if approximator have to be used.
+			   Continuity : Shape from GeomAbs; 
+    	    	    	   MaxSegments: Integer;
+			   MaxDegree  : Integer)
+    returns BSplineSurface from Geom;
+        
+    JoinPCurves(theEdges : HSequenceOfShape from TopTools;
+    	    	theFace  : Face from TopoDS;
+    	    	theEdge : in out Edge from TopoDS)
+    returns Boolean from Standard;
+    	---Purpose: join pcurves of the <theEdge> on the <theFace>
+	--    	    try to use pcurves from originas edges <theEdges>
+    	--          Returns false if cannot join pcurves
+	
+    JoinCurves(c3d1,ac3d2 : Curve from Geom; 
+    	    	Orient1, Orient2 : Orientation from TopAbs;
+		first1,last1,first2,last2 : in out Real;
+		c3dOut : out Curve from Geom;
+		isRev1,isRev2 : out Boolean) returns Boolean;
+		
+    --- Purpose:Method for joininig curves 3D. 
+    --          Parameters : c3d1,ac3d2 - initial curves
+    --	                     Orient1, Orient2 - initial edges orientations.
+    --                       first1,last1,first2,last2 - parameters for trimming curves 
+    --	    	             (re-calculate with account of orientation edges)
+    --                       c3dOut - result curve
+    --                       isRev1,isRev2 - out parameters indicative on possible errors.
+    --          Return value : True - if curves were joined successfully,
+    --                               else - False.
+    
+    JoinCurves(c2d1,ac2d2 : Curve from Geom2d; 
+    	    	Orient1, Orient2 : Orientation from TopAbs;
+		first1,last1,first2,last2 : in out Real;
+		c2dOut : out Curve from Geom2d;
+		isRev1,isRev2 : out Boolean;
+                isError : Boolean = Standard_False) returns Boolean;
+		
+    --- Purpose:Method for joininig curves 3D. 
+    --          Parameters : c3d1,ac3d2 - initial curves
+    --	                     Orient1, Orient2 - initial edges orientations.
+    --                       first1,last1,first2,last2 - parameters for trimming curves 
+    --	    	             (re-calculate with account of orientation edges)
+    --                       c3dOut - result curve
+    --                       isRev1,isRev2 - out parameters indicative on possible errors.
+    --                       isError - input parameter indicative possible errors due to that one from edges have one vertex
+    --         Return value : True - if curves were joined successfully,
+    --                               else - False.
+end ShapeConstruct;

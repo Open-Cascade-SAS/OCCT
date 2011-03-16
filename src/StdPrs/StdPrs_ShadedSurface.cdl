@@ -1,0 +1,32 @@
+-- File:	StdPrs_ShadedSurface.cdl
+-- Created:	Thu Jul 27 11:42:59 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ShadedSurface from StdPrs 
+
+inherits Root from Prs3d
+    	--- Purpose: Draws a surface by drawing the isoparametric curves with respect to 
+    	-- a maximal chordial deviation.
+    	-- The number of isoparametric curves to be drawn and their color are
+    	-- controlled by the furnished Drawer.
+uses
+    Surface      from Adaptor3d,
+    Presentation from Prs3d,
+    Drawer       from Prs3d
+    	
+is
+  
+    Add(myclass; aPresentation: Presentation from Prs3d;  
+    	    	 aSurface     : Surface      from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+    	---Purpose: Adds the surface aSurface to the presentation object aPresentation.
+    	-- The surface's display attributes are set in the attribute manager aDrawer.
+    	-- The surface object from Adaptor3d provides data
+    	-- from a Geom surface in order to use the surface in an algorithm.
+end ShadedSurface;
+
+
+

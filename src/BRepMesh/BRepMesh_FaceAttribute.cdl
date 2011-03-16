@@ -1,0 +1,71 @@
+-- File:      BRepMesh_FaceAttribute.cdl
+-- Created:   Fri Oct 31 16:16:20 2008
+-- Author:    EPA
+---Copyright: OPEN CASCADE 2008
+
+class FaceAttribute from BRepMesh inherits TShared from MMgt
+
+    ---Purpose: auxiliary class for FastDiscret and FastDiscretFace classes
+
+uses    
+    Real          from Standard,
+    Address       from Standard,
+    ClassifierPtr from BRepMesh
+
+is 
+
+    Create returns mutable FaceAttribute from BRepMesh;
+
+    GetDefFace(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline    
+
+    GetUMin(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetVMin(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetUMax(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetVMax(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetDeltaX(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetDeltaY(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetMinX(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+
+    GetMinY(me:mutable) returns Real;
+       ---C++: return &
+       ---C++: inline
+       
+    GetClassifier(me:mutable) returns ClassifierPtr from BRepMesh;
+       ---C++: return &
+       ---C++: inline
+
+fields  
+    mydefface   : Real          from Standard;
+    myumin      : Real          from Standard;
+    myumax      : Real          from Standard;
+    myvmin      : Real          from Standard;
+    myvmax      : Real          from Standard;
+    mydeltaX    : Real          from Standard;
+    mydeltaY    : Real          from Standard;
+    myminX      : Real          from Standard;
+    myminY      : Real          from Standard;
+    myclassifier: ClassifierPtr from BRepMesh;
+
+end FaceAttribute;

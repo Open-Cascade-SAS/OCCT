@@ -1,0 +1,80 @@
+-- File:        QuasiUniformCurveAndRationalBSplineCurve.cdl
+-- Created:     Fri Dec  1 11:11:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class QuasiUniformCurveAndRationalBSplineCurve from StepGeom 
+
+inherits BSplineCurve from StepGeom 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+	QuasiUniformCurve from StepGeom, 
+	RationalBSplineCurve from StepGeom, 
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray1OfCartesianPoint from StepGeom, 
+	BSplineCurveForm from StepGeom, 
+	Logical from StepData, 
+	HArray1OfReal from TColStd, 
+	Real from Standard
+is
+
+	Create returns mutable QuasiUniformCurveAndRationalBSplineCurve;
+	---Purpose: Returns a QuasiUniformCurveAndRationalBSplineCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aQuasiUniformCurve : mutable QuasiUniformCurve from StepGeom;
+	      aRationalBSplineCurve : mutable RationalBSplineCurve from StepGeom) is virtual;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aWeightsData : mutable HArray1OfReal from TColStd) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetQuasiUniformCurve(me : mutable; aQuasiUniformCurve : mutable QuasiUniformCurve);
+	QuasiUniformCurve (me) returns mutable QuasiUniformCurve;
+	SetRationalBSplineCurve(me : mutable; aRationalBSplineCurve : mutable RationalBSplineCurve);
+	RationalBSplineCurve (me) returns mutable RationalBSplineCurve;
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+
+	-- Specific Methods for ANDOR Field Data Access --
+
+	SetWeightsData(me : mutable; aWeightsData : mutable HArray1OfReal);
+	WeightsData (me) returns mutable HArray1OfReal;
+	WeightsDataValue (me; num : Integer) returns Real;
+	NbWeightsData (me) returns Integer;
+
+fields
+
+	quasiUniformCurve : QuasiUniformCurve from StepGeom;
+	rationalBSplineCurve : RationalBSplineCurve from StepGeom;
+
+end QuasiUniformCurveAndRationalBSplineCurve;

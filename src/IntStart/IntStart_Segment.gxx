@@ -1,0 +1,19 @@
+IntStart_Segment::IntStart_Segment () {}
+
+
+void IntStart_Segment::SetLimitPoint (const ThePathPoint& V,
+				      const Standard_Boolean First) {
+
+  if (First) {
+    hasfp = Standard_True;
+    thefp = V;
+  }
+  else {
+    haslp = Standard_True;
+    thelp = V;
+  }
+}
+
+
+
+

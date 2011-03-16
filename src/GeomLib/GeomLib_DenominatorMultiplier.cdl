@@ -1,0 +1,72 @@
+-- File:	GeomLib_DenominatorMultiplier.cdl
+-- Created:	Tue May 13 10:36:30 1997
+-- Author:	Stagiaire Francois DUMONT
+--		<dum@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+class DenominatorMultiplier from GeomLib
+
+	---Purpose: this class is used to  construct the BSpline curve
+	--          from an Approximation ( ApproxAFunction from AdvApprox).
+    	
+
+uses
+
+    BSplineSurface    from Geom,
+    Array1OfReal      from TColStd
+   
+raises
+
+    OutOfRange from Standard,
+    ConstructionError from Standard
+is
+
+    Create( Surface           : BSplineSurface from Geom ;
+    	    KnotVector        : Array1OfReal   from TColStd)
+    returns DenominatorMultiplier from GeomLib
+    raises
+        ConstructionError from Standard;
+       
+     ---Purpose: if the surface is rational this will define the evaluator
+     --          of a real function of 2 variables a(u,v) such that
+     --          if we define a new surface by :
+     --                       a(u,v) * N(u,v) 
+     --          NewF(u,v) = ----------------
+     --                       a(u,v) * D(u,v) 
+    
+    
+    Value(me; UParameter : in Real from Standard ;
+    	      VParameter : in Real from Standard) 
+
+    returns Real from Standard
+    raises
+    	OutOfRange from Standard
+    	---Purpose: Returns the value of 
+    	--          a(UParameter,VParameter)=
+    	--          
+    	--            H0(UParameter)/Denominator(Umin,Vparameter)
+    	--            
+    	--            D Denominator(Umin,Vparameter)
+        --          - ------------------------------[H1(u)]/(Denominator(Umin,Vparameter)^2)
+        --            D U
+        --            
+        --          + H3(UParameter)/Denominator(Umax,Vparameter)
+        --          
+        --            D Denominator(Umax,Vparameter)
+        --          - ------------------------------[H2(u)]/(Denominator(Umax,Vparameter)^2)
+        --            D U
+    is static;
+
+    
+fields
+    
+    mySurface          : BSplineSurface  from Geom  ;
+    myKnotFlatVector   : Array1OfReal from TColStd  ;              
+    
+
+end MakeCurvefromApprox;
+
+
+

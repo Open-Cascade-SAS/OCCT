@@ -1,0 +1,32 @@
+-- File:	StepGeom_SurfaceBoundary.cdl
+-- Created:	Fri Nov 26 16:26:28 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class SurfaceBoundary from StepGeom
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type SurfaceBoundary
+
+uses
+    BoundaryCurve from StepGeom,
+    DegeneratePcurve from StepGeom
+
+is
+    Create returns SurfaceBoundary from StepGeom;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of SurfaceBoundary select type
+	--          1 -> BoundaryCurve from StepGeom
+	--          2 -> DegeneratePcurve from StepGeom
+	--          0 else
+
+    BoundaryCurve (me) returns BoundaryCurve from StepGeom;
+	---Purpose: Returns Value as BoundaryCurve (or Null if another type)
+
+    DegeneratePcurve (me) returns DegeneratePcurve from StepGeom;
+	---Purpose: Returns Value as DegeneratePcurve (or Null if another type)
+
+end SurfaceBoundary;

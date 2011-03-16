@@ -1,0 +1,11 @@
+#include <TCollection_MapNodePtr.hxx>
+
+inline TCollection_MapNode::TCollection_MapNode(const TCollection_MapNodePtr& n) 
+: myNext(n) 
+{
+}
+
+inline TCollection_MapNodePtr& TCollection_MapNode::Next() const
+{
+  return (TCollection_MapNodePtr&)myNext;
+}

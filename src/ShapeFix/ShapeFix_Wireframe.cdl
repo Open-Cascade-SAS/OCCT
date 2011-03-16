@@ -1,0 +1,119 @@
+-- File:	ShapeFix_Wireframe.cdl
+-- Created:	Tue Aug 24 11:27:03 1999
+-- Author:	Sergei ZERTCHANINOV
+--		<szv@nnov>
+---Copyright:	 Matra Datavision 1999
+
+
+class Wireframe from ShapeFix inherits Root from ShapeFix
+
+    ---Purpose : Provides methods for fixing wireframe of shape
+
+uses 
+
+    Shape from TopoDS,
+    Status from ShapeExtend,
+    Shape from GeomAbs,
+    HArray1OfReal from TColStd,
+    MapOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools
+
+is
+
+    Create returns Wireframe from ShapeFix;
+
+    Create (shape: Shape from TopoDS) returns Wireframe from ShapeFix;
+
+    ClearStatuses (me: mutable) is virtual;
+    ---Purpose: Clears all statuses
+
+    Load (me : mutable; shape: Shape from TopoDS);
+    ---Purpose: Loads a shape, resets statuses
+
+    FixWireGaps (me : mutable) returns Boolean from Standard;
+    ---Purpose : Fixes gaps between ends of curves of adjacent edges
+    --           (both 3d and pcurves) in wires
+    --           If precision is 0.0, uses Precision::Confusion().
+    ---Status  : See StatusWireGaps() for details
+    --           OK - No gaps were found
+    --           DONE1 - Some gaps in 3D were fixed
+    --           DONE2 - Some gaps in 2D were fixed
+    --           FAIL1 - Failed to fix some gaps in 3D
+    --           FAIL2 - Failed to fix some gaps in 2D
+    ---Returns : False if nothing done, else True
+
+    FixSmallEdges (me : mutable) returns Boolean from Standard;
+    ---Purpose : Fixes small edges in shape by merging adjacent edges
+    --           If precision is 0.0, uses Precision::Confusion().
+    ---Status  : See StatusSmallEdges() for details
+    --           OK - No small edges were found
+    --           DONE1 - Some small edges were fixed
+    --           FAIL1 - Failed to fix some small edges
+    ---Returns : False if nothing done, else True
+
+    CheckSmallEdges (me: mutable; theSmallEdges: out MapOfShape from TopTools;
+                       	          theEdgeToFaces: out DataMapOfShapeListOfShape from TopTools;
+     	    	      	    	  theFaceWithSmall: out DataMapOfShapeListOfShape from TopTools;
+    	    	    	    	  theMultyEdges: out MapOfShape from TopTools)
+    returns Boolean from Standard;
+    	---Purpose: Auxiliary tool for FixSmallEdges which checks for small edges and fills the maps.
+	--          Returns True if at least one small edge has been found.
+	
+    MergeSmallEdges (me: mutable; theSmallEdges: in out MapOfShape from TopTools;
+                      	    	  theEdgeToFaces: in out DataMapOfShapeListOfShape from TopTools;
+     	    	      	    	  theFaceWithSmall: in out DataMapOfShapeListOfShape from TopTools;
+				  theMultyEdges: out MapOfShape from TopTools;
+    	    	      	    	  theModeDrop: Boolean = Standard_False;
+    	    	      	    	  theLimitAngle: Real = -1)
+    returns Boolean from Standard;
+    	---Purpose: Auxiliary tool for FixSmallEdges which merges small edges.
+	--          If theModeDrop is equal to Standard_True then small edges,
+    	--          which cannot be connected with adjacent edges are dropped.
+    	--          Otherwise they are kept.
+    	--          theLimitAngle specifies maximum allowed tangency
+    	--          discontinuity between adjacent edges.
+	--          If theLimitAngle is equal to -1, this angle is not taken into account.
+	
+    StatusWireGaps (me; status: Status from ShapeExtend) returns Boolean;
+    ---C++: inline
+    ---Purpose : Decodes the status of the last FixWireGaps.
+    --           OK - No gaps were found
+    --           DONE1 - Some gaps in 3D were fixed
+    --           DONE2 - Some gaps in 2D were fixed
+    --           FAIL1 - Failed to fix some gaps in 3D
+    --           FAIL2 - Failed to fix some gaps in 2D
+
+    StatusSmallEdges (me; status: Status from ShapeExtend) returns Boolean;
+    ---C++: inline
+    ---Purpose : Decodes the status of the last FixSmallEdges.
+    --           OK - No small edges were found
+    --           DONE1 - Some small edges were fixed
+    --           FAIL1 - Failed to fix some small edges
+
+    Shape (me : mutable) returns Shape from TopoDS;
+    ---C++: inline
+    
+    ModeDropSmallEdges(me : mutable) returns Boolean;
+    ---C++: return &
+    ---C++: inline
+    ---Purpose: Returns mode managing removing small edges.
+    
+    SetLimitAngle(me:mutable; theLimitAngle : Real);
+    ---C++: inline
+    ---Purpose:Set limit angle for merging edges.
+    
+    LimitAngle(me) returns Real;
+    ---C++: inline
+    ---Purpose:Get limit angle for merging edges.
+    
+    
+    
+fields
+
+    myShape             : Shape from TopoDS is protected;
+    myModeDrop          : Boolean;
+    myLimitAngle        : Real;
+    myStatusWireGaps    : Integer from Standard;
+    myStatusSmallEdges  : Integer from Standard;
+
+end Wireframe;

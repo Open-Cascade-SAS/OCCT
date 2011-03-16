@@ -1,0 +1,134 @@
+-- File:	Contap_SurfaceTool.cdl
+-- Created:	Wed May 12 09:11:00 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred generic class SurfaceTool from Contap
+    (TheSurface as any)
+                                   
+
+	---Purpose: Template class for a tool on a surface.
+	--          It is possible to implement this class with an 
+	--          instantiation of the Surface2Tool from Adaptor3d.
+
+
+uses SurfaceType from GeomAbs,
+     Pln         from gp,
+     Sphere      from gp,
+     Cylinder    from gp,
+     Cone        from gp,
+     Pnt         from gp,
+     Vec         from gp
+
+ is
+
+
+    GetType(myclass; S: TheSurface)
+    
+    	returns SurfaceType from GeomAbs;
+
+
+    Plane(myclass; S: TheSurface)
+    
+	---Purpose: Returns the plane from gp when GetType returns
+	--          GeomAbs_Plane.
+    
+    	returns Pln from gp;
+
+
+    Cylinder(myclass; S: TheSurface)
+    
+	---Purpose: Returns the cylinder from gp when GetType returns
+	--          GeomAbs_Cylinder.
+    
+    	returns Cylinder from gp;
+
+
+    Sphere(myclass; S: TheSurface)
+    
+	---Purpose: Returns the sphere from gp when GetType returns
+	--          GeomAbs_Sphere.
+    
+    	returns Sphere from gp;
+
+
+    Cone(myclass; S: TheSurface)
+    
+	---Purpose: Returns the cone from gp when GetType returns
+	--          GeomAbs_Cone.
+    
+    	returns Cone from gp;
+
+
+
+    UIntervalFirst(myclass ; S: TheSurface)
+	   
+	---Purpose: Returns the first U parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    VIntervalFirst(myclass ; S: TheSurface)
+	   
+	---Purpose: Returns the first V parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    UIntervalLast(myclass ; S: TheSurface)
+	   
+	---Purpose: Returns the last U parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    VIntervalLast(myclass ; S: TheSurface)
+	   
+	---Purpose: Returns the last V parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    Value (myclass ; S: TheSurface;
+           U,V : Real from Standard)
+	   
+	---Purpose: Returns the point of parameter (U,V) on the surface.
+
+    	 returns Pnt from gp;
+
+
+    D1(myclass; S: TheSurface; U,V: Real from Standard; 
+                P: out Pnt from gp; D1U,D1V: out Vec from gp);
+		
+	---Purpose: Returns the point of parameter (U,V) on the surface,
+	--          and the first derivatives in the directions u and v.
+
+    
+    D2(myclass; S: TheSurface; U,V: Real from Standard; P: out Pnt from gp;
+                       D1U,D1V,D2U,D2V,D2UV: out Vec from gp);
+		       
+	---Purpose: Returns the point of parameter (U,V) on the surface,
+	--          and the first and the second derivatives in the
+	--          directions u and v.
+
+    
+    UResolution(myclass; S : TheSurface; Tol3d: Real from Standard)
+    
+	---Purpose: Returns the numerical resolution in the U direction,
+	--          for a given resolution in 3d space.
+
+    	returns Real from Standard;
+
+
+    VResolution(myclass; S : TheSurface; Tol3d: Real from Standard)
+    
+	---Purpose: Returns the numerical resolution in the V direction,
+	--          for a given resolution in 3d space.
+
+    	returns Real from Standard;
+
+
+end SurfaceTool;

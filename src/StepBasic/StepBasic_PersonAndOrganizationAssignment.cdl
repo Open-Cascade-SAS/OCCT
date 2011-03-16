@@ -1,0 +1,33 @@
+-- File:        PersonAndOrganizationAssignment.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class PersonAndOrganizationAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	PersonAndOrganization from StepBasic, 
+	PersonAndOrganizationRole from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedPersonAndOrganization : mutable PersonAndOrganization from StepBasic;
+	      aRole : mutable PersonAndOrganizationRole from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedPersonAndOrganization(me : mutable; aAssignedPersonAndOrganization : mutable PersonAndOrganization);
+	AssignedPersonAndOrganization (me) returns mutable PersonAndOrganization;
+	SetRole(me : mutable; aRole : mutable PersonAndOrganizationRole);
+	Role (me) returns mutable PersonAndOrganizationRole;
+
+fields
+
+	assignedPersonAndOrganization : PersonAndOrganization from StepBasic;
+	role : PersonAndOrganizationRole from StepBasic;
+
+end PersonAndOrganizationAssignment;

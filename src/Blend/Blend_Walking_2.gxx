@@ -1,0 +1,308 @@
+Blend_Status Blend_Walking::TestArret(Blend_Function& Function,
+				      const Blend_Status State,
+				      const Standard_Boolean TestDefl,
+				      const Standard_Boolean TestSolu,
+				      const Standard_Boolean TestLengthStep)
+
+// On regarde si le point donne est solution.
+// Si c est le cas,
+//  On verifie le critere de fleche sur surf1 et surf2
+//   Si OK, on classifie les points sur surf1 et sur surf2.
+//    Si les deux sont dedans : on retourne Blend_OK
+//    sinon si un seul est dedans
+//     on resout le pb inverse sur la restriction concernee
+//    sinon on resout le pb inverse sur la surface pour laquelle
+//     le point est le plus loin.
+//   sinon (fleche non OK)
+//    on renvoie Blend_StepTooLarge.
+// sinon on renvoie Blend_StepTooLarge.
+//
+
+{
+  gp_Pnt pt1,pt2;
+  gp_Vec V1,V2;
+  gp_Vec Tgp1,Tgp2,Nor1,Nor2;
+  gp_Vec2d V12d,V22d;
+  Blend_Status State1,State2;
+  IntSurf_TypeTrans tras1,tras2;
+  Blend_Point curpoint;
+  Standard_Boolean loctwist1 = Standard_False, loctwist2 = Standard_False;
+  Standard_Real tolsolu = tolesp;
+
+  if ( !TestSolu) tolsolu *= 1000; //Ca doit toujours etre bon
+  if (Function.IsSolution(sol,tolsolu)) {
+
+#ifdef DEB
+    sectioncalculee = 1;
+#endif
+    Standard_Boolean curpointistangent = Function.IsTangencyPoint();
+    pt1  = Function.PointOnS1();
+    pt2  = Function.PointOnS2();
+    if(curpointistangent){
+      curpoint.SetValue(pt1,pt2,param,
+			sol(1),sol(2),sol(3),sol(4));
+    }
+    else{
+      V1   = Function.TangentOnS1();
+      V2   = Function.TangentOnS2();
+      V12d = Function.Tangent2dOnS1();
+      V22d = Function.Tangent2dOnS2();
+      curpoint.SetValue(pt1,pt2,param,
+			sol(1),sol(2),sol(3),sol(4),
+			V1,V2,V12d,V22d);
+      if(Function.TwistOnS1()) loctwist1 = Standard_True;
+      if(Function.TwistOnS2()) loctwist2 = Standard_True;
+    }
+
+    if (TestDefl && check) {
+
+      // Verification du critere de fleche sur chaque surface
+      //et sur la ligne guide
+    
+      State1 = CheckDeflection(Standard_True,curpoint);
+      State2 = CheckDeflection(Standard_False,curpoint);
+    }
+    else {
+       State1 = Blend_OK;
+       State2 = Blend_OK;
+       if (TestLengthStep) {
+	 // On verifie juste que le pas n'est pas trop grand
+	 // (Cas des prolongements foireux)
+	 Standard_Real curparamu,curparamv, prevparamu,prevparamv;
+	 math_Vector inf(1,4), sup(1,4);
+	 Function.GetBounds(inf, sup);
+	 sup -= inf;
+	 sup *= 0.05; // Pas max : 5% du domaine
+     
+	 curpoint.ParametersOnS1(curparamu,curparamv);
+	 previousP.ParametersOnS1(prevparamu,prevparamv);
+	 if (Abs(curparamu-prevparamu) > sup(1)) State1 = Blend_StepTooLarge;
+	 if (Abs(curparamv-prevparamv) > sup(2)) State1 = Blend_StepTooLarge;     
+	 curpoint.ParametersOnS2(curparamu,curparamv);
+	 previousP.ParametersOnS2(prevparamu,prevparamv);
+	 if (Abs(curparamu-prevparamu) > sup(3)) State2 = Blend_StepTooLarge;
+	 if (Abs(curparamv-prevparamv) > sup(4)) State2 = Blend_StepTooLarge;
+       }
+    }
+      
+    if (State1 == Blend_Backward) {
+      State1 = Blend_StepTooLarge;
+      rebrou= Standard_True;
+    }
+
+    if (State2 == Blend_Backward) {
+      State2 = Blend_StepTooLarge;
+      rebrou = Standard_True;
+    }
+
+    if (State1 == Blend_StepTooLarge ||
+	State2 == Blend_StepTooLarge) {
+      
+      return Blend_StepTooLarge;
+    }
+    
+
+    // Ici seulement on peut statuer sur le twist
+    // Car les rejet ont ete effectue (BUC60322)
+    if (loctwist1) twistflag1 = Standard_True;
+    if (loctwist2) twistflag2 = Standard_True;
+
+    if (!comptra && !curpointistangent) {
+      Function.Tangent(sol(1),sol(2),sol(3),sol(4),Tgp1,Tgp2,Nor1,Nor2);
+      Nor1.Normalize();
+      Nor2.Normalize();
+      Standard_Real testra = Tgp1.Dot(Nor1.Crossed(V1));
+      if (Abs(testra) > Precision::Confusion()) {
+	tras1 = IntSurf_In;
+	if ((testra > 0. && !loctwist1) || (testra < 0. && loctwist1)) {
+	  tras1 = IntSurf_Out;
+	}
+      
+	testra = Tgp2.Dot(Nor2.Crossed(V2));
+	if (Abs(testra) > Precision::Confusion()) {
+	  tras2 = IntSurf_Out;
+	  if ((testra > 0. && !loctwist2) || (testra < 0. && loctwist2)) {
+	    tras2 = IntSurf_In;
+	  }
+	  comptra = Standard_True;
+	  line->Set(tras1,tras2);
+	}
+      }
+    }
+
+    if (State1 == Blend_OK ||
+	State2 == Blend_OK ) {
+      previousP = curpoint;
+      return State;
+    }
+
+    if (State1 == Blend_StepTooSmall &&
+	State2 == Blend_StepTooSmall) {
+      previousP = curpoint;
+      if (State == Blend_OK) {
+	return Blend_StepTooSmall;
+      }
+      else {
+	return State;
+      }
+    }
+
+    if (State == Blend_OK) {
+      return Blend_SamePoints;
+    }
+    else {
+      return State;
+    }
+
+  }
+  else {
+    return Blend_StepTooLarge;
+  }
+}
+
+
+Blend_Status Blend_Walking::CheckDeflection
+  (const Standard_Boolean OnFirst,
+   const Blend_Point&     CurPoint)
+{
+  // regle par tests dans U4 correspond a 11.478 d
+  const Standard_Real CosRef3D = 0.98;
+
+  const Standard_Real CosRef2D = 0.88; // correspond a 25 d
+
+  Standard_Real Norme, Cosi, Cosi2;
+#ifndef DEB
+  Standard_Real prevNorme = 0.;
+#else
+  Standard_Real prevNorme;
+#endif
+  Standard_Real FlecheCourante;
+  Standard_Real Du,Dv,Duv;
+  Standard_Real tolu,tolv;
+
+  gp_Pnt Psurf;
+  gp_Vec Tgsurf;
+  gp_Vec2d Tgonsurf;
+  Standard_Real curparamu, curparamv;
+  Standard_Boolean curpointistangent = CurPoint.IsTangencyPoint();
+
+  gp_Pnt prevP;
+  gp_Vec prevTg;
+  gp_Vec2d previousd2d;
+  Standard_Real prevparamu, prevparamv;
+  Standard_Boolean prevpointistangent = previousP.IsTangencyPoint();
+
+  if (OnFirst) {
+    Psurf = CurPoint.PointOnS1();
+    if(!curpointistangent){
+      Tgsurf = CurPoint.TangentOnS1();
+    }
+    prevP = previousP.PointOnS1();
+    if(!prevpointistangent){
+      prevTg = previousP.TangentOnS1();
+    }
+    tolu = TheSurfaceTool::UResolution(surf1,tolesp);
+    tolv = TheSurfaceTool::VResolution(surf1,tolesp);
+  }
+  else {
+    Psurf = CurPoint.PointOnS2();
+    if(!curpointistangent){
+      Tgsurf = CurPoint.TangentOnS2();
+    }
+    prevP = previousP.PointOnS2();
+    if(!prevpointistangent){
+      prevTg = previousP.TangentOnS2();
+    }
+    tolu = TheSurfaceTool::UResolution(surf2,tolesp);
+    tolv = TheSurfaceTool::VResolution(surf2,tolesp);
+  }
+
+  gp_Vec Corde(prevP,Psurf);
+  Norme = Corde.SquareMagnitude();
+//  if(!curpointistangent) curNorme = Tgsurf.SquareMagnitude();
+  if(!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
+
+
+  if (Norme <= tolesp*tolesp){
+    // il faudra peut etre  forcer meme point
+    return Blend_SamePoints;
+  }
+  if(!prevpointistangent){
+    if(prevNorme <= tolesp*tolesp) {
+      return Blend_SamePoints;
+    }
+    Cosi = sens*Corde*prevTg;
+    if (Cosi <0.) { // angle 3d>pi/2. --> retour arriere
+      return Blend_Backward;
+    }
+    
+    Cosi2 = Cosi * Cosi / prevNorme / Norme;
+    if (Cosi2 < CosRef3D) { 
+      return Blend_StepTooLarge;
+    }
+  }
+
+  if(!curpointistangent){
+    // Voir s il faut faire le controle sur le signe de prevtg*Tgsurf
+    Cosi = sens*Corde*Tgsurf;
+    Cosi2 = Cosi * Cosi / Tgsurf.SquareMagnitude() / Norme;
+    if (Cosi2 < CosRef3D || Cosi < 0.) { 
+      return Blend_StepTooLarge;
+    }
+  }  
+    
+  if(check2d){
+    if (OnFirst) {
+      CurPoint.ParametersOnS1(curparamu,curparamv);
+      if(!curpointistangent) Tgonsurf = CurPoint.Tangent2dOnS1();
+      previousP.ParametersOnS1(prevparamu,prevparamv);
+      if(!prevpointistangent) previousd2d = previousP.Tangent2dOnS1();
+    }
+    else {
+      CurPoint.ParametersOnS2(curparamu,curparamv);
+      if(!curpointistangent) Tgonsurf = CurPoint.Tangent2dOnS2();
+      previousP.ParametersOnS2(prevparamu,prevparamv);
+      if(!prevpointistangent) previousd2d = previousP.Tangent2dOnS2();
+    }
+    
+    Du = curparamu - prevparamu;
+    Dv = curparamv - prevparamv;
+    Duv = Du * Du + Dv * Dv;
+//    SqrtDuv = Sqrt(Duv);
+    if (Abs(Du) < tolu && Abs(Dv) < tolv){
+      // il faudra peut etre  forcer meme point
+      return Blend_SamePoints; //point confondu 2d
+    }
+    if(!prevpointistangent){
+      if(Abs(previousd2d.X()) < tolu && Abs(previousd2d.Y()) < tolv){
+	// il faudra peut etre  forcer meme point
+	return Blend_SamePoints; //point confondu 2d
+      }
+      Cosi = sens*(Du * previousd2d.X() + Dv * previousd2d.Y());
+      if (Cosi < 0) {
+	return Blend_Backward; 
+      }
+    }    
+    if(!curpointistangent){
+      // Voir s il faut faire le controle sur le signe de Cosi
+      Cosi = sens*(Du * Tgonsurf.X() +  Dv * Tgonsurf.Y())/Tgonsurf.Magnitude();
+      Cosi2 = Cosi * Cosi / Duv;
+      if (Cosi2 < CosRef2D || Cosi <0.) { 
+	return Blend_StepTooLarge;
+      }
+    }
+  }
+  if(!curpointistangent && !prevpointistangent){
+    // Estimation de la fleche courante
+    FlecheCourante = (prevTg.Normalized().XYZ()-Tgsurf.Normalized().XYZ()).SquareModulus()*Norme/64.;
+    
+    if (FlecheCourante <= 0.25*fleche*fleche) {
+      return Blend_StepTooSmall;
+    }
+    if (FlecheCourante > fleche*fleche) {
+      // pas trop grand : commentaire interessant
+      return Blend_StepTooLarge;
+    }
+  }
+  return Blend_OK;
+}

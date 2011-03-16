@@ -1,0 +1,50 @@
+-- File:	Vrml_WWWAnchor.cdl
+-- Created:	Wed Feb 12 12:49:57 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class WWWAnchor from Vrml 
+
+	---Purpose: defines a WWWAnchor node of VRML specifying group properties.
+    	--  The  WWWAnchor  group  node  loads  a  new  scene  into  a  VRML  browser 
+	--  when  one  of  its  children  is  closen.  Exactly  how  a  user  "chooses" 
+	--  a  child  of  the  WWWAnchor  is  up  to  the  VRML browser. 
+	--  WWWAnchor  with  an  empty  ("")  name  does  nothing  when  its   
+	--  children  are  chosen. 
+	--  WWWAnchor  behaves  like  a  Separator,  pushing  the  traversal  state 
+	--  before  traversing  its  children  and  popping  it  afterwards.
+
+
+uses
+ 
+    AsciiString   from  TCollection,
+    WWWAnchorMap  from  Vrml
+
+is
+    Create  (  aName         :  AsciiString   from  TCollection  =  "";
+               aDescription  :  AsciiString   from  TCollection  =  "";
+               aMap          :  WWWAnchorMap  from  Vrml  =  Vrml_MAP_NONE ) 
+	 returns  WWWAnchor from Vrml;
+
+    SetName ( me : in out;  aName : AsciiString   from  TCollection );
+    Name ( me )  returns  AsciiString   from  TCollection;
+
+    SetDescription ( me : in out;  aDescription : AsciiString   from  TCollection );
+    Description ( me )  returns  AsciiString   from  TCollection;
+
+    SetMap ( me : in out;  aMap :  WWWAnchorMap  from  Vrml );
+    Map ( me )  returns  WWWAnchorMap  from  Vrml;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myName         :  AsciiString     from  TCollection;	  -- URL name
+    myDescription  :  AsciiString     from  TCollection;	  -- Useful description of scene
+    myMap          :  WWWAnchorMap    from  Vrml;	          -- How to map pick to URL name
+
+end WWWAnchor;
+

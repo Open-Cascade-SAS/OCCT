@@ -1,0 +1,151 @@
+-- File:	BRepTools_Modification.cdl
+-- Created:	Thu Aug 25 09:19:11 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class Modification from BRepTools
+
+	---Purpose:  Defines geometric modifications to a shape, i.e.
+-- changes to faces, edges and vertices.
+
+inherits TShared from MMgt
+
+uses Face     from TopoDS,
+     Edge     from TopoDS,
+     Vertex   from TopoDS,
+     Location from TopLoc,
+     
+     Shape    from GeomAbs,
+     
+     Surface  from Geom,
+     Curve    from Geom,
+     Curve    from Geom2d,
+     Pnt      from gp
+
+
+is
+
+    NewSurface(me: mutable; F        :     Face     from TopoDS;
+                            S        : out Surface  from Geom;
+		            L        : out Location from TopLoc;
+		            Tol      : out Real     from Standard;
+                            RevWires : out Boolean from Standard;
+                            RevFace  : out Boolean from Standard)
+    
+      	---Purpose: Returns true if the face, F, has been modified.
+-- If the face has been modified:
+-- - S is the new geometry of the face,
+-- - L is its new location, and
+-- - Tol is the new tolerance.
+-- The flag, RevWires, is set to true when the
+-- modification reverses the normal of the surface, (i.e.
+-- the wires have to be reversed).
+-- The flag, RevFace, is set to true if the orientation of
+-- the modified face changes in the shells which contain it.
+-- If the face has not been modified this function returns
+-- false, and the values of S, L, Tol, RevWires and
+-- RevFace are not significant.
+    
+    	returns Boolean from Standard
+	is deferred;
+
+	
+    NewCurve(me: mutable; E  :     Edge     from TopoDS;
+                          C  : out Curve    from Geom;
+		          L  : out Location from TopLoc;
+		          Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard
+	
+	---Purpose: Returns true if the edge, E, has been modified.
+-- If the edge has been modified:
+-- - C is the new geometry associated with the edge,
+-- - L is its new location, and
+-- - Tol is the new tolerance.
+--   If the edge has not been modified, this function
+-- returns false, and the values of C, L and Tol are not significant.
+
+	is deferred;
+	
+    
+
+    NewPoint(me: mutable; V  :     Vertex   from TopoDS;
+                          P  : out Pnt      from gp;
+		          Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard
+
+	---Purpose: Returns true if the vertex V has been modified.
+-- If V has been modified:
+-- - P is the new geometry of the vertex, and
+-- - Tol is the new tolerance.
+--   If the vertex has not been modified this function
+-- returns false, and the values of P and Tol are not significant.
+
+	is deferred;
+	
+    
+
+    NewCurve2d(me: mutable;  E    :     Edge     from TopoDS;
+                             F    :     Face     from TopoDS;
+                             NewE :     Edge     from TopoDS;
+                             NewF :     Face     from TopoDS;
+                             C    : out Curve    from Geom2d;
+		             Tol  : out Real     from Standard)
+    
+    	returns Boolean from Standard
+
+---Purpose: Returns true if the edge, E, has a new curve on
+-- surface on the face, F.
+-- If a new curve exists:
+-- - C is the new geometry of the edge,
+-- - L is the new location, and
+-- - Tol is the new tolerance.
+--   NewE is the new edge created from E, and NewF is
+-- the new face created from F.
+-- If there is no new curve on the face, this function
+-- returns false, and the values of C, L and Tol are not significant.
+
+	is deferred;
+	
+    
+
+    NewParameter(me: mutable; V  :     Vertex   from TopoDS;
+                              E  :     Edge     from TopoDS;
+                              P  : out Real     from Standard;
+  		              Tol: out Real     from Standard)
+    
+    	returns Boolean from Standard
+
+	---Purpose: Returns true if the vertex V has a new parameter on the edge E.
+-- If a new parameter exists:
+-- - P is the parameter, and
+-- - Tol is the new tolerance.
+--   If there is no new parameter this function returns
+-- false, and the values of P and Tol are not significant.
+
+	is deferred;
+	
+
+    
+
+    Continuity(me: mutable; E          : Edge from TopoDS;
+    	                    F1,F2      : Face from TopoDS;
+			    NewE       : Edge from TopoDS;
+			    NewF1,NewF2: Face from TopoDS)
+    
+    	returns Shape from GeomAbs
+	
+	---Purpose: Returns the  continuity of  <NewE> between <NewF1>
+	--          and <NewF2>.
+	--          <NewE> is the new  edge created from <E>.  <NewF1>
+	--          (resp. <NewF2>) is the new  face created from <F1>
+	--          (resp. <F2>).
+
+    	is deferred;
+
+end Modification;
+
+

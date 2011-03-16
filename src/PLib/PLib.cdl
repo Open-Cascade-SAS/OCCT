@@ -1,0 +1,494 @@
+-- File:	PLib.cdl
+-- Created:	Mon Aug 28 11:17:53 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+-- Modified: 28/02/1996 by PMN :  HermiteCoefficients added
+-- Modified: 19/02/1997 by JCT :  EvalPoly2Var added
+
+--   Modified:  05/09/97 by   JPI for    SSV   : JacobiPolynomial   --
+--  DoubleJacobiPolynomial, HermiteInterpolate, JacobiParameters
+---Copyright:	 Matra Datavision 1995
+
+
+package PLib 
+
+	---Purpose: PLib means Polynomial  functions library.  This pk
+	--          provides  basic       computation    functions for
+	--          polynomial functions.
+	--          
+
+uses Standard, math, TColStd, gp, TColgp,  GeomAbs
+
+is 
+      deferred class Base from PLib;
+      class JacobiPolynomial  from  PLib; 
+      class HermitJacobi from PLib;
+      class DoubleJacobiPolynomial  from  PLib; 
+      
+     NoWeights returns Array1OfReal from TColStd;
+	---Purpose: Used as argument for a non rational functions
+	--          
+	---C++: return &
+	---C++: inline
+
+     NoWeights2 returns Array2OfReal from TColStd;
+	---Purpose: Used as argument for a non rational functions
+	--          
+	---C++: return &
+	---C++: inline
+
+     SetPoles(Poles : Array1OfPnt      from TColgp;
+    	      FP    : out Array1OfReal from TColStd);
+      ---Purpose: Copy in FP the coordinates of the poles.
+
+     SetPoles(Poles   : Array1OfPnt      from TColgp;
+    	      Weights : Array1OfReal     from TColStd;
+    	      FP      : out Array1OfReal from TColStd);
+      ---Purpose: Copy in FP the coordinates of the poles.
+
+     GetPoles(FP    : Array1OfReal    from TColStd;
+    	      Poles : out Array1OfPnt from TColgp);
+      ---Purpose: Get from FP the coordinates of the poles.
+
+     GetPoles(FP      : Array1OfReal     from TColStd;
+    	      Poles   : out Array1OfPnt  from TColgp;
+    	      Weights : out Array1OfReal from TColStd);
+      ---Purpose: Get from FP the coordinates of the poles.
+
+     SetPoles(Poles : Array1OfPnt2d    from TColgp;
+    	      FP    : out Array1OfReal from TColStd);
+      ---Purpose: Copy in FP the coordinates of the poles.
+
+     SetPoles(Poles   : Array1OfPnt2d    from TColgp;
+    	      Weights : Array1OfReal     from TColStd;
+    	      FP      : out Array1OfReal from TColStd);
+      ---Purpose: Copy in FP the coordinates of the poles.
+
+     GetPoles(FP    : Array1OfReal      from TColStd;
+    	      Poles : out Array1OfPnt2d from TColgp);
+      ---Purpose: Get from FP the coordinates of the poles.
+
+     GetPoles(FP      : Array1OfReal      from TColStd;
+    	      Poles   : out Array1OfPnt2d from TColgp;
+    	      Weights : out Array1OfReal  from TColStd);
+      ---Purpose: Get from FP the coordinates of the poles.
+
+     Bin(N,P : Integer) returns Real;  
+      ---Purpose: Returns the Binomial Cnp , without testing anything.
+    	---C++: inline
+
+     Binomial(N : Integer);  
+      ---Purpose:  test on N >  maxbinom and build the PASCAL triangle
+      --          on size N if necessary.
+      ---C++: inline
+
+     InternalBinomial(N        : Integer;
+                      maxbinom : out Integer;
+                      binom    : out Address);
+      ---Purpose: only called by Binomial(N,P)
+
+     RationalDerivative(Degree    : Integer;
+     	    	    	N         : Integer;
+			Dimension : Integer;
+			Ders      : in out Real;
+			RDers     : in out Real;
+    	    	    	All       : Boolean = Standard_True);
+      ---Purpose: Computes the derivatives of a ratio at order
+      --          <N> in dimension <Dimension>. 
+      --          
+      --          <Ders> is an  array containing the  values  of the
+      --          input   derivatives from  0 to  Min(<N>,<Degree>).
+      --          For   orders   higher  than <Degree>    the  inputcd /s2d1/BMDL/
+      --          derivatives   are assumed to be  0. 
+      --          
+      --          Content of <Ders> :
+      --          
+      --          x(1),x(2),...,x(Dimension),w
+      --          x'(1),x'(2),...,x'(Dimension),w'
+      --          x''(1),x''(2),...,x''(Dimension),w''
+      --          
+      --          If  <All> is false, only the   derivative at order
+      --          <N> is computed.  <RDers>  is an array   of length
+      --          Dimension which will contain the result :
+      --          
+      --          x(1)/w , x(2)/w ,  ... derivated <N> times
+      --          
+      --          If <All> is  true all the  derivatives up to order
+      --          <N> are computed.   <RDers> is an array of  length
+      --          Dimension * (N+1) which will contains :
+      --          
+      --          x(1)/w , x(2)/w ,  ... 
+      --          x(1)/w , x(2)/w ,  ... derivated <1> times
+      --          x(1)/w , x(2)/w ,  ... derivated <2> times
+      --          ...
+      --          x(1)/w , x(2)/w ,  ... derivated <N> times
+      --          
+      --  Warning: <RDers> must be dimensionned properly.
+
+
+     RationalDerivatives(DerivativesRequest         : Integer;
+			 Dimension                  : Integer;
+			 PolesDerivatives           : in out Real;
+			 WeightsDerivatives         : in out Real;
+                         RationalDerivates          : in out Real) ;
+
+      ---Purpose: Computes DerivativesRequest derivatives of a ratio at
+      --          of a BSpline function of degree <Degree> 
+      --          dimension <Dimension>. 
+      --          
+      --          <PolesDerivatives> is an  array containing the  values  
+      --          of the input   derivatives from  0 to  <DerivativeRequest>
+      --          For   orders   higher  than <Degree>    the  input
+      --          derivatives   are assumed to be  0. 
+      --          
+      --          Content of <PoleasDerivatives> :
+      --          
+      --          x(1),x(2),...,x(Dimension)
+      --          x'(1),x'(2),...,x'(Dimension)  
+      --          x''(1),x''(2),...,x''(Dimension)
+      --          
+      --          
+      --          WeightsDerivatives is an array that contains derivatives
+      --          from 0 to  <DerivativeRequest>
+      --          After returning from the routine the array 
+      --          RationalDerivatives contains the following 
+      --          x(1)/w , x(2)/w ,  ... 
+      --          x(1)/w , x(2)/w ,  ...   derivated once
+      --          x(1)/w , x(2)/w ,  ...   twice
+      --          x(1)/w , x(2)/w ,  ... derivated <DerivativeRequest> times
+      --          
+      --          The array RationalDerivatives and PolesDerivatives
+      --          can be same since the overwrite is non destructive within
+      --          the algorithm
+      --          
+      --  Warning: <RationalDerivates> must be dimensionned properly.
+
+
+     EvalPolynomial(U                 : Real;
+    	    	    DerivativeOrder   : Integer ;
+		    Degree            : Integer ;
+		    Dimension         : Integer ;
+		    PolynomialCoeff   : in out Real ;
+		    Results           : in out Real) ;
+		     
+      ---Purpose: Performs Horner method with synthethic division
+      --          for derivatives
+      --          parameter <U>, with <Degree> and <Dimension>.
+      --          PolynomialCoeff are stored in the following fashion
+      --          c0(1)      c0(2) ....       c0(Dimension) 
+      --          c1(1)      c1(2) ....       c1(Dimension) 
+      --          
+      --          
+      --          cDegree(1) cDegree(2) ....  cDegree(Dimension)
+      --          where the polynomial is defined as :
+      --          
+      --                          2                     Degree
+      --          c0 + c1 X + c2 X  +  ....   cDegree X
+      --          
+      --          Results stores the result in the following format
+      --          
+      --          f(1)             f(2)  ....     f(Dimension) 
+      --           (1)           (1)              (1)
+      --          f  (1)        f   (2) ....     f   (Dimension) 
+      --          
+      --           (DerivativeRequest)            (DerivativeRequest)
+      --          f  (1)                         f   (Dimension) 
+      --          
+      --          this just evaluates the point at parameter U
+      --  
+      --  Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
+      --          
+      --          
+
+     NoDerivativeEvalPolynomial(U                 : Real;
+			        Degree            : Integer ;
+		                Dimension         : Integer ;
+		                DegreeDimension   : Integer ;
+		                PolynomialCoeff   : in out Real ;
+		                Results           : in out Real) ;
+      ---Purpose: Same as above with DerivativeOrder = 0;
+
+     EvalPoly2Var(U,V                                 : Real;
+    	    	  UDerivativeOrder,VDerivativeOrder   : Integer ;
+		  UDegree,VDegree,Dimension           : Integer ;
+		  PolynomialCoeff                     : in out Real;
+		  Results                             : in out Real) ;
+		     
+      ---Purpose: Applies EvalPolynomial twice to evaluate the derivative
+      --          of orders UDerivativeOrder in U, VDerivativeOrder in V
+      --          at parameters U,V
+      --          
+      --          
+      --          PolynomialCoeff are stored in the following fashion
+      --          c00(1)  ....       c00(Dimension) 
+      --          c10(1)  ....       c10(Dimension) 
+      --          .... 
+      --          cm0(1)  ....       cm0(Dimension) 
+      --          .... 
+      --          c01(1)  ....       c01(Dimension) 
+      --          c11(1)  ....       c11(Dimension) 
+      --          .... 
+      --          cm1(1)  ....       cm1(Dimension) 
+      --          .... 
+      --          c0n(1)  ....       c0n(Dimension) 
+      --          c1n(1)  ....       c1n(Dimension) 
+      --          .... 
+      --          cmn(1)  ....       cmn(Dimension) 
+      --          
+      --          
+      --          where the polynomial is defined as :
+      --                             2                 m
+      --          c00 + c10 U + c20 U  +  ....  + cm0 U
+      --                                  2                   m
+      --          + c01 V + c11 UV + c21 U V  +  ....  + cm1 U  V
+      --                         n               m n 
+      --          + .... + c0n V +  ....  + cmn U V
+      --          
+      --          with m = UDegree and n = VDegree
+      --          
+      --          Results stores the result in the following format
+      --          
+      --          f(1)             f(2)  ....     f(Dimension) 
+      --  
+      --  Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
+      --          
+      --          
+
+
+     EvalLagrange(U                 : Real    ;
+                  DerivativeOrder   : Integer ;
+                  Degree            : Integer ;
+                  Dimension         : Integer ;
+                  ValueArray        : in out Real;
+                  ParameterArray    : in out Real;
+                  Results           : in out Real) returns Integer ; 
+		 
+      ---Purpose: Performs the Lagrange Interpolation of 
+      --          given series of points with given parameters
+      --          with the requested derivative order 
+      --          Results will store things in the following format
+      --          with d = DerivativeOrder
+      --                    
+      -- [0],             [Dimension-1]              : value 
+      -- [Dimension],     [Dimension  + Dimension-1] : first derivative
+      --    
+      -- [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
+      
+     EvalCubicHermite(U                 : Real    ;
+                      DerivativeOrder   : Integer ;
+                      Dimension         : Integer ;
+                      ValueArray        : in out Real;
+                      DerivativeArray   : in out Real;
+                      ParameterArray    : in out Real;
+                      Results           : in out Real) returns Integer ; 
+		 
+      ---Purpose: Performs the Cubic Hermite Interpolation of 
+      --          given series of points with given parameters
+      --          with the requested derivative order.
+      --          ValueArray stores the value at the first and
+      --          last parameter. It has the following format :
+      -- [0],             [Dimension-1]              : value at first param
+      -- [Dimension],     [Dimension  + Dimension-1] : value at last param
+      --           Derivative array stores the value of the derivatives
+      --           at the first parameter and at the last parameter
+      --           in the following format
+      -- [0],             [Dimension-1]              : derivative at 
+      --                                               first param
+      -- [Dimension],     [Dimension  + Dimension-1] : derivative at 
+      --                                               last param
+      --   
+      --          ParameterArray  stores the first and last parameter 
+      --          in the following format :
+      --          [0] : first parameter
+      --          [1] : last  parameter
+      --              
+      --          Results will store things in the following format
+      --          with d = DerivativeOrder
+      --                    
+      -- [0],             [Dimension-1]              : value 
+      -- [Dimension],     [Dimension  + Dimension-1] : first derivative
+      --    
+      -- [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
+
+  HermiteCoefficients(FirstParameter : in Real;
+                      LastParameter  : in Real;
+		      FirstOrder     : in Integer;
+		      LastOrder      : in Integer;
+		      MatrixCoefs    : in out Matrix from math)
+
+      ---Purpose: This build the coefficient of Hermite's polynomes on
+      --          [FirstParameter, LastParameter]
+      --          
+      --          if j <= FirstOrder+1 then
+      --          
+      --          MatrixCoefs[i, j] = ith coefficient of the polynome H0,j-1
+      --          
+      --          else
+      --          
+      --          MatrixCoefs[i, j] = ith coefficient of the polynome H1,k
+      --            with k = j - FirstOrder - 2
+      --          
+      --          return false if
+      --          - |FirstParameter| > 100
+      --          - |LastParameter| > 100
+      --          - |FirstParameter| +|LastParameter| < 1/100
+      --          -   |LastParameter - FirstParameter|
+      --            / (|FirstParameter| +|LastParameter|)  < 1/100 
+  returns Boolean;		     
+
+----------------------------------------------------------------  
+--  The following functions computes poles corresponding to   --
+--  given coefficients.                                       --
+--  PLib::NoWeights() must be given for non rational functions--
+----------------------------------------------------------------  
+
+  CoefficientsPoles(Coefs  : in Array1OfPnt from TColgp;
+                    WCoefs : in Array1OfReal from TColStd;
+                    Poles  : in out Array1OfPnt from TColgp;
+                    WPoles : in out Array1OfReal from TColStd);
+
+  CoefficientsPoles(Coefs  : in Array1OfPnt2d from TColgp;
+                    WCoefs : in Array1OfReal from TColStd;
+                    Poles  : in out Array1OfPnt2d from TColgp;
+                    WPoles : in out Array1OfReal from TColStd);
+
+  CoefficientsPoles(Coefs  : in Array1OfReal from TColStd;
+                    WCoefs : in Array1OfReal from TColStd;
+                    Poles  : in out Array1OfReal from TColStd;
+                    WPoles : in out Array1OfReal from TColStd);
+		    
+  CoefficientsPoles(dim    : in Integer from Standard;
+                    Coefs  : in Array1OfReal from TColStd;
+                    WCoefs : in Array1OfReal from TColStd;
+                    Poles  : in out Array1OfReal from TColStd;
+                    WPoles : in out Array1OfReal from TColStd);
+		    
+		    
+----------------------------------------------------------------  
+--  The following functions trim the Bezier curve between two --
+--  parametric values U1, U2.                                 --
+--  Can be used to extend the curve :                         --
+--  Parameters  U1<0. or U2>1. can be given.                  --
+--  PLib::NoWeights() must be given for non rational functions--
+----------------------------------------------------------------  
+
+
+  Trimming (U1, U2  : in  Real;
+            Coeffs  : in  out Array1OfPnt from TColgp;
+            WCoeffs : in  out Array1OfReal from TColStd);
+
+
+  Trimming (U1, U2  : in  Real;
+            Coeffs  : in  out Array1OfPnt2d from TColgp;
+            WCoeffs : in  out Array1OfReal from TColStd);
+
+
+  Trimming (U1, U2  : in  Real;
+            Coeffs  : in  out Array1OfReal from TColStd;
+            WCoeffs : in  out Array1OfReal from TColStd);
+
+
+  Trimming (U1, U2  : in  Real;
+            dim     : in  Integer;
+            Coeffs  : in  out Array1OfReal from TColStd;
+            WCoeffs : in  out Array1OfReal from TColStd);
+
+
+
+
+----------------------------------------------------------------  
+--  The following functions computes poles corresponding to   --
+--  given coefficients.                                       --
+--  PLib::NoWeights2() must be given for non rational         --
+--  functions.                                                --
+----------------------------------------------------------------  
+
+  CoefficientsPoles(Coefs  : in Array2OfPnt from TColgp;
+                    WCoefs : in Array2OfReal from TColStd;
+                    Poles  : in out Array2OfPnt from TColgp;
+                    WPoles : in out Array2OfReal from TColStd);
+
+
+----------------------------------------------------------------  
+--  The following functions trim the Bezier surface between   --
+--  two parametric values.                                    --
+--  Can be used to extend the surface :                       --
+--  Parameters  U1(V1)<0. or U2(V2)>1. can be given.          --
+--  PLib::NoWeights2() must be given for non rational         --
+--  functions.                                                --
+----------------------------------------------------------------  
+
+
+  UTrimming (U1, U2  : in  Real;
+             Coeffs  : in  out Array2OfPnt  from TColgp;
+    	     WCoeffs : in  out Array2OfReal from TColStd);
+
+
+  VTrimming (V1, V2  : in  Real; 
+             Coeffs  : in  out Array2OfPnt  from TColgp;
+    	     WCoeffs : in  out Array2OfReal from TColStd);
+
+
+  HermiteInterpolate(Dimension : in Integer; 
+                     FirstParameter,LastParameter : in Real;
+                     FirstOrder,LastOrder : in Integer;
+                     FirstConstr,LastConstr : Array2OfReal from TColStd; 
+                     Coefficients : out Array1OfReal from TColStd)
+                     returns Boolean from Standard;
+  ---Purpose : Compute the coefficients in the canonical base of the 
+  --         polynomial satisfying the given constraints
+  --         at the given parameters
+  --         The array FirstContr(i,j) i=1,Dimension j=0,FirstOrder
+  --         contains the values of the constraint at parameter FirstParameter
+  --         idem for LastConstr
+
+  JacobiParameters (ConstraintOrder: Shape from GeomAbs;   
+                  MaxDegree, Code: in Integer; 
+                  NbGaussPoints: out Integer; 
+                  WorkDegree: out Integer)
+---Purpose : Compute the number of points used for integral
+--         computations (NbGaussPoints) and the degree of Jacobi 
+--         Polynomial (WorkDegree). 
+--         ConstraintOrder has to be GeomAbs_C0, GeomAbs_C1 or GeomAbs_C2
+--         Code: Code d' init. des parametres de discretisation.
+--            = -5
+--            = -4 
+--            = -3 
+--            = -2
+--            = -1
+--            =  1 calcul rapide avec precision moyenne.
+--            =  2 calcul rapide avec meilleure precision.
+--            =  3 calcul un peu plus lent avec bonne precision.
+--            =  4 calcul lent avec la meilleure precision possible.
+
+    raises ConstructionError from Standard;
+-- if ConstraintOrder or Code is not valid 
+--    MaxDegree < 2*NivConstr+2 or MaxDegree > 50
+-- 
+----------  new 
+    NivConstr(ConstraintOrder : Shape from GeomAbs) 
+    ---Purpose: translates from GeomAbs_Shape to Integer
+    returns Integer
+    raises ConstructionError from Standard;
+    
+    ConstraintOrder(NivConstr : Integer) 
+    ---Purpose: translates from Integer to GeomAbs_Shape
+    returns Shape from GeomAbs
+    raises ConstructionError from Standard;
+    
+
+    EvalLength(Degree : Integer; 
+    	       Dimension : Integer; 
+	       PolynomialCoeff : in out Real; 
+	       U1, U2 : Real; 
+	       Length : out Real); 
+
+    EvalLength(Degree : Integer; 
+    	       Dimension : Integer; 
+	       PolynomialCoeff : in out Real; 
+	       U1, U2 : Real; 
+	       Tol : Real; 
+	       Length : out Real; 
+	       Error : out Real); 
+
+end PLib;

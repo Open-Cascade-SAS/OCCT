@@ -1,0 +1,97 @@
+-- File:	FEmTool_Curve.cdl
+-- Created:	Fri Sep 12 18:23:02 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class Curve from FEmTool inherits TShared  from  MMgt 
+
+	---Purpose:  Curve defined by Polynomial Elements. 
+                  
+uses 
+  Base  from  PLib,  
+  Array1OfReal  from  TColStd, 
+  HArray1OfInteger  from  TColStd,    
+  Array2OfReal  from  TColStd,  
+  Array1OfInteger  from  TColStd,
+  HArray1OfReal  from  TColStd
+
+raises 
+  DimensionError
+
+is 
+  Create(Dimension  :  Integer;
+         NbElements :  Integer; 
+	 TheBase    :  Base  from  PLib; 
+    	 Tolerance  :  Real); 
+   
+  Knots(me)  
+   ---C++: return & 
+  returns Array1OfReal;
+   
+  SetElement(me  :  mutable; IndexOfElement  :  Integer; 
+             Coeffs  :  Array2OfReal);  
+		 
+  D0(me  :  mutable;  U  :  Real;  Pnt : out  Array1OfReal);   
+  
+  D1(me  :  mutable;  U  :  Real;  Vec : out  Array1OfReal); 
+   
+  D2(me  :  mutable;  U  :  Real;  Vec : out  Array1OfReal);  
+   
+  Length(me  :  mutable;  
+         FirstU,  LastU  :  Real;   
+    	 Length     :  out  Real); 
+	  
+  GetElement(me  :  mutable; IndexOfElement  :  Integer; 
+                     Coeffs  :  out  Array2OfReal);   
+		      
+  GetPolynom(me  :  mutable;  Coeffs  :  out  Array1OfReal); 
+  ---Purpose:  returns  coefficients  of  all  elements  in  canonical  base.             
+									    
+  NbElements(me)  returns  Integer; 
+   
+  Dimension(me)  returns  Integer; 
+   
+  Base(me) returns Base  from  PLib; 
+
+  Degree(me; IndexOfElement : Integer) returns  Integer; 
+     
+  SetDegree(me :  mutable;  
+            IndexOfElement : Integer; 
+	    Degree         : Integer);
+
+  ReduceDegree(me :  mutable;  
+               IndexOfElement : Integer;  Tol  :  Real;   
+    	       NewDegree  : out  Integer;  MaxError  :  out  Real);
+    
+    
+  Update(me:mutable;  Element  :  Integer; Order  :  Integer) 
+  is  private; 
+   
+fields 
+  myNbElements  :  Integer; 
+  myDimension   :  Integer;  
+  myTolerance   :  Real;  
+  myBase        :  Base  from  PLib;
+  myKnots       :  HArray1OfReal;  
+  myDegree      :  Array1OfInteger;
+  myCoeff       :  Array1OfReal;  --  Coeff  in  <myBase>    
+  myPoly        :  Array1OfReal;  --  Coeff  in  the  canonnical  Bases 
+  myDeri        :  Array1OfReal;  --  Coeff  of  the  first  Derivative   
+                            --  in the canonical Base
+  myDsecn       :  Array1OfReal;  --  Coeff  of  the  second  Derivative   
+                            --  in the canonnical Base
+  HasPoly       :  Array1OfInteger;  --  Say  If  the Ith  Element
+                               --  has an canonical Representation.
+  HasDeri       :  Array1OfInteger;  --  Say  If  the Ith  Element   
+                               --  has an  first  Derivative Representation.
+  HasSecn       :  Array1OfInteger;  --  Say  If  the Ith  Element   
+                               --  has an  second  Derivative Representation.
+  myLength      :  Array1OfReal;     --  Table  of  Length  Element  by Element  
+  Uf,  Ul       :  Real; 
+  Denom, USum :  Real;
+  myIndex,  myPtr :  Integer; 
+end Curve;
+
+

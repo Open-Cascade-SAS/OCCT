@@ -1,0 +1,124 @@
+-- File:	IntCurveSurface_PolyhedronTool.cdl
+-- Created:	Fri Mar 12 11:05:50 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class PolyhedronTool from IntCurveSurface
+    (ThePolyhedron as any) -- as Polyhedron from IntCurveSurface
+
+    ---Purpose: Describe the signature  of  a polyhedral  surface with
+    --          only triangular facets and the  necessary informations
+    --          to compute the interferences.
+
+
+uses    XYZ           from gp,
+    	Pnt           from gp,
+    	Box           from Bnd,
+	HArray1OfBox  from Bnd
+
+
+raises  OutOfRange from Standard
+
+
+is  
+
+
+    Bounding       (myclass; thePolyh : ThePolyhedron)
+    	---Purpose: Give the bounding box of the PolyhedronTool.
+    	---C++: return const &
+    	---C++: inline
+    returns Box from Bnd;
+
+
+    ComponentsBounding
+       	    	   (myclass; thePolyh : ThePolyhedron)    	    	    
+    	---Purpose: Give the array of boxes. The box <n> corresponding 
+    	--          to the triangle <n>.
+    	---C++: return const &
+    	---C++: inline
+    returns HArray1OfBox from Bnd;
+
+
+    DeflectionOverEstimation
+		   (myclass; thePolyh : ThePolyhedron)
+    	---Purpose: Give the tolerance of the polygon.
+    	---C++: inline
+    returns Real from Standard;
+
+
+
+
+-- Structure needings :
+
+    NbTriangles	   (myclass; thePolyh : ThePolyhedron) 
+    	    	    returns Integer from Standard;
+    ---Purpose: Give the number of triangles in this polyedral surface.
+    ---C++: inline
+
+
+    Triangle	   (myclass; thePolyh : ThePolyhedron;
+		    Index     : in Integer from Standard;
+		    P1,P2,P3  : out Integer from Standard)
+		    raises OutOfRange from Standard;
+    ---Purpose: Give the indices  of  the 3 points of  the triangle of
+    --          address Index in the PolyhedronTool.
+    ---C++: inline
+
+
+    Point	   (myclass; thePolyh : ThePolyhedron;
+		    Index : in Integer)
+		    returns Pnt from gp
+		    raises OutOfRange from Standard;
+    ---Purpose: Give the point of index i in the polyedral surface.
+    ---C++: return const &
+    ---C++: inline
+
+
+    TriConnex	   (myclass; thePolyh : ThePolyhedron;
+		    Triang	 : in Integer;
+		    Pivot,Pedge	 : in Integer;
+		    TriCon	 : out Integer;
+		    OtherP	 : out Integer)
+		    returns Integer
+		    raises OutOfRange from Standard;
+    ---Purpose: Give the  addresse Tricon of   the triangle connexe to
+    --          the triangle of address Triang by the edge Pivot Pedge
+    --          and the third point of this  connexe triangle. When we
+    --          are on  a free edge TriCon==0  but the function return
+    --          the value of  the triangle in the  other side of Pivot
+    --          on the free edge.  Used to turn around a vertex.
+    ---C++: inline
+
+ 
+-- Modified by Sergey KHROMOV - Fri Dec  7 13:25:47 2001 Begin
+
+    IsOnBound(myclass;  thePolyh: ThePolyhedron; 
+    	    	    	Index1  : Integer  from  Standard; 
+    	    	    	Index2  : Integer  from  Standard) 
+    ---Purpose: This method returns true if the edge based on points with 
+    --          indices Index1 and Index2 represents a boundary edge. It is 
+    --          necessary to take into account the boundary deflection for 
+    --          this edge. 
+    ---C++: inline
+    returns  Boolean  from  Standard;
+
+    GetBorderDeflection(myclass;  thePolyh : ThePolyhedron) 
+    ---Purpose: This method returns a border deflection of the polyhedron. 
+    ---C++: inline
+    returns  Real  from  Standard;
+
+-- Modified by Sergey KHROMOV - Fri Dec  7 13:25:53 2001 End
+
+
+    Dump          (myclass; thePolyh: ThePolyhedron);
+
+end PolyhedronTool;
+
+
+
+
+
+
+

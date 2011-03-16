@@ -1,0 +1,72 @@
+-- File:	TopOpeBRepTool_makeTransition.cdl
+-- Created:	Thu Feb 11 11:41:08 1999
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class makeTransition from TopOpeBRepTool
+uses
+    Pnt2d from gp,
+    Edge from TopoDS,
+    Face from TopoDS,
+    State from TopAbs	        	
+is    
+	   
+    Create returns makeTransition from TopOpeBRepTool;
+    
+    Initialize(me : in out; 
+    	       E : Edge from TopoDS; pbef,paft,parE : Real;
+    	       FS : Face from TopoDS; uv : Pnt2d from gp;
+    	       factor : Real)
+    returns Boolean;
+    -- <E> interfers with <FS> at point :
+    -- Pt(parE,E) = Pt(uv,FS)
+    --  <pbef>,<paft> greater and lower <parE>.    
+
+    Setfactor(me : in out; factor : Real); -- 0 < factor < 1
+    Getfactor(me) returns Real;
+
+    IsT2d(me) returns Boolean;  
+	   
+    SetRest(me : in out; 
+    	    ES : Edge from TopoDS; parES : Real)
+    returns Boolean;
+    -- Pt(parES,ES) = Pt(uv,FS)
+    --  Transition is computed vs <ES>, restrition on <FS>
+    HasRest(me) returns Boolean;
+
+    MkT2donE(me; stb,sta : out State from TopAbs)
+    returns Boolean;  
+    -- returns false if (!isT2d)   
+    -- computes transition on <myE>, using tangent vectors. 
+
+    MkT3onE(me; stb,sta : out State from TopAbs)
+    returns Boolean;  
+    -- returns false if (isT2d)
+    -- return states in/out/on
+    
+    MkT3dproj(me; stb,sta : out State from TopAbs)
+    returns Boolean;
+    -- using projections.
+    -- return states in/out/on
+    
+    MkTonE(me : in out; stb,sta : out State from TopAbs)
+    returns Boolean;  
+    -- Compute for <T> = transition on <E> vs <FS>.
+    -- return states in/out/on.
+    -- modifies field myfactor.
+
+fields
+    myE : Edge from TopoDS; 
+    mypb,mypa,mypE : Real;
+    myFS : Face from TopoDS;
+    myuv : Pnt2d from gp;
+    
+    hasES : Boolean;
+    myES : Edge from TopoDS;
+    mypES : Real;
+
+    isT2d : Boolean;	
+    myfactor : Real;
+	
+end makeTransition;

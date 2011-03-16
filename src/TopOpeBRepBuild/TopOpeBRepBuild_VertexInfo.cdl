@@ -1,0 +1,87 @@
+-- File:	TopOpeBRepBuild_VertexInfo.cdl
+-- Created:	Mon Nov 29 12:05:52 1999
+-- Author:	Peter KURNEV
+--		<pkv@irinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class VertexInfo from TopOpeBRepBuild 
+
+	---Purpose: 
+
+uses
+    Vertex  from  TopoDS,  
+    Edge    from  TopoDS,
+    SequenceOfInteger  from  TColStd, 
+    IndexedMapOfOrientedShape from TopTools,
+    ListOfShape  from TopTools
+--raises
+
+is
+    Create     returns VertexInfo from TopOpeBRepBuild; 
+     
+    SetVertex    (me:out;  aV:Vertex  from  TopoDS); 
+     
+    Vertex       (me)  returns  Vertex  from  TopoDS;  
+    ---C++: return const & 
+     
+    SetSmart     (me:out;  aFlag: Boolean  from  Standard);
+     
+    Smart        (me)  returns Boolean  from  Standard; 
+     
+    NbCases    (me) returns  Integer  from  Standard; 
+     
+    FoundOut   (me) returns  Integer  from  Standard; 
+     
+    AddIn        (me:out;  anE:  Edge  from  TopoDS);	      
+     
+    AddOut       (me:out;  anE:  Edge  from  TopoDS);	      
+
+    SetCurrentIn (me:out;  anE:  Edge  from  TopoDS);	 
+     
+    EdgesIn    (me) returns IndexedMapOfOrientedShape from TopTools;    
+    ---C++: return const & 
+     
+    EdgesOut   (me) returns IndexedMapOfOrientedShape from TopTools;      
+    ---C++: return const & 
+
+    ChangeEdgesOut   (me:out) returns IndexedMapOfOrientedShape from TopTools;      
+    ---C++: return &  
+    
+    Dump       (me); 
+   
+    CurrentOut (me:out)  returns  Edge from  TopoDS; 
+    ---C++: return const &  
+     
+    AppendPassed  (me:out; anE:  Edge  from  TopoDS); 
+     
+    RemovePassed  (me:out);  
+     
+    ListPassed    (me)  returns  ListOfShape  from TopTools;
+    ---C++: return const &  
+     
+    Prepare(me:  out;  aL  :   ListOfShape  from TopTools);
+    
+fields
+    myVertex         :  Vertex  from  TopoDS; 
+    myCurrent        :  Edge  from  TopoDS;  
+    myCurrentIn      :  Edge  from  TopoDS;  
+
+    mySmart          :  Boolean  from  Standard; 
+    
+    myEdgesIn        :  IndexedMapOfOrientedShape from TopTools; 
+    myEdgesOut       :  IndexedMapOfOrientedShape from TopTools;  
+    myLocalEdgesOut  :  IndexedMapOfOrientedShape from TopTools; 
+    myEdgesPassed    :  ListOfShape  from TopTools; 
+    
+    myFoundOut  :  Integer from Standard;    
+    
+end VertexInfo;
+
+
+
+
+
+
+
+

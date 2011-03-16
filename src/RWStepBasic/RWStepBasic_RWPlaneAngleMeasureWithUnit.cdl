@@ -1,0 +1,30 @@
+-- File:        PlaneAngleMeasureWithUnit.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPlaneAngleMeasureWithUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for PlaneAngleMeasureWithUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PlaneAngleMeasureWithUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPlaneAngleMeasureWithUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PlaneAngleMeasureWithUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : PlaneAngleMeasureWithUnit from StepBasic);
+
+	Share(me; ent : PlaneAngleMeasureWithUnit from StepBasic; iter : in out EntityIterator);
+
+end RWPlaneAngleMeasureWithUnit;

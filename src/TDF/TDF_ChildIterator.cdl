@@ -1,0 +1,101 @@
+-- File:	TDF_ChildIterator.cdl
+--      	------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb  4 1997	Creation
+
+class ChildIterator from TDF 
+
+	---Purpose: Iterates on the children of a label, at the first
+	--          level only. It is possible to ask the iterator to
+	--          explore all the sub label levels of the given one,
+	--          with the option "allLevels".
+
+uses
+    Label         from TDF,
+    LabelNodePtr  from TDF
+
+is
+
+    Create
+    	returns ChildIterator from TDF;
+    	---Purpose: Creates an empty iterator  object to
+ --  explore the children of a label.
+    
+    Create(aLabel    : Label from TDF;
+    	   allLevels : Boolean from Standard = Standard_False)
+    	returns ChildIterator from TDF;
+    	---Purpose: Constructs the iterator object defined by
+ --  the label aLabel.  Iterates on the children of the given label. If
+    	--          <allLevels> option is set to true, it explores not
+    	--          only the first, but all the sub label levels.
+    
+    Initialize(me : in out;
+    	       aLabel : Label from TDF;
+    	       allLevels : Boolean from Standard = Standard_False);
+    	---Purpose: Initializes the iteration on the children of the
+    	--          given label. 
+    	-- If <allLevels> option is set to true,
+    	--          it explores not only the first, but all the sub
+    	--          label levels.
+    	--  If allLevels is false, only the first level of
+    	--  child labels is explored.
+    	--  In the example below, the label is iterated
+    	--  using Initialize, More and Next and its
+    	--  child labels dumped using TDF_Tool::Entry.
+    	--  Example
+    	--  void DumpChildren(const
+    	--  TDF_Label& aLabel)
+    	--  {
+    	--  TDF_ChildIterator it;
+    	--  TCollection_AsciiString es;
+    	--  for
+    	--  (it.Initialize(aLabel,Standard_True);
+    	--  it.More(); it.Next()){
+    	--  TDF_Tool::Entry(it.Value(),es);
+    	--  cout << as.ToCString() << endl;
+    	--  }
+    	--  }   
+    More(me) returns Boolean;
+	---Purpose: Returns true if a current label is found in the
+    	--  iteration process.
+	--          
+	---C++: inline
+    
+    Next(me : in out);
+    	---Purpose: Move the  current  iteration  to the next Item. 
+    
+    NextBrother(me : in out);
+    	---Purpose: Moves this iteration to the next brother
+    	--  label. A brother label is one with the same
+    	--  father as an initial label.
+    	--  Use this function when the non-empty
+    	--  constructor or Initialize has allLevels set to
+    	--  true. The result is that the iteration does not
+    	--  explore the children of the current label. 
+ 	--          This method is interesting only with
+    	--          "allLevels" behavior, because it avoids to explore
+    	--          the current label children.
+    
+    Value(me) returns Label from TDF;
+	---Purpose: Returns the current label; or, if there is
+	--          none, a null label.
+	--          
+	---C++: return const
+	---C++: inline
+
+fields
+
+    myNode       : LabelNodePtr  from TDF;
+    myFirstLevel : Integer from Standard;
+
+end ChildIterator;
+
+
+
+
+

@@ -1,0 +1,30 @@
+-- File:        GeometricRepresentationContextAndParametricRepresentationContext.cdl
+-- Created:     Thu Dec  7 14:30:30 1995
+-- Author:      FMA
+-- Copyright:   Matra-Datavision 1996
+
+
+
+
+class RWGeometricRepresentationContextAndParametricRepresentationContext from RWStepGeom
+
+	---Purpose : Read & Write Module for GeometricRepresentationContextAndParametricRepresentationContext
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     GeometricRepresentationContextAndParametricRepresentationContext from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWGeometricRepresentationContextAndParametricRepresentationContext;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable GeometricRepresentationContextAndParametricRepresentationContext from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : GeometricRepresentationContextAndParametricRepresentationContext from StepGeom);
+
+	Share(me; ent : GeometricRepresentationContextAndParametricRepresentationContext from StepGeom; iter : in out EntityIterator);
+
+end RWGeometricRepresentationContextAndParametricRepresentationContext;

@@ -1,0 +1,6 @@
+inline Standard_Integer& ShapeUpgrade_SplitSurfaceArea::NbParts() 
+{
+  return myNbParts;
+}
+
+ 

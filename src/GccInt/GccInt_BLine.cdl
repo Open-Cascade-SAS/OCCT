@@ -1,0 +1,36 @@
+-- File:	BLine.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BLine from GccInt  
+
+inherits Bisec from GccInt    
+     	---Purpose:  Describes a line as a bisecting curve between two 2D
+    	-- geometric objects (such as lines, circles or points).
+
+uses Lin2d  from gp,
+     IType  from GccInt 
+ 
+
+is
+
+Create(Line : Lin2d) returns mutable BLine;
+    	---Purpose: Constructs a bisecting line whose geometry is the 2D line Line.
+    
+Line(me) returns Lin2d from gp
+    is redefined;
+    	---Purpose: Returns a 2D line which is the geometry of this bisecting line.  
+    
+ArcType(me) returns IType from GccInt
+    is static;
+    	---Purpose: Returns GccInt_Lin, which is the type of any GccInt_BLine bisecting line.
+
+fields
+
+    lin : Lin2d from gp;
+    ---Purpose: The bisecting line.
+
+end BLine;

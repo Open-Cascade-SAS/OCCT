@@ -1,0 +1,30 @@
+// File:	BRep_CurveOnSurface.lxx
+// Created:	Thu Nov 18 12:19:53 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : SetUVPoints
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_CurveOnSurface::SetUVPoints(const gp_Pnt2d& P1, 
+						    const gp_Pnt2d& P2)
+{
+  myUV1 = P1;
+  myUV2 = P2;
+}
+
+
+//=======================================================================
+//function : UVPoints
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_CurveOnSurface::UVPoints(gp_Pnt2d& P1, 
+						 gp_Pnt2d& P2)const 
+{
+  P1 = myUV1;
+  P2 = myUV2;
+}

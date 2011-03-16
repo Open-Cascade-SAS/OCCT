@@ -1,0 +1,26 @@
+// File:	IntTools_CurveRangeSample.lxx
+// Created:	Wed Oct  5 17:05:28 2005
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+inline void IntTools_CurveRangeSample::SetRangeIndex(const Standard_Integer theIndex) 
+{
+  myIndex = theIndex;
+}
+
+ 
+inline Standard_Integer IntTools_CurveRangeSample::GetRangeIndex() const
+{
+  return myIndex;
+}
+
+inline Standard_Boolean IntTools_CurveRangeSample::IsEqual(const IntTools_CurveRangeSample& Other) const
+{
+  return ((myIndex == Other.myIndex) && (GetDepth() == Other.GetDepth()));
+}
+
+ 
+inline Standard_Integer IntTools_CurveRangeSample::GetRangeIndexDeeper(const Standard_Integer theNbSample) const
+{
+  return myIndex * theNbSample;
+}

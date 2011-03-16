@@ -1,0 +1,201 @@
+-- File:	TCollection_DoubleMap.cdl
+-- Created:	Fri Jan  8 17:15:50 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class DoubleMap from TCollection (TheKey1    as any;
+    	    	    	    	    	  TheKey2    as any;
+    	    	    	    	          Hasher1 as any; -- as MapHasher(TheKey1)
+    	    	    	    	          Hasher2 as any) -- as MapHasher(TheKey2)
+inherits BasicMap from TCollection
+
+	---Purpose: 
+    	-- A map used to bind pairs of keys (Key1,Key2) and
+    	-- retrieve them in linear time. Key1 is referenced as the
+    	-- first key of the DoubleMap and Key2 as the second key.
+    	-- An entry of a DoubleMap is composed of a pair of two
+    	-- keys: the first key and the second key.
+    	-- DoubleMap is a generic class which depends on four parameters:
+    	-- -   Key1 is the type of the first key for an entry in the map,
+    	-- -   Key2 is the type of the second key for an entry in the   map,
+    	-- -   Hasher1 is the type of hasher on first keys,
+    	-- -   Hasher2 is the type of hasher on second keys.
+    	--   Use a DoubleMapIterator to explore a DoubleMap map.
+    	-- Notes:
+    	-- -   An iterator class is automatically instantiated from the
+    	--   TCollection_DoubleMapIterator class at the time of
+    	--   instantiation of a DoubleMap map.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required for a Hasher1 or a Hasher2 object.
+  	
+raises
+    DomainError     from Standard,
+    MultiplyDefined from Standard,
+    NoSuchObject    from Standard
+
+    class DoubleMapNode from TCollection 
+    inherits MapNode from TCollection
+    uses MapNodePtr from TCollection
+    is
+      Create(K1 : TheKey1; K2 : TheKey2; n1,n2 : MapNodePtr from TCollection) returns DoubleMapNode from TCollection;
+      ---C++: inline
+      
+      Key1(me) returns TheKey1;
+      ---C++: return &
+      ---C++: inline
+
+      Key2(me) returns TheKey2;
+      ---C++: return &
+      ---C++: inline
+
+      Next2(me) returns MapNodePtr from TCollection;
+      ---C++: return &
+      ---C++: inline
+      
+    fields  
+    	myKey1 : TheKey1;
+	myKey2 : TheKey2;
+	myNext2 : MapNodePtr from TCollection;
+    end;
+    
+    class DoubleMapIterator inherits BasicMapIterator from TCollection
+    
+	---Purpose: Functions used for iterating the contents of a DoubleMap map.
+    	-- Note: an iterator class is automatically instantiated from
+    	-- this generic class at the time of instantiation of a DoubleMap map.
+    	-- Warning
+    	-- -   A map is a non-ordered data structure. The order in
+    	--   which entries of a map are explored by the iterator
+    	--   depends on its contents, and changes when the map is edited.
+    	-- -   It is not recommended to modify the contents of a map
+    	--   during iteration: the result is unpredictable.
+	
+    raises NoSuchObject from Standard	
+    is
+       	Create returns DoubleMapIterator from TCollection;
+	    ---Purpose: Creates an undefined Iterator (empty) use the
+	    --- function Initialize to define the map to explore.
+	
+	Create (aMap : DoubleMap from TCollection) 
+    	returns DoubleMapIterator from TCollection;
+	    ---Purpose: Creates an Iterator on the map <aMap>.
+	
+	Initialize(me : in out; aMap : DoubleMap from TCollection)
+	    ---Level: Public
+	    ---Purpose: Sets or resets the Iterator in the map <aMap>.
+	is static;
+	
+	Key1(me) returns any TheKey1
+	    ---Purpose: Returns the first key,  of the current
+    	    --  entry in the map for this iterator.
+    	    -- Note: Key1 and Key2 are the types of the first and second
+    	    -- keys for an entry in the explored DoubleMap map.
+    	    -- Exceptions
+    	    -- Standard_NoSuchObject if this iterator is empty (i.e.
+    	    -- when the function More returns false).
+	    ---C++: return const &    
+	raises
+	    NoSuchObject from Standard
+	is static;
+	
+	Key2(me) returns any TheKey2
+    	    ---Purpose: Returns the second key, of the current
+    	    --  entry in the map for this iterator.
+    	    -- Note: Key1 and Key2 are the types of the first and second
+    	    -- keys for an entry in the explored DoubleMap map.
+    	    -- Exceptions
+    	    -- Standard_NoSuchObject if this iterator is empty (i.e.
+    	    -- when the function More returns false).
+	    ---C++: return const &
+	raises
+	    NoSuchObject from Standard
+	is static;
+	
+    end DoubleMapIterator from TCollection;
+
+is
+
+    Create(NbBuckets : Integer = 1) returns DoubleMap from TCollection;
+	---Purpose: Creates   a DoubleMap with  <NbBuckets> buckets. Without
+	-- arguments the map is automatically dimensioned.
+    
+
+    Create(Other : DoubleMap from TCollection) 
+    returns DoubleMap from TCollection
+	---Purpose: As  copying  Map  is an expensive  operation it is
+	-- incorrect  to  do  it implicitly. This constructor is private and 
+	-- will raise an  error if the Map  is not  empty. To copy the
+	-- content of a  Map use the  Assign  method (operator =).
+    raises DomainError from Standard
+    is private;
+    
+    Assign(me : in out; Other : DoubleMap from TCollection) 
+    returns DoubleMap from TCollection
+	---Purpose: Copies the contents of the map Other into this map.
+    	-- Note that this method is an alias of operator =.
+	---C++: alias operator =
+	---C++: return &
+    is static;
+    
+    ReSize(me : in out; NbBuckets : Integer)
+	---Purpose: Changes the number of buckets of this map to N.
+    	-- The entries (Key1 + Key2) already stored in this map are maintained.
+    is static;
+    
+    Clear(me : in out)
+	---Level: Public
+	---Purpose: Removes all keys from the map.
+	---C++: alias ~
+    is static;
+    
+    Bind(me : in out; K1 : TheKey1; K2 : TheKey2)
+	---Level: Public
+	---Purpose: Adds the pair <K1>,<K2> to the map.
+	--  Trigger: An exception is raised if K1 or K2 are already bound.          
+    raises MultiplyDefined from Standard 
+    is static;
+    
+    AreBound(me; K1 : TheKey1; K2 : TheKey2) returns Boolean
+	---Level: Public
+	---Purpose: Returns True if <K1>  and  <K2>  are bound to each other in the map <me>. 
+    is static;
+
+    IsBound1(me; K : TheKey1) returns Boolean
+	---Level: Public
+	---Purpose: Returns  True if the  TheKey <K> is  bound in the map <me>.
+    is static;
+    
+    IsBound2(me; K : TheKey2) returns Boolean
+	---Level: Public
+	---Purpose: Returns True if  the key <K> is bound in the map <me>.
+    is static;
+    
+    Find1(me; K : TheKey1) returns any TheKey2
+	---Level: Public
+	---Purpose: Returns the Key2 bound to <K> in the map.
+	---C++: return const &
+    raises NoSuchObject
+    is static;
+    
+    Find2(me; K : TheKey2) returns any TheKey1
+	---Level: Public
+	---Purpose: Returns the Key1 bound to <K> in the map.
+	---C++: return const &
+    raises NoSuchObject
+    is static;
+    
+    UnBind1(me : in out; K : TheKey1) returns Boolean
+	---Level: Public
+	---Purpose: Unbind the Key <K>  from the map.  Returns True if
+	-- the Key was bound in the Map.
+    is static;
+    
+    UnBind2(me : in out; K : TheKey2) returns Boolean
+	---Level: Public
+	---Purpose: Unbind the Key <K>  from the map.  Returns True if
+	-- the Key was bound in the Map.
+    is static;
+    
+end DoubleMap;

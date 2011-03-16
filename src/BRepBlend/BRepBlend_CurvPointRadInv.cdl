@@ -1,0 +1,85 @@
+-- File:	BRepBlend_CurvPointRadInv.cdl
+-- Created:	Wed Feb 12 14:27:39 1997
+-- Author:	Laurent BOURESCHE
+--		<lbo@pomalox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class CurvPointRadInv from BRepBlend
+
+inherits CurvPointFuncInv from Blend 
+
+    ---Purpose: This function  is used  to find a  solution on  a done
+    --          point   of   the curve 1 when   using  RstRstConsRad or
+    --          CSConstRad... 
+    --          The vector <X>  used in Value, Values and  Derivatives
+    --          methods  has  to   be the  vector   of the  parametric
+    --          coordinates w, U where w is  the parameter  on the
+    --          guide line, U   are the parametric coordinates of  a
+    --          point on the partner curve 2.
+
+uses
+    Pnt      from gp,
+    Vector   from math,
+    Matrix   from math,
+    HCurve   from Adaptor3d
+
+
+is
+    Create(C1 : HCurve from Adaptor3d; C2  : HCurve from Adaptor3d)
+    returns CurvPointRadInv from BRepBlend;
+    	
+    Set(me: in out; Choix: Integer from Standard)
+    is static;
+
+    NbEquations(me)
+    ---Purpose: returns 2.
+    returns Integer from Standard;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    ---Purpose: computes the values <F> of the Functions for the 
+    --          variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard;
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    ---Purpose: returns the values <D> of the derivatives for the 
+    --          variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard;
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    ---Purpose: returns the values <F> of the functions and the derivatives
+    --          <D> for the variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard;
+
+    Set(me: in out; P : Pnt from gp);
+    ---Purpose: Set the Point on which a solution has to be found.
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard);
+    ---Purpose: Returns in the vector Tolerance the parametric tolerance
+    --          for each of the 3 variables;
+    --          Tol is the tolerance used in 3d space.
+
+    GetBounds(me; InfBound,SupBound: out Vector from math);
+    ---Purpose: Returns in the vector InfBound the lowest values allowed
+    --          for each of the 3 variables.
+    --          Returns in the vector SupBound the greatest values allowed
+    --          for each of the 3 variables.
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    ---Purpose: Returns Standard_True if Sol is a zero of the function.
+    --          Tol is the tolerance used in 3d space.
+    returns Boolean from Standard;
+
+fields
+
+    curv1 : HCurve   from Adaptor3d;
+    curv2 : HCurve   from Adaptor3d;
+    point : Pnt      from gp;
+    choix : Integer  from Standard;
+
+end CurvPointRadInv;

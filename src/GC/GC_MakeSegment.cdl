@@ -1,0 +1,66 @@
+-- File:	MakeSegment.cdl
+-- Created:	Mon Sep 28 11:49:59 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeSegment from GC inherits Root from GC
+
+    	--- Purpose: Implements construction algorithms for a line
+    	-- segment in 3D space. The result is a Geom_TrimmedCurve curve.
+    	-- A MakeSegment object provides a framework for:
+    	-- -   defining the construction of the line segment,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results. In particular, the Value
+    	--   function returns the constructed line segment.
+        
+uses Pnt          from gp,
+     Real         from Standard,
+     Lin          from gp,
+     TrimmedCurve from Geom
+
+raises NotDone from StdFail
+
+is
+
+Create(P1, P2 : Pnt from gp ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the 2 points <P1> and <P2>.
+    	--          It returns NullObject if <P1> and <P2> are confused.
+	
+Create(Line   : Lin  from gp       ;
+       U1, U2 : Real from Standard ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line1> 
+    	--          between the two parameters U1 and U2.
+    	--          It returns NullObject if <U1> is equal <U2>.
+
+Create(Line   : Lin  from gp       ;
+       Point  : Pnt  from gp       ;
+       Ulast  : Real from Standard ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line1> 
+    	--          between the point <Point> and the parameter Ulast.
+    	--          It returns NullObject if <U1> is equal <U2>.
+
+Create(Line : Lin  from gp ;
+       P1   : Pnt  from gp ;
+       P2   : Pnt  from gp ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line1> 
+    	--          between the two points <P1> and <P2>.
+    	--          It returns NullObject if <U1> is equal <U2>.
+
+Value(me) returns TrimmedCurve from Geom
+    raises NotDone
+    is static;
+    	---Purpose: Returns the constructed line segment.
+    	---C++: return const&
+
+Operator(me) returns TrimmedCurve from Geom
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom_TrimmedCurve() const;"
+
+fields
+
+    TheSegment : TrimmedCurve from Geom;
+    --The solution from Geom.
+    
+end MakeSegment;

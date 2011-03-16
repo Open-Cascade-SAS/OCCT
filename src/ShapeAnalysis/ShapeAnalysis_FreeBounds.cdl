@@ -1,0 +1,181 @@
+-- File:	ShapeAnalysis_FreeBounds.cdl
+-- Created:	Wed Jun  3 12:07:11 1998
+-- Author:	Daniel RISSER
+--		<dan@sgi100>
+---Copyright:	 Matra Datavision 1998
+-- Modified     Mon Sep 14 10:20:25 1998 by Roman LYGIN (rln)
+--              1. Analysis of actual free bounds of the shells.
+--              2. Options to extract closed sub-wires out of closed and open
+--                 wires
+--              3. Improved algorithm for connecting free edges into wires
+
+
+class FreeBounds from ShapeAnalysis 
+
+    ---Purpose: This class is intended to output free bounds of the shape
+    --          (free bounds are the wires consisting of edges referenced by the
+    --          only face).
+    --          This class works on two distinct types of shapes when analyzing
+    --          their free bounds:
+    --          1. compound of faces.
+    --            Analyzer of sewing algorithm (BRepAlgo_Sewing) is used for
+    --            for forecasting free bounds that would be obtained after
+    --            performing sewing
+    --          2. compound of shells.
+    --            Actual free bounds (edges shared by the only face in the shell)
+    --            are output in this case. ShapeAnalysis_Shell is used for that.
+    --
+    --          When connecting edges into the wires algorithm tries to build
+    --          wires of maximum length. Two options are provided for a user
+    --          to extract closed sub-contours out of closed and/or open contours.
+    --
+    --          Free bounds are returned as two compounds, one for closed and one
+    --          for open wires.
+    --
+    --          This class also provides some static methods for advanced use:
+    --          connecting edges/wires to wires, extracting closed sub-wires out
+    --          of wires, dispatching wires into compounds for closed and open
+    --          wires.
+    --          NOTE. Ends of the edge or wire mean hereafter their end vertices.
+    
+
+uses
+    Shape            from TopoDS,
+    Vertex           from TopoDS, 
+    Wire             from TopoDS,
+    Compound         from TopoDS,
+    HSequenceOfShape    from TopTools,
+    DataMapOfShapeShape from TopTools,
+    HArray1OfShape      from TopTools
+    
+is
+    Create returns  FreeBounds from  ShapeAnalysis;
+    	---Purpose: Empty constructor
+	
+    Create (shape      : Shape from TopoDS; 
+    	    toler      : Real;
+    	    splitclosed: Boolean = Standard_False;
+    	    splitopen  : Boolean = Standard_True) 
+    returns  FreeBounds from  ShapeAnalysis; 
+    	---Purpose: Builds forecasting free bounds of the <shape>. 
+    	--          <shape> should be a compound of faces.
+	--          This constructor is to be used for forecasting free edges
+	--          with help of sewing analyzer BRepAlgo_Sewing which is called
+	--          with tolerance <toler>.
+	--          Free edges are connected into wires only when their ends are
+        --          at distance less than <toler>.
+	--          If <splitclosed> is True extracts closed sub-wires out of
+	--          built closed wires.
+	--          If <splitopen> is True extracts closed sub-wires out of
+	--          built open wires.
+	
+    Create (shape      : Shape from TopoDS;
+    	    splitclosed: Boolean = Standard_False;
+    	    splitopen  : Boolean = Standard_True;
+    	    checkinternaledges  : Boolean = Standard_False)
+    returns FreeBounds from ShapeAnalysis;
+    	---Purpose: Builds actual free bounds of the <shape>.
+    	--          <shape> should be a compound of shells.
+	--          This constructor is to be used for getting free edges (ones
+	--          referenced by the only face) with help of analyzer
+        --          ShapeAnalysis_Shell.
+	--          Free edges are connected into wires only when they share the
+	--          same vertex.
+	--          If <splitclosed> is True extracts closed sub-wires out of
+	--          built closed wires.
+	--          If <splitopen> is True extracts closed sub-wires out of
+	--          built open wires.
+	
+    GetClosedWires (me) returns Compound from TopoDS; 
+    	---Purpose: Returns compound of closed wires out of free edges.
+	---C++: inline
+	---C++: return const &
+     
+    GetOpenWires (me) returns Compound from TopoDS; 
+    	---Purpose: Returns compound of open wires out of free edges.
+	---C++: inline
+	---C++: return const &
+	
+
+
+    ---Level: Advanced
+    
+    ConnectEdgesToWires (myclass; edges : in out HSequenceOfShape from TopTools;
+    	    	    	     	  toler : Real;
+				  shared: Boolean;
+				  wires : out HSequenceOfShape from TopTools);
+    	---Purpose: Builds sequnce of <wires> out of sequence of not sorted
+    	--          <edges>.
+    	--          Tries to build wires of maximum length. Building a wire is
+    	--          stopped when no edges can be connected to it at its head or
+    	--          at its tail.
+	--
+    	--          Orientation of the edge can change when connecting.
+	--          If <shared> is True connection is performed only when
+    	--          adjacent edges share the same vertex.
+	--          If <shared> is False connection is performed only when
+    	--          ends of adjacent edges are at distance less than <toler>.
+	
+    ConnectWiresToWires (myclass; iwires: in out HSequenceOfShape from TopTools;
+    	    	    	     	  toler : Real;
+				  shared: Boolean;
+				  owires: out HSequenceOfShape from TopTools);
+
+    ConnectWiresToWires (myclass; iwires: in out HSequenceOfShape from TopTools;
+    	    	    	     	  toler : Real;
+				  shared: Boolean;
+				  owires: out HSequenceOfShape from TopTools;
+    	    	    	    	  vertices: out DataMapOfShapeShape
+    	    	    	    	      from TopTools);
+    	---Purpose: Builds sequnce of <owires> out of sequence of not sorted
+    	--          <iwires>.
+    	--          Tries to build wires of maximum length. Building a wire is
+    	--          stopped when no wires can be connected to it at its head or
+    	--          at its tail.
+	--
+    	--          Orientation of the wire can change when connecting.
+	--          If <shared> is True connection is performed only when
+    	--          adjacent wires share the same vertex.
+	--          If <shared> is False connection is performed only when
+    	--          ends of adjacent wires are at distance less than <toler>.
+	--          Map <vertices> stores the correspondence between original
+	--          end vertices of the wires and new connecting vertices.
+				     
+    SplitWires (myclass; wires :     HSequenceOfShape from TopTools;
+			 toler : Real;
+			 shared: Boolean;
+    	    	    	 closed: out HSequenceOfShape from TopTools;
+			 open  : out HSequenceOfShape from TopTools);
+    	---Purpose: Extracts closed sub-wires out of <wires> and adds them
+    	--          to <closed>, open wires remained after extraction are put
+	--          into <open>.
+	--          If <shared> is True extraction is performed only when
+    	--          edges share the same vertex.
+	--          If <shared> is False connection is performed only when
+    	--          ends of the edges are at distance less than <toler>.
+	
+    DispatchWires (myclass; wires : HSequenceOfShape from TopTools;
+    	    	    	    closed: in out Compound from TopoDS;
+    	    	    	    open  : in out Compound from TopoDS);
+	---Purpose: Dispatches sequence of <wires> into two compounds
+	--          <closed> for closed wires and <open> for open wires.
+	--          If a compound is not empty wires are added into it.
+    
+	
+    ---Level: Internal
+    
+    SplitWires (me: in out) is private;
+    
+
+fields  
+
+    myWires: Compound from TopoDS; 
+    myEdges: Compound from TopoDS; 
+    
+    myTolerance  : Real;
+    myShared     : Boolean;
+    
+    mySplitClosed: Boolean;
+    mySplitOpen  : Boolean;
+    
+end FreeBounds;

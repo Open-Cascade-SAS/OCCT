@@ -1,0 +1,15 @@
+-- File:	ExprIntrp_WOKSteps.edl
+-- Author:	Atelier CAS2000
+-- History:	Thu Jun 29 13:18:31 2000	Atelier CAS2000	Creation
+-- Copyright:	 Matra Datavision 2000
+
+@ifnotdefined ( %ExprIntrp_WOKSteps_EDL) then
+@set %ExprIntrp_WOKSteps_EDL = "";
+
+--- Insert your stuff Here
+
+ @set %CASCADESamplesJni_WOKSteps_EDL  = "";
+ @string %WOKSteps_XcppGroup += "xcpp.repl";
+ @set %WOKSteps_xcpp_repl     = "*ExprIntrp_Replace(xcpp.header)";
+
+@endif;

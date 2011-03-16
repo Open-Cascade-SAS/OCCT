@@ -1,0 +1,42 @@
+-- File:	StepElement_Volume3dElementDescriptor.cdl
+-- Created:	Thu Dec 12 17:29:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class Volume3dElementDescriptor from StepElement
+inherits ElementDescriptor from StepElement
+
+    ---Purpose: Representation of STEP entity Volume3dElementDescriptor
+
+uses
+    ElementOrder from StepElement,
+    HAsciiString from TCollection,
+    HArray1OfVolumeElementPurposeMember from StepElement,
+    Volume3dElementShape from StepElement
+
+is
+    Create returns Volume3dElementDescriptor from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aElementDescriptor_TopologyOrder: ElementOrder from StepElement;
+                       aElementDescriptor_Description: HAsciiString from TCollection;
+                       aPurpose: HArray1OfVolumeElementPurposeMember from StepElement;
+                       aShape: Volume3dElementShape from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Purpose (me) returns HArray1OfVolumeElementPurposeMember from StepElement;
+	---Purpose: Returns field Purpose
+    SetPurpose (me: mutable; Purpose: HArray1OfVolumeElementPurposeMember from StepElement);
+	---Purpose: Set field Purpose
+
+    Shape (me) returns Volume3dElementShape from StepElement;
+	---Purpose: Returns field Shape
+    SetShape (me: mutable; Shape: Volume3dElementShape from StepElement);
+	---Purpose: Set field Shape
+
+fields
+    thePurpose: HArray1OfVolumeElementPurposeMember from StepElement;
+    theShape: Volume3dElementShape from StepElement;
+
+end Volume3dElementDescriptor;

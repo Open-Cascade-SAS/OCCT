@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolRightAngularWedge.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolRightAngularWedge  from IGESSolid
+
+    ---Purpose : Tool to work on a RightAngularWedge. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses RightAngularWedge from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolRightAngularWedge;
+    ---Purpose : Returns a ToolRightAngularWedge, ready to work
+
+
+    ReadOwnParams (me; ent : mutable RightAngularWedge;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : RightAngularWedge;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : RightAngularWedge;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a RightAngularWedge <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : RightAngularWedge) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : RightAngularWedge;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : RightAngularWedge; entto : mutable RightAngularWedge;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : RightAngularWedge;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolRightAngularWedge;

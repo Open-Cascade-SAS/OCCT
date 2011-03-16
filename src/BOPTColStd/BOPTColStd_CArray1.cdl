@@ -1,0 +1,117 @@
+-- File:	BOPTColStd_CArray1.cdl
+-- Created:	Tue Nov 14 11:02:27 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+generic class CArray1 from BOPTColStd (Array1Item as any)
+
+	---Purpose:  
+    	--  The class CArray1 represents unidimensionnal arrays
+	--  of fixed size known at run time. Run-time boundary
+	--  check is performed
+	--  The range of the index is user defined from 0 to Length-1
+
+raises
+    OutOfRange from Standard,
+    OutOfMemory from Standard 
+
+is
+
+    Create (Length      : Integer from Standard = 0; 
+    	    BlockLength : Integer from Standard = 5)
+    	returns CArray1 from BOPTColStd
+    	raises  OutOfMemory from Standard;        
+    ---Purpose:  
+    --  Creates an array  of given Length. 
+    --
+    Create (AnArray : CArray1 from BOPTColStd) 
+    	returns CArray1 from  BOPTColStd 
+    	is private;
+    ---Purpose: 
+    -- Prohibits the creator by copy
+    --
+    Assign  (me:out;  Other : CArray1 from BOPTColStd) 
+    	returns  CArray1 from BOPTColStd   
+    	is private; 
+	---C++:  alias  operator = 
+	---C++:  return  & 
+    ---Purpose:  
+    --  Prohibits the operator = 
+    -- 
+    Resize(me: in out; theNewLength: Integer from Standard);
+    ---Purpose:  
+    --  destroy current content and realloc the new size
+    --  	   
+    Destroy (me: in out);
+    	---C++: alias ~
+    ---Purpose:  
+    --  Frees the  allocated   area  corresponding  to the
+    --  array.  
+    --	 
+    Length (me) returns Integer from Standard;
+    ---Purpose: 
+    -- Returns the number of elements of <me> 
+    --
+    Extent (me) returns Integer from Standard;
+    ---Purpose:  
+    --  The  same  as Length(). 
+    --- 
+    FactLength (me) returns Integer from Standard;
+    ---Purpose:  
+    --  Returns the number of elements of <me>.
+    --- 
+    Append (me:out; Value: Array1Item)  
+    	returns Integer from Standard
+    	raises  OutOfMemory from Standard; 
+    ---Purpose:  
+    --  Remove the Item[Index]  from the array.
+    ---
+    Remove (me:out; Index:Integer from Standard) 
+    	raises  OutOfMemory from Standard; 
+    ---Purpose:  
+    --  Appends the Value at the end of me
+    --- 
+    Value (me; Index:Integer from Standard) returns any Array1Item 
+    	---C++: alias operator ()
+    	---C++: return const & 
+    	raises OutOfRange from Standard;
+    ---Purpose:  
+    --  Return the value of  the  <Index>th element of the
+    --  array.
+    --          
+    
+    ChangeValue (me: in out; Index:Integer from Standard) returns any Array1Item
+    	---C++: alias operator ()
+    	---C++: return & 
+    	raises OutOfRange from Standard; 
+    ---Purpose:  
+    --  Returns the value  of the Index-th element of the
+    --  array.
+
+    SetBlockLength(me:out; aBL: Integer from Standard); 
+    ---Purpose:  
+    --  Sets the  size of the allocated block     
+    --- 
+    BlockLength(me) 
+    	returns Integer from Standard;  
+    ---Purpose:  
+    --  Returns the current size of the allocated block   
+    --- 
+    IsInvalidIndex  (me; Index:Integer from Standard)  
+    	returns Boolean from Standard 
+    	is  private;   
+    ---Purpose:   
+    --  Checks the input value of an Index for validity in 
+    --  array.     	     
+
+fields
+
+    myStart      : Address;
+    myLength     : Integer; 
+    myFactLength : Integer;
+    myBlockLength: Integer;
+    myIsAllocated: Boolean; 
+    
+
+end CArray1;

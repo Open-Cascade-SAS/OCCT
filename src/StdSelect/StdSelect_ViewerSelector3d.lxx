@@ -1,0 +1,2 @@
+inline const Select3D_Projector& StdSelect_ViewerSelector3d::
+Projector() const {return myprj;}

@@ -1,0 +1,16 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	Select2D_SensitivePoint.lxx
+// Created:	Thu Jan 26 17:03:08 1995
+// Author:	Mister rmi
+//		<rmi>
+
+
+inline const gp_Pnt2d& Select2D_SensitivePoint::
+Location() const {return mylocation;}
+
+
+inline void Select2D_SensitivePoint::
+Set(const Standard_Real aSensitivity)
+{mysensitivity = aSensitivity;}
+
+

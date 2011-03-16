@@ -1,0 +1,9 @@
+appresource:::Standard
+msgappresource:::Standard.us
+icon:::MDTV-Standard.xwd
+loginfile:::Plugin
+appresource:::XCAF
+appresource:::TObj
+srcinc:::dftree.tcl
+appresource:::StandardLite
+appresource:::MigrationSheet.txt

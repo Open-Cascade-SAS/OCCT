@@ -1,0 +1,27 @@
+-- File:	StepAP203_WorkItem.cdl
+-- Created:	Fri Nov 26 16:26:28 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class WorkItem from StepAP203
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type WorkItem
+
+uses
+    ProductDefinitionFormation from StepBasic
+
+is
+    Create returns WorkItem from StepAP203;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of WorkItem select type
+	--          1 -> ProductDefinitionFormation from StepBasic
+	--          0 else
+
+    ProductDefinitionFormation (me) returns ProductDefinitionFormation from StepBasic;
+	---Purpose: Returns Value as ProductDefinitionFormation (or Null if another type)
+
+end WorkItem;

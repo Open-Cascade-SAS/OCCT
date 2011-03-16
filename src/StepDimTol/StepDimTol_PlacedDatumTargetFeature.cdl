@@ -1,0 +1,21 @@
+-- File:	StepDimTol_PlacedDatumTargetFeature.cdl
+-- Created:	Wed Jun  4 13:34:33 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class PlacedDatumTargetFeature from StepDimTol
+inherits DatumTarget from StepDimTol
+
+    ---Purpose: Representation of STEP entity PlacedDatumTargetFeature
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData
+
+is
+    Create returns PlacedDatumTargetFeature from StepDimTol;
+	---Purpose: Empty constructor
+
+end PlacedDatumTargetFeature;

@@ -1,0 +1,724 @@
+-- File:	TransferProcess.cdl
+-- Created:	Mon Feb  3 17:54:43 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class TransferProcess  from Transfer
+    	(TheStart  as  any;      -- either Transient or Finder
+         TheMapHasher as any;
+    	 TheList as Transient)   -- HSequence from TCollection(TheStart)
+        -- TheStart as Handle (i.e. Finder-Transient only)
+    	-- TheMapMasher : only for the Map
+    	-- TheList : for Starting Objects in Iterator (a HSequence from TColStd)
+      inherits TShared
+
+    ---Purpose : This class gives the frame for doing a direct transfer : it
+    --           provides required basic tools, such as a Map, and automatisms
+    --           which simplify work, while their use is not mandatory.
+    --           
+    --           Starting Objects managed by Mapping can be Transient or any
+    --           (by two instantiations provided by the package,
+    --           TransientProcess and FinderProcess, see class Finder).
+    --           
+    --           A direct Transfer must maintain data sharing whenever possible
+    --           (that is, when described by both sides) : this is managed by a
+    --           Map. It works with intermediate Objects, the Binders. Hence it
+    --           allows a binding,  one/several-one/several, and it controls
+    --           that a Resulting Data can be used by another one only
+    --           if its creation has been ended. Also it keeps error status.
+    --           
+    --           Several results can be bound to a starting object, identified
+    --           by a category number. The default one (the only one considered
+    --           for final analysis) is zero. But mapping accesses allow to
+    --           precise a category number different from zero
+    --           
+    --           In order to work more easily in most cases, automatisms are
+    --           offered. Classically, to transfer an object, its result is
+    --           computed then bound. This applies recursively for referenced
+    --           objects. Each Transfer of a kind of object can be performed
+    --           by a specific Tool, which can use TransferProcess to work.
+    --           
+    --           
+    --           Many often, a specific Transfer can work as : "Search the good
+    --           Tool to Perform the Transfer (if not provided), run the Tool,
+    --           then Bind the Result", where "Perform" is seen as a black box.
+    --           
+    --           This way of working is assumed through automatisms which use
+    --           two types of auxiliary objects :
+    --           - An Actor acts as a Library of Transfer Actions :
+    --             it recognizes the operation to perform on a starting object,
+    --             then runs it (see class Actor)
+    --           - it produces a Binder, which is then recorded in the Map
+    --           - of course, if the Transfer has been already done, it is not
+    --             run once more : the first Result is available
+    --           - it is possible to re-evaluate the Result if required (i.e.
+    --             if the definitive Result is known only once other Transfers
+    --             have been engaged)
+    --           - in the case of a second (or more) ask for Transfer, the
+    --             Result is considered as "AlreadyUsed", hence it may not be
+    --             changed (in the Binder itself or by Rebinding another one)
+    --           
+    --           This gives a top-down process, in which first object to be
+    --           transferred asks for another one it references to be, etc...
+    --           This allows automatic management of Roots : only first
+    --           transfers (asked by the user) can be Root Transfers.
+    --           
+    --             
+    --           Other features are : Management of Root Entities (the Entities
+    --           by which the Transfer has started, and their Results, can be
+    --           identified as Roots, by the user or by automatisms); Error
+    --           Handling (if automatisms are used); 
+    --           Returning Results, which can be specialized for
+    --           Roots, or Erroneous Data, or complete/partial (for one entity)
+    --           
+    --           Finally, TransferProcess inherits TShared : this allows to
+    --           run successive steps on the same set of data attached to a
+    --           given Transfer, by easily transmitting this set.
+    
+uses Integer, Boolean, Transient, Type,
+     IndexedMapOfInteger,SequenceOfInteger,HArray1OfInteger, SequenceOfTransient,
+     HSequenceOfTransient,  DictionaryOfInteger from Dico,
+     Msg from Message, Messenger from Message,
+     ParamType from Interface,
+     Check from Interface, CheckIterator from Interface, Binder from Transfer,
+     ProgressIndicator from Message
+     --   also : parameter TheStart;  nested Actor, Iterator, TransferMap
+
+raises InterfaceError, TransferFailure
+
+
+    	    	-- --    Nested Classes    -- --
+
+        class TransferMap instantiates IndexedDataMap from TCollection
+	    	(TheStart,Binder,TheMapHasher);
+    	---Purpose : This is the Map used by TransferProcess
+
+
+        class Iterator  inherits TransferIterator
+    	---Purpose : This is a TransferIterator PLUS the capability to access
+    	--           the Starting Objects. It is given as a Result from
+    	--           TransferProcess. It can be used when a TransferIterator
+    	--           is required
+    	---See also : TransferIterator, for more information
+
+    	uses Boolean, Binder   --  , TheStart, TheList
+
+    	raises NoSuchObject
+
+	is
+	
+	    Create (withstarts : Boolean) returns Iterator;
+	    ---Purpose : Creates an empty Iterator
+	    --           if withstarts is True, each Binder to be iterated will
+	    --           be associated to its corresponding Starting Object
+
+	    Add (me : in out; binder : Binder)
+	    ---Purpose : Adds a Binder to the iteration list (construction)
+	    --           with no corresponding Starting Object
+	    --           (note that Result is brought by Binder)
+    	    	raises NoSuchObject  is static;
+	    --           Error if Starting Objects were required at Creation
+	    --           time
+
+	    Add (me : in out; binder : Binder; start : TheStart)  is static;
+	    ---Purpose : Adds a Binder to the iteration list, associated with
+	    --           its corresponding Starting Object "start"
+	    --           Starting Object is ignored if not required at
+	    --           Creation time
+
+    	    Filter (me : in out; list : TheList; keep : Boolean = Standard_True);
+	    ---Purpose : After having added all items, keeps or rejects items
+	    --           which are attached to starting data given by <only>
+	    --           <keep> = True (D) : keeps. <keep> = False : rejects
+	    --           Does nothing if <withstarts> was False
+
+	    HasStarting (me) returns Boolean  is static;
+	    ---Purpose : Returns True if Starting Object is available
+	    --           (defined at Creation Time)
+
+	    Starting (me) returns TheStart
+	    ---Purpose : Returns corresponding Starting Object
+	            raises NoSuchObject  is static;
+	    --           Error if the Iterator was not created with Starting
+	    --           Objects (Create called with <withstarts> = True)
+    	    ---C++ : return const &
+
+    	fields
+
+    	    thestarts  : TheList;
+
+    	end Iterator;
+
+
+    	--  (should be deferred, not allowed for a nested class)
+    	class Actor  inherits TShared
+	---Purpose : An Actor performs the effective Transfer of a Starting
+        --           Object, piloted by a TransferProcess. That is :
+    	--           - It recognizes, for a Starting Object, the case to be run
+    	--           - Then, it performs the Transfer : the recommanded way to
+    	--             work is to define for each Type of Object to Transfer, a
+    	--             specific Transfer Tool, then to call it by the Actor
+    	--           - It assumes that the Result of Transfer is stored in a
+    	--             Binder, it creates it if the Tool does not do
+    	--             It can use the TransferProcess for intermediate Results
+    	--           - It returns the Binder which stores the Result
+    	--           It no Result can be produced, it returns a Null Handle
+    	--           It may bind this Binder to <start> but is not obliged :
+    	--           TransferProcess controls this point.
+    	--           
+    	--           Remark about the kind of returned Binder :
+    	--           - for a Transient Result,  use the method TransientResult
+    	--           - else, cast and query the Binder itself
+    	--           
+    	--           An Actor can be built by combination : this allows to
+    	--           gather several Actors, each one processing a set of cases.
+
+    	uses  Transient, Binder,
+	      SimpleBinderOfTransient
+	      --  TransferProcess, TheStart
+
+    	raises DomainError
+
+    	is
+
+    	    Create returns mutable Actor;
+
+    	    Recognize (me : mutable; start : TheStart)
+    	    	returns Boolean is virtual;
+	    ---Purpose : Prerequesite for Transfer : the method Transfer is
+	    --           called on a starting object only if Recognize has
+	    --           returned True on it
+	    --           This allows to define a list of Actors, each one
+	    --           processing a definite kind of data
+	    --           TransferProcess calls Recognize on each one before
+	    --           calling Transfer. But even if Recognize has returned
+	    --           True, Transfer can reject by returning a Null Binder
+	    --           (afterwards rejection), the next actor is then invoked
+	    --           
+	    --           The provided default returns True, can be redefined
+
+	    Transferring (me : mutable;
+    	    	      start : TheStart; TP : mutable TransferProcess)
+	        	returns mutable Binder
+	    ---Purpose : Specific action of Transfer. The Result is stored in
+	    --           the returned Binder, or a Null Handle for "No result"
+	    --           (Default defined as doing nothing; should be deffered)
+	    --           "mutable" allows the Actor to record intermediate
+	    --           information, in addition to those of TransferProcess
+	            raises DomainError  is virtual;     --  should be deferred;
+	    --           In case of Error during a Transfer, any kind of
+	    --           exception can be raised
+
+	    TransientResult  (me; res : any Transient)
+	        	returns mutable SimpleBinderOfTransient;
+	    ---Purpose : Prepares and Returns a Binder for a Transient Result
+	    --           Returns a Null Handle if <res> is itself Null
+
+	    NullResult (me) returns mutable Binder;
+	    ---Purpose : Returns a Binder for No Result, i.e. a Null Handle
+
+
+    	    SetLast (me : mutable; mode : Boolean = Standard_True);
+	    ---Purpose : If <mode> is True, commands an Actor to be set at the
+	    --           end of the list of Actors (see SetNext)
+	    --           If it is False (creation default), each add Actor is
+	    --           set at the beginning of the list
+	    --           This allows to define default Actors (which are Last)
+
+    	    IsLast (me) returns Boolean;
+	    ---Purpose : Returns the Last status (see SetLast).
+
+	    SetNext (me : mutable; next : mutable Actor);
+	    ---Purpose : Defines a Next Actor : it can then be asked to work if
+	    --           <me> produces no result for a given type of Object.
+	    --           If Next is already set and is not "Last", calls
+	    --           SetNext on it. If Next defined and "Last", the new
+	    --           actor is added before it in the list
+
+	    Next (me) returns mutable Actor;
+	    ---Purpose : Returns the Actor defined as Next, or a Null Handle
+
+    	fields
+
+	    thenext : Actor;
+	    thelast : Boolean;
+
+    	end Actor;
+
+    	    --  --    The class TransferProcess itself    --  --
+
+is
+
+    Create (nb : Integer = 10000) returns mutable TransferProcess from Transfer;
+    ---Purpose : Sets TransferProcess at initial state. Gives an Initial size
+    --           (indicative) for the Map when known (default is 10000).
+    --           Sets default trace file as a printer and default trace level
+    --           (see Message_TraceFile).
+
+    Create (printer: Messenger from Message; nb: Integer = 10000)
+    returns mutable TransferProcess from Transfer;
+    ---Purpose : Sets TransferProcess at initial state. Gives an Initial size
+    --           (indicative) for the Map when known (default is 10000).
+    --           Sets a specified printer.
+
+    Clear (me : mutable);
+    ---Purpose : Resets a TransferProcess as ready for a completely new work.
+    --           Clears general data (roots) and the Map
+
+    Clean (me : mutable);
+    ---Purpose : Rebuilds the Map and the roots to really remove Unbound items
+    --           Because Unbind keeps the entity in place, even if not bound
+    --           Hence, working by checking new items is meaningless if a
+    --           formerly unbound item is rebound
+
+    Resize (me : mutable; nb : Integer);
+    ---Purpose : Resizes the Map as required (if a new reliable value has been
+    --           determined). Acts only if <nb> is greater than actual NbMapped
+
+    SetActor (me : mutable; actor : mutable Actor);
+    ---Purpose : Defines an Actor, which is used for automatic Transfer
+    --           If already defined, the new Actor is cumulated
+    --           (see SetNext from Actor)
+
+    Actor (me) returns mutable Actor;
+    ---Purpose : Returns the defined Actor. Returns a Null Handle if
+    --           not set.
+
+    	-- --    Fine Access to Map    -- --
+    	--  This access works on : Binder (default), or Handle Result
+    	--   (Transient,Finder) as privileged kinds of Result
+
+    Find (me; start : TheStart) returns mutable Binder;
+    ---Purpose : Returns the Binder which is linked with a starting Object
+    --           It can either bring a Result (Transfer done) or none (for a
+    --           pre-binding).
+    --           If no Binder is linked with <start>, returns a Null Handle
+    --           Considers a category number, by default 0
+    ---Warning : it is not equivalent to IsBound, which demands a Result
+    --  C++ : return const &
+
+    IsBound (me; start : TheStart) returns Boolean;
+    ---Purpose : Returns True if a Result (whatever its form) is Bound with
+    --           a starting Object. I.e., if a Binder with a Result set,
+    --           is linked with it
+    --           Considers a category number, by default 0
+
+    IsAlreadyUsed (me; start : TheStart) returns Boolean;
+    ---Purpose : Returns True if the result of the transfer of an object is
+    --           already used in other ones. If it is, Rebind cannot change it.
+    --           Considers a category number, by default 0
+
+    FindAndMask (me : mutable; start : TheStart)
+    	returns mutable Binder  is private;
+    ---Purpose : Same as Find but stores the last access to the map, for a
+    --           faster access on next calls (as Bind does too)
+    --           Considers a category number, by default 0
+    --  C++ : return const &
+
+    Bind (me : mutable; start : TheStart; binder : mutable Binder)
+    ---Purpose : Creates a Link a starting Object with a Binder. This Binder
+    --           can either bring a Result (effective Binding) or none (it can
+    --           be set later : pre-binding).
+    --           Considers a category number, by default 0
+    	raises TransferFailure;
+    --           Error if a Binder with a Result set is already linked with
+    --           this Object (Binder with StatusResult not Initial)
+
+    Rebind (me : mutable; start : TheStart; binder : mutable Binder)
+    ---Purpose : Changes the Binder linked with a starting Object for its
+    --           unitary transfer. This it can be useful when the exact form
+    --           of the result is known once the transfer is widely engaged.
+    --           This can be done only on first transfer.
+    --           Considers a category number, by default 0
+    	raises TransferFailure;
+    --           Error if : - the Result is known as Already Used
+    --              or if   - No  Result is bound to <start>
+    --              or if   - <binder> brings No result
+
+    Unbind (me : mutable; start : TheStart) returns Boolean
+    ---Purpose : Removes the Binder linked with a starting object
+    --           If this Binder brings a non-empty Check, it is replaced by
+    --           a VoidBinder. Also removes from the list of Roots as required.
+    --           Returns True if done, False if <start> was not bound
+    --           Considers a category number, by default 0
+    	raises TransferFailure;
+    --           Error if : - the Result is known as Already Used
+
+    FindElseBind (me : mutable; start : TheStart)
+    	returns mutable Binder;
+    ---Purpose : Returns a Binder for a starting entity, as follows :
+    --           Tries to Find the already bound one
+    --           If none found, creates a VoidBinder and Binds it
+
+    	--  Check management (uses Binder's Check)
+	
+    SetMessenger (me: mutable; messenger: Messenger from Message);
+    ---Purpose : Sets Messenger used for outputting messages.
+
+    Messenger (me) returns Messenger from Message;
+    ---Purpose : Returns Messenger used for outputting messages.
+    --           The returned object is guaranteed to be non-null;
+    --           default is Message::Messenger().
+
+    SetTraceLevel (me: mutable; tracelev: Integer);
+    ---Purpose : Sets trace level used for outputting messages:
+    --           <trace> = 0 : no trace at all
+    --           <trace> = 1 : handled exceptions and calls to AddError
+    --           <trace> = 2 : also calls to AddWarning
+    --           <trace> = 3 : also traces new Roots
+    --           (uses method ErrorTrace).
+    --           Default is 1 : Errors traced
+
+    TraceLevel (me) returns Integer;
+    ---Purpose : Returns trace level used for outputting messages.
+
+    SendFail    (me : mutable; start : TheStart; amsg : Msg from Message);
+    ---Purpose : New name for AddFail (Msg)
+
+    SendWarning (me : mutable; start : TheStart; amsg : Msg from Message);
+    ---Purpose : New name for AddWarning (Msg)
+
+    SendMsg     (me : mutable; start : TheStart; amsg : Msg from Message);
+    ---Purpose : Adds an information message
+    --           Trace is filled if trace level is at least 3
+
+    AddFail (me : mutable; start : TheStart; mess : CString; orig : CString = "");
+    ---Purpose : Adds an Error message to a starting entity (to the check of
+    --           its Binder of category 0, as a Fail)
+
+    AddError (me : mutable; start : TheStart; mess : CString; orig : CString = "");
+    ---Purpose : (other name of AddFail, maintained for compatibility)
+
+    AddFail (me : mutable; start : TheStart; amsg : Msg from Message);
+    ---Purpose : Adds an Error Message to a starting entity from the definition
+    --           of a Msg (Original+Value)
+
+    AddWarning (me : mutable; start : TheStart; mess : CString; orig : CString = "");
+    ---Purpose : Adds a Warning message to a starting entity (to the check of
+    --           its Binder of category 0)
+
+    AddWarning (me : mutable; start : TheStart; amsg : Msg from Message);
+    ---Purpose : Adds a Warning Message to a starting entity from the definition
+    --           of a Msg (Original+Value)
+
+
+    Mend (me : mutable; start : TheStart; pref : CString = "");
+    ---Pirpose : Mends messages bound to a starting entity, if there are some
+    --           <pref> as for Check from Interface :
+    --           Default converts all fails to warnings and that's all
+
+    Check (me; start : TheStart) returns Check;
+    ---Purpose : Returns the Check attached to a starting entity. If <start>
+    --           is unknown, returns an empty Check
+
+--    AddCaseName   (me : mutable; start : TheStart; casename : CString);
+    ---Purpose : Adds a case name to a starting entity
+
+--    AddCaseValue  (me : mutable; start : TheStart; caseval  : Transient);
+    ---Purpose : Adds a case value to a starting entity
+
+--    CaseList (me; start : TheStart) returns HSequenceOfTransient;
+    ---Purpose : Returns the complete case list for an entity. Null Handle if empty
+
+--    NextItemWithAttribute (me; name : CString; num0 : Integer) returns Integer;
+    ---Purpose : In the list of mapped items (between 1 and NbMapped),
+    --           searches for the first item which follows <num0>(not included)
+    --           and which has an attribute named <name>
+    --           Attributes are brought by Binders
+    --           Hence, allows such an iteration
+    --           
+    --           for (num = TP->NextItemWithAttribute(name,0);
+    --                num > 0;
+    --                num = TP->NextItemWithAttribute(name,num) {
+    --                .. process mapped item <num>
+    --           }
+
+--    AttributeType (me; name : CString) returns ParamType;
+    ---Purpose : Returns the type of an Attribute attached to binders
+    --           If this name gives no Attribute, returns ParamVoid
+    --           If this name gives several different types, returns ParamMisc
+    --           Else, returns the effective type (ParamInteger, ParamReal,
+    --           ParamIdent, or ParamText)
+
+--    Attributes (me; rootname : CString = "") returns DictionaryOfInteger;
+    ---Purpose : Returns the list of recorded Attribute Names, as a Dictionary
+    --           of Integer : each value gives the count of items which bring
+    --           this attribute name
+    --           By default, considers all the attribute names
+    --           If <rootname> is given, considers only the attribute names
+    --           which begin by <rootname>
+
+    	--  Most Useful Specific Bindings  --
+
+    BindTransient  (me : mutable; start : TheStart; res : any Transient)
+    ---Purpose : Binds a starting object with a Transient Result.
+    --           Uses a SimpleBinderOfTransient to work. If there is already
+    --           one but with no Result set, sets its Result.
+    --           Considers a category number, by default 0
+    	raises TransferFailure;
+    --           Error if a result is already bound (Binder not Initial)
+
+    FindTransient  (me; start : TheStart)
+    	 returns any Transient;
+    ---Purpose : Returns the Result of the Transfer of an object <start> as a
+    --           Transient Result.
+    --           Returns a Null Handle if there is no Transient Result
+    --           Considers a category number, by default 0
+    --  Warning : Supposes that Binding is done with a SimpleBinderOfTransient
+    ---C++ : return const &
+
+
+    BindMultiple (me : mutable; start : TheStart)
+    ---Purpose : Prepares an object <start> to be bound with several results.
+    --           If no Binder is yet attached to <obj>, a MultipleBinder
+    --           is created, empty. If a Binder is already set, it must
+    --           accept Multiple Binding.
+    --           Considers a category number, by default 0
+    	raises TransferFailure;
+    --           Error if a UNIQUE result is already bound (if a Multiple
+    --           Result is, nothing is done)
+
+    AddMultiple (me : mutable; start : TheStart; res : mutable Transient)
+    ---Purpose : Adds an item to a list of results bound to a starting object.
+    --           Considers a category number, by default 0, for all results
+    	raises TransferFailure;
+    --           Error if no Binder accepting Multiple Binding is attached
+    --           to <start> (none at all, or for a unique result)
+
+    FindTypedTransient (me; start : TheStart; atype : Type from Standard;
+    	    	    	val : out mutable Transient)  returns Boolean;
+    ---Purpose : Searches for a transient result attached to a starting object,
+    --           according to its type, by criterium IsKind(atype)
+    --           
+    --           In case of multiple result, explores the list and gives in
+    --           <val> the first transient result IsKind(atype)
+    --           Returns True and fills <val> if found
+    --           Else, returns False (<val> is not touched, not even nullified)
+    --           
+    --           This syntactic form avoids to do DownCast : if a result is
+    --           found with the good type, it is loaded in <val> and can be
+    --           immediately used, well initialised
+
+    GetTypedTransient (me; binder : Binder; atype : Type from Standard;
+    	    	       val : out mutable Transient)  returns Boolean;
+    ---Purpose : Searches for a transient result recorded in a Binder, whatever
+    --           this Binder is recorded or not in <me>
+    --           
+    --           This is strictly equivalent to the class method GetTypedResult
+    --           from class SimpleBinderOfTransient, but is just lighter to call
+    --           
+    --           Apart from this, works as FindTypedTransient
+
+
+    	-- --    Atomic access to Map    -- --
+
+    NbMapped (me) returns Integer;
+    ---Purpose : Returns the maximum possible value for Map Index
+    --           (no result can be bound with a value greater than it)
+
+    Mapped (me; num : Integer) returns any TheStart;
+    ---Purpose : Returns the Starting Object bound to an Index,
+    ---C++ : return const &
+
+    MapIndex (me; start : TheStart) returns Integer;
+    ---Purpose : Returns the Index value bound to a Starting Object, 0 if none
+
+    MapItem (me; num : Integer) returns mutable Binder;
+    ---Purpose : Returns the Binder bound to an Index
+    --           Considers a category number, by default 0
+
+    	-- --    Root Management    -- --
+
+    SetRoot (me : mutable; start : TheStart)
+    ---Purpose : Declares <obj> (and its Result) as Root. This status will be
+    --           later exploited by RootResult, see below (Result can be
+    --           produced at any time)
+    	raises TransferFailure;
+    --           Error if <obj> is not bound before calling to SetRoot
+
+    SetRootManagement (me : mutable; stat : Boolean);
+    ---Purpose : Enable (if <stat> True) or Disables (if <stat> False) Root
+    --           Management. If it is set, Transfers are considered as stacked
+    --           (a first Transfer commands other Transfers, and so on) and
+    --           the Transfers commanded by an external caller are "Root".
+    --           Remark : SetRoot can be called whatever this status, on every
+    --           object.
+    --           Default is set to True.
+
+    NbRoots (me) returns Integer;
+    ---Purpose : Returns the count of recorded Roots
+
+    Root (me; num : Integer) returns any TheStart;
+    ---Purpose : Returns a Root Entity given its number in the list (1-NbRoots)
+    ---C++ : return const &
+
+    RootItem (me; num : Integer) returns mutable Binder;
+    ---Purpose : Returns the Binder bound with a Root Entity given its number
+    --           Considers a category number, by default 0
+
+    RootIndex (me; start : TheStart) returns Integer;
+    ---Purpose : Returns the index in the list of roots for a starting item,
+    --           or 0 if it is not recorded as a root
+
+    NestingLevel (me) returns Integer;
+    ---Purpose : Returns Nesting Level of Transfers (managed by methods
+    --           TranscriptWith & Co). Starts to zero. If no automatic Transfer
+    --           is used, it remains to zero. Zero means Root Level.
+
+    ResetNestingLevel (me : mutable);
+    ---Purpose : Resets Nesting Level of Transfers to Zero (Root Level),
+    --           whatever its current value.
+
+    	-- --    The Transfer Operations themselves    -- --
+
+    Recognize (me; start : TheStart)  returns Boolean;
+    ---Purpose : Tells if <start> has been recognized as good candidate for
+    --           Transfer. i.e. queries the Actor and its Nexts
+
+    Transferring (me : mutable; start : TheStart)  returns mutable Binder
+    ---Purpose : Performs the Transfer of a Starting Object, by calling
+    --           the method TransferProduct (see below).
+    --           Mapping and Roots are managed : nothing is done if a Result is
+    --           already Bound, an exception is raised in case of error.
+    	raises TransferFailure;
+    --           Error : if the Transfer falls in a loop, or asks to Rebind an
+    --           Object already Bound AND Used or reads a non computed Result
+    --           
+    --           Remark : if ErrorHandle is set, no exception is raised : see
+    --           the method SetErrorHandle for more details
+    --  C++ : return const &
+
+    TransferProduct (me : mutable; start : TheStart)  returns mutable Binder
+    ---Purpose : Internal action of Transfer, called by Transferring, with or
+    --           without ErrorHandle. It invokes the Actor to work (set by
+    --           SetActor), and tries its Nexts if no result is produced,
+    --           until a Non Null Binder is produced.
+    --           But keep in mind that a Null Binder can allways be returned
+    --           if a Starting Entity has not been recognized at all.
+    	raises TransferFailure
+        is private;
+    --           Error if the Transfer Action does any bad use of the Bindings
+
+    Transfer (me : mutable; start : TheStart) returns Boolean
+    --- Purpose : Same as Transferring but does not return the Binder.
+    --            Simply returns True in case of success (for user call)
+    	raises TransferFailure;
+    --           Error : from Transferring.
+
+    	-- --    Error Control on run-time    -- --
+
+    SetErrorHandle (me : mutable; err : Boolean);
+    ---Purpose : Allows controls if exceptions will be handled 
+    --           Transfer Operations
+    --           <err> False : they are not handled with try {} catch {}
+    --           <err> True  : they are
+    --           Default is False: no handling performed
+
+    ErrorHandle (me) returns Boolean;
+    ---Purpose : Returns error handling flag
+
+    StartTrace (me; binder : Binder; start : TheStart; level,mode : Integer);
+    ---Purpose : Method called when trace is asked
+    --           Calls PrintTrace to display information relevant for starting
+    --           objects (which can be redefined)
+    --	         <level> is Nesting Level of Transfer (0 = root)
+    --	         <mode> controls the way the trace is done :
+    --	          0 neutral, 1 for Error, 2 for Warning message, 3 for new Root
+
+    PrintTrace (me; start : TheStart; S : Messenger from Message)  is virtual;
+    ---Purpose : Prints a short information on a starting object. By default
+    --           prints its Dynamic Type. Can be redefined
+
+    IsLooping (me; alevel : Integer) returns Boolean;
+    ---Purpose : Returns True if we are surely in a DeadLoop. Evaluation is not
+    --           exact, it is a "majorant" which must be computed fast.
+    --           This "majorant" is : <alevel> greater than NbMapped.
+
+    	-- --    Results and Error Log    -- --
+    	--  The Map can be consulted term by term (as being indexed),
+    	--  or through an Iterator
+
+
+    RootResult (me; withstart : Boolean = Standard_False)  returns Iterator;
+    ---Purpose : Returns, as an iterator, the log of root transfer, i.e. the
+    --           created objects and Binders bound to starting roots
+    --           If withstart is given True, Starting Objets are also returned
+
+    CompleteResult (me; withstart : Boolean = Standard_False) returns Iterator;
+    ---Purpose : Returns, as an Iterator, the entire log of transfer (list of
+    --           created objects and Binders which can bring errors)
+    --           If withstart is given True, Starting Objets are also returned
+
+    AbnormalResult (me) returns Iterator;
+    ---Purpose : Returns Binders which are neither "Done" nor "Initial",
+    --           that is Error,Loop or Run (abnormal states at end of Transfer)
+    --           Starting Objects are given in correspondance in the iterator
+
+    CheckList (me; erronly : Boolean) returns CheckIterator;
+    ---Purpose : Returns a CheckList as a list of Check : each one is for a
+    --           starting entity which have either check (warning or fail)
+    --           messages are attached, or are in abnormal state : that case
+    --           gives a specific message
+    --           If <erronly> is True, checks with Warnings only are ignored
+
+    ResultOne    (me; start : TheStart; level : Integer;
+		  withstart : Boolean = Standard_False)  returns Iterator;
+    ---Purpose : Returns, as an Iterator, the log of transfer for one object
+    --           <level> = 0 : this object only
+    --           and if <start> is a scope owner (else, <level> is ignored) :
+    --           <level> = 1 : object plus its immediate scoped ones
+    --           <level> = 2 : object plus all its scoped ones
+
+    CheckListOne (me; start : TheStart; level : Integer;
+		  erronly : Boolean) returns CheckIterator;
+    ---Purpose : Returns a CheckList for one starting object
+    --           <level> interpreted as by ResultOne
+    --           If <erronly> is True, checks with Warnings only are ignored
+
+    IsCheckListEmpty (me; start : TheStart; level : Integer;
+		  erronly : Boolean) returns Boolean;
+    ---Purpose : Returns True if no check message is attached to a starting
+    --           object. <level> interpreted as by ResultOne
+    --           If <erronly> is True, checks with Warnings only are ignored
+
+    RemoveResult (me : mutable; start : TheStart; level : Integer;
+    	    	  compute : Boolean = Standard_True);
+    ---Purpose : Removes Results attached to (== Unbinds) a given object and,
+    --           according <level> :
+    --           <level> = 0 : only it
+    --           <level> = 1 : it plus its immediately owned sub-results(scope)
+    --           <level> = 2 : it plus all its owned sub-results(scope)
+
+    CheckNum     (me; start : TheStart) returns Integer  is virtual;
+    ---Purpose : Computes a number to be associated to a starting object in
+    --           a check or a check-list
+    --           By default, returns 0; can be redefined
+
+    SetProgress(me : mutable; theProgress : ProgressIndicator from Message);
+    	---Purpose: Sets Progress indicator
+    
+    GetProgress(me) returns ProgressIndicator from Message;
+    	---Purpose: Gets Progress indicator
+	
+fields
+
+    theerrh    : Boolean;                     -- to handle or not exception raisings
+    thetrace   : Integer;                     -- trace level (exceptions,errors, etc...)
+    themessenger : Messenger from Message;    -- messenger for sending messages
+
+    thelevel : Integer;
+    therootl : Integer;           -- level of root at each time (not allways 1)
+    therootm : Boolean;           -- Flag for Root Management set or not
+    theroots : IndexedMapOfInteger; -- indices of roots in the map
+
+    thelastobj : TheStart;        -- Last Starting Object Bound
+    thelastbnd : Binder;          -- Its attached Binder (noted to optimize)
+    theindex   : Integer;         -- And Index
+    theactor   : Actor;
+    themap     : TransferMap;
+
+    myProgress : ProgressIndicator from Message; -- Progress indicator
+
+end TransferProcess;

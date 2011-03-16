@@ -1,0 +1,32 @@
+-- File:	StepElement_CurveElementPurposeMember.cdl
+-- Created:	Tue Dec 10 18:12:56 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementPurposeMember from StepElement
+inherits SelectNamed from StepData
+
+    ---Purpose: Representation of member for  STEP SELECT type CurveElementPurpose
+
+is
+    Create returns CurveElementPurposeMember from StepElement;
+	---Purpose: Empty constructor
+
+    HasName (me) returns Boolean  is redefined;
+	---Purpose: Returns True if has name
+
+    Name (me) returns CString  is redefined;
+	---Purpose: Returns set name 
+
+    SetName (me : mutable; name : CString)  returns Boolean  is redefined;
+	---Purpose: Set name 
+
+    Matches (me; name : CString) returns Boolean  is redefined;
+	---Purpose : Tells if the name of a SelectMember matches a given one;
+
+fields
+
+    mycase : Integer;
+
+end CurveElementPurposeMember;

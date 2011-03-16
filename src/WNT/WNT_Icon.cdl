@@ -1,0 +1,45 @@
+-- File:	WNT_Icon.cdl
+-- Created:	Th Mar 28 09:54:47 1996
+-- Author:	PLOTNIKOV Eugeny
+--		<eugeny@maniax>
+---Copyright:	 Matra Datavision 1996
+
+
+class Icon from WNT inherits Image from WNT
+
+	---Purpose: Internal class for icon management
+
+ uses
+
+    Handle from Aspect
+
+ is
+
+    Create (
+     aName     : CString from Standard;
+     aBitmap   : Handle  from Aspect;
+     aHashCode : Integer from Standard
+    )
+     returns mutable Icon from WNT;
+    	---Purpose: Creates a class.
+
+    Destroy ( me : mutable ) is redefined;
+	---Level:   Public
+	---Purpose: Destroys all resources attached to the Icon.
+    	---C++:     alias ~
+
+    SetName ( me : mutable; aName : CString from Standard )
+     is static;
+     	---Level:   Public
+     	---Purpose: Sets a name for icon.
+
+ fields
+
+    myName : PCharacter from Standard is protected;
+
+ friends
+ 
+    class ImageManager from WNT,
+    class IconBox      from WNT
+
+end Icon;

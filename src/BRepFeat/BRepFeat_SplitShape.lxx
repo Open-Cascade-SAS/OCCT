@@ -1,0 +1,83 @@
+// File:	BRepFeat_SplitShape.lxx
+// Created:	Mon Sep  4 09:55:52 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <LocOpe_WiresOnShape.hxx>
+
+
+//=======================================================================
+//function : BRepFeat_SplitShape
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_SplitShape::BRepFeat_SplitShape () {}
+
+
+
+
+//=======================================================================
+//function : BRepFeat_SplitShape
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_SplitShape::BRepFeat_SplitShape (const TopoDS_Shape& S) :
+   mySShape(S)
+{
+  myWOnShape = new LocOpe_WiresOnShape(S);
+}
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::Init(const TopoDS_Shape& S)
+{
+  mySShape.Init(S);
+  if (myWOnShape.IsNull()) {
+    myWOnShape = new LocOpe_WiresOnShape(S);
+  }
+  else {
+    myWOnShape->Init(S);
+  }
+}
+
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Wire& W,
+				     const TopoDS_Face& F)
+{
+  myWOnShape->Bind(W,F);
+}
+
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E,
+				     const TopoDS_Face& F)
+{
+  myWOnShape->Bind(E,F);
+}
+
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E,
+				     const TopoDS_Edge& EOn)
+{
+  myWOnShape->Bind(E,EOn);
+}
+
+

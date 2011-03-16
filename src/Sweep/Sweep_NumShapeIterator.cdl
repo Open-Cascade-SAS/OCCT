@@ -1,0 +1,68 @@
+-- File:	Sweep_NumShapeIterator.cdl
+-- Created:	Wed Jun  2 15:30:09 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class NumShapeIterator from Sweep
+
+	---Purpose: This class provides iteration services required by
+	--          the   Swept Primitives  for   a Directing NumShape
+	--          Line.
+	--          
+
+uses
+
+    NumShape from Sweep,
+    Orientation from TopAbs
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create returns NumShapeIterator from Sweep;
+
+    Init(me : in out; aShape: NumShape from Sweep)
+	---Purpose: Resest the NumShapeIterator on sub-shapes of <aShape>.
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns True if there is a current sub-shape.
+	--          
+	---C++: inline
+    is static;
+    
+    Next(me : in out)
+	---Purpose: Moves to the next sub-shape.
+    raises
+    	NoMoreObject from Standard
+    is static;
+    
+    Value(me) returns NumShape from Sweep
+	---Purpose: Returns the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: return const &
+	---C++: inline
+    is static;
+    
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns the orientation of the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: inline
+    is static;
+    
+fields
+
+    myNumShape           : NumShape from Sweep;
+    myCurrentNumShape    : NumShape from Sweep;
+    myCurrentRange       : Integer from Standard; 
+    myMore               : Boolean from Standard;
+    myCurrentOrientation : Orientation from TopAbs;   
+
+end NumShapeIterator;

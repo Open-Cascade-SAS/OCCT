@@ -1,0 +1,129 @@
+-- File:	DsgPrs_AnglePresentation.cdl
+-- Created:	Tue Feb  7 12:13:12 1995
+-- Author:	Arnaud BOUZY
+--		<adn@houblon>
+-- Modifs by ROB : Added one Method to take into Account Units in
+--                 Presentation
+---Copyright:	 Matra Datavision 1995
+
+class AnglePresentation from DsgPrs
+    	---Purpose: A framework for displaying angles.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Circ from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection,
+    ArrowSide from DsgPrs,
+    Ax1 from gp
+
+is  
+
+
+   Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aVal: Real from Standard;
+		  aText: ExtendedString from TCollection;
+		  aCircle:  Circ from gp;
+                  aPosition: Pnt from gp;
+		  Apex: Pnt from gp; 
+                  VminCircle: Circ from gp;
+                  VmaxCircle: Circ from gp;
+    	    	  aArrowSize: Real from Standard );
+    	---Purpose: Draws the presenation of the full angle of a cone. 
+    	--          VminCircle - a circle at V parameter = Vmin
+    	--          VmaxCircle - a circle at V parameter = Vmax
+    	--          aCircle - a circle at V parameter from projection of aPosition to axis of the cone
+
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  theval: Real from Standard;
+    	    	  CenterPoint : Pnt from gp;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+    	    	  dir1: Dir from gp;
+    	    	  dir2: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Draws the representation of the angle
+	--          defined by dir1 and dir2, centered on  
+	--          CenterPoint, using the offset point OffsetPoint.
+	--          Lines are drawn to points AttachmentPoint1 and AttachmentPoint2
+
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  theval: Real from Standard;
+		  thevalstring : ExtendedString from TCollection;
+    	    	  CenterPoint : Pnt from gp;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+    	    	  dir1: Dir from gp;
+    	    	  dir2: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+    	---Purpose: Same  as above, but <thevalstring> contains conversion
+    	--          in Session units....
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  theval: Real from Standard;
+		  thevalstring : ExtendedString from TCollection;
+    	    	  CenterPoint : Pnt from gp;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+    	    	  dir1: Dir from gp;
+    	    	  dir2: Dir from gp;
+		  OffsetPoint: Pnt from gp;
+	    	  ArrowSide    : ArrowSide from DsgPrs);
+    	---Purpose: Same  as above, may add one  or
+    	-- two Arrows  according to  <ArrowSide>  value
+    
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  theval: Real from Standard;
+		  thevalstring : ExtendedString from TCollection;
+    	    	  CenterPoint : Pnt from gp;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+    	    	  dir1: Dir from gp;
+    	    	  dir2: Dir from gp;
+		  axisdir: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+    	---Purpose: Same  as above, but axisdir contains the axis direction
+    	--          useful for Revol that can be opened with 180 degrees
+
+    Add( myclass; aPresentation    : Presentation   from Prs3d;
+    	    	  aDrawer          : Drawer         from Prs3d;
+		  theval           : Real           from Standard;
+		  thevalstring     : ExtendedString from TCollection;
+    	    	  CenterPoint      : Pnt            from gp;
+                  AttachmentPoint1 : Pnt            from gp;
+		  AttachmentPoint2 : Pnt            from gp;
+    	    	  dir1             : Dir            from gp;
+    	    	  dir2             : Dir            from gp;
+		  axisdir          : Dir            from gp;
+		  isPlane          : Boolean        from Standard;
+		  AxisOfSurf       : Ax1            from gp;
+		  OffsetPoint      : Pnt            from gp;
+	    	  ArrowSide        : ArrowSide      from DsgPrs);
+    	---Purpose: Same  as above,may add one  or
+    	-- two Arrows  according to  <ArrowSide>  value
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+                  aDrawer:Drawer from Prs3d;
+		  theval: Real from Standard;
+    	          theCenter,AttachmentPoint1:Pnt from gp;
+    	          theAxe: Ax1 from gp;
+	          ArrowSide: ArrowSide from DsgPrs);
+    	---Purpose: simple representation of a poor lonesome angle dimension
+    	--          Draw a line from <theCenter>   to <AttachmentPoint1>, then operates
+    	--          a rotation around the perpmay add one  or
+    	--          two Arrows  according to  <ArrowSide>  value.  The
+    	--          attributes (color,arrowsize,...) are driven by the Drawer.
+
+
+end AnglePresentation;
+
+
+
+

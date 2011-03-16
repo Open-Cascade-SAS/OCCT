@@ -1,0 +1,18 @@
+// File:      Bnd_Box.lxx
+// Created:   14.02.05 12:38:11
+// Author:    Alexey MORENOV
+// Copyright: Open CASCADE  2005
+
+//=======================================================================
+//function : SquareExtent
+//purpose  : Computes the squared diagonal
+//=======================================================================
+
+inline Standard_Real Bnd_Box::SquareExtent() const 
+{
+  if ( IsVoid() ) return 0.;
+  Standard_Real dx = Xmax-Xmin+Gap;
+  Standard_Real dy = Ymax-Ymin+Gap;
+  Standard_Real dz = Zmax-Zmin+Gap;
+  return dx*dx + dy*dy + dz*dz;
+}

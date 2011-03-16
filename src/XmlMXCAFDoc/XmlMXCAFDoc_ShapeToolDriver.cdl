@@ -1,0 +1,37 @@
+-- File:	XmlMXCAFDoc_ShapeToolDriver.cdl
+-- Created:	Tue May 17 11:34:56 2005
+-- Author:	Eugeny NAPALKOV <eugeny.napalkov@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2005
+
+class ShapeToolDriver from XmlMXCAFDoc  inherits ADriver from XmlMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMsgDriver:MessageDriver from CDM)
+    returns mutable ShapeToolDriver from XmlMXCAFDoc;
+
+    NewEmpty (me)  
+    returns mutable Attribute from TDF
+    is redefined;
+
+    Paste(me; theSource     : Persistent from XmlObjMgt;
+              theTarget     : mutable Attribute from TDF;
+              theRelocTable : out RRelocationTable from XmlObjMgt)
+    returns Boolean from Standard
+    is redefined;
+
+    Paste(me; theSource     : Attribute from TDF;
+              theTarget     : in out Persistent from XmlObjMgt;
+              theRelocTable : out SRelocationTable from XmlObjMgt)
+    is redefined;
+
+end;
+

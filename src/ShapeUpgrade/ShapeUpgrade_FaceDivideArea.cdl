@@ -1,0 +1,35 @@
+-- File:	ShapeUpgrade_FaceDivideArea.cdl
+-- Created:	Mon Aug  7 17:14:06 2006
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	Open CASCADE 2006
+
+
+class FaceDivideArea from ShapeUpgrade inherits FaceDivide from ShapeUpgrade
+
+	---Purpose: Divides face by max area criterium.
+
+uses
+    Face from TopoDS
+
+is
+
+    Create returns FaceDivideArea from ShapeUpgrade; 
+        ---Purpose: Creates empty  constructor.
+
+    Create (F : Face from TopoDS) returns FaceDivideArea from ShapeUpgrade;
+    
+    Perform (me: mutable) returns Boolean is redefined;
+        ---Purpose: Performs splitting and computes the resulting shell
+	--          The context is used to keep track of former splittings
+    
+    MaxArea(me: mutable) returns Real;
+    ---C++: inline
+    ---C++: return &
+    ---Purpose:Set max area allowed for faces
+     
+fields
+
+    myMaxArea : Real;
+
+end FaceDivideArea;

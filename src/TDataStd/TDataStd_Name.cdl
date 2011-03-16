@@ -1,0 +1,175 @@
+-- File:	TDataStd_Name.cdl
+-- Created:	Thu Jul 31 10:29:12 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Name from TDataStd inherits Attribute from TDF
+
+	---Purpose: Used to define a name attribute containing a string which specifies the name.
+
+uses Attribute            from TDF,
+     Label                from TDF,
+     GUID                 from Standard,
+     ExtendedString       from TCollection, 
+     ListOfExtendedString from TDataStd,
+     DataSet              from TDF,
+     RelocationTable      from TDF,
+     AttributeSequence    from TDF, 
+     AttributeList        from TDF,
+     Data                 from TDF,
+     AttributeDelta       from TDF
+
+
+raises
+
+    DomainError from Standard
+
+
+is    
+
+
+    ---Purpose: class methods working on the name itself
+    --          ========================================
+
+
+    GetID (myclass)   
+   ---C++: return const & 
+   ---Purpose: Returns the GUID for name attributes.  
+    returns GUID from Standard;    
+    
+
+    Set (myclass; label: Label from TDF; string  : ExtendedString from TCollection)
+    ---Purpose: Creates (if does not exist) and sets the name in the name attribute.
+    --          myEmpty becomes False
+    returns Name from TDataStd;
+    
+    
+    
+    ---Warning: ======================================================
+    --          As already announced next methods will be moved soon in 2 tools
+    --          
+    --          * one to search  label from name following the framework
+    --          label hierarchy.
+    --          
+    --          * one to search label from name following the treenode hierachy.
+    -- ===============================================================         
+
+    --Find  (myclass; L : Label from TDF; father : in out Name from TDataStd)
+    ---Purpose: from any label <L>  search in father  labels (L is not
+    --          concerned) the first name attribute.if found set it in
+    --          <father>.
+    --returns Boolean from Standard;
+    
+    
+    ---Purpose: class methods working on the name tree
+    --          ======================================
+
+    --Find (myclass; framework  :                  Data from TDF; 
+    --	    	   fullPath   : ListOfExtendedString from TDataStd;
+    --	    	   name       :         in out   Name  from TDataStd)
+    --returns Boolean from Standard;
+    ---Purpose: Search in the  whole TDF_Data the Name attribute which
+    --           fit with <fullPath>. Returns True if found.
+
+    --Find (myclass; current  :        Label          from TDF;
+    --               string   :        ExtendedString from TCollection;
+    --               name     : in out Name           from TDataStd)
+    --returns Boolean from Standard;
+    ---Purpose:  Search  under <currentLabel>  a  label which fit with
+    --          <name>. Returns True if  found. Shortcut which  avoids
+    --          building a ListOfExtendedStrin.
+    
+    --Find (myclass; framework :        Data           from TDF;
+    --               string    :        ExtendedString from TCollection;
+    --               name      : in out Name           from TDataStd)
+    --returns Boolean from Standard;
+    ---Purpose:  Search in the whole TDF_Data the label which fit with name
+    --           Returns True if found.
+
+    ---Purpose: tools methods to translate path <-> pathlist
+    --          ===========================================
+
+    --MakePath (myclass; path     :        ExtendedString       from TCollection;
+	--	       pathlist : in out ListOfExtendedString from TDataStd;
+    	--    	       Separator:        ExtCharacter         from Standard = ':')
+    --returns Boolean from Standard;
+    ---Purpose: move to draw For Draw test we may provide this tool method which convert a path in a
+    --	    	sequence of string to call after the FindLabel methods.
+    --          Example: if it's given "Assembly:Part_1:Sketch_5" it will return in <pathlist>
+    --          the list of 3 strings: "Assembly","Part_1","Sketch_5".
+    
+    --MakePath (myclass; pathlist :        AttributeList  from TDF;
+    --                   path     : in out ExtendedString from TCollection;
+    --                   Separator:          ExtCharacter from Standard = ':')
+    ---Purpose: move to draw from <pathlist> build the string path
+    --returns Boolean from Standard;
+
+
+    ---Purpose: Name methods
+    --          ============
+    
+    Create 
+    returns mutable Name from TDataStd;
+    
+
+    --Father (me; father : in out Name from TDataStd)
+    -- Purpose: Returns  the Father Name.  The  search is done in <me>
+    --           fathers   labels. If  noone  father is  found returns
+    --          False.
+    --returns Boolean from Standard;
+    
+    --FullPath (me; path : in out AttributeList from TDF) 
+    --returns Boolean from Standard;
+    
+    --ChildNames (me; list : in out AttributeList  from TDF)
+    -- Purpose: puts  in list the childs  names of me. returns TRUE if
+    --          found
+    --returns Boolean from Standard;
+
+    --Find (me; relativePath :        ListOfExtendedString from TDataStd;
+    --	      name         : in out Name  from TDataStd)
+    --returns Boolean from Standard;
+
+    Set (me : mutable; S : ExtendedString from TCollection)
+    	raises DomainError from Standard;
+    ---Purpose: Sets <S> as name. Raises if <S> is not a valid name.
+    
+    Get (me)
+    returns ExtendedString from TCollection;    
+    ---Purpose:
+    --    Returns the name contained in this name attribute.
+    ---C++: return const & 
+    
+    --SetEmpty(me: mutable);
+    ---Purpose: Set myEmpty field
+    
+    --IsEmpty(me) returns Boolean from Standard;
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+fields
+
+    myString : ExtendedString from TCollection;     --To store name 
+    myEmpty  : Boolean        from Standard;        --Is set to True if name isn't set 
+
+end Name;

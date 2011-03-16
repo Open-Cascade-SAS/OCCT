@@ -1,0 +1,50 @@
+-- File:	BOPTools_CommonBlockAPI.cdl
+-- Created:	Wed Mar 14 14:56:48 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class CommonBlockAPI from BOPTools 
+
+	---Purpose:  
+	--- class that provide some  useful tools 
+    	--- to manage with a List Of Common Block-s             
+
+uses
+    ListOfCommonBlock from BOPTools, 
+    ListOfPaveBlock   from BOPTools, 
+    PaveBlock         from BOPTools 
+    
+is 
+    Create  (aList:ListOfCommonBlock from BOPTools)   
+    	returns CommonBlockAPI from BOPTools; 
+    	---Purpose:   
+    	--- Constructor 
+    	---
+    List(me) 
+    	returns  ListOfCommonBlock from BOPTools; 
+    	---C++:  return const & 
+    	---Purpose:   
+    	--- Selector 
+    	---
+    CommonPaveBlocks(me;   
+    	    anE:Integer from  Standard) 
+    	returns  ListOfPaveBlock from BOPTools;
+    	---C++:  return const &  
+    	---Purpose:   
+    	--- Returns all PaveBlock-s (from the list) that are 
+    	--- common for the given edge with  DS-index <anE>     
+    	---
+    IsCommonBlock   (me;  
+    	    aPB: PaveBlock from BOPTools) 
+    	returns  Boolean from Standard;
+    	---Purpose:   
+    	--- Returns TRUE if given PaveBlock <aPB> is 
+    	--- common for the Blocks from the list      
+    	---
+fields 
+    myListOfCommonBlock  :Address from Standard;
+    myListOfPaveBlock    :ListOfPaveBlock from BOPTools; 
+    
+end CommonBlockAPI;

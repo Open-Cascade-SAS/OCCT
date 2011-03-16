@@ -1,0 +1,133 @@
+-- File:	Units_Measurement.cdl
+-- Created:	Mon Jun 22 16:42:01 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Measurement from Units
+
+	---Purpose: This class  defines  a measurement which is the 
+	--          association of a real value and a unit.
+
+uses
+
+    Token from Units
+
+--raises
+
+is
+
+    Create returns Measurement from Units;
+    ---Level: Internal
+    ---Purpose: It is the empty constructor of the class.
+    
+    Create(avalue : Real ; atoken : Token from Units)
+    ---Level: Internal
+    ---Purpose: Returns an instance  of this class.   <avalue> defines
+    --          the measurement, and <atoken>  the token which defines
+    --          the unit used.
+    returns Measurement from Units;
+    
+    Create(avalue : Real ; aunit : CString)
+    ---Level: Public
+    ---Purpose: Returns an  instance of this  class.  <avalue> defines
+    --          the  measurement, and <aunit> the   unit used, 
+    --          described in natural language.
+    returns Measurement from Units;
+    
+    Convert(me : in out ; aunit : CString)
+    ---Level: Public
+    ---Purpose: Converts (if   possible)  the  measurement   object into
+    --          another   unit.      <aunit>   must  have    the  same
+    --          dimensionality as  the  unit  contained in   the token
+    --          <thetoken>.
+    is static;
+    
+    Integer(me) returns Measurement from Units
+    ---Level: Public
+    ---Purpose: Returns a Measurement object with the integer value of 
+    --          the measurement contained in <me>.
+    is static;
+    
+    Fractional(me) returns Measurement from Units
+    ---Level: Public
+    ---Purpose: Returns a Measurement object with the fractional value 
+    --          of the measurement contained in <me>.
+    is static;
+    
+    Measurement(me) returns Real
+    ---Level: Public
+    ---Purpose: Returns the value of the measurement.
+    is static;
+    
+    Token(me) returns Token from Units
+    ---Level: Internal
+    ---Purpose: Returns the token contained in <me>.
+    is static;
+    
+    Add(me ; ameasurement : Measurement from Units) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator +
+    ---Purpose: Returns (if it is possible) a measurement which is the
+    --          addition  of  <me>  and  <ameasurement>.  The   chosen
+    --          returned unit is the unit of <me>.
+    is static;
+    
+    Subtract(me ; ameasurement : Measurement from Units) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator -
+    ---Purpose: Returns (if it is possible) a measurement which is the
+    --          subtraction of  <me>  and <ameasurement>.   The chosen
+    --          returned unit is the unit of <me>.
+    is static;
+    
+    Multiply(me ; ameasurement : Measurement from Units) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator *
+    ---Purpose: Returns  a measurement which  is the multiplication of
+    --          <me> and <ameasurement>.
+    is static;
+    
+    Multiply(me ; avalue : Real) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator *
+    ---Purpose: Returns  a measurement which  is the multiplication of
+    --          <me> with the value  <avalue>.
+    is static;
+    
+    Divide(me ; ameasurement : Measurement from Units) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator /
+    ---Purpose: Returns a measurement which  is the division of  <me> by
+    --          <ameasurement>.
+    is static;
+    
+    Divide(me ; avalue : Real) returns Measurement from Units
+    ---Level: Public
+    ---C++: alias operator /
+    ---Purpose: Returns  a measurement which  is the division of <me> by
+    --          the constant <avalue>.
+    is static;
+
+    Power(me ; anexponent : Real) returns Measurement from Units
+    ---Level: Public
+    --  -C++: alias "friend Units_Measurement pow(const Units_Measurement&,const Standard_Real);"
+    ---Purpose: Returns   a    measurement  which   is <me>    powered
+    --          <anexponent>.
+    is static;
+
+    HasToken(me) returns Boolean from Standard;
+
+    Dump(me)
+    ---Level: Internal
+    ---Purpose: Useful for debugging.
+    is static;
+    
+fields
+
+    themeasurement : Real;
+    thetoken       : Token from Units;
+    myHasToken     : Boolean from Standard;
+
+end Measurement;

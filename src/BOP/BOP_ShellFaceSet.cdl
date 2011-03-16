@@ -1,0 +1,39 @@
+-- File:	BOP_ShellFaceSet.cdl
+-- Created:	Mon Jun 25 09:50:30 2001
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2001
+
+class ShellFaceSet from BOP inherits ShapeSet from BOP
+
+    	---Purpose: class for set of faces and shells 
+	--- 
+uses
+    Solid from TopoDS
+
+is
+
+    Create  
+    	returns ShellFaceSet from BOP;
+    	---Purpose:  
+    	--- Empty  Consreuctor 
+    	---
+    Create(theSolid: Solid from TopoDS)
+    	returns ShellFaceSet from BOP;
+    	---Purpose:  
+    	--- Creates the object to build blocks of faces
+    	--- connected by edges.
+    	---
+    Solid(me)
+    	returns Solid from TopoDS;
+    	---C++: return const &
+    	---C++: inline
+    	---Purpose: 
+    	--- Selector   
+    	---
+    
+fields
+
+    mySolid : Solid from TopoDS;
+
+end ShellFaceSet from BOP;

@@ -1,0 +1,13 @@
+-- File:	PCDM_PCDM.cdl
+-- Created:	Fri Aug  1 15:26:17 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class Document from PCDM inherits Persistent from Standard
+
+uses Document from CDM
+
+is
+
+end Document from PCDM;

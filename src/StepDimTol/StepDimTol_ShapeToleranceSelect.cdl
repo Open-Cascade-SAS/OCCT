@@ -1,0 +1,32 @@
+-- File:	StepDimTol_ShapeToleranceSelect.cdl
+-- Created:	Wed Jun  4 13:34:33 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ShapeToleranceSelect from StepDimTol
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type ShapeToleranceSelect
+
+uses
+    GeometricTolerance from StepDimTol,
+    PlusMinusTolerance from StepShape
+
+is
+    Create returns ShapeToleranceSelect from StepDimTol;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of ShapeToleranceSelect select type
+	--          1 -> GeometricTolerance from StepDimTol
+	--          2 -> PlusMinusTolerance from StepShape
+	--          0 else
+
+    GeometricTolerance (me) returns GeometricTolerance from StepDimTol;
+	---Purpose: Returns Value as GeometricTolerance (or Null if another type)
+
+    PlusMinusTolerance (me) returns PlusMinusTolerance from StepShape;
+	---Purpose: Returns Value as PlusMinusTolerance (or Null if another type)
+
+end ShapeToleranceSelect;

@@ -1,0 +1,36 @@
+-- File:        Axis2Placement.cdl
+-- Created:     Fri Dec  1 11:11:10 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class Axis2Placement from StepGeom inherits SelectType from StepData
+
+	-- <Axis2Placement> is an EXPRESS Select Type construct translation.
+	-- it gathers : Axis2Placement2d, Axis2Placement3d
+
+uses
+
+	Axis2Placement2d,
+	Axis2Placement3d
+is
+
+	Create returns Axis2Placement;
+	---Purpose : Returns a Axis2Placement SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a Axis2Placement Kind Entity that is :
+	--        1 -> Axis2Placement2d
+	--        2 -> Axis2Placement3d
+	--        0 else
+
+	Axis2Placement2d (me) returns any Axis2Placement2d;
+	---Purpose : returns Value as a Axis2Placement2d (Null if another type)
+
+	Axis2Placement3d (me) returns any Axis2Placement3d;
+	---Purpose : returns Value as a Axis2Placement3d (Null if another type)
+
+
+end Axis2Placement;
+

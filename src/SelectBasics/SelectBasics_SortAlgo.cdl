@@ -1,0 +1,77 @@
+-- File:	SelectBasics_SortAlgo.cdl
+-- Created:	Mon Jan 23 17:15:55 1995
+-- Author:	Didier Piffault
+--		<rmi@photon>
+--		Full Copy of Select_Rectangle (Didier Piffault 94)
+---Copyright:	 Matra Datavision 1995
+
+
+class SortAlgo from SelectBasics 
+
+	---Purpose: Quickly selection of a rectangle in a set of rectangles
+
+
+uses    Integer from Standard,
+    	Real    from Standard,
+	MapIteratorOfMapOfInteger from TColStd,
+	MapOfInteger from TColStd,
+	ListIteratorOfListOfInteger from TColStd,
+	Box2d          from Bnd,
+	HArray1OfBox2d from Bnd,
+	BoundSortBox2d from Bnd
+
+
+is      Create 
+	---Purpose: Empty rectangle selector.
+	    returns SortAlgo from SelectBasics;
+
+	Create     (ClippingRectangle    : Box2d from Bnd;
+    	    	    sizeOfSensitiveArea  : Real from Standard;
+    	    	    theRectangles        : HArray1OfBox2d from Bnd)
+	---Purpose: Creates a initialized selector.
+	    returns SortAlgo from SelectBasics;
+
+	Initialize (me                   : in out;
+    	    	    ClippingRectangle    : Box2d from Bnd;
+    	    	    sizeOfSensitiveArea  : Real from Standard;
+    	    	    theRectangles        : HArray1OfBox2d from Bnd)
+	---Purpose: Clears and initializes the selector.
+	    is static;
+
+
+	InitSelect (me    : in out;
+	    	    x, y  : Real from Standard) 
+	---Purpose: Searchs the items on this position.
+	    is static;
+
+
+	InitSelect (me    : in out;
+	    	    rect  : Box2d from Bnd) 
+	---Purpose: Searchs the items in this rectangle.
+	    is static;
+
+
+
+    	More(me)
+	---Purpose: Returns true if there is something selected.
+	    returns Boolean from Standard is static;
+
+    	Next(me : in out) 
+	---Purpose: Sets value on the next selected item.
+	    is static;
+
+    	Value(me)
+	---Purpose: Returns the index of the selected rectangle.
+	    returns Integer from Standard is static;
+
+
+fields  clipRect   : Box2d            from Bnd;
+	sizeArea   : Real             from Standard;
+	sortedRect : BoundSortBox2d   from Bnd;
+	myMap      : MapOfInteger     from TColStd;
+	curResult  : MapIteratorOfMapOfInteger from TColStd;
+
+end SortAlgo;
+
+
+

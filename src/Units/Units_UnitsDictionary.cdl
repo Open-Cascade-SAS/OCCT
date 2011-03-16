@@ -1,0 +1,113 @@
+-- File:	Units_UnitsDictionary.cdl
+-- Created:	Mon Jun 22 18:08:47 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class UnitsDictionary from Units 
+
+inherits
+
+        TShared from MMgt 
+	---Purpose: This class creates  a dictionary of all  the units
+	--          you want to know.
+
+uses
+
+    HAsciiString       from TCollection,
+    AsciiString        from TCollection,
+    Quantity           from Units,
+    QuantitiesSequence from Units,
+    Dimensions         from Units
+
+
+is
+
+    Create returns mutable UnitsDictionary from Units;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns an empty instance of UnitsDictionary.
+    
+    Creates(me : mutable ; afilename : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns a  UnitsDictionary object  which  contains the
+    --          sequence  of all   the  units  you want to   consider,
+    --          physical quantity by physical quantity.
+    
+    is static;
+    
+    Sequence(me) returns any QuantitiesSequence from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns   the  head   of   the  sequence  of  physical
+    --          quantities.
+    
+    is static;
+    
+    UpToDate(me) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns true if there has been no  modification of the
+    --          file Units.dat  since the   creation of the dictionary
+    --          object, false otherwise.
+    
+    is static;
+    
+    ActiveUnit(me ; aquantity : CString) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns for <aquantity> the active unit.
+
+    is static;
+    
+    Dump(me ; alevel : Integer)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Dumps only  the sequence   of  quantities without  the
+    --          units  if  <alevel> is  equal  to zero,  and  for each
+    --          quantity all the units stored if <alevel>  is equal to
+    --          one.
+    
+    is static;
+
+    Dump(me ; adimensions : Dimensions)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Dumps  for a     designated  physical       dimensions
+    --          <adimensions> all the previously stored units.
+    
+    is static;
+
+fields
+
+    thefilename           : HAsciiString from TCollection;
+    thetime               : Integer;
+    thequantitiessequence : QuantitiesSequence from Units;
+
+end UnitsDictionary;
+
+
+
+
+
+
+
+
+
+
+

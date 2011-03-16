@@ -1,0 +1,38 @@
+-- File:        FileDescription.cdl
+-- Created:     Thu Jun 16 18:05:54 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FileDescription from HeaderSection 
+
+inherits TShared from MMgt
+
+uses
+
+	HArray1OfHAsciiString from Interface,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable FileDescription;
+	---Purpose: Returns a FileDescription
+
+	Init (me : mutable;
+	      aDescription : mutable HArray1OfHAsciiString from Interface;
+	      aImplementationLevel : mutable HAsciiString from TCollection);
+
+	-- Specific Methods for Field Data Access --
+
+	SetDescription(me : mutable; aDescription : mutable HArray1OfHAsciiString);
+	Description (me) returns mutable HArray1OfHAsciiString;
+	DescriptionValue (me; num : Integer) returns mutable HAsciiString;
+	NbDescription (me) returns Integer;
+	SetImplementationLevel(me : mutable; aImplementationLevel : mutable HAsciiString);
+	ImplementationLevel (me) returns mutable HAsciiString;
+
+fields
+
+	description : HArray1OfHAsciiString from Interface;
+	implementationLevel : HAsciiString from TCollection;
+
+end FileDescription;

@@ -1,0 +1,137 @@
+-- File:	Resource_Unicode.cdl
+-- Created:	Thu Sep 26 14:30:43 1996
+-- Author:	Arnaud BOUZY
+--		<adn@legox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Unicode from Resource 
+
+	---Purpose: This class provides functions used to convert a non-ASCII C string
+    	-- given in ANSI, EUC, GB or SJIS format, to a
+    	-- Unicode string of extended characters, and vice versa.
+
+uses ExtendedString from TCollection,
+     FormatType from Resource
+
+is
+
+    ConvertSJISToUnicode(myclass;
+                         fromstr : CString;
+                         tostr   : out ExtendedString);
+    ---Purpose: Converts non-ASCII CString <fromstr> in SJIS format 
+    --          to Unicode ExtendedString <tostr>.
+  
+    
+    ConvertEUCToUnicode(myclass;
+    	    	    	fromstr : CString;
+    	    	        tostr : out ExtendedString);
+    ---Purpose: Converts non-ASCII CString <fromstr> in EUC format 
+    --          to Unicode ExtendedString <tostr>.
+			
+    ConvertGBToUnicode(myclass;
+    	    	       fromstr : CString;
+    	    	       tostr : out ExtendedString);
+    ---Purpose: Converts non-ASCII CString <fromstr> in GB format 
+    --          to Unicode ExtendedString <tostr>.
+			
+    ConvertANSIToUnicode(myclass;
+    	    	    	 fromstr : CString;
+    	    	    	 tostr : out ExtendedString);
+    ---Purpose: Converts non-ASCII CString <fromstr> in ANSI format 
+    --          to Unicode ExtendedString <tostr>.
+			
+
+
+    ConvertUnicodeToSJIS(myclass;
+    	    	    	 fromstr : ExtendedString;
+    	    	    	 tostr :out PCharacter;
+    	    	    	 maxsize : Integer)
+    ---Purpose: Converts Unicode ExtendedString <fromstr> to non-ASCII 
+    --          CString <tostr> in SJIS format, limited to <maxsize> 
+    --          characters. To translate the whole <fromstr>, use more 
+    --          than twice the length of <fromstr>. Returns true if
+    --          <maxsize> has not been reached before end of conversion.
+    returns Boolean;
+
+    ConvertUnicodeToEUC(myclass;
+    	    	    	fromstr : ExtendedString;
+    	    	    	tostr : out PCharacter;
+			maxsize : Integer)
+    ---Purpose: Converts Unicode ExtendedString <fromstr> to non-ASCII 
+    --          CString <tostr> in EUC format, limited to <maxsize> 
+    --          characters. To translate the whole <fromstr>, use more 
+    --          than twice the length of <fromstr>. Returns true if
+    --          <maxsize> has not been reached before end of conversion.    
+    returns Boolean;
+
+
+    ConvertUnicodeToGB(myclass;
+    	    	       fromstr : ExtendedString;
+    	    	       tostr : out PCharacter;
+		       maxsize : Integer)
+    ---Purpose: Converts Unicode ExtendedString <fromstr> to non-ASCII 
+    --          CString <tostr> in GB format, limited to <maxsize> 
+    --          characters. To translate the whole <fromstr>, use more 
+    --          than twice the length of <fromstr>. Returns true if
+    --          <maxsize> has not been reached before end of conversion.    
+    returns Boolean;
+
+
+    ConvertUnicodeToANSI(myclass;
+    	    	    	 fromstr : ExtendedString;
+    	    	    	 tostr : out PCharacter;
+			 maxsize : Integer)
+    ---Purpose: Converts Unicode ExtendedString <fromstr> to non-ASCII 
+    --          CString <tostr> in ANSI format, limited to <maxsize> 
+    --          characters. To translate the whole <fromstr>, use more 
+    --          than twice the length of <fromstr>.  Returns true if
+    --          <maxsize> has not been reached before end of conversion.   
+    returns Boolean;
+
+
+    SetFormat(myclass; typecode : FormatType from Resource);
+    ---Purpose: Defines the current conversion format as typecode.
+    --          This conversion format will then be used by the
+    --          functions ConvertFormatToUnicode and
+    --          ConvertUnicodeToFormat to convert the strings.
+    
+    GetFormat(myclass) 
+    ---Purpose: Returns the current conversion format (either
+    --          ANSI, EUC, GB or SJIS).
+    --          The current converting format must be defined in
+    --          advance with the SetFormat function.
+    returns FormatType from Resource;
+
+                       
+    ReadFormat(myclass);
+    ---Purpose: Reads converting format from resource "FormatType" 
+    --          in Resource Manager "CharSet"
+
+    ConvertFormatToUnicode(myclass;
+    	    	 	   fromstr : CString;
+    	    	           tostr : out ExtendedString);
+    ---Purpose: Converts the non-ASCII C string fromstr to the
+    --          Unicode string of extended characters tostr.
+    --          fromstr is translated according to the format
+    --          (either ANSI, EUC, GB or SJIS) returned by the function GetFormat.
+			
+    ConvertUnicodeToFormat(myclass;
+    	    	    	   fromstr : ExtendedString;
+    	    	    	   tostr : out PCharacter;
+			   maxsize : Integer)
+    ---Purpose: Converts the Unicode string of extended
+    --          characters fromstr to the non-ASCII C string
+    --          tostr according to the format (either ANSI, EUC,
+    --          GB or SJIS) returned by the function GetFormat.
+    --          maxsize limits the size of the string tostr to a
+    --          maximum number of characters. You need more
+    --          than twice the length of the string fromstr to
+    --          complete the conversion.
+    --          The function returns true if conversion is
+    --          complete, i.e. the maximum number of characters
+    --          maxsize is not reached by tostr before the end
+    --          of conversion of fromstr.
+    returns Boolean;
+
+end Unicode;

@@ -1,0 +1,43 @@
+-- File:	IFSelect_GraphCounter.cdl
+-- Created:	Thu Oct 15 14:58:46 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class GraphCounter  from IFSelect    inherits SignCounter  from IFSelect
+
+    ---Purpose : A GraphCounter computes values to be sorted with the help of
+    --           a Graph. I.E. not from a Signature
+    --           
+    --           The default GraphCounter works with an Applied Selection (a
+    --           SelectDeduct), the value is the count of selected entities
+    --           from each input entities)
+
+uses HSequenceOfTransient from TColStd,
+     Graph from Interface, SelectDeduct from IFSelect
+
+is
+
+    Create (withmap  : Boolean = Standard_True;
+            withlist : Boolean = Standard_False) returns mutable GraphCounter;
+    ---Purpose : Creates a GraphCounter, without applied selection
+
+    Applied (me) returns SelectDeduct;
+    ---Purpose : Returns the applied selection
+
+    SetApplied (me : mutable; sel : SelectDeduct);
+    ---Purpose : Sets a new applied selection
+
+    AddWithGraph (me : mutable; list : HSequenceOfTransient; graph : Graph)
+        is redefined virtual;
+    ---Purpose : Adds a list of entities in the context given by the graph
+    --           Default takes the count of entities selected by the applied
+    --           selection, when it is given each entity of the list
+    --           Can be redefined
+
+fields
+
+    theapplied : SelectDeduct;
+
+end GraphCounter;

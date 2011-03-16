@@ -1,0 +1,37 @@
+-- File:	IFSelect_ModifEditForm.cdl
+-- Created:	Fri Feb 27 18:24:16 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox>
+---Copyright:	 Matra Datavision 1996
+
+
+class ModifEditForm  from IFSelect  inherits Modifier
+
+    ---Purpose : This modifier applies an EditForm on the entities selected
+
+uses CString, AsciiString from TCollection,
+     InterfaceModel, CopyTool, Protocol from Interface, ContextModif,
+     EditForm
+
+is
+
+    Create (editform : EditForm) returns mutable ModifEditForm;
+    ---Purpose : Creates a ModifEditForm. It may not change the graph
+
+    EditForm (me) returns EditForm;
+    ---Purpose : Returns the EditForm
+
+    Perform (me; ctx  : in out ContextModif;
+    	     target   : mutable InterfaceModel;
+    	     protocol : Protocol from Interface;
+    	     TC       : in out CopyTool);
+    ---Purpose : Acts by applying an EditForm to entities, selected or all model
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns Label as "Apply EditForm <+ label of EditForm>"
+
+fields
+
+    theedit : EditForm;
+
+end ModifEditForm;

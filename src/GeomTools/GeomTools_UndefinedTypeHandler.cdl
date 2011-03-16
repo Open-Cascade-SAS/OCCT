@@ -1,0 +1,60 @@
+-- File:	GeomTools_UndefinedTypeHandler.cdl
+-- Created:	Fri Oct 29 11:16:35 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class UndefinedTypeHandler from GeomTools inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+
+    Curve   from Geom,
+    Surface from Geom,
+    Curve   from Geom2d,
+    OStream,
+    IStream
+
+is
+
+    Create returns mutable UndefinedTypeHandler from GeomTools;
+    
+    -- Curve
+    
+    PrintCurve(me; C  : Curve from Geom;
+    	      	   OS : in out OStream;
+		   compact : Boolean = Standard_False) is virtual;
+    
+    ReadCurve(me; ctype: Integer;
+    	    	  IS   : in out IStream;
+    	    	  C    : in out Curve from Geom)
+    returns IStream is virtual;
+    ---C++: return &
+    
+    --PCurve
+    
+    PrintCurve2d(me; C  : Curve from Geom2d;
+    	    	     OS : in out OStream;
+		     compact : Boolean = Standard_False) is virtual;
+    
+    ReadCurve2d(me; ctype: Integer;
+    	    	    IS   : in out IStream;
+    	    	    C    : in out Curve from Geom2d)
+    returns IStream is virtual;
+    ---C++: return &
+    
+    --Surface
+    
+    PrintSurface(me; S  : Surface from Geom;
+    	    	     OS : in out OStream;
+		     compact : Boolean = Standard_False) is virtual;
+    
+    ReadSurface(me; ctype: Integer;
+    	    	    IS   : in out IStream;
+    	    	    S    : in out Surface from Geom)
+    returns IStream is virtual;
+    ---C++: return &
+    
+end UndefinedTypeHandler;

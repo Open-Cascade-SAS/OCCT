@@ -1,0 +1,266 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class GTrsf2d   from gp   inherits Storable
+
+
+        --- Purpose :
+        --  Defines a non persistent transformation in 2D space.
+        --  This transformation is a general transformation.
+        --  It can be a Trsf2d from package gp, an affinity, or you can
+        --  define your own transformation giving the corresponding
+        --  matrix of transformation.
+        -- 
+        --  With a GTrsf2d you can transform only a doublet of coordinates
+        --  XY. It is not possible to transform other geometric objects
+        --  because these transformations can change the nature of non-
+        --  elementary geometric objects.
+        --  A GTrsf2d is represented with a 2 rows * 3 columns matrix :
+        --  
+        --       V1   V2   T        XY         XY
+        --    | a11  a12  a14 |   | x |      | x'|
+        --    | a21  a22  a24 |   | y |      | y'|
+        --    |  0    0    1  |   | 1 |      | 1 |
+        --
+        --    where {V1, V2} defines the vectorial part of the
+        --    transformation and T defines the translation part of 
+        --    the transformation.
+        -- Warning
+        -- A GTrsf2d transformation is only applicable on
+        -- coordinates. Be careful if you apply such a
+        -- transformation to all the points of a geometric object,
+        -- as this can change the nature of the object and thus
+        -- render it incoherent!
+        -- Typically, a circle is transformed into an ellipse by an
+        -- affinity transformation. To avoid modifying the nature of
+        -- an object, use a gp_Trsf2d transformation instead, as
+        -- objects of this class respect the nature of geometric objects.
+
+uses  Ax2d     from gp,
+      Mat2d    from gp,
+      Trsf2d   from gp,
+      Vec2d    from gp,
+      XY       from gp, 
+      TrsfForm from gp
+
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+
+
+is
+
+
+
+  Create   returns GTrsf2d;
+    	---C++: inline
+        --- Purpose : returns identity transformation.
+
+
+  Create (T : Trsf2d)  returns GTrsf2d;
+    	---C++: inline
+        --- Purpose : Converts the gp_Trsf2d transformation T into a
+        --   general transformation.
+
+  Create (M : Mat2d; V : XY)   returns GTrsf2d;
+    	---C++: inline
+        --- Purpose : Creates   a transformation based on the matrix M and the
+        --    vector V where M defines the vectorial part of the
+        --    transformation, and V the translation part.
+
+
+  SetAffinity (me : in out; A : Ax2d; Ratio : Real)   is static;
+        --- Purpose : 
+        -- Changes this transformation into an affinity of ratio Ratio
+        -- with respect to the axis A.
+        -- Note: An affinity is a point-by-point transformation that
+        -- transforms any point P into a point P' such that if H is
+        -- the orthogonal projection of P on the axis A, the vectors
+        -- HP and HP' satisfy: HP' = Ratio * HP.
+
+
+
+  SetValue (me : in out; Row, Col : Integer; Value : Real)
+    	---C++: inline
+        --- Purpose : 
+        --  Replaces   the coefficient (Row, Col) of the matrix representing
+        --  this transformation by Value, 
+        -- Raises OutOfRange if Row < 1 or Row > 2 or Col < 1 or Col > 3
+    raises OutOfRange
+ 
+     is static;
+
+
+  SetTranslationPart (me : in out;  Coord : XY)   is static;
+        --- Purpose : Replacesthe translation part of this
+        -- transformation by the coordinates of the number pair Coord.
+
+
+  SetTrsf2d (me : in out;  T : Trsf2d)    is static;
+    	---C++: inline
+        --- Purpose : 
+        --  Assigns the vectorial and translation parts of T to this transformation.
+
+
+  SetVectorialPart (me : in out; Matrix : Mat2d)   is static;
+    	---C++: inline
+        --- Purpose :
+        -- Replaces the vectorial part of this transformation by Matrix.
+
+
+
+  IsNegative (me)   returns Boolean   is static;
+    	---C++: inline
+        --- Purpose :
+        --  Returns true if the determinant of the vectorial part of
+        -- this transformation is negative.
+
+  IsSingular (me)   returns Boolean    is static;
+    	---C++: inline
+        --- Purpose : Returns true if this transformation is singular (and
+        -- therefore, cannot be inverted).
+        -- Note: The Gauss LU decomposition is used to invert the
+        -- transformation matrix. Consequently, the transformation
+        -- is considered as singular if the largest pivot found is less
+        -- than or equal to gp::Resolution().
+        -- Warning
+        -- If this transformation is singular, it cannot be inverted.
+       
+
+  Form (me)   returns TrsfForm  is static;
+    	---C++: inline
+        --- Purpose :
+        --  Returns the nature of the transformation.  It can be 
+        --  an identity transformation, a rotation, a translation, a mirror
+        -- transformation (relative to a point or axis), a scaling
+        -- transformation, a compound transformation or some
+        -- other type of transformation.
+
+
+  TranslationPart (me)   returns XY   is static;
+        --- Purpose :  Returns the translation part of the GTrsf2d.
+    	---C++: inline
+    	---C++: return const&
+
+
+  VectorialPart (me)   returns Mat2d   is static;
+        --- Purpose : 
+        --  Computes the vectorial part of the GTrsf2d. The returned 
+        --  Matrix is a 2*2 matrix.
+    	---C++: inline
+    	---C++: return const&
+
+
+  Value (me; Row, Col : Integer)   returns Real
+        --- Purpose :
+        --  Returns the coefficients of the global matrix of transformation.
+        --- Raised OutOfRange if Row < 1 or Row > 2 or Col < 1 or Col > 3
+    	---C++: inline
+    	---C++: alias operator()
+     raises OutOfRange
+     is static;
+
+
+
+
+
+  Invert (me : in out)             raises ConstructionError  is static;
+
+  Inverted (me)   returns GTrsf2d  raises ConstructionError  is static;
+    	---C++: inline
+        --- Purpose :
+        --  Computes the reverse transformation.
+        --  Raised an exception if the matrix of the transformation 
+        --  is not inversible.
+
+
+
+
+
+  Multiply (me : in out; T : GTrsf2d)            is static;
+        ---C++: alias operator *=
+
+  Multiplied (me; T : GTrsf2d)  returns GTrsf2d  is static;
+    	---C++: inline
+        ---C++: alias operator *
+        --- Purpose :
+        --  Computes the transformation composed with T and <me>.
+        --  In a C++ implementation you can also write Tcomposed = <me> * T.
+        --  Example :
+        --      GTrsf2d T1, T2, Tcomp; ...............
+        --      //composition :
+        --        Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
+        --      // transformation of a point
+        --        XY P(10.,3.);
+        --        XY P1(P);
+        --        Tcomp.Transforms(P1);               //using Tcomp
+        --        XY P2(P);
+        --        T1.Transforms(P2);                  //using T1 then T2
+        --        T2.Transforms(P2);                  // P1 = P2 !!!
+
+ 
+
+  PreMultiply (me : in out; T : GTrsf2d)    is static;
+
+
+        --- Purpose :
+        -- Computes the product of the transformation T and this
+        -- transformation, and assigns the result to this transformation:
+        -- this = T * this 
+
+
+
+  Power (me : in out; N : Integer) raises ConstructionError  is static;
+
+  Powered (me; N : Integer) returns GTrsf2d raises ConstructionError is static;
+    	---C++: inline
+        --- Purpose :
+        --  Computes the following composition of transformations
+        --  <me> * <me> * .......* <me>, N time.
+        --  if N = 0 <me> = Identity
+        --  if N < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+        --
+        --  Raises an exception if N < 0 and if the matrix of the 
+        --  transformation is not inversible.
+
+
+  
+  Transforms (me; Coord : in out XY)   is static;
+    	---C++: inline
+
+  Transformed(me; Coord : in XY from gp)
+  returns XY from gp
+  is static;
+    	---C++: inline
+
+
+  Transforms (me; X, Y : in out Real)  is static;
+    	---C++: inline
+        ---Purpose:
+        --    Applies this transformation to the coordinates:
+        -- -   of the number pair Coord, or
+        -- -   X and Y.
+        --  
+        -- Note:
+        -- -   Transforms modifies X, Y, or the coordinate pair Coord, while
+        -- -   Transformed creates a new coordinate pair.
+
+
+
+  Trsf2d (me)  returns Trsf2d raises ConstructionError  is static;
+        ---Purpose:
+        -- Converts this transformation into a gp_Trsf2d transformation.
+        -- Exceptions
+        -- Standard_ConstructionError if this transformation
+        -- cannot be converted, i.e. if its form is gp_Other.
+
+
+fields
+
+  matrix : Mat2d;
+  loc    : XY;
+  shape  : TrsfForm;
+  scale  : Real;
+
+end; 

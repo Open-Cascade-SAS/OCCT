@@ -1,0 +1,144 @@
+-- File:	GeomFill_TrihedronLaw.cdl
+-- Created:	Tue Dec  2 10:25:37 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred  class TrihedronLaw from GeomFill inherits TShared from MMgt 
+
+	---Purpose: To define Trihedron along one Curve          
+      
+uses
+ HCurve from  Adaptor3d,    
+ PipeError      from GeomFill,   
+ Shape  from  GeomAbs, 
+ Array1OfReal   from TColStd, 
+ Vec    from  gp  
+    
+
+raises 
+ OutOfRange,  NotImplemented   
+
+is 
+ 
+   SetCurve(me : mutable;  C  :  HCurve  from  Adaptor3d) 
+   is  virtual; 
+    
+   Copy(me)   
+   returns  TrihedronLaw  from  GeomFill          
+   is  deferred;  
+    
+   ErrorStatus(me)   
+   ---Purpose:Give a status to the Law              
+   --         Returns PipeOk (default implementation) 
+   returns  PipeError  from  GeomFill 
+   is  virtual;   
+                 
+-- 
+--========== To compute Location and derivatives Location
+--              
+   D0(me : mutable; 
+      Param: Real; 
+      Tangent    : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon on curve at parameter <Param>         
+   returns Boolean  is  deferred;
+	
+   D1(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp)
+      ---Purpose: compute Triedrhon and  derivative Trihedron  on curve
+      --          at parameter <Param>                
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   raises  NotImplemented 
+   is  virtual; 
+   
+   D2(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      D2Tangent  : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      D2Normal   : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp; 
+      D2BiNormal : out  Vec  from  gp)    
+      ---Purpose: compute  Trihedron on curve          
+      --          first and seconde  derivatives.
+      --  Warning : It used only for C2 aproximation
+   returns Boolean
+   raises  NotImplemented  
+   is  virtual; 
+--
+--  =================== Management  of  continuity  ===================
+--                 
+   NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  deferred;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is deferred;  
+     
+    	
+   SetInterval(me: mutable; First, Last: Real from Standard)    
+	---Purpose: Sets the bounds of the parametric interval on 
+	--          the function
+	--          This determines the derivatives in these values if the
+	--          function is not Cn.
+   is virtual; 
+   
+    GetInterval(me: mutable; First, Last: out  Real from Standard)    
+	---Purpose: Gets the bounds of the parametric interval on 
+	--          the function
+    is static; 
+	  
+--  ===================  To help   computation of  Tolerance   ===============	 
+    GetAverageLaw(me  :  mutable;
+      ATangent    : out  Vec  from  gp; 
+      ANormal     : out  Vec  from  gp; 
+      ABiNormal   : out  Vec  from  gp) 
+     ---Purpose: Get average value of M(t) and V(t) it is usfull to 
+     --          make fast approximation of rational  surfaces.        
+  is  deferred;
+
+--   =================== To help Particular case   ===============	
+   
+    IsConstant(me) 
+    ---Purpose: Say if the law is Constant
+
+    --          Return False by Default.        
+    returns  Boolean   
+    is virtual;  
+     
+     
+    IsOnlyBy3dCurve(me) 
+     ---Purpose: Say if the law is defined, only by the 3d Geometry of
+     --          the setted Curve  
+     --          Return False by Default.        
+    returns  Boolean   
+    is virtual;           
+     
+    
+fields 
+    myCurve  :  HCurve  from  Adaptor3d  is  protected;--  The curve  definition 
+    myTrimmed:  HCurve  from  Adaptor3d  is  protected;--  The  curve  to  used
+end TrihedronLaw;

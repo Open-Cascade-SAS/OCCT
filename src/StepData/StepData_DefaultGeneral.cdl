@@ -1,0 +1,44 @@
+-- File:	StepData_DefaultGeneral.cdl
+-- Created:	Fri Mar 26 10:22:38 1993
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class DefaultGeneral  from StepData    inherits GeneralModule  from StepData
+
+    ---Purpose : DefaultGeneral defines a GeneralModule which processes
+    --           Unknown Entity from StepData  only
+
+uses OStream, Transient ,
+     EntityIterator , CopyTool, Check, ShareTool
+
+is
+
+    Create returns mutable DefaultGeneral;
+    ---Purpose : Creates a Default General Module
+
+    	--  Reconduction because limitation cdl  --
+
+    FillSharedCase (me; casenum : Integer; ent : Transient;
+    	iter : in out EntityIterator);
+    ---Purpose : Specific filling of the list of Entities shared by an Entity
+    --           <ent>, which is an UnknownEntity from StepData.
+
+    CheckCase (me; casenum : Integer; ent : Transient; shares : ShareTool;
+    	       ach : in out Check);
+    ---Purpose : Specific Checking of an Entity <ent>
+
+    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : Specific creation of a new void entity
+
+    CopyCase (me; casenum : Integer;
+    	      entfrom : Transient; entto : mutable Transient;
+    	      TC : in out CopyTool);
+    ---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
+    --           by using a CopyTool which provides its working Map.
+    --           Use method Transferred from TransferControl to work
+
+
+end DefaultGeneral;

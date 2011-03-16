@@ -1,0 +1,68 @@
+-- File:	Dynamic_DynamicDerivedClass.cdl
+-- Created:	Fri Feb  5 10:09:23 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class DynamicDerivedClass from Dynamic 
+
+
+inherits
+
+    DynamicClass from Dynamic
+    
+	---Purpose: The object of  this class is  to allow, as in  the
+	--          C++ language,    the  possibility  to   define   a
+	--          DynamicDerivedClass  which  inherits from   one or
+	--          more DynamicClass.
+
+uses
+
+    CString from Standard,
+    Method            from Dynamic,
+    DynamicInstance   from Dynamic,
+    SequenceOfClasses from Dynamic
+
+is
+
+    Create(aname : CString from Standard) returns mutable DynamicDerivedClass from Dynamic;
+    
+    ---Level: Public 
+    
+    ---Purpose: Creates a new instance of this class with <aname> as name.
+    
+    AddClass(me : mutable ; aclass : any DynamicClass from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds another class <aclass> to the sequence of derived
+    --          classes.
+    
+    is static;
+    
+    Method(me ; amethod : CString from Standard) returns any Method from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Starting with  the name of  a method,  this  redefined
+    --          method searches for   the  right method object  in the
+    --          sequence of methods  of  the derived class and  in all
+    --          the inherited classes.
+
+    is redefined;
+    
+    Instance(me) returns mutable DynamicInstance from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Defines an instance of this class definition.
+
+    is redefined;
+
+fields
+
+    thesequenceofclasses : SequenceOfClasses from Dynamic;
+
+end DynamicDerivedClass;

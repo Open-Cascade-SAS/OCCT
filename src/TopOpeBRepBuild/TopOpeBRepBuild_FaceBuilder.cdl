@@ -1,0 +1,106 @@
+-- File:	TopOpeBRepBuild_FaceBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class FaceBuilder from TopOpeBRepBuild 
+
+uses
+
+    Shape from TopoDS,
+    Face from TopoDS,
+    ListOfShape from TopTools,
+    IndexedMapOfShape from TopTools,
+    IndexedDataMapOfShapeShape from TopTools,
+    ShapeSet from TopOpeBRepBuild,
+    LoopSet from TopOpeBRepBuild,
+    BlockIterator from TopOpeBRepBuild,
+    BlockBuilder from TopOpeBRepBuild,
+    WireEdgeSet from TopOpeBRepBuild,
+    FaceAreaBuilder from TopOpeBRepBuild,
+    DataMapOfShapeInteger from TopTools
+
+is
+
+    Create returns FaceBuilder;
+
+    Create(ES : in out WireEdgeSet; F : Shape from TopoDS;
+    	   ForceClass : Boolean = Standard_False)  returns FaceBuilder;
+    ---Purpose: Create a FaceBuilder to build the faces on
+    -- the shapes (wires, blocks of edge) described by <LS>.
+
+    InitFaceBuilder(me : in out; 
+    	    	    ES : in out WireEdgeSet; F : Shape from TopoDS;
+    	    	    ForceClass : Boolean);
+		
+    DetectUnclosedWire(me : in out;
+    	    	       mapVVsameG  : out IndexedDataMapOfShapeShape from TopTools;
+    	    	       mapVon1Edge : out IndexedDataMapOfShapeShape from TopTools);
+    ---Purpose: Removes   are  non 3d-closed  wires.    
+    --          Fills  up maps <mapVVsameG> and  <mapVon1Edge>,  in order to 
+    --          correct 3d-closed but unclosed (topologic connexity) wires.
+    -- modifies myBlockBuilder      
+
+    CorrectGclosedWire(me : in out;
+    	    	       mapVVref    : IndexedDataMapOfShapeShape from TopTools;
+    	    	       mapVon1Edge : IndexedDataMapOfShapeShape from TopTools);
+    ---Purpose: Using the given maps, change the topology of the 3d-closed
+    --          wires, in order to get closed wires.
+        
+    DetectPseudoInternalEdge(me : in out;
+    	    	             mapE : out IndexedMapOfShape from TopTools);
+    ---Purpose: Removes edges appearing twice (FORWARD,REVERSED) with a bounding
+    --          vertex not connected to any other edge.
+    --          mapE contains edges found.
+    -- modifies myBlockBuilder.
+
+    Face(me) returns Shape from TopoDS;
+    ---C++: return const &
+    ---Purpose: return myFace
+    
+    -- Output methods 
+    InitFace(me : in out) returns Integer from Standard;
+    MoreFace(me) returns Boolean from Standard;
+    NextFace(me : in out);
+    
+    -- Exploration of the wires of the current face
+    InitWire(me : in out) returns Integer from Standard;
+    MoreWire(me) returns Boolean from Standard;
+    NextWire(me : in out);
+    IsOldWire(me) returns Boolean from Standard;
+    OldWire(me) returns Shape from TopoDS;
+    ---Purpose: Returns current wire
+    -- This wire may be : 
+    -- * an old wire OldWire(), which has not been reconstructed;
+    -- * a new wire made of edges described by ...NewEdge() methods.
+    ---C++: return const &
+
+    -- Exploration of the edges of current wire when IsOldWire = False
+    FindNextValidElement(me : in out);
+    ---Purpose: Iterates on myBlockIterator until finding a valid element
+    InitEdge(me : in out) returns Integer from Standard;
+    MoreEdge(me) returns Boolean from Standard;
+    NextEdge(me : in out);
+    Edge(me) returns Shape from TopoDS;
+    ---Purpose: Returns current new edge of current new wire.
+    ---C++: return const &
+
+    EdgeConnexity(me;E:Shape) returns Integer;
+    AddEdgeWire(me;E:Shape;W:in out Shape)
+    returns Integer;
+    
+    --- private
+    MakeLoops(me : in out; SS : in out ShapeSet from TopOpeBRepBuild) 
+    is private;
+
+fields
+
+    myFace : Face from TopoDS;
+    myLoopSet : LoopSet from TopOpeBRepBuild;
+    myBlockIterator : BlockIterator from TopOpeBRepBuild;
+    myBlockBuilder : BlockBuilder from TopOpeBRepBuild;
+    myFaceAreaBuilder : FaceAreaBuilder from TopOpeBRepBuild;
+    myMOSI : DataMapOfShapeInteger from TopTools;
+    
+end FaceBuilder;

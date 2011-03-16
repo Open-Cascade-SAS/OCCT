@@ -1,0 +1,54 @@
+-- File:	Material.cdl
+-- Created:	Thu Oct 22 11:09:03 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Material from Materials 
+
+	---Purpose: This  class describes  the facilities available to
+	--          create and manipulate materials.
+
+inherits
+
+    FuzzyInstance from Materials
+    
+uses
+
+    HAsciiString from TCollection,
+    AsciiString from TCollection
+
+--raises
+
+is
+
+    Create(amaterial : CString from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates the material <amaterial>.
+    
+    returns mutable Material from Materials;
+    
+    Name(me) returns AsciiString from TCollection
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns the name of the material.
+    
+    is static;
+    
+    Dump(me ; astream : in out OStream)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+    is redefined;
+    
+fields
+
+    thematerial      : HAsciiString from TCollection;
+
+end Material;

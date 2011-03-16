@@ -1,0 +1,298 @@
+-- File:	TCollection_Sequence.cdl
+-- Created:	Fri Sep 11 17:34:39 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Sequence from TCollection (SeqItem as any)  
+inherits BaseSequence from TCollection
+
+	---Purpose: A sequence of items indexed by an integer.
+    	-- Sequences have approximately the same goal as
+    	-- unidimensional arrays (TCollection_Array1): they are
+    	-- commonly used as elementary data structures for more
+    	-- complex objects. But a sequence is a structure of
+    	-- variable size: sequences avoid the use of large and
+    	-- quasi-empty arrays. Exploring a sequence data
+    	-- structure is performant when the exploration is done in
+    	-- sequence; elsewhere a sequence item is longer to read
+    	-- than an array item. Note also that sequences are not
+    	-- performant when they have to support numerous
+    	-- algorithmic explorations: a map is better for that.
+    	-- Sequence is a generic class which depends on Item,
+    	-- the type of element in the sequence.
+raises
+    
+    NoSuchObject from Standard,
+    OutOfRange from Standard
+    
+    class SequenceNode from TCollection
+    	inherits SeqNode from TCollection
+	uses SeqNodePtr from TCollection
+    is
+    	Create(I : SeqItem; n,p : SeqNodePtr from TCollection) returns SequenceNode from TCollection;
+	---C++: inline
+
+    	Value(me) returns SeqItem;
+	---C++: return &
+	---C++: inline
+
+    	fields
+	    myValue : SeqItem;
+    end;
+    
+is 
+
+	Create returns  Sequence;
+		---Purpose: Constructs an empty sequence.
+    	    	-- Use:
+    	    	-- -   the function Append or Prepend to add an item or
+    	    	-- a collection of items at the end, or at the beginning of the sequence,
+    	    	-- -   the function InsertAfter or InsertBefore to add an
+    	    	-- item or a collection of items at any position in the sequence,
+    	    	-- -   operator() or the function SetValue to assign a
+    	    	--   new value to an item of the sequence,
+    	    	-- -   operator() to read an item of the sequence,
+    	    	-- -   the function Remove to remove an item at any
+    	    	--   position in the sequence.
+    	    	--   Warning
+    	    	-- To copy a sequence, you must explicitly call the
+    	    	-- assignment operator (operator=).
+ 		---C++: inline
+
+	Create(Other : Sequence) returns Sequence from TCollection
+		---Purpose: Creation by copy of existing Sequence.
+		--  Warning: This constructor prints a warning message.
+		-- We recommand to use the operator =.
+	is private;
+		
+	Clear(me : in out);
+		---Purpose: Removes all element(s) of the sequence <me>
+		--  Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = ()
+		--   
+                ---C++: alias ~
+
+	Assign(me : in out; Other : Sequence) returns Sequence from TCollection
+		---Purpose: Copies the contents of the sequence Other into this sequence.
+    	    	-- If this sequence is not empty, it is automatically cleared before the copy.
+		---C++: alias operator =
+		---C++: return const &		
+	is static;
+	
+	Append(me : in out; T : SeqItem);
+        	---Level: Public
+		---Purpose: Appends <T> at the end of <me>.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C T)
+
+	Append(me : in out; S : in out Sequence)
+        	---Level: Public
+		---Purpose: Concatenates <S> at the end of <me>. 
+		-- <S> is cleared.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		--   S  = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = ()
+                --
+                ---C++: inline
+	is static;
+
+	Prepend(me : in out; T : SeqItem);
+        	---Level: Public
+		---Purpose: Add <T> at the beginning of <me>.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (T A B C )
+
+	Prepend(me : in out; S : in out Sequence);
+        	---Level: Public
+		---Purpose: Concatenates <S> at the beginning of <me>.
+		-- <S> is cleared.
+		--  Example:
+		-- before 
+		-- me = (A B C) S =  (D E F)
+		-- after me = (D E F A B C) 
+		-- S = ()
+		-- 
+		---C++: inline
+
+	InsertBefore(me : in out; Index : Integer from Standard; T : SeqItem) 
+	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Inserts  <T> in  <me>  before the position <Index>.
+		-- Raises an exception if the index is out of bounds.
+		--  Example:
+		-- before
+		--   me = (A B D), Index = 3, T = C
+		-- after
+		--   me = (A B C D )
+		--   
+		---C++: inline
+
+	InsertBefore(me : in out ; Index : Integer from Standard; S : in out Sequence) 
+	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Inserts the  sequence <S>  in  <me> before
+		-- the position <Index>. <S> is cleared.
+		-- Raises an exception if the index is out of bounds
+		--  Example:
+		-- before
+		--   me = (A B F), Index = 3, S = (C D E)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = ()
+                --
+                ---C++: inline
+
+	InsertAfter(me : in out; Index : Integer from Standard; T : SeqItem) 
+	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Inserts  <T>  in  <me> after the  position <Index>.
+		-- Raises an exception if the index is out of bound
+		--  Example:
+		-- before
+		--   me = (A B C), Index = 3, T = D
+		-- after
+		--   me = (A B C D)
+
+	InsertAfter(me : in out; Index : Integer from Standard; S : in out Sequence) 
+	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Inserts the sequence <S> in <me> after the
+		-- position <Index>. <S> is cleared.
+		-- Raises an exception if the index is out of bound.
+		--  Example:          
+		-- before
+		--   me = (A B C), Index = 3, S = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = ()
+		--   
+		---C++: inline
+
+    	First(me) returns any SeqItem 
+        raises NoSuchObject from Standard
+        	---Level: Public
+		---Purpose: Returns the first element of the sequence <me>
+		-- Raises an exception if the sequence is empty.
+		--  Example: 
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C)
+		-- returns A
+		---C++: return const &
+	is static;
+
+	Last(me)  returns  any SeqItem 
+        raises NoSuchObject from Standard
+        	---Level: Public
+		---Purpose: Returns the last element of the sequence <me>
+		-- Raises an exception if the sequence is empty.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C)
+		-- returns C	
+		---C++: return const &
+	is static;
+
+	Split(me : in out; Index : Integer from Standard; Sub : in out Sequence) 
+        raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Keeps in <me> the items 1 to <Index>-1 and
+		-- puts  in  <Sub> the  items <Index>  to the end.
+		--  Example:
+		-- before
+		--   me = (A B C D) ,Index = 3
+		-- after
+		--   me  = (A B)
+		--   Sub = (C D)
+		--   
+		---C++: inline
+
+	Value(me; Index : Integer from Standard) returns any SeqItem 
+    	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Returns  the Item  at position <Index>  in <me>. 
+		-- Raises an exception if the index is out of bound
+		--  Example:
+		-- before 
+		--   me = (A B C), Index = 1
+		-- after
+		--   me = (A B C)
+		-- returns 
+		--   A
+		---C++: return const &
+		---C++: alias operator()
+
+	SetValue(me : in out; Index : Integer from Standard; I : SeqItem)
+    	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Changes the item at position <Index>
+		-- Raises an exception if the index is out of bound
+		--  Example:
+		-- before 
+		--   me = (A B C), Index = 1, Item = D
+		-- after
+		--   me = (D B C)
+		--   
+
+	ChangeValue(me : in out; Index : Integer from Standard) returns any SeqItem 
+    	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Returns  the Item  at position <Index>  in
+		-- <me>. This method  may  be  used to modify
+		-- <me> : S.Value(Index) = Item.
+		-- Raises an exception if the index is out of bound
+		--  Example:
+		-- before 
+		--   me = (A B C), Index = 1
+		-- after
+		--   me = (A B C)
+		-- returns 
+		--   A		
+		---C++: return &
+		---C++: alias operator()
+
+	Remove(me : in out; Index : Integer from Standard) 
+    	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Removes  from  <me> the  item at  position <Index>.
+		-- Raises an exception if the index is out of bounds
+    	    	--  Example:
+		-- before
+		--   me = (A B C), Index = 3
+		-- after
+		--   me = (A B)
+
+	Remove(me : in out; FromIndex, ToIndex : Integer from Standard) 
+      	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Removes  from  <me>    all  the  items  of
+		-- positions between <FromIndex> and <ToIndex>.
+		-- Raises an exception if the indices are out of bounds.
+		--  Example:
+		-- before
+		--   me = (A B C D E F), FromIndex = 1 ToIndex = 3
+		-- after
+		--   me = (D E F)
+	
+end;
+
+
+

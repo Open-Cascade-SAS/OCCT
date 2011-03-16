@@ -1,0 +1,12 @@
+// File:	TopoDS_TCompSolid.lxx
+// Created:	Fri Apr 12 15:00:10 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TCompSolid
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TCompSolid::TopoDS_TCompSolid() : TopoDS_TShape()
+{
+}

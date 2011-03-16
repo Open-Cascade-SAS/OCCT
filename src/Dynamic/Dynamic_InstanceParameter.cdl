@@ -1,0 +1,73 @@
+-- File:	Dynamic_InstanceParameter.cdl
+-- Created:	Wed Feb  3 15:49:43 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class InstanceParameter from Dynamic
+
+inherits
+
+    Parameter from Dynamic
+
+	---Purpose: This class describes a parameter with a dynamic 
+	--          fuzzy instance as value.
+
+uses
+
+    CString from Standard,
+    OStream from Standard,
+    DynamicInstance from Dynamic
+
+
+is
+
+    Create(aparameter : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Creates an   InstanceParameter  with  <aparameter>  as
+    --          identifier.
+    
+    returns mutable InstanceParameter from Dynamic;
+    
+    Create(aparameter : CString from Standard; avalue : DynamicInstance from Dynamic) 
+
+    ---Level: Public 
+    
+    ---Purpose: Creates   an  InstanceParameter  with  <aparameter>  as
+    --          identifier and <avalue> as initial value.
+
+    returns mutable InstanceParameter from Dynamic;
+    
+    Value(me) returns DynamicInstance from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns <thevalue>.
+    
+    is static;
+    
+    Value(me : mutable ; avalue : DynamicInstance from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Sets <avalue> to <thevalue>.
+    
+    is static;
+
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Useful for debugging.
+    
+    is redefined;
+    
+fields
+
+    thevalue : DynamicInstance from Dynamic;
+
+end InstanceParameter;

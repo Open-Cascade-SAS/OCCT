@@ -1,0 +1,107 @@
+-- File:	XSAlgo_AlgoContainer.cdl
+-- Created:	Wed Jan 19 17:49:47 2000
+-- Author:	data exchange team
+--		<det@nnov>
+---Copyright:	 Matra Datavision 2000
+
+
+class AlgoContainer from XSAlgo inherits TShared from MMgt
+
+    ---Purpose: 
+
+uses
+
+    Curve         from Geom2d,
+    Surface       from Geom,
+    Edge          from TopoDS,
+    Face          from TopoDS,
+    Shape         from TopoDS,
+    Caller        from XSAlgo,
+    ToolContainer from XSAlgo,
+    WireData      from ShapeExtend,
+    Wire          from ShapeAnalysis,
+    Wire          from ShapeFix,
+    TransientProcess from Transfer,
+    FinderProcess from Transfer
+    
+is
+
+    Create returns mutable AlgoContainer from XSAlgo;
+    	---Purpose: Empty constructor
+	
+    SetToolContainer (me: mutable; TC: ToolContainer from XSAlgo);
+    	---C++    : inline
+    	---Purpose: Sets ToolContainer
+	
+    ToolContainer (me) returns ToolContainer from XSAlgo;
+    	---C++    : inline
+    	---Purpose: Returns ToolContainer
+	
+
+    PrepareForTransfer (me) is virtual;
+    	---Purpose: Performs actions necessary for preparing environment
+	--          for transfer. Empty in Open version.
+	
+--    PerformFixShape (me; shape       : Shape from TopoDS;
+--		         TP          : TransientProcess from Transfer;
+--    	 	    	 Prec, MaxTol: Real)
+--    returns Shape from TopoDS is virtual;
+    	---Purpose: Applies fixes to the shape resulting from transfer,
+    	--          and updates map of entity-shape in TP in accordance with 
+    	--          substitutions made during fixes (if any)
+
+    ProcessShape (me; shape: Shape from TopoDS; 
+    	 	      Prec, MaxTol: Real;
+                      rscfile: CString;
+		      seq: CString;
+		      info: out Transient)
+    returns Shape from TopoDS is virtual;
+    	---Purpose: Does shape processing with specified tolerances
+    	--          and returns resulting shape and associated information 
+        --          in the form of Transient.
+	--          This information should be later transmitted to 
+	--          MergeTransferInfo in order to be recorded in the
+	--          translation map
+	--
+	---Default behaviour:
+    	--          Applies sequence with name identified by parameter named 
+        --          <seq> (see Interface_Static), defined in resource file
+        --          identified by parameter with name <rscfile>, to shape,
+    	--          and keeps info of substitutions made during the process.
+	--          The Prec and MaxTol define run-time parameters 
+	--          Runtime.Tolerance and Runtime.MaxTolerance which can be 
+        --          referred from the resource file
+        --          ("param : &Runtime.Tolerance")
+	--          In the info returns ShapeProcess_ShapeContext with recorded
+	--          modifications. If info has already this type on input, uses it.
+	--
+	--          If resource file is not found, or sequence is not defined 
+        --          there, performs default fixes:
+	--        - if <seq> is write.iges.sequence or write.step.sequence, does DirectFaces
+	--        - if <seq> is read.iges.sequence or read.step.sequence, performs FixShape
+
+    CheckPCurve (me; edge  : Edge from TopoDS;
+		     face  : Face from TopoDS;
+		     preci : Real;
+		     isSeam: Boolean)
+    returns Boolean is virtual;
+    	---Purpose: Checks quality of pcurve of the edge on the given face, 
+        --          and corrects it if necessary.
+	---Remark : In Open CASCADE does nothing.
+
+    MergeTransferInfo (me; TP : TransientProcess from Transfer;
+		           info: Transient;
+    	    	    	   startTPitem: Integer = 1) is virtual;
+    MergeTransferInfo (me; FP : FinderProcess from Transfer;
+		           info: Transient) is virtual;
+	---Purpose: Updates translation map (TP or FP) with information
+	--          resulting from ShapeProcessing
+	--          Parameter startTPitem can be used for optimisation, to
+	--          restrict modifications to entities stored in TP starting
+	--          from item startTPitem
+
+fields
+
+    myTC : ToolContainer from XSAlgo;
+    
+end AlgoContainer;

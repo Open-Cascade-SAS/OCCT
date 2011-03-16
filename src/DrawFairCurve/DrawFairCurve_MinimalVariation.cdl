@@ -1,0 +1,25 @@
+-- File:	DrawFairCurve_MinimalVariation.cdl
+-- Created:	Fri Apr 12 11:03:34 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+class MinimalVariation from DrawFairCurve inherits Batten from DrawFairCurve
+
+	---Purpose: Interactive Draw object of type "MVC"
+
+uses MinimalVariation from FairCurve
+
+is
+   Create(TheMVC : Address)
+   returns mutable MinimalVariation from DrawFairCurve;
+   
+   SetCurvature(me: mutable; Side : Integer; Rho : Real);
+   SetPhysicalRatio(me: mutable; Ratio : Real);
+   GetCurvature(me; Side : Integer) returns Real;
+   GetPhysicalRatio(me) returns Real;
+   FreeCurvature(me: mutable; Side : Integer);
+
+end MinimalVariation;
+
+

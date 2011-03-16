@@ -1,0 +1,90 @@
+--
+-- File      :  SphericalSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SphericalSurface from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines SphericalSurface, Type <196> Form Number <0,1>
+        --          in package IGESSolid
+        --          Spherical surface is defined by a center and radius.
+        --          In case of parametrised surface an axis and a
+        --          reference direction is provided.
+
+uses
+
+        Point           from IGESGeom,
+        Direction       from IGESGeom,
+        Pnt             from gp
+
+is
+
+        Create returns mutable SphericalSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              aCenter : Point;
+              aRadius : Real;
+              anAxis  : Direction;
+              aRefdir : Direction);
+        ---Purpose : This method is used to set the fields of the class
+        --           SphericalSurface
+        --       - aCenter : the coordinates of the center point
+        --       - aRadius : value of radius
+        --       - anAxis  : the direction of the axis
+        --                   Null in case of Unparametrised surface
+        --       - aRefdir : the reference direction
+        --                   Null in case of Unparametrised surface
+
+        Center(me) returns Point;
+        ---Purpose : returns the center of the spherical surface
+
+        TransformedCenter(me) returns Pnt;
+        ---Purpose : returns the center of the spherical surface after applying
+        -- TransformationMatrix
+
+        Radius(me) returns Real;
+        ---Purpose : returns the radius of the spherical surface
+
+        Axis(me) returns Direction;
+        ---Purpose : returns the direction of the axis (Parametrised surface)
+        -- Null is returned if the surface is not parametrised
+
+        ReferenceDir(me) returns Direction;
+        ---Purpose : returns the reference direction (Parametrised surface)
+        -- Null is returned if the surface is not parametrised
+
+        IsParametrised(me) returns Boolean;
+        ---Purpose : Returns True if the surface is parametrised, else False
+
+fields
+
+--
+-- Class    : IGESSolid_SphericalSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SphericalSurface.
+--
+-- Reminder : A SphericalSurface instance is defined by :
+--            the center point coordinates (Center), a radius (Radius).
+--            In case of Parametrised surface, the direction of the axis
+--            (Axis) and a reference direction (RefDir) is given.
+--
+
+        theCenter  : Point;
+            --  the center of the spherical surface
+
+        theRadius  : Real;
+            --  the radius of the spherical surface
+
+        theAxis    : Direction;
+            -- the direction of the axis (Parametrised surface)
+
+        theRefDir  : Direction;
+            -- the reference direction (Parametrised surface)
+
+end SphericalSurface;

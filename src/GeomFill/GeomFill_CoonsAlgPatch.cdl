@@ -1,0 +1,96 @@
+-- File:	GeomFill_CoonsAlgPatch.cdl
+-- Created:	Mon Dec  4 09:38:55 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class CoonsAlgPatch from GeomFill inherits TShared from MMgt
+
+	---Purpose: Provides  evaluation   methods on an   algorithmic
+	--          patch   defined by  its   boundaries and  blending
+	--          functions.
+
+uses
+    Pnt              from gp,
+    Vec              from gp,
+    Boundary         from GeomFill,
+    Function         from Law
+
+is
+
+    Create(B1, B2, B3, B4 : Boundary from GeomFill) 
+    ---Purpose: Constructs the  algorithmic   patch. By   Default  the
+    --          constructed blending functions are linear.
+    --  Warning: No control is done on the bounds.
+    --          B1/B3 and B2/B4 must be same range and well oriented.
+    returns mutable CoonsAlgPatch  from  GeomFill;
+
+    Func(me;
+         f1,f2 : out Function from Law)
+    ---Purpose: Give the blending functions.
+
+    is static;
+
+    SetFunc(me    : mutable;
+            f1,f2 : Function from Law)
+    ---Purpose: Set the blending functions.
+
+    is static;
+
+    Value(me;
+          U,V : Real from Standard) returns Pnt from gp
+    ---Purpose: Computes  the  value   on the  algorithmic    patch at
+    --          parameters U and V.
+    is static;
+    
+    D1U(me;
+    	U,V : Real from Standard)
+    returns Vec from gp
+    ---Purpose: Computes   the  d/dU   partial   derivative  on    the
+    --          algorithmic patch at parameters U and V.
+    is static;
+
+    D1V(me;
+    	U,V : Real from Standard)
+    returns Vec from gp
+    ---Purpose: Computes    the  d/dV    partial    derivative on  the
+    --          algorithmic patch at parameters U and V.
+    is static;
+
+    DUV(me;
+    	U,V : Real from Standard)
+    returns Vec from gp
+    ---Purpose: Computes the   d2/dUdV  partial  derivative   on   the
+    --          algorithmic  patch made with linear blending functions
+    --          at parameter U and V.
+    is static;
+
+    Corner(me; I : Integer from Standard) 
+    ---C++: return const&
+    returns Pnt from gp
+    is static;
+
+    Bound(me; I : Integer from Standard) 
+    ---C++: return const&
+    returns any Boundary from GeomFill
+    is static;
+
+    Func(me; I : Integer from Standard) 
+    ---C++: return const&
+    returns any Function from Law
+    is static;
+
+fields
+
+    -- the boundaries.
+    bound : Boundary from GeomFill [4];
+    
+    -- the corners.
+    c   : Pnt from gp [4];
+    gap : Real from Standard [4];
+    
+    -- the   blending functions.
+    a : Function from Law [2];
+    
+end CoonsAlgPatch;

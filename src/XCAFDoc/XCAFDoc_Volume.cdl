@@ -1,0 +1,65 @@
+-- File:	XCAFDoc_Volume.cdl
+-- Created:	Fri Sep  8 10:54:04 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Volume from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+     Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Real            from Standard,
+     RelocationTable from TDF
+    
+is
+    Create returns Volume from XCAFDoc;
+    
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass) 
+    	---C++: return const &  
+    returns GUID from Standard;
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Set (me: mutable; vol: Real from Standard);
+    	---Purpose: Sets a value of volume
+
+    Set (myclass ; label : Label from TDF; vol: Real from Standard)
+    returns Volume from XCAFDoc;
+        ---Purpose: Find, or create, an Volume attribute and set its value
+
+    Get (me)
+    returns Real from Standard;
+    
+    Get (myclass ; label : Label from TDF; vol: in out Real from Standard)
+    returns Boolean from Standard;
+        ---Purpose: Returns volume as argument
+	--          returns false if no such attribute at the <label>
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myValue     : Real     from Standard;
+
+end Volume from XCAFDoc;

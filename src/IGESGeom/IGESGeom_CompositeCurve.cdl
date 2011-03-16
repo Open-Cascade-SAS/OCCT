@@ -1,0 +1,58 @@
+--
+-- File      : CompositeCurve.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Kiran)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CompositeCurve from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESCompositeCurve, Type <102> Form <0>
+        --          in package IGESGeom
+        --          A composite curve is defined as an ordered list of entities
+        --          consisting of a point, connect point and parametrised curve
+        --          entities (excluding the CompositeCurve entity).
+
+uses
+
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable CompositeCurve;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              allEntities : HArray1OfIGESEntity);
+         ---Purpose : This method is used to set the fields of the class
+         --           CompositeCurve
+         --       - allEntities : Constituent Entities of the composite curve
+
+        NbCurves (me) returns Integer;
+        ---Purpose : returns the number of curves contained in the CompositeCurve
+
+        Curve (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Component of the CompositeCurve (a curve or a point)
+        -- raises exception if Index <= 0 or Index > NbCurves()
+
+fields
+
+--
+-- Class    : IGESGeom_CompositeCurve
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CompositeCurve.
+--
+-- Reminder : A CompositeCurve instance is defined by :
+--            The collection of constituent curves which could
+--            be of type point, connect point or parametric curve
+--            entities
+
+        theEntities : HArray1OfIGESEntity;
+
+end CompositeCurve;

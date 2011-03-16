@@ -1,0 +1,33 @@
+-- File:	BinMXCAFDoc_MaterialDriver.cdl
+-- Created:	Wed Dec 10 13:02:14 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class MaterialDriver from BinMXCAFDoc inherits ADriver from BinMDF
+
+uses
+    MessageDriver    from CDM,
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF
+
+is
+    Create (theMsgDriver:MessageDriver from CDM)
+    returns mutable MaterialDriver from BinMXCAFDoc;
+
+    NewEmpty (me)  returns mutable Attribute from TDF
+    is redefined;
+
+    Paste(me; theSource     : Persistent from BinObjMgt;
+              theTarget     : mutable Attribute from TDF;
+              theRelocTable : out RRelocationTable from BinObjMgt)
+    returns Boolean from Standard is redefined;
+
+    Paste(me; theSource     : Attribute from TDF;
+              theTarget     : in out Persistent from BinObjMgt;
+              theRelocTable : out SRelocationTable from BinObjMgt)
+    is redefined;
+
+end;

@@ -1,0 +1,23 @@
+-- File:	TopoDS_TCompound.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class TCompound from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TCompound from TopoDS;
+    ---C++: inline
+    ---Purpose: Creates an empty TCompound.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: Returns COMPOUND.
+
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+    ---Purpose: Returns an empty TCompound.
+
+end TCompound;

@@ -1,0 +1,184 @@
+-- File:	Select3D_SensitiveTriangulation.cdl
+-- Created:	Thu May 15 15:05:37 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SensitiveTriangulation from Select3D 
+inherits SensitiveEntity from Select3D
+
+	---Purpose: A framework to define selection of a sensitive entity made of a set of triangles.
+
+uses
+    EntityOwner      from SelectBasics,
+    Projector        from Select3D,
+    Lin              from gp,
+    Trsf             from gp,
+    ListOfBox2d      from SelectBasics,
+    Array1OfPnt      from TColgp,
+    Array1OfPnt2d    from TColgp,
+    HArray1OfInteger from TColStd,
+    Box2d            from Bnd,
+    SensitiveTriangle from Select3D,
+    ListOfSensitiveTriangle from Select3D,
+    XYZ              from gp,
+    XY               from gp,
+    Pnt              from gp,
+    Pnt2d            from gp,
+    Triangulation    from Poly,
+    Location from TopLoc
+is
+
+    Create(OwnerId       : EntityOwner from SelectBasics;
+    	   aTriangulation: Triangulation from Poly;
+    	   aLoc          : Location from TopLoc;
+    	   InteriorFlag  : Boolean from Standard = Standard_True)
+    returns mutable SensitiveTriangulation from Select3D;
+
+    	---Purpose: Constructs a sensitive triangulation object defined by
+    	-- the owner OwnerId, the triangulation aTriangulation,
+    	-- the location aLoc, and the flag InteriorFlag.
+
+    Create(OwnerId       : EntityOwner from SelectBasics;
+    	   aTriangulation: Triangulation from Poly;
+    	   aLoc          : Location from TopLoc;
+	   thefreeedges  : HArray1OfInteger from TColStd;
+    	   theCDG        : Pnt from gp;
+    	   InteriorFlag  : Boolean from Standard)
+    returns mutable SensitiveTriangulation from Select3D;
+	---Purpose: Constructs a sensitive triangulation object defined by
+    	-- the owner OwnerId, the triangulation aTriangulation,
+    	-- the location aLoc, the array of free edges
+    	-- thefreeedges, the center of gravity theCDG, and the flag InteriorFlag.
+    	-- As free edges and the center of gravity do not have
+    	-- to be computed later, this syntax reduces computation time. 
+
+
+    Project (me:mutable;aProjector : Projector from Select3D) is redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+    
+    Areas   (me:mutable ; boxes : in out ListOfBox2d from SelectBasics) is redefined static;
+    	---Level: Public 
+    	---Purpose: stores in <boxes> the 2D Boxes which represent the sensitive face
+    	--          in the selection algorithm.
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is redefined static;
+
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    	---Level: Public 
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    	---Level: Public 
+    
+    
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static;
+    	---Purpose: give the depht of the last detected triangle
+    	--          (center of gravity)
+
+    DetectedTriangle(me) returns Integer from Standard;
+    	---Purpose: Returns the detected three nodes P1, P2, P3 constituting a triangle.
+    	-- This triangle is a component of the overall sensitive
+    	-- triangulation created at construction time.
+	---C++: inline
+
+    Triangulation(me) returns any Triangulation from Poly;
+    	---Purpose: Returns the triangulation used at the time of construction.
+    	---C++: inline
+    	---C++: return const &
+
+    CDG3D(me) returns Pnt from gp;
+    	---Purpose: Returns the 3D center of gravity used at the time of construction.
+    	---C++: inline
+    	---C++: return const &
+    
+    CDG2D(me) returns Pnt2d from gp;
+    	---Purpose: Returns the 2D center of gravity used at the time of construction.
+    	---C++: inline
+    	---C++: return const &
+   
+
+    IsFree(me;
+    	   IndexOfTriangle : Integer from Standard;
+           IndexinFree     : out Integer from Standard) 
+    returns Boolean is static private;
+
+    Status (me;
+    	     p0,p1,p2: XY from gp ;
+    	     aPoint  : XY from gp ;
+    	     aTol    : Real from Standard;
+    	     Dmin    : out Real from Standard) returns Integer from  Standard;
+    	---Purpose: Dmin gives the distance between the cdg and aPoint
+
+
+    ---Category: TheLocations....
+
+    HasInitLocation(me) returns Boolean from Standard;
+    	---C++: inline
+
+    GetInitLocation(me) returns Location from TopLoc;
+    	---C++: inline
+    	---C++: return const &
+
+    
+    ResetLocation(me:mutable) is redefined virtual;
+
+    SetLocation(me:mutable;aLoc :Location from TopLoc) is redefined virtual;
+
+
+
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+
+
+    DetectedTriangle(me;P1,P2,P3 : out Pnt from gp) 
+    returns Boolean from Standard;
+    	---Purpose: gives the vertices of detected triangle...
+
+ 
+    DetectedTriangle2d(me;P1,P2,P3 : out Pnt2d from gp) 
+    returns Boolean from Standard;
+    	---Purpose: Gets 2D nodes computed by entity using 3D nodes and viewer
+    	--          parameters (see Project() method)
+    
+    ComputeTotalTrsf(me:mutable) is static private;
+
+
+fields
+
+    
+    myTriangul : Triangulation from Poly;
+    myiniloc   : Location      from TopLoc;
+    myTrsf     : Trsf          from gp;
+
+    myCDG3D    : Pnt from gp;
+    myFreeEdges: HArray1OfInteger from TColStd;
+    myIntFlag  : Boolean from Standard;
+
+    myNodes2d  : Array1OfPnt2d from TColgp;
+    myCDG2D    : Pnt2d from gp;
+    mybox2d    : Box2d from Bnd;
+
+    
+    myDetectedTr: Integer from Standard;
+        
+end SensitiveTriangulation;

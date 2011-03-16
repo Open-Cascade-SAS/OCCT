@@ -1,0 +1,43 @@
+// File:	TopExp_Explorer.lxx
+// Created:	Mon Jan 18 18:05:05 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+#include <TopoDS_Iterator.hxx>
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  TopExp_Explorer::More()const 
+{
+  return hasMore;
+}
+
+
+//=======================================================================
+//function : Depth
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer  TopExp_Explorer::Depth()const 
+{
+  return myTop;
+}
+
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+
+inline void  TopExp_Explorer::Clear()
+{
+  hasMore = Standard_False;
+  if(myTop >0) {
+    for(int i=1;i<= myTop; i++)
+      myStack[i].~TopoDS_Iterator();
+  }
+  myTop = 0;
+}

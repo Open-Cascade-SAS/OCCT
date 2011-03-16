@@ -1,0 +1,35 @@
+-- File:	BinMDataStd_RealArrayDriver.cdl
+-- Created:	Thu Oct 31 20:38:50 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+class RealArrayDriver from BinMDataStd inherits ADriver from BinMDF
+
+        ---Purpose: Array of Real attribute Driver.
+
+uses
+    MessageDriver    from CDM,
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable RealArrayDriver from BinMDataStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF
+    	is redefined;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard is redefined;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt)
+    	is redefined;
+
+end RealArrayDriver;

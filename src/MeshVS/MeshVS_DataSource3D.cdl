@@ -1,0 +1,26 @@
+-- File     : MeshVS_DataSource3D.cdl
+-- Created  : 21 January 2005
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2005
+
+deferred class DataSource3D from MeshVS inherits DataSource from MeshVS
+
+uses
+  Integer                             from Standard,
+  Array1OfPnt                         from TColgp,
+
+  HArray1OfSequenceOfInteger          from MeshVS,
+  DataMapOfHArray1OfSequenceOfInteger from MeshVS
+
+is
+
+  GetPrismTopology  ( me; BasePoints : Integer ) returns HArray1OfSequenceOfInteger from MeshVS;
+  GetPyramidTopology( me; BasePoints : Integer ) returns HArray1OfSequenceOfInteger from MeshVS;
+
+  CreatePrismTopology  ( myclass; BasePoints : Integer ) returns HArray1OfSequenceOfInteger from MeshVS;
+  CreatePyramidTopology( myclass; BasePoints : Integer ) returns HArray1OfSequenceOfInteger from MeshVS;
+
+fields
+  myPrismTopos, myPyramidTopos : DataMapOfHArray1OfSequenceOfInteger from MeshVS;
+
+end DataSource3D from MeshVS;

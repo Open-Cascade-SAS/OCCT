@@ -1,0 +1,69 @@
+-- File:	IntImpParGen.cdl
+-- Created:	Mon Mar  2 10:07:38 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package IntImpParGen
+
+
+    ---Purpose: Gives a generic algorithm to intersect Implicit Curves
+    --          and Bounded Parametric Curves. 
+    --      
+    --  Level: Internal
+    --
+    -- All the methods of all the classes are Internal.
+    
+
+uses Standard, TColStd, gp, math, IntRes2d, StdFail
+
+is 
+
+    deferred class ImpTool;
+    ---Purpose: Template class for an implicit  curve.
+    
+    deferred generic class ParTool;
+    ---Purpose: Template class for a tool on a parameterised curve.
+    
+    generic class ImpParTool;
+    ---Purpose: Math function, instantiated inside the Intersector.
+
+    generic class Intersector,MyImpParTool;
+    
+    
+    ---Purpose: Tool used by the package IntCurve and IntImpParGen
+    
+    DetermineTransition(Pos1  :          Position    from IntRes2d;
+    	                Tan1  : in out   Vec2d       from gp;
+			Norm1 :          Vec2d       from gp;
+			Trans1: in out   Transition  from IntRes2d;
+			Pos2  :          Position    from IntRes2d;
+    	                Tan2  : in out   Vec2d       from gp;
+			Norm2 :          Vec2d       from gp;
+			Trans2: in out   Transition  from IntRes2d;
+                        Tol   :          Real        from Standard);
+			
+    DetermineTransition(Pos1  :          Position    from IntRes2d;
+    	                Tan1  : in out   Vec2d       from gp;
+			Trans1: in out   Transition  from IntRes2d;
+			Pos2  :          Position    from IntRes2d;
+    	                Tan2  : in out   Vec2d       from gp;
+			Trans2: in out   Transition  from IntRes2d;
+                        Tol   :          Real        from Standard)
+    returns Boolean from Standard;
+			
+    DeterminePosition(  Pos1  : in out   Position    from IntRes2d; 
+                        Dom1  :          Domain      from IntRes2d;
+			P1    :          Pnt2d       from gp;
+			Tol   :          Real        from Standard);
+			
+    NormalizeOnDomain(  Par1  : in out   Real        from Standard;
+                        Dom1  :          Domain      from IntRes2d)
+			
+           returns Real from Standard;
+						
+
+end IntImpParGen;
+

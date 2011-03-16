@@ -1,0 +1,58 @@
+-- File:	GeometryTest.cdl
+-- Created:	Mon Jun 24 11:23:25 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+-- modified by mps (dec 96)  add of  ContinuityCommands
+---Copyright:	 Matra Datavision 1991
+
+
+
+package GeometryTest 
+
+	---Purpose: this  package  provides  commands for  curves  and
+	--          surface.
+uses
+    Draw,
+    Standard, 
+    GeomliteTest
+
+is
+
+    AllCommands(I : in out Interpretor from Draw);
+	---Purpose: defines all geometric commands.
+    
+    CurveCommands(I : in out Interpretor from Draw);
+	---Purpose: defines curve commands.
+    
+    FairCurveCommands(I : in out Interpretor from Draw);
+	---Purpose: defines fair curve commands.
+    
+    SurfaceCommands(I : in out Interpretor from Draw);
+	---Purpose: defines surface commands.
+
+    ConstraintCommands(I : in out Interpretor from Draw);
+	---Purpose: defines cosntrained curves commands.
+    
+    API2dCommands(I : in out Interpretor from Draw);
+	---Purpose: defines commands to test the Geom2dAPI
+	--          - Intersection
+	--          - Extrema
+	--          - Projection
+	--          - Approximation, interpolation
+    
+    APICommands(I : in out Interpretor from Draw);
+	---Purpose: defines commands to test the Geom2dAPI
+	--          - Intersection
+	--          - Extrema
+	--          - Projection
+	--          - Approximation, interpolation
+ 
+    ContinuityCommands(I : in out Interpretor from Draw);
+        --- Purpose: defines commands to check local
+        --          continuity between curves or surfaces
+
+    PolyCommands(I : in out Interpretor from Draw);
+	---Purpose: defines     command  to    test  the    polyhedral
+	--          triangulations and the polygons from the Poly package.
+    
+end GeometryTest;

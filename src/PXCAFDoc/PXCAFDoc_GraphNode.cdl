@@ -1,0 +1,52 @@
+-- File:	PXCAFDoc_GraphNode.cdl
+-- Created:	Fri Sep 29 09:13:30 2000
+-- Author:	Pavel TELKOV
+--		<ptv@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class GraphNode from PXCAFDoc inherits Attribute from PDF
+
+	---Purpose: 
+
+uses
+    Attribute         from PDF,
+    GUID              from Standard,
+    GraphNodeSequence from PXCAFDoc
+
+is
+    Create returns mutable GraphNode from PXCAFDoc;
+    
+    SetFather (me : mutable;F : GraphNode from PXCAFDoc)
+    returns Integer from Standard;
+
+    SetChild (me : mutable;Ch : GraphNode from PXCAFDoc)
+    returns Integer from Standard;
+    
+    GetFather (me ; Findex : Integer from Standard)
+    returns GraphNode from PXCAFDoc;
+	
+    GetChild (me ; Chindex : Integer from Standard)
+    returns GraphNode from PXCAFDoc;
+    
+    FatherIndex (me ; F : GraphNode from PXCAFDoc)
+    returns Integer from Standard;
+    
+    ChildIndex (me ; Ch : GraphNode from PXCAFDoc)
+    returns Integer from Standard;
+
+    NbFathers (me) returns Integer from Standard;
+
+    NbChildren (me) returns Integer from Standard;
+
+    SetGraphID(me : mutable; GUID : GUID from Standard);
+
+    GetGraphID(me) returns GUID from Standard;
+
+fields
+
+	myFathers  : GraphNodeSequence from PXCAFDoc;
+	myChildren : GraphNodeSequence from PXCAFDoc;
+    	myGraphID  : GUID              from Standard;
+	
+end GraphNode;

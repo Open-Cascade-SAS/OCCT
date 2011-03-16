@@ -1,0 +1,48 @@
+-- File:	RUIterator.cdl
+-- Created:	Wed Feb  6 16:39:20 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class RUIterator from Expr
+
+	---Purpose: Iterates on NamedUnknowns in a GeneralRelation. 
+    	---Level : Internal
+
+uses GeneralRelation from Expr,
+    NamedUnknown from Expr,
+    MapOfNamedUnknown from Expr
+    
+raises NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create(rel : GeneralRelation)
+    ---Purpose: Creates an iterator on every NamedUnknown contained in 
+    --          <rel>.
+    returns RUIterator;
+    
+    More(me)
+    ---Purpose: Returns False if on other unknown remains.
+    returns Boolean
+    is static;
+    
+    Next(me : in out)
+    raises NoMoreObject
+    is static;
+    
+    Value(me)
+    ---Purpose: Returns current NamedUnknown.
+    --          Raises exception if no more unknowns remain.
+    returns NamedUnknown
+    raises NoSuchObject
+    is static;
+
+fields
+
+    myMap : MapOfNamedUnknown;
+    myCurrent : Integer;
+
+end RUIterator;

@@ -1,0 +1,39 @@
+-- File:	StepBasic_ProductDefinitionWithAssociatedDocuments.cdl
+-- Created:	Tue Jun 30 15:45:42 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ProductDefinitionWithAssociatedDocuments  from StepBasic
+    inherits ProductDefinition  from StepBasic
+
+uses
+     HAsciiString from TCollection,
+     ProductDefinitionFormation from StepBasic,
+     ProductDefinitionContext from StepBasic,
+     Document from StepBasic,
+     HArray1OfDocument from StepBasic
+
+is
+
+    Create returns ProductDefinitionWithAssociatedDocuments;
+
+    Init (me : mutable;
+    	  aId : HAsciiString;
+    	  aDescription : HAsciiString;
+    	  aFormation : ProductDefinitionFormation;
+	  aFrame : ProductDefinitionContext;
+	  aDocIds : HArray1OfDocument);
+
+    DocIds (me) returns HArray1OfDocument;
+    SetDocIds (me : mutable; DocIds : HArray1OfDocument);
+    NbDocIds (me) returns Integer;
+    DocIdsValue (me; num : Integer) returns Document;
+    SetDocIdsValue (me : mutable; num : Integer; adoc : Document);
+
+fields
+
+    theDocIds : HArray1OfDocument;
+
+end ProductDefinitionWithAssociatedDocuments;

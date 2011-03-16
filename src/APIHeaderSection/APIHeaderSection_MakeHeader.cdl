@@ -1,0 +1,160 @@
+-- File:	APIHeaderSection_MakeHeader.cdl
+-- Created:	Thu Aug 12 10:43:48 1993
+-- Author:	Frederic MAUPAS
+--		<fma@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeHeader from APIHeaderSection
+   
+    ---Purpose : This class allows to consult and prepare/edit  data stored in
+    --           a Step Model  Header
+
+   uses
+    
+    	StepModel             from StepData,
+	Protocol              from Interface,
+    	FileName              from HeaderSection,
+    	FileSchema            from HeaderSection,
+    	FileDescription       from HeaderSection,
+    	Integer               from Standard,
+    	Boolean               from Standard,
+    	HAsciiString          from TCollection,
+    	HArray1OfHAsciiString from Interface
+   
+--   raises  NotDone               from StdFail
+	
+   is
+   
+       Create(shapetype : Integer = 0) returns MakeHeader;
+       ---Purpose : Prepares a new MakeHeader from scratch
+
+       Create(model : StepModel) returns MakeHeader;
+       ---Purpose : Prepares a MakeHeader from the content of a StepModel
+       --           See IsDone to know if the Header is well defined
+
+       Init (me : in out; nameval : CString);
+       ---Purpose : Cancels the former definition and gives a FileName
+       --           To be used when a Model has no well defined Header
+
+       IsDone(me) returns Boolean;
+       ---Purpose : Returns True if all data have been defined (see also
+       --           HasFn, HasFs, HasFd)
+
+       Apply (me; model : mutable StepModel);
+       ---Purpose : Creates an empty header for a new
+       --           STEP model and allows the header fields to be completed.
+
+
+       NewModel (me; protocol : Protocol from Interface) returns StepModel;
+       ---Purpose : Builds a Header, creates a new StepModel, then applies the
+       --           Header to the StepModel
+       --           The Schema Name is taken from the Protocol (if it inherits
+       --           from StepData, else it is left in blanks)
+
+       --- Specific Methods for FileName Entity
+
+       HasFn (me) returns Boolean;
+       ---Purpose: Checks whether there is a
+       --          file_name entity. Returns True if there is one.    
+    
+       FnValue (me) returns FileName from HeaderSection;
+       ---Purpose: Returns the file_name entity.
+       --          Returns an empty entity if the file_name entity is not initialized.       	    	 
+
+       SetName(me : in out; aName : HAsciiString);
+    
+       Name (me) returns HAsciiString;
+       ---Purpose: Returns the name attribute for the file_name entity.    
+       SetTimeStamp(me : in out; aTimeStamp : HAsciiString);
+       TimeStamp (me) returns HAsciiString;
+       --- Purpose: Returns the value of the time_stamp attribute for the file_name entity.   
+       SetAuthor(me : in out; aAuthor : HArray1OfHAsciiString);
+       SetAuthorValue(me : in out; num : Integer; aAuthor : HAsciiString);
+       Author (me) returns HArray1OfHAsciiString;
+       AuthorValue (me; num : Integer) returns HAsciiString;
+       ---Purpose: Returns the value of the name attribute for the file_name entity.    
+    
+       NbAuthor (me) returns Integer;
+       ---Purpose: Returns the number of values for the author attribute in the file_name entity.    
+    
+       SetOrganization(me : in out; 
+     	    	       aOrganization : HArray1OfHAsciiString);
+       SetOrganizationValue(me : in out; num : Integer;
+    	    	       aOrganization : HAsciiString);
+       Organization (me) returns HArray1OfHAsciiString;
+       OrganizationValue (me; num : Integer) returns HAsciiString;
+       --- Purpose: Returns the value of attribute
+       -- organization for the file_name entity.
+    
+       NbOrganization (me) returns Integer;
+       --- Purpose: Returns the number of values for
+       -- the organization attribute in the file_name entity.   
+    
+       SetPreprocessorVersion(me : in out; 
+      	    	    	      aPreprocessorVersion : HAsciiString);
+       PreprocessorVersion (me) returns HAsciiString;
+       ---Purpose: Returns the name of the preprocessor_version for the file_name entity.    
+    
+       SetOriginatingSystem(me : in out; aOriginatingSystem : HAsciiString);
+       OriginatingSystem (me) returns HAsciiString;
+       SetAuthorisation(me : in out; aAuthorisation : HAsciiString);
+       Authorisation (me) returns HAsciiString;
+       ---Purpose: Returns the value of the authorization attribute for the file_name entity.
+
+       HasFs (me) returns Boolean;
+       ---Purpose: Checks whether there is a file_schema entity. Returns True if there is one.    
+    
+       FsValue (me) returns FileSchema from HeaderSection;
+       ---Purpose: Returns the file_schema entity. Returns an empty entity if the file_schema entity is not initialized.
+
+       SetSchemaIdentifiers(me : in out; aSchemaIdentifiers : 
+    	    	    	    	 mutable HArray1OfHAsciiString);
+       SetSchemaIdentifiersValue(me : in out; num : Integer;
+    	    	       aSchemaIdentifier : HAsciiString);
+       SchemaIdentifiers (me) returns HArray1OfHAsciiString;
+       SchemaIdentifiersValue (me; num : Integer) returns HAsciiString;
+       --- Purpose: Returns the value of the schema_identifier attribute for the file_schema entity.
+        
+       NbSchemaIdentifiers (me) returns Integer;
+       ---Purpose: Returns the number of values for the schema_identifier attribute in the file_schema entity.    
+    
+       AddSchemaIdentifier (me: in out; aSchemaIdentifier : HAsciiString);
+       ---Purpose: Add a subname of schema (if not yet in the list)
+
+       --- Specific Methods for FileDescription Entity
+
+       HasFd (me) returns Boolean;
+       --- Purpose: Checks whether there is a file_description entity. Returns True if there is one.   
+    
+       FdValue (me) returns FileDescription from HeaderSection;
+       ---Purpose: Returns the file_description
+       -- entity. Returns an empty entity if the file_description entity is not initialized.
+        
+       SetDescription(me : in out;
+    	    	      aDescription : HArray1OfHAsciiString);
+       SetDescriptionValue(me : in out; num : Integer;
+    	    	       aDescription : HAsciiString);
+       Description (me) returns HArray1OfHAsciiString;
+       DescriptionValue (me; num : Integer) returns HAsciiString;
+       --- Purpose: Returns the value of the
+       -- description attribute for the file_description entity.
+    
+       NbDescription (me) returns Integer;
+       --- Purpose: Returns the number of values for
+       -- the file_description entity in the STEP file header.  
+    
+       SetImplementationLevel(me : in out; 
+    	    	    	      aImplementationLevel : HAsciiString);
+       ImplementationLevel (me) returns HAsciiString;
+       ---Purpose: Returns the value of the
+       -- implementation_level attribute for the file_description entity.
+    
+   fields
+
+    	done : Boolean;
+	fn   : FileName; 
+        fs   : FileSchema;
+	fd   : FileDescription;
+
+end MakeHeader;

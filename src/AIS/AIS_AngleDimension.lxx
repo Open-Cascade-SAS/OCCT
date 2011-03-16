@@ -1,0 +1,39 @@
+// File:	AIS_AngleDimension.lxx
+// Created:	Fri Feb 28 10:09:45 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+//=======================================================================
+//function : KindOfDimension
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfDimension AIS_AngleDimension::KindOfDimension() const 
+{
+  return AIS_KOD_PLANEANGLE;
+}
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_AngleDimension::IsMovable() const 
+{
+  return Standard_True;
+}
+
+//=======================================================================
+//function : Axis
+//purpose  : 
+//=======================================================================
+inline const gp_Ax1& AIS_AngleDimension::Axis() const 
+{
+  return myAxis;
+}
+
+//=======================================================================
+//function : SetAxis
+//purpose  : 
+//=======================================================================
+inline void AIS_AngleDimension::SetAxis(const gp_Ax1& anAxis)
+{
+  myAxis = anAxis;
+}

@@ -1,0 +1,47 @@
+-- File:	TopoDSToStep_MakeManifoldSolidBrep.cdl
+-- Created:	Fri Jul 23 12:38:59 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeManifoldSolidBrep from TopoDSToStep inherits
+    Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Shell or Solid from TopoDS and ManifoldSolidBrep from
+    --          StepShape. All the topology and geometry comprised 
+    --          into the shell or the solid are taken into account and
+    --           translated.
+  
+uses Shell from TopoDS,
+     Solid from TopoDS,
+     ManifoldSolidBrep from StepShape,
+     FinderProcess from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+Create ( S  : Shell from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+       returns MakeManifoldSolidBrep;
+
+Create ( S  : Solid from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+       returns MakeManifoldSolidBrep;
+
+Value (me) returns ManifoldSolidBrep from StepShape
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theManifoldSolidBrep : ManifoldSolidBrep from StepShape;
+
+    	-- The solution from StepShape
+    	
+end MakeManifoldSolidBrep;
+
+

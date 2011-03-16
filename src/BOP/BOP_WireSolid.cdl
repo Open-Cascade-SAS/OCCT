@@ -1,0 +1,81 @@
+-- File:	BOP_WireSolid.cdl
+-- Created:	Mon Feb  4 11:46:26 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class WireSolid from BOP inherits WireShape from BOP
+
+	---Purpose:  
+    	--  The class is to perform a Boolean Operations (BO)       
+	--  Common,Cut,Fuse  between arguments when one of them is  
+    	--  a wire and other argument is a solid 
+	--    	 
+
+uses
+    DSFiller  from BOPTools, 
+    PDSFiller from BOPTools, 
+    HistoryCollector from BOP,
+    --modified by NIZHNY-MKK  Tue Sep  7 11:42:36 2004
+    ShapeEnum        from TopAbs,
+    Operation        from BOP,
+    ListOfShape from TopTools 
+
+
+is
+    Create   
+    	returns  WireSolid from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    Do  (me:out) 
+    	is  redefined; 	 
+    	---Purpose:  
+    	--- (See base classes, please)
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- (See base classes, please) 
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_WireSolid(){Destroy();}"  
+    	---Purpose:  
+    	--- Destructor 
+    	---
+    BuildResult (me:out) 
+	is  redefined;	 
+    	---Purpose:  
+    	--- (See base classes, please) 
+    	---
+    --modified by NIZHNY-MKK  Tue Sep  7 11:41:46 2004
+    CheckArgTypes(myclass; theType1, theType2: ShapeEnum from TopAbs;
+    	    	    	   theOperation: Operation from BOP) 
+	 returns Boolean from Standard;  
+    	---Purpose: 
+    	--- Check the types of arguments.      
+    	--- Returns  FALSE if types of arguments     
+    	--- are non-valid to be  treated by the         
+    	--- agorithm
+	
+    CheckArgTypes(me) 
+	returns Boolean from Standard 
+    	is  private;  
+    	---Purpose:  
+    	--- Internal  usage
+    	---
+    AddSplitParts(me:out)   
+	is  private;     
+    	---Purpose:  
+    	--- Internal  usage
+    	---
+
+    SetHistoryCollector(me: in out; theHistory: HistoryCollector from BOP)
+    	is redefined virtual;
+
+--fields
+     
+end WireSolid;

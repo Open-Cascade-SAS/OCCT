@@ -1,0 +1,16 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	StdSelect_TextProjector2d.lxx
+// Created:	Tue May  2 17:06:22 1995
+// Author:	Robert COUBLANC
+//		<rob>
+
+ inline void StdSelect_TextProjector2d::Set(const Handle(V2d_View)& aView)
+{
+  myview = aView;
+}
+
+ inline void StdSelect_TextProjector2d::Set(const gp_Trsf2d& atrsf)
+{
+  mytrsf = atrsf;
+}
+

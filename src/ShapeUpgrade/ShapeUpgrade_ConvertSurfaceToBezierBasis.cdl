@@ -1,0 +1,79 @@
+-- File:	ShapeUpgrade_ConvertSurfaceToE3.cdl
+-- Created:	Fri May 21 14:20:03 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ConvertSurfaceToBezierBasis from ShapeUpgrade inherits SplitSurface from ShapeUpgrade
+
+	---Purpose: Converts a plane, bspline surface, surface of revolution, surface 
+    	--          of extrusion, offset surface to grid of bezier basis surface (
+	--           bezier surface,
+	--           surface of revolution based on bezier curve,
+	--           offset surface based on any previous type).
+
+uses
+
+    CompositeSurface from ShapeExtend
+
+is
+
+    Create returns mutable ConvertSurfaceToBezierBasis from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    Build (me: mutable; Segment: Boolean) is redefined;
+    	---Purpose: Splits a list of beziers computed by Compute method according
+	--          the split values and splitting parameters.
+    
+    Compute(me: mutable; Segment: Boolean) is redefined;
+    	---Purpose: Converts surface into a grid of bezier based surfaces, and
+	--          stores this grid.
+    
+    Segments(me) returns CompositeSurface from ShapeExtend;
+    	---Purpose: Returns the grid of bezier based surfaces correspondent to 
+        --          original surface.
+    
+    --Methods for handling surface modes
+
+    SetPlaneMode(me: mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Plane to Bezier
+	---C++: inline
+    
+    GetPlaneMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_Pline conversion mode.
+    	---C++: inline
+    
+    SetRevolutionMode(me: mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_SurfaceOfRevolution to Bezier
+	---C++: inline
+    
+    GetRevolutionMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_SurfaceOfRevolution conversion mode.
+    	---C++: inline
+    
+    SetExtrusionMode(me: mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_SurfaceOfLinearExtrusion to Bezier
+	---C++: inline
+    
+    GetExtrusionMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_SurfaceOfLinearExtrusion conversion mode.
+    	---C++: inline
+    
+    SetBSplineMode(me: mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_BSplineSurface to Bezier
+	---C++: inline
+    
+    GetBSplineMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_BSplineSurface conversion mode.
+    	---C++: inline
+    
+fields
+
+    mySegments      : CompositeSurface from ShapeExtend;
+    myPlaneMode     : Boolean;
+    myRevolutionMode: Boolean;
+    myExtrusionMode : Boolean;
+    myBSplineMode   : Boolean;
+    
+end ConvertSurfaceToBezierBasis;

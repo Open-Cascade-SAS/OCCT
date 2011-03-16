@@ -1,0 +1,21 @@
+-- File:	V3d_ListOfTransient.cdl
+-- Created:	Wed May 17 15:17:30 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+private class ListOfTransient from V3d inherits ListOfTransient from TColStd
+
+is
+
+    Create returns ListOfTransient from V3d;
+    
+    Contains(me; aTransient: Transient from Standard)
+    returns Boolean from Standard
+    is static;
+    
+    Remove(me: in out; aTransient: Transient from Standard)
+    is static;
+    
+    
+end ListOfTransient from V3d;

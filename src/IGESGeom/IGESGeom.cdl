@@ -1,0 +1,176 @@
+--
+-- File      :  IGESGeom.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESGeom
+
+
+        ---Purpose : This package consists of B-Rep and CSG Solid entities
+
+uses
+
+        Standard,
+        TCollection,
+	TColgp,
+	TColStd,
+        gp,
+	Message,
+        Interface,
+        IGESBasic,
+        IGESData
+
+is
+
+        class CircularArc;
+        -- Type 100,   Form 0
+        ---Purpose : Defines IGES CircularArc
+
+        class CompositeCurve;
+        -- Type 102,   Form 0
+        ---Purpose : Defines IGES CompositeCurve
+
+        class ConicArc;
+        -- Type 104,   Form 0-3
+        ---Purpose : Defines a ConicArc
+
+        class CopiousData;
+        -- Type 106,   Form 1-3,11-13,63
+        ---Purpose : Defines a CopiousData
+
+        class Plane;
+        -- Type 108,   Form -1,0,1
+        ---Purpose : Defines IGES Plane
+
+        class Line;
+        -- Type 110,   Form 0
+        ---Purpose : Defines IGES Line
+
+        class SplineCurve;
+        -- Type 112,   Form 0
+        ---Purpose : Defines IGES SplineCurve
+
+        class SplineSurface;
+        -- Type 114,   Form 0
+        -- Purpose : Defines IGES SplineSurface
+
+        class Point;
+        -- Type 116,   Form 0
+        ---Purpose : Defines IGES Point
+
+        class RuledSurface;
+        -- Type 118,   Form 0,1
+        ---Purpose : Defines IGES RuledSurface
+
+        class SurfaceOfRevolution;
+        -- Type 120,   Form 0
+        ---Purpose : Defines IGES SurfaceOfRevolution
+
+        class TabulatedCylinder;
+        -- Type 122,   Form 0
+        ---Purpose : Defines IGES TabulatedCylinder
+
+        class Direction;
+        -- Type 123,   Form 0
+        ---Purpose : Defines IGES Direction
+
+        class TransformationMatrix;
+        -- Type 124,   Form 0
+        ---Purpose : Defines IGES TransformationMatrix
+
+        class Flash;
+        -- Type 125,   Form 0-4
+        ---Purpose : Defines IGES Flash
+
+        class BSplineCurve;
+        -- Type 126,   Form 0-5
+        ---Purpose : Defines IGES BSplineCurve
+
+        class BSplineSurface;
+        -- Type 128,   Form 0-9
+        ---Purpose : Defines IGES BSplineSurface
+
+        class OffsetCurve;
+        -- Type 130,   Form 0
+        ---Purpose : Defines IGES OffsetCurve
+
+        class OffsetSurface;
+        -- Type 140,   Form 0
+        ---Purpose : Defines IGES OffsetSurface
+
+        class Boundary;
+        -- Type 141,   Form 0
+        ---Purpose : Defines IGES Boundary
+
+        class CurveOnSurface;
+        -- Type 142,   Form 0
+        ---Purpose : Defines IGES CurveOnSurface
+
+        class BoundedSurface;
+        -- Type 143,   Form 0
+        ---Purpose : Defines IGES BoundedSurface
+
+        class TrimmedSurface;
+        -- Type 144,   Form 0
+        ---Purpose : Defines IGES TrimmedSurface
+
+    	--    Tools for Entities    --
+
+        class ToolCircularArc;
+        class ToolCompositeCurve;
+        class ToolConicArc;
+        class ToolCopiousData;
+        class ToolPlane;
+        class ToolLine;
+        class ToolSplineCurve;
+        class ToolSplineSurface;
+        class ToolPoint;
+        class ToolRuledSurface;
+        class ToolSurfaceOfRevolution;
+        class ToolTabulatedCylinder;
+        class ToolDirection;
+        class ToolTransformationMatrix;
+        class ToolFlash;
+        class ToolBSplineCurve;
+        class ToolBSplineSurface;
+        class ToolOffsetCurve;
+        class ToolOffsetSurface;
+        class ToolBoundary;
+        class ToolCurveOnSurface;
+        class ToolBoundedSurface;
+        class ToolTrimmedSurface;
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    -- Instantiations :
+
+    class  Array1OfBoundary instantiates  Array1 from TCollection (Boundary);
+    class  Array1OfCurveOnSurface        instantiates
+	  Array1 from TCollection (CurveOnSurface);
+    class  Array1OfTransformationMatrix  instantiates
+    	  Array1 from TCollection (TransformationMatrix);
+
+    class HArray1OfBoundary instantiates HArray1 from TCollection
+    	 (Boundary,Array1OfBoundary);
+    class HArray1OfCurveOnSurface        instantiates HArray1 from TCollection
+    	 (CurveOnSurface,Array1OfCurveOnSurface);
+    class HArray1OfTransformationMatrix  instantiates HArray1 from TCollection
+    	 (TransformationMatrix,Array1OfTransformationMatrix);
+
+    -- Package Methods
+
+    Init;
+    ---Purpose : Prepares dymanic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESGeom;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESGeom;

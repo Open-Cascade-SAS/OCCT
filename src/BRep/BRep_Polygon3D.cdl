@@ -1,0 +1,50 @@
+-- File:	BRep_Polygon3D.cdl
+-- Created:	Thu Mar  9 15:41:43 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon3D from BRep inherits CurveRepresentation from BRep
+
+	---Purpose: 
+
+uses
+    Polygon3D           from Poly,
+    CurveRepresentation from BRep,
+    Location            from TopLoc
+
+raises DomainError from Standard
+
+is
+
+    Create(P: Polygon3D from Poly;
+    	   L: Location  from TopLoc) 
+    	---Purpose:
+
+    returns mutable Polygon3D from BRep;
+    
+    
+    IsPolygon3D(me) returns Boolean
+    	---Purpose: Returns True.
+    is redefined;
+    
+    Polygon3D(me) returns any Polygon3D from Poly
+    	---C++: return const&
+    is redefined;
+    
+    Polygon3D(me: mutable; P: Polygon3D from Poly)
+    raises
+    	DomainError from Standard
+    is redefined;
+
+    Copy(me) returns mutable CurveRepresentation from BRep;
+	---Purpose: Return a copy of this representation.
+
+
+fields
+
+myPolygon3D: Polygon3D from Poly;
+
+
+end Polygon3D;

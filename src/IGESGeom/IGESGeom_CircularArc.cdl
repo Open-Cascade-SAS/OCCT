@@ -1,0 +1,97 @@
+--
+-- File      :  CircularArc.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CircularArc from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESCircularArc, Type <100> Form <0>
+        --          in package IGESGeom
+        --          A circular arc is a connected portion of a parent circle
+        --          which consists of more than one point. The definition space
+        --          coordinate system is always chosen so that the circular arc
+        --          remains in a plane either coincident with or parallel to
+        --          the XT, YT plane.
+
+uses
+
+        XY          from gp,
+        Dir2d       from gp,
+        Dir         from gp,
+        Pnt         from gp,
+        Pnt2d       from gp
+
+is
+
+        Create returns mutable CircularArc;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aZT : Real; aCenter, aStart, anEnd : XY);
+        ---Purpose : This method is used to set the fields of the class
+        --           CircularArc
+        --       - aZT     : Shift above the Z plane
+        --       - aCenter : Center of the circle of which the arc forms a part
+        --       - aStart  : Starting point of the circular arc
+        --       - anEnd   : Ending point of the circular arc
+
+        Center(me) returns Pnt2d;
+        ---Purpose : returns the center of the circle of which arc forms a part
+
+        TransformedCenter(me) returns Pnt;
+        ---Purpose : returns the center of the circle of which arc forms a part
+        -- after applying Transf. Matrix
+
+        StartPoint(me) returns Pnt2d;
+        ---Purpose : returns the start point of the arc
+
+        TransformedStartPoint(me) returns Pnt;
+        ---Purpose : returns the start point of the arc after applying Transf. Matrix
+
+        ZPlane(me) returns Real;
+        ---Purpose : returns the parallel displacement of the plane containing the
+        -- arc from the XT, YT plane
+
+        EndPoint(me) returns Pnt2d;
+        ---Purpose : returns the end point of the arc
+
+        TransformedEndPoint(me) returns Pnt;
+        ---Purpose : returns the end point of the arc after applying Transf. Matrix
+
+        Radius(me) returns Real;
+        ---Purpose : returns the radius of the circle of which arc forms a part
+
+        Angle(me) returns Real;
+        ---Purpose : returns the angle subtended by the arc at the center in radians
+
+        Axis(me) returns Dir;
+        ---Purpose : Z-Axis of circle (i.e. [0,0,1])
+
+    	TransformedAxis (me) returns Dir;
+	---Purpose : Z-Axis after applying Trans. Matrix
+
+        IsClosed(me) returns Boolean;
+        ---Purpose : True if StartPoint = EndPoint
+
+fields
+
+--
+-- Class    : IGESGeom_CircularArc
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CircularArc.
+--
+-- Reminder : A CircularArc instance is defined by :
+--            The center of a circle of which it forms a part
+--            the plane in which it lies, the starting point
+--            and ending point coordinates
+
+        theZT     : Real;
+        theCenter : XY;
+        theStart  : XY;
+        theEnd    : XY;
+
+end CircularArc;

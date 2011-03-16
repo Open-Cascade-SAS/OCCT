@@ -1,0 +1,148 @@
+-- File:	DrawableShape.cdl
+-- Created:	Thu Jul  4 14:40:35 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+class DrawableShape from DBRep inherits Drawable3D from Draw
+    ---Purpose: 
+
+uses  
+    Shape           from TopoDS,
+    Color           from Draw,
+    Display         from Draw,
+    Trsf            from gp,
+    ListOfEdge      from DBRep,
+    ListOfFace      from DBRep,
+    ListOfHideData  from DBRep,
+    Interpretor     from Draw,
+    Triangulation   from Poly,
+    OStream
+
+raises 
+    DomainError
+
+is
+
+    Create (C: Shape from TopoDS;
+    	    FreeCol : Color from Draw;    -- color for free edges
+    	    ConnCol : Color from Draw;    -- color for shared edges
+	    EdgeCol : Color from Draw;    -- color for other edges
+	    IsosCol : Color from Draw;    -- color for Isos
+	    size    : Real;               -- size for infinite isos
+	    nbisos  : Integer;            -- # of isos on each face
+	    discret : Integer)            -- # of points on curves
+    returns mutable DrawableShape from DBRep
+    raises DomainError;
+    
+    Set (me : mutable; C: Shape from TopoDS)
+    is static;
+    
+    ChangeNbIsos (me : mutable ; NbIsos : Integer from Standard)
+    	---Purpose: Changes the number of isoparametric curves in a shape.
+    is static ;
+
+    NbIsos (me)
+    	---Purpose: Returns the number of isoparametric curves in a shape.
+    returns Integer from Standard
+    is static ;
+
+    ChangeDiscret (me : mutable ; Discret : Integer from Standard)
+    	---Purpose: Changes the number of isoparametric curves in a shape.
+    is static ;
+
+    Discret (me)
+    	---Purpose: Returns the discretisation value of curve
+    returns Integer from Standard
+    is static ;
+
+    Shape(me) returns Shape from TopoDS
+	---Purpose: Return const &
+    is static;
+    
+    DisplayOrientation(me : mutable; D : Boolean)
+	---Purpose: When True  the orientations  of the edges and free
+	--          vertices  are displayed.
+    is static;
+
+    DisplayTriangulation(me : mutable; D : Boolean)
+	---Purpose: When True  the triangulations  of the faces
+	--          are displayed even if there is a surface.
+    is static;
+
+    DisplayPolygons(me : mutable; D : Boolean)
+	---Purpose: When True  the polygons  of the edges
+	--          are displayed even if there is a geometric curve.
+    is static;
+    
+    DisplayHLR(me : mutable; withHLR : Boolean;
+                             withRg1 : Boolean;
+                             withRgN : Boolean;
+                             withHid : Boolean;
+                             ang     : Real);
+	---Purpose: Performs Hidden lines.
+
+    DisplayTriangulation(me)
+	---Purpose:
+    returns Boolean
+    is static;
+
+    DisplayPolygons(me)
+	---Purpose: 
+    returns Boolean
+    is static;
+    
+    GetDisplayHLR(me; withHLR : out Boolean;
+                      withRg1 : out Boolean;
+                      withRgN : out Boolean;
+                      withHid : out Boolean;
+                      ang     : out Real);
+    
+    DrawOn(me; dis : in out Display from Draw);
+
+    Display(me;   T   :        Triangulation from Poly;
+    	          tr  :        Trsf          from gp;
+    	          dis : in out Display       from Draw)   
+	---Purpose:
+    is static private;
+    
+    DisplayHiddenLines(me : mutable; dis : in out Display from Draw);
+
+    Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+    is redefined;
+	
+    Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+    is redefined;
+
+    Whatis(me; I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command.
+    is redefined;
+
+    LastPick(myclass; S : in out Shape from TopoDS; u,v : in out Real);
+	---Purpose: Returns the subshape touched by the last pick.
+	--          u,v are the parameters of the closest point.
+    
+fields
+    myShape          : Shape          from TopoDS;
+    myEdges          : ListOfEdge     from DBRep;
+    myFaces          : ListOfFace     from DBRep;
+    myHidData        : ListOfHideData from DBRep;
+    mySize           : Real           from Standard;
+    myDiscret        : Integer        from Standard;
+    myFreeCol        : Color          from Draw;
+    myConnCol        : Color          from Draw;
+    myEdgeCol        : Color          from Draw;
+    myIsosCol        : Color          from Draw;
+    myNbIsos         : Integer        from Standard;
+    myDispOr         : Boolean        from Standard;
+    mytriangulations : Boolean        from Standard;
+    mypolygons       : Boolean        from Standard;
+    myHLR            : Boolean        from Standard;
+    myRg1            : Boolean        from Standard;
+    myRgN            : Boolean        from Standard;
+    myHid            : Boolean        from Standard;
+    myAng            : Real           from Standard;
+        
+end DrawableShape;

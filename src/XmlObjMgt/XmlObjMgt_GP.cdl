@@ -1,0 +1,45 @@
+-- File:        XmlObjMgt_GP.cdl
+
+class GP from XmlObjMgt
+
+        ---Purpose: Translation of gp (simple geometry) objects
+uses
+    Trsf        from gp,
+    Mat         from gp,
+    XYZ         from gp,
+    DOMString   from XmlObjMgt
+is
+
+    -- ---------------
+    -- Package Methods
+    -- ---------------
+
+    -- from gp to string
+
+    Translate (myclass; aTrsf : Trsf from gp)
+    returns DOMString from XmlObjMgt;
+        ---Level: Advanced 
+    
+    Translate (myclass; aMat : Mat from gp)
+    returns DOMString from XmlObjMgt;
+        ---Level: Advanced 
+    
+    Translate (myclass; anXYZ : XYZ from gp)
+    returns DOMString from XmlObjMgt;
+        ---Level: Advanced 
+    
+    -- from string to gp
+
+    Translate (myclass; aStr : DOMString from XmlObjMgt; T : out Trsf from gp)
+        returns Boolean from Standard;
+        ---Level: Advanced 
+    
+    Translate (myclass; aStr : DOMString from XmlObjMgt; T : out Mat from gp)
+        returns Boolean from Standard;
+        ---Level: Advanced 
+    
+    Translate (myclass; aStr : DOMString from XmlObjMgt; T : out XYZ from gp)
+        returns Boolean from Standard;
+        ---Level: Advanced 
+    
+end;

@@ -1,0 +1,57 @@
+-- File:	GeomLProp.cdl
+-- Created:	Thu Mar 26 10:42:56 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+package GeomLProp
+
+    ---Purpose: These global functions compute the degree of
+    --          continuity of a 3D curve built by concatenation of two
+    --          other curves (or portions of curves) at their junction point.
+
+uses Standard, gp, Geom, GeomAbs, LProp
+
+is
+    
+    private  class CurveTool; 
+    private  class SurfaceTool;
+					    
+    class CLProps from GeomLProp 
+            instantiates CLProps from LProp(Curve      from Geom,
+	                                    Vec        from gp,
+					    Pnt        from gp,
+					    Dir        from gp,
+					    CurveTool  from GeomLProp); 
+					     
+
+    class SLProps from GeomLProp 
+            instantiates SLProps from LProp(Surface     from Geom,
+	                                    SurfaceTool from GeomLProp); 
+
+    
+    Continuity(C1,C2 : Curve from Geom;
+    	       u1,u2 : Real from Standard;
+    	       r1,r2 : Boolean from Standard;
+               tl,ta : Real from Standard) 
+    ---Purpose: Computes the regularity at the junction between C1 and
+    --          C2. The booleans r1 and r2 are true if the curves must
+    --          be taken reversed.  The point u1 on C1 and the point
+    --          u2 on C2 must be confused.
+    --          tl and ta are the linear and angular tolerance used two
+    --          compare the derivative.
+    returns Shape from GeomAbs;
+
+    
+    Continuity(C1,C2 : Curve from Geom;
+    	       u1,u2 : Real from Standard;
+    	       r1,r2 : Boolean from Standard) 
+    ---Purpose: The  same  as  preciding   but   using  the   standard
+    --          tolerances from package Precision.
+    returns Shape from GeomAbs;
+
+end GeomLProp;    
+
+
+
+

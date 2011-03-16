@@ -1,0 +1,34 @@
+-- File:        AppStdL_Application.cdl
+-- Created:     Jun 29 11:42:21 2004
+-- Author:      Eugeny NAPALKOV 
+--  	    	<env@kivox>
+-- Copyright:   Matra Datavision 2004
+
+
+class Application from AppStdL inherits Application from TDocStd
+
+uses MessageDriver            from CDM,
+     SequenceOfExtendedString from TColStd, 
+     ExtendedString           from TCollection
+
+is
+   
+    Create returns mutable Application from AppStdL; 
+
+    MessageDriver(me: mutable)
+        returns MessageDriver from CDM
+    is redefined;
+
+    Formats(me: mutable; theFormats: out SequenceOfExtendedString from TColStd) 
+    ---Purpose: returns supported format for application documents.
+    is redefined;    
+
+    ResourcesName (me: mutable)
+    ---Purpose: returns   the file  name  which  contains  application
+    --          resources
+        returns CString from Standard;
+
+fields
+    myMessageDriver : MessageDriver from CDM;
+
+end Application;

@@ -1,0 +1,45 @@
+-- File:        DegenerateToroidalSurface.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DegenerateToroidalSurface from StepGeom 
+
+inherits ToroidalSurface from StepGeom 
+
+uses
+
+	Boolean from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement3d from StepGeom, 
+	Real from Standard
+is
+
+	Create returns mutable DegenerateToroidalSurface;
+	---Purpose: Returns a DegenerateToroidalSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aMajorRadius : Real from Standard;
+	      aMinorRadius : Real from Standard) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aMajorRadius : Real from Standard;
+	      aMinorRadius : Real from Standard;
+	      aSelectOuter : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSelectOuter(me : mutable; aSelectOuter : Boolean);
+	SelectOuter (me) returns Boolean;
+
+fields
+
+	selectOuter : Boolean from Standard;
+
+end DegenerateToroidalSurface;

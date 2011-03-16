@@ -1,0 +1,70 @@
+-- File:      XmlMDF_ADriver.cdl
+-- Created:   Mon Jul  9 12:29:49 MSK DST 2001
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Matra Datavision 2001
+
+deferred class ADriver from XmlMDF inherits TShared from MMgt
+
+        ---Purpose: Attribute Storage/Retrieval Driver.
+
+uses
+    AsciiString         from TCollection,
+    ExtendedString      from TCollection,
+    Attribute           from TDF,
+    MessageDriver       from CDM,
+    RRelocationTable    from XmlObjMgt,
+    SRelocationTable    from XmlObjMgt,
+    Persistent          from XmlObjMgt,
+    Element             from XmlObjMgt
+
+is
+    Initialize (theMessageDriver : MessageDriver from CDM;
+                theNamespace     : CString from Standard;
+                theName          : CString from Standard = NULL);
+
+    VersionNumber(me) returns Integer from Standard
+        is virtual;
+        ---Purpose: Returns the version number from which the driver
+        --          is available.
+
+    NewEmpty    (me)
+        returns mutable Attribute from TDF
+        is deferred;
+        ---Purpose: Creates a new attribute from TDF.
+
+    SourceType  (me) returns Type from Standard;
+        ---Purpose: Returns the type of source object,
+        --          inheriting from Attribute from TDF.
+
+    TypeName    (me)
+        returns AsciiString from TCollection
+        is static;
+        ---C++: return const &
+        ---Purpose: Returns the full XML tag name (including NS prefix)
+
+    Paste       (me; aSource     : Persistent from XmlObjMgt;
+                     aTarget     : mutable Attribute from TDF;
+                     aRelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard
+        is deferred;
+        ---Purpose: Translate the contents of <aSource> and put it
+        --          into <aTarget>, using the relocation table
+        --          <aRelocTable> to keep the sharings.
+
+    Paste       (me; aSource     : Attribute from TDF;
+                     aTarget     : in out Persistent from XmlObjMgt;
+                     aRelocTable : out SRelocationTable from XmlObjMgt)
+        is deferred;
+        ---Purpose: Translate the contents of <aSource> and put it
+        --          into <aTarget>, using the relocation table
+        --          <aRelocTable> to keep the sharings.
+
+    WriteMessage (me; theMessage : ExtendedString from TCollection);
+        ---Purpose: Send message to Application (usually when error occurres)
+
+fields
+
+    myMessageDriver : MessageDriver from CDM;
+    myTypeName      : AsciiString from TCollection is protected;
+
+end ADriver;

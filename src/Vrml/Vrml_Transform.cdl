@@ -1,0 +1,64 @@
+-- File:	Vrml_Transform.cdl
+-- Created:	Wed Feb 12 10:09:43 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Transform from Vrml 
+
+	---Purpose:  defines a Transform of VRML specifying transform
+	---          properties.
+    	--  This  node  defines  a  geometric  3D  transformation   consisting   of  (in  order) 
+    	--  a  (possibly)  non-uniform  scale  about  an  arbitrary  point,  a  rotation  about 
+    	--  an arbitrary point  and  axis  and  translation. 
+    	--  By  default  : 
+	--    myTranslation (0,0,0) 
+	--    myRotation  (0,0,1,0)
+	--    myScaleFactor (1,1,1)
+	--    myScaleOrientation (0,0,1,0)
+	--    myCenter (0,0,0)
+
+uses
+ 
+   Vec         from  gp, 
+   SFRotation  from  Vrml
+
+is
+ 
+    Create returns  Transform from Vrml; 
+ 
+    Create ( aTranslation      : Vec         from  gp; 
+    	     aRotation         : SFRotation  from  Vrml; 
+    	     aScaleFactor      : Vec         from  gp; 
+    	     aScaleOrientation : SFRotation  from  Vrml; 
+             aCenter           : Vec         from  gp )
+    	returns  Transform from Vrml; 
+
+    SetTranslation ( me : in out;  aTranslation : Vec  from  gp );
+    Translation ( me )  returns Vec  from  gp;
+
+    SetRotation ( me : in out;  aRotation : SFRotation  from  Vrml );
+    Rotation ( me )  returns  SFRotation  from  Vrml;
+
+    SetScaleFactor ( me : in out;  aScaleFactor : Vec  from  gp );
+    ScaleFactor ( me )  returns Vec  from  gp;
+
+    SetScaleOrientation ( me : in out;  aScaleOrientation : SFRotation  from  Vrml );
+    ScaleOrientation ( me  )  returns  SFRotation  from  Vrml;
+
+    SetCenter ( me : in out;  aCenter : Vec  from  gp );
+    Center ( me )  returns Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myTranslation      : Vec         from  gp;   -- Translation vector
+    myRotation         : SFRotation  from  Vrml; -- Rotation
+    myScaleFactor      : Vec         from  gp;   -- Scale factors
+    myScaleOrientation : SFRotation  from  Vrml; -- Defines rotational space for scale
+    myCenter           : Vec         from  gp;   -- Center point for scale and rotate
+
+end Transform;

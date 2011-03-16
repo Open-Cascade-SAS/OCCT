@@ -1,0 +1,80 @@
+-- File:	TDataStd_Current.cdl
+-- Created:	Mon Aug  2 09:49:50 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Current from TDataStd inherits Attribute from TDF
+
+	---Purpose: this attribute,  located at root label,  manage an
+	--          access to a current label.
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+
+    Set (myclass; L : Label from TDF);   
+    ---Purpose: Set <L> as current of <L> Framework.
+
+
+    Get (myclass; acces : Label from TDF)    
+    ---Purpose: returns current of <acces> Framework. raise if (!Has)
+    returns Label from TDF;    
+
+
+    Has (myclass; acces : Label from TDF)
+    ---Purpose: returns True if a  current label is managed in <acces>
+    --          Framework.
+    returns Boolean from Standard;
+    
+    ---Purpose: class methods
+    --          =============    
+
+    Create
+    returns mutable Current from TDataStd;    
+
+    SetLabel (me : mutable; current : Label from TDF);
+    
+    GetLabel (me)
+    returns Label from TDF;
+
+    	---Category: TDF_Attribute methods
+    	--           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myLabel : Label from TDF;
+
+end Current;

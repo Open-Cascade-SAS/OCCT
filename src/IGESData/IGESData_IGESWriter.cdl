@@ -1,0 +1,194 @@
+-- File:	IGESWriter.cdl
+-- Created:	Tue Apr  7 14:06:46 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class IGESWriter  from IGESData
+
+    ---Purpose : manages atomic file writing, under control of IGESModel :
+    --           prepare text to be sent then sends it
+    --           takes into account distinction between successive Sections
+
+uses Integer, Real, Character,
+     HAsciiString from TCollection,  HSequenceOfHAsciiString from TColStd,
+     Array1OfInteger from TColStd,
+     IGESModel,     GlobalSection, IGESEntity, Array1OfDirPart, ReadStage,
+     Protocol from IGESData,       WriterLib,  LineBuffer, FloatWriter,
+     XY, XYZ
+
+raises InterfaceMismatch
+
+is
+
+    Create (amodel : IGESModel) returns IGESWriter;
+    ---Purpose : Creates an IGESWriter, empty ready to work
+    --           (see the methods SendModel and Print)
+
+    Create returns IGESWriter;
+    ---Purpose : Default constructor (not used) to satisfy the compiler
+
+    Create (other : IGESWriter) returns IGESWriter;
+    ---Purpose : Constructor by copy (not used) to satisfy the compiler
+
+    	--  Options for Sending Forms  --
+
+    FloatWriter (me : in out) returns FloatWriter;
+    ---Purpose : Returns the embedded FloatWriter, which controls sending Reals
+    --           Use this method to access FloatWriter in order to consult or
+    --           change its options (MainFormat, FormatForRange,ZeroSuppress),
+    --           because it is returned as the address of its field
+    ---C++ : return &
+
+    WriteMode (me : in out) returns Integer;
+    ---Purpose : Returns the write mode, in order to be read and/or changed
+    --           Write Mode controls the way final print works
+    --           0 (D) : Normal IGES, 10 : FNES
+    ---C++ : return &
+
+    	-- --   Management of building file   -- --
+
+    SendStartLine (me : in out; startline : CString);
+    ---Purpose : Sends an additionnal Starting Line : this is the way used to
+    --           send comments in an IGES File (at beginning of the file).
+    --           If the line is more than 72 char.s long, it is splited into
+    --           as many lines as required to send it completely
+
+    SendModel (me : in out; protocol : Protocol from IGESData);
+    ---Purpose  : Sends the complete IGESModel (Global Section, Entities as
+    --            Directory Entries & Parameter Lists, etc...)
+    --            i.e. fills a list of texts. Once filled, it can be sent by
+    --            method Print
+
+    SectionS (me : in out)  raises InterfaceMismatch;
+    ---Purpose : declares sending of S section (only a declaration)
+    --           error if state is not initial
+
+    SectionG (me : in out; header : GlobalSection)  raises InterfaceMismatch;
+    ---Purpose : prepares sending of header, from a GlobalSection (stores it)
+    --           error if SectionS was not called just before
+    --           takes in account special characters (Separator, EndMark)
+
+    SectionsDP (me : in out)  raises InterfaceMismatch;
+    ---Purpose : prepares sending of list of entities, as Sections D (directory
+    --           list) and P (Parameters lists, one per entity)
+    --           Entities will be then processed, one after the other
+    --           error if SectionG has not be called just before
+
+    SectionT (me : in out)  raises InterfaceMismatch;
+    ---Purpose : declares sending of T section (only a declaration)
+    --           error if does not follow Entities sending
+
+    DirPart (me : in out; anent : IGESEntity)  raises InterfaceMismatch;
+    ---Purpose : translates directory part of an Entity into a litteral DirPart
+    --           Some infos are computed after sending parameters
+    --           Error if not in sections DP or Stage not "Dir"
+
+    OwnParams (me : in out; anent : IGESEntity) raises InterfaceMismatch;
+    ---Purpose : sends own parameters of the entity, by sending firstly its
+    --           type, then calling specific method WriteOwnParams
+    --           Error if not in sections DP or Stage not "Own"
+
+    Associativities (me : in out; anent : IGESEntity) raises InterfaceMismatch;
+    ---Purpose : sends associativity list, as complement of parameters list
+    --           error if not in sections DP or Stage not "Associativity"
+
+    Properties (me : in out; anent : IGESEntity) raises InterfaceMismatch;
+    ---Purpose : sends property list, as complement of parameters list
+    --           error if not in sections DP or Stage not "Property"
+
+    EndEntity (me : in out) raises InterfaceMismatch;
+    ---Purpose : declares end of sending an entity (ends param list by ';')
+
+    	-- --   Sending parameters (to be used by WriteOwnParams)   -- --
+
+    AddString (me : in out; val : HAsciiString from TCollection;
+    	       more : Integer = 0)  is private;
+    ---Purpose : Basic action of adding a string to current parameter list as a
+    --           line; manages size limit (64 or 72 according Sestion G or P)
+    --           <more>, if precised, requires that <more> characters will
+    --           remain free on the current line once this AddString done
+
+    AddString (me : in out; val : CString; lnval : Integer = 0;
+    	       more : Integer = 0)  is private;
+    ---Purpose : Basic action of adding a string to current parameter list as a
+    --           line. Manages size limit (64 or 72 according Sestion G or P)
+    --           <val> is the string and <lnval> its length. If <lnval> is not
+    --           given, it is computed by strlen(val).
+    --           <more>, if precised, requires that <more> characters will
+    --           remain free on the current line once this AddString done
+
+    AddChar   (me : in out; val : Character;  more : Integer = 0)  is private;
+    ---Purpose : Adds a string defined as a single character (for instance, the
+    --           parameter separator). Manages size limit
+    --           <more>, if precised, requires that <more> characters will
+    --           remain free on the current line once this AddString done
+
+
+    SendVoid (me : in out);
+    ---Purpose : sends a void parameter, that is null text
+
+    Send (me : in out; val : Integer);
+    ---Purpose : sends an Integer parameter
+
+    SendBoolean (me : in out; val : Boolean);
+    ---Purpose : sends a Boolean parameter as an Integer value 0(False)/1(True)
+
+    Send (me : in out; val : Real);
+    ---Purpose : sends a Real parameter. Works with FloatWriter
+
+    Send (me : in out; val : HAsciiString from TCollection);
+    ---Purpose : sends a Text parameter under Hollerith form
+
+    Send (me : in out; val : IGESEntity; negative : Boolean = Standard_False);
+    ---Purpose : sends a Reference to an Entity (if its Number is N, its
+    --           pointer is 2*N-1)
+    --           If <val> is Null, "0" will be sent
+    --           If <negative> is True, "Pointer" is sent as negative
+
+    SendString (me : in out; val : HAsciiString from TCollection);
+    ---Purpose : sends a parameter under its exact form given as a string
+
+    Send (me : in out; val : XY);
+    ---Purpose : Sends a XY, interpreted as a couple of 2 Reals (X & Y)
+
+    Send (me : in out; val : XYZ);
+    ---Purpose : Sends a XYZ, interpreted as a couple of 2 Reals (X , Y & Z)
+
+    	-- --   Conclusion : printing on an output   -- --
+
+    SectionStrings (me; numsec : Integer)
+    	 returns HSequenceOfHAsciiString from TColStd;
+    ---Purpose : Returns the list of strings for a section given its rank
+    --           1 : Start (if not empty)  2 : Global  3 or 4 : Parameters
+    --           RQ: no string list for Directory section
+    --           An empty section gives a null handle
+
+    Print (me; S : in out OStream) returns Boolean
+    ---Purpose : Writes result on an output defined as an OStream
+    --           resolves stored infos at this time; in particular, numbers of
+    --           lines used to adress P-section from D-section and final totals
+    --           Takes WriteMode into account
+    	  raises InterfaceMismatch;
+    --           Error if not at Section "T"
+
+fields
+
+    themodel : IGESModel;
+    thestar : HSequenceOfHAsciiString from TColStd;  -- starting lines
+    thehead : HSequenceOfHAsciiString from TColStd;  -- parameters for header
+
+    thesep  : Character;           -- separator (gotten from GlobalSection)
+    theendm : Character;           -- end mark  ( id )
+    thedirs : Array1OfDirPart;
+    thepnum : Array1OfInteger from TColStd;   -- rank in P-section for each entity
+    thepars : HSequenceOfHAsciiString from TColStd;  -- parameters for file
+    thesect : Integer;             -- section number (initial:0-S-G-DP-T)
+    thestep : ReadStage;           -- step for each entity
+    thecurr : LineBuffer;          -- current line (for sections G then P)
+
+    themodew  : Integer;      -- control of writing mode
+    thefloatw : FloatWriter;  -- control of sending Reals
+
+end IGESWriter;

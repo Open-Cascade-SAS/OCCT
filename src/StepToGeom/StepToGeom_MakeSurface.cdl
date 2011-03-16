@@ -1,0 +1,23 @@
+-- File:	StepToGeom_MakeSurface.cdl
+-- Created:	Tue Jun 22 12:19:43 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Surface from StepGeom which describes a Surface
+    --          from prostep and Surface from Geom.
+    --          As Surface is an abstract
+    --          Surface this class is an access to the sub-class required.
+
+uses Surface from Geom,
+     Surface from StepGeom
+
+is 
+
+    Convert ( myclass; SS : Surface from StepGeom;
+                       CS : out Surface from Geom )
+    returns Boolean from Standard;
+
+end MakeSurface;

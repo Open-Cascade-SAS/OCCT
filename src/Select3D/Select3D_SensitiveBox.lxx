@@ -1,0 +1,6 @@
+// File:	Select3D_SensitiveBox.lxx
+// Created:	Wed Jul 16 18:04:10 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline const Bnd_Box& Select3D_SensitiveBox::Box() const
+{return mybox3d;}

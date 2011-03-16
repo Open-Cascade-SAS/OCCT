@@ -1,0 +1,38 @@
+-- File:	StepShape_DimensionalSize.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class DimensionalSize from StepShape
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity DimensionalSize
+
+uses
+    ShapeAspect from StepRepr,
+    HAsciiString from TCollection
+
+is
+    Create returns DimensionalSize from StepShape;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAppliesTo: ShapeAspect from StepRepr;
+                       aName: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AppliesTo (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns field AppliesTo
+    SetAppliesTo (me: mutable; AppliesTo: ShapeAspect from StepRepr);
+	---Purpose: Set field AppliesTo
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+fields
+    theAppliesTo: ShapeAspect from StepRepr;
+    theName: HAsciiString from TCollection;
+
+end DimensionalSize;

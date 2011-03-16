@@ -1,0 +1,206 @@
+--
+-- File      :  IGESDimen.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+-- 
+---Copyright : MATRA-DATAVISION  1993  
+--
+
+package IGESDimen
+
+        ---Purpose : This package represents Entities applied to Dimensions
+        --           ie. Annotation Entities and attached Properties and
+        --           Associativities.
+
+uses
+
+        Standard, 
+        TCollection, 
+        gp,
+	TColStd,
+	TColgp,
+	Message,
+        Interface, 
+        IGESData, 
+        IGESBasic,
+        IGESGraph,
+        IGESGeom
+
+is
+
+        class CenterLine;                  
+        -- Type 106,  Form 20-21
+        ---Purpose : Is an entity appearing as crosshairs or as a
+        --           construction between 2 positions
+
+        class Section;                     
+        -- Type 106,  Form 31-38
+        ---Purpose : Contains information to display sectioned sides
+
+        class WitnessLine;                 
+        -- Type 106,  Form 40
+        ---Purpose : Contains one or more straight line segments associated
+        --           with drafting entities of various types
+
+        class AngularDimension;            
+        -- Type 202, Form 0
+        ---Purpose : Used to dimension angles
+
+        class CurveDimension;              
+        -- Type 204, Form 0
+        ---Purpose : Used to dimension curves
+
+        class DiameterDimension;           
+        -- Type 206, Form 0
+        ---Purpose : Used for dimensioning diameters
+
+        class FlagNote;                    
+        -- Type 208, Form 0
+        ---Purpose : Is label information formatted in different ways
+
+        class GeneralLabel;                
+        -- Type 210, Form 0
+        ---Purpose : Used for general labeling with leaders
+
+        class GeneralNote;                 
+        -- Type 212, Form 0-8, 100-102, 105
+        ---Purpose : Used for formatting boxed text in different ways
+
+        class NewGeneralNote;              
+        -- Type 213, Form 0
+        ---Purpose : Further attributes for formatting text strings
+
+        class LeaderArrow;                 
+        -- Type 214, Form 1-12
+        ---Purpose : Consists of one or more line segments except when
+        --           leader is part of an angular dimension, with links to
+        --           presumed text item
+
+        class LinearDimension;            
+        -- Type 216, Form 0
+        ---Purpose : Used for linear dimensioning
+
+        class OrdinateDimension;           
+        -- Type 218, Form 0, 1
+        ---Purpose : The ordinate dimension entity is used to 
+        --           indicate dimensions from a common base line.
+        --           Dimensioning is only permitted along the XT
+        --           or YT axis.
+
+        class PointDimension;              
+        -- Type 220
+        ---Purpose : A Point Dimension Entity consists of a leader, text, and 
+        --           an optional circle or hexagon enclosing the text
+
+        class RadiusDimension;             
+        -- Type 222, Form 0, 1
+        ---Purpose : A Radius Dimension Entity consists of a General Note, a
+        --           leader, and an arc center point. A second form of this 
+        --           entity accounts for the occasional need to have two
+        --           leader entities referenced.
+
+        class GeneralSymbol;               
+        -- Type 228, Form 0
+        ---Purpose : A General Symbol entity consists of zero or one(Form 0)
+        --           or one(all other forms), one or more geometry entities
+        --           which define a symbol, and zero, one or more associated
+        --           leaders.
+
+        class SectionedArea;               
+        -- Type 230
+        ---Purpose : A sectioned area is a portion of a design which is to be
+        --           filled with a pattern of lines. 
+
+        class DimensionedGeometry;         
+        -- Type 402,  Form 13
+        ---Purpose : This associativity links a dimension entity with the
+        --           geometry entities it is dimensioning.
+        --           This entity has been replaced by the new form of  
+        --           Dimensioned Geometry Associativity Entity (Type 402, 
+        --           Form 21) and should no longer be used by preprocessors.
+
+        class NewDimensionedGeometry;      
+        -- Type 402,  Form 21
+        ---Purpose : This Associativity links a dimension entity with the 
+        --           geometry entities it is dimensioning, so that later, 
+        --           in the receiving database, the dimension can be 
+        --           automatically recalculated and redrawn should the 
+        --           geometry be changed.
+
+        class DimensionUnits;              
+        -- Type 406,  Form 28
+        ---Purpose : The Dimension Units Property describes the units and 
+        --           formatting details of the nominal value of a dimension.
+
+        class DimensionTolerance;          
+        -- Type 406,  Form 29
+        ---Purpose : The Dimension Tolerance Property provides tolerance 
+        --           information for a dimension. This information can be used 
+        --           by the receiving system to regenerate the dimension.
+
+        class DimensionDisplayData;        
+        -- Type 406,  Form 30
+        ---Purpose : The Dimensional Display Data Property is optional but when
+        --           present must be referenced by a dimension entity. The 
+        --           information it contains could be extracted from the text, 
+        --           leader and witness line data with difficulty.
+
+        class BasicDimension;              
+        -- Type 406,  Form 31
+        ---Purpose : The basic Dimension Property indicates that the referencing
+        --           dimension entity is to be displayed with a box around text. 
+
+    	--    Tools for Entities    --
+
+        class ToolCenterLine;
+        class ToolSection;
+        class ToolWitnessLine;                 
+        class ToolAngularDimension;            
+        class ToolCurveDimension;              
+        class ToolDiameterDimension;           
+        class ToolFlagNote;                    
+        class ToolGeneralLabel;                
+        class ToolGeneralNote;                 
+        class ToolNewGeneralNote;              
+        class ToolLeaderArrow;                 
+        class ToolLinearDimension;            
+        class ToolOrdinateDimension;           
+        class ToolPointDimension;              
+        class ToolRadiusDimension;             
+        class ToolGeneralSymbol;               
+        class ToolSectionedArea;               
+        class ToolDimensionedGeometry;         
+        class ToolNewDimensionedGeometry;      
+        class ToolDimensionUnits;              
+        class ToolDimensionTolerance;          
+        class ToolDimensionDisplayData;        
+        class ToolBasicDimension;              
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    -- Instantiations :
+
+    class  Array1OfLeaderArrow instantiates
+    	 Array1 from TCollection (LeaderArrow);
+    class  Array1OfGeneralNote instantiates
+    	 Array1 from TCollection (GeneralNote);
+
+    class HArray1OfLeaderArrow instantiates
+    	HArray1 from TCollection (LeaderArrow,Array1OfLeaderArrow);
+    class HArray1OfGeneralNote instantiates
+    	HArray1 from TCollection (GeneralNote,Array1OfGeneralNote);
+
+    -- Package Methods
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESDimen;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESDimen;

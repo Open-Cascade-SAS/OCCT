@@ -1,0 +1,79 @@
+-- File:	Draw_ProgressIndicator.cdl
+-- Created:	Wed Jun 25 16:31:08 2008
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2008
+
+class ProgressIndicator from Draw inherits ProgressIndicator from Message
+
+    ---Purpose: Implements ProgressIndicator (interface provided by Message)
+    --          for DRAW, with possibility to output to TCL window
+    --          and/or trace file
+
+uses
+    Interpretor from Draw
+
+is
+    Create (di: Interpretor from Draw; updateTime: Integer = 0) 
+    returns ProgressIndicator from Draw;
+    	---Purpose: Creates a progress indicator and remembers pointer to 
+	--          Draw_Interpretor 
+	--          The updateTime, if given, defines time interval between
+	--          updates of the indicator (in seconds)
+	
+    Destroy (me: mutable);
+    	---C++: alias ~
+    	---Purpose: Destructor; calls Reset()
+	
+    SetTextMode(me : mutable; theTextMode : Boolean);
+    	---Purpose: Sets text output mode (on/off)
+    
+    GetTextMode(me) returns Boolean;
+    	---Purpose: Gets text output mode (on/off)
+
+    SetGraphMode(me : mutable; theGraphMode : Boolean);
+    	---Purpose: Sets graphical output mode (on/off)
+    
+    GetGraphMode(me) returns Boolean;
+    	---Purpose: Gets graphical output mode (on/off)
+
+    ---Scope: Redefined methods
+
+    Reset (me: mutable) is redefined;
+    	---Purpose: Clears/erases opened TCL windows if any 
+        --          and sets myBreak to False
+
+    Show (me: mutable; force: Boolean = Standard_True) 
+    returns Boolean is redefined;
+    	---Purpose: Defines method Show of Progress Indicator
+
+    UserBreak (me: mutable) returns Boolean is redefined;
+    	---Purpose: Redefines method UserBreak of Progress Indicator
+
+    ---Scope: Class methods maintaining static data
+
+    DefaultTextMode (myclass) returns Boolean;
+    	---C++: return &
+    DefaultGraphMode (myclass) returns Boolean;
+    	---C++: return &
+    	---Purpose: Get/Set default values for output modes
+    
+    StopIndicator (myclass) returns Integer;
+    	---C++: return &
+    	---Purpose: Internal method for implementation of UserBreak mechanism
+	
+fields
+
+    myTextMode : Boolean; -- text output mode (on/off)
+    myGraphMode : Boolean; -- graphical output mode (on/off)
+
+    myDraw: Address;  -- pointer to Draw_Interpretor (!!!)
+    myShown: Boolean; -- whether graphical window is shown
+    myBreak: Boolean; -- whether user break was signaled
+    
+    myUpdateTime: Integer; -- Time interval for update (in sec)
+    myLastUpdate: Size; -- Start time (first call to Show())
+    myStartTime: Size; -- Start time (first call to Show())
+
+end ProgressIndicator;
+

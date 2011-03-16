@@ -1,0 +1,94 @@
+-- File:	WNT_WClass.cdl
+-- Created:	Fri Jan 26 14:13:05 1996
+-- Author:	PLOTNIKOV Eugeny
+--		<eugeny@proton>
+---Copyright:	 Matra Datavision 1996
+
+
+class WClass from WNT inherits TShared from MMgt
+
+	---Purpose: This class defines a Windows NT window class.
+	--          A window in Windows NT is always created based on a
+	--          window class. The window class identifies the window
+	--          procedure that processes messages to the window. Each
+	--          window class has unique name ( character string ). More
+	--          than one window can be created based on a single window
+	--          class. For example, all button windows in Windows NT
+	--          are created based on the same window class. The window
+	--          class defines the window procedure and some other
+	--          characteristics ( background, mouse cursor shape etc. )
+	--          of the windows that are created based on that class.
+	--          When we create a window, we define additional
+	--          characteristics of the window that are unique to that
+	--          window. So, we have to create and register window
+	--          class before creation of any window. Of course, it's possible
+	--          to create a new window class for each window inside
+	--          the Window class and do not use the WClass at all.
+	--          We implemented this class for sake of flexibility of
+	--          event processing.
+
+ uses
+ 
+    Uint      from WNT,
+    Handle    from Aspect
+
+ raises
+ 
+    ClassDefinitionError from WNT
+
+ is
+
+    Create (
+     aClassName    : CString   from Standard;
+     aWndProc      : Address   from Standard;
+     aStyle        : Uint      from WNT;
+     aClassExtra   : Integer   from Standard = 0;
+     aWindowExtra  : Integer   from Standard = 0;
+     aCursor       : Handle    from Aspect = 0;
+     anIcon        : Handle    from Aspect = 0;
+     aMenuName     : CString   from Standard = 0
+    )
+     returns mutable WClass from WNT
+    	---Level:   Public
+    	---Purpose: Creates a Windows NT window class and registers it.
+    	---Trigger: Raises if class registration failed.
+     raises ClassDefinitionError from WNT;
+
+    Destroy ( me : mutable )
+     is virtual;
+     	---Level:   Public
+     	---Purpose: Destroys all resources attached to the class
+     	---C++:     alias ~
+     
+
+    	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+
+    WndProc ( me ) returns Address from Standard;
+    	---Level:   Public
+    	---Purpose: Returns address of window procedure.
+    	---C++:     inline
+
+    Name ( me ) returns CString from Standard;
+    	---Level:   Public
+    	---Purpose: Returns a class name.
+        ---C++:     inline
+
+    Instance ( me ) returns Handle from Aspect;
+    	---Level:   Public
+    	---Purpose: Returns a program instance handle.
+    	---C++:     inline
+
+ fields
+
+  lpszName    : CString from Standard is protected;
+  hInstance   : Handle  from Aspect   is protected;
+  lpfnWndProc : Address from Standard is protected;
+
+ friends
+ 
+  class Window from WNT
+
+end WClass;

@@ -1,0 +1,45 @@
+-- File:	StepElement_SurfaceElementProperty.cdl
+-- Created:	Thu Dec 12 17:29:04 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class SurfaceElementProperty from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity SurfaceElementProperty
+
+uses
+    HAsciiString from TCollection,
+    SurfaceSectionField from StepElement
+
+is
+    Create returns SurfaceElementProperty from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aPropertyId: HAsciiString from TCollection;
+                       aDescription: HAsciiString from TCollection;
+                       aSection: SurfaceSectionField from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    PropertyId (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field PropertyId
+    SetPropertyId (me: mutable; PropertyId: HAsciiString from TCollection);
+	---Purpose: Set field PropertyId
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+    Section (me) returns SurfaceSectionField from StepElement;
+	---Purpose: Returns field Section
+    SetSection (me: mutable; Section: SurfaceSectionField from StepElement);
+	---Purpose: Set field Section
+
+fields
+    thePropertyId: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection;
+    theSection: SurfaceSectionField from StepElement;
+
+end SurfaceElementProperty;

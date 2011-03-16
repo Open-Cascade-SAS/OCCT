@@ -1,0 +1,72 @@
+-- File:	GeomFill_PolynomialConvertor.cdl
+-- Created:	Fri Jul 18 17:22:52 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+private  class PolynomialConvertor from GeomFill 
+
+	---Purpose:  To convert circular section in polynome
+
+uses
+    Matrix from math,
+    Pnt from gp,
+    Vec from gp,
+    Array1OfPnt from TColgp,
+    Array1OfVec from TColgp
+
+raises NotDone from StdFail
+
+is
+    Create returns PolynomialConvertor from GeomFill;
+    
+    Initialized(me) 
+    ---Purpose: say if <me> is Initialized
+    returns Boolean;
+    
+    Init(me: in out);
+    
+    Section(me;
+    	    FirstPnt : Pnt from gp;
+	    Center   : Pnt from gp;
+	    Dir      : Vec from gp;
+	    Angle    : Real from Standard;
+            Poles    : out Array1OfPnt   from TColgp);
+	    
+    Section(me;
+    	    FirstPnt  : Pnt from gp;
+	    DFirstPnt : Vec from gp;
+	    Center    : Pnt from gp;
+	    DCenter   : Vec from gp;
+	    Dir       : Vec from gp;
+	    DDir      : Vec from gp;
+	    Angle     : Real from Standard;
+	    DAngle    : Real from Standard;
+            Poles     : out Array1OfPnt   from TColgp;
+            DPoles    : out Array1OfVec   from TColgp);
+	    
+     Section(me;
+    	    FirstPnt  : Pnt from gp;
+	    DFirstPnt : Vec from gp;
+	    D2FirstPnt: Vec from gp;
+	    Center    : Pnt from gp;
+	    DCenter   : Vec from gp;
+	    D2Center  : Vec from gp;
+	    Dir       : Vec from gp;
+	    DDir      : Vec from gp;
+	    D2Dir     : Vec from gp;
+	    Angle     : Real from Standard;
+	    DAngle    : Real from Standard;
+	    D2Angle   : Real from Standard;
+            Poles     : out Array1OfPnt   from TColgp;
+            DPoles    : out Array1OfVec   from TColgp;
+            D2Poles   : out Array1OfVec   from TColgp);  	    
+ 
+fields
+    Ordre  : Integer from Standard;
+    myinit : Boolean from Standard;
+    BH     : Matrix from math; 
+
+
+end PolynomialConvertor;

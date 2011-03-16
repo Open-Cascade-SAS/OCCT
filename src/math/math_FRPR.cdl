@@ -1,0 +1,167 @@
+-- File:        FRPR.cdl
+-- Created:     Tue May 14 17:01:21 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class FRPR from math
+    	---Purpose:
+    	-- this class implements the Fletcher-Reeves-Polak_Ribiere minimization 
+    	-- algorithm of a function of multiple variables.
+    	-- Knowledge of the function's gradient is required.
+
+uses Vector from math, Matrix from math, 
+     MultipleVarFunctionWithGradient from math,
+     Status from math,
+     OStream from Standard
+     
+raises DimensionError from Standard,
+       NotDone from StdFail
+
+is
+
+    Create(F: in out MultipleVarFunctionWithGradient;
+    	   StartingPoint: Vector; Tolerance: Real;
+	   NbIterations: Integer=200; ZEPS: Real=1.0e-12)
+    	---Purpose:	  Computes FRPR minimization function F from input vector
+    	-- StartingPoint. The solution F = Fi is found when 2.0 *
+    	-- abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) +
+    	-- ZEPS). The maximum number of iterations allowed is given
+    	-- by NbIterations.
+    returns FRPR;
+    
+    
+    Create(F: in out MultipleVarFunctionWithGradient;
+    	   Tolerance: Real;
+	   NbIterations: Integer = 200;
+	   ZEPS: Real = 1.0e-12)
+    	---Purpose: Purpose
+    	-- Initializes the computation of the minimum of F.
+    	-- Warning
+    	-- A call to the Perform method must be made after this
+    	-- initialization to compute the minimum of the function.
+    returns FRPR;
+
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_FRPR(){Delete();}"
+    
+    Perform(me: in out; F: in out MultipleVarFunctionWithGradient; 
+    	    StartingPoint: Vector)
+	---Purpose: Use this method after a call to the initialization constructor
+    	-- to compute the minimum of function F.
+    	-- Warning
+    	-- The initialization constructor must have been called before
+    	-- the Perform method is called
+
+    is static;
+
+
+    IsSolutionReached(me: in out; F: in out MultipleVarFunctionWithGradient)
+    	---Purpose:
+    	-- The solution F = Fi is found when :
+    	--   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
+    	-- The maximum number of iterations allowed is given by NbIterations.
+    
+    returns Boolean
+    is virtual;
+    
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+        ---C++: inline
+    returns Boolean
+    is static;
+    
+    
+
+    Location(me)
+    	---Purpose: returns the location vector of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+        ---C++: inline
+        ---C++: return const&
+    
+    returns Vector
+    raises NotDone
+    is static;
+
+
+    Location(me; Loc: out Vector)
+    	---Purpose: outputs the location vector of the minimum in Loc.
+    	-- Exception NotDone is raised if the minimum was not found.
+    	-- Exception DimensionError is raised if the range of Loc is not
+    	-- equal to the range of the StartingPoint.
+        ---C++: inline
+    raises DimensionError,
+    	   NotDone
+    is static;
+    
+
+    Minimum(me)
+       	---Purpose: returns the value of the minimum.
+       	-- Exception NotDone is raised if the minimum was not found.
+       	---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me)
+       ---Purpose: returns the gradient vector at the minimum.
+       -- Exception NotDone is raised if the minimum was not found.
+       ---C++: inline
+       ---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Gradient(me; Grad: out Vector)
+    	---Purpose: outputs the gradient vector at the minimum in Grad.
+        -- Exception NotDone is raised if the minimum was not found.
+        -- Exception DimensionError is raised if the range of Grad is not
+        -- equal to the range of the StartingPoint.
+        ---C++: inline
+    
+    raises DimensionError,
+    	   NotDone
+    is static;
+    
+    
+    
+    NbIterations(me)
+	---Purpose: returns the number of iterations really done during the
+        -- computation of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+        ---C++: inline
+    
+    returns Integer
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+
+fields
+Done:            Boolean;
+TheLocation:     Vector is protected;
+TheGradient:     Vector is protected;
+TheMinimum:      Real is protected;
+PreviousMinimum: Real is protected;
+Iter:            Integer;
+State:           Integer;
+XTol:            Real is protected;
+EPSZ:            Real is protected;
+TheStatus:       Status;
+Itermax:         Integer;
+
+end FRPR;

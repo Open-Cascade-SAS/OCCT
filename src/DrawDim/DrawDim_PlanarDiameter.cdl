@@ -1,0 +1,33 @@
+-- File:	DrawDim_PlanarDiameter.cdl
+-- Created:	Wed Nov 25 11:36:39 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class PlanarDiameter from DrawDim inherits PlanarDimension from DrawDim
+
+	---Purpose: 
+
+uses Vertex  from TopoDS,
+     Face    from TopoDS,
+     Shape   from TopoDS,
+     Color   from Draw,
+     Display from Draw
+
+is
+
+    Create (plane  : Face  from TopoDS;
+            circle : Shape from TopoDS)
+    returns mutable PlanarDiameter from DrawDim;    
+
+    Create (circle : Shape from TopoDS)
+    returns mutable PlanarDiameter from DrawDim;
+    
+    DrawOn(me; dis : in out Display);
+    
+fields
+
+    myCircle : Shape   from TopoDS;
+
+end PlanarDiameter;

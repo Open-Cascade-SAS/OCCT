@@ -1,0 +1,46 @@
+-- File:	Prs3d_Point.cdl
+-- Created:	Wed Dec 16 12:39:30 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+generic class Point from Prs3d 
+    	    	(anyPoint as any; 
+    	    	 PointTool as any) -- as PointTool from Prs3d;
+		 
+inherits Root from Prs3d
+
+uses 
+    Presentation from Prs3d,
+    Drawer from Prs3d,
+    Length from Quantity
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aPoint: anyPoint;
+    	    	 aDrawer: Drawer from Prs3d);
+		 
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aPoint: anyPoint);
+
+    Match(myclass; aPoint: anyPoint;
+    	           X,Y,Z: Length from Quantity;
+    	    	   aDistance: Length from Quantity) 
+    returns Boolean from Standard;
+    
+end Point;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+-- File:	PFunction_Function.cdl
+-- Created:	Thu Jun 17 10:56:43 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class Function from PFunction inherits Attribute from PDF 
+
+uses 
+     
+    Attribute from PDF, 
+    GUID      from Standard 
+
+is
+
+    Create returns mutable Function from PFunction;
+        
+    SetDriverGUID(me : mutable; driverGUID : GUID from Standard);
+
+    GetDriverGUID(me) returns GUID from Standard;
+
+    GetFailure(me) returns Integer from Standard;
+    
+    SetFailure(me : mutable; mode : Integer from Standard);
+
+fields
+
+    myDriverGUID  : GUID     from Standard;
+    myFailure     : Integer  from Standard;
+
+end Function;
+ 

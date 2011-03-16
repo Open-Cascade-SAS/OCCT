@@ -1,0 +1,35 @@
+-- File:	IGESSelect_IGESTypeForm.cdl
+-- Created:	Tue May 31 14:16:19 1994
+-- Author:	Modelistation
+--		<model@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class IGESTypeForm from IGESSelect    inherits Signature  from IFSelect
+
+    ---Purpose : IGESTypeForm is a Signature specific to the IGES Norm :
+    --           it gives the signature under two possible forms :
+    --           - as "mmm nnn", with "mmm" as IGES Type Number, and "nnn"
+    --             as IGES From Number (even if = 0)  [Default]
+    --           - as "mmm" alone, which gives only the IGES Type Number
+
+uses CString, Transient, InterfaceModel
+
+is
+
+    Create (withform : Boolean = Standard_True) returns mutable IGESTypeForm;
+    ---Purpose : Creates a Signature for IGES Type & Form Numbers
+    --           If <withform> is False, for IGES Type Number only
+
+    SetForm (me : mutable; withform : Boolean);
+    ---Purpose : Changes the mode for giving the Form Number
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the signature for IGES, "mmm nnn" or "mmm" according
+    --           creation choice (Type & Form or Type only)
+
+fields
+
+    theform : Boolean;
+
+end IGESTypeForm;

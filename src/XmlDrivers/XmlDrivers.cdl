@@ -1,0 +1,30 @@
+-- File:        XmlDrivers.cdl
+-- Created:     Wed Jul 25 16:50:11 2001
+-- Author:      Julia DOROVSKIKH
+--              <jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2001
+
+package XmlDrivers
+
+uses
+    Standard,
+    TDF,
+    TDocStd,
+    TCollection,
+    TColStd,
+    CDM,
+    PCDM,
+    XmlObjMgt,
+    XmlMDF,
+    XmlLDrivers
+
+is
+    class DocumentStorageDriver;
+    class DocumentRetrievalDriver;
+
+    Factory (theGUID : GUID from Standard) returns Transient from Standard;
+
+    AttributeDrivers (theMsgDriver: MessageDriver from CDM)
+        returns ADriverTable from XmlMDF;
+
+end XmlDrivers;

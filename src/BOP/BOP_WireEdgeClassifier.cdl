@@ -1,0 +1,103 @@
+-- File:	BOP_WireEdgeClassifier.cdl
+-- Created:	Thu Jun 17 10:15:32 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class WireEdgeClassifier from BOP inherits CompositeClassifier from BOP
+    
+    ---Purpose: 
+    -- The  algorithm is to classify loops that
+    -- shapes are Wires, Element are Edge.
+
+uses 
+
+    ShapeEnum from TopAbs,
+    State     from TopAbs, 
+    
+    Shape     from TopoDS,
+    Face      from TopoDS, 
+    
+    Pnt2d     from gp, 
+    
+    Edge                  from BRepClass,
+    FacePassiveClassifier from BRepClass,
+    BlockBuilder from BOP,
+    Loop         from BOP
+    
+is
+
+    Create(F : Face from TopoDS;
+    	   BB : BlockBuilder)  
+    	returns WireEdgeClassifier;
+    	---Purpose:  
+    	--- Creates a classifier on edge <F>.  
+    	--- Used to compare edges and wires on the edge <F>.
+	---
+
+    Compare(me : in out;  
+    	    L1 : Loop from BOP; 
+    	    L2 : Loop from BOP) 
+    	returns State from TopAbs
+    	is redefined;
+    	---Purpose:  
+    	--- Classify loop <L1> with  <L2>  
+    	---
+    LoopToShape(me : in out;  
+    	L : Loop from BOP)
+    	returns Shape from TopoDS;
+    	---Purpose: 
+    	--- Internal usage  
+    	---
+    CompareShapes(me : in out;  
+    	    	  B1 : Shape from TopoDS;
+    	    	  B2 : Shape from TopoDS) 
+    	returns State from TopAbs;
+    	---Purpose:  
+    	--- Classify wire <B1> with wire <B2> 
+    	---
+    CompareElementToShape(me : in out;  
+    	    	    	  E : Shape from TopoDS;
+    	    	    	  W : Shape from TopoDS) 
+    	returns State from TopAbs;
+    	---Purpose:  
+    	--- Classify edge <E> with wire <W> 
+    	---
+    ResetShape(me : in out;  
+    	       B : Shape from TopoDS);
+    	---Purpose:  
+    	--- Prepare classification involving wire <B>
+    	--- calls ResetElement on first edge of <B>
+	---
+    
+    ResetElement(me : in out;  
+    	    	 E : Shape from TopoDS);
+    	---Purpose:  
+    	--- Prepare classification involving edge <E>
+    	--- define 2D point (later used in Compare())  
+    	--- on first vertex of edge <E>.
+	---
+    
+    CompareElement(me : in out;  
+    	    	   E : Shape from TopoDS);
+    	---Purpose:  
+    	--- Add the edge <E> in the set of edges used in 2D point
+    	--- classification.
+	---
+    
+    State(me : in out)  
+    	returns State from TopAbs;
+    	---Purpose:  
+    	--- Returns state of classification of 2D point, defined by 
+    	--- ResetElement, with the current set of edges, defined by Compare.
+	---
+
+fields
+    
+    myFirstCompare : Boolean from Standard;
+    myPoint2d      : Pnt2d from gp;
+    myBCEdge       : Edge  from BRepClass;
+    myFPC          : FacePassiveClassifier from BRepClass; 
+    myShape        : Shape from TopoDS;
+    
+end WireEdgeClassifier;

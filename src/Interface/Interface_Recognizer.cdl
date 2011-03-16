@@ -1,0 +1,70 @@
+-- File:	Recognizer.cdl
+-- Created:	Mon Feb  3 16:31:47 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred generic class Recognizer  from Interface
+        (TheKey as any;
+    	 TheResul as Transient)
+    inherits Transient
+
+    ---Purpose : Defines a correspondance between an object to be recognized,
+    --           of type (Kind) TheKey, and a result of the recognition. There
+    --           can be no correspondance. When an object is recognized, the
+    --           returned result is empty : a Recognizer is not aimed to make
+    --           a transfer but to initiate it by giving a correspondant
+    --           
+    --           A Recognizer can be compound, that is, in addition to its own
+    --           Eval method if this one has failed, it can ask another
+    --           Recognizer to work, and so on : See method Add
+
+raises NoSuchObject
+
+
+is
+
+    Initialize;
+    ---Purpose : Assumes that no result has yet been recognized
+
+    Evaluate (me : mutable; akey : TheKey; res : out mutable TheResul)
+    	returns Boolean;
+    ---Purpose : Evaluates if recognition has a result, returns it if yes
+    --           In case of success, Returns True and puts result in "res"
+    --           In case of Failure, simply Returns False
+    --           Works by calling deferred method Eval, and in case of failure,
+    --           looks for Added Recognizers to work
+
+    Result (me) returns mutable TheResul  raises NoSuchObject;
+    ---Purpose : Returns result of last recognition (call of Evaluate)
+
+    Add (me : mutable; reco : mutable Recognizer);
+    ---Purpose : Adds a new Recognizer to the Compound, at the end
+    --           Several calls to Add work by adding in the order of calls :
+    --           Hence, when Eval has failed to recognize, Evaluate will call
+    --	         Evaluate from the first added Recognizer if there is one,
+    --	         and to the second if there is still no result, and so on
+
+    SetOK (me : mutable; aresult : mutable TheResul) is protected;
+    ---Purpose : Records the result of the recognition. Called by specific
+    --           method Eval to record a result : after calling it, Eval has
+    --           finished and can return
+
+    SetKO (me : mutable) is protected;
+    ---Purpose : Records that recognition gives no result
+
+    Eval (me : mutable; akey : TheKey) is deferred protected;
+    ---Purpose : THIS METHOD DEFINES THE RECOGNITION PROTOCOL, it is proper to
+    --           each precise type of Recognizer
+    --           For a suitable type of akey, it calls SetOK(result) where
+    --           result is an empty result of appropriate type, then returns
+
+fields
+
+    theres : TheResul;     -- storing result of last evaluation
+
+    hasnext : Boolean;
+    thenext : Recognizer;  -- managing compound definition
+
+end Recognizer;

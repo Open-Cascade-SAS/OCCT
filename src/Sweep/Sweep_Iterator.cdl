@@ -1,0 +1,60 @@
+-- File:	Sweep_Iterator.cdl
+-- Created:	Wed Jan 27 10:51:55 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class Iterator from Sweep (TheShape as any)
+
+	---Purpose: This  is a  signature class describing   iteration
+	--          services   required      by the Swept   Primitives
+	--          algorithms from  a Directing or a Generating Line.
+	--          This  tool is  used   to  iterate   on the  direct
+	--          sub-shapes  of a  Shape. 
+	--          
+
+uses
+
+    Orientation from TopAbs
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Init(me : in out; aShape: TheShape)
+	---Purpose: Resest the Iterator on sub-shapes of <aShape>.
+    is deferred;
+    
+    More(me) returns Boolean
+	---Purpose: Returns True if there is a current sub-shape.
+	--          
+	-- -C++: inline
+    is deferred;
+    
+    Next(me : in out)
+	---Purpose: Moves to the next sub-shape.
+    raises
+    	NoMoreObject from Standard
+    is deferred;
+    
+    Value(me) returns TheShape
+	---Purpose: Returns the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	-- -C++: return const &
+	-- -C++: inline
+    is deferred;
+    
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns the orientation of the current sub-shape.
+    raises
+    	NoSuchObject from Standard
+	---C++: return const &
+	---C++: inline
+    is deferred;
+    
+end Iterator;

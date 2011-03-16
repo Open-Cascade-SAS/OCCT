@@ -1,0 +1,41 @@
+-- File:	PXCAFDoc.cdl
+-- Created:	Tue Aug 15 12:06:55 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package PXCAFDoc 
+
+	---Purpose: This pakage is the persistent equivalent of
+	--          XCAFDoc
+
+uses
+    Quantity,
+    TopLoc,
+    PTopLoc,
+    PDF,
+    PDataStd,
+    gp,
+    PCollection,
+    PColStd
+is
+    class Location;
+    class Color;
+    class Volume;
+    class Area;
+    class Centroid;
+    class ColorTool;
+    class ShapeTool;
+    class DocumentTool;
+    class LayerTool;
+    class GraphNode;
+    class GraphNodeSequence instantiates HSequence from PCollection
+    	(GraphNode from PXCAFDoc);
+    class Datum;
+    class DimTol;
+    class DimTolTool;
+    class Material;
+    class MaterialTool;
+
+end PXCAFDoc;

@@ -1,0 +1,76 @@
+// File:	HatchGen_ElementGen.gxx
+// Created:	Wed Nov  3 17:08:32 1993
+// Author:	Jean Marc LACHAUME
+//		<jml@phylox>
+
+//=======================================================================
+// Function : HatchGen_ElementGen
+// Purpose  : Magic Constructor.
+//=======================================================================
+
+HatchGen_ElementGen::HatchGen_ElementGen (const HatchGen_ElementGen& Other) 
+: myCurve(Other.myCurve), myOrientation(Other.myOrientation) { 
+}
+  
+//=======================================================================
+// Function : HatchGen_ElementGen
+// Purpose  : Empty Constructor.
+//=======================================================================
+
+HatchGen_ElementGen::HatchGen_ElementGen () { 
+}
+  
+//=======================================================================
+// Function : HatchGen_ElementGen
+// Purpose  : Constructor.
+//=======================================================================
+
+HatchGen_ElementGen::HatchGen_ElementGen (const TheElementCurve& Curve,
+					  const TopAbs_Orientation Orientation) :
+       myCurve       (Curve),
+       myOrientation (Orientation)
+{
+}
+  
+//=======================================================================
+// Function : Curve
+// Purpose  : Returns the curve associated to the hatching.
+//=======================================================================
+
+const TheElementCurve& HatchGen_ElementGen::Curve () const
+{
+  return myCurve ;
+}
+
+//=======================================================================
+// Function : ChangeCurve
+// Purpose  : Returns the curve associated to the hatching.
+//=======================================================================
+
+TheElementCurve& HatchGen_ElementGen::ChangeCurve ()
+{
+  return myCurve ;
+}
+
+//=======================================================================
+// Function : Orientation
+// Purpose  : Sets the orientation of the element.
+//=======================================================================
+
+void HatchGen_ElementGen::Orientation (const TopAbs_Orientation Orientation)
+{
+  myOrientation = Orientation ;
+}
+
+//=======================================================================
+// Function : Orientation
+// Purpose  : Returns the orientation of the element.
+//=======================================================================
+
+TopAbs_Orientation HatchGen_ElementGen::Orientation () const
+{
+  return myOrientation ;
+}
+
+
+

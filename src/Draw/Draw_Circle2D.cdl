@@ -1,0 +1,33 @@
+-- File:	Draw_Circle2D.cdl
+-- Created:	Mon Apr 18 18:11:17 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Circle2D from Draw inherits Drawable2D from Draw
+
+	---Purpose: 
+
+uses
+    Circ2d from gp,
+    Color from Draw,
+    Display from Draw
+
+is
+
+    Create(C : Circ2d from gp; A1,A2 : Real; col : Color)
+    returns mutable Circle2D;
+    
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myCirc  : Circ2d from gp;
+    myA1    : Real;
+    myA2    : Real;
+    myColor : Color;
+    
+end Circle2D;
+

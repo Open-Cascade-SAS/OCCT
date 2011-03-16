@@ -1,0 +1,12 @@
+inline  Standard_Boolean AIS_ExclusionFilter::IsExclusionFlagOn() const
+{
+  return myIsExclusionFlagOn;
+}
+
+
+inline  void AIS_ExclusionFilter::SetExclusionFlag(const Standard_Boolean Status) 
+{
+  myIsExclusionFlagOn = Status;
+}
+
+ 

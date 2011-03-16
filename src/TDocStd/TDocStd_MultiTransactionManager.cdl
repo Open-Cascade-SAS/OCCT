@@ -1,0 +1,159 @@
+-- File:	TDocStd_MultiTransactionManager.cdl
+-- Created:	Mon Nov 18 17:52:55 2002
+-- Author:	Vladimir ANIKIN
+--		<van@matrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+
+class MultiTransactionManager from TDocStd inherits TShared from MMgt
+
+    ---Purpose: Class for synchronization of transactions within multiple documents.
+    --          Each transaction of this class involvess one transaction in each modified document.
+    --
+    --          The documents to be synchronized should be added explicitly to
+    --          the manager; then its interface is uesd to ensure that all transactions
+    --          (Open/Commit, Undo/Redo) are performed synchronously in all managed documents.
+    --
+    --          The current implementation does not support nested transactions
+    --          on multitransaction manager level. It only sets the flag enabling
+    --          or disabling nested transactions in all its documents, so that 
+    --          a nested transaction can be opened for each particular document 
+    --          with TDocStd_Document class interface.
+    --
+    --          NOTE: When you invoke CommitTransaction of multi transaction
+    --          manager, all nested transaction of its documents will be closed (commited).
+
+uses SequenceOfApplicationDelta from TDocStd,
+     ExtendedString             from TCollection,
+     Document                   from TDocStd,
+     SequenceOfDocument         from TDocStd
+
+is
+
+    Create returns MultiTransactionManager from TDocStd;
+    ---Purpose: Constructor
+
+    SetUndoLimit (me : mutable;
+    	    	  theLimit : Integer from Standard);
+    ---Purpose: Sets undo limit for the manager and all documents.
+
+    GetUndoLimit (me)
+    returns Integer from Standard;
+    ---Purpose: Returns undo limit for the manager.
+    ---C++: inline
+    
+    
+    Undo (me : mutable);
+    ---Purpose: Undoes the current transaction of the manager.
+    --          It calls the Undo () method of the document being
+    --          on top of the manager list of undos (list.First())
+    --          and moves the list item to the top of the list of manager
+    --          redos (list.Prepend(item)).
+
+    Redo (me : mutable);
+    ---Purpose: Redoes the current transaction of the application. It calls
+    --          the Redo () method of the document being on top of the
+    --          manager list of redos (list.First()) and moves the list
+    --          item to the top of the list of manager undos (list.Prepend(item)).
+
+    GetAvailableUndos (me)
+    returns SequenceOfApplicationDelta from TDocStd;
+    ---Purpose: Returns available manager undos.
+    ---C++: inline
+    ---C++: return const &
+
+    GetAvailableRedos (me)
+    returns SequenceOfApplicationDelta from TDocStd;
+    ---Purpose: Returns available manager redos.
+    ---C++: inline
+    ---C++: return const &
+
+    OpenCommand (me : mutable);
+    ---Purpose: Opens transaction in each document and sets the flag that
+    --          transaction is opened. If there are already opened transactions in the documents,
+    --          these transactions will be aborted before openning new ones.
+
+    AbortCommand (me : mutable);
+    ---Purpose: Unsets the flag of started manager transaction and aborts
+    --          transaction in each document.
+
+    CommitCommand (me : mutable) returns Boolean;
+    ---Purpose: Commits transaction in all documents and fills the transaction manager
+    --          with the documents that have been changed during the transaction.
+    --          Returns True if new data has been added to myUndos.
+    --          NOTE: All nested transactions in the documents will be commited.
+    
+    CommitCommand (me : mutable;
+    	    	   theName : ExtendedString from TCollection) returns Boolean;
+    ---Purpose: Makes the same steps as the previous function but defines the name for transaction.
+    --          Returns True if new data has been added to myUndos.
+
+    HasOpenCommand (me)
+    returns Boolean from Standard;
+    ---Purpose: Returns true if a transaction is opened.
+    ---C++: inline
+
+    RemoveLastUndo (me : mutable);
+    ---Purpose: Removes undo information from the list of undos of the manager and
+    --          all documents which have been modified during the transaction.
+
+    DumpTransaction(me; theOS : in out OStream from Standard);
+    ---Purpose: Dumps transactions in undos and redos
+
+    AddDocument(me : mutable; theDoc : Document from TDocStd);
+    ---Purpose: Adds the document to the transaction manager and
+    --          checks if it has been already added
+
+    RemoveDocument(me : mutable; theDoc : Document from TDocStd);
+    ---Purpose: Removes the document from the transaction manager.
+
+    Documents(me) returns SequenceOfDocument from TDocStd;
+    ---Purpose: Returns the added documents to the transaction manager.
+    ---C++: inline
+    ---C++: return const &
+
+    SetNestedTransactionMode(me : mutable; isAllowed : Boolean = Standard_True);
+    ---Purpose: Sets nested transaction mode if isAllowed == Standard_True
+    --          NOTE: field myIsNestedTransactionMode exists only for synchronization
+    --           between several documents and has no effect on transactions
+    --          of multitransaction manager.
+
+    IsNestedTransactionMode (me)
+    returns Boolean from Standard;
+    ---Purpose: Returns Standard_True if NestedTransaction mode is set.
+    ---C++: inline
+
+    ---Purpose: Methods for protection of changes outside transactions
+
+    SetModificationMode (me : mutable; theTransactionOnly : Boolean from Standard);
+    ---Purpose: If theTransactionOnly is True, denies all changes outside transactions.
+    
+    ModificationMode (me) returns Boolean from Standard;
+    ---Purpose: Returns True if changes are allowed only inside transactions.
+    ---C++: inline
+    
+    ClearUndos (me : mutable);
+    ---Purpose: Clears undos in the manager and in documents.
+    
+    ClearRedos (me : mutable);
+    ---Purpose: Clears redos in the manager and in documents.
+    
+fields
+
+    ---Purpose: Data framework 
+
+    myDocuments       : SequenceOfDocument         from TDocStd;
+    myUndos           : SequenceOfApplicationDelta from TDocStd;
+    myRedos           : SequenceOfApplicationDelta from TDocStd;
+    myUndoLimit       : Integer                    from Standard;
+    myOpenTransaction : Boolean                    from Standard;
+    
+    ---Purpose: A flag for nested transaction mode.
+
+    myIsNestedTransactionMode : Boolean   from Standard;
+
+    ---Purpose: Data for protection of changes outside transactions.
+
+    myOnlyTransactionModification : Boolean from Standard;
+
+end MultiTransactionManager;

@@ -1,0 +1,38 @@
+-- File:	NLPlate_HPG3Constraint.cdl
+-- Created:	Fri Apr 17 15:22:54 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class  HPG3Constraint  from  NLPlate  inherits  HPG2Constraint from  NLPlate 
+---Purpose: define a PinPoint (no G0)  G3 Constraint used to load a Non
+--  Linear Plate
+uses
+     XY from gp,
+     D1  from  Plate,
+     D2  from  Plate,
+     D3  from  Plate
+     
+is
+    Create(UV : XY; D1T : D1 from Plate; 
+     D2T : D2 from Plate; D3T : D3 from Plate) returns mutable HPG3Constraint;
+    -- create a G3 Constraint
+    -- 
+
+
+    ActiveOrder(me)  returns  Integer 
+    is   redefined; 
+    --  returns the constraint active  order, i.e. the maximum between
+    --  -- the initial constraint i.e 3 (for G3 Constraints)
+    --  
+    -- 
+
+    G3Target(me) returns D3  from  Plate 
+    ---C++: return const &
+    is   redefined; 
+
+fields
+    myG3Target : D3 from Plate;
+end;

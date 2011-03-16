@@ -1,0 +1,130 @@
+#include <Precision.hxx>
+
+//=======================================================================
+//function : Context
+//purpose  : 
+//=======================================================================
+
+inline Handle(ShapeBuild_ReShape) ShapeFix_Root::Context() const
+{
+  return myContext;
+}
+
+//=======================================================================
+//function : MsgRegistrator
+//purpose  : 
+//=======================================================================
+
+inline Handle(ShapeExtend_BasicMsgRegistrator) ShapeFix_Root::MsgRegistrator() const
+{
+  return myMsgReg;
+}
+
+//=======================================================================
+//function : Precision
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeFix_Root::Precision() const
+{
+  return myPrecision;
+}
+
+//=======================================================================
+//function : MinTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeFix_Root::MinTolerance() const
+{
+  return myMinTol;
+}
+
+//=======================================================================
+//function : MaxTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeFix_Root::MaxTolerance() const
+{
+  return myMaxTol;
+}
+
+//=======================================================================
+//function : LimitTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeFix_Root::LimitTolerance(const Standard_Real toler) const
+{
+  //only maximal restriction implemented.
+  return Min(myMaxTol,toler);
+}
+
+//=======================================================================
+//function : SendMsg
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Root::SendMsg(const Message_Msg& message,const Message_Gravity gravity) const
+{
+  SendMsg (myShape, message, gravity);
+}
+
+ 
+//=======================================================================
+//function : SendWarning
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Root::SendWarning(const TopoDS_Shape& shape,const Message_Msg& message) const
+{
+  SendMsg (shape, message, Message_Warning);
+}
+
+ 
+//=======================================================================
+//function : SendWarning
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Root::SendWarning(const Message_Msg& message) const
+{
+  SendWarning (myShape, message);
+}
+
+ 
+//=======================================================================
+//function : SendFail
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Root::SendFail(const TopoDS_Shape& shape,const Message_Msg& message) const
+{
+  SendMsg (shape, message, Message_Fail);
+}
+
+ 
+//=======================================================================
+//function : SendFail
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Root::SendFail(const Message_Msg& message) const
+{
+  SendFail (myShape, message);
+}
+
+ 
+//=======================================================================
+//function : NeedFix
+//purpose  : Function used to define if the fixing method needs to be called
+//           according to its specific flag if it is set, or 
+//           to some additional criteria (if Flag is default) 
+//=======================================================================
+
+inline Standard_Boolean ShapeFix_Root::NeedFix (const Standard_Integer Flag, 
+						const Standard_Boolean need)
+{
+  return Flag <0 ? need : ( Flag >0 );
+}

@@ -1,0 +1,71 @@
+-- File:	MAT_Zone.cdl
+-- Created:	Thu May 27 11:12:20 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Zone from MAT 
+
+	---Purpose: 
+	--          Definition of Zone of Proximity of a BasicElt :
+        --          ----------------------------------------------
+        --          A Zone of proximity is the set of the points which are
+        --          more near from the BasicElt than any other.
+        --          
+    
+inherits 
+
+    TShared from MMgt
+
+uses
+    Arc            from MAT,
+    Side           from MAT,
+    SequenceOfArc  from MAT,
+    BasicElt       from MAT,
+    Node           from MAT
+is
+
+    Create returns mutable Zone from MAT;
+    
+    Create(aBasicElt : BasicElt from MAT)
+        --- Purpose: Compute the frontier of the Zone of proximity.
+    returns mutable Zone from MAT;
+    	
+    Perform(me : mutable ; aBasicElt : BasicElt from MAT)
+        --- Purpose: Compute the frontier of the Zone of proximity.
+    is static;
+    
+    NumberOfArcs(me) 
+	--- Purpose: Return the number Of Arcs On the frontier of <me>.
+    returns Integer
+    is static;
+
+    ArcOnFrontier (me ; Index : Integer)
+	--- Purpose: Return the  Arc number <Index>  on the frontier.
+	--  of  <me>.
+    returns Arc
+    is static;
+    
+    NoEmptyZone (me)
+	--- Purpose: Return TRUE if <me> is not empty .
+    returns Boolean
+    is static;
+    
+    Limited(me)
+    	--- Purpose: Return TRUE if <me> is Limited.
+    returns Boolean
+    is static;
+    
+    NodeForTurn(me ; 
+                anArc     : Arc      from MAT ;
+                aBasicElt : BasicElt from MAT ;
+		aSide     : Side     from MAT )
+    returns Node from MAT
+    is static private;
+    
+fields
+    frontier  : SequenceOfArc from MAT;
+    limited   : Boolean        from Standard;
+end Zone;

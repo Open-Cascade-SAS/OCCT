@@ -1,0 +1,74 @@
+-- File:	Image_ColorImage.cdl
+-- Created:	Tue Jul 27 18:53:48 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+
+class ColorImage from Image inherits DColorImage from Image
+
+	---Purpose : A ColorImage is a DColorImage with specific method.
+	--	     Each Pixel in the Image ,as a ColorPixel
+	--	     from Aspect, can be use directly as a Color.
+    	-- A ColorImage is also called a "true color image".
+uses
+    Color 		from Quantity,
+    ColorPixel		from Aspect,
+    GenericColorMap	from Aspect,
+    Image 		from Image,
+    ColorPixelMapHasher from Image,
+    TypeOfImage 	from Image
+
+is
+
+    Create( x,y,dx,dy   : in Integer from Standard )
+    	returns mutable ColorImage from Image;
+	---Level: Public
+	---Purpose : Create a ColorImage object.
+	--	       The default Background Pixel is set to Black .
+	--	       All the Image is initialised with Background Pixel
+    
+
+    Create( x,y,dx,dy   : in Integer from Standard;
+	    BackPixel   : ColorPixel from Aspect )
+    	returns mutable ColorImage from Image;
+	---Level: Public
+	---Purpose : Create a ColorImage object and set the Background Pixel.
+	--	       All the Image is initialised with Background Pixel
+
+ChooseColorMap( me : immutable ; aSize : Integer from Standard )
+	returns GenericColorMap from Aspect ;
+	---Purpose : Create a GenericColorMap object with the best ColorMap
+	--	of a particular size to use in Dithering method .
+	--	The best ColorMap is defined to be the one that contains as
+	--	many as possible of the most frequently used colors.
+
+    Type    ( me : immutable )  returns TypeOfImage from Image ;
+	---Level: Public
+	---Purpose : Returns the Image Type.
+
+    PixelColor( me : immutable ; X,Y : in Integer from Standard ) 
+	returns Color from Quantity ;
+	---C++: return const &
+ 	---Purpose : Returns the Pixel Color .
+
+    Dup ( me : immutable ) returns mutable Image from Image ;
+	---Purpose : Duplicates a Image.
+
+    -- ******************* Redefined method  *************************** 
+
+--	ShallowCopy (me) returns mutable like me  ;
+	---Level: Public
+--	    ---Purpose: Returns a copy at the first level of <me>. The objects 
+--	    --         referenced are not copied. Entities copied by 
+--	    --         ShallowCopy are equal.
+--	    ---C++:  function call
+
+--	DeepCopy (me) returns mutable like me  ;
+	---Level: Public
+--	    ---Purpose: Returns a deep copy of <me>. The objects 
+--	    --          referenced are copied. Entities copied by 
+--	    --          DeepCopy are similar (c.f the Method IsSimilar).
+--	    ---C++:  function call
+
+end ColorImage from Image;

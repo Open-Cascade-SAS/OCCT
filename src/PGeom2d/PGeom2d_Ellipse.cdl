@@ -1,0 +1,61 @@
+-- File:	PGeom2d_Ellipse.cdl
+-- Created:	Tue Apr  6 17:23:24 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Ellipse from PGeom2d inherits Conic from PGeom2d
+
+        ---Purpose :  Defines an ellipse in 3D space. 
+        --         
+	---See Also : Ellipse from Geom2d.
+
+uses Ax22d from gp
+
+is
+
+
+  Create returns mutable Ellipse from PGeom2d;
+        ---Purpose : Creates an ellipse with default values.
+	---Level: Internal 
+
+
+  Create (aPosition : Ax22d from gp;
+    	    aMajorRadius, aMinorRadius : Real from Standard)
+     returns mutable Ellipse from PGeom2d;
+	---Purpose :      Creates   an Ellipse      with  <aPosition>,
+	--         <aMajorRadius> and <aMinorRadius> as  field values.
+	--         The major radius of  the ellipse is  on the "XAxis"
+	--         and  the minor radius   of the ellipse   is  on the
+	--         "YAxis".
+	---Level: Internal 
+
+
+  MajorRadius (me : mutable; aMajorRadius : Real from Standard);
+	---Purpose: Set the value of the field majorRadius with <aMajorRadius>.
+	---Level: Internal 
+
+
+  MajorRadius (me)  returns Real from Standard;
+	---Purpose: Returns the value of the field majorRadius.
+	---Level: Internal 
+
+
+  MinorRadius (me : mutable; aMinorRadius : Real from Standard);
+	---Purpose: Set the value of the field minorRadius with <aMinorRadius>.
+	---Level: Internal 
+
+
+  MinorRadius (me)  returns Real from Standard;
+	---Purpose: Returns the value of the field minorRadius.
+	---Level: Internal 
+
+
+fields
+
+     majorRadius : Real from Standard;
+     minorRadius : Real from Standard;
+
+end;
+

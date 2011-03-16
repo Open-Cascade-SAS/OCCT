@@ -1,0 +1,30 @@
+-- File:        ProductDefinitionEffectivity.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWProductDefinitionEffectivity from RWStepBasic
+
+	---Purpose : Read & Write Module for ProductDefinitionEffectivity
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ProductDefinitionEffectivity from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWProductDefinitionEffectivity;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ProductDefinitionEffectivity from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ProductDefinitionEffectivity from StepBasic);
+
+	Share(me; ent : ProductDefinitionEffectivity from StepBasic; iter : in out EntityIterator);
+
+end RWProductDefinitionEffectivity;

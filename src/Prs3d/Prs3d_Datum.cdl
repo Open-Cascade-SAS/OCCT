@@ -1,0 +1,36 @@
+-- File:	Prs3d_Point.cdl
+-- Created:	Fri Apr 16 12:39:30 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+generic class Datum from Prs3d 
+    	    	(anyDatum as any; 
+    	    	 DatumTool as any) -- as DatumTool from Prs3d;
+		 
+inherits Root from Prs3d
+
+uses 
+    Presentation from Prs3d,
+    Drawer from Prs3d
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aDatum: anyDatum;
+    	    	 aDrawer: Drawer from Prs3d);
+end Datum from Prs3d;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

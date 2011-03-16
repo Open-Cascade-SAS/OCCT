@@ -1,0 +1,142 @@
+-- File:	IGESModel.cdl
+-- Created:	Mon Apr  6 15:40:52 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class IGESModel  from IGESData  inherits InterfaceModel
+
+    	---Purpose : Defines the file header and
+    	-- entities for IGES files. These headers and entities result from
+    	-- a complete data translation using the IGES data exchange processor.
+    	-- Each entity is contained in a single model only and has a
+    	-- unique identifier. You can access this identifier using the method Number.
+    	-- Gives an access to the general data in the Start and the Global
+    	-- sections of an IGES file. 
+    	-- The IGES file includes the following sections: 
+    	-- -Start, 
+    	-- -Global, 
+    	-- -Directory Entry, 
+    	-- -Parameter Data, 
+    	-- -Terminate
+
+uses Check, CString,
+     Messenger from Message,
+     HAsciiString from TCollection, HSequenceOfHAsciiString,
+     IGESEntity, GlobalSection, IGESWriter
+
+
+raises InterfaceError
+
+is
+
+    Create returns mutable IGESModel;
+
+    ClearHeader (me : mutable);
+    	---Purpose : Erases all data specific to IGES file Header (Start + Global)
+
+    DumpHeader (me; S : Messenger from Message; level : Integer = 0);
+    	---Purpose : Prints the IGES file header
+    	-- (Start and Global Sections) to the log file. The integer
+    	-- parameter is intended to be used as a level indicator but is not used at present.
+
+    StartSection (me) returns HSequenceOfHAsciiString  is static;
+    	---Purpose : Returns Model's Start Section (list of comment lines)
+
+    NbStartLines (me) returns Integer  is static;
+    	---Purpose : Returns the count of recorded Start Lines
+
+    StartLine (me; num : Integer) returns CString  is static;
+    	---Purpose : Returns a line from the IGES file
+    	-- Start section by specifying its number. An empty string is
+    	-- returned if the number given is out of range, the range being
+    	-- from 1 to NbStartLines.
+
+    ClearStartSection (me : mutable)  is static;
+    	---Purpose : Clears the IGES file Start Section
+
+    SetStartSection (me : mutable; list : mutable HSequenceOfHAsciiString;
+    	    	     copy : Boolean = Standard_True)  is static;
+    	---Purpose : Sets a new Start section from a list of strings.
+    	-- If copy is false, the Start section will be shared. Any
+    	-- modifications made to the strings later on, will have an effect on
+    	-- the Start section. If copy is true (default value),
+    	-- an independent copy of the strings is created and used as
+    	-- the Start section. Any modifications made to the strings
+    	-- later on, will have no effect on the Start section.
+
+    AddStartLine (me : mutable; line : CString; atnum : Integer = 0) is static;
+    	---Purpose : Adds a new string to the existing
+    	-- Start section at the end if atnum is 0 or not given, or before
+    	-- atnumth line.
+        
+    GlobalSection (me) returns GlobalSection;
+    	---Purpose : Returns the Global section of the IGES file.
+    	---C++ : return const &
+
+    SetGlobalSection (me : mutable; header : GlobalSection);
+    	---Purpose : Sets the Global section of the IGES file.
+
+    ApplyStatic (me : mutable; param : CString = "") returns Boolean;
+    	---Purpose : Sets some of the Global section
+    	-- parameters with the values defined by the translation
+    	-- parameters. param may be:
+    	-- - receiver (value read in XSTEP.iges.header.receiver),
+    	-- - author (value read in XSTEP.iges.header.author),
+    	-- - company (value read in XSTEP.iges.header.company).
+    	--   The default value for param is an empty string.
+    	-- Returns True when done and if param is given, False if param is
+    	-- unknown or empty. Note: Set the unit in the IGES
+    	-- file Global section via IGESData_BasicEditor class.
+
+    Entity (me; num : Integer) returns IGESEntity;
+    	---Purpose :  Returns an IGES entity given by its rank number.
+    
+    DNum (me; ent : IGESEntity) returns Integer;
+    	---Purpose : Returns the equivalent DE Number for an Entity, i.e. 
+    	--           2*Number(ent)-1 , or 0 if <ent> is unknown from <me>
+    	--           This DE Number is used for File Writing for instance
+
+    GetFromAnother (me : mutable; other : InterfaceModel);
+    	---Purpose : gets Header (GlobalSection) from another Model
+
+    NewEmptyModel (me) returns mutable InterfaceModel;
+    	---Purpose : Returns a New Empty Model, same type as <me> i.e. IGESModel
+
+    VerifyCheck (me; ach : in out Check)  is redefined;
+    	---Purpose : Checks that the IGES file Global
+    	-- section contains valid data that conforms to the IGES specifications.
+
+    SetLineWeights (me : mutable; defw : Real);
+    	---Purpose : Sets LineWeights of contained Entities according header data
+    	--           (MaxLineWeight and LineWeightGrad) or to a default value for
+    	--           undefined weights
+
+
+    ClearLabels (me : mutable);
+    	---Purpose : erases specific labels, i.e. does nothing
+
+    PrintLabel (me; ent : Transient; S : Messenger from Message);
+    	---Purpose : Prints label specific to IGES norm for a given entity, i.e.
+    	--           its directory entry number (2*Number-1)
+
+    PrintToLog (me; ent : Transient; S : Messenger from Message)  is redefined;
+    	---Purpose : Prints label specific to IGES norm  for a given -- --
+    	--          entity,  i.e.  its directory entry number (2*Number-1)
+    	--          in the log file format.
+ 
+    PrintInfo (me; ent : Transient; S : Messenger from Message);
+    	---Purpose : Prints label specific to IGES norm for a given entity, i.e.
+    	--           its directory entry number (2*Number-1)
+
+    StringLabel (me; ent : Transient) returns HAsciiString from TCollection;
+    	---Purpose : Returns a string with the label attached to a given entity,
+    	--           i.e. a string "Dnn" with nn = directory entry number (2*N-1)
+
+fields
+
+    thestart  : HSequenceOfHAsciiString;
+    theheader : GlobalSection;
+
+end IGESModel;

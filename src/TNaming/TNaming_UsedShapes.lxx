@@ -1,0 +1,23 @@
+// File:	TNaming_UsedShapes.lxx
+// Created:	Fri Feb  7 10:23:41 1997
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : Map
+//purpose  : 
+//=======================================================================
+
+inline TNaming_DataMapOfShapePtrRefShape& TNaming_UsedShapes::Map()
+{
+  return myMap;
+}
+
+//=======================================================================
+//function : ID
+//purpose  : 
+//=======================================================================
+
+inline const Standard_GUID& TNaming_UsedShapes::ID() const
+{ return GetID(); }

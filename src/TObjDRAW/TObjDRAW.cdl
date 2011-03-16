@@ -1,0 +1,22 @@
+-- File:	TObjDRAW.cdl
+-- Created:	Sat Jun 07 08:46:11 2008
+-- Author:	Pavel TELKOV
+---Copyright:	Open CasCade S.A. 2008
+
+
+package TObjDRAW 
+
+    ---Purpose: Provides DRAW commands for work with TObj data structures
+
+uses
+    Draw
+
+    is
+
+    Init (di: in out Interpretor from Draw);
+    	---Purpose: Initializes all the functions
+
+    Factory (theDI : out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands of  TKTObjDRAW. Used for plugin.
+
+end TObjDRAW;

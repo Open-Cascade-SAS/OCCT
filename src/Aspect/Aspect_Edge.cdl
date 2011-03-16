@@ -1,0 +1,108 @@
+--
+-- File:	Aspect_Edge.cdl
+-- Created:	Lundi 4 Novembre 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class Edge from Aspect
+
+	---Version:
+
+	---Purpose: This class allows the definition of an edge.
+
+	---Keywords: Edge, Visible, Invisible, Border, Line, Face
+
+	---Warning:
+	---References:
+
+uses
+
+	TypeOfEdge	from Aspect
+
+raises
+
+	EdgeDefinitionError	from Aspect
+
+is
+
+	Create
+		returns Edge from Aspect;
+	---Level: Public
+	---Purpose: Creates an edge.
+
+	Create ( AIndex1, AIndex2	: Integer from Standard;
+		 AType			: TypeOfEdge from Aspect )
+		returns Edge from Aspect
+	---Level: Public
+	---Purpose: Creates an edge from an index of vertices
+	--	    in a table of vertices.
+	--	    <AType> indicates if this edge is seen or not.
+	--  Warning: Raises EdgeDefinitionError if AIndex1 == AIndex2.
+	raises EdgeDefinitionError from Aspect;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetValues ( me			: in out;
+		    AIndex1, AIndex2	: Integer from Standard;
+		    AType		: TypeOfEdge from Aspect )
+	---Level: Public
+	---Purpose: Updates the values of an edge <me>.
+	--  Warning: Raises EdgeDefinitionError if AIndex1 == AIndex2.
+	raises EdgeDefinitionError from Aspect;
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Values ( me;
+		 AIndex1, AIndex2	: out Integer from Standard;
+		 AType			: out TypeOfEdge from Aspect );
+	---Level: Public
+	---Purpose: Returns the index of the vertices and the
+	--	    type of edge <me>.
+	---Category: Inquire methods
+
+	FirstIndex ( me )
+		returns Integer from Standard;
+	---Level: Public
+	---Purpose: Returns the index of the begin of the edge <me>.
+	---Category: Inquire methods
+
+	LastIndex ( me )
+		returns Integer from Standard;
+	---Level: Public
+	---Purpose: Returns the index of the end of the edge <me>.
+	---Category: Inquire methods
+
+	Type ( me)
+		returns TypeOfEdge from Aspect;
+	---Level: Public
+	---Purpose: Returns the type of the edge <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_Edge
+--
+-- Purpose	:	Declaration of variables specific to edges
+--
+-- Reminder	:	An edge is defined by :
+--			- two vertices referenced by indices
+--			- its visibility
+--
+
+	-- indices of the vertices
+	MyBegin		:	Integer from Standard;
+	MyEnd		:	Integer from Standard;
+
+	-- the visibility
+	MyVisibility	:	TypeOfEdge from Aspect;
+
+end Edge;

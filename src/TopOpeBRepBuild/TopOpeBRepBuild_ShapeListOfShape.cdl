@@ -1,0 +1,48 @@
+-- File:	TopOpeBRepBuild_ShapeListOfShape.cdl
+-- Created:	Mon Jun 12 10:23:56 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1995
+
+class ShapeListOfShape from TopOpeBRepBuild
+
+---Purpose: represent shape + a list of shape
+
+uses
+    
+    ListOfShape from TopTools,
+    Shape from TopoDS
+    
+is
+
+    Create returns ShapeListOfShape from TopOpeBRepBuild;
+
+    Create(S : Shape from TopoDS)
+    returns ShapeListOfShape from TopOpeBRepBuild;
+
+    Create(S : Shape from TopoDS;
+     	   L : ListOfShape from TopTools)
+    returns ShapeListOfShape from TopOpeBRepBuild;
+
+    List(me)
+    returns ListOfShape from TopTools is static;
+    ---C++: return const &
+
+    ChangeList(me : in out)
+    returns ListOfShape from TopTools is static;
+    ---C++: return &
+
+    Shape(me) 
+    returns Shape from TopoDS is static;
+    ---C++: return const &
+
+    ChangeShape(me : in out) 
+    returns Shape from TopoDS is static;
+    ---C++: return &
+
+fields
+
+    myList : ListOfShape from TopTools;
+    myShape : Shape from TopoDS;
+
+end ShapeListOfShape from TopOpeBRepBuild;

@@ -1,0 +1,42 @@
+-- File:	TopOpeBRep_WPointInterIterator.cdl
+-- Created:	Fri May  7 17:03:26 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class WPointInterIterator from TopOpeBRep
+
+uses
+
+    LineInter from TopOpeBRep,
+    PLineInter from TopOpeBRep,
+    WPointInter from TopOpeBRep
+    
+is
+
+    -- ==========================
+    -- Restriction Point iterator
+    -- ==========================
+
+    Create returns WPointInterIterator from TopOpeBRep;
+    Create (LI : LineInter from TopOpeBRep) 
+    returns WPointInterIterator from TopOpeBRep; 
+
+    Init(me:in out; LI : LineInter from TopOpeBRep) is static;
+    Init(me:in out) is static;
+    More(me) returns Boolean from Standard is static;
+    Next(me:in out) is static;
+ 
+    CurrentWP(me:in out) returns WPointInter from TopOpeBRep 
+    ---C++: return const &
+    is static;
+
+    PLineInterDummy(me) returns PLineInter from TopOpeBRep;
+
+fields
+
+    myLineInter : PLineInter from TopOpeBRep;
+    myWPointIndex : Integer from Standard;
+    myWPointNb : Integer from Standard;
+    
+end WPointInterIterator from TopOpeBRep;

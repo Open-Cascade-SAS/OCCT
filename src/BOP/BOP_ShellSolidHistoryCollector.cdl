@@ -1,0 +1,37 @@
+-- File:	BOP_ShellSolidHistoryCollector.cdl
+-- Created:	Mon Mar 24 14:43:28 2003
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Open CASCADE 2003
+
+class ShellSolidHistoryCollector from BOP
+    inherits HistoryCollector from BOP
+
+uses
+    Shape from TopoDS,
+    PDSFiller from BOPTools,
+    Operation from BOP,
+    ListOfShape from TopTools
+
+is
+    Create(theShape1   : Shape from TopoDS;
+    	   theShape2   : Shape from TopoDS;
+	   theOperation: Operation from BOP)
+    	returns ShellSolidHistoryCollector from BOP;
+
+    AddNewFace(me: mutable; theOldShape: Shape from TopoDS;
+    	    	    	   theNewShape: Shape from TopoDS;
+    	    	    	   theDSFiller: PDSFiller from BOPTools);
+
+    SetResult(me: mutable; theResult: Shape from TopoDS;
+    	    	    	   theDSFiller: PDSFiller from BOPTools)
+    	is redefined virtual;
+
+    --- private
+    FillSection(me: mutable; theDSFiller: PDSFiller from BOPTools)
+    	is private;
+
+    FillEdgeHistory(me: mutable; theDSFiller: PDSFiller from BOPTools)
+    	is private;
+
+end ShellSolidHistoryCollector from BOP;

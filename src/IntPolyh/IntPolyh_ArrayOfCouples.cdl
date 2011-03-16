@@ -1,0 +1,58 @@
+-- File:	IntPolyh_ArrayOfCouples.cdl
+-- Created:	Thu Apr 8 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ArrayOfCouples from IntPolyh
+
+uses
+    
+    Couple from IntPolyh
+
+is
+
+    Create;
+    
+    Create(nn: Integer from Standard); 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+    
+    NbCouples(me)
+    returns Integer from Standard
+    is static;
+    
+    SetNbCouples(me: in out; fint: Integer from Standard)
+    is static;
+    
+    IncNbCouples(me: in out)
+    is static;
+    
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &      
+    returns Couple from IntPolyh
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns Couple from IntPolyh 
+    is static;
+    
+    Destroy(me: in out)
+  	 ---C++: alias ~
+    is static;
+
+    Dump(me) 
+    is static;
+    
+	
+fields
+
+    n,eoa : Integer from Standard;
+    ptr :Address from Standard;
+    
+end ArrayOfCouples from IntPolyh;

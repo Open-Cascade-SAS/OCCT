@@ -1,0 +1,91 @@
+-- File:	XCAFDoc_DimTol.cdl
+-- Created:	Fri Jan  9 14:24:20 2004
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class DimTol from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+    Label from TDF,
+    RelocationTable from TDF,
+    HArray1OfReal from TColStd,
+    HAsciiString from TCollection
+
+is
+    Create returns DimTol from XCAFDoc;
+    
+    ---Category: class methods
+    --           =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+    
+    Set (myclass; label : Label from TDF; kind : Integer from Standard;
+    	    	  aVal : HArray1OfReal from TColStd;
+    	    	  aName : HAsciiString from TCollection;
+    	    	  aDescription : HAsciiString from TCollection)
+    returns DimTol from XCAFDoc;
+
+    Set (me : mutable; kind : Integer from Standard;
+    	    	       aVal : HArray1OfReal from TColStd;
+    	    	       aName : HAsciiString from TCollection;
+    	    	       aDescription : HAsciiString from TCollection);
+	     
+    GetKind (me) returns Integer from Standard;
+
+    GetVal (me) returns HArray1OfReal from TColStd;
+
+    GetName (me) returns HAsciiString from TCollection;
+
+    GetDescription (me) returns HAsciiString from TCollection;
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+    myKind : Integer from Standard;
+    myVal  : HArray1OfReal from TColStd;
+    myName : HAsciiString from TCollection;
+    myDescription : HAsciiString from TCollection;
+    -- Table of kinds:
+    -- dimensions:
+    --  1 - diameter
+    --
+    -- tolerances with datum references:
+    -- 21 - GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol (ModGeoTol->MaximumMaterialCondition)
+    -- 22 - GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol (ModGeoTol->LeastMaterialCondition)
+    -- 23 - GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol (ModGeoTol->RegardlessOfFeatureSize)
+    -- 24 - AngularityTolerance
+    -- 25 - CircularRunoutTolerance
+    -- 26 - CoaxialityTolerance
+    -- 27 - ConcentricityTolerance
+    -- 28 - ParallelismTolerance
+    -- 29 - PerpendicularityTolerance
+    -- 30 - SymmetryTolerance
+    -- 31 - TotalRunoutTolerance
+    -- tolerances without datum references:
+    -- 35 - ModifiedGeometricTolerance (MaximumMaterialCondition)
+    -- 36 - ModifiedGeometricTolerance (LeastMaterialCondition)
+    -- 37 - ModifiedGeometricTolerance (RegardlessOfFeatureSize)
+    -- 38 - CylindricityTolerance
+    -- 39 - FlatnessTolerance
+    -- 40 - LineProfileTolerance
+    -- 41 - PositionTolerance
+    -- 42 - RoundnessTolerance
+    -- 43 - StraightnessTolerance
+    -- 44 - SurfaceProfileTolerance
+    
+end DimTol;

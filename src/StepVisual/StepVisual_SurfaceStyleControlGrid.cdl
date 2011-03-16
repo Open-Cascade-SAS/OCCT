@@ -1,0 +1,31 @@
+-- File:        SurfaceStyleControlGrid.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceStyleControlGrid from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	CurveStyle from StepVisual
+is
+
+	Create returns mutable SurfaceStyleControlGrid;
+	---Purpose: Returns a SurfaceStyleControlGrid
+
+	Init (me : mutable;
+	      aStyleOfControlGrid : mutable CurveStyle from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStyleOfControlGrid(me : mutable; aStyleOfControlGrid : mutable CurveStyle);
+	StyleOfControlGrid (me) returns mutable CurveStyle;
+
+fields
+
+	styleOfControlGrid : CurveStyle from StepVisual;
+
+end SurfaceStyleControlGrid;

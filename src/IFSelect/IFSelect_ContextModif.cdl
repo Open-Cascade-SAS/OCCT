@@ -1,0 +1,196 @@
+-- File:	IFSelect_ContextModif.cdl
+-- Created:	Wed Jun  8 11:15:14 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ContextModif  from IFSelect
+
+    ---Purpose : This class gathers various informations used by Model Modifiers
+    --           apart from the target model itself, and the CopyTool which
+    --           must be passed directly.
+    --           
+    --           These informations report to original data : model, entities,
+    --           and the selection list if there is one : it allows to query
+    --           about such or such starting entity, or result entity, or
+    --           iterate on selection list ...
+    --           Also data useful for file output are available (because some
+    --           Modifiers concern models produced for file output).
+    --           
+    --           Furthermore, in return, ContextModif can record Checks, either
+    --           one for all, or one for each Entity. It supports trace too.
+
+uses Transient, CString, AsciiString from TCollection,
+     Graph, InterfaceModel, CopyTool, CopyControl, EntityIterator,
+     Protocol from Interface, Check, CheckIterator, GeneralModifier
+
+raises NoSuchObject
+
+is
+
+    Create (graph : Graph; TC : CopyTool; filename : CString = "")
+    	returns ContextModif;
+    ---Purpose : Prepares a ContextModif with these informations :
+    --           - the graph established from original model (target passed
+    --             directly to Modifier)
+    --           - the CopyTool which detains the CopyControl, which maps
+    --             starting (in original) and result (in target) entities
+    --           - an optional file name (for file output)
+    --           
+    --           Such a ContextModif is considered to be applied on all
+    --           transferred entities (no filter active)
+
+    Create (graph : Graph; filename : CString = "")
+    	returns ContextModif;
+    ---Purpose : Prepares a ContextModif with these informations :
+    --           - the graph established from original model (target passed
+    --             directly to Modifier)
+    --           - an optional file name (for file output)
+    --           Here, no CopyControl, hence all entities are considered equal
+    --           as starting and result
+    --           
+    --           Such a ContextModif is considered to be applied on all
+    --           transferred entities (no filter active)
+
+    Select (me : in out; list : in out EntityIterator)  is static;
+    ---Purpose : This method requires ContextModif to be applied with a filter.
+    --           If a ModelModifier is defined with a Selection criterium,
+    --           the result of this Selection is used as a filter :
+    --           - if none of its items has been transferred, the modification
+    --             does not apply at all
+    --           - else, the Modifier can query for what entities were selected
+    --             and what are their results
+    --           - if this method is not called before working, the Modifier
+    --             has to work on the whole Model
+
+    OriginalGraph (me) returns Graph  is static;
+    ---Purpose : Returns the original Graph (compared to OriginalModel, it
+    --           gives more query capabilitites)
+    ---C++ : return const &
+
+    OriginalModel (me) returns InterfaceModel  is static;
+    ---Purpose : Returns the original model
+
+    SetProtocol (me : in out; proto : Protocol from Interface);
+    ---Purpose : Allows to transmit a Protocol as part of a ContextModif
+
+    Protocol (me) returns Protocol from Interface;
+    ---Purpose : Returns the Protocol (Null if not set)
+
+    HasFileName (me) returns Boolean  is static;
+    ---Purpose : Returns True if a non empty file name has been defined
+
+    FileName (me) returns CString  is static;
+    ---Purpose : Returns File Name (can be empty)
+
+    Control  (me) returns CopyControl  is static;
+    ---Purpose : Returns the map for a direct use, if required
+
+    IsForNone (me) returns Boolean  is static;
+    ---Purpose : Returns True if Select has determined that a Modifier may not
+    --           be run (filter defined and empty)
+
+    IsForAll  (me) returns Boolean  is static;
+    ---Purpose : Returns True if no filter is defined : a Modifier has to work
+    --           on all entities of the resulting (target) model
+
+    IsTransferred (me; ent : Transient) returns Boolean  is static;
+    ---Purpose : Returns True if a starting item has been transferred
+
+    IsSelected (me; ent : Transient) returns Boolean  is static;
+    ---Purpose : Returns True if a starting item has been transferred and selected
+
+    Search (me; ent : Transient; res : out any Transient)
+    	 returns Boolean  is static;
+    ---Purpose : Returns True if a starting entity has been transferred, and
+    --           the result is in <res>. Returns False else
+    --           (direct call to the map)
+
+    SelectedOriginal (me) returns EntityIterator  is static;
+    ---Purpose : Returns the list of original selected items.
+    --           See also the iteration
+
+    SelectedResult   (me) returns EntityIterator  is static;
+    ---Purpose : Returns the list of resulting counterparts of selected items.
+    --           See also the iteration
+
+    SelectedCount    (me) returns Integer  is static;
+    ---Purpose : Returns the count of selected and transferred items
+
+
+    Start (me : in out)  is static;
+    ---Purpose : Starts an iteration on selected items. It takes into account
+    --           IsForAll/IsForNone, by really iterating on all selected items.
+
+    More (me) returns Boolean  is static;
+    ---Purpose : Returns True until the iteration has finished
+
+    Next (me : in out)  is static;
+    ---Purpose : Advances the iteration
+
+    ValueOriginal (me) returns     Transient  raises NoSuchObject  is static;
+    ---Purpose : Returns the current selected item in the original model
+
+    ValueResult   (me) returns any Transient  raises NoSuchObject  is static;
+    ---Purpose : Returns the result counterpart of current selected item
+    --           (in the target model)
+
+
+    TraceModifier (me : in out; modif : GeneralModifier)  is static;
+    ---Purpose : Traces the application of a Modifier. Works with default trace
+    --           File and Level. Fills the trace if default trace level is at
+    --           least 1. Traces the Modifier (its Label) and its Selection if
+    --           there is one (its Label).
+    --           To be called after Select (because status IsForAll is printed)
+    --           Worths to trace a global modification. See also Trace below
+
+    Trace (me : in out; mess : CString = "")  is static;
+    ---Purpose : Traces the modification of the current entity (see above,
+    --           ValueOriginal and ValueResult) for default trace level >= 2.
+    --           To be called on each indivudual entity really modified
+    --           <mess> is an optionnal additional message
+
+    AddCheck (me : in out; check : Check)  is static;
+    ---Purpose : Adds a Check to the CheckList. If it is empty, nothing is done
+    --           If it concerns an Entity from the Original Model (by SetEntity)
+    --           to which another Check is attached, it is merged to it.
+    --           Else, it is added or merged as to GlobalCheck.
+
+    AddWarning (me : in out; start : Transient; mess : CString; orig : CString = "");
+    ---Purpose : Adds a Warning Message for an Entity from the original Model
+    --           If <start> is not an Entity from the original model (e.g. the
+    --           model itself) this message is added to Global Check.
+
+    AddFail    (me : in out; start : Transient; mess : CString; orig : CString = "");
+    ---Purpose : Adds a Fail Message for an Entity from the original Model
+    --           If <start> is not an Entity from the original model (e.g. the
+    --           model itself) this message is added to Global Check.
+
+    CCheck (me : in out; num : Integer = 0) returns Check;
+    ---Purpose : Returns a Check given an Entity number (in the original Model)
+    --           by default a Global Check. Creates it the first time.
+    --           It can then be acknowledged on the spot, in condition that the
+    --           caller works by reference ("Interface_Check& check = ...")
+
+    CCheck (me : in out; start : Transient) returns Check;
+    ---Purpose : Returns a Check attached to an Entity from the original Model
+    --           It can then be acknowledged on the spot, in condition that the
+    --           caller works by reference ("Interface_Check& check = ...")
+
+    CheckList (me) returns CheckIterator  is static;
+    ---Purpose : Returns the complete CheckList
+
+fields
+
+    thegraf : Graph;
+    theprot : Protocol from Interface;
+    themap  : CopyControl;
+    thefile : AsciiString;
+    thelist : AsciiString;
+    thechek : CheckIterator;
+    thesel  : Boolean;
+    thecurr : Integer;
+    thecurt : Integer;
+
+end ContextModif;

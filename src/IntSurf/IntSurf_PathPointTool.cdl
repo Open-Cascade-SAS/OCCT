@@ -1,0 +1,118 @@
+-- File:	PathPointTool.cdl
+-- Created:	Fri Sep 25 16:41:41 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class PathPointTool from IntSurf
+
+uses Pnt       from gp,
+     Vec       from gp,
+     Dir2d     from gp,
+     PathPoint from IntSurf
+
+raises OutOfRange          from Standard,
+       UndefinedDerivative from StdFail
+
+
+
+is
+
+
+    Value3d(myclass; PStart: PathPoint from IntSurf)
+    
+      	---Purpose: Returns the 3d coordinates of the starting point.
+
+    	returns Pnt from gp;
+	
+	---C++: inline
+
+
+    Value2d(myclass; PStart: PathPoint from IntSurf;
+                     U, V: out Real from Standard);
+    
+	---Purpose: Returns the <U, V> parameters which are associated 
+	--          with <P>
+	--          it's the parameters which start the marching algorithm
+
+	---C++: inline
+
+
+    IsPassingPnt(myclass; PStart: PathPoint from IntSurf)
+    
+    	---Purpose: Returns True if the point is a point on a non-oriented
+    	--          arc, which means that the intersection line does not
+    	--          stop at such a point but just go through such a point.
+    	--          IsPassingPnt is True when IsOnArc is True 
+
+    	returns Boolean from Standard;
+
+	---C++: inline
+
+
+    IsTangent(myclass; PStart: PathPoint from IntSurf )
+    
+	---Purpose: Returns True if the surfaces are tangent at this point.
+	--          IsTangent can be True when IsOnArc is True
+	--          if IsPassingPnt is True and IsTangent is True,this point
+	--          is a stopped point.
+
+    	returns Boolean from Standard;
+
+	---C++: inline
+
+
+    Direction3d(myclass; PStart: PathPoint from IntSurf)
+    
+        ---Purpose: returns the tangent at the intersection in 3d space
+        --          associated to <P>
+        --         an exception is raised if IsTangent is true.
+
+    	returns Vec from gp
+
+	---C++: inline
+
+    	raises UndefinedDerivative from StdFail;
+
+
+    Direction2d(myclass; PStart: PathPoint from IntSurf)
+    
+        ---Purpose: returns the tangent at the intersection in the
+        --          parametric space of the parametrized surface.This tangent
+        --          is associated to the value2d
+        --          la tangente a un sens signifiant (indique le sens de chemin
+        --          ement)
+        --          an exception is raised if IsTangent is true.
+
+    	returns Dir2d from gp
+
+	---C++: inline
+
+	raises UndefinedDerivative from StdFail;
+
+
+    Multiplicity(myclass; PStart: PathPoint from IntSurf)
+    
+    	---Purpose: Returns the multiplicity of the point i-e 
+    	--          the number of auxillar parameters associated to the
+    	--          point which the principal parameters are given by Value2d 
+
+    	returns Integer from Standard;
+
+	---C++: inline
+
+
+    Parameters(myclass; PStart: PathPoint from IntSurf;
+                        Mult: Integer from Standard;
+                        U, V: out Real from Standard) 
+	       
+    	---Purpose: Parametric coordinates associated to the multiplicity.
+    	--          An exception is raised if Mult<=0 or Mult>multiplicity.
+
+	---C++: inline
+
+    	raises OutOfRange from Standard;
+
+
+end PathPointTool;

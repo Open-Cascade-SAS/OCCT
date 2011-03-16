@@ -1,0 +1,31 @@
+-- File:	Transfer_FindHasher.cdl
+-- Created:	Fri Nov  4 11:06:49 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class FindHasher  from Transfer
+
+    ---Purpose : FindHasher defines HashCode for Finder, which is : ask a
+    --           Finder its HashCode !  Because this is the Finder itself which
+    --           brings the HashCode for its Key
+    --           
+    --           This class complies to the template given in TCollection by
+    --           MapHasher itself
+
+uses Finder
+
+is
+
+    HashCode (myclass; K : Finder; Upper : Integer) returns Integer;
+    ---Purpose : Returns a HashCode in the range <0,Upper> for a Finder :
+    --           asks the Finder its HashCode then transforms it to be in the
+    --           required range
+
+    IsEqual (myclass; K1, K2 : Finder) returns Boolean;
+    ---Purpose : Returns True if two keys are the same.
+    --           The test does not work on the Finders themselves but by
+    --           calling their methods Equates
+
+end FindHasher;

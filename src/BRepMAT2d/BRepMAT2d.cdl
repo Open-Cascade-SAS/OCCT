@@ -1,0 +1,55 @@
+-- File:	BRepMAT2d.cdl
+-- Created:	Mon Oct  3 17:32:10 1994
+-- Author:	Yves FRICAUD
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+package BRepMAT2d 
+
+	---Purpose: 
+
+uses
+    MAT2d,
+    MAT,
+    TCollection,
+    TColStd,
+    TColGeom2d,
+    Geom2d,
+    gp,	
+    TopoDS,
+    TopTools
+    
+is
+    class Explorer;
+    	---Purpose: Construct an  explorer for  the computation of the 
+    	--          bisecting locus  from a Wire, a  Face, or a set of 
+    	--          curves from Geom2d.
+
+    class BisectingLocus instantiates BisectingLocus from MAT2d 
+    	    	    	    	    	  (Explorer  from BRepMAT2d);
+	---Purpose: the map of bisecting locus.
+					  
+    class LinkTopoBilo;
+    	---Purpose: Constucts links between the Wire or the Face and
+    	--          the BasicElts contained in the bisecting locus.
+
+
+    class SequenceOfBasicElt instantiates Sequence from TCollection
+                                                         (BasicElt from MAT); 
+							 
+    class DataMapOfShapeSequenceOfBasicElt instantiates DataMap from TCollection 
+    		    		    	      (Shape               from TopoDS, 
+					       SequenceOfBasicElt  from  BRepMAT2d, 
+					       ShapeMapHasher      from TopTools); 
+    
+    class DataMapOfBasicEltShape  instantiates
+    	DataMap from TCollection (BasicElt            from MAT,
+    	    	    	    	  Shape               from TopoDS,
+    	    	    	    	  MapTransientHasher  from TColStd);				       
+
+end BRepMAT2d;
+
+
+
+

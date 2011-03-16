@@ -1,0 +1,32 @@
+// File:	AIS_SymmetricRelation.lxx
+// Created:	Mon Mar  3 16:26:56 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : SetTool
+//purpose  : 
+//=======================================================================
+inline void AIS_SymmetricRelation::SetTool(const TopoDS_Shape& aSymmetricTool)
+{
+  myTool = aSymmetricTool;
+}
+
+//=======================================================================
+//function : GetTool
+//purpose  : 
+//=======================================================================
+inline const TopoDS_Shape& AIS_SymmetricRelation::GetTool() const 
+{
+  return myTool;
+}
+
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_SymmetricRelation::IsMovable() const 
+{
+  return Standard_True;
+}

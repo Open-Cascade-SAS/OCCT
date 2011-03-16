@@ -1,0 +1,88 @@
+--
+-- File      :  LineFontDefTemplate.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LineFontDefTemplate from IGESGraph  inherits LineFontEntity
+
+        ---Purpose : defines IGESLineFontDefTemplate, Type <304> Form <1>
+        --           in package IGESGraph
+        --
+        --           Line Font can be defined as a repetition od Template figure
+        --           that is displayed at regularly spaced locations along a
+        --           planer anchoring curve. The anchoring curve itself has
+        --           no visual purpose.
+
+uses
+
+            IGESEntity          from IGESData,
+            SubfigureDef        from IGESBasic
+
+is
+
+        Create returns mutable LineFontDefTemplate;
+
+        -- Specific Methods pertaining to class
+
+        Init (me            : mutable;
+              anOrientation : Integer;
+              aTemplate     : SubfigureDef;
+              aDistance     : Real;
+              aScale        : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           LineFontDefTemplate
+        --       - anOrientation : Orientation of Template figure on
+        --                         anchoring curve
+        --       - aTemplate     : SubfigureDef entity used as Template figure
+        --       - aDistance     : Distance between the neighbouring Template
+        --                         figures
+        --       - aScale        : Scale factor applied to the Template figure
+
+        Orientation (me) returns Integer;
+        ---Purpose : if return value = 0, Each Template display is oriented by aligning
+        --                      the axis of the SubfigureDef with the axis of
+        --                      the definition space of the anchoring curve.
+        --                 = 1, Each Template display is oriented by aligning
+        --                      X-axis of the SubfigureDef with the tangent
+        --                      vector of the anchoring curve at the point of
+        --                      incidence of the curve and the origin of
+        --                      subfigure.
+        --                      Similarly Z-axis is aligned.
+
+        TemplateEntity (me) returns SubfigureDef;
+        ---Purpose : returns SubfigureDef as the Entity used as Template figure.
+
+        Distance (me) returns Real;
+        ---Purpose : returns the Distance between any two Template figures on the
+        -- anchoring curve.
+
+        Scale (me) returns Real;
+        ---Purpose : returns the Scaling factor applied to SubfigureDef to form
+        -- Template figure.
+
+fields
+
+--
+-- Class    : IGESGraph_LineFontDefTemplate
+--
+-- Purpose  : Declaration of the variables specific to Line Font Templates.
+--
+-- Reminder : A Line Font Template is defined by :
+--              - Orientation of Template figure on the anchoring curve
+--              - Sub Figure definition entity used as Template figure
+--              - Distance between the neighbouring Template figures
+--              - Scale factor applied to the Template figure
+--
+
+        theOrientation    : Integer;
+
+        theTemplateEntity : SubfigureDef;
+
+        theDistance       : Real;
+
+        theScale          : Real;
+
+end LineFontDefTemplate;

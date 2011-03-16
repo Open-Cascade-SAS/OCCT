@@ -1,0 +1,84 @@
+--
+-- File:	AlienImage_EuclidAlienData.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	Matravision 1993
+--
+
+class EuclidAlienData from AlienImage inherits AlienImageData from AlienImage
+
+	---Version: 0.0
+
+	---Level: Public
+	---Purpose: This class defines an Euclid .PIX Alien image.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	File 			from OSD,
+	AsciiString 		from TCollection,
+	ColorImage 		from Image,
+	PseudoColorImage 	from Image,
+	Image			from Image,
+	HArray2OfInteger	from TColStd
+
+raises
+	OutOfRange 	from Standard,
+	TypeMismatch 	from Standard
+
+is
+	Create returns mutable EuclidAlienData from AlienImage ;
+
+	Clear( me : in out mutable ) ;
+	---Level: Public
+	---Purpose: Frees memory allocated by EuclidAlienData
+	---C++: alias ~
+
+	Read ( me : in out mutable ; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	  ---Purpose: Read content of a  EuclidAlienData object from a file .
+	  --          Returns True if file is a XWD file .
+
+	Write( me : in immutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	  ---Purpose: Write content of a  EuclidAlienData object to a file .
+
+	ToImage( me : in  immutable) 
+	  returns mutable Image from Image 
+          raises TypeMismatch from Standard ;
+	---Level: Public
+	  ---Purpose : convert a EuclidAlienData object to a Image object.
+
+	FromImage( me : in out mutable ; anImage : in Image from Image )
+          raises TypeMismatch from Standard ;
+	---Level: Public
+	  ---Purpose : convert a Image object to a EuclidAlienData object.
+
+	--
+	--			Private Method
+	--
+
+
+	FromPseudoColorImage( me : in out mutable ; 
+			      anImage : in PseudoColorImage from Image );
+	---Level: Internal
+	  ---Purpose : convert a Image object to a EuclidAlienData object.
+
+	FromColorImage( me : in out mutable ; 
+				anImage : in ColorImage from Image );
+	---Level: Internal
+	  ---Purpose : convert a Image object to a EuclidAlienData object.
+
+fields
+
+	myX1, myY1, myX2, myY2 	: Integer from Standard ;
+	myNumberOfColor 	: Integer from Standard ;
+	myColors 		: Address from Standard ;
+	myPixels 		: HArray2OfInteger from TColStd ;
+	myPixelsIsDef		: Boolean from Standard ;
+end ;
+ 

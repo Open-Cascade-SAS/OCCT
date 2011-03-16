@@ -1,0 +1,180 @@
+-- File:	WNT_IconBox.cdl
+-- Created:	Mon Jan 29 14:46:25 1996
+-- Author:	PLOTNIKOV Eugeny
+--		<eugeny@proton>
+---Copyright:	 Matra Datavision 1996
+
+
+class IconBox from WNT inherits Window from WNT
+
+	---Purpose: This class defines a Windows NT icon box
+
+ uses
+
+    Handle        from Aspect,
+    GraphicDevice from WNT,
+    WClass        from WNT,
+    Window        from WNT,
+    Uint          from WNT,
+    Long          from WNT,
+    Dword         from WNT,
+    NameOfColor   from Quantity
+
+ raises
+
+    WindowDefinitionError from Aspect,
+    WindowError		  from Aspect
+
+ is
+
+    Create (
+     aDevice  : GraphicDevice from WNT;
+     aName    : CString       from Standard;
+     aStyle   : Dword         from WNT = 0;
+     Xc       : Real          from Standard = 0.5;
+     Yc	      : Real          from Standard = 0.5;
+     aBkColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
+    )
+     returns mutable IconBox from WNT
+    	---Level:   Public
+	---Purpose: Creates an IconBox defined by his Center in DSU.
+	--	    ALL Icons are loaded from the Icon File Directory Name:
+	--	    "[$SYMBOL]xxxxxxx[.ifd]"
+	--  Warning: Raises if the Position is out of the Screen Space
+	--	    or the Icon File Directory Name don't exist
+     raises WindowDefinitionError from Aspect;
+
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+
+    LoadIcons ( me : mutable; Name : CString from Standard ) 
+     returns Integer from Standard is static;
+	---Level:   Public
+	---Purpose: Loads Icon Box from an Other Icon File Directory Name
+	--          and returns the loaded icons number.
+	--  Warning: The Icons previously loaded are NOT cleared.
+
+    Show ( me ) is static;
+	---Level:   Public
+	---Purpose: Shows Icon Box to the screen
+	--  Warning: The Icon Box is displayed at the centered position
+	--	    specified at the creation time and the size depend
+	--	    of the Icon number really loaded inside.
+
+    UnloadIcons (
+     me   : mutable;
+     Name : CString from Standard
+    ) 
+     returns Integer from Standard is static;
+	---Level:   Public
+	---Purpose: Unloads All previously loaded Icons in the IconBox
+        --          and returns the unloaded icons number.
+
+    Destroy ( me : mutable ) is redefined;
+	---Level:   Public
+	---Purpose: Destroies the IconBox
+	---C++: alias ~
+
+    AddIcon (
+     me      : mutable;
+     W       : Window  from WNT;
+     Name    : CString from Standard;
+     aWidth  : Integer from Standard = 0;
+     aHeight : Integer from Standard = 0
+    ) is static;
+	---Level: Public
+	---Purpose: Adds an Icon of Size aWidth,aHeight given in PIXEL
+	--          to the Icon Box from a FULL Existing Window
+	--  NOTE that if aWidth or aHeight is 0 the default icon size is taken.
+
+    SaveIcons ( me ) returns Integer from Standard is static;
+	---Level: Public
+	---Purpose:  Save all new created Icons as iconname.xwd file in the user
+	--      directory and returns the saved icons number.
+
+    SetDim (
+     me      : mutable;
+     aWidth  : Integer from Standard;
+     aHeight : Integer from Standard
+    ) is static;
+    	---Level:   Public
+    	---Purpose: Sets dimensions for icons which are visible in the box.
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+
+    IconNumber ( me )
+     returns Integer from Standard is static;
+	---Level:   Public
+	---Purpose: Returns the Number of Icons loaded in the Icon Box.
+
+    IconName ( me; Index : Integer from Standard )
+     returns CString from Standard
+	---Level:   Public
+	---Purpose: Returns the Name of the N ime Icon
+	--  Warning: Raises if Index if out of range depending of the
+	--	    Number of Loaded Icons.
+     raises WindowError from Aspect is static;
+
+    IconSize (
+     me;
+     Name          : CString     from Standard;
+     Width, Height : out Integer from Standard
+    )
+     returns Boolean from Standard is static;
+	---Level:   Public
+	---Purpose: Returns the Pixmap Size attached to the Icon Name
+	--  Warning: May return FALSE if Icon doesn't exist in the IconBox.
+	---Category: Inquire methods
+
+    IconPixmap ( me; Name : CString from Standard )
+     returns Handle from Aspect is static;
+	---Level:   Public
+	---Purpose: Returns the Pixmap attached to the Icon Name
+	--  Warning: May return 0 if Icon doesn't exist in the IconBox.
+
+    IconPixmap (
+     me;
+     Name   : CString from Standard;
+     Width  : Integer from Standard;
+     Height : Integer from Standard
+    ) returns Handle from Aspect is static;
+	---Level:   Public
+	---Purpose: Returns the Centered part of the Pixmap of required Size
+	--	    attached to the Icon Name
+	--  Warning: May return 0 if Icon doesn't exist in the IconBox.
+
+    HandleEvent (
+     me     : mutable;
+     hwnd   : Handle from Aspect;
+     uMsg   : Uint   from WNT;
+     wParam : Dword  from WNT;
+     lParam : Dword  from WNT
+    )
+     returns Long from WNT is static;
+     	---Level:   Internal
+     	---Purpose: routine to process events sent to the icon box
+ fields
+ 
+    myIconWidth  : Integer from Standard is protected;
+    myIconHeight : Integer from Standard is protected;
+    myFont       : Handle  from Aspect   is protected;
+    myPen        : Handle  from Aspect   is protected;
+
+--  fields for event management
+
+    myDragging   : Boolean from Standard is protected;
+    myStart,
+    myIncX,
+    myIncY,
+    myNX,
+    myNY,
+    myNPos,
+    myMaxPos     : Integer from Standard is protected;
+
+end IconBox;

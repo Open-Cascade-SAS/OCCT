@@ -1,0 +1,56 @@
+---Copyright:	 Matra Datavision 1997
+-- File:	Vrml_OrthographicCamera.cdl
+-- Created:	Wed Feb 12 10:46:43 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class OrthographicCamera from Vrml 
+
+	---Purpose: specifies a OrthographicCamera node of VRML specifying properties of cameras. 
+    	--  An orthographic camera defines a parallel projection from a viewpoint. This camera does
+       	--  not diminish objects with distance, as a PerspectiveCamera does. The viewing volume for
+       	--  an orthographic camera is a rectangular parallelepiped (a box). 
+uses
+ 
+    Vec         from gp, 
+    SFRotation  from Vrml
+
+is 
+                                                    --  defaults  :
+    Create  returns  OrthographicCamera from Vrml;  --  myPosition(0 0 1)
+ 						    --  myOrientation(0 0 1 0)
+						    --  myFocalDistance(5)
+						    --  myHeight(2)
+    	    	    	    	    	    	    --  Camera looks along the negative Z-axis
+    Create  ( aPosition      :  Vec         from  gp;   
+    	      aOrientation   :  SFRotation  from  Vrml; 
+    	      aFocalDistance :  Real        from  Standard; 
+    	      aHeight        :  Real        from  Standard )
+    	returns  OrthographicCamera from Vrml; 
+	 
+    SetPosition ( me : in out;  aPosition : Vec  from  gp );
+    Position ( me )  returns Vec  from  gp;
+
+    SetOrientation ( me : in out;  aOrientation : SFRotation  from  Vrml );
+    Orientation ( me )  returns SFRotation  from  Vrml;
+
+    SetFocalDistance ( me : in out;  aFocalDistance : Real  from  Standard );
+    FocalDistance ( me )  returns Real  from  Standard;
+
+    SetHeight ( me : in out;  aHeight : Real  from  Standard );
+    Height ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+    
+fields
+ 
+    myPosition      :  Vec         from  gp;        -- Location of viewpoint
+    myOrientation   :  SFRotation  from  Vrml;      -- Orientation (rotation with respect to (0,0,-1) vector)
+    myFocalDistance :  Real        from  Standard;  -- Distance from viewpoint to point of focus.
+    myHeight        :  Real        from  Standard;  -- Height of view volume
+
+end OrthographicCamera;
+

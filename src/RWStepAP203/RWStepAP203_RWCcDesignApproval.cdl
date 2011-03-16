@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWCcDesignApproval.cdl
+-- Created:	Fri Nov 26 16:26:31 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCcDesignApproval from RWStepAP203
+
+    ---Purpose: Read & Write tool for CcDesignApproval
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CcDesignApproval from StepAP203
+
+is
+    Create returns RWCcDesignApproval from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CcDesignApproval from StepAP203);
+	---Purpose: Reads CcDesignApproval
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CcDesignApproval from StepAP203);
+	---Purpose: Writes CcDesignApproval
+
+    Share (me; ent : CcDesignApproval from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCcDesignApproval;

@@ -1,0 +1,9 @@
+// File:	ShapeCustom_Surface.lxx
+// Created:	Thu Jul  9 15:38:42 1998
+// Author:	data exchange team
+//		<det@pronox.nnov.matra-dtv.fr>
+
+inline Standard_Real ShapeCustom_Surface::Gap() const
+{
+  return myGap;
+}

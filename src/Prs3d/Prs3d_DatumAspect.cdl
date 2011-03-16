@@ -1,0 +1,60 @@
+-- File:	Prs3d_DatumAspect.cdl
+-- Created:	Fri Jul 30 09:32:13 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class DatumAspect from Prs3d inherits CompositeAspect from Prs3d
+    	---Purpose: A framework to define the display of datums.
+uses
+
+    LineAspect from Prs3d,
+    Length from Quantity    
+is
+
+    Create returns mutable DatumAspect from Prs3d;
+    	---Purpose: An empty framework to define the display of datums.
+      
+    FirstAxisAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the attributes for display of the first axis.    
+    SecondAxisAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the attributes for display of the second axis.    
+    ThirdAxisAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the attributes for display of the third axis.    
+    SetDrawFirstAndSecondAxis(me:mutable ; draw: Boolean from Standard);
+    	---Purpose: Sets the DrawFirstAndSecondAxis attributes to active.    
+    
+    DrawFirstAndSecondAxis(me) returns Boolean from Standard; 
+    	---Purpose: Returns true if the first and second axes can be drawn. 
+    
+    SetDrawThirdAxis(me:mutable; draw: Boolean from Standard);
+    	---Purpose: Sets the DrawThirdAxis attributes to active.
+    
+    DrawThirdAxis(me) returns Boolean from Standard;
+    	---Purpose: Returns true if the third axis can be drawn.    
+    SetAxisLength(me:mutable; L1,L2,L3: Real from Standard);
+    	---Purpose: Sets the lengths L1, L2 and L3 of the three axes. 
+        
+    FirstAxisLength(me) returns Length from Quantity;
+    	--- Purpose: Returns the length of the displayed first axis.   
+    
+    SecondAxisLength(me) returns Length from Quantity;
+    	---Purpose: Returns the length of the displayed second axis.    
+    
+    ThirdAxisLength(me) returns Length from Quantity;
+    	---Purpose: Returns the length of the displayed third axis.    
+    Print(me; s: in out OStream from Standard) is static;
+    
+fields
+
+    myFirstAxisAspect: LineAspect from Prs3d;
+    mySecondAxisAspect: LineAspect from Prs3d;
+    myThirdAxisAspect: LineAspect from Prs3d;
+    myDrawFirstAndSecondAxis: Boolean from Standard;
+    myDrawThirdAxis: Boolean from Standard;
+    myFirstAxisLength: Length from Quantity;    
+    mySecondAxisLength: Length from Quantity;    
+    myThirdAxisLength: Length from Quantity;    
+end DatumAspect from Prs3d;
+

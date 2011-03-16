@@ -1,0 +1,62 @@
+// File:	TDataStd_NamedData.lxx
+// Created:	Mon Aug 20 11:34:13 2007
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+// Copyright:   Open CASCADE SA 2007
+
+//=======================================================================
+//function : HasIntegers
+//purpose  : Returns true if there are some named integers in the attribute.
+//=======================================================================
+
+inline Standard_Boolean TDataStd_NamedData::HasIntegers() const
+{
+  return !myIntegers.IsNull();
+}
+
+//=======================================================================
+//function : HasReals
+//purpose  : Returns true if there are some named reals in the attribute.
+//=======================================================================
+inline Standard_Boolean TDataStd_NamedData::HasReals() const
+{
+  return !myReals.IsNull();
+}
+
+//=======================================================================
+//function : HasStrings
+//purpose  : Returns true if there are some named strings in the attribute.
+//=======================================================================
+inline Standard_Boolean TDataStd_NamedData::HasStrings() const
+{
+  return !myStrings.IsNull();
+}
+
+//=======================================================================
+//function : HasBytes
+//purpose  : Returns true if there are some named bytes in the attribute.
+//=======================================================================
+inline Standard_Boolean TDataStd_NamedData::HasBytes() const
+{
+  return !myBytes.IsNull();
+}
+
+//=======================================================================
+//function : HasArraysOfIntegers
+//purpose  : Returns true if there are at least one array of integer 
+//         : values in the internal container of the attribute.
+//=======================================================================
+inline Standard_Boolean TDataStd_NamedData::HasArraysOfIntegers() const
+{
+  return !myArraysOfIntegers.IsNull();
+}
+//=======================================================================
+//function : HasArraysOfReals
+//purpose  : Returns true if there are some named arrays of real values 
+//         : in the attribute.
+//=======================================================================
+inline Standard_Boolean TDataStd_NamedData::HasArraysOfReals() const
+{
+  return !myArraysOfReals.IsNull();
+}
+

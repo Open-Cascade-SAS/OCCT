@@ -1,0 +1,27 @@
+-- File:	PNaming_Naming.cdl
+-- Created:	Thu Oct 21 12:45:55 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Naming from PNaming inherits Attribute from PDF
+
+	---Purpose: 
+
+uses 
+    Name from PNaming
+			    
+is
+    Create
+    returns mutable Naming from PNaming;
+    
+    SetName(me : mutable ; aName : Name from PNaming);
+
+    GetName(me) returns Name from PNaming;
+
+fields
+
+    myName :  Name from PNaming;
+
+end Naming;

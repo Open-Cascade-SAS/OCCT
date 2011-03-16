@@ -1,0 +1,27 @@
+-- File:	XSDRAWIGES.cdl
+-- Created:	Wed Mar 15 13:04:58 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+package  XSDRAWIGES
+
+    ---Purpose : XSDRAW for IGES : commands IGESSelect, Controller, transfer
+
+uses Standard, Interface, Transfer, IFSelect, IGESControl  , Draw
+
+is
+
+--    class Controller;  see IGESControl
+
+    InitSelect;
+    ---Purpose : Inits IGESSelect commands, for DRAW
+
+    InitToBRep   (theCommands : in out Interpretor from Draw);
+    ---Purpose : Inits IGESToBRep for DRAW
+
+    InitFromBRep (theCommands : in out Interpretor from Draw);
+    ---Purpose : Inits BRepToIGES for DRAW
+
+end XSDRAWIGES;

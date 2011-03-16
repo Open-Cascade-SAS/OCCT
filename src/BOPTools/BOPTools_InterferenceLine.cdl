@@ -1,0 +1,89 @@
+-- File:	BOPTools_InterferenceLine.cdl
+-- Created:	Tue Nov 21 11:54:46 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class InterferenceLine from BOPTools 
+
+	---Purpose: class for storing information about all  
+    	---         interferences for given shape. 
+	---         So,  for each shape in the DS, we will have 
+        ---         the  following interference list 
+	---         (i1, t1, r1), (i2, t2, r2),...(iN, tN, rN), 
+	---         where    
+	---         (iN, tN, rN) - object of type  BOPTools_Interference 
+        ---         The  class 	BOPTools_InterferenceLine is  dedicated 
+	---         to provide convinient tools to  manage this info. 
+        --- 
+	 
+uses
+    KindOfInterference from BooleanOperations, 
+    ListOfInterference from BOPTools,
+    Interference from BOPTools
+
+
+is
+    Create  
+    	returns InterferenceLine from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    GetOnType(me;  
+    	    	    aType :KindOfInterference from BooleanOperations) 
+    	returns ListOfInterference from BOPTools; 
+    	---C++: return  const & 
+    	---Purpose:  
+    	--- Returns info. list for interferences of given type 
+    	---
+    IsComputed(me;  
+    	    	    aWith :Integer from Standard; 
+    	            aType :KindOfInterference from BooleanOperations) 
+	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns  TRUE if the interference of type <aType> 
+    	--- with the shape <aWith> has already been computed.           
+    	---
+    AddInterference  (me:out;  
+    	    	    anInterference  :Interference from BOPTools);	    	  
+    	---Purpose:  
+    	--- Adds  info. about the Interference to the list
+    	---
+    AddInterference  (me:out;  
+    	    	    aWith :Integer from Standard; 
+    	            aType :KindOfInterference from BooleanOperations;  
+    	    	    anIndex:Integer from Standard);
+    	---Purpose:  
+    	--- Adds  info. about the Interference to the list
+    	---
+    List(me) 
+    	returns ListOfInterference from BOPTools;  
+    	---C++: return const & 
+    	---Purpose:  
+    	--- Selector  
+    	---
+     RealList(me) 
+    	returns ListOfInterference from BOPTools;  
+    	---C++: return const & 
+    	---Purpose:  
+    	--- Selector     
+    	---
+    HasInterference(me)    	    
+    	returns Boolean from Standard;       	
+    	---Purpose:  
+    	--- Returns  TRUE if the list contains at least one  interference   
+    	--- with non-empty result            
+    	---
+fields
+     
+    myList            : ListOfInterference from BOPTools; 
+    mySSList          : ListOfInterference from BOPTools; 
+    myESList          : ListOfInterference from BOPTools; 
+    myVSList          : ListOfInterference from BOPTools; 
+    myEEList          : ListOfInterference from BOPTools; 
+    myVEList          : ListOfInterference from BOPTools; 
+    myVVList          : ListOfInterference from BOPTools; 
+    myEmptyList       : ListOfInterference from BOPTools;  
+    
+end InterferenceLine;

@@ -1,0 +1,18 @@
+-- File:	Viewer.cdl
+-- Created:	Thu Apr  6 16:19:05 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+package Viewer
+
+uses  MMgt,TCollection,Aspect,Quantity
+  
+is
+
+    deferred class Viewer;
+    deferred class View;
+    
+    exception BadValue inherits OutOfRange;
+
+end Viewer;

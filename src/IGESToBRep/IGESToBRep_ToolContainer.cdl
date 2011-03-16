@@ -1,0 +1,24 @@
+-- File:	IGESToBRep_ToolContainer.cdl
+-- Created:	Mon Feb  7 13:08:17 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class ToolContainer from IGESToBRep inherits TShared from MMgt
+
+    ---Purpose: 
+
+uses
+
+    IGESBoundary from IGESToBRep
+    
+is
+
+    Create returns mutable ToolContainer from IGESToBRep;
+    	---Purpose: Empty constructor
+	
+    IGESBoundary (me) returns IGESBoundary from IGESToBRep is virtual;
+    	---Purpose: Returns IGESToBRep_IGESBoundary
+
+end ToolContainer;

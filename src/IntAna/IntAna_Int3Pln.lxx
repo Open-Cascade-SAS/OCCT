@@ -1,0 +1,22 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+
+
+inline Standard_Boolean IntAna_Int3Pln::IsDone () const {
+
+  return done;
+}
+
+inline Standard_Boolean IntAna_Int3Pln::IsEmpty () const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  return empt;
+}
+
+inline const gp_Pnt& IntAna_Int3Pln::Value () const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  if (empt) {Standard_DomainError::Raise();}
+  return pnt;
+}
+

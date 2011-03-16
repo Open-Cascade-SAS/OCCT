@@ -1,0 +1,28 @@
+-- File:        ApprovalAssignment.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class ApprovalAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Approval from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedApproval : mutable Approval from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedApproval(me : mutable; aAssignedApproval : mutable Approval);
+	AssignedApproval (me) returns mutable Approval;
+
+fields
+
+	assignedApproval : Approval from StepBasic;
+
+end ApprovalAssignment;

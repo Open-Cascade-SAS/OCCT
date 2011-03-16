@@ -1,0 +1,129 @@
+-- File:	ExtCS.cdl
+-- Created:	Thu Feb 21 19:12:30 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class ExtCS from Extrema
+
+    	---Purpose: It calculates all the extremum distances
+    	--          between a curve and a surface.
+    	--          These distances can be minimum or maximum.
+
+uses  	POnSurf           from Extrema,
+    	POnCurv           from Extrema,
+    	ExtElCS           from Extrema,
+    	Pnt               from gp,
+	SurfaceType       from GeomAbs,
+	CurveType         from GeomAbs,
+	SequenceOfPOnSurf from Extrema,
+	SequenceOfPOnCurv from Extrema,
+	SequenceOfReal    from TColStd,
+	Curve             from Adaptor3d,
+	Surface           from Adaptor3d,
+	SurfacePtr        from Adaptor3d
+	
+	
+
+raises  NotDone      from StdFail,
+    	OutOfRange   from Standard,
+	TypeMismatch from Standard
+	
+	
+is
+
+    Create returns ExtCS;
+
+    Create (C: Curve   from Adaptor3d; 
+    	    S: Surface from Adaptor3d; 
+    	    TolC, TolS: Real)
+    	returns ExtCS;
+      	---Purpose: It calculates all the distances between C and S.
+    
+
+    Create (C: Curve   from Adaptor3d; 
+    	    S: Surface from Adaptor3d; 
+    	    UCinf, UCsup: Real;
+    	    Uinf, Usup, Vinf, Vsup: Real;
+    	    TolC, TolS: Real)
+    	returns ExtCS;
+      	---Purpose: It calculates all the distances between C and S.
+      	--          UCinf and UCmax are the start and end parameters
+      	--          of the curve.
+    
+
+    Initialize(me: in out; S: Surface from Adaptor3d;
+    	       Uinf, Usup, Vinf, Vsup: Real;
+	       TolC, TolS: Real)
+	---Purpose: Initializes the fields of the algorithm.
+    
+    is static;
+
+
+    Perform(me: in out; C: Curve from Adaptor3d; Uinf, Usup: Real)
+    	---Purpose: Computes the distances.
+    	--          An exception is raised if the fieds have not been 
+    	--          initialized.
+    
+    raises TypeMismatch from Standard
+    is static;
+    
+    
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+    
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the curve is on a parallel surface.
+    	raises  NotDone from StdFail
+    	    	-- if IsDone(me)=False.
+    	is static;
+
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Returns the value of the Nth resulting square distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    Points (me; N: Integer; P1: out POnCurv; P2: out POnSurf) 
+    	---Purpose: Returns the point of the Nth resulting distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange from Standard
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+
+    Bidon(me) returns SurfacePtr from Adaptor3d
+    is static private;
+
+
+fields
+    myS      : SurfacePtr        from Adaptor3d;
+    myDone   : Boolean           from Standard;
+    myIsPar  : Boolean           from Standard;
+    myExtElCS: ExtElCS           from Extrema;
+    myPOnS   : SequenceOfPOnSurf from Extrema;
+    myPOnC   : SequenceOfPOnCurv from Extrema;
+    myuinf   : Real              from Standard;
+    myusup   : Real              from Standard;
+    myvinf   : Real              from Standard;
+    myvsup   : Real              from Standard;
+    mytolC   : Real              from Standard;
+    mytolS   : Real              from Standard;
+    myucinf  : Real              from Standard;
+    myucsup  : Real              from Standard;
+    mySqDist : SequenceOfReal    from TColStd;
+    myStype  : SurfaceType       from GeomAbs;
+
+end ExtCS;

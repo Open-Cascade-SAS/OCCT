@@ -1,0 +1,15 @@
+-- File:	ColorEntity.cdl
+-- Created:	Tue Apr  7 16:01:46 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class ColorEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for Color in directory part
+    --           an effective Color entity must inherits it
+
+is
+
+end ColorEntity;

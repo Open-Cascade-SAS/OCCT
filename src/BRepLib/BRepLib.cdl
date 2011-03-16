@@ -1,0 +1,306 @@
+-- File:	BRepLib.cdl
+-- Created:	Wed Dec 15 15:34:04 1993
+-- Author:	Remi LEQUETTE
+--		<rle@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package BRepLib 
+
+	---Purpose: The BRepLib package provides general utilities for
+	--          BRep.
+	--          
+	--          * FindSurface : Class to compute a surface through
+	--          a set of edges.
+	--          
+	--          * Compute missing 3d curve on an edge.
+
+uses
+    Standard,
+    StdFail,
+    gp,
+    Geom, 
+    GeomAbs,
+    Geom2d,
+    TopoDS,
+    TopLoc,
+    TopTools, 
+    TopAbs
+
+is
+
+    enumeration EdgeError is 
+	---Purpose: Errors that can occur at edge construction.
+	EdgeDone, -- no error
+	PointProjectionFailed, 
+	ParameterOutOfRange,
+	DifferentPointsOnClosedCurve, 
+	PointWithInfiniteParameter,
+    	DifferentsPointAndParameter,
+	LineThroughIdenticPoints
+    end EdgeError;
+
+    
+    enumeration WireError is 
+	---Purpose: Errors that can occur at wire construction.
+	WireDone, -- no error
+	EmptyWire,
+	DisconnectedWire,
+	NonManifoldWire
+
+    end WireError;
+
+
+    enumeration  FaceError is 
+	---Purpose: Errors that can occur at face construction.
+    	FaceDone, -- no error
+	NoFace,   -- not initialised
+	NotPlanar,
+	CurveProjectionFailed,
+	ParametersOutOfRange
+	
+    end FaceError;
+    
+    
+    enumeration ShellError is 
+	---Purpose: Errors that can occur at shell construction.
+
+	ShellDone, -- no error
+	EmptyShell,
+	DisconnectedShell,
+	ShellParametersOutOfRange
+	
+    end ShellError;
+
+    enumeration ShapeModification is
+    	---Purpose: Modification type after a topologic operation.
+    	
+	Preserved,   -- no  modification
+	Deleted, 
+	Trimmed,
+	Merged,
+	BoundaryModified
+	
+    end ShapeModification;
+
+    deferred class Command;
+	---Purpose: Root class for all BRepBuilderAPI commands.
+
+    deferred class MakeShape;
+	---Purpose: Root class for all shape constructions.
+
+    -- 
+    -- Construction of topology from geometry
+    -- 
+    
+    class MakeVertex;
+    
+    class MakeEdge;
+    
+    class MakeEdge2d;
+	
+    class MakePolygon;
+	
+    class MakeFace;
+
+    --
+    --  Construction of composite topologies
+    --  
+
+    class MakeWire;
+    
+    class MakeShell;
+    
+    class MakeSolid;
+
+
+
+
+    --- END of API commands.
+
+
+
+
+    class FindSurface;
+	---Purpose: Find a surface in a set of edges.
+
+    class FuseEdges;
+	---Purpose: 
+
+
+    --
+    --   Default precison methods.
+    --   The default precision is initialized with Precision::Confusion()
+    --   
+
+    Precision(P : Real);
+	---Purpose: Sets the default precision.  The current Precision
+	--          is returned.
+	---Level: Public
+	
+    Precision returns Real;
+	---Purpose: Returns the default precision.
+	---Level: Public 
+
+
+    --         
+    --   Default plane for 2d edges.
+    --   
+
+    Plane(P : Plane from Geom);
+	---Purpose: Sets the current plane to P.
+	---Level: Public
+    
+    Plane returns Plane from Geom;
+	---Purpose: Returns the current plane.
+	--          
+	---C++: return const &
+	---Level: Public
+
+
+
+    CheckSameRange(E : Edge from TopoDS ;
+    	    	   Confusion  : Real from Standard = 1.0e-12) 
+    returns Boolean;
+
+    	---Purpose: checks if the Edge is same range IGNORING 
+    	--          the same range flag of the edge
+    	--          Confusion argument is to compare real numbers
+    	--          idenpendently of any model space tolerance 
+    	--          
+     
+    
+    SameRange(E : Edge from TopoDS ;
+    	    	 Tolerance : Real from Standard = 1.0e-5) ;
+      	---Purpose: will make all the curve representation have
+      	--          the same range domain for the parameters.
+      	--          This will IGNORE the same range flag value
+      	--          to proceed.
+      	--          If there is a 3D curve there it will the
+      	--          range of that curve. If not the first curve representation
+      	--          encountered in the list will give its range to
+      	--          the all the other curves. 
+
+    BuildCurve3d(E : Edge from TopoDS ;
+                 Tolerance : Real from Standard = 1.0e-5 ;
+                 Continuity       : Shape  from  GeomAbs  =  GeomAbs_C1;
+    	         MaxDegree        : Integer  =  14; 
+                 MaxSegment       : Integer  =  0 --30
+        ) returns Boolean;
+	---Purpose: Computes the 3d curve for the edge  <E> if it does
+	--          not exist. Returns True  if the curve was computed
+	--          or  existed. Returns False  if there is no  planar
+	--          pcurve. 
+	--          <MaxSegment> >= 30 in approximation
+
+    BuildCurves3d(S : Shape from TopoDS ;
+    	    	  Tolerance  : Real from Standard; 
+                  Continuity : Shape  from  GeomAbs  =  GeomAbs_C1;
+    	          MaxDegree  : Integer  =  14; 
+                  MaxSegment : Integer  =  0 --30
+        ) returns Boolean;
+	
+	---Purpose: Computes  the 3d curves  for all the  edges of <S>
+	--          return False if one of the computation failed.
+	--          <MaxSegment> >= 30 in approximation
+
+    BuildCurves3d(S : Shape from TopoDS)
+    	    	  returns Boolean;
+	
+	---Purpose: Computes  the 3d curves  for all the  edges of <S>
+	--          return False if one of the computation failed.
+
+
+       --          
+       --           
+    UpdateEdgeTol(  E  :  Edge  from  TopoDS  ;  
+    	    	   MinToleranceRequest :  Real  from  Standard  ;
+		   MaxToleranceToCheck  :  Real  from  Standard) 
+       ---Purpose:       Checks if the edge has a  Tolerance smaller than -- --
+       --       -- -- MaxToleranceToCheck  if  so it will compute  the
+       --       radius    of  -- the   cylindrical  pipe  surface that
+       --       MinToleranceRequest is the minimum tolerance before it
+       --       is usefull to start testing. Usually it should be arround
+       --       10e-5
+       --       contains all  --  the curve represenation of  the edge
+       --       returns True if the Edge tolerance had to be updated
+    returns  Boolean  ;
+
+
+    UpdateEdgeTolerance(S : Shape  from  TopoDS;   
+    	                MinToleranceRequest :  Real  from  Standard  ;
+    	                MaxToleranceToCheck :  Real  from  Standard) 
+			
+       ---Purpose: -- Checks all the edges of the shape whose -- -- --
+       --          Tolerance  is  smaller than  MaxToleranceToCheck --
+       --           Returns True if at  least  one edge was updated --
+       --          MinToleranceRequest is the minimum tolerance before
+       --          --  it -- is  usefull to start  testing. Usually it
+       --          should be arround -- 10e-5-- 
+       --          
+       --  Warning :The  method is  very  slow  as it  checks all.
+       --         Use  only  in interfaces or  processing assimilate batch 
+       --         
+
+     returns  Boolean  ;
+
+    SameParameter(E: Edge from TopoDS;
+    	    	  Tolerance : Real from Standard = 1.0e-5);
+    	---Purpose: Computes new 2d curve(s)  for the edge <E> to have 
+    	--          the same parameter  as  the  3d curve.  
+    	--          The algorithm is not done if the flag SameParameter 
+    	--          was True  on the  Edge.
+
+
+
+    SameParameter(S: Shape from TopoDS ;
+     	    	  Tolerance : Real from Standard = 1.0e-5;
+    	    	  forced : Boolean from Standard = Standard_False);
+    	---Purpose: Computes new 2d curve(s) for all the edges of  <S>
+    	--          to have the same parameter  as  the  3d curve.  
+    	--          The algorithm is not done if the flag SameParameter 
+    	--          was True  on an  Edge.
+
+    UpdateTolerances(S: Shape from TopoDS;
+    	    	     verifyFaceTolerance : Boolean from Standard = Standard_False);
+    	---Purpose:  Replaces tolerance   of  FACE EDGE VERTEX  by  the
+    	--          tolerance Max of their connected handling shapes.
+    	--          It is not necessary to use this call after
+    	--          SameParameter. (called in)
+
+    OrientClosedSolid(solid : in out Solid from TopoDS)
+    	---Purpose:  Orients the solid forward  and the  shell with the
+    	--           orientation to have  matter in the solid. Returns
+    	--          False if the solid is unOrientable (open or incoherent)
+     returns  Boolean;
+
+
+    EncodeRegularity(S      : Shape from TopoDS;
+    	    	     TolAng : Real  from Standard = 1.0e-10);
+	---Purpose: Encodes the Regularity of edges on a Shape.
+	--  Warning: <TolAng> is an angular tolerance, expressed in Rad.
+        --  Warning: If the edges's regularity are coded before, nothing 
+        --          is done.
+
+    EncodeRegularity(S  : in  out  Edge from TopoDS; 
+                     F1,  F2  :  Face  from  TopoDS;
+    	    	     TolAng : Real  from Standard = 1.0e-10);
+	---Purpose: Encodes the Regularity beetween <F1> and <F2> by <E>
+	-- Warning: <TolAng> is an angular tolerance, expressed in Rad.
+	-- Warning: If the edge's regularity is coded before, nothing 
+        --          is done.
+
+    SortFaces (S  :        Shape       from TopoDS;
+               LF : in out ListOfShape from TopTools);
+	---Purpose: Sorts in  LF the Faces of   S on the  complexity of
+	--                             their                  surfaces
+	--          (Plane,Cylinder,Cone,Sphere,Torus,other)
+			
+    ReverseSortFaces (S  :        Shape       from TopoDS;
+                      LF : in out ListOfShape from TopTools);
+	---Purpose:    Sorts in  LF  the   Faces  of S   on the reverse
+	--               complexity       of       their      surfaces
+	--          (other,Torus,Sphere,Cone,Cylinder,Plane)
+			
+end BRepLib;

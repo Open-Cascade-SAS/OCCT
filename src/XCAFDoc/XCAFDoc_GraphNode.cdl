@@ -1,0 +1,162 @@
+-- File:	XCAFDoc_GraphNode.cdl
+-- Created:	Wed Sep 27 16:00:50 2000
+-- Author:	Pavel TELKOV.
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class GraphNode from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: This attribute allow user multirelation tree of labels.
+    	-- This GraphNode is experimental Graph that not control looping and redundance.
+uses
+
+  GUID              from Standard,   
+  OStream           from Standard,
+  Attribute         from TDF, 
+  RelocationTable   from TDF,  
+  DataSet           from TDF, 
+  Label             from TDF,
+  GraphNodeSequence from XCAFDoc   
+    
+is
+    ---Purpose: class  methods working on the node 
+    --          ===================================
+
+    Find (myclass; L  : Label from TDF;  
+    	    	   G  : out GraphNode from XCAFDoc) 
+    ---Purpose: Shortcut to search  a Graph node attribute with default
+    --          GraphID.  Returns true if found.
+    returns Boolean from Standard;	     
+
+    Set (myclass; L : Label from TDF) 
+    ---Purpose: Finds or Creates a GraphNode attribute on the label <L>
+    --           with  the  default Graph  ID,   returned by the method
+    --          <GetDefaultGraphID>.  Returns the created/found     GraphNode
+    --          attribute.
+    returns GraphNode from XCAFDoc;
+
+    Set (myclass; L : Label from TDF; ExplicitGraphID : GUID  from Standard)
+    ---Purpose: Finds  or Creates a   GraphNode attribute on  the label
+    --          <L>, with an   explicit tree ID.  <ExplicitGraphID>  is
+    --          the  ID   returned by    <TDF_Attribute::ID>   method.
+    --          Returns the found/created GraphNode attribute.
+    returns GraphNode from XCAFDoc;
+    
+    GetDefaultGraphID (myclass) 
+    ---Purpose:  returns a default  Graph ID.  this  ID is  used by the
+    --          <Set> method without explicit tree ID.  
+    ---C++: return const &
+    returns GUID from Standard;  
+
+
+	    ---Purpose: Instance methods: 
+	    --          ================ 
+    
+    Create returns mutable GraphNode from XCAFDoc;
+    
+    SetGraphID (me : mutable; explicitID : GUID  from Standard);
+	
+    SetFather (me : mutable;F : GraphNode from XCAFDoc)
+    	---Purpose: Set GraphNode <F> as father of me and returns index of <F> 
+	--          in Sequence that containing Fathers GraphNodes.
+	--          return index of <F> from GraphNodeSequnece 
+    returns Integer from Standard;
+
+    SetChild (me : mutable;Ch : GraphNode from XCAFDoc)
+    	---Purpose: Set GraphNode <Ch> as child of me and returns index of <Ch>
+	--          in Sequence that containing Children GraphNodes.
+	--          return index of <Ch> from GraphNodeSequnece 
+    returns Integer from Standard;
+
+    UnSetFather (me : mutable;F : GraphNode from XCAFDoc);
+    	---Purpose: Remove <F> from Fathers GraphNodeSequence.
+	--          and remove link between father and child.
+
+    UnSetFather (me : mutable; Findex : Integer from Standard);
+    	---Purpose: Remove Father GraphNode by index from Fathers GraphNodeSequence.
+	--          and remove link between father and child.
+
+    UnSetFatherlink (me : mutable; F: GraphNode from XCAFDoc) is private;
+    	---Purpose: remove link between father and child.
+
+    UnSetChild (me : mutable; Ch : GraphNode from XCAFDoc);
+    	---Purpose: Remove <Ch> from GraphNodeSequence.
+	--          and remove link between father and child.
+
+    UnSetChild (me : mutable; Chindex : Integer from Standard);
+    	---Purpose: Remove Child GraphNode by index from Children GraphNodeSequence.
+	--          and remove link between father and child.
+
+    UnSetChildlink (me : mutable; C : GraphNode from XCAFDoc) is private;
+    	---Purpose: remove link between father and child.
+
+    GetFather (me ; Findex : Integer from Standard)
+	---Purpose: Return GraphNode by index from GraphNodeSequence.    	
+    returns GraphNode from XCAFDoc;
+	
+    GetChild (me ; Chindex : Integer from Standard)
+	---Purpose: Return GraphNode by index from GraphNodeSequence.    	
+    returns GraphNode from XCAFDoc;
+    
+    FatherIndex (me ; F : GraphNode from XCAFDoc)
+    	---Purpose: Return index of <F>, or zero if there is no such Graphnode.
+    returns Integer from Standard;
+    
+    ChildIndex (me ; Ch : GraphNode from XCAFDoc)
+    	---Purpose: Return index of <Ch>, or zero if there is no such Graphnode.
+    returns Integer from Standard;
+
+    IsFather (me ; Ch : GraphNode from XCAFDoc)
+    	---Purpose: returns TRUE if <me> is father of <Ch>.
+    returns Boolean from Standard;
+
+    IsChild (me ; F : GraphNode from XCAFDoc)
+	---Purpose: returns TRUE if <me> is child of <F>.
+    returns Boolean from Standard;
+
+    NbFathers (me) returns Integer from Standard;
+    	---Purpose: return Number of Fathers GraphNodes.
+
+    NbChildren (me) returns Integer from Standard;
+    	---Purpose: return Number of Childrens GraphNodes.
+
+
+    ---Purpose: Implementation of Attribute methods:  
+    --          ===================================  
+     
+    ID (me)
+    ---Purpose: Returns the Graph ID (default or explicit one depending
+    --          onthe Set method used).  
+    ---C++: return const &
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF) 
+    is virtual;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF) 
+    is virtual;    
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF
+    is redefined;
+	
+    References(me;
+    	       aDataSet : DataSet from TDF)
+    is redefined;
+	
+    Dump(me; anOS : in out OStream from Standard) 
+    returns OStream from Standard   
+    ---C++: return &
+    is redefined; 
+    
+    BeforeForget(me: mutable)
+    is redefined;
+
+fields
+	myFathers  : GraphNodeSequence from XCAFDoc;
+	myChildren : GraphNodeSequence from XCAFDoc;
+    	myGraphID  : GUID              from Standard;
+	
+end GraphNode;

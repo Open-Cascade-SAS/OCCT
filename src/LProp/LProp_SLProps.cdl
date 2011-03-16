@@ -1,0 +1,216 @@
+-- File:	SLProps.cdl
+-- Created:	Tue Mar 26 09:37:49 1991
+-- Author:	Michel CHAUVAT
+--		<mca@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+generic class SLProps from LProp (Surface as any;
+                                  Tool    as any) -- as ToolSurface(Surface)
+    ---Purpose: Computation of Surface Local Properties:
+    --          - point,
+    --          - derivatives,
+    --          - tangents,
+    --          - normal,
+    --          - tangent plane,
+    --          - principal curvatures and their associated direction,
+    --          - mean curvature,
+    --          - Gaussian curvature.
+
+uses    Dir    from gp,
+    	Pnt    from gp,
+    	Vec    from gp,
+	Status from LProp
+
+raises  BadContinuity, DomainError, OutOfRange, NotDefined
+
+is
+    Create(S: Surface; U, V: Real; N: Integer; Resolution: Real)
+    	---Purpose: Initializes the local properties of the surface <S> 
+    	--          for the parameter values (<U>, <V>).
+    	--          The current point and the derivatives are 
+    	--          computed at the same time, which allows an 
+    	--          optimization of the computation time.
+    	--          <N> indicates the maximum number of derivations to 
+    	--          be done (0, 1, or 2). For example, to compute 
+    	--          only the tangent, N should be equal to 1.
+    	--          <Resolution> is the linear tolerance (it is used to test
+    	--          if a vector is null).
+    	returns SLProps
+	raises  OutOfRange;
+		-- if N < 0 or N > 2.
+
+    Create(S: Surface; N: Integer; Resolution: Real)
+    ---Purpose: idem as previous constructor but without setting the value
+    --          of parameters <U> and <V>.
+    	returns SLProps
+	raises  OutOfRange;
+		-- if N < 0 or N > 2.		
+
+    Create( N: Integer; Resolution: Real)
+    ---Purpose: idem as previous constructor but without setting the value
+    --          of parameters <U> and <V> and the surface.
+    --          the surface can have an empty constructor.
+
+    	returns SLProps
+	raises  OutOfRange;
+		-- if N < 0 or N > 2.		
+		
+    SetSurface(me : in out;S : Surface)
+    	---Purpose: Initializes the local properties of the surface S 
+    	--          for the new surface.
+        is static;
+
+    SetParameters(me: in out; U, V : Real) 
+    	---Purpose: Initializes the local properties of the surface S 
+    	--          for the new parameter values (<U>, <V>).
+        is static;
+
+    Value(me) returns Pnt
+    	---Purpose: Returns the point.
+    	---C++: return const &
+    is static;
+
+    D1U(me: in out) returns Vec is static;
+    	---Purpose: Returns the first U derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    D1V(me: in out) returns Vec is static;
+    	---Purpose: Returns the first V derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    D2U(me: in out) returns Vec is static;
+    	---Purpose: Returns the second U derivatives
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    D2V(me: in out) returns Vec is static;
+    	---Purpose: Returns the second V derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    DUV(me: in out) returns Vec is static;
+    	---Purpose: Returns the second UV cross-derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    IsTangentUDefined(me: in out) returns Boolean is static;
+    	---Purpose: returns True if the U tangent is defined.
+    	--          For example, the tangent is not defined if the 
+    	--          two first U derivatives are null.
+
+    TangentU(me: in out; D : out Dir)
+    	---Purpose: Returns the tangent direction <D> on the iso-V.
+	raises  NotDefined
+    	    	-- if IsTangentUDefined() == False.
+        is static;
+	
+    IsTangentVDefined(me: in out) returns Boolean is static;
+    	---Purpose: returns if the V tangent is defined.
+    	--          For example, the tangent is not defined if the 
+    	--          two first V derivatives are null.
+
+    TangentV(me: in out; D : out Dir)
+    	---Purpose: Returns the tangent direction <D> on the iso-V.
+	raises  NotDefined 
+    	    	-- if IsTangentVDefined() == False.
+    	is static;
+
+    IsNormalDefined(me: in out) returns Boolean is static;
+    	---Purpose: Tells if the normal is defined.
+
+    Normal(me: in out) returns Dir
+    	---Purpose: Returns the normal direction.
+    	---C++: return const &
+	raises  NotDefined
+	-- if IsNormalDefined() == False
+	is static;
+
+    IsCurvatureDefined(me: in out)
+    	---Purpose: returns True if the curvature is defined.
+    	returns Boolean
+	raises  BadContinuity
+	    	-- if the surface is not C2.
+	is static;
+
+    IsUmbilic(me: in out)
+    	---Purpose: returns True if the point is umbilic (i.e. if the 
+    	--          curvature is constant).
+    	returns Boolean
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False
+	is static;
+
+    MaxCurvature(me : in out)
+    	---Purpose: Returns the maximum curvature
+    	returns Real
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False.
+	is static;
+
+    MinCurvature(me : in out)
+    	---Purpose: Returns the minimum curvature 
+    	returns Real
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False.
+	is static;
+
+    CurvatureDirections(me: in out; MaxD, MinD : out Dir)
+    	---Purpose: Returns the direction of the maximum and minimum curvature
+    	--          <MaxD> and <MinD>
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False
+	    	-- or IsUmbilic() == True.
+	is static;
+
+    MeanCurvature(me: in out)
+    	---Purpose: Returns the mean curvature.
+    	returns Real
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False.
+        is static;
+	
+    GaussianCurvature(me: in out)
+    	---Purpose: Returns the Gaussian curvature
+    	returns Real
+	raises  NotDefined
+	    	-- if IsCurvatureDefined() == False.
+	is static;
+
+fields
+
+    surf   : Surface;
+    u      : Real;
+    v      : Real;
+    level  : Integer;
+    cn     : Integer;
+    linTol : Real;
+
+    pnt  : Pnt from gp;
+    d1U  : Vec from gp;
+    d1V  : Vec from gp;
+    d2U  : Vec from gp;
+    d2V  : Vec from gp;
+    dUV  : Vec from gp;
+
+    normal     : Dir from gp;
+    minCurv    : Real;
+    maxCurv    : Real;
+    dirMinCurv : Dir from gp;
+    dirMaxCurv : Dir from gp;
+    meanCurv   : Real;
+    gausCurv   : Real;
+
+    significantFirstUDerivativeOrder : Integer;
+    significantFirstVDerivativeOrder : Integer;
+
+    uTangentStatus  : Status from LProp;
+    vTangentStatus  : Status from LProp;
+    normalStatus    : Status from LProp;
+    curvatureStatus : Status from LProp;
+
+end SLProps;
+

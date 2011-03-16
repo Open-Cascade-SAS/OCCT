@@ -1,0 +1,27 @@
+#include<Select3D_Pnt.hxx>
+#include<Select3D_Pnt2d.hxx>
+#include<TColgp_HArray1OfPnt.hxx>
+#include<TColgp_Array1OfPnt2d.hxx>
+
+inline void Select3D_SensitivePoly
+::Points3D( Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt )
+{ 
+  theHArrayOfPnt = new TColgp_HArray1OfPnt(1,mynbpoints);
+  for(Standard_Integer i = 1; i <= mynbpoints; i++)
+  {
+    gp_Pnt aPnt(((Select3D_Pnt*)mypolyg3d)[i-1].x, ((Select3D_Pnt*)mypolyg3d)[i-1].y, ((Select3D_Pnt*)mypolyg3d)[i-1].z);
+    theHArrayOfPnt->SetValue(i, aPnt);
+  }
+}
+
+inline void Select3D_SensitivePoly
+::Points2D( TColgp_Array1OfPnt2d& aArrayOf2dPnt)
+{
+  for(Standard_Integer i = 1; i <= mynbpoints; i++)
+  {
+    gp_Pnt2d aPnt2d(((Select3D_Pnt2d*)mypolyg2d)[i-1].x, ((Select3D_Pnt2d*)mypolyg2d)[i-1].y);
+    aArrayOf2dPnt.SetValue(i,aPnt2d);
+  }
+}
+
+

@@ -1,0 +1,59 @@
+-- File:	LProp_NumericCurInf.cdl
+-- Created:	Fri Sep  2 15:56:00 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class NumericCurInf from LProp (Curve as any;
+    	    	    	    	        Vec   as any; -- as Vec or Vec2d
+		     	                Pnt   as any; -- as Pnt or Pnt2d
+		   	                Dir   as any; -- as Dir or Dir2d Vec  
+    	    	    	    	    	Tool  as any) -- as Tool(Curve, Pnt, Vec) 
+					
+	---Purpose: Computes the locals extremas of curvature and the 
+    	--          inflections of a bounded curve in 2d. 
+
+uses
+    CurAndInf from LProp
+    
+private class FCurExt instantiates FuncCurExt from LProp (Curve,Vec,Pnt,Dir,Tool); 
+private class FCurNul instantiates FuncCurNul from LProp (Curve,Vec,Pnt,Dir,Tool);
+
+is
+    Create;
+    
+    PerformCurExt (me : in out; C : Curve; Result : in out CurAndInf) 
+    	---Purpose: Computes the locals extremas of curvature.
+    is static;
+    
+    PerformInf    (me : in out; C : Curve; Result : in out CurAndInf)
+       	---Purpose: Computes the inflections.
+    is static;
+    
+    PerformCurExt (me     : in out; 
+    	           C      : Curve ; 
+                   UMin   : Real;
+    	    	   UMax   : Real;
+    	    	   Result : in out CurAndInf) 
+    	---Purpose: Computes the locals extremas of curvature.
+    	--          in the interval of parmeters [UMin,UMax].
+    is static;
+    
+    PerformInf    (me     : in out;
+        	   C      : Curve ; 
+                   UMin   : Real;
+    	    	   UMax   : Real;
+    	    	   Result : in out CurAndInf)
+       	---Purpose: Computes the inflections in the interval of 
+       	--          parmeters [UMin,UMax].
+    is static;
+    
+    IsDone (me) returns Boolean
+	---Purpose: True if the solutions are found.
+    is static;
+    
+fields
+    isDone : Boolean from Standard;
+
+end NumericCurInf;

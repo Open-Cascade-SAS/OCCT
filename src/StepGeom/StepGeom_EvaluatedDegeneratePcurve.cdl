@@ -1,0 +1,43 @@
+-- File:        EvaluatedDegeneratePcurve.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class EvaluatedDegeneratePcurve from StepGeom 
+
+inherits DegeneratePcurve from StepGeom 
+
+uses
+
+	CartesianPoint from StepGeom, 
+	HAsciiString from TCollection, 
+	Surface from StepGeom, 
+	DefinitionalRepresentation from StepRepr
+is
+
+	Create returns mutable EvaluatedDegeneratePcurve;
+	---Purpose: Returns a EvaluatedDegeneratePcurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisSurface : mutable Surface from StepGeom;
+	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisSurface : mutable Surface from StepGeom;
+	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr;
+	      aEquivalentPoint : mutable CartesianPoint from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetEquivalentPoint(me : mutable; aEquivalentPoint : mutable CartesianPoint);
+	EquivalentPoint (me) returns mutable CartesianPoint;
+
+fields
+
+	equivalentPoint : CartesianPoint from StepGeom;
+
+end EvaluatedDegeneratePcurve;

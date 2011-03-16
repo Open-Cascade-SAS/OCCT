@@ -1,0 +1,32 @@
+-- File:	StepFEA_AlignedCurve3dElementCoordinateSystem.cdl
+-- Created:	Thu Dec 12 17:51:03 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class AlignedCurve3dElementCoordinateSystem from StepFEA
+inherits FeaRepresentationItem from StepFEA
+
+    ---Purpose: Representation of STEP entity AlignedCurve3dElementCoordinateSystem
+
+uses
+    HAsciiString from TCollection,
+    FeaAxis2Placement3d from StepFEA
+
+is
+    Create returns AlignedCurve3dElementCoordinateSystem from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aCoordinateSystem: FeaAxis2Placement3d from StepFEA);
+	---Purpose: Initialize all fields (own and inherited)
+
+    CoordinateSystem (me) returns FeaAxis2Placement3d from StepFEA;
+	---Purpose: Returns field CoordinateSystem
+    SetCoordinateSystem (me: mutable; CoordinateSystem: FeaAxis2Placement3d from StepFEA);
+	---Purpose: Set field CoordinateSystem
+
+fields
+    theCoordinateSystem: FeaAxis2Placement3d from StepFEA;
+
+end AlignedCurve3dElementCoordinateSystem;

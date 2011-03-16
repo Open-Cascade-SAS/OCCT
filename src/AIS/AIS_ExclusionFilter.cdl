@@ -1,0 +1,112 @@
+-- File:	AIS_ExclusionFilter.cdl
+-- Created:	Fri Nov 28 11:04:30 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ExclusionFilter from AIS inherits Filter from SelectMgr
+
+    	---Purpose:  A framework to reject or to accept only objects of
+    	-- given types and/or signatures.
+    	-- Objects are stored, and the stored objects - along
+    	-- with the flag settings - are used to define the filter.
+    	-- Objects to be filtered are compared with the stored
+    	-- objects added to the filter, and are accepted or
+    	-- rejected according to the exclusion flag setting.
+    	-- -   Exclusion flag on
+    	--   -   the function IsOk answers true for all objects,
+    	--    except those of the types and signatures stored
+    	--    in the filter framework
+    	-- -   Exclusion flag off
+    	--   -   the funciton IsOk answers true for all objects
+    	--    which have the same type and signature as the stored ones.
+
+uses
+    
+     EntityOwner from SelectMgr,
+     KindOfInteractive from AIS,
+     ListOfInteger from TColStd,
+     DataMapOfIntegerListOfInteger from TColStd
+is
+    
+    Create(ExclusionFlagOn:Boolean from Standard = Standard_True)
+    returns mutable ExclusionFilter from AIS;
+    	---Purpose: Constructs an empty exclusion filter object defined by
+    	-- the flag setting ExclusionFlagOn.
+    	-- By default, the flag is set to true.
+    
+    Create(TypeToExclude : KindOfInteractive from AIS;
+	   ExclusionFlagOn : Boolean from Standard = Standard_True)
+    returns  mutable ExclusionFilter from AIS;
+    	---Purpose: All the AIS objects of <TypeToExclude>
+    	--          Will be rejected by the IsOk Method.
+    
+    
+    Create(TypeToExclude : KindOfInteractive from AIS;
+    	   SignatureInType :Integer from Standard ;
+	   ExclusionFlagOn : Boolean from Standard = Standard_True)
+    returns  mutable ExclusionFilter from AIS;
+    	---Purpose: Constructs an exclusion filter object defined by the
+    	-- enumeration value TypeToExclude, the signature
+    	-- SignatureInType, and the flag setting ExclusionFlagOn.
+    	-- By default, the flag is set to true.
+    
+
+    IsOk(me; anObj : EntityOwner from SelectMgr)
+    returns Boolean from Standard
+    is redefined virtual;
+
+
+
+
+
+	    ---Category: Load Filter...
+
+    Add(me:mutable;TypeToExclude : KindOfInteractive from AIS) 
+    returns Boolean from Standard;
+   	---Purpose: Adds the type TypeToExclude to the list of types.
+
+    Add(me:mutable;
+    	TypeToExclude   : KindOfInteractive from AIS;
+        SignatureInType : Integer from Standard) 
+    returns Boolean from Standard;
+	
+    Remove(me:mutable;
+    	   TypeToExclude:KindOfInteractive from AIS)
+    returns Boolean from Standard;
+
+    Remove(me:mutable;
+    	   TypeToExclude:KindOfInteractive from AIS;
+           SignatureInType : Integer from Standard) 
+    returns Boolean from Standard;
+
+    Clear(me:mutable);
+
+	    ---Category: Information about Filter...
+
+
+
+    IsExclusionFlagOn(me) returns Boolean from Standard;
+    	---C++: inline
+
+    SetExclusionFlag(me:mutable; Status : Boolean from Standard);
+    	---C++: inline
+
+
+    IsStored(me;aType:KindOfInteractive from AIS) returns Boolean from Standard;
+    
+    ListOfStoredTypes( me; TheList: in out ListOfInteger from TColStd);
+    
+    ListOfSignature(me;
+    	    	    aType         : KindOfInteractive from AIS;
+    	    	    TheStoredList : in out ListOfInteger from TColStd);
+		
+
+    IsSignatureIn(me;aType:KindOfInteractive from AIS;aSignature:Integer from Standard)
+    returns Boolean from Standard is static private;
+
+fields
+    myIsExclusionFlagOn : Boolean from Standard;
+    myStoredTypes       : DataMapOfIntegerListOfInteger from TColStd;
+end ExclusionFilter;

@@ -1,0 +1,23 @@
+// File:	TDataStd_HDataMapOfStringString.lxx
+// Created:	Fri Aug 17 16:54:56 2007
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+// Copyright:   Open Cascade SA 2007 
+
+//=======================================================================
+//function : Map
+//purpose  : Access to the map
+//=======================================================================
+inline const TDataStd_DataMapOfStringString& TDataStd_HDataMapOfStringString::Map () const 
+{ 
+  return myMap; 
+}
+
+//=======================================================================
+//function : ChangeMap
+//purpose  : Access to the map for modification
+//=======================================================================
+inline TDataStd_DataMapOfStringString& TDataStd_HDataMapOfStringString::ChangeMap () 
+{ 
+  return myMap; 
+}

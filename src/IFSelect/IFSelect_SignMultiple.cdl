@@ -1,0 +1,50 @@
+-- File:	IFSelect_SignMultiple.cdl
+-- Created:	Wed Jan 28 16:35:26 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignMultiple  from IFSelect    inherits Signature  from IFSelect
+
+    ---Purpose : Multiple Signature : ordered list of other Signatures
+    --           It concatenates on a same line the result of its sub-items
+    --           separated by sets of 3 blanks
+    --           It is possible to define tabulations between sub-items
+    --           Moreover, match rules are specific
+
+uses CString, Transient, AsciiString, InterfaceModel,
+     SequenceOfTransient, SequenceOfInteger
+
+is
+
+    Create (name : CString) returns mutable SignMultiple;
+    ---Purpose : Creates an empty SignMultiple with a Name
+    --           This name should take expected tabulations into account
+
+    Add (me : mutable; subsign : Signature;
+    	 width : Integer = 0; maxi : Boolean = Standard_False);
+    ---Purpose : Adds a Signature. Width, if given, gives the tabulation
+    --           If <maxi> is True, it is a forced tabulation (overlength is
+    --           replaced by a final dot)
+    --           If <maxi> is False, just 3 blanks follow an overlength
+
+    Value (me; ent : any Transient; model : InterfaceModel)  returns CString;
+    ---Purpose : Concatenates the values of sub-signatures, with their
+    --           tabulations
+
+    Matches (me; ent : Transient; model : InterfaceModel;
+    	    	 text : AsciiString; exact : Boolean)
+	returns Boolean  is redefined;
+    ---Purpose : Specialized Match Rule
+    --           If <exact> is False, simply checks if at least one sub-item
+    --           matches
+    --           If <exact> is True, standard match with Value
+    --           (i.e. tabulations must be respected)
+
+fields
+
+    thesubs : SequenceOfTransient;
+    thetabs : SequenceOfInteger;
+
+end SignMultiple;

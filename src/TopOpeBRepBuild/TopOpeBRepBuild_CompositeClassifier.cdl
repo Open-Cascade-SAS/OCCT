@@ -1,0 +1,55 @@
+-- File:	TopOpeBRepBuild_CompositeClassifier.cdl
+-- Created:	Fri Jan  5 15:16:22 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+deferred class CompositeClassifier from TopOpeBRepBuild
+    inherits LoopClassifier from TopOpeBRepBuild
+
+---Purpose: 
+-- classify composite Loops, i.e, loops that can be either a Shape, or
+-- a block of Elements.
+
+uses
+    
+    ShapeEnum from TopAbs,
+    Shape from TopoDS,
+    State from TopAbs,
+    Loop from TopOpeBRepBuild,
+    BlockBuilder from TopOpeBRepBuild
+    
+is
+
+    Initialize(BB : BlockBuilder);
+
+    Compare(me : in out; L1,L2 : Loop) returns State from TopAbs
+    is redefined;
+
+    CompareShapes(me : in out; B1,B2 : Shape from TopoDS)
+    ---Purpose: classify shape <B1> with shape <B2>
+    returns State from TopAbs is deferred;
+    
+    CompareElementToShape(me : in out; E,B : Shape from TopoDS)
+    ---Purpose: classify element <E> with shape <B>
+    returns State from TopAbs is deferred;
+    
+    ResetShape(me : in out; B : Shape from TopoDS) is deferred;
+    ---Purpose: prepare classification involving shape <B>
+    -- calls ResetElement on first element of <B>
+    
+    ResetElement(me : in out; E : Shape from TopoDS) is deferred;
+    ---Purpose: prepare classification involving element <E>.
+    
+    CompareElement(me : in out; E : Shape from TopoDS) is deferred;
+    ---Purpose: Add element <E> in the set of elements used in classification.
+    
+    State(me : in out) returns State from TopAbs is deferred;
+    ---Purpose: Returns state of classification of 2D point, defined by 
+    -- ResetElement, with the current set of elements, defined by Compare.
+
+fields
+
+    myBlockBuilder : Address is protected; -- (TopOpeBRepBuild_BlockBuilder*)
+
+end CompositeClassifier from TopOpeBRepBuild;

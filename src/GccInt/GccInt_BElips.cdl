@@ -1,0 +1,38 @@
+-- File:	BElips.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BElips from GccInt  
+
+inherits Bisec from GccInt
+
+     	---Purpose: Describes an ellipse as a bisecting curve between two
+    	-- 2D geometric objects (such as circles or points).
+
+uses Elips2d from gp,
+     IType  from GccInt
+
+is
+
+Create(Ellipse : Elips2d) returns mutable BElips;
+    	---Purpose:
+    	-- Constructs a bisecting curve whose geometry is the 2D ellipse Ellipse.
+    
+Ellipse(me) returns Elips2d from gp
+    is redefined;
+    	---Purpose: Returns a 2D ellipse which is the geometry of this bisecting curve.  
+    
+ArcType(me) returns IType from GccInt
+    is static;
+    	---Purpose: Returns GccInt_Ell, which is the type of any GccInt_BElips bisecting curve.
+
+fields
+
+    eli : Elips2d from gp;
+    	---Purpose: The bisecting line.
+    
+end BElips;    
+

@@ -1,0 +1,102 @@
+-- File:	Plate_GtoCConstraint.cdl
+-- Created:	Thu Oct 19 18:06:18 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+
+class GtoCConstraint from Plate
+---Purpose: define a G1, G2  or G3 constraint on the Plate
+--          
+
+uses 
+ XY from gp, 
+ XYZ from gp, 
+ D1 from Plate, 
+ D2 from Plate, 
+ D3 from Plate, 
+ PinpointConstraint from Plate
+
+is 
+    Create(ref  :  GtoCConstraint  from  Plate) returns GtoCConstraint;
+     
+    Create(point2d : XY ; D1S , D1T : D1 ) returns GtoCConstraint;
+    -- G1 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+
+    Create(point2d : XY ; D1S , D1T : D1;
+       nP : XYZ from gp ) returns GtoCConstraint;
+    -- G1 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- nP : normal vector to tge Plane in which we want the correction to occur
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate) returns GtoCConstraint;
+    -- G2 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate;
+       nP : XYZ from gp ) returns GtoCConstraint;
+    -- G2 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+    -- nP : normal vector to tge Plane in which we want the correction to occur
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate;
+       D3S, D3T : D3 from Plate) returns GtoCConstraint;
+    -- G3 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+    -- D3S : third derivative of  S, the surface we want to  correct 
+    -- D3T : third derivative of the reference surface
+
+    Create(point2d : XY from gp; D1S , D1T : D1 from Plate;
+       D2S, D2T : D2 from Plate;
+       D3S, D3T : D3 from Plate;
+       nP : XYZ from gp ) returns GtoCConstraint;
+    -- G3 constraint:   
+    -- D1S : first  derivative of  S, the surface we want to  correct 
+    -- D1T : first derivative of the reference surface
+    -- D2S : second derivative of  S, the surface we want to  correct 
+    -- D2T : second derivative of the reference surface
+    -- D3S : third derivative of  S, the surface we want to  correct 
+    -- D3T : third derivative of the reference surface
+    -- nP : normal vector to tge Plane in which we want the correction to occur
+
+    -- Accessors :
+    nb_PPC(me) returns Integer;
+    ---C++: inline 
+    ---C++: return const &
+
+    GetPPC(me;  Index:  Integer) returns PinpointConstraint; 
+    --	"C style" Index :  Index : 0 --> nb_PPC-1
+    --	
+    ---C++: inline 
+    ---C++: return const &
+
+    D1SurfInit(me) returns D1; 
+    --	
+    ---C++: inline 
+    ---C++: return const &
+
+fields
+
+    myPPC : PinpointConstraint[9]; 
+    myD1SurfInit  :  D1;  
+    pnt2d : XY ;    
+    nb_PPConstraints : Integer;
+
+end;
+
+    
+    

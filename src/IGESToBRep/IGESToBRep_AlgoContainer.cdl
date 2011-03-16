@@ -1,0 +1,34 @@
+-- File:	IGESToBRep_AlgoContainer.cdl
+-- Created:	Mon Feb  7 13:05:53 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class AlgoContainer from IGESToBRep inherits TShared from MMgt
+
+    ---Purpose: 
+
+uses
+
+    ToolContainer from IGESToBRep
+    
+is
+
+    Create returns mutable AlgoContainer from IGESToBRep;
+    	---Purpose: Empty constructor
+	
+    SetToolContainer (me: mutable; TC: ToolContainer from IGESToBRep);
+    	---C++    : inline
+    	---Purpose: Sets ToolContainer
+	
+    ToolContainer (me) returns ToolContainer from IGESToBRep;
+    	---C++    : inline
+    	---Purpose: Returns ToolContainer
+	
+	
+fields
+
+    myTC     : ToolContainer from IGESToBRep;
+    
+end AlgoContainer;

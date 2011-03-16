@@ -1,0 +1,117 @@
+-- File:	IGESToBRep_TopoSurface.cdl
+-- Created:	Thu Apr 21 14:02:21 1994
+-- Authors:	Christophe GUYOT & Frederic UNTEREINER
+--		<fun@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TopoSurface  from IGESToBRep inherits CurveAndSurface from IGESToBRep
+
+    ---Purpose : Provides methods to transfer topologic surfaces entities 
+    --           from IGES to CASCADE.
+
+uses   
+
+    CurveAndSurface      from IGESToBRep,
+    IGESEntity           from IGESData,
+    RuledSurface         from IGESGeom,
+    SurfaceOfRevolution  from IGESGeom,
+    TabulatedCylinder    from IGESGeom,
+    OffsetSurface        from IGESGeom,
+    Plane                from IGESGeom,
+    TrimmedSurface       from IGESGeom,
+    BoundedSurface       from IGESGeom,
+    PlaneSurface         from IGESSolid,
+    SingleParent         from IGESBasic,
+    Shape                from TopoDS,
+    Face                 from TopoDS,
+    Pln                  from gp,
+    Trsf                 from gp,
+    Trsf2d               from gp
+
+
+is
+
+    Create returns TopoSurface;
+    ---Purpose : Creates  a tool TopoSurface  ready  to  run, with
+    --         epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+    --         optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep) returns TopoSurface;
+    ---Purpose : Creates a tool TopoSurface ready to run and sets its
+    --         fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean)
+        returns TopoSurface;
+    ---Purpose : Creates a tool TopoSurface ready to run.
+
+    TransferTopoSurface         (me    : in out;
+    	    	    	    	 start : IGESEntity from IGESData)
+    	returns Shape from TopoDS;
+	
+    TransferTopoBasicSurface    (me    : in out;
+    	    	    	    	 start : IGESEntity from IGESData)
+    	returns Shape from TopoDS;
+	
+    TransferRuledSurface        (me    : in out;
+    	    	    	    	 start : RuledSurface from IGESGeom)
+    	returns Shape from TopoDS;
+	
+    TransferSurfaceOfRevolution (me    : in out;
+    	    	    	    	 start : SurfaceOfRevolution from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferTabulatedCylinder   (me    : in out;
+    	    	    	         start : TabulatedCylinder from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferOffsetSurface       (me    : in out;
+    	    	    	         start : OffsetSurface from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferTrimmedSurface      (me    : in out;
+    	    	    	         start : TrimmedSurface from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferBoundedSurface      (me    : in out;
+    	    	    	         start : BoundedSurface from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferPlane               (me    : in out;
+    	    	    	         start : Plane from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferPlaneSurface        (me    : in out;
+    	    	    	         start : PlaneSurface from IGESSolid)
+    	returns Shape from TopoDS;
+
+    TransferPerforate           (me    : in out;
+                                 start : SingleParent from IGESBasic)
+        returns Shape from TopoDS;
+
+    TransferPlaneParts          (me    : in out;
+                                 start : Plane from IGESGeom;
+                                 gplan : out Pln  from gp;
+                                 locat : out Trsf from gp;
+                                 first : Boolean)
+        returns Shape from TopoDS  is private;
+
+    ParamSurface                (me      : in out;
+    	    	    	    	 start   : IGESEntity from IGESData;
+				 trans   : out Trsf2d from gp;
+				 uFact   : out Real)
+    	returns Shape from TopoDS;
+    --             ---Purpose : Set the surface parameters:
+    --           IsRevol : True for TabulatedCylinder or SurfaceOfRevolution
+    --           ParamU ,Paramv, Length used for 2d Curves parametrization.
+    
+fields
+
+    TheULength : Real from Standard;
+    
+end TopoSurface;

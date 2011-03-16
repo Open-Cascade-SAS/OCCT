@@ -1,0 +1,79 @@
+-- File:        Person.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Person from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfHAsciiString from Interface, 
+	Boolean from Standard
+is
+
+	Create returns mutable Person;
+	---Purpose: Returns a Person
+
+	Init (me : mutable;
+	      aId : mutable HAsciiString from TCollection;
+	      hasAlastName : Boolean from Standard;
+	      aLastName : mutable HAsciiString from TCollection;
+	      hasAfirstName : Boolean from Standard;
+	      aFirstName : mutable HAsciiString from TCollection;
+	      hasAmiddleNames : Boolean from Standard;
+	      aMiddleNames : mutable HArray1OfHAsciiString from Interface;
+	      hasAprefixTitles : Boolean from Standard;
+	      aPrefixTitles : mutable HArray1OfHAsciiString from Interface;
+	      hasAsuffixTitles : Boolean from Standard;
+	      aSuffixTitles : mutable HArray1OfHAsciiString from Interface) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetId(me : mutable; aId : mutable HAsciiString);
+	Id (me) returns mutable HAsciiString;
+	SetLastName(me : mutable; aLastName : mutable HAsciiString);
+	UnSetLastName (me:mutable);
+	LastName (me) returns mutable HAsciiString;
+	HasLastName (me) returns Boolean;
+	SetFirstName(me : mutable; aFirstName : mutable HAsciiString);
+	UnSetFirstName (me:mutable);
+	FirstName (me) returns mutable HAsciiString;
+	HasFirstName (me) returns Boolean;
+	SetMiddleNames(me : mutable; aMiddleNames : mutable HArray1OfHAsciiString);
+	UnSetMiddleNames (me:mutable);
+	MiddleNames (me) returns mutable HArray1OfHAsciiString;
+	HasMiddleNames (me) returns Boolean;
+	MiddleNamesValue (me; num : Integer) returns mutable HAsciiString;
+	NbMiddleNames (me) returns Integer;
+	SetPrefixTitles(me : mutable; aPrefixTitles : mutable HArray1OfHAsciiString);
+	UnSetPrefixTitles (me:mutable);
+	PrefixTitles (me) returns mutable HArray1OfHAsciiString;
+	HasPrefixTitles (me) returns Boolean;
+	PrefixTitlesValue (me; num : Integer) returns mutable HAsciiString;
+	NbPrefixTitles (me) returns Integer;
+	SetSuffixTitles(me : mutable; aSuffixTitles : mutable HArray1OfHAsciiString);
+	UnSetSuffixTitles (me:mutable);
+	SuffixTitles (me) returns mutable HArray1OfHAsciiString;
+	HasSuffixTitles (me) returns Boolean;
+	SuffixTitlesValue (me; num : Integer) returns mutable HAsciiString;
+	NbSuffixTitles (me) returns Integer;
+
+fields
+
+	id : HAsciiString from TCollection;
+	lastName : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	firstName : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	middleNames : HArray1OfHAsciiString from Interface;   -- OPTIONAL can be NULL
+	prefixTitles : HArray1OfHAsciiString from Interface;   -- OPTIONAL can be NULL
+	suffixTitles : HArray1OfHAsciiString from Interface;   -- OPTIONAL can be NULL
+	hasLastName : Boolean from Standard;
+	hasFirstName : Boolean from Standard;
+	hasMiddleNames : Boolean from Standard;
+	hasPrefixTitles : Boolean from Standard;
+	hasSuffixTitles : Boolean from Standard;
+
+end Person;

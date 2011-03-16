@@ -1,0 +1,436 @@
+-- File:	AdvApp2Var_ApproxAFunc2Var.cdl
+-- Created:	Wed Feb 14 13:41:28 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Wed Jan 15 09:45:42 1997
+--    by:	Joelle CHAUVET
+--		G1135 : Constructor with criterion
+--		G1135 : Private methods 'Init','InitGrid','Perform','ConvertBS',
+--		                        'ComputePatches','ComputeConstraints',
+--		                        Compute3DErrors','ComputeCritError'
+--		G1135 : Fields 'myConditions','myResults','myConstraints',
+--		G1134 : Option 0 for myPrecisionCode
+---Copyright:	 Matra Davision 1996
+--           	 
+
+class ApproxAFunc2Var from AdvApp2Var 
+
+    ---Purpose: Perform   the  approximation of  <Func>     F(U,V)
+    -- Arguments are :
+    -- Num1DSS, Num2DSS, Num3DSS :The numbers of 1,2,3 dimensional subspaces        
+    -- OneDTol, TwoDTol, ThreeDTol: The tolerance of approximation in each
+    --                              subspaces
+    -- OneDTolFr, TwoDTolFr, ThreeDTolFr: The tolerance of approximation on
+    --           the boundarys in each subspaces
+    -- [FirstInU, LastInU]: The Bounds in U of the Approximation
+    -- [FirstInV, LastInV]: The Bounds in V of the Approximation
+    -- FavorIso : Give preference to extract u-iso or v-iso on F(U,V) 
+    --            This can be usefull to optimize the <Func> methode
+    -- ContInU, ContInV : Continuity waiting in u and v
+    -- PrecisCode : Precision on approximation's error mesurement
+    --              1 : Fast computation and average precision
+    --              2 : Average computation and good precision
+    --              3 : Slow computation and very good precision
+    -- MaxDegInU : Maximum u-degree waiting in U
+    -- MaxDegInV : Maximum u-degree waiting in V
+    --  Warning:
+    --     MaxDegInU (resp. MaxDegInV) must be >= 2*iu (resp. iv) + 1,
+    --     where iu (resp. iv) = 0 if ContInU (resp. ContInV)  = GeomAbs_C0,
+    --                         = 1 if                          = GeomAbs_C1,
+    --                         = 2 if                          = GeomAbs_C2. 
+    -- MaxPatch  : Maximun number of Patch waiting
+    --             number of Patch is number of u span * number of v span
+    -- Func      : The external method to evaluate F(U,V)
+    -- Crit      : To (re)defined condition of convergence
+    -- UChoice, VChoice : To define the way in U (or V) Knot insertion
+    --  Warning:
+    --     for the moment, the result is a 3D Surface 
+    --     so Num1DSS and Num2DSS must be equals to 0
+    --     and Num3DSS must be equal to 1.     
+    --  Warning:
+    --     the Function of type EvaluatorFunc2Var from Approx
+    --     must be an extern "C" function
+    --     
+    --     The evaluator Function has the following type :
+    --     typedef  void (* AdvApp2Var_EvaluatorFunc2Var) 
+    --                         (Standard_Integer *,     // Total Dimension
+    --				Standard_Real    *,     // StartEndInU[2]
+    --				Standard_Real    *,     // StartEndInV[2]
+    --				Standard_Integer *,     // 1 for U = cte
+    --				                        // 2 for V = cte
+    --				Standard_Real    *,     // Value of cte
+    --				Standard_Integer *,     // Number N  of parameters
+    --			        Standard_Real    *,     // Tab[N] of parameters at
+    --			                                // which evaluation
+    --				                        // should take place
+    --			        Standard_Integer *,     // U-Derivative Request
+    --			        Standard_Integer *,     // V-Derivative Request
+    --				Standard_Real    *,     // Result[Dimension,N]
+    --			        Standard_Integer *      // Error Code
+    --			        ) ;
+    --     
+    --	  the result should be formatted in the following way :
+    -- <--Num1DSS--> <--2 * Num2DSS--> <--3 * Num3DSS-->
+    -- R[0,0] ....   R[Num1DSS,0].....  R[Dimension-1,0] for the 1st parameter
+    -- R[0,i] ....   R[Num1DSS,i].....  R[Dimension-1,i] for the ith parameter
+    -- R[0,N-1] .... R[Num1DSS,N-1].... R[Dimension-1,N-1] for the Nth parameter
+    --
+    --  the order in which each Subspace appears should be consistent
+    --  with the tolerances given in the create function and the
+    --  results will be given in that order as well that is :
+    --  Surface(n) will correspond to the nth entry described by Num3DSS 
+
+uses Array1OfInteger   from TColStd,
+     HArray1OfInteger  from TColStd,
+     Array1OfReal      from TColStd,
+     Array1OfPnt2d     from TColgp,
+     Array1OfPnt       from TColgp,
+     HArray1OfReal     from TColStd,
+     HArray1OfPnt2d    from TColgp,
+     HArray1OfPnt      from TColgp,
+     HArray2OfInteger  from TColStd,
+     HArray2OfReal     from TColStd,
+     HArray2OfPnt2d    from TColgp,
+     HArray2OfPnt      from TColgp,
+     HArray1OfSurface  from TColGeom,
+     BSplineSurface    from Geom,
+     Pnt               from gp,
+     Pnt2d             from gp,
+     Shape             from GeomAbs,
+     IsoType           from GeomAbs,
+     EvaluatorFunc2Var from AdvApp2Var,
+     Criterion         from AdvApp2Var,
+     Context           from AdvApp2Var,
+     Network           from AdvApp2Var,
+     Framework         from AdvApp2Var,
+     Cutting           from AdvApprox
+ 
+
+raises
+
+    OutOfRange        from Standard,
+    ConstructionError from Standard
+
+is   
+    Create(Num1DSS    : Integer ;
+    	   Num2DSS    : Integer ;
+	   Num3DSS    : Integer ;
+	   OneDTol    : HArray1OfReal from TColStd ;
+	   TwoDTol    : HArray1OfReal from TColStd ;
+	   ThreeDTol  : HArray1OfReal from TColStd ;
+	   OneDTolFr  : HArray2OfReal from TColStd ;
+	   TwoDTolFr  : HArray2OfReal from TColStd ;
+	   ThreeDTolFr: HArray2OfReal from TColStd ;
+	   FirstInU   : Real ;
+	   LastInU    : Real ;
+	   FirstInV   : Real ;
+	   LastInV    : Real ;
+	   FavorIso   : IsoType from GeomAbs ;
+	   ContInU    : Shape from GeomAbs ;
+	   ContInV    : Shape from GeomAbs ;
+	   PrecisCode : Integer ;
+	   MaxDegInU  : Integer ;
+	   MaxDegInV  : Integer ;
+	   MaxPatch   : Integer ;
+	   Func       : EvaluatorFunc2Var from AdvApp2Var;
+           UChoice     : in out Cutting from AdvApprox; 
+           VChoice     : in out Cutting from AdvApprox) 
+    returns ApproxAFunc2Var from AdvApp2Var    
+    raises ConstructionError;
+             
+    Create(Num1DSS    : Integer ;
+    	   Num2DSS    : Integer ;
+	   Num3DSS    : Integer ;
+	   OneDTol    : HArray1OfReal from TColStd ;
+	   TwoDTol    : HArray1OfReal from TColStd ;
+	   ThreeDTol  : HArray1OfReal from TColStd ;
+	   OneDTolFr  : HArray2OfReal from TColStd ;
+	   TwoDTolFr  : HArray2OfReal from TColStd ;
+	   ThreeDTolFr: HArray2OfReal from TColStd ;
+	   FirstInU   : Real ;
+	   LastInU    : Real ;
+	   FirstInV   : Real ;
+	   LastInV    : Real ;
+	   FavorIso   : IsoType from GeomAbs ;
+	   ContInU    : Shape from GeomAbs ;
+	   ContInV    : Shape from GeomAbs ;
+	   PrecisCode : Integer ;
+	   MaxDegInU  : Integer ;
+	   MaxDegInV  : Integer ;
+	   MaxPatch   : Integer ;
+	   Func       : EvaluatorFunc2Var from AdvApp2Var;
+	   Crit       : Criterion from AdvApp2Var;
+           UChoice     : in out Cutting from AdvApprox; 
+           VChoice     : in out Cutting from AdvApprox) 
+    returns ApproxAFunc2Var from AdvApp2Var    
+    raises ConstructionError; 
+     
+   
+    
+    Init(me : in out) 
+    is private;
+    ---Purpose:  Initialisation of the approximation ; used by Create
+
+    InitGrid(me : in out; NbInt : Integer) 
+    is private;
+    ---Purpose:  Initialisation of the approximation with a grid of regular cuttings ;
+    --  used by Init and Perform
+
+    Perform(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var)
+    is private;
+    ---Purpose:  Computation of the approximation result ; used by Create
+
+
+    Perform(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var; 
+	                 Crit : Criterion from AdvApp2Var)
+    is private;
+    ---Purpose:  Computation of the approximation result ; used by Create
+
+
+    ComputePatches(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var)
+    is private;
+    ---Purpose:  Computation of the polynomial approximations ; used by Perform
+
+
+    ComputePatches(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var; 
+	                 Crit : Criterion from AdvApp2Var)
+    is private;
+    ---Purpose:  Computation of the polynomial approximations ; used by Perform
+
+
+    ComputeConstraints(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var) 
+    is private;
+    ---Purpose:  Approximation of the constraints ; used by ComputePatches
+
+    ComputeConstraints(me : in out; UChoice, VChoice : Cutting from AdvApprox;
+                         Func : EvaluatorFunc2Var from AdvApp2Var; 
+	                 Crit : Criterion from AdvApp2Var) 
+    is private;
+    ---Purpose:  Approximation of the constraints ; used by ComputePatches
+
+
+    Compute3DErrors(me : in out) 
+    is private;
+    ---Purpose:  Computation of the 3D errors on the approximation result ; used by Perform
+
+    ComputeCritError(me : in out) 
+    is private;
+    ---Purpose:  Computation of the max value of the criterion on the approximation result ;
+    --  used by Perform
+
+    ConvertBS(me : in out) 
+    is private;
+    ---Purpose:  Conversion of the approximation result in BSpline; used by Create
+
+
+    IsDone(me) 
+    ---C++: inline
+    returns Boolean;
+    ---Purpose:  True if the approximation succeeded within the imposed
+    --  tolerances and the wished continuities
+    --  
+
+    HasResult(me) 
+    ---C++: inline
+    returns Boolean;
+    ---Purpose:  True if the approximation did come out with a result that
+    --  is not NECESSARELY within the required tolerance or a result
+    --  that is not recognized with the wished continuities
+    --  
+    
+    Surface (me; Index : Integer) 
+    ---Purpose: returns the BSplineSurface of range Index
+    ---Warning:
+    --     Index must be equal to 1. 
+    ---C++: inline 
+    returns BSplineSurface from Geom;
+    
+        
+    UDegree(me)  returns Integer ;
+    ---C++: inline
+    
+    VDegree(me)  returns Integer ;
+    ---C++: inline
+        
+    
+    
+    NumSubSpaces(me; Dimension : Integer) returns Integer;
+    ---C++: inline
+    ---Warning:
+    --     Dimension must be equal to 1, 2 or 3. 
+ 
+
+    
+    
+    MaxError    (me; Dimension : Integer) returns HArray1OfReal from TColStd ;
+    ---Purpose:  returns the errors max
+    ---Warning:
+    --     Dimension must be equal to 3. 
+    
+    AverageError(me; Dimension : Integer) returns HArray1OfReal from TColStd ;
+    ---Purpose: returns the average errors
+    ---Warning:
+    --     Dimension must be equal to 3. 
+ 
+    UFrontError(me; Dimension : Integer) returns HArray1OfReal from TColStd ;
+    ---Purpose: returns the errors max on UFrontiers
+    --  Warning:
+    --     Dimension must be equal to 3. 
+
+    VFrontError(me; Dimension : Integer) returns HArray1OfReal from TColStd ;
+    ---Purpose: returns the errors max on VFrontiers
+    --  Warning:
+    --     Dimension must be equal to 3. 
+    
+  
+    MaxError (me; Dimension : Integer ; Index : Integer) returns Real ;
+    ---Purpose: returns the error max of the BSplineSurface of range Index
+    ---Warning:
+    --     Dimension must be equal to 3, Index must be equal to 1. 
+	
+    AverageError(me; Dimension : Integer; Index : Integer) returns Real ;
+    ---Purpose: returns the average error of the BSplineSurface of range Index
+    ---Warning:
+    --     Dimension must be equal to 3, Index must be equal to 1. 
+    
+    UFrontError(me; Dimension : Integer; Index : Integer) returns Real ;
+    ---Purpose: returns the error max of the BSplineSurface of range Index on a UFrontier
+    ---Warning:
+    --     Dimension must be equal to 3, Index must be equal to 1. 
+    
+    VFrontError(me; Dimension : Integer; Index : Integer) returns Real ;
+    ---Purpose: returns the error max of the BSplineSurface of range Index on a VFrontier
+    ---Warning:
+    --     Dimension must be equal to 3, Index must be equal to 1. 
+ 
+    CritError(me; Dimension : Integer; Index : Integer) returns Real ; 
+    --  Computation of the max value of the criterion on the BSplineSurface of range Index
+    ---Warning:
+    --     Dimension must be equal to 3, Index must be equal to 1.
+
+    Dump(me ; o : in out OStream);
+    ---Purpose: Prints on the stream o informations on the current state 
+    --          of the object.
+    --         
+
+fields
+    --
+    --  Input fields 
+    -- 
+    myNumSubSpaces : Integer[3] ;
+    -- Number of subspaces [0] = number of 1 dimensional subspaces
+    --                     [1] = number of 2 dimensional subspaces
+    --                     [2] = number of 3 dimensional subspaces
+    ---Warning:
+    --     for the moment, the result is a 3D Surface so
+    --     myNumSubSpaces[0] = Num1DSS = 0,
+    --     myNumSubSpaces[1] = Num2DSS = 0,
+    --     myNumSubSpaces[2] = Num3DSS = 1. 
+    --     
+    
+    my1DTolerances   : HArray1OfReal from TColStd ;
+    -- unused for the moment
+    my2DTolerances   : HArray1OfReal from TColStd ;
+    -- unused for the moment
+
+    my3DTolerances   : HArray1OfReal from TColStd ;
+    --  one tolerance per subspace 
+    
+    my1DTolOnFront   : HArray2OfReal from TColStd ;
+    -- unused for the moment
+    my2DTolOnFront   : HArray2OfReal from TColStd ;
+    -- unused for the moment
+    
+    my3DTolOnFront   : HArray2OfReal from TColStd ;
+    --  4 tolerances per subspace,
+    --  one for each frontier U=U0, U=U1, V=V0, V=V1
+    
+    myFirstParInU    : Real ;
+    -- U0 : first U parameter for the approximation
+    myLastParInU     : Real ;
+    -- U1 : last U parameter for the approximation 
+    myFirstParInV    : Real ;
+    -- V0 : first V parameter for the approximation
+    myLastParInV     : Real ;
+    -- V1 : last V parameter for the approximation
+    -- 
+    -- 
+    myFavoriteIso    : IsoType from GeomAbs ; 
+    myContInU        : Shape from GeomAbs ;
+    myContInV        : Shape from GeomAbs ;    
+    -- continuity requested for the approximation
+    ---Warning:
+    --   The evaluator of the function to approximate must
+    --   provide the derivatives up to the requested order
+    --   
+    myPrecisionCode  : Integer ;
+    myMaxDegInU      : Integer ;
+    -- maximum U-degree for the approximation
+    myMaxDegInV      : Integer ;
+    -- maximum V-degree for the approximation
+     ---Warning:
+    --   Because of the unstable evaluation after degree 14
+    --   there are limited to 14
+    myMaxPatches    : Integer ;
+    -- maximum of patches allowed 
+    -- 
+    myEvaluator      : EvaluatorFunc2Var from AdvApp2Var ;   
+    -- external function
+    -- 
+    myConditions     : Context from AdvApp2Var;
+    myResult         : Network from AdvApp2Var;
+    myConstraints    : Framework from AdvApp2Var;
+    -- 
+    -- 
+    -- Output fields 
+    -- 
+    myDone           : Boolean ;
+    -- tells if the approximation succeeded within the requested
+    -- tolerances and continuities.
+    -- 
+    myHasResult      : Boolean ;
+    -- tells if the approximation  returned a result although
+    -- it might not  be within the requested  tolerances or
+    -- the BSpline result surface has not the wished continuities.
+    -- In those cases myDone will be false.
+    -- 
+    --
+    mySurfaces       : HArray1OfSurface  from TColGeom;
+    --  one surface per subspace 
+    --
+    myDegreeInU      : Integer ;
+    myDegreeInV      : Integer ;    
+    -- 
+    -- The Errors 
+    -- 1DErrors and 2DErrors are unused for the moment
+    -- 
+    my1DMaxError     : HArray1OfReal     from TColStd ;
+    my1DAverageError : HArray1OfReal     from TColStd ;
+    my1DUFrontError  : HArray1OfReal     from TColStd ;
+    my1DVFrontError  : HArray1OfReal     from TColStd ;
+    
+    my2DMaxError     : HArray1OfReal     from TColStd ;
+    my2DAverageError : HArray1OfReal     from TColStd ;
+    my2DUFrontError  : HArray1OfReal     from TColStd ;
+    my2DVFrontError  : HArray1OfReal     from TColStd ;
+
+    -- each array contains one error
+    my3DMaxError     : HArray1OfReal     from TColStd ;
+    my3DAverageError : HArray1OfReal     from TColStd ;
+    my3DUFrontError  : HArray1OfReal     from TColStd ;
+    my3DVFrontError  : HArray1OfReal     from TColStd ;
+
+    myCriterionError : Real              from Standard ;
+    
+end ApproxAFunc2Var ;
+
+
+
+
+
+

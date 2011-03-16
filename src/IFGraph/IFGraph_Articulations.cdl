@@ -1,0 +1,51 @@
+-- File:	Articulations.cdl
+-- Created:	Wed Sep 23 11:19:31 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Articulations  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class gives entities which are Articulation points
+    	--           in a whole Model or in a sub-part
+    	--           An Articulation Point divides the graph in two (or more)
+    	--           disconnected sub-graphs
+    	--           Identifying Articulation Points allows improving
+    	--           efficiency of spliting a set of Entities into sub-sets
+
+uses Transient, HSequenceOfInteger, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns Articulations;
+    ---Purpose : creates Articulations to evaluate a Graph
+    --           whole True : works on the whole Model
+    --           whole False : remains empty, ready to work on a sub-part
+
+    GetFromEntity (me : in out; ent : any Transient);
+    ---Purpose : adds an entity and its shared ones to the list
+
+    GetFromIter (me : in out; iter : EntityIterator);
+    ---Purpose : adds a list of entities (as an iterator)
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value give Articulation points
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : Evaluates the list of Articulation points
+
+    Visit (me : in out; num : Integer) returns Integer  is private;
+    ---Purpose : basic routine of computation
+    --           (see book Sedgewick "Algorithms", p 392)
+
+fields
+
+    thegraph : Graph;
+    thenow   : Integer;  -- for Visit algorithm
+    thelist  : HSequenceOfInteger;  -- results from Visiting
+
+end Articulations;

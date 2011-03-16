@@ -1,0 +1,59 @@
+-- File:	IGESDraw_ToolLabelDisplay.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolLabelDisplay  from IGESDraw
+
+    ---Purpose : Tool to work on a LabelDisplay. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses LabelDisplay from IGESDraw,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolLabelDisplay;
+    ---Purpose : Returns a ToolLabelDisplay, ready to work
+
+
+    ReadOwnParams (me; ent : mutable LabelDisplay;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : LabelDisplay;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : LabelDisplay;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a LabelDisplay <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : LabelDisplay) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : LabelDisplay;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : LabelDisplay; entto : mutable LabelDisplay;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : LabelDisplay;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolLabelDisplay;

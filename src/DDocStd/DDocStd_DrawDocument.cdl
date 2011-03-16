@@ -1,0 +1,45 @@
+-- File:	DDocStd_DrawDocument.cdl
+-- Created:	Wed Mar  1 14:07:18 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DrawDocument from DDocStd inherits Data from DDF
+
+	---Purpose: draw variable for TDocStd_Document.
+	--          ==================================
+
+uses Document    from TDocStd,
+     Drawable3D  from Draw,
+     Interpretor from Draw,
+     Display     from Draw
+
+is 
+
+
+    Find (myclass; Doc : Document from TDocStd)
+    returns DrawDocument from DDocStd;
+
+    Create (Doc : Document from TDocStd)
+    returns mutable DrawDocument from DDocStd;
+
+    GetDocument(me) returns Document from TDocStd;
+
+    DrawOn (me; dis : in out Display from Draw);
+    
+    Copy (me) 
+    returns mutable Drawable3D from Draw
+    is redefined;
+	
+    Dump (me; S : in out OStream) 
+    is redefined;
+    
+    Whatis (me; I : in out Interpretor from Draw)
+    is redefined;
+
+fields
+
+    myDocument : Document from TDocStd;
+
+end DrawDocument;

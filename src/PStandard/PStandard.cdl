@@ -1,0 +1,17 @@
+-- File:	PStandard.cdl
+-- Created:	Mon Jan 29 14:55:58 1996
+-- Author:	Kernel
+--		<kernel@ylliox>
+---Copyright:	 Matra Datavision 1996
+
+package PStandard
+---Purpose: This package <PStandard> contains the declaration of the
+--          generic class ArrayNode
+
+uses
+    Standard
+    
+is
+    class ArrayNode;
+
+end PStandard;

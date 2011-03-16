@@ -1,0 +1,60 @@
+-- File:	TestTopOpeDraw_DrawableSHA.cdl
+-- Created:	Mon Oct 24 16:18:55 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class DrawableSHA from TestTopOpeDraw inherits DrawableShape from DBRep
+
+    ---Purpose: 
+
+uses  
+
+    Shape           from TopoDS,
+    Color           from Draw,
+    Display         from Draw,
+    Text3D          from Draw,
+    Marker3D        from Draw,
+    CString         from Standard,
+    Pnt             from gp
+
+is
+
+    Create (S         : Shape from TopoDS;
+    	    FreeCol   : Color from Draw;    -- color for free edges
+    	    ConnCol   : Color from Draw;    -- color for shared edges
+	    EdgeCol   : Color from Draw;    -- color for other edges
+	    IsosCol   : Color from Draw;    -- color for Isos
+	    size      : Real;               -- size for infinite isos
+	    nbisos    : Integer;            -- # of isos on each face
+	    discret   : Integer;            -- # of points on curves
+    	    Text      : CString from Standard; 
+    	    TextColor : Color from Draw;
+    	    DisplayGeometry : Boolean from Standard = Standard_False)
+    returns mutable DrawableSHA from TestTopOpeDraw;
+
+    SetDisplayGeometry(me : mutable; b : Boolean from Standard) is static;
+
+    SetTol(me : mutable; t : Real) is static;
+
+    SetPar(me : mutable; p : Real) is static;
+
+    Pnt(me) returns Pnt from gp
+    is static private;
+
+    DisplayGeometry(me; dis : in out Display from Draw) 
+    is static;
+    
+    DrawOn(me; dis : in out Display from Draw)
+    is redefined;
+    
+fields
+
+    myText : Text3D from Draw;
+    myTextColor : Color from Draw;
+    myDisplayGeometry : Boolean from Standard;
+    myDM3d : Marker3D from Draw;
+    myTol : Real;
+    myPar : Real;
+    
+end DrawableSHA;

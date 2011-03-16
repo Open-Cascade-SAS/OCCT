@@ -1,0 +1,41 @@
+-- File:	TDocStd_ApplicationDelta.cdl<2>
+-- Created:	Tue Nov 19 16:16:47 2002
+-- Author:	Vladimir ANIKIN
+--		<van@matrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+class ApplicationDelta from TDocStd inherits TShared from MMgt
+
+uses
+
+	SequenceOfDocument from TDocStd,
+	ExtendedString from TCollection,
+	OStream from Standard
+
+is
+
+	Create returns ApplicationDelta from TDocStd;
+
+	GetDocuments(me : mutable)
+	returns SequenceOfDocument from TDocStd;
+	---C++: return &
+	---C++: inline
+
+	GetName(me)
+	returns ExtendedString from TCollection;
+	---C++: return const &
+	---C++: inline
+
+    	SetName(me : mutable;
+	    	theName : ExtendedString from TCollection);
+	---C++: inline
+
+	Dump(me;
+	     anOS : in out OStream from Standard);
+
+fields
+
+	myDocuments : SequenceOfDocument from TDocStd;
+	myName      : ExtendedString from TCollection;
+
+end ApplicationDelta;

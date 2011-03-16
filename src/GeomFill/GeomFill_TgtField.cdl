@@ -1,0 +1,39 @@
+-- File:	GeomFill_TgtField.cdl
+-- Created:	Mon Dec  4 11:11:31 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class TgtField from GeomFill inherits TShared from MMgt
+
+	---Purpose: Root class defining the methods we need to make an
+	--          algorithmic tangents field.
+
+uses
+    Vec from gp,
+    BSpline from Law
+
+is
+
+    IsScalable(me) returns Boolean from Standard is virtual;
+    Scale(me : mutable; Func : BSpline from Law) is virtual;
+
+    Value(me; W : Real from Standard)
+    returns Vec from gp
+    ---Purpose: Computes  the value  of the    field of tangency    at
+    --          parameter W.
+    is deferred;
+
+    D1(me; W : Real from Standard)
+    returns Vec from gp
+    ---Purpose: Computes the  derivative of  the field of  tangency at
+    --          parameter W.
+    is deferred;
+
+    D1(me; W : Real from Standard; V, DV : out Vec from gp)
+    ---Purpose: Computes the value and the  derivative of the field of
+    --          tangency at parameter W.
+    is deferred;
+
+end TgtField;

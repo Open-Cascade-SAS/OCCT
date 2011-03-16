@@ -1,0 +1,142 @@
+-- File:	Extrema_GenExtPC.cdl
+-- Created:	Tue Jul 18 17:38:32 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+generic class   GenExtPC from Extrema (Curve   as any; 
+    	    	    	    	       Tool    as any;   --as ToolCurve(Curve)
+				       POnC    as any; 
+                                       Pnt     as any;
+                                       Vec     as any)
+				     
+    	---Purpose: It calculates all the distances between a point
+    	--          and a curve.
+    	--          These distances can be minimum or maximum.
+
+
+raises  NotDone      from StdFail,
+    	OutOfRange   from Standard,
+	TypeMismatch from Standard
+	
+private class PCF instantiates FuncExtPC from Extrema (Curve, Tool, POnC, Pnt, Vec);
+	
+is
+
+    Create returns GenExtPC;
+    
+
+    Create (P: Pnt; C: Curve; NbU: Integer; TolU,TolF: Real)
+    	returns GenExtPC;
+      	---Purpose: It calculates all the distances.
+        --          The function F(u)=distance(P,C(u)) has an extremum
+        --          when g(u)=dF/du=0. The algorithm searchs all the
+        --          zeros inside the definition range of the curve.
+      	--          NbU is used to locate the close points to 
+      	--          find the zeros.
+      	--          Tol and TolU are used to decide to stop the 
+      	--          iterations according to the following condition:
+      	--          if n is the number of iterations,
+      	--           abs(Un-Un-1) < TolU and abs(F(Un)-F(Un-1)) < Tol.
+
+
+    Create (P: Pnt; C: Curve; NbU: Integer; Umin, Usup: Real; TolU,TolF: Real)
+    	returns GenExtPC;
+      	---Purpose: It calculates all the distances.
+        --          The function F(u)=distance(P,C(u)) has an extremum
+        --          when g(u)=dF/du=0. The algorithm searchs all the
+        --          zeros inside the definition range of the curve.
+      	--          NbU is used to locate the close points to 
+      	--          find the zeros.
+      	--          Zeros are searched between umin and usup.
+      	--          Tol and TolU are used to decide to stop the 
+      	--          iterations according to the following condition:
+      	--          if n is the number of iterations,
+      	--           abs(Un-Un-1) < TolU and abs(F(Un)-F(Un-1)) < Tol.
+
+
+
+    Initialize(me: in out; C: Curve; NbU: Integer; TolU, TolF: Real)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+
+    Initialize(me: in out; C: Curve; NbU: Integer; 
+               Umin, Usup: Real; TolU, TolF: Real)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+    Initialize(me: in out; C: Curve)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+    Initialize(me: in out; NbU: Integer; Umin, Usup: Real; TolU, TolF: Real)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+
+    Perform(me: in out; P: Pnt)
+        ---Purpose: the algorithm is done with the point P.
+        --          An exception is raised if the fields have not
+        --          been initialized.  
+    raises TypeMismatch from Standard
+    is static;
+    
+    
+    IsDone (me) returns Boolean
+    	---Purpose: True if the distances are found.
+    raises TypeMismatch from Standard
+    is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    raises TypeMismatch from Standard,
+           NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+    
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    raises TypeMismatch from Standard,
+    	   NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	   OutOfRange from Standard
+	    	-- if N < 1 or N > NbPoints(me).
+    is static;
+
+
+    IsMin (me; N: Integer) returns Boolean
+    	---Purpose: Returns True if the Nth extremum distance is a
+    	--          minimum.
+    raises TypeMismatch from Standard,
+    	   NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	   OutOfRange from Standard
+	    	-- if N < 1 or N > NbPoints(me).
+    is static;
+
+
+    Point (me; N: Integer) returns POnC
+    	---Purpose: Returns the point of the Nth extremum distance.
+    raises TypeMismatch from Standard,
+    	   NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	   OutOfRange from Standard
+	    	-- if N < 1 or N > NbPoints(me).
+    is static;
+
+
+
+fields
+    myDone :    Boolean;
+    myInit:     Boolean;
+    mynbsample: Integer;
+    myumin:     Real;
+    myusup:     Real;
+    mytolu:     Real;
+    mytolF:     Real;
+    myF   :     PCF;
+
+end GenExtPC;
+

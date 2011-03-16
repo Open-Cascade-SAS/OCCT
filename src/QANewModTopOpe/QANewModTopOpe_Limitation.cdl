@@ -1,0 +1,137 @@
+-- File:	QANewModTopOpe_Limitation.cdl
+-- Created:	Thu May  3 11:56:07 2001
+-- Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
+-- Copyright:	SAMTECH S.A. 2001
+
+
+-- sccsid[] = "@(#) QANewModTopOpe_Limitation.cdl 4.0-2, 07/01/03@(#)";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       ifv ! Creation                                ! 3-05-2001! 3.0-00-2!
+-- !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
+-- +---------------------------------------------------------------------------+
+
+class Limitation from QANewModTopOpe inherits MakeShape from BRepBuilderAPI
+
+---Purpose: provides  cutting  shape  by  face  or  shell;
+
+uses
+
+    Shape from TopoDS, 
+    ListOfShape from TopTools, 
+    ModeOfLimitation  from  QANewModTopOpe, 
+    State  from  TopAbs,  
+    CutPtr  from  QANewModTopOpe, 
+    CommonPtr  from  QANewModTopOpe
+is 
+  
+    Create(theObjectToCut,  theCutTool : Shape from TopoDS;
+    	    theMode : ModeOfLimitation  from  QANewModTopOpe = QANewModTopOpe_Forward)
+    ---Purpose: initializes and  fills data structure for  cutting and
+    --          makes  cutting according to orientation theCutTool and
+    --          theMode.
+    --          if theCutTool is not face or shell does nothing.
+    
+    returns Limitation from QANewModTopOpe;    
+     
+    Cut(me  :  in  out);
+    ---Purpose: makes cutting  according to  orientation theCutTool
+    --          and  current value   of  myMode.  Does nothing  if
+    --          result already  exists.
+
+    SetMode(me  :  in  out;  theMode  :  ModeOfLimitation  from  QANewModTopOpe); 
+     
+    GetMode(me)  returns  ModeOfLimitation  from  QANewModTopOpe;  
+     
+    Shape1(me)  returns  Shape  from  TopoDS
+    ---Purpose: Returns the first shape.
+    ---C++: return const &
+    ---Level: Public
+    is static;
+     
+    Shape2(me)  returns  Shape  from  TopoDS
+    ---Purpose: Returns the second shape.
+    ---C++: return const &
+    ---Level: Public
+    is static; 
+    
+    Modified (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the list  of shapes modified from the shape
+    	--          <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined;
+ 
+    Modified2 (me: in out;  
+    	    	aS : Shape from TopoDS) 
+    	returns ListOfShape from TopTools;
+    ---Purpose: Returns the list  of shapes modified from the shape <S>.
+    ---         For use in BRepNaming.
+    ---C++: return const & 
+    ---Level: Public
+
+    Generated (me: in out; S : Shape from TopoDS)
+    	returns ListOfShape from TopTools
+	is redefined;
+    	---Purpose: Returns the list  of shapes generated from the shape <S>.
+    	---         For use in BRepNaming.
+    	---C++:  return const &
+    
+    HasModified (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one modified shape.
+    	---         For use in BRepNaming.
+
+    HasGenerated (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one generated shape.
+    	---         For use in BRepNaming.
+
+    HasDeleted (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one deleted shape.
+    	---         For use in BRepNaming.
+
+    IsDeleted (me: in out; S : Shape from TopoDS)
+    returns Boolean from Standard
+    is redefined;
+      
+    Delete(me  :  in  out)  is  redefined; 
+    ---C++:  alias  "Standard_EXPORT  ~QANewModTopOpe_Limitation()  {Delete();}"
+  
+
+fields 
+
+    myResultFwd     :  Shape  from  TopoDS;  
+    myResultRvs     :  Shape  from  TopoDS;  
+    myObjectToCut   :  Shape  from  TopoDS;  
+    myCutTool       :  Shape  from  TopoDS;  
+    myCut           :  CutPtr  from  QANewModTopOpe;
+    myCommon        :  CommonPtr  from  QANewModTopOpe;
+    myFwdIsDone     :  Boolean  from  Standard;
+    myRevIsDone     :  Boolean  from  Standard;  
+    myMode          :  ModeOfLimitation  from  QANewModTopOpe;
+    
+end  Limitation;
+
+
+-- @@SDM: begin
+
+-- Copyright SAMTECH ..........................................Version    3.0-00
+-- Lastly modified by : skv                                    Date :  6-05-2003
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       ifv ! Creation                                ! 3-05-2001! 3.0-00-2!
+-- !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
+-- !  vladimir ! adaptation to CAS 5.0                   !  07/01/03!    4.0-2!
+-- +---------------------------------------------------------------------------+
+--
+-- @@SDM: end

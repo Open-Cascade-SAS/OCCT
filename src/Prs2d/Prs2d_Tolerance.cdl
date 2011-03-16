@@ -1,0 +1,55 @@
+-- File      : Prs2d_Tolerance.cdl
+-- Created   : October 2000
+-- Author    : TCL
+---Copyright : Matra Datavision 2000
+
+deferred class Tolerance from Prs2d inherits Line from Graphic2d
+
+	---Purpose: Groups all the tolerances
+	
+uses
+
+	GraphicObject from Graphic2d,
+	Drawer        from Graphic2d,
+	Length	      from Quantity
+
+is
+	
+	Initialize( aGO                    : GraphicObject from Graphic2d;
+		        aX, aY                 : Real          from Standard;
+			    aLength                : Real          from Standard;
+                anAngle                : Real          from Standard );
+	---Level: Public
+	---Purpose: Creates a tolerance with the center in the point (<aX>, <aY>); 
+	--          reference point is <aXPosition>, <aYPosition>
+	---Category: Constructor
+
+    SetCoord( me: mutable; aX, aY: Real from Standard );
+    ---Level: Public
+    ---Purpose: Changes the coordinates of this tolerance
+
+    SetSize( me: mutable; aLen: Real from Standard );
+    ---Level: Public
+    ---Purpose: Defines the size of this one
+
+    Pick( me : mutable; X, Y: ShortReal from Standard;
+		  aPrecision: ShortReal from Standard;
+		  aDrawer: Drawer from Graphic2d )
+	returns Boolean from Standard is protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the Tolerance is picked,
+	--	        Standard_False if not.
+
+
+fields
+
+   myX      : ShortReal from Standard is protected;
+   myY      : ShortReal from Standard is protected;
+   myLength : ShortReal from Standard is protected;
+   myAngle  : ShortReal from Standard is protected;
+
+friends
+
+   class ToleranceFrame from Prs2d
+    
+end Tolerance from Prs2d;

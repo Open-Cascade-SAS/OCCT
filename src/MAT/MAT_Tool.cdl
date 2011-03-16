@@ -1,0 +1,116 @@
+-- File:	MAT_Tool.cdl
+-- Created:	Wed Sep 23 16:38:49 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+generic class Tool from MAT (Item as any)
+
+	    
+	--- Purpose : Set of the methods useful for the MAT's computation.            
+        -- Warning : To use the algorithm MAT, it's necessary to use four 
+        --            indexed sets (Array,Sequence ...)
+        --              One set contains the geometric definitions of
+        --            the simple composants of the Figure.      
+        --              An other set contains the geometric definitions of
+        --            the bisectors.
+        --              An other set contains the geometric definitions of
+        --            the points created during the MAT's computation.
+        --              An other set contains the geometric definitions of
+        --            the Tangent Vectors to the edge's extremitis.
+        --            
+uses
+    Bisector from MAT
+
+is
+
+    Create returns Tool from MAT;
+    
+    NumberOfItems(me) returns Integer
+	--- Purpose : Returns the Number of Items .
+    is static;
+    
+    ToleranceOfConfusion(me) returns Real
+	---Purpose: Returns tolerance to test the confusion of two points.
+    is static;
+    
+    FirstPoint(me ; anitem :     Integer;
+                    dist   : out Real    ) returns Integer
+	--- Purpose :  Creates the point at the origin of the bisector between
+	--            anitem and the previous  item.
+	--            dist is the distance from the FirstPoint to <anitem>.
+	--            Returns an index.
+    is static;
+    
+    TangentBefore(me ; anitem : Integer) returns Integer
+    	--- Purpose : Create the Tangent at the end of the Item defined
+    	--            by <anitem>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    is static;
+    
+    TangentAfter(me ; anitem : Integer) returns Integer 
+    	--- Purpose : Create the Reversed Tangent at the origin of the Item 
+    	--            defined by <anitem>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    is static;
+    
+    Tangent(me ; bisector : Integer ) returns Integer 
+    	--- Purpose : Create the Tangent at the end of the bisector defined
+    	--            by <bisector>. Returns the index of this vector in
+    	--            <theGeomVecs>
+    is static;
+    
+    CreateBisector(me : in out ; abisector : mutable Bisector from MAT)
+	--- Purpose : Create the geometric bisector defined by <abisector>.
+    is static;
+    
+    TrimBisector(me        : in out ; 
+    	    	 abisector : mutable Bisector from MAT) 
+	--- Purpose : Trim the geometric bisector by the <firstparameter>
+	--            of <abisector>.
+	--            If the parameter is out of the bisector, Return False.
+	--            else Return True.
+    returns Boolean is static;
+    
+    TrimBisector(me        : in out ; 
+            	 abisector : mutable Bisector from MAT ;
+                 apoint    : Integer)
+        --- Purpose : Trim the geometric bisector by the point of index
+        --            <apoint> in <theGeomPnts>.
+	--            If the point is out of the bisector, Return False
+	--            else Return True.
+    returns Boolean is static;
+    
+    IntersectBisector(me          : in out ;
+                      bisectorone : mutable Bisector from MAT ;
+                      bisectortwo : mutable Bisector from MAT ;
+                      intpnt      : in out Integer)
+        --- Purpose  : Computes  the point  of  intesection between  the
+        --             bisectors defined  by  <bisectorone>  and  
+        --             <bisectortwo> .
+        --             If this point exists,  <intpnt> is its  index 
+        --             in <theGeomPnts> and Return the distance of the point 
+        --             from the edges separated by the bisectors  else 
+        --             Returns <RealLast>.
+    returns Real is static;
+    
+    Distance(me; 
+             abisector : Bisector from MAT;
+             param1    : Real;
+             param2    : Real)
+    	---Purpose: Returns the distance between the two points designed
+    	--          by their parameters on <abisector>.
+    returns Real is static;
+    
+    Dump(me ; 
+    	 bisector        : Integer ; 
+    	 erease          : Integer)
+	--- Purpose : display informations about the bisector defined by
+	--            <bisector>.
+    is static;
+    
+end Tool;
+
+
+
+

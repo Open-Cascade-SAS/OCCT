@@ -1,0 +1,371 @@
+-- File:	HLRBRep_Data.cdl
+-- Created:	Mon Jan 11 13:58:26 1993
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+class Data from HLRBRep inherits TShared from MMgt
+
+uses
+    Address           from Standard,
+    Integer           from Standard,
+    Boolean           from Standard,
+    ShortReal         from Standard,
+    Real              from Standard,
+    Array1OfInteger   from TColStd,
+    Pnt               from gp,
+    Pnt2d             from gp,
+    Dir2d             from gp,
+    CurveType         from GeomAbs,
+    SurfaceType       from GeomAbs,
+    State             from TopAbs,
+    Orientation       from TopAbs,
+    IndexedMapOfShape from TopTools,
+    IntersectionPoint from IntRes2d,
+    Interference      from HLRAlgo,
+    InterferenceList  from HLRAlgo,
+    Projector         from HLRAlgo,
+    EdgeData          from HLRBRep,
+    FaceData          from HLRBRep,
+    Array1OfEData     from HLRBRep,
+    Array1OfFData     from HLRBRep,
+    FaceIterator      from HLRBRep,
+    EdgeFaceTool      from HLRBRep,
+    Intersector       from HLRBRep,
+    Curve             from HLRBRep,
+    CLProps           from HLRBRep,
+    Surface           from HLRBRep,
+    SLProps           from HLRBRep,
+    TopolTool         from BRepTopAdaptor,
+    MapOfShapeTool    from BRepTopAdaptor
+    
+    
+raises
+    UndefinedDerivative from StdFail
+
+is
+    --
+    --       Method to load or edit the Data Structure
+    --       
+
+    Create(NV, NE, NF : Integer from Standard)
+	---Purpose: Create an  empty data structure  of <NV> vertices,
+	--          <NE> edges and <NF> faces.
+    returns mutable Data from HLRBRep;
+    
+    Write(me : mutable; DS       : Data    from HLRBRep;
+                        dv,de,df : Integer from Standard)
+	---Purpose: Write <DS>    in   me  with   a     translation of
+	--          <dv>,<de>,<df>.
+    is static;
+    
+    EDataArray(me : mutable) returns Array1OfEData from HLRBRep
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    FDataArray(me : mutable) returns Array1OfFData from HLRBRep
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    Tolerance(me : mutable; tol : ShortReal from Standard)
+    	---C++: inline
+    	---Purpose: Set the  tolerance for the  rejections  during the
+    	--          exploration
+    is static;
+    
+    Tolerance(me) returns ShortReal from Standard
+    	---C++: inline
+    	---Purpose: returns  the tolerance for the  rejections  during
+    	--          the exploration
+    is static;
+    
+    Update(me : mutable; P : Projector from HLRAlgo)
+    	---Purpose: end of building  of the Data and updating
+    	--          all the informations linked to the projection.
+    is static;
+    
+    Projector(me : mutable) returns Projector from HLRAlgo
+    	---C++: inline
+	---C++: return &
+    is static;
+
+    --
+    --      Methods to query the Data
+    --      
+    
+    NbVertices(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    NbEdges(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    NbFaces(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    EdgeMap(me : mutable) returns IndexedMapOfShape from TopTools
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    FaceMap(me : mutable) returns IndexedMapOfShape from TopTools
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    --
+    --      Exploration of non rejected visible edges
+    --      
+
+    InitBoundSort(me        : mutable;
+                  MinMaxTot : Address from Standard;
+                  e1,e2     : Integer from Standard)
+	---Purpose: to compare with only non rejected edges.
+    is static;
+    
+    InitEdge(me : mutable; FI :        Integer        from Standard;
+                           MST: in out MapOfShapeTool from BRepTopAdaptor)
+	---Purpose: Begin an iteration only  on visible Edges
+	--          crossing the face number <FI>.
+    is static;
+    
+    MoreEdge(me : mutable) returns Boolean from Standard
+    is static;
+    
+    NextEdge(me : mutable; skip : Boolean from Standard = Standard_True)
+    is static;
+    
+    Edge(me) returns Integer from Standard
+	---Purpose: Returns the  current Edge
+    is static;
+
+    HidingTheFace(me) returns Boolean from Standard
+    	---C++: inline
+        ---Purpose: Returns true if   the  current edge to   be hidden
+        --          belongs to the hiding face.
+    is static;
+    
+    SimpleHidingFace(me) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: Returns true if the current hiding face is not  an
+    	--          auto-intersected one.
+    is static;
+    
+    --
+    --     Intersection of current edge with face
+    --     
+    
+    InitInterference(me : mutable)
+	---Purpose: Intersect  the current  Edge  with the boundary of
+	--          the hiding  face.   The interferences are given by
+	--          the More, Next, and Value methods.
+    is static;
+    
+    MoreInterference(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    NextInterference(me : mutable)
+    is static;
+
+    RejectedInterference(me : mutable) returns Boolean from Standard
+    	---Purpose: Returns  True if the  interference is rejected.
+    is static;
+    
+    AboveInterference(me : mutable) returns Boolean from Standard
+    	---Purpose: Returns True if the rejected interference is above
+    	--          the face.
+    is static;
+    
+    Interference(me : mutable) returns Interference from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+    
+    LocalLEGeometry2D(me : mutable; Param :     Real    from Standard;
+    	                            Tg    : out Dir2d   from gp;
+    	                            Nm    : out Dir2d   from gp;
+                                    Cu    : out Real    from Standard)
+	---Purpose: Returns the local description of the projection of
+	--          the current LEdge  at parameter  <Param>.
+    raises
+    	UndefinedDerivative from StdFail
+    is static;
+
+    LocalFEGeometry2D(me : mutable; FE    :     Integer from Standard;
+                                    Param :     Real    from Standard;
+    	                            Tg    : out Dir2d   from gp;
+    	                            Nm    : out Dir2d   from gp;
+                                    Cu    : out Real    from Standard)
+	---Purpose: Returns the local description of the projection of
+	--          the current FEdge  at parameter  <Param>.
+    raises
+    	UndefinedDerivative from StdFail
+    is static;
+
+    EdgeState(me : mutable; p1,p2       :     Real  from Standard;
+                            stbef, staf : out State from TopAbs)
+	---Purpose: Returns the local  3D   state of the  intersection
+	--          between the current edge and the current face at the
+	--          <p1> and <p2> parameters.
+    is static;
+    
+    EdgeOfTheHidingFace(me; E  : Integer  from Standard;
+                            ED : EdgeData from HLRBRep)
+    returns Boolean from Standard
+	---Purpose: Returns the  true if the  Edge <ED> belongs to the
+	--          Hiding Face.
+ 	---C++: inline
+   is static;
+
+    HidingStartLevel(me : mutable; E  : Integer          from Standard;
+                                   ED : EdgeData         from HLRBRep;
+                                   IL : InterferenceList from HLRAlgo)
+    returns Integer from Standard
+	---Purpose: Returns the number of  levels of hiding face above
+	--          the   first  point  of   the    edge <ED>.     The
+	--          InterferenceList is  given to  compute far away of
+	--          the Interferences and then come back.
+    is static;
+
+    Compare(me : mutable; E  : Integer  from Standard;
+                          ED : EdgeData from HLRBRep)
+    returns State from TopAbs
+	---Purpose: Returns   the  state   of  the   Edge  <ED>  after
+	--          classification.
+    is static;
+
+    SimplClassify(me : mutable; E         :     Integer  from Standard;
+                            	ED        :     EdgeData from HLRBRep;
+                            	Nbp       :     Integer  from Standard;
+                            	p1,  p2   :     Real     from Standard)
+    returns State from TopAbs; 
+	---Purpose: Simple classification of part of edge  [p1,  p2] 
+	--  returns  OUT  if  at  least  1 of  Nbp  points  of  edge  is  out 
+	--  othewise  returns  IN 
+	--  It  is  used  to  check  "suspision"  hided  part  of  edge.
+    
+    -- The following methods are private
+
+    OrientOutLine(me : mutable; I  :     Integer  from Standard;
+                                FD : out FaceData from HLRBRep)
+    returns Boolean from Standard
+	---Purpose: Orient the   OutLines  ( left  must  be  inside in
+	--          projection ). Returns True if the face of a closed
+	--          shell has been inverted;
+    is static private;
+
+    OrientOthEdge(me : mutable; I  :     Integer  from Standard;
+                                FD : out FaceData from HLRBRep)
+	---Purpose: Orient the Edges which  are not  Internal OutLine,
+	--          not Double and not IsoLine.
+    is static private;
+
+    Classify(me : mutable; E         :     Integer  from Standard;
+                           ED        :     EdgeData from HLRBRep;
+                           LevelFlag :     Boolean  from Standard;
+                           Level     : out Integer  from Standard;
+                           param     :     Real     from Standard)
+    returns State from TopAbs
+	---Purpose: Classification of an edge.
+    is static private;
+
+    RejectedPoint(me : mutable; PInter      : IntersectionPoint from IntRes2d;
+    	    	                BoundOri    : Orientation       from TopAbs;
+                                NumSeg      : Integer           from Standard) --- -1 if Point else NumSegment 
+    returns Boolean from Standard
+    	---Purpose: Returns  True  if the  intersection is  rejected.
+    is static private;
+
+    SameVertex(me : mutable; head1,head2 : Boolean from Standard)
+    returns Boolean from Standard
+	---Purpose: returns True  if there is a common  vertex between
+	--          myLE and myFE  dependig  on  <head1> and  <head2>.
+    is static private;
+    
+    Destroy(me: mutable);
+    	---C++: alias ~
+    
+    
+fields
+
+    -- basic data : Vertices, Edges, Faces
+    myNbVertices  : Integer           from Standard;
+    myNbEdges     : Integer           from Standard;
+    myNbFaces     : Integer           from Standard;
+    myEMap        : IndexedMapOfShape from TopTools;
+    myFMap        : IndexedMapOfShape from TopTools;
+    myEData       : Array1OfEData     from HLRBRep;
+    myFData       : Array1OfFData     from HLRBRep;
+    myEdgeIndices : Array1OfInteger   from TColStd;
+    myToler       : ShortReal         from Standard;
+    myProj        : Projector         from HLRAlgo;
+    myLLProps     : CLProps           from HLRBRep;
+    myFLProps     : CLProps           from HLRBRep;
+    mySLProps     : SLProps           from HLRBRep;
+    myBigSize     : Real              from Standard;
+
+    -- Face exploration
+    myFaceItr1    : FaceIterator      from HLRBRep;
+    myFaceItr2    : FaceIterator      from HLRBRep;
+    
+    -- Current hiding face
+    iFace         : Integer           from Standard;
+    iFaceData     : Address           from Standard;
+    iFaceGeom     : Address           from Standard;
+    iFaceMinMax   : Address           from Standard;
+    iFaceType     : SurfaceType       from GeomAbs;
+    iFaceBack     : Boolean           from Standard;
+    iFaceSimp     : Boolean           from Standard;
+    iFaceSmpl     : Boolean           from Standard;
+    iFaceTest     : Boolean           from Standard;
+    
+    -- Exploration of edges to be hidden
+    myHideCount   : Integer           from Standard;
+    myDeca        : Real              from Standard[16];
+    mySurD        : Real              from Standard[16];
+    myCurSortEd   : Integer           from Standard;
+    myNbrSortEd   : Integer           from Standard;
+     
+    -- Current hidden edge, to be intersected
+    myLE          : Integer           from Standard;
+    myLEOutLine   : Boolean           from Standard;
+    myLEInternal  : Boolean           from Standard;
+    myLEDouble    : Boolean           from Standard;
+    myLEIsoLine   : Boolean           from Standard;
+    myLEData      : Address           from Standard;
+    myLEGeom      : Address           from Standard;
+    myLEMinMax    : Address           from Standard;
+    myLEType      : CurveType         from GeomAbs;
+    myLETol       : ShortReal         from Standard;
+
+    -- Exploration of hiding face for intersection
+    myFE          : Integer           from Standard;
+    myFEOri       : Orientation       from TopAbs;
+    myFEOutLine   : Boolean           from Standard;
+    myFEInternal  : Boolean           from Standard;
+    myFEDouble    : Boolean           from Standard;
+    myFEData      : Address           from Standard;
+    myFEGeom      : Address           from Standard;
+    myFEType      : CurveType         from GeomAbs;
+    myFETol       : ShortReal         from Standard;
+    
+    -- Intersections
+    myIntersector : Intersector       from HLRBRep;
+    myClassifier  : TopolTool         from BRepTopAdaptor;
+    mySameVertex  : Boolean           from Standard;
+    myIntersected : Boolean           from Standard;
+    myNbPoints    : Integer           from Standard;
+    myNbSegments  : Integer           from Standard;
+    iInterf       : Integer           from Standard;
+    myIntf        : Interference      from HLRAlgo;
+    myAboveIntf   : Boolean           from Standard;
+
+    myReject      : Address           from Standard; 
+     
+    
+end Data;

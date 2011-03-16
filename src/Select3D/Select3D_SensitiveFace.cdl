@@ -1,0 +1,87 @@
+-- File:    Select3D_SensitiveFace.cdl
+-- Created: Fri Mar 24 16:01:23 1995
+-- Author:  Robert COUBLANC
+--      <rob@fidox>
+---Copyright:    Matra Datavision 1995
+
+
+class SensitiveFace from Select3D 
+inherits SensitivePoly from Select3D
+
+    ---Purpose: Sensitive Entity to make a face selectable.
+
+uses
+    EntityOwner       from SelectBasics,
+    Projector         from Select3D,
+    Lin               from gp,
+    ListOfBox2d       from SelectBasics,
+    Array1OfPnt       from TColgp,
+    HArray1OfPnt      from TColgp,
+    Array1OfPnt2d     from TColgp,
+    Box2d             from Bnd,
+    TypeOfSensitivity from Select3D,
+    Location          from TopLoc
+
+is
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : Array1OfPnt from TColgp;
+            Sensitivity  : TypeOfSensitivity = Select3D_TOS_INTERIOR)
+     returns mutable SensitiveFace;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive face object defined by the
+        -- owner OwnerId, the array of points ThePoints, and
+        -- the sensitivity type Sensitivity.
+        -- The array of points is the outer polygon of the geometric face.
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : HArray1OfPnt from TColgp;
+            Sensitivity  : TypeOfSensitivity = Select3D_TOS_INTERIOR)
+     returns mutable SensitiveFace;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive face object defined by the
+        -- owner OwnerId, the array of points ThePoints, and
+        -- the sensitivity type Sensitivity.
+        -- The array of points is the outer polygon of the geometric face.
+    
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    ---Level: Public 
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+             aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    ---Level: Public 
+    
+
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined virtual;
+    ---Level: Public
+    ---Purpose: Computes the depth values for all 3D points defining this face and returns
+    -- the minimal value among them. 
+    -- If the "minimal depth" approach is not suitable and gives wrong detection results
+    -- in some particular case, a custom sensitive face class can be implemented at application level
+    -- that overrides default ComputeDepth() behavior.
+
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+
+
+fields
+
+    mytype          : TypeOfSensitivity;
+    myautointer     : Boolean;
+    myDetectedIndex : Integer from Standard;
+end SensitiveFace;

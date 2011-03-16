@@ -1,0 +1,132 @@
+-- File:	FairCurve_Energy.cdl<2>
+-- Created:	Wed Mar  6 10:09:03 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+deferred class Energy from FairCurve 
+    inherits MultipleVarFunctionWithHessian from math
+
+	---Purpose: necessary methodes to compute the energy of an FairCurve.
+	---Category: Advanced use
+
+uses Vector  from  math,
+     Matrix  from math,
+     HArray1OfPnt2d from TColgp,
+     Array1OfXY  from TColgp,
+     Pnt2d from gp,
+     HArray1OfReal from TColStd
+
+
+is   
+     Initialize(Poles         : HArray1OfPnt2d;
+    	    	ConstrOrder1  : Integer;
+	   	ConstrOrder2  : Integer;
+	        WithAuxValue  : Boolean = Standard_False;
+            	Angle1        : Real = 0;
+            	Angle2        : Real = 0;
+		Degree        : Integer = 2;
+                Curvature1    : Real = 0;
+    	        Curvature2    : Real = 0);
+	---Purpose: Angles corresspond to the Ox axis
+	--          ConstrOrder1(2) can be equal to 0, 1 or 2
+  
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the energy.
+
+    returns Integer is redefined;
+    ---C++: inline
+
+
+    Value(me: in out; X: Vector; E: out Real)
+    	---Purpose: computes the values of the Energys E for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is redefined;
+    
+    
+    Gradient(me: in out; X: Vector; G: out Vector)
+    	---Purpose:computes the gradient <G> of the energys for the 
+    	--         variable <X>.
+    	--         Returns True if the computation was done successfully, 
+    	--         False otherwise.
+
+    returns Boolean
+    is redefined;
+    
+    Gradient1(me : in out; TheVector: Vector; G: out Vector)
+    	---Purpose: It is use internaly to make the Gradient Vector <G> 
+    is protected;
+
+
+    Values(me: in out; X: Vector; E: out Real; G: out Vector)
+    	---Purpose: computes the Energy <E> and the gradient <G> of the 
+    	--          energy for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is redefined;    
+    
+    Values(me: in out; X: Vector; E: out Real; G: out Vector; H: out Matrix)
+    	---Purpose: computes the Energy  <E>, the gradient <G> and the
+    	--          Hessian   <H> of  the  energy  for  the   variable <X>.
+    	--          Returns   True  if    the  computation   was  done
+    	--          successfully, False otherwise.
+
+    returns Boolean
+    is redefined;
+    
+    Variable(me; X: out Vector)
+    ---Purpose: compute the variables <X> wich correspond with the field <MyPoles>
+    returns Boolean
+    is virtual;
+    
+    Hessian1(me : in out; TheVector : Vector; H: out Matrix)
+    ---Purpose: It is use internaly to make the Hessian Matrix <H> 
+    is protected; 
+    
+    Poles(me)
+    ---Purpose: return  the  poles
+    ---C++: inline
+    ---C++: return const&
+    returns  HArray1OfPnt2d;
+ 
+    ComputePoles(me: in out; X: Vector)
+    ---Purpose: compute  the  poles wich correspond with the variable X
+    is virtual protected;
+    
+    Indice(me; i,j : Integer)
+    ---C++: inline
+    returns Integer
+    is protected;
+    
+    ComputePolesG1(me; Side : Integer; Lambda : Real; P1: Pnt2d; P2 : in out Pnt2d) 
+    ---Purpose: compute  the  pole wich depend of variables and G1 constraint   
+    is  protected;
+    
+    ComputePolesG2(me; Side : Integer; Lambda, Rho : Real; P1: Pnt2d; P2 : in out Pnt2d) 
+    ---Purpose: compute  the  pole wich depend of variables and G2 constraint   
+    is  protected;
+     
+    Compute(me:in out; DerivativeOrder : Integer; Result : out Vector)
+        ---Purpose: compute the energy (and derivatives) in intermediat format
+    returns Boolean 
+    is deferred protected;
+    
+fields
+    MyPoles         : HArray1OfPnt2d is protected;
+    MyContrOrder1   : Integer        is protected;
+    MyContrOrder2   : Integer        is protected;
+    MyWithAuxValue  : Boolean        is protected;
+    MyNbVar         : Integer        is protected;
+    MyNbValues      : Integer  ;      
+    MyLinearForm    : Array1OfXY;
+    MyQuadForm      : Array1OfXY;    
+    MyGradient      : Vector    ;  
+    MyHessian       : Vector    ;   
+end Energy;

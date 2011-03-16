@@ -1,0 +1,36 @@
+-- File:	Draw_Axis2D.cdl
+-- Created:	Mon Apr 18 18:08:38 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Axis2D from Draw inherits Drawable2D from Draw
+
+	---Purpose: 
+
+uses Pnt2d from gp,
+    Ax22d from gp,
+    Color from Draw,
+    Display from Draw
+
+is
+
+    Create(col : Color; Size : Integer = 5)
+    returns mutable Axis2D;
+
+    Create(p : Pnt2d; col : Color; Size : Integer = 5)
+    returns mutable Axis2D;
+    
+    Create(A : Ax22d from gp; col : Color; Size : Integer = 5)
+    returns mutable Axis2D;
+    
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myAxes : Ax22d from gp;
+    myColor : Color;
+    mySize : Integer;
+    
+end Axis2D;

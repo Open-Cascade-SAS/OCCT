@@ -1,0 +1,39 @@
+-- File:	IGESSelect_SelectBypassGroup.cdl
+-- Created:	Wed Jun  1 15:57:53 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectBypassGroup  from IGESSelect  inherits SelectExplore
+
+    ---Purpose : Selects a list built as follows :
+    --           Groups are entities type 402, forms 1,7,14,15 (Group,
+    --           Ordered or not, "WithoutBackPointer" or not)
+    --           
+    --           Entities which are not GROUP are taken as such
+    --           For Groups, their list of Elements is explore
+    --           Hence, level 0 (D) recursively explores a Group if some of
+    --           its Elements are Groups. level 1 explores just at first level
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph
+
+raises InterfaceError
+
+is
+
+    Create (level : Integer = 0) returns mutable SelectBypassGroup;
+    ---Purpose : Creates a SelectBypassGroup, by default all level
+    --           (level = 1 explores at first level)
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : Explores an entity : for a Group, gives its elements
+    --           Else, takes the entity itself
+
+
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Content of Group"
+
+end SelectBypassGroup;

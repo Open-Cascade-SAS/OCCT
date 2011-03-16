@@ -1,0 +1,30 @@
+-- File:	Color.cdl
+-- Created:	Wed Apr 24 14:23:43 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class Color from Draw inherits Storable
+
+	---Purpose: 
+
+uses ColorKind from Draw
+
+is
+
+    Create
+    returns Color from Draw;
+    
+    Create(c : ColorKind)
+    returns Color from Draw;
+    
+    ID(me)
+    returns ColorKind from Draw;
+    
+    
+fields
+
+    myKind : ColorKind from Draw;
+    
+end Color;

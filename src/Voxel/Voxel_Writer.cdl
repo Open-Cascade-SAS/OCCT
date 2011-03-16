@@ -1,0 +1,97 @@
+-- File:	Voxel_Writer.cdl
+-- Created:	Wed Aug 28 11:23:33 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class Writer from Voxel
+
+    ---Purpose: Writes a cube of voxels on disk.
+
+uses
+
+    VoxelFileFormat from Voxel,
+    BoolDS          from Voxel,
+    ColorDS         from Voxel,
+    FloatDS         from Voxel,
+    ExtendedString  from TCollection
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns Writer from Voxel;
+
+    SetFormat(me : in out;
+    	      format : VoxelFileFormat from Voxel);
+    ---Purpose: Defines the file format for voxels.
+    --          ASCII - slow and occupies more space on disk.
+    --          BINARY - fast and occupies less space on disk.
+
+    SetVoxels(me : in out;
+    	      voxels : BoolDS from Voxel);
+    ---Purpose: Defines the voxels (1bit).
+
+    SetVoxels(me : in out;
+    	      voxels : ColorDS from Voxel);
+    ---Purpose: Defines the voxels (4bit).
+
+    SetVoxels(me : in out;
+    	      voxels : FloatDS from Voxel);
+    ---Purpose: Defines the voxels (4bytes).
+
+    Write(me;
+    	  file : ExtendedString from TCollection)
+    ---Purpose: Writes the voxels on disk 
+    --          using the defined format and file name.
+    returns Boolean from Standard;
+
+
+    ---Private area
+    -- ============
+
+    WriteBoolAsciiVoxels(me;
+    	    	    	 file : ExtendedString from TCollection)
+    ---Purpose: Writes 1bit voxels on disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    WriteColorAsciiVoxels(me;
+    	    	     	  file : ExtendedString from TCollection)
+    ---Purpose: Writes 4bit voxels on disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    WriteFloatAsciiVoxels(me;
+    	    	    	  file : ExtendedString from TCollection)
+    ---Purpose: Writes 4bytes voxels on disk in ASCII format.
+    returns Boolean from Standard
+    is private;
+
+    WriteBoolBinaryVoxels(me;
+    	    	    	 file : ExtendedString from TCollection)
+    ---Purpose: Writes 1bit voxels on disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+    WriteColorBinaryVoxels(me;
+    	    	     	   file : ExtendedString from TCollection)
+    ---Purpose: Writes 4bit voxels on disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+    WriteFloatBinaryVoxels(me;
+    	    	    	   file : ExtendedString from TCollection)
+    ---Purpose: Writes 4bytes voxels on disk in BINARY format.
+    returns Boolean from Standard
+    is private;
+
+
+fields
+
+    myFormat      : VoxelFileFormat from Voxel;
+    myBoolVoxels  : Address from Standard;
+    myColorVoxels : Address from Standard;
+    myFloatVoxels : Address from Standard;
+
+end Writer;

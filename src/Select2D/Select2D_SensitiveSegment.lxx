@@ -1,0 +1,29 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	Select2D_SensitiveSegment.lxx
+// Created:	Mon Jan 30 16:03:00 1995
+// Author:	Mister rmi
+//		<rmi>
+
+
+
+inline void Select2D_SensitiveSegment::Set( const Standard_Integer nbrect) 
+{mymaxrect =nbrect;} 
+
+inline void Select2D_SensitiveSegment::
+StartPoint (const gp_Pnt2d& aPt) {mystart = aPt;}
+
+
+inline const gp_Pnt2d& Select2D_SensitiveSegment::
+StartPoint() const {return mystart;}
+
+inline void Select2D_SensitiveSegment::
+EndPoint(const gp_Pnt2d& aPt) {myend = aPt;}
+
+
+inline const gp_Pnt2d& Select2D_SensitiveSegment::
+EndPoint() const {return myend;}
+
+inline Standard_Integer Select2D_SensitiveSegment::
+MaxBoxes() const {return mymaxrect;}
+
+

@@ -1,0 +1,167 @@
+-- File:	Builder.cdl
+-- Created:	Thu Mar 12 11:04:50 1992
+-- Author:	Philippe DAUTRY
+--		<fid@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Builder from BRepPrim 
+
+	---Purpose: implements the abstract Builder with the BRep Builder
+
+uses
+    Builder from BRep,
+        
+    Shell   from TopoDS,
+    Face    from TopoDS,
+    Wire    from TopoDS,
+    Edge    from TopoDS,
+    Vertex  from TopoDS,
+    
+    Pnt     from gp,
+    Lin     from gp,
+    Circ    from gp,
+    Pln     from gp,
+    
+    Lin2d   from gp,
+    Circ2d  from gp
+
+is
+    Create returns Builder from BRepPrim;
+	---Purpose: Creates an empty, useless  Builder. Necesseray for
+	--          compilation. 
+
+    Create(B : Builder from BRep) returns Builder from BRepPrim;
+	---Purpose: Creates from a Builder.
+	
+    Builder(me) returns Builder from BRep
+	---C++: inline
+	---C++: return const &
+    is static;
+	
+        -- implements the Builder methods
+
+
+    MakeShell (me; S : out Shell from TopoDS)
+	---Purpose: Make a empty Shell.
+    is static;
+    
+    MakeFace (me; F : out Face from TopoDS; P : Pln from gp)
+	---Purpose: Returns in   <F> a  Face  built  with   the  plane
+	--          equation <P>. Used by all primitives.
+    is static;
+
+    MakeWire (me; W : out Wire from TopoDS)
+	---Purpose: Returns in <W> an empty Wire.
+    is static;
+    
+    MakeDegeneratedEdge(me; E : out Edge from TopoDS)
+	---Purpose: Returns in <E> a degenerated edge.
+    is static;
+    
+    MakeEdge (me; E : out Edge from TopoDS; L : Lin from gp)
+	---Purpose: Returns   in <E>  an  Edge  built  with  the  line
+	--          equation  <L>.
+    is static;
+
+    MakeEdge (me; E : out Edge from TopoDS; C : Circ from gp)
+	---Purpose: Returns  in <E>   an  Edge  built  with the circle
+	--          equation  <C>.
+    is static;
+    
+    SetPCurve(me; E : in out Edge from TopoDS; F : in Face from TopoDS; 
+    	          L : Lin2d from gp)
+	---Purpose: Sets the line <L> to be the curve representing the
+	--          edge <E> in the parametric space of the surface of
+	--          <F>.
+    is static;
+    
+    SetPCurve(me; E : in out Edge from TopoDS; F : in Face from TopoDS; 
+    	          L1,L2 : Lin2d from gp)
+	---Purpose: Sets the    lines  <L1,L2>  to   be     the curves
+	--          representing the edge <E>  in the parametric space
+	--          of the closed surface of <F>.
+    is static;
+    
+    SetPCurve(me; E : in out Edge from TopoDS; F : in Face from TopoDS; 
+                  C : Circ2d from gp)
+	---Purpose: Sets the  circle <C> to  be the curve representing
+	--          the  edge <E>  in   the  parametric  space of  the
+	--          surface of <F>.
+    is static;
+    
+    MakeVertex (me; V : out Vertex from TopoDS; P : Pnt from gp)
+	---Purpose: Returns in <V> a Vertex built with the point <P>.
+    is static;
+    
+    ReverseFace(me; F : in out Face from TopoDS)
+	---Purpose: Reverses the Face <F>.
+    is static;
+    
+    AddEdgeVertex(me; E      : in out Edge from TopoDS; 
+                      V      : in     Vertex from TopoDS;
+		      P      : in     Real;
+    	    	      direct : Boolean)
+	  ---Purpose: Adds the Vertex <V> in the Edge <E>.  <P> is the
+	  --          parameter of the vertex on the  edge.  If direct
+	  --          is False the Vertex is reversed.
+    is static;
+
+    AddEdgeVertex(me; E      : in out Edge from TopoDS; 
+                      V      : in     Vertex from TopoDS;
+		      P1,P2  : in     Real)
+	  ---Purpose: Adds  the Vertex <V>  in the Edge <E>.   <P1,P2>
+	  --          are the  parameters of the  vertex on the closed
+	  --          edge.
+    is static;
+
+    SetParameters(me;
+    	    	    E      : in out Edge from TopoDS;
+    	    	    V      : in     Vertex from TopoDS;
+		    P1,P2  : in     Real)
+	  ---Purpose: <P1,P2> are the parameters of the  vertex on the
+	  --          edge.  The edge is a closed curve.
+    is static;
+
+    AddWireEdge(me; W      : in out Wire from TopoDS; 
+                    E      : in     Edge from TopoDS;
+    	    	    direct : Boolean)
+	  ---Purpose: Adds the Edge <E> in the  Wire <W>, if direct is
+	  --          False the Edge is reversed.
+    is static;
+
+    AddFaceWire(me; F      : in out Face from TopoDS; 
+                    W      : in     Wire from TopoDS)
+	  ---Purpose: Adds the Wire <W> in  the Face <F>.
+    is static;
+
+    AddShellFace(me; Sh     : in out Shell from TopoDS; 
+                     F      : in     Face from TopoDS)
+	  ---Purpose: Adds the Face <F>  in the Shell <Sh>.
+    is static;
+    
+    CompleteEdge(me; E : in out Edge from TopoDS)
+	---Purpose: This is called once an edge is completed. It gives
+	--          the opportunity to perform any post treatment.
+    is static;
+    
+    CompleteWire(me; W : in out Wire from TopoDS)
+	---Purpose: This is called once a wire is  completed. It gives
+	--          the opportunity to perform any post treatment.
+    is static;
+    
+    CompleteFace(me; F : in out Face from TopoDS)
+	---Purpose: This is called once a face is  completed. It gives
+	--          the opportunity to perform any post treatment.
+    is static;
+    
+    CompleteShell(me; S : in out Shell from TopoDS)
+	---Purpose: This is called once a shell is  completed. It gives
+	--          the opportunity to perform any post treatment.
+    is static;
+
+fields
+    myBuilder : Builder from BRep;
+
+end Builder;

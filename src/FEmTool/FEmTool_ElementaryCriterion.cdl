@@ -1,0 +1,66 @@
+-- File:	FEmTool_ElementaryCriterion.cdl
+-- Created:	Thu Sep 11 18:06:06 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class ElementaryCriterion from FEmTool inherits  TShared  from  MMgt
+
+	---Purpose:  defined J Criteria to used in minimisation 
+
+uses
+   Vector  from  math, 
+   Matrix  from  math,  
+   HArray2OfReal  from  TColStd, 
+   HArray2OfInteger  from TColStd 
+    
+raises 
+  NotImplemented,   
+  DomainError
+
+is
+    Set(me  :  mutable;   
+        Coeff : HArray2OfReal) 
+	 ---Purpose: Set the coefficient of the Element (the  Curve)
+    is  static;
+     
+    Set(me : mutable; 
+        FirstKnot  :  Real; 
+        LastKnot   :  Real) 
+	---Purpose: Set the definition interval of the Element         
+    is virtual;  
+     
+    DependenceTable(me)  
+    returns  HArray2OfInteger  from TColStd 
+	---Purpose: To know if two dimension are independent.        
+    is  deferred;  
+    
+    Value  (me  : mutable) 
+    	---Purpose: To Compute J(E) where E  is the current Element        
+    returns  Real  is  deferred;
+     
+    Hessian(me  :  mutable ;
+	    Dim1  :  Integer; 
+	    Dim2  :  Integer;
+            H  :  out  Matrix  from  math) 
+    ---Purpose: To Compute J(E)  the coefficients of Hessian matrix of
+    --          J(E) wich are crossed derivatives in dimensions <Dim1>
+    --          and  <Dim2>.          
+     raises  DomainError -- If DependenceTable(Dimension1,Dimension2) is False 
+     is  deferred;  
+   
+    Gradient(me   : mutable; 
+	     Dim  :  Integer;
+             G    :  out  Vector  from  math)     	 
+    ---Purpose: To Compute the  coefficients in the dimension <dim> 
+    --          of  the  J(E)'s  Gradient where E  is  the current  Element
+    is  deferred;
+
+fields 
+  myCoeff           :  HArray2OfReal  is  protected; 
+  myFirst,  myLast  :  Real is  protected;
+end ElementaryCriterion;
+
+
+

@@ -1,0 +1,131 @@
+// File:	HLRAlgo_BiPoint.lxx
+// Created:	Thu Jun 22 12:35:03 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+#define EMskRg1Line  ((Standard_Boolean)1)
+#define EMskRgNLine  ((Standard_Boolean)2)
+#define EMskOutLine  ((Standard_Boolean)4)
+#define EMskIntLine  ((Standard_Boolean)8)
+#define EMskHidden   ((Standard_Boolean)16)
+
+//=======================================================================
+//function : HLRAlgo_BiPoint
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_BiPoint::HLRAlgo_BiPoint ()
+{
+}
+
+//=======================================================================
+//function : Rg1Line
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_BiPoint::Rg1Line () const
+{ return (myIndices[9] & EMskRg1Line) != 0; }
+
+//=======================================================================
+//function : Rg1Line
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_BiPoint::Rg1Line (const Standard_Boolean B)
+{
+  if (B) myIndices[9] |=  EMskRg1Line;
+  else   myIndices[9] &= ~EMskRg1Line;
+}
+
+//=======================================================================
+//function : RgNLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_BiPoint::RgNLine () const
+{ return (myIndices[9] & EMskRgNLine) != 0; }
+
+//=======================================================================
+//function : RgNLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_BiPoint::RgNLine (const Standard_Boolean B)
+{
+  if (B) myIndices[9] |=  EMskRgNLine;
+  else   myIndices[9] &= ~EMskRgNLine;
+}
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_BiPoint::OutLine () const
+{ return (myIndices[9] & EMskOutLine) != 0; }
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_BiPoint::OutLine (const Standard_Boolean B)
+{
+  if (B) myIndices[9] |=  EMskOutLine;
+  else   myIndices[9] &= ~EMskOutLine;
+}
+
+//=======================================================================
+//function : IntLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_BiPoint::IntLine () const
+{ return (myIndices[9] & EMskIntLine) != 0; }
+
+//=======================================================================
+//function : IntLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_BiPoint::IntLine (const Standard_Boolean B)
+{
+  if (B) myIndices[9] |=  EMskIntLine;
+  else   myIndices[9] &= ~EMskIntLine;
+}
+
+//=======================================================================
+//function : Hidden
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_BiPoint::Hidden () const
+{ return (myIndices[9] & EMskHidden) != 0; }
+
+//=======================================================================
+//function : Hidden
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_BiPoint::Hidden (const Standard_Boolean B)
+{
+  if (B) myIndices[9] |=  EMskHidden;
+  else   myIndices[9] &= ~EMskHidden;
+}
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_BiPoint::Indices () const
+{ return (Standard_Address)myIndices; }
+
+//=======================================================================
+//function : Coordinates
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_BiPoint::Coordinates () const
+{ return (Standard_Address)myCoordinates; }
+

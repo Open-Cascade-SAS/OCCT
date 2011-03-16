@@ -1,0 +1,119 @@
+-- File:	Segment.cdl
+-- Created:	Tue Apr 14 09:48:28 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Segment from IntStart
+
+    (TheVertex    as any;
+     TheArc       as any;
+     ThePathPoint as any) -- as PathPoint from IntStart (TheVertex,TheArc)
+
+	---Purpose: This class defines the intersection between two implicit
+	--          surfaces A and B, when this intersection is a part of an 
+	--          arc of restriction .
+	--          It can be bounded or  semi infinite;
+	--          the extremities of these curves are vertices(ThepathPoint).
+
+
+raises DomainError from Standard
+
+is
+
+    Create
+
+        ---Purpose: Empty constructor.
+
+    	returns Segment;
+
+
+    SetValue(me: in out; A: TheArc)
+	     
+	---Purpose: Defines the concerned arc.
+
+	---C++: inline
+
+    	is static;
+	
+
+    SetLimitPoint(me: in out; V: ThePathPoint; First: Boolean)
+    
+	---Purpose: Defines the first point or the last point,
+	--          depending on the value of the boolean First.
+
+    	is static;
+
+
+    Curve(me)
+    
+    	---Purpose: Returns the geometric curve on the surface 's domain
+    	--          which is solution.
+
+    	returns any TheArc
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+  
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if there is a vertex (ThePathPoint) defining
+	--          the lowest valid parameter on the arc.
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    FirstPoint(me)
+
+    	---Purpose: Returns the first point.
+	
+    	returns ThePathPoint
+	---C++: return const&	
+	---C++: inline
+
+	raises DomainError from Standard
+	
+	is static;
+
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if there is a vertex (ThePathPoint) defining
+	--          the greatest valid parameter on the arc.
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    LastPoint(me)
+
+    	---Purpose: Returns the last point.
+	
+    	returns ThePathPoint
+	---C++: return const&	
+	---C++: inline
+
+	raises DomainError from Standard
+	
+	is static;
+
+
+
+fields
+
+    arc   : TheArc;
+    hasfp : Boolean from Standard;
+    thefp : ThePathPoint;
+    haslp : Boolean from Standard;
+    thelp : ThePathPoint;
+
+end Segment;

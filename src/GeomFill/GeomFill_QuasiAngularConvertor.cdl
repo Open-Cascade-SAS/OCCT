@@ -1,0 +1,79 @@
+-- File:	GeomFill_QuasiAngularConvertor.cdl
+-- Created:	Wed Aug  6 09:28:30 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+private  class QuasiAngularConvertor from GeomFill 
+
+	---Purpose: To convert circular section in QuasiAngular Bezier
+ 	--          form   
+
+uses
+    Matrix from math, 
+    Vector from  math,
+    Pnt from gp,
+    Vec from gp,  
+    Array1OfReal from  TColStd,
+    Array1OfPnt  from TColgp,
+    Array1OfVec  from TColgp
+
+raises NotDone from StdFail
+
+is
+    Create returns QuasiAngularConvertor from GeomFill;
+    
+    Initialized(me) 
+    ---Purpose: say if <me> is Initialized
+    returns Boolean;
+    
+    Init(me: in out);
+    
+    Section(me  :  in  out;
+    	    FirstPnt : Pnt from gp;
+	    Center   : Pnt from gp;
+	    Dir      : Vec from gp;
+	    Angle    : Real from Standard;
+            Poles    : out Array1OfPnt  from TColgp; 
+            Weights  : out Array1OfReal from TColStd);
+	    
+    Section(me:  in  out;
+    	    FirstPnt  : Pnt from gp;
+	    DFirstPnt : Vec from gp;
+	    Center    : Pnt from gp;
+	    DCenter   : Vec from gp;
+	    Dir       : Vec from gp;
+	    DDir      : Vec from gp;
+	    Angle     : Real from Standard;
+	    DAngle    : Real from Standard;
+            Poles     : out Array1OfPnt   from TColgp;
+            DPoles    : out Array1OfVec   from TColgp; 
+            Weights   : out Array1OfReal from TColStd; 
+            DWeights  : out Array1OfReal from TColStd);
+	    
+     Section(me  :  in  out;
+    	    FirstPnt  : Pnt from gp;
+	    DFirstPnt : Vec from gp;
+	    D2FirstPnt: Vec from gp;
+	    Center    : Pnt from gp;
+	    DCenter   : Vec from gp;
+	    D2Center  : Vec from gp;
+	    Dir       : Vec from gp;
+	    DDir      : Vec from gp;
+	    D2Dir     : Vec from gp;
+	    Angle     : Real from Standard;
+	    DAngle    : Real from Standard;
+	    D2Angle   : Real from Standard;
+            Poles     : out Array1OfPnt   from TColgp;
+            DPoles    : out Array1OfVec   from TColgp;
+            D2Poles   : out Array1OfVec   from TColgp; 
+            Weights   : out Array1OfReal from TColStd; 
+            DWeights  : out Array1OfReal from TColStd; 
+            D2Weights : out Array1OfReal from TColStd);  	    
+ 
+fields  
+    myinit : Boolean from Standard;
+    B       : Matrix from math;  
+    Px,  Py,  W,  Vx,  Vy, Vw : Vector  from  math; 
+end QuasiAngularConvertor;

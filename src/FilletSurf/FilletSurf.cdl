@@ -1,0 +1,97 @@
+-- File:	FilletSurf.cdl
+-- Created:	Fri Jul 26 11:05:18 1996
+-- Author:	Maria PUMBORIOS
+--		<mps@sgi30>
+---Copyright:	 Matra Datavision 1996
+
+
+package FilletSurf 
+
+	---Purpose:  This package contains the API giving 
+	--           only geometric informations about fillets
+	--           for Toyota Project UV4. 
+        
+uses
+    TopoDS,
+    TopTools,
+    ChFi3d,
+    ChFiDS,
+    BRepAdaptor,
+    Adaptor3d,
+    math,
+    Geom,
+    Geom2d,
+    gp,
+    StdFail,
+    TopAbs
+is
+
+---------------------------------------------------------- 
+--  enumeration used to describe the status of start and end section
+--  of the fillet 
+--   TwoExtremityOnEdge
+--   OneExtremityOnEdge
+--   NoExtremityOnEdge
+----------------------------------------------------------
+--                                                               
+--    
+enumeration StatusType  is  TwoExtremityOnEdge, OneExtremityOnEdge, 
+                            NoExtremityOnEdge  
+end  StatusType;
+    
+---------------------------------------------------------- 
+--  enumeration used to describe the status of the computation of the fillet
+-- IsOk  
+-- IsNotOk 
+-- IsPartial    
+--   
+----------------------------------------------------------
+
+enumeration StatusDone  is  IsOk, IsNotOk,IsPartial 
+                      
+end  StatusDone;
+
+---------------------------------------------------------- 
+--  enumeration used to describe the  status error  
+--   EmptyList 
+--   EdgeNotG1 
+--   FacesNotG1
+--    EdgeNotOnShape    
+--    NotSharpEdge
+--    PbFilletCompute
+----------------------------------------------------------
+
+enumeration ErrorTypeStatus  is  EmptyList, EdgeNotG1,FacesNotG1,EdgeNotOnShape,
+                                 NotSharpEdge, PbFilletCompute                    
+end  ErrorTypeStatus ;
+
+
+
+--  this class is the API giving geometric informations about fillets:
+ 
+    class Builder; 
+
+
+-- this class is private and is only used by the class Builder:
+
+
+    private class InternalBuilder;
+    
+
+end FilletSurf;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

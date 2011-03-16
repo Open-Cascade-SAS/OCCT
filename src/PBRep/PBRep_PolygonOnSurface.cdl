@@ -1,0 +1,43 @@
+-- File:	PBRep_PolygonOnSurface.cdl
+-- Created:	Tue Oct 24 09:23:57 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnSurface from PBRep inherits CurveRepresentation from PBRep 
+
+    	---Purpose: Representation of a 2D polygon in the parametric
+    	--          space of a surface.
+
+
+uses
+    Polygon2D           from PPoly,
+    Surface             from PGeom,
+    Location            from PTopLoc
+
+is
+
+    Create(P: Polygon2D from PPoly;
+    	   S: Surface   from PGeom;
+	   L: Location  from PTopLoc)
+    returns mutable PolygonOnSurface from PBRep;
+
+
+    IsPolygonOnSurface(me)  returns Boolean
+    	---Purpose: A   2D polygon  representation  in the  parametric
+    	--          space of a surface.
+    is redefined;
+
+    Surface(me) returns any Surface from PGeom;
+
+    Polygon(me) returns any Polygon2D from PPoly;
+
+
+fields
+
+    myPolygon2D: Polygon2D from PPoly;
+    mySurface  : Surface   from PGeom;
+
+
+end PolygonOnSurface;

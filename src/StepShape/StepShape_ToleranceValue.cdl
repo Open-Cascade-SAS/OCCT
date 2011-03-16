@@ -1,0 +1,31 @@
+-- File:	StepShape_ToleranceValue.cdl
+-- Created:	Tue Apr 24 13:53:43 2001
+-- Author:	Christian CAILLET
+--		ckyd@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class ToleranceValue  from StepShape    inherits TShared
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    MeasureWithUnit from StepBasic
+
+is
+
+    Create returns mutable ToleranceValue;
+
+    Init (me : mutable; lower_bound, upper_bound : MeasureWithUnit from StepBasic);
+
+    LowerBound (me) returns MeasureWithUnit from StepBasic;
+    SetLowerBound (me : mutable; lower_bound : MeasureWithUnit from StepBasic);
+
+    UpperBound (me) returns MeasureWithUnit from StepBasic;
+    SetUpperBound (me : mutable; upper_bound : MeasureWithUnit from StepBasic);
+
+fields
+
+    theLowerBound : MeasureWithUnit from StepBasic;
+    theUpperBound : MeasureWithUnit from StepBasic;
+
+end ToleranceValue;

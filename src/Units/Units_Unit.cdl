@@ -1,0 +1,166 @@
+-- File:	Units_Unit.cdl
+-- Created:	Thu Oct 29 10:48:14 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+class Unit from Units 
+    
+inherits
+
+    TShared from MMgt 
+    
+	---Purpose: This class defines an elementary word contained in
+	--          a physical quantity.
+
+uses
+
+    HAsciiString    from TCollection,
+    AsciiString     from TCollection,
+    HSequenceOfHAsciiString from TColStd,
+    Quantity        from Units,
+    Token           from Units 
+
+
+is
+
+    Create(aname , asymbol : CString ;
+           avalue : Real ;
+           aquantity : any Quantity from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
+    --          the  unit, <asymbol> is the  usual abbreviation of the
+    --          unit,  and  <avalue> is the  value in relation to  the
+    --          International System of Units.
+    
+    returns mutable Unit from Units;
+    
+    Create(aname , asymbol : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
+    --          the  unit, <asymbol> is the  usual abbreviation of the
+    --          unit.
+    
+    returns mutable Unit from Units;
+    
+    Create(aname : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
+    --          the  unit.
+    
+    returns mutable Unit from Units;
+    
+    Name(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the name of the unit <thename>
+    
+    is static;
+    
+    Symbol(me : mutable ; asymbol : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Adds a new symbol <asymbol> attached to <me>.
+    
+    is static;
+    
+    Value(me) returns Real
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+
+    ---Purpose: Returns the  value in relation  with the International
+    --          System of Units.
+    
+    is static;
+    
+    Quantity(me) returns any Quantity from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+
+    ---Purpose: Returns <thequantity> contained in <me>.
+    
+    is static;
+    
+    SymbolsSequence(me) returns any HSequenceOfHAsciiString from TColStd
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+
+    ---Purpose: Returns the sequence of symbols <thesymbolssequence>
+    
+    is static;
+    
+    Value(me : mutable ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+
+    ---Purpose: Sets the value <avalue> to <me>.
+    
+    is static;
+    
+    Quantity(me : mutable ; aquantity : any Quantity from Units)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+
+    ---Purpose: Sets the physical Quantity <aquantity> to <me>.
+    
+    is static;
+    
+    Token(me) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: Starting with <me>, returns a new Token object.
+
+    is virtual;
+	
+    IsEqual(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---Purpose: Compares all the symbols  linked  within <me> with the
+    --          name of <atoken>,  and returns  True  if there is  one
+    --          symbol equal to the name, False otherwise.
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Unit)&,const Standard_CString);"
+    
+    is static;
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging
+
+    is virtual;
+    
+fields
+
+    thename            : HAsciiString from TCollection;
+    thesymbolssequence : HSequenceOfHAsciiString from TColStd is protected;
+    thevalue           : Real is protected;
+    thequantity        : Quantity from Units;
+
+end Unit;
+
+
+

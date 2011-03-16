@@ -1,0 +1,10 @@
+// File math_SVD.lxx
+
+inline Standard_Boolean math_SVD::IsDone() const { return Done; }
+
+inline Standard_OStream& operator<<(Standard_OStream& o,
+				    const math_SVD& S)
+{
+  S.Dump(o);
+  return o;
+}

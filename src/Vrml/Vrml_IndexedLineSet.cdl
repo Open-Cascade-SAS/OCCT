@@ -1,0 +1,60 @@
+-- File:	Vrml_IndexedLineSet.cdl
+-- Created:	Thu Dec 26 15:33:56 1996
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class IndexedLineSet from Vrml  inherits  TShared  from  MMgt
+
+	---Purpose:  defines a IndexedLineSet node of VRML specifying geometry shapes.
+    	--  This node represents a 3D shape formed by constructing polylines from vertices  
+    	--  located at the current coordinates. IndexedLineSet uses the indices in its coordIndex  
+    	--  field to specify the polylines. An index of -1 separates one polyline from the next  
+    	--  (thus, a final -1 is optional). the current polyline has ended and the next one begins. 
+    	--  Treatment of the current material and normal binding is as follows: The PER_PART binding  
+    	--  specifies a material or normal for each segment of the line. The PER_FACE binding  
+    	--  specifies a material or normal for each polyline. PER_VERTEX specifies a material or  
+    	--  normal for each vertex. The corresponding _INDEXED bindings are the same, but use  
+    	--  the materialIndex or normalIndex indices. The DEFAULT material binding is equal  
+    	--  to OVERALL. The DEFAULT normal binding is equal to  PER_VERTEX_INDEXED;  
+    	--  if insufficient normals exist in the state, the lines will be drawn unlit. The same
+	--  rules for texture coordinate generation as IndexedFaceSet are used. 
+uses
+
+    HArray1OfInteger from TColStd
+
+is
+
+    Create ( aCoordIndex        : HArray1OfInteger from TColStd;
+    	     aMaterialIndex     : HArray1OfInteger from TColStd;
+	     aNormalIndex       : HArray1OfInteger from TColStd;
+	     aTextureCoordIndex : HArray1OfInteger from TColStd )
+        returns mutable IndexedLineSet from Vrml; 
+	
+    Create  returns mutable IndexedLineSet from Vrml; 
+    
+    SetCoordIndex ( me : mutable; aCoordIndex : HArray1OfInteger from TColStd );
+    CoordIndex ( me )  returns HArray1OfInteger from TColStd;
+    
+    SetMaterialIndex ( me : mutable; aMaterialIndex : HArray1OfInteger from TColStd );
+    MaterialIndex ( me )  returns HArray1OfInteger from TColStd;
+    
+    SetNormalIndex ( me : mutable; aNormalIndex : HArray1OfInteger from TColStd );
+    NormalIndex ( me )  returns HArray1OfInteger from TColStd;
+    
+    SetTextureCoordIndex ( me : mutable; 
+    	aTextureCoordIndex : HArray1OfInteger from TColStd );
+    TextureCoordIndex ( me )  returns HArray1OfInteger from TColStd;
+   
+    Print  ( me; anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+
+    myCoordIndex        : HArray1OfInteger from TColStd;  -- Coordinate indices
+    myMaterialIndex     : HArray1OfInteger from TColStd;  -- Material indices
+    myNormalIndex       : HArray1OfInteger from TColStd;  -- Surface normal indices
+    myTextureCoordIndex : HArray1OfInteger from TColStd;  -- Texture Coordinate indices
+
+end IndexedLineSet;

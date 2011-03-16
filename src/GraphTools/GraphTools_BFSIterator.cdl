@@ -1,0 +1,64 @@
+-- File:	GraphTools_BFSIterator.cdl
+-- Created:	Mon Oct 12 12:58:52 1992
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class BFSIterator from GraphTools 
+                         (Graph     as any;
+                          Vertex    as any;
+			  VHasher   as any;
+                          VIterator as any)
+			  
+--generic class BFSIterator from GraphTools
+--            (Graph     as any;
+--    	       Vertex    as any;
+--    	       VHasher   as MapHasher from TCollection (Vertex);
+--	       VIterator as VertexIterator (Graph,Vertex))
+
+---Purpose: This generic class  implement the Breadth First Search
+    --          algorithm from a Vertex with   an iterator to  reached
+    --          adjacent vertices of  a given  one.   The interface of
+    --          this algorithm is made as an iterator.
+
+raises NoMoreObject from Standard,
+       NoSuchObject from Standard
+
+    class BFSMap instantiates IndexedMap from TCollection (Vertex,VHasher); 
+                                        
+is
+
+    Create
+    returns BFSIterator;
+	---Purpose: Create an empty iterator.
+
+    Perform (me : in out; G : Graph; V : Vertex);
+	---Purpose: Initializes the research from <V> member vertex of <G>.
+        ---Level: Public
+
+    More (me) returns Boolean from Standard;
+	---Purpose: Returns True if there are other vertices.
+        ---Level: Public
+    
+    Next(me : in out) 
+    	---Purpose: Set the iterator to the next vertex.
+        ---Level: Public
+    raises NoMoreObject from Standard;
+
+    Value(me) returns any Vertex 
+	---Purpose: returns   the vertex value  for the current
+	--          position of the iterator.
+        ---Level: Public
+	---C++: return const &
+    raises NoSuchObject from Standard;
+
+fields
+
+    myVisited      : BFSMap  from GraphTools;
+    myCurrentIndex : Integer from Standard;
+    
+end BFSIterator;
+
+
+

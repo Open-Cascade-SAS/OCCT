@@ -1,0 +1,21 @@
+
+//=======================================================================
+//function : SetReadVisible
+//purpose  : 
+//=======================================================================
+
+inline void IGESControl_Reader::SetReadVisible (const Standard_Boolean ReadRoot)
+{
+ theReadOnlyVisible = ReadRoot;
+}
+
+
+//=======================================================================
+//function : GetReadVisible
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean IGESControl_Reader::GetReadVisible ()const
+{
+ return  theReadOnlyVisible;
+}

@@ -1,0 +1,104 @@
+-- File:	TransferOutput.cdl
+-- Created:	Tue Feb  4 15:12:05 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class TransferOutput  from Transfer
+
+    ---Purpose : A TransferOutput is a Tool which manages the transfer of
+    --           entities created by an Interface, stored in an InterfaceModel,
+    --           into a set of Objects suitable for an Application
+    --           Objects to be transferred are given, by method Transfer
+    --           (which calls Transfer from TransientProcess)
+    --           A default action is available to get all roots of the Model
+    --           Result is given as a TransferIterator (see TransferProcess)
+    --           Also, it is possible to pilot directly the TransientProcess
+
+uses Transient, HSequenceOfTransient,
+     InterfaceModel,    Protocol from Interface, Graph, EntityIterator,
+     TransientProcess,  ActorOfTransientProcess
+
+raises NoSuchObject, TransferFailure
+
+is
+
+    Create (actor : mutable ActorOfTransientProcess; amodel : InterfaceModel)
+    	returns TransferOutput;
+    ---Purpose : Creates a TransferOutput ready to use, with a TransientProcess
+
+    Create (proc : mutable TransientProcess; amodel : InterfaceModel)
+    	returns TransferOutput;
+    ---Purpose : Creates a TransferOutput from an already existing
+    --           TransientProcess, and a Model
+
+--    ScopeMode (me : in out) returns Boolean;
+    ---Purpose : Returns (by Reference, hence can be changed) the Mode for
+    --           Scope Management. False (D) means Scope is ignored.
+    --           True means that each individual Transfer (direct or through
+    --           TransferRoots) is regarded as one Scope
+    ---C++ : return &
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Starting Model
+
+    TransientProcess (me) returns mutable TransientProcess;
+    ---Purpose : Returns the TransientProcess used to work
+
+    Transfer (me : in out; obj : Transient)
+    ---Purpose : Transfer checks that all taken Entities come from the same
+    --           Model, then calls Transfer from TransientProcess
+    	raises TransferFailure;
+    --           Error if <obj> does not come from starting Model
+
+
+    TransferRoots (me : in out; protocol : Protocol from Interface);
+    ---Purpose : Runs transfer on the roots of the Interface Model
+    --           The Roots are computed with a ShareFlags created from a
+    --           Protocol given as Argument
+
+    TransferRoots (me : in out; G : Graph from Interface);
+    ---Purpose : Runs transfer on the roots defined by a Graph of dependences
+    --           (which detains also a Model and its Entities)
+    --           Roots are computed with a ShareFlags created from the Graph
+
+    TransferRoots (me : in out);
+    ---Purpose : Runs transfer on the roots of the Interface Model
+    --           Remark : the Roots are computed with a ShareFlags created
+    --           from the Active Protocol
+
+    	--  Helping Extractions  --
+
+    ListForStatus (me; normal : Boolean; roots : Boolean = Standard_True)
+    	returns EntityIterator;
+    ---Purpose : Returns the list of Starting Entities with these criteria :
+    --         - <normal> False, gives the entities bound with ABNORMAL STATUS
+    --           (e.g. : Fail recorded, Exception raised during Transfer)
+    --         - <normal> True, gives Entities with or without a Result, but
+    --           with no Fail, no Exception (Warnings are not counted)
+    --         - <roots> False, considers all entities recorded (either for
+    --           Result, or for at least one Fail or Warning message)
+    --         - <roots> True (Default), considers only roots of Transfer
+    --           (the Entities recorded at highest level)
+    --          This method is based on AbnormalResult from TransferProcess
+
+    ModelForStatus (me; protocol : Protocol;
+    	normal : Boolean; roots : Boolean = Standard_True)
+	returns mutable InterfaceModel;
+    ---Purpose : Fills a Model with the list determined by ListForStatus
+    --           This model starts from scratch (made by NewEmptyModel from the
+    --           current Model), then is filled by AddWithRefs
+    --           
+    --           Useful to get separately from a transfer, the entities which
+    --           have caused problem, in order to furtherly analyse them (with
+    --           normal = False), or the "good" entities, to obtain a data set
+    --           "which works well" (with normal = True)
+
+fields
+
+    theproc  : TransientProcess;
+    themodel : InterfaceModel;
+--    thescope : Boolean;
+
+end TransferOutput;

@@ -1,0 +1,135 @@
+-- File:	IntTools_Root.cdl
+-- Created:	Mon May 22 16:46:21 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class Root from IntTools 
+
+	---Purpose: The class is to describe the root of  
+        --          function of one variable  for  Edge/Edge 
+	--          and  Edge/Surface  algorithms. 
+	
+uses 
+    State  from  TopAbs
+
+---raises
+is 
+    Create  
+    	returns Root from IntTools ; 
+    	---Purpose: 
+    	--- Empty constructor
+	---
+     
+    Create(aRoot:  Real    from Standard; 
+    	   aType:  Integer from Standard) 
+    	returns Root from IntTools ;  
+    	---Purpose: 
+	--- Initializes my by range of parameters
+	--- and type of root
+	---
+	    		  
+    SetRoot  (me:out;  aRoot:  Real from Standard); 
+    	---Purpose: 
+    	--- Sets the Root's value
+	---
+   
+    SetType  (me:out;  aType:  Integer from Standard); 
+    	---Purpose: 
+    	--- Sets the Root's Type
+	---
+    
+    SetStateBefore  (me:out;  aState: State  from  TopAbs); 
+    	---Purpose: 
+    	--- Set  the  value of the state before the root   
+    	--- (at  t=Root-dt)
+	---
+
+    SetStateAfter   (me:out;  aState: State  from  TopAbs); 
+    	---Purpose: 
+    	--- Set  the  value of the state after the root   
+    	--- (at  t=Root-dt)
+	---
+
+    SetLayerHeight  (me:out;  aHeight:Real from Standard); 
+    	---Purpose: 
+    	--- Not  used  in  Edge/Edge  algorithm 
+	---
+
+    SetInterval     (me:out;  t1, t2, f1, f2:Real from Standard); 
+    	---Purpose: 
+    	--- Sets the  interval  from which the Root was 
+    	--- found [t1,t2] and the  corresponding  values   
+    	--- of  the  function  on  the  bounds f(t1), f(t2).
+	---
+     
+    Root  (me)   
+    	returns Real from Standard; 
+    	---Purpose: 
+    	--- Returns the Root  value 
+	---
+     
+    Type  (me)       
+      	returns Integer from Standard;  
+    	---Purpose: 
+    	--- Returns the  type  of  the  root 
+    	--- =0  -  Simple (was  found  by  bisection  method); 
+    	--- =2  -  Smart when f1=0, f2!=0 or  vice  versa 
+    	---        (was  found  by  Fibbonacci method); 
+    	--- =1  -  Pure   (pure  zero  for all t [t1,t2] ); 
+    
+    StateBefore(me) 
+    	returns State  from  TopAbs;
+    	---Purpose: 
+    	--- Returns the state before the root
+	---
+
+    StateAfter(me) 
+    	returns State  from  TopAbs;  
+    	---Purpose: 
+    	--- Returns the state after the root
+	---
+
+    LayerHeight (me) 
+	returns Real from Standard;  
+    	---Purpose: 
+    	--- Not  used  in  Edge/Edge  algorithm
+	---
+
+    IsValid   (me) 
+    	returns  Boolean  from Standard; 
+    	---Purpose: 
+    	--- Returns the validity flag for the root, 
+    	--- True if   
+    	--- myStateBefore==TopAbs_OUT && myStateAfter==TopAbs_IN or	     
+    	--- myStateBefore==TopAbs_OUT && myStateAfter==TopAbs_ON or	     
+    	--- myStateBefore==TopAbs_ON  && myStateAfter==TopAbs_OUT or 
+    	--- myStateBefore==TopAbs_IN  && myStateAfter==TopAbs_OUT  . 
+    	--- For  other  cases it  returns  False. 
+	---
+     
+    Interval  (me;  t1:out Real from Standard;  
+    	    	    t2:out Real from Standard;  
+    	    	    f1:out Real from Standard;  
+    	    	    f2:out Real from Standard); 
+    	---Purpose: 
+    	--- Returns the values of interval  from which the Root was 
+    	--- found [t1,t2] and the  corresponding  values   
+    	--- of  the  function  on  the  bounds f(t1), f(t2).
+	---
+
+fields 
+    myRoot:  Real from Standard;
+    
+    myType:  Integer from Standard; 
+     
+    myLayerHeight:  Real from Standard;
+    myStateBefore:  State  from  TopAbs; 
+    myStateAfter :  State  from  TopAbs; 
+
+    myt1:  Real from Standard;
+    myt2:  Real from Standard;
+    myf1:  Real from Standard;
+    myf2:  Real from Standard;
+end Root;

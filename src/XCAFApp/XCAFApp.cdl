@@ -1,0 +1,25 @@
+-- File:	XCAFApp.cdl
+-- Created:	Fri Aug 11 13:30:20 2000
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 2000
+
+
+package XCAFApp 
+
+    ---Purpose: Defines application for DECAF document
+    --          and provides application-specific tools
+    --
+    --          The application should be registered before work with DECAF
+    --          documents by call to XCAFApp_Application::GetApplication()
+
+uses
+    TColStd,
+    TDocStd
+
+is
+
+    class Application;
+    	---Purpose: Defines application for DECAF documents
+    
+end XCAFApp;

@@ -1,0 +1,25 @@
+-- File:	StdSchema_CMPLRS.edl
+-- Author:	Sergey ZARITCHNY
+-- History:	Fri Nov  5 15:35:12 1999	Sergey ZARITCHNY	Creation
+-- Copyright:	 Matra Datavision 1999
+
+@ifnotdefined ( %StdLSchema_CMPLRS_EDL) then
+@set %StdLSchema_CMPLRS_EDL = "";
+
+--- Insert your stuff Here
+
+--
+-- Templates HP-UX 
+--
+@if ( %Station == "hp" ) then
+
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w  ";
+--- POP suivant directive POP :  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w +a1 ";
+--
+-- FSA : +O2 est trop consomateur de swap pour l'instant.
+
+  @set %ModeOpt = "+O1";
+
+@endif;
+
+@endif;

@@ -1,0 +1,38 @@
+-- File:	ProjLib_ComputeApprox.cdl
+-- Created:	Tue Sep  7 16:30:36 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+class ComputeApprox from ProjLib 
+
+
+uses
+     HCurve       from Adaptor3d,
+     HSurface     from Adaptor3d,
+     BSplineCurve from Geom2d,
+     BezierCurve  from Geom2d
+is
+
+    Create(C   : HCurve   from Adaptor3d ; 
+           S   : HSurface from Adaptor3d;
+    	   Tol : Real     from Standard) 
+    	---Purpose: <Tol>    is   the   tolerance   with  which    the
+    	--          approximation is performed.
+    returns ComputeApprox from ProjLib;
+    
+    BSpline(me) returns BSplineCurve from Geom2d ;
+
+    Bezier(me)  returns BezierCurve  from Geom2d ;
+    
+    Tolerance(me) returns Real from Standard;
+    	---Purpose: returns the reached Tolerance.
+    
+fields
+
+    myTolerance : Real         from Standard;    
+    myBSpline   : BSplineCurve from Geom2d ;
+    myBezier    : BezierCurve  from Geom2d ;
+
+end ComputeApprox;

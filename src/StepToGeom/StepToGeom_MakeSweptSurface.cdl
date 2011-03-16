@@ -1,0 +1,23 @@
+-- File:	StepToGeom_MakeSweptSurface.cdl
+-- Created:	Tue Jun 22 14:40:20 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeSweptSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          SweptSurface from StepGeom which describes a SweptSurface
+    --          from prostep and SweptSurface from Geom.
+    --          As SweptSurface is an abstract SweptSurface this class 
+    --          is an access to the sub-class required.
+
+uses SweptSurface from Geom,
+     SweptSurface from StepGeom
+
+is 
+
+    Convert ( myclass; SS : SweptSurface from StepGeom;
+                       CS : out SweptSurface from Geom )
+    returns Boolean from Standard;
+
+end MakeSweptSurface;

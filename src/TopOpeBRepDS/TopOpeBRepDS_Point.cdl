@@ -1,0 +1,56 @@
+-- File:	TopOpeBRepDS_Point.cdl
+-- Created:	Wed Jun 23 12:07:08 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Point from TopOpeBRepDS
+
+    ---Purpose: A Geom point and a tolerance.
+
+uses
+
+    Pnt from gp,
+    Shape from TopoDS
+    
+is
+
+    Create returns Point from TopOpeBRepDS; 
+
+    Create(P : Pnt from gp; T : Real from Standard)
+    returns Point from TopOpeBRepDS; 
+
+    Create(S : Shape from TopoDS)
+    returns Point from TopOpeBRepDS;
+
+    IsEqual(me; other : Point from TopOpeBRepDS)
+    returns Boolean from Standard
+    is static;
+
+    Point(me) returns Pnt from gp
+    ---C++: return const &
+    is static;
+    
+    ChangePoint(me : in out) returns Pnt from gp
+    ---C++: return &
+    is static;
+    
+    Tolerance(me) returns Real from Standard
+    is static;
+
+    Tolerance(me : in out; Tol : Real from Standard)
+    is static;
+
+    Keep(me) returns Boolean from Standard
+    is static;
+    ChangeKeep(me : in out; B : Boolean from Standard)
+    is static;
+
+fields
+
+    myPoint     : Pnt from gp;
+    myTolerance : Real from Standard;
+    myKeep      : Boolean from Standard;
+    
+end Point from TopOpeBRepDS;

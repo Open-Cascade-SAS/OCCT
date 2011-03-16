@@ -1,0 +1,214 @@
+-- File:	AppParCurves_BSpFunction.cdl
+-- Created:	Tue Sep 21 18:02:28 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+generic class BSpFunction from AppParCurves (
+    	    	    	      MultiLine  as any;
+			      ToolLine   as any; -- as ToolLine(MultiLine)
+    	    	    	      Squares    as any)
+
+    inherits MultipleVarFunctionWithGradient from math
+
+    ---Purpose: This function inherits MultipleVarFunctionWithGradient to be 
+    --          used in the mathematical algorithm BFGS.
+    --          It computes the value of the function 
+    --          F=sum(||Qui - B*Pi||)2 where Pi are Poles of the BSpline
+    --          curves approximating the given MultiLine SSP and ui the
+    --          parameters associated to the points Qi of SSP.
+    --          It also computes the gradient for values ui of the parameter.
+
+
+uses MultiBSpCurve             from AppParCurves, 
+     HArray1OfConstraintCouple from AppParCurves,
+     Constraint                from AppParCurves,
+     Vector                    from math, 
+     IntegerVector             from math, 
+     Matrix                    from math,
+     HArray1OfInteger          from TColStd,
+     Array1OfReal              from TColStd,
+     Array1OfInteger           from TColStd
+
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: Vector; Knots: Array1OfReal;
+    	   Mults: Array1OfInteger; NbPol: Integer)
+       ---Purpose: initializes the fields of the function. The approximating
+       --          curve has <NbPol> control points.
+
+    returns BSpFunction from AppParCurves;
+    
+    
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function. It 
+    	--          corresponds to the number of MultiPoints.
+
+    returns Integer
+    is static;
+    
+    
+
+    Perform(me: in out; X: Vector)
+    	---Purpose: this method is used each time Value or Gradient is
+    	--           needed.
+    
+    is static protected;
+
+
+    Value(me: in out; X: Vector; F: out Real) 
+    	---Purpose: this method computes the new approximation of the 
+    	--          MultiLine
+    	--          SSP and calculates F = sum (||Pui - Bi*Pi||2) for each 
+    	--          point of the MultiLine.
+    
+    returns Boolean
+    is static;
+
+
+    Gradient(me: in out; X: Vector; G: out Vector)
+    	---Purpose: returns the gradient G of the sum above for the 
+    	--          parameters Xi.
+
+    returns Boolean
+    is static;
+    
+    
+    Values(me: in out; X: Vector; F: out Real; G: out Vector)
+    	---Purpose: returns the value F=sum(||Pui - Bi*Pi||)2.
+    	--          returns the value G = grad(F) for the parameters Xi.
+
+    returns Boolean
+    is static;
+    
+    
+    
+    NewParameters(me)
+    	---Purpose: returns the new parameters of the MultiLine.
+    	---C++: return const&
+    returns Vector
+    is static;
+
+
+    CurveValue(me: in out)
+    	---Purpose: returns the MultiBSpCurve approximating the set after
+    	--          computing the value F or Grad(F).
+
+    returns MultiBSpCurve from AppParCurves
+    is static;
+    
+
+    Error(me: in out; IPoint, CurveIndex: Integer)
+    	---Purpose: returns the distance between the MultiPoint of range 
+    	--          IPoint and the curve CurveIndex.
+    
+    returns Real
+    is static;
+
+
+    MaxError3d(me)
+    	---Purpose: returns the maximum distance between the points
+    	--          and the MultiBSpCurve.
+
+    returns Real
+    is static;
+    
+    MaxError2d(me)
+    	---Purpose: returns the maximum distance between the points
+    	--          and the MultiBSpCurve.
+
+    returns Real
+    is static;
+
+
+    FunctionMatrix(me)
+    	---Purpose: returns the function matrix used to approximate the
+    	--          multiline.
+    	---C++: return const&
+    
+    returns Matrix from math
+    is static;
+    
+
+    DerivativeFunctionMatrix(me)
+    	---Purpose: returns the derivative function matrix used to approximate the
+    	--          multiline.
+    	---C++: return const&
+    
+    returns Matrix from math
+    is static;
+    
+    
+    
+    Index(me)
+        ---Purpose: Returns the indexes of the first non null values of
+    	--          A and DA.
+    	--          The values are non null from Index(ieme point) +1
+    	--          to Index(ieme point) + degree +1.
+    	---C++: return const&
+    
+    returns IntegerVector
+    is static;
+
+    
+    FirstConstraint(me; TheConstraints: HArray1OfConstraintCouple;
+    	    	    FirstPoint: Integer)
+	---Purpose:
+
+    returns Constraint from AppParCurves
+    is static;
+    
+    
+    LastConstraint(me; TheConstraints: HArray1OfConstraintCouple;
+    	    	   LastPoint: Integer)
+	---Purpose:
+
+    returns Constraint from AppParCurves
+    is static;
+    
+
+
+    SetFirstLambda(me: in out; l1: Real)
+    is static;
+
+
+    SetLastLambda(me: in out; l2: Real)
+    is static;
+
+
+fields
+
+Done:           Boolean;
+MyMultiLine :   MultiLine;
+MyMultiBSpCurve:   MultiBSpCurve from AppParCurves;
+nbpoles:          Integer;
+myParameters:   Vector;
+FVal:           Real;
+ValGrad_F:      Vector from math;
+MyF:            Matrix from math;
+PTLX :          Matrix from math;
+PTLY :          Matrix from math;
+PTLZ :          Matrix from math;
+A:              Matrix from math;
+DA:             Matrix from math;
+MyLeastSquare : Squares;
+Contraintes:    Boolean;
+NbP:            Integer;
+NbCu:           Integer;
+Adeb:           Integer;
+Afin:           Integer;
+tabdim:         HArray1OfInteger from TColStd;
+ERR3d:          Real;
+ERR2d:          Real;
+FirstP:         Integer;
+LastP:          Integer;
+myConstraints:  HArray1OfConstraintCouple from AppParCurves;
+mylambda1:      Real;
+mylambda2:      Real;
+
+end BSpFunction;

@@ -1,0 +1,29 @@
+-- File:	AndFilter.cdl
+-- Created:	Mon Dec  4 17:45:11 1995
+-- Author:	Stephane MORTAUD
+--		<smo@gibson>
+---Copyright:	 Matra Datavision 1995
+
+
+class AndFilter from SelectMgr inherits CompositionFilter from SelectMgr
+
+	---Purpose: A framework to define a selection filter for two or
+    	-- more types of entity.
+
+uses
+
+    Filter       from SelectMgr,
+    Transient    from Standard,
+    Boolean      from Standard,
+    EntityOwner  from SelectMgr
+is
+
+    Create
+    returns mutable AndFilter from SelectMgr;
+    	--- Purpose: Constructs an empty selection filter object for two or
+    	-- more types of entity.   
+    
+    IsOk(me; anobj :EntityOwner from SelectMgr)
+    returns Boolean from Standard ;
+
+end AndFilter;

@@ -1,0 +1,63 @@
+-- File:	InteriorPointTool.cdl
+-- Created:	Thu Oct  1 12:05:40 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class InteriorPointTool from IntSurf 
+
+	---Purpose: This class provides a tool on the "interior point"
+	--          that can be used to instantiates the Walking
+	--          algorithmes (see package IntWalk).
+
+uses Pnt           from gp,
+     Vec           from gp,
+     Dir2d         from gp,
+     InteriorPoint from IntSurf
+
+
+is
+
+
+    Value3d(myclass; PStart: InteriorPoint from IntSurf)
+    
+      	---Purpose: Returns the 3d coordinates of the starting point.
+
+    	returns Pnt from gp;
+
+	---C++: inline
+
+
+    Value2d(myclass; PStart: InteriorPoint from IntSurf;
+                         U, V: out Real from Standard);
+    
+	---Purpose: Returns the <U,V> parameters which are associated 
+	--          with <P>
+	--          it's the parameters which start the marching algorithm
+
+	---C++: inline
+
+
+    Direction3d(myclass; PStart: InteriorPoint from IntSurf)
+    
+        ---Purpose: returns the tangent at the intersectin in 3d space
+        --          associated to <P>
+
+    	returns Vec from gp;
+
+	---C++: inline
+
+
+    Direction2d(myclass; PStart: InteriorPoint from IntSurf)
+    
+        ---Purpose: returns the tangent at the intersectin in the
+        --          parametric space of the parametrized surface.This tangent
+        --          is associated to the value2d
+
+    	returns Dir2d from gp;
+
+	---C++: inline
+
+
+end InteriorPointTool;

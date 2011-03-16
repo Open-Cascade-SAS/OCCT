@@ -1,0 +1,381 @@
+/***********************************************************************
+
+     FONCTION :
+     ----------
+        Classe Visual3d_ContextView.cxx :
+
+	Declaration des variables specifiques aux contextes des vues.
+
+	Un contexte de vues est defini par :
+		- l'activite de l'aliasing
+		- l'activite du depth-cueing
+		- l'activite du Z clipping
+		- l'activite des sources lumineuses definies
+		- le type de visualisation demande
+		- le modele de shading si besoin est
+
+     HISTORIQUE DES MODIFICATIONS   :
+     --------------------------------
+      Mars 1992 : NW,JPB,CAL ; Creation.
+      01-08-97  : PCT ; Ajout support texture mapping
+      01-10-97  : CAL ; Retrait de DownCast.
+
+************************************************************************/
+
+#define BUC60572	//GG 03-08-99 Move Zcueing and Zclipping front & back planes
+//                  coherence checking in Visual3d_View::SetContext()
+
+
+/*----------------------------------------------------------------------*/
+/*
+ * Includes
+ */
+
+#include <Visual3d_ContextView.ixx>
+
+/*----------------------------------------------------------------------*/
+
+Visual3d_ContextView::Visual3d_ContextView ():
+AliasingIsActive (Standard_False),
+ZcueingIsActive (Standard_False),
+FrontZclippingIsActive (Standard_False),
+BackZclippingIsActive (Standard_False),
+MyZclippingFrontPlane (Standard_ShortReal (1.0)),
+MyZclippingBackPlane (Standard_ShortReal (0.0)),
+MyDepthCueingFrontPlane (Standard_ShortReal (1.0)),
+MyDepthCueingBackPlane (Standard_ShortReal (0.0)),
+MyModel (Visual3d_TOM_NONE),
+MyVisual (Visual3d_TOV_WIREFRAME),
+MyLights (),
+MyClipPlanes (),
+MyTextureEnv(),
+MySurfaceDetail(Visual3d_TOD_NONE)
+{
+}
+
+/*----------------------------------------------------------------------*/
+
+void Visual3d_ContextView::SetAliasingOn () {
+
+	AliasingIsActive	= Standard_True;
+
+}
+
+void Visual3d_ContextView::SetAliasingOff () {
+
+	AliasingIsActive	= Standard_False;
+
+}
+
+Standard_Boolean Visual3d_ContextView::AliasingIsOn () const {
+
+	return (AliasingIsActive);
+
+}
+
+void Visual3d_ContextView::SetZClippingOn () {
+
+	BackZclippingIsActive	= Standard_True;
+	FrontZclippingIsActive	= Standard_True;
+
+}
+
+void Visual3d_ContextView::SetZClippingOff () {
+
+	BackZclippingIsActive	= Standard_False;
+	FrontZclippingIsActive	= Standard_False;
+
+}
+
+Standard_Boolean Visual3d_ContextView::BackZClippingIsOn () const {
+
+	return (BackZclippingIsActive);
+
+}
+
+void Visual3d_ContextView::SetBackZClippingOn () {
+
+	BackZclippingIsActive	= Standard_True;
+
+}
+
+void Visual3d_ContextView::SetBackZClippingOff () {
+
+	BackZclippingIsActive	= Standard_False;
+
+}
+
+Standard_Boolean Visual3d_ContextView::FrontZClippingIsOn () const {
+
+	return (FrontZclippingIsActive);
+
+}
+
+void Visual3d_ContextView::SetFrontZClippingOn () {
+
+	FrontZclippingIsActive	= Standard_True;
+
+}
+
+void Visual3d_ContextView::SetFrontZClippingOff () {
+
+	FrontZclippingIsActive	= Standard_False;
+
+}
+
+void Visual3d_ContextView::SetZClippingFrontPlane (const Standard_Real AFront) {
+
+#ifndef BUC60572
+	if ( (FrontZclippingIsActive) && (BackZclippingIsActive) &&
+					(MyZclippingBackPlane >= AFront) )
+		Visual3d_ZClippingDefinitionError::Raise
+			("Bad value for ZClippingFrontPlane");
+#endif
+
+	MyZclippingFrontPlane	= Standard_ShortReal (AFront);
+
+}
+
+Standard_Real Visual3d_ContextView::ZClippingFrontPlane () const {
+
+	return (Standard_Real (MyZclippingFrontPlane));
+
+}
+
+void Visual3d_ContextView::SetDepthCueingFrontPlane (const Standard_Real AFront) {
+
+#ifndef BUC60572
+	if ( (ZcueingIsActive) && (MyDepthCueingBackPlane >= AFront) )
+		Visual3d_DepthCueingDefinitionError::Raise
+			("Bad value for DepthCueingFrontPlane");
+#endif
+
+	MyDepthCueingFrontPlane	= Standard_ShortReal (AFront);
+
+}
+
+Standard_Real Visual3d_ContextView::DepthCueingFrontPlane () const {
+
+	return (Standard_Real (MyDepthCueingFrontPlane));
+
+}
+
+void Visual3d_ContextView::SetZClippingBackPlane (const Standard_Real ABack) {
+
+#ifndef BUC60572
+	if ( (FrontZclippingIsActive) && (FrontZclippingIsActive) &&
+					(MyZclippingFrontPlane <= ABack) )
+		Visual3d_ZClippingDefinitionError::Raise
+			("Bad value for ZClippingBackPlane");
+#endif
+
+	MyZclippingBackPlane	= Standard_ShortReal (ABack);
+
+}
+
+Standard_Real Visual3d_ContextView::ZClippingBackPlane () const {
+
+	return (Standard_Real (MyZclippingBackPlane));
+
+}
+
+void Visual3d_ContextView::SetDepthCueingBackPlane (const Standard_Real ABack) {
+
+#ifndef BUC60572
+	if ( (ZcueingIsActive) && (MyDepthCueingFrontPlane <= ABack) )
+		Visual3d_DepthCueingDefinitionError::Raise
+			("Bad value for DepthCueingBackPlane");
+#endif
+
+	MyDepthCueingBackPlane	= Standard_ShortReal (ABack);
+
+}
+
+Standard_Real Visual3d_ContextView::DepthCueingBackPlane () const {
+
+	return (Standard_Real (MyDepthCueingBackPlane));
+
+}
+
+void Visual3d_ContextView::SetDepthCueingOn () {
+
+	ZcueingIsActive	= Standard_True;
+
+}
+
+void Visual3d_ContextView::SetDepthCueingOff () {
+
+	ZcueingIsActive	= Standard_False;
+
+}
+
+Standard_Boolean Visual3d_ContextView::DepthCueingIsOn () const {
+
+	return (ZcueingIsActive);
+
+}
+
+void Visual3d_ContextView::SetModel (const Visual3d_TypeOfModel AModel) {
+
+	MyModel	= AModel;
+
+}
+
+Visual3d_TypeOfModel Visual3d_ContextView::Model () const {
+
+	return (MyModel);
+
+}
+
+void Visual3d_ContextView::SetVisualization (const Visual3d_TypeOfVisualization AVisual) {
+
+	MyVisual	= AVisual;
+
+}
+
+Visual3d_TypeOfVisualization Visual3d_ContextView::Visualization () const {
+
+	return (MyVisual);
+
+}
+
+void Visual3d_ContextView::SetLightOn (const Handle(Visual3d_Light)& ALight) {
+
+Standard_Integer LengthL	= MyLights.Length ();
+Standard_Integer indexL = 0;
+
+	// Recherche de la light <ALight> dans la
+	// sequence des lights deja allumees
+	for (Standard_Integer i=1; i<=LengthL && indexL==0; i++)
+		if ((void *) (MyLights.Value (i)) ==
+		    (void *) (ALight.operator->())) indexL = i;
+
+	// Il s'agit d'une nouvelle light a activer
+	if (indexL == 0)
+		MyLights.Append ((void *) ALight.operator->());
+
+}
+
+void Visual3d_ContextView::SetLightOff (const Handle(Visual3d_Light)& ALight) {
+
+Standard_Integer LengthL	= MyLights.Length ();
+Standard_Integer indexL = 0;
+
+	// Recherche de la light <ALight> dans la
+	// sequence des lights deja allumees
+	for (Standard_Integer i=1; i<=LengthL && indexL==0; i++)
+		if ((void *) (MyLights.Value (i)) ==
+		    (void *) (ALight.operator->())) indexL = i;
+
+	// Il s'agit d'une light allumee
+	if (indexL != 0) MyLights.Remove (indexL);
+
+}
+
+Handle(Visual3d_HSetOfLight) Visual3d_ContextView::ActivatedLights () const {
+
+Handle(Visual3d_HSetOfLight) SG = new Visual3d_HSetOfLight ();
+Standard_Integer Length	= MyLights.Length ();
+
+	for (Standard_Integer i=1; i<=Length; i++)
+		SG->Add ((Visual3d_Light *) (MyLights.Value (i)));
+
+	return (SG);
+
+}
+
+Standard_Integer Visual3d_ContextView::NumberOfActivatedLights () const {
+
+Standard_Integer Length	= MyLights.Length ();
+
+	return (Length);
+
+}
+
+Handle(Visual3d_Light) Visual3d_ContextView::ActivatedLight (const Standard_Integer AnIndex) const {
+
+	return (Visual3d_Light *) (MyLights.Value (AnIndex));
+
+}
+
+void Visual3d_ContextView::SetClipPlaneOn (const Handle(Visual3d_ClipPlane)& AClipPlane) {
+
+Standard_Integer LengthC	= MyClipPlanes.Length ();
+Standard_Integer indexC		= 0;
+
+	// Recherche du plan <AClipPlane> dans la
+	// sequence des plans deja actives
+	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
+		if ((void *) (MyClipPlanes.Value (i)) ==
+		    (void *) (AClipPlane.operator->())) indexC = i;
+
+	// Il s'agit d'un nouveau plan a activer
+	if (indexC == 0)
+		MyClipPlanes.Append ((void *) AClipPlane.operator->());
+
+}
+
+void Visual3d_ContextView::SetClipPlaneOff (const Handle(Visual3d_ClipPlane)& AClipPlane) {
+
+Standard_Integer LengthC	= MyClipPlanes.Length ();
+Standard_Integer indexC		= 0;
+
+	// Recherche du plan <AClipPlane> dans la
+	// sequence des plans deja actives
+	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
+		if ((void *) (MyClipPlanes.Value (i)) ==
+		    (void *) (AClipPlane.operator->())) indexC = i;
+
+	// Il s'agit d'un plane actif
+	if (indexC != 0) MyClipPlanes.Remove (indexC);
+
+}
+
+Handle(Visual3d_HSetOfClipPlane) Visual3d_ContextView::ActivatedClipPlanes () const {
+
+Handle(Visual3d_HSetOfClipPlane) SG = new Visual3d_HSetOfClipPlane ();
+Standard_Integer Length	= MyClipPlanes.Length ();
+
+	for (Standard_Integer i=1; i<=Length; i++)
+		SG->Add ((Visual3d_ClipPlane *) (MyClipPlanes.Value (i)));
+
+	return (SG);
+
+}
+
+Standard_Integer Visual3d_ContextView::NumberOfActivatedClipPlanes () const {
+
+Standard_Integer Length	= MyClipPlanes.Length ();
+
+	return (Length);
+
+}
+
+Handle(Visual3d_ClipPlane) Visual3d_ContextView::ActivatedClipPlane (const Standard_Integer AnIndex) const {
+
+	return (Visual3d_ClipPlane *) (MyClipPlanes.Value (AnIndex));
+}
+
+
+void Visual3d_ContextView::SetSurfaceDetail(const Visual3d_TypeOfSurfaceDetail TOSD)
+{
+  MySurfaceDetail = TOSD;
+}
+
+
+void Visual3d_ContextView::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& ATexture)
+{
+  MyTextureEnv = ATexture;
+}
+
+
+Handle_Graphic3d_TextureEnv Visual3d_ContextView::TextureEnv() const
+{
+  return MyTextureEnv;
+}
+
+
+Visual3d_TypeOfSurfaceDetail Visual3d_ContextView::SurfaceDetail() const
+{
+  return MySurfaceDetail;
+}

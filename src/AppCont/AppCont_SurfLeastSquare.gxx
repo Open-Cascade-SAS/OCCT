@@ -1,0 +1,480 @@
+// File AppCont_SurfLeastSquare.gxx
+// Lpa, le 19/05/93
+
+
+#ifndef DEB
+#define No_Standard_OutOfRange
+#define No_Standard_RangeError
+#endif
+
+#include <math_GaussPoints.hxx>
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <AppCont_ContMatrices.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
+#include <PLib.hxx>
+
+
+
+
+static void InvMSurfMatrix(const Standard_Integer classeU, 
+			   const Standard_Integer classeV,
+			   math_Matrix&           InvM)
+{
+  math_Matrix Inv1(1, classeU);
+  InvMMatrix(classeU, Inv1);
+  math_Matrix Inv2(1, classeV);
+  InvMMatrix(classeV, Inv2);
+
+  // math_Matrix InvM(1, classeU*classeV, 1, classeU*classeV);
+  Standard_Integer i, j, k, l;
+  
+  for (i = 1; i <= classeU; i++) {
+    for (j= 1; j <= classeU; j++) {
+      for (k =1; k<= classeV; k++) {
+	for (l = 1; l<= classeV; l++) {
+	  InvM(k+(i-1)*classeV,l+(j-1)*classeV) = Inv1(i,j)*Inv2(k,l);
+	}
+      }
+    }
+  }
+}
+
+
+static void MSurfMatrix(const Standard_Integer classeU, 
+			const Standard_Integer classeV,
+			math_Matrix&           M)
+{
+  math_Matrix M1(1, classeU, 1, classeU);
+  MMatrix(classeU, M1);
+  math_Matrix M2(1, classeV, 1, classeV);
+  MMatrix(classeV, M2);
+
+  // math_Matrix M(1, classeU*classeV, 1, classeU*classeV);
+  Standard_Integer i, j, k, l;
+  
+  for (i = 1; i <= classeU; i++) {
+    for (j= 1; j <= classeU; j++) {
+      for (k =1; k<= classeV; k++) {
+	for (l = 1; l<= classeV; l++) {
+	  M(k+(i-1)*classeV,l+(j-1)*classeV) = M1(i,j)*M2(k,l);
+	}
+      }
+    }
+  }
+}
+
+
+
+
+
+
+AppCont_SurfLeastSquare::
+  AppCont_SurfLeastSquare(const Surface& Surf,
+			  const Standard_Real U0,
+			  const Standard_Real U1,
+			  const Standard_Real V0,
+			  const Standard_Real V1,
+			  const AppParCurves_Constraint FirstCons,
+			  const AppParCurves_Constraint LastUCons,
+			  const AppParCurves_Constraint LastVCons,
+			  const AppParCurves_Constraint LastCons,
+			  const Standard_Integer DegU,
+			  const Standard_Integer DegV,
+			  const Standard_Integer NbPoints):
+                          PointsX(1, NbPoints, 1 , NbPoints),
+                          PointsY(1, NbPoints, 1 , NbPoints),
+                          PointsZ(1, NbPoints, 1 , NbPoints),
+                          PolesX(1, (DegU+1)*(DegV+1), 0.0),
+                          PolesY(1, (DegU+1)*(DegV+1), 0.0),
+                          PolesZ(1, (DegU+1)*(DegV+1), 0.0),
+                          myUParam(1, NbPoints),
+                          myVParam(1, NbPoints),
+                          VBU(1, DegU+1, 1, NbPoints),
+                          VBV(1, DegV+1, 1, NbPoints)
+{
+  DegreU = DegU;
+  DegreV = DegV;
+  Nbdiscret = NbPoints;
+  Standard_Integer c, c1, c2, classeU = DegU+1, classeV = DegV+1;
+  Standard_Integer cla = classeU*classeV;
+  Standard_Integer bdeb = 1, bfin = cla, clav = cla-classeV+1;
+  Standard_Integer bint = 0, bint1 = 0, bint2 = 0, bintfin = 0;
+  Standard_Integer bint3 = 0, bint4 = 0, bint5 = 0, bint6 = 0;
+  Standard_Integer bint7 = 0, bint8 = 0;
+  math_Vector GaussP(1, NbPoints), GaussW(1, NbPoints);
+  Standard_Integer i, j, FirstP = 1, LastP = NbPoints;
+  Standard_Real U, dU, V, dV, ISS, Coeff, Coeff2;
+  Done = Standard_False;
+  gp_Pnt Pt;
+  gp_Vec VU, VV;
+  math_Vector BX(1, cla, 0.0),
+              BY(1, cla, 0.0),
+              BZ(1, cla, 0.0);
+
+  GaussP = GPoints(NbPoints);
+  GaussW = GWeights(NbPoints);
+  math_Vector TheWeights(1, NbPoints), VBParam(1, NbPoints);
+
+  dU = 0.5*(U1-U0);
+  dV = 0.5*(V1-V0);
+
+  // calcul et mise en ordre des parametres et des poids:
+  for (i = FirstP; i <= LastP; i++) {
+    U  = 0.5*(U1+U0) + dU*GaussP(i);
+    V  = 0.5*(V1+V0) + dV*GaussP(i);
+    if (i <=  (NbPoints+1)/2) {
+      myUParam(LastP-i+1)  = U;
+      myVParam(LastP-i+1)  = V;
+      VBParam(LastP-i+1)  = 0.5*(1 + GaussP(i));
+      TheWeights(LastP-i+1) = 0.5*GaussW(i);
+    }
+    else {
+      myUParam(i-(NbPoints+1)/2) = U;
+      myVParam(i-(NbPoints+1)/2) = V;
+      VBParam(i-(NbPoints+1)/2)  = 0.5*(1 + GaussP(i));
+      TheWeights(i-(NbPoints+1)/2) = 0.5*GaussW(i);
+    }
+  }
+
+
+
+  // Stockage des Points de Gauss:
+  for (i = FirstP; i <= LastP; i++) {
+    U = myUParam(i);
+    for (j = FirstP; j <= LastP; j++) {
+      V = myVParam(j);
+      SurfTool::D0(Surf, U, V, Pt);
+      Pt.Coord(PointsX(i, j), PointsY(i, j), PointsZ(i, j));
+    }
+  }
+
+  
+  // Calcul des VB ( fonctions de Bernstein):
+  for (i = 1; i <= classeU; i++) {
+    for (j = 1; j <= NbPoints; j++) {
+      VBU(i,j) = PLib::Binomial(classeU-1,i-1)*
+	Pow((1-VBParam(j)),classeU-i)*Pow(VBParam(j),i-1);
+    }
+  }
+  
+  for (i = 1; i <= classeV; i++) {
+    for (j = 1; j <= NbPoints; j++) {
+      VBV(i,j) = PLib::Binomial(classeV-1,i-1)*
+	Pow((1-VBParam(j)),classeV-i)*Pow(VBParam(j),i-1);
+    }
+  }
+
+  // Traitement du second membre:
+  c = 0;
+  for (c1 = 1; c1 <= classeU; c1++) {
+    for (c2 = 1; c2 <= classeV; c2++) {
+      c++;
+      for (i = 1; i <= NbPoints; i++) {
+	for (j = 1; j <= NbPoints; j++) {
+	  Coeff = TheWeights(i)*TheWeights(j)*VBU(c1, i)*VBV(c2, j);
+	  BX(c) += PointsX(i, j)*Coeff;
+	  BY(c) += PointsY(i, j)*Coeff;
+	  BZ(c) += PointsZ(i, j)*Coeff;
+	}
+      }
+    }
+  }
+
+  math_Matrix InvM(1, classeU*classeV, 1, classeU*classeV);
+  InvMSurfMatrix(classeU, classeV, InvM);
+  TColgp_Array2OfPnt Poles(1, classeU, 1, classeV);
+
+  // Calcul des poles:
+  // =================
+  if (FirstCons == AppParCurves_NoConstraint &&
+      LastCons  == AppParCurves_NoConstraint &&
+      LastUCons == AppParCurves_NoConstraint &&
+      LastVCons == AppParCurves_NoConstraint) {
+
+    for (i = 1; i <= cla; i++) {
+      for (j = 1; j <= cla; j++) {
+	ISS = InvM(i, j);
+	PolesX(i) += ISS * BX(j);
+	PolesY(i) += ISS * BY(j);
+	PolesZ(i) += ISS * BZ(j);
+      }
+    }
+  }
+  
+  else {
+    // Traitement du second membre:
+    math_Matrix M(1, classeU*classeV, 1, classeU*classeV);
+    MSurfMatrix(classeU, classeV, M);
+    
+    
+    if (FirstCons == AppParCurves_PassPoint ||
+	FirstCons == AppParCurves_TangencyPoint) {
+      bdeb = 2;
+      SurfTool::D0(Surf, U0, V0, Pt);
+      Pt.Coord(PolesX(1), PolesY(1), PolesZ(1));
+	
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, 1);
+	BX(c) = BX(c) - PolesX(1)*Coeff;
+	BY(c) = BY(c) - PolesY(1)*Coeff;
+	BZ(c) = BZ(c) - PolesZ(1)*Coeff;
+      }
+    }
+
+    if (LastCons == AppParCurves_PassPoint ||
+	LastCons == AppParCurves_TangencyPoint) {
+      bfin = cla-1;
+      SurfTool::D0(Surf, U1, V1, Pt);
+      Pt.Coord(PolesX(cla), PolesY(cla), PolesZ(cla));
+	
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, cla);
+	BX(c) = BX(c) - PolesX(cla)*Coeff;
+	BY(c) = BY(c) - PolesY(cla)*Coeff;
+	BZ(c) = BZ(c) - PolesZ(cla)*Coeff;
+      }
+    }
+
+    if (LastUCons == AppParCurves_PassPoint ||
+	LastUCons == AppParCurves_TangencyPoint) {
+      bint++; bint1 = clav;
+      SurfTool::D0(Surf, U1, V0, Pt);
+      Pt.Coord(PolesX(clav), PolesY(clav), PolesZ(clav));
+	
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, clav);
+	BX(c) = BX(c) - PolesX(clav)*Coeff;
+	BY(c) = BY(c) - PolesY(clav)*Coeff;
+	BZ(c) = BZ(c) - PolesZ(clav)*Coeff;
+      }
+    }
+
+    if (LastVCons == AppParCurves_PassPoint ||
+	LastVCons == AppParCurves_TangencyPoint) {
+      bint++; bint2 = classeV;
+      SurfTool::D0(Surf, U0, V1, Pt);
+      Pt.Coord(PolesX(classeV), PolesY(classeV), PolesZ(classeV));
+	
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, classeV);
+	BX(c) = BX(c) - PolesX(classeV)*Coeff;
+	BY(c) = BY(c) - PolesY(classeV)*Coeff;
+	BZ(c) = BZ(c) - PolesZ(classeV)*Coeff;
+      }
+    }
+
+    
+
+
+    
+    if (FirstCons == AppParCurves_TangencyPoint) {
+      SurfTool::D1(Surf, U0, V0, Pt, VU, VV);
+      bdeb = 3; bint++; bint3 = classeV+1;
+	
+      PolesX(bint3) = PolesX(1) + VU.X()/DegU*(U1-U0);
+      PolesY(bint3) = PolesY(1) + VU.Y()/DegU*(U1-U0);
+      PolesZ(bint3) = PolesZ(1) + VU.Z()/DegU*(U1-U0);
+	
+      PolesX(2) = PolesX(1) + VV.X()/DegV*(V1-V0);
+      PolesY(2) = PolesY(1) + VV.Y()/DegV*(V1-V0);
+      PolesZ(2) = PolesZ(1) + VV.Z()/DegV*(V1-V0);
+	
+      for (c = 1; c <= cla; c++) {
+        Coeff = M(c, 2); Coeff2 = M(c, bint3);
+        BX(c) = BX(c) - PolesX(2)*Coeff - PolesX(bint3)*Coeff2;
+        BY(c) = BY(c) - PolesY(2)*Coeff - PolesY(bint3)*Coeff2;
+        BZ(c) = BZ(c) - PolesZ(2)*Coeff - PolesZ(bint3)*Coeff2;
+      }
+    }
+
+
+    if (LastCons == AppParCurves_TangencyPoint) {
+      SurfTool::D1(Surf, U1, V1, Pt, VU, VV);
+      bfin = cla-2; bint++; bint4 = cla-classeV;
+      
+      PolesX(bint4) = PolesX(cla) - VU.X()/DegU*(U1-U0);
+      PolesY(bint4) = PolesY(cla) - VU.Y()/DegU*(U1-U0);
+      PolesZ(bint4) = PolesZ(cla) - VU.Z()/DegU*(U1-U0);
+      
+      PolesX(cla-1) = PolesX(cla) - VV.X()/DegV*(V1-V0);
+      PolesY(cla-1) = PolesY(cla) - VV.Y()/DegV*(V1-V0);
+      PolesZ(cla-1) = PolesZ(cla) - VV.Z()/DegV*(V1-V0);
+      
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, cla-1); Coeff2 = M(c, bint4);
+	BX(c) = BX(c) - PolesX(cla-1)*Coeff - PolesX(bint4)*Coeff2;
+	BY(c) = BY(c) - PolesY(cla-1)*Coeff - PolesY(bint4)*Coeff2;
+	BZ(c) = BZ(c) - PolesZ(cla-1)*Coeff - PolesZ(bint4)*Coeff2;
+      }
+    }
+
+
+    if (LastVCons == AppParCurves_TangencyPoint) {
+      SurfTool::D1(Surf, U0, V1, Pt, VU, VV);
+      bint += 2; bint5 = classeV-1; bint6 = 2*classeV;
+      
+      PolesX(bint5) = PolesX(classeV) - VV.X()/DegV*(V1-V0);
+      PolesY(bint5) = PolesY(classeV) - VV.Y()/DegV*(V1-V0);
+      PolesZ(bint5) = PolesZ(classeV) - VV.Z()/DegV*(V1-V0);
+      
+      PolesX(bint6) = PolesX(classeV) + VU.X()/DegU*(U1-U0);
+      PolesY(bint6) = PolesY(classeV) + VU.Y()/DegU*(U1-U0);
+      PolesZ(bint6) = PolesZ(classeV) + VU.Z()/DegU*(U1-U0);
+      
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, bint5); Coeff2 = M(c, bint6);
+	BX(c) = BX(c) - PolesX(bint5)*Coeff - PolesX(bint6)*Coeff2;
+	BY(c) = BY(c) - PolesY(bint5)*Coeff - PolesY(bint6)*Coeff2;
+	BZ(c) = BZ(c) - PolesZ(bint5)*Coeff - PolesZ(bint6)*Coeff2;
+      }
+    }
+
+
+    if (LastUCons == AppParCurves_TangencyPoint) {
+      SurfTool::D1(Surf, U1, V0, Pt, VU, VV);
+      bint += 2; bint7 = clav-classeV; bint8 = clav+1;
+      
+      PolesX(bint8) = PolesX(clav) + VV.X()/DegV*(V1-V0);
+      PolesY(bint8) = PolesY(clav) + VV.Y()/DegV*(V1-V0);
+      PolesZ(bint8) = PolesZ(clav) + VV.Z()/DegV*(V1-V0);
+      
+      PolesX(bint7) = PolesX(clav) - VU.X()/DegU*(U1-U0);
+      PolesY(bint7) = PolesY(clav) - VU.Y()/DegU*(U1-U0);
+      PolesZ(bint7) = PolesZ(clav) - VU.Z()/DegU*(U1-U0);
+      
+      for (c = 1; c <= cla; c++) {
+	Coeff = M(c, bint8); Coeff2 = M(c, bint7);
+	BX(c) = BX(c)- PolesX(bint8)*Coeff - PolesX(bint7)*Coeff2;
+	BY(c) = BY(c)- PolesY(bint8)*Coeff - PolesY(bint7)*Coeff2;
+	BZ(c) = BZ(c)- PolesZ(bint8)*Coeff - PolesZ(bint7)*Coeff2;
+      }
+    }
+
+
+    math_Vector B2X(bdeb, bfin-bint, 0.0);
+    math_Vector B2Y(bdeb, bfin-bint, 0.0);
+    math_Vector B2Z(bdeb, bfin-bint, 0.0);
+
+    Standard_Integer i2 = bdeb;
+    for (i = bdeb; i <= bfin; i++) {
+      if (i != bint1 && i != bint2 && i != bint3 && i != bint4 &&
+	  i != bint5 && i != bint6 && i != bint7 && i != bint8) {
+	for (j = 1; j <= cla; j++) {
+	  Coeff = M(i, j);
+	  B2X(i2) = B2X(i2) + BX(j)*Coeff;
+	  B2Y(i2) = B2Y(i2) + BY(j)*Coeff;
+	  B2Z(i2) = B2Z(i2) + BZ(j)*Coeff;
+	}
+	i2 ++;
+      }
+    }
+
+    math_Matrix MP(1, cla, bdeb, bfin-bint);
+    math_Matrix IBP(bdeb, bfin-bint, bdeb, bfin-bint);
+
+    Standard_Integer j2 = bdeb;
+    for (i = 1; i <= cla; i++) {
+      j2 = bdeb;
+      for (j = bdeb; j <= bfin; j++) {
+	if (j != bint1 && j != bint2 && j != bint3 && j != bint4 &&
+	    j != bint5 && j != bint6 && j != bint7 && j != bint8) {
+	  MP(i, j2) = M(i, j);
+	  j2++;
+	}
+      }
+    }
+    math_Matrix IBP1 = MP.Transposed()*MP;
+    IBP = IBP1.Inverse();
+
+    i2 = bdeb;
+    for (i = bdeb; i <= bfin; i++) {
+      if (i != bint1 && i != bint2 && i != bint3 && i != bint4 &&
+	  i != bint5 && i != bint6 && i != bint7 && i != bint8) {
+	for (j = bdeb; j <= bfin-bint; j++) {
+	  ISS = IBP(i2, j);
+	  PolesX(i) += ISS * B2X(j);
+	  PolesY(i) += ISS * B2Y(j);
+	  PolesZ(i) += ISS * B2Z(j);
+	}
+	i2++;
+      }
+    }
+  }
+
+  for (j = 1; j <= classeV; j++) {
+    for (i = 1; i <= classeU; i++) {
+      Poles(i, j).SetCoord(PolesX(j+ (i-1)*classeV), 
+			   PolesY(j+ (i-1)*classeV), 
+			   PolesZ(j+ (i-1)*classeV));
+    }
+  }
+
+  SCU = new Geom_BezierSurface(Poles);
+  Done = Standard_True;
+}
+
+
+
+Standard_Boolean AppCont_SurfLeastSquare::IsDone() const
+{
+  return Done;
+}
+
+
+const Handle(Geom_BezierSurface)& AppCont_SurfLeastSquare::Value()
+{
+  return SCU;
+}
+
+
+
+void AppCont_SurfLeastSquare::Error(Standard_Real& F,
+				    Standard_Real& MaxE3d) const
+{
+
+  Standard_Integer i, j, c, cu, cv, classeU = DegreU+1, classeV = DegreV+1;
+  Standard_Real Coeff, err3d = 0.0;
+  math_Matrix MyPointsX(1, Nbdiscret, 1, Nbdiscret);
+  math_Matrix MyPointsY(1, Nbdiscret, 1, Nbdiscret);
+  math_Matrix MyPointsZ(1, Nbdiscret, 1, Nbdiscret);
+  MyPointsX = PointsX;
+  MyPointsY = PointsY;
+  MyPointsZ = PointsZ;
+  MaxE3d = 0.0;
+  F = 0.0;
+  c = 0;
+
+  for (cu = 1; cu <= classeU; cu++) {
+    for (cv = 1; cv <= classeV; cv++) {
+      c++;
+      for (i = 1; i <= Nbdiscret; i++) {
+	for (j = 1; j <= Nbdiscret; j++) {
+	  Coeff = VBU(cu, i)*VBV(cv, j);
+	  MyPointsX(i, j) = MyPointsX(i, j) - PolesX(c)*Coeff;
+	  MyPointsY(i, j) = MyPointsY(i, j) - PolesY(c)*Coeff;
+	  MyPointsZ(i, j) = MyPointsZ(i, j) - PolesZ(c)*Coeff;
+	}
+      }
+    }
+  }
+
+
+  for (i = 1; i <= Nbdiscret; i++) {
+    for (j = 1; j <= Nbdiscret; j++) {
+      err3d = MyPointsX(i, j) * MyPointsX(i, j) +
+	      MyPointsY(i, j) * MyPointsY(i, j) +
+	      MyPointsZ(i, j) * MyPointsZ(i, j);
+      MaxE3d = Max(MaxE3d, err3d);
+      F += err3d;
+    }
+  }
+
+  MaxE3d = Sqrt(MaxE3d);
+
+}

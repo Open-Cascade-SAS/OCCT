@@ -1,0 +1,22 @@
+-- File:      XmlXCAFDrivers_DocumentRetrievalDriver.cdl
+-- Created:   11.09.01 11:50:20
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+
+class DocumentRetrievalDriver from XmlXCAFDrivers 
+inherits DocumentRetrievalDriver from XmlDrivers
+
+        ---Purpose: retrieval driver of a XS document
+
+uses
+    ADriverTable  from XmlMDF,
+    MessageDriver from CDM
+
+is
+    Create returns mutable DocumentRetrievalDriver from XmlXCAFDrivers;    
+
+    AttributeDrivers(me : mutable; theMsgDriver: MessageDriver from CDM)
+    returns ADriverTable from XmlMDF is redefined;
+
+end DocumentRetrievalDriver;

@@ -1,0 +1,66 @@
+-- File:	IGESControl_Controller.cdl
+-- Created:	Wed Mar 15 13:09:14 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+class Controller from IGESControl inherits Controller from XSControl
+
+    ---Purpose : Controller for IGES-5.1
+
+uses
+
+    CString,
+    Protocol from Interface,
+    InterfaceModel from Interface,
+    WorkLibrary from IFSelect,
+    ReturnStatus from IFSelect,
+    ActorOfTransientProcess from Transfer,
+    FinderProcess from Transfer,
+    ActorOfFinderProcess from Transfer,
+    WorkSession from XSControl,
+    Shape from TopoDS
+
+is
+
+    Create (modefnes : Boolean = Standard_False)
+    	returns mutable Controller from IGESControl;
+    ---Purpose : Initializes the use of IGES Norm (the first time) and returns
+    --           a Controller for IGES-5.1
+    --           If <modefnes> is True, sets it to internal FNES format
+
+    NewModel     (me) returns mutable InterfaceModel from Interface;
+    ---Purpose : Creates a new empty Model ready to receive data of the Norm.
+    --           It is taken from IGES Template Model
+
+    ActorRead    (me; model : InterfaceModel)
+                 returns mutable ActorOfTransientProcess from Transfer;
+    ---Purpose : Returns the Actor for Read attached to the pair (norm,appli)
+    --           It is an Actor from IGESToBRep, adapted from an IGESModel :
+    --           Unit, tolerances
+
+    TransferWriteShape (me; shape : Shape from TopoDS;
+    	    	    	FP        : mutable FinderProcess  from Transfer;
+    	    	        model     : mutable InterfaceModel from Interface;
+			modetrans : Integer = 0)
+      returns ReturnStatus  is redefined;
+    ---Purpose : Takes one Shape and transfers it to the InterfaceModel
+    --           (already created by NewModel for instance)
+    --           <modetrans> is to be interpreted by each kind of XstepAdaptor
+    --           Returns a status : 0 OK  1 No result  2 Fail  -1 bad modeshape
+    --               -2 bad model (requires an IGESModel)
+    --           modeshape : 0  groupe of face (version < 5.1)
+    --                       1  BREP-version 5.1 of IGES
+
+    Init (myclass) returns Boolean;
+    ---Purpose : Standard Initialisation. It creates a Controller for IGES and
+    --           records it to various names, available to select it later
+    --           Returns True when done, False if could not be done
+    --           Also, it creates and records an Adaptor for FNES
+    Customise (me: mutable; WS : in out WorkSession from XSControl) is redefined;
+fields
+
+    themode : Boolean;
+
+end Controller;

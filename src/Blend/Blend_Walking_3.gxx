@@ -1,0 +1,514 @@
+//26-04-1997 modified by pmn : Initialisation plus fine de la resolution
+
+Standard_Integer Blend_Walking::ArcToRecadre(const Standard_Boolean OnFirst,
+					     const math_Vector& sol,
+					     const Standard_Integer PrevIndex,
+					     gp_Pnt2d& lastpt2d,
+					     gp_Pnt2d& pt2d,
+					     Standard_Real& ponarc)
+{
+  Standard_Integer IndexSol = 0,  nbarc = 0;
+  Standard_Boolean ok = Standard_False;
+  Standard_Boolean byinter = (line->NbPoints() != 0), okinter = 0;
+  Standard_Real distmin = RealLast();
+  Standard_Real uprev,vprev, prm, dist;
+  Handle(TheTopolTool) Iter;
+
+  if (OnFirst) {
+    if(byinter) previousP.ParametersOnS1(uprev,vprev);
+    pt2d.SetCoord(sol(1),sol(2));
+    Iter = recdomain1;
+  }
+  else {
+    if(byinter) previousP.ParametersOnS2(uprev,vprev);
+    pt2d.SetCoord(sol(3),sol(4));
+    Iter = recdomain2;
+  }
+  lastpt2d.SetCoord(uprev,vprev);
+  Iter->Init();
+  while (Iter->More()) {
+    nbarc++; ok = 0;
+    if (OnFirst) {
+      if(byinter) { 
+	ok = okinter = TheBlendTool::Inters(pt2d,lastpt2d,
+					    surf1,Iter->Value(),prm,dist); 
+      }
+      if(!ok) ok = TheBlendTool::Project(pt2d,surf1,Iter->Value(),prm,dist);
+    }
+    else {
+      if(byinter) { 
+	ok = okinter = TheBlendTool::Inters(pt2d,lastpt2d,
+					    surf2,Iter->Value(),prm,dist); 
+      }
+      if(!ok) ok = TheBlendTool::Project(pt2d,surf2,Iter->Value(),prm,dist);
+    }
+    if (ok && (nbarc != PrevIndex) ) {
+      if (dist<distmin || okinter) {
+	distmin = dist;
+	ponarc = prm;
+	IndexSol = nbarc;
+	if(okinter && (PrevIndex==0)) break;
+      }
+    }
+    Iter->Next();
+  }
+  return IndexSol;
+}
+
+Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
+					const Standard_Boolean OnFirst,
+					const math_Vector& sol,
+					math_Vector& solrst,
+					Standard_Integer& Indexsol,
+					Standard_Boolean& IsVtx,
+					TheVertex& Vtx,
+					const Standard_Real Extrap)
+
+{
+  Standard_Boolean jalons_Trouve = Standard_False;
+  Standard_Boolean recadre = Standard_True, ok;
+  Standard_Boolean byinter = (line->NbPoints() != 0);
+#ifndef DEB
+  Standard_Integer LeJalon = 0;
+#else
+  Standard_Integer LeJalon;
+#endif
+  Standard_Integer nbarc;
+  Standard_Real dist,prm,pmin, vtol;
+  gp_Pnt2d pt2d, lastpt2d;
+
+  math_Vector toler(1,4),infb(1,4),supb(1,4),valsol(1,4);
+
+  Handle(Adaptor2d_HCurve2d) thecur;
+  Handle(TheTopolTool) Iter;
+
+  if (OnFirst) Iter = recdomain1;
+  else         Iter = recdomain2;
+
+  Indexsol = ArcToRecadre(OnFirst, sol, 0, 
+			  lastpt2d, pt2d, pmin);
+  IsVtx = Standard_False;
+  if (Indexsol == 0) {
+    return Standard_False;
+  }
+
+  Iter->Init();
+  nbarc = 1;
+  while (nbarc < Indexsol) {
+    nbarc++;
+    Iter->Next();
+  }
+
+  TheArc thearc = Iter->Value();
+
+  if (OnFirst) {
+    thecur = TheBlendTool::CurveOnSurf(thearc,surf1);
+  }
+  else {
+    thecur = TheBlendTool::CurveOnSurf(thearc,surf2);
+  }
+
+// Le probleme a resoudre
+  FuncInv.Set(OnFirst,thecur);
+  FuncInv.GetBounds(infb,supb);
+  infb(2) -= Extrap;
+  supb(2) += Extrap;
+  
+  FuncInv.GetTolerance(toler,tolesp/10);//Il vaut mieux garder un peu de marge
+  math_FunctionSetRoot rsnld(FuncInv,toler,35);
+  toler *= 10; // Mais on fait les tests correctements
+
+// Calcul d'un point d'init
+  Standard_Real ufirst,ulast;
+  TheBlendTool::Bounds(thecur, ufirst,ulast);
+  // Pour aider a trouver les coins singuliers on recadre eventuelement le paramtere
+  if (Abs(pmin-ufirst) < Abs(ulast-ufirst)/1000) {
+    pmin = ufirst;
+  }
+  if (Abs(pmin-ulast) < Abs(ulast-ufirst)/1000) {
+    pmin = ulast;
+  }
+
+  if (byinter) { 
+    Standard_Real lastParam = previousP.Parameter();
+    // Verifie que le recadrage n'est pas un jalons
+    if (jalons.Length()!=0) {
+      Standard_Real t1, t2, t;
+      Standard_Boolean Cherche=Standard_True;
+      Standard_Integer ii;
+      if (lastParam < param) {
+	t1 = lastParam; t2 = param;
+      }
+      else {
+	t1 = param; t2 = lastParam;
+      }
+      for (ii=1; ii<=jalons.Length() && Cherche; ii++) {
+	t = jalons.Value(ii).Parameter();
+        if  (((t1 < t) && (t2 > t)) || (t==param)) {
+	 jalons_Trouve = Standard_True;
+	 LeJalon = ii;
+	 Cherche = Standard_False; //Ne marche que si l'on sort simultanement
+       }
+	else Cherche = t < t2; // On s'arrete si t>=t2;
+      }
+    }
+    if (!jalons_Trouve) {
+      //Initialisation par Interpolation
+      Standard_Real lambda, u, v;
+      gp_Pnt2d Pnt, Pnt1, Pnt2;//,  POnC;
+      thecur->D0(pmin, Pnt);    
+      if (OnFirst) {
+	previousP.ParametersOnS2(u,v);
+	Pnt1.SetCoord(u, v);
+	Pnt2.SetCoord(sol(3), sol(4));
+      }
+      else {
+	previousP.ParametersOnS1(u,v);
+	Pnt1.SetCoord(u, v);
+	Pnt2.SetCoord(sol(1), sol(2));
+      }
+
+      lambda = Pnt.Distance(lastpt2d);
+      if (lambda > 1.e-12) lambda /=  Pnt.Distance(lastpt2d) + Pnt.Distance(pt2d);
+      else lambda = 0;
+      solrst(1) = pmin;
+      solrst(2) = (1-lambda)*lastParam + lambda*param;
+      solrst(3) = (1-lambda)*Pnt1.X()  + lambda*Pnt2.X();
+      solrst(4) = (1-lambda)*Pnt1.Y()  + lambda*Pnt2.Y();
+    }
+  }
+  else { // sinon on initialise par le dernier point calcule
+    solrst(1) = pmin;
+    solrst(2) = param; 
+    if (OnFirst) {
+      solrst(3) = sol(3);
+      solrst(4) = sol(4);
+    }
+    else {
+      solrst(3) = sol(1);
+      solrst(4) = sol(2);
+    }
+  }
+
+  if (jalons_Trouve) { // On recupere le jalon
+    Blend_Point MonJalon;
+    Standard_Boolean periodic;
+    Standard_Real uperiod = 0, vperiod = 0;
+    gp_Pnt2d Pnt;
+    Standard_Real distaux;
+    MonJalon = jalons.Value(LeJalon);
+    solrst(2) =  MonJalon.Parameter();
+    if (OnFirst) {
+      MonJalon.ParametersOnS2(solrst(3), solrst(4));
+      periodic = (surf2->IsUPeriodic() || surf2->IsVPeriodic());
+    }
+    else  {
+       MonJalon.ParametersOnS1(solrst(3), solrst(4));
+       periodic = (surf1->IsUPeriodic() || surf1->IsVPeriodic());
+     }
+
+    // Recadrage eventuelle pour le cas periodique
+    if (periodic) {
+      Handle(Adaptor3d_HSurface) surf;
+      if (OnFirst) surf = surf2;
+      else surf = surf1;
+
+      lastpt2d = thecur->Value(pmin);      
+
+      if (surf->IsUPeriodic()) {
+	uperiod =  surf->UPeriod();
+	if (solrst(3)-lastpt2d.X() >  uperiod*0.6) solrst(3) -= uperiod;
+	if (solrst(3)-lastpt2d.X() < -uperiod*0.6) solrst(3) += uperiod;
+      }
+      if (surf->IsVPeriodic()) {
+	vperiod =  surf->VPeriod();
+	if (solrst(4)-lastpt2d.Y() >  vperiod*0.6) solrst(4) -= vperiod;
+	if (solrst(4)-lastpt2d.Y() < -vperiod*0.6) solrst(4) += vperiod;
+      }	
+    }
+
+    // Pour le parametre sur arc il faut projeter...
+    pt2d.SetCoord(solrst(3), solrst(4));
+    Pnt = thecur->Value(ufirst);
+    dist = pt2d.Distance(Pnt);
+    solrst(1) = ufirst;
+    Pnt = thecur->Value(ulast);
+    distaux = pt2d.Distance(Pnt);
+    if ( distaux < dist) {
+      solrst(1) = ulast;
+      dist = distaux;
+    }
+
+    if (dist>Precision::PConfusion()) {
+      prm = pmin;
+      if (OnFirst) { 
+	ok = TheBlendTool::Project(pt2d,surf1,thearc,prm,distaux);
+      }
+      else {
+	ok = TheBlendTool::Project(pt2d,surf2,thearc,prm,distaux);
+      }
+      if (ok && (pt2d.Distance(thecur->Value(prm)) < dist)) solrst(1) = prm;
+      else solrst(1) = pmin;
+    }
+    // On verifie le jalon
+    jalons_Trouve = (FuncInv.IsSolution(solrst,tolesp));
+  }
+
+  if (!jalons_Trouve) {
+    // Resolution...
+    rsnld.Perform(FuncInv,solrst,infb,supb);  
+    if (!rsnld.IsDone()) {
+      cout << "Walking::Recadre : RSNLD not done " << endl;
+      recadre = Standard_False;
+    }
+    else {
+      rsnld.Root(solrst);
+      recadre = FuncInv.IsSolution(solrst,tolesp);
+    }
+  }
+
+  // En cas d'echecs, on regarde si un autre arc 
+  // peut faire l'affaire (cas des sorties a proximite d'un vertex)
+  dist = (ulast - ufirst)/100;
+  if ((!recadre) && 
+      ((Abs(pmin-ulast) < dist) || (Abs(pmin-ufirst) < dist)) ) {
+
+    Indexsol =  ArcToRecadre(OnFirst, sol, Indexsol, 
+			     lastpt2d, pt2d, pmin);
+    if (Indexsol == 0) {
+      return Standard_False;
+    }
+
+    Iter->Init();
+    nbarc = 1;
+    while (nbarc < Indexsol) {
+      nbarc++;
+      Iter->Next();
+    }
+    thearc = Iter->Value();
+ 
+    if (OnFirst) {
+      thecur = TheBlendTool::CurveOnSurf(thearc,surf1);
+    }
+    else {
+      thecur = TheBlendTool::CurveOnSurf(thearc,surf2);
+    }
+    solrst(1) = pmin;
+    // Le probleme a resoudre
+    FuncInv.Set(OnFirst,thecur);
+    FuncInv.GetBounds(infb,supb);
+    FuncInv.GetTolerance(toler,tolesp/10);//Il vaut mieux garder un peu de marge
+    math_FunctionSetRoot rsnld(FuncInv,toler,35);
+    toler *= 10; // Mais on fait les tests correctements
+    // Resolution...
+    rsnld.Perform(FuncInv,solrst,infb,supb);
+  
+    if (!rsnld.IsDone()) {
+      cout << "Walking::Recadre : RSNLD not done " << endl;
+      recadre = Standard_False;
+    }
+    else {
+      rsnld.Root(solrst);
+      recadre = FuncInv.IsSolution(solrst,tolesp);
+    }
+  }
+
+  if (recadre) {
+    // Classification topologique  
+    if (OnFirst) {
+      thecur = TheBlendTool::CurveOnSurf(thearc,surf1);
+    }
+    else {
+      thecur = TheBlendTool::CurveOnSurf(thearc,surf2);
+    }
+    TheBlendTool::Bounds(thecur, ufirst,ulast);    
+
+    Iter->Initialize(thearc);
+    Iter->InitVertexIterator();
+    IsVtx = !Iter->MoreVertex();
+    while (!IsVtx) {
+      Vtx = Iter->Vertex();
+      vtol = 0.4*Abs(ulast-ufirst); // Un majorant de la tolerance
+      if (vtol > Max(TheBlendTool::Tolerance(Vtx,thearc), toler(1)))
+	vtol = Max(TheBlendTool::Tolerance(Vtx,thearc), toler(1));
+      if (Abs(TheBlendTool::Parameter(Vtx,thearc)-solrst(1)) <= vtol) {
+	IsVtx = Standard_True; // On est dans la boule du vertex ou 
+	                       // le vertex est dans la "boule" du recadrage
+      }
+      else {
+	Iter->NextVertex();
+	IsVtx = !Iter->MoreVertex();
+      }
+    }
+    if (!Iter->MoreVertex()) {
+      IsVtx = Standard_False;
+    }
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+
+void Blend_Walking::Transition(const Standard_Boolean OnFirst,
+			       const TheArc& A,
+			       const Standard_Real Param,
+			       IntSurf_Transition& TLine,
+			       IntSurf_Transition& TArc)
+{
+  Standard_Boolean computetranstionaveclacorde = 0;
+  gp_Vec tgline;
+  Blend_Point prevprev;
+
+  if(previousP.IsTangencyPoint()){
+    if(line->NbPoints() < 2) return;
+    computetranstionaveclacorde = 1;
+    if(sens < 0){
+      prevprev = line->Point(2);
+    }
+    else {
+      prevprev = line->Point(line->NbPoints() - 1);
+    }
+  }
+  gp_Pnt2d p2d;
+  gp_Vec2d dp2d;
+
+  gp_Pnt pbid;
+  gp_Vec d1u,d1v,normale,tgrst;
+  gp_Dir thenormal;
+  CSLib_NormalStatus stat;
+
+  TheArcTool::D1(A,Param,p2d,dp2d);
+  if (OnFirst) {
+    TheSurfaceTool::D1(surf1,p2d.X(),p2d.Y(),pbid,d1u,d1v);
+    if(!computetranstionaveclacorde) tgline = previousP.TangentOnS1();
+    else tgline = gp_Vec(prevprev.PointOnS1(),previousP.PointOnS1());
+  }
+  else {
+    TheSurfaceTool::D1(surf2,p2d.X(),p2d.Y(),pbid,d1u,d1v);
+    if(!computetranstionaveclacorde) tgline = previousP.TangentOnS2();
+    else tgline = gp_Vec(prevprev.PointOnS2(),previousP.PointOnS2());
+  }
+
+  tgrst.SetLinearForm(dp2d.X(),d1u,dp2d.Y(),d1v);
+
+  CSLib::Normal(d1u, d1v, 1.e-9, stat, thenormal);
+  if (stat ==  CSLib_Defined) normale.SetXYZ(thenormal.XYZ());
+  else {
+    Handle(Adaptor3d_HSurface) surf;
+    if (OnFirst) surf = surf1;
+    else         surf = surf2;
+    Standard_Integer iu, iv;
+    TColgp_Array2OfVec Der(0, 2 , 0, 2);
+    TheSurfaceTool::D2(surf,p2d.X(),p2d.Y(),pbid, Der(1,0), Der(0,1), 
+		       Der(2,0), Der(0,2), Der(1,1));
+    Der(2,1) = TheSurfaceTool::DN(surf, p2d.X(), p2d.Y(), 2,1);
+    Der(1,2) = TheSurfaceTool::DN(surf,p2d.X(),p2d.Y(), 1,2);
+    Der(2,2) = TheSurfaceTool::DN(surf,p2d.X(),p2d.Y(), 2,2);
+    CSLib::Normal(2, Der, 1.e-9,  
+		  p2d.X(), p2d.Y(), 
+		  TheSurfaceTool::FirstUParameter(surf),
+		  TheSurfaceTool::LastUParameter(surf),
+		  TheSurfaceTool::FirstVParameter(surf),
+		  TheSurfaceTool::LastVParameter(surf),
+		  stat, thenormal, iu, iv);
+    normale.SetXYZ(thenormal.XYZ());
+#if DEB
+    if (stat == CSLib_InfinityOfSolutions)
+      cout << "Blend_Walking::Transition : Infinite de Normal" << endl;
+#endif 
+  }
+
+  IntSurf::MakeTransition(tgline,tgrst,normale,TLine,TArc);
+
+}
+
+
+void Blend_Walking::MakeExtremity(TheExtremity& Extrem,
+				  const Standard_Boolean OnFirst,
+				  const Standard_Integer Index,
+				  const Standard_Real Param,
+				  const Standard_Boolean IsVtx,
+				  const TheVertex& Vtx)
+{
+
+  IntSurf_Transition Tline,Tarc;
+  Standard_Integer nbarc;
+  Handle(TheTopolTool) Iter;
+
+  if (OnFirst) {
+    Extrem.SetValue(previousP.PointOnS1(),
+		    sol(1),sol(2),
+		    previousP.Parameter(), tolesp);
+    if (!previousP.IsTangencyPoint())  
+      Extrem.SetTangent(previousP.TangentOnS1());
+    Iter = recdomain1;
+  }
+  else {
+    Extrem.SetValue(previousP.PointOnS2(),
+		    sol(3),sol(4),
+		    previousP.Parameter(), tolesp);
+    if (!previousP.IsTangencyPoint())  
+      Extrem.SetTangent(previousP.TangentOnS2());
+    Iter = recdomain2;
+  }
+
+  Iter->Init();
+  nbarc = 1;
+
+  while (nbarc < Index) {
+    nbarc++;
+    Iter->Next();
+  }
+
+  Transition(OnFirst,Iter->Value(),Param,Tline,Tarc);
+  Extrem.AddArc(Iter->Value(),Param,Tline,Tarc);
+  if (IsVtx) Extrem.SetVertex(Vtx);
+}
+
+void  Blend_Walking::MakeSingularExtremity( TheExtremity& Extrem,
+					   const Standard_Boolean OnFirst,
+					   const TheVertex& Vtx)
+{
+  IntSurf_Transition Tline,Tarc;
+  Handle(TheTopolTool) Iter;
+  Standard_Real prm;
+
+  if (OnFirst) {
+    Iter = recdomain1;
+    if (!previousP.IsTangencyPoint())
+      Extrem.SetTangent(previousP.TangentOnS1());
+  }
+  else {
+    if (!previousP.IsTangencyPoint()) 
+      Extrem.SetTangent(previousP.TangentOnS2());
+    Iter = recdomain2;
+  }
+  
+  Iter->Init(); 
+  Extrem.SetVertex(Vtx);
+  while (Iter->More()) {
+    TheArc arc = Iter->Value();
+    Iter->Initialize(arc);
+    Iter->InitVertexIterator();
+    while (Iter->MoreVertex()) {
+      if (Iter->Identical(Vtx,Iter->Vertex())) {
+	prm = TheBlendTool::Parameter(Vtx,arc);
+	Transition(OnFirst,arc,prm,Tline,Tarc);
+	Extrem.AddArc(arc,prm,Tline,Tarc);
+      }
+      Iter->NextVertex();
+    }
+    Iter->Next();
+  }   
+}
+
+
+
+
+
+
+
+
+
+
+

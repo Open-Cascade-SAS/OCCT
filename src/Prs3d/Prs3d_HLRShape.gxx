@@ -1,0 +1,49 @@
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+void Prs3d_HLRShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
+			 const anyShape&                    aShape,
+			 const Handle (Prs3d_Drawer)&       aDrawer,
+			 const Handle (Prs3d_Projector)&    aProjector)
+{
+  HLRShapeTool Tool(aShape,aProjector->Projector());
+  Standard_Integer NbEdge = Tool.NbEdges();
+  Standard_Integer i;
+  Standard_Real U1,U2;
+  anyCurve TheCurve;
+  Standard_Real def = aDrawer->MaximalChordialDeviation();
+  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+
+  aGroup->SetPrimitivesAspect(aDrawer->SeenLineAspect()->Aspect());
+  
+  aGroup->BeginPrimitives();
+  Standard_Real anAngle = aDrawer->DeviationAngle();
+  TColgp_SequenceOfPnt Points;
+  for (i=1;i<=NbEdge;i++){
+    for(Tool.InitVisible(i);Tool.MoreVisible();Tool.NextVisible()){
+      Tool.Visible(TheCurve,U1,U2);
+      CurvePresentation::Add(aPresentation,TheCurve,U1,U2,def, Points, anAngle);
+    }
+  }
+  aGroup->EndPrimitives();
+
+  if(aDrawer->DrawHiddenLine()){
+    aGroup->SetPrimitivesAspect(aDrawer->HiddenLineAspect()->Aspect());     
+    
+    aGroup->BeginPrimitives();
+    for (i=1;i<=NbEdge;i++){
+      for(Tool.InitHidden(i);Tool.MoreHidden();Tool.NextHidden()){
+	Tool.Hidden(TheCurve,U1,U2);
+	CurvePresentation::Add(aPresentation,TheCurve,U1,U2,def, Points, anAngle);
+      }
+    }
+    aGroup->EndPrimitives();
+  }
+}   
+

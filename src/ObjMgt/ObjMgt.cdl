@@ -1,0 +1,39 @@
+---File:	 ObjMgt.cdl
+
+---Copyright:	 Matra Datavision 1995
+---Version:	 1.2 
+
+---History: 
+--  Version	Date		Purpose
+--         	Feb  3 1995	Creation
+--         	Dec  15 1996    Version CSFDB
+
+package ObjMgt 
+
+---Purpose: This package defines services to manage the storage grain of data 
+--          produced by applications and those classes to manage persistent 
+--          extern reference.
+
+uses
+
+    PCollection,
+    Storage,
+    CDM,PCDM, TCollection
+
+is
+
+    --deferred class RetrievalDriver;
+    ---Purpose: to retrieve ExternShareable objects in the framework.
+ 
+
+    deferred class ExternShareable;
+    ---Purpose: Defines the root persistent object which can be persistent 
+    --          extern reference.
+
+    private class ExternRef;
+    ---Purpose: Defines (objet-relais) to implement extern reference.
+
+    private class PSeqOfExtRef instantiates HSequence from 
+    	    PCollection (ExternRef from ObjMgt);
+
+end ObjMgt;

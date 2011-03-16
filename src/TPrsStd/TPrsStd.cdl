@@ -1,0 +1,67 @@
+-- File:	TPrsStd.cdl
+-- Created:	1997
+-- Author:	SMO
+---Copyright:	 Matra Datavision 1997
+
+
+package TPrsStd 
+
+	---Purpose: The visualization attribute implements the
+    	-- Application Interactive Services in the context
+    	-- of Open CASCADE Application Framework.
+
+
+    ---Category: GUID 
+    --           04fb4d05-5690-11d1-8940-080009dc3333   TPrsStd_AISViewer
+    --           04fb4d00-5690-11d1-8940-080009dc3333	TPrsStd_AISPresentation
+   
+uses
+    Standard,
+    TCollection,
+    TColStd,
+    MMgt,
+    Quantity,
+    Graphic3d,
+    AIS,
+    V3d,    
+    TDF,
+    TDataXtd,
+    Geom,
+    TopoDS,
+    gp
+    
+    
+is
+
+
+    ---Category: Attributes 
+    --           ==========
+    
+    class AISViewer;
+    
+    class AISPresentation;  
+
+    ---Category : Drivers to build and/or update AIS objects
+    --            ==========================================
+
+    deferred class Driver;
+      class PointDriver ;         -- to display Point
+      class AxisDriver ;          -- to display Axis
+      class PlaneDriver ;         -- to display Plane
+      class GeometryDriver;       -- to display Geometry
+      class ConstraintDriver;     -- to display Constraint
+      class NamedShapeDriver;     -- to display NamedShape
+    
+    class DriverTable ;               
+    
+    ---Category: Tools
+    --           =====
+
+    class ConstraintTools;
+
+    class DataMapOfGUIDDriver
+    instantiates DataMap from TCollection(GUID      from Standard, 
+	    	 		       	  Driver from TPrsStd, 
+				          GUID      from Standard); 
+end TPrsStd;
+

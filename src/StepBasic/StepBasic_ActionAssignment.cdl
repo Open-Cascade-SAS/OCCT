@@ -1,0 +1,30 @@
+-- File:	StepBasic_ActionAssignment.cdl
+-- Created:	Fri Nov 26 16:26:29 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ActionAssignment from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ActionAssignment
+
+uses
+    Action from StepBasic
+
+is
+    Create returns ActionAssignment from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAssignedAction: Action from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AssignedAction (me) returns Action from StepBasic;
+	---Purpose: Returns field AssignedAction
+    SetAssignedAction (me: mutable; AssignedAction: Action from StepBasic);
+	---Purpose: Set field AssignedAction
+
+fields
+    theAssignedAction: Action from StepBasic;
+
+end ActionAssignment;

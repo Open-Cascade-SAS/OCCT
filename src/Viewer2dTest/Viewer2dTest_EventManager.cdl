@@ -1,0 +1,33 @@
+-- File:	Viewer2dTest_EventManager.cdl
+
+class EventManager from Viewer2dTest inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+    View from V2d,
+    InteractiveContext from AIS2D
+
+is
+
+    Create(aCtx:InteractiveContext from AIS2D)
+    returns mutable EventManager from Viewer2dTest;
+
+    MoveTo(me:mutable; xpix,ypix:Integer;aView:View from V2d) is virtual;
+
+    Select(me:mutable) is virtual;
+
+    ShiftSelect(me:mutable) is virtual;
+
+    Select(me:mutable;xmin,ymin,xmax,ymax:Integer;aView:View from V2d) is virtual;
+
+    ShiftSelect(me:mutable;xmin,ymin,xmax,ymax:Integer;aView:View from V2d) is virtual;
+
+    Context(me) returns InteractiveContext from AIS2D;
+    ---C++: return const&
+
+fields
+
+    myCtx : InteractiveContext from AIS2D;
+
+end EventManager;

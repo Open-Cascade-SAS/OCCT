@@ -1,0 +1,193 @@
+-- File:	ShapeFix_Edge.cdl
+-- Created:	Wed Jun 17 13:31:39 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Edge from ShapeFix inherits TShared from MMgt
+
+    ---Purpose: Fixing invalid edge.
+    --          Geometrical and/or topological inconsistency:
+    --          - no 3d curve or pcurve,
+    --          - mismatching orientation of 3d curve and pcurve,
+    --          - incorrect SameParameter flag (curve deviation is greater than
+    --            edge tolerance),
+    --          - not adjacent curves (3d or pcurve) to the vertices.
+
+uses
+    Surface  from Geom,
+    Surface  from ShapeAnalysis,
+    Edge     from TopoDS,
+    Face     from TopoDS,
+    Location from TopLoc,
+    Status   from ShapeExtend,
+    ProjectCurveOnSurface from ShapeConstruct
+
+is
+    Create returns Edge from ShapeFix;
+    	---Purpose: Empty constructor
+
+    Projector (me: mutable) returns ProjectCurveOnSurface from ShapeConstruct;
+        ---Purpose: Returns the projector used for recomputing missing pcurves
+	--          Can be used for adjusting parameters of projector
+	
+    FixRemovePCurve (me: mutable; edge: Edge from TopoDS;
+    	    	                 face: Face from TopoDS)
+    returns Boolean;
+
+    FixRemovePCurve (me: mutable; edge    : Edge from TopoDS;
+    	    	                 surface : Surface from Geom;
+    	    	                 location: Location from TopLoc)
+    returns Boolean;
+    	---Purpose: Removes the pcurve(s) of the edge if it does not match the
+    	--          vertices
+	--          Check is done 
+    	--  Use    : It is to be called when pcurve of an edge can be wrong
+    	--          (e.g., after import from IGES)
+    	--  Returns: True, if does not match, removed (status DONE)
+    	--          False, (status OK) if matches or (status FAIL) if no pcurve, 
+    	--          nothing done
+
+    FixRemoveCurve3d (me: mutable; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Removes 3d curve of the edge if it does not match the vertices
+    	--  Returns: True,  if does not match, removed (status DONE)
+    	--          False, (status OK) if matches or (status FAIL) if no 3d curve, 
+    	--          nothing done
+
+    FixAddPCurve (me: mutable; edge  : Edge from TopoDS;
+    	   	              face  : Face from TopoDS;
+    	    	    	      isSeam: Boolean;
+                              prec  : Real = 0.0)
+    returns Boolean;
+    	---Purpose: See method below for information
+
+    FixAddPCurve (me: mutable; edge    : Edge from TopoDS;
+    	    	              surface : Surface from Geom;
+    	    	              location: Location from TopLoc;
+    	    	    	      isSeam  : Boolean;
+                              prec    : Real = 0.0)
+    returns Boolean;
+    	---Purpose: See method below for information
+
+    FixAddPCurve (me: mutable; edge    : Edge from TopoDS;
+                              face    : Face from TopoDS;
+    	    	    	      isSeam  : Boolean;
+    	    	              surfana : Surface from ShapeAnalysis;
+                              prec    : Real = 0.0)
+    returns Boolean;
+    	---Purpose: See method below for information
+
+    FixAddPCurve (me: mutable; edge    : Edge from TopoDS;
+    	    	              surface : Surface from Geom;
+			      location: Location from TopLoc;
+    	    	    	      isSeam  : Boolean;
+    	    	              surfana : Surface from ShapeAnalysis;
+                              prec    : Real = 0.0)
+    returns Boolean;
+    	---Purpose: Adds pcurve(s) of the edge if missing (by projecting 3d curve)
+	--          Parameter isSeam indicates if the edge is a seam.
+	--          The parameter <prec> defines the precision for calculations.
+	--          If it is 0 (default), the tolerance of the edge is taken.
+	--  Remark : This method is rather for internal use since it accepts parameter
+        --          <surfana> for optimization of computations
+    	--  Use    : It is to be called after FixRemovePCurve (if removed) or in any
+    	--          case when edge can have no pcurve
+    	--  Returns: True if pcurve was added, else False
+    	--  Status :
+    	--          OK   : Pcurve exists
+    	--          FAIL1: No 3d curve
+    	--          FAIL2: fail during projecting
+    	--          DONE1: Pcurve was added
+    	--          DONE2: specific case of pcurve going through degenerated point on 
+	--                 sphere encountered during projection (see class
+	--                 ShapeConstruct_ProjectCurveOnSurface for more info)
+
+    FixAddCurve3d (me: mutable; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Tries to build 3d curve of the edge if missing
+    	--  Use    : It is to be called after FixRemoveCurve3d (if removed) or in any
+    	--          case when edge can have no 3d curve
+    	--  Returns: True if 3d curve was added, else False
+    	--  Status :
+    	--          OK   : 3d curve exists
+    	--          FAIL1: BRepLib::BuildCurve3d() has failed
+    	--          DONE1: 3d curve was added
+
+    FixVertexTolerance (me: mutable; edge: Edge from TopoDS;
+    	    	    	    	     face: Face from TopoDS) returns Boolean;
+    FixVertexTolerance (me: mutable; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Increases the tolerances of the edge vertices to comprise
+	--          the ends of 3d curve and pcurve on the given face
+        --          (first method) or all pcurves stored in an edge (second one)
+	--  Returns: True, if tolerances have been increased, otherwise False
+	--  Status:
+	--          OK   : the original tolerances have not been changed
+	--          DONE1: the tolerance of first vertex has been increased
+	--          DONE2: the tolerance of last  vertex has been increased
+    
+    FixReversed2d (me: mutable; edge: Edge from TopoDS;
+    	    	               face: Face from TopoDS)
+    returns Boolean;
+
+    FixReversed2d (me: mutable; edge    : Edge from TopoDS;
+    	    	               surface : Surface from Geom;
+    	    	               location: Location from TopLoc)
+    returns Boolean;
+    	---Purpose: Fixes edge if pcurve is directed opposite to 3d curve
+	--          Check is done by call to the function
+        --          ShapeAnalysis_Edge::CheckCurve3dWithPCurve()
+        --  Warning: For seam edge this method will check and fix the pcurve in only
+        --          one direction. Hence, it should be called twice for seam edge:
+        --          once with edge orientation FORWARD and once with REVERSED.
+    	--  Returns: False if nothing done, True if reversed (status DONE)
+	--  Status:  OK    - pcurve OK, nothing done
+	--          FAIL1 - no pcurve
+	--          FAIL2 - no 3d curve
+	--          DONE1 - pcurve was reversed
+	
+    FixSameParameter (me: mutable; edge     : Edge from TopoDS;
+    	    	    	    	  tolerance: Real = 0.0)
+    returns Boolean;
+       	---Purpose: Tries to make edge SameParameter and sets corresponding 
+        --          tolerance and SameParameter flag.
+	--          First, it makes edge same range if SameRange flag is not set.
+    	--
+        --          If flag SameParameter is set, this method calls the 
+    	--          function ShapeAnalysis_Edge::CheckSameParameter() that 
+    	--          calculates the maximal deviation of pcurves of the edge from 
+    	--          its 3d curve. If deviation > tolerance, the tolerance of edge 
+    	--          is increased to a value of deviation. If deviation < tolerance 
+    	--          nothing happens.
+	--         
+        --          If flag SameParameter is not set, this method chooses the best
+	--          variant (one that has minimal tolerance), either
+    	--          a. only after computing deviation (as above) or
+    	--          b. after calling standard procedure BRepLib::SameParameter
+    	--          and computing deviation (as above). If <tolerance> > 0, it is
+    	--          used as parameter for BRepLib::SameParameter, otherwise,
+    	--          tolerance of the edge is used.
+	--
+    	--  Use    : Is to be called after all pcurves and 3d curve of the edge are
+    	--          correctly computed
+    	--  Remark : SameParameter flag is always set to True after this method
+    	--  Returns: True, if something done, else False
+        --  Status : OK    - edge was initially SameParameter, nothing is done
+        --          FAIL1 - computation of deviation of pcurves from 3d curve has failed
+        --          FAIL2 - BRepLib::SameParameter() has failed
+        --          DONE1 - tolerance of the edge was increased
+        --          DONE2 - flag SameParameter was set to True (only if 
+    	--                  BRepLib::SameParameter() did not set it)
+        --          DONE3 - edge was modified by BRepLib::SameParameter() to SameParameter
+	--          DONE4 - not used anymore
+        --          DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
+        --                  (only for edges with not set SameParameter) 
+
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status (in the form of True/False) of last Fix
+	
+fields
+
+    myStatus: Integer is protected;
+    myProjector: ProjectCurveOnSurface from ShapeConstruct is protected;
+
+end Edge;

@@ -1,0 +1,340 @@
+-- File:	Image_GImage.cdl
+-- Created:	Tue Jul 27 18:47:06 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class GImage from Image (anyPixel as Pixel from Aspect) 
+						inherits Image from Image
+
+	---Purpose: Provide genmeric Image method independent from Pixel type.
+
+uses
+
+    Pixel       	from Aspect,
+    PixelInterpolation	from Image,
+    PixelAddress 	from Image,
+    FlipType    	from Image,
+    TypeOfImage 	from Image,
+    PlaneAngle  	from Quantity,
+    Trsf		from gp,
+    GTrsf2d		from gp
+
+    class PixelRow   instantiates Array1 from TCollection (anyPixel);
+	---Level: Public
+	---Purpose: Manipulates PixelRow.
+
+    class PixelField instantiates GPixelField from Image (anyPixel);
+	---Level: Public
+	---Purpose: Resizable Image PixelField.
+
+is
+
+    Initialize( x,y,dx,dy : in Integer from Standard ;
+		BackPixel : in anyPixel ) ;
+	---Level: Public
+	---Purpose: GImage constructor ,initialise Image origin, create Image
+	--		PixelField .
+
+    Destroy (me : mutable )
+	---Level: Public
+    	---Purpose: Frees   the allocated   area corresponding to  the
+    	--          PixelField.
+        --          
+        ---C++: alias ~
+    is redefined;
+
+    SetBackgroundPixel( me : mutable ; aPixel: in anyPixel ) ;
+	---Level: Public
+	---Purpose: Sets the  Image BackgroundPixel.
+
+    BackgroundPixel   ( me : immutable ) returns anyPixel ;
+    	---C++: return const &
+	---Level: Public
+ 	---Purpose: Return the Image BackgroundPixel.
+ 
+    Pixel ( me : immutable ; X,Y : in Integer from Standard ) 
+	returns anyPixel ;
+    	---C++: return const &
+    	---C++: alias operator()
+	---Level: Public
+	---Purpose: Return the Image Pixel Value at X,Y coordinate.
+	--		The returned Pixel is ReadOnly .
+
+    SetPixel( me : mutable   ; X,Y   : in Integer from Standard ; 
+	                              aPixel: in anyPixel ) ;
+	---Level: Public
+	---Purpose: Sets the Image Pixel at X,Y coordinate with aPixel.
+ 	    
+    MutPixel   ( me : mutable  ; X,Y : in Integer from Standard ) 
+	returns anyPixel ;
+    	---C++: return &
+    	---C++: alias operator()
+	---Level: Public
+	---Purpose: Return the Image Pixel Value at X,Y coordinate.
+	--		The returned Pixel is ReadWrite .
+
+    SetRow  ( me : mutable   ; X,Y : in Integer from Standard ;
+                                      aRow: in PixelRow from Image);
+	---Level: Public
+	---Purpose: Sets an Image PixelRow starting at X,Y coordinate with aRow.
+
+    Row     ( me : immutable ; X,Y : in Integer from Standard ;
+             		              aRow: in out PixelRow from Image);
+	---Level: Public
+	---Purpose: Get an Image PixelRow starting at X,Y coordinate in aRow.
+
+    SwapRow ( me : mutable ; I,J : Integer from Standard);
+	---Level: Public
+	---Purpose: Swap row.
+
+    SwapCol ( me : mutable ; I,J : Integer from Standard);
+	---Level: Public
+	---Purpose: Swap columns.
+
+    Zoom     ( me : mutable ; 
+				anInterpolation : PixelInterpolation from Image;
+				aCoefX,aCoefY  : in Real from Standard ) ;
+	---Level: Public
+	---Purpose: Zoom an Image with a specific PixelInterpolation method.
+	--		Warning: image size change after a Zoom.
+
+    Rotate   ( me : mutable ;
+				anInterpolation : PixelInterpolation from Image;
+				aAngle         : in PlaneAngle from Quantity ) ;
+	---Level: Public
+	---Purpose: Rotate an Image with a specific PixelInterpolation method.
+
+    Translate( me : mutable ;
+				anInterpolation : PixelInterpolation from Image;
+				DX, DY         : in Real from Standard ) ;
+	---Level: Public
+	---Purpose: Translate an Image with a specific PixelInterpolation method.
+
+    Affine( me : mutable ;
+				anInterpolation : PixelInterpolation from Image;
+	       			Trsf           : in GTrsf2d from gp ) ;
+	---Level: Public
+	---Purpose : General transformation of an Image with the default 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raised an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+    Affine( me : mutable ;
+				anInterpolation : PixelInterpolation from Image;
+	       			Trsf           : in Trsf from gp ) ;
+	---Level: Public
+	---Purpose : General transformation of an Image with the default 
+	--		PixelInterpolation method.
+	--	Warning:         
+	--  		Raised an exception if the matrix of the transformation 
+        --  		is not inversible.
+
+    InternalDup( me : mutable ; anImage : immutable like me )
+		is redefined ;
+	---Level: Public
+	---Purpose : Duplicate an Image.
+
+    -- ******************* Deferred method from Image ******************* 
+
+    SetOrigin ( me : mutable ; x,y : in Integer from Standard ) ;
+	---Level: Public
+	---Purpose: Sets Image origin, for Rotation, copy between image ...
+	--		Image origin is on the TOP LEFT . Y axis goes TOP to
+	--		DOWN , X axis goes LEFT to RIGHT.
+
+
+    LowerX  ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Return the lower X Image coordinate ( X Origin ).
+    UpperX  ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+ 	---Purpose: Return the upper X Image coordinate 
+	--		( X Origin + Image width - 1 ).
+
+    Width   ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Return the Image width.
+
+    LowerY  ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Return the lower Y Image coordinate ( Y Origin ).
+
+    UpperY  ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Return the upper Y Image coordinate 
+	--		( Y Origin + Image height - 1 ).
+
+    Height  ( me : immutable )  returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Return the Image height.
+
+    Resize( me : mutable ; 
+	XOffset,XScale, YOffset,YScale : Real from Standard ) ;
+	---Level: Public
+	---Purpose: Resize an Image. Image Pixel are left unchanged at there
+	--	      absolute positon. Resulting Image can be clipped.
+	--	newLowerX = LowerX()*XScale + XOffset
+	--	newLowerY = LowerY()*YScale + YOffset
+	--	newUpperX = UpperX()*XScale + XOffset
+	--	newUpperY = UpperY()*YScale + YOffset
+	--	newWidth  = Width() *XScale
+	--	newHeight = Height()*YScale
+
+    Type    ( me : immutable )  returns TypeOfImage from Image is deferred ;
+	---Level: Public
+	---Purpose: Return the ImageType TOI_ColorImage or TOI_PseudoColorImage
+
+    isSamePixel( me : immutable ; 
+	X,Y    	     		: in Integer from Standard ;
+	anotherImage 		: immutable like me ;
+	anotherX,anotherY	: in Integer from Standard ) 
+	returns Boolean from Standard ;
+	---Level: Public
+	---Purpose: Returns True if me->Pixel(X,Y) is equal to 
+	--	    anotherImage->Pixel(anotherX,anotherY)
+
+    Pixel   ( me : immutable ; 	X,Y    : in Integer from Standard ;
+				aPixel : in out Pixel from Aspect ) ;
+	---Level: Public
+	---Purpose: Store the Image Pixel Value at X,Y coordinate in aPixel.
+	--	    Warning: aPixel must have the same type than Image Pixel.
+
+    SetPixel( me : mutable ; 	X,Y    : in Integer from Standard ;
+				aPixel : in Pixel   from Aspect ) ;
+	---Level: Public
+	---Purpose: Store aPixel in the Image  at X,Y coordinate .
+	-- Warning: aPixel must have the same type than Image Pixel.
+
+    Pixel   ( me : immutable ; 	X,Y    : in Integer from Standard ;
+				aPixel : in out PixelAddress from Image ) ;
+	---Level: Public
+	---Purpose: Store the Image Pixel Value at X,Y coordinate in aPixel.
+	--	    Warning: aPixel must have the same type than Image Pixel.
+
+    SetPixel( me : mutable ; 	X,Y    : in Integer from Standard ;
+				aPixel : in PixelAddress from Image ) ;
+	---Level: Public
+	---Purpose: Store aPixel in the Image  at X,Y coordinate .
+	-- Warning: aPixel must have the same type than Image Pixel.
+
+    Transpose( me : mutable ; aType         : in FlipType from Image ) ;
+	---Level: Public
+	---Purpose: Transpose an Image( flipping across horizontal axis or 
+	--		vertical axis, or acroos diagonal... )
+	--	    This geometric transformation preserve all Image Pixels.
+	--	    We don't need to interpolate pixel .
+	--	    Warning : Image size change durring Transpose.
+
+    Clip     ( me : mutable ; X,Y,Width,Height:in Integer from Standard);
+	---Level: Public
+	---Purpose: Extract a SubImage starting at coordinate X,Y 
+	--		to (X+Width-1),(Y+Height-1).
+	--	    Warning : the Image size and origin change, new origine
+	--	    is X,Y ; new size is Width,Height.
+
+
+    Shift    ( me : mutable ; XShifth,YShift  :in Integer from Standard);
+	---Level: Public
+	---Purpose: Translate an Image XShifth pixel Right, YShift Down .
+	--	    Shift parameter are Integer value.
+
+    Fill     ( me : mutable ; SrcImage : immutable like me ) ;
+	---Level: Public
+	---Purpose: Fill me with SrcImage. SrcImage pixel are copied starting
+	--	     at SrcImage->LowerX(),SrcImage->LowerY() in MyPixelField.
+	--	     SrcImage Pixel are clipped outside <me>.
+
+    Fill     ( me : mutable ; SrcImage : immutable like me ;
+		SrcX, SrcY, SrcWidth, SrcHeight,
+		X, Y : in Integer from Standard ) ;
+	---Level: Public
+	---Purpose: Fill me with a SubImage of SrcImage starting from 
+	--	    SrcX, SrcY to (SrcX+SrcWidth-1),(SrcY+SrcHeight-1) in 
+	--	    Src Image coordinate. SrcImage SubImage pixels are copied 
+	--	    starting at X,Y in MyPixelField.
+	--	    SrcImage Pixel are clipped outside <me>.
+
+
+    FillRect  ( me : mutable ; aPixel : anyPixel ;
+		X, Y, Width, Height : in Integer from Standard) ;
+	---Level: Public
+	---Purpose: Fill a Rectangle in me with a Pixel 
+	--	    starting at X,Y to (X+Width-1,Y+Height-1) .
+
+    DrawRect  ( me : mutable ; aPixel : anyPixel ;
+		X, Y, Width, Height : in Integer from Standard) ;
+	---Level: Public
+	---Purpose: draw a Rectangle in me with a Pixel  
+	--	    starting at X,Y to (X+Width-1,Y+Height-1) .
+
+    DrawLine  ( me : mutable ; aPixel : anyPixel ;
+		X1, Y1, X2, Y2 : in Integer from Standard) ;
+	---Level: Public
+	---Purpose: draw a line in me with a Pixel  
+	--	    starting at X1,Y1 to X2,Y2 .
+
+    --DrawCircle  ( me : mutable ; aPixel : anyPixel ;
+		  --X, Y, R : in Integer from Standard) ;
+	-- ---Level: Public
+	-- ---Purpose: draw a circle in me with a Pixel
+
+    Clear    ( me : mutable ) ;
+	---Level: Public
+	---Purpose: Fill the entire Image with the BackgroundPixel.
+
+    Dump    ( me : immutable ) ;
+	---Level: Public
+	---Purpose: Debug
+    
+    -- ******************* Redefined method  *************************** 
+
+--	ShallowCopy (me) returns mutable like me is redefined deferred ;
+	---Level: Public
+--	    ---Purpose: Returns a copy at the first level of <me>. The objects 
+--	    --         referenced are not copied. Entities copied by 
+--	    --         ShallowCopy are equal.
+--	    ---C++:  function call
+
+--	DeepCopy (me) returns mutable like me is redefined deferred ;
+	---Level: Public
+--	    ---Purpose: Returns a deep copy of <me>. The objects 
+--	    --          referenced are copied. Entities copied by 
+--	    --          DeepCopy are similar (c.f the Method IsSimilar).
+--	    ---C++:  function call
+
+    --  *******************  Private Method   ******************* 
+
+    FlipHorizontal  ( me : mutable ) is private ;
+    FlipVertical    ( me : mutable ) is private ;
+    FlipMainDiagonal( me : mutable ) is private ;
+    FlipAntiDiagonal( me : mutable ) is private ;
+    Rotate90        ( me : mutable ) is private ;
+    Rotate180       ( me : mutable ) is private ;
+    Rotate270       ( me : mutable ) is private ;
+    PixelField      ( me : immutable ) 
+			returns PixelField from Image is private ;
+    	---C++: return const &
+    PixelFieldCopyTo(   me  : immutable ; 
+		      	Dst : in out PixelField from Image ;
+			LowR,LowC,UpR,UpC,
+			DstLowR, DstLowC :in Integer from Standard) is private;
+    PixelFieldCopyFrom( me  : mutable ; 
+		      	Dst : PixelField from Image ;
+			LowR,LowC,UpR,UpC,
+			DstLowR, DstLowC :in Integer from Standard) is private;
+
+    PixelFieldDestroy( me  : mutable ) is private ; 
+
+    CirclePixels( me : mutable ;
+		  Pixel : anyPixel ;
+		  XCenter, YCenter, x,y : Integer from Standard ;
+		  LowX,LowY,UpX,UpY : Integer from Standard ) is private ;
+
+fields
+    myX,myY		: Integer from Standard ;
+    myPixelField	: Address from Standard ;
+    myBackgroundPixel	: anyPixel;
+end GImage from Image;

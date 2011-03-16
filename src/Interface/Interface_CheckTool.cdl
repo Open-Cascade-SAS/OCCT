@@ -1,0 +1,105 @@
+-- File:	Interface_CheckTool.cdl
+-- Created:	Tue Feb  2 16:12:59 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CheckTool  from Interface
+
+    ---Purpose : Performs Checks on Entities, using General Service Library and
+    --           Modules to work. Works on one Entity or on a complete Model
+
+uses Transient, InterfaceModel, Check,
+     CheckIterator, EntityIterator, HGraph, Graph, ShareTool,
+     Messenger from Message,
+     Protocol from Interface, GeneralLib,  GTool
+
+raises CheckFailure
+
+is
+
+    Create (model : InterfaceModel; protocol : Protocol from Interface)
+    	returns CheckTool;
+    ---Purpose : Creates a CheckTool, by calling the General Service Library
+    --           and Modules, selected through a Protocol, to work on a Model
+    --           Moreover, Protocol recognizes Unknown Entities
+
+    Create (model : InterfaceModel)
+    	returns CheckTool;
+    ---Purpose : Creates a CheckTool, by calling the General Service Library
+    --           and Modules, selected through a Protocol, to work on a Model
+    --           Protocol and so on are taken from the Model (its GTool)
+
+    Create (graph : Graph) returns CheckTool;
+    ---Purpose : Creates a CheckTool from a Graph. The Graph contains a Model
+    --           which designates a Protocol: they are used to create ShareTool
+    
+    Create (hgraph : HGraph) returns CheckTool;
+
+    FillCheck (me : in out; ent : Transient; sh : ShareTool; ach : in out Check);
+    ---Purpose : Fills as required a Check with the Error and Warning messages
+    --           produced by Checking a given Entity.
+    --           For an Erroneous or Corrected Entity : Check build at Analyse
+    --           time; else, Check computed for Entity (Verify integrity), can
+    --           use a Graph as required to control context
+
+    Print (me; ach : Check; S : Messenger from Message);
+    ---Purpose : Utility method which Prints the content of a Check
+
+    Print (me; list : CheckIterator; S : Messenger from Message);
+    ---Purpose : Simply Lists all the Checks and the Content (messages) and the
+    --           Entity, if there is, of each Check
+    --           (if all Checks are OK, nothing is Printed) 
+
+    	-- --    Checking a Model (the one given for Creation)    -- --
+
+    Check (me : in out; num : Integer) returns Check;
+    ---Purpose : Returns the Check associated to an Entity identified by
+    --           its Number in a Model.
+
+    CheckSuccess (me : in out; reset : Boolean = Standard_False)
+    	  raises CheckFailure;
+    ---Purpose : Checks if any Error has been detected (CheckList not empty)
+    --           Returns normally if none, raises exception if some exists.
+    --           It reuses the last computations from other checking methods,
+    --           unless the argument <resest> is given True
+
+    CompleteCheckList (me : in out)  returns CheckIterator;
+    ---Purpose : Returns list of all "remarkable" informations, which include :
+    --           - GlobalCheck, if not empty
+    --           - Error Checks, for all Errors (Verify + Analyse)
+    --           - also Corrected Entities
+    --           - and Unknown Entities : for those, each Unknown Entity is
+    --             associated to an empty Check (it is neither an Error nor a
+    --             Correction, but a remarkable information)
+
+    CheckList (me : in out)  returns CheckIterator;
+    ---Purpose : Returns list of all Errors detected
+    --           Note that presence of Unknown Entities is not an error
+    --           Cumulates : GlobalCheck if error +
+    --             AnalyseCheckList + VerifyCheckList
+
+    AnalyseCheckList (me : in out)  returns CheckIterator;
+    ---Purpose : Returns list of errors dectected at Analyse time (syntactic)
+    --           (note that GlobalCheck is not in this list)
+
+    VerifyCheckList (me : in out)  returns CheckIterator;
+    ---Purpose : Returns list of integrity constraints errors (semantic)
+    --           (note that GlobalCheck is not in this list)
+
+    WarningCheckList (me : in out)  returns CheckIterator;
+    ---Purpose : Returns list of Corrections (includes GlobalCheck if corrected)
+
+    UnknownEntities (me : in out)  returns EntityIterator;
+    ---Purpose : Returns list of Unknown Entities
+    --           Note that Error and Erroneous Entities are not considered
+    --           as Unknown
+
+fields
+
+    thegtool : GTool;
+    theshare : ShareTool;
+    thestat  : Integer;
+
+end CheckTool;

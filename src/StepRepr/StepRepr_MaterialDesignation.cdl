@@ -1,0 +1,38 @@
+-- File:	StepRepr_MaterialDesignation.cdl
+-- Created:	Fri Jul 24 15:32:36 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class MaterialDesignation  from StepRepr
+
+inherits TShared  from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	CharacterizedDefinition from StepRepr
+
+is
+
+    Create returns mutable MaterialDesignation;
+
+    Init (me : mutable;
+    	  aName : mutable HAsciiString from TCollection;
+	  aOfDefinition : CharacterizedDefinition);
+
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+    	SetOfDefinition (me : mutable; aOfDefinition : CharacterizedDefinition);
+	OfDefinition (me) returns CharacterizedDefinition;
+
+fields
+
+    	name : HAsciiString from TCollection;
+    	ofDefinition : CharacterizedDefinition;
+
+end MaterialDesignation;

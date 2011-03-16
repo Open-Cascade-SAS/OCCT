@@ -1,0 +1,66 @@
+-- File:	XCAFDoc_Material.cdl
+-- Created:	Wed Mar  5 16:11:43 2003
+-- Author:	Sergey KUUL
+--		<skl@friendox>
+---Copyright:	 Matra Datavision 2003
+
+class Material from XCAFDoc inherits Attribute from TDF
+uses
+    Label from TDF,
+    RelocationTable from TDF,
+    HAsciiString from TCollection
+
+is
+    Create returns Material from XCAFDoc;
+    
+    ---Category: class methods
+    --           =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+    
+    Set (myclass; label : Label from TDF;
+    	    	  aName : HAsciiString from TCollection;
+    	    	  aDescription : HAsciiString from TCollection;
+    	    	  aDensity : Real from Standard;
+    	    	  aDensName : HAsciiString from TCollection;
+    	    	  aDensValType : HAsciiString from TCollection)
+    returns Material from XCAFDoc;
+
+    Set (me : mutable; aName : HAsciiString from TCollection;
+    	    	       aDescription : HAsciiString from TCollection;
+    	    	       aDensity : Real from Standard;
+    	    	       aDensName : HAsciiString from TCollection;
+    	    	       aDensValType : HAsciiString from TCollection);
+	     
+    GetName (me) returns HAsciiString from TCollection;
+
+    GetDescription (me) returns HAsciiString from TCollection;
+
+    GetDensity (me) returns Real from Standard;
+
+    GetDensName (me) returns HAsciiString from TCollection;
+
+    GetDensValType (me) returns HAsciiString from TCollection;
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+    myName        : HAsciiString from TCollection;
+    myDescription : HAsciiString from TCollection;
+    myDensity     : Real from Standard;
+    myDensName    : HAsciiString from TCollection;
+    myDensValType : HAsciiString from TCollection;
+
+end Material;

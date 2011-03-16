@@ -1,0 +1,130 @@
+-- File:	TDesignStd_Naming.cdl
+-- Created:	Mon Sep  8 17:08:54 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Naming from TNaming inherits Attribute from TDF
+
+
+    ---Purpose:  This attribute  store the  topological  naming of any
+    --           selected   shape,  when this  shape  is  not  already
+    --           attached to a specific label. This class is also used
+    --            to solve  it when  the argumentsof the  toipological
+    --           naming are modified.
+
+
+
+uses
+
+    Attribute       from TDF,
+    Label           from TDF,
+    LabelMap        from TDF,
+    RelocationTable from TDF,
+    GUID            from Standard,
+    NamedShape      from TNaming,
+    Name            from TNaming,
+    Shape           from TopoDS,
+    AttributeIndexedMap from TDF,
+    IDFilter        from TDF,
+    DataSet         from TDF,
+    Scope           from TNaming
+
+is
+
+
+
+    ---Purpose: following code from TDesignStd
+    --          ==============================
+    
+
+    GetID  (myclass)      
+    ---C++: return const &  
+    returns GUID from Standard;  
+    
+    Insert (myclass;  under : Label from TDF)
+    returns Naming from TNaming;
+ 
+    Name   (myclass; where     : Label    from TDF;
+    	    	     Selection : Shape    from TopoDS;
+		     Context   : Shape    from TopoDS;
+		     Geometry  : Boolean  from Standard = Standard_False; 
+     	    	     KeepOrientation  : Boolean  from Standard = Standard_False; 
+    	    	     BNproblem : Boolean  from Standard = Standard_False)
+    returns NamedShape from TNaming;    
+    ---Purpose: Creates  a   Namimg  attribute  at  label <where>   to
+    --             identify  the   shape   <Selection>.    Geometry is
+    --          Standard_True  if   we  are  only  interested  by  the
+    --                 underlying   geometry     (e.g.     setting   a
+    --          constraint). <Context> is  used to find neighbours  of
+    --          <S> when required by the naming. 
+    --          If KeepOrientation is True the Selection orientation is taken 
+    --          into  account. BNproblem == True points out that Context sub-shapes 
+    --          in  DF have orientation differences with Context shape itself.
+
+
+    ---Purpose: instance method
+    --          ===============
+
+
+    Create 
+    returns mutable Naming from TNaming; 
+
+    IsDefined (me) returns Boolean from Standard;
+	    
+    GetName(me)
+    returns Name from TNaming;
+	---C++: return const &
+     
+    ChangeName(me : mutable)
+    returns Name from TNaming;
+	---C++: return &
+     
+    Regenerate (me:mutable; scope  :  in  out  LabelMap  from  TDF) 
+    ---Purpose:  regenerate only the Name associated to me
+    returns Boolean;    
+
+    Solve (me : mutable; scope : in out LabelMap from TDF)  
+    ---Purpose: Regenerate recursively the  whole name with scope.  If
+    --          scope  is empty it  means that  all the labels  of the
+    --          framework are valid.
+    returns Boolean from Standard;    
+
+    ID(me)
+    ---C++: return const & 
+    returns GUID from Standard
+    is redefined;
+
+    ---Purpose: Deferred methods from TDF_Attribute
+    --          ===================================
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+	
+    References (me; aDataSet : DataSet from TDF)
+    is redefined virtual;
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+    
+    ExtendedDump(me;
+    	    	 anOS : in out OStream from Standard;
+    	    	 aFilter : IDFilter from TDF;
+    	    	 aMap    : in out AttributeIndexedMap from TDF)
+    	is redefined;
+    
+    
+fields
+
+    myName : Name from TNaming;
+	    
+end Naming;
+

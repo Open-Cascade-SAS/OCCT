@@ -1,0 +1,131 @@
+--
+-- File      :  CircArraySubfigure.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CircArraySubfigure from IGESDraw 
+	
+inherits IGESEntity 
+
+        ---Purpose: Defines IGES Circular Array Subfigure Instance Entity,
+        --            Type <414> Form Number <0> in package IGESDraw
+        --
+        --            Used to produce copies of object called the base entity,
+        --            arranging them around the edge of an imaginary circle
+        --            whose center and radius are specified
+
+uses
+
+        HArray1OfInteger from TColStd,
+        XYZ              from gp,
+        Pnt              from gp 
+
+raises OutOfRange
+
+is
+
+        Create returns mutable CircArraySubfigure;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aBase     : IGESEntity;
+              aNumLocs  : Integer;
+              aCenter   : XYZ;
+              aRadius   : Real;
+              aStAngle  : Real;
+              aDelAngle : Real;
+              aFlag     : Integer;
+              allNumPos : HArray1OfInteger);
+        ---Purpose : This method is used to set the fields of the class
+        --           CircArraySubfigure
+        --       - aBase     : Base entity
+        --       - aNumLocs  : Total number of possible instance locations
+        --       - aCenter   : Coordinates of Center of imaginary circle
+        --       - aRadius   : Radius of imaginary circle
+        --       - aStAngle  : Start angle in radians
+        --       - aDelAngle : Delta angle in radians
+        --       - aFlag     : DO-DON'T flag to control which portion to
+        --                     display
+        --       - allNumPos : All position to be or not to be processed
+
+        BaseEntity (me) returns IGESEntity;
+        ---Purpose : returns the base entity, copies of which are produced
+
+        NbLocations (me) returns Integer;
+        ---Purpose : returns total number of possible instance locations
+
+        CenterPoint (me) returns Pnt;
+        ---Purpose : returns the center of the imaginary circle
+
+        TransformedCenterPoint (me) returns Pnt;
+        ---Purpose : returns the Transformed center of the imaginary circle
+
+        CircleRadius (me) returns Real;
+        ---Purpose : returns the radius of the imaginary circle
+
+        StartAngle (me) returns Real;
+        ---Purpose : returns the start angle in radians
+
+        DeltaAngle (me) returns Real;
+        ---Purpose : returns the delta angle in radians
+
+        ListCount (me) returns Integer;
+        ---Purpose : returns 0 if all elements to be displayed
+
+        DisplayFlag (me) returns Boolean;
+        ---Purpose : returns True if (ListCount = 0) all elements are to be displayed
+
+        DoDontFlag (me) returns Boolean;
+        ---Purpose : returns 0 if half or fewer of the elements of  the array are defined
+        --         1 if half or more of the elements are defined
+
+        PositionNum (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns whether Index is to be processed (DO)
+        -- or not to be processed(DON'T)
+        -- if (ListCount = 0) return theDoDontFlag
+        -- raises exception if Index <= 0 or Index > ListCount().
+
+        ListPosition (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th value position
+        -- raises exception if Index <= 0 or Index > ListCount().
+
+fields
+
+--
+-- Class    : IGESDraw_CircArraySubfigure
+--
+-- Purpose  : Declaration of the variables specific to a CircArraySubfigure.
+--
+-- Reminder : A  Circular Array Subfigure Instance is defined by :
+--                  - a base entity which is replicated
+--                  - total number of possible instance locations
+--                  - coordinates of Center of imaginary circle
+--                  - radius of imaginary circle
+--                  - start angle to govern the location of first instance
+--                  - delta angle to govern successive instances' distribution
+--                  - a DO-DON'T flag to control which portion to display
+--
+
+        theBaseEntity        : IGESEntity;
+
+        theNbLocations       : Integer;
+
+        theCenter            : XYZ;
+
+        theRadius            : Real;
+
+        theStartAngle        : Real;
+
+        theDeltaAngle        : Real;
+
+        theDoDontFlag        : Integer;
+
+        thePositions         : HArray1OfInteger;
+
+end CircArraySubfigure;

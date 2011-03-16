@@ -1,0 +1,32 @@
+-- File:	PNaming.cdl
+-- Created:	Fri Apr 11 12:38:53 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+
+package PNaming 
+
+	---Purpose: 
+
+uses Standard,
+     PCollection,
+     PTopoDS,
+     PColStd,
+     PDF
+    
+is
+
+    class Name; 
+    
+    class Name_1; 
+    
+    class NamedShape;
+    
+    class Naming; 
+    
+    class Naming_1; 
+    
+    class HArray1OfNamedShape instantiates HArray1 from PCollection (NamedShape);
+    
+end PNaming;

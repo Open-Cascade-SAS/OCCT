@@ -1,0 +1,77 @@
+-- File:	DrawablePolyEdgeTool.cdl
+-- Created:	Thu Aug 27 16:28:55 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class DrawablePolyEdgeTool from HLRTest inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses
+    Boolean      from Standard,
+    Integer      from Standard,
+    Display      from Draw,
+    PolyAlgo     from HLRBRep,
+    ListOfBPoint from HLRBRep
+
+is
+    Create(Alg    : PolyAlgo from HLRBRep;
+           ViewId : Integer  from Standard;
+           Debug  : Boolean  from Standard = Standard_False)
+    returns mutable DrawablePolyEdgeTool from HLRTest;
+    
+    Show(me : mutable)
+    	---C++: inline
+    is static;
+
+    Hide(me : mutable)
+    	---C++: inline
+    is static;
+
+    DisplayRg1Line(me : mutable; B : Boolean from Standard)
+	---C++: inline
+    is static;
+    
+    DisplayRg1Line(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    DisplayRgNLine(me : mutable; B : Boolean from Standard)
+	---C++: inline
+    is static;
+    
+    DisplayRgNLine(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    DisplayHidden(me : mutable; B : Boolean from Standard)
+	---C++: inline
+    is static;
+    
+    DisplayHidden(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    DrawOn(me; D : in out Display from Draw);
+    
+    Debug(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    Debug(me : mutable; B : Boolean from Standard)
+	---C++: inline
+    is static;
+    
+fields
+    myAlgo     : PolyAlgo     from HLRBRep;
+    myDispRg1  : Boolean      from Standard;
+    myDispRgN  : Boolean      from Standard;
+    myDispHid  : Boolean      from Standard;
+    myViewId   : Integer      from Standard;
+    myBiPntVis : ListOfBPoint from HLRBRep;
+    myBiPntHid : ListOfBPoint from HLRBRep;
+    myDebug    : Boolean      from Standard;
+    myHideMode : Boolean      from Standard;
+
+end DrawablePolyEdgeTool;

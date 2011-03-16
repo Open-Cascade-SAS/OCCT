@@ -1,0 +1,64 @@
+--
+-- File      :  LevelFunction.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LevelFunction from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines LevelFunction, Type <406> Form <3>
+        --          in package IGESAppli
+        --          Used to transfer the meaning or intended use of a level
+        --          in the sending system
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable LevelFunction;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me           : mutable;
+              nbPropVal    : Integer;
+              aCode        : Integer;
+              aFuncDescrip : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           LevelFunction
+        --       - nbPropVal    : Number of Properties, always = 2
+        --       - aCode        : Function Description code
+        --                        default = 0
+        --       - aFuncDescrip : Function Description
+        --                        default = null string
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : is always 2
+
+        FuncDescriptionCode (me) returns Integer;
+        ---Purpose : returns the function description code . Default = 0
+
+        FuncDescription (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the function description
+        -- Default = null string
+
+fields
+
+--
+-- Class    : IGESAppli_LevelFunction
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class LevelFunction.
+--
+-- Reminder : A LevelFunction instance is defined by :
+--            -  Function Description code, default = 0
+--            -  Function Description, default = null string
+
+        theNbPropertyValues : Integer;
+        theFuncDescripCode  : Integer;
+        theFuncDescrip      : HAsciiString;
+
+end LevelFunction;

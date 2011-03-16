@@ -1,0 +1,34 @@
+-- File:        XmlMDataStd_BooleanArrayDriver.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class BooleanArrayDriver from XmlMDataStd inherits ADriver from XmlMDF
+
+uses
+
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+
+    Create (theMessageDriver:MessageDriver from CDM)
+    returns mutable BooleanArrayDriver from XmlMDataStd;
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+    returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+end BooleanArrayDriver;

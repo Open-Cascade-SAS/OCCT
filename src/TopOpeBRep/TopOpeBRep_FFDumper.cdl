@@ -1,0 +1,40 @@
+-- File:	TopOpeBRep_FFDumper.cdl
+-- Created:	Wed Oct 23 15:36:43 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class FFDumper from TopOpeBRep inherits TShared from MMgt
+
+uses
+
+    DataMapOfShapeInteger from TopTools,
+    PFacesFiller from TopOpeBRep,
+    LineInter from TopOpeBRep, 
+    VPointInter from TopOpeBRep,
+    VPointInterIterator from TopOpeBRep,
+    Kind from TopOpeBRepDS,    
+    Shape from TopoDS,
+    Face from TopoDS
+    
+is 
+
+    Create(PFF:PFacesFiller) returns mutable FFDumper from  TopOpeBRep; 
+    Init(me:mutable;PFF:PFacesFiller); 
+    DumpLine(me:mutable;I:Integer);
+    DumpLine(me:mutable;L:LineInter);
+    DumpVP(me:mutable;VP:VPointInter);
+    DumpVP(me:mutable;VP:VPointInter;ISI:Integer); 
+    ExploreIndex(me;S:Shape;ISI:Integer) returns Integer; 
+    DumpDSP(me;VP:VPointInter;GK:Kind;G:Integer;newinDS:Boolean);
+    PFacesFillerDummy(me) returns PFacesFiller;
+
+fields
+
+    myPFF:PFacesFiller from TopOpeBRep;
+    myF1,myF2:Face from TopoDS;
+    myEM1,myEM2:DataMapOfShapeInteger from TopTools; 
+    myEn1,myEn2:Integer;
+    myLineIndex : Integer;
+
+end FFDumper from TopOpeBRep;

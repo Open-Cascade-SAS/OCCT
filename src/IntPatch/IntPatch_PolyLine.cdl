@@ -1,0 +1,59 @@
+-- File:      IntPatch_PolyLine.cdl
+-- Created:   Fri Jan 29 17:14:59 1993
+-- Author:    Isabelle GRIGNON
+---Copyright: Matra Datavision 1993
+
+class PolyLine from IntPatch
+
+inherits Polygo from IntPatch
+
+uses Pnt2d from gp,
+     Box2d from Bnd,
+     IType from IntPatch,
+     WLine from IntPatch,
+     RLine from IntPatch
+
+is
+
+    Create
+    returns PolyLine from IntPatch;
+
+    Create (InitDefle: Real from Standard)
+   	returns PolyLine from IntPatch;
+
+    SetWLine(me: in out; OnFirst: Boolean from Standard; Line: WLine from IntPatch)
+    	is static;
+
+    SetRLine(me: in out; OnFirst: Boolean from Standard; Line: RLine from IntPatch)
+      	is static;
+
+    Prepare(me: in out)
+      	is static private;
+
+    ResetError(me: in out);
+
+    Bounding (me)  
+    	---C++: return const & 
+    	returns Box2d from Bnd;
+  
+    Error(me) returns Real from Standard;
+                       	    	          
+    Closed(me) returns Boolean from Standard;
+
+    NbPoints(me) returns Integer;
+  
+    Point(me; Index : Integer) 
+    	returns Pnt2d from gp;
+                                      	    	 
+
+fields
+
+    box      : Box2d   from Bnd;
+    pnt      : Pnt2d   from gp;
+    typ      : IType   from IntPatch;
+    onfirst  : Boolean from Standard;
+    wpoly    : WLine from IntPatch;
+    rpoly    : RLine from IntPatch;
+    defle    : Real from Standard;
+
+end PolyLine;

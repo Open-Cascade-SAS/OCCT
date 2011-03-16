@@ -1,0 +1,140 @@
+-- File:	ExtPElC.cdl
+-- Created:	Thu Feb 21 18:03:14 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class   ExtPElC from Extrema 
+    	---Purpose: It calculates all the distances between a point
+    	--          and an elementary curve.
+    	--          These distances can be minimum or maximum.
+
+uses    POnCurv from Extrema,
+        Lin     from gp,
+    	Circ    from gp,
+    	Elips   from gp,
+    	Hypr    from gp,
+    	Parab   from gp,
+    	Pnt     from gp
+
+raises  NotDone     from StdFail,
+    	OutOfRange  from Standard
+
+is
+    Create returns ExtPElC;
+
+    Create (P: Pnt; C: Lin; Tol: Real; Uinf,Usup: Real)
+    	returns ExtPElC;
+    	---Purpose: Calculates the extremum distance between the
+    	--          point P and the segment [Uinf,Usup] of the line C.
+
+    Perform(me: in out; P: Pnt; C: Lin; Tol: Real; Uinf,Usup: Real)
+    is static;
+
+
+    Create (P: Pnt; C: Circ; Tol: Real; Uinf,Usup: Real)
+    	returns ExtPElC;
+    	---Purpose: Calculates the 2 extremum distances between the
+    	--          point P and the segment [Uinf,Usup] of the circle C.
+    	--          Tol is used to determine
+    	--          if P is on the axis of the circle or
+    	--          if an extremum is on an endpoint of the segment.
+    	--          If P is on the axis of the circle,
+    	--          there are infinite solution then IsDone(me)=False.
+    	--          The conditions on the Uinf and Usup are:
+    	--            0. <= Uinf <= 2.*PI and Usup > Uinf.
+    	--          If Usup > Uinf + 2.*PI, then only the solutions in
+    	--          the range [Uinf,Uinf+2.*PI[ are computed.
+
+
+    Perform(me: in out; P: Pnt; C: Circ; Tol: Real; Uinf,Usup: Real)
+    is static;
+
+    Create (P: Pnt; C: Elips; Tol: Real; Uinf,Usup: Real)
+    	returns ExtPElC;
+    	---Purpose: Calculates the 4 extremum distances between the
+    	--          point P and the segment [Uinf,Usup] of the elipse C.
+     	--          Tol is used to determine
+     	--          if the point is on the axis of the elipse and
+     	--          if the major radius is equal to the minor radius or
+     	--          if an extremum is on an endpoint of the segment.
+    	--          If P is on the axis of the elipse,
+    	--          there are infinite solution then IsDone(me)=False.
+    	--          The conditions on the Uinf and Usup are:
+    	--            0. <= Uinf <= 2.*PI and Usup > Uinf.
+    	--          If Usup > Uinf + 2.*PI, then only the solutions in
+    	--          the range [Uinf,Uinf+2.*PI[ are computed.
+
+
+    Perform(me: in out; P: Pnt; C: Elips; Tol: Real; Uinf,Usup: Real)
+    is static;
+
+    Create (P: Pnt; C: Hypr; Tol: Real; Uinf,Usup: Real)
+    	returns ExtPElC;
+    	---Purpose: Calculates the extremum distances between the
+    	--          point P and the segment [Uinf,Usup] of the hyperbola
+    	--          C.
+    	--          Tol is used to determine if two solutions u and v
+    	--          are identical; the condition is:
+    	--          dist(C(u),C(v)) < Tol.
+
+    Perform(me: in out; P: Pnt; C: Hypr; Tol: Real; Uinf,Usup: Real)
+    is static;
+
+    Create (P: Pnt; C: Parab; Tol: Real; Uinf,Usup: Real)
+    	returns ExtPElC;
+    	---Purpose: Calculates the 4 extremum distances between the
+    	--          point P and the segment [Uinf,Usup] of the parabola
+    	--          C.
+    	--          Tol is used to determine if two solutions u and v
+    	--          are identical; the condition is:
+    	--          dist(C(u),C(v)) < Tol.
+
+    Perform(me: in out; P: Pnt; C: Parab; Tol: Real; Uinf,Usup: Real)
+    is static;
+    
+
+    IsDone (me) returns Boolean
+    	---Purpose: True if the distances are found.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+    
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	OutOfRange
+	    	-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    IsMin (me; N: Integer) returns Boolean
+    	---Purpose: Returns True if the Nth extremum distance is a
+    	--          minimum.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	OutOfRange
+	    	-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    Point (me; N: Integer) returns POnCurv
+    	---Purpose: Returns the point of the Nth extremum distance.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	OutOfRange
+	    	-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+fields
+    myDone : Boolean;
+    myNbExt: Integer;
+    mySqDist: Real [4];
+    myIsMin: Boolean [4];
+    myPoint: POnCurv from Extrema [4];
+
+end ExtPElC;

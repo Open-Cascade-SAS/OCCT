@@ -1,0 +1,63 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:    OSD_EnvironmentIterator.cdl
+-- Created: Sept 11 1992
+-- Author:  Stephan GARNAUD
+--          <sga@sparc4>
+
+
+class EnvironmentIterator from OSD   
+
+ ---Purpose: This allows consultation of every environment variable.
+ --          There is no specific order of results.
+
+uses Environment, Error, AsciiString from TCollection
+raises OSDError
+
+is
+ Create returns EnvironmentIterator;
+    ---Purpose: Instantiates Object as Iterator;
+    ---Level: Public
+
+ Destroy ( me : out );
+	---C++: alias ~
+	-- Only implemented on Windows NT system
+
+ More (me : in out) returns Boolean  is static;
+    ---Purpose: Returns TRUE if there are other environment variables.
+    ---Level: Public
+
+ Next (me : in out)  is static;
+    ---Purpose: Sets the iterator to the next item.
+    --          Returns the item value corresponding to the current
+    --          position of the iterator.
+    ---Level: Public
+
+ Values (me : in out) returns Environment is static;
+    ---Purpose: Returns the next environment variable found.
+    ---Level: Public
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+    ---Level: Public
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+    ---Level: Public
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+    ---Level: Public
+   raises OSDError is static ;
+
+ Error (me) returns Integer is static ;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+    ---Level: Public
+
+ fields
+      myEnv        : Address;         -- Windows NT specific
+      myCount      : Integer;         -- Count in list of variables
+      myError      : Error;
+end EnvironmentIterator from OSD;
+

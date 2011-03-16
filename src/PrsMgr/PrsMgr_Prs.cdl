@@ -1,0 +1,64 @@
+-- File:	P3D_Prs.cdl
+-- Created:	Tue Jan 31 14:19:42 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+--Modified by   rob 11-mar-98 : Implement virtual methods from Graphic3d_Structure
+--                              to optimize HLR Display...
+---Copyright:	 Matra Datavision 1995
+
+class Prs from PrsMgr inherits Presentation from Prs3d
+
+uses
+    Array2OfReal          from TColStd,
+    StructureManager      from Graphic3d,
+    Structure             from Graphic3d,
+    DataStructureManager  from Graphic3d,
+    TypeOfPresentation3d  from PrsMgr,
+    Presentation3dPointer from PrsMgr
+    
+is
+    Create(aStructureManager     : StructureManager from Graphic3d; 
+    	   aPresentation         : Presentation3dPointer from PrsMgr; 
+           aTypeOfPresentation3d : TypeOfPresentation3d from PrsMgr)
+    returns mutable Prs from PrsMgr;
+    
+    Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
+    returns Structure from Graphic3d
+    is redefined static;
+
+    Compute ( me	: mutable;
+	      aProjector: DataStructureManager from Graphic3d;
+	      AMatrix	: Array2OfReal from TColStd )
+    returns Structure from Graphic3d is 
+    redefined static;
+    ---Purpose: the "degenerated" Structure is displayed with
+    --          a transformation defined by <AMatrix>
+    --          which is not a Pure Translation.
+    --          We have to take in account this Transformation
+    --          in the computation of hidden line removal...
+    --          returns a filled Graphic Structure.
+
+
+
+    Compute(me              : mutable; 
+    	    aProjector      : DataStructureManager from Graphic3d;
+	    ComputedStruct  : in out Structure from Graphic3d)
+    is redefined static;
+    ---Purpose: No need to return a structure, just to fill
+    --          <ComputedStruct> ....
+
+
+    Compute ( me	: mutable;
+	      aProjector: DataStructureManager from Graphic3d;
+	      AMatrix	: Array2OfReal from TColStd ;
+    	      aStructure: in out Structure from Graphic3d )
+    is redefined static;
+    ---Purpose: No Need to return a Structure, just to
+    --          Fill <aStructure>. The Trsf has to be taken in account
+    --          in the computation (Rotation Part....)
+
+    
+
+fields 
+    myPresentation3d: Presentation3dPointer from PrsMgr;
+end Prs from PrsMgr;

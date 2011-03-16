@@ -1,0 +1,144 @@
+// File:	PLib_ChangeDim.gxx
+// Created:	Fri Sep  1 15:52:10 1995
+// Author:	Laurent BOURESCHE
+//		<lbo@phylox>
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::SetPoles(const Array1OfPoints& Poles,
+		    TColStd_Array1OfReal& FP)
+{
+  Standard_Integer i;
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+  if (Dimension_gen == 3) {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      const Point& P = Poles(i);
+      FP(j) = P.Coord(1); j++;
+      FP(j) = P.Coord(2); j++;
+      FP(j) = P.Coord(3); j++;
+    }
+  }
+  else {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      const Point& P = Poles(i);
+      FP(j) = P.Coord(1); j++;
+      FP(j) = P.Coord(2); j++;
+    }
+  }
+}
+
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::SetPoles(const Array1OfPoints&       Poles,
+		    const TColStd_Array1OfReal& Weights,
+		    TColStd_Array1OfReal&       FP)
+{
+  Standard_Real w;
+  Standard_Integer i;
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+  if (Dimension_gen == 3) {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      w = Weights(i);
+      const Point& P = Poles(i);
+      FP(j) = P.Coord(1) * w; j++;
+      FP(j) = P.Coord(2) * w; j++;
+      FP(j) = P.Coord(3) * w; j++;
+      FP(j) =              w; j++;
+    }
+  }
+  else {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      w = Weights(i);
+      const Point& P = Poles(i);
+      FP(j) = P.Coord(1) * w; j++;
+      FP(j) = P.Coord(2) * w; j++;
+      FP(j) =              w; j++;
+    }
+  }
+}
+
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    Array1OfPoints&             Poles)
+{
+  Standard_Integer i;
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+  if (Dimension_gen == 3) {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      Point& P = Poles(i);
+      P.SetCoord(1,FP(j)); j++;
+      P.SetCoord(2,FP(j)); j++;
+      P.SetCoord(3,FP(j)); j++;
+    }
+  }
+  else {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      Point& P = Poles(i);
+      P.SetCoord(1,FP(j)); j++;
+      P.SetCoord(2,FP(j)); j++;
+    }
+  }
+}
+
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    Array1OfPoints&             Poles,
+		    TColStd_Array1OfReal&       Weights)
+{
+  Standard_Real w;
+  Standard_Integer i;
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+  if (Dimension_gen == 3) {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      Weights(i) = w = FP(j + 3);
+      Point& P = Poles(i);
+      P.SetCoord(1,FP(j) / w); j++;
+      P.SetCoord(2,FP(j) / w); j++;
+      P.SetCoord(3,FP(j) / w); j++;
+      j++;
+    }
+  }
+  else {
+    
+    for (i = PLower; i <= PUpper; i++) {
+      Weights(i) = w = FP(j + 2);
+      Point& P = Poles(i);
+      P.SetCoord(1,FP(j) / w); j++;
+      P.SetCoord(2,FP(j) / w); j++;
+      j++;
+    }
+  }
+}
+

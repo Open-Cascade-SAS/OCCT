@@ -1,0 +1,364 @@
+-- File:	LocalAnalysis_SurfaceContinuity.cdl
+-- Created:	Fri Aug  9 10:54:22 1996
+-- Author:	Herve LOUESSARD
+--		<hl1@sgi30>
+--modified  by  Jerome  LEMONIER 
+--Wed Aug 13 10:46 
+--New  constructor  and  new  method  ComputeAnalysis 
+---Copyright:	 Matra Datavision 1996
+
+class SurfaceContinuity from  LocalAnalysis  
+
+    ---Purpose: 
+    --          This class gives tools to check local continuity C0
+    --          C1 C2 G1 G2 between  two points situated on two surfaces
+   
+uses 
+    Shape                        from GeomAbs,
+    Boolean, Integer, Real       from Standard,
+    Surface                      from Geom,
+    SLProps                      from GeomLProp,
+    Curve                        from Geom, 
+    Curve                        from Geom2d,
+    StatusErrorType              from LocalAnalysis
+   
+raises
+ 
+    NotDone                    from StdFail 
+
+is
+
+
+    Create( Surf1: Surface from Geom; u1, v1: Real from Standard;
+            Surf2: Surface from Geom; u2, v2: Real from Standard;
+    	    Order: Shape from GeomAbs; 
+            EpsNul: Real from Standard= 0.001;
+	    EpsC0 : Real from Standard= 0.001;
+	    EpsC1 : Real from Standard= 0.001;
+            EpsC2 : Real from Standard= 0.001;
+            EpsG1 : Real from Standard= 0.001;
+            Percent :Real from Standard= 0.01;   	    
+            Maxlen: Real from  Standard =10000)
+	     
+	---Purpose:   
+        --           -u1,v1 are  the parameters of the point on Surf1 
+        --           -u2,v2  are  the  parameters of the point on Surf2 
+    	--           -Order  is the required continuity:
+    	--            GeomAbs_C0    GeomAbs_C1  GeomAbs_C2 
+    	--            GeomAbs_G1 GeomAbs_G2            
+    	--           
+    	--           -EpsNul  is  used to  detect a  a vector with nul
+    	--           magnitude 
+    	--           
+    	--           -EpsC0 is used for C0  continuity to confuse two
+    	--            points (in mm) 
+    	--           
+    	--           -EpsC1 is  an angular  tolerance in radians  used
+    	--            for C1 continuity  to compare the angle between 
+    	--            the first derivatives   
+    	--           
+    	--           -EpsC2 is an   angular tolerance in radians  used
+    	--           for C2  continuity to  compare the angle  between
+    	--           the second derivatives 
+    	--            
+    	--           -EpsG1 is an  angular  tolerance in radians  used
+    	--           for G1  continuity to compare  the angle  between
+    	--           the  normals
+    	--            
+    	--            
+    	--           -Percent  : percentage of  curvature variation (unitless)
+    	--           used for G2 continuity 
+    	--           
+    	--           - Maxlen is the maximum length of Surf1 or Surf2  in
+    	--           meters used to detect null curvature (in mm)
+    	--  
+    	--            
+    	--            
+        --           the constructor computes the quantities  which are 
+    	--           necessary to check the continuity in the following cases:    
+    	--           
+	--           case  C0 
+    	--           -------- 
+    	--           - the distance between P1 and P2  with P1=Surf (u1,v1)  and 
+    	--           P2=Surfv2(u2,v2)
+        -- 
+    	--              
+    	--           case C1   
+    	--           ------- 
+    	--           
+    	--           - the angle between the first derivatives in u : 
+    	--           
+     	--             dSurf1(u1,v1)               dSurf2(u2,v2)    
+     	--             -----------      and        ---------   
+     	--             du                           du 
+     	--             
+     	--             the angle value is between 0 and PI/2 
+     	--           
+     	--           - the angle between the first derivatives in v : 
+    	--           
+     	--             dSurf1(u1,v1)               dSurf2(u2,v2)    
+     	--             --------         and         ---------   
+     	--             dv                           dv
+     	--              
+     	--           - the ratio between  the magnitudes of  the first derivatives  in  u   
+      	--           - the  ratio  between  the magnitudes of the first derivatives in v
+    	--            
+    	--             the angle value is between  0 and pi/2 
+    	--             
+    	--           case  C2 
+    	--           ------- 
+    	--           - the  angle  between the second derivatives in u
+    	--                2                  2 
+    	--               d Surf1(u1,v1)    d  Surf2(u2,v2)
+    	--               ----------        ---------- 
+    	--                2                  2  
+    	--               d u               d  u 
+    	--         
+    	--          - the ratio between the  magnitudes of the second derivatives in  u  
+        --          - the  ratio between the  magnitudes of the  second derivatives in v 
+    	--       
+    	--            the angle value is between 0 and PI/2 
+    	--        
+    	--           case G1 
+    	--           -------
+    	--           -the angle between  the normals  at each point
+    	--           the angle value is between 0 and PI/2 
+        --             
+        --           case  G2  
+        --           ------- 
+        --           - the maximum  normal curvature gap between the two 
+        --           points 
+        --            
+     
+       								      
+     returns  SurfaceContinuity  from LocalAnalysis;
+    
+
+    Create( curv1: Curve from Geom2d; curv2 : Curve from Geom2d;
+    	    U: Real from  Standard;Surf1: Surface from Geom ; 
+            Surf2: Surface from Geom;
+    	    Order: Shape from GeomAbs;  
+            EpsNul: Real from Standard= 0.001;
+	    EpsC0 : Real from Standard= 0.001;
+	    EpsC1 : Real from Standard= 0.001;
+            EpsC2 : Real from Standard= 0.001;
+            EpsG1 : Real from Standard= 0.001;
+            Percent :Real from Standard= 0.01;   	    
+            Maxlen: Real from  Standard =10000) 
+	        
+	--           - the first point is located  by surf1(curv1(U))
+	--           - the second point is located by surf2(curv2(U))
+        --            
+    	--           - Order is the required continuity:
+    	--            GeomAbs_C0    GeomAbs_C1  GeomAbs_C2 
+    	--            GeomAbs_G1 GeomAbs_G2
+    	--                 
+    	--        (see the above constructor for the tolerances)          
+	    
+   returns SurfaceContinuity from LocalAnalysis;   
+   
+    Create( EpsNul: Real from Standard= 0.001;
+	    EpsC0 : Real from Standard= 0.001;
+	    EpsC1 : Real from Standard= 0.001;
+            EpsC2 : Real from Standard= 0.001;
+            EpsG1 : Real from Standard= 0.001;
+            Percent :Real from Standard= 0.01;   	    
+            Maxlen: Real from  Standard =10000)
+	    returns  SurfaceContinuity  from LocalAnalysis; 
+    ---Purpose:
+    -- This  constructor  is  used  when  we  want  to compute  many  analysis. 
+    -- After  we  use  the  method  ComputeAnalysis   
+    ComputeAnalysis( me:in out; Surf1, Surf2: in  out  SLProps from GeomLProp; 
+                                Order: Shape from GeomAbs);
+    -- This  method  computes  the  analysis  for  two  SLProps  which  contains 
+    -- the  properties  of  the  two  surfaces  and  the  two  points
+    -- Order is the required continuity:
+    -- GeomAbs_C0    GeomAbs_C1  GeomAbs_C2 
+    -- GeomAbs_G1 GeomAbs_G2
+
+
+    IsDone(me) returns Boolean from Standard;
+    -- returns true if there  is no problem in the constructor  
+    
+    
+    ContinuityStatus(me) returns Shape from GeomAbs raises NotDone ;
+    -- returns the continuity required in the constructor  
+   
+    StatusError(me) returns  StatusErrorType from LocalAnalysis; 
+    -- returns the status of error :
+    -- NullFirstDerivative : one  of the first derivatives is null
+    -- NullSecondDerivative: one of the second derivatives is null 
+    -- NormalNotDefined: one (or both) normal is undefined 
+    -- CurvatureNotDefined: one of the mean curvatures is undefined 
+ 
+    
+    
+    -- The following functions return  the quantities  
+    -- which are necessary to check continuity 
+
+    C0Value(me) returns  Real from Standard raises NotDone ;
+    -- returns  the distance between P1 and P2  with P1=Surf (u1,v1)  and 
+    --           P2=Surfv2(u2,v2) 
+    
+    C1UAngle(me) returns  Real from Standard raises NotDone ; 
+    --   returns the angle   between  the first derivatives  in u :
+    --    
+    --             dSurf1(u1,v1)           dSurf2(u2,v2)    
+    --             --------       and      ---------
+    --             du                      du               
+    --
+    --   the angle value is between 0 and PI/2 
+    
+    C1URatio (me) returns  Real from Standard raises NotDone ;
+    -- returns the   ratio   between  the  magnitudes  of   the   first
+    -- derivatives in u  
+    -- 
+    --
+     
+    C1VAngle(me) returns  Real from Standard raises NotDone ;  
+    --   returns the angle  between  the first derivatives  in v:
+    --    
+    --             dSurf1(u1,v1)           dSurf2(u2,v2)    
+    --             --------       and      ---------
+    --             dv                      dv    
+    --
+    --   the angle value is between 0 and PI/2 
+    
+    C1VRatio(me) returns  Real from Standard raises NotDone ;
+    -- returns the   ratio   between  the  magnitudes  of   the   first
+    -- derivatives in v
+ 
+    C2UAngle(me) returns  Real from Standard raises NotDone ;    
+    --  returns the angle  between the second derivatives in u 
+    --             2                      2
+    --            d  Surf1(u1,v1)       d  Surf2(u2,v2)
+    --            ----------    and     ----------
+    --             2                    2
+    --            du                   du
+    C2URatio(me) returns  Real from Standard raises NotDone ; 
+    -- returns   the  ratio between   the    magnitudes of the  second
+    -- derivatives in u
+   
+    C2VAngle(me) returns  Real from Standard raises NotDone ;
+    --  returns the angle  between the second derivatives in v 
+    --             2                      2
+    --            d  Surf1(u1,v1)       d  Surf2(u2,v2)
+    --            ----------    and     ----------
+    --             2                    2
+    --            dv                   dv 
+    --
+    --  the angle value is between 0 and PI/2    
+    --     
+    C2VRatio(me) returns  Real from Standard raises NotDone ; 
+    -- returns the   ratio   between  the  magnitudes  of   the   first
+    -- derivatives in v 
+
+    G1Angle(me) returns  Real from Standard raises NotDone ;   
+    --returns the angle between the normals at the two points  
+    --
+    --  the angle value is between 0 and PI/2     
+    
+    G2CurvatureGap (me) returns  Real from Standard raises NotDone ;
+    -- returns the maximum  normal curvature gap 
+ 
+    
+
+
+    -- the following  functions check the local continuity  and return 
+    -- true if the required continuity is satisfied : 
+
+    IsC0(me) returns Boolean from Standard   
+    raises NotDone ; 
+    --  returns true  if the local  continuity is  C0  that is :  
+    --  ContC0(me) < EpsC0  
+  
+  
+    IsC1(me) returns Boolean from Standard   
+    raises NotDone ;     
+    --  returns true    if  the local  continuity  is   C1 that   is :
+    --  C0Value (me)   <  EpsC0 ,  
+    --  C1UAngle (me)  <  EpsC1  
+    --  C1VAngle (me)  < EpsC1 
+  
+  
+    
+    IsC2(me) returns Boolean from Standard   
+    raises NotDone ;         
+    --  returns  true  if   the  local continuity  is   C2 that  is  :
+    --  C0Value (me) < EpsC0,    
+    --  C1UAngle(me) < EpsC1  
+    --  C1VAngle(me) < EpsC1       
+    --  C2UAngle(me) < EpsC2  
+    --  C2VAngle(me) < EpsC2  
+    --  C2URatio(me) is the square of C1URatio up to a tolerance 
+    --  C2VRatio(me) is the square of C1VRatio up to a tolerance
+    --     
+  
+  
+    IsG1(me) returns Boolean from Standard   
+    raises NotDone ;
+    -- returns true is the local continuity is G1  that is 
+    --  C0Value(me) < EpsC0 
+    --  G1Angle(me) < EpsG1   
+    --  
+    
+    IsG2(me)  returns Boolean from Standard   
+    raises NotDone ;  
+    -- returns true is the local continuity is G2     
+
+    
+    
+    
+    -- The following function are private  and used in the  constructor 
+    SurfC0(me:in out; Surf1, Surf2: SLProps from GeomLProp) is private ;     
+    SurfC1(me:in out; Surf1, Surf2:in out SLProps from GeomLProp)is private  ;  
+    SurfC2(me:in out; Surf1, Surf2:in out SLProps from GeomLProp)is private; 
+    SurfG1(me:in out; Surf1, Surf2:in out SLProps from GeomLProp) is private;
+    SurfG2(me:in out; Surf1, Surf2:in out SLProps from GeomLProp) is private;
+
+
+
+fields
+    myContC0    : Real     from Standard;
+    myContC1U   : Real     from Standard;    
+    myContC1V   : Real     from Standard;        
+    myContC2U   : Real     from Standard;    
+    myContC2V   : Real     from Standard;        
+    myContG1    : Real     from Standard;    
+    myLambda1U  : Real     from Standard;
+    myLambda2U  : Real     from Standard;
+    myLambda1V  : Real     from Standard;
+    myLambda2V  : Real     from Standard; 
+    myETA1      : Real     from Standard;
+    myETA2      : Real     from Standard;
+    myETA       : Real     from Standard;
+    myZETA1     : Real     from Standard;
+    myZETA2     : Real     from Standard;
+    myZETA      : Real     from Standard;
+    myAlpha     : Real     from Standard; 
+    myTypeCont  : Shape    from GeomAbs;
+    myepsC0     : Real     from Standard;
+    myepsnul    : Real     from Standard; 
+    myepsC1     : Real     from Standard;
+    myepsC2     : Real     from Standard;
+    myepsG1     : Real     from Standard;
+    myperce     : Real     from Standard;
+    mymaxlen    : Real     from Standard; 
+    myGap       : Real     from Standard; 
+    myIsDone    : Boolean  from Standard;
+    myErrorStatus : StatusErrorType from LocalAnalysis;
+end SurfaceContinuity;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

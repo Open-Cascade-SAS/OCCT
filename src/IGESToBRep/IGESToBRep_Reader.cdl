@@ -1,0 +1,99 @@
+-- File:	IGESToBRep_Reader.cdl
+-- Created:	Thu Sep  1 10:22:08 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class Reader  from IGESToBRep
+
+    ---Purpose : A simple way to read geometric IGES data.
+    --           Encapsulates reading file and calling transfer tools
+
+uses 
+    IGESModel from IGESData, 
+    ShareFlags from Interface, 
+    TransientProcess from Transfer,
+    Shape from TopoDS, 
+    SequenceOfShape from TopTools, 
+    Actor from IGESToBRep
+
+is
+
+    Create returns Reader;
+    ---Purpose : Creates a Reader
+
+    LoadFile (me : in out; filename : CString) returns Integer;
+    ---Purpose : Loads a Model from a file.Returns 0 if success.
+    --           returns 1 if the file could not be opened,
+    --           returns -1 if an error occurred while the file was being loaded.
+
+    SetModel (me : in out; model : IGESModel);
+    ---Purpose : Specifies a Model to work on
+    --           Also clears the result and Done status, sets TransientProcess
+
+    Model (me) returns IGESModel;
+    ---Purpose : Returns the Model to be worked on.
+
+    SetTransientProcess (me : in out; TP : mutable TransientProcess);
+    ---Purpose : Allows to set an already defined TransientProcess
+    --           (to be called after LoadFile or SetModel)
+
+    TransientProcess (me) returns TransientProcess;
+    ---Purpose : Returns the TransientProcess
+
+    Actor (me) returns Actor from IGESToBRep;
+    ---Purpose : Returns "theActor"
+    
+    Clear (me : in out);
+    ---Purpose : Clears the results between two translation operations.
+
+    Check (me; withprint : Boolean) returns Boolean;
+    ---Purpose : Checks the IGES file that was
+-- loaded into memory. Displays error messages in the default
+-- message file if withprint is true. Returns True if no fail
+-- message was found and False if there was at least one fail message.
+
+    TransferRoots (me : in out; onlyvisible : Boolean = Standard_True);
+    ---Purpose : Translates root entities in an
+-- IGES file. Standard_True is the default value and means that only
+-- visible root entities are translated. Standard_False
+-- translates all of the roots (visible and invisible).
+
+    Transfer (me : in out; num : Integer) returns Boolean;
+    ---Purpose : Transfers an Entity given its rank in the Model (Root or not)
+    --           Returns True if it is recognized as Geom-Topol.
+    --           (But it can have failed : see IsDone)
+
+    IsDone (me) returns Boolean;
+    ---Purpose : Returns True if the LAST Transfer/TransferRoots was a success
+
+    UsedTolerance (me) returns Real;
+    ---Purpose : Returns the Tolerance which has been actually used, converted
+    --           in millimeters
+    --          (either that from File or that from Session, according the mode)
+
+    NbShapes (me) returns Integer;
+    ---Purpose : Returns the number of shapes produced by the translation.
+
+    Shape (me; num : Integer = 1) returns Shape from TopoDS;
+    ---Purpose :  Returns the num the resulting shape in a translation operation.
+
+    OneShape (me) returns Shape from TopoDS;
+    ---Purpose : Returns all of the results in a
+-- single shape which is:
+-- - a null shape if there are no results,
+-- - a shape if there is one result,
+-- - a compound containing the resulting shapes if there are several.
+  
+    
+    
+fields
+
+    theModel  : IGESModel from IGESData;
+    theDone   : Boolean;
+    theShapes : SequenceOfShape from TopTools;
+    theActor  : Actor from IGESToBRep;
+    theProc   : TransientProcess from Transfer;
+    
+end Reader;

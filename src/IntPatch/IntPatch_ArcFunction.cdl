@@ -1,0 +1,103 @@
+-- File:	IntPatch_ArcFunction.cdl
+-- Created:	Mon Jun  7 17:39:24 1993
+-- Author:	Jacques GOUSSARD
+---Copyright:	 Matra Datavision 1993
+
+
+class ArcFunction from IntPatch
+
+inherits FunctionWithDerivative from math
+
+uses
+     HCurve2d      from Adaptor2d,
+     HSurface      from Adaptor3d,
+     Pnt           from gp,
+     SequenceOfPnt from TColgp,
+     Quadric       from IntSurf
+
+is
+
+    Create
+    
+    	returns ArcFunction from IntPatch;
+
+
+    SetQuadric(me: in out; Q: Quadric from IntSurf)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; A: HCurve2d from Adaptor2d)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; S: HSurface from Adaptor3d)
+    
+	---C++: inline
+    	is static;
+
+
+    Value(me: in out; X: Real from Standard; F: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    Derivative(me: in out; X: Real from Standard; D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    Values(me: in out; X: Real from Standard; F,D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    NbSamples(me)
+    
+    	returns Integer from Standard
+	is static;
+
+
+    GetStateNumber(me: in out)
+
+    	returns Integer from Standard
+    	is redefined;
+	
+	
+    Valpoint(me; Index: Integer from Standard)
+    
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+	is static;
+    
+    Quadric(me) 
+    	returns Quadric from IntSurf
+	---C++: return const&
+	---C++: inline
+	is static;
+       
+    Arc(me)
+   	returns HCurve2d from Adaptor2d
+	---C++: return const&
+	---C++: inline
+	is static;
+       
+    Surface(me)
+   	returns HSurface from Adaptor3d
+	---C++: return const&
+	---C++: inline
+	is static;
+	    
+fields
+
+    myArc  : HCurve2d      from Adaptor2d;
+    mySurf : HSurface      from Adaptor3d;
+    myQuad : Quadric       from IntSurf;
+    ptsol  : Pnt           from gp;
+    seqpt  : SequenceOfPnt from TColgp;
+
+end ArcFunction;

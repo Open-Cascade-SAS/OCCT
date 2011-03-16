@@ -1,0 +1,16 @@
+// File:	BOPTools_DSFiller.lxx
+// Created:	Fri Jun 11 14:57:42 2004
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+
+inline const TColStd_DataMapOfIntegerListOfInteger& BOPTools_DSFiller::SplitFacePool() const
+{
+  return mySplitFacePool;
+}
+
+inline TColStd_DataMapOfIntegerListOfInteger& BOPTools_DSFiller::ChangeSplitFacePool() 
+{
+  return mySplitFacePool;
+}
+

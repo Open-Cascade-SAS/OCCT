@@ -1,0 +1,15 @@
+--
+-- File:	Graphic2d_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:12:20 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %Graphic2d_CMPLRS_EDL) then
+  @set %Graphic2d_CMPLRS_EDL = "";
+  @uses "CSF.edl";
+
+  --@uses "Graphic2d.edl";
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " " %CSF_X11_INCLUDE ;
+
+@endif;

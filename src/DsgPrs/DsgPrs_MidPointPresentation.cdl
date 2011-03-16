@@ -1,0 +1,65 @@
+-- File:	DsgPrs_MidPointPresentation.cdl
+-- Created:	Fri Oct 20 15:57:32 2000
+-- Author:	Julia DOROVSKIKH
+--		<jfa@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class MidPointPresentation from DsgPrs
+
+uses
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Pnt   from gp,
+    Lin   from gp,
+    Circ  from gp,
+    Elips from gp,
+    Ax2   from gp
+
+is
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer      : Drawer from Prs3d;
+		  theAxe       : Ax2 from gp;
+		  MidPoint     : Pnt from gp;
+	          Position     : Pnt from gp;
+	       	  AttachPoint  : Pnt from gp;
+    	    	  first        : Boolean from Standard);
+	           ---Purpose: draws the representation of a MidPoint between
+	           --          two vertices.
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer      : Drawer from Prs3d;
+		  theAxe       : Ax2 from gp;
+		  MidPoint     : Pnt from gp;
+		  Position     : Pnt from gp;
+	       	  AttachPoint  : Pnt from gp;
+	       	  Point1       : Pnt from gp;
+		  Point2       : Pnt from gp;
+    	    	  first        : Boolean from Standard);
+		   ---Purpose: draws the representation of a MidPoint between
+		   --          two lines or linear segments.
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer      : Drawer from Prs3d;
+		  aCircle      : Circ from gp;
+		  MidPoint     : Pnt from gp;
+		  Position     : Pnt from gp;
+	       	  AttachPoint  : Pnt from gp;
+	       	  Point1       : Pnt from gp;
+		  Point2       : Pnt from gp;
+    	    	  first        : Boolean from Standard);
+		   ---Purpose: draws the representation of a MidPoint between
+		   --          two entire circles or two circular arcs.
+
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer      : Drawer from Prs3d;
+		  anElips      : Elips from gp;
+		  MidPoint     : Pnt from gp;
+		  Position     : Pnt from gp;
+	       	  AttachPoint  : Pnt from gp;
+	       	  Point1       : Pnt from gp;
+		  Point2       : Pnt from gp;
+    	    	  first        : Boolean from Standard);
+		   ---Purpose: draws the representation of a MidPoint between
+		   --          two entire ellipses or two elliptic arcs.
+
+end MidPointPresentation;

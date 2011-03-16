@@ -1,0 +1,38 @@
+-- File:	StepRepr_ReprItemAndLengthMeasureWithUnit.cdl
+-- Created:	Thu Aug 21 10:38:57 2003
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+class ReprItemAndLengthMeasureWithUnit from StepRepr inherits RepresentationItem from StepRepr
+
+uses
+    LengthMeasureWithUnit from StepBasic,
+    MeasureRepresentationItem from StepRepr,
+    MeasureWithUnit from StepBasic
+
+is
+
+    Create returns mutable ReprItemAndLengthMeasureWithUnit;
+    
+    Init(me: mutable; aMWU: mutable MeasureWithUnit; aRI : RepresentationItem);
+
+    SetLengthMeasureWithUnit(me: mutable; aLMWU: mutable LengthMeasureWithUnit);
+    
+    GetLengthMeasureWithUnit(me) returns mutable LengthMeasureWithUnit;
+
+    GetMeasureRepresentationItem(me) returns mutable MeasureRepresentationItem;
+
+    SetMeasureWithUnit(me: mutable; aMWU: mutable MeasureWithUnit);
+    
+    GetMeasureWithUnit(me) returns mutable MeasureWithUnit;
+
+    GetRepresentationItem(me) returns mutable RepresentationItem;
+
+fields
+
+    myLengthMeasureWithUnit: LengthMeasureWithUnit from StepBasic;
+    myMeasureRepresentationItem : MeasureRepresentationItem from StepRepr;
+    myMeasureWithUnit: MeasureWithUnit from StepBasic;
+
+end ReprItemAndLengthMeasureWithUnit;

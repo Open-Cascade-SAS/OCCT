@@ -1,0 +1,162 @@
+-- File:	AIS_ConnectedShape.cdl
+-- Created:	Wed Jan  8 17:57:55 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+--Modified by rob on Jul-28-97		
+---Copyright:	 Matra Datavision 1997
+
+
+class ConnectedShape from AIS inherits ConnectedInteractive from AIS
+
+	---Purpose: Constructs a Connected Interactive Object with an
+    	-- AIS_Shape presentation as its reference Interactive Object.
+    	-- In topological decomposition of the shape, this class
+    	-- assigns the same owners to the sensitive primitives
+    	-- as those in AIS_Shape. Like AIS_Shape, it allows a
+    	-- presentation of hidden parts. These are calculated
+    	-- automatically from the shape of its reference entity.
+
+    
+
+uses
+
+    Shape                from TopoDS,
+    Projector            from Prs3d,
+    Presentation         from Prs3d,
+    Selection            from SelectMgr,
+    Integer              from Standard,
+    Shape                from AIS,
+    TypeOfPresentation3d from PrsMgr,
+    GraphicObject         from Graphic2d,
+    PresentationManager3d from PrsMgr,
+    PresentationManager2d from PrsMgr,
+    InteractiveObject    from AIS,
+    KindOfInteractive    from AIS,
+    Location             from TopLoc,
+    Transformation       from Geom
+raises
+    NotImplemented from Standard
+
+is
+
+    Create (aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
+    	    	    	    	  =PrsMgr_TOP_ProjectorDependant) 
+    returns mutable  ConnectedShape  from  AIS;
+    	---Purpose: Initializes the type of 3d presentation aTypeOfPresentation
+        
+    Create (aInteractiveShape   : Shape from AIS;
+    	    aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
+    	    	    	    	  =PrsMgr_TOP_ProjectorDependant)  
+    returns  mutable  ConnectedShape  from  AIS;
+    	---Purpose: Initializes the entity aInteractiveShape and the type of 3d presentation aTypeOfPresentation.
+
+    Create(aConnectedShape     : ConnectedShape from AIS;
+     	   aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
+    	    	    	    	=PrsMgr_TOP_ProjectorDependant)  
+    returns  mutable  ConnectedShape  from  AIS;
+    	---Purpose: Initializes the entity aConnectedShape and the type of 3d presentation aTypeOfPresentation.
+    
+    ---Category:  Redefined methods...
+
+    Type(me) returns KindOfInteractive from AIS
+    is redefined virtual;
+
+    Signature(me) returns Integer from Standard
+    is redefined virtual;
+
+    AcceptShapeDecomposition(me) 
+    returns Boolean from Standard is redefined;
+
+
+
+	   
+    Connect(me          : mutable; 
+    	    anotherIObj : InteractiveObject from AIS) is redefined ;
+	---Purpose:  Establishes the connection between the Connected
+    	-- Interactive Object, anotherIobj, and its reference
+    	-- entity. If there is already a previous connection with
+    	-- an Interactive Object, this connection is removed.
+
+    Connect(me:mutable;
+    	    anotherIobj: InteractiveObject from AIS;
+	    aLocation : Location from TopLoc) is redefined;
+	---Purpose: Establishes the connection between the Connected
+    	-- Interactive Object, anotherIobj, and its reference
+    	-- entity. If there is already a previous connection with
+    	-- an Interactive Object, this connection is removed.
+    	-- This syntax also initiates the location of the Connected Interactive Object.
+
+
+    Compute(me:mutable;
+    	        aProjector   :         Projector    from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined virtual private;
+ 
+    Compute(me                   : mutable;
+    	    aProjector           : Projector from Prs3d;
+	    aTrsf                : Transformation from Geom;
+	    aPresentation        : mutable Presentation from Prs3d)
+    is redefined virtual private;
+
+    Compute(me                   : mutable;
+            aPresentationManager : PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation from Prs3d;
+            aMode                : Integer from Standard = 0)
+	 ---Level: Public 
+         ---Purpose: this method is redefined virtual;
+	 --          when the instance is connected to another
+         --          InteractiveObject,this method doesn't
+	 --          compute anything, but just uses the 
+	 --          presentation of this last object, with
+	 --          a transformation if there's one stored. 
+    is redefined;
+
+
+
+    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+                                 aMode      :        Integer   from Standard)
+    is redefined virtual private;
+    	---Purpose:
+    	-- Recovers and calculates any sensitive primitive,
+    	-- aSelection, available in Shape mode, specified by
+    	-- aMode . As a rule, these are sensitive faces.
+    	-- This method is defined as virtual. This enables you to
+    	-- implement it in the creation of a new class of
+    	-- Interactive Object. You need to do this and in so
+    	-- doing, redefine this method, if you create a class
+    	-- which enriches the list of signatures and types.
+
+    Compute(me:mutable;
+    	        aPresentationManager: PresentationManager2d from PrsMgr;
+                aPresentation: mutable GraphicObject from Graphic2d;
+                aMode: Integer from Standard = 0)
+    	---Level: Internal 
+    	---Purpose: this method should fill the presentation according to the
+    	--          enumerated mode of the application and to the display parameter
+    	--          of the application.
+		
+    raises NotImplemented from Standard
+    is redefined;
+    
+    Shape(me:mutable) returns Shape from TopoDS;
+        ---C++: return const&
+    	---Purpose: Returns the topological shape which is the reference
+    	-- for the connected shape. Sets hilight mode to index
+    	-- 0. This returns a wireframe presentation.
+	
+
+    UpdateShape(me:mutable;WithLocation:Boolean from Standard = Standard_True)
+    is static private;
+    
+    Compute(me:mutable;
+    	        aProjector   :         Projector    from Prs3d;
+                aPresentation: mutable Presentation from Prs3d;
+    	    	aShape       :         Shape from TopoDS)
+    is  private;
+
+    
+fields
+    
+    myOwnSh : Shape   from TopoDS; -- used for HLR and selection...
+    
+end ConnectedShape;

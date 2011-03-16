@@ -1,0 +1,39 @@
+-- File:        FillAreaStyle.cdl
+-- Created:     Fri Dec  1 11:11:20 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FillAreaStyle from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfFillStyleSelect from StepVisual, 
+	FillStyleSelect from StepVisual
+is
+
+	Create returns mutable FillAreaStyle;
+	---Purpose: Returns a FillAreaStyle
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aFillStyles : mutable HArray1OfFillStyleSelect from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetFillStyles(me : mutable; aFillStyles : mutable HArray1OfFillStyleSelect);
+	FillStyles (me) returns mutable HArray1OfFillStyleSelect;
+	FillStylesValue (me; num : Integer) returns FillStyleSelect;
+	NbFillStyles (me) returns Integer;
+
+fields
+
+	name : HAsciiString from TCollection;
+	fillStyles : HArray1OfFillStyleSelect from StepVisual; -- a SelectType
+
+end FillAreaStyle;

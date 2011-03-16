@@ -1,0 +1,22 @@
+
+-- -- File:	TEdge1.cdl
+-- Created:	Mon Dec 17 09:53:25 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+deferred class TEdge1 from PTopoDS inherits TShape1 from PTopoDS
+
+	---Purpose: A  Topological edge   shape.
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Level: Internal 
+
+end TEdge1;
+

@@ -1,0 +1,38 @@
+-- File:	XDEDRAW.cdl
+-- Created:	Mon Oct 23 11:59:12 2000
+-- Author:	Pavel TELKOV
+--		<ptv@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package XDEDRAW 
+
+    ---Purpose: Provides DRAW commands for work with DECAF data structures
+
+uses
+    Draw
+
+is
+
+    class Shapes;
+    	---Purpose: Provides functions for work with shapes and assemblies
+
+    class Colors;
+    	---Purpose: Provides functions for work with colors
+
+    class Layers;
+    	---Purpose: Provides functions for work with layers
+
+    class Props;
+    	---Purpose: Provides functions for work with geometric properties  
+	
+    class Common; 
+    	---Purpose: Provides common commands for work XDE
+
+    Init (di: in out Interpretor from Draw);
+    	---Purpose: Initializes all the functions
+
+    Factory (theDI : out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands of  TKXDEDRAW. Used for plugin.
+
+end XDEDRAW;

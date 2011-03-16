@@ -1,0 +1,27 @@
+-- File:        GeometricRepresentationItem.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWGeometricRepresentationItem from RWStepGeom
+
+	---Purpose : Read & Write Module for GeometricRepresentationItem
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     GeometricRepresentationItem from StepGeom
+
+is
+
+	Create returns RWGeometricRepresentationItem;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable GeometricRepresentationItem from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : GeometricRepresentationItem from StepGeom);
+
+end RWGeometricRepresentationItem;

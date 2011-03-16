@@ -1,0 +1,102 @@
+-- File:	TopOpeBRepDS_GapFiller.cdl
+-- Created:	Tue Aug 18 09:16:07 1998
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class GapFiller from TopOpeBRepDS 
+
+	---Purpose: 
+
+uses
+    HDataStructure     from TopOpeBRepDS,
+    Interference       from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    Association        from TopOpeBRepDS,
+    GapTool            from TopOpeBRepDS,
+    Edge               from TopoDS,
+    Face               from TopoDS,
+    Shape              from TopoDS,
+    MapOfInteger       from TColStd	    
+is
+    Create(HDS : HDataStructure from TopOpeBRepDS) returns GapFiller;
+
+
+    Perform (me : in out);
+    
+
+    FindAssociatedPoints (me    : in out; 
+    	    	    	  I     : Interference       from TopOpeBRepDS;
+    	    	    	  LI    : in out ListOfInterference from TopOpeBRepDS);
+    ---Purpose: Recherche parmi  l'ensemble  des points  d'Interference
+    --          la Liste <LI> des points qui correspondent au point d'indice <Index>
+
+    
+    CheckConnexity(me : in out;
+    	    	   LI : in out ListOfInterference from TopOpeBRepDS) returns Boolean from Standard;
+    ---Purpose:Enchaine les sections   via  les points d'Interferences  deja
+    --         associe; Renvoit  dans   <L> les points extremites des Lignes.
+   
+
+    
+	
+    ---Purpose: Methodes pour  construire la liste des Points qui
+    --          peuvent correspondre a une Point donne.
+
+    AddPointsOnShape (me    : in out; 
+		      S     :        Shape          from TopoDS;			
+    	    	      LI    : in out ListOfInterference from TopOpeBRepDS);
+
+							    
+    AddPointsOnConnexShape(me    : in out; 
+			   F     :        Shape         from TopoDS;
+    	    	    	   LI    : ListOfInterference from TopOpeBRepDS);
+
+    ---Purpose:  Methodes pour  reduire la liste des Points qui
+    --          peuvent correspondre a une Point donne.
+
+    FilterByFace (me : in out;
+    	    	  F  :         Face               from TopoDS;
+    	    	  LI : in out  ListOfInterference from TopOpeBRepDS);
+								  
+    FilterByEdge (me : in out;
+    	    	  E  :         Edge               from TopoDS;
+    	    	  LI : in out  ListOfInterference from TopOpeBRepDS);
+								  
+														  
+    FilterByIncidentDistance(me    : in out;
+    	    	    	     F     :        Face               from TopoDS;
+    	    	    	     I     :        Interference       from TopOpeBRepDS;
+    	    	    	     LI    : in out ListOfInterference from TopOpeBRepDS);
+
+
+    IsOnFace (me ; I : Interference from TopOpeBRepDS;
+    	    	   F : Face         from TopoDS)
+    	---Purpose: Return TRUE si I a ete obtenu par une intersection
+    	--          avec <F>.
+    returns Boolean from Standard
+    is static;
+
+    IsOnEdge (me ; I : Interference from TopOpeBRepDS;
+    	    	   E : Edge         from TopoDS)
+    	---Purpose: Return TRUE  si I ou une  de  ses representaions a
+    	--          pour support <E>.
+    returns Boolean from Standard
+    is static;
+
+    ---Purpose: Methodes de  reconstructions des  geometries des point
+    --          et des courbes de section
+
+    BuildNewGeometries (me : in out);
+    
+    ReBuildGeom (me: in out; I1   :        Interference from TopOpeBRepDS;
+    	    	    	     Done : in out MapOfInteger from TColStd);	
+
+fields
+
+    myHDS     : HDataStructure from TopOpeBRepDS;
+    myGapTool : GapTool      from TopOpeBRepDS;
+    myAsso    : Association    from TopOpeBRepDS;
+
+end GapFiller;

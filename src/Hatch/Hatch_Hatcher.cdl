@@ -1,0 +1,229 @@
+-- File:	Hatcher.cdl
+-- Created:	Wed Aug 19 10:00:20 1992
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Hatcher from Hatch 
+
+	---Purpose: The Hatcher   is  an algorithm  to   compute cross
+	--          hatchings in a 2d plane. It is mainly dedicated to
+	--          display purpose.
+	--          
+	--          Computing cross hatchings is a 3 steps process :
+	--          
+	--          1.  The users stores in the   Hatcher a set  of 2d
+	--          lines to   be  trimmed. Methods   in  the  "Lines"
+	--          category.
+	--          
+	--          2.  The user trims the lines with a boundary.  The
+	--          inside of a boundary is on the left side.  Methods
+	--          in the "Trimming" category.
+	--          
+	--          3. The user reads  back the trimmed lines. Methods
+	--          in the "Results" category.
+	--         
+	--          The result is a set of parameter intervals  on the
+	--          line. The first  parameter of an  Interval may  be
+	--          RealFirst() and the last may be RealLast().
+	--          
+	--          A line can be a line parallel to the axis (X  or Y
+	--          line or a 2D line.
+	--          
+	--          The Hatcher has two modes :
+	--          
+	--          *  The "Oriented" mode,  where the  orientation of
+	--          the trimming curves is  considered. The  hatch are
+	--          kept on  the left of  the  trimming curve. In this
+	--          mode infinite hatch can be computed.
+	--          
+	--          *   The "UnOriented"  mode,  where  the  hatch are
+	--          always finite.
+	--          
+
+    	---Overview: Lines, Trimming, Results
+
+uses
+    Boolean        from Standard,
+    Integer        from Standard,
+    Real           from Standard,
+    Lin2d          from gp,
+    Pnt2d          from gp,
+    Dir2d          from gp,
+    LineForm       from Hatch,
+    SequenceOfLine from Hatch
+    
+raises
+    OutOfRange from Standard
+
+is
+    Create(Tol : Real from Standard;
+    	   Oriented : Boolean = Standard_True) returns Hatcher from Hatch;
+	---Purpose: Returns a empty  hatcher.  <Tol> is the  tolerance
+	--          for intersections.
+	
+    Tolerance(me : in out; Tol : Real from Standard)
+	---C++: inline
+    is static;
+	
+    Tolerance(me) returns Real from Standard
+	---C++: inline
+    is static;
+	
+    AddLine(me : in out; L : Lin2d from gp; 
+    	    T  : LineForm from Hatch = Hatch_ANYLINE)
+	---Purpose: Add a line <L>  to  be trimmed.   <T> the  type is
+	--          only kept from information. It is not used  in the
+	--          computation.
+	--          
+	---Category: Lines
+    is static;
+    
+    AddLine(me : in out; D : Dir2d from gp; Dist : Real from Standard)
+	---Purpose: Add an infinite line on  direction <D> at distance
+	--          <Dist> from the origin  to be  trimmed. <Dist> may
+	--          be negative.
+	--          
+	--          If O  is the origin  of the  2D plane, and   V the
+	--          vector perpendicular to D (in the direct direction).
+	--          
+	--          A point P is on the line if :
+	--            OP dot V = Dist
+	--          The parameter of P on the line is
+	--            OP dot D
+	--          
+	---Category: Lines
+    is static;
+    
+    AddXLine(me : in out; X : Real from Standard)
+	---Purpose: Add an infinite line   parallel to the Y-axis   at
+	--          abciss <X>.
+	--          
+	---Category: Lines
+    is static;
+    
+    AddYLine(me : in out; Y : Real from Standard)
+	---Purpose: Add an infinite line   parallel to the X-axis   at
+	--          ordinate <Y>.
+	--          
+	---Category: Lines
+    is static;
+    
+    Trim(me : in out; L     : Lin2d   from gp;
+                      Index : Integer from Standard = 0)
+	---Purpose: Trims the lines at intersections with  <L>.
+	--         
+	--Category: Trimming
+    is static;
+    
+    Trim(me : in out; L          : Lin2d   from gp;
+                      Start, End : Real    from Standard;
+                      Index      : Integer from Standard = 0)
+	---Purpose: Trims the lines at intersections  with <L>  in the
+	--          parameter range <Start>, <End>
+	--         
+	--Category: Trimming
+    is static;
+    
+    Trim(me : in out; P1, P2     : Pnt2d   from gp;
+                      Index      : Integer from Standard = 0)
+	---Purpose: Trims the line at  intersection with  the oriented
+	--          segment P1,P2.
+	--          
+	--Category: Trimming
+    is static;
+    
+    NbIntervals(me) returns Integer from Standard
+	---Purpose: Returns the total number  of intervals on  all the
+	--          lines. 
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    NbLines(me) returns Integer from Standard
+	---Purpose: Returns the number of lines.
+	---Category : Results
+    is static;
+    
+    Line(me; I : Integer from Standard) returns Lin2d from gp
+	---Purpose: Returns the line of index <I>.
+	---C++: return const &
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    LineForm(me; I : Integer from Standard) returns LineForm from Hatch
+	---Purpose: Returns  the type of the  line   of  index <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    IsXLine(me; I : Integer from Standard) returns Boolean from Standard
+	---Purpose: Returns  True if the  line   of  index <I>  has  a
+	--          constant X value.
+	---Category : Results
+	---C++: inline
+    raises OutOfRange
+    is static;
+    
+    IsYLine(me; I : Integer from Standard) returns Boolean from Standard
+	---Purpose: Returns  True if the  line   of  index <I>  has  a
+	--          constant Y value.
+	---Category : Results
+	---C++: inline
+    raises OutOfRange
+    is static;
+    
+    Coordinate(me; I : Integer from Standard) returns Real from Standard
+	---Purpose: Returns the X or Y coordinate of the line of index
+	--          <I> if it is a X or a Y line.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    NbIntervals(me; I : Integer from Standard) returns Integer from Standard
+	---Purpose: Returns the number of intervals on line of index <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    Start(me; I,J : Integer from Standard) returns Real from Standard
+	---Purpose: Returns the first   parameter of  interval <J>  on
+	--          line  <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    StartIndex(me; I,J   :     Integer from Standard;
+                   Index : out Integer from Standard;
+		   Par2  : out Real    from Standard)
+	---Purpose: Returns the first Index and Par2 of  interval <J>  on
+	--          line  <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    End(me; I,J : Integer) returns Real from Standard
+	---Purpose: Returns the last   parameter of  interval <J>  on
+	--          line  <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+    EndIndex(me; I,J   :     Integer from Standard;
+                 Index : out Integer from Standard;
+		 Par2  : out Real    from Standard)
+	---Purpose: Returns the last Index and Par2 of  interval <J>  on
+	--          line  <I>.
+	---Category : Results
+    raises OutOfRange
+    is static;
+    
+fields
+    myToler  : Real;
+    myLines  : SequenceOfLine from Hatch;
+    myOrient : Boolean;
+
+end Hatcher;

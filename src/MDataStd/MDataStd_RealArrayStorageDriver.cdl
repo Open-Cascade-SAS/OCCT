@@ -1,0 +1,38 @@
+-- File:	MDataStd_RealArrayStorageDriver.cdl
+-- Created:	Tue Jun 15 16:56:00 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+class RealArrayStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
+    returns mutable RealArrayStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: RealArray from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end RealArrayStorageDriver;
+

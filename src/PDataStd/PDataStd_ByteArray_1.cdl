@@ -1,0 +1,36 @@
+-- File:	PDataStd_ByteArray_1.cdl
+-- Created:	Wed Mar 26 18:01:54 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+class ByteArray_1 from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistence
+uses 
+
+    HArray1OfInteger from PColStd
+
+is
+
+    Create 
+    returns mutable ByteArray_1 from PDataStd;
+
+    Set (me : mutable;
+    	 values : HArray1OfInteger from PColStd);
+	 
+    Get (me)
+    ---C++: return const &
+    returns HArray1OfInteger from PColStd; 
+     
+    SetDelta(me : mutable; delta : Boolean from Standard); 
+     
+    GetDelta(me) returns Boolean from Standard;
+
+fields
+
+    myValues : HArray1OfInteger from PColStd;
+    myDelta  : Boolean from Standard;
+
+end ByteArray_1;

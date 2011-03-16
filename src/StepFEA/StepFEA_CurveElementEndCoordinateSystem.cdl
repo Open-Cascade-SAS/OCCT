@@ -1,0 +1,37 @@
+-- File:	StepFEA_CurveElementEndCoordinateSystem.cdl
+-- Created:	Thu Dec 12 17:51:03 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementEndCoordinateSystem from StepFEA
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type CurveElementEndCoordinateSystem
+
+uses
+    FeaAxis2Placement3d from StepFEA,
+    AlignedCurve3dElementCoordinateSystem from StepFEA,
+    ParametricCurve3dElementCoordinateSystem from StepFEA
+
+is
+    Create returns CurveElementEndCoordinateSystem from StepFEA;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of CurveElementEndCoordinateSystem select type
+	--          1 -> FeaAxis2Placement3d from StepFEA
+	--          2 -> AlignedCurve3dElementCoordinateSystem from StepFEA
+	--          3 -> ParametricCurve3dElementCoordinateSystem from StepFEA
+	--          0 else
+
+    FeaAxis2Placement3d (me) returns FeaAxis2Placement3d from StepFEA;
+	---Purpose: Returns Value as FeaAxis2Placement3d (or Null if another type)
+
+    AlignedCurve3dElementCoordinateSystem (me) returns AlignedCurve3dElementCoordinateSystem from StepFEA;
+	---Purpose: Returns Value as AlignedCurve3dElementCoordinateSystem (or Null if another type)
+
+    ParametricCurve3dElementCoordinateSystem (me) returns ParametricCurve3dElementCoordinateSystem from StepFEA;
+	---Purpose: Returns Value as ParametricCurve3dElementCoordinateSystem (or Null if another type)
+
+end CurveElementEndCoordinateSystem;

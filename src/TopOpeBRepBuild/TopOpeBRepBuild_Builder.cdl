@@ -1,0 +1,630 @@
+-- File:	TopOpeBRepBuild_Builder.cdl
+-- Created:	Mon Jun 14 10:23:56 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class Builder from TopOpeBRepBuild
+
+---Purpose: The Builder  algorithm    constructs   topological
+--          objects  from   an    existing  topology  and  new
+--          geometries attached to the topology. It is used to
+--          construct the result of a topological operation;
+--          the existing  topologies are the parts involved in
+--          the  topological  operation and the new geometries
+--          are the intersection lines and points.
+
+uses
+
+    State from TopAbs,
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs,
+    MapOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    IndexedMapOfOrientedShape from TopTools,
+    IndexedMapOfShape from TopTools,
+    HArray1OfShape from TopTools,
+    DataMapOfIntegerListOfShape from TopTools,
+    DataMapOfIntegerShape from TopTools,
+    HArray1OfListOfShape from TopTools,
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS,
+    DataMapOfShapeInteger from TopTools,
+    DataMapOfShapeShape from TopTools,
+    IndexedDataMapOfShapeShape from TopTools,
+    ShapeSet from TopOpeBRepBuild,
+    EdgeBuilder from TopOpeBRepBuild,
+    FaceBuilder from TopOpeBRepBuild,
+    SolidBuilder from TopOpeBRepBuild,
+    WireEdgeSet from TopOpeBRepBuild,
+    ShellFaceSet from TopOpeBRepBuild,
+
+    ListOfShape from TopTools,
+    Shape from TopoDS,
+    Solid from TopoDS,
+    Face from TopoDS,
+    Edge from TopoDS,
+    Vertex from TopoDS,
+    ShapeExplorer from TopOpeBRepTool,
+    ShapeClassifier from TopOpeBRepTool,
+    BuildTool from TopOpeBRepDS,
+    PaveSet from TopOpeBRepBuild,
+    GTopo from TopOpeBRepBuild,
+    HDataStructure from TopOpeBRepDS,
+    SurfaceIterator from TopOpeBRepDS,
+    PointIterator from TopOpeBRepDS,
+    CurveIterator from TopOpeBRepDS,
+    Interference from TopOpeBRepDS,
+    Config from TopOpeBRepDS,
+    Pnt from gp,
+    AsciiString from TCollection
+
+
+raises
+
+    NoSuchObject from Standard
+
+is
+    
+    Create(BT:BuildTool)
+    returns Builder from TopOpeBRepBuild;
+
+    --modified by NIZHNY-MZV  Sat May  6 09:53:22 2000  
+    Destroy(me:out)  is  virtual; 
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRepBuild_Builder()  {  Destroy() ; }"
+
+    ChangeBuildTool(me:in out) returns BuildTool from TopOpeBRepDS;
+    ---C++: return &
+
+    BuildTool(me) returns BuildTool from TopOpeBRepDS;
+    ---C++: return const &
+
+    Perform (me:in out;HDS:mutable HDataStructure)  is  virtual;
+    ---Purpose: Stores the data structure <HDS>,  
+    -- Create shapes from the new geometries.
+    --modified by NIZHNY-MZV  Thu Nov  4 13:20:25 1999
+    Perform (me:in out;HDS:mutable HDataStructure;S1,S2:Shape)  is  virtual;
+    ---Purpose: Stores the data structure <HDS>,  
+    -- Create shapes from the new geometries,
+    -- Evaluates if an operation performed on shapes S1,S2 
+    -- is a particular case.
+    
+    DataStructure(me) returns HDataStructure;
+    ---Purpose: returns the DS handled by this builder
+    --modified by NIZHNY-MZV  Tue Apr 18 15:32:13 2000
+    Clear(me:in out)  is  virtual;
+    ---Purpose: Removes all splits and merges already performed.
+    -- Does NOT clear the handled DS.
+    
+    MergeEdges(me:in out;
+    	       L1:ListOfShape;TB1:State;
+    	       L2:ListOfShape;TB2:State;
+    	       onA:Boolean = Standard_False;
+    	       onB:Boolean = Standard_False;
+    	       onAB:Boolean = Standard_False);
+    ---Purpose: Merges  the two edges <S1> and <S2> keeping the
+    -- parts in each edge of states <TB1> and <TB2>.
+    -- Booleans onA, onB, onAB indicate wheter parts of edges
+    -- found as state ON respectively on first, second, and both
+    -- shapes must be (or not) built.
+    
+    MergeFaces(me:in out;
+    	       S1:ListOfShape;TB1:State;S2:ListOfShape;TB2:State;
+    	       onA:Boolean = Standard_False;
+    	       onB:Boolean = Standard_False;
+    	       onAB:Boolean = Standard_False);
+    ---Purpose: Merges  the two faces <S1>   and <S2> keeping the
+    -- parts in each face of states <TB1> and <TB2>.
+
+    MergeSolids(me:in out;
+    	    	S1:Shape;TB1:State;S2:Shape;TB2:State);
+    ---Purpose: Merges  the two solids <S1>   and <S2> keeping the
+    -- parts in each solid of states <TB1> and <TB2>.
+
+    MergeShapes(me:in out;
+    	    	S1:Shape;TB1:State;
+    	    	S2:Shape;TB2:State);
+    ---Purpose: Merges the two shapes <S1> and <S2> keeping the
+    -- parts of states <TB1>,<TB2> in <S1>,<S2>.
+
+    End(me:in out);
+
+    -- LocOpe use
+    Classify(me) returns Boolean;
+    ChangeClassify(me:in out; B:Boolean);
+
+    MergeSolid(me:in out;S:Shape;TB:State);
+    ---Purpose: Merges the solid <S>  keeping the
+    -- parts of state <TB>.
+    
+    NewVertex(me;I:Integer) returns Shape;
+    ---Purpose: Returns the vertex created on point <I>.
+    ---C++: return const &
+    
+    NewEdges(me;I:Integer) returns ListOfShape;
+    ---Purpose: Returns the edges created on curve <I>.
+    ---C++: return const &
+    
+    NewFaces(me;I:Integer) returns ListOfShape;
+    ---Purpose: Returns the faces created on surface <I>.
+    ---C++: return const &
+    
+    IsSplit(me;S:Shape;TB:State) returns Boolean;
+    ---Purpose: Returns True if the shape <S> has been split.
+    
+    Splits(me;S:Shape;TB:State) returns ListOfShape
+    ---Purpose: Returns the split parts <TB> of shape <S>.
+    ---C++: return const &
+    raises NoSuchObject from Standard; -- if S is not IsSplit()
+
+    IsMerged(me;S:Shape;TB:State) returns Boolean;
+    ---Purpose: Returns True if the shape <S> has been merged.
+    
+    Merged(me;S:Shape;TB:State) returns ListOfShape 
+    ---Purpose: Returns the merged parts <TB> of shape <S>.
+    ---C++: return const &
+    raises NoSuchObject from Standard; -- if <S> is not IsMerged()
+
+    InitSection(me:in out);
+
+    SplitSectionEdges (me:in out);
+    ---Purpose: create parts ON solid of section edges
+    --modified by NIZHNY-MZV  Wed Feb 23 12:54:11 2000
+    SplitSectionEdge (me:in out; E:Shape from TopoDS)  is  virtual;
+    ---Purpose: create parts ON solid of section edges
+
+    SectionCurves(me:in out; L:in out ListOfShape);
+    ---Purpose: return the section edges built on new curves.
+
+    SectionEdges(me:in out; L:in out ListOfShape);
+    ---Purpose: return the parts of edges found ON the boundary
+    -- of the two arguments S1,S2 of Perform() 
+
+    FillSecEdgeAncestorMap(me; aShapeRank: Integer; aMapON: MapOfShape;
+    	    	    	       anAncMap: out DataMapOfShapeShape);
+    ---Purpose: Fills anAncMap with pairs (edge,ancestor edge) for each
+    --          split from the map aMapON for the shape object identified
+    --          by ShapeRank
+
+    Section(me:in out; L:in out ListOfShape);
+    ---Purpose: return all section edges.
+
+    Section(me:in out) returns ListOfShape;
+    ---C++: return const &
+
+    BuildVertices (me:in out;DS:mutable HDataStructure);
+    ---Purpose: update the DS by creating new geometries.
+    --          create vertices on DS points.
+
+    BuildEdges (me:in out;DS:mutable HDataStructure);
+    ---Purpose: update the DS by creating new geometries.
+    --          create shapes from the new geometries.
+
+    MSplit(me;s:State from TopAbs)
+    returns DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS;
+    ---C++: return const &
+
+    ChangeMSplit(me:in out;s:State from TopAbs) 
+    returns DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS;
+    ---C++: return &
+    
+    -------
+    -- private
+    -------
+
+    BuildEdges (me:in out;iC:Integer;DS:mutable HDataStructure) is protected;
+    ---Purpose: update the DS by creating new geometries.
+    --          create edges on the new curve <Icurv>.
+
+    BuildFaces (me:in out;iS:Integer;DS:mutable HDataStructure) is protected;
+    ---Purpose: update the DS by creating new geometries.
+    --          create faces on the new surface <ISurf>.
+    
+    BuildFaces (me:in out;DS:mutable HDataStructure) is protected;
+    ---Purpose: update the DS by creating new geometries.
+    --          create shapes from the new geometries.
+    
+    SplitEdge(me:in out;E1:Shape;TB1,TB2:State) is protected;
+    ---Purpose: Split <E1> keeping the parts of state <TB1>.
+
+    SplitEdge1(me:in out;E1:Shape;TB1,TB2:State) is protected;
+    ---Purpose: Split <E1> keeping the parts of state <TB1>.
+    
+    SplitEdge2(me:in out;E1:Shape;TB1,TB2:State) is protected;
+    ---Purpose: Split <E1> keeping the parts of state <TB1>.
+    
+    SplitFace(me:in out;F1:Shape;TB1,TB2:State) is protected;
+    ---Purpose: Split <F1> keeping the  parts of state  <TB1>.
+    --          Merge faces with same domain, keeping parts  of
+    --          state <TB2>.
+
+    SplitFace1(me:in out;F1:Shape;TB1,TB2:State) is protected;
+
+    SplitFace2(me:in out;F1:Shape;TB1,TB2:State) is protected;
+
+    SplitSolid(me:in out;S1:Shape;TB1,TB2:State) is protected;
+    ---Purpose: Split <S1> keeping the parts of state <TB1>.
+
+    SplitShapes(me:in out;Ex:in out ShapeExplorer from TopOpeBRepTool;
+    	    	    	  TB1,TB2:State;
+    	    	    	  SS:in out ShapeSet;RevOri:Boolean) is protected;
+    ---Purpose: Explore shapes of given  by explorer <Ex> to split them.
+    -- Store  new shapes in the set <SS>.
+    -- According to RevOri, reverse or not their orientation.
+    
+    MakeEdges(me:in out;E:Shape;B:in out EdgeBuilder;
+		        L:in out ListOfShape);
+		     
+    MakeFaces(me:in out;F:Shape;B:in out FaceBuilder;
+		        L:in out ListOfShape);
+		     
+    MakeSolids(me:in out;B:in out SolidBuilder;
+    	    	    	 L:in out ListOfShape); 
+			 
+    MakeShells(me:in out;B:in out SolidBuilder;
+    	    	    	 L:in out ListOfShape);
+		     
+    FillFace(me:in out;F1:Shape;TB1:State;
+		       LF2:ListOfShape;TB2:State;
+    	    	       WES:in out WireEdgeSet;RevOri:Boolean) is protected;
+    ---Purpose: Split edges of <F1> and store  wires and edges in
+    -- the set <WES>. According to RevOri, reverse (or not) orientation.
+
+    FillSolid(me:in out;S1:Shape;TB1:State;
+			LS2:ListOfShape;TB2:State;
+    	    	        SS:in out ShapeSet;RevOri:Boolean) is protected;
+    ---Purpose: Split faces of <S1> and store shells  and faces in
+    -- the set <SS>. According to RevOri, reverse (or not) orientation.
+
+    FillShape(me:in out;S1:Shape;TB1:State;
+			LS2:ListOfShape;TB2:State;
+    	    	    	SS:in out ShapeSet;RevOri:Boolean) is protected;
+    ---Purpose: Split subshapes of <S1> and store subshapes in
+    -- the set <SS>. According to RevOri, reverse (or not) orientation.
+
+    FillVertexSet(me;IT:in out PointIterator;
+    	             TB:State;PVS:in out PaveSet) is protected;
+    ---Purpose: fills the vertex set PVS with the point iterator IT.
+    -- IT accesses a list of interferences which geometry is a point or a vertex.
+    -- TB indicates the orientation to give to the geometries
+    -- found in interference list accessed by IT.
+
+    FillVertexSetOnValue(me;IT:PointIterator;
+    	                    TB:State;PVS:in out PaveSet) is protected;
+    ---Purpose: fills vertex set PVS with the current value of IT.
+    -- I geometry is a point or a vertex.  
+    -- TB  indicates the orientation to give to geometries found I
+
+    ToSplit(me;S:Shape;TB:State) returns Boolean is protected;
+    ---Purpose: Returns True if the shape <S> has not already been split
+    --modified by NIZHNY-MZV  Thu Sep 30 10:29:53 1999
+    MarkSplit(me:in out;S:Shape;TB:State;B:Boolean=Standard_True) is protected;
+    ---Purpose: add the shape <S> to the map of split shapes.
+    -- mark <S> as split/not split on <state>, according to B value.
+
+    ChangeSplit(me:in out;S:Shape;TB:State) returns ListOfShape;
+    ---Purpose: Returns a ref.on the list of shapes connected to <S> as
+    -- <TB> split parts of <S>.
+    -- Mark <S> as split in <TB> parts.
+    ---C++: return &
+
+    ChangeMerged(me:in out;S:Shape;TB:State) returns ListOfShape is protected;
+    ---Purpose: Returns a ref. on the list of shapes connected to <S> as
+    -- <TB> merged parts of <S>.
+    ---C++: return &
+    
+    ChangeNewVertex(me:in out;I:Integer) returns Shape is protected;
+    ---Purpose: Returns a ref. on the vertex created on point <I>.
+    ---C++: return &
+    
+    ChangeNewEdges(me:in out;I:Integer) returns ListOfShape is protected;
+    ---Purpose: Returns a ref. on the list of edges created on curve <I>.
+    ---C++: return &
+    
+    ChangeNewFaces(me:in out;I:Integer) returns ListOfShape is protected;
+    ---Purpose: Returns a ref. on the list of faces created on surface <I>.
+    ---C++: return &
+
+    AddIntersectionEdges(me;F:in out Shape;TB:State;
+			    RevOri:Boolean;ES:in out ShapeSet) is protected;
+
+    Opec12(me) returns Boolean;
+
+    Opec21(me) returns Boolean;
+
+    Opecom(me) returns Boolean;
+
+    Opefus(me) returns Boolean;
+    
+    ShapePosition(me:in out;S:Shape;LS:ListOfShape) returns State;
+
+    KeepShape(me:in out;S:Shape;LS:ListOfShape;T:State) returns Boolean;
+
+    TopType(myclass;S:Shape) returns ShapeEnum;
+
+    Reverse(myclass;T1,T2:State) returns Boolean;
+
+    Orient(myclass;O:Orientation;R:Boolean) returns Orientation;
+
+    FindSameDomain(me;L1,L2:in out ListOfShape);
+
+    FindSameDomainSameOrientation(me;LSO,LDO:in out ListOfShape);
+
+    MapShapes(me:in out;S1,S2:Shape);
+
+    ClearMaps(me:in out);
+
+    FindSameRank(me;L1:ListOfShape;R:Integer;L2:in out ListOfShape);
+
+    ShapeRank(me;S:Shape) returns Integer;
+
+    IsShapeOf(me;S:Shape;I12:Integer) returns Boolean;
+
+    Contains(myclass;S:Shape;L:ListOfShape) returns Boolean;
+
+    UpdateSplitAndMerged(me : in out;   mle :DataMapOfIntegerListOfShape from TopTools;
+    			 mre :DataMapOfIntegerShape from TopTools;
+    			 mlf :DataMapOfShapeShape from TopTools;
+    	    	         state :State from TopAbs)
+    is protected;
+    
+    
+    -- KPart Builder
+
+    FindIsKPart(me:in out) returns Integer;
+    IsKPart(me) returns Integer; 
+    --Begin  modified by NIZHNY-MZV  Mon Feb  7 17:18:40 2000
+    MergeKPart(me:in out)  is  virtual;
+    MergeKPart(me:in out;TB1,TB2:State)  is  virtual; 
+    --End  modified by NIZHNY-MZV  Mon Feb  7 17:18:45 2000
+    MergeKPartiskole(me:in out);
+    MergeKPartiskoletge(me:in out);
+    MergeKPartisdisj(me:in out);
+    MergeKPartisfafa(me:in out);
+    MergeKPartissoso(me:in out);
+    KPiskole(me:in out) returns Integer;
+    KPiskoletge(me:in out) returns Integer;
+    KPisdisj(me:in out) returns Integer;
+    KPisfafa(me:in out) returns Integer;
+    KPissoso(me:in out) returns Integer;
+    KPClearMaps(me:in out);
+    KPlhg(me;S:Shape;T:ShapeEnum;L:out ListOfShape) returns Integer;
+    KPlhg(me;S:Shape;T:ShapeEnum) returns Integer;
+    KPlhsd(me;S:Shape;T:ShapeEnum;L:out ListOfShape) returns Integer;
+    KPlhsd(me;S:Shape;T:ShapeEnum) returns Integer;
+    KPclasSS(me:in out;S1:Shape;exceptLS1:ListOfShape;S2:Shape) returns State;
+    KPclasSS(me:in out;S1,exceptS1,S2:Shape) returns State;
+    KPclasSS(me:in out;S1,S2:Shape) returns State;
+    KPiskolesh(me;S:Shape;LS,LF:out ListOfShape) returns Boolean; 
+    KPiskoletgesh(me;S:Shape;LS,LF:out ListOfShape) returns Boolean; 
+    KPSameDomain(me;L1:in out ListOfShape;L2:out ListOfShape);
+    KPisdisjsh(me;S:Shape) returns Integer;	      
+    KPisfafash(me;S:Shape) returns Integer;
+    KPissososh(me;S:Shape) returns Integer;
+    KPiskoleanalyse(me;FT1,FT2,ST1,ST2:State;I,I1,I2:out Integer);
+    KPiskoletgeanalyse(me;Conf:Config;ST1,ST2:State;I:out Integer);
+    KPisdisjanalyse(me;ST1,ST2:State;I,IC1,IC2:out Integer);
+    KPls(myclass;S:Shape;T:ShapeEnum;L:out ListOfShape) returns Integer;
+    KPls(myclass;S:Shape;T:ShapeEnum) returns Integer;
+    
+    -- les methodes suivantes sont in out er non myclass
+    -- car elles modifient myShapeClassifier
+    KPclassF(me:in out;F1,F2:Shape) returns State;
+    KPclassFF(me:in out;F1,F2:Shape;T1,T2:out State);
+    KPiskoleFF(me:in out;F1,F2:Shape;T1,T2:out State) returns Boolean;
+    KPContains(myclass;S:Shape;L:ListOfShape) returns Boolean;
+    KPmakeface(me:in out;F1:Shape;LF2:ListOfShape;T1,T2:State;R1,R2:Boolean) 
+    returns Shape;
+    KPreturn(myclass;KP:Integer) returns Integer;
+
+    -- 
+    SplitEvisoONperiodicF(me:in out);
+
+    -- solid
+    --modified by NIZHNY-MZV  Wed Sep 29 09:46:48 1999
+    GMergeSolids(me:in out;LSO1,LSO2:ListOfShape;G:GTopo);
+    GFillSolidsSFS(me:in out;LSO1,LSO2:ListOfShape;G:GTopo;SFS:in out ShellFaceSet);
+    GFillSolidSFS(me:in out;SO1:Shape;LSO2:ListOfShape;G:GTopo;SFS:in out ShellFaceSet)  is  virtual;
+    GFillSurfaceTopologySFS(me:in out;SO1:Shape;G:GTopo;SFS:in out ShellFaceSet);
+    GFillSurfaceTopologySFS(me;IT:SurfaceIterator;G:GTopo;SFS:in out ShellFaceSet);
+    --modified by NIZHNY-MZV  Thu Sep 30 09:55:31 1999
+    GFillShellSFS(me:in out;SH1:Shape;LSO2:ListOfShape;G:GTopo;SFS:in out ShellFaceSet)  is  virtual;
+    GFillFaceSFS(me:in out;F1:Shape;LSO2:ListOfShape;G:GTopo;SFS:in out ShellFaceSet);
+    GSplitFaceSFS(me:in out;F1:Shape;LSclass:ListOfShape;G:GTopo;SFS:in out ShellFaceSet);
+    GMergeFaceSFS(me:in out;F:Shape;G:GTopo;SFS:out ShellFaceSet);
+    GSplitFace(me:in out;F:Shape;G:GTopo;LSclass:ListOfShape);
+    AddONPatchesSFS(me:in out;G:GTopo;SFS:out ShellFaceSet);
+    FillOnPatches(me:in out;anEdgesON:ListOfShape; aBaseFace:Shape;
+    	    	    	    avoidMap:IndexedMapOfOrientedShape);
+    FindFacesTouchingEdge(me;aFace,anEdge:Shape; aShRank:Integer; aFaces:out ListOfShape);
+
+    -- face
+    
+    GMergeFaces(me:in out;LF1,LF2:ListOfShape;G:GTopo);
+    GFillFacesWES(me:in out;LF1,LF2:ListOfShape;G:GTopo;WES:out WireEdgeSet);
+    GFillFacesWESK(me:in out;LF1,LF2:ListOfShape;G:GTopo;WES:out WireEdgeSet;K:Integer);
+    GFillFacesWESMakeFaces(me:in out;LF1,LF2,LSO:ListOfShape;G:GTopo);
+    GFillFaceWES(me:in out;F:Shape;LF2:ListOfShape;G:GTopo;WES:in out WireEdgeSet);
+    GFillCurveTopologyWES(me:in out;F:Shape;G:GTopo;WES:in out WireEdgeSet);
+    GFillCurveTopologyWES(me;IT:CurveIterator;G:GTopo;WES:in out WireEdgeSet);
+    
+    GFillONPartsWES(me:in out;F:Shape;G:GTopo;LSclass:ListOfShape;WES:in out WireEdgeSet);
+    
+    GFillWireWES(me:in out;W:Shape;LF2:ListOfShape;G:GTopo;WES:in out WireEdgeSet);
+    GFillEdgeWES(me:in out;E:Shape;LF2:ListOfShape;G:GTopo;WES:in out WireEdgeSet);
+    GSplitEdgeWES(me:in out;E:Shape;LF2:ListOfShape;G:GTopo;WES:in out WireEdgeSet);
+    GMergeEdgeWES(me:in out;E:Shape;G:GTopo;WES:in out WireEdgeSet);
+    GSplitEdge(me:in out;E:Shape;G:GTopo;LSclass:ListOfShape);
+    
+    -- edge
+
+    GMergeEdges(me:in out;LE1,LE2:ListOfShape;G:GTopo);
+    GFillEdgesPVS(me:in out;LE1,LE2:ListOfShape;G:GTopo;PVS:in out PaveSet);
+    GFillEdgePVS(me:in out;E:Shape;LE2:ListOfShape;G:GTopo;PVS:in out PaveSet);
+    GFillPointTopologyPVS(me:in out;E:Shape;G:GTopo;PVS:in out PaveSet);
+    GFillPointTopologyPVS(me;E:Shape;IT:PointIterator;G:GTopo;PVS:in out PaveSet);
+    GParamOnReference(me;V:Vertex;E:Edge;P:out Real) returns Boolean;
+
+    -- other 
+
+    GKeepShape(me:in out;S:Shape;Lref:ListOfShape;T:State) returns Boolean;
+    GKeepShape1(me:in out;S:Shape;Lref:ListOfShape;T:State;pos:out State) returns Boolean;
+    ---Purpose: return True if S is classified <T> / Lref shapes
+    GKeepShapes(me:in out ;S:Shape;Lref:ListOfShape;T:State;
+    	    	    	     Lin:ListOfShape;Lou:in out ListOfShape);
+    ---Purpose: add to Lou the shapes of Lin classified <T> / Lref shapes. 
+    -- Lou is not cleared. (S is a dummy trace argument)
+
+    GSFSMakeSolids(me:in out;SOF:Shape;SFS:in out ShellFaceSet;LOSO:in out ListOfShape);
+    GSOBUMakeSolids(me:in out;SOF:Shape;SOBU:in out SolidBuilder;LOSO:in out ListOfShape);
+--modified by NIZHNY-MZV  Mon Dec  6 14:53:21 1999
+    GWESMakeFaces(me:in out;FF:Shape;WES:in out WireEdgeSet;LOF:in out ListOfShape)  is  virtual;
+    GFABUMakeFaces(me:in out;FF:Shape;FABU:in out FaceBuilder;LOF:in out ListOfShape;
+    	    	   MWisOld:out DataMapOfShapeInteger from TopTools);
+    RegularizeFaces(me:in out;FF:Shape;lnewFace:ListOfShape;LOF:in out ListOfShape);
+    RegularizeFace(me:in out;FF:Shape;newFace:Shape;LOF:in out ListOfShape);
+    -- regularize face newFace issued from face SS.
+    -- regularized faces are returned in the list of shape LOF
+    RegularizeSolids(me:in out;SS:Shape;lnewSolid:ListOfShape;LOS:in out ListOfShape);
+    RegularizeSolid(me:in out;SS:Shape;newSolid:Shape;LOS:in out ListOfShape);
+    -- regularize solid newSolid issued from solid SS.
+    -- regularized solids are returned in the list of shape LOS
+
+    GPVSMakeEdges(me;EF:Shape;PVS:in out PaveSet;LOE:in out ListOfShape);
+    GEDBUMakeEdges(me;EF:Shape;EDBU:in out EdgeBuilder;LOE:in out ListOfShape);
+
+    GToSplit(me;S:Shape;TB:State) returns Boolean;
+    GToMerge(me;S:Shape) returns Boolean;
+
+    GTakeCommonOfSame(myclass;G:GTopo) returns Boolean;
+    GTakeCommonOfDiff(myclass;G:GTopo) returns Boolean;
+
+    -- NYI:GFindxxx methods:should be provided by the DS
+    GFindSamDom(me;S:Shape;L1,L2:in out ListOfShape);
+    GFindSamDom(me;L1,L2:in out ListOfShape);
+    GFindSamDomSODO(me;S:Shape;LSO,LDO:in out ListOfShape);
+    GFindSamDomSODO(me;LSO,LDO:in out ListOfShape);
+    
+    GMapShapes(me:in out;S1,S2:Shape);
+    GClearMaps(me:in out);
+    GFindSameRank(me;L1:ListOfShape;R:Integer;L2:in out ListOfShape);
+    GShapeRank(me;S:Shape) returns Integer;
+    GIsShapeOf(me;S:Shape;I12:Integer) returns Boolean;
+    GContains(myclass;S:Shape;L:ListOfShape) returns Boolean;
+    GCopyList(myclass;Lin:ListOfShape;i1,i2:Integer;Lou:out ListOfShape);
+    GCopyList(myclass;Lin:ListOfShape;Lou:out ListOfShape);
+
+    -- dump
+
+    GdumpLS(me;L:ListOfShape);
+    GdumpPNT(myclass;P:Pnt);
+    GdumpORIPARPNT(myclass;o:Orientation;p:Real;Pnt:Pnt);
+    GdumpSHA(me;S:Shape;str:Address=NULL);
+    GdumpSHAORI(me;S:Shape;str:Address=NULL);
+    GdumpSHAORIGEO(me;S:Shape;str:Address=NULL);
+
+    GdumpSHASTA(me;iS:Integer;T:State;
+		   a:AsciiString="";b:AsciiString="");
+    GdumpSHASTA(me;S:Shape;T:State;
+		   a:AsciiString="";b:AsciiString="");
+    GdumpSHASTA(me;iS:Integer;T:State;SS:ShapeSet;
+    	    	   a:AsciiString="";b:AsciiString="";c:AsciiString="\n");
+
+    GdumpEDG(me;S:Shape;str:Address=NULL);
+    GdumpEDGVER(me;E,V:Shape;str:Address=NULL);
+
+    GdumpSAMDOM(me;L:ListOfShape;str:Address=NULL);
+    GdumpEXP(me;E:ShapeExplorer);
+    GdumpSOBU(me;SB:in out SolidBuilder);
+    GdumpFABU(me;FB:in out FaceBuilder);
+    GdumpEDBU(me;EB:in out EdgeBuilder);
+    GtraceSPS(me;iS:Integer) returns Boolean; 
+    GtraceSPS(me;iS,jS:Integer) returns Boolean; 
+    GtraceSPS(me;S:Shape) returns Boolean; 
+    GtraceSPS(me;S:Shape;IS:out Integer) returns Boolean; 
+    GdumpSHASETreset(me:in out);
+    GdumpSHASETindex(me:in out) returns Integer;
+    PrintGeo(myclass;S:Shape);
+    PrintSur(myclass;F:Face);
+    PrintCur(myclass;E:Edge);
+    PrintPnt(myclass;V:Vertex);
+    PrintOri(myclass;S:Shape);
+    StringState(myclass;S:State) returns AsciiString from TCollection;
+    GcheckNBOUNDS(myclass;E:Shape) returns Boolean; 
+     
+
+fields
+
+    myState1,myState2:State from TopAbs  is  protected;
+    myShape1,myShape2:Shape from TopoDS  is  protected;
+    myDataStructure:HDataStructure from TopOpeBRepDS  is  protected;
+    myBuildTool:BuildTool from TopOpeBRepDS  is  protected;
+
+    myNewVertices:HArray1OfShape from TopTools  is  protected;
+    myNewEdges:DataMapOfIntegerListOfShape from TopTools  is  protected;
+    myNewFaces:HArray1OfListOfShape from TopTools  is  protected;
+
+    mySplitIN :DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+    mySplitON :DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+    mySplitOUT:DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+    myMergedIN :DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+    myMergedON :DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+    myMergedOUT:DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS  is  protected;
+
+    myEmptyShapeList:ListOfShape from TopTools  is  protected;
+    myListOfSolid:ListOfShape from TopTools  is  protected;
+    myListOfFace:ListOfShape from TopTools  is  protected;
+    myListOfEdge:ListOfShape from TopTools  is  protected;
+
+    -- new faces to split with their splits 
+    myFSplits:DataMapOfShapeListOfShape  is  protected;
+    -- new edges to split with their splits 
+    myESplits:DataMapOfShapeListOfShape  is  protected;
+
+    -- section data
+    mySectionDone:Boolean from Standard  is  protected;
+    mySplitSectionEdgesDone:Boolean from Standard  is  protected;
+    mySection:ListOfShape from TopTools  is  protected;
+
+    -- grid data
+    mySolidReference:Solid from TopoDS  is  protected;
+    mySolidToFill:Solid from TopoDS  is  protected;
+    myFaceAvoid:ListOfShape from TopTools  is  protected;
+
+    myFaceReference:Face from TopoDS  is  protected;
+    myFaceToFill:Face from TopoDS  is  protected;
+    myEdgeAvoid:ListOfShape from TopTools  is  protected;
+
+    myEdgeReference:Edge from TopoDS  is  protected;
+    myEdgeToFill:Edge from TopoDS  is  protected;
+    myVertexAvoid:ListOfShape from TopTools  is  protected;
+
+    myMAP1,myMAP2:IndexedMapOfShape from TopTools  is  protected;
+
+    -- KPart Builder
+    myIsKPart:Integer from Standard  is  protected;
+    myKPMAPf1f2:DataMapOfShapeListOfShape from TopTools  is  protected;
+
+     -- trace        
+    mySHASETindex:Integer  is  protected;
+
+    -- special cases
+    myClassifyDef:Boolean  is  protected;
+    myClassifyVal:Boolean  is  protected;
+
+    myShapeClassifier:ShapeClassifier from TopOpeBRepTool  is  protected;
+
+    --- Regularization
+    myMemoSplit : MapOfShape from TopTools  is  protected;
+
+    myEmptyAS : AsciiString from TCollection  is  protected; -- BUG extraction hxx WOK
+
+    -- for building of ON patches from coinciding faces not same domain
+    myProcessON: Boolean from Standard is protected;
+    myONFacesMap: IndexedDataMapOfShapeShape from TopTools is protected;
+    myONElemMap: IndexedMapOfOrientedShape from TopTools is protected;
+
+friends
+
+    class HBuilder from TopOpeBRepBuild
+    
+end Builder from TopOpeBRepBuild;

@@ -1,0 +1,101 @@
+--
+-- File:	Aspect_ColorRampColorMap.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class ColorRampColorMap from Aspect inherits ColorMap from Aspect
+
+	---Version: 0.0
+
+	---Purpose: This class defines a ColorRampColorMap object.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	Color		from Quantity,
+	NameOfColor 	from Quantity,
+	ColorMapEntry   from Aspect
+
+raises
+        RangeError from Standard,
+	BadAccess 	from Aspect
+
+is
+	Create( basepixel,dimension  : in Integer from Standard ;
+		color  		     : in Color from Quantity )
+		returns mutable ColorRampColorMap from Aspect
+		raises RangeError from Standard ;
+	---Level: Public
+	---Purpose : Create a Color Ramp Colormap starting from Black at
+	--	     basepixel to color at basepixel+dimension-1.
+
+	Create( basepixel,dimension  : in Integer     from Standard ;
+		colorName  	     : in NameOfColor from Quantity )
+		returns mutable ColorRampColorMap from Aspect
+		raises RangeError from Standard ;
+	---Level: Public
+	---Purpose : Create a Color Ramp Colormap starting from Black at
+	--	     basepixel to color at basepixel+dimension-1.
+
+	ColorRampDefinition( me : in ;
+			basepixel,dimension : out Integer from Standard ;
+			color : out Color from Quantity ) ;
+	---Level: Public
+	---Purpose : Get  Color Ramp Colormap definition .
+
+	ComputeEntry( me : in out mutable ;
+		      basepixel,dimension  : in Integer from Standard ;
+		      color  		   : in Color from Quantity )
+		raises RangeError from Standard is private ;
+	---Level: Public
+	---Purpose : Create a Color Ramp Colormap starting from Black at
+	--	     basepixel to color at basepixel+dimension-1.
+
+	FindColorMapIndex ( me ;
+			    ColorMapEntryIndex : Integer from Standard )
+		returns Integer from Standard
+		raises BadAccess from Aspect ;
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the 
+	--	    ColorMapEntry.Index() equal to <AnEntryIndex>.
+	--  Warning: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+
+	FindEntry ( me ; AColorMapEntryIndex : Integer from Standard )
+		returns ColorMapEntry from Aspect
+		raises BadAccess from Aspect ;
+	---Level: Public
+	---Purpose: Returns the ColorMapEntry with ColorMapEntry.Index()
+	--	    equal to <AnEntryIndex>.
+	--  Warning: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+    	---C++: return const &
+
+	NearestColorMapIndex( me ; aColor : Color from Quantity )
+		returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the
+	--	    nearest matching ColorMapEntry 
+
+	NearestEntry( me ; aColor : Color from Quantity )
+		returns ColorMapEntry from Aspect ;
+	---Level: Public
+	---Purpose: Returns the nearest ColorMapEntry that match aColor .
+    	---C++: return const &
+
+        AddEntry (me : mutable; aColor : Color from Quantity)
+                returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical color entry in the color map <me>
+        -- or returns the nearest ColorMapEntry Index.
+
+fields
+	mycolor	    : Color	from Quantity ;
+	mybasepixel : Integer 	from Standard ;
+	mydimension : Integer 	from Standard ;
+
+end ColorRampColorMap ;

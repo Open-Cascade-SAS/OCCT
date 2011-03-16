@@ -1,0 +1,20 @@
+-- File:        Surface.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Surface from StepGeom 
+
+inherits GeometricRepresentationItem from StepGeom 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Surface;
+	---Purpose: Returns a Surface
+
+
+end Surface;

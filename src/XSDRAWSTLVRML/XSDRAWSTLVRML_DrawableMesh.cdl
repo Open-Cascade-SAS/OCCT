@@ -1,0 +1,22 @@
+-- File     : XSDRAWSTLVRML_DrawableMesh.cdl
+-- Created  : 11 June 2004
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2004
+
+class DrawableMesh from XSDRAWSTLVRML inherits Drawable3D from Draw
+
+	---Purpose:
+uses
+  Display from Draw,
+  Mesh    from MeshVS
+
+is
+    Create ( aMesh : Mesh from MeshVS ) returns mutable DrawableMesh from XSDRAWSTLVRML;
+    DrawOn(me; dis : in out Display) is redefined virtual;
+
+    GetMesh( me ) returns Mesh;
+
+fields
+    myMesh : Mesh;
+
+end DrawableMesh;

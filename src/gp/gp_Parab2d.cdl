@@ -1,0 +1,277 @@
+---Copyright:   Matra Datavision 1991
+
+class Parab2d   from gp   inherits Storable
+
+        ---Purpose: Describes a parabola in the plane (2D space).
+        -- A parabola is defined by its focal length (that is, the
+        -- distance between its focus and apex) and positioned in
+        -- the plane with a coordinate system (a gp_Ax22d object) where:
+        -- -   the origin of the coordinate system is on the apex of
+        --   the parabola, and
+        -- -   the "X Axis" of the coordinate system is the axis of
+        --   symmetry; the parabola is on the positive side of this axis.
+        -- This coordinate system is the "local coordinate system"
+        -- of the parabola. Its orientation (direct or indirect sense)
+        -- gives an implicit orientation to the parabola.
+        -- In this coordinate system, the equation for the parabola is:
+        -- Y**2 = (2*P) * X.
+        -- where P, referred to as the parameter of the parabola, is
+        -- the distance between the focus and the directrix (P is
+        -- twice the focal length).
+        -- See Also
+        -- GCE2d_MakeParab2d which provides functions for
+        -- more complex parabola constructions
+        -- Geom2d_Parabola which provides additional functions
+        -- for constructing parabolas and works, in particular, with
+        -- the parametric equations of parabolas
+
+
+uses Ax2d   from gp,
+     Ax22d  from gp, 
+     Pnt2d  from gp,
+     Trsf2d from gp,
+     Vec2d  from gp
+
+raises ConstructionError from Standard
+
+
+is
+
+ 
+
+  Create   returns  Parab2d;
+        ---C++: inline
+        --- Purpose : Creates an indefinite parabola.
+
+
+  Create (MirrorAxis : Ax2d; 
+    	  Focal : Real;
+    	  Sense : Boolean from Standard = Standard_True)  returns Parab2d
+        ---C++: inline
+        --- Purpose :
+        --  Creates a parabola with its vertex point, its axis of symmetry
+        --  ("XAxis") and its focal length.
+	--  The sense of parametrization is given by Sense.
+        --  Warnings : It is possible to have Focal = 0. 
+        -- Raises ConstructionError if Focal < 0.0
+
+     raises ConstructionError;
+
+
+  Create (A     : Ax22d; 
+    	  Focal : Real)  returns Parab2d
+        ---C++: inline
+        --- Purpose :
+        --  Creates a parabola with its vertex point, its axis of symmetry
+        --  ("XAxis") and its focal length.
+	--  The sense of parametrization is given by A.
+        -- Warnings : It is possible to have Focal = 0. 
+        -- Raises ConstructionError if Focal < 0.0
+
+     raises ConstructionError;
+
+
+  Create (D : Ax2d; 
+    	  F : Pnt2d;
+    	  Sense : Boolean from Standard = Standard_True)  returns Parab2d;
+        --- Purpose :
+        --  Creates a parabola with the directrix and the focus point.
+	--  The sense of parametrization is given by Sense.
+
+
+  Create (D : Ax22d; F : Pnt2d)  returns Parab2d;
+        --- Purpose :
+        --  Creates a parabola with the directrix and the focus point.
+        --  The Sense of parametrization is given by D.
+
+
+  SetFocal (me : in out; Focal : Real)
+        ---C++: inline
+        --- Purpose :
+        --  Changes the focal distance of the parabola
+        -- Warnings : It is possible to have Focal = 0. 
+        -- Raises ConstructionError if Focal < 0.0
+
+     raises ConstructionError
+     is static;
+
+
+  SetLocation (me : in out; P : Pnt2d)  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Changes the "Location" point of the parabola. It is the 
+        --  vertex of the parabola.
+
+  
+  SetMirrorAxis (me : in out; A : Ax2d)   is static;
+        ---C++: inline
+        --- Purpose : Modifies this parabola, by redefining its local coordinate system so that
+        --    its origin and "X Direction" become those of the axis
+        --  MA. The "Y Direction" of the local coordinate system is
+        --   then recomputed. The orientation of the local
+        --   coordinate system is not modified.
+        
+
+  SetAxis (me : in out; A : Ax22d)   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the local coordinate system of the parabola.
+        --  The "Location" point of A becomes the vertex of the parabola.
+        
+
+  Coefficients (me; A, B, C, D, E, F : out Real)   is static;
+        --- Purpose :
+        --  Computes the coefficients of the implicit equation of the parabola.
+        --  A * (X**2) + B * (Y**2) + 2*C*(X*Y) + 2*D*X + 2*E*Y + F = 0.
+
+
+  Directrix (me)   returns Ax2d   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the directrix of the parabola.
+        -- The directrix is:
+        -- -   a line parallel to the "Y Direction" of the local
+        --   coordinate system of this parabola, and
+        -- -   located on the negative side of the axis of symmetry,
+        --   at a distance from the apex which is equal to the focal  length of this parabola.
+        --   The directrix is returned as an axis (a gp_Ax2d object),
+        -- the origin of which is situated on the "X Axis" of this parabola.
+
+
+  Focal (me)  returns Real  is static;
+        ---C++: inline
+	--- Purpose : 
+	--  Returns the distance between the vertex and the focus
+	--  of the parabola.
+
+
+  Focus (me)   returns Pnt2d   is static;
+        ---C++: inline
+	--- Purpose : Returns the focus of the parabola.
+
+
+  Location (me)  returns Pnt2d   is static;
+        ---C++: inline
+        --- Purpose : Returns the vertex of the parabola.
+
+
+  MirrorAxis (me)  returns Ax2d   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the symmetry axis of the parabola.
+        --  The "Location" point of this axis is the vertex of the parabola.
+
+  Axis (me)  returns Ax22d   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the local coordinate system of the parabola.
+        --  The "Location" point of this axis is the vertex of the parabola.
+
+  Parameter (me)   returns Real  is static;
+        ---C++: inline
+        --- Purpose :
+	--  Returns the distance between the focus and the
+        --  directrix of the parabola.
+
+
+
+
+  Reverse (me : in out)         is static;
+        ---C++: inline
+
+  Reversed (me)  returns Parab2d  is static;
+        ---C++: inline
+        ---Purpose:
+        -- Reverses the orientation of the local coordinate system
+        -- of this parabola (the "Y Direction" is reversed).
+        -- Therefore, the implicit orientation of this parabola is reversed.
+        -- Note:
+        -- -   Reverse assigns the result to this parabola, while
+        -- -   Reversed creates a new one.
+  
+  IsDirect (me)  returns Boolean  is static;
+        ---C++: inline
+        --- Purpose : Returns true if the local coordinate system is direct
+        --            and false in the other case.
+
+  Mirror (me : in out; P : Pnt2d)            is static;
+
+  Mirrored (me; P : Pnt2d)  returns Parab2d  is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a parabola with respect 
+        --  to the point P which is the center of the symmetry
+
+
+  Mirror (me : in out; A : Ax2d)            is static;
+
+  Mirrored (me; A : Ax2d)  returns Parab2d  is static;
+       --- Purpose :
+        --  Performs the symmetrical transformation of a parabola with respect 
+        --  to an axis placement which is the axis of the symmetry.
+
+
+       
+
+  Rotate (me : in out; P : Pnt2d; Ang : Real)           is static;
+        ---C++: inline
+
+  Rotated (me; P : Pnt2d; Ang : Real)  returns Parab2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a parabola. P is the center of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+  
+
+  Scale (me : in out; P : Pnt2d; S : Real)          is static;
+        ---C++: inline
+
+  Scaled (me; P : Pnt2d; S : Real)  returns Parab2d  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a parabola. S is the scaling value.
+        --  If S is negative the direction of the symmetry axis
+        --  "XAxis" is reversed and the direction of the "YAxis" too.
+
+
+
+  Transform (me : in out; T : Trsf2d)             is static;
+        ---C++: inline
+
+  Transformed (me; T : Trsf2d)  returns Parab2d   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms an parabola with the transformation T from class Trsf2d.
+
+
+
+
+  Translate (me : in out; V : Vec2d)            is static;
+        ---C++: inline
+
+  Translated (me; V : Vec2d)   returns Parab2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a parabola in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+
+  
+
+  Translate (me : in out; P1, P2 : Pnt2d )           is static;
+        ---C++: inline
+
+  Translated (me; P1, P2 : Pnt2d)   returns Parab2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a parabola from the point P1 to the point P2.
+
+
+fields
+
+  pos         : Ax22d;
+  focalLength : Real;
+
+end;

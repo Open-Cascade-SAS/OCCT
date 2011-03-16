@@ -1,0 +1,102 @@
+-- File:	Voxel_BooleanOperation.cdl
+-- Created:	Wed May 21 10:59:19 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class BooleanOperation from Voxel
+
+    ---Purpose: Boolean operations (fuse, cut)
+    --          for voxels of the same dimension.
+
+uses
+
+    DS from Voxel,
+    BoolDS from Voxel,
+    ColorDS from Voxel,
+    FloatDS from Voxel
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns BooleanOperation from Voxel;
+
+    
+    ---Category: Fusion
+    --           ======
+
+    Fuse(me;
+    	 theVoxels1 : in out BoolDS from Voxel;
+    	 theVoxels2 : in     BoolDS from Voxel)
+    ---Purpose: Fuses two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    returns Boolean from Standard;
+
+    Fuse(me;
+    	 theVoxels1 : in out ColorDS from Voxel;
+    	 theVoxels2 : in     ColorDS from Voxel)
+    ---Purpose: Fuses two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    --          It summerizes the value of corresponding voxels and puts the result to theVoxels1.
+    --          If the result exceeds 15 or becomes greater, it keeps 15.
+    returns Boolean from Standard;
+
+    Fuse(me;
+    	 theVoxels1 : in out FloatDS from Voxel;
+    	 theVoxels2 : in     FloatDS from Voxel)
+    ---Purpose: Fuses two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    --          It summerizes the value of corresponding voxels and puts the result to theVoxels1.
+    returns Boolean from Standard;
+
+    
+    ---Category: Cut
+    --           ===
+
+    Cut(me;
+    	theVoxels1 : in out BoolDS from Voxel;
+    	theVoxels2 : in     BoolDS from Voxel)
+    ---Purpose: Cuts two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    returns Boolean from Standard;
+    
+    Cut(me;
+    	theVoxels1 : in out ColorDS from Voxel;
+    	theVoxels2 : in     ColorDS from Voxel)
+    ---Purpose: Cuts two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    --          It subtracts the value of corresponding voxels and puts the result to theVoxels1.
+    returns Boolean from Standard;
+
+    Cut(me;
+    	theVoxels1 : in out FloatDS from Voxel;
+    	theVoxels2 : in     FloatDS from Voxel)
+    ---Purpose: Cuts two cubes of voxels.
+    --          It modifies the first cube of voxels.
+    --          It returns false in case of different dimension of the cube,
+    --          different number of voxels.
+    --          It subtracts the value of corresponding voxels and puts the result to theVoxels1.
+    returns Boolean from Standard;
+
+    
+    ---Category: Private area
+    --           ============
+    
+    Check(me;
+    	  theVoxels1 : DS from Voxel;
+    	  theVoxels2 : DS from Voxel)
+    returns Boolean from Standard
+    is private;
+    
+end BooleanOperation;

@@ -1,0 +1,90 @@
+-- File:	TopOpeBRepTool_GeomTool.cdl
+-- Created:	Thu Jun 24 17:20:00 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class GeomTool from TopOpeBRepTool 
+
+
+uses
+
+    OutCurveType from TopOpeBRepTool
+    
+is
+
+    Create(TypeC3D : OutCurveType from TopOpeBRepTool = TopOpeBRepTool_BSPLINE1; 
+    	   CompC3D : Boolean from Standard = Standard_True; 
+    	   CompPC1 : Boolean from Standard = Standard_True;
+    	   CompPC2 : Boolean from Standard = Standard_True)
+    returns GeomTool from TopOpeBRepTool;
+    
+	---Purpose: Boolean flags <CompC3D>, <CompPC1>, <CompPC2>
+	--          indicate whether  the  corresponding result curves
+	--          <C3D>, <PC1>, <PC2> of MakeCurves method  must or not
+	--          be computed from an intersection line <L>.  
+	--          When  the line <L> is a walking one, <TypeC3D> is the  
+	--          kind  of the 3D curve <C3D>  to  compute  : 
+	--          - BSPLINE1 to compute  a BSpline of  degree 1 on the
+	--          walking   points  of  <L>, 
+	--          - APPROX  to build  an  approximation curve on the 
+	--          walking points of <L>.
+
+    Define(me : in out;
+	   TypeC3D : OutCurveType from TopOpeBRepTool;
+    	   CompC3D : Boolean from Standard;
+    	   CompPC1 : Boolean from Standard;
+    	   CompPC2 : Boolean from Standard)
+    is static;
+
+    Define(me : in out;TypeC3D : OutCurveType from TopOpeBRepTool)
+    is static;
+
+    DefineCurves(me : in out;CompC3D : Boolean from Standard)
+    is static;
+
+    DefinePCurves1(me : in out;CompPC1 : Boolean from Standard)
+    is static;
+
+    DefinePCurves2(me : in out;CompPC2 : Boolean from Standard)
+    is static;
+
+    Define(me : in out;GT : GeomTool from TopOpeBRepTool)
+    is static;
+
+    GetTolerances(me; tol3d,tol2d : out Real from Standard)
+    is static;
+
+    SetTolerances(me : in out; tol3d,tol2d : Real from Standard)
+    is static;
+
+    GetTolerances(me; tol3d,tol2d : out Real from Standard; relative : out Boolean from Standard)
+    is static;
+
+    SetTolerances(me : in out; tol3d,tol2d : Real from Standard; relative : Boolean from Standard)
+    is static;
+
+    NbPntMax(me) returns Integer from Standard is static;
+    
+    SetNbPntMax(me : in out; NbPntMax : Integer from Standard)
+    is static;
+    
+    TypeC3D(me) returns OutCurveType from TopOpeBRepTool is static;
+    CompC3D(me) returns Boolean from Standard is static;
+    CompPC1(me) returns Boolean from Standard is static;
+    CompPC2(me) returns Boolean from Standard is static;
+
+fields
+
+    myTypeC3D     : OutCurveType from TopOpeBRepTool is protected;
+    myCompC3D     : Boolean from Standard is protected;
+    myCompPC1     : Boolean from Standard is protected;
+    myCompPC2     : Boolean from Standard is protected;
+    myTol3d       : Real from Standard;
+    myTol2d       : Real from Standard;
+    myRelativeTol : Boolean from Standard;
+    myNbPntMax    : Integer from Standard;
+    
+end GeomTool;

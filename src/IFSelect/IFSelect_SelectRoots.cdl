@@ -1,0 +1,37 @@
+-- File:	SelectRoots.cdl
+-- Created:	Wed Nov 18 10:09:31 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectRoots  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectRoots sorts the Entities which are local roots of a
+    --           set of Entities (not shared by other Entities inside this set,
+    --           even if they are shared by other Entities outside it)
+
+uses AsciiString from TCollection, InterfaceModel, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectRoots;
+    ---Purpose : Creates a SelectRoots
+
+    RootResult (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns the list of local roots. It is redefined for a purpose
+    --           of effeciency : calling a Sort routine for each Entity would
+    --           cost more ressource than to work in once using a Map
+    --           RootResult takes in account the Direct status
+
+    HasUniqueResult (me) returns Boolean  is redefined protected;
+    ---Purpose : Returns True, because RootResult assures uniqueness
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns always True, because RootResult has done work
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Local Root Entities"
+
+end SelectRoots;

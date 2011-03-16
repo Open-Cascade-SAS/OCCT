@@ -1,0 +1,49 @@
+-- File:	AllConnected.cdl
+-- Created:	Fri Oct  2 09:54:44 1992
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class AllConnected  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class gives content of the CONNECTED COMPONANT(S)
+    	--           which include specific Entity(ies)
+
+uses Transient, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph) returns AllConnected;
+    ---Purpose : creates an AllConnected from a graph, empty ready to be filled
+
+    Create (agraph : Graph; ent : any Transient)
+    	returns AllConnected;
+    ---Purpose : creates an AllConnected which memorizes Entities Connected to
+    --           a given one, at any level : that is, itself, all Entities
+    --           Shared by it and Sharing it, and so on.
+    --           In other terms, this is the content of the CONNECTED COMPONANT
+    --           which include a specific Entity
+
+    GetFromEntity (me : in out; ent : any Transient);
+    ---Purpose : adds an entity and its Connected ones to the list (allows to
+    --           cumulate all Entities Connected by some ones)
+    --           Note that if "ent" is in the already computed list,, no entity
+    --           will be added, but if "ent" is not already in the list, a new
+    --           Connected Componant will be cumulated 
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value give all entities noted in Connected Componant,
+    	--   including the entities given for construction or to GetFromEntity
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the specific evaluation (Connected entities atall levels)
+
+fields
+
+    thegraph : Graph;
+
+end AllConnected;

@@ -1,0 +1,24 @@
+#define OCC9026     //AEL Additional method to optimize performance
+                    //of the FindSelectedOwnerFromShape() method.
+
+inline void SelectMgr_ViewerSelector::Init() 
+{
+  myCurRank = 1;
+}
+
+inline void SelectMgr_ViewerSelector::Next()
+{
+  myCurRank++;
+}
+
+inline void SelectMgr_ViewerSelector::SetPickClosest (const Standard_Boolean preferClosest)
+{
+  preferclosest = preferClosest;
+}
+
+#ifdef OCC9026
+inline const SelectMgr_DataMapOfIntegerSensitive& SelectMgr_ViewerSelector::Primitives() const
+{
+  return myentities;
+}
+#endif

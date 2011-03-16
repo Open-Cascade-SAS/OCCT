@@ -1,0 +1,30 @@
+-- File:        NamedUnit.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWNamedUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for NamedUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     NamedUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWNamedUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable NamedUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : NamedUnit from StepBasic);
+
+	Share(me; ent : NamedUnit from StepBasic; iter : in out EntityIterator);
+
+end RWNamedUnit;

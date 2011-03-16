@@ -1,0 +1,21 @@
+-- File:	StepToGeom_MakeBSplineCurve2d.cdl
+-- Created:	Tue Jul  6 12:11:06 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeBSplineCurve2d from StepToGeom
+    
+    ---Purpose: This class implements the mapping between classes
+    --          BSplineCurve from StepGeom and BSplineCurve from Geom2d
+    
+uses
+     BSplineCurve from Geom2d,
+     BSplineCurve from StepGeom     
+     
+is 
+
+    Convert ( myclass; SC : BSplineCurve from StepGeom;
+                       CC : out BSplineCurve from Geom2d)
+    returns Boolean from Standard;
+
+end MakeBSplineCurve2d;

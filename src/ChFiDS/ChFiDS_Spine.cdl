@@ -1,0 +1,359 @@
+-- File:	ChFiDS_Spine.cdl
+-- Created:	Tue Nov  9 16:23:29 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class Spine from ChFiDS inherits TShared from MMgt
+
+	---Purpose: Contient  les  informations  necessaires   a    la
+	--          construction d un conge volumique :
+	--          
+	--          
+	--          - ligne guide composee d'edges du solide, tangents
+	--          entre eux, et bordes par des faces tangentes entre
+	--          elles. 
+	--          
+	--          Les outils de construction du   Sp
+	--          par propagation a partir d un  edge du solide sont
+	--          fournis dans le Builder de Fil3d.
+	--          
+    	--          Le Spine contient par aileurs     des
+    	--          informations concernant la nature des   extremites
+    	--          du conge ( sur bord libre, sur cassure ou ferme ).
+	--          
+	--          REMARQUE  IMPORTANTE  :    la  ligne  guide  ainsi
+	--          representee n est pas C2, alors que le cheminement
+	--          le  reclame.   Un  certain  nombre d  amenagements
+	--          paliatifs (voir les  methodes en fin) sont prevus,
+ 	--          s  ils  sont insuffisants  il faudra changer notre
+	--          fusil d  epaule et doubler le Spine d
+	--          une  ligne C2 avec  les consequences que l on sait
+	--          pour gerer les va et  vient entre KPart Blend dans
+	--          Fil3d.
+
+
+
+uses  
+
+    HArray1OfReal    from TColStd,
+    HArray1OfBoolean from TColStd,
+    Pnt              from gp,
+    Vec              from gp,
+    Lin              from gp,
+    Circ             from gp,
+    CurveType        from GeomAbs,
+    Vertex           from TopoDS,
+    Edge             from TopoDS,
+    SequenceOfShape  from TopTools,
+    Curve            from BRepAdaptor,
+    SurfData         from ChFiDS,
+    State            from ChFiDS,
+    HElSpine         from ChFiDS,
+    ListOfHElSpine   from ChFiDS,
+    ErrorStatus      from ChFiDS 
+is
+
+----------------------------
+-- methodes de construction.
+----------------------------
+
+    Create  returns mutable Spine from ChFiDS;
+
+    Create(Tol : Real from Standard) returns mutable Spine from ChFiDS;
+
+    SetEdges(me : mutable; E : Edge from TopoDS) is static;
+    ---Purpose: stocker les edges qui vont composer la ligne guide
+    ---C++: inline
+
+    PutInFirst(me : mutable; E : Edge from TopoDS) is static;
+    ---Purpose:stocker l edge en premiere position avant tous les autres
+    ---C++: inline
+
+    NbEdges(me) returns Integer is static;
+    ---C++: inline
+
+
+    Edges(me; I : Integer) returns Edge from TopoDS is static;
+    ---C++: return const &
+    ---C++: inline
+
+    
+    SetFirstStatus(me : mutable; S : State from ChFiDS) is static;
+    ---Purpose: stocker si le debut de l ensemble des edges demarre
+    --          sur une cassure un bord libre ou forme un contour ferme
+    ---C++: inline
+
+
+    SetLastStatus(me : mutable; S : State from ChFiDS) is static;
+    ---Purpose: stocker si la fin de l ensemble des edges demarre
+    --          sur une cassure un bord libre ou forme un contour ferme
+    ---C++: inline
+
+    AppendElSpine(me : mutable; Els : HElSpine from ChFiDS) 
+    is virtual;
+    
+    ElSpine(me; IE : Integer from Standard) 
+    returns mutable HElSpine from  ChFiDS
+    is static;
+
+    ElSpine(me; E : Edge from TopoDS) 
+    returns mutable HElSpine from  ChFiDS
+    is static;
+
+    ElSpine(me; W : Real from Standard) 
+    returns mutable HElSpine from  ChFiDS
+    is static;
+
+    ChangeElSpines(me : mutable) 
+    ---C++: return &
+    returns ListOfHElSpine from ChFiDS
+    is static;
+
+    Reset(me : mutable; AllData : Boolean from Standard = Standard_False)
+    is virtual;
+
+    SplitDone(me) returns Boolean from Standard is static;
+    SplitDone(me : mutable; B : Boolean from Standard) is static;
+
+----------------------
+-- methodes de calcul.
+----------------------
+
+    Load(me : mutable) is static;
+    ---Purpose: preparer la ligne guide en fonction  des edges qui
+    --          sont des arcs elementaires (prendre un parametrage
+    --          unique  abscisse curviligne );pour pouvoir appeller
+    --          les methodes sur la geometrie (first,last,value,d1,d2)
+    --          il faut d abord preparer sinon une exception sera levee
+
+    Resolution(me; R3d : Real) returns Real
+    is static;
+    
+    IsClosed(me) returns Boolean
+    is static;
+
+    FirstParameter(me) returns Real
+    is static;
+
+    LastParameter(me) returns Real 
+    is static;
+
+    SetFirstParameter(me : mutable; Par : Real from Standard)
+    is static;
+
+    SetLastParameter(me : mutable; Par : Real from Standard)
+    is static;
+    
+    FirstParameter(me; IndexSpine : Integer ) returns Real 
+    ---Purpose: donne  la longueur cumulee  de tous les  arcs avant le
+    --          numero IndexSp
+    is static;
+    
+    LastParameter(me; IndexSpine : Integer ) returns Real 
+    ---Purpose: donne  la longueur cumulee  jusqu  a l  arc de  numero
+    --          IndexSpine (inclus)
+    is static;
+    
+    Length(me;IndexSpine : Integer ) returns Real 
+    ---Purpose: donne la longueur de l arc de numero IndexSp
+    is static;
+    
+    IsPeriodic(me) returns Boolean
+    is static;    
+
+    Period(me) returns Real
+    is static;
+
+    Absc(me :mutable; U : Real) returns Real from Standard  
+    is static;
+
+    Absc(me :mutable; U : Real; I : Integer from Standard) 
+    returns Real from Standard  
+    is static;
+
+    Parameter(me :mutable;
+    	      AbsC     : Real; 
+              U        : out Real; 
+              Oriented : Boolean  from  Standard = Standard_True)  
+    is static;
+
+    Parameter(me :mutable; 
+              Index    : Integer; 
+              AbsC     : Real; 
+    	      U        : out Real;  
+              Oriented : Boolean  from  Standard = Standard_True)  
+    is static;
+
+    Prepare(me; 
+            L     : in out Real from Standard; 
+            Index : in out  Integer  from  Standard ) 
+    is static private;
+
+    Value(me :mutable; AbsC : Real ) returns Pnt from gp 
+    is static;
+    
+    D0(me :mutable; AbsC : Real ; P : out Pnt from gp) 
+    is static;
+
+    D1(me :mutable; AbsC : Real ; P : out Pnt from gp; V1 : out Vec from gp) 
+    is static;
+    
+    D2(me :mutable; AbsC : Real ; P : out Pnt from gp; 
+       V1,V2 : out Vec from gp)  
+    is static;
+
+    SetCurrent (me : mutable; Index : Integer ) 
+    is static;
+    
+    CurrentElementarySpine (me : mutable; Index : Integer ) 
+    ---Purpose: set la courbe courante et la renvoie 
+    returns Curve from BRepAdaptor is static; 
+    ---C++: return const &
+
+    CurrentIndexOfElementarySpine(me) returns Integer from Standard
+    ---C++: inline    
+    is static;
+
+    GetType(me) returns CurveType from GeomAbs
+    is static;
+
+    Line(me) returns Lin from gp
+    is static;
+     
+    Circle(me) returns Circ from gp
+    is static;
+     
+    FirstStatus(me) returns State from ChFiDS is static;
+    ---Purpose: returns if the set of edges starts on a free boundary
+    --          or if the first vertex is a breakpoint or if the set is
+    --          closed
+    ---C++: inline
+
+    LastStatus(me) returns State from ChFiDS is static;
+    ---Purpose: returns the state at the end of the set
+    ---C++: inline
+
+
+    Status(me; IsFirst : Boolean from Standard) 
+    returns State from ChFiDS is static;
+    ---C++: inline
+
+
+    SetStatus(me : mutable; 
+              S : State from ChFiDS; 
+              IsFirst : Boolean from Standard) is static;
+    ---C++: inline
+
+    IsTangencyExtremity(me; IsFirst : Boolean from Standard) 
+    returns Boolean is static; 
+    ---Purpose:  returns   if the  set  of  edges starts (or   end) on
+    --          Tangency point.
+    ---C++: inline
+
+
+    SetTangencyExtremity(me : mutable; 
+              IsTangency : Boolean from Standard; 
+              IsFirst    : Boolean from Standard) is static;
+    ---C++: inline
+-----------------------------------------------------------
+--  Methodes d acces aux vertex  et a leurs parametres     
+-----------------------------------------------------------
+
+    Absc(me ; V : Vertex from TopoDS) returns Real from Standard  
+    is static;
+    FirstVertex(me) returns Vertex from TopoDS;
+    LastVertex(me) returns Vertex from TopoDS;
+
+-----------------------------------------------------------
+--  Methodes de controle des prolongements aux extremites :
+--  - prolongement par parmetrage etendu,
+--  - prolongement par la tangente.
+-----------------------------------------------------------
+
+    SetFirstTgt(me : mutable; W : Real from Standard) is static;
+
+    SetLastTgt(me : mutable; W : Real from Standard) is static;
+
+    HasFirstTgt(me) returns Boolean from Standard is static;
+
+    HasLastTgt(me) returns Boolean from Standard is static;
+
+
+---------------------------------------------------------------------
+--  Methodes d implementation permettant de positionner un flag pour
+--  le calcul de D2 aux points singuliers de la ligne guide.
+---------------------------------------------------------------------
+
+    SetReference(me : mutable; W : Real from Standard) is static;
+    ---Purpose: set a parameter reference for the approx.
+
+    SetReference(me : mutable; I : Integer from Standard) is static;
+    ---Purpose: set  a  parameter  reference  for  the approx,  at the
+    --          middle  of edge I.
+
+    Index(me; 
+    	  W       : Real from Standard; 
+    	  Forward : Boolean from Standard =  Standard_True) 
+    returns Integer from Standard
+    is static;
+
+    Index(me; E : Edge from TopoDS)
+    returns Integer from Standard
+    is static;
+
+    UnsetReference(me : mutable) is static;
+
+-----------------------------------------------------------------------
+-- methodes concernant le statut d'erreur 
+-----------------------------------------------------------------------
+ SetErrorStatus(me : mutable; state : ErrorStatus from ChFiDS) is static;
+ 
+ ErrorStatus(me) returns ErrorStatus from ChFiDS is static; 
+ 
+
+fields
+ 
+-- donnees generales.
+
+myCurve      : Curve from BRepAdaptor;
+indexofcurve : Integer from Standard;
+firstState   : State from ChFiDS;
+lastState    : State from ChFiDS;
+spine        : SequenceOfShape from TopTools;
+abscissa     : HArray1OfReal from TColStd;
+--isconstant   : HArray1OfBoolean from TColStd is protected;
+splitdone    : Boolean from Standard is protected;
+elspines     : ListOfHElSpine from ChFiDS is protected;
+tolesp       : Real from Standard;
+
+-- donnees caraterisant les extremites.
+
+firstparam   : Real from Standard;
+lastparam    : Real from Standard;
+firstprolon  : Boolean from Standard;
+lastprolon   : Boolean from Standard; 
+firstistgt   : Boolean from Standard; 
+lastistgt    : Boolean from Standard;
+
+firsttgtpar  : Real from Standard;
+lasttgtpar   : Real from Standard;
+hasfirsttgt  : Boolean from Standard;
+haslasttgt   : Boolean from Standard;
+firstori     : Pnt from gp;
+lastori      : Pnt from gp;
+firsttgt     : Vec from gp;
+lasttgt      : Vec from gp;
+
+-- detrompeurs de calcul.
+
+valref       : Real from Standard;
+hasref       : Boolean from Standard;
+
+-- statut d'erreur
+errorstate   : ErrorStatus from ChFiDS; 
+
+end Spine;

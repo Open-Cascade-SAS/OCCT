@@ -1,0 +1,56 @@
+-- File:	BRepTopAdaptor.cdl
+-- Created:	Fri Apr  1 10:51:41 1994
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+package BRepTopAdaptor 
+
+	---Purpose: 
+	--          
+	--          
+	--          *** Class2d    : Low level algorithm for 2d classification
+	--          
+	--          *** FClass2d   : 2d classification on a Face from TopoDS
+	--                           A face is first loaded and then every 
+	--                           classification is computed as a rejection.                        
+	--                           (call BRepClass algorithms if necessary,
+	--                           ie, when the rejection is not efficient)
+	--                           
+	--          *** TopolTool :  Several tools used by the intersection
+	--                           algorithm and topology.
+	--         
+	--          
+
+	---Level: Internal
+
+uses Adaptor3d, TopExp, TopoDS, BRepAdaptor, gp, TopAbs,  Adaptor2d  ,
+     TColgp,TColStd,TCollection,TopTools, CSLib
+
+is
+
+    --class Class2d;
+
+    alias SeqOfPtr is SequenceOfAddress from TColStd;
+
+    class FClass2d; 
+
+    class HVertex; -- inherits HVertex from Adaptor3d
+
+    class TopolTool; -- inherits TopolTool from Adaptor3d
+    
+
+
+    --- the folowing classes are used to compute and store 
+    --  informations on shapes. ( TopolTool , Bnd_Box ... )
+    
+    class Tool; 
+    
+    class MapOfShapeTool  instantiates DataMap from TCollection
+        (Shape          from TopoDS,
+         Tool           from BRepTopAdaptor,
+         ShapeMapHasher from TopTools);
+
+
+end BRepTopAdaptor;

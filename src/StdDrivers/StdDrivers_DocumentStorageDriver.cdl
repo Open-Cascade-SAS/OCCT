@@ -1,0 +1,32 @@
+-- File:	PAppStd_DocumentStorageDriver.cdl
+-- Created:	Sep  7 16:30:56 2000
+-- Author:	TURIN  Anatoliy <ati@nnov.matra-dtv.fr>
+-- Copyright:	Matra Datavision 2000
+
+class DocumentStorageDriver from StdDrivers inherits DocumentStorageDriver from MDocStd
+
+	---Purpose: storage driver of a  Part document
+
+
+uses Document from CDM, 
+     MessageDriver from CDM,
+     Document     from PCDM,
+     SequenceOfDocument from PCDM,
+     ExtendedString from  TCollection,
+     ASDriverTable from MDF
+
+
+is
+
+    Create
+    returns mutable DocumentStorageDriver from StdDrivers;
+    
+    Make(me : mutable; aDocument :     Document from CDM;
+                       Documents : out SequenceOfDocument from PCDM)
+    is redefined; 
+    
+    AttributeDrivers(me : mutable;  theMessageDriver : MessageDriver from CDM)
+    returns ASDriverTable from MDF
+    is redefined;
+    
+end DocumentStorageDriver;

@@ -1,0 +1,75 @@
+--
+-- File      :  SingularSubfigure.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SingularSubfigure from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines SingularSubfigure, Type <408> Form <0>
+        --          in package IGESBasic
+        --          Defines the occurrence of a single instance of the
+        --          defined Subfigure.
+
+uses
+
+        SubfigureDef    from IGESBasic,
+        XYZ             from gp
+
+is
+
+        Create returns mutable SingularSubfigure;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              aSubfigureDef : SubfigureDef;
+              aTranslation  : XYZ;
+              hasScale      : Boolean;
+              aScale        : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           SingularSubfigure
+        --       - aSubfigureDef : the Subfigure Definition entity
+        --       - aTranslation  : used to store the X,Y,Z coord
+        --       - hasScale      : Indicates the presence of scale factor
+        --       - aScale        : Used to store the scale factor
+
+        Subfigure (me) returns SubfigureDef;
+        ---Purpose : returns the subfigure definition entity
+
+        Translation (me) returns XYZ;
+        ---Purpose : returns the X, Y, Z coordinates
+
+        ScaleFactor (me) returns Real;
+        ---Purpose : returns the scale factor
+        -- if hasScaleFactor is False, returns 1.0 (default)
+
+        HasScaleFactor (me) returns Boolean;
+        ---Purpose : returns a boolean indicating whether scale factor 
+        -- is present or not
+
+        TransformedTranslation (me) returns XYZ;
+        ---Purpose : returns the Translation after transformation 
+
+fields
+
+--
+-- Class    : IGESBasic_SingularSubfigure
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SingularSubfigure.
+--
+-- Reminder : A SingularSubfigure instance is defined by :
+--            - the Subfigure Definition entity
+--            - the X, Y, Z coordinates
+--            - the scale factor
+--            - indicator of the presence of scale factor
+
+        theSubfigureDef : SubfigureDef;
+        theTranslation  : XYZ from gp;
+        theScaleFactor  : Real;
+        hasScaleFactor  : Boolean;
+
+end SingularSubfigure;

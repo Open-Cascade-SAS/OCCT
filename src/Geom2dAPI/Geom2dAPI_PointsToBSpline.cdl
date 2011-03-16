@@ -1,0 +1,254 @@
+-- File:	Geom2dAPI_PointsToBSpline.cdl
+ -- Created:	Wed Mar 23 15:13:17 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class PointsToBSpline from Geom2dAPI
+
+    	---Purpose: This  class  is  used  to  approximate a  BsplineCurve
+    	--          passing  through an  array  of points,  with  a  given
+    	--          Continuity. 
+    	--       Describes functions for building a 2D BSpline
+    	--       curve which approximates a set of points.
+    	--       A PointsToBSpline object provides a framework for:
+    	--       -   defining the data of the BSpline curve to be built,
+    	--       -   implementing the approximation algorithm, and
+    	--       -   consulting the results   
+
+
+
+uses
+    Array1OfReal  from TColStd,
+    Array1OfPnt2d from TColgp,
+    Shape         from GeomAbs,
+    BSplineCurve  from Geom2d,
+    ParametrizationType from Approx
+raises
+    NotDone from StdFail,
+    OutOfRange from Standard
+is
+    Create
+	---Purpose: Constructs an empty approximation algorithm.
+    	-- Use an Init function to define and build the BSpline curve.
+    returns PointsToBSpline from Geom2dAPI;
+    
+    Create(Points       : Array1OfPnt2d from TColgp;
+    	   DegMin       : Integer       from Standard = 3;
+	   DegMax       : Integer       from Standard = 8;
+	   Continuity   : Shape         from GeomAbs  = GeomAbs_C2;
+	   Tol2D        : Real          from Standard = 1.0e-6)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    returns PointsToBSpline from Geom2dAPI;
+	   
+    Create(YValues      : Array1OfReal  from TColStd;
+	   X0           : Real          from Standard;
+    	   DX           : Real          from Standard;
+    	   DegMin       : Integer       from Standard = 3;
+	   DegMax       : Integer       from Standard = 8;
+	   Continuity   : Shape         from GeomAbs  = GeomAbs_C2;
+	   Tol2D        : Real          from Standard = 1.0e-6)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  Of coordinates :
+        --          
+        --          X = X0 + DX * (i-YValues.Lower())
+        --          Y = YValues(i)
+        --          
+        --          With i in the range YValues.Lower(), YValues.Upper()
+        --          
+        --          The BSpline will be parametrized  from t = X0 to 
+        --          X0 + DX * (YValues.Upper() - YValues.Lower())
+        --          
+        --          And will satisfy X(t) = t
+        --          
+        --          The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    returns PointsToBSpline from Geom2dAPI;
+	   
+	   
+    Create(Points       : Array1OfPnt2d from TColgp; 
+    	   ParType      : ParametrizationType from Approx;
+    	   DegMin       : Integer     from Standard = 3;
+	   DegMax       : Integer     from Standard = 8;
+	   Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol2D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    returns PointsToBSpline from Geom2dAPI;
+	   
+    Create(Points       : Array1OfPnt2d  from TColgp;
+           Parameters   : Array1OfReal from TColStd;
+    	   DegMin       : Integer      from Standard = 3;
+	   DegMax       : Integer      from Standard = 8;
+	   Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	   Tol2D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate  a  BSpline  Curve  passing through an
+        --          array of Point,  which parameters are given by the
+        --           array <Parameters>. 
+        --          The resulting  BSpline   will have the   following
+        --          properties:
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+        ---Level: Public
+    returns PointsToBSpline from Geom2dAPI
+    raises OutOfRange from Standard;
+	   
+
+    Create(Points       : Array1OfPnt2d  from TColgp;
+           Weight1      : Real         from Standard;
+           Weight2      : Real         from Standard;
+           Weight3      : Real         from Standard;
+	   DegMax       : Integer      from Standard = 8;
+	   Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	   Tol3D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate a BSpline Curve  passing through an
+        --          array of Point using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion 
+        ---Level: Public
+    returns PointsToBSpline from Geom2dAPI;
+
+    Init(me : in out;
+         Points       : Array1OfPnt2d from TColgp;
+    	 DegMin       : Integer       from Standard = 3;
+	 DegMax       : Integer       from Standard = 8;
+         Continuity   : Shape         from GeomAbs  = GeomAbs_C2;
+	 Tol2D        : Real          from Standard = 1.0e-6)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    is static;
+	 
+    Init(me : in out;
+           YValues      : Array1OfReal  from TColStd;
+	   X0           : Real          from Standard;
+    	   DX           : Real          from Standard;
+    	   DegMin       : Integer       from Standard = 3;
+	   DegMax       : Integer       from Standard = 8;
+	   Continuity   : Shape         from GeomAbs  = GeomAbs_C2;
+	   Tol2D        : Real          from Standard = 1.0e-6)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  Of coordinates :
+        --          
+        --          X = X0 + DX * (i-YValues.Lower())
+        --          Y = YValues(i)
+        --          
+        --          With i in the range YValues.Lower(), YValues.Upper()
+        --          
+        --          The BSpline will be parametrized  from t = X0 to 
+        --          X0 + DX * (YValues.Upper() - YValues.Lower())
+        --          
+        --          And will satisfy X(t) = t
+        --          
+        --          The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    is static;
+	 
+
+    Init(me : in out;
+         Points       : Array1OfPnt2d from TColgp;
+    	 ParType      : ParametrizationType from Approx;
+    	 DegMin       : Integer     from Standard = 3;
+	 DegMax       : Integer     from Standard = 8;
+         Continuity   : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol2D        : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximate  a BSpline  Curve passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    is static;
+	 
+    
+    Init(me : in out;
+         Points       : Array1OfPnt2d  from TColgp;
+         Parameters   : Array1OfReal from TColStd;
+    	 DegMin       : Integer      from Standard = 3;
+	 DegMax       : Integer      from Standard = 8;
+         Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	 Tol2D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate  a  BSpline  Curve  passing through an
+        --          array of Point,  which parameters are given by the
+        --           array <Parameters>.
+        --          The resulting  BSpline   will have the   following
+        --          properties:
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol2D
+    	---Level: Public
+    is static;
+	 
+    
+    Init(me : in out;
+         Points       : Array1OfPnt2d  from TColgp;
+         Weight1      : Real         from Standard;
+         Weight2      : Real         from Standard;
+         Weight3      : Real         from Standard;
+	 DegMax       : Integer      from Standard = 8;
+	 Continuity   : Shape        from GeomAbs  = GeomAbs_C2;
+	 Tol2D        : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximate a BSpline Curve  passing through an
+        --          array of Point using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion 
+        ---Level: Public
+    is  static;
+	   
+    
+    Curve(me) 
+	---Purpose: Returns the approximate BSpline Curve
+    	---Level: Public
+    returns BSplineCurve from Geom2d
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator Handle(Geom2d_BSplineCurve)() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+	    
+     
+    IsDone(me) 
+    returns  Boolean  from  Standard;
+	    
+	    
+fields
+    myIsDone : Boolean      from Standard;
+    myCurve  : BSplineCurve from Geom2d;
+
+
+end PointsToBSpline;

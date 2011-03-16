@@ -1,0 +1,98 @@
+-- File:	AppCont_LeastSquare.cdl
+-- Created:	Thu Apr 22 14:05:49 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class LeastSquare from AppCont(MultiLine as any;
+    	    	    	    	       LineTool  as any)
+				       ---as TheToolLine(MultiLine)
+
+    ---Purpose:
+
+
+uses  Matrix          from math,
+      Vector          from math,
+      Constraint      from AppParCurves,
+      MultiCurve      from AppParCurves
+
+
+raises NotDone        from StdFail, 
+       OutOfRange     from Standard,
+       DimensionError from Standard
+
+
+
+is
+
+    Create(SSP: MultiLine; U0, U1: Real; FirstCons, LastCons: Constraint; 
+    	   Deg: Integer; NbPoints: Integer = 24)
+    	---Purpose: given a continous MultiLine, this algorithm computes 
+    	--          the approximation into Bezier curves. 
+    	--          NbPoints points are taken on the initial MultiLine for
+    	--          minimizing the surface between the MultiLine and the
+    	--          Bezier curves doing the approximation.
+    	--          The first point will be the point of parameter U0 with
+    	--          a constraint FirstCons.
+    	--          The last point will be the point of parameter U1 with
+    	--          a constraint LastCons.
+
+    returns LeastSquare from AppCont
+    raises DimensionError from Standard;    
+
+
+    
+    IsDone(me)
+    	---Purpose: returns True if all has been correctly done.
+
+    returns Boolean
+    is static;
+    
+    
+    Value(me: in out)
+    	---Purpose: returns the result of the approximation, i.e. a
+    	--          MultiCurve.
+    	--          An exception is raised if NotDone.
+    	---C++: return const &
+
+    returns MultiCurve from AppParCurves
+    raises NotDone from StdFail
+    is static;
+
+
+    NbBColumns(me; SSP: MultiLine)
+    	---Purpose: is internally used by the constuctor.
+
+    returns Integer
+    is static protected;
+
+
+    Error(me; F: in out Real; MaxE3d, MaxE2d: in out Real)
+    	---Purpose: F is the sum of the square errors at each of the 
+    	--          NbPoints of the MultiLine.
+    	--          MaxE3d is the maximum 3d value of these errors.
+    	--          MaxE2d is the maximum 2d value of these errors.
+    	--          An exception is raised if NotDone.
+
+    raises NotDone from StdFail
+    is static;
+
+
+
+fields
+
+Done:      Boolean;
+SCU:       MultiCurve from AppParCurves;
+Degre:     Integer;
+Nbdiscret: Integer;
+nbP:       Integer;
+nbP2d:     Integer;
+Points:    Matrix;
+Poles:     Matrix;
+myParam:   Vector;
+VB:        Matrix;
+
+end LeastSquare from AppCont;
+

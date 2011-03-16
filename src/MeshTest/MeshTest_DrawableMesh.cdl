@@ -1,0 +1,74 @@
+-- File:	MeshTest_DrawableMesh.cdl
+-- Created:	Wed Aug  3 18:19:44 1994
+-- Author:	Modeling
+--		<modeling@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class DrawableMesh from MeshTest inherits Drawable3D from Draw
+
+	---Purpose: A  drawable  mesh.   It  contains  a  sequence  of
+	--          highlighted edges and highlighted vertices.
+
+uses
+    Display           from Draw,
+    Interpretor       from Draw,
+    Shape             from TopoDS,
+    FastDiscret       from BRepMesh,
+    SequenceOfInteger from TColStd
+
+is
+
+    Create returns mutable DrawableMesh from MeshTest;
+
+    Create(S : Shape from TopoDS; Deflect : Real; 
+           Partage : Boolean; InShape: Boolean from Standard= Standard_False)
+    returns mutable DrawableMesh from MeshTest;
+
+
+    Create(Tr: FastDiscret from BRepMesh)
+    returns mutable DrawableMesh from MeshTest;
+    
+    AddInShape(me: mutable; inshape: Boolean)
+    is static;
+
+    Add(me : mutable; S : Shape from TopoDS)
+    is static;
+    
+    Edges(me : mutable) returns SequenceOfInteger from TColStd
+	---C++: return &
+    is static;
+    
+    Vertices(me : mutable) returns SequenceOfInteger from TColStd
+	---C++: return &
+    is static;
+    
+    Triangles(me : mutable) returns SequenceOfInteger from TColStd
+	---C++: return &
+    is static;
+    
+    DrawOn(me; dis : in out Display from Draw);
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is redefined;
+
+    Dump(me; S : in out OStream)
+    is redefined;
+
+    Whatis(me; S : in out Interpretor from Draw)
+    is redefined;
+    
+    Mesh(me) returns mutable FastDiscret from BRepMesh
+    is static;
+
+fields
+
+    myMesh       : FastDiscret from BRepMesh;
+    myDeflection : Real;
+    myEdges      : SequenceOfInteger from TColStd;      
+    myVertices   : SequenceOfInteger from TColStd;      
+    myTriangles  : SequenceOfInteger from TColStd;      
+    myinshape    : Boolean           from Standard;
+
+end DrawableMesh;

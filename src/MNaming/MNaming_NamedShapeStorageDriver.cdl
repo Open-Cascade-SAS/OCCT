@@ -1,0 +1,42 @@
+-- File:	MNaming_NamedShapeStorageDriver.cdl
+-- Created:	Fri Apr 11 16:05:10 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+
+class NamedShapeStorageDriver from MNaming inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses 
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+is
+
+
+    Create(theMessageDriver : MessageDriver from CDM) -- Version 0
+    returns mutable NamedShapeStorageDriver from MNaming;
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: NamedShape from PNaming.
+
+    NewEmpty (me)
+    returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute        from TDF;
+    	  Target     : mutable Attribute        from PDF;
+    	  RelocTable :         SRelocationTable from MDF);
+	  
+	  
+end NamedShapeStorageDriver;
+

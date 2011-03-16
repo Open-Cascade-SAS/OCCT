@@ -1,0 +1,22 @@
+-- File:        FaceOuterBound.cdl
+-- Created:     Fri Dec  1 11:11:20 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FaceOuterBound from StepShape 
+
+inherits FaceBound from StepShape 
+
+uses
+
+	HAsciiString from TCollection, 
+	Loop from StepShape, 
+	Boolean from Standard
+is
+
+	Create returns mutable FaceOuterBound;
+	---Purpose: Returns a FaceOuterBound
+
+
+end FaceOuterBound;

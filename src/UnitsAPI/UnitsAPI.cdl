@@ -1,0 +1,197 @@
+-- File:	UnitsAPI.cdl
+-- Created:	Wed Nov 15 11:43:41 1995
+-- Author:	Jean-Louis Frenkel <rmi@pernox>
+-- Modified:	Gerard GRAS <gg@photox> Tue Feb 25
+--		Add local system methodes
+-- Modified     Mon Apr  7 16:52:40 1997 by Patrick BOSINCO
+--            Add Dimensions access methods
+--		GG 05/02/01 MECALOG
+--		Add Check() method.
+---Copyright:	 Matra Datavision 1995
+
+
+package UnitsAPI 
+
+---Purpose: The UnitsAPI global functions are used to
+-- convert a value from any unit into another unit.
+-- Principles
+-- Conversion is executed among three unit systems:
+-- -   the SI System
+-- -   the user's Local System
+-- -   the user's Current System.
+-- The SI System is the standard international unit
+-- system. It is indicated by SI in the synopses of
+-- the UnitsAPI functions.
+-- The MDTV System corresponds to the SI
+-- international standard but the length unit and all
+-- its derivatives use millimeters instead of the meters.
+-- Both systems are proposed by Open CASCADE;
+-- the SI System is the standard option. By
+-- selecting one of these two systems, the user
+-- defines his Local System through the
+-- SetLocalSystem function. The Local System is
+-- indicated by LS in the synopses of the UnitsAPI functions.
+-- The user's Local System units can be modified in
+-- the working environment. The user defines his
+-- Current System by modifying its units through
+-- the SetCurrentUnit function. The Current
+-- System is indicated by Current in the synopses
+-- of the UnitsAPI functions.
+
+uses Resource,Units 
+
+is
+
+    enumeration SystemUnits is DEFAULT,SI,MDTV end;
+---Purpose: Identifies unit systems which may be defined as a
+-- basis system in the user's session:
+-- -   UnitsAPI_DEFAULT : default system (this is the SI system)
+-- -   UnitsAPI_SI : the SI unit system
+-- -   UnitsAPI_MDTV : the MDTV unit system; it
+--   is equivalent to the SI unit system but the
+--   length unit and all its derivatives use
+--   millimeters instead of meters.
+-- Use the function SetLocalSystem to set up one
+-- of these unit systems as working environment.
+    
+    CurrentToLS(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the current unit value to the local system units value.
+    --  Example: CurrentToLS(1.,"LENGTH") returns 1000. if the current length unit 
+    --          is meter and LocalSystem is MDTV.
+
+    CurrentToSI(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the current unit value to the SI system units value.
+    --  Example: CurrentToSI(1.,"LENGTH") returns 0.001 if current length unit 
+    --          is millimeter.
+    
+    CurrentFromLS(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local system units value to the current unit value.
+    --  Example: CurrentFromLS(1000.,"LENGTH") returns 1. if current length unit 
+    --          is meter and LocalSystem is MDTV.
+    
+    CurrentFromSI(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the SI system units value to the current unit value.
+    --  Example: CurrentFromSI(0.001,"LENGTH") returns 1 if current length unit 
+    --          is millimeter.
+    
+    AnyToLS(aData: Real from Standard; aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local unit value to the local system units value.
+    --  Example: AnyToLS(1.,"in.") returns 25.4 if the LocalSystem is MDTV.
+
+    AnyToLS(aData: Real from Standard; aUnit: CString from Standard;
+            aDim : out Dimensions from Units)
+    returns Real from Standard;
+    ---Purpose: Converts the local unit value to the local system units value.
+    --          and gives the associated dimension of the unit
+
+    AnyToSI(aData: Real from Standard; aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local unit value to the SI system units value.
+    --  Example: AnyToSI(1.,"in.") returns 0.0254 
+    
+    AnyToSI(aData: Real from Standard; aUnit: CString from Standard;
+            aDim : out Dimensions from Units)
+    returns Real from Standard;
+    ---Purpose: Converts the local unit value to the SI system units value.
+    --          and gives the associated dimension of the unit
+
+    AnyFromLS(aData: Real from Standard; aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local system units value to the local unit value.
+    --  Example: AnyFromLS(25.4,"in.") returns 1. if the LocalSystem is MDTV.
+-- Note: aUnit is also used to identify the type of physical quantity to convert.
+    
+    AnyFromSI(aData: Real from Standard; aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the SI system units value to the local unit value.
+    --  Example: AnyFromSI(0.0254,"in.") returns 0.001
+-- Note: aUnit is also used to identify the type of physical quantity to convert.
+    
+    CurrentToAny(aData: Real from Standard; aQuantity: CString from Standard; 
+                 aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the aData value expressed in the
+-- current unit for the working environment, as
+-- defined for the physical quantity aQuantity by the
+-- last call to the SetCurrentUnit function, into the unit aUnit.
+    
+    CurrentFromAny(aData: Real from Standard; aQuantity: CString from Standard;
+                   aUnit: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the aData value expressed in the unit
+-- aUnit, into the current unit for the working
+-- environment, as defined for the physical quantity
+-- aQuantity by the last call to the SetCurrentUnit function.
+    
+    AnyToAny(aData: Real from Standard; aUnit1: CString from Standard;
+    aUnit2: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local unit value to another local unit value.
+    --  Example: AnyToAny(0.0254,"in.","millimeter") returns 1. ;
+
+    LSToSI(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the local system units value to the SI system unit value.
+    --  Example: LSToSI(1.,"LENGTH") returns 0.001 if the local system 
+    --		length unit is millimeter.
+
+    SIToLS(aData: Real from Standard; aQuantity: CString from Standard)
+    returns Real from Standard;
+    ---Purpose: Converts the SI system unit value to the local system units value.
+    --  Example: SIToLS(1.,"LENGTH") returns 1000. if the local system 
+    --		length unit is millimeter.
+    
+    SetLocalSystem(aSystemUnit: SystemUnits = UnitsAPI_SI);
+    ---Purpose: Sets the local system units.
+    --  Example: SetLocalSystem(UnitsAPI_MDTV)
+
+    LocalSystem returns SystemUnits;
+    ---Purpose: Returns the current local system units.
+
+    SetCurrentUnit(aQuantity: CString from Standard; aUnit: CString from Standard);
+    ---Purpose: Sets the current unit dimension <aUnit> to the unit quantity <aQuantity>.
+    --  Example: SetCurrentUnit("LENGTH","millimeter")
+
+    CurrentUnit(aQuantity:CString from Standard)
+    returns CString from Standard;
+    ---Purpose: Returns the current unit dimension <aUnit> from the unit quantity <aQuantity>.
+
+    Save;
+    ---Purpose: saves the units in the file .CurrentUnits of the directory pointed by the
+    --          CSF_CurrentUnitsUserDefaults environment variable.
+
+    Reload;
+
+    CheckLoading(aSystemUnit: SystemUnits) is private;
+
+    Dimensions(aQuantity : CString from Standard)
+    returns Dimensions from Units
+    raises NoSuchObject from Standard;
+    ---Purpose: return the dimension associated to the quantity
+    ---Example: Dimensions("LENGTH")
+
+    DimensionLess returns Dimensions from Units;
+    DimensionMass returns Dimensions from Units;
+    DimensionLength returns Dimensions from Units;
+    DimensionTime returns Dimensions from Units;
+    DimensionElectricCurrent returns Dimensions from Units;
+    DimensionThermodynamicTemperature returns Dimensions from Units;
+    DimensionAmountOfSubstance returns Dimensions from Units;
+    DimensionLuminousIntensity returns Dimensions from Units;
+    DimensionPlaneAngle returns Dimensions from Units;
+    DimensionSolidAngle returns Dimensions from Units;
+    ---Purpose: Returns the basic dimensions.
+
+    Check( aQuantity: CString from Standard; 
+           aUnit: CString from Standard)
+    returns Boolean from Standard;
+    ---Purpose: Checks the coherence between the quantity <aQuantity>
+    --  	and the unit <aUnits> in the current system and
+    --		returns FALSE when it's WRONG.
+
+end UnitsAPI;

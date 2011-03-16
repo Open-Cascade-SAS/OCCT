@@ -1,0 +1,68 @@
+-- File:	XCAFDoc_Centroid.cdl
+-- Created:	Fri Sep  8 11:12:09 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Centroid from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+    Pnt from gp,
+    Label from TDF,
+    RelocationTable from TDF
+    
+is
+    Create returns Centroid from XCAFDoc;
+  	---Purpose: class methods
+    	--          =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF; pnt : Pnt from gp)
+    	---Purpose: Find, or create, a Location attribute and set it's value
+    	--          the Location attribute is returned.
+    returns Centroid from XCAFDoc;
+
+    	---Purpose: Location methods
+    	--          ===============
+    
+    Set (me : mutable; pnt : Pnt from gp);
+    
+    Get (me)
+    returns Pnt from gp;
+
+    Get (myclass ; label : Label from TDF; pnt: in out Pnt from gp)
+    returns Boolean from Standard;
+        ---Purpose: Returns point as argument
+	--          returns false if no such attribute at the <label>
+
+    	---Category: methodes de TDF_Attribute
+    	--           =========================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+fields
+
+    myCentroid : Pnt from gp;
+    
+end Centroid;

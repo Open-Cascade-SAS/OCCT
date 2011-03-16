@@ -1,0 +1,185 @@
+-- File:	GeomFill_Sweep.cdl
+-- Created:	Thu Nov 20 16:05:06 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class Sweep from GeomFill 
+
+	---Purpose: Geometrical Sweep Algorithm
+	---Level: Advanced
+
+uses 
+   SectionLaw   from  GeomFill, 
+   LocationLaw  from  GeomFill, 
+   ApproxStyle  from  GeomFill, 
+   Shape        from  GeomAbs,    
+ 
+   Surface      from  Geom,  
+   Curve        from  Geom2d,    
+   HArray1OfCurve  from  TColGeom2d,  
+   HArray2OfReal  from  TColStd
+   
+raises
+    NotDone,   
+    OutOfRange,   
+    ConstructionError 
+    
+is 
+   Create(Location :  LocationLaw  from  GeomFill; 
+          WithKpart  :  Boolean  =  Standard_True)  
+   returns Sweep  from  GeomFill;
+     
+   SetDomain(me : in  out;  First,  Last :  Real; 
+                            SectionFirst,  SectionLast  :  Real); 
+    ---Purpose: Set parametric information          
+    --          [<First>, <Last>] Sets the parametric bound of the
+    --                  sweeping surface to build.  
+    --           <SectionFirst>, <SectionLast> gives coresponding
+    --           bounds parameter on the section law of <First> and <Last>
+    --          
+    --           V-Iso on Sweeping Surface S(u,v) is defined by 
+    --           Location(v) and Section(w) where 
+    --           w = SectionFirst + (v - First) / (Last-First) 
+    --             * (SectionLast - SectionFirst)
+    --
+    --           By default w = v, and First and Last are given by 
+    --           First and Last parameter stored in LocationLaw.
+
+   SetTolerance(me  :  in  out;   
+    	    	Tol3d  :  Real; 
+      	    	BoundTol   : Real  =  1.0; 
+    	    	Tol2d      : Real  =  1.0e-5;   
+                TolAngular : Real  =  1.0); 
+   ---Purpose: Set Approximation Tolerance
+    	   --    Tol3d : Tolerance to surface approximation
+	   --    Tol2d : Tolerance used to perform curve approximation
+	   --            Normaly the 2d curve are approximated with a 
+           --            tolerance given by the resolution method define in 
+	   --            <LocationLaw> but if this tolerance is too large Tol2d 
+           --            is used.
+           --    TolAngular : Tolerance (in radian) to control the angle 
+           --                 beetween tangents on the section law and
+           --                 tangent of iso-v on approximed surface
+
+                     
+    ExchangeUV(me)
+    	---Purpose: returns true if sections are U-Iso
+         -- This can be produce in some cases when <WithKpart> is True.
+    returns Boolean from Standard
+    is static;   
+		      
+   UReversed(me)   	 
+    ---Purpose: returns true if Parametrisation sens in U is inverse of
+    --          parametrisation sens of section (or of path if ExchangeUV)
+    returns Boolean from Standard
+    is static;	       
+
+   VReversed(me)   	 
+    ---Purpose: returns true if Parametrisation sens in V is inverse of
+    --          parametrisation sens of path (or of section if ExchangeUV)
+    returns Boolean from Standard
+    is static;
+
+
+   Build(me  :  in  out; 
+         Section  :  SectionLaw  from  GeomFill;            
+         Methode    : ApproxStyle = GeomFill_Location; 
+         Continuity : Shape = GeomAbs_C2;
+	 Degmax     : Integer = 10;
+         Segmax     : Integer = 30)  
+   ---Purpose: Build the Sweeep  Surface
+   --    ApproxStyle defines Approximation Strategy
+   --    - GeomFill_Section : The composed Function : Location X Section
+   --                         is directly approximed.
+   --    - GeomFill_Location : The location law is approximed, and the
+   --                          SweepSurface is build algebric composition
+   --                          of approximed location law and section law
+   --                          This option is Ok, if Section.Surface() methode
+   --                          is effective.
+   --    Continuity : The continuity in v waiting on the surface 
+   --    Degmax     : The maximum degree in v requiered on the surface 
+   --    Segmax     : The maximum number of span in v requiered on 
+   --                 the surface
+   --  
+   --      raise If Domain are infinite or Profile not Setted.
+   raises  ConstructionError; 
+    
+   Build2d(me:in  out; 
+           Continuity : Shape;
+	   Degmax     : Integer;
+           Segmax     : Integer) 
+   returns  Boolean 
+   is  private; 
+    
+   BuildAll(me:in  out; 
+            Continuity : Shape;
+	    Degmax     : Integer;
+            Segmax     : Integer) 
+   returns  Boolean 
+   is  private;  
+    
+   BuildProduct(me:in  out; 
+                Continuity : Shape;
+	        Degmax     : Integer;
+                Segmax     : Integer) 
+   returns  Boolean 
+   is  private;  
+    
+   BuildKPart(me:in  out) 
+   returns  Boolean 
+   is  private; 
+    
+   IsDone(me) 
+    ---Purpose: Tells if the Surface is Buildt.          
+   returns  Boolean;  
+    
+   ErrorOnSurface(me) 
+    ---Purpose: Gets the Approximation  error.       
+   returns  Real; 
+    
+   ErrorOnRestriction(me; IsFirst : Boolean; 
+                      UError, VError : out Real)
+    ---Purpose: Gets the Approximation  error. 
+   raises  NotDone;
+      
+   ErrorOnTrace(me; IndexOfTrace  : Integer; 
+                    UError, VError : out Real) 
+    ---Purpose: Gets the Approximation error. 
+    raises NotDone,  OutOfRange; 
+        
+   Surface(me)  
+    returns Surface  from  Geom 
+    raises  NotDone; 
+     
+   Restriction(me;  IsFirst :  Boolean)  
+    returns Curve  from  Geom2d 
+    raises  NotDone; 
+      
+   NumberOfTrace(me)   
+   returns  Integer; 
+   
+   Trace(me;  IndexOfTrace  :  Integer)  
+    returns Curve  from  Geom2d
+    raises  NotDone,  OutOfRange;  
+
+
+fields   
+    First,  Last  :  Real;
+    SFirst,  SLast:  Real;  
+    Tol3d,  BoundTol,  Tol2d,  TolAngular  :  Real;     
+    SError        :  Real;      
+     
+    myLoc      :  LocationLaw  from GeomFill;
+    mySec      :  SectionLaw   from GeomFill;
+    mySurface  :  Surface from Geom;
+    myCurve2d  :  HArray1OfCurve  from TColGeom2d; 
+    CError     :  HArray2OfReal  from  TColStd;      
+
+    done         :  Boolean;
+    myExchUV     :  Boolean from Standard; 
+    isUReversed  :  Boolean;
+    isVReversed  :  Boolean;
+    myKPart      :  Boolean from Standard;
+end Sweep;

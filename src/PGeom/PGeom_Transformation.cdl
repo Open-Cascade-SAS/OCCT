@@ -1,0 +1,51 @@
+-- File:	PGeom_Transformation.cdl
+-- Created:	Mon Feb 22 17:03:53 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+
+class Transformation from PGeom inherits Persistent from Standard
+
+        ---Purpose :  The    class Transformation  allows   to  create
+        --         Translation, Rotation,   Symmetry,     Scaling  and
+        --         complex transformations obtained by  combination of
+        --         the  previous elementary   transformations.     The
+        --         restriction to  these basic  transformations allows
+        --         us to be sure that   an object  will never   change
+        --         nature.
+        --         
+	---See Also : Transformation from Geom.
+
+
+uses Trsf from gp
+
+is
+
+
+  Create returns mutable Transformation from PGeom;
+        ---Purpose : Creates a transformation with default values.
+    	---Level: Internal 
+
+
+  Create (aTrsf : Trsf from gp) returns mutable Transformation from PGeom;
+        ---Purpose :  Creates a transformation with <aTrsf>.
+    	---Level: Internal 
+
+
+  Trsf (me : mutable; aTrsf : Trsf from gp);
+        ---Purpose : Set the field trsf with <aTrsf>.
+    	---Level: Internal 
+
+
+  Trsf (me)  returns Trsf from gp;
+        ---Purpose : Returns the value of the field trsf.
+    	---Level: Internal 
+
+
+fields
+
+  trsf : Trsf from gp;
+
+end;

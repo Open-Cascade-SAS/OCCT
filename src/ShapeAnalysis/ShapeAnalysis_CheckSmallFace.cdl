@@ -1,0 +1,203 @@
+-- File:	ShapeAnalysis_CheckSmallFace.cdl
+-- Created:	Mon Sep 13 10:19:37 1999
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class CheckSmallFace from ShapeAnalysis 
+
+	---Purpose: 
+
+uses
+    Shape from TopoDS,
+    Face from TopoDS,
+    Pnt from gp,
+    Edge from TopoDS,
+    Compound from TopoDS,
+    DataMapOfShapeShape from TopTools,
+    DataMapOfShapeListOfReal from ShapeAnalysis,
+    DataMapOfShapeListOfShape from TopTools,
+    Status from ShapeExtend
+    
+is
+    Create returns CheckSmallFace from ShapeAnalysis;
+    ---Purpose :Creates an empty tool
+    
+
+--    CheckShape (me : in out; S : Shape from TopoDS);
+    ---Purpose : Checks a Shape i.e. each of its faces, records checks as
+    --           diagnostics in the <infos>
+    --           
+    --           If <infos> has not been set before, no check is done
+    --           
+    --           For faces which are in a Shell, topological data are recorded
+    --           to allow recovering connectivities after fixing or removing
+    --           the small faces or parts of faces
+
+--    CheckFace (me : in out; F : Face from TopoDS; inshell : Boolean);
+    ---Purpose : Enchains various checks on a face
+    --           inshell : to compute more informations, relevant to topology
+
+
+    IsSpotFace (me; F : Face from TopoDS;
+    	        spot : out Pnt from gp; spotol : out Real;
+    	    	tol : Real = -1.0) returns Integer;
+    ---Purpose : Checks if a Face is as a Spot
+    --           Returns 0 if not, 1 if yes, 2 if yes and all vertices are the
+    --           same
+    --           By default, considers the tolerance zone of its vertices
+    --           A given value <tol> may be given to check a spot of this size
+    --           If a Face is a Spot, its location is returned in <spot>, and
+    --           <spotol> returns an equivalent tolerance, which is computed as
+    --           half of max dimension of min-max box of the face
+
+    CheckSpotFace (me : in out; F : Face from TopoDS; tol : Real = -1.0) returns Boolean;
+    ---Purpose : Acts as IsSpotFace, but records in <infos> a diagnostic
+    --           "SpotFace" with the Pnt as value (data "Location")
+    
+    IsStripSupport (me: in out; F : Face; tol : Real = -1.0) returns Boolean;
+    ---Purpose : Checks if a Face lies on a Surface which is a strip
+    --           So the Face is a strip. But a Face may be a strip elsewhere ..
+    --           
+    --           A given value <tol> may be given to check max width
+    --           By default, considers the tolerance zone of its edges
+    --           Returns 0 if not a strip support, 1 strip in U, 2 strip in V
+    
+    CheckStripEdges (me; E1, E2 : Edge from TopoDS; tol : Real;
+    	    	     dmax : out Real) returns Boolean;
+    ---Purpose : Checks if two edges define a strip, i.e. distance maxi below
+    --           tolerance, given or some of those of E1 and E2
+
+    FindStripEdges (me: in out; F : Face from TopoDS; 
+    	    	    E1, E2 : out Edge from TopoDS; tol : Real;dmax : out Real) returns Boolean;
+    ---Purpose : Searchs for two and only two edges up tolerance
+    --           Returns True if OK, false if not 2 edges
+    --           If True, returns the two edges and their maximum distance
+    
+
+    CheckSingleStrip (me : in out; F : Face from TopoDS; E1,E2 : in out Edge from TopoDS;tol : Real = -1.0)
+    	returns Boolean;
+    ---Purpose : Checks if a Face is a single strip, i.e. brings two great
+    --           edges which are confused on their whole length, possible other
+    --           edges are small or null length
+    --           
+    --           Returns 0 if not a strip support, 1 strip in U, 2 strip in V
+    --           Records diagnostic in info if it is a single strip
+
+    
+    CheckStripFace (me : in out; F : Face from TopoDS;E1,E2 : in out Edge from TopoDS; tol : Real = -1.0)
+    	returns Boolean;
+    ---Purpose : Checks if a Face is as a Strip
+    --           Returns 0 if not or non determined, 1 if in U, 2 if in V
+    --           By default, considers the tolerance zone of its edges
+    --           A given value <tol> may be given to check a strip of max this width
+    --           
+    --           If a Face is determined as a Strip, it is delinited by two
+    --           lists of edges. These lists are recorded in diagnostic
+    --           Diagnostic "StripFace" brings data "Direction" (U or V),
+    --           "List1" , "List2" (if they could be computed)
+
+
+    CheckSplittingVertices (me : in out; F : Face from TopoDS; MapEdges :in out DataMapOfShapeListOfShape from TopTools;
+    	    	MapParam :in out DataMapOfShapeListOfReal from ShapeAnalysis; theAllVert : in out Compound from TopoDS) returns Integer;
+    ---Purpose : Checks if a Face brings vertices which split it, either
+    --           confused with non adjacent vertices, or confused with their
+    --           projection on non adjacent edges
+    --           Returns the count of found splitting vertices
+    --           Each vertex then brings a diagnostic "SplittingVertex",
+    --           with data : "Face" for the face, "Edge" for the split edge
+
+
+    CheckPin (me : in out; F : Face from TopoDS; whatrow,sence : in out Integer) returns Boolean;
+    ---Purpose : Checks if a Face has a pin, which can be edited
+    --           No singularity : no pin, returns 0
+    --           If there is a pin, checked topics, with returned value :
+    --           - 0 : nothing to do more
+    --           - 1 : "smooth", i.e. not a really sharp pin
+    --             -> diagnostic "SmoothPin"
+    --           - 2 : stretched pin, i.e. is possible to relimit the face by
+    --             another vertex, so that this vertex still gives a pin
+    --             -> diagnostic "StretchedPin" with location of vertex (Pnt)
+
+    CheckTwisted (me : in out; F : Face from TopoDS; paramu,paramv : in out Real) returns Boolean;
+    ---Purpose : Checks if a Face is twisted (apart from checking Pin, i.e. it
+    --           does not give information on pin, only "it is twisted")
+    
+    CheckPinFace(me : in out; F : Face from TopoDS;mapEdges : in out DataMapOfShapeShape from TopTools;toler : Real = -1.0) returns Boolean;
+    
+    CheckPinEdges(me; theFirstEdge:  Edge from TopoDS;theSecondEdge: Edge from TopoDS; coef1,coef2 : Real;toler : Real) returns Boolean; 
+
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status of last call to Perform()
+    	--          ShapeExtend_OK   : face was OK, nothing done
+    	--          ShapeExtend_DONE1: some wires are fixed
+    	--          ShapeExtend_DONE2: orientation of wires fixed
+    	--          ShapeExtend_DONE3: missing seam added
+    	--          ShapeExtend_DONE4: small area wire removed
+    	--          ShapeExtend_DONE5: natural bounds added
+    	--          ShapeExtend_FAIL1: some fails during fixing wires
+    	--          ShapeExtend_FAIL2: cannot fix orientation of wires
+    	--          ShapeExtend_FAIL3: cannot add missing seam
+    	--          ShapeExtend_FAIL4: cannot remove small area wire
+	---C++: inline
+    SetTolerance (me : in out; tol : Real);
+    ---Purpose : Sets a fixed Tolerance to check small face
+    --           By default, local tolerance zone is considered
+    ---C++: inline
+    
+--    SetMaxTolerance (me : in out; tol : Real);
+    ---Purpose : Sets a fixed MaxTolerance to check small face
+    ---C++: inline
+    
+--    SetMinTolerance (me : in out; tol : Real);
+    ---Purpose : Sets a fixed Tolerance to check small face
+    --           By default, local tolerance zone is considered
+    ---C++: inline
+    
+--    MaxTolerance (me : in out);
+    ---Purpose : Unset fixed tolerance, comes back to local tolerance zones
+    ---C++: inline
+    
+--    MinTolerance (me : in out);
+    ---Purpose : Unset fixed tolerance, comes back to local tolerance zones
+    ---C++: inline
+    
+     Tolerance (me) returns Real;
+    ---Purpose : Returns the tolerance to check small faces, negative value if
+    --           local tolerances zones are to be considered
+    ---C++: inline
+    
+    StatusSpot (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+	
+    StatusStrip(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+	
+    StatusPin(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+	
+    StatusTwisted(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+	
+    StatusSplitVert(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+
+    StatusPinFace(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusPinEdges(me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+fields  
+
+    myComp           : Shape from TopoDS;
+    myStatus         : Integer; -- error statusis
+    myStatusSpot     : Integer;
+    myStatusStrip    : Integer;
+    myStatusPin      : Integer;
+    myStatusTwisted  : Integer;
+    myStatusSplitVert: Integer;
+    myStatusPinFace  : Integer;
+    myStatusPinEdges : Integer;
+    myPrecision      : Real;
+    
+end CheckSmallFace;

@@ -1,0 +1,192 @@
+-- File:	Transition.cdl
+-- Created:	Fri Apr  3 14:49:41 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class Transition from IntRes2d
+
+inherits Storable from Standard 
+
+    ---Purpose: Definition of    the  type  of   transition    near an
+    --          intersection point between  two curves. The transition
+    --          is either a "true transition", which means that one of
+    --          the curves goes inside or outside  the area defined by
+    --          the other curve  near  the intersection, or  a  "touch
+    --          transition" which means that the  first curve does not
+    --          cross  the  other one,  or an  "undecided" transition,
+    --          which means that the curves are superposed.
+
+
+uses Position  from IntRes2d,
+     Situation from IntRes2d,
+     TypeTrans from IntRes2d
+
+
+raises DomainError from Standard
+
+is
+
+    Create
+
+	---Purpose: Empty constructor.
+    
+    	returns Transition from IntRes2d;
+
+
+    Create(Tangent: Boolean    from Standard; 
+           Pos    : Position   from IntRes2d;
+           Type   : TypeTrans  from IntRes2d)
+    
+	---Purpose: Creates an IN or OUT transition.
+
+	---C++: inline
+
+       	returns Transition from IntRes2d;
+
+
+    Create(Tangent: Boolean    from Standard; 
+           Pos    : Position   from IntRes2d;
+           Situ   : Situation  from IntRes2d; 
+           Oppos  : Boolean    from Standard)
+    
+	---Purpose: Creates a TOUCH transition.
+
+	---C++: inline
+    
+    	returns Transition from IntRes2d;
+
+
+    Create(Pos: Position from IntRes2d)
+    
+	---Purpose: Creates an UNDECIDED transition.
+
+	---C++: inline
+
+       	returns Transition from IntRes2d;
+
+
+    SetValue(me: in out; Tangent: Boolean   from Standard; 
+                         Pos    : Position  from IntRes2d;
+                         Type   : TypeTrans from IntRes2d)
+
+	---Purpose: Sets the values of an IN or OUT transition.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetValue(me: in out; Tangent: Boolean    from Standard; 
+    	                 Pos    : Position   from IntRes2d;
+                         Situ   : Situation  from IntRes2d;
+                         Oppos  : Boolean    from Standard)
+
+	---Purpose: Sets the values of a TOUCH transition.
+
+	---C++: inline
+    
+    	is static;
+
+
+    SetValue(me: in out; Pos: Position from IntRes2d)
+
+	---Purpose: Sets the values of an UNDECIDED transition.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetPosition(me: in out; Pos: Position from IntRes2d)
+    
+	---Purpose: Sets the value of the position.
+
+	---C++: inline
+
+    	is static;
+
+
+    PositionOnCurve(me)
+
+    	---Purpose: Indicates if the  intersection is at the beginning
+    	--          (IntRes2d_Head),  at the end (IntRes2d_End), or in
+    	--          the middle (IntRes2d_Middle) of the curve.
+
+   	---C++: inline
+       
+    	returns Position from IntRes2d
+	is static;
+
+
+    TransitionType(me)
+    
+	---Purpose: Returns the type of transition at the intersection.
+	--          It may be IN or OUT or TOUCH, or UNDECIDED if the
+	--          two first derivatives are not enough to give
+	--          the tangent to one of the two curves.
+
+	---C++: inline
+    
+    	returns TypeTrans from IntRes2d
+	is static;
+
+
+    IsTangent(me)
+    
+	---Purpose: Returns TRUE when the 2 curves are tangent at the
+	--          intersection point.
+	--          Theexception DomainError is raised if the type of
+	--          transition is UNDECIDED.
+
+	---C++: inline
+
+    	returns Boolean     from Standard
+	raises  DomainError from Standard
+	is static;
+
+
+    Situation(me)
+    
+    	---Purpose: returns a significant value if TransitionType returns
+    	--          TOUCH. In this case, the function returns :
+    	--          INSIDE when the curve remains inside the other one,
+    	--          OUTSIDE when it remains outside the other one,
+    	--          UNKNOWN when the calculus, based on the second derivatives
+    	--          cannot give the result.
+    	--          If TransitionType returns IN or OUT or UNDECIDED, the
+    	--          exception DomainError is raised.
+
+	---C++: inline
+
+    	returns Situation   from IntRes2d
+    	raises  DomainError from Standard
+	is static;
+
+
+    IsOpposite(me)
+    
+    	---Purpose: returns a  significant value   if   TransitionType
+    	--          returns TOUCH. In this  case, the function returns
+    	--          true   when  the  2   curves   locally define  two
+    	--          different  parts of the  space.  If TransitionType
+    	--          returns  IN or   OUT or UNDECIDED,  the  exception
+    	--          DomainError is raised.
+
+	---C++: inline
+
+    	returns Boolean     from Standard
+    	raises  DomainError from Standard
+	is static;
+
+
+fields
+
+    tangent     : Boolean   from Standard;
+    posit       : Position  from IntRes2d;
+    typetra     : TypeTrans from IntRes2d;
+    situat      : Situation from IntRes2d;
+    oppos       : Boolean   from Standard;
+    
+end Transition;

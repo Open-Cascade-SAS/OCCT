@@ -1,0 +1,26 @@
+--
+-- File:	Image_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:12:20 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %Image_CMPLRS_EDL) then
+  @set %Image_CMPLRS_EDL = "";
+
+  --@uses "Image.edl";
+
+  @if ( %Station == "sun" ) then
+  @endif;
+
+  @if ( %Station == "sil" ) then
+  @endif;
+  
+  @if ( %Station == "ao1" ) then
+  @endif;
+
+  @if ( %Station == "hp" ) then
+  @endif;
+
+  --@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -DSTANDARD_TYPE=TYPE";
+@endif;

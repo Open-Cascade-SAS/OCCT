@@ -1,0 +1,98 @@
+--
+-- File:	Xw_WidthMap.cdl
+-- Created:	24/08/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class WidthMap from Xw inherits Transient
+
+	---Version: 0.0
+
+	---Purpose: This class defines a WidthMap object.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+
+	WidthMap		from Aspect,
+	WidthMapEntry		from Aspect
+
+raises
+
+	WidthMapDefinitionError	from Aspect,
+	BadAccess from Aspect
+
+is
+
+	Create
+	returns mutable WidthMap from Xw
+	is protected ;
+	---Level: Public
+
+	Create ( Connexion : CString from Standard ) 
+	returns mutable WidthMap from Xw
+	---Level: Public
+	---Purpose: Creates a WidthMap with unallocated WidthMapEntry.
+	--  Warning: Raises if WidthMap creation failed according
+	--	    to the supported hardware
+	raises WidthMapDefinitionError from Aspect ;
+
+	SetEntry ( me : mutable ; 
+		  Entry : WidthMapEntry from Aspect )
+	---Level: Public
+	---Purpose: Modifies an entry already defined  or Add the Entry
+	--	    in the type map <me> if it don't exist.
+	--  Warning: Raises if WidthMap size is exceeded,
+	--	   or WidthMap is not defined properly,
+	--	   or WidthMapEntry Index is out of range according
+	--	   to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	SetEntries ( me : mutable ;
+	          Widthmap : WidthMap from Aspect )
+	---Level: Public
+	---Purpose: Modifies all entries from the New Widthmap
+	--  Warning: Raises if WidthMap size is exceeded,
+	--         or WidthMap is not defined properly,
+	--         or One of new WidthMapEntry Index is out of range according
+	--         to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	Destroy( me : mutable ) is virtual;
+	---Level: Public
+	---Purpose: Destroies the Widthmap
+	---C++: alias ~
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	FreeWidths( me )
+	returns Integer from Standard 
+	---Level: Internal
+	---Purpose: Returns the Number of Free Widths in the Widthmap
+	--	    depending of the HardWare
+	--  Warning: Raises if WidthMap is not defined properly
+	raises BadAccess from Aspect is static;
+
+	ExtendedWidthMap ( me )
+	returns Address from Standard
+	is static protected ;
+	---Level: Internal
+	---Purpose: Returns extended data typemap structure pointer.
+	---Category: Inquire methods
+
+fields
+
+	MyExtendedDisplay 	:	Address from Standard ;
+	MyExtendedWidthMap 	:	Address from Standard ;
+
+friends
+
+	class GraphicDevice from Xw
+
+end WidthMap ;

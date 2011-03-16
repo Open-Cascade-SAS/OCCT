@@ -1,0 +1,257 @@
+-- File:	GeomAPI_PointsToBSplineSurface.cdl
+-- Created:	Mon Jan 16 09:01:47 1995
+-- Author:	Remi LEQUETTE
+--		<rle@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PointsToBSplineSurface from GeomAPI 
+
+	---Purpose: This class is used to approximate or interpolate 
+	--          a BSplineSurface passing through an  Array2 of 
+	--          points, with a given continuity. 
+    	-- Describes functions for building a BSpline
+    	-- surface which approximates or interpolates a set of points.
+    	-- A PointsToBSplineSurface object provides a framework for:
+    	-- -   defining the data of the BSpline surface to be built,
+    	-- -   implementing the approximation algorithm
+    	--   or the interpolation algorithm, and consulting the results.
+uses
+    Array2OfPnt    from TColgp,
+    Array2OfReal   from TColStd,
+    Shape          from GeomAbs,
+    BSplineSurface from Geom,
+    ParametrizationType from Approx 
+    
+raises
+    NotDone from StdFail
+
+is
+    Create
+	---Purpose: Constructs an empty algorithm for
+    	-- approximation or interpolation of a surface.
+    	-- Use:
+    	-- -   an Init function to define and build the
+    	--   BSpline surface by approximation, or
+    	-- -   an Interpolate function to define and build
+    	--   the BSpline surface by interpolation.
+ 
+    returns PointsToBSplineSurface from GeomAPI;
+    
+    Create(Points     : Array2OfPnt from TColgp;
+    	   DegMin     : Integer     from Standard = 3;
+	   DegMax     : Integer     from Standard = 8;
+	   Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline  Surface passing  through  an
+        --          array of  Points.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    returns PointsToBSplineSurface from GeomAPI;
+    
+    Create(Points     : Array2OfPnt from TColgp;
+    	   ParType    : ParametrizationType from Approx;
+    	   DegMin     : Integer     from Standard = 3;
+	   DegMax     : Integer     from Standard = 8;
+	   Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline  Surface passing  through  an
+        --          array of  Points.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    returns PointsToBSplineSurface from GeomAPI;
+    
+    Create(Points     : Array2OfPnt from TColgp;
+           Weight1      : Real         from Standard;
+           Weight2      : Real         from Standard;
+           Weight3      : Real         from Standard;
+	   DegMax     : Integer     from Standard = 8;
+	   Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	   Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline  Surface passing  through  an
+        --          array of  points using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion 
+    	---Level: Public
+    returns PointsToBSplineSurface from GeomAPI;
+    
+    Create(ZPoints    : Array2OfReal from TColStd;
+    	   X0         : Real         from Standard;
+	   dX         : Real         from Standard;
+    	   Y0         : Real         from Standard;
+	   dY         : Real         from Standard;
+    	   DegMin     : Integer      from Standard = 3;
+	   DegMax     : Integer      from Standard = 8;
+	   Continuity : Shape        from GeomAbs  = GeomAbs_C2;
+	   Tol3D      : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline  Surface passing  through  an
+        --          array of  Points.  
+        --          
+        --          The points will be constructed as follow:
+        --            P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
+        --                             Y0 + (j-1)*dY ,
+        --                             ZPoints(i,j)   )
+        --          
+        --          The resulting BSpline will  have the following 
+        --          properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+        --          4- the parametrization of the surface will verify:
+        --               S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
+    	---Level: Public
+    returns PointsToBSplineSurface from GeomAPI;
+
+
+    Init(me : in out;
+         Points     : Array2OfPnt from TColgp;
+    	 DegMin     : Integer     from Standard = 3;
+	 DegMax     : Integer     from Standard = 8;
+         Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline Surface passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    is static;
+
+	     
+    Interpolate(me : in out; Points     : Array2OfPnt from TColgp)
+        ---Purpose: Interpolates  a BSpline Surface passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be 3.
+        --          2- his  continuity will be  C2.
+    	---Level: Public
+    is static;
+	     
+	     
+    Interpolate(me : in out; Points     : Array2OfPnt from TColgp; 
+    	                     ParType    : ParametrizationType from Approx)
+        ---Purpose: Interpolates  a BSpline Surface passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be 3.
+        --          2- his  continuity will be  C2.
+    	---Level: Public
+    is static;
+	     
+
+    Init(me : in out;
+         ZPoints    : Array2OfReal from TColStd;
+    	 X0         : Real         from Standard;
+	 dX         : Real         from Standard;
+    	 Y0         : Real         from Standard;
+	 dY         : Real         from Standard;
+    	 DegMin     : Integer      from Standard = 3;
+	 DegMax     : Integer      from Standard = 8;
+	 Continuity : Shape        from GeomAbs  = GeomAbs_C2;
+	 Tol3D      : Real         from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline  Surface passing  through  an
+        --          array of  Points.  
+        --          
+        --          The points will be constructed as follow:
+        --            P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
+        --                             Y0 + (j-1)*dY ,
+        --                             ZPoints(i,j)   )
+        --          
+        --          The resulting BSpline will  have the following 
+        --          properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity>
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+        --          4- the parametrization of the surface will verify:
+        --               S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
+    	---Level: Public
+    is static;
+	   
+    Interpolate(me : in out;
+            	ZPoints    : Array2OfReal from TColStd;
+    	    	X0         : Real         from Standard;
+	    	dX         : Real         from Standard;
+    	    	Y0         : Real         from Standard;
+	    	dY         : Real         from Standard)
+        ---Purpose: Interpolates  a BSpline  Surface passing  through  an
+        --          array of  Points.  
+        --          
+        --          The points will be constructed as follow:
+        --            P(i,j) = gp_Pnt( X0 + (i-1)*dX ,
+        --                             Y0 + (j-1)*dY ,
+        --                             ZPoints(i,j)   )
+        --          
+        --          The resulting BSpline will  have the following 
+        --          properties: 
+        --          1- his degree will be 3
+        --          2- his  continuity will be  C2.
+        --          4- the parametrization of the surface will verify:
+        --               S->Value( U, V) = gp_Pnt( U, V, Z(U,V) );
+    	---Level: Public
+    is static;
+
+    Init(me : in out;
+         Points     : Array2OfPnt from TColgp;
+    	 ParType      : ParametrizationType from Approx;
+    	 DegMin     : Integer     from Standard = 3;
+	 DegMax     : Integer     from Standard = 8;
+         Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline Surface passing  through  an
+        --          array of  Point.  The resulting BSpline will  have
+        --          the following properties: 
+        --          1- his degree will be in the range [Degmin,Degmax]  
+        --          2- his  continuity will be  at  least <Continuity> 
+        --          3- the distance from the point <Points> to the 
+        --             BSpline will be lower to Tol3D
+    	---Level: Public
+    is static;
+
+
+    Init(me : in out;
+         Points     : Array2OfPnt from TColgp;
+         Weight1      : Real         from Standard;
+         Weight2      : Real         from Standard;
+         Weight3      : Real         from Standard;
+	 DegMax     : Integer     from Standard = 8;
+         Continuity : Shape       from GeomAbs  = GeomAbs_C2;
+	 Tol3D      : Real        from Standard = 1.0e-3)
+        ---Purpose: Approximates  a BSpline Surface passing  through  an
+        --          array of  point using variational smoothing algorithm, 
+	--          which tries to minimize additional criterium: 
+	--          Weight1*CurveLength + Weight2*Curvature + Weight3*Torsion
+    	---Level: Public
+    is static;
+
+	   
+    Surface(me) 
+	---Purpose: Returns the approximate BSpline Surface
+    returns BSplineSurface from Geom
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator Handle(Geom_BSplineSurface)() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+     
+    IsDone(me) 
+    returns  Boolean  from  Standard 
+    is  static;
+	    
+
+fields
+    myIsDone  : Boolean        from Standard;
+    mySurface : BSplineSurface from Geom;
+
+end PointsToBSplineSurface;

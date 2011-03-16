@@ -1,0 +1,35 @@
+-- File:	PDF_TagSource.cdl
+-- Created:	Mon Aug  4 15:32:05 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+
+class TagSource from PDF inherits Attribute from PDF
+
+	---Purpose: 
+
+uses Integer from Standard
+
+is
+
+    
+    Create returns mutable TagSource from  PDF;
+    
+    
+    Create (V : Integer from Standard) 
+    returns mutable TagSource from PDF;
+    
+    
+    Get (me) returns Integer from Standard;
+    
+    
+    Set (me : mutable; V : Integer from Standard);
+
+
+fields
+
+    myValue : Integer from Standard;
+
+end TagSource;
+

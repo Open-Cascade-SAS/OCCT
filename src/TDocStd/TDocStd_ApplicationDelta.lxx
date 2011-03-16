@@ -1,0 +1,35 @@
+// File:      TDocStd_ApplicationDelta.lxx
+// Created:   21.11.02 14:40:25
+// Author:    Vladimir ANIKIN
+// Copyright: Open CASCADE 2002
+
+//=======================================================================
+//function : GetDocuments
+//purpose  : 
+//=======================================================================
+
+inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
+{
+  return myDocuments;
+}
+
+//=======================================================================
+//function : GetName
+//purpose  : 
+//=======================================================================
+
+inline const TCollection_ExtendedString& TDocStd_ApplicationDelta::GetName() const
+{
+  return myName;
+}
+
+//=======================================================================
+//function : SetName
+//purpose  : 
+//=======================================================================
+
+inline void TDocStd_ApplicationDelta::SetName(const TCollection_ExtendedString& theName)
+{
+  myName = theName;
+}
+

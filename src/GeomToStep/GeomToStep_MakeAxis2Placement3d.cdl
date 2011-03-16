@@ -1,0 +1,47 @@
+-- File:	GeomToStep_MakeAxis2Placementd.cdl
+-- Created:	Mon Jun 14 11:17:16 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeAxis2Placement3d from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Axis2Placement from Geom and Ax2, Ax3 from gp, and the class
+    --          Axis2Placement3d from StepGeom which describes an
+    --          axis2_placement_3d from Prostep. 
+   
+uses Ax2 from gp,
+     Ax3 from gp,
+     Trsf from gp,
+     Axis2Placement from Geom,
+     Axis2Placement3d from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create returns MakeAxis2Placement3d;
+-- creates an identity (original axis)
+
+Create ( A : Ax2 from gp ) returns MakeAxis2Placement3d;
+
+Create ( A : Ax3 from gp ) returns MakeAxis2Placement3d;
+
+Create ( T : Trsf from gp) returns MakeAxis2Placement3d;
+
+Create ( A : Axis2Placement from Geom ) returns MakeAxis2Placement3d;
+
+Value (me) returns Axis2Placement3d from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theAxis2Placement3d : Axis2Placement3d from StepGeom;
+    	-- TheOP solution from StepGeom
+    	
+end MakeAxis2Placement3d;
+
+

@@ -1,0 +1,87 @@
+-- File:	MDF_DriverTable.cdl
+--      	-------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	May  6 1997	Creation
+
+
+generic class DriverTable from MDF
+    (TheHDriver as Transient from Standard;
+     TheDriverHSeq as Transient from Standard;
+     TheTypeDriverMap as any)
+    inherits TShared from MMgt
+
+	---Purpose: A driver table is an object building links between
+	--          object types and object drivers. In the
+	--          translation process, a driver table is asked to
+	--          give a translation driver for each current object
+	--          to be translated.
+	--          
+	--          Validity range of a driver: a driver is available
+	--          from its version number till the next upper
+	--          version number.
+
+uses
+
+    Type                     from Standard,
+    MapTransientHasher       from TColStd
+    
+
+-- raises
+
+    class DriverList instantiates List from TCollection
+    	(TheHDriver);
+    
+    class TypeDriverListMap instantiates DataMap from TCollection
+    	(Type from Standard,
+	 DriverList,
+	 MapTransientHasher from TColStd);
+
+is
+
+    Create returns mutable DriverTable from MDF;
+	---Purpose: Creates a mutable DriverTable from MDF.
+
+    SetDriver(me : mutable;
+	      anHDriver       : TheHDriver);
+	---Purpose: Sets a translation driver: <aDriver>.
+
+    SetDrivers(me : mutable;
+	       aDriverHSeq       : TheDriverHSeq);
+	---Purpose: Sets translation drivers.
+
+    GetDrivers(me : mutable;
+	       aVersion   : Integer from Standard = 0)
+    	returns TheTypeDriverMap;
+	---Purpose: Gets a map of drivers available for <aVersion>. 
+	--          
+	--          If <aVersion> is not given or is null, the highest
+	--          version number driver is returned.
+	--          
+	---C++: return const &
+
+    GetDriver(me;
+    	      aType           : Type from Standard;
+	      anHDriver       : in out TheHDriver;
+	      aVersion        : Integer from Standard = 0)
+    	returns Boolean from Standard;
+	---Purpose: Gets a driver <aDriver> according to <aType> and
+	--          <aVersion>.
+	--          
+	--          If <aVersion> is not given or is null, the highest
+	--          version number driver is returned.
+	--          
+	--          Returns True if a driver is found; false otherwise.
+
+
+fields
+
+    myVersion  : Integer from Standard;
+    myMap      : TheTypeDriverMap; -- available for myVersion.
+    myMapOfLst : TypeDriverListMap;
+
+end DriverTable;

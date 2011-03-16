@@ -1,0 +1,91 @@
+-- File:	MAT.cdl
+-- Created:	Tue Sep 22 15:04:08 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+package MAT
+
+uses
+    MMgt,
+    TCollection,
+    TColStd
+
+is
+
+    generic class Tool;
+  	--- Purpose: The template class used in Mat.
+   
+    generic class Mat;
+        --- Purpose: The Algorithm of Computation of the Map of 
+        --           bisecting locus.
+
+
+    --------------------------------------------------
+    --  Classes of exploration of the Bisecting Locus.
+    --------------------------------------------------
+    enumeration Side is Left,Right end Side;
+    	--- Purpose: Definition on the Left and the Right on the Fig.
+
+    class Graph;
+	--- Purpose: Graph of exploration of the Bisecting Locus.
+
+    class Arc;
+    	--- Purpose: Arc of Graph. 
+    
+    class Node;
+    	--- Purpose: Node of Graph.
+  
+    class BasicElt;
+	--- Purpose: BasicElt of Graph.
+    
+    class Zone;
+	--- Purpose: Class Zone contains the frontiere of the Zone of proximity
+	--           of a BasicElt.
+
+    class SequenceOfBasicElt instantiates Sequence from TCollection
+                                                         (BasicElt from MAT); 
+						     
+    class SequenceOfArc instantiates Sequence from TCollection
+                                                         (Arc from  MAT) ;  
+
+    class DataMapOfIntegerArc instantiates
+    	DataMap from TCollection(Integer          from Standard,
+	    	    	    	 Arc              from MAT     ,
+				 MapIntegerHasher from TColStd);
+
+    class DataMapOfIntegerBasicElt instantiates
+    	DataMap from TCollection(Integer          from Standard,
+	    	    	    	 BasicElt         from MAT     ,
+				 MapIntegerHasher from TColStd);
+ 
+    class DataMapOfIntegerNode instantiates
+    	DataMap from TCollection(Integer          from Standard,
+	    	    	    	 Node             from MAT     ,
+				 MapIntegerHasher from TColStd);
+ 
+ 
+    --------------------------------------------------- 
+    --  Classes used for the computation of the Mat.
+    --------------------------------------------------- 
+
+    generic class TList, TListNode;
+
+    class Bisector;
+	
+    class DataMapOfIntegerBisector instantiates
+    	DataMap from TCollection(Integer          from Standard,
+	    	    	    	 Bisector         from MAT     ,
+				 MapIntegerHasher from TColStd);
+				 
+    class ListOfBisector instantiates TList from MAT (Bisector from MAT);
+    
+    class Edge;
+    
+    class ListOfEdge instantiates TList from MAT (Edge from MAT);
+    
+end MAT;
+
+
+
+

@@ -1,0 +1,42 @@
+-- File:	LProp_FuncCurExt.cdl
+-- Created:	Fri Sep  2 16:32:55 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+private generic class FuncCurExt from LProp (Curve as any;
+                                             Vec   as any; -- as Vec or Vec2d
+		     	                     Pnt   as any; -- as Pnt or Pnt2d
+		   	                     Dir   as any; -- as Dir or Dir2d Vec  
+    	    	    	    	    	     Tool  as any) -- as Tool(Curve, Pnt, Vec) 
+inherits FunctionWithDerivative from math
+	---Purpose: Function used to find the extremas of curvature in 2d.
+
+is
+    Create ( C : Curve ; Tol : Real) returns FuncCurExt from LProp;
+    
+    Value (me : in out; X : Real; F : out Real)
+    	---Purpose: Returns the value for the variable <X>.
+    returns Boolean;
+    
+    Derivative (me : in out; X : Real; D : out Real)
+        ---Purpose: Returns the derivative for the variable <X>.
+    returns Boolean;
+
+    Values (me : in out ; X  : Real; F  : out Real; D  : out Real)    
+    	---Purpose: Returns the value of the function and the derivative
+    	--          for the variable <X>.
+    returns Boolean;    
+    
+    IsMinKC (me ; Param : Real) 
+	---Purpose: True  if  Param  corresponds  to  a minus   
+	--          of the radius of curvature.
+    returns Boolean;
+
+fields
+    theCurve : Curve;
+    epsX     : Real from Standard;
+	    
+end FuncCurExt;
+

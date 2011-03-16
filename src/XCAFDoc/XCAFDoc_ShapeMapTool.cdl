@@ -1,0 +1,64 @@
+-- File:	XCAFDoc_ShapeMapTool.cdl
+-- Created:	Fri Aug 29 15:53:19 2003
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 2003
+
+class ShapeMapTool from XCAFDoc inherits Attribute from TDF
+
+uses
+
+    SequenceOfHAsciiString from TColStd,
+    Shape from TopoDS,
+    IndexedMapOfShape from TopTools,
+    Label from TDF,
+    RelocationTable from TDF
+    
+is
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;    
+
+
+    Set (myclass; L : Label from TDF) returns ShapeMapTool from XCAFDoc;
+    ---Purpose: Create (if not exist) ShapeTool from XCAFDoc on <L>.
+
+
+    Create returns ShapeMapTool from XCAFDoc;
+    	---Purpose: Creates an empty tool
+    
+    
+    ---API: Analysis
+
+    
+    IsSubShape (me; sub: Shape from TopoDS) 
+    returns Boolean;
+    	---Purpose: Checks whether shape <sub> is subshape of shape stored on
+        --          label shapeL
+
+    SetShape (me: mutable; S: Shape from TopoDS);
+    	---Purpose: Sets representation (TopoDS_Shape) for top-level shape
+
+            ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    GetMap (me) returns IndexedMapOfShape from TopTools;
+    ---C++: return const & 
+
+fields
+
+    myMap: IndexedMapOfShape from TopTools;
+    
+end ShapeTool;

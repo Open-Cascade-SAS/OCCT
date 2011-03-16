@@ -1,0 +1,61 @@
+--
+-- File      :  Sphere.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Sphere from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Sphere, Type <158> Form Number <0>
+        --          in package IGESSolid
+        --          This defines a sphere with a center and radius
+
+uses
+
+        Pnt             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable Sphere;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              aRadius : Real;
+              aCenter : XYZ);
+        ---Purpose : This method is used to set the fields of the class Sphere
+        --       - aRadius : the radius of the sphere
+        --       - aCenter : the center point coordinates (default (0,0,0))
+
+        Radius (me) returns Real;
+        ---Purpose : returns the radius of the sphere
+
+        Center (me) returns Pnt;
+        ---Purpose : returns the center of the sphere
+
+        TransformedCenter (me) returns Pnt;
+        ---Purpose : returns the center of the sphere after applying 
+        -- TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_Sphere
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Sphere.
+--
+-- Reminder : A Sphere instance is defined by :
+--            its center (X1,Y1,Z1) and a radius (Radius) > 0
+--
+
+        theRadius : Real;
+            -- the radius of the sphere
+
+        theCenter : XYZ;
+            -- the center point coordinates
+
+end Sphere;

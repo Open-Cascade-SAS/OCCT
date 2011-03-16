@@ -1,0 +1,49 @@
+-- File:	BOPTools_ComparePave.cdl
+-- Created:	Fri Feb 16 15:43:15 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ComparePave from BOPTools 
+
+	---Purpose: 
+	---    	 
+    	--- Auxiliary class for sorting paves along the edge    
+        --- in acoordance with increasing order of parameter     
+	    	 
+uses 
+    Pave from BOPTools 
+     
+is
+    Create   
+    	returns ComparePave from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	--- Default comparing tolerance value=1.e-12 
+    	---
+    Create  (aTol:Real from Standard) 
+    	returns ComparePave from BOPTools;  
+    	---Purpose:   
+    	--- Constructor that use comparing tolerance value as parameter.     
+    	---
+    IsLower (me; Left, Right: Pave from BOPTools) 
+    	returns Boolean ;
+    	---Purpose:  
+    	--- Returns True if <Left> is lower than <Right>. 
+    	---
+    IsGreater (me; Left, Right: Pave from BOPTools) 
+    	returns Boolean from Standard ;
+    	---Purpose:  
+    	--- Returns True if <Left> is greater than <Right>.
+    	---
+    IsEqual(me; Left, Right: Pave from BOPTools) 
+    	returns Boolean from Standard ; 
+    	---Purpose:  
+    	--- Returns True when <Right> and <Left> are equal.
+    	---
+	 
+fields
+    myTol: Real from Standard;  
+     
+end ComparePave;

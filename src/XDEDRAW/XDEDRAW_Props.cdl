@@ -1,0 +1,19 @@
+-- File:	XDEDRAW_Props.cdl
+-- Created:	Fri Aug  4 14:39:39 2000
+-- Author:	Pavel TELKOV
+--		<ptv@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class Props from XDEDRAW 
+
+    ---Purpose: Contains commands to work with geometric validation
+    --          properties of shapes
+
+uses
+    Interpretor from Draw
+    
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+	
+end Props;

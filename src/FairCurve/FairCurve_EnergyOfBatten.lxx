@@ -1,0 +1,9 @@
+inline Standard_Real FairCurve_EnergyOfBatten::LengthSliding() const 
+{
+  return MyLengthSliding;
+}
+
+inline FairCurve_AnalysisCode FairCurve_EnergyOfBatten::Status() const 
+{
+  return MyStatus;
+}

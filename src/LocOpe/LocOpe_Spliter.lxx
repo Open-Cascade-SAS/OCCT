@@ -1,0 +1,73 @@
+// File:	LocOpe_Spliter.lxx
+// Created:	Tue Jan  9 13:51:07 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : LocOpe_Spliter
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_Spliter::LocOpe_Spliter()
+{
+}
+
+
+//=======================================================================
+//function : LocOpe_Spliter
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_Spliter::LocOpe_Spliter(const TopoDS_Shape& S):
+   myShape(S), myDone(Standard_False)
+{
+}
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void LocOpe_Spliter::Init(const TopoDS_Shape& S)
+{
+  myShape = S;
+  myDone = Standard_False;
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_Spliter::IsDone() const
+{
+  return myDone;
+}
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Spliter::Shape() const
+{
+  return myShape;
+}
+
+
+//=======================================================================
+//function : ResultingShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Spliter::ResultingShape() const
+{
+  if (!myDone) {StdFail_NotDone::Raise();}
+  return myRes;
+}
+
+

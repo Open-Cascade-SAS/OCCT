@@ -1,0 +1,103 @@
+--
+-- File      :  LeaderArrow.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LeaderArrow from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines LeaderArrow, Type <214> Form <1-12>
+        --          in package IGESDimen
+        --          Consists of one or more line segments except when
+        --          leader is part of an angular dimension, with links to
+        --          presumed text item
+
+uses
+
+        Pnt         from gp,
+        Pnt2d       from gp,
+        XYZ         from gp,
+        XY          from gp,
+        HArray1OfXY from TColgp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable LeaderArrow;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              height, width : Real;
+              depth         : Real;
+              position      : XY;
+              segments      : HArray1OfXY);
+        ---Purpose : This method is used to set the fields of the class
+        --           LeaderArrow
+        --       - height      : ArrowHead height
+        --       - width       : ArrowHead width
+        --       - depth       : Z Depth
+        --       - position    : ArrowHead coordinates
+        --       - segments    : Segment tail coordinate pairs
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Shape of the Arrow)
+	--           Error if not in range [0-12]
+
+
+        NbSegments (me) returns Integer;
+        ---Purpose : returns number of segments
+
+        ArrowHeadHeight (me) returns Real;
+        ---Purpose : returns ArrowHead height
+
+        ArrowHeadWidth (me) returns Real;
+        ---Purpose : returns ArrowHead width
+
+        ZDepth (me) returns Real;
+        ---Purpose : returns Z depth
+
+        ArrowHead (me) returns Pnt2d;
+        ---Purpose : returns ArrowHead co-ordinates
+
+        TransformedArrowHead (me) returns Pnt;
+        ---Purpose : returns ArrowHead co-ordinates after Transformation
+
+        SegmentTail (me; Index : Integer) returns Pnt2d
+        raises OutOfRange;
+        ---Purpose : returns segment tail co-ordinates.
+        -- raises exception if Index <= 0 or Index > NbSegments
+
+        TransformedSegmentTail (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns segment tail co-ordinates after Transformation.
+        -- raises exception if Index <= 0 or Index > NbSegments
+
+fields
+
+--
+-- Class    : IGESDimen_LeaderArrow
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class LeaderArrow.
+--
+-- Reminder : A LeaderArrow instance is defined by :
+--            - ArrowHead height
+--            - ArrowHead width
+--            - Z Depth
+--            - ArrowHead coordinates
+--            - Segment tail coordinate pairs
+-- A LeaderArrow Entity consists of one or more line segments. The first
+-- segment begins with an arrowhead & remaining segments successively link
+-- to a presumed text item.
+
+        theArrowHeadHeight : Real;
+        theArrowHeadWidth  : Real;
+        theZDepth          : Real;
+        theArrowHead       : XY;
+        theSegmentTails    : HArray1OfXY;
+
+end LeaderArrow;

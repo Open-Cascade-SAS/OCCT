@@ -1,0 +1,16 @@
+// File:	GeomFill_BSplineCurves.lxx
+// Created:	Wed Oct  6 16:10:28 1993
+// Author:	Bruno DUMORTIER
+//		<dub@sdsun1>
+
+
+//=======================================================================
+//function : Surface
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_BSplineSurface)&  GeomFill_BSplineCurves::Surface()
+     const 
+{
+  return mySurface;
+}

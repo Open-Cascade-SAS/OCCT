@@ -1,0 +1,48 @@
+-- File:	ShapeCustom_Curve2d.cdl
+-- Created:	Thu Dec 20 15:30:06 2001
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Curve2d from ShapeCustom 
+
+	---Purpose: Converts curve2d to analytical form with given 
+    	--          precision or simpify curve2d.
+    	
+uses
+    Curve         from Geom2d,
+    Line          from Geom2d,
+    Array1OfPnt2d from TColgp,
+    BSplineCurve  from Geom2d
+is
+    
+    -- static methods
+    IsLinear (myclass; thePoles : Array1OfPnt2d from TColgp;
+    	    	       theTolerance : Real from Standard;
+		       theDeviation : in out Real from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Check if poleses is in the plane with given precision
+    	--          Returns false if no.
+	
+    ConvertToLine2d (myclass; theCurve : Curve from Geom2d;
+    	    	    	      theFirstIn, theLastIn : Real from Standard;
+			      theTolerance : Real from Standard;
+			      theNewFirst, theNewLast : in out Real from Standard;
+			      theDeviation: in out Real from Standard)
+    returns Line from Geom2d;
+    	---Purpose: Try to convert BSpline2d or Bezier2d to line 2d
+    	--          only if it is linear. Recalculate first and last parameters.
+    	--          Returns line2d or null curve2d.
+
+    SimplifyBSpline2d (myclass; theBSpline2d : in out BSplineCurve from Geom2d;
+    	    	    	    	theTolerance : Real from Standard )
+    returns Boolean from Standard;
+    	---Purpose: Try to remove knots from bspline where local derivatives are the same.
+    	--          Remove knots with given precision.
+    	--          Returns false if Bsplien was not modified
+
+--fields
+
+
+end Curve2d;

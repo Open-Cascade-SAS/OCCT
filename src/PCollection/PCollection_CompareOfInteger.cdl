@@ -1,0 +1,28 @@
+-- File:	PCollection_CompareOfInteger.cdl
+-- Created:	Thu Aug 27 12:06:34 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+class CompareOfInteger from PCollection 
+  inherits 
+    PrivCompareOfInteger
+
+is
+
+    Create ;
+    
+    IsLower (me; Left, Right: Integer)
+	---Purpose: Returns True if <Left> is lower than <Right>.
+        ---Level: Public
+    	returns Boolean
+        is redefined;
+
+    IsGreater (me; Left, Right: Integer)
+	---Purpose: Returns True if <Left> is greater than <Right>.
+        ---Level: Public
+    	returns Boolean
+	is redefined;
+
+end;

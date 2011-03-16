@@ -1,0 +1,57 @@
+-- File:	TestTopOpeDraw_DrawableC3D.cdl
+-- Created:	Fri Dec  1 17:56:57 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class DrawableC3D from TestTopOpeDraw inherits Curve from DrawTrSurf
+
+    ---Purpose: 
+
+uses  
+
+    Interpretor from Draw,
+    Curve from Geom,
+    Color from Draw,
+    Display from Draw,
+    Text3D from Draw,
+    CString from Standard,
+    Pnt from gp
+
+is
+
+    Create (C : Curve from Geom; CColor : Color from Draw)
+    returns mutable DrawableC3D from TestTopOpeDraw;
+
+    Create (C : Curve from Geom; CColor : Color from Draw;
+    	    Text : CString; TextColor : Color from Draw)
+    returns mutable DrawableC3D from TestTopOpeDraw;
+
+    Create (C : Curve from Geom; CColor : Color from Draw;
+    	    Text : CString; TextColor : Color from Draw;
+    	    Discret : Integer; Deflection : Real; DrawMode : Integer;
+    	    DispOrigin : Boolean from Standard = Standard_True)
+    returns mutable DrawableC3D from TestTopOpeDraw;
+
+    Pnt(me) returns Pnt from gp is virtual;
+    
+    ChangePnt(me : mutable; P : Pnt);
+    
+    ChangeCurve(me : mutable; C : Curve from Geom);
+    
+    ChangeText(me : mutable; T : CString from Standard);
+    
+    Name(me : mutable; N : CString) is redefined;
+    
+    Whatis(me; I : in out Interpretor from Draw) is redefined;
+    ---Purpose: For variable whatis command.
+
+    DrawOn(me; dis : in out Display from Draw) is redefined;
+    
+fields
+
+    myText3D : Text3D from Draw is protected;
+    myText :CString from Standard is protected;
+    myTextColor : Color from Draw;
+
+end DrawableC3D;

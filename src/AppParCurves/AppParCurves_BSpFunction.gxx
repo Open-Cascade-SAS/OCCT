@@ -1,0 +1,311 @@
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <math_Vector.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+
+
+AppParCurves_BSpFunction::
+  AppParCurves_BSpFunction(const MultiLine& SSP,
+	 const Standard_Integer FirstPoint,
+	 const Standard_Integer LastPoint,
+	 const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+	 const math_Vector& Parameters,
+         const TColStd_Array1OfReal& Knots,
+         const TColStd_Array1OfInteger& Mults,
+	 const Standard_Integer NbPol) :
+         MyMultiLine(SSP),
+         MyMultiBSpCurve(NbPol),
+         myParameters(Parameters.Lower(), Parameters.Upper()),
+         ValGrad_F(FirstPoint, LastPoint),
+         MyF(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLX(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLY(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         PTLZ(FirstPoint, LastPoint, 
+	     1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+         A(FirstPoint, LastPoint, 1, NbPol),
+         DA(FirstPoint, LastPoint, 1, NbPol),
+         MyLeastSquare(SSP, Knots, Mults, FirstPoint, LastPoint, 
+		       FirstConstraint(TheConstraints, FirstPoint),
+		       LastConstraint(TheConstraints, LastPoint), NbPol)
+{
+  Standard_Integer i; 
+  for (i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+    myParameters(i) = Parameters(i);
+  FirstP = FirstPoint;
+  LastP = LastPoint;
+  myConstraints = TheConstraints;
+  NbP = LastP-FirstP+1;
+  Adeb = FirstP;
+  Afin = LastP;
+  nbpoles = NbPol;
+  MyMultiBSpCurve.SetKnots(Knots);
+  MyMultiBSpCurve.SetMultiplicities(Mults);
+  Contraintes = Standard_False;
+  Standard_Integer myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == FirstP) {
+      if (Cons >= 1) Adeb = Adeb+1;
+    }
+    else if (myindex == LastP) {
+      if (Cons >= 1) Afin = Afin-1;
+    }
+    else {
+      if (Cons >= 1) Contraintes = Standard_True;
+    }
+  }
+
+  Standard_Integer nb3d = ToolLine::NbP3d(SSP);
+  Standard_Integer nb2d = ToolLine::NbP2d(SSP);
+  Standard_Integer mynb3d= nb3d, mynb2d=nb2d;
+  if (nb3d == 0) mynb3d = 1;
+  if (nb2d == 0) mynb2d = 1;
+
+  NbCu = nb3d+nb2d;
+  tabdim = new TColStd_HArray1OfInteger(0, NbCu-1);
+
+  if (Contraintes) {
+    for (i = 1; i <= NbCu; i++) {
+      if (i <= nb3d) tabdim->SetValue(i-1, 3);
+      else tabdim->SetValue(i-1, 2);
+    }
+
+    TColgp_Array1OfPnt TabP(1, mynb3d);
+    TColgp_Array1OfPnt2d TabP2d(1, mynb2d);
+    
+    for ( i = FirstP; i <= LastP; i++) {
+      if (nb3d != 0 && nb2d != 0) ToolLine::Value(SSP, i, TabP, TabP2d);
+      else if (nb3d != 0)         ToolLine::Value(SSP, i, TabP);
+      else                        ToolLine::Value(SSP, i, TabP2d);
+      for (Standard_Integer j = 1; j <= NbCu; j++) {
+	if (tabdim->Value(j-1) == 3) {
+	  TabP(j).Coord(PTLX(i, j), PTLY(i, j),PTLZ(i, j));
+	}
+	else {
+	  TabP2d(j).Coord(PTLX(i, j), PTLY(i, j));
+	}
+      }
+    }
+  }
+}
+
+
+AppParCurves_Constraint AppParCurves_BSpFunction::FirstConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer FirstPoint) const
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == FirstPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+AppParCurves_Constraint AppParCurves_BSpFunction::LastConstraint
+  (const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+   const Standard_Integer LastPoint) const
+{
+  Standard_Integer i, myindex;
+  Standard_Integer low = TheConstraints->Lower(), upp= TheConstraints->Upper();
+  AppParCurves_ConstraintCouple mycouple;
+  AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
+
+  for (i = low; i <= upp; i++) {
+    mycouple = TheConstraints->Value(i);
+    Cons = mycouple.Constraint();
+    myindex = mycouple.Index();
+    if (myindex == LastPoint) {
+      break;
+    }
+  }
+  return Cons;
+}
+
+
+
+
+Standard_Boolean AppParCurves_BSpFunction::Value (const math_Vector& X, 
+						  Standard_Real& F) {
+
+  myParameters = X;
+
+  // Resolution moindres carres:
+  // ===========================
+  MyLeastSquare.Perform(myParameters, mylambda1, mylambda2);
+  if (!(MyLeastSquare.IsDone())) { 
+    Done = Standard_False;
+    return Standard_False;
+  }
+  if (!Contraintes) {
+    MyLeastSquare.Error(FVal, ERR3d, ERR2d);
+    F = FVal;
+  }
+
+  // Resolution avec contraintes:
+  // ============================
+  else { 
+  }  
+  return Standard_True;
+}
+
+
+
+
+void AppParCurves_BSpFunction::Perform(const math_Vector& X) {
+  Standard_Integer j;
+
+  myParameters = X;
+  // Resolution moindres carres:
+  // ===========================
+  MyLeastSquare.Perform(myParameters, mylambda1, mylambda2);
+
+  if (!(MyLeastSquare.IsDone())) { 
+    Done = Standard_False;
+    return;
+  }
+
+  for(j = myParameters.Lower(); j <= myParameters.Upper(); j++) {
+    ValGrad_F(j) = 0.0;
+  }
+
+  if (!Contraintes) {
+    MyLeastSquare.ErrorGradient(ValGrad_F, FVal, ERR3d, ERR2d);
+  }
+  else {
+  }
+}
+
+
+
+void AppParCurves_BSpFunction::SetFirstLambda(const Standard_Real l1)
+{
+  mylambda1 = l1;
+}
+
+void AppParCurves_BSpFunction::SetLastLambda(const Standard_Real l2)
+{
+  mylambda2 = l2;
+}
+
+
+
+Standard_Integer AppParCurves_BSpFunction::NbVariables() const{ 
+  return NbP;
+}
+
+
+Standard_Boolean AppParCurves_BSpFunction::Gradient (const math_Vector& X,
+						     math_Vector& G) {
+
+  Perform(X);
+  G = ValGrad_F;
+
+  return Standard_True;
+}
+
+
+Standard_Boolean AppParCurves_BSpFunction::Values (const math_Vector& X, 
+						   Standard_Real& F, 
+						   math_Vector& G) {
+
+
+  Perform(X);
+  F = FVal;
+  G = ValGrad_F;
+
+/*
+  math_Vector mygradient = G;
+  math_Vector myx = X;
+  Standard_Real myf = FVal;
+  Standard_Real F2 = FVal;
+  math_Vector G2 = ValGrad_F;
+  for (Standard_Integer i = 1; i <= X.Length(); i++) {
+    myx = X;
+    myx(i) = X(i) + 1.0e-10;
+    Value(myx, F2);
+    mygradient(i) = (F2 - myf)/(1.0e-10);
+  }
+
+cout << " Gradient calcule : " << G2 << endl;
+cout << " Gradient interpole : " <<  mygradient << endl;
+*/
+  return Standard_True;
+}
+
+
+AppParCurves_MultiBSpCurve AppParCurves_BSpFunction::CurveValue() {
+  if (!Contraintes)  MyMultiBSpCurve = MyLeastSquare.BSplineValue();
+  return MyMultiBSpCurve;
+}
+
+
+Standard_Real AppParCurves_BSpFunction::Error(const Standard_Integer IPoint,
+				     const Standard_Integer CurveIndex) {
+  const math_Matrix& DD = MyLeastSquare.Distance();
+  Standard_Real d = DD.Value(IPoint, CurveIndex);
+  if (!Contraintes)  return d;
+  else return Sqrt(MyF(IPoint, CurveIndex));
+}
+
+Standard_Real AppParCurves_BSpFunction::MaxError3d() const
+{
+  return ERR3d;
+}
+
+Standard_Real AppParCurves_BSpFunction::MaxError2d() const
+{
+  return ERR2d;
+}
+
+
+
+const math_Vector& AppParCurves_BSpFunction::NewParameters() const
+{
+  return myParameters;
+}
+
+
+const math_Matrix& AppParCurves_BSpFunction::FunctionMatrix() const
+{
+  return MyLeastSquare.FunctionMatrix();
+}
+
+const math_Matrix& AppParCurves_BSpFunction::DerivativeFunctionMatrix() const
+{
+  return MyLeastSquare.DerivativeFunctionMatrix();
+}
+
+
+const math_IntegerVector& AppParCurves_BSpFunction::Index() const
+{
+  return MyLeastSquare.KIndex();
+}

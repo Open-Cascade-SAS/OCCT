@@ -1,0 +1,148 @@
+-- File     : AIS2D_LocalStatus.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+private class LocalStatus from AIS2D inherits TShared from MMgt
+
+   ---Purpose: Stored Info about temporary objects.
+
+uses 
+
+    ListOfInteger   from TColStd,
+	NameOfColor     from Quantity,
+    PToListOfInt    from AIS2D,
+    TypeOfDetection from AIS2D
+is
+
+    Create( isTemporary   : Boolean         from Standard = Standard_True;
+    	    Decompose     : Boolean         from Standard = Standard_False; 
+    	    DMode         : Integer         from Standard = -1;
+    	    SMode         : Integer         from Standard = -1; 
+	        HMode         : TypeOfDetection from AIS2D    = AIS2D_TOD_PRIMITIVE;
+    	    SubIntensity  : Boolean         from Standard = 0;
+    	    HighlCol      : NameOfColor     from Quantity = Quantity_NOC_WHITE )
+     returns mutable LocalStatus from AIS2D;
+    ---Purpose: Initializes the default Local Status
+
+    Decomposed( me ) returns Boolean from Standard; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+    
+    IsTemporary( me ) returns Boolean from Standard; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    DisplayMode( me ) returns Integer from Standard; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SelectionModes( me: mutable ) returns PToListOfInt from AIS2D; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    IsActivated( me; aSelMode: Integer from Standard ) returns Boolean from Standard;
+    ---Level: Internal
+    ---Purpose: 
+
+    HighlightMode( me ) returns TypeOfDetection from AIS2D; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    IsSubIntensityOn( me ) returns Boolean from Standard; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    HighlightColor( me ) returns NameOfColor from Quantity; 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    IsFirstDisplay( me ) returns Boolean from  Standard;
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SetDecomposition( me:mutable; aStatus: Boolean from Standard); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SetTemporary( me:mutable; aStatus: Boolean from Standard); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SetDisplayMode( me:mutable; aMode: Integer from Standard); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SetFirstDisplay( me:mutable; aStatus: Boolean  from  Standard) ; 
+    ---C++: inline    
+    ---Level: Internal      
+    ---Purpose: 
+
+    AddSelectionMode( me:mutable; aMode: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: 
+
+    RemoveSelectionMode( me:mutable; aMode: Integer from Standard );
+    ---Level: Internal
+    ---Purpose: 
+
+    ClearSelectionModes( me:mutable );
+    ---Level: Internal
+    ---Purpose: 
+
+    IsSelModeIn( me; aMode: Integer from Standard ) returns Boolean from Standard;    
+    ---Level: Internal
+    ---Purpose: 
+
+    SetHighlightMode( me: mutable; aMode: TypeOfDetection from AIS2D ); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SetHighlightColor( me: mutable; aHiCol: NameOfColor from Quantity ); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SubIntensityOn( me:mutable ); 
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+    SubIntensityOff( me:mutable );
+    ---Level: Internal
+    ---Purpose: 
+
+    SetPreviousState( me:mutable; aStatus: Transient from Standard ); 
+    ---Level: Internal
+    ---Purpose: 
+
+    PreviousState( me ) returns any Transient from Standard;
+    ---C++: inline
+    ---Level: Internal
+    ---Purpose: 
+
+fields
+
+    myDecomposition : Boolean         from Standard;
+    myIsTemporary   : Boolean         from Standard;
+    myDMode         : Integer         from Standard; 
+    myFirstDisplay  : Boolean         from Standard;
+    myHMode         : TypeOfDetection from AIS2D;
+    mySModes        : ListOfInteger   from TColStd;
+    mySubIntensity  : Boolean         from Standard;
+    myHighlCol      : NameOfColor     from Quantity;
+    myPrevState     : Transient       from Standard;
+    
+end LocalStatus;

@@ -1,0 +1,61 @@
+-- File:	BOPTools_PaveBlockIterator.cdl
+-- Created:	Wed Mar  7 15:59:24 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PaveBlockIterator from BOPTools 
+
+	---Purpose: 
+        ---         class providing iterations for PaveSet to   
+        ---         have the right order of paves along the edge           	 
+	--- 
+uses
+    PaveSet from BOPTools, 
+    CArray1OfPave from BOPTools, 
+    PaveBlock from BOPTools 
+
+is 
+    Create 
+    	returns PaveBlockIterator from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Create (aEdge   :  Integer from Standard; 
+            aPaveSet:  PaveSet from BOPTools)
+    	returns PaveBlockIterator from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	--- aEdge     -   DS-index of the edge	 
+    	--- aPaveSet  -   a set of paves for the edge	  
+    	---
+    Initialize(me:out;aEdge   :  Integer from Standard; 
+                      aPaveSet:  PaveSet from BOPTools); 
+    	---Purpose:  
+    	--- Resets the iterator on the PaveSet <aPaveSet> 
+    	---
+    More(me) 
+    	returns  Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns True if there is a current Pave in 
+    	--- the iteration. 
+    	---
+    Next(me:out); 
+    	---Purpose: 
+    	--- Moves to the next Pave in the PaveSet 
+    	---
+    Value(me:out) 
+    	returns PaveBlock from BOPTools; 
+    	---C++:  return &	
+    	---Purpose:  
+    	--- Returns the current Pave 
+    	---
+fields 
+    myEdge     : Integer from Standard; 
+    myIndex    : Integer from Standard;   
+    myPaveSet  : PaveSet from BOPTools; 
+    myPaves    : CArray1OfPave from BOPTools;      
+    myPaveBlock: PaveBlock from BOPTools;  
+    
+end PaveBlockIterator;

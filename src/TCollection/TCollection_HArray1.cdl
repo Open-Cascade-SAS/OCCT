@@ -1,0 +1,119 @@
+generic class HArray1 from TCollection 
+    (ItemHArray1 as any; 
+     TheArray1 as Array1 from TCollection(ItemHArray1))
+
+inherits TShared
+
+raises  RangeError from Standard,
+    	DimensionMismatch from Standard,
+    	OutOfRange from Standard,
+	OutOfMemory from Standard 
+
+	---Purpose: The class HArray1 represents unidimensionnal arrays 
+	-- of fixed size dynamically dimensioned at construction time.
+    	-- As with a C array, the access time to an HArray1 indexed
+    	-- item is constant and is independent of the array size.
+    	-- Arrays are commonly used as elementary data structures
+    	-- for more complex objects.
+    	-- HArray1 objects are handles to arrays.
+    	-- -   HArray1 arrays may be shared by several objects.
+    	-- -   You may use a TCollection_Array1 structure to have the actual array.
+    	-- HArray1 is a generic class which depends on two parameters:
+    	-- -   Item, the type of element in the array,
+    	-- -   Array, the actual type of array handled by HArray1.
+    	--   This is an instantiation with Item of the
+    	--   TCollection_Array1 generic class.  
+    	-- Warning
+    	-- HArray1 indexes start and end at a user-defined position.
+    	-- Thus, when accessing an item, you must base the index on
+    	-- the lower and upper bounds of the array.
+
+
+
+is
+    
+    Create (Low, Up: Integer from Standard) 
+    returns mutable  HArray1 from TCollection
+    	---Purpose: Creates an array  of lower  bound  <Low> and upper
+    	-- bound  <Up>. Range  error is  raised when  <Up> is less than <Low>.
+    raises 
+    	RangeError  from Standard,
+        OutOfMemory from Standard;
+	
+    Create (Low, Up: Integer from Standard; V : ItemHArray1) 
+    returns mutable  HArray1 from TCollection
+    	---Purpose: Creates an array  of lower  bound  <Low> and upper
+    	-- bound  <Up>. Range  error is  raised when  <Up> is less than <Low>.
+    raises 
+    	RangeError  from Standard,
+        OutOfMemory from Standard;
+
+    Init(me : mutable; V : ItemHArray1);
+    	---Purpose: Initialize the array with the value <V>
+
+    Length (me) returns Integer from Standard
+        ---Level: Public
+    	---Purpose: Returns the number of elements of <me>.
+	---C++: inline
+    is static ;
+
+    Lower (me) returns Integer from Standard
+        ---Level: Public
+    	---Purpose:  Returns the lower bound.
+	---C++: inline
+    is static ;
+
+    Upper (me) returns Integer from Standard
+        ---Level: Public
+    	---Purpose: Returns the upper bound.
+	---C++: inline
+    is static ;
+
+
+    SetValue (me : mutable; Index: Integer from Standard; Value: ItemHArray1) 
+        ---Level: Public
+    	---Purpose: Assigns the value <Value> to the <Index>th item of this array.
+    raises 
+    	OutOfRange from Standard
+	---C++: inline
+    is static ;
+
+
+    Value (me; Index:Integer from Standard) returns any ItemHArray1
+        ---Level: Public
+    	---Purpose: Returns the value of the <Index>th element  of the array.
+    	---C++: inline
+	---C++: return const &
+    raises 
+    	OutOfRange from Standard
+    is static ;
+
+    ChangeValue (me : mutable; Index:Integer from Standard) returns any 
+    ItemHArray1
+        ---Level: Public
+    	---Purpose: Returns the value of the <Index>th element  of the array.
+    	---C++: inline
+      	---C++: return &
+    raises 
+    	OutOfRange from Standard
+    is static ;
+
+    Array1(me) returns TheArray1
+        ---Purpose: Returns the Array array used as a field by this array;
+    	--   the returned array is not modifiable;
+        ---C++: return const &
+        ---C++: inline
+    is static;
+    
+    ChangeArray1(me : mutable) returns TheArray1
+        ---Purpose:   Returns a modifiable reference on the Array array
+    	--  used as a field by this array, in order to modify it.
+        ---C++: return &
+        ---C++: inline   
+    is static;
+    
+fields
+	myArray : TheArray1;
+	
+end HArray1 ;
+ 

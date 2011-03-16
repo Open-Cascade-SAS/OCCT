@@ -1,0 +1,180 @@
+-- File:	DsgPrs.cdl
+-- Created:	Mon Oct  3 15:35:36 1994
+-- Author:	Arnaud BOUZY
+--		<adn@houblon>
+---Copyright:	 Matra Datavision 1994
+
+
+package DsgPrs 
+
+	---Purpose: Describes Standard Presentations for DsgIHM objects
+
+uses Prs3d,
+     gp,
+     TCollection,
+     TopoDS,
+     Quantity,
+     Geom
+
+is
+    enumeration ArrowSide is AS_NONE,AS_FIRSTAR,AS_LASTAR,AS_BOTHAR,AS_FIRSTPT,AS_LASTPT,AS_BOTHPT,
+AS_FIRSTAR_LASTPT,AS_FIRSTPT_LASTAR;
+    	---Purpose:  Designates how many arrows will be displayed and
+    	-- where they will be displayed in presenting a length.
+    
+    class EllipseRadiusPresentation; 
+    
+    class LengthPresentation;
+
+    class RadiusPresentation;
+    
+    class DiameterPresentation;
+    
+    class FilletRadiusPresentation;
+   
+    class AnglePresentation;
+    
+    class Chamf2dPresentation;
+    
+    class ParalPresentation;
+
+    class PerpenPresentation;
+       
+    class SymmetricPresentation; -- presentation for axial symmetry
+    
+    class MidPointPresentation; -- presentation for equal distance from point
+    
+    class TangentPresentation;
+    
+    class ConcentricPresentation;
+    
+    class FixPresentation;
+    
+    class IdenticPresentation;
+    
+    class EqualRadiusPresentation;
+    
+    class EqualDistancePresentation;
+    
+    class SymbPresentation;
+    
+    class ShapeDirPresentation;
+
+    class OffsetPresentation;
+    
+    class DatumTool;
+    
+    class DatumPrs instantiates Datum from Prs3d(Ax2 from gp,
+    	    	    	    	    	    	 DatumTool from DsgPrs);
+    class XYZAxisPresentation;
+
+    class XYZPlanePresentation;
+
+    class ShadedPlanePresentation;
+
+    ComputeSymbol(aPresentation: Presentation from Prs3d;
+                  anAspect: AngleAspect from Prs3d;
+    	          pt1,pt2:Pnt from gp;
+    	          dir1,dir2: Dir from gp;
+	          ArrowSide: ArrowSide from DsgPrs);
+    	---Purpose: draws symbols ((one or two) arrows,(one or two)points 
+    	--          at thebeginning and at the end of the dimension
+
+    ComputeSymbol(aPresentation: Presentation from Prs3d;
+                  anAspect: LengthAspect from Prs3d;
+    	          pt1,pt2:Pnt from gp;
+    	          dir1,dir2: Dir from gp;
+	          ArrowSide: ArrowSide from DsgPrs;
+    	    	  drawFromCenter: Boolean = Standard_True);
+    	---Purpose: draws symbols ((one or two) arrows,(one or two)points 
+    	--          at thebeginning and at the end of the dimension
+
+    ComputePlanarFacesLengthPresentation( FirstArrowLength  : Real from Standard;
+					  SecondArrowLength : Real from Standard;
+					  AttachmentPoint1  : Pnt  from gp;
+					  AttachmentPoint2  : Pnt  from gp;
+					  DirAttach         : Dir  from gp;
+					  OffsetPoint       : Pnt  from gp;
+					  PlaneOfFaces      : Pln  from gp;
+					  EndOfArrow1       : out Pnt from gp;
+					  EndOfArrow2       : out Pnt from gp;
+					  DirOfArrow1       : out Dir from gp );
+
+    ComputeCurvilinearFacesLengthPresentation( FirstArrowLength  : Real from Standard;
+				               SecondArrowLength : Real from Standard;
+					       SecondSurf        : Surface from Geom;
+					       AttachmentPoint1  : Pnt  from gp;
+					       AttachmentPoint2  : Pnt  from gp;
+					       DirAttach         : Dir  from gp;
+					       EndOfArrow2       : out Pnt  from gp;
+					       DirOfArrow1       : out Dir  from gp;
+					       VCurve            : out Curve from Geom;
+					       UCurve            : out Curve from Geom;
+					       FirstU            : out Real from Standard;
+					       deltaU            : out Real from Standard;
+					       FirstV            : out Real from Standard;
+					       deltaV            : out Real from Standard );
+					       
+
+
+    ComputeFacesAnglePresentation( ArrowLength      : Real    from Standard;
+				   Value            : Real    from Standard;
+				   CenterPoint      : Pnt     from gp;
+				   AttachmentPoint1 : Pnt     from gp;
+				   AttachmentPoint2 : Pnt     from gp;
+				   dir1             : Dir     from gp;
+				   dir2             : Dir     from gp;
+				   axisdir          : Dir     from gp;
+				   isPlane          : Boolean from Standard;
+				   AxisOfSurf       : Ax1     from gp;
+				   OffsetPoint      : Pnt     from gp; 
+				   AngleCirc          : out Circ  from gp;
+				   FirstParAngleCirc  : out Real  from Standard;
+				   LastParAngleCirc   : out Real  from Standard;
+				   EndOfArrow1        : out Pnt   from gp;
+				   EndOfArrow2        : out Pnt   from gp;
+				   DirOfArrow1        : out Dir   from gp;
+				   DirOfArrow2        : out Dir   from gp;
+				   ProjAttachPoint2   : out Pnt   from gp;
+				   AttachCirc         : out Circ  from gp;
+				   FirstParAttachCirc : out Real  from Standard;
+				   LastParAttachCirc  : out Real  from Standard ); 
+				   
+
+    ComputeRadiusLine( aCenter       :  Pnt  from  gp; 
+    	    	       anEndOfArrow  :  Pnt  from  gp; 
+    	    	       aPosition     :  Pnt  from  gp; 
+		       drawFromCenter:  Boolean  from  Standard;
+    	    	       aRadLineOrign :  out  Pnt  from  gp; 
+    	    	       aRadLineEnd   :  out  Pnt  from  gp);
+    
+    ComputeFilletRadiusPresentation( ArrowLength      : Real     from Standard;
+				     Value            : Real     from Standard;
+				     Position         : Pnt      from gp;
+				     NormalDir        : Dir      from gp;
+				     FirstPoint       : Pnt      from gp;
+				     SecondPoint      : Pnt      from gp;
+				     Center           : Pnt      from gp;
+				     BasePnt          : Pnt      from gp; 
+				     drawRevers       : Boolean from Standard; 
+				     SpecCase         : out Boolean from Standard;
+				     FilletCirc       : out Circ from gp;
+				     FirstParCirc     : out Real from Standard;
+				     LastParCirc      : out Real from Standard;
+				     EndOfArrow       : out Pnt  from gp;
+				     DirOfArrow       : out Dir  from gp;
+				     DrawPosition     : out Pnt  from gp );
+    	---Purpose: computes Geometry for  fillet radius  presentation;
+    	--          special case flag  SpecCase equal Standard_True if 
+    	--          radius of  fillet circle  =  0  or if  anngle between
+    	--          Vec1(Center, FirstPoint)  and Vec2(Center,SecondPoint) equal 0 or PI 
+
+    
+    DistanceFromApex( elips  :  Elips  from  gp; 
+	       	      Apex   :  Pnt    from  gp;
+		      par    :	Real   from  Standard) 
+    returns  Real  from  Standard;						             
+    	---Purpose:  computes  length  of  ellipse  arc  in  parametric  units          
+    
+end DsgPrs;
+

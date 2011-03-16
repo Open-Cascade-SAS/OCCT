@@ -1,0 +1,35 @@
+-- File:	StepShape_QualifiedRepresentationItem.cdl
+-- Created:	Tue Apr 24 17:06:06 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class QualifiedRepresentationItem  from StepShape
+    inherits RepresentationItem  from StepRepr
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    HArray1OfValueQualifier from StepShape,
+    ValueQualifier from StepShape,
+    HAsciiString from TCollection
+
+is
+
+    Create returns mutable QualifiedRepresentationItem;
+
+    Init (me : mutable;
+             aName : mutable HAsciiString from TCollection;
+	     qualifiers : HArray1OfValueQualifier from StepShape);
+
+    Qualifiers (me) returns HArray1OfValueQualifier from StepShape;
+    NbQualifiers (me) returns Integer;
+    SetQualifiers (me : mutable; qualifiers : HArray1OfValueQualifier from StepShape);
+    QualifiersValue (me; num : Integer) returns ValueQualifier from StepShape;
+    SetQualifiersValue (me : mutable; num : Integer; aqualifier : ValueQualifier from StepShape);
+
+fields
+
+    theQualifiers : HArray1OfValueQualifier from StepShape;
+
+end QualifiedRepresentationItem;

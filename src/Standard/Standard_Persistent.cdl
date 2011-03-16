@@ -1,0 +1,121 @@
+-- File:	Standard_Persistent.cdl
+-- Created:	Mon Aug 24 13:11:56 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun3>
+
+deferred class Persistent from Standard 
+inherits
+    Storable from Standard 
+    
+    	    ---Purpose: 
+            -- The root of the entire persistent class hierarchy.
+	    --
+    	    -- Persistence is the ability to create objects which
+    	    -- outlive the application process.
+    	    -- Objects stored in the database must be instances
+    	    -- of a Persistent-derived class. 
+            -- The collection of persistent classes used by an 
+    	    -- application constitute its application data schema.
+	    --
+    	    -- Open CASCADE provides persistent classes to describe:
+    	    -- - ASCII (normal 8 bit character type) and
+    	    --   Unicode (16 bit character type) strings,
+    	    -- - arrays of persistent data,
+    	    -- - geometric data structures,
+    	    -- - topological data structures.
+	    --
+    	    -- The user can enrich this set of persistent classes by describing
+    	    -- his own persistent data structures inheriting from Persistent 
+    	    -- for use in a store and retrieve programming context.
+	    --
+    	    -- Warning:
+	    --
+    	    -- Persistent objects are manipulated in programs by handles. 
+    	    -- A handle to a persistent object behaves like
+    	    -- a pointer to the entire database address space. 
+    	    -- In using such a handle, you transparently operate on the object 
+    	    -- in the database, providing that you do this inside a transaction.
+	    --
+    	    -- However "Persistent Programming" (i.e. the programming 
+    	    -- technique whereby the application operates on persistent 
+    	    -- objects, that is, directly in the database, within a transaction) 
+    	    -- is not supported by Open CASCADE.
+        
+uses
+    Type from Standard
+   ,Boolean from Standard
+   ,OId from Standard
+         
+is
+
+	ShallowCopy (me) returns mutable like me is deferred;
+	    ---Purpose: Returns a copy at the first level of <me>. 
+	    --          The objects  referenced are not copied. 
+	    --          Entities copied by ShallowCopy are equal.
+	    ---C++:  function call
+            ---Level: Advanced
+
+    	Delete (me: mutable) is redefined;
+	    ---Purpose: Deletes this object.
+	    
+
+	DynamicType (me) returns Type is virtual;
+            ---Purpose: 
+            -- Returns the type object representing the actual type of the object. 
+            -- There is one type object per Persistent-derived class.
+	    --
+    	    -- Example:
+	    --
+    	    -- Handle(Standard_Persistent) p;
+    	    -- Handle(Standard_Type)    t;
+    	    -- p = new PGeom_CartesianPoint(0.,0.,0.);
+    	    -- t = STANDARD_TYPE(PGeom_CartesianPoint);
+    	    -- assert(p->DynamicType() == t);
+        
+	IsInstance (me; TheType : Type) returns Boolean is static;
+            ---Purpose: 
+            -- Returns true if the actual type of the object is equal to the given type.
+	    --
+    	    -- Example:
+	    --
+    	    -- Handle(Standard_Persistent) p;
+    	    -- Handle(Standard_Type)    t;
+    	    -- p = new PGeom_CartesianPoint(0.,0.,0.);
+    	    -- t = STANDARD_TYPE(PGeom_CartesianPoint);
+    	    -- assert(p->IsInstance(t));
+	    --
+    	    -- Warning:
+	    --
+    	    -- For most purposes it is better to use IsKind because IsInstance
+    	    -- rejects objects being subtype of the given type.
+                      
+	IsKind (me; TheType : Type) returns Boolean 
+	    ---Purpose: 
+            -- Returns true if <me> is an instance of <aType> or an
+	    -- instance of any class that inherits from <aType>.
+	    -- All persistent objects are a kind of Object class.
+	    --
+	    -- Example:
+	    --
+    	    -- Handle(Standard_Persistent) p;
+    	    -- Handle(Standard_Type)    tp, tt;
+    	    -- p = new PGeom_CartesianPoint(0.,0.,0.);
+    	    -- tp = STANDARD_TYPE(PGeom_CartesianPoint);
+    	    -- tt = STANDARD_TYPE(Standard_Persistent);
+    	    -- assert(p->IsKind(tp));
+    	    -- assert(p->IsKind(tt));   
+    	is static;
+	    
+	This (me) returns mutable Persistent
+	    ---Purpose:  Returns a handle on the object. 
+    	    -- This method is useful only in constructors of persistent 
+    	    -- objects when you need a handle on the object being constructed. 
+    	    -- It guarantees that, whatever the underlying database 
+    	    -- you are using, the object will not be swapped out 
+    	    -- during its construction.
+	is static protected;
+
+end Persistent from Standard;
+
+
+

@@ -1,0 +1,27 @@
+// File:	TopTools_ShapeMapHasher.lxx
+// Created:	Thu Jan 14 16:01:40 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+#include <TopoDS_Shape.hxx>
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+inline Standard_Integer  TopTools_ShapeMapHasher::HashCode
+  (const TopoDS_Shape& S, const Standard_Integer Upper)
+{
+  return S.HashCode(Upper);
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean  TopTools_ShapeMapHasher::IsEqual
+  (const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+{
+  return S1.IsSame(S2);
+}

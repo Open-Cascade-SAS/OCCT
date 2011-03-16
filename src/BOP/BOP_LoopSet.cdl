@@ -1,0 +1,62 @@
+-- File:	BOP_LoopSet.cdl
+-- Created:	Tue Mar 23 14:55:16 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+class LoopSet from BOP 
+
+    ---Purpose:  
+    --  The auxiliary class to store  and iterate on Loop(s) 
+uses
+
+    Loop                     from BOP,
+    ListOfLoop               from BOP,
+    ListIteratorOfListOfLoop from BOP
+
+is
+    
+    Create  
+    	returns LoopSet;
+    	---Purpose:  
+    	--- Empty constructor;  
+    	---
+    Delete(me:out)  
+    	is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~BOP_LoopSet(){Delete() ; }"
+    	---Purpose:  
+    	--- Destructor;  
+    	---
+    ChangeListOfLoop(me : in out)  
+    	returns ListOfLoop  
+    	is static;
+    	---C++: return &
+    	---Purpose:  
+    	--- Modifier;  
+
+    --- 
+    --- Exploration of the loops
+    --- 
+    InitLoop(me : in out)  
+    	is virtual;
+     
+    MoreLoop(me)  
+    	returns Boolean  
+    	is virtual;
+     
+    NextLoop(me : in out)  
+    	is virtual;
+     
+    Loop(me)  
+    	returns Loop from BOP  
+    	is virtual;
+    	---C++: return const &
+    
+fields
+
+    myListOfLoop   : ListOfLoop               from BOP;
+    myLoopIterator : ListIteratorOfListOfLoop from BOP;
+    myLoopIndex    : Integer from Standard;
+    myNbLoop       : Integer from Standard;
+    
+end LoopSet;

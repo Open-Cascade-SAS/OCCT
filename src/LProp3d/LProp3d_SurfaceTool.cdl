@@ -1,0 +1,42 @@
+-- File:        LProp3d_SurfaceTool.cdl
+-- Created:     Fri Aug  2 17:14:36 2002
+-- Author:      Alexander KARTOMIN  (akm)
+--              <a-kartomin@opencascade.com>
+-- NB:          This originates from BRepLProp being abstracted of BRep.
+---Copyright:   Matra Datavision 2002
+
+class SurfaceTool from LProp3d
+
+uses Pnt      from gp,
+     Vec      from gp,
+     HSurface from Adaptor3d
+
+is
+
+    Value(myclass; S : HSurface; U, V : Real; P : out Pnt);
+    ---Purpose: Computes the point <P> of parameter <U> and <V> on the 
+    --          HSurface <S>.
+        
+    D1   (myclass; S : HSurface; U, V : Real; P : out Pnt; D1U, D1V : out Vec);
+    ---Purpose: Computes the point <P> and first derivative <D1*> of 
+    --          parameter <U> and <V> on the HSurface <S>.
+
+    D2   (myclass; S : HSurface; U, V : Real; 
+              P : out Pnt; D1U, D1V, D2U, D2V, DUV : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <D1*> and second
+    --          derivative <D2*> of parameter <U> and <V> on the HSurface <S>.
+              
+    DN   (myclass; S : HSurface; U, V : Real;  IU,  IV  :  Integer) 
+    returns  Vec;
+     
+    Continuity(myclass; S : HSurface) returns Integer;
+    ---Purpose: returns the order of continuity of the HSurface <S>.
+    --          returns 1 : first derivative only is computable
+    --          returns 2 : first and second derivative only are computable.
+
+    Bounds(myclass; S : HSurface; U1, V1, U2, V2 : out Real);
+    ---Purpose: returns the bounds of the HSurface.
+
+end SurfaceTool;
+
+

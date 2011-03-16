@@ -1,0 +1,71 @@
+--
+-- File      :  SingleParent.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SingleParent from IGESBasic  inherits SingleParentEntity
+
+        ---Purpose: defines SingleParent, Type <402> Form <9>
+        --          in package IGESBasic
+        --          It defines a logical structure of one independent
+        --          (parent) entity and one or more subordinate (children)
+        --          entities
+
+uses
+
+    	IGESEntity,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable SingleParent;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              nbParentEntities : Integer;
+              aParentEntity    : IGESEntity;
+              allChildren      : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           SingleParent
+        --       - nbParentEntities : Indicates number of Parents, always = 1
+        --       - aParentEntity    : Used to hold the Parent Entity
+        --       - allChildren      : Used to hold the children
+
+        NbParentEntities (me) returns Integer;
+        ---Purpose : returns the number of Parent Entities, which should be 1
+
+	SingleParent (me) returns IGESEntity;
+	---Purpose : Returns the Parent Entity (inherited method)
+
+        NbChildren (me) returns Integer;
+        ---Purpose : returns the number of children of the Parent
+
+        Child (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the specific child as indicated by Index
+        -- raises exception if Index <= 0 or Index > NbChildren()
+
+fields
+
+--
+-- Class    : IGESBasic_SingleParent
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SingleParent.
+--
+-- Reminder : A SingleParent instance is defined by :
+--            - number of parents (equal to 1)
+--            - the parent entity
+--            - the children entities
+
+        theNbParentEntities : Integer;
+        theParentEntity     : IGESEntity;
+        theChildren         : HArray1OfIGESEntity;
+
+end SingleParent;

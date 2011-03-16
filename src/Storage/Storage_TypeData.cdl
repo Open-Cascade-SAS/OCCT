@@ -1,0 +1,57 @@
+-- File:	Storage_TypeData.cdl
+-- Created:	Thu Feb  6 16:58:03 1997
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class TypeData from Storage 
+
+inherits TShared from MMgt
+
+uses HSequenceOfAsciiString from TColStd,
+     PType from Storage,
+     AsciiString from TCollection,
+     Error from Storage
+     
+raises NoSuchObject from Standard
+is
+    Create returns mutable TypeData from Storage;
+    
+    NumberOfTypes(me) returns Integer from Standard;
+    
+    IsType(me; aName : AsciiString from TCollection) returns Boolean from Standard;
+    
+    Types(me) returns HSequenceOfAsciiString from TColStd;
+
+    ErrorStatus(me) returns Error from Storage;
+    ErrorStatusExtension(me) returns AsciiString from TCollection;
+   
+    ClearErrorStatus(me : mutable);
+
+    Clear(me : mutable); 
+	
+    -- PRIVATE
+
+    AddType(me : mutable; aName : AsciiString from TCollection; aTypeNum : Integer from Standard) is private;
+    ---Purpose: add a type to the list
+    
+    Type(me; aTypeNum : Integer from Standard) returns AsciiString from TCollection
+      raises NoSuchObject is private;
+    ---Purpose: returns the name of the type with number <aTypeNum>
+    
+    Type(me; aTypeName : AsciiString from TCollection) returns Integer from Standard
+      raises NoSuchObject is private;
+    ---Purpose: returns the name of the type with number <aTypeNum>
+
+    SetErrorStatus(me : mutable; anError : Error from Storage) is private;
+    SetErrorStatusExtension(me : mutable; anErrorExt : AsciiString from TCollection) is private;    
+    
+    fields
+    
+      myPt                 : PType from Storage;      
+      myErrorStatus        : Error from Storage;
+      myErrorStatusExt     : AsciiString      from TCollection;
+     
+    friends class Schema from Storage
+    
+end;

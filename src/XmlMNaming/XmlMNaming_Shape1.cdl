@@ -1,0 +1,65 @@
+-- File:        XmlMNaming_Shape1.cdl
+-- Created:     Sep 14 2001
+-- Author:      Alexander GRIGORIEV
+---Copyright:   Open Cascade 2001
+
+class Shape1 from XmlMNaming inherits Storable
+
+    ---Purpose: The XmlMNaming_Shape1 is the Persistent view of a TopoDS_Shape.
+    --          
+    --  a  Shape1 contains :
+    --          - a reference to a TShape
+    --          - a reference to Location
+    --          - an Orientation.
+    
+uses
+    Shape         from TopoDS,
+    Orientation   from TopAbs,
+    Document      from XmlObjMgt,
+    Element       from XmlObjMgt,
+    DOMString     from XmlObjMgt
+
+is
+    Create(Doc : out Document from XmlObjMgt) returns Shape1 from XmlMNaming;
+    ---Level: Internal 
+
+    Create(E : Element from XmlObjMgt) returns Shape1 from XmlMNaming;
+    ---Level: Internal 
+
+    Element (me) returns Element from XmlObjMgt;
+      ---Purpose: return myElement
+      ---C++: return const &
+
+    Element (me:in out) returns Element from XmlObjMgt;
+      ---Purpose: return myElement
+      ---C++: return &
+
+    TShapeId(me) returns Integer from Standard
+    ---Level: Internal 
+    is static;
+
+    LocId(me) returns Integer from Standard
+    ---Level: Internal 
+    is static;
+
+    Orientation(me) returns Orientation from TopAbs
+    ---Level: Internal 
+    is static;
+
+    SetShape (me: in out; ID, LocID : Integer from Standard;
+                          Orient    : Orientation from TopAbs)
+    ---Level: Internal 
+    is static;
+
+
+    SetVertex (me: in out; theVertex : Shape from TopoDS)
+    ---Level: Internal 
+    is static;
+
+fields
+    myElement     : Element     from XmlObjMgt;
+    myTShapeID    : Integer     from Standard;
+    myLocID       : Integer     from Standard;
+    myOrientation : Orientation from TopAbs;
+
+end Shape1;

@@ -1,0 +1,22 @@
+-- File:	TCollection_MapNode.cdl
+-- Created:	Mon Jan 19 17:41:44 1998
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+private class MapNode from TCollection
+inherits TShared from MMgt
+uses MapNodePtr from TCollection
+is
+  Create(n : MapNodePtr from TCollection) returns MapNode from TCollection;
+  ---C++: inline
+
+  Next(me) returns MapNodePtr from TCollection;
+  ---C++: inline
+  ---C++: return &
+
+ fields
+      
+  myNext : MapNodePtr from TCollection;
+end;
+    

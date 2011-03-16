@@ -1,0 +1,85 @@
+--
+-- File      :  Section.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Section from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines Section, Type <106> Form <31-38>
+        --          in package IGESDimen
+        --          Contains information to display sectioned sides
+
+uses
+
+        Pnt2d       from gp,
+        XY          from gp,
+        Pnt         from gp,
+        XYZ         from gp,
+        HArray1OfXY from TColgp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable Section;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              dataType      : Integer;
+              aDisp         : Real;
+              dataPoints    : HArray1OfXY);
+        ---Purpose : This method is used to set the fields of the class
+        --           Section
+        --       - dataType   : Interpretation Flag, always = 1
+        --       - aDisp      : Common z displacement
+        --       - dataPoints : Data points
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Type of the Hatches)
+	--           Error if not in range [31-38]
+
+
+        Datatype (me) returns Integer;
+        ---Purpose : returns Interpretation Flag, always = 1
+
+        NbPoints (me) returns Integer;
+        ---Purpose : returns number of Data Points
+
+        ZDisplacement (me) returns Real;
+        ---Purpose : returns common Z displacement
+
+        Point (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns Index'th data point
+        -- raises exception if Index <= 0 or Index > NbPoints()
+
+        TransformedPoint (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns Index'th data point after Transformation
+        -- raises exception if Index <= 0 or Index > NbPoints()
+
+fields
+
+--
+-- Class    : IGESDimen_Section
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Section.
+--
+-- Reminder : A Section instance is defined by :
+--            - Interpretation Flag, always = 1
+--            - Common Z displacement
+--            - Data points
+-- An Section Entity has 8 forms. The form number describes how the data
+-- is to be interpreted. The point data is a list of points, Z value is
+-- constant and N is an even integer.
+
+        theDatatype      : Integer;
+        theZDisplacement : Real;
+        theDataPoints    : HArray1OfXY;
+
+end Section;

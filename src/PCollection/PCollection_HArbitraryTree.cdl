@@ -1,0 +1,458 @@
+-- File:	HArbitraryTree.cdl
+-- Created:	Thu Jun 20 14:45:39 1991
+-- Author:	Annick PANCHER
+--		<apc@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+-- Revised:	 Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class HArbitraryTree from PCollection ( 
+               Item as Storable)
+
+
+    ---Purpose: Description of  a  tree  with an arbitrary  number  of
+    -- children  at   each  level.   Each    'node'   is   an
+    -- ArbitraryTree which knows its parent and its children.
+    -- An ArbitraryTree  can't  contain an empty  child.   To
+    -- separate  a  part  B from  an   ArbitraryTree A,  it's
+    -- possible to swap B with a Null tree: the parent A will
+    -- remove its child B, which is returned.
+    -- 
+    -- There are three iterators known  for an ArbitraryTree(
+    -- PreOrder,  PostOrder and InOrder).   Each  of  them
+    -- manages a stack whose depth is always less or equal to
+    -- the tree's  height, and which  describes the  way from
+    -- the root to the current tree. 
+  --  Warning: It could be a bad choice to use an ArbitraryTree for
+    -- a great number of items if it's frequently necessary 
+    -- to search them, for there is no optimisation to find
+    -- an item in an unordered tree. 
+    -- The same item can be stored several times in several places.
+
+inherits Persistent
+raises IsNotRoot    ,
+       IsNullTree   ,
+       IsContained  ,
+       NoMoreObject from Standard,
+       NoSuchObject from Standard,
+       OutOfRange   from Standard
+
+
+    class SeqArbitraryTree instantiates 
+                HSequence from PCollection(HArbitraryTree);
+    class StackArbitraryTree instantiates 
+                HStack from PCollection(HArbitraryTree);
+	 
+    class ATPreOrderIterator 
+
+        ---Purpose: Permits to  iterate through  an ArbitraryTree so that,
+        -- from the   root, it reads each   element  on the left,
+        -- until  the first leave, then  goes to its rightSibling
+        -- and upward.  
+        -- IF theTree is ( A (B (C D E)) F G (H (I J K))) 
+        -- THEN it will read ( A B C D E F G H I J K)
+
+    raises NoMoreObject from Standard ,
+           NoSuchObject from Standard
+    is        
+
+	Create( theTree : HArbitraryTree) 
+	     ---Purpose: Creates an iterator on <theTree>.
+             returns ATPreOrderIterator;
+
+	More( me) 
+	    ---Purpose: Returns True if there is at least one element to be read.
+            ---Level: Public
+            returns Boolean from Standard;
+	    
+	Next( me : in out) raises NoMoreObject from Standard; 
+	     ---Purpose: Manages currentStack  which  always  contains
+	     -- the way from the root to the  next leaf to be
+	     -- visited.  Updates currentTree.
+             ---Level: Public
+
+    	Value( me )
+            ---Purpose: Returns the current element.	
+            ---Level: Public
+	    returns mutable HArbitraryTree
+    	    raises NoSuchObject from Standard;
+	    
+	Clear( me : in out);
+	    ---Purpose: Empties <me>, so that More() will answer False.
+            ---Level: Public
+
+
+    	 
+    	RecursiveRemove( me : in out; aTree : HArbitraryTree)
+	    ---Purpose: Removes the end of currentStack until finding a 
+	    -- tree having a right sibling: removes it too, and returns it.
+	    returns mutable HArbitraryTree
+            ---Level: Internal
+	    is private;
+	    
+    fields 
+    	HasMore     : Boolean from Standard;
+	CurrentTree : HArbitraryTree;
+	CurrentStack: StackArbitraryTree;	    
+    end;
+
+
+    class ATPostOrderIterator
+
+        ---Purpose: Permits to iterate through an ArbitraryTree beginning by 
+        -- the most left leave and its rightSibling, then upward to its parent.
+        -- IF theTree is (  A (B (C D E)) F G (H (I J K)))
+        -- THEN it will read ( C D E B F I J K H G A)
+	
+    raises NoMoreObject from Standard,
+           NoSuchObject from Standard
+	   
+    is	   
+
+	Create( theTree : HArbitraryTree) 
+	    ---Purpose: Creates an iterator on the tree theTree
+            returns ATPostOrderIterator;
+
+	More( me) returns Boolean from Standard;
+	    ---Purpose: Returns True if there is at least one element to
+	    -- be read.
+            ---Level: Public
+
+	Next( me : in out) raises NoMoreObject from Standard; 
+	    ---Purpose: Sets the iterator on the next element
+            ---Level: Public
+
+    	Value( me) 
+            ---Level: Public
+	    returns mutable HArbitraryTree
+    	    raises NoSuchObject from Standard;
+	    
+	Clear( me : in out);
+	    ---Purpose: Empties <me>, so that More() will answer False
+            ---Level: Public
+    	
+	RecursiveAppend( me : in out; aTree : HArbitraryTree)
+	    ---Purpose: adds a new branch to currentStack, until
+	    -- reaching a leaf; the branch's parent is <aTree>
+            ---Level: Internal
+	    is private;
+	    
+    fields
+    	HasMore     : Boolean from Standard;
+	CurrentTree : HArbitraryTree;
+	CurrentStack: StackArbitraryTree;
+	    
+    end;
+
+
+    class ATInOrderIterator
+
+        ---Purpose: Permits to iterate through an ArbitraryTree so that, from
+        -- the most left leave, it reads it, then its parent, then in
+        -- the same order what is on its right.
+        -- IF theTree is (  A (B (C D E)) F G (H (I J K)))
+        -- THEN it will read ( C B D E A F I H J K G)
+
+    raises NoMoreObject from Standard, 
+           NoSuchObject from Standard
+    is
+    
+	Create( theTree : HArbitraryTree) 
+	    ---Purpose: Create an iterator on the tree theTree
+            returns ATInOrderIterator;
+	    
+	More( me) returns Boolean from Standard;
+	    ---Purpose: Returns True if there is at least one element to be read.
+            ---Level: Public
+
+	Next( me : in out) raises NoMoreObject from Standard; 
+	    ---Purpose: Sets the iterator to the next element.
+            ---Level: Public
+
+    	Value( me) 
+	    returns mutable HArbitraryTree
+    	    raises NoSuchObject from Standard;
+            ---Level: Public
+	    
+	Clear( me : in out);
+	    ---Purpose: Empties <me>, so that More() will answer False.
+            ---Level: Public
+
+	RecursiveAppend( me : in out; aTree : HArbitraryTree)
+	    ---Purpose: Adds to currentStack a new branch of the tree,
+	    -- which has not been visited; this branch's parent is <aTree>.
+            ---Level: Internal
+	    is private;
+	    
+	RecursiveRemove( me : in out; aTree : HArbitraryTree)
+	    ---Purpose: Removes from currentStack one or more trees,
+	    -- which have already been visited and have no
+	    -- more children not visited; the first tree
+	    -- removed is <aTree>.
+            ---Level: Internal
+	    returns mutable HArbitraryTree
+	    is private;
+	    
+    fields
+    	HasMore     : Boolean from Standard;
+	CurrentTree : HArbitraryTree;
+	CurrentStack: StackArbitraryTree;
+    end;
+
+
+is 
+
+    
+    Create ( TheItem : Item) 
+        ---Purpose: Creation of a root tree of value Item with no child(e.g. a leaf)
+        --  Example:
+        -- if <TheItem> = i0 
+        -- returns
+        --  ( i0 )
+        -- The field <MyParent> is Null and so is <MyChildren>.
+    	returns mutable HArbitraryTree;
+		
+    Children( me)
+    	---Purpose: Reads all children of <me>, to be able to know the
+    	-- location of one of them.
+        ---Level: Internal
+    	returns mutable SeqArbitraryTree
+    	is private;
+
+    Child( me; Index : Integer from Standard) 
+	---Purpose: Returns the child of <me> at the range <Index>.
+	-- Raises an exception if <Index> is out of range.
+	--  Example:Before
+	--   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ), Index = 2
+	-- After
+	--   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) )
+	-- returns   (i2)
+        ---Level: Public
+    	returns mutable HArbitraryTree 
+        raises OutOfRange from Standard;
+
+    Value( me) returns any Item;
+	---Purpose: Returns the value of <me>.
+	--  Example:Before and After
+	--   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) )
+	-- returns  i0
+        ---Level: Public
+
+    NbChildren( me) returns Integer from Standard;
+	---Purpose: Returns the number of children of me.
+	--  Example: me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) )
+	-- returns 3
+        ---Level: Public
+
+    IsLeaf( me) returns Boolean from Standard;
+	---Purpose: Returns True if the tree <me> is a leaf.
+	--  Example: me = ( i0 )
+	-- returns True
+        ---Level: Public
+
+    Parent( me) 
+	---Purpose: Returns the father of <me>.
+	-- The returned ArbitraryTree can be Null.
+	--  Example: if T = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ) and 
+	--   me = ( i1 (i4 i5) )
+	-- returns T.
+        ---Level: Public
+    	returns mutable HArbitraryTree;
+	
+    IsRoot( me)
+	---Purpose: Returns True if <me> has no father.
+        ---Level: Public
+        returns Boolean from Standard;
+
+    Root( me) 
+	---Purpose: Returns the root of the tree <me>.
+	-- If <me> is a root, returns <me>
+	--  Example: if T = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ) and 
+	--   me = (i1( i4 i5 )) and T->IsRoot == True
+	-- returns  T 
+        ---Level: Public
+    	returns mutable HArbitraryTree ;
+
+    LeftSibling( me) 
+	---Purpose: Returns the left neighbour of the tree <me>.
+	-- May return a Null tree.
+	-- if T = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ) 
+	--   and me = (i2)
+	-- returns  ( i1 (i4 i5) )
+        ---Level: Public
+        returns mutable HArbitraryTree;
+
+    RightSibling( me) 
+	---Purpose: Returns the right neighbour of the tree <me>.
+	-- May return a Null tree.
+	--  Example: if T = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ) 
+	--   and  me = (i2)
+	-- returns  ( i3 (i6 i7) )
+        ---Level: Public
+        returns mutable HArbitraryTree;
+
+    Contains( me; aTree: HArbitraryTree)
+	---Purpose: Checks <aTree> is contained by <me>.
+        ---Level: Public
+    	returns Boolean from Standard
+    	raises IsNullTree ;
+
+    SetValue( me : mutable ; theItem : Item) ;
+        ---Purpose: Changes the value of MyItem.
+        --  Example: before
+        --   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ), theItem= i10
+        -- after
+        --   me = ( i10 (i1 (i4 i5) i2 i3 (i6 i7) ) )
+        ---Level: Public
+
+    SwapChild( me : mutable ; Index : Integer from Standard; 
+    	       WithTree : in out mutable HArbitraryTree)
+	---Purpose: Replaces the child of <me> at range <Index> by <WithTree>
+	-- and conversely.
+	-- Only removes Child at range <Index> if <WithTree> is Null.
+	--  Trigger: Raises an exception if <Index> is greater than NbChildren;
+	-- raises IsNotRoot if <WithTree> is not a root;
+	--  Example: Before
+	--   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ), 
+	--   Index = 2,  WithTree = ( i8 (i9  i10) )
+	-- After
+	--   me = ( i0 (i1 (i4 i5) i8 (i9 i10) i3 (i6 i7) ) )
+	--   WithTree = (i2)
+        ---Level: Public
+        raises OutOfRange from Standard, 
+               IsNotRoot;
+
+    SwapChildren( me : mutable ; subtree1, subtree2 : mutable HArbitraryTree)
+	---Purpose: TradeOff between two subtrees of <me>.
+	--  Example: Before
+	--   me = ( i0 (i1 (i4 i5) i2 i3 (i6 i7) ) ), 
+	--   subtree1 = (i4), subtree2 = (i3 (i6 i7)),
+	-- After
+	--   me = ( i0 (i1 ( i3 (i6 i7) i5)  i2 i4))
+	--  Trigger:Raises an  exception if <subtree1>  or  <subtree2>
+	-- are not subtrees of <me>.
+	-- Raises an exception if one of the  two subtrees is
+	-- contained by the other one.For instance :
+	--  Example: IF subtree1 = (i3( i6 i7)) and subtree2 = (i6).
+        -- Raises an exception if one of the two subtrees is null.
+        ---Level: Public
+        raises OutOfRange from Standard, 
+               NoSuchObject from Standard, 
+               IsContained,
+	       IsNullTree;
+	       
+    AppendChild( me: mutable; theTree: HArbitraryTree)
+	---Purpose: Appends <theTree> as last child of <me>
+	--  Example:
+	-- Before
+	--   me = ( i0 ( i1 i2 i3)) 
+	--   theTree = ( i4)
+	-- After
+	--   me = ( i0 ( i1 i2 i3 i4))
+	--  Trigger: Raises IsNotRoot if <theTree> is not a root.
+       	-- Raises IsNullTree if <theTree> is Null.
+        ---Level: Public
+	raises IsNotRoot, 
+               IsNullTree;
+	
+    PrependChild( me: mutable; theTree: HArbitraryTree)
+	---Purpose: Appends <theTree> as first child of <me>.
+	--  Example:
+	-- Before
+	--   me = ( i0 ( i1 i2 i3)) 
+	--   theTree = ( i4)
+	-- After
+	--   me = ( i0 ( i4 i1 i2 i3))
+	--  Trigger: Raises IsNotRoot if <theTree> is not a root.
+       	-- Raises IsNullTree if <theTree> is Null.
+        ---Level: Public
+	raises IsNotRoot, 
+               IsNullTree;
+
+    InsertChildBefore( me : mutable; Index : Integer from Standard;
+    	    	       theTree: HArbitraryTree)
+        ---Purpose: Adds   <theTree> to  the   field  <MyChildren>, at
+        -- <Index>, and all  children  from <Index> pushed on
+        -- the right.
+	--  Example: Before
+	--   me = ( i0 ( i1 i2 i3)) 
+	--   theTree = ( i4), Index = 2
+	-- After
+	--   me = ( i0 ( i1 i4 i2 i3))
+        -- Trigger: Raises  OutOfRange if   <Index>  is  greater  than
+        -- NbChildren. 	
+        -- Raises IsNotRoot if <theTree> is not a root.
+        -- Raises IsNullTree if <theTree> is Null.
+        ---Level: Public
+	raises OutOfRange from Standard, 
+               IsNotRoot, 
+               IsNullTree;
+	
+    InsertChildAfter( me: mutable; Index: Integer from Standard;
+    	    	      theTree: HArbitraryTree)
+        ---Purpose: Adds <theTree> to  <MyChildren>, at <Index>+1, and
+        -- all children from <Index>+1 pushed on the right.
+       	--  Example: Before
+	--   me = ( i0 ( i1 i2 i3)) 
+	--   theTree = ( i4), Index = 2
+	-- After
+	--   me = ( i0 ( i1 i2 i4 i3))
+        --  Trigger: Raises OutOfRange if <Index> is greater than NbChildren
+	-- Raises IsNotRoot if <theTree> is not a root
+       	-- Raises IsNullTree if <theTree> is Null
+        ---Level: Public
+	raises OutOfRange from Standard, 
+               IsNotRoot, 
+               IsNullTree;
+	    
+    RemoveChild( me : mutable; Index: Integer from Standard)
+	---Purpose: Removes from <MyChildren> the ArbitraryTree at range <Index>. 
+	--  Example: Before
+	--   me = ( i0 ( i1 i2 i3 i4)) and Index = 2
+	-- After
+	--   me = ( i0 ( i1 i3 i4))
+        --  Trigger: Raises OutOfRange if <Index> is greater than NbChildren
+        ---Level: Public
+	raises OutOfRange from Standard;
+	
+    RemoveAllChildren( me: mutable);
+	---Purpose: Removes all my children.
+        ---Level: Public
+    
+    RemoveChildren( me: mutable; FromIndex, ToIndex : Integer from Standard)
+	---Purpose: Removes from <MyChildren> all the ArbitraryTree 
+	-- located from range <FromIndex> to <ToIndex>.
+	--  Example: Before
+	--   me = ( i0 ( i1 i2 i3 i4)) 
+	--   FromIndex = 2 and ToIndex = 4
+	-- After
+	--   me = ( i0 ( i1))
+        --  Trigger: Raises OutOfRange if <FromIndex> or <ToIndex> is 
+        -- greater than NbChildren.
+        ---Level: Public
+	raises OutOfRange from Standard; 
+
+    SetParent( me : mutable; theTree : HArbitraryTree)
+	---Purpose: Changes the value of MyParent.
+        ---Level: Internal
+	is private;
+
+
+    ShallowCopy(me) returns mutable like me 
+        is redefined;
+        ---Level: Advanced
+	---C++: function call
+
+    ShallowDump (me; s: in out OStream) 
+        is redefined;
+        ---Level: Advanced
+    	---C++: function call
+
+fields
+
+    MyParent  : HArbitraryTree;
+    MyItem    : Item;
+    MyChildren: SeqArbitraryTree;
+end;

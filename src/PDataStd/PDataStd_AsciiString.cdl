@@ -1,0 +1,32 @@
+-- File:	PDataStd_AsciiString.cdl
+-- Created:	Wed Aug 22 15:50:29 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class AsciiString from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistance attribute of  TDataStd_AsciiString
+
+uses  HAsciiString from PCollection
+
+is
+    Create returns mutable  AsciiString from  PDataStd;
+    
+    
+    Create (V : HAsciiString from PCollection) 
+    returns mutable  AsciiString from PDataStd;
+    
+    
+    Get (me) returns HAsciiString from PCollection;
+    
+    
+    Set (me : mutable; V : HAsciiString from PCollection);
+    
+fields
+
+    myValue : HAsciiString from PCollection;
+
+
+end AsciiString;

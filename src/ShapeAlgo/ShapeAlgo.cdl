@@ -1,0 +1,42 @@
+-- File:	ShapeAlgo.cdl
+-- Created:	Mon Feb  7 12:17:57 2000
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package ShapeAlgo 
+
+    ---Purpose: 
+
+uses
+
+    MMgt,
+    Geom,
+    Geom2d,
+    TColGeom,
+    TColGeom2d,
+    TopoDS,
+    ShapeExtend,
+    ShapeAnalysis,
+    ShapeFix,
+    GeomAbs
+
+is
+
+    class ToolContainer;
+    	---Purpose: Returns tools used by AlgoContainer
+
+    class AlgoContainer;
+    	---Purpose: Provides initerface to the algorithms from Shape Healing.
+
+    Init;
+    	---Purpose: Creates and initializes default AlgoContainer.
+    
+    SetAlgoContainer (aContainer: AlgoContainer from ShapeAlgo);
+    	---Purpose: Sets default AlgoContainer
+
+    AlgoContainer returns AlgoContainer from ShapeAlgo;
+    	---Purpose: Returns default AlgoContainer
+
+end ShapeAlgo;

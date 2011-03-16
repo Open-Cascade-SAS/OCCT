@@ -1,0 +1,25 @@
+-- File:	Plate_D2.cdl
+-- Created:	Thu Oct 19 18:01:25 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+
+class D2 from Plate
+---Purpose : define an order 2 derivatives of a 3d valued
+--          function of a 2d variable
+--         
+
+uses XYZ from gp
+
+is
+    Create(duu,duv,dvv : XYZ from gp) returns D2;
+    Create(ref  :  D2  from  Plate) returns D2;
+
+fields
+    
+    Duu, Duv,Dvv : XYZ from gp;
+
+friends
+    class GtoCConstraint from Plate,
+    class FreeGtoCConstraint from Plate    
+end;

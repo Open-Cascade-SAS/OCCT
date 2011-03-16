@@ -1,0 +1,45 @@
+-- File:	Vrml_Cone.cdl
+-- Created:	Tue Dec 24 09:36:53 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Cone from Vrml 
+
+	---Purpose: defines a Cone node of VRML specifying geometry shapes.
+    	-- This  node  represents  a  simple  cone,  whose  central  axis  is  aligned 
+	-- with  the  y-axis.  By  default ,  the  cone  is  centred  at  (0,0,0) 
+	-- and  has  size  of  -1  to  +1  in  the  all  three  directions. 
+	-- the  cone  has  a  radius  of  1  at  the  bottom  and  height  of  2, 
+	-- with  its  apex  at  1  and  its  bottom  at  -1.  The  cone  has  two  parts: 
+	-- the  sides  and  the  bottom
+uses
+     
+    ConeParts from Vrml
+is
+
+    Create ( aParts        : ConeParts from Vrml = Vrml_ConeALL; 
+    	     aBottomRadius : Real      from Standard = 1; 
+             aHeight       : Real      from Standard = 2 )  
+        returns Cone from Vrml;
+    
+    SetParts ( me : in out; aParts : ConeParts from Vrml );
+    Parts ( me )  returns  ConeParts from Vrml;
+
+    SetBottomRadius ( me : in out; aBottomRadius : Real from Standard );
+    BottomRadius ( me )  returns Real  from  Standard;
+
+    SetHeight ( me : in out; aHeight : Real from Standard );
+    Height ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+
+    myParts        : ConeParts from Vrml;      -- Visible parts of cone
+    myBottomRadius : Real      from Standard;  -- Radius of bottom circular face
+    myHeight       : Real      from Standard;  -- Size in y dimension
+   
+end Cone;

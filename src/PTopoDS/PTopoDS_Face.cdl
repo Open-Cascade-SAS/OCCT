@@ -1,0 +1,15 @@
+-- File:	PTopoDS_Face.cdl
+-- Created:	Wed May  5 16:56:23 1993
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Face from PTopoDS inherits HShape from PTopoDS
+
+is
+    Create returns mutable Face from PTopoDS;
+	---Level: Internal 
+
+end Face;

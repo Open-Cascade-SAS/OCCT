@@ -1,0 +1,96 @@
+-- File:	Dynamic_Variable.cdl
+-- Created:	Wed Aug 24 09:59:22 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+class Variable from Dynamic
+inherits
+
+    TShared from MMgt
+    
+
+	---Purpose: This  class   is the  root   class for  describing
+	--          variables.  A   variable is useful to  specify the
+	--          signature of a method in terms of arguments and if
+	--          necessary variables and/or constants needed inside
+	--          a  function.   This  set  of information defines a
+	--          scope for  these variables. This class is directly
+	--          used   by  the MethodDefinition class.   From this
+	--          class is  derived the instances of variables which
+	--          are used by the  classes under the  MethodInstance
+	--          class. A variable is composed by :
+	--          
+	--          * an identifier for giving it a name,
+	--          * a type of expected value,
+	--          * possibly a default value,
+	--          * a mode which explains if the variable is :
+	--          
+	--            - an input and/or output argument to the method,
+	--            - an internal or  constant variable used in  the
+	--            body of the method.
+
+uses
+
+    OStream from Standard,
+    Parameter from Dynamic,
+    ModeEnum  from Dynamic 
+    
+
+is
+
+    Create returns mutable Variable from Dynamic;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Creates and returns an empty instance of this class.
+    
+    Parameter(me : mutable ; aparameter : Parameter from Dynamic)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Sets  the   parameter  <aparameter>   in  <me>.   This
+    --          parameter gives the name,  the  type of value, and  if
+    --          necessary the default value of the variable.
+    
+    is static;
+    
+    Parameter(me) returns any Parameter from Dynamic
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the parameter stored in <me>.
+    
+    is static;
+    
+    Mode(me : mutable ; amode : ModeEnum from Dynamic)
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Sets the mode to the variable. the  mode is to take in
+    --          the enumeration  IN,  OUT, INOUT,  INTERNAL, CONSTANT,
+    --          which describes the type of the variable.
+    
+    is static;
+    
+    Mode(me) returns ModeEnum from Dynamic
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns the mode of the variable.
+    
+    is static;
+    
+    Dump(me; astream : in out OStream from Standard);
+
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+fields
+
+    theparameter    : Parameter from Dynamic;
+    themode         : ModeEnum  from Dynamic;
+
+end Variable;

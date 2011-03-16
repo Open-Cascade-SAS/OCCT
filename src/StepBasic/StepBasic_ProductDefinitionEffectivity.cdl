@@ -1,0 +1,29 @@
+-- File:	StepBasic_ProductDefinitionEffectivity.cdl
+-- Created:	Tue Jun 30 15:20:11 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ProductDefinitionEffectivity  from StepBasic    inherits Effectivity  from StepBasic
+
+uses
+     HAsciiString from TCollection,
+     ProductDefinitionRelationship from StepBasic
+
+is
+
+    Create returns mutable ProductDefinitionEffectivity;
+
+    Init (me : mutable;
+    	  aId : HAsciiString;
+	  aUsage : ProductDefinitionRelationship);
+
+    Usage (me) returns ProductDefinitionRelationship;
+    SetUsage (me : mutable; aUsage : ProductDefinitionRelationship);
+
+fields
+
+    theUsage : ProductDefinitionRelationship;
+
+end ProductDefinitionEffectivity;

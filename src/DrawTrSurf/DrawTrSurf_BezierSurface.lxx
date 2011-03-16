@@ -1,0 +1,13 @@
+
+
+  inline Draw_Color DrawTrSurf_BezierSurface::PolesColor () const {
+
+    return polesLook;
+  }
+
+
+  inline void DrawTrSurf_BezierSurface::SetPolesColor (
+  const Draw_Color& aColor) {
+
+    polesLook = aColor;
+  }

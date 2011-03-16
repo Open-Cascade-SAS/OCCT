@@ -1,0 +1,229 @@
+-- File:	TCollection_HExtendedString.cdl
+-- Created:	Wed Mar 17 17:32:41 1993
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1993
+
+
+class HExtendedString from TCollection 
+inherits TShared from MMgt
+
+    ---Purpose: A variable-length sequence of "extended"
+    -- (UNICODE) characters (16-bit character
+    -- type). It provides editing operations with
+    -- built-in memory management to make
+    -- ExtendedString objects easier to use than
+    -- ordinary extended character arrays.
+    -- HExtendedString objects are handles to strings.
+    -- - HExtendedString strings may be shared by several objects.
+    -- - You may use an ExtendedString object to get the actual string.
+    --   Note: HExtendedString objects use an
+    -- ExtendedString string as a field.
+
+uses ExtendedString from TCollection
+    ,HAsciiString from TCollection
+    
+raises 
+    NullObject from Standard, 
+    OutOfRange from Standard, 
+    NumericError from Standard, 
+    NegativeValue from Standard
+is
+
+ Create returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString to an empty ExtendedString.
+
+ Create ( message : CString ) 
+         returns mutable HExtendedString from TCollection
+   ---Purpose: Initializes a HExtendedString with a CString.
+   raises NullObject from Standard;
+
+ Create ( message : ExtString ) 
+         returns mutable HExtendedString from TCollection
+   ---Purpose: Initializes a HExtendedString with an ExtString.
+   raises NullObject from Standard;
+
+ Create ( aChar : ExtCharacter) 
+         returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString with a single character.
+
+ Create ( length : Integer; filler : ExtCharacter)
+         returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString with <length> space allocated.
+   -- and filled with <filler>.This is usefull for buffers.
+
+ Create ( aString : ExtendedString from TCollection) 
+         returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString with a HExtendedString.
+
+ Create ( aString : HAsciiString from TCollection) 
+         returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString with an HAsciiString.
+
+ Create ( aString : HExtendedString from TCollection) 
+         returns mutable HExtendedString from TCollection;
+   ---Purpose: Initializes a HExtendedString with a HExtendedString.
+
+ AssignCat (me : mutable ; other : HExtendedString from TCollection); 
+   ---Purpose: Appends <other>  to me.
+
+ Cat (me ; other : HExtendedString from TCollection) 
+        returns mutable HExtendedString from TCollection;
+   ---Level: Public
+   ---Purpose: Returns a string appending <other>  to me.
+
+ ChangeAll(me : mutable; aChar, NewChar : ExtCharacter);
+   ---Level: Public
+   ---Purpose: Substitutes all the characters equal to aChar by NewChar
+   -- in the string <me>.
+ 
+ Clear (me : mutable);
+   ---Level: Public
+   ---Purpose: Removes all characters contained in <me>.
+   -- This produces an empty ExtendedString.
+
+ IsEmpty(me) returns Boolean from Standard;
+   ---Purpose:  Returns True if the string <me> contains zero character
+
+ Insert (me : mutable; where : Integer; what : ExtCharacter)
+   ---Purpose: Insert a ExtCharacter at position <where>.
+   -- Example:
+   --    aString contains "hy not ?"
+   --    aString.Insert(1,'W'); gives "Why not ?"
+   --    aString contains "Wh"
+   --    aString.Insert(3,'y'); gives "Why"
+   --    aString contains "Way"
+   --    aString.Insert(2,'h'); gives "Why"
+   raises OutOfRange from Standard;
+
+ Insert (me : mutable; where : Integer; 
+         what : HExtendedString from TCollection)
+   ---Purpose: Insert a HExtendedString at position <where>.
+   raises OutOfRange from Standard;
+
+ IsLess (me ; other : HExtendedString from TCollection) returns Boolean;
+   ---Purpose: Returns TRUE if <me> is less than <other>.
+
+ IsGreater (me ; other : HExtendedString from TCollection) returns Boolean;
+   ---Purpose: Returns TRUE if <me> is greater than <other>.
+
+ IsAscii(me) returns Boolean from Standard;
+   ---Purpose: Returns True if the string contains only "Ascii Range"  characters
+         
+ Length (me) returns Integer;
+   ---Purpose: Returns number of characters in <me>.
+   -- This is the same functionality as 'strlen' in C.
+
+ Remove (me : mutable ; where : Integer ; ahowmany : Integer=1)
+   ---Purpose: Erases <ahowmany> characters from position <where>,
+   -- <where> included.
+   -- Example:
+   --   aString contains "Hello"
+   --   aString.Erase(2,2) erases 2 characters from position 1
+   --   This gives "Hlo".
+   raises OutOfRange from Standard;
+
+ RemoveAll(me : mutable; what : ExtCharacter);
+   ---Purpose: Removes every <what> characters from <me>.
+
+ SetValue(me : mutable; where : Integer; what : ExtCharacter)
+   ---Purpose: Replaces one character in the string at position <where>.
+   -- If <where> is less than zero or greater than the length of <me>
+   -- an exception is raised.
+   -- Example:
+   --   aString contains "Garbake"
+   --   astring.Replace(6,'g')  gives <me> = "Garbage"
+   raises OutOfRange from Standard;
+
+ SetValue(me : mutable; where : Integer; 
+          what : HExtendedString from TCollection)
+   ---Level: Public
+   ---Purpose: Replaces a part of <me> by another string.
+   raises OutOfRange from Standard;
+
+ Split(me : mutable; where : Integer) 
+ returns mutable HExtendedString from TCollection
+   ---Purpose: Splits a ExtendedString into two sub-strings.
+   -- Example: 
+   --   aString contains "abcdefg"
+   --   aString.Split(3) gives <me> = "abc" and returns "defg"
+ raises OutOfRange from Standard;
+
+ Search (me ; what : HExtendedString from TCollection) returns Integer;
+   ---Level: Public
+   ---Purpose: Searches a String in <me> from the beginning 
+   -- and returns position of first item <what> matching.
+   -- It returns -1 if not found.
+
+ SearchFromEnd (me ; what : HExtendedString from TCollection) returns Integer;
+   ---Level: Public
+   ---Purpose: Searches a ExtendedString in another ExtendedString from the end 
+   -- and returns position of first item <what> matching.
+   -- It returns -1 if not found.
+
+ ToExtString(me) returns ExtString;
+   ---Level: Public
+   ---Purpose: Returns pointer to ExtString
+   ---C++: return const
+
+ Token (me ; separators : ExtString; whichone : Integer=1) 
+ returns mutable HExtendedString from TCollection
+   ---Level: Public
+   ---Purpose: Extracts <whichone> token from <me>.
+   -- By default, the <separators> is set to space and tabulation.
+   -- By default, the token extracted is the first one (whichone = 1).
+   -- <separators> contains all separators you need.
+   -- If no token indexed by <whichone> is found, it returns an empty String.
+   -- Example:
+   --    aString contains "This is a     message"
+   --    aString.Token()  returns "This" 
+   --    aString.Token(" ",4) returns "message"
+   --    aString.Token(" ",2) returns "is"
+   --    aString.Token(" ",9) returns ""
+   -- Other separators than space character and tabulation are allowed
+   --    aString contains "1234; test:message   , value"
+   --    aString.Token("; :,",4) returns "value"
+   --    aString.Token("; :,",2) returns "test"
+   raises NullObject from Standard;
+
+ Trunc (me : mutable ; ahowmany  : Integer)
+   ---Purpose: Truncates <me> to <ahowmany> characters.
+   -- Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
+   raises OutOfRange from Standard;
+
+ Value(me ; where : Integer) returns ExtCharacter
+   ---Purpose: Returns ExtCharacter at position <where> in <me>.
+   -- If <where> is less than zero or greater than the length of
+   -- <me>, an exception is raised.
+   -- Example:
+   --   aString contains "Hello"
+   --   aString.Value(2) returns 'e'
+   raises OutOfRange from Standard;
+ 
+ String(me) returns ExtendedString from TCollection;
+        ---Purpose: Returns the field myString
+
+ Print (me ; astream : out OStream);
+   ---Purpose: Displays <me> .
+
+ ShallowCopy(me) returns mutable like me;
+      ---C++: function call  
+
+ ShallowDump(me ; s: in out OStream); 
+   ---Level: Advanced
+
+ IsSameState (me ; other : like me) returns Boolean;
+   ---Level: Advanced
+
+ ChangeString(me) returns ExtendedString from TCollection is private;
+   ---Purpose: Returns the field myString
+   ---C++: return &
+
+  fields
+
+    myString : ExtendedString from TCollection; 
+
+end;
+
+
+

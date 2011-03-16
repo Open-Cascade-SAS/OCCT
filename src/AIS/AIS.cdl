@@ -1,0 +1,674 @@
+-- File:	AIS.cdl
+-- Created:	Wed Dec 11 11:16:37 1996
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+package AIS 
+
+    	 ---Purpose: Application Interactive Services provide the means to
+    	 -- create links between an application GUI viewer and
+    	 -- the packages which are used to manage selection
+    	 -- and presentation. The tools AIS defined in order to
+    	 -- do this include different sorts of entities: both the
+    	 -- selectable viewable objects themselves and the
+    	 -- context and attribute managers to define their
+    	 -- selection and display.
+    	 -- To orient the user as he works in a modeling
+    	 -- environment, views and selections must be
+    	 -- comprehensible. There must be several different sorts
+    	 -- of selectable and viewable object defined. These must
+    	 -- also be interactive, that is, connecting graphic
+    	 -- representation and the underlying reference
+    	 -- geometry. These entities are called Interactive
+    	 -- Objects, and are divided into four types:
+    	 -- -   the Datum
+    	 -- -   the Relation
+    	 -- -   the Object
+    	 -- -   None.
+    	 --   The Datum groups together the construction elements
+    	 -- such as lines, circles, points, trihedra, plane trihedra,
+    	 -- planes and axes.
+    	 -- The Relation is made up of constraints on one or
+    	 -- more interactive shapes and the corresponding
+    	 -- reference geometry. For example, you might want to
+    	 -- constrain two edges in a parallel relation. This
+    	 -- contraint is considered as an object in its own right,
+    	 -- and is shown as a sensitive primitive. This takes the
+    	 -- graphic form of a perpendicular arrow marked with
+    	 -- the || symbol and lying between the two edges.
+    	 -- The Object type includes topological shapes, and
+    	 -- connections between shapes.
+    	 -- None, in order not to eliminate the object, tells the
+    	 -- application to look further until it finds an object
+    	 -- definition in its generation which is accepted.
+    	 -- Inside these categories, you have the possibility
+    	 -- of   an additional characterization by means of a
+    	 -- signature. The signature provides an index to the
+     	 -- further characterization. By default, the   Interactive
+    	 -- Object has a None type and a signature of 0
+     	 -- (equivalent to None.) If you want to give a particular
+    	 -- type and signature to your interactive object, you must
+    	 -- redefine the two virtual methods: Type and Signature.
+    	 -- In the C++ inheritance structure of the package, each
+    	 -- class representing a specific Interactive Object
+    	 -- inherits AIS_InteractiveObject. Among these
+    	 -- inheriting classes, AIS_Relation functions as the
+    	 -- abstract mother class for tinheriting classes defining
+    	 -- display of specific relational constraints and types of
+    	 -- dimension. Some of these include:
+    	 -- -   display of constraints based on relations of
+    	 -- symmetry, tangency, parallelism and concentricity
+    	 -- -   display of dimensions for angles, offsets,
+    	 -- diameters, radii and chamfers.
+    	 --  No viewer can show everything at once with any
+    	 -- coherence or clarity. Views must be managed
+    	 -- carefully both sequentially and at any given instant.
+    	 -- Another function of the view is that of a context to
+    	 -- carry out design in. The design changes are applied
+    	 -- to the objects in the view and then extended to the
+    	 -- underlying reference geometry by a solver. To make
+    	 -- sense of this complicated visual data, several display
+    	 -- and selection tools are required. To facilitate
+    	 -- management, each object and each construction
+    	 -- element has a selection priority. There are also
+    	 -- means to modify the default priority.
+    	 -- To define an environment of dynamic detection, you
+    	 -- can use standard filter classes or create your own. A
+    	 -- filter questions the owner of the sensitive primitive in
+    	 -- local context to determine if it has the the desired
+    	 -- qualities. If it answers positively, it is kept. If not, it is rejected.
+    	 -- The standard filters supplied in AIS include:
+    	 -- AIS_AttributeFilter
+    	 -- AIS_SignatureFilter
+    	 -- AIS_TypeFilter.
+    	 -- Only the type filter can be used in the default
+    	 -- operating mode, the neutral point. The others can
+    	 -- only be used in open local contexts.
+    	 -- Neutral point and local context constitute the two
+    	 -- operating modes of the central entity which pilots
+    	 -- visualizations and selections, the Interactive Context.
+    	 -- It is linked to a main viewer and if you like, a trash bin
+    	 -- viewer as well.
+    	 -- The neutral point, which is the default mode, allows
+    	 -- you to easily visualize and select interactive objects
+    	 -- which have been loaded into the context. Opening
+    	 -- local contexts allows you to prepare and use a
+    	 -- temporary selection environment without disturbing
+    	 -- the neutral point. A set of functions allows you to
+    	 -- choose the interactive objects which you want to act
+    	 -- on, the selection modes which you want to activate,
+    	 -- and the temporary visualizations which you will
+    	 -- execute. When the operation is finished, you close the
+    	 -- current local context and return to the state in which
+    	 -- you were before opening it (neutral point or previous
+    	 -- local context).
+    	 -- An interactive object can have a certain number of
+    	 -- graphic attributes which are specific to it, such as
+    	 -- visualization mode, color, and material. By the same
+    	 -- token, the interactive context has a set of graphic
+    	 -- attributes, the Drawer which is valid by default for the
+    	 -- objects it controls.   When an interactive object is
+    	 -- visualized, the required graphic attributes are first
+    	 -- taken from the object's own Drawer if one exists, or
+    	 -- from the context drawer for the others.
+
+    
+uses
+    TCollection,
+    MMgt,
+    Quantity,
+    TColgp,
+    TColStd,
+    TopLoc,
+    gp,
+    Geom,
+    Bnd,
+    Aspect,
+    Graphic2d,
+    Graphic3d,
+    V3d,
+    TopAbs,
+    TopoDS,
+    Prs3d,
+    PrsMgr,
+    Select3D,
+    SelectMgr,
+    StdSelect,
+    DsgPrs,
+    TopTools,
+    Poly
+
+is
+    
+    
+    enumeration DisplayMode is WireFrame, Shaded, QuickHLR, ExactHLR;
+    	 ---Purpose:
+    	 -- Sets display modes other than neutral point ones,
+    	 -- for interactive objects. The possibilities include:
+    	 -- -   wireframe,
+         -- -   shaded,
+        
+    enumeration ConnectStatus is 
+    CS_None,
+    CS_Connection,
+    CS_Transform,
+    CS_Both;
+    	 ---Purpose: Gives the status of connection of an Interactive
+    	 -- Object. This will be one of the following:
+    	 -- -   No connection
+    	 -- -   Connection
+    	 -- -   Transformation
+    	 -- -   Both connection and transformation
+    	 --   This enumeration is used in
+    	 -- AIS_ConnectedInteractive. Transform indicates
+    	 -- that the Interactive Object reference geometry has
+    	 -- changed location relative to the reference geometry.
+        
+    enumeration TypeOfIso is
+    TOI_IsoU,
+    TOI_IsoV,
+    TOI_Both;
+    	 ---Purpose: Declares the type of isoparameter displayed.	    
+    
+    enumeration DisplayStatus is 
+    DS_Displayed,  
+    DS_Erased,     
+    DS_FullErased,
+    DS_Temporary, 
+    DS_None;     
+    	 ---Purpose:
+    	 -- To give the display status of an Interactive Object.
+    	 -- This will be one of the following:
+    	 -- -   DS_Displayed: the Interactive Object is
+    	 --   displayed in the main viewer;
+    	 -- -   DS_Erased: the Interactive Object is erased in the collector;
+    	 -- -   DS_FullErased: the Interactive Object is erased
+    	 --   but not in the collector;
+    	 -- -   DS_Temporary: the Interactive Object is temporarily displayed;
+    	 -- -   DS_None: the Interactive Object is nowhere displayed.
+        
+    enumeration SelectStatus is 
+    SS_Added,
+    SS_Removed,
+    SS_NotDone
+    end SelectStatus;
+
+    enumeration StatusOfPick is
+    SOP_Error,
+    SOP_NothingSelected,
+    SOP_Removed,
+    SOP_OneSelected,
+    SOP_SeveralSelected
+    end StatusOfPick;
+
+    enumeration StatusOfDetection is
+    SOD_Error,
+    SOD_Nothing,
+    SOD_AllBad,
+    SOD_Selected,
+    SOD_OnlyOneDetected,
+    SOD_OnlyOneGood,
+    SOD_SeveralGood
+    end StatusOfDetection;
+
+    enumeration KindOfDimension is 
+    KOD_NONE,
+    KOD_LENGTH,
+    KOD_PLANEANGLE,
+    KOD_SOLIDANGLE,
+    KOD_AREA,
+    KOD_VOLUME,
+    KOD_MASS,
+    KOD_TIME,
+    KOD_RADIUS,
+    KOD_DIAMETER,
+    KOD_CHAMF2D,
+    KOD_CHAMF3D,
+    KOD_OFFSET,
+    KOD_ELLIPSERADIUS;
+    	 ---Purpose: Declares the kinds of dimensions needed in the
+    	 -- display of Interactive Objects.
+        
+    enumeration KindOfInteractive is
+    KOI_None,
+    KOI_Datum,
+    KOI_Shape,
+    KOI_Object,
+    KOI_Relation;
+    	 --- Purpose: Declares the type of Interactive Object. 
+    	 -- This is one of the following:
+    	 -- -   the Datum
+    	 -- -   the Object
+    	 -- -   the Relation
+    	 -- -   the None type.
+    	 --  The Datum is the construction element. These include
+    	 -- points, lines, axes and planes. The object brings
+    	 -- together topological shapes. The Relation includes
+    	 -- dimensions and constraints. When the object is of an
+    	 -- unknown type, the None type is declared.
+    
+    enumeration ClearMode is
+    CM_All,
+    CM_Interactive,
+    CM_Filters,
+    CM_StandardModes,
+    CM_TemporaryShapePrs
+    end ClearMode;
+ 	 ---Purpose: Declares which entities in an opened local context
+    	 -- are to be cleared of mode settings. Temporary
+    	 -- graphic presentations such as those for sub-shapes,
+    	 -- for example, are only created for the selection
+    	 -- process. By means of these enumerations, they can
+    	 -- be cleared from local context.
+        
+    enumeration KindOfUnit is 
+    TOU_LENGTH,
+    TOU_SURFACE,
+    TOU_VOLUME,
+    TOU_PLANE_ANGLE,
+    TOU_SOLID_ANGLE,
+    TOU_MASS,
+    TOU_FORCE,
+    TOU_TIME;
+    	 ---Purpose: Declares the type of Interactive Object unit.
+        
+    enumeration TypeOfAxis is TOAX_Unknown,TOAX_XAxis,TOAX_YAxis,TOAX_ZAxis;
+    	 ---Purpose: Declares the type of axis.
+        
+    enumeration TypeOfPlane is TOPL_Unknown,TOPL_XYPlane,TOPL_XZPlane,TOPL_YZPlane;
+    	 ---Purpose: Declares the type of plane.
+    enumeration TypeOfDist is TOD_Unknown,TOD_Horizontal,TOD_Vertical;
+---Purpose: To declare the type of distance.
+    
+    enumeration TypeOfAttribute is 
+    TOA_Line,
+    TOA_Angle,
+    TOA_Wire,
+    TOA_Plane,
+    TOA_Vector,
+    TOA_UIso,
+    TOA_VIso,
+    TOA_Free,
+    TOA_UnFree,
+    TOA_Section, 
+    TOA_Hidden,
+    TOA_Seen,
+    TOA_FirstAxis,
+    TOA_SecondAxis,
+    TOA_ThirdAxis;
+    
+    enumeration StandardDatum is SD_None,SD_Point,SD_Axis,SD_Trihedron,SD_PlaneTrihedron,SD_Line,SD_Circle,SD_Plane;
+    	--- Purpose: Declares the type of standard datum of an Interactive Object. 
+
+-- New ------------------------------------------------
+
+    enumeration KindOfSurface is KOS_Plane, KOS_Cylinder, KOS_Cone, KOS_Sphere, KOS_Torus,
+    	        KOS_Revolution, KOS_Extrusion, KOS_OtherSurface;
+-------------------------------------------------------    
+   
+    class Triangulation;
+
+    class TexturedShape;
+
+    class Drawer;
+    
+    class InteractiveContext;
+
+    class GraphicTool;
+                            
+    private class LocalContext;    
+
+    private class LocalStatus;
+
+    private class GlobalStatus;
+ 
+    deferred class InteractiveObject;
+
+            ---Category: VARIOUS STANDARD INTERACTIVE OBJECTS
+            --           each type of Datum has a given signature.
+            --           the other interactive objects don't
+            --           implement this signature.
+            --           Mainly used for selection with Filters...
+
+    ---Category: Datum
+    class Point;                         --signature 1
+    class Axis;                          --signature 2
+    class Trihedron;                     --signature 3
+    class PlaneTrihedron;                --signature 4
+    class Line;                          --signature 5
+    class Circle;                        --signature 6
+    class Plane;                         --signature 7 
+
+    
+    ---Category: Object of type Shape
+    class Shape;                         --signature 0
+    class ConnectedShape;                --signature 1
+    class MultipleConnectedShape;        --signature 2        
+
+
+
+    ---Category: General Objects
+    class ConnectedInteractive;          --signature 0
+    class MultipleConnectedInteractive;  --signature 1        
+
+	    ---Category:  DIMENSIONS AND RELATIONS
+ 
+    class DimensionOwner;
+
+    deferred class Relation; 
+    deferred class EllipseRadiusDimension; 
+    class MaxRadiusDimension; 
+    class MinRadiusDimension; 
+    class LengthDimension;
+    class AngleDimension;
+    class RadiusDimension;
+    class DiameterDimension;
+    class Chamf2dDimension;
+    class Chamf3dDimension;
+    class OffsetDimension;
+    class FixRelation;
+    class PerpendicularRelation;
+    class ParallelRelation;
+    class TangentRelation;	   
+    class ConcentricRelation;     
+    class IdenticRelation;
+    class SymmetricRelation; -- axial symmetry
+    class MidPointRelation; -- equal distance from point
+    class EqualRadiusRelation;
+    class EqualDistanceRelation;
+
+    
+	    ---Category: FILTERS
+ 
+    
+    class TypeFilter;
+    class SignatureFilter;    
+    class ExclusionFilter;
+    class AttributeFilter;
+    class C0RegularityFilter;
+    class BadEdgeFilter;
+
+    pointer PToContext to InteractiveContext from AIS;
+
+
+
+
+    class Selection;
+
+
+		    ---Category: The Collections
+
+
+    class ListOfInteractive instantiates List from TCollection
+    (InteractiveObject from AIS);
+
+    class SequenceOfInteractive	instantiates Sequence from TCollection
+    (InteractiveObject from AIS);
+    
+    class SequenceOfDimension	instantiates Sequence from TCollection
+    (Relation from AIS);
+	    
+    class MapOfInteractive instantiates Map from TCollection
+    (InteractiveObject from AIS,MapTransientHasher from TColStd);
+    
+    
+    class DataMapofIntegerListOfinteractive instantiates DataMap from
+    TCollection(Integer from Standard, ListOfInteractive from AIS,MapIntegerHasher  from  TColStd);
+    -- for further management of layers 
+
+    private class DataMapOfIOStatus instantiates DataMap from
+    TCollection(InteractiveObject from AIS,GlobalStatus from AIS,MapTransientHasher  from  TColStd);
+    -- Management of interactiveObjects Status...
+
+    class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection 
+    (EntityOwner from SelectMgr,Presentation from Prs3d ,MapTransientHasher from TColStd); 
+    -- for dynamic selection management in local context...
+    
+    -- san: 18/04/2003 AIS_Selection class optimization
+    -- agv: 04/05/2003 Replace NCollection_List for CDL list
+    imported NListTransient;
+    imported NListIteratorOfListTransient;
+    imported NDataMapOfTransientIteratorOfListTransient;
+    -- service map for AIS_Selection class optimized logic
+
+    private class  DataMapOfILC  instantiates  DataMap  from  TCollection 
+    (Integer  from  Standard,  LocalContext  from  AIS,  MapIntegerHasher  from  TColStd);
+
+    private class DataMapOfSelStat instantiates DataMap from TCollection 
+    (SelectableObject from SelectMgr,LocalStatus from AIS,MapTransientHasher  from  TColStd); 
+    -- to tell if an object is sensitive to Standard Modes Of Selection....
+
+-- Methods for dimensions
+
+    Nearest( aShape : Shape from TopoDS;
+             aPoint : Pnt from gp )
+    returns Pnt from gp;
+    	 ---Purpose:
+    	 -- Returns the nearest point in a shape. This is used by
+    	 -- several classes in calculation of dimensions.
+    
+    Farest( aShape : Shape from TopoDS;
+            aPoint : Pnt from gp )
+    returns Pnt from gp;
+
+    ComputeGeometry(anEdge   : Edge from TopoDS;
+    	    	    aCurve   : out Curve from Geom;
+    	    	    FirstPnt : out Pnt from gp;
+    	    	    LastPnt  : out Pnt from gp)
+    ---Purpose: Used by 2d Relation only
+    --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
+    --          and the extremities if any
+    --          Return TRUE if ok
+    returns Boolean  from Standard;
+    
+    ComputeGeometry(anEdge   : Edge from TopoDS;
+    	    	    aCurve   : out Curve from Geom;
+    	    	    FirstPnt : out Pnt from gp;
+    	    	    LastPnt  : out Pnt from gp;
+    	    	    extCurve : out Curve from Geom;
+		    isinfinite: out Boolean from Standard;
+		    isOnPlane : out Boolean from Standard;	
+    	    	    aPlane   : Plane from Geom)
+    ---Purpose: Used by 2d Relation only
+    --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
+    --          and the extremities if any.
+    --          If <aCurve> is not in the current plane, <extCurve> contains
+    --          the not projected curve associated to <anEdge>.
+    --          If <anEdge> is infinite, <isinfinite> = true and the 2
+    --          parameters <FirstPnt> and <LastPnt> have no signification.
+    --          Return TRUE if ok
+    returns Boolean from Standard;
+    
+    ComputeGeometry     (anEdge1   : Edge from TopoDS;
+    	    	    	 anEdge2   : Edge from TopoDS;
+    	    	    	 aCurve1   : out Curve from Geom;
+    	    	    	 aCurve2   : out Curve from Geom;
+    	    	    	 FirstPnt1 : out Pnt from gp;
+    	    	    	 LastPnt1  : out Pnt from gp;
+    	    	    	 FirstPnt2 : out Pnt from gp;
+    	    	    	 LastPnt2  : out Pnt from gp;
+    	    	    	 aPlane    : Plane from Geom)
+    ---Purpose: Used by 2d Relation only
+    --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
+    --          and the extremities if any
+    --          Return TRUE if ok
+    returns Boolean from Standard;
+
+
+    ComputeGeometry    (anEdge1   : Edge from TopoDS;
+    	    	    	anEdge2   : Edge from TopoDS;
+			indexExt  : out Integer from Standard;
+    	    	    	aCurve1   : out Curve from Geom;
+    	    	    	aCurve2   : out Curve from Geom;
+    	    	        FirstPnt1 : out Pnt from gp;
+    	    	    	LastPnt1  : out Pnt from gp;
+    	    	    	FirstPnt2 : out Pnt from gp;
+    	    	    	LastPnt2  : out Pnt from gp;
+    	    	    	ExtCurve  : out Curve from Geom;
+			isinfinite1 : out Boolean from Standard;
+			isinfinite2 : out Boolean from Standard;			
+    	    	    	aPlane    : Plane from Geom)
+    	    	    	
+    ---Purpose: Used  by  2d Relation  only Computes  the  3d geometry
+    --          of<anEdge1> and <anEdge2> in the current Plane and the
+    --          extremities if any.   Return in ExtCurve  the 3d curve
+    --          (not projected  in the  plane)  of the  first edge  if
+    --          <indexExt> =1 or of the 2nd edge if <indexExt> = 2. If
+    --          <indexExt> = 0, ExtCurve is Null.  if there is an edge
+    --          external to the  plane,  <isinfinite> is true if  this
+    --          edge is infinite.  So, the extremities of it are not
+    --          significant.  Return TRUE if ok
+    returns Boolean from Standard;
+
+    ComputeGeomCurve   (aCurve    : in out Curve from Geom;
+    	    	    	first1    : Real from Standard;
+    	    	    	last1     : Real from Standard;
+    	    	    	FirstPnt1 : out Pnt from gp;
+    	    	    	LastPnt1  : out Pnt from gp;
+    	    	    	aPlane    : Plane from Geom;
+    	    	    	isOnPlane: out Boolean from Standard)
+    	    	    	
+    ---Purpose: Checks if aCurve belongs to aPlane; if not, projects aCurve in aPlane 
+    --          and returns aCurve;
+    --          Return TRUE if ok
+    returns Boolean from Standard;
+
+    ComputeGeometry(aVertex  : Vertex      from TopoDS;
+    	    	    point    : out Pnt     from gp;
+    	    	    aPlane   : Plane       from Geom;
+		    isOnPlane: out Boolean from Standard)
+    returns Boolean from Standard;
+    
+
+    GetPlaneFromFace( aFace     : Face            from TopoDS;
+    	    	      aPlane    : out Pln         from gp;
+		      aSurf     : out Surface     from Geom;
+    	    	      aSurfType : out KindOfSurface from AIS;
+    	    	      Offset    : out Real from Standard )
+    returns Boolean from Standard;
+    ---Purpose: Tryes to get Plane from Face.  Returns Surface of Face
+    --          in aSurf.  Returns Standard_True  and Plane of Face in
+    --           aPlane in following  cases:
+    --          Face is Plane, Offset of Plane,
+    --                  Extrusion of Line  and Offset of  Extrusion of Line
+    --	        Returns pure type of Surface which can be:
+    --	        Plane, Cylinder, Cone, Sphere, Torus, 
+    --	        SurfaceOfRevolution, SurfaceOfExtrusion
+
+    InitFaceLength(  aFace         :  Face                from  TopoDS; 
+    	    	     aPlane        :  out  Pln            from  gp; 
+		     aSurface      :  out  Surface        from  Geom; 
+		     aSurfaceType  :  out  KindOfSurface  from  AIS; 
+		     anOffset      :  out  Real           from  Standard  ); 
+		     
+    ComputeLengthBetweenPlanarFaces( FirstFace     : Face        from TopoDS;
+    	                             SecondFace    : Face        from TopoDS;
+    	    	    	             Plane1        : Pln         from gp;
+			             Plane2        : Pln         from gp;
+				     Value         : out Real    from Standard;
+			             FirstAttach   : out Pnt     from gp ;
+			             SecondAttach  : out Pnt     from gp ;
+			             DirAttach     : out Dir     from gp ;
+			             AutomaticPos  : Boolean     from Standard;
+			             Position      : in out Pnt  from gp);
+    
+     ComputeLengthBetweenCurvilinearFaces( FirstFace      : Face from TopoDS;
+				           SecondFace     : Face from TopoDS;
+    	    	    	    	           FirstSurf      : in out Surface from Geom;
+    	    	    	    	           SecondSurf     : in out Surface from Geom;
+				     	   AutomaticPos   : Boolean from Standard; 
+              				   Value          : out Real from Standard;
+				           Position       : out Pnt from gp;
+				           FirstAttach    : out Pnt from gp;
+				           SecondAttach   : out Pnt from gp;
+    	    	    	    	    	   DirAttach      : out Dir from gp );
+					  
+     ComputeAngleBetweenPlanarFaces( FirstFace    : Face from TopoDS;
+				     SecondFace   : Face from TopoDS;
+    	    	    	    	     Surf2        : Surface from Geom;
+				     Axis         : Ax1 from gp;
+				     Value        : Real from Standard;
+				     AutomaticPos : Boolean from Standard; 
+				     Position     : out Pnt from gp;
+				     Center       : out Pnt from gp;
+				     FirstAttach  : out Pnt from gp;
+				     SecondAttach : out Pnt from gp;
+				     FirstDir     : out Dir from gp;
+				     SecondDir    : out Dir from gp);
+    ---Purpose: Computes geometric   parameters for planar   faces for
+    --          Angular dimensions
+ 
+     ComputeAngleBetweenCurvilinearFaces( FirstFace    : Face from TopoDS;
+				          SecondFace   : Face from TopoDS;
+    	    	    	    	          FirstSurf    : Surface from Geom;
+    	    	    	    	          SecondSurf   : Surface from Geom;
+					  FirstSurfType  : KindOfSurface from AIS;
+					  SecondSurfType : KindOfSurface from AIS;
+				          Axis         : Ax1 from gp;
+				     	  Value        : Real from Standard;
+				     	  AutomaticPos : Boolean from Standard; 
+				          Position     : out Pnt from gp;
+				          Center       : out Pnt from gp;
+				          FirstAttach  : out Pnt from gp;
+				          SecondAttach : out Pnt from gp;
+				          FirstDir     : out Dir from gp;
+				          SecondDir    : out Dir from gp;
+    	    	    	    	    	  Plane        : out Plane from Geom );
+    ---Purpose: Computes geometric   parameters for curvilinear   faces for
+    --          Angular dimensions
+
+    ProjectPointOnPlane( aPoint : Pnt from gp; aPlane : Pln from gp )
+    returns Pnt from gp;
+		    
+    ProjectPointOnLine( aPoint : Pnt from gp; aLine : Lin from gp )
+    returns Pnt from gp; 
+     
+    TranslatePointToBound( aPoint : Pnt from gp; aDir : Dir from gp; aBndBox: Box from Bnd )
+    returns Pnt from gp;
+	 
+    InDomain( aFirstPar    :  Real  from  Standard; 
+    	      aLastPar     :  Real  from  Standard;  
+	      anAttachPar  :  Real  from  Standard)  
+    returns  Boolean  from  Standard;      
+    ---Purpose: returns  True  if  point  with anAttachPar  is 
+    --          in  domain  of  arc   
+  
+    NearestApex(elips  :  Elips from  gp;
+		pApex  :  Pnt   from  gp; 
+		nApex  :  Pnt   from  gp;
+		fpara  :  Real  from  Standard ;
+            	lpara  :  Real  from  Standard ; 
+    	    	IsInDomain  :  out  Boolean  from  Standard) 
+    returns  Pnt  from  gp;
+    ---Purpose:  computes  nearest  to  ellipse  arc  apex 
+ 
+    DistanceFromApex(elips  :  Elips  from  gp;
+		     Apex   :  Pnt    from  gp;
+		     par    :  Real   from  Standard )        
+    returns  Real  from  Standard;		     
+    ---Purpose:  computes  length  of  ellipse  arc  in  parametric  units   
+     
+    
+    ComputeProjEdgePresentation(aPres    : mutable Presentation from Prs3d; 
+    	    	    	    	aDrawer  : mutable Drawer       from AIS;        
+			   	anEdge   : Edge                 from TopoDS;
+			    	ProjCurve: Curve                from Geom;
+			    	FirstP   : Pnt                  from gp;
+			    	LastP    : Pnt                  from gp;
+			    	aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;
+			    	aWidth   : Real                 from Standard = 2;
+    	    	    	    	aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
+			    	aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT);
+    
+    ComputeProjVertexPresentation(aPres    : mutable Presentation from Prs3d; 
+             	    	    	  aDrawer  : mutable Drawer       from AIS;        
+			   	  aVertex  : Vertex               from TopoDS;
+			    	  ProjPoint: Pnt                  from gp;
+       			    	  aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;
+			    	  aWidth   : Real                 from Standard = 2;
+    	    	    	    	  aProjTOM : TypeOfMarker         from Aspect   = Aspect_TOM_PLUS;
+			    	  aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT);
+
+end AIS;

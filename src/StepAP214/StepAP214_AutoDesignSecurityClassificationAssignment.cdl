@@ -1,0 +1,40 @@
+-- File:        AutoDesignSecurityClassificationAssignment.cdl
+-- Created:     Fri Dec  1 11:11:14 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class AutoDesignSecurityClassificationAssignment from StepAP214 
+
+inherits SecurityClassificationAssignment from StepBasic 
+
+uses
+
+	HArray1OfApproval from StepBasic, 
+	Approval from StepBasic, 
+	SecurityClassification from StepBasic
+is
+
+	Create returns mutable AutoDesignSecurityClassificationAssignment;
+	---Purpose: Returns a AutoDesignSecurityClassificationAssignment
+
+
+	Init (me : mutable;
+	      aAssignedSecurityClassification : mutable SecurityClassification from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aAssignedSecurityClassification : mutable SecurityClassification from StepBasic;
+	      aItems : mutable HArray1OfApproval from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetItems(me : mutable; aItems : mutable HArray1OfApproval);
+	Items (me) returns mutable HArray1OfApproval;
+	ItemsValue (me; num : Integer) returns mutable Approval;
+	NbItems (me) returns Integer;
+
+fields
+
+	items : HArray1OfApproval from StepBasic;
+
+end AutoDesignSecurityClassificationAssignment;

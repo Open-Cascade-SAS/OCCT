@@ -1,0 +1,14 @@
+// File:	TDF_CopyLabel.lxx
+// Created:	Tue Jun 29 16:16:18 1999
+// Author:	Sergey ZARITCHNY
+//		<szy@philipox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TDF_CopyLabel::IsDone() const
+{
+  return myIsDone;
+}

@@ -1,0 +1,127 @@
+-- File:	IntImp_IntCS.cdl
+-- Created:	Thu Jan 14 14:14:13 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class IntCS from IntImp 
+    (ThePSurface     as any;
+     ThePSurfaceTool as any; --as PSurfaceTool from IntImp(ThePSurface)
+     TheCurve        as any;
+     TheCurveTool    as any; --as CurveTool from IntImp(TheCurve)
+     TheFunction     as any  --as CSFunction from IntImp
+    )
+
+    	---Purpose: intersection between a curve and a surface with a close
+    	--          point
+
+uses Pnt from gp,
+     FunctionSetRoot from math
+
+raises NotDone from StdFail,
+       DomainError from Standard    
+
+is
+
+    
+    Create( U,V,W       : Real from Standard;
+            F           : TheFunction;
+	    TolTangency : Real;
+    	    MarginCoef  : Real = 0.0)
+	    
+    	---Purpose: compute the solution point with the close point
+    	--          MarginCoef is the coefficient for extension of UV bounds.
+    	--          Ex., UFirst -= MarginCoef*(ULast-UFirst)
+    	
+    returns IntCS from IntImp;
+    
+    Create( F           : TheFunction;
+            TolTangency : Real from Standard)
+	    
+	    ---Purpose: initialize the parameters to compute the solution
+
+    returns IntCS from IntImp;
+    
+
+    Perform(me : in out; U,V,W : Real from Standard;
+    	    	    	 Rsnld : in out FunctionSetRoot from math;
+    	    	    	 u0,v0,u1,v1,w0,w1 : Real from Standard)
+	---Purpose: compute the solution 
+	--          it's possible to write to optimize:
+	--          IntImp_IntCS inter(S1,C1,Toltangency)
+	--          math_FunctionSetRoot rsnld(Inter.function())
+	--          while ...{
+	--             u=...
+	--             v=...
+	--             w=...
+	--             inter.Perform(u,v,w,rsnld)
+	--          }
+	--      or
+	--          IntImp_IntCS inter(Toltangency)
+	--          inter.SetSurface(S);
+	--          math_FunctionSetRoot rsnld(Inter.function())
+	--          while ...{
+	--             C=...  
+	--             inter.SetCurve(C);
+	--             u=...
+	--             v=...
+	--             w=...
+	--             inter.Perform(u,v,w,rsnld)
+	--          }
+	--          
+    is static;
+
+    IsDone(me) returns Boolean from Standard
+        ---Purpose: Returns TRUE if the creation completed without failure.
+    is static;
+
+    IsEmpty(me) returns Boolean from Standard
+    raises NotDone from StdFail
+    is static;
+    
+    Point(me)
+        ---Purpose: returns the intersection point
+        --          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+
+    	returns Pnt from gp
+    	---C++: return const &
+
+    	raises NotDone     from StdFail,
+	       DomainError from Standard
+	
+    is static;
+
+
+    ParameterOnCurve(me) returns Real from Standard
+    raises NotDone     from StdFail,
+	   DomainError from Standard
+	
+    is static;
+    
+    ParameterOnSurface(me;U,V : out Real from Standard)
+    raises NotDone     from StdFail,
+	   DomainError from Standard
+	
+    is static;
+
+    Function(me: in out )
+    ---Purpose: return the math function which 
+    --          is used to compute the intersection
+    ---C++: return &
+    returns TheFunction
+    is static;
+    
+
+fields
+
+    done  : Boolean from Standard;
+    empty : Boolean from Standard;
+    myFunction : TheFunction;
+    w     : Real from Standard;
+    u     : Real from Standard;
+    v     : Real from Standard;
+    tol   : Real from Standard;
+
+end IntCS;

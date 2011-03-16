@@ -1,0 +1,107 @@
+// File:      IntPatch_ImpImpIntersection_1.gxx
+// Created:   Thu May  7 08:47:45 1992
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 1992
+
+static Standard_Boolean IntPP (const IntSurf_Quadric&,
+			       const IntSurf_Quadric&,
+			       const Standard_Real,
+			       const Standard_Real,
+			       Standard_Boolean&,
+			       IntPatch_SequenceOfLine&);
+
+static Standard_Boolean IntPCy (const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&);
+
+
+static Standard_Boolean IntPSp (const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+
+static Standard_Boolean IntPCo (const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+
+static void ProcessBounds(const Handle(IntPatch_ALine)&,
+			  const IntPatch_SequenceOfLine&,
+			  const IntSurf_Quadric&,
+			  const IntSurf_Quadric&,
+			  Standard_Boolean&,
+			  const gp_Pnt&,
+			  const Standard_Real,
+			  Standard_Boolean&,
+			  const gp_Pnt&,
+			  const Standard_Real,
+			  Standard_Boolean&,
+			  const Standard_Real);
+
+
+static Standard_Boolean IntCyCy(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntCySp(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntCyCo(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntSpSp(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntCoSp(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				const Standard_Boolean,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntCoCo(const IntSurf_Quadric&,
+				const IntSurf_Quadric&,
+				const Standard_Real,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				Standard_Boolean&,
+				IntPatch_SequenceOfLine&,
+				IntPatch_SequenceOfPoint&);

@@ -1,0 +1,67 @@
+-- File:	BRepClass_FaceClassifier.cdl
+-- Created:	Fri May 28 15:13:53 1993
+-- Author:	Modelistation
+--		<model@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+class FaceClassifier from BRepClass inherits FClassifier from BRepClass
+
+	---Purpose: Provides Constructors.
+
+uses
+    FaceExplorer from BRepClass,
+    Face         from TopoDS,
+    Pnt2d        from gp,
+    Pnt          from gp
+
+is
+    Create returns FaceClassifier from BRepClass;
+	---Purpose: Empty constructor, undefined algorithm.
+	
+	
+	
+      
+    Create(F : in out FaceExplorer from BRepClass; 
+    	   P : Pnt2d from gp; Tol : Real)
+    returns FaceClassifier from BRepClass;
+	---Purpose: Creates an algorithm to classify the Point  P with
+	--          Tolerance <T> on the face described by <F>.
+	
+    Create(F : Face from TopoDS; 
+    	   P : Pnt2d from gp; Tol : Real)
+    returns FaceClassifier from BRepClass;
+	---Purpose: Creates an algorithm to classify the Point  P with
+	--          Tolerance <T> on the face <F>.
+	
+    Perform(me : in out;
+    	    F : Face from TopoDS; 
+    	    P : Pnt2d from gp; Tol : Real)
+	---Purpose: Classify  the Point  P  with  Tolerance <T> on the
+	--          face described by <F>.
+    is static;
+
+
+
+    
+    Create(F : in out FaceExplorer from BRepClass; 
+    	   P : Pnt from gp; Tol : Real)
+    returns FaceClassifier from BRepClass;
+	---Purpose: Creates an algorithm to classify the Point  P with
+	--          Tolerance <T> on the face described by <F>.
+	
+    Create(F : Face from TopoDS; 
+    	   P : Pnt from gp; Tol : Real)
+    returns FaceClassifier from BRepClass;
+	---Purpose: Creates an algorithm to classify the Point  P with
+	--          Tolerance <T> on the face <F>.
+	
+    Perform(me : in out;
+    	    F : Face from TopoDS; 
+    	    P : Pnt from gp; Tol : Real)
+	---Purpose: Classify  the Point  P  with  Tolerance <T> on the
+	--          face described by <F>.
+    is static;   
+
+
+end FaceClassifier;

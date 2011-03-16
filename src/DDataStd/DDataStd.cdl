@@ -1,0 +1,77 @@
+-- File:	DDataStd.cdl
+-- Created:	Thu Mar 27 09:19:52 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+package DDataStd 
+
+	---Purpose: commands for Standard Attributes.
+	--          =================================
+
+
+uses Draw,
+     TDF,
+     TDataStd,     
+     TDataXtd,
+     TopoDS,
+     MMgt,
+     Standard,
+     TNaming, 
+     TCollection
+
+is 
+
+    ---Purpose: attribute display presentation
+    --          ==============================
+
+    class DrawPresentation;
+    
+    class DrawDriver;
+    ---Purpose: root class of drivers to build draw variables from TDF_Label.
+
+   ---Purpose: attribute tree presentation
+    --         ===========================
+
+    class TreeBrowser;
+    ---Purpose: Used to browse tree nodes.
+
+    ---Purpose: commands
+    --          ========
+
+    AllCommands (I : in out Interpretor from Draw);
+    ---Purpose: command to set and get modeling attributes
+
+    NamedShapeCommands (I : in out Interpretor from Draw);
+    ---Purpose: to set and get NamedShape
+
+    BasicCommands  (I : in out Interpretor from Draw);
+    ---Purpose: to set and get Integer, Real,  Reference, Geometry
+
+    DatumCommands (I : in out Interpretor from Draw);
+    ---Purpose: to set and get Datum attributes
+
+    ConstraintCommands (I : in out Interpretor from Draw);
+    ---Purpose: to set and get Constraint and Constraint  attributes    
+
+    ObjectCommands (I : in out Interpretor from Draw);
+    ---Purpose: to set and get Objects attributes
+
+    DrawDisplayCommands  (I : in out Interpretor from Draw);
+    ---Purpose: to display standard attributes
+
+    NameCommands (I: in out Interpretor from Draw);
+    ---Purpose: to set and get Name attribute    
+    
+    TreeCommands (I: in out Interpretor from Draw);    
+    ---Purpose: to build, edit and browse an explicit tree of labels
+    
+    ---Purpose: package methods
+    --          ===============
+
+    DumpConstraint (C : Constraint from TDataXtd; S : in out OStream);
+
+
+end DDataStd;
+

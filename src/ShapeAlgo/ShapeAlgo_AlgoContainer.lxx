@@ -1,0 +1,26 @@
+// File:	ShapeAlgo_AlgoContainer.lxx
+// Created:	Mon Feb  7 12:22:49 2000
+// Author:	data exchange team
+//		<det@nnov>
+
+#include <ShapeAlgo_AlgoContainer.hxx>
+
+//=======================================================================
+//function : SetToolContainer
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeAlgo_AlgoContainer::SetToolContainer(const Handle(ShapeAlgo_ToolContainer)& TC) 
+{
+  myTC = TC;
+}
+ 
+//=======================================================================
+//function : ToolContainer
+//purpose  : 
+//=======================================================================
+
+inline  Handle(ShapeAlgo_ToolContainer) ShapeAlgo_AlgoContainer::ToolContainer() const
+{
+  return myTC;
+}

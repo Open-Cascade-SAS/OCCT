@@ -1,0 +1,179 @@
+-- File:	TransferBRep.cdl
+-- Created:	Mon Oct  3 10:03:04 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+package TransferBRep
+
+    ---Purpose : This package gathers services to simply read files and convert
+    --           them to Shapes from CasCade. IE. it can be used in conjunction
+    --           with purely CasCade software
+
+uses Standard, TCollection, TColStd, TopoDS, TopAbs, TopTools, Interface, Transfer, Message
+
+is
+
+    class Reader;
+
+--    class Analyzer;
+
+    class ShapeInfo;
+    class BinderOfShape  instantiates  SimpleBinder from Transfer
+    	(Shape from TopoDS, ShapeInfo);
+
+    class ShapeBinder;
+    class ShapeListBinder;
+
+    class ShapeMapper instantiates Mapper from Transfer
+    	(Shape from TopoDS, ShapeMapHasher from TopTools, ShapeInfo);
+    class OrientedShapeMapper instantiates Mapper from Transfer
+    	(Shape from TopoDS, OrientedShapeMapHasher from TopTools, ShapeInfo);
+
+    class TransferResultInfo;
+    class SequenceOfTransferResultInfo instantiates Sequence from TCollection
+    	(TransferResultInfo from TransferBRep);
+    class HSequenceOfTransferResultInfo instantiates HSequence from TCollection
+    	(TransferResultInfo from TransferBRep,
+    	 SequenceOfTransferResultInfo from TransferBRep);
+    
+    	--  some usefull functions for binding shapes  --
+
+    ShapeResult (binder : Binder from Transfer) returns Shape from TopoDS;
+    ---Purpose : Get the Shape recorded in a Binder
+    --           If the Binder brings a multiple result, search for the Shape
+
+    ShapeResult (TP : TransientProcess from Transfer; ent : Transient)
+    	returns Shape from TopoDS;
+    ---Purpose : Get the Shape recorded in a TransientProcess as result of the
+    --           Transfer of an entity. I.E. in the binder bound to that Entity
+    --           If no result or result not a single Shape, returns a Null Shape
+
+    SetShapeResult (TP : mutable TransientProcess from Transfer; ent : Transient;
+    	    	    result : Shape from TopoDS);
+    ---Purpose : Sets a Shape as a result for a starting entity <ent>
+    --           (reverse of ShapeResult)
+    --           It simply creates a ShapeBinder then binds it to the entity
+
+    Shapes (TP : TransientProcess from Transfer; rootsonly : Boolean = Standard_True)
+    	returns HSequenceOfShape from TopTools;
+    ---Purpose : Gets the Shapes recorded in a TransientProcess as result of a
+    --           Transfer, considers roots only or all results according
+    --           <rootsonly>, returns them as a HSequence
+
+    Shapes (TP : TransientProcess from Transfer;
+    	    list : HSequenceOfTransient from TColStd)
+    	returns HSequenceOfShape from TopTools;
+    ---Purpose : Gets the Shapes recorded in a TransientProcess as result of a
+    --           Transfer, for a given list of starting entities, returns
+    --           the shapes as a HSequence
+
+
+    ShapeState (FP : FinderProcess from Transfer; shape : Shape from TopoDS)
+    	returns Orientation from TopAbs;
+    ---Purpose : Returns a Status regarding a Shape in a FinderProcess
+    --           - FORWARD means bound with SAME Orientation
+    --           - REVERSED means bound with REVERSE Orientation
+    --           - EXTERNAL means NOT BOUND
+    --           - INTERNAL is not used
+
+    ResultFromShape (FP : FinderProcess from Transfer; shape : Shape from TopoDS)
+    	returns Binder from Transfer;
+    ---Purpose : Returns the result (as a Binder) attached to a given Shape
+    --           Null if none
+
+    TransientFromShape (FP : FinderProcess from Transfer; shape : Shape from TopoDS)
+    	returns Transient;
+    ---Purpose : Returns the result as pure Transient attached to a Shape
+    --           first one if multiple result
+
+    SetTransientFromShape (FP : FinderProcess from Transfer;
+    	shape : Shape from TopoDS; result : Transient);
+    ---Purpose : Binds a Transient Result to a Shape in a FinderProcess
+    --           (as first result if multiple : does not add it to existing one)
+
+    ShapeMapper (FP : FinderProcess from Transfer; shape : Shape from TopoDS)
+    	returns ShapeMapper;
+    ---Purpose : Returns a ShapeMapper for a given Shape (location included)
+    --           Either <shape> is already mapped, then its Mapper is returned
+    --           Or it is not, then a new one is created then returned, BUT
+    --             it is not mapped here (use Bind or FindElseBind to do this)
+
+    	-- Functions to collect transfer result information --
+	
+    TransferResultInfo (TP         : TransientProcess from Transfer;
+    	    	    	EntityTypes: HSequenceOfTransient from TColStd;
+    	    	    	InfoSeq    : out HSequenceOfTransferResultInfo from TransferBRep);
+    	---Purpose: Fills sequence of TransferResultInfo for each type of entity
+	--          given in the EntityTypes (entity are given as objects).
+    	--          Method IsKind applied to the entities in TP is used to
+    	--          compare with entities in EntityTypes.
+    	--          TopAbs_ShapeEnum).
+
+    TransferResultInfo (FP        : FinderProcess from Transfer;
+    	    	    	ShapeTypes: HSequenceOfInteger from TColStd;
+    	    	    	InfoSeq   : out HSequenceOfTransferResultInfo from TransferBRep);
+    	---Purpose: Fills sequence of TransferResultInfo for each type of shape
+	--          given in the ShapeTypes (which are in fact considered as
+    	--          TopAbs_ShapeEnum).
+	--          The Finders in the FP are considered as ShapeMappers.
+    
+    PrintResultInfo ( Printer   : Printer from Message;
+    	    	      Header    : Msg  from Message;
+		      ResultInfo: TransferResultInfo from TransferBRep;
+    	    	      printEmpty: Boolean = Standard_True);
+    	---Purpose: Prints the results of transfer to given priner with given header.
+		      
+
+
+    	--  Functions to analyse checks on objects, shapes ...  --
+
+    BRepCheck (shape : Shape from TopoDS; lev : Integer = 1)
+    	returns CheckIterator from Interface;
+    ---Purpose : Performs a heavy check by calling the Analyser from BRepCheck
+    --           This tool computes a lot of informations about integrity of a
+    --           Shape. This method uses it and converts its internal result
+    --           to a classic check-list.
+    --           <lev> allows to get more informations :
+    --            0 : BRepCheck only
+    --            1(D) + Curves/Surfaces not C0  ;  2 + SameParameter on Edges
+    --  Warning : entities to which checks are bound are the Shapes themselves,
+    --           embedded in ShapeMapper
+
+    ResultCheckList (chl : CheckIterator from Interface;
+    	    	     FP : FinderProcess  from Transfer;
+    	    	     model : InterfaceModel from Interface)
+    	returns CheckIterator from Interface;
+    ---Purpose : Takes a starting CheckIterator which brings checks bound with
+    --           starting objects (Shapes, Transient from an Imagine appli ...)
+    --           and converts it to a CheckIterator in which checks are bound
+    --           with results in an InterfaceModel
+    --           Mapping is recorded in the FinderProcess
+    --           Starting objects for which no individual result is recorded
+    --           remain in their state
+
+    Checked (chl : CheckIterator from Interface;
+    	     alsoshapes : Boolean = Standard_False)
+    	returns HSequenceOfTransient from TColStd;
+    ---Purpose : Returns the list of objects to which a non-empty Check is
+    --           bound in a check-list. Objects are transients, they can then
+    --           be either Imagine objects entities for an Interface Norm.
+    --           <alsoshapes> commands Shapes to be returned too
+    --           (as ShapeMapper), see also CheckedShapes
+
+    CheckedShapes (chl : CheckIterator from Interface)
+    	returns HSequenceOfShape from TopTools;
+    ---Purpose : Returns the list of shapes to which a non-empty Check is bound
+    --           in a check-list
+
+    CheckObject (chl : CheckIterator from Interface; obj : Transient)
+    	returns CheckIterator from Interface;
+    ---Purpose : Returns the check-list bound to a given object, generally none
+    --           (if OK) or one check. <obj> can be, either a true Transient
+    --           object or entity, or a ShapeMapper, in that case the Shape is
+    --           considered
+
+    	--  Complementary helps
+
+end TransferBRep;

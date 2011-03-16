@@ -1,0 +1,99 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+
+-- File:          OSD_Environment.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+
+
+class Environment from OSD
+
+   ---Purpose: Management of system environment variables
+   --          An environment variable is composed of a variable name
+   --          and its value.
+   --
+   --          To be portable among various systems, environment variables
+   --          are local to a process.
+
+uses Protection, Error, AsciiString from TCollection
+raises ConstructionError, NullObject, OSDError
+
+is
+ Create returns Environment;
+   ---Purpose: Creates the object Environment.
+   ---Level: Public
+
+ Create (Name : AsciiString) returns Environment
+   ---Purpose: Creates an Environment variable initialized with value
+   --          set to an empty AsciiString.
+   ---Level: Public
+   raises ConstructionError;
+
+ Create (Name, Value : AsciiString) returns Environment
+   ---Purpose: Creates an Environment variable initialized with Value.
+   raises ConstructionError, NullObject;
+   -- ConstructionError is raised when invalid character is encountered.
+   ---Level: Public
+
+ SetValue (me : in out; Value : AsciiString)
+   ---Purpose: Changes environment variable value.
+   --          Raises ConstructionError either if the string contains 
+   --          characters not in range of ' '...'~' or if the string 
+   --          contains the character '$' which is forbiden.
+   ---Level: Public
+   raises ConstructionError  is static;
+
+ Value (me : in out) returns AsciiString is static ;
+   ---Purpose: Gets the value of an environment variable
+   ---Level: Public
+
+ SetName (me : in out; name : AsciiString)
+   ---Purpose: Changes environment variable name.
+   --          Raises ConstructionError either if the string contains 
+   --          characters not in range of ' '...'~' or if the string 
+   --          contains the character '$' which is forbiden.
+   ---Level: Public
+   raises ConstructionError  is static;
+
+ Name (me ) returns AsciiString  is static;
+   ---Purpose: Gets the name of <me>.
+   ---Level: Public
+
+ Build (me : in out) is static ;
+   ---Purpose: Sets the value of an environment variable
+   --          into system (physically).
+   ---Level: Public
+
+ Remove(me : in out) is static ;
+   ---Purpose: Removes (physically) an environment variable 
+   ---Level: Public
+
+ Failed (me) returns Boolean is static ;
+   ---Purpose: Returns TRUE if an error occurs
+   ---Level: Public
+
+ Reset (me : in out) is static ;
+   ---Purpose: Resets error counter to zero
+   ---Level: Public
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+   ---Level: Public
+   raises OSDError is static ;
+
+ Error (me) returns Integer is static ;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Publi
+
+fields
+   myName  : AsciiString;  --- Name of the variable
+   myValue : AsciiString;
+   myError : Error;
+end Environment from OSD;
+
+
+

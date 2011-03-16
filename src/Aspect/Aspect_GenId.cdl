@@ -1,0 +1,120 @@
+--
+-- File:	Aspect_GenId.cdl
+-- Created:	Mercredi 13 Mai 1992
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class GenId from Aspect
+
+	---Version:
+
+	---Level: Internal
+	---Purpose: This class permits the creation and control of all
+	--	    identifiers.
+	--  Warning: An identifier is an integer.
+
+	---References:
+
+uses
+
+	ListOfInteger	from TColStd
+
+raises
+
+	IdentDefinitionError	from Aspect
+
+is
+
+	Create
+		returns GenId from Aspect;
+	---Level: Internal
+	---Purpose: Creates an available set of identifiers with the lower
+	--	    bound 0 and the upper bound INT_MAX/2.
+
+	Create ( Low, Up	: Integer from Standard )
+		returns GenId from Aspect
+	---Level: Internal
+	---Purpose: Creates an available set of identifiers with the lower
+	--	    bound <Low> and the upper bound <Up>.
+	--  Warning: Raises IdentDefinitionError if <Up> is less than <Low>.
+	raises IdentDefinitionError from Aspect;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	--Assign ( me	: in out;
+		 --Other	: GenId from Aspect );
+	---Level: Internal
+	---Purpose: Copies the content of <Other> into <me>.
+	---Category: Methods to modify the class definition
+	-- C++: alias operator =
+
+	Free ( me	: in out );
+	---Level: Internal
+	---Purpose: Frees all identifiers of <me>.
+	---Category: Methods to modify the class definition
+
+	Free ( me	: in out;
+	       Id	: Integer from Standard );
+	---Level: Internal
+	---Purpose: Frees the identifier <Id> of <me>.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Available ( me )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Returns the number of available identifiers of <me>.
+	---Category: Inquire methods
+
+	Lower ( me )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Returns the lower bound of <me>.
+	---Category: Inquire methods
+
+	Next ( me	: in out )
+		returns Integer from Standard
+	---Level: Internal
+	---Purpose: Returns an available identifier of <me>.
+	--  Warning: Raises IdentDefinitionError if all identifiers are busy.
+	raises IdentDefinitionError from Aspect;
+
+	Upper ( me )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Returns the upper bound of <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_GenId
+--
+-- Purpose	:	Declaration of variables specific to identifiers
+--
+-- Reminder	:	An identifier is an integer
+--
+
+	-- the current number of available identifiers
+	MyCount		:	Integer from Standard;
+
+	-- the number of identifiers
+	MyLength	:	Integer from Standard;
+
+	-- the limits for identifiers
+	MyLowerBound	:	Integer from Standard;
+	MyUpperBound	:	Integer from Standard;
+
+	-- to save free identifiers
+	MyFreeIds	:	ListOfInteger from TColStd;
+
+end GenId;

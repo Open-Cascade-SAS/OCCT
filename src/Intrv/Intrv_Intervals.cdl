@@ -1,0 +1,71 @@
+-- File:	Intervals.cdl
+-- Created:	Fri Dec 13 14:20:52 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+class Intervals from Intrv
+	---Purpose: The class  Intervals is a  sorted  sequence of non
+	--          overlapping  Real Intervals.
+
+uses
+    Integer            from Standard,
+    Interval           from Intrv,
+    SequenceOfInterval from Intrv
+
+raises
+    OutOfRange
+
+is
+    Create returns Intervals from Intrv;
+	---Purpose: Creates a void sequence of intervals.
+
+    Create(Int : Interval from Intrv) returns Intervals from Intrv;
+	---Purpose: Creates a sequence of one interval.
+	
+    Create(Int : Intervals from Intrv) returns Intervals from Intrv;
+	---Purpose: Creates   by   copying  an   existing  sequence of
+	--          intervals.
+	
+    Intersect(me : in out; Tool : Interval from Intrv)
+	---Purpose: Intersects the intervals with the interval <Tool>.
+    is static;
+
+    Intersect(me : in out; Tool : Intervals from Intrv)
+	---Purpose: Intersects the intervals with the intervals in the
+	--          sequence  <Tool>.
+    is static;
+
+    Subtract(me : in out; Tool : Interval from Intrv)
+    is static;
+
+    Subtract(me : in out; Tool : Intervals from Intrv)
+    is static;
+
+    Unite(me : in out; Tool : Interval from Intrv)
+    is static;
+
+    Unite(me : in out; Tool : Intervals from Intrv)
+    is static;
+
+    XUnite(me : in out; Tool : Interval from Intrv)
+    is static;
+
+    XUnite(me : in out; Tool : Intervals from Intrv)
+    is static;
+
+    NbIntervals(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    Value(me; Index : Integer from Standard) 
+    returns Interval from Intrv
+    	---C++: inline
+    	---C++: return const &
+    raises OutOfRange from Standard
+    is static;
+    
+fields
+    myInter : SequenceOfInterval from Intrv;
+
+end Intervals;

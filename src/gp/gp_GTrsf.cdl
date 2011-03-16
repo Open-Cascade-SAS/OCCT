@@ -1,0 +1,282 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class GTrsf   from gp   inherits Storable
+
+  --- Purpose :
+        --  Defines a non-persistent transformation in 3D space.
+        --  This transformation is a general transformation. 
+        --  It can be a Trsf from gp, an affinity, or you can define 
+        --  your own transformation giving the matrix of transformation.
+        -- 
+        --  With a Gtrsf you can transform only a triplet of coordinates
+        --  XYZ. It is not possible to transform other geometric objects
+        --  because these transformations can change the nature of non-
+        --  elementary geometric objects.
+        --  The transformation GTrsf can be represented as follow :
+        --  
+        --       V1   V2   V3    T       XYZ        XYZ
+        --    | a11  a12  a13   a14 |   | x |      | x'|
+        --    | a21  a22  a23   a24 |   | y |      | y'|
+        --    | a31  a32  a33   a34 |   | z |   =  | z'|
+        --    |  0    0    0     1  |   | 1 |      | 1 |
+        --
+        --    where {V1, V2, V3} define the vectorial part of the
+        --    transformation and T defines the translation part of the 
+        --    transformation.
+        --  Warning
+        -- A GTrsf transformation is only applicable to
+        -- coordinates. Be careful if you apply such a
+        -- transformation to all points of a geometric object, as
+        -- this can change the nature of the object and thus
+        -- render it incoherent!
+        -- Typically, a circle is transformed into an ellipse by an
+        -- affinity transformation. To avoid modifying the nature of
+        -- an object, use a gp_Trsf transformation instead, as
+        -- objects of this class respect the nature of geometric objects.
+uses  Ax1       from gp, 
+      Ax2       from gp,
+      Mat       from gp,
+      Trsf      from gp,
+      Vec       from gp,
+      XYZ       from gp,
+      TrsfForm  from gp
+  
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+
+is
+
+
+      
+
+  Create   returns GTrsf;
+        ---C++: inline
+        --- Purpose : Returns the Identity transformation.
+
+
+  Create (T : Trsf)  returns GTrsf;
+        ---C++: inline
+        --- Purpose : 
+        --  Converts the gp_Trsf transformation T into a
+        --   general transformation, i.e. Returns a GTrsf with
+        -- the same matrix of coefficients as the Trsf T.
+
+
+  Create (M : Mat; V : XYZ)   returns GTrsf;
+        ---C++: inline
+        --- Purpose :
+        --  Creates a transformation based on the matrix M and the
+        --    vector V where M defines the vectorial part of
+        --    the transformation, and V the translation part, or
+
+
+  SetAffinity (me : in out; A1 : Ax1; Ratio : Real)    is static;
+        ---C++: inline
+        --- Purpose : Changes this transformation into an affinity of ratio Ratio
+        -- with respect to the axis A1. 
+        --   Note: an affinity is a point-by-point transformation that
+        -- transforms any point P into a point P' such that if H is
+        -- the orthogonal projection of P on the axis A1 or the
+        -- plane A2, the vectors HP and HP' satisfy:
+        -- HP' = Ratio * HP.
+
+  SetAffinity (me : in out; A2 : Ax2; Ratio : Real)   is static;
+        ---C++: inline
+        --- Purpose : Changes this transformation into an affinity of ratio Ratio
+        -- with respect to  the plane defined by the origin, the "X Direction" and
+        --   the "Y Direction" of coordinate system A2.
+        --   Note: an affinity is a point-by-point transformation that
+        -- transforms any point P into a point P' such that if H is
+        -- the orthogonal projection of P on the axis A1 or the
+        -- plane A2, the vectors HP and HP' satisfy:
+        -- HP' = Ratio * HP.      
+
+  SetValue (me : in out; Row, Col : Integer; Value : Real)
+        ---C++: inline
+        --- Purpose : 
+        --  Replaces  the coefficient (Row, Col) of the matrix representing
+        -- this transformation by Value.  Raises OutOfRange
+        -- if  Row < 1 or Row > 3 or Col < 1 or Col > 4
+     raises OutOfRange
+
+     is static;
+
+
+  SetVectorialPart (me : in out; Matrix : Mat)     is static;
+        ---C++: inline
+        --- Purpose : Replaces the vectorial part of this transformation by Matrix.
+
+
+  SetTranslationPart (me : in out;  Coord : XYZ)    is static;
+        --- Purpose : Replaces the translation part of
+        -- this transformation by the coordinates of the number triple Coord.
+
+
+  SetTrsf (me : in out;  T : Trsf)    is static;
+        ---C++: inline
+        --- Purpose :  Assigns the vectorial and translation parts of T to this transformation.
+      
+  IsNegative (me)   returns Boolean   is static;
+        ---C++: inline
+        --- Purpose :
+        --   Returns true if the determinant of the vectorial part of
+        -- this transformation is negative.
+
+
+  IsSingular (me)   returns Boolean   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns true if this transformation is singular (and
+        -- therefore, cannot be inverted).
+        -- Note: The Gauss LU decomposition is used to invert the
+        -- transformation matrix. Consequently, the transformation
+        -- is considered as singular if the largest pivot found is less
+        -- than or equal to gp::Resolution().
+        -- Warning
+        -- If this transformation is singular, it cannot be inverted.
+
+  Form (me)   returns TrsfForm    is static;
+        --- Purpose :
+        --  Returns the nature of the transformation.  It can be an
+        -- identity transformation, a rotation, a translation, a mirror
+        -- transformation (relative to a point, an axis or a plane), a
+        -- scaling transformation, a compound transformation or
+        -- some other type of transformation.
+
+
+  SetForm (me:in out)  is static;
+        --- Purpose :
+    	--  verify and set the shape of the GTrsf Other or CompoundTrsf
+    	--  Ex :
+    	--  myGTrsf.SetValue(row1,col1,val1);
+    	--  myGTrsf.SetValue(row2,col2,val2);
+    	--  ...
+    	--  myGTrsf.SetForm();
+
+
+
+  TranslationPart (me)   returns XYZ   is static;
+        --- Purpose :  Returns the translation part of the GTrsf.
+    	---C++: inline
+    	---C++: return const&
+  
+
+  VectorialPart (me)   returns Mat   is static;
+        --- Purpose : 
+        --  Computes the vectorial part of the GTrsf. The returned Matrix 
+        --  is a  3*3 matrix.
+    	---C++: inline
+    	---C++: return const&
+
+
+  Value (me; Row, Col : Integer)   returns Real
+        --- Purpose :
+        --  Returns the coefficients of the global matrix of transformation. 	
+        -- Raises OutOfRange if Row < 1 or Row > 3 or Col < 1 or Col > 4
+    	---C++: inline
+    	---C++: alias operator()
+    	
+     raises OutOfRange
+   
+     is static;
+
+
+  Invert (me : in out)            raises ConstructionError  is static;
+
+  Inverted (me)   returns GTrsf   raises ConstructionError  is static;
+    	---C++: inline
+        --- Purpose :
+        --  Computes the reverse transformation.
+        --  Raises an exception if the matrix of the transformation
+        --  is not inversible.
+
+
+
+
+
+  Multiply (me : in out; T : GTrsf)          is static;
+
+        --- Purpose :
+        --  Computes the transformation composed from T and <me>.
+        --  In a C++ implementation you can also write Tcomposed = <me> * T.
+        --- Example :
+        --      GTrsf T1, T2, Tcomp; ...............
+        --      //composition :
+        --        Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
+        --      // transformation of a point
+        --        XYZ P(10.,3.,4.);
+        --        XYZ P1(P);
+        --        Tcomp.Transforms(P1);               //using Tcomp
+        --        XYZ P2(P);
+        --        T1.Transforms(P2);                  //using T1 then T2
+        --        T2.Transforms(P2);                  // P1 = P2 !!!
+        -- C++: alias operator *=
+
+
+
+  Multiplied (me; T : GTrsf)  returns GTrsf  is static;
+ 
+        --- Purpose :
+        --  Computes the transformation composed with <me> and T.
+        --  <me> = T * <me>
+    	---C++: inline
+        -- C++: alias operator *
+
+  PreMultiply (me : in out; T : GTrsf)  is static;
+
+        ---Purpose:
+        -- Computes the product of the transformation T and this
+        -- transformation and assigns the result to this transformation.
+        -- this = T * this
+
+
+
+  Power (me : in out; N : Integer) raises ConstructionError  is static;
+
+  Powered (me; N : Integer)  returns GTrsf  raises ConstructionError is static;
+    	---C++: inline
+
+
+        --- Purpose :
+        --  Computes:
+        --  -   the product of this transformation multiplied by itself
+        --   N times, if N is positive, or
+        -- -   the product of the inverse of this transformation
+        --   multiplied by itself |N| times, if N is negative.
+        --   If N equals zero, the result is equal to the Identity
+        --  transformation.
+        --  I.e.:  <me> * <me> * .......* <me>, N time.
+        --  if N =0 <me> = Identity
+        --  if N < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+        --
+        --  Raises an exception if N < 0 and if the matrix of the 
+        --  transformation not inversible.
+
+
+
+  
+  Transforms (me; Coord : in out XYZ)      is static;
+    	---C++: inline
+
+  Transforms (me; X, Y, Z : in out Real)   is static;
+    	---C++: inline
+        --- Purpose : Transforms a triplet XYZ with a GTrsf.
+  
+
+  Trsf (me)  returns Trsf   raises ConstructionError    is static;
+    	---C++: inline
+
+
+fields
+
+  matrix : Mat;
+  loc    : XYZ;
+  shape  : TrsfForm;
+  scale  : Real;
+ 
+end; 
+
+

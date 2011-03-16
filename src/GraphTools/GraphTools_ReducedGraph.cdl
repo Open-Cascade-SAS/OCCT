@@ -1,0 +1,244 @@
+-- File:	GraphTools_ReducedGraph.cdl
+-- Created:	Wed Jan  6 10:55:11 1993
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class ReducedGraph from GraphTools 
+             (Graph     as any;
+    	      Vertex    as any;
+	      VHasher   as any;
+	      VIterator as any;
+	      GIterator as any)
+
+--signature class ReducedGraph from GraphTools
+--              Graph     as any;
+--    	        Vertex    as any;
+--    	        VHasher   as MapHasher from TCollection (Vertex);
+--	        VIterator as VertexIterator (Graph,Vertex);
+--	        GIterator as GraphIterator  (Graph,Vertex))
+
+    ---Purpose: this generic class defines an  algorithm to  build and
+    --          visit the reduced graph of a given directed graph.
+    --          
+    --          A reduced  graph is  defined itself as  a graph  where
+    --          each  vertex  represents  a  strong  component.   Each
+    --          strong  component   is  a subset  of vertices   of the
+    --          underlying graph which  are  mutually dependant in the
+    --          way that there is always  a path  to  go from a  given
+    --          vertex to  another  vertex and back (Definition   of a
+    --          cycle)  .  Of course  the Reduced  Graph (or Condensed
+    --          Graph) is a DAG (Directed Acyclic Graph).
+    --          
+    --          After  initialisation conditions (methods FromXXX) the
+    --          user has  to build the  reduced graph using the method
+    --          Perfrom.  So each vertex of the underlying  graph will
+    --          be encapsulated in a strong component (class SC of the
+    --          package).   The algorithm may   be  reused  using  the
+    --          method Reset.
+    --          
+    --          nested iterators and  methods provides   services   to
+    --          visit the reduced graph:
+    --
+    --          * class SortedSCIterator  defines an iterator to visit
+    --          each  strong component.  This visit is  done according
+    --          to topologiacl  sort of the  reduced graph (which is a
+    --          DAG).
+    --          
+    --          *  class AdjSCIterator  defines an iterator   to visit
+    --          each adjacent StrongComponent of  a given one.
+    --	    
+    --	        * The methods NbVertices  and GetVertex of the reduced
+    --	        graph returned the number and each  vertex member of a
+    --	        strong   component. The method  GetSC  returned  for a
+    --	        given vertex its strong component.e
+    --	        
+    --  Warning: Noone method may be used on SC class. This class is only
+    --          here to identify a StrongComponent.
+
+uses  SC                   from GraphTools,
+      SCList               from GraphTools,
+      ListIteratorOfSCList from GraphTools,
+      StackOfInteger       from TColStd
+
+raises NoSuchObject from Standard,
+       NoMoreObject from Standard,
+       OutOfRange   from Standard 
+       
+    private class RGMap instantiates IndexedDataMap from TCollection
+                  (Vertex,
+                   RGNode from GraphTools,
+                   VHasher); 
+
+    class SortedSCIterator from GraphTools
+    
+    uses SC                   from GraphTools,
+         ListIteratorOfSCList from GraphTools
+    
+    raises NoMoreObject from Standard,
+           NoSuchObject from Standard
+	   
+    is
+    
+    	Create returns SortedSCIterator from GraphTools;
+    
+    	Create (RG : ReducedGraph from GraphTools) 
+    	returns SortedSCIterator from GraphTools;
+	
+	Initialize (me : in out; RG : ReducedGraph from GraphTools);
+	    ---Level: Public
+
+    	More (me) returns Boolean from Standard;
+	    ---Purpose: Returns True   if  there are   others   Strong
+	    --          Components.
+            ---Level: Public
+	
+	Next (me : in out) 
+        raises NoMoreObject from Standard;
+            ---Level: Public
+
+	Value (me) returns SC from GraphTools
+    	raises NoSuchObject from Standard;
+            ---Level: Public
+
+    fields
+    
+        myIterator : ListIteratorOfSCList;
+
+    end SortedSCIterator;
+
+
+    class AdjSCIterator from GraphTools
+
+    uses SC                   from GraphTools,
+         ListIteratorOfSCList from GraphTools
+	 
+    raises NoMoreObject from Standard,
+           NoSuchObject from Standard,
+	   OutOfRange   from Standard
+
+    is
+
+	Create returns AdjSCIterator from GraphTools;
+	
+    	Create (RG : ReducedGraph from GraphTools; 
+                SC : SC from GraphTools) 
+    	returns AdjSCIterator  from GraphTools;
+
+    	Initialize (me : in out; RG : ReducedGraph from GraphTools;
+	                         SC : SC from GraphTools);
+            ---Level: Public
+ 
+      	More (me) returns Boolean from Standard;
+            ---Level: Public
+	
+    	Next (me : in out)
+    	raises NoMoreObject from Standard;
+            ---Level: Public
+	
+    	Value (me) returns SC from GraphTools
+            ---Level: Public
+    	raises NoSuchObject from Standard;
+
+    fields
+
+        myIterator : ListIteratorOfSCList;
+	
+    end AdjSCIterator;
+
+is
+
+    Create 
+	---Purpose: Create       an empty algorithm
+    returns ReducedGraph from GraphTools;
+
+
+    Create (G : Graph)
+	---Purpose: Create the algorithm,  set   each  vertex  of  <G>
+	--          reached by GIterator, as  research conditions, and
+	--          perform the  algorithm.   User  may directly visit
+	--          (nested class   xxxIterator)   the result   of the
+	--          algorithm.
+    returns ReducedGraph from GraphTools;
+
+    FromGraph (me : in out; G : Graph);
+	---Purpose: Add each vertex of  <G> reached by  GIterator tool
+	--          as research  conditions.  User must  used  Perform
+	--          method before visiting the result of the algorithm.
+            ---Level: Public
+    
+    FromVertex (me : in out; V : Vertex);
+	---Purpose: Add <V>  as   research condition.  This  method is
+	--          cumulative.  User must used  Perform method before
+	--          visting the result of the algorithm.
+            ---Level: Public
+
+    Perform (me : in out; G : Graph);
+	---Purpose: Perform  the    algorithm  IN   <G> FROM  previous
+	--          initialisation condition(s).
+            ---Level: Public
+
+    Reset (me : in out);
+	---Purpose: Clear initialisation conditions. The algorithm may
+	--          be  initialized and   performed  again  from   new
+	--          conditions. In that case new nested SCIterator and
+	--          AdjSCIterator may be reinitialized.
+            ---Level: Public
+
+    IsRoot (me; SC : SC from GraphTools)
+    returns Boolean from Standard;
+            ---Level: Public
+    
+    IsLeaf (me; SC : SC from GraphTools)
+    returns Boolean from Standard;
+            ---Level: Public
+    
+    NbVertices (me; SC : SC from GraphTools) 
+        ---Purpose: returns number of vertices, members of <me>.    
+        ---Level: Public
+    returns Integer from Standard;
+
+    GetVertex (me; SC    : SC from GraphTools;
+                   index : Integer from Standard) 
+    returns any Vertex
+	---C++: return const&         
+        ---Level: Public
+    raises OutOfRange from Standard;
+
+    GetSC (me; V : Vertex)
+	---Purpose: Returns the SC which contains <V>.
+        ---Level: Public
+    returns SC from GraphTools;
+	
+    Visit (me : in out; k : Integer from Standard;
+                        G : Graph)
+            ---Level: Public
+    returns Integer from Standard 
+    is private;
+
+fields    
+
+-- conditions
+    myVertices  : RGMap  from GraphTools;
+-- algorithm    
+    performed   : Boolean from Standard;
+    myNowIndex  : Integer from Standard;
+    myStack     : StackOfInteger from TColStd;
+-- result
+    mySort      : SCList from GraphTools;
+
+friends
+
+    class SortedSCIterator from GraphTools
+
+end ReducedGraph;
+
+
+
+
+
+
+
+
+

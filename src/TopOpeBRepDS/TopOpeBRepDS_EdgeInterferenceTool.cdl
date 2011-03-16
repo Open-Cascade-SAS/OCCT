@@ -1,0 +1,50 @@
+-- File:	TopOpeBRepDS_EdgeInterferenceTool.cdl
+-- Created:	Tue Nov  8 14:47:14 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class EdgeInterferenceTool from TopOpeBRepDS 
+
+	---Purpose: a tool computing complex transition on Edge.
+
+uses
+
+    Orientation from TopAbs,
+    CurveTransition from TopTrans,
+    Interference from TopOpeBRepDS,
+    Point from TopOpeBRepDS,
+    Shape from TopoDS
+
+is
+
+    Create returns EdgeInterferenceTool from TopOpeBRepDS;
+    
+    Init(me : in out; 
+         E : Shape from TopoDS; 
+         I : Interference from TopOpeBRepDS)
+    is static;
+    
+    Add(me : in out; 
+        E : Shape from TopoDS;
+        V : Shape from TopoDS;
+        I : Interference from TopOpeBRepDS)
+    is static;
+    
+    Add(me : in out; 
+        E : Shape from TopoDS;
+	P : Point from TopOpeBRepDS;
+        I : Interference from TopOpeBRepDS)
+    is static;
+    
+    Transition(me; I : mutable Interference from TopOpeBRepDS)
+    is static;
+    
+fields
+    
+    myEdgeOrientation : Orientation from TopAbs;
+    myEdgeOriented    : Integer from Standard;
+    myTool            : CurveTransition from TopTrans;
+
+end EdgeInterferenceTool from TopOpeBRepDS;

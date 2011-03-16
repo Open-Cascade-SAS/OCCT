@@ -1,0 +1,99 @@
+-- File:	Interface_Protocol.cdl
+-- Created:	Tue Feb  2 11:35:43 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Protocol  from Interface  inherits TShared
+
+    ---Purpose : General description of Interface Protocols. A Protocol defines
+    --           a set of Entity types. This class provides also the notion of
+    --           Active Protocol, as a working context, defined once then
+    --           exploited by various Tools and Libraries.
+    --           
+    --           It also gives control of type definitions. By default, types
+    --           are provided by CDL, but specific implementations, or topics
+    --           like multi-typing, may involve another way
+
+uses InterfaceModel, Check, Graph
+
+raises InterfaceError
+
+is
+
+    	--  --    Management of Active Protocol    -- --
+
+    Active (myclass) returns Protocol;
+    ---Purpose : Returns the Active Protocol, if defined (else, returns a
+    --           Null Handle, which means "no defined active protocol")
+
+    SetActive (myclass; aprotocol : Protocol);
+    ---Purpose : Sets a given Protocol to be the Active one (for the users of
+    --           Active, see just above). Applies to every sub-type of Protocol
+
+    ClearActive (myclass);
+    ---Purpose : Erases the Active Protocol (hence it becomes undefined)
+
+    	-- --    General Definition (complies with Template)    -- --
+
+    NbResources (me) returns Integer  is deferred;
+    ---Purpose : Returns count of Protocol used as Resources (level one)
+
+    Resource (me; num : Integer) returns Protocol  is deferred;
+    ---Purpose : Returns a Resource, given its rank (between 1 and NbResources)
+
+    CaseNumber (me; obj : any Transient) returns Integer  is virtual;
+    ---Purpose : Returns a unique positive CaseNumber for each Recognized
+    --           Object. By default, recognition is based on Type(1)
+    --           By default, calls the following one which is deferred.
+
+    IsDynamicType (me; obj : any Transient) returns Boolean  is virtual;
+    ---Purpose : Returns True if type of <obj> is that defined from CDL
+    --           This is the default but it may change according implementation
+
+    NbTypes (me; obj : any Transient) returns Integer  is virtual;
+    ---Purpose : Returns the count of DISTINCT types under which an entity may
+    --           be processed. Each one is candidate to be recognized by
+    --           TypeNumber, <obj> is then processed according it
+    --           By default, returns 1 (the DynamicType)
+
+    Type    (me; obj : any Transient; nt : Integer = 1) returns Type;
+    ---Purpose : Returns a type under which <obj> can be recognized and
+    --           processed, according its rank in its definition list (see
+    --           NbTypes).
+    --           By default, returns DynamicType
+
+    TypeNumber (me; atype : any Type) returns Integer  is deferred;
+    ---Purpose : Returns a unique positive CaseNumber for each Recognized Type,
+    --           Returns Zero for "<type> not recognized"
+
+    GlobalCheck (me; G : Graph; ach : in out Check)
+    	returns Boolean  is virtual;
+    ---Purpose : Evaluates a Global Check for a model (with its Graph)
+    --           Returns True when done, False if data in model do not apply
+    --           
+    --           Very specific of each norm, i.e. of each protocol : the
+    --           uppest level Protocol assumes it, it can call GlobalCheck of
+    --           its ressources only if it is necessary
+    --           
+    --           Default does nothing, can be redefined
+
+    	-- --    General Services (defined at Norm level)    -- --
+
+    NewModel (me) returns mutable InterfaceModel  is deferred;
+    ---Purpose : Creates an empty Model of the considered Norm
+
+    IsSuitableModel (me; model : InterfaceModel)  returns Boolean  is deferred;
+    ---Purpose : Returns True if <model> is a Model of the considered Norm
+
+
+    UnknownEntity (me) returns mutable Transient  is deferred;
+    ---Purpose : Creates a new Unknown Entity for the considered Norm
+
+    IsUnknownEntity (me; ent : Transient) returns Boolean  is deferred;
+    ---Purpose : Returns True if <ent> is an Unknown Entity for the Norm, i.e.
+    --           same Type as them created by method UnknownEntity
+    --           (for an Entity out of the Norm, answer can be unpredicable)
+
+end Protocol;

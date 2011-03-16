@@ -1,0 +1,48 @@
+-- File:	CDF_StoreList.cdl
+-- Created:	Wed Mar 22 08:15:57 1995
+-- Author:	Jean-Louis  Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+private class StoreList from CDF inherits Transient from Standard
+
+uses  Document from CDM, StackOfDocument from CDM, MapOfDocument from CDM, MapIteratorOfMapOfDocument from CDM, StackIteratorOfStackOfDocument from CDM,MetaData from CDM, ExtendedString from TCollection, StoreStatus from CDF
+
+raises NoSuchObject from Standard
+is
+
+    Create(aDocument: Document from CDM)
+    returns mutable StoreList from CDF;
+    
+    IsConsistent(me) returns Boolean from Standard;
+
+    
+    Store(me: mutable; aMetaData: out MetaData from CDM;
+		       aStatusAssociatedText: out ExtendedString from TCollection)
+    returns StoreStatus from CDF
+    ---Purpose: stores each object of the storelist in the reverse
+    --          order of which they had been added.
+    raises NoSuchObject from Standard;
+    ---Warning: if the active dbunit cannot be found
+
+
+     ---Category: Private methods.
+
+
+    Add(me: mutable; aDocument: Document from CDM)
+    is private;
+
+ ---Category: iteration methods
+    Init(me: mutable);
+    More(me) returns Boolean from Standard;
+    Next(me: mutable);
+    Value(me) returns Document from CDM;
+    
+    
+fields
+
+    myItems: MapOfDocument from CDM;
+    myStack: StackOfDocument from CDM;
+    myIterator: MapIteratorOfMapOfDocument from CDM;
+    myMainDocument: Document from CDM;
+end StoreList from CDF;

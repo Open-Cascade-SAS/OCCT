@@ -1,0 +1,44 @@
+-- File:	IntImp.cdl
+-- Created:	Mon Apr 13 09:54:46 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+package IntImp
+
+	---Purpose: 
+
+uses Standard, TColStd, StdFail, math, gp, IntSurf
+
+is
+
+    enumeration ConstIsoparametric is
+                UIsoparametricOnCaro1, VIsoparametricOnCaro1,
+                UIsoparametricOnCaro2, VIsoparametricOnCaro2;
+		
+    deferred generic class PSurfaceTool;
+
+    deferred generic class ISurfaceTool;
+
+    deferred generic class CurveTool;
+
+    deferred generic class CSCurveTool;
+
+    deferred generic class COnSCurveTool;
+
+    generic class ZerImpFunc; -- inherits FunctionSetWithDerivatives
+    
+    generic class ZerParFunc; -- inherits FunctionSetWithDerivatives
+
+    deferred generic class CSFunction; -- inherits FunctionSetWithDerivatives
+
+    generic class ZerCSParFunc; -- inherits FunctionSetWithDerivatives
+    
+    generic class ZerCOnSSParFunc; -- inherits FunctionSetWithDerivatives
+    
+    generic class Int2S,TheFunction;
+    
+    generic class IntCS;
+
+end IntImp;

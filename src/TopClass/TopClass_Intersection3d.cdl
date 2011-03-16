@@ -1,0 +1,82 @@
+-- File:	TopClass_Intersection3d.cdl
+-- Created:	Wed Mar 30 14:37:00 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+
+deferred class Intersection3d from TopClass 
+    ---Purpose: Template class for the intersection algorithm required 
+    --          by the 3D classifications. 
+    --          
+    --          (a intersection point near the origin of the line, ie. 
+    --          at a distance less or equal than <tolerance>, will be 
+    --          returned even if it has a negative parameter.)
+    --          
+
+uses 
+    Lin               from gp,
+    Pnt               from gp,
+    Face              from TopoDS,
+    State             from TopAbs,
+    IntersectionPoint from IntCurveSurface
+    
+is
+
+    Initialize;
+    	---Purpose: Empty constructor.
+    	          
+    Perform(me: in out;  L    : Lin     from gp;
+    	                 Prm  : Real    from Standard;
+			 Tol  : Real    from Standard;
+			 Face : Face    from TopoDS) 
+	---Purpose: Perform the intersection between the 
+	--          segment L(0) ... L(Prm) and the Face <Face>.
+	--          
+	--          Only the point with the smallest parameter on the 
+	--          line is returned. 
+	--          
+	--          The Tolerance <Tol> is used to determine if the 
+	--          first point of the segment is near the face. In 
+	--          that case, the parameter of the intersection point 
+	--          on the line can be a negative value (greater than -Tol).
+    is deferred;
+    
+    
+    IsDone(me)  
+    	---Purpose: True is returned when the intersection have been computed.
+    returns Boolean from Standard
+    is deferred;
+    
+    
+    HasAPoint(me) 
+    	---Purpose: True is returned if a point has been found.
+    returns Boolean from Standard
+    is deferred;
+    
+	 
+    Point(me) 
+        ---Purpose: Returns the Intersection Point.
+        --
+        ---C++: return const & 
+    returns IntersectionPoint from IntCurveSurface
+    is deferred;
+
+     
+    State(me) 
+    	---Purpose: Returns the state of the point on the face.
+    	--          The values can be either TopAbs_IN 
+    	--             ( the point is in the face)
+    	--           or TopAbs_ON
+    	--             ( the point is on a boudary of the face).
+       
+    returns State from TopAbs
+    is deferred;
+    
+	---------------------- Loacl Geometry avec courbureS dans une 
+	--                     direction et la direction normale     
+end Intersection3d;
+

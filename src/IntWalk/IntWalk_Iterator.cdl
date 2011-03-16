@@ -1,0 +1,52 @@
+-- File:	Iterator.cdl
+-- Created:	Fri Mar  6 16:13:20 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Iterator from IntWalk (Point as any)
+                       
+
+	---Purpose: Template class to describe the exploration argument of the
+	--          generic class IWalking 
+
+
+raises OutOfRange from Standard
+
+is
+
+    Create
+    
+    	returns Iterator from IntWalk;
+
+
+    Length(me)
+    
+    	---Purpose: returns the dimension of the exploration
+
+    	returns Integer from Standard
+
+    	is static;
+
+
+    Value(me; Index : Integer)
+    
+    	---Purpose: returns the current point
+    	--          an exception is raised if i>NbPoints
+
+    	returns  Point
+
+    	raises OutOfRange from Standard
+
+    	is static;
+
+
+    Append(me: in out; P: Point)
+    
+	---Purpose: Adds a point in the iterator.
+    
+    	is static;
+	
+	
+end Iterator;

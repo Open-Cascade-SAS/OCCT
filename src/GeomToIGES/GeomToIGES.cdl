@@ -1,0 +1,26 @@
+-- File:	GeomToIGES.cdl
+-- Created:	Wed Nov 16 11:35:32 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+package GeomToIGES
+
+--- Purpose: Creation des entites geometriques de IGES
+--           a partir des entites de Geom .
+
+uses Interface, IGESData, IGESBasic, IGESConvGeom, IGESGeom, IGESSolid, IGESToBRep,
+     gp, Geom, Geom2d, GeomConvert, GeomLProp, TColStd, TopoDS, TopTools,
+     Transfer, TransferBRep,  BRep, TCollection, ElCLib
+
+is
+
+-- classes du package
+
+    class GeomCurve;
+    class GeomEntity;
+    class GeomPoint;
+    class GeomSurface;
+    class GeomVector;
+
+end GeomToIGES;

@@ -1,0 +1,50 @@
+-- File:	GeomInt.cdl
+-- Created:	Fri Jan 27 10:21:27 1995
+-- Author:	Jacques GOUSSARD
+---Copyright:	 Matra Datavision 1995
+
+
+package GeomInt
+
+	---Purpose: Provides intersections on between two surfaces of Geom.
+	--          The result are curves from Geom.
+
+
+uses StdFail,
+     TCollection,
+     TColStd,
+     TopAbs,
+     
+     gp,
+     Geom,
+     Geom2d,
+     TColGeom,
+     TColGeom2d,     
+     Adaptor3d,
+     GeomAdaptor,
+
+     IntSurf,
+     IntPatch,
+     ApproxInt
+
+is
+
+    class IntSS;
+
+    class LineConstructor;
+
+    class LineTool;
+
+    class WLApprox instantiates Approx from ApproxInt
+    	(HSurface     from Adaptor3d,
+	 HSurfaceTool from Adaptor3d,
+	 Quadric      from IntSurf,
+	 QuadricTool  from IntSurf,
+	 WLine        from IntPatch);
+
+    private class ParameterAndOrientation;
+
+    private class SequenceOfParameterAndOrientation instantiates
+    	Sequence from TCollection(ParameterAndOrientation);
+
+end GeomInt;

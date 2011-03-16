@@ -1,0 +1,23 @@
+-- File:	TShell1.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+class TShell1 from PTopoDS inherits TShape1 from PTopoDS
+
+	---Purpose: A topological  Shell1 shape.
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TShell1 from PTopoDS;
+    	---Level: Internal 
+    	
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    	---Level: Internal 
+
+end TShell1;

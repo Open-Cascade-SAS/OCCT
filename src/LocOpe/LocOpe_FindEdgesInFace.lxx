@@ -1,0 +1,69 @@
+// File:	LocOpe_FindEdgesInFace.lxx
+// Created:	Thu Feb 15 09:35:59 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+#include <TopoDS.hxx>
+
+//=======================================================================
+//function : LocOpe_FindEdgesInFace
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace()
+{}
+
+//=======================================================================
+//function : LocOpe_FindEdgesInFace
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_FindEdgesInFace::LocOpe_FindEdgesInFace(const TopoDS_Shape& S,
+						      const TopoDS_Face& F)
+{
+  Set(S,F);
+}
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void LocOpe_FindEdgesInFace::Init ()
+{
+  myIt.Initialize(myList);
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_FindEdgesInFace::More() const
+{
+  return myIt.More();
+}
+
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Edge& LocOpe_FindEdgesInFace::Edge() const
+{
+  return TopoDS::Edge(myIt.Value());
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void LocOpe_FindEdgesInFace::Next()
+{
+  myIt.Next();
+}

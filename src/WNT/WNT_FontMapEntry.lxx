@@ -1,0 +1,40 @@
+inline Quantity_PlaneAngle WNT_FontMapEntry :: SetSlant (
+                                                const Quantity_PlaneAngle aSlant
+                                               ) {
+ Quantity_PlaneAngle tmp = mySlant;
+ 
+ mySlant = aSlant;
+
+ return tmp;
+
+}  // end WNT_FontMapEntry :: SetSlant
+
+inline Quantity_Factor WNT_FontMapEntry :: SetScale (
+                                            const Quantity_Factor aScale
+                                           ) {
+
+ Quantity_Factor tmp = myScale;
+ 
+ myScale = aScale;
+
+ return tmp;
+
+}  // end WNT_FontMapEntry :: SetScale
+
+inline Quantity_PlaneAngle WNT_FontMapEntry :: Slant () const {
+
+ return mySlant;
+
+}  // end WNT_FontMapEntry :: Slant
+
+inline Quantity_Factor WNT_FontMapEntry :: Scale () const {
+
+ return myScale;
+
+}  // end WNT_FontMapEntry :: Scale
+
+inline Standard_Address WNT_FontMapEntry :: LogFont () const {
+
+ return ( void* )&myLogFont;
+
+}  // end WNT_FontMapEntry :: LogFont

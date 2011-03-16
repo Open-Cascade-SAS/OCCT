@@ -1,0 +1,359 @@
+-- File:	Circ2d3Tan.cdl
+-- Created:	Mon Mar 18 16:35:25 1991
+-- Author:	Remy GILET
+--		<Reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class Circ2d3Tan
+
+from GccAna
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles tangent to 3 points/lines/circles.
+	--          The arguments of all construction methods are :
+	--             - The three qualified elements for the 
+	--             tangency constraints (QualifiedCirc, QualifiedLine,
+	--             Points).
+	--             - A real Tolerance.
+	--          Tolerance is only used in the limit cases.
+    	--          For example : 
+    	--          We want to create a circle tangent to an UnqualifiedCirc 
+    	--          C1 and an UnqualifiedCirc C2 and an UnqualifiedCirc C3 
+    	--          with a tolerance Tolerance.
+    	--          If we do not use Tolerance it is impossible to find
+    	--          a solution in the following case : C2 is inside C1
+    	--          and there is no intersection point between the two
+    	--          circles, and C3 is completly outside C1.
+    	--          With Tolerance we will find a solution if the 
+    	--          lowest distance between C1 and C2 is lower than or 
+    	--          equal Tolerance.
+
+
+uses Pnt2d           from gp,
+     Circ2d          from gp,
+     QualifiedCirc   from GccEnt,
+     QualifiedLin    from GccEnt,
+     Array1OfReal    from TColStd,
+     Array1OfInteger from TColStd,
+     Array1OfCirc2d  from TColgp,
+     Array1OfPnt2d   from TColgp,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt
+
+raises OutOfRange        from Standard,
+       NotDone           from StdFail,
+       BadQualifier      from GccEnt
+
+is
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Qualified2 : QualifiedCirc from GccEnt  ;
+       Qualified3 : QualifiedCirc from GccEnt  ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 3 circles.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Qualified2 : QualifiedCirc from GccEnt  ;
+       Qualified3 : QualifiedLin  from GccEnt  ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 circles and 1 line.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Qualified2 : QualifiedLin  from GccEnt  ;
+       Qualified3 : QualifiedLin  from GccEnt  ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 1 circle and 2 lines.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedLin  from GccEnt  ;
+       Qualified2 : QualifiedLin  from GccEnt  ;
+       Qualified3 : QualifiedLin  from GccEnt  ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 3 lines.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Qualified2 : QualifiedCirc from GccEnt  ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 circles and 1 Point.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Qualified2 : QualifiedLin  from GccEnt  ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a circle and a line and 
+	--          1 Point.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedLin  from GccEnt  ;
+       Qualified2 : QualifiedLin  from GccEnt  ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 lines and 1 Point.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedCirc from GccEnt  ;
+       Point2     : Pnt2d         from gp      ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a circle and passing 
+	--          thrue 2 Points.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Qualified1 : QualifiedLin  from GccEnt  ;
+       Point2     : Pnt2d         from gp      ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a line and passing 
+	--          thrue 2 Points.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+raises BadQualifier from GccEnt;
+
+Create(Point1     : Pnt2d         from gp      ;
+       Point2     : Pnt2d         from gp      ;
+       Point3     : Pnt2d         from gp      ;
+       Tolerance  : Real          from Standard) returns Circ2d3Tan;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles passing thrue 3 Points.
+	--          ConstructionError is raised if there is a problem during
+	--          the computation.
+
+-- -- ....................................................................
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: This method returns True if the construction 
+    	--          algorithm succeeded.
+    	-- Note: IsDone protects against a failure arising from a
+    	-- more internal intersection algorithm, which has
+    	-- reached its numeric limits.
+    
+NbSolutions(me) returns Integer from Standard
+    	---Purpose: This method returns the number of solutions. 
+    	--    Raises NotDone if the construction algorithm didn't succeed.
+raises NotDone
+is static;
+    	
+
+ThisSolution(me ; Index : Integer from Standard) returns Circ2d from gp
+        ---Purpose: Returns the solution number Index and raises OutOfRange 
+        --   	    exception if Index is greater than the number of 
+        --   	    solutions.
+        --          Be careful: the Index is only a way to get all the 
+        --          solutions, but is not associated to those outside the 
+        --          context of the algorithm-object.
+    	--    Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+       
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  ;
+	       Qualif2 : out Position from GccEnt  ;
+	       Qualif3 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns the informations about the qualifiers of the 
+    	--          tangency 
+    	--          arguments concerning the solution number Index.
+    	--          It returns the real qualifiers (the qualifiers given to the 
+    	--          constructor method in case of enclosed, enclosing and outside 
+    	--          and the qualifiers computedin case of unqualified).
+
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+        ---Purpose: Returns informations about the tangency point between the 
+    	--          result number Index and the first argument.
+    	--          ParSol is the intrinsic parameter of the point PntSol 
+    	--          on the solution curv.
+    	--          ParArg is the intrinsic parameter of the point PntArg 
+    	--          on the argument curv. Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+
+raises OutOfRange, NotDone
+is static;
+       
+
+Tangency2(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+        ---Purpose: Returns informations about the tangency point between the 
+    	--          result number Index and the first argument.
+    	--          ParSol is the intrinsic parameter of the point PntSol 
+    	--          on the solution curv.
+    	--          ParArg is the intrinsic parameter of the point Pntsol 
+    	--          on the argument curv. Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+      
+
+Tangency3(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol        : out Real  from Standard;
+          ParArg        : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+        ---Purpose: Returns informations about the tangency point between the 
+    	--          result number Index and the first argument.
+    	--          ParSol is the intrinsic parameter of the point PntSol 
+    	--          on the solution curv.
+    	--          ParArg is the intrinsic parameter of the point Pntsol 
+    	--          on the argument curv. Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+       
+
+IsTheSame1(me                           ;
+           Index : Integer from Standard) returns Boolean from Standard
+    	---Purpose: Returns True if the solution number Index is equal to 
+    	--          the first argument. Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+        
+
+IsTheSame2(me                           ;
+           Index : Integer from Standard) returns Boolean from Standard
+    	---Purpose: Returns True if the solution number Index is equal to 
+    	--          the second argument. Raises OutOfRange Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+       
+
+IsTheSame3(me                           ;
+           Index : Integer from Standard) returns Boolean from Standard
+    	---Purpose: Returns True if the solution number Index is equal to 
+    	--          the third argument. Raises OutOfRange if Index is greater than 
+        --          the number of solutions.
+        --          It raises NotDone if the algorithm failed.
+raises OutOfRange, NotDone
+is static;
+       
+
+fields
+
+    WellDone : Boolean from Standard;
+    ---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    ---Purpose: The number of solutions found.
+
+    cirsol   : Array1OfCirc2d from TColgp;
+    -- The solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    ---Purpose: The qualifiers of the first argument.
+
+    qualifier2 : Array1OfPosition from GccEnt ;
+    ---Purpose: The qualifiers of the second argument.
+
+    qualifier3 : Array1OfPosition from GccEnt;
+    ---Purpose: The qualifiers of the third argument.
+
+    TheSame1 : Array1OfInteger from TColStd;
+    ---Purpose: 1 if the solution and the first argument are the same 
+    --          (2 circles).
+    --          If R1 is the radius of the first argument and Rsol the radius 
+    --          of the solution and dist the distance between the two centers,
+    --          we consider the two circles are identical if R1+dist-Rsol is 
+    --          less than Tolerance.
+    --          0 in the other cases.
+
+    TheSame2 : Array1OfInteger from TColStd;
+    ---Purpose: 1 if the solution and the second argument are the same 
+    --          (2 circles).
+    --          If R2 is the radius of the second argument and Rsol the radius 
+    --          of the solution and dist the distance between the two centers,
+    --          we consider the two circles are identical if R2+dist-Rsol is 
+    --          less than Tolerance.
+    --          0 in the other cases.
+
+    TheSame3 : Array1OfInteger from TColStd;
+    ---Purpose: 1 if the solution and the third argument are the same 
+    --          (2 circles).
+    --          If R3 is the radius of the third argument and Rsol the radius 
+    --          of the solution and dist the distance between the two centers,
+    --          we consider the two circles are identical if R3+dist-Rsol is 
+    --          less than Tolerance.
+    --          0 in the other cases.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    ---Purpose: The tangency point between the solution and the first 
+    --          argument.
+
+    pnttg2sol   : Array1OfPnt2d from TColgp;
+    ---Purpose: The tangency point between the solution and the second 
+    --          argument.
+
+    pnttg3sol   : Array1OfPnt2d from TColgp;
+    ---Purpose: The tangency point between the solution and the third
+    --          argument.
+
+    par1sol   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution
+    --          and the first argument on the solution.
+
+    par2sol   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the second argument on the solution.
+
+    par3sol   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the third argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the first argument on the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the second argument on the second argument.
+
+    pararg3   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the third argument on the second argument.
+
+end Circ2d3Tan;

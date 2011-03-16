@@ -1,0 +1,257 @@
+-- File:	Extrema.cdl
+-- Created:	Tue Feb 26 15:01:07 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+package Extrema 
+    ---Purpose: This package calculates the distances between
+    --          points, curves and surfaces.
+    --          In general case, the algorithm to find the 
+    --          distances is a minimization algorithm of a function
+    --          of variables: F(X). It is stopped when:
+    --            for X1=X+Dx, F(X) and F(X1) are the same.
+    --          The value of Dx can be calculated for all the 
+    --          algorithms.
+
+    ---Level : Public. 
+    --  All methods of all  classes will be public.
+
+
+uses
+    gp,
+    math,
+    TColStd,
+    TColgp,
+    StdFail,
+    Standard,
+    TCollection,
+    GeomAbs,
+    Adaptor3d,
+    Adaptor2d,
+    Geom,
+    Geom2d
+
+is
+
+    class CurveTool;
+    class Curve2dTool;
+
+    generic class Point;
+    class POnSurf;
+
+    generic class ExtPSOfRev;
+    
+    -----------------------------------
+    -- Treatement of elementary curves 
+    -- 	and surfaces extremas:
+    -----------------------------------
+    class ExtPElC;
+    class ExtPElC2d;
+    class ExtPElS;
+    class ExtPExtS;
+    class ExtPRevS;
+    class ExtElC;
+    class ExtElC2d;
+
+    class ExtElCS;
+    class ExtElSS;
+    
+    -----------------------------------------------
+    --  generic classes for  POINT-CURVE  extremas:
+    -----------------------------------------------
+    private generic class FuncExtPC, SeqPC;
+    generic class GenExtPC, PCF;
+    generic class GenLocateExtPC, PCLocF;
+
+    -------------------------------------------------
+    --  classes for  POINT-SURFACE  extremas:
+    -------------------------------------------------
+    private class FuncExtPS;
+    class GenExtPS;
+    class GenLocateExtPS; 
+    
+    ----------------------------------------------
+    --  generic classes for  CURVE-CURVE extremas:
+    ----------------------------------------------
+    private generic class FuncExtCC, SeqPOnC;
+    generic class GenExtCC, CCF;
+    generic class GenLocateExtCC, CCLocF;
+    generic class CurveCache;
+    
+    
+    ----------------------------------------------
+    --  classes for  CURVE-SURFACE extremas:
+    ----------------------------------------------
+    private class FuncExtCS;
+    class GenExtCS;    
+    class GenLocateExtCS;
+    
+    ----------------------------------------------
+    --  classes for  SURFACE-SURFACE extremas:
+    ----------------------------------------------
+    private class FuncExtSS;
+    class GenExtSS;
+    class GenLocateExtSS;
+    
+    --------------------------------------------------
+    -- the following classes switches the curve or 
+    -- surface types for approximate elementary curves.
+    -- the tools are the tools from Adaptor3d.
+    --------------------------------------------------
+    --  Point-Curve:                                  
+    generic class GExtPC, EPC;
+    generic class GLocateExtPC, ELPC, LocEPC;
+    
+    --  Point-Surface:                                  
+    class ExtPS;
+    
+    --  Curve-Curve:                                  
+    --  3d:
+    generic class GExtCC, CCache, ECC;
+    generic class GLocateExtCC, LCCache, ELCC, LocECC;
+    -- 2d:
+    generic class GExtCC2d, CCache2d, ECC2d;
+    generic class GLocateExtCC2d, LCCache2d, ELCC2d, LocECC2d;
+    
+    --  Curve-Surface:                                  
+    class ExtCS;
+
+    --  Surface-Surface:                                  
+    class ExtSS;
+
+
+    -----------------------------------------------
+    -- the following class is used to locate
+    -- a first evaluation of the possible extremas. 
+    -----------------------------------------------
+    generic class CurveLocator;
+      
+      
+    --------------------------------------
+    --- instantiations of generic classes:
+    --------------------------------------
+    class POnCurv instantiates Point from Extrema(Pnt from gp);
+    class POnCurv2d instantiates Point from Extrema(Pnt2d from gp);
+    
+    class Array1OfPOnCurv     instantiates 
+    	Array1 from TCollection(POnCurv);
+	
+    class Array2OfPOnCurv     instantiates 
+    	Array2 from TCollection(POnCurv);
+	
+    class Array1OfPOnCurv2d   instantiates 
+    	Array1 from TCollection(POnCurv2d);
+	
+    class Array2OfPOnCurv2d   instantiates 
+    	Array2 from TCollection(POnCurv2d);
+	
+    class Array1OfPOnSurf     instantiates 
+    	Array1 from TCollection(POnSurf);
+	
+    class Array2OfPOnSurf     instantiates 
+    	Array2 from TCollection(POnSurf);
+	
+
+    class HArray1OfPOnCurv    instantiates 
+    	HArray1 from TCollection(POnCurv, Array1OfPOnCurv);
+	
+    class HArray2OfPOnCurv    instantiates 
+    	HArray2 from TCollection(POnCurv, Array2OfPOnCurv);
+	
+    class HArray1OfPOnCurv2d  instantiates 
+    	HArray1 from TCollection(POnCurv2d,Array1OfPOnCurv2d);
+	
+    class HArray2OfPOnCurv2d  instantiates 
+    	HArray2 from TCollection(POnCurv2d,Array2OfPOnCurv2d);
+	
+    
+    class HArray1OfPOnSurf    instantiates 
+    	HArray1 from TCollection(POnSurf, Array1OfPOnSurf);
+	
+    class HArray2OfPOnSurf    instantiates 
+    	HArray2 from TCollection(POnSurf, Array2OfPOnSurf);
+	
+
+    class SequenceOfPOnCurv   instantiates 
+    	Sequence from TCollection(POnCurv);
+	
+    class SequenceOfPOnCurv2d instantiates 
+    	Sequence from TCollection(POnCurv2d);
+	
+    class SequenceOfPOnSurf   instantiates 
+    	Sequence from TCollection(POnSurf);
+	
+
+
+         --- 3d instantiations:
+    class ExtPC instantiates GExtPC from Extrema
+    	(Curve             from Adaptor3d,
+    	 CurveTool         from Extrema,
+	 ExtPElC           from Extrema,
+	 Pnt               from gp,
+    	 Vec               from gp,
+    	 POnCurv           from Extrema,
+    	 SequenceOfPOnCurv from Extrema);
+	 
+	     
+    class LocateExtPC instantiates GLocateExtPC from Extrema
+    	(Curve             from Adaptor3d,
+    	 CurveTool         from Extrema,
+    	 ExtPElC           from Extrema,
+    	 Pnt               from gp,
+    	 Vec               from gp,
+    	 POnCurv           from Extrema,
+    	 SequenceOfPOnCurv from Extrema);
+  
+
+    class ExtCC instantiates GExtCC from Extrema
+    	(Curve             from Adaptor3d, 
+    	 CurveTool         from Extrema,
+    	 Curve             from Adaptor3d, 
+    	 CurveTool         from Extrema);
+
+    class LocateExtCC instantiates GLocateExtCC from Extrema
+    	(Curve             from Adaptor3d, 
+    	 CurveTool         from Extrema,
+    	 Curve             from Adaptor3d, 
+    	 CurveTool         from Extrema);
+
+
+         --- 2d instantiations:
+    class ExtPC2d instantiates GExtPC from Extrema
+    	(Curve2d             from Adaptor2d,
+    	 Curve2dTool         from Extrema,
+	 ExtPElC2d           from Extrema,
+	 Pnt2d               from gp,
+    	 Vec2d               from gp,
+    	 POnCurv2d           from Extrema,
+    	 SequenceOfPOnCurv2d from Extrema);
+	 
+	 
+    class LocateExtPC2d instantiates GLocateExtPC from Extrema
+    	(Curve2d             from Adaptor2d,
+    	 Curve2dTool         from Extrema,
+    	 ExtPElC2d           from Extrema,
+    	 Pnt2d               from gp,
+    	 Vec2d               from gp,
+    	 POnCurv2d           from Extrema,
+    	 SequenceOfPOnCurv2d from Extrema);
+  
+
+    class ExtCC2d instantiates GExtCC2d from Extrema
+    	(Curve2d             from Adaptor2d, 
+    	 Curve2dTool         from Extrema,
+    	 Curve2d             from Adaptor2d, 
+    	 Curve2dTool         from Extrema);
+
+    class LocateExtCC2d instantiates GLocateExtCC2d from Extrema
+    	(Curve2d             from Adaptor2d, 
+    	 Curve2dTool         from Extrema,
+    	 Curve2d             from Adaptor2d, 
+    	 Curve2dTool         from Extrema);
+
+
+
+
+end Extrema;

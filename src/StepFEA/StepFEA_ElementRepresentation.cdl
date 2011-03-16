@@ -1,0 +1,36 @@
+-- File:	StepFEA_ElementRepresentation.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ElementRepresentation from StepFEA
+inherits Representation from StepRepr
+
+    ---Purpose: Representation of STEP entity ElementRepresentation
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr,
+    HArray1OfNodeRepresentation from StepFEA
+
+is
+    Create returns ElementRepresentation from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentation_Name: HAsciiString from TCollection;
+                       aRepresentation_Items: HArray1OfRepresentationItem from StepRepr;
+                       aRepresentation_ContextOfItems: RepresentationContext from StepRepr;
+                       aNodeList: HArray1OfNodeRepresentation from StepFEA);
+	---Purpose: Initialize all fields (own and inherited)
+
+    NodeList (me) returns HArray1OfNodeRepresentation from StepFEA;
+	---Purpose: Returns field NodeList
+    SetNodeList (me: mutable; NodeList: HArray1OfNodeRepresentation from StepFEA);
+	---Purpose: Set field NodeList
+
+fields
+    theNodeList: HArray1OfNodeRepresentation from StepFEA;
+
+end ElementRepresentation;

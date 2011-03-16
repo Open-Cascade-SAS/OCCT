@@ -1,0 +1,59 @@
+-- File:	IntPolyh_ArrayOfStartPoints.cdl
+-- Created:	Tue Apr  6 11:05:48 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ArrayOfStartPoints from IntPolyh
+
+uses
+    
+    StartPoint from IntPolyh
+
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &
+    returns StartPoint from IntPolyh    
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns StartPoint from IntPolyh    
+    is static;
+    
+    Copy(me: in out; Other : ArrayOfStartPoints from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns ArrayOfStartPoints from IntPolyh
+    is static;
+    
+    NbPoints(me)
+    returns Integer from Standard
+    is static;
+    
+    Destroy(me: in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+     	
+fields
+
+    n : Integer from Standard;
+    ptr :Address from Standard;
+    
+end ArrayOfStartPoints from IntPolyh;

@@ -1,0 +1,495 @@
+#include <Hatch_Hatcher.hxx>
+#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_Group.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <GCPnts_UniformDeflection.hxx>
+#include <Adaptor3d_IsoCurve.hxx>
+
+#ifdef DEBUG
+#include <OSD_Timer.hxx>
+extern OSD_Timer RestrictedFaceTimer1,RestrictedFaceTimer2,RestrictedFaceTimer3,RestrictedFaceTimer4;
+#endif
+
+
+
+//=========================================================================
+// function: Add
+// purpose
+//=========================================================================
+void Prs3d_WFDeflectionRestrictedFace::Add
+  (const Handle (Prs3d_Presentation)& aPresentation,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Standard_Boolean DrawUIso,
+   const Standard_Boolean DrawVIso,
+   const Quantity_Length Deflection,
+   const Standard_Integer NBUiso,
+   const Standard_Integer NBViso,
+   const Handle(Prs3d_Drawer)& aDrawer,
+   Prs3d_NListOfSequenceOfPnt& Curves) 
+{
+
+#ifdef DEBUG
+  RestrictedFaceTimer1.Start();
+#endif
+
+  RestrictionTool ToolRst (aFace);
+  Standard_Real aLimit = aDrawer->MaximalParameterValue();
+
+  // compute bounds of the restriction
+  Standard_Real UMin,UMax,VMin,VMax;
+  Standard_Real u,v,step;
+  Standard_Integer i,nbPoints = 10;
+  UMin = VMin = RealLast();
+  UMax = VMax = RealFirst();
+  gp_Pnt2d P;
+
+  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
+    Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+    u = TheRCurve->FirstParameter();
+    v = TheRCurve->LastParameter();
+    if (TheRCurve->GetType() != GeomAbs_Line) {
+      step = ( v - u) / nbPoints;
+      for (i = 0; i <= nbPoints; i++) {
+	TheRCurve->D0(u, P);
+	if (P.X() < UMin) UMin = P.X();
+	if (P.X() > UMax) UMax = P.X();
+	if (P.Y() < VMin) VMin = P.Y();
+	if (P.Y() > VMax) VMax = P.Y();
+	u += step;
+      }
+    }
+    else {
+      TheRCurve->D0(u, P);
+      if (P.X() < UMin) UMin = P.X();
+      if (P.X() > UMax) UMax = P.X();
+      if (P.Y() < VMin) VMin = P.Y();
+      if (P.Y() > VMax) VMax = P.Y();
+
+      TheRCurve->D0(v, P);
+      if (P.X() < UMin) UMin = P.X();
+      if (P.X() > UMax) UMax = P.X();
+      if (P.Y() < VMin) VMin = P.Y();
+      if (P.Y() > VMax) VMax = P.Y();
+    }
+  }
+
+#ifdef DEBUG
+  RestrictedFaceTimer1.Stop();
+
+  RestrictedFaceTimer2.Start();
+#endif
+
+  // load the isos
+  Hatch_Hatcher isobuild(1.e-5,ToolRst.IsOriented());
+  Standard_Boolean UClosed = aFace->IsUClosed();
+  Standard_Boolean VClosed = aFace->IsVClosed();
+
+  if ( ! UClosed ) {
+    UMin = UMin + ( UMax - UMin) /1000.;
+    UMax = UMax - ( UMax - UMin) /1000.; 
+  }
+
+  if ( ! VClosed ) {
+    VMin = VMin + ( VMax - VMin) /1000.;
+    VMax = VMax - ( VMax - VMin) /1000.; 
+  }
+
+  if (DrawUIso){
+    if (NBUiso > 0) {
+      UClosed = Standard_False; // En attendant un hatcher de course.
+      Standard_Real du= UClosed ? (UMax-UMin)/NBUiso : (UMax-UMin)/(1+NBUiso);
+      for (i=1; i<=NBUiso;i++){
+	isobuild.AddXLine(UMin+du*i);
+      }
+    }
+  }
+  if (DrawVIso){
+    if ( NBViso > 0) {
+      VClosed = Standard_False;
+      Standard_Real dv= VClosed ?(VMax-VMin)/NBViso : (VMax-VMin)/(1+NBViso);
+      for (i=1; i<=NBViso;i++){
+	isobuild.AddYLine(VMin+dv*i);
+      }
+    }
+  }
+
+#ifdef DEBUG
+  RestrictedFaceTimer2.Stop();
+  RestrictedFaceTimer3.Start();
+#endif
+
+  // trim the isos
+  gp_Pnt2d P1,P2;
+  Standard_Real U1, U2;
+  gp_Pnt dummypnt;
+  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
+    TopAbs_Orientation Orient = ToolRst.Orientation();
+    if ( Orient == TopAbs_FORWARD || Orient == TopAbs_REVERSED ) {
+      Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+      if (TheRCurve->GetType() != GeomAbs_Line) {
+        GCPnts_UniformDeflection UDP(*TheRCurve, Deflection, Standard_False);
+	if (UDP.IsDone()) {
+	  Standard_Integer NumberOfPoints = UDP.NbPoints();
+	  if ( NumberOfPoints >= 2 ) {
+	    dummypnt = UDP.Value(1);
+	    P2.SetCoord(dummypnt.X(), dummypnt.Y());
+	    for (i = 2; i <= NumberOfPoints; i++) {
+	      P1 = P2;
+	      dummypnt = UDP.Value(i);
+	      P2.SetCoord(dummypnt.X(), dummypnt.Y());
+	      if(Orient == TopAbs_FORWARD )
+		isobuild.Trim(P1,P2);
+	      else
+		isobuild.Trim(P2,P1);
+	    }
+	  }
+	}
+	else {
+	  cout << "Cannot evaluate curve on surface"<<endl;
+	}
+      }
+      else {
+	U1 = TheRCurve->FirstParameter();
+	U2 = TheRCurve->LastParameter();
+	P1 = TheRCurve->Value(U1);
+	P2 = TheRCurve->Value(U2);
+	if(Orient == TopAbs_FORWARD )
+	  isobuild.Trim(P1,P2);
+	else
+	  isobuild.Trim(P2,P1);
+      }
+    }
+  }
+
+#ifdef DEBUG  
+  RestrictedFaceTimer3.Stop();
+  RestrictedFaceTimer4.Start();
+#endif
+
+  // draw the isos
+
+  Adaptor3d_IsoCurve anIso;
+  anIso.Load(aFace);
+  Standard_Integer NumberOfLines = isobuild.NbLines();
+
+  for (i = 1; i <= NumberOfLines; i++) {
+    Standard_Integer NumberOfIntervals = isobuild.NbIntervals(i);
+    Standard_Real Coord = isobuild.Coordinate(i);
+    for (Standard_Integer j = 1; j <= NumberOfIntervals; j++) {
+      Standard_Real b1=isobuild.Start(i,j),b2=isobuild.End(i,j);
+
+      b1 = b1 == RealFirst() ? - aLimit : b1;
+      b2 = b2 == RealLast()  ?   aLimit : b2;
+
+      if (isobuild.IsXLine(i))
+	anIso.Load(GeomAbs_IsoU,Coord,b1,b2);
+      else
+	anIso.Load(GeomAbs_IsoV,Coord,b1,b2);
+
+      DrawFaceIso::Add(aPresentation,anIso,Deflection, aLimit);
+    }
+  }
+#ifdef DEBUG
+  RestrictedFaceTimer4.Stop();
+#endif
+
+}
+
+
+//=========================================================================
+// function: Match
+// purpose
+//=========================================================================
+Standard_Boolean Prs3d_WFDeflectionRestrictedFace::Match
+  (const Quantity_Length X,
+   const Quantity_Length Y,
+   const Quantity_Length Z,
+   const Quantity_Length aDistance,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(Prs3d_Drawer)& aDrawer,
+   const Standard_Boolean DrawUIso,
+   const Standard_Boolean DrawVIso,
+   const Quantity_Length Deflection,
+   const Standard_Integer NBUiso,
+   const Standard_Integer NBViso)
+{
+
+   RestrictionTool ToolRst (aFace);
+   const Standard_Real aLimit = aDrawer->MaximalParameterValue();
+
+  // compute bounds of the restriction
+  Standard_Real UMin,UMax,VMin,VMax;
+  Standard_Real u,v,step;
+  Standard_Integer i,nbPoints = 10;
+  UMin = VMin = RealLast();
+  UMax = VMax = RealFirst();
+  
+  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
+    Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+    u = TheRCurve->FirstParameter();
+    v = TheRCurve->LastParameter();
+    step = ( v - u) / nbPoints;
+    for (i = 0; i <= nbPoints; i++) {
+      gp_Pnt2d P = TheRCurve->Value(u);
+      if (P.X() < UMin) UMin = P.X();
+      if (P.X() > UMax) UMax = P.X();
+      if (P.Y() < VMin) VMin = P.Y();
+      if (P.Y() > VMax) VMax = P.Y();
+      u += step;
+    }
+  }
+  
+  // load the isos
+  Hatch_Hatcher isobuild(1.e-5,ToolRst.IsOriented());
+  Standard_Boolean UClosed = aFace->IsUClosed();
+  Standard_Boolean VClosed = aFace->IsVClosed();
+
+  if ( ! UClosed ) {
+    UMin = UMin + ( UMax - UMin) /1000.;
+    UMax = UMax - ( UMax - UMin) /1000.; 
+  }
+
+  if ( ! VClosed ) {
+    VMin = VMin + ( VMax - VMin) /1000.;
+    VMax = VMax - ( VMax - VMin) /1000.; 
+  }
+
+  if (DrawUIso){
+    if (NBUiso > 0) {
+      UClosed = Standard_False; // En attendant un hatcher de course.
+      Standard_Real du= UClosed ? (UMax-UMin)/NBUiso : (UMax-UMin)/(1+NBUiso);
+      for (i=1; i<=NBUiso;i++){
+	isobuild.AddXLine(UMin+du*i);
+      }
+    }
+  }
+  if (DrawVIso){
+    if ( NBViso > 0) {
+      VClosed = Standard_False;
+      Standard_Real dv= VClosed ?(VMax-VMin)/NBViso : (VMax-VMin)/(1+NBViso);
+      for (i=1; i<=NBViso;i++){
+	isobuild.AddYLine(VMin+dv*i);
+      }
+    }
+  }
+
+  // trim the isos
+  gp_Pnt2d P1,P2;
+  gp_Pnt dummypnt;
+  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
+    TopAbs_Orientation Orient = ToolRst.Orientation();
+    if ( Orient == TopAbs_FORWARD || Orient == TopAbs_REVERSED ) {
+      Adaptor2d_Curve2dPtr TheRCurve = ToolRst.Value();
+      GCPnts_UniformDeflection UDP(*TheRCurve, Deflection, Standard_False);
+      if (UDP.IsDone()) {
+	Standard_Integer NumberOfPoints = UDP.NbPoints();
+	if ( NumberOfPoints >= 2 ) {
+	  dummypnt = UDP.Value(1);
+	  P2.SetCoord(dummypnt.X(), dummypnt.Y());
+	  for (i = 2; i <= NumberOfPoints; i++) {
+	    P1 = P2;
+	    dummypnt = UDP.Value(i);
+	    P2.SetCoord(dummypnt.X(), dummypnt.Y());
+	    if(Orient == TopAbs_FORWARD )
+              isobuild.Trim(P1,P2);
+            else
+              isobuild.Trim(P2,P1);
+	  }
+	}
+      }
+      else {
+	cout << "Cannot evaluate curve on surface"<<endl;
+      }
+    }
+  }
+  
+  // draw the isos
+
+  Adaptor3d_IsoCurve anIso;
+  anIso.Load(aFace);
+  Standard_Integer NumberOfLines = isobuild.NbLines();
+
+  for (i = 1; i <= NumberOfLines; i++) {
+    Standard_Integer NumberOfIntervals = isobuild.NbIntervals(i);
+    Standard_Real Coord = isobuild.Coordinate(i);
+    for (Standard_Integer j = 1; j <= NumberOfIntervals; j++) {
+      Standard_Real b1=isobuild.Start(i,j),b2=isobuild.End(i,j);
+
+      b1 = b1 == RealFirst() ? - aLimit : b1;
+      b2 = b2 == RealLast()  ?   aLimit : b2;
+
+      if (isobuild.IsXLine(i))
+	anIso.Load(GeomAbs_IsoU,Coord,b1,b2);
+      else
+	anIso.Load(GeomAbs_IsoV,Coord,b1,b2);
+    
+      if (DrawFaceIso::Match(X,Y,Z,aDistance,anIso,Deflection, aLimit))
+	  return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+
+//=========================================================================
+// function: Add
+// purpose
+//=========================================================================
+void Prs3d_WFDeflectionRestrictedFace::Add
+  (const Handle (Prs3d_Presentation)& aPresentation,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer){
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+
+  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+  TheGroup->BeginPrimitives();
+
+  Prs3d_WFDeflectionRestrictedFace::Add (  
+		      aPresentation,
+		      aFace,
+		      Standard_True,
+		      Standard_True,
+		      Deflection,
+		      finu,
+		      finv,
+		      aDrawer);
+
+  TheGroup->EndPrimitives();
+}
+
+
+//=========================================================================
+// function: AddUIso
+// purpose
+//=========================================================================
+void Prs3d_WFDeflectionRestrictedFace::AddUIso
+  (const Handle (Prs3d_Presentation)& aPresentation,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer) {
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  Prs3d_WFDeflectionRestrictedFace::Add ( 
+		      aPresentation,
+		      aFace,
+		      Standard_True,
+		      Standard_False,
+		      Deflection,
+		      finu,
+		      finv,
+		      aDrawer);
+}
+
+
+//=========================================================================
+// function: AddVIso
+// purpose
+//=========================================================================
+void Prs3d_WFDeflectionRestrictedFace::AddVIso
+  (const Handle (Prs3d_Presentation)& aPresentation,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer) {
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   Prs3d_WFDeflectionRestrictedFace::Add ( 
+		      aPresentation,
+		      aFace,
+		      Standard_False,
+		      Standard_True,
+		      Deflection,
+		      finu,
+		      finv,
+		      aDrawer);
+}
+
+
+//=========================================================================
+// function: Match
+// purpose
+//=========================================================================
+Standard_Boolean Prs3d_WFDeflectionRestrictedFace::Match
+  (const Quantity_Length X,
+   const Quantity_Length Y,
+   const Quantity_Length Z,
+   const Quantity_Length aDistance,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer){
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  return Prs3d_WFDeflectionRestrictedFace::Match (  
+                      X,Y,Z,aDistance,
+		      aFace,
+		      aDrawer,
+		      Standard_True,
+		      Standard_True,
+		      Deflection,
+		      finu,
+		      finv);
+}
+
+
+//=========================================================================
+// function: MatchUIso
+// purpose
+//=========================================================================
+Standard_Boolean Prs3d_WFDeflectionRestrictedFace::MatchUIso
+  (const Quantity_Length X,
+   const Quantity_Length Y,
+   const Quantity_Length Z,
+   const Quantity_Length aDistance,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer) {
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  return Prs3d_WFDeflectionRestrictedFace::Match ( 
+                      X,Y,Z,aDistance,
+		      aFace,
+		      aDrawer,
+		      Standard_True,
+		      Standard_False,
+		      Deflection,
+		      finu,
+		      finv);
+}
+
+
+//=========================================================================
+// function: MatchVIso
+// purpose
+//=========================================================================
+Standard_Boolean Prs3d_WFDeflectionRestrictedFace::MatchVIso
+  (const Quantity_Length X,
+   const Quantity_Length Y,
+   const Quantity_Length Z,
+   const Quantity_Length aDistance,
+   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle (Prs3d_Drawer)& aDrawer) {
+
+  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
+  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
+  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+  return Prs3d_WFDeflectionRestrictedFace::Match ( 
+                      X,Y,Z,aDistance,
+		      aFace,
+		      aDrawer,
+		      Standard_False,
+		      Standard_True,
+		      Deflection,
+		      finu,
+		      finv);
+}
+
+

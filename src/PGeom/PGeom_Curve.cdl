@@ -1,0 +1,17 @@
+-- File:	PGeom_Curve.cdl
+-- Created:	Mon Feb 22 18:09:22 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Curve from PGeom inherits Geometry from PGeom
+
+         --- Purpose :
+         --  Defines the general abstract class curve in the 3D space.
+         --  
+	 ---See Also : Curve from Geom.
+
+is
+
+end;

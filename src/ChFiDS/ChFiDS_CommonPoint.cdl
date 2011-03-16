@@ -1,0 +1,219 @@
+-- File:	ChFiDS_CommonPoint.cdl
+-- Created:	Mon Nov 29 11:14:27 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class CommonPoint from ChFiDS 
+
+	---Purpose: 
+
+uses Orientation from TopAbs,
+     Vertex from TopoDS,
+     Edge from TopoDS,
+     Pnt from gp, 
+     Vec from  gp
+
+raises 
+    DomainError from Standard,
+    TypeMismatch from Standard
+
+is
+
+
+    Create returns CommonPoint from ChFiDS;
+    
+	---Purpose: Empty constructor.
+
+    Reset( me : in out) is static;
+    ---Purpose: default value for all fields
+
+    SetVertex(me: in out; V: Vertex from TopoDS)
+
+	---Purpose: Sets the values of a point which is a vertex on
+	--          the initial facet of restriction of one
+	--          of the surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetArc(me: in out; Tol: Real from Standard;
+                       A: Edge from TopoDS;
+    	    	       Param: Real from Standard;
+                       TArc: Orientation from TopAbs)
+
+	---Purpose: Sets the values of a point which is on the arc
+	--          A, at parameter Param.
+
+
+    	is static;
+ 
+    SetParameter(me: in out;  Param: Real from Standard)
+	---Purpose: Sets the value of the parameter on the spine
+    	is static;
+
+
+    SetPoint(me :in out; Point : Pnt from gp)
+    
+	---Purpose: Set the 3d point for a commonpoint that is not
+	--          a vertex or on an arc. 
+
+	---C++: inline
+	
+	is static; 
+	 
+    SetVector(me :in out; Vector : Vec from gp)
+    
+	---Purpose: Set the output 3d  vector
+
+	---C++: inline
+	
+	is static;
+
+    SetTolerance(me : in out; Tol : Real from Standard)
+    
+	---Purpose: This method set the fuzziness on the point.
+	---C++: inline
+	is static;
+
+
+    Tolerance(me)
+    
+	---Purpose: This method returns the fuzziness on the point.
+    
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+    IsVertex(me)
+
+	---Purpose: Returns TRUE if the point is a vertex on the initial
+	--          restriction facet of the surface.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me)
+    
+    	---Purpose: Returns the information about the point when it is
+    	--          on the domain of the first patch, i-e when the function
+    	--          IsVertex returns True.
+    	--          Otherwise, an exception is raised.
+    
+    	returns Vertex from TopoDS
+	---C++: return const&
+	---C++: inline
+	
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    IsOnArc(me)
+
+	---Purpose: Returns TRUE if the point is a on an edge of the initial
+	--          restriction facet of the surface.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Arc(me)
+    
+	---Purpose: Returns the arc of restriction containing the
+	--          vertex.
+
+    	returns Edge from TopoDS
+	---C++: return const&
+	
+	is static;
+
+
+    TransitionOnArc(me)
+    
+	---Purpose: Returns the transition of the point on the arc
+	--          returned by Arc().
+
+    	returns Orientation from TopAbs
+	
+	is static;
+
+
+
+    ParameterOnArc(me)
+    
+	---Purpose: Returns the parameter of the point on the
+	--          arc returned by the method Arc().
+
+    	returns Real from Standard
+	
+	is static; 
+	 
+    Parameter(me)
+    
+	---Purpose: Returns  the parameter the  paramter on the  spine
+    	returns Real from Standard
+	
+	is static;	
+
+
+    Point(me)
+    
+	---Purpose: Returns the 3d point 
+
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+	
+	is static;  
+	 
+	
+      HasVector(me)
+
+	---Purpose: Returns TRUE if the output vector is  stored.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static; 
+	 
+      Vector(me)   
+	---Purpose: Returns the output  3d vector         
+
+    	returns Vec from gp
+	---C++: return const&
+	---C++: inline
+    	raises DomainError from Standard --  if HasVector()  return  False;
+	 
+	is static;
+
+
+fields 
+    arc       : Edge           from TopoDS;     
+    vtx       : Vertex         from TopoDS; 
+    
+    point     : Pnt            from gp;      
+    vector    : Vec            from gp;      
+
+    tol       : Real           from Standard;    
+    prmarc    : Real           from Standard; 
+    prmtg     : Real           from Standard; 
+     
+    isonarc   : Boolean        from Standard; 
+    traarc    : Orientation    from TopAbs;
+    isvtx     : Boolean        from Standard;
+    hasvector : Boolean        from Standard;
+
+
+end CommonPoint;

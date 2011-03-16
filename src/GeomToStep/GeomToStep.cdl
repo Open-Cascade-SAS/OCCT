@@ -1,0 +1,50 @@
+-- File:	GeomToStep.cdl
+-- Created:	Fri Jun 11 18:17:21 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+package GeomToStep
+
+--- Purpose: Creation des entites geometriques du schema PmsAp2Demo3d a 
+--  partir des entites de Geom ou de gp.
+--  Update : mise a jour pour traiter le schema StepGeom, pour demo de 94
+
+uses gp, Geom, Geom2d, StepGeom, StdFail, TColgp
+
+is
+
+private deferred class Root;
+class MakeCartesianPoint;
+class MakeAxis1Placement;
+class MakeAxis2Placement2d;
+class MakeAxis2Placement3d;
+class MakeDirection;
+class MakeVector;
+class MakeCurve;
+class MakeConic;
+class MakeBoundedCurve;
+class MakeCircle;
+class MakeEllipse;
+class MakeHyperbola;
+class MakeParabola;
+class MakeBSplineCurveWithKnots;
+class MakeBSplineCurveWithKnotsAndRationalBSplineCurve;
+class MakeLine;
+class MakePolyline;
+class MakePlane;
+class MakeSurface;
+class MakeBoundedSurface;
+class MakeElementarySurface;
+class MakeSweptSurface;
+class MakeConicalSurface;
+class MakeCylindricalSurface;
+class MakeRectangularTrimmedSurface;
+class MakeSphericalSurface;
+class MakeSurfaceOfLinearExtrusion;
+class MakeSurfaceOfRevolution;
+class MakeToroidalSurface;
+class MakeBSplineSurfaceWithKnots;
+class MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface;
+
+end GeomToStep;

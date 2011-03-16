@@ -1,0 +1,35 @@
+-- File:	Storage_TypedCallBack.cdl
+-- Created:	Fri Feb 28 10:44:18 1997
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class TypedCallBack from Storage 
+
+inherits TShared from MMgt
+
+uses CallBack from Storage,
+     AsciiString from TCollection
+     
+is
+    Create returns mutable TypedCallBack from Storage;
+
+    Create(aTypeName : AsciiString from TCollection; aCallBack : CallBack from Storage)
+    	returns mutable TypedCallBack from Storage;
+
+    SetType(me : mutable; aType : AsciiString from TCollection);
+    Type(me) returns AsciiString from TCollection;
+    
+    SetCallBack(me : mutable; aCallBack : CallBack from Storage);
+    CallBack(me) returns CallBack from Storage;
+
+    SetIndex(me : mutable; anIndex : Integer from Standard);
+    Index(me) returns Integer from Standard;
+    
+    fields
+    
+    	myType     : AsciiString from TCollection;
+	myCallBack : CallBack from Storage;
+    	myIndex    : Integer from Standard;
+	
+end;

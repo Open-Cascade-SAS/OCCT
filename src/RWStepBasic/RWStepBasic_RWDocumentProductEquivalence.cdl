@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWDocumentProductEquivalence.cdl
+-- Created:	Tue Jan 28 12:40:35 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWDocumentProductEquivalence from RWStepBasic
+
+    ---Purpose: Read & Write tool for DocumentProductEquivalence
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    DocumentProductEquivalence from StepBasic
+
+is
+    Create returns RWDocumentProductEquivalence from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : DocumentProductEquivalence from StepBasic);
+	---Purpose: Reads DocumentProductEquivalence
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: DocumentProductEquivalence from StepBasic);
+	---Purpose: Writes DocumentProductEquivalence
+
+    Share (me; ent : DocumentProductEquivalence from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWDocumentProductEquivalence;

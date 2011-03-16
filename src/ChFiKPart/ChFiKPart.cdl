@@ -1,0 +1,44 @@
+-- File:	ChFiKPart.cdl
+-- Created:	Wed Dec  8 10:36:10 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+package ChFiKPart  
+
+	---Purpose: Fonctions de remplissage pour une SurfData, dans
+	--          les cas particulers de conges/chanfreins suivants :
+	--          - cylindre/plan entre 2 surfaces planes,
+	--          - tore/sphere/cone entre un plan et un cylindre othogonal,
+	--          - tore/sphere/cone entre un plan et un cone othogonal,
+	--          - tore/sphere/cone entre un plan et un tore othogonal,
+	--          - tore/cone entre un plan et une sphere.
+
+uses 
+    ChFiDS, 
+    TopOpeBRepDS,
+    Adaptor2d,
+    Adaptor3d,
+    TopoDS,
+    TopAbs,
+    gp,
+    TCollection,
+    TColStd,
+    Standard
+
+is
+
+    class RstMap instantiates DataMap from TCollection 
+    	(Integer from Standard, 
+    	 HCurve2d from Adaptor2d, 
+    	 MapIntegerHasher  from  TColStd);
+
+    class ComputeData;
+    ---Purpose: Contient toutes  les   methodes de classe  destinees a
+    --          remplir  une SurfData   dans  les  cas  particuliers
+    --          enumeres ci-dessus.
+
+end ChFiKPart;
+
+

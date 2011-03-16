@@ -1,0 +1,133 @@
+-- File:	IntTools_CArray1.cdl
+-- Created:	Fri May 26 10:55:45 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+	---Purpose: 
+
+generic class CArray1 from IntTools (Array1Item as any)
+
+	---Purpose: The class CArray1 represents unidimensionnal arrays
+	--          of fixed size known at run time. Run-time boundary
+	--          check is performed
+	--          
+	--          The range of the index is user defined from 0 to Length
+
+raises
+
+    ConstructionError from Standard,
+    OutOfRange from Standard,
+    OutOfMemory from Standard 
+
+is
+
+    Create (Length: Integer from Standard = 0)
+    	returns CArray1 from IntTools
+      	---Purpose: 
+    	--- Creates an array  of given Length. 
+	---
+    	raises 
+            ConstructionError  from Standard,  -- when Length < 0
+            OutOfMemory from Standard;         -- when not enough memory
+
+    Create (AnArray : CArray1 from IntTools) 
+    	returns CArray1 from  IntTools 
+     	---Purpose: 
+    	--- Prohibits the creator by copy
+	---
+    	is private;
+
+    Create(Item: Array1Item;
+    	   Length: Integer from Standard)
+    	---Purpose: 
+    	--- Creates an array sharing datas with an other.
+    	--  Example:
+    	---  Item tab[100];
+    	---  CArray1OfItem thetab (tab[0],100);
+    	---            
+    	---  CArray1OfItem aArray1(100);
+    	---  CArray1OfItem anSharedArray1(aArray1.ChangeValue(0),aArray1.Length());
+    	---            
+    	--  Warning: 
+    	--- The validity of length are under the responsability
+    	--- of the user.
+    	--- The sahred array must have a valid address during the life of
+    	--- the Array1.
+	---
+    	returns CArray1 from IntTools
+    	raises  ConstructionError  from Standard; -- when Length < 0
+    	   
+    Init (me: in out; V: Array1Item);
+    	---Purpose: 
+    	--- Initializes the array with a given value.
+	---
+
+
+    Resize(me: in out;
+    	   theNewLength: Integer from Standard);
+    	---Purpose: 
+    	--- destroy current content and realloc the new size
+    	--- does nothing if Length() == theLength
+	---
+	   
+    Destroy (me: in out);
+    	---Purpose: 
+    	--- Frees the  allocated   area  corresponding  to the
+    	--- array.
+	---
+    	---C++: alias ~
+
+    Length (me) returns Integer from Standard;
+    	---Purpose: 
+    	--- Returns the number of elements of <me>.
+    	---           
+        ---C++: inline 
+	
+    Append (me:out; Value: Array1Item); 
+    	---Purpose: 
+
+    SetValue (me : out; Index: Integer from Standard; Value: Array1Item)  
+    	raises OutOfRange from Standard;
+    	---Purpose: 
+    	--- Sets  the   <Index>th  element  of   the  array to
+    	--- <Value>.
+	---
+    	
+
+    Value (me; Index:Integer from Standard) returns any Array1Item
+    	---Purpose: 
+    	--- Returns the value of  the  <Index>th element of the
+    	--- array.
+    	---          
+    	---C++: alias operator ()
+    	---C++: return const &
+	raises OutOfRange from Standard;
+    
+    ChangeValue (me: in out; Index:Integer from Standard) returns any Array1Item
+    	---Purpose: 
+	--- Returns the value  of the <Index>th element  of the
+    	--- array.
+    	---
+    	---C++: alias operator ()
+    	---C++: return & 
+    	raises OutOfRange from Standard;
+
+    IsEqual(me; Other: CArray1 from IntTools) 
+    	returns Boolean from Standard;
+    	---Purpose: 
+    	--- Applys the == operator on each array item
+	---
+    	---C++: alias operator ==
+   
+fields
+
+    myStart: Address;
+    myLength: Integer;
+    myIsAllocated: Boolean;
+
+end CArray1;
+
+
+

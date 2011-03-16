@@ -1,0 +1,27 @@
+-- File:        PreDefinedColour.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPreDefinedColour from RWStepVisual
+
+	---Purpose : Read & Write Module for PreDefinedColour
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PreDefinedColour from StepVisual
+
+is
+
+	Create returns RWPreDefinedColour;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PreDefinedColour from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : PreDefinedColour from StepVisual);
+
+end RWPreDefinedColour;

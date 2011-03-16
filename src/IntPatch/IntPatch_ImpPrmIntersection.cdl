@@ -1,0 +1,155 @@
+-- File:      IntPatch_ImpPrmIntersection.cdl
+-- Created:   Thu May  7 08:47:45 1992
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1992
+
+
+class ImpPrmIntersection from IntPatch
+
+	---Purpose: Implementation of the intersection between a natural
+	--          quadric patch : Plane, Cone, Cylinder or Sphere and
+	--          a bi-parametrised surface.
+
+uses
+     TheSearchInside     from IntPatch,
+     HSurface            from Adaptor3d,
+     TopolTool           from Adaptor3d,
+     Point               from IntPatch,
+     SequenceOfPoint     from IntPatch,
+     TheSOnBounds        from IntPatch,
+     SequenceOfLine      from IntPatch,
+     Line                from IntPatch,
+     PathPointTool       from IntSurf,
+     SequenceOfPathPoint from IntSurf,
+     Quadric             from IntSurf,
+     QuadricTool         from IntSurf,
+     InteriorPoint       from IntSurf,
+     InteriorPointTool   from IntSurf
+
+
+raises NotDone           from StdFail,
+       OutOfRange        from Standard,
+       DomainError       from Standard,
+       ConstructionError from Standard
+
+is
+
+
+    Create
+    
+    	returns ImpPrmIntersection from IntPatch;
+
+
+    Create(Surf1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+           Surf2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d; 
+           TolArc,TolTang,Fleche,Pas: Real from Standard)
+
+    	returns ImpPrmIntersection from IntPatch
+	raises ConstructionError from Standard;
+
+
+    SetStartPoint(me: in out; U,V: Real from Standard)
+	---Purpose: to search for solution from the given point
+    	is static;
+
+
+    Perform(me: in out;
+            Surf1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+            Surf2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d; 
+            TolArc,TolTang,Fleche,Pas: Real from Standard)
+
+    	raises ConstructionError from Standard
+    	is static;
+
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns true if the calculus was succesfull.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns true if the is no intersection.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    NbPnts(me)
+    
+    	---Purpose: Returns the number of "single" points.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	
+    	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbPnt.
+
+    	returns Point from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+
+    	is static;
+
+
+    NbLines(me)
+    
+    	---Purpose: Returns the number of intersection lines.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    Line(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the line of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbLine.
+
+    	returns Line from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	
+    	is static;
+
+
+fields
+
+    done   : Boolean         from Standard;
+    empt   : Boolean         from Standard;
+    spnt   : SequenceOfPoint from IntPatch;
+    slin   : SequenceOfLine  from IntPatch;
+    solrst : TheSOnBounds    from IntPatch;
+    solins : TheSearchInside from IntPatch;
+--    iwalk  : TheIWalking     from IntPatch;
+    myIsStartPnt: Boolean    from Standard;
+    myUStart  : Real         from Standard;
+    myVStart  : Real         from Standard;
+
+end ImpPrmIntersection;

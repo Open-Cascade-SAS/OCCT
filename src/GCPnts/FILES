@@ -1,0 +1,6 @@
+GCPnts_AbscissaPoint.gxx
+GCPnts_UniformDeflection.gxx
+GCPnts_UniformAbscissa.gxx
+GCPnts_QuasiUniformAbscissa.gxx
+GCPnts_QuasiUniformDeflection.gxx
+GCPnts_TangentialDeflection.gxx

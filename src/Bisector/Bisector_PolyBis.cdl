@@ -1,0 +1,51 @@
+-- File:	Bisector_PolyBis.cdl
+-- Created:	Fri Apr  1 16:10:52 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+class PolyBis from Bisector 
+
+	---Purpose: Polygon of PointOnBis
+
+uses
+    PointOnBis from Bisector,
+    Trsf2d     from gp
+
+is
+    Create returns PolyBis from Bisector;
+    
+    Append ( me : in out; Point : PointOnBis from Bisector) 
+    is static ;
+						    		
+    Length (me) returns Integer
+    is static ;
+    
+    IsEmpty (me) returns Boolean
+    is static;
+
+    Value (me ; Index : Integer) returns PointOnBis from Bisector
+       ---C++: return const&
+    is static;
+    
+    First (me) returns PointOnBis from Bisector
+       ---C++: return const&
+    is static;
+    
+    Last (me) returns PointOnBis from Bisector
+       ---C++: return const&
+    is static;
+    
+    Interval (me ; U :Real) returns Integer from Standard
+    is static;
+    
+    Transform (me : in out ; T :Trsf2d)
+    is static;
+    
+fields
+
+    thePoints       : PointOnBis from Bisector [30];
+    nbPoints        : Integer    from Standard;
+    
+end PolyBis;
+

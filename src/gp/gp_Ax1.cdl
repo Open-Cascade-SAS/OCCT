@@ -1,0 +1,228 @@
+---Copyright:   Matra Datavision 1991
+
+class Ax1    from gp   inherits Storable
+
+        --- Purpose : Describes an axis in 3D space.
+        -- An axis is defined by:
+        -- -   its origin (also referred to as its "Location point"), and
+        -- -   its unit vector (referred to as its "Direction" or "main   Direction").
+        -- An axis is used:
+        -- -   to describe 3D geometric entities (for example, the
+        -- axis of a revolution entity). It serves the same purpose
+        -- as the STEP function "axis placement one axis", or
+        -- -   to define geometric transformations (axis of
+        --   symmetry, axis of rotation, and so on).
+        -- For example, this entity can be used to locate a geometric entity 
+        --  or to define a symmetry axis.
+
+uses Ax2  from gp,
+     Dir  from gp,
+     Pnt  from gp,
+     Trsf from gp,
+     Vec  from gp
+
+is
+
+
+  Create   returns Ax1;
+        ---C++: inline
+        --- Purpose : Creates an axis object representing Z axis of
+        --            the reference co-ordinate system.
+     
+  Create (P : Pnt; V : Dir)  returns Ax1;
+        ---C++: inline
+        --- Purpose : 
+        --  P is the location point and V is the direction of <me>.
+
+  SetDirection (me : in out; V : Dir)    is static;
+        ---C++: inline
+        --- Purpose : Assigns V as the "Direction"  of this axis.
+
+  SetLocation (me : in out; P : Pnt)     is static;
+        ---C++: inline
+        --- Purpose : Assigns  P as the origin of this axis.
+
+  Direction (me)  returns Dir    is static;
+    	---C++: inline
+    	---C++: return const&
+        --- Purpose : Returns the direction of <me>.
+
+  Location(me)  returns Pnt      is static;
+    	---C++: inline
+    	---C++: return const&
+        --- Purpose : Returns the location point of <me>.
+
+  
+  IsCoaxial (me; Other : Ax1; AngularTolerance, LinearTolerance : Real)
+     returns Boolean
+     is static;
+        --- Purpose :
+        --  Returns True if  :
+        --  . the angle between <me> and <Other> is lower or equal
+        --    to <AngularTolerance> and
+        --  . the distance between <me>.Location() and <Other> is lower
+        --    or equal to <LinearTolerance> and 
+        --  . the distance between <Other>.Location() and <me> is lower 
+        --    or equal to LinearTolerance.
+
+  IsNormal (me; Other : Ax1; AngularTolerance : Real)    returns Boolean
+     is static;
+    	---C++: inline
+        --- Purpose :
+        --  Returns True if the direction of the <me> and <Other>
+        --  are normal to each other. 
+        -- That is, if the angle between the two axes is equal to Pi/2.
+        -- Note: the tolerance criterion is given by AngularTolerance..
+
+  IsOpposite (me; Other : Ax1; AngularTolerance : Real)   returns Boolean
+     is static;
+    	---C++: inline
+        --- Purpose :
+        --  Returns True if the direction of <me> and <Other> are 
+        --  parallel with opposite orientation. That is, if the angle
+        -- between the two axes is equal to Pi.
+        -- Note: the tolerance criterion is given by AngularTolerance.
+
+  IsParallel (me; Other : Ax1; AngularTolerance : Real)   returns Boolean
+     is static;
+    	---C++: inline
+        --- Purpose :
+        --  Returns True if the direction of <me> and <Other> are
+        --  parallel with same orientation or opposite orientation. That
+        -- is, if the angle between the two axes is equal to 0 or Pi.
+        -- Note: the tolerance criterion is given by
+        -- AngularTolerance.
+
+  Angle (me; Other : Ax1)   returns Real   is static;
+    	---C++: inline
+        --- Purpose :
+        --  Computes the angular value, in radians, between <me>.Direction() and
+        --  <Other>.Direction(). Returns the angle between 0 and 2*PI
+        --  radians.
+
+  Reverse (me : in out)         is static;
+    	---C++: inline
+        --- Purpose :  Reverses the unit vector of this axis.
+        -- and  assigns the result to this axis.
+
+
+  Reversed (me)  returns Ax1    is static;
+    	---C++: inline
+        --- Purpose : Reverses the unit vector of this axis and creates a new one.
+
+
+  Mirror (me : in out; P : Pnt)          is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to the point P which is the
+        --  center of the symmetry and assigns the result to this axis.
+    
+  Mirrored (me; P : Pnt)  returns Ax1    is static;
+        --- Purpose : Performs the symmetrical transformation of an axis
+        --  placement with respect to the point P which is the
+        --  center of the symmetry and creates a new axis.  
+  Mirror (me : in out; A1 : Ax1)         is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to an axis placement which
+        --  is the axis of the symmetry and assigns the result to this axis.
+
+  Mirrored (me; A1 : Ax1)  returns Ax1   is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to an axis placement which
+        --  is the axis of the symmetry and creates a new axis.
+
+
+  Mirror (me : in out; A2 : Ax2)         is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to a plane. The axis placement 
+        --  <A2> locates the plane of the symmetry :
+        --  (Location, XDirection, YDirection) and assigns the result to this axis.
+
+  Mirrored (me; A2 : Ax2)  returns Ax1   is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to a plane. The axis placement 
+        --  <A2> locates the plane of the symmetry :
+        --  (Location, XDirection, YDirection) and creates a new axis.
+
+
+
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)       
+    	---C++: inline
+        ---Purpose: Rotates this axis at an angle Ang (in radians) about the axis A1
+        -- and assigns the result to this axis.
+     is static;
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns Ax1  is static;
+    	---C++: inline
+        ---Purpose: Rotates this axis at an angle Ang (in radians) about the axis A1
+        -- and creates a new one.
+
+
+  Scale (me : in out; P : Pnt; S : Real)         is static;
+    	---C++: inline
+        ---Purpose: 
+        -- Applies a scaling transformation to this axis with:
+        -- -   scale factor S, and
+        -- -   center P and assigns the result to this axis.
+
+  Scaled (me; P : Pnt; S : Real)  returns Ax1    is static;
+    	---C++: inline
+        ---Purpose: 
+        -- Applies a scaling transformation to this axis with:
+        -- -   scale factor S, and
+        -- -   center P and creates a new axis.
+
+     
+  Transform (me : in out; T : Trsf)            
+    	---C++: inline
+        ---Purpose: Applies the transformation T to this axis.
+        -- and assigns the result to this axis.
+     is static;
+
+  Transformed (me; T : Trsf)   returns Ax1     is static;
+    	---C++: inline
+        --- Purpose:
+        -- Applies the transformation T to this axis and creates a new one.  
+        --- Purpose : 
+        --  Translates an axis plaxement in the direction of the vector
+        --  <V>. The magnitude of the translation is the vector's magnitude.
+
+  Translate (me : in out; V : Vec)              
+    	---C++: inline
+        ---Purpose:
+        -- Translates this axis by the vector V, 
+        -- and assigns the result to this axis. 
+      is static;
+
+  Translated (me; V : Vec)  returns Ax1         is static;
+    	---C++: inline
+        ---Purpose:
+        -- Translates this axis by the vector V, 
+        -- and creates a new one.
+
+  Translate (me : in out; P1, P2 : Pnt)         
+    	---C++: inline
+        ---Purpose:
+        -- Translates this axis by:
+        -- the vector (P1, P2) defined from point P1 to point P2.
+        -- and assigns the result to this axis. 
+      is static;
+
+  Translated (me; P1, P2 : Pnt)   returns Ax1   is static;
+    	---C++: inline
+        ---Purpose:
+        -- Translates this axis by:
+        -- the vector (P1, P2) defined from point P1 to point P2.
+        -- and creates a new one.
+
+fields
+
+   loc  : Pnt;
+   vdir : Dir;
+
+end;

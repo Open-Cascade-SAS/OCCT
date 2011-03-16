@@ -1,0 +1,100 @@
+-- File:	GeomFill_SectionPlacement.cdl
+-- Created:	Mon Dec 15 16:25:44 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class  SectionPlacement from  GeomFill
+
+	---Purpose: To place section in sweep Function                   
+    	---Level: Advanced
+
+uses 
+    LocationLaw  from  GeomFill, 
+    Geometry from Geom,
+    Curve    from Geom, 
+    HCurve   from Adaptor3d, 
+    Curve    from GeomAdaptor, 
+    ExtPC  from  Extrema,  
+    Trsf   from  gp,
+    Mat    from  gp, 
+    Ax1    from  gp,     
+    Vec    from  gp, 
+    Pnt    from  gp
+     
+raises
+    NotDone 
+    
+is
+    Create(L  :  LocationLaw  from  GeomFill; 
+           Section  :  Geometry  from  Geom)   
+    returns   SectionPlacement from  GeomFill; 
+     
+    SetLocation(me :  in  out;  L  :  LocationLaw  from  GeomFill)  
+    ---Purpose: To change the section Law         
+    is  static;
+	    
+    Perform(me:in  out; Tol  :  Real) 
+    is  static;    
+     
+    Perform(me:in  out; Path  :  HCurve  from  Adaptor3d; 
+                        Tol  :  Real) 
+    is  static;  
+     
+    Perform(me:in  out; ParamOnPath  :  Real;
+                        Tol  :  Real) 
+    is  static;   
+     
+    IsDone(me)   
+    returns  Boolean;  
+     
+    ParameterOnPath(me)  returns  Real; 
+     
+    ParameterOnSection(me)  returns  Real; 
+     
+    Distance(me)  returns  Real;  
+     
+    Angle(me)  returns  Real;
+      
+    Transformation(me; WithTranslation :  Boolean; 
+                   WithCorrection  :  Boolean  =  Standard_False) 
+    returns  Trsf  from  gp;
+     
+    Section(me; WithTranslation  :  Boolean) 
+    ---Purpose: Compute the Section, in the coordinate syteme given by
+    --          the Location Law.         
+    --          If <WithTranslation> contact beetween
+    --          <Section> and <Path> is forced.     
+    returns  Curve from Geom; 
+     
+    ModifiedSection(me;  WithTranslation  :  Boolean)  
+    ---Purpose: Compute the Section, in the coordinate syteme given by
+    --          the Location Law.         
+    --          To have the Normal to section equal to the Location
+    --          Law Normal.  If <WithTranslation> contact beetween
+    --          <Section> and <Path> is forced.
+    returns  Curve from Geom; 
+     
+    SectionAxis(me;  M  :  Mat  from  gp; 
+                T,  N,  BN  :  out  Vec  from  gp)  is private; 
+		 
+    Choix(me;  Dist,  Angle  :  Real)   
+    returns  Boolean   
+    is  private; 
+    
+fields
+  done    :  Boolean;
+  isplan  :  Boolean; 
+  TheAxe  :  Ax1  from  gp; 
+  Gabarit :  Real;
+  myLaw :  LocationLaw  from  GeomFill;
+  myAdpSection  :  Curve  from  GeomAdaptor;   
+  mySection  :  Curve  from  Geom;  
+  SecParam,  PathParam,  Dist,  AngleMax  :  Real; 
+  myExt        :  ExtPC  from  Extrema;  
+  
+  myIsPoint : Boolean from Standard; 
+  myPoint   : Pnt     from gp;
+  
+end ;

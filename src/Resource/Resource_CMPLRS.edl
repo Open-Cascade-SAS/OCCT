@@ -1,0 +1,22 @@
+-- File:	_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %Resource_CMPLRS_EDL ) then
+@set %Resource_CMPLRS_EDL = "";
+
+-- Templates HP-UX 
+
+@if ( %Station == "hp" ) then
+	@string %CMPLRS_C_Command = %CMPLRS_C_Command " -Aa";
+
+@endif;
+
+@endif;
+
+
+
+
+
+

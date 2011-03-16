@@ -1,0 +1,118 @@
+-- File:	CurvePGTool.cdl
+-- Created:	Thu Jun  4 16:21:49 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+generic class CurvePGTool from GccGeo (
+    TheCurve        as any;
+    TheCurveTool    as any; -- as CurveTool(TheCurve) from GccInt
+    TheParGenCurve  as any) -- as ParGenCurve(TheCurve) from GccGeo
+	---Purpose: 
+
+uses Pnt2d        from gp,
+     Vec2d        from gp,
+     Lin2d        from gp,
+     Circ2d       from gp,
+     Elips2d      from gp,
+     Parab2d      from gp,
+     Hypr2d       from gp,
+     CurveType    from GeomAbs,
+     Shape        from GeomAbs
+
+is
+
+    TheType(myclass; C: TheParGenCurve ) 
+    	returns CurveType from GeomAbs;
+
+    Line(myclass; C: TheParGenCurve)
+    	---Purpose: Returns the Lin2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          IntCurve_Lin.
+    	returns Lin2d from gp;
+
+    Circle(myclass; C: TheParGenCurve)
+    	---Purpose: Returns the Circ2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          IntCurve_Cir.
+    	returns Circ2d from gp;
+
+    Ellipse(myclass; C: TheParGenCurve)
+	---Purpose: Returns the Elips2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          IntCurve_Eli.
+    	returns Elips2d from gp;
+
+    Parabola(myclass; C: TheParGenCurve)
+	---Purpose: Returns the Parab2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          IntCurve_Prb.
+    	returns Parab2d from gp;
+
+    Hyperbola(myclass; C: TheParGenCurve)
+	---Purpose: Returns the Hypr2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          IntCurve_Hpr.
+    	returns Hypr2d from gp;
+
+-- The following method are used only when TheType returns  IntCurve_Other.
+
+    FirstParameter(myclass;C: TheParGenCurve)
+    	returns Real;
+
+    LastParameter(myclass;C: TheParGenCurve)
+    	returns Real;
+
+    EpsX (myclass                     ; 
+    	  C       : TheParGenCurve    ;
+    	  Tol     : Real from Standard)
+    	returns Real;
+
+    NbSamples(myclass                 ;
+    	      C       : TheParGenCurve)
+    	returns Integer;
+
+    Value (myclass                 ;
+    	   C       : TheParGenCurve;
+    	   X       : Real          )
+    	returns Pnt2d from gp;
+
+    D1 (myclass; C :     TheParGenCurve ;
+    	    	 U :     Real           ;  
+                 P : out Pnt2d          ;
+    	    	 T : out Vec2d          );
+
+    D2 (myclass; C   :     TheParGenCurve ;
+    	    	 U   :     Real           ; 
+                 P   : out Pnt2d          ;
+    	    	 T,N : out Vec2d          );
+
+    IsComposite(myclass; C:TheParGenCurve)
+   
+    	returns Boolean from Standard;
+
+-- The following methods are used only when IsComposite returns True.
+
+	
+    GetIntervals(myclass ; C:TheParGenCurve) returns Integer from Standard;
+        ---Purpose : Outputs the number of interval of continuity C1 of 
+        --           the curve
+        --           used if Type == Composite.
+
+    GetInterval (myclass; C      :     TheParGenCurve
+                       ; Index  :     Integer  from Standard
+    	    	       ; U1, U2 : out Real     from Standard);
+        ---Purpose : Outputs the bounds of interval of index <Index>
+        --           used if Type == Composite.
+
+    SetCurrentInterval (myclass; C: in out TheParGenCurve
+                              ; Index : Integer from Standard);
+        ---Purpose : Set the current valid interval of index <Index>
+        --           inside which the computations will be done
+        --           (used if Type == Composite).
+
+end CurvePGTool;
+
+
+
+

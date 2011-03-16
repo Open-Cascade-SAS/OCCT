@@ -1,0 +1,60 @@
+--
+-- File      :  LineFontPredefined.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LineFontPredefined from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESLineFontPredefined, Type <406> Form <19>
+        --          in package IGESGraph
+        --
+        --          Provides the ability to specify a line font pattern
+        --          from a predefined list rather than from
+        --          Directory Entry Field 4
+
+uses  Integer  -- no one specific type
+
+
+is
+
+        Create returns mutable LineFontPredefined;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                   : mutable;
+              nbProps              : Integer;
+              aLineFontPatternCode : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           LineFontPredefined
+        --       - nbProps              : Number of property values (NP = 1)
+        --       - aLineFontPatternCode : Line Font Pattern Code
+
+        -- Specific Access Methods : According to each type of Entity
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        LineFontPatternCode (me) returns Integer;
+        ---Purpose : returns the Line Font Pattern Code of <me>
+
+fields
+
+--
+-- Class    : IGESGraph_LineFontPredefined
+--
+-- Purpose  : Declaration of the variables specific to a
+--            LineFontPredefined property.
+--
+-- Reminder : A LineFontPredefined property is defined by :
+--                  - Number of property values
+--                  - Line Font Pattern Code
+--
+
+        theNbPropertyValues    : Integer;
+
+        theLineFontPatternCode : Integer;
+
+end LineFontPredefined;

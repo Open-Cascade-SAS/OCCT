@@ -1,0 +1,152 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// ------------
+// constructor
+// -----------
+
+PCollection_HQueue::PCollection_HQueue() 
+{
+    TheLength = 0;
+    TheFront  = new PCollection_QueueNode;
+    TheBack   = TheFront;
+}
+
+// -----------------------------
+// IsEmpty : is the queue empty ? 
+// -----------------------------
+Standard_Boolean PCollection_HQueue::IsEmpty() const {
+    return TheLength == 0;
+} 
+
+// --------------------------------------
+// Front : item at the front of the Queue 
+// --------------------------------------
+Item PCollection_HQueue::Front() const 
+{
+    if (TheFront->IsEmpty()) Standard_NoSuchObject::Raise();
+    return TheFront->Value();
+}
+
+// --------------------------------------
+// Clear : remove all items in the Queue 
+// --------------------------------------
+void PCollection_HQueue::Clear()
+{   
+   Handle(PCollection_QueueNode) temp; 
+   while (TheLength != 0) {    
+      temp = TheFront;
+      TheFront = TheFront->Tail();
+      if (TheLength == 1) TheBack = TheFront;
+      temp.Delete();
+      --TheLength;
+   }  
+}
+
+// ------------------------------------
+// Push : insert an item at the back
+// ------------------------------------
+void PCollection_HQueue::Push(const Item& T)
+{   
+    Handle(PCollection_QueueNode) L;
+    L = new PCollection_QueueNode;
+    if (TheLength == 0) 
+     {
+        L->ChangeForwardPointer(TheFront);
+        TheBack = L;
+        TheFront = TheBack;
+     }
+    else
+     { 
+        L->ChangeForwardPointer(TheBack->Tail()); 
+        TheBack->ChangeForwardPointer(L);
+        TheBack = L;
+      };
+    TheBack->SetValue(T);
+    TheLength = TheLength + 1;          
+  }
+
+// ------------------------------------
+// Pop : remove an item from the front
+// ------------------------------------
+void PCollection_HQueue::Pop()
+{   
+    if (TheFront->IsEmpty()) Standard_NoSuchObject::Raise();
+    Handle(PCollection_QueueNode) temp = TheFront;
+    TheFront = TheFront->Tail();
+    temp.Delete();
+    TheLength = TheLength - 1;
+    if (TheLength == 0) TheBack = TheFront;
+}
+
+// ------------------------------------
+// ChangeFront : replace the front by T
+// ------------------------------------
+void PCollection_HQueue::ChangeFront(const Item& T)
+{   
+    if (TheFront->IsEmpty()) Standard_NoSuchObject::Raise();
+    TheFront->SetValue(T);       
+}
+
+// ------------------------------------
+// ShallowCopy
+// ------------------------------------
+Handle(Standard_Persistent) PCollection_HQueue::ShallowCopy() const
+{
+  Handle(PCollection_HQueue) TheCopy;
+  Handle(PCollection_QueueNode) TheList;
+
+  TheCopy = new PCollection_HQueue;
+  TheList = TheFront;
+
+
+  for (Standard_Integer I = 1; I <= TheLength; I++){
+    TheCopy->Push(TheList->Value());
+    TheList = TheList->Tail();
+  }
+
+  return TheCopy;
+  
+}
+
+// ------------------------------------
+// ShallowDump
+// ------------------------------------
+void PCollection_HQueue::ShallowDump(Standard_OStream& S) const
+{
+  S << "begin class Queue "<< endl;
+  S << "Length of Queue : "<< TheLength << endl;
+  TheFront->ShallowDump(cout);
+  S << "end of class Queue." << endl;
+}
+
+
+
+// -----------------------------
+// Length : numbers of items 
+// -----------------------------
+Standard_Integer PCollection_HQueue::Length() const {
+    return TheLength;
+} 
+
+// -----------------------------
+// FFront : front of the queue  
+// -----------------------------
+Handle(PCollection_QueueNode) PCollection_HQueue::FFront() const {
+    return TheFront;
+} 
+
+// -----------------------------
+// FBack : the back of the queue  
+// -----------------------------
+Handle(PCollection_QueueNode) PCollection_HQueue::FBack() const {
+    return TheBack;
+} 
+
+void PCollection_HQueue::Destroy()
+{
+#ifdef CSFDB
+  Clear();
+#endif
+}

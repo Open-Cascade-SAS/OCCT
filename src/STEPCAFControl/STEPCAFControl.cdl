@@ -1,0 +1,84 @@
+-- File:	STEPCAFControl.cdl
+-- Created:	Tue Apr  9 10:33:36 2000
+-- Author:	Sergey MOZOKHIN
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 2000
+
+
+package STEPCAFControl
+
+    ---Purpose : This package provides external access and control for STEP,
+    --           on the level of CAF (shapes with attributes, external 
+    --           references etc.)
+
+uses 
+    Dico,
+    TCollection,
+    TColStd,
+    TopTools,
+    TopoDS,
+    IFSelect,
+    Transfer,
+    XSControl,
+    STEPControl,
+    STEPConstruct,
+    StepShape,
+    StepRepr,
+    StepBasic,
+    ShapeBuild,
+    TDF,
+    TDocStd,
+    XCAFDoc,
+    MoniTool
+
+is
+
+    class Reader;
+    	---Purpose: Reader for DECAF documents
+    
+    class Writer;
+    	---Purpose: Writer for DECAF documents
+
+    class ExternFile;
+        ---Purpose: Auxiliary class to store results of translation of external file
+
+    class ActorWrite;
+    class Controller;
+    	---Purpose: Extensions of standard STEP tools for DECAF specifics
+    
+    class DictionaryOfExternFile instantiates 
+    	  Dictionary from Dico (ExternFile from STEPCAFControl);
+
+    class DataMapOfShapeSDR instantiates 
+    	  DataMap from TCollection (Shape from TopoDS,
+	    	    	    	    ShapeDefinitionRepresentation from StepShape,
+				    ShapeMapHasher from TopTools);
+
+    --- skl
+    class DataMapOfShapePD instantiates 
+    	  DataMap from TCollection (Shape from TopoDS,
+	    	    	    	    ProductDefinition from StepBasic,
+				    ShapeMapHasher from TopTools);
+
+    class DataMapOfSDRExternFile instantiates 
+    	  DataMap from TCollection (ShapeDefinitionRepresentation from StepShape,
+				    ExternFile from STEPCAFControl,
+				    MapTransientHasher from TColStd);
+
+    --- skl
+    class DataMapOfPDExternFile instantiates 
+    	  DataMap from TCollection (ProductDefinition from StepBasic,
+				    ExternFile from STEPCAFControl,
+				    MapTransientHasher from TColStd);
+
+    class DataMapOfLabelShape instantiates
+    	  DataMap from TCollection (Label from TDF,
+				    Shape from TopoDS,
+	    	    	    	    LabelMapHasher from TDF);
+
+    class DataMapOfLabelExternFile instantiates
+    	  DataMap from TCollection (Label from TDF,
+				    ExternFile from STEPCAFControl,
+	    	    	    	    LabelMapHasher from TDF);
+
+end STEPCAFControl;

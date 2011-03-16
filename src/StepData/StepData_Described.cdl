@@ -1,0 +1,68 @@
+-- File:	StepData_Described.cdl
+-- Created:	Fri May  9 15:17:42 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class Described  from StepData  inherits TShared from MMgt
+
+    ---Purpose : General frame to describe entities with Description (Simple or
+    --           Complex)
+
+uses CString,
+     Check from Interface,  EntityIterator from Interface,
+     Field from StepData, EDescr from StepData, Simple from StepData
+
+raises InterfaceMismatch from Interface
+
+is
+
+    Initialize (descr : EDescr);
+    ---Purpose : Initializes a Described Entity from a Description
+    --           (i.e. puts it in a field ...)
+
+    Description (me) returns EDescr;
+    ---Purpose : Returns the Description used to define this entity
+
+    IsComplex   (me) returns Boolean  is deferred;
+    ---Purpose : Tells if a described entity is complex
+
+    Matches (me; steptype : CString) returns Boolean  is deferred;
+    ---Purpose : Tells if a step type is matched by <me>
+    --           For a Simple Entity : own type or super type
+    --           For a Complex Entity : one of the members
+
+    As (me; steptype : CString) returns mutable Simple  is deferred;
+    ---Purpose : Returns a Simple Entity which matches with a Type in <me> :
+    --           For a Simple Entity : me if it matches, else a null handle
+    --           For a Complex Entity : the member which matches, else null
+
+    HasField (me; name : CString) returns Boolean  is deferred;
+    ---Purpose : Tells if a Field brings a given name
+
+    Field (me; name : CString) returns Field
+    ---Purpose : Returns a Field from its name; read-only
+    	raises InterfaceMismatch  is deferred;
+    --           raises if no Field for <name>
+    ---C++ : return const &
+
+    CField (me : mutable; name : CString) returns Field
+    ---Purpose : Returns a Field from its name; read or write
+    	raises InterfaceMismatch  is deferred;
+    --           raises if no Field for <name>
+    ---C++ : return &
+
+    	--
+
+    Check  (me; ach  : in out Check from Interface)  is deferred;
+    ---Purpose : Fills a Check by using its Description
+
+    Shared (me; list : in out EntityIterator from Interface)  is deferred;
+    ---Purpose : Fills an EntityIterator with entities shared by <me>
+
+fields
+
+    thedescr : EDescr;
+
+end Described;

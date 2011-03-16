@@ -1,0 +1,138 @@
+-- File:	Extrema_GenExtSS.cdl
+-- Created:	Thu Jan 18 10:27:34 1996
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1996
+
+class   GenExtSS from Extrema 
+
+    	---Purpose: It calculates all the extremum distances
+    	--          between two surfaces.
+    	--          These distances can be minimum or maximum.
+
+uses  	POnSurf       from Extrema,
+    	Pnt           from gp,
+	HArray2OfPnt  from TColgp,
+	FuncExtSS     from Extrema,
+	Surface       from Adaptor3d,
+	SurfacePtr    from Adaptor3d
+
+raises  NotDone      from StdFail,
+    	OutOfRange   from Standard,
+	TypeMismatch from Standard
+	
+
+is
+
+    Create returns GenExtSS;
+    
+    Create (S1, S2: Surface from Adaptor3d; NbU,NbV: Integer; Tol1,Tol2: Real)
+    	returns GenExtSS;
+      	---Purpose: It calculates all the distances.
+        --          The function F(u,v)=distance(S1(u1,v1),S2(u2,v2)) has an 
+        --          extremum when gradient(F)=0. The algorithm searchs
+        --          all the zeros inside the definition ranges of the 
+        --          surfaces.
+      	--          NbU and NbV are used to locate the close points
+      	--          to find the zeros. 
+
+    Create (S1, S2: Surface from Adaptor3d; NbU,NbV: Integer; 
+    	    U1min, U1sup, V1min, V1sup: Real; 
+    	    U2min, U2sup, V2min, V2sup: Real; 
+    	    Tol1,Tol2: Real)
+    	returns GenExtSS;
+      	---Purpose: It calculates all the distances.
+        --          The function F(u,v)=distance(P,S(u,v)) has an 
+        --          extremum when gradient(F)=0. The algorithm searchs
+        --          all the zeros inside the definition ranges of the 
+        --          surface.
+      	--          NbU and NbV are used to locate the close points
+      	--          to find the zeros. 
+    
+    Initialize(me: in out; S2: Surface from Adaptor3d; 
+    	       NbU, NbV: Integer; Tol2: Real)
+    	---Pupose: sets the fields of the algorithm.
+    is static;
+
+
+    Initialize(me: in out; S2: Surface from Adaptor3d; NbU, NbV: Integer; 
+    	       U2min, U2sup, V2min, V2sup: Real; Tol2: Real)
+    	---Pupose: sets the fields of the algorithm.
+    is static;
+    
+
+    Perform(me: in out; S1: Surface from Adaptor3d; Tol1: Real)
+        ---Purpose: the algorithm is done with S1
+        --          An exception is raised if the fields have not
+        --          been initialized.  
+    raises TypeMismatch from Standard
+    is static;
+
+    Perform(me: in out; S1: Surface from Adaptor3d;
+            U1min, U1sup, V1min, V1sup: Real; Tol1: Real)
+        ---Purpose: the algorithm is done withS1
+        --          An exception is raised if the fields have not
+        --          been initialized.  
+    raises TypeMismatch from Standard
+    is static;
+
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+    
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Returns the value of the Nth resulting square distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    PointOnS1 (me; N: Integer) returns POnSurf
+    	---Purpose: Returns the point of the Nth resulting distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    PointOnS2 (me; N: Integer) returns POnSurf
+    	---Purpose: Returns the point of the Nth resulting distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    Bidon(me) returns SurfacePtr from Adaptor3d
+    is static private;
+
+fields
+    myDone     : Boolean;
+    myInit     : Boolean;
+    myu1min    : Real;
+    myu1sup    : Real;
+    myv1min    : Real;
+    myv1sup    : Real;
+    myu2min    : Real;
+    myu2sup    : Real;
+    myv2min    : Real;
+    myv2sup    : Real;
+    myusample  : Integer;
+    myvsample  : Integer;
+    mypoints1  : HArray2OfPnt from TColgp;
+    mypoints2  : HArray2OfPnt from TColgp;
+    mytol1     : Real;
+    mytol2     : Real;
+    myF	       : FuncExtSS from Extrema;
+    myS1       : SurfacePtr from Adaptor3d;
+    myS2       : SurfacePtr from Adaptor3d;
+
+end GenExtSS;

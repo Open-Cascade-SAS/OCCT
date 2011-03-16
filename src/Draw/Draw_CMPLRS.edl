@@ -1,0 +1,6 @@
+
+@uses "CSF.edl";
+
+---@string %CMPLRS_CXX_Options += " -I"%CSF_TCL_INCLUDE" -DUSE_TK";
+@string %CMPLRS_CXX_Options += " -I"%CSF_TCL_INCLUDE;
+

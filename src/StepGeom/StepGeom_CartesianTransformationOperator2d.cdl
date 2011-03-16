@@ -1,0 +1,20 @@
+-- File:	StepGeom_CartesianTransformationOperator2d.cdl
+-- Created:	Wed Mar 26 15:17:23 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CartesianTransformationOperator2d  from StepGeom
+
+inherits CartesianTransformationOperator from StepGeom
+
+    ---Purpose : Added from StepGeom Rev2 to Rev4
+
+uses Boolean
+
+is
+
+    Create returns mutable CartesianTransformationOperator2d from StepGeom;
+
+end CartesianTransformationOperator2d;

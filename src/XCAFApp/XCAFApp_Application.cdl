@@ -1,0 +1,46 @@
+-- File:	XCAFApp_Application.cdl
+-- Created:	Wed May 24 09:27:01 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Application from XCAFApp inherits Application from TDocStd
+
+    ---Purpose: Implements an Application for the DECAF documents
+
+uses
+    SequenceOfExtendedString from TColStd,
+    Document from TDocStd
+
+is
+
+    Create returns mutable Application from XCAFApp is private;
+
+
+    ---Purpose: methods from CDF_Application
+    --          ============================
+
+
+    Formats(me: mutable; Formats: out SequenceOfExtendedString from TColStd) 
+    is redefined;    
+
+
+    ResourcesName (me: mutable) returns CString from Standard is redefined;
+
+    ---Purpose: methods from TDocStd_Application
+    --          ================================
+
+    InitDocument (me; aDoc : Document from TDocStd) is redefined;
+    ---Purpose: Set XCAFDoc_DocumentTool attribute
+    
+    ---API: method for initialisation
+
+    GetApplication (myclass) returns Application from XCAFApp;
+    ---Purpose: Initializes (for the first time) and returns the 
+    --          static object (XCAFApp_Application)
+    --          This is the only valid method to get XCAFApp_Application
+    --          object, and it should be called at least once before
+    --          any actions with documents in order to init application
+
+end Application;

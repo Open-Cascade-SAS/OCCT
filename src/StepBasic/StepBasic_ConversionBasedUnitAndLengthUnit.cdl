@@ -1,0 +1,42 @@
+-- File:        ConversionBasedUnitAndLengthUnit.cdl
+-- Created:     Fri Dec  1 11:11:34 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConversionBasedUnitAndLengthUnit from StepBasic inherits ConversionBasedUnit from StepBasic 
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    LengthUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    HAsciiString from TCollection, 
+    MeasureWithUnit from StepBasic
+    
+is
+
+    Create returns mutable ConversionBasedUnitAndLengthUnit;
+	---Purpose: Returns a ConversionBasedUnitAndLengthUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
+	               aName      : mutable HAsciiString from TCollection;
+	               aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetLengthUnit(me: mutable; aLengthUnit: mutable LengthUnit);
+    
+    LengthUnit (me) returns mutable LengthUnit;
+
+    -- Specific Methods for ANDOR Field Data Access --
+
+fields
+
+    lengthUnit: LengthUnit from StepBasic;
+
+end ConversionBasedUnitAndLengthUnit;

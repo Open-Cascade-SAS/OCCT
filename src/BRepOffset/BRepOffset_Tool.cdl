@@ -1,0 +1,170 @@
+-- File:	BRepOffset_Tool.cdl
+-- Created:	Mon Oct 23 14:15:53 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Tool from BRepOffset 
+
+	---Purpose: 
+
+uses
+    Edge                      from TopoDS,
+    Face                      from TopoDS,
+    Wire                      from TopoDS,
+    Shape                     from TopoDS,
+    Orientation               from TopAbs,
+    MapOfShape                from TopTools,
+    DataMapOfShapeShape       from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    ListOfShape               from TopTools,	
+    Vertex                    from TopoDS,
+    State                     from TopAbs,
+    Image                     from BRepAlgo,
+    AsDes                     from BRepAlgo, 
+    Analyse                   from BRepOffset, 
+    Curve                     from Geom
+    
+is
+    EdgeVertices (myclass; E  : Edge   from TopoDS;
+    	    	    	   V1 : in out Vertex from TopoDS;
+    	    	    	   V2 : in out Vertex from TopoDS);
+    	---Purpose: <V1> is the FirstVertex ,<V2> is the Last Vertex of <Edge> 
+    	--          taking account the orientation of Edge.
+    
+    OriEdgeInFace (myclass; E : Edge from TopoDS;
+    	    	    	    F : Face from TopoDS)
+    	---Purpose: returns the cumul  of the orientation  of <Edge>
+    	--          and thc containing wire in <Face>
+    returns Orientation from TopAbs;
+    
+
+			
+    OrientSection (myclass; E     : Edge from TopoDS;
+			    F1,F2 : Face from TopoDS;
+			    O1,O2 : in out Orientation from TopAbs);	
+    	---Purpose: <E> is a section  between <F1> and <F2>.  Computes 
+    	--          <O1> the orientation of <E> in <F1> influenced by <F2>.
+    	--          idem for <O2>.
+
+    HasCommonShapes (myclass; F1,F2 : Face from TopoDS;
+        	    	      LE    : in out ListOfShape from TopTools;
+    	    	    	      LV    : in out ListOfShape from TopTools)
+    	---Purpose: Returns True if  <F1> and <F2> has common Vertices
+    	--          or edges , <LE> contains the common edges. <LV> the
+    	--          common vertices.
+    returns Boolean from Standard;			     
+
+    Inter3D (myclass; F1, F2 :        Face        from TopoDS;
+                      LInt1  : in out ListOfShape from TopTools;
+		      LInt2  : in out ListOfShape from TopTools;
+    	    	      Side   :        State       from TopAbs; 
+    	    	      RefEdge :          Edge from TopoDS; 
+    	    	      IsRefEdgeDefined : Boolean from Standard = Standard_False);
+
+     	---Purpose: Computes the   Section betwwen  <F1> and  <F2> the
+    	--          edges solution   are  stored in <LInt1>  with  the
+    	--          orientation on <F1>, the sames edges are stored in
+    	--          <Lint2> with the orientation on <F2>.
+		      
+    TryProject (myclass; F1, F2 :        Face        from TopoDS;
+    	    	    	 Edges  :        ListOfShape from TopTools;
+                	 LInt1  : in out ListOfShape from TopTools;
+		         LInt2  : in out ListOfShape from TopTools;
+    	    	         Side   :        State       from TopAbs;
+    	                 TolConf:        Real        from Standard)
+			 
+	 ---Purpose: Find if the edges <Edges> of the face <F2> are on
+	 --          the face <F1>.
+	 --          Set in <LInt1> <LInt2> the updated edges.
+	 --          If all the edges are computed, returns true.
+	 --          
+    returns Boolean from Standard;
+		      
+    PipeInter (myclass; F1, F2 :        Face        from TopoDS;
+                        LInt1  : in out ListOfShape from TopTools;
+		        LInt2  : in out ListOfShape from TopTools;    	
+    	    	        Side   :        State       from TopAbs);
+
+    Inter2d (myclass; F     :        Face        from TopoDS;
+    		      E1,E2 :        Edge        from TopoDS;
+		      LV    : in out ListOfShape from TopTools;
+		      Tol   :        Real        from Standard);   
+
+    InterOrExtent (myclass; F1, F2 :        Face        from TopoDS;
+    			    LInt1  : in out ListOfShape from TopTools;
+		            LInt2  : in out ListOfShape from TopTools;
+    	    	            Side   :        State       from TopAbs);
+			    
+    CheckBounds(myclass; F : Face from TopoDS;			    
+                         Analyse : Analyse from BRepOffset;
+                         enlargeU, enlargeVfirst,  enlargeVlast : out Boolean from Standard);
+			    
+    EnLargeFace(myclass; F            :        Face from TopoDS;			    
+                         NF           : in out Face from TopoDS;			     
+			 ChangeGeom   :        Boolean from Standard;
+			 UpDatePCurve :        Boolean from Standard = Standard_False; 
+			 enlargeU      :        Boolean from Standard = Standard_True;
+			 enlargeVfirst :        Boolean from Standard = Standard_True;
+			 enlargeVlast  :        Boolean from Standard = Standard_True)
+    	---Purpose: if <ChangeGeom> is TRUE  ,   the surface  can  be
+    	--          changed .   
+    	--          if <UpdatePCurve>  is  TRUE, update the  pcurves of the
+    	--          edges of <F> on   the new surface.if the surface has  been changed,
+    	--          Returns  True if The Surface of  <NF> has changed.
+    	--          
+    returns Boolean from Standard;			 
+
+    ExtentFace (myclass;
+    	    	F           :        Face                from TopoDS;
+	        ConstShapes : in out DataMapOfShapeShape from TopTools;
+    	    	ToBuild     : in out DataMapOfShapeShape from TopTools;
+		Side        :        State               from TopAbs ;
+		TolConf     :        Real                from Standard;    
+		NF          : in out Face                from TopoDS);
+			 
+			 
+    BuildNeighbour (myclass;
+	            W      :         Wire from TopoDS;
+		    F      :         Face from TopoDS;
+		    NOnV1  :  in out DataMapOfShapeShape from TopTools;
+		    NOnV2  :  in out DataMapOfShapeShape from TopTools);
+    	---Purpose: Via the wire explorer store in <NOnV1> for 
+    	--          an Edge <E> of <W> his Edge neighbour on the first
+    	--          vertex <V1> of <E>.
+    	--          Store in NOnV2 the Neighbour of <E>on the last 
+    	--          vertex <V2> of <E>.
+
+    MapVertexEdges (myclass;
+		    S      :        Shape                     from TopoDS;
+		    MVE    : in out DataMapOfShapeListOfShape from TopTools); 
+       ---Purpose: Store in MVE for a vertex <V>  in <S> the incident
+       --          edges <E> in <S>.
+       --          An Edge is Store only one Time for a vertex.
+
+
+    
+    Deboucle3D (myclass;
+    	    	S        : in Shape      from TopoDS;
+    	    	Boundary : in MapOfShape from TopTools)
+	---Purpose: Remove the non valid   part of an offsetshape 
+	--          1 - Remove all the free boundary  and the faces 
+	--          connex to such edges.
+	--          2 - Remove all the shapes not  valid in the result
+	--          (according to the side of offseting)
+	--   in this verion only the first point is implemented.
+    returns Shape from TopoDS;
+    
+    CorrectOrientation (myclass ;
+    	    	    	SI         : in     Shape      from TopoDS;
+			NewEdges   : in     MapOfShape from TopTools;    
+    	    	    	AsDes      : in out AsDes      from BRepAlgo;
+    	    	    	InitOffset : in out Image      from BRepAlgo;
+    	    	    	Offset     : in     Real       from Standard);
+    
+    Gabarit(myclass ; 
+    	    aCurve  :  Curve from Geom) 
+    returns Real from Standard;
+    
+end Tool;

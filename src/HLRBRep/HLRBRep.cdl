@@ -1,0 +1,139 @@
+-- File:	HLRBRep.cdl
+-- Created:	Wed Oct 14 11:08:52 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+package HLRBRep 
+    ---Purpose: Hidden Lines Removal
+    --          algorithms on the BRep DataStructure.
+    --          
+    --          The class PolyAlgo  is used to remove Hidden lines
+    --          on Shapes with Triangulations.
+
+uses
+    Standard,
+    StdFail,
+    MMgt,
+    gp,
+    Geom,
+    Geom2d,
+    TCollection,
+    TColgp,
+    TColStd,
+    GeomAbs,
+    LProp,
+    IntRes2d,
+    IntCurve,
+    IntCurveSurface,
+    TopAbs,
+    TopoDS,
+    TopExp,
+    TopTools,
+    HLRAlgo,
+    Adaptor3d,
+    BRep,
+    BRepAdaptor,
+    BRepTopAdaptor,
+    HLRTopoBRep
+
+is
+    class CurveTool;
+    class BCurveTool;
+    class Curve;
+    class SurfaceTool;
+    class BSurfaceTool;
+    class Surface;
+
+    class CLPropsATool;
+    class CLProps       instantiates CLProps          from LProp (
+    	Address      from Standard, -- as Curve from HLRBRep
+	Vec2d        from gp,
+	Pnt2d        from gp,
+	Dir2d        from gp,
+	CLPropsATool from HLRBRep);
+
+    class SLPropsATool;
+    class SLProps       instantiates SLProps          from LProp (
+    	Address      from Standard, -- as Surface from HLRBRep
+	SLPropsATool from HLRBRep);
+
+    class CInter        instantiates IntCurveCurveGen from IntCurve ( 
+    	Address   from Standard,
+    	CurveTool from HLRBRep);
+
+    class LineTool;
+
+    class InterCSurf    instantiates Inter            from IntCurveSurface (
+    	Lin         from gp,
+	LineTool    from HLRBRep,
+    	Address     from Standard,
+        SurfaceTool from HLRBRep);
+
+    class EdgeFaceTool;
+
+    class Intersector;
+    
+    class EdgeData;
+	
+    class FaceData;
+    
+    class FaceIterator;
+	
+    class Array1OfEData instantiates Array1           from TCollection
+    	(EdgeData from HLRBRep);
+
+    class Array1OfFData instantiates Array1           from TCollection
+    	(FaceData from HLRBRep);
+
+    class Data;
+
+    class ShapeToHLR;
+
+    class HLRToShape;
+
+    class ShapeBounds;
+
+    class SeqOfShapeBounds instantiates Sequence from TCollection
+    	(ShapeBounds from HLRBRep);
+
+    class EdgeInterferenceTool;
+
+    class VertexList;
+
+    class EdgeIList;
+    
+    class AreaLimit;
+    
+    class EdgeBuilder;
+
+    class Hider;
+    
+    class InternalAlgo;
+    
+    class Algo;
+	---Purpose: Inherited  from InternalAlgo  to  provide  methods
+	--          with Shape from TopoDS.
+    
+    class PolyAlgo;
+	---Purpose: to remove Hidden lines on Shapes with Triangulations.
+    
+    class BiPoint;
+    class BiPnt2D;
+    
+    class ListOfBPoint instantiates List from TCollection (
+    	BiPoint from HLRBRep);
+
+    class ListOfBPnt2D instantiates List from TCollection (
+    	BiPnt2D from HLRBRep);
+
+    class PolyHLRToShape;
+
+    MakeEdge(ec    : Curve from HLRBRep;
+             U1,U2 : Real  from Standard)
+    returns Edge from TopoDS;
+    
+    PolyHLRAngleAndDeflection(InAngl           :     Real from Standard;
+                              OutAngl, OutDefl : out Real from Standard);
+    
+end HLRBRep;

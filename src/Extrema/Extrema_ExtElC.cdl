@@ -1,0 +1,136 @@
+-- File:	ExtElC.cdl
+-- Created:	Thu Feb 21 18:49:13 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class   ExtElC from Extrema 
+	---Purpose: It calculates all the distance between two elementary
+	--          curves.
+	--          These distances can be maximum or minimum.
+
+uses    Circ    from gp,
+     	Elips   from gp,
+     	Hypr    from gp,
+    	Lin     from gp,
+     	Parab   from gp,
+	POnCurv from Extrema
+
+raises  InfiniteSolutions from StdFail,
+    	NotDone           from StdFail,
+    	OutOfRange        from Standard
+
+is
+    Create returns ExtElC;
+
+    Create (C1,C2: Lin; AngTol: Real) returns ExtElC;
+      	---Purpose: Calculates the distance between two lines.
+      	--          AngTol is used to test if the lines are parallel:
+      	--          Angle(C1,C2) < AngTol.
+    
+    Create (C1: Lin; C2: Circ; Tol: Real) returns ExtElC;
+        ---Purpose: Calculates the distance between a line and a 
+        --          circle.
+                  
+    Create (C1: Lin; C2: Elips) returns ExtElC;
+        ---Purpose: Calculates the distance between a line and an
+        --          elipse.
+                  
+    Create (C1: Lin; C2: Hypr) returns ExtElC;
+        ---Purpose: Calculates the distance between a line and a
+        --          hyperbola.
+                  
+    Create (C1: Lin; C2: Parab) returns ExtElC;
+        ---Purpose: Calculates the distance between a line and a
+        --          parabola.
+
+    Create (C1,C2: Circ) returns ExtElC;
+      	---Purpose: Calculates the distance between two circles.
+      	--          The circles can be parallel or identical.
+    
+    Create (C1: Circ; C2: Elips) returns ExtElC;
+        ---Purpose: Calculates the distance between a circle and an
+        --          elipse.
+                  
+    Create (C1: Circ; C2: Hypr) returns ExtElC;
+        ---Purpose: Calculates the distance between a circle and a
+        --          hyperbola.
+                  
+    Create (C1: Circ; C2: Parab) returns ExtElC;
+        ---Purpose: Calculates the distance between a circle and a
+        --          parabola.
+                  
+    Create (C1,C2: Elips) returns ExtElC;
+      	---Purpose: Calculates the distance between two elipses.
+      	--          The elipses can be parallel or identical.
+    
+    Create (C1: Elips; C2: Hypr) returns ExtElC;
+        ---Purpose: Calculates the distance between an elipse and a
+        --          hyperbola.
+                  
+    Create (C1: Elips; C2: Parab) returns ExtElC;
+        ---Purpose: Calculates the distance between an elipse and a
+        --          parabola.
+
+    Create (C1,C2: Hypr) returns ExtElC;
+      	---Purpose: Calculates the distance between two hyperbolas.
+      	--          The hyperbolas can be parallel or identical.
+    
+    Create (C1: Hypr; C2: Parab) returns ExtElC;
+        ---Purpose: Calculates the distance between a hyperbola and a
+        --          parabola.
+
+    Create (C1,C2: Parab) returns ExtElC;
+      	---Purpose: Calculates the distance between two parabolas
+      	--          The parabolas can be parallel or identical.
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the two curves are parallel.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)= True.
+    	is static;
+
+    SquareDistance (me; N: Integer =1) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True and N > 1.
+    	    	OutOfRange from Standard
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+    Points (me; N: Integer; P1,P2: out POnCurv)
+    	---Purpose: Returns the points of the Nth extremum distance.
+    	--          P1 is on the first curve, P2 on the second one.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True.
+    	    	OutOfRange from Standard
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+fields
+    myDone : Boolean;
+    myIsPar: Boolean;
+    myNbExt: Integer;
+    --modified by NIZNHY-PKV Fri Nov 21 10:47:21 2008 ft  
+    --  it was *[4]	
+    mySqDist: Real [6];
+    myPoint: POnCurv from Extrema [6,2];
+
+end ExtElC;

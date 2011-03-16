@@ -1,0 +1,51 @@
+--
+-- File      :  Name.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Name from IGESBasic  inherits NameEntity
+
+        ---Purpose: defines Name, Type <406> Form <15>
+        --          in package IGESBasic
+        --          Used to specify a user defined name
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable Name;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me :  mutable; nbPropVal : Integer; aName : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class Name
+        --       - nbPropVal  : Number of property values, always = 1
+        --       - aName      : Stores the Name
+
+        NbPropertyValues (me) returns Integer ;
+        ---Purpose : returns the number of property values, which should be 1
+
+        Value (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the user defined Name
+
+fields
+
+--
+-- Class    : IGESBasic_Name
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Name.
+--
+-- Reminder : A Name instance is defined by :
+--            - the number of property values (equal to 1)
+--            - the name
+
+        theNbPropertyValues : Integer;
+        theName             : HAsciiString from TCollection;
+
+end Name;

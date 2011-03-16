@@ -1,0 +1,15 @@
+// File:	AIS_ConnectedInteractive.lxx
+// Created:	Wed Jan  8 15:25:08 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+
+inline const Handle(AIS_InteractiveObject)& AIS_ConnectedInteractive::ConnectedTo() const 
+{return myReference;}
+
+
+inline Standard_Boolean AIS_ConnectedInteractive::HasConnection() const 
+{return !myReference.IsNull();}
+
+inline Standard_Boolean AIS_ConnectedInteractive::AcceptShapeDecomposition() const
+{return myReference.IsNull()? Standard_False : myReference->AcceptShapeDecomposition();}

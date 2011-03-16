@@ -1,0 +1,143 @@
+-- File:	Transfer_ResultFromModel.cdl
+-- Created:	Thu Nov 16 10:07:40 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ResultFromModel  from Transfer    inherits TShared
+
+    ---Purpose : ResultFromModel is used to store a final result stored in a
+    --           TransientProcess, respectfully to its structuration in scopes
+    --           by using a set of ResultFromTransient
+    --           Hence, it can be regarded as a passive equivalent of the
+    --           stored data in the TransientProcess, while an Iterator gives
+    --           a flat view of it.
+    --           
+    --           A ResultFromModel is intended to be attached to the transfer
+    --           of one entity (typically root entity but it is not mandatory)
+    --           
+    --           It is then possible to :
+    --           - Create and fill a ResultFromModel from a TransientProcess,
+    --             by designating a starting entity
+    --           - Fill back the TransientProcess from a ResultFromModel, as it
+    --             were filled by the operation which filled it the first time
+
+uses CString, AsciiString, HSequenceOfTransient from TColStd,
+     InterfaceModel, CheckIterator, CheckStatus,
+     ResultFromTransient, TransientProcess
+
+is
+
+    Create returns mutable ResultFromModel;
+    ---Purpose : Creates a ResultFromModel, empty
+
+    SetModel (me : mutable; model : InterfaceModel);
+    ---Purpose : Sets starting Model
+
+    SetFileName (me : mutable; filename : CString);
+    ---Purpose : Sets starting File Name
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns starting Model (null if not set)
+
+    FileName (me) returns CString;
+    ---Purpose : Returns starting File Name (empty if not set)
+
+    Fill (me : mutable; TP : TransientProcess; ent : Transient) returns Boolean;
+    ---Purpose : Fills from a TransientProcess, with the result attached to
+    --           a starting entity. Considers its Model if it is set.
+    --           This action produces a structured set of ResultFromTransient,
+    --           considering scopes, starting by that of <ent>.
+    --           If <ent> has no recorded result, it remains empty
+    --           Returns True if a result is recorded, False else
+
+    Strip (me : mutable; mode : Integer);
+    ---Purpose : Clears some data attached to binders used by TransientProcess,
+    --           which become useless once the transfer has been done,
+    --           by calling Strip on its ResultFromTransient
+    --           
+    --           mode = 0 : minimum, clears data remaining from TransferProcess
+    --           mode = 10 : just keeps file name, label, check status ...,
+    --             and MainResult but only the result (Binder)
+    --           mode = 11 : also clears MainResult (status and names remain)
+
+    FillBack (me; TP : mutable TransientProcess);
+    ---Purpose : Fills back a TransientProcess from the structured set of
+    --           binders. Also sets the Model.
+
+
+    HasResult (me) returns Boolean;
+    ---Purpose : Returns True if a Result is recorded
+
+    MainResult (me) returns ResultFromTransient;
+    ---Purpose : Returns the main recorded ResultFromTransient, or a null
+
+    SetMainResult (me : mutable; amain : ResultFromTransient);
+    ---Purpose : Sets a new value for the main recorded ResultFromTransient
+
+    MainLabel  (me) returns CString;
+    ---Purpose : Returns the label in starting model attached to main entity
+    --           (updated by Fill or SetMainResult, if Model is known)
+
+    MainNumber (me) returns Integer;
+    ---Purpose : Returns the label in starting model attached to main entity
+
+    	--  Global Queries  --
+
+    ResultFromKey (me; start : Transient) returns ResultFromTransient;
+    ---Purpose : Searches for a key (starting entity) and returns its result
+    --           Returns a null handle if not found
+
+    Results (me; level : Integer) returns HSequenceOfTransient;
+    ---Purpose : Internal method which returns the list of ResultFromTransient,
+    --           according level (2:complete; 1:sub-level 1; 0:main only)
+
+    TransferredList (me; level : Integer = 2) returns HSequenceOfTransient;
+    ---Purpose : Returns the list of recorded starting entities, ending by the
+    --           root. Entities with check but no transfer result are ignored
+    --           <level> = 2 (D), considers the complete list
+    --           <level> = 1      considers the main result plus immediate subs
+    --           <level> = 0      just the main result
+
+    CheckedList (me; check : CheckStatus; result : Boolean)
+    	 returns HSequenceOfTransient;
+    ---Purpose : Returns the list of starting entities to which a check status
+    --           is attached.
+    --           <check> = -2 , all entities whatever the check (see result)
+    --           <check> = -1 , entities with no fail (warning allowed)
+    --           <check> =  0 , entities with no check at all
+    --           <check> =  1 , entities with warning but no fail
+    --           <check> =  2 , entities with fail
+    --           <result> : if True, only entities with an attached result
+    --           Remark : result True and check=0 will give an empty list
+
+    CheckList  (me; erronly : Boolean; level : Integer = 2)
+    	returns CheckIterator;
+    ---Purpose : Returns the check-list of this set of results
+    --           <erronly> true : only fails are considered
+    --           <level> = 0 : considers only main binder
+    --           <level> = 1 : considers main binder plus immediate subs
+    --           <level> = 2 (D) : considers all checks
+
+    CheckStatus (me) returns CheckStatus;
+    ---Purpose : Returns the check status with corresponds to the content
+    --           of this ResultFromModel; considers all levels of transfer
+    --           (worst status). Returns CheckAny if not yet computed
+    --           Reads it from recorded status if already computed, else
+    --           recomputes one
+
+    ComputeCheckStatus (me : mutable; enforce : Boolean) returns CheckStatus;
+    ---Purpose : Computes and records check status (see CheckStatus)
+    --           Does not computes it if already done and <enforce> False
+
+fields
+
+    themodel : InterfaceModel;
+    thename  : AsciiString;
+    themain  : ResultFromTransient;
+    themlab  : AsciiString;
+    themnum  : Integer;
+    themchk  : CheckStatus;
+
+end ResultFromModel;

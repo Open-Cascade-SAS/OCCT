@@ -1,0 +1,21 @@
+-- File:	AppBlend.cdl
+-- Created:	Mon Dec 13 16:28:26 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+package AppBlend
+
+uses StdFail, MMgt, TCollection, TColStd, TColgp, GeomAbs
+
+is
+
+    deferred generic class Line;
+    
+    deferred generic class SectionGenerator;
+    
+    deferred class Approx;
+
+    generic class AppSurf;
+
+end AppBlend;

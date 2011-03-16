@@ -1,0 +1,63 @@
+-- File:	BRepPrim_Wedge.cdl
+-- Created:	Mon Jan  9 14:10:54 1995
+-- Author:	Modelistation
+--		<model@mastox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Wedge from BRepPrim inherits GWedge from BRepPrim
+
+	---Purpose: Provides constructors without Builders.
+
+uses
+    Ax2 from gp,
+    Pnt from gp
+
+raises
+    DomainError
+
+is
+
+    Create(Axes : Ax2 from gp; dx, dy, dz : Real)
+    returns Wedge from BRepPrim
+	---Purpose: Creates a  Wedge  algorithm.   <Axes> is  the axis
+	--          system for the primitive.
+	--          
+	--          XMin, YMin, ZMin are set to 0
+	--          XMax, YMax, ZMax are set to dx, dy, dz
+	--          Z2Min = ZMin
+	--          Z2Max = ZMax
+	--          X2Min = XMin
+	--          X2Max = XMax
+	--          The result is a box
+	--          dx,dy,dz should be positive
+	raises DomainError;
+
+    Create(Axes : Ax2 from gp; dx, dy, dz, ltx : Real)
+    returns Wedge from BRepPrim
+	---Purpose: Creates  a Wedge  primitive. <Axes> is   the  axis
+	--          system for the primitive.
+	--          
+	--          XMin, YMin, ZMin are set to 0
+	--          XMax, YMax, ZMax are set to dx, dy, dz
+	--          Z2Min = ZMin
+	--          Z2Max = ZMax
+	--          X2Min = ltx
+	--          X2Max = ltx
+	--          The result is a STEP right angular wedge
+	--          dx,dy,dz should be positive
+	--          ltx should not be negative
+	raises DomainError;
+
+    Create(Axes : Ax2 from gp; xmin, ymin, zmin, z2min, x2min,
+                                   xmax, ymax, zmax, z2max, x2max : Real)
+    returns Wedge from BRepPrim
+	---Purpose: Create  a Wedge primitive.   <Axes>  is  the  axis
+	--          system for the primitive.
+	--          
+	--          all the fields are set to the corresponding value
+	--          XYZMax - XYZMin should be positive
+	--          ZX2Max - ZX2Min should not be negative 
+	raises DomainError;
+
+end Wedge;

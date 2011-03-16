@@ -1,0 +1,60 @@
+-- File:	StlMesh_MeshTriangle.cdl
+-- Created:	Tue Sep 21 09:59:49 1995
+-- Author:	 Philippe GIRODENGO
+---Copyright:	 Matra Datavision 1995
+
+
+
+class MeshTriangle from StlMesh inherits TShared from MMgt
+
+	---Purpose: A  mesh triangle is defined with
+	--          three geometric vertices and an orientation
+	--          
+
+raises 
+
+    NegativeValue from Standard
+
+is
+
+    Create  returns mutable MeshTriangle;
+    	---Purpose: empty constructor
+
+
+    Create (V1, V2, V3 : Integer; Xn, Yn, Zn : Real)  returns mutable MeshTriangle
+        ---Purpose: create a triangle defined with the indexes of its three vertices 
+        --          and its orientation
+    raises NegativeValue;
+    	---Purpose: Raised if V1, V2 or V3 is lower than zero
+
+
+    GetVertexAndOrientation (me; V1, V2, V3 : out Integer; Xn, Yn, Zn : out Real);
+        ---Purpose: get indexes of the three vertices (V1,V2,V3) and the orientation
+
+    SetVertexAndOrientation (me : mutable; V1, V2, V3 : in Integer; Xn, Yn, Zn : in Real)
+        ---Purpose: set indexes of the three vertices (V1,V2,V3) and the orientation
+    raises NegativeValue;
+    	---Purpose: Raised if V1, V2 or V3 is lower than zero
+
+
+    GetVertex  (me; V1, V2, V3 : out Integer);
+        ---Purpose: get indexes of the three vertices (V1,V2,V3)
+
+    SetVertex  (me : mutable; V1, V2, V3 : in Integer)
+        ---Purpose: set indexes of the three vertices (V1,V2,V3)
+    raises NegativeValue;
+    	---Purpose: Raised if V1, V2 or V3 is lower than zero
+
+
+fields 
+
+    MyV1     : Integer;
+    MyV2     : Integer;
+    MyV3     : Integer;
+    MyXn     : Real;
+    MyYn     : Real;
+    MyZn     : Real;
+
+end MeshTriangle;
+
+

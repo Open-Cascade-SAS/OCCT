@@ -1,0 +1,30 @@
+-- File:	LevelListEntity.cdl
+-- Created:	Tue Apr  7 16:00:09 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class LevelListEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for LevelList in directory part
+    --           an effective LevelList entity must inherits it
+
+uses Boolean, Integer
+
+raises OutOfRange
+
+is
+
+    NbLevelNumbers (me) returns Integer  is deferred;
+    ---Purpose : Must return the count of levels
+
+    LevelNumber (me; num : Integer) returns Integer
+        raises OutOfRange  is deferred;
+    ---Purpose : returns the Level Number of <me>, indicated by <num>
+    -- raises an exception if num is out of range
+
+    HasLevelNumber (me; level : Integer) returns Boolean;
+    ---Purpose : returns True if <level> is in the list
+
+end LevelListEntity;

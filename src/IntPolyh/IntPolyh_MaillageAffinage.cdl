@@ -1,0 +1,295 @@
+-- File:	IntPolyh_MaillageAffinage.cdl
+-- Created:	Wed Mar  3 11:23:52 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+--Copyright:	 Matra Datavision 1999
+
+-- Modified by skv - Thu Sep 25 16:51:09 2003 OCC567
+-- The method GetArrayOfCouples() is added. The Boolean flag isShiftFwd is 
+-- added to the method FillArrayOfPnt(..).
+-- The method GetArrayOfCouples() returns array of couples of contact triangles. 
+-- The flag isShiftFwd shows whether circumscribed (Standard_True) or inscribed 
+-- (Standard_False) mesh should be constructed.
+-- modified by ofv Thu Apr  8 14:45:35 2004 fip
+
+class MaillageAffinage from IntPolyh
+
+
+uses
+    Box                 from Bnd,
+    Pnt	                from gp,
+    HSurface            from Adaptor3d,
+    TopolTool           from Adaptor3d, 
+    Point               from IntPolyh,
+    StartPoint          from IntPolyh,
+    Edge                from IntPolyh,
+    Triangle            from IntPolyh,
+    ArrayOfCouples      from IntPolyh,
+    ArrayOfPoints       from IntPolyh,
+    ArrayOfStartPoints  from IntPolyh,
+    ArrayOfEdges        from IntPolyh,
+    ArrayOfTriangles    from IntPolyh,
+    SectionLine         from IntPolyh,
+    ArrayOfSectionLines from IntPolyh,
+    ArrayOfTangentZones from IntPolyh, 
+    Array1OfReal        from TColStd
+        
+is 
+
+    Create(S1 : HSurface from Adaptor3d;
+    	   NbSU1,NbSV1 : Integer from Standard;
+    	   S2 : HSurface from Adaptor3d;
+    	   NbSU2,NbSV2 : Integer from Standard;
+    	   PRINT : Integer from Standard);
+        
+    Create(S1,S2: HSurface from Adaptor3d;
+    	   PRINT : Integer from Standard);
+    
+    FillArrayOfPnt(me: in out; SurfID: Integer from Standard)
+    	is static;
+	---Purpose: Compute points on one surface and fill an array of points;
+	---         standard (default) method
+
+    FillArrayOfPnt(me: in out; SurfID    : Integer from Standard; 
+    	    	    	       isShiftFwd: Boolean from Standard) 
+    	---Purpose: isShiftFwd flag is added. The purpose is to define shift 
+    	--          of points along normal to the surface in this point. The 
+    	--          shift length represents maximal deflection of triangulation. 
+    	--          The direction (forward or reversed regarding to normal 
+    	--          direction) is defined by isShiftFwd flag.
+    is static;
+    	---Purpose: Compute points on one surface and fill an array of points;
+	---         advanced method 
+	 
+    --  IFV  start	
+    FillArrayOfPnt(me: in out; SurfID: Integer from Standard;  
+                               Upars, Vpars :  Array1OfReal  from  TColStd)
+    	is static;
+	---Purpose: Compute points on one surface and fill an array of points;
+	---         standard (default) method
+
+    FillArrayOfPnt(me: in out; SurfID    : Integer from Standard; 
+    	    	    	       isShiftFwd: Boolean from Standard; 
+                               Upars, Vpars :  Array1OfReal  from  TColStd) 
+    	---Purpose: isShiftFwd flag is added. The purpose is to define shift 
+    	--          of points along normal to the surface in this point. The 
+    	--          shift length represents maximal deflection of triangulation. 
+    	--          The direction (forward or reversed regarding to normal 
+    	--          direction) is defined by isShiftFwd flag.
+    is static;
+    	---Purpose: Compute points on one surface and fill an array of points;
+	---         advanced method
+ 
+    --  IFV  end     
+    CommonBox(me:in out; B1,B2: Box from Bnd; xMin,yMin,zMin,xMax,yMax,zMax: in out Real from Standard)
+    is static;
+    	---Purpose:  Compute the common box  witch is the intersection
+    	--          of the two bounding boxes,  and mark the points of
+    	--          the two surfaces that are inside.
+    
+    FillArrayOfEdges(me: in out; SurfID: Integer from Standard)
+    is static;
+    	---Purpose: Compute edges from the array of points
+
+    FillArrayOfTriangles(me: in out; SurfID: Integer from Standard)
+    is static;
+    	---Purpose: Compute triangles from the array of points, and --
+    	--           mark the triangles  that use marked points by the
+    	--           CommonBox function.
+    
+    LinkEdges2Triangles(me:in out)
+    is static;
+    	---Purpose: fill the  edge fields in  Triangle object  for the
+    	--          two array of triangles.
+    
+    CommonPartRefinement(me: in out)
+    is static;
+    	---Purpose: Refine systematicaly all marked triangles of both surfaces
+
+    LocalSurfaceRefinement(me: in out; SurfId: Integer from Standard)
+    is static;
+    	---Purpose: Refine systematicaly all marked triangles of ONE surface
+
+    ComputeDeflections(me: in out; SurfID: Integer from Standard) 
+    is static;
+    	---Purpose:  Compute deflection  for   all  triangles  of  one
+    	--          surface,and sort min and max of deflections
+
+
+    TrianglesDeflectionsRefinementBSB(me:in out)
+        is static;
+    	---Purpose:  Refine  both  surfaces using  BoundSortBox  as --
+    	--           rejection.  The  criterions  used to refine a  --
+    	--           triangle are:  The deflection The  size of the --
+    	--           bounding boxes   (one surface may be   very small
+    	--           compared to the other)
+
+    TriContact(me; P1,P2,P3,Q1,Q2,Q3: Point from IntPolyh;
+    	      Angle:in out Real from Standard)
+    returns Integer from Standard
+    is static; 
+	---Purpose: This fonction     Check if two triangles   are  in
+	--          contact or no,  return 1 if yes, return 0
+	--          if no.
+    
+    TriangleEdgeContact(me; TriSurfID, EdgeIndice:  Integer from Standard; 
+    	    	    	P1,P2,P3,C1,C2,C3,Pe1,Pe2,E,N: Point from IntPolyh;
+    	    	    	SP1,SP2: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+
+    TriangleEdgeContact2(me; TriSurfID, EdgeIndice:  Integer from Standard;
+       	    	    	Tri1, Tri2: Triangle from IntPolyh;
+    	    	    	P1,P2,P3,C1,C2,C3,Pe1,Pe2,E,N: Point from IntPolyh;
+    	    	    	SP1,SP2: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+
+    StartingPointsResearch(me; T1,T2: Integer from Standard;
+    	    	    	   SP1,SP2: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+	
+    StartingPointsResearch2(me; T1,T2: Integer from Standard;
+    	    	    	   SP1,SP2: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+    	---Purpose: From  two  triangles compute intersection  points.
+    	--            If I found   more  than two intersection  points
+    	--          that's mean that those triangle are coplanar
+	
+    NextStartingPointsResearch(me; T1,T2: Integer from Standard;
+    			       SPInit: StartPoint from IntPolyh;
+    	    	    	       SPNext: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+
+    NextStartingPointsResearch2(me; T1,T2: Integer from Standard;
+    			       	SPInit: StartPoint from IntPolyh;
+    	    	    	        SPNext: in out StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+    	---Purpose: from  two triangles  and an intersection   point I
+    	--          seach the other point (if it exist).
+    	--          This function is used by StartPointChain
+
+    TriangleCompare(me :in out)
+    returns Integer from Standard
+    is static;
+    	---Purpose: Analyse  each couple of  triangles from the two --
+    	--             array  of triangles,  to   see  if they are  in
+    	--           contact,  and  compute the  incidence.  Then  put
+    	--            couples  in contact  in  the  array  of  couples
+
+    TriangleComparePSP(me :in out)
+    returns Integer from Standard
+    is static;
+    	---Purpose:  The   same as   TriangleCompare, plus compute the
+    	--          StartPoints without chaining them.
+
+    StartPointsCalcul(me)
+    is static;
+    	---Purpose:  From the array  of couples compute  all the start
+    	--          points and display them on the screen
+
+    StartPointsChain(me: in out; 
+    	    	     TSectionLines: in out ArrayOfSectionLines from IntPolyh;
+    	    	     TTangentZones: in out ArrayOfTangentZones from IntPolyh)
+    returns Integer from Standard
+    is static;
+    	---Purpose: Loop on the array of couples. Compute StartPoints.
+    	--          Try to chain  the StartPoints into SectionLines or
+    	--          put  the  point  in  the    ArrayOfTangentZones if
+    	--          chaining it, is not possible.
+
+    GetNextChainStartPoint(me: in out; 
+                           SPInit: StartPoint from IntPolyh; 
+                           SPNext: in out StartPoint from IntPolyh;
+    	    	    	   MySectionLine: in out SectionLine from IntPolyh;
+    	    	    	   TTangentZones: in out ArrayOfTangentZones from IntPolyh;
+                           Prepend : Boolean from Standard = Standard_False)
+    returns Integer from Standard
+    is static;
+        ---Purpose:  Mainly  used  by StartPointsChain(), this function
+    	--           try to compute the next StartPoint.
+
+    GetArrayOfPoints(me; SurfID: Integer from Standard)
+    	---C++: return const &
+    returns ArrayOfPoints from IntPolyh
+    is static;
+
+    GetArrayOfEdges(me; SurfID: Integer from Standard)
+    	---C++: return const &
+    returns ArrayOfEdges from IntPolyh
+    is static;
+
+    GetArrayOfTriangles(me; SurfID: Integer from Standard)
+   	---C++: return const &
+    returns ArrayOfTriangles from IntPolyh
+    is static;
+    
+    GetFinTE(me; SurfID: Integer from Standard)
+    returns Integer from Standard
+    is static;
+    
+    GetFinTT(me; SurfID: Integer from Standard)
+    returns Integer from Standard
+    is static;
+    
+    GetBox(me; SurfID: Integer from Standard)
+    returns Box from Bnd
+    is static;
+    
+    GetBoxDraw(me; SurfID: Integer from Standard)
+    is static;    
+
+
+    GetArrayOfSP(me)
+   	---C++: return const &
+    returns ArrayOfStartPoints from IntPolyh
+    is static;
+    
+    GetArrayOfCouples(me:  in  out)
+	---Purpose: This method returns array of couples of contact triangles.
+   	---C++: return & 
+    returns ArrayOfCouples from IntPolyh
+    is static;
+
+    SetEnlargeZone(me: in out; EnlargeZone: in out Boolean from Standard);
+    GetEnlargeZone(me) returns Boolean from Standard;
+
+
+fields
+
+    
+    MaSurface1     : HSurface from Adaptor3d;
+    MaSurface2     : HSurface from Adaptor3d;
+    
+    MyBox1         : Box from Bnd;
+    MyBox2         : Box from Bnd;
+    
+    NbSamplesU1    : Integer from Standard;
+    NbSamplesU2    : Integer from Standard;
+    NbSamplesV1    : Integer from Standard;
+    NbSamplesV2    : Integer from Standard;
+    
+    FlecheMax1     : Real    from Standard;
+    FlecheMax2     : Real    from Standard;
+    FlecheMin1     : Real    from Standard;
+    FlecheMin2     : Real    from Standard;
+    FlecheMoy1     : Real    from Standard;
+    FlecheMoy2     : Real    from Standard;
+
+    TPoints1           : ArrayOfPoints      from IntPolyh;
+    TPoints2           : ArrayOfPoints      from IntPolyh;
+    TEdges1            : ArrayOfEdges       from IntPolyh;
+    TEdges2            : ArrayOfEdges       from IntPolyh;
+    TTriangles1        : ArrayOfTriangles   from IntPolyh;
+    TTriangles2        : ArrayOfTriangles   from IntPolyh;
+    TTrianglesContacts : ArrayOfCouples     from IntPolyh;
+    TStartPoints       : ArrayOfStartPoints from IntPolyh;
+    
+    myEnlargeZone    : Boolean from Standard;
+
+end Test from IntPolyh;
+

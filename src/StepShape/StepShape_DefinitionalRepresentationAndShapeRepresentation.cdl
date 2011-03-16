@@ -1,0 +1,21 @@
+-- File:	StepShape_DefinitionalRepresentationAndShapeRepresentation.cdl
+-- Created:	Thu Jul  6 14:10:05 2000
+-- Author:	Andrey BETENEV
+--		<abv@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DefinitionalRepresentationAndShapeRepresentation from StepShape 
+    inherits DefinitionalRepresentation from StepRepr
+
+    ---Purpose: Implements complex type 
+    -- (DEFINITIONAL_REPRESENTATION,REPRESENTATION,SHAPE_REPRESENTATION)
+
+uses
+    ShapeRepresentation from StepShape
+
+is
+
+    Create returns DefinitionalRepresentationAndShapeRepresentation from StepShape;
+
+end DefinitionalRepresentationAndShapeRepresentation;

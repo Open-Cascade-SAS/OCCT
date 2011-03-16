@@ -1,0 +1,56 @@
+-- File:	TopOpeBRepBuild_Area1dBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class Area1dBuilder from TopOpeBRepBuild 
+    inherits AreaBuilder from TopOpeBRepBuild 
+
+uses
+    
+    PaveSet from TopOpeBRepBuild,
+    PaveClassifier from TopOpeBRepBuild,
+    
+    Loop from TopOpeBRepBuild,
+    ListOfLoop from TopOpeBRepBuild,
+    ListIteratorOfListOfLoop from TopOpeBRepBuild,
+    ListOfListOfLoop from TopOpeBRepBuild,
+    ListIteratorOfListOfListOfLoop from TopOpeBRepBuild,
+    LoopSet from TopOpeBRepBuild,
+    LoopClassifier from TopOpeBRepBuild,
+    LoopEnum from TopOpeBRepBuild
+    
+is
+
+    Create returns Area1dBuilder;
+
+    Create(LS : in out PaveSet; LC : in out PaveClassifier;
+    	   ForceClass : Boolean = Standard_False) returns Area1dBuilder;
+    ---Purpose: Creates a Area1dBuilder to find the areas of
+    -- the shapes described by <LS> using the classifier <LC>.
+    
+    InitAreaBuilder(me : in out;
+    	    	    LS : in out LoopSet; LC : in out LoopClassifier;
+    	    	    ForceClass : Boolean = Standard_False)
+    ---Purpose: Sets a Area1dBuilder to find the areas of
+    -- the shapes described by <LS> using the classifier <LC>.
+    is redefined;
+
+    ADD_Loop_TO_LISTOFLoop(me; L   : Loop;
+    	    	    	       LOL : in out ListOfLoop;
+			         s : Address = NULL) is redefined;
+
+    REM_Loop_FROM_LISTOFLoop(me; ITLOL : in out ListIteratorOfListOfLoop; 
+     	    	    	    	   LOL : in out ListOfLoop;
+			             s : Address = NULL) is redefined;
+
+    ADD_LISTOFLoop_TO_LISTOFLoop(me; LOL1 : in out ListOfLoop;
+    	    	    	             LOL2 : in out ListOfLoop;
+			               s  : Address = NULL;
+			               s1 : Address = NULL;
+			               s2 : Address = NULL) is redefined;
+
+    DumpList(myclass; L:ListOfLoop);
+    
+end Area1dBuilder from TopOpeBRepBuild;

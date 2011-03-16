@@ -1,0 +1,221 @@
+-- File:	Camera.cdl
+-- Created:	Thu Oct 20 10:14:50 1994
+-- Author:	FDA
+---Copyright:	Matra Datavision 1994
+
+
+class Camera from V3d
+
+        ---Version:
+
+	---Purpose: Creation and modification of a spot.
+
+        ---Keywords: 
+
+        ---Warning:
+
+        ---References:
+
+    
+inherits
+
+    	TShared
+
+uses 
+
+	TypeOfOrientation from V3d,
+	TypeOfRepresentation from V3d,
+	TypeOfPickCamera from V3d,
+	Coordinate from V3d,
+	PlaneAngle from Quantity,
+	Coefficient from Quantity,
+	Parameter from Quantity,
+        View from V3d,
+	Structure from Graphic3d,
+	Vertex from Graphic3d,
+	Group from Graphic3d
+
+raises     BadValue from Viewer
+
+
+is
+
+    	Create ( aView : View from V3d ) returns mutable Camera;
+        ---Level: Public
+	---Purpose: Creates the camera which relatives of View
+
+	
+        -----------------------------------------------------------
+        ---Category: Methods to modify the Attributes of the camera
+        -----------------------------------------------------------
+
+    	SetPosition ( me : mutable; X,Y,Z : Coordinate ) is static;
+	---Level: Public
+	---Purpose: Defines the position of the camera.     .
+
+    	SetAngle ( me : mutable; Angle : PlaneAngle ) 
+	---Level: Public
+	---Purpose: Defines the angular position of camera.
+	raises BadValue from Viewer
+	---Purpose:  Warning! raises BadValue from Viewer if Abs(Angle) > 2*PI;
+	--	If the angle is <= 0 ou > PI .
+        is static;
+	
+    	SetAperture ( me : mutable; Angle : PlaneAngle ) 
+	---Level: Public
+	---Purpose: Defines the Aperture.
+	raises BadValue from Viewer
+	---Purpose:  Warning! raises BadValue from Viewer if angle <= 0 or > PI
+        is static;
+	
+        SetTarget (me : mutable; X,Y,Z : Coordinate)
+	---Level: Public
+	---Purpose: Defines the target of the camera.
+        is static;
+	
+        SetRadius ( me : mutable; Radius : Parameter)
+	---Level: Public
+	---Purpose: Define the radius.
+        raises BadValue from Viewer
+	---Purpose:  Warning! raises BadValue from Viewer if radius <= 0 .
+        is static;
+
+        OnHideFace (me : mutable; aView : View from V3d) is static;
+	---Level: Public
+	---Purpose: Calculate the position of the camera, on the hide face
+	--          of the picking sphere.
+
+        OnSeeFace (me : mutable; aView : View from V3d) is static;
+	---Level: Public
+	---Purpose: Calculate the position of the camera, on the seen face
+	--          of the picking sphere.      
+
+    	Tracking (me : mutable;  aView : View from V3d;
+	    	    	    	 WathPick : TypeOfPickCamera from V3d; 
+    	    	    	    	 Xpix,Ypix : Integer from Standard) is static;
+	---Level: Public
+	---Purpose: Tracking the camera position, or the picking sphere,
+	--          or the radius of the picking sphere, that depends of
+	--          initial picking "WhatPick" (see the pick method).
+	--          If WhatPick is SPACECAMERA, then the parameters
+	--          Xpix, Ypix are the coordinates of a translation vector.
+
+
+    	AerialPilot (me : mutable; aView : View from V3d;
+    	    	    	    	 Xpix,Ypix : Integer from Standard) is static;
+	---Level: Public
+        ---Purpose: Permits the driving of the camera in aerial mode.
+        --          The user believes fly in plane ...
+
+        EarthPilot (me : mutable; aView : View from V3d;
+    	    	    	    	 Xpix,Ypix : Integer from Standard) is static;
+	---Level: Public
+	---Purpose: Permits the driving of the camera in earth mode.
+	--          The user believes drive a car ...
+
+        Move (me : mutable; Dist : Parameter) is static;
+	---Level: Public
+	---Purpose: The camera move or move back in the direction camera, 
+	--          target of camera.
+
+        GoUp (me : mutable; Haut : Parameter) is static;
+	---Level: Public
+	---Purpose: The camera go up or go down on the z axis,
+	--          the direction of camera is the same.
+
+        ---------------------------------------------------
+        ---Category: display methods
+        ---------------------------------------------------
+
+        Display(me: mutable; aView: View from V3d;
+	        Representation : TypeOfRepresentation)
+ 	is static;
+	---Level: Public
+	---Purpose: Display the graphic structure of camera
+	--          in the choosen view. We have two types of representation.
+	--          - SIMPLE : Only the camera position is displayed.
+	--          - COMPLETE : The position camera, the picking sphere and 
+	--                       the radius of sphere are displayed.
+
+        Erase(me: mutable) is static;	
+	---Level: Public
+	---Purpose: Erase the graphic structure of camera.
+
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+    	Position ( me; X,Y,Z : out Coordinate ) is static;
+	---Level: Public
+	---Purpose : Returns the position of the camera.
+
+        Target ( me; X,Y,Z : out Coordinate) is static;
+	---Level: Public
+	---Purpose: Returns the position of the target of camera.
+
+    	Angle ( me ) returns PlaneAngle  is static;
+	---Level: Public
+	---Purpose: Returns the angle.
+
+    	Aperture ( me ) returns PlaneAngle  is static;
+	---Level: Public
+	---Purpose: Returns the Aperture.
+
+        Radius (me ) returns Parameter is static;
+	---Level: Public
+	---Purpose: Returns the radius of the picking sphere.
+
+        SeeOrHide (me; aView: View from V3d) returns Boolean is static;
+	---Level: Public
+	---Purpose: Returns a Boolean on the status seen or hidden of the
+	--          camera.
+	--          If True the camera has seen.
+	--          If False the camera has hidden.
+
+        Pick ( me; aView: View from V3d; Xpix, Ypix: Integer from Standard)
+	returns TypeOfPickCamera from V3d is static;
+	---Level: Public
+	---Purpose: Returns the type of pick element.
+	--          "POSITIONCAMERA"  : Representation of camera position.
+	--          "SPACECAMERA"     : Representation of picking sphere. 
+	--          "ExtRADIUSCAMERA" : Representation of extern arrow.
+	--          "IntRADIUSCAMERA" : Representation of intern arrow.
+	--          "RADIUSTEXTCAMERA": Representation of radius value.
+	--          "NOTHINGCAMERA"   : Any component of camera.
+	--          Determinate which type of tracking apply.
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+                      aView   : View from V3d ) is static private;
+	---Level: Internal
+	---Purpose: Defined the representation of camera position.
+
+        SymetricPointOnSphere ( myclass ; aView  : View from V3d;
+    	    	    	    	    	  Center : Vertex from Graphic3d;
+    	    	    	    	    	  aPoint : Vertex from Graphic3d;
+					  Radius : Parameter;
+					  X,Y,Z  : out Coordinate;
+					  VX,VY,VZ : out Parameter ) 
+                                          is private ;
+        ---Level: Internal
+        ---Purpose: Returns the symetric point coordinates of "aPoint"  
+        --          on the sphere of center "Center" and radius "Radius".
+        --          VX,VY,VZ is the project vector of view.
+
+fields
+
+        MyPosition:             Vertex from Graphic3d;
+        MyTarget:               Vertex from Graphic3d;
+	MyAngle:                PlaneAngle from Quantity;
+	MyAperture:             PlaneAngle from Quantity;
+        MyGraphicStructure:     Structure from Graphic3d;
+        MyGraphicStructure1:    Structure from Graphic3d;
+	MyTypeOfRepresentation: TypeOfRepresentation from V3d;
+	
+end Camera;
+
+
+

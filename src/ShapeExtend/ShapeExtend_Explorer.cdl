@@ -1,0 +1,86 @@
+-- File:	ShapeExtend_Explorer.cdl
+-- Created:	Wed Jun  3 12:42:52 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Explorer from ShapeExtend 
+
+    	---Purpose: This class is intended to
+    	-- explore shapes and convert different representations
+    	-- (list, sequence, compound) of complex shapes. It provides tools for: 
+    	-- - obtaining type of the shapes in context of TopoDS_Compound, 
+    	-- - exploring shapes in context of  TopoDS_Compound, 
+    	-- - converting different representations of shapes (list, sequence, compound). 
+uses 
+    Shape            from TopoDS, 
+    ShapeEnum        from TopAbs,
+    HSequenceOfShape from TopTools, 
+    ListOfShape      from TopTools
+
+raises 
+    TypeMismatch from Standard
+
+is
+
+    Create returns Explorer from ShapeExtend;
+    	---Purpose: Creates an object Explorer
+
+    CompoundFromSeq (me; seqval: HSequenceOfShape)
+    returns Shape from TopoDS;
+    	---Purpose: Converts a sequence of Shapes to a Compound
+
+    SeqFromCompound (me; comp: Shape from TopoDS; expcomp: Boolean)
+    returns HSequenceOfShape;
+    	---Purpose: Converts a Compound to a list of Shapes
+    	--          if <comp> is not a compound, the list contains only <comp>
+    	--          if <comp> is Null, the list is empty
+    	--          if <comp> is a Compound, its sub-shapes are put into the list
+    	--          then if <expcomp> is True, if a sub-shape is a Compound, it
+    	--          is not put to the list but its sub-shapes are (recursive)
+
+    ListFromSeq (me; seqval: HSequenceOfShape;
+    	    	     lisval: in out ListOfShape from TopTools;
+    	    	     clear: Boolean = Standard_True);
+    	---Purpose: Converts a Sequence of Shapes to a List of Shapes
+    	--          <clear> if True (D), commands the list to start from scratch
+    	--          else, the list is cumulated
+
+    SeqFromList (me; lisval: ListOfShape)
+    returns HSequenceOfShape from TopTools;
+    	---Purpose: Converts a List of Shapes to a Sequence of Shapes
+
+
+    ShapeType (me; shape: Shape from TopoDS; compound: Boolean)
+    returns ShapeEnum;
+    	---Purpose: Returns the type of a Shape: true type if <compound> is False
+    	--          If <compound> is True and <shape> is a Compound, iterates on
+    	--          its items. If all are of the same type, returns this type.
+    	--          Else, returns COMPOUND. If it is empty, returns SHAPE
+    	--          For a Null Shape, returns SHAPE
+
+    SortedCompound (me; shape: Shape from TopoDS; type: ShapeEnum;
+    	    	    explore: Boolean; compound: Boolean)
+    returns Shape from TopoDS;
+        ---Purpose: Builds a COMPOUND from the given shape. 
+        --          It explores the shape level by level, according to the 
+        --          <explore> argument. If <explore> is False, only COMPOUND 
+        --          items are explored, else all items are.
+        --          The following shapes are added to resulting compound:
+        --        - shapes which comply to <type>
+        --        - if <type> is WIRE, considers also free edges (and makes wires)
+        --        - if <type> is SHELL, considers also free faces (and makes shells)
+    	--          If <compound> is True, gathers items in compounds which
+    	--          correspond to starting COMPOUND,SOLID or SHELL containers, or
+    	--          items directly contained in a Compound
+
+    DispatchList (me; list: HSequenceOfShape;
+    	    	  vertices, edges, wires, faces, shells, solids, compsols, compounds:
+	          in out HSequenceOfShape);
+    	---Purpose: Dispatches starting list of shapes according to their type,
+    	--          to the appropriate resulting lists
+    	--          For each of these lists, if it is null, it is firstly created
+    	--          else, new items are appended to the already existing ones
+
+end Explorer;

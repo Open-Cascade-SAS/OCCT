@@ -1,0 +1,62 @@
+-- File:	IGESSelect_SelectBasicGeom.cdl
+-- Created:	Mon Apr 14 11:10:31 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SelectBasicGeom  from IGESSelect  inherits SelectExplore
+
+    ---Purpose : This selection returns the basic geometric elements
+    --           contained in an IGES Entity
+    --           Intended to run a "quick" transfer. I.E. :
+    --           - for a Group, considers its Elements
+    --           - for a Trimmed or Bounded Surface or a Face (BREP),
+    --             considers the 3D curves of each of its loops
+    --           - for a Plane (108), considers its Bounding Curve
+    --           - for a Curve itself, takes it
+    --           
+    --           Also, FREE surfaces are taken, because curve 3d is known for
+    --           them. (the ideal should be to have their natural bounds)
+    --           
+    --           If <curvesonly> is set, ONLY curves-3d are returned
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph,
+     IGESEntity from IGESData
+
+is
+
+    Create (mode : Integer) returns mutable SelectBasicGeom;
+    ---Purpose : Creates a SelectBasicGeom, which allways works recursively
+    --           mode = -1 : Returns Surfaces (without trimming)
+    --           mode = +1 : Returns Curves 3D (free or bound of surface)
+    --           mode = +2 : Returns Basic Curves 3D : as 1 but CompositeCurves
+    --                        are returned in detail
+    --           mode = 0  : both
+
+    CurvesOnly (me) returns Boolean;
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : Explores an entity, to take its contained Curves 3d
+    --           Works recursively
+
+
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Curves 3d" or
+    --           "Basic Geometry"
+
+    SubCurves (myclass; ent : IGESEntity; explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : This method can be called from everywhere to get the curves
+    --           as sub-elements of a given curve :
+    --           CompositeCurve : explored lists its subs + returns True
+    --           Any Curve : explored is not filled but returned is True
+    --           Other : returned is False
+
+fields
+
+    thegeom : Integer;  -- -1 : Surfaces only  1 : Curves 3D only  0 : both
+
+end SelectBasicGeom;

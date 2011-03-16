@@ -1,0 +1,206 @@
+---File:      gp_Quaternion.cdl
+---Created:   Tue May 11 12:09:38 2010
+---Author:    Kirill GAVRILOV
+---Copyright: Open CASCADE SAS 2010
+
+class Quaternion from gp
+
+   ---Purpose: Represents operation of rotation in 3d space as queternion
+   --          and implements operations with rotations basing on 
+   --          quaternion mathematics.
+   --
+   --          In addition, provides methods for conversion to and from other 
+   --          representatons of rotation (3*3 matrix, vector and
+   --          angle, Euler angles)
+
+uses
+  Vec from gp,
+  Mat from gp,
+  EulerSequence from gp
+  
+is
+
+  Create returns Quaternion from gp;
+  ---Purpose: Creates an identity quaternion
+  ---C++: inline
+  
+  Create (x, y, z, w: Real)
+  returns Quaternion from gp;
+  ---Purpose: Creates quaternion directly from component values
+
+  Create (theToCopy: Quaternion from gp)
+  returns Quaternion from gp;
+  ---Purpose: Creates copy of another quaternion
+
+  Create (theVecFrom, theVecTo: Vec from gp)
+  returns Quaternion from gp;
+  ---Purpose: Creates quaternion representing shortest-arc rotation  
+  --          operator producing vector theVecTo from vector theVecFrom.
+
+  Create (theVecFrom, theVecTo, theHelpCrossVec: Vec from gp)
+  returns Quaternion from gp;
+  ---Purpose: Creates quaternion representing shortest-arc rotation  
+  --          operator producing vector theVecTo from vector theVecFrom.
+  --          Additional vector theHelpCrossVec defines preferred direction for
+  --          rotation and is used when theVecTo and theVecFrom are directed 
+  --          oppositely.
+
+  Create (theAxis: Vec from gp; theAngle: Real)
+  returns Quaternion from gp;
+  ---Purpose: Creates quaternion representing rotation on angle 
+  --          theAngle around vector theAxis
+
+  Create (theMat: Mat from gp)
+  returns Quaternion from gp;
+  ---Purpose: Creates quaternion from rotation matrix 3*3 
+  --          (which should be orthonormal skew-symmetric matrix)
+
+  IsEqual (me; theOther: Quaternion from gp) returns Boolean;
+  ---Purpose: Simple equal test without precision
+
+  SetRotation (me: in out; theVecFrom, theVecTo: Vec from gp);
+  ---Purpose: Sets quaternion to shortest-arc rotation producing
+  --          vector theVecTo from vector theVecFrom.
+  --          If vectors theVecFrom and theVecTo are opposite then rotation 
+  --          axis is computed as theVecFrom ^ (1,0,0) or theVecFrom ^ (0,0,1).
+
+  SetRotation (me: in out; theVecFrom, theVecTo, theHelpCrossVec: Vec from gp);
+  ---Purpose: Sets quaternion to shortest-arc rotation producing
+  --          vector theVecTo from vector theVecFrom.
+  --          If vectors theVecFrom and theVecTo are opposite then rotation 
+  --          axis is computed as theVecFrom ^ theHelpCrossVec.
+
+  SetVectorAndAngle (me: in out; theAxis: Vec from gp; theAngle: Real);
+  ---Purpose: Create a unit quaternion from Axis+Angle representation
+
+  GetVectorAndAngle (me; theAxis: out Vec from gp; theAngle: out Real);
+  ---Purpose: Convert a quaternion to Axis+Angle representation, 
+  --          preserve the axis direction and angle from -PI to +PI
+
+  SetMatrix (me: in out; theMat: Mat from gp);
+  ---Purpose: Create a unit quaternion by rotation matrix
+  --          matrix must contain only rotation (not scale or shear)
+  --          
+  --          For numerical stability we find first the greatest component of quaternion
+  --          and than search others from this one
+
+  GetMatrix (me) returns Mat from gp;
+  ---Purpose: Returns rotation operation as 3*3 matrix
+
+  SetEulerAngles (me: in out; theOrder: EulerSequence from gp; 
+                  theAlpha, theBeta, theGamma: Real);
+  ---Purpose: Create a unit quaternion representing rotation defined
+  --          by generalized Euler angles
+
+  GetEulerAngles (me; theOrder: EulerSequence from gp; 
+                  theAlpha, theBeta, theGamma: out Real);
+  ---Purpose: Returns Euler angles describing current rotation
+
+  Set (me: in out; x, y, z, w: Real);
+
+  Set (me: in out; theQuaternion: Quaternion from gp);
+
+  X (me) returns Real;
+
+  Y (me) returns Real;
+
+  Z (me) returns Real;
+
+  W (me) returns Real;
+
+  SetIdent (me: in out);
+  ---Purpose: Make identity quaternion (zero-rotation)
+
+  Reverse (me: in out);
+  ---Purpose: Reverse direction of rotation (conjugate quaternion)
+
+  Reversed (me) returns Quaternion from gp;
+  ---Purpose: Return rotation with reversed direction (conjugated quaternion) 
+
+  Invert (me: in out);
+  ---Purpose: Inverts quaternion (both rotation direction and norm)
+
+  Inverted (me) returns Quaternion from gp;
+  ---Purpose: Return inversed quaternion q^-1
+
+  SquareNorm (me) returns Real;
+  ---Purpose: Returns square norm of quaternion
+
+  Norm (me) returns Real;
+  ---Purpose: Returns norm of quaternion
+
+  Scale (me: in out; theScale: Real);
+  ---Purpose: Scale all components by quaternion by theScale; note that 
+  --          rotation is not changed by this operation (except 0-scaling)
+  ---C++: alias operator *=
+
+  Scaled (me; theScale: Real) returns Quaternion from gp;
+  ---Purpose: Returns scaled quaternion
+  ---C++: alias operator *
+
+  StabilizeLength (me: in out);
+  ---Purpose: Stabilize quaternion length within 1 - 1/4.
+  --          This operation is a lot faster than normalization
+  --          and preserve length goes to 0 or infinity
+
+  Normalize (me: in out);
+  ---Purpose: Scale quaternion that its norm goes to 1.
+  --          The appearing of 0 magnitude or near is a error,
+  --          so we can be sure that can divide by magnitude
+
+  Normalized (me) returns Quaternion from gp;
+  ---Purpose: Returns quaternion scaled so that its norm goes to 1.
+
+  Negated (me) returns Quaternion from gp;
+  ---Purpose: Returns quaternion with all components negated.
+  --          Note that this operation does not affect neither
+  --          rotation operator defined by quaternion nor its norm.
+  ---C++: alias operator -
+
+  Added (me; theOther: Quaternion from gp) returns Quaternion from gp;
+  ---Purpose: Makes sum of quaternion components; result is "rotations mix"
+  ---C++: alias operator +
+
+  Subtracted (me; theOther: Quaternion from gp) returns Quaternion from gp;
+  ---Purpose: Makes difference of quaternion components; result is "rotations mix"
+  ---C++: alias operator -
+
+  Multiplied (me; theOther: Quaternion from gp) returns Quaternion from gp;
+  ---Purpose: Multiply function - work the same as Matrices multiplying.
+  --          qq' = (cross(v,v') + wv' + w'v, ww' - dot(v,v'))
+  --          Result is rotation combination: q' than q (here q=this, q'=theQ).
+  --          Notices than:
+  --          qq' != q'q;
+  --          qq^-1 = q;
+  ---C++: alias operator *
+
+  Add (me: in out; theOther: Quaternion from gp);
+  ---Purpose: Adds componnets of other quaternion; result is "rotations mix"
+  ---C++: alias operator +=
+
+  Subtract (me: in out; theOther: Quaternion from gp);
+  ---Purpose: Subtracts componnets of other quaternion; result is "rotations mix"
+  ---C++: alias operator -=
+
+  Multiply (me: in out; theOther: Quaternion from gp);
+  ---Purpose: Adds rotation by multiplication
+  ---C++: alias operator *=
+
+  Dot (me; theOther: Quaternion from gp) returns Real;
+  ---Purpose: Computes inner product / scalar product / Dot
+
+  GetRotationAngle (me) returns Real;
+  ---Purpose: Return rotation angle from -PI to PI
+
+  Multiply (me; theVec: Vec from gp) returns Vec from gp;
+  ---Purpose: Rotates vector by quaternion as rotation operator
+  ---C++: alias operator *
+
+fields
+
+  x: Real;
+  y: Real;
+  z: Real;
+  w: Real;
+
+end;

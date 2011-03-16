@@ -1,0 +1,118 @@
+-- File:	PCollection_HArray1.cdl
+-- Created:	Wed Nov 25 17:47:24 1992
+-- Author:	Jean Pierre TIRAULT
+--		<jpt@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+generic class HArray1 from PCollection  (Item as Storable) 
+inherits Persistent
+
+	---Purpose: The class HArray1 represents unidimensionnal 
+	-- array of fixed size known at run time. 
+	-- The range of the index is user defined. 
+	--  Warning: Programs clients of such class must be independent
+	-- of the range of the first element. Then, a C++ for
+	-- loop must be written like this
+	--     for (i = A->Lower(); i <= A->Upper(); i++)
+uses 
+    Integer from Standard,
+    Address from Standard
+    
+raises 
+    OutOfRange from Standard,
+    RangeError from Standard
+    
+    class FieldOfHArray1 instantiates VArray from DBC (Item);
+    
+is
+
+
+	Create (Low, Up: Integer from Standard) returns mutable HArray1
+		raises RangeError from Standard;
+		---Purpose: Creates an array of lower bound <Low> and 
+                -- upper bound <Up>. Range error is raised 
+                -- when <Up> is less than <Low>.
+
+	Create (Low, Up: Integer from Standard ; V : Item) 
+                returns mutable HArray1
+		raises RangeError from Standard;
+		---Purpose: Creates an array of lower bound <Low> and 
+                -- upper bound <Up>. Range error is raised 
+                -- when <Up> is less than <Low>.
+		-- The Array is initialized with V
+
+	Length (me) returns Integer from Standard
+		is static ;
+		---Purpose:  Returns the number of elements of <me>.
+                ---Level: Public
+    	    	---C++: inline
+
+	Lower (me) returns Integer from Standard
+		is static ;
+		---Purpose: Returns the lower bound.
+                ---Level: Public
+    	    	---C++: inline
+
+	SetValue (me : mutable; Index: Integer from Standard; Value: Item) 
+		---Purpose: Assigns Value to the Index-th element of this array.
+    	    	-- Example
+    	    	-- PCollection_HArray1
+    	    	-- myTable(1,100);
+    	    	-- myTable->SetValue(3, 1551);
+    	    	-- assert (myTable(3) == 1551);
+    	    	-- Exceptions
+    	    	-- Standard_OutOfRange if Index is not within the bounds of this array
+		raises OutOfRange from Standard
+		is static ;
+		---Purpose: Set the <Index>th element of the array to <Value>.
+                ---Level: Public
+
+	Upper (me) returns Integer from Standard
+		is static ;
+		---Purpose: Returns the upper bound.
+                ---Level: Public
+    	    	---C++: inline
+
+	Value (me; Index: Integer from Standard) returns any Item
+		raises OutOfRange from Standard
+		is static;
+		---Purpose: Returns the value of the <Index>th element of the array.
+              	--  Example
+    	    	-- PCollection_HArray1
+    	    	-- myTable(1,100);
+    	    	-- myTable->SetValue(3, 1551);
+    	    	-- Standard_Integer myItem =
+    	    	-- myTable->Value(3);
+    	    	-- Exceptions
+    	    	-- Standard_OutOfRange if Index is not within the bounds of this array. 
+    
+    ShallowCopy(me) 
+                returns mutable like me 
+                is redefined;
+                ---Purpose: Returns a new array containing a copy
+   	    	-- of the values (of the elements) in this array.
+
+
+    	ShallowDump (me; s: in out OStream) 
+                is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+    	Field (me)returns FieldOfHArray1 
+                ---Level: Internal
+                is private;
+   	    	---Purpose: Private method that returns the field Data.
+        
+        Datas(me) returns Address
+                ---Level: Internal
+    	    	is private;
+
+fields 
+
+	LowerBound   : Integer from Standard ;
+        UpperBound   : Integer from Standard ;
+	Data         : FieldOfHArray1    ;
+
+end HArray1 ;
+
+

@@ -1,0 +1,21 @@
+// File:	IGESToBRep_IGESBoundary.lxx
+// Created:	Wed Dec 16 16:59:43 1998
+// Author:	data exchange team
+//		<det@kinox.nnov.matra-dtv.fr>
+
+inline  Handle(ShapeExtend_WireData) IGESToBRep_IGESBoundary::WireData() const
+{
+  return mysewd;
+}
+
+ 
+inline  Handle(ShapeExtend_WireData) IGESToBRep_IGESBoundary::WireData3d() const
+{
+  return mysewd3d;
+}
+
+ 
+inline  Handle(ShapeExtend_WireData) IGESToBRep_IGESBoundary::WireData2d() const
+{
+  return mysewd2d;
+}

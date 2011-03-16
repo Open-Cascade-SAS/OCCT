@@ -1,0 +1,38 @@
+-- File:	TDataStd_HDataMapOfStringReal.cdl
+-- Created:	Fri Aug 17 16:37:57 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@popox.nnov.matra-dtv.fr>
+---Copyright:	Open CasCade SA 2007
+
+
+class HDataMapOfStringReal from TDataStd inherits TShared from MMgt 
+
+	---Purpose:Extension of TDataStd_DataMapOfStringReal class  
+    	--         to be manipulated by handle. 
+
+uses
+    DataMapOfStringReal from TDataStd 
+    
+is
+    Create( NbBuckets: Integer from Standard = 1 )  
+    returns mutable HDataMapOfStringReal from TDataStd;    
+     
+    Create( theOther:  DataMapOfStringReal from TDataStd)  
+    returns mutable HDataMapOfStringReal from TDataStd;
+     
+    Map( me ) returns DataMapOfStringReal from TDataStd
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns DataMapOfStringReal from TDataStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields
+    
+    myMap : DataMapOfStringReal from TDataStd ;  
+   
+
+end HDataMapOfStringReal;

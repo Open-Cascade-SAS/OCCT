@@ -1,0 +1,14 @@
+inline void SelectMgr_SelectableObject::Init()
+{mycurrent=1;}
+
+inline Standard_Boolean SelectMgr_SelectableObject::More() const
+{return (mycurrent<=myselections.Length());}
+
+inline void SelectMgr_SelectableObject::Next()
+{mycurrent++;}
+
+inline const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject::
+CurrentSelection() const
+{return myselections(mycurrent);}
+
+

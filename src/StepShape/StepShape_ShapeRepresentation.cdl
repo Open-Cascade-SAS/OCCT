@@ -1,0 +1,22 @@
+-- File:        ShapeRepresentation.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ShapeRepresentation from StepShape 
+
+inherits Representation from StepRepr
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr,
+	RepresentationContext from StepRepr
+is
+
+	Create returns mutable ShapeRepresentation;
+	---Purpose: Returns a ShapeRepresentation
+
+
+end ShapeRepresentation;

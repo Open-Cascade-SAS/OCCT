@@ -1,0 +1,81 @@
+-- File:	Draft.cdl
+-- Created:	Wed Aug 31 14:37:14 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+
+package Draft
+
+uses BRepTools,
+     TopoDS,
+     TopTools,
+     TopLoc,
+     TopAbs,
+
+     GeomAbs,
+     Geom,
+     Geom2d,
+     gp,
+     
+     TColStd,
+     StdFail,
+     TCollection
+     
+     
+is
+
+    class Modification; --- inherits Modification from BRepTools
+
+
+    class FaceInfo;
+    
+    class EdgeInfo;
+    
+    class VertexInfo;
+    
+    enumeration ErrorStatus is
+    	NoError,
+	FaceRecomputation,
+	EdgeRecomputation,
+	VertexRecomputation
+    end ErrorStatus;
+    
+    
+    class DataMapOfFaceFaceInfo instantiates
+    	DataMap from TCollection(Face           from TopoDS,
+	                         FaceInfo       from Draft,
+				 ShapeMapHasher from TopTools);
+
+
+    class DataMapOfEdgeEdgeInfo instantiates
+    	DataMap from TCollection(Edge           from TopoDS,
+	                         EdgeInfo       from Draft,
+				 ShapeMapHasher from TopTools);
+
+
+    class DataMapOfVertexVertexInfo instantiates
+    	DataMap from TCollection(Vertex         from TopoDS,
+	                         VertexInfo     from Draft,
+				 ShapeMapHasher from TopTools);
+
+
+
+
+    Angle(F: Face from TopoDS;  Direction: Dir from gp)
+    
+    	returns Real from Standard
+	raises DomainError from Standard;
+	
+	---Purpose: Returns the draft angle of the  face <F> using the
+	--          direction <Direction>.  The  method is valid for :
+	--          - Plane  faces,
+	--          - Cylindrical or conical faces, when the direction
+	--          of the axis of the surface is colinear with the
+	--          direction.
+	--          Otherwise, the exception DomainError is raised.
+
+
+end Draft;
+

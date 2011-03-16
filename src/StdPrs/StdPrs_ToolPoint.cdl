@@ -1,0 +1,14 @@
+-- File:	StdPrs_ToolPoint.cdl
+-- Created:	Wed Dec 16 13:36:55 1992
+-- Author:	Jean Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1992
+
+class ToolPoint from StdPrs
+uses
+    Length from Quantity,
+    Point from Geom
+is
+    Coord( myclass; aPoint: Point from Geom; X,Y,Z: out Length from Quantity);
+    
+end ToolPoint from StdPrs;

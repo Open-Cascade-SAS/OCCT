@@ -1,0 +1,169 @@
+-- File:	HLRBRep_InternalAlgo.cdl
+-- Created:	Thu Apr 17 20:45:25 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class InternalAlgo from HLRBRep inherits TShared from MMgt
+
+uses
+    Address          from Standard,
+    Boolean          from Standard,
+    Integer          from Standard,
+    Projector        from HLRAlgo,
+    Data             from HLRBRep,
+    ShapeBounds      from HLRBRep,
+    SeqOfShapeBounds from HLRBRep,
+    OutLiner         from HLRTopoBRep,
+    MapOfShapeTool   from BRepTopAdaptor,
+    TShared          from MMgt
+
+raises
+    OutOfRange   from Standard
+    
+is
+    Create returns mutable InternalAlgo from HLRBRep;
+    
+    Create(A : InternalAlgo from HLRBRep)
+    returns mutable InternalAlgo from HLRBRep;
+    
+    Projector(me: mutable; P : Projector from HLRAlgo)
+	---Purpose: set the projector.
+    is static;
+
+    Projector(me: mutable)
+    returns  Projector from HLRAlgo
+	---Purpose: set the projector.
+    	---C++: return &
+    is static;
+
+    Update(me: mutable)
+	---Purpose: update the DataStructure.
+    is static;
+
+    Load(me : mutable; S     : OutLiner from HLRTopoBRep;
+    	    	       SData : TShared  from MMgt;
+                       nbIso : Integer  from Standard = 0)
+	---Purpose: add the shape <S>.
+    is static;
+    
+    Load(me : mutable; S     : OutLiner from HLRTopoBRep;
+                       nbIso : Integer  from Standard = 0)
+	---Purpose: add the shape <S>.
+    is static;
+    
+    Index(me; S : OutLiner from HLRTopoBRep) returns Integer from Standard
+	---Purpose: return the index of the Shape <S> and  return 0 if
+	--          the Shape <S> is not found.
+    is static;
+
+    Remove(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: remove the Shape of Index <I>.
+    is static;
+
+    ShapeData(me : mutable; I     : Integer from Standard;
+                            SData : TShared from MMgt)
+    raises OutOfRange from Standard
+	---Purpose: Change the Shape Data of the Shape of index <I>.
+    is static;
+    
+    SeqOfShapeBounds(me : mutable) returns SeqOfShapeBounds from HLRBRep
+    	---C++: return &
+    is static;
+    
+    NbShapes(me) returns Integer from Standard
+    is static;
+    
+    ShapeBounds(me : mutable; I : Integer from Standard)
+    returns ShapeBounds from HLRBRep
+    raises OutOfRange from Standard
+    	---C++: return &
+    is static;
+    
+    InitEdgeStatus(me : mutable)
+	---Purpose: init the status of the selected edges depending of
+	--          the back faces of a closed shell.
+    is static;
+    
+    Select(me : mutable)
+	---Purpose: select all the DataStructure.
+    is static;
+    
+    Select(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: select  only   the Shape of index <I>.
+    is static;
+    
+    SelectEdge(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: select only the edges of the Shape <S>.
+    is static;
+    
+    SelectFace(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: select only the faces of the Shape <S>.
+    is static;
+    
+    ShowAll(me : mutable)
+	---Purpose: set to visible all the edges.
+    is static;
+    
+    ShowAll(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: set to visible all the edges of the Shape <S>.
+    is static;
+    
+    HideAll(me : mutable)
+	---Purpose: set to hide all the edges.
+    is static;
+    
+    HideAll(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: set to  hide all the  edges of the  Shape <S>.
+    is static;
+    
+    PartialHide(me : mutable)
+	---Purpose: own hiding  of all the shapes of the DataStructure
+	--          without hiding by each other.
+    is static;
+    
+    Hide(me : mutable)
+	---Purpose: hide all the DataStructure.
+    is static;
+    
+    Hide(me : mutable; I : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: hide the Shape <S> by itself.
+    is static;
+    
+    Hide(me : mutable; I,J : Integer from Standard)
+    raises OutOfRange from Standard
+	---Purpose: hide the Shape <S1> by the shape <S2>.
+    is static;
+    
+    HideSelected(me : mutable; I        : Integer from Standard;
+                               SideFace : Boolean from Standard)
+	---Purpose: first if <SideFace> own hiding  of the side faces.
+	--          After hiding  of    the  selected  parts  of   the
+	--          DataStructure.
+    is static private;
+    
+    Debug(me : mutable; deb : Boolean from Standard)
+    is static;
+    
+    Debug(me) returns Boolean from Standard
+    is static;
+    
+    DataStructure(me) returns any Data from HLRBRep
+    is static;
+    
+fields
+    myDS             : Data             from HLRBRep;
+    myProj           : Projector        from HLRAlgo;
+    myShapes         : SeqOfShapeBounds from HLRBRep;
+    myMapOfShapeTool : MapOfShapeTool   from BRepTopAdaptor;
+
+    myDebug       : Boolean          from Standard;
+
+end Algo;

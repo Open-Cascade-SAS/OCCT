@@ -1,0 +1,120 @@
+-- File:	AppParCurves_Projection.cdl
+-- Created:	Thu Jun 24 16:27:02 1993
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Projection from AppParCurves
+    	    	    (MultiLine   as any;
+    	    	     ToolLine    as any)   -- as ToolLine(MultiLine)
+
+
+    ---Purpose: This algorithm uses the algorithms LeastSquare, 
+    --          ResConstraint and a Projection method to approximate a set 
+    --          of points (AppDef_MultiLine) with a minimization of the
+    --          sum(square(|F(i)-Qi|)) by changing the parameter. 
+
+
+
+uses Vector                    from math, 
+     MultiCurve                from AppParCurves,
+     HArray1OfConstraintCouple from AppParCurves
+
+
+raises OutOfRange from Standard,
+       NotDone    from StdFail
+
+
+private class ProLeastSquare instantiates LeastSquare from AppParCurves
+    	(MultiLine, ToolLine);
+	
+private class ProConstraint instantiates ResolConstraint from AppParCurves
+    	(MultiLine, ToolLine);
+
+private class ProFunction instantiates Function from AppParCurves
+    	(MultiLine, ToolLine, ProLeastSquare, ProConstraint);
+
+
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: in out Vector; Deg: Integer; 
+    	   Tol3d, Tol2d: Real; NbIterations: Integer = 200)
+	---Purpose: Tries to minimize the sum (square(||Qui - Bi*Pi||)) 
+	--          where Pui describe the approximating Bezier curves'Poles 
+	--          and Qi the MultiLine points with a parameter ui.
+	--          In this algorithm, the parameters ui are the unknowns.
+	--          The tolerance required on this sum is given by Tol.
+	--          The desired degree of the resulting curve is Deg.
+	--          SSP is returned with the new parameter.
+
+    returns Projection from AppParCurves;
+    
+    
+    IsDone(me)
+	---Purpose: returns True if all has been correctly done.	
+
+    returns Boolean
+    is static;
+    
+    
+    Value(me)
+    	---Purpose: returns all the Bezier curves approximating the
+    	--          MultiLine SSP after minimization of the parameter.
+
+    returns MultiCurve from AppParCurves
+    raises NotDone from StdFail
+    is static;
+    
+    
+    Error(me; Index: Integer)
+	---Purpose: returns the difference between the old and the new 
+	--          approximation.
+	--          An exception is raised if NotDone.
+	--          An exception is raised if Index<1 or Index>NbParameters.
+
+    returns Real
+    raises NotDone from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+
+    MaxError3d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    MaxError2d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    AverageError(me)
+       ---Purpose: returns the average error between the old and the
+       --          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+fields
+
+SCU:          MultiCurve from AppParCurves;
+ParError:     Vector from math;
+AvError:      Real;
+MError3d:     Real;
+MError2d:     Real;
+Done:         Boolean;
+
+end Projection from AppParCurves;

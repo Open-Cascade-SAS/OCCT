@@ -1,0 +1,227 @@
+
+// Copyright: 	Matra-Datavision 1995
+// File:	Select3D_SensitiveEntity.cxx
+// Created:	Mon Mar 13 17:55:29 1995
+// Author:	Robert COUBLANC
+//		<rob>
+
+
+
+#include <Select3D_SensitiveEntity.ixx>
+#include <Precision.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <Select3D_Macro.hxx>
+
+//=======================================================================
+//function : Select3D_SensitiveEntity
+//purpose  : 
+//=======================================================================
+
+Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectBasics_EntityOwner)& OwnerId):
+SelectBasics_SensitiveEntity(OwnerId),
+mylastprj(NULL),
+mylastdepth(0.0)
+{}
+
+//=======================================================================
+//function : Project
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::Project(const Select3D_Projector& aPrj)
+{
+  mylastprj = (Standard_Address*)&aPrj;
+}
+
+//=======================================================================
+//function : Matches
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
+						   const Standard_Real Y,
+						   const Standard_Real aTol,
+						   Standard_Real&  DMin)
+{
+  gp_Lin L;
+  if(mylastprj!=NULL)
+    L = (* ((Select3D_Projector*) mylastprj)).Shoot(X,Y);
+  SetLastDepth( ComputeDepth(L) );
+
+  return (Abs(mylastdepth)>Precision::Confusion());
+}
+
+//=======================================================================
+//function : Matches
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
+						   const Standard_Real YMin,
+						   const Standard_Real XMax,
+						   const Standard_Real YMax,
+						   const Standard_Real aTol)
+{
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Matches
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d& aPoly,
+						   const Bnd_Box2d& aBox,
+						   const Standard_Real aTol)
+{
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
+{
+  S<<"\tSensitive Entity 3D"<<endl;
+}
+
+//=======================================================================
+//function : DumpBox
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::DumpBox(Standard_OStream& S,const Bnd_Box2d& b2d) 
+{
+  if(!b2d.IsVoid()){
+    Standard_Real xmin,ymin,xmax,ymax;
+    b2d.Get(xmin,ymin,xmax,ymax);
+    S<<"\t\t\tBox2d: PMIN ["<<xmin<<" , "<<ymin<<"]"<<endl;
+    S<<"\t\t\t       PMAX ["<<xmax<<" , "<<ymax<<"]"<<endl;
+  }
+  
+}
+
+//=======================================================================
+//function : ResetLocation
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::ResetLocation()
+{
+}
+
+//=======================================================================
+//function : SetLocation
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::SetLocation(const TopLoc_Location&)
+{
+}
+
+//=======================================================================
+//function : UpdateLocation
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::UpdateLocation(const TopLoc_Location& aLoc)
+{
+  if(aLoc.IsIdentity() || aLoc == Location()) return;
+  if(!HasLocation())
+    SetLocation(aLoc);
+  else {
+    TopLoc_Location compLoc = aLoc * Location();
+    SetLocation(compLoc);}
+}
+
+//=======================================================================
+//function : Location
+//purpose  : 
+//=======================================================================
+
+const TopLoc_Location& Select3D_SensitiveEntity::Location() const 
+{
+  static TopLoc_Location anIdentity;	
+  Handle(SelectBasics_EntityOwner) anOwner = OwnerId();
+  return anOwner.IsNull() ? anIdentity : anOwner->Location();
+}
+
+//=======================================================================
+//function : HasLocation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveEntity::HasLocation() const
+{ 
+  Handle(SelectBasics_EntityOwner) anOwner = OwnerId();
+  return (!anOwner.IsNull() && anOwner->HasLocation());
+}
+
+//=======================================================================
+//function : Is3D
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveEntity::Is3D() const
+{return Standard_True;}
+
+//=======================================================================
+//function : Depth
+//purpose  : 
+//=======================================================================
+
+Standard_Real Select3D_SensitiveEntity::Depth() const
+{return mylastdepth;}
+
+//=======================================================================
+//function : GetEyeLine
+//purpose  : 
+//=======================================================================
+
+gp_Lin Select3D_SensitiveEntity::GetEyeLine(const Standard_Real X,
+					    const Standard_Real Y) const
+{
+  gp_Lin L;
+  if(mylastprj!=NULL)
+    L = (* ((Select3D_Projector*) mylastprj)).Shoot(X,Y);
+  return L;
+}
+
+//=======================================================================
+//function : MaxBoxes
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Select3D_SensitiveEntity::MaxBoxes() const 
+{return 1;}
+
+//=======================================================================
+//function : SetLastPrj
+//purpose  : 
+//=======================================================================
+
+void Select3D_SensitiveEntity::SetLastPrj(const Select3D_Projector& aprj)
+{ mylastprj = (Standard_Address*)& aprj;}
+
+
+//=======================================================================
+//function : GetConnected
+//purpose  : 
+//=======================================================================
+
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveEntity::GetConnected(const TopLoc_Location&)  
+{
+  Handle(Select3D_SensitiveEntity) NiouEnt;
+  return NiouEnt;
+}
+
+//=======================================================================
+//function : GetConnected
+//purpose  : 
+//=======================================================================
+void Select3D_SensitiveEntity::SetLastDepth(const Standard_Real aDepth)
+{
+  mylastdepth = DToF(aDepth);
+}

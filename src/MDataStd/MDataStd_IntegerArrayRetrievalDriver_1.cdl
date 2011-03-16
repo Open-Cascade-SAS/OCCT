@@ -1,0 +1,43 @@
+-- File:	MDataStd_IntegerArrayRetrievalDriver_1.cdl
+-- Created:	Thu Mar 27 18:59:19 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008 
+
+class IntegerArrayRetrievalDriver_1 from MDataStd inherits ARDriver from MDF
+
+	---Purpose: Retrieval  driver of IntegerArray attribute supporting 
+	--          delta mechanism by default
+
+uses
+    RRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM) 
+    returns mutable IntegerArrayRetrievalDriver_1 from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 1.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: IntegerArray from PDataStd.
+
+    NewEmpty (me) returns mutable Attribute from TDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable from MDF);
+
+
+
+end IntegerArrayRetrievalDriver_1;
+
+

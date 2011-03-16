@@ -1,0 +1,74 @@
+-- File:	HatchGen.cdl
+-- Created:	Mon Oct 25 17:01:34 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:   Matra Datavision 1993
+
+package HatchGen
+
+uses
+    IntRes2d ,
+    StdFail ,
+    TopAbs ,
+    TCollection ,
+    TColStd,
+    gp,
+    TopClass
+
+is
+
+    enumeration IntersectionType is
+
+        ---Purpose: Intersection type between the hatching and the
+        --          element.
+
+       	TRUE ,
+	TOUCH ,
+    	TANGENT ,
+	UNDETERMINED
+
+    end IntersectionType from HatchGen ;
+
+
+    enumeration ErrorStatus is
+    
+    	---Purpose: Error status.
+
+    	NoProblem ,
+    	TrimFailure ,
+	TransitionFailure ,
+	IncoherentParity ,
+	IncompatibleStates
+	
+    end ErrorStatus from HatchGen ;
+
+
+    deferred generic class Intersector ;
+
+    deferred class IntersectionPoint ;
+
+    class PointOnHatching ;
+    class PointsOnHatching instantiates Sequence from TCollection
+    	(PointOnHatching from HatchGen) ;
+
+    class PointOnElement ;
+    class PointsOnElement instantiates Sequence from TCollection
+    	(PointOnElement) ;
+	
+    class Domain ;
+    class Domains instantiates Sequence from TCollection
+    	(Domain from HatchGen) ;
+	
+    generic class HatchingGen ;
+    generic class ElementGen ;
+    generic class ElementsGen,MapOfElements;
+    
+    generic class Hatcher ,
+                  Hatching ,
+    	    	  Hatchings ,
+                  Element ,
+                  Elements,
+                  Classifier;
+
+
+end HatchGen ;

@@ -1,0 +1,340 @@
+// Modified by cma, Fri Dec 10 18:11:56 1993
+// File:	Extrema_GExtPC.gxx
+// Created:	Mon Oct 19 11:55:06 1992
+// Author:	Laurent PAINNOT
+//		<lpa@phylox>
+// Copyright:	 Matra Datavision 1992
+
+#include Extrema_EPC_hxx
+#include ThePOnC_hxx
+#include TheSequenceOfPOnC_hxx
+#include ThePoint_hxx
+#include TheVector_hxx
+#include TheExtPElC_hxx
+#include <StdFail_NotDone.hxx>
+#include <Standard_Failure.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <Precision.hxx>
+#include <ElCLib.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void Extrema_GExtPC::Perform(const ThePoint& P)
+{
+  mySqDist.Clear();
+  mypoint.Clear();
+  myismin.Clear();
+  Standard_Integer i, NbExt, n;                     
+  Standard_Real U;
+  mysample = 17;
+  Standard_Real t3d = Precision::Confusion();
+  if (Precision::IsInfinite(myuinf)) mydist1 = RealLast();
+  else {
+    Pf = TheCurveTool::Value(*((TheCurve*)myC), myuinf);
+    mydist1 = P.SquareDistance(Pf);
+  }
+  
+  if (Precision::IsInfinite(myusup)) mydist2 = RealLast();
+  else {
+    Pl = TheCurveTool::Value(*((TheCurve*)myC), myusup);
+    mydist2 = P.SquareDistance(Pl);
+  }
+
+  switch(type) {
+  case GeomAbs_Circle: 
+    {
+      myExtPElC.Perform(P, TheCurveTool::Circle(*((TheCurve*)myC)), t3d, myuinf, myusup);
+    }
+    break;
+  case GeomAbs_Ellipse: 
+    {
+      myExtPElC.Perform(P, TheCurveTool::Ellipse(*((TheCurve*)myC)), t3d, myuinf, myusup);
+    }
+    break;
+  case GeomAbs_Parabola: 
+    {
+      myExtPElC.Perform(P, TheCurveTool::Parabola(*((TheCurve*)myC)), t3d,myuinf,myusup);
+    }
+    break;
+  case GeomAbs_Hyperbola: 
+    {
+      myExtPElC.Perform(P,TheCurveTool::Hyperbola(*((TheCurve*)myC)),t3d, myuinf, myusup);
+    }
+    break;
+  case GeomAbs_Line: 
+    {
+      myExtPElC.Perform(P, TheCurveTool::Line(*((TheCurve*)myC)), t3d, myuinf, myusup);
+    }
+    break;
+  case GeomAbs_BezierCurve:
+    {
+      myintuinf = myuinf;
+      myintusup = myusup;
+      mysample = (TheCurveTool::Bezier(*((TheCurve*)myC)))->NbPoles()*2;
+      IntervalPerform(P);
+      return;
+    }
+  case GeomAbs_BSplineCurve: 
+    {
+      mysample = (TheCurveTool::BSpline(*((TheCurve*)myC)))->NbPoles()*2;
+    }
+  case GeomAbs_OtherCurve: 
+    {
+      Standard_Boolean IntExtIsDone = Standard_False;
+      Standard_Boolean IntIsNotValid;
+      n = TheCurveTool::NbIntervals(*((TheCurve*)myC), GeomAbs_C2);
+      TColStd_Array1OfReal theInter(1, n+1);
+      TheCurveTool::Intervals(*((TheCurve*)myC), theInter, GeomAbs_C2);
+      mysample = Max(mysample/n, 17);
+      TheVector V1;
+      ThePoint PP;
+      Standard_Real s1 = 0.0 ;
+      Standard_Real s2 = 0.0;      
+      for (i = 1; i <= n; i++) {
+	myintuinf = theInter(i);
+	myintusup = theInter(i+1);
+
+	IntIsNotValid = (myuinf > myintusup) || 
+	                (myusup < myintuinf);
+
+	if(IntIsNotValid) continue;
+
+	if (myuinf >= myintuinf) myintuinf = myuinf;
+	if (myusup <= myintusup) myintusup = myusup;
+
+	if((myintusup - myintuinf) <= mytolu) continue;
+
+	if (i != 1) {
+	  TheCurveTool::D1(*((TheCurve*)myC), myintuinf, PP, V1);
+	  s1 = (TheVector(P, PP))*V1;
+	  if (s1*s2 < 0.0) {
+	    mySqDist.Append(PP.SquareDistance(P));
+	    myismin.Append((s1 < 0.0));
+	    mypoint.Append(ThePOnC(myintuinf, PP));
+	  }
+	}
+	if (i != n) {
+	  TheCurveTool::D1(*((TheCurve*)myC), myintusup, PP, V1);
+	  s2 = (TheVector(P, PP))*V1;
+	}
+	IntervalPerform(P);
+	IntExtIsDone = IntExtIsDone || mydone;
+      }
+      mydone = IntExtIsDone;
+      return;
+    }
+  }
+  
+  
+  mydone = myExtPElC.IsDone();
+  if (mydone) {
+    NbExt = myExtPElC.NbExt();
+    for (i = 1; i <= NbExt; i++) {
+      // Verification de la validite des parametres:
+      ThePOnC PC = myExtPElC.Point(i);
+      U = PC.Parameter();
+      if (TheCurveTool::IsPeriodic(*((TheCurve*)myC))) {
+	U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
+      }
+      if ((U >= myuinf-mytolu) && (U <= myusup+mytolu)){
+	PC.SetValues(U, myExtPElC.Point(i).Value());
+	mySqDist.Append(myExtPElC.SquareDistance(i));
+	myismin.Append(myExtPElC.IsMin(i));
+	mypoint.Append(PC);
+      }
+    }
+  }
+  
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void Extrema_GExtPC::Initialize(const TheCurve&     C,
+				const Standard_Real Uinf,
+				const Standard_Real Usup,
+				const Standard_Real TolF) 
+{
+  myC = (Standard_Address)&C;
+  myintuinf = myuinf = Uinf;
+  myintusup = myusup = Usup;
+  mytolf = TolF;
+  mytolu = TheCurveTool::Resolution(*((TheCurve*)myC), Precision::Confusion());
+  type = TheCurveTool::GetType(C);
+  mydone = Standard_False;
+  mydist1 = RealLast();
+  mydist2 = RealLast();
+  mysample = 17;
+}
+
+
+//=======================================================================
+//function : IntervalPerform
+//purpose  : 
+//=======================================================================
+
+void Extrema_GExtPC::IntervalPerform(const ThePoint& P)
+{
+  Standard_Integer i;
+  Standard_Real U;
+  myExtPC.Initialize((*((TheCurve*)myC)), mysample, 
+		     myintuinf, myintusup, mytolu, mytolf);
+  myExtPC.Perform(P);
+  mydone = myExtPC.IsDone();
+  if (mydone) {
+    Standard_Integer NbExt = myExtPC.NbExt();
+    for (i = 1; i <= NbExt; i++) {
+      // Verification de la validite des parametres pour le cas trimme:
+      ThePOnC PC = myExtPC.Point(i);
+      U = PC.Parameter();
+      if (TheCurveTool::IsPeriodic(*((TheCurve*)myC))) {
+	U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
+      }
+      if ((U >= myuinf - mytolu) && (U <= myusup + mytolu)) {
+	PC.SetValues(U, PC.Value());
+	mySqDist.Append(myExtPC.SquareDistance(i));
+	myismin.Append(myExtPC.IsMin(i));
+	mypoint.Append(PC);
+      }
+    }
+  }
+}
+
+
+
+
+//=======================================================================
+//function : Extrema_GExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GExtPC::Extrema_GExtPC()
+{
+  myC = 0;
+  mydone = Standard_False;
+  mydist1 = RealLast();
+  mydist2 = RealLast();
+  mytolu = 0.0;
+  mytolf = 0.0;
+  mysample = 17;
+  myintuinf = myintusup = myuinf = myusup = Precision::Infinite();
+  type = GeomAbs_OtherCurve;
+}
+
+//=======================================================================
+//function : Extrema_GExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GExtPC::Extrema_GExtPC(const ThePoint&           P, 
+			       const TheCurve&           C,
+			       const Standard_Real       Uinf,
+			       const Standard_Real       Usup,
+			       const Standard_Real       TolF) 
+{
+  Initialize(C, Uinf, Usup, TolF);
+  Perform(P);
+}
+
+//=======================================================================
+//function : Extrema_GExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GExtPC::Extrema_GExtPC(const ThePoint&     P, 
+			       const TheCurve&     C,
+			       const Standard_Real TolF) 
+{
+  Initialize(C, TheCurveTool::FirstParameter(C), 
+	     TheCurveTool::LastParameter(C), TolF);
+  Perform(P);
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Extrema_GExtPC::IsDone() const
+{
+  return mydone;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Real Extrema_GExtPC::SquareDistance(const Standard_Integer N) const 
+{
+  if(!mydone) StdFail_NotDone::Raise();
+  if ((N < 1) || (N > mySqDist.Length())) Standard_OutOfRange::Raise();
+  return mySqDist.Value(N);
+}
+
+
+//=======================================================================
+//function : NbExt
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Extrema_GExtPC::NbExt() const
+{
+  if(!mydone) StdFail_NotDone::Raise();
+  return mySqDist.Length();
+}
+
+
+//=======================================================================
+//function : IsMin
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
+{
+  if(!mydone) StdFail_NotDone::Raise();
+  if ((N < 1) || (N > mySqDist.Length())) Standard_OutOfRange::Raise();
+  return myismin.Value(N);
+}
+
+
+
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
+
+ThePOnC Extrema_GExtPC::Point(const Standard_Integer N) const
+{
+  if(!mydone) StdFail_NotDone::Raise();
+  if ((N < 1) || (N > mySqDist.Length())) Standard_OutOfRange::Raise();
+  return mypoint.Value(N);
+}
+
+
+//=======================================================================
+//function : TrimmedDistances
+//purpose  : 
+//=======================================================================
+
+void Extrema_GExtPC::TrimmedSquareDistances(Standard_Real& dist1, 
+				      Standard_Real& dist2,
+				      ThePoint& P1,
+				      ThePoint& P2) const
+{
+  dist1 = mydist1;
+  dist2 = mydist2;
+  P1 = Pf;
+  P2 = Pl;
+}
+

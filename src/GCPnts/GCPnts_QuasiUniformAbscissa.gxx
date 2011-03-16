@@ -1,0 +1,113 @@
+// File:	GCPnts_QuasiUniformAbscissa.gxx
+// Created:	Thu Aug 22 15:58:50 1996
+// Author:	Stagiaire Mary FABIEN
+//		<fbi@zozox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : GCPnts_QuasiUniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C, 
+					       const Standard_Integer NbPoints)
+{
+  Initialize(C, NbPoints);
+}
+
+//=======================================================================
+//function : GCPnts_QuasiUniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa(TheCurve& C, 
+					       const Standard_Integer NbPoints,
+					       const Standard_Real U1, 
+					       const Standard_Real U2)
+{
+  Initialize(C, NbPoints, U1, U2);
+}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C, 
+					const Standard_Integer NbPoints)
+{
+  Initialize(C, NbPoints, C.FirstParameter(),
+	     C.LastParameter());
+} 
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C, 
+					     const Standard_Integer NbPoints,
+					     const Standard_Real U1, 
+					     const Standard_Real U2)
+{
+  Standard_Integer i;
+  if ((C.GetType() != GeomAbs_BezierCurve) && (C.GetType() != GeomAbs_BSplineCurve))
+    {
+      GCPnts_UniformAbscissa UA(C,NbPoints,U1,U2);
+      myDone = UA.IsDone();
+      myNbPoints = UA.NbPoints();
+      myParams = new TColStd_HArray1OfReal(1,myNbPoints);
+      for( i = 1 ; i <= myNbPoints ; i++ ) 
+	myParams->SetValue(i,UA.Parameter(i));
+#ifdef DEB
+
+//      char name [100];
+//      for( i = 1 ; i <= NbPoints ; i++ ) {
+//	sprintf(name,"%s_%d","pnt2d",i+(compteur++));
+//	DrawTrSurf::Set(name,C->Value(UA.Parameter(i)));
+//      }
+#endif
+    }
+  else {
+    Standard_ConstructionError_Raise_if(NbPoints <= 1, "");
+    
+// evaluate the approximative length of the 3dCurve
+    myNbPoints = NbPoints;
+    Standard_Real Length = 0.;
+    Standard_Real Dist, dU = (U2 - U1) / ( 2*NbPoints - 1);
+    
+    TColgp_Array1OfPnt2d LP(1,2*NbPoints); // tableau Longueur <-> Param
+    ThePnt P1, P2;
+    P1 = C.Value(U1);
+    
+// On additionne toutes les distances
+    for ( i = 0; i < 2*NbPoints ; i++) {
+      P2      = C.Value(U1 + i*dU);
+      Dist    = P1.Distance(P2);
+      Length += Dist;
+      LP(i+1) = gp_Pnt2d( Length, U1 + (i*dU));
+      P1      = P2;
+    }
+
+// On cherche a mettre NbPoints dans la curve.
+// on met les points environ a Length/NbPoints.
+
+    Standard_Real DCorde = Length / ( NbPoints - 1); 
+    Standard_Real Corde  = DCorde;
+    Standard_Integer Index = 1;
+    Standard_Real U, Alpha;
+    myParams = new TColStd_HArray1OfReal(1,NbPoints); 
+    myParams->SetValue(1,U1); 
+    for ( i = 2; i < NbPoints; i++) {
+      while ( LP(Index).X() < Corde) Index ++;
+      Alpha = (Corde - LP(Index-1).X()) / (LP(Index).X() - LP(Index-1).X());
+      U = LP(Index-1).Y() + Alpha * ( LP(Index).Y() - LP(Index-1).Y());
+      myParams->SetValue(i,U);
+      Corde = i*DCorde;
+    }
+    myParams->SetValue(NbPoints,U2);
+    myDone = Standard_True;
+  }
+}
+

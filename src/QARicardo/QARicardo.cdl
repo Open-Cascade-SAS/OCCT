@@ -1,0 +1,12 @@
+-- File:	QARicardo.cdl
+-- Created:	Thu May 16 18:34:01 2002
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2002
+
+
+package QARicardo
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

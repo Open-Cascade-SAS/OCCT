@@ -1,0 +1,87 @@
+--
+-- File      :  CenterLine.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CenterLine from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines CenterLine, Type <106> Form <20-21>
+        --          in package IGESDimen
+        --          Is an entity appearing as crosshairs or as a
+        --          construction between 2 positions
+
+uses
+
+        Pnt         from gp,
+        Pnt2d       from gp,
+        XY          from gp,
+        XYZ         from gp,
+        HArray1OfXY from TColgp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable CenterLine;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me             : mutable;
+              aDataType      : Integer;
+              aZdisp         : Real;
+              dataPnts       : HArray1OfXY);
+        ---Purpose : This method is used to set the fields of the class
+        --           CenterLine
+        --       - aDataType      : Interpretation Flag, always = 1
+        --       - aZDisplacement : Common z displacement
+        --       - dataPnts       : Data points (x and y)
+
+    	SetCrossHair (me : mutable; mode : Boolean);
+	---Purpose : Sets FormNumber to 20 if <mode> is True, 21 else
+
+
+        Datatype (me) returns Integer;
+        ---Purpose : returns Interpretation Flag : IP = 1.
+
+        NbPoints (me) returns Integer;
+        ---Purpose : returns Number of Data Points.
+
+        ZDisplacement (me) returns Real;
+        ---Purpose : returns Common Z displacement.
+
+        Point (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the data point as Pnt from gp.
+        -- raises exception if Index <= 0 or Index > NbPoints()
+
+        TransformedPoint (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the data point as Pnt from gp after Transformation.
+        -- raises exception if Index <= 0 or Index > NbPoints()
+
+        IsCrossHair(me) returns Boolean;
+        ---Purpose : returns True if Form is 20.
+
+fields
+
+--
+-- Class    : IGESDimen_CenterLine
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CenterLine.
+--
+-- Reminder : A CenterLine instance is defined by :
+--            - Interpretation Flag, always = 1
+--            - Common Z displacement
+--            - Data points (x and y)
+-- A Center Line Entity takes two forms. The first appears as crosshairs
+-- and the second is a construction between 2 positions.
+
+        theDatatype      : Integer;
+        theZDisplacement : Real;
+        theDataPoints    : HArray1OfXY;
+
+end CenterLine;

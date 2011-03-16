@@ -1,0 +1,27 @@
+// File:	AIS_LengthDimension.lxx
+// Created:	Fri Feb 28 10:16:02 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+#include <AIS.hxx>
+#include <TopoDS.hxx>
+
+
+//=======================================================================
+//function : TypeOfDist
+//purpose  : 
+//=======================================================================
+inline AIS_TypeOfDist AIS_LengthDimension::TypeOfDist() const 
+{
+  return myTypeDist;
+}
+
+//=======================================================================
+//function : SetTypeOfDist
+//purpose  : 
+//=======================================================================
+
+inline void AIS_LengthDimension::SetTypeOfDist(const AIS_TypeOfDist aTypeDist)
+{
+  myTypeDist = aTypeDist;
+}

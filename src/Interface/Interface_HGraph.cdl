@@ -1,0 +1,58 @@
+-- File:	Interface_HGraph.cdl
+-- Created:	Thu Apr 22 18:40:22 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class HGraph  from Interface  inherits TShared
+
+    ---Purpose : This class allows to store a redefinable Graph, via a Handle
+    --           (usefull for an Object which can work on several successive
+    --           Models, with the same general conditions)
+
+uses Graph, InterfaceModel, GeneralLib, Protocol, GTool
+
+raises DomainError
+
+is
+
+    Create (agraph : Graph) returns mutable HGraph;
+    ---Purpose : Creates an HGraph directly from a Graph.
+    --           Remark that the starting Graph is duplicated
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns mutable HGraph;
+    ---Purpose : Creates an HGraph with a Graph created from <amodel> and <lib>
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns mutable HGraph;
+    ---Purpose : Creates an HGraph with a graph itself created from <amodel>
+    --           and <protocol>
+
+    Create (amodel : InterfaceModel; gtool : GTool from Interface)
+    	returns mutable HGraph;
+    ---Purpose : Creates an HGraph with a graph itself created from <amodel>
+    --           and <protocol>
+
+    Create (amodel : InterfaceModel) returns mutable HGraph
+    ---Purpose : Same a above, but works with the GTool in the model
+    	raises DomainError;
+    --           Error if no Active Protocol is defined
+
+    Graph (me) returns Graph;
+    ---Purpose : Returns the Graph contained in <me>, for Read Only Operations
+    --           Remark that it is returns as "const &"
+    --           Getting it in a new variable instead of a reference would be
+    --           a pitty, because all the graph's content would be duplicated
+    ---C++ : return const &
+
+    CGraph (me : mutable) returns Graph;
+    ---Purpose : Same as above, but for Read-Write Operations
+    --           Then, The Graph will be modified in the HGraph itself
+    ---C++ : return &
+
+fields
+
+    thegraph : Graph;
+
+end HGraph;

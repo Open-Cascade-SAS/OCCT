@@ -1,0 +1,53 @@
+-- File:	IGESSelect_WorkLibrary.cdl
+-- Created:	Fri Jun  3 09:33:18 1994
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1994
+
+
+class WorkLibrary  from IGESSelect  inherits WorkLibrary  from IFSelect
+
+    ---Purpose : Performs Read and Write an IGES File with an IGES Model
+
+uses CString, Transient, 
+     InterfaceModel, Protocol from Interface, CheckIterator, ContextWrite,
+     Messenger from Message,
+     Protocol from IGESData
+
+is
+
+    Create (modefnes : Boolean = Standard_False)
+    	returns mutable WorkLibrary from IGESSelect;
+    ---Purpose : Creates a IGES WorkLibrary
+    --           If <modefnes> is given as True, it will work for FNES
+
+    ReadFile (me; name : CString;
+    	      model    : out mutable InterfaceModel;
+    	      protocol : Protocol from Interface)
+    	  returns Integer;
+    ---Purpose : Reads a IGES File and returns a IGES Model (into <mod>),
+    --           or lets <mod> "Null" in case of Error
+    --           Returns 0 if OK, 1 if Read Error, -1 if File not opened
+
+    WriteFile (me; ctx : in out ContextWrite)  returns Boolean;
+    ---Purpose : Writes a File from a IGES Model (brought by <ctx>)
+    --           Returns False (and writes no file) if <ctx> is not for IGES
+
+    DefineProtocol (myclass) returns Protocol from IGESData;
+    ---Purpose : Defines a protocol to be adequate for IGES
+    --           (encompasses ALL the IGES norm including IGESSolid, IGESAppli)
+
+    DumpEntity (me;
+    	       model    : InterfaceModel;
+    	       protocol : Protocol from Interface;
+	       entity   : Transient;
+	       S        : Messenger from Message;
+	       level    : Integer);
+    ---Purpose : Dumps an IGES Entity with an IGES Dumper. <level> is the one
+    --           used by IGESDumper.
+
+fields
+
+    themodefnes : Boolean;
+
+end WorkLibrary;

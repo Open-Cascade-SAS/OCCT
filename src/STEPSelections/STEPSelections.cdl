@@ -1,0 +1,61 @@
+-- File:	StepSelect.cdl
+-- Created:	Thu Dec 22 11:03:12 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+package STEPSelections
+
+    ---Purpose : Step Selections
+
+uses 
+    
+    MMgt, 
+    TCollection, 
+    TColStd,
+    Interface, 
+    IFGraph,
+    IFSelect, 
+    StepSelect,
+    StepBasic,
+    StepShape,
+    StepGeom,
+    StepRepr,
+    StepData,
+    XSControl
+
+is
+
+    class SelectFaces;
+    
+    class SelectDerived;
+    
+    class SelectGSCurves;
+    
+    class SelectAssembly;
+    
+    class SelectInstances;
+     
+    class SelectForTransfer;
+    -- Classes that are intended for assembly exploration
+    
+    class SequenceOfAssemblyLink instantiates
+    	Sequence from TCollection (AssemblyLink from STEPSelections);
+	
+    class HSequenceOfAssemblyLink instantiates
+    	HSequence from TCollection (AssemblyLink           from STEPSelections,
+	    	    	    	    SequenceOfAssemblyLink from STEPSelections);
+				    
+    class SequenceOfAssemblyComponent instantiates
+    	Sequence from TCollection (AssemblyComponent from STEPSelections);
+    
+    class AssemblyComponent;
+    
+    class AssemblyLink;
+    
+    class AssemblyExplorer;
+
+    class Counter;
+
+end STEPSelections;

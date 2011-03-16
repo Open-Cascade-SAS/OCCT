@@ -1,0 +1,268 @@
+-- File:	BRepAdaptor_CompCurve.cdl
+-- Created:	Thu Aug 20 10:53:03 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class CompCurve from BRepAdaptor
+    
+inherits Curve from Adaptor3d
+
+	---Purpose: The Curve from BRepAdaptor allows to use a Wire
+	--          of the BRep topology like a 3D curve.
+	--  Warning: With this  class of curve,  C0 and C1 continuities
+	--          are not assumed. So be carful with some algorithm!
+          
+uses 
+    Wire               from TopoDS, 
+    Edge               from TopoDS,
+    CurveType          from GeomAbs,
+    Shape              from GeomAbs,
+    HCurve             from Adaptor3d,
+    HArray1OfCurve     from  BRepAdaptor,
+    BezierCurve        from Geom,
+    BSplineCurve       from Geom,
+    Array1OfReal       from TColStd, 
+    HArray1OfReal      from TColStd,
+    Pnt                from gp,
+    Vec                from gp,
+    Circ               from gp,
+    Elips              from gp,
+    Hypr               from gp,
+    Parab              from gp,
+    Lin                from gp 
+
+raises
+    NullObject   from Standard,
+    DomainError  from Standard,
+    OutOfRange   from Standard,
+    NoSuchObject from Standard
+
+is
+    Create returns CompCurve from BRepAdaptor;
+	---Purpose: Creates an undefined Curve with no Wire loaded.
+	
+    Create(W : Wire from TopoDS; 
+    	   KnotByCurvilinearAbcissa  :  Boolean  =  Standard_False)  
+    returns CompCurve from BRepAdaptor;
+	
+    Create(W : Wire from TopoDS; 
+    	   KnotByCurvilinearAbcissa  :  Boolean; 
+           First,  Last,  Tol  :  Real)  
+    returns CompCurve from BRepAdaptor;
+	---Purpose: Creates a Curve  to  acces to the geometry of edge
+	--          <W>.  
+	--          
+
+    Initialize(me : in out; W : Wire from TopoDS; 
+               KnotByCurvilinearAbcissa  :  Boolean)
+	---Purpose: Sets the  wire <W>.
+         
+    is static;  
+     
+    Initialize(me : in out; W : Wire from TopoDS; 
+               KnotByCurvilinearAbcissa  :  Boolean; 
+               First,  Last,  Tol  :  Real )
+	---Purpose: Sets wire <W> and trimmed  parameter.  
+    is static; 
+      
+    SetPeriodic(me:  in  out;  Periodic  :  Boolean) 
+       ---Purpose: Set the flag Periodic.           
+       --  Warning: This method has no effect if the wire is not closed        
+    is  static;
+     
+    Wire(me) returns Wire from TopoDS
+	---Purpose: Returns the wire.
+	--          
+	---C++: return const &
+    is static; 
+     
+    Edge(me; U  :  Real;   
+         E  :  out  Edge;   
+         UonE  :  out  Real) 
+      ---Purpose: returns an  edge  and   one  parameter on them
+      --           corresponding to the parameter U.         
+    is  static; 
+      
+    --
+    --     Methods of  Curve  from GeomAdaptor.
+    --     
+
+   FirstParameter(me) returns Real
+   is redefined static;
+
+   LastParameter(me) returns Real
+   is redefined static;     
+
+   Continuity(me) returns Shape from GeomAbs
+   is redefined static;
+
+   NbIntervals(me: in out; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+   is redefined static;
+
+   Intervals(me: in out; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+   raises
+    	OutOfRange from Standard 
+   is redefined static;
+    
+   Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+   raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+   is redefined static;
+    
+   IsClosed(me) returns Boolean
+   is redefined static;
+    
+   IsPeriodic(me) returns Boolean
+   is redefined static;
+
+   Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+
+    
+   Value(me; U : Real) returns Pnt from gp
+        --- Purpose : Computes the point of parameter U on the curve 
+   is redefined static;
+
+   D0 (me; U : Real; P : out Pnt from gp)
+        --- Purpose : Computes the point of parameter U.
+   is redefined static;
+
+   D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+        --- Purpose : Computes the point of parameter U on the curve
+        --  with its first derivative.
+
+     raises 
+       DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+   is redefined static;
+    
+   D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises 
+       DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+     is redefined static;
+
+   D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+    is redefined static;
+        
+   DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+    is redefined static;
+
+
+   Resolution(me; R3d :Real) returns Real
+        ---Purpose : returns the parametric resolution
+   is redefined static;   
+   
+
+   GetType(me) returns CurveType from GeomAbs
+   is redefined static;
+
+   Line(me) returns Lin from gp
+    raises NoSuchObject from Standard
+   is redefined static;
+   
+   Circle(me) returns Circ from gp
+    raises NoSuchObject from Standard
+   is redefined static;
+
+   Ellipse(me) returns Elips from gp
+    raises NoSuchObject from Standard
+   is redefined static;
+
+   Hyperbola(me) returns  Hypr from gp
+    raises NoSuchObject from Standard
+   is redefined static;
+
+   Parabola(me) returns Parab from gp
+    raises NoSuchObject from Standard
+   is redefined static;
+
+
+   Degree(me) returns Integer
+    raises NoSuchObject from Standard
+   is redefined static;
+
+   IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   NbPoles(me) returns Integer
+    raises NoSuchObject from Standard
+   is redefined static;
+    
+   NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+
+   Bezier(me) returns BezierCurve from Geom
+    	---Warning : 
+    	--         This  will    make a copy of the Bezier Curve .
+    	--          Be carefull when  using this method
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+   
+   BSpline(me) returns BSplineCurve from Geom
+    	---Warning : This will  make a copy  of the BSpline Curve.  Be
+     	--         carefull when using this method
+
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+         
+   Prepare(me;  W,  D: in  out  Real;  ind  : in  out Integer) 
+   is  private;  
+    
+   InvPrepare(me; ind :  Integer; F, D: in  out  Real) 
+   is  private; 
+
+fields 
+  myWire    :  Wire  from  TopoDS; 
+  TFirst, TLast,  PTol, myPeriod : Real;
+  myCurves  :  HArray1OfCurve  from  BRepAdaptor; 
+  myKnots   :  HArray1OfReal   from  TColStd;   
+  CurIndex  :  Integer; 
+  Forward   :  Boolean;   
+  IsbyAC    :  Boolean; 
+  Periodic  :  Boolean; 
+  end CompCurve;

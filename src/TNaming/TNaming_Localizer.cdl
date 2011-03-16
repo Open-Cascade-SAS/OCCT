@@ -1,0 +1,106 @@
+-- File:	TNaming_Localizer.cdl
+-- Created:	Tue Jun 10 09:54:53 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class Localizer from TNaming 
+
+	---Purpose: 
+
+uses
+    Shape                                  from TopoDS,
+    ShapeEnum                              from TopAbs,
+    Label                                  from TDF,
+    LabelList                              from TDF,
+    LabelMap                               from TDF,
+    UsedShapes                             from TNaming,
+    NamedShape                             from TNaming,
+    MapOfNamedShape                        from TNaming,
+    ListOfNamedShape                       from TNaming,
+    Evolution                              from TNaming,
+    ShapesSet                              from TNaming,	
+    ListOfShape                            from TopTools,
+    MapOfShape                             from TopTools,
+    IndexedDataMapOfShapeListOfShape       from TopTools,
+    ListOfMapOfShape                       from TNaming,
+    ListOfIndexedDataMapOfShapeListOfShape from TNaming
+	    
+is
+
+
+    Create returns Localizer from TNaming;
+    
+    Init (me       : in out;
+    	  US       : UsedShapes from TNaming;
+	  CurTrans : Integer    from Standard );
+
+    SubShapes (me : in out; S : Shape from TopoDS; Type : ShapeEnum from TopAbs) 
+    returns MapOfShape from TopTools;
+    ---C++: return const&
+  
+    Ancestors    (me : in out; S : Shape from TopoDS; Type : ShapeEnum from TopAbs)
+    returns IndexedDataMapOfShapeListOfShape from TopTools;
+    ---C++: return const&
+    
+    FindFeaturesInAncestors (me            : in out;
+    	    	    	     S             :        Shape      from TopoDS;
+			     In            :        Shape      from TopoDS;
+			     AncInFeatures : in out MapOfShape from TopTools);
+			     
+			     
+    GoBack (me     : in out;
+    	    S      : Shape                   from TopoDS;
+	    Lab    : Label                   from TDF;
+	    Evol   : Evolution               from TNaming;
+	    OldS   : in out ListOfShape      from TopTools;
+	    OldLab : in out ListOfNamedShape from TNaming);
+	    
+
+    Backward (me          : in out;
+    	      NS          :        NamedShape      from TNaming;
+    	      S           :        Shape           from TopoDS;
+	      Primitives  : in out MapOfNamedShape from TNaming;
+	      ValidShapes : in out MapOfShape      from TopTools);
+	      
+    FindNeighbourg (me         : in out;
+    	            Cont       :       Shape from TopoDS;
+		    S          :       Shape from TopoDS;
+		    Neighbourg : in out MapOfShape from TopTools);
+		    	
+    IsNew (myclass ;S  : Shape      from TopoDS;
+    	            NS : NamedShape from TNaming)
+    returns Boolean from Standard;
+    
+    FindGenerator (myclass ; NS :        NamedShape from TNaming;
+	    		     S  :        Shape      from TopoDS;
+    	    theListOfGenerators : in out ListOfShape from TopTools );
+
+    
+    FindShapeContext (myclass ; NS    :        NamedShape from TNaming;
+    	    	    	    	theS  :        Shape      from TopoDS; 
+				theSC : in out Shape      from TopoDS); 
+    ---Purpose: Finds context of the shape <S>.		    				
+
+fields
+
+    myCurTrans           : Integer                                from Standard;	
+    myUS                 : UsedShapes                             from TNaming;
+
+    myShapeWithSubShapes : ListOfShape                            from TopTools;
+    mySubShapes          : ListOfMapOfShape                       from TNaming;
+    
+    myShapeWithAncestors : ListOfShape                            from TopTools;
+    myAncestors          : ListOfIndexedDataMapOfShapeListOfShape from TNaming;
+    
+end Localizer;
+
+
+
+
+
+
+
+
+

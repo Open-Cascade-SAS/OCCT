@@ -1,0 +1,77 @@
+--
+-- File      :  PartNumber.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PartNumber from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines PartNumber, Type <406> Form <9>
+        --          in package IGESAppli
+        --          Attaches a set of text strings that define the common
+        --          part numbers to an entity being used to represent a
+        --          physical component
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable PartNumber;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable; 
+              nbPropVal : Integer;
+              aGenName  : HAsciiString;
+              aMilName  : HAsciiString;
+              aVendName : HAsciiString;
+              anIntName : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           PartNumber
+        --       - nbPropVal : number of property values, always = 4
+        --       - aGenName  : Generic part number or name
+        --       - aMilName  : Military Standard (MIL-STD) part number
+        --       - aVendName : Vendor part number or name
+        --       - anIntName : Internal part number
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns number of property values, always = 4
+
+        GenericNumber (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Generic part number or name
+
+        MilitaryNumber (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Military Standard (MIL-STD) part number
+
+        VendorNumber (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Vendor part number or name
+
+        InternalNumber (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Internal part number
+
+fields
+
+--
+-- Class    : IGESAppli_PartNumber
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PartNumber.
+--
+-- Reminder : A PartNumber instance is defined by :
+--            - number of property values, always = 4
+--            - Generic part number or name
+--            - Military Standard (MIL-STD) part number
+--            - Vendor part number or name
+--            - Internal part number
+
+        theNbPropertyValues : Integer;
+        theGenericNumber    : HAsciiString;
+        theMilitaryNumber   : HAsciiString;
+        theVendorNumber     : HAsciiString;
+        theInternalNumber   : HAsciiString;
+
+end PartNumber;

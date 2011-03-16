@@ -1,0 +1,59 @@
+-- File:	BRepFill_TrimEdgeTool.cdl
+-- Created:	Mon Apr 24 16:15:45 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+private class TrimEdgeTool from BRepFill 
+
+	---Purpose: 
+
+uses
+
+    Bisec         from Bisector,
+    Edge          from TopoDS,
+    Pnt2d         from gp,
+    Curve         from Geom2d,
+    Geometry      from Geom2d,	
+    SequenceOfPnt from TColgp,
+    Curve         from Geom2dAdaptor
+
+is
+    Create
+    returns TrimEdgeTool from BRepFill;
+    
+    Create( Bisec   : Bisec    from Bisector;
+    	    S1, S2  : Geometry from Geom2d;
+    	    Offset  : Real     from Standard)
+    returns TrimEdgeTool from BRepFill;
+    
+    IntersectWith( me : in out;
+    	    	   Edge1 , Edge2 :        Edge          from TopoDS;
+		   Params        : in out SequenceOfPnt from TColgp)
+    is static;
+
+    AddOrConfuse ( me ;
+    		   Start         :        Boolean       from Standard;
+		   Edge1 , Edge2 :        Edge          from TopoDS;
+		   Params  : in out SequenceOfPnt from TColgp)
+    is static;		  
+
+
+    IsInside( me; P : Pnt2d from gp)
+    returns Boolean from Standard
+    is static;
+	      
+    	    
+		       
+fields
+    isPoint1 : Boolean from Standard;
+    isPoint2 : Boolean from Standard;    
+    myP1     : Pnt2d   from gp;
+    myP2     : Pnt2d   from gp;    	
+    myC1     : Curve   from Geom2d;
+    myC2     : Curve   from Geom2d;
+    myOffset : Real    from Standard;
+    myBisec  : Bisec   from Bisector;
+    myBis    : Curve   from Geom2dAdaptor;
+end TrimEdgeTool;

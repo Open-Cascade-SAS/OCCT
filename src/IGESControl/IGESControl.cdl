@@ -1,0 +1,36 @@
+-- File:	IGESControl.cdl
+-- Created:	Tue Jan 30 18:44:36 1996
+-- Author:	Christian CAILLET
+--		<cky@paris1>
+---Copyright:	 Matra Datavision 1996
+
+
+package IGESControl
+
+    ---Purpose : This package provide external access and control to use IGES
+    --           See also IGESToBRep for reading IGES to Shapes
+
+uses
+
+    TColStd,
+    Interface,
+    Transfer,
+    IFSelect,
+    XSControl,
+    IGESData,
+    TopoDS,
+    IGESToBRep,
+    ShapeExtend, 
+    Message
+
+is
+
+    class Controller;
+    class Writer;
+    class Reader;
+    class ActorWrite;
+    class IGESBoundary;
+    class AlgoContainer;
+    class ToolContainer;
+
+end;

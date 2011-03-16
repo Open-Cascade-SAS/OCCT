@@ -1,0 +1,37 @@
+-- File:	MDataStd_NamedDataStorageDriver.cdl
+-- Created:	Wed Jun 27 17:21:55 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@friendox>
+---Copyright:	Open CASCADE 2007
+
+
+class NamedDataStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)
+    returns mutable NamedDataStorageDriver from MDataStd;
+
+    VersionNumber(me) 
+    returns Integer from Standard;
+
+    SourceType(me) 
+    returns Type from Standard;
+
+    NewEmpty (me) 
+    returns mutable Attribute from PDF;
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+end NamedDataStorageDriver;

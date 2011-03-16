@@ -1,0 +1,19 @@
+inline Standard_Integer SelectMgr_Selection::Mode() const {return myMode;}
+
+inline void SelectMgr_Selection::Init ()  
+{myit.Initialize(myentities);}
+
+inline Standard_Boolean SelectMgr_Selection::More() const
+{return myit.More();}
+
+inline void SelectMgr_Selection::Next() 
+{myit.Next();}
+
+inline const Handle (SelectBasics_SensitiveEntity)& SelectMgr_Selection::Sensitive () const
+{return myit.Value();}
+
+inline void SelectMgr_Selection::UpdateStatus(const SelectMgr_TypeOfUpdate TheStat)
+{myUpdateStatus = TheStat;}
+
+inline SelectMgr_TypeOfUpdate SelectMgr_Selection::UpdateStatus() const
+{return myUpdateStatus;}

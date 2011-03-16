@@ -1,0 +1,25 @@
+// File:	Select3D_SensitiveTriangulation.lxx
+// Created:	Thu May 15 17:48:58 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline const Handle(Poly_Triangulation)& Select3D_SensitiveTriangulation::Triangulation() const
+{
+  return myTriangul;
+}
+
+ 
+inline const gp_Pnt& Select3D_SensitiveTriangulation::CDG3D() const
+{
+  return myCDG3D;
+}
+
+ 
+inline const gp_Pnt2d& Select3D_SensitiveTriangulation::CDG2D() const
+{
+  return myCDG2D;
+}
+
+inline Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
+{return !myiniloc.IsIdentity();}
+inline const TopLoc_Location& Select3D_SensitiveTriangulation::GetInitLocation() const
+{return myiniloc;}

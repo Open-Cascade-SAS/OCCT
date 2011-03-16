@@ -1,0 +1,8 @@
+Visual3d_View.pxx
+Visual3d_ViewManager.pxx
+Visual3d.edl
+Visual3d_CMPLRS.edl
+EXTERNLIB
+Visual3d_WOKSteps.edl 
+Visual3d_View_Print.cxx
+Visual3d_NListOfLayerItem.hxx

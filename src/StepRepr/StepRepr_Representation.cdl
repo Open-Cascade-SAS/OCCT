@@ -1,0 +1,44 @@
+-- File:        Representation.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Representation from StepRepr 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr, 
+	RepresentationContext from StepRepr, 
+	RepresentationItem from StepRepr
+is
+
+	Create returns mutable Representation;
+	---Purpose: Returns a Representation
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aItems : mutable HArray1OfRepresentationItem from StepRepr;
+	      aContextOfItems : mutable RepresentationContext from StepRepr) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetItems(me : mutable; aItems : mutable HArray1OfRepresentationItem);
+	Items (me) returns mutable HArray1OfRepresentationItem;
+	ItemsValue (me; num : Integer) returns mutable RepresentationItem;
+	NbItems (me) returns Integer;
+	SetContextOfItems(me : mutable; aContextOfItems : mutable RepresentationContext);
+	ContextOfItems (me) returns mutable RepresentationContext;
+
+fields
+
+	name : HAsciiString from TCollection;
+	items : HArray1OfRepresentationItem from StepRepr;
+	contextOfItems : RepresentationContext from StepRepr;
+
+end Representation;

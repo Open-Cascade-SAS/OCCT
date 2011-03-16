@@ -1,0 +1,20 @@
+-- File:        TimeUnit.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TimeUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable TimeUnit;
+	---Purpose: Returns a TimeUnit
+
+
+end TimeUnit;

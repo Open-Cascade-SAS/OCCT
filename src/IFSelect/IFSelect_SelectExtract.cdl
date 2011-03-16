@@ -1,0 +1,70 @@
+-- File:	SelectExtract.cdl
+-- Created:	Tue Nov 17 19:19:26 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectExtract  from IFSelect  inherits SelectDeduct
+
+    ---Purpose : A SelectExtract determines a list of Entities from an Input
+    --           Selection, as a sub-list of the Input Result
+    --           It works by applying a sort criterium on each Entity of the
+    --           Input. This criterium can be applied Direct to Pick Items
+    --           (default case) or Reverse to Remove Item
+    --           
+    --           Basic features (the unique Input) are inherited from SelectDeduct
+
+uses AsciiString from TCollection, InterfaceModel, EntityIterator,  Graph
+
+is
+
+    Initialize;
+    ---Purpose : Initializes a SelectExtract : enforces the sort to be Direct
+
+    IsDirect (me) returns Boolean;
+    ---Purpose : Returns True if Sort criterium is Direct, False if Reverse
+
+    SetDirect (me : mutable; direct : Boolean);
+    ---Purpose : Sets Sort criterium sense to a new value
+    --           (True : Direct , False : Reverse)
+
+    	-- Input : see SelectDeduct
+
+
+    RootResult (me; G : Graph) returns EntityIterator is virtual;
+    ---Purpose : Returns the list of selected entities. Works by calling the
+    --           method Sort on each input Entity : the Entity is kept as
+    --           output if Sort returns the same value as Direct status
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean  is deferred;
+    ---Purpose : Returns True for an Entity if it satisfies the Sort criterium
+    --           It receives :
+    --           - <rank>, the rank of the Entity in the Iteration,
+    --           - <ent> , the Entity itself, and
+    --           - <model>, the Starting Model
+    --             Hence, the Entity to check is "model->Value(num)" (but an
+    --             InterfaceModel allows other checks)
+    --           This method is specific to each class of SelectExtract
+
+    SortInGraph (me; rank : Integer; ent : Transient; G : Graph)
+    	returns Boolean  is virtual;
+    ---Purpose : Works as Sort but works on the Graph
+    --           Default directly calls Sort, but it can be redefined
+    --           If SortInGraph is redefined, Sort should be defined even if
+    --           not called (to avoid deferred methods in a final class)
+
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text saying "Picked" or "Removed", plus the
+    --           specific criterium returned by ExtractLabel (see below)
+
+    ExtractLabel (me) returns AsciiString from TCollection  is deferred;
+    ---Purpose : Returns a text defining the criterium for extraction
+
+fields
+
+    thesort : Boolean;
+
+end SelectExtract;

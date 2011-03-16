@@ -1,0 +1,31 @@
+-- File:	TColStd_HPackedMapOfInteger.cdl
+-- Created:	Tue Dec 05 14:31:27 2006
+-- Author:	Sergey  KOCHETKOV
+-- Copyright:   Open Cascade 2006 
+ 
+class HPackedMapOfInteger from TColStd inherits TShared from MMgt 
+ 
+	  ---Purpose: Extension of TColStd_PackedMapOfInteger class to be manipulated by handle. 
+ 
+uses 
+    PackedMapOfInteger from TColStd 
+ 
+is 
+    Create( NbBuckets: Integer from Standard = 1 ) returns mutable HPackedMapOfInteger from TColStd;    
+     
+    Create( theOther:  PackedMapOfInteger from TColStd ) returns mutable HPackedMapOfInteger from TColStd; 
+     
+    Map( me ) returns PackedMapOfInteger from TColStd 
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns PackedMapOfInteger from TColStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields     
+    myMap : PackedMapOfInteger from TColStd; 
+ 
+end HPackedMapOfInteger;     

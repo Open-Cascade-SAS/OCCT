@@ -1,0 +1,26 @@
+-- File:	StepBasic_Effectivity.cdl
+-- Created:	Tue Jun 30 15:14:58 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Effectivity  from StepBasic    inherits TShared from MMgt
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable Effectivity;
+
+    Init (me : mutable; aid : HAsciiString);
+
+    Id (me) returns HAsciiString;
+    SetId (me : mutable; aid : HAsciiString);
+
+fields
+
+    theid : HAsciiString;
+
+end Effectivity;

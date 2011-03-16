@@ -1,0 +1,124 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+
+// ----------------------------------------------------------------------
+// 
+// HArray1 implementation:
+// 
+// Last Revision : Feb,10 1992 J.P Tirault
+//                 Implementation of ShallowCopy, ShallowDump
+//                 methods.
+// ----------------------------------------------------------------------
+//                 Constructor
+// ----------------------------------------------------------------------
+
+PCollection_HArray1::PCollection_HArray1 
+           (const Standard_Integer First, 
+            const Standard_Integer Last) : Data (Last-First+1)
+{
+	Standard_Integer Size = Last-First+1;
+	if( Size <= 0 ) Standard_RangeError::Raise();
+	LowerBound = First ;
+	UpperBound = Last ;
+}
+
+
+// ----------------------------------------------------------------------
+//                 datas
+// ----------------------------------------------------------------------
+
+Standard_Address PCollection_HArray1::Datas() const
+{
+  return ((Standard_Address)Data.Lock());
+}
+
+// ----------------------------------------------------------------------
+//                 Constructor
+// ----------------------------------------------------------------------
+
+PCollection_HArray1::PCollection_HArray1 
+           (const Standard_Integer First, 
+            const Standard_Integer Last, 
+            const Item& V) :Data (Last-First+1) {
+
+	Standard_Integer Size = Last-First+1;
+	if( Size <= 0 ) Standard_RangeError::Raise();
+	LowerBound = First ;
+	UpperBound = Last ;
+	for(Standard_Integer I = 0 ; I < Size ; I++) Data.SetValue(I, V);
+}
+
+
+// ----------------------------------------------------------------------
+//                  Destructor
+// ----------------------------------------------------------------------
+
+/*
+void PCollection_HArray1::~PCollection_HArray1 () 
+{
+	delete Data ;
+}
+*/
+
+
+
+// ----------------------------------------------------------------------
+//                      ShallowCopy
+// ----------------------------------------------------------------------
+
+Handle(Standard_Persistent) PCollection_HArray1::ShallowCopy() const
+{
+  PCollection_HArray1* TheCopy = new PCollection_HArray1(*this);
+//  PCollection_FieldOfHArray1 DataCopy (Data);
+//  TheCopy->Data = DataCopy;
+  return TheCopy;
+}
+
+// ----------------------------------------------------------------------
+//                      ShallowDump
+// ----------------------------------------------------------------------
+
+void PCollection_HArray1::ShallowDump(Standard_OStream& S) const
+{
+  ::ShallowDump(Data,S);
+}
+
+
+
+/* Anciens INLINE */
+
+// ----------------------------------------------------------------------
+//                   SetValue
+// ----------------------------------------------------------------------
+void PCollection_HArray1::SetValue
+            ( const Standard_Integer Index, const Item& Value)
+{
+  Standard_OutOfRange_Raise_if((Index < LowerBound || Index > UpperBound),
+        "Index out of range in HArray1::SetValue");
+  Data.SetValue(Index-LowerBound, Value) ;
+}
+
+
+// ----------------------------------------------------------------------
+//                      Value
+// ----------------------------------------------------------------------
+Item PCollection_HArray1::Value
+            ( const Standard_Integer Index) const
+{
+  Standard_OutOfRange_Raise_if((Index < LowerBound || Index > UpperBound),
+        "Index out of range in HArray1::operator()");
+
+  return Data(Index-LowerBound);
+
+}
+
+// ------------------------------------------------------------------
+//
+// ------------------------------------------------------------------
+PCollection_FieldOfHArray1 PCollection_HArray1::Field () const
+{
+  return Data ;
+}
+   

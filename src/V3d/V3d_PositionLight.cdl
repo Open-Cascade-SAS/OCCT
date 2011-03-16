@@ -1,0 +1,145 @@
+-- File:	PositionLight.cdl
+-- Created:	Fri Nov 21 17:49:00 1997
+-- Author:	ZOV
+--		ZOV - Mars 30 1998
+---Copyright:	Matra Datavision 1992
+
+
+deferred class PositionLight from V3d
+
+
+inherits Light from V3d  
+
+	---Purpose: Base class for Positional, Spot and Directional Light classes
+
+uses 
+
+	Viewer from V3d,
+	Coordinate from V3d,
+	View from V3d,
+	TypeOfRepresentation from V3d,
+	TypeOfPickLight from V3d,
+	NameOfColor from Quantity,
+	Coefficient from Quantity,
+	Parameter from Quantity,
+	Structure from Graphic3d,
+	Vertex from Graphic3d,
+	Group from Graphic3d
+
+raises BadValue from Viewer
+
+is
+
+	Initialize( VM : mutable Viewer )  ;
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Attributes of the Light
+        --------------------------------------------------------
+
+    	SetPosition ( me : mutable; X,Y,Z : Coordinate ) is deferred;
+	---Level: Public
+	---Purpose: Defines the position of the light source. Should be redefined!
+
+        SetTarget (me : mutable; X,Y,Z : Coordinate);
+	---Level: Public
+	---Purpose: Defines the target of the light (the center 
+	--          of the sphere)
+
+        SetRadius ( me : mutable; Radius : Parameter) raises BadValue from Viewer is static;
+	---Level: Public
+	---Purpose: Define the radius.
+	---Warning: raises BadValue from Viewer if the radius is <= 0	or if the light is directional
+	
+        OnHideFace (me : mutable; aView : View from V3d);
+	---Level: Public
+	---Purpose: Calculate the position of the light, on the hide face
+	--          of the picking sphere.
+
+        OnSeeFace (me : mutable; aView : View from V3d);
+	---Level: Public
+	---Purpose: Calculate the position of the light, on the seen face
+	--          of the picking sphere.      
+	
+    	  Tracking (me : mutable;  aView : View from V3d;
+	    	    	    	 WathPick : TypeOfPickLight from V3d; 
+    	    	    	    	 Xpix,Ypix : Integer from Standard) is static;
+	---Level: Public
+	---Purpose: Tracking the light position, or the light space,
+	--          or the radius of the light space, that depends of
+	--          initial picking "WhatPick" (see the pick method).
+	--          If WhatPick is SPACELIGHT, then the parameters
+	--          Xpix, Ypix are the coordinates of a translation vector.
+
+     	---------------------------------------------------
+      ---Category: Displaying methods 
+      ---------------------------------------------------
+
+        Display(me: mutable; aView: View from V3d;  Representation : TypeOfRepresentation = V3d_SIMPLE)
+	is virtual;
+	---Level: Public
+	---Purpose: Display the graphic structure of light source
+	--          in the choosen view. We have three type of representation
+	--          - SIMPLE   : Only the light source is displayed.
+	--          - PARTIAL  : The light source and the light space are
+	--                       displayed.
+	--          - COMPLETE : The light source, the light space and the
+	--                       radius of light space are displayed.
+	--          We can choose the "SAMELAST" as parameter of representation
+	--          In this case the graphic structure representation will be 
+	--          the last displayed.
+
+        Erase(me: mutable) is static;
+	---Level: Public
+	---Purpose: Erase the graphic structure of light source.
+	
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+        Pick ( me; aView: View from V3d; Xpix, Ypix: Integer from Standard)
+	returns TypeOfPickLight from V3d is virtual;
+	---Level: Public
+	---Purpose: Returns the type of pick element.
+	--          "POSITIONLIGHT"  : Representation of position light.
+	--          "SPACELIGHT"     : Representation of lighting space. 
+	--          "RADIUSLIGHT"    : Representation of lighting space radius.
+	--          "NOTHING"        : Any component of light.
+	--          Determinate which type of tracking apply.
+
+        Radius (me ) returns Parameter is static;
+	---Level: Public
+	---Purpose: Returns the radius of the picking sphere.
+
+        SeeOrHide (me; aView: View from V3d) returns Boolean is static;
+	---Level: Public
+	---Purpose: Returns the visibility status
+	--          If True the source is visible.
+	--          If False it's hidden.
+
+	    	Position ( me; X,Y,Z : out Coordinate ) is deferred;
+	---Level: Public
+	---Purpose : Returns the position of the light source.
+
+        Target ( me; X,Y,Z : out Coordinate) is static;
+	---Level: Public
+	---Purpose: Returns the position of the target of the light source.
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+                      aView   : View from V3d ) is deferred private;
+	---Level: Internal
+	---Purpose: Defines representation of the light source.
+
+
+
+fields
+
+        MyTarget:               Vertex from Graphic3d  is protected;
+        MyTypeOfRepresentation: TypeOfRepresentation from V3d  is protected;	
+
+end PositionalLight;
+
+

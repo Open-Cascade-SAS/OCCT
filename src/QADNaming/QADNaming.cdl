@@ -1,0 +1,67 @@
+-- File:	QADNaming.cdl
+-- Created:	Wed Jan  8 15:54:45 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+package QADNaming 
+
+	---Purpose: 
+
+	--           FOR OLD TOPOLOGY ONLY!
+uses 
+    Draw,
+    TCollection, 
+    TColStd,
+    TDF,
+    TNaming,
+    TopoDS,
+    TopTools
+is
+         
+    class DataMapOfShapeOfName instantiates
+    	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 AsciiString    from TCollection,
+                                 ShapeMapHasher from TopTools);  				  			       								   
+    CurrentShape (ShapeEntry      : CString  from Standard; 
+    	    	  Data            : Data     from TDF)
+    returns Shape from TopoDS;		  
+
+    GetShape (ShapeEntry  :        CString     from Standard; 
+    	      Data        :        Data        from TDF;
+    	      Shapes      : in out ListOfShape from TopTools);
+    
+
+    GetEntry (Shape      : in     Shape   from TopoDS; 
+              Data       : in     Data    from TDF; 
+              Status     : in out Integer from Standard)
+    	---Purpose: Status = 0  Not  found, 
+    	--          Status = 1  One  shape,
+    	--          Status = 2  More than one shape. 
+    returns AsciiString from TCollection;
+    
+    Entry (theArguments : Address from Standard;
+    	   theLabel : in out Label from TDF) returns Boolean from Standard;
+    --- Purpose: returns label by first two arguments (df and entry string)
+
+    AllCommands        (DI : in out Interpretor from Draw);
+    
+    BasicCommands      (DI : in out Interpretor from Draw);
+    ---Purpose: commands relatives to NamedShape
+
+    BuilderCommands    (DI : in out Interpretor from Draw);
+    ---Purpose: loading NamedShape to the Data Framework
+
+    IteratorsCommands  (DI : in out Interpretor from Draw);
+    ---Purpose: loading NamedShape to the Data Framework
+
+    ToolsCommands      (DI : in out Interpretor from Draw);
+    
+    SelectionCommands  (DI : in out Interpretor from Draw);
+    ---Purpose: commands relatives to Naming 
+
+end QADNaming;
+
+
+
+

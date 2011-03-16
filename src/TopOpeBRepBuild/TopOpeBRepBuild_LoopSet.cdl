@@ -1,0 +1,40 @@
+-- File:	TopOpeBRepBuild_LoopSet.cdl
+-- Created:	Tue Mar 23 14:55:16 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+class LoopSet from TopOpeBRepBuild
+
+uses
+
+    Loop                     from TopOpeBRepBuild,
+    ListOfLoop               from TopOpeBRepBuild,
+    ListIteratorOfListOfLoop from TopOpeBRepBuild
+
+is
+    
+    Create returns LoopSet;
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRepBuild_LoopSet(){Delete() ; }"
+    
+    -- filling : append loops (shapes,blocks) in list
+    ChangeListOfLoop(me : in out) returns ListOfLoop is static;
+    ---C++: return &
+
+    -- exploration of the loops
+    InitLoop(me : in out) is virtual;
+    MoreLoop(me) returns Boolean is virtual;
+    NextLoop(me : in out) is virtual;
+    Loop(me) returns Loop from TopOpeBRepBuild is virtual;
+    ---C++: return const &
+    
+fields
+
+    myListOfLoop : ListOfLoop;
+    myLoopIterator : ListIteratorOfListOfLoop;
+    myLoopIndex : Integer from Standard;
+    myNbLoop : Integer from Standard;
+    
+end LoopSet from TopOpeBRepBuild;

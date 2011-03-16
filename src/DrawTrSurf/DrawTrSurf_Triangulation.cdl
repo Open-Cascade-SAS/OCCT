@@ -1,0 +1,62 @@
+-- File:	DrawTrSurf_Triangulation.cdl
+-- Created:	Mon Mar  6 16:10:04 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Triangulation from DrawTrSurf inherits Drawable3D from Draw
+
+	---Purpose: Used to display a triangulation.
+	--          
+	--          Display internal edges in blue
+	--          Display boundary edges in red
+	--          Optional display of triangles and nodes indices.
+
+uses
+    HArray1OfInteger from TColStd,
+    Triangulation from Poly,
+    Display       from Draw,
+    Interpretor   from Draw,
+    OStream
+
+is
+
+    Create(T : Triangulation from Poly)
+    returns mutable Triangulation from DrawTrSurf;
+    
+    Triangulation(me)
+    returns Triangulation from Poly;
+    
+    ShowNodes(me : mutable; B : Boolean);
+
+    ShowNodes(me) returns Boolean;
+
+    ShowTriangles(me : mutable; B : Boolean);
+
+    ShowTriangles(me) returns Boolean;
+
+    DrawOn(me; dis : in out Display);
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is redefined;
+	---Purpose: For variable copy.
+	
+    Dump(me; S : in out OStream)
+    is redefined;
+	---Purpose: For variable dump.
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+fields
+
+    myTriangulation : Triangulation from Poly;
+    myInternals     : HArray1OfInteger from TColStd;
+    myFree          : HArray1OfInteger from TColStd;
+    myNodes         : Boolean;
+    myTriangles     : Boolean;
+
+end Triangulation;

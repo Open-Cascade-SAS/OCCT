@@ -1,0 +1,61 @@
+-- File:	MDocStd_DocumentStorageDriver.cdl
+-- Created:	Thu Apr 15 13:47:15 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class DocumentStorageDriver from MDocStd inherits StorageDriver from PCDM
+
+	---Purpose: storage driver for  a standard document
+
+
+uses Document           from TDocStd,
+     Document           from PDocStd,
+     SRelocationTable   from MDF,
+     Document           from CDM, 
+     MessageDriver      from CDM,       
+     Document           from PCDM,
+     ExtendedString from  TCollection,
+     ASDriverTable from MDF
+
+
+is
+
+
+    Create
+    returns mutable  DocumentStorageDriver from MDocStd;
+    
+    CreateDocument (me: mutable) returns Document from PCDM
+    ---Purpose: returns an empty PDocStd_Document. may be redefined;
+    is virtual;
+    	     
+    Paste (me : mutable; TDOC   : Document from TDocStd;
+                         PDOC   : Document from PDocStd;
+			 aReloc : SRelocationTable from MDF);
+  
+
+    ---Purpose: virtual  methods of StorageDriver from PCDM
+    --          ============================================
+    
+    Make (me: mutable; aDocument: Document from CDM)
+    returns Document from PCDM 
+    is redefined;
+    
+    ---Purpose: virtual methods (may be redefined by specialized application)
+    --          =============================================================
+    
+    SchemaName(me) 
+    returns   ExtendedString from  TCollection
+    is virtual;
+    
+    AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM)
+    returns ASDriverTable from MDF
+    is virtual;
+    
+fields
+
+    myDrivers : ASDriverTable from MDF;
+    
+end DocumentStorageDriver;

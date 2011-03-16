@@ -1,0 +1,38 @@
+-- File:	StepRepr_MeasureRepresentationItem.cdl
+-- Created:	Wed Sep  8 10:32:35 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class MeasureRepresentationItem from StepRepr 
+    inherits RepresentationItem from StepRepr 
+
+	---Purpose: Implements a measure_representation_item entity
+	--          which is used for storing validation properties
+	--          (e.g. area) for shapes
+
+uses
+    HAsciiString       from TCollection,
+    Unit               from StepBasic,
+    MeasureWithUnit    from StepBasic,
+    MeasureValueMember from StepBasic
+    
+is
+    Create returns mutable MeasureRepresentationItem;
+        ---Purpose: Creates empty object
+    
+    Init (me : mutable;
+	  aName : mutable HAsciiString from TCollection;
+	  aValueComponent : MeasureValueMember from StepBasic;
+	  aUnitComponent : Unit from StepBasic);
+        ---Purpose: Init all fields
+
+    SetMeasure (me: mutable; Measure: MeasureWithUnit from StepBasic);
+    Measure (me) returns MeasureWithUnit from StepBasic;
+    
+fields
+    myMeasure: MeasureWithUnit from StepBasic;
+
+end MeasureRepresentationItem;
+

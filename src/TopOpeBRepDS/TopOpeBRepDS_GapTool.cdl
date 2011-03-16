@@ -1,0 +1,83 @@
+-- File:	TopOpeBRepDS_GapTool.cdl
+-- Created:	Thu Aug 20 14:18:53 1998
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class GapTool from TopOpeBRepDS inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+    HDataStructure                     from TopOpeBRepDS,
+    Interference                       from TopOpeBRepDS,
+    Point                              from TopOpeBRepDS,
+    Curve                              from TopOpeBRepDS,
+    DataMapOfIntegerListOfInterference from TopOpeBRepDS,
+    Shape                              from TopoDS,
+    Face                               from TopoDS,
+    ListOfInterference                 from TopOpeBRepDS,
+    DataMapOfInterferenceShape         from TopOpeBRepDS
+is
+    
+    Create returns mutable GapTool from TopOpeBRepDS;    
+
+    Create (HDS : HDataStructure from TopOpeBRepDS)
+    returns mutable GapTool from TopOpeBRepDS;
+    
+    Init   (me : mutable; HDS : HDataStructure from TopOpeBRepDS);
+    
+    Interferences (me; IndexPoint : Integer from Standard)
+        ---C++: return const &
+    returns ListOfInterference from TopOpeBRepDS
+    is static;
+ 
+    SameInterferences (me; I : Interference from TopOpeBRepDS)
+         ---C++: return const &
+    returns ListOfInterference from TopOpeBRepDS
+    is static;
+
+    ChangeSameInterferences (me : mutable ; I : Interference from TopOpeBRepDS)
+         ---C++: return &
+    returns ListOfInterference from TopOpeBRepDS
+    is static;
+
+    Curve  (me; I : Interference from TopOpeBRepDS; C : out Curve from TopOpeBRepDS ) 
+    returns Boolean from Standard
+    is static;		    		
+
+    EdgeSupport(me; I : Interference from TopOpeBRepDS; E : out Shape from TopoDS)
+    returns Boolean from Standard
+    is static;
+    
+    FacesSupport(me; I     :     Interference from TopOpeBRepDS;
+    	    	     F1,F2 : out Shape        from TopoDS)
+    	---Purpose: Return les faces qui  ont genere la section origine
+    	--          de I
+    returns Boolean from Standard
+    is static;				     
+
+    ParameterOnEdge (me; I :     Interference from TopOpeBRepDS;
+    	    	    	 E :     Shape        from TopoDS;
+			 U : out Real         from Standard)
+    returns Boolean from Standard;
+
+    ---Modification 
+    --              
+    SetPoint (me : mutable; I          : mutable Interference from TopOpeBRepDS;
+    	    	            IndexPoint :         Integer      from Standard);
+    
+    SetParameterOnEdge (me : mutable; 
+    	    	    	I  : mutable Interference from TopOpeBRepDS;
+    	    	    	E  :         Shape        from TopoDS;
+			U  :         Real         from Standard)
+    is static;			    
+							    
+
+fields
+    myHDS           : HDataStructure                     from TopOpeBRepDS;
+    myGToI          : DataMapOfIntegerListOfInterference from TopOpeBRepDS;
+    myInterToShape  : DataMapOfInterferenceShape         from TopOpeBRepDS;
+end GapTool;
+

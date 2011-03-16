@@ -1,0 +1,35 @@
+-- File:	MXCAFDoc_GraphNodeStorageDriver.cdl
+-- Created:	Fri Sep 29 10:41:48 2000
+-- Author:	data exchange team
+--		<det@nordox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class GraphNodeStorageDriver from MXCAFDoc inherits ASDriver from MDF
+
+uses
+
+     SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF,
+     MessageDriver    from CDM
+
+is
+--    Create returns mutable GraphNodeStorageDriver from MXCAFDoc;
+    Create (theMsgDriver : MessageDriver from CDM)
+    returns mutable GraphNodeStorageDriver from MXCAFDoc;
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+end GraphNodeStorageDriver;

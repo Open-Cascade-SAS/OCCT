@@ -1,0 +1,42 @@
+-- File:	DrawDim_Dimension.cdl
+-- Created:	Mon Apr 21 13:29:26 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class Dimension from DrawDim inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses 
+    Real       from Standard,
+    Pnt        from gp,
+    Color      from Draw,
+    Display    from Draw
+
+is
+
+    Initialize;
+
+    SetValue (me : mutable; avalue : Real from Standard);
+    
+    GetValue (me)
+    returns Real from Standard;
+    
+    IsValued (me)
+    returns Boolean from Standard;
+    
+    TextColor(me : mutable; C : Color from Draw);
+    
+    TextColor(me) returns Color from Draw;
+    
+    DrawText(me; Pos : Pnt from gp; D : in out Display from Draw);
+    
+fields
+
+    is_valued     : Boolean from Standard is protected;
+    myValue       : Real    from Standard is protected;
+    myTextColor   : Color   from Draw     is protected;
+    
+end Dimension;

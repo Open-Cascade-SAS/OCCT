@@ -1,0 +1,116 @@
+--
+-- File      :  UniformRectGrid.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class UniformRectGrid from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESUniformRectGrid, Type <406> Form <22>
+        --          in package IGESGraph
+        --
+        --          Stores sufficient information for the creation of
+        --          a uniform rectangular grid within a drawing
+
+uses
+
+        XY          from gp,
+        Pnt2d       from gp,
+        Vec2d       from gp
+
+is
+
+        Create returns mutable UniformRectGrid;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me              : mutable;
+              nbProps         : Integer;
+              finite          : Integer;
+              line            : Integer;
+              weighted        : Integer;
+              aGridPoint      : XY;
+              aGridSpacing    : XY;
+              pointsX         : Integer;
+              pointsY         : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           UniformRectGrid
+        --     - nbProps      : Number of property values (NP = 9)
+        --     - finite       : Finite/Infinite grid flag
+        --     - line         : Line/Point grid flag
+        --     - weighted     : Weighted/Unweighted grid flag
+        --     - aGridPoint   : Point on the grid
+        --     - aGridSpacing : Grid spacing
+        --     - pointsX      : No. of points/lines in X Direction
+        --     - pointsY      : No. of points/lines in Y Direction
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>.
+
+        IsFinite (me) returns Boolean;
+        ---Purpose : returns False if <me> is an infinite grid,
+        --         True  if <me> is a finite grid.
+
+        IsLine (me) returns Boolean;
+        ---Purpose : returns False if <me> is a Point grid,
+        --         True  if <me> is a Line grid.
+
+        IsWeighted (me) returns Boolean;
+        ---Purpose : returns False if <me> is a Weighted grid,
+        --         True  if <me> is not a Weighted grid.
+
+        GridPoint (me) returns Pnt2d;
+        ---Purpose : returns coordinates of lower left corner,
+        --                     if <me> is a finite grid,
+        --         coordinates of an arbitrary point,
+        --                     if <me> is an infinite grid.
+
+        GridSpacing (me) returns Vec2d;
+        ---Purpose : returns the grid-spacing in drawing coordinates.
+
+        NbPointsX (me) returns Integer;
+        ---Purpose : returns the no. of points/lines in X direction
+        --  (only applicable if IsFinite() = 1, i.e: a finite grid).
+
+        NbPointsY (me) returns Integer;
+        ---Purpose : returns the no. of points/lines in Y direction
+        --  (only applicable if IsFinite() = 1, i.e: a finite grid).
+
+fields
+
+--
+-- Class    : IGESGraph_UniformRectGrid
+--
+-- Purpose  : Declaration of the variables specific to a
+--            Uniform Rectangular Grid.
+--
+-- Reminder : A Uniform Rectangular Grid is defined by :
+--                    - Number of property values
+--                    - Finite/Infinite grid flag
+--                    - Line/Point grid flag
+--                    - Weighted/Unweighted grid flag
+--                    - Point on the grid
+--                    - Grid spacing
+--                    - No. of points/lines in X Direction
+--                    - No. of points/lines in Y Direction
+--
+
+        theNbPropertyValues : Integer;
+
+        isItFinite          : Integer;
+
+        isItLine            : Integer;
+
+        isItWeighted        : Integer;
+
+        theGridPoint        : XY;
+
+        theGridSpacing      : XY;
+
+        theNbPointsX        : Integer;
+
+        theNbPointsY        : Integer;
+
+end UniformRectGrid;

@@ -1,0 +1,19 @@
+-- File:	StepBasic_ThermodynamicTemperatureUnit.cdl
+-- Created:	Thu Dec 12 15:38:09 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ThermodynamicTemperatureUnit from StepBasic
+inherits NamedUnit from StepBasic
+
+    ---Purpose: Representation of STEP entity ThermodynamicTemperatureUnit
+
+uses
+    DimensionalExponents from StepBasic
+
+is
+    Create returns ThermodynamicTemperatureUnit from StepBasic;
+	---Purpose: Empty constructor
+
+end ThermodynamicTemperatureUnit;

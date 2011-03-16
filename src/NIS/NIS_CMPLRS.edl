@@ -1,0 +1,44 @@
+--
+-- File:	NIS_CMPLRS.edl
+-- Author:	Stephane Callegari
+-- History:	13-12-96 : CAL : Creation
+--              01-11-97 : BGN : Portage HP/OpenGL
+--                               (avec option +a1 pour C++, et -Aa pour C)
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %NIS_CMPLRS_EDL) then
+
+  @set %NIS_CMPLRS_EDL = "";
+
+  @uses "CSF.edl";
+
+  @string %CMPLRS_CXX_Options += %CSF_X11_INCLUDE " " %CSF_OPENGL_INCLUDE " " ;
+  @string %CMPLRS_C_Options   += %CSF_X11_INCLUDE " " %CSF_OPENGL_INCLUDE " " ;
+
+  @if ( %Station == "hp" ) then
+
+    -- BGN : et ajout de _HPUX_SOURCE  pour /usr/include/math.h (M_PI)
+    @string %CMPLRS_C_Options +=  " -D_HPUX_SOURCE";
+
+	@if ( %DebugMode == "False" ) then
+          @set %CMPLRS_C_ModeOpt = "+O1 -DNo_Exception ";
+          @set %CMPLRS_F77_ModeOpt = "+O1";
+        @endif;
+ 
+  @endif;
+
+  @if ( %Station == "ao1" ) then
+
+    @string %CMPLRS_C_Options +=  " -DJWR_DEC_TRIFAN_BUG";
+    @string %CMPLRS_C_Options +=  " -std1";
+
+  @endif;
+
+  -- FMN  @string %CMPLRS_C_Options +=  " -DLMC_COLOR";
+  @string %CMPLRS_C_Options +=  " -DSILGL -DSILGL_VRS=50";
+
+
+
+@endif;
+

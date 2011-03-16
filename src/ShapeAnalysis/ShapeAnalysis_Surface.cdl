@@ -1,0 +1,394 @@
+-- File:	ShapeAnalysis_Surface.cdl
+-- Created:	Wed Jun  3 12:01:25 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Surface from ShapeAnalysis inherits TShared from MMgt
+
+    ---Purpose: Complements standard tool Geom_Surface by providing additional
+    --          functionality for detection surface singularities, checking
+    --          spatial surface closure and computing projections of 3D points
+    --          onto a surface.
+    --
+    --          * The singularities
+    --          Each singularity stores the precision with which corresponding
+    --          surface iso-line is considered as degenerated.
+    --          The number of singularities is determined by specifying precision
+    --          and always not greater than 4.
+    --
+    --          * The spatial closure
+    --          The check for spatial closure is performed with given precision
+    --          (default value is Precision::Confusion).
+    --          If Geom_Surface says that the surface is closed, this class
+    --          also says this. Otherwise additional analysis is performed.
+    --
+    --	        * The parameters of 3D point on the surface
+    --          The projection of the point is performed with given precision.
+    --          This class tries to find a solution taking into account possible
+    --          singularities.
+    --          Additional method for searching the solution from already built
+    --          one is also provided.
+    --           
+    --          This tool is optimised: computes most information only once
+
+uses
+    Pnt   from gp,
+    Pnt2d from gp,
+    Box from Bnd,
+    Curve   from Geom,
+    Surface from Geom,
+    Surface  from GeomAdaptor,
+    HSurface from GeomAdaptor,
+    ExtPS from Extrema,
+    Array1OfPnt from TColgp,
+    Array1OfPnt2d from TColgp
+
+is
+    Create (S : Surface from Geom) returns mutable Surface from ShapeAnalysis;
+    	---Purpose: Creates an analyzer object on the basis of existing surface
+
+    Init (me : mutable; S: Surface from Geom);
+    	---Purpose: Loads existing surface
+
+    Init (me : mutable; other: Surface from ShapeAnalysis);
+    	---Purpose: Reads all the data from another Surface, without recomputing
+	
+    SetDomain(me : mutable; U1, U2, V1, V2 : Real);
+
+    Surface (me) returns Surface from Geom;
+    	---C++: return const &
+    	---C++: inline
+    	---Purpose: Returns a surface being analyzed
+
+    Adaptor3d (me : mutable) returns HSurface from GeomAdaptor;
+    	---C++: return const &
+    	---Purpose: Returns the Adaptor.
+    	--          Creates it if not yet done.
+
+    TrueAdaptor3d (me) returns HSurface from GeomAdaptor;
+    	---C++: return const &
+    	---C++: inline
+    	---Purpose: Returns the Adaptor (may be Null if method Adaptor() was not called)
+
+    Gap (me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns 3D distance found by one of the following methods.
+    	--          IsDegenerated, DegeneratedValues, ProjectDegenerated 
+        --          (distance between 3D point and found or last (if not found)
+    	--          singularity),
+    	--          IsUClosed, IsVClosed (minimum value of precision to consider
+    	--          the surface to be closed),
+	--          ValueOfUV (distance between 3D point and found solution).
+
+    Value (me : mutable; u,v : Real) returns Pnt from gp;
+    	---C++: inline
+    	---Purpose: Returns a 3D point specified by parameters in surface
+    	--          parametrical space
+
+    Value (me : mutable; p2d : Pnt2d from gp) returns Pnt from gp;
+    	---C++: inline
+    	---Purpose: Returns a 3d point specified by a point in surface
+    	--          parametrical space
+
+    ComputeSingularities (me: mutable) is private;
+    	---Purpose: Computes singularities on the surface.
+    	--          Computes the sizes of boundaries or singular ares of the
+    	--          surface. Then each boundary or area is considered as
+    	--          degenerated with precision not less than its size.
+	--
+	--          The singularities and corresponding precisions are the
+    	--          following:
+	--          - ConicalSurface -  one degenerated point (apex of the cone),
+    	--              precision is 0.,
+	--          - ToroidalSurface - two degenerated points, precision is 
+    	--              Max (0, majorR-minorR),
+	--          - SphericalSurface - two degenerated points (poles), 
+    	--              precision is 0.
+	--          - Bounded, Surface Of Revolution, Offset - four degenerated
+	--              points, precisions are maximum distance between corners
+	--              and middle point on the boundary
+	--
+    	---Remark:  Considers only boundaries of the surface (i.e. does not detect
+    	--          singularity if it is inside parametrical space)
+
+    HasSingularities (me: mutable; preci: Real) returns Boolean;
+    	---Purpose: Returns True if the surface has singularities for the given
+	--          precision (i.e. if there are surface singularities with sizes
+    	--          not greater than precision).
+
+    NbSingularities (me: mutable; preci: Real) returns Integer;
+    	---Purpose: Returns the number of singularities for the given precision
+	--          (i.e. number of surface singularities with sizes not greater
+    	--          than precision).
+
+    Singularity (me: mutable; num              : Integer;
+    	    	              preci            : out Real;
+    	    	              P3d              : out Pnt from gp;
+    	    	              firstP2d, lastP2d: out Pnt2d from gp;
+		              firstpar, lastpar: out Real;
+    	    	    	      uisodeg          : out Boolean)
+    returns Boolean;
+    	---Purpose: Returns the characteristics of the singularity specified by
+	--          its rank number <num>.
+	--          That means, that it is not neccessary for <num> to be in the
+	--          range [1, NbSingularities] but must be not greater than
+    	--          possible (see ComputeSingularities).
+	--          The returned characteristics are:
+	--          preci: the smallest precision with which the iso-line is
+	--                 considered as degenerated,
+    	--          P3d: 3D point of singularity (middle point of the surface
+    	--               iso-line),
+    	--          firstP2d and lastP2d: first and last 2D points of the
+    	--                                iso-line in parametrical surface,
+    	--          firstpar and lastpar: first and last parameters of the
+    	--                                iso-line in parametrical surface,
+	--          uisodeg: if the degenerated iso-line is U-iso (True) or
+    	--          V-iso (False).
+    	--          Returns False if <num> is out of range, else returns True.
+	---Remarks  - all the singularities are sorted in ascending order by
+    	--            precision
+	--          - firstP2d and lastP2d are such to define left-hand passing of
+	--            parametrical space
+
+    IsDegenerated (me: mutable; P3d  : Pnt from gp;
+    	    	    	      	preci: Real)
+    returns Boolean;
+    	---Purpose: Returns True if there is at least one surface boundary which
+	--          is considered as degenerated with <preci> and distance
+    	--          between P3d and corresponding singular point is less than
+	--          <preci>
+
+    DegeneratedValues (me: mutable; P3d              : Pnt from gp;
+    	    	    	     	    preci            : Real;
+    	    	                    firstP2d, lastP2d: out Pnt2d from gp;
+		            	    firstpar, lastpar: out Real;
+    	    	       	    	    forward          : Boolean = Standard_True)
+    returns Boolean;
+    	---Purpose: Returns True if there is at least one surface iso-line which
+	--          is considered as degenerated with <preci> and distance
+    	--          between P3d and corresponding singular point is less than
+	--          <preci> (like IsDegenerated).
+	--          Returns characteristics of the first found boundary matching
+	--          those criteria.
+    	---Remark : <forward> is not used
+
+    ProjectDegenerated (me: mutable; P3d      : Pnt from gp;
+    	    	    	     	     preci    : Real;
+    	    	    	    	     neighbour: Pnt2d from gp;
+    	    	    	    	     result   : in out Pnt2d from gp)
+    returns Boolean;
+    	---Purpose: Projects a point <P3d> on a singularity by computing
+    	--          one of the coordinates of preliminary computed <result>.
+	--
+	--          Finds the iso-line which is considered as degenerated with
+	--          <preci> and
+       	--          a. distance between P3d and corresponding singular point is
+	--             less than <preci> (like IsDegenerated) or
+    	--          b. difference between already computed <result>'s coordinate
+	--             and iso-coordinate of the boundary is less than 2D
+    	--             resolution (computed from <preci> by Geom_Adaptor).
+	--          Then sets not yet computed <result>'s coordinate taking it
+    	--          from <neighbour> and returns True.
+	---Example: U-iso at Ufirst=0 is degenerated with 1e-03,
+    	--          <neighbour> = (0, 0.5),
+    	--          <result> = (1e-06, ?); (1e-06 - already computed, ? - not yet)
+	--          After, <result> will be (1e-06, 0.5): 0.5 is taken from <neighbour>
+    	--         
+    	---Remark : This is only one method to compute the coordinate taking it
+	--          from neighbour point. Other methods are also possible (by
+    	--          using tangent or C2, etc).
+    	--           
+    	--          If the P3d is not on a singularity, no computation is done,
+    	--          returns False and <result> remains unchanged
+
+    ProjectDegenerated (me: mutable; nbrPnt: Integer;
+    	    	    	    	     points: Array1OfPnt from TColgp;
+				     pnt2d : in out Array1OfPnt2d from TColgp;
+				     preci : Real;
+				     direct: Boolean)
+    returns Boolean;
+    	---Purpose: Checks points at the beginning (direct is True) or end
+    	--          (direct is False) of array <points> to lie in singularity of
+    	--          surface, and if yes, adjusts the indeterminate 2d coordinate
+    	--          of these points by nearest point which is not in singularity.
+    	--          Returns True if some points were adjusted.
+
+    IsDegenerated (me: mutable; p2d1, p2d2: Pnt2d from gp; tol, ratio: Real)
+    returns Boolean;
+    	---Purpose: Returns True if straight pcurve going from point p2d1 to p2d2
+        --          is degenerate, i.e. lies in the singularity of the surface.
+	--          NOTE: it uses another method of detecting singularity than
+        --                used by ComputeSingularities() et al.!
+	--          For that, maximums of distances between points p2d1, p2d2 
+        --          and 0.5*(p2d1+p2d2) and between corresponding 3d points are
+	--          computed.
+        --          The pcurve (p2d1, p2d2) is considered as degenerate if:
+        --          - max distance in 3d is less than <tol>
+	--          - max distance in 2d is at least <ratio> times greather than  
+        --            the Resolution computed from max distance in 3d 
+        --            (max3d < tol && max2d > ratio * Resolution(max3d))
+	--          NOTE: <ratio> should be >1 (e.g. 10)
+
+    Bounds (me; ufirst, ulast, vfirst, vlast: out Real);
+    	---C++: inline
+    	---Purpose: Returns the bounds of the surface
+    	--          (from Bounds from Surface, but buffered)
+
+    ComputeBoundIsos(me : mutable);
+    	---Purpose: Computes bound isos (protected against exceptions)
+
+    UIso (me: mutable; U: Real) returns Curve from Geom;
+    	---Purpose: Returns a U-Iso. Null if not possible or failed
+    	--          Remark : bound isos are buffered
+
+    VIso (me: mutable; V: Real) returns Curve from Geom;
+    	---Purpose: Returns a V-Iso. Null if not possible or failed
+    	--          Remark : bound isos are buffered
+
+    IsUClosed (me: mutable; preci: Real = -1) returns Boolean;
+    	---Purpose: Tells if the Surface is spatially closed in U with given 
+    	--          precision. If <preci> < 0 then Precision::Confusion is used.
+    	--          If Geom_Surface says that the surface is U-closed, this method
+    	--          also says this. Otherwise additional analysis is performed,
+    	--          comparing given precision with the following distances:
+	--          - periodic B-Splines are closed,
+    	--          - polinomial B-Spline with boundary multiplicities degree+1
+	--            and Bezier - maximum distance between poles,
+	--          - rational B-Spline or one with boundary multiplicities not
+    	--            degree+1 - maximum distance computed at knots and their
+    	--            middles,
+	--          - surface of extrusion - distance between ends of basis
+    	--            curve,
+	--          - other (RectangularTrimmed and Offset) - maximum distance
+	--            computed at 100 equi-distanted points.
+
+    IsVClosed (me: mutable; preci: Real = -1) returns Boolean;
+    	---Purpose: Tells if the Surface is spatially closed in V with given 
+    	--          precision. If <preci> < 0 then Precision::Confusion is used.
+    	--          If Geom_Surface says that the surface is V-closed, this method
+    	--          also says this. Otherwise additional analysis is performed,
+    	--          comparing given precision with the following distances:
+	--          - periodic B-Splines are closed,
+    	--          - polinomial B-Spline with boundary multiplicities degree+1
+	--            and Bezier - maximum distance between poles,
+	--          - rational B-Spline or one with boundary multiplicities not
+    	--            degree+1 - maximum distance computed at knots and their
+    	--            middles,
+	--          - surface of revolution - distance between ends of basis
+    	--            curve,
+	--          - other (RectangularTrimmed and Offset) - maximum distance
+	--            computed at 100 equi-distanted points.
+
+    ValueOfUV (me: mutable; P3D: Pnt from gp;
+    	    	    	    preci : Real)
+    returns Pnt2d from gp;
+    	---Purpose: Computes the parameters in the surface parametrical space of
+    	--          3D point.
+    	--          The result is parameters of the point projected onto the
+    	--          surface.
+    	--          This method enhances functionality provided by the standard
+	--          tool GeomAPI_ProjectPointOnSurface by treatment of cases when
+	--          the projected point is near to the surface boundaries and
+	--          when this standard tool fails.
+
+    NextValueOfUV (me: mutable; p2dPrev: Pnt2d from gp;
+          	    	        P3D    : Pnt from gp;
+    	    	    	    	preci  : Real;
+    	    	    	    	maxpreci:Real = -1.0)
+    returns Pnt2d from gp;
+    	---Purpose: Projects a point P3D on the surface.
+        --          Does the same thing as ValueOfUV but tries to optimize 
+        --          computations by taking into account previous point <p2dPrev>:
+	--          makes a step by UV and tries Newton algorithm.
+	--          If <maxpreci> >0. and distance between solution and 
+	--          P3D is greater than <maxpreci>, that solution is considered 
+        --          as bad, and ValueOfUV() is used.
+	--          If not succeded, calls ValueOfUV()
+
+    UVFromIso (me: mutable; P3D  : Pnt from gp;
+    	    	    	   preci : Real;
+    	       	    	   U, V  : in out Real)
+    returns Real;
+    	---Purpose: Tries a refinement of an already computed couple (U,V) by
+    	--          using projecting 3D point on iso-lines:
+    	--          1. boundaries of the surface,
+    	--          2. iso-lines passing through (U,V)
+	--          3. iteratively received iso-lines passing through new U and
+    	--             new V (number of iterations is limited by 5 in each
+    	--             direction)
+    	--          Returns the best resulting distance between P3D and Value(U,V)
+    	--          in the case of success. Else, returns a very great value
+    
+    UCloseVal (me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns minimum value to consider the surface as U-closed
+    
+    VCloseVal (me) returns Real;
+    	---C++: inline
+    	---Purpose: Returns minimum value to consider the surface as V-closed
+	
+    GetBoxUF(me: mutable) returns Box from Bnd;
+    	---C++: return const&
+    
+    GetBoxUL(me: mutable) returns Box from Bnd;
+    	---C++: return const&
+	
+    GetBoxVF(me: mutable) returns Box from Bnd;
+    	---C++: return const&
+	
+    GetBoxVL(me: mutable) returns Box from Bnd;
+    	---C++: return const&
+	
+    ComputeBoxes(me: mutable) is private;
+    
+    SurfaceNewton (me: mutable; p2dPrev: Pnt2d from gp;
+    	    	                P3D    : Pnt from gp;
+                                preci  : Real;
+                                sol    :in out Pnt2d from gp)
+    returns Boolean is private;
+    
+    SortSingularities (me: mutable) is private;
+    
+fields
+
+    mySurf     : Surface  from Geom is protected;
+    myAdSur    : HSurface from GeomAdaptor is protected;
+
+    myExtPS    : ExtPS from Extrema is protected;        -- speed optimization
+    myExtSrf   : Surface from GeomAdaptor is protected;  -- for extrema
+    myExtOK    : Boolean is protected;                   -- is theExtPS initialized? 
+
+    myNbDeg    : Integer is protected; --  < 0 means not yet computed
+    myPreci    : Real          [4] is protected;
+    myP3d      : Pnt   from gp [4] is protected;
+    myFirstP2d : Pnt2d from gp [4] is protected;
+    myLastP2d  : Pnt2d from gp [4] is protected;
+    myFirstPar : Real          [4] is protected;
+    myLastPar  : Real          [4] is protected;
+    myUIsoDeg  : Boolean       [4] is protected; -- True if U-iso is degenerated, False if V-iso
+
+    myIsos     : Boolean is protected;  -- are bound isos computed
+    myUF       : Real is protected;
+    myUL       : Real is protected;
+    myVF       : Real is protected;
+    myVL       : Real is protected;
+    myIsoUF    : Curve from Geom is protected;
+    myIsoUL    : Curve from Geom is protected;
+    myIsoVF    : Curve from Geom is protected;
+    myIsoVL    : Curve from Geom is protected;
+    myIsoBoxes : Boolean is protected;  -- are boxes for bound isos computed
+    myBndUF    : Box from Bnd is protected;
+    myBndUL    : Box from Bnd is protected;
+    myBndVF    : Box from Bnd is protected;
+    myBndVL    : Box from Bnd is protected;
+
+    myGap      : Real is protected;
+    myUDelt    : Real is protected; -- what overparametrisation to have good ValueOfUV
+    myVDelt    : Real is protected;
+
+    myUCloseVal: Real is protected; -- minimum value to consider the surface as U-closed
+    myVCloseVal: Real is protected; -- minimum value to consider the surface as V-closed
+
+end Surface;

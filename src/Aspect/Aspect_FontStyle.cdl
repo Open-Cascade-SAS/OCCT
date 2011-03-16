@@ -1,0 +1,363 @@
+--
+-- File:	Aspect_FontStyle.cdl
+-- Created:	Mardi 7 Septembre 1993
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1991-1993
+--
+
+class FontStyle from Aspect
+
+	---Version:
+
+	---Purpose: This class defines a Font Style.
+	--	    The Style can be Predefined or defined by the user
+
+	---Keywords: FontStyle 
+
+	---Warning:
+	---References:
+
+uses
+
+	Length from Quantity,
+	PlaneAngle from Quantity,
+	TypeOfFont from Aspect,
+	AsciiString from TCollection
+
+raises
+
+	FontStyleDefinitionError from Aspect
+
+is
+
+	Create
+		returns FontStyle from Aspect
+	---Level: Public
+	---Purpose: Creates a font style with the default values of
+	--	    FontStyle type : DEFAULT
+	--
+	raises FontStyleDefinitionError from Aspect;
+	-- if the maximum number of font style is exceeded
+
+	Create ( Type : TypeOfFont from Aspect; 
+		 Size : Length from Quantity; 
+		 Slant : PlaneAngle from Quantity = 0.0;
+		 CapsHeight : Boolean from Standard = Standard_False)
+		returns FontStyle from Aspect 
+	---Level: Public
+	---Purpose: Creates the font style <Type> depending of
+	--	    Size given in the basic LENGTH unit and Slant in 
+	--	    the basic PLANE ANGLE unit.
+	--	    When CapsHeight is TRUE the size defines the
+	--	    ascent height of the font;if FALSE,the size
+	--	    defines the ascent+descent part of the font.
+	raises FontStyleDefinitionError from Aspect;
+	-- if the Size is <= 0. 
+
+	Create ( Style : CString from Standard;
+		 Size : Length from Quantity;
+		 Slant : PlaneAngle from Quantity = 0.0;
+		 CapsHeight : Boolean from Standard = Standard_False)
+		returns FontStyle from Aspect
+	---Level: Public
+	---Purpose: Creates a font style from Adobe font style descriptor 
+	--	   depending of Size given in MM and Slant in RADIAN.
+	--	    When CapsHeight is TRUE the size defines the
+	--	    ascent height of the font;if FALSE,the size
+	--	    defines the ascent+descent part of the font.
+	--	    Font Style Descriptor must be :
+        --	       Simple form is "family"      	Ex: "helvetica"
+        --	       More complex form is "family-weight" Ex: "helvetica-bold"
+        --	       Full form is :
+	--		"-foundry-family-weight-slant-swdth-adstyl-pixelsize"
+	--		"-pointsize-resx-resy-spacing-avgWidth-registry-encoding"
+        --		where each field must be replaced by an "*"
+	--  Warning: create the smalest font size if the foundry height
+	--and the <Size> are null.
+	raises FontStyleDefinitionError from Aspect;
+	-- if <Style> is empty or don't have an normalized X format
+
+        Create ( Style : CString from Standard)
+        returns FontStyle from Aspect
+        ---Level: Public
+        ---Purpose: Creates a transformable font with the full font name <Style>
+        --  given in the XLFD descriptor :
+        -- "-foundry-family-weight-slant-swidth-adstyl-pixelsize-pointsize-
+        --  resx-resy-spacing-avdWidth-registry-encoding".
+	-- The fields pixelsize ,pointsize,resx,resy are sets to 0
+        -- and all unknown fields sets to '*'.
+        --  Example: "adobe-helvetica-bold-*-*-*-0-0-0-0-*-*-iso8859-*"
+	--  Warning: the height and slant of the font is supposed to be NULL
+	-- and computed dynamically at the drawing text time. 
+        raises FontStyleDefinitionError from Aspect;
+	---Trigger: If <Style> is empty or dont't have an XLFD font descriptor.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Assign ( me	: in out ;
+		 Other	: FontStyle from Aspect )
+		returns FontStyle from Aspect;
+	---Level: Public
+	---Purpose: Updates the font style <me> from the definition of the
+	--	    font style <Other>.
+	---Category: Methods to modify the class definition
+	---C++: alias operator =
+	---C++: return &
+
+	SetValues ( me		: in out ;
+		    Type	: TypeOfFont from Aspect; 
+		    Size	: Length from Quantity;
+		    Slant	: PlaneAngle from Quantity = 0.0;
+		    CapsHeight	: Boolean from Standard = Standard_False)
+	---Level: Public
+	---Purpose: Updates the font style <me> from the definition of the
+	--	    font style <Type>.
+	raises FontStyleDefinitionError from Aspect;
+	-- if the Size is <= 0. 
+	---Category: Methods to modify the class definition
+
+	SetValues ( me		: in out ;
+		    Style 	: CString from Standard;
+		    Size	: Length from Quantity;
+		    Slant	: PlaneAngle from Quantity = 0.0;
+		    CapsHeight	: Boolean from Standard = Standard_False)
+	---Level: Public
+	---Purpose: Updates a font style with the new Abode font descriptor
+	--  Warning: create the smalest font size if the foundry height
+	--and the <Size> are null.
+	raises FontStyleDefinitionError from Aspect;
+	---Trigger: If <Style> is empty or dont't have an normalized X format.
+	---Category: Methods to modify the class definition
+
+	SetValues ( me		: in out ;
+		    Style 	: CString from Standard)
+	---Level: Public
+	---Purpose: Updates a font style with the new XLFD font descriptor
+	raises FontStyleDefinitionError from Aspect;
+	---Trigger: If <Style> is empty or dont't have an XLFD font descriptor.
+	---Category: Methods to modify the class definition
+
+        SetFamily (me : in out;
+		   aName: CString from Standard);
+        ---Level: Public
+        ---Purpose: Sets the family of the font.
+
+        SetWeight (me : in out;
+		   aName: CString from Standard);
+        ---Level: Public
+        ---Purpose: Sets the weight of the font.
+
+        SetRegistry (me : in out;
+		   aName: CString from Standard);
+        ---Level: Public
+        ---Purpose: Sets the registry of the font.
+
+        SetEncoding (me : in out;
+		   aName: CString from Standard);
+        ---Level: Public
+        ---Purpose: Sets the encoding of the font.
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Style ( me )
+		returns TypeOfFont from Aspect;
+	---Level: Public
+	---Purpose: Returns the type of the font style <me> 
+	---Category: Inquire methods
+
+	Length ( me )
+		returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Returns the string components length of the 
+	-- font style descriptor
+	---Category: Inquire methods
+
+	Value ( me ) 
+		returns CString from Standard ;
+	---Level: Public
+	---Purpose: Returns the String component of a font style  
+	---Category: Inquire methods
+
+	Size ( me ) 
+		returns Length from Quantity ;
+	---Level: Public
+	---Purpose: Returns the Size component of a font style  
+	---Category: Inquire methods
+
+	Slant ( me ) 
+		returns PlaneAngle from Quantity ;
+	---Level: Public
+	---Purpose: Returns the Slant component of a font style  
+	---Category: Inquire methods
+
+	CapsHeight( me )
+		returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Returns the CapsHeight component of a font style  
+	---Category: Inquire methods
+
+        AliasName (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns a shorter font name which identify the
+        --          main characteristics of the fonts.
+        ---Example: "helvetica-bold"
+
+        FullName (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the full normalized font name
+
+        Foundry (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the foundry of the font.
+        ---Example: "adobe"
+
+        Family (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the family of the font.
+        ---Example: "helvetica"
+
+        Weight (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the weight of the font.
+        ---Example: "bold"
+
+        Registry (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the char set registry of the font.
+        ---Example: "iso8859"
+
+        Encoding (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the char set encoding of the font.
+        ---Example: "1"
+
+        SSlant (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the slant of the font.
+        ---Example: "i"
+
+        SWidth (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the width name of the font.
+        ---Example: "normal"
+
+        SStyle (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the style name of the font.
+        ---Example: "serif"
+
+        SPixelSize (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the pixel size of the font.
+
+        SPointSize (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the point size of the font.
+
+        SResolutionX (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the resolution X of the font.
+
+        SResolutionY (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the resolution Y of the font.
+
+        SSpacing (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the spacing of the font.
+        ---Example: "p"
+
+        SAverageWidth (me)
+                returns CString from Standard;
+        ---Level: Public
+        ---Purpose: Returns the average width of the font.
+        ---Example: "90"
+
+        Dump (me);
+        ---Level: Public
+        ---Purpose: Dumps the font attributes.
+
+
+    	IsEqual(me; Other : FontStyle from Aspect) returns Boolean;
+	    ---C++: alias operator==
+
+    	IsNotEqual(me; Other : FontStyle from Aspect) returns Boolean;
+	    ---C++: alias operator!=
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	SetPredefinedStyle ( me : in out  ;
+		     Type	: TypeOfFont from Aspect;  
+		     Size	: Length from Quantity;
+		     Slant	: PlaneAngle from Quantity;
+		     CapsHeight	: Boolean from Standard)
+	---Level: Internal
+	---Purpose: Set MyFontString with the predefined style value
+	--	    and size according of type
+	---Category: Private methods
+	raises FontStyleDefinitionError from Aspect is private;
+	-- if the Type is USERDEFINED ! 
+
+        Normalize (myclass;
+                aFontName: CString from Standard;
+		aSize: in out Real from Standard)
+                returns CString from Standard is private;
+        ---Purpose: Returns a normalized descriptor from the font name
+        --         <aFontName>
+
+        Field (myclass;
+                aFontName: AsciiString from TCollection;
+                aRank: Integer from Standard)
+                returns CString from Standard is private;
+        ---Purpose: Returns the field at position <aRank>
+        --          from the font name <aFontName>.
+
+        SetField (myclass;
+                aFontName: AsciiString from TCollection;
+                aField: CString from Standard;
+                aRank: Integer from Standard)
+                returns CString from Standard is private;
+        ---Purpose: Sets the field at position <aRank>
+	--	    of the fontname <aFontName>
+        --          from the field name <aField>.
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_FontStyle
+--
+-- Purpose	:	Declaration of variables specific to font styles
+--
+
+	MyFontType		: TypeOfFont from Aspect is protected;
+	MyStyle			: AsciiString from TCollection is protected;
+	MyFontName		: AsciiString from TCollection is protected;
+	MyFontSize		: Real from Standard is protected;
+	MyFontSlant		: Real from Standard is protected;
+	MyCapsHeight		: Boolean from Standard is protected;
+
+end FontStyle;

@@ -1,0 +1,33 @@
+-- File:	StepAP214_PresentedItemSelect.cdl
+-- Created:	Wed Mar 10 15:38:56 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class PresentedItemSelect from StepAP214 
+inherits SelectType from StepData
+	
+uses
+     ProductDefinition from StepBasic,
+     ProductDefinitionRelationship from StepBasic
+
+
+is
+
+    Create returns PresentedItemSelect;
+	---Purpose : Returns a PresentedItemSelect SelectType
+
+    CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a PresentedItemSelect Kind Entity that is :
+	--  1 -> ProductDefinition,
+	--  2 -> ProductDefinitionRelationship,
+	--        0 else
+
+    ProductDefinitionRelationship (me) returns any ProductDefinitionRelationship;
+    ---Purpose : returns Value as a ProductDefinitionRelationship (Null if another type)
+
+    ProductDefinition (me) returns any ProductDefinition;
+    ---Purpose : returns Value as a ProductDefinition (Null if another type)
+
+end PresentedItemSelect;

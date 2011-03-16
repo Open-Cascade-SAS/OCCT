@@ -1,0 +1,106 @@
+-- File:	IntTools_TopolTool.cdl
+-- Created:	Thu Apr 18 11:39:53 2002
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2002
+
+class TopolTool from IntTools inherits TopolTool from Adaptor3d
+
+    	---Purpose: Class redefine methods of TopolTool from Adaptor3d
+	---         concerning sample points
+	---
+uses
+    Pnt   from gp,
+    Pnt2d from gp,
+    HSurface from Adaptor3d, 
+    HArray1OfReal  from  TColStd
+
+raises DomainError from Standard
+
+is
+    Create returns mutable TopolTool from IntTools;
+    	---Purpose:
+	--- Empty constructor
+	---
+
+    Create(theSurface: HSurface from Adaptor3d)
+    	returns mutable TopolTool from IntTools;
+	---Purpose:
+	--- Initializes me by surface
+	---
+
+    Initialize(me: mutable)
+    	is redefined;
+	---Purpose:
+	--- Redefined empty initializer
+	---
+	--  Warning:
+	--- Raises the exception NotImplemented
+	---
+    
+    Initialize(me: mutable; theSurface: HSurface from Adaptor3d)
+	is redefined;
+	---Purpose:
+	--- Initializes me by surface
+	---
+
+    --- sample points  tools
+
+    ComputeSamplePoints(me: mutable)
+    	is redefined;
+	---Purpose:
+	--- 
+	---
+    
+    NbSamplesU(me: mutable) 
+    	returns Integer from Standard
+    	is redefined;
+    	---Purpose: 
+    	--- Computes the sample-points for the intersections algorithms
+	---
+    
+    NbSamplesV(me: mutable) 
+    	returns Integer from Standard
+    	is redefined;
+    	---Purpose: 
+    	--- Computes the sample-points for the intersections algorithms
+	---
+    
+    NbSamples(me: mutable)
+    	returns Integer from Standard
+    	is redefined;
+        ---Purpose: 
+    	--- Computes the sample-points for the intersections algorithms
+	---
+
+    SamplePoint(me: mutable; Index: Integer from Standard;
+                             P2d  : out Pnt2d   from gp;
+                             P3d  : out Pnt     from gp)
+    	is redefined;
+	---Purpose:
+	--- Returns a 2d point from surface myS
+	--- and a corresponded 3d point
+	--- for given index.
+	--- The index should be from 1 to NbSamples()
+	---
+
+    --modified by NIZNHY-IFV Sep 28 16:01:38 2005 f
+    SamplePnts(me: mutable; theDefl:  Real  from  Standard; theNUmin, theNVmin: Integer from Standard)
+        ---Purpose: compute the sample-points for the intersections algorithms
+	-- by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
+	-- is the same as in method ComputeSamplePoints(), but only fill arrays of U
+	-- and V sample parameters;
+	-- theDefl is a requred deflection
+	-- theNUmin, theNVmin are minimal nb points for U and V.
+    is redefined;
+    
+fields
+    --myS         : HSurface from Adaptor3d;  now inherits myS from Adaptor3d_TopolTool
+    myNbSmplU   : Integer  from Standard;
+    myNbSmplV   : Integer  from Standard;
+    myU0        : Real     from Standard;
+    myV0        : Real     from Standard;
+    myDU        : Real     from Standard;
+    myDV        : Real     from Standard;
+     
+end TopolTool from IntTools;

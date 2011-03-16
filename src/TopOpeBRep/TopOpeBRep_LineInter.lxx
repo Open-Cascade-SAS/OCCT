@@ -1,0 +1,185 @@
+// File:      TopOpeBRep_LineInter.lxx
+// Created:   Wed Nov 10 18:31:43 1993
+// Author:    Jean Yves LEBEY
+// Copyright: OPEN CASCADE 1993
+
+#include <IntPatch_Line.hxx>
+
+
+//=======================================================================
+//function : TopOpeBRep_LineInter
+//purpose  : 
+//=======================================================================
+
+inline TopOpeBRep_LineInter::TopOpeBRep_LineInter() :
+  myOK(Standard_True),
+  //myIndex, myNbVPoint,
+  myIsVClosed(Standard_False),
+  myHasVPonR(Standard_False),
+  myINL(Standard_False),
+  myVPBDefined(Standard_False)
+  //myVPF, myVPL, myVPN,
+  //myTypeLineCurve, myLineTonF1, myLineTonF2
+{
+}
+
+//=======================================================================
+//function : SetFaces
+//purpose  : 
+//=======================================================================
+
+inline void TopOpeBRep_LineInter::SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2)
+{
+  myF1 = F1;
+  myF2 = F2;
+}
+
+//=======================================================================
+//function : TypeLineCurve
+//purpose  : 
+//=======================================================================
+
+inline TopOpeBRep_TypeLineCurve TopOpeBRep_LineInter::TypeLineCurve() const
+{
+  return myTypeLineCurve;
+}
+
+//=======================================================================
+//function : NbVPoint
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TopOpeBRep_LineInter::NbVPoint() const 
+{
+  return myNbVPoint;
+}
+
+//=======================================================================
+//function : INL
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRep_LineInter::INL() const
+{
+  return myINL;
+}
+
+//=======================================================================
+//function : IsVClosed
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRep_LineInter::IsVClosed() const
+{
+  return myIsVClosed;
+}
+
+//=======================================================================
+//function : HasVPonR
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRep_LineInter::HasVPonR() const
+{
+  return myHasVPonR;
+}
+
+//=======================================================================
+//function : TransitionOnS1
+//purpose  : 
+//=======================================================================
+
+inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS1() const
+{
+  return myIL->TransitionOnS1();
+}
+
+//=======================================================================
+//function : TransitionOnS2
+//purpose  : 
+//=======================================================================
+
+inline IntSurf_TypeTrans TopOpeBRep_LineInter::TransitionOnS2() const
+{
+  return myIL->TransitionOnS2();
+}
+
+//=======================================================================
+//function : SituationS1
+//purpose  : 
+//=======================================================================
+
+inline IntSurf_Situation TopOpeBRep_LineInter::SituationS1() const
+{
+  return myIL->SituationS1();
+}
+
+//=======================================================================
+//function : SituationS2
+//purpose  : 
+//=======================================================================
+
+inline IntSurf_Situation TopOpeBRep_LineInter::SituationS2() const
+{
+  return myIL->SituationS2();
+}
+
+//=======================================================================
+//function : LineW
+//purpose  : 
+//=======================================================================
+
+inline const Handle(IntPatch_WLine)& TopOpeBRep_LineInter::LineW() const
+{
+  return myILW;
+}
+
+//=======================================================================
+//function : LineG
+//purpose  : 
+//=======================================================================
+
+inline const Handle(IntPatch_GLine)& TopOpeBRep_LineInter::LineG() const
+{
+  return myILG;
+}
+
+//=======================================================================
+//function : LineR
+//purpose  : 
+//=======================================================================
+
+inline const Handle(IntPatch_RLine)& TopOpeBRep_LineInter::LineR() const
+{
+  return myILR;
+}
+
+//=======================================================================
+//function : Index
+//purpose  : trace
+//=======================================================================
+
+inline void TopOpeBRep_LineInter::Index(const Standard_Integer I)
+{
+  myIndex = I;
+}
+
+//=======================================================================
+//function : Index
+//purpose  : trace
+//=======================================================================
+
+inline Standard_Integer TopOpeBRep_LineInter::Index() const
+{
+  return myIndex;
+}
+
+//=======================================================================
+//function : OK
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRep_LineInter::OK() const
+{
+  return myOK;
+}

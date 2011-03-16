@@ -1,0 +1,58 @@
+-- File:        CartesianTransformationOperator3d.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CartesianTransformationOperator3d from StepGeom 
+
+inherits CartesianTransformationOperator from StepGeom 
+
+uses
+
+	Direction from StepGeom, 
+	Boolean from Standard, 
+	HAsciiString from TCollection, 
+	CartesianPoint from StepGeom, 
+	Real from Standard
+is
+
+	Create returns mutable CartesianTransformationOperator3d;
+	---Purpose: Returns a CartesianTransformationOperator3d
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAaxis1 : Boolean from Standard;
+	      aAxis1 : mutable Direction from StepGeom;
+	      hasAaxis2 : Boolean from Standard;
+	      aAxis2 : mutable Direction from StepGeom;
+	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      hasAscale : Boolean from Standard;
+	      aScale : Real from Standard) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAaxis1 : Boolean from Standard;
+	      aAxis1 : mutable Direction from StepGeom;
+	      hasAaxis2 : Boolean from Standard;
+	      aAxis2 : mutable Direction from StepGeom;
+	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      hasAscale : Boolean from Standard;
+	      aScale : Real from Standard;
+	      hasAaxis3 : Boolean from Standard;
+	      aAxis3 : mutable Direction from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAxis3(me : mutable; aAxis3 : mutable Direction);
+	UnSetAxis3 (me:mutable);
+	Axis3 (me) returns mutable Direction;
+	HasAxis3 (me) returns Boolean;
+
+fields
+
+	axis3 : Direction from StepGeom;   -- OPTIONAL can be NULL
+	hasAxis3 : Boolean from Standard;
+
+end CartesianTransformationOperator3d;

@@ -1,0 +1,55 @@
+-- File:	TopOpeBRepDS_Surface.cdl
+-- Created:	Wed Jun 23 12:09:41 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Surface from TopOpeBRepDS
+
+    ---Purpose: A Geom poimt and a tolerance.
+
+uses
+
+    Surface from Geom
+
+is
+
+    Create returns Surface from TopOpeBRepDS; 
+    
+    Create(P : Surface from Geom; T : Real from Standard)
+    returns Surface from TopOpeBRepDS; 
+     
+--modified by NIZNHY-PKV Tue Oct 30 09:27:32 2001  f    
+    Create  (Other :Surface from TopOpeBRepDS) 
+    	returns Surface from TopOpeBRepDS; 
+	 
+    Assign(me :out;  
+    	    Other: Surface from TopOpeBRepDS);  
+    ---C++: alias operator=
+--modified by NIZNHY-PKV Tue Oct 30 09:27:25 2001  t     
+
+    Surface(me) returns Surface from Geom
+	---C++: return const &
+    is static;
+    
+    Tolerance(me) returns Real from Standard
+    is static;
+
+    Tolerance(me : in out; tol : Real)
+    ---Purpose: Update the tolerance
+    is static;
+	
+    Keep(me) returns Boolean from Standard
+    is static;
+    ChangeKeep(me : in out; B : Boolean from Standard)
+    is static;
+
+fields
+
+    mySurface   : Surface from Geom;
+    myTolerance : Real from Standard;
+    myKeep      : Boolean from Standard;
+
+end Surface from TopOpeBRepDS;

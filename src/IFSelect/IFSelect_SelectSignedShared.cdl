@@ -1,0 +1,56 @@
+-- File:	IFSelect_SelectSignedShared.cdl
+-- Created:	Wed Sep 25 14:12:50 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SelectSignedShared  from IFSelect  inherits SelectExplore
+
+    ---Purpose : In the graph, explore the Shareds of the input entities,
+    --           until it encounters some which match a given Signature
+    --           (for a limited level, filters the returned list)
+    --           By default, fitted for any level
+
+uses AsciiString, Transient,  Graph, EntityIterator, Signature
+
+is
+
+    Create (matcher : Signature;
+            signtext : CString;
+            exact : Boolean = Standard_True;
+   	    level : Integer = 0)  returns mutable SelectSignedShared;
+    ---Purpose : Creates a SelectSignedShared, defaulted for any level
+    --           with a given Signature and text to match
+
+    Signature (me) returns mutable Signature;
+    ---Purpose : Returns the used Signature, then it is possible to access it,
+    --           modify it as required
+
+    SignatureText (me) returns AsciiString from TCollection;
+    ---Purpose : Returns Text used to Sort Entity on its Signature
+    ---C++ : return const &
+
+    IsExact (me) returns Boolean;
+    ---Purpose : Returns True if match must be exact
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : Explores an entity : its Shared entities
+    --           <ent> to take if it matches the Signature
+    --           At level max, filters the result. Else gives all Shareds
+
+
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium.
+    --           (it refers to the text and exact flag to be matched, and is
+    --           qualified by the Name provided by the Signature)
+
+fields
+ 
+    thematcher  : Signature;
+    thesigntext : AsciiString from TCollection;
+    theexact    : Boolean;
+
+end SelectSignedShared;

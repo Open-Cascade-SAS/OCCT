@@ -1,0 +1,154 @@
+inline  void Prs2d_Dimension::SetText(const TCollection_ExtendedString& aText) 
+{
+  myText = aText;
+}
+
+inline  void Prs2d_Dimension::SetTextScale(const Standard_Real aTS) 
+{
+  myTextScale = aTS;
+}
+ 
+inline  void Prs2d_Dimension::SetTextFont(const Standard_Integer aTF) 
+{
+  myTextFont = aTF;
+}
+ 
+inline  void Prs2d_Dimension::SetFontOfSymb(const Standard_Integer aFS) 
+{
+  mySymbFont = aFS;
+}
+ 
+inline  void Prs2d_Dimension::SetArrowType(const Prs2d_TypeOfArrow anArrT) 
+{
+  myArrType = anArrT;
+}
+
+inline  void Prs2d_Dimension::SetArrowSides(const Prs2d_ArrowSide anArrS) 
+{
+  myArrow = anArrS;
+}
+ 
+inline  void Prs2d_Dimension::DrawSymbol(const Standard_Boolean isDraw ) 
+{
+  myIsSymbol = isDraw;
+}
+ 
+inline  void Prs2d_Dimension::SetSymbolCode( const Standard_Integer aCode ) 
+{
+  mySymbCode = aCode;
+}
+
+inline void Prs2d_Dimension::SetTextAbsAngle(const Standard_Real Ap) 
+{
+  myAbsAngle=Ap;
+  CalcTxtPos(Standard_True);
+}     
+
+inline void Prs2d_Dimension::SetTextAbsPos(const Standard_Real Xp,
+					   const Standard_Real Yp) 
+{
+  myAbsX=Xp;
+  myAbsY=Yp;
+  CalcTxtPos(Standard_True);
+}     
+
+inline void Prs2d_Dimension::SetTextRelPos(const Standard_Real Xp,
+					   const Standard_Real Yp) 
+{ 
+  myTextPosH=Xp;
+  myTextPosV=Yp;
+  CalcTxtPos();
+}     
+
+inline void Prs2d_Dimension::SetTextRelAngle(const Standard_Real Ap) 
+{
+  myTextAngle=Ap;
+  CalcTxtPos();
+}
+
+inline  TCollection_ExtendedString Prs2d_Dimension::Text() const 
+{
+  return myText;
+}
+ 
+inline Standard_Real Prs2d_Dimension::TextRelH() const 
+{
+  return myTextPosH;
+}
+
+inline Standard_Real Prs2d_Dimension::TextRelV() const 
+{
+  return myTextPosV;
+}
+
+inline Standard_Real Prs2d_Dimension::TextRelAngle() const 
+{
+  return myTextAngle;
+}
+
+
+inline Standard_Real Prs2d_Dimension::TextAbsAngle() const 
+{
+  return myAbsAngle;
+}
+
+inline Standard_Real Prs2d_Dimension::TextAbsX() const 
+{
+  return myAbsX;
+}
+
+inline Standard_Real Prs2d_Dimension::TextAbsY() const 
+{
+  return myAbsY;
+}
+
+inline  Standard_Real Prs2d_Dimension::TextScale() const 
+{
+  return myTextScale;
+}
+ 
+inline  Standard_Integer Prs2d_Dimension::TextFont() const 
+{
+  return myTextFont;
+}
+ 
+inline  Standard_Integer Prs2d_Dimension::FontOfSymb() const 
+{
+  return mySymbFont;
+}
+ 
+inline  Prs2d_TypeOfArrow Prs2d_Dimension::ArrowType() const 
+{
+  return myArrType;
+}
+ 
+inline  Prs2d_ArrowSide Prs2d_Dimension::ArrowSides() const 
+{
+  return myArrow;
+}
+
+inline  Standard_Real Prs2d_Dimension::ArrowAngle() const 
+{
+  return myArrowAng;
+} 
+
+inline  Standard_Real Prs2d_Dimension::ArrowLength() const 
+{
+  return myArrowLen;
+} 
+
+inline  Standard_Boolean Prs2d_Dimension::ArrowIsReversed() const 
+{
+  return myIsRevArr;
+}
+
+inline  Standard_Boolean Prs2d_Dimension::IsDrawSymbol() const 
+{
+  return myIsSymbol;
+}
+
+inline  Standard_Integer Prs2d_Dimension::SymbolCode() const 
+{
+  return mySymbCode;
+}
+

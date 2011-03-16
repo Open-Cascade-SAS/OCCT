@@ -1,0 +1,239 @@
+#ifdef CHRONO
+#include <OSD_Chronometer.hxx>
+OSD_Chronometer Chronrsnld;
+
+#endif
+
+#include <Precision.hxx>
+
+IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
+                                    const Standard_Real Deflection,
+                                    const Standard_Real Increment ) :
+      done(Standard_False),
+      fleche(Deflection),
+      pas(Increment),
+      tolerance(1,2),
+      epsilon(Epsilon*Epsilon)
+{
+}
+
+
+// ***************************************************************************
+     //  etat1=12 pas tangent,pas passant
+     //  etat1=11 tangent,pas passant
+     //  etat1=2  pas tangent,passant
+     //  etat1=1  tangent,passant
+     //  lorsque un point a ete traite son etat devient negatif.
+// ***************************************************************************
+     //  etat2=13  point de demarage interieur sur ligne ferme
+     //  etat2=12  point de demarage interieur sur ligne ouverte
+     //            (ligne initialement fermee -> la ligne s est ouverte)       
+     //  lorsque un point a ete traite (ou si on passe dessus lors du 
+     //  cheminement) son etat devient negatif.
+// ****************************************************************************
+
+//
+// Perform avec points interieurs
+//
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+			       const ThePOLIterator& Pnts2,
+			       TheIWFunction& Func,
+			       const ThePSurface& Caro,
+			       const Standard_Boolean Reversed)
+
+{
+
+  Standard_Integer I;
+  ThePointOfPath PathPnt;
+  Standard_Boolean Rajout = Standard_False;
+  Standard_Integer nbPnts1 = Pnts1.Length();
+  Standard_Integer nbPnts2 = Pnts2.Length();
+  Standard_Real U,V;
+
+  done = Standard_False;
+
+  ustart1.Clear();
+  vstart1.Clear();
+  etat1.Clear();
+  nbMultiplicities.Clear();
+  ustart2.Clear();
+  vstart2.Clear();
+  etat2.Clear();
+  seqAjout.Clear();
+  lines.Clear();
+  reversed = Reversed;
+
+
+  // Chargement de etat1 et etat2  et des ustart et vstart.
+
+  TColStd_SequenceOfReal Umult;
+  TColStd_SequenceOfReal Vmult;
+
+  Standard_Integer decal=0;
+  for (I=1;I <= nbPnts1+decal; I++) {
+    PathPnt = Pnts1.Value(I-decal);
+    etat1.Append(1);
+    if (!ThePointOfPathTool::IsPassingPnt(PathPnt)) 
+      etat1(I) = 11; 
+    if (!ThePointOfPathTool::IsTangent(PathPnt))   
+      etat1(I) = etat1(I) + 1;
+
+    Standard_Integer etat1I=etat1(I);
+#ifdef DEB
+    Standard_Integer multi=0;
+#endif
+    //-- cout<<" \n Etat1("<<I<<") = "<<etat1I<<endl;
+    if(etat1I==2) {  //-- lbr le 15 fev 99 
+      etat1(I)=11;      
+      
+      ThePointOfPathTool::Value2d(PathPnt, U,V);
+      ustart1.Append(U);
+      vstart1.Append(V);
+      nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
+      
+      for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
+	ThePointOfPathTool::Parameters(PathPnt, J, U , V);
+	Umult.Append(U);
+	Vmult.Append(V);
+      }
+    }
+     
+    else { 
+      ThePointOfPathTool::Value2d(PathPnt, U,V);
+      ustart1.Append(U);
+      vstart1.Append(V);
+      nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
+      
+      for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
+	ThePointOfPathTool::Parameters(PathPnt, J, U , V);
+	Umult.Append(U);
+	Vmult.Append(V);
+      }
+    }
+  }
+
+
+  for (I = 1; I <= nbPnts2; I++) {
+    etat2.Append(13);
+    ThePointOfLoopTool::Value2d(Pnts2.Value(I), U,V);
+    ustart2.Append(U);
+    vstart2.Append(V);
+  }
+
+  tolerance(1) = ThePSurfaceTool::UResolution(Caro,Precision::Confusion());
+  tolerance(2) = ThePSurfaceTool::VResolution(Caro,Precision::Confusion());
+
+  Um = ThePSurfaceTool::FirstUParameter(Caro);
+  Vm = ThePSurfaceTool::FirstVParameter(Caro);
+  UM = ThePSurfaceTool::LastUParameter(Caro);
+  VM = ThePSurfaceTool::LastVParameter(Caro);
+
+  if (UM < Um) {
+    Standard_Real utemp = UM;
+    UM = Um;
+    Um = utemp;
+  }
+  if (VM < Vm) {
+    Standard_Real vtemp = VM;
+    VM = Vm;
+    Vm = vtemp;
+  }
+
+  Func.Set(Caro);
+
+  // calcul de toutes les lignes ouvertes   
+  if (nbPnts1 != 0) ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
+  // calcul de toutes les lignes fermees 
+  if (nbPnts2 != 0) ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
+  for (I = 1; I <= nbPnts1; I++) { 
+    if (etat1(I) >0) seqSingle.Append(Pnts1(I));
+  }
+  done = Standard_True;
+}
+
+
+
+//
+// Perform sans point interieur
+//
+
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+			       TheIWFunction& Func,
+			       const ThePSurface& Caro,
+			       const Standard_Boolean Reversed)
+
+{
+  Standard_Integer I;
+  ThePointOfPath PathPnt;
+  Standard_Boolean Rajout = Standard_False;
+  Standard_Integer nbPnts1 = Pnts1.Length();
+  Standard_Real U,V;
+
+  done = Standard_False;
+
+  ustart1.Clear();
+  vstart1.Clear();
+  etat1.Clear();
+  nbMultiplicities.Clear();
+  ustart2.Clear();
+  vstart2.Clear();
+  etat2.Clear();
+  seqAjout.Clear();
+  lines.Clear();
+  reversed = Reversed;
+
+
+  // Chargement de etat1 et de ustart1 et vstart1.
+
+  TColStd_SequenceOfReal Umult;
+  TColStd_SequenceOfReal Vmult;
+
+  for (I=1;I <= nbPnts1; I++) {
+    PathPnt = Pnts1.Value(I);
+    etat1.Append(1);
+    if (!ThePointOfPathTool::IsPassingPnt(PathPnt)) etat1(I) = 11; 
+    if (!ThePointOfPathTool::IsTangent(PathPnt))   etat1(I) = etat1(I) + 1;
+    ThePointOfPathTool::Value2d(PathPnt, U,V);
+    ustart1.Append(U);
+    vstart1.Append(V);
+    nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
+
+    for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
+      ThePointOfPathTool::Parameters(PathPnt, J, U , V);
+      Umult.Append(U);
+      Vmult.Append(V);
+    }
+  }
+
+  tolerance(1) = ThePSurfaceTool::UResolution(Caro,Precision::Confusion());
+  tolerance(2) = ThePSurfaceTool::VResolution(Caro,Precision::Confusion());
+
+  Um = ThePSurfaceTool::FirstUParameter(Caro);
+  Vm = ThePSurfaceTool::FirstVParameter(Caro);
+  UM = ThePSurfaceTool::LastUParameter(Caro);
+  VM = ThePSurfaceTool::LastVParameter(Caro);
+
+  if (UM < Um) {
+    Standard_Real utemp = UM;
+    UM = Um;
+    Um = utemp;
+  }
+  if (VM < Vm) {
+    Standard_Real vtemp = VM;
+    VM = Vm;
+    Vm = vtemp;
+  }
+
+  Func.Set(Caro);
+
+  // calcul de toutes les lignes ouvertes   
+  if (nbPnts1 != 0) ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
+
+  for (I = 1; I <= nbPnts1; I++) { 
+    if (etat1(I) >0) seqSingle.Append(Pnts1(I));
+  }
+  done = Standard_True;
+}
+
+
+

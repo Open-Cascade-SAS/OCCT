@@ -1,0 +1,47 @@
+// File:	BRepBlend_SurfRstLineBuilder.lxx
+// Created:	Fri Jan 24 10:47:10 1997
+// Author:	Laurent BOURESCHE
+//		<lbo@pomalox.paris1.matra-dtv.fr>
+
+#include <StdFail_NotDone.hxx>
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_SurfRstLineBuilder::IsDone() const
+{
+  return done;
+}
+
+//=======================================================================
+//function : Line
+//purpose  : 
+//=======================================================================
+
+inline const Handle(BRepBlend_Line)& BRepBlend_SurfRstLineBuilder::Line() const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return line;
+}
+
+//=======================================================================
+//function : DecrochStart
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochStart() const
+{
+  return decrochdeb;
+}
+
+
+//=======================================================================
+//function : DecrochEnd
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepBlend_SurfRstLineBuilder::DecrochEnd() const
+{
+  return decrochfin;
+}

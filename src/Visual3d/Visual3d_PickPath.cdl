@@ -1,0 +1,130 @@
+--
+-- File:	Visual3d_PickPath.cdl
+-- Created:	Lundi 25 Novembre 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class PickPath from Visual3d
+
+	---Version:
+
+	---Purpose: PickPath is a vector ( pick_id, struct_id, elem_num ).
+	--	    It's one of the constituents of a PickDescriptor.
+	--	    There are many PickPaths in a PickDescriptor.
+	--	    Each PickPath describes a structure or a sub-structure.
+	--	    The pick_id is set by SetPickId method from Group.
+
+	---Keywords: Pick Path, PickId
+
+	---Warning:
+	---References:
+
+uses
+
+	Structure	from Graphic3d
+
+raises
+
+	PickError	from Visual3d
+
+is
+
+	Create
+		returns PickPath from Visual3d;
+	---Level: Public
+	---Purpose: Creates an undefined PickPath.
+
+	Create ( AElemNumber	: Integer from Standard;
+		 APickId	: Integer from Standard;
+		 AStructure	: Structure from Graphic3d)
+		returns PickPath from Visual3d;
+	---Level: Public
+	---Purpose: Creates a PickPath :
+	--	    <AElemNumber> : Element number of the structure picked.
+	--	    <APickId>	  : Pick identifier of the structure picked.
+	--	    <AStructure>  : The picked structure.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetElementNumber ( me		: in out;
+			   AElemNumber	: Integer from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the PickPath <me>.
+	--	    <AElemNumber> : Element number of the structure picked.
+	---Category: Methods to modify the class definition
+
+	SetPickIdentifier ( me		: in out;
+			    APickId	: Integer from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the PickPath <me>.
+	--	    <APickId>	  : Pick identifier of the structure picked.
+	---Category: Methods to modify the class definition
+
+	SetStructIdentifier ( me		: in out;
+			      AStructure	: Structure from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the PickPath <me>.
+	--	    <AStructure>	: Identifier of the structure picked.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	ElementNumber ( me )
+		returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the element number stocked in the PickPath <me>.
+	--  Category: Inquire methods
+	--  Warning: Raises PickError if PickPath is empty (no picked structure).
+	raises PickError from Visual3d is static;
+
+	PickIdentifier ( me )
+		returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the pick identifier stocked in the PickPath <me>.
+	--  Category: Inquire methods
+	--  Warning: Raises PickError if PickPath is empty (no picked structure).
+	raises PickError from Visual3d is static;
+
+	StructIdentifier ( me )
+		returns Structure from Graphic3d
+	---Level: Public
+	---Purpose: Returns the structure stocked in the PickPath <me>.
+	--  Category: Inquire methods
+	--  Warning: Raises PickError if PickPath is empty (no picked structure).
+	raises PickError from Visual3d is static;
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_PickPath
+--
+-- Purpose	:	Declaration of variables specific to the class
+--			describing a picking.
+--
+-- Reminders	:	A pick is defined by :
+--			- a vector (Elem_Num, Pick_Id, Structure)
+--
+--
+
+	-- the pick vector
+	MyElementNumber		:	Integer from Standard;
+	MyPickId		:	Integer from Standard;
+	MyStructure		:	Structure from Graphic3d;
+
+	-- the flag for definition
+	MyElementNumberIsDef	:	Boolean from Standard;
+	MyPickIdIsDef		:	Boolean from Standard;
+	MyStructureIsDef	:	Boolean from Standard;
+
+end PickPath;

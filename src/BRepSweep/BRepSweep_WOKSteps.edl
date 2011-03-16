@@ -1,0 +1,17 @@
+
+--
+-- File:        BRepSweep_WOKSteps.edl
+-- Author:      JR
+-- History:     19-11-99
+-- Copyright:   Matra Datavision 1999
+--
+
+@ifnotdefined ( %BRepSweep_WOKSteps_EDL) then
+
+  @set %BRepSweep_WOKSteps_EDL = "";
+
+  @string %WOKSteps_XcppGroup += " xcpp.repl ";
+  @set %WOKSteps_xcpp_repl = "*BRepSweep_Replace(xcpp.header)";
+
+@endif;
+

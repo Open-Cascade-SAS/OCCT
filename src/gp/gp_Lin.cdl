@@ -1,0 +1,242 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+
+class Lin    from gp   inherits Storable
+
+        ---Purpose:
+        -- Describes a line in 3D space.
+        -- A line is positioned in space with an axis (a gp_Ax1
+        -- object) which gives it an origin and a unit vector.
+        -- A line and an axis are similar objects, thus, we can
+        -- convert one into the other. A line provides direct access
+        -- to the majority of the edit and query functions available
+        -- on its positioning axis. In addition, however, a line has
+        -- specific functions for computing distances and positions.
+        -- See Also
+        -- gce_MakeLin which provides functions for more complex
+        -- line constructions
+        -- Geom_Line which provides additional functions for
+        -- constructing lines and works, in particular, with the
+        -- parametric equations of lines
+
+
+uses Ax1  from gp,
+     Ax2  from gp,
+     Dir  from gp,
+     Trsf from gp, 
+     Vec  from gp,
+     Pnt  from gp
+
+raises ConstructionError from Standard
+
+is
+
+  
+  Create   returns Lin;
+        ---C++:inline
+        --- Purpose : Creates a Line corresponding to Z axis of the
+	--            reference coordinate system.
+
+  Create (A1 : Ax1)  returns Lin;
+        ---C++:inline
+        --- Purpose : Creates a line defined by axis A1.
+
+  Create (P : Pnt; V : Dir) returns Lin;
+        --- Purpose : Creates a line passing through point P and parallel to
+        --  vector V (P and V are, respectively, the origin and
+        -- the unit vector of the positioning axis of the line).
+  
+   
+
+  Reverse (me : in out)       
+        ---C++:inline
+        is static;
+
+  Reversed (me) returns Lin   is static;
+        ---C++:inline
+        --- Purpose : Reverses the direction of the line.        
+        -- Note:
+        -- -   Reverse assigns the result to this line, while
+        -- -   Reversed creates a new one.
+      
+  SetDirection (me : in out; V : Dir)    is static;
+        ---C++:inline
+        --- Purpose :  Changes the direction of the line.
+
+  SetLocation (me : in out; P : Pnt)     is static;
+        ---C++:inline
+        --- Purpose : Changes the location point (origin) of the line.
+
+  SetPosition (me : in out; A1 : Ax1)    is static;
+        ---C++:inline
+        --- Purpose :
+        --  Complete redefinition of the line.
+        --  The "Location" point of <A1> is the origin of the line.
+        --  The "Direction" of <A1> is  the direction of the line.
+
+  Direction (me)  returns Dir            is static;
+        ---C++:inline
+        --- Purpose : Returns the direction of the line.
+        ---C++: return const&
+
+  Location (me)  returns Pnt             is static;
+        ---C++:inline
+        --- Purpose : 
+        --  Returns the location point (origin) of the line.
+    	---C++: return const&
+
+  Position (me)  returns Ax1             is static;
+        --- Purpose :
+        --  Returns the axis placement one axis whith the same
+        --  location and direction as <me>.
+        ---C++: inline
+    	---C++: return const&
+ 
+  Angle (me; Other : Lin)   returns Real   is static;
+        ---C++: inline
+        --- Purpose : Computes the angle between two lines in radians.
+
+  Contains (me; P : Pnt; LinearTolerance : Real)    returns Boolean
+     is static;
+        ---C++: inline
+        --- Purpose : Returns true if this line contains the point P, that is, if the
+        -- distance between point P and this line is less than or
+        -- equal to LinearTolerance..
+
+  Distance (me; P : Pnt)  returns Real             is static;
+        ---C++: inline
+        --- Purpose : Computes the distance between <me> and the point P.
+
+  Distance (me; Other : Lin)  returns Real         is static;
+        --- Purpose : Computes the distance between two lines.
+
+  SquareDistance (me; P : Pnt)  returns Real       is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Computes the square distance between <me> and the point P.
+
+  SquareDistance (me; Other : Lin)   returns Real  is static;
+        ---C++: inline
+        --- Purpose : Computes the square distance between two lines.
+
+  Normal (me; P : Pnt)  returns Lin
+        ---C++: inline
+        --- Purpose :
+        --  Computes the line normal to the direction of <me>, passing
+        --  through the point P.  Raises ConstructionError
+        --  if the distance between <me> and the point P is lower
+        --  or equal to Resolution from gp because there is an infinity of
+        --  solutions in 3D space.
+     raises ConstructionError
+      
+     is static;
+
+          
+
+
+  Mirror (me : in out; P : Pnt)  
+        is static;
+
+  Mirrored (me; P : Pnt)  returns Lin
+    is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a line
+        --  with respect to the point P which is the center of
+        --  the symmetry.
+
+
+
+
+  Mirror (me : in out; A1 : Ax1)
+         is static;
+
+  Mirrored (me; A1 : Ax1)  returns Lin   is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a line
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry.
+
+
+  
+  Mirror (me : in out; A2 : Ax2)
+         is static;
+
+
+  Mirrored (me; A2 : Ax2)   returns Lin  is static;
+      --- Purpose :
+        --  Performs the symmetrical transformation of a line
+        --  with respect to a plane. The axis placement  <A2> 
+        --  locates the plane of the symmetry :
+        --  (Location, XDirection, YDirection).
+
+
+     
+  Rotate(me : in out; A1 : Ax1; Ang : Real)
+        ---C++: inline
+         is static;
+
+  Rotated (me; A1 : Ax1; Ang : Real)   returns Lin  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a line. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+
+   
+
+  Scale (me : in out; P : Pnt; S : Real)
+        ---C++: inline
+        is static;
+
+  Scaled (me; P : Pnt; S : Real)   returns Lin  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a line. S is the scaling value.
+        --  The "Location" point (origin) of the line is modified.
+        --  The "Direction" is reversed if the scale is negative.
+
+
+     
+
+  Transform (me : in out; T : Trsf)
+        ---C++: inline
+         is static;
+
+
+  Transformed (me; T : Trsf)   returns Lin  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms a line with the transformation T from class Trsf.
+
+       
+  Translate (me : in out; V : Vec)
+        ---C++: inline
+         is static;
+
+  Translated (me; V : Vec)   returns Lin   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a line in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+
+
+
+  Translate (me : in out; P1, P2 : Pnt)        is static;
+        ---C++: inline
+
+  Translated (me; P1, P2 : Pnt)   returns Lin  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a line from the point P1 to the point P2.
+
+
+
+fields
+
+   pos : Ax1;
+
+end;

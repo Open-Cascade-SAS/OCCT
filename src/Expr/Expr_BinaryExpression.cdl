@@ -1,0 +1,102 @@
+-- File:	BinaryExpression.cdl
+-- Created:	Thu Jan 10 12:27:32 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class BinaryExpression from Expr
+    
+inherits GeneralExpression from Expr
+    ---Purpose: Defines all binary expressions. The order of the two 
+    --          operands is significant.
+
+uses NamedUnknown from Expr
+    
+raises OutOfRange from Standard,
+    NumericError from Standard,
+    InvalidOperand from Expr
+
+is
+
+    FirstOperand(me)
+    ---C++: inline
+    ---C++: return const &
+    ---Level : Internal
+    returns any GeneralExpression
+    is static;
+
+    SecondOperand(me)
+    ---C++: inline
+    ---C++: return const &
+    ---Level : Internal
+    returns any GeneralExpression
+    is static;
+
+    SetFirstOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets first operand of <me>
+    --          Raises InvalidOperand if exp = me
+    ---Level : Internal
+    raises InvalidOperand
+    is static;
+
+    SetSecondOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets second operand of <me>
+    --          Raises InvalidOperand if <exp> contains <me>.
+    ---Level : Internal
+    raises InvalidOperand
+    is static;
+
+    CreateFirstOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets first operand of <me>
+    ---Level : Internal
+    is static protected;
+
+    CreateSecondOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets second operand of <me>
+    --          Raises InvalidOperand if <exp> contains <me>.
+    ---Level : Internal
+    is static protected;
+
+    NbSubExpressions(me)
+    ---Purpose: returns the number of sub-expressions contained
+    --          in <me> ( >= 0)
+    returns Integer
+    is static;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: returns the <I>-th sub-expression of <me>
+    --          raises OutOfRange if <I> > NbSubExpressions(me)
+    ---C++: return const &
+    returns any GeneralExpression
+    raises OutOfRange
+    is static;
+
+    ContainsUnknowns(me) 
+    ---Purpose: Does <me> contain NamedUnknown ?
+    returns Boolean
+    is static;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <me> contains <exp>.
+    returns Boolean
+    is static;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression)
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>.
+    --          Raises InvalidOperand if <with> contains <me>.
+    raises InvalidOperand
+    is static;
+    
+    Simplified(me) 
+    ---Purpose: Returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression and after
+    --          values computation.
+    returns any GeneralExpression
+    raises NumericError;
+    
+fields
+
+    myFirstOperand  : GeneralExpression;
+    mySecondOperand : GeneralExpression;
+
+end BinaryExpression;

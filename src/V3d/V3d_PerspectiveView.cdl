@@ -1,0 +1,94 @@
+-- File:	PerspectiveView.cdl
+-- Created:	Tue Jan 21 15:28:48 1992
+-- Author:	GG
+-- Update:	             		
+---Copyright:	Matra Datavision 1992
+
+
+class PerspectiveView from V3d
+
+    	---Purpose : Creates and modifies a perspective
+	--           See the methods of the class View	
+
+
+
+inherits View from V3d
+
+
+uses
+
+	Viewer from V3d,
+	OrthographicView from V3d,
+	PlaneAngle from Quantity
+
+raises
+
+        BadValue from Viewer
+	
+is
+
+    	Create ( VM : mutable Viewer ) returns mutable PerspectiveView;
+	---Level: Public
+	---Purpose: Defines a perspective view in a viewer VM.
+	--          The default angle of opening is given
+	--          by the viewer.
+     
+
+    	Create ( VM : mutable Viewer ; V : OrthographicView )
+					returns mutable PerspectiveView;  
+	---Level: Public
+	---Purpose: Creates a perspective view from the parameters 
+	--	    of an orthographic view.
+        --          The parameters of the original view are duplicated
+        --          in the resulting view (Projection,Mapping,Context) .
+        --          The view thus created must be activated in a new window.
+	--          The default angle of opening is given
+	--          by the viewer.
+
+
+
+    	Create ( VM : mutable Viewer ; V : PerspectiveView ) 
+					returns mutable PerspectiveView ; 
+	---Level: Public
+	---Purpose: Creates one perspective view from another.
+        --          The parameters of the original view are duplicated
+        --          in the resulting view (Projection,Mapping,Context) .
+        --          The view thus created must be activated in a new window.
+
+        Copy ( me ) returns mutable PerspectiveView from V3d is static;
+	---Level: Public
+	
+        --------------------------------------------------------
+        ---Category: Methods to modify the status of the view
+        --------------------------------------------------------
+
+    	SetAngle ( me : mutable ; Angle : PlaneAngle ) 
+	---Level: Public
+	---Purpose: Modifies the angle of opening of the perspective in RADIANS.
+	--	    The projection window is resized according to the
+	--	    formula :
+	--	    TAN(Angle/2) = Size/Length       
+	--	    	Size expresses the smallest dimension of the window.
+    	--	        Length expresses the focal length.
+	raises BadValue from Viewer 
+	---Purpose:  Warning! raises BadValue from Viewer 
+	--	    if the opening angle is <= 0 or >= PI 
+        is static;
+	
+    	Angle ( me ) returns PlaneAngle  is static; 
+	---Level: Public
+	---Purpose: Returns the value of the angle of opening.
+
+    	SetPerspective ( me : mutable ; Angle : PlaneAngle; 
+		                 UVRatio, ZNear, ZFar : Real ) 
+	---Level: Public
+	---Purpose: Modifies the viewing perspective volume by given
+	--		angle of opening of the perspective in RADIANS,
+	--      aspect ratio of window width to its height and 
+	--      near and far clipping planes
+	raises BadValue from Viewer 
+	--	    if the opening angle is <= 0 or >= PI or
+    --      the ZNear<0, ZFar<0 or ZNear>=Zfar.
+        is static;
+	
+end PerspectiveView;

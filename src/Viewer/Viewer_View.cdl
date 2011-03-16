@@ -1,0 +1,51 @@
+-- File:	Viewer_View.cdl
+-- Created:	Thu Mar  7 14:06:17 1996
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1996
+
+deferred class View from Viewer inherits TShared from MMgt
+    	---Purpose: This class defines a view.        
+uses
+    Length from Quantity,Factor from Quantity
+raises
+    BadValue from Viewer
+is 
+    Initialize;
+
+    Update(me)
+    	---Purpose: Clears the window and redraws all primitives.
+    is deferred;
+
+  
+    SetImmediateUpdate(me: mutable; onoff: Boolean from Standard)
+    	---Purpose: sets the immediate update mode and returns the previous one.
+    returns Boolean from Standard;
+    
+    ImmediateUpdate(me)
+    	---Purpose: 
+    is static protected;
+    
+    WindowFit(me: mutable ; Xmin, Ymin, Xmax, Ymax : Integer)
+    	---Purpose: Centres the defined pixel window defined by the
+    	-- minimum and maximum pixels Xmin, Ymin, Xmax,
+    	-- Ymax so that it occupies the largest possible space
+    	-- while maintaining the initial height/width ratio.
+    	-- Exceptions
+    	-- Viewer_BadValue if the size of the defined
+    	-- projection window is equal to 0.
+    raises BadValue from Viewer
+    is deferred;
+
+    Place (me:mutable; x,y: Integer from Standard;
+                      aZoomFactor: Factor from Quantity = 1)
+    	---Purpose: Sets the center of the object space defined by x, y
+    	-- and the zoom factor aZoomFactor. The view is updated.
+    is deferred;
+
+fields
+
+    myImmediateUpdate: Boolean from Standard is protected;
+
+
+end View from Viewer;

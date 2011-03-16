@@ -1,0 +1,170 @@
+--
+-- File      :  SplineCurve.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SplineCurve from IGESGeom  	
+inherits IGESEntity 
+
+
+        ---Purpose: Defines IGESSplineCurve, Type <112> Form <0>
+        --          in package IGESGeom
+        --          The parametric spline is a sequence of parametric
+        --          polynomial segments. The curve could be of the type
+        --          Linear, Quadratic, Cubic, Wilson-Fowler, Modified
+        --          Wilson-Fowler, B-Spline. The N polynomial segments
+        --          are delimited by the break points  T(1), T(2), T(3),
+        --          ..., T(N+1).
+
+uses
+
+        Pnt           from gp,
+        HArray1OfReal from TColStd,
+        HArray2OfReal from TColStd 
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable SplineCurve;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me              : mutable;
+              aType, aDegree  : Integer;
+              nbDimensions    : Integer;
+              allBreakPoints  : HArray1OfReal;
+              allXPolynomials : HArray2OfReal;
+              allYPolynomials : HArray2OfReal;
+              allZPolynomials : HArray2OfReal;
+              allXvalues      : HArray1OfReal;
+              allYvalues      : HArray1OfReal;
+              allZvalues      : HArray1OfReal)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           SplineCurve
+        --       - aType           : Spline Type
+        --                           1 = Linear
+        --                           2 = Quadratic
+        --                           3 = Cubic
+        --                           4 = Wilson-Fowler
+        --                           5 = Modified Wilson-Fowler
+        --                           6 = B Spline
+        --       - aDegree         : Degree of continuity w.r.t. arc length
+        --       - nbDimensions    : Number of dimensions
+        --                           2 = Planar
+        --                           3 = Non-planar
+        --       - allBreakPoints  : Array of break points
+        --       - allXPolynomials : X coordinate polynomials of segments
+        --       - allYPolynomials : Y coordinate polynomials of segments
+        --       - allZPolynomials : Z coordinate polynomials of segments
+        --       - allXValues      : Values of 1st, 2nd, 3rd derivatives of
+        --                           X polynomials at the terminate point
+        --                           and values of X at terminate point
+        --       - allYValues      : Values of 1st, 2nd, 3rd derivatives of
+        --                           Y polynomials at the terminate point
+        --                           and values of Y at terminate point
+        --       - allZvalues      : Values of 1st, 2nd, 3rd derivatives of
+        --                           Z polynomials at the terminate point
+        --                           and values of Z at terminate point
+        -- raises exception if allXPolynomials, allYPolynomials
+        -- & allZPolynomials are not of same size OR allXValues, allYValues
+        -- & allZValues are not of size 4
+
+        SplineType(me) returns Integer;
+        ---Purpose : returns the type of Spline curve
+
+        Degree(me) returns Integer;
+        ---Purpose : returns the degree of the curve
+
+        NbDimensions(me) returns Integer;
+        ---Purpose : returns the number of dimensions
+        -- 2 = Planar
+        -- 3 = Non-planar
+
+        NbSegments(me) returns Integer;
+        ---Purpose : returns the number of segments
+
+        BreakPoint(me ; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns breakpoint of piecewise polynomial
+        -- raises exception if Index <= 0 or Index > NbSegments() + 1
+
+        XCoordPolynomial(me ; Index : Integer; AX, BX, CX, DX : out Real)
+        raises OutOfRange;
+        ---Purpose:  returns X coordinate polynomial for segment referred to by Index
+        -- raises exception if Index <= 0 or Index > NbSegments()
+
+        YCoordPolynomial(me ; Index : Integer; AY, BY, CY, DY : out Real)
+        raises OutOfRange;
+        ---Purpose: returns Y coordinate polynomial for segment referred to by Index
+        -- raises exception if Index <= 0 or Index > NbSegments()
+
+        ZCoordPolynomial(me ; Index : Integer; AZ, BZ, CZ, DZ : out Real)
+        raises OutOfRange;
+        ---Purpose: returns Z coordinate polynomial for segment referred to by Index
+        -- raises exception if Index <= 0 or Index > NbSegments()
+
+        XValues(me ; TPX0, TPX1, TPX2, TPX3 : out Real);
+        ---Purpose: returns the value of X polynomial, the values of 1st, 2nd and
+        -- 3rd derivatives of the X polynomial at the terminate point
+
+        YValues(me ; TPY0, TPY1, TPY2, TPY3 : out Real);
+        ---Purpose: returns the value of Y polynomial, the values of 1st, 2nd and
+        -- 3rd derivatives of the Y polynomial at the termminate point
+
+        ZValues(me ; TPZ0, TPZ1, TPZ2, TPZ3 : out Real);
+        ---Purpose: returns the value of Z polynomial, the values of 1st, 2nd and
+        -- 3rd derivatives of the Z polynomial at the termminate point
+
+fields
+
+--
+-- Class    : IGESGeom_SplineCurve
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SplineCurve.
+--
+-- Reminder : A SplineCurve instance is defined by :
+--            The type of spline, degree of continuity, the number of
+--            dimensions, the number of segments, the break points, the
+--            X, Y, Z polynomials for all the segments, the first, second
+--            and third derivative values of X, Y, Z polynomials at the
+--            terminate point.
+
+        theType              : Integer;
+        theDegree            : Integer;
+        theNbDimensions      : Integer;
+        theBreakPoints       : HArray1OfReal;
+        theXCoordsPolynomial : HArray2OfReal;
+                -- stores X coordinate polynomial for all breakpoints.
+                -- size of array is (N X 4)
+                -- i.e., AX(1), BX(1), CX(1), DX(1)
+                --        ... ,  ... ,  ... ,  ...
+                --       AX(N), BX(N), CX(N), DX(N)
+        theYCoordsPolynomial : HArray2OfReal;
+                -- stores Y coordinate polynomial for all breakpoints.
+                -- size of array is (N X 4)
+                -- i.e., AY(1), BY(1), CY(1), DY(1)
+                --        ... ,  ... ,  ... ,  ...
+                --       AY(N), BY(N), CY(N), DY(N)
+        theZCoordsPolynomial : HArray2OfReal;
+                -- stores Z coordinate polynomial for all breakpoints.
+                -- size of array is (N X 4)
+                -- i.e., AZ(1), BZ(1), CZ(1), DZ(1)
+                --        ... ,  ... ,  ... ,  ...
+                --       AZ(N), BZ(N), CZ(N), DZ(N)
+        theXvalues           : HArray1OfReal;
+            -- Stores X value, X 1st derivative, X 2nd derivative/2!
+            -- and X 3rd derivative/3!
+        theYvalues           : HArray1OfReal;
+            -- Stores Y value, Y 1st derivative, Y 2nd derivative/2!
+            -- and Y 3rd derivative/3!
+        theZvalues           : HArray1OfReal;
+            -- Stores Z value, Z 1st derivative, Z 2nd derivative/2!
+            -- and Z 3rd derivative/3!
+
+end SplineCurve;

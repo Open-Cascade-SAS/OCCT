@@ -1,0 +1,63 @@
+-- File:	BinMDF.cdl
+-- Created:	Tue Oct 29 18:50:21 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package BinMDF
+
+        ---Purpose: This package provides classes and methods to
+        --          translate a transient DF into a persistent one and
+        --          vice versa.
+        --          
+        --          Driver
+        --          
+        --          A driver is a tool used to translate a transient
+        --          attribute into a persistent one and vice versa.
+        --          
+        --          Driver Table
+        --          
+        --          A driver table is an object building links between
+        --          object types and object drivers. In the
+        --          translation process, a driver table is asked to
+        --          give a translation driver for each current object
+        --          to be translated.
+
+uses
+    TCollection,
+    TColStd,
+    TDF,
+    CDM,
+    BinObjMgt
+
+is
+
+    deferred class ADriver; -- Attribute Storage/Retrieve Driver.
+
+    class ReferenceDriver;  -- Driver for reference
+
+    class TagSourceDriver;  -- Driver for TDF_TagSource
+
+    private alias StringIdMap is DataMapOfAsciiStringInteger from TColStd;
+
+    -- Map (Type, ADriver)
+    class TypeADriverMap instantiates DataMap from TCollection
+        (Type from Standard,
+         ADriver from BinMDF,
+         MapTransientHasher from TColStd);
+
+    -- Double Map (Type, Integer ID)
+    class TypeIdMap instantiates DoubleMap from TCollection
+        (Type from Standard,
+         Integer from Standard,
+         MapTransientHasher from TColStd,
+         MapIntegerHasher from TColStd);
+
+    -- Attribute Storage Driver Table.
+    class ADriverTable;
+
+    AddDrivers (aDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv      : MessageDriver from CDM);
+        ---Purpose: Adds the attribute storage drivers to <aDriverTable>.
+
+end BinMDF;

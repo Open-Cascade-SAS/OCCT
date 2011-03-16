@@ -1,0 +1,111 @@
+-- File:	NamedFunction.cdl
+-- Created:	Mon Jan 14 10:52:08 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class NamedFunction from Expr
+
+inherits GeneralFunction from Expr
+
+uses GeneralExpression from Expr,
+    NamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    Array1OfNamedUnknown from Expr,
+    AsciiString from TCollection
+    
+raises OutOfRange from Standard, 
+    	DimensionMismatch from Standard, 
+    	NumericError from Standard,
+	NotEvaluable from Expr
+
+is
+
+
+    Create( name : AsciiString; 
+    	    exp : GeneralExpression; 
+    	    vars : Array1OfNamedUnknown)
+    
+    ---Purpose: Creates a function of given variables <vars> with name 
+    --          <name> defined by the expression <exp>.
+    ---Level : Advanced
+    
+    returns mutable NamedFunction;
+
+    SetName(me : mutable; newname : AsciiString)
+    ---Purpose: Sets the name <newname> to <me>.
+    ---Level : Internal
+    is static;
+    
+    GetName(me)
+    ---Purpose: Returns the name assigned to <me>
+    ---Level : Internal
+    returns AsciiString
+    is static;
+    
+    NbOfVariables(me)
+    ---Purpose: Returns the number of variables of <me>.
+    returns Integer
+    is static;
+
+    Variable(me ; index : Integer)
+    ---Purpose: Returns the variable denoted by <index> in <me>.
+    --          Raises OutOfRange if <index> is greater than 
+    --          NbOfVariables of <me>, or less than or equal to zero.
+    returns NamedUnknown
+    raises OutOfRange
+    is static;
+    
+    Evaluate(me; vars : Array1OfNamedUnknown;
+    	    	 values : Array1OfReal)
+    ---Purpose: Computes the value of <me> with the given variables.
+    --          Raises DimensionMismatch if Length(vars) is different from 
+    --          Length(values).
+    returns Real
+    raises DimensionMismatch,NumericError,NotEvaluable;
+		 
+    Copy(me)
+    ---Purpose: Returns a copy of <me> with the same form.
+    returns mutable like me;
+
+    Derivative(me; var : NamedUnknown)
+    ---Purpose: Returns Derivative of <me> for variable <var>.
+    returns GeneralFunction;
+    
+    Derivative(me; var : NamedUnknown; deg : Integer)
+    ---Purpose: Returns Derivative of <me> for variable <var> with 
+    --          degree <deg>.
+    returns GeneralFunction;
+    
+    IsIdentical(me; func : GeneralFunction)
+    ---Purpose: Tests if <me> and <func> are similar functions (same 
+    --          name and same used expression).
+    returns Boolean;
+
+    IsLinearOnVariable(me; index : Integer)
+    ---Purpose: Tests if <me> is linear on variable on range <index>
+    returns Boolean;
+    
+    GetStringName(me)
+    returns AsciiString from TCollection;
+    
+    Expression(me)
+    ---Purpose: Returns equivalent expression of <me>.
+    ---Level : Internal
+    returns GeneralExpression
+    is static;
+
+    SetExpression(me : mutable; exp : GeneralExpression);
+    ---Purpose: Modifies expression of <me>.
+    --  Warning: Beware of derivatives. See FunctionDerivative
+    ---Level : Internal
+
+fields
+
+    myName : AsciiString;
+    myExp : GeneralExpression;
+    myVariables : Array1OfNamedUnknown;
+	
+end NamedFunction;
+
+

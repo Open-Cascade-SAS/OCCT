@@ -1,0 +1,16 @@
+// File:	IntTools_SurfaceRangeSampleMapHasher.lxx
+// Created:	Fri Oct 14 20:56:50 2005
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+
+inline Standard_Integer IntTools_SurfaceRangeSampleMapHasher::HashCode(const IntTools_SurfaceRangeSample& K,
+								       const Standard_Integer Upper) { 
+//   return (((K.GetDepthU() % Upper) ^ (K.GetDepthV() % Upper)) % Upper);
+  return ((K.GetIndexU() * K.GetIndexV()) % Upper);
+}
+	
+inline Standard_Boolean IntTools_SurfaceRangeSampleMapHasher::IsEqual(const IntTools_SurfaceRangeSample& S1,
+								      const IntTools_SurfaceRangeSample& S2) {
+  return S1.IsEqual(S2);
+}

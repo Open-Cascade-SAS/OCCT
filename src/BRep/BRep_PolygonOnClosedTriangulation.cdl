@@ -1,0 +1,56 @@
+-- File:	BRep_PolygonOnClosedTriangulation.cdl
+-- Created:	Wed Mar 15 09:54:13 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class PolygonOnClosedTriangulation from BRep 
+    
+    inherits PolygonOnTriangulation  from  BRep
+
+
+    	---Purpose: A representation by two arrays of nodes on a 
+    	--          triangulation.
+
+
+uses HArray1OfInteger       from TColStd,
+     Array1OfInteger        from TColStd,
+     Location               from TopLoc,
+     CurveRepresentation    from BRep,
+     Triangulation          from Poly,
+     PolygonOnTriangulation from Poly
+
+
+is
+
+    Create(P1, P2 : PolygonOnTriangulation from Poly;
+    	   Tr: Triangulation          from Poly;
+	   L : Location               from TopLoc)
+    returns mutable PolygonOnClosedTriangulation from BRep;
+
+
+    IsPolygonOnClosedTriangulation(me)    returns Boolean
+    	---Purpose: Returns True.
+    is redefined;
+
+
+    PolygonOnTriangulation2(me: mutable; P2: PolygonOnTriangulation from  Poly)
+    is redefined;
+
+
+    PolygonOnTriangulation2(me) returns any PolygonOnTriangulation from  Poly
+    	---C++: return const&
+    is redefined;
+
+
+    Copy(me) returns mutable CurveRepresentation from BRep is redefined;
+	---Purpose: Return a copy of this representation.
+
+
+fields
+
+myPolygon2: PolygonOnTriangulation from Poly;
+
+end PolygonOnClosedTriangulation;

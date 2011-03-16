@@ -1,0 +1,74 @@
+// File:	Dynamic_EnumerationParameter.gxx
+// Created:	Thu Feb  3 14:50:09 1994
+// Author:	Gilles DEBARBOUILLE
+//		<gde@metrox>
+
+
+void String(const Standard_CString,Enum);
+
+//=======================================================================
+//function : Dynamic_EnumerationParameter
+//purpose  : 
+//=======================================================================
+
+Dynamic_EnumerationParameter::Dynamic_EnumerationParameter
+  (const Standard_CString aparameter)
+     : Dynamic_Parameter(aparameter)
+{}
+
+//=======================================================================
+//function : Dynamic_EnumerationParameter
+//purpose  : 
+//=======================================================================
+
+Dynamic_EnumerationParameter::Dynamic_EnumerationParameter
+  (const Standard_CString aparameter,
+   const Enum& avalue)
+     : Dynamic_Parameter(aparameter)
+{
+  thevalue = avalue;
+}
+
+//=======================================================================
+//function : Dynamic_EnumerationParameter
+//purpose  : 
+//=======================================================================
+
+Dynamic_EnumerationParameter::Dynamic_EnumerationParameter
+  (const Standard_CString aparameter,
+   const Standard_CString avalue)
+     : Dynamic_Parameter(aparameter)
+{
+  String(avalue,thevalue);
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Enum Dynamic_EnumerationParameter::Value() const
+{
+  return thevalue;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+void Dynamic_EnumerationParameter::Value(const Enum& avalue) 
+{
+  thevalue = avalue;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+void Dynamic_EnumerationParameter::Dump(Standard_OStream& astream) const
+{
+  Dynamic_Parameter::Dump(astream);
+  astream<<" "<<thevalue;
+}

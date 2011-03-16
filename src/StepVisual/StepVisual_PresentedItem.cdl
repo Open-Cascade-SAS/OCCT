@@ -1,0 +1,14 @@
+-- File:        PresentedItem.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class PresentedItem from StepVisual 
+
+inherits TShared from MMgt
+
+is
+
+
+end PresentedItem;

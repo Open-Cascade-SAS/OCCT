@@ -1,0 +1,207 @@
+-- File:	GeomFill_SweepFunction.cdl
+-- Created:	Thu Nov 20 18:55:05 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+private  class SweepFunction from GeomFill   
+         inherits SweepFunction from  Approx 
+
+	---Purpose: Function to approximate by SweepApproximation from
+	--          Approx. To bulid general sweep Surface.
+
+uses 
+ SectionLaw   from  GeomFill, 
+ LocationLaw  from  GeomFill, 
+
+ Mat          from  gp, 
+ Vec          from  gp, 
+ Pnt          from gp,  
+ Shape        from GeomAbs , 
+  
+ Array1OfPnt       from TColgp,
+ Array1OfVec       from TColgp,
+ Array1OfPnt2d     from TColgp,
+ Array1OfVec2d     from TColgp,
+ Array1OfReal      from TColStd, 
+ Array1OfInteger   from TColStd
+
+ 
+raises
+ OutOfRange  from  Standard
+is 
+ 
+ Create(Section  :  SectionLaw  from  GeomFill;  
+        Location :  LocationLaw  from  GeomFill; 
+        FirstParameter,  FirstParameterOnS,  RatioParameterOnS  :  Real)  
+ returns SweepFunction from GeomFill;
+
+--  
+--           To compute Sections and derivatives Sections
+-- 
+--  
+
+   D0(me : mutable; 
+      Param: Real;
+      First, Last : Real; 
+      Poles    : out Array1OfPnt   from TColgp;
+      Poles2d  : out Array1OfPnt2d from TColgp;
+      Weigths  : out Array1OfReal  from TColStd)
+      ---Purpose: compute the section for v = param           
+   returns Boolean  is  redefined;
+	
+   D1(me : mutable;
+      Param: Real;
+      First, Last : Real; 
+      Poles    : out Array1OfPnt   from TColgp;
+      DPoles   : out Array1OfVec   from TColgp;
+      Poles2d  : out Array1OfPnt2d from TColgp;
+      DPoles2d : out Array1OfVec2d from TColgp;
+      Weigths  : out Array1OfReal  from TColStd;
+      DWeigths : out Array1OfReal  from TColStd)
+      ---Purpose: compute the first  derivative in v direction  of the
+      --           section for v =  param 
+   returns Boolean  
+   is  redefined; 
+   
+    D2(me : mutable;
+      Param: Real;
+      First, Last : Real; 
+      Poles     : out Array1OfPnt   from TColgp;
+      DPoles    : out Array1OfVec   from TColgp;
+      D2Poles   : out Array1OfVec   from TColgp;
+      Poles2d   : out Array1OfPnt2d from TColgp;
+      DPoles2d  : out Array1OfVec2d from TColgp;
+      D2Poles2d : out Array1OfVec2d from TColgp;
+      Weigths   : out Array1OfReal  from TColStd;
+      DWeigths  : out Array1OfReal  from TColStd;
+      D2Weigths : out Array1OfReal  from TColStd)      
+      ---Purpose: compute the second derivative  in v direction of the
+      --          section  for v = param  
+   returns Boolean 
+   is  redefined; 
+    
+-- 
+--               General Information On The Function
+--                                         
+       
+   Nb2dCurves(me)     
+     ---Purpose: get the number of 2d curves to  approximate.
+   returns Integer  is  redefined;  
+
+   SectionShape(me; NbPoles   : out Integer from Standard;
+                    NbKnots   : out Integer from Standard;
+                    Degree    : out Integer from Standard) 
+	---Purpose: get the format of an  section
+    is  redefined;  
+    
+    Knots(me; TKnots: out Array1OfReal from TColStd)
+	---Purpose: get the Knots of the section 
+	is redefined;
+
+
+    Mults(me; TMults: out Array1OfInteger from TColStd)
+	---Purpose: get the Multplicities of the section          
+	is redefined;   
+
+
+    IsRational(me)
+	---Purpose: Returns if the section is rationnal or not         
+    returns Boolean  is redefined; 
+
+     
+     
+--
+--                Mangement  of  continuity
+--                
+  
+    NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+   returns Integer  is  redefined;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined;  
+     
+    	
+   SetInterval(me: mutable; First, Last: Real from Standard)    
+	---Purpose: Sets the bounds of the parametric interval on 
+	--          the function
+	--          This determines the derivatives in these values if the
+	--          function is not Cn.
+    	is redefined; 
+  
+--
+--                      To  help  computation  of  Tolerance
+--
+--      Evaluation of error, in 2d space, or  on rational function, is
+--      dificult.  The folowing methodes can help 
+--      
+--      
+  Resolution(me;   
+              Index       :  Integer  from  Standard;
+   	      Tol         : Real from Standard;   
+              TolU,  TolV :  out Real  from Standard)  
+   ---Purpose: Returns the resolutions in the  sub-space 2d <Index>
+   --          This information is usfull to find an good tolerance in
+   --          2d approximation.              
+  --  Warning: Used only if Nb2dCurve > 0            
+  is redefined;     
+ 
+   GetTolerance(me;  
+    	    	BoundTol, SurfTol, AngleTol : Real;
+		Tol3d : out Array1OfReal)
+	---Purpose: Returns the tolerance to reach in approximation
+	--          to respecte
+	--          BoundTol error at the Boundary
+	--          AngleTol tangent error at the Boundary (in radian)
+	--          SurfTol error inside the surface.         
+  is  redefined;
+ 
+  SetTolerance(me :  mutable; Tol3d,  Tol2d  :  Real) 
+        ---Purpose: Is usfull, if (me) have to  be run numerical
+        --           algorithme to perform D0, D1 or D2
+  is  redefined;
+   
+   BarycentreOfSurf(me) 
+   ---Purpose:  Get    the   barycentre of   Surface.   An   very  poor
+   --          estimation is sufficent. This information is usefull
+   --          to perform well conditionned rational approximation.     
+   --  Warning: Used only if <me> IsRational         
+   returns Pnt from gp      
+   is  redefined; 
+      
+	
+   MaximalSection(me) returns Real
+    	---Purpose: Returns the   length of the maximum section. This
+    	--          information is usefull to perform well conditionned rational
+    	--           approximation. 
+
+        --  Warning: Used only if <me> IsRational           
+   is redefined;
+    
+   GetMinimalWeight(me; Weigths  : out Array1OfReal  from TColStd)
+    	---Purpose: Compute the minimal value of weight for each poles
+    	--          of all  sections.  This information is  usefull to
+    	--          perform well conditionned rational approximation.
+        --  Warning: Used only if <me> IsRational           
+   is redefined; 
+   
+fields 
+    myLoc  :  LocationLaw  from GeomFill; 
+    mySec  :  SectionLaw   from GeomFill; 
+    myf    :  Real; 
+    myfOnS :  Real;  
+    myRatio:  Real; 
+    M,  DM,  D2M  :  Mat  from  gp; 
+    V,  DV,  D2V  :  Vec  from  gp;
+end SweepFunction;

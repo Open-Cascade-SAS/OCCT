@@ -1,0 +1,123 @@
+
+
+class Draft from BRepFill 
+
+uses 
+    LocationDraft  from  GeomFill, 
+    Dir  from  gp,  
+    Box  from  Bnd,
+    Surface  from  Geom,  
+
+    SectionLaw  from  BRepFill,
+    DraftLaw  from  BRepFill, 
+    TransitionStyle from  BRepFill, 
+    
+    HCurve  from  Adaptor3d, 
+    Shape   from GeomAbs, 
+    Shape   from TopoDS,
+    Shell  from  TopoDS, 
+    Face   from  TopoDS, 
+    Wire    from  TopoDS, 
+    ListOfShape from TopTools, 
+    HArray2OfShape from TopTools 
+     
+raises   
+  NotDone
+ 
+is    
+  Create(Shape  :  Shape  from  TopoDS; 
+          Dir    :  Dir  from  gp; 
+	  Angle  :  Real)  
+     ---Purpose:
+             
+  returns Draft from BRepFill; 
+   
+  SetOptions(me : in out; 
+             Style  :  TransitionStyle  from  BRepFill  =  BRepFill_Right; 
+	     AngleMin :  Real  =  0.01; 
+	     AngleMax :  Real  =  3.0); 
+     ---Purpose: 
+		       
+  SetDraft(me:  in  out;  IsInternal  :  Boolean  =  Standard_False); 
+     ---Purpose:
+              
+  
+	     
+  Perform(me  :  in  out; 
+          LengthMax  :  Real) 
+  is  static;  
+  ---Purpose: 
+	     
+  Perform(me  :  in  out; 
+          Surface  : Surface  from  Geom;    
+          KeepInsideSurface  :  Boolean  =  Standard_True) 
+  is  static;  
+   ---Purpose: 
+  
+   
+  Perform(me  :  in  out; 
+          StopShape  : Shape  from  TopoDS; 
+          KeepOutSide  :  Boolean  =  Standard_True) 
+  is  static;   
+  ---Purpose: 
+      
+  IsDone(me) 
+  returns  Boolean;   
+     
+  Shell(me)   
+  ---Purpose: Returns the draft surface 
+  --          To have the complete shape
+  --          you have to use the Shape() methode.         
+  returns  Shell  from  TopoDS    
+  raises  NotDone; 
+   
+  Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+  returns ListOfShape from TopTools;
+     
+   Shape(me) 
+   returns  Shape  from  TopoDS;  
+    	-- retourne la shape resultat 
+
+   Init(me:in  out; Surf  :  Surface  from  Geom; 
+                    Length  :  Real; 
+                    Box  :  Box  from  Bnd)   
+   is  private;  
+    
+		      
+   BuildShell(me:in  out;  Surf  :  Surface  from  Geom; 
+               	           KeepOutSide  :  Boolean  =  Standard_False) 
+   is  private; 
+            
+   Fuse(me:in  out;  S  :  Shape  from  TopoDS;   
+                     KeepOutSide  :  Boolean)  
+   returns  Boolean  is  private; 
+    
+   Sewing(me:  in  out)    
+   returns  Boolean  is  private;
+    
+fields   
+    myDir   : Dir  from  gp; 
+    myAngle : Real;  
+    angmin,  angmax  :  Real;
+    myTol   : Real;
+    myLoc   : DraftLaw from  BRepFill;  
+    mySec   : SectionLaw  from  BRepFill;    
+    mySections: HArray2OfShape from TopTools; 
+    myFaces   : HArray2OfShape from TopTools;  
+    myGenerated  : ListOfShape from TopTools; 
+     
+    myShape : Shape from  TopoDS; 
+    myTop   : Shape from  TopoDS; 
+    myShell : Shell from  TopoDS; 
+    myWire  : Wire  from  TopoDS; 
+    myCont  : Shape from  GeomAbs; 
+    myStyle : TransitionStyle from  BRepFill; 
+    IsInternal  : Boolean;     
+    myDone  : Boolean;
+end  Draft;
+		
+

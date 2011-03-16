@@ -1,0 +1,131 @@
+-- File:	ParamCursor.cdl
+-- Created:	Mon Oct 26 16:25:39 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class ParamCursor  from IGESData
+
+    ---Purpose : Auxiliary class for ParamReader.
+    --           It stores commands for a ParamReader to manage the current
+    --           parameter number. Used by methods Read... from ParamReader.
+    --           It allows to define the following commands :
+    --           - read a parameter specified by a precise Number (basic case)
+    --           - read a parameter then set Current Number to follow its number
+    --           - read the current parameter (with Current Number) then
+    --             advance Current Number by one
+    --           - idem with several : read "nb" parameters from one specified,
+    --             included, with or without setting Current Number to follow
+    --             last parameter read
+    --           - read several parameter from the current one, then advance
+    --             Current Number to follow the last one read
+    --           - Read several parameters (as above) but in interlaced lists,
+    --             i.e. from complex items (each one including successively for
+    --             instance, an Integer, a Real, an Entity ...)
+    --             
+    --           If commands to advance Current Number are not set, it must be
+    --           set by the user (with method SetCurrent from ParamReader)
+    --           ParamReader offers methods which create most useful cases
+    ---See also : class ParamReader
+
+uses Integer, Boolean
+
+raises InterfaceError
+
+is
+
+    Create (num : Integer) returns ParamCursor;
+    ---Purpose : Creates a Cursor to read a precise parameter of ParamReader,
+    --           identified by its number, then set Current Number to "num + 1"
+    --           (this constructor allows to simply give a Number to a method
+    --           Read... from ParamReader, which will be translated into a
+    --           ParamCursor by compiler)
+
+    Create (num, nb : Integer; size : Integer = 1) returns ParamCursor;
+    ---Purpose : Creates a Cursor to read a list of parameters (count "nb")
+    --           starting from a precise one (number "num") included, then
+    --           set Current Number of ParamNumber to the first following one
+    --           ("num + nb")
+    --           If size is given, it means that each parameter is made of more
+    --           than one term. One term is the normal (default) case : for
+    --           instance, a Parameter comprises one Integer, or one Entity ...
+    --           Size gives the complete size of each Item if it is complex.
+    --           To be used ONLY IF it is constant
+
+    SetTerm (me : in out; size : Integer; autoadv : Boolean = Standard_True)
+    	raises InterfaceError  is static;
+    ---Purpose : Defines the size of a term to read in the item : this commands
+    --           ParamReader to read "size" parameters for each item, then
+    --           skip the remainder of the item to the same term of next Item
+    --           (that is, skip "item size" - "term size")
+    --           
+    --           In addition, Offset from beginning of Item is managed :
+    --           After being created, and for the frist call to SetTerm, the
+    --           part of Item to be read begins exactly as the Item begins
+    --           But after a SetTerm, the next read will add an offset which is
+    --           the size of former term.
+    --           
+    --           autoadv commands Advance management. If it is True (default),
+    --           the last SetTerm (Item size has been covered) calls SetAdvance
+    --           If it is False, SetAdvance must be called directly if necessary
+    --           
+    --           Error if a SetTerm overpasses the size of the Item
+
+    SetOne  (me : in out; autoadv : Boolean = Standard_True)
+    	raises InterfaceError  is static;
+    ---Purpose : Defines a term of one Parameter (very current case)
+
+    SetXY   (me : in out; autoadv : Boolean = Standard_True)
+    	raises InterfaceError  is static;
+    ---Purpose : Defines a term of two Parameters for a XY (current case)
+
+    SetXYZ  (me : in out; autoadv : Boolean = Standard_True)
+    	raises InterfaceError  is static;
+    ---Purpose : Defines a term of three Parameters for XYZ (current case)
+
+
+    SetAdvance (me : in out; advance : Boolean) is static;
+    ---Purpose : Changes command to advance current cursor after reading
+    --           parameters. If "advance" True, sets advance, if "False",
+    --           resets it. ParamCursor is created by default with True.
+
+    Start    (me) returns Integer  is static;
+    ---Purpose : Returns (included) starting number for reading parameters
+    ---C++: inline
+
+    Limit    (me) returns Integer  is static;
+    ---Purpose : Returns (excluded) upper limit number for reading parameters
+    ---C++ : inline
+
+    Count    (me) returns Integer  is static;
+    ---Purpose : Returns required count of items to be read
+    ---C++ : inline
+
+    ItemSize (me) returns Integer  is static;
+    ---Purpose : Returns length of item (count of parameters per item)
+    ---C++ : inline
+
+    TermSize (me) returns Integer  is static;
+    ---Purpose : Returns length of current term (count of parameters) in item
+    ---C++ : inline
+
+    Offset   (me) returns Integer  is static;
+    ---Purpose : Returns offset from which current term must be read in item
+    ---C++ : inline
+
+    Advance  (me) returns Boolean  is static;
+    ---Purpose : Returns True if Advance command has been set
+    ---C++ : inline
+
+fields
+
+    thestart : Integer;
+    thelimit : Integer;
+    thecount : Integer;
+    theisize : Integer;
+    theoffst : Integer;
+    thetsize : Integer;
+    theadv   : Boolean;
+
+end ParamCursor;

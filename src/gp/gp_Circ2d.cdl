@@ -1,0 +1,255 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+
+class Circ2d  from gp   inherits Storable
+        --- Purpose : Describes a circle in the plane (2D space).
+    	-- A circle is defined by its radius and positioned in the
+    	-- plane with a coordinate system (a gp_Ax22d object) as follows:
+    	-- -   the origin of the coordinate system is the center of the circle, and
+    	-- -   the orientation (direct or indirect) of the coordinate
+    	--   system gives an implicit orientation to the circle (and
+    	--   defines its trigonometric sense).
+    	-- This positioning coordinate system is the "local
+    	-- coordinate system" of the circle.
+    	-- Note: when a gp_Circ2d circle is converted into a
+    	-- Geom2d_Circle circle, some implicit properties of the
+    	-- circle are used explicitly:
+    	-- -   the implicit orientation corresponds to the direction in
+    	--   which parameter values increase,
+    	-- -   the starting point for parameterization is that of the "X
+    	--   Axis" of the local coordinate system (i.e. the "X Axis" of the circle).
+    	--   See Also
+    	-- GccAna and Geom2dGcc packages which provide
+    	-- functions for constructing circles defined by geometric constraints
+    	-- gce_MakeCirc2d which provides functions for more
+    	-- complex circle constructions
+    	-- Geom2d_Circle which provides additional functions for
+    	-- constructing circles and works, with the parametric
+    	-- equations of circles in particular  gp_Ax22d
+
+
+
+uses Ax2d   from gp,
+     Ax22d  from gp,
+     Pnt2d  from gp,
+     Trsf2d from gp,
+     Vec2d  from gp
+
+raises ConstructionError  from Standard
+
+is
+
+       
+  Create   returns Circ2d;
+        ---C++: inline
+        --- Purpose : creates an indefinite circle.
+
+  Create (XAxis  : Ax2d; 
+    	  Radius : Real;
+    	  Sense  : Boolean from Standard = Standard_True)   returns Circ2d
+        ---C++: inline
+        --- Purpose :
+        --  The location point of XAxis is the center of the circle.
+        --  Warnings :
+        --  It is not forbidden to create a circle with Radius = 0.0   Raises ConstructionError if Radius < 0.0.
+
+     raises ConstructionError;
+        --- Purpose : Raised if Radius < 0.0.
+
+  Create (Axis : Ax22d; Radius : Real)   returns Circ2d
+        ---C++: inline
+        --- Purpose :
+	--  Axis defines the Xaxis and Yaxis of the circle which defines 
+	--  the origin and the sense of parametrization.
+        --  The location point of Axis is the center of the circle.
+        --  Warnings :
+        --  It is not forbidden to create a circle with Radius = 0.0 Raises ConstructionError if Radius < 0.0.
+     raises ConstructionError;
+        --- Purpose : Raised if Radius < 0.0.
+
+  SetLocation (me : in out; P : Pnt2d)   is static;
+
+        --- Purpose : Changes the location point (center) of the circle.
+
+  SetXAxis (me : in out; A : Ax2d)  is static;
+        ---C++:inline
+        --- Purpose : Changes the X axis of the circle.
+
+  SetAxis  (me : in out; A : Ax22d)  is static;
+        ---C++:inline
+        --- Purpose : Changes the X axis of the circle.
+
+  SetYAxis (me : in out; A : Ax2d)  is static;
+        ---C++:inline
+        --- Purpose : Changes the Y axis of the circle.
+
+  SetRadius (me : in out; Radius : Real)
+        ---C++:inline
+    	---Purpose:    Modifies the radius of this circle.
+    	-- This class does not prevent the creation of a circle where
+    	-- Radius is null.
+    	-- Exceptions
+    	-- Standard_ConstructionError if Radius is negative.
+     raises ConstructionError
+     is static;
+
+  Area (me)  returns Real   is static;
+        ---C++: inline
+        --- Purpose : Computes the area of the circle.
+
+  Coefficients (me; A, B, C, D, E, F : out Real)   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the normalized coefficients from the implicit equation
+        --  of the circle :
+        --  A * (X**2) + B * (Y**2) + 2*C*(X*Y) + 2*D*X + 2*E*Y + F = 0.0
+
+  Contains (me; P : Pnt2d; LinearTolerance : Real)  returns Boolean
+     is static;
+        ---C++: inline
+        --- Purpose : Does <me> contain P ?
+        --  Returns True if the distance between P and any point on
+        --  the circumference of the circle is lower of equal to
+        --  <LinearTolerance>.
+
+  Distance (me; P : Pnt2d)   returns Real  is static;
+        ---C++: inline 
+        --- Purpose :
+        --  Computes the minimum of distance between the point P and any
+        --  point on the circumference of the circle.
+
+  SquareDistance (me; P : Pnt2d)   returns Real  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Computes the square distance between <me> and the point P.
+
+  Length (me)  returns Real    is static;
+        --- Purpose : computes the circumference of the circle.
+        ---C++: inline
+
+  Location (me)  returns Pnt2d   is static;
+        ---C++:inline
+        --- Purpose : Returns the location point (center) of the circle. 
+    	---C++: return const&
+
+  Radius (me)  returns Real  is static;
+        --- Purpose : Returns the radius value of the circle.
+        ---C++: inline
+       
+  Axis (me)  returns Ax22d   is static;
+        --- Purpose : returns the position of the circle.
+        ---C++: inline
+    	---C++: return const&
+
+  Position (me)  returns Ax22d   is static;
+        --- Purpose : returns the position of the circle. Idem Axis(me).
+        ---C++: inline
+    	---C++: return const&
+
+  XAxis (me)  returns Ax2d   is static;
+        ---C++: inline
+        --- Purpose : returns the X axis of the circle.
+
+  YAxis (me)  returns Ax2d  is static;
+        ---C++: inline
+        --- Purpose : Returns the Y axis of the circle.
+
+        --- Purpose : Reverses the direction of the circle.
+
+  Reverse (me : in out)         is static;
+        ---C++: inline
+	--- Purpose: Reverses the orientation of the local coordinate system
+    	-- of this circle (the "Y Direction" is reversed) and therefore
+    	--- changes the implicit orientation of this circle.
+    	--   Reverse assigns the result to this circle, 
+  Reversed (me)  returns Circ2d  is static;
+        ---C++: inline
+    	---Purpose: Reverses the orientation of the local coordinate system
+    	-- of this circle (the "Y Direction" is reversed) and therefore
+    	-- changes the implicit orientation of this circle.
+    	--   Reversed creates a new circle.
+
+  IsDirect (me)  returns Boolean  is static;
+        ---C++: inline
+        --- Purpose : Returns true if the local coordinate system is direct
+        -- and false in the other case.
+
+
+  Mirror (me : in out; P : Pnt2d)           is static;
+
+  Mirrored (me; P : Pnt2d)  returns Circ2d  is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a circle with respect 
+        --  to the point P which is the center of the symmetry
+
+
+
+  Mirror (me : in out; A : Ax2d)           is static;
+
+  Mirrored (me; A : Ax2d)  returns Circ2d  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a circle with respect 
+        --  to an axis placement which is the axis of the symmetry.
+      
+  Rotate (me : in out; P : Pnt2d; Ang : Real)          is static;
+        ---C++: inline
+
+  Rotated (me; P : Pnt2d; Ang : Real)  returns Circ2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a circle. P is the center of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+
+  Scale (me : in out; P : Pnt2d; S : Real)          is static;
+        ---C++: inline
+	
+  Scaled (me; P : Pnt2d; S : Real)  returns Circ2d  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a circle. S is the scaling value.
+        -- Warnings :
+        --  If S is negative the radius stay positive but
+        --  the "XAxis" and the "YAxis" are  reversed as for
+        --  an ellipse.
+
+  Transform (me : in out; T : Trsf2d)            is static;
+        ---C++: inline 
+  Transformed (me; T : Trsf2d)  returns Circ2d   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms a circle with the transformation T from class Trsf2d.
+
+
+
+
+  Translate (me : in out; V : Vec2d)           is static;
+        ---C++: inline
+	
+  Translated (me; V : Vec2d)   returns Circ2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a circle in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+  
+
+  Translate (me : in out; P1, P2 : Pnt2d)           is static;
+        ---C++: inline
+	
+  Translated (me; P1, P2 : Pnt2d)   returns Circ2d  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a circle from the point P1 to the point P2.
+
+fields
+
+  pos    : Ax22d;
+  radius : Real;  
+
+end;

@@ -1,0 +1,27 @@
+-- File:        SiUnitAndSolidAngleUnit.cdl
+-- Created:     Fri Jun 17 11:44:50 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSiUnitAndSolidAngleUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for SiUnitAndSolidAngleUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SiUnitAndSolidAngleUnit from StepBasic
+
+is
+
+	Create returns RWSiUnitAndSolidAngleUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SiUnitAndSolidAngleUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndSolidAngleUnit from StepBasic);
+
+end RWSiUnitAndSolidAngleUnit;

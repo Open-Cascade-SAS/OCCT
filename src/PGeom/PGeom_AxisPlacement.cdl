@@ -1,0 +1,45 @@
+-- File:	PGeom_AxisPlacement.cdl
+-- Created:	Mon Feb 22 16:05:29 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class AxisPlacement from PGeom inherits Geometry from PGeom
+
+        ---Purpose :   An  axis  placement  defines a  local cartesian
+        --         coordinate  system and   can be used to  locate  an
+        --         entity in 3D space.
+        --  
+	---See Also : AxisPlacement from Geom.
+
+uses Ax1 from gp
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+    	---Level: Internal 
+
+
+    Initialize(aAxis: Ax1 from gp);
+	---Purpose: Initializes the field axis with <aAxis>.
+    	---Level: Internal 
+
+
+  Axis (me : mutable; aAxis : Ax1 from gp);
+        --- Purpose : Set the field axis with <aAxis>.
+    	---Level: Internal 
+
+
+  Axis (me)  returns Ax1 from gp;
+        --- Purpose : Returns the value of the field axis.
+    	---Level: Internal 
+
+
+fields
+
+  axis : Ax1 from gp is protected;
+
+end;

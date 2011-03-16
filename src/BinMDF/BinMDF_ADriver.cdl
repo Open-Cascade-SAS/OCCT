@@ -1,0 +1,66 @@
+-- File:	BinMDF_ADriver.cdl
+-- Created:	Tue Oct 29 19:18:49 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+deferred class ADriver from BinMDF inherits TShared from MMgt
+
+        ---Purpose: Attribute Storage/Retrieval Driver.
+
+uses
+    ExtendedString   from TCollection,
+    MessageDriver    from CDM,
+    AsciiString      from TCollection,
+    Attribute        from TDF,
+    RRelocationTable from BinObjMgt,
+    SRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt
+
+is
+    Initialize (theMsgDriver: MessageDriver from CDM;
+                theName     : CString from Standard = NULL);
+
+    NewEmpty    (me)
+        returns mutable Attribute from TDF
+        is deferred;
+        ---Purpose: Creates a new attribute from TDF.
+
+    SourceType  (me) returns Type from Standard;
+        ---C++: return const &
+	---C++: inline
+        ---Purpose: Returns the type of source object,
+        --          inheriting from Attribute from TDF.
+
+    TypeName    (me)
+        returns AsciiString from TCollection
+        is static;
+        ---C++: return const &
+	---C++: inline
+        ---Purpose: Returns the type name of the attribute object
+
+    Paste       (me; aSource     : Persistent from BinObjMgt;
+                     aTarget     : mutable Attribute from TDF;
+                     aRelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard is deferred;
+        ---Purpose: Translate the contents of <aSource> and put it
+        --          into <aTarget>, using the relocation table
+        --          <aRelocTable> to keep the sharings.
+
+    Paste       (me; aSource     : Attribute from TDF;
+                     aTarget     : in out Persistent from BinObjMgt;
+                     aRelocTable : out SRelocationTable from BinObjMgt)
+        is deferred;
+        ---Purpose: Translate the contents of <aSource> and put it
+        --          into <aTarget>, using the relocation table
+        --          <aRelocTable> to keep the sharings.
+
+    WriteMessage (me; theMessage : ExtendedString from TCollection);
+        ---Purpose: Send message to Application (usually when error occurres)
+
+fields
+
+    myMessageDriver : MessageDriver from CDM;
+    myTypeName      : AsciiString   from TCollection is protected;
+
+end ADriver;

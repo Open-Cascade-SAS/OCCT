@@ -1,0 +1,142 @@
+-- File:	HatchGen_ElementsGen.cdl
+-- Created:	Fri Dec 16 11:01:56 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@mastox>
+---Copyright:	 Matra Datavision 1994
+
+-- Modified by skv - Fri Jul 14 16:46:18 2006 OCC12627
+
+
+generic class ElementsGen from HatchGen
+   (TheKey          as any;
+    TheItem         as any;
+    TheHasher       as any;
+    TheCurve        as any)
+    
+
+uses 
+    Orientation      from TopAbs,
+    Lin2d            from gp,
+    Pnt2d            from gp
+
+raises         
+    DomainError  from Standard,
+    NoSuchObject from Standard
+
+
+private class MapOfElements from HatchGen instantiates 
+    DataMap from TCollection
+    	    (TheKey,
+	     TheItem,
+	     TheHasher);
+
+
+is 
+
+    Create
+    returns ElementsGen from HatchGen;
+
+    Create(Other : ElementsGen from HatchGen)
+    returns ElementsGen from HatchGen;
+
+        
+
+----------------------------------------------------------------------
+--               E m u l a t i o n   o f   D a t a M a p  
+--               
+--                  f r o m  T C o l l e c t  i o n                                                                          
+----------------------------------------------------------------------
+    Clear(me : in out)
+	---C++: alias ~
+    is static;
+
+    Bind(me : in out; K : TheKey; I : TheItem) returns Boolean
+    is static;
+
+    IsBound(me; K : TheKey) returns Boolean
+    is static;
+    
+    UnBind(me : in out; K : TheKey) returns Boolean
+    is static;
+    
+    Find(me; K : TheKey) returns any TheItem
+    raises NoSuchObject from Standard  -- when <K> is not in the map.
+	---C++: alias operator()
+	---C++: return const &
+    is static;
+    
+    ChangeFind(me : in out; K : TheKey) returns any TheItem
+    raises NoSuchObject from Standard  -- when <K> is not in the map.
+	---C++: alias operator()
+	---C++: return &
+    is static;
+
+----------------------------------------------------------------------
+--      M e t h o d s   u s e d   b y   t h e   C l a s s i f i e r 
+--      
+--      see BRepClass_FaceExplorer for the Purposes
+----------------------------------------------------------------------
+
+    Reject(me;  P : Pnt2d from gp) 
+        returns Boolean from Standard
+    is static;
+    
+-- Modified by skv - Fri Jul 14 16:46:18 2006 OCC12627 Begin
+    Segment(me: in out;  P   :     Pnt2d from gp;
+    	                 L   : out Lin2d from gp; 
+                         Par : out Real)
+    returns  Boolean from Standard
+    is static;
+    
+    OtherSegment(me: in out;  P   :     Pnt2d from gp;
+    	                      L   : out Lin2d from gp; 
+                              Par : out Real)
+    returns Boolean from Standard
+    is static;
+    
+-- Modified by skv - Fri Jul 14 16:46:18 2006 OCC12627 End
+
+    InitWires(me : in out)
+    is static;
+    
+    MoreWires(me) returns
+       Boolean from Standard
+    is static;
+    	
+    NextWire(me : in out)
+    is static;
+    
+    RejectWire(me; L : Lin2d from gp; 
+                 Par : Real  from Standard) 
+    	returns Boolean from Standard
+    is static;
+    
+    InitEdges(me : in out)
+    is static;
+    
+    MoreEdges(me) 
+       returns Boolean from Standard
+    is static;
+    
+    NextEdge(me  : in out) 
+    is static;
+
+    RejectEdge(me; L : Lin2d from gp; 
+                 Par : Real  from Standard) 
+    	returns Boolean from Standard
+    is static;
+    
+    CurrentEdge(me; E : out TheCurve;
+    	           Or : out Orientation from TopAbs)
+    is static;
+    
+
+fields 
+
+    myMap    : MapOfElements; 
+    Iter     : DataMapIteratorOfMapOfElements;
+    NumWire  : Integer from Standard;
+    NumEdge  : Integer from Standard;
+    myCurEdge: Integer from Standard;
+    
+end ElementsGen from HatchGen; 

@@ -1,0 +1,35 @@
+// File:	Draw_Drawable3D.lxx
+// Created:	Tue Feb 28 13:35:31 1995
+// Author:	Remi LEQUETTE
+//		<rle@bravox>
+
+inline Standard_Boolean Draw_Drawable3D::Visible() const
+{
+  return isVisible;
+}
+
+inline void Draw_Drawable3D::Visible(const Standard_Boolean V) 
+{
+  isVisible = V;
+}
+
+inline Standard_Boolean Draw_Drawable3D::Protected() const
+{
+  return isProtected;
+}
+
+inline void Draw_Drawable3D::Protected(const Standard_Boolean V) 
+{
+  isProtected = V;
+}
+
+inline Standard_CString Draw_Drawable3D::Name() const
+{
+  return myName;
+}
+
+inline void Draw_Drawable3D::Name(const Standard_CString N) 
+{
+  myName = N;
+}
+

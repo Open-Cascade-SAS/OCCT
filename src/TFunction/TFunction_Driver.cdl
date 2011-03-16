@@ -1,0 +1,85 @@
+-- File:	TFunction_Driver.cdl
+-- Created:	Mon Jul 19 14:37:17 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+deferred class Driver from TFunction inherits TShared from MMgt 
+
+    ---Purpose: This  driver  class provide  services  around function
+    --          execution.   One instance of  this class is  built for
+    --          the whole  session.    The driver  is bound   to   the
+    --          DriverGUID in the DriverTable class.
+    --          It allows you to create classes which inherit from
+    --          this abstract class.
+    --          These subclasses identify the various algorithms
+    --          which can be applied to the data contained in the
+    --          attributes of sub-labels of a model.
+    --          A single instance of this class and each of its
+    --          subclasses is built for the whole session.
+uses 
+  
+     Logbook   from TFunction,  
+     Label     from TDF,
+     LabelList from TDF
+      
+is 
+ 
+    Initialize returns mutable Driver from TFunction; 
+
+
+    ---Purpose: initialisation of the driver
+    --          ============================
+
+    Init(me : mutable; L : Label from TDF);
+    	---Purpose: Initializes the label L for this function prior to its  execution.
+     
+    Label(me) returns Label from TDF;  
+        ---C++: inline
+        ---Purpose: Returns the label of the driver for this function.
+
+    Validate(me; log : in out Logbook from TFunction)
+    is virtual;
+    	---Purpose: Validates labels of a function  in <log>. 
+    	-- This function is the one initialized in this function driver.
+    	-- Warning
+    	-- In regeneration mode, the solver must call this
+    	-- method even if the function is not executed. 
+     
+     
+    ---Purpose: execution of function
+    --          =====================
+
+    MustExecute (me; log : Logbook from TFunction)
+    	---Purpose: Analyzes the labels in the logbook log.
+    	-- Returns true if attributes have been modified.
+    	-- If the function label itself has been modified, the function must be executed.
+    returns Boolean from Standard
+    is virtual;
+
+    Execute (me; log : in out Logbook from TFunction)
+    	---Purpose: Executes the function in this function driver and
+    	-- puts the impacted labels in the logbook log.
+    returns Integer from Standard
+    is deferred;
+ 
+ 
+    ---Purpose: arguments & results of functions
+    --          ================================
+ 
+    Arguments (me; args : out LabelList from TDF)
+    ---Purpose: The method fills-in the list by labels, 
+    --          where the arguments of the function are located.
+    is virtual;
+ 
+    Results (me; res : out LabelList from TDF)
+    ---Purpose: The method fills-in the list by labels,
+    --          where the results of the function are located.
+    is virtual;
+ 
+fields 
+ 
+    myLabel : Label from TDF;
+
+end Driver;    

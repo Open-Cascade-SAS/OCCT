@@ -1,0 +1,10 @@
+--
+-- File:	Xw.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:25:43 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %Xw_EDL) then
+  @set %Xw_EDL = "";
+@endif;

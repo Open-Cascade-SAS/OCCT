@@ -1,0 +1,56 @@
+-- File:	DsgPrs_Chamf2dPresentation.cdl
+-- Created:	Tue Mar 19 18:37:53 1996
+-- Author:	Flore Lantheaume
+--		<fla@filax>
+---Copyright:	 Matra Datavision 1996
+
+
+class Chamf2dPresentation from DsgPrs 
+
+	---Purpose: Framework for display of 2D chamfers.
+
+uses
+
+    Presentation from Prs3d,
+    Drawer from Prs3d,
+    Pnt from gp,
+    ArrowSide from DsgPrs,
+    ExtendedString from TCollection
+
+
+is
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer: Drawer from Prs3d;
+    	aPntAttach : Pnt from gp;
+	aPntEnd    : Pnt from gp;
+    	aText      : ExtendedString from TCollection);
+
+    	---Purpose: Defines the display of elements showing 2D chamfers on shapes.
+    	-- These include the text aText, the point of attachment,
+    	-- aPntAttach and the end point aPntEnd.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer: Drawer from Prs3d;
+    	aPntAttach : Pnt from gp;
+	aPntEnd    : Pnt from gp;
+    	aText      : ExtendedString from TCollection;
+	ArrowSide  : ArrowSide from DsgPrs);
+
+    	---Purpose: Defines the display of texts, symbols and icons used
+    	-- to present 2D chamfers.
+    	-- These include the text aText, the point of attachment,
+    	-- aPntAttach and the end point aPntEnd.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer. The arrow
+    	-- at the point of attachment has a display defined by a
+    	-- value of the enumeration DsgPrs_Arrowside.
+
+end Chamf2dPresentation;

@@ -1,0 +1,17 @@
+// File:	TCollection_List.lxx
+// Created:	Thu Dec 17 16:30:53 1992
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_List::IsEmpty() const
+
+{
+  return myFirst == 0L;
+}
+

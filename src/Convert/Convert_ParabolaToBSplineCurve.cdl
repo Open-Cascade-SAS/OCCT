@@ -1,0 +1,33 @@
+-- File:	 ParabolaToBSplineCurve.cdl
+-- Created:	 Thu Oct 10 14:52:24 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class ParabolaToBSplineCurve   from Convert   inherits ConicToBSplineCurve
+
+        --- Purpose :
+        --  This algorithm converts a parabola into a non rational B-spline
+        --  curve.
+        --  The parabola is a Parab2d from package gp with the parametrization
+        --  P (U) = Loc + F * (U*U * Xdir + 2 * U * Ydir) where Loc is the 
+        --  apex of the parabola, Xdir is the normalized direction of the 
+        --  symmetry axis of the parabola, Ydir is the normalized direction of
+        --  the directrix and F is the focal length.
+        --- KeyWords :
+        --  Convert, Parabola, BSplineCurve, 2D .
+
+uses Parab2d from gp
+
+is
+
+
+  Create (Prb : Parab2d; U1, U2 : Real)   returns ParabolaToBSplineCurve;
+        --- Purpose : 
+        --  The parabola Prb is limited between the parametric values U1, U2
+        --  and the equivalent B-spline curve as the same orientation as the
+        --  parabola Prb.
+
+
+end ParabolaToBSplineCurve;

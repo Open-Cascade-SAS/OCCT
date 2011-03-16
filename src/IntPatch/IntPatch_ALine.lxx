@@ -1,0 +1,89 @@
+// File:	IntPatch_ALine.lxx
+// Created:	Mon Apr  6 11:17:45 1992
+// Author:	Jacques GOUSSARD
+// Copyright:	OPEN CASCADE 1992
+
+#include <Standard_DomainError.hxx>
+#include <Precision.hxx>
+#include <IntPatch_Point.hxx>
+
+
+inline void IntPatch_ALine::Replace (const Standard_Integer Index, const IntPatch_Point& Pnt)
+{
+  svtx(Index) = Pnt;
+}
+
+inline void IntPatch_ALine::SetFirstPoint (const Standard_Integer IndFirst)
+{
+  fipt = Standard_True;
+  indf = IndFirst;
+}
+
+inline void IntPatch_ALine::SetLastPoint (const Standard_Integer IndLast)
+{
+  lapt = Standard_True;
+  indl = IndLast;
+}
+
+inline Standard_Real IntPatch_ALine::FirstParameter (Standard_Boolean& IsIncluded) const
+{
+  Standard_Real bid,first;
+  curv.Domain(first,bid);
+  IsIncluded = !curv.IsFirstOpen();
+  return first;
+}
+
+inline Standard_Real IntPatch_ALine::LastParameter (Standard_Boolean& IsIncluded) const
+{
+  Standard_Real bid,last;
+  curv.Domain(bid,last);
+  IsIncluded = !curv.IsLastOpen();
+  return last;
+}
+
+inline gp_Pnt IntPatch_ALine::Value (const Standard_Real U)
+{
+  return curv.Value(U);// Value leve l exception DomainError
+}
+
+inline Standard_Boolean IntPatch_ALine::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& Du)
+{
+  return curv.D1u(U,P,Du); // D1u leve l exception DomainError
+}
+
+inline Standard_Boolean IntPatch_ALine::FindParameter(const gp_Pnt& P, Standard_Real& Para) const
+{
+  return curv.FindParameter(P,Para);
+}
+
+inline Standard_Boolean IntPatch_ALine::HasFirstPoint () const
+{
+  return fipt;
+}
+
+inline Standard_Boolean IntPatch_ALine::HasLastPoint () const
+{
+  return lapt;
+}
+
+inline const IntPatch_Point& IntPatch_ALine::FirstPoint () const
+{
+  if (!fipt) {Standard_DomainError::Raise();}
+  return svtx(indf);
+}
+
+inline const IntPatch_Point& IntPatch_ALine::LastPoint () const
+{
+  if (!lapt) {Standard_DomainError::Raise();}
+  return svtx(indl);
+}
+
+inline Standard_Integer IntPatch_ALine::NbVertex () const
+{
+  return svtx.Length();
+}
+
+inline const IntPatch_Point& IntPatch_ALine::Vertex (const Standard_Integer Index) const
+{
+  return svtx(Index);
+}

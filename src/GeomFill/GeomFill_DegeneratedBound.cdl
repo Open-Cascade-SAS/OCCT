@@ -1,0 +1,48 @@
+-- File:	GeomFill_DegeneratedBound.cdl
+-- Created:	Tue Dec  5 17:35:39 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+class DegeneratedBound from GeomFill inherits Boundary from GeomFill 
+
+	---Purpose: Description of a degenerated boundary (a point).
+
+uses
+    Pnt            from gp,
+    Vec            from gp
+
+is
+
+    Create(Point       : Pnt from gp;
+    	   First, Last : Real from Standard;
+           Tol3d       : Real from Standard;
+    	   Tolang      : Real from Standard)
+    returns mutable DegeneratedBound from GeomFill;
+
+    Value(me; 
+          U : Real from Standard) 
+    returns Pnt from gp;
+
+    D1(me; 
+       U : Real from Standard; 
+       P : out Pnt from gp; 
+       V : out Vec from gp) ;
+
+    Reparametrize(me           : mutable;
+    	    	  First, Last  : Real from Standard;
+                  HasDF, HasDL : Boolean from Standard;
+                  DF, DL       : Real from Standard;
+                  Rev          : Boolean from Standard);
+		  
+    Bounds(me; First, Last : out Real from Standard);
+
+    IsDegenerated(me) returns Boolean from Standard;
+
+fields
+
+    myPoint : Pnt from gp;
+    myFirst : Real from Standard;
+    myLast  : Real from Standard;
+
+end DegeneratedBound;

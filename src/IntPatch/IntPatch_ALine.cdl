@@ -1,0 +1,263 @@
+-- File:	IntPatch_ALine.cdl
+-- Created:	Mon Apr  6 11:17:45 1992
+-- Author:	Jacques GOUSSARD
+---Copyright:	OPEN CASCADE 1992
+
+
+class ALine from IntPatch
+
+
+inherits Line from IntPatch
+
+
+	---Purpose: Implementation of an intersection line described by a
+	--          parametrised curve.
+
+
+uses
+     Point           from IntPatch,
+     SequenceOfPoint from IntPatch,
+     TypeTrans       from IntSurf,
+     Situation       from IntSurf,
+     Pnt             from gp,
+     Vec             from gp,
+     Curve           from IntAna
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+
+    Create(C: Curve from IntAna; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates an analytic intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable ALine from IntPatch;
+
+
+    Create(C: Curve from IntAna; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates an analytic intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable ALine from IntPatch;
+
+
+    Create(C: Curve from IntAna; Tang: Boolean from Standard)
+    
+	---Purpose: Creates an analytic intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable ALine from IntPatch;
+
+
+    AddVertex(me: mutable; Pnt: Point from IntPatch)
+    
+	---Purpose: To add a vertex in the list.
+
+    	is static;
+
+    
+    Replace(me: mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+	---Purpose: Replaces the element of range Index in the list
+	--          of points.
+
+	---C++: inline
+
+    	raises OutOfRange from Standard
+	---         The exception OutOfRange is raised when Index <= 0
+	--          or Index > NbVertex.
+
+	is static;
+
+
+    SetFirstPoint(me: mutable; IndFirst: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    SetLastPoint(me: mutable; IndLast: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    FirstParameter(me; IsIncluded: in out Boolean from Standard)
+    
+	---Purpose: Returns the first parameter on the intersection line.
+	--          If IsIncluded returns True, Value and D1 methods can
+	--          be call with a parameter equal to FirstParamater.
+	--          Otherwise, the parameter must be greater than 
+	--          FirstParameter.
+    
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+    LastParameter(me; IsIncluded: in out Boolean from Standard)
+    
+	---Purpose: Returns the last parameter on the intersection line.
+	--          If IsIncluded returns True, Value and D1 methods can
+	--          be call with a parameter equal to LastParamater.
+	--          Otherwise, the parameter must be less than LastParameter.
+    
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Value(me: mutable; U: Real from Standard)
+    
+	---Purpose: Returns the point of parameter U on the analytic
+	--          intersection line.
+    
+    	returns Pnt from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+    	--     The exception DomainError is raised when U is outside the bounds
+    	--     FirstParameter,LastParameter.
+
+    	is static;
+
+
+    D1(me: mutable; U: Real from Standard;
+                    P: out Pnt from gp; Du: out Vec from gp)
+    
+	---Purpose: Returns Standard_True when the derivative at parameter U
+	--          is defined on the analytic intersection line.
+	--          In that case, Du is the derivative.
+	--          Returns Standard_False when it is not possible to
+	--          evaluate the derivative.
+	--          In both cases, P is the point at parameter U on the
+	--          intersection.
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+    	--     The exception DomainError is raised when U is outside the bounds
+    	--     FirstParameter,LastParameter.
+
+    	is static;
+
+
+    FindParameter(me; P: Pnt from gp; Para: out Real from Standard)
+    
+	---Purpose: Tries to find the parameter of the point P on the curve.
+	--          If the method returns False, the "projection" is
+	--          impossible, and the value of Para is not significant.
+	--          If the method returns True, Para is the parameter of the
+	--          nearest intersection between the curve and the iso-theta
+	--          containing P.
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if the line has a known First point.
+	--          This point is given by the method FirstPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if the line has a known Last point.
+	--          This point is given by the method LastPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    FirstPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the FirstPoint.
+	--          An exception is raised when HasFirstPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    LastPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the LastPoint.
+	--          An exception is raised when HasLastPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    NbVertex(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the vertex of range Index on the line.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange from Standard
+	--- The exception OutOfRange is raised if Index <= 0 or
+	--  Index > NbVertex.
+	
+	is static;
+
+    ComputeVertexParameters(me: mutable; Tol: Real from Standard)
+    
+    	---Purpose: Set the parameters of all the vertex on the line.
+    	--          if a vertex is already in the line, 
+    	--             its parameter is modified
+    	--          else a new point in the line is inserted.
+        is static; 
+
+
+    Curve(me) 
+    
+    returns Curve from IntAna
+    ---C++: return const&
+    is static;
+
+fields
+
+    curv : Curve           from IntAna;
+    fipt : Boolean         from Standard;
+    lapt : Boolean         from Standard;
+    indf : Integer         from Standard;
+    indl : Integer         from Standard;
+    svtx : SequenceOfPoint from IntPatch;
+
+end ALine;

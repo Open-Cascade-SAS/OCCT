@@ -1,0 +1,468 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <GCPnts_AbscissaType.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <CPnts_AbscissaPoint.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Precision.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+
+
+static Standard_Real GetParameterLengthRatio(TheCurve& C)
+{
+  switch (C.GetType()) {
+    
+  case GeomAbs_Circle :
+    return C.Circle().Radius();
+    
+  case GeomAbs_Line :
+    return 1.;
+    
+  case GeomAbs_BezierCurve : 
+  case GeomAbs_BSplineCurve :
+    {
+      if (!C.IsRational())
+	return C.DN(0., 1).Magnitude();
+      else
+	return RealLast();
+    }
+    
+    default :
+      return RealLast();
+    
+  }
+}
+
+
+static GCPnts_AbscissaType GetAbsType(TheCurve& C)
+{
+  if (C.NbIntervals(GeomAbs_C1) > 1)
+    return GCPnts_AbsComposite;
+
+  switch (C.GetType()) {
+    
+  case GeomAbs_Line:
+  case GeomAbs_Circle:
+    return GCPnts_LengthParametrized;
+  case GeomAbs_BezierCurve:
+    {
+      Handle_TheBezierCurve  BZ = C.Bezier(); 
+      if (BZ->NbPoles() == 2 && !BZ->IsRational()) 
+	return GCPnts_LengthParametrized;
+      else
+	return GCPnts_Parametrized; 
+    }
+  case GeomAbs_BSplineCurve:
+    {
+      Handle_TheBSplineCurve BS = C.BSpline() ;
+      if (BS->NbPoles() == 2 && !BS->IsRational()) 
+	return GCPnts_LengthParametrized;
+      else
+	return GCPnts_Parametrized; 
+    }
+  default:
+   return GCPnts_Parametrized ;   
+  }
+}
+
+static Standard_Boolean Perform(Handle(TColStd_HArray1OfReal)& HParameters,
+				TheCurve& C, 
+				const Standard_Real Abscissa,
+				const Standard_Real U1,
+				const Standard_Real U2,
+				const Standard_Real TotalLength,
+				Standard_Integer &NbPoints,
+				const Standard_Real EPSILON) 
+{
+  Standard_Boolean NotDone = Standard_True;
+  Standard_Boolean LocalDone = Standard_True;
+//  Standard_Boolean Forward = Standard_True  ;
+  Standard_Real UU1 = Min(U1, U2), UU2 = Max(U1, U2) ;
+  Standard_Integer Index ;
+//  Standard_Real UCurrent, Delta, Ui;
+  Standard_Real Delta, Ui;
+  NbPoints = 0 ;
+
+// 
+// this initialization avoids the computation of the Length
+// of the curve 
+
+  Delta = (Abscissa/TotalLength) * (UU2 - UU1) ; 
+  Index = 1 ;
+  HParameters->SetValue(Index,UU1)  ;
+  while (NotDone) {
+    Ui = HParameters->Value(Index) + Delta;
+    if (Ui > UU2) {
+      // MSV 21.04.2004: OCC5739 (GCPnts_UniformAbscissa gives incorrect
+      // distribution of points)
+//       if (UU2 - HParameters->Value(Index) > 0.01*Delta) {
+// 	Index += 1;
+//       }
+//       HParameters->SetValue(Index, UU2);
+//       NotDone = Standard_False;
+//       break;
+      Ui = UU2;
+    }
+    GCPnts_AbscissaPoint   AbscissaFinder(C,
+					  Abscissa,
+					  HParameters->Value(Index),
+					  Ui,
+					  EPSILON) ;
+    if (AbscissaFinder.IsDone()) {
+      Index += 1 ;
+      Ui = AbscissaFinder.Parameter();
+      if (Abs(Ui-UU2) <= EPSILON) {
+	HParameters->SetValue(Index, UU2);
+        NotDone = Standard_False;
+      }
+      else if (Ui < UU2) {
+	HParameters->SetValue(Index, Ui);
+      }
+      else {
+	HParameters->SetValue(Index, UU2);
+	NotDone = Standard_False;
+      }
+      NotDone = NotDone && (Index + 1 <= HParameters->Length()) ;
+    }
+    else {
+      
+      LocalDone = Standard_False ;
+      NotDone = Standard_True ;
+      Delta -= Delta/10;
+      if (Delta <= Precision::PConfusion()) break;
+    }
+  }
+  NbPoints = Index ;
+  return (LocalDone) ;
+}
+
+
+static Standard_Boolean 
+PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
+			  TheCurve& C, 
+			  const Standard_Real Abscissa,
+			  const Standard_Real U1,
+			  const Standard_Real U2,
+			  const Standard_Real TotalLength,
+			  Standard_Integer &NbPoints,
+			  const Standard_Real EPSILON) 
+{
+  Standard_Boolean NotDone = Standard_True;
+//  Standard_Boolean LocalDone = Standard_True;
+  Standard_Boolean Forward = Standard_True  ;
+  Standard_Real UU1 = Min(U1, U2);
+//  Standard_Real UCurrent;
+  Standard_Real Delta, Ui;
+  Standard_Real UU2 = Max(U1, U2);
+#ifdef DEB
+  Standard_Real L = 
+#endif
+    CPnts_AbscissaPoint::Length(C, UU1, UU2);
+  Standard_Integer   Index ;
+
+// Ratio is defined as dl = Ratio * du
+// for a circle of gp Ratio is equal to the radius of the circle.
+// for a line of gp ratio is equal to 1.0
+  Standard_Real Ratio = GetParameterLengthRatio(C);
+
+
+  if (Abscissa < 0.0e0)    {
+    Forward = Standard_False ;
+    UU2 = Min(U1, U2);
+    UU1 = Max(U1, U2);
+  }
+  Delta = (Abscissa/TotalLength) * (UU2 - UU1) ; 
+  Index = 1 ;
+  NbPoints = 0 ;
+  HParameters->SetValue(Index,UU1) ;  
+  while  (NotDone) {
+    Index += 1 ;
+    Ui = HParameters->Value(Index-1) + Delta;
+    if (Abs(Ui-UU2) <= EPSILON) {
+      HParameters->SetValue(Index, UU2);
+      NotDone = Standard_False;
+    }
+    else if (Ui < UU2) {
+      HParameters->SetValue(Index, Ui);
+    }
+    else {
+      NotDone = Standard_False;
+      if (Abs(HParameters->Value(Index-1) - UU2)*Ratio/Abscissa < 0.1) {
+	HParameters->SetValue(Index-1, UU2);
+	Index -= 1;
+      }
+      else 
+	HParameters->SetValue(Index, UU2);
+    }
+    NotDone = (Index+1  <= HParameters->Length()) && NotDone ;
+  }
+
+  NbPoints = Index ;
+  return Standard_True ;
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_UniformAbscissa::Initialize  (TheCurve& C, 
+					  const Standard_Real Abscissa, 
+					  const Standard_Real Tol)
+{
+  Initialize(C, Abscissa, C.FirstParameter(), 
+	     C.LastParameter(), Tol);
+} 
+
+//=======================================================================
+//function : GCPnts_UniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C, 
+						 const Standard_Real Abscissa,
+						 const Standard_Real Tol)
+{
+  Initialize(C, Abscissa, Tol);
+} 
+
+//=======================================================================
+//function : GCPnts_UniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa  (TheCurve& C, 
+						 const Standard_Real Abscissa, 
+						 const Standard_Real U1, 
+						 const Standard_Real U2,
+						 const Standard_Real Tol)
+{
+  Initialize(C, Abscissa, U1, U2, Tol);
+}
+
+//=======================================================================
+//function : GCPnts_UniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C, 
+					       const Standard_Integer NbPoints, 
+					       const Standard_Real Tol)
+{
+  Initialize(C, NbPoints, Tol);
+}
+
+//=======================================================================
+//function : GCPnts_UniformAbscissa
+//purpose  : 
+//=======================================================================
+
+GCPnts_UniformAbscissa::GCPnts_UniformAbscissa(TheCurve& C, 
+					       const Standard_Integer NbPoints,
+					       const Standard_Real U1, 
+					       const Standard_Real U2,
+					       const Standard_Real Tol)
+{
+  Initialize(C, NbPoints, U1, U2, Tol);
+}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+					const Standard_Real Abscissa, 
+					const Standard_Real U1,
+					const Standard_Real U2,
+					const Standard_Real Tol)
+{ 
+  Standard_Real L ;
+  myAbscissa = Abscissa;
+  myNbPoints = 0 ;
+  myDone = Standard_False;
+  Standard_Real EPSILON;
+  
+  if(Tol < Precision::Confusion())
+    EPSILON = C.Resolution(Precision::Confusion());
+  else
+    EPSILON = C.Resolution(Tol);
+  
+  L = GCPnts_AbscissaPoint::Length(C, U1, U2, EPSILON);
+  if (L <= Precision::Confusion()) {
+    return;
+  }
+  Standard_Integer size ;
+
+// 
+//  compute the total Length here so that we can 
+//  guess the number of points instead of letting the
+//  constructor of CPnts_AbscissaPoint do that and loosing
+//  the information
+//
+//
+
+// modified by Igor Motchalov 23/04/2001
+//  size = (Standard_Integer )( (L/Abs(Abscissa)) + 5 );
+  Standard_Real sizeR=L/Abs(Abscissa) + 5; 
+  if (sizeR < IntegerLast()) {
+    size=(Standard_Integer) sizeR; 
+  } else {
+    return; 
+  }
+
+  if (!myParams.IsNull())    {
+    if (myParams->Length() < size) 	{
+      myParams.Nullify() ;
+      myParams =  new
+	TColStd_HArray1OfReal(1,size) ;
+    } 
+  }
+  else    {
+    myParams  = new
+      TColStd_HArray1OfReal(1,size) ;
+  }
+
+//  Standard_Real EPSILON = C.Resolution(Precision::Confusion());
+  GCPnts_AbscissaType Type = GetAbsType(C);
+  switch (Type) {
+  case GCPnts_LengthParametrized : 
+    myDone = PerformLengthParametrized(myParams, 
+				       C, 
+				       Abscissa, 
+				       U1, 
+				       U2, 
+				       L, 
+				       myNbPoints, 
+				       EPSILON);
+    break;
+  case GCPnts_Parametrized: 
+  case GCPnts_AbsComposite: 
+    myDone = Perform(myParams, 
+		     C, 
+		     Abscissa, 
+		     U1, 
+		     U2, 
+		     L, 
+		     myNbPoints, 
+		     EPSILON);
+    break;
+  }
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+					const Standard_Integer NbPoints,
+					const Standard_Real Tol)
+{
+  Initialize(C, NbPoints, C.FirstParameter(),
+	     C.LastParameter(), Tol);
+} 
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GCPnts_UniformAbscissa::Initialize(TheCurve& C, 
+					const Standard_Integer NbPoints,
+					const Standard_Real U1, 
+					const Standard_Real U2,
+					const Standard_Real Tol)
+{
+  Standard_ConstructionError_Raise_if(NbPoints <= 1, "");
+  Standard_Real Abscissa ;
+  myNbPoints = 0 ;
+  myDone = Standard_False;
+  Standard_Real EPSILON;
+  
+  if(Tol < Precision::Confusion())
+    EPSILON = C.Resolution(Precision::Confusion());
+  else
+    EPSILON = C.Resolution(Tol);
+
+//
+// although very similar to Initialize with Abscissa this avoid
+// the computation of the total length of the curve twice
+//
+  Standard_Real L = GCPnts_AbscissaPoint::Length(C, U1, U2, EPSILON) ;
+
+  if (L <= Precision::Confusion()) {
+    return;
+  }
+
+  Abscissa = 
+  myAbscissa = L / (NbPoints - 1);
+  
+  Standard_Integer size ;
+
+// 
+//  compute the total Length here so that we can 
+//  guess the number of points instead of letting the
+//  constructor of CPnts_AbscissaPoint do that and loosing
+//  the information
+//
+//
+
+  size = NbPoints + 5 ;
+
+
+  if (!myParams.IsNull())    {
+    if (myParams->Length() < size) 	{
+      myParams.Nullify() ;
+      myParams =  new
+	TColStd_HArray1OfReal(1,size) ;
+    } 
+  }
+  else    {
+    myParams  = new
+      TColStd_HArray1OfReal(1,size) ;
+  }
+  
+
+  myNbPoints = 0 ;
+  GCPnts_AbscissaType Type = GetAbsType(C);
+  switch (Type) {
+  case GCPnts_LengthParametrized: 
+    myDone = PerformLengthParametrized(myParams, 
+				       C, 
+				       Abscissa, 
+				       U1, 
+				       U2, 
+				       L, 
+				       myNbPoints, 
+				       EPSILON);
+    break;
+  case GCPnts_Parametrized: 
+  case GCPnts_AbsComposite: 
+    myDone = Perform(myParams, 
+		     C, 
+		     Abscissa, 
+		     U1, 
+		     U2, 
+		     L, 
+		     myNbPoints, 
+		     EPSILON);
+    break;
+  }
+}
+
+
+
+
+
+

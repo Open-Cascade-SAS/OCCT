@@ -1,0 +1,242 @@
+-- File:	Interval.cdl
+-- Created:	Fri Dec 13 14:22:13 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+class Interval from Intrv
+    	---Purpose:
+    	--               **-----------****             Other
+    	--   ***---*                                   IsBefore
+    	--   ***----------*                            IsJustBefore
+    	--   ***---------------*                       IsOverlappingAtStart
+    	--   ***------------------------*              IsJustEnclosingAtEnd
+    	--   ***-----------------------------------*   IsEnclosing
+    	--              ***----*                       IsJustOverlappingAtStart
+    	--              ***-------------*              IsSimilar
+    	--              ***------------------------*   IsJustEnclosingAtStart
+    	--                     ***-*                   IsInside
+    	--                     ***------*              IsJustOverlappingAtEnd
+    	--                     ***-----------------*   IsOverlappingAtEnd
+    	--                              ***--------*   IsJustAfter
+    	--                                   ***---*   IsAfter
+
+
+uses
+    Real      from Standard,
+    ShortReal from Standard,
+    Integer   from Standard,
+    Position  from Intrv
+
+is
+    Create returns Interval from Intrv;
+
+    Create(Start, End : Real from Standard) returns Interval from Intrv;
+
+    Create(Start    : Real      from Standard;
+           TolStart : ShortReal from Standard;
+           End      : Real      from Standard;
+           TolEnd   : ShortReal from Standard) 
+    returns Interval from Intrv;
+   
+    Start(me) returns Real from Standard
+    	---C++: inline
+    is static;
+    
+    End(me) returns Real from Standard
+    	---C++: inline
+    is static;   
+    
+    TolStart(me) returns ShortReal from Standard
+    	---C++: inline
+    is static;
+    
+    TolEnd(me) returns ShortReal from Standard
+    	---C++: inline
+    is static;   
+    
+    Bounds(me; Start    : out Real      from Standard;
+               TolStart : out ShortReal from Standard;
+               End      : out Real      from Standard;
+               TolEnd   : out ShortReal from Standard)
+    	---C++: inline
+    is static;
+   
+    SetStart(me : in out; Start    : Real      from Standard;
+                          TolStart : ShortReal from Standard)
+    	---C++: inline
+    is static;
+    
+    FuseAtStart(me : in out; Start    : Real      from Standard;
+                             TolStart : ShortReal from Standard)
+    	---C++: inline
+    	---Purpose:
+    	--             ****+****-------------------->      Old one
+    	--         ****+****------------------------>      New one to fuse
+    	--         <<<     <<<
+    	--         ****+****------------------------>      result      
+    is static;
+    
+    CutAtStart(me : in out; Start    : Real      from Standard;
+                            TolStart : ShortReal from Standard)
+    	---C++: inline
+    	---Purpose:
+    	--                      ****+****----------->      Old one
+    	--         <----------**+**                        Tool for cutting
+    	--                    >>>     >>>
+    	--                      ****+****----------->      result      
+    is static;
+
+    SetEnd(me : in out; End      : Real      from Standard;
+                        TolEnd   : ShortReal from Standard)
+    	---C++: inline
+    is static;   
+
+    FuseAtEnd(me : in out; End      : Real      from Standard;
+                           TolEnd   : ShortReal from Standard)
+    	---C++: inline
+    	---Purpose:
+    	--         <---------------------****+****      Old one
+    	--         <-----------------**+**              New one to fuse
+    	--                             >>>     >>>
+    	--         <---------------------****+****      result      
+    is static;   
+
+    CutAtEnd(me : in out; End      : Real      from Standard;
+                          TolEnd   : ShortReal from Standard)
+    	---C++: inline
+    	---Purpose:
+    	--         <-----****+****                      Old one
+    	--                     **+**------>             Tool for cutting
+    	--               <<<     <<<
+    	--         <-----****+****                      result      
+    is static;   
+
+    IsProbablyEmpty(me) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if myStart+myTolStart > myEnd-myTolEnd
+    	--            or if myEnd+myTolEnd > myStart-myTolStart
+    is static;
+
+    Position(me; Other : Interval from Intrv) returns Position from Intrv
+    	---Purpose: True if me is Before Other
+    	--                 **-----------****             Other
+    	--   ***-----*                                   Before
+    	--   ***------------*                            JustBefore
+    	--   ***-----------------*                       OverlappingAtStart
+    	--   ***--------------------------*              JustEnclosingAtEnd
+    	--   ***-------------------------------------*   Enclosing
+    	--                ***----*                       JustOverlappingAtStart
+    	--                ***-------------*              Similar
+    	--                ***------------------------*   JustEnclosingAtStart
+    	--                       ***-*                   Inside
+    	--                       ***------*              JustOverlappingAtEnd
+    	--                       ***-----------------*   OverlappingAtEnd
+    	--                                ***--------*   JustAfter
+    	--                                     ***---*   After
+    is static;
+
+    IsBefore(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is Before Other
+    	--          ***----------------**                              me 
+    	--                                  **-----------****          Other
+    is static;
+
+    IsAfter(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is After Other
+    	--                                  **-----------****          me
+    	--          ***----------------**                              Other
+    is static;
+
+    IsInside(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is Inside Other
+    	--                  **-----------****                          me
+    	--          ***--------------------------**                    Other 
+    is static;
+
+    IsEnclosing(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is Enclosing Other
+    	--        ***----------------------------****                  me
+    	--              ***------------------**                        Other 
+    is static;
+
+    IsJustEnclosingAtStart(me; Other : Interval from Intrv) 
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just Enclosing Other at start
+    	--               ***---------------------------****            me
+    	--              ***------------------**                        Other 
+    	is static;
+
+    IsJustEnclosingAtEnd(me; Other : Interval from Intrv)
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just Enclosing Other at End
+    	--        ***----------------------------****                  me
+    	--                  ***-----------------****                   Other 
+    is static;
+
+    IsJustBefore(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just before Other
+    	--        ***--------****                                      me
+    	--                     ***-----------**                        Other 
+    is static;
+
+    IsJustAfter(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just after Other
+    	--                     ****-------****                         me
+    	--        ***-----------**                                     Other 
+    is static;
+
+    IsOverlappingAtStart(me; Other : Interval from Intrv) 
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is overlapping Other at start
+    	--        ***---------------***                                me
+    	--                     ***-----------**                        Other 
+    is static;
+
+    IsOverlappingAtEnd(me; Other : Interval from Intrv) 
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is overlapping Other at end
+    	--                     ***-----------**                        me 
+    	--        ***---------------***                                Other
+    is static;
+
+    IsJustOverlappingAtStart(me; Other : Interval from Intrv) 
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just overlapping Other at start
+    	--        ***-----------***                                    me
+    	--        ***------------------------**                        Other 
+    is static;
+
+    IsJustOverlappingAtEnd(me; Other : Interval from Intrv) 
+    returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me is just overlapping Other at end
+    	--                     ***-----------*                         me 
+    	--        ***------------------------**                        Other 
+    is static;
+
+    IsSimilar(me; Other : Interval from Intrv) returns Boolean from Standard
+    	---C++: inline
+    	---Purpose: True if me and Other have the same bounds
+    	--         *----------------***                                me 
+    	--        ***-----------------**                               Other
+    is static;
+
+fields
+    myStart    : Real      from Standard;
+    myEnd      : Real      from Standard;
+    myTolStart : ShortReal from Standard;
+    myTolEnd   : ShortReal from Standard;
+
+end;

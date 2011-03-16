@@ -1,0 +1,110 @@
+#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Dir.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d.hxx>
+
+static void DrawLine (const anyLine& aLine,
+                      const Handle(Graphic3d_Group)& aGroup) {
+
+  Standard_Integer Count=0;
+  Quantity_Length x,y,z;
+
+  Standard_Integer Lower = LineTool::Lower(aLine);
+  Standard_Integer Upper = LineTool::Upper(aLine);
+
+  Graphic3d_Array1OfVertex VertexArray(1,Upper-Lower+1);
+
+  for (Standard_Integer i=Lower;i<=Upper;i++){
+    LineTool::Coord(aLine,i,x,y,z);
+    VertexArray(++Count).SetCoord(x,y,z);
+  }
+  aGroup->Polyline(VertexArray);
+}
+
+void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation,
+		    const anyLine& aLine,
+		    const Handle (Prs3d_Drawer)& aDrawer){
+
+//  Prs3d_Root::NewGroup(aPresentation);    
+  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);    
+  TheGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  DrawLine(aLine,TheGroup);
+  if (aDrawer->LineArrowDraw()) {
+    Standard_Integer Lower = LineTool::Lower(aLine);
+    Standard_Integer Upper = LineTool::Upper(aLine);    
+    if ( Upper > Lower ){
+      Quantity_Length x1,y1,z1,x2,y2,z2;
+      LineTool::Coord(aLine,Upper-1,x1,y1,z1);
+      LineTool::Coord(aLine,Upper,x2,y2,z2);
+      
+      Prs3d_Arrow::Draw(aPresentation,
+		      gp_Pnt(x2,y2,z2),
+		      gp_Dir(x2-x1,y2-y1,z2-z1),
+		      aDrawer->ArrowAspect()->Angle(),
+		      aDrawer->ArrowAspect()->Length());
+    }
+  }
+}
+void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation,
+			   const anyLine& aLine){
+
+    
+  DrawLine (aLine,Prs3d_Root::CurrentGroup(aPresentation));
+
+}
+
+Standard_Integer Prs3d_Line::Pick
+             (const Quantity_Length X,
+	      const Quantity_Length Y,
+	      const Quantity_Length Z,
+	      const Quantity_Length aDistance,
+	      const anyLine& aLine,
+	      const Handle (Prs3d_Drawer)& aDrawer,
+	      const Prs3d_TypeOfLinePicking TypeOfPicking){
+
+
+  Standard_Integer Lower = LineTool::Lower(aLine);
+  Standard_Integer Upper = LineTool::Upper(aLine);
+
+  Standard_Integer num = 0;
+  Quantity_Length X1,Y1,Z1,X2,Y2,Z2,dist;
+
+  Standard_Real DistMin = RealLast();
+
+  for (Standard_Integer i=Lower;i<=Upper;i++){
+    LineTool::Coord(aLine,i,X2,Y2,Z2);
+    switch (TypeOfPicking) {
+    case Prs3d_TOLP_Point: {
+      dist = Abs(X-X2)+Abs(Y-Y2)+ Abs(Z-Z2);
+      if(dist < aDistance) {
+	if (dist < DistMin) {
+	  DistMin = dist;
+	  num = i;
+	}
+      }
+    }
+      break;
+    case Prs3d_TOLP_Segment: {
+      if (i > 1) {
+	if (Prs3d::MatchSegment
+        (X,Y,Z,aDistance,gp_Pnt(X1,Y1,Z1),gp_Pnt(X2,Y2,Z2),dist)){
+	  if(dist < aDistance) {
+	    if (dist < DistMin) {
+	      DistMin = dist;
+	      num = i;
+	    }
+	  }
+	}
+      }
+      X1=X2;Y1=Y2;Z1=Z2;
+    }
+    break;
+    }
+  }
+    return num;
+}

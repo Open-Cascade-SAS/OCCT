@@ -1,0 +1,137 @@
+-- File:	Draw_Interpretor.cdl
+-- Created:	Thu Feb 23 16:59:40 1995
+-- Author:	Remi LEQUETTE
+--		<rle@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Interpretor from Draw 
+
+	---Purpose: Provides  an  encapsulation of the TCL interpretor
+	--          to define Draw commands.
+
+uses
+
+	PInterp         from Draw,
+	CommandFunction from Draw,
+	AsciiString     from TCollection,
+	ExtendedString  from TCollection
+
+is
+
+    Create returns Interpretor from Draw;
+    
+    Init(me : in out);
+
+    Add(me : in out; Command  : CString;
+    	             Help     : CString;
+		     Function : CommandFunction from Draw;
+		     Group    : CString = "User Commands");
+	---Purpose: Creates a  new command  with name <Command>,  help
+	--          string <Help> in group <Group>.
+	--          <Function> implement the function.
+
+    Add(me : in out; Command  : CString;
+    	             Help     : CString;
+		     FileName : CString ; 
+		     Function : CommandFunction from Draw;
+    	    	     Group    : CString = "User Commands");
+	---Purpose: Creates a  new command  with name  <Command>, help
+	--          string   <Help>   in   group  <Group>.  <Function>
+	--          implement the function. 
+	--           <FileName> is the name of the file that contains
+	--           the implementation of the command
+        --
+
+    Remove(me : in out; Command : CString)
+    returns Boolean;
+	---Purpose: Removes   <Command>, returns true  if success (the
+	--          command existed).
+	
+    --
+    --  The result
+    --
+
+    Result(me) returns CString;
+    
+    Reset(me : in out);
+	---Purpose: Resets the result to empty string
+	
+    Append(me : in out; Result : CString) returns Interpretor from Draw; 
+	---Purpose: Appends to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    Append(me : in out; Result : AsciiString from TCollection) 
+    returns Interpretor from Draw; 
+	---Purpose: Appends to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    Append(me : in out; Result : ExtendedString from TCollection) 
+    returns Interpretor from Draw; 
+	---Purpose: Appends to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    Append(me : in out; Result : Integer) returns Interpretor from Draw; 
+	---Purpose: Appends  to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    Append(me : in out; Result : Real) returns Interpretor from Draw; 
+	---Purpose: Appends  to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    Append(me : in out; Result : SStream) returns Interpretor from Draw; 
+	---Purpose: Appends  to the result
+	---C++: return &
+	---C++: alias operator<<
+    	
+    AppendElement(me : in out; Result : CString);
+	---Purpose: Appends to the result the string as a list element
+
+
+
+    --
+    --      Interpetation
+    --      
+    
+    Eval(me : in out; Script : CString) 
+    returns Integer;
+	---Purpose: Eval the script and returns OK = 0, ERROR = 1
+	
+    RecordAndEval(me : in out; Script : CString; Flags : Integer = 0) 
+    returns Integer;
+	---Purpose: Eval the script and returns OK = 0, ERROR = 1
+	--          Store the script in the history record.
+	
+    EvalFile(me : in out; FileName : CString) 
+    returns Integer;
+	---Purpose: Eval the content on the file and returns status
+	
+    Complete(myclass; Script : CString) returns Boolean;
+	---Purpose: Returns True if the script is complete, no pending
+	--          closing braces. (})
+    
+    Destroy(me : in out);
+	---C++: alias ~
+
+    --
+    --  Access to Tcl_Interp
+    --  
+
+    Create(anInterp : PInterp from Draw)
+    returns Interpretor from Draw;
+    
+    Set(me : in out; anInterp : PInterp from Draw);
+    
+    Interp (me) returns PInterp from Draw;
+	
+ fields
+ 
+    isAllocated : Boolean from Standard;
+    myInterp    : PInterp from Draw;
+
+end Interpretor;

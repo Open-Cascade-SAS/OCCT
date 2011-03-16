@@ -1,0 +1,215 @@
+-- File:	TopTools.cdl
+-- Created:	Thu Jan 14 11:35:23 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+package TopTools 
+
+	---Purpose: The  TopTools package provides   utilities for the
+	--          topological data structure.
+	--          
+	--          * ShapeMapHasher. Hash a  Shape base on the TShape
+	--          and the Location. The Orientation is not used.
+	--          
+	--          * OrientedShapeMapHasher. Hash a Shape base on the
+	--          TShape ,the Location and the Orientation.
+	--          
+	--          * Instantiations of TCollection for Shapes :
+	--             MapOfShape
+	--             IndexedMapOfShape
+	--             DataMapOfIntegerShape
+	--             DataMapOfShapeInteger
+	--             DataMapOfShapeReal
+	--             Array1OfShape
+	--             HArray1OfShape
+	--             SequenceOfShape
+	--             HSequenceOfShape
+	--             ListOfShape
+	--             Array1OfListShape
+	--             HArray1OfListShape
+	--             DataMapOfIntegerListOfShape
+	--             DataMapOfShapeListOfShape
+	--             DataMapOfShapeListOfInteger
+	--             IndexedDataMapOfShapeShape
+	--             IndexedDataMapOfShapeListOfShape
+	--             DataMapOfShapeShape
+	--             IndexedMapOfOrientedShape
+	--             DataMapOfShapeSequenceOfShape
+	--             IndexedDataMapOfShapeAddress
+        --             DataMapOfOrientedShapeShape
+	--             
+	--          * LocationSet : to write sets of locations.
+	--          
+	--          * ShapeSet : to writes sets of TShapes.
+	--          
+	--          Package Methods :
+	--          
+	--            Dump : To dump the topology of a Shape.
+	--          
+
+        --- Level : Public  
+        --  All methods of all  classes will be public.
+
+
+uses
+
+    MMgt,
+    TCollection,
+    TColStd,
+    TopLoc,
+    TopAbs,
+    TopoDS,
+    Message
+
+is
+
+    ----------------------------------------------------------
+    -- TCollections for Shapes
+    ----------------------------------------------------------
+
+    class ShapeMapHasher;
+    
+    class OrientedShapeMapHasher;
+    
+    class MapOfShape instantiates 
+    	Map from TCollection(Shape          from TopoDS, 
+                             ShapeMapHasher from TopTools);
+
+    class MapOfOrientedShape instantiates 
+    	Map from TCollection(Shape          from TopoDS, 
+                             OrientedShapeMapHasher from TopTools);
+
+    class IndexedMapOfShape instantiates 
+    	IndexedMap from TCollection(Shape          from TopoDS, 
+                                    ShapeMapHasher from TopTools);
+				    
+    class DataMapOfIntegerShape instantiates 
+    	DataMap from TCollection(Integer,
+	    	    	    	 Shape            from TopoDS,
+				 MapIntegerHasher from TColStd);
+    
+    class DataMapOfOrientedShapeInteger instantiates 
+    	DataMap from TCollection(Shape                    from TopoDS,
+                                 Integer                  from Standard,
+				 OrientedShapeMapHasher   from TopTools);
+
+    class DataMapOfShapeInteger instantiates 
+    	DataMap from TCollection(Shape                    from TopoDS,
+                                 Integer                  from Standard,
+				 ShapeMapHasher           from TopTools);
+
+    class DataMapOfShapeReal instantiates 
+    	DataMap from TCollection(Shape                    from TopoDS,
+				 Real                     from Standard,
+				 ShapeMapHasher           from TopTools);
+
+    class Array1OfShape instantiates 
+    	Array1 from TCollection	(Shape from TopoDS);
+	
+    class HArray1OfShape instantiates 
+    	HArray1 from TCollection(Shape         from TopoDS,
+    	    	    	    	 Array1OfShape from TopTools); 
+				  
+    class Array2OfShape instantiates 
+    	Array2 from TCollection	(Shape from TopoDS);
+	
+    class HArray2OfShape instantiates 
+    	HArray2 from TCollection(Shape         from TopoDS,
+    	    	    	    	 Array2OfShape from TopTools);			 
+	
+    class SequenceOfShape instantiates 
+    	Sequence from TCollection (Shape from TopoDS);
+	
+    class HSequenceOfShape instantiates 
+    	HSequence from TCollection(Shape           from TopoDS,
+    	    	    	    	   SequenceOfShape from TopTools);
+	
+    class ListOfShape instantiates 
+    	List from TCollection (Shape from TopoDS);
+	
+    class Array1OfListOfShape instantiates 
+    	Array1 from TCollection	(ListOfShape from TopTools);
+	
+    class HArray1OfListOfShape instantiates 
+    	HArray1 from TCollection(ListOfShape         from TopTools,
+    	    	    	    	 Array1OfListOfShape from TopTools);
+	
+    class DataMapOfIntegerListOfShape instantiates 
+    	DataMap from TCollection(Integer from Standard, 
+	    		         ListOfShape from TopTools,
+	    		       	 MapIntegerHasher from TColStd);
+	
+    class DataMapOfShapeListOfShape instantiates
+    	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 ListOfShape    from TopTools,
+                                 ShapeMapHasher from TopTools);
+				 
+    class DataMapOfShapeListOfInteger instantiates
+    	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 ListOfInteger  from TColStd,
+                                 ShapeMapHasher from TopTools);
+				 
+    class IndexedDataMapOfShapeShape instantiates
+    	IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	Shape          from TopoDS,
+                                        ShapeMapHasher from TopTools);				
+    class IndexedDataMapOfShapeListOfShape instantiates
+    	IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	ListOfShape    from TopTools,
+                                        ShapeMapHasher from TopTools);
+					
+    class DataMapOfShapeShape instantiates
+    	DataMap from TCollection (Shape          from TopoDS,
+	                          Shape          from TopoDS,
+	                          ShapeMapHasher from TopTools);
+
+    class IndexedMapOfOrientedShape instantiates
+    	IndexedMap from TCollection(Shape from TopoDS,
+    	    	    	    	    OrientedShapeMapHasher from TopTools);
+
+    class DataMapOfShapeSequenceOfShape instantiates 
+    	DataMap from TCollection (Shape           from TopoDS,
+    	    	    	    	  SequenceOfShape from TopTools,
+				  ShapeMapHasher  from TopTools);
+
+    class IndexedDataMapOfShapeAddress instantiates
+    	IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	Address        from Standard,
+                                        ShapeMapHasher from TopTools);	  
+
+     class DataMapOfOrientedShapeShape instantiates
+        DataMap from TCollection (Shape                  from TopoDS,
+                                  Shape                  from TopoDS,
+                                  OrientedShapeMapHasher from TopTools);			    
+
+    ----------------------------------------------------------
+    -- Tools for writing and reading Locations and Shapes
+    ----------------------------------------------------------
+
+    class LocationSet;
+	---Purpose: A set of Locations. Can be dump, wrote or read.
+  
+    pointer LocationSetPtr to LocationSet from TopTools;
+
+    class ShapeSet;
+	---Purpose: A set of Shapes. Can be dump, wrote or read.
+	
+    --
+    --     Package methods
+    --     
+    
+    Dump(Sh : Shape from TopoDS; S : in out OStream);
+	  ---Purpose: Dumps the topological structure  of <Sh>  on the
+	  --          stream <S>.
+
+    Dummy(I : Integer);
+	---Purpose: This is to bypass an extraction bug. It will force
+	--          the  inclusion    of  Standard_Integer.hxx  itself
+	--          including Standard_OStream.hxx  at   the   correct
+	--          position.
+    
+end TopTools;
+
+

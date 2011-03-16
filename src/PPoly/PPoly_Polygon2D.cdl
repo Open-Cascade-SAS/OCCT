@@ -1,0 +1,41 @@
+-- File:	PPoly_Polygon2D.cdl
+-- Created:	Tue Oct 24 10:48:37 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon2D from PPoly inherits Persistent from Standard
+
+    	---Purpose: This class represents a 2d polygon.
+    	--          
+    	--          It is defined by an array of 2d nodes values.
+    	--          If the Polygon2D is closed, the point will be
+    	--          repeated.
+
+
+uses HArray1OfPnt2d  from PColgp
+
+is
+
+    Create(Nodes: HArray1OfPnt2d from PColgp;
+    	   Defl : Real from Standard) 
+    returns mutable Polygon2D from PPoly;
+    	---Purpose: Defaults with allocation of nodes.
+    
+    Deflection(me) returns Real;
+
+    Deflection(me : mutable; Defl : Real from Standard);
+    
+    NbNodes(me) returns Integer;
+    
+    Nodes(me) returns HArray1OfPnt2d from PColgp;
+
+    Nodes(me : mutable; Nodes : HArray1OfPnt2d from PColgp);
+    
+fields
+
+    myDeflection: Real;
+    myNodes:      HArray1OfPnt2d from PColgp;
+
+end Polygon2D;

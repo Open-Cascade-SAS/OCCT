@@ -1,0 +1,231 @@
+#include <Precision.hxx>
+#include <TColStd_Array2OfReal.hxx>
+
+
+Approx_ComputeCSurface::Approx_ComputeCSurface(
+			  const Surface&                Surf,
+			  const Standard_Integer        degreemin,
+			  const Standard_Integer        degreemax,
+			  const Standard_Real           Tolerance3d,
+			  const AppParCurves_Constraint FirstCons,
+			  const AppParCurves_Constraint LastUCons,
+			  const AppParCurves_Constraint LastVCons,
+			  const AppParCurves_Constraint LastCons,
+			  const Standard_Boolean        cutting)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d = Tolerance3d;
+  myfirstUCons  = FirstCons;
+  mylastUCons   = LastUCons;
+  mylastVCons   = LastVCons;
+  mylastCons    = LastCons;
+  mycut = cutting;
+  
+  Perform(Surf);
+}
+
+
+
+Approx_ComputeCSurface::Approx_ComputeCSurface(
+			  const Standard_Integer        degreemin,
+			  const Standard_Integer        degreemax,
+			  const Standard_Real           Tolerance3d,
+			  const AppParCurves_Constraint FirstCons,
+			  const AppParCurves_Constraint LastUCons,
+			  const AppParCurves_Constraint LastVCons,
+			  const AppParCurves_Constraint LastCons,
+			  const Standard_Boolean        cutting)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+  mytol3d = Tolerance3d;
+  myfirstUCons  = FirstCons;
+  mylastUCons   = LastUCons;
+  mylastVCons   = LastVCons;
+  mylastCons    = LastCons;
+  mycut = cutting;
+}
+
+
+
+void Approx_ComputeCSurface::Perform(const Surface& Surf) 
+{
+  Standard_Real UFirst, ULast, VFirst, VLast;
+  UFirst = SurfaceTool::FirstUParameter(Surf);
+  ULast  = SurfaceTool::LastUParameter(Surf);
+  VFirst = SurfaceTool::FirstVParameter(Surf);
+  VLast  = SurfaceTool::LastVParameter(Surf);
+  Standard_Boolean Finish = Standard_False, 
+          begin = Standard_True, Ok = Standard_False;
+  Standard_Real thetol3d;
+  Standard_Real myfirstU = UFirst, mylastU = ULast;
+  Standard_Real myfirstV = VFirst, mylastV = VLast;
+  Standard_Integer i;
+
+  TColStd_Array2OfReal Error(1, 50, 1, 50);   // pour l instant
+
+  if (!mycut) {
+    alldone = Compute(Surf, UFirst, ULast, VFirst, VLast, thetol3d);
+    if (!alldone) {
+      tolreached = Standard_False;
+      mySurfaces.Append(TheSurface);
+      Tolers3d.Append(thetol3d);
+      myfirstUparam.Append(UFirst);
+      mylastUparam.Append(ULast);
+      myfirstVparam.Append(VFirst);
+      mylastVparam.Append(VLast);
+    }
+  }
+
+  else {  // gestion du decoupage:
+    TColStd_SequenceOfReal TheU, TheV;
+    TheU.Append(UFirst);
+    TheU.Append(ULast);
+    TheV.Append(VFirst);
+    TheV.Append(VLast);
+
+    while (!Finish) {
+      
+      Ok = Compute(Surf, myfirstU, mylastU, myfirstV, mylastV, thetol3d);
+      if (Ok) {
+	if (Abs(ULast-mylastU) <= Precision::PConfusion() &&
+	    Abs(VLast-mylastV) <= Precision::PConfusion()) {
+	  Finish = Standard_True;
+	  alldone = Standard_True;
+	  return;
+	}
+	myfirstU = mylastU;
+	mylastU = ULast;
+      }
+      else {
+	// choix du decoupage en u ou en v:
+	// si debut, en u:
+	if (begin) {
+	  begin = Standard_False;
+	  mylastU = (myfirstU + mylastU)/2.;
+	  TheU.InsertAfter(1, mylastU);
+	  Error.SetValue(1, 1, currenttol3d);
+	}
+	else {
+	  Standard_Real tolu, tolv;
+	  for (i = 1; i <= TheU.Length(); i++) {
+	    
+	  }
+
+	}
+
+
+      }
+      
+      
+    }      
+
+  }
+
+}
+
+
+
+Standard_Boolean Approx_ComputeCSurface::Compute(const Surface&      Surf,
+						 const Standard_Real Ufirst,
+						 const Standard_Real Ulast,
+						 const Standard_Real Vfirst,
+						 const Standard_Real Vlast,
+						 Standard_Real&      TheTol3d) 
+
+{
+  Standard_Integer NbPoints = 12;     // 12 * 12 sur la surface.
+  Standard_Integer degu, degv;
+  Standard_Real Fv;
+
+  for (degu = mydegremin; degu <= mydegremax; degu++) {
+    for (degv = mydegremin; degv <= mydegremax; degv++) {
+      Approx_MySLeastSquare LSQ(Surf, Ufirst, Ulast, Vfirst, Vlast,
+				myfirstUCons, mylastUCons, 
+				mylastVCons, mylastCons,
+				degu, degv, NbPoints);
+      LSQ.Error(Fv, TheTol3d);
+      if (TheTol3d <= mytol3d) {
+	TheSurface = LSQ.Value();
+	mySurfaces.Append(TheSurface);
+	tolreached = Standard_True;
+	Tolers3d.Append(TheTol3d);
+	currenttol3d = TheTol3d;
+	myfirstUparam.Append(Ufirst);
+	mylastUparam.Append(Ulast);
+	myfirstVparam.Append(Vfirst);
+	mylastVparam.Append(Vlast);
+	return Standard_True;
+      }
+      
+      if (degu == mydegremax && degv == mydegremax) {
+	TheSurface = LSQ.Value();
+	tolreached = Standard_False;
+	currenttol3d = TheTol3d;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+
+
+Standard_Real Approx_ComputeCSurface::Error(const Standard_Integer Index)const
+{
+  return Tolers3d.Value(Index);
+}
+				   
+
+
+Handle(Geom_BezierSurface) Approx_ComputeCSurface::Value(const Standard_Integer Index)const
+{
+  return Handle(Geom_BezierSurface)::DownCast(mySurfaces.Value(Index));
+}
+
+
+Standard_Integer Approx_ComputeCSurface::NbSurfaces() const
+{
+  return mySurfaces.Length();
+}
+
+
+void Approx_ComputeCSurface::Parameters(const Standard_Integer Index,
+					Standard_Real& firstU,
+					Standard_Real& lastU,
+					Standard_Real& firstV,
+					Standard_Real& lastV)const
+{
+  firstU = myfirstUparam.Value(Index);
+  lastU = mylastUparam.Value(Index);
+  firstV = myfirstVparam.Value(Index);
+  lastV = mylastVparam.Value(Index);
+}
+
+
+Standard_Boolean Approx_ComputeCSurface::IsToleranceReached() const
+{
+  return tolreached;
+}
+
+Standard_Boolean Approx_ComputeCSurface::IsAllApproximated() const
+{
+  return alldone;
+}
+
+
+void Approx_ComputeCSurface::SetDegrees(const Standard_Integer degreemin,
+					const Standard_Integer degreemax)
+{
+  mydegremin = degreemin;
+  mydegremax = degreemax;
+}
+
+
+
+void Approx_ComputeCSurface::SetTolerance(const Standard_Real Tolerance3d)
+{
+  mytol3d = Tolerance3d;
+}
+
+

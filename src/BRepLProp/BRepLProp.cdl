@@ -1,0 +1,49 @@
+-- File:	BRepLProp.cdl
+-- Created:	Thu Feb 24 10:15:08 1994
+-- Author:	Laurent BOURESCHE
+--		<lbo@nonox>
+---Copyright:	 Matra Datavision 1994
+
+package BRepLProp
+
+    ---Purpose: These global functions compute the degree of
+-- continuity of a curve built by concatenation of two
+-- edges at their junction point.
+
+uses Standard, gp, BRepAdaptor, GeomAbs, LProp
+
+is
+    
+    class CurveTool;
+    class SurfaceTool;
+    
+					    
+    class CLProps from BRepLProp 
+            instantiates CLProps from LProp(Curve      from BRepAdaptor,
+	                                    Vec        from gp,
+					    Pnt        from gp,
+					    Dir        from gp,
+					    CurveTool  from BRepLProp);
+
+    class SLProps from BRepLProp 
+            instantiates SLProps from LProp(Surface     from BRepAdaptor,
+	                                    SurfaceTool from BRepLProp);
+
+    
+    Continuity(C1,C2 : Curve from BRepAdaptor;
+    	       u1,u2 : Real from Standard;
+               tl,ta : Real from Standard) 
+    ---Purpose: Computes the regularity at the junction between C1 and
+    --          C2. The point u1 on C1 and the point u2 on  C2 must be
+    --          confused.   tl  and ta  are  the  linear  and  angular
+    --          tolerance used two compare the derivative.
+    returns Shape from GeomAbs;
+
+    
+    Continuity(C1,C2 : Curve from BRepAdaptor;
+    	       u1,u2 : Real from Standard)
+    ---Purpose: The  same  as  preciding   but   using  the   standard
+    --          tolerances from package Precision.
+    returns Shape from GeomAbs;
+
+end BRepLProp;    

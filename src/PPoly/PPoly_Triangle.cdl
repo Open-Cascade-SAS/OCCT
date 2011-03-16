@@ -1,0 +1,24 @@
+-- File:	PPoly_Triangle.cdl
+-- Created:	Tue Oct 24 10:34:36 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Triangle from PPoly inherits Storable from Standard
+
+	---Purpose: A Triangle is a triplet of node indices.
+is
+
+    Create(N1,N2,N3 : Integer)
+    returns Triangle from PPoly;
+
+    Set(me : in out; N1,N2,N3 : Integer);
+    
+    Get(me; N1,N2,N3 : in out Integer);
+
+fields
+
+    myNodes : Integer [3];
+
+end Triangle;

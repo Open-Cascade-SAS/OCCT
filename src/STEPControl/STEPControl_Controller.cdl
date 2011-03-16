@@ -1,0 +1,62 @@
+-- File:	STEPControl_Controller.cdl
+-- Created:	Mon Feb 20 11:00:58 1995
+-- Author:	Christian CAILLET
+--		<cky@paris1>
+---Copyright:	 Matra Datavision 1995
+
+
+class Controller  from STEPControl inherits Controller  from XSControl
+
+    ---Purpose : defines basic controller for STEP processor
+
+uses
+
+     CString,
+     Protocol from Interface,
+     InterfaceModel from Interface,
+     WorkLibrary    from IFSelect,
+     ReturnStatus   from IFSelect,
+     ActorOfTransientProcess from Transfer,
+     FinderProcess  from Transfer,
+     ActorOfFinderProcess from Transfer,
+     Shape from TopoDS,
+     WorkSession from XSControl
+
+is
+
+    Create returns mutable Controller from STEPControl;
+    ---Purpose : Initializes the use of STEP Norm (the first time) and
+    --           returns a Controller
+
+    NewModel     (me) returns mutable InterfaceModel from Interface;
+    ---Purpose : Creates a new empty Model ready to receive data of the Norm.
+    --           It is taken from STEP Template Model
+
+    ActorRead  (me; model : InterfaceModel)
+                 returns mutable ActorOfTransientProcess from Transfer;
+    ---Purpose : Returns a new Actor for Read attached to the pair (norm,appli)
+    --           It is a PmsToTopoDSAct_Actor
+
+    	--  Redefined Transfer for Write (using Actor)  --
+    Customise (me: mutable; WS : in out WorkSession from XSControl) is redefined;
+    
+    TransferWriteShape (me; shape : Shape from TopoDS;
+    	    	    	FP        : mutable FinderProcess  from Transfer;
+    	    	        model     : mutable InterfaceModel from Interface;
+			modetrans : Integer = 0)  returns ReturnStatus
+      is redefined;
+    ---Purpose : Takes one Shape and transfers it to the InterfaceModel
+    --           (already created by NewModel for instance)
+    --           <modeshape> is to be interpreted by each kind of XstepAdaptor
+    --           Returns a status : 0 OK  1 No result  2 Fail  -1 bad modeshape
+    --               -2 bad model (requires a StepModel)
+    --           modeshape : 1 Facetted BRep, 2 Shell, 3 Manifold Solid
+
+    	--  for global initialisation
+
+    Init (myclass) returns Boolean;
+    ---Purpose : Standard Initialisation. It creates a Controller for STEP
+    --           and records it to various names, available to select it later
+    --           Returns True when done, False if could not be done
+
+end Controller;

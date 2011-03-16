@@ -1,0 +1,84 @@
+-- File:	Circ2dBisec.cdl
+-- Created:	Wed Apr  3 11:29:37 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+class Circ2dBisec
+
+from GccAna
+
+	---Purpose: This class describes functions for building bisecting curves between two 2D circles.
+    	-- A bisecting curve between two circles is a curve such
+    	-- that each of its points is at the same distance from the
+    	-- two circles. It can be an ellipse, hyperbola, circle or line,
+    	-- depending on the relative position of the two circles.
+    	-- The algorithm computes all the elementary curves which
+    	-- are solutions. There is no solution if the two circles are coincident.
+    	-- A Circ2dBisec object provides a framework for:
+    	-- -   defining the construction of the bisecting curves,
+    	-- -   implementing the construction algorithm, and consulting the result.
+
+uses Circ2d from gp,
+     Bisec  from GccInt
+
+raises OutOfRange        from Standard,
+       NotDone           from StdFail
+
+is
+
+Create(Circ1,Circ2 : Circ2d from gp) returns Circ2dBisec;
+
+    	---Purpose: Constructs bisecting curves between the two circles Circ1 and Circ2.
+        
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: This method returns True if the construction algorithm succeeded.
+
+NbSolutions(me) returns Integer from Standard
+    	---Purpose: This method returns the number of solutions.
+    	--    Raises NotDone if the construction algorithm  didn't succeed.
+raises NotDone
+is static;
+  
+
+ThisSolution(me                           ; 
+    	     Index : Integer from Standard) returns Bisec from GccInt
+    	---Purpose: Returns the solution number Index 
+    	-- Raises OutOfRange exception if Index is greater than 
+    	--          the number of solutions.
+    	--          It raises NotDone if the construction algorithm
+        --          didn't succeed.
+raises OutOfRange, NotDone
+is static;
+   
+fields
+
+    WellDone : Boolean from Standard;
+    	---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    	---Purpose: The number of possible solutions.
+
+    intersection : Integer from Standard;
+    	---Purpose: c is the circle which has the lowest radius among Circ1 and 
+    	--          Circ2, and C is the other one.
+    	--          intersection = 0 if c is completly inside C.
+    	--          intersection = 1 if c is tangent to C and c is inside C.
+    	--          intersection = 2 if c intersects C.
+    	--          intersection = 3 if c is tangent to C and c is outside C.
+    	--          intersection = 4 if c is completly outside C.
+
+    sameradius : Boolean from Standard;
+    	---Purpose: sameradius is true is Circ1 has the same radius as Circ2.
+
+    circle1   : Circ2d from gp;
+    	---Purpose: The first argument used for ThisSolution. It is the circle 
+    	--          which has the greatest radius or Circ1 if Circ1 and Circ2 
+    	--          has the same radius.
+
+    circle2   : Circ2d from gp;
+    	---Purpose: The second argument used for ThisSolution. It is the other 
+    	--          circle.
+
+end Circ2dBisec;

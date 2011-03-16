@@ -1,0 +1,122 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by Viewer2d.rc
+//
+#define ID_BUTTON_Test_Image            0
+#define IDR_MAINFRAME2                  130
+#define IDR_2DTYPE2                     131
+#define ID_FILE_EXPORT_IMAGE2           133
+#define ID_MENU_CASCADE_PROPERTIES      148
+#define IDD_DIALOG_Font                 160
+#define IDD_DIALOG_Width                161
+#define IDD_DIALOG_Color                162
+#define IDD_DIALOG_NewColorCube         163
+#define IDD_DIALOG_NewColorRamp         164
+#define IDD_DIALOG_Type                 165
+#define IDD_DIALOG_Mark                 166
+#define ID_BUTTON_Test_Text             1043
+#define ID_BUTTON_Test_Markers          1045
+#define ID_BUTTON_Test_Line             1048
+#define ID_BUTTON_Erase                 1051
+#define IDR_MAINFRAME1                  1208
+#define IDC_ColorMap_STATIC_Type        1420
+#define IDC_ColorMap_STATIC_Size        1421
+#define IDC_ColorMap_TAB                1422
+#define IDC_ColorMap_STATIC_EntryColorGreen 1423
+#define IDC_ColorMap_STATIC_EntryColorRed 1424
+#define IDC_ColorMap_STATIC_EntryColorBlue 1425
+#define IDC_ColorMap_STATIC_EntryColorName 1426
+#define IDC_ColorMap_EDIT_NewEntryColorRed 1427
+#define IDC_ColorMap_EDIT_NewEntryColorGreen 1428
+#define IDC_ColorMap_EDIT_NewEntryColorBlue 1429
+#define IDC_ColorMap_COMBO_NewEntryColorName 1430
+#define IDC_ColorMap_BUTTON_NewEntry_EditColor 1431
+#define IDC_ColorMap_BUTTON_UpdateCurrentEntry 1432
+#define IDC_ColorMap_BUTTON_AddNewEntry 1433
+#define IDC_ColorMap_BUTTON_NewGenericColorMap 1434
+#define IDC_ColorMap_STATIC_NewEntryColorNameStatic 1435
+#define IDC_ColorMap_STATIC_NewEntryNotavailable 1436
+#define IDC_ColorMap_BUTTON_NewColorCubeColorMap 1437
+#define IDC_ColorMap_BUTTON_NewColorRampColorMap 1438
+#define IDC_NewColorMap_COMBO_NewEntryColorName 1439
+#define IDC_NewColorMap_BUTTON_NewColorRampColorMap 1440
+#define IDC_NewColorMapRamp_EDIT_ColorRed 1441
+#define IDC_NewColorMapRamp_EDIT_ColorGreen 1442
+#define IDC_NewColorMapRamp_EDIT_ColorBlue 1443
+#define IDC_NewColorMapRamp_BUTTON_EditColor 1444
+#define IDC_NewColorRamp_EDIT_base_pixel 1445
+#define IDC_NewColorramp_EDIT_dimension 1446
+#define IDC_NewColorCube_EDIT_bluemult  1447
+#define IDC_NewColorCube_EDIT_base_pixel 1448
+#define IDC_NewColorCube_EDIT_bluemax   1449
+#define IDC_NewColorCube_EDIT_grennmult 1450
+#define IDC_NewColorCube_EDIT_greenmax  1451
+#define IDC_NewColorCube_EDIT_redmax    1452
+#define IDC_NewColorCube_EDIT_redmult   1453
+#define IDC_WidthMap_STATIC_Size        1454
+#define IDC_WidthMap_TAB                1455
+#define IDC_WidthMap_STATIC_EntryType   1456
+#define IDC_WidthMap_STATIC_EntryWidth  1457
+#define IDC_WidthMap_COMBO_NewEntryType 1458
+#define IDC_WidthMap_EDIT_NewEntryWidth 1459
+#define IDC_WidthMap_BUTTON_AddNewEntry 1460
+#define IDC_WidthMap_BUTTON_UpdateCurrentEntry 1461
+#define IDC_FontMap_STATIC_Size         1462
+#define IDC_FontMap_TAB                 1463
+#define IDC_FontMap_STATIC_CurrentEntryValue 1464
+#define IDC_FontMap_STATIC_CurrentEntryType 1465
+#define IDC_FontMap_STATIC_CurrentEntrySize 1466
+#define IDC_FontMap_STATIC_CurrentEntrySlant 1467
+#define IDC_FontMap_BUTTON_NewEntry     1468
+#define IDC_FontMap_BUTTON_UpdateCurrent 1469
+#define IDC_FontMap_COMBO_NewEntryType  1470
+#define IDC_FontMap_EDIT_NewEntryValue  1471
+#define IDC_FontMap_EDIT_NewEntrySize   1472
+#define IDC_FontMap_EDIT_NewEntrySlant  1473
+#define IDC_FontMap_BUTTON_NewEntry_EditFont 1474
+#define IDC_TypeMap_STATIC_Size         1475
+#define IDC_TypeMap_TAB                 1476
+#define IDC_TypeMap_STATIC_CurrentEntryStyle 1477
+#define IDC_TypeMap_STATIC_CurrentEntryValue 1478
+#define IDC_TypeMap_COMBO_NewEntryStyle 1479
+#define IDC_TypeMap_EDIT_NewEntryValue  1480
+#define IDC_MarkMap_STATIC_Size         1481
+#define IDC_MarkMap_TAB                 1482
+#define IDC_MarkMap_STATIC_CurrentEntryXValue 1483
+#define IDC_MarkMap_STATIC_CurrentEntryStyle 1484
+#define IDC_MarkMap_STATIC_CurrentEntryYValue 1485
+#define IDC_MarkMap_STATIC_CurrentEntrySValue 1486
+#define IDC_MarkMap_STATIC_CurrentEntryValue 1487
+#define ID_BUTTON32791                  32791
+#define ID_BUTTON32793                  32793
+#define ID_BUTTON_Test_MultiImages      32794
+#define ID_BUTTON_Test_Rect             32795
+#define ID_BUTTON_Test_Face             32796
+#define ID_BUTTON_Test_Curve            40016
+#define ID_FILE_NEW2                    57601
+#define ID_FILE_OPEN2                   57603
+#define ID_FILE_CLOSE2                  57604
+#define ID_FILE_SAVE2                   57605
+#define ID_FILE_SAVE_AS2                57606
+#define ID_WINDOW_NEW2                  57652
+#define ID_WINDOW_ARRANGE2              57653
+#define ID_WINDOW_CASCADE2              57654
+#define ID_WINDOW_TILE_HORZ2            57655
+#define ID_WINDOW_TILE_VERT2            57656
+#define ID_WINDOW_SPLIT2                57657
+#define ID_APP_ABOUT2                   57666
+#define ID_APP_EXIT2                    57667
+#define ID_VIEW_TOOLBAR2                59394
+#define ID_VIEW_STATUS_BAR2             59395
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_3D_CONTROLS                     1
+#define _APS_NEXT_RESOURCE_VALUE        179
+#define _APS_NEXT_COMMAND_VALUE         32797
+#define _APS_NEXT_CONTROL_VALUE         1100
+#define _APS_NEXT_SYMED_VALUE           170
+#endif
+#endif

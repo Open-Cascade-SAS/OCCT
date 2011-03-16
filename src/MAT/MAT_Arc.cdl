@@ -1,0 +1,140 @@
+-- File:	MAT_Arc.cdl
+-- Created:	Fri Apr 30 17:24:12 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Arc from MAT
+
+inherits  
+
+    TShared from MMgt 
+	---Purpose: An Arc is associated to each Bisecting of the mat. 
+
+uses
+    
+    BasicElt       from MAT,
+    Node           from MAT,
+    Side           from MAT,
+    Address        from Standard
+
+    
+raises
+
+    DomainError from Standard    
+
+is
+
+
+    Create ( ArcIndex        : Integer;
+             GeomIndex       : Integer;
+             FirstElement    : BasicElt from MAT;
+             SecondElement   : BasicElt from MAT )
+    	--- Purpose :
+    returns mutable Arc;
+
+    Index (me) 
+    	--- Purpose : Returns the index of <me> in Graph.theArcs.
+    returns Integer
+    is static;
+	    
+    GeomIndex(me) 
+    	--- Purpose : Returns  the index associated  of the  geometric
+    	--            representation of <me>.
+    returns Integer
+    is static;
+    
+    FirstElement(me) 
+    	--- Purpose : Returns one of the BasicElt equidistant from <me>.
+    returns BasicElt from MAT
+    is static;
+    
+    SecondElement(me) 
+        --- Purpose : Returns the other BasicElt equidistant from <me>.
+    returns BasicElt from MAT
+    is static;
+    
+    FirstNode (me)  
+        --- Purpose : Returns one Node extremity of <me>.
+    returns mutable Node from MAT
+    is static;
+    
+    SecondNode (me) 
+  	--- Purpose : Returns the other Node extremity of <me>.   
+    returns mutable Node from MAT
+    is static;    
+    
+    TheOtherNode (me ; aNode : Node) 
+    returns Node from MAT
+	--- Purpose : an Arc has two Node, if <aNode> egal one
+	--            Returns the other.
+	--            
+    raises
+    	DomainError from Standard
+	---Purpose: if <aNode> is not oh <me>
+    is static;
+
+    HasNeighbour(me ; aNode : Node ; aSide : Side) 
+        --- Purpose : Returnst True is there is an arc linked to 
+        --            the Node <aNode> located on the side <aSide> of <me>;  
+    returns Boolean from Standard
+    raises
+    	DomainError from Standard
+	---Purpose: if <aNode> is not on <me>
+    is static;
+    
+    Neighbour(me ; aNode : Node ; aSide : Side) 
+        --- Purpose : Returns the first arc linked to the Node <aNode>
+        --            located on the side <aSide> of <me>;  
+    returns Arc from MAT 
+    raises
+    	DomainError from Standard
+	---Purpose: if HasNeighbour() returns FALSE. 
+    is static;
+
+    SetIndex (me : mutable ; anInteger : Integer)
+    is static;
+    
+    SetGeomIndex(me : mutable ; anInteger : Integer)
+    is static;
+    
+    SetFirstElement  (me : mutable ; aBasicElt : BasicElt from MAT)
+    is static;
+    
+    SetSecondElement (me : mutable ; aBasicElt : BasicElt from MAT)
+    is static;
+    
+    SetFirstNode  (me : mutable ; aNode : Node from MAT)
+    is static;
+
+    SetSecondNode (me : mutable ; aNode : Node from MAT)
+    is static;
+    
+    SetFirstArc  (me : mutable ; aSide : Side ; anArc : Arc)
+    is static;
+
+    SetSecondArc (me : mutable ; aSide : Side ; anArc : Arc)
+    is static;
+
+    SetNeighbour (me : mutable ; aSide : Side ; aNode : Node ; anArc : Arc) 
+    is static;
+    
+fields
+
+    arcIndex        : Integer;
+    geomIndex       : Integer;
+    firstElement    : BasicElt from MAT;
+    secondElement   : BasicElt from MAT;
+    firstNode       : Node     from MAT;
+    secondNode      : Node     from MAT;
+    firstArcLeft    : Address  from Standard;
+    firstArcRight   : Address  from Standard;
+    secondArcRight  : Address  from Standard;
+    secondArcLeft   : Address  from Standard;
+    firstParameter  : Real;
+    secondParameter : Real;
+    
+end Arc;
+
+

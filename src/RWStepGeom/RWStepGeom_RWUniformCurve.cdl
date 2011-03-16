@@ -1,0 +1,30 @@
+-- File:        UniformCurve.cdl
+-- Created:     Mon Dec  4 12:02:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWUniformCurve from RWStepGeom
+
+	---Purpose : Read & Write Module for UniformCurve
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     UniformCurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWUniformCurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable UniformCurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : UniformCurve from StepGeom);
+
+	Share(me; ent : UniformCurve from StepGeom; iter : in out EntityIterator);
+
+end RWUniformCurve;

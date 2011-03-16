@@ -1,0 +1,24 @@
+-- File:        QuasiUniformCurve.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class QuasiUniformCurve from StepGeom 
+
+inherits BSplineCurve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray1OfCartesianPoint from StepGeom, 
+	BSplineCurveForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable QuasiUniformCurve;
+	---Purpose: Returns a QuasiUniformCurve
+
+
+end QuasiUniformCurve;

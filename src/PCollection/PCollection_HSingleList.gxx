@@ -1,0 +1,164 @@
+// ----------------------------------------------------------------------
+// 
+// HSingleList implementation:
+// 
+// Last Revision : Feb,10 1992 J.P Tirault
+//                 Implementation of ShallowCopy, ShallowDump
+//                 methods.
+// -------------------------------------------------------------------------
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_OStream.hxx>
+
+// -------------------------------------------------------------------------
+//                                                                         -
+// Constructor Returns an empty list                                       -
+// ----------                                                              -
+//                                                                         -
+// -------------------------------------------------------------------------
+PCollection_HSingleList::PCollection_HSingleList ()
+{
+ Next.Nullify();
+}
+
+
+// -------------------------------------------------------------------------
+//                                                                         -
+// Construct : Add an item at the beginning of the list                    -
+// ---------                                                               -
+//                                                                         -
+// -------------------------------------------------------------------------
+Handle(PCollection_HSingleList) 
+  PCollection_HSingleList::Construct(const Item& T)const
+{
+
+
+ Handle(PCollection_HSingleList) me , L ;
+ me = this;
+#ifndef OBJS
+ L = new PCollection_HSingleList;
+#else
+ L = new (os_segment::of(this)) PCollection_HSingleList;
+#endif
+ L->ChangeForwardPointer ( me );
+ L->SetValue ( T );			
+ return L;
+}
+
+
+// -------------------------------------------------------------------------
+//                                                                         -
+// Shallowcopy : Redefinition of the shallowcopy dump                      -
+// -----------                                                             -
+
+//                                                                         -
+// -------------------------------------------------------------------------
+Handle(Standard_Persistent) PCollection_HSingleList::ShallowCopy() const
+{
+  Handle(PCollection_HSingleList) TheList,          // Traversal depth of <this>
+                                TheCopy,          // The list returned
+                                Pred,             // Backward pointer
+                                Succ;             // Forward pointer
+#ifndef OBJS
+  TheCopy = new PCollection_HSingleList;            // Initialization of the list
+#else
+  TheCopy = new (os_segment::of(this)) PCollection_HSingleList;            // Initialization of the list
+#endif
+                                                  // that will be returned
+  Standard_Boolean FirstTime = Standard_True;                 
+
+  TheList = this;                                 // Start at the beginning
+  Pred = Succ = TheCopy;
+  
+  while ( ! TheList->IsEmpty() ) {                // Append each item at the
+    Succ = Succ->Construct(TheList->Value());     // end of the list
+    if ( FirstTime ){
+      FirstTime = Standard_False;
+      TheCopy   = Succ;
+    }
+    else{
+      Pred->ChangeForwardPointer(Succ);           // Make the link between 
+    }                                             // Pred and Succ
+    Pred = Succ;
+    Succ = Succ->Tail();
+    TheList = TheList->Tail();                   
+  }
+  return TheCopy;                                 // Returns the header
+}
+
+// -------------------------------------------------------------------------
+//                                                                         -
+// ShallowDump Redefinition of the shallowdump method                      -
+// -----------                                                             -
+//                                                                         -
+// -------------------------------------------------------------------------
+void PCollection_HSingleList::ShallowDump(Standard_OStream& S) const
+{
+  Handle(PCollection_HSingleList) TheList;
+  TheList = this;
+  S << "begin class HSingleList " << endl;
+  while ( ! TheList->IsEmpty() ) {                
+    ::ShallowDump(TheList->Value(), S);
+    TheList = TheList->Tail();
+  }
+  S << "end class HSingleList" << endl;
+  
+}
+
+
+
+/* Anciens INLINE */
+
+Item PCollection_HSingleList::Value() const {
+  Standard_NoSuchObject_Raise_if(IsEmpty(),
+                                 "Empty Element in HSingleList::Value");
+     return Data;
+}
+
+Handle(PCollection_HSingleList) PCollection_HSingleList::Tail() const {
+  Standard_NoSuchObject_Raise_if (IsEmpty(),
+                                  "Empty Element in HSingleList::Value");
+  return Next;
+}
+
+
+Standard_Boolean PCollection_HSingleList::IsEmpty()const
+{
+  return Next.IsNull();
+}
+
+
+void PCollection_HSingleList::SetValue(const Item& T)
+{
+  Standard_NoSuchObject_Raise_if (IsEmpty(),
+                                  "Empty Element in HSingleList::SetValue");
+  Data = T;
+}
+
+
+// -------------------------------------------------------------------------
+//                                                                         -
+// SwapTail : Exchange the tail of the current list with an another list   -
+// --------                                                                -
+//                                                                         -
+// -------------------------------------------------------------------------
+void PCollection_HSingleList::SwapTail(Handle(PCollection_HSingleList)&
+                                            WithList)
+{
+  Standard_NoSuchObject_Raise_if (IsEmpty(),
+                                  "Empty Element in HSingleList::SwapTail");
+  Handle(PCollection_HSingleList) L = Next;
+  Next     = WithList;
+  WithList = L;
+}
+
+
+void PCollection_HSingleList::ChangeForwardPointer
+   (const Handle(PCollection_HSingleList)& L)
+{
+     Next = L;
+}
+
+

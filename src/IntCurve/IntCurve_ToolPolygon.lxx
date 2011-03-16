@@ -1,0 +1,49 @@
+// File:	IntCurve_ToolPolygon.gxx
+// Created:	Thu Jun 3 14:52:18 1993
+// Author:	Laurent BUCHARD
+//		<lbr@nonox>
+
+
+#include Polygon_hxx
+
+
+//=================================================================
+inline const BoundingBox& IntCurve_ToolPolygon::Bounding
+  (const Polygon& thePolygon)
+{
+  return thePolygon.Bounding();
+}
+//=================================================================
+inline Standard_Real IntCurve_ToolPolygon::DeflectionOverEstimation
+  (const Polygon& thePolygon)
+{
+  return thePolygon.DeflectionOverEstimation();
+}
+//=================================================================
+inline Standard_Boolean IntCurve_ToolPolygon::Closed 
+  (const Polygon& thePolygon)
+{
+  return thePolygon.Closed();
+}
+//=================================================================
+inline Standard_Integer IntCurve_ToolPolygon::NbSegments
+  (const Polygon& thePolygon)
+{
+  return thePolygon.NbSegments();
+}
+//=================================================================
+inline const Point& IntCurve_ToolPolygon::BeginOfSeg
+  (const Polygon& thePolygon,
+   const Standard_Integer Index)
+{
+  return thePolygon.BeginOfSeg(Index);
+}
+//=================================================================
+inline const Point& IntCurve_ToolPolygon::EndOfSeg
+  (const Polygon& thePolygon,
+   const Standard_Integer Index)
+{
+  return thePolygon.EndOfSeg(Index);
+}
+//=================================================================
+

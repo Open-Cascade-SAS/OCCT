@@ -1,0 +1,60 @@
+-- File:	GeomInt_ParameterAndOrientation.cdl
+-- Created:	Wed Feb  8 09:32:29 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1995
+
+
+private class ParameterAndOrientation from GeomInt
+
+	---Purpose: 
+
+uses Orientation from TopAbs
+
+is
+
+    Create
+    
+    	returns ParameterAndOrientation from GeomInt;
+
+
+    Create(P: Real from Standard; Or1,Or2: Orientation from TopAbs)
+    
+    	returns ParameterAndOrientation from GeomInt;
+
+
+    SetOrientation1(me: in out; Or: Orientation from TopAbs)
+    
+    	is static;
+
+
+    SetOrientation2(me: in out; Or: Orientation from TopAbs)
+    
+    	is static;
+
+
+    Parameter(me)
+    
+    	returns Real from Standard
+	is static;
+
+
+    Orientation1(me)
+    
+    	returns Orientation from TopAbs
+    	is static;
+
+
+    Orientation2(me)
+    
+    	returns Orientation from TopAbs
+    	is static;
+
+
+fields
+
+    prm : Real from Standard;
+    or1 : Orientation from TopAbs;
+    or2 : Orientation from TopAbs;
+
+end ParameterAndOrientation;

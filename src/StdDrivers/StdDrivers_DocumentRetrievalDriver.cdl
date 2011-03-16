@@ -1,0 +1,25 @@
+-- File:	PAppStd_DocumentRetrievalDriver.cdl
+-- Created:	Sep  7 16:30:56 2000
+-- Author:	TURIN  Anatoliy <ati@nnov.matra-dtv.fr>
+-- Copyright:	Matra Datavision 2000
+
+class DocumentRetrievalDriver from StdDrivers inherits DocumentRetrievalDriver from MDocStd
+
+	---Purpose: retrieval driver of a Part document
+
+uses  
+
+    ARDriverTable from MDF, 
+    MessageDriver from CDM
+
+is
+
+    Create
+    returns mutable DocumentRetrievalDriver from StdDrivers;
+
+    AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM) 
+    returns ARDriverTable from MDF
+    is redefined;
+
+end DocumentRetrievalDriver;
+

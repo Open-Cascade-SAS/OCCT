@@ -1,0 +1,82 @@
+-- File:	MDF_Tool.cdl
+--      	--------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+class Tool from MDF
+
+	---Purpose: A tool to translate...
+
+uses
+
+    Label                  from TDF,
+    Data                   from TDF,
+    Data                   from PDF,
+    HAttributeArray1       from PDF,
+    TypeARDriverMap        from MDF,
+    TypeASDriverMap        from MDF,
+    ARDriverTable          from MDF,
+    ASDriverTable          from MDF,
+    RRelocationTable       from MDF,
+    SRelocationTable       from MDF,
+    Integer                from Standard,
+    HArray1OfInteger       from PColStd,
+    TransientPersistentMap from PTColStd
+
+-- raises
+
+is
+
+    WriteLabels(myclass;
+    	  aSource : Data from TDF;
+	  aTarget : Data from PDF;
+	  aDriverMap    : TypeASDriverMap from MDF;
+	  aReloc        : SRelocationTable from MDF);
+	---Purpose: Writes the labels with empty attributes.
+
+    WriteLabels(myclass;
+    	  aSourceLab    : Label from TDF;
+	  theLabels     : HArray1OfInteger from PColStd;
+	  theAttributes : HAttributeArray1 from PDF;
+	  aDriverMap    : TypeASDriverMap from MDF;
+	  aReloc        : SRelocationTable from MDF;
+	  labAlloc      : in out Integer from Standard;
+	  attAlloc      : in out Integer from Standard);
+	---Purpose: Used for recursivity.
+
+    WriteAttributes(myclass;
+	aDriverMap    : TypeASDriverMap from MDF;
+    	aReloc        : SRelocationTable from MDF);
+	---Purpose: Writes attributes content.
+
+
+
+    ReadLabels(myclass;
+    	  aSource : Data from PDF;
+	  aTarget : Data from TDF;
+	  aDriverMap    : TypeARDriverMap from MDF;
+	  aReloc        : RRelocationTable from MDF);
+	---Purpose:  Reads the labels abd adds empty attributes to them.
+
+    ReadLabels(myclass;
+    	  anIns         : in out Label from TDF;
+	  theLabels     : HArray1OfInteger from PColStd;
+	  theAttributes : HAttributeArray1 from PDF;
+	  aDriverMap    : TypeARDriverMap from MDF;
+	  aReloc        : RRelocationTable from MDF;
+	  labRead       : in out Integer from Standard;
+	  attRead       : in out Integer from Standard);
+	---Purpose: Used for recursivity.
+
+    ReadAttributes(myclass;
+	aDriverMap    : TypeARDriverMap from MDF;
+    	aReloc        : RRelocationTable from MDF);
+	---Purpose: Reads attributes content and paste them.
+
+end Tool;

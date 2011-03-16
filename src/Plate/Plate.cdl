@@ -1,0 +1,56 @@
+-- File:	Plate.cdl
+-- Created:	Tue Oct 17 16:44:41 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+--           	 
+
+package Plate
+
+uses
+     TCollection,  TColStd,
+     math, gp, TColgp
+is
+
+    class Plate; 
+    
+-- Basic  Constraints Class
+    class PinpointConstraint;
+    class LinearScalarConstraint;
+    class LinearXYZConstraint;
+--
+-- geometric Constraints Class
+--
+    class GlobalTranslationConstraint;  
+--    
+    class PlaneConstraint; 
+    class LineConstraint;  
+--  
+    class SampledCurveConstraint;
+--   
+--  class LinearizedHighlightConstraint;
+--  
+--  class DirectionalPressureConstraint;
+--  
+--  
+--  Geometric contact of order k Constraint 
+    class GtoCConstraint;
+    class FreeGtoCConstraint;
+
+
+-- utilities and internal Classes
+    class D1;
+    class D2;
+    class D3;
+    class SequenceOfPinpointConstraint instantiates Sequence from TCollection  
+                                       (PinpointConstraint from Plate);
+    class SequenceOfLinearXYZConstraint instantiates Sequence from TCollection  
+                                       (LinearXYZConstraint from Plate);
+    class SequenceOfLinearScalarConstraint instantiates Sequence from TCollection  
+                                       (LinearScalarConstraint from Plate);
+    class Array1OfPinpointConstraint instantiates Array1 from TCollection
+                                       (PinpointConstraint from Plate);    
+    class HArray1OfPinpointConstraint instantiates HArray1 from TCollection
+                                       (PinpointConstraint         from Plate,
+                                        Array1OfPinpointConstraint from Plate);    
+end Plate;

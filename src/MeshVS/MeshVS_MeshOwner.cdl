@@ -1,0 +1,77 @@
+-- File     : MeshVS_MeshOwner.cdl
+-- Created  : 24 January 2007
+-- Author   : Sergey  Kochetkov
+---Copyright: Open CASCADE 2007
+
+
+class MeshOwner from MeshVS inherits EntityOwner from SelectMgr
+
+	---Purpose: The custom mesh owner used for advanced mesh selection. This class provides methods to store information: 
+	-- 1) IDs of hilighted mesh nodes and elements 
+	-- 2) IDs of mesh nodes and elements selected on the mesh 
+	
+uses
+  SOPtr from SelectMgr,
+  Integer from Standard,
+  EntityType from MeshVS, 
+  HPackedMapOfInteger from TColStd,
+  PresentationManager3d   from PrsMgr, 
+  PresentationManager from PrsMgr,
+  NameOfColor from Quantity, 
+  DataSource from MeshVS
+
+is
+
+  Create ( theSelObj      : SOPtr from SelectMgr;  
+    	   theDS          : DataSource from MeshVS; 
+           thePriority    : Integer = 0 ) returns mutable MeshOwner from MeshVS;  
+ 
+  GetDataSource( me ) returns DataSource from MeshVS; 
+    	---C++: return const & 
+ 
+  GetSelectedNodes( me ) returns HPackedMapOfInteger from TColStd;  
+    	---C++: return const &
+    	---Purpose: Returns ids of selected mesh nodes  
+	 
+  GetSelectedElements( me ) returns HPackedMapOfInteger from TColStd;  
+    	---C++: return const &
+    	---Purpose: Returns ids of selected mesh elements 	    	
+	 
+  AddSelectedEntities( me : mutable;  Nodes  : HPackedMapOfInteger from TColStd; 
+    	    	    	    	      Elems  : HPackedMapOfInteger from TColStd ) is virtual;
+    	---Purpose: Saves ids of selected mesh entities 
+	 
+  ClearSelectedEntities( me : mutable ) is virtual;  
+    	---Purpose: Clears ids of selected mesh entities		  
+ 
+  GetDetectedNodes( me ) returns HPackedMapOfInteger from TColStd;  
+    	---C++: return const &
+    	---Purpose: Returns ids of hilighted mesh nodes  
+	 
+  GetDetectedElements( me ) returns HPackedMapOfInteger from TColStd;  
+    	---C++: return const &
+    	---Purpose: Returns ids of hilighted mesh elements 	    	
+	 
+  SetDetectedEntities( me : mutable;  Nodes  : HPackedMapOfInteger from TColStd; 
+    	    	    	    	      Elems  : HPackedMapOfInteger from TColStd );
+    	---Purpose: Saves ids of hilighted mesh entities   		    		  
+ 
+  HilightWithColor ( me : mutable; PM       : PresentationManager3d from PrsMgr;
+                                   theColor : NameOfColor from Quantity;
+                                   Mode     : Integer = 0 ) is redefined;		    
+										 
+  Unhilight( me    : mutable;      PM   : PresentationManager from PrsMgr;
+                                   Mode : Integer  from  Standard  = 0 ) is redefined;				      
+															       
+  IsForcedHilight ( me ) returns Boolean from Standard is redefined; 
+				    
+fields 
+ 
+  myDataSource         : DataSource from MeshVS; 
+  mySelectedNodes      : HPackedMapOfInteger from TColStd is protected;
+  mySelectedElems      : HPackedMapOfInteger from TColStd is protected;
+  myDetectedNodes      : HPackedMapOfInteger from TColStd;  
+  myDetectedElems      : HPackedMapOfInteger from TColStd; 
+  myLastID             : Integer from Standard;     
+			        
+end MeshOwner;

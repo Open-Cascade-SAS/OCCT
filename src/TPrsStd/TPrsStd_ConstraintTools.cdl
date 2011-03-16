@@ -1,0 +1,132 @@
+-- File:	TPrsStd_ConstraintTools.cdl
+-- Created:	Wed Aug 20 11:02:45 1997
+-- Author:	Guest Design
+--		<g_design@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ConstraintTools from TPrsStd
+
+uses
+
+  Constraint        from TDataXtd,
+  InteractiveObject from AIS,
+  ExtendedString    from TCollection,
+  Shape             from TopoDS,
+  Geometry          from Geom
+  
+is
+
+  UpdateOnlyValue (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : InteractiveObject from AIS);
+
+  ComputeDistance (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeParallel (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeTangent  (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputePerpendicular (myclass; aConst : Constraint from TDataXtd;
+    	    	    	         anAIS  : in out InteractiveObject from AIS);
+
+  ComputeConcentric (myclass; aConst : Constraint from TDataXtd;
+    	    	     	      anAIS  : in out InteractiveObject from AIS);
+
+  ComputeSymmetry (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeMidPoint (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeAngle    (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeRadius   (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+--ota:			    
+  ComputeMinRadius   (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+			    
+  ComputeMaxRadius   (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+     
+  ComputeEqualDistance (myclass;  aConst : Constraint from TDataXtd; 
+    	    	    		  anAIS  : in out InteractiveObject from AIS);
+--end     
+  ComputeEqualRadius   (myclass; aConst : Constraint from TDataXtd; 
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeFix      (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeDiameter (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeOffset   (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputePlacement(myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+  ComputeCoincident(myclass; aConst : Constraint from TDataXtd;
+    	    	    	     anAIS  : in out InteractiveObject from AIS);  
+
+  ComputeRound(myclass; aConst : Constraint from TDataXtd;
+    	    	    	     anAIS  : in out InteractiveObject from AIS);  
+
+  ComputeOthers   (myclass; aConst : Constraint from TDataXtd;
+    	    	    	    anAIS  : in out InteractiveObject from AIS);
+
+
+  ComputeTextAndValue(myclass; aConst : Constraint from TDataXtd;
+    			       aValue : in out Real from Standard;
+    	    	    	       aText  : in out ExtendedString from TCollection;
+                               anIsAngle : Boolean from Standard);
+			       
+-- addition for one conical face angle
+  ComputeAngleForOneFace(myclass; aConst : Constraint from TDataXtd;
+    	    	    	    	  anAIS  : in out InteractiveObject from AIS );
+				  
+  GetOneShape(myclass; aConst : Constraint from TDataXtd;
+              aShape : in out Shape from TopoDS)
+  is private;
+
+  GetGeom    (myclass; aConst : Constraint from TDataXtd;
+                       aGeom  : in out Geometry     from Geom)
+  is private;
+
+  GetTwoShapes(myclass; aConst : Constraint from TDataXtd;
+              aShape1 : in out Shape from TopoDS;
+    	      aShape2 : in out Shape from TopoDS)
+  is private;
+
+  GetShapesAndGeom(myclass; aConst : Constraint from TDataXtd;
+                   aShape1 : in out Shape from TopoDS;
+    	           aShape2 : in out Shape from TopoDS;
+    	    	   aGeom   : in out Geometry     from Geom)
+  is private;
+
+  GetShapesAndGeom(myclass; aConst : Constraint from TDataXtd;
+                   aShape1 : in out Shape from TopoDS;
+    	           aShape2 : in out Shape from TopoDS;
+    	           aShape3 : in out Shape from TopoDS;
+    	    	   aGeom   : in out Geometry     from Geom)
+  is private;
+  
+--ota --
+  GetShapesAndGeom(myclass; aConst : Constraint from TDataXtd;
+                   aShape1 : in out Shape from TopoDS;
+    	           aShape2 : in out Shape from TopoDS;
+    	           aShape3 : in out Shape from TopoDS;
+    	           aShape4 : in out Shape from TopoDS;
+    	    	   aGeom   : in out Geometry from Geom)
+  is private;
+----
+
+end ConstraintTools;
+
+
+

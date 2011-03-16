@@ -1,0 +1,39 @@
+-- File:	SurfaceTool.cdl
+-- Created:	Thu Mar 26 13:40:06 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+private  class SurfaceTool from GeomLProp
+
+uses Pnt     from gp,
+     Vec     from gp,
+     Surface from Geom
+
+is
+
+    Value(myclass; S : Surface; U, V : Real; P : out Pnt);
+    ---Purpose: Computes the point <P> of parameter <U> and <V> on the 
+    --          Surface <S>.
+     	
+    D1   (myclass; S : Surface; U, V : Real; P : out Pnt; D1U, D1V : out Vec);
+    ---Purpose: Computes the point <P> and first derivative <D1*> of 
+    --          parameter <U> and <V> on the Surface <S>.
+
+    D2   (myclass; S : Surface; U, V : Real; 
+              P : out Pnt; D1U, D1V, D2U, D2V, DUV : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <D1*> and second
+    --          derivative <D2*> of parameter <U> and <V> on the Surface <S>.
+     
+    DN     (myclass; S : Surface; U, V : Real;  IU,  IV  :  Integer) 
+    returns  Vec;
+    
+    Continuity(myclass; S : Surface) returns Integer;
+    ---Purpose: returns the order of continuity of the Surface <S>.
+    --          returns 1 : first derivative only is computable
+    --          returns 2 : first and second derivative only are computable.
+
+    Bounds(myclass; S : Surface; U1, V1, U2, V2 : out Real);
+    ---Purpose: returns the bounds of the Surface.
+
+end SurfaceTool;

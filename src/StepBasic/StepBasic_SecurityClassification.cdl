@@ -1,0 +1,40 @@
+-- File:        SecurityClassification.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SecurityClassification from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	SecurityClassificationLevel from StepBasic
+is
+
+	Create returns mutable SecurityClassification;
+	---Purpose: Returns a SecurityClassification
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPurpose : mutable HAsciiString from TCollection;
+	      aSecurityLevel : mutable SecurityClassificationLevel from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetPurpose(me : mutable; aPurpose : mutable HAsciiString);
+	Purpose (me) returns mutable HAsciiString;
+	SetSecurityLevel(me : mutable; aSecurityLevel : mutable SecurityClassificationLevel);
+	SecurityLevel (me) returns mutable SecurityClassificationLevel;
+
+fields
+
+	name : HAsciiString from TCollection;
+	purpose : HAsciiString from TCollection;
+	securityLevel : SecurityClassificationLevel from StepBasic;
+
+end SecurityClassification;

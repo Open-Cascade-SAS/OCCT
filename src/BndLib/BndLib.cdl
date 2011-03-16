@@ -1,0 +1,184 @@
+-- File:	BndLib.cdl
+-- Created:	Thu Jul  8 11:05:36 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package BndLib 
+
+	---Purpose: The BndLib package provides functions to add a geometric primitive to a bounding box.
+    	--     Note: these functions work with gp objects, optionally
+    	--     limited by parameter values. If the curves and surfaces
+    	--     provided by the gp package are not explicitly
+    	--     parameterized, they still have an implicit parameterization,
+    	--     similar to that which they infer for the equivalent Geom or Geom2d objects.          
+	--     Add : Package to compute the bounding boxes for elementary 
+	--           objects from gp in 2d and 3d .
+	-- 
+	--     AddCurve2d : A class to compute the bounding box for a curve
+	--     in 2d dimensions ;the curve is defined by a tool              
+	--     
+	--     AddCurve : A class to compute the bounding box for a curve
+	--     in 3d dimensions ;the curve is defined by a tool              
+	--     
+	--     AddSurface : A class to compute the bounding box for a surface.
+	--     The surface is defined by a tool for the geometry and another
+	--     tool for the topology (only the edges in 2d dimensions) 
+
+        ---Level : Public. 
+        --  All methods of all  classes will be public.
+
+
+uses TColgp,Bnd,gp,GeomAbs,Standard, Geom2d, Geom, Adaptor3d  ,Adaptor2d
+
+is
+    class Add3dCurve;
+	    ---Purpose: Bounding box for a curve in  3d.		     
+
+    class Add2dCurve;
+	    ---Purpose: Bounding box for a curve in 2d.        
+
+    class AddSurface;
+	    ---Purpose: Bounding box for a surface trimmed or not    
+
+    Add(L   : Lin from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+	---Purpose: Adds the segment of the line L limited by the two
+    	-- parameter values P1 and P2, to the bounding box B, and
+    	-- then enlarges B by the tolerance value Tol. 
+	-- Tol is the tolerance value to enlarge the minimun and maximum dimension 
+    	-- P1 and P2 may represent infinite values.
+    	-- Exceptions
+    	-- Standard_Failure if P1 and P2 are either two negative
+    	-- infinite real numbers, or two positive infinite real numbers.
+  
+
+    Add(L   : Lin2d from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box2d from Bnd);
+
+
+    Add(C : Circ from gp; Tol : Real from Standard; B :in out Box from Bnd);
+
+    Add(C   : Circ from gp; P1,P2 : Real from Standard;
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose:  P2-P1 can be in [0,2*pi]
+
+    Add(C  : Circ2d from gp; Tol : Real from Standard;
+    	 B : in out Box2d from Bnd);
+
+    Add(C   : Circ2d from gp; P1,P2 : Real from Standard;
+        Tol : Real from Standard; B : in out Box2d from Bnd);
+    	---Purpose: Adds the circle C, or the arc of the circle C 
+    	-- limited by the two parameter values P1 and P2,
+    	-- to the bounding box B, and then enlarges B by the tolerance value Tol.
+        -- P2-P1 can be in [0,2*pi]
+
+    Add(C : Elips from gp; Tol : Real from Standard; B :in out Box from Bnd);
+
+    Add(C   : Elips from gp; P1,P2 : Real from Standard;
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose:  P2-P1 can be in [0,2*pi]
+
+    Add(C : Elips2d from gp; Tol : Real from Standard; 
+    	B : in out Box2d from Bnd);
+
+    Add(C   : Elips2d from gp; P1,P2 : Real from Standard;
+        Tol : Real from Standard; B : in out Box2d from Bnd);
+    	---Purpose: Adds the ellipse E, or the arc of the ellipse E 
+    	-- limited by the two parameter values P1 and P2,
+    	-- to the bounding box B, and then enlarges B by the tolerance value Tol.
+    	-- P2-P1 can be in [0,2*pi]
+
+    Add(P   : Parab from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+
+    Add(P   : Parab2d from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box2d from Bnd);
+    	--- Purpose: Adds the arc of the parabola P limited by the two
+    	-- parameter values P1 and P2, to the bounding box B, and
+    	-- then enlarges B by the tolerance value Tol.
+    	-- P1 and P2 may represent infinite values.
+    	-- Exceptions
+    	-- Standard_Failure if P1 and P2 are either two negative
+    	-- infinite real numbers, or two positive infinite real numbers.
+  
+    Add(H   : Hypr from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+
+    Add(H   : Hypr2d from gp; P1,P2 : Real from Standard; 
+        Tol : Real from Standard; B : in out Box2d from Bnd);
+    	---Purpose: Adds the arc of the branch of hyperbola H limited by the
+    	-- two parameter values P1 and P2, to the bounding box B,
+    	-- and then enlarges B by the tolerance value Tol.
+    	-- P1 and P2 may represent infinite values.
+    	-- Exceptions
+    	-- Standard_Failure if P1 and P2 are either two negative
+    	-- infinite real numbers, or two positive infinite real numbers.
+    
+    Add(S   : Cylinder from gp; UMin,UMax,VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose:  UMax -UMin can be in [0,2*pi]
+
+    Add(S   : Cylinder from gp; VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose: Adds to the bounding box B, the patch of the cylinder S limited
+    	-- -   in the v parametric direction, by the two parameter
+    	--   values VMin and VMax
+    	-- -   and optionally in the u parametric direction, by the two
+    	--   parameter values UMin and UMax.
+    	-- B is then enlarged by the tolerance value Tol.
+    	-- VMin and VMax may represent infinite values.
+    	-- Exceptions
+    	-- Standard_Failure if VMin and VMax are either two
+    	-- negative infinite real numbers, or two positive infinite real numbers.
+    
+    Add(S   : Cone from gp; UMin,UMax,VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose:  UMax-UMin can be in [0,2*pi]
+
+    Add(S   : Cone from gp; VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose: Adds to the bounding box B, the patch of the cone S limited
+    	-- -   in the v parametric direction, by the two parameter
+    	--   values VMin and VMax
+    	-- -   and optionally in the u parametric direction, by the two
+    	--   parameter values UMin and UMax,
+    	-- B is then enlarged by the tolerance value Tol.
+    	-- VMin and VMax may represent infinite values.
+    	-- Exceptions
+    	-- Standard_Failure if VMin and VMax are either two
+    	-- negative infinite real numbers, or two positive infinite real numbers.
+    
+    Add(S   : Sphere from gp;  Tol : Real from Standard; 
+    	B   : in out Box from Bnd);
+
+    Add(S   : Sphere from gp; UMin,UMax,VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose: Adds to the bounding box B the sphere S, or
+    	-- -   the patch of the sphere S, limited in the u parametric
+    	--   direction, by the two parameter values UMin and UMax,
+    	--   and in the v parametric direction, by the two parameter
+    	--   values VMin and VMax.
+    	-- B is then enlarged by the tolerance value Tol.
+    	-- UMax-UMin can be in [0,2*pi]
+	--           VMin,VMax can be [-pi/2,pi/2]
+
+    Add(P   : Torus from gp; Tol : Real from Standard; 
+    	B   : in out Box from Bnd);
+
+    Add(P   : Torus from gp; UMin,UMax,VMin,VMax : Real from Standard; 
+        Tol : Real from Standard; B : in out Box from Bnd);
+    	---Purpose: Adds to the bounding box B
+    	-- -   the torus S, or
+    	-- -   the patch of the torus S, limited in the u parametric
+    	--   direction, by the two parameter values UMin and UMax,
+    	--   and in the v parametric direction, by the two parameter
+    	--   values VMin and VMax.
+    	-- B is then enlarged by the tolerance value Tol.
+    	-- UMax-UMin can be in [0,2*pi],
+    	--           VMin,VMax can be [-pi/2,pi/2]
+
+end BndLib;
+

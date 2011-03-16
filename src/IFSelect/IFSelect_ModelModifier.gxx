@@ -1,0 +1,28 @@
+//#include <IFSelect_ModelModifier.ixx>
+#include <Interface_Check.hxx>
+
+    IFSelect_ModelModifier::IFSelect_ModelModifier (const Standard_Boolean grf)
+    : IFSelect_Modifier (grf)    {  }
+
+    void  IFSelect_ModelModifier::Perform
+  (IFSelect_ContextModif& ctx,
+   const Handle(Interface_InterfaceModel)& target,
+   const Handle(Interface_Protocol)& protocol,
+   Interface_CopyTool& TC) const
+{
+  ctx.TraceModifier(this);
+  Handle(Model) targ = Handle(Model)::DownCast(target);
+  Handle(Proto) prot = Handle(Proto)::DownCast(protocol);
+  if (targ.IsNull()) {
+    ctx.CCheck()->AddFail("Model to Modify : unproper type");
+    return;
+  }
+  PerformProtocol (ctx,targ,prot,TC);
+}
+
+    void  IFSelect_ModelModifier::PerformProtocol
+  (IFSelect_ContextModif& ctx,
+   const Handle(Model)& target,
+   const Handle(Proto)& protocol,
+   Interface_CopyTool& TC) const
+{  ctx.SetProtocol(protocol);  Performing (ctx,target,TC);  }

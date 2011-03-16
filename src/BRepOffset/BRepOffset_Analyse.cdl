@@ -1,0 +1,128 @@
+-- File:	BRepOffset_Analyse.cdl
+-- Created:	Fri Oct 20 16:40:49 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Analyse from BRepOffset 
+
+	---Purpose: Analyse of a shape consit to
+	--          Find the part of edges convex concave tangent.
+
+uses
+
+    Shape                            from TopoDS,
+    Face                             from TopoDS,
+    Edge                             from TopoDS,
+    Vertex                           from TopoDS,
+    Compound                         from TopoDS,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    ListOfShape                      from TopTools,
+    MapOfShape                       from TopTools,
+    Interval                         from BRepOffset,
+    ListOfInterval                   from BRepOffset,
+    DataMapOfShapeListOfInterval     from BRepOffset,
+    Type                             from BRepOffset
+    
+is
+    Create;
+    
+    Create (S         : Shape  from TopoDS  ;
+    	    Angle     : Real   from Standard) 
+    returns Analyse from BRepOffset;
+    
+    Perform (me        : in out ;
+    	     S         : Shape  from TopoDS  ;
+    	     Angle     : Real   from Standard)   
+    is static;
+	    
+    IsDone (me) 
+    returns Boolean from Standard
+    is static;
+
+    Clear(me : in out)
+    is static;
+
+    Type (me; E : Edge from TopoDS) 
+	---C++: return const&
+    returns  ListOfInterval from BRepOffset
+    is static;
+    
+    Edges (me; 
+           V :        Vertex      from TopoDS; 
+           T :        Type        from BRepOffset;
+           L : in out ListOfShape from TopTools)
+	---Purpose: Stores in <L> all the edges of Type <T>
+	--          on the vertex <V>.
+    is static;
+    
+    Edges (me; 
+           F :        Face        from TopoDS; 
+           T :        Type        from BRepOffset;
+           L : in out ListOfShape from TopTools)
+	---Purpose: Stores in <L> all the edges of Type <T>
+	--          on the face <F>.
+    is static;
+
+    TangentEdges(me;
+    	         Edge   :        Edge        from TopoDS;
+		 Vertex :        Vertex      from TopoDS;
+		 Edges  : in out ListOfShape from TopTools)
+    	---Purpose: set in <Edges> all  the Edges of <Shape> which are
+    	--          tangent to <Edge> at the vertex <Vertex>.
+    is static;		    		 
+
+    HasAncestor (me ; S : Shape from TopoDS)
+    returns Boolean from Standard
+    is static;
+    
+    Ancestors (me ; S : Shape from TopoDS)
+    ---C++: return const &
+    returns ListOfShape from TopTools
+    is static;
+    
+    Explode (me;
+    	     L    : in out ListOfShape from TopTools;
+    	     Type : in     Type        from BRepOffset) 
+	---Purpose: Explode in compounds of faces where
+	--          all the connex edges are of type <Side>
+    is static;
+
+    Explode (me;
+    	     L     : in out ListOfShape from TopTools;
+    	     Type1 : in     Type        from BRepOffset; 
+	     Type2 : in     Type        from BRepOffset) 
+	---Purpose: Explode in compounds of faces where
+	--          all the connex edges are of type <Side1> or <Side2>
+    is static;
+
+    AddFaces(me;
+    	     Face :        Face       from TopoDS;
+	     Co   : in out Compound   from TopoDS;
+	     Map  : in out MapOfShape from TopTools;
+	     Type : in     Type       from BRepOffset) 
+	---Purpose: Add in <CO> the faces of the shell containing <Face>
+	--          where all the connex edges are of type <Side>.
+    is static;
+
+    AddFaces(me;
+    	     Face  :        Face       from TopoDS;
+	     Co    : in out Compound   from TopoDS;
+	     Map   : in out MapOfShape from TopTools;
+	     Type1 : in     Type       from BRepOffset;
+	     Type2 : in     Type       from BRepOffset) 
+        ---Purpose: Add in <CO> the faces of the shell containing <Face>
+	--          where all the connex edges are of type <Side1> or <Side2>.
+
+    is static;
+
+fields
+
+    myDone      : Boolean                          from Standard;
+    myShape     : Shape                            from TopoDS;
+    mapEdgeType : DataMapOfShapeListOfInterval     from BRepOffset;
+    ancestors   : IndexedDataMapOfShapeListOfShape from TopTools;
+    angle       : Real                             from Standard;
+    
+end Analyse;

@@ -1,0 +1,79 @@
+-- File     : MeshVS_MeshEntityOwner.cdl
+-- Created  : 10 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+
+class MeshEntityOwner from MeshVS inherits EntityOwner from SelectMgr
+
+	---Purpose: The custom owner. This class provides methods to store owner information:
+        --   1) An address of element or node data structure
+        --   2) Type of node or element owner assigned
+        --   3) ID of node or element owner assigned
+
+uses
+  SOPtr from SelectMgr,
+
+  Integer from Standard,
+  Address from Standard,
+
+  Array1OfReal from TColStd,
+
+  EntityType from MeshVS,
+
+  PresentationManager3d from PrsMgr,
+  PresentationManager   from PrsMgr,
+
+  NameOfColor from Quantity
+
+is
+
+  Create ( SelObj      : SOPtr from SelectMgr;
+           ID          : Integer;
+           MeshEntity  : Address;
+           Type        : EntityType from MeshVS;
+           Priority    : Integer = 0;
+           IsGroup     : Boolean = Standard_False ) returns mutable MeshEntityOwner from MeshVS;
+
+  Owner            ( me ) returns Address;
+	---Purpose: Returns an address of element or node data structure
+
+  Type             ( me ) returns EntityType;
+	---Purpose: Returns type of element or node data structure
+
+  ID               ( me ) returns Integer;
+	---Purpose: Returns ID of element or node data structure
+
+  IsGroup          ( me ) returns Boolean;
+	---Purpose: Returns true if owner represents group of nodes or elements
+
+  IsHilighted      ( me; PM : PresentationManager from PrsMgr;
+                     Mode   : Integer = 0 ) returns Boolean is redefined;
+	---Purpose: Returns true if owner is hilighted
+
+  Hilight          ( me : mutable ) is redefined;
+	---Purpose: Hilights owner
+
+  Hilight          ( me : mutable; PM : PresentationManager from PrsMgr;
+                     Mode   : Integer = 0 ) is redefined;
+	---Purpose: Hilights owner
+
+  HilightWithColor ( me : mutable; PM   : PresentationManager3d from PrsMgr;
+                     theColor : NameOfColor from Quantity;
+                     Mode     : Integer = 0 ) is redefined;
+	---Purpose: Hilights owner with the certain color
+
+  Unhilight        ( me : mutable; PM : PresentationManager from PrsMgr;
+                     Mode   : Integer = 0 ) is redefined;
+	---Purpose: Strip hilight of owner
+
+  Clear            ( me : mutable; PM : PresentationManager from PrsMgr;
+                     Mode   : Integer = 0 ) is redefined;
+
+fields
+  myAddr           : Address;
+  myType           : EntityType from MeshVS;
+  myID             : Integer;
+  myIsGroup        : Boolean;
+
+end MeshEntityOwner;

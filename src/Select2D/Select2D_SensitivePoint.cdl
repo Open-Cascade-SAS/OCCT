@@ -1,0 +1,71 @@
+-- File:	Select2D_SensitivePoint.cdl
+-- Created:	Thu Jan 26 16:24:58 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class SensitivePoint from Select2D inherits SensitiveEntity from Select2D
+
+	---Purpose: A framework to define sensitive 2D points.
+
+uses
+    Integer from Standard,
+    Pnt2d from gp,
+    EntityOwner from SelectBasics,
+    ListOfBox2d from SelectBasics  
+
+is
+
+
+    Create (OwnerId         : EntityOwner from SelectBasics;
+    	    Location        : Pnt2d from gp;
+    	    InitSensitivity : Real = 0)
+    returns mutable SensitivePoint from Select2D;
+    	---Purpose: Constructs the sensitive point object defined by the
+    	-- owner OwnerId, the point Location and the sensitivity InitSensitivity.
+    	-- InitSensitivity allows choice of dimensions in the
+    	-- selectable box around the sensitive point. It is
+    	-- initialized with a null value, and is given a working one by Set.
+    
+    
+    Set(me:mutable; aSensitivity:Real) is static;
+    	---Purpose: Sets the sensitivity aSensitivity for sensitive
+    	-- primitives to find owners of points.
+
+    Areas  (me:mutable ; aresul : in out ListOfBox2d from SelectBasics) is static;
+    	---Level: Public 
+    	---Purpose: Returns the 2Dbox around the point (this box) has to be enlarged (sensitivity = 0) 
+    
+    
+    Location(me) returns Pnt2d from gp;
+    	---Level: Public 
+    	---C++: inline
+    	---C++: return const&
+    	---Purpose: returns the original point.
+    
+    
+    
+    Matches (me     : mutable ; 
+    	     X,Y    : Real from Standard;
+             aTol   : Real from Standard;
+    	     DMin   : out Real from Standard) 
+    returns Boolean
+    is static;
+    	---Purpose: if distance between P
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+
+
+fields
+    
+    mylocation    : Pnt2d from gp;
+    mysensitivity : Real;
+
+end SensitivePoint;
+

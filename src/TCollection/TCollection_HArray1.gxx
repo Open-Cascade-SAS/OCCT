@@ -1,0 +1,43 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_OutOfMemory.hxx>
+
+
+//=======================================================================
+//function : TCollection_HArray1
+//purpose  : 
+//=======================================================================
+
+TCollection_HArray1::TCollection_HArray1(const Standard_Integer First,
+					 const Standard_Integer Last) :
+       myArray(First,Last)
+{
+}
+
+//=======================================================================
+//function : TCollection_HArray1
+//purpose  : 
+//=======================================================================
+TCollection_HArray1::TCollection_HArray1(const Standard_Integer First,
+					 const Standard_Integer Last,
+					 const ItemHArray1& V) :
+       myArray(First,Last)
+{
+  myArray.Init(V);
+}
+
+
+//=======================================================================
+//function : TCollection_HArray1
+//purpose  : 
+//=======================================================================
+
+void TCollection_HArray1::Init(const ItemHArray1& V)
+{
+  myArray.Init(V);
+}
+
+
+
+

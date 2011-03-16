@@ -1,0 +1,216 @@
+#include <LProp_Status.hxx>
+#include <LProp_NotDefined.hxx>
+#include <Standard_OutOfRange.hxx>
+
+
+ 
+LProp_CLProps::LProp_CLProps (const Curve& C, 
+                              const Standard_Real U,
+			      const Standard_Integer N, 
+                              const Standard_Real Resolution) 
+     : myCurve(C), 
+       level(N),
+       cn(4), // cn(Tool::Continuity(C)),   RLE
+       linTol(Resolution), 
+       tangentStatus (LProp_Undecided)
+{
+
+  Standard_OutOfRange_Raise_if (N < 0 || N > 3,
+                                "LProp_CLProps::LProp_CLProps()");
+  
+  SetParameter(U);
+}
+
+LProp_CLProps::LProp_CLProps (const Curve& C, 
+			      const Standard_Integer N, 
+                              const Standard_Real Resolution) 
+     : myCurve(C), 
+       u(RealLast()),
+       level(N),
+       cn(4), // (Tool::Continuity(C)), RLE
+       linTol(Resolution), 
+       tangentStatus (LProp_Undecided)
+
+{
+
+  Standard_OutOfRange_Raise_if (N < 0 || N > 3, "");  
+}
+
+LProp_CLProps::LProp_CLProps (const Standard_Integer N, 
+                              const Standard_Real Resolution) 
+     : u(RealLast()),
+       level(N),
+       cn(0),
+       linTol(Resolution),
+       tangentStatus (LProp_Undecided)
+{
+
+  Standard_OutOfRange_Raise_if (N < 0 || N > 3, "");  
+}
+
+void LProp_CLProps::SetParameter(const Standard_Real U)
+{ 
+  u = U;
+  switch (level) {
+  case 0:
+    Tool::Value(myCurve, u, pnt);
+    break;
+  case 1:
+    Tool::D1(myCurve, u, pnt, d[0]);
+    break;
+  case 2:
+    Tool::D2(myCurve, u, pnt, d[0], d[1]);
+    break;
+  case 3:
+    Tool::D3(myCurve, u, pnt, d[0], d[1], d[2]);
+    break;
+  }
+  tangentStatus = LProp_Undecided;
+}
+
+void LProp_CLProps::SetCurve(const Curve& C) {
+       myCurve = C ; 
+       cn = 4; // Tool::Continuity(C); RLE
+}
+
+const Pnt& LProp_CLProps::Value () const
+{ 
+  return pnt;
+}
+
+const Vec& LProp_CLProps::D1 ()
+{
+  if (level < 1) {
+    level = 1;
+    Tool::D1(myCurve, u, pnt, d[0]);
+  }
+  return d[0];
+}
+
+const Vec& LProp_CLProps::D2 ()
+{
+  if (level < 2) {
+    level = 2;
+    Tool::D2(myCurve, u, pnt, d[0], d[1]);
+  }
+  return d[1];
+}
+
+const Vec& LProp_CLProps::D3 ()
+{
+  if (level < 3) {
+    level = 3;
+    Tool::D3(myCurve, u, pnt, d[0], d[1], d[2]);
+  }
+  return d[2];
+}
+
+Standard_Boolean LProp_CLProps::IsTangentDefined ()
+{
+
+  if (tangentStatus == LProp_Undefined) {
+    return Standard_False;
+  }
+  else if (tangentStatus >= LProp_Defined) {
+    return Standard_True;
+  }
+
+  // tangentStatus == Lprop_Undecided 
+  // we have to calculate the first non null derivative
+  Standard_Real Tol = linTol * linTol;
+  Vec V;
+  Standard_Integer Order = 0;
+  while (Order < 4) {
+    Order++;
+    if(cn >= Order) {
+      switch(Order) {
+      case 1 :
+	V = D1();
+	break;
+      case 2 :
+	V = D2();
+	break;
+      case 3 :
+	V = D3();
+	break;
+      };
+      if(V.SquareMagnitude() > Tol) {
+	significantFirstDerivativeOrder = Order;
+	tangentStatus = LProp_Defined;
+	return Standard_True;
+      }
+    }
+    else {
+      tangentStatus = LProp_Undefined;
+      return Standard_False;
+    }
+  }
+  return Standard_False;
+}
+
+
+void  LProp_CLProps::Tangent (Dir& D)
+{
+
+  if(!IsTangentDefined()) { LProp_NotDefined::Raise(); }
+  D = Dir(d[significantFirstDerivativeOrder - 1]);
+}
+
+Standard_Real LProp_CLProps::Curvature ()
+{
+  Standard_Boolean isDefined = IsTangentDefined();
+  LProp_NotDefined_Raise_if(!isDefined,
+			    "LProp_CLProps::CurvatureNotDefined()");
+
+  // if the first derivative is null the curvature is infinite.
+  if(significantFirstDerivativeOrder > 1) return RealLast();
+
+  Standard_Real Tol = linTol * linTol;
+  Standard_Real DD1 = d[0].SquareMagnitude();
+  Standard_Real DD2 = d[1].SquareMagnitude();
+  // if the second derivative is null the curvature is null.
+  if (DD2 <= Tol) { 
+    curvature = 0.0;
+  }
+  else {
+    Standard_Real N = d[0].CrossSquareMagnitude(d[1]);
+    // if d[0] and d[1] are colinear the curvature is null.
+    Standard_Real t = N/(DD1*DD2);
+    if (t<=Tol) {
+      curvature = 0.0;
+    }
+    else {
+      curvature = sqrt(N) / (DD1*sqrt(DD1));
+    }
+  }
+  return curvature;
+} 
+
+
+void  LProp_CLProps::Normal (Dir& D)
+{
+  Standard_Real c = Curvature();
+  if(c==RealLast() || Abs(c) <= linTol) { LProp_NotDefined::Raise(); }
+
+  // we used here the following vector relation 
+  // a ^ (b ^ c) = b(ac) - c(ab)
+  // Norm = d[0] ^ (d[1] ^ d[0])
+
+  Vec Norm = d[1] * (d[0] * d[0]) - d[0] * (d[0] * d[1]);
+  D = Dir(Norm);
+}
+
+
+void  LProp_CLProps::CentreOfCurvature (Pnt& P)
+{
+  if(Abs(Curvature()) <= linTol) { LProp_NotDefined::Raise(); }
+
+  // we used here the following vector relation 
+  // a ^ (b ^ c) = b(ac) - c(ab)
+  // Norm = d[0] ^ (d[1] ^ d[0])
+
+  Vec Norm = d[1] * (d[0] * d[0]) - d[0] * (d[0] * d[1]);
+  Norm.Normalize();
+  Norm.Divide(curvature);
+  P= pnt.Translated(Norm);
+}

@@ -1,0 +1,81 @@
+-- File:	StdSelect_SensitiveText2d.cdl
+-- Created:	Fri Apr 21 10:53:42 1995x
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class SensitiveText2d from StdSelect inherits SensitiveEntity from 
+Select2D
+
+	---Purpose:  A framework to define a sensitive text entity for 2D views.
+        
+uses
+    ExtendedString  from TCollection,
+    EntityOwner     from SelectBasics,
+    ListOfBox2d     from SelectBasics,
+    Projector       from Select2D,
+    Array1OfPnt2d   from TColgp,
+    Box2d from Bnd
+    
+is
+
+    Create(anOwnerId : EntityOwner from SelectBasics;
+    	   aString   : ExtendedString from TCollection;
+    	   XPox,YPos : Real from Standard;
+    	   Angle     : Real = 0;
+    	   aFontIndex: Integer = -1)
+    returns mutable SensitiveText2d from StdSelect;
+    	---Purpose: Constructs a sensitive 2D text object defined by the
+    	-- owner anOwnerId, the string aString, the point
+    	-- defined by the parameters XPos and YPos, the angle
+    	-- Angle and the font index aFontIndex. 
+
+    NeedsConversion (me) returns Boolean is redefined static;
+    	---Purpose: returns Standard_True 
+    	---Level: Public 
+    	---C++: inline
+
+    Convert(me:mutable; aTextProj : Projector from Select2D) is redefined virtual;
+    	---Purpose: gets the size of the text in the 2d view 
+    	---Level: Public 
+
+
+    Areas(me:mutable; aresult : in out ListOfBox2d from SelectBasics) is redefined static;  
+    	---Level: Public 
+    	---Purpose: to be implemented specifically by each type of
+    	--          sensitive  primitive .
+    	--          
+    
+    Matches (me  :mutable; 
+             X,Y : Real from Standard;
+             aTol: Real from Standard;
+             DMin: out Real from Standard) 
+    returns Boolean
+    is redefined static;
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard)
+    returns Boolean
+    is redefined static;
+
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard)
+    returns Boolean
+    is redefined static;
+
+fields
+
+    mytext : ExtendedString from TCollection;
+    myxpos : Real;
+    myypos : Real;
+    myangle: Real;
+    myfont : Integer;
+
+    myinitbox: Box2d from Bnd; --box before rotation...
+
+end SensitiveText2d;

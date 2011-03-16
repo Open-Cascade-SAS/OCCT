@@ -1,0 +1,69 @@
+-- File:	DDataStd_TreeBrowser.cdl
+--      	--------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Nov 27 1997	Creation
+
+class TreeBrowser from DDataStd inherits Drawable3D from Draw
+
+	---Purpose: Browses a TreeNode from TDataStd.
+	--          =================================
+
+uses
+
+    Label               from TDF,
+    TreeNode            from TDataStd,
+    Interpretor         from Draw,
+    Display             from Draw,
+    AsciiString         from TCollection
+
+is
+
+    Create  (root : Label from TDF)
+    returns mutable TreeBrowser from DDataStd;
+    
+    DrawOn (me; dis : in out Display);
+    
+    Copy (me) 
+    returns mutable Drawable3D from Draw
+    is redefined;
+
+    Dump (me; S : in out OStream) 
+    is redefined;
+
+    Whatis (me; I : in out Interpretor from Draw)
+    is redefined;
+
+    ---Purpose: Specific methods
+    --          ================
+
+    Label (me : mutable; root : Label from TDF);
+    
+    Label (me) 
+    returns Label from TDF;
+
+    OpenRoot (me)
+    ---Purpose: Returns   a   string composed with  the   TreeNode  of
+    --          <myLabel>.
+     returns AsciiString from TCollection;
+
+    OpenNode (me; L : Label from TDF)
+    ---Purpose:  Returns a string composed   with the sub-TreeNodes of
+    --          <L>
+    returns AsciiString from TCollection;
+
+    OpenNode (me; aTreeNode :        TreeNode    from TDataStd;
+    	    	  aList     : in out AsciiString from TCollection)  
+    ---Purpose: Returns a string composed with the sub-TreeNodes
+    --          of <aTreeNode>. Used to implement other methods.
+    is private;
+
+fields
+
+    myRoot : Label from TDF;
+
+end TreeBrowser;

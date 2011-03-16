@@ -1,0 +1,28 @@
+-- File:	RWStepBasic_RWSiUnitAndVolumeUnit.cdl
+-- Created:	Tue Oct 12 13:35:51 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class RWSiUnitAndVolumeUnit from RWStepBasic 
+
+	---Purpose: Read & Write Module for SiUnitAndVolumeUnit
+
+uses
+
+    Check from Interface,
+    StepReaderData from StepData,
+    StepWriter from StepData,
+    SiUnitAndVolumeUnit from StepBasic
+
+is
+
+    Create returns RWSiUnitAndVolumeUnit from RWStepBasic;
+    
+    ReadStep (me; data: StepReaderData; num: Integer;
+	          ach : in out Check;   ent: mutable SiUnitAndVolumeUnit from StepBasic);
+    
+    WriteStep (me; SW : in out StepWriter; ent: SiUnitAndVolumeUnit from StepBasic);
+    
+end RWSiUnitAndVolumeUnit;

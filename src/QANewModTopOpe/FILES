@@ -1,0 +1,5 @@
+QANewModTopOpe_Glue_util.cxx
+QANewModTopOpe_Glue_vertex.cxx
+QANewModTopOpe_Glue_shell.cxx
+QANewModTopOpe_Glue_wire.cxx
+QANewModTopOpe_Glue_SDFaces.cxx

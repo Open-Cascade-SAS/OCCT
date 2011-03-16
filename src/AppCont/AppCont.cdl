@@ -1,0 +1,100 @@
+-- File:	AppCont.cdl
+-- Created:	Thu Apr 22 11:56:20 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package AppCont
+
+    ---Purpose: This package provides the least square algorithms 
+    --          necessary to approximate a set of continous curves
+    --          or a continous surface.
+    --          
+    --          
+    --          It also provides an instantiation of these algorithms 
+    --          for a class Function, a function f(t).
+    --          The user will have to inherit class Function to use it.
+
+
+    ---Level : Advanced.  
+    --  All methods of all  classes will be advanced.
+
+
+
+
+uses AppParCurves, Geom, math, StdFail, TCollection, TColStd, gp, 
+     TColgp, Standard
+
+
+is
+
+
+    deferred generic class TheLineTool; --- Template
+    	---Purpose: Tool describing a continous MultiLine.
+   	 --          The MultiLine is described by a parameter.
+
+    deferred generic class TheSurfTool; --- Template
+    	---Purpose: Tool describing a continous Surface.
+	    --          The Surface is described by a couple of parameters.
+
+
+
+    -------------------------------
+    --- Algorithms:
+    -------------------------------
+  
+    ---Purpose: The two following algorithms are using the same recipe:
+    --          Minimizing the difference between the approximate result 
+    --          Curve or Surface and respectively a continous MultiLine 
+    --          or a continous surface.
+
+    generic class LeastSquare;
+	    ---Purpose: makes an approximation of a continous Line described by
+	    --          the tool TheLineTool.
+
+    generic class SurfLeastSquare;
+	    ---Purpose: makes an approximation of a continous Surface 
+	    --          described by the tool TheSurfaceTool.
+
+
+
+    ------------------------------------------------------
+    --- Necessary class for approximation a function f(t):
+    ------------------------------------------------------
+
+    deferred class Function;
+	    ---Purpose: This class must be provided by the user to use the
+	    --          approximation algorithm FittingCurve.
+
+
+    class FunctionTool;
+	    ---Purpose: This class is the inteface between the Function 
+	    --          class and the tool asked by LeastSquare.
+
+
+    ---------------------------------------------------------
+    --- Necessary class for approximation a 2d function f(t):
+    ---------------------------------------------------------
+
+    deferred class Function2d;
+	    ---Purpose: This class must be provided by the user to use the
+	    --          approximation algorithm FittingCurve2d.
+
+
+    class FunctionTool2d;
+	    ---Purpose: This class is the inteface between the Function2d 
+	    --          class and the tool asked by LeastSquare.
+
+
+
+    class FitFunction instantiates LeastSquare from AppCont
+	    (Function from AppCont, FunctionTool from AppCont);
+
+    class FitFunction2d instantiates LeastSquare from AppCont
+	    (Function2d from AppCont, FunctionTool2d from AppCont);
+
+
+end AppCont;
+

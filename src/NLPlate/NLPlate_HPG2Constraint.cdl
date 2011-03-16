@@ -1,0 +1,36 @@
+-- File:	NLPlate_HPG2Constraint.cdl
+-- Created:	Fri Apr 17 15:20:08 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class  HPG2Constraint  from  NLPlate  inherits  HPG1Constraint from  NLPlate 
+---Purpose: define a PinPoint (no G0)  G2 Constraint used to load a Non
+--  Linear Plate
+uses
+     XY from gp,
+     D1  from  Plate,
+     D2  from  Plate
+     
+is
+    Create(UV : XY; D1T : D1 from Plate; D2T : D2 from Plate) returns mutable HPG2Constraint;
+    -- create a G2 Constraint
+    -- 
+
+
+    ActiveOrder(me)  returns  Integer 
+    is   redefined; 
+    --  returns the constraint active  order, i.e. the maximum between
+    --  -- the initial constraint i.e 2 (for G2 Constraints)
+    --  
+    -- 
+
+    G2Target(me) returns D2  from  Plate 
+    ---C++: return const &
+    is   redefined; 
+
+fields
+    myG2Target : D2 from Plate;
+end;

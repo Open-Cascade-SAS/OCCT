@@ -1,0 +1,6 @@
+BinObjMgt_PChar.hxx
+BinObjMgt_PExtChar.hxx
+BinObjMgt_PInteger.hxx
+BinObjMgt_PReal.hxx
+BinObjMgt_PShortReal.hxx
+BinObjMgt_PByte.hxx

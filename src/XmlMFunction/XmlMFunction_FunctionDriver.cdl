@@ -1,0 +1,32 @@
+-- File:      XmlMFunction_FunctionDriver.cdl
+-- Created:   04.09.01 14:47:31
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+class FunctionDriver from XmlMFunction  inherits ADriver from XmlMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable FunctionDriver from XmlMFunction;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+end FunctionDriver;

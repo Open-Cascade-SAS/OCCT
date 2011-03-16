@@ -1,0 +1,183 @@
+--
+-- File      :  GeneralNote.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class GeneralNote from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines GeneralNote, Type <212> Form <0-8, 100-200, 105>
+        --          in package IGESDimen
+        --          Used for formatting boxed text in different ways
+
+uses
+
+        TextFontDef           from IGESGraph,
+        HAsciiString          from TCollection,
+        Pnt                   from gp,
+        XYZ                   from gp,
+        HArray1OfHAsciiString from Interface,
+        HArray1OfReal         from TColStd,
+        HArray1OfInteger      from TColStd,
+        HArray1OfXYZ          from TColgp,
+        HArray1OfTextFontDef  from IGESGraph
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable GeneralNote;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                    : mutable;
+              nbChars               : HArray1OfInteger;
+              widths, heights       : HArray1OfReal;
+              fontCodes             : HArray1OfInteger;
+              fonts                 : HArray1OfTextFontDef;
+              slants, rotations     : HArray1OfReal;
+              mirrorFlags, rotFlags : HArray1OfInteger;
+              start                 : HArray1OfXYZ;
+              texts                 : HArray1OfHAsciiString)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           GeneralNote
+        --       - nNbChars      : number of chars strings
+        --       - widths        : Box widths
+        --       - heights       : Box heights
+        --       - fontCodes     : Font codes, default = 1
+        --       - fonts         : Text Font Definition Entities
+        --       - slants        : Slant angles in radians
+        --       - rotations     : Rotation angles in radians
+        --       - mirrorFlags   : Mirror flags
+        --       - rotFlags      : Rotation internal text flags
+        --       - start         : Text start points
+        --       - texts         : Text strings
+        -- raises exception if there is mismatch between the various 
+        -- Array Lengths.
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates Graphical Representation)
+	--           Error if not in ranges [0-8] or [100-102] or 105
+
+
+        NbStrings (me) returns Integer;
+        ---Purpose : returns number of text strings in General Note
+
+        NbCharacters (me ; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns number of characters of string or zero
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        BoxWidth (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Box width of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        BoxHeight (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Box height of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        IsFontEntity (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns False if Value, True if Entity
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        FontCode (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Font code (default = 1) of string
+        -- returns 0 if IsFontEntity () is True
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        FontEntity (me; Index : Integer) returns TextFontDef
+        raises OutOfRange;
+        ---Purpose : returns Text Font Definition Entity of string
+        -- returns a Null Handle if IsFontEntity () returns False
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        SlantAngle (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Slant angle of string in radians
+        -- default value = PI/2
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        RotationAngle (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns Rotation angle of string in radians
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        MirrorFlag (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Mirror Flag of string
+        --      0 = no mirroring
+        --      1 = mirror axis is perpendicular to the text base line
+        --      2 = mirror axis is text base line
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        RotateFlag (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Rotate internal text Flag of string
+        --      0 = text horizontal
+        --      1 = text vertical
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        StartPoint (me ; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns text start point of Index'th string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        TransformedStartPoint (me ; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns text start point of Index'th string after Transformation
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        ZDepthStartPoint (me; Index : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns distance from Start Point plane of string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+        Text (me ; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns text string
+        -- raises exception if Index <= 0 or Index > NbStrings()
+
+fields
+
+--
+-- Class    : IGESDimen_GeneralNote
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class GeneralNote.
+--
+-- Reminder : A GeneralNote instance is defined by :
+--            - number of chars strings
+--            - Box widths
+--            - Box heights
+--            - Font codes, default = 1
+--            - Text Font Definition Entities
+--            - Slant angles in radians
+--            - Rotation angles in radians
+--            - Mirror flags
+--            - Rotation internal text flags
+--            - Text start points
+--            - Text strings
+-- An GeneralNote Entity consists of one or more text strings. Each text
+-- string contains text, a start point, a text size, and an angle of
+-- rotation of the text.
+
+        theNbChars        : HArray1OfInteger;
+        theBoxWidths      : HArray1OfReal;
+        theBoxHeights     : HArray1OfReal;
+        theFontCodes      : HArray1OfInteger;
+        theFontEntities   : HArray1OfTextFontDef;
+        theSlantAngles    : HArray1OfReal;
+        theRotationAngles : HArray1OfReal;
+        theMirrorFlags    : HArray1OfInteger;
+        theRotateFlags    : HArray1OfInteger;
+        theStartPoints    : HArray1OfXYZ;
+        theTexts          : HArray1OfHAsciiString;
+
+end GeneralNote;

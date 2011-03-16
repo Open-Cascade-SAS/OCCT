@@ -1,0 +1,30 @@
+-- File:        Effectivity.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWEffectivity from RWStepBasic
+
+	---Purpose : Read & Write Module for Effectivity
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Effectivity from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWEffectivity;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Effectivity from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : Effectivity from StepBasic);
+
+	Share(me; ent : Effectivity from StepBasic; iter : in out EntityIterator);
+
+end RWEffectivity;

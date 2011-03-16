@@ -1,0 +1,87 @@
+-- File:	PBRep_CurveRepresentation.cdl
+-- Created:	Mon Jul  5 19:27:07 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class CurveRepresentation from PBRep inherits Persistent
+
+	---Purpose: Root class for the curve representations.
+
+uses
+    Location from PTopLoc
+
+
+is
+
+    Initialize(L : Location from PTopLoc);
+    	---Level: Internal 
+
+    Location(me) returns Location from PTopLoc
+    is static;
+    	---Level: Internal 
+    
+    Next(me) returns CurveRepresentation from PBRep
+    is static;
+    	---Level: Internal 
+		
+    Next(me : mutable; N :  CurveRepresentation from PBRep)
+    is static;
+    	---Level: Internal 
+
+    ------------------------------------------------------
+    -- What kind of representation : used to speed Mapping
+    ------------------------------------------------------
+
+    IsCurve3D(me)               returns Boolean
+	 ---Purpose: A 3D curve representation.
+    is virtual;
+
+    IsCurveOnSurface(me)        returns Boolean
+	---Purpose: A curve in the parametric space of a surface.
+    is virtual;
+
+    IsRegularity(me)            returns Boolean
+	---Purpose: A continuity between two surfaces.
+    is virtual;
+    
+    IsCurveOnClosedSurface(me)  returns Boolean
+	---Purpose: A curve with two parametric   curves  on the  same
+	--          surface. 
+    is virtual;
+
+    IsGCurve(me) returns Boolean from Standard
+    	---Purpose:
+    is virtual;
+    
+    IsPolygon3D(me) returns Boolean
+	---Purpose: 
+    is virtual;
+    
+    IsPolygonOnTriangulation(me) returns Boolean
+	---Purpose: 
+    is virtual;
+
+    IsPolygonOnClosedTriangulation(me) returns Boolean
+	---Purpose: 
+    is virtual;
+
+    IsPolygonOnSurface(me) returns Boolean
+	---Purpose: 
+    is virtual;
+
+    IsPolygonOnClosedSurface(me) returns Boolean
+	---Purpose: 
+    is virtual;
+    
+    
+fields
+    
+    myLocation : Location from PTopLoc;
+    myNext     : CurveRepresentation from PBRep;
+
+end CurveRepresentation;

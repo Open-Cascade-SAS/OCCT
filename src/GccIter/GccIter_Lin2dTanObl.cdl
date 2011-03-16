@@ -1,0 +1,130 @@
+-- File:	Lin2dTanObl.cdl
+-- Created:	Wed Apr 24 11:39:11 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+generic class Lin2dTanObl from GccIter (
+    TheCurve          as any;
+    TheCurveTool      as any; 
+    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
+    	    	      	      --                  (TheCurve)
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d line tangent to a curve QualifiedCurv and 
+	--          doing an angle Angle with a line TheLin.
+	--          The angle must be in Radian.
+
+uses Lin2d    from gp,
+     Pnt2d    from gp,
+     Position from GccEnt
+
+raises BadQualifier from GccEnt,
+       NotDone      from StdFail,
+       IsParallel   from GccIter
+
+private class FuncTObl instantiates FunctionTanObl from GccIter(
+    	    	    	    	    	    TheCurve,TheCurveTool);
+
+is
+
+Create (Qualified1 : TheQualifiedCurve ;
+    	TheLin     : Lin2d             ;
+    	Param1     : Real              ;
+    	TolAng     : Real              ;
+        Angle      : Real = 0          ) returns Lin2dTanObl from GccIter
+raises BadQualifier from GccEnt;
+	---Purpose: This class implements the algorithm used to 
+	--          create 2d line tangent to a curve and doing an 
+	--          angle Angle with the line TheLin.
+	--          Angle must be in Radian.
+	--          Param2 is the initial guess on the curve QualifiedCurv.
+	--          Tolang is the angular tolerance.
+
+-- ........................................................................
+
+IsDone(me) returns Boolean
+is static;
+    	---Purpose: This method returns true when there is a solution 
+    	--          and false in the other cases.
+
+ThisSolution(me) returns Lin2d 
+raises NotDone from StdFail
+is static;
+    -- Returns the solution.
+
+WhichQualifier(me                                 ; 
+    	       Qualif1  : out Position from GccEnt)
+raises NotDone from StdFail
+is static;
+    -- It returns the informations about the qualifiers of the tangency 
+    -- arguments concerning the solution number Index.
+    -- It returns the real qualifiers (the qualifiers given to the 
+    -- constructor method in case of enclosed, enclosing and outside 
+    -- and the qualifiers computedin case of unqualified).
+
+Tangency1(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+raises NotDone from StdFail
+is static;
+    -- Returns informations about the tangency point between the 
+    -- result and the first argument.
+    -- ParSol is the intrinsic parameter of the point ParSol on the solution
+    -- curv.
+    -- ParArg is the intrinsic parameter of the point PntSol on the argument
+    -- curv.
+
+Intersection2 (me                       ;
+               ParSol,ParArg : out Real ;
+               PntSol        : out Pnt2d)
+raises NotDone from StdFail, IsParallel from GccIter
+is static;
+    -- Returns informations about the center (on the curv) of the
+    -- result and the third argument.
+
+IsParallel2(me) returns Boolean
+raises NotDone from StdFail
+is static;
+    -- Returns informations about the center (on the curv) of the
+    -- result and the third argument.
+
+fields
+
+    WellDone : Boolean;
+    -- True if the algorithm succeeded.
+
+    Paral2 : Boolean;
+    -- True if the solution is parallel to the second argument (Angle = 0).
+
+    linsol   : Lin2d;
+    ---Purpose : The solution.
+
+    qualifier1 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    pnttg1sol   : Pnt2d;
+    -- The tangency point between the solution and the first argument on 
+    -- the solution.
+
+    pntint2sol   : Pnt2d;
+    -- The tangency point between the solution and the second argument on 
+    -- the solution.
+
+    par1sol   : Real;
+    -- The parameter of the tangency point between the solution and the 
+    -- first argument on the solution.
+
+    par2sol   : Real;
+    -- The parameter of the intersection point between the solution and the 
+    -- second argument on the solution.
+
+    pararg1   : Real;
+    -- The parameter of the tangency point between the solution and the first 
+    -- argument on the first argument.
+
+    pararg2   : Real;
+    -- The parameter of the intersection point between the solution and 
+    -- the second argument on the second argument.
+
+end Lin2dTanObl;

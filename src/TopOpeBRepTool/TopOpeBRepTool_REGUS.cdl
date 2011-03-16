@@ -1,0 +1,109 @@
+-- File:	TopOpeBRepTool_REGUS.cdl
+-- Created:	Mon Jan  4 14:30:25 1999
+-- Author:	Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class REGUS from TopOpeBRepTool
+
+uses
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    ListOfShape from TopTools,
+    MapOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    IndexedMapOfShape from TopTools
+	
+is
+    Create
+    returns REGUS from TopOpeBRepTool;
+ 
+    Init (me : in out; S : Shape from TopoDS);
+    
+    S(me) returns Shape from TopoDS;
+    ---C++: return const &
+
+    -- <S> regularization
+    -- 
+    --     TopOpeBRepTool_REGUS REGUS;
+    --     
+    --     REGUS.SetOshNsh(OshNsh);   // optionnal
+    --     REGUS.SetFsplits(Fsplits); // optionnal
+    --     
+    --     REGUS.Init(S);
+    --     REGUS.MapS();
+    --     REGUS.SplitFaces();
+    --     REGUS.REGU(); 
+    --     
+    --     // OshNsh = {(Sh,splitsofSh) if Sh has splits}
+    --     REGUS.GetOshNsh(OshNsh);   
+    --     // Fsplits ={(F,splitsofF) if F has splits}
+    --     REGUS.GetFsplits(Fsplits); 
+    
+    MapS(me : in out)
+    returns Boolean;
+	    
+    WireToFace(myclass; Fanc : Face from TopoDS; nWs : ListOfShape from TopTools; 
+    	       nFs : out ListOfShape from TopTools)	
+    returns Boolean;    
+    -- Builds up a list of new faces <nFs> on <Fanc> geometry using the
+    -- list of wires <nWs>.
+	    
+    SplitF(myclass; Fanc : Face from TopoDS; FSplits : out ListOfShape from TopTools)
+    returns Boolean;
+    -- Splits face <Fanc> on its INTERNAL edges if any. Returns true if split succeeds.
+
+    SplitFaces(me : in out) 
+    returns Boolean;       
+    -- Splits all faces and updates the map of connexity.   
+    
+    REGU(me : in out)
+    returns Boolean;
+    -- <myS> gives <Splits> after complete regularization
+
+    SetFsplits(me : in out; Fsplits : in out DataMapOfShapeListOfShape from TopTools);
+    GetFsplits(me; Fsplits : out DataMapOfShapeListOfShape from TopTools);
+    SetOshNsh(me : in out; OshNsh : in out DataMapOfShapeListOfShape from TopTools);
+    GetOshNsh(me; OshNsh : out DataMapOfShapeListOfShape from TopTools);
+
+
+    --
+    --       INTERNAL methods
+    --       
+    --  <S> = { Block }, Block  = { ({edges of fi},fi) }, 
+    --  a Block starts with (e1,f1)
+    --          ends when all edges of { faces in Block } are touched.
+
+    InitBlock(me : in out)
+    returns Boolean;
+    -- Gets starts elements for a new block
+    
+    NextinBlock(me : in out)
+    returns Boolean;
+    -- Go to next element in the block
+  
+    NearestF(me; e : Edge from TopoDS; lof : ListOfShape from TopTools; ffound : out Face from TopoDS)
+    returns Boolean;
+    -- Gets nearest face Ang(myf,ffound)=Min{ Ang(myf,fi) , fi in lof }
+    -- <e> is shared by all faces of <lof>
+  
+fields
+    hasnewsplits : Boolean; 	    
+    myFsplits : DataMapOfShapeListOfShape from TopTools;
+    myOshNsh : DataMapOfShapeListOfShape from TopTools;  
+	
+    myS : Shape from TopoDS;
+    mymapeFsstatic : DataMapOfShapeListOfShape from TopTools;   
+    mymapeFs : DataMapOfShapeListOfShape from TopTools;       	
+    mymapemult : IndexedMapOfShape from TopTools;     			    
+		    	    	
+    -- BLOCK processing :	
+    mynF : Integer; -- <myS> gives mynf faces to regularize.
+    myoldnF : Integer; -- <myS> has myoldnF faces.
+    myf : Shape from TopoDS; -- current face
+    myedstoconnect : MapOfShape from TopTools; -- edges to connect
+    mylFinBlock : ListOfShape from TopTools; -- list of faces stored in the current block
+
+end REGUS;

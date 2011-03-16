@@ -1,0 +1,119 @@
+-- File:	FuzzyDefinitionsDictionary.cdl
+-- Created:	Mon Jun 22 18:08:47 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class FuzzyDefinitionsDictionary from Dynamic
+
+inherits
+
+    TShared from MMgt
+
+	---Purpose: This  class groups   in  a dictionary  all  of the
+	--          various definitions of  an object. It  also allows
+	--          the  sharing of the   same definition by more than
+	--          one  FuzzyInstance to  preserve a global coherence
+	--          and also to manage  the memory.  To use this class
+	--          an  inheritance  is  necessary with  perhaps   the
+	--          overload  of  the  Switch  method if the parameter
+	--          types   are   not  of  the  type BooleanParameter,
+	--          IntegerParameter,        RealParameter         and
+	--          StringParameter.
+  
+uses
+
+    OStream from Standard,
+    Integer from Standard,
+    Boolean from Standard,
+    CString from Standard,
+    HAsciiString               from TCollection,
+    Parameter                  from Dynamic,
+    SequenceOfFuzzyDefinitions from Dynamic,
+    FuzzyClass                 from Dynamic
+
+is
+
+    Initialize;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Deferred constructor of the class.
+    
+    Creates(me : mutable ; afilename : CString from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Starting with   a file named  <afilename>,  fills  the
+    --          dictionary with all the wishes definitions.
+    
+    is static;
+    
+    Switch(me ; aname , atype , avalue : CString from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: This virtual method allows the user to add recognition
+    --          of its  own  parameters when reading  the file to fill
+    --          the dictionary.
+    
+    returns Parameter from Dynamic
+
+    is virtual;
+    
+    Definition(me ; atype       : CString from Standard
+                  ; adefinition : out FuzzyClass from Dynamic) returns Boolean from Standard
+		  
+    ---Level: Public 
+    
+    ---Purpose: Returns from     the dictionary in  the   out variable
+    --          <adefinition> a reference to the right instance of the
+    --          definition identified  by its type <atype>. The method
+    --          returns true if the definition exist, false otherwise.
+    
+    is static;
+    
+    UpToDate(me) returns Boolean from Standard
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Returns true if there has been  no modification of the
+    --          file  fuzzyclasses.dat  since  the   creation  of  the
+    --          dictionary object, false otherwise.
+    
+    is static;
+    
+    NumberOfDefinitions(me) returns Integer from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns    the number  of  definitions  stored  in the
+    --          dictionary.
+    
+    is static;
+    
+    Definition(me ; anindex : Integer from Standard) returns any FuzzyClass from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns a  reference on the  definition identified  by
+    --          the index <anidex>.
+    
+    is static;
+    
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+    is static;
+
+fields
+
+    thefilename                   : HAsciiString               from TCollection;
+    thetime                       : Integer from Standard                                ;
+    thesequenceoffuzzydefinitions : SequenceOfFuzzyDefinitions from Dynamic    ;
+
+end FuzzyDefinitionsDictionary;

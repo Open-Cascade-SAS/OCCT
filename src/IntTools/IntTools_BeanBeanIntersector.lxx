@@ -1,0 +1,6 @@
+inline Standard_Boolean IntTools_BeanBeanIntersector::IsDone() const
+{
+  return myIsDone;
+}
+
+ 

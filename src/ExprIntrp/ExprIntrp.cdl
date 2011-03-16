@@ -1,0 +1,54 @@
+-- File:	ExprIntrp.cdl
+-- Created:	Thu Jul 18 18:10:24 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package ExprIntrp 
+
+	---Purpose: Describes an interpreter for GeneralExpressions, 
+	--          GeneralFunctions, and GeneralRelations defined in 
+	--          package Expr. 
+
+uses Expr, MMgt, TCollection, TColStd
+
+is
+
+    deferred class Generator;
+    
+    class GenExp;
+    
+    class GenFct;
+    
+    class GenRel;
+    
+    private class Analysis;
+    
+    class SequenceOfNamedFunction instantiates 
+    	Sequence from TCollection(NamedFunction from Expr);
+
+    class SequenceOfNamedExpression instantiates 
+    	Sequence from TCollection(NamedExpression from Expr);
+
+    exception SyntaxError inherits Failure from Standard;
+    
+    private class StackOfGeneralExpression instantiates 
+    	Stack from TCollection (GeneralExpression from Expr);
+    
+    private class StackOfGeneralRelation instantiates 
+    	Stack from TCollection (GeneralRelation from Expr);
+
+    private class StackOfGeneralFunction instantiates 
+    	Stack from TCollection (GeneralFunction from Expr);
+        
+    
+    private class StackOfNames instantiates 
+    	Stack from TCollection (AsciiString from TCollection);
+
+    Parse(gen : Generator; str : AsciiString from TCollection)
+    returns Boolean
+    is private;
+    
+end ExprIntrp;
+

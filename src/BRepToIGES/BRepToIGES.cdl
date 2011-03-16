@@ -1,0 +1,29 @@
+-- File:	BRepToIGES.cdl 
+-- Created:	Tue Nov 15 14:19:36 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+package BRepToIGES
+
+    ---Purpose : Provides tools in order to transfer CAS.CADE entities
+    --         to IGES.
+
+uses Interface, IGESData, IGESBasic, IGESGeom, IGESSolid,
+     Geom, Geom2d, GeomToIGES, Geom2dToIGES, 
+     TColStd, TopoDS, TopTools, TopLoc, TopAbs,
+     Transfer, TransferBRep,  
+     BRep, gp, TCollection
+
+is
+
+-- classes du package
+
+    class BREntity;
+    class BRShell;
+    class BRSolid;
+    class BRWire;
+
+end BRepToIGES;
+
+

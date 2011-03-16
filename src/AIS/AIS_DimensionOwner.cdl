@@ -1,0 +1,54 @@
+-- File:	AIS_DimensionOwner.cdl
+-- Created:	Thu Dec  5 17:04:35 1996
+-- Author:	Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class DimensionOwner from AIS inherits EntityOwner from SelectMgr
+
+	---Purpose: The owner is the entity which makes it possible to link
+    	-- the sensitive primitives and the reference shapes that
+    	-- you want to detect. It stocks the various pieces of
+    	-- information which make it possible to find objects. An
+    	-- owner has a priority which you can modulate, so as to
+    	-- make one entity more selectable than another. You
+    	-- might want to make edges more selectable than
+    	-- faces, for example. In that case, you could attribute sa
+    	-- higher priority to the one compared to the other. An
+    	-- edge, could have priority 5, for example, and a face,
+    	-- priority 4. The default priority is 5.
+
+uses
+
+    SelectableObject from SelectMgr,
+    Shape            from TopoDS
+
+is
+
+    Create ( aSO      : SelectableObject;
+            aPriority : Integer from Standard =0)
+    returns mutable DimensionOwner from AIS;
+    	---Purpose:
+    	-- Initializes the dimension owner, aSO, and attributes it
+    	-- the priority, aPriority.    
+    
+    SetShape(me : mutable; aShape : Shape from TopoDS);
+        ---C++: inline
+    	---Purpose:
+    	-- Constructs the reference shape owner aShape for
+    	-- presentation primitives.
+    
+    FixedShape(me)
+        ---C++: return const &
+    	---C++: inline    
+    	---Purpose:
+    	-- Returns the owner shape whose primitives we are concerned with.   
+    returns Shape from TopoDS;
+    
+
+fields
+
+    myFixedShape : Shape from TopoDS;
+
+end DimensionOwner;
+

@@ -1,0 +1,39 @@
+-- File:	TCollection_Compare.cdl
+-- Created:	Tue May 14 18:07:48 1991
+-- Author:	Annick PANCHER
+--		<apc@topsn2>
+-- Revised:     Mireille MERCIEN
+--              <mip@sdsun3>           	 
+--           	Copyright:	 Matra Datavision 1992
+
+
+deferred generic class Compare from TCollection ( Item as any )
+
+	---Purpose: Defines a comparison operator which can be used by
+	-- any ordered structure.   The  way to compare items
+	-- has  to be described  in  subclasses, which inherit
+	-- from instantiations of Compare.
+
+is
+
+    IsLower (me; Left, Right: Item)
+	---Level: Public
+	---Purpose: returns True if <Left> is lower than <Right>.
+    returns Boolean
+    is virtual;
+    
+    IsGreater (me; Left, Right: Item)
+	---Level: Public
+	---Purpose: returns True if <Left> is greater than <Right>.
+    returns Boolean
+    is virtual;
+
+    IsEqual(me; Left, Right: Item)
+	---Level: Public
+	---Purpose: returns True when <Right> and <Left> are equal.
+    returns Boolean
+    is virtual;
+	
+end;
+
+

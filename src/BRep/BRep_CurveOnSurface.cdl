@@ -1,0 +1,76 @@
+-- File:	BRep_CurveOnSurface.cdl
+-- Created:	Tue Jul  6 10:12:44 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class CurveOnSurface from BRep inherits GCurve from BRep
+
+	---Purpose: Representation  of a  curve   by a   curve  in the
+	--          parametric space of a surface.
+
+uses
+    Pnt                 from gp,
+    Pnt2d               from gp,
+    Box2d               from Bnd,
+    Curve               from Geom2d,
+    Surface             from Geom,
+    Location            from TopLoc,
+    CurveRepresentation from BRep
+
+is
+
+    Create(PC : Curve    from Geom2d; 
+    	   S  : Surface  from Geom; 
+    	   L  : Location from  TopLoc)
+    returns mutable CurveOnSurface from BRep;
+
+    SetUVPoints(me : mutable; P1, P2 : Pnt2d from gp)
+	---C++: inline
+    is static;
+
+    UVPoints(me; P1, P2 : out Pnt2d from gp)
+	---C++: inline
+    is static;
+    
+    D0(me; U : Real; P : out Pnt from gp);
+	---Purpose: Computes the point at parameter U.
+
+    IsCurveOnSurface(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+    IsCurveOnSurface(me; S : Surface from Geom; L : Location from TopLoc) 
+    returns Boolean
+	---Purpose: A curve in the parametric space of a surface.
+    is redefined;
+    
+    Surface(me) returns any Surface from Geom
+	---C++: return const &
+    is redefined;
+
+    PCurve(me) returns any Curve from Geom2d
+	---C++: return const &
+    is redefined;
+
+    PCurve(me : mutable; C : Curve from Geom2d)
+    is redefined;
+
+    Copy(me) returns mutable CurveRepresentation from BRep is virtual;
+	---Purpose: Return a copy of this representation.
+
+    Update(me : mutable)
+	---Purpose: Recomputes any derived data after a modification.
+	--          This is called when the range is modified.
+    is redefined;
+
+fields
+    
+    myPCurve      : Curve from Geom2d;
+    mySurface     : Surface from Geom;
+    myUV1         : Pnt2d from gp  is protected;
+    myUV2         : Pnt2d from gp  is protected;
+
+end CurveOnSurface;

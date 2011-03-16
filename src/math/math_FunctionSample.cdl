@@ -1,0 +1,55 @@
+-- File:	FunctionSample.cdl
+-- Created:	Wed Jul 17 14:35:02 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class FunctionSample from math 
+
+	---Purpose: This class gives a default sample (constant difference
+	--          of parameter) for a function defined between
+	--          two bound A,B.
+
+raises OutOfRange from Standard
+
+is
+
+    Create(A,B: Real; N: Integer)
+    
+    	returns FunctionSample from math;
+
+
+    Bounds(me; A,B: out Real) is virtual;
+    
+	---Purpose: Returns the bounds of parameters.
+
+
+
+    NbPoints(me)
+    
+	---Purpose: Returns the number of sample points.
+
+    returns Integer
+    is static;
+
+
+    GetParameter(me; Index: Integer)
+    
+	---Purpose: Returns the value of parameter of the point of 
+	--          range Index : A + ((Index-1)/(NbPoints-1))*B.
+	--          An exception is raised if Index<=0 or Index>NbPoints.
+
+    returns Real
+    raises OutOfRange
+    is virtual;
+
+
+
+fields
+
+    a: Real;
+    b: Real;
+    n: Integer;
+
+end FunctionSample;

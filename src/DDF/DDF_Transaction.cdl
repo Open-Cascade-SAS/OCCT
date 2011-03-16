@@ -1,0 +1,75 @@
+-- File:	DDF_Transaction.cdl
+--      	-------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Nov  4 1997	Creation
+
+class Transaction from DDF
+    inherits TShared from MMgt
+
+	---Purpose: This class encapsulates TDF_Transaction.
+
+uses
+
+    Data  from TDF,
+    Delta from TDF,
+    Transaction from TDF
+
+raises
+
+    DomainError, NullObject from Standard
+
+is
+
+    Create
+    	returns Transaction from DDF;
+	---Purpose: Creates an empty transaction context, unable to be
+	--          opened.
+
+    Create(aDF : Data from TDF)
+    	returns Transaction from DDF;
+	---Purpose: Creates a transaction context on <aDF>, ready to
+	--          be opened.
+
+    Open(me : mutable)
+    	returns Integer from Standard;
+	---Purpose: If not yet done, opens a new transaction on
+	--          <myDF>. Returns the index of the just opened
+	--          transaction.
+	--          
+	--          It raises DomainError if the transaction is
+	--          already open, and NullObject if there is no
+	--          current Data framework.
+
+    Commit(me : mutable;
+    	   withDelta : Boolean from Standard = Standard_False)
+    	returns Delta from TDF;
+	---Purpose: Commits the transactions until AND including the
+	--          current opened one.
+
+    Abort(me : mutable);
+	---Purpose: Aborts the transactions until AND including the
+	--          current opened one.
+	--          
+	---C++: alias ~
+
+    Data(me) returns Data from TDF;
+	---Purpose: Returns the Data from TDF.
+
+    Transaction(me) returns Integer from Standard;
+	---Purpose: Returns the number of the transaction opened by <me>.
+
+    IsOpen(me)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if the transaction is open.
+
+
+fields
+
+    myTransaction : Transaction from TDF;
+
+end Transaction;

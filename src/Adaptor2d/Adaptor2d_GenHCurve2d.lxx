@@ -1,0 +1,9 @@
+// File:	Adaptor2d_GenHCurve2d.lxx
+// Created:	Tue May  9 16:08:08 1995
+// Author:	Xavier BENVENISTE
+//		<xab@nonox>
+
+inline TheCurve& Adaptor2d_GenHCurve2d::ChangeCurve2d()
+{
+  return myCurve;
+}

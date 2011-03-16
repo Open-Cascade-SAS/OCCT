@@ -1,0 +1,111 @@
+-- File:	Curve2d.cdl
+-- Created:	Fri May 22 10:48:44 1992
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@sdsun4>
+-- Modified     PMN CurvatureRadius added
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Curve2d  from DrawTrSurf
+	
+inherits Drawable  
+
+        --- Purpose : This class defines a drawable curve in 2d space.
+        --  The curve is drawned in the plane XOY. 
+
+uses Curve       from Geom2d,
+     Color       from Draw,
+     Display     from Draw,
+     Drawable3D  from Draw,
+     Interpretor from Draw,
+     OStream
+
+
+is
+
+
+
+
+
+  Create (C : Curve from Geom2d; 
+          DispOrigin : Boolean from Standard = Standard_True)
+        --- Purpose :
+        --  creates a drawable curve from a curve of package Geom2d.
+     returns mutable Curve2d from DrawTrSurf;
+
+
+  Create (C : Curve from Geom2d; aColor : Color from Draw; Discret :Integer;
+    	  DispOrigin : Boolean from Standard = Standard_True;
+          DispCurvRadius : Boolean  = Standard_False;
+          RadiusMax : Real = 1.0e3;
+	  RatioOfRadius : Real = 0.1)
+     returns mutable Curve2d from DrawTrSurf;
+
+
+  DrawOn (me; dis : in out Display from Draw);
+     
+
+  GetCurve (me) returns any Curve from Geom2d
+        ---C++: inline
+     is static;
+
+
+  SetColor(me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+     
+  ShowCurvature(me : mutable)
+        ---C++: inline
+     is static;
+     
+  ClearCurvature(me : mutable)
+        ---C++: inline
+     is static;
+  
+  SetRadiusMax(me : mutable; Radius : Real)
+        ---C++: inline
+     is static;
+     
+  SetRadiusRatio(me : mutable;  Ratio : Real)
+        ---C++: inline
+     is static;   
+
+  Color (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+     
+  RadiusMax(me)  returns Real
+        ---C++: inline
+     is static;
+     
+  RadiusRatio(me)  returns Real
+        ---C++: inline
+     is static;     
+     
+ 
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+	
+  Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+  is redefined;
+  
+  Is3D(me) returns Boolean
+    	---Purpose: Returns False.
+  is redefined;
+
+  Whatis(me; I : in out Interpretor from Draw)
+  is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+fields
+  curv       : Curve   from Geom2d   is protected ;
+  look       : Color   from Draw     is protected ;
+  disporigin : Boolean from Standard is protected ;
+  dispcurvradius : Boolean from Standard is protected ;
+  radiusmax      : Real from  Standard is protected ;
+  radiusratio    : Real from  Standard is protected ;
+end Curve2d;

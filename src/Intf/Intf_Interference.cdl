@@ -1,0 +1,120 @@
+-- File:	Interference.cdl
+-- Created:	Mon Jun 24 10:15:49 1991
+-- Author:	Didier PIFFAULT
+--		<dpf@phobox>
+---Copyright:	Matra Datavision 1991, 1992
+
+
+deferred class Interference from Intf
+
+	---Purpose: Describes the   Interference  computation    result
+	--          between polygon2d or polygon3d or polyhedron.
+
+uses    SectionPoint      from Intf,
+    	SeqOfSectionPoint from Intf,
+    	SectionLine       from Intf,
+    	SeqOfSectionLine  from Intf,
+    	TangentZone       from Intf,
+    	SeqOfTangentZone  from Intf
+
+
+raises  OutOfRange from Standard
+
+
+is  Initialize(Self : Boolean from Standard);
+
+    SelfInterference(me   : in out;
+    	    	     Self : Boolean from Standard) is protected;
+    ---Purpose: Only one argument for the intersection.
+
+    NbSectionPoints(me)
+    	    	    returns Integer is static;
+    ---Purpose: Gives the number   of  points of  intersection  in the
+    --          interference.
+
+    PntValue       (me;
+    	    	    Index      : in Integer)
+		    returns SectionPoint from Intf
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives the point of  intersection of address  Index in
+    --          the interference.
+    --
+    ---C++: return const &
+
+
+    NbSectionLines (me)
+    	    	    returns Integer is static;
+    ---Purpose: Gives the number  of polylines of  intersection in the
+    --          interference.
+
+    LineValue      (me;
+    	    	    Index      : in Integer)
+    	    	    returns SectionLine from Intf
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives the polyline of intersection at address <Index> in
+    --          the interference.
+    --
+    ---C++: return const &
+
+
+
+    NbTangentZones  (me)
+    	    	    returns Integer is static;
+    ---Purpose: Gives the number of zones of tangence in the interference.
+
+    ZoneValue      (me;
+    	    	    Index      : in Integer)
+    	    	    returns TangentZone from Intf
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives  the zone of  tangence at address   Index in the
+    --          interference.
+    --
+    ---C++: return const &
+
+
+    GetTolerance   (me)
+    	    	    returns Real
+    	    	    is static;
+    ---Purpose: Gives the tolerance used for the calculation.
+
+
+-- Implementation functions :
+
+    Contains       (me;
+     	    	    ThePnt : in SectionPoint from Intf)
+		    returns Boolean
+    	    	    is static;
+    ---Purpose: Tests if the polylines of  intersection or the zones of
+    --          tangence contain the point of intersection <ThePnt>.
+
+
+    Insert         (me         : in out;
+     	    	    TheZone    : in TangentZone from Intf)
+		    returns Boolean
+    	    	    is static;
+    ---Purpose: Inserts a new zone of tangence in  the current list of
+    --          tangent zones of  the interference  and  returns  True
+    --          when done.
+
+
+    Insert         (me         : in out;
+     	    	    pdeb       : in SectionPoint from Intf;
+     	    	    pfin       : in SectionPoint from Intf)
+    	    	    is static;
+    ---Purpose: Insert a new segment of intersection in the current  list of
+    --          polylines of intersection of the interference.
+
+
+    Dump           (me) is static;
+
+
+fields    mySPoins  : SeqOfSectionPoint from Intf is protected;
+    	  mySLines  : SeqOfSectionLine  from Intf is protected;
+    	  myTZones  : SeqOfTangentZone  from Intf is protected;
+    	  SelfIntf  : Boolean from Standard is protected;
+	  Tolerance : Real from Standard is protected;
+
+end Interference;

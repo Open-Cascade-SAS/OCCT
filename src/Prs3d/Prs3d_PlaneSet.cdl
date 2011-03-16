@@ -1,0 +1,34 @@
+-- File:	Prs3d_PlaneSet.cdl
+-- Created:	Wed Oct 20 12:52:03 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class PlaneSet from Prs3d inherits TShared from MMgt
+
+uses
+
+    Length from Quantity,
+    Pln from gp
+is
+
+    Create( Xdir,Ydir,Zdir: Real from Standard;
+            Xloc,Yloc,Zloc: Length from Quantity;
+    	    anOffset: Length from Quantity)
+    returns mutable PlaneSet from Prs3d;
+
+    SetDirection(me: mutable; X,Y,Z: Real from Standard);
+    SetLocation(me: mutable; X,Y,Z: Length from Quantity);
+    SetOffset(me: mutable; anOffset: Length from Quantity);
+    
+    Plane(me) returns Pln from gp;
+    Offset(me) returns Length from Quantity;
+    Location(me; X,Y,Z: out Length from Quantity);
+    Direction(me; X,Y,Z: out Length from Quantity);
+
+fields
+
+    myPlane: Pln from gp;
+    myOffset: Length from Quantity;
+    
+end PlaneSet from Prs3d;

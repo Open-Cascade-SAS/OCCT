@@ -1,0 +1,61 @@
+-- File:	DoubleTab.cdl
+-- Created:	Fri Feb  7 09:26:29 1992
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class DoubleTab from math (Item as any)
+uses Address from Standard
+is
+
+    Create(LowerRow, UpperRow, LowerCol, UpperCol: Integer)
+    	returns DoubleTab;
+
+    Create(Tab : Item; LowerRow, UpperRow, LowerCol, UpperCol: Integer)
+    	returns DoubleTab;
+
+    Init(me : in out; InitValue: Item) is static;
+
+    Create(Other: DoubleTab)
+    	returns DoubleTab;
+
+    Allocate(me : in out) is private;
+    
+    Copy(me; Other: in out DoubleTab)
+    	---C++: inline
+    is static;
+
+    
+    SetLowerRow(me: in out; LowerRow: Integer)
+    is static;
+
+
+    SetLowerCol(me: in out; LowerCol: Integer)
+    is static;
+
+        
+    Value(me; RowIndex, ColIndex: Integer)
+    	---C++: alias operator()
+    	---C++: return &
+    	---C++: inline
+      returns Item
+      is static;		
+	
+	
+    Free(me: in out)
+        ---C++: alias ~
+
+    is static;
+    
+    
+fields
+
+Addr        : Address;
+isAllocated : Boolean;
+LowR        : Integer;
+UppR        : Integer;
+LowC        : Integer;
+UppC        : Integer;
+
+end DoubleTab;	

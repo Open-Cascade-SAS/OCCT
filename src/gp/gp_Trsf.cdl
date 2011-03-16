@@ -1,0 +1,380 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+
+class Trsf   from gp   inherits Storable
+
+        --- Purpose: Defines a non-persistent transformation in 3D space.
+        --  The following transformations are implemented :  
+        --  . Translation, Rotation, Scale
+        --  . Symmetry with respect to a point, a line, a plane.
+        --  Complex transformations can be obtained by combining the
+        --  previous elementary transformations using the method 
+        --  Multiply.
+        --  The transformations can be represented as follow :
+        --  
+        --       V1   V2   V3    T       XYZ        XYZ
+        --    | a11  a12  a13   a14 |   | x |      | x'|
+        --    | a21  a22  a23   a24 |   | y |      | y'|
+        --    | a31  a32  a33   a34 |   | z |   =  | z'|
+        --    |  0    0    0     1  |   | 1 |      | 1 |
+        --
+        --    where {V1, V2, V3} defines the vectorial part of the
+        --    transformation and T defines the translation part of the 
+        --    transformation.
+
+ 
+
+uses Ax1      from gp,
+     Ax2      from gp,
+     Ax3      from gp,
+     Mat      from gp,
+     Pnt      from gp,
+     TrsfForm from gp,
+     Vec      from gp,
+     XYZ      from gp,
+     Trsf2d   from gp,
+     Quaternion from gp
+
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+is
+ 
+  Create   returns Trsf from gp;
+        ---C++: inline
+        --- Purpose : Returns the identity transformation.
+
+  Create(T : Trsf2d from gp) returns Trsf from gp;
+        ---C++: inline
+        ---Purpose: Creates  a 3D transformation from the 2D transformation T.
+        -- The resulting transformation has a homogeneous
+        -- vectorial part, V3, and a translation part, T3, built from T:
+        --       a11    a12   
+        -- 0             a13
+        -- V3 =    a21    a22    0       T3
+        -- =   a23
+        --           0    0    1.            
+        -- 0
+        -- It also has the same scale factor as T. This
+        -- guarantees (by projection) that the transformation
+        -- which would be performed by T in a plane (2D space)
+        -- is performed by the resulting transformation in the xOy
+        -- plane of the 3D space, (i.e. in the plane defined by the
+        -- origin (0., 0., 0.) and the vectors DX (1., 0., 0.), and DY
+        -- (0., 1., 0.)). The scale factor is applied to the entire space.
+
+  SetMirror (me : in out; P : Pnt)   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Makes the transformation into a symmetrical transformation.
+        --  P is the center of the symmetry.
+
+
+  SetMirror (me : in out; A1 : Ax1)   is static;
+        --- Purpose :
+        --  Makes the transformation into a symmetrical transformation.
+        --  A1 is the center of the axial symmetry.
+
+
+  SetMirror (me : in out; A2 : Ax2)   is static;
+        --- Purpose :
+        --  Makes the transformation into a symmetrical transformation.
+        --  A2 is the center of the planar symmetry 
+        --  and defines the plane of symmetry by its origin, "X
+        --  Direction" and "Y Direction".
+
+
+  SetRotation (me : in out; A1 : Ax1; Ang : Real)    is static;
+        --- Purpose :
+        --  Changes the transformation into a rotation.
+        --  A1 is the rotation axis and Ang is the angular value of the 
+        --  rotation in radians.
+
+  SetRotation (me : in out; R : Quaternion) is static;
+        --- Purpose :
+        --  Changes the transformation into a rotation defined by quaternion.
+        --  Note that rotation is performed around origin, i.e. 
+        --  no translation is involved.
+  
+  SetScale (me : in out; P : Pnt; S : Real)
+        --- Purpose :
+        --  Changes the transformation into a scale.
+        --  P is the center of the scale and S is the scaling value. 
+        --  Raises ConstructionError  If <S> is null.
+  raises
+    ConstructionError from Standard
+  is static;
+
+  SetDisplacement (me : in out; FromSystem1, ToSystem2 : Ax3)   is static;
+        --- Purpose :
+        --  Modifies this transformation so that it transforms the
+        --  coordinate system defined by FromSystem1 into the
+        --  one defined by ToSystem2. After this modification, this
+        --  transformation transforms:
+        -- -   the origin of FromSystem1 into the origin of ToSystem2,
+        -- -   the "X Direction" of FromSystem1 into the "X
+        --   Direction" of ToSystem2,
+        -- -   the "Y Direction" of FromSystem1 into the "Y
+        --   Direction" of ToSystem2, and
+        -- -   the "main Direction" of FromSystem1 into the "main
+        --   Direction" of ToSystem2.
+        -- Warning
+        -- When you know the coordinates of a point in one
+        -- coordinate system and you want to express these
+        -- coordinates in another one, do not use the
+        -- transformation resulting from this function. Use the
+        -- transformation that results from SetTransformation instead.
+        -- SetDisplacement and SetTransformation create
+        -- related transformations: the vectorial part of one is the
+        -- inverse of the vectorial part of the other.
+
+
+  SetTransformation (me : in out; FromSystem1, ToSystem2 : Ax3)   is static;
+        --- Purpose : Modifies this transformation so that it transforms the
+        -- coordinates of any point, (x, y, z), relative to a source
+        -- coordinate system into the coordinates (x', y', z') which
+        -- are relative to a target coordinate system, but which
+        -- represent the same point
+        --  The transformation is from the coordinate
+        --  system "FromSystem1" to the coordinate system "ToSystem2".
+        -- Example :
+        --  In a C++ implementation :
+        --  Real x1, y1, z1;  // are the coordinates of a point in the
+        --                    // local system FromSystem1
+        --  Real x2, y2, z2;  // are the coordinates of a point in the
+        --                    // local system ToSystem2
+        --  gp_Pnt P1 (x1, y1, z1) 
+        --  Trsf T;
+        --  T.SetTransformation (FromSystem1, ToSystem2);
+        --  gp_Pnt P2 = P1.Transformed (T);
+        --  P2.Coord (x2, y2, z2);
+
+
+  SetTransformation (me : in out; ToSystem : Ax3)    is static;
+        --- Purpose : Modifies this transformation so that it transforms the
+        --  coordinates of any point, (x, y, z), relative to a source
+        --  coordinate system into the coordinates (x', y', z') which
+        --  are relative to a target coordinate system, but which
+        --  represent the same point
+        --  The transformation is from the default coordinate system
+        --  {P(0.,0.,0.), VX (1.,0.,0.), VY (0.,1.,0.), VZ (0., 0. ,1.) }
+        --  to the local coordinate system defined with the Ax3 ToSystem.
+        --  Use in the same way  as the previous method. FromSystem1 is
+        --  defaulted to the absolute coordinate system.
+
+
+  SetTransformation (me : in out; R : Quaternion; T : Vec) is static;
+        --- Purpose :
+        --  Sets transformation by directly specified rotation and translation.
+  
+  SetTranslation (me : in out; V : Vec)   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the transformation into a translation.
+        --  V is the vector of the translation.
+
+  SetTranslation (me : in out; P1, P2 : Pnt)   is static;
+        ---C++: inline
+        --- Purpose :
+        -- Makes the transformation into a translation where the translation vector
+        -- is the vector (P1, P2) defined from point P1 to point P2.
+
+
+  SetTranslationPart (me : in out; V : Vec)    is static;
+        --- Purpose :  Replaces the translation vector with the vector V.
+
+
+  SetScaleFactor (me : in out; S : Real) 
+        --- Purpose :  Modifies the scale factor. 
+        -- Raises ConstructionError  If S is null.
+  raises
+    ConstructionError from Standard
+  is static;
+
+  SetValues(me : in out;
+            a11, a12, a13, a14,
+            a21, a22, a23, a24,
+            a31, a32, a33, a34 : Real;
+            Tolang, TolDist : Real)
+
+        ---Purpose: Sets the coefficients  of the transformation.  The
+        --          transformation  of the  point  x,y,z is  the point
+        --          x',y',z' with :
+        --          
+        --          x' = a11 x + a12 y + a13 z + a14
+        --          y' = a21 x + a22 y + a23 z + a24
+        --          z' = a31 x + a32 y + a43 z + a34
+        --          
+        --          Tolang and  TolDist are  used  to  test  for  null
+        --          angles and null distances to determine the form of
+        --          the transformation (identity, translation, etc..).
+        --          
+        --          The method Value(i,j) will return aij.
+        --          Raises ConstructionError if the determinant of  the aij is null. Or  if
+        --          the matrix as not a uniform scale.
+
+    raises
+        ConstructionError from Standard
+
+    is static;
+     
+
+  IsNegative (me)  returns Boolean    is static;
+        ---C++: inline
+        --- Purpose : Returns true if the determinant of the vectorial part of
+        -- this transformation is negative.
+
+  Form (me)  returns TrsfForm   is static;
+        --- Purpose :
+        --  Returns the nature of the transformation. It can be: an
+        -- identity transformation, a rotation, a translation, a mirror
+        -- transformation (relative to a point, an axis or a plane), a
+        -- scaling transformation, or a compound transformation.
+        ---C++: inline
+
+  ScaleFactor (me)  returns Real   is static;
+        --- Purpose : Returns the scale factor.
+        ---C++: inline
+
+
+  TranslationPart (me)   returns XYZ   is static;
+        --- Purpose :
+        --  Returns the translation part of the transformation's matrix
+        ---C++: inline
+        ---C++: return const&
+
+  GetRotation (me; theAxis : out XYZ  from gp;
+                   theAngle: out Real from Standard)
+        returns Boolean from Standard is static;
+        --- Purpose : 
+        --  Returns the boolean True if there is non-zero rotation.
+        --  In the presence of rotation, the output parameters store the axis
+        --  and the angle of rotation. The method always returns positive
+        --  value "theAngle", i.e., 0. < theAngle <= PI. 
+        --  Note that this rotation is defined only by the vectorial part of
+        --  the transformation; generally you would need to check also the
+        --  translational part to obtain the axis (gp_Ax1) of rotation.
+
+  GetRotation (me) returns Quaternion from gp is static;
+        --- Purpose : 
+        --  Returns quaternion representing rotational part of the transformation.
+
+  VectorialPart (me)   returns Mat   is static;
+        --- Purpose : 
+        --  Returns the vectorial part of the transformation. It is 
+        --  a 3*3 matrix which includes the scale factor.
+
+
+  HVectorialPart (me)   returns Mat   is static;
+        --- Purpose : 
+        --  Computes the homogeneous vectorial part of the transformation.
+        --  It is a 3*3 matrix which doesn't include the scale factor.
+        --  In other words, the vectorial part of this transformation is equal
+        --  to its homogeneous vectorial part, multiplied by the scale factor.
+        --  The coefficients of this matrix must be multiplied by the
+        --  scale factor to obtain the coefficients of the transformation.
+        ---C++: inline
+        ---C++: return const&       
+
+
+  Value (me; Row, Col : Integer)   returns Real
+        ---C++: inline
+        --- Purpose :
+        --  Returns the coefficients of the transformation's matrix.
+        --  It is a 3 rows * 4 columns matrix.
+        --  This coefficient includes the scale factor.
+        --  Raises OutOfRanged if Row < 1 or Row > 3 or Col < 1 or Col > 4
+     raises OutOfRange
+     is static;
+
+
+
+
+     
+  Invert (me : in out)        raises ConstructionError  is static;
+
+  Inverted (me) returns Trsf  raises ConstructionError  is static;
+        --- Purpose :
+        --  Computes the reverse transformation
+        --  Raises an exception if the matrix of the transformation
+        --  is not inversible, it means that the scale factor is lower
+        --  or equal to Resolution from package gp.
+        --  Computes the transformation composed with T and  <me>.
+        --  In a C++ implementation you can also write Tcomposed = <me> * T.
+        --- Example :
+        --      Trsf T1, T2, Tcomp; ...............
+        --        Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
+        --        Pnt P1(10.,3.,4.);
+        --        Pnt P2 = P1.Transformed(Tcomp);    //using Tcomp
+        --        Pnt P3 = P1.Transformed(T1);       //using T1 then T2
+        --        P3.Transform(T2);                  // P3 = P2 !!!
+        ---C++: inline
+
+  Multiplied (me; T : Trsf)   returns Trsf  is static;
+        ---C++: inline
+        ---C++: alias operator *
+
+  Multiply (me : in out; T : Trsf)          is static;
+        ---C++: alias operator *=
+        --- Purpose :
+        --  Computes the transformation composed with T and  <me>.
+        --  In a C++ implementation you can also write Tcomposed = <me> * T.
+        --  Example :
+        --      Trsf T1, T2, Tcomp; ...............
+        --      //composition :
+        --        Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
+        --      // transformation of a point
+        --        Pnt P1(10.,3.,4.);
+        --        Pnt P2 = P1.Transformed(Tcomp);    //using Tcomp
+        --        Pnt P3 = P1.Transformed(T1);       //using T1 then T2
+        --        P3.Transform(T2);                  // P3 = P2 !!!
+        --  Computes the transformation composed with <me> and T.
+        --  <me> = T * <me>
+
+  PreMultiply (me : in out; T : Trsf)  is static;
+        --- Purpose :
+        --  Computes the transformation composed with <me> and T.
+        --  <me> = T * <me>
+    
+
+  Power (me : in out; N : Integer)   raises ConstructionError   is static;
+
+  Powered (me : in out; N : Integer)  returns Trsf
+        ---C++: inline
+        --- Purpose :
+        --  Computes the following composition of transformations
+        --  <me> * <me> * .......* <me>, N time.
+        --  if N = 0 <me> = Identity
+        --  if N < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+        --
+        --  Raises if N < 0 and if the matrix of the transformation not
+        --  inversible.
+     raises ConstructionError
+     is static;
+
+
+    
+  Transforms (me; X, Y, Z : out Real)   is static;
+        ---C++: inline
+
+  Transforms (me; Coord : out XYZ)      is static;
+        ---C++: inline
+        --- Purpose : Transformation of a triplet XYZ with a Trsf
+
+
+
+fields
+
+  scale  : Real;
+  shape  : TrsfForm;
+  matrix : Mat;
+  loc    : XYZ; 
+
+
+friends 
+
+  class GTrsf
+
+end;

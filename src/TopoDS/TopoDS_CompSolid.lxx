@@ -1,0 +1,13 @@
+// File:	TopoDS_CompSolid.lxx
+// Created:	Tue Apr 16 17:48:07 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_CompSolid
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_CompSolid::TopoDS_CompSolid ()
+{
+}

@@ -1,0 +1,12 @@
+-- File:	QAQuickPen.cdl
+-- Created:	Thu Oct 24 18:03:07 2002
+-- Author:	Michael KUZMITCHEV
+--		<mkv@russox>
+---Copyright:	 Matra Datavision 2002
+
+package QAQuickPen
+     uses Draw
+is
+    
+    Commands(DI : in out Interpretor from Draw);
+end;

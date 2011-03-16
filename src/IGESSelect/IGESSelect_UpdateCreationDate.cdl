@@ -1,0 +1,34 @@
+-- File:	IGESSelect_UpdateCreationDate.cdl
+-- Created:	Wed Jun  1 16:19:53 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class UpdateCreationDate  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Allows to Change the Creation Date indication in the Header
+    --           (Global Section) of IGES File. It is taken from the operating
+    --           system (time of application of the Modifier).
+    --           The Selection of the Modifier is not used : it simply acts as
+    --           a criterium to select IGES Files to touch up
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create returns mutable UpdateCreationDate;
+    ---Purpose : Creates an UpdateCreationDate, which uses the system Date
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : only <target> is used : the system Date
+    --           is set to Global Section Item n0 18.
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Update IGES Header Creation Date"
+
+end UpdateCreationDate;

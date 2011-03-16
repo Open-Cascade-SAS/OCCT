@@ -1,0 +1,86 @@
+
+        -- File:	MakeLin2d.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeLin2d from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create Lin2d from gp.
+    --           
+    --           * Create a Lin2d parallel to another and passing 
+    --             through a point.
+    --           * Create a Lin2d parallel to another at the distance 
+    --             Dist.
+    --           * Create a Lin2d passing through 2 points.
+    --           * Create a Lin2d from its axis (Ax1 from gp).
+    --           * Create a Lin2d from a point and a direction.
+    --           * Create a Lin2d from its equation.
+
+uses Pnt2d from gp,
+     Lin2d from gp,
+     Ax2d  from gp,
+     Dir2d from gp,
+     Real  from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A : Ax2d from gp)   returns MakeLin2d;
+    --- Purpose : Creates a line located with A.
+
+Create (P : Pnt2d from gp; 
+    	V : Dir2d from gp)   returns MakeLin2d;
+    --- Purpose : 
+    --  <P> is the location point (origin) of the line and
+    --  <V> is the direction of the line.
+
+Create (A, B, C : Real)   returns MakeLin2d;
+    --- Purpose :
+    --  Creates the line from the equation A*X + B*Y + C = 0.0
+    --  the status is "NullAxis"if Sqrt(A*A + B*B) <= Resolution from gp.
+
+Create(Lin    :     Lin2d from gp      ;
+       Dist   :     Real  from Standard) returns MakeLin2d;
+    ---Purpose : Make a Lin2d from gp <TheLin> parallel to another 
+    --           Lin2d <Lin> at a distance <Dist>.
+    --           If Dist is greater than zero the result is on the 
+    --           right of the Line <Lin>, else the result is on the 
+    --           left of the Line <Lin>.
+
+Create(Lin    :     Lin2d from gp;
+       Point  :     Pnt2d from gp) returns MakeLin2d;
+    ---Purpose : Make a Lin2d from gp <TheLin> parallel to another 
+    --           Lin2d <Lin> and passing through a Pnt2d <Point>.
+
+Create(P1     :     Pnt2d from gp;
+       P2     :     Pnt2d from gp) returns MakeLin2d;
+    ---Purpose : Make a Lin2d from gp <TheLin> passing through 2 
+    --           Pnt2d <P1>,<P2>.
+    --           It returns false if <P1> and <P2> are confused.
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_NullAxis if Sqrt(A*A + B*B) is less
+    --   than or equal to gp::Resolution(), or
+    -- -   gce_ConfusedPoints if points P1 and P2 are coincident.
+        
+Value(me) returns Lin2d from gp
+    raises NotDone
+    is static;
+    ---Purpose: Returns the constructed line.
+    -- Exceptions StdFail_NotDone if no line is constructed.
+    
+Operator(me) returns Lin2d from gp
+    is static;
+    ---C++: alias "Standard_EXPORT operator gp_Lin2d() const;"
+
+fields
+
+    TheLin2d : Lin2d from gp;
+    --The solution from gp.
+
+end MakeLin2d;

@@ -1,0 +1,125 @@
+-- File:	Law_Interpolate.cdl
+-- Created:	Wed Nov 15 17:30:50 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+--- cut and past from GeomAPI_Interpolate in order 
+--  to provide 1D interpolation.
+
+class Interpolate from Law
+
+    ---Purpose: This  class   is used  to   interpolate a BsplineCurve
+    --          passing through    an  array of  points,   with   a C2
+    --          Continuity if tangency  is not requested at the point.
+    --          If tangency is  requested at the  point the continuity
+    --          will be C1.  If Perodicity is requested the curve will
+    --          be  closed  and the junction will  be  the first point
+    --          given. The curve will than be only C1
+    --          
+    --          
+
+
+
+uses
+
+    Array1OfReal     from TColStd,
+    HArray1OfReal    from TColStd,
+    HArray1OfBoolean from TColStd,
+    BSpline          from Law
+
+raises
+    NotDone           from StdFail,
+    ConstructionError from Standard
+is
+    
+    Create(Points       : HArray1OfReal from TColStd;
+    	   PeriodicFlag : Boolean       from Standard;
+    	   Tolerance    : Real)
+    ---Purpose: Tolerance is to check if  the points are not too close
+    --          to one an  other.  It is  also  used to check   if the
+    --          tangent vector  is not too small.   There should be at
+    --          least 2 points. If PeriodicFlag is True then the curve
+    --          will be periodic be periodic
+    returns Interpolate from Law
+    raises ConstructionError from Standard;
+
+    Create(Points       : HArray1OfReal from TColStd;
+    	   Parameters   : HArray1OfReal from TColStd;
+	   PeriodicFlag : Boolean       from Standard;
+    	   Tolerance    : Real          from Standard) 
+    ---Purpose: Tolerance is to check if  the points are not too close
+    --          to one an  other.  It is  also  used to check   if the
+    --          tangent vector  is not too small.   There should be at
+    --          least 2 points. If PeriodicFlag is True then the curve
+    --          will be periodic be periodic
+
+    --  Warning: There should be as many parameters as there are points
+    --          except if  PeriodicFlag is True  then  there should be
+    --          one more parameter to close the curve
+    returns Interpolate from Law
+    raises ConstructionError from Standard;
+    
+    Load(me : in out;
+         InitialTangent : Real from Standard;
+	 FinalTangent   : Real from Standard) 
+    ---Purpose: loads initial and final tangents if any.
+    is static;
+    
+    Load(me : in out;
+         Tangents     : Array1OfReal     from TColStd;
+         TangentFlags : HArray1OfBoolean from TColStd)
+    ---Purpose: loads the tangents. We should have as many tangents as
+    --          they are points  in the array if TangentFlags.Value(i)
+    --          is    Standard_True  use the tangent Tangents.Value(i)
+    --          otherwise the tangent is not constrained.
+    --           
+    is static; 
+ 
+    ClearTangents(me : in out);
+    ---Purpose: Clears the tangents if any
+
+    Perform(me : in out);
+    ---Purpose: Makes the interpolation
+
+    Curve(me) 
+    ---C++: return const &
+    returns BSpline from Law
+    raises NotDone from StdFail
+    is static;
+	    
+
+    IsDone(me)
+    returns Boolean from Standard
+    is static;
+    
+    PerformNonPeriodic(me : in out) 
+    ---Purpose: Interpolates in a non periodic fashion.
+    is private;
+    
+    PerformPeriodic(me : in out) 
+    ---Purpose: Interpolates in a C1 periodic fashion.
+    is private;
+	    
+fields
+
+    myTolerance      : Real             from Standard;
+    -- the 3D tolerance to check for degenerate points
+    myPoints         : HArray1OfReal    from TColStd;
+    -- the points to interpolates
+    myIsDone         : Boolean          from Standard;
+    -- the algorithm did complete OK if Standard_True 
+    myCurve          : BSpline          from Law;
+    -- the interpolated curve
+    myTangents       : HArray1OfReal    from TColStd;
+    -- the tangents only defined at slot i if 
+    -- myTangenFlags->Value(i) is Standard_True 
+    myTangentFlags   : HArray1OfBoolean from TColStd;
+    -- the flags defining the tangents
+    myParameters     : HArray1OfReal    from TColStd;
+    -- the parameters used for the cubic interpolation
+    myPeriodic       : Boolean          from Standard;
+    -- if Standard_True the curve will be periodic
+    myTangentRequest : Boolean          from Standard;
+    -- Tangents are given if True False otherwise
+
+end Interpolate from Law;

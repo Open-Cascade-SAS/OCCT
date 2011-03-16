@@ -1,0 +1,45 @@
+-- File:	TopOpeBRepDS_GeometryData.cdl
+-- Created:	Thu May 26 11:42:08 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+class GeometryData from TopOpeBRepDS 
+
+    ---Purpose: mother-class of SurfaceData, CurveData, PointData 
+
+uses
+
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS
+
+is
+
+    Create returns GeometryData from TopOpeBRepDS; 
+     
+--modified by NIZNHY-PKV Tue Oct 30 09:24:30 2001  f 
+    Create  (Other:GeometryData from TopOpeBRepDS) 
+    	returns GeometryData from TopOpeBRepDS;  
+    
+    Assign (me:out; 
+    	    Other:GeometryData from TopOpeBRepDS); 
+    ---C++: alias operator=	 
+--modified by NIZNHY-PKV Tue Oct 30 09:24:33 2001  t
+
+    Interferences(me) returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeInterferences(me : in out) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+    
+    AddInterference(me : in out; I : Interference from TopOpeBRepDS)
+    is static;
+    
+fields
+
+    myInterferences : ListOfInterference from TopOpeBRepDS;
+    
+end GeometryData from TopOpeBRepDS;

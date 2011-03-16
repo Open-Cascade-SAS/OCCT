@@ -1,0 +1,178 @@
+-- File:	TopOpeBRepBuild_Tools.cdl
+-- Created:	Tue Nov  2 15:21:24 1999
+-- Author:	Peter KURNEV
+--		<pkv@irinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Tools from TopOpeBRepBuild 
+
+	---Purpose: Auxiliary  methods  used  in  TopOpeBRepBuild_Builder1  class  
+
+uses
+    
+    Shape from TopoDS, 
+    Face  from TopoDS,
+    Wire  from  TopoDS,
+    Edge  from TopoDS, 
+    
+    Vec from gp,
+     
+    State     from TopAbs,  
+    ShapeEnum from TopAbs, 
+    
+    IndexedDataMapOfShapeListOfShape from TopTools,  
+    IndexedMapOfShape                from TopTools,
+    MapOfShape                       from TopTools,  
+     
+    DataMapOfShapeState            from TopOpeBRepDS, 
+    IndexedDataMapOfShapeWithState from TopOpeBRepDS, 
+    IndexedMapOfOrientedShape      from TopTools, 
+    IndexedDataMapOfShapeShape from TopTools,       
+    ShapeClassifier from TopOpeBRepTool
+    
+    
+is
+    DumpMapOfShapeWithState  (myclass;  
+    	                       iP:Integer from Standard; 
+			       aMapOfShapeWithState: IndexedDataMapOfShapeWithState from TopOpeBRepDS); 
+     
+    FindState                 (myclass; 	 
+                                aVertex: Shape from TopoDS;   
+    			        aState : State from TopAbs;   
+    	    	    	        aShapeEnum:ShapeEnum from TopAbs;
+			        aMapVertexEdges:IndexedDataMapOfShapeListOfShape from TopTools; 
+			        aMapProcessedVertices:out MapOfShape from TopTools; 
+			        aMapVs:out DataMapOfShapeState from TopOpeBRepDS);							                               						 			       
+    PropagateState            (myclass; 	 
+    	    	    	    	aSplEdgesState:DataMapOfShapeState from TopOpeBRepDS; 
+				anEdgesToRestMap:IndexedMapOfShape from TopTools;  
+				aShapeEnum1:ShapeEnum from TopAbs; 
+				aShapeEnum2:ShapeEnum from TopAbs; 
+				aShapeClassifier:in out ShapeClassifier from TopOpeBRepTool;    
+				aMapOfShapeWithState:out IndexedDataMapOfShapeWithState from TopOpeBRepDS;
+    	    	    	    	anUnkStateShapes:MapOfShape from TopTools); 
+				 
+   FindStateThroughVertex     (myclass; 
+    	    	    	    	aShape    :Shape from TopoDS;  
+				aShapeClassifier:in out ShapeClassifier from TopOpeBRepTool;
+				aMapOfShapeWithState:out IndexedDataMapOfShapeWithState from TopOpeBRepDS;
+    	    	    	    	anAvoidSubshMap: MapOfShape from TopTools) 
+    	    	    	    	    returns  State from TopAbs;  
+				 
+   PropagateStateForWires     (myclass; 
+				aFacesToRestMap:IndexedMapOfShape from TopTools; 
+				aMapOfShapeWithState:out IndexedDataMapOfShapeWithState from TopOpeBRepDS); 
+
+   SpreadStateToChild         (myclass;  
+    	    	    	    	aShape:Shape from TopoDS; 
+				aState:State from TopAbs;	 
+				aMapOfShapeWithState:out IndexedDataMapOfShapeWithState from TopOpeBRepDS); 
+				 
+   FindState1                 (myclass; 
+   				anEdge:Shape from TopoDS;      
+				aState:State from TopAbs;	 
+				aMapEdgesFaces:IndexedDataMapOfShapeListOfShape from TopTools; 
+				aMapProcessedVertices:out MapOfShape from TopTools;  
+				aMapVs:out DataMapOfShapeState from TopOpeBRepDS); 
+				 				 
+   FindState2                 (myclass; 
+    	    	    	    	anEdge:Shape from TopoDS;   
+				aState:State from TopAbs;	 
+				aMapEdgesFaces:IndexedDataMapOfShapeListOfShape from TopTools; 
+				aMapProcessedEdges:out MapOfShape from TopTools; 
+				aMapVs:out DataMapOfShapeState from TopOpeBRepDS); 
+
+   GetAdjacentFace            (myclass;  
+    	    	    	    	aFaceObj:Shape from TopoDS;
+    	    	    	    	anEObj  :Shape from TopoDS;
+    	    	    	    	anEdgeFaceMap:IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    	    	    	anAdjFaceObj :out Shape from TopoDS) 
+    	    	    	    	    returns  Boolean  from  Standard;   
+			     
+   GetNormalToFaceOnEdge      (myclass; 
+    	    	    	    	aFObj    :Face from TopoDS;
+    	    	    	    	anEdgeObj:Edge from TopoDS; 
+				aDirNormal:out Vec from gp); 
+
+   GetNormalInNearestPoint(myclass;  aFace  :  Face  from  TopoDS;
+				     anEdge  :  Edge  from  TopoDS;
+				     aNormal:  out  Vec  from  gp);	 
+   ---Purpose:  This  function  used  to  compute  normal  in  point  which  is  located 
+   ---          near  the  point  with  param  UV    (used  for  computation  of  normals  where  the  normal  in  the  point UV  equal  to  zero).    
+					   
+
+   GetTangentToEdgeEdge       (myclass;  
+    	    	    	    	aFObj    :Face from TopoDS;
+    	    	    	    	anEdgeObj:Edge from TopoDS;
+    	    	    	    	aOriEObj :Edge from TopoDS; 
+    	    	    	    	aTangent :out Vec from gp) 
+				   returns  Boolean  from  Standard;    
+				   
+   GetTangentToEdge           (myclass; 	 
+   				anEdgeObj:Edge from TopoDS;	 
+				aTangent:out Vec from gp)  
+			       	  returns  Boolean  from  Standard; 
+
+   UpdatePCurves              (myclass; 
+    	    	    	    	aWire  :  Wire  from  TopoDS; 
+				fromFace  :  Face  from  TopoDS; 
+    	    	    	    	toFace  :  Face  from  TopoDS);  
+   ---Purpose  :  Recompute  PCurves  of  the  all  edges  from  the  wire  on  the  <toFace>				 
+								  
+   UpdateEdgeOnPeriodicalFace(myclass; 
+    	    	    	    	  aEdgeToUpdate  :  Edge  from  TopoDS; 
+				  OldFace  :  Face  from  TopoDS; 
+				  NewFace  :  Face  from  TopoDS);  
+   ---Purpose  :  recompute  PCurves  of  the  closing  (SIM  ,  with 2  PCurves)  edge on  the  NewFace		   
+				  			    				   
+   UpdateEdgeOnFace(myclass; 
+    	    	    	 aEdgeToUpdate  :  Edge  from  TopoDS; 
+			 OldFace  :  Face  from  TopoDS; 
+			 NewFace  :  Face  from  TopoDS);  
+   ---Purpose  :  recompute  PCurve  of  the    edge on  the  NewFace			  
+							    
+   IsDegEdgesTheSame (myclass;  
+   		       anE1: Shape  from  TopoDS;
+   		       anE2: Shape  from  TopoDS) 
+		       returns  Boolean  from  Standard; 			  
+     
+   NormalizeFace(myclass;  oldFace  :  Shape  from  TopoDS; 
+    	    	    	   corrFace :  out  Shape  from  TopoDS); 
+   ---Purpose  :  test  if  <oldFace>  does  not  contain  INTERNAL  or  EXTERNAL  edges   
+   ---            and  remove  such  edges  in  case  of  its  presence.  The  result  is  stored  in  <corrFace>
+			      
+   CorrectFace2d(myclass;  oldFace  :  Shape  from  TopoDS; 
+    	    	    	   corrFace :  out  Shape  from  TopoDS; 
+    	    	    	   aSourceShapes:  IndexedMapOfOrientedShape  from  TopTools; 
+    	    	    	   aMapOfCorrect2dEdges:out  IndexedDataMapOfShapeShape from TopTools);  
+   ---Purpose:  test  if  UV  representation  of  <oldFace>  is  good  (i.e.  face  is  closed  in  2d). 
+   --           if  face  is  not  closed  ,  this  method  will  try  to  close  such  face  and  will 
+   --           return  corrected  edges  in  the  <aMapOfCorrect2dEdges>.  Parameter  <aSourceShapes> 
+   --           used  to  fix  the  edge  (or  wires)  which  should  be  correct  (Corrector  used  it  as  a  start  shapes). 
+   --           NOTE  :  Parameter  corrFace  doesn't  mean  anything.  If  you  want  to use  this  method  ,  rebuild  resulting  face 
+   --           after  by  yourself  using  corrected  edges.
+
+ --modified by NIZNHY-PKV Fri Feb 11 17:20:08 2000  from 
+   ------------------------------------------------------------ 
+   --  Tools  to  correct  tolerances  Fri Feb 11 17:20:08 NIZNHY-PKV
+   CorrectTolerances      (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001);
+
+   CorrectCurveOnSurface  (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001); 
+			      
+   CorrectPointOnCurve    (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001);  
+   
+--modified by NIZNHY-PKV Fri Feb 11 17:20:20 2000  to    
+    
+    CheckFaceClosed2d (myclass;  
+    	    	    	theFace: Face  from  TopoDS)
+    returns Boolean from Standard;
+    ---Purpose: Checks if <theFace> has the properly closed in 2D boundary(ies)
+
+end Tools;

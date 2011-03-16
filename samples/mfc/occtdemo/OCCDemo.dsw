@@ -1,0 +1,389 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "All"=.\All\All.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Approx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Chamfers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Convert
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name DCA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Extrema
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name GeomConstraints
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Glue
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name GProps
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HLR
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Interpol
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Intersections
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name LProps
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Offset2d
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name PointOnCurve
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Primitives
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Projection
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Simplify
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SplitShape
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Sweep
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Tesselate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name TexturesExt
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ThruSections
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Transform
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Validate
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Approx"=.\Approx\Approx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Chamfers"=.\Chamfers\Chamfers.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Convert"=.\Convert\Convert.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DCA"=.\DCA\DCA.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Extrema"=.\Extrema\Extrema.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "GProps"=.\GProps\GProps.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "GeomConstraints"=.\GeomConstraints\GeomConstraints.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Glue"=.\Glue\Glue.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "HLR"=.\HLR\HLR.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Interpol"=.\Interpol\Interpol.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Intersections"=.\Intersections\Intersections.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "LProps"=.\LProps\LProps.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Offset2d"=.\Offset2d\Offset2d.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PointOnCurve"=.\PointOnCurve\PointOnCurve.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Primitives"=.\Primitives\Primitives.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Projection"=.\Projection\Projection.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Simplify"=.\Simplify\Simplify.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SplitShape"=.\SplitShape\SplitShape.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Sweep"=.\Sweep\Sweep.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Tesselate"=.\Tesselate\Tesselate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "TexturesExt"=.\TexturesExt\TexturesExt.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ThruSections"=.\ThruSections\ThruSections.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Transform"=.\Transform\Transform.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Validate"=.\Validate\Validate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

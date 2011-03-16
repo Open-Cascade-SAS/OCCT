@@ -1,0 +1,34 @@
+-- File:	PDocStd_Document.cdl
+-- Created:	Wed Nov  5 11:12:42 1997
+-- Author:	Francois PONTET
+--		<fpo@salgox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Document from PDocStd inherits Document from PCDM
+
+	---Purpose: 
+
+uses
+
+      Data from PDF
+
+is
+
+    Create
+    returns Document from PDocStd;   
+
+    Create (data : Data from PDF)
+    returns Document from PDocStd;
+
+
+    SetData (me : mutable; data : Data from PDF);
+
+    GetData (me) 
+    returns Data from PDF;
+
+fields
+
+     myData :  Data from PDF;
+
+end Document;

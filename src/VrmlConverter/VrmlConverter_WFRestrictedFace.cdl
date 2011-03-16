@@ -1,0 +1,49 @@
+-- File:	VrmlConverter_WFRestrictedFace.cdl
+-- Created:	Tue May 13 16:17:51 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class WFRestrictedFace from VrmlConverter 
+
+
+    	---Purpose: WFRestrictedFace -     computes     the  wireframe
+    	--          presentation  of faces  with   restrictions by  
+    	--          displaying   a  given  number    of  U   and/or  V
+    	--          isoparametric  curves,  converts this  one into VRML
+    	--          objects  and writes  (adds)  into anOStream.
+    	--          All requested  properties  of the representation
+    	--          are specify in  aDrawer.
+    	--          This kind of the presentation is converted into
+    	--          IndexedLineSet ( VRML ).
+
+        --          The isoparametric curves are drawn with a fixed
+        --          number of points. 
+
+uses
+ 
+    HSurface     from BRepAdaptor,
+    Drawer       from VrmlConverter
+
+is
+ 
+    Add(myclass; anOStream: in out OStream from Standard; 
+        	 aFace: HSurface from BRepAdaptor;
+    	    	 aDrawer: Drawer from VrmlConverter);
+		 
+    AddUIso(myclass; anOStream: in out OStream from Standard; 
+        	     aFace: HSurface from BRepAdaptor;
+    	    	     aDrawer: Drawer from VrmlConverter);
+		 
+    AddVIso(myclass; anOStream: in out OStream from Standard; 
+        	     aFace: HSurface from BRepAdaptor;
+    	    	     aDrawer: Drawer from VrmlConverter);
+
+    Add(myclass;  anOStream: in out OStream from Standard; 
+    	          aFace: HSurface from BRepAdaptor;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  NBUiso,NBViso: Integer from Standard;
+		  aDrawer: Drawer from VrmlConverter);
+		   
+end WFRestrictedFace;

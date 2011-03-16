@@ -1,0 +1,18 @@
+// File:	GeomLib_MakeCurvefromApprox.lxx
+// Created:	Tue Jun 13 11:11:23 1995
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GeomLib_MakeCurvefromApprox::IsDone() const 
+{
+  return myApprox.IsDone();
+}
+
+

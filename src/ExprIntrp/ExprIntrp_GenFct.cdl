@@ -1,0 +1,40 @@
+-- File:	GenFct.cdl
+-- Created:	Tue Aug 18 11:06:13 1992
+-- Author:	Arnaud BOUZY
+--		<adn@bravox>
+---Copyright:	 Matra Datavision 1992
+
+class GenFct from ExprIntrp inherits Generator from ExprIntrp
+
+	---Purpose: Implements an interpreter for defining functions. 
+	--          All its functionnalities can be found in class 
+	--          GenExp. 
+
+uses NamedFunction from Expr,
+    SequenceOfNamedFunction from ExprIntrp,
+    AsciiString from TCollection
+
+raises NoSuchObject
+
+is
+
+    Create
+    ---Level: Internal 
+    returns mutable GenFct is private;
+
+    Create( myclass ) returns GenFct;
+        
+    Process(me : mutable; str : AsciiString)
+    ---Level: Internal 
+    is static;
+
+    IsDone(me)
+    ---Level: Internal 
+    returns Boolean
+    is static;
+	    
+fields
+
+    done : Boolean;
+    
+end GenFct;

@@ -1,0 +1,81 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_BreadthFirstIterator.gxx
+// Created:	Wed May 29 17:43:06 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_BreadthFirstIterator::
+      PCollection_BreadthFirstIterator (const Handle(PCollection_Vertex)& V) 
+{
+  Visited = new PCollection_SetOfVertex;
+  Ready = new PCollection_QueueOfVertex;
+  Visited->Add(V);
+//mip  Ready->Add(V);
+  Ready->Push(V);  
+  HasMore = !(Ready->IsEmpty());
+}
+
+
+//---------------------------------------------------------------------------
+// More
+//---------------------------------------------------------------------------
+Boolean PCollection_BreadthFirstIterator::More () const 
+{
+  return HasMore;
+}
+
+
+//---------------------------------------------------------------------------
+// Next
+//---------------------------------------------------------------------------
+void PCollection_BreadthFirstIterator::Next () 
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  Handle(PCollection_Vertex) w1 = Ready->Front();
+  Ready->Pop();
+  PCollection_FrontEdgesIterator It(w1);
+  while (It.More()) {
+    Handle(PCollection_Vertex) w2 = It.Value()->Destination();
+    if (! (Visited->Contains(w2))) {
+//mip       Ready->Add(w2);
+       Ready->Push(w2);
+       Visited->Add(w2);
+    }
+    It.Next();
+  }
+  HasMore = !(Ready->IsEmpty());
+}
+
+//---------------------------------------------------------------------------
+// Value
+//---------------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_BreadthFirstIterator::Value () const 
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return Ready->Front();
+}
+
+//---------------------------------------------------------------------------
+// Clear
+//---------------------------------------------------------------------------
+void PCollection_BreadthFirstIterator::Clear () 
+{
+  HasMore = False;
+}
+
+
+
+
+
+
+
+

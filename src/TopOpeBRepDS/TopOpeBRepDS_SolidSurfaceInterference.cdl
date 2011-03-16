@@ -1,0 +1,32 @@
+-- File:	TopOpeBRepDS_SolidSurfaceInterference.cdl
+-- Created:	Thu May 26 17:02:31 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SolidSurfaceInterference from TopOpeBRepDS 
+    inherits Interference from TopOpeBRepDS
+
+	---Purpose: 
+
+uses
+
+    Transition  from TopOpeBRepDS,
+    Kind        from TopOpeBRepDS,
+    OStream     from Standard    
+    
+is
+
+    Create(Transition   : Transition from TopOpeBRepDS;
+	   SupportType  : Kind from TopOpeBRepDS;
+	   Support      : Integer;
+	   GeometryType : Kind from TopOpeBRepDS;
+	   Geometry     : Integer)
+    returns mutable SolidSurfaceInterference from TopOpeBRepDS;
+
+    Dump(me; OS : in out OStream from Standard) returns OStream
+    is redefined;
+    ---C++: return &
+
+end SolidSurfaceInterference from TopOpeBRepDS;

@@ -1,0 +1,206 @@
+-- File:	Adaptor2d_HCurve2d.cdl
+-- Created:	Wed Feb 23 11:21:19 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class HCurve2d from Adaptor2d inherits TShared from MMgt
+
+	---Purpose: Root class for 2D curves manipulated by handles, on
+    	-- which geometric algorithms work.
+    	-- An adapted curve is an interface between the
+    	-- services provided by a curve, and those required of
+    	-- the curve by algorithms, which use it.
+    	-- A derived specific class is provided:
+    	-- Geom2dAdaptor_HCurve for a curve from the Geom2d package. 
+
+
+
+uses
+
+     Array1OfReal from TColStd,
+     Shape        from GeomAbs,
+     CurveType    from GeomAbs,
+     Vec2d        from gp,
+     Pnt2d        from gp,
+     Circ2d       from gp,
+     Elips2d      from gp,
+     Hypr2d       from gp,
+     Parab2d      from gp,
+     Lin2d        from gp,
+     BezierCurve  from Geom2d,
+     BSplineCurve from Geom2d,
+     Curve2d      from Adaptor2d
+     
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard,
+    NotImplemented      from Standard
+ 
+is
+
+    --
+    --  Access to the curve
+    --  
+    
+    Curve2d(me) returns Curve2d from Adaptor2d
+	---Purpose: Returns a reference to the Curve2d inside the HCurve2d.
+	--          
+	---C++: return const &
+    is deferred;
+   
+      
+    --     Curve  methods,  they are  provided  for convenience.  Each
+    --     method M() is defined inline as :
+    --     
+    --     Adaptor_HCurve::M() { Curve().M(); }
+    --     
+    --     See the class Curve for comments on the methods.
+    --     
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    FirstParameter(me) returns Real ;
+    ---C++: inline  
+    LastParameter(me) returns Real ;
+    ---C++: inline
+	    
+    Continuity(me) returns Shape from GeomAbs ;
+    ---C++: inline
+    --      
+    
+    NbIntervals(me ; S : Shape from GeomAbs) returns Integer ; 
+    ---C++: inline
+    --      
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+    ---C++: inline
+    raises
+    	OutOfRange from Standard 
+    is static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve2d from Adaptor2d
+    ---C++: inline
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is static;
+
+    --
+    --     Local methods - Apply to the current interval.
+    --     By default the current interval is the first.
+    --     
+    
+    IsClosed(me) returns Boolean ;
+    ---C++: inline
+    --      
+     
+    IsPeriodic(me) returns Boolean ;
+    ---C++: inline
+    --      
+    
+    Period(me) returns Real ;
+    ---C++: inline
+    --      
+     
+    Value(me; U : Real) returns Pnt2d from gp ;
+    ---C++: inline
+    --      
+    
+    D0 (me; U : Real; P : out Pnt2d from gp) ;
+    ---C++: inline
+    --      
+    
+    D1 (me; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)  ; 
+    ---C++: inline
+    --      
+    
+    D2 (me; U : Real; P : out Pnt2d from gp;
+                               V1, V2 : out Vec2d from gp) ;
+       ---C++: inline
+       --      
+
+    D3 (me; U : Real; P : out Pnt2d from gp;  
+    	    	    	    V1, V2, V3 : out Vec2d from gp) ;
+    ---C++: inline
+    --      
+        
+    DN (me; U : Real; N : Integer)   returns Vec2d from gp ;
+    ---C++: inline
+    --      
+
+    Resolution(me; R3d : Real) returns Real ;
+    ---C++: inline
+    --      
+
+    GetType(me) returns CurveType from GeomAbs ;
+    ---C++: inline
+    --      
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+     Line(me) returns Lin2d from gp ;
+     ---C++: inline
+     --      
+     
+     Circle(me) returns Circ2d from gp ;
+     ---C++: inline
+     --      
+     
+     Ellipse(me) returns Elips2d from gp ;
+     ---C++: inline
+     --      
+     
+     Hyperbola(me) returns  Hypr2d from gp ;
+     ---C++: inline
+     --      
+     
+     Parabola(me) returns Parab2d from gp ;
+     ---C++: inline
+     --  
+
+     Degree(me) returns Integer
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+	
+     IsRational(me) returns Boolean
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+
+     
+     NbPoles(me) returns Integer
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+
+    
+     NbKnots(me) returns Integer
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+     
+
+     Bezier(me) returns BezierCurve from Geom2d
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+    
+     BSpline(me) returns BSplineCurve from Geom2d
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard,
+    	OutOfRange   from Standard -- if TK has not length NbKnots
+     is virtual;
+    
+
+end HCurve2d;

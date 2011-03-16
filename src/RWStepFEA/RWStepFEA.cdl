@@ -1,0 +1,68 @@
+-- File:	RWStepFEA.cdl
+-- Created:	Thu Dec 12 18:14:19 2002
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2002
+
+package RWStepFEA
+
+uses
+
+	StepData, Interface, TCollection, TColStd, StepFEA
+
+is
+
+    class RWAlignedCurve3dElementCoordinateSystem;
+    class RWArbitraryVolume3dElementCoordinateSystem;
+    class RWCurve3dElementProperty;
+    class RWCurve3dElementRepresentation;
+    class RWCurveElementEndOffset;
+    class RWCurveElementEndRelease;
+    class RWCurveElementInterval;
+    class RWCurveElementIntervalConstant;
+    class RWCurveElementLocation;
+    class RWDummyNode;
+    class RWElementGeometricRelationship;
+    class RWElementGroup;
+    class RWElementRepresentation;
+    class RWFeaAreaDensity;
+    class RWFeaAxis2Placement3d;
+    class RWFeaGroup;
+    class RWFeaLinearElasticity;
+    class RWFeaMassDensity;
+    class RWFeaMaterialPropertyRepresentation;
+    class RWFeaMaterialPropertyRepresentationItem;
+    class RWFeaModel;
+    class RWFeaModel3d;
+    class RWFeaMoistureAbsorption;
+    class RWFeaParametricPoint;
+    class RWFeaRepresentationItem;
+    class RWFeaSecantCoefficientOfLinearThermalExpansion;
+    class RWFeaShellBendingStiffness;
+    class RWFeaShellMembraneBendingCouplingStiffness;
+    class RWFeaShellMembraneStiffness;
+    class RWFeaShellShearStiffness;
+    class RWFeaTangentialCoefficientOfLinearThermalExpansion;
+    class RWGeometricNode;
+    class RWNode;
+    class RWNodeGroup;
+    class RWNodeRepresentation;
+    class RWNodeSet;
+    class RWNodeWithSolutionCoordinateSystem;
+    class RWNodeWithVector;
+    class RWParametricCurve3dElementCoordinateDirection;
+    class RWParametricCurve3dElementCoordinateSystem;
+    class RWParametricSurface3dElementCoordinateSystem;
+    class RWSurface3dElementRepresentation;
+    class RWVolume3dElementRepresentation;
+    class RWFeaModelDefinition;
+    class RWFreedomAndCoefficient;
+    class RWFreedomsList;
+    class RWNodeDefinition;
+    class RWAlignedSurface3dElementCoordinateSystem;
+    class RWConstantSurface3dElementCoordinateSystem;
+    class RWCurveElementIntervalLinearlyVarying;    -- added 23.01.2003
+    class RWFeaCurveSectionGeometricRelationship;   -- added 23.01.2003
+    class RWFeaSurfaceSectionGeometricRelationship; -- added 23.01.2003
+
+end;

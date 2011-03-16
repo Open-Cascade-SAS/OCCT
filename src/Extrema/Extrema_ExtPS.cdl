@@ -1,0 +1,150 @@
+-- File:	Extrema_ExtPS.cdl
+-- Created:	Tue Feb  1 15:30:11 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ExtPS from Extrema
+		    
+    	---Purpose: It calculates all the extremum distances
+    	--          between a point and a surface.
+    	--          These distances can be minimum or maximum.
+		    
+uses  	
+    POnSurf           from Extrema,
+    ExtPElS           from Extrema,
+    Pnt               from gp,
+    SurfaceType       from GeomAbs,
+    SequenceOfPOnSurf from Extrema,
+    SequenceOfReal    from TColStd,
+    Surface           from Adaptor3d,
+    SurfacePtr        from Adaptor3d,
+    GenExtPS          from Extrema
+--    ExtPExtS from Extrema,
+--    ExtPRevS from Extrema
+
+
+raises  NotDone      from StdFail,
+    OutOfRange   from Standard,
+    TypeMismatch from Standard
+	
+	
+	
+is
+    Create returns ExtPS;
+
+
+    Create (P: Pnt from gp; S: Surface from Adaptor3d; TolU,TolV: Real)
+    	returns ExtPS;
+      	---Purpose: It calculates all the distances.
+      	--          NbU and NbV are used to locate the close points
+      	--          to find the zeros. They must be great enough
+      	--          such that if there is N extrema, there will
+      	--          be N extrema between P and the grid.
+      	--          TolU et TolV are used to determine the conditions 
+      	--          to stop the iterations; at the iteration number n:
+      	--           (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
+    
+    Create (P: Pnt from gp; S: Surface from Adaptor3d;
+    	    Uinf, Usup, Vinf, Vsup: Real;
+    	    TolU,TolV: Real)
+    	returns ExtPS;
+      	---Purpose: It calculates all the distances.
+      	--          NbU and NbV are used to locate the close points
+      	--          to find the zeros. They must be great enough
+      	--          such that if there is N extrema, there will
+      	--          be N extrema between P and the grid.
+      	--          TolU et TolV are used to determine the conditions 
+      	--          to stop the iterations; at the iteration number n:
+      	--           (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
+    
+
+    Initialize(me: in out; S: Surface from Adaptor3d;
+    	       Uinf, Usup, Vinf, Vsup: Real;
+	       TolU, TolV: Real)
+	---Purpose: Initializes the fields of the algorithm.
+    
+    is static;
+    
+    Perform(me: in out; P: Pnt from gp)
+    	---Purpose: Computes the distances.
+    	--          An exception is raised if the fieds have not been 
+    	--          initialized.
+    
+    raises TypeMismatch from Standard
+    is static;
+    
+    
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+    
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Returns the value of the Nth resulting square distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    Point (me; N: Integer) returns POnSurf
+    	---Purpose: Returns the point of the Nth resulting distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	        OutOfRange
+		-- if N < 1 or N > NbPoints(me).
+    	is static;
+
+    TrimmedSquareDistances(me; dUfVf, dUfVl, dUlVf, dUlVl: out Real;
+    	    	     PUfVf, PUfVl, PUlVf, PUlVl: out Pnt)
+    	---Purpose: if the surface is a trimmed surface,
+    	--          dUfVf is a square distance between <P> and the point
+    	--          of parameter FirstUParameter and FirstVParameter <PUfVf>.
+    	--          dUfVl is a square distance between <P> and the point
+    	--          of parameter FirstUParameter and LastVParameter <PUfVl>.
+    	--          dUlVf is a square distance between <P> and the point
+    	--          of parameter LastUParameter and FirstVParameter <PUlVf>.
+    	--          dUlVl is a square distance between <P> and the point
+    	--          of parameter LastUParameter and LastVParameter <PUlVl>.
+    is static;
+
+
+    Bidon(me) returns SurfacePtr from Adaptor3d
+		    is static private;
+    
+--  modified by NIZHNY-EAP Fri Oct 29 09:44:34 1999 ___BEGIN___
+    TreatSolution (me:in out; PS: POnSurf from Extrema;
+			      Val: Real from Standard)
+		    is static private;
+--  modified by NIZHNY-EAP Fri Oct 29 09:44:37 1999 ___END___
+fields
+    myS      : SurfacePtr        from Adaptor3d;
+    myDone   : Boolean           from Standard;
+    myExtPElS: ExtPElS           from Extrema;
+    myExtPS  : GenExtPS          from Extrema;
+    myPoints : SequenceOfPOnSurf from Extrema;
+    myuinf   : Real              from Standard;
+    myusup   : Real              from Standard;
+    myvinf   : Real              from Standard;
+    myvsup   : Real              from Standard;
+    mytolu   : Real              from Standard;
+    mytolv   : Real              from Standard;
+    d11      : Real              from Standard;
+    d12      : Real              from Standard;
+    d21      : Real              from Standard;
+    d22      : Real              from Standard;
+    P11      : Pnt               from gp;
+    P12      : Pnt               from gp;
+    P21      : Pnt               from gp;
+    P22      : Pnt               from gp;
+    mySqDist : SequenceOfReal    from TColStd;
+    mytype   : SurfaceType       from GeomAbs;
+
+end ExtPS;

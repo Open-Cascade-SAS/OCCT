@@ -1,0 +1,72 @@
+-- File:	TopOpeBRepTool_CLASSI.cdl
+-- Created:	Wed Jan 13 14:43:00 1999
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class CLASSI from TopOpeBRepTool
+uses
+    Shape from TopoDS,
+    Face from TopoDS,
+    Box2d from Bnd,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    face from TopOpeBRepTool,
+    IndexedDataMapOfShapeBox2d from TopOpeBRepTool,
+    DataMapOfShapeface from TopOpeBRepTool
+is
+    Create returns CLASSI from TopOpeBRepTool;
+    
+    Init2d(me : in out; Fref : Face from TopoDS);
+    -- prequesitory : <Fref> is oriented FORWARD
+
+    HasInit2d(me) returns Boolean;	    
+
+    Add2d(me : in out; S : Shape from TopoDS) 
+    returns Boolean; 
+    -- Compute of 2d  bounding boxe for  shape <S>, stores the box in
+    -- the map		
+		
+    GetBox2d(me : in out; S : Shape from TopoDS; Box2d : out Box2d from Bnd)
+    returns Boolean; 
+    -- Compute of <Box2d> 2d bounding boxe for shape <S> if necessary (then
+    -- stores it in the map).     
+
+    ClassiBnd2d(me : in out; S1,S2 : Shape from TopoDS; tol: Real; checklarge: Boolean)	
+    returns Integer; 		 
+    -- Classification of 2drep(S1) with 2drep(S2) using their 2d bounding boxes
+    -- if shapes are not stored in <mymapsbox2d>, compute the bounding boxes
+    -- then stores them.
+    -- Returns state :  0 : unknown
+    --                 -1 : same 	
+    --                 -2 : disjoints
+    --                  1 : <S1> IN <S2> 
+    --                  2 : <S2> IN <S1> 
+					 
+    Classip2d(me : in out; S1,S2 : Shape from TopoDS; stabnd2d12 : Integer) 
+    returns Integer; 	
+    -- prequesitory : <S1> and <S2> are disjoint or connexed by 
+    --                vertices or edges, 
+    --                and classify(<S1>,<S2>) is in {0,-2,1,2}
+    -- Classification of 2drep(S1) with 2drep(S2), using <stabnd2d12>  
+    -- (from ClassiBnd2d) 
+    -- update for <mymapsface>      
+
+    Getface(me; S : Shape from TopoDS; fa : out face from TopOpeBRepTool)
+    returns Boolean;
+    -- Returns false if <S> is not bound in <mymapsface>
+
+    Classilist(me : in out; lS : ListOfShape from TopTools; 
+    	       mapgreasma : out DataMapOfShapeListOfShape from TopTools) 
+    returns Boolean;
+    -- prequesitory : <lS> contains a list of wires built on <myFref>
+    -- 
+    -- Classification of wires of <lS>, filling up map <mapgreasma>
+    -- <mapgreasma> = {(s,los) / shapes of los are IN s}
+
+fields    
+    myFref       : Face from TopoDS;
+    mymapsbox2d  : IndexedDataMapOfShapeBox2d from TopOpeBRepTool;
+    mymapsface   : DataMapOfShapeface from TopOpeBRepTool;
+    
+end CLASSI;

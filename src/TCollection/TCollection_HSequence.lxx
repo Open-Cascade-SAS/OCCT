@@ -1,0 +1,47 @@
+// File:	TCollection_HSequence.lxx
+// Created:	Fri Mar 12 09:55:26 1993
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+// -----------
+// constructor :
+// -----------
+inline TCollection_HSequence::TCollection_HSequence(){}
+
+//--------------------------------------------------
+// IsEmpty: Returns True if the Sequence is empty
+//--------------------------------------------------
+inline Standard_Boolean TCollection_HSequence::IsEmpty() const 
+{
+  return mySequence.IsEmpty();
+}
+
+//--------------------------------------------------
+// Length : Returns the length of the sequence
+//--------------------------------------------------
+inline Standard_Integer TCollection_HSequence::Length() const 
+{
+  return mySequence.Length();
+}
+
+//=======================================================================
+//function : Sequence
+//purpose  : 
+//=======================================================================
+
+inline const TheSequence& TCollection_HSequence::Sequence() const
+{
+  return mySequence;
+}
+
+
+//=======================================================================
+//function : ChangeSequence
+//purpose  : 
+//=======================================================================
+
+inline TheSequence& TCollection_HSequence::ChangeSequence()
+{
+  return mySequence;
+}
+

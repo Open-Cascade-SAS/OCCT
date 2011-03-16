@@ -1,0 +1,148 @@
+-- File:	Approx.cdl
+-- Created:	Tue Jan 26 11:16:41 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package Approx 
+
+     ---Purpose: Tis package provides algorithms approximating a set of
+     --          points or curves with the possibility of dividing into
+     --          one or many bezier curves.
+     --          It also provides an instantiation for approximating
+     --          a continous function f(t) into one or many curves. 
+     
+uses AdvApprox, 
+     AppCont, 
+     AppParCurves, 
+     math, 
+     gp,
+     GeomAbs,
+     Geom,
+     Geom2d,
+     Adaptor3d,
+     Adaptor2d,
+     TColStd, 
+     TColGeom, 
+     TColgp, 
+     TCollection,  
+     Standard, 
+     StdFail
+
+
+is
+
+enumeration ParametrizationType is
+    ChordLength,
+    Centripetal,
+    IsoParametric
+end;    
+
+enumeration Status is
+    PointsAdded,
+    NoPointsAdded,
+    NoApproximation
+end;    
+
+    deferred generic class TheLineTool;    ---Template
+	---Purpose: This template is different from the one of AppParCurves.
+	--          In this case, it is possible to insert new points 
+	--          during the approximation with ComputeLine.
+    
+    
+    
+---------------------------------------------
+---Algorithms for Bezier curves construction:
+---------------------------------------------
+
+
+   generic class ComputeLine, MyGradient;
+    ---Purpose: Approximate a MultiLine with a cutting.
+
+   generic class ComputeCLine, MyLeastSquare;
+    ---Purpose: Approximate a continous MultiLine with a cutting.
+    --          The Tool of the line is the tool from AppCont.
+
+
+   generic class ComputeCSurface, MySLeastSquare;
+    ---Purpose: Approximate a continous Surface with or without cutting.
+    --          The tool is the tool of AppCont.   
+
+
+
+
+----------------------------------------------
+---Algorithms for BSpline curves construction:
+----------------------------------------------
+
+
+    generic class BSplComputeLine, MyBSplGradient, MyGradientbis;
+
+----------------------------------------------
+---Algorithms for BSpline Surface construction:
+----------------------------------------------
+										   class  SweepApproximation; 
+										   deferred  class  SweepFunction;
+-----------------------------------------------------------------
+--- Transformation of connecting MultiCurves into a MultiBSpCurve
+-----------------------------------------------------------------
+
+
+    class MCurvesToBSpCurve;
+
+------------------------------------------------
+---Algorithms  for  PCurve  approximation:
+------------------------------------------------
+    class  CurveOnSurface;  
+    class  Curve3d;     
+    class  Curve2d; 
+------------------------------------------------
+---Algorithms  for  PCurve  approximation:
+------------------------------------------------
+    class  CurvilinearParameter;  
+    class  CurvlinFunc;
+--------------------------
+--- instantiate classes:
+--------------------------
+
+    class SequenceOfHArray1OfReal instantiates Sequence from TCollection
+    	    	    	    	    	    (HArray1OfReal from TColStd);
+
+
+-----------------------------------------------------------------
+--- the folowing classes approximate a continous function f(t) in 
+--- one or many bezier curves.
+-----------------------------------------------------------------
+
+    class FitAndDivide instantiates ComputeCLine from Approx
+    	(Function from AppCont, FunctionTool from AppCont);
+
+    class FitAndDivide2d instantiates ComputeCLine from Approx
+    	(Function2d from AppCont, FunctionTool2d from AppCont);
+
+    class SameParameter from Approx ;
+    ---Purpose: this makes a 3D curve from Adaptor3d and
+    --          a curve on surface to check and build a 2D 
+    --          BSpline curve that has the same parameterisation
+    --          as the 3D curve.
+    class Array1OfAdHSurface    instantiates Array1 from TCollection 
+    	    	    	    (HSurface  from  Adaptor3d)                      ;
+    class HArray1OfAdHSurface  instantiates HArray1 from TCollection
+    	    	    	    (HSurface from   Adaptor3d, Array1OfAdHSurface)  ;
+    class Array1OfGTrsf2d     instantiates Array1 from TCollection
+                            (GTrsf2d  from  gp)                            ;
+ 
+    class HArray1OfGTrsf2d  instantiates HArray1  from TCollection
+    	    	    	    (GTrsf2d from  gp, Array1OfGTrsf2d)  ; 
+			    
+    --    class ApproxPoints from Approx ;
+    --    class ApproxPoints  from Approx ;
+    ---Purpose:  
+    --      this approximates a series of points
+    --   Boundary conditions can be given as well
+    --   a given parameterisation
+    --   
+ 
+end Approx;

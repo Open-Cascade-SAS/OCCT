@@ -1,0 +1,91 @@
+#include <Blend_SequenceOfPoint.hxx>
+#include <Standard_DomainError.hxx>
+
+
+inline void Blend_Line::Append(const Blend_Point& P)
+{
+  seqpt.Append(P);
+}
+
+inline void Blend_Line::Prepend(const Blend_Point& P)
+{
+  seqpt.Prepend(P);
+}
+
+inline void Blend_Line::InsertBefore(const Standard_Integer Index,
+				    const Blend_Point& P) 
+{
+  seqpt.InsertBefore(Index, P);
+}
+
+inline void Blend_Line::Remove(const Standard_Integer FromIndex,
+			       const Standard_Integer ToIndex)
+{
+  seqpt.Remove(FromIndex,ToIndex);
+}
+
+inline void Blend_Line::SetStartPoints(const TheExtremity& StartPtOnS1,
+				       const TheExtremity& StartPtOnS2)
+
+{
+  stp1  = StartPtOnS1;
+  stp2  = StartPtOnS2;
+}
+
+inline void Blend_Line::SetEndPoints(const TheExtremity& EndPtOnS1,
+				     const TheExtremity& EndPtOnS2)
+
+{
+  endp1 = EndPtOnS1;
+  endp2 = EndPtOnS2;
+}
+
+inline Standard_Integer Blend_Line::NbPoints () const
+{
+  return seqpt.Length();
+}
+
+inline const Blend_Point& Blend_Line::Point(const Standard_Integer Index) const
+{
+  return seqpt(Index);
+}
+
+inline IntSurf_TypeTrans Blend_Line::TransitionOnS1 () const
+{
+  if (!hass1) {Standard_DomainError::Raise();}
+  return tras1;
+}
+
+inline IntSurf_TypeTrans Blend_Line::TransitionOnS2 () const
+{
+  if (!hass2) {Standard_DomainError::Raise();}
+  return tras2;
+}
+
+inline const TheExtremity& Blend_Line::StartPointOnFirst() const
+{
+  return stp1;
+}
+
+inline const TheExtremity& Blend_Line::StartPointOnSecond() const
+{
+  return stp2;
+}
+
+inline const TheExtremity& Blend_Line::EndPointOnFirst() const
+{
+  return endp1;
+}
+
+inline const TheExtremity& Blend_Line::EndPointOnSecond() const
+{
+  return endp2;
+}
+
+inline IntSurf_TypeTrans Blend_Line::TransitionOnS () const
+{
+  if (!hass1) {Standard_DomainError::Raise();}
+  return tras1;
+}
+
+

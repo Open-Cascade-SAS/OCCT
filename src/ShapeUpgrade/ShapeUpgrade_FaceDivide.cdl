@@ -1,0 +1,105 @@
+-- File:	ShapeUpgrade_FaceDivide.cdl
+-- Created:	Wed Feb 18 15:43:07 1998
+-- Author:	Pierre BARRAS
+--		<pbs@sgi84>
+---Copyright:	 Matra Datavision 1998
+
+class FaceDivide from ShapeUpgrade
+     
+inherits Tool from ShapeUpgrade     
+        ---Purpose: Divides a Face (both edges in the wires, by splitting
+        --            curves and pcurves, and the face itself, by splitting
+        --            supporting surface) according to splitting criteria. 
+	--  * The domain of the face to divide is defined by the PCurves
+	--    of the wires on the Face.
+	--
+	--  * all the PCurves are supposed to be defined (in the parametric
+	--     space of the supporting surface).
+	-- 
+	--  The result is available after the call to the Build method.
+	--  It is a Shell containing all the resulting Faces.
+	--
+	--  All the modifications made during splitting are recorded in the 
+	--  external context (ShapeBuild_ReShape).
+
+uses     
+    Face         from TopoDS,
+    Shape        from TopoDS,
+    Status       from ShapeExtend,
+    SplitSurface from ShapeUpgrade,
+    WireDivide   from ShapeUpgrade 
+
+   
+is 
+ 
+    Create returns FaceDivide from ShapeUpgrade; 
+        ---Purpose: Creates empty  constructor.
+
+    Create (F : Face from TopoDS)
+     returns FaceDivide from ShapeUpgrade;
+        --- Purpose : Initialize by a Face.
+
+    Init (me: mutable; F : Face from TopoDS);
+        ---Purpose: Initialize by a Face.
+    
+    SetSurfaceSegmentMode(me: mutable; Segment: Boolean);
+    	---Purpose: Purpose sets mode for trimming (segment) surface by
+	--          wire UV bounds.
+ 
+    Perform (me: mutable)
+    returns Boolean is virtual;
+        ---Purpose: Performs splitting and computes the resulting shell
+	--          The context is used to keep track of former splittings
+	--          in order to keep sharings. It is updated according to 
+	--          modifications made.
+    SplitSurface (me: mutable) 
+    returns Boolean is virtual; 
+        ---Purpose: Performs splitting of surface and computes the shell 
+        --          from source face.
+    
+    SplitCurves (me: mutable) 
+    returns Boolean is virtual;
+    	---Purpose: Performs splitting of curves of all the edges in the 
+        --          shape and divides these edges.
+    
+    Result (me) returns Shape from TopoDS;
+	---Purpose: Gives the resulting Shell, or Face, or Null shape if not done.
+    
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+	---Purpose: Queries the status of last call to Perform
+	-- OK   : no splitting was done (or no call to Perform)
+	-- DONE1: some edges were splitted
+	-- DONE2: surface was splitted
+	-- DONE3: surface was modified without splitting
+	-- FAIL1: some fails encountered during splitting wires
+	-- FAIL2: face cannot be splitted
+    
+    ---Level: Internal
+    
+    SetSplitSurfaceTool (me: mutable; splitSurfaceTool: SplitSurface from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting surfaces.
+    
+    SetWireDivideTool (me: mutable; wireDivideTool: WireDivide from ShapeUpgrade);
+    	---Purpose: Sets the tool for dividing edges on Face.
+	
+    GetSplitSurfaceTool (me) returns SplitSurface from ShapeUpgrade
+    is virtual protected;
+    	---Purpose: Returns the tool for splitting surfaces. 
+    	--          This tool must be already initialized.
+	
+    GetWireDivideTool (me) returns WireDivide from ShapeUpgrade
+    is virtual;
+    	---Purpose: Returns the tool for dividing edges on Face.
+    	--          This tool must be already initialized.
+	
+fields  
+    
+    mySplitSurfaceTool: SplitSurface from ShapeUpgrade;
+    myWireDivideTool  : WireDivide from ShapeUpgrade;
+    myFace       : Face from TopoDS is protected;
+    myResult     : Shape from TopoDS is protected;
+    mySegmentMode: Boolean is protected;
+    myStatus     : Integer is protected;
+    
+end;
+

@@ -1,0 +1,56 @@
+-- File:	TVertex1.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TVertex1 from PBRep inherits TVertex1 from PTopoDS
+
+	---Purpose: The TVertex1 from  PBRep inherits  from  the TVertex1
+	--          from TopoDS. 
+	--          
+	--          The  TVertex1 contains a Pnt from gp and a tolerance.
+	--            
+uses
+    Pnt from gp,
+    PointRepresentation from PBRep
+
+is
+    Create returns mutable TVertex1 from PBRep;
+    	---Level: Internal 
+
+    
+    Tolerance(me) returns Real
+    is static;
+    	---Level: Internal 
+    
+    Tolerance(me : mutable; T : Real)
+    is static;
+    	---Level: Internal 
+
+    Pnt(me) returns Pnt from gp
+    is static;
+    	---Level: Internal 
+	
+    Pnt(me : mutable; P : Pnt from gp)
+    is static;
+    	---Level: Internal 
+
+    Points(me) returns PointRepresentation from PBRep
+    is static;
+    	---Level: Internal 
+
+    Points(me : mutable; P : PointRepresentation from PBRep)
+    is static;
+    	---Level: Internal 
+
+fields
+
+    myTolerance : Real;
+    myPnt       : Pnt from gp;
+    myPoints    : PointRepresentation from PBRep;
+
+end TVertex1;

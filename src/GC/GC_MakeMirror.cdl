@@ -1,0 +1,65 @@
+-- File:	MakeMirror.cdl
+-- Created:	Mon Sep 28 11:52:47 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeMirror
+
+from GC
+
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- symmetrical transformation in 3D space about a point,
+    -- axis or plane. The result is a Geom_Transformation transformation.
+    -- A MakeMirror object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result.
+
+uses Pnt            from gp,
+     Ax1            from gp,
+     Ax2            from gp,
+     Dir            from gp,
+     Pln            from gp,
+     Lin            from gp,
+     Transformation from Geom,
+     Real           from Standard
+     
+is
+
+Create(Point : Pnt from gp) returns MakeMirror;
+    ---Puprose: Make a symetry transformation of center <Point>.
+
+Create(Axis : Ax1 from gp) returns MakeMirror;
+    ---Puprose: Make a symetry transformation of axis <Axis>.
+
+Create(Line : Lin from gp) returns MakeMirror;
+    ---Puprose: Make a symetry transformation of axis <Line>.
+
+Create(Point : Pnt from gp;
+       Direc : Dir from gp) returns MakeMirror;
+    ---Purpose: Make a symetry transformation af axis defined by 
+    --          <Point> and <Direc>.
+
+Create(Plane : Pln from gp) returns MakeMirror;
+    ---Purpose: Make a symetry transformation of plane <Plane>.
+
+Create(Plane : Ax2 from gp) returns MakeMirror;
+    ---Purpose: Make a symetry transformation of plane <Plane>.
+
+Value(me) returns Transformation from Geom
+    is static;
+    ---Purpose: Returns the constructed transformation.
+    ---C++: return const&
+
+Operator(me) returns Transformation from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_Transformation() const;"
+
+fields
+
+    TheMirror : Transformation from Geom;
+
+end MakeMirror;
+

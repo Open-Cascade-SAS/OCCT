@@ -1,0 +1,99 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Disk.cdl
+-- Created:       May 27 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+
+class Disk from OSD  
+
+   ---Purpose: Disk management
+
+
+uses Error, Path, CString from Standard, AsciiString from TCollection
+raises OSDError
+
+
+is
+  Create returns Disk;
+    ---Purpose: Creates a disk object.
+    --          This is used only when a class contains a Disk field.
+    --          By default, its name is initialized to current working disk.
+    ---Level: Public
+
+  Create (Name : Path) returns Disk;
+    ---Purpose: Initializes the object Disk with the disk name 
+    --          associated to the OSD_Path.
+    ---Level: Public
+
+  Create (PathName : CString) returns Disk;
+    ---Purpose: Initializes the object Disk with <PathName>.
+    --          <PathName> specifies any file within the mounted 
+    --          file system.
+    --          Example : OSD_Disk myDisk ("/tmp") 
+    --                    Initializes a disk object with the mounted
+    --                    file associated to /tmp.
+    ---Level: Public
+
+  Name (me ) returns Path is static;
+    ---Purpose: Returns disk name of <me>.
+    ---Level: Public
+
+  SetName (me : in out; Name : Path) is static ;
+    ---Purpose: Instantiates <me> with <Name>.
+    ---Level: Public
+
+  DiskSize(me : in out)  returns Integer is static ;
+    ---Purpose: Returns total disk capacity in 512 bytes blocks.
+    ---Level: Advanced
+ 
+  DiskFree(me : in out)  returns Integer is static ;
+    ---Purpose: Returns free available 512 bytes blocks on disk.
+    ---Level: Advanced
+
+  DiskQuota(me : in out)  returns Integer is static ;
+    ---Purpose: Returns user's disk quota (in Bytes).
+    ---Level: Advanced
+ 
+  SetDiskQuota(me : in out; QuotaSize : Integer) is static ;
+    ---Purpose: Sets user's disk quota (in Bytes).
+    --  Warning: Needs system administrator privilege.
+    ---Level: Advanced
+ 
+  SetQuotaOn(me : in out)  is static;
+    ---Purpose: Activates user's disk quota
+    --  Warning: Needs system administrator privilege.
+    ---Level: Advanced
+ 
+  SetQuotaOff(me : in out)  is static;
+    ---Purpose: Deactivates user's disk quota
+    --  Warning: Needs system administrator privilege.
+    ---Level: Advanced
+ 
+  Failed (me) returns Boolean is static ;
+    ---Purpose: Returns TRUE if an error occurs
+    ---Level: Public
+
+  Reset (me : in out) is static ;
+    ---Purpose: Resets error counter to zero
+    ---Level: Public
+      
+  Perror (me : in out)
+    ---Purpose: Raises OSD_Error
+    ---Level: Public
+    raises OSDError is static ;
+
+ Error (me) returns Integer  is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+    ---Level: Public
+
+fields
+  DiskName   : AsciiString;
+  myQuotaSize: Integer;
+  myError    : Error;
+end Disk from OSD;
+
+

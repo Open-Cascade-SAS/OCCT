@@ -1,0 +1,11 @@
+-- File:	QABUC.cdl
+-- Created:	Mon Jun 17 10:49:02 2002
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2002
+
+package QABUC
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

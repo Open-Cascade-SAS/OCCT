@@ -1,0 +1,130 @@
+-- File:       NewtonFunctionRoot.cdl
+-- Created:    Tue 14 11:21:21 1991
+-- Author:     Laurent PAINNOT
+--             <lpa@topsn3>
+---Copyright:   Matra Datavision 1991, 1992
+
+
+class NewtonFunctionRoot from math 
+     ---Purpose:
+     -- This class implements the calculation of a root of a function of
+     -- a single variable starting from an initial near guess using the
+     -- Newton algorithm. Knowledge of the derivative is required.
+
+
+uses Vector from math, Matrix from math,
+     FunctionWithDerivative from math,
+     OStream from Standard
+     
+raises NotDone from StdFail
+
+is 
+
+    Create(F: in out FunctionWithDerivative;
+    	   Guess, EpsX, EpsF: Real;
+	   NbIterations: Integer = 100)
+    ---Purpose:
+    -- The Newton method is done to find the root of the function F 
+    -- from the initial guess Guess.
+    -- The tolerance required on the root is given by Tolerance.
+    -- The solution is found when :
+    --  abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
+    -- The maximum number of iterations allowed is given by NbIterations.
+    returns NewtonFunctionRoot;
+
+
+    Create(F: in out FunctionWithDerivative;
+    	   Guess, EpsX, EpsF, A, B: Real;
+	   NbIterations: Integer = 100)
+    ---Purpose:
+    -- The Newton method is done to find the root of the function F 
+    -- from the initial guess Guess.
+    -- The solution must be inside the interval [A, B].
+    -- The tolerance required on the root is given by Tolerance.
+    -- The solution is found when :
+    --  abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
+    -- The maximum number of iterations allowed is given by NbIterations.
+    returns NewtonFunctionRoot;
+
+
+    Create(A, B, EpsX, EpsF: Real; 
+           NbIterations: Integer = 100)
+        ---Purpose: is used in a sub-class to initialize correctly all the fields
+        --          of this class.
+
+    returns NewtonFunctionRoot;
+    
+
+    Perform(me: in out; F: in out FunctionWithDerivative;
+    	    Guess: Real)
+        ---Purpose: is used internally by the constructors.
+
+    is static;
+
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+      	---C++: inline
+  returns Boolean
+    is static;
+    
+    
+    Root(me)
+    	---Purpose: Returns the value of the root of function <F>.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+
+    returns Real
+    raises NotDone
+    is static;
+    
+
+    Derivative(me)
+    	---Purpose: returns the value of the derivative at the root.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+
+    Value(me)
+    	---Purpose: returns the value of the function at the root.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+
+    NbIterations(me)
+        ---Purpose: Returns the number of iterations really done on the 
+        -- computation of the Root.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+
+
+    Dump(me; o:in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+
+    is static;
+
+
+fields
+
+Done: Boolean;
+X   : Real;
+Fx  : Real;
+DFx : Real;
+It  : Integer;
+EpsilonX: Real;
+EpsilonF: Real;
+Itermax: Integer;
+Binf: Real;
+Bsup: Real;
+
+end NewtonFunctionRoot;
+

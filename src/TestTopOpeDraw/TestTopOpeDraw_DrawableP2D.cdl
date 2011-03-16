@@ -1,0 +1,60 @@
+-- File:	TestTopOpeDraw_DrawableP2D.cdl
+-- Created:	Mon Oct 24 16:18:55 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class DrawableP2D from TestTopOpeDraw inherits Marker2D from Draw
+
+    ---Purpose: 
+
+uses  
+
+    Color           from Draw,
+    Display         from Draw,
+    Text2D          from Draw,
+    MarkerShape     from Draw,
+    CString         from Standard,
+    Pnt2d           from gp,
+    Circ            from gp
+    
+is
+
+    Create (P : Pnt2d from gp; PColor : Color from Draw;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP2D from TestTopOpeDraw;
+
+    Create (P : Pnt2d from gp; PColor : Color from Draw;
+    	    Text : CString; TextColor : Color from Draw;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP2D from TestTopOpeDraw;
+
+    Create (P : Pnt2d from gp; T : MarkerShape from Draw; PColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw;
+	    Size : Integer from Standard = 2;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP2D from TestTopOpeDraw;
+
+    Create (P : Pnt2d from gp; T : MarkerShape from Draw; 
+    	    PColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw;
+    	    Tol : Real from Standard;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP2D from TestTopOpeDraw;
+
+    ChangePnt2d(me : mutable; P : Pnt2d);
+    
+    DrawOn(me; dis : in out Display from Draw)
+    is redefined;
+    
+fields
+
+    myPnt2d : Pnt2d from gp;
+    myText : CString from Standard;
+    myTextColor : Color from Draw;
+    myMoveX  : Real from Standard;
+    myMoveY  : Real from Standard;
+
+    myText2D : Text2D from Draw;
+
+end DrawableP2D;

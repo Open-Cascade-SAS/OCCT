@@ -1,0 +1,27 @@
+-- File:        FileDescription.cdl
+-- Created:     Thu Jun 16 18:05:55 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWFileDescription from RWHeaderSection
+
+	---Purpose : Read & Write Module for FileDescription
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     FileDescription from HeaderSection
+
+is
+
+	Create returns RWFileDescription;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable FileDescription from HeaderSection);
+
+	WriteStep (me; SW : in out StepWriter; ent : FileDescription from HeaderSection);
+
+end RWFileDescription;

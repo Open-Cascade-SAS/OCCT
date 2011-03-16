@@ -1,0 +1,21 @@
+-- File:	StepDimTol_FlatnessTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FlatnessTolerance from StepDimTol
+inherits GeometricTolerance from StepDimTol
+
+    ---Purpose: Representation of STEP entity FlatnessTolerance
+
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr
+
+is
+    Create returns FlatnessTolerance from StepDimTol;
+	---Purpose: Empty constructor
+
+end FlatnessTolerance;

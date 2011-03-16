@@ -1,0 +1,54 @@
+-- File:	TNaming_SameShapeIterator.cdl
+-- Created:	Thu Apr 24 17:40:44 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SameShapeIterator from TNaming 
+
+	---Purpose:  To iterate on   all  the label which contained  a
+	--          given shape.
+
+uses
+    Shape       from TopoDS,
+    UsedShapes  from TNaming,
+    Iterator    from TNaming,
+    Label       from TDF,
+    PtrNode     from TNaming 	
+
+raises
+     NoMoreObject from Standard,
+     NoSuchObject from Standard 
+
+is
+
+    Create(aShape      : Shape     from TopoDS; 
+    	   Shapes      : UsedShapes from TNaming)
+    returns SameShapeIterator from TNaming 
+    is private;    
+
+    Create(aShape      : Shape     from TopoDS; 
+    	   access      : Label from TDF)
+    returns SameShapeIterator from TNaming;
+    
+    More(me) returns Boolean;
+    	---C++: inline
+    
+    Next(me : in out)
+    raises
+       NoMoreObject from Standard;
+       
+    Label(me) returns Label from TDF
+    raises
+	NoSuchObject from Standard;
+	
+fields
+    myNode  : PtrNode from TNaming;	
+    myIsNew   : Boolean from Standard;
+
+friends
+
+    class Tool from TNaming
+    
+end SameShapeIterator;

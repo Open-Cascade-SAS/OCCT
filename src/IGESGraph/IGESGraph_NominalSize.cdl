@@ -1,0 +1,77 @@
+--
+-- File      :  NominalSize.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NominalSize from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESNominalSize, Type <406> Form <13>
+        --          in package IGESGraph
+        --
+        --          Specifies a value, a name, and optionally a
+        --          reference to an engineering standard
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable NominalSize;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                : mutable;
+              nbProps           : Integer;
+              aNominalSizeValue : Real;
+              aNominalSizeName  : HAsciiString from TCollection;
+              aStandardName     : HAsciiString from TCollection);
+        ---Purpose : This method is used to set the fields of the class
+        --           NominalSize
+        --      - nbProps           : Number of property values (2 or 3)
+        --      - aNominalSizeValue : NominalSize Value
+        --      - aNominalSizeName  : NominalSize Name
+        --      - aStandardName     : Name of relevant engineering standard
+
+        NbPropertyValues  (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        NominalSizeValue (me) returns Real;
+        ---Purpose : returns the value of <me>
+
+        NominalSizeName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the name of <me>
+
+        HasStandardName (me) returns Boolean;
+        ---Purpose : returns True if an engineering Standard is defined for <me>
+        -- else, returns False
+
+        StandardName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the name of the relevant engineering standard of <me>
+
+fields
+
+--
+-- Class    : IGESGraph_NominalSize
+--
+-- Purpose  : Declaration of the variables specific to a Nominal Size.
+--
+-- Reminder : A Nominal Size is defined by :
+--            - Number of property values
+--            - Value
+--            - Name
+--            - Name of relevant engineering standard
+--
+
+        theNbPropertyValues : Integer;
+
+        theNominalSizeValue : Real;
+
+        theNominalSizeName  : HAsciiString from TCollection;
+
+        theStandardName     : HAsciiString from TCollection;
+
+end NominalSize;

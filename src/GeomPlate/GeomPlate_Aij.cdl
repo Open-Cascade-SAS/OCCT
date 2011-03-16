@@ -1,0 +1,31 @@
+-- File:	GeomPlate_Aij.cdl
+-- Created:	Wed Nov 25 11:34:31 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Aij from GeomPlate
+
+	---Purpose: A structure containing indexes of two normals and its cross product
+
+uses
+    Vec from gp
+is
+    Create returns Aij from GeomPlate;
+    
+    Create( anInd1 : Integer from Standard;
+    	    anInd2 : Integer from Standard;
+	    aVec   : Vec from gp )
+    returns Aij from GeomPlate;
+
+fields
+
+    Ind1 : Integer from Standard;
+    Ind2 : Integer from Standard;
+    Vec  : Vec from gp;
+
+friends
+    class BuildAveragePlane from GeomPlate
+
+end Aij;

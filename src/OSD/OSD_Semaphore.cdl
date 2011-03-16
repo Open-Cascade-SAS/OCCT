@@ -1,0 +1,113 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Semaphore.cdl
+-- Created:       April 21 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+
+class Semaphore from OSD
+   
+   ---Purpose: IPC Tools -Semaphores
+   --          The semaphores are used to facilitate shared resources.
+   --          This implementation provides a way to ensure mutual
+   --          exclusion using 'Lock' and 'Free' primitives.
+   --          The Lock is used to prevent access if it's not yet allowed.
+   --          The Free validates the semaphores and if possible, frees process
+   --          waiting for a common resource.
+
+   uses Protection, Error, AsciiString from TCollection
+raises ConstructionError,  OSDError, ProgramError
+
+
+is
+  Create returns Semaphore;
+    ---Purpose: Allocate room for semaphore name.
+    --          This is to be used with 'Open'.
+    --          so the process is a client.
+    ---Level: Advanced
+
+  Create (Name : AsciiString) returns Semaphore
+    ---Purpose: Instantiates Semaphore object with a name.
+    --          The name is the only way provided to work with a common
+    --          semaphore for different processes.
+    --          Each process working with the same semaphore must use
+    --          a common known access : the semaphore's NAME.
+    --          Raises ConstructionError when the name contains characters 
+    --          not in range of ' '...'~'.
+    --          This is for a server process.
+    ---Level: Advanced
+   raises ConstructionError;
+
+  Build (me : in out) is static;
+    ---Purpose: Sets semaphore (physically) into memory
+    ---Level: Advanced
+
+  Open (me : in out ; Name : AsciiString)
+    ---Purpose: Opens (physically) a semaphore
+    --          Raises ConstructionError when the name contains characters 
+    --          not in range of ' '...'~'.
+    ---Level: Advanced
+   raises ConstructionError is static;
+
+  GetCounter (me : in out) returns Integer is static;
+    ---Purpose: Returns current value of the semaphore's counter.
+    --          Raises ProgramError when the semaphore is not open.
+    ---Level: Advanced
+
+  SetCounter (me : in out; Value : Integer) is static;
+    ---Purpose: Sets the semaphore's counter to a specific value.
+    --          Raises ProgramError when the semaphore is not open.
+    ---Level: Advanced
+
+  Delete (me: out)
+    ---Purpose: Removes the semaphore.
+    --          This is used only by server process !
+    --          Raise ProgramError if the semaphore is already deleted.
+    ---Level: Advanced
+    raises ProgramError is static;
+
+  Lock (me: out)
+    ---Purpose: Makes current process waiting for access
+    --          Raises ProgramError when the semaphore does't exist.
+    ---Level: Advanced
+    raises ProgramError is static;
+
+  Free (me: out)
+    ---Purpose: Frees one access to a semaphore.
+    --          Raises ProgramError when the semaphore does't exist.
+    ---Level: Advanced
+    raises ProgramError is static;
+
+  Restore (me : in out)
+    ---Purpose: Resets semaphore counter to zero.
+    --          Raises ProgramError when the semaphore does't exist.
+    ---Level: Advanced
+    raises ProgramError is static;
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+   ---Level: Advanced
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+   ---Level: Advanced
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+   ---Level: Advanced
+   raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Advanced
+
+ fields
+   myName : AsciiString;      -- The semaphore name
+   myKey   : Integer;
+   mySemId : Integer;     -- Internal identification of semaphore
+   myError : Error;
+end Semaphore from OSD;
+

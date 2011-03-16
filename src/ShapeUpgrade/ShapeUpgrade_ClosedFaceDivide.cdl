@@ -1,0 +1,43 @@
+-- File:	ShapeUpgrade_ClosedFaceDivide.cdl
+-- Created:	Thu Jul 22 16:06:50 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class ClosedFaceDivide from ShapeUpgrade inherits FaceDivide from ShapeUpgrade
+
+	---Purpose: Divides a Face with one or more seam edge to avoid closed faces.
+	--          Splitting is performed by U and V direction. The number of 
+        --          resulting faces can be defined by user.
+
+uses
+
+    Face    from TopoDS
+
+is
+    
+    Create returns ClosedFaceDivide from ShapeUpgrade;
+    	---Purpose: Creates empty  constructor.
+    
+    Create (F : Face from TopoDS)
+    returns ClosedFaceDivide from ShapeUpgrade;
+        --- Purpose : Initialize by a Face.
+    
+    SplitSurface (me: mutable) 
+    returns Boolean is redefined;
+    	---Purpose: Performs splitting of surface and computes the shell
+	--          from source face.
+    
+    SetNbSplitPoints(me: mutable; num: Integer);
+    	---Purpose: Sets the number of cutting lines by which closed face 
+        --          will be splitted. The resulting faces will be num+1.
+    
+    GetNbSplitPoints(me) returns Integer;
+    	---Purpose: Returns the number of splitting points
+  
+fields
+
+    myNbSplit: Integer;
+
+end ClosedFaceDivide;

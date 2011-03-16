@@ -1,0 +1,78 @@
+// File:	GraphTools_DFSIterator.gxx
+// Created:	Mon Oct 12 16:34:15 1992
+// Author:	Denis PASCAL
+//		<dp@bravox>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColStd_StackOfInteger.hxx>
+
+//=======================================================================
+//function : GraphTools_DFSIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_DFSIterator::GraphTools_DFSIterator () {}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_DFSIterator::Perform
+  (const Graph& G, const Vertex& V)
+{  
+  Standard_Integer index;
+  myVisited.Clear();
+  TColStd_StackOfInteger myReady;
+ 
+  index = myVisited.Add(V);
+  myReady.Push(index);
+  while (!myReady.IsEmpty()) {
+    Vertex w1 = myVisited (myReady.Top());
+    myReady.Pop();
+    for (VIterator it(G,w1); it.More(); it.Next()) {
+      Vertex w2 = it.Value();      
+      if (!myVisited.Contains(w2)) {
+	index = myVisited.Add(w2); 
+	myReady.Push(index);
+      }
+    }
+  }
+  myCurrentIndex = 1;
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_DFSIterator::More () const 
+{
+  return myCurrentIndex <= myVisited.Extent();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_DFSIterator::Next () 
+{
+  myCurrentIndex++;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_DFSIterator::Value () const 
+{
+  return myVisited(myCurrentIndex);
+}
+

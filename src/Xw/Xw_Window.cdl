@@ -1,0 +1,669 @@
+--
+-- File:    Xw_Window.cdl
+-- Created: 18 Novembre 1991
+-- Author:  NW,JPB,CAL,GG
+-- Modified :   GG 28/01/00 G004
+--      Add gamma correction computation just before dumping an image.
+--              GG  07/03/00 G004 Add MMSize() method
+--              TCL 26/10/00 G002 SetBackground(aName: CString) method
+--              SAV 24/11/01 SetBackground(Quantity_Color)
+--              GG - RIC120302 Add NEW XParentWindow methods.
+--
+---Copyright:   MatraDatavision 1991,1992,1993
+
+class Window from Xw
+
+    ---Version:
+
+    ---Purpose: This class defines a X11 window
+    --  Warning: The position and size for the creation of the window
+    --      are defined in Device Screen Unit (DSU)
+    --      floating [0,1] space.
+
+    ---References:
+
+inherits
+
+    Window  from Aspect
+
+uses
+
+    AsciiString        from TCollection,
+    Background         from Aspect,
+    GradientBackground from Aspect,
+    TypeOfResize       from Aspect,
+    Handle             from Aspect,
+    FillMethod         from Aspect,
+    GradientFillMethod from Aspect,
+    PixMap             from Aspect,
+    NameOfColor        from Quantity,
+    Parameter          from Quantity,
+    Ratio              from Quantity,
+    Color              from Quantity,
+    ColorMap           from Xw,
+    TypeMap            from Xw,
+    WidthMap           from Xw,
+    FontMap            from Xw,
+    MarkMap            from Xw,
+    GraphicDevice      from Xw,
+    WindowQuality      from Xw,
+    TypeOfVisual       from Xw
+
+raises
+
+    WindowDefinitionError from Aspect,
+    WindowError           from Aspect
+
+is
+
+    Create ( Device : GraphicDevice from Xw )
+    returns mutable Window from Xw
+    raises WindowDefinitionError from Aspect;
+    ---Level: Public
+
+    Create ( Device : GraphicDevice from Xw ;
+         aPart1, aPart2 : Integer from Standard ;
+         aQuality : WindowQuality from Xw = Xw_WQ_SAMEQUALITY ;
+         BackColor : NameOfColor from Quantity =
+                        Quantity_NOC_MATRAGRAY )
+    returns mutable Window from Xw
+    ---Level: Public
+    ---Purpose: Creates a Window from an X Window defined by his ID
+    --      This Xid equals (aPart1 << 16) + aPart2.
+    --      A child of this Window is created when the WindowQuality
+    --      isn't the same than the parent Window
+    --  Trigger: Raises WindowDefinitionError if the connection failed
+    --      or if the Position out of the Screen Space
+    raises WindowDefinitionError from Aspect ;
+
+    Create ( Device : GraphicDevice from Xw ;
+         aWindow : Handle from Aspect;
+         aQuality : WindowQuality from Xw = Xw_WQ_SAMEQUALITY ;
+         BackColor : NameOfColor from Quantity =
+                        Quantity_NOC_MATRAGRAY )
+    returns mutable Window from Xw
+    ---Level: Public
+    ---Purpose: Creates a Window from an X Window defined by his Xid
+    --      A child of this Window is created when the WindowQuality
+    --      isn't the same than the parent Window
+    --  Trigger: Raises WindowDefinitionError if the connection failed
+    --      or if the Position out of the Screen Space
+    raises WindowDefinitionError from Aspect ;
+
+    Create ( Device     : GraphicDevice from Xw ;
+             Title      : CString from Standard ;
+             Xc         : Parameter from Quantity = 0.5 ;
+             Yc         : Parameter from Quantity = 0.5 ;
+             Width      : Parameter from Quantity = 0.5 ;
+             Height     : Parameter from Quantity = 0.5 ;
+             Quality    : WindowQuality from Xw = Xw_WQ_DRAWINGQUALITY ;
+             BackColor  : NameOfColor from Quantity =  Quantity_NOC_MATRAGRAY ;
+             Parent     : Handle from Aspect = 0 )
+    returns mutable Window from Xw
+    ---Level: Public
+    ---Purpose: Creates a Window defined by his Center and his Size
+    --      in DSU from the Parent Window.
+    --      NOTE than if Parent is 0 the window is created from the
+    --      ROOT Window.
+    --      Connects it to the X server at the first call
+    --      depending of the GraphicDevice Visual and
+    --      Display parameters.
+    --      Quality defined a 2D or 3D Graphics oriented Window and
+    --      must be one of :
+    --      Xw_WQ_DRAWINGQUALITY for 2D Wireframe.
+    --      Xw_WQ_PICTUREQUALITY for Picture.
+    --      Xw_WQ_3DQUALITY for 3D Shading, HiddenLines, Wireframe.
+    --
+    --      Creation of an Xw_Window automatically determines the
+    --      smaller dimension of the screen (usually the height)
+    --      and parametrises it as 1.0.
+    --      The smaller dimension of the window is limited to 1.0
+    --      We can give a value greater than 1.0 to the larger
+    --      dimension.
+    --      No matter how large the values passed in argument, the
+    --      window is automatically limited to the maximum size of
+    --      the screen.
+    --      The ratio of width to height of a conventional screen is
+    --      of the order of 1.3.
+    --
+    --  Trigger: Raises WindowDefinitionError if the connection failed
+    --      or if the Position out of the Screen Space
+    raises WindowDefinitionError from Aspect ;
+
+    Create ( theDevice    : GraphicDevice from Xw ;
+             theTitle     : CString from Standard ;
+             thePxLeft    : Integer from Standard ;
+             thePxTop     : Integer from Standard ;
+             thePxWidth   : Integer from Standard ;
+             thePxHeight  : Integer from Standard ;
+             theQuality   : WindowQuality from Xw = Xw_WQ_DRAWINGQUALITY ;
+             theBackColor : NameOfColor from Quantity =  Quantity_NOC_MATRAGRAY ;
+             theParent    : Handle from Aspect = 0 )
+    returns mutable Window from Xw
+    ---Level: Public
+    ---Purpose: Creates a Window defined by his position and size
+    --      in pixels from the Parent Window.
+    --  Trigger: Raises WindowDefinitionError if the connection failed
+    --      or if the Position out of the Screen Space
+    raises WindowDefinitionError from Aspect ;
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    SetBackground ( me : mutable ;
+                    Background : Background from Aspect ) is virtual;
+    ---Level: Public
+    ---Purpose: Modifies the window background.
+    --  Warning: the background color is ignored when the quality
+    --     of this window is TRANSPARENT.
+    ---Category: Methods to modify the class definition
+
+    SetBackground ( me : mutable ;
+            BackColor : NameOfColor from Quantity ) is virtual;
+    ---Level: Public
+    ---Purpose: Modifies the window background from a Named Color.
+    --  Warning: the background color is ignored when the quality
+    --     of this window is TRANSPARENT.
+    ---Category: Methods to modify the class definition
+
+    SetBackground ( me : mutable; color : Color from Quantity ) is virtual;
+    ---Level: Public
+    ---Purpose: Modifies the window background from a Named Color.
+    --  Warning: the background color is ignored when the quality
+    --     of this window is TRANSPARENT.
+    ---Category: Methods to modify the class definition
+
+    SetBackground( me: mutable;
+                       aPixmap: Handle from Aspect);
+        ---Level: Advanced
+        ---Purpose: Defines the window background directly from a bitmap.
+    --  Warning: the bitmap and window must have the same depth.
+        ---Category: Methods to modify the class definition
+
+    SetBackground( me: mutable;
+                       aName: CString from Standard;
+               aMethod : FillMethod from Aspect = Aspect_FM_CENTERED)
+    returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Loads the window background from an image file <aName>
+    -- defined with a supported format XWD,GIF or BMP
+    -- and returns TRUE if the operation is successfull.
+        ---Category: Methods to modify the class definition
+
+    SetBackground ( me : mutable ;
+                    Background : GradientBackground from Aspect ) is virtual;
+    ---Level: Public
+    ---Purpose: Modifies the window gradient background.
+    --  Warning: the gradient background colours are ignored when the quality
+    --     of this window is TRANSPARENT.
+    ---Category: Methods to modify the class definition
+
+        SetBackground( me      : mutable;
+                       aCol1   : Color from Quantity;
+                       aCol2   : Color from Quantity;
+               aMethod : GradientFillMethod from Aspect = Aspect_GFM_HOR);
+        ---Level: Public
+    ---Purpose: Modifies the window gradient background.
+    --  Warning: the gradient background colours are ignored when the quality
+    --     of this window is TRANSPARENT.
+    ---Category: Methods to modify the class definition
+
+    SetDoubleBuffer ( me : mutable ;
+              DBmode : Boolean from Standard )
+    ---Level: Advanced
+    ---Purpose: Activates/Deactivates the Double Buffering capability
+    --      for this window.
+    --  Warning: Double Buffering is always DISABLE by default
+    --      If there is not enought ressources to activate the
+    --      double-buffering the DB mode flag can be set to FALSE.
+    ---Category: Methods to modify the class definition
+    is virtual;
+
+    Flush ( me )
+    ---Level: Advanced
+    ---Purpose: Flushs all graphics to the screen and Swap the Double
+    --      buffer if Enable
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Something is WRONG at Drawing Time.
+    raises WindowError from Aspect is virtual;
+
+    Map ( me ) is virtual;
+    ---Level: Public
+    ---Purpose: Opens the window <me>.
+    ---Category: Methods to modify the class definition
+
+    Unmap ( me ) is virtual;
+    ---Level: Public
+    ---Purpose: Closes the window <me>.
+    ---Category: Methods to modify the class definition
+
+    DoResize ( me )
+    returns TypeOfResize from Aspect
+    ---Level: Advanced
+    ---Purpose: Applies the resizing to the window <me>.
+    ---Category: Methods to modify the class definition
+    raises WindowError from Aspect is virtual;
+
+        DoMapping ( me ) returns Boolean from Standard
+                raises WindowError from Aspect is virtual;
+        ---Level: Advanced
+        ---Purpose: Apply the mapping change to the window <me>
+    -- and returns TRUE if the window is mapped at screen.
+        ---Category: Methods to modify the class definition
+
+    Destroy ( me : mutable )
+    ---Level: Advanced
+    ---Purpose: Destroies the Window
+    --  C++: alias ~
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is virtual;
+
+    Clear ( me ) is virtual;
+    ---Level: Public
+    ---Purpose: Clears the Window in the Background color
+    ---Category: Methods to modify the class definition
+
+    ClearArea ( me ;
+            Xc, Yc : Integer from Standard ;
+            Width, Height : Integer from Standard )
+    ---Level: Public
+    ---Purpose: Clears the Window Area defined by his center and PIXEL size
+    --      in the Background color
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is virtual;
+
+    Restore ( me )
+    ---Level: Public
+    ---Purpose: Restores The Window from the BackingStored Window
+    --      See BackingStore () method.
+    ---Category: Methods to modify the class definition
+    raises WindowError from Aspect is virtual;
+
+    RestoreArea ( me ;
+              Xc, Yc : Integer from Standard ;
+              Width, Height : Integer from Standard )
+    ---Level: Public
+    ---Purpose: Restores The Window Area defined by his center
+    --      and PIXEL size from the BackingStored Window
+    --      See BackingStore () method.
+    ---Category: Methods to modify the class definition
+    raises WindowError from Aspect is virtual;
+
+    Dump ( me ; aFilename : CString from Standard;
+            aGammaValue: Real from Standard = 1.0 ) returns Boolean
+    ---Level: Advanced
+    ---Purpose: Dumps the Window to an XWD,GIF or BMP file with
+    -- an optional gamma correction value according to the graphic system.
+    --  and returns TRUE if the dump occurs normaly.
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is virtual;
+
+    DumpArea ( me ; aFilename : CString from Standard ;
+            Xc, Yc : Integer from Standard ;
+            Width, Height : Integer from Standard ;
+            aGammaValue: Real from Standard = 1.0 ) returns Boolean
+    ---Level: Advanced
+    ---Purpose: Dumps the Window Area defined by his center and PIXEL size
+    -- to an XWD,GIF or BMP file with
+    -- an optional gamma correction value according to the graphic system.
+    --  and returns TRUE if the dump occurs normaly.
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    --      or the area is out of the Window.
+    raises WindowError from Aspect is virtual;
+
+    ToPixMap ( me )
+    returns PixMap from Aspect
+    ---Level   : Public
+    ---Purpose : dump the full contents of the window to a pixmap.
+    is virtual;
+
+    Load ( me ; aFilename : CString from Standard) returns Boolean
+    ---Level: Advanced
+    ---Purpose: Loads the XWD file to this Window.
+    -- Returns TRUE if the loading occurs normaly.
+    --  Warning: Note that the Window is enlarged automatically
+    --  when the image size is too large for this window.
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is virtual;
+
+    LoadArea ( me ; aFilename : CString from Standard ;
+                    Xc, Yc : Integer from Standard ;
+                    Width, Height : Integer from Standard ) returns Boolean
+    ---Level: Advanced
+    ---Purpose: Loads the XWD file to Window Area defined by his center
+    --  and PIXEL size.
+    -- Returns TRUE if the loading occurs normaly.
+    --  Warning: Note that the Image is zoomed automatically
+    --  when the image size is too large for this window area.
+    --  Category: Methods to modify the class definition
+    --  Trigger: Raises if Window is not defined properly
+    --          or the area is out of the Window.
+    raises WindowError from Aspect is virtual;
+
+    SetCursor ( me ; anId : Integer from Standard ;
+        aColor : NameOfColor from Quantity
+                    = Quantity_NOC_YELLOW ) is virtual ;
+    ---Level: Advanced
+    ---Purpose: Changes the current window cursor by anId cursor
+    --      in the specified color.
+    --      NOTE than anId must be one of /usr/include/X11/cursorfont.h
+    --      or 0 for Deactivate the cursor
+    ---Category: Methods to modify the class definition
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    BackingStore ( me )
+    returns Boolean from Standard  is virtual;
+    ---Level: Advanced
+    ---Purpose: Returns the BackingStore capability for this Window.
+    --      If Answer is True Exposure can be recovered by
+    --      Restore RestoreArea methods.
+    --      If Answer is False, Application must Redraw the
+    --          exposed area.
+    ---Category: Inquire methods
+
+    DoubleBuffer ( me )
+    returns Boolean from Standard  is virtual;
+    ---Level: Advanced
+    ---Purpose: Returns the DoubleBuffer state.
+    ---Category: Inquire methods
+
+    IsMapped ( me )
+    returns Boolean from Standard  is virtual;
+    ---Level: Public
+    ---Purpose: Returns True if the window <me> is opened
+    --      and False if the window is closed.
+    ---Category: Inquire methods
+
+    Ratio ( me )
+    returns Ratio from Quantity  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window RATIO equal to the physical
+    --      WIDTH/HEIGHT dimensions
+    ---Category: Inquire methods
+
+    Position ( me ;
+           X1, Y1, X2, Y2 : out Parameter from Quantity )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window POSITION in DSU
+    ---Category: Inquire methods
+
+    Position ( me ;
+           X1, Y1, X2, Y2 : out Integer from Standard )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window POSITION in PIXEL
+    ---Category: Inquire methods
+
+    Size ( me ;
+           Width, Height : out Parameter from Quantity )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window SIZE in DSU
+    ---Category: Inquire methods
+
+    Size ( me ;
+           Width, Height : out Integer from Standard )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window SIZE in PIXEL
+    ---Category: Inquire methods
+
+    MMSize ( me ;
+           Width, Height : out Real from Standard )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns The Window SIZE in MM
+    ---Category: Inquire methods
+
+    Convert ( me ; PV : Integer from Standard )
+    returns Parameter from Quantity  is virtual;
+    ---Level: Public
+    ---Purpose: Returns the DSU value depending of the PIXEL value.
+    ---Category: Inquire methods
+
+    Convert ( me ; DV : Parameter from Quantity )
+    returns Integer from Standard  is virtual;
+    ---Level: Public
+    ---Purpose: Returns the PIXEL value depending of the DSU value.
+    ---Category: Inquire methods
+
+    Convert ( me ;
+          PX, PY : Integer from Standard ;
+          DX, DY : out Parameter from Quantity )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns the DSU position depending of the PIXEL position.
+    ---Category: Inquire methods
+
+    Convert ( me ;
+          DX, DY : Parameter from Quantity ;
+          PX, PY : out Integer from Standard )  is virtual;
+    ---Level: Public
+    ---Purpose: Returns the PIXEL position depending of the DSU position.
+    ---Category: Inquire methods
+
+    XWindow ( me )
+    returns Handle from Aspect is static;
+    ---Level: Public
+    ---Purpose: Returns the X window ID of the created window <me>.
+    ---Category: Inquire methods
+
+    XWindow ( me ; aPart1, aPart2 : out Integer from Standard ) is static;
+    ---Level: Public
+    ---Purpose: Returns the X window ID of the created window <me>.
+    --      This Xid equals (aPart1 << 16) + aPart2.
+
+    XParentWindow ( me )
+    returns Handle from Aspect is static;
+    ---Level: Public
+    ---Purpose: Returns the X window ID parent of the created window <me>.
+    ---Category: Inquire methods
+
+    XParentWindow ( me ; aPart1, aPart2 : out Integer from Standard ) is static;
+    ---Level: Public
+    ---Purpose: Returns the X window ID parent of the created window <me>.
+    --      This Xid equals (aPart1 << 16) + aPart2.
+
+    XPixmap ( me )
+    returns Handle from Aspect is static;
+    ---Level: Internal
+    ---Purpose: Returns the X pixmap ID of the created window <me>.
+    --      If BackingStore () is permitted.
+    ---Category: Inquire methods
+
+    PointerPosition ( me ; X, Y : out Integer from Standard )
+    returns Boolean from Standard is virtual;
+    ---Level: Advanced
+    ---Purpose: Returns the Pointer position relatively to the Window <me>
+    --      and FALSE if the pointer is outside of the window
+    ---Category: Inquire methods
+
+    ColorMap ( me )
+    returns ColorMap from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Colormap attached to this Window
+
+    TypeMap ( me )
+    returns TypeMap from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Typemap attached to this Window
+
+    WidthMap ( me )
+    returns WidthMap from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Widthmap attached to this Window
+
+    FontMap ( me )
+    returns FontMap from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Fontmap attached to this Window
+
+    MarkMap ( me )
+    returns MarkMap from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Markmap attached to this Window
+
+    XColorMap ( me )
+    returns Handle from Aspect
+    ---Level: Internal
+    ---Purpose: Returns the Colormap XId attached to this Window
+    --      depending of the HardWare and Visual class
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is static;
+
+    XVisual ( me )
+    returns Address from Standard
+    ---Level: Internal
+    ---Purpose: Returns the Visual address attached to this Window
+    --      depending of the HardWare
+    --  Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect is static;
+
+    VisualClass ( me )
+    returns TypeOfVisual from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the X window Visual class of the created window <me>
+    ---Category: Inquire methods
+
+    VisualDepth ( me )
+    returns Integer from Standard is static;
+    ---Level: Public
+    ---Purpose: Returns the X window Visual depth of the created window <me>
+    ---Category: Inquire methods
+
+    VisualID ( me )
+    returns Integer from Standard is static;
+    ---Level: Public
+     ---Purpose: Returns the Visual ID of the Window
+    ---Category: Inquire methods
+
+    Quality ( me )
+    returns WindowQuality from Xw is static;
+    ---Level: Public
+    ---Purpose: Returns the Quality of this window
+    ---Category: Inquire methods
+
+    PixelOfColor ( me ;aColor : NameOfColor from Quantity;
+                  aPixel : out Integer from Standard )
+    returns Boolean from Standard is static;
+    ---Level: Public
+    ---Purpose: Returns FALSE when the returned pixel value <aPixel>
+    --     of an RGB color <aColor> is exact or TRUE
+    --     when the pixel value is approximated.
+
+    PixelOfColor ( me ;aColor : Color from Quantity;
+                   aPixel : out Integer from Standard )
+    returns Boolean from Standard is static;
+    ---Level: Advanced
+    ---Purpose: Returns FALSE when the returned pixel value <aPixel>
+    --     of an RGB color <aColor> is exact or TRUE
+    --     when the pixel value is approximated.
+    --  Warning:
+    -- make becarefull about the number of different pixel
+    -- of colors reserved in the colormap in PseudoColor mode !!!
+
+    BackgroundPixel ( me ; aPixel : out Integer from Standard )
+    returns Boolean from Standard is static;
+    ---Level: Public
+     ---Purpose: Returns FALSE when the returned background pixel
+    --     value <aPixel> is not defined
+
+    ExtendedWindow ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedWindow address of the created window.
+    ---Category: Inquire methods
+
+    ExtendedColorMap ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedColorMap address of the created window.
+    ---Category: Inquire methods
+
+    ExtendedTypeMap ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedTypeMap address of the created window.
+    ---Category: Inquire methods
+
+    ExtendedWidthMap ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedWidthMap address of the created window.
+    ---Category: Inquire methods
+
+    ExtendedFontMap ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedFontMap address of the created window.
+    ---Category: Inquire methods
+
+    ExtendedMarkMap ( me )
+    returns Address from Standard
+    is static protected ;
+    ---Level: Internal
+    ---Purpose: Returns the ExtendedMarkMap address of the created window.
+    ---Category: Inquire methods
+
+    SetWindow ( me: mutable ; aWindow : Handle from Aspect ;
+                aQuality: WindowQuality from Xw ;
+                BackColor : NameOfColor from Quantity )
+    ---Level: Internal
+    ---Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect
+    is static private ;
+
+    SetWindow ( me: mutable ; Title : CString from Standard ;
+                Xc, Yc, Width, Height: Parameter from Quantity ;
+                Quality : WindowQuality from Xw ;
+                BackColor : NameOfColor from Quantity ;
+                Parent : Handle from Aspect )
+    ---Level: Internal
+    ---Trigger: Raises if Window is not defined properly
+    raises WindowError from Aspect
+    is static private ;
+
+    PrintError(myclass) is protected;
+    ---Purpose: Print last error or raise depending of the error gravity.
+
+    Init( me: mutable ) is private;
+    ---Purpose: Initialise the fileds of class
+
+fields
+
+    MyQuality           : WindowQuality from Xw is protected ;
+    MyColorMap          : ColorMap from Xw is protected ;
+    MyTypeMap           : TypeMap from Xw is protected ;
+    MyWidthMap          : WidthMap from Xw is protected ;
+    MyFontMap           : FontMap from Xw is protected ;
+    MyMarkMap           : MarkMap from Xw is protected ;
+    MyXWindow           : Handle from Aspect is protected ;
+    MyXParentWindow     : Handle from Aspect is protected ;
+    MyXPixmap           : Handle from Aspect is protected ;
+    MyVisualClass       : TypeOfVisual from Xw is protected ;
+    MyDepth             : Integer from Standard is protected ;
+    MyBackgroundIndex   : Integer from Standard is protected ;
+    MyExtendedDisplay   : Address from Standard is protected ;
+    MyExtendedWindow    : Address from Standard is protected ;
+    MyExtendedColorMap  : Address from Standard is protected ;
+    MyExtendedTypeMap   : Address from Standard is protected ;
+    MyExtendedWidthMap  : Address from Standard is protected ;
+    MyExtendedFontMap   : Address from Standard is protected ;
+    MyExtendedMarkMap   : Address from Standard is protected ;
+
+friends
+
+    class Driver from Xw,
+    class IconBox from Xw,
+    class PixMap from Xw
+
+end Window ;

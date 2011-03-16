@@ -1,0 +1,72 @@
+-- File:	SimpleBinder.cdl
+-- Created:	Mon Feb 17 11:39:12 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class SimpleBinder  from Transfer
+
+    	  (TheResult as any;  -- any : avoid Transient classes
+	   TheInfo   as any)  -- template : DataInfo
+
+        inherits Binder
+
+    ---Purpose : Allows direct binding between a starting Object and the Result
+    --           of its transfer when it is Unique.
+    --           The Result itself is defined as a formal parameter <TheResult>           
+    --  Warning : While it is possible to instantiate SimpleBinder with any Type
+    --           for the Result, it is not advisable to instantiate it with
+    --           Transient Classes, because such Results are directly known and
+    --           managed by TransferProcess & Co, through
+    --           SimpleBinderOfTransient : this class looks like instantiation
+    --           of SimpleBinder, but its method ResultType
+    --           is adapted (reads DynamicType of the Result)
+
+uses CString, Type
+
+raises TransferFailure
+
+is
+
+    Create returns mutable SimpleBinder;
+    ---Purpose : normal standard constructor, creates an empty SimpleBinder
+
+    Create (res : any TheResult) returns mutable SimpleBinder;
+    ---Purpose : constructor which in the same time defines the result
+
+--    IsMultiple (me) returns Boolean;
+    ---Purpose : Returns True if a starting object is bound with SEVERAL
+    --           results : Here, returns allways False
+    --           But it can have next results
+
+    ResultType (me) returns Type;
+    ---Purpose : Returns the Type permitted for the Result, i.e. the Type
+    --           of the Parameter Class <TheResult> (statically defined)
+
+    ResultTypeName (me) returns CString;
+    ---Purpose : Returns the Type Name computed for the Result (dynamic)
+
+    SetResult (me : mutable; res : any TheResult)
+    ---Purpose : Defines the Result
+    	raises TransferFailure;
+    --           Error if the Result is already used (see class Binder)
+
+    Result (me) returns any TheResult
+    ---Purpose : Returns the defined Result, if there is one
+    	raises TransferFailure;
+    --           Error if the Result is not defined (see class Binder)
+    ---C++ : return const &
+
+    CResult (me : mutable) returns any TheResult;
+    ---Purpose : Returns the defined Result, if there is one, and allows to
+    --           change it (avoids Result + SetResult).
+    --           Admits that Result can be not yet defined
+    --  Warning : a call to CResult causes Result to be known as defined
+    ---C++ : return &
+
+fields
+
+    theres : TheResult;
+
+end SimpleBinder;

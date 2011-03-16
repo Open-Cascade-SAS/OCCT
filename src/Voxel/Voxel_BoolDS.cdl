@@ -1,0 +1,74 @@
+-- File:	Voxel_BoolDS.cdl
+-- Created:	Sun May 04 09:50:26 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class BoolDS from Voxel inherits DS from Voxel
+
+    ---Purpose: A 3D voxel model keeping a bool flag (1 or 0)
+    --          value for each voxel.
+    
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns BoolDS from Voxel;
+
+    Create(x     : Real    from Standard;
+    	   y     : Real    from Standard;
+    	   z     : Real    from Standard;
+    	   x_len : Real    from Standard;
+    	   y_len : Real    from Standard;
+    	   z_len : Real    from Standard;
+	   nb_x  : Integer from Standard;
+	   nb_y  : Integer from Standard;
+	   nb_z  : Integer from Standard)
+    ---Purpose: A constructor initializing the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    returns BoolDS from Voxel;
+
+    Init(me : in out;
+    	 x     : Real    from Standard;
+    	 y     : Real    from Standard;
+    	 z     : Real    from Standard;
+    	 x_len : Real    from Standard;
+    	 y_len : Real    from Standard;
+    	 z_len : Real    from Standard;
+	 nb_x  : Integer from Standard;
+	 nb_y  : Integer from Standard;
+	 nb_z  : Integer from Standard)
+    ---Purpose: Initialization of the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    is redefined virtual;
+
+    Destroy(me : in out);
+    ---C++: alias ~
+    ---Purpose: A destructor of the voxel model.
+
+    SetZero(me : in out);
+    ---Purpose: The method sets all values equal to 0 (false) and
+    --          releases the memory.
+
+    Set(me   : in out;
+    	ix   : Integer from Standard;
+    	iy   : Integer from Standard;
+    	iz   : Integer from Standard;
+	data : Boolean from Standard = Standard_True);
+    ---Purpose: Defines a value for voxel with co-ordinates (ix, iy, iz).
+    --          Initial state of the model is so that all voxels have value 0 (false),
+    --          and this data doesn't occupy memory.
+    --          Memory for data is allocating during setting non-zero values (true).
+
+    Get(me;
+    	ix : Integer from Standard;
+    	iy : Integer from Standard;
+    	iz : Integer from Standard)
+    ---Purpose: Returns the value of voxel with co-ordinates (ix, iy, iz).
+    returns Boolean from Standard;
+
+end BoolDS;

@@ -1,0 +1,344 @@
+-- File:	BRepAlgo_DSAccess.cdl
+-- Created:	Wed Aug 13 16:01:14 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class DSAccess from BRepAlgo
+
+    ---Purpose: 
+
+uses
+
+    HDataStructure from TopOpeBRepDS,
+    Kind           from TopOpeBRepDS,
+    Shape          from TopoDS,
+    Wire           from TopoDS,
+    Face           from TopoDS,
+    Vertex         from TopoDS,
+    ListOfInteger  from TColStd,  
+    SetOfInteger   from TColStd,
+    MapOfInteger   from TColStd,
+    ListOfShape    from TopTools,
+    State          from TopAbs,
+    CheckStatus    from BRepAlgo,
+    EdgeConnector  from BRepAlgo,
+    LoopSet        from TopOpeBRepBuild,
+    HBuilder       from TopOpeBRepBuild,
+    DataMapOfShapeInterference  from BRepAlgo,
+    DataMapOfShapeShape from TopTools,
+    DataMapOfShapeListOfShape   from TopTools,
+    DSFiller from TopOpeBRep
+
+is
+    
+    Create returns DSAccess from BRepAlgo;
+    
+    Init(me: in out);
+    ---Purpose: Clears the internal data structure, including the
+    --Shapes of  Load().
+
+
+-- Filling of the DS
+
+    Load(me : in out; S : Shape from TopoDS);
+    ---Purpose: Loads the shape in DS.
+    --          
+
+    Load(me : in out; S1, S2 : in out Shape from TopoDS);
+    ---Purpose: Loads two shapes in the DS without intersecting them.
+
+    Intersect(me : in out);
+    ---Purpose: Intersects two shapes at input and loads the DS with
+    --          their intersection. Clears the TopOpeBRepBuild_HBuilder if
+    --          necessary
+
+    Intersect(me : in out; S1, S2 : Shape from TopoDS);
+    ---Purpose: Intersects the faces contained in two given shapes
+    --          and loads them in the DS. Clears the TopOpeBRepBuild_HBuilder
+    --          if necessary
+
+    SameDomain(me : in out;S1, S2 : Shape from TopoDS);
+    ---Purpose: This method does the same thing as the previous,
+    --          but faster. There is no intersection face/face 3D.
+    --          The faces have the same support(surface). No test of
+    --          tangency (that is why it is faster). Intersects in 2d
+    --          the faces tangent F1 anf F2.
+
+
+-- Construction des Sections
+
+    GetSectionEdgeSet(me : in out; S1,S2 : Shape from TopoDS)
+    ---Purpose: returns compounds of Edge connected with section, which 
+    --          contains sections between faces contained in S1 and S2.
+    --          returns an empty list of Shape if S1 or S2 do not contain
+    --          face.
+    --          calls GetSectionEdgeSet() if it has not already been done
+    ---C++: return const &
+    returns ListOfShape from TopTools;
+
+    GetSectionEdgeSet(me : in out)
+    ---Purpose: returns all compounds of edges connected with section 
+    --          contained in the DS
+    ---C++: return const &
+    returns ListOfShape from TopTools;
+    
+    IsWire(me : in out;Compound : Shape from TopoDS) 
+    ---Purpose: NYI
+    returns Boolean from Standard;
+    
+    Wire(me : in out;Compound : Shape from TopoDS)
+    ---Purpose: NYI
+    ---C++: return const &
+    returns Shape from TopoDS;
+    
+    SectionVertex(me : in out;S1 : Shape from TopoDS;S2 : Shape from TopoDS)
+    ---Purpose: NYI
+    --          returns the vertex of section, which contains the section
+    --          between face S1 and edge S2 (returns an empty Shape
+    --          if S1 is not a face or if S2 is not an edge)
+    ---C++: return const &
+    returns ListOfShape from TopTools;
+
+
+-- Edition de la SD
+
+    SuppressEdgeSet(me : in out; Compound : Shape from TopoDS);
+    ---Purpose: Invalidates a complete line of section. All  
+    --          Edges connected by Vertex or a Wire. Can be 
+    --          a group of connected Edges, which do not form a 
+    --          standard Wire. 
+              
+    ChangeEdgeSet(me : in out; Old,  New : Shape from TopoDS);
+    ---Purpose:  Modifies a line of section.  <New> -- should be a
+    --          Group of Edges connected by Vertex.  -- Can be a
+    --          Wire.  Can be a group of connected Edges that do not
+    --          form a standard Wire.   <New> should be sub-groupn of <Old>
+    --          
+    --          
+
+    SuppressSectionVertex(me : in out;V : Vertex from TopoDS);
+    ---Purpose: NYI
+    --          Make invalid a Vertex of section. The Vertex shoud be 
+    --          reconstructed from a point.
+
+    Suppress(me  :  in  out;  Compound  :  Shape  from TopoDS; 
+             KeepComp  :  Shape  from TopoDS) 
+    is  private; 
+
+-- Reconstruction des Shapes
+
+    Merge(me : in out; state1 : State from TopAbs;
+    	    	       state2 : State from TopAbs)
+    ---C++: return const &
+    returns Shape from TopoDS;
+
+    Merge(me : in out; state1 : State from TopAbs)
+    ---C++: return const &
+    returns Shape from TopoDS;
+
+    Propagate(me :in out;what  : State from TopAbs;
+	      	    	 FromShape : Shape from TopoDS;
+    	    	    	 LoadShape : Shape from TopoDS)
+    ---Purpose:  NYI   Propagation  of a state starting from the shape
+    --          FromShape = edge or vertex of section, face or
+    --          Coumpound de section. LoadShape is either S1,
+    --          or S2  (see the method Load).   Propagation   from
+    --          FromShape, on the states <what> of LoadShape.
+    --          Return a Wire in 2d, a Shell in 3d.
+    --          Specifications are incomplete, to be redefined for the typologies
+    --          correpsonding to  <FromShape> and the result :
+    --          exemple :    FromShape        resultat
+    --                         vertex           wire (or edge)
+    --                    edge of section       face (or shell)
+    --                    compound of section   shell
+    --                      ...                  ...
+    ---C++: return const &
+    returns Shape from TopoDS;
+
+    PropagateFromSection(me : in out;SectionShape : Shape from TopoDS)
+    ---Purpose: SectionShape est soit un Vertex de section(NYI), soit
+    --          une Edge de section. Propagation  des shapes
+    --          de section en partant de SectionShape.
+    --          return un Compound de section.
+    ---C++:   return const &
+    returns Shape from TopoDS; 
+     
+     
+-- History
+   Modified (me: in out; S : Shape from TopoDS)
+    ---Purpose: Returns the list of the descendant shapes of the shape <S>.
+    ---C++: return const & 
+    returns ListOfShape from TopTools ; 
+     
+   IsDeleted (me: in out; S : Shape from TopoDS)
+    ---Purpose: Returns the fact that the shape <S> has been deleted or not
+    --          by the boolean operation.
+    returns Boolean;     
+    
+-- Verification de la DS
+
+    Check(me : in out)
+    ---Purpose: NYI
+    --          coherence of the internal Data Structure.
+    returns CheckStatus from BRepAlgo;
+
+-- private
+
+    RemoveEdgeInterferences(me : in out;iF1 : Integer;
+    	    	    	    	    	iF2 : Integer;
+    	    	    	    	    	iCurve : Integer) 
+    ---purpose: case of SectEdge coming from Curve
+    --     for each of F1 and F2, find Edges
+    --	   for each Edge :
+    --	   remove the impact on geometry of vertexes
+    --	   of  SectEdge. If there is no other impact at these edges 
+    --     and if these Edges are not SameDomain,
+    --     make unKeepShape.
+    is private;
+    
+    RemoveEdgeInterferences(me : in out;iE1  : Integer;
+    	    	    	    	    	iE2 : Integer;
+    	    	    	                SectEdge :Shape from TopoDS) 
+    ---purpose: case of SectEdge coming from Edge(s)
+    --        if iE1 and iE2 are Edges :
+    --          Remove the impact of DSEdge(= iE1 or iE2) of 
+    --          geometry a vertex of SectEdge, and if there is nothing
+    --   	 else make unkeep on DSEdge 
+    --          if iE1 or iE2 == 0, no interference on Edges in the DS 
+    --        if iE1 and iE2 are Faces :
+    --          for each of faces F1 and F2, explode into Edges
+    --   	   for each Edge :
+    --   	    remove interferences a vertex of SectEdge as geometry.
+    --   	    If no other interferences are attached to 
+    --              these Edges, and if these Edges are not SameDomain,
+    --              make unKeepShape.
+    is private;
+    
+    RemoveFaceInterferences(me : in out;iF1 : Integer;
+    	    	    	    	    	iF2 : Integer;
+    	    	    	    	    	iE1 : Integer;
+    	    	    	    	    	iE2 : Integer)
+    --purpose  : case of SectEdge coming from Edge(s)
+    --        Remove the interferences between F1 and F2 concerning 
+    --        DSEdge (= E1 or E2) :
+    --		a) if DSEdge is not SameDomain -> the edge is Removed
+    --		b) if there are no interferences of DSEdge of 
+    --                 GeomtryType == VERTEX 
+    --                 with Edge of DSFace(= F1 or F2)
+    --	  if DSFace has no more interference and is not SameDomain,
+    --        make unkeep DSFace.
+    is private;
+
+    RemoveFaceInterferences(me : in out;iF1 : Integer;
+    	    	    	    	    	iF2 : Integer;
+    	    	    	    	    	iCurve : Integer)
+    ---purpose: case of SectEdge coming from Curve
+    --           remove the interferences of Geometry iCurve between F1 and F2.
+    --           if Face(= F1 or F2) has no other interferences, and if Face
+    --           is not SameDomain, make unKeepShape Face.
+    is private;
+
+    RemoveEdgeInterferencesFromFace(me : in out;
+    	    	    	    	    iF1 : Integer;
+    	    	    	    	    iF2 : Integer;
+    	    	    	    	    ipv1 : Integer;
+    	    	    	    	    kind1  : Kind from TopOpeBRepDS;
+    	    	    	    	    ipv2 : Integer;
+    	    	    	    	    kind2  : Kind from TopOpeBRepDS)
+    ---purpose: remove from iF1 or iF2 interferences of Edges
+    --          that have GeometryType kind1/kind2 and 
+    --          Geometry ipv1/ipv2.
+    --          if kind1/kind2 == TopAbs_VERTEX -> RemoveEdgeFromFace
+    is private;
+
+    RemoveEdgeFromFace(me : in out;iF : Integer;
+    	    	    	    	   iV : Integer)
+    ---purpose: remove from the DS the Edges that belong to iF
+    --          that have iV as Vertex if they do not have Geometry and
+    --          are not SameDomain.
+    is private;
+    
+    PntVtxOnCurve(me : in out; iCurve : Integer;
+    	    	       ipv1 : in out Integer;
+    	    	       ik1  : in out Kind from TopOpeBRepDS;
+    	    	       ipv2 : in out Integer;
+    	    	       ik2  : in out Kind from TopOpeBRepDS)
+    ---purpose: Find points/vertex on curves
+    is private;
+
+    PntVtxOnSectEdge(me : in out; SectEdge : Shape from TopoDS;
+    	    	       	  ipv1 : in out Integer;
+    	    	          ik1  : in out Kind from TopOpeBRepDS;
+    	    	          ipv2 : in out Integer;
+    	    	          ik2  : in out Kind from TopOpeBRepDS)
+    ---purpose  : Find points/Vertex on SectEdge
+    is private;
+
+    RemoveEdgeSameDomain(me : in out; iE1 : Integer;
+    	    	                      iE2 : Integer)
+    is private;
+
+    RemoveFaceSameDomain(me : in out; C : Shape from TopoDS)
+    is private;
+
+    FindGoodFace(me : in out; iE : Integer;
+			      iF1 : in out Integer;
+    	    	    	      b : in out Boolean)
+    ---C++: return &
+    returns ListOfInteger from TColStd is private;
+
+    
+    
+    RemoveFaceSameDomain(me : in out; iF1 : Integer;
+    	    	                      iF2 : Integer)
+    is private;
+
+    GoodInterf(me : in out; SectEdge : Shape from TopoDS;
+    	    	    	    kind : Kind from TopOpeBRepDS;
+			    iPointVertex : Integer)
+    returns Boolean is private;
+    
+    DS(me) returns HDataStructure from TopOpeBRepDS;
+    ---C++: return const &
+
+    ChangeDS(me : in out) returns HDataStructure from TopOpeBRepDS;
+    ---C++: return &
+
+    Builder(me) returns HBuilder from TopOpeBRepBuild;
+    ---C++: return const &
+
+    ChangeBuilder(me : in out) returns HBuilder from TopOpeBRepBuild;
+    ---C++: return &
+
+fields
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    myDSFiller : DSFiller  from TopOpeBRep;
+    myHB  : HBuilder       from TopOpeBRepBuild;
+    myEC  : EdgeConnector  from BRepAlgo;
+    myS1  : Shape from TopoDS;
+    myS2  : Shape from TopoDS;
+    myState1,myState2 : State from TopAbs;
+    
+    myListOfCompoundOfEdgeConnected : ListOfShape from TopTools;
+    myCurrentList                   : ListOfShape from TopTools;
+    myRecomputeBuilderIsDone : Boolean from Standard;
+    myGetSectionIsDone       : Boolean from Standard;
+    myResultShape            : Shape from TopoDS;
+
+    myWire : Wire from TopoDS;
+    myListOfVertex : ListOfShape from TopTools; 
+    myModified     : ListOfShape from TopTools;
+    myEmptyShape : Shape from TopoDS;
+    myEmptyListOfShape : ListOfShape from TopTools;
+    myEmptyListOfInteger : ListOfInteger from TColStd;
+
+    myCompoundWireMap : DataMapOfShapeShape from TopTools; 
+    mySetOfKeepPoint  : SetOfInteger  from  TColStd;
+    
+friends
+    
+    class BooleanOperations
+
+end DSAccess from BRepAlgo;

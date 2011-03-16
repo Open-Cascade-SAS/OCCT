@@ -1,0 +1,69 @@
+-- File:	Difference.cdl
+-- Created:	Mon Jan 14 16:20:15 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class Difference from Expr
+
+inherits BinaryExpression from Expr
+
+uses GeneralExpression from Expr,
+    AsciiString from TCollection,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    NamedUnknown from Expr
+    
+raises OutOfRange from Standard, 
+    NumericError from Standard,
+    NotEvaluable from Expr
+
+is
+
+    Create(exp1,exp2 : GeneralExpression)
+    ---Purpose: Creates the difference <exp1> - <exp2>.
+    returns mutable Difference;
+
+    ShallowSimplified(me) 
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression
+    raises NumericError;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --          This method does not include any simplification before
+    --          testing.
+    returns Boolean;
+
+    IsLinear(me)
+    returns Boolean;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    returns any GeneralExpression;
+
+    NDerivative(me; X : NamedUnknown; N : Integer)
+    ---Purpose: Returns the <N>-th derivative on <X> unknown of <me>.
+    --          Raises OutOfRange if <N> <= 0
+    returns any GeneralExpression
+    raises OutOfRange
+    is redefined;
+
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    returns Real
+    raises NotEvaluable,NumericError;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+
+end Difference;

@@ -1,0 +1,23 @@
+-- File:	Storage_CallBack.cdl
+-- Created:	Thu Feb 27 17:58:37 1997
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class CallBack from Storage
+
+inherits TShared from MMgt
+
+uses Schema from Storage,
+     BaseDriver from Storage
+     
+is
+   New(me) returns mutable Persistent is deferred;
+   
+   Add(me; aPers : Persistent from Standard; aSchema : Schema from Storage) is deferred;
+   
+   Write(me; aPers : Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage) is deferred;
+   
+   Read(me; aPers : mutable Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage) is deferred;
+   
+end;

@@ -1,0 +1,201 @@
+-- File:	AIS_Trihedron.cdl
+-- Created:	Mon Oct  9 16:23:38 1995
+-- Author:	Arnaud BOUZY/Odile Olivier
+--		<adn@houblon>
+-- Modified by:  rob Wed Feb 11 -> Size of Trihedron
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--   GG  :  IMP120100 Add SetTextColor() methods.
+--                        SetArrowColor() methods.
+
+---Copyright:	 Matra Datavision 1995
+
+class Trihedron from AIS inherits InteractiveObject from AIS
+
+	---Purpose: Create a selectable trihedron
+    	-- there are 4 modes of selection :
+    	--  mode = 0 to select triedron    ,priority = 1
+    	--  mode = 1 to select its origine ,priority = 5
+    	--  mode = 2 to select its axis    ,priority = 3
+    	--  mode = 3 to select its planes  ,priority = 2
+    	--  a trihedron has 1 origine,3 axes,3 planes.
+    	-- Warning
+    	-- For the presentation of trihedra, the default unit of
+    	-- length is the millimetre, and the default value for the
+    	-- representation of the axes is 100. If you modify these
+    	-- dimensions, you must temporarily recover the Drawer.
+    	-- From inside it, you take the aspect in which the values
+    	-- for length are stocked. For trihedra, this is
+    	-- AIS_Drawer_FirstAxisAspect. You change the
+    	-- values inside this Aspect and recalculate the presentation.
+    	--  
+
+uses 
+    Axis2Placement        from Geom,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Selection             from SelectMgr,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,      
+    Axis                  from AIS,
+    Point                 from AIS,
+    Plane                 from AIS,
+    KindOfInteractive     from AIS,
+    InteractiveContext    from AIS,
+    Array1OfPnt           from  TColgp
+is
+
+    Create(aComponent : Axis2Placement from Geom)
+    returns mutable Trihedron from AIS;
+    	--- Purpose: Initializes a trihedron entity.   
+    
+    Component(me) returns any Axis2Placement from Geom 
+    is static;
+    	---Purpose: Returns the right-handed coordinate system set in SetComponent.
+    	---C++: inline
+    	---C++: return const&
+    
+    SetComponent(me: mutable;aComponent : Axis2Placement from Geom)
+    is static;
+    	---Purpose: Constructs the right-handed coordinate system aComponent.
+
+    HasOwnSize(me) returns Boolean from Standard;
+    	---Purpose: Returns true if the trihedron object has a size other
+	-- than the default size of 100 mm. along each axis.
+    	---C++: inline
+
+    SetSize(me:mutable;aValue : Real from Standard);
+    	---Purpose:  Sets the size aValue for the trihedron object.
+    	-- The default value is 100 mm.
+
+    UnsetSize(me:mutable);
+    	---Purpose: Removes any non-default settings for size of this
+    	-- trihedron object.
+    
+    Size(me) returns Real from Standard;
+    
+    
+    XAxis (me)   returns Axis from AIS;
+   	---Purpose : Returns the "XAxis". 
+ 
+    YAxis (me)  returns Axis from AIS;
+  	---Purpose : Returns the "YAxis". 
+
+    Axis (me)  returns Axis from AIS;
+  	---Purpose : Returns the main Axis. 
+
+    Position (me)  returns Point from AIS;
+  	---Purpose : Returns the origine. 
+
+    XYPlane (me)   returns Plane from AIS;
+   	---Purpose : Returns the "XYPlane". 
+
+    XZPlane (me)   returns Plane from AIS;
+   	---Purpose : Returns the "XZPlane". 
+
+    YZPlane (me)   returns Plane from AIS;
+   	---Purpose : Returns the "YZPlane". 
+
+
+    SetContext(me:mutable; aCtx : InteractiveContext from AIS) 
+    is redefined;
+    	---Purpose: connection to <aCtx> default drawer implies a recomputation
+    	--          of SubObjects values.
+
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard is redefined static;
+    	---Purpose: Returns true if the display mode selected, aMode, is
+    	-- valid for trihedron datums.
+        
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard = 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: Computes the presentation according to a point of view
+    	--          given by <aProjector>.
+    	--          To be Used when the associated degenerated Presentations
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)is private;
+
+-- Methods from InteractiveObject
+
+    Signature(me) returns Integer from Standard is redefined;
+    	---Purpose: Returns index 3, selection of the planes XOY, YOZ, XOZ.
+    Type(me) returns KindOfInteractive from AIS is redefined;
+    	---Purpose: Indicates that the type of Interactive Object is datum.
+    SetColor(me :mutable; aColor : NameOfColor from Quantity)
+    is redefined static ;
+ 
+    SetColor(me :mutable; aColor : Color from Quantity) 
+    is redefined static ;
+    	---Purpose: Sets the color aColor for this trihedron object.
+    SetTextColor(me :mutable; aColor : NameOfColor from Quantity)
+    is static ;
+
+    HasTextColor(me) returns Boolean from Standard 
+    is static ;
+ 
+    TextColor(me) returns NameOfColor from Quantity
+    is static ;
+
+    SetArrowColor(me :mutable; aColor : NameOfColor from Quantity)
+    is static ;
+
+    HasArrowColor(me) returns Boolean from Standard 
+    is static ;
+ 
+    ArrowColor(me) returns NameOfColor from Quantity
+    is static ;
+
+    ExtremityPoints(me;TheExtrem  :  in  out  Array1OfPnt  from  TColgp);
+    	---Purpose: Returns the four extremities of the trihedron from the
+    	-- array of points, TheExtrem.
+            
+    
+    UnsetColor(me:mutable) is redefined static;
+    	---Purpose: Removes the settings for color.
+    UnsetWidth(me:mutable) is redefined static;
+    	---Purpose: Removes the non-default settings for width set in SetWidth.
+
+    LoadSubObjects(me:mutable) is static private;
+
+
+fields
+	myComponent : Axis2Placement from Geom;   
+    	myShapes    : InteractiveObject from AIS [7];
+	myHasOwnSize: Boolean from Standard;
+	myHasOwnTextColor : Boolean from Standard;
+	myOwnTextColor: NameOfColor from Quantity;
+	myHasOwnArrowColor : Boolean from Standard;
+	myOwnArrowColor: NameOfColor from Quantity;
+
+end Trihedron from AIS;

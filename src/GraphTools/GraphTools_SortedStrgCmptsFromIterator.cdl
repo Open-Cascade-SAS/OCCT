@@ -1,0 +1,120 @@
+-- File:	GraphTools_SortedStrgCmptsFromIterator.cdl
+-- Created:	Wed Oct 23 12:07:20 1991
+-- Author:	Denis PASCAL
+--		<dp@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+generic class SortedStrgCmptsFromIterator from GraphTools
+             (Graph     as any;
+    	      Vertex    as any;
+	      VHasher   as any;
+	      VIterator as any)
+
+    ---Purposes: This generic  class  implements the Strong Components
+    --           Research  algorithm  from a  set   of  vertices.   An
+    --           iterator on  adjacent vertices  of  a given one,  are
+    --           requested.   Each   Strong Component     encapsulates
+    --           vertices which are part of a cycle, in the underlying
+    --           graph.  The interface of this algorithm is made as an
+    --           iterator.  A each step it  is possible  to  know  the
+    --           number of vertices, which are members  of the current
+    --           Strong Components,  and  to  visit each  one.  Strong
+    --           Components are visited in such an order than noone is
+    --           returned before an other which point to it.
+
+
+uses StackOfInteger from TColStd,
+     ListOfSequenceOfInteger from GraphTools,
+     ListIteratorOfListOfSequenceOfInteger from GraphTools     
+     
+raises NoMoreObject from Standard,
+       NoSuchObject from Standard,
+       DomainError from Standard
+
+
+    private class SCMap instantiates IndexedDataMap from TCollection 
+                                    (Vertex,Integer,VHasher); 
+
+is
+
+    Create	
+    	---Purpose: Create an empty algorithm.
+    returns SortedStrgCmptsFromIterator from GraphTools;
+
+    FromVertex (me : in out; V : Vertex)    	
+    	---Purpose: Add  <V>  as  initial  condition.  This method  is
+	--          cumulative.  Use Perform method before visting the
+	--          result of the algorithm.  
+	---Level: Public
+    raises DomainError from Standard;
+    
+    Reset (me : in out);
+    	---Purpose: Reset the algorithm.  It   may be reused  with new
+    	--          conditions.  
+    	---Level: Public
+
+    Perform (me : in out; G : Graph);       
+    	---Purpose: Peform the  algorithm  in  <G> from initial  setted
+       	--          conditions.  
+       	---Level: Public
+    
+    More(me) 
+    returns Boolean from Standard;
+        ---Purpose: returns  True   if  there are   others  strong
+        --          components.
+       ---Level: Public
+
+    Next(me : in out) 
+        ---Purpose: Set the iterator to the next strong component.
+       ---Level: Public
+    raises NoMoreObject from Standard;
+    
+    NbVertices (me) 
+    returns Integer from Standard
+	---Purpose: Returns number  of vertices of  the current Strong
+	--          Components.
+        ---Level: Public
+    raises NoSuchObject from Standard;
+
+    Value(me; index : Integer from Standard) 
+    returns any Vertex
+	---Purpose: returns  the vertex of  index <I> of  the  current
+	--          Strong Component.
+        ---Level: Public
+	---C++: return const &          
+    raises NoSuchObject from Standard;
+	
+    Visit (me : in out; k : Integer from Standard;
+                        G : Graph) 
+       ---Level: Internal
+    returns Integer from Standard;
+    
+fields
+
+-- conditions
+    myVertices : SCMap from GraphTools;
+-- algorithm    
+    myNowIndex : Integer from Standard;
+    myStack    : StackOfInteger from TColStd;
+-- result    
+    mySort     : ListOfSequenceOfInteger from GraphTools;
+    myIterator : ListIteratorOfListOfSequenceOfInteger from GraphTools;
+    
+end SortedStrgCmptsFromIterator;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

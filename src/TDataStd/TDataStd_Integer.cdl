@@ -1,0 +1,72 @@
+-- File:	TDataStd_Integer.cdl
+-- Created:	Thu Feb  6 17:04:48 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+class Integer from TDataStd inherits Attribute from TDF
+
+	---Purpose:  The basis to define an integer attribute.
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Integer         from Standard,
+     RelocationTable from TDF
+
+is 
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+        ---C++: return const & 
+	---Purpose: Returns the GUID for integers.  
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF; value : Integer from Standard)
+    ---Purpose: Finds, or creates, an Integer attribute and sets <value>
+    --          the Integer  attribute is returned.
+    returns Integer from TDataStd;
+
+    ---Purpose: Integer methods
+    --          ===============
+    
+    Set (me : mutable; V : Integer from Standard);
+    
+    Get (me)
+    returns Integer from Standard;
+    ---Purpose: Returns the integer value contained in the attribute.
+    IsCaptured(me) returns Boolean;
+	---Purpose: Returns True if there is a reference on the same label
+
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+
+    Create
+    returns mutable Integer from TDataStd;    
+
+
+fields
+
+    myValue : Integer from Standard;
+
+end Integer;

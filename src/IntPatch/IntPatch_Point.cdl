@@ -1,0 +1,437 @@
+-- File:	IntPatch_Point.cdl
+-- Created:	Wed May  6 14:01:12 1992
+-- Author:	Jacques GOUSSARD
+---Copyright:	OPEN CASCADE 1992
+
+
+class Point from IntPatch
+
+	---Purpose: Definition of an intersection point between two surfaces.
+	--          Such a point is contains geometrical informations (see
+	--          the Value method) and logical informations.
+
+uses
+     HVertex    from Adaptor3d,
+     HCurve2d   from Adaptor2d,
+     PntOn2S    from IntSurf,
+     Line       from IntPatch,
+     Transition from IntSurf,
+     Pnt        from gp
+     
+raises DomainError from Standard
+
+is
+
+
+    Create
+
+	---Purpose: Empty constructor.
+	---C++: inline
+    	returns Point from IntPatch;
+
+
+    SetValue(me: in out; Pt: Pnt from gp; Tol: Real from Standard;
+                         Tangent: Boolean from Standard)
+
+	---Purpose: Sets the values of a point which is on no domain,
+	--          when both surfaces are implicit ones.
+	--          If Tangent is True, the point is a point of tangency
+	--          between the surfaces.
+
+    	is static;
+
+
+    SetValue(me: in out; Pt: Pnt from gp)
+	---C++: inline
+    	is static;
+	
+
+    SetTolerance(me: in out; Tol: Real from Standard)
+	---C++: inline
+    	is static;
+
+
+    SetParameters(me: in out; U1,V1,U2,V2: Real from Standard)
+	     
+   	---Purpose: Sets the values of the parameters of the point
+   	--          on each surface.
+	---C++: inline
+    	is static;
+
+
+    SetParameter(me: in out; Para: Real from Standard)
+    
+	---Purpose: Set the value of the parameter on the intersection line.
+	---C++: inline
+    	is static;
+
+
+    SetVertex(me: in out; OnFirst: Boolean from Standard; V: HVertex from Adaptor3d)
+
+	---Purpose: Sets the values of a point which is a vertex on
+	--          the initial facet of restriction of one
+	--          of the surface.
+	--          If OnFirst is True, the point is on the domain of the
+	--          first patch, otherwise the point is on the domain of the
+	--          second surface.
+
+    	is static;
+
+
+    SetArc(me: in out; OnFirst: Boolean from Standard;
+                       A: HCurve2d from Adaptor2d; Param: Real from Standard;
+                       TLine, TArc: Transition from IntSurf)
+
+	---Purpose: Sets the values of a point which is on one of the domain,
+	--          when both surfaces are implicit ones.
+	--          If OnFirst is True, the point is on the domain of the
+	--          first patch, otherwise the point is on the domain of the
+	--          second surface.
+
+    	is static;
+
+
+    SetMultiple(me: in out; IsMult: Boolean from Standard)
+    
+	---Purpose: Sets (or unsets) the point as a point on several
+	--          intersection line.
+	---C++: inline
+    	is static;
+
+
+    Value(me)
+    
+    	---Purpose: Returns the intersection point (geometric information).
+
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+
+
+    ParameterOnLine(me)
+    
+	---Purpose: This method returns the parameter of the point
+	--          on the intersection line.
+	--          If the points does not belong to an intersection line,
+	--          the value returned does not have any sens.
+    
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Tolerance(me)
+    
+	---Purpose: This method returns the fuzziness on the point.
+    
+    	returns Real from Standard
+	---C++: inline
+	
+	is static;
+
+
+    IsTangencyPoint(me)
+
+	---Purpose: Returns True if the Point is a tangency point between
+	--          the surfaces.
+	--          If the Point is on one of the domain (IsOnDomS1 returns
+	--          True or IsOnDomS2 returns True), an exception is raised.
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    ParametersOnS1(me; U1,V1: out Real from Standard)
+    
+	---Purpose: Returns the parameters on the first surface of the point.
+
+    	raises DomainError from Standard
+	---C++: inline
+
+    	is static;
+
+
+    ParametersOnS2(me; U2,V2: out Real from Standard)
+    
+	---Purpose: Returns the parameters on the second surface of the point.
+
+    	raises DomainError from Standard
+	---C++: inline
+
+    	is static;
+
+
+    IsMultiple(me)
+    
+	---Purpose: Returns True if the point belongs to several intersection
+	--          lines.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    IsOnDomS1(me)
+    
+    	---Purpose: Returns TRUE if the point is on a boundary of the domain
+    	--          of the first patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+        is static;
+
+
+    IsVertexOnS1(me)
+
+	---Purpose: Returns TRUE if the point is a vertex on the initial
+	--          restriction facet of the first surface.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    VertexOnS1(me)
+    
+    	---Purpose: Returns the information about the point when it is
+    	--          on the domain of the first patch, i-e when the function
+    	--          IsVertexOnS1 returns True.
+    	--          Otherwise, an exception is raised.
+    
+    	returns HVertex from Adaptor3d
+	---C++: return const&
+	---C++: inline
+	
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    ArcOnS1(me)
+    
+	---Purpose: Returns the arc of restriction containing the
+	--          vertex.
+	--          The exception DomainError is raised if 
+	--          IsOnDomS1 returns False.
+
+    	returns HCurve2d from Adaptor2d
+	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    TransitionLineArc1(me)
+    
+	---Purpose: Returns the transition of the point on the
+	--          intersection line with the arc on S1.
+	--          The exception DomainError is raised if IsOnDomS1
+	--          returns False.
+
+    	returns Transition from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    TransitionOnS1(me)
+    
+	---Purpose: Returns the transition between the intersection line
+	--          returned by the method Line and the arc on S1 returned
+	--          by ArcOnS1().
+	--          The exception DomainError is raised if 
+	--          IsOnDomS1 returns False.
+
+    	returns Transition from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard
+	       
+	is static;
+
+
+    ParameterOnArc1(me)
+    
+	---Purpose: Returns the parameter of the point on the
+	--          arc returned by the method ArcOnS2.
+	--          The exception DomainError is raised if 
+	--          IsOnDomS1 returns False.
+
+    	returns Real from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+	       
+	is static;
+
+
+    IsOnDomS2(me)
+     
+    	---Purpose: Returns TRUE if the point is on a boundary of the domain
+    	--          of the second patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;
+
+
+    IsVertexOnS2(me)
+
+	---Purpose: Returns TRUE if the point is a vertex on the initial
+	--          restriction facet of the first surface.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    VertexOnS2(me)
+    
+    	---Purpose: Returns the information about the point when it is
+    	--          on the domain of the second patch, i-e when the function
+    	--          IsVertexOnS2 returns True.
+    	--          Otherwise, an exception is raised.
+
+    	returns HVertex from Adaptor3d
+	---C++: return const&
+	---C++: inline
+
+    	raises DomainError from Standard
+	
+    	is static;
+
+
+    ArcOnS2(me)
+    
+	---Purpose: Returns the arc of restriction containing the
+	--          vertex.
+	--          The exception DomainError is raised if 
+	--          IsOnDomS2 returns False.
+
+    	returns HCurve2d from Adaptor2d
+	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    TransitionLineArc2(me)
+    
+	---Purpose: Returns the transition of the point on the
+	--          intersection line with the arc on S2.
+	--          The exception DomainError is raised if IsOnDomS2
+	--          returns False.
+
+    	returns Transition from IntSurf
+    	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    TransitionOnS2(me)
+    
+	---Purpose: Returns the transition between the intersection line
+	--          returned by the method Line and the arc on S2 returned
+	--          by ArcOnS2.
+	--          The exception DomainError is raised if 
+	--          IsOnDomS2 returns False.
+
+    	returns Transition from IntSurf
+	---C++: return const&
+	---C++: inline
+
+	raises DomainError from Standard
+	       
+	is static;
+
+
+    ParameterOnArc2(me)
+    
+	---Purpose: Returns the parameter of the point on the
+	--          arc returned by the method ArcOnS2.
+	--          The exception DomainError is raised if 
+	--          IsOnDomS2 returns False.
+
+    	returns Real from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+	       
+	is static;
+
+
+    PntOn2S(me)
+    
+    	---Purpose: Returns the PntOn2S 
+    	--          (geometric Point and the parameters)
+    	--          
+        ---C++: inline
+        ---C++: return const &
+
+    	returns PntOn2S from IntSurf
+        is static;
+    
+    Parameters(me; U1,V1,U2,V2: out Real from Standard)
+	---Purpose: Returns the parameters on the first and on the 
+	--          second surface of the point.
+    	raises DomainError from Standard
+	---C++: inline
+
+    	is static;
+
+
+    ReverseTransition(me: in out)
+    	is static;
+
+    Dump(me) 
+    
+    	is static;
+
+fields
+
+    pt        : PntOn2S    from IntSurf;
+    para      : Real       from Standard;
+    tol       : Real       from Standard;
+    tgt       : Boolean    from Standard;
+    mult      : Boolean    from Standard;
+
+    onS1      : Boolean    from Standard;
+    vtxonS1   : Boolean    from Standard;
+    vS1       : HVertex    from Adaptor3d;
+    arcS1     : HCurve2d   from Adaptor2d;
+    traline1  : Transition from IntSurf;
+    tra1      : Transition from IntSurf;
+    prm1      : Real       from Standard;
+
+    onS2      : Boolean    from Standard;
+    vtxonS2   : Boolean    from Standard;
+    vS2       : HVertex    from Adaptor3d;
+    arcS2     : HCurve2d   from Adaptor2d;
+    traline2  : Transition from IntSurf;
+    tra2      : Transition from IntSurf;
+    prm2      : Real       from Standard;
+
+end Point;

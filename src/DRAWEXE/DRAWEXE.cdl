@@ -1,0 +1,11 @@
+-- File:	DRAWEXE.cdl
+-- Created:	Mon Aug 11 14:37:26 2003
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CASCADE S.A. 2003
+
+executable DRAWEXE is
+    executable  DRAWEXE 
+    is
+       DRAWEXE; 
+    end;
+end;

@@ -1,0 +1,440 @@
+--     File: InterfaceModel.cdl
+--     Created: Mon Feb 3 11:27:05 1992 -- --
+--     Author:Christian CAILLET <cky@phobox> 
+--     Modified : David Carbonel Mon 4 january 1999 
+--     Add of DENumber function. no. and of PrintToLog
+--   
+--		
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class InterfaceModel  from Interface  inherits TShared
+
+    ---Purpose : Defines an (Indexed) Set of data corresponding to a complete
+    --           Transfer by a File Interface, i.e. File Header and Transient
+    --           Entities (Objects) contained in a File. Contained Entities are
+    --           identified in the Model by unique and consecutive Numbers.
+    --           
+    --           In addition, a Model can attach to each entity, a specific
+    --           Label according to the norm (e.g. Name for VDA, #ident for
+    --           Step ...), intended to be output on a string or a stream
+    --           (remark : labels are not obliged to be unique)
+    --           
+    --           InterfaceModel itself is not Transient, it is intended to
+    --           work on a set of Transient Data. The services offered are
+    --           basic Listing and Identification operations on Transient
+    --           Entities, storage of Error Reports, Copying.
+    --           
+    --           Moreovere, it is possible to define and use templates. These
+    --           are empty Models, from which copies can be obtained in order
+    --           to be filled with effective data. This allows to record
+    --           standard definitions for headers, avoiding to recreate them
+    --           for each sendings, and assuring customisation of produced
+    --           files for a given site.
+    --           A template is attached to a name. It is possible to define a
+    --           template from another one (get it, edit it then record it
+    --           under another name).
+    --           
+    --           See also Graph, ShareTool, CheckTool for more
+
+uses Transient, IndexedMapOfTransient, 
+     DataMapOfIntegerTransient from TColStd,
+     HAsciiString from TCollection, 
+     HSequenceOfHAsciiString from TColStd,
+     Messenger from Message,
+     ReportEntity,      Check,      CheckIterator,
+     EntityIterator,    GeneralLib, Protocol,       GTool,
+     DataState
+
+raises OutOfRange, NoSuchObject, InterfaceMismatch
+
+is
+
+    Initialize;
+    ---Purpose : Defines empty InterfaceModel, ready to be filled
+
+    Destroy (me : mutable);
+    ---Purpose : Clears the list of entities (service WhenDelete)
+    ---C++ : alias ~
+
+    SetProtocol (me : mutable; proto : Protocol from Interface);
+    ---Purpose : Sets a Protocol for this Model
+    --           It is also set by a call to AddWithRefs with Protocol
+    --           It is used for : DumpHeader (as required), ClearEntities ...
+
+    Protocol (me) returns Protocol from Interface  is virtual;
+    ---Purpose : Returns the Protocol which has been set by SetProtocol, or
+    --           AddWithRefs with Protocol
+
+    SetGTool (me : mutable; gtool : GTool from Interface);
+    ---Purpose : Sets a GTool for this model, which already defines a Protocol
+
+    GTool    (me) returns GTool;
+    ---Purpose : Returns the GTool, set by SetProtocol or by SetGTool
+
+    DispatchStatus (me : mutable) returns Boolean;
+    ---Purpose : Returns the Dispatch Status, either for get or set
+    --           A Model which is produced from Dispatch may share entities
+    --           with the original (according to the Protocol), hence these
+    --           non-copied entities should not be deleted
+    ---C++ : return &
+
+    Clear (me : mutable)  is virtual;
+    ---Purpose : Erases contained data; used when a Model is copied to others :
+    --           the new copied ones begin from clear
+    --           Clear calls specific method ClearHeader (see below)
+
+    ClearEntities (me : mutable)  is virtual;
+    ---Purpose : Clears the entities; uses the general service WhenDelete, in
+    --           addition to the standard Memory Manager; can be redefined
+
+    ClearLabels (me : mutable) is deferred;
+    ---Purpose : Erases informations about labels, if any : specific to each
+    --           norm
+
+    ClearHeader (me : mutable)  is deferred;
+    ---Purpose : Clears Model's header : specific to each norm
+
+    	-- --    Unitary Accesses to Entities    -- --
+
+    NbEntities (me) returns Integer;
+    ---Purpose : Returns count of contained Entities
+
+    Contains (me; anentity : Transient) returns Boolean;
+    ---Purpose : Returns True if a Model contains an Entity (for a ReportEntity,
+    --           looks for the ReportEntity itself AND its Concerned Entity)
+
+    Number (me; anentity : Transient) returns Integer;
+    ---Purpose : Returns the Number of an Entity in the Model if it contains it.
+    --           Else returns 0. For a ReportEntity, looks at Concerned Entity.
+
+--    DENumber (me; anentity : Transient) returns Integer;
+    ---Purpose :  Returns the Directory entry   Number of  an Entity in
+    --         the  Model if it contains it.   Else returns  0.  For a
+    --         ReportEntity, looks at Concerned Entity.
+
+    Value (me; num : Integer) returns mutable Transient    raises OutOfRange;
+    ---Purpose : Returns an Entity identified by its number in the Model
+    --           Each sub-class of InterfaceModel can define its own method
+    --           Entity to return its specific class of Entity (e.g. for VDA,
+    --           VDAModel returns a VDAEntity), working by calling Value
+    -- Remark : For a Reported Entity, (Erroneous, Corrected, Unknown), this
+    -- 	        method returns this Reported Entity.
+    --          See ReportEntity for other questions.
+    ---C++ : return const &
+
+    NbTypes (me; ent : Transient) returns Integer;
+    ---Purpose : Returns the count of DISTINCT types under which an entity may
+    --           be processed. Defined by the Protocol, which gives default as
+    --           1 (dynamic Type).
+
+    Type    (me; ent : Transient; num : Integer = 1) returns Type;
+    ---Purpose : Returns a type, given its rank : defined by the Protocol
+    --           (by default, the first one)
+
+    TypeName (me; ent : Transient; complete : Boolean = Standard_True)
+    	returns CString;
+    ---Purpose : Returns the type name of an entity, from the list of types
+    --           (one or more ...)
+    --           <complete> True (D) gives the complete type, else packages are
+    --             removed
+    --           WARNING : buffered, to be immediately copied or printed
+
+    ClassName (myclass; typnam : CString) returns CString;
+    ---Purpose : From a CDL Type Name, returns the Class part (package dropped)
+    --           WARNING : buffered, to be immediately copied or printed
+
+    	-- --    Report Entities (for syntactic concerns)    -- --
+
+    EntityState    (me; num : Integer) returns DataState    raises OutOfRange;
+    ---Purpose : Returns the State of an entity, given its number
+
+    IsReportEntity (me; num : Integer; semantic : Boolean = Standard_False)
+    	returns Boolean    raises OutOfRange;
+    ---Purpose : Returns True if <num> identifies a ReportEntity in the Model
+    --           Hence, ReportEntity can be called.
+    --           
+    --           By default, queries main report, if <semantic> is True, it
+    --           queries report for semantic check
+    --           
+    --           Remember that a Report Entity can be defined for an Unknown
+    --           Entity, or a Corrected or Erroneous (at read time) Entity.
+    --           The ReportEntity is defined before call to method AddEntity.
+
+    ReportEntity (me; num : Integer; semantic : Boolean = Standard_False)
+    	returns mutable ReportEntity
+    ---Purpose : Returns a ReportEntity identified by its number in the Model,
+    --           or a Null Handle If <num> does not identify a ReportEntity.
+    --           
+    --           By default, queries main report, if <semantic> is True, it
+    --           queries report for semantic check
+    	raises OutOfRange;
+    --           Error if <num> is out of range
+
+    IsErrorEntity (me; num : Integer) returns Boolean  raises OutOfRange;
+    ---Purpose : Returns True if <num> identifies an Error Entity : in this
+    --           case, a ReportEntity brings Fail Messages and possibly an
+    --           "undefined" Content, see IsRedefinedEntity
+
+    IsRedefinedContent (me; num : Integer) returns Boolean  raises OutOfRange;
+    ---Purpose : Returns True if <num> identifies an Entity which content is
+    --           redefined through a ReportEntity (i.e. with literal data only)
+    --           This happens when an entity is syntactically erroneous in the
+    --           way that its basic content remains empty.
+    --           For more details (such as content itself), see ReportEntity
+
+    ClearReportEntity (me : mutable; num : Integer) returns Boolean
+    ---Purpose : Removes the ReportEntity attached to Entity <num>. Returns
+    --           True if done, False if no ReportEntity was attached to <num>.
+    --  Warning : the caller must assume that this clearing is meaningfull
+    	raises OutOfRange;
+    --           Error if <num> is out of range
+
+    SetReportEntity (me : mutable; num : Integer; rep : mutable ReportEntity)
+    	returns Boolean
+    ---Purpose : Sets or Replaces a ReportEntity for the Entity <num>. Returns
+    --           True if Report is replaced, False if it has been replaced
+    --  Warning : the caller must assume that this setting is meaningfull
+    	raises OutOfRange, InterfaceMismatch;
+    --           Error if <num> is out of range, or if concerned Entity is
+    --           not equal to Value(num)
+
+    AddReportEntity (me : mutable; rep : mutable ReportEntity;
+    	    	     semantic : Boolean = Standard_False) returns Boolean;
+    ---Purpose : Adds a ReportEntity as such. Returns False if the concerned
+    --           entity is not recorded in the Model
+    --           Else, adds it into, either the main report list or the
+    --           list for semantic checks, then returns True
+
+    IsUnknownEntity (me; num : Integer) returns Boolean   raises OutOfRange;
+    ---Purpose : Returns True if <num> identifies an Unknown Entity : in this
+    --           case, a ReportEntity with no Check Messages designates it.
+
+    	-- --    Checks (semantic & syntactic)    -- --
+
+    FillSemanticChecks (me : mutable; checks : CheckIterator;
+    	    	    	clear : Boolean = Standard_True);
+    ---Purpose : Fills the list of semantic checks.
+    --           This list is computed (by CheckTool). Hence, it can be stored
+    --           in the model for later queries
+    --           <clear> True (D) : new list replaces
+    --           <clear> False    : new list is cumulated
+
+    HasSemanticChecks (me) returns Boolean;
+    ---Purpose : Returns True if semantic checks have been filled
+
+    Check (me; num : Integer; syntactic : Boolean) returns Check;
+    ---Purpose : Returns the check attached to an entity, designated by its
+    --           Number. 0 for global check
+    --           <semantic> True  : recorded semantic check
+    --           <semantic> False : recorded syntactic check (see ReportEntity)
+    --           If no check is recorded for <num>, returns an empty Check
+    ---C++ : return const &
+
+    	-- --    Editions    -- --
+
+    Reservate (me : mutable; nbent : Integer)  is virtual;
+    ---Purpose : Does a reservation for the List of Entities (for optimized
+    --           storage management). If it is not called, storage management
+    --           can be less efficient. <nbent> is the expected count of
+    --           Entities to store
+
+    AddEntity (me : mutable; anentity : mutable Transient)
+    ---Purpose : Internal method for adding an Entity. Used by file reading
+    --           (defined by each Interface) and Transfer tools. It adds the
+    --           entity required to be added, not its refs : see AddWithRefs.
+    --           If <anentity> is a ReportEntity, it is added to the list of
+    --           Reports, its Concerned Entity (Erroneous or Corrected, else
+    --           Unknown) is added to the list of Entities.
+    --           That is, the ReportEntity must be created before Adding
+    	raises InterfaceMismatch  is virtual;
+    --           Error if anentity already recorded
+
+    AddWithRefs (me : mutable; anent : mutable Transient; proto : Protocol;
+    	    	 level : Integer = 0; listall : Boolean = Standard_False);
+    ---Purpose : Adds to the Model, an Entity with all its References, as they
+    --           are defined by General Services FillShared and ListImplied.
+    --           Process is recursive (any sub-levels) if <level> = 0 (Default)
+    --           Else, adds sub-entities until the required sub-level.
+    --           Especially, if <level> = 1, adds immediate subs and that's all
+    --           
+    --           If <listall> is False (Default), an entity (<anentity> itself
+    --           or one of its subs at any level) which is already recorded in
+    --           the Model is not analysed, only the newly added ones are.
+    --           If <listall> is True, all items are analysed (this allows to
+    --           ensure the consistency of an adding made by steps)
+
+    AddWithRefs (me : mutable; anent : mutable Transient;
+    	    	 level : Integer = 0; listall : Boolean = Standard_False)
+    ---Purpose : Same as above, but works with the Protocol of the Model
+    	raises InterfaceMismatch;
+    --           Error if no Protocol is defined in the Model
+
+    AddWithRefs (me : mutable; anent : mutable Transient; lib : GeneralLib;
+    	    	 level : Integer = 0; listall : Boolean = Standard_False);
+    ---Purpose : Same as above, but works with an already created GeneralLib
+
+
+    ReplaceEntity (me : mutable; nument : Integer; anent : mutable Transient);
+    ---Purpose : Replace Entity with Number=nument on other entity - "anent"
+
+    ReverseOrders (me : mutable; after : Integer = 0);
+    ---Purpose : Reverses the Numbers of the Entities, between <after> and the
+    --           total count of Entities. Thus, the entities :
+    --           1,2 ... after, after+1 ... nb-1, nb  become numbered as :
+    --           1,2 ... after, nb, nb-1 ... after+1
+    --           By default (after = 0) the whole list of Entities is reversed
+
+    ChangeOrder (me : mutable; oldnum, newnum : Integer; count : Integer = 1)
+    ---Purpose : Changes the Numbers of some Entities : <oldnum> is moved to
+    --           <newnum>, same for <count> entities. Thus :
+    --           1,2 ... newnum-1 newnum ... oldnum .. oldnum+count oldnum+count+1 .. gives
+    --           1,2 ... newnum-1 oldnum .. oldnum+count newnum ... oldnum+count+1
+    --           (can be seen as a circular permutation)
+    	raises OutOfRange;
+    --           Error if one of <oldnum,newnum, and + count> is out of range,
+    --           or if <count> is greater than Abs(newnum-oldnum)
+
+    GetFromTransfer (me : mutable; aniter : EntityIterator)
+    ---Purpose : Gets contents from an EntityIterator, prepared by a
+    --           Transfer tool (e.g TransferCopy). Starts from clear
+    	raises InterfaceMismatch;
+    --           Error if InterfaceEntities to get are not free
+
+    GetFromAnother (me : mutable; other : InterfaceModel) is deferred;
+    ---Purpose : Gets header (data specific of a defined Interface) from
+    --           another InterfaceModel; called from TransferCopy
+
+    NewEmptyModel (me) returns mutable InterfaceModel  is deferred;
+    ---Purpose : Returns a New Empty Model, same type as <me> (whatever its
+    --           Type); called to Copy parts a Model into other ones, then
+    --           followed by a call to GetFromAnother (Header) then filling
+    --           with specified Entities, themselves copied
+
+    	-- --    Categories     -- --
+
+    SetCategoryNumber (me : mutable; num : Integer; val : Integer)
+    	returns Boolean;
+    ---Purpose : Records a category number for an entity number
+    --           Returns True when done, False if <num> is out of range
+
+    CategoryNumber (me; num : Integer) returns Integer;
+    ---Purpose : Returns the recorded category number for a given entity number
+    --           0 if none was defined for this entity
+
+    	-- --   Global Queries   -- --
+
+    FillIterator (me; iter : in out EntityIterator);
+    ---Purpose : Allows an EntityIterator to get a list of Entities
+
+
+    Entities (me) returns EntityIterator;
+    ---Purpose : Returns the list of all Entities, as an Iterator on Entities
+    --           (the Entities themselves, not the Reports)
+
+    Reports (me; semantic : Boolean = Standard_False) returns EntityIterator;
+    ---Purpose : Returns the list of all ReportEntities, i.e. data about
+    --           Entities read with Error or Warning informations
+    --           (each item has to be casted to Report Entity then it can be
+    --           queried for Concerned Entity, Content, Check ...)
+    --           By default, returns the main reports, is <semantic> is True it
+    --           returns the list for sematic checks
+    ---See Also : classes ReportEntity (for contents) and CheckTool
+
+    Redefineds (me) returns EntityIterator;
+    ---Purpose : Returns the list of ReportEntities which redefine data
+    --           (generally, if concerned entity is "Error", a literal content
+    --           is added to it : this is a "redefined entity"
+
+
+    GlobalCheck (me; syntactic : Boolean = Standard_True) returns Check;
+    ---Purpose : Returns the GlobalCheck, which memorizes messages global to
+    --           the file (not specific to an Entity), especially Header
+    ---C++ : return const &
+
+    SetGlobalCheck (me : mutable; ach : Check);
+    ---Purpose : Allows to modify GlobalCheck, after getting then completing it
+    --           Remark : it is SYNTACTIC check. Semantics, see FillChecks
+
+    VerifyCheck    (me; ach : in out Check)  is virtual;
+    ---Purpose : Minimum Semantic Global Check on data in model (header)
+    --           Can only check basic Data. See also GlobalCheck from Protocol
+    --           for a check which takes the Graph into account
+    --           Default does nothing, can be redefined
+
+    DumpHeader (me; S : Messenger from Message; level : Integer = 0)  is deferred;
+    ---Purpose : Dumps Header in a short, easy to read, form, onto a Stream
+    --           <level> allows to print more or less parts of the header,
+    --           if necessary. 0 for basic print
+
+    Print      (me; ent : Transient; s : Messenger from Message; mode : Integer = 0);
+    ---Purpose : Prints identification of a given entity in <me>, in order to
+    --           be printed in a list or phrase
+    --           <mode> < 0 : prints only its number
+    --           <mode> = 1 : just calls PrintLabel
+    --           <mode> = 0 (D) : prints its number plus '/' plus PrintLabel
+    --           If <ent> == <me>, simply prints "Global"
+    --           If <ent> is unknown, prints "??/its type"
+
+    PrintLabel (me; ent : Transient; S : Messenger from Message) is deferred;
+    ---Purpose : Prints label specific to each norm, for a given entity.
+    --           Must only print label itself, in order to be included in a
+    --           phrase. Can call the result of StringLabel, but not obliged.
+
+    PrintToLog (me; ent : Transient; S : Messenger from Message) is virtual;
+    ---Purpose : Prints label specific to each norm in log format, for
+    --         a given entity.
+    --         By default, just calls PrintLabel, can be redefined
+
+    StringLabel (me; ent : Transient) returns HAsciiString from TCollection
+    	is deferred;
+    ---Purpose : Returns a string with the label attached to a given entity.
+    --  Warning : While this string may be edited on the spot, if it is a read
+    --           field, the returned value must be copied before.
+
+    NextNumberForLabel (me; label : CString;
+    	    	        lastnum : Integer = 0; exact : Boolean = Standard_True)
+	returns Integer  is virtual;
+    ---Purpose : Searches a label which matches with one entity.
+    --           Begins from <lastnum>+1 (default:1) and scans the entities
+    --           until <NbEntities>. For the first which matches <label>,
+    --           this method returns its Number. Returns 0 if nothing found
+    --           Can be called recursively (labels are not specified as unique)
+    --           <exact> : if True (default), exact match is required
+    --           else, checks the END of entity label
+    --           
+    --           This method is virtual, hence it can be redefined for a more
+    --           efficient search (if exact is true).
+
+    	-- --   Templates   -- --
+
+    HasTemplate (myclass; name : CString) returns Boolean;
+    ---Purpose : Returns true if a template is attached to a given name
+
+    Template (myclass; name : CString) returns mutable InterfaceModel;
+    ---Purpose : Returns the template model attached to a name, or a Null Handle
+
+    SetTemplate (myclass; name : CString; model : mutable InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Records a new template model with a name. If the name was
+    --           already recorded, the corresponding template is replaced by
+    --           the new one. Then, WARNING : test HasTemplate to avoid
+    --           surprises
+
+    ListTemplates (myclass) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the complete list of names attached to template models
+
+fields
+
+    theentities : IndexedMapOfTransient;
+    thereports  : DataMapOfIntegerTransient from TColStd;  --  EntityNumber -> ReportEntity
+    therepch    : DataMapOfIntegerTransient from TColStd;  --  for semantic checks
+    thecheckstx : Check;         -- it is GlobalCheck (Syntactic)
+    thechecksem : Check;         -- it is GlobalCheck (Semantic)
+    haschecksem : Boolean;       -- are semantic checks recorded
+    isdispatch  : Boolean;       -- is <me> produced for dispatch ?
+    thecategory : HAsciiString;
+    thegtool    : GTool;
+--    theprotocol : Protocol;
+
+end InterfaceModel;

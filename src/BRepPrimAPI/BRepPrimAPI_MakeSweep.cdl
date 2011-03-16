@@ -1,0 +1,41 @@
+-- File:	BRepPrimAPI_MakeSweep.cdl
+-- Created:	Fri Feb 18 10:32:19 1994
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+deferred class MakeSweep from BRepPrimAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose:  The abstract class MakeSweep is
+    	-- the root class of swept primitives.
+    	-- Sweeps are objects you obtain by sweeping a profile along a path.
+    	-- The profile can be any topology and the path is usually a curve or
+    	-- a wire. The profile generates objects according to the following rules:
+    	--   -      Vertices generate Edges
+    	--   -      Edges generate Faces.
+    	--   -      Wires generate Shells.
+    	--   -      Faces generate Solids.
+    	--   -      Shells generate Composite  Solids.
+    	--     You are not allowed to sweep Solids and Composite Solids.
+    	-- Two kinds of sweeps are implemented in the BRepPrimAPI package:
+    	--   -      The linear sweep called a   Prism
+    	--   -      The rotational sweep    called a Revol
+    	--   Swept constructions along complex profiles such as BSpline curves
+    	-- are also available in the BRepOffsetAPI package..
+
+uses Shape from TopoDS
+
+is
+    FirstShape (me : in out)
+    	---Purpose: Returns the  TopoDS  Shape of the bottom of the sweep.
+    returns Shape from TopoDS
+    is deferred;
+
+    LastShape (me : in out)
+    	---Purpose: Returns the TopoDS Shape of the top of the sweep.
+    returns Shape from TopoDS
+    is deferred;
+
+end MakeSweep;

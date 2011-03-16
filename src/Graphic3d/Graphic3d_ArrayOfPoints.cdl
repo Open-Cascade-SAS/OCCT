@@ -1,0 +1,18 @@
+-- File:	Graphic3d_ArrayOfPoints.cdl
+-- Created:	04/01/01 : GG : G005 : Draw ARRAY primitives
+--
+
+class ArrayOfPoints from Graphic3d inherits ArrayOfPrimitives from Graphic3d
+
+is
+
+	-- constructor
+	Create (
+                maxVertexs: Integer from Standard)
+	returns mutable ArrayOfPoints from Graphic3d;
+	---Purpose: Creates an array of points,
+	-- a single pixel point is drawn at each vertex.
+	-- The array must be filled using only
+	--     the AddVertex(Point) method. 
+
+end;

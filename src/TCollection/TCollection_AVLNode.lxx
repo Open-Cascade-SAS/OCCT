@@ -1,0 +1,10 @@
+inline Item& TCollection_AVLNode::Value() const
+{
+  return (Item&)myValue;
+}
+
+inline TCollection_AVLNode::TCollection_AVLNode(const Item& I,const TCollection_AVLBaseNodePtr& r,const TCollection_AVLBaseNodePtr& l)
+: TCollection_AVLBaseNode(r,l)
+{
+  myValue = I;
+}

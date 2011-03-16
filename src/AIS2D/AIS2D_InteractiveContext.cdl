@@ -1,0 +1,770 @@
+-- File     : AIS2D_InteractiveContext.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+-- Modified:  EAV:  07-09-01 :  NbSelected(),  InitSelected(),   
+--                              MoreSelected(),  NextSelected()
+
+--            SAV:  15/11/01    MoveCircleTo(). detection by circle. SetDetectionMode().
+--                              Detect() - internal
+
+class InteractiveContext from AIS2D inherits TShared from MMgt
+
+ ---Purpose: The InteractiveContext class allows you to manage 
+ --          graphic behavior and selection of Interactive Objects 
+ --          in one or more viewers. 
+
+uses
+ 
+  TypeOfLine            from Aspect,
+  WidthOfLine           from Aspect,
+  MarkerStyle           from Aspect,
+  TypeOfMarker          from Aspect,
+  FontStyle             from Aspect,
+  GenericColorMap       from Aspect, 
+  TypeMap               from Aspect,
+  WidthMap              from Aspect,
+  MarkMap               from Aspect,
+  FontMap               from Aspect,
+  GridType              from Aspect,
+  GridDrawMode          from Aspect,
+  CardinalPoints        from Aspect,
+  Color                 from Quantity,
+  PlaneAngle            from Quantity,
+  Length                from Quantity,
+  NameOfColor           from Quantity,
+  ExtendedString        from TCollection,
+  Primitive             from Graphic2d,
+  PickMode              from Graphic2d,
+  TransientManager      from Graphic2d,
+  DisplayList           from Graphic2d,
+  Viewer                from V2d,
+  View	                from V2d,
+  Drawer                from Prs2d,
+  InteractiveObject     from AIS2D,
+  KindOfIO              from AIS2D,
+  DataMapOfIOStatus     from AIS2D,
+  DataMapOfLC           from AIS2D,
+  StatusOfDetection     from AIS2D,
+  DisplayStatus         from AIS2D,
+  StatusOfPick          from AIS2D,
+  TypeOfDetection       from AIS2D,
+  PToListOfInt          from AIS2D,
+  ListOfIO              from AIS2D,
+  HSequenceOfIO         from AIS2D
+  
+is 
+
+  Create( MainViewer: Viewer from V2d )
+    returns mutable InteractiveContext from  AIS2D;
+  ---Purpose: Initiates <MainViewer>
+
+  Create( MainViewer, aCollector: Viewer from V2d)
+    returns mutable InteractiveContext from  AIS2D;
+  ---Purpose: Initiates the principal viewer and Collector(trash) viewer together
+
+  -- *************************************************************
+  ---Category: Editing general Display Services 
+  -- *************************************************************
+  
+  Display( me        : mutable;
+    	   anIObj    : InteractiveObject from AIS2D;
+    	   UpdateVwr : Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Display when no local context is opened.
+  --          if <anIObj> has no proper display mode, the defaut
+  --          display mode of the session is used
+  --          Same for the selection Mode (by default =0)
+
+  Display( me                 : mutable;
+    	   anIObj             : InteractiveObject from AIS2D;
+    	   aDispMode          : Integer from Standard ;
+    	   aSelectMode        : Integer from Standard;
+    	   UpdateVwr          : Boolean from Standard = Standard_True;
+    	   AllowDecomp        : Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Use only if a local context is opened. Displays the
+  --          <aDispMode> the presentation of interactive object,
+  --          activates the selection mode <aSelectMode> if
+  --          <UpdateVwr> =  Standard_False,  the  object is
+  --          displayed but no viewer will be updated; CONVENTION :
+  --          <aSelectMode> = -1 means no activation for <anIObj>
+  --          : it will be displayed but not  selectable.  (Option
+  --          only available for local context...)
+  --          <AllowDecomp>  = true  means  that <anIObj>  is
+  --          able to have subshapes detected by selection mechanisms.
+  --          2 conditions: <anIObj> must be able to give a shape
+  --          selection modes fit the AIS2D_Shape
+  --          selection modes ( 1->vertex, 2->edges, 3->wires...)
+
+  Load( me: mutable;
+        anIObj: InteractiveObject from AIS2D;
+        SelMode : Integer from Standard = -1;
+        AllowDecomp   : Boolean from Standard = Standard_False );
+  ---Purpose: Available when opened local contexts only;
+  --          option to load in the selector objects which will
+  --          be selectable but not displayed. Nevertheless, they
+  --          will be hilighted when detected by the selector.
+  --          ex : be able to select center of a line without
+  --               displaying all centers before selection process
+	 
+  Erase( me             : mutable; 
+         anIObj         : InteractiveObject from AIS2D;
+	     UpdateVwr      : Boolean from Standard = Standard_True;
+         PutInCollector : Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: Erases presentations in current local context, 
+  --          or failing that, in other local contexts which allow erasing.
+  --          If <PutInCollector> is false, the object is erased but 
+  --          not put in the Collector.
+     	  		  
+  EraseMode( me             : mutable;
+             anIObj         : InteractiveObject from AIS2D;
+	         aMode          : Integer from Standard;
+	         UpdateVwr      : Boolean from Standard = Standard_True);
+  ---Purpose: Selects an erase mode. Used only if more than one
+  -- mode is displayed in the main viewer. If aMode is
+  -- the Prs used by default, no erase mode is selected.
+
+  EraseAll( me             : mutable;
+            PutInCollector : Boolean from Standard = Standard_True;
+    	    updateVwr      : Boolean from Standard = Standard_True );
+  ---Purpose: Every erased object goes into the Collector viewer
+
+  DisplayAll( me                : mutable;
+              OnlyFromCollector : Boolean from Standard = Standard_True;
+    	      updateVwr         : Boolean from Standard = Standard_True);
+  ---Purpose: Displays all erased objects, in other words, 
+  --          all objects in the Collector viewer.
+
+  EraseSelected( me             : mutable;
+    	         PutInCollector : Boolean from Standard = Standard_True;
+    	         updateVwr      : Boolean from Standard = Standard_True );
+  ---Purpose: Erases selected objects if a local context is open. 
+  --          Erases current objects if there is no active local context.
+  --          If a local context is open and if <updateVwr> equals 
+  --          Standard_False, the presentation of the Interactive Object 
+  --          activates the selection mode; the object is displayed but 
+  --          no viewer will be updated.
+
+  DisplaySelected( me        : mutable;
+                   updateVwr : Boolean from Standard = Standard_True );
+  ---Purpose: Displays or erases selected objects if a local
+ --  context is open. If no active local context is found,
+ --  only current objects can be displayed or erased.
+ 
+  KeepTemporary( me          :  mutable; 
+    	    	 anIObj      :  InteractiveObject from AIS2D; 
+    	    	 InWhichLocal:  Integer  from  Standard  =  -1)
+    returns  Boolean  from  Standard;
+  ---Purpose: Changes the status of a temporary object it will be --
+  --          kept at the  neutral point, i.e.   put in the list  of
+  --           displayed  objects,  with  its  temporary  attributes
+  --          (displaymode,selection  mode) returns true  if done --
+  --          inWhichLocal means that gives   the local context   in
+  --          which <anIObj> is displayed.  By default, -1 means the
+  --          last opened one
+  
+  Redisplay( me        : mutable;
+    	     anIObj    : InteractiveObject from AIS2D;
+	         updateVwr : Boolean from Standard = Standard_True;
+    	     allModes : Boolean from Standard = Standard_False);
+  ---Purpose: Forces Recompute of the seen presentations of the object;
+  --          if <allModes>= True -> recomputes all the
+  --          presentations .
+
+  --***********************************************************************
+  ---Category:     Querying and Editing Selection Process
+  --***********************************************************************    
+
+  IsCurrent( me; anIObj: InteractiveObject from AIS2D ) 
+           returns Boolean from Standard;
+  ---Purpose: Finds the current selected entity <anIObj> in Neutral Point.
+
+  IsSelected( me; anIObj: InteractiveObject from AIS2D ) 
+          returns Boolean from Standard;
+  ---Purpose: Confirms selection. Returns true if <anIObj> is selected in the interactive context
+   
+  Highlight( me      : mutable;
+    	    anIObj   : InteractiveObject from AIS2D;
+	        updateVwr: Boolean from Standard = Standard_True);
+  ---Purpose: Updates the display in the viewer to take dynamic detection 
+  --          into account. 
+  --          If a local context is open and if <updateVwr> equals Standard_False, 
+  --          the presentation of the Interactive Object activates the selection 
+  --          mode; the object is displayed but no viewer will be updated.
+
+  HighlightWithColor( me: mutable;
+    	              anIObj:InteractiveObject from AIS2D;
+	                  aCol: NameOfColor from Quantity;
+	                  updateVwr: Boolean from Standard = Standard_True );
+  ---Purpose: Changes the color of the object in view <anIObj>. 
+  --          It paints this object the color passed as the argument <aCol>
+  --          If a local context is open and if <updateVwr> equals Standard_False, 
+  --          the presentation of the Interactive Object activates the selection 
+  --          mode; the object is displayed but no viewer will be updated.
+
+  Unhighlight( me        : mutable;
+    	       anIObj    : InteractiveObject from AIS2D;
+	           updateVwr : Boolean from Standard = Standard_True );
+  ---Purpose: Removes hilighting from the entity <anIObj>. Updates the viewer.
+  --          If a local context is open and if <updateVwr> equals Standard_False, 
+  --          the presentation of the Interactive Object activates the selection 
+  --          mode; the object is displayed but no viewer will be updated.
+
+  
+  --****************************************************************
+  ---Category:    Graphic Detection and Selection
+  --****************************************************************
+
+  SetPrecision( me: mutable; aPrec: Integer from Standard );
+  ---C++: inline
+  ---Level: Public 
+  ---Purpose: Sets the precision of detection
+  
+  DetectPrecision( me ) returns Integer from Standard;
+  ---C++: inline
+  ---Level: Public 
+  ---Purpose: Returns the precision of detection
+  
+  Place( me          : mutable; 
+         XPix, YPix  : Integer from Standard; 
+		 aView       : View from V2d; 
+		 anIO        : InteractiveObject from AIS2D;
+		 isTemporary : Boolean from Standard = Standard_False );
+  ---Level: Public
+  ---Purpose: Places object <anIO> to the pixel position (XPix, YPix) 
+  --          in the view <aView> is using TransientManager.
+  --          It's possible to use without preliminary application of  Display method.
+
+  Drag( me         : mutable; 
+        XPix, YPix : Integer from Standard; 
+		aView      : View from V2d;
+		isTemporary: Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: Places selected objects  to the pixel position (XPix, YPix) 
+  --          in the view <aView>. If <isTemporary> is True,  is used TransientManager.
+  
+  MoveTo( me: mutable; 
+          XPix, YPix: Integer from Standard; 
+		  aView: View from V2d ) returns StatusOfDetection from AIS2D;
+  ---Level: Public
+  ---Purpose: Relays mouse position in pixels XPix and YPix to the 
+  --          interactive context selectors. This is done by the view <aView>
+  --          passing this position to the main viewer and updating it.
+  --          Functions in both Neutral Point and local contexts.
+   
+  ---SAV
+  MoveCircleTo( me: mutable; XPix, YPix, Radius : Integer from Standard; 
+		             aView: View from V2d ) returns StatusOfDetection from AIS2D;
+  ---Level: Public
+  ---Purpose: Relays mouse position in circle <XPix, YPix> and <Radius> to the 
+  --          interactive context selectors. This is done by the view <aView>
+  --          passing this position to the main viewer and updating it.
+  --          Functions in both Neutral Point and local contexts.
+   
+  MoveTo( me: mutable; 
+          Xmin, Ymin, Xmax, Ymax: Integer from Standard; 
+		  aView: View from V2d ) returns StatusOfDetection from AIS2D;
+  ---Level: Public
+  ---Purpose: Relays mouse position in rectangle Xmin, Ymin, Xmax, Ymax to the 
+  --          interactive context selectors. This is done by the view <aView>
+  --          passing this position to the main viewer and updating it.
+  --          Functions in both Neutral Point and local contexts.
+  
+
+  ---SAV
+  Detect( me: mutable; dList : DisplayList from Graphic2d; aView : View from V2d )
+  returns StatusOfDetection from AIS2D is private;
+  
+  Select( me        : mutable;
+    	  UpdateVwr : Boolean from Standard = Standard_True) 
+      returns StatusOfPick from AIS2D;
+  ---Level: Public
+  ---Purpose: Stores  and hilights the previous detected; Unhilights
+  --          the previous picked.
+
+  ShiftSelect( me: mutable;	UpdateVwr: Boolean from Standard = Standard_True )
+    returns StatusOfPick from AIS2D;
+  ---Level: Public
+  ---Purpose: adds the last detected to the list of previous picked.
+  --          if the last detected was already declared as picked,
+  --          removes it from the Picked List.
+    
+  ShiftSelect( me: mutable; XPMin, YPMin, XPMax, YPMax: Integer from Standard; 
+               aView: View from V2d; UpdateVwr : Boolean from Standard = Standard_True) 
+             returns StatusOfPick from AIS2D;
+  ---Level: Public
+  ---Purpose: rectangle  of selection  ; adds new detected entities into the
+  --          picked list, removes the detected entities that were already stored...
+
+
+  SetHighlightColor( me: mutable; aCol: NameOfColor from Quantity );
+  ---Purpose: Allows to set the color used to show highlighted entities, 
+  --          that is, entities picked out by the mouse.
+
+  SetSelectionColor( me: mutable; aCol: NameOfColor from Quantity );
+  ---Purpose: Sets the color used to show selected entities
+
+  SetSubIntensityColor( me: mutable; aCol: NameOfColor from Quantity );
+  ---Purpose: Allows you to set the color used to show that an object 
+  --          is not currently selected
+
+  DisplayMode( me ) returns Integer from Standard; 
+  ---C++: inline
+  ---Purpose: Returns the display mode setting
+
+  HighlightColor( me ) returns NameOfColor from Quantity;
+  ---C++: inline
+  ---Level: Public
+  ---Purpose: Returns the name of the color used to show highlighted entities, 
+  --          that is, entities picked out by the mouse
+
+  SelectionColor( me ) returns NameOfColor from Quantity;
+  ---C++: inline
+  ---Level: Public
+  ---Purpose: Returns the name of the color used to show selected entities.
+
+  SubIntensityColor( me ) returns NameOfColor from Quantity;
+  ---C++: inline
+  ---Level: Public
+  ---Purpose: Returns the name of the color used to show 
+  --          that an object is not currently selected.
+
+  SubIntensityOn( me        : mutable;
+    	    	  anIObj    : InteractiveObject from AIS2D;
+		          UpdateVwr : Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Highlights, and removes highlights from, the displayed object 
+  --          <anIObj> which is displayed at Neutral Point with subintensity 
+  --          color; available only for active local context. 
+  --          There is no effect if there is no local context.
+
+  SubIntensityOff( me        : mutable;
+    	    	   anIObj    : InteractiveObject from AIS2D;
+		           UpdateVwr : Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Removes the subintensity option for the entity <anIObj>.
+
+
+  -- *************************************************************   
+  --          Management of the Trash Bin Viewer
+  -- *************************************************************
+
+  IsCollectorClosed( me ) returns Boolean from Standard; 
+  ---C++: inline
+  ---Level: Internal
+  ---Purpose: 
+     
+  CloseCollector( me: mutable ); 
+  ---C++: inline
+  ---Level: Internal
+  ---Purpose: Allows to close Collector
+
+  OpenCollector( me: mutable );
+  ---Level: Internal
+  ---Purpose: Allows to open Collector
+
+  --************************************************************************
+  ---Category:   Specific Local Context Action
+  --************************************************************************
+ 
+  OpenLocalContext( me              : mutable;
+    	            UseDispObj      : Boolean from Standard = Standard_True;
+    	    	    AllowDecomposit : Boolean from Standard = Standard_True;
+		            AcceptEraseOfObj: Boolean from Standard = Standard_False )
+    returns Integer from Standard;
+  ---Level: Public
+  ---Purpose: Opens a local context of display and selection
+  --          returns the index of new opened local context.
+  --          Must be stored and used to close the local context.
+  
+  CloseLocalContext( me        : mutable;
+    	    	     ind       : Integer from Standard = -1;
+    	    	     updateVwr : Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: close the current opened local context.
+  --          Use <ind> to be sure to close the local context you Opened !
+  --          if <ind> == -1 the current local context is closed
+  --          WITHOUT VERIFICATION.
+  --          if <ind> is greater than the current opened local context,
+  --          nothing is done.
+
+  IndexOfCurrentLocal( me ) returns Integer from Standard;
+  ---Level: Public
+  ---Purpose: returns -1 if no opened local context.
+
+  CloseAllContext( me: mutable; updateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Allows to close all local contexts at one go and return to 
+  --          Neutral Point.
+
+  --****************************************************************
+  ---Category: non interactive actions about Selection
+  --           2 categories are distinct:
+  --           - Current Objects 
+  --           - Selected Objects
+  --           a Current object is the object picked
+  --           at neutral Point.
+  --           The Selected objects are objects picked
+  --           when a local context is opened
+
+
+  SetCurrentObject( me       : mutable;
+    	    	    anIObj   : InteractiveObject from AIS2D;
+    	    	    UpdateVwr: Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: Updates the view of the current object in open context.
+  --          Objects selected when there is no open local context 
+  --          are called current objects; those selected in open local context, 
+  --          selected objects.
+   
+  AddOrRemoveCurObject( me        : mutable;
+    	    	        anIObj    : InteractiveObject from AIS2D;
+    	    	        UpdateVwr : Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Allows to add a current object to the list of current objects 
+  --          or remove it from that list.
+  --          Objects selected when there is no open local context are called 
+  --          current objects; those selected in open local context, 
+  --          selected objects.
+
+  			     
+  UpdateCurrent( me: mutable );
+  ---Level: Public
+  ---Purpose: updates the list of current objects
+  --          i.e. hilights new current objects,
+  --          unhighlights old current objects
+  --          
+
+  SetOkCurrent( me: mutable );
+  ---Level: Internal
+  ---Purpose: 
+ 
+  --FirstCurrentObject( me: mutable ) returns InteractiveObject from AIS2D;
+  ---Level: Public
+  ---Purpose: Returns the first current object in the list of current objects.
+
+  HighlightCurrent( me: mutable; 
+ 	              UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Highlights current objects.
+
+  UnhighlightCurrent( me: mutable; 
+    	               UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Unhighlights current objects.
+   
+  ClearCurrent(me: mutable; UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Empties previous current objects in order to get the current 
+  --          objects detected by the selector using UpdateCurrent.
+
+  SetSelected( me: mutable; anIObj: InteractiveObject from AIS2D; 
+               UpdateVwr: Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: Puts the selected <anIObj> in the current objects list.
+
+  SetSelectedCurrent( me: mutable );
+  ---Level: Public
+  ---Purpose: Puts the selected list in the current objects list.
+
+  UpdateSelected( me: mutable; 
+    	          UpdateVwr: Boolean from Standard=Standard_True );
+  ---Level: Public
+  ---Purpose: Updates the list of selected objects, i.e. hilights 
+  --          new selected objects, removes hilighting from former 
+  --          selected objects.
+
+  AddOrRemoveSelected( me: mutable;
+    	    	           anIObj   : InteractiveObject from AIS2D; 
+    	                   UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Allows you to add a selected object <anIObj> to the list of selected 
+  --          objects or remove it from that list. 
+  
+  HighlightSelected( me: mutable; 
+    	            UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Highlights selected objects.
+
+  UnhighlightSelected( me: mutable; 
+    	               UpdateVwr: Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: UnHighlights selected objects.
+
+  ClearSelected( me: mutable; 
+    	         UpdateVwr: Boolean from Standard = Standard_True);
+  ---Level: Public
+  ---Purpose: Empties previous selected objects in order to get 
+  --          the selected objects detected by the selector using UpdateSelected.
+
+  NbSelected(  me  )  returns  Integer  from  Standard; 
+  ---Level:  Public 
+  ---Purpose:  Returns  number of objects selected  in   
+  ---          local context ( if opened ) or in neutral context
+ 
+  InitSelected(  me:  mutable  );   
+  ---Level: Public 
+  ---Purpose:  Iteration  
+   
+  MoreSelected(  me  )  returns  Boolean  from  Standard;   
+  ---Level: Public 
+  ---Purpose:  Iteration  
+            
+  NextSelected(  me:  mutable  );  
+  ---Level: Public 
+  ---Purpose:  Iteration
+
+  SelectedObject(  me  )  returns TShared  from  MMgt;  
+  ---Level: Public 
+  ---Purpose:  Returns  current  selected  object  (  see  InitSelected()  ..  ) 
+  --           The  object type depends  on  highlight  mode   
+  --           (  OBJECT,  PRIMITIVE  etc  )   
+
+
+ --*****************************************************************
+  --            Querying Graphic Attributes
+  --*****************************************************************
+
+  DisplayStatus( me; anIObj: InteractiveObject from AIS2D )
+    returns DisplayStatus from AIS2D;
+  ---Level: Public
+  ---Purpose: Returns the display status of the entity <anIObj>.
+
+  DisplayedModes( me; anIObj: InteractiveObject from AIS2D )
+    returns PToListOfInt from AIS2D;
+  ---Level: Public
+  ---Purpose: Returns the list of active display modes for the entity <anIObj>
+
+  IsDisplayed( me; anIObj:InteractiveObject from AIS2D )
+    returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Returns true if <anIObj> is displayed in the interactive context
+
+  IsDisplayed( me;
+               anIObj: InteractiveObject from AIS2D;
+               aMode : Integer from Standard ) 
+    returns Boolean  from  Standard;
+ 
+  ---Level: Public
+  ---Purpose: Returns true if <anIObj> is displayed in the interactive context with <aMode> display mode
+
+  IsHighlighted( me; anIObj: InteractiveObject from AIS2D ) 
+    returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Returns true if the Interactive Object <anIObj>
+  --          is highlighted in the interactive context.
+
+  IsHighlighted( me;
+                 anIObj    : InteractiveObject from AIS2D;
+		         WithColor : out Boolean from Standard;
+                 theHiCol  : out NameOfColor from Quantity )
+    returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: if <anIObj> is highlighted with a specific color
+  --          <WithColor> will be returned TRUE
+  --          <theHiCol> gives the name of the hilightcolor
+
+  IsInCollector( me; anIObj: InteractiveObject from AIS2D ) 
+    returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Returns true if the entity <anIObj> is in the Collector viewer.
+
+  Status( me;
+          anIObj : InteractiveObject from AIS2D;
+    	  aStatus: in out ExtendedString from TCollection);
+  ---Level: Public
+  ---Purpose: Modified the status of the entity <anIObj>
+
+  UpdateCurrentViewer( me: mutable );
+  ---Level: Public
+  ---Purpose: Updates the current viewer, the viewer in Neutral Point.
+
+  UpdateCollector( me: mutable );
+  ---Level: Public
+  ---Purpose: Updates the Collector viewer
+
+  --********************************************************************************
+  ---Category:            Information methods - Get Fields
+  --********************************************************************************
+  
+  CurrentViewer( me ) returns any Viewer from V2d;
+  ---C++: inline
+  ---Level: Public
+  ---Purpose: Returns the current viewer.
+
+  HasOpenedContext( me ) returns Boolean from Standard; 
+  ---C++: inline
+  ---Level: Public
+  ---Purpose: Returns true if there is an open context.
+
+  DisplayedObjects( me;
+     	    	    aListOfIO       : in out ListOfIO from AIS2D;
+    	    	    OnlyFromNeutral : Boolean from Standard = Standard_False );
+  ---Level: Public
+  ---Purpose: gives the list of displayed objects in the main viewer.
+
+  --********************************************************************************
+
+  GetDefModes( me;
+               anIObj  : InteractiveObject from AIS2D;
+    	       Dmode   : out Integer from Standard;
+			   HiMod   : out TypeOfDetection from AIS2D; 
+			   SelMode : out Integer from Standard ) is private;
+  ---Level: Public
+  ---Purpose: Returns display, highlight and selection modes of the <anIObj>
+			   
+  EraseGlobal( me             : mutable;
+    	       anIObj         : InteractiveObject from AIS2D;
+		       UpdateVwr      : Boolean from Standard = Standard_True;
+    	       PutInCollector : Boolean from Standard = Standard_True) is private;
+  ---Level: Internal
+  ---Purpose: 
+
+  SetPickMode( me: mutable; aMode: PickMode from Graphic2d );
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Allows to provide settings for pick mode.
+
+   GetPickMode( me) returns PickMode from Graphic2d;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns the pick mode
+
+
+  --**********************************************************************************
+
+  HighestIndex( me ) returns Integer from Standard;
+  ---Level: Internal
+  ---Purpose: 
+
+  --**********************************************************************************
+  -- Category: initialization of the attributes
+  --**********************************************************************************
+   
+  InitializeColor( me: mutable; aColor: Color from Quantity ) returns Integer from Standard;
+  ---Purpose: Initialize <aColor> in the color map
+
+  InitializeStyle( me: mutable; aType: TypeOfLine from Aspect ) returns Integer from Standard;
+  ---Purpose: Initialize <aType> in the type map
+
+  InitializeWidth( me: mutable; aWidth: WidthOfLine from Aspect ) returns Integer from Standard;
+  ---Purpose: Initialize <aWidth> in the width map
+
+  InitializeMarker( me: mutable; aMark: TypeOfMarker from Aspect ) returns Integer from Standard;
+  ---Purpose: Initialize <aMark> in the mark map
+
+  InitializeFont( me: mutable; aFont: FontStyle from Aspect ) returns Integer from Standard;
+  ---Purpose: Initialize <aFont> in the font map
+
+  --**********************************************************************************
+  ResetOriginalState( me        : mutable;
+                      updateVwr : Boolean from Standard = Standard_True );
+  ---Level: Public
+  ---Purpose: to be used only with no  opened
+  --        local context..  displays and activates objects in their
+  --        original state before local contexts were opened...
+
+
+  DrawObject( me: mutable; anObj: InteractiveObject from AIS2D; aDispMode: Integer from Standard ) 
+    is private;
+
+  AvailableToDetect( me; anObj: InteractiveObject from AIS2D ) returns Boolean from Standard 
+                   is private;
+  DoDetectObject( me: mutable; anObj: InteractiveObject from AIS2D; aDrawer: TransientManager from Graphic2d )
+                   is private;
+  IsIOPicked( me; anObj: InteractiveObject from AIS2D ) 
+              returns Boolean from Standard is private;
+  IsPrimPicked( me; anObj: InteractiveObject from AIS2D; aPrim: Primitive from Graphic2d ) 
+              returns Boolean from Standard is private;
+  IsElemPicked( me; anObj: InteractiveObject from AIS2D; 
+                aPrim: Primitive from Graphic2d; ind: Integer from Standard ) 
+                returns Boolean from Standard is private;
+  IsElemSelected( me; anObj: InteractiveObject from AIS2D; 
+                  aPrim: Primitive from Graphic2d; ind: Integer from Standard ) 
+                returns Boolean from Standard is private;
+
+  IsIOSelected( me; anObj: InteractiveObject from AIS2D ) 
+              returns Boolean from Standard is private;
+  IsPrimSelected( me; anObj: InteractiveObject from AIS2D;
+                  aPrim: Primitive from Graphic2d ) 
+              returns Boolean from Standard is private;
+  
+  --**********************************************************************************
+  -- Category: immediate mode management
+  --**********************************************************************************
+
+  BeginImmediateDraw( me: mutable; aView: View from V2d );
+  ---Level: Public
+  ---Purpose:  switches on immediate mode 
+
+  ImmediateDraw(me: mutable; anIObj: InteractiveObject from AIS2D; aView: View from V2d );
+  ---Level: Public
+  ---Purpose: draws object <anIObj> into immediate mode
+
+  EndImmediateDraw( me: mutable; aView: View from V2d );
+  ---Level: Public
+  ---Purpose: switches of immediate mode 
+
+  IsImmediateModeOn( me; aView: View from V2d ) returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: returns true if immediate mode is on
+
+  ---SAV
+  SetDetectionMode(me:mutable; mode  : TypeOfDetection from AIS2D);
+    
+fields
+
+    myMainVwr      : Viewer from V2d;
+    myCollectorVwr : Viewer from V2d;
+    myIsCollClosed : Boolean from Standard;
+    myObjects      : DataMapOfIOStatus from AIS2D;
+
+    -- the selection and current objects.
+
+    myDetectPrecision: Integer         from Standard;
+    myResetDetect    : Boolean         from Standard;
+
+    myLastPicked     : InteractiveObject from AIS2D;
+    myLastinMain     : InteractiveObject from AIS2D;
+    myLastinColl     : InteractiveObject from AIS2D;
+
+   	mySeqOfDetIO     : HSequenceOfIO   from AIS2D;
+    mySeqOfSelIO     : HSequenceOfIO   from AIS2D;
+
+	myCurDetectMode  : TypeOfDetection from AIS2D;
+
+    myWasLastMain    : Boolean from Standard;
+    myPickMode       : PickMode from Graphic2d;
+
+	-- the attributes of session...
+
+    myHighlightColor    : NameOfColor from Quantity;
+    mySelectionColor    : NameOfColor from Quantity;
+    mySubIntensity      : NameOfColor from Quantity;
+    myDisplayMode       : Integer     from Standard;
+
+    -- The Local Context...
+	
+    myLocalContexts     : DataMapOfLC  from AIS2D;
+    myCurLocalIndex     : Integer      from Standard;
+    myLastMoveView      : View         from V2d;
+
+    myColorMap : GenericColorMap  from Aspect is protected;
+    myTypeMap  : TypeMap   from Aspect is protected;
+    myWidthMap : WidthMap  from Aspect is protected;
+    myMarkMap  : MarkMap   from Aspect is protected;
+    myFontMap  : FontMap   from Aspect is protected;
+
+    --  Iteration  
+    
+    myCurSelected  :  Integer  from  Standard;  
+    myMaxSelected  :  Integer  from  Standard;       
+	  
+friends
+
+    class LocalContext from AIS2D
+
+end InteractiveContext;

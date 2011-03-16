@@ -1,0 +1,46 @@
+-- File:	PGeom2d_Circle.cdl
+-- Created:	Tue Apr  6 17:18:38 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Circle from PGeom2d inherits Conic from PGeom2d
+
+        ---Purpose : Defines a circle in 3D space.
+        --         
+	---See Also : Circle from Geom2d.
+
+uses Ax22d from gp
+
+is
+
+
+  Create returns mutable Circle from PGeom2d;
+	---Purpose : Creates a circle with default values.
+	---Level: Internal 
+
+
+  Create (aPosition : Ax22d from gp; aRadius : Real from Standard)
+    returns mutable Circle from PGeom2d;
+        ---Purpose : Creates a Circle with <aPosition> and <aRadius> as field
+        --         values.
+	---Level: Internal 
+
+
+  Radius (me : mutable; aRadius : Real from Standard);
+	---Purpose: Set the value of the field radius with <aRadius>.
+	---Level: Internal 
+
+
+  Radius (me) returns Real from Standard;
+	---Purpose: Returns the value of the field radius.
+	---Level: Internal 
+
+
+fields
+
+  radius : Real from Standard;
+
+end;
+

@@ -1,0 +1,281 @@
+-- File:	Circ2d2TanOn.cdl
+-- Created:	Tue Oct 20 16:23:45 1992
+-- Author:	Remi GILET
+--		<reg@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Circ2d2TanOn from Geom2dGcc
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles TANgent to 2 entities and 
+	--          having the center ON a curve.
+	--          The order of the tangency argument is always
+	--          QualifiedCirc, QualifiedLin, QualifiedCurv, Pnt2d. 
+	--          the arguments are :
+	--            - The two tangency arguments.
+	--            - The center line.
+	--            - The parameter for each tangency argument which 
+	--            is a curve.
+	--            - The tolerance.
+
+-- inherits Entity from Standard
+
+uses Curve            from Geom2dAdaptor,
+     QualifiedCurve   from Geom2dGcc,
+     Integer          from Standard,
+     Boolean          from Standard,
+     Array1OfInteger  from TColStd,
+     Array1OfReal     from TColStd,
+     Array1OfPnt2d    from TColgp,
+     Array1OfCirc2d   from TColgp,
+     Pnt2d            from gp,
+     Point            from Geom2d,
+     Circ2d           from gp,
+     Circ2d2TanOn     from GccAna,
+     MyCirc2d2TanOn   from Geom2dGcc,
+     MyC2d2TanOn      from Geom2dGcc,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt
+     
+raises NotDone      from StdFail,
+       BadQualifier from GccEnt,
+       OutOfRange   from Standard
+
+is
+
+Create(Qualified1 : QualifiedCurve from Geom2dGcc     ;
+       Qualified2 : QualifiedCurve from Geom2dGcc     ;
+       OnCurve    : Curve          from Geom2dAdaptor ;
+       Tolerance  : Real           from Standard      ;
+       Param1     : Real           from Standard      ; 
+       Param2     : Real           from Standard      ;
+       ParamOn    : Real           from Standard      )
+returns Circ2d2TanOn from Geom2dGcc ;
+    	---Purpose: This method implements the algorithms used to 
+    	--          create 2d circles TANgent to two curves and 
+    	--          having the center ON a 2d curve.
+    	--          Param1 is the initial guess on the first curve QualifiedCurv.
+    	--          Param1 is the initial guess on the second curve QualifiedCurv.
+    	--          ParamOn is the initial guess on the center curve OnCurv.
+    	--          Tolerance is used for the limit cases.
+
+Create(Qualified1 : QualifiedCurve from Geom2dGcc     ;
+       Point      : Point          from Geom2d        ;
+       OnCurve    : Curve          from Geom2dAdaptor ;
+       Tolerance  : Real           from Standard      ;
+       Param1     : Real           from Standard      ; 
+       ParamOn    : Real           from Standard      )
+returns Circ2d2TanOn from Geom2dGcc ;
+    	---Purpose: This method implements the algorithms used to 
+    	--          create 2d circles TANgent to one curve and one point and
+    	--          having the center ON a 2d curve.
+    	--          Param1 is the initial guess on the first curve QualifiedCurv.
+    	--          ParamOn is the initial guess on the center curve OnCurv.
+    	--          Tolerance is used for the limit cases.
+
+Create(Point1     : Point          from Geom2d        ;
+       Point2     : Point          from Geom2d        ;
+       OnCurve    : Curve          from Geom2dAdaptor ;
+       Tolerance  : Real           from Standard      )
+returns Circ2d2TanOn from Geom2dGcc ;
+    	---Purpose: This method implements the algorithms used to 
+    	--          create 2d circles TANgent to two points and
+   	--          having the center ON a 2d curve.
+    	--          Tolerance is used for the limit cases.
+
+-- -- ....................................................................
+
+Results(me   : in out                         ;
+    	Circ :        Circ2d2TanOn from GccAna)
+is static;
+
+Results(me   : in out                              ;
+    	Circ :        MyCirc2d2TanOn from Geom2dGcc)
+is static;
+
+IsDone(me) returns Boolean
+is static;
+    	---Purpose: Returns true if the construction algorithm does not fail
+    	--          (even if it finds no solution).
+    	--          Note: IsDone protects against a failure arising from a
+    	--          more internal intersection algorithm, which has
+    	--          reached its numeric limits.
+        
+NbSolutions(me) returns Integer from Standard
+raises NotDone
+is static;
+    	---Purpose: This method returns the number of solutions.
+    	--          NotDone is raised if the algorithm failed.
+
+ThisSolution(me ; Index : Integer) returns Circ2d 
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns the solution number Index and raises OutOfRange 
+    	-- exception if Index is greater than the number of solutions.
+    	-- Be carefull: the Index is only a way to get all the 
+    	-- solutions, but is not associated to theses outside the context
+   	-- of the algorithm-object.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than or equal
+    	-- to zero or greater than the number of solutions
+    	-- computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+        
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  ;
+	       Qualif2 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: It returns the informations about the qualifiers of 
+    	--          the tangency 
+    	--          arguments concerning the solution number Index.
+    	--          It returns the real qualifiers (the qualifiers given to the 
+    	--          constructor method in case of enclosed, enclosing and outside 
+    	--          and the qualifiers computedin case of unqualified).
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+    
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises NotDone
+is static;
+    	---Purpose: Returns informations about the tangency point between the 
+    	-- result and the first argument.
+    	-- ParSol is the intrinsic parameter of the point PntSol on the solution curv.
+    	-- ParArg is the intrinsic parameter of the point PntSol on the argument curv.
+
+Tangency2(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises NotDone
+is static;
+    	---Purpose: Returns informations about the tangency point between the 
+    	-- result and the second argument.
+    	-- ParSol is the intrinsic parameter of the point PntSol on the solution curv.
+    	-- ParArg is the intrinsic parameter of the point PntSol on the argument curv.
+
+CenterOn3 (me                                     ;
+           Index         : Integer   from Standard;
+           ParArg        : out Real  from Standard;
+           PntSol        : out Pnt2d from gp      )
+raises NotDone
+is static;
+    	---Purpose: Returns the center PntSol of the solution of index Index
+    	-- computed by this algorithm.
+    	-- ParArg is the parameter of the point PntSol on the third argument.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails. 
+
+IsTheSame1(me                           ;
+           Index : Integer from Standard) returns Boolean from Standard
+raises NotDone
+is static;
+    	--- Purpose: Returns true if the solution of index Index and,
+    	-- respectively, the first or second argument of this
+    	-- algorithm are the same (i.e. there are 2 identical circles).
+    	-- If Rarg is the radius of the first or second argument,
+    	-- Rsol is the radius of the solution and dist is the
+    	-- distance between the two centers, we consider the two
+    	-- circles to be identical if |Rarg - Rsol| and dist
+    	-- are less than or equal to the tolerance criterion given at
+    	-- the time of construction of this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+
+IsTheSame2(me              ;
+           Index : Integer ) returns Boolean
+raises NotDone
+is static;
+    	--- Purpose: Returns true if the solution of index Index and,
+    	-- respectively, the first or second argument of this
+    	-- algorithm are the same (i.e. there are 2 identical circles).
+    	-- If Rarg is the radius of the first or second argument,
+    	-- Rsol is the radius of the solution and dist is the
+    	-- distance between the two centers, we consider the two
+    	-- circles to be identical if |Rarg - Rsol| and dist
+    	-- are less than or equal to the tolerance criterion given at
+    	-- the time of construction of this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails. 
+
+fields
+
+    WellDone : Boolean from Standard;
+    	---Purpose: Returns  True if the algorithm succeeded.
+
+    cirsol   : Array1OfCirc2d from TColgp;
+    	-- TheSolution.
+
+    NbrSol   : Integer from Standard;
+    	---Purpose: Returns the number of solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    	---Purpose: The qualifiers of the first argument.
+
+    qualifier2 : Array1OfPosition from GccEnt;
+    	---Purpose: The qualifiers of the second argument.
+
+    TheSame1 : Array1OfInteger from TColStd;
+    	---Purpose: Returns  1 if the solution and the first argument are the same (2 circles).
+    	-- if R1 is the radius of the first argument and Rsol the radius 
+    	-- of the solution and dist the distance between the two centers,
+    	-- we concider the two circles are identical if R1+dist-Rsol is 
+    	-- less than Tolerance.
+    	-- 0 in the other cases.
+
+    TheSame2 : Array1OfInteger from TColStd;
+    	---Purpose: 1 if the solution and the second argument are the same (2 circles).
+    	-- if R2 is the radius of the second argument and Rsol the radius 
+    	-- of the solution and dist the distance between the two centers,
+    	-- we concider the two circles are identical if R2+dist-Rsol is 
+    	-- less than Tolerance.
+    	-- 0 in the other cases.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the first argument.
+
+    pnttg2sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the second argument.
+
+    pntcen      : Array1OfPnt2d from TColgp;
+    	---Purpose: The center point of the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of pnttg1sol on the solution. 
+    	-- pnttg1sol is the tangency point between the solution and the first argument.
+
+    par2sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of pnttg2sol on the solution. 
+    	-- pnttg2sol is the tangency point between the solution and the second argument.
+
+    pararg1   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of pnttg1sol on the first argument. 
+    	-- pnttg1sol is the tangency point between the solution and the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of pnttg2sol on the second argument. 
+    	-- pnttg2sol is the tangency point between the solution and the second argument.
+
+    parcen3   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the center point of the solution on the third argument.
+
+    Invert   : Boolean from Standard;
+
+--    CircAna  : Circ2d2TanOn from GccAna;
+--    CircGeo  : MyCirc2d2TanOn from Geom2dGcc;
+--    CircIter : MyC2d2TanOn from Geom2dGcc;
+--    TypeAna  : Boolean;
+
+end Circ2d2TanOn;

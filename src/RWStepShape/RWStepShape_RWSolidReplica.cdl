@@ -1,0 +1,30 @@
+-- File:        SolidReplica.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSolidReplica from RWStepShape
+
+	---Purpose : Read & Write Module for SolidReplica
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SolidReplica from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSolidReplica;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SolidReplica from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : SolidReplica from StepShape);
+
+	Share(me; ent : SolidReplica from StepShape; iter : in out EntityIterator);
+
+end RWSolidReplica;

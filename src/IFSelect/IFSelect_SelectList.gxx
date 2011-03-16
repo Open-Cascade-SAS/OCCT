@@ -1,0 +1,31 @@
+//#include <IFSelect_SelectList.ixx>
+
+// ....    Instanciation avec "Handle(Entity)" qui offre ces deux methodes :
+//   nb = ent->NbEntities()   et   ent_i = ent->InterfaceEntity(i)
+
+
+    IFSelect_SelectList::IFSelect_SelectList ()  {  }
+
+    void IFSelect_SelectType::KeepInputEntity (Interface_EntityIterator& iter)
+      {  iter.SelectType(STANDARD_TYPE(Entity));  }
+
+    Standard_Integer IFSelect_SelectList::NbItems
+  (const Handle(Standard_Transient)& ent)
+{
+  Handle(Entity) anent = Handle(Entity)::DownCast(ent);
+  if (anent.IsNull()) return 0;
+  return anent->NbEntities();
+}
+
+    Handle(Standard_Transient) IFSelect_SelectList::ListedEntity
+  (const Standard_Integer num, const Handle(Standard_Transient)& ent)
+{
+  Handle(Entity) anent = Handle(Entity)::DownCast(ent);
+  if (anent.IsNull()) Standard_OutOfRange::Raise
+    ("IFSelect SelectType : ListedEntity");
+  return anent->InterfacebEntity(num);
+}
+
+
+    TCollection_AsciiString  IFSelect_SelectList::ListLabel () const 
+      {  return TCollection_AsciiString(STANDARD_TYPE(Entity)->Name());  }

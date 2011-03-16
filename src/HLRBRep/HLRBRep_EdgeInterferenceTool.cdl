@@ -1,0 +1,104 @@
+-- File:	HLRBRep_EdgeInterferenceTool.cdl
+-- Created:	Thu Apr 17 19:45:19 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class EdgeInterferenceTool from HLRBRep
+
+	---Purpose: Implements the  methods required  to  instantiates
+	--          the EdgeInterferenceList from HLRAlgo.
+
+uses
+    Integer      from Standard,
+    Boolean      from Standard,
+    Real         from Standard,
+    Dir          from gp,
+    Orientation  from TopAbs,
+    Intersection from HLRAlgo,
+    Interference from HLRAlgo,
+    Data         from HLRBRep
+
+is
+    Create(DS : Data from HLRBRep) returns EdgeInterferenceTool from HLRBRep;
+
+    --- methods to iterate on the Vertices of the Edge
+    
+    LoadEdge(me : in out)
+    is static;
+	
+    InitVertices(me : in out)
+	---C++: inline
+    is static;
+    
+    MoreVertices(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    NextVertex(me : in out)
+	---C++: inline
+    is static;
+    
+    CurrentVertex(me) returns Intersection from HLRAlgo
+	---C++: inline
+    	---C++: return const &
+    is static;
+    
+    CurrentOrientation(me) returns Orientation from TopAbs
+	---C++: inline
+    is static;
+    
+    CurrentParameter(me) returns Real from Standard
+	---C++: inline
+    is static;
+    
+    -- Data on the Edge
+
+    IsPeriodic(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+
+    EdgeGeometry(me; Param :     Real from Standard;
+    	    	     Tgt   : out Dir  from gp;
+		     Nrm   : out Dir  from gp;
+		     Curv  : out Real from Standard)
+	---Purpose: Returns local geometric description of the Edge at
+	--          parameter   <Para>.  See  method  Reset  of  class
+	--          EdgeFaceTransition from TopCnx for other arguments.
+    is static;
+    
+    -- Data on Interferences
+    
+    ParameterOfInterference(me; I : Interference from HLRAlgo) 
+    returns Real from Standard 
+    	---C++: inline
+    is static;
+    
+    SameInterferences(me; I1, I2 : Interference from HLRAlgo) 
+    returns Boolean from Standard 
+	---Purpose: True if   the  two interferences are on   the same
+	--          geometric locus.
+    is static;
+    
+    SameVertexAndInterference(me; I : Interference from HLRAlgo)
+    returns Boolean from Standard
+	---Purpose: True if the  Interference and the  current  Vertex
+	--          are on the same geometric locus.
+    is static;
+    
+    InterferenceBoundaryGeometry(me; I    :     Interference from HLRAlgo;
+    	                             Tang : out Dir          from gp;       
+   	                             Norm : out Dir          from gp;       
+    	                             Curv : out Real         from Standard)
+	---Purpose: Returns   the  geometry of  the   boundary  at the
+	--          interference  <I>.  See the AddInterference method
+	--          of the class  EdgeFaceTransition  from  TopCnx for
+	--          the other arguments.
+    is static;    	
+    
+fields
+    myDS   : Data         from HLRBRep;
+    inter  : Intersection from HLRAlgo [2];
+    cur    : Integer      from Standard;
+    
+end EdgeInterferenceTool;

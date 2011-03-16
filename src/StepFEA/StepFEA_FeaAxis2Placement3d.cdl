@@ -1,0 +1,46 @@
+-- File:	StepFEA_FeaAxis2Placement3d.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaAxis2Placement3d from StepFEA
+inherits Axis2Placement3d from StepGeom
+
+    ---Purpose: Representation of STEP entity FeaAxis2Placement3d
+
+uses
+    HAsciiString from TCollection,
+    CartesianPoint from StepGeom,
+    Direction from StepGeom,
+    CoordinateSystemType from StepFEA
+
+is
+    Create returns FeaAxis2Placement3d from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aPlacement_Location: CartesianPoint from StepGeom;
+                       hasAxis2Placement3d_Axis: Boolean;
+                       aAxis2Placement3d_Axis: Direction from StepGeom;
+                       hasAxis2Placement3d_RefDirection: Boolean;
+                       aAxis2Placement3d_RefDirection: Direction from StepGeom;
+                       aSystemType: CoordinateSystemType from StepFEA;
+                       aDescription: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    SystemType (me) returns CoordinateSystemType from StepFEA;
+	---Purpose: Returns field SystemType
+    SetSystemType (me: mutable; SystemType: CoordinateSystemType from StepFEA);
+	---Purpose: Set field SystemType
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+fields
+    theSystemType: CoordinateSystemType from StepFEA;
+    theDescription: HAsciiString from TCollection;
+
+end FeaAxis2Placement3d;

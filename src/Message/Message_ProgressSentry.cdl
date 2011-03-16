@@ -1,0 +1,68 @@
+-- File:	Message_ProgressSentry.cdl
+-- Created:	Fri Feb 22 11:44:07 2002
+-- Author:	Andrey BETENEV
+--		<abv@doomox>
+---Copyright:	Open CASCADE SA 2002
+
+
+class ProgressSentry from Message 
+
+    ---Purpose: This class is a tool allowing to manage opening/closing 
+    --          scopes in the ProgressIndicator in convenient and safe way.
+    --
+    --          Its main features are:
+    --          - Set all parameters for the current scale on the given 
+    --            ProgressIndicator and open a new scope at one line
+    --          - Iterator-like interface to opening next scopes and
+    --            check for user break
+    --          - Automatic scope closing in destructor
+    --          - Safe for NULL ProgressIndicator (just does nothing)
+
+uses
+    HAsciiString from TCollection,
+    ProgressIndicator from Message
+
+is
+
+    Create (PI: ProgressIndicator from Message; name: CString; 
+            min, max, step: Real; isInf: Boolean = Standard_False;
+    	    newScopeSpan: Real = 0.0);
+    Create (PI: ProgressIndicator from Message; name: HAsciiString from TCollection; 
+            min, max, step: Real; isInf: Boolean = Standard_False;
+    	    newScopeSpan: Real = 0.0);
+        ---Purpose: Creates an instance of ProgressSentry attaching it to
+	--          the specified ProgressIndicator, selects parameters of
+	--          the current scale, and opens a new scope with specified
+	--          span (equal to step by default)
+
+    Relieve (me: in out);
+    	---C++: inline
+    	---C++: alias ~
+    	---Purpose: Moves progress indicator to the end of the current scale
+        --          and relieves sentry from its duty. Methods other than Show() 
+	--          will do nothing after this one is called.
+	
+    Next (me; name: CString = 0);
+    	---C++: inline
+    Next (me; span: Real; name: CString = 0); 
+    	---C++: inline
+    Next (me; span: Real; name: HAsciiString from TCollection); 
+    	---C++: inline
+    	---Purpose: Closes current scope and opens next one 
+	--          with either specified or default span
+
+    More (me) returns Boolean;
+    	---C++: inline
+	---Purpose: Returns False if ProgressIndicator signals UserBreak
+
+    Show (me);
+    	---C++: inline
+	---Purpose: Forces update of progress indicator display
+
+fields
+
+    myProgress: ProgressIndicator from Message; 
+    myActive: Boolean; -- True if ProgressIndicator is non-Null and scope is opened
+
+end ProgressSentry;
+

@@ -1,0 +1,43 @@
+// File:	TDataStd_IntegerArray.lxx
+// Created:	Tue Oct  2 14:34:01 2007
+// Author:	Sergey ZARITCHNY
+//		<sergey.zaritchny@opencascade.com>
+
+#include <TColStd_HArray1OfInteger.hxx>
+
+//=======================================================================
+//function : Array
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TColStd_HArray1OfInteger) TDataStd_IntegerArray::Array(void) const
+{
+  return myValue; 
+}
+
+//=======================================================================
+//function : RemoveArray
+//purpose  : 
+//=======================================================================
+inline void TDataStd_IntegerArray::RemoveArray(void) 
+{
+  myValue.Nullify(); 
+}
+
+
+//=======================================================================
+//function : SetDelta
+//purpose  : 
+//=======================================================================
+inline void TDataStd_IntegerArray::SetDelta(const Standard_Boolean isDelta) 
+{
+  myIsDelta = isDelta;
+}
+//=======================================================================
+//function : GetDelta
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TDataStd_IntegerArray::GetDelta(void)  const
+{
+  return myIsDelta;
+}

@@ -1,0 +1,50 @@
+-- File:	LibCtl_ProtocolTemplate.cdl
+-- Created:	Wed Mar 17 17:23:19 1993
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class ProtocolTemplate  from LibCtl
+      (TheObject as any)
+    	inherits Transient
+
+    ---Purpose : This class is a Template class for Library : there is no
+    --           obligation to inherit it for instantiate a Library class.
+    --         
+    --           A Protocol class defines a data scheme by gathering a set of
+    --           Object Classes. This set is made of :
+    --           - As necessary, other sets already defined by other Protocols.
+    --             These Protocols are the Resources of <myclass>
+    --             This definition can be recurrent : each Protocol class
+    --             defines its Resources at immediate level
+    --           - The list of Object Classes it identifies DIRECTLY (itself),
+    --             i.e. not through its Resources.
+    --          
+    --          A classic Selection criterium is DynamicType (for a Transient
+    --          or Persistent Object), this gives a Case Number per Class. If
+    --          another criterium is taken, it must assume unique and non-
+    --          ambiguous binding between an object state and a Cse Number.
+    --          
+    --          For each Object Class (or recognized state) it identifies
+    --          directly, it provides a unique positive Number, which can be
+    --          used as Case Number.
+    --          
+    --          A Module bound with a Protocol class is assumed to accept any
+    --          Object of a Class it defines DIRECTLY (not its Resources).
+
+uses Type
+
+is
+
+    NbResources (me) returns Integer  is deferred;
+    ---Purpose : Gives the count of Protocols used as Resource (can be zero)
+
+    Resource (me; num : Integer) returns ProtocolTemplate  is deferred;
+    ---Purpose : Returns a Resource, given a rank.
+
+    CaseNumber (me; obj : any TheObject) returns Integer  is deferred;
+    ---Purpose : Returns a Case Number, specific of each recognized Object
+    --           This is a positive number. Zero means "<obj> not recognized"
+
+end ProtocolTemplate;

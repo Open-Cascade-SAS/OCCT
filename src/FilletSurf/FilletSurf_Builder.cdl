@@ -1,0 +1,205 @@
+-- File:	FilletSurf_Builder.cdl
+-- Created:	Fri Jul 26 11:28:31 1996
+-- Author:	Maria PUMBORIOS
+--		<mps@sgi30>
+---Copyright:	 Matra Datavision 1996
+
+class Builder from FilletSurf
+
+
+---Purpose:  API giving the  following  geometric information about fillets
+--            list of corresponding NUBS surfaces
+--            for each surface:
+--               the 2  support faces
+--               on each face: the 3d curve and the corresponding 2d curve
+--               the 2d curves on the fillet 
+--            status of start and end section of the fillet
+--            first and last parameter on edge of the fillet. 
+
+uses
+    Shape,Edge,Face from TopoDS,
+    Surface from Geom,
+    Curve from Geom,
+    TrimmedCurve from Geom,
+    ListOfShape from TopTools,
+    Real from Standard,
+    Curve from Geom2d,
+    InternalBuilder, StatusType,ErrorTypeStatus,StatusDone from FilletSurf 
+    
+raises 
+
+   NotDone      from StdFail,
+   OutOfRange   from Standard
+is 
+
+    Create(S      : Shape from TopoDS;                                            
+	   E      :  ListOfShape from TopTools;
+	   R      : Real from Standard;
+	   Ta     : Real from Standard= 1.0e-2;
+           Tapp3d : Real from Standard= 1.0e-4;
+           Tapp2d : Real from Standard =1.0e-5)
+	   
+    ---Purpose: initialize  of the informations necessary for  the 
+    --          computation of  the fillet on the 
+    --          Shape S from a list of edges E and a radius R. 
+    --           
+    --           Ta is the angular tolerance 
+    --		 Tapp3d is the 3d approximation tolerance
+    --		 Tapp2d is the 2d approximation tolerance 
+    --		 
+    -- 
+    --  		 
+    returns Builder from FilletSurf;
+    
+    Perform(me:in out);
+    ---Purpose computation  of the fillet (list of NUBS)
+    
+    Simulate (me:in out);
+    -- computes only the sections used in the computation of the fillet 
+     
+ 
+    IsDone(me) returns StatusDone from FilletSurf;
+    ---Purpose: gives the status about the computation of the fillet
+    --          returns: 
+    --          IsOK :no problem during the computation 
+    --          IsNotOk: no result is produced 
+    --          IsPartial: the result is partial     
+ 
+ 
+    StatusError(me) returns ErrorTypeStatus from FilletSurf;
+    ---Purpose: gives    informations     about  error   status     if
+    --          IsDone=IsNotOk 
+    --          returns 
+    --          EdgeNotG1: the edges are not G1
+    --          FacesNotG1 : two connected faces on a same support are
+    --          not  G1  
+    --          EdgeNotOnShape: the  edge   is  not on  shape
+    --          NotSharpEdge: the  edge is not sharp
+    --          PbFilletCompute: problem during the computation of the fillet
+
+ 
+	      
+
+    NbSurface(me) returns Integer from Standard
+    ---Purpose: gives the number of NUBS surfaces  of the Fillet. 
+    raises NotDone from StdFail;
+
+    SurfaceFillet (me;Index:Integer from Standard) returns Surface from Geom
+    ---Purpose: gives the NUBS surface of index Index. 
+    ---C++: return const &
+    raises NotDone from StdFail,
+           OutOfRange from Standard; 
+
+    TolApp3d (me;Index:Integer from Standard) returns Real from Standard
+    ---Purpose: gives  the  3d  tolerance reached during approximation
+    --          of surface of index Index
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+    
+    SupportFace1 (me;Index:Integer from Standard)  returns Face from TopoDS
+    ---Purpose:gives the first support  face relative to SurfaceFillet(Index);
+    ---C++:return const & 
+    raises  NotDone from StdFail,
+            OutOfRange from Standard;  
+    
+    SupportFace2 (me;Index:Integer from Standard) returns Face from TopoDS
+    ---Purpose:gives the second support  face relative to SurfaceFillet(Index);
+    ---C++:return const &
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+   
+   
+    CurveOnFace1 (me;Index:Integer from Standard) returns Curve from Geom
+    ---C++: return const & 
+    --- Purpose:    gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)  
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+
+    CurveOnFace2  (me;Index:Integer from Standard)  returns Curve from Geom
+    ---C++: return  const    & 
+    ---Purpose: gives the     3d  curve of  SurfaceFillet(Index) on SupportFace2(Index)
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+
+
+    PCurveOnFace1(me;Index:Integer from Standard)  returns Curve from Geom2d
+    ---Purpose:gives the  PCurve associated to CurvOnSup1(Index)  on the support face 
+    ---C++: return const&
+
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+
+
+    PCurve1OnFillet (me;Index:Integer from Standard) returns Curve from Geom2d
+    ---Purpose: gives the PCurve associated to CurveOnFace1(Index) on the Fillet
+    ---C++: return const&
+   
+    raises  NotDone from StdFail,
+            OutOfRange from Standard;
+    
+     PCurveOnFace2(me;Index:Integer from Standard)  returns Curve from Geom2d
+     ---Purpose: gives the PCurve  associated to CurveOnSup2(Index) on  the  support face 
+     ---C++: return const&
+
+     raises  NotDone from StdFail,
+            OutOfRange from Standard;
+   
+    PCurve2OnFillet (me;Index:Integer from Standard) returns Curve from Geom2d
+     ---Purpose: gives the PCurve  associated to CurveOnSup2(Index) on  the  fillet
+    ---C++: return const&
+     raises  NotDone from StdFail,
+             OutOfRange from Standard;
+ 
+    FirstParameter(me)  returns Real from Standard
+    ---Purpose:gives the parameter of the fillet  on the first edge. 
+    raises  NotDone from StdFail;
+
+    LastParameter (me)   returns Real from Standard
+    ---Purpose: gives the  parameter of the fillet  on the last edge 
+    raises  NotDone from StdFail;
+    
+    StartSectionStatus(me) returns StatusType from FilletSurf
+    -- returns: 
+    -- twoExtremityonEdge:  each extremity of  start section of the Fillet is
+    --                        on the edge of  the corresponding support face.  
+    -- OneExtremityOnEdge: only one  of  the extremities of  start section  of the  Fillet 
+    --                     is on the  edge of the corresponding support face.  
+    -- NoExtremityOnEdge  any extremity of  the start section  ofthe fillet is  on  
+    --                       the edge  of   the  corresponding support face. 
+     raises  NotDone from StdFail;
+     
+    EndSectionStatus(me) returns StatusType from FilletSurf
+    -- returns: 
+    --  twoExtremityonEdge: each extremity of  end section of the Fillet is
+    --                      on the edge of  the corresponding support face.  
+    --  OneExtremityOnEdge:  only one  of  the extremities of  end  section  of the  Fillet 
+    --                      is on the  edge of the corresponding support face.  
+    --  NoExtremityOnEdge:  any extremity of  the end  section  of the fillet is  on  
+    --                      the edge  of   the  corresponding support face. 
+     raises  NotDone from StdFail;
+    
+    
+    NbSection(me;IndexSurf:Integer from Standard) returns Integer from Standard
+    -- gives the number of sections relative to SurfaceFillet(IndexSurf)
+    raises NotDone from StdFail,
+           OutOfRange from Standard;
+   
+    Section(me;IndexSurf:Integer from Standard;IndexSec:Integer from Standard; 
+            Circ: out  TrimmedCurve  from  Geom)
+    --  gives the   arc of circle corresponding    to section number 
+    --  IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the 
+    --  trimmed curve is a Geom_Circle) 
+    raises NotDone from  StdFail,
+           OutOfRange from Standard; 
+    
+fields
+    myIntBuild : InternalBuilder from FilletSurf;
+    myisdone     : StatusDone from FilletSurf; 
+    myerrorstatus: ErrorTypeStatus from FilletSurf;
+end Builder;
+
+
+
+
+
+

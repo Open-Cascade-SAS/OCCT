@@ -1,0 +1,21 @@
+-- File:	QuickSort.cdl
+-- Created:	Tue Mar  5 10:50:42 1991
+-- Author:	Herve Legrand, Mireille MERCIEN
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+generic class QuickSort from SortTools (Item as any;
+                                        Array as Array1 from TCollection(Item);
+                                        Comparator as any)
+
+	---Purpose: This class provides the QuickSort algorithm.
+
+is
+
+    Sort(myclass; TheArray : in out Array; Comp : Comparator);
+    ---Purpose: Sort an array using the QuickSort algorithm.
+    ---Level: Public
+
+end;
+

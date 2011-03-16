@@ -1,0 +1,229 @@
+-- File:	BiTgte_CurveOnVertex.cdl
+-- Created:	Fri Mar 21 16:32:41 1997
+-- Author:	Bruno DUMORTIER
+--		<dub@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+private class CurveOnVertex from BiTgte inherits Curve from Adaptor3d
+
+	---Purpose: 
+
+uses
+    Array1OfReal    from TColStd,
+    Shape           from GeomAbs,
+    CurveType       from GeomAbs,
+    Vec             from gp,
+    Pnt             from gp,
+    Circ            from gp,
+    Elips           from gp,
+    Hypr            from gp,
+    Parab           from gp,
+    Lin             from gp,
+    Curve           from Geom,
+    BezierCurve     from Geom,
+    BSplineCurve    from Geom,
+    HCurve          from Adaptor3d,
+    Curve           from Adaptor3d,
+    Edge            from TopoDS,
+    Vertex          from TopoDS
+
+raises
+    OutOfRange       from Standard,
+    NoSuchObject     from Standard,
+    DomainError      from Standard
+
+is
+
+    Create
+    returns CurveOnVertex from BiTgte;
+    
+    Create( EonF : Edge   from TopoDS;
+	    V    : Vertex from TopoDS);
+
+    Init( me   : in out;
+    	  EonF : Edge   from TopoDS;
+	  V    : Vertex from TopoDS)
+    is static;
+
+    --------------------------------
+    -- Methodes from Adaptor3d_Curve --
+    --------------------------------
+    
+    FirstParameter(me) returns Real
+    is redefined static;
+
+    LastParameter(me) returns Real
+    is redefined static;
+
+    Continuity(me) returns Shape from GeomAbs
+	---Purpose: 
+    is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static;
+    
+
+    IsClosed(me) returns Boolean
+    is redefined static;
+     
+    IsPeriodic(me) returns Boolean
+    is redefined static;
+    
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value(me; U : Real) returns Pnt from gp
+         --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D0 (me; U : Real; P : out Pnt from gp)
+         --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+         --- Purpose : Computes the point of parameter U on the curve with its
+         --  first derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is redefined static;
+    
+    D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+     is redefined static;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+     is redefined static;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+     is redefined static;
+
+    Resolution(me; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;   
+        
+    GetType(me) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    is redefined static;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+     Line(me) returns Lin from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Circle(me) returns Circ from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Ellipse(me) returns Elips from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Hyperbola(me) returns  Hypr from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Parabola(me) returns Parab from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+  
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;     
+          
+     Bezier(me) returns BezierCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+    
+     BSpline(me) returns BSplineCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+fields
+
+    myFirst : Real from Standard;
+    myLast  : Real from Standard;
+    myPnt   : Pnt from gp;
+    
+end CurveOnVertex from BiTgte;

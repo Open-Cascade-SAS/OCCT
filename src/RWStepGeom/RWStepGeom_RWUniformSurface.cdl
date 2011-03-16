@@ -1,0 +1,30 @@
+-- File:        UniformSurface.cdl
+-- Created:     Mon Dec  4 12:02:33 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWUniformSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for UniformSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     UniformSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWUniformSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable UniformSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : UniformSurface from StepGeom);
+
+	Share(me; ent : UniformSurface from StepGeom; iter : in out EntityIterator);
+
+end RWUniformSurface;

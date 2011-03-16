@@ -1,0 +1,27 @@
+// File:	GProp_UFunction.lxx
+// Created:	Wed Dec 21 10:00:26 2005
+// Author:	Sergey KHROMOV
+//		<skv@dimox>
+
+
+
+//=======================================================================
+//function : SetValueType
+//purpose  : Setting the type of the value to be returned.
+//=======================================================================
+
+inline void GProp_UFunction::SetValueType(const GProp_ValueType theType)
+{
+  myValueType = theType;
+}
+
+//=======================================================================
+//function : SetVParam
+//purpose  : Setting the V parameter that is constant during the 
+//           integral computation.
+//=======================================================================
+
+inline void GProp_UFunction::SetVParam(const Standard_Real theVParam)
+{
+  myVParam = theVParam;
+}

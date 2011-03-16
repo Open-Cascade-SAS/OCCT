@@ -1,0 +1,308 @@
+-- File:	Circ2d3Tan.cdl
+-- Created:	Fri Mar 29 10:00:31 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+generic class Circ2d3Tan from GccIter (
+    TheCurve          as any;
+    TheCurveTool      as any; -- as CurveTool from GccInt (TheCurve)
+    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
+    	    	      	      --                  (TheCurve)
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles tangent to 3 points/lines/circles/
+	--          curves with one curve or more.
+	--          The arguments of all construction methods are :
+	--             - The three qualifiied elements for the 
+	--             tangency constrains (QualifiedCirc, QualifiedLine,
+	--             Qualifiedcurv, Points).
+	--             - A parameter for each QualifiedCurv.
+
+-- inherits Entity from Standard
+
+uses Pnt2d            from gp,
+     Lin2d            from gp, 
+     Circ2d           from gp,
+     QualifiedCirc    from GccEnt,
+     QualifiedLin     from GccEnt,
+     Position         from GccEnt
+
+raises NotDone    from StdFail
+
+private class FuncTCuCuCu instantiates FunctionTanCuCuCu from GccIter (
+    	    	    	    	    	    TheCurve,TheCurveTool);
+is
+
+Create(Qualified1 : QualifiedCirc from GccEnt ;
+       Qualified2 : QualifiedCirc from GccEnt ;
+       Qualified3 : TheQualifiedCurve            ;
+       Param1     : Real                         ;
+       Param2     : Real                         ;
+       Param3     : Real                         ;
+       Tolerance  : Real                         ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 circles and a curve.
+
+Create(Qualified1 : QualifiedCirc from GccEnt ;
+       Qualified2 : TheQualifiedCurve            ;
+       Qualified3 : TheQualifiedCurve            ;
+       Param1     : Real                         ;
+       Param2     : Real                         ;
+       Param3     : Real                         ;
+       Tolerance  : Real                         )
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a circle and 2 curves.
+
+Create(Qualified1 : QualifiedCirc from GccEnt ;
+       Qualified2 : QualifiedLin  from GccEnt ;
+       Qualified3 : TheQualifiedCurve            ;
+       Param1     : Real                         ;
+       Param2     : Real                         ;
+       Param3     : Real                         ;
+       Tolerance  : Real                         ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a circle and a line and
+	--          a curve.
+
+Create(Qualified1 : QualifiedCirc     from GccEnt ;
+       Qualified2 : TheQualifiedCurve                ;
+       Point3     : Pnt2d                            ;
+       Param1     : Real                             ;
+       Param2     : Real                             ;
+       Tolerance  : Real                             ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a circle and a point and
+	--          a curve.
+
+Create(Qualified1 : QualifiedLin      from GccEnt ;
+       Qualified2 : QualifiedLin      from GccEnt ;
+       Qualified3 : TheQualifiedCurve                ;
+       Param1     : Real                             ;
+       Param2     : Real                             ;
+       Param3     : Real                             ;
+       Tolerance  : Real                             ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 lines and a curve.
+
+Create(Qualified1 : QualifiedLin      from GccEnt ;
+       Qualified2 : TheQualifiedCurve                ;
+       Qualified3 : TheQualifiedCurve                ;
+       Param1     : Real                             ;
+       Param2     : Real                             ;
+       Param3     : Real                             ;
+       Tolerance  : Real                             ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a line and 2 curves.
+
+Create(Qualified1 : QualifiedLin      from GccEnt ;
+       Qualified2 : TheQualifiedCurve                ;
+       Point3     : Pnt2d                            ;
+       Param1     : Real                             ;
+       Param2     : Real                             ;
+       Tolerance  : Real                             ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a line and a curve 
+	--          and a point.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Point1     : Pnt2d             ;
+       Point2     : Pnt2d             ;
+       Param1     : Real              ;
+       Tolerance  : Real              ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to a curve and 2 points.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Qualified2 : TheQualifiedCurve ;
+       Point2     : Pnt2d             ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Tolerance  : Real              ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 2 curves and a point.
+
+Create(Qualified1 : TheQualifiedCurve ;
+       Qualified2 : TheQualifiedCurve ;
+       Qualified3 : TheQualifiedCurve ;
+       Param1     : Real              ;
+       Param2     : Real              ;
+       Param3     : Real              ;
+       Tolerance  : Real              ) 
+returns Circ2d3Tan from GccIter;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d circles tangent to 3 curves.
+
+-- -- ....................................................................
+
+IsDone(me) returns Boolean
+is static;
+    ---Purpose: This method returns True if the construction 
+    --          algorithm succeeded.
+
+ThisSolution(me) returns Circ2d 
+    ---Purpose: Returns the solution.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+WhichQualifier(me                                 ; 
+    	       Qualif1  : out Position from GccEnt;
+    	       Qualif2  : out Position from GccEnt;
+    	       Qualif3  : out Position from GccEnt)
+raises NotDone from StdFail
+is static;
+    -- It returns the informations about the qualifiers of the tangency 
+    -- arguments concerning the solution number Index.
+    -- It returns the real qualifiers (the qualifiers given to the 
+    -- constructor method in case of enclosed, enclosing and outside 
+    -- and the qualifiers computedin case of unqualified).
+
+Tangency1(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+    ---Purpose: Returns informations about the tangency point between 
+    --          the result and the first argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntSol 
+    --          on the argument curv.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+Tangency2(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+    ---Purpose: Returns informations about the tangency point between 
+    --          the result and the second argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntSol 
+    --          on the argument curv.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+Tangency3(me                       ;
+          ParSol,ParArg : out Real ;
+          PntSol        : out Pnt2d)
+    ---Purpose: Returns informations about the tangency point between 
+    --          the result and the third argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntSol 
+    --          on the argument curv.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+IsTheSame1(me) returns Boolean
+    -- Returns True if the solution is equal to the first argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+IsTheSame2(me) returns Boolean
+    -- Returns True if the solution is equal to the second argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+IsTheSame3(me) returns Boolean
+    -- Returns True if the solution is equal to the third argument.
+raises NotDone from StdFail
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+
+fields
+
+    WellDone : Boolean;
+    ---Purpose: True if the algorithm succeeded.
+
+    cirsol   : Circ2d;
+    ---Purpose: The solutions.
+
+    qualifier1 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    qualifier2 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    qualifier3 : Position from GccEnt;
+    -- The qualifiers of the first argument.
+
+    TheSame1 : Boolean;
+    ---Purpose: True if the solution and the first argument are identical.
+    --          Two circles are identical if the difference between the 
+    --          radius of one and the sum of the radius of the other and 
+    --          the distance between the centers is less than Tolerance. 
+    --          False in the other cases.
+
+    TheSame2 : Boolean;
+    ---Purpose: True if the solution and the second argument are identical.
+    --          Two circles are identical if the difference between the 
+    --          radius of one and the sum of the radius of the other and 
+    --          the distance between the centers is less than Tolerance. 
+    --          False in the other cases.
+
+    TheSame3 : Boolean;
+    ---Purpose: True if the solution and the third argument are identical.
+    --          Two circles are identical if the difference between the 
+    --          radius of one and the sum of the radius of the other and 
+    --          the distance between the centers is less than Tolerance. 
+    --          False in the other cases.
+
+    pnttg1sol   : Pnt2d;
+    ---Purpose: The tangency point between the solution and the first 
+    --          argument on the solution.
+
+    pnttg2sol   : Pnt2d;
+    ---Purpose: The tangency point between the solution and the second 
+    --          argument on the solution.
+
+    pnttg3sol   : Pnt2d;
+    ---Purpose: The tangency point between the solution and the third 
+    --          argument on the solution.
+
+    par1sol   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the first argument on the solution.
+
+    par2sol   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the second argument on the solution.
+
+    par3sol   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the third argument on the solution.
+
+    pararg1   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the first argument on the first argument.
+
+    pararg2   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the second argument on the second argument.
+
+    pararg3   : Real;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the third argument on the second argument.
+
+end Circ2d3Tan;

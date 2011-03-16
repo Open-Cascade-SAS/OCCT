@@ -1,0 +1,80 @@
+-- File:	TopOpeBRep_EdgesFiller.cdl
+-- Created:	Wed Oct 12 14:25:35 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class EdgesFiller from TopOpeBRep 
+
+---Purpose: Fills a TopOpeBRepDS_DataStructure with Edge/Edge 
+--          instersection data described by TopOpeBRep_EdgesIntersector.
+
+uses
+
+    Edge from TopoDS,
+    Face from TopoDS,
+    Shape from TopoDS,
+    EdgesIntersector from TopOpeBRep,
+    Point2d from TopOpeBRep,
+    PEdgesIntersector from TopOpeBRep,
+    HDataStructure from TopOpeBRepDS,
+    DataStructure from TopOpeBRepDS,
+    PDataStructure from TopOpeBRepDS,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS,
+    Kind from TopOpeBRepDS,
+    Transition from TopOpeBRepDS,
+    Config from TopOpeBRepDS
+    
+is
+
+    Create returns EdgesFiller;
+    
+    Insert(me:out;E1,E2:Shape;EI:out EdgesIntersector;HDS:HDataStructure);
+
+    Face(me:out;I:Integer;F:Shape);
+
+    Face(me;I:Integer) returns Shape;---C++: return const &
+
+    -- -------
+    -- private
+    -- -------
+    
+    GetGeometry(me;IT:out ListIteratorOfListOfInterference;
+		   P:Point2d;G:out Integer;K:out Kind)
+    returns Boolean is private;
+
+    MakeGeometry(me;P:Point2d;G:out Integer;K:out Kind)
+    returns Boolean is private;
+
+    SetShapeTransition(me;P:Point2d;T1,T2:out Transition from TopOpeBRepDS)
+    is private;
+
+    StorePI(me:out;P:Point2d;T:Transition from TopOpeBRepDS;
+    	    EI,PI:Integer;p:Real;IE:Integer)
+    returns Interference is private;
+
+    StoreVI(me:out;P:Point2d;T:Transition from TopOpeBRepDS;
+    	    EI,VI:Integer;VB:Boolean;C:Config;p:Real;IE:Integer)
+    returns Interference is private;
+
+    ToRecompute(me:out;P:Point2d;I:Interference;IEmother:Integer)
+    returns Boolean is private;
+
+    StoreRecompute(me:out;I:Interference;IEmother:Integer) is private;
+    RecomputeInterferences(me:out;E:Edge;LOI:out ListOfInterference) is private;
+
+fields
+
+    myE1:Edge from TopoDS;
+    myE2:Edge from TopoDS;
+    myF1:Face from TopoDS;
+    myF2:Face from TopoDS;
+    myHDS:HDataStructure from TopOpeBRepDS;
+    myPDS:PDataStructure from TopOpeBRepDS;
+    myPEI:PEdgesIntersector from TopOpeBRep;
+    myLI1:ListOfInterference from TopOpeBRepDS;
+    myLI2:ListOfInterference from TopOpeBRepDS;
+    
+end EdgesFiller from TopOpeBRep;

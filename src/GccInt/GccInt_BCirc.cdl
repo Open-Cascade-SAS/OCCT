@@ -1,0 +1,38 @@
+-- File:	BCirc.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BCirc from GccInt 
+
+inherits Bisec from GccInt 
+
+     	---Purpose: Describes a circle as a bisecting curve between two 2D
+    	-- geometric objects (such as circles or points).
+
+uses Circ2d from gp,
+     IType  from GccInt
+
+is
+
+Create(Circ : Circ2d) returns mutable BCirc;
+    	---Purpose: Constructs a bisecting curve whose geometry is the 2D circle Circ.
+    
+Circle(me) returns Circ2d from gp
+    is redefined;
+    	---Purpose: Returns a 2D circle which is the geometry of this bisecting curve.    
+
+    ArcType(me) returns IType from GccInt
+    is static;
+    	---Purpose: Returns GccInt_Cir, which is the type of any GccInt_BCirc bisecting curve.
+
+fields
+
+    cir : Circ2d from gp;
+    ---Purpose: The bisecting line.
+
+end BCirc;    
+
+

@@ -1,0 +1,23 @@
+-- File:	TopoDS_Solid.cdl
+-- Created:	Mon Dec 17 11:12:03 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class Solid from TopoDS inherits Shape from TopoDS
+
+	---Purpose: Describes a solid shape which
+-- - references an underlying solid shape with the
+--   potential to be given a location and an orientation
+-- - has a location for the underlying shape, giving its
+--   placement in the local coordinate system
+-- - has an orientation for the underlying shape, in
+ --  terms of its geometry (as opposed to orientation in
+ --  relation to other shapes).
+
+is
+    Create returns Solid from TopoDS;
+    ---C++: inline
+	---Purpose: Constructs an Undefined Solid.
+
+end Solid;

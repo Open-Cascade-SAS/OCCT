@@ -1,0 +1,21 @@
+-- File:	AdvApprox_DichoCutting.cdl
+-- Created:	Fri Apr  5 17:08:30 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+         	 
+     ---Purpose :
+      -- if Cutting is necessary in [a,b], we cut at (a+b) / 2.
+      
+class DichoCutting from AdvApprox inherits Cutting from AdvApprox
+
+uses Real from Standard
+
+is
+    Create returns DichoCutting;
+    Value(me; a,b : Real;
+          cuttingvalue : out Real)
+    returns Boolean 
+    is redefined;
+
+end DichoCutting;

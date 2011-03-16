@@ -1,0 +1,152 @@
+-- File:	TDataXtd_PatternStd.cdl
+-- Created:	Mon Apr  6 18:02:51 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009  
+
+class PatternStd from TDataXtd inherits Pattern from TDataXtd
+
+	---Purpose: to create a PatternStd 
+
+uses
+
+    Label           from TDF,
+    Attribute       from TDF,
+    RelocationTable from TDF,
+    DataSet         from TDF,
+    NamedShape      from TNaming,
+    Real            from TDataStd,
+    Integer         from TDataStd,
+    Array1OfTrsf    from TDataXtd,
+    OStream         from Standard,
+    GUID            from Standard
+
+
+is
+
+    ---Category: class methods
+    --           =============
+      
+    GetPatternID(myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;   
+
+    Set (myclass ; label :  Label from TDF) 
+    returns PatternStd from TDataXtd;
+        ---Purpose: Find, or  create,  a PatternStd  attribute
+
+
+    ---Category: constructor
+    --           ===========      
+
+    Create
+    returns mutable PatternStd from TDataXtd;
+
+    --- Category: Set and Get methods
+
+    Signature(me: mutable; signature: Integer from Standard);
+      --  Use SetSignature to set the signature
+      --  signature = 1 : linear PatternStd
+      --                  (axis1 + dist1 + nb1)
+      --            = 2 : circular PatternStd
+      --                  (axis1 + angle + nb1)
+      --            = 3 : rentagular PatternStd
+      --                  (axis1 + dist1 + nb1 + axis2 + dist2 + nb2)
+      --            = 4 : circular rectangulaire PatternStd
+      --                  (axis1 + dist1 + nb1 + axis2 + angle + nb2)
+      --            = 5 : mirror PatternStd
+      --                  (plane)
+    
+    Axis1(me: mutable; Axis1: NamedShape from TNaming);
+
+    Axis2(me: mutable; Axis2: NamedShape from TNaming);
+
+    Axis1Reversed(me: mutable;  Axis1Reversed:  Boolean from Standard);
+     
+    Axis2Reversed(me: mutable;  Axis2Reversed:  Boolean from Standard);
+     
+    Value1(me: mutable; value : Real from TDataStd);
+        
+    Value2(me: mutable; value : Real from TDataStd);
+        
+    NbInstances1(me: mutable; NbInstances1: Integer from TDataStd);
+
+    NbInstances2(me: mutable; NbInstances2: Integer from TDataStd);
+
+    Mirror(me: mutable; plane: NamedShape from TNaming);
+
+    Signature(me) returns Integer from Standard;
+        ---C++: inline
+    
+    Axis1(me) returns NamedShape from TNaming;
+        ---C++: inline
+
+    Axis2(me) returns NamedShape from TNaming;
+        ---C++: inline
+
+    Axis1Reversed(me) returns Boolean from Standard;
+        ---C++: inline
+     
+    Axis2Reversed(me) returns Boolean from Standard;
+        ---C++: inline
+     
+    Value1(me) returns Real from TDataStd;
+        ---C++: inline
+        
+    Value2(me) returns Real from TDataStd;
+        ---C++: inline
+        
+    NbInstances1(me) returns Integer from TDataStd;
+        ---C++: inline
+
+    NbInstances2(me) returns Integer from TDataStd;
+        ---C++: inline
+
+    Mirror(me) returns NamedShape from TNaming;
+        ---C++: inline
+
+    --- Category:  TDataXtd_Pattern methods
+
+    NbTrsfs(me) returns Integer from Standard;
+
+    ComputeTrsfs(me; Trsfs: in out Array1OfTrsf from TDataXtd);
+
+
+    ---Category: Deferred methods from TDF_Attribute
+
+    PatternID (me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me) returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    References(me; aDataSet : DataSet from TDF)
+    is redefined;
+
+    Dump(me; anOS : in out OStream from Standard) 
+    	---C++: return &
+    returns OStream from Standard
+    is redefined;
+    
+
+fields
+
+    mySignature     : Integer         from Standard;
+    myAxis1Reversed : Boolean         from Standard;
+    myAxis2Reversed : Boolean         from Standard;
+
+    myAxis1         : NamedShape      from TNaming;
+    myAxis2         : NamedShape      from TNaming;
+    myValue1        : Real            from TDataStd;
+    myValue2        : Real            from TDataStd;
+    myNb1           : Integer         from TDataStd;
+    myNb2           : Integer         from TDataStd;
+    myMirror        : NamedShape      from TNaming;
+
+end PatternStd;
+

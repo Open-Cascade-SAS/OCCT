@@ -1,0 +1,41 @@
+-- File:        PointReplica.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PointReplica from StepGeom 
+
+inherits Point from StepGeom 
+
+uses
+
+	CartesianTransformationOperator from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PointReplica;
+	---Purpose: Returns a PointReplica
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aParentPt : mutable Point from StepGeom;
+	      aTransformation : mutable CartesianTransformationOperator from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetParentPt(me : mutable; aParentPt : mutable Point);
+	ParentPt (me) returns mutable Point;
+	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator);
+	Transformation (me) returns mutable CartesianTransformationOperator;
+
+fields
+
+	parentPt : Point from StepGeom;
+	transformation : CartesianTransformationOperator from StepGeom;
+
+end PointReplica;

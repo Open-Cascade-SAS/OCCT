@@ -1,0 +1,216 @@
+-- File:	XCAFDoc_ColorTool.cdl
+-- Created:	Thu May 11 10:05:27 2000
+-- Author:	Edward AGAPOV
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ColorTool from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: Provides tools to store and retrieve attributes (colors)
+	--          of TopoDS_Shape in and from TDocStd_Document
+	--          A Document is intended to hold different 
+	--          attributes of ONE shape and it's sub-shapes
+
+uses
+    Color from Quantity,
+    Shape from TopoDS,
+    Label from TDF,
+    LabelSequence from TDF,
+    Document from TDocStd,
+    ColorType from XCAFDoc,
+    ShapeTool from XCAFDoc,
+    RelocationTable from TDF
+
+is
+    Create returns ColorTool from XCAFDoc;
+
+    Set (myclass; L : Label from TDF) returns ColorTool from XCAFDoc;
+    	---Purpose: Creates (if not exist) ColorTool.
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    
+    
+    ---API: General structure
+    
+    BaseLabel(me) returns Label from TDF;
+    	---Purpose: returns the label under which colors are stored
+    
+    ShapeTool (me: mutable) returns ShapeTool from XCAFDoc;
+    	---Purpose: Returns internal XCAFDoc_ShapeTool tool
+	---C++: return const &
+
+    ---API: Color table management
+    
+    IsColor (me; lab: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label belongs to a colortable and
+        --          is a color definition 
+    
+    GetColor (me; lab: Label from TDF; col: out Color from Quantity) 
+    returns Boolean;
+    	---Purpose: Returns color defined by label lab
+	--          Returns False if the label is not in colortable
+	--          or does not define a color
+
+    FindColor (me; col: Color from Quantity; lab: out Label from TDF)
+    returns Boolean;
+    	---Purpose: Finds a color definition in a colortable and returns
+	--          its label if found
+    	--          Returns False if color is not found in colortable 
+    
+    FindColor (me; col: Color from Quantity) returns Label from TDF;
+    	---Purpose: Finds a color definition in a colortable and returns
+	--          its label if found (or Null label else)
+    
+    AddColor (me; col: Color from Quantity) returns Label from TDF;
+    	---Purpose: Adds a color definition to a colortable and returns
+	--          its label (returns existing label if the same color 
+        --          is already defined)
+    
+    RemoveColor (me; lab: Label from TDF);
+    	---Purpose: Removes color from the colortable
+    
+    GetColors (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of colors currently stored 
+        --          in the colortable
+    
+    ---API: Assignment of colors to labels
+    
+    SetColor (me; L: Label from TDF;
+		  colorL: Label from TDF;
+		  type : ColorType from XCAFDoc);
+    	---Purpose: Sets a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color
+    	--          defined by <colorL>
+    
+    SetColor (me; L: Label from TDF;
+		  Color: Color from Quantity;
+		  type : ColorType from XCAFDoc);
+    	---Purpose: Sets a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
+    	--          in the colortable
+    	--          Adds a color as necessary
+    
+    UnSetColor (me; L: Label from TDF;
+		    type : ColorType from XCAFDoc);
+    	---Purpose: Removes a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color
+    
+    IsSet (me; L: Label from TDF;
+	       type : ColorType from XCAFDoc) returns Boolean;
+    	---Purpose: Returns True if label <L> has a color assignment 
+    	--          of the type <type>
+    
+    GetColor (me: mutable; L: Label from TDF;
+		  type : ColorType from XCAFDoc;
+    	    	  colorL: out Label from TDF) returns Boolean;
+        ---Purpose: Returns label with color assigned to <L> as <type>
+    	--          Returns False if no such color is assigned
+    
+    GetColor (me: mutable; L: Label from TDF;
+		  type : ColorType from XCAFDoc;
+    	    	  color: out Color from Quantity) returns Boolean;
+        ---Purpose: Returns color assigned to <L> as <type>
+    	--          Returns False if no such color is assigned
+    
+    ---API: Assignment of colors to shapes in Shapes section
+    
+    SetColor (me: mutable; S: Shape from TopoDS;
+			   colorL: Label from TDF;
+			   type : ColorType from XCAFDoc) returns Boolean;
+    	---Purpose: Sets a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color
+    	--          defined by <colorL>
+	--          Returns False if cannot find a label for shape S
+    
+    SetColor (me: mutable; S: Shape from TopoDS;
+			   Color: Color from Quantity;
+			   type : ColorType from XCAFDoc) returns Boolean;
+    	---Purpose: Sets a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color <Color>
+    	--          in the colortable
+    	--          Adds a color as necessary
+	--          Returns False if cannot find a label for shape S
+    
+    UnSetColor (me: mutable; S: Shape from TopoDS;
+		    type : ColorType from XCAFDoc) returns Boolean;
+    	---Purpose: Removes a link with GUID defined by <type> (see 
+    	--          XCAFDoc::ColorRefGUID()) from label <L> to color
+    	--          Returns True if such link existed
+    
+    IsSet (me: mutable; S: Shape from TopoDS;
+	       type : ColorType from XCAFDoc) returns Boolean;
+    	---Purpose: Returns True if label <L> has a color assignment 
+    	--          of the type <type>
+    
+    GetColor (me: mutable; S: Shape from TopoDS;
+		  type : ColorType from XCAFDoc;
+    	    	  colorL: out Label from TDF) returns Boolean;
+        ---Purpose: Returns label with color assigned to <L> as <type>
+    	--          Returns False if no such color is assigned
+    
+    GetColor (me: mutable; S: Shape from TopoDS;
+		  type : ColorType from XCAFDoc;
+    	    	  color: out Color from Quantity) returns Boolean;
+        ---Purpose: Returns color assigned to <L> as <type>
+    	--          Returns False if no such color is assigned
+  
+    IsVisible (me; L: Label from TDF)
+    	---Purpose: Return TRUE if object on this label is visible, FALSE if invisible.
+    returns Boolean;
+    
+    SetVisibility (me: mutable; shapeLabel: Label from TDF;
+    	    	       isvisible: Boolean = Standard_True);
+    	---Purpose: Set the visibility of object on label. Do nothing if there no any object.
+	--          Set UAttribute with corresponding GUID.
+	
+    SetInstanceColor (me: mutable; theShape : Shape from TopoDS;
+		      type : ColorType from XCAFDoc;
+    	    	      color: Color from Quantity;
+    	    	      isCreateSHUO : Boolean = Standard_True)
+    returns Boolean;
+    	---Purpose: Sets the color of component that styled with SHUO structure
+	--          Returns FALSE if no sush component found
+	--          NOTE: create SHUO structeure if it is necessary and if <isCreateSHUO> 
+    	    	      
+    GetInstanceColor (me: mutable; theShape : Shape from TopoDS;
+		      type : ColorType from XCAFDoc;
+    	    	      color: out Color from Quantity)
+    returns Boolean;
+    	---Purpose: Gets the color of component that styled with SHUO structure
+	--          Returns FALSE if no sush component or color type
+    
+    IsInstanceVisible (me: mutable; theShape : Shape from TopoDS)
+    returns Boolean;
+    	---Purpose: Gets the visibility status of component that styled with SHUO structure
+	--          Returns FALSE if no sush component
+	
+    ReverseChainsOfTreeNodes(me: mutable) returns Boolean;  -- skl 11.11.2003
+        ---Purpose: Reverses order in chains of TreeNodes (from Last to First) under
+	--          each Color Label since we became to use function ::Prepend()
+	--          instead of ::Append() in method SetColor() for acceleration
+    
+
+            ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+
+    myShapeTool: ShapeTool from XCAFDoc;
+    
+end ColorTool;

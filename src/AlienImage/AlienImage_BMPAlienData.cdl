@@ -1,0 +1,71 @@
+-- File:        AlienImage_BMPAlienData.cdl
+-- Created:     20/10/98
+-- Author:      DCB
+---Copyright:   Matravision 1998
+
+private class BMPAlienData from AlienImage inherits AlienImageData from AlienImage
+
+uses
+  File                    from OSD,
+  GenericColorMap         from Aspect,
+  PseudoColorImage        from Image,
+  ColorImage              from Image,
+  Image                   from Image
+
+raises
+  OutOfRange      from Standard,
+  TypeMismatch    from Standard
+
+is
+  Create returns mutable BMPAlienData from AlienImage ;
+
+  Clear( me : in out mutable );
+  ---Level: Public
+  ---Purpose: Frees memory allocated by BMPAlienData
+  ---C++: alias ~
+
+  Read ( me : in out mutable ; afile : in out File from OSD )
+  returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Read content of a  BMPAlienData object from a file
+  --          Returns True if file is a BMP file .
+
+  Write( me : in immutable; afile : in out File from OSD )
+  returns Boolean from Standard;
+  ---Level: Public
+  ---Purpose: Write content of a  BMPAlienData object to a file
+
+  ToImage( me : in  immutable) 
+  returns mutable Image from Image 
+  raises TypeMismatch from Standard ;
+  ---Level: Public
+  ---Purpose : convert a BMPAlienData object to a Image object.
+
+  FromImage( me : in out mutable ; anImage : in Image from Image )
+  raises TypeMismatch from Standard ;
+  ---Level: Public
+  ---Purpose : convert a Image object to a BMPAlienData object.
+
+  ------------------------------------------------------
+  --- Private methods
+  ------------------------------------------------------
+  FromPseudoColorImage (me      : in out mutable; 
+                        anImage : in PseudoColorImage from Image )
+  is private;
+  ---Level: Internal
+  ---Purpose : convert a Image object to a GIFAlienData object.
+
+  FromColorImage (me      : in out mutable;
+                  anImage : in ColorImage from Image)
+  is private;
+  ---Level: Internal
+  ---Purpose : convert a Image object to a GIFAlienData object.
+
+fields
+  myColorMap           : GenericColorMap from Aspect;
+  myData               : Address         from Standard; --BYTE* or DWORD*
+  myWidth              : Integer         from Standard;
+  myHeight             : Integer         from Standard;
+
+end;
+ 

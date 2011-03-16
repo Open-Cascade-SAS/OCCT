@@ -1,0 +1,33 @@
+-- File:        DateAndTimeAssignment.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class DateAndTimeAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	DateAndTime from StepBasic, 
+	DateTimeRole from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedDateAndTime : mutable DateAndTime from StepBasic;
+	      aRole : mutable DateTimeRole from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedDateAndTime(me : mutable; aAssignedDateAndTime : mutable DateAndTime);
+	AssignedDateAndTime (me) returns mutable DateAndTime;
+	SetRole(me : mutable; aRole : mutable DateTimeRole);
+	Role (me) returns mutable DateTimeRole;
+
+fields
+
+	assignedDateAndTime : DateAndTime from StepBasic;
+	role : DateTimeRole from StepBasic;
+
+end DateAndTimeAssignment;

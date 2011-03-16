@@ -1,0 +1,131 @@
+-- File:	BOPTools_Checker.cdl
+-- Created:	Mon Aug  5 16:01:03 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class Checker from BOPTools inherits PaveFiller from BOPTools
+
+	---Purpose: 
+    	--  class that provides the algorithm 
+    	--  to  check a shape on self-interference. 
+        	 
+
+uses
+    ListOfCheckResults from BOPTools, 
+    InterferencePool from BOPTools, 
+    Shape            from TopoDS,	     
+    ShapeEnum        from TopAbs, 
+    Geometry         from Geom
+
+is  
+    Create 
+	returns  Checker from BOPTools;  
+    	---Purpose:  
+    	--- Empty Contructor  
+    	---
+    Create (aS:Shape from TopoDS)    
+    	returns  Checker from BOPTools; 
+    	---Purpose:  
+    	--- Contructs the object using the shape <aS> to check 
+    	---
+    Create  (aIP: InterferencePool from BOPTools) 
+    	returns  Checker from BOPTools;
+    	---Purpose: 
+    	--- Contructs the object using the <InterferencePool> 
+    	---
+    Destroy (me:out) 
+    	is redefined;
+    	---C++: alias "Standard_EXPORT virtual ~BOPTools_Checker(){Destroy();}"  
+    	---Purpose:  
+    	--- Destructor  
+    	---
+
+    SetPerformType(me: in out; StopOnFirstFaulty: Boolean from Standard);
+    	---Purpose: if <StopOnFirstFaulty == Standard_True> the process stops
+    	--          and the exception throws; otherwise all faulties are searched
+
+    Perform    (me:out)   
+    	is redefined; 
+    	---Purpose:  
+    	--- Launches  the  algorithm 
+    	---
+    SetShape(me:out; 
+    	aS:Shape from TopoDS); 
+    	---Purpose:  
+    	--- Selector 
+    	---
+    Shape(me) 
+    	returns Shape from TopoDS; 
+    	---C++:return const & 	    	    	  
+    	---Purpose:  
+    	--- Selector 
+    	---
+
+    GetCheckResult(me)
+    	returns ListOfCheckResults from BOPTools;
+	---C++: return const &
+	---Purpose: returnes a result of check
+
+    HasFaulty(me) 
+    	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Selector.  
+    	--- Retrns TRUE if there is interferred sub-shapes . 
+    	---
+    PerformVV  (me:out) 
+    	is  redefined protected ; 
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PerformVE  (me:out) 
+    	is  redefined protected ;  
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PerformVF  (me:out) 
+    	is  redefined protected ;  
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PerformEE  (me:out) 
+    	is  redefined protected ;  
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PerformEF  (me:out) 
+    	is  redefined protected ; 
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PerformFF  (me:out) 
+    	is  redefined protected ;  	 
+    	---Purpose:   
+    	--- See in base classe, please   
+    	---
+    PrepareEdges  (me:out) 
+    	is redefined protected ; 
+    	---Purpose:  
+    	--- Prepare end paves for each edge 
+    	---
+    PreparePaveBlocks (me:out; 
+    	    	    	aType1: ShapeEnum  from  TopAbs; 
+    	    	    	aType2: ShapeEnum  from  TopAbs) 
+    	is redefined protected ;   
+    	---Purpose:  
+    	--- Internal usage 
+    	---
+    PreparePaveBlocks (me:out;   
+    	    	       anE:Integer from Standard) 
+    	is redefined protected ;   
+    	---Purpose:  
+    	--- Prepare end paves for the edge <anE>
+    	---
+fields
+    myShape        :  Shape              from TopoDS;
+    myCheckResults :  ListOfCheckResults from BOPTools;
+    myStopOnFirst  :  Boolean            from Standard;
+    myEntryType    :  Integer            from Standard;
+    
+end Checker;

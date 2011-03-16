@@ -1,0 +1,13 @@
+// File:	TopoDS_Face.lxx
+// Created:	Tue Apr 16 17:32:31 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Face
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Face::TopoDS_Face ()
+{
+}

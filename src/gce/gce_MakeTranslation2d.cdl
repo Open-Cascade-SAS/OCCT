@@ -1,0 +1,48 @@
+-- File:	Translation2d.cdl
+-- Created:	Wed Aug 26 14:32:08 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeTranslation2d
+
+from gce
+
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- translation in 2D space. The result is a gp_Trsf2d transformation.
+    -- A MakeTranslation2d object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result.
+
+uses Pnt2d  from gp,
+     Trsf2d from gp,
+     Vec2d  from gp,
+     Real   from Standard
+     
+is
+
+Create(Vect : Vec2d from gp) returns MakeTranslation2d;
+    ---Purpose: Constructs a translation along the vector Vect.
+        
+Create(Point1 : Pnt2d from gp;
+       Point2 : Pnt2d from gp) returns MakeTranslation2d;
+    --- Purpose: Constructs a translation along the vector
+    ---  (Point1,Point2) defined from the point Point1 to the point Point2.
+        
+Value(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed transformation.
+
+Operator(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Trsf2d() const;"
+
+fields
+
+    TheTranslation2d : Trsf2d from gp;
+
+end MakeTranslation2d;
+

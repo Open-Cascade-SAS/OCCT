@@ -1,0 +1,153 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphDS_EntitiesIterator.cxx
+// Created:	Tue Sep 10 17:01:56 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <GraphDS_DataMapIteratorOfEntityRoleMap.hxx> 
+
+//=======================================================================
+//function : GraphDS_EntitiesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EntitiesIterator::GraphDS_EntitiesIterator ()
+{
+}
+
+//=======================================================================
+//function : GraphDS_EntitiesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EntitiesIterator::GraphDS_EntitiesIterator 
+  (const GraphDS_RelationGraph& G)  
+{
+  Initialize (G);
+}
+
+//=======================================================================
+//function : GraphDS_EntitiesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EntitiesIterator::GraphDS_EntitiesIterator 
+  (const GraphDS_RelationGraph& G,
+   const Handle(GraphDS_Entity)& E) 
+{
+  Initialize (G,E);
+}
+
+
+//=======================================================================
+//function : GraphDS_EntitiesIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_EntitiesIterator::GraphDS_EntitiesIterator 
+  (const GraphDS_RelationGraph& G,
+   const Handle(GraphDS_Relation)& R) 
+{
+  Initialize (G,R);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EntitiesIterator::Initialize
+  (const GraphDS_RelationGraph& G)  
+{
+  myEntities.Initialize(G.myEntities);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : adjacent entities search
+//=======================================================================
+
+void GraphDS_EntitiesIterator::Initialize
+  (const GraphDS_RelationGraph&,
+   const Handle(GraphDS_Entity)& E) 
+{
+  myMap.Clear();
+
+  Handle(GraphDS_Relation) REL;
+  GraphDS_DataMapIteratorOfEntityRoleMap itv; 
+  TColStd_MapIteratorOfMapOfTransient itr;
+
+  for (itr.Initialize(E->GetRelations());itr.More();itr.Next()) {
+    REL = Handle(GraphDS_Relation)::DownCast(itr.Key()); 
+    if (REL->IsInput(E)) {
+      for (itv.Initialize(REL->GetEntities());itv.More();itv.Next()) {
+	if (itv.Value() !=  GraphDS_OnlyInput) {
+	  myMap.Add(itv.Key());
+	}
+      }
+    }
+  }      
+  myEntities.Initialize(myMap);
+}     
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EntitiesIterator::Initialize 
+  (const GraphDS_RelationGraph&, 
+   const Handle(GraphDS_Relation)& R) 
+{  
+  myMap.Clear();
+  GraphDS_DataMapIteratorOfEntityRoleMap itv; 
+  for (itv.Initialize(R->GetEntities());itv.More();itv.Next()) {
+    myMap.Add(itv.Key());
+  }
+  myEntities.Initialize(myMap);
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_EntitiesIterator::More () const
+{
+  return myEntities.More();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphDS_EntitiesIterator::Next () 
+{
+  myEntities.Next();
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Entity)& GraphDS_EntitiesIterator::Value () const 
+{  
+  return  *((Handle(GraphDS_Entity)*)& myEntities.Key());
+  //return Handle(GraphDS_Entity)::DownCast(myEntities.Key());
+}
+
+
+
+
+
+

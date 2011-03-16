@@ -1,0 +1,218 @@
+-- File:	TColgp.cdl
+-- Created:	Wed Mar 10 12:34:53 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+---Copyright:	 Matra Datavision 1993
+
+package TColgp  
+
+
+        ---Purpose :   This package  provides  standard and frequently
+    	-- used instantiations of generic classes from the
+    	-- TCollection package with geometric objects from the gp package.     
+
+uses TCollection, TColStd, gp
+
+is
+
+
+
+    -- Array1 of 2D objects.
+
+  class Array1OfCirc2d
+    	instantiates Array1 from TCollection (Circ2d from gp);
+  class Array1OfDir2d
+    	instantiates Array1 from TCollection (Dir2d from gp);
+  class Array1OfLin2d
+    	instantiates Array1 from TCollection (Lin2d from gp);
+  class Array1OfPnt2d
+    	instantiates Array1 from TCollection (Pnt2d from gp);
+  class Array1OfVec2d
+    	instantiates Array1 from TCollection (Vec2d from gp);
+  class Array1OfXY
+    	instantiates Array1 from TCollection (XY from gp);
+
+
+    -- Array1 of 3D objects.
+
+  class Array1OfDir
+    	instantiates Array1 from TCollection (Dir from gp);
+  class Array1OfPnt
+    	instantiates Array1 from TCollection (Pnt from gp);
+  class Array1OfVec
+    	instantiates Array1 from TCollection (Vec from gp);
+  class Array1OfXYZ
+    	instantiates Array1 from TCollection (XYZ from gp);
+
+
+    -- Array2 of 2D objects.
+
+  class Array2OfCirc2d
+    	instantiates Array2 from TCollection (Circ2d from gp);
+  class Array2OfDir2d
+    	instantiates Array2 from TCollection (Dir2d from gp);
+  class Array2OfLin2d
+    	instantiates Array2 from TCollection (Lin2d from gp);
+  class Array2OfPnt2d
+    	instantiates Array2 from TCollection (Pnt2d from gp);
+  class Array2OfVec2d
+    	instantiates Array2 from TCollection (Vec2d from gp);
+  class Array2OfXY
+    	instantiates Array2 from TCollection (XY from gp);
+
+
+    -- Array2 of 3D objects.
+
+  class Array2OfDir
+    	instantiates Array2 from TCollection (Dir from gp);
+  class Array2OfPnt
+    	instantiates Array2 from TCollection (Pnt from gp);
+  class Array2OfVec
+    	instantiates Array2 from TCollection (Vec from gp);
+  class Array2OfXYZ
+    	instantiates Array2 from TCollection (XYZ from gp);
+
+
+    -- HArray1 of 2D objects.
+
+  class HArray1OfCirc2d
+    instantiates HArray1 from TCollection (Circ2d from gp,
+    	    	    	    	    	   Array1OfCirc2d from TColgp);
+  class HArray1OfDir2d
+    	instantiates HArray1 from TCollection (Dir2d from gp,
+    	    	    	    	    	       Array1OfDir2d from TColgp);
+  class HArray1OfLin2d
+    	instantiates HArray1 from TCollection (Lin2d from gp,
+    	    	    	    	    	       Array1OfLin2d from TColgp);
+  class HArray1OfPnt2d
+    	instantiates HArray1 from TCollection (Pnt2d from gp,
+    	    	    	    	    	       Array1OfPnt2d from TColgp);
+  class HArray1OfVec2d
+    	instantiates HArray1 from TCollection (Vec2d from gp,
+    	    	    	    	    	       Array1OfVec2d from TColgp);
+  class HArray1OfXY
+    	instantiates HArray1 from TCollection (XY from gp,
+    	    	    	    	    	       Array1OfXY from TColgp);
+
+
+    -- HArray1 of 3D objects.
+
+  class HArray1OfDir
+    	instantiates HArray1 from TCollection (Dir from gp,
+    	    	    	    	    	       Array1OfDir from TColgp);
+  class HArray1OfPnt
+    	instantiates HArray1 from TCollection (Pnt from gp,
+    	    	    	    	    	       Array1OfPnt from TColgp);
+  class HArray1OfVec
+    	instantiates HArray1 from TCollection (Vec from gp,
+    	    	    	    	    	       Array1OfVec from TColgp);
+  class HArray1OfXYZ
+    	instantiates HArray1 from TCollection (XYZ from gp,
+    	    	    	    	    	       Array1OfXYZ from TColgp);
+
+
+    -- HArray2 of 2D objects.
+
+  class HArray2OfCirc2d
+    	instantiates HArray2 from TCollection (Circ2d from gp,
+    	    	    	    	    	       Array2OfCirc2d from TColgp);
+  class HArray2OfDir2d
+    	instantiates HArray2 from TCollection (Dir2d from gp,
+    	    	    	    	    	       Array2OfDir2d from TColgp);
+  class HArray2OfLin2d
+    	instantiates HArray2 from TCollection (Lin2d from gp,
+    	    	    	    	    	       Array2OfLin2d from TColgp);
+  class HArray2OfPnt2d
+    	instantiates HArray2 from TCollection (Pnt2d from gp,
+    	    	    	    	    	       Array2OfPnt2d from TColgp);
+  class HArray2OfVec2d
+    	instantiates HArray2 from TCollection (Vec2d from gp,
+    	    	    	    	    	       Array2OfVec2d from TColgp);
+  class HArray2OfXY
+    	instantiates HArray2 from TCollection (XY from gp,
+    	    	    	    	    	       Array2OfXY from TColgp);
+
+
+    -- HArray2 of 3D objects.
+
+  class HArray2OfDir
+    	instantiates HArray2 from TCollection (Dir from gp,
+    	    	    	    	    	       Array2OfDir from TColgp);
+  class HArray2OfPnt
+    	instantiates HArray2 from TCollection (Pnt from gp,
+    	    	    	    	    	       Array2OfPnt from TColgp);
+  class HArray2OfVec
+    	instantiates HArray2 from TCollection (Vec from gp,
+    	    	    	    	    	       Array2OfVec from TColgp);
+  class HArray2OfXYZ
+    	instantiates HArray2 from TCollection (XYZ from gp,
+    	    	    	    	    	       Array2OfXYZ from TColgp);
+
+
+    -- Sequences of 3D objects.
+
+  class SequenceOfDir
+    	instantiates Sequence  from TCollection (Dir from gp);
+  class SequenceOfPnt
+    	instantiates Sequence  from TCollection (Pnt from gp);
+  class SequenceOfVec
+    	instantiates Sequence  from TCollection (Vec from gp);
+  class SequenceOfXYZ
+    	instantiates Sequence  from TCollection (XYZ from gp);
+
+
+    -- HSequences of 3D objects.
+
+  class HSequenceOfDir
+    	instantiates HSequence  from TCollection (Dir from gp,
+                                                  SequenceOfDir from TColgp);
+  class HSequenceOfPnt
+    	instantiates HSequence  from TCollection (Pnt from gp,
+                                                  SequenceOfPnt from TColgp);
+
+  class HSequenceOfVec
+    	instantiates HSequence  from TCollection (Vec from gp,
+                                                  SequenceOfVec from TColgp);
+
+  class HSequenceOfXYZ
+    	instantiates HSequence  from TCollection (XYZ from gp,
+                                                  SequenceOfXYZ from TColgp);
+
+
+    -- Sequences of 2D objects.
+
+  class SequenceOfDir2d
+    	instantiates Sequence  from TCollection (Dir2d from gp);
+  class SequenceOfPnt2d
+    	instantiates Sequence  from TCollection (Pnt2d from gp);
+  class SequenceOfVec2d
+    	instantiates Sequence  from TCollection (Vec2d from gp);
+  class SequenceOfXY
+    	instantiates Sequence  from TCollection (XY from gp);
+  class SequenceOfArray1OfPnt2d
+    	instantiates Sequence from TCollection(HArray1OfPnt2d from TColgp);
+
+
+    -- HSequences of 2D objects.
+
+  class HSequenceOfDir2d
+    	instantiates HSequence  from TCollection (Dir2d from gp,
+                                                  SequenceOfDir2d from TColgp);
+  class HSequenceOfPnt2d
+    	instantiates HSequence  from TCollection (Pnt2d from gp,
+                                                  SequenceOfPnt2d from TColgp);
+  class HSequenceOfVec2d
+    	instantiates HSequence  from TCollection (Vec2d from gp,
+                                                  SequenceOfVec2d from TColgp);
+  class HSequenceOfXY
+    	instantiates HSequence  from TCollection (XY from gp,
+                                                  SequenceOfXY from TColgp);
+
+--                    
+--       Instantiations DataMap
+--       
+
+    class DataMapOfIntegerCirc2d  instantiates
+    	DataMap from TCollection(Integer,Circ2d from gp,MapIntegerHasher from TColStd);
+
+end TColgp;

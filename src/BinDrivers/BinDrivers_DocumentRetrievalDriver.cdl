@@ -1,0 +1,38 @@
+-- File:	BinDrivers_DocumentRetrievalDriver.cdl
+-- Created:	Thu Oct 31 10:52:35 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+class DocumentRetrievalDriver from BinDrivers inherits DocumentRetrievalDriver from BinLDrivers
+
+uses
+    MessageDriver    from CDM,
+    ADriverTable     from BinMDF, 
+    Position         from Storage, 
+    IStream          from Standard, 
+    DocumentSection from BinLDrivers 
+    
+is
+    -- ===== Public methods =====
+
+    Create returns mutable DocumentRetrievalDriver from BinDrivers;
+	---Purpose: Constructor
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from BinMDF
+	is redefined virtual;
+
+    ReadShapeSection (me: mutable;
+                      theSection : in out DocumentSection from BinLDrivers;
+                      theIS      : in out IStream from Standard; 
+    	    	      isMess     : Boolean from Standard = Standard_False) is redefined virtual;  
+		       
+    CheckShapeSection (me: mutable;
+                      thePos : Position from Storage;
+                      theIS  : in out IStream from Standard) is redefined virtual; 
+		       
+    PropagateDocumentVersion(me: mutable; theVersion : Integer from Standard) 
+    	is redefined  virtual;		      
+	
+end DocumentRetrievalDriver;

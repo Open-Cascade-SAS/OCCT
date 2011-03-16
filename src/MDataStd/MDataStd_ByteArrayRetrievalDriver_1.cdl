@@ -1,0 +1,37 @@
+-- File:	MDataStd_ByteArrayRetrievalDriver_1.cdl
+-- Created:	Thu Mar 27 17:45:18 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+class ByteArrayRetrievalDriver_1 from MDataStd inherits ARDriver from MDF
+
+	---Purpose: Retrieval  driver of ByteArray attribute supporting 
+	--          delta mechanism by default
+
+uses
+    RRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)
+    returns mutable ByteArrayRetrievalDriver_1 from MDataStd;
+
+    VersionNumber(me) returns Integer from Standard;
+
+    SourceType(me) returns Type from Standard;
+
+    NewEmpty (me) returns mutable Attribute from TDF;
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable from MDF);
+
+
+
+end ByteArrayRetrievalDriver_1;

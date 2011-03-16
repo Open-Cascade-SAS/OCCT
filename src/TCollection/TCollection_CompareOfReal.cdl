@@ -1,0 +1,28 @@
+-- File:	TCollection_CompareOfReal.cdl
+-- Created:	Thu Aug 27 12:27:20 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+class CompareOfReal from TCollection 
+  inherits 
+    PrivCompareOfReal
+
+is
+
+    Create;
+
+    IsLower (me; Left, Right: Real)
+	---Level: Public
+	---Purpose: Returns True if <Left> is lower than <Right>.
+    	returns Boolean
+        is redefined;
+
+    IsGreater (me; Left, Right: Real)
+	---Level: Public
+	---Purpose: Returns True if <Left> is greater than <Right>.
+    	returns Boolean
+	is redefined;
+
+end;

@@ -1,0 +1,116 @@
+-- File:	GeomPlate_BuildAveragePlane.cdl
+-- Created:	Mon Mar 18 15:15:54 1996
+-- Author:	Stagiaire Frederic CALOONE
+--		<cfc@stylox>
+-- Modified:	Wed Mar  5 09:45:42 1997
+--    by:	Joelle CHAUVET
+--              G1134 : convertion of a GeomPlate_Surface to a Geom_BSplineSurface
+--                      by approximation with G0 or G1 criterion
+--                      modification of Create, BasePlan and DefPlan for options
+---Copyright:	 Matra Datavision 1996
+
+class BuildAveragePlane from GeomPlate
+
+    ---Purpose: This class computes an average inertial plane with an
+    --          array of points.
+
+uses
+    Jacobi from math,
+    Matrix from math,
+    Vector from math,
+    Pnt from gp,
+    HArray1OfPnt from TColgp,
+    Plane from Geom,
+    Vec from gp,
+    Line from Geom,
+    
+    SequenceOfVec from TColgp,
+    SequenceOfAij from GeomPlate
+  
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create ( Pts : HArray1OfPnt from TColgp;
+    	     NbBoundPoints : Integer from Standard;
+    	     Tol : Real from Standard;
+             POption : Integer from Standard ;
+             NOption : Integer from Standard )
+    returns BuildAveragePlane from GeomPlate;
+    	---Purpose: Tol is a  Tolerance to make the difference between
+    	--           the result plane and the result line.
+    	--- if POption = 1 : automatical parametrisation
+    	--- if POption = 2 : parametrisation by eigen vectors
+    	--- if NOption = 1 : the average plane is the inertial plane.
+    	--- if NOption = 2 : the average plane is the plane of max. flux.
+     
+    Create ( Normals : SequenceOfVec from TColgp; 
+    	     Pts     : HArray1OfPnt from TColgp )
+    returns BuildAveragePlane from GeomPlate;
+    	---Purpose: Creates the plane from the "best vector"
+	
+     
+    BasePlan ( me : in out ; N :Vec from gp)
+    	---Purpose: Computes a base of the average plane defined by (myG,N)
+    	--- using eigen vectors
+    is private;
+    
+    DefPlan ( me : in out ; NOption : Integer from Standard )
+    	---Purpose: Defines the average plane.
+    	--- if NOption = 1 : the average plane is the inertial plane.
+    	--- if NOption = 2 : the average plane is the plane of max. flux.
+    returns Vec from gp
+    is private;
+    
+    
+    Plane ( me ) returns Plane from Geom
+    	---Purpose:
+    	-- Return the average Plane.
+        raises NoSuchObject from Standard;
+    	-- Raises if the computed object is not a Plane.         
+    
+    Line ( me ) returns Line from Geom
+    	---Purpose :
+    	-- Return a Line when 2 eigenvalues are null.
+    	raises NoSuchObject from Standard;
+    	-- Raises if the computed object is not a Line. 
+
+    IsPlane ( me ) 
+    	---Purpose: return OK if is a plane.
+    returns Boolean from Standard;
+
+
+    IsLine ( me ) 
+    	---Purpose: return OK if is a line.
+    returns Boolean from Standard;
+
+
+    MinMaxBox ( me ; Umin,Umax,Vmin,Vmax : out Real from Standard);
+    	---Purpose: computes the   minimal box  to include  all normal
+    	--          projection points of the initial array  on the plane.
+
+    HalfSpace( myclass  ; NewNormals : SequenceOfVec from TColgp;
+    	    	    	Normals    : in out SequenceOfVec from TColgp;
+			Bset       : in out SequenceOfAij from GeomPlate;
+			LinTol     : Real from Standard;
+			AngTol     : Real from Standard )
+    returns Boolean from Standard;
+    
+fields
+
+    myPts  : HArray1OfPnt from TColgp;
+    myUmax : Real  from Standard;
+    myVmax : Real  from Standard;
+    myVmin : Real  from Standard;
+    myUmin : Real  from Standard;
+    myPlane: Plane from Geom;
+    myTol  : Real  from Standard;
+    myLine : Line  from Geom;
+    myOX   : Vec   from gp;
+    myOY   : Vec   from gp;
+    myG    : Pnt   from gp;
+
+    myNbBoundPoints : Integer from Standard;
+
+end;

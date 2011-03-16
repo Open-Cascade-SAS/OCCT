@@ -1,0 +1,75 @@
+-- File:	EdgeFaceTransition.cdl
+-- Created:	Tue Aug 11 18:17:52 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class EdgeFaceTransition from TopCnx 
+
+	---Purpose: TheEdgeFaceTransition is an algorithm to   compute
+	--          the  cumulated  transition for interferences on an
+	--          edge. 
+
+uses
+
+    Boolean from Standard,
+    Real    from Standard,
+    Integer from Standard,
+    
+    Pnt from gp,
+    Dir from gp,
+    
+    State from TopAbs,
+    Orientation from TopAbs,
+
+    CurveTransition from TopTrans
+
+is
+    Create returns EdgeFaceTransition from TopCnx;
+	---Purpose: Creates an empty algorithm.
+
+    Reset( me   : in out;
+    	   Tgt  : Dir from gp;        -- Tangent at this point      
+    	   Norm : Dir from gp;        -- Normal vector at this point
+    	   Curv : Real from Standard) -- Curvature at this point     
+	---Purpose: Initialize  the     algorithm    with the    local
+	--          description of the edge.
+    is static;
+
+    Reset( me   : in out;
+    	   Tgt  : in Dir from gp)        -- Tangent at this point      
+	---Purpose: Initialize the algorithm with a linear Edge.
+    is static;
+    
+    AddInterference(me : in out;
+    	    Tole : Real from Standard;      -- Cosine tolerance
+    	    Tang : Dir from gp;             -- Tangent on curve for this point
+   	    Norm : Dir from gp;             -- Normal vector at this point
+    	    Curv : Real from Standard;      -- Curvature at this point    
+    	    Or   : Orientation from TopAbs; -- Orientation on the curve 
+	    Tr   : Orientation from TopAbs; -- Transition
+	    BTr  : Orientation from TopAbs) -- Boundary transition	    
+	---Purpose: Add a curve  element to the  boundary.  Or  is the
+	--          orientation of   the interference on  the boundary
+	--          curve. Tr is  the transition  of the interference.
+	--          BTr     is   the    boundary  transition    of the
+	--          interference.
+    is static;
+    
+    Transition(me) returns Orientation from TopAbs
+	---Purpose: Returns the current cumulated transition.
+    is static;
+    
+    BoundaryTransition(me) returns Orientation from TopAbs
+	---Purpose: Returns the current cumulated BoundaryTransition.
+    is static;
+
+fields
+    myCurveTransition : CurveTransition from TopTrans;
+    nbBoundForward    : Integer from Standard;
+    nbBoundReversed   : Integer from Standard;
+
+end EdgeFaceTransition;

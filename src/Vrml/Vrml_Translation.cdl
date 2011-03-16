@@ -1,0 +1,38 @@
+-- File:	Vrml_Translation.cdl
+-- Created:	Wed Feb 12 10:33:34 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Translation from Vrml 
+
+	---Purpose:  defines a Translation of VRML specifying transform
+	---          properties.
+    	--  This  node  defines  a  translation  by  3D  vector. 
+    	--  By  default  : 
+	--    myTranslation (0,0,0) 
+
+uses
+ 
+    Vec  from  gp
+
+is
+ 
+    Create returns  Translation from Vrml; 
+ 
+    Create  ( aTranslation  :  Vec  from  gp ) 
+    	returns  Translation from Vrml; 
+
+    SetTranslation ( me : in out;  aTranslation : Vec  from  gp );
+    Translation ( me )  returns Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myTranslation  :  Vec  from  gp;  -- Translation vector
+
+end Translation;
+

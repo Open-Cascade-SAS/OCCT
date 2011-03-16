@@ -1,0 +1,36 @@
+-- File:	PXCAFDoc_Datum.cdl
+-- Created:	Wed Dec 10 09:50:52 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class Datum from PXCAFDoc inherits  Attribute from PDF
+
+	---Purpose: 
+uses
+    HAsciiString  from PCollection
+is
+    Create returns mutable Datum from PXCAFDoc;
+
+    Create (theName : HAsciiString from PCollection;
+    	    theDescr: HAsciiString from PCollection;
+            theId   : HAsciiString from PCollection)
+    returns mutable Datum from PXCAFDoc;
+    
+    GetName (me) returns HAsciiString from PCollection;
+
+    GetDescription (me) returns HAsciiString from PCollection;
+
+    GetIdentification (me) returns HAsciiString from PCollection;
+    
+    Set (me : mutable; theName : HAsciiString from PCollection;
+    	    	       theDescr: HAsciiString from PCollection;
+    	    	       theId   : HAsciiString from PCollection);
+    
+fields
+
+    myName : HAsciiString from PCollection;
+    myDescr: HAsciiString from PCollection;
+    myId   : HAsciiString from PCollection;
+
+end Datum from PXCAFDoc;

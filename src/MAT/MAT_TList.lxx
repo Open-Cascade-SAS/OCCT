@@ -1,0 +1,35 @@
+// File:	MAT_TList.lxx
+// Created:	Wed Jun 24 12:47:58 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+//=======================================================================
+//function : Number
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer MAT_TList::Number() const
+{
+  return thenumberofitems;
+}
+
+//=======================================================================
+//function : Index
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer MAT_TList::Index() const
+{
+  return thecurrentindex;
+}
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean MAT_TList::IsEmpty() const
+{
+  return thenumberofitems == 0;
+}

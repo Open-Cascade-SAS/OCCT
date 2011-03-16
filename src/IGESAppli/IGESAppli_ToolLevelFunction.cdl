@@ -1,0 +1,63 @@
+-- File:	IGESAppli_ToolLevelFunction.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolLevelFunction  from IGESAppli
+
+    ---Purpose : Tool to work on a LevelFunction. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses LevelFunction from IGESAppli,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolLevelFunction;
+    ---Purpose : Returns a ToolLevelFunction, ready to work
+
+
+    ReadOwnParams (me; ent : mutable LevelFunction;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : LevelFunction;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : LevelFunction;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a LevelFunction <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable LevelFunction) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a LevelFunction
+    --           (NbPropertyValues forced to 2)
+
+    DirChecker (me; ent : LevelFunction) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : LevelFunction;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : LevelFunction; entto : mutable LevelFunction;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : LevelFunction;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolLevelFunction;

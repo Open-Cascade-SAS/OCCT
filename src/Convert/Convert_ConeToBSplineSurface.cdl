@@ -1,0 +1,53 @@
+-- File:	 ConeToBSplineSurface.cdl
+-- Created: 	 Thu Oct 10 15:39:30 1991
+-- Author: 	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+class ConeToBSplineSurface  from Convert
+
+        --- Purpose :
+        --  This algorithm converts a bounded Cone into a rational 
+        --  B-spline  surface.
+        --  The cone a Cone from package gp. Its parametrization is :
+        --  P (U, V) =  Loc + V * Zdir +
+        --              (R + V*Tan(Ang)) * (Cos(U)*Xdir + Sin(U)*Ydir)
+        --  where Loc is the location point of the cone, Xdir, Ydir and Zdir
+        --  are the normalized directions of the local cartesian coordinate
+        --  system of the cone (Zdir is the direction of the Cone's axis) ,
+        --  Ang is the cone semi-angle.  The U parametrization range is
+        --  [0, 2PI].
+        --- KeyWords :
+        --  Convert, Cone, BSplineSurface.
+
+inherits ElementarySurfaceToBSplineSurface
+
+uses Cone from gp
+
+raises DomainError from Standard
+
+is
+
+  Create (C : Cone; U1, U2, V1, V2 : Real)  returns ConeToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-spline surface as the same orientation as the 
+       --  Cone in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
+        --  Raised if V1 = V2.
+
+
+  Create (C : Cone; V1, V2 : Real)          returns ConeToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-spline surface as the same orientation as the
+       --  Cone in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if V1 = V2.
+
+
+
+end ConeToBSplineSurface;
+
+
+

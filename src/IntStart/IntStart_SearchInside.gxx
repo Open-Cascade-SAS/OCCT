@@ -1,0 +1,253 @@
+//-- File IntStart_SearchInside.gxx
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+
+#include <math_FunctionSetRoot.hxx>
+#include <Precision.hxx>
+#include <gp_Pnt2d.hxx>
+
+#include <TopAbs_State.hxx>
+
+IntStart_SearchInside::IntStart_SearchInside (): done(Standard_False)
+{}
+
+IntStart_SearchInside::IntStart_SearchInside (TheFunction& Func,
+                                              const ThePSurface& PS,
+					      const Handle(TheTopolTool)& T,
+					      const Standard_Real Epsilon) {
+
+  Perform(Func,PS,T,Epsilon);
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : Search all inside points
+//=======================================================================
+
+void IntStart_SearchInside::Perform (TheFunction& Func,
+				     const ThePSurface& PS,
+				     const Handle(TheTopolTool)& T,
+				     const Standard_Real Epsilon) {
+
+  done = Standard_False;
+  list.Clear();
+  static math_Vector Binf(1,2), Bsup(1,2), UVap(1,2),toler(1,2);
+  gp_Pnt psol;
+  Standard_Boolean testpnt;
+  Standard_Integer i,j,nbpt;
+  TopAbs_State situ;
+  Standard_Real umin,umax,vmin,vmax;
+  Binf(1) = umin = ThePSurfaceTool::FirstUParameter(PS);
+  Binf(2) = vmin = ThePSurfaceTool::FirstVParameter(PS);
+  Bsup(1) = umax = ThePSurfaceTool::LastUParameter(PS);
+  Bsup(2) = vmax = ThePSurfaceTool::LastVParameter(PS);
+  
+  Standard_Integer NbsampleU= T->NbSamplesU();
+  Standard_Integer NbsampleV= T->NbSamplesV();
+  Standard_Integer Nbsample = T->NbSamples();
+  
+  Standard_Real du = Bsup(1)-Binf(1);
+  Standard_Real dv = Bsup(2)-Binf(2);  
+  du/=(Standard_Real)NbsampleU*0.5;
+  dv/=(Standard_Real)NbsampleV*0.5;
+  
+  Standard_Real toler1 = toler(1) = ThePSurfaceTool::UResolution(PS,Precision::Confusion());
+  Standard_Real toler2 = toler(2) = ThePSurfaceTool::VResolution(PS,Precision::Confusion());
+  Standard_Real Maxtoler1toler2 = toler1;
+  if(toler2>Maxtoler1toler2) Maxtoler1toler2 = toler2;
+
+  //-- lbr le 15 mai 97
+  //-- on interdit aux points d'etre trop prets des restrictions 
+  Maxtoler1toler2*=1000;
+  if(Maxtoler1toler2>du*0.001) Maxtoler1toler2=du*0.001;
+  if(Maxtoler1toler2>dv*0.001) Maxtoler1toler2=dv*0.001;
+  
+  
+  Func.Set(PS);
+  Standard_Real Tol = Func.Tolerance();
+
+  math_FunctionSetRoot Rsnld(Func,toler);
+
+  Standard_Integer REJET_OK=0;
+  Standard_Integer REJET_KO=0;
+
+  //-- lbr le 15 mai 97 
+  umin+=du*0.01;
+  vmin+=dv*0.01;
+  umax-=du*0.01;
+  vmax-=dv*0.01;
+
+  //-- lbr le 30 octobre 97 : 
+  //-- Si une surface vient tangenter 2 edges proche d un coin
+  //-- il faut faire attention qu un point de depart soit trouve au 
+  //-- voisinage du coin. Car ds le cas contraire, le cheminement ne
+  //-- pourra pas passer au travers des frontieres : 
+  //--
+  //-- typiquement I est un cylindre (conge)
+  //--
+  //--                 PPPPPPPPPPPPPPPPPPPP*PPPPPPPPPPPPPPPP
+  //--                 P               I     I
+  //--                 P           I           I
+  //--                 P        I
+  //--                 P      #  il faut trouver un point ici
+  //--                 P    I
+  //--                 P  I
+  //--                 PI
+  //--                 *                    I
+  //--                 PI                 I 
+  //--                 P  I I I I I I I I
+  //--
+
+  
+  for (i=1; i <= Nbsample+12; i++) {
+    gp_Pnt2d s2d;
+    gp_Pnt s3d;
+    Standard_Boolean nepastester=Standard_False;
+    if(i<=Nbsample) { 
+      T->SamplePoint(i,s2d,s3d);      
+      UVap(1)=s2d.X(); UVap(2)=s2d.Y();
+      
+      Standard_Real u1,v1,u2,v2;
+      u1 = Binf(1) = Max(umin,UVap(1)-du);
+      v1 = Binf(2) = Max(vmin,UVap(2)-dv);
+      u2 = Bsup(1) = Min(umax,UVap(1)+du);
+      v2 = Bsup(2) = Min(vmax,UVap(2)+dv);
+      
+      
+      //-- gp_Pnt Pmilieu = ThePSurfaceTool::Value(PS,0.5*(u1+u2),0.5*(v1+v2));
+      gp_Pnt Pextrm1 = ThePSurfaceTool::Value(PS,u1,v1);
+      gp_Pnt Pextrm2 = ThePSurfaceTool::Value(PS,u2,v2);
+      static math_Vector Valf(1,1);
+      Func.Value(UVap,Valf);
+      Standard_Real rvalf = Valf(1);
+      Standard_Real DistPP = Pextrm1.SquareDistance(Pextrm2);
+      if(rvalf*rvalf > 3.0*DistPP) { 
+	REJET_OK++;
+	nepastester=Standard_True;
+      }      
+    }
+    else { 
+                 if(i==Nbsample+1) { s2d.SetCoord(umin+du*0.02,vmin+dv*0.02); }
+      else       if(i==Nbsample+2) { s2d.SetCoord(umax-du*0.02,vmin+dv*0.02);  }
+      else       if(i==Nbsample+3) { s2d.SetCoord(umin+du*0.02,vmax-dv*0.02); }
+      else       if(i==Nbsample+4) { s2d.SetCoord(umax-du*0.02,vmax-dv*0.02);  }
+
+      else       if(i==Nbsample+5) { s2d.SetCoord(umin+du*0.02,vmin+dv*0.02); }
+      else       if(i==Nbsample+6) { s2d.SetCoord(umax-du*0.02,vmin+dv*0.02);  }
+      else       if(i==Nbsample+7) { s2d.SetCoord(umin+du*0.02,vmax-dv*0.02); }
+      else       if(i==Nbsample+8) { s2d.SetCoord(umax-du*0.02,vmax-dv*0.02);  }
+
+      else       if(i==Nbsample+9) { s2d.SetCoord(umin+du*0.005,vmin+dv*0.005); }
+      else       if(i==Nbsample+10){ s2d.SetCoord(umax-du*0.005,vmin+dv*0.005);  }
+      else       if(i==Nbsample+11){ s2d.SetCoord(umin+du*0.005,vmax-dv*0.005); }
+      else                         { s2d.SetCoord(umax-du*0.005,vmax-dv*0.005);  }
+
+      UVap(1)=s2d.X(); UVap(2)=s2d.Y();
+
+      Binf(1) = Max(umin,UVap(1)-du);
+      Binf(2) = Max(vmin,UVap(2)-dv);
+      Bsup(1) = Min(umax,UVap(1)+du);
+      Bsup(2) = Min(vmax,UVap(2)+dv);      
+    }
+    
+
+    if(nepastester==Standard_False) { 
+      REJET_KO++;
+      Rsnld.Perform(Func,UVap,Binf,Bsup);
+      if (Rsnld.IsDone()) {
+	if (Abs(Func.Root()) <= Tol) {
+	  if (!Func.IsTangent()) {
+	    psol = Func.Point();
+	    Rsnld.Root(UVap);
+	    // On regarde si le point trouve est bien un nouveau point.	  
+	    j = 1;
+	    nbpt = list.Length();
+	    testpnt = (j <= nbpt);
+	    
+	    while (testpnt) {
+	      const IntSurf_InteriorPoint&  IPj = list(j);
+	      const gp_Pnt& Pj = IPj.Value();
+	      if (   (Abs(Pj.X()-psol.X()) <= Epsilon)
+		  && (Abs(Pj.Y()-psol.Y()) <= Epsilon)
+		  && (Abs(Pj.Z()-psol.Z()) <= Epsilon)
+		  && (Abs(UVap(1)-IPj.UParameter()) <= toler1)
+		  && (Abs(UVap(2)-IPj.VParameter()) <= toler2) ) {
+		testpnt = Standard_False;
+	      }
+	      else {
+		j = j+1;
+		testpnt = (j <= nbpt);
+	      }
+	    }
+	    if (j > nbpt) {
+	      //	    situ = TheSITool::Classify(PS,UVap(1),UVap(2));
+	      situ = T->Classify(gp_Pnt2d(UVap(1),UVap(2)),
+				 Maxtoler1toler2,Standard_False);   //-- ,Standard_False pour ne pas recadrer on Periodic
+	      if (situ == TopAbs_IN) {
+		list.Append(IntSurf_InteriorPoint(psol,UVap(1),UVap(2),
+						  Func.Direction3d(),
+						  Func.Direction2d()));
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+  //-- printf("\n Total : %d    Rejet : %d   RatioPointCalc : %g   nbpt =%d\n",REJET_OK+REJET_KO,REJET_OK,(double)(REJET_KO)/(double)(REJET_OK+REJET_KO),list.Length());
+  done = Standard_True;
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : Test the given inside point
+//=======================================================================
+
+void IntStart_SearchInside::Perform (TheFunction& Func,
+				     const ThePSurface& PS,
+				     const Standard_Real UStart,
+				     const Standard_Real VStart)
+{
+  done = Standard_False;
+  list.Clear();
+  math_Vector Binf(1,2), Bsup(1,2), toler(1,2);
+
+  Binf(1) = ThePSurfaceTool::FirstUParameter(PS);
+  Binf(2) = ThePSurfaceTool::FirstVParameter(PS);
+  Bsup(1) = ThePSurfaceTool::LastUParameter(PS);
+  Bsup(2) = ThePSurfaceTool::LastVParameter(PS);
+
+  toler(1) = ThePSurfaceTool::UResolution(PS,Precision::Confusion());
+  toler(2) = ThePSurfaceTool::VResolution(PS,Precision::Confusion());
+
+  if (UStart-Binf(1) > -toler(1) && UStart-Bsup(1) < toler(1) &&
+      VStart-Binf(2) > -toler(2) && VStart-Bsup(2) < toler(2)) {
+
+    Func.Set(PS);
+    math_Vector UVap(1,2);
+    UVap(1)=UStart; UVap(2)=VStart;
+
+    math_FunctionSetRoot Rsnld(Func,toler);
+    Rsnld.Perform(Func,UVap,Binf,Bsup);
+    if (Rsnld.IsDone()) {
+      Standard_Real tol = Func.Tolerance();
+      Standard_Real valf = Func.Root();
+      if (Abs(valf) <= tol && !Func.IsTangent()) {
+	const gp_Pnt& psol = Func.Point();
+	Rsnld.Root(UVap);
+	IntSurf_InteriorPoint intp (psol,UVap(1),UVap(2),
+				    Func.Direction3d(),Func.Direction2d());
+	list.Append(intp);
+      }
+    }
+  }
+
+  done = Standard_True;
+}

@@ -1,0 +1,107 @@
+--
+-- File      :  CurveDimension.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CurveDimension from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines CurveDimension, Type <204> Form <0>
+        --          in package IGESDimen
+        --          Used to dimension curves
+        --          Consists of one tail segment of nonzero length
+        --          beginning with an arrowhead and which serves to define
+        --          the orientation
+
+uses
+
+        GeneralNote     from IGESDimen,
+        LeaderArrow     from IGESDimen,
+        WitnessLine     from IGESDimen
+
+is
+
+        Create returns mutable CurveDimension;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable;
+              aNote         : GeneralNote;
+              aCurve        : IGESEntity;
+              anotherCurve  : IGESEntity;
+              aLeader       : LeaderArrow;
+              anotherLeader : LeaderArrow;
+              aLine         : WitnessLine;
+              anotherLine   : WitnessLine);
+        ---Purpose : This method is used to set the fields of the class
+        --           CurveDimension
+        --       - aNote         : General Note Entity
+        --       - aCurve        : First Curve Entity
+        --       - anotherCurve  : Second Curve Entity or a Null Handle
+        --       - aLeader       : First Leader Entity
+        --       - anotherLeader : Second Leader Entity
+        --       - aLine         : First Witness Line Entity or a Null
+        --                         Handle
+        --       - anotherLine   : Second Witness Line Entity or a Null
+        --                         Handle
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns the General Note Entity
+
+        FirstCurve (me) returns IGESEntity;
+        ---Purpose : returns the First curve Entity
+
+        HasSecondCurve (me) returns Boolean;
+        ---Purpose : returns False if theSecondCurve is a Null Handle.
+
+        SecondCurve (me) returns IGESEntity;
+        ---Purpose : returns the Second curve Entity or a Null Handle.
+
+        FirstLeader (me) returns LeaderArrow;
+        ---Purpose : returns the First Leader Entity
+
+        SecondLeader (me) returns LeaderArrow;
+        ---Purpose : returns the Second Leader Entity
+
+        HasFirstWitnessLine (me) returns Boolean;
+        ---Purpose : returns False if theFirstWitnessLine is a Null Handle.
+
+        FirstWitnessLine (me) returns WitnessLine;
+        ---Purpose : returns the First Witness Line Entity or a Null Handle.
+
+        HasSecondWitnessLine (me) returns Boolean;
+        ---Purpose : returns False if theSecondWitnessLine is a Null Handle.
+
+        SecondWitnessLine (me) returns WitnessLine;
+        ---Purpose : returns the Second Witness Line Entity or a Null Handle.
+
+fields
+
+--
+-- Class    : IGESDimen_CurveDimension
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CurveDimension.
+--
+-- Reminder : A CurveDimension instance is defined by :
+--            - General Note Entity
+--            - First Curve Entity
+--            - Second Curve Entity or a Null Handle.
+--            - First Leader Entity
+--            - Second Leader Entity
+--            - First Witness Line Entity or a Null Handle.
+--            - Second Witness Line Entity or a Null Handle.
+-- A CurveDimension Entity consists of a general note, one or two
+-- parametrized curves, two leaders, and zero, one, or two witness lines.
+
+        theNote              : GeneralNote;
+        theFirstCurve        : IGESEntity;
+        theSecondCurve       : IGESEntity;
+        theFirstLeader       : LeaderArrow;
+        theSecondLeader      : LeaderArrow;
+        theFirstWitnessLine  : WitnessLine;
+        theSecondWitnessLine : WitnessLine;
+
+end CurveDimension;

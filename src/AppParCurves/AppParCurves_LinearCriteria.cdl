@@ -1,0 +1,132 @@
+-- File:	AppParCurves_LinearCriteria.cdl
+-- Created:	Thu Sep 11 18:06:06 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+generic class LinearCriteria from AppParCurves   
+                    (MultiLine   as any;
+    	    	     ToolLine    as any)   -- as ToolLine(MultiLine) 
+inherits  SmoothCriterion  from AppParCurves
+
+	---Purpose: defined an Linear Criteria to used in variational
+	--          Smoothing of points.
+                             
+
+uses
+   Vector  from  math, 
+   Matrix  from  math, 
+   Curve   from  FEmTool, 
+   HAssemblyTable    from  FEmTool, 
+   ElementaryCriterion  from  FEmTool,   
+   HArray2OfInteger  from TColStd, 
+   HArray1OfReal    from TColStd,
+   Array1OfReal    from TColStd 
+   
+raises 
+  NotImplemented,   
+  DomainError 
+   
+ 
+
+is 
+    Create(SSP: MultiLine; 
+    	   FirstPoint, LastPoint: Integer)  returns  LinearCriteria;
+
+    SetParameters(me  :  mutable;  Parameters  : HArray1OfReal); 
+
+    SetCurve(me  :  mutable;  C  :Curve from FEmTool) 
+    is  static; 
+     
+    GetCurve(me;  C  :  out  Curve  from FEmTool) 
+    is  static; 
+     
+    SetEstimation(me  :  mutable;  E1,  E2,  E3  :  Real)   
+    is  static; 
+
+    EstLength(me  :  mutable)   
+    ---C++: return &
+    returns  Real  is  static;      
+      
+    GetEstimation(me;  E1,  E2,  E3  : out Real)   
+    is  static; 
+     
+    AssemblyTable(me)  
+    returns HAssemblyTable  from  FEmTool   
+    is  static; 
+     
+    DependenceTable(me)  
+    returns  HArray2OfInteger  from TColStd   
+    is  static;  
+    
+     
+    QualityValues  (me : mutable; J1min,  J2min,  J3min  :  Real; 
+    	    	    	    	  J1,  J2,  J3  :  out  Real) 
+				 returns  Integer  is  static; 
+
+    ErrorValues(me  :  mutable;   
+                MaxError,  QuadraticError,  AverageError  :  out  Real) 
+    is  static;
+     
+    Hessian(me  :  mutable ;  
+            Element    :  Integer; 
+	    Dimension1  :  Integer; 
+	    Dimension2  :  Integer;
+            H  :  out  Matrix  from  math)  
+     raises  DomainError -- If DependenceTable(Dimension1,Dimension2) is False 
+     is  static;  
+   
+    
+    Gradient(me  :  mutable;  
+             Element  :  Integer; 
+	     Dimension  :  Integer;
+             G  :  out  Vector  from  math) 
+    is  static; 
+    
+    InputVector(me  :  mutable;  X : Vector from math;   
+                                 AssTable : HAssemblyTable  from  FEmTool)  
+    ---Purpose: Convert the assembly Vector in an Curve;
+    --          
+    raises  DomainError; 
+     
+    SetWeight(me:  mutable;  
+              QuadraticWeight,  QualityWeight  :  Real; 
+	      percentJ1,  percentJ2,  percentJ3  :  Real) 
+    is  static; 
+     
+    GetWeight(me;  QuadraticWeight,  QualityWeight  :  out  Real)  
+    is  static;  
+    
+    SetWeight(me:  mutable;  
+              Weight  :  Array1OfReal)
+    is  static; 
+     
+    BuildCache(me:  mutable;  E  :  Integer)  is  private;
+          
+fields
+mySSP         :  MultiLine; 
+myParameters  :  HArray1OfReal; 
+myCache     :    HArray1OfReal;
+myCriteria  :  ElementaryCriterion  from  FEmTool[3]; 
+myEstimation:  Real[3];  
+myQuadraticWeight,  myQualityWeight  :  Real; 
+myPercent   :  Real[3]; 
+myPntWeight :  Array1OfReal;
+myCurve     :  Curve  from  FEmTool; 
+myLength    :  Real;  
+myE         :  Integer; 
+IF,  IL     :  Integer;
+end LinearCriteria;
+
+
+
+
+
+
+
+
+
+
+
+

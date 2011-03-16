@@ -1,0 +1,47 @@
+-- File:	IGESData_SpecificModule.cdl
+-- Created:	Tue Sep  7 11:14:37 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class SpecificModule  from IGESData  inherits Transient
+
+    ---Purpose : This class defines some Services which are specifically
+    --           attached to IGES Entities : Dump
+
+uses IGESEntity, IGESDumper,
+     Messenger from Message
+
+is
+
+    OwnDump (me; CN : Integer; ent : IGESEntity;
+    	      dumper : IGESDumper;  S : Messenger from Message; own : Integer)
+	is deferred;
+    ---Purpose : Specific Dump for each type of IGES Entity : it concerns only
+    --           own parameters, the general data (Directory Part, Lists) are
+    --           taken into account by the IGESDumper
+    --           See class IGESDumper for the rules to follow for <own> and
+    --           <attached> level
+
+    OwnCorrect (me; CN : Integer; ent : mutable IGESEntity)
+    	returns Boolean  is virtual;
+    ---Purpose : Specific Automatic Correction on own Parameters of an Entity.
+    --           It works by setting in accordance redundant data, if there are
+    --           when there is no ambiguity (else, it does nothing).
+    --           Remark that classic Corrections on Directory Entry (to set
+    --           void data) are taken into account alsewhere.
+    --           
+    --           For instance, many "Associativity Entities" have a Number of
+    --           Properties which must have a fixed value.
+    --           Or, a ConicalArc has its Form Number which records the kind of
+    --           Conic, also determined from its coefficients
+    --           But, a CircularArc of which Distances (Center-Start) and
+    --           (Center-End) are not equal cannot be corrected ...
+    --           
+    --           Returns True if something has been corrected in <ent>
+    --           By default, does nothing. If at least one of the Types
+    --           processed by a sub-class of SpecificModule has a Correct
+    --           procedure attached, this method can be redefined
+
+end SpecificModule;

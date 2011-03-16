@@ -1,0 +1,328 @@
+-- File:	Geom2d_Hyperbola.cdl
+-- Created:	Wed Mar 24 18:06:32 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991, 1992
+
+
+class Hyperbola from Geom2d inherits Conic from Geom2d 
+
+    	--- Purpose : Describes a branch of a hyperbola in the plane (2D space).
+    	-- A hyperbola is defined by its major and minor radii
+    	-- and, as with any conic curve, is positioned in the
+    	-- plane with a coordinate system (gp_Ax22d object) where:
+    	-- - the origin is the center of the hyperbola,
+    	-- - the "X Direction" defines the major axis, and
+    	-- - the "Y Direction" defines the minor axis.
+    	--   This coordinate system is the local coordinate
+    	-- system of the hyperbola.
+    	-- The branch of the hyperbola described is the one
+    	-- located on the positive side of the major axis.
+    	-- The orientation (direct or indirect) of the local
+    	-- coordinate system gives an explicit orientation to the
+    	-- hyperbola, determining the direction in which the
+    	-- parameter increases along the hyperbola.
+    	-- The Geom2d_Hyperbola hyperbola is parameterized as follows:
+    	-- P(U) = O + MajRad*Cosh(U)*XDir + MinRad*Sinh(U)*YDir
+    	-- where:
+    	-- - P is the point of parameter U,
+    	-- - O, XDir and YDir are respectively the origin, "X
+    	--   Direction" and "Y Direction" of its local coordinate system,
+    	-- - MajRad and MinRad are the major and minor radii of the hyperbola.
+    	-- The "X Axis" of the local coordinate system therefore
+    	-- defines the origin of the parameter of the hyperbola.
+    	-- The parameter range is ] -infinite,+infinite [.
+    	-- The following diagram illustrates the respective
+    	-- positions, in the plane of the hyperbola, of the three
+    	-- branches of hyperbolas constructed using the
+    	-- functions OtherBranch, ConjugateBranch1 and
+    	-- ConjugateBranch2:
+    	--                 ^YAxis
+    	--                 |
+    	--           FirstConjugateBranch
+    	--                 |
+    	--     Other         |          Main
+    	-- --------------------- C
+    	-- --------------------->XAxis
+    	--     Branch       |         
+    	-- Branch
+    	--                 |
+    	--           SecondConjugateBranch
+    	--                 |
+    	-- Warning
+    	-- The value of the major radius (on the major axis) can
+    	-- be less than the value of the minor radius (on the minor axis).
+    	-- See Also
+    	-- GCE2d_MakeHyperbola which provides functions for
+    	-- more complex hyperbola constructions
+    	-- gp_Ax22d
+    	-- gp_Hypr2d for an equivalent, non-parameterized data structure
+	
+
+uses Ax2d     from gp,
+     Ax22d    from gp,
+     Hypr2d   from gp, 
+     Pnt2d    from gp, 
+     Trsf2d   from gp, 
+     Vec2d    from gp,
+     Geometry from Geom2d
+
+
+raises ConstructionError from Standard, 
+       DomainError       from Standard,
+       RangeError        from Standard
+
+
+is
+
+  Create (H : Hypr2d)   returns mutable Hyperbola;
+        --- Purpose : Creates  an Hyperbola from a non persistent one from package gp
+
+
+  Create (MajorAxis : Ax2d; MajorRadius, MinorRadius : Real;
+          Sense: Boolean from Standard = Standard_True)
+     returns mutable Hyperbola
+	--- Purpose :
+	--  MajorAxis is the "XAxis" of the hyperbola.
+	--  The YAxis is in the direct sense if "Sense" is True;
+        --  The major radius of the hyperbola is on this "XAxis" and 
+        --  the minor radius is on the "YAxis" of the hyperbola.
+     raises ConstructionError;
+	--- Purpose : Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
+
+  Create (Axis : Ax22d; MajorRadius, MinorRadius : Real)
+     returns mutable Hyperbola
+	--- Purpose :
+	--  The XDirection of "Axis" is the "XAxis" of the hyperbola and 
+	--  the YDirection of "Axis" is the "YAxis".
+        --  The major radius of the hyperbola is on this "XAxis" and 
+        --  the minor radius is on the "YAxis" of the hyperbola.
+     raises ConstructionError;
+	--- Purpose : Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
+
+
+
+  SetHypr2d (me : mutable; H : Hypr2d);
+    	--- Purpose: Converts the gp_Hypr2d hyperbola H into this hyperbola.
+
+
+
+  SetMajorRadius (me : mutable; MajorRadius : Real)
+     raises ConstructionError;
+	---Purpose : Assigns a value to the major or minor radius of this hyperbola.
+    	--  Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - MajorRadius is less than 0.0,
+    	-- - MinorRadius is less than 0.0.
+
+  SetMinorRadius (me : mutable; MinorRadius : Real)
+     raises ConstructionError;
+	--- Purpose : Assigns a value to the major or minor radius of this hyperbola.
+    	--  Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - MajorRadius is less than 0.0,
+    	-- - MinorRadius is less than 0.0.
+
+  Hypr2d (me)  returns Hypr2d;
+        --- Purpose : Converts this hyperbola into a gp_Hypr2d one.
+      
+
+
+  ReversedParameter(me; U : Real) returns Real is redefined static;
+	---Purpose: Computes the parameter on the reversed hyperbola,
+    	-- for the point of parameter U on this hyperbola.
+    	-- For a hyperbola, the returned value is -U.
+
+
+  FirstParameter (me)   returns Real is redefined static;
+        --- Purpose : Returns RealFirst from Standard.
+
+
+  LastParameter (me)   returns Real is redefined static;
+        --- Purpose : returns RealLast from Standard.
+
+
+  IsClosed (me)   returns Boolean is redefined static;
+        --- Purpose : Returns False.
+
+
+  IsPeriodic (me)   returns Boolean is redefined static;
+        --- Purpose : return False for an hyperbola.
+
+
+  Asymptote1 (me)  returns Ax2d
+	--- Purpose :
+	--  In the local coordinate system of the hyperbola the 
+	--  equation of the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0
+	--  and the equation of the first asymptote is Y = (B/A)*X
+	--  where A is the major radius of the hyperbola and B is the
+	--  minor radius of the hyperbola.
+     raises ConstructionError;
+        --- Purpose : Raised if MajorRadius = 0.0
+
+
+  Asymptote2 (me)    returns Ax2d
+	--- Purpose :
+	--  In the local coordinate system of the hyperbola the 
+	--  equation of the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0
+	--  and the equation of the first asymptote is Y = -(B/A)*X.
+	--  where A is the major radius of the hyperbola and B is the
+	--  minor radius of the hyperbola.
+     raises ConstructionError;
+        --- Purpose : raised if MajorRadius = 0.0
+
+
+  ConjugateBranch1 (me)   returns Hypr2d;
+	--- Purpose : Computes the first conjugate branch relative to this hyperbola.
+    	-- Note: The diagram given under the class purpose
+    	-- indicates where these two branches of hyperbola are
+    	-- positioned in relation to this branch of hyperbola.
+	
+  ConjugateBranch2 (me)  returns Hypr2d;
+	--- Purpose : Computes the second conjugate branch relative to this hyperbola.
+    	-- Note: The diagram given under the class purpose
+    	-- indicates where these two branches of hyperbola are
+    	-- positioned in relation to this branch of hyperbola.
+	
+
+  Directrix1 (me)   returns Ax2d;
+        --- Purpose :
+        --  This directrix is the line normal to the XAxis of the hyperbola
+        --  in the local plane (Z = 0) at a distance d = MajorRadius / e 
+        --  from the center of the hyperbola, where e is the eccentricity of
+        --  the hyperbola.
+        --  This line is parallel to the "YAxis". The intersection point
+        --  between directrix1 and the "XAxis" is the location point of the
+        --  directrix1. This point is on the positive side of the "XAxis".
+
+
+  Directrix2 (me)   returns Ax2d;
+        --- Purpose :
+        --  This line is obtained by the symmetrical transformation 
+        --  of "Directrix1" with respect to the "YAxis" of the hyperbola.
+
+
+  Eccentricity (me)   returns Real
+	--- Purpose :
+	--  Returns the excentricity of the hyperbola (e > 1).
+	--  If f is the distance between the location of the hyperbola
+	--  and the Focus1 then the eccentricity e = f / MajorRadius.
+     raises DomainError is redefined static;
+        --- Purpose : raised if MajorRadius = 0.0
+
+
+  Focal (me)   returns Real;
+	--- Purpose :
+	--  Computes the focal distance. It is the distance between the
+        --  two focus of the hyperbola.
+
+
+  Focus1 (me)   returns Pnt2d;
+	--- Purpose :
+	--  Returns the first focus of the hyperbola. This focus is on the
+        --  positive side of the "XAxis" of the hyperbola.
+
+
+  Focus2 (me)  returns Pnt2d;
+        --- Purpose :
+	--  Returns the second focus of the hyperbola. This focus is on the
+        --  negative side of the "XAxis" of the hyperbola.
+
+
+  MajorRadius (me)  returns Real;
+    	---Purpose: Returns the major or minor radius of this hyperbola.
+    	-- The major radius is also the distance between the
+    	-- center of the hyperbola and the apex of the main
+    	-- branch (located on the "X Axis" of the hyperbola).
+ 
+
+  MinorRadius (me)  returns Real;
+    	---Purpose: Returns the major or minor radius of this hyperbola.
+    	-- The minor radius is also the distance between the
+    	-- center of the hyperbola and the apex of a conjugate
+    	-- branch (located on the "Y Axis" of the hyperbola).
+        
+  OtherBranch (me)   returns Hypr2d;
+        --- Purpose :
+	--  Computes the "other" branch of this hyperbola. This
+    	-- is a symmetrical branch with respect to the center of this hyperbola.
+    	-- Note: The diagram given under the class purpose
+    	-- indicates where the "other" branch is positioned in
+    	-- relation to this branch of the hyperbola.  
+    	--   ^ YAxis
+    	-- |
+    	-- FirstConjugateBranch
+    	--   |
+    	-- Other   | Main
+    	-- ---------------------------- C
+    	-- ------------------------------------------&gtXAxis
+    	-- Branch |  Branch
+    	--   |
+    	-- |
+    	-- SecondConjugateBranch
+    	--   |
+    	-- Warning
+    	-- The major radius can be less than the minor radius. 
+
+  Parameter (me)  returns Real
+        --- Purpose : Computes the parameter of this hyperbola.
+    	-- The parameter is:
+    	-- p = (e*e - 1) * MajorRadius
+    	-- where e is the eccentricity of this hyperbola and
+    	-- MajorRadius its major radius.
+    	-- Exceptions
+    	-- Standard_DomainError if the major radius of this
+    	-- hyperbola is null.
+             raises DomainError;
+
+
+  D0(me; U : Real; P : out Pnt2d) is redefined static;
+	---Purpose: Returns in P the point of parameter U.
+        --  P = C + MajorRadius * Cosh (U) * XDir +
+        --          MinorRadius * Sinh (U) * YDir
+        --  where C is the center of the hyperbola , XDir the XDirection and
+        --  YDir the YDirection of the hyperbola's local coordinate system.
+
+
+  D1 (me; U : Real; P : out Pnt2d; V1 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U and the first derivative V1.
+
+
+  D2 (me; U : Real; P : out Pnt2d; V1, V2 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second 
+        --  derivatives V1 and V2.
+
+
+  D3 (me; U : Real; P : out Pnt2d; V1, V2, V3 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U, the first second and 
+        --  third derivatives V1 V2 and V3.
+  
+
+
+  DN (me; U : Real; N : Integer)   returns Vec2d
+        --- Purpose : For the point of parameter U of this hyperbola,
+    	-- computes the vector corresponding to the Nth derivative.
+    	-- Exceptions Standard_RangeError if N is less than 1.
+            raises RangeError is redefined static;
+
+
+
+  Transform (me : mutable; T : Trsf2d) is redefined static;
+
+    	---Purpose: Applies the transformation T to this hyperbola.
+
+  Copy (me)  returns mutable like me is redefined static;
+    	---Purpose: Creates a new object which is a copy of this hyperbola.
+        
+fields
+
+     majorRadius : Real;
+     minorRadius : Real;
+
+end;
+

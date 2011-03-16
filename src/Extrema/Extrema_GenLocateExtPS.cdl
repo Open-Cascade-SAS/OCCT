@@ -1,0 +1,58 @@
+-- File:	Extrema_GenLocateExtPS.cdl
+-- Created:	Tue Jul 18 08:22:37 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class   GenLocateExtPS from Extrema
+					 
+    	---Purpose: With a close point, it calculates the distance 
+    	--          between a point and a surface.
+    	--          This distance can be a minimum or a maximum.
+
+uses    POnSurf from Extrema,
+        Pnt     from gp,
+	Surface from Adaptor3d
+ 
+raises  DomainError from Standard,
+    	NotDone     from StdFail
+
+
+is
+    Create returns GenLocateExtPS;
+
+    Create (P: Pnt; S: Surface from Adaptor3d; U0,V0: Real; TolU,TolV: Real)
+    	returns GenLocateExtPS
+    	---Purpose: Calculates the distance with a close point.
+    	--          The close point is defined by the parameter values
+    	--          U0 and V0.
+    	--          The function F(u,v)=distance(S(u,v),p) has an
+    	--          extremun when gradient(F)=0. The algorithm searchs
+    	--          a zero near the close point.
+    	raises  DomainError;
+	    	-- if U0,V0 are outside the definition ranges of the 
+	    	-- surface.
+    
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+
+    SquareDistance (me) returns Real
+    	---Purpose: Returns the value of the extremum square distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    Point (me) returns POnSurf
+    	---Purpose: Returns the point of the extremum distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+fields
+    myDone : Boolean;
+    mySqDist: Real;
+    myPoint: POnSurf from Extrema;
+
+end GenLocateExtPS;

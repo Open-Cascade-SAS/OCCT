@@ -1,0 +1,124 @@
+-- File     : MeshVS_VectorPrsBuilder.cdl
+-- Created  : 13 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class VectorPrsBuilder from MeshVS inherits PrsBuilder from MeshVS
+
+	---Purpose: This class provides methods to create vector data presentation.
+        -- It store map of vectors assigned with nodes or elements.
+        -- In simplified mode vectors draws with thickened ends instead of arrows
+	
+uses
+  Real    from Standard,
+  Boolean from Standard,
+  Integer from Standard,
+
+  Color from Quantity,
+
+  Presentation from Prs3d,
+
+  Trsf from gp,
+  Pnt  from gp,
+  Vec  from gp,
+
+  ArrayOfPrimitives from Graphic3d,
+
+  Array1OfPnt from TColgp,
+
+  Mesh                    from MeshVS,
+  MeshPtr                 from MeshVS,
+  DataSource              from MeshVS,
+  DisplayModeFlags        from MeshVS,
+  DataMapOfIntegerVector  from MeshVS,
+  BuilderPriority         from MeshVS,
+  PackedMapOfInteger      from TColStd
+
+is
+
+  Create ( Parent       : Mesh from MeshVS;
+           MaxLength    : Real;
+           VectorColor  : Color from Quantity;
+           Flags        : DisplayModeFlags from MeshVS = MeshVS_DMF_VectorDataPrs;
+           DS           : DataSource from MeshVS = 0;
+           Id           : Integer = -1;
+           Priority     : BuilderPriority from MeshVS = MeshVS_BP_Vector;
+           IsSimplePrs  : Boolean = Standard_False ) returns mutable VectorPrsBuilder from MeshVS;
+
+  Build   ( me; Prs        : Presentation from Prs3d;
+            IDs            : PackedMapOfInteger;
+            IDsToExclude   : in out PackedMapOfInteger;
+            IsElement      : Boolean;
+            theDisplayMode : Integer ) is virtual;
+	---Purpose: Builds vector data presentation
+
+
+  DrawVector ( me; theTrsf : Trsf from gp;
+               Length      : Real;
+	       MaxLength   : Real;
+               ArrowPoints : Array1OfPnt from TColgp;
+               Lines       : ArrayOfPrimitives from Graphic3d;
+               ArrowLines  : ArrayOfPrimitives from Graphic3d;
+               Triangles   : ArrayOfPrimitives from Graphic3d );
+	---Purpose: Adds to array of polygons and polylines some primitive representing single vector
+
+  calculateArrow ( myclass; Points  : out Array1OfPnt from TColgp;
+                   Length      : Real;
+                   ArrowPart   : Real   ) returns Real;
+	---Purpose: Calculates points of arrow presentation
+
+  GetVectors ( me; IsElement : Boolean ) returns DataMapOfIntegerVector from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of vectors assigned with nodes or elements
+
+  SetVectors ( me : mutable;
+               IsElement     : Boolean;
+               Map           : DataMapOfIntegerVector from MeshVS );
+	---Purpose: Sets map of vectors assigned with nodes or elements
+
+  HasVectors ( me; IsElement : Boolean )     returns Boolean;
+	---Purpose: Returns true, if map isn't empty
+
+  GetVector  ( me; IsElement : Boolean;
+               ID            : Integer;
+               Vect          : out Vec from gp )     returns Boolean;
+	---Purpose: Returns vector assigned with certain node or element
+
+  SetVector  ( me : mutable;
+               IsElement     : Boolean;
+               ID            : Integer;
+               Vect          : Vec from gp     );
+	---Purpose: Sets vector assigned with certain node or element
+
+  GetMinMaxVectorValue ( me; IsElement : Boolean;
+                         MinValue : out Real;
+                         MaxValue : out Real );
+	---Purpose: Calculates minimal and maximal length of vectors in map
+        -- ( nodal, if IsElement = False or elemental, if IsElement = True )
+
+  SetSimplePrsMode  ( me : mutable;
+                      IsSimpleArrow : Boolean );
+	---Purpose: Sets flag that indicates is simple vector arrow mode uses or not
+	-- default value is False
+	
+  SetSimplePrsParams ( me : mutable;
+                       theLineWidthParam : Real;
+                       theStartParam, theEndParam : Real );
+	---Purpose: Sets parameters of simple vector arrwo presentation
+	-- theLineWidthParam - coefficient of vector line width (to draw line instead of arrow)
+	-- theStartParam and theEndParam parameters of start and end of thickened ends
+	-- position of thickening calculates according to parameters and maximum vector length
+	-- default values are:
+	--   theLineWidthParam = 2.5
+	--   theStartParam     = 0.85
+	--   theEndParam       = 0.95
+	
+fields
+  myIsSimplePrs         : Boolean;
+  mySimpleWidthPrm      : Real;
+  mySimpleStartPrm      : Real;
+  mySimpleEndPrm        : Real;
+  myNodeVectorMap       : DataMapOfIntegerVector from MeshVS;
+  myElemVectorMap       : DataMapOfIntegerVector from MeshVS;
+
+end VectorPrsBuilder;

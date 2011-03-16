@@ -1,0 +1,85 @@
+-- File:	MoniTool.cdl
+-- Created:	Wed Apr  1 13:54:29 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package MoniTool
+
+    ---Purpose: This package provides basic tools to help monitoring of data
+    --          exchange and shapehealing process, such as:
+    --          - attaching messages to objects
+    --          - storing recorded objects with attached messages for further use
+    --          - timers for measuring the performance
+
+uses Standard, MMgt, TCollection, TColStd, Dico,
+     gp, Geom, Geom2d,
+     TopoDS, TopTools,
+     Message, Dico, OSD
+
+is
+
+    -- Element, generic Elem, and instance for Transient
+    class DataInfo;  -- used in Elem : this one is for Transient
+    deferred class Element;
+        generic class Elem;
+        class TransientElem  instantiates Elem
+            (Transient, MapTransientHasher from TColStd, DataInfo);
+    class ElemHasher;
+
+
+    class IntVal;
+    class RealVal;
+    class AttrList;
+
+    class TypedValue;
+    primitive ValueSatisfies;
+    -- (val : HAsciiString) returns Boolean,  see Satisfies from TypedValue
+    primitive ValueInterpret;
+    -- (typval : TypedValue; hval : HAsciiString; native : Boolean)
+    --   returns HAsciiString,  see Interpret from TypedValue
+
+    class CaseData;
+
+    deferred class SignText;
+    class SignShape;
+
+    class Stat;
+
+    class Option;
+    class Profile;
+    class OptValue;
+
+
+    enumeration ValueType is
+        ValueMisc, ValueInteger, ValueReal, ValueIdent, ValueVoid,   ValueText,
+        ValueEnum, ValueLogical, ValueSub,  ValueHexa,  ValueBinary;
+
+    class DataMapOfShapeTransient instantiates
+          DataMap from TCollection 
+            (Shape           from TopoDS,
+             Transient       from Standard,
+             ShapeMapHasher  from TopTools);
+
+    class IndexedDataMapOfShapeTransient instantiates
+          IndexedDataMap from TCollection 
+            (Shape           from TopoDS,
+             Transient       from Standard,
+             ShapeMapHasher  from TopTools);
+
+    class SequenceOfElement instantiates
+         Sequence from TCollection (Element);
+    class HSequenceOfElement instantiates
+        HSequence from TCollection (Element,SequenceOfElement);
+
+    -- Timers
+    class Timer;
+    class TimerSentry;
+    class MTHasher;
+    class DataMapOfTimer instantiates DataMap from TCollection 
+		    (CString   from Standard,
+	             Timer     from MoniTool,
+		     MTHasher  from MoniTool);
+
+end MoniTool;

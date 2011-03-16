@@ -1,0 +1,50 @@
+-- File:	Blend_Iterator.cdl
+-- Created:	Thu Dec  2 16:13:15 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class Iterator from Blend (Item as any)
+
+	---Purpose: Template class for an iterator.
+	--          A Sequence from TCollection can implement this iterator.
+
+is
+
+    Create
+
+	---Purpose: Creates an empty iterator.
+
+    	returns Iterator;
+
+
+    Clear(me: in out);
+
+	---Purpose: Clears the content of the iterator.
+
+
+
+    Append(me: in out; I: Item);
+
+	---Purpose: Adds an element in the iterator.
+
+
+    Length(me: in out)
+    
+	---Purpose: Returns the number of elements in the iterator.
+
+    	returns Integer;
+
+
+    Value(me: in out; Index: Integer from Standard)
+    
+	---Purpose: Returns the element of range Index.
+    
+    	returns any Item;
+	---C++: return const&
+	---C++: alias operator()
+
+
+end Iterator;

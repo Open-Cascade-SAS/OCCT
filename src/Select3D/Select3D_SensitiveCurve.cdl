@@ -1,0 +1,93 @@
+-- File:    Select3D_SensitiveCurve.cdl
+-- Created: Fri Mar 10 16:13:39 1995
+-- Author:  Mister rmi
+--      <rmi@photon>
+-- Modified on july 97 by ROB : Field HArray instead Of ArrayOfPnt3D
+--                      (connected entities)
+---Copyright:    Matra Datavision 1995
+
+
+class SensitiveCurve   from Select3D 
+inherits SensitivePoly from Select3D
+
+    ---Purpose: A framework to define a sensitive 3D curve.
+
+uses
+    Pnt             from gp,
+    Pnt2d           from gp,
+    Projector       from Select3D,
+    Lin             from gp,
+    EntityOwner     from SelectBasics,
+    ListOfBox2d     from SelectBasics,
+    Curve           from Geom,
+    Array1OfPnt     from TColgp,
+    Array1OfPnt2d   from TColgp,
+    HArray1OfPnt     from TColgp,
+    Box2d           from Bnd,
+    Location                 from TopLoc
+is
+
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+            TheCurve     : Curve from Geom;
+            MaxPoints    : Integer = 17)
+     returns mutable SensitiveCurve;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive curve object defined by the
+        -- owner OwnerId, the curve TheCurve, and the
+        -- maximum number of points on the curve: MaxPoints.
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : HArray1OfPnt from TColgp)
+     returns mutable SensitiveCurve;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive curve object defined by the
+        -- owner OwnerId and the set of points ThePoints.
+        
+    Create (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : Array1OfPnt from TColgp)
+     returns mutable SensitiveCurve;
+        ---Level: Public 
+        ---Purpose: Creation of Sensitive Curve from Points.
+        --          Warning : This Method should disappear in the next version...
+    
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is  redefined static;
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard)
+    returns Boolean
+    is static;
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+             aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+        ---Level: Public 
+    
+
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static; 
+     
+ 
+    GetLastDetected(me) returns Integer from Standard;
+    ---Purpose: Gets index of last detected segment 
+    ---C++: inline
+
+
+        ---Category: Internal Methods
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
+     
+    LoadPoints(me:mutable;aCurve:Curve from Geom;NbPoints: Integer) is static private;
+
+fields
+    mylastseg : Integer        from Standard;
+end SensitiveCurve;
+

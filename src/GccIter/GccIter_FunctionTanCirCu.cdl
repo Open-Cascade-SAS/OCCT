@@ -1,0 +1,55 @@
+-- File:        FunctionTanCirCu.cdl
+-- Created:     Thu Feb 20 7:33:43 1992
+-- Author:      Remy GILET
+--              <reg@topsn3>
+---Copyright:    Matra Datavision 1992
+
+
+generic class FunctionTanCirCu from GccIter (
+    TheCurve     as any;
+    TheCurveTool as any) -- as CurvePGTool from GccInt(TheCurve)
+
+inherits FunctionWithDerivative from math
+         
+    ---Purpose: This abstract class describes a Function of 1 Variable 
+    --          used to find a line tangent to a curve and a circle.
+
+uses Circ2d from gp    
+
+is
+
+Create (Circ   : Circ2d   from gp ;
+    	Curv   : TheCurve         ) returns FunctionTanCirCu from GccIter;
+
+Value (me : in out      ;
+       X  :        Real ;
+       F  :    out Real ) returns Boolean;
+    ---Purpose: Computes the value of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Derivative (me    : in out      ;
+            X     :        Real ;
+            Deriv :    out Real ) returns Boolean;
+    ---Purpose: Computes the derivative of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Values (me    : in out      ;
+        X     :        Real ;
+        F     : out    Real ;
+        Deriv : out    Real ) returns Boolean;
+    ---Purpose: Computes the value and the derivative of the function F 
+    --          for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+fields
+
+TheCirc  : Circ2d from gp;
+Curve    : TheCurve; 
+-- Modified by Sergey KHROMOV - Thu Apr  5 09:50:18 2001 Begin
+myWeight : Real;
+-- Modified by Sergey KHROMOV - Thu Apr  5 09:50:19 2001 End
+
+end FunctionTanCirCu;

@@ -1,0 +1,32 @@
+-- File:	StepAP214_AppliedGroupAssignment.cdl
+-- Created:	Wed May 10 15:09:06 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class AppliedGroupAssignment from StepAP214
+inherits GroupAssignment from StepBasic
+
+    ---Purpose: Representation of STEP entity AppliedGroupAssignment
+
+uses
+    Group from StepBasic,
+    HArray1OfGroupItem from StepAP214
+
+is
+    Create returns AppliedGroupAssignment from StepAP214;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aGroupAssignment_AssignedGroup: Group from StepBasic;
+                       aItems: HArray1OfGroupItem from StepAP214);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Items (me) returns HArray1OfGroupItem from StepAP214;
+	---Purpose: Returns field Items
+    SetItems (me: mutable; Items: HArray1OfGroupItem from StepAP214);
+	---Purpose: Set field Items
+
+fields
+    theItems: HArray1OfGroupItem from StepAP214;
+
+end AppliedGroupAssignment;

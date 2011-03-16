@@ -1,0 +1,282 @@
+-- File:	BooleanOperations_ShapesDataStructure.cdl
+-- Created:	Thu Aug 10 10:29:38 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapesDataStructure from BooleanOperations 
+
+	---Purpose: 
+
+uses
+    Box                    from Bnd,
+    Shape                  from TopoDS,
+    ShapeEnum              from TopAbs,
+    Orientation            from TopAbs,
+    StateOfShape           from BooleanOperations, 
+--modified by NIZNHY-PKV Wed Feb  2 14:20:09 2005f 
+--    InterferencesList      from BooleanOperations,
+--    InterferenceResult     from BooleanOperations, 
+--modified by NIZNHY-PKV Wed Feb  2 14:20:14 2005t
+    ShapeAndInterferences  from BooleanOperations,
+    AncestorsAndSuccessors from BooleanOperations,
+    PShapeAndInterferences from BooleanOperations,
+    IndexedMapOfInteger    from TColStd,
+    IndexedMapOfShape      from TopTools,
+    IndexedMapOfOrientedShape    from TopTools,
+    AncestorsSeqAndSuccessorsSeq from BooleanOperations,
+    IndexedDataMapOfShapeAncestorsSuccessors from BooleanOperations, 
+    IndexedDataMapOfShapeInteger from BooleanOperations, 
+    CArray1OfInteger from BOPTColStd 
+     
+--raises
+
+is
+    Create  
+    	returns ShapesDataStructure;
+    ---C++: alias "Standard_EXPORT virtual ~BooleanOperations_ShapesDataStructure();" 
+--modified by NIZNHY-PKV Wed Feb  2 11:34:40 2005ft     
+    Create (Object,Tool: Shape from TopoDS)  
+    	returns ShapesDataStructure; 
+	
+--modified by NIZNHY-PKV Wed Feb  2 11:34:46 2005ft    
+    Destroy(me: in out) 
+    	is  protected;
+--    --C++: alias ~
+
+    ReInit (me:in out)  
+    	is private;
+    
+    InsertShapeAndAncestorsSuccessors (me:in out;  
+    	    	    	    	       S: Shape from TopoDS;  
+    	    	    	    	       AncSuc: AncestorsSeqAndSuccessorsSeq;  
+                                       shift: Integer=0);
+    ---Purpose: fill  a line of the  data structure, the shift is used
+    --          for the numbers of the shapes of the Tool. 
+    
+
+       
+    FillIndexedMapOfShapesAncestorsAndSuccessors (me;  
+                                                  Sha: Shape from TopoDS;  
+                                                  IndDatMap:out IndexedDataMapOfShapeAncestorsSuccessors);
+    ---Purpose: to find the   data  structure we first decompose  the
+    --          Object and Tool in the indexed data map of shapes.    
+
+    FindSubshapes (me;  
+    	    	    Sha: Shape from TopoDS;  
+    	    	    TotalNumberOfShapes:out Integer from Standard;  
+    	    	    IndDatMap:out IndexedDataMapOfShapeAncestorsSuccessors);
+    ---Purpose: to  find all the subshapes  of  Sha and  store them in
+    --          IndDatMap if they had not been already taken into account.
+
+    Dump (me;  
+    	S : in out OStream);
+    ---Purpose:  dump the content of the fields.
+    LightDump (me;  
+    	S : in out OStream);
+    ---Purpose:  dump the types of the shapes.
+
+    --------------------
+    -- INLINE METHODS --
+    --------------------
+    GetShape       (me;  
+    	index: Integer from Standard)  
+    	returns Shape from TopoDS;
+    ---C++: return const & 
+    
+    Shape       (me;  
+    	anIndex: Integer from Standard)  
+    	returns Shape from TopoDS;
+    ---C++: return const & 
+     
+    
+	
+    GetShapeType   (me;  
+    	    index: Integer from Standard)  
+    	returns ShapeEnum from TopAbs;
+    
+    GetBoundingBox (me;  
+    	    index: Integer from Standard)  
+    	returns Box;
+    ---C++: return const &
+
+    GetState (me;  
+    	    index: Integer from Standard)  
+    	returns StateOfShape from BooleanOperations;
+
+    SetState (me:in out;  
+    	    	index: Integer from Standard;  
+    	    	theState: StateOfShape from BooleanOperations);
+    
+    GetAncestor(me;  
+    	    	    index: Integer from Standard;  
+    	    	    ancestorNumber: Integer from Standard)  
+    	returns Integer from Standard;
+
+    GetSuccessor(me;  
+    	    	    index: Integer from Standard;  
+    	    	    successorNumber: Integer from Standard)  
+    	returns Integer from Standard;
+
+    GetAncestors (me;  
+    	    	    index: Integer from Standard;  
+    	    	    theArrayOfAncestors: out Address from Standard;  
+    	    	    AncestorsSize:out Integer from Standard);
+
+    GetSuccessors (me;  
+    	    index: Integer from Standard;  
+    	    theArrayOfSuccessors:out Address from Standard; 
+    	    SuccessorsSize:out Integer from Standard);
+
+    
+
+    NumberOfAncestors  (me;  
+    	    index: Integer from Standard)  
+    	returns Integer from Standard;
+
+    NumberOfSuccessors (me;  
+    	    index: Integer from Standard)  
+    	returns Integer from Standard;
+
+    
+    
+
+    NumberOfShapesOfTheTool   (me)  
+    	returns Integer from Standard;
+
+    NumberOfShapesOfTheObject (me)  
+    	returns Integer from Standard;
+     
+    --
+    NumberOfSourceShapes  (me) 
+    	returns Integer from Standard ;
+     
+    IsNewShape (me; 
+    	    	index: Integer from Standard) 
+    	returns Boolean from Standard ; 
+
+    --NumberOfShapesOfTheTool+NumberOfShapesOfTheObject+NewShapes
+    NumberOfInsertedShapes(me) 
+    	returns Integer from Standard ;  
+     
+    NumberOfNewShapes(me) 
+    	returns Integer from Standard ;   
+     
+    Line  (me; index: Integer from  Standard) 
+    	returns ShapeAndInterferences from BooleanOperations; 
+    ---C++: return const &  
+
+
+    ShapeIndexMap (me;   
+    	    iRank:Integer from Standard) 
+	returns IndexedDataMapOfShapeInteger from BooleanOperations;  
+    ---C++:  return const &  
+
+    ShapeIndex  (me;  
+    	    aS:Shape from TopoDS; 
+    	    iRank:Integer from Standard) 
+    	returns Integer from Standard  
+    	is virtual;--modified by NIZNHY-PKV Thu Feb  5 14:20:31 2004
+	
+    Object  (me) 
+    	returns Shape from TopoDS; 
+    ---C++:  return const & 
+
+    Tool    (me) 
+    	returns Shape from TopoDS; 
+    ---C++:  return const &
+   
+    ObjectRange (me; 
+    	    iFirst:out Integer from Standard; 
+    	    iLast :out Integer from Standard); 
+	    	 
+    ToolRange   (me; 
+    	    iFirst:out Integer from Standard; 
+    	    iLast :out Integer from Standard);   
+   
+    Rank (me; 
+    	    anIndex:Integer from Standard) 
+    	returns Integer from Standard      --  1-Object,  2-Tool,  3-New  0-?  
+    	is virtual;                          --XX
+	
+    RefEdge(me; 
+    	    anIndex:Integer from Standard) 
+	returns Integer from Standard;  
+    ---Purpose: for given index "anIndex" of an edge in DS get  
+    ---         reference index of an edge 
+     
+    NbEdges(me) 
+    	returns Integer from Standard; 
+    ---Purpose: returns number of edges from source shapes 	 
+     
+    GetOrientation (me;  
+    	    index: Integer from Standard;  
+    	    successorNumber: Integer from Standard)  
+    	returns Orientation;
+
+    GetOrientations (me;  
+    	    index: Integer from Standard;  
+    	    theArrayOfOrientations:out Address; 
+    	    OrientationsSize:out Integer from Standard); 
+
+--modified by NIZNHY-PKV Thu Feb  3 11:17:25 2005f  
+--    InsertInterference (me:in out;  
+--                        index: Integer; IR: InterferenceResult);
+--    GetInterference       (me;  
+--    	    	    	    index: Integer from Standard;  
+--    	    	    	    interfNumber: Integer from Standard)  
+--    	returns InterferenceResult;
+--    --C++: return const & 
+--    GetIntersectedShape   (me;  
+--    	    index: Integer from Standard;  
+--    	    interfNumber: Integer from Standard)  
+--    	returns Integer from Standard;
+
+--    GetIntersectionResult (me;  
+--    	    index: Integer from Standard;  
+--    	    interfNumber: Integer from Standard)  
+--    	returns Integer from Standard;
+
+--    NumberOfInterferences (me; index: Integer)  
+--    	returns Integer from Standard;
+--modified by NIZNHY-PKV Wed Feb  2 14:18:57 2005t  
+
+fields
+
+    myListOfShapeAndInterferences : PShapeAndInterferences  from BooleanOperations is protected;
+    ---Purpose: gives the number of interferences inserted in myListOfInterferences.
+
+    myNumberOfShapesOfTheObject : Integer is protected;
+    ---Purpose: the total number of the shapes of the Object.
+
+    myNumberOfShapesOfTheTool : Integer is protected;
+    ---Purpose: the total number of the shapes of the Tool.
+
+    myNumberOfInsertedShapes : Integer is protected;
+    ---Purpose: the  total number of  the  shapes of  the Object, Tool and
+    --          also the shapes created by interferences.
+    myLength : Integer is protected;
+    ---Purpose: the total number of allocated space to store.
+
+    --
+    myObject : Shape from TopoDS is protected; 
+
+    myTool   : Shape from TopoDS is protected;  
+    --
+    myShapeIndexMapObj :  IndexedDataMapOfShapeInteger from BooleanOperations is protected;   
+
+    myShapeIndexMapTool:  IndexedDataMapOfShapeInteger from BooleanOperations is protected;   
+
+    --
+    myRefEdges:	 CArray1OfInteger from BOPTColStd is protected; 
+     
+    myNbEdges :  Integer from Standard is protected;        
+    --
+
+friends 
+
+    class Explorer from BooleanOperations,
+    class OnceExplorer from BooleanOperations
+
+end ShapesDataStructure;

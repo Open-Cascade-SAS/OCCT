@@ -1,0 +1,165 @@
+-- File:	AbscissaPoint.cdl
+-- Created:	Wed Mar 25 13:17:28 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class AbscissaPoint from GCPnts
+
+	---Purpose: Provides an algorithm to compute a point on a curve
+	-- situated at a given distance from another point on the
+	-- curve, the distance being measured along the curve
+	-- (curvilinear abscissa on the curve).
+	-- This algorithm is also used to compute the length of a curve.
+	-- An AbscissaPoint object provides a framework for:
+	-- -   defining the point to compute
+	-- -   implementing the construction algorithm
+	-- -   consulting the result.
+
+uses
+    Curve   from Adaptor3d,
+    Curve2d from Adaptor2d,
+    AbscissaPoint from CPnts
+
+raises NotDone           from StdFail,
+       ConstructionError from Standard
+      
+is
+
+  Length(myclass; C : in out Curve from Adaptor3d) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : in out Curve2d from Adaptor2d) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : in out Curve from Adaptor3d; Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance.
+
+  Length(myclass; C : in out Curve2d from Adaptor2d; Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance.
+
+  Length(myclass; C : in out Curve from Adaptor3d; U1, U2 : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : in out Curve2d from Adaptor2d; U1, U2 : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : in out Curve from Adaptor3d; U1, U2, Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance.
+
+  Length(myclass; C : in out Curve2d from Adaptor2d; U1, U2, Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance.
+
+  Create 
+    	---Purpose: Constructs an empty algorithm. This function is used
+	-- only for initializing a framework to compute the length
+	-- of a curve (or a series of curves).
+	-- Warning
+	-- The function IsDone will return the value false after the use of this function.
+  returns AbscissaPoint from GCPnts ;
+
+  Create (C : in out Curve from Adaptor3d; Abscissa, U0 : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (Tol: Real; C : in out Curve from Adaptor3d; Abscissa, U0 : Real)
+    ---Purpose: the  algorithm computes a point on  a curve <Curve> at
+    --           the distance  <Abscissa> from the  point of parameter
+    --          <U0> with the given  tolerance.
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (Tol: Real; C : in out Curve2d from Adaptor2d; Abscissa, U0 : Real)
+    ---Purpose: the  algorithm computes a point on  a curve <Curve> at
+    --           the distance  <Abscissa> from the  point of parameter
+    --          <U0> with the given  tolerance.
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : in out Curve2d from Adaptor2d; Abscissa, U0 : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : in out Curve from Adaptor3d; Abscissa, U0, Ui : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be close to the final
+    --          solution
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : in out Curve2d from Adaptor2d; Abscissa, U0, Ui : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be closed to the final
+    --          solution
+    returns AbscissaPoint from GCPnts
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : in out Curve from Adaptor3d; Abscissa, U0, Ui, Tol : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be close to the final
+    --          solution
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : in out Curve2d from Adaptor2d; Abscissa, U0, Ui, Tol : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be close to the final
+    --          solution
+    returns AbscissaPoint from GCPnts 
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+
+  IsDone(me)
+    ---Purpose: True if the computation was successful, False otherwise.
+    --   IsDone is a protection against:
+    -- -   non-convergence of the algorithm
+    -- -   querying the results before computation.
+    ---C++: inline
+    returns Boolean
+    is static;
+    
+  Parameter(me) returns Real
+    ---Purpose: Returns the parameter on the curve of the point
+    -- solution of this algorithm.
+    -- Exceptions
+    -- StdFail_NotDone if the computation was not
+    -- successful, or was not done.
+    ---C++: inline
+    raises NotDone from StdFail
+    is static;
+
+fields
+
+   myComputer : AbscissaPoint from CPnts;
+   
+end AbscissaPoint;
+
+

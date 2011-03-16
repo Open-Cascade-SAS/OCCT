@@ -1,0 +1,139 @@
+--
+-- File      :  PipingFlow.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PipingFlow from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines PipingFlow, Type <402> Form <20>
+        --          in package IGESAppli
+        --          Represents a single fluid flow path
+
+uses
+
+        ConnectPoint                 from IGESDraw,
+        TextDisplayTemplate          from IGESGraph,
+        HAsciiString                 from TCollection,
+        HArray1OfHAsciiString        from Interface,
+        HArray1OfConnectPoint        from IGESDraw,
+        HArray1OfIGESEntity          from IGESData,
+        HArray1OfTextDisplayTemplate from IGESGraph
+
+raises OutOfRange
+
+is
+
+        Create returns mutable PipingFlow;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                 : mutable;
+              nbContextFlags     : Integer;
+              aFlowType          : Integer;
+              allFlowAssocs      : HArray1OfIGESEntity;
+              allConnectPoints   : HArray1OfConnectPoint;
+              allJoins           : HArray1OfIGESEntity;
+              allFlowNames       : HArray1OfHAsciiString;
+              allTextDisps       : HArray1OfTextDisplayTemplate;
+              allContFlowAssocs  : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           PipingFlow
+        --       - nbContextFlags    : Count of Context Flags, always = 1
+        --       - aFlowType         : Type of Flow, default = 0
+        --       - allFlowAssocs     : PipingFlow Associativity Entities
+        --       - allConnectPoints  : Connect Point Entities
+        --       - allJoins          : Join Entities
+        --       - allFlowNames      : PipingFlow Names
+        --       - allTextDispTs     : Text Display Template Entities
+        --       - allContFlowAssocs : Continuation Flow Associativity Entities
+
+    	OwnCorrect (me : mutable) returns Boolean;
+	---Purpose : forces NbContextFalgs to 1, returns True if changed
+
+        NbContextFlags (me) returns Integer;
+        ---Purpose : returns number of Count of Context Flags, always = 1
+
+        NbFlowAssociativities (me) returns Integer;
+        ---Purpose : returns number of Piping Flow Associativity Entities
+
+        NbConnectPoints (me) returns Integer;
+        ---Purpose : returns number of Connect Point Entities
+
+        NbJoins (me) returns Integer;
+        ---Purpose : returns number of Join Entities
+
+        NbFlowNames (me) returns Integer;
+        ---Purpose : returns number of Flow Names
+
+        NbTextDisplayTemplates (me) returns Integer;
+        ---Purpose : returns number of Text Display Template Entities
+
+        NbContFlowAssociativities (me) returns Integer;
+        ---Purpose : returns number of Continuation Piping Flow Associativities
+
+        TypeOfFlow (me) returns Integer;
+        ---Purpose : returns Type of Flow = 0 : Not specified,
+        --                                  1 : Logical,
+        --                                  2 : Physical
+
+        FlowAssociativity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Piping Flow Associativity Entity
+        -- raises exception if Index <= 0 or Index > NbFlowAssociativities()
+
+        ConnectPoint (me; Index : Integer) returns ConnectPoint
+        raises OutOfRange;
+        ---Purpose : returns Connect Point Entity
+        -- raises exception if Index <= 0 or Index > NbConnectPoints()
+
+        Join (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Join Entity
+        -- raises exception if Index <= 0 or Index > NbJoins()
+
+        FlowName (me; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns Flow Name
+        -- raises exception if Index <= 0 or Index > NbFlowNames()
+
+        TextDisplayTemplate (me; Index : Integer) returns TextDisplayTemplate
+        raises OutOfRange;
+        ---Purpose : returns Text Display Template Entity
+        -- raises exception if Index <= 0 or Index > NbTextDisplayTemplates()
+
+        ContFlowAssociativity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Continuation Piping Flow Associativity Entity
+        -- raises exception if Index <= 0 or Index > NbContFlowAssociativities()
+
+fields
+
+--
+-- Class    : IGESAppli_PipingFlow
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PipingFlow.
+--
+-- Reminder : A PipingFlow instance is defined by :
+--            - Count of Context Flags, always = 1
+--            - Type of Flow, default = 0
+--            - Flow Associativity Entities
+--            - Connect Point Entities
+--            - Join Entities
+--            - Flow Names
+--            - Text Display Template Entities
+--            - Continuation Piping Flow Associativity Entities
+
+        theNbContextFlags          : Integer;
+        theTypeOfFlow              : Integer;
+        theFlowAssociativities     : HArray1OfIGESEntity;
+        theConnectPoints           : HArray1OfConnectPoint;
+        theJoins                   : HArray1OfIGESEntity;
+        theFlowNames               : HArray1OfHAsciiString;
+        theTextDisplayTemplates    : HArray1OfTextDisplayTemplate;
+        theContFlowAssociativities : HArray1OfIGESEntity;
+
+end PipingFlow;

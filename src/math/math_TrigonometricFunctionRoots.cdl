@@ -1,0 +1,105 @@
+-- File:	TrigonometricFunctionRoots.cdl
+-- Created:	Tue Sep  3 16:46:25 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class TrigonometricFunctionRoots from math 
+
+    	---Purpose: This class implements the solutions of the equation 
+    	--          a*Cos(x)*Cos(x) + 2*b*Cos(x)*Sin(x) + c*Cos(x) + d*Sin(x) + e
+    	--          The degree of this equation can be 4, 3 or 2.
+
+
+uses Array1OfReal from TColStd,
+     OStream      from Standard
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard,
+       RangeError from Standard
+
+is 
+
+    Create(A, B, C, D, E: Real; InfBound, SupBound: Real)
+    	---Purpose: Given coefficients a, b, c, d , e, this constructor
+    	--          performs the resolution of the equation above.
+    	--          The solutions must be contained in [InfBound, SupBound].
+    	--          InfBound and SupBound can be set by default to 0 and 2*PI.
+
+    returns TrigonometricFunctionRoots;
+
+    
+    Create(D, E: Real; InfBound, SupBound: Real)
+    	---Purpose: Given the two coefficients d and e, it performs 
+    	--          the resolution of d*sin(x) + e = 0.
+    	--          The solutions must be contained in [InfBound, SupBound].
+    	--          InfBound and SupBound can be set by default to 0 and 2*PI.
+
+    returns TrigonometricFunctionRoots;
+
+
+    Create(C, D, E: Real; InfBound, SupBound: Real)
+    	---Purpose: Given the three coefficients c, d and e, it performs 
+    	--          the resolution of 2*b*cos(x)*sin(x) + d*sin(x) + e = 0.
+    	--          The solutions must be contained in [InfBound, SupBound].
+    	--          InfBound and SupBound can be set by default to 0 and 2*PI.
+
+    returns TrigonometricFunctionRoots;
+
+
+
+    Perform(me: in out; A, B, C, D, E: Real; InfBound, SupBound: Real)
+    	---Purpose: is used by the constructors above.
+
+    is static protected;
+    
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+  
+    InfiniteRoots(me)
+    	---Purpose: Returns true if there is an infinity of roots, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+
+    Value(me; Index: Integer)
+    	---Purpose: Returns the solution of range Index.
+    	--         An exception is raised if NotDone.
+    	--         An exception is raised if Index>NbSolutions.
+    	--         An exception is raised if there is an infinity of solutions.
+    	---C++: inline
+    returns Real
+    raises NotDone, OutOfRange, RangeError
+    is static;
+
+    
+    NbSolutions(me)
+    	---Purpose: Returns the number of solutions found.
+    	--          An exception is raised if NotDone.
+    	--         An exception is raised if there is an infinity of solutions.
+    	---C++: inline
+    returns Integer
+    raises NotDone, RangeError
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+
+    is static;
+
+
+fields
+
+NbSol:          Integer;
+Sol:            Array1OfReal from TColStd;
+InfiniteStatus: Boolean;
+Done:           Boolean;
+
+end TrigonometricFunctionRoots;

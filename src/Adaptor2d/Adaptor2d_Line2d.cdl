@@ -1,0 +1,199 @@
+-- File:	Adaptor2d_Line2d.cdl
+-- Created:	Tue May  2 10:15:46 1995
+-- Author:	Modelistation
+--		<model@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class Line2d from Adaptor2d inherits Curve2d from Adaptor2d
+
+uses 
+     Array1OfReal from TColStd,
+     Pnt2d        from gp,
+     Dir2d        from gp,
+     Vec2d        from gp,
+     Lin2d        from gp,
+     Ax2d         from gp,
+     Circ2d       from gp,
+     Elips2d      from gp,
+     Hypr2d       from gp,
+     Parab2d      from gp,
+     Shape        from GeomAbs,
+     CurveType    from GeomAbs,
+     BezierCurve     from Geom2d,
+     BSplineCurve    from Geom2d,
+     HCurve2d        from Adaptor2d
+
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+    
+is
+
+    Create returns  Line2d from Adaptor2d;
+
+    Create(P: Pnt2d from gp; 
+           D: Dir2d from gp;
+           UFirst,ULast: Real from Standard)
+    returns  Line2d from Adaptor2d;
+
+    Load(me : in out; L : Lin2d from gp)
+    is static;
+
+    Load(me : in out; L : Lin2d from gp;
+         UFirst,ULast: Real from Standard)
+    is static;
+
+    FirstParameter(me)
+    	returns Real from Standard
+    	is redefined static;
+
+    LastParameter(me)
+    	returns Real from Standard
+    	is redefined static;
+    
+    Continuity(me)
+    	returns Shape from GeomAbs
+    	is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <S>.    And  returns   the number   of
+	--          intervals.
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve2d from Adaptor2d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static;
+
+    IsClosed(me)
+    	returns Boolean from Standard
+    	is redefined static;
+     
+    IsPeriodic(me)
+    	returns Boolean from Standard
+	is redefined static;
+
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value(me; X: Real from Standard)
+    	returns Pnt2d from gp
+	is redefined static;
+
+    D0(me; X: Real from Standard; P: out Pnt2d from gp)
+    	is redefined static;
+
+    D1(me; X: Real from Standard;
+                    P: out Pnt2d from gp; V: out Vec2d from gp)
+    	is redefined static;
+
+    D2(me; X: Real from Standard;
+                    P: out Pnt2d from gp; V1,V2: out Vec2d from gp)
+    	is redefined static;
+
+    D3(me; X: Real from Standard;
+                    P: out Pnt2d from gp; V1,V2,V3: out Vec2d from gp)
+    	is redefined static;
+
+    DN (me; U : Real; N : Integer)
+    	returns Vec2d from gp
+    	is redefined static;
+
+
+    Resolution(me; R3d : Real)
+    	returns Real from Standard
+	is redefined static;
+
+        
+    GetType(me)
+    	returns CurveType from GeomAbs
+    	is redefined static;
+
+
+     Line(me)
+    	returns Lin2d from gp
+	is redefined static;
+
+     Circle(me) returns Circ2d from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Ellipse(me) returns Elips2d from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Hyperbola(me) returns  Hypr2d from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     Parabola(me) returns Parab2d from gp
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+  
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;     
+          
+
+     
+     Bezier(me) returns BezierCurve from Geom2d
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+    
+     BSpline(me) returns BSplineCurve from Geom2d
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+
+fields
+
+    myUfirst : Real from Standard;
+    myUlast  : Real from Standard;
+    myAx2d   : Ax2d from gp;
+
+end Line2d;

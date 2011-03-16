@@ -1,0 +1,50 @@
+-- File:        RightCircularCone.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RightCircularCone from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	Axis1Placement from StepGeom,
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable RightCircularCone;
+	---Purpose: Returns a RightCircularCone
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis1Placement from StepGeom;
+	      aHeight : Real from Standard;
+	      aRadius : Real from Standard;
+	      aSemiAngle : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPosition(me : mutable; aPosition : mutable Axis1Placement);
+	Position (me) returns mutable Axis1Placement;
+	SetHeight(me : mutable; aHeight : Real);
+	Height (me) returns Real;
+	SetRadius(me : mutable; aRadius : Real);
+	Radius (me) returns Real;
+	SetSemiAngle(me : mutable; aSemiAngle : Real);
+	SemiAngle (me) returns Real;
+
+fields
+
+	position : Axis1Placement from StepGeom;
+	height : Real from Standard;
+	radius : Real from Standard;
+	semiAngle : Real from Standard;
+
+end RightCircularCone;

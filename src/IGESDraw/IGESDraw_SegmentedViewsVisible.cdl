@@ -1,0 +1,168 @@
+--
+-- File      :  SegmentedViewsVisible.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SegmentedViewsVisible from IGESDraw  inherits ViewKindEntity
+
+        ---Purpose: defines IGESSegmentedViewsVisible, Type <402> Form <19>
+        --          in package IGESDraw
+        --
+        --          Permits the association of display parameters with the
+        --          segments of curves in a given view
+
+uses
+
+        HArray1OfInteger        from TColStd,
+        HArray1OfReal           from TColStd,
+        Color                   from IGESGraph,
+        LineFontEntity          from IGESData,
+        HArray1OfViewKindEntity from IGESDraw,
+        HArray1OfLineFontEntity from IGESBasic,
+        HArray1OfColor          from IGESGraph
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable SegmentedViewsVisible;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                      : mutable;
+              allViews                : HArray1OfViewKindEntity;
+              allBreakpointParameters : HArray1OfReal;
+              allDisplayFlags         : HArray1OfInteger;
+              allColorValues          : HArray1OfInteger;
+              allColorDefinitions     : HArray1OfColor;
+              allLineFontValues       : HArray1OfInteger;
+              allLineFontDefinitions  : HArray1OfLineFontEntity;
+              allLineWeights          : HArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           SegmentedViewsVisible
+        --       - allViews                : Pointers to View Entities
+        --       - allBreakpointParameters : Parameters of breakpoints
+        --       - allDisplayFlags         : Display flags
+        --       - allColorValues          : Color Values
+        --       - allColorDefinitions     : Color Definitions
+        --       - allLineFontValues       : LineFont values
+        --       - allLineFontDefinitions  : LineFont Definitions
+        --       - allLineWeights          : Line weights
+        -- raises exception if Lengths of allViews, allBreakpointParameters,
+        -- allDisplayFlags, allColorValues, allColorDefinitions,
+        -- allLineFontValues, allLineFontDefinitions and allLineWeights
+        -- are not same.
+
+    	IsSingle (me) returns Boolean;
+	---Purpose : Returns False (for a complex view)
+
+    	NbViews (me) returns Integer;
+	---Purpose : Returns the count of Views referenced by <me> (inherited)
+
+        NbSegmentBlocks (me) returns Integer;
+        ---Purpose : returns the number of view/segment blocks in <me>
+        --           Similar to NbViews but has a more general significance
+
+        ViewItem (me; ViewIndex : Integer) returns ViewKindEntity
+        raises OutOfRange;
+        ---Purpose : returns the View entity indicated by ViewIndex
+        -- raises an exception if ViewIndex <= 0 or
+        -- ViewIndex > NbSegmentBlocks()
+
+        BreakpointParameter (me; BreakpointIndex : Integer) returns Real
+        raises OutOfRange;
+        ---Purpose : returns the parameter of the breakpoint indicated by
+        -- BreakpointIndex
+        -- raises an exception if BreakpointIndex <= 0 or
+        -- BreakpointIndex > NbSegmentBlocks().
+
+        DisplayFlag (me; FlagIndex : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Display flag indicated by FlagIndex
+        -- raises an exception if FlagIndex <= 0 or
+        -- FlagIndex > NbSegmentBlocks().
+
+        IsColorDefinition (me; ColorIndex : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns True if the ColorIndex'th value of the
+        -- "theColorDefinitions" field of <me> is a pointer
+        -- raises an exception if ColorIndex <= 0 or
+        -- ColorIndex > NbSegmentBlocks().
+
+        ColorValue (me; ColorIndex : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Color value indicated by ColorIndex
+        -- raises an exception if ColorIndex <= 0 or
+        -- ColorIndex > NbSegmentBlocks().
+
+        ColorDefinition (me; ColorIndex : Integer) returns Color
+        raises OutOfRange;
+        ---Purpose : returns the Color definition entity indicated by ColorIndex
+        -- raises an exception if ColorIndex <= 0 or
+        -- ColorIndex > NbSegmentBlocks().
+
+        IsFontDefinition (me; FontIndex : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns True if the FontIndex'th value of the
+        -- "theLineFontDefinitions" field of <me> is a pointer
+        -- raises an exception if FontIndex <= 0 or
+        -- FontIndex > NbSegmentBlocks().
+
+        LineFontValue (me; FontIndex : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the LineFont value indicated by FontIndex
+        -- raises an exception if FontIndex <= 0 or
+        -- FontIndex > NbSegmentBlocks().
+
+        LineFontDefinition (me; FontIndex : Integer) returns LineFontEntity
+        raises OutOfRange;
+        ---Purpose : returns the LineFont definition entity indicated by FontIndex
+        -- raises an exception if FontIndex <= 0 or
+        -- FontIndex > NbSegmentBlocks().
+
+        LineWeightItem (me; WeightIndex : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the LineWeight value indicated by WeightIndex
+        -- raises an exception if WeightIndex <= 0 or
+        -- WeightIndex > NbSegmentBlocks().
+
+fields
+
+--
+-- Class    : IGESDraw_SegmentedViewsVisible
+--
+-- Purpose  : Declaration of the variables specific to a
+--            SegmentedViewsVisible Entity.
+--
+-- Reminder : A SegmentedViewsVisible Entity is defined by :
+--                    - Pointers to View Entities
+--                    - Parameters of breakpoints
+--                    - Display flags
+--                    - Color values
+--                    - Color Definitions
+--                    - LineFont values
+--                    - LineFont Definitions
+--                    - Line weights
+--
+
+        theViews                : HArray1OfViewKindEntity;
+
+        theBreakpointParameters : HArray1OfReal;
+
+        theDisplayFlags         : HArray1OfInteger;
+
+        theColorValues          : HArray1OfInteger;
+
+        theColorDefinitions     : HArray1OfColor;
+
+        theLineFontValues       : HArray1OfInteger;
+
+        theLineFontDefinitions  : HArray1OfLineFontEntity;
+
+        theLineWeights          : HArray1OfInteger;
+
+end SegmentedViewsVisible;

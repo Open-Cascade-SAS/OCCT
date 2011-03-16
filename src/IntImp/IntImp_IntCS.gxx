@@ -1,0 +1,151 @@
+//-- File: IntImp_IntCS.gxx
+
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <IntImp_ComputeTangence.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <Precision.hxx>
+
+IntImp_IntCS::IntImp_IntCS(const Standard_Real U,
+			   const Standard_Real V,
+			   const Standard_Real W,
+			   const TheFunction& F,
+			   const Standard_Real TolTangency,
+			   const Standard_Real MarginCoef) :
+  done(Standard_True),
+  empty(Standard_True),
+  myFunction(F),
+  tol(TolTangency*TolTangency)
+  {
+    if(tol<1e-13) { tol=1e-13; } 
+    math_FunctionSetRoot Rsnld(myFunction);
+    Standard_Real u0,u1,v0,v1,w0,w1;
+    const ThePSurface& S = myFunction.AuxillarSurface();
+    const TheCurve&    C = myFunction.AuxillarCurve();
+    
+    w0 = TheCurveTool::FirstParameter(C);
+    w1 = TheCurveTool::LastParameter(C);
+    
+    u0 = ThePSurfaceTool::FirstUParameter(S);
+    v0 = ThePSurfaceTool::FirstVParameter(S);
+    u1 = ThePSurfaceTool::LastUParameter(S);
+    v1 = ThePSurfaceTool::LastVParameter(S);
+
+    if (MarginCoef > 0.) {
+      if (!Precision::IsInfinite(u0) && !Precision::IsInfinite(u1)) {
+	Standard_Real marg = (u1-u0)*MarginCoef;
+	if (u0 > u1) marg = -marg;
+	u0 -= marg; u1 += marg;
+      }
+      if (!Precision::IsInfinite(v0) && !Precision::IsInfinite(v1)) {
+	Standard_Real marg = (v1-v0)*MarginCoef;
+	if (v0 > v1) marg = -marg;
+	v0 -= marg; v1 += marg;
+      }
+    }
+    
+    Perform(U,V,W,Rsnld,u0,u1,v0,v1,w0,w1);
+  }
+
+IntImp_IntCS::IntImp_IntCS(const TheFunction& F,
+			   const Standard_Real TolTangency) :
+  done(Standard_True),
+  empty(Standard_True),
+  myFunction(F),
+  tol(TolTangency*TolTangency)
+{
+}
+
+void IntImp_IntCS::Perform(const Standard_Real U,
+			   const Standard_Real V,
+			   const Standard_Real W,
+			   math_FunctionSetRoot& Rsnld,
+			   const Standard_Real u0,
+			   const Standard_Real u1,
+			   const Standard_Real v0,
+			   const Standard_Real v1,
+			   const Standard_Real w0,
+			   const Standard_Real w1) {
+  done = Standard_True;
+  static math_Vector UVap(1,3);
+  static math_Vector BornInf(1,3);
+  static math_Vector BornSup(1,3);
+  static math_Vector Tolerance(1,3);
+  UVap(1) = U;
+  UVap(2) = V;
+  UVap(3) = W;
+  const ThePSurface& S = myFunction.AuxillarSurface();
+  const TheCurve&    C = myFunction.AuxillarCurve();
+
+  BornInf(1) = u0;  BornInf(2) = v0; 
+  BornSup(1) = u1;  BornSup(2) = v1;
+
+  BornInf(3) = w0;   BornSup(3) = w1;
+
+  Tolerance(1) = ThePSurfaceTool::UResolution(S,Precision::Confusion());
+  Tolerance(2) = ThePSurfaceTool::VResolution(S,Precision::Confusion());
+  Tolerance(3) = TheCurveTool::Resolution(C,Precision::Confusion());
+  Rsnld.SetTolerance(Tolerance);
+  Standard_Integer autretentative=0;
+  done=Standard_False;
+  do { 
+    if(autretentative==1) { 
+      UVap(3)=w0;
+    }
+    else if(autretentative==2) { 
+      UVap(3)=w1;
+    }
+    autretentative++;
+    Rsnld.Perform(myFunction,UVap,BornInf,BornSup);
+    if (Rsnld.IsDone()) {
+      Standard_Real AbsmyFunctionRoot = Abs(myFunction.Root());
+      if (AbsmyFunctionRoot <= tol) {
+	Rsnld.Root(UVap);
+	u = UVap(1);
+	v = UVap(2);
+	w = UVap(3);
+	empty = Standard_False;
+	done=Standard_True;
+      }
+    }
+  }
+  while(done==Standard_False && autretentative<3);
+}
+
+Standard_Boolean IntImp_IntCS::IsDone() const { return done;}
+
+Standard_Boolean IntImp_IntCS::IsEmpty()const { 
+  if (!done) StdFail_NotDone::Raise();
+  return empty;
+}
+
+const gp_Pnt& IntImp_IntCS::Point() const
+{ 
+  if (!done) StdFail_NotDone::Raise();
+  if (empty) Standard_DomainError::Raise();
+  return myFunction.Point();
+}
+
+void IntImp_IntCS::ParameterOnSurface(Standard_Real& U,
+				      Standard_Real& V) const
+{ 
+  if (!done) StdFail_NotDone::Raise();
+  if (empty) Standard_DomainError::Raise();
+  U=u;
+  V=v;
+}
+Standard_Real  IntImp_IntCS::ParameterOnCurve() const
+{ 
+  if (!done) StdFail_NotDone::Raise();
+  if (empty) Standard_DomainError::Raise();
+  return w;
+}
+
+TheFunction& IntImp_IntCS::Function()  {return myFunction;} 

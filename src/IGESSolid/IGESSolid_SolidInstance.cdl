@@ -1,0 +1,59 @@
+--
+-- File      :  SolidInstance.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SolidInstance from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines SolidInstance, Type <430> Form Number <0>
+        --          in package IGESSolid
+        --          This provides a mechanism for replicating a solid
+        --          representation.
+        --          
+        --          From IGES-5.3, Form may be <1> for a BREP
+        --          Else it is for a Boolean Tree, Primitive, other Solid Inst.
+
+uses  Integer  -- no one specific type
+
+
+is
+
+        Create returns mutable SolidInstance;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me       : mutable; 
+              anEntity : IGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           SolidInstance
+        --       - anEntity : the entity corresponding to the solid
+
+    	IsBrep (me) returns Boolean;
+	---Purpose : Tells if a SolidInstance is for a BREP
+	--           Default is False
+
+    	SetBrep (me : mutable; brep : Boolean);
+	---Purpose : Sets or unsets the Brep status (FormNumber = 1 else 0)
+
+        Entity(me) returns IGESEntity;
+        ---Purpose : returns the solid entity
+
+fields
+
+--
+-- Class    : IGESSolid_SolidInstance
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SolidInstance.
+--
+-- Reminder : A SolidInstance instance is defined by :
+--            a pointer to a solid entity
+--
+
+        theEntity : IGESEntity;
+            -- the solid entity
+
+end SolidInstance;

@@ -1,0 +1,59 @@
+-- File:	IGESDraw_ToolNetworkSubfigure.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolNetworkSubfigure  from IGESDraw
+
+    ---Purpose : Tool to work on a NetworkSubfigure. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses NetworkSubfigure from IGESDraw,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolNetworkSubfigure;
+    ---Purpose : Returns a ToolNetworkSubfigure, ready to work
+
+
+    ReadOwnParams (me; ent : mutable NetworkSubfigure;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : NetworkSubfigure;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : NetworkSubfigure;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a NetworkSubfigure <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : NetworkSubfigure) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : NetworkSubfigure;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : NetworkSubfigure; entto : mutable NetworkSubfigure;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : NetworkSubfigure;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolNetworkSubfigure;

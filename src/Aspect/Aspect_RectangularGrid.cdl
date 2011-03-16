@@ -1,0 +1,112 @@
+-- File:	Aspect_RectangularGrid.cdl
+-- Created:	Thu Mar  2 14:23:42 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+class RectangularGrid from Aspect
+inherits Grid from Aspect
+
+uses
+    PlaneAngle, Length from Quantity
+
+raises 
+    NegativeValue,NullValue,NumericError from Standard
+
+is 
+
+    Create(aXStep, aYStep: Length from Quantity;
+	       anXOrigin: Length from Quantity = 0;
+	       anYOrigin: Length from Quantity = 0;
+               aFirstAngle: PlaneAngle from Quantity = 0;
+               aSecondAngle: PlaneAngle from Quantity = 0;
+               aRotationAngle: PlaneAngle from Quantity = 0)
+    returns mutable RectangularGrid from Aspect
+    ---Purpose: creates a new grid. By default this grid is not
+    --          active.
+    --          The first angle is given relatively to the horizontal.
+    --          The second angle is given relatively to the vertical.
+    raises NumericError from Standard;
+    ---Warning: raises NumericError from Standard if the two
+    --          networks are parallel.
+    
+---Category: grid definition methods
+
+
+    SetXStep(me: mutable; aStep: Length from Quantity) 
+    ---Purpose: defines the x step of the grid.
+    raises NegativeValue,NullValue from Standard
+    ---Warning: raises an exception is the step is not strictly positive.
+    is static;
+
+    SetYStep(me: mutable; aStep: Length from Quantity) 
+    ---Purpose: defines the y step of the grid.
+    raises NegativeValue,NullValue from Standard
+    ---Warning: raises an exception is the step is not strictly positive.
+    is static;
+
+    SetAngle(me: mutable; anAngle1: PlaneAngle from Quantity;
+    	                  anAngle2: PlaneAngle from Quantity)
+    ---Purpose: defines the angle of the second network
+    --          the fist angle is given relatively to the horizontal.
+    --          the second angle is given relatively to the vertical.
+    raises NumericError from Standard
+    ---Warning: raises NumericError from Standard if the two
+    --          line networks are parallel.
+    is static;
+
+    SetGridValues(me: mutable; XOrigin, YOrigin: Length from Quantity;
+                               XStep, YStep: Length from Quantity;
+                               RotationAngle: PlaneAngle from Quantity)
+    is static;
+
+---Category: Pick methods
+--           
+    Compute(me; X,Y: Length from Quantity; gridX, gridY : out Length from Quantity)
+    ---Purpose: returns the point of the grid the closest to the point X,Y
+    is static;
+    
+
+    
+---Category: inquire methods
+
+    XStep(me) returns Length from Quantity
+    ---Purpose: returns the x step of the grid.
+    is static;
+
+    YStep(me) returns Length from Quantity
+    ---Purpose: returns the x step of the grid.
+    is static;
+    
+    FirstAngle(me) returns PlaneAngle from Quantity
+    ---Purpose: returns the x Angle of the grid, relatively to the horizontal.
+    is static;
+    
+    SecondAngle(me) returns PlaneAngle from Quantity
+    ---Purpose: returns the y Angle of the grid, relatively to the vertical.
+    is static;
+    
+   
+    
+    
+---Category: private methods.
+
+    
+    Init(me: mutable)
+    is redefined static;
+    
+    CheckAngle(me;alpha,beta: PlaneAngle from Quantity) 
+    returns Boolean from Standard
+    is static private;
+    
+fields
+
+    myXStep: Length from Quantity;
+    myYStep: Length from Quantity;
+    myFirstAngle: PlaneAngle from Quantity;
+    mySecondAngle: PlaneAngle from Quantity;
+    a1,b1,c1: Real from Standard;
+    a2,b2,c2: Real from Standard;
+    
+    
+end RectangularGrid from Aspect;

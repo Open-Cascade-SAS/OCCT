@@ -1,0 +1,19 @@
+TDataStd_Shape          TDataXtd_Shape
+TDataStd_Constraint     TDataXtd_Constraint
+TDataStd_Geometry       TDataXtd_Geometry
+TDataStd_Axis           TDataXtd_Axis
+TDataStd_Point          TDataXtd_Point
+TDataStd_Plane          TDataXtd_Plane
+TDataStd_Position       TDataXtd_Position
+TDataStd_Placement      TDataXtd_Placement
+TDataStd_PatternStd     TDataXtd_PatternStd
+PDataStd_Shape		PDataXtd_Shape
+PDataStd_Constraint	PDataXtd_Constraint
+PDataStd_Geometry	PDataXtd_Geometry
+PDataStd_Axis		PDataXtd_Axis
+PDataStd_Point		PDataXtd_Point
+PDataStd_Plane		PDataXtd_Plane
+PDataStd_Position	PDataXtd_Position
+PDataStd_Placement	PDataXtd_Placement
+PDataStd_PatternStd	PDataXtd_PatternStd
+

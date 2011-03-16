@@ -1,0 +1,78 @@
+-- File:	MakeLine.cdl
+-- Created:	Mon Sep 28 11:48:51 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeLine from GCE2d inherits Root from GCE2d
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Line from Geom2d.
+    --           * Create a Line parallel to another and passing 
+    --             through a point.
+    --           * Create a Line passing through 2 points.
+
+uses Pnt2d from gp,
+     Lin2d from gp,
+     Ax2d  from gp,
+     Dir2d from gp,
+     Line  from Geom2d,
+     Real  from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A : Ax2d from gp) returns MakeLine;
+    --- Purpose :
+    --  Creates a line located in 2D space with the axis placement A.
+    --  The Location of A is the origin of the line. 
+
+Create (L : Lin2d from gp) returns MakeLine;
+    --- Purpose :
+    --  Creates a line from a non persistent line from package gp.
+
+Create (P : Pnt2d from gp; 
+    	V : Dir2d from gp) returns MakeLine;
+    --- Purpose :
+    --  P is the origin and V is the direction of the line.
+
+Create(Lin    :     Lin2d from gp;
+       Point  :     Pnt2d from gp) returns MakeLine;
+    ---Purpose : Make a Line from Geom2d <TheLin> parallel to another 
+    --           Lin <Lin> and passing through a Pnt <Point>.
+
+Create(Lin    :     Lin2d from gp      ;
+       Dist   :     Real  from Standard) returns MakeLine;
+    ---Purpose : Make a Line from Geom2d <TheLin> parallel to another 
+    --           Lin <Lin> at a distance <Dist>.
+
+Create(P1     :     Pnt2d from gp;
+       P2     :     Pnt2d from gp) returns MakeLine;
+    ---Purpose : Make a Line from Geom2d <TheLin> passing through 2 
+    --           Pnt <P1>,<P2>.
+    --           It returns false if <p1> and <P2> are confused.
+    -- Warning
+    -- If points P1 and P2 coincident (that is, when IsDone
+    -- returns false), the Status function returns gce_ConfusedPoints.
+        
+Value(me) returns Line from Geom2d
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed line.
+    -- Exceptions StdFail_NotDone if no line is constructed.
+
+Operator(me) returns Line from Geom2d
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom2d_Line() const;"
+
+fields
+
+    TheLine : Line from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeLine;
+
+

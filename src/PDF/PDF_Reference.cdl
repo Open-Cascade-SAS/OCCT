@@ -1,0 +1,31 @@
+-- File:	PDF_Reference.cdl
+-- Created:	Wed Mar  1 14:33:04 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Reference from PDF inherits Attribute from PDF
+
+uses HAsciiString from PCollection
+
+is
+
+    Create returns mutable Reference from  PDF;
+    
+    
+    Create (V : HAsciiString from PCollection) 
+    returns mutable Reference from PDF;
+    
+    
+    ReferencedLabel (me) returns HAsciiString from PCollection;
+    
+    
+    ReferencedLabel (me : mutable; V : HAsciiString from PCollection);
+
+
+fields
+
+    myValue : HAsciiString from PCollection;
+
+end Reference;

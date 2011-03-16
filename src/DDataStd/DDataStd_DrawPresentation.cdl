@@ -1,0 +1,118 @@
+-- File:	DDataStd_Presentation.cdl
+-- Created:	Wed Sep 23 08:15:56 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class DrawPresentation from DDataStd inherits Attribute from TDF
+
+	---Purpose: draw presentaion of a label of a document
+
+
+uses GUID                from Standard,
+     AttributeIndexedMap from TDF,
+     DataSet             from TDF,
+     AttributeDelta      from TDF,
+     Label               from TDF,
+     RelocationTable     from TDF,
+     Drawable3D          from Draw
+
+is
+
+
+    ---Purpose: api methods on draw presentation
+    --          ================================
+
+    HasPresentation (myclass; L : Label from TDF)
+    returns Boolean from Standard;
+    
+    IsDisplayed (myclass;  L : Label from TDF)
+    returns Boolean from Standard;
+
+    Display (myclass; L : Label from TDF);
+    -- display <L> presentation in draw viewer.
+    
+    Erase (myclass; L : Label from TDF);
+    -- erase <L> in draw viewer
+    
+    Update (myclass; L : Label from TDF);
+    -- recompute and display L in draw viewer
+    
+    ---Purpose: attribute implementation
+    --          ========================
+    
+    GetID(myclass) returns GUID from Standard;
+    ---C++: return const &
+
+    Create returns mutable DrawPresentation from DDataStd;
+
+    SetDisplayed (me : mutable; status : Boolean from Standard);
+    
+    IsDisplayed (me)
+    returns Boolean from Standard;    
+
+    SetDrawable (me : mutable; D : Drawable3D from Draw);
+    
+    GetDrawable (me)
+    returns Drawable3D from Draw;
+
+
+    ID(me)returns GUID from Standard;
+	---C++: return const &
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;    
+ 
+    Restore(me: mutable; with : Attribute from TDF);
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);     
+
+
+    ---Purpose: call backs for viewer updating
+    --          ==============================
+
+    AfterAddition (me: mutable)
+    is redefined;    
+
+    BeforeRemoval (me: mutable)
+    is redefined;
+
+    BeforeForget(me: mutable)
+    is redefined;
+
+    AfterResume(me: mutable)	
+    is redefined;    
+    
+    BeforeUndo (me: mutable; anAttDelta : AttributeDelta from TDF;
+                             forceIt    : Boolean from Standard = Standard_False)
+    returns Boolean from Standard
+    is redefined;
+    
+    AfterUndo (me: mutable; anAttDelta : AttributeDelta from TDF;
+                            forceIt    : Boolean from Standard = Standard_False)
+    ---Purpose: update draw viewer according to delta
+    returns Boolean from Standard
+    is redefined;
+
+
+    ---Purpose: private methods
+    --          ===============
+
+    DrawBuild (me : mutable)
+    is private;
+
+    DrawDisplay (myclass; L : Label from TDF; P : DrawPresentation from DDataStd)
+    is private;
+    
+    DrawErase (myclass; L : Label from TDF; P : DrawPresentation from DDataStd)
+    is private;
+
+fields
+
+    isDisplayed : Boolean  from Standard;
+    myDrawable  : Drawable3D from Draw;
+    
+end DrawPresentation;

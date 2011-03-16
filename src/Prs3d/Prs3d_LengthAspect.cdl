@@ -1,0 +1,73 @@
+-- File:	Prs3d_LengthAspect.cdl
+-- Created:	Thu Jun  3 09:28:46 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class LengthAspect from Prs3d inherits CompositeAspect from Prs3d
+
+    	---Purpose: defines the attributes when drawing a Length Presentation.
+uses 
+
+    AspectLine3d from Graphic3d,
+    ArrowAspect from Prs3d,
+    LineAspect from Prs3d,
+    TextAspect from Prs3d,
+    NameOfColor from Quantity,
+    TypeOfLine from Aspect,
+    PlaneAngle from Quantity
+
+is
+
+-- 
+--  Attributes for the lines.
+-- 
+    Create returns mutable LengthAspect from Prs3d;
+    	--- Purpose: Constructs an empty framework to define the display of lengths.   
+    
+    LineAspect(me) returns mutable LineAspect from Prs3d;
+    	---Purpose: Returns the settings for the display of lines used in presentation of lengths.    
+    
+    SetLineAspect(me: mutable; anAspect: LineAspect from Prs3d);
+    	---Purpose: Sets the display attributes of lines used in presentation of lengths.
+
+    Arrow1Aspect(me) returns mutable ArrowAspect from Prs3d is static;
+    	--- Purpose: Returns the settings for displaying a right-pointing arrow.   
+    
+    SetArrow1Aspect(me: mutable; anAspect: ArrowAspect from Prs3d) is static;
+    	---Purpose:   Sets the display attributes of the first arrow used in presentation of lengths. 
+        
+    Arrow2Aspect(me) returns mutable ArrowAspect from Prs3d is static;
+    	--- Purpose: Returns the settings for displaying a left-pointing arrow.   
+    
+    SetArrow2Aspect(me: mutable ; anAspect: ArrowAspect from Prs3d) is static;
+    	---Purpose: Sets the display attributes of the second arrow used in presentation of lengths.
+    
+    TextAspect(me) returns mutable TextAspect from Prs3d is static;
+    	--- Purpose: Returns the settings for the display of text used in presentation of lengths.   
+    
+    SetTextAspect(me:mutable; anAspect: TextAspect from Prs3d) is static; 
+    	---Purpose: Sets the display attributes of text used in presentation of lengths.
+    
+    SetDrawFirstArrow(me: mutable; draw: Boolean from Standard) is static;
+    	--- Purpose: Sets the DrawFirstArrow attributes to active. 
+    
+    DrawFirstArrow(me) returns Boolean from Standard is static;
+    	---Purpose: Returns true if the first arrow can be drawn.    
+    SetDrawSecondArrow(me: mutable; draw: Boolean from Standard) is static;
+    	---Purpose: Sets the DrawSecondArrow attributes to active.    
+    
+    DrawSecondArrow(me) returns Boolean from Standard is static;
+    	---Purpose: Returns true if the second arrow can be drawn.   
+    Print(me; s: in out OStream from Standard) is static;
+   
+fields
+
+    myLineAspect: LineAspect from Prs3d;
+    myArrow1Aspect: ArrowAspect from Prs3d;
+    myArrow2Aspect: ArrowAspect from Prs3d;
+    myTextAspect: TextAspect from Prs3d;
+    myDrawFirstArrow: Boolean from Standard;
+    myDrawSecondArrow: Boolean from Standard;
+    
+end LengthAspect from Prs3d;

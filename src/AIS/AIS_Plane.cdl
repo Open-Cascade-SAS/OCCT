@@ -1,0 +1,246 @@
+-- File:	AIS_Plane.cdl
+-- Created:	Wed Aug  2 16:18:48 1995
+-- Author:	Arnaud BOUZY/Odile Olivier
+--		<adn@houblon>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--Modified by   rob Wed 11 feb 98 : add Size Methods
+---Copyright:	 Matra Datavision 1995
+
+
+class Plane from AIS inherits InteractiveObject from AIS
+
+	---Purpose: Constructs plane datums to be used in construction of
+    	-- composite shapes.
+
+uses 
+    Plane                 from Geom,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Selection             from SelectMgr,
+    Pnt                   from gp,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,        
+    NameOfMaterial        from Graphic3d,
+    TypeOfPlane           from AIS, 
+    Axis2Placement        from Geom,
+    InteractiveContext    from AIS,
+    KindOfInteractive     from AIS
+
+is
+    Create(aComponent : Plane from Geom;
+    	   aCurrentMode : Boolean from Standard = Standard_False) 
+    returns mutable Plane from AIS;
+    	---Purpose: initializes the plane aComponent. If
+    	--   the mode aCurrentMode equals true, the drawing
+    	--   tool, "Drawer" is not initialized.  
+    
+    Create(aComponent : Plane from Geom;
+    	   aCenter    : Pnt   from gp;
+    	   aCurrentMode : Boolean from Standard = Standard_False) 
+    returns mutable Plane from AIS;
+    	--- Purpose:   initializes the plane aComponent and
+    	--   the point aCenter. If the mode aCurrentMode
+    	--   equals true, the drawing tool, "Drawer" is not
+    	--   initialized. aCurrentMode equals true, the drawing
+    	--   tool, "Drawer" is not initialized. 
+    
+    Create(aComponent : Plane from Geom;
+    	   aCenter    : Pnt   from gp;
+	   aPmin      : Pnt   from gp;
+	   aPmax      : Pnt   from gp;
+    	   aCurrentMode : Boolean from Standard = Standard_False) 
+    returns mutable Plane from AIS;
+    	---Purpose:   initializes the plane aComponent, the
+    	--   point aCenter, and the minimum and maximum
+    	--   points, aPmin and aPmax. If the mode
+    	-- aCurrentMode equals true, the drawing tool, "Drawer" is not initialized.
+    
+    Create(aComponent : Axis2Placement from Geom;
+    	   aPlaneType : TypeOfPlane from AIS;
+    	   aCurrentMode : Boolean from Standard = Standard_False) 
+    returns mutable Plane from AIS;
+
+
+    ---Category: Size Modifications...
+
+    SetSize(me:mutable;aValue:Real from Standard);
+    	---Purpose: Same value for x and y directions
+
+    SetSize(me:mutable;Xval,YVal:Real from Standard);
+    	---Purpose: Sets the size defined by the length along the X axis
+    	-- XVal and the length along the Y axis YVal.
+
+    UnsetSize(me:mutable) ;
+
+    Size(me;X,Y:out Real from Standard) returns Boolean from Standard;
+    
+    HasOwnSize(me) returns Boolean from Standard;
+    	---C++: inline
+
+
+
+    Signature(me) returns Integer from Standard is redefined;
+
+    Type(me) returns KindOfInteractive from AIS is redefined;
+
+
+
+    Component(me: mutable) returns Plane from Geom 
+    is static;
+    	---Purpose: Returns the component specified in SetComponent.
+    	---C++: inline
+    	---C++: return const&
+    
+    SetComponent(me: mutable;aComponent : Plane from Geom) is static;
+    	---Purpose: Creates an instance of the plane aComponent.
+
+    PlaneAttributes(me: mutable;
+    	       aComponent : out Plane from Geom;
+    	       aCenter    : out Pnt   from gp;
+	       aPmin      : out Pnt   from gp;
+	       aPmax      : out Pnt   from gp)
+    returns Boolean from Standard;
+    	---Purpose: Returns the settings for the selected plane
+    	-- aComponent, provided in SetPlaneAttributes.
+    	-- These include the points aCenter, aPmin, and aPmax
+
+    SetPlaneAttributes(me: mutable;
+    	       aComponent : Plane from Geom;
+    	       aCenter    : Pnt   from gp;
+	       aPmin      : Pnt   from gp;
+	       aPmax      : Pnt   from gp)
+    is static;
+    	---Purpose: Allows you to provide settings other than default ones
+    	-- for the selected plane. These include: center point
+    	-- aCenter, maximum aPmax and minimum aPmin.
+        
+    Center (me) returns Pnt from gp;
+    	---Purpose: Returns the coordinates of the center point.
+    	---C++: inline
+    	---C++: return const&
+	
+    SetCenter (me: mutable; aCenter : Pnt from gp);
+    	---Purpose:
+    	-- Provides settings for the center aCenter other than (0, 0, 0).
+      	---C++: inline
+  
+    SetAxis2Placement(me: mutable;
+                      aComponent : Axis2Placement from Geom;
+    	    	      aPlaneType : TypeOfPlane from AIS)
+    is static;
+    	---Purpose: Allows you to provide settings for the position and
+    	-- direction of one of the plane's axes, aComponent, in
+    	-- 3D space. The coordinate system used is
+    	-- right-handed, and the type of plane aPlaneType is one of:
+    	-- -   AIS_ TOPL_Unknown
+    	-- -   AIS_ TOPL_XYPlane
+    	-- -   AIS_ TOPL_XZPlane
+    	-- -   AIS_ TOPL_YZPlane}.
+        
+    Axis2Placement(me: mutable) returns Axis2Placement from Geom 
+    is static;
+    	---Purpose: Returns the position of the plane's axis2 system
+    	-- identifying the x, y, or z axis and giving the plane a
+    	-- direction in 3D space. An axis2 system is a right-handed coordinate system.
+        
+    TypeOfPlane (me : mutable) returns TypeOfPlane from AIS;
+    	---Purpose: Returns the type of plane - xy, yz, xz or unknown.
+    	---C++: inline
+
+
+    IsXYZPlane  (me : mutable) returns Boolean from Standard;
+    	---Purpose: Returns the type of plane - xy, yz, or xz.
+    	---C++: inline
+
+    CurrentMode  (me : mutable) returns Boolean from Standard;
+    	---Purpose: Returns the non-default current display mode set by SetCurrentMode.
+        ---C++: inline
+
+    SetCurrentMode  (me : mutable; aCurrentMode : Boolean from Standard ) ;
+    	---Purpose:
+    	-- Allows you to provide settings for a non-default
+    	-- current display mode.
+        ---C++: inline
+    
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard 
+    is redefined virtual;
+    	---Purpose: Returns true if the display mode selected, aMode, is valid for planes.
+
+    SetContext(me:mutable; aCtx : InteractiveContext from AIS) is redefined;
+    	---Purpose: connection to <aCtx> default drawer implies a recomputation of Frame values.
+
+-- Methods from PresentableObject
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard = 0) 
+    is redefined virtual private;
+
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined virtual private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined virtual private;	    
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    ---Purpose: computes the presentation according to a point of view
+    --          given by <aProjector>.
+    --          To be Used when the associated degenerated Presentations
+    --          have been transformed by <aTrsf> which is not a Pure
+    --          Translation. The HLR Prs can't be deducted automatically
+    --          WARNING :<aTrsf> must be applied
+    --           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard) is redefined virtual;
+
+-- Methods from InteractiveObject
+
+    SetColor(me :mutable; aColor : NameOfColor from Quantity)
+    is redefined static;
+
+    SetColor(me :mutable; aColor : Color from Quantity) 
+    is redefined static;
+    
+    UnsetColor(me:mutable) is redefined static;
+    
+    ComputeFrame(me: mutable)
+    is private;
+
+    ComputeFields(me: mutable)
+    is private;
+    
+    InitDrawerAttributes(me:mutable)  is  private;
+     
+fields
+
+    myComponent    : Plane   from Geom;    
+    myAx2          : Axis2Placement from Geom;
+    myCenter       : Pnt     from gp;
+    myPmin         : Pnt     from gp;
+    myPmax         : Pnt     from gp;
+    myCurrentMode  : Boolean from Standard;    
+    myAutomaticPosition : Boolean from Standard;    
+    myTypeOfPlane  : TypeOfPlane from AIS;
+    myIsXYZPlane   : Boolean from Standard;
+    myHasOwnSize   : Boolean from Standard;
+    
+end Plane;

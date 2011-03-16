@@ -1,0 +1,645 @@
+--
+-- Package  :   Graphic3d
+-- Author   :   NW,JPB,CAL
+-- Created  :   Jeudi 22 Aout 1991
+-- Updated  :   Vendredi 2 Octobre 1992
+--          Mercredi 31 Mars 1993
+--          Mercredi 19 Janvier 1994
+--      1/08/97 ; PCT : Ajout texture mapping
+--      11/97 ; CAL : retrait de la dependance avec math
+--      11/97 ; CAL : retrait des DataStructure
+--      11/97 ; CAL : ajout pointer StructPtr
+--              04/98 ; FGU : ajout champs 'TOR_EMISSION'
+--      16-09-98; BGN: (S3819) Ajout TypeOfTriedronEcho,
+--                             TypeOfTriedronPosition.
+--              22-09-98; BGN: S3989 (anciennement S3819): report
+--                             dans Aspect des TypeOfTriedron*
+--              26-03-99 : FMN ; Compatibilite ascendante:
+--              Ajout des anciens noms de materiaux.
+--              09-04-99 : GG ; Compatibilite ascendante:
+--                         NameOfPhysicalMaterial disparait
+--              23-11-99 : GG ; Add material name DEFAULT
+--          16-06-2000 : ATS : Study G005: class ArrayOfPrimitives
+--              and derivated used for model presentation.
+--                       Required: enumeration TypeOfPrimitive;
+--                  imported PrimitiveArray; class PrimitiveList.
+--
+--      17-12-01 : GG ; IMP171201 : Add material name UserDefined
+--              Thanks to Stephane ROUTELOUS
+--              20-01-2009 : ABD Integration support of system fonts (using FTGL and FreeType)
+--
+-- Copyright    :   MatraDatavision 1991,1992,1993,1994
+--
+-- Objective    :   Specifications definitives
+--
+--
+-- Date     :   Mercredi 31 mars 1993
+--
+--
+-- File:    Graphic3d.cdl
+-- Created: Jeudi 22 Aout 1991
+-- Author:  NW,JPB,CAL
+--
+---Copyright:   MatraDatavision 1991,1992,1993
+--
+
+package Graphic3d
+
+    ---Version:
+
+    ---Purpose: This package permits the creation of 3d graphic objects
+    --      in a visualiser.
+    --      These objects, called structures, are composed of groups of
+    --      primitives and attributes.
+    --      The group is the smallest editable element of a structure.
+    --      A structure can be displayed, erased, high-lighted.
+    --      A transformation can be applied to it.
+    --      Structures can be connected to form a tree of structures,
+    --      composed by transformations.
+    --      The visualiser permits global manipulation of structures.
+
+    ---Keywords: Structure, Group, Primitives, Line, Marker, Text,
+    --  FillAreas, Vertex, Vector, Material, Font, Shading
+    ---Warning:
+    ---References:
+
+uses
+
+    TCollection,
+    TColStd,
+    OSD,
+    Quantity,
+    Aspect,
+    MMgt,
+    Xw,
+    WNT,
+    Image,
+    AlienImage,
+    gp
+is
+
+    -----------------------
+    -- Category: Exceptions
+    -----------------------
+
+    exception AspectTextDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception CycleError inherits DomainError;
+    ---Category: Exceptions
+
+    exception GroupDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception InitialisationError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception MaterialDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception PickIdDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception PlotterDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception PriorityDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception StructureDefinitionError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception TransformError inherits OutOfRange;
+    ---Category: Exceptions
+
+    exception VectorError inherits OutOfRange;
+    ---Category: Exceptions
+
+    -------------------------
+    -- Category: Enumerations
+    -------------------------
+
+        enumeration NameOfMaterial is
+                    NOM_BRASS,      -- laiton       (PHYSIC)
+                                        NOM_BRONZE,     -- bronze       (PHYSIC)
+                                        NOM_COPPER,     -- cuivre       (PHYSIC)
+                                        NOM_GOLD,       -- or           (PHYSIC)
+
+                                        NOM_PEWTER,     -- etain        (PHYSIC)
+
+                                        NOM_PLASTER,    -- platre       (GENERIC)
+                                        NOM_PLASTIC,    -- plastic      (GENERIC)
+
+                                        NOM_SILVER,     -- argent       (PHYSIC)
+
+                                        NOM_STEEL,      -- acier        (PHYSIC)
+
+                                        NOM_STONE,      -- pierre       (PHYSIC)
+
+                                        NOM_SHINY_PLASTIC,      -- plastique brillant   (GENERIC)
+                                        NOM_SATIN,      --  satin       (GENERIC)
+                                        NOM_METALIZED,  -- metallise New (GENERIC)
+                                        NOM_NEON_GNC,   -- neon      New (GENERIC)
+                                        NOM_CHROME,     -- chrome    New (PHYSIC)
+                                        NOM_ALUMINIUM,  -- aluminium New (PHYSIC)
+                                        NOM_OBSIDIAN,   -- obsidian  New (PHYSIC)
+                                        NOM_NEON_PHC,   -- neon      New (PHYSIC)
+                                        NOM_JADE,       -- jade      New (PHYSIC)
+                        NOM_DEFAULT,
+                        NOM_UserDefined -- owner material
+    end NameOfMaterial;
+    ---Purpose: Types of aspect materials.
+    ---Category: Enumerations
+
+    enumeration TypeOfMaterial is MATERIAL_ASPECT,          -- Materiel generique
+                                  MATERIAL_PHYSIC           -- Materiel physique
+    end TypeOfMaterial;
+        ---Purpose: Types of materials specifies if a material can change color.
+    ---Category: Enumerations
+
+        enumeration  NameOfTexture1D  is  NOT_1D_ELEVATION,
+                      NOT_1D_UNKNOWN
+    end  NameOfTexture1D;
+    ---Purpose: Types of standard textures.
+    ---Category: Enumerations
+
+
+    enumeration  NameOfTexture2D  is  NOT_2D_MATRA,
+                                      NOT_2D_ALIENSKIN,
+                                      NOT_2D_BLUE_ROCK,
+                                      NOT_2D_BLUEWHITE_PAPER,
+                                      NOT_2D_BRUSHED,
+                                      NOT_2D_BUBBLES,
+                                      NOT_2D_BUMP,
+                                      NOT_2D_CAST,
+                                      NOT_2D_CHIPBD,
+                                      NOT_2D_CLOUDS,
+                                      NOT_2D_FLESH,
+                                      NOT_2D_FLOOR,
+                                      NOT_2D_GALVNISD,
+                                      NOT_2D_GRASS,
+                                      NOT_2D_ALUMINUM,
+                                      NOT_2D_ROCK,
+                                      NOT_2D_KNURL,
+                                      NOT_2D_MAPLE,
+                                      NOT_2D_MARBLE,
+                                      NOT_2D_MOTTLED,
+                                      NOT_2D_RAIN,
+                                      NOT_2D_UNKNOWN
+    end  NameOfTexture2D;
+    ---Purpose: Types of standard textures.
+    ---Category: Enumerations
+
+
+        enumeration  NameOfTextureEnv is  NOT_ENV_CLOUDS,
+                                          NOT_ENV_CV,
+                                          NOT_ENV_MEDIT,
+                                          NOT_ENV_PEARL,
+                                          NOT_ENV_SKY1,
+                                          NOT_ENV_SKY2,
+                                          NOT_ENV_LINES,
+                                          NOT_ENV_ROAD,
+                                          NOT_ENV_UNKNOWN
+    end  NameOfTextureEnv;
+    ---Purpose: Types of standard textures.
+    ---Category: Enumerations
+
+        enumeration  TypeOfTexture  is  TOT_1D,
+                                        TOT_2D,
+                                        TOT_2D_MIPMAP;
+    ---Purpose: Type of the texture file format.
+    ---Category: Enumerations
+
+    enumeration  TypeOfTextureMode  is  TOTM_OBJECT,
+                                        TOTM_SPHERE,
+                                        TOTM_EYE,
+                                        TOTM_MANUAL;
+    ---Purpose: Type of the texture projection.
+    ---Category: Enumerations
+
+    enumeration  NameOfTexturePlane  is  NOTP_XY,
+                                         NOTP_YZ,
+                                         NOTP_ZX,
+                                         NOTP_UNKNOWN;
+    ---Purpose: Type of the texture projection plane for both S and T texture coordinate.
+    ---Category: Enumerations
+
+    enumeration TypeOfComposition is    TOC_REPLACE,
+                        TOC_POSTCONCATENATE
+    end TypeOfComposition;
+    ---Purpose: To manage the transformation matrices of structures.
+    ---Category: Enumerations
+
+    enumeration TypeOfConnection is TOC_ANCESTOR,
+                    TOC_DESCENDANT
+    end TypeOfConnection;
+    ---Purpose: To manage the connections between the structures.
+    ---Category: Enumerations
+
+    enumeration TypeOfPolygon is    TOP_UNKNOWN,
+                                    TOP_COMPLEX,
+                                    TOP_CONCAVE,
+                                    TOP_CONVEX
+    end TypeOfPolygon;
+    ---Purpose: The type of polygon in a group in a structure.
+    ---Category: Enumerations
+
+    enumeration TypeOfPrimitive is  TOP_UNDEFINED,
+                                    TOP_POLYLINE,
+                                    TOP_POLYGON,
+                                    TOP_TRIANGLEMESH,
+                                    TOP_QUADRANGLEMESH,
+                                    TOP_TEXT,
+                                    TOP_MARKER,
+                                    TOP_PARRAY
+    end TypeOfPrimitive;
+    ---Purpose: The type of primitive in a group in a structure.
+    ---Category: Enumerations
+
+        enumeration TypeOfPrimitiveArray is TOPA_UNDEFINED,
+                                            TOPA_POINTS,
+                                            TOPA_POLYLINES,
+                                            TOPA_SEGMENTS,
+                                            TOPA_POLYGONS,
+                                            TOPA_TRIANGLES,
+                                            TOPA_QUADRANGLES,
+                                            TOPA_TRIANGLESTRIPS,
+                                            TOPA_QUADRANGLESTRIPS,
+                                            TOPA_TRIANGLEFANS
+        end TypeOfPrimitiveArray;
+        ---Purpose: The type of primitive array in a group in a structure.
+        ---Category: Enumerations
+
+    enumeration TypeOfReflection is TOR_AMBIENT,
+                                    TOR_DIFFUSE,
+                                    TOR_SPECULAR,
+                                    TOR_EMISSION
+    end TypeOfReflection;
+    ---Purpose: Nature of the reflection of a material.
+    ---Category: Enumerations
+
+    enumeration TypeOfStructure is  TOS_WIREFRAME,
+                                    TOS_SHADING,
+                                    TOS_COMPUTED,
+                                    TOS_ALL
+    end TypeOfStructure;
+    ---Purpose: Structural attribute indicating if it can be displayed
+    --      in wireframe, shadow mode, or both.
+    ---Category: Enumerations
+
+    enumeration TextPath is TP_UP,
+                            TP_DOWN,
+                            TP_LEFT,
+                            TP_RIGHT
+    end TextPath;
+    ---Purpose: Direction in which text is displayed.
+    ---Category: Enumerations
+
+    enumeration HorizontalTextAlignment is  HTA_LEFT,
+                                            HTA_CENTER,
+                                            HTA_RIGHT
+    end HorizontalTextAlignment;
+    ---Purpose: Defines the horizontal position of the text
+    --      relative to its anchor.
+    ---Category: Enumerations
+
+    enumeration VerticalTextAlignment is    VTA_BOTTOM,
+                                            VTA_CENTER,
+                                            VTA_TOP
+    end VerticalTextAlignment;
+    ---Purpose: Defines the vertical position of the text
+    --      relative to its anchor.
+    ---Category: Enumerations
+
+    enumeration GroupAspect is ASPECT_LINE,
+        ASPECT_TEXT,
+        ASPECT_MARKER,
+        ASPECT_FILL_AREA
+    end GroupAspect;
+    ---Purpose: Identifies primitives aspects defined per group.
+    -- - ASPECT_LINE: aspect for line primitives;
+    -- - ASPECT_TEXT: aspect for text primitives;
+    -- - ASPECT_MARKER: aspect for marker primitives;
+    -- - ASPECT_FILL_AREA: aspect for face primitives.
+
+    ---------------------------
+    -- Category: Imported types
+    ---------------------------
+
+    imported PrimitiveArray;
+
+    imported CBitFields20;
+    ---Purpose: Defines the C structure
+    ---Category: Imported types
+
+    imported CBitFields16;
+    ---Purpose: Defines the C structure
+    ---Category: Imported types
+
+    imported CBitFields8;
+    ---Purpose: Defines the C structure
+    ---Category: Imported types
+
+    imported CBitFields4;
+    ---Purpose: Defines the C structure
+    ---Category: Imported types
+
+    imported CGroup;
+    ---Purpose: Defines the C structure <agroup>
+    ---Category: Imported types
+
+    imported CStructure;
+    ---Purpose: Defines the C structure <astructure>
+    ---Category: Imported types
+
+    imported CLight;
+    ---Purpose: Defines the C structure <alight>
+    ---Category: Imported types
+
+    imported CPick;
+    ---Purpose: Defines the C structure <apick>
+    ---Category: Imported types
+
+    imported CPlane;
+    ---Purpose: Defines the C structure <aplane>
+    ---Category: Imported types
+
+    imported CBounds;
+    ---Purpose: Defines the C structure <abounds>
+    ---Category: Imported types
+
+    imported CUserDraw;
+    ---Purpose: Defines the C structure <auserdraw>
+    ---Category: Imported types
+
+    imported CView;
+    ---Purpose: Defines the C structure <aview>
+    ---Category: Imported types
+
+    imported CGraduatedTrihedron;
+    ---Purpose: Defines the C structure of a graduated trihedron.
+    ---Category: Imported types
+
+    imported CInitTexture;
+    imported CTexture;
+
+--   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+        imported CTransPersStruct;
+        imported TransModeFlags;
+--   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+
+    primitive PtrFrameBuffer;
+
+    --------------------
+    -- Category: Classes
+    --------------------
+
+    class Strips;
+    ---Purpose: Contains some static functions to strips treatment
+
+    deferred class ArrayOfPrimitives;
+    ---Purpose: Contains basic methods for array allocation and filling
+
+    class ArrayOfPoints;
+    ---Purpose: Contains points array definition
+
+    class ArrayOfPolylines;
+    ---Purpose: Contains polylines array definition
+
+    class ArrayOfSegments;
+    ---Purpose: Contains segments array definition
+
+    class ArrayOfPolygons;
+    ---Purpose: Contains polygons array definition
+
+    class ArrayOfTriangles;
+    ---Purpose: Contains triangles array definition
+
+    class ArrayOfTriangleStrips;
+    ---Purpose: Contains triangles strip array definition
+
+    class ArrayOfTriangleFans;
+    ---Purpose: Contains triangles fan array definition
+
+    class ArrayOfQuadrangles;
+    ---Purpose: Contains quatrangles array definition
+
+    class ArrayOfQuadrangleStrips;
+    ---Purpose: Contains quadrangles strip array definition
+
+    class AspectLine3d;
+    ---Purpose: Grouping line attributes
+    ---Category: Classes
+
+    class AspectFillArea3d;
+    ---Purpose: Grouping face attributes
+    ---Category: Classes
+
+    class AspectMarker3d;
+    ---Purpose: Grouping marker attributes
+    ---Category: Classes
+
+    class AspectText3d;
+    ---Purpose: Grouping text attributes.
+    ---Category: Classes
+
+    class Group;
+    ---Purpose: For grouping together primitives in a structure
+    ---Category: Classes
+
+    class GraphicDevice;
+    ---Purpose: Defines a physical graphic device allowing to
+    --          shares graphical ressources.
+    ---Category: Classes
+
+    class WNTGraphicDevice;
+    ---Purpose:  Defines a physical graphic device for Windows NT
+    ---Category: Classes
+
+    class MaterialAspect;
+    ---Purpose: Aspect attributes of a 3d face.
+    ---Category: Classes
+
+    class Structure;
+    ---Purpose: Graphic object.
+    ---Category: Classes
+
+    deferred class GraphicDriver;
+    ---Purpose: Defines a graphic driver for 3d interface
+
+    deferred class StructureManager;
+    ---Purpose: Visualiser with which the graphic objects are associated.
+    ---Category: Classes
+
+    deferred class DataStructureManager;
+    ---Purpose: Visualiser with which the graphic objects are associated.
+    ---Category: Classes
+
+    deferred class Plotter;
+    ---Purpose: Defines the minimal plotter.
+    ---Category: The classes
+
+    class Vector;
+    ---Purpose: 3d vector
+    ---Category: Classes
+
+    class Vertex;
+    ---Purpose: 3d vertex
+    ---Category: Classes
+
+    class VertexN;
+    ---Purpose: 3d vertex with a normal vector
+    ---Category: Classes
+
+    class VertexNT;
+    ---Purpose: 3d vertex with a normal vector and texture coordinate
+    ---Category: Classes
+
+    class VertexC;
+    ---Purpose: 3d vertex with a colour
+    ---Category: Classes
+
+    class VertexNC;
+    ---Purpose: 3d vertex with a normal and a colour
+    ---Category: Classes
+
+    ---------------------
+    -- Category: Pointers
+    ---------------------
+
+    pointer StructPtr to Structure from Graphic3d;
+    ---Category: Pointers
+
+    ---------------------------------
+    -- Category: Instantiated classes
+    ---------------------------------
+
+    class ListOfPArray instantiates
+        List from TCollection (ArrayOfPrimitives from Graphic3d);
+        ---Category: Instantiated classes
+
+    class SequenceOfAddress instantiates
+            Sequence from TCollection
+            (Address from Standard);
+    ---Category: Instantiated classes
+
+    class SetOfGroup instantiates
+            Set from TCollection (Group from Graphic3d);
+    ---Category: Instantiated classes
+
+    class HSetOfGroup instantiates
+            HSet from TCollection
+            (Group from Graphic3d, SetOfGroup);
+    ---Category: Instantiated classes
+
+    class SequenceOfGroup instantiates
+                Sequence from TCollection (Group from Graphic3d);
+
+    ---Category: Instantiated classes
+
+    class HSequenceOfGroup instantiates
+            HSequence from TCollection
+        (Group from Graphic3d, SequenceOfGroup from Graphic3d);
+    ---Category: Instantiated classes
+
+    class MapOfStructure instantiates
+            Map from TCollection (Structure from Graphic3d,MapTransientHasher from TColStd);
+
+
+    ---Category: Instantiated classes
+
+    class SequenceOfStructure instantiates
+            Sequence from TCollection
+            (Structure from Graphic3d);
+    ---Category: Instantiated classes
+
+    class HSequenceOfStructure instantiates
+            HSequence from TCollection
+        (Structure from Graphic3d, SequenceOfStructure from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVector instantiates
+            Array1 from TCollection (Vector from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVertex instantiates
+            Array1 from TCollection (Vertex from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array2OfVertex instantiates
+            Array2 from TCollection (Vertex from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVertexC instantiates
+            Array1 from TCollection (VertexC from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array2OfVertexC instantiates
+            Array2 from TCollection (VertexC from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVertexN instantiates
+            Array1 from TCollection (VertexN from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array2OfVertexN instantiates
+            Array2 from TCollection (VertexN from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVertexNT instantiates
+            Array1 from TCollection (VertexNT from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array2OfVertexNT instantiates
+            Array2 from TCollection (VertexNT from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array1OfVertexNC instantiates
+            Array1 from TCollection (VertexNC from Graphic3d);
+    ---Category: Instantiated classes
+
+    class Array2OfVertexNC instantiates
+            Array2 from TCollection (VertexNC from Graphic3d);
+    ---Category: Instantiated classes
+
+    class ListOfShortReal instantiates
+            List from TCollection (ShortReal from Standard);
+    ---Category: Instantiated classes
+
+    --ABD Integration support of system fonts (using FTGL and FreeType)
+    imported NListOfHAsciiString;
+    ---Category: Instantiated classes
+
+
+        deferred  class  TextureRoot  from  Graphic3d;
+    deferred  class  TextureMap   from  Graphic3d;
+    deferred  class  Texture1D    from  Graphic3d;
+    deferred  class  Texture2D    from  Graphic3d;
+
+    class  TextureEnv       from  Graphic3d;
+    class  Texture1Dmanual  from  Graphic3d;
+    class  Texture1Dsegment from  Graphic3d;
+    class  Texture2Dmanual  from  Graphic3d;
+    class  Texture2Dplane   from  Graphic3d;
+
+
+    enumeration ExportFormat is
+
+        EF_PostScript,
+        EF_EnhPostScript,
+        EF_TEX,
+        EF_PDF,
+        EF_SVG,
+        EF_PGF
+
+    end ExportFormat;
+
+
+    enumeration SortType is
+
+        ST_Simple,    -- sorting by depth of center point of primitive(fast)
+        ST_BSP_Tree   -- sorting by BSPTree (slow, but fine result )
+
+        end SortType;
+
+end Graphic3d;

@@ -1,0 +1,159 @@
+--
+-- File:	Aspect_MarkerStyle.cdl
+-- Created:	Vendredi 13 Janvier 1995
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1991-1993
+--
+
+class MarkerStyle from Aspect
+
+	---Version:
+
+	---Purpose: This class defines a Marker Style.
+	--	    The Style can be Predefined or defined by the user
+	--	    A user defined style must be described in the space <-1,+1>
+
+	---Keywords: MarkerStyle 
+
+	---Warning:
+	---References:
+
+uses
+	TypeOfMarker from Aspect,
+	Array1OfReal from TColStd,
+	Array1OfBoolean from TColStd,
+	HArray1OfBoolean from TColStd,
+	Array1OfShortReal from TShort,
+	HArray1OfShortReal from TShort
+
+raises
+	MarkerStyleDefinitionError from Aspect
+
+is
+	Create returns MarkerStyle from Aspect;
+	---Level: Public
+	---Purpose: Creates a marker style with the default value of
+	--	    MarkerStyle type : POINT
+	--
+
+	Create ( aType	: TypeOfMarker ) returns MarkerStyle from Aspect ;
+	---Level: Public
+	---Purpose: Creates the marker style <aType>.
+
+	Create ( aXpoint : Array1OfReal ; 
+	         aYpoint : Array1OfReal ) 
+					returns MarkerStyle from Aspect
+	---Level: Public
+	---Purpose: Creates a marker style from a implicit draw point 
+	--descriptor .
+	-- Each coordinate <aXpoint(i),aYpoint(i)> must be defined 
+	--in the space -1,+1.
+	raises MarkerStyleDefinitionError;
+	---Trigger:
+	-- if <aXpoint>,<aYpoint> have different length.
+	-- if one coordinate is <-1 or >+1.
+
+	Create ( aXpoint : Array1OfReal ; 
+	         aYpoint : Array1OfReal ; 
+	  	 aSpoint : Array1OfBoolean )
+					returns MarkerStyle from Aspect
+	---Level: Public
+	---Purpose: Creates a marker style from a move-draw point descriptor .
+	-- Each coordinate <aXpoint(i),aYpoint(i)> must be defined 
+	--in the space -1,+1.
+	-- Each status point <aSpoint(i)> must be TRUE for drawing
+	--or FALSE for moving to the last at this point .
+	raises MarkerStyleDefinitionError;
+	---Trigger:
+	-- if <aXpoint>,<aYpoint>,<aSpoint> have different length.
+	-- if one coordinate is <-1 or >+1
+
+        ---------------------------------------------------
+        -- Category: Methods to modify the class definition
+        ---------------------------------------------------
+ 
+        Assign ( me     : in out ;
+                 Other  : MarkerStyle from Aspect )
+                returns MarkerStyle from Aspect is static;
+        ---Level: Public
+        ---Purpose: Updates the marker style <me> from the definition of the
+        --          marker style <Other>.
+        ---Category: Methods to modify the class definition
+        ---C++: alias operator =
+        ---C++: return &
+ 
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Type ( me ) returns TypeOfMarker is static;
+	---Level: Public
+	---Purpose: Returns the type of the marker style <me> 
+	---Category: Inquire methods
+
+        Length ( me ) returns Integer is static;
+        ---Level: Public
+        ---Purpose: Returns the components length of the marker descriptors
+        ---Category: Inquire methods
+
+	Values ( me ; aRank : Integer ;
+		      aX,aY : out Real ) returns Boolean
+	---Level: Public
+	---Purpose: Returns the point and status of a marker style 
+	--descriptor of rank <aRank>.
+	raises MarkerStyleDefinitionError is static;
+	---Trigger:
+	-- If aRank is < 1 or > Length()
+	---Category: Inquire methods
+
+	XValues ( me ) returns Array1OfShortReal is static;
+	---Level: Public
+	---Purpose: Returns the X vector of a marker style descriptor
+	---Category: Inquire methods
+	---C++: return const &
+
+	YValues ( me ) returns Array1OfShortReal is static;
+	---Level: Public
+	---Purpose: Returns the Y vector of a marker style descriptor
+	---Category: Inquire methods
+	---C++: return const &
+
+	SValues ( me ) returns Array1OfBoolean is static;
+	---Level: Public
+	---Purpose: Returns the State vector of a marker style descriptor
+	---Category: Inquire methods
+	---C++: return const &
+
+    	IsEqual(me; Other : MarkerStyle from Aspect) returns Boolean;
+	    ---C++: alias operator==
+
+    	IsNotEqual(me; Other : MarkerStyle from Aspect) returns Boolean;
+	    ---C++: alias operator!=
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	SetPredefinedStyle ( me : in out ) is static private;
+	---Level: Internal
+	---Purpose: Set MyMarkerDescriptor with the predefined style values
+	--	    according of current type
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_MarkerStyle
+--
+-- Purpose	:	Declaration of variables specific to marker styles
+--
+
+	MyMarkerType		: TypeOfMarker;
+	MyXpoint		: HArray1OfShortReal;
+	MyYpoint		: HArray1OfShortReal;
+	MySpoint		: HArray1OfBoolean;
+
+end MarkerStyle;

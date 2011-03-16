@@ -1,0 +1,28 @@
+//#include <MoniTool_Elem.ixx>
+#include <Standard_Integer.hxx>
+
+
+    MoniTool_Elem::MoniTool_Elem (const TheKey& akey)
+    : theval (akey)
+{  SetHashCode ( TheHasher::HashCode (akey, IntegerLast() ) );  }
+
+
+    const TheKey&  MoniTool_Elem::Value () const
+      {  return theval;  }
+
+    Standard_Boolean  MoniTool_Elem::Equates
+  (const Handle(MoniTool_Element)& other) const
+{
+  if (other.IsNull()) return Standard_False;
+  if (GetHashCode() != other->GetHashCode()) return Standard_False;
+  if (other->DynamicType() != DynamicType()) return Standard_False;
+  Handle(MoniTool_Elem) another = Handle(MoniTool_Elem)::DownCast(other);
+//  return (theval == another->Value());
+  return  TheHasher::IsEqual (theval,another->Value());
+}
+
+    Handle(Standard_Type)  MoniTool_Elem::ValueType () const
+      {  return TheInfo::Type(theval);  }
+
+    Standard_CString  MoniTool_Elem::ValueTypeName () const
+      {  return TheInfo::TypeName(theval);  }

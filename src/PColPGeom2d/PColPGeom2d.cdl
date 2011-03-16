@@ -1,0 +1,37 @@
+-- File:	PColPGeom2d.cdl
+-- Created:	Thu Jun  3 16:48:21 1993
+-- Author:	fid
+--		<model@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+package PColPGeom2d 
+
+        ---Purpose : This package  is used to  instantiate of  several
+        --         generic classes from  the package  PCollection with
+        --         objects from the package PGeom2d.
+
+uses PCollection, PGeom2d
+
+is
+
+
+
+    class HArray1OfCurve 
+    	instantiates HArray1 from PCollection (Curve from PGeom2d);
+    class HArray1OfBoundedCurve 
+    	instantiates HArray1 from PCollection (BoundedCurve from PGeom2d);
+    class HArray1OfBezierCurve 
+    	instantiates HArray1 from PCollection (BezierCurve from PGeom2d);
+    class HArray1OfBSplineCurve 
+    	instantiates HArray1 from PCollection (BSplineCurve from PGeom2d);
+
+
+
+--    class HSequenceOfCurve  
+--    	instantiates HSequence from PCollection (Curve from PGeom2d);
+--    class HSequenceOfBoundedCurve  
+--    	instantiates HSequence from PCollection (BoundedCurve from PGeom2d);
+
+
+end PColPGeom2d;

@@ -1,0 +1,85 @@
+--
+-- File      :  Torus.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Torus from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Torus, Type <160> Form Number <0>
+        --          in package IGESSolid
+        --          A Torus is a solid formed by revolving a circular disc
+        --          about a specified coplanar axis.
+
+uses
+
+        Pnt             from gp,
+        Dir             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable Torus;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              R1        : Real;
+              R2        : Real;
+              aPoint    : XYZ;
+              anAxisdir : XYZ);
+        ---Purpose : This method is used to set the fields of the class Torus
+        --       - R1     : distance from center of torus to center
+        --                  of circular disc to be revolved
+        --       - R2     : radius of circular disc
+        --       - aPoint : center point coordinates (default (0,0,0))
+        --       - anAxis : unit vector in axis direction (default (0,0,1))
+
+        MajorRadius (me) returns Real;
+        ---Purpose : returns the distance from the center of torus to the center of
+        -- the disc to be revolved
+
+        DiscRadius (me) returns Real;
+        ---Purpose : returns the radius of the disc to be revolved
+
+        AxisPoint (me) returns Pnt;
+        ---Purpose : returns the center of torus
+
+        TransformedAxisPoint (me) returns Pnt;
+        ---Purpose : returns the center of torus after applying TransformationMatrix
+
+        Axis (me) returns Dir;
+        ---Purpose : returns direction of the axis
+
+        TransformedAxis (me) returns Dir;
+        ---Purpose : returns direction of the axis after applying TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_Torus
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Torus.
+--
+-- Reminder : A Torus instance is defined by :
+--            the distance from the axis to the center of the disc(R1),
+--            the radius of the disc(R2), the center of the torus(X1,Y1,Z1)
+--            and the direction of the axis(I1,J1,K1)
+--
+
+        theR1    : Real;
+            -- the distance from the axis to the center of the disc
+
+        theR2    : Real;
+            -- the radius of the disc
+
+        thePoint : XYZ;
+            -- the center of the torus
+
+        theAxis  : XYZ;
+            -- the direction of the axis
+
+end Torus;

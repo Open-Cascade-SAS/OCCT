@@ -1,0 +1,15 @@
+// File:	LocOpe_WiresOnShape.lxx
+// Created:	Wed Jan 24 13:46:41 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_WiresOnShape::IsDone() const
+{
+  return myDone;
+}

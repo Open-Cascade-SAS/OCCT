@@ -1,0 +1,55 @@
+-- File:	 CylinderToBSplineSurface.cdl
+-- Created:	 Thu Oct 10 15:14:38 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+class CylinderToBSplineSurface  from Convert
+
+        --- Purpose :
+        --  This algorithm converts a bounded cylinder into a rational 
+        --  B-spline surface. The cylinder is a Cylinder from package gp. 
+        --  The parametrization of the cylinder is  :
+        --  P (U, V) = Loc + V * Zdir + Radius * (Xdir*Cos(U) + Ydir*Sin(U)) 
+        --  where Loc is the location point of the cylinder, Xdir, Ydir and
+        --  Zdir are the normalized directions of the local cartesian
+        --  coordinate system of the cylinder (Zdir is the direction of the
+        --  cylinder's axis). The U parametrization range is U [0, 2PI].
+        --- KeyWords :
+        --  Convert, Cylinder, BSplineSurface.
+
+inherits ElementarySurfaceToBSplineSurface
+
+
+uses Cylinder from gp
+
+raises DomainError from Standard
+
+is
+
+  Create (Cyl : Cylinder; U1, U2, V1, V2 : Real)
+     returns CylinderToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-splineSurface as the same orientation as the 
+       --  cylinder in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
+        --  Raised if V1 = V2.
+
+
+  Create (Cyl : Cylinder; V1, V2 : Real)
+     returns CylinderToBSplineSurface
+       --- Purpose : 
+       --  The equivalent B-splineSurface as the same orientation as the
+       --  cylinder in the U and V parametric directions.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if V1 = V2.
+
+
+end CylinderToBSplineSurface;
+
+

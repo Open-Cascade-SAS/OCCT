@@ -1,0 +1,160 @@
+generic class Array1 from TCollection (Array1Item as any)
+ 
+raises  RangeError from Standard,
+    	DimensionMismatch from Standard,
+    	OutOfRange from Standard,
+	OutOfMemory from Standard 
+
+	---Purpose: The class Array1 represents unidimensionnal arrays
+    	--          of fixed size dynamically dimensioned at construction time..
+	--          
+	--          The range of the index is user defined.
+	--         
+    	--          As with a C array, the access time to an Array1
+    	--          indexed item is constant and is
+    	--          array-size-independent. Arrays are commonly
+    	--          used as elementary data structures for more complex objects.
+    	--          Array1 is a generic class, which depends on
+    	--          Item, the type of element in the array.
+	--          An array1 can be constructed with a "C array".
+        --          This functionality is useful to call methods expecting
+        --          an Array1. It allows to carry the bounds inside the arrays.
+        --          
+        --  Examples: Item tab[100]; //  An example with a C array
+        --          Array1OfItem ttab (tab[0],1,100);
+        --          
+        --          Array1OfItem tttab (ttab(10),10,20); // a slice of ttab
+        --  
+        --          If you want to reindex an array from 1 to Length do :
+        --          
+        --          Array1 tab1(tab(tab.Lower()),1,tab.Length());
+        --                          
+	--  Warning: Programs client of such a class must be independant
+	--          of the range of the first element. Then, a C++ for
+	--          loop must be written like this
+	--
+	--          for (i = A.Lower(); i <= A.Upper(); i++)
+
+
+
+is
+    
+    Create (Low, Up: Integer from Standard) 
+    returns  Array1 from TCollection
+      	---Purpose: Creates an array  of lower  bound <Low>  and upper
+    	--          bound <Up>. Range  error  is raised  when <Up>  is
+    	--          less than <Low>.
+    raises 
+        RangeError  from Standard,
+        OutOfMemory from Standard;
+
+    Create(Item : Array1Item;
+           Low, Up: Integer from Standard) 
+    returns Array1 from TCollection
+    	---Purpose: Creates an array sharing datas with a C array.
+    	--          Example:
+    	--            Item tab[100];
+    	--            Array1OfItem thetab (tab[0],1,100);
+    	--            
+    	--  Warning: The validity of Low and Up values are under the responsability
+    	--          of the user.
+    	--          The C array must be a validate address during the life of
+    	--          the Array1.
+    raises 
+        RangeError  from Standard;
+    	
+    Init (me: in out; V: Array1Item);
+    	---Purpose: Initializes the array with a given value.
+
+    Destroy (me: in out);
+    	---Purpose: Frees the  allocated   area  corresponding  to the
+    	--          array.   If  the  array   was constructed  either from  a
+    	--          C Array (when method Allocated returns False) 
+    	--          the Destroy doesn't delete the area.
+    	--          
+    	---C++: alias ~
+
+    IsAllocated (me) returns Boolean from Standard;
+    	---Purpose: Returns True if the data was allocated by the array constructors.
+    	--          (i.e not a slice neither a C array)
+        ---C++: inline
+
+    Assign (me: in out; Other: Array1 from TCollection) 
+    returns Array1 from TCollection
+    	---Purpose: Copies the contents of <Other> into <me>.  <Other>
+    	--          and <me> must have the same dimension.
+    	--    	This method is an alias of operator =.
+    	-- Example
+    	-- TColStd_Array1OfInteger
+    	-- t1(1,20), t2(1,20);
+    	-- t1.Init(3);
+    	-- t2 = t1;
+    	-- assert ( t2(10) == 3 );
+    	-- Exceptions
+    	-- Standard_DimensionMismatch if this array
+    	-- and array Other do not have the same dimension.
+    	---C++: alias operator = 
+    	---C++: return const &
+    raises DimensionMismatch from Standard;
+    
+    Length (me) returns Integer from Standard;
+    	---Purpose: Returns the number of elements of <me>.
+    	--           
+        ---C++: inline
+
+    Lower (me) returns Integer from Standard;
+    	---Purpose:  Returns the lower bound.
+    	-- Warning
+    	--Client programs of the Array1 class must be independent of the first item range.--          
+    	---C++: inline
+	
+    Upper (me) returns Integer from Standard;
+    	---Purpose: Returns the upper bound.
+    	-- Warning
+    	--Client programs of the Array1 class must be independent of the first item range.--          
+    	---C++: inline
+
+    SetValue (me : out; Index: Integer from Standard; Value: Array1Item) 
+    	---Purpose: Assigns the value <Value> to the <Index>-th item of this array.
+    	-- Example
+    	-- TColStd_Array1OfInteger
+    	-- array(0,100);
+    	-- array.SetValue(3,1515);
+    	-- assert (array(3) == 1515 );
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index lies outside the bounds of this array.
+    ---C++: inline
+    raises OutOfRange from Standard;
+
+    Value (me; Index:Integer from Standard) returns any Array1Item
+    	---Purpose: Return the value of  the  <Index>th element of the
+    	--          array.
+    	--          
+    	---C++: alias operator ()
+    	---C++: return const &
+        ---C++: inline
+    raises OutOfRange from Standard;
+    
+    ChangeValue (me: in out; Index:Integer from Standard) returns any Array1Item
+    	---Purpose: return the value  of the <Index>th element  of the
+    	--          array.
+    	--
+    	---C++: alias operator ()
+    	---C++: return &
+        ---C++: inline
+    raises OutOfRange from Standard;
+
+    Create (AnArray : Array1 from TCollection) 
+    returns Array1 from TCollection
+    is private;
+    	---Purpose: Creates an Array1 by copy of an Array1.
+    
+fields
+
+	myLowerBound : Integer;
+        myUpperBound : Integer;
+    	myStart      : Address;
+        isAllocated  : Boolean;
+	
+end Array1 ;
+ 

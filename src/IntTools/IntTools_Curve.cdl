@@ -1,0 +1,126 @@
+-- File:	IntTools_Curve.cdl
+-- Created:	Thu Nov 23 15:00:22 2000
+-- Author:	Michael KLOKOV
+--		<mkk@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class Curve from IntTools
+
+
+uses
+    Curve from Geom,
+    Curve from Geom2d,
+    Pnt  from gp, 
+    CurveType from GeomAbs
+is
+    Create  
+    	returns Curve from IntTools;
+	---Purpose:
+	--- Empty constructor
+	---
+
+    Create(Curve3d: Curve from Geom;  
+    	   FirstCurve2d : Curve from Geom2d;
+    	   SecondCurve2d: Curve from Geom2d)
+    	returns Curve from IntTools;
+	---Purpose:
+	--- Initializes me by a 3d curve
+	--- and two 2d curves
+	---
+
+    SetCurves(me: in out;  
+    	      Curve3d: Curve from Geom;  
+    	      FirstCurve2d  : Curve from Geom2d;
+    	      SecondCurve2d : Curve from Geom2d);
+    	---Purpose:
+	--- Modifier
+	---
+    
+    SetCurve(me: in out;  
+    	    	Curve3d: Curve from Geom);
+    	---C++: inline
+	---Purpose:
+	--- Modifier
+	---
+    
+    SetFirstCurve2d(me: in out;  
+    	    	FirstCurve2d: Curve from Geom2d);
+    	---C++: inline
+	---Purpose:
+	--- Modifier
+	---
+    
+    SetSecondCurve2d(me: in out;  
+    	    	SecondCurve2d: Curve from Geom2d);
+    	---C++: inline
+	---Purpose:
+	--- Modifier
+	---
+
+    Curve(me)  
+    	returns any Curve from Geom;
+    	---C++: return const &
+	---C++: inline
+	---Purpose:
+	--- Selector
+	---
+    
+    FirstCurve2d(me)
+    	returns any Curve from Geom2d;
+    	---C++: return const &
+	---C++: inline
+	---Purpose:
+	--- Selector
+	---
+	    
+    SecondCurve2d(me)
+    	returns any Curve from Geom2d;
+    	---C++: return const &
+	---C++: inline 
+	---Purpose:
+	--- Selector
+	---
+	
+    HasBounds (me) 
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if 3d curve is BoundedCurve from Geom
+	---
+
+    Bounds    (me; aT1:out Real from Standard;    	  
+                   aT2:out Real from Standard;    	  
+		   aP1:out Pnt  from gp;     
+		   aP2:out Pnt  from gp);
+    	---Purpose:
+	--- Returns boundary parameters
+	--- and corresponded 3d point.
+	---
+	--  Warning:
+	--- If HasBounds returns false
+	--- the returned parameters are equal
+	--- to zero.
+	---
+
+    D0        (me;  
+    	       aT1:out Real from Standard; 
+               aP1:out Pnt  from gp) 
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Computes 3d point corresponded to parameter aT1
+	--- Returns true if given parameter aT1
+	--- is inside the boundaries of the curve
+	---
+     
+    Type  (me) 
+    	returns CurveType from GeomAbs; 
+	---Purpose:
+	--- Returns the type of 3d curve
+	---
+ 
+fields
+
+    my3dCurve : Curve from Geom;
+    my2dCurve1: Curve from Geom2d;
+    my2dCurve2: Curve from Geom2d;
+    
+end Curve from IntTools;

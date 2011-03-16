@@ -1,0 +1,41 @@
+-- File:	TNaming_CopyShape.cdl
+-- Created:	Mon Feb 14 16:45:46 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class CopyShape from TNaming 
+
+	---Purpose: 
+
+uses Shape from TopoDS,
+     IndexedDataMapOfTransientTransient from TColStd,
+     TranslateTool from TNaming,
+     Location from TopLoc
+
+is
+
+    CopyTool (myclass;
+              aShape    :  Shape      from TopoDS;
+    	      aMap      :  in out  IndexedDataMapOfTransientTransient from TColStd; 
+	      aResult   :  in  out Shape  from  TopoDS);
+	---Purpose:      Makes  copy  a  set  of  shape(s),  using the  aMap 
+	 
+	  
+    Translate (myclass;
+               aShape  : Shape          from TopoDS; 
+	       aMap    : in out  IndexedDataMapOfTransientTransient from TColStd; 
+	       aResult : in  out Shape  from  TopoDS;
+    	       TrTool  : TranslateTool  from TNaming); 
+	     
+	 ---Purpose: Translates  a  Transient  shape(s)  to  Transient     
+	    
+    Translate (myclass;
+               L : Location from TopLoc; 
+     	       aMap :  in out  IndexedDataMapOfTransientTransient from TColStd)   	       
+    returns Location from TopLoc; 
+     ---Purpose: Translates a Topological  Location  to an  other  Top.
+     --          Location 
+
+end CopyShape;

@@ -1,0 +1,86 @@
+-- File:	Interface_GTool.cdl
+-- Created:	Thu Jan  8 14:42:05 1998
+-- Author:	Christian CAILLET
+--		<xstep@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class GTool  from Interface    inherits TShared
+
+    ---Purpose : GTool - General Tool for a Model
+    --           Provides the functions performed by Protocol/GeneralModule for
+    --           entities of a Model, and recorded in a GeneralLib
+    --           Optimized : once an entity has been queried, the GeneralLib is
+    --           not longer queried
+    --           Shareable between several users : as a Handle
+
+uses Transient,
+     Protocol, GeneralLib, GeneralModule,
+     SignType, InterfaceModel,
+     IndexedDataMapOfTransientTransient from TColStd,
+     DataMapOfTransientInteger   from Interface
+
+is
+
+    Create  returns mutable GTool;
+    ---Purpose : Creates an empty, not set, GTool
+
+    Create (proto : Protocol; nbent : Integer = 0)  returns mutable GTool;
+    ---Purpose : Creates a GTool from a Protocol
+    --           Optional starting count of entities
+
+    SetSignType (me : mutable; sign : SignType);
+    ---Purpose : Sets a new SignType
+
+    SignType    (me) returns SignType;
+    ---Purpose : Returns the SignType. Can be null
+
+    SignValue   (me; ent : Transient; model : InterfaceModel)
+    	returns CString;
+    ---Purpose : Returns the Signature for a Transient Object in a Model
+    --           It calls SignType to do that
+    --           If SignType is not defined, return ClassName of <ent>
+
+    SignName    (me) returns CString;
+    ---Purpose : Returns the Name of the SignType, or "Class Name"
+
+    SetProtocol (me : mutable; proto : Protocol; enforce : Boolean = Standard_False);
+    ---Purpose : Sets a new Protocol
+    --           if <enforce> is False and the new Protocol equates the old one
+    --           then nothing is done
+
+    Protocol    (me) returns Protocol;
+    ---Purpose : Returns the Protocol.  Warning : it can be Null
+
+    Lib         (me : mutable) returns GeneralLib;
+    ---Purpose : Returns the GeneralLib itself
+    ---C++ : return &
+
+    Reservate   (me : mutable; nb : Integer; enforce : Boolean = Standard_False);
+    ---Purpose : Reservates maps for a count of entities
+    --           <enforce> False : minimum count
+    --           <enforce> True  : clears former reservations
+    --           Does not clear the maps
+
+    ClearEntities (me : mutable);
+    ---Purpose : Clears the maps which record, for each already recorded entity
+    --           its Module and Case Number
+
+    Select (me : mutable; ent : Transient;
+    	    gmod : out mutable GeneralModule;
+    	    CN   : out Integer;
+    	    enforce : Boolean = Standard_False)  returns Boolean;
+    ---Purpose : Selects for an entity, its Module and Case Number
+    --           It is optimised : once done for each entity, the result is
+    --           mapped and the GeneralLib is not longer queried
+    --           <enforce> True overpasses this optimisation
+
+fields
+
+    theproto : Protocol;
+    thesign  : SignType;
+    thelib   : GeneralLib;
+    thentnum : DataMapOfTransientInteger;
+    thentmod : IndexedDataMapOfTransientTransient;
+
+end GTool;

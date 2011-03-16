@@ -1,0 +1,35 @@
+// File:	Poly_Triangulation.lxx
+// Created:	Mon Mar  6 10:53:09 1995
+// Author:	Laurent PAINNOT
+//		<lpa@metrox>
+
+//=======================================================================
+//function : NbNodes
+//purpose  : 
+//=======================================================================
+
+ inline Standard_Integer Poly_Triangulation::NbNodes() const 
+{
+  return myNbNodes;
+}
+
+//=======================================================================
+//function : NbTriangles
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Poly_Triangulation::NbTriangles() const 
+{
+  return myNbTriangles;
+}
+
+//=======================================================================
+//function : HasUVNodes
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Poly_Triangulation::HasUVNodes() const 
+{
+  return !myUVNodes.IsNull();
+}
+

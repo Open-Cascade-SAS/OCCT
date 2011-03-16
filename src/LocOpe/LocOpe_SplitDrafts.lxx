@@ -1,0 +1,44 @@
+// File:	LocOpe_SplitDrafts.lxx
+// Created:	Wed Oct  2 15:10:30 1996
+// Author:	Jacques GOUSSARD
+//		<jag@mobilox.lyon.matra-dtv.fr>
+
+
+//=======================================================================
+//function : LocOpe_SplitDrafts
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_SplitDrafts::LocOpe_SplitDrafts ()
+{}
+
+
+//=======================================================================
+//function : LocOpe_SplitDrafts
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_SplitDrafts::LocOpe_SplitDrafts (const TopoDS_Shape& S):
+   myShape(S)
+{}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_SplitDrafts::IsDone() const 
+{
+  return (!myResult.IsNull());
+}
+
+//=======================================================================
+//function : OriginalShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_SplitDrafts::OriginalShape () const
+{
+  return myShape;
+}

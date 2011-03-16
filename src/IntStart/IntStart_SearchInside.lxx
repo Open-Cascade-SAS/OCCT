@@ -1,0 +1,24 @@
+#include <StdFail_NotDone.hxx>
+
+
+inline Standard_Boolean IntStart_SearchInside::IsDone () const {
+
+  return done;
+}
+
+
+inline Standard_Integer IntStart_SearchInside::NbPoints () const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  return list.Length();
+}
+
+
+inline const IntSurf_InteriorPoint& IntStart_SearchInside::Value 
+     (const Standard_Integer Index) const
+
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return list.Value(Index);
+}
+

@@ -1,0 +1,65 @@
+-- File:	MXCAFDoc.cdl
+-- Created:	Tue Aug 15 15:33:38 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package MXCAFDoc 
+
+	---Purpose: 
+
+uses
+    TopLoc,
+    PTopLoc,
+    TDF,
+    PDF,
+    MDF,
+    MDataStd,
+    CDM
+
+is
+    class DocumentToolRetrievalDriver;
+    class DocumentToolStorageDriver;
+    class ColorToolRetrievalDriver;
+    class ColorToolStorageDriver;
+    class ShapeToolRetrievalDriver;
+    class ShapeToolStorageDriver;
+
+    class LayerToolRetrievalDriver;
+    class LayerToolStorageDriver;
+    
+    class LocationStorageDriver;
+    class LocationRetrievalDriver;
+    class ColorStorageDriver;
+    class ColorRetrievalDriver;
+    class VolumeStorageDriver;
+    class VolumeRetrievalDriver;
+    class AreaStorageDriver;
+    class AreaRetrievalDriver;
+    class CentroidStorageDriver;
+    class CentroidRetrievalDriver;
+    
+    class GraphNodeStorageDriver;
+    class GraphNodeRetrievalDriver;
+
+    class DatumStorageDriver;
+    class DatumRetrievalDriver;
+    class DimTolStorageDriver;
+    class DimTolRetrievalDriver;
+    class DimTolToolRetrievalDriver;
+    class DimTolToolStorageDriver;
+    class MaterialStorageDriver;
+    class MaterialRetrievalDriver;
+    class MaterialToolRetrievalDriver;
+    class MaterialToolStorageDriver;
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF; theMsgDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF; theMsgDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverSeq>.
+
+
+end MXCAFDoc;

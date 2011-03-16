@@ -1,0 +1,34 @@
+-- File:	BinMPrsStd_AISPresentationDriver.cdl
+-- Created:	Mon May 17 10:15:10 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+class AISPresentationDriver from BinMPrsStd inherits ADriver from BinMDF
+
+	---Purpose: AISPresentation Attribute Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable AISPresentationDriver from BinMPrsStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+    
+
+end AISPresentationDriver;

@@ -1,0 +1,216 @@
+-- File:	ShapeConstruct_ProjectCurveOnSurface.cdl
+-- Created:	Tue Jul 14 10:14:07 1998
+-- Author:	data exchange team
+--		<det@pronox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+-- szv#4 S4163
+
+class ProjectCurveOnSurface from ShapeConstruct inherits TShared from MMgt
+
+    ---Purpose: This tool provides a method for computing pcurve by projecting
+    --          3d curve onto a surface.
+    --          Projection is done by 23 or more points (this number is changed
+    --          for B-Splines according to the following rule:
+    --          the total number of the points is not less than number of spans *
+    --          (degree + 1);
+    --          it is increased recursively starting with 23 and is added with 22
+    --          until the condition is fulfilled).
+    --          Isoparametric cases (if curve corresponds to U=const or V=const on
+    --          the surface) are recognized with the given precision.
+
+uses
+    Pnt            from gp,
+    Pnt2d          from gp,
+    Curve          from Geom2d, 
+    Curve          from Geom, 
+    Surface        from Geom,
+    Array1OfPnt    from TColgp,
+    HArray1OfPnt   from TColgp,
+    Array1OfPnt2d  from TColgp,
+    HArray1OfPnt2d from TColgp,
+    Array1OfReal   from TColStd,
+    HArray1OfReal  from TColStd,
+    Surface        from ShapeAnalysis,
+    Status         from ShapeExtend,
+    Shape          from GeomAbs
+
+is
+
+    Create returns ProjectCurveOnSurface from ShapeConstruct;
+    	---Purpose: Empty constructor.
+
+    Init (me: mutable; surf: Surface from Geom; preci: Real) is virtual;
+    	---Purpose: Initializes the object with all necessary parameters,
+	--          i.e. surface and precision
+
+    Init (me : mutable; surf: Surface from ShapeAnalysis; preci : Real) is virtual;
+    	---Purpose: Initializes the object with all necessary parameters,
+	--          i.e. surface and precision
+
+    SetSurface (me: mutable; surf: Surface from Geom);
+    	---Purpose: Loads a surface (in the form of Geom_Surface) to project on
+
+    SetSurface (me : mutable; surf: Surface from ShapeAnalysis);
+    	---Purpose: Loads a surface (in the form of ShapeAnalysis_Surface) to project on
+
+    SetPrecision (me : mutable; preci : Real);
+    	---Purpose : Sets value for current precision
+
+    BuildCurveMode (me : mutable) returns Boolean;
+    	---Purpose : Returns (modifiable) the build-curve-3d mode, by default False
+    	--           If True, if the projected curve has been recomputed by
+    	--           interpolation, the 3d curve is also rebuild by interpolation
+    	---C++ : return &
+
+    AdjustOverDegenMode (me : mutable) returns Integer; -- szv#4:S4163:12Mar99 was Boolean
+    	---Purpose : Returns (modifiable) the flag specifying to which side of
+        --           parametrical space adjust part of pcurve which lies on seam.
+	--           This is required in very rare case when 3d curve which is 
+	--           to be projected goes partly along the seam on the closed  
+	--           surface with singularity (e.g. sphere), goes through the 
+        --           degenerated point and paerly lies on internal area of surface.
+	--
+     	--           If this flag is True, the seam part of such curve will be 
+        --           adjusted to the left side of parametric space (on sphere U=0), 
+        --           else to the right side (on sphere U=2*PI)
+	--           Default value is True
+	---Level: Advanced
+    	---C++ : return &
+
+    Status (me; Status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status of last Peform
+
+    Perform (me: mutable; c3d        : in out Curve from Geom;
+    	    	         First, Last: Real;
+    	    	         c2d        : out Curve from Geom2d;
+ 			 continuity : Shape from GeomAbs = GeomAbs_C1;
+    	    	    	 maxdeg     : Integer = 12;
+    	    	    	 nbinterval : Integer = -1   )
+    returns Boolean is virtual;
+    	---Purpose: Computes the projection of 3d curve onto a surface using the 
+        --          standard algorithm from ProjLib. Returns False if standard
+	--          projector fails or raises an exception or cuts the curve by 
+	--          parametrical bounds of the surface. Else, if pcurve computed
+	--          successfully, returns True.
+	--          The continuity, maxdeg and nbinterval are parameters of call
+	--          to Approx_CurveOnSurface. If nbinterval is equal to -1 
+        --          (default), this value is computed depending on source 3d curve
+	--          and surface.
+    	---Status: 
+	--          FAIL1 if the standard projector fails (no result)
+	--          FAIL2 if the standard projector raises an exception
+	--          FAIL3 if the standard projector cuts the pcurve
+    	--          DONE1 if pcurve was computed successfully
+
+    PerformByProjLib(me: mutable; c3d        : in out Curve from Geom;
+    	    	    		 First, Last: Real;
+				 c2d        : out Curve from Geom2d;
+				 continuity : Shape from GeomAbs = GeomAbs_C1;
+    	    	    	    	 maxdeg     : Integer = 12;
+    	    	    	    	 nbinterval : Integer = -1)
+    returns Boolean;
+    	---Purpose: Computes the projection of 3d curve onto a surface using the 
+        --          standard algorithm from ProjLib. Returns False if standard
+	--          projector fails or raises an exception or cuts the curve by 
+	--          parametrical bounds of the surface. Else, if pcurve computed
+	--          successfully, returns True.
+	--          The continuity, maxdeg and nbinterval are parameters of call
+	--          to Approx_CurveOnSurface. If nbinterval is equal to -1 
+        --          (default), this value is computed depending on source 3d curve
+	--          and surface.
+    	---Status: 
+	--          FAIL1 if the standard projector fails (no result)
+	--          FAIL2 if the standard projector raises an exception
+	--          FAIL3 if the standard projector cuts the pcurve
+    	--          DONE1 if pcurve was computed successfully
+
+    PerformAdvanced(me: mutable; c3d        : in out Curve from Geom;
+                                First, Last: Real;
+				c2d        : out Curve from Geom2d)
+    returns Boolean;
+        ---Purpose: Computes the projection of 3d curve onto a surface using 
+	--          either standard projector (method PerformByStandard()) or 
+        --          internal one (method Perform()). The selection is done by 
+	--          analyzing the surface and 3d curve and is aimed to filter
+	--          the cases potentially dangerous for the standard projector.
+	--          If the standard projector fails, internal one is used.
+    	---Status: 
+    	--          FAIL1 if no surface loaded,
+    	--          FAIL2 if standard projected has failed,
+    	--          FAIL3 if internal projected failed
+    	--          DONE1 if c2d was built analytically,
+    	--          DONE2 if c2d was approximied by internal projector,
+	--          DONE3 if c3d was rebuilt (see BuildCurveMode)
+	--          DONE4 if seam part of pcurve was adjusted to one side of 
+        --                parametric space according to flag AdjustOverDegenMode
+	--          DONE5 if c2d was computed by PerformByProjLib()
+    
+    ---Level: Private
+
+    ProjectAnalytic (me; c3d: Curve from Geom)
+    returns Curve from Geom2d is private;
+
+    ApproxPCurve (me: mutable; nbrPnt  : Integer;
+    	    	      points  : Array1OfPnt from TColgp;
+		      params  : Array1OfReal from TColStd;
+		      points2d: out Array1OfPnt2d from TColgp;
+		      c2d     : out Curve from Geom2d)
+    returns Boolean is private;
+
+    InterpolatePCurve (me; nbrPnt  : Integer;
+		           points2d: in out HArray1OfPnt2d from TColgp;
+		           params  : in out HArray1OfReal from TColStd;
+    	    	    	   orig    : Curve from Geom)
+    returns Curve from Geom2d is private;
+
+    ApproximatePCurve (me; nbrPnt  : Integer;
+		           points2d: in out HArray1OfPnt2d from TColgp;
+		           params  : in out HArray1OfReal from TColStd;
+    	    	    	   orig    : Curve from Geom)
+    returns Curve from Geom2d is private;
+
+    InterpolateCurve3d (me; nbrPnt: Integer;
+		            points: in out HArray1OfPnt from TColgp;
+		            params: in out HArray1OfReal from TColStd;
+    	    	    	    orig  : Curve from Geom)
+    returns Curve from Geom is private;
+
+    CheckPoints (me; points: in out HArray1OfPnt from TColgp;
+		     params: in out HArray1OfReal from TColStd;
+		     preci : in out Real)
+    is private;
+
+    CheckPoints2d (me; points: in out HArray1OfPnt2d from TColgp;
+		       params: in out HArray1OfReal from TColStd;
+		       preci : in out Real)
+    is private;
+
+    IsAnIsoparametric (me; nbrPnt    : Integer;
+    	    	    	   points    : Array1OfPnt from TColgp;
+			   params    : Array1OfReal from TColStd;
+			   isoTypeU  : out Boolean;
+			   p1OnIso   : out Boolean;
+			   valueP1   : out Pnt2d from gp;
+			   p2OnIso   : out Boolean;
+			   valueP2   : out Pnt2d from gp;
+			   isoPar2d3d: out Boolean;
+			   cIso      : out Curve from Geom;
+			   t1, t2    : out Real;
+    	    	    	   pout      : out Array1OfReal from TColStd)
+    returns Boolean is private;
+
+
+fields
+
+    mySurf  : Surface from ShapeAnalysis is protected;
+    myPreci : Real is protected;
+    myBuild : Boolean is protected;
+    myStatus: Integer is protected;
+    -- myAdjustOverDegen: Boolean; --//:c0 abv: cases when curve goes over sphere pole
+    myAdjustOverDegen: Integer is protected; -- szv#4:S4163:12Mar99 was Boolean -- smh#14 - never used in open version
+  
+    myNbCashe: Integer is protected;
+    myCashe3d: Pnt   from gp [2] is protected;
+    myCashe2d: Pnt2d from gp [2] is protected;
+
+end ProjectCurveOnSurface;

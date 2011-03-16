@@ -1,0 +1,28 @@
+--
+-- File:        PS_CMPLRS.edl
+-- Author:      Jean GAUTIER
+-- History:     Thu Oct  3 13:12:20 1996        Jean GAUTIER    Creation
+-- Copyright:   Matra Datavision 1996
+--
+
+@ifnotdefined ( %PS_CMPLRS_EDL) then
+  @set %PS_CMPLRS_EDL = "";
+  @uses "CSF.edl" ;
+
+  --@uses "PS.edl";
+
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " " %CSF_X11_INCLUDE ;
+    @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " " %CSF_X11_INCLUDE ;
+
+  @if ( %Station == "sil" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -D_NO_PROTO";
+  @endif;
+
+  @if ( %Station == "ao1" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -std1";
+  @endif;
+
+  @if ( %Station == "hp" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -Ac -D_NO_PROTO";
+  @endif;
+@endif;

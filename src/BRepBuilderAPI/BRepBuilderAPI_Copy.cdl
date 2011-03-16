@@ -1,0 +1,50 @@
+-- File:	BRepBuilderAPI_Copy.cdl
+-- Created:	Mon Dec 12 12:10:47 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Copy from BRepBuilderAPI inherits ModifyShape from BRepBuilderAPI
+
+	---Purpose: Duplication of a shape.
+    	-- A Copy object provides a framework for:
+    	-- -   defining the construction of a duplicate shape,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+        
+uses
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    ShapeModification from BRepBuilderAPI,
+    ListOfShape       from TopTools
+
+
+is
+
+    Create
+	---Purpose: Constructs an empty copy framework. Use the function
+    	-- Perform to copy shapes.
+       	returns Copy from BRepBuilderAPI;
+
+
+    Create(S: Shape from TopoDS; copyGeom: Boolean = Standard_True)
+	---Purpose: Constructs a copy framework and copies the shape S.
+    	-- Use the function Shape to access the result.
+    	-- If copyGeom is False, only topological objects will be copied, while 
+    	-- geometry will be shared with original shape.
+    	-- Note: the constructed framework can be reused to copy
+    	-- other shapes: just specify them with the function Perform.
+    	returns Copy from BRepBuilderAPI;
+
+
+    Perform(me: in out; S: Shape from TopoDS; copyGeom: Boolean = Standard_True)
+	---Purpose: Copies the shape S.
+    	-- Use the function Shape to access the result.
+    	-- If copyGeom is False, only topological objects will be copied, while 
+    	-- geometry will be shared with original shape.
+    	is static;
+
+
+end Copy;

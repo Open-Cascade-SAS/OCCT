@@ -1,0 +1,233 @@
+-- File:	IntCurveCurveGen.cdl
+-- Created:	Fri May 22 14:20:59 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class IntCurveCurveGen from IntCurve (
+    TheCurve         as any;
+    TheCurveTool     as any) -- as CurveTool from IntCurve(TheCurve)
+
+	---Purpose: Provides the algorithm to intersect two 2D-curves.
+	--          The curves may be parametric curves or Conic (see
+	--          the template class CurveTool).
+	--
+	-- Note: The  exception  ConstructionError  is   raised  in
+	--          constructors  or in Perform  methods when a domain
+	--          (Domain from IntRes2d)  is not  correct, i-e  when
+	--          the method  TheType  returns GeomAbs_Circle     or
+	--          GeomAbs_Ellipsei   and the corresponding domain is
+	--          not  closed (use the SetEquivalentParameters for a
+	--          domain on  a circle  or an  ellipse)  or  when the
+	--          method  TheType   returns  GeomAbs_Other and   the
+	--          domain     of  the   curve   is    not     bounded
+	--          (HasFirstPoint() && HasLastPoint() return True).
+        ---Level: Advanced
+        
+inherits Intersection from IntRes2d
+
+uses Domain        from IntRes2d,
+     IntConicConic from IntCurve,
+     IConicTool    from IntCurve,
+     Array1OfReal  from TColStd
+ 
+raises ConstructionError from Standard
+
+		      
+    	class TheProjPCur instantiates ProjPCurGen from IntCurve(
+	    	        TheCurve,
+    	    	        TheCurveTool);
+		       
+        class TheIntConicCurve instantiates IntConicCurveGen from IntCurve
+	                (IConicTool      from  IntCurve,
+                         TheCurve,
+			 TheCurveTool,
+                         TheProjPCur);
+
+        class IntConicCurve instantiates UserIntConicCurveGen from IntCurve
+	                (IConicTool      from  IntCurve,
+                         TheCurve,
+			 TheCurveTool,
+                         TheIntConicCurve);
+
+    	class TheIntPCurvePCurve  instantiates IntPolyPolyGen from IntCurve
+	                (TheCurve,
+			 TheCurveTool,
+                         TheProjPCur);
+is
+
+    Create
+    
+	---Purpose: Empty constructor.
+    	returns IntCurveCurveGen from IntCurve;
+    	---C++: inline
+
+
+    Create (C:  TheCurve; TolConf,Tol: Real from Standard)
+    
+    	---Purpose: Self Intersection of a curve
+    	---C++: inline
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+    Create (C:  TheCurve; D: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+	    
+        ---Purpose: Self Intersection of a curve with a domain.
+    	---C++: inline
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+	    
+
+    Create (C1:  TheCurve; C2:  TheCurve;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between 2 curves.
+    	---C++: inline 
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+    Create (C1:  TheCurve; D1: Domain from IntRes2d;
+            C2:  TheCurve; 
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between 2 curves.
+    	---C++: inline
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+	
+	
+    Create (C1:  TheCurve; 
+            C2:  TheCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+    
+	---Purpose: Intersection between 2 curves.
+    	---C++: inline
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Create (C1:  TheCurve; D1: Domain from IntRes2d;
+            C2:  TheCurve; D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between 2 curves.
+    	---C++: inline
+    	returns IntCurveCurveGen from IntCurve
+	raises ConstructionError from Standard;
+
+
+
+    Perform (me: in out;
+             C1:  TheCurve; D1: Domain from IntRes2d;
+             C2:  TheCurve; D2: Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static;
+
+    Perform (me: in out;
+             C1:  TheCurve; 
+             C2:  TheCurve; 
+    	     TolConf,Tol: Real from Standard)
+    	
+	---Purpose: Intersection between 2 curves.
+    	---C++: inline
+    	raises ConstructionError from Standard
+    	is static;
+
+    Perform (me: in out;
+             C1:  TheCurve; D1: Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between 2 curves.
+    	raises ConstructionError from Standard
+    	is static;
+
+    Perform (me: in out;
+             C1:  TheCurve; 
+    	     TolConf,Tol: Real from Standard)
+
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static;
+
+    Perform (me: in out;
+             C1:  TheCurve; D1: Domain from IntRes2d;
+             C2:  TheCurve; 
+    	     TolConf,Tol: Real from Standard)
+    	---C++: inline
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static;
+
+    Perform (me: in out;
+             C1:  TheCurve; 
+             C2:  TheCurve; D2: Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+    	---C++: inline
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static;
+
+
+    ComputeDomain(me;  C1: TheCurve; TolDomain: Real from Standard)
+    
+    	---Purpose: Create a domain from a curve
+        returns Domain from IntRes2d
+        is static;
+	
+    
+    
+    InternalPerform(me: in out;
+             C1:  TheCurve; D1: Domain from IntRes2d;
+             C2:  TheCurve; D2: Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard;
+    	     Composite: Boolean from Standard)
+
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static private;
+ 
+
+    InternalCompositePerform(me: in out;
+             C1:  TheCurve; D1: Domain from IntRes2d;
+	     N1,NB1: Integer from Standard;
+	     Tab1: Array1OfReal from TColStd;
+             C2:  TheCurve; D2: Domain from IntRes2d;
+	     N2,NB2: Integer from Standard;
+	     Tab2: Array1OfReal from TColStd;
+    	     TolConf,Tol: Real from Standard;
+    	     Composite: Boolean from Standard)
+
+	---Purpose: Intersection between 2 curves.
+
+    	raises ConstructionError from Standard
+    	is static private;
+
+
+fields
+
+    param1inf     : Real              from Standard;
+    param1sup     : Real              from Standard;
+    param2inf     : Real              from Standard;
+    param2sup     : Real              from Standard;
+    intconiconi   : IntConicConic     from IntCurve;
+    intconicurv   : TheIntConicCurve;
+    intcurvcurv   : TheIntPCurvePCurve;
+
+end IntCurveCurveGen;
+
+
+
+
+

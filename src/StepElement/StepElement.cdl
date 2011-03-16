@@ -1,0 +1,168 @@
+
+
+package StepElement
+
+
+uses
+
+    TCollection,
+    TColStd,
+    MMgt,
+    StepData,
+    StepBasic,
+    StepRepr
+
+is 
+
+    enumeration ElementOrder is 
+	Linear,
+	Quadratic,
+	Cubic
+    end;
+
+    enumeration EnumeratedCurveElementPurpose is 
+	Axial,
+	YYBending,
+	ZZBending,
+	Torsion,
+	XYShear,
+	XZShear,
+	Warping
+    end;
+
+    enumeration EnumeratedCurveElementFreedom is 
+	XTranslation,
+	YTranslation,
+	ZTranslation,
+	XRotation,
+	YRotation,
+	ZRotation,
+	Warp,
+	None
+    end;
+
+    enumeration UnspecifiedValue is 
+	Unspecified
+    end;
+
+    enumeration ElementVolume is 
+	Volume
+    end;
+
+    enumeration CurveEdge is 
+	ElementEdge
+    end;
+
+    enumeration EnumeratedSurfaceElementPurpose is 
+	MembraneDirect,
+	MembraneShear,
+	BendingDirect,
+	BendingTorsion,
+	NormalToPlaneShear
+    end;
+
+    enumeration Element2dShape is 
+	Quadrilateral,
+	Triangle
+    end;
+
+    enumeration EnumeratedVolumeElementPurpose is 
+	StressDisplacement
+    end;
+
+    enumeration Volume3dElementShape is 
+	Hexahedron,
+	Wedge,
+	Tetrahedron,
+	Pyramid
+    end;
+    
+    
+
+   class AnalysisItemWithinRepresentation;
+   class Curve3dElementDescriptor;
+   class CurveElementEndReleasePacket;
+   class CurveElementFreedom;
+     class CurveElementFreedomMember;
+   class CurveElementPurpose;
+     class CurveElementPurposeMember;
+   class CurveElementSectionDefinition;
+   class CurveElementSectionDerivedDefinitions;
+   class ElementAspect;
+     class ElementAspectMember;
+   class ElementDescriptor;
+   class ElementMaterial;
+   class MeasureOrUnspecifiedValue;
+     class MeasureOrUnspecifiedValueMember;
+   class Surface3dElementDescriptor;
+   class SurfaceElementProperty;
+   class SurfaceElementPurpose;
+     class SurfaceElementPurposeMember;
+   class SurfaceSection;
+   class SurfaceSectionField;
+   class SurfaceSectionFieldConstant;
+   class SurfaceSectionFieldVarying;
+   class UniformSurfaceSection;
+   class Volume3dElementDescriptor;
+   class VolumeElementPurpose;
+     class VolumeElementPurposeMember;
+	
+	
+--- Instantiations
+
+class Array2OfCurveElementPurposeMember instantiates Array2 from TCollection (CurveElementPurposeMember);
+class HArray2OfCurveElementPurposeMember instantiates HArray2 from TCollection (CurveElementPurposeMember,Array2OfCurveElementPurposeMember from StepElement);
+
+class Array2OfSurfaceElementPurposeMember instantiates Array2 from TCollection (SurfaceElementPurposeMember);
+class HArray2OfSurfaceElementPurposeMember instantiates HArray2 from TCollection (SurfaceElementPurposeMember,Array2OfSurfaceElementPurposeMember from StepElement);
+
+class Array1OfVolumeElementPurposeMember instantiates Array1 from TCollection (VolumeElementPurposeMember);
+class HArray1OfVolumeElementPurposeMember instantiates HArray1 from TCollection (VolumeElementPurposeMember,Array1OfVolumeElementPurposeMember from StepElement);
+
+class Array2OfSurfaceElementPurpose instantiates Array2 from TCollection (SurfaceElementPurpose);
+class HArray2OfSurfaceElementPurpose instantiates HArray2 from TCollection (SurfaceElementPurpose, Array2OfSurfaceElementPurpose from StepElement);
+
+class Array1OfMeasureOrUnspecifiedValue instantiates Array1 from TCollection (MeasureOrUnspecifiedValue);
+class HArray1OfMeasureOrUnspecifiedValue instantiates HArray1 from TCollection (MeasureOrUnspecifiedValue, Array1OfMeasureOrUnspecifiedValue from StepElement);
+
+class Array1OfSurfaceSection instantiates Array1 from TCollection (SurfaceSection);
+class HArray1OfSurfaceSection instantiates HArray1 from TCollection (SurfaceSection, Array1OfSurfaceSection from StepElement);
+
+class Array1OfVolumeElementPurpose instantiates Array1 from TCollection (VolumeElementPurpose);
+class HArray1OfVolumeElementPurpose instantiates HArray1 from TCollection (VolumeElementPurpose, Array1OfVolumeElementPurpose from StepElement);
+
+class Array1OfCurveElementEndReleasePacket instantiates Array1 from TCollection (CurveElementEndReleasePacket);
+class HArray1OfCurveElementEndReleasePacket instantiates HArray1 from TCollection (CurveElementEndReleasePacket, Array1OfCurveElementEndReleasePacket from StepElement);
+
+class Array1OfCurveElementSectionDefinition instantiates Array1 from TCollection (CurveElementSectionDefinition);
+class HArray1OfCurveElementSectionDefinition instantiates HArray1 from TCollection (CurveElementSectionDefinition, Array1OfCurveElementSectionDefinition from StepElement);
+
+
+class SequenceOfElementMaterial instantiates Sequence from TCollection (ElementMaterial);
+class HSequenceOfElementMaterial instantiates HSequence from TCollection (ElementMaterial, SequenceOfElementMaterial from StepElement);
+
+class SequenceOfCurveElementSectionDefinition instantiates Sequence
+     from TCollection (CurveElementSectionDefinition);
+class HSequenceOfCurveElementSectionDefinition instantiates HSequence
+     from TCollection (CurveElementSectionDefinition, SequenceOfCurveElementSectionDefinition from StepElement);
+
+class SequenceOfCurveElementPurposeMember instantiates Sequence
+     from TCollection (CurveElementPurposeMember);
+class HSequenceOfCurveElementPurposeMember instantiates HSequence
+     from TCollection (CurveElementPurposeMember, SequenceOfCurveElementPurposeMember from StepElement);
+class Array1OfHSequenceOfCurveElementPurposeMember instantiates Array1
+     from TCollection (HSequenceOfCurveElementPurposeMember);
+class HArray1OfHSequenceOfCurveElementPurposeMember instantiates HArray1
+     from TCollection (HSequenceOfCurveElementPurposeMember, Array1OfHSequenceOfCurveElementPurposeMember from StepElement);
+
+class SequenceOfSurfaceElementPurposeMember instantiates Sequence
+     from TCollection (SurfaceElementPurposeMember);
+class HSequenceOfSurfaceElementPurposeMember instantiates HSequence
+     from TCollection (SurfaceElementPurposeMember, SequenceOfSurfaceElementPurposeMember from StepElement);
+class Array1OfHSequenceOfSurfaceElementPurposeMember instantiates Array1
+     from TCollection (HSequenceOfSurfaceElementPurposeMember);
+class HArray1OfHSequenceOfSurfaceElementPurposeMember instantiates HArray1
+     from TCollection (HSequenceOfSurfaceElementPurposeMember, Array1OfHSequenceOfSurfaceElementPurposeMember from StepElement);
+
+
+end;

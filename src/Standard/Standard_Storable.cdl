@@ -1,0 +1,51 @@
+-- File:	Standard_Storable.cdl
+-- Created:	Thu Sep  5 16:41:43 1991
+-- Author:	jean pierre TIRAULT
+--		<jpt@topsn1>
+---Copyright:	 Matra Datavision 1991
+
+deferred class Storable from Standard
+
+   ---Purpose: This class Storable is an abstract class that allows built-in 
+   --          primitive types to be extended. They are not themselves 
+   --          persistent, but are known by the database, therefore can be used
+   --         to define the internal representation of persistent objects.
+   --         Otherwise, all the fields of subclasses of Object MUST inherit
+   --         from Storable.
+   --         
+   --         This class provides also a framework for copying, comparing and 
+   --         printing.
+
+is    
+        Delete ( me : out ) is virtual;
+        ---C++: alias "Standard_EXPORT virtual ~Standard_Storable(){Delete();}"
+
+	HashCode (me; Upper : Integer ) returns Integer is virtual;
+	    ---Purpose: Returns a hashed value denoting <me>. This value is in
+	    --         the range 1..<Upper>.
+	    ---C++:  function call
+            ---Level: Advanced
+            
+	IsEqual (me; Other : Storable) returns Boolean
+	    ---Purpose: Returns true if the direct contents of <me> and
+	    --         <Other> are memberwise equal.
+	    ---C++:  alias operator ==
+	    ---Level: Public 
+        is static;
+
+	IsSimilar (me; Other : Storable) returns Boolean;
+	    ---Purpose: Returns true if the Deep contents of <me> and
+	    --         <Other> are memberwise equal.
+	    ---C++:  function call
+            ---Level: Public
+            
+	ShallowDump (me; S: in out OStream) is virtual;
+	    ---Purpose: Prints the contents at the first level of <me> on
+	    --         the stream <s>. The Root version of ShallowDump prints
+	    --         the name of the class <me> is instance of, followed by 
+	    --         its memory address.
+	    ---C++:  function call
+            ---Level: Public
+
+end Storable;
+

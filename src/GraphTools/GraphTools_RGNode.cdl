@@ -1,0 +1,43 @@
+-- File:	GraphTools_RGNode.cdl
+-- Created:	Wed Sep 29 14:41:03 1993
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1993
+
+class RGNode from GraphTools
+
+uses SC                from GraphTools,
+     SequenceOfInteger from TColStd
+
+is
+
+    Create returns RGNode;
+    
+    Reset (me : in out);
+    
+    SetVisited (me : in out; v : Integer from Standard);
+    
+    GetVisited (me) 
+    returns Integer from Standard;
+    
+    AddAdj (me : in out; adj : Integer from Standard);
+    
+    NbAdj (me) 
+    returns Integer from Standard;
+    
+    GetAdj (me; index : Integer from Standard)
+    returns Integer from Standard;
+
+    SetSC (me : in out; SC : SC from GraphTools);
+
+    GetSC (me) 
+    returns SC from GraphTools;
+
+fields
+
+    visited : Integer from Standard;
+    myAdj   : SequenceOfInteger from TColStd;
+    mySC    : SC from GraphTools;
+
+end RGNode;      	
+

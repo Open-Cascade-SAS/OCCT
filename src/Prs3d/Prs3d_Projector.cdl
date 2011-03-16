@@ -1,0 +1,46 @@
+-- File:	Prs3d_Projector.cdl
+-- Created:	Fri Mar 19 09:51:20 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Projector from Prs3d inherits TShared from MMgt
+
+	---Purpose: A projector object.
+    	-- This object defines the parameters of a view for a
+    	-- visualization algorithm. It is, for example, used by the
+    	-- hidden line removal algorithms.
+
+uses
+    Projector from HLRAlgo,
+        Length    from Quantity
+is
+
+    Create(Pr: Projector from HLRAlgo)
+    returns mutable Projector from Prs3d;
+
+
+    Create ( Pers: Boolean from Standard;
+    	     Focus: Length from Quantity;
+	     DX, DY, DZ: Length from Quantity;       -- Projection Vector
+	     XAt, YAt , ZAt: Length from Quantity;   -- View Point
+	     XUp, YUp, ZUp: Length from Quantity)    -- High Point Direction
+    returns mutable Projector from Prs3d;
+    	--- Purpose: Constructs a projector framework from the following parameters
+    	-- -   Pers is true if the view is a perspective view and
+    	--   false if it is an axonometric one;
+    	-- -   Focus is the focal length if a perspective view is defined;
+    	-- -   DX, DY and DZ are the coordinates of the
+    	--   projection vector;
+    	-- -   XAt, YAt and ZAt are the coordinates of the view point;
+    	-- -   XUp, YUp and ZUp are the coordinates of the
+    	--   vertical direction vector.   
+        
+    Projector(me) returns Projector from HLRAlgo
+    is static;
+    	---Purpose: Returns a projector object for use in a hidden line removal algorithm.
+        
+fields
+    MyProjector: Projector from HLRAlgo;
+end Projector;

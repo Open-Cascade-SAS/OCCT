@@ -1,0 +1,61 @@
+-- File:	PGeom_OffsetSurface.cdl
+-- Created:	Tue Mar  2 14:39:56 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class OffsetSurface from PGeom inherits Surface from PGeom
+
+        ---Purpose : This class implements  the basis services for  an
+        --         offset surface in 3D space.
+        --         
+
+uses Surface from PGeom
+
+is
+
+
+  Create returns mutable OffsetSurface from PGeom;
+    ---Purpose: Creates an OffsetSurface with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	    aBasisSurface : Surface from PGeom;
+    	    aOffsetValue : Real from Standard)
+     returns mutable OffsetSurface from PGeom;
+        ---Purpose :  <aBasisSurface>    is  the   basis      surface,
+        --         <aOffsetValue> is the distance between <me> and the
+        --         basis  surface at any  point.    <aOffsetDirection>
+        --         defines  the  fixed  reference  direction   (offset
+        --         direction).
+    	---Level: Internal 
+
+
+  BasisSurface (me : mutable; aBasisSurface : Surface from PGeom);
+	---Purpose: Set the field basisSurface with <aBasisSurface>.
+    	---Level: Internal 
+      
+
+  BasisSurface (me) returns Surface from PGeom;
+        ---Purpose : The basis surface can be an offset surface.
+    	---Level: Internal 
+
+
+  OffsetValue (me : mutable; aOffsetValue : Real from Standard);
+        ---Purpose : Set the field offsetValue with <aOffsetValue>.
+    	---Level: Internal 
+
+
+  OffsetValue (me) returns Real from Standard;
+        ---Purpose : Returns the value of the field offsetValue.
+    	---Level: Internal 
+
+
+fields
+
+  basisSurface : Surface from PGeom;
+  offsetValue  : Real from Standard;
+
+end;

@@ -1,0 +1,46 @@
+// File:	LocOpe_Pipe.lxx
+// Created:	Wed Sep  4 14:57:19 1996
+// Author:	Jacques GOUSSARD
+//		<jag@mobilox.lyon.matra-dtv.fr>
+
+
+//=======================================================================
+//function : Spine
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Pipe::Spine () const
+{
+  return myPipe.Spine();
+}
+
+//=======================================================================
+//function : Profile
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Pipe::Profile () const
+{
+  return myPipe.Profile();
+}
+
+//=======================================================================
+//function : FirstShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Pipe::FirstShape () const
+{
+  return myPipe.FirstShape();
+}
+
+//=======================================================================
+//function : LastShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Pipe::LastShape () const
+{
+  return myPipe.LastShape();
+}
+

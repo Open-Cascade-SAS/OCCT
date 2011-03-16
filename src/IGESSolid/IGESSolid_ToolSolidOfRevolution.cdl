@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolSolidOfRevolution.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolSolidOfRevolution  from IGESSolid
+
+    ---Purpose : Tool to work on a SolidOfRevolution. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses SolidOfRevolution from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolSolidOfRevolution;
+    ---Purpose : Returns a ToolSolidOfRevolution, ready to work
+
+
+    ReadOwnParams (me; ent : mutable SolidOfRevolution;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : SolidOfRevolution;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : SolidOfRevolution;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a SolidOfRevolution <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : SolidOfRevolution) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : SolidOfRevolution;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : SolidOfRevolution; entto : mutable SolidOfRevolution;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : SolidOfRevolution;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolSolidOfRevolution;

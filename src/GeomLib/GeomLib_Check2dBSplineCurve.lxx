@@ -1,0 +1,8 @@
+// File:	GeomLib_Check2dBSplineCurve.lxx
+// Created:	Wed May 28 17:33:32 1997
+// Author:	Xavier BENVENISTE
+//		<xab@zozox.paris1.matra-dtv.fr>
+inline Standard_Boolean GeomLib_Check2dBSplineCurve::IsDone() const 
+{
+  return myDone ;
+}

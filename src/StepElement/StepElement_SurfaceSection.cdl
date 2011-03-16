@@ -1,0 +1,44 @@
+-- File:	StepElement_SurfaceSection.cdl
+-- Created:	Thu Dec 12 17:29:04 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class SurfaceSection from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity SurfaceSection
+
+uses
+    MeasureOrUnspecifiedValue from StepElement
+
+is
+    Create returns SurfaceSection from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aOffset: MeasureOrUnspecifiedValue from StepElement;
+                       aNonStructuralMass: MeasureOrUnspecifiedValue from StepElement;
+                       aNonStructuralMassOffset: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Offset (me) returns MeasureOrUnspecifiedValue from StepElement;
+	---Purpose: Returns field Offset
+    SetOffset (me: mutable; Offset: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Set field Offset
+
+    NonStructuralMass (me) returns MeasureOrUnspecifiedValue from StepElement;
+	---Purpose: Returns field NonStructuralMass
+    SetNonStructuralMass (me: mutable; NonStructuralMass: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Set field NonStructuralMass
+
+    NonStructuralMassOffset (me) returns MeasureOrUnspecifiedValue from StepElement;
+	---Purpose: Returns field NonStructuralMassOffset
+    SetNonStructuralMassOffset (me: mutable; NonStructuralMassOffset: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Set field NonStructuralMassOffset
+
+fields
+    theOffset: MeasureOrUnspecifiedValue from StepElement;
+    theNonStructuralMass: MeasureOrUnspecifiedValue from StepElement;
+    theNonStructuralMassOffset: MeasureOrUnspecifiedValue from StepElement;
+
+end SurfaceSection;

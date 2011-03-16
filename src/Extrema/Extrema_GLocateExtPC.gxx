@@ -1,0 +1,338 @@
+// File:	Extrema_GLocateExtPC.gxx
+// Created:	Tue Dec 14 16:38:29 1993
+// Author:	Christophe MARION
+//		<cma@zerox>
+// 05-Jun-00 : hla : meme type de corr. que xab : dans la methode "Perform",
+//             suppression du test mal a propos "myintuinf > myintusup" avec
+//             "return" a la suite.
+// 05-Sep-95 : xab : correction d'un probleme de determination d'intervalle
+//             de recherche
+
+#include Extrema_ELPC_hxx
+#include ThePOnC_hxx
+#include ThePoint_hxx
+#include TheVector_hxx
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+
+//=======================================================================
+//function : Extrema_GLocateExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GLocateExtPC::Extrema_GLocateExtPC() { }
+
+
+//=======================================================================
+//function : Extrema_GLocateExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
+					    const TheCurve&     C,
+					    const Standard_Real U0,
+					    const Standard_Real TolF)
+{
+  Initialize(C, TheCurveTool::FirstParameter(C), TheCurveTool::LastParameter(C), TolF);
+  Perform(P, U0);
+}
+
+//=======================================================================
+//function : Extrema_GLocateExtPC
+//purpose  : 
+//=======================================================================
+
+Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
+					    const TheCurve&     C,
+					    const Standard_Real U0, 
+					    const Standard_Real Umin,
+					    const Standard_Real Usup,
+					    const Standard_Real TolF)
+{
+  Initialize(C, Umin, Usup, TolF);
+  Perform(P, U0);
+}
+
+
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void Extrema_GLocateExtPC::Initialize(const TheCurve&     C, 
+				      const Standard_Real Umin,
+				      const Standard_Real Usup,
+				      const Standard_Real TolF)
+{
+  myC = (Standard_Address)&C;
+  mytol = TolF;
+  myumin = Umin;
+  myusup = Usup;
+  type = TheCurveTool::GetType(C);
+  Standard_Real tolu = TheCurveTool::Resolution(C, Precision::Confusion());
+  if ((type == GeomAbs_BSplineCurve) || 
+      (type == GeomAbs_BezierCurve)  || 
+      (type == GeomAbs_OtherCurve)) {
+    myLocExtPC.Initialize(C, Umin, Usup, tolu);
+  }
+  else {
+    myExtremPC.Initialize(C, Umin, Usup, tolu);
+  }
+}
+
+
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
+				   const Standard_Real U0)
+{
+  Standard_Integer i, i1, i2, inter;
+#ifdef DEB
+  Standard_Real Tol = TheCurveTool::Resolution(*((TheCurve*)myC), Precision::Confusion());
+#else
+  TheCurveTool::Resolution(*((TheCurve*)myC), Precision::Confusion());
+#endif
+  Standard_Real Par, valU, valU2 = RealLast(),
+  local_u0 ;
+  Standard_Real myintuinf=0, myintusup=0;
+  local_u0 = U0 ;
+  switch(type) {
+    case GeomAbs_OtherCurve:
+    case GeomAbs_BSplineCurve: {
+      // La recherche de l extremum est faite intervalle continu C2 par
+      // intervalle continu C2 de la courbe
+      Standard_Integer n = TheCurveTool::NbIntervals(*((TheCurve*)myC), GeomAbs_C2);
+      TColStd_Array1OfReal theInter(1, n+1);
+      TheCurveTool::Intervals(*((TheCurve*)myC), theInter, GeomAbs_C2);
+//
+//  be gentle with the caller 
+//
+      if (local_u0 < myumin) {
+	local_u0 = myumin ; 
+      }
+      else if (local_u0 > myusup) {
+	local_u0  = myusup ;
+      }
+      // Recherche de l intervalle ou se trouve U0
+      Standard_Boolean found = Standard_False;
+      inter = 1;
+      while (!found && inter <= n) {
+        // Intervalle commun a l intervalle C2 courant de la courbe et a
+        // l intervalle total de recherche de l'extremum (hla : au cas ou
+        // myintuinf > myintusup, c est que les 2 intervalles ne s intersectent
+        // pas, mais il n'y avait aucune raison de sortir en "return")
+        myintuinf = Max(theInter(inter), myumin);
+        myintusup = Min(theInter(inter+1), myusup);
+	if ((local_u0 >= myintuinf) && (local_u0 < myintusup)) found = Standard_True;
+	inter++;
+      }
+
+      if( found ) inter--; //IFV 16.06.00 - inter is increased after found!
+
+      // Essai sur l intervalle trouve
+      myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
+			    myintusup, mytol);
+      myLocExtPC.Perform(P, local_u0);
+      myDone = myLocExtPC.IsDone();
+      if (myDone) {
+	mypp = myLocExtPC.Point();
+	myismin = myLocExtPC.IsMin();
+	mydist2 = myLocExtPC.SquareDistance();
+      }
+      else {
+	Standard_Integer k = 1;
+	// Essai sur les intervalles alentours:
+	i1 = inter;
+	i2 = inter;
+	Standard_Real s1inf, s2inf, s1sup, s2sup;
+	ThePoint P1;
+	TheVector V1;
+	TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+	s2inf = (TheVector(P, P1)*V1);
+	TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+	s1sup = (TheVector(P, P1)*V1);
+	
+
+	while (!myDone && (i2 > 0) && (i1 <= n)) {
+	  i1 = inter + k;
+	  i2 = inter - k;
+	  if (i1 <= n) {
+	    myintuinf = Max(theInter(i1), myumin);
+	    myintusup = Min(theInter(i1+1), myusup);
+	    if (myintuinf < myintusup) {
+	      TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+	      s2sup = (TheVector(P, P1)*V1);
+	      if (s1sup*s2sup <= RealEpsilon()) {
+		// extremum:
+		myDone = Standard_True;
+		mypp.SetValues(myintuinf, P1);
+		myismin = (s1sup <= 0.0);
+		mydist2 = P.SquareDistance(P1);
+		break;
+	      }
+	      TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+	      s1sup = (TheVector(P, P1)*V1);
+	      myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
+				    myintusup, mytol);
+	      myLocExtPC.Perform(P, (myintuinf + myintusup)*0.5);
+	      myDone = myLocExtPC.IsDone();
+	      if (myDone) {
+		mypp = myLocExtPC.Point();
+		myismin = myLocExtPC.IsMin();
+		mydist2 = myLocExtPC.SquareDistance();
+		break;
+	      }
+	    }
+	  }
+	  if (i2 > 0) {
+	    myintuinf = Max(theInter(i2), myumin);
+	    myintusup = Min(theInter(i2+1), myusup);
+	    if (myintuinf < myintusup) {
+	      TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+	      s1inf = (TheVector(P, P1)*V1);
+	      if (s1inf*s2inf <= RealEpsilon()) {
+		// extremum:
+		myDone = Standard_True;
+		mypp.SetValues(myintusup, P1);
+		myismin = (s1inf <= 0.0);
+		mydist2 = P.SquareDistance(P1);
+		break;
+	      }
+	      TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+	      s2inf = (TheVector(P, P1)*V1);
+	      myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
+				    myintusup, mytol);
+	      myLocExtPC.Perform(P, (myintuinf+myintusup)*0.5 );
+	      myDone = myLocExtPC.IsDone();
+	      if (myDone) {
+		mypp = myLocExtPC.Point();
+		myismin = myLocExtPC.IsMin();
+		mydist2 = myLocExtPC.SquareDistance();
+		break;
+	      }
+	    }
+	  }
+	  k++;
+	}
+      }
+    }
+      break;
+    case GeomAbs_BezierCurve: {
+      myLocExtPC.Perform(P, U0);
+      myDone = myLocExtPC.IsDone();
+    }
+      break;
+    default:{
+      myExtremPC.Perform(P);
+      numberext = 0;
+      if (myExtremPC.IsDone()) {
+	for (i = 1; i <= myExtremPC.NbExt(); i++) {
+	  Par = myExtremPC.Point(i).Parameter();
+	  valU = Abs(Par - U0);
+	  if (valU <= valU2) {
+	    valU2 = valU;
+	    numberext = i;
+	    myDone = Standard_True;
+	  }
+	}
+      }
+      if (numberext == 0) myDone = Standard_False;
+      break;
+    }
+  }
+}
+
+
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Extrema_GLocateExtPC::IsDone () const 
+{
+  return myDone;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Real Extrema_GLocateExtPC::SquareDistance () const 
+{
+  if (!myDone) { StdFail_NotDone::Raise(); }
+  Standard_Real d=0;
+  if ((type == GeomAbs_BezierCurve)) {
+    d =  myLocExtPC.SquareDistance();
+  }
+  else if(type == GeomAbs_BSplineCurve || type == GeomAbs_OtherCurve) {
+    d = mydist2;
+  }
+  else {
+    if (numberext != 0) {
+      d = myExtremPC.SquareDistance(numberext);
+    }
+  }
+  return d;
+}
+
+
+//=======================================================================
+//function : IsMin
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Extrema_GLocateExtPC::IsMin () const 
+{
+  if (!myDone) { StdFail_NotDone::Raise(); }
+  Standard_Boolean b=0;
+  if ((type == GeomAbs_BezierCurve)) {
+    b = myLocExtPC.IsMin();
+  }
+  else if(type == GeomAbs_BSplineCurve || type == GeomAbs_OtherCurve) {
+    b = myismin;
+  }
+  else {
+    if (numberext != 0) {
+      b = myExtremPC.IsMin(numberext);
+    }
+  }
+  return b;
+}
+
+
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
+
+ThePOnC Extrema_GLocateExtPC::Point () const 
+{
+  if (!myDone) { StdFail_NotDone::Raise(); }
+  ThePOnC P;
+  if (type == GeomAbs_BezierCurve) {
+    P = myLocExtPC.Point();
+  }
+  else if(type == GeomAbs_BSplineCurve || type == GeomAbs_OtherCurve) {
+    P =  mypp;
+  }
+  else {
+    if (numberext != 0) {
+      P = myExtremPC.Point(numberext);
+    }
+  }
+  return P;
+}

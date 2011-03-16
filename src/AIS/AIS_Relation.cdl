@@ -1,0 +1,280 @@
+-- File:	AIS_Relation.cdl<2>
+-- Created:	Thu Feb 27 09:50:48 1997
+-- Author:	Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--   GG  :  BUC60915 05/06/01 Enable to compute the requested arrow size if any
+--	    in all dimensions, add a field myArrowSizeIsDefined.
+---Copyright:	 Matra Datavision 1997
+
+deferred class Relation from AIS inherits InteractiveObject from AIS
+
+	---Purpose: One of the four types of interactive object in
+    	-- AIS,comprising dimensions and constraints. Serves
+    	-- as the abstract class for the seven relation classes as
+    	-- well as the seven dimension classes.
+    	-- The statuses available for relations between shapes are as follows:
+    	-- -   0 - there is no connection to a shape;
+    	-- -   1 - there is a connection to the first shape;
+    	-- -   2 - there is a connection to the second shape.
+    	--   The connection takes the form of an edge between the two shapes.
+
+uses 
+     TypeOfPresentation3d  from PrsMgr,
+     Shape                 from TopoDS,
+     Edge                  from TopoDS,
+     Vertex                from TopoDS,
+     Pnt                   from gp,
+     ExtendedString        from TCollection,
+     Plane                 from Geom,
+     ArrowSide             from DsgPrs, 
+     KindOfDimension       from AIS,
+     Presentation          from Prs3d,
+     Curve                 from Geom,
+     NameOfColor           from Quantity,
+     Color			   from Quantity,
+     TypeOfLine            from Aspect,
+     TypeOfMarker          from Aspect,
+     KindOfInteractive     from AIS,
+     
+     Pln                   from gp,
+     Surface               from Geom,
+     KindOfSurface         from AIS,
+     Box                   from Bnd
+is
+    Initialize(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) ;
+
+    SetColor(me :mutable; aColor : NameOfColor from Quantity)
+    is redefined static;
+    	---Purpose: Allows you to provide settings for the color aColor
+    	-- of the lines representing the relation between the two shapes.
+        
+    SetColor(me :mutable; aColor : Color from Quantity)
+    is redefined static;
+
+    UnsetColor(me:mutable)
+    is redefined static;    
+    	---Purpose: Allows you to remove settings for the color of the
+    	-- lines representing the relation between the two shapes.
+    
+    Type(me) returns KindOfInteractive from AIS is redefined;
+    	---C++: inline
+
+    KindOfDimension(me) returns KindOfDimension from AIS is virtual;
+    	---Purpose: Indicates that the type of dimension is unknown.
+    
+    IsMovable(me) returns Boolean from Standard is virtual;
+    	---Purpose: Returns true if the interactive object is movable.
+    
+    FirstShape(me) returns Shape from TopoDS 
+    is static;
+    	---C++: return const &    
+    	---C++: inline
+
+    SetFirstShape(me: mutable;aFShape : Shape from TopoDS)
+    is virtual;
+
+    SecondShape(me) returns Shape from TopoDS 
+    is static;
+    	---Purpose: Returns the second shape.
+    	---C++: inline
+    	---C++: return const &    
+    
+    SetSecondShape(me: mutable;aSShape : Shape from TopoDS)
+    is virtual;
+    	--- Purpose: Allows you to identify the second shape aSShape
+    	-- relative to the first.   
+    
+    SetBndBox( me: mutable;  Xmin, Ymin, Zmin, Xmax, Ymax, Zmax : Real from Standard );
+    	---C++: inline
+    
+    UnsetBndBox( me: mutable );
+    	---C++: inline
+
+    Plane(me) returns any Plane from Geom 
+    is static;
+    	---Purpose: Returns the plane.
+    	---C++: inline
+    	---C++: return const &    
+
+    SetPlane(me: mutable;aPlane : Plane from Geom)
+    is static;
+    	---Purpose:
+    	-- Allows you to set the plane aPlane. This is used to
+    	-- define relations and dimensions in several daughter classes.
+    	---C++: inline
+
+    Value(me) returns Real from Standard 
+    is static;
+    	---Purpose: Returns the value of each object in the relation.
+    	---C++: inline
+
+    SetValue(me: mutable;aVal : Real from Standard)
+    is static;
+    	---Purpose: Allows you to provide settings for the value aVal for
+    	-- each object in the relation.
+    	---C++: inline
+
+    Position(me) returns Pnt from gp 
+    is static;
+    	---Purpose: Returns the position set using SetPosition.
+    	---C++: inline
+        ---C++: return const &  
+	
+    SetPosition(me: mutable;aPosition: Pnt from gp)
+    is static;
+    	---Purpose:
+    	-- Allows you to provide the objects in the relation with
+    	-- settings for a non-default position.
+        ---C++: inline
+    
+    Text(me) returns  ExtendedString from TCollection
+    is static;
+    	---Purpose: Returns settings for text aspect.
+    	---C++: inline
+   	---C++: return const &    
+
+    SetText(me: mutable;aText:ExtendedString from TCollection)
+    is static;
+    	---Purpose: Allows you to provide the settings aText for text aspect.
+        ---C++: inline
+        
+    ArrowSize (me) returns Real from Standard
+    is static;
+    	---Purpose:
+    	-- Returns the value for the size of the arrow identifying
+    	-- the relation between the two shapes.
+    	---C++: inline
+
+    SetArrowSize(me: mutable;anArrowSize: Real from Standard)
+    is static;
+        ---C++: inline
+    	---Purpose:
+    	-- Allows you to provide settings for the size of the
+    	-- arrow anArrowsize identifying the relation between the two shapes.
+
+    SymbolPrs (me) returns ArrowSide from DsgPrs
+    is static;
+      	---C++: inline
+      	---Purpose:
+    	-- Returns the value of the symbol presentation. This will be one of:
+    	-- -   AS_NONE - none
+    	-- -   AS_FIRSTAR - first arrow
+    	-- -   AS_LASTAR - last arrow
+    	-- -   AS_BOTHAR - both arrows
+    	-- -   AS_FIRSTPT - first point
+    	-- -   AS_LASTPT - last point
+    	-- -   AS_BOTHPT - both points
+    	-- -   AS_FIRSTAR_LASTPT - first arrow, last point
+    	-- -   AS_FIRSTPT_LASTAR - first point, last arrow
+
+    SetSymbolPrs(me: mutable;aSymbolPrs: ArrowSide from DsgPrs)
+    is static;
+        ---C++: inline
+    	---Purpose:
+    	-- Allows you to provide settings for the symbol presentation.
+
+    SetExtShape(me:mutable; aIndex : Integer from Standard);
+     	---C++: inline
+      	---Purpose:
+      	-- Allows you to set the status of the extension shape by
+      	-- the index aIndex.
+    	-- The status will be one of the following:
+    	-- -   0 - there is no connection to a shape;
+    	-- -   1 - there is a connection to the first shape;
+    	-- -   2 - there is a connection to the second shape.
+        
+    ExtShape(me)
+    returns Integer from Standard;
+    	---Purpose:
+    	-- Returns the status index of the extension shape.
+    	---C++: inline
+
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard is redefined virtual;
+    	---Purpose:
+    	-- Returns true if the display mode aMode is accepted
+    	-- for the Interactive Objects in the relation.
+    	-- ComputeProjPresentation(me;
+    	-- 	    	    	    aPres    : mutable Presentation from Prs3d;
+	--		    Curve1   : Curve                from Geom;
+	--		    Curve2   : Curve                from Geom;
+	--		    FirstP1  : Pnt                  from gp;
+	--		    LastP1   : Pnt                  from gp;
+	--		    FirstP2  : Pnt                  from gp;
+	--		    LastP2   : Pnt                  from gp;
+	--		    aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;
+	--		    aWidth   : Real                 from Standard = 2;
+    	--    	    	    aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
+	--		    aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
+    --is protected;
+    
+    ComputeProjEdgePresentation(me;
+    	    	  		aPres    : mutable Presentation from Prs3d; 
+			   	anEdge   : Edge                 from TopoDS;
+			    	ProjCurve: Curve                from Geom;
+			    	FirstP   : Pnt                  from gp;
+			    	LastP    : Pnt                  from gp;
+			    	aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;
+			    	aWidth   : Real                 from Standard = 2;
+    	    	    	    	aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
+			    	aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
+    is protected;
+    	---Purpose: Calculates the presentation aPres of the the edge
+    	-- anEdge and the curve it defines, ProjCurve. The later
+    	-- is also specified by the first point FirstP and the last point LastP.
+    	-- The presentation includes settings for color aColor,
+    	-- type - aProjTOL and aCallTOL -   and width of line, aWidth.
+        
+    ComputeProjVertexPresentation(me;
+    	    	  		  aPres    : mutable Presentation from Prs3d; 
+			   	  aVertex  : Vertex               from TopoDS;
+			    	  ProjPoint: Pnt                  from gp;
+       			    	  aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;
+			    	  aWidth   : Real                 from Standard = 2;
+    	    	    	    	  aProjTOM : TypeOfMarker         from Aspect   = Aspect_TOM_PLUS;
+			    	  aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT)
+    is protected;
+    
+    	---Purpose: Calculates the presentation aPres of the the vertex
+    	-- aVertex and the point it defines, ProjPoint.
+    	-- The presentation includes settings for color aColor,
+    	-- type - aProjTOM and aCallTOL -   and width of line, aWidth.
+        
+    SetAutomaticPosition ( me : mutable ; aStatus : Boolean from Standard );
+    	---C++: inline
+    
+    AutomaticPosition ( me ) 
+    returns Boolean from Standard  ;
+    	---C++: inline
+    
+fields
+
+    myFShape   : Shape            from TopoDS      is protected;    
+    mySShape   : Shape            from TopoDS      is protected;
+    myPlane    : Plane            from Geom        is protected;
+    myVal      : Real             from Standard    is protected;
+    myPosition : Pnt              from gp          is protected;       
+    myText     : ExtendedString   from TCollection is protected;
+    myArrowSize: Real             from Standard    is protected; 
+    myAutomaticPosition : Boolean from Standard    is protected;
+    mySymbolPrs: ArrowSide        from DsgPrs      is protected;        
+    myExtShape : Integer          from Standard    is protected;
+   ---purpose: (0  no attachment,1  attachment with first shape, 2  attachment with second shape)
+    
+    myFirstPlane       : Pln     from gp    is protected;
+    mySecondPlane      : Pln     from gp    is protected;
+    myFirstBasisSurf   : Surface from Geom    is protected;
+    mySecondBasisSurf  : Surface from Geom    is protected;
+    
+    myFirstSurfType  : KindOfSurface from AIS    is protected;
+    mySecondSurfType : KindOfSurface from AIS    is protected;
+    
+    myFirstOffset  : Real from Standard    is protected;
+    mySecondOffset : Real from Standard    is protected; 
+     
+    myBndBox      : Box     from Bnd    is protected; 
+    myIsSetBndBox : Boolean from Standard    is protected;
+    myArrowSizeIsDefined: Boolean      from Standard    is protected; 
+    
+end Relation;

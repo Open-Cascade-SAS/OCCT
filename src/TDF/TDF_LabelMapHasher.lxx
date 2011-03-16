@@ -1,0 +1,37 @@
+// File:	TDF_LabelMapHasher.lxx
+//      	----------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Feb 13 1997	Creation
+
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+
+//#ifndef WNT
+//inline  static Standard_Integer TDF_LabelMapHasher::HashCode
+//#else
+inline         Standard_Integer TDF_LabelMapHasher::HashCode
+//#endif
+(const TDF_Label& aLab, const Standard_Integer Upper) 
+{ return 1 + ( (int) (labs((long int) aLab.myLabelNode) % Upper) ); }
+
+ 
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+//#ifndef WNT
+//inline  static Standard_Boolean TDF_LabelMapHasher::IsEqual
+//#else
+inline         Standard_Boolean TDF_LabelMapHasher::IsEqual
+//#endif
+(const TDF_Label& aLab1,const TDF_Label& aLab2) 
+{ return aLab1.IsEqual(aLab2); }

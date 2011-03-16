@@ -1,0 +1,106 @@
+-- File:	IntPoint.cdl
+-- Created:	Wed Feb 20 16:51:04 1991
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class IntPoint from IntAna2d inherits Storable from Standard
+
+    ---Purpose: Geometrical intersection between two 2d elements.
+
+
+uses Pnt2d from gp
+
+raises DomainError from Standard
+
+is
+
+    Create(X,Y: Real; U1,U2: Real)
+    
+    	---Purpose: Create an intersection point between 2 parametric 2d lines.
+    	--          X,Y are the coordinate of the point. U1 is the parameter
+    	--          on the first element, U2 the parameter on the second one.
+    
+    	returns IntPoint;
+
+
+    Create(X,Y: Real; U1: Real)
+    
+    	---Purpose: Create an intersection point between a parametric 2d line,
+    	--          and a line given by an implicit equation (ImplicitCurve).
+    	--          X,Y are the coordinate of the point. U1 is the parameter
+    	--          on the parametric element.
+    
+    	returns IntPoint;
+
+
+    Create
+
+	---Purpose: Empty constructor. It's necessary to use one of
+	--          the SetValue method after this one.
+
+    	returns IntPoint;
+
+
+    SetValue(me : in out; X,Y: Real; U1,U2: Real)
+    
+	---Purpose: Set the values for a "non-implicit" point.
+    is virtual;
+
+
+    SetValue(me : in out; X,Y:Real; U1: Real)
+    
+	---Purpose: Set the values for an "implicit" point.
+    is virtual;
+
+    Value(me)
+    
+	---Purpose: Returns the geometric point.
+    	---C++: inline
+    	---C++: return const&
+    	returns Pnt2d from gp
+
+    is static;
+    
+    
+    SecondIsImplicit(me)
+    
+    	---Purpose: Returns True if the second curve is implicit.
+    	---C++: inline
+    	returns Boolean from Standard
+	
+   is static;
+	
+    
+    ParamOnFirst(me)
+    
+    	---Purpose: Returns the parameter on the first element.
+    	---C++: inline
+    	returns Real
+	
+    is static;
+
+ 
+    ParamOnSecond(me)
+    
+    	---Purpose: Returns the parameter on the second element.
+    	--          If the second element is an implicit curve, an exception
+    	--          is raised.
+    	---C++: inline
+    	returns Real
+	
+	raises DomainError from Standard
+    
+    is static;
+
+
+
+fields
+
+    myu1        : Real  from Standard;
+    myu2        : Real  from Standard;
+    myp         : Pnt2d from gp;
+    myimplicit  : Boolean from Standard;
+
+end IntPoint;

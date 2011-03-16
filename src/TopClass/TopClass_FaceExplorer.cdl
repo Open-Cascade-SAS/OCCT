@@ -1,0 +1,75 @@
+-- File:	FaceExplorer.cdl
+-- Created:	Tue Nov 17 16:39:19 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred generic class FaceExplorer from TopClass 
+     (TheEdge as any)
+
+	---Purpose: Describe an exploration of a 2D face  suitable for
+	--          classification.
+
+uses
+    Orientation from TopAbs,
+    Pnt2d from gp,
+    Lin2d from gp
+
+is
+    Reject(me;  P : Pnt2d from gp) returns Boolean
+	---Purpose: Should  return  True  if the  point  is  outside a
+	--          bounding volume of the face.
+    is deferred;
+    
+    Segment(me;  P :  Pnt2d from gp;
+    	         L : out Lin2d from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the   face  boundary  to
+	 --          compute  intersections. 
+    is deferred;
+    
+    InitWires(me : in out)
+	---Purpose: Starts an exploration of the wires.
+    is deferred;
+    
+    MoreWires(me) returns Boolean
+	---Purpose: Returns True if there is  a current wire.
+	---C++: inline
+    is deferred;
+    	
+    NextWire(me : in out)
+	---Purpose: Sets the explorer  to the  next  wire and  returns
+	--          False if there are no more wires.
+    is deferred;
+    
+    RejectWire(me; L :  Lin2d from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the wire  bounding volume does not
+	--          intersect the segment.
+    is deferred;
+    
+    InitEdges(me : in out)
+	---Purpose: Starts an exploration of the  edges of the current
+	--          wire.
+    is deferred;
+    
+    MoreEdges(me) returns Boolean
+	---Purpose: Returns True if there is a current edge.
+	---C++: inline
+    is deferred;
+    
+    NextEdge(me  : in out)
+	---Purpose: Sets the explorer  to the  next  wire and  returns
+	--          False if there are no more wires.
+    is deferred;
+
+    RejectEdge(me; L :  Lin2d from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the edge  bounding volume does not
+	--          intersect the segment.
+    is deferred;
+    
+    CurrentEdge(me; E : out TheEdge; Or : out Orientation from TopAbs)
+	---Purpose: Curent edge in current wire and its orientation
+    is deferred;
+    
+end FaceExplorer;

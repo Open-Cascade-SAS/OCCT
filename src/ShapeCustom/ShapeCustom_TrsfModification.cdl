@@ -1,0 +1,82 @@
+-- File:	ShapeCustom_TrsfModification.cdl
+-- Created:	Tue Mar  9 13:59:08 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+private class TrsfModification from ShapeCustom inherits TrsfModification from BRepTools
+
+	---Purpose: Complements BRepTools_TrsfModification to provide reversible
+	--          scaling regarding tolerances.
+	--          Uses actual tolerances (attached to the shapes) not ones
+	--          returned by BRep_Tool::Tolerance to work with tolerances
+    	--          lower than Precision::Confusion.
+
+uses
+    Face     from TopoDS,
+    Edge     from TopoDS,
+    Vertex   from TopoDS,
+    Location from TopLoc,
+    Shape    from GeomAbs,
+     
+    Surface  from Geom,
+    Curve    from Geom,
+    Curve    from Geom2d,
+     
+    Trsf     from gp,
+    Pnt      from gp
+
+is
+    Create (T: Trsf from gp) returns mutable TrsfModification from ShapeCustom;
+    	---Purpose: Empty constructor
+    
+    NewSurface (me: mutable; F       :     Face     from TopoDS;
+                             S       : out Surface  from Geom;
+		             L       : out Location from TopLoc;
+		             Tol     : out Real     from Standard;
+                             RevWires: out Boolean from Standard;
+                             RevFace : out Boolean from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Calls inherited method.
+	--          Sets <Tol> as actual tolerance of <F> multiplied with scale
+	--          factor.
+
+    NewCurve (me: mutable; E  :     Edge     from TopoDS;
+                           C  : out Curve    from Geom;
+		           L  : out Location from TopLoc;
+		           Tol: out Real     from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Calls inherited method.
+	--          Sets <Tol> as actual tolerance of <E> multiplied with scale
+	--          factor.
+
+    NewPoint (me: mutable; V  :     Vertex   from TopoDS;
+                           P  : out Pnt      from gp;
+		           Tol: out Real     from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Calls inherited method.
+	--          Sets <Tol> as actual tolerance of <V> multiplied with scale
+	--          factor.
+
+    NewCurve2d (me: mutable;  E    :     Edge     from TopoDS;
+                              F    :     Face     from TopoDS;
+                              NewE :     Edge     from TopoDS;
+                              NewF :     Face     from TopoDS;
+                              C    : out Curve    from Geom2d;
+		              Tol  : out Real     from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Calls inherited method.
+	--          Sets <Tol> as actual tolerance of <E> multiplied with scale
+	--          factor.
+
+    NewParameter (me: mutable; V  :     Vertex   from TopoDS;
+                               E  :     Edge     from TopoDS;
+                               P  : out Real     from Standard;
+  		               Tol: out Real     from Standard)
+    returns Boolean from Standard;
+      	---Purpose: Calls inherited method.
+	--          Sets <Tol> as actual tolerance of <V> multiplied with scale
+	--          factor.
+
+end TrsfModification;

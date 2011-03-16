@@ -1,0 +1,58 @@
+if (!($?CCHOME))   setenv CCHOME   "g++"
+if (!($?CCFLAGS))  setenv CCFLAGS  " -shared "
+
+if (!($?STLPortHome)) then
+    setenv STLPortLib		"."
+else
+    if (!($?STLPortLib_CC))	setenv STLPortLib_CC	"stlport_gcc"
+    if (!($?STLPortLib)) 	setenv STLPortLib	"$STLPortHome/lib"
+    setenv STLPortLib		"$STLPortLib -l$STLPortLib_CC"
+endif
+
+${CCHOME} ${CCFLAGS} -o ${SAMPLE_ROOT}/${STATION}/lib//libSampleAISSelectJni.so \
+ -L${SAMPLE_ROOT}/${STATION}/lib \
+ -L${CASROOT}/${STATION}/lib -L${STLPortLib} \
+\
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_AIS_InteractiveContext_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_Quantity_Color_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_SampleAISSelectPackage_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_TCollection_AsciiString_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_V3d_Viewer_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_V3d_View_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_Viewer_Viewer_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectJni/SampleAISSelectJni_Viewer_View_java.o \
+\
+ -lPTKernel \
+ -lTKPShape \
+ -lTKOffset \
+ -lTKShHealing \
+ -lTKXSBase \
+ -lTKIGES \
+ -lTKCDF \
+ -lTKPCAF \
+ -lTKShapeSchema \
+ -lTKSTEP \
+ -lTKFeat \
+ -lTKSamples \
+ -lTKFillet \
+ -lTKGeomAlgo \
+ -lTKPrim \
+ -lTKBool \
+ -lTKjcas \
+ -lTKV3d \
+ -lTKernel \
+ -lTKGeomBase \
+ -lTKTopAlgo \
+ -lTKBRep \
+ -lTKHLR \
+ -lTKG2d \
+ -lTKV2d \
+ -lTKService \
+ -lTKMath \
+ -lTKG3d \
+ ;
+ set ld_status=$status
+ if ( $?LD_LIBRARY_PATH ) then
+  set ld_library_path=$LD_LIBRARY_PATH
+ endif
+

@@ -1,0 +1,16 @@
+// File:	BRepFill_Generator.lxx
+// Created:	Mon Mar  7 10:00:22 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+
+//=======================================================================
+//function : Shell
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shell& BRepFill_Generator::Shell() const 
+{
+  return myShell;
+}

@@ -1,0 +1,229 @@
+-- File:	Lin2d2Tan.cdl
+-- Created:	Tue Oct 20 16:27:16 1992
+-- Author:	Remi GILET
+--		<reg@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Lin2d2Tan from Geom2dGcc
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d lines tangent to 2 other elements which
+	--          can be circles, curves or points.
+	--          More than one argument must be a curve.
+    	-- Describes functions for building a 2D line:
+    	-- -   tangential to 2 curves, or
+    	-- -   tangential to a curve and passing through a point.
+    	-- A Lin2d2Tan object provides a framework for:
+    	-- -   defining the construction of 2D line(s),
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result(s).
+	--
+    	-- Note: Some constructors may check the type of the qualified argument 
+    	--         and raise BadQualifier Error in case of incorrect couple (qualifier, curv).
+
+        
+-- inherits Entity from Standard
+
+uses Pnt2d            from gp,
+     Lin2d            from gp,
+     Array1OfInteger  from TColStd,
+     Array1OfReal     from TColStd,
+     QualifiedCurve   from Geom2dGcc,
+     Array1OfPnt2d    from TColgp,
+     Array1OfLin2d    from TColgp,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt,
+     MyL2d2Tan        from Geom2dGcc,
+     Curve            from Geom2dAdaptor
+
+raises NotDone      from StdFail,
+       BadQualifier from GccEnt,
+       OutOfRange   from Standard
+
+
+is
+
+-- Modified by Sergey KHROMOV - Wed Oct 16 11:40:57 2002  Begin 
+
+    --  Add constructors without initial parameters Param1 and Param2 which 
+    --  calculate all solutions.
+
+Create (Qualified1 : QualifiedCurve from Geom2dGcc   ;
+        Qualified2 : QualifiedCurve from Geom2dGcc   ;
+    	Tolang     : Real           from Standard    )
+returns Lin2d2Tan from Geom2dGcc
+raises BadQualifier from GccEnt;
+    	---Purpose: This class implements the algorithms used to create 2d 
+    	--          line tangent to two curves.
+    	--          Tolang is used to determine the tolerance for the tangency points.
+
+Create (Qualified1 : QualifiedCurve from Geom2dGcc   ;
+    	ThePoint   : Pnt2d          from gp          ;
+    	Tolang     : Real           from Standard    ) 
+returns Lin2d2Tan from Geom2dGcc
+    	---Purpose: This class implements the algorithms used to create 2d 
+    	--          lines passing thrue a point and tangent to a curve.
+    	--          Tolang is used to determine the tolerance for the tangency points.
+raises BadQualifier from GccEnt;
+
+-- Modified by Sergey KHROMOV - Wed Oct 16 11:40:57 2002  End
+
+Create (Qualified1 : QualifiedCurve from Geom2dGcc   ;
+        Qualified2 : QualifiedCurve from Geom2dGcc   ;
+    	Tolang     : Real           from Standard    ;
+    	Param1     : Real           from Standard    ;
+    	Param2     : Real           from Standard    )
+returns Lin2d2Tan from Geom2dGcc
+raises BadQualifier from GccEnt;
+    	---Purpose: This class implements the algorithms used to create 2d 
+    	--          line tangent to two curves.
+    	--          Tolang is used to determine the tolerance for the tangency points.
+    	--          Param1 is used for the initial guess on the first curve.
+    	--          Param2 is used for the initial guess on the second curve.
+
+Create (Qualified1 : QualifiedCurve from Geom2dGcc   ;
+    	ThePoint   : Pnt2d          from gp          ;
+    	Tolang     : Real           from Standard    ;
+        Param1     : Real           from Standard    ) 
+returns Lin2d2Tan from Geom2dGcc
+    	---Purpose: This class implements the algorithms used to create 2d 
+    	--          lines passing thrue a point and tangent to a curve.
+    	--          Tolang is used to determine the tolerance for the tangency points.
+    	--          Param2 is used for the initial guess on the curve.
+raises BadQualifier from GccEnt;
+
+--------------------------------------------------------------------------
+
+IsDone (me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the construction algorithm does not fail
+    	-- (even if it finds no solution).
+    	-- Note: IsDone protects against a failure arising from a
+    	-- more internal intersection algorithm, which has
+    	-- reached its numeric limits.
+        
+NbSolutions(me) returns Integer  from Standard
+raises NotDone from StdFail
+is static;
+    	---Purpose: Returns the number of lines, representing solutions computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if the construction fails.R
+
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Lin2d from gp
+raises OutOfRange,NotDone
+is static;
+    	---Purpose: Returns a line, representing the solution of index Index computed by this algorithm.
+    	-- Warning
+    	-- This indexing simply provides a means of consulting the
+    	-- solutions. The index values are not associated with
+    	-- these solutions outside the context of the algorithm object.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  ;
+	       Qualif2 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns the qualifiers Qualif1 and Qualif2 of the
+    	-- tangency arguments for the solution of index Index
+    	-- computed by this algorithm.
+    	-- The returned qualifiers are:
+    	-- -   those specified at the start of construction when the
+    	--   solutions are defined as enclosing or outside with
+    	--   respect to the arguments, or
+    	-- -   those computed during construction (i.e. enclosing or
+    	--   outside) when the solutions are defined as unqualified
+    	--   with respect to the arguments, or
+    	-- -   GccEnt_noqualifier if the tangency argument is a   point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+
+Tangency1(me                                     ;
+    	  Index         :   Integer from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises OutOfRange,NotDone
+is static;
+    	---Purpose: Returns informations about the tangency point between the 
+    	--          result and the first argument.
+    	--          ParSol is the intrinsic parameter of the point PntSol on 
+    	--          the solution curv.
+    	--          ParArg is the intrinsic parameter of the point PntSol on the argument curv.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+
+Tangency2(me                                     ;
+    	  Index         :   Integer from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+raises OutOfRange,NotDone
+is static;
+    	---Purpose: Returns informations about the tangency point between the 
+    	-- result and the first argument.
+    	-- ParSol is the intrinsic parameter of the point PntSol on the solution curv.
+    	-- ParArg is the intrinsic parameter of the point PntSol on the argument curv.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails.
+    
+-- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  Begin 
+    Add(me:  in  out;  theIndex:  Integer    from  Standard; 
+                       theLin  :  MyL2d2Tan  from  Geom2dGcc; 
+                       theTol  :  Real       from  Standard; 
+    	    	       theC1   :  Curve      from  Geom2dAdaptor; 
+    	    	       theC2   :  Curve      from  Geom2dAdaptor) 
+    returns  Boolean  from  Standard 
+    is  private;
+-- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  End
+
+fields
+
+    WellDone : Boolean from Standard;
+    -- True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    ---Purpose: Number of solutions.
+    
+    linsol   : Array1OfLin2d from TColgp;
+    ---Purpose : The solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the first argument.
+
+    qualifier2 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the second argument.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the first argument on 
+    -- the solution.
+
+    pnttg2sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the second argument on 
+    -- the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the 
+    -- first argument on the solution.
+
+    par2sol   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the 
+    -- second argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the first 
+    -- argument on the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the second 
+    -- argument on the second argument.
+
+end Lin2d2Tan;

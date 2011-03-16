@@ -1,0 +1,103 @@
+-- File:	Storage_InfoSection.cdl
+-- Created:	Thu Feb  6 15:37:03 1997
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class HeaderData from Storage
+
+inherits TShared from MMgt
+
+uses AsciiString from TCollection,
+     SequenceOfAsciiString from TColStd,
+     Error from Storage,
+     ExtendedString from TCollection,
+     SequenceOfExtendedString from TColStd
+     
+is
+
+    Create returns mutable HeaderData from Storage;
+    
+    CreationDate(me) returns AsciiString from TCollection;
+    ---Purpose: return the creation date
+
+    StorageVersion(me) returns AsciiString from TCollection;
+    ---Purpose: return the Storage package version
+  
+    SchemaVersion(me) returns AsciiString from TCollection;
+    ---Purpose: get the version of the schema
+  
+    SchemaName(me) returns AsciiString from TCollection;
+    ---Purpose: get the schema's name
+
+    SetApplicationVersion(me : mutable; aVersion : AsciiString from TCollection);
+    ---Purpose: set the version of the application
+
+    ApplicationVersion(me) returns AsciiString from TCollection;
+    ---Purpose: get the version of the application
+
+    SetApplicationName(me : mutable; aName : ExtendedString from TCollection);
+    ---Purpose: set the name of the application
+  
+    ApplicationName(me) returns ExtendedString from TCollection;
+    ---Purpose: get the name of the application
+
+    SetDataType(me : mutable; aType : ExtendedString from TCollection);
+    ---Purpose: set the data type
+
+    DataType(me) returns ExtendedString from TCollection;
+    ---Purpose: returns data type
+
+    AddToUserInfo(me : mutable; theUserInfo : AsciiString from TCollection);
+    ---Purpose: add <theUserInfo> to the user informations
+    
+    UserInfo(me) returns SequenceOfAsciiString from TColStd;
+    ---Purpose: return the user informations
+    ---C++: return const &
+    	
+    AddToComments(me : mutable; aComment : ExtendedString from TCollection);
+    ---Purpose: add <theUserInfo> to the user informations
+    
+    Comments(me) returns SequenceOfExtendedString from TColStd;
+    ---Purpose: return the user informations
+    ---C++: return const &
+
+    NumberOfObjects(me) returns Integer;
+    ---Purpose: the the number of persistent objects
+    --  Return:
+    --   the number of persistent objects readed
+
+    ErrorStatus(me) returns Error from Storage;
+    ErrorStatusExtension(me) returns AsciiString from TCollection;    
+    
+    ClearErrorStatus(me : mutable);
+    
+
+    -- PRIVATE
+
+    SetNumberOfObjects(me : mutable; anObjectNumber : Integer from Standard) is private;
+    SetStorageVersion(me : mutable; aVersion : AsciiString from TCollection) is private;
+    SetCreationDate(me : mutable; aDate : AsciiString from TCollection) is private;
+    SetSchemaVersion(me : mutable; aVersion : AsciiString from TCollection) is private;
+    SetSchemaName(me : mutable; aName : AsciiString from TCollection) is private;
+    SetErrorStatus(me : mutable; anError : Error from Storage) is private;
+    SetErrorStatusExtension(me : mutable; anErrorExt : AsciiString from TCollection) is private;    
+
+    fields
+    
+      myNBObj              : Integer from Standard;
+      myStorageVersion     : AsciiString from TCollection;
+      mySchemaVersion      : AsciiString from TCollection;
+      mySchemaName         : AsciiString from TCollection;
+      myApplicationVersion : AsciiString from TCollection;
+      myApplicationName    : ExtendedString from TCollection;
+      myDataType           : ExtendedString from TCollection;
+      myDate               : AsciiString from TCollection;
+      myUserInfo           : SequenceOfAsciiString from TColStd;
+      myComments           : SequenceOfExtendedString from TColStd;
+
+      myErrorStatus        : Error from Storage;
+      myErrorStatusExt     : AsciiString      from TCollection;
+      
+    friends class Schema from Storage
+end;

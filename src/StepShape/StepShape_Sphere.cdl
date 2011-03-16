@@ -1,0 +1,42 @@
+-- File:        Sphere.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Sphere from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	Real from Standard, 
+	Point from StepGeom,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Sphere;
+	---Purpose: Returns a Sphere
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aRadius : Real from Standard;
+	      aCentre : mutable Point from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRadius(me : mutable; aRadius : Real);
+	Radius (me) returns Real;
+	SetCentre(me : mutable; aCentre : mutable Point);
+	Centre (me) returns mutable Point;
+
+fields
+
+	radius : Real from Standard;
+	centre : Point from StepGeom;
+
+end Sphere;

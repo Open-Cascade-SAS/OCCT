@@ -1,0 +1,86 @@
+-- File:	PGeom_BezierSurface.cdl
+-- Created:	Tue Mar  2 11:47:59 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class BezierSurface from PGeom inherits BoundedSurface from PGeom
+
+        ---Purpose :   Defines a  rational  or  non  rational   Bezier
+        --         surface.  In this package the  degree of the Bezier
+        --         surface is limited to MaxDegree and must be greater
+        --         or equal to 1.
+        --         
+	---See Also : BezierSurface from Geom.
+
+uses HArray2OfReal from PColStd,
+     HArray2OfPnt  from PColgp
+
+is
+
+
+  Create returns mutable BezierSurface from PGeom;
+	---Purpose: Creates a BezierSurface with default values.
+    	---Level: Internal 
+
+
+  Create (aURational : Boolean from Standard;
+    	  aVRational : Boolean from Standard;
+    	  aPoles     : HArray2OfPnt from PColgp;
+    	  aWeights   : HArray2OfReal from PColStd)
+     returns mutable BezierSurface from PGeom;
+	---Purpose: Creates a BezierSurface with these values.
+    	---Level: Internal 
+
+
+  Poles (me: mutable; aPoles: HArray2OfPnt from PColgp);
+	---Purpose: Set the field poles with <aPoles>.
+    	---Level: Internal 
+
+
+
+  Poles (me) returns HArray2OfPnt from PColgp;
+	---Purpose: Returns the value of the field poles.
+    	---Level: Internal 
+
+
+  Weights (me: mutable; aWeights : HArray2OfReal from PColStd);
+        ---Purpose : Set the value of the field weights with <aWeights>.
+    	---Level: Internal 
+
+  
+  Weights (me) returns HArray2OfReal from PColStd;
+        ---Purpose : Returns the value of the field weights.
+    	---Level: Internal 
+
+  
+  URational (me: mutable; aURational: Boolean from Standard);
+        ---Purpose : Set the value of the field uRational with <aURational>.
+    	---Level: Internal 
+
+
+  URational (me) returns Boolean from Standard;
+        ---Purpose : Returns the value of the field uRational.
+    	---Level: Internal 
+
+
+  VRational (me: mutable; aVRational: Boolean from Standard);
+        ---Purpose : Set the value of the field vRational with <aVRational>.
+    	---Level: Internal 
+
+
+  VRational (me) returns Boolean from Standard;
+        ---Purpose : Returns the value of the field vRational.
+    	---Level: Internal 
+
+
+
+fields
+
+   uRational : Boolean from Standard;
+   vRational : Boolean from Standard;
+   poles     : HArray2OfPnt from PColgp;
+   weights   : HArray2OfReal from PColStd;
+
+end;

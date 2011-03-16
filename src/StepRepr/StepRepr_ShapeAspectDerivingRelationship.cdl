@@ -1,0 +1,19 @@
+-- File:	StepRepr_ShapeAspectDerivingRelationship.cdl
+-- Created:	Tue Apr 24 18:04:22 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class ShapeAspectDerivingRelationship  from StepRepr
+  inherits ShapeAspectRelationship  from StepRepr
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    Integer
+
+is
+
+    Create returns mutable ShapeAspectDerivingRelationship;
+
+end ShapeAspectDerivingRelationship;

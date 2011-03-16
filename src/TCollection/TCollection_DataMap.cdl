@@ -1,0 +1,195 @@
+-- File:	TCollection_DataMap.cdl
+-- Created:	Fri Jan  8 12:16:17 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class DataMap from TCollection 
+   (TheKey    as any;
+    TheItem   as any;
+    Hasher as any) -- as MapHasher(TheKey)
+inherits BasicMap from TCollection
+
+	---Purpose: The DataMap is a Map to store keys with associated
+	-- Items.An entry of a DataMap is composed of both the key and the item.
+	-- The DataMap can be seen as an extended array where
+	-- the Keys  are the   indices.  For this reason  the
+	-- operator () is defined on DataMap to fetch an Item
+	-- from a Key. So the following syntax can be used :
+	-- 
+	-- anItem = aMap(aKey);
+	-- aMap(aKey) = anItem;
+	-- 
+	-- This analogy has its  limit.   aMap(aKey) = anItem
+	-- can  be done only  if aKey was previously bound to
+	-- an item in the map.
+    	-- DataMap is a generic class which depends on three parameters:
+    	-- -   Key is the type of key for an entry in the map,
+    	-- -   Item is the type of element associated with a key in the   map,
+    	-- -   Hasher is the type of hasher on keys.
+    	-- Use a DataMapIterator iterator to explore a DataMap map.
+    	-- Notes:
+    	-- -   An iterator class is automatically instantiated from the
+    	--   TCollection_DataMapIterator generic class at the
+    	--   time of instantiation of a DataMap map.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required for a Hasher object.
+raises
+    DomainError  from Standard,
+    NoSuchObject from Standard
+
+    class DataMapNode from TCollection 
+    inherits MapNode from TCollection 
+     
+     
+    
+    uses MapNodePtr from TCollection
+    is
+      Create(K : TheKey; I : TheItem; n : MapNodePtr from TCollection) returns DataMapNode from TCollection;
+      --- Purpose: Constructs a DataMap with NbBuckets (defaulted to 1) buckets.
+      -- Note that the map will be automatically redimensioned
+      -- during its use if the number of entries becomes too large.
+      -- Use:
+      -- -   the function Bind to add an entry (key, item) in the map,
+      -- -   operator() to read an item from a key, or to assign a
+      --  new value to this item,
+      -- -   the function UnBind to remove an entry (key, item) from the map,
+      -- -   and a map iterator to explore the map.
+      ---C++: inline
+
+      Key(me) returns TheKey;
+      ---C++: return &
+      ---C++: inline
+
+      Value(me) returns TheItem;
+      ---C++: return &
+      ---C++: inline
+
+    fields  
+    	myKey : TheKey;
+    	myValue : TheItem;
+    end;
+    
+    class DataMapIterator inherits BasicMapIterator from TCollection
+	---Purpose: Functions used for iterating the contents of a DataMap
+    	-- Note: an iterator class is automatically instantiated from
+    	-- this generic class at the time of instantiation of a DataMap.
+    	-- Warning
+    	-- -   A map is a non-ordered data structure. The order in
+    	--   which entries of a map are explored by the iterator
+    	--   depends on its contents, and change when the map is edited.
+    	-- -   It is not recommended to modify the contents of a map
+    	--   during iteration: the result is unpredictable.
+ 
+    raises NoSuchObject from Standard	
+    is
+       	Create returns DataMapIterator from TCollection;
+	    ---Purpose: Creates an undefined Iterator (empty); use the function Initialize to define the map to explore.
+	
+	Create (aMap : DataMap from TCollection) 
+    	returns DataMapIterator from TCollection;
+	    ---Purpose: Creates an Iterator on the map <aMap>.
+	
+	Initialize(me : in out; aMap : DataMap from TCollection)
+	    ---Level: Public
+	    ---Purpose: Sets, or resets the Iterator in the map <aMap>.
+	is static;
+	
+	Key(me) returns any TheKey
+	    ---Purpose: Returns the current Key. An error is raised if
+	    -- the iterator is empty (More returns False).
+    	    -- Note: Key is the type of key for an entry in the explored DataMap map.
+    	    -- Exceptions
+    	    -- Standard_NoSuchObject if this iterator is empty (i.e.
+    	    -- when the function More returns false).
+	    ---C++: return const &
+	raises
+	    NoSuchObject from Standard
+	is static;
+	
+	Value(me) returns any TheItem
+	    ---Purpose: Returns the item of the current entry in the map for this iterator.
+    	    -- Note: Item is the type of element bound to a key in the explored DataMap map.
+    	    -- Exceptions
+    	    -- Standard_NoSuchObject if this iterator is empty (i.e.
+    	    -- when the function More returns false)
+	    ---C++: return const &
+	raises
+	    NoSuchObject from Standard
+	is static;
+
+    end DataMapIterator from TCollection;
+
+is
+    Create(NbBuckets : Integer = 1) returns DataMap from TCollection;
+	---Purpose: Creates   a DataMap with  <NbBuckets> buckets. Without
+	-- arguments the map is automatically dimensioned.
+    
+
+    Create(Other : DataMap from TCollection) returns DataMap from TCollection
+	---Purpose: As  copying  Map  is an expensive  operation it is
+	-- incorrect  to  do  it implicitly. This constructor is private and 
+	-- will raise an error if the Map is not empty. 
+	-- To copy the content of a DataMap use the Assign method (operator =).
+    raises DomainError from Standard
+    is private;
+    
+    Assign(me : in out; Other : DataMap from TCollection) 
+    returns DataMap from TCollection
+	---Purpose: Copies the contents of the map Other into this map.
+    	-- Note that this method is an alias of operator =.
+	---C++: alias operator =
+	---C++: return & 
+    is static;
+    
+    ReSize(me : in out; NbBuckets : Integer)
+	---Level: Public
+	---Purpose: Changes the  number    of  buckets of  <me>  to be
+	-- <NbBuckets>. The keys  already  stored in  the map are kept.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Removes all keys in the map.
+	---C++: alias ~
+    is static;
+    
+    Bind(me : in out; K : TheKey; I : TheItem) returns Boolean
+	---Purpose: Adds the Key <K> to  the Map <me>  with  the  Item
+	-- <I>.  Returns True  if the Key  was not already in
+	-- the  Map.  If the  Key was already in the  Map the
+	-- Item in the Map is replaced.
+    is static;
+
+    IsBound(me; K : TheKey) returns Boolean
+	---Purpose: Returns True if the key <K>  is stored  in the map <me>. 
+    is static;
+    
+    UnBind(me : in out; K : TheKey) returns Boolean
+	---Purpose: Removes the Key <K> from the  map. Returns True if
+	-- the Key was in the Map.
+    	--   Returns false if the key K was not in this map.
+        is static;
+    
+    Find(me; K : TheKey) returns any TheItem
+	---Level: Public
+	---Purpose: Returns  the Item stored  with the Key  <K> in the Map. 
+        -- Trigger: An exception is raised when <K> is not in the map.
+    raises NoSuchObject from Standard  
+	---C++: alias operator()
+	---C++: return const &
+    is static;
+    
+    ChangeFind(me : in out; K : TheKey) returns any TheItem
+	---Level: Public
+	---Purpose: Returns the  Item stored with  the Key  <K> in the
+	-- Map. This Item can be   modified with  the  syntax
+	-- aMap(K) = newItem; 
+        --  Trigger: An exception is raised when <K> is not in the map.
+	---C++: alias operator()
+	---C++: return &
+    raises NoSuchObject from Standard 
+    is static;
+    
+end DataMap;

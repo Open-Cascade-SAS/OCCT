@@ -1,0 +1,75 @@
+-- File:	BinTools_CurveSet.cdl
+-- Created:	Thu May 20 11:41:05 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+class CurveSet from BinTools 
+
+	---Purpose: Stores a set of Curves from Geom in binary format.
+
+uses
+    Curve from Geom,
+    IndexedMapOfTransient from TColStd
+    
+raises
+    OutOfRange from Standard
+
+is
+
+    Create returns CurveSet from BinTools;
+	---Purpose: Returns an empty set of Curves.
+	
+    Clear(me : in out)
+	---Purpose: Clears the content of the set.
+    is static;
+	
+    Add(me : in out; C : Curve from Geom) returns Integer
+	---Purpose: Incorporate a new Curve in the  set and returns
+	--          its index.
+    is static;
+    
+    Curve(me; I : Integer) returns Curve from Geom
+	---Purpose: Returns the Curve of index <I>.
+    raises
+    	OutOfRange from Standard
+    is static;
+
+    Index(me; C : Curve from Geom) returns Integer
+	---Purpose: Returns the index of <L>.
+    is static;
+    	
+    Write(me; OS : in out OStream)
+	---Purpose: Writes the content of  me  on the stream <OS> in a
+	--          format that can be read back by Read.
+    is static;
+	
+    Read(me : in out; IS : in out IStream)
+	---Purpose: Reads the content of me from the  stream  <IS>. me
+	--          is first cleared.
+	--          
+    is static;
+	
+    --
+    -- 	class methods to write an read curves
+    -- 	
+    
+    WriteCurve(myclass; C  : Curve from Geom;
+    	    	    	OS : in out OStream);
+	---Purpose: Dumps the curve on the stream in binary format
+	--          that can be read back.
+	
+    ReadCurve(myclass; IS : in out IStream;
+    	    	       C  : in out Curve from Geom)
+    returns IStream;
+	---Purpose: Reads the curve  from  the stream.  The  curve  is
+	--          assumed  to have  been  written  with  the Write
+	--          method
+	--          
+	---C++: return &
+	
+fields
+
+    myMap : IndexedMapOfTransient from TColStd;
+
+end CurveSet;

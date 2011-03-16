@@ -1,0 +1,15 @@
+//=======================================================================
+// File:	StlMesh_MeshExplorer.lxx
+// Created:	Mon Sep 25 10:09:46 1995
+// Author:	Philippe GIRODENGO
+// Copyright:    Matra Datavision	
+
+//=======================================================================
+//function : MoreTriangle
+//design   : 
+//warning  : 
+//=======================================================================
+
+inline Standard_Boolean StlMesh_MeshExplorer::MoreTriangle() const 
+{ return triangleIndex <= nbTriangles; }
+

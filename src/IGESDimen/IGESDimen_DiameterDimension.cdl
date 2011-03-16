@@ -1,0 +1,82 @@
+--
+-- File      :  DiameterDimension.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DiameterDimension from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines DiameterDimension, Type <206> Form <0>
+        --          in package IGESDimen
+        --          Used for dimensioning diameters
+
+uses
+
+        GeneralNote     from IGESDimen,
+        LeaderArrow     from IGESDimen,
+        Pnt             from gp,
+        Pnt2d           from gp,
+        XYZ             from gp,
+        XY              from gp
+
+is
+
+        Create returns mutable DiameterDimension;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              aNote         : GeneralNote;
+              aLeader       : LeaderArrow;
+              anotherLeader : LeaderArrow;
+              aCenter       : XY);
+        ---Purpose : This method is used to set the fields of the class
+        --           DiameterDimension
+        --       - aNote         : General Note Entity
+        --       - aLeader       : First Leader Entity
+        --       - anotherLeader : Second Leader Entity or a Null Handle.
+        --       - aCenter       : Arc center coordinates
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns the General Note Entity
+
+        FirstLeader (me) returns LeaderArrow;
+        ---Purpose : returns the First Leader Entity
+
+        HasSecondLeader (me) returns Boolean;
+        ---Purpose : returns False if theSecondleader is a Null Handle.
+
+        SecondLeader (me) returns LeaderArrow;
+        ---Purpose : returns the Second Leader Entity
+
+        Center (me) returns Pnt2d;
+        ---Purpose : returns the Arc Center co-ordinates as Pnt2d from package gp
+
+        TransformedCenter (me) returns Pnt2d;
+        ---Purpose : returns the Arc Center co-ordinates as Pnt2d from package gp
+        -- after Transformation. (Z = 0.0 for Transformation)
+
+fields
+
+--
+-- Class    : IGESDimen_DiameterDimension
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DiameterDimension.
+--
+-- Reminder : A DiameterDimension instance is defined by :
+--            - General Note Entity
+--            - First Leader Entity
+--            - Second Leader Entity or a Null Handle.
+--            - Arc Center Co-ordinates.
+-- A DiameterDimension Entity consists of a general note, one or two
+-- leaders, and an arc center point.
+
+        theNote         : GeneralNote;
+        theFirstLeader  : LeaderArrow;
+        theSecondLeader : LeaderArrow;
+        theCenter       : XY;
+
+end DiameterDimension;

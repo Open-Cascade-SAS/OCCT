@@ -1,0 +1,55 @@
+-- File:	AdvApp2Var_Context.cdl
+-- Created:	Tue Apr 16 13:53:24 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Mon Dec  9 10:30:56 1996
+--    by:	Joelle CHAUVET
+--		G1135 : Empty constructor
+---Copyright:	 Matra Datavision 1996
+           	 
+
+class Context from AdvApp2Var
+
+uses
+    HArray1OfReal from TColStd,
+    HArray2OfReal from TColStd
+
+is
+    Create returns Context;
+    Create(ifav,iu,iv : Integer; nlimu,nlimv : Integer; iprecis : Integer;
+           nb1Dss,nb2Dss,nb3Dss : Integer; tol1D,tol2D,tol3D : HArray1OfReal; 
+           tof1D,tof2D,tof3D : HArray2OfReal) returns  Context;
+    TotalDimension(me) returns Integer;
+    TotalNumberSSP(me) returns Integer;
+    FavorIso(me) returns Integer;
+    UOrder(me) returns Integer;
+    VOrder(me) returns Integer;
+    ULimit(me) returns Integer;
+    VLimit(me) returns Integer;
+    UJacDeg(me) returns Integer;
+    VJacDeg(me) returns Integer;
+    UJacMax(me) returns HArray1OfReal;
+    VJacMax(me) returns HArray1OfReal;
+    URoots(me) returns HArray1OfReal;
+    VRoots(me) returns HArray1OfReal;
+    UGauss(me) returns HArray1OfReal;
+    VGauss(me) returns HArray1OfReal;
+    IToler(me) returns HArray1OfReal;
+    FToler(me) returns HArray2OfReal;
+    CToler(me) returns HArray2OfReal;
+
+fields
+    myFav : Integer;
+    myOrdU, myOrdV : Integer;
+    myLimU, myLimV : Integer;
+    myNb1DSS, myNb2DSS,  myNb3DSS: Integer;
+    myNbURoot, myNbVRoot : Integer;
+    myJDegU, myJDegV : Integer;
+    myJMaxU, myJMaxV : HArray1OfReal;
+    myURoots, myVRoots : HArray1OfReal;
+    myUGauss, myVGauss : HArray1OfReal;
+    myInternalTol : HArray1OfReal;
+    myFrontierTol : HArray2OfReal;
+    myCuttingTol : HArray2OfReal;
+    
+end Context;

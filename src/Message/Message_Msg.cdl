@@ -1,0 +1,147 @@
+-- File:	Message_Msg.cdl
+-- Created:	18.01.01 16:55:51
+-- Author:	OCC Team
+---Copyright:	Open CASCADE S.A. 2005
+
+
+class Msg  from Message
+
+    ---Purpose: This class provides a tool for constructing the parametrized message
+    --          basing on resources loaded by Message_MsgFile tool.
+    --           
+    --          A Message is created from a keyword: this keyword identifies the 
+    --          message in a message file that should be previously loaded by call
+    --          to Message_MsgFile::LoadFile(). 
+    --          
+    --          The text of the message can contain placeholders for the parameters
+    --          which are to be filled by the proper values when the message 
+    --          is prepared. Most of the format specifiers used in C can be used,
+    --          for instance, %s for string, %d for integer etc. In addition,
+    --          specifier %f is supported for double numbers (for compatibility
+    --          with previous versions).
+    --          
+    --          User fills the parameter fields in the text of the message by 
+    --          calling corresponding methods Arg() or operators "<<".
+    --          
+    --          The resulting message, filled with all parameters, can be obtained
+    --          by method Get(). If some parameters were not filled, the text
+    --          UNKNOWN is placed instead.
+
+uses
+
+    AsciiString  from TCollection,
+    HAsciiString  from TCollection,
+    ExtendedString from TCollection,
+    HExtendedString from TCollection,
+    SequenceOfInteger from TColStd
+
+is
+
+    Create returns Msg from Message;
+    	---Purpose : Empty constructor
+
+    Create (theMsg: Msg from Message) returns Msg from Message;
+    	---Purpose : Copy constructor
+
+    Create (theKey: CString) returns Msg from Message;
+    	---Purpose : Create a message using a corresponding entry in Message_MsgFile
+
+    Create (theKey: ExtendedString from TCollection) returns Msg from Message;
+    	---Purpose : Create a message using a corresponding entry in Message_MsgFile
+
+    Set (me: in out; theMsg: CString);
+    	---Purpose : Set a message body text -- can be used as alternative to 
+	--           using messages from resource file
+
+    Set (me: in out; theMsg: ExtendedString from TCollection);
+    	---Purpose : Set a message body text -- can be used as alternative to 
+	--           using messages from resource file
+
+    -- Adding arguments
+
+    Arg (me: in out; theString : CString)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..s conversion
+    
+    Arg (me: in out; theString : AsciiString from TCollection)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: inline
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..s conversion
+
+    Arg (me: in out; theString : HAsciiString from TCollection)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: inline
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..s conversion
+
+    Arg (me: in out; theString : ExtendedString from TCollection)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..s conversion
+
+    Arg (me: in out; theString : HExtendedString from TCollection)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: inline
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..s conversion
+
+    Arg (me: in out; theInt : Integer)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..d, %..i, %..o, %..u, %..x or %..X conversion
+
+    Arg (me: in out; theReal : Real)
+    returns Msg from Message;
+    	---C++: return &
+    	---C++: alias operator <<
+    	---Purpose : Set a value for %..f, %..e, %..E, %..g or %..G conversion
+
+    Original (me) returns ExtendedString from TCollection;
+    	---C++: inline
+    	---C++: return const &
+    	---Purpose : Returns the original message text
+    
+    Value (me) returns ExtendedString from TCollection;
+    	---C++: inline
+    	---C++: return const &
+    	---Purpose : Returns current state of the message text with 
+        --           parameters to the moment
+    
+    IsEdited (me) returns Boolean;
+    	---C++: inline
+    	---Purpose : Tells if Value differs from Original
+    
+    Get (me: in out)
+    returns ExtendedString from TCollection;
+    	---C++: return const &
+    	---C++: alias "operator const TCollection_ExtendedString& () { return Get(); }"
+    	---Purpose : Return the resulting message string with all parameters
+	--           filled. If some parameters were not yet filled by calls
+	--           to methods Arg (or <<), these parameters are filled by
+	--           the word UNKNOWN
+
+    -- Private methods
+	
+    getFormat (me: in out; theType : Integer;
+                   theFormat : in out AsciiString from TCollection)
+    returns Integer is private;
+
+    replaceText (me: in out; theFirst : Integer;
+                             theNb    : Integer;
+                             theStr   : ExtendedString from TCollection) is private;
+
+fields
+
+    myOriginal     : ExtendedString    from TCollection;
+    myMessageBody  : ExtendedString    from TCollection;
+    mySeqOfFormats : SequenceOfInteger from TColStd;
+
+end Msg;

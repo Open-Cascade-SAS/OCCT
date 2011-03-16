@@ -1,0 +1,178 @@
+-- File:	TopOpeBRepTool_REGUW.cdl
+-- Created:	Tue Dec  8 17:28:35 1998
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class REGUW from TopOpeBRepTool
+
+    -- purpose : Regularisation is computed in two steps :
+    -- 1. we split the face in areas of matter.
+    -- 2. we split wires to avoid any multiple point.
+    -- 
+    --   TopOpeBRepTool_REGUW REGUW(FRef); 
+    --   
+    --   // optionnal : setting Esplits,OwNw
+    --   REGUW.GetEsplits(Esplits);
+    --   REGUW.GetOwNw(OwNw);
+    --   
+    --   
+
+uses
+    Pnt2d from gp,
+    Dir2d from gp,
+    Shape from TopoDS,
+    Vertex from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    ListOfShape from TopTools,
+    MapOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    DataMapOfOrientedShapeC2DF from TopOpeBRepTool,
+    IndexedDataMapOfShapeconnexity from TopOpeBRepTool,
+    CORRISO from TopOpeBRepTool,    
+    connexity from TopOpeBRepTool
+is
+    Create (FRef : Face from TopoDS) 
+    returns REGUW from TopOpeBRepTool;
+    
+    Fref (me) returns Face from TopoDS;
+    ---C++: return const &
+
+    SetEsplits(me : in out; Esplits : in out DataMapOfShapeListOfShape from TopTools);
+    GetEsplits(me; Esplits : out DataMapOfShapeListOfShape from TopTools);
+    SetOwNw(me : in out; OwNw : in out DataMapOfShapeListOfShape from TopTools);
+    GetOwNw(me; OwNw : out DataMapOfShapeListOfShape from TopTools);
+
+    SplitEds(me : in out) 
+    returns Boolean;
+    -- Splits all edges on their internal vertices if any, and updates 
+    -- map of connexity.
+    
+    --
+    --  <S> processing on subshapes of complete shape to regularize
+    --  prequesitory : all these subshapes are not connexed.   
+    --     
+    --     TopOpeBRepTool_REGUW REGUW(Fref);
+    --     
+    --     REGUW.SetOwNw(OwNw);       // optionnal
+    --     REGUW.SetEsplits(Esplits); // optionnal
+    --     
+    --     REGUW.Init(S);
+    --     REGUW.MapS();
+    --     REGUW.SplitEds();
+    --     REGUW.REGU();
+    --     
+    --     REGUW.GetSplit(Splits);                    //    do1
+    --     REGUW.GetOwNw(OwNw); Splits = OwNw.Find(S);// or do2
+    --     
+    --     REGUW.GetOwNw(OwNw);       // optionnal
+    --     REGUW.GetEsplits(Esplits); // optionnal
+    --     
+    --     all methods -except initialization methods- Raise if (!HasInit())  
+    
+    Init (me : in out; S : Shape from TopoDS);
+    -- initializes <myS>    
+    S(me) returns Shape from TopoDS;
+    -- returns <myS>
+    ---C++: return const &          
+    HasInit(me) returns Boolean;    
+
+    InitStep (me : in out; S : Shape from TopoDS) 
+    is static private;
+    
+    MapS(me : in out)
+    returns Boolean;
+
+    REGU(me : in out; istep : Integer; Scur : Shape from TopoDS; Splits : out ListOfShape from TopTools)
+    returns Boolean;
+    -- <istep> step for regularization.
+
+    REGU(me : in out)
+    returns Boolean;
+    -- Fills up <myOwNw> for shape <myS>
+    
+    GetSplits(me; Splits : out ListOfShape from TopTools)
+    returns Boolean;
+    -- <myS> gives <Splits> after complete regularization
+
+    --
+    --       INTERNAL methods
+    --       
+    --  <S> = { Block }, Block  = {(vi,ei)}, 
+    --  a Block starts with (v0,e1,p2d0)
+    --          ends when p2di equals p2d0.
+
+    InitBlock(me : in out)
+    returns Boolean;
+    -- Gets starts elements for a new block
+
+    NextinBlock(me : in out)
+    returns Boolean;
+    -- Go to next element in the block
+
+    NearestE(me; loe : ListOfShape from TopTools; efound : out Edge from TopoDS)
+    returns Boolean;
+    -- Gets nearest edge Ang(mye,efound)=Min{ Ang(mye,ei) , ei in loe }
+    -- iStep = 1 : Ang(e,ei) = 2d matter angle (e,ei)
+    --             ori(myv,mye) = 2
+    --             ori(myv,ei)  = 1
+    --             
+    -- iStep = 2 : Ang(e,ei) = 2d oppo matter angle (e,ei)
+    --             ori(myv,mye) = 1
+    --             ori(myv,ei)  = 2 
+
+
+    Connexity(me; v : Vertex from TopoDS; co : out connexity from TopOpeBRepTool)
+    returns Boolean;
+    -- returns false if v is not bound.
+
+    --
+    --      for external use : if the user wants to modify the mapping
+    --      for the input shape he can modify the connexity map.
+    --      IMPORTANT : after these changes, do NOT forget to update the
+    --      map for multiple vertices ( UpdateMultiple )
+    --      
+
+    AddNewConnexity(me : in out; v : Vertex from TopoDS; OriKey : Integer; e : Edge from TopoDS)
+    returns Boolean;
+    -- Adds new connexity <e> to connexity(<v>,<e>),
+    -- updates <myCORRISO>, <mymapvEds>
+    -- prequesitory : <e> oriented FORWARD has no INTERNAL vertex
+
+    RemoveOldConnexity(me : in out; v : Vertex from TopoDS; OriKey : Integer; e : Edge from TopoDS)
+    returns Boolean;
+    
+    UpdateMultiple(me : in out; v : Vertex from TopoDS)
+    returns Boolean;
+    -- updates map of multiple vertices
+    -- returns false if v is not bound.
+
+fields     
+    myS : Shape from TopoDS;
+    myCORRISO : CORRISO from TopOpeBRepTool;
+    
+    hasnewsplits : Boolean;    	
+    myEsplits : DataMapOfShapeListOfShape from TopTools;
+    myOwNw : DataMapOfShapeListOfShape from TopTools;
+
+    mymapvEds : IndexedDataMapOfShapeconnexity from TopOpeBRepTool;       	
+    mymapvmultiple : MapOfShape from TopTools;
+    myListVmultiple: ListOfShape from TopTools;
+
+    iStep : Integer; -- 1 or 2
+
+    	    	
+    -- BLOCK processing :	
+    mytol2d : Real;
+    isinit0 : Boolean;
+    -- starts elements 
+    myv0   : Vertex from TopoDS;
+    myp2d0 : Pnt2d from gp;
+    -- current elements
+    myv    : Vertex from TopoDS;
+    myed   : Edge from TopoDS;
+    myp2d  : Pnt2d from gp; 
+    mytg2d : Dir2d from gp; 
+
+end REGUW;

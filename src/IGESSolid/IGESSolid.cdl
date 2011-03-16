@@ -1,0 +1,207 @@
+--
+-- File    : IGESSolid.cdl
+-- Created : Mon 11 Jan 1993
+-- Author  : SIVA
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESSolid
+
+
+        ---Purpose : This package consists of B-Rep and CSG Solid entities
+
+uses
+
+        Standard,
+        TCollection,
+	TColStd,
+	TColgp,
+        gp,
+	Message,
+        Interface,
+        IGESData,
+        IGESBasic,
+        IGESGeom
+
+is
+
+        class Block;
+        -- Type 150 Form 0
+        ---Purpose : The Block is a rectangular parallelopiped, defined with
+        --           one vertex at (X1, Y1, Z1) and three edges lying along
+        --           the local +X, +Y, +Z axes.
+
+        class RightAngularWedge;
+        -- Type 152 Form 0
+        ---Purpose : A right angular wedge is a triangular/trapezoidal prism
+
+        class Cylinder;
+        -- Type 154
+        ---Purpose : Defines a cylinder
+
+        class ConeFrustum;
+        -- Type 156 Form 0
+        ---Purpose : The Cone Frustum is defined by the center of the
+        --           larger circular face of the frustum, its radius, a unit
+        --           vector in the axis direction, a height in this direction
+        --           and a second circular face with radius which is lesser
+        --           than the first face.
+
+        class Sphere;
+        -- Type 158 Form 0
+        ---Purpose : Defines a sphere.
+
+        class Torus;
+        -- Type 160 Form 0
+        ---Purpose : A Torus is a solid formed by revolving a circular disc
+        --           about a specified coplanar axis.
+
+        class SolidOfRevolution;
+        -- Type 162 Form 0,1
+        ---Purpose : This entity is defined by revolving the area determined
+        --           by a planar curve about a specified axis through a given
+        --           fraction of full rotation.
+
+        class SolidOfLinearExtrusion;
+        -- Type 164
+        ---Purpose : Solid of linear extrusion is defined by translating an
+        --           area determined by a planar curve
+
+        class Ellipsoid;
+        -- Type 168 Form 0
+        ---Purpose : The ellipsoid is a solid bounded by the surface defined
+        --           by:
+        --                    X^2       Y^2       Z^2
+        --                   -----  +  -----  +  -----  =  1
+        --                    LX^2      LY^2      LZ^2
+
+        class BooleanTree;
+        -- Type 180 Form 0
+        ---Purpose : The Boolean tree describes a binary tree structure
+        --           composed of regularized Boolean operations and operands,
+        --           in post-order notation.
+
+        class SelectedComponent;
+        -- Type 182 Form 0
+        ---Purpose : The Selected Component entity provides a means of
+        --           selecting one component of a disjoint CSG solid
+
+        class SolidAssembly;
+        -- Type 184 Form 0
+        ---Purpose : Solid assembly is a collection of items which possess a
+        --           shared fixed geometric relationship.
+
+        class ManifoldSolid;
+        -- Type 186 Form 0
+        ---Purpose : A manifold solid is a bounded, closed, and finite volume
+        --           in three dimensional Euclidean space
+
+        class PlaneSurface;
+        -- Type 190 Form 0,1
+        ---Purpose : A plane surface entity is defined by a point on the
+        --           surface and a normal to it.
+
+        class CylindricalSurface;
+        -- Type 192
+        ---Purpose : Defines a cylindrical surface
+
+        class ConicalSurface;
+        -- Type 194 Form 0,1
+        ---Purpose : Defines a conical surface
+
+        class SphericalSurface;
+        -- Type 196 Form 0,1
+        ---Purpose : Defines a spherical surface
+
+        class ToroidalSurface;
+        -- Type 198 Form 0,1
+        ---Purpose : Defines a toroidal surface
+
+        class SolidInstance;
+        -- Type 430 Form 0
+        ---Purpose : This provides a mechanism for replicating a solid
+        --           representation.
+
+        class VertexList;
+        -- Type 502 Form 1
+        ---Purpose : It contains one or more vertices.
+
+        class EdgeList;
+        -- Type 504
+        ---Purpose : It contains one or more edge tuples.
+
+        class Loop;
+        -- Type 508 Form 1
+        ---Purpose : A Loop entity specifies a bound of a face. It represents
+        --           a connected collection of face boundaries, seams, and
+        --           poles of a single face.
+
+        class Face;
+        -- Type 510 Form 1
+        ---Purpose : Face entity is a bound (partial) which has finite area
+
+        class Shell;
+        -- Type 514 Form 1
+        ---Purpose : Shell entity is a connected entity of dimensionality 2
+        --           which divides R3 into two arcwise connected open subsets,
+        --           one of which is finite. Inside of the shell is defined to
+        --           be the finite region.
+
+    	--    Tool for Entities    --
+
+        class ToolBlock;
+        class ToolRightAngularWedge;
+        class ToolCylinder;
+        class ToolConeFrustum;
+        class ToolSphere;
+        class ToolTorus;
+        class ToolSolidOfRevolution;
+        class ToolSolidOfLinearExtrusion;
+        class ToolEllipsoid;
+        class ToolBooleanTree;
+        class ToolSelectedComponent;
+        class ToolSolidAssembly;
+        class ToolManifoldSolid;
+        class ToolPlaneSurface;
+        class ToolCylindricalSurface;
+        class ToolConicalSurface;
+        class ToolSphericalSurface;
+        class ToolToroidalSurface;
+        class ToolSolidInstance;
+        class ToolVertexList;
+        class ToolEdgeList;
+        class ToolLoop;
+        class ToolFace;
+        class ToolShell;
+
+    -- Definition and Exploitation of Entities defined in this Package
+
+    class Protocol;
+    class ReadWriteModule;
+    class GeneralModule;
+    class SpecificModule;
+
+    class TopoBuilder;
+    ---Purpose : a tool to build BREP IGES Entities
+
+    -- Instantiations
+
+    class  Array1OfLoop       instantiates  Array1 from TCollection (Loop);
+    class  Array1OfFace       instantiates  Array1 from TCollection (Face);
+    class  Array1OfShell      instantiates  Array1 from TCollection (Shell);
+    class  Array1OfVertexList instantiates  Array1 from TCollection (VertexList);
+    class HArray1OfLoop       instantiates HArray1 from TCollection (Loop,Array1OfLoop);
+    class HArray1OfFace       instantiates HArray1 from TCollection (Face,Array1OfFace);
+    class HArray1OfShell      instantiates HArray1 from TCollection (Shell,Array1OfShell);
+    class HArray1OfVertexList instantiates HArray1 from TCollection (VertexList,Array1OfVertexList);
+
+    --  Package methods
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESSolid;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESSolid;

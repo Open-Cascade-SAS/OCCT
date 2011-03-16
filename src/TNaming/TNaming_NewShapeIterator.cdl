@@ -1,0 +1,92 @@
+-- File:	TNaming_NewShapeIterator.cdl
+-- Created:	Tue Dec 17 16:53:12 1996
+-- Author:	Remi Lequette
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class NewShapeIterator from TNaming 
+
+	---Purpose: Iterates on all the descendants of a shape
+
+uses
+    Shape       from TopoDS,
+    UsedShapes  from TNaming,
+    NamedShape  from TNaming,
+    Iterator    from TNaming,
+    Label       from TDF,
+    PtrNode     from TNaming 	
+
+raises
+     NoMoreObject from Standard,
+     NoSuchObject from Standard 
+
+is
+
+    Create (aShape      : Shape     from TopoDS; 
+    	    Transaction : Integer    from Standard;
+    	    Shapes      : UsedShapes from TNaming)
+    returns NewShapeIterator from TNaming
+    is private;
+
+    Create (aShape      : Shape     from TopoDS; 
+    	    Shapes      : UsedShapes from TNaming)
+    returns NewShapeIterator from TNaming 
+    is private;  
+
+    Create (aShape      : Shape     from TopoDS; 
+    	    Transaction : Integer    from Standard;
+    	    access      : Label from TDF)
+    returns NewShapeIterator from TNaming;
+
+    Create (aShape : Shape     from TopoDS; 
+    	    access : Label from TDF)
+    returns NewShapeIterator from TNaming;
+    
+    Create (anIterator : NewShapeIterator from TNaming)
+    returns NewShapeIterator from TNaming;
+	---Purpose: Iterates from the current Shape in <anIterator>
+
+    Create (anIterator  : Iterator from TNaming)
+    returns NewShapeIterator from TNaming;
+	---Purpose: Iterates from the current Shape in <anIterator>
+	
+    More(me) returns Boolean;
+    	---C++: inline
+    
+    Next(me : in out)
+    raises
+       NoMoreObject from Standard;
+       
+    Label(me) returns Label from TDF
+    raises
+	NoSuchObject from Standard;
+
+    NamedShape(me) returns NamedShape from TNaming
+    raises
+	NoSuchObject from Standard;
+		
+    Shape(me) returns Shape from TopoDS
+	---C++: return const&
+       	---Purpose:  Warning! Can be a Null Shape if a descendant is deleted.
+    raises
+	NoSuchObject from Standard;
+	
+    IsModification(me) returns Boolean;
+	---Purpose: True if the new  shape is a modification  (split,
+	--          fuse,etc...) of the old shape.
+    
+fields
+    
+    myNode  : PtrNode from TNaming;	
+    myTrans : Integer from Standard; -- is < 0 means in Current Transaction.
+
+friends
+
+    class Tool   from TNaming,
+    class Name   from TNaming,
+    class Naming from TNaming  
+    
+end NewShapeIterator;
+
+
+

@@ -1,0 +1,428 @@
+-- File:	Geom_BezierCurve.cdl
+-- Created:	Tue Mar  9 19:49:01 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class BezierCurve from Geom inherits BoundedCurve from Geom
+
+        ---Purpose : Describes a rational or non-rational Bezier curve
+    	-- - a non-rational Bezier curve is defined by a table of
+    	--   poles (also called control points),
+    	-- - a rational Bezier curve is defined by a table of
+    	--   poles with varying weights.
+    	--  These data are manipulated by two parallel arrays:
+    	-- - the poles table, which is an array of gp_Pnt points, and
+    	-- - the weights table, which is an array of reals.
+    	-- The bounds of these arrays are 1 and "the number of "poles" of the curve.
+    	-- The poles of the curve are "control points" used to deform the curve.
+    	-- The first pole is the start point of the curve, and the
+    	-- last pole is the end point of the curve. The segment
+    	-- that joins the first pole to the second pole is the
+    	-- tangent to the curve at its start point, and the
+    	-- segment that joins the last pole to the
+    	-- second-from-last pole is the tangent to the curve at its end point.
+    	-- It is more difficult to give a geometric signification to
+    	-- the weights but they are useful for providing the exact
+    	-- representations of arcs of a circle or ellipse.
+    	-- Moreover, if the weights of all poles are equal, the
+    	-- curve is polynomial; it is therefore a non-rational
+    	-- curve. The non-rational curve is a special and
+    	-- frequently used case. The weights are defined and
+    	-- used only in the case of a rational curve.
+    	-- The degree of a Bezier curve is equal to the number
+    	-- of poles, minus 1. It must be greater than or equal to
+    	-- 1. However, the degree of a Geom_BezierCurve
+    	-- curve is limited to a value (25) which is defined and
+    	-- controlled by the system. This value is returned by the function MaxDegree.
+    	-- The parameter range for a Bezier curve is [ 0, 1 ].
+    	-- If the first and last control points of the Bezier curve
+    	-- are the same point then the curve is closed. For
+    	-- example, to create a closed Bezier curve with four
+    	-- control points, you have to give the set of control
+    	-- points P1, P2, P3 and P1.
+    	-- The continuity of a Bezier curve is infinite.
+    	-- It is not possible to build a Bezier curve with negative
+    	-- weights. We consider that a weight value is zero if it
+    	-- is less than or equal to gp::Resolution(). We
+    	-- also consider that two weight values W1 and W2 are equal if:
+    	-- |W2 - W1| <= gp::Resolution().
+    	--   Warning
+    	-- - When considering the continuity of a closed Bezier
+    	--   curve at the junction point, remember that a curve
+    	--   of this type is never periodic. This means that the
+    	--   derivatives for the parameter u = 0 have no
+    	--   reason to be the same as the derivatives for the
+    	--   parameter u = 1 even if the curve is closed.
+    	-- - The length of a Bezier curve can be null.
+       
+
+
+uses  Array1OfReal      from TColStd,
+      HArray1OfReal     from TColStd,
+      Array1OfPnt       from TColgp,
+      Ax1               from gp, 
+      Ax2               from gp,
+      Pnt               from gp, 
+      HArray1OfPnt      from TColgp, 
+      Vec               from gp, 
+      Trsf              from gp,
+      Geometry          from Geom,
+      Shape             from GeomAbs
+
+
+raises ConstructionError from Standard,
+       DimensionError    from Standard,
+       RangeError        from Standard,
+       OutOfRange        from Standard
+
+
+is 
+
+  Create (CurvePoles : Array1OfPnt from TColgp)
+    returns mutable BezierCurve
+        ---Purpose :  Creates a non rational Bezier curve with a set of poles 
+        --         CurvePoles.  The weights are defaulted to all being 1.
+    	--         Raises ConstructionError if the number of poles is greater than MaxDegree + 1
+        --         or lower than 2.
+     raises ConstructionError;
+      
+
+
+  Create (CurvePoles : Array1OfPnt from TColgp;
+    	  PoleWeights : Array1OfReal from TColStd) 
+     returns mutable BezierCurve
+        ---Purpose :  Creates a rational Bezier curve with the set of poles
+        --  CurvePoles and the set of weights  PoleWeights .
+        --  If all the weights are identical the curve is considered 
+        --  as non rational. Raises ConstructionError if 
+        --  the number of poles is greater than  MaxDegree + 1 or lower
+        --  than 2 or CurvePoles and CurveWeights have not the same length
+        --  or one weight value is lower or equal to Resolution from package gp.
+     raises ConstructionError;
+       
+
+
+
+  Increase (me : mutable; Degree : Integer)
+        ---Purpose :  Increases the degree of a bezier curve. Degree is the new 
+        --  degree of <me>. Raises ConstructionError 
+    	--    if Degree is greater than MaxDegree or lower than 2 
+        --  or lower than the initial degree of <me>.
+     raises ConstructionError;
+      
+
+  InsertPoleAfter (me : mutable; Index : Integer; P : Pnt)
+        ---Purpose :  Inserts a pole P after the pole of range Index.
+        --  If the curve <me> is rational the weight value for the new 
+        --  pole of range Index is 1.0.
+     raises OutOfRange,
+        ---Purpose : raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : 
+        --  raised if the resulting number of poles is greater than 
+        --  MaxDegree + 1.
+
+
+  InsertPoleAfter (me : mutable; Index : Integer; P : Pnt; Weight : Real)
+        ---Purpose :
+        --  Inserts a pole with its weight in the set of poles after the
+        --  pole of range Index. If the curve was non rational it can
+        --  become rational if all the weights are not identical.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if the resulting number of poles is greater than 
+        --  MaxDegree + 1.
+        --  Raised if Weight is lower or equal to Resolution from package gp.
+
+
+  InsertPoleBefore (me : mutable; Index : Integer; P : Pnt)
+        ---Purpose :  Inserts a pole P before the pole of range Index.
+        --  If the curve <me> is rational the weight value for the new
+        --  pole of range Index is 1.0.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if the resulting number of poles is greater than 
+        --  MaxDegree + 1.
+
+
+
+  InsertPoleBefore (me : mutable; Index : Integer; P : Pnt; Weight : Real)
+        ---Purpose :
+        --  Inserts a pole with its weight in the set of poles after 
+        --  the pole of range Index. If the curve was non rational it
+        --  can become rational if all the weights are not identical.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : 
+        --  Raised if the resulting number of poles is greater than 
+        --  MaxDegree + 1.
+        --  Raised if Weight is lower or equal to Resolution from 
+        --  package gp.
+
+  RemovePole (me : mutable; Index : Integer)
+        ---Purpose : Removes the pole of range Index.
+        --  If the curve was rational it can become non rational.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        --- Purpose : Raised if Degree is lower than 2.
+
+
+  Reverse (me : mutable);
+        ---Purpose :
+        --  Reverses the direction of parametrization of <me>
+        --  Value (NewU) =  Value (1 - OldU)
+
+
+  ReversedParameter(me; U : Real) returns Real;
+	---Purpose: Returns the  parameter on the  reversed  curve for
+	--          the point of parameter U on <me>.
+	--          
+	--          returns 1-U
+
+
+  Segment (me : mutable; U1, U2 : Real);
+        ---Purpose :
+        --  Segments the curve between U1 and U2 which can be out
+        --  of the bounds of the curve. The curve is oriented from U1
+        --  to U2.
+        --  The control points are modified, the first and the last point
+        --  are not the same but the parametrization range is [0, 1] 
+        --  else it could not be a Bezier curve.
+        --  Warnings :
+        --  Even if <me> is not closed it can become closed after the 
+        --  segmentation for example if U1 or U2 are out of the bounds 
+        --  of the curve <me> or if the curve makes loop.
+        --  After the segmentation the length of a curve can be null.
+
+
+  SetPole (me : mutable; Index : Integer; P : Pnt)
+        ---Purpose :
+        --  Substitutes the pole of range index with P.
+        --  If the curve <me> is rational the weight of range Index 
+        --  is not modified.
+     raises OutOfRange;
+        ---Purpose : raiseD if Index is not in the range [1, NbPoles]
+
+
+  SetPole (me : mutable; Index : Integer; P : Pnt; Weight : Real)
+        ---Purpose :
+        --  Substitutes the pole and the weights of range Index.
+        --  If the curve <me> is not rational it can become rational 
+        --  if all the weights are not identical.
+        --  If the curve was rational it can become non rational if
+        --  all the weights are identical.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : Raised if Weight <= Resolution from package gp
+
+
+  SetWeight (me : mutable; Index : Integer; Weight : Real)
+        ---Purpose :
+        --  Changes the weight of the pole of range Index.
+        --  If the curve <me> is not rational it can become rational 
+        --  if all the weights are not identical.
+        --  If the curve was rational it can become non rational if
+        --  all the weights are identical.
+     raises OutOfRange,
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+            ConstructionError;
+        ---Purpose : Raised if Weight <= Resolution from package gp
+
+
+
+  IsClosed (me)   returns Boolean;
+        ---Purpose :
+        --  Returns True if the distance between the first point 
+        --  and the last point of the curve is lower or equal to
+        --  the Resolution from package gp.
+
+
+  IsCN (me; N : Integer)   returns Boolean;
+        ---Purpose : Continuity of the curve, returns True. 
+
+
+  IsPeriodic (me)   returns Boolean;
+        ---Purpose : 
+        --  Returns True if the parametrization of a curve is periodic.
+        --  (P(u) = P(u + T) T = constante)
+
+
+  IsRational (me)   returns Boolean;
+        ---Purpose :
+        --  Returns false if all the weights are identical. The tolerance
+        --  criterion is Resolution from package gp.
+
+
+  Continuity (me)   returns Shape from GeomAbs;
+        ---Purpose :  a Bezier curve is CN
+
+
+  Degree (me)   returns Integer;
+        ---Purpose : Returns the polynomial degree of the curve.
+        --  it is the number of poles - 1
+
+
+
+
+        ---Purpose : point P and derivatives (V1, V2, V3) computation
+        --  The Bezier Curve has a Polynomial representation so the 
+        --  parameter U can be out of the bounds of the curve.
+
+
+  D0 (me; U : Real; P : out Pnt);
+
+  D1 (me; U : Real; P : out Pnt; V1 : out Vec);
+
+  D2 (me; U : Real; P : out Pnt; V1, V2 : out Vec);
+
+  D3 (me; U : Real; P : out Pnt; V1, V2, V3 : out Vec);
+    	---Purpose: For this Bezier curve, computes
+    	-- - the point P of parameter U, or
+    	-- - the point P and one or more of the following values:
+    	--   - V1, the first derivative vector,
+    	--   - V2, the second derivative vector,
+    	--   - V3, the third derivative vector.
+    	-- Note: the parameter U can be outside the bounds of the curve.
+        
+  DN (me; U : Real; N : Integer)  returns Vec
+        ---Purpose : For the point of parameter U of this Bezier curve,
+    	-- computes the vector corresponding to the Nth derivative.
+    	-- Note: the parameter U can be outside the bounds of the curve.
+    	-- Exceptions Standard_RangeError if N is less than 1.
+     raises RangeError;
+
+
+  StartPoint (me)  returns Pnt;
+        ---Purpose: Returns Value (U=0.), it is the first control point of the curve.
+
+
+  EndPoint (me) returns Pnt;
+        ---Purpose: Returns Value (U=1.), it is the last control point of the Bezier curve.
+
+
+  FirstParameter (me) returns Real;
+        ---Purpose : Returns the value of the first  parameter of this
+    	-- Bezier curve. This is 0.0, which gives the start point of this Bezier curve
+
+
+  LastParameter (me) returns Real;
+        ---Purpose : Returns the value of the last parameter of this
+    	-- Bezier curve. This is  1.0, which gives the end point of this Bezier curve.
+
+
+  NbPoles (me)  returns Integer;
+    	---Purpose: Returns the number of poles of this Bezier curve.
+
+  Pole (me; Index : Integer) returns Pnt
+        ---Purpose : Returns the pole of range Index.
+     raises OutOfRange;
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+
+
+  Poles (me; P : out Array1OfPnt from TColgp)
+        ---Purpose : Returns all the poles of the curve.
+     raises DimensionError;
+        ---Purpose : 
+        --  Raised if the length of P is not equal to the number of poles.
+
+
+  Weight (me; Index : Integer)   returns Real  
+        ---Purpose : Returns the weight of range Index.
+     raises OutOfRange;
+        ---Purpose : Raised if Index is not in the range [1, NbPoles]
+
+
+  Weights (me; W : out Array1OfReal from TColStd)
+        ---Purpose : Returns all the weights of the curve.
+     raises DimensionError;
+        ---Purpose : 
+        --  Raised if the length of W is not equal to the number of poles.
+        
+
+
+
+  Transform (me : mutable; T : Trsf);
+
+    	---Purpose: Applies the transformation T to this Bezier curve.
+	     
+
+  MaxDegree (myclass)   returns Integer;
+        ---Purpose :
+        --  Returns the value of the maximum polynomial degree
+    	-- of any Geom_BezierCurve curve. This value is 25.
+
+
+  Resolution(me          : mutable; 
+             Tolerance3D : Real;
+             UTolerance  : out Real);
+	---Purpose:  Computes for this Bezier curve the parametric
+    	-- tolerance UTolerance for a given 3D tolerance Tolerance3D.
+    	-- If f(t) is the equation of this Bezier curve,
+    	-- UTolerance ensures that:
+    	-- |t1-t0| < UTolerance ===> |f(t1)-f(t0)| < Tolerance3D
+
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this Bezier curve.
+
+  Init (me : mutable; Poles   :  HArray1OfPnt  from TColgp;
+    	              Weights :  HArray1OfReal from TColStd) 
+  
+        ---Purpose : Set  poles  to  Poles,  weights to  Weights  (not
+        --         copied). If Weights is   null  the  curve is    non
+        --         rational. Create the arrays of coefficients.  Poles
+        --         and    Weights  are   assumed   to  have the  first
+        --         coefficient 1.
+        --         Update rational and closed.
+        --         
+  raises ConstructionError -- if nbpoles < 2 or nbboles > MaDegree + 1
+
+  is static private;
+
+  CoefficientsOK(me; U : Real) returns Boolean
+  
+        ---Purpose : returns true if the coefficients have been
+        --           computed with the right value of cacheparameter
+        --           for the given U value.
+        -- 
+        is static private;
+  
+  UpdateCoefficients(me : mutable; U : Real from Standard = 0.0)
+    	---Purpose: Recompute the coeficients.
+  is static private;
+
+
+
+fields
+
+   rational : Boolean;
+   closed   : Boolean;
+   poles    : HArray1OfPnt  from TColgp;
+   weights  : HArray1OfReal from TColStd;
+
+   coeffs   : HArray1OfPnt  from TColgp;
+   wcoeffs  : HArray1OfReal from TColStd;
+   -- computed at parametercache. 
+
+   validcache      : Integer;
+   -- = 1 the cache is valid 
+   -- = 0 the cache is invalid
+   parametercache    : Real;
+   -- Parameter at which the Taylor expension is stored in 
+   -- the cache, often 0., sometimes 1..
+   spanlenghtcache   : Real;
+   -- always 1. for the moment.
+
+   -- usefull to evaluate the parametric resolution
+   maxderivinv   : Real from Standard;
+   maxderivinvok : Boolean from Standard;
+
+end;

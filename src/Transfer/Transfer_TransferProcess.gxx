@@ -1,0 +1,1555 @@
+// DCE 21.01.99 S3767 Display original messages only 
+//	 if the level is greater than 2
+
+//#include <Transfer_TransferProcess.ixx>
+//  Class generique
+
+//  TheStart est suppose Handle(Standard_Transient) ou (Transfer_Finder)
+//  Il doit offrir : "==" , .IsNull() , ->DynamicType()
+
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Message.hxx>
+
+#include <Transfer_VoidBinder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_MultipleBinder.hxx>
+#include <Transfer_StatusResult.hxx>
+#include <Transfer_TransferFailure.hxx>
+#include <Transfer_TransferDeadLoop.hxx>
+
+#include <TCollection_HAsciiString.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+
+
+//#define TRANSLOG   // debug
+
+static Handle(Standard_Transient)  nultrans;   // pour retour const&(Null) ...
+static Handle(Transfer_Binder)     nulbinder;
+
+
+//=======================================================================
+//function : Transfer_TransferProcess
+//purpose  : 
+//=======================================================================
+
+Transfer_TransferProcess::Transfer_TransferProcess (const Standard_Integer nb)
+      : themap (nb)
+{
+  theerrh  = Standard_True;
+  therootm = Standard_False;
+  thelevel = 0;     therootl  = 0;
+  themessenger = Message::DefaultMessenger();
+  thetrace = 0;
+//  theroots = new TColStd_HSequenceOfInteger ();
+  theindex = 0;
+}
+
+
+//=======================================================================
+//function : Transfer_TransferProcess
+//purpose  : 
+//=======================================================================
+
+Transfer_TransferProcess::Transfer_TransferProcess(const Handle(Message_Messenger)& messenger,
+						   const Standard_Integer nb)
+     : themap (nb)
+{
+  theerrh  = Standard_True;
+  therootm = Standard_False;
+  thelevel = 0;     therootl  = 0;
+  SetMessenger (messenger);
+  thetrace = 1;
+//  theroots = new TColStd_HSequenceOfInteger ();
+  theindex = 0;
+}
+
+    void Transfer_TransferProcess::Clear ()
+{
+  thelevel = 0;     therootl  = 0;
+  theroots.Clear();
+  themap.Clear();
+  theindex = 0;  thelastobj.Nullify();  thelastbnd.Nullify();
+}
+
+    void Transfer_TransferProcess::Clean ()
+{
+  Standard_Integer i, nb = NbMapped();
+  Standard_Integer j,unb = 0;
+  for (i = 1; i <= nb; i ++) {
+    if (themap(i).IsNull()) unb ++;
+  }
+  if (unb == 0) return;
+
+//   Refaire la map -> decalages
+  TColStd_Array1OfInteger unbs (1,nb);  unbs.Init(0);
+  Transfer_TransferMap newmap (nb*2);
+  for (i = 1; i <= nb; i ++) {
+    TheStart ent = Mapped(i);
+    Handle(Transfer_Binder) bnd = MapItem(i);
+    if (bnd.IsNull()) continue;
+    j = newmap.Add (ent,bnd);
+    unbs.SetValue (i,j);
+  }
+  themap.Assign (newmap);
+
+  // Update   La liste des racines
+  TColStd_IndexedMapOfInteger aNewRoots;
+  for( i=1; i<= theroots.Extent(); i++ ) {
+    j = theroots.FindKey(i);
+    Standard_Integer k = unbs.Value(j);
+    if ( k ) aNewRoots.Add ( k );
+  }
+  theroots.Clear();
+  theroots = aNewRoots;
+
+//    Le reste : nettoyage
+  thelastobj.Nullify();
+  thelastbnd.Nullify();
+  theindex = 0;
+}
+
+
+//=======================================================================
+//function : Resize
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::Resize (const Standard_Integer nb)
+{
+  if (nb > themap.NbBuckets()) themap.ReSize(nb);
+}
+
+
+//=======================================================================
+//function : SetActor
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::SetActor(const Handle(Transfer_Actor)& actor)
+{
+  if (theactor == actor)         return;
+  if (theactor.IsNull())         theactor = actor;
+  else if (actor.IsNull())       theactor = actor;  // declenche RAZ
+  else if (theactor->IsLast()) { actor->SetNext(theactor);  theactor = actor; }
+  else                           theactor->SetNext(actor);
+}
+
+
+//=======================================================================
+//function : Actor
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Actor)  Transfer_TransferProcess::Actor () const 
+{
+  return theactor;
+}
+
+
+//  ########################################################################
+//  ....                             MAPPING                            ....
+
+//  ##    ##    ##       Actions Generales sur Binders       ##    ##    ##
+//  ##    ##    ##               Consultations               ##    ##    ##
+
+
+//        ##    ##    Find    ##    ##
+
+//=======================================================================
+//function : Find
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::Find (const TheStart& start) const
+//							 const Standard_Integer categ) const
+{
+  if (thelastobj == start) {
+    //if (theindex > 0) return thelastbnd->Search(categ); //skl
+    if (theindex > 0) return thelastbnd; //skl
+  }
+  Standard_Integer index = themap.FindIndex (start);
+  if (index > 0) {
+    const Handle(Transfer_Binder)& binder = themap.FindFromIndex(index);
+    //if (binder.IsNull()) //skl
+    return binder;
+    //return binder->Search(categ); //skl
+  }
+  return nulbinder;
+}
+
+//        ##    ##    IsBound    ##    ##
+
+//=======================================================================
+//function : IsBound
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::IsBound(const TheStart& start) const
+//						    const Standard_Integer categ) const
+{
+  Handle(Transfer_Binder) binder = Find(start); //,categ); skl
+  if (binder.IsNull()) return Standard_False;
+  return binder->HasResult();
+}
+
+//        ##    ##    IsAlreadyUsed    ##    ##
+
+//=======================================================================
+//function : IsAlreadyUsed
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Transfer_TransferProcess::IsAlreadyUsed(const TheStart& start) const
+//							 const Standard_Integer categ) const
+{
+  Handle(Transfer_Binder) binder = Find(start); //,categ); skl
+  if (binder.IsNull()) {
+    StartTrace (binder,start,thelevel,4);
+    Transfer_TransferFailure::Raise
+      ("TransferProcess : IsAlreadyUsed, transfer not done cannot be used...");
+  }
+  return (binder->Status() == Transfer_StatusUsed);
+}
+
+
+//        ##    ##    FindAndMask (private)    ##    ##
+
+//=======================================================================
+//function : FindAndMask
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::FindAndMask(const TheStart& start)
+//							      const Standard_Integer categ)
+{
+  if (thelastobj == start) {
+    if (theindex > 0) return thelastbnd; //skl ->Search(categ);
+  }
+  thelastobj = start;
+  theindex   = themap.FindIndex (start);
+  if (theindex > 0) thelastbnd = themap.FindFromIndex(theindex);
+  else thelastbnd.Nullify();
+  //if (thelastbnd.IsNull()) skl
+  return thelastbnd;
+  //return thelastbnd->Search(categ); //skl
+}
+
+
+//  ##    ##    ##               Modifications               ##    ##    ##
+
+
+//=======================================================================
+//function : Bind
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::Bind (const TheStart& start,
+				     const Handle(Transfer_Binder)& binder)
+//				      const Standard_Integer categ)
+{
+  if (binder.IsNull()) return;
+  Handle(Transfer_Binder) former = FindAndMask(start);//,categ);skl
+  if (!former.IsNull()) {
+//  On admet VoidBinder : alors on reprend son Check
+    if (former->DynamicType() == STANDARD_TYPE(Transfer_VoidBinder)) {
+      binder->Merge(former);
+      //binder->SetCategory(categ); //skl
+      themap(theindex) = binder;                          // Substitution
+    }
+    else if (former->Status() == Transfer_StatusUsed) {
+      StartTrace (former,start,thelevel,4);
+      Transfer_TransferFailure::Raise
+	("TransferProcess : Bind, already Bound");
+    }
+    else {
+      if (thetrace > 2) StartTrace (former,start,thelevel,5);
+      binder->CCheck()->GetMessages (former->Check());
+    }
+  }
+  //binder->SetCategory(categ); //skl
+  if (theindex == 0 || thelastbnd.IsNull()) {
+    if (theindex == 0) theindex = themap.Add(start,binder);  // Nouveau
+    else themap(theindex) = binder;                          // idem en fait
+    thelastbnd = binder;
+  }
+  else { //skl
+    //binder->AddResult(thelastbnd);
+    thelastbnd  = binder;
+    themap(theindex) = binder;
+  }
+/*skl else if (thelastbnd->Category() == categ) {   // Substitue cette categorie
+    binder->Next(Standard_False)->SetNext(thelastbnd->Next(Standard_True),Standard_True);
+    thelastbnd  = binder;
+    themap(theindex) = binder;
+  } else {
+    thelastbnd->AddNext (binder,categ,Standard_True);
+  } */
+}
+
+
+//=======================================================================
+//function : Rebind
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::Rebind (const TheStart& start,
+					const Handle(Transfer_Binder)& binder)
+//					const Standard_Integer categ)
+{
+  Bind(start,binder); //,categ);skl
+  // entre les deux, les differences allaient s amenuisant
+  //  au debut, on criait si pas encore Bound (idiot)
+  //  ne restait plus comme difference que le test StatusUsed sur Rebind,
+  //    tandis que Bind refusait des lors qu il y avait un resultat
+  //  -> a present, Bind s aligne sur Rebind
+}
+
+
+//=======================================================================
+//function : Unbind
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Transfer_TransferProcess::Unbind(const TheStart& start)
+//						   const Standard_Integer categ)
+{
+  Handle(Transfer_Binder) former = FindAndMask(start);//,categ);skl
+  if (theindex == 0) return Standard_False;
+  if (former.IsNull()) return Standard_False;
+  if (former->DynamicType() == STANDARD_TYPE(Transfer_VoidBinder)) return Standard_True;
+  //const Interface_Check& ach = thelastbnd->Check();
+  //Handle(Transfer_Binder) newbinder = thelastbnd->RemoveNext(categ);skl
+  //if (newbinder != thelastbnd)skl
+    themap(theindex) = thelastbnd;// = newbinder;skl
+  if(theroots.Contains(theindex)) {
+    TColStd_IndexedMapOfInteger aNewRoots;
+    for(Standard_Integer i = 1; i <= theroots.Extent(); i++)
+      if(theindex!= theroots.FindKey(i))
+	aNewRoots.Add(theroots.FindKey(i));
+    
+    theroots.Clear();
+    theroots = aNewRoots;
+  }
+
+  thelastobj.Nullify();
+  thelastbnd.Nullify();
+  theindex = 0;
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : FindElseBind
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::FindElseBind(const TheStart& start)
+//							       const Standard_Integer categ)
+{
+  Handle(Transfer_Binder) binder = FindAndMask (start);//,categ);skl
+  if (!binder.IsNull()) return binder;
+  binder = new Transfer_VoidBinder;
+  Bind(start,binder);//,categ);skl
+  return binder;
+}
+
+
+//  ##    ##    ##              Messages associes              ##    ##    ##
+
+//=======================================================================
+//function : SetMessenger
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::SetMessenger (const Handle(Message_Messenger)& messenger)
+{
+  if ( messenger.IsNull() )
+    themessenger = Message::DefaultMessenger();
+  else   
+    themessenger = messenger;
+}
+
+//=======================================================================
+//function : Messenger
+//purpose  : 
+//=======================================================================
+
+Handle(Message_Messenger) Transfer_TransferProcess::Messenger () const
+{
+  return themessenger;
+}
+
+//=======================================================================
+//function : SetTraceLevel
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::SetTraceLevel (const Standard_Integer tracelev)
+{
+  thetrace = tracelev;
+}
+
+//=======================================================================
+//function : TraceLevel
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Transfer_TransferProcess::TraceLevel () const
+{
+  return thetrace;
+}
+
+//=======================================================================
+//function : SendFail
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::SendFail(const TheStart& start,
+					 const Message_Msg& amsg)
+{
+  AddFail(start,amsg);
+}
+
+
+//=======================================================================
+//function : SendWarning
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::SendWarning(const TheStart& start,
+					    const Message_Msg& amsg)
+{
+  AddWarning(start,amsg);
+}
+
+
+//=======================================================================
+//function : SendMsg
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::SendMsg(const TheStart& start,
+					const Message_Msg& amsg)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);
+  if (binder.IsNull()) {
+    binder = new Transfer_VoidBinder;
+    Bind (start,binder);
+  }
+  // Alimente la trace : Regle causant (user messages)
+  if (thetrace > 0) {
+    StartTrace (binder,start,thelevel,6);
+    themessenger << amsg.Value();
+    if (amsg.IsEdited()&&thetrace>2)
+      themessenger << " [from: " << amsg.Original() << "]";
+    themessenger << endl;
+  }
+}
+
+
+//=======================================================================
+//function : AddFail
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddFail(const TheStart& start,
+				       const Standard_CString mess,
+				       const Standard_CString orig)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);
+  if (binder.IsNull()) {
+    binder = new Transfer_VoidBinder;
+    Bind (start,binder);
+  }
+  binder->AddFail (mess,orig);
+  if (thetrace > 0) {
+    StartTrace (binder,start,thelevel,1);
+    themessenger << "    --> Fail : " << mess;
+    if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
+    themessenger << endl;
+  }
+}
+
+
+//=======================================================================
+//function : AddError
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddError(const TheStart& start,
+					const Standard_CString mess,
+					const Standard_CString orig)
+{
+  AddFail (start,mess,orig);
+}
+
+
+//=======================================================================
+//function : AddFail
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddFail(const TheStart& start,
+				       const Message_Msg& amsg)
+{
+  if (amsg.IsEdited()) AddFail (start,TCollection_AsciiString(amsg.Value()).ToCString(),
+				TCollection_AsciiString(amsg.Original()).ToCString());
+  else AddFail (start,TCollection_AsciiString(amsg.Value()).ToCString());
+}
+
+
+//=======================================================================
+//function : AddWarning
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddWarning(const TheStart& start,
+					  const Standard_CString mess,
+					  const Standard_CString orig)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);
+  if (binder.IsNull()) {
+    binder = new Transfer_VoidBinder;
+    Bind (start,binder);
+  }
+  binder->AddWarning(mess,orig);
+  if (thetrace > 1) {
+    StartTrace (binder,start,thelevel,2);
+    themessenger << "    --> Warning : " << mess;
+    if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
+    themessenger << endl;
+  }
+}
+
+
+//=======================================================================
+//function : AddWarning
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddWarning(const TheStart& start,
+					  const Message_Msg& amsg)
+{
+  if (amsg.IsEdited()) AddWarning (start,TCollection_AsciiString(amsg.Value()).ToCString(),
+				   TCollection_AsciiString(amsg.Original()).ToCString());
+  else AddWarning (start,TCollection_AsciiString(amsg.Value()).ToCString());
+}
+
+
+//=======================================================================
+//function : Mend
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::Mend(const TheStart& start,
+				     const Standard_CString pref)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);
+  if (binder.IsNull()) return;  // rien a faire ...
+  Handle(Interface_Check) ach =  binder->CCheck();
+  ach->Mend (pref);
+}
+
+
+//=======================================================================
+//function : Check
+//purpose  : 
+//=======================================================================
+
+Handle(Interface_Check) Transfer_TransferProcess::Check(const TheStart& start) const
+{
+  const Handle(Transfer_Binder)& binder = Find(start);
+  if (binder.IsNull()) {
+    Handle(Interface_Check) check;
+    return check;
+  }
+  return binder->Check();
+}
+
+/*skl
+void Transfer_TransferProcess::AddCaseName(const TheStart& start,
+					   const Standard_CString casename)
+{
+  AddCaseValue (start, new TCollection_HAsciiString (casename));
+}
+
+
+void Transfer_TransferProcess::AddCaseValue(const TheStart& start,
+					    const Handle(Standard_Transient)& caseval)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);
+  if (binder.IsNull()) {
+    binder = new Transfer_VoidBinder;
+    Bind (start,binder);
+  }
+  binder->AddCaseValue (caseval);
+}
+
+
+Handle(TColStd_HSequenceOfTransient) Transfer_TransferProcess::CaseList
+       (const TheStart& start) const
+{
+  Handle(TColStd_HSequenceOfTransient) list;
+  const Handle(Transfer_Binder)& binder = Find(start);
+  if (binder.IsNull()) return list;
+  return binder->CaseList();
+}
+
+Standard_Integer Transfer_TransferProcess::NextItemWithAttribute
+  (const Standard_CString name, const Standard_Integer num0) const
+{
+  Standard_Integer num, nb = NbMapped();
+  for (num = num0+1; num <= nb; num ++) {
+    Handle(Transfer_Binder) bnd = MapItem (num);
+    if (bnd.IsNull()) continue;
+    if (!bnd->Attribute(name).IsNull()) return num;
+  }
+  return 0;
+}
+
+
+Interface_ParamType Transfer_TransferProcess::AttributeType
+  (const Standard_CString name) const
+{
+  Interface_ParamType aty, res = Interface_ParamVoid;
+  Standard_Integer num, nb = NbMapped();
+  for (num = 1; num <= nb; num ++) {
+    Handle(Transfer_Binder) bnd = MapItem (num);
+    if (bnd.IsNull()) continue;
+    aty = bnd->AttributeType(name);
+    if (aty == Interface_ParamVoid) continue;
+    if (res == Interface_ParamVoid) res = aty;
+    else if (res != aty) return Interface_ParamMisc;
+  }
+  return res;
+}
+
+Handle(Dico_DictionaryOfInteger) Transfer_TransferProcess::Attributes
+  (const Standard_CString rootname) const
+{
+  Handle(Dico_DictionaryOfInteger) list = new Dico_DictionaryOfInteger;
+  Standard_Integer num, nb = NbMapped();
+  for (num = 1; num <= nb; num ++) {
+    Handle(Transfer_Binder) bnd = MapItem (num);
+    if (bnd.IsNull()) continue;
+    Handle(Dico_DictionaryOfTransient) atr = bnd->AttrList();
+    if (atr.IsNull()) continue;
+    Dico_IteratorOfDictionaryOfTransient iatr(atr,rootname);
+    for (; iatr.More(); iatr.Next()) {
+      TCollection_AsciiString name = iatr.Name();
+      Standard_Boolean deja;
+      Standard_Integer& nbval = list->NewItem (name.ToCString(),deja);
+      if (!deja) nbval = 0;
+      nbval ++;
+    }
+
+  }
+  return list;
+}
+skl*/
+
+
+//  ##    ##    ##        Actions sur Types Privilegies        ##    ##    ##
+//  ##    ##    ##          (Transient)                        ##    ##    ##
+
+// Bind associe un objet a un objet resultat; or la Map associe un Objet a un
+// Binder (qui designe son resultat)
+//  *Transient  travaillent avec un SimpleBinderOfTransient
+// si  deja la, on considere son resultat
+// sinon, on cree un Binder du bon type
+
+
+//=======================================================================
+//function : BindTransient
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::BindTransient(const TheStart& start,
+					     const Handle(Standard_Transient)& res)
+//					     const Standard_Integer categ)
+{
+  if (res.IsNull()) return;
+  Handle(Transfer_Binder) former = Find(start);//,categ);skl
+  Handle(Transfer_SimpleBinderOfTransient) binder =
+    Handle(Transfer_SimpleBinderOfTransient)::DownCast(former);
+//      Binding sur place ?
+  if (!binder.IsNull()) {
+    if (binder->Status() == Transfer_StatusVoid) { binder->SetResult(res); return; }
+  }
+//      Sinon, refaire
+  binder = new Transfer_SimpleBinderOfTransient;
+  binder->SetResult (res);
+  if (former.IsNull()) Bind(start,binder);//,categ);skl
+  else Rebind(start,binder);//,categ);skl
+}
+
+
+//=======================================================================
+//function : FindTransient
+//purpose  : 
+//=======================================================================
+
+const Handle(Standard_Transient)& Transfer_TransferProcess::FindTransient
+       (const TheStart& start) const
+{
+  Handle(Transfer_SimpleBinderOfTransient) binder =
+    Handle(Transfer_SimpleBinderOfTransient)::DownCast(Find(start));
+  if (binder.IsNull()) return nultrans;
+  if (!binder->HasResult()) return nultrans;
+  return binder->Result();
+}
+
+
+//  Binding Multiple : D abord le declarer par BindMultiple (si pas deja fait)
+//  Puis ajouter les termes par AddMultiple
+
+//=======================================================================
+//function : BindMultiple
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::BindMultiple(const TheStart& start)
+//					    const Standard_Integer categ)
+{
+  Handle(Transfer_Binder) binder = FindAndMask (start);//,categ);skl
+  if (!binder.IsNull()) {
+    if (!binder->IsKind(STANDARD_TYPE(Transfer_MultipleBinder))) {
+      StartTrace (thelastbnd,start,thelevel,4);
+      Transfer_TransferFailure::Raise ("TransferProcess : BindMultiple");
+    }
+  }
+  else Bind(start,new Transfer_MultipleBinder);//,categ);skl
+}
+
+
+//=======================================================================
+//function : AddMultiple
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::AddMultiple(const TheStart& start,
+					   const Handle(Standard_Transient)& res)
+//					   const Standard_Integer categ)
+{
+  Handle(Transfer_Binder) binder = FindAndMask(start);//,categ);skl
+  Handle(Transfer_MultipleBinder) multr =
+    Handle(Transfer_MultipleBinder)::DownCast(binder);
+  if (multr.IsNull()) {
+    StartTrace (binder,start,thelevel,4);
+    if (binder.IsNull()) Transfer_TransferFailure::Raise
+      ("TransferProcess : AddMultiple, nothing bound");
+    else                 Transfer_TransferFailure::Raise
+      ("TransferProcess : AddMultiple, Binder not a MultipleBinder");
+  }
+  multr->AddResult(res);
+}
+
+
+//=======================================================================
+//function : FindTypedTransient
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Transfer_TransferProcess::FindTypedTransient
+  (const TheStart& start, const Handle(Standard_Type)& atype,
+   Handle(Standard_Transient)& val) const
+{
+  return GetTypedTransient (Find(start),atype,val);
+}
+
+
+//=======================================================================
+//function : GetTypedTransient
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::GetTypedTransient
+  (const Handle(Transfer_Binder)& binder, const Handle(Standard_Type)& atype,
+   Handle(Standard_Transient)& val) const
+{
+  return Transfer_SimpleBinderOfTransient::GetTypedResult(binder,atype,val);
+}
+
+
+//  ##    ##    ##    ##    ##    Acces Atomique    ##    ##    ##    ##    ##
+//    (ne gere pas le scope mais donne acces aux categories)
+
+//=======================================================================
+//function : NbMapped
+//purpose  : 
+//=======================================================================
+
+Standard_Integer  Transfer_TransferProcess::NbMapped () const
+{
+  return themap.Extent();
+}
+
+
+//=======================================================================
+//function : Mapped
+//purpose  : 
+//=======================================================================
+
+const TheStart& Transfer_TransferProcess::Mapped(const Standard_Integer num) const
+{
+  return themap.FindKey(num);
+}
+
+
+//=======================================================================
+//function : MapIndex
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Transfer_TransferProcess::MapIndex(const TheStart& start) const
+{
+  return themap.FindIndex(start);
+}
+
+
+//=======================================================================
+//function : MapItem
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::MapItem(const Standard_Integer num) const
+//							  const Standard_Integer categ) const
+{
+  Handle(Transfer_Binder) binder = themap.FindFromIndex(num);
+  //sklif (binder.IsNull())
+  return binder;
+  //sklreturn binder->Search (categ);
+}
+
+
+//  ########################################################################
+//  ....                         ROOT MANAGEMENT                        ....
+
+//=======================================================================
+//function : SetRoot
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::SetRoot (const TheStart& start)
+{
+  Standard_Integer index = MapIndex(start);
+  if (index == 0) {
+    //StartTrace (thelastbnd,start,thelevel,4);
+    //Transfer_TransferFailure::Raise("TransferProcess : SetRoot");
+    return;
+  }
+
+  theroots.Add(index);
+  if (thetrace > 2) StartTrace (MapItem(index),start,thelevel,3);
+}
+
+
+//=======================================================================
+//function : SetRootManagement
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::SetRootManagement(const Standard_Boolean stat)
+{
+  therootm = stat;
+}
+
+
+//=======================================================================
+//function : NbRoots
+//purpose  : 
+//=======================================================================
+
+Standard_Integer  Transfer_TransferProcess::NbRoots () const
+{
+  return theroots.Extent();
+}
+
+
+//=======================================================================
+//function : Root
+//purpose  : 
+//=======================================================================
+
+const TheStart&  Transfer_TransferProcess::Root(const Standard_Integer num) const
+{
+  Standard_Integer ind = 0;
+  if (num > 0 && num <= theroots.Extent()) ind = theroots.FindKey(num);
+  return themap.FindKey (ind);
+}
+
+
+//=======================================================================
+//function : RootItem
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::RootItem(const Standard_Integer num) const
+//							   const Standard_Integer categ) const
+{
+  Standard_Integer ind = 0;
+  if (num > 0 && num <= theroots.Extent()) ind = theroots.FindKey(num);
+  return themap.FindFromIndex(ind);//->Search(categ);skl
+}
+
+
+//=======================================================================
+//function : RootIndex
+//purpose  : 
+//=======================================================================
+
+Standard_Integer  Transfer_TransferProcess::RootIndex(const TheStart& start) const
+{
+  Standard_Integer index = MapIndex(start);
+  if (index == 0) return 0;
+  return theroots.FindIndex(index);
+}
+
+
+//=======================================================================
+//function : NestingLevel
+//purpose  : 
+//=======================================================================
+
+Standard_Integer  Transfer_TransferProcess::NestingLevel () const
+{
+  return thelevel;
+}
+
+
+//=======================================================================
+//function : ResetNestingLevel
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::ResetNestingLevel ()
+{
+  thelevel = 0;
+}
+
+
+//  ########################################################################
+//  ....                        SCOPE MANAGEMENT                        ....
+
+
+//======================================================================
+//Purpose : gka TRJ9 for writing SDR for solid
+//          Check if binder has already been bound to the result binder.
+//======================================================================
+
+// static Standard_Boolean Contains(const Handle(Transfer_Binder)& resbinder, 
+// 				 const Handle(Transfer_Binder)& addbinder)
+// {
+//   Handle(Transfer_Binder) tmpbind = resbinder;
+//   for ( ; ! tmpbind.IsNull(); tmpbind = tmpbind->NextResult() )
+//     if ( tmpbind == addbinder ) return Standard_True;
+//   return Standard_False;
+// }
+
+//  ########################################################################
+//  ....                    AUTOMATISMES DE TRANSFERT                   ....
+
+//  ##    ##    ##    ##    ##  Fonctions de Base  ##    ##    ##    ##    ##
+
+
+//=======================================================================
+//function : Recognize
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::Recognize(const TheStart& start) const
+{
+  Handle(Transfer_Actor) actor = theactor;
+  //   On balaie les Next jusqu a avoir un Resultat
+  while (!actor.IsNull()) {
+    if (actor->Recognize (start)) return Standard_True;
+    actor = actor->Next();
+  }
+  return Standard_False;
+}
+
+
+//=======================================================================
+//function : Transferring
+//purpose  : 
+//=======================================================================
+
+Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& start)
+{
+  //   Map deja alimentee ?
+  Handle(Transfer_Binder) former = FindAndMask(start);
+
+  //  ....    Transfert deja effectue avec Resultat ?    ....
+
+  //  On considere que cette nouvelle demande de Transfert correspond donc a une
+  //  utilisation en plus : noter "AlreadyUsed", donc resultat non modifiable
+  if (!former.IsNull()) {
+    if (former->HasResult()) {
+      former->SetAlreadyUsed();
+      return former;
+    }
+  //}
+
+    //  ....    Etat Initial : peut-etre deja fait ... ou infaisable !
+
+  //if (!former.IsNull()) {
+    Transfer_StatusExec statex = former->StatusExec();
+    switch (statex) {
+      case Transfer_StatusInitial :               // Transfert prepare a faire
+	break;
+      case Transfer_StatusDone :                  // Transfert deja fait
+//#ifdef TRANSLOG
+	themessenger << " .. and Transfer done" << endl;
+//#endif
+//	if (former->HasResult()) former->SetAlreadyUsed();
+	return former;
+      case Transfer_StatusRun :                   // ca y est, on boucle
+	former->SetStatusExec(Transfer_StatusLoop);
+	return former;
+      case Transfer_StatusError :                 // pas propre, ca ...
+	if (thetrace) {
+	  themessenger << "                  *** Transfer in Error Status  :" << endl;
+	  StartTrace (former, start, thelevel,0);
+//	  (*themessenger->Out()) << flush;
+	}
+	else StartTrace (former, start,thelevel,4);
+	Transfer_TransferFailure::Raise
+	  ("TransferProcess : Transfer in Error Status");
+      case Transfer_StatusLoop :                  // la boucle est bouclee ...
+	if (thetrace) {
+	  themessenger << "                  *** Transfer  Head of Dead Loop  :" << endl;
+	  StartTrace (former, start, thelevel,0);
+//	  (*themessenger->Out()) << flush;
+	}
+	else StartTrace (former, start,thelevel,4);
+	Transfer_TransferDeadLoop::Raise
+	  ("TransferProcess : Transfer at Head of a Dead Loop");
+    }
+#ifdef TRANSLOG
+    cout << "Transfer,level "<<thelevel<<Message_Flush;
+#endif
+  //}
+
+  //  ....    OK, on peut lancer l Execution
+  //if (!former.IsNull()) 
+    former->SetStatusExec(Transfer_StatusRun);
+  }
+#ifdef TRANSLOG
+  cout << " GO .." << endl;
+#endif
+
+  Handle(Transfer_Binder) binder;
+  Standard_Boolean newbind = Standard_False;
+  if (theerrh) {
+    //   Transfert sous protection pour les exceptions (pour notification en fait)
+    Standard_Integer oldlev = thelevel;
+    try {
+      OCC_CATCH_SIGNALS
+      binder = TransferProduct(start);
+    }
+
+    //    ...  Exceptions a Rattraper : elles ne se ressemblent pas toutes ... !
+    catch (Transfer_TransferDeadLoop) {
+      if (binder.IsNull()) {
+	themessenger << "                  *** Dead Loop with no Result" << endl;
+	if (thetrace) StartTrace (binder, start, thelevel-1,0);
+	binder = new Transfer_VoidBinder;
+	Bind (start,binder);  newbind = Standard_True;
+      } else if (binder->StatusExec() == Transfer_StatusLoop) {
+	if (thetrace) {
+	  themessenger << "                  *** Dead Loop : Finding head of Loop :" << endl;
+	  StartTrace (binder, start, thelevel-1,0);
+	}
+	else StartTrace (binder, start,thelevel-1,4);
+	Transfer_TransferFailure::Raise("TransferProcess : Head of Dead Loop");
+// Autrement dit, on change d exception (on est sorti de la boucle)
+      } else {
+	if (thetrace) {
+	  themessenger << "                  *** Dead Loop : Actor in Loop :" << endl;
+	  StartTrace (binder, start, thelevel-1,0);
+	}
+      }
+      binder->AddFail("Transfer in dead Loop");
+      thelevel = oldlev;
+    }
+    catch (Standard_Failure) {
+      if (binder.IsNull()) {
+	themessenger << "                  *** Exception Raised with no Result" << endl;
+	binder = new Transfer_VoidBinder;
+	Bind (start,binder);  newbind = Standard_True;
+      }
+      binder->AddFail("Transfer stopped by exception raising");
+      if (thetrace) {
+	themessenger << "    *** Raised : " << Standard_Failure::Caught()->GetMessageString() << endl;
+	StartTrace (binder, start, thelevel-1,4);
+      }
+      thelevel = oldlev;
+    }
+  }
+
+//   Transfert non protege (ainsi, dbx a la main en cas de plantage par Raise)
+  else  binder = TransferProduct(start);
+
+//  ....                Conclusion : Noter dans la Map                ....
+
+  if (!newbind && !binder.IsNull()) {
+    if (former.IsNull()) {
+//    Peut-etre <theactor> a fait lui meme Bind ... verifier sinon le faire
+      if (!IsBound(start)) Bind(start,binder);     // resultat = categorie 0
+      else {                                       // gka TRJ9 for writing SDR for solid
+// 	Handle(Transfer_Binder) tmpbind = Find(start);
+// 	if(!Contains(binder,tmpbind))
+// 	   binder->AddResult(tmpbind);
+ 	Rebind(start,binder); // test_pattern.sat
+      }
+    }
+    else Rebind(start,binder);
+//  (du coup, <thelastbnd> vaut <binder>)
+#ifdef TRANSLOG
+    cout << " ... OK" << endl;
+#endif
+  }
+  else {
+    //= by ABV: 5 Oct 97: nothing generated, but former can be in run state - drop it
+    //= ASK: may be set it to StatusInitial ?
+    if ( ! former.IsNull() ) former->SetStatusExec ( Transfer_StatusDone ); //+
+    return nulbinder;    // Binder Null ... que faire d autre ?
+  }
+
+//  ....                Gerer les Racines (si prevu)                ....
+
+  if (therootl >= thelevel) {
+    therootl = 0;
+    if (therootm && binder->Status() != Transfer_StatusVoid) {
+      SetRoot (start);
+    }
+  }
+  return thelastbnd;
+}
+
+//  ##    ##        TransferProduct : Action proprement dite        ##    ##
+
+    Handle(Transfer_Binder) Transfer_TransferProcess::TransferProduct
+  (const TheStart& start)
+{
+  thelevel ++;             // si decremente et == 0, transfert racine
+  Handle(Transfer_Binder) binder;
+  Handle(Transfer_Actor) actor = theactor;
+
+//   On balaie les Next jusqu a avoir un Resultat
+  while (!actor.IsNull()) {
+    if (actor->Recognize (start)) binder = actor->Transferring(start,this);
+    else binder.Nullify();
+    if (!binder.IsNull()) break;
+    actor = actor->Next();
+  }
+  if (binder.IsNull()) {
+//    if (thetrace) {
+//      themessenger << "Transfer has produced no Result" <<endl;
+//      StartTrace (binder, start, thelevel-1,0); sout << flush;
+//    }
+    if (thelevel > 0) thelevel --;
+    return binder;
+  }
+//      Gestion du niveau racine (.. a regarder de pres ..)
+  if (therootl == 0 && binder->StatusExec() == Transfer_StatusDone)
+    therootl = thelevel - 1;
+
+  if (thelevel > 0) thelevel --;
+  return binder;
+}
+
+
+//=======================================================================
+//function : Transfer
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::Transfer(const TheStart& start)
+{
+  Handle(Transfer_Binder) binder = Transferring(start);
+  return (!binder.IsNull());
+}
+
+
+//  #########################################################################
+//  ....                      Error Handling + Trace                     ....
+
+//  trace : 1 pour Fail et Exception , 2 pour Root et Warning
+
+
+//=======================================================================
+//function : SetErrorHandle
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::SetErrorHandle(const Standard_Boolean err)
+{
+  theerrh = err;
+}    // traite par Transferring
+
+
+//=======================================================================
+//function : ErrorHandle
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::ErrorHandle() const
+{
+  return theerrh;
+}
+
+//=======================================================================
+//function : StartTrace
+//purpose  : 
+//=======================================================================
+
+void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
+					  const TheStart& start,
+					  const Standard_Integer level,
+					  const Standard_Integer mode) const 
+{
+  // ###  Fail (Roots:50)  --  Start start->DynamicType()
+  // ###  Fail (Roots:50)  --  Start id:#label.. Type:start->DynamicType()
+  if (thetrace > 3) {  // Internal to be switch when searching bug (trace >= 4)
+    if (mode == 1) themessenger << "  ###  Fail";
+    if (mode == 2) themessenger << "  ###  Warning";
+    if (mode == 3) themessenger << "  ###  New Root n0 " << theroots.Extent();
+    if (mode == 4) themessenger << "  ###  Exception";
+    if (mode == 5) themessenger << "  ###  Substitution";
+    if (mode == 6) themessenger << "  ###  Information";
+    if (level > 1)
+      themessenger << " (nested)";  // " at nesting Level:"<<level;
+    if (mode >= 0 && mode != 3)
+      themessenger << " at " << theroots.Extent() << " Roots";
+  }
+  if (!start.IsNull()) PrintTrace (start,themessenger);
+////  sout << endl;
+
+  if (!binder.IsNull()) {   // old: if IsNull sout <<endl<< "  ---  Not Bound";
+    Handle(Transfer_Binder) bnd = binder;
+    Standard_Boolean hasres = Standard_False, isused = Standard_False;
+    while (!bnd.IsNull()) {
+      if (bnd->Status() != Transfer_StatusVoid) {
+// ---  Result Type: binder->ResultType()  ---  Binder : binder->DynamicType();
+	if (!hasres)
+	  themessenger << "\n  ---  Result Type : ";
+	else 
+	  themessenger << " , ";
+	themessenger << bnd->ResultTypeName();
+//  CKY 9-JAN-1999:  waiting for XSTEP Kernel message (not IGES_2075)
+/*        Message_Msg Msg2075("IGES_2075");
+          Msg2075.AddString(bnd->ResultTypeName());
+          Msg2075.TraceEver();  */
+	hasres = Standard_True;
+	if (bnd->Status() == Transfer_StatusUsed) isused = Standard_True;
+      }
+      bnd = bnd->NextResult();
+    }
+    if (!hasres && mode > 2) {
+      themessenger << "\n  ---  No Result recorded";
+//  CKY 9-JAN-1999 : waiting for XSTEP Kernel message
+//     (not IGES_2075, no reference to specifically TopoDS_Shape)
+/*       Message_Msg Msg2075("IGES_2075");
+         Msg2075.AddString("No TopoDS_Shape");
+         Msg2075.TraceEver();  */
+    }
+//old    if (isused) sout << "  --    (Already Used in another Transfer)";
+  }
+  themessenger << endl;
+}
+
+
+//=======================================================================
+//function : PrintTrace
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::PrintTrace(const TheStart& start,
+					   const Handle(Message_Messenger)& S) const
+{
+  if (!start.IsNull())   S <<" Type:" << start->DynamicType()->Name();
+}
+
+
+//=======================================================================
+//function : IsLooping
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::IsLooping
+  (const Standard_Integer alevel) const 
+      {  return alevel > NbMapped();  }
+
+
+
+//  #########################################################################
+//  ....                            RESULTATS                            ....
+
+
+//  ##    ##        RootResult : Les Racines        ##    ##
+
+
+//=======================================================================
+//function : RootResult
+//purpose  : 
+//=======================================================================
+
+Transfer_Iterator Transfer_TransferProcess::RootResult(const Standard_Boolean withstart) const
+{
+  Transfer_Iterator iter(withstart);
+  Standard_Integer max = theroots.Extent();
+  for (Standard_Integer j = 1; j <= max; j ++) {
+    Standard_Integer i = theroots.FindKey(j);
+    Handle(Transfer_Binder) binder = MapItem(i);
+    if (binder.IsNull()) continue;
+    if (withstart) iter.Add (binder,Mapped(i));
+    else iter.Add (binder);
+  }
+  return iter;
+}
+
+
+//  ##    ##        CompleteResult : Tous les Resultats        ##    ##
+
+//=======================================================================
+//function : CompleteResult
+//purpose  : 
+//=======================================================================
+
+Transfer_Iterator Transfer_TransferProcess::CompleteResult
+  (const Standard_Boolean withstart) const
+{
+  Transfer_Iterator iter(withstart);
+  Standard_Integer max = NbMapped();
+  for (Standard_Integer i = 1; i <= max; i ++) {
+    Handle(Transfer_Binder) binder = MapItem(i);
+    if (binder.IsNull()) continue;
+    if (withstart) iter.Add (binder,Mapped(i));
+    else iter.Add (binder);
+  }
+  return iter;
+}
+
+
+//  ##    ##        AbnormalResult : Transferts a probleme        ##    ##
+//=======================================================================
+//function : AbnormalResult
+//purpose  : 
+//=======================================================================
+
+Transfer_Iterator Transfer_TransferProcess::AbnormalResult() const
+{
+  Transfer_Iterator iter(Standard_True);
+  Standard_Integer max = NbMapped();
+  for (Standard_Integer i = 1; i <= max; i ++) {
+    Handle(Transfer_Binder) binder = MapItem(i);
+    if (binder.IsNull()) continue;
+    Transfer_StatusExec statex = binder->StatusExec();
+    if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone)
+      iter.Add (binder,Mapped(i));  // on note les cas "pas normaux"
+  }
+  return iter;
+}
+
+
+//  ##    ##    ##         CheckList : les messages         ##    ##    ##
+//=======================================================================
+//function : CheckList
+//purpose  : 
+//=======================================================================
+
+Interface_CheckIterator  Transfer_TransferProcess::CheckList
+  (const Standard_Boolean erronly) const
+{
+  Interface_CheckIterator list;
+  Standard_Integer num, max = NbMapped();
+  for (Standard_Integer i = 1; i <= max; i ++) {
+    Handle(Transfer_Binder) binder = MapItem(i);
+    if (binder.IsNull()) continue;
+    Transfer_StatusExec statex = binder->StatusExec();
+    Handle(Interface_Check) check = binder->Check();
+    if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone &&
+	!check->HasFailed())
+      check->AddFail("Transfer in Abnormal Status (!= Initial or Done)");
+    if (!check->HasFailed() && (erronly || check->NbWarnings() == 0)) continue;
+    const TheStart& ent = Mapped(i);
+    num = CheckNum(ent);
+    if (num == 0) num = i;
+    check->SetEntity(ent);
+    list.Add(check,num);
+  }
+  return list;
+}
+
+
+//  #########################################################################
+//  ....                       RESULTATS PAR ENTITE                      ....
+
+//=======================================================================
+//function : ResultOne
+//purpose  : 
+//=======================================================================
+
+Transfer_Iterator Transfer_TransferProcess::ResultOne(const TheStart& start,
+						      const Standard_Integer level,
+						      const Standard_Boolean withstart) const
+{
+  Transfer_Iterator iter(withstart);
+  Standard_Integer max = NbMapped();
+  Standard_Integer ind = MapIndex (start);
+  if (ind == 0) return iter;
+  Standard_Integer i1 = (level == 0 ? ind : 1);
+  Standard_Integer i2 = (level == 0 ? ind : max);
+  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger (i1,i2,0);
+  //MarkScoped (ind,level,map);
+
+  for (Standard_Integer i = i1; i <= i2; i ++) {
+    ind = map->Value(i);
+    if (ind == 0) continue;
+    Handle(Transfer_Binder) binder = MapItem(i);
+    if (binder.IsNull()) continue;
+    if (withstart) iter.Add (binder,Mapped(ind));
+    else iter.Add (binder);
+  }
+  return iter;
+}
+
+
+//=======================================================================
+//function : CheckListOne
+//purpose  : 
+//=======================================================================
+
+Interface_CheckIterator  Transfer_TransferProcess::CheckListOne
+  (const TheStart& start,const Standard_Integer level,
+   const Standard_Boolean erronly) const
+{
+  Interface_CheckIterator list;
+  Standard_Integer max = NbMapped();
+  Standard_Integer num, ind = MapIndex (start);
+  if (ind == 0) return list;
+  Standard_Integer i1 = (level == 0 ? ind : 1);
+  Standard_Integer i2 = (level == 0 ? ind : max);
+  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger (i1,i2,0);
+  //MarkScoped (ind,level,map);
+
+  for (Standard_Integer i = i1; i <= i2; i ++) {
+    ind = map->Value(i);
+    if (ind == 0) continue;
+    Handle(Transfer_Binder) binder = MapItem(ind);
+    if (binder.IsNull()) continue;
+    Transfer_StatusExec statex = binder->StatusExec();
+    Handle(Interface_Check) check = binder->Check();
+    if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone &&
+	!check->HasFailed())
+      check->AddFail("Transfer in Abnormal Status (!= Initial or Done)");
+    if (!check->HasFailed() && (erronly || check->NbWarnings() == 0)) continue;
+    const TheStart& ent = Mapped(ind);
+    num = CheckNum(ent);  if (num == 0) num = ind;
+    check->SetEntity(ent);
+    list.Add(check,num);
+  }
+  return list;
+}
+
+
+//=======================================================================
+//function : IsCheckListEmpty
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean  Transfer_TransferProcess::IsCheckListEmpty
+  (const TheStart& start, const Standard_Integer level,
+   const Standard_Boolean erronly) const
+{
+  Standard_Integer max = NbMapped();
+  Standard_Integer ind = MapIndex (start);
+  if (ind == 0) return Standard_False;
+  Standard_Integer i1 = (level == 0 ? ind : 1);
+  Standard_Integer i2 = (level == 0 ? ind : max);
+  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger (i1,i2,0);
+//  MarkScoped (ind,level,map);
+
+  for (Standard_Integer i = i1; i <= i2; i ++) {
+    ind = map->Value(i);
+    if (ind == 0) continue;
+    Handle(Transfer_Binder) binder = MapItem(ind);
+    if (binder.IsNull()) continue;
+
+    Transfer_StatusExec statex = binder->StatusExec();
+    Handle(Interface_Check) check = binder->Check();
+    if (statex != Transfer_StatusInitial && statex != Transfer_StatusDone)
+      return Standard_False;
+    if (check->HasFailed() || (!erronly && check->NbWarnings() > 0)) return Standard_False;
+  }
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : RemoveResult
+//purpose  : 
+//=======================================================================
+
+void  Transfer_TransferProcess::RemoveResult(const TheStart& start,
+					     const Standard_Integer level,
+					     const Standard_Boolean /*compute*/)
+{
+  //if (compute) ComputeScopes();
+  Standard_Integer max = NbMapped();
+  Standard_Integer ind = MapIndex (start);
+  if (ind == 0) return;
+  Standard_Integer i1 = (level == 0 ? ind : 1);
+  Standard_Integer i2 = (level == 0 ? ind : max);
+  Handle(TColStd_HArray1OfInteger) map = new TColStd_HArray1OfInteger (i1,i2,0);
+//  MarkScoped (ind,level,map);
+
+  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  for (i = i1; i <= i2; i ++) {
+    ind = map->Value(i);
+    if (ind == 0) continue;
+    Handle(Transfer_Binder) binder = MapItem(ind);
+    if (binder.IsNull()) continue;
+//    Standard_Boolean cayest = binder->SetNbUserScopes (-1);
+//    if (cayest) themap(ind) = nulbinder;    // RAZ !
+  }
+
+//pdn commented  for (i = NbRoots(); i > 0; i --)
+//    if (theroots.Value(i) == ind) theroots.Remove(i);
+}
+
+
+Standard_Integer  Transfer_TransferProcess::CheckNum(const TheStart& ) const
+{
+  return 0;
+}
+
+
+//=======================================================================
+//function : SetProgress
+//purpose  : Sets Progress indicator
+//=======================================================================
+
+void Transfer_TransferProcess::SetProgress(const Handle(Message_ProgressIndicator)& theProgress)
+{
+  myProgress = theProgress;
+}
+
+//=======================================================================
+//function : GetProgress
+//purpose  : Returns Progress indicator
+//=======================================================================
+
+Handle(Message_ProgressIndicator) Transfer_TransferProcess::GetProgress() const
+{
+  return myProgress;
+}

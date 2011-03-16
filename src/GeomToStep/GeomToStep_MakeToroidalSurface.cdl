@@ -1,0 +1,36 @@
+-- File:	GeomToStep_MakeToroidalSurface.cdl
+-- Created:	Mon Jun 14 16:23:51 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeToroidalSurface from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between class
+    --          ToroidalSurface from Geom and the class
+    --          ToroidalSurface from StepGeom which describes a
+    --          toroidal_surface from Prostep
+  
+uses ToroidalSurface from Geom,
+     ToroidalSurface from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( TorSurf : ToroidalSurface from Geom ) returns MakeToroidalSurface;
+
+Value (me) returns ToroidalSurface from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theToroidalSurface : ToroidalSurface from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeToroidalSurface;
+
+
+

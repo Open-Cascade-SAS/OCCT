@@ -1,0 +1,205 @@
+-- File:	TopOpeBRepTool.cdl
+-- Created:	Thu Jun 17 09:59:51 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+package TopOpeBRepTool 
+
+	---Purpose: This package provides services used by the TopOpeBRep
+	--          package performing topological operations on the BRep
+	--          data structure.
+	--          
+
+uses
+
+    Standard,
+    TColStd,
+    TCollection,
+    TColgp,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TopExp,
+    GeomAbs,
+    Geom,
+    GeomAdaptor,
+    Geom2d,
+    Geom2dAdaptor,
+    gp,
+    Bnd,
+    BRepClass,
+    TopClass,
+    BRepClass3d,
+    BRep,
+    BRepAdaptor,
+    Geom2dInt,
+    IntSurf
+
+is
+
+    enumeration OutCurveType is 
+    BSPLINE1,APPROX,INTERPOL
+    end OutCurveType; 
+     
+    class GeomTool;
+    class AncestorsTool;
+
+    pointer PSoClassif to SolidClassifier from BRepClass3d;
+
+    class C2DF;
+    class ListOfC2DF instantiates List from TCollection(C2DF from TopOpeBRepTool);    
+    class DataMapOfOrientedShapeC2DF 
+    instantiates DataMap from TCollection 
+    	(Shape from TopoDS,
+     	 C2DF from TopOpeBRepTool,
+     	 OrientedShapeMapHasher from TopTools);
+    class DataMapOfShapeListOfC2DF 
+    instantiates DataMap from TCollection 
+    	(Shape from TopoDS,
+     	 ListOfC2DF from TopOpeBRepTool,
+     	 ShapeMapHasher from TopTools);
+    
+    class IndexedDataMapOfSolidClassifier 
+    instantiates IndexedDataMap from TCollection 
+    	(Shape from TopoDS,
+     	 SolidClassifier from BRepClass3d,
+     	 ShapeMapHasher from TopTools);
+	 
+    pointer Plos to ListOfShape from TopTools;
+    class SolidClassifier;
+    
+    class CurveTool;
+    class IndexedDataMapOfShapeBox2d
+    instantiates IndexedDataMap from TCollection 
+    	(Shape from TopoDS,
+     	 Box2d from Bnd,
+     	 OrientedShapeMapHasher from TopTools);
+    class IndexedDataMapOfShapeBox
+    instantiates IndexedDataMap from TCollection 
+    	(Shape from TopoDS,
+     	 Box from Bnd,
+     	 OrientedShapeMapHasher from TopTools);
+
+    class HBoxTool;
+    class BoxSort;
+
+    class ShapeExplorer;
+    class ShapeTool;
+    class ShapeClassifier;
+    pointer PShapeClassifier to ShapeClassifier from TopOpeBRepTool;
+
+    class connexity;
+    class IndexedDataMapOfShapeconnexity instantiates 
+    	  IndexedDataMap from TCollection (Shape from TopoDS,
+	    	    	            connexity from TopOpeBRepTool,
+	                            ShapeMapHasher from TopTools); 
+
+    class face;
+    class DataMapOfShapeface instantiates 
+    	  DataMap from TCollection (Shape from TopoDS,
+	    	    	            face from TopOpeBRepTool,
+    	                            ShapeMapHasher from TopTools); 
+    class CLASSI;
+    
+    class TOOL;	    
+    class CORRISO;	
+    class REGUW;	    
+    class REGUS;	    
+
+    class makeTransition;
+    class mkTondgE;
+    
+    class PurgeInternalEdges;
+    ---Purpose: Detect and remove  Internal  and External edges  (that
+    --          are not connex to other faces) from all faces of a shape.
+
+    class FuseEdges;
+    ---Purpose:  Fuse  edges (in a   wire) of a  shape   where we have
+    --          useless vertex.
+
+   
+    PurgeClosingEdges(F, FF   : in Face from TopoDS; 
+    	    	      MWisOld : in DataMapOfShapeInteger from TopTools;
+		      MshNOK  : in out IndexedMapOfOrientedShape from TopTools)
+    returns Boolean from Standard;
+    ---Purpose: In case face <FF> is built on UV-non-connexed  wires
+    --          (with the two closing edges  FORWARD and REVERSED, in
+    --          spite of one only), we find out the faulty edge, add 
+    --          the faulty shapes (edge,wire,face) to <MshNOK>.
+    --          <FF> is a face descendant of <F>.
+    --          <MWisOld>(wire) = 1 if wire is wire of <F>
+    --                            0    wire results from <F>'s wire splitted.
+    --          returns false if purge fails                  
+		      
+    PurgeClosingEdges(F       : in Face from TopoDS; 
+    	    	      LOF     : in ListOfShape from TopTools;
+    	    	      MWisOld : in DataMapOfShapeInteger from TopTools;
+		      MshNOK  : out IndexedMapOfOrientedShape from TopTools)
+    returns Boolean from Standard;	
+    --          <LOF> is the list of <F>'s descendant faces.
+    --          returns false if purge fails    
+
+    CorrectONUVISO(F       : in Face from TopoDS; 
+    	    	   Fsp     : in out Face from TopoDS)
+    returns Boolean from Standard;	
+    --            <Fsp> is one of  <F>'s split, corrects <Fsp> to have
+    --           it connexed in UV space.
+
+    MakeFaces(F      : in Face from TopoDS; 
+              LOF    : in ListOfShape from TopTools;
+	      MshNOK : in IndexedMapOfOrientedShape from TopTools;
+    	      LOFF   : out ListOfShape from TopTools)	
+    returns Boolean from Standard;
+    ---Purpose: Builds up the correct list of faces <LOFF> from <LOF>, using
+    --          faulty shapes from map <MshNOK>.	
+    --          <LOF> is the list of <F>'s descendant faces.
+    --          returns false if building fails    
+    		   
+    Regularize(aFace : in Face from TopoDS;
+    	       aListOfFaces : out ListOfShape from TopTools;
+	       ESplits : in out DataMapOfShapeListOfShape from TopTools)
+    returns Boolean from Standard;
+    ---Purpose: Returns <False>  if  the  face is  valid (the UV
+    --          representation  of  the  face is   a set   of  pcurves
+    --          connexed by points with   connexity 2).  
+    --          Else,  splits <aFace> in order to return a list of valid 
+    --          faces.
+    
+    RegularizeWires(aFace : in Face from TopoDS;
+    	            OldWiresNewWires : out DataMapOfShapeListOfShape from TopTools;		 
+	       	    ESplits : in out DataMapOfShapeListOfShape from TopTools)
+    returns Boolean from Standard;
+    ---Purpose: Returns <False>  if  the  face is  valid (the UV
+    --          representation  of  the  face is   a set   of  pcurves
+    --          connexed by points with   connexity 2).  
+    --          Else,  splits wires of the face, these are boundaries of the
+    --          new faces to build up; <OldWiresNewWires> describes (wire,
+    --          splits of wire); <ESplits> describes (edge, edge's splits) 
+        
+    RegularizeFace(aFace : in Face from TopoDS;
+    	           OldWiresnewWires : in DataMapOfShapeListOfShape from TopTools;	 
+	           aListOfFaces : out ListOfShape from TopTools)
+    returns Boolean from Standard;
+    ---Purpose:  Classify wire's splits of map <OldWiresnewWires> in order to 
+    --           compute <aListOfFaces>, the splits of <aFace>.
+
+    RegularizeShells(aSolid : in Solid from TopoDS;
+    	    	     OldSheNewShe : out DataMapOfShapeListOfShape from TopTools;	
+		     FSplits : in out DataMapOfShapeListOfShape from TopTools)
+    returns Boolean from Standard; 
+    ---Purpose: Returns <False> if the shell is valid (the solid is a set
+    --          of faces connexed by edges with connexity 2).
+    --          Else, splits faces of the shell; <OldFacesnewFaces> describes
+    --          (face, splits of face).
+    
+    -- NYI RegularizeSolid(...)
+
+    Print(OCT  : OutCurveType from TopOpeBRepTool; S  : in out OStream) 
+    returns OStream;
+    ---C++: return &
+    ---Purpose: Prints <OCT> as string on stream <S>; returns <S>.
+
+	
+end TopOpeBRepTool;

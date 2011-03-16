@@ -1,0 +1,204 @@
+-- File:	Interface_CopyTool.cdl
+-- Created:	Tue Feb  2 16:22:56 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CopyTool  from Interface
+
+    ---Purpose : Performs Deep Copies of sets of Entities
+    --	         Allows to perform Copy of Interface Entities from a Model to
+    --           another one. Works by calling general services GetFromAnother
+    --           and GetImplied.
+    --           Uses a CopyMap to bind a unique Result to each Copied Entity
+    --           
+    --           It is possible to command Copies of Entities (and those they
+    --           reference) by call to the General Service Library, or to
+    --           enforce results for transfer of some Entities (calling Bind)
+    --           
+    --           A Same CopyTool can be used for several successive Copies from
+    --           the same Model : either by restarting from scratch (e.g. to
+    --           copy different parts of a starting Model to several Targets),
+    --           or incremental : in that case, it is possible to know what is
+    --           the content of the last increment (defined by last call to
+    --           ClearLastFlags  and queried by call to LastCopiedAfter)
+    --           
+    --           Works in two times : first, create the list of copied Entities
+    --           second, pushes them to a target Model (manages also Model's
+    --           Header) or returns the Result as an Iterator, as desired
+    --           
+    --           The core action (Copy) works by using ShallowCopy (method
+    --           attached to each class) and Copy from GeneralLib (itself using
+    --           dedicated tools). It can be redefined for specific actions.
+
+uses Transient,   SequenceOfInteger from TColStd, BitMap,
+     InterfaceModel, EntityIterator, CopyControl, CopyMap,
+     GeneralModule,  GeneralLib,     Protocol from Interface
+
+raises InterfaceError
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns CopyTool;
+    ---Purpose : Creates a CopyTool adapted to work from a Model. Works
+    --           with a General Service Library, given as an argument
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns CopyTool;
+    ---Purpose : Same as above, but Library is defined through a Protocol
+
+    Create (amodel : InterfaceModel) returns CopyTool
+    ---Purpose : Same as above, but works with the Active Protocol
+    	raises InterfaceError;
+    --           Error if no Active Protocol is defined
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model on which the CopyTool works
+
+    SetControl (me : in out; othermap : mutable CopyControl);
+    ---Purpose : Changes the Map of Result for another one. This allows to work
+    --           with a more sophisticated Mapping Control than the Standard
+    --           one which is CopyMap (e.g. TransferProcess from Transfer)
+
+    Control (me) returns mutable CopyControl;
+    ---Purpose : Returns the object used for Control
+
+    	--  --    Basic Operations    -- --
+
+    Clear (me : in out)  is virtual;
+    ---Purpose : Clears Transfer List. Gets Ready to begin another Transfer
+
+    NewVoid (me : in out; entfrom : Transient; entto : out mutable Transient)
+    	returns Boolean  is virtual protected;
+    ---Purpose : Creates a new void instance (just created) of the same class
+    --           as <entfrom>. Uses the general service GeneralModule:NewVoid
+    --           Returns True if OK (Recognize has succeeded), False else
+    --           (in such a case, the standard method ShallowCopy is called
+    --           to produce <ento> from <entfrom> : hence it is not void)
+    --           
+    --           No mapping is managed by this method
+
+    Copy (me : in out; entfrom : Transient; entto : out mutable Transient;
+    	  mapped : Boolean; errstat : Boolean)
+    	returns Boolean  is virtual;
+    ---Purpose : Creates the CounterPart of an Entity (by ShallowCopy), Binds
+    --           it, then Copies the content of the former Entity to the other
+    --           one (same Type), by call to the General Service Library
+    --           It may command the Copy of Referenced Entities
+    --           Then, its returns True.
+    --           
+    --           If <mapped> is True, the Map is used to store the Result
+    --           Else, the Result is simply produced : it can be used to Copy
+    --           internal sub-parts of Entities, which are not intended to be
+    --           shared (Strings, Arrays, etc...)
+    --           If <errstat> is True, this means that the Entity is recorded
+    --           in the Model as Erroneous : in this case, the General Service
+    --           for Deep Copy is not called (this could be dangerous) : hence
+    --           the Counter-Part is produced but empty, it can be referenced.
+    --           
+    --           This method does nothing and returns False if the Protocol
+    --           does not recognize <ent>.
+    --           It basically makes a Deep Copy without changing the Types.
+    --           It can be redefined for special uses.
+
+    Implied (me : in out; entfrom : Transient; entto : mutable Transient)
+    	is virtual private;
+    ---Purpose : Renews the Implied References of one already Copied Entity
+
+    Transferred (me : in out; ent : Transient) returns mutable Transient
+    ---Purpose : Transfers one Entity, if not yet bound to a result
+    --           Remark : For an Entity which is reported in the Starting Model,
+    --           the ReportEntity will also be copied with its Content if it
+    --           has one (at least ShallowCopy; Complete Copy if the Protocol
+    --           recognizes the Content : see method Copy)
+    	raises InterfaceError;
+    --           This method can raise any kind of Interface exception.
+    --           Especially if <ent> is not contained in Starting Model.
+
+    Bind (me : in out; ent : Transient; res : mutable Transient)
+    ---Purpose : Defines a Result for the Transfer of a Starting object.
+    --           Used by method Transferred (which performs a normal Copy),
+    --           but can also be called to enforce a result : in the latter
+    --           case, the enforced result must be compatible with the other
+    --           Transfers which are performed
+    	raises InterfaceError;
+    --           Error if a Result is already bound with this Starting Object
+
+    Search (me; ent : Transient; res : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : Search for the result of a Starting Object (i.e. an Entity)
+    --           Returns True  if a  Result is Bound (and fills "result")
+    --           Returns False if no result is Bound
+
+    ClearLastFlags (me : in out);
+    ---Purpose : Clears LastFlags only. This allows to know what Entities are
+    --           copied after its call (see method LastCopiedAfter). It can be
+    --           used when copies are done by increments, which must be
+    --           distinghished. ClearLastFlags is also called by Clear.
+
+    LastCopiedAfter (me; numfrom : Integer;
+    	ent : out Transient; res : out mutable Transient)  returns Integer;
+    ---Purpose : Returns an copied Entity and its Result which were operated
+    --           after last call to ClearLastFlags. It returns the first
+    --           "Last Copied Entity" which Number follows <numfrom>, Zero if
+    --           none. It is used in a loop as follow :
+    --             Integer num = 0;
+    --             while ( (num = CopyTool.LastCopiedAfter(num,ent,res)) ) {
+    --               .. Process Starting <ent> and its Result <res>
+    --             }
+
+    	-- --  General Operations  -- --
+
+    TransferEntity (me : in out; ent : Transient)
+    ---Purpose : Transfers one Entity and records result into the Transfer List
+    --           Calls method Transferred
+    	raises InterfaceError;
+    --           This method can raise any kind of Interface exception
+
+    RenewImpliedRefs (me : in out)  raises InterfaceError;
+    ---Purpose : Renews the Implied References. These References do not involve
+    --           Copying of referenced Entities. For such a Reference, if the
+    --           Entity which defines it AND the referenced Entity are both
+    --           copied, then this Reference is renewed. Else it is deleted in
+    --           the copied Entities.
+    --           Remark : this concerns only some specific references, such as
+    --           "back pointers".
+
+    FillModel (me : in out; bmodel : mutable InterfaceModel)
+    	raises InterfaceError;
+    ---Purpose : Fills a Model with the result of the transfer (TransferList)
+    --           Commands copy of Header too, and calls RenewImpliedRefs
+
+    CompleteResult (me; withreports : Boolean = Standard_False)
+    	returns EntityIterator;
+    ---Purpose : Returns the complete list of copied Entities
+    --           If <withreports> is given True, the entities which were
+    --           reported in the Starting Model are replaced in the list
+    --           by the copied ReportEntities
+
+    RootResult (me; withreports : Boolean = Standard_False)
+    	returns EntityIterator;
+    ---Purpose : Returns the list of Root copied Entities (those which were
+    --           asked for copy by the user of CopyTool, not by copying
+    --           another Entity)
+
+    Destroy (me: in out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~Interface_CopyTool() { Destroy(); }"
+
+    fields
+
+    themod : InterfaceModel;       -- Starting Model & Entities
+    themap : CopyControl;          -- Basic Copy Results
+    therep : CopyMap;              -- Report Results (if any)
+    thelst : BitMap;
+    thelib : GeneralLib   is protected;  -- (heirs can use it)
+    thelev : Integer;              -- Current recursive Call Level (Root = 0)
+    therts : SequenceOfInteger from TColStd;    -- "Root" Entities (thelev = 0)
+    theimp : Boolean;  -- are Implied Refs renewed
+
+    theent : Transient;            -- Last processed
+    themdu : GeneralModule;
+    theCN  : Integer;
+
+end CopyTool;

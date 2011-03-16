@@ -1,0 +1,81 @@
+-- File:	BRepMesh_Classifier.cdl
+-- Created:	Thu Jun 26 11:38:02 1997
+-- Author:	Laurent PAINNOT
+--		<lpa@penox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class Classifier from BRepMesh
+
+
+
+uses  
+    Pnt2d                         from gp,
+    SequenceOfPnt2d               from TColgp,
+    Face                          from TopoDS,
+    State                         from TopAbs,
+    SequenceOfInteger             from TColStd,
+    SeqOfPtr                      from BRepTopAdaptor, 
+    DataMapOfShapePairOfPolygon   from BRepMesh,
+    IndexedMapOfInteger           from TColStd,
+    IndexedMapOfVertex            from BRepMesh,
+    Status                        from BRepMesh,
+    DataStructureOfDelaun         from BRepMesh
+
+is 
+    
+    Create   (F      : Face                          from TopoDS; 
+    	      Tol    : Real                          from Standard;
+    	      edges  : DataMapOfShapePairOfPolygon   from BRepMesh;
+       	      themap : IndexedMapOfInteger           from TColStd;
+    	      Str    : IndexedMapOfVertex            from BRepMesh;
+    	      Umin, Umax, Vmin, Vmax: Real           from Standard)
+    returns Classifier from BRepMesh;
+    
+    
+    Create   (F      : Face                          from TopoDS; 
+    	      Tol    : Real                          from Standard;
+    	      edges  : DataMapOfShapePairOfPolygon   from BRepMesh;
+       	      themap : IndexedMapOfInteger           from TColStd;
+    	      Str    : DataStructureOfDelaun         from BRepMesh;
+    	      Umin, Umax, Vmin, Vmax: Real           from Standard)
+    returns Classifier from BRepMesh;
+
+
+    Perform(me; Puv: Pnt2d from gp)
+    returns State from TopAbs;
+
+
+    State (me)
+    returns Status from BRepMesh;
+        ---C++: inline
+
+    NaturalRestriction(me)
+    returns Boolean from Standard;
+        ---C++: inline
+
+
+    Destroy(me: in out);
+    	---C++: alias ~
+
+
+    AnalizeWire (me: in out; theSeqPnt2d : in SequenceOfPnt2d from TColgp;
+		             Umin, Umax, Vmin, Vmax: in Real from Standard)
+    is private;
+    -- Private method called from constructor after some (piece of) wire 
+    -- has been explored and put into <theSeqPnt2d>. 
+    -- Here it is triangulated if it is a hole and anyway added to the bulk.
+    
+fields 
+
+    TabClass    : SeqOfPtr          from BRepTopAdaptor;
+    TabOrien    : SequenceOfInteger from TColStd;
+    Toluv       : Real              from Standard;
+    Face        : Face              from TopoDS;
+    U1          : Real              from Standard;
+    V1          : Real              from Standard;    
+    U2          : Real              from Standard;
+    V2          : Real              from Standard;
+    myState     : Status            from BRepMesh;
+    isnatural   : Boolean           from Standard;
+
+end Classifier from BRepMesh;

@@ -1,0 +1,103 @@
+--
+-- File:	Aspect_ColorMap.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	MatraDatavision 1993
+--
+
+deferred class ColorMap from Aspect inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a ColorMap object.
+	---Keywords:
+	---Warning:
+	---References:
+uses
+	Color			from Quantity,
+	TypeOfColorMap 		from Aspect,
+	ColorMapEntry 		from Aspect,
+	SequenceOfColorMapEntry from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+
+	Initialize( type : TypeOfColorMap from Aspect );
+
+	Type( me )
+	returns TypeOfColorMap from Aspect is static;
+	---Level: Public
+
+	Size( me ) returns Integer from Standard is static;
+	---Level: Public
+	---Purpose: Returns the Allocated colormap Size
+
+	Index( me ; aColormapIndex : Integer ) returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the ColorMapEntry.Index of the ColorMap  
+	--	    at rank <aColormapIndex> .
+	raises BadAccess from Aspect is static;
+	---Trigger: Raises BadAccess if the index less than 1 or
+	--	    greater than Size.
+
+	Dump( me ) ;
+	---Level: Internal
+
+	Entry ( me ; AColorMapIndex : Integer from Standard )
+	returns ColorMapEntry from Aspect
+	---Level: Public
+    	---Purpose: Return the value of the <Index>th element of
+	--	    the ColorMap
+	raises BadAccess from Aspect is static;
+	---Trigger: Raises BadAccess if the index less than 1 or
+	--	    greater than Size.
+    	---C++: return const &
+
+	FindColorMapIndex ( me ;
+		AColorMapEntryIndex : Integer from Standard )
+		returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the 
+	--	    ColorMapEntry.Index() equal to <AnEntryIndex>.
+		raises BadAccess from Aspect is deferred ;
+	---Trigger: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+
+	FindEntry ( me ; AColorMapEntryIndex : Integer from Standard )
+		returns ColorMapEntry from Aspect
+	---Level: Public
+	---Purpose: Returns the ColorMapEntry with ColorMapEntry.Index()
+	--	    equal to <AnEntryIndex>.
+		raises BadAccess from Aspect is deferred ;
+	---Trigger: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+    	---C++: return const &
+
+	NearestColorMapIndex( me ; aColor : Color from Quantity )
+		returns Integer from Standard is deferred ;
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the
+	--	    nearest matching ColorMapEntry 
+
+	NearestEntry( me ; aColor : Color from Quantity )
+		returns ColorMapEntry from Aspect is deferred ;
+	---Level: Public
+	---Purpose: Returns the nearest ColorMapEntry that match aColor .
+    	---C++: return const &
+
+        AddEntry (me : mutable; aColor : Color from Quantity)
+             	returns Integer from Standard is deferred;
+        ---Level: Public
+        ---Purpose: Search an identical color entry in the color map <me>
+        -- and returns the ColorMapEntry Index if exist.
+        -- Or add a new entry and returns the computed ColorMapEntry index used.
+
+fields
+
+	mytype		: TypeOfColorMap	  from Aspect;
+	mydata		: SequenceOfColorMapEntry from Aspect is protected;
+
+end ColorMap ;

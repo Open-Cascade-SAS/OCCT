@@ -1,0 +1,43 @@
+-- File:        DPrsStd.cdl
+-- Created:     Thu Oct  2 09:30:03 1997
+-- Author:      Denis PASCAL
+--              <dp@dingox.paris1.matra-dtv.fr>
+---Copyright:    Matra Datavision 1997
+
+
+
+package DPrsStd 
+
+        ---Purpose:  commands for presentation based on AIS
+        --           ======================================
+
+
+uses Draw
+
+
+is    
+
+    ---Purpose: Presentation commands
+    --          =====================
+
+    AllCommands (I : in out Interpretor from Draw);
+    ---Purpose: to load all sketch commands   
+
+
+    AISPresentationCommands (I : in out Interpretor from Draw);
+    ---Purpose: to display....etc... ais presentation
+
+    AISViewerCommands (I : in out Interpretor from Draw);
+    ---Purpose: to repaint...etc... ais viewer
+
+    BasicCommands (I : in out Interpretor from Draw);
+    ---Purpose: set/get position attribute
+
+    Factory (theDI : out Interpretor from Draw);
+    ---Purpose: Loads all Draw commands of  TKDCAF. Used for plugin. 
+    
+end DPrsStd;
+
+
+
+

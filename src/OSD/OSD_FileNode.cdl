@@ -1,0 +1,123 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_FileNode.cdl
+-- Created:       Mon 24 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+deferred class FileNode from OSD 
+
+     ---Purpose: A class for 'File' and 'Directory' grouping common
+     --          methods.
+     --          The "file oriented" name means files or directories which are
+     --          in fact hard coded as files.
+
+uses Protection, Date, Path, OpenMode, Error, AsciiString from TCollection
+raises OSDError, ProgramError
+
+
+is 
+  Initialize;
+     ---Purpose: Creates FileNode object
+     --          This is to be used with SetPath .
+     --          Allocate space for the file name and initializes this
+     --          name to an empty name.
+     ---Level: Internal
+
+  Initialize (Name : Path )
+     ---Purpose: Instantiates the object FileNode storing its name.
+     --          If a name is not found, it raises a program error.
+     ---Level: Internal
+    raises ProgramError;
+
+  Path(me ; Name : out Path) is static;
+     ---Purpose: Gets file name and path.
+     ---Level: Public
+
+  SetPath(me : in out; Name : Path)
+     ---Purpose: Sets file name and path.
+     --          If a name is not found, it raises a program error.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Exists ( me : in out ) returns Boolean
+     ---Purpose: Returns TRUE if <me> exists.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Remove (me : in out)
+     ---Purpose: Erases the FileNode from directory
+     ---Level: Public
+     raises ProgramError is static;
+
+  Move (me : in out; NewPath : Path)
+     ---Purpose: Moves <me> into another directory
+     ---Level: Public
+     raises ProgramError is static;
+
+  Copy (me : in out; ToPath : Path )
+     ---Purpose: Copies <me> to another FileNode
+     ---Level: Public
+     raises ProgramError is static;
+
+  Protection (me : in out) returns Protection
+     ---Purpose: Returns access mode of <me>.
+     ---Level: Public
+     raises ProgramError is static;
+
+  SetProtection (me  : out; Prot : Protection)
+     ---Purpose: Changes protection of the FileNode
+     ---Level: Public
+     raises ProgramError is static;
+
+  AccessMoment (me : in out) returns Date
+     ---Purpose: Returns last write access.
+     --          On UNIX, AccessMoment and CreationMoment return the
+     --          same value.
+     ---Level: Public
+     raises ProgramError is static;
+
+  CreationMoment (me : in out) returns Date
+     ---Purpose: Returns creation date.
+     --          On UNIX, AccessMoment and CreationMoment return the
+     --          same value.
+     ---Level: Public
+     raises ProgramError is static;
+
+  UserId (me : in out) returns Integer
+     ---Purpose: Returns User Identification.
+     ---Level: Public
+     raises ProgramError is static;
+
+  GroupId (me : in out) returns Integer
+     ---Purpose: Returns Group Identification.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Failed (me) returns Boolean  is static;
+    ---Purpose: Returns TRUE if an error occurs
+    ---Level: Public
+
+  Reset (me : in out) is static;
+    ---Purpose: Resets error counter to zero
+    ---Level: Public
+      
+  Perror (me : in out)
+    ---Purpose: Raises OSD_Error
+    ---Level: Public
+    raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+    ---Level: Public
+
+ fields
+    myPath              : Path is protected;   -- system independent path name
+    myFileChannel       : Integer is protected; -- file descriptor
+    myError             : Error is protected;
+end FileNode from OSD;
+
+
+

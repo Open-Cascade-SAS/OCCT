@@ -1,0 +1,46 @@
+#include <Standard_JmpBuf.hxx>
+
+inline Standard_JmpBuf& Standard_ErrorHandler::Label()
+{
+  return myLabel;
+}
+
+/*Common part for jumps*/
+// In the current version setjmp is used. The alternative solution is to
+// use sigsetjmp that stores the signal mask (to be checked)
+// In the original implementation sigsetjmp is tried to use for SUN and IRIX
+// in the following way:
+//    #ifdef SOLARIS
+//      #define DoesNotAbort(aHandler) !sigsetjmp(aHandler.Label(),1)
+//    #endif
+//
+
+#if defined(NO_CXX_EXCEPTION) || defined(OCC_CONVERT_SIGNALS)
+  #ifdef SOLARIS
+    #define DoesNotAbort(aHandler) !setjmp(aHandler.Label())
+  #elif IRIX
+    #define DoesNotAbort(aHandler) !setjmp(aHandler.Label())
+  #else
+    #define DoesNotAbort(aHandler) !setjmp(aHandler.Label())
+  #endif
+#endif
+
+
+#ifdef NO_CXX_EXCEPTION
+/* No CXX Exceeptions, only jumps in all the cases.*/
+  #define try               Standard_ErrorHandler _Function; \
+                            if(DoesNotAbort(_Function))
+  #define catch(Error)        else if(_Function.Catches(STANDARD_TYPE(Error)))
+  #define OCC_CATCH_SIGNALS 
+#elif defined(OCC_CONVERT_SIGNALS)
+/* Exceptions are raied as usual, signal are converted into jumps and 
+   raused in the proper point.*/
+  #define OCC_CATCH_SIGNALS   Standard_ErrorHandler _aHandler; \
+                              if(!DoesNotAbort(_aHandler)) { \
+				_aHandler.Catches(STANDARD_TYPE(Standard_Failure)); \
+				_aHandler.Error()->Reraise(); \
+			      }
+#else
+/*Normal Exceptions (for example WNT)*/
+  #define OCC_CATCH_SIGNALS
+#endif

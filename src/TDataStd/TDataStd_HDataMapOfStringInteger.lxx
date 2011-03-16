@@ -1,0 +1,23 @@
+// File:	TDataStd_HDataMapOfStringInteger.lxx
+// Created:	Fri Aug 17 16:26:51 2007
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+// Copyright:   Open CasCade SA 2007
+
+//=======================================================================
+//function : Map
+//purpose  : Access to the map
+//=======================================================================
+inline const TColStd_DataMapOfStringInteger& TDataStd_HDataMapOfStringInteger::Map () const 
+{ 
+  return myMap; 
+}
+
+//=======================================================================
+//function : ChangeMap
+//purpose  : Access to the map for modification
+//=======================================================================
+inline TColStd_DataMapOfStringInteger& TDataStd_HDataMapOfStringInteger::ChangeMap () 
+{ 
+  return myMap; 
+}

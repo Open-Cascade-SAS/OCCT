@@ -1,0 +1,65 @@
+-- File:	ShapeUpgrade_SplitCurve.cdl
+-- Created:	Thu Mar 12 11:14:13 1998
+-- Author:	Pierre BARRAS
+--		<pbs@sgi84>
+---Copyright:	 Matra Datavision 1998
+
+class SplitCurve from ShapeUpgrade inherits TShared from MMgt
+
+    	---Purpose: Splits a  curve with a  criterion.
+    
+uses     
+    Curve          from Geom,
+    HArray1OfCurve from TColGeom,
+    HSequenceOfReal  from TColStd,
+    Shape          from GeomAbs,
+    Status         from  ShapeExtend
+is 
+ 
+    Create returns mutable SplitCurve from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+
+    Init (me: mutable; First, Last: Real);
+    	---Purpose: Initializes with curve first and last parameters.
+	
+    SetSplitValues (me: mutable; SplitValues: HSequenceOfReal from TColStd);
+    	---Purpose: Sets the parameters where splitting has to be done.
+	
+    Build (me: mutable; Segment: Boolean) is virtual;
+       ---Purpose: If Segment is True, the result is composed with
+       --  segments of the curve bounded by the SplitValues.  If
+       --  Segment is False, the result is composed with trimmed
+       --  Curves all based on the same complete curve.
+       --  
+
+    SplitValues(me) returns HSequenceOfReal from TColStd;
+       ---C++: return const &
+       --- Purpose : returns all the splitting values including the  
+       --  First and Last parameters of the input curve
+
+       
+    ---Level: Internal
+    
+    --PrepareKnots (me: mutable) is protected;
+    	---Purpose: Merges input split values and new ones into myGlobalKnots
+    
+    Compute(me: mutable) is virtual;
+    	---Purpose: Calculates points for correction/splitting of the curve
+    
+    Perform(me: mutable; Segment: Boolean = Standard_True);
+    	---Purpose: Performs correction/splitting of the curve.
+	---         First defines splitting values by method Compute(), then calls method Build().   
+	
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status 
+	-- OK    - no splitting is needed
+	-- DONE1 - splitting required and gives more than one segment
+	-- DONE2 - splitting is required, but gives only one segment (initial)
+	-- DONE3 - geometric form of the curve or parametrisation is modified
+fields 
+ 
+    mySplitValues     : HSequenceOfReal from TColStd is protected;  
+    myNbCurves        : Integer is protected;
+    myStatus : Integer is protected; 
+end;
+    

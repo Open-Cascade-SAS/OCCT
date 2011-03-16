@@ -1,0 +1,32 @@
+-- File:	StepShape_DimensionalCharacteristic.cdl
+-- Created:	Tue Apr 18 16:42:57 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class DimensionalCharacteristic from StepShape
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type DimensionalCharacteristic
+
+uses
+    DimensionalLocation from StepShape,
+    DimensionalSize from StepShape
+
+is
+    Create returns DimensionalCharacteristic from StepShape;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of DimensionalCharacteristic select type
+	--          1 -> DimensionalLocation from StepShape
+	--          2 -> DimensionalSize from StepShape
+	--          0 else
+
+    DimensionalLocation (me) returns DimensionalLocation from StepShape;
+	---Purpose: Returns Value as DimensionalLocation (or Null if another type)
+
+    DimensionalSize (me) returns DimensionalSize from StepShape;
+	---Purpose: Returns Value as DimensionalSize (or Null if another type)
+
+end DimensionalCharacteristic;

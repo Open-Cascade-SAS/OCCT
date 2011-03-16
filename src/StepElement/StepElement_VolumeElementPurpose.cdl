@@ -1,0 +1,47 @@
+-- File:	StepElement_VolumeElementPurpose.cdl
+-- Created:	Tue Dec 10 18:13:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
+-- Copyright:	Open CASCADE 2002
+
+class VolumeElementPurpose from StepElement
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type VolumeElementPurpose
+
+uses
+    SelectMember from StepData,
+    EnumeratedVolumeElementPurpose from StepElement,
+    HAsciiString from TCollection
+
+is
+    Create returns VolumeElementPurpose from StepElement;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of VolumeElementPurpose select type
+	--          return 0 
+
+    CaseMem (me; ent: SelectMember from StepData) returns Integer is redefined;
+	---Purpose: Recognizes a items of select member VolumeElementPurposeMember
+	--          1 -> EnumeratedVolumeElementPurpose
+	--          2 -> ApplicationDefinedElementPurpose
+	--          0 else
+
+
+     NewMember(me) returns SelectMember from StepData is redefined;
+	---Purpose: Returns a new select member the type VolumeElementPurposeMember
+
+    SetEnumeratedVolumeElementPurpose(me: in out; aVal :EnumeratedVolumeElementPurpose from StepElement);
+	---Purpose: Set Value for EnumeratedVolumeElementPurpose
+
+    EnumeratedVolumeElementPurpose (me) returns EnumeratedVolumeElementPurpose from StepElement;
+	---Purpose: Returns Value as EnumeratedVolumeElementPurpose (or Null if another type)
+
+    SetApplicationDefinedElementPurpose(me: in out; aVal :HAsciiString from TCollection);
+	---Purpose: Set Value for ApplicationDefinedElementPurpose
+
+    ApplicationDefinedElementPurpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns Value as ApplicationDefinedElementPurpose (or Null if another type)
+
+end VolumeElementPurpose;

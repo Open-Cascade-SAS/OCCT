@@ -1,0 +1,33 @@
+-- File:	TopOpeBRepBuild_GIter.cdl
+-- Created:	Tue Feb 13 17:47:51 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+class GIter from TopOpeBRepBuild
+
+uses
+
+    State from TopAbs,
+    GTopo from TopOpeBRepBuild
+    
+is
+
+    Create returns GIter;
+    Create(G : GTopo) returns GIter;
+
+    Find(me : in out) is static private;
+    Init(me : in out) is static;
+    Init(me : in out; G : GTopo) is static;
+    More(me) returns Boolean is static;
+    Next(me : in out) is static;
+    Current(me; s1,s2 : in out State from TopAbs) is static;
+
+    Dump(me; OS : in out OStream) is static;
+    
+fields
+
+    myII : Integer;
+    mypG : Address; -- (GTopo*)
+    
+end GIter;

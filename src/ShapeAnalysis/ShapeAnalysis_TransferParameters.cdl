@@ -1,0 +1,77 @@
+-- File:	ShapeAnalysis_TransferPrameters.cdl
+-- Created:	Mon Jun 21 09:44:37 1999
+-- Author:	Galina KULIKOVA
+--		<gka@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class TransferParameters from ShapeAnalysis inherits TShared from MMgt
+
+	---Purpose: This tool is used for transferring parameters
+	--          from 3d curve of the edge to pcurve and vice versa.
+	--
+	--          Default behaviour is to trsnafer parameters with help
+	--          of linear transformation:
+	--
+	--            T2d = myShift + myScale * T3d
+	--          where
+	--            myScale = ( Last2d - First2d ) / ( Last3d - First3d )
+	--            myShift = First2d - First3d * myScale
+	--            [First3d, Last3d] and [First2d, Last2d] are ranges of 
+        --            edge on curve and pcurve
+	--
+	--          This behaviour can be redefined in derived classes, for example, 
+	--          using projection.
+
+uses
+    Edge from TopoDS,
+    Face from TopoDS,
+    HSequenceOfReal from TColStd,
+    HArray1OfReal from TColStd
+
+is
+    Create returns mutable TransferParameters from ShapeAnalysis;
+    	---Purpose: Creates empty tool with myShift = 0 and myScale = 1
+    
+    Create(E : Edge from TopoDS; F : Face from TopoDS) 
+    returns mutable TransferParameters from ShapeAnalysis;
+    	---Purpose: Creates a tool and initializes it with edge and face
+    
+    Init(me :  mutable;E : Edge from TopoDS; F : Face from TopoDS ) is virtual;
+    	---Purpose: Initialize a tool with edge and face
+    
+    SetMaxTolerance(me:mutable; maxtol: Real);
+    	---Purpose: Sets maximal tolerance to use linear recomputation of
+	--          parameters.
+    
+    Perform(me : mutable; Params: HSequenceOfReal from TColStd; To2d : Boolean) 
+    returns HSequenceOfReal from TColStd is virtual;
+    	---Purpose: Transfers parameters given by sequence Params from 3d curve
+	--          to pcurve (if To2d is True) or back (if To2d is False)
+     
+    Perform(me : mutable;Param : Real; To2d : Boolean) returns Real from Standard is virtual;
+    ---Purpose: Transfers parameter given by sequence Params from 3d curve
+	--          to pcurve (if To2d is True) or back (if To2d is False)
+	
+    TransferRange(me: mutable; newEdge : in out Edge from TopoDS; prevPar,currPar : Real;
+    	To2d : Boolean) is virtual;
+     ---Purpose:Recomputes range of curves from NewEdge.
+     --	        If Is2d equals True parameters are recomputed by curve2d else by curve3d.
+
+    IsSameRange (me) returns Boolean is virtual;
+    	---Purpose: Returns True if 3d curve of edge and pcurve are SameRange
+	--          (in default implementation, if myScale == 1 and myShift == 0)
+
+fields
+
+    myShift       : Real;
+    myScale       : Real;
+    myFirst       : Real is protected;
+    myLast        : Real is protected;
+    myFirst2d     : Real;
+    myLast2d      : Real;
+    myEdge        : Edge from TopoDS is protected;
+    myFace        : Face from TopoDS;
+    myMaxTolerance: Real is protected;
+    
+end TransferParameters;

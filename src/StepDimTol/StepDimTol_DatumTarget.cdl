@@ -1,0 +1,36 @@
+-- File:	StepDimTol_DatumTarget.cdl
+-- Created:	Wed Jun  4 13:34:35 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class DatumTarget from StepDimTol
+inherits ShapeAspect from StepRepr
+
+    ---Purpose: Representation of STEP entity DatumTarget
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData
+
+is
+    Create returns DatumTarget from StepDimTol;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aShapeAspect_Name: HAsciiString from TCollection;
+                       aShapeAspect_Description: HAsciiString from TCollection;
+                       aShapeAspect_OfShape: ProductDefinitionShape from StepRepr;
+                       aShapeAspect_ProductDefinitional: Logical from StepData;
+                       aTargetId: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    TargetId (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field TargetId
+    SetTargetId (me: mutable; TargetId: HAsciiString from TCollection);
+	---Purpose: Set field TargetId
+
+fields
+    theTargetId: HAsciiString from TCollection;
+
+end DatumTarget;

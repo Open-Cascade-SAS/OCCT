@@ -1,0 +1,127 @@
+-- File:	Intersector.cdl
+-- Created:	Wed Aug 26 18:11:37 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class Intersector from HLRBRep
+
+	---Purpose: The Intersector  computes 2D  intersections of the
+	--          projections of 3D curves.
+	--          
+	--          It can also computes the intersection of a 3D line
+	--          and a surface.
+
+uses
+    Address               from Standard,
+    Integer               from Standard,
+    Boolean               from Standard,
+    Real                  from Standard,
+    Lin                   from gp,
+    IntersectionPoint     from IntRes2d,
+    IntersectionSegment   from IntRes2d,
+    IntersectionPoint     from IntCurveSurface,
+    IntersectionSegment   from IntCurveSurface,
+    Curve                 from HLRBRep,
+    CInter                from HLRBRep,
+    InterCSurf            from HLRBRep
+
+raises
+    UndefinedDerivative from StdFail
+
+is
+    Create returns Intersector from HLRBRep;
+    
+    Perform(me      : in out; 
+            A1      : Address from Standard; -- as HLRBRep_EDataOfData 
+            da1,db1 : Real    from Standard)
+	 ---Purpose: Performs the auto  intersection  of  an edge. The
+	 --          edge domain is cutted at start with da1*(b-a) and
+	 --          at end with db1*(b-a).
+    is static;
+    
+    Perform(me     : in out;
+    	    nA      : Integer from Standard;
+            A1      : Address from Standard; -- as HLRBRep_EDataOfData
+            da1,db1 : Real    from Standard;
+	    nB      : Integer from Standard;
+            A2      : Address from Standard; -- as HLRBRep_EDataOfData
+            da2,db2 : Real    from Standard;
+            NoBound : Boolean from Standard)
+	 ---Purpose: Performs the  intersection between the two edges.
+	 --          The  edges  domains  are  cutted  at  start  with
+	 --          da*(b-a) and at end with db*(b-a).
+    is static;
+    
+    
+    
+    SimulateOnePoint(me:in out;
+    	             A1      : Address from Standard; -- as HLRBRep_EDataOfData
+		     U       : Real    from Standard;
+    	    	     A2      : Address from Standard; -- as HLRBRep_EDataOfData
+                     V       : Real    from Standard)
+	 ---Purpose: Create a single IntersectionPoint (U on A1) (V on A2)
+	 --          The point is middle on both curves. 
+    is static;
+    
+    
+    
+    
+    --
+    --    Methods used to intersect a line from the eye with a surface
+    --        
+
+    Load(me  : in out; 
+         A   : out Address from Standard) -- as BRepAdaptor_Surface
+    is static;
+
+    Perform(me  : in out; 
+            L   : Lin  from gp;
+            P   : Real from Standard)
+    is static;
+
+    --
+    --    Methods to get the results
+    --      
+
+    IsDone(me) returns Boolean from Standard
+    is static;
+
+    NbPoints(me) returns Integer from Standard
+    is static;
+
+    Point(me; N : Integer from Standard)
+    	---C++: return const &
+    returns IntersectionPoint from IntRes2d
+    is static;
+
+    CSPoint(me; N : Integer from Standard)
+    	---C++: return const &
+    returns IntersectionPoint from IntCurveSurface
+    is static;
+
+    NbSegments(me) returns Integer from Standard
+    is static;
+	
+    Segment(me; N : Integer)
+    	---C++: return const &
+    returns IntersectionSegment from IntRes2d
+    is static;
+
+    CSSegment(me; N : Integer)
+    	---C++: return const &
+    returns IntersectionSegment from IntCurveSurface
+    is static;
+
+    Destroy(me : in out);
+	---C++: alias ~
+    
+fields
+    mySinglePoint   : IntersectionPoint from IntRes2d;
+    myTypePerform   : Integer           from Standard;
+    myIntersector   : CInter            from HLRBRep;
+    myCSIntersector : InterCSurf        from HLRBRep;
+    mySurface       : Address           from Standard;
+    myPolyhedron    : Address           from Standard;
+
+end Intersector;

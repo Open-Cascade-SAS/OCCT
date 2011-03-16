@@ -1,0 +1,63 @@
+-- File     : Prs2d_AspectHidingText.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class AspectHidingText from Prs2d inherits AspectRoot from Prs2d
+ 
+ ---Purpose: defines the attributes when drawing a hiding text
+
+uses
+ 
+ NameOfColor from Quantity,
+ TypeOfFont from Aspect,
+ WidthOfLine from Aspect
+
+
+is
+ 
+    Create ( ColorInd:       NameOfColor from Quantity;
+	       HidingColorInd: NameOfColor from Quantity;
+             FrameColorInd:  NameOfColor from Quantity;
+             FrameWidthInd:  WidthOfLine from Aspect;
+             FontInd:        TypeOfFont  from Aspect;
+             aSlantInd:      ShortReal   from Standard;
+             aHScaleInd:     ShortReal   from Standard;
+	       aWScaleInd:     ShortReal   from Standard;
+             isUnderlined:   Boolean     from Standard)
+	 returns mutable AspectHidingText from Prs2d;
+	    
+    SetColorOfText      ( me: mutable;  aColorInd:      NameOfColor from  Quantity); 
+    SetHidingColorOfText( me: mutable;  aHidColorInd:   NameOfColor from  Quantity); 
+    SetFrameColorOfText ( me: mutable;  aFrameColorInd: NameOfColor from  Quantity); 
+    SetFrameWidthOfText ( me: mutable;  aFrameWidthInd: WidthOfLine from  Aspect); 
+    SetFontOfText       ( me: mutable;  aFontInd:       TypeOfFont  from  Aspect);  
+    SetSlant            ( me: mutable;  aSlantInd:      ShortReal   from  Standard); 
+    SetHScale           ( me: mutable;  aHScaleInd:     ShortReal   from  Standard); 
+    SetWScale           ( me: mutable;  aWScaleInd:     ShortReal   from  Standard);  
+    SetUnderlined       ( me: mutable;  anIsUnderline:  Boolean     from  Standard); 
+    
+    Values( me;
+	      ColorInd:       out NameOfColor from Quantity;
+	      HidingColorInd: out NameOfColor from Quantity;
+             FrameColorInd:  out NameOfColor from Quantity;
+             FrameWidthInd:  out WidthOfLine from Aspect;
+             FontInd:        out TypeOfFont from Aspect;
+             aSlantInd:      out ShortReal from Standard;
+             aHScaleInd:     out ShortReal from Standard;
+		 aWScaleInd:     out ShortReal from Standard;
+             isUnderlined:   out Boolean from Standard );
+
+fields
+
+    myFontInd         : TypeOfFont from Aspect;
+    myColorInd        : NameOfColor from Quantity;
+    HidingColorInd    : NameOfColor from Quantity;
+    FrameColorInd     : NameOfColor from Quantity;
+    FrameWidthInd     : WidthOfLine from Aspect;
+    mySlantInd        : ShortReal from Standard;
+    myHScaleInd       : ShortReal from Standard;
+    myWScaleInd       : ShortReal from Standard;
+    myIsUnderlined    : Boolean   from Standard;
+    
+end AspectHidingText from Prs2d;

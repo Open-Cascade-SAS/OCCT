@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWCcDesignDateAndTimeAssignment.cdl
+-- Created:	Fri Nov 26 16:26:32 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCcDesignDateAndTimeAssignment from RWStepAP203
+
+    ---Purpose: Read & Write tool for CcDesignDateAndTimeAssignment
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CcDesignDateAndTimeAssignment from StepAP203
+
+is
+    Create returns RWCcDesignDateAndTimeAssignment from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CcDesignDateAndTimeAssignment from StepAP203);
+	---Purpose: Reads CcDesignDateAndTimeAssignment
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CcDesignDateAndTimeAssignment from StepAP203);
+	---Purpose: Writes CcDesignDateAndTimeAssignment
+
+    Share (me; ent : CcDesignDateAndTimeAssignment from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCcDesignDateAndTimeAssignment;

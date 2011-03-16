@@ -1,0 +1,185 @@
+-- File:	TNaming_NamedShape.cdl
+-- Created:	Tue Feb  4 14:12:59 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class NamedShape from TNaming inherits Attribute from TDF
+
+	---Purpose: The basis to define an attribute for the storage of
+    	-- topology and naming data.
+    	-- This attribute contains two parts:
+    	-- -   The type of evolution, a term of the
+    	--   enumeration TNaming_Evolution
+    	-- -   A list of pairs of shapes called the "old"
+    	--   shape and the "new" shape. The meaning
+    	--   depends on the type of evolution.
+
+uses
+    GUID                from Standard,
+    PtrNode             from TNaming,
+    Evolution           from TNaming,	
+    DeltaOnModification from TDF,
+    DeltaOnRemoval      from TDF,
+    RelocationTable     from TDF,
+    AttributeIndexedMap from TDF,
+    Attribute           from TDF,
+    AttributeDelta      from TDF,
+    Delta               from TDF,
+    DataSet             from TDF,
+    Shape               from TopoDS
+
+
+is
+
+    ---Purpose: class method
+    --          ============
+
+    GetID(myclass) returns GUID from Standard;
+	---Purpose: Returns the GUID for named shapes.
+	---C++: return const &
+
+    Create returns mutable NamedShape from TNaming;
+ 
+ 
+    IsEmpty (me) 
+    returns Boolean from Standard;
+  
+    Get (me)
+    	---Purpose: Returns the shapes contained in <NS>. Returns a null
+    	--          shape if IsEmpty.
+    returns Shape from TopoDS;	 
+    
+
+    Evolution (me) returns Evolution from TNaming;
+	---Purpose: Returns the Evolution of the attribute.
+	---C++: inline         
+
+    Version   (me) returns Integer from Standard;
+    	---Purpose: Returns the Version of the attribute.
+	---C++: inline         
+
+    SetVersion (me : mutable; version : Integer from Standard);
+    	---Purpose: Set the Version of the attribute. 
+	---C++: inline         
+
+    Clear (me : mutable);
+
+    ID(me) returns GUID from Standard
+    	is redefined static;
+	---Purpose: Returns the ID of the attribute.
+	---C++: inline         
+	---C++: return const &
+
+    BackupCopy(me) returns mutable Attribute from TDF
+    is redefined;
+	---Purpose: Copies  the attribute  contents into  a  new other
+	--          attribute. It is used by Backup().
+
+    Restore(me: mutable; anAttribute : Attribute from TDF)
+    is redefined;
+	---Purpose: Restores the contents from <anAttribute> into this
+	--          one. It is used when aborting a transaction.
+	--          
+ 
+    -- Delta use methods
+    -- -----------------
+
+    DeltaOnModification(me; anOldAttribute : Attribute from TDF)
+    	returns DeltaOnModification from TDF
+    	---Purpose : Makes a DeltaOnModification between <me> and
+    	--         <anOldAttribute.
+    	is redefined virtual;
+
+    DeltaOnModification(me : mutable; aDelta : DeltaOnModification from TDF)
+    	is redefined virtual;
+	---Purpose: Applies a DeltaOnModification to <me>.
+
+    DeltaOnRemoval(me)
+    	returns DeltaOnRemoval from TDF
+    	---Purpose : Makes a DeltaOnRemoval on <me> because <me> has
+    	--         disappeared from the DS.
+    	is redefined virtual;
+
+
+    -- Copy use methods
+    -- ----------------
+
+    NewEmpty(me)
+    	returns mutable Attribute from TDF
+    	is redefined;
+	---Purpose: Returns an new empty attribute from the good end
+	--          type. It is used by the copy algorithm.
+
+    Paste(me;
+    	  intoAttribute    : mutable Attribute from TDF;
+	  aRelocTationable : mutable RelocationTable from TDF)
+	is redefined;
+	---Purpose: This method is different from the "Copy" one,
+	--          because it is used when copying an attribute from
+	--          a source structure into a target structure. This
+	--          method pastes the current attribute to the label
+	--          corresponding to the insertor. The pasted
+	--          attribute may be a brand new one or a new version
+	--          of the previous one.   
+
+    
+    OldPaste(me;
+    	  intoAttribute    : mutable Attribute from TDF;
+	  aRelocTationable : mutable RelocationTable from TDF);
+
+
+
+    References(me; aDataSet : DataSet from TDF)
+    	is redefined;
+	---Purpose: Adds the directly referenced attributes and labels
+	--          to <aDataSet>. "Directly" means we have only to
+	--          look at the first level of references.
+
+
+    BeforeRemoval(me: mutable) is redefined;
+
+    BeforeUndo(me: mutable;
+    	       anAttDelta : AttributeDelta from TDF;
+    	       forceIt : Boolean from Standard = Standard_False)
+    	returns Boolean from Standard
+    	is redefined;
+	---Purpose: Something to do before applying <anAttDelta>
+
+    AfterUndo(me: mutable;
+    	      anAttDelta : AttributeDelta from TDF;
+    	      forceIt : Boolean from Standard = Standard_False)
+    	returns Boolean from Standard
+    	is redefined;
+	---Purpose: Something to do after applying <anAttDelta>.
+
+
+    -- Methods to build contents of the TNaming attribute
+    -- This methods are private. the only one way to build
+    -- an Attribute is to use the TNaming_Builder.
+    -----------------------------------------------------
+
+    Add(me : mutable ; Evolution : in out PtrNode from TNaming)
+    	---Purpose: Adds an evolution
+    is private;
+
+
+    Dump(me; anOS : in out OStream from Standard) 
+    returns OStream from Standard
+    	is redefined ;
+	---Purpose: Dumps the attribute on <aStream>.
+    	---C++:     return &
+   
+fields
+    myNode        : PtrNode   from TNaming;
+    myEvolution   : Evolution from TNaming;
+    myVersion     : Integer   from Standard;
+
+friends
+    class Builder          from TNaming,
+    class Iterator         from TNaming,
+    class NewShapeIterator from TNaming,	
+    class OldShapeIterator from TNaming	
+    
+end Attribute;

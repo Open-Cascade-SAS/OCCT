@@ -1,0 +1,73 @@
+-- File:	CircLin2dBisec.cdl
+-- Created:	Wed Apr  3 11:29:37 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+class CircLin2dBisec
+
+from GccAna
+
+	---Purpose: Describes functions for building bisecting curves between a 2D line and a 2D circle.
+    	-- A bisecting curve between a circle and a line is a curve
+    	-- such that each of its points is at the same distance from
+    	-- the circle and the line. It can be a parabola or a line,
+    	-- depending of the relative position of the line and the
+    	-- circle. The algorithm computes all the elementary curves which are solutions.
+    	-- A CircLin2dBisec object provides a framework for:
+    	-- -   defining the construction of the bisecting curves,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+
+uses Lin2d  from gp,
+     Circ2d from gp,
+     Bisec  from GccInt
+     
+raises OutOfRange        from Standard,
+       NotDone           from StdFail
+       
+is
+
+Create(Circle  : Circ2d from gp;
+       Line    : Lin2d  from gp) returns CircLin2dBisec;
+
+    	---Purpose: Constructs bisecting curves between the circle Circle and the line Line. 
+
+IsDone(me) returns Boolean from Standard
+is static;
+
+    	--- Purpose: Returns true (this construction algorithm never fails).
+        
+NbSolutions(me) returns Integer from Standard
+raises NotDone
+is static;
+    	---Purpose:
+    	-- Returns the number of curves, representing solutions computed by this algorithm.
+    
+ThisSolution(me                           ; 
+    	     Index : Integer from Standard) returns Bisec from GccInt
+raises OutOfRange, NotDone
+is static;
+    	---Purpose : Returns the solution number Index and raises OutOfRange 
+    	--         exception if Index is greater than the number of solutions 
+    	--    Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+
+fields
+
+    WellDone : Boolean from Standard;
+    	---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    	---Purpose: The number of possible solutions. We have to decide about the
+    	--          status of the multiple solutions...
+
+    circle   : Circ2d from gp;
+    	---Purpose: The first argument used for ThisSolution.
+
+    line   : Lin2d from gp;
+    	---Purpose: The second argument used for ThisSolution.
+
+end CircLin2dBisec;

@@ -1,0 +1,31 @@
+-- File:	SWDRAW_ShapeUpgrade.cdl
+-- Created:	Tue Mar  9 15:26:38 1999
+-- Author:	data exchange team
+--		<det@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeUpgrade from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeUpgrade
+	--          List of DRAW commands and corresponding functionalities:
+	--          DT_ShapeDivide         - ShapeUpgrade_ShapeDivide
+	--          DT_PlaneDividedFace    - ShapeUpgrade_PlaneDividedFace
+	--          DT_PlaneGridShell      - ShapeUpgrade_PlaneGridShell
+	--          DT_PlaneFaceCommon     - ShapeUpgrade_PlaneFaceCommon
+	--          DT_Split2dCurve        - ShapeUpgrade_Split2dCurve
+	--          DT_SplitCurve          - ShapeUpgrade_SplitCurve
+	--          DT_SplitSurface        - ShapeUpgrade_SplitSurface
+	--          DT_SupportModification - ShapeUpgrade_DataMapOfShapeSurface
+	--          DT_Debug               - ShapeUpgrade::SetDebug
+	--          shellsolid             - ShapeAnalysis_Shell/ShapeUpgrade_ShellSewing
+	
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeUpgrade
+
+end ShapeUpgrade;

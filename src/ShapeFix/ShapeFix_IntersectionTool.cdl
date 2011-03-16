@@ -1,0 +1,100 @@
+-- File:	ShapeFix_IntersectionTool.cdl
+-- Created:	Fri Mar  5 18:36:52 2004
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class IntersectionTool from ShapeFix
+
+	---Purpose: Tool for fixing selfintersecting wire
+	--          and intersecting wires
+
+uses
+
+    Face from TopoDS,
+    Edge from TopoDS,
+    Vertex from TopoDS,
+    ReShape from ShapeBuild,
+    WireData from ShapeExtend,
+    DataMapOfShapeBox2d from ShapeFix,
+    Curve from Geom2d,
+    Box2d from Bnd
+
+is
+    Create(context: ReShape from ShapeBuild;
+    	   preci: Real; maxtol: Real =1.0) returns IntersectionTool from ShapeFix;
+    	---Purpose: Constructor
+	
+    Context (me) returns ReShape from ShapeBuild;
+    	---Purpose: Returns context 
+	---C++: inline
+	
+    SplitEdge(me; edge: Edge from TopoDS; param: Real from Standard;
+    	          vert: Vertex from TopoDS; face: Face from TopoDS;
+	          newE1: in out Edge from TopoDS; newE2: in out Edge from TopoDS;
+    	          preci: Real from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Split edge on two new edges using new vertex "vert"
+	--          and "param" - parameter for splitting
+	--          The "face" is necessary for pcurves and using TransferParameterProj
+
+    CutEdge(me; edge: Edge from TopoDS; pend: Real from Standard;
+    	        cut: Real from Standard; face: Face from TopoDS;
+	        iscutline: in out Boolean from Standard)
+    returns Boolean from Standard;
+    	---Purpose: Cut edge by parameters pend and cut
+
+    SplitEdge1(me; sewd: WireData from ShapeExtend;
+	           face: Face from TopoDS;
+    	           num: Integer from Standard;
+      	           param: Real from Standard;
+    	           vert: Vertex from TopoDS;
+    	           preci: Real from Standard;
+    	    	   boxes: in out DataMapOfShapeBox2d from ShapeFix)
+    returns Boolean from Standard is private;
+
+    SplitEdge2(me; sewd: WireData from ShapeExtend;
+	           face: Face from TopoDS;
+    	           num: Integer from Standard;
+    	           param1: Real from Standard;
+    	           param2: Real from Standard;
+    	           vert: Vertex from TopoDS;
+    	           preci: Real from Standard;
+    	    	   boxes: in out DataMapOfShapeBox2d from ShapeFix)
+    returns Boolean from Standard is private;
+
+    UnionVertexes(me; sewd: WireData from ShapeExtend;
+	              edge1: in out Edge from TopoDS;
+	              edge2: in out Edge from TopoDS;
+		      num2: Integer from Standard;
+     	    	      boxes: in out DataMapOfShapeBox2d from ShapeFix;
+    	    	      B2: Box2d from Bnd)
+    returns Boolean from Standard is private;
+
+    FindVertAndSplitEdge(me; param1: Real from Standard;
+    	    	    	     edge1,edge2: Edge from TopoDS;
+			     Crv1: Curve from Geom2d;
+			     MaxTolVert: in out Real from Standard;
+			     num1: in out Integer from Standard;
+			     sewd: WireData from ShapeExtend;
+			     face: Face from TopoDS;
+			     boxes: in out DataMapOfShapeBox2d from ShapeFix;
+    	    	    	     aTmpKey: Boolean from Standard)
+    returns Boolean from Standard is private;
+
+    FixSelfIntersectWire(me; sewd: in out WireData from ShapeExtend;
+	                     face: Face from TopoDS;
+    	    	    	     NbSplit: in out Integer; NbCut: in out Integer;
+    	    	    	     NbRemoved: in out Integer)
+    returns Boolean from Standard;
+
+    FixIntersectingWires(me; face: in out Face from TopoDS)
+    returns Boolean from Standard;
+
+fields
+
+    myContext  : ReShape from ShapeBuild;
+    myPreci    : Real from Standard;
+    myMaxTol   : Real from Standard;
+
+end IntersectionTool;

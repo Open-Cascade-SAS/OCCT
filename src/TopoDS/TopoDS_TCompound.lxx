@@ -1,0 +1,13 @@
+// File:	TopoDS_TCompound.lxx
+// Created:	Fri Apr 12 15:11:28 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TCompound
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TCompound::TopoDS_TCompound() : TopoDS_TShape()
+{
+  Orientable(Standard_False);
+}

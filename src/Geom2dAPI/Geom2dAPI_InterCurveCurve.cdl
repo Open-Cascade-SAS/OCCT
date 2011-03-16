@@ -1,0 +1,174 @@
+-- File:	Geom2dAPI_InterCurveCurve.cdl
+-- Created:	Thu Mar 24 10:59:18 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class InterCurveCurve from Geom2dAPI 
+
+	---Purpose: This class implements methods for computing
+    	-- -       the intersections between  two 2D curves,
+    	-- -       the self-intersections of a  2D curve.
+    	-- Using the InterCurveCurve algorithm allows to get the following results:
+    	-- -      intersection points in the  case of cross intersections,
+    	-- -      intersection segments in the case of tangential intersections,
+    	-- -       nothing in the case of no intersections.
+uses
+    Curve  from Geom2d,
+    Pnt2d  from gp,
+    GInter from Geom2dInt    
+
+raises
+
+    OutOfRange from Standard,
+    NullObject from Standard
+    
+is
+
+    Create
+	---Purpose: Create an empty intersector. Use the
+    	-- function Init for further initialization of the intersection
+    	-- algorithm by curves or curve.
+    	---Level: Public
+    returns InterCurveCurve from Geom2dAPI;
+    
+    
+    Create(C1  : Curve from Geom2d;
+    	   C2  : Curve from Geom2d;
+	   Tol : Real  from Standard = 1.0e-6)
+	---Purpose: Creates an object and computes the
+    	-- intersections between the curves C1 and C2.
+    returns InterCurveCurve from Geom2dAPI;
+    
+    
+    Create(C1  : Curve from Geom2d;
+	   Tol : Real  from Standard = 1.0e-6)
+	---Purpose: 
+    	-- Creates an object and computes self-intersections of the curve C1.
+    	--   Tolerance value Tol, defaulted to 1.0e-6, defines the precision of
+    	-- computing the intersection points.
+    	-- In case of a tangential intersection, Tol also defines the
+    	-- size of intersection segments (limited portions of the curves)
+    	-- where the distance between all points from two curves (or a curve
+    	-- in case of self-intersection) is less than Tol.
+    	-- Warning
+    	-- Use functions NbPoints and NbSegments to obtain the number of
+    	-- solutions. If the algorithm finds no intersections NbPoints and
+    	-- NbSegments return 0.
+    returns InterCurveCurve from Geom2dAPI;
+    
+    
+    Init( me  : in out;
+    	  C1  : Curve from Geom2d;
+	  C2  : Curve from Geom2d;
+	  Tol : Real  from Standard = 1.0e-6)
+	---Purpose: Initializes an algorithm with the
+    	-- given arguments and computes the intersections between the curves C1. and C2.
+    is static;
+    
+    
+    Init( me  : in out;
+    	  C1  : Curve from Geom2d;
+	  Tol : Real  from Standard = 1.0e-6)
+	---Purpose: Initializes an algorithm with the
+    	-- given arguments and computes the self-intersections of the curve C1.
+    	-- Tolerance value Tol, defaulted to 1.0e-6, defines the precision of
+    	-- computing the intersection points. In case of a tangential
+    	-- intersection, Tol also defines the size of intersection segments
+    	-- (limited portions of the curves) where the distance between all
+    	-- points from two curves (or a curve in case of self-intersection) is less than Tol.
+    	-- Warning
+    	-- Use functions NbPoints and NbSegments to obtain the number
+    	-- of solutions. If the algorithm finds no intersections NbPoints
+    	-- and NbSegments return 0.
+    is static;
+    
+    
+    NbPoints(me)
+    returns Integer from Standard
+	---Purpose: Returns the number of intersection-points in case of cross intersections.
+    	--        NbPoints returns 0 if no intersections were found.
+    is static;
+    
+    
+    Point(me; Index : Integer from Standard)
+    returns Pnt2d from gp
+	---Purpose: Returns the intersection point of index Index.
+    	-- Intersection points are computed in case of cross intersections with a
+    	-- precision equal to the tolerance value assigned at the time of
+    	-- construction or in the function Init (this value is defaulted to 1.0e-6).
+    	-- Exceptions
+    	-- Standard_OutOfRange if index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of computed intersection points
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+    
+    
+    NbSegments(me)
+    returns Integer from Standard
+	---Purpose: Returns the number of tangential intersections.
+    	-- NbSegments returns 0 if no intersections were found
+    is static;
+    
+    
+    Segment(me; Index          :        Integer from Standard;
+                Curve1, Curve2 : in out Curve   from Geom2d)
+	---Purpose:  Use this syntax only to get
+    	-- solutions of tangential intersection between two curves.
+    	-- Output values Curve1 and Curve2 are the intersection segments on the
+    	-- first curve and on the second curve accordingly. Parameter Index
+    	-- defines a number of computed solution.
+    	-- An intersection segment is a portion of an initial curve limited
+    	-- by two points. The distance from each point of this segment to the
+    	-- other curve is less or equal to the tolerance value assigned at the
+    	-- time of construction or in function Init (this value is defaulted to 1.0e-6).
+    	--   Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
+    	-- where NbSegments is the number of computed tangential intersections.
+    	-- Standard_NullObject if the algorithm is initialized for the
+    	-- computing of self-intersections on a curve.
+    raises
+    	OutOfRange from Standard,
+	NullObject from Standard
+	    is static;
+
+    
+    Segment(me; Index  :        Integer from Standard;
+                Curve1 : in out Curve   from Geom2d)
+	---Purpose: Use this syntax to get solutions of
+    	-- tangential intersections only in case of a self-intersected curve.
+    	-- Output value Curve1 is the intersection segment of the curve
+    	-- defined by number Index. An intersection segment is a
+    	-- portion of the initial curve limited by two points. The distance
+    	-- between each point of this segment to another portion of the curve is
+    	-- less or equal to the tolerance value assigned at the time of
+    	-- construction or in the function Init (this value is defaulted to 1.0e-6).
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
+    	-- where NbSegments is the number of computed tangential intersections.
+    raises
+    	OutOfRange from Standard
+	
+    is static;
+
+    
+    Intersector(me) 
+	---Purpose: return the algorithmic object from Intersection.
+    	---Level: Advanced
+    returns GInter from Geom2dInt
+	---C++: return const &
+	---C++: inline
+    is static;
+       
+fields
+
+    myIsDone      : Boolean from Standard;
+    myCurve1      : Curve   from Geom2d;
+    myCurve2      : Curve   from Geom2d;
+    myIntersector : GInter  from Geom2dInt;
+
+end InterCurveCurve;

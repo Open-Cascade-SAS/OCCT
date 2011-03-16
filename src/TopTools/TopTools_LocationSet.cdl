@@ -1,0 +1,78 @@
+-- File:	TopTools_LocationSet.cdl
+-- Created:	Fri Jul 16 16:52:20 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class LocationSet from TopTools 
+
+	---Purpose: The class LocationSet stores a set of location in
+	--          a relocatable state.
+	--          
+	--          It can be created from Locations.
+	--          
+	--          It can create Locations.
+	--          
+	--          It can be write and read from a stream.
+
+uses
+    Location             from TopLoc,
+    IndexedMapOfLocation from TopLoc,
+    ProgressIndicator    from Message
+
+raises
+    OutOfRange           from Standard
+
+is
+    Create returns LocationSet from TopTools;
+	---Purpose: Returns an empty set of locations.
+	
+    Clear(me : in out)
+	---Purpose: Clears the content of the set.
+    is static;
+	
+    Add(me : in out; L : Location from TopLoc) returns Integer
+	---Purpose: Incorporate a new Location in the  set and returns
+	--          its index.
+    is static;
+    
+    Location(me; I : Integer) returns Location from TopLoc
+	---Purpose: Returns the location of index <I>.
+	--          
+	---C++: return const &
+    raises
+    	OutOfRange from Standard
+    is static;
+
+    Index(me; L : Location from TopLoc) returns Integer
+	---Purpose: Returns the index of <L>.
+    is static;
+    
+    Dump(me; OS : in out OStream)
+	---Purpose: Dumps the content of me on the stream <OS>.
+    is static;
+	
+    Write(me; OS : in out OStream)
+	---Purpose: Writes the content of  me  on the stream <OS> in a
+	--          format that can be read back by Read.
+    is static;
+	
+    Read(me : in out; IS : in out IStream)
+	---Purpose: Reads the content of me from the  stream  <IS>. me
+	--          is first cleared.
+	--          
+    is static;
+	
+    SetProgress(me : in out; PR : ProgressIndicator from Message);
+
+    GetProgress(me) returns ProgressIndicator from Message;
+
+fields
+    myMap : IndexedMapOfLocation from TopLoc;
+    myProgress : ProgressIndicator from Message;
+
+end LocationSet;
+
+

@@ -1,0 +1,68 @@
+-- File:	IntCurveSurface_IntersectionSegment.cdl
+-- Created:	Wed Apr  7 16:47:10 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class IntersectionSegment from IntCurveSurface
+ 
+
+    ---Purpose: A IntersectionSegment describes a segment of curve 
+    --          (w1,w2) where distance(C(w),Surface) is less than a  
+    --          given tolerances. 
+    
+    ---Level: Public
+
+uses
+
+    IntersectionPoint    from IntCurveSurface
+
+is
+
+    Create
+    	returns IntersectionSegment from IntCurveSurface;
+	
+    Create(P1: IntersectionPoint from IntCurveSurface;
+    	   P2: IntersectionPoint from IntCurveSurface)
+	returns IntersectionSegment from IntCurveSurface;
+	
+    SetValues(me: in out;
+    	     P1: IntersectionPoint from IntCurveSurface;
+	     P2: IntersectionPoint from IntCurveSurface)
+	 is static;
+	 
+    Values(me;
+    	  P1: out IntersectionPoint from IntCurveSurface;
+	  P2: out IntersectionPoint from IntCurveSurface)
+	 is static;
+	 
+    FirstPoint(me;
+	       P1: out IntersectionPoint from IntCurveSurface)
+	 is static;	 
+
+    SecondPoint(me;
+	        P2: out IntersectionPoint from IntCurveSurface)
+	 is static;
+
+	 
+    FirstPoint(me)
+	returns IntersectionPoint from IntCurveSurface 
+	---C++: return const &
+        is static;	 
+
+    SecondPoint(me)
+    	 returns IntersectionPoint from IntCurveSurface
+	 ---C++: return const &
+	 is static;
+ 
+    Dump(me)
+          is static;
+
+fields
+
+    myP1 : IntersectionPoint from IntCurveSurface;
+    myP2 : IntersectionPoint from IntCurveSurface;
+ 
+end IntersectionSegment;
+

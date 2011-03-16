@@ -1,0 +1,42 @@
+-- File:        GeneralModule.cdl
+-- Created:     Thu Jun 16 18:05:55 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class GeneralModule from RWHeaderSection  inherits GeneralModule from StepData
+	---Purpose : Defines General Services for HeaderSection Entities
+	--           (Share,Check,Copy; Trace already inherited)
+	--           Depends (for case numbers) of Protocol from HeaderSection
+
+uses Transient,
+     EntityIterator from Interface,
+     ShareTool      from Interface,
+     Check          from Interface,
+     CopyTool       from Interface
+
+is
+
+	Create returns mutable GeneralModule from RWHeaderSection;
+	---Purpose : Creates a GeneralModule
+
+	FillSharedCase (me; CN : Integer; ent : Transient;
+	iter : in out EntityIterator);
+	---Purpose : Specific filling of the list of Entities shared by an Entity
+	--           <ent>, according to a Case Number <CN> (provided by HeaderSection
+	--           Protocol).
+
+	CheckCase (me; CN : Integer; ent : Transient; shares : ShareTool; ach : in out Check);
+	---Purpose : Specific Checking of an Entity <ent>
+
+	CopyCase (me; CN : Integer; entfrom : Transient; entto : mutable Transient; TC : in out CopyTool);
+	---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
+	--           by using a CopyTool which provides its working Map.
+	--           Use method Transferred from CopyTool to work
+
+
+	NewVoid (me; CN : Integer; ent : out mutable Transient) returns Boolean;
+
+end GeneralModule;

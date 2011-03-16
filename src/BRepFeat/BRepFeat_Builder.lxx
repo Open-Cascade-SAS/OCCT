@@ -1,0 +1,62 @@
+// File:	BRepFeat_Builder.lxx
+// Created:	Tue Jun 13 11:50:44 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+
+//=======================================================================
+//function : BRepFeat_Builder
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_Builder::BRepFeat_Builder () 
+{
+}
+
+
+//=======================================================================
+//function : BRepFeat_Builder
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_Builder::BRepFeat_Builder 
+   (const TopoDS_Shape& S) : myBuilder(S) 
+{
+}
+
+
+//=======================================================================
+//function : BRepFeat_Builder
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_Builder::BRepFeat_Builder(const TopoDS_Shape& S,
+					  const TopoDS_Shape& T): 
+   myBuilder(S,T) 
+{
+}
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Builder::Init(const TopoDS_Shape& S)
+{
+  myBuilder.Init(S);
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Builder::Init(const TopoDS_Shape& S,
+				   const TopoDS_Shape& T)
+{
+  myBuilder.Init(S,T);
+}
+
+

@@ -1,0 +1,11 @@
+// Copyright: 	Matra-Datavision 1994
+// File:	Expr_UnaryExpression.lxx
+// Created:	Wed Jan  5 15:26:12 1994
+// Author:	Arnaud BOUZY
+//		<adn>
+
+inline const Handle(Expr_GeneralExpression)& Expr_UnaryExpression::Operand () const
+{
+  return myOperand;
+}
+

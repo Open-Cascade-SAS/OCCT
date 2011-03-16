@@ -1,0 +1,34 @@
+// File:	Poly_Connect.lxx
+// Created:	Mon Mar  6 16:25:53 1995
+// Author:	Laurent PAINNOT
+//		<lpa@metrox>
+
+//=======================================================================
+//function : Triangulation
+//purpose  : 
+//=======================================================================
+
+ inline Handle(Poly_Triangulation) Poly_Connect::Triangulation() const 
+{
+  return myTriangulation;
+}
+
+//=======================================================================
+//function : Triangle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Poly_Connect::Triangle(const Standard_Integer N) const 
+{
+  return myTriangles(N);
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Poly_Connect::More() const
+{
+  return (mymore);
+}

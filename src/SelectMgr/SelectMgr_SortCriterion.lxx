@@ -1,0 +1,28 @@
+// File:	SelectMgr_SortCriterion.lxx
+// Created:	Thu Mar 26 17:22:40 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline void SelectMgr_SortCriterion::SetPriority(const Standard_Integer Prior)
+{myPrior = Prior;}
+
+inline void SelectMgr_SortCriterion::SetDepth(const Standard_Real Depth)
+{myDepth = Depth;}
+
+inline void SelectMgr_SortCriterion::SetMinDist(const Standard_Real Dist)  
+{myDist=Dist;}
+
+inline void SelectMgr_SortCriterion::SetTol(const Standard_Real Tol)  
+{myTol=Tol;}
+
+inline Standard_Integer SelectMgr_SortCriterion::Priority() const
+{return myPrior;}
+
+inline Standard_Real SelectMgr_SortCriterion::Depth() const
+{return myDepth;}
+
+inline Standard_Real SelectMgr_SortCriterion::MinDist() const
+{return myDist;}
+
+inline Standard_Real SelectMgr_SortCriterion::Tol() const
+{return myTol;}

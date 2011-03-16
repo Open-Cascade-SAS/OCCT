@@ -1,0 +1,94 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	TCollection_AVLSearchTree.gxx
+// Created:	Thu May 23 16:57:42 1991
+// Author:	Jean-Pierre TIRAULT
+//		Transient implementation
+//
+
+#include <Standard_Address.hxx>           
+
+// Global variable
+static Standard_Address LastNode;                
+// Global variable
+
+
+void TCollection_AVLIterator::InOrderTraversal (const Standard_Address A)  {
+  if (A) {
+    InOrderTraversal (((TCollection_AVLNode*)A)->Left());
+    TCollection_AVLList* S     = new TCollection_AVLList;
+    S->Value()       = ((TCollection_AVLNode*)A)->Value();
+    if (!FirstNode) { 
+      FirstNode = (Standard_Address*)S; 
+      LastNode = FirstNode; 
+    }
+    else { 
+      ((TCollection_AVLList*)LastNode)->Next() = S;
+      LastNode = (Standard_Address)S; 
+    }
+    InOrderTraversal (((TCollection_AVLNode*)A)->Right());
+  }
+}   
+
+
+
+
+//-----------------------------------------------------------------------------
+TCollection_AVLIterator::
+              TCollection_AVLIterator ( const TCollection_AVLSearchTree& aTree) 
+{
+  LastNode  = FirstNode = NULL;
+  Standard_Address Root = (Standard_Address) aTree.GetRoot();     // Current node = root of tree
+  if (!Root) {
+    HasMore = Standard_False;
+  }
+  else {
+    HasMore = Standard_True;
+    InOrderTraversal(Root);
+  }
+}
+//-----------------------------------------------------------------------------
+TCollection_AVLIterator::TCollection_AVLIterator ( const TCollection_AVLSearchTree&   aTree, const Item&   anItem) 
+{
+  LastNode  = FirstNode = NULL;
+  Standard_Address  Root;
+  
+  if (aTree.Find(anItem,Root)) {
+    HasMore = Standard_True;
+    InOrderTraversal(Root);
+  }
+  else {   
+    HasMore = Standard_False;
+  }
+}
+
+//-----------------------------------------------------------------------------
+void TCollection_AVLIterator::Clear () 
+{
+  LastNode     = NULL ;
+  TCollection_AVLList* S   = (TCollection_AVLList*)FirstNode;
+  TCollection_AVLList* P;
+  while (S) {     // Memory management
+    P = S;
+    S = (TCollection_AVLList*)S->Next();
+    delete P;
+  }
+  FirstNode    = NULL ;
+  HasMore      = Standard_False;
+}
+
+//-----------------------------------------------------------------------------
+const Item& TCollection_AVLIterator::Value () const 
+{
+  Standard_NoSuchObject_Raise_if(!HasMore,"TCollection_AVLIterator - No more object");
+  return ((TCollection_AVLList*)FirstNode)->Value();
+}
+
+//-----------------------------------------------------------------------------
+void TCollection_AVLIterator::Next () 
+{
+  Standard_NoSuchObject_Raise_if(!HasMore,"TCollection_AVLIterator - No more object");
+  TCollection_AVLList* S = (TCollection_AVLList*)FirstNode;
+  FirstNode  = ((TCollection_AVLList*)FirstNode)->Next();
+  HasMore    = (FirstNode != NULL);
+  delete S;
+}

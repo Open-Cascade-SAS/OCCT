@@ -1,0 +1,39 @@
+-- File:	TCollection_AVLBaseNode.cdl
+-- Created:	Wed Jan 21 15:32:50 1998
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+    class AVLBaseNode from TCollection
+    inherits TShared from MMgt
+    uses AVLBaseNodePtr from TCollection,
+    	 Side from TCollection
+    is
+    	Create(L,R : AVLBaseNodePtr from TCollection) returns mutable AVLBaseNode from TCollection;
+	---C++: inline
+
+    	SetChild(me : mutable; theNode : AVLBaseNodePtr from TCollection; theSide : Side from TCollection);
+	---C++: inline
+
+    	Height(myclass; ANode : AVLBaseNodePtr from TCollection) returns Integer;
+    	RecursiveExtent(myclass;  ANode : AVLBaseNodePtr from TCollection) returns Integer;
+	RecursiveTotalExtent(myclass;  ANode : AVLBaseNodePtr from TCollection) returns Integer;
+
+    	Right(me) returns AVLBaseNodePtr from TCollection;
+	---C++: inline
+	---C++: return &
+
+    	Left(me) returns AVLBaseNodePtr from TCollection;
+	---C++: inline
+	---C++: return &
+
+    	Count(me) returns Integer;
+	---C++: inline
+	---C++: return &
+
+    fields
+      myLeft : AVLBaseNodePtr from TCollection is protected;
+      myRight : AVLBaseNodePtr from TCollection is protected;
+      myCount : Integer from Standard is protected;      
+    end;
+    

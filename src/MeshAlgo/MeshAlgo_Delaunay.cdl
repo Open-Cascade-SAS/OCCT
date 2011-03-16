@@ -1,0 +1,241 @@
+-- File:	MeshAlgo_Delaunay.cdl
+-- Created:	Tue May 11 17:19:19 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@nonox>
+---Copyright:	 Matra Datavision 1993, 1994 
+ 
+
+generic class Delaunay from MeshAlgo  (Vertex as any;
+	    	    	    	       Edge as any;
+	    	    	    	       Triangle as any)
+
+	---Purpose: Compute the  Delaunay's triangulation    with  the
+	--          algorithm of Watson.
+
+
+uses    Integer from Standard,
+    	SequenceOfInteger from TColStd,
+    	Array1OfInteger from TColStd,
+	XY from gp,
+	Box2d from Bnd,
+	CircleTool from MeshAlgo,
+	MapOfInteger from MeshDS,
+	MapOfIntegerInteger from MeshDS
+
+
+    	class DataStructure instantiates Mesh2d from MeshDS
+    	    	    	    	    	(Vertex, Edge, Triangle);
+	
+	class ComparatorOfVertex instantiates PntComparator(Vertex,XY from gp);
+
+	class ComparatorOfIndexedVertex instantiates IndexedPntComparator
+    	    (DataStructure from MeshAlgo, XY from gp);
+
+    	class Array1OfVertex instantiates Array1 from TCollection(Vertex);
+
+    	class HArray1OfVertex instantiates HArray1 from TCollection
+    	    (Vertex, Array1OfVertex);
+
+	class HeapSortVertex instantiates  HeapSort from SortTools
+    	    (Vertex, Array1OfVertex, ComparatorOfVertex);
+
+	class HeapSortIndexedVertex instantiates  HeapSort from SortTools
+    	    (Integer, Array1OfInteger from TColStd, ComparatorOfIndexedVertex);
+
+
+is
+
+-- Interface :
+
+    	Create         (Vertices  : in out Array1OfVertex from MeshAlgo;
+    	    	    	ZPositive : in Boolean from Standard=Standard_True)
+	    ---Purpose: Creates the  triangulation with an  empty Mesh
+	    --          data structure.
+    	    returns Delaunay from MeshAlgo;
+
+
+    	Create         (OldMesh   : mutable DataStructure from MeshAlgo;
+    	    	    	Vertices  : in out Array1OfVertex from MeshAlgo;
+    	    	    	ZPositive : in Boolean from Standard=Standard_True)
+	    ---Purpose: Creates  the triangulation with   and existant
+	    --          Mesh data structure.
+    	    returns Delaunay from MeshAlgo;
+
+
+    	Create         (OldMesh       : mutable DataStructure from MeshAlgo;
+    	    	    	VertexIndices : in out Array1OfInteger from TColStd;
+    	    	    	ZPositive     : in Boolean from Standard=Standard_True)
+	    ---Purpose: Creates  the triangulation with   and existant
+	    --          Mesh data structure.
+    	    returns Delaunay from MeshAlgo;
+
+
+	AddVertex      (me            : in out;
+    	    	    	theVertex     : in Vertex);
+	    ---Purpose: Adds a new vertex in the triangulation.
+
+
+	RemoveVertex   (me            : in out;
+    	    	    	theVertex     : in Vertex);
+	    ---Purpose: Removes a vertex in the triangulation.
+
+
+	AddVertices    (me            : in out;
+    	    	    	Vertices      : in out Array1OfVertex from MeshAlgo);
+	    ---Purpose: Adds some vertices in the triangulation.
+
+
+	RevertDiagonal (me            : in out;
+    	    	    	theEdge       : in Integer from Standard)
+	    ---Purpose: Substitutes the Edge beetween to  triangles by the
+	    --          other  diagonal  of  the  quadrilatere  if  it  is
+	    --          possible (convex polygon). Return True if done.
+	    returns Boolean from Standard;
+
+
+	UseEdge        (me            : in out;
+    	    	    	theEdge       : in Integer from Standard)
+	    ---Purpose: Modify mesh to use the edge. Return True if done.
+	    returns Boolean from Standard;
+
+
+	SmoothMesh     (me            : in out;
+    	    	    	Epsilon       : in Real from Standard);
+ 	    ---Purpose: Smooths the  mesh  in 2d space. The  method  is to
+ 	    --          move  the  free  and  OnSurface  vertices  at  the
+ 	    --          barycentre of their polygon.
+
+
+    	Result         (me)
+		---C++: return const &
+		---Purpose: Gives the Mesh data structure.
+	    returns DataStructure from MeshAlgo;
+
+
+    	Frontier       (me     : in out)
+		---Purpose: Gives the list of frontier edges
+		---C++: return const &
+	    returns MapOfInteger from MeshDS;
+
+
+    	InternalEdges  (me     : in out)
+		---Purpose: Gives the list of internal edges
+		---C++: return const &
+	    returns MapOfInteger from MeshDS;
+
+
+    	FreeEdges      (me     : in out)
+		---Purpose: Gives the list of free edges used only one time
+		---C++: return const &
+	    returns MapOfInteger from MeshDS;
+
+
+    	GetVertex      (me;
+	    	    	vIndex : in Integer from Standard)
+		---C++: return const &
+		---C++: inline
+    	    returns Vertex;
+
+
+    	GetEdge        (me;
+	    	    	eIndex : in Integer from Standard)
+		---C++: return const &
+		---C++: inline
+    	    returns Edge;
+
+
+    	GetTriangle    (me;
+	    	    	tIndex : in Integer from Standard)
+		---C++: return const &
+		---C++: inline
+    	    returns Triangle;
+
+
+-- Implementation :
+
+    	Init           (me            : in out;
+    	    	    	Vertices      : in out Array1OfVertex from MeshAlgo);
+	    ---Purpose: Initializes the triangulation with an Array of
+	    --          Vertex.
+
+    	Compute        (me            : in out;
+    	    	    	VertexIndices : in out Array1OfInteger from TColStd);
+	    ---Purpose: Computes the triangulation and add the vertices
+	    --          edges and triangles to the Mesh data structure.
+
+    	ReCompute      (me            : in out;
+    	    	    	VertexIndices : in out Array1OfInteger from TColStd);
+	    ---Purpose: Clear the  existing  triangles  and recomputes
+	    --          the triangulation .
+
+    	SuperMesh      (me            : in out;
+    	    	    	theBox        : Box2d from Bnd);
+	    ---Purpose: Build the super mesh .
+
+
+    	FrontierAdjust (me            : in out)
+	    ---Purpose: Adjust the mesh on the frontier.
+    	    is private;
+
+
+    	MeshLeftPolygonOf  (me        : in out;
+    	    	    	    EdgeIndex : Integer from Standard;
+			    EdgeSens  : Boolean from Standard)
+	    ---Purpose: Find left polygon of the edge and call MeshPolygon.
+    	    is private;
+
+
+    	MeshPolygon    (me            : in out;
+    	    	    	Polygon       : in out SequenceOfInteger from TColStd)
+	    ---Purpose: Mesh closed polygon.
+    	    is private;
+
+
+	CreateTriangles(me            : in out; 
+                        vertexIndex   : Integer from Standard; 
+    	    	    	--vertex        : in Vertex; 
+    	    	    	freeEdges: out MapOfIntegerInteger from MeshDS)
+	    ---Purpose: Creates the triangles beetween the node 
+	    --          <Vertex> and the polyline <freeEdges>.
+    	    is private;
+
+
+	DeleteTriangle (me         : in out; 
+    	    	    	TrianIndex : Integer from Standard; 
+    	    	    	freeEdges  : out MapOfIntegerInteger from MeshDS)
+	    ---Purpose: Deletes the triangle of index <TrianIndex> and
+	    --          add the free edges to the map.
+	    --          When an edge is suppressed more than one time 
+	    --          it is destroyed.
+    	    is private;
+
+
+	Contains       (me;
+	    	    	TrianIndex    : Integer from Standard;
+    	    	    	theVertex     : in Vertex;
+    	    	    	edgeOn        : out Integer from Standard)
+	    ---Purpose: Test  if   triangle   of  index   <TrianIndex>
+	    --          contains geometricaly <theVertex>. If <EdgeOn>
+	    --          is != 0  then theVertex is  on Edge  of  index
+	    --          <edgeOn>.
+	    returns Boolean from Standard;
+			
+	TriangleContaining
+       	    	       (me            : in out;
+    	    	    	theVertex     : in Vertex)
+	    ---Purpose: Gives  the   index   of  triangle   containing
+	    --          geometricaly <theVertex>. 
+	    returns Integer from Standard;
+			
+
+fields  MeshData               : DataStructure from MeshAlgo;
+	PositiveOrientation    : Boolean from Standard;
+    	tCircles               : CircleTool from MeshAlgo;
+	supVert1               : Integer from Standard;
+	supVert2               : Integer from Standard;
+	supVert3               : Integer from Standard;
+	supTrian               : Triangle;
+	mapEdges               : MapOfInteger from MeshDS;
+	
+	
+end Delaunay;

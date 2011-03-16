@@ -1,0 +1,149 @@
+-- File:	StdPrs_Curve.cdl
+-- Created:	Fri Aug  4 11:17:47 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+class Curve from StdPrs 
+
+--          
+        ---Purpose: A framework to define display of lines, arcs of circles
+    	-- and conic sections.
+    	-- This is done with a fixed number of points, which can be modified.
+
+    
+    
+inherits Root from Prs3d    
+   
+    
+uses
+    Curve          from Adaptor3d,
+    Presentation   from Prs3d,
+    Drawer         from Prs3d,
+    Length         from Quantity,  
+    SequenceOfPnt  from TColgp 
+is
+
+
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve       : Curve        from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d; 
+    	    	 drawCurve    : Boolean      from Standard = Standard_True);
+
+    	---Purpose: Adds to the presentation aPresentation the drawing of the curve aCurve.
+    	--          The aspect is defined by LineAspect in aDrawer.  
+        --          If drawCurve equals Standard_False the curve will not be displayed,  
+        --          it is used if the curve is a part of some shape and PrimitiveArray  
+        --          visualization approach is activated (it is activated by default).   
+
+
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve       : Curve        from Adaptor3d;
+                 U1,U2        : Real         from Standard;
+    	    	 aDrawer      : Drawer       from Prs3d; 
+		 drawCurve    : Boolean      from Standard = Standard_True);
+		    
+    	---Purpose: Adds to the presentation aPresentation the drawing of the curve aCurve.
+   	--          The aspect is defined by LineAspect in aDrawer.
+    	--          The drawing will be limited between the points of parameter U1 and U2. 
+        --          If drawCurve equals Standard_False the curve will not be displayed,  
+        --          it is used if the curve is a part of some shape and PrimitiveArray  
+        --          visualization approach is activated (it is activated by default).   
+
+
+
+    Add(myclass; aPresentation: Presentation      from Prs3d; 
+    	    	 aCurve       : Curve             from Adaptor3d;
+    	    	 aDeflection  : Length            from Quantity;
+    	         aDrawer      : Drawer            from Prs3d; 
+    	    	 Points       : out SequenceOfPnt from TColgp; 
+		 drawCurve    : Boolean      from Standard = Standard_True);
+		 
+    	---Purpose: adds to the presentation aPresentation the drawing of the curve aCurve.
+    	--          The aspect is the current aspect.
+    	--          aDeflection is used in the circle case. 
+	--          Points give a sequence of curve points. 
+        --          If drawCurve equals Standard_False the curve will not be displayed,  
+        --          it is used if the curve is a part of some shape and PrimitiveArray  
+        --          visualization approach is activated (it is activated by default).   
+
+
+    Add(myclass; aPresentation: Presentation      from Prs3d; 
+    	    	 aCurve       : Curve             from Adaptor3d;
+    	    	 U1, U2       : Real              from Standard;
+    	    	 aDeflection  : Length            from Quantity;  
+		 Points       : out SequenceOfPnt from TColgp;   		  
+    	    	 aNbPoints    : Integer           from Standard = 30; 
+		 drawCurve    : Boolean      from Standard = Standard_True);
+
+    	---Purpose: adds to the presentation aPresentation the drawing of the curve
+    	--          aCurve.
+    	--          The aspect is the current aspect.
+    	--          The drawing will be limited between the points of parameter
+    	--          U1 and U2.
+    	--          aDeflection is used in the circle case. 
+	--          Points give a sequence of curve points. 
+        --          If drawCurve equals Standard_False the curve will not be displayed,  
+        --          it is used if the curve is a part of some shape and PrimitiveArray  
+        --          visualization approach is activated (it is activated by default).   
+
+
+    Match(myclass; X,Y,Z:     Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve:    Curve  from Adaptor3d;
+    	    	   aDrawer:   Drawer from Prs3d) 
+    returns Boolean from Standard;
+    
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          drawing of the curve is less than aDistance.
+
+
+    Match(myclass; X,Y,Z:       Length  from Quantity;
+                   aDistance:   Length  from Quantity;
+    	    	   aCurve:      Curve   from Adaptor3d;
+    	    	   aDeflection: Length  from Quantity;
+                   aLimit:      Real    from Standard;
+    	    	   aNbPoints :  Integer from Standard) 
+    returns Boolean from Standard;
+    
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          drawing of the curve is less than aDistance.
+
+
+
+
+    Match(myclass; X,Y,Z:     Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve:    Curve  from Adaptor3d;
+                   U1,U2 :    Real   from Standard;
+    	    	   aDrawer: Drawer   from Prs3d)
+    returns Boolean from Standard;
+    
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          drawing of the curve aCurve is less than aDistance. 
+    	--          The drawing is considered between the points
+    	--          of parameter U1 and U2;
+
+
+    Match(myclass; X,Y,Z:       Length  from Quantity;
+                   aDistance:   Length  from Quantity;
+    	    	   aCurve:      Curve   from Adaptor3d;
+                   U1,U2 :      Real    from Standard;
+    	    	   aDeflection: Length  from Quantity;
+    	    	   aNbPoints  : Integer from Standard)
+    returns Boolean from Standard;
+    
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          drawing of the curve aCurve is less than aDistance. 
+    	--          The drawing is considered between the points
+    	--          of parameter U1 and U2;
+
+
+
+
+
+end Curve from StdPrs;
+
+
+

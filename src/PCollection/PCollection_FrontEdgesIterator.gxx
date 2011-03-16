@@ -1,0 +1,65 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_FrontEdgesIterator.cxx
+// Created:	Wed May 29 17:42:37 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_FrontEdgesIterator::PCollection_FrontEdgesIterator
+     (const Handle(PCollection_Vertex)& V):MyEdgeIterator(V->GetFrontEdges())
+{
+  HasMore = MyEdgeIterator.More();
+}
+
+//---------------------------------------------------------------------------
+// More
+//---------------------------------------------------------------------------
+Boolean PCollection_FrontEdgesIterator::More () const 
+{
+  return HasMore;
+}
+
+//---------------------------------------------------------------------------
+// Next
+//---------------------------------------------------------------------------
+void PCollection_FrontEdgesIterator::Next () 
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  MyEdgeIterator.Next();
+  HasMore = MyEdgeIterator.More();
+}
+
+//---------------------------------------------------------------------------
+// Value
+//---------------------------------------------------------------------------
+Handle(PCollection_Edge) PCollection_FrontEdgesIterator::Value () const 
+{
+  if (HasMore) {
+    return MyEdgeIterator.Value();
+  }
+  else {
+    Standard_NoSuchObject::Raise();
+  }
+}
+
+//---------------------------------------------------------------------------
+// Clear
+//---------------------------------------------------------------------------
+void PCollection_FrontEdgesIterator::Clear () 
+{
+  HasMore = False;
+}
+
+
+
+
+
+

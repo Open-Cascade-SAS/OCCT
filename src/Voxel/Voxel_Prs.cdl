@@ -1,0 +1,152 @@
+-- File:	Voxel_Prs.cdl
+-- Created:	Tue May 06 15:41:47 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class Prs from Voxel inherits InteractiveObject from AIS
+
+    ---Purpose: Interactive object for voxels.
+
+uses 
+
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    Selection             from SelectMgr,
+    Color                 from Quantity,
+    HArray1OfColor        from Quantity,
+    HArray1OfReal         from TColStd,
+    VoxelDisplayMode      from Voxel,
+    Triangulation         from Poly
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns mutable Prs from Voxel;
+
+
+    ---Category: Set Voxels
+    --           ==========
+
+    SetBoolVoxels(me : mutable;
+    	    	  theVoxels : Address from Standard);
+    ---Purpose: <theVoxels> is a Voxel_BoolDS* object.
+
+    SetColorVoxels(me : mutable;
+    	    	   theVoxels : Address from Standard);
+    ---Purpose: <theVoxels> is a Voxel_ColorDS* object.
+
+    SetROctBoolVoxels(me : mutable;
+    	    	      theVoxels : Address from Standard);
+    ---Purpose: <theVoxels> is a Voxel_ROctBoolDS* object.
+
+    SetTriangulation(me : mutable;
+    	    	     theTriangulation : Triangulation from Poly);
+    ---Purpose: Sets a triangulation for visualization.
+
+
+    ---Category: Visual attributes
+    --           =================
+
+    SetDisplayMode(me : mutable;
+    	    	   theMode : VoxelDisplayMode from Voxel);
+    ---Purpose: Sets a display mode for voxels.
+
+    SetColor(me : mutable;
+    	     theColor : Color from Quantity)
+    ---Purpose: Defines the color of points, quadrangles ... for BoolDS.
+    is redefined;
+
+    SetColors(me : mutable;
+    	      theColors : HArray1OfColor from Quantity);
+    ---Purpose: Defines the color of points, quadrangles... for ColorDS.
+    --          For ColorDS the size of array is 0 .. 15.
+    --          0 - means no color, this voxel is not drawn.
+
+    SetPointSize(me : mutable;
+    	    	 theSize : Real from Standard);
+    ---Purpose: Defines the size of points for all types of voxels.
+
+    SetQuadrangleSize(me : mutable;
+    	    	      theSize : Integer from Standard);
+    ---Purpose: Defines the size of quadrangles in per cents (0 .. 100).
+
+    SetTransparency(me : mutable;
+    	    	    theTransparency : Real from Standard)
+    ---Purpose: Defines the transparency value [0 .. 1] for quadrangular visualization.
+    is redefined;
+
+    Highlight(me : mutable;
+    	      ix : Integer from Standard;
+	      iy : Integer from Standard;
+	      iz : Integer from Standard);
+    ---Purpose: Highlights a voxel.
+    --          It doesn't re-computes the whole interactive object,
+    --          but only marks a voxels as "highlighted".
+    --          The voxel becomes highlighted on next swapping of buffers.
+    --          In order to unhighlight a voxel, set ix = iy = iz = -1.
+
+
+    ---Category: Compute
+    --           =======
+
+    Compute(me : mutable;
+    	    thePresentationManager : PresentationManager3d from PrsMgr;
+    	    thePresentation : mutable Presentation from Prs3d;
+    	    theMode         : Integer from Standard = 0) 
+    is redefined 
+    protected;
+
+    ComputeSelection(me : mutable;
+    	    	     theSelection : mutable Selection from SelectMgr;
+    	    	     theMode      : Integer from Standard)
+    is private;
+
+    Allocate(me : mutable)
+    ---Purpose: Allocates the data structure of visualization.
+    is private;
+
+    Destroy(me : mutable);
+    ---C++: alias ~
+    ---Purpose: A destructor of presentation data.
+    
+    SetDegenerateMode(me : mutable;
+    	    	      theDegenerate : Boolean from Standard);
+    ---Purpose: Simplifies visualization of voxels in case of view rotation, panning and zooming.
+
+    SetUsageOfGLlists(me : mutable;
+    	    	      theUsage : Boolean from Standard);
+    ---Purpose: GL lists accelerate view rotation, panning and zooming operations, but
+    --          it takes additional memory...
+    --          It is up to the user of this interactive object to decide whether 
+    --          he has enough memory and may use GL lists or
+    --          he is lack of memory and usage of GL lists is not recommended.
+    --          By default, usage of GL lists is on.
+    --          Also, as I noticed, the view without GL lists looks more precisely.
+
+    SetSmoothPoints(me : mutable;
+    	    	    theSmooth : Boolean from Standard);
+    ---Purpose: Switches visualization of points from smooth to rough.
+
+    SetColorRange(me : mutable;
+    	    	  theMinValue : Byte from Standard;
+    	    	  theMaxValue : Byte from Standard);
+   ---Purpose: Defines min-max values for visualization of voxels of ColorDS structure.
+   --          By default, min value = 1, max value = 15 (all non-zero values).
+
+    SetSizeRange(me : mutable;
+    	         theDisplayedXMin : Real from Standard;
+    	         theDisplayedXMax : Real from Standard;
+    	         theDisplayedYMin : Real from Standard;
+    	         theDisplayedYMax : Real from Standard;
+    	         theDisplayedZMin : Real from Standard;
+    	         theDisplayedZMax : Real from Standard);
+    ---Purpose: Defines the displayed area of voxels.
+    --          By default, the range is equal to the box of voxels (all voxels are displayed).
+
+fields
+
+    myVisData : Address from Standard;
+    
+end Prs;

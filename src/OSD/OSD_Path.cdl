@@ -1,0 +1,275 @@
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:       OSD_Path.cdl
+-- Created:    Tue Feb 18 10:54:35 1992
+-- Author:     Stephan GARNAUD (ARM)
+--             <sga@sparc4>
+-- Modified by LD on Dec 15 1995
+-- Methode SetSystemName added
+
+
+
+class Path from OSD
+
+    --Purpose: Manage a system independent path.
+    --         It is possible to give this object a complete
+    --         path including VMS possibilities such as
+    --         Node"Username Password"::Disk:[path1.path2]
+    --         This system dependent syntax is avoided with the
+    --         SetValues method.
+ 
+ uses Environment, SysType, Error, AsciiString from TCollection
+raises ConstructionError, NullObject, OSDError, NumericError, ProgramError
+
+ is
+  Create returns Path;
+    ---Purpose: Creates a Path object initialized to an empty string.
+    --          i.e. current directory.
+    ---Level: Public
+
+  Create (aDependentName : AsciiString; aSysType : SysType=OSD_Default) returns Path
+    ---Purpose: Creates a Path object initialized by dependant path.
+    --          ex: OSD_Path me ("/usr/bin/myprog.sh",OSD_UnixBSD);
+    --              
+    --              OSD_Path me ("sys$common:[syslib]cc.exe",OSD_OSF) will
+    --              raise a ProgramError due to invalid name for this
+    --              type of system.
+    --              In order to avoid a 'ProgramError' , use IsValid(...)
+    --              to ensure you the validity of <aDependentName>.
+    --              Raises ConstructionError when the path is either null
+    --              or contains characters not in range of ' '...'~'.
+    ---Level: Public
+    raises ConstructionError;
+
+  Create (aNode,aUsername,aPassword,aDisk,aTrek,aName,anExtension: in AsciiString) returns Path;
+    ---Purpose: Initializes a system independent path.
+    --          By default , the Path conversion will be assumed using
+    --          currently used system.
+    --          A special syntax is used to specify a "aTrek" in an
+    --          independent manner :
+    --          a "|" represents directory separator
+    --          a "^" means directory above (father)
+    --          examples:
+    --          "|usr|bin" - On UNIX -> "/usr/bin"
+    --                     - On VMS  -> "[usr.bin]"
+    --                     - On MSDOS-> "\usr\bin"
+    --                     - On MacOs-> ": usr : bin"
+    --
+    --          "^|rep"    - On UNIX -> "../rep"
+    --                     - On VMS  -> "[-.rep]" 
+    --                     - On MSDOS -> "..\rep"
+    --                     - On MacOS->  ":: rep"
+    --          
+    --          "subdir|" - On UNIX -> "subdir/"
+    --                    - On VMS  -> "[.subdir.]"
+
+    ---Example: Create("amelix", "sga", "toto", "dk$22", "|bin|usr",myFile,"")
+    --          will give internaly
+    --          On MS-DOS/OS2           \DK22\BIN\USR\MYFILE
+    --          On UNIX                 sga"toto"@amelix:/dk22/bin/usr/myFile
+    --          On VMS                  AMELIX"SGA TOTO"::DK$22:[BIN.USR]MYFILE
+    --          On MacOs                dk$22 : bin : usr : myFile
+    --
+    -- As you can see, "aDisk" is  used under UNIX.
+    -- This is possible when one 'mounts' a directory from another system.
+    -- However, the syntax of <aDisk> can slightly change on several systems.
+    -- So "DK$22" on VMS becomes "dk22" on UNIX and Windows NT.
+    -- for instance when you mount a VMS directory under UNIX this gives:
+    --
+    -- lucide:/dk22/mydirectory mounted on /vms/mydirectory
+    ---Level: Public
+
+
+  Values (me ; aNode,aUsername,aPassword,aDisk,aTrek,aName,anExtension :
+     out AsciiString) is static;
+    ---Purpose: Gets each component of a path.
+    ---Level: Public
+
+  SetValues (me : in out; 
+    aNode,aUsername,aPassword,aDisk,aTrek,aName,anExtension : in AsciiString)
+    ---Purpose: Sets each component of a path.
+    ---Level: Public
+    raises ConstructionError is static;
+
+  SystemName(me ; FullName : out AsciiString ; aType : SysType=OSD_Default) 
+    is static;
+    ---Purpose: Returns system dependent path
+    --          <aType> is one among Unix,VMS ...
+    --          This function is not private because you may need to
+    --          display system dependent path on a front-end.
+    --          It can be useful when communicating with another system.
+    --          For instance when you want to communicate between VMS and Unix 
+    --          to transfer files, or to do a remote procedure call 
+    --          using files.
+    --          example : 
+    --          OSD_Path myPath ("sparc4", "sga", "secret_passwd",
+    --                           "$5$dkb100","|users|examples");
+    --          Internal ( Dependent_name );
+    --          On UNIX  sga"secret_passwd"@sparc4:/users/examples
+    --          On VMS   sparc4"sga secret_passwd"::$5$dkb100:[users.examples] 
+    ---Level: Public
+
+--   SetSystemName(me : in out ; aDependentName : AsciiString; aSysType : SysType=OSD_Default)
+    ---Purpose: Sets each component of a Path giving its system dependent name.
+    ---Level: Public
+--    raises ConstructionError is static;
+
+  ExpandedName(me : in out; aName : out AsciiString) 
+    is static;
+    ---Purpose: Returns system dependent path resolving logical symbols.
+
+  IsValid (me ; aDependentName : AsciiString; aSysType : SysType=OSD_Default) 
+    returns Boolean is static;
+    ---Purpose: Returns TRUE if <aDependentName> is valid for this SysType.
+    ---Level: Public
+
+
+  UpTrek (me : in out) is static;
+   ---Purpose: This removes the last directory name in <aTrek>
+   --          and returns result.
+   --          ex:  me = "|usr|bin|todo.sh" 
+   --               me.UpTrek() gives me = "|usr|todo.sh"
+   --          if <me> contains "|", me.UpTrek() will give again "|"
+   --          without any error.
+   ---Level: Public
+
+  DownTrek(me : in out; aName : AsciiString) is static;
+   ---Purpose: This appends a directory name into the Trek.
+   --          ex: me = "|usr|todo.sh"
+   --              me.DownTrek("bin") gives me = "|usr|bin|todo.sh".
+   ---Level: Public
+
+  TrekLength(me) returns Integer is static;
+   ---Purpose: Returns number of components in Trek of <me>.
+   --          ex: me = "|usr|sys|etc|bin"
+   --              me.TrekLength() returns 4.
+   ---Level: Public
+
+  RemoveATrek(me : in out; where : Integer)
+   ---Purpose: This removes a component of Trek in <me> at position <where>.
+   --          The first component of Trek is numbered 1.
+   --          ex:   me = "|usr|bin|"
+   --                me.RemoveATrek(1) gives me = "|bin|"
+   --          To avoid a 'NumericError' because of a bad <where>, use
+   --          TrekLength() to know number of components of Trek in <me>.
+   ---Level: Public
+   raises NumericError is static;
+
+  RemoveATrek(me : in out; aName : AsciiString) is static;
+   ---Purpose: This removes <aName> from <me> in Trek.
+   --          No error is raised if <aName> is not in <me>.
+   --          ex:  me = "|usr|sys|etc|doc"
+   --               me.RemoveATrek("sys") gives me = "|usr|etc|doc".
+   ---Level: Public
+
+  TrekValue(me ; where : Integer) returns AsciiString
+   ---Purpose: Returns component of Trek in <me> at position <where>.
+   --          ex:  me = "|usr|bin|sys|"
+   --               me.TrekValue(2) returns "bin"
+   raises NumericError is static;
+   ---Level: Public
+
+  InsertATrek(me : in out; aName : AsciiString; where : Integer)
+   ---Purpose: This inserts <aName> at position <where> into Trek of <me>.
+   --          ex:  me = "|usr|etc|"
+   --               me.InsertATrek("sys",2) gives me = "|usr|sys|etc" 
+   raises NumericError is static;
+   ---Level: Public
+
+  Node (me) returns AsciiString is static;
+   ---Purpose: Returns Node of <me>.
+   ---Level: Public
+
+  UserName (me) returns AsciiString is static;
+   ---Purpose: Returns UserName of <me>.
+   ---Level: Public
+
+  Password (me) returns AsciiString is static;
+   ---Purpose: Returns Password of <me>.
+   ---Level: Public
+
+  Disk(me) returns AsciiString is static;
+   ---Purpose: Returns Disk of <me>.
+   ---Level: Public
+
+  Trek(me) returns AsciiString is static;
+   ---Purpose: Returns Trek of <me>.
+   ---Level: Public
+
+  Name (me) returns AsciiString is static;
+   ---Purpose: Returns file name of <me>.
+     --          If <me> hasn't been initialized, it returns an empty AsciiString.
+   ---Level: Public
+                                             
+  Extension (me) returns AsciiString is static;
+   ---Purpose: Returns my extension name.
+     --          This returns an empty string if path contains no file name.
+   ---Level: Public
+
+  SetNode (me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets Node of <me>.
+   ---Level: Public
+
+  SetUserName (me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets UserName of <me>.
+   ---Level: Public
+
+  SetPassword (me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets Password of <me>.
+   ---Level: Public
+
+  SetDisk(me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets Disk of <me>.
+   ---Level: Public
+
+  SetTrek(me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets Trek of <me>.
+   ---Level: Public
+
+  SetName (me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets file name of <me>.
+   --          If <me> hasn't been initialized, it returns an empty AsciiString.
+   ---Level: Public
+                                             
+  SetExtension (me : in out; aName : AsciiString) is static;
+   ---Purpose: Sets my extension name.
+   ---Level: Public
+
+  LocateExecFile(me : in out; aPath: out Path from OSD )
+  returns Boolean from Standard ;
+   ---Purpose: Finds the full path of an executable file, like the
+   --          "which" Unix utility. Uses the path environment variable.
+   --          Returns False if executable file not found.
+   ---Level: Public    
+	
+  RelativePath(myclass; DirPath, AbsFilePath : AsciiString from TCollection)
+  returns AsciiString from TCollection ;
+   ---Purpose: Returns the relative file path between the absolute directory 
+   ---         path <DirPath>  and the absolute file path <AbsFilePath>.
+   ---         If <DirPath> starts with "/", pathes are handled as
+   ---         on Unix, if it starts with a letter followed by ":", as on
+   ---         WNT. In particular on WNT directory names are not key sensitive.
+   ---         If handling fails, an empty string is returned.
+   ---Level: Public
+
+
+  AbsolutePath(myclass; DirPath, RelFilePath : AsciiString from TCollection) 
+  returns AsciiString from TCollection ;
+   ---Purpose: Returns the absolute file path from the absolute directory path
+   ---         <DirPath> and the relative file path returned by RelativePath().
+   ---         If the RelFilePath is an absolute path, it is returned and the
+   ---         directory path is ignored.
+   ---         If handling fails, an empty string is returned.
+
+
+ fields
+  myNode      : AsciiString;
+  myUserName  : AsciiString;
+  myPassword  : AsciiString;
+  myDisk      : AsciiString;
+  myTrek      : AsciiString;
+  myName      : AsciiString;
+  myExtension : AsciiString;
+  myUNCFlag   : Boolean ;
+  SysDep      : SysType;  -- To allow system specific use
+end Path from OSD;

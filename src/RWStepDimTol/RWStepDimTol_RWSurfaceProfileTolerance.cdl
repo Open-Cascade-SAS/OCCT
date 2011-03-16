@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWSurfaceProfileTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWSurfaceProfileTolerance from RWStepDimTol
+
+    ---Purpose: Read & Write tool for SurfaceProfileTolerance
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    SurfaceProfileTolerance from StepDimTol
+
+is
+    Create returns RWSurfaceProfileTolerance from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : SurfaceProfileTolerance from StepDimTol);
+	---Purpose: Reads SurfaceProfileTolerance
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: SurfaceProfileTolerance from StepDimTol);
+	---Purpose: Writes SurfaceProfileTolerance
+
+    Share (me; ent : SurfaceProfileTolerance from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWSurfaceProfileTolerance;

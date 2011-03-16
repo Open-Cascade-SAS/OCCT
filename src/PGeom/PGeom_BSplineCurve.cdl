@@ -1,0 +1,123 @@
+-- File:	PGeom_BSplineCurve.cdl
+-- Created:	Mon Mar  1 10:27:22 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+
+class BSplineCurve from PGeom inherits BoundedCurve from PGeom
+
+        ---Purpose :  Definition of  a  B_spline   curve (it can    be
+        --         periodic, rational and non uniform : NURBS).
+        --         
+	---See Also : BSplineCurve from Geom.
+
+uses  HArray1OfInteger from PColStd,
+      HArray1OfReal    from PColStd,
+      HArray1OfPnt     from PColgp
+
+is
+
+
+  Create returns mutable BSplineCurve from PGeom;
+	---Purpose: Creates a BSplineCurve with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	    aRational       : Boolean from Standard;
+    	    aPeriodic       : Boolean from Standard;
+    	    aSpineDegree    : Integer from Standard;
+    	    aPoles          : HArray1OfPnt from PColgp;
+    	    aWeights        : HArray1OfReal from PColStd;
+    	    aKnots          : HArray1OfReal from PColStd;
+    	    aMultiplicities : HArray1OfInteger from PColStd)
+     returns mutable BSplineCurve from PGeom;
+	---Purpose: Creates a BSplineCurve with these field values.
+    	---Level: Internal 
+
+
+  Periodic (me: mutable; aPeriodic: Boolean from Standard);
+        ---Purpose :Set the field periodic with <aPeriodic>.
+    	---Level: Internal 
+
+
+  Periodic (me) returns Boolean from Standard;
+        ---Purpose :Returns the value of the field periodic.
+    	---Level: Internal 
+
+
+  Rational (me: mutable; aRational: Boolean from Standard);
+        ---Purpose :Set  the   value  of  the    field rational   with
+        --         <aRational>.
+    	---Level: Internal 
+    
+    
+  Rational (me) returns Boolean from Standard;
+        ---Purpose :Returns the value of the field rational.
+    	---Level: Internal 
+    
+    
+  SpineDegree (me: mutable; aSpineDegree: Integer from Standard);
+	---Purpose: Set the value of the field spineDegree with <aSpineDegree>.
+    	---Level: Internal 
+
+
+  SpineDegree (me)  returns Integer from Standard;
+	---Purpose: Returns the value of the field spineDegree.
+    	---Level: Internal 
+
+
+  Poles (me: mutable; aPoles: HArray1OfPnt from PColgp);
+        ---Purpose : Set the value of the field poles with <aPoles>.
+    	---Level: Internal 
+
+
+  Poles (me) returns HArray1OfPnt from PColgp;
+        ---Purpose : Returns the value of the field poles.
+    	---Level: Internal 
+
+
+  Weights (me: mutable; aWeights : HArray1OfReal from PColStd);
+        ---Purpose : Set the value of the field weights with <aWeights>.
+    	---Level: Internal 
+
+
+  Weights (me) returns HArray1OfReal from PColStd;
+        ---Purpose : Returns the the value of the field weights.
+    	---Level: Internal 
+
+
+  Knots (me: mutable; aKnots : HArray1OfReal);
+	---Purpose :  Set the field knots with <aKnots>.
+        --  The multiplicity of the knots are not modified.
+    	---Level: Internal 
+
+
+  Knots (me) returns HArray1OfReal from PColStd;
+        ---Purpose : returns the value of the field knots.
+    	---Level: Internal 
+
+
+  Multiplicities (me: mutable; aMultiplicities : HArray1OfInteger);
+	---Purpose :  Set the field multiplicities with <aMultiplicities>.
+    	---Level: Internal 
+
+
+  Multiplicities (me) returns HArray1OfInteger from PColStd;
+        ---Purpose : returns the value of the field multiplicities.
+    	---Level: Internal 
+
+
+fields
+
+  rational       : Boolean from Standard;
+  periodic       : Boolean from Standard;
+  spineDegree    : Integer from Standard;
+  poles          : HArray1OfPnt from PColgp;
+  weights        : HArray1OfReal from PColStd;
+  knots          : HArray1OfReal from PColStd;
+  multiplicities : HArray1OfInteger from PColStd;
+
+end;

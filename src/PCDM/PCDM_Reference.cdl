@@ -1,0 +1,26 @@
+-- File:	PCDM_Reference.cdl
+-- Created:	Tue Dec  9 09:20:32 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private class Reference from PCDM
+uses ExtendedString from TCollection
+is
+    Create returns Reference from PCDM;
+    
+    Create(aReferenceIdentifier: Integer from Standard; aFileName: ExtendedString from TCollection; aDocumentVersion: Integer from Standard)
+     returns Reference from PCDM;
+    
+    ReferenceIdentifier(me) returns Integer from Standard;
+    
+    FileName(me) returns ExtendedString from TCollection;
+    
+    DocumentVersion(me) returns Integer from Standard;
+    
+    
+fields
+    myReferenceIdentifier: Integer from Standard;
+    myFileName: ExtendedString from TCollection;
+    myDocumentVersion: Integer from Standard;
+end Reference from PCDM;

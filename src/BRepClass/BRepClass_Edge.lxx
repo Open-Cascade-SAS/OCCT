@@ -1,0 +1,46 @@
+// File:	BRepClass_Edge.lxx
+// Created:	Thu Nov 19 14:44:29 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Edge& BRepClass_Edge::Edge() 
+{
+  return  myEdge;
+}
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Edge& BRepClass_Edge::Edge() const
+{
+  return  myEdge;
+}
+
+//=======================================================================
+//function : Face
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Face& BRepClass_Edge::Face() 
+{
+  return myFace;
+}
+
+//=======================================================================
+//function : Face
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Face& BRepClass_Edge::Face() const
+{
+  return myFace;
+}
+

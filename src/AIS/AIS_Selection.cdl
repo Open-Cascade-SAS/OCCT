@@ -1,0 +1,148 @@
+-- File:	AIS_Selection.cdl
+-- Created:	Tue Mar 21 07:41:28 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+-- Modified by rob Sep 98 : a) Replace List by HArray1
+
+-- SAV : 18/03/02 OCC189 - array was replaced with list
+
+-- san : 18/04/03 USE_MAP - additional datamap is used to speed up access 
+--       to certain owners in <myresult> list
+
+class Selection from AIS inherits TShared from MMgt
+
+uses
+-- SAV : OCC189    HArray1OfTransient          from TColStd,
+    AsciiString                 from TCollection,
+    SelectStatus                from AIS,
+-- san : USE_MAP
+--    DataMapOfTransientListIteratorOfListOfTransient from AIS
+    NListTransient                             from AIS,
+    NListIteratorOfListTransient               from AIS,
+    NDataMapOfTransientIteratorOfListTransient from AIS
+raises NoSuchObject,MultiplyDefined from Standard,TypeMismatch from Standard
+
+is
+    
+    Create(aName: CString from Standard)
+    returns mutable Selection from AIS;
+    ---Purpose: creates a new selection and make it current in the session.
+    --          the selection will be accessible later through its name
+    --          to make it again current.
+    --          
+    --          Note that if a session has been created, a session with 
+    --          the name  "default" is created.
+    --          
+    --          In this case, the is always a current selection which 
+    --          is the last one created  until SetCurrentSelection is used.
+    --          
+    --          The class methods deals with the current selection.
+    --          
+    --          Warning : Better Call AIS_Selection::CreateSelection.
+    --          
+
+
+    Remove(myclass;  aName: CString from Standard)
+    raises NoSuchObject from Standard;
+    ---Warning: raises NoSuchObject from Standard if no selection having this name
+    --          exists.
+
+    Find(myclass; aName: CString from Standard)
+    ---Purpose: returns True if a selection having this name exsits.
+
+    returns Boolean from Standard;
+
+    CreateSelection(myclass;aName:CString from Standard)
+    returns Boolean from Standard;
+    ---Purpose: calls the private constructor and puts the new Selection
+    --          in the list of existing selections.
+    --          returns False if the selection exists.
+
+    Selection(myclass; aName: CString from Standard) 
+    ---Purpose: 
+    returns mutable Selection from AIS;
+
+    SetCurrentSelection(myclass; aName: CString from Standard)
+    ---Purpose: 
+    returns Boolean from Standard;
+    ---Purpose: returns False if There is no selection of name <aName>
+
+    CurrentSelection(myclass)
+    ---Purpose: 
+    returns mutable Selection from AIS;
+    
+
+    Select(myclass);
+    ---Purpose: removes all the object of the currentselection.
+
+    Select(myclass; anObject: Transient from Standard)
+    returns SelectStatus from AIS;
+    ---Purpose:  if the object is not yet in the current selection, it will be added.
+    --           if the object is already in the current selection, it will be removed.
+            
+    AddSelect(myclass; anObject: Transient from Standard)
+    returns SelectStatus from AIS;
+    ---Purpose:  the object is always add int the selection.
+    --           faster when the number of objects selected is great.
+    
+    ClearAndSelect(myclass; anObject: Transient from Standard);
+    ---Purpose: clears the selection and adds the object in the selection.
+    
+
+    IsSelected(myclass; anObject: Transient from Standard)
+    returns Boolean from Standard;
+    
+
+    Extent(myclass) returns Integer from Standard;
+    ---Purpose: returns the number of objects selected.
+
+    Single(myclass) returns Transient from Standard
+        ---Purpose: returns the single object selected.   
+  --  Warning: raises TypeMismatch from Standard if Extent is not equal to 1.
+
+    raises TypeMismatch from Standard;
+
+
+    	---Category: Instance Methods
+
+    Init(me: mutable);
+    ---Purpose:
+    ---C++: inline
+    
+    More(me) returns Boolean from Standard;
+    ---Purpose:
+    ---C++: inline
+   
+    Next(me: mutable);
+    ---Purpose:
+    ---C++: inline
+   
+    Value(me) returns Transient from Standard;
+    ---Purpose:
+    ---C++: inline
+    ---C++: return const&
+
+    NbStored(me) returns Integer from Standard;
+    ---C++: inline
+
+--  SAV : OCC189  Objects(me) returns HArray1OfTransient from TColStd;
+    Objects(me) returns NListTransient from AIS;
+    ---C++: inline
+    ---C++: return const&
+
+---Category: private methods.
+    Index(myclass;aName:CString from Standard) 
+    returns Integer from Standard;
+
+fields
+    myName     : AsciiString                                from TCollection;
+    mycuri     : Integer                                    from Standard;
+-- SAV : OCC189    myresult   : HArray1OfTransient from TColStd;
+    myresult   : NListTransient                             from AIS;
+    myIterator : NListIteratorOfListTransient               from AIS;
+-- san : USE_MAP
+    myResultMap: NDataMapOfTransientIteratorOfListTransient from AIS;
+    myNb       : Integer                                    from Standard;
+end Selection from AIS;
+

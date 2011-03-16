@@ -1,0 +1,194 @@
+-- File:	BRepAlgoAPI_BooleanOperation.cdl
+-- Created:	Thu Oct 14 18:14:43 1993
+-- Author:	Remi LEQUETTE
+-- modified by  Peter KURNEV   Tue Mar  5 14:01:51 2002
+---Copyright:	 Matra Datavision 1993
+
+deferred class BooleanOperation from BRepAlgoAPI
+    inherits MakeShape from BRepBuilderAPI
+
+    	---Purpose: The abstract class BooleanOperation is the root
+    	-- class of Boolean Operations (see Overview).
+    	-- Boolean Operations algorithm is divided onto two parts.
+    	-- -      The first one is computing interference between arguments.
+    	-- -      The second one is building the result of operation.
+    	-- The BooleanOperation class provides execution of both parts
+    	-- of the Boolean Operations algorithm. The second part
+    	-- (building the result) depends on given type of the Boolean
+    	-- Operation (see Constructor).
+  
+uses
+
+    Shape       from TopoDS,
+    ListOfShape from TopTools,
+    Operation   from BOP,  
+    PBuilder    from BOP, 	     
+    HistoryCollector from BOP,
+    PDSFiller from BOPTools, 
+    DSFiller from BOPTools, 
+    DataMapOfIntegerListOfShape  from  TopTools, 
+    DataMapOfIntegerShape  from  TopTools,
+    DataMapOfShapeShape  from  TopTools 
+    
+is
+
+    Initialize (S1 :Shape from TopoDS; 
+    	    	S2 :Shape from TopoDS; 
+    	    	anOperation:Operation from BOP);
+    	---Purpose: Prepares the operations for S1 and S2.
+     
+    Initialize (S1   :Shape from TopoDS; 
+    	    	S2   :Shape from TopoDS; 
+		aDSF :DSFiller from BOPTools;   							     
+    	    	anOperation:Operation from BOP); 
+    	---Purpose: Prepares the operations for S1 and S2.
+
+    SetOperation (me:out; 
+    	    anOp:  Operation from BOP); 
+    	---Purpose:  Sets the type of Boolean operation to perform      
+    	---          It can be BOP_SECTION 
+    	---                    BOP_COMMON 
+    	---                    BOP_FUSE 
+    	---                    BOP_CUT 
+    	---                    BOP_CUT21 
+    	--- 
+	 
+
+    Build  (me:out) 
+    	is redefined virtual; 
+    	---Purpose: Provides the algorithm of Boolean Operations
+    	-- -      Filling interference Data Structure (if it is necessary)
+    	-- -      Building the result of the operation.
+    
+    Shape1(me)  
+    	returns Shape from TopoDS 
+    	is static;
+    	---Purpose: Returns the first shape involved in this Boolean operation.
+    	---C++: return const &
+
+    Shape2(me)  
+    	returns Shape from TopoDS 
+    	is static;
+    	---Purpose: Returns the second shape involved in this Boolean operation.
+    	---C++: return const &
+     
+    Operation  (me) 
+    	returns Operation from BOP;
+    	---Purpose: Returns the type of Boolean Operation that has been performed.  
+	 
+    FuseEdges(me)  returns  Boolean  from  Standard;
+    	---Purpose: Returns the flag of edge refining
+     
+    RefineEdges(me:out);
+    	---Purpose: Fuse C1 edges
+
+    PrepareFiller(me:out) 
+    	returns Boolean from Standard 
+    	is  protected;   
+	 
+ 
+    	---Category: Querying
+    BuilderCanWork(me)  
+    	returns Boolean from Standard;
+
+    ErrorStatus(me) 
+    	returns Integer from Standard; 
+    	---Purpose:  Returns the error status of operation.  
+    	--- 0 - Ok
+    	--- 1 - The Object is created but Nothing is Done 
+    	--- 2 - Null source shapes is not allowed
+    	--- 3 - Check types of the arguments
+    	--- 4 - Can not allocate memory for the DSFiller
+    	--- 5 - The Builder can not work with such types of arguments
+    	--- 6 - Unknown operation is not allowed 
+    	--- 7 - Can not allocate memory for the Builder
+    	--  > 100 - See the Builder's  ErrorStatus
+
+    Modified (me: in out;  
+    	    aS : Shape from TopoDS) 
+    	returns ListOfShape from TopTools
+    	is redefined virtual;
+    	---Purpose: Returns the list  of shapes modified from the shape <S>. 
+    	---C++: return const & 
+
+    IsDeleted (me: in out;  
+    	    aS : Shape from TopoDS)
+    	returns Boolean
+    	is redefined virtual;
+    	---Purpose: Returns true if the shape S has been deleted. The
+    	-- result shape of the operation does not contain the shape S.
+        
+    Modified2 (me: in out;  
+    	    	aS : Shape from TopoDS) 
+    	returns ListOfShape from TopTools
+    	is virtual;
+    	---Purpose: Returns the list  of shapes modified from the shape <S>.
+    	---         For use in BRepNaming.
+    	---C++: return const & 
+    	---Level: Public
+
+    Generated (me: in out; S : Shape from TopoDS)
+    	returns ListOfShape from TopTools
+	is redefined virtual;
+    	---Purpose: Returns the list  of shapes generated from the shape <S>.
+    	---         For use in BRepNaming.
+    	---C++:  return const &
+    
+    HasModified (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one modified shape.
+    	---         For use in BRepNaming.
+
+    HasGenerated (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one generated shape.
+    	---         For use in BRepNaming.
+
+    HasDeleted (me)
+    	returns Boolean from Standard
+	is virtual;
+    	---Purpose: Returns true if there is at least one deleted shape.
+    	---         For use in BRepNaming.
+
+    Destroy (me: in out); 
+    ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_BooleanOperation(){Destroy();}" 
+     
+    --modified by NIZNHY-PKV Wed Mar 20 10:29:30 2002  f
+    
+    SectionEdges (me:  in  out)  
+	returns ListOfShape from TopTools;    
+    	--- Purpose: Returns a list of section edges.
+    	-- The edges represent the result of intersection between arguments of
+    	-- Boolean Operation. They are computed during operation execution.
+    	---C++:  return const &  
+    --modified by NIZNHY-PKV Wed Mar 20 10:29:35 2002  t
+
+    RefinedList (me:  in  out; theL : ListOfShape from TopTools)  
+    	returns ListOfShape from TopTools
+	is private;
+    	---Purpose: Returns the list  of shapes generated from the shape <S>.
+    	---         For use in BRepNaming.
+    	---C++:  return const &
+
+fields
+    myS1             : Shape from TopoDS       is protected;
+    myS2             : Shape from TopoDS       is protected;
+    myBuilderCanWork : Boolean from Standard   is protected;   
+    myOperation      : Operation from BOP      is protected;  
+    myErrorStatus    : Integer from Standard   is protected;  	     
+    myDSFiller       : PDSFiller from BOPTools is protected; 
+    myBuilder        : PBuilder  from BOP      is protected;
+
+    myHistory        : HistoryCollector from BOP is protected;
+
+    myEntryType      : Integer     from Standard;   
+
+    --    for  edge  refiner
+    myFuseEdges      : Boolean  from  Standard ; 
+    myModifFaces     : DataMapOfShapeShape  from  TopTools;   
+    myEdgeMap        : DataMapOfShapeShape  from  TopTools;
+    
+end BooleanOperation;
+

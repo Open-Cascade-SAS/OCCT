@@ -1,0 +1,40 @@
+--
+-- File      :  OrderedGroup.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class OrderedGroup from IGESBasic  inherits Group
+
+        ---Purpose: defines OrderedGroup, Type <402> Form <14>
+        --          in package IGESBasic
+        --          this class defines an Ordered Group with back pointers
+        --          
+        --          It inherits from Group
+
+uses
+
+        Transient        ,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable OrderedGroup;
+
+        -- Specific Methods pertaining to the class : see Group
+
+--
+-- Class    : IGESBasic_OrderedGroup
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class OrderedGroup.
+--
+-- Reminder : A OrderedGroup instance is defined by :
+--            - an array of entities
+--            See Group
+
+end OrderedGroup;

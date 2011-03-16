@@ -1,0 +1,45 @@
+// File:	LocOpe_LinearForm.lxx
+// Created:	Mon Sep 15 16:33:23 1997
+// Author:	Olga KOULECHOVA
+//		<opt@cleox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : LocOpe_LinearForm
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_LinearForm::LocOpe_LinearForm () {}
+
+
+//=======================================================================
+//function : LocOpe_LinearForm
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_LinearForm::LocOpe_LinearForm (const TopoDS_Shape&  Base,
+						   const gp_Vec& V,
+						   const gp_Pnt& Pnt1,
+						   const gp_Pnt& Pnt2)
+
+{
+  Perform(Base, V, Pnt1, Pnt2);
+}
+
+
+//=======================================================================
+//function : LocOpe_LinearForm
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_LinearForm::LocOpe_LinearForm (const TopoDS_Shape&  Base,
+						   const gp_Vec& V,
+						   const gp_Vec& Vectra,
+						   const gp_Pnt& Pnt1,
+						   const gp_Pnt& Pnt2)
+
+{
+  Perform(Base, V, Vectra, Pnt1, Pnt2);
+}
+
+

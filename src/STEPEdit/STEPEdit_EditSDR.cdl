@@ -1,0 +1,32 @@
+-- File:	STEPEdit_EditSDR.cdl
+-- Created:	Wed Jul 29 14:47:07 1998
+-- Author:	Administrateur Atelier XSTEP
+--		<xstep@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EditSDR  from STEPEdit    inherits Editor  from IFSelect
+
+    ---Purpose : EditSDR is an Editor fit for a Shape Definition Representation
+    --           which designates a Product Definition
+
+uses Transient, AsciiString, HAsciiString, InterfaceModel, EditForm
+
+is
+
+    Create returns EditSDR;
+
+    Label (me) returns AsciiString;
+
+    Recognize (me; form : EditForm) returns Boolean;
+
+    StringValue (me; form : EditForm;  num : Integer)
+    	returns HAsciiString from TCollection;
+
+    Apply (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+    Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+end EditSDR;

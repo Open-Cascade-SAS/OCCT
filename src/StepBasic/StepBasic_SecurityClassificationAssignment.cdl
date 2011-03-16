@@ -1,0 +1,28 @@
+-- File:        SecurityClassificationAssignment.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+deferred class SecurityClassificationAssignment from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	SecurityClassification from StepBasic
+is
+
+	Init (me : mutable;
+	      aAssignedSecurityClassification : mutable SecurityClassification from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAssignedSecurityClassification(me : mutable; aAssignedSecurityClassification : mutable SecurityClassification);
+	AssignedSecurityClassification (me) returns mutable SecurityClassification;
+
+fields
+
+	assignedSecurityClassification : SecurityClassification from StepBasic;
+
+end SecurityClassificationAssignment;

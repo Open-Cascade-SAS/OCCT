@@ -1,0 +1,274 @@
+-- File:	HLRBRep_LineTool.cdl
+-- Created:	Wed Aug 18 14:58:10 1993
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+class LineTool from HLRBRep
+
+	---Purpose: The  LineTool  class  provides  class  methods to
+	--          access the methodes of the Line.
+
+uses
+     Shape           from GeomAbs,
+     CurveType       from GeomAbs,
+     Vec             from gp,
+     Pnt             from gp,
+     Circ            from gp,
+     Elips           from gp,
+     Hypr            from gp,
+     Parab           from gp,
+     Lin             from gp, 
+     BezierCurve     from Geom,
+     BSplineCurve    from Geom,
+     Array1OfPnt     from TColgp,
+     Array1OfReal    from TColStd,
+     HArray1OfReal   from TColStd,
+     Array1OfInteger from TColStd
+     
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+
+    --
+    --     Global methods - Apply to the whole Line.
+    --     
+    
+    FirstParameter(myclass; C : Lin from gp) returns Real
+    	---C++: inline
+    ;
+
+    LastParameter(myclass; C : Lin from gp) returns Real
+    	---C++: inline
+    ;
+    
+    Continuity(myclass; C : Lin from gp) returns Shape from GeomAbs
+    	---C++: inline
+    ;
+    
+    NbIntervals(myclass; C : Lin from gp; S : Shape from GeomAbs) returns Integer
+	---Purpose: If necessary,   breaks the line  in  intervals of
+	--          continuity <S>.     And   returns  the  number  of
+	--          intervals.
+    	---C++: inline
+    ;
+    
+    Intervals(myclass; C :Lin from gp; T: out Array1OfReal from TColStd; Sh  :  Shape  from  GeomAbs)
+	---Purpose: Sets the current working interval.
+    raises
+    	OutOfRange from Standard -- if Index < 1 or Index > NbIntervals
+    	---C++: inline
+    ;
+    
+    --
+    --     Local methods - Apply to the current interval.
+    --     By default the current interval is the first.
+    --     
+    
+    IntervalFirst(myclass; C : Lin from gp) returns Real
+	---Purpose: Returns  the  first  parameter    of  the  current
+	--          interval. 
+    	---C++: inline
+    ;
+    
+    IntervalLast(myclass; C : Lin from gp) returns Real
+	---Purpose: Returns  the  last  parameter    of  the  current
+	--          interval. 
+    	---C++: inline
+    ;
+    
+    IntervalContinuity(myclass; C : Lin from gp) returns Shape from GeomAbs
+    	---C++: inline
+    ;
+    
+    IsClosed(myclass; C : Lin from gp) returns Boolean
+    	---C++: inline
+    ;
+     
+    IsPeriodic(myclass; C : Lin from gp) returns Boolean
+    	---C++: inline
+    ;
+    
+    Period(myclass; C : Lin from gp) returns Real
+    raises
+    	DomainError from Standard -- if the line is not periodic
+    	---C++: inline
+    ;
+     
+    Value(myclass; C : Lin from gp; U : Real) returns Pnt from gp
+         --- Purpose : Computes the point of parameter U on the line.
+    	---C++: inline
+    ;
+    
+    D0 (myclass; C : Lin from gp; U : Real; P : out Pnt from gp)
+         --- Purpose : Computes the point of parameter U on the line.
+    	---C++: inline
+    ;
+    
+    D1 (myclass; C : Lin from gp; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+         --- Purpose : Computes the point of parameter U on the line with its
+         --  first derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    	---C++: inline
+    ;
+    
+    D2 (myclass; C : Lin from gp; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+     	---C++: inline
+    ;
+
+    D3 (myclass; C : Lin from gp; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+     	---C++: inline
+    ;
+        
+    DN (myclass; C : Lin from gp; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+     	---C++: inline
+    ;
+
+    Resolution(myclass; C : Lin from gp; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    	---C++: inline
+    ;   
+        
+    GetType(myclass; C : Lin from gp) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   line  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    	---C++: inline
+    ;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+     Line(myclass; C : Lin from gp) returns Lin from gp
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Circle(myclass; C : Lin from gp) returns Circ from gp
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Ellipse(myclass; C : Lin from gp) returns Elips from gp
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Hyperbola(myclass; C : Lin from gp) returns  Hypr from gp
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Parabola(myclass; C : Lin from gp) returns Parab from gp
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Bezier(myclass; C : Lin from gp) returns BezierCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     BSpline(myclass; C : Lin from gp) returns BSplineCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Degree(myclass; C : Lin from gp) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     NbPoles(myclass; C : Lin from gp) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     Poles(myclass; C : Lin from gp; TP : in out Array1OfPnt from TColgp)
+     raises 
+    	NoSuchObject from Standard,
+    	OutOfRange   from Standard -- if TP has not length NbPoles
+     	---C++: inline
+     ;
+     
+     IsRational(myclass; C : Lin from gp) returns Boolean
+     raises
+        NoSuchObject from Standard
+	---C++: inline
+     ;
+    
+     PolesAndWeights(myclass; C : Lin from gp; TP : in out Array1OfPnt from  TColgp; 
+                                            TW : in out Array1OfReal from TColStd)
+     raises 
+    	NoSuchObject from Standard,
+    	OutOfRange   from Standard -- if TW has not length NbPoles
+     	---C++: inline
+     ;
+    
+     NbKnots(myclass; C : Lin from gp) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     	---C++: inline
+    ;
+     
+     KnotsAndMultiplicities(myclass; C : Lin from gp;TK : in out Array1OfReal  from  TColStd; 
+                                                  TM : in out Array1OfInteger from TColStd)
+     raises 
+    	NoSuchObject from Standard,
+    	OutOfRange   from Standard --  if TK has not length NbKnots
+     	---C++: inline
+     ;
+
+
+    NbSamples(myclass; C: Lin from gp; U0,U1: Real from Standard) 
+    ---C++:inline
+    returns Integer from Standard;
+
+--modified by NIZHNY-MKK  Tue Nov  1 18:49:37 2005
+    SamplePars(myclass;  C: Lin from gp; U0,U1: Real from Standard;  
+                         Defl: Real from Standard; NbMin: Integer  from  Standard; 
+                         Pars: in  out HArray1OfReal from TColStd);
+
+end LineTool;

@@ -1,0 +1,105 @@
+// File:	LocOpe_Gluer.lxx
+// Created:	Tue Jan 30 11:58:59 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+#include <StdFail_NotDone.hxx>
+
+
+//=======================================================================
+//function : LocOpe_Gluer
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_Gluer::LocOpe_Gluer () : 
+   myDone(Standard_False),myOri(TopAbs_INTERNAL)
+{}
+
+
+//=======================================================================
+//function : LocOpe_Gluer
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_Gluer::LocOpe_Gluer (const TopoDS_Shape& Sbase,
+			       const TopoDS_Shape& Snew) :
+   myDone(Standard_False),mySb(Sbase),mySn(Snew),myOri(TopAbs_INTERNAL)
+{}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_Gluer::IsDone() const
+{
+  return myDone;
+}
+
+
+//=======================================================================
+//function : ResultingShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Gluer::ResultingShape () const
+{
+  if (!myDone) {
+    StdFail_NotDone::Raise();
+  }
+  return myRes;
+}
+
+//=======================================================================
+//function : BasisShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Gluer::BasisShape () const
+{
+  return mySb;
+}
+
+//=======================================================================
+//function : GluedShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_Gluer::GluedShape () const
+{
+  return mySn;
+}
+
+//=======================================================================
+//function : OpeType
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_Operation LocOpe_Gluer::OpeType() const
+{
+  return myOpe;
+}
+
+
+//=======================================================================
+//function : Edges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& LocOpe_Gluer::Edges() const
+{
+  return myEdges;
+}
+
+
+//=======================================================================
+//function : TgtEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_ListOfShape& LocOpe_Gluer::TgtEdges() const
+{
+  return myTgtEdges;
+}

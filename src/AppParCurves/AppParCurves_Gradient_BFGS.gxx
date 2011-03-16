@@ -1,0 +1,39 @@
+// File:	AppParCurves_Gradient_BFGS.gxx
+// Created:	Thu Dec 16 13:09:24 1999
+// Author:	Atelier CAS2000
+//		<cas@cageox.paris1.matra-dtv.fr>
+//-Copyright:	 Matra Datavision 1999
+
+
+// Redefinition de math_BFGS:
+// ==========================
+
+
+AppParCurves_Gradient_BFGS::AppParCurves_Gradient_BFGS(math_MultipleVarFunctionWithGradient& F,
+						       const math_Vector& StartingPoint,
+						       const Standard_Real Tolerance3d,
+						       const Standard_Real Tolerance2d,
+						       const Standard_Real Eps,
+						       const Standard_Integer NbIterations ):
+       math_BFGS(F, Eps, NbIterations, Eps),
+       myTol3d(Tolerance3d),
+       myTol2d(Tolerance2d) 
+{
+  Perform(F, StartingPoint);
+}
+
+Standard_Boolean AppParCurves_Gradient_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradient& F) const 
+{
+    AppParCurves_ParFunction *F1 = (AppParCurves_ParFunction*) &F;
+    Standard_Boolean Result, Result2;
+
+    Result = (2.0 * fabs(TheMinimum - PreviousMinimum) <= 
+	1.e-10 * (fabs(TheMinimum) + fabs(PreviousMinimum))+1.e-12);
+    Standard_Real MErr3d = F1->MaxError3d();
+    Standard_Real MErr2d = F1->MaxError2d();
+    
+    Result2 = ((MErr3d <= myTol3d) && (MErr2d <= myTol2d));
+    return (Result || Result2);
+  }
+
+

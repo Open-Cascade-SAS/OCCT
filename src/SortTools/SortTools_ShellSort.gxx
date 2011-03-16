@@ -1,0 +1,40 @@
+// SortTools_ShellSort.gxx
+// cree le 04/11/91 par ASI
+// Reference : Software Conponents with ADA, Grady Booch.
+
+void SortTools_ShellSort::Sort(Array& TheArray, 
+				      const Comparator& Comp) 
+{
+
+  Item    TempItem;
+  Standard_Integer Outer;
+  Standard_Integer Inner;
+  Standard_Integer Inc = 1;
+
+  for(;;) {
+    if((9 * Inc) + 4 >= TheArray.Upper() - TheArray.Lower() + 1) break;
+    Inc = (Inc * 3) + 1;
+  }
+  for(;;) {
+    Outer = TheArray.Lower() + Inc;
+    for(;;) {
+      TempItem = TheArray(Outer);
+      Inner = Outer;
+      while (Comp.IsLower(TempItem, TheArray(Inner - Inc))) {
+	TheArray(Inner) = TheArray(Inner - Inc);
+	Inner = Inner - Inc;
+	if(Inner - Inc < TheArray.Lower()) break;
+      }
+      TheArray(Inner) = TempItem;
+      if(Outer + Inc > TheArray.Upper()) break;
+      Outer = Outer + Inc;
+    }
+    if(Inc == 1) break;
+    Inc = (Inc - 1) / 3;
+  }
+}
+
+
+
+
+

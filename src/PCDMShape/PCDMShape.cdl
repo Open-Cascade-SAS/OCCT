@@ -1,0 +1,15 @@
+-- File:	PCDMShape.cdl
+-- Created:	Thu Jan  8 15:53:45 1998
+-- Author:	Isabelle GRIGNON
+--		<isg@bigbox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+package PCDMShape
+
+uses PCDM,CDM,TCollection,PTopoDS,PTopLoc,TopAbs
+
+is 
+
+    class Document;
+    
+end PCDM;

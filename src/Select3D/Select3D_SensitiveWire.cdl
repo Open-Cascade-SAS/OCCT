@@ -1,0 +1,118 @@
+-- File:	Select3D_SensitiveWire.cdl
+-- Created:	Thu Oct 17 10:19:25 1996
+-- Author:	Odile OLIVIER
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SensitiveWire   from Select3D 
+inherits SensitiveEntity from Select3D
+
+	---Purpose: A framework to define selection of a wire owner by an
+    	-- elastic wire band.
+
+uses
+    Pnt                      from gp,
+    Projector                from Select3D,
+    Lin                      from gp,
+    EntityOwner              from SelectBasics,
+    SensitiveEntity          from Select3D,
+    SensitiveEntitySequence  from Select3D,
+    ListOfBox2d              from SelectBasics,
+    Array1OfPnt2d            from TColgp,
+    Box2d                    from Bnd,
+    Location                 from TopLoc
+
+is
+
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    MaxRect      : Integer = 1)
+     returns mutable SensitiveWire;
+    	---Purpose: Constructs a sensitive wire object defined by the
+    	-- owner OwnerId, and the maximum number of
+    	-- sensitive rectangles MaxRect.
+    Add (me   :mutable;aSensitive : SensitiveEntity from Select3D)
+    is static;
+    	---Purpose: Adds the sensitive entity aSensitive to this framework.
+    Project (me:mutable;aProjector : Projector from Select3D) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+
+    Areas   (me:mutable ; boxes : in out ListOfBox2d from SelectBasics) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: gives the 2D boxes which represent the segment in the 
+    	--          selection process...
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is redefined static;
+
+    GetEdges(me       : mutable;
+	     theEdges : in out SensitiveEntitySequence from Select3D);
+	---Level: Public
+    	---Purpose: returns the sensitive edges stored in this wire
+
+
+    SetLocation(me:mutable;aLoc:Location from TopLoc) is redefined static;
+    	---Purpose:  propagation of location on all the sensitive inside...
+    ResetLocation(me:mutable) is redefined static;
+    	---Purpose:  propagation of location on all the sensitive inside...    
+
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is  redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    	---Level: Public 
+    
+
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static;
+    	---Purpose: returns the depth of the touched entity
+
+    MaxBoxes(me) returns Integer is redefined static;    
+    	---Level: Public 
+    	---Purpose:returns <mymaxrect>
+	    
+    
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+        
+    SetLastPrj(me:mutable;aPrj: Projector from Select3D) is redefined virtual; 
+     
+    GetLastDetected(me)
+    returns SensitiveEntity from Select3D is static; 
+    ---Purpose:returns <mymaxrect>
+
+fields
+    mymaxrect       : Integer;
+    mysensitive     : SensitiveEntitySequence from Select3D;
+    myDetectedIndex : Integer from Standard;
+end SensitiveWire;
+
+
+
+
+
+
+
+

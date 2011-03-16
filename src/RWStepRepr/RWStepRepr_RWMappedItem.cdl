@@ -1,0 +1,30 @@
+-- File:        MappedItem.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWMappedItem from RWStepRepr
+
+	---Purpose : Read & Write Module for MappedItem
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     MappedItem from StepRepr,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWMappedItem;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable MappedItem from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : MappedItem from StepRepr);
+
+	Share(me; ent : MappedItem from StepRepr; iter : in out EntityIterator);
+
+end RWMappedItem;

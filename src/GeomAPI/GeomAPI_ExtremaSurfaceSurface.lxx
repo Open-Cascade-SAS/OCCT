@@ -1,0 +1,15 @@
+// File:	GeomAPI_ExtremaSurfaceSurface.lxx
+// Created:	Fri Mar 18 15:58:42 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Extrema
+//purpose  : 
+//=======================================================================
+
+inline const Extrema_ExtSS& GeomAPI_ExtremaSurfaceSurface::Extrema() const
+{
+  return myExtSS;
+}

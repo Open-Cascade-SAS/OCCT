@@ -1,0 +1,491 @@
+-- File:	TopOpeBRepDS_DataStructure.cdl
+-- Created:	Wed Jun 23 10:00:09 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class DataStructure from TopOpeBRepDS 
+
+	---Purpose: The DataStructure stores :
+	--         
+	-- New geometries : points, curves, and surfaces.
+      	-- Topological shapes : vertices, edges, faces.           
+	-- The new geometries and the topological shapes have interferences.
+	-- 
+
+uses
+
+    Shape        from TopoDS,
+    Edge         from TopoDS,
+    ListOfShape  from TopTools,
+    IndexedMapOfShape from TopTools,
+    Config                           from TopOpeBRepDS,    
+    Interference                     from TopOpeBRepDS,
+    ListOfInterference               from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS,
+    Surface                    from Geom,
+    ShapeSurface               from TopOpeBRepDS,
+    Surface                    from TopOpeBRepDS,
+    MapOfSurface               from TopOpeBRepDS,
+    Curve                      from TopOpeBRepDS,
+    MapOfCurve                 from TopOpeBRepDS,
+    Point                      from TopOpeBRepDS,
+    MapOfPoint                 from TopOpeBRepDS,
+    ShapeData                  from TopOpeBRepDS,
+    MapOfShapeData             from TopOpeBRepDS, 
+    --modified by NIZNHY-PKV Wed Sep 22 11:55:19 1999  f
+    IndexedDataMapOfShapeWithState  from TopOpeBRepDS , 
+    ShapeWithState  from  TopOpeBRepDS
+    --modified by NIZNHY-PKV Wed Sep 22 11:55:23 1999  t
+is
+
+    Create returns DataStructure;
+    
+    Init(me : in out)
+    ---Purpose: reset the data structure    
+    is static;
+    
+    -- =====================
+    -- Methods to store data
+    -- =====================
+
+    AddSurface(me : in out; S : Surface from TopOpeBRepDS) returns Integer 
+    ---Purpose: Insert a new surface. Returns the index.
+    is static;
+ 
+    RemoveSurface(me : in out; I : Integer from Standard)
+    is static;
+    
+    KeepSurface(me; I : Integer from Standard)
+    returns Boolean from Standard is static;
+    KeepSurface(me; S : in out Surface from TopOpeBRepDS)
+    returns Boolean from Standard is static;
+    ChangeKeepSurface(me : in out; 
+    	    	      I : Integer from Standard;
+		      FindKeep : Boolean from Standard)
+    is static;
+    ChangeKeepSurface(me : in out; 
+    	    	      S : in out Surface from TopOpeBRepDS;
+		      FindKeep : Boolean from Standard)
+    is static;
+
+    AddCurve(me : in out; S : Curve from TopOpeBRepDS)
+    ---Purpose: Insert a new curve. Returns the index.
+    returns Integer is static;
+
+    RemoveCurve(me : in out; I : Integer from Standard)
+    is static;
+
+    KeepCurve(me; I : Integer from Standard)
+    returns Boolean from Standard is static;
+    KeepCurve(me; C : Curve from TopOpeBRepDS)
+    returns Boolean from Standard is static;
+    ChangeKeepCurve(me : in out; 
+    	    	    I : Integer from Standard;
+		    FindKeep : Boolean from Standard)
+    is static;
+    ChangeKeepCurve(me : in out; 
+    	    	    C : in out Curve from TopOpeBRepDS;
+		    FindKeep : Boolean from Standard)
+    is static;
+
+    AddPoint(me : in out; PDS : Point from TopOpeBRepDS) returns Integer
+    ---Purpose: Insert a new point. Returns the index.
+    is static;
+
+    AddPointSS(me : in out; PDS : Point from TopOpeBRepDS;
+    	    	    	    S1,S2 : Shape from TopoDS) returns Integer
+    ---Purpose: Insert a new point. Returns the index.
+    is static;
+    
+    RemovePoint(me : in out; I : Integer from Standard)
+    is static;
+
+    KeepPoint(me; I : Integer from Standard)
+    returns Boolean from Standard is static;
+    KeepPoint(me; P : Point from TopOpeBRepDS)
+    returns Boolean from Standard is static;
+    ChangeKeepPoint(me : in out; 
+    	    	    I : Integer from Standard;
+		    FindKeep : Boolean from Standard)
+    is static;
+    ChangeKeepPoint(me : in out; 
+    	    	    P : in out Point from TopOpeBRepDS;
+		    FindKeep : Boolean from Standard)
+    is static;
+
+    AddShape(me : in out; S : Shape from TopoDS) returns Integer
+    ---Purpose: Insert a shape S. Returns the index.
+    is static;
+
+    AddShape(me : in out; S : Shape from TopoDS; I : Integer) returns Integer
+    ---Purpose: Insert a shape S which ancestor is I = 1 or 2. Returns the index.
+    is static;
+
+    KeepShape(me; I : Integer;
+    	          FindKeep : Boolean = Standard_True)
+    returns Boolean from Standard is static;
+    KeepShape(me; S : Shape from TopoDS;
+    	          FindKeep : Boolean = Standard_True)
+    returns Boolean from Standard is static;
+    ChangeKeepShape(me : in out; 
+    	    	    I : Integer from Standard;
+		    FindKeep : Boolean from Standard)
+    is static;
+    ChangeKeepShape(me : in out; 
+    	    		    S : Shape from TopoDS;
+		    FindKeep : Boolean from Standard)
+    is static;
+
+    InitSectionEdges(me : in out)
+    is static;
+
+    AddSectionEdge(me : in out; E : Edge from TopoDS) returns Integer
+    is static;
+    
+    SurfaceInterferences(me; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeSurfaceInterferences(me : in out; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    CurveInterferences(me; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeCurveInterferences(me : in out; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+    
+    PointInterferences(me; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangePointInterferences(me : in out; I : Integer) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    ShapeInterferences(me; S : Shape from TopoDS;
+		           FindKeep : Boolean = Standard_True)
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeShapeInterferences(me : in out; S : Shape from TopoDS) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    ShapeInterferences(me; I : Integer from Standard;
+		           FindKeep : Boolean = Standard_True) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeShapeInterferences(me : in out; I : Integer from Standard) 
+    returns ListOfInterference from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    ShapeSameDomain(me; S : Shape from TopoDS) 
+    returns ListOfShape from TopTools
+    ---C++: return const &
+    is static;
+
+    ChangeShapeSameDomain(me : in out; S : Shape from TopoDS) 
+    returns ListOfShape from TopTools
+    ---C++: return &
+    is static;
+    
+    ShapeSameDomain(me; I : Integer from Standard)  
+    returns ListOfShape from TopTools
+    ---C++: return const &
+    is static;
+
+    ChangeShapeSameDomain(me : in out; I : Integer from Standard) 
+    returns ListOfShape from TopTools
+    ---C++: return &
+    is static;
+    
+    ChangeShapes(me: in out)
+    returns MapOfShapeData from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    AddShapeSameDomain(me : in out; S,SSD : Shape from TopoDS)
+    is static;
+
+    RemoveShapeSameDomain(me : in out; S,SSD : Shape from TopoDS)
+    is static;
+
+    -- reference
+
+    SameDomainRef(me; I : Integer from Standard) 
+    returns Integer from Standard is static;
+
+    SameDomainRef(me; S : Shape from TopoDS) 
+    returns Integer from Standard is static;
+
+    SameDomainRef(me : in out; I : Integer from Standard;
+    	    	               Ref : Integer from Standard) is static;
+
+    SameDomainRef(me : in out; S : Shape from TopoDS;
+    	    	               Ref : Integer from Standard) is static;
+
+    -- orientation
+
+    SameDomainOri(me; I : Integer from Standard) 
+    returns Config from TopOpeBRepDS is static;
+
+    SameDomainOri(me; S : Shape from TopoDS) 
+    returns Config from TopOpeBRepDS is static;
+
+    SameDomainOri(me : in out; I : Integer from Standard;
+    	    	               Ori : Config from TopOpeBRepDS) is static;
+    SameDomainOri(me : in out; S : Shape from TopoDS;
+    	    	               Ori : Config from TopOpeBRepDS) is static;
+
+    -- Index
+
+    SameDomainInd(me; I : Integer from Standard) 
+    returns Integer from Standard is static;
+
+    SameDomainInd(me; S : Shape from TopoDS) 
+    returns Integer from Standard is static;
+
+    SameDomainInd(me : in out; I : Integer from Standard;
+    	    	               Ind : Integer from Standard) is static;
+
+    SameDomainInd(me : in out; S : Shape from TopoDS;
+    	    	               Ind : Integer from Standard) is static;
+
+    AncestorRank(me; I : Integer from Standard) returns Integer;
+
+    AncestorRank(me; S : Shape from TopoDS) returns Integer;
+
+    AncestorRank(me : in out; I : Integer from Standard; Ianc : Integer);
+
+    AncestorRank(me : in out; S : Shape from TopoDS; Ianc : Integer);
+
+
+    AddShapeInterference(me : in out;
+    	    	    	 S : Shape from TopoDS; 
+    	    	    	 I : Interference from TopOpeBRepDS)
+    is static;
+
+    RemoveShapeInterference(me : in out;
+    	    	            S : Shape from TopoDS;
+    	    	    	    I : Interference from TopOpeBRepDS)
+    is static;
+
+    FillShapesSameDomain(me : in out; S1,S2 : Shape from TopoDS;
+    	    	    	              refFirst: Boolean from Standard = Standard_True)
+    is static;
+
+    FillShapesSameDomain(me : in out; S1,S2 : Shape from TopoDS;
+    	    	    	    	      c1,c2 : Config from TopOpeBRepDS;
+    	    	    	              refFirst: Boolean from Standard = Standard_True)
+    is static;
+
+    UnfillShapesSameDomain(me : in out; S1,S2 : Shape from TopoDS)
+    is static;
+
+    -- ==================================
+    -- Methods to read the DataStructure.
+    -- ================================== 
+
+    -- - - - - - - - - - -        
+    -- The new geometries
+    -- - - - - - - - - - -   
+    
+    NbSurfaces(me) returns Integer
+    is static;
+    
+    NbCurves(me) returns Integer
+    is static;
+    
+    ChangeNbCurves(me: in out; N : Integer)
+    is static;
+    
+    NbPoints(me) returns Integer
+    is static;
+    
+    NbShapes(me) returns Integer
+    is static;
+        
+    NbSectionEdges(me) returns Integer
+    is static;
+        
+    Surface(me; I : Integer) returns Surface from TopOpeBRepDS
+    ---Purpose: Returns the surface of index <I>.
+    ---C++: return const &
+    is static;
+    
+    ChangeSurface(me : in out; I : Integer) returns Surface from TopOpeBRepDS
+    ---Purpose: Returns the surface of index <I>.
+    ---C++: return &
+    is static;
+    
+    Curve(me; I : Integer) returns Curve from TopOpeBRepDS
+    ---Purpose: Returns the Curve of index <I>.
+    ---C++: return const &
+    is static;
+
+    ChangeCurve(me : in out; I : Integer) returns Curve from TopOpeBRepDS
+    ---Purpose: Returns the Curve of index <I>.
+    ---C++: return &
+    is static;
+
+    Point(me; I : Integer) returns Point from TopOpeBRepDS
+    ---Purpose: Returns the point of index <I>.
+    ---C++: return const &
+    is static;
+
+    ChangePoint(me : in out; I : Integer) returns Point from TopOpeBRepDS
+    ---Purpose: Returns the point of index <I>.
+    ---C++: return &
+    is static;
+
+    -- - - - - - - - - - - -         
+    -- The Topological shapes
+    -- - - - - - - - - - - -   
+
+    Shape(me; I : Integer; 
+    	      FindKeep : Boolean = Standard_True)
+    returns Shape from TopoDS
+    ---Purpose: returns the shape of index I stored in
+    --          the map myShapes, accessing a list of interference.
+    ---C++: return const &
+    is static;
+
+    Shape(me; S : Shape from TopoDS; 
+    	      FindKeep : Boolean = Standard_True) 
+    returns Integer from Standard
+    ---Purpose: returns the index of shape <S> stored in
+    --          the map myShapes, accessing a list of interference.
+    --          returns 0 if <S> is not in the map.
+    is static;
+        
+    SectionEdge(me; I : Integer; 
+    	            FindKeep : Boolean = Standard_True)
+    returns Edge from TopoDS
+    ---C++: return const &
+    is static;
+
+    SectionEdge(me; E : Edge from TopoDS; 
+    	            FindKeep : Boolean = Standard_True)
+    returns Integer from Standard
+    is static;
+
+    IsSectionEdge(me; E : Edge from TopoDS; 
+    	              FindKeep : Boolean = Standard_True)
+    returns Boolean from Standard
+    is static;
+
+    -- - - - - - - - - - - - - - - - - - - - - 
+    -- Geometry attached to a topological shape
+    -- - - - - - - - - - - - - - - - - - - - - 
+   
+    HasGeometry(me; S : Shape from TopoDS) returns Boolean from Standard
+    ---Purpose: Returns True if <S> has new geometries, i.e :
+    -- True si :
+    --     HasShape(S) True
+    --     S a une liste d'interferences non vide.
+    -- S = SOLID, FACE, EDGE : true/false
+    -- S = SHELL, WIRE, VERTEX : false.
+    is static;
+
+    HasShape(me; S : Shape from TopoDS;
+    	         FindKeep : Boolean = Standard_True)
+    returns Boolean from Standard
+    ---Purpose: Returns True if <S> est dans myShapes
+    is static;
+
+    SetNewSurface(me : in out; F : Shape from TopoDS; S : Surface from Geom) is static;
+
+    HasNewSurface(me; F : Shape from TopoDS) returns Boolean from Standard is static;
+
+    NewSurface(me; F : Shape from TopoDS) returns Surface from Geom is static;
+    ---C++: return const &
+
+
+    Isfafa(me : in out; isfafa : Boolean) is static;
+    Isfafa(me) returns Boolean is static;
+
+     -- ========================
+    -- 	Interference management
+    -- ========================
+   
+    FindInterference(me; 
+		   IT : in out ListIteratorOfListOfInterference from TopOpeBRepDS; 
+		   I  : Interference from TopOpeBRepDS) returns Boolean
+    is static private; 
+     --modified by NIZNHY-PKV Wed Sep 22 11:51:32 1999  f 
+    -------------------------- 
+    --  States  Management  -- 
+    -------------------------- 
+    
+    ChangeMapOfShapeWithStateObj (me:out)  returns  IndexedDataMapOfShapeWithState  from TopOpeBRepDS; 
+    ---C++: return  &     
+     
+    ChangeMapOfShapeWithStateTool(me:out)  returns  IndexedDataMapOfShapeWithState  from TopOpeBRepDS; 
+    ---C++: return  &      
+     
+    ChangeMapOfShapeWithState (me:out; aShape:Shape from TopoDS; aFlag:out Boolean from Standard) 
+	returns  IndexedDataMapOfShapeWithState  from TopOpeBRepDS; 
+    ---C++: return  &  		     
+
+    GetShapeWithState(me;  aShape  :  Shape  from  TopoDS)  returns  ShapeWithState  from  TopOpeBRepDS; 
+    ---C++:  return  const  &      
+
+    ChangeMapOfRejectedShapesObj (me:out)  returns  IndexedMapOfShape  from TopTools;
+    ---C++: return  &     
+     
+    ChangeMapOfRejectedShapesTool (me:out)  returns  IndexedMapOfShape  from TopTools;
+    ---C++: return  &     
+     
+--modified by NIZNHY-PKV Wed Sep 22 11:52:38 1999  t
+fields
+
+    myNbSurfaces : Integer from Standard;
+    mySurfaces   : MapOfSurface from TopOpeBRepDS;
+    myNbCurves   : Integer from Standard;
+    myCurves     : MapOfCurve   from TopOpeBRepDS;
+    myNbPoints   : Integer from Standard;
+    myPoints     : MapOfPoint   from TopOpeBRepDS;
+    myShapes     : MapOfShapeData from TopOpeBRepDS;
+    mySectionEdges : IndexedMapOfShape from TopTools;
+
+    myEmptyListOfInterference : ListOfInterference from TopOpeBRepDS;
+    myEmptyListOfShape : ListOfShape from TopTools;
+    myEmptyShape : Shape from TopoDS;
+    myEmptyPoint : Point from TopOpeBRepDS;
+    myEmptySurface : Surface from TopOpeBRepDS;
+    myEmptyCurve : Curve from TopOpeBRepDS;
+    myEmptyGSurface : Surface from Geom;
+    myNewSurface : ShapeSurface from TopOpeBRepDS;
+
+    myIsfafa : Boolean;
+
+    myI  :  Integer  from  Standard; 
+    --modified by NIZNHY-PKV Wed Sep 22 09:37:26 1999  f 
+    myMapOfShapeWithStateObj :  IndexedDataMapOfShapeWithState  from TopOpeBRepDS;
+    myMapOfShapeWithStateTool:  IndexedDataMapOfShapeWithState  from TopOpeBRepDS; 
+    myMapOfRejectedShapesObj:  IndexedMapOfShape  from  TopTools;
+    myMapOfRejectedShapesTool:  IndexedMapOfShape  from  TopTools;
+
+friends
+
+    class SurfaceExplorer from TopOpeBRepDS,
+    class CurveExplorer from TopOpeBRepDS,
+    class PointExplorer from TopOpeBRepDS
+    
+end DataStructure from TopOpeBRepDS;

@@ -1,0 +1,87 @@
+-- File:	PCDM.cdl
+-- Created:	Fri Aug  1 15:22:57 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package PCDM
+
+uses
+
+    CDM,TColStd,TCollection,Storage
+
+
+is 
+ 
+    enumeration ReaderStatus is  
+	    RS_OK, 
+	    RS_NoDriver, 
+	    RS_UnknownFileDriver, 
+	    RS_OpenError, 
+	    RS_NoVersion, 
+	    RS_NoSchema, 
+	    RS_NoDocument, 
+	    RS_ExtensionFailure,
+	    RS_WrongStreamMode, 
+	    RS_FormatFailure, 
+	    RS_TypeFailure,
+	    RS_TypeNotFoundInSchema, 
+	    RS_UnrecognizedFileFormat, 
+	    RS_MakeFailure,		     
+	    RS_PermissionDenied, 
+	    RS_DriverFailure
+    end ReaderStatus;
+
+    
+    deferred class Document;
+    class SequenceOfDocument instantiates Sequence from TCollection(Document from PCDM);
+
+    deferred class Reader;
+    deferred class Writer;
+    deferred class RetrievalDriver;    
+    deferred class StorageDriver;    
+
+    class ReferenceIterator;    
+---Category: exceptions
+
+    exception DriverError inherits Failure from Standard;
+    
+
+    ---Category: classes for versioning  reading/writing og the headers.
+    private class Reference;
+    private class SequenceOfReference instantiates Sequence from TCollection(Reference from PCDM);
+    private deferred class ReadWriter;
+    private class ReadWriter_1;
+    
+    ---Category: type of FileDriver;
+    --           
+    private enumeration TypeOfFileDriver is TOFD_File, TOFD_CmpFile, TOFD_Unknown
+    end TypeOfFileDriver from PCDM;
+    
+    private pointer BaseDriverPointer to BaseDriver from Storage;    
+    
+---Category: drivers plugin.
+--           
+    FindStorageDriver(aDocument: Document from CDM) 
+    returns Boolean from Standard;
+    
+    StorageDriver(aDocument: Document from CDM)
+    returns StorageDriver from PCDM
+    raises NoSuchObject from Standard;
+    ---Purpose:   gets   in the  EuclidDesktop   resource  the plugin
+    --          identifier of the driver plugs the driver.
+    --          
+    
+    Schema(aSchemaName: ExtendedString from TCollection;
+           anApplication: Application from CDM)
+    ---Purpose: returns a schema to be used during a Store or Retrieve
+    --          operation.
+    --          Schema will plug the schema defined by
+    --          the SchemaName method.
+    returns Schema from Storage;
+    
+    FileDriverType(aFileName: AsciiString from TCollection; aBaseDriver: out BaseDriverPointer from PCDM)
+    returns TypeOfFileDriver from PCDM
+    is private;
+end PCDM;
+

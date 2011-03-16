@@ -1,0 +1,24 @@
+-- File:	TopOpeBRep_Bipoint.cdl
+-- Created:	Thu Jan  9 15:44:12 1997
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Bipoint from TopOpeBRep 
+
+uses
+
+    Integer from Standard
+
+is
+
+    Create returns Bipoint from TopOpeBRep;
+    Create(I1,I2 : Integer from Standard) returns Bipoint from TopOpeBRep;
+    I1(me) returns Integer from Standard;
+    I2(me) returns Integer from Standard;
+
+fields
+
+    myI1,myI2 : Integer from Standard;
+    
+end Bipoint;

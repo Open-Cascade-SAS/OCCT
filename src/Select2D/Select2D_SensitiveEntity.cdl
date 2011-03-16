@@ -1,0 +1,75 @@
+-- File:	Select2D_SensitiveEntity.cdl
+-- Created:	Fri Mar 10 11:37:55 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+-- Modified by rob (18/10/96) : add methods to store a constant sensitivity
+---Copyright:	 Matra Datavision 1995
+
+
+
+deferred class SensitiveEntity from Select2D inherits SensitiveEntity from SelectBasics
+
+	---Purpose: A framework to define what all sensitive 2D entities have in common.
+    	-- This framework can be used to create new 2D sensitive entities.
+
+uses 
+    EntityOwner  from SelectBasics, 
+    Array1OfPnt2d from TColgp, 
+    Box2d from Bnd,
+    Projector from Select2D 
+    
+raises 
+    NotImplemented from Standard
+
+is
+
+    Initialize(anOwnerId: EntityOwner from SelectBasics);
+
+    NeedsConversion (me) returns Boolean is virtual;
+    	---Purpose: returns Standard_False unless if redefined...
+    	---Level: Public 
+    	---C++: inline
+
+    Convert(me:mutable;aProjector: Projector from Select2D) is virtual;
+    	---Purpose: Processes the projection of the sensitive primitives in
+    	-- the active view.   This must be performed before the selection action.
+    	-- This function must be implemented in daughter classes.
+    
+    MaxBoxes(me) returns Integer is virtual;
+    	---Purpose: Returns the maximum number of boxes.
+
+
+    SetOwnTolerance(me:mutable; aValue : Real from Standard) ;
+    	---Purpose: Sets and stores a tolerance value in the argument
+    	-- aTol of the function Matches inherited from SelectBasics_SensitiveEntity.
+
+    UnsetOwnTolerance(me:mutable);
+    	---Purpose: Removes the in the argument aTol of the function
+    	-- Matches inherited from SelectBasics_SensitiveEntity.
+    
+    HasOwnTolerance(me) returns Boolean from Standard;
+    	---Purpose: Returns true if the entity has a setting for the
+    	-- argument aTol   of the function Matches inherited
+    	-- from SelectBasics_SensitiveEntity.
+
+
+    OwnTolerance(me) returns Real from Standard;
+    	---Purpose: Returns the tolerance value in the argument aTol of
+    	-- the function Matches inherited from SelectBasics_SensitiveEntity.
+    
+    Is3D(me) returns Boolean from Standard is redefined static;
+    	--- Purpose: Returns true if this object can provide 3D information.
+
+        Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard)
+    returns Boolean from Standard is redefined virtual;
+    	---Purpose: Free contur selection for 2d is not defined
+
+
+fields
+
+    myOwnTolerance : Real from Standard is protected;
+
+end SensitiveEntity;

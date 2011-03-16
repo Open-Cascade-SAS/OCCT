@@ -1,0 +1,133 @@
+-- File:	Light.cdl
+-- Created:	Fri Jan 17 11:54:50 1992
+-- Author:	GG 
+-- Update:      FDA Oct 15 1994
+--		ZOV - Mars 30 1998
+--		GG IMP230300 Add SetColor() and Color() methods
+--              GG - 23/11/00 Add IsDisplayed() method
+---Copyright:	Matra Datavision 1992
+
+
+deferred class Light from V3d 
+
+    	---Purpose: Defines services on Light type objects.. 
+
+
+
+inherits 
+
+	TShared
+
+uses
+
+	TypeOfLight from V3d,
+	TypeOfRepresentation from V3d,
+	TypeOfPickLight from V3d,
+	View from V3d,
+	Viewer from V3d,
+	Coordinate from V3d,
+        Light from Visual3d,
+	TypeOfColor from Quantity,
+	NameOfColor from Quantity,
+	Color from Quantity,
+	Parameter from Quantity,
+	PlaneAngle from Quantity,
+	Group from Graphic3d,
+	Vertex from Graphic3d,
+        Structure from Graphic3d
+	
+raises
+	BadValue from Viewer
+
+is
+
+	Initialize( VM : mutable Viewer )  ;
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the attributes of the Light
+        --------------------------------------------------------
+
+	SetColor( me : mutable; Type: TypeOfColor ; V1 , V2 , V3 : Parameter) 
+        is static;
+	---Level: Public
+	---Purpose: Defines the colour of a light source
+	--          according to the type of colour definition 
+	--          and the three corresponding values.
+
+    	SetColor( me : mutable; Name : NameOfColor )  is static;
+	---Level: Public
+	---Purpose: Defines the colour of a light source by giving
+	--	    the name of the colour in the form Quantity_NOC_xxxx .
+
+    	SetColor( me : mutable; Name : Color )  is static;
+	---Level: Public
+	---Purpose: Defines the colour of a light source by giving
+	--	    the basic colour.
+
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+    	Color ( me; Type: TypeOfColor ; V1 , V2 , V3 : out Parameter ) 
+        is static;
+	---Level: Public
+	---Purpose: Returns the colour of the light source depending of
+	--	    the color type.
+
+    	Color( me ; Name : out NameOfColor )  is static;
+	---Level: Public
+	---Purpose: Returns the colour of the light source.	
+
+    	Color( me )  returns Color is static;
+	---Level: Public
+	---Purpose: Returns the colour of the light source.	
+	
+	Type ( me ) returns TypeOfLight from V3d  is static;
+	---Level: Public
+	---Purpose: Returns the Type of the Light
+
+	Headlight ( me ) returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: returns true if the light is a headlight
+
+        IsDisplayed( me ) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns TRUE when a light representation is displayed
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        SymetricPointOnSphere ( myclass ; aView  : View from V3d;
+    	    	    	    	    	  Center : Vertex from Graphic3d;
+    	    	    	    	    	  aPoint : Vertex from Graphic3d;
+					  Radius : Parameter;
+					  X,Y,Z  : out Coordinate;
+					  VX,VY,VZ : out Parameter ) 
+                                          is protected ;
+        ---Level: Internal
+        ---Purpose: Returns the symetric point coordinates of "aPoint"  
+        --          on the sphere of center "Center" and radius "Radius".
+        --          VX,VY,VZ is the project vector of view.
+
+        Light ( me ) returns mutable Light from Visual3d is static private ;
+	---Level: Internal
+        ---Purpose: Returns the Light of the associated Visual3d.
+
+fields
+
+	MyType:		TypeOfLight from V3d is protected ;
+	MyLight:	Light from Visual3d is protected ;
+        MyGraphicStructure:     Structure from Graphic3d is protected;
+        MyGraphicStructure1:    Structure from Graphic3d is protected;
+ 
+friends
+
+	SetLightOn from class View from V3d 
+				( me : mutable ; MyLight : Light from V3d ),
+	SetLightOn from class View from V3d ( me : mutable ),
+	SetLightOff from class View from V3d 
+				( me : mutable ; MyLight : Light from V3d ),
+	SetLightOff from class View from V3d ( me : mutable )
+
+end Light;

@@ -1,0 +1,26 @@
+-- File:	QANewBRepNaming_LoaderParent.cdl
+-- Created:	Wed May 21 14:16:46 2003
+-- Author:	Open CASCADE Support
+--		<support@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+class LoaderParent from QANewBRepNaming
+
+uses
+    Shape from TopoDS,
+    Builder from TNaming,
+    DataMapOfShapeShape from TopTools,
+    ShapeEnum from TopAbs
+
+is
+
+    LoadGeneratedDangleShapes (myclass; ShapeIn : Shape from TopoDS;
+    	    	    	    	    	GeneratedFrom : ShapeEnum from TopAbs;
+    	    	    	    	    	GenBuider : in out Builder from TNaming);
+
+    GetDangleShapes (myclass; ShapeIn : Shape from TopoDS;
+    	    	    	      GeneratedFrom : ShapeEnum from TopAbs;
+    	    	    	      Dangles : in out DataMapOfShapeShape from TopTools)
+    returns Boolean from Standard;
+
+end LoaderParent from QANewBRepNaming;

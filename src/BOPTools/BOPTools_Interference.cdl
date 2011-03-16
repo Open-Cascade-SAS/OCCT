@@ -1,0 +1,69 @@
+-- File:	BOPTools_Interference.cdl
+-- Created:	Tue Nov 21 11:28:00 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class Interference from BOPTools 
+
+	---Purpose: class for storing information about an interference 
+	---         that  takes  place  between  given  shape and shape 
+        ---         with  DS-index =aWith  	 
+
+
+uses
+    KindOfInterference from BooleanOperations
+
+is 
+    Create 
+    	returns Interference from BOPTools;  
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Create  (aWith   :Integer from Standard; 
+    	     aType   :KindOfInterference from BooleanOperations; 
+	     anIndex :Integer from Standard)
+    	returns Interference from BOPTools;   
+    	---Purpose:  constructor 
+    	--- aWith  -  DS-index for the opposite shape     
+    	--- aType  -  the type of the  interference       
+    	--- anIndex-  the index of the result in corresponding  
+    	--- interference table  (if the result is computed 
+    	--- but there is no result  ->   anIndex=0) 
+    	---
+    SetWith  (me:out; aWith :Integer from Standard);	
+    	---Purpose:  
+    	--- Modifier 
+    	---
+    SetType  (me:out; aType : KindOfInterference from BooleanOperations); 
+    	---Purpose: 
+    	--- Modifier 
+    	---
+    SetIndex (me:out; anIndex  :Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier 
+    	---
+    With  (me) 
+    	returns Integer from Standard; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Type  (me)  
+    	returns  KindOfInterference from BooleanOperations; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Index (me) 
+    	returns Integer from Standard; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+
+fields
+    myWith        : Integer from Standard; 
+    myType        : KindOfInterference from BooleanOperations; 
+    myIndex       : Integer from Standard;  --< index  in corresp.interference  table  
+   
+
+end Interference;

@@ -1,0 +1,147 @@
+-- File:	BRep_PointRepresentation.cdl
+-- Created:	Tue Aug 10 14:01:46 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+deferred class PointRepresentation from BRep inherits TShared from MMgt
+
+	---Purpose: Root  class     for   the points  representations.
+	--          Contains a location and a parameter.
+
+uses
+    Curve    from Geom2d,
+    Curve    from Geom,
+    Surface  from Geom,
+    Location from TopLoc
+
+raises
+    DomainError from Standard
+
+is
+
+   Initialize(P : Real;
+    	      L : Location from TopLoc);
+   
+    -------------------------------------------------
+    -- What kind of representation
+    -------------------------------------------------
+
+    IsPointOnCurve(me)          returns Boolean
+	---Purpose: A point on a 3d curve.
+    is virtual;
+	
+    IsPointOnCurveOnSurface(me) returns Boolean
+	---Purpose: A point on a 2d curve on a surface.
+    is virtual;
+
+    IsPointOnSurface(me)        returns Boolean
+	---Purpose: A point on a surface.
+    is virtual;
+   
+    IsPointOnCurve(me; C : Curve    from Geom;
+    	    	       L : Location from TopLoc)   returns Boolean
+	---Purpose: A point on the curve <C>.
+    is virtual;
+	
+    IsPointOnCurveOnSurface(me; PC : Curve     from Geom2d;
+    	    	    	    	S  : Surface  from Geom;
+    	    	                L  : Location from TopLoc)   returns Boolean
+	---Purpose: A point on the 2d curve <PC> on the surface <S>.
+    is virtual;
+
+    IsPointOnSurface(me; S  : Surface  from Geom;
+    	    	         L  : Location from TopLoc)   returns Boolean
+	---Purpose: A point on the surface <S>.
+    is virtual;
+   
+    -------------------------------------------------
+    -- Location
+    -------------------------------------------------
+
+    Location(me) returns Location from TopLoc
+	---C++: return const &
+	---C++: inline
+    is static;
+		
+    Location(me : mutable; L : Location from TopLoc)
+	---C++: inline
+    is static;
+    
+    -------------------------------------------------
+    -- Parameters
+    -------------------------------------------------
+
+    Parameter(me) returns Real
+	---C++: inline
+    is static;
+		
+    Parameter(me : mutable; P : Real)
+	---C++: inline
+    is static;
+		
+    Parameter2(me) returns Real
+    raises 
+    	DomainError from Standard -- if !IsPointOnSurface
+    is virtual;
+		
+    Parameter2(me : mutable; P : Real)
+    raises 
+    	DomainError from Standard -- if !IsPointOnSurface
+    is virtual;
+
+    -------------------------------------------------
+    -- 3d curve
+    -------------------------------------------------
+
+    Curve(me) returns any Curve from Geom
+	---C++: return const &
+    raises
+    	DomainError from Standard -- if !IsPointOnCurve
+    is virtual;
+	
+    Curve(me : mutable; C : Curve from Geom)
+    raises
+    	DomainError from Standard -- if !IsPointOnCurve
+    is virtual;
+	
+		
+    -------------------------------------------------
+    -- curve on surface
+    -------------------------------------------------
+	
+    PCurve(me) returns any Curve from Geom2d
+	---C++: return const &
+    raises
+    	DomainError from Standard -- if !IsPointOnCurveOnSurface
+    is virtual;
+    
+    PCurve(me : mutable; C : Curve from Geom2d)
+    raises
+    	DomainError from Standard -- if !IsPointOnCurveOnSurface
+    is virtual;
+    
+    -------------------------------------------------
+    -- surface
+    -------------------------------------------------
+	
+    Surface(me) returns any Surface from Geom
+	---C++: return const &
+    raises
+    	DomainError from Standard -- if IsPointOnCurve()
+    is virtual;
+
+    Surface(me : mutable; S : Surface from Geom)
+    raises
+    	DomainError from Standard -- if IsPointOnCurve()
+    is virtual;
+
+fields
+
+    myLocation  : Location from TopLoc;
+    myParameter : Real;
+
+end PointRepresentation;

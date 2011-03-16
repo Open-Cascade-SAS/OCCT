@@ -1,0 +1,62 @@
+-- File:	Transfer_FinderProcess.cdl
+-- Created:	Wed Sep  4 10:20:27 1996
+-- Author:	Christian CAILLET
+--		<cky@helioxfidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class FinderProcess  from Transfer  inherits ProcessForFinder
+
+    ---Purpose : Adds specific features to the generic definition :
+    --           PrintTrace is adapted
+
+uses InterfaceModel from Interface, 
+     Messenger from Message,
+     Finder, TransientMapper
+
+is
+
+    Create (nb : Integer = 10000) returns mutable FinderProcess;
+    ---Purpose : Sets FinderProcess at initial state, with an initial size
+
+    SetModel (me : mutable; model : InterfaceModel);
+    ---Purpose : Sets an InterfaceModel, which can be used during transfer
+    --           for instance if a context must be managed, it is in the Model
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model which can be used for context
+
+    NextMappedWithAttribute (me; name : CString; num0 : Integer) returns Integer;
+    ---Purpose : In the list of mapped items (between 1 and NbMapped),
+    --           searches for the first mapped item which follows <num0>
+    --           (not included) and which has an attribute named <name>
+    --           The considered Attributes are those brought by Finders,i.e.
+    --           by Input data.
+    --           While NextItemWithAttribute works on Result data (Binders)
+    --           
+    --           Hence, allows such an iteration
+    --           
+    --           for (num = FP->NextMappedWithAttribute(name,0);
+    --                num > 0;
+    --                num = FP->NextMappedWithAttribute(name,num) {
+    --                .. process mapped item <num>
+    --           }
+
+    TransientMapper (me; obj : Transient) returns TransientMapper;
+    ---Purpose : Returns a TransientMapper for a given Transient Object
+    --           Either <obj> is already mapped, then its Mapper is returned
+    --           Or it is not, then a new one is created then returned, BUT
+    --             it is not mapped here (use Bind or FindElseBind to do this)
+
+
+    PrintTrace (me; start : Finder; S : Messenger from Message)  is redefined;
+    ---Purpose : Specific printing to trace a Finder (by its method ValueType)
+
+    PrintStats (me; mode : Integer; S : Messenger from Message);
+    ---Purpose : Prints statistics on a given output, according mode
+
+fields
+
+    themodel : InterfaceModel;
+
+end FinderProcess;

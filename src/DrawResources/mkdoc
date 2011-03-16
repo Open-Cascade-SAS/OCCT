@@ -1,0 +1,23 @@
+#!/bin/csh
+
+# make the big doc
+
+echo making DRAW.doc
+wget DRAW.doc
+set draw = `locate Draw::source:::Draw.doc`
+set geo  = `locate GeometryTest::source:::GeometryTest.doc`
+set topo = `locate BRepTest::source:::BRepTest.doc`
+
+cat $draw $geo $topo > DRAW.doc
+wput DRAW.doc
+
+# make the postscript
+
+echo making postscript
+tdoc DRAW.doc "Draw Reference Manual"
+
+# make the info
+
+echo making info
+idoc DRAW.doc '(MODEL)'
+cp DRAW.info $WBCONTAINER/info

@@ -1,0 +1,38 @@
+-- File:	VrmlConverter_HLRShape.cdl
+-- Created:	Fri Feb 21 13:46:45 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class HLRShape from VrmlConverter 
+ 
+       ---Purpose : HLRShape  -  computes the presentation  of objects
+       --           with removal of their hidden  lines for a specific
+       --           projector, converts them into VRML  objects  and
+       --           writes (adds) them into anOStream.  All requested
+       --           properties of  the representation  are  specify in
+       --           aDrawer of Drawer class.  This kind  of the presentation 
+       --           is  converted  into  IndexedLineSet  and   if  they  are  defined
+       --           in  Projector into : 
+       --                PerspectiveCamera,
+       --                OrthographicCamera, 
+       --                DirectionLight,
+       --                PointLight,
+       --                SpotLight 
+       --           from  Vrml  package.
+
+uses
+ 
+    Projector    from VrmlConverter, 
+    Drawer       from VrmlConverter,
+    Shape        from TopoDS
+
+is
+ 
+    Add(myclass; anOStream: in out OStream from Standard;
+    	    	 aShape       : Shape        from TopoDS;
+                 aDrawer      : Drawer       from VrmlConverter;
+		 aProjector   : Projector    from VrmlConverter);
+
+end HLRShape;
+

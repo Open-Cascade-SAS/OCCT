@@ -1,0 +1,49 @@
+-- File:	TopoDSToStep_MakeShellBasedSurfaceModel.cdl
+-- Created:	Fri Jun 24 13:30:37 1994
+-- Author:	Frederic MAUPAS
+--		<fma@nonox>
+---Copyright:	 Matra Datavision 1994
+
+class MakeShellBasedSurfaceModel from TopoDSToStep inherits
+    Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Face, Shell or Solid from TopoDS and ShellBasedSurfaceModel
+    --          from StepShape. All the topology and geometry comprised 
+    --          into the shape are taken into account and translated.
+  
+uses Face  from TopoDS,
+     Shell from TopoDS,
+     Solid from TopoDS,
+     ShellBasedSurfaceModel from StepShape,
+     FinderProcess from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+Create ( F  : Face from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+        returns MakeShellBasedSurfaceModel;
+
+Create ( S           : Shell from TopoDS;
+         FP          : mutable FinderProcess from Transfer)
+        returns MakeShellBasedSurfaceModel;
+
+Create ( S  : Solid from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+        returns MakeShellBasedSurfaceModel;
+
+Value (me) returns ShellBasedSurfaceModel from StepShape
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theShellBasedSurfaceModel : ShellBasedSurfaceModel from StepShape;
+
+    	-- The solution from StepShape
+    	
+end MakeShellBasedSurfaceModel;
+

@@ -1,0 +1,16 @@
+-- File:	PXCAFDoc_ShapeTool.cdl
+-- Created:	Thu Aug 31 14:47:38 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapeTool from PXCAFDoc inherits Attribute from PDF
+
+	---Purpose: 
+
+
+is
+    Create returns ShapeTool from PXCAFDoc;
+
+end ShapeTool;

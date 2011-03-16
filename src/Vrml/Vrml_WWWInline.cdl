@@ -1,0 +1,57 @@
+-- File:	Vrml_WWWInline.cdl
+-- Created:	Wed Feb 12 13:38:42 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class WWWInline from Vrml 
+
+	---Purpose: defines a WWWInline node of VRML specifying group properties.
+    	--  The  WWWInline  group  node  reads  its  children  from  anywhere  in  the   
+    	--  World  Wide  Web.
+	--  Exactly  when  its  children  are  read  is  not  defined; 
+	--  reading  the  children  may  be  delayed  until  the  WWWInline  is  actually 
+    	--  displayed. 
+	--  WWWInline  with  an  empty  ("")  name  does  nothing. 
+	--  WWWInline  behaves  like  a  Separator,  pushing  the  traversal  state 
+	--  before  traversing  its  children  and  popping  it  afterwards.
+    	--  By  defaults: 
+	--    myName  ("")
+	--    myBboxSize (0,0,0)
+	--    myBboxCenter  (0,0,0)
+
+uses
+ 
+    AsciiString   from   TCollection,
+    Vec           from   gp 
+
+is
+ 
+    Create returns  WWWInline from Vrml; 
+
+    Create  ( aName        :   AsciiString from  TCollection; 
+    	      aBboxSize    :   Vec         from  gp;
+    	      aBboxCenter  :   Vec         from  gp )
+    	returns  WWWInline from Vrml; 
+
+    SetName ( me : in out; aName : AsciiString from TCollection );
+    Name ( me )  returns  AsciiString from TCollection;
+
+    SetBboxSize ( me : in out; aBboxSize  : Vec  from  gp);
+    BboxSize ( me )  returns   Vec  from  gp;
+
+    SetBboxCenter ( me : in out; aBboxCenter  : Vec  from  gp);
+    BboxCenter ( me )  returns  Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myName        :   AsciiString from TCollection;   -- URL name
+    myBboxSize    :   Vec         from gp;            -- Size of 3D bounding box
+    myBboxCenter  :   Vec         from gp;            -- Center of 3D bounding box
+    
+end WWWInline;
+

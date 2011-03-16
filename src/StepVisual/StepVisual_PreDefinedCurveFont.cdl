@@ -1,0 +1,20 @@
+-- File:        PreDefinedCurveFont.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PreDefinedCurveFont from StepVisual 
+
+inherits PreDefinedItem from StepVisual 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PreDefinedCurveFont;
+	---Purpose: Returns a PreDefinedCurveFont
+
+
+end PreDefinedCurveFont;

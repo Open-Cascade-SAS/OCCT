@@ -1,0 +1,124 @@
+-- File:	Intf.cdl
+-- Created:	Thu May 23 11:21:00 1991
+-- Author:	Didier PIFFAULT
+--		<dpf@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package Intf 
+
+	---Purpose: Interference computation  between polygons, lines  and
+	--          polyhedra with only  triangular  facets. These objects
+	--          are polygonal  representations of complex   curves and
+	--          triangulated representations of complex surfaces.
+
+
+uses Standard, TCollection, TColStd, gp, Bnd, IntAna2d
+
+
+is
+
+--  Enumeration :
+
+    enumeration PIType is EXTERNAL, FACE, EDGE, VERTEX;
+    ---Purpose: Describes the different intersection  point types for this
+    --          application.
+
+
+--  Classes input data :
+
+    generic  class ToolPolygon;        -- Signature
+    ---Purpose: Describes the necessary polygon information to compute the
+    --          interferences.
+
+    generic  class ToolPolyhedron;     -- Signature
+    ---Purpose: Describes the  necessary polyhedron information to compute
+    --          the interferences.
+
+
+    class Array1OfLin instantiates Array1 from TCollection
+     	    	    (Lin from gp);
+    ---Purpose: Describes  a set of Straight Lines  to  intersect with the
+    --          Polyhedron.
+
+
+
+--	Classes output data :
+
+    class SectionPoint;
+    ---Purpose: Describes a common point between two polygons  or between a
+    --          polygon and a polyhedron.
+
+    class SeqOfSectionPoint instantiates Sequence from TCollection
+    	    	    	    	    	    (SectionPoint);
+
+
+    class SectionLine;
+    ---Purpose: Describes a common line between two polyhedrons.
+
+    class SeqOfSectionLine instantiates Sequence from TCollection
+    	    	    	    	    	    (SectionLine);
+
+
+    class TangentZone;
+    ---Purpose: Describes a zone  of tangence between two polygons  or  two
+    --          polyhedrons.
+
+    class SeqOfTangentZone instantiates Sequence from TCollection
+    	    	    	    	    	    (TangentZone);
+
+
+    deferred class Interference;
+    ---Purpose: Describes  the Interference   computation result  as  three
+    --          sequences   of  points  of  intersection   ,  polylines of
+    --          intersection and zones de tangence.
+
+
+-- Algorithms :
+
+    class Tool;
+    	---Purpose: The class tool  provide methods to  create Box  or
+    	--          Box2d in particular contex. 
+
+
+
+
+    generic class InterferencePolygon2d;
+    ---Purpose: Computes   the  interference between   two polygons in  2d.
+    --          Result : points of intersections and zones of tangence.
+
+    generic class InterferencePolygon3d;
+    ---Purpose: Computes  the   interference  between  two  polygon  in 3d.
+    --          Section points, common perpendicular and projections.
+
+    generic class InterferencePolygonPolyhedron;
+    ---Purpose: Computes the interference  between a polygon or  a straight
+    --          line and a polyhedron.   Points of intersection  and zones
+    --          of tangence.
+
+    generic class InterferencePolyhedron;
+    ---Purpose: Compute the  interference  between two polyhedron.  Points
+    --          of intersection ,  polylines  of intersection and zones of
+    --          tangence.
+
+
+    --- Package Methods :
+    --  
+
+    PlaneEquation  (P1            : in Pnt from gp;
+		    P2            : in Pnt from gp;
+		    P3            : in Pnt from gp;
+		    NormalVector  : out XYZ from gp;
+		    PolarDistance : out Real from Standard);
+    ---Purpose: Give the plane equation of the triangle <P1> <P2> <P3>.
+
+
+    Contain	   (P1            : in Pnt from gp;
+		    P2            : in Pnt from gp;
+		    P3            : in Pnt from gp;
+		    ThePnt	  : in Pnt from gp)
+		    returns Boolean;
+    ---Purpose: Compute if the triangle <P1> <P2> <P3> contain <ThePnt>.
+
+
+end Intf;

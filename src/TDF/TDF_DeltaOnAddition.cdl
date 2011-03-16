@@ -1,0 +1,36 @@
+-- File:	TDF_DeltaOnAddition.cdl
+--      	-----------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct 10 1997	Creation
+
+
+class DeltaOnAddition from TDF inherits AttributeDelta from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on an ADDITION action.
+	--          
+	--          Applying this AttributeDelta means REMOVING its
+	--          attribute.
+
+uses
+
+    Attribute from TDF
+
+-- raises
+
+is
+
+    Create(anAtt : Attribute from TDF)
+    	returns mutable DeltaOnAddition from TDF;
+	---Purpose: Creates a TDF_DeltaOnAddition.
+
+    Apply (me : mutable)
+    	is redefined static;
+    	---Purpose: Applies the delta to the attribute.
+
+end DeltaOnAddition;

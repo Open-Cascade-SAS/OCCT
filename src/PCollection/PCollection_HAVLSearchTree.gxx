@@ -1,0 +1,445 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_HAVLSearchTree.gxx
+// Created:	Thu May 23 16:57:42 1991
+// Author:	Annick PANCHER
+//		<apc>
+// Revised by:  Jean-Pierre TIRAULT,Mireille MERCIEN
+//              May,14 1992
+
+#include <Standard_NoSuchObject.hxx>
+#include <PCollection_Side.hxx>
+typedef PCollection_Side Side;
+typedef PCollection_AVLNode Node;
+typedef Handle(PCollection_AVLNode) Handle(Node);
+typedef PCollection_HAVLSearchTree Tree;
+typedef Handle(PCollection_HAVLSearchTree) Handle(Tree);
+typedef PCollection_AVLIterator AVLIterator;
+
+
+//-----------------------------------------------------------------------------
+// Internal function Height : returns the height of an AVLtree
+//-----------------------------------------------------------------------------
+static Integer Height(const Handle(Node)& ANode) 
+{
+//   ... Length of the longest child
+     if(ANode.IsNull()) return 0;
+     return (1 + Max( Height(ANode->LeftChild()), 
+                      Height(ANode->RightChild()) ) );
+}
+
+//-----------------------------------------------------------------------------
+// Create : creates an empty AVLSearchTree
+//-----------------------------------------------------------------------------
+PCollection_HAVLSearchTree::
+    PCollection_HAVLSearchTree(const Comparator& AComparator)
+{
+  TheComparator = AComparator;
+  Handle(Node) NullNode;
+  NullNode.Nullify();
+  TheRoot = NullNode;
+}
+
+//-----------------------------------------------------------------------------
+// IsEmpty : Is the current tree empty ?
+//-----------------------------------------------------------------------------
+Boolean PCollection_HAVLSearchTree::IsEmpty () const
+{
+  return (TheRoot.IsNull());
+}
+
+//-----------------------------------------------------------------------------
+// GetRoot : Returns the root of the current tree
+//-----------------------------------------------------------------------------
+Handle(Node) PCollection_HAVLSearchTree::GetRoot () const 
+{
+  return TheRoot;
+}
+
+// ---------------------------------------------------------------------------
+// SetRoot : Replaces the root of the current tree
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::SetRoot(const Handle(Node)& ANode)
+{
+  TheRoot = ANode;
+}
+
+//-----------------------------------------------------------------------------
+// Extent : Number of different items in the current tree
+//-----------------------------------------------------------------------------
+// ... Management tools to have the number of nodes from a given one
+static Integer RecursiveExtent(const Handle(Node)& ANode) 
+{
+  if (ANode.IsNull()) return 0;
+  return  (1 +  RecursiveExtent(ANode->LeftChild())   
+             +  RecursiveExtent(ANode->RightChild())  );
+}
+
+//----------------------------------------------------------------------------
+Integer PCollection_HAVLSearchTree::Extent () const
+{
+  return RecursiveExtent(TheRoot);
+}
+
+//-----------------------------------------------------------------------------
+// Extent : Number of different items in the current tree according to
+//          the multiplicity
+//-----------------------------------------------------------------------------
+// ... Management tools to have the number of nodes from a given one
+static Integer RecursiveTotalExtent(const Handle(Node)& ANode) 
+{
+  if ( ANode.IsNull()) return 0;
+  return ( RecursiveTotalExtent(ANode->LeftChild())  +  
+           RecursiveTotalExtent(ANode->RightChild()) + 
+           ANode->GetMultiplicity() );
+}
+
+//----------------------------------------------------------------------------
+Integer PCollection_HAVLSearchTree::TotalExtent () const
+{
+  return RecursiveTotalExtent(TheRoot);
+}
+
+//-----------------------------------------------------------------------------
+// Find : Find the node containing an item
+//-----------------------------------------------------------------------------
+// ... Management tools
+static Handle(Node) RecursiveFind( const Comparator& Comp,
+                                   const Handle(Node)& SubRoot,
+                                   const Item& TheItem) 
+{
+  if ( SubRoot.IsNull() ) return SubRoot;
+  if ( Comp.IsLower(TheItem, SubRoot->Value()) ) {
+    return RecursiveFind(Comp, SubRoot->LeftChild(), TheItem);
+  }
+  if (Comp.IsGreater(TheItem, SubRoot->Value()) ) {
+    return RecursiveFind(Comp, SubRoot->RightChild(), TheItem);
+  }
+  return SubRoot;
+}
+
+//----------------------------------------------------------------------------
+Handle(Node) PCollection_HAVLSearchTree::Find(const Item& TheItem) const
+{
+  return RecursiveFind(TheComparator, TheRoot, TheItem);
+}
+
+//----------------------------------------------------------------------------
+// RotateRight
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::RotateRight(Handle(Node)& TheNode) const 
+{
+// the left child becomes the parent...
+  Handle(Node) Temp = TheNode->LeftChild();
+  TheNode->SetLeftChild(Temp->RightChild());
+  Temp->SetRightChild(TheNode);
+  TheNode = Temp;
+}
+
+//-----------------------------------------------------------------------------
+// RotateLeft
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::
+                      RotateLeft(Handle(Node)& TheNode) const 
+{
+// the right child becomes the parent...
+  Handle(Node) Temp = TheNode->RightChild();
+  TheNode->SetRightChild(Temp->LeftChild());
+  Temp->SetLeftChild(TheNode);
+  TheNode = Temp;
+}
+
+//-----------------------------------------------------------------------------
+// LeftBalance
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::LeftBalance(Handle(Node)& Root) const 
+{
+  Handle(Node) TheNode = Root->LeftChild();
+  if( Height(TheNode->LeftChild()) >= Height(TheNode->RightChild()) )  {
+    RotateRight(Root);
+    return;
+  }
+  RotateLeft(TheNode);
+  Root->SetLeftChild(TheNode);
+  RotateRight(Root);
+}
+
+//----------------------------------------------------------------------------
+// RightBalance
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::RightBalance(Handle(Node)& Root) const 
+{
+  Handle(Node) TheNode = Root->RightChild();
+  if( Height(TheNode->RightChild()) >= Height(TheNode->LeftChild())) {
+    RotateLeft(Root);
+    return;
+  }
+  RotateRight(TheNode);
+  Root->SetRightChild(TheNode);
+  RotateLeft(Root);
+}
+
+//-----------------------------------------------------------------------------
+// InsertBalance
+//-----------------------------------------------------------------------------
+Boolean PCollection_HAVLSearchTree::InsertBalance(Handle(Node)& Child, 
+                                            const Handle(Node)& Father,
+		                            const Side theSide) const 
+{
+// Balance after insertion
+  switch (Height(Child->LeftChild()) - Height(Child->RightChild())) {
+        case 2  : LeftBalance(Child);
+                  if (!Father.IsNull()) Father->SetChild(Child, theSide);
+                  return False;
+        case -2 : RightBalance(Child);
+                  if (!Father.IsNull()) Father->SetChild(Child, theSide);
+                  return False;
+        case 0  : return False;
+        default : return True;
+  }
+}
+
+//----------------------------------------------------------------------------
+// RemoveBalance
+//-----------------------------------------------------------------------------
+Boolean PCollection_HAVLSearchTree::
+                           RemoveBalance(Handle(Node)& Child, 
+                                          const Handle(Node)& Father,
+                  	                  const Side theSide) const 
+{
+// Balance after Remove           
+  switch (Height(Child->LeftChild()) - Height(Child->RightChild())) {
+         case 2  : LeftBalance(Child);
+                   if (!Father.IsNull()) Father->SetChild(Child, theSide);
+	           return True;
+         case -2 : RightBalance(Child);
+                   if (!Father.IsNull()) Father->SetChild(Child, theSide);
+	           return True;
+	 default : return True;
+         }
+}
+
+//---------------------------------------------------------------------------
+// RecursiveInsert
+//-----------------------------------------------------------------------------
+Boolean PCollection_HAVLSearchTree::
+                           RecursiveInsert(Handle(Node)& Child,
+                                            const Handle(Node)& Father,
+				            const Side theSide,
+                                            const Item& theItem,
+                                            Boolean& forOnce) const 
+{
+// FINDS WHERE TO INSERT theItem AND DOES IT
+  Handle(Node) Temp;
+  Boolean Result = False;
+  Integer Number;
+  if(TheComparator.IsLower(theItem, Child->Value())) {
+    Temp = Child->LeftChild();
+    if (Temp.IsNull()) {
+      Child->SetLeftChild( new Node(theItem));
+      return True;
+    }
+    Result = RecursiveInsert( Temp, Child, PCollection_Left,
+                               theItem, forOnce);
+    if(Result) return InsertBalance(Child, Father, theSide) ;
+    else return False;
+  }
+  else if (TheComparator.IsGreater(theItem, Child->Value())) {
+    Temp = Child->RightChild();
+    if (Temp.IsNull()) {
+      Child->SetRightChild( new Node(theItem));
+      return True;
+    }
+    Result = RecursiveInsert( Temp, Child, PCollection_Right, 
+                               theItem, forOnce);
+    if(Result) return InsertBalance(Child, Father, theSide);
+    else  return False;
+  }
+  else {
+//  ITEM FOUND // SET MULTIPLICITY
+    if (forOnce) {
+      forOnce = False;
+    }
+    else {
+      Number = Child->GetMultiplicity();
+      Child->SetMultiplicity(++Number);
+    }
+    return False;
+  }
+}
+
+//-----------------------------------------------------------------------------
+// RecursiveRemove
+//-----------------------------------------------------------------------------
+
+Boolean PCollection_HAVLSearchTree::RecursiveRemove(
+                                       Handle(Node)& Child, 
+                                       const Handle(Node)& Father, 
+		                       const Side theSide,
+                                       const Item& TheItem,
+			               const Boolean ForAll) const
+{
+
+  Boolean Result;
+  Integer Number;
+// ITEM NOT FOUND
+  if (Child.IsNull()) NoSuchObject::Raise(); 
+  Handle(Node) TheLeft  = Child->LeftChild();
+  Handle(Node) TheRight = Child->RightChild();
+  if (TheComparator.IsLower(TheItem, Child->Value())) {
+    Result = RecursiveRemove( TheLeft, Child, 
+                               PCollection_Left, 
+	         	       TheItem, ForAll);
+  }
+  
+  else if (TheComparator.IsGreater(TheItem, Child->Value())) {
+    Result = RecursiveRemove( TheRight, Child, 
+                               PCollection_Right, 
+                               TheItem, ForAll);
+  }
+  else {                        
+//  theItem IS FOUND
+    Number = Child->GetMultiplicity();
+    Child->SetMultiplicity(--Number);
+//  SOMETIMES IT'S NOT NECESSARY REMOVING theItem
+    if (!ForAll && Number > 0) return True;
+//  IF IT IS, LOOKING FOR THE NEW VALUE OF Child
+    if (! TheLeft.IsNull() && ! TheRight.IsNull()) {
+//    Child HAS TWO CHILDREN
+      Handle(Node) T;
+      Handle(Node) Temp = TheRight;
+      while (! Temp.IsNull()) {
+        T = Temp;
+        Temp = Temp->LeftChild();
+      }
+//    WE HAVE FOUND THE GOOD NODE
+      Child->SetValue(T->Value());
+      Child->SetMultiplicity(T->GetMultiplicity());
+
+
+      const Item anItem = Child->Value();
+
+      Result = RecursiveRemove( TheRight, Child, PCollection_Right, 
+//JPT/RBA on sait pas pourquoi ? Child->Value(), ForAll);
+                               anItem, ForAll);
+    }
+    else {
+//    ONLY ONE CHILD, SO IT'S THE GOOD ONE
+// Mip-12-janv-93 : integration de la gestion memoire
+//      if (TheLeft.IsNull()) 
+//        Child = TheRight;
+//      else  
+//        Child = TheLeft;
+      Child.Delete();
+      if (TheLeft.IsNull()) { 
+        Child = TheRight;
+      }
+      else {  
+        Child = TheLeft;
+      }
+      Father->SetChild(Child, theSide);
+      return True;
+    }
+  }
+  if (Result) return RemoveBalance(Child, Father, theSide);
+  return False;   //     Child has not been found for now
+}
+
+//----------------------------------------------------------------------------
+// Insert
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::Insert (const Item& theItem)
+{
+  if (TheRoot.IsNull()) {
+     TheRoot = new Node(theItem);
+     return;
+  }
+  Handle(Node) Bid;
+  Boolean forOnce = False;
+  RecursiveInsert( TheRoot, Bid, PCollection_Left, theItem, forOnce);
+}
+
+//-----------------------------------------------------------------------------
+// InsertOnce
+//-----------------------------------------------------------------------------
+Boolean PCollection_HAVLSearchTree::InsertOnce (const Item& theItem)
+{
+  if (TheRoot.IsNull()) {
+    TheRoot = new Node(theItem);
+    return True;
+  }
+  Handle(Node) Bid;
+  Boolean forOnce = True;
+  RecursiveInsert( TheRoot, Bid, PCollection_Left, theItem, forOnce);
+  return forOnce;
+}
+
+//-----------------------------------------------------------------------------
+// Remove
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::Remove (const Item& theItem)
+{
+  Handle(Node) Bid;
+  RecursiveRemove( TheRoot, Bid, PCollection_Left, theItem, False);
+}
+
+//----------------------------------------------------------------------------
+// RemoveAll
+//-----------------------------------------------------------------------------
+void PCollection_HAVLSearchTree::RemoveAll (const Item& theItem)
+{
+  Handle(Node) Bid;
+  RecursiveRemove( TheRoot, Bid, PCollection_Left, theItem, True);
+}
+
+//----------------------------------------------------------------------------
+// Copy
+//-----------------------------------------------------------------------------
+Handle(Tree) PCollection_HAVLSearchTree::Copy() const 
+{
+  Handle(Tree) aTree = new Tree(TheComparator);
+  aTree->SetRoot(TheRoot->Copy());
+  return aTree;
+}
+
+//----------------------------------------------------------------------------
+// Merge
+//-----------------------------------------------------------------------------
+Handle(Tree) PCollection_HAVLSearchTree::Merge(const Handle(Tree)& aTree) const 
+{
+  Item theItem;
+  AVLIterator Iter( aTree);
+  Handle(Tree) newTree = Copy();
+  while( Iter.More()) {
+    theItem = Iter.Value()->Value();
+    newTree->Insert(theItem);
+    Iter.Next();
+  }
+  return newTree;
+}
+
+
+// ----------------------------------------------------------
+//
+// These methods must be implemented
+//
+// ----------------------------------------------------------
+
+Handle(Standard_Persistent) PCollection_HAVLSearchTree::ShallowCopy() const
+{
+
+cout << "HAVLSearchTree::ShallowCopy Not yet implemented" << endl;
+return This();
+}
+
+
+// ----------------------------------------------------
+// 
+//                                ShallowDump 
+// ----------------------------------------------------
+void PCollection_HAVLSearchTree::ShallowDump(Standard_OStream& S) const
+{
+cout << "HAVLSearchTree::ShallowDump Not yet implemented" << endl;
+}
+
+
+

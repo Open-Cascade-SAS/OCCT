@@ -1,0 +1,17 @@
+formatlist: TObjXml|TObjBin
+!
+! Default format
+xml.FileFormat: TObjXml
+cbf.FileFormat: TObjBin
+!
+! TObjXml format
+TObjXml.Description: TObj XML Document Version 1.0
+TObjXml.FileExtension: xml
+TObjXml.StoragePlugin: f78ff4a0-a779-11d5-aab4-0050044b1af1
+TObjXml.RetrievalPlugin: f78ff4a1-a779-11d5-aab4-0050044b1af1
+!
+! TObjBin format
+TObjBin.Description: TObj BIN Document Version 1.0
+TObjBin.FileExtension: cbf
+TObjBin.StoragePlugin: f78ff4a2-a779-11d5-aab4-0050044b1af1
+TObjBin.RetrievalPlugin: f78ff4a3-a779-11d5-aab4-0050044b1af1

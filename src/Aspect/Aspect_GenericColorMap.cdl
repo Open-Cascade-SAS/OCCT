@@ -1,0 +1,92 @@
+--
+-- File:	Aspect_GenericColorMap.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class GenericColorMap from Aspect inherits ColorMap from Aspect
+
+	---Version: 0.0
+
+	---Level: Public
+	---Purpose: This class defines a GenericColorMap object.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	Color			from Quantity,
+	TypeOfColorMap		from Aspect,
+	ColorMapEntry		from Aspect,
+	DataMapOfIntegerInteger	from TColStd
+
+raises
+
+	BadAccess	from Aspect
+
+is
+
+	Create
+		returns mutable GenericColorMap from Aspect;
+	---Level: Public
+	---Purpose: Creates a generic ColorMap .
+
+	AddEntry (me : mutable; AnEntry : ColorMapEntry from Aspect)
+	---Level: Public
+	---Purpose: Adds an entry in the color map <me>.
+	--  Warning: Raises BadAccess if the ColorMapEntry index is alreadry 
+	--          defined.
+	raises BadAccess from Aspect;
+
+	AddEntry (me : mutable; aColor : Color from Quantity)
+					returns Integer from Standard;
+	---Level: Public
+	---Purpose: Search an identical color entry in the color map <me>
+	-- and returns the ColorMapEntry Index if exist.
+	-- Or add a new entry and returns the computed ColorMapEntry index used. 
+	RemoveEntry ( me: mutable;
+		      AColorMapEntryIndex : Integer from Standard )
+		raises BadAccess from Aspect ;
+	---Level: Public
+	---Purpose: Remove the ColorMapEntry at position index in the ColorMap 
+	--  Warning: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+
+	FindColorMapIndex ( me ; AColorMapEntryIndex : Integer from Standard )
+		returns Integer from Standard
+		raises BadAccess from Aspect ;
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the 
+	--	    ColorMapEntry.Index() equal to <AnEntryIndex>.
+	--  Warning: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+
+	FindEntry ( me ; AColorMapEntryIndex : Integer from Standard )
+		returns ColorMapEntry from Aspect
+		raises BadAccess from Aspect ;
+	---Level: Public
+	---Purpose: Returns the ColorMapEntry with ColorMapEntry.Index()
+	--	    equal to <AnEntryIndex>.
+	--  Warning: Raises BadAccess if the index is not defined in the
+	--	    ColorMap.
+    	---C++: return const &
+
+	NearestColorMapIndex( me ; aColor : Color from Quantity )
+		returns Integer from Standard ;
+	---Level: Public
+	---Purpose: Returns the index in the ColorMap of the
+	--	    nearest matching ColorMapEntry 
+
+	NearestEntry( me ; aColor : Color from Quantity )
+		returns ColorMapEntry from Aspect ;
+	---Level: Public
+	---Purpose: Returns the nearest ColorMapEntry that match aColor .
+    	---C++: return const &
+
+fields
+
+	myDataMap : DataMapOfIntegerInteger from TColStd is protected;
+
+end GenericColorMap;

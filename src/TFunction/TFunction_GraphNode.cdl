@@ -1,0 +1,147 @@
+-- File:	TFunction_GraphNode.cdl
+-- Created:	Mon Jun 21 14:25:12 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class GraphNode from TFunction inherits Attribute from TDF
+
+    	---Purpose: Provides links between functions.
+
+uses 
+
+    GUID            from Standard,   
+    OStream         from Standard,
+    Attribute       from TDF, 
+    RelocationTable from TDF,  
+    DataSet         from TDF, 
+    Label           from TDF,
+    MapOfInteger    from TColStd,
+    ExecutionStatus from TFunction
+
+is  
+
+    ---Purpose: Static methods
+    --          ==============
+
+    Set (myclass; L : Label from TDF) 
+    ---Purpose: Finds or Creates a graph node attribute at the label <L>. 
+    --          Returns the attribute.
+    returns GraphNode from TFunction;
+
+    GetID (myclass) 
+    ---Purpose: Returns the GUID for GraphNode attribute. 
+    ---C++: return const & 
+    returns GUID from Standard;  
+				    
+     
+    ---Purpose: Instant methods
+    --          =============== 
+
+    Create 
+    ---Purpose: Constructor (empty).
+    returns mutable GraphNode from TFunction;
+
+
+    AddPrevious (me : mutable;
+    	    	 funcID : Integer from Standard)
+    ---Purpose: Defines a reference to the function as a previous one.
+    returns Boolean from Standard;
+
+    AddPrevious (me : mutable;
+    	    	 func : Label from TDF)
+    ---Purpose: Defines a reference to the function as a previous one.
+    returns Boolean from Standard;
+
+    RemovePrevious (me : mutable;
+    	    	    funcID : Integer from Standard)
+    ---Purpose: Removes a reference to the function as a previous one.
+    returns Boolean from Standard;
+
+    RemovePrevious (me : mutable;
+    	    	    func : Label from TDF)
+    ---Purpose: Removes a reference to the function as a previous one.
+    returns Boolean from Standard;
+
+    GetPrevious (me)
+    ---C++: return const &
+    ---Purpose: Returns a map of previous functions.
+    returns MapOfInteger from TColStd;
+
+    RemoveAllPrevious (me : mutable);
+    ---Purpose: Clears a map of previous functions.
+
+
+    AddNext (me : mutable;
+    	     funcID : Integer from Standard)
+    ---Purpose: Defines a reference to the function as a next one.
+    returns Boolean from Standard;
+
+    AddNext (me : mutable;
+    	     func : Label from TDF)
+    ---Purpose: Defines a reference to the function as a next one.
+    returns Boolean from Standard;
+
+    RemoveNext (me : mutable;
+    	        funcID : Integer from Standard)
+    ---Purpose: Removes a reference to the function as a next one.
+    returns Boolean from Standard;
+
+    RemoveNext (me : mutable;
+    	        func : Label from TDF)
+    ---Purpose: Removes a reference to the function as a next one.
+    returns Boolean from Standard;
+
+    GetNext (me)
+    ---C++: return const &
+    ---Purpose: Returns a map of next functions.
+    returns MapOfInteger from TColStd;
+
+    RemoveAllNext (me : mutable);
+    ---Purpose: Clears a map of next functions.
+
+
+    GetStatus (me)
+    ---Purpose: Returns the execution status of the function.
+    returns ExecutionStatus from TFunction;
+
+    SetStatus (me : mutable;
+    	       status : ExecutionStatus from TFunction);
+    ---Purpose: Defines an execution status for a function.
+
+
+    ---Purpose: Implementation of Attribute methods
+    --          ===================================  
+     
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF) 
+    is virtual;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF) 
+    is virtual;    
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF
+    is redefined;
+	
+    References (me;
+    	       aDataSet : DataSet from TDF)
+    is redefined;
+	
+    Dump (me; anOS : in out OStream from Standard) 
+    ---C++: return &
+    returns OStream from Standard
+    is redefined; 
+
+
+fields
+
+    myPrevious : MapOfInteger from TColStd;
+    myNext     : MapOfInteger from TColStd;
+    myStatus   : ExecutionStatus from TFunction;
+
+end GraphNode;

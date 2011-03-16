@@ -1,0 +1,165 @@
+-- File:	BRepMesh_FastDiscretFace.cdl
+-- Created:	Tue Oct 28 14:10:54 2008
+-- Author:	
+--		<epa@TOSTEX>
+---Copyright:	 Matra Datavision 2008
+
+private class FastDiscretFace from BRepMesh inherits TShared from MMgt
+
+	---Purpose: Algorithm  to mesh  a face  with  respect of  the
+	--          frontier the deflection  and by option the  shared
+	--          components.
+
+
+uses    Boolean                   from Standard,
+    	Integer                   from Standard,
+	Real                      from Standard,
+	Face                      from TopoDS,
+	Edge                      from TopoDS,
+	Vertex                    from TopoDS,
+	ListOfShape               from TopTools,
+	Dir                       from gp,
+	Pnt                       from gp,
+	Pnt2d                     from gp,
+        XY                        from gp,
+    	HSurface                  from BRepAdaptor,
+	Delaun                    from BRepMesh,
+	DataStructureOfDelaun     from BRepMesh,
+	DataMapOfVertexInteger    from BRepMesh,
+	DataMapOfIntegerListOfXY  from BRepMesh,
+    	DataMapOfShapeReal        from TopTools,
+	ListOfVertex              from BRepMesh,
+	ClassifierPtr             from BRepMesh,	
+	Triangle                  from BRepMesh,
+	Edge                      from BRepMesh,
+	Vertex                    from BRepMesh,
+	Status                    from BRepMesh,
+	FaceAttribute             from BRepMesh,
+	Curve                     from Geom2d,
+	ListOfInteger             from TColStd,
+	BaseAllocator             from MeshDS,
+	MapOfInteger              from MeshDS,
+	DataMapOfIntegerPnt       from BRepMesh,
+	IndexedMapOfInteger       from TColStd,
+        IndexedMapOfReal          from TColStd,
+	DataMapOfShapePairOfPolygon from  BRepMesh
+	
+
+is 
+
+        Create (angle      : Real    from Standard;
+    	    	withShare  : Boolean from Standard=Standard_True;
+    	    	inshape    : Boolean from Standard=Standard_False;
+    	    	shapetrigu : Boolean from Standard=Standard_False)
+    	    returns mutable FastDiscretFace from BRepMesh;
+
+
+
+
+    	Add    (me       : mutable;
+    	    	face     : Face from TopoDS;
+        	attrib   : FaceAttribute from BRepMesh;        
+                mapdefle : DataMapOfShapeReal from TopTools)
+	    is static;
+
+	
+    	Add (me     : mutable;
+             theVert: Vertex   from TopoDS;
+	     face   : Face     from TopoDS;
+	     S      : HSurface from BRepAdaptor) is private;
+	     
+    	Update (me: mutable; 
+    	    	Edge:    Edge     from TopoDS; 
+    	    	Face:    Face     from TopoDS; 
+                C      : Curve    from Geom2d;
+    	    	defedge: Real     from Standard;
+		first  : Real     from Standard;
+                last   : Real     from Standard)
+		 
+    	returns Boolean;
+	
+ 
+    	InternalVertices
+    	       (me         : mutable;
+	       	caro       : HSurface            from BRepAdaptor;
+    	    	inter      : in out ListOfVertex from BRepMesh;
+    	        defedge    : Real                from Standard;
+    	    	classifier : ClassifierPtr       from BRepMesh)
+	is static private;
+
+
+    	Control
+    	       (me      : mutable;
+	       	caro    : HSurface                from BRepAdaptor;
+		defface : Real                    from Standard;
+    	    	inter   : in out ListOfVertex     from BRepMesh;
+    	    	badTri  : in out ListOfInteger    from TColStd;
+    	    	nulTri  : in out ListOfInteger    from TColStd;
+		trigu   : in out Delaun           from BRepMesh;
+		isfirst : Boolean                 from Standard)
+	returns Real from Standard is static;
+
+	FindUV(me: mutable; V:  Vertex  from TopoDS; 
+    	    	    	    XY: Pnt2d   from gp;
+	                    ip: Integer from Standard; 
+                            S : HSurface from BRepAdaptor; 
+                            mindist:  Real  from  Standard)
+	returns XY from gp;
+
+    	AddInShape(me: mutable; face   : Face                          from TopoDS;
+    	    	    	        defedge: Real                          from Standard)
+	is static private;
+
+
+-- Output :
+
+    	Triangle   (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the triangle of <Index>.
+	    ---C++: return const &
+	    returns Triangle from BRepMesh
+	    is static;
+
+    	Edge       (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the edge of index <Index>.
+	    ---C++: return const &
+	    returns Edge from BRepMesh
+	    is static;
+
+
+    	Vertex     (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the vertex of <Index>.
+	    ---C++: return const &
+	    returns Vertex from BRepMesh
+	    is static;
+
+    	Pnt        (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the location3d of the vertex of <Index>.
+	    ---C++: return const &
+	    returns Pnt from gp
+	    is static;
+
+fields  
+    	angle        : Real                          from Standard;
+    	WithShare    : Boolean                       from Standard;
+    	vertices     : DataMapOfVertexInteger        from BRepMesh;
+    	edges        : DataMapOfShapePairOfPolygon   from BRepMesh;
+    	internaledges: DataMapOfShapePairOfPolygon   from BRepMesh;
+	nbLocat      : Integer                       from Standard;
+	Location3d   : DataMapOfIntegerPnt           from BRepMesh;
+	structure    : DataStructureOfDelaun         from BRepMesh;
+	mylistver    : ListOfVertex                  from BRepMesh;
+	myvemap      : IndexedMapOfInteger           from TColStd;
+	mylocation2d : DataMapOfIntegerListOfXY      from BRepMesh;
+	myattrib     : FaceAttribute                 from BRepMesh;
+	myshapetrigu : Boolean                       from Standard;
+	myinshape    : Boolean                       from Standard;
+	myInternalVerticesMode : Boolean             from Standard; --mode to accounting internal vertices 
+	myUParam     : IndexedMapOfReal              from TColStd;
+	myVParam     : IndexedMapOfReal              from TColStd;
+	myAllocator  : BaseAllocator                 from MeshDS;
+ 
+end FastDiscretFace;

@@ -1,0 +1,310 @@
+-- File:	Approx_BSplComputeLine.cdl
+-- Created:	Wed Sep 22 12:36:13 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class BSplComputeLine from Approx 
+    	    	    (MultiLine as any;
+    	    	     LineTool  as any) --as TheLineTool(MultiLine)
+
+
+
+uses ParametrizationType       from Approx,
+     SequenceOfReal            from TColStd,
+     HArray1OfReal             from TColStd,
+     HArray1OfInteger          from TColStd,
+     Array1OfReal              from TColStd,
+     Array1OfInteger           from TColStd,
+     HArray1OfConstraintCouple from AppParCurves,
+     Constraint                from AppParCurves,
+     MultiBSpCurve             from AppParCurves,
+     MultiCurve                from AppParCurves,
+     Vector                    from math
+     
+     
+
+private class MyBSplGradient instantiates BSpGradient from AppParCurves
+    	    	    	    	       (MultiLine,
+			    	    	LineTool);
+
+
+private class MyGradientbis instantiates Gradient from AppParCurves
+    	    	    	    	       (MultiLine,
+			    	    	LineTool);
+							  
+is
+
+
+    Create(Line:            MultiLine; 
+    	   degreemin:       Integer = 4;
+           degreemax:       Integer = 8;
+    	   Tolerance3d:     Real    = 1.0e-3; 
+    	   Tolerance2d:     Real    = 1.0e-6;
+           NbIterations:    Integer = 5;
+	   cutting:         Boolean = Standard_True; 
+    	   parametrization: ParametrizationType from Approx =
+    	   Approx_ChordLength;
+	   Squares:         Boolean = Standard_False)
+	   
+	---Purpose: The MultiLine <Line> will be approximated until tolerances
+	--          will be reached.
+	--          The approximation will be done from degreemin to degreemax
+	--          with a cutting if the corresponding boolean is True.
+	--          If <Squares> is True, the computation will be done with
+	--          no iteration at all.
+	--          
+	--          The multiplicities of the internal knots is set by
+	--          default.
+
+    returns BSplComputeLine;
+
+
+    Create(Line:         MultiLine; 
+    	   Parameters:   Vector from math;
+    	   degreemin:    Integer = 4;
+    	   degreemax:    Integer = 8;
+    	   Tolerance3d:  Real    = 1.0e-03; 
+    	   Tolerance2d:  Real    = 1.0e-06; 
+	   NbIterations: Integer = 5;
+	   cutting:      Boolean = Standard_True; 
+    	   Squares:      Boolean = Standard_False)
+	   
+	---Purpose: The MultiLine <Line> will be approximated until tolerances
+	--          will be reached.
+	--          The approximation will be done from degreemin to degreemax
+	--          with a cutting if the corresponding boolean is True.
+	--          If <Squares> is True, the computation will be done with
+	--          no iteration at all.
+
+    returns BSplComputeLine;
+
+
+    Create(Parameters:   Vector from math;
+    	   degreemin:    Integer = 4;
+    	   degreemax:    Integer = 8;
+    	   Tolerance3d:  Real    = 1.0e-03; 
+    	   Tolerance2d:  Real    = 1.0e-06; 
+	   NbIterations: Integer = 5;
+	   cutting:      Boolean = Standard_True; 
+    	   Squares:      Boolean = Standard_False)
+	   
+	---Purpose: Initializes the fields of the algorithm.
+
+    returns BSplComputeLine;
+
+
+    Create(degreemin:    Integer = 4;
+    	   degreemax:    Integer = 8;
+    	   Tolerance3d:  Real    = 1.0e-03; 
+    	   Tolerance2d:  Real    = 1.0e-06; 
+	   NbIterations: Integer = 5;
+	   cutting:      Boolean = Standard_True; 
+    	   parametrization: ParametrizationType from Approx =
+    	   Approx_ChordLength;
+    	   Squares:      Boolean = Standard_False)
+	   
+	---Purpose: Initializes the fields of the algorithm.
+
+    returns BSplComputeLine;
+
+
+    Interpol(me: in out; Line: MultiLine)
+    	---Purpose: Constructs an interpolation of the MultiLine <Line>
+    	--          The result will be a C2 curve of degree 3.
+    is static;
+
+
+
+    Init(me: in out; degreemin:    Integer = 4;
+    	             degreemax:    Integer = 8;
+    	             Tolerance3d:  Real    = 1.0e-03; 
+    	             Tolerance2d:  Real    = 1.0e-06; 
+	             NbIterations: Integer = 5;
+	             cutting:      Boolean = Standard_True; 
+               	     parametrization: ParametrizationType from Approx =
+    	             Approx_ChordLength;
+    	             Squares:      Boolean = Standard_False)
+		     
+	---Purpose: Initializes the fields of the algorithm.
+
+    is static;
+
+
+    Perform(me: in out; Line: MultiLine)
+	---Purpose: runs the algorithm after having initialized the fields.
+    
+    is static;
+
+
+    Compute(me: in out; Line: MultiLine; fpt, lpt: Integer;
+    	    Para: in out Vector from math; Knots: Array1OfReal;
+    	    Mults: in out Array1OfInteger)
+	---Purpose: is internally used in the algorithm.
+
+    returns Boolean
+    is static private;
+    
+    
+    ComputeCurve(me: in out; Line: MultiLine; firspt, lastpt: Integer) 
+	---Purpose: is internally used in the algorithm.
+    
+    returns Boolean
+    is static private;
+    
+    
+    Parameters(me; Line: MultiLine; firstP, LastP: Integer;
+               TheParameters: in out Vector)
+    	---Purpose: computes new parameters between firstP and lastP.
+
+    is static private;
+    
+    
+    SetParameters(me: in out; ThePar: Vector from math)
+    	---Purpose: The approximation will begin with the
+    	--          set of  parameters <ThePar>. 
+    is static;
+
+
+    SetKnots(me: in out; Knots: Array1OfReal from TColStd)
+    	---Purpose: The approximation will be done with the
+    	--          set of knots <Knots>. The multiplicities will be set
+    	--          with the degree and the desired continuity.
+    is static;
+
+
+    SetKnotsAndMultiplicities(me: in out; 
+    	    	    	      Knots: Array1OfReal from TColStd;
+    	    	    	      Mults: Array1OfInteger from TColStd)
+    	---Purpose: The approximation will be done with the
+    	--          set of knots <Knots> and the multiplicities <Mults>.
+    is static;
+    
+    
+    SetDegrees(me: in out; degreemin, degreemax: Integer)
+    	---Purpose: changes the degrees of the approximation.
+    
+    is static;
+    
+    
+    SetTolerances(me: in out; Tolerance3d, Tolerance2d: Real)
+    	---Purpose: Changes the tolerances of the approximation.
+    
+    is static;
+    
+
+    SetContinuity(me: in out; C: Integer)
+    	---Purpose: sets the continuity of the spline.
+    	--          if C = 2, the spline will be C2.
+
+    is static;
+    
+
+    SetConstraints(me: in out; firstC, lastC: Constraint from AppParCurves)
+    	    ---Purpose: changes the first and the last constraint points.
+    is static;
+
+
+    IsAllApproximated(me) 
+    	---Purpose: returns False if at a moment of the approximation,
+    	--          the status NoApproximation has been sent by the user
+    	--          when more points were needed.
+    
+    returns Boolean
+    is static;
+    
+
+    IsToleranceReached(me)
+    	---Purpose: returns False if the status NoPointsAdded has been sent.
+    
+    returns Boolean
+    is static;
+    
+
+    Error(me; tol3d: in out Real; tol2d: in out Real)
+    	---Purpose: returns the tolerances 2d and 3d of the MultiBSpCurve.
+
+    is static;
+    
+
+    Value(me)
+    	---Purpose: returns the result of the approximation.
+    	---C++: return const&
+    returns MultiBSpCurve from AppParCurves;
+
+
+    ChangeValue(me: in out)
+    	---Purpose: returns the result of the approximation.
+    	---C++: return &
+    returns MultiBSpCurve from AppParCurves;
+
+
+
+    Parameters(me)
+    	---Purpose: returns the new parameters of the approximation
+    	--          corresponding to the points of the MultiBSpCurve.
+    	---C++: return const&
+    returns Array1OfReal from TColStd
+    is static;
+    
+    
+    
+    SearchFirstLambda(me; Line: MultiLine; Para: Vector; 
+    	    	      Knots: Array1OfReal from TColStd;
+    	    	      V: Vector; index: Integer)
+    returns Real
+    is static private;
+    
+    SearchLastLambda(me: ; Line: MultiLine; Para: Vector;
+      	             Knots: Array1OfReal from TColStd;
+    	    	     V: Vector; index: Integer)
+    returns Real
+    is static private;
+    
+    TangencyVector(me; Line: MultiLine; C: MultiCurve from AppParCurves;
+    	    	       U: Real from Standard; V: in out Vector from math)
+    is static private;
+    
+
+    FirstTangencyVector(me; Line: MultiLine; index: Integer; V: out Vector)
+    is static private;
+    
+    LastTangencyVector(me; Line: MultiLine; index: Integer; V: out Vector)
+    is static private;
+    
+    FindRealConstraints(me: in out; Line: MultiLine)
+    is static private;
+    
+fields
+
+TheMultiBSpCurve: MultiBSpCurve             from AppParCurves;
+alldone         : Boolean                   from Standard;
+tolreached      : Boolean                   from Standard;
+Par             : ParametrizationType       from Approx;
+myParameters    : HArray1OfReal             from TColStd;
+myfirstParam    : HArray1OfReal             from TColStd;
+myknots         : HArray1OfReal             from TColStd;
+mymults         : HArray1OfInteger          from TColStd;
+myhasknots      : Boolean                   from Standard;
+myhasmults      : Boolean                   from Standard;
+myConstraints   : HArray1OfConstraintCouple from AppParCurves;
+mydegremin      : Integer                   from Standard;
+mydegremax      : Integer                   from Standard;
+mytol3d         : Real                      from Standard;
+mytol2d         : Real                      from Standard;
+currenttol3d    : Real                      from Standard;
+currenttol2d    : Real                      from Standard;
+mycut           : Boolean                   from Standard;
+mysquares       : Boolean                   from Standard;
+myitermax       : Integer                   from Standard;
+myfirstC        : Constraint                from AppParCurves;
+mylastC         : Constraint                from AppParCurves;
+realfirstC      : Constraint                from AppParCurves;
+reallastC       : Constraint                from AppParCurves;
+mycont          : Integer                   from Standard;
+mylambda1       : Real                      from Standard;
+mylambda2       : Real                      from Standard;
+
+end BSplComputeLine;

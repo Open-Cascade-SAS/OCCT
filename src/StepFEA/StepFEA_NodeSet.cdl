@@ -1,0 +1,32 @@
+-- File:	StepFEA_NodeSet.cdl
+-- Created:	Thu Dec 12 17:51:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class NodeSet from StepFEA
+inherits GeometricRepresentationItem from StepGeom
+
+    ---Purpose: Representation of STEP entity NodeSet
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfNodeRepresentation from StepFEA
+
+is
+    Create returns NodeSet from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aNodes: HArray1OfNodeRepresentation from StepFEA);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Nodes (me) returns HArray1OfNodeRepresentation from StepFEA;
+	---Purpose: Returns field Nodes
+    SetNodes (me: mutable; Nodes: HArray1OfNodeRepresentation from StepFEA);
+	---Purpose: Set field Nodes
+
+fields
+    theNodes: HArray1OfNodeRepresentation from StepFEA;
+
+end NodeSet;

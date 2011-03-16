@@ -1,0 +1,120 @@
+--
+-- File      : Boundary.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Kiran)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Boundary from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESBoundary, Type <141> Form <0>
+        --          in package IGESGeom
+        --          A boundary entity identifies a surface boundary consisting
+        --          of a set of curves lying on the surface
+
+uses
+
+        HArray1OfInteger             from TColStd,
+        HArray1OfIGESEntity          from IGESData,
+        HArray1OfHArray1OfIGESEntity from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable Boundary;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                 : mutable;
+              aType              : Integer;
+              aPreference        : Integer;
+              aSurface           : IGESEntity;
+              allModelCurves     : HArray1OfIGESEntity;
+              allSenses          : HArray1OfInteger;
+              allParameterCurves : HArray1OfHArray1OfIGESEntity)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           Boundary
+        --       - aType              : Type of bounded surface representation
+        --       - aPreference        : Preferred representation of
+        --                              Trimming Curve
+        --       - aSurface           : Untrimmed surface to be bounded
+        --       - allModelCurves     : Model Space Curves
+        --       - allSenses          : Orientation flags of all Model Space
+        --                              Curves
+        --       - allParameterCurves : Parameter Space Curves
+        -- raises exception if allSenses, allModelCurves and
+        -- allParameterCurves do not have same dimensions
+
+        BoundaryType (me) returns Integer;
+        ---Purpose : returns type of bounded surface representation
+        -- 0 = Boundary entities may only reference model space trimming
+        --     curves. Associated surface representation may be parametric
+        -- 1 = Boundary entities must reference model space curves and
+        --     associated parameter space curve collections. Associated
+        --     surface must be a parametric representation
+
+        PreferenceType (me) returns Integer;
+        ---Purpose : returns preferred representation of trimming curves
+        -- 0 = Unspecified
+        -- 1 = Model space
+        -- 2 = Parameter space
+        -- 3 = Representations are of equal preference
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the surface to be bounded
+
+        NbModelSpaceCurves (me) returns Integer;
+        ---Purpose : returns the number of model space curves
+
+        ModelSpaceCurve (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns Model Space Curve
+        -- raises exception if Index <= 0 or Index > NbModelSpaceCurves()
+
+        Sense(me; Index: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the sense of a particular model space curve
+        -- 1 = model curve direction does not need reversal
+        -- 2 = model curve direction needs to be reversed
+        -- raises exception if Index <= 0 or Index > NbModelSpaceCurves()
+
+        NbParameterCurves (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the number of parameter curves associated with one
+        -- model space curve referred to by Index
+        -- raises exception if Index <= 0 or Index > NbModelSpaceCurves()
+
+        ParameterCurves (me; Index : Integer) returns HArray1OfIGESEntity
+        raises OutOfRange;
+        ---Purpose : returns an array of parameter space curves associated with
+        -- a model space curve referred to by the Index
+        -- raises exception if Index <= 0 or Index > NbModelSpaceCurves()
+
+        ParameterCurve (me; Index, Num: Integer) returns mutable IGESEntity
+        raises OutOfRange;
+    	---Purpose : returns an individual parameter curve
+        -- raises exception if Index or Num is out of range
+
+fields
+
+--
+-- Class    : IGESGeom_Boundary
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Boundary.
+--
+-- Reminder : A Boundary instance is defined by :
+--            A surface boundary consisting of a set of curves lying
+--            on the surface
+
+        theType              : Integer;
+        thePreference        : Integer;
+        theSurface           : IGESEntity;
+        theModelCurves       : HArray1OfIGESEntity;
+        theSenses            : HArray1OfInteger;
+        theParameterCurves   : HArray1OfHArray1OfIGESEntity;
+
+end Boundary;

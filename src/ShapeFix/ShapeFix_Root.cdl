@@ -1,0 +1,118 @@
+-- File:	ShapeFix_Root.cdl
+-- Created:	Mon Aug  9 16:41:59 1999
+-- Author:	Galina KULIKOVA
+--		<gka@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Root from ShapeFix inherits TShared from MMgt  
+
+	---Purpose: Root class for fixing operations
+	--          Provides context for recording changes (optional),
+	--          basic precision value and limit (minimal and
+	--          maximal) values for tolerances,
+	--          and message registrator
+
+uses
+
+    Shape               from TopoDS,
+    ReShape             from ShapeBuild,
+    BasicMsgRegistrator from ShapeExtend,
+    Msg                 from Message,
+    Gravity             from Message
+
+is
+    Create returns Root from ShapeFix;
+    	---Purpose: Empty Constructor (no context is created)
+	
+    Set (me: mutable; Root: Root from ShapeFix) is virtual;
+    	---Purpose: Copy all fields from another Root object
+	
+    SetContext (me:mutable; context : ReShape from ShapeBuild) is virtual;
+	---Purpose: Sets context
+	
+    Context (me) returns ReShape from ShapeBuild;
+    	---Purpose: Returns context 
+	---C++: inline
+	
+    SetMsgRegistrator (me:mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is virtual;
+	---Purpose: Sets message registrator
+	
+    MsgRegistrator (me) returns BasicMsgRegistrator from ShapeExtend;
+    	---Purpose: Returns message registrator
+	---C++: inline
+	
+    SetPrecision (me:mutable; preci: Real) is virtual;
+    	---Purpose: Sets basic precision value
+    
+    Precision (me) returns Real;
+    	---Purpose: Returns basic precision value
+	---C++: inline
+	
+    SetMinTolerance (me:mutable; mintol: Real) is virtual;
+    	---Purpose: Sets minimal allowed tolerance
+    
+    MinTolerance (me) returns Real;
+    	---Purpose: Returns minimal allowed tolerance
+	---C++: inline
+	
+    SetMaxTolerance (me:mutable; maxtol: Real) is virtual;
+    	---Purpose: Sets maximal allowed tolerance
+    
+    MaxTolerance (me) returns Real;
+    	---Purpose: Returns maximal allowed tolerance
+	---C++: inline
+
+    LimitTolerance (me; toler: Real) returns Real;
+    	---Purpose: Returns tolerance limited by [myMinTol,myMaxTol]
+	---C++: inline
+
+    -- Methods for sending messages
+
+    SendMsg (me; shape  : Shape from TopoDS;
+                 message: Msg from Message;
+                 gravity: Gravity from Message = Message_Info);
+    	---Purpose: Sends a message to be attached to the shape.
+	--          Calls corresponding message of message registrator.
+
+    SendMsg (me; message: Msg from Message;
+                 gravity: Gravity from Message = Message_Info);
+    	---Purpose: Sends a message to be attached to myShape.
+	--          Calls previous method.
+    	---C++    : inline
+
+    SendWarning (me; shape: Shape from TopoDS; message: Msg from Message);
+    	---Purpose: Sends a warning to be attached to the shape.
+	--          Calls SendMsg with gravity set to Message_Warning.
+    	---C++    : inline
+
+    SendWarning (me; message: Msg from Message);
+    	---Purpose: Calls previous method for myShape.
+    	---C++    : inline
+
+    SendFail    (me; shape: Shape from TopoDS; message: Msg from Message);
+    	---Purpose: Sends a fail to be attached to the shape.
+	--          Calls SendMsg with gravity set to Message_Fail.
+    	---C++    : inline
+
+    SendFail    (me; message: Msg from Message);
+    	---Purpose: Calls previous method for myShape.
+    	---C++    : inline
+
+
+    NeedFix (myclass; flag: Integer; def: Boolean = Standard_True)
+    returns Boolean is protected;
+    	---Purpose: Auxiliary method for work with three-position
+	--          (on/off/default) flags (modes) in ShapeFix.
+	---C++: inline
+    
+fields
+
+    myContext  : ReShape from ShapeBuild;
+    myMsgReg   : BasicMsgRegistrator from ShapeExtend;
+    myPrecision: Real;       -- basic precision
+    myMinTol   : Real;       -- minimal allowed tolerance
+    myMaxTol   : Real;       -- maximal allowed tolerance
+    myShape    : Shape from TopoDS is protected; -- current processed shape
+
+end Root;

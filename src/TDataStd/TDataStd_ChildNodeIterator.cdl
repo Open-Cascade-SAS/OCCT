@@ -1,0 +1,67 @@
+-- File:	TDataStd_ChildNodeIterator.cdl
+-- Created:	Wed Jan 26 16:32:08 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ChildNodeIterator from TDataStd 
+
+	---Purpose:  Iterates on the  ChildStepren step of  a step, at the
+	--           first level  only.   It  is possible  to ask  the
+	--          iterator to explore all the sub step levels of the
+	--          given one, with the option "allLevels".
+
+uses TreeNode from TDataStd
+
+is
+
+    Create
+    	returns ChildNodeIterator from TDataStd;
+    	---Purpose: Creates an empty iterator.
+    
+    Create(aTreeNode : TreeNode from TDataStd;
+    	   allLevels : Boolean from Standard = Standard_False)
+    	returns ChildNodeIterator from TDataStd;
+    	---Purpose: Iterates on the ChildStepren of the given Step. If
+    	--          <allLevels> option is set to true, it explores not
+    	--          only the first, but all the sub Step levels.
+    
+    Initialize(me : in out;
+    	       aTreeNode : TreeNode from TDataStd;
+    	       allLevels : Boolean from Standard = Standard_False);
+    	---Purpose: Initializes the iteration on  the Children Step of
+    	--          the  given Step. If <allLevels>  option is  set to
+    	--          true, it explores not  only the first, but all the
+    	--          sub Step levels.
+    
+    More(me) returns Boolean;
+    	---C++: inline
+	---Purpose: Returns True if there is a current Item in the
+	--          iteration.
+    
+    Next(me : in out);
+    	---Purpose: Move to the next Item 
+    
+    NextBrother(me : in out);
+    	---Purpose: Move to the next Brother. If there is none, go up
+    	--          etc. This method is interesting only with
+    	--          "allLevels" behavior, because it avoids to explore
+    	--          the current Step ChildStepren.
+    
+    Value(me) returns TreeNode from TDataStd;
+    	---C++: inline
+	---Purpose: Returns the current item; a null Step if there is
+	--          no one.
+
+fields
+
+    myNode       : TreeNode from TDataStd;
+    myFirstLevel : Integer  from Standard;
+
+end ChildNodeIterator;
+
+
+
+
+

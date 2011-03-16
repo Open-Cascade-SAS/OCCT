@@ -1,0 +1,92 @@
+-- File:	HLRAlgo_PolyData.cdl
+-- Created:	Fri Oct 29 15:19:08 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class PolyData from HLRAlgo inherits TShared from MMgt
+
+uses
+    Address          from Standard,
+    Integer          from Standard,
+    Boolean          from Standard,
+    Array1OfXYZ      from TColgp,
+    Array1OfTData    from HLRAlgo,
+    Array1OfPHDat    from HLRAlgo,
+    HArray1OfXYZ     from TColgp,
+    HArray1OfTData   from HLRAlgo,
+    HArray1OfPHDat   from HLRAlgo,
+    EdgeStatus       from HLRAlgo
+
+is
+    Create returns mutable PolyData from HLRAlgo;
+
+    HNodes(me : mutable; HNodes : HArray1OfXYZ from TColgp)
+    is static;
+
+    HTData(me : mutable; HTData : HArray1OfTData from HLRAlgo)
+    is static;
+
+    HPHDat(me : mutable; HPHDat : HArray1OfPHDat from HLRAlgo)
+    is static;
+
+    FaceIndex(me : mutable; I : Integer from Standard)
+    	---C++: inline
+    is static;
+
+    FaceIndex(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    Nodes(me) returns Array1OfXYZ from TColgp
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    TData(me) returns Array1OfTData from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    PHDat(me) returns Array1OfPHDat from HLRAlgo
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    UpdateGlobalMinMax(me        : mutable;
+		       ToTMinMax : Address from Standard)
+    is static;
+    
+    Hiding(me) returns Boolean from Standard
+        ---C++: inline
+    is static;
+
+    HideByPolyData(me          : mutable;
+                   Coordinates :     Address    from Standard;
+                   RealPtr     :     Address    from Standard;
+		   Indices     :     Address    from Standard;
+		   HidingShell :     Boolean    from Standard;
+                   status      : out EdgeStatus from HLRAlgo)
+	---Purpose: process hiding between <Pt1> and <Pt2>.
+    is static;
+    
+    HideByOneTriangle(me          : mutable;
+		      Coordinates :     Address    from Standard;
+                      RealPtr     :     Address    from Standard;
+                      BooleanPtr  :     Address    from Standard;
+                      PlanPtr     :     Address    from Standard;
+		      status      : out EdgeStatus from HLRAlgo)
+	---Purpose: evident.
+    is static private;
+    
+    Indices(me : mutable) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices : Integer        from Standard[3];
+    myHNodes  : HArray1OfXYZ   from TColgp;
+    myHTData  : HArray1OfTData from HLRAlgo;
+    myHPHDat  : HArray1OfPHDat from HLRAlgo;
+
+end PolyData;

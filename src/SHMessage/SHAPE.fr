@@ -1,0 +1,162 @@
+! Message file for Shape Healing
+
+
+! ------------------------------------------------------------------------------
+! Messages for shape names
+!
+.Name.Shape.MSG0
+!
+.Name.Vertex.MSG0
+!
+.Name.Edge.MSG0
+!
+.Name.Wire.MSG0
+!
+.Name.Face.MSG0
+!
+.Name.Shell.MSG0
+!
+.Name.Solid.MSG0
+!
+.Name.CompSolid.MSG0
+!
+.Name.Compound.MSG0
+!
+! ------------------------------------------------------------------------------
+! Messages for sequence of operators
+! 
+.Sequence.MSG0
+Sequence d'operateurs: %s
+!
+.Sequence.MSG5
+Operateur %d/%d: %s
+!
+.Sequence.MSG
+!
+! ------------------------------------------------------------------------------
+! Messages for printing results of shape processing
+! 
+.PrResult.Print.MSG50
+  Shells:
+!
+.PrResult.Print.MSG55
+  Faces:
+!
+.PrResult.Print.MSG100
+Mapping:
+!
+.PrResult.Print.MSG110
+    Le Resultat est un Shell        : %d
+!
+.PrResult.Print.MSG115
+    Le Resultat est une Face        : %d
+!
+.PrResult.Print.MSG150
+    Pas de Resultat                 : %d
+!
+.PrResult.Print.MSG200
+Taux de Preparation:
+!
+.PrResult.Print.MSG205
+  Shells: %d pour cent
+!
+.PrResult.Print.MSG210
+  Faces : %d pour cent
+!
+!
+! ==============================================================================
+! Messages for Shape Healing
+! 
+! ------------------------------------------------------------------------------
+! Messages for ShapeFix_Wire
+! 
+.FixWire.FixDegenerated.MSG0
+Detection d'Arete(s) degeneree(s)
+!
+.FixWire.FixDegenerated.MSG5
+L'Arete n0 %d est degeneree
+!
+.FixAdvWire.FixSmall.MSG0
+Petite(s) arete(s) supprimee(s)
+! 
+.FixAdvWire.FixSmall.MSG5
+L'arete n0 %d etait petite, supprimee
+! 
+.FixAdvWire.FixIntersection.MSG0
+Auto-intersection corrigee
+!
+.FixAdvWire.FixIntersection.MSG5
+L'arete %d etait auto-intersectante, corrigee
+!
+.FixAdvWire.FixIntersection.MSG10
+Les aretes n0 %d et %d s'intersectaient, corrigees
+!
+.FixAdvWire.FixLacking.MSG0
+Insertion d'arete(s) manquante(s)
+!
+.FixAdvWire.FixLacking.MSG5
+Arete n0 %d manquante, inseree
+!
+.FixAdvWire..MSG0
+!
+.FixAdvWire..MSG5
+!
+.FixAdvWire..MSG10
+!
+! ------------------------------------------------------------------------------
+! Messages for ShapeFix_Face
+!
+.FixAdvFace.FixMissingSeam.MSG0
+Arete de couture manquante, ajoutee
+!
+.FixAdvFace.FixSmallAreaWire.MSG0
+Contour d'aire nulle, supprime
+!
+.FixAdvFace.FixOrientation.MSG0
+Face creee avec bords naturels
+!
+.FixAdvFace.FixOrientation.MSG5
+Contour sur face inverse
+!
+.FixAdvFace.FixOrientation.MSG10
+Le Contour n0 %d parmi %d de la face a ete inverse
+!
+.FixAdvFace.FixOrientation.MSG11
+Impossible d'orienter les contour n0 %d parmi %d
+!
+.FixAdvShell.FixOrientation.MSG20
+Impossible d'orienter les faces dans le shell, creation de plusieurs shells
+!
+.FixAdvShell.FixOrientation.MSG30
+Shell avec connexions incorrectes, divise en plusieurs parties
+!
+.FixAdvSolid.FixShell.MSG10
+Impossible de creer un Solide a partir d'un shell ouvert
+!
+.FixAdvSolid.FixOrientation.MSG20
+L'Orientation du/des shell(s) dans le solida ete corrigee
+!
+.FixAdvSolid.FixOrientation.MSG30
+Solide avec connexions incorrectes, divise en plusieurs parties
+!
+.FixAdvFace..MSG0
+!
+.FixAdvFace..MSG5
+!
+.FixAdvFace..MSG10
+!
+! ------------------------------------------------------------------------------
+! Messages for ShapeFix_Shell
+!
+.FixAdvShell.FixOrientation.MSG0
+Faces mal orientees dans le shell, corrigees
+!
+.FixAdvShell.FixOrientation.MSG5
+Faces mal orientees dans le shell, non corrigees
+!
+.FixAdvShell..MSG0
+!
+.FixAdvShell..MSG5
+!
+.FixAdvShell..MSG10
+!

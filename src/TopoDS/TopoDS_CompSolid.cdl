@@ -1,0 +1,23 @@
+-- File:	TopoDS_CompSolid.cdl
+-- Created:	Mon Dec 17 11:12:03 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class CompSolid from TopoDS inherits Shape from TopoDS
+
+	---Purpose: Describes a composite solid which
+      -- - references an underlying composite solid with the
+--   potential to be given a location and an orientation
+-- - has a location for the underlying composite solid,
+--   giving its placement in the local coordinate system
+-- - has an orientation for the underlying composite
+--   solid, in terms of its geometry (as opposed to
+--   orientation in relation to other shapes).
+
+is
+    Create returns CompSolid from TopoDS;
+    ---C++: inline
+	---Purpose: Constructs an Undefined CompSolid.
+
+end CompSolid;

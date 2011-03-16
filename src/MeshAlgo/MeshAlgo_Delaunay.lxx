@@ -1,0 +1,27 @@
+// File:	MeshAlgo_Delaunay.lxx
+// Created:	Thu Aug 19 10:52:01 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+
+#include MeshAlgo_DataStructure_hxx
+
+inline const Vertex& MeshAlgo_Delaunay::GetVertex
+  (const Standard_Integer vIndex) const
+{
+  return MeshData->GetNode(vIndex);
+}
+
+
+inline const Edge& MeshAlgo_Delaunay::GetEdge
+  (const Standard_Integer eIndex) const
+{
+  return MeshData->GetLink(eIndex);
+}
+
+
+inline const Triangle& MeshAlgo_Delaunay::GetTriangle
+  (const Standard_Integer tIndex) const
+{
+  return MeshData->GetElement(tIndex);
+}

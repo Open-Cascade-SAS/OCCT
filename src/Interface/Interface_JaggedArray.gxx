@@ -1,0 +1,26 @@
+//#include <Interface_JaggedArray.ixx>
+
+    Interface_JaggedArray::Interface_JaggedArray
+  (const Standard_Integer low, const Standard_Integer up)
+: thelist (low,up)  {  Handle(Standard_Transient) nulo; thelist.Init(nulo);  }
+
+    Standard_Integer  Interface_JaggedArray::Lower () const
+      {  return thelist.Lower();  }
+
+    Standard_Integer  Interface_JaggedArray::Upper () const
+      {  return thelist.Upper();  }
+
+    Standard_Integer  Interface_JaggedArray::Length () const
+      {  return thelist.Length();  }
+
+    void Interface_JaggedArray::SetValue
+  (const Standard_Integer num, const Handle(TheKey)& val)
+      {  thelist.SetValue(num,val);  }
+
+    Handle(TheKey)  Interface_JaggedArray::Value
+  (const Standard_Integer num) const
+      {  return Handle(TheKey)::DownCast(thelist.Value(num));  }
+
+//    Handle(TheKey)&  Interface_JaggedArray::ChangeValue
+//  (const Standard_Integer num)
+//      {  return thelist.ChangeValue(num);  }

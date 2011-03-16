@@ -1,0 +1,6 @@
+// File:	ViewerTest_EventManager.lxx
+// Created:	Thu Aug 27 15:13:00 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline const Handle(AIS_InteractiveContext)& ViewerTest_EventManager::Context() const
+{return myCtx;}

@@ -1,0 +1,130 @@
+-- File:	TopOpeBRepDS_Interference.cdl
+-- Created:	Wed Jun 23 11:18:04 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Interference from TopOpeBRepDS inherits TShared from MMgt
+
+	---Purpose: An interference    is   the   description  of  the
+	--          attachment of  a new  geometry on a  geometry. For
+	--          example an intersection point  on an Edge or on  a
+	--          Curve.
+	--          
+	--          The Interference contains the following data :
+	--          
+	--          - Transition :  How the interference  separates the
+	--          existing geometry in INSIDE and OUTSIDE.
+	--          
+	--          - SupportType : Type of  the object supporting the
+	--          interference. (FACE, EDGE, VERTEX, SURFACE, CURVE).
+	--          
+	--          - Support :  Index  in the data  structure  of the
+	--          object supporting the interference.
+	--          
+	--          - GeometryType  :   Type  of the  geometry of  the
+	--          interference (SURFACE, CURVE, POINT).
+	--          
+	--          - Geometry : Index  in the data structure  of the
+	--          geometry. 
+	--          
+
+uses
+
+    Transition from TopOpeBRepDS,
+    Kind from TopOpeBRepDS,
+    OStream from Standard,
+    AsciiString from TCollection
+
+is
+
+    Create returns mutable Interference from TopOpeBRepDS;
+
+    Create(Transition   : Transition from TopOpeBRepDS;
+	   SupportType  : Kind from TopOpeBRepDS;
+	   Support      : Integer from Standard;
+	   GeometryType : Kind from TopOpeBRepDS;
+	   Geometry     : Integer from Standard)
+    returns mutable Interference from TopOpeBRepDS;
+
+    Create( I : Interference from TopOpeBRepDS )
+    returns mutable Interference from TopOpeBRepDS;
+
+    Transition(me) returns Transition from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeTransition(me : mutable) returns Transition from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+    Transition(me : mutable; T : Transition from TopOpeBRepDS)
+    is static;
+
+    GKGSKS (me; GK : out Kind from TopOpeBRepDS; G : out Integer;
+                SK : out Kind from TopOpeBRepDS; S : out Integer);
+    ---Purpose: return GeometryType + Geometry + SupportType + Support
+	      	
+    SupportType(me) returns Kind from TopOpeBRepDS
+    is static;
+
+    Support(me) returns Integer from Standard
+    is static;
+
+    GeometryType(me) returns Kind from TopOpeBRepDS
+    is static;
+
+    Geometry(me) returns Integer from Standard
+    is static;
+    
+    SetGeometry(me : mutable; GI :Integer from Standard)
+    is static;
+    
+    SupportType(me : mutable; ST : Kind from TopOpeBRepDS)
+    is static;
+
+    Support(me : mutable; S : Integer from Standard)
+    is static;
+
+    GeometryType(me : mutable; GT : Kind from TopOpeBRepDS)
+    is static;
+
+    Geometry(me : mutable; G : Integer from Standard)
+    is static;
+
+    HasSameSupport (me; Other : Interference from TopOpeBRepDS)
+    returns Boolean from Standard
+    is static;
+
+    HasSameGeometry (me; Other : Interference from TopOpeBRepDS)
+    returns Boolean from Standard
+    is static;
+        
+    DumpG(me; OS : in out OStream from Standard) returns OStream
+    is static;    
+    ---C++: return &
+
+    DumpS(me; OS : in out OStream from Standard) returns OStream
+    is static;    
+    ---C++: return &
+
+    Dump(me; OS : in out OStream from Standard) returns OStream
+    ---C++: return &
+    is virtual;
+
+    Dump(me; OS : in out OStream from Standard;
+    	     s1,s2 : AsciiString from TCollection) returns OStream
+    ---C++: return &
+    is static;
+
+fields
+
+    myTransition         : Transition from TopOpeBRepDS;
+    mySupport            : Integer from Standard;
+    myGeometry           : Integer from Standard;
+    mySupportType        : Kind from TopOpeBRepDS;
+    myGeometryType       : Kind from TopOpeBRepDS;
+
+end Interference from TopOpeBRepDS;

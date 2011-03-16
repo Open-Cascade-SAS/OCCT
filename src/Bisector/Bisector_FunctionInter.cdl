@@ -1,0 +1,54 @@
+-- File:	Bisector_FunctionInter.cdl
+-- Created:	Tue Apr  5 14:05:05 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+private class FunctionInter from Bisector  
+inherits FunctionWithDerivative from math 
+
+        ---Purpose:                           2                      2 
+	--          F(u) =  (PC(u) - PBis1(u))   + (PC(u) - PBis2(u))
+
+uses 
+    Curve   from Geom2d,
+    Curve   from Bisector
+	--          
+
+is
+
+    Create  returns FunctionInter from Bisector;
+    
+    Create (C     : Curve   from Geom2d ;
+            Bis1  : Curve   from Bisector;
+	    Bis2  : Curve   from Bisector)  
+    returns FunctionInter from Bisector;
+    
+    Perform (me    : in out;
+    	     C     : Curve   from Geom2d ;
+             Bis1  : Curve   from Bisector;
+	     Bis2  : Curve   from Bisector)
+    is static;	     	
+	     
+    Value(me : in out; X : Real; F : out Real) 
+    	---Purpose: Computes the values of the Functions for the variable <X>.
+    returns Boolean
+    is static;
+    
+    Derivative(me : in out; X : Real; D : out Real) 
+    returns Boolean;
+
+    Values(me : in out ; X  : Real; F  : out Real; D  : out Real)    
+    	---Purpose: Returns the values of the functions and the derivatives
+    	--          for the variable <X>.
+    returns Boolean
+    is static;
+    
+fields
+    
+    curve     : Curve from Geom2d;
+    bisector1 : Curve from Bisector;
+    bisector2 : Curve from Bisector;
+    
+end FunctionInter;

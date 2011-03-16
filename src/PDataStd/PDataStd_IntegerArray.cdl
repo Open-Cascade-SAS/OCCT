@@ -1,0 +1,30 @@
+-- File:	PDataStd_IntegerArray.cdl
+-- Created:	Fri Jun 11 11:41:53 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+class IntegerArray from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses HArray1OfInteger from PColStd
+     
+     
+is
+
+    Create returns mutable IntegerArray from PDataStd;
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+
+    SetValue(me: mutable; Index : Integer from Standard; Value : Integer from Standard);
+    
+    Value(me;  Index : Integer from Standard) returns Integer  from Standard;
+   
+    Lower (me) returns Integer from Standard;      
+
+    Upper (me) returns Integer from Standard;   
+     
+fields
+    myValue     :  HArray1OfInteger from PColStd;
+end IntegerArray;

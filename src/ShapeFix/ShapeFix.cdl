@@ -1,0 +1,145 @@
+-- File:	ShapeFix.cdl
+-- Created:	Wed Jun  3 12:07:35 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeFix 
+
+    	---Purpose:  This package provides algorithms for fixing
+	-- problematic (violating Open CASCADE requirements) shapes.
+	-- Tools from package ShapeAnalysis are used for detecting the problems. The
+	-- detecting and fixing is done taking in account various
+	-- criteria implemented in BRepCheck package. 
+	-- Each class of package ShapeFix deals with one
+	-- certain type of shapes or with some family of problems.
+
+uses
+
+    gp,
+    Geom,
+    Geom2d,
+    Geom2dAPI,
+    GeomAbs,
+    Adaptor3d,
+    TCollection,
+    TColStd,
+    TopAbs,
+    TopLoc,
+    TopoDS, 
+    TopTools,
+    Message,
+    ShapeExtend,
+    ShapeAnalysis,
+    ShapeConstruct,
+    ShapeBuild,
+    Bnd
+
+is
+
+    -- classes
+    class Root;    
+
+    class EdgeProjAux;
+
+    class Edge;
+    	---Purpose: Fixing different problems on edge
+	
+    class Wire;
+        ---Purpose: Fixing different problems with wires
+
+    class Face;
+    	---Purpose: Fixing problems with face (orientation of wires and wrong wires)
+	  
+    class FixSmallFace;
+      	---Purpose: Fixing face with small size
+
+    class WireVertex;
+    	---Purpose: Fixing disconnected edges in the wire
+
+    class Wireframe;
+        ---Purpose: Provides methods to fix wireframe of shape
+    
+    class FreeBounds;
+	---Purpose: Fixing free bounds of the shape (connecting open wires)
+
+    class FaceConnect;
+        ---Purpose: Rebuilds connectivity between faces in shell
+	
+    class Shell;
+    	---Purpose: Fixing orientation of faces in shell
+
+    class Solid;
+        ---Purpose: Creating solid from shell and orienting it to have finite volume
+	
+    class ShapeTolerance;
+    	---Purpose: Modifying shape tolerances
+
+    class Shape;
+    	---Purpose: Fixing problem of shape. 
+
+    class EdgeConnect;
+        ---Purpose: Rebuilds edges to connect with new vertices, was moved from ShapeBuild
+
+    class ComposeShell;
+    	---Purpose: Splits a (pseudo)face onto grid of faces (shell)
+
+    class SplitCommonVertex;
+    	---Purpose: Splits vertex which is common for two wires
+	--          (for writing into STEP)
+
+    class WireSegment;
+    	---Purpose: Auxiliary class (data storage) for ComposeShell
+	
+    class IntersectionTool;
+    	---Purpose: Tool for fixing selfintersecting wire
+	--          and intersecting wires
+	
+    --class OverlappingTool;  now it is in package OverlapShape of Products
+    	---Purpose: Tool for fixing overlapping
+	
+    class SplitTool;
+    	---Purpose: Tool for splitting and cutting edges; incudes methods
+	--          used in OverlappingTool and IntersectionTool
+	
+    class SequenceOfWireSegment instantiates Sequence from TCollection
+    	(WireSegment from ShapeFix);
+    
+    class DataMapOfShapeBox2d instantiates DataMap from TCollection                           
+    	(Shape from TopoDS, Box2d from Bnd, ShapeMapHasher from TopTools);
+
+
+    SameParameter (shape  : Shape from TopoDS;
+    	    	   enforce: Boolean;
+    	    	   preci  : Real = 0.0)
+    returns Boolean;
+    	---Purpose : Runs SameParameter from BRepLib with these adaptations :
+    	--           <enforce> forces computations, else they are made only on
+    	--             Edges with flag SameParameter false
+    	--           <preci>, if not precised, is taken for each EDge as its own
+    	--           Tolerance
+    	--           Returns True when done, False if an exception has been raised
+    	--           In case of exception anyway, as many edges as possible have
+    	--           been processed
+
+    EncodeRegularity (shape: Shape from TopoDS; tolang: Real = 1.0e-10);
+    	---Purpose : Runs EncodeRegularity from BRepLib taking into account
+	--           shared components of assemblies, so that each component
+	--           is processed only once
+
+    RemoveSmallEdges (shape: in out Shape from TopoDS; Tolerance: Real; context: in out ReShape from ShapeBuild) 
+    	returns Shape from TopoDS;
+	---Purpose: Removes edges which are less than given tolerance from shape
+	--          with help of ShapeFix_Wire::FixSmall()
+
+    FixVertexPosition(theshape: in out Shape from TopoDS;
+		      theTolerance: Real; 
+    	    	      thecontext: ReShape from ShapeBuild) returns Boolean;
+	---Purpose: Fix position of the vertices having tolerance more tnan specified one.;       
+    	 
+    LeastEdgeSize(theshape: in out Shape from TopoDS) returns Real;
+	---Purpose: Calculate size of least edge;       
+    	 
+
+end ShapeFix;

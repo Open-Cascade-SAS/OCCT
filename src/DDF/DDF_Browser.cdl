@@ -1,0 +1,99 @@
+-- File:	DDF_Browser.cdl
+--      	---------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct  3 1997	Creation
+
+
+class Browser from DDF inherits Drawable3D from Draw
+
+	---Purpose: Browses a data framework.
+
+uses
+
+    Data                from TDF,
+    Label               from TDF,
+    AttributeIndexedMap from TDF,
+    Interpretor         from Draw,
+    Display             from Draw,
+    AsciiString         from TCollection
+
+-- raises
+
+is
+
+    Create  (aDF : Data from TDF)
+    returns mutable Browser from DDF;
+    
+    
+    DrawOn (me; dis : in out Display);
+    
+    
+    Copy (me) 
+    returns mutable Drawable3D from Draw
+    is redefined;
+
+    Dump (me; S : in out OStream) 
+    is redefined;
+
+    Whatis (me; I : in out Interpretor from Draw)
+    is redefined;
+
+    -- Specific methods -------------------------------------------------------
+
+    Data (me : mutable; aDF : Data from TDF);
+
+    Data (me)
+    returns Data from TDF;
+    
+    OpenRoot(me)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns a string composed with the sub-label
+	--          entries of <myDF>.
+
+    OpenLabel(me; aLab : Label from TDF)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns a string composed with the sub-label
+	--          entries of <aLab>.
+
+    OpenAttributeList(me : mutable;
+    	    	      aLab : Label from TDF)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns a string composed with the attribute index
+	--          (found in <myAttMap>) of <aLab>.
+
+    OpenAttribute(me : mutable;
+    	    	  anIndex : Integer from Standard = 0)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns a string composed with the list of
+	--          referenced attribute index of the attribute
+	--          <anIndex>. For exemple, it is usefull for
+	--          TDataStd_Group. It uses a mecanism based on a
+	--          DDF_AttributeBrowser.
+
+    Information(me)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns information about <me> to be displayed in
+	--          information window.
+
+    Information(me; aLab : Label from TDF)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns information about <aLab> to be displayed
+	--          in information window.
+
+    Information(me; anIndex : Integer from Standard = 0)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns information about attribute <anIndex> to
+	--          be displayed in information window.
+
+
+fields
+
+    myDF     : Data from TDF;
+    myAttMap : AttributeIndexedMap from TDF;
+
+end Browser;

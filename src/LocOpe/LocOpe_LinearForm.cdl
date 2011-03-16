@@ -1,0 +1,116 @@
+-- File:	LocOpe_LinearForm.cdl
+-- Created:	Mon Apr 14 15:31:54 1997
+-- Author:	Olga PILLOT
+--		<opt@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class LinearForm from LocOpe 
+
+	---Purpose: Defines a linear form (using Prism from BRepSweep)
+	--          with modifications provided for the LinearForm feature.
+uses DataMapOfShapeListOfShape from TopTools,
+     Edge               from TopoDS,
+     Prism            from BRepSweep,     
+     Shape           from TopoDS,
+     Face            from TopoDS,
+     SequenceOfCurve from TColGeom, 
+     ListOfShape     from TopTools,
+     Curve           from Geom, 
+     Vec             from gp,
+     Dir             from gp,
+     Plane           from Geom,     
+     Pnt             from gp
+    
+raises NoSuchObject from Standard,
+       NotDone      from StdFail
+
+is
+
+    Create 
+     
+    	returns  LinearForm  from  LocOpe;
+	---C++: inline
+
+ 
+    Create (Base  : Shape       from  TopoDS;
+    	    V     : Vec         from  gp;
+	    Pnt1  : Pnt         from  gp;
+	    Pnt2  : Pnt         from  gp)
+	    
+	---C++: inline
+	returns LinearForm from LocOpe;     
+
+    Create (Base  : Shape       from  TopoDS;
+    	    V     : Vec         from  gp;
+	    Vectra: Vec         from gp;
+	    Pnt1  : Pnt         from  gp;
+	    Pnt2  : Pnt         from  gp)
+	    
+	---C++: inline
+	returns LinearForm from LocOpe;     
+
+    Perform(me:  in  out;  Base : Shape       from  TopoDS;
+		    	   V    : Vec         from  gp;
+		           Pnt1 : Pnt         from  gp;
+		           Pnt2 : Pnt         from  gp)
+
+	is  static;
+
+    Perform(me:  in  out;  Base  : Shape       from  TopoDS;
+		    	   V     : Vec         from  gp;
+		    	   Vectra: Vec         from  gp;
+		           Pnt1  : Pnt         from  gp;
+		           Pnt2  : Pnt         from  gp)
+
+	is  static;
+
+    FirstShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    LastShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    Shape(me)
+    
+    	returns Shape from TopoDS 
+	raises  NotDone  from  StdFail
+	---C++: return const &
+	is static;
+
+
+    Shapes(me; S: Shape from TopoDS)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const &
+    	raises NoSuchObject from Standard
+	       -- The exception is raised if S is not a subshape of the profile
+	is static;
+
+    IntPerf(me:  in  out) 
+     
+    	is  static  private;
+ 
+
+fields
+
+    myBase       : Shape             from TopoDS;
+    myVec        : Vec               from gp; 
+    myTra        : Vec               from gp; 
+    myDone       : Boolean           from Standard; 
+    myIsTrans    : Boolean           from Standard;     
+    myRes        : Shape             from TopoDS;
+    myFirstShape : Shape             from TopoDS;
+    myLastShape  : Shape             from TopoDS;
+    myMap        : DataMapOfShapeListOfShape    from TopTools;
+    myPnt1       : Pnt               from gp;
+    myPnt2       : Pnt               from gp;    
+    
+end LinearForm;     

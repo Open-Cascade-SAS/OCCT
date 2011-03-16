@@ -1,0 +1,85 @@
+-- File:	ImageUtility.cdl
+-- Created:	Tue Jul 27 18:51:28 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+package ImageUtility
+
+
+uses
+	TCollection,
+	Image,
+	AlienImage,
+	OSD,
+	Aspect
+
+is
+
+	class XPR ;
+		--- Purpose : perform a "xpr " with a XAlienImage build
+		-- 		 from any Image , any AlienImage .
+
+	class XWUD ;
+		--- Purpose : perform a "xwud " with a XAlienImage build
+		-- 		 from any Image , any AlienImage .
+
+	class XWD ;
+		--- Purpose : perform a "xwd " and create Image and XAlienImage.
+
+	class X11Dump ;
+		--- Purpose : Create a X11 Window and perform a XPutImage on it,
+		--            from any Image , any AlienImage .
+
+	imported X11Window ;
+		--- Xlib.h : Window type
+
+	imported X11Display ;
+		--- Xlib.h : Display type
+
+	imported X11XImage ;
+		--- Xlib.h : XImage type
+
+	imported X11GC ;
+		--- Xlib.h : XImage type
+
+	PixelDiff( aImage       : immutable Image from Image ;
+	           anotherImage : immutable Image from Image ) 
+		returns mutable PseudoColorImage from Image
+		--- Purpose : Create a Black & White Image from two Image.
+		--	      Resulting Image Pixel is set to 0 if Pixel from
+		--	      both Image are the same else set to 1 .
+		raises TypeMismatch from Standard;
+
+	PixelColorDiff( aImage       : immutable Image from Image ;
+	                anotherImage : immutable Image from Image ) 
+		returns mutable PseudoColorImage from Image
+		--- Purpose : Create a Black & White Image from two Image.
+		--	      Resulting Image Pixel is set to 0 if PixelColor 
+		--	      from both Image are the same else set to 1 .
+		raises TypeMismatch from Standard;
+
+	PixelColorDiff( aImage       : immutable Image from Image ;
+	                anotherImage : immutable Image from Image ;
+			aCRColorMap  : immutable ColorRampColorMap from Aspect )
+		returns mutable PseudoColorImage from Image
+		--- Purpose : Create a ColorRamp Image from two Image.
+		--	      Resulting Image Pixel Index is proportional
+		--	      to the (Red+Green_Blue)Image Differences scaling
+		--	      to the ColorRamp range.
+		raises TypeMismatch from Standard;
+
+	PixelColorDiff( aImage       : immutable Image from Image ;
+	                anotherImage : immutable Image from Image ;
+			aCRColorMap  : immutable ColorRampColorMap from Aspect ;
+			RedDiff      : out mutable PseudoColorImage from Image ;
+			GreenDiff    : out mutable PseudoColorImage from Image ;
+			BlueDiff     : out mutable PseudoColorImage from Image )
+		--- Purpose : Create a ColorRamp Images from two Image.
+		--	      Resulting Image Pixel Index is proportional
+		--	      to the Image Differences scaling to the 
+		--	      ColorRamp range.
+		raises TypeMismatch from Standard;
+
+
+end ;

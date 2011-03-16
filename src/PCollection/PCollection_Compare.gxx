@@ -1,0 +1,42 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_Compare.gxx
+// Created:	Thu Aug 27 12:06:34 1992
+// Author:	Mireille MERCIEN
+//              <mip@sdsun3>           	 
+//           	Copyright:	 Matra Datavision 1992
+
+#include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+
+// -----------
+// IsLower :
+// -----------
+Standard_Boolean PCollection_Compare::IsLower (const Item& ,
+					       const Item& ) const
+{
+//   Standard_NotImplemented::Raise();
+   return Standard_False;
+}
+
+// -----------
+// IsGreater :
+// -----------
+Standard_Boolean PCollection_Compare::IsGreater (const Item& ,
+						 const Item& ) const
+{
+//   Standard_NotImplemented::Raise();
+   return Standard_False;
+}
+
+// -----------
+// IsEqual :
+// -----------
+Standard_Boolean PCollection_Compare::IsEqual (const Item& ,
+					       const Item& ) const
+{
+  //   return (Left == Right) ;
+  Standard_ProgramError::Raise("PCollection_Compare::IsEqual : Obsolete method...");
+  return Standard_False;
+}
+
+

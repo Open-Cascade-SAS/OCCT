@@ -1,0 +1,88 @@
+-- File:	Message.cdl
+-- Created:	Thu Jul 29 11:48:06 1999
+-- Author:	Roman LYGIN
+--		<rln@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+package Message 
+
+    	---Purpose: Defines
+   	--          - tools to work with messages
+    	--          - basic tools intended for progress indication
+
+uses
+
+    MMgt,
+    TColStd,
+    TCollection,
+    Standard
+
+is
+
+    enumeration Gravity is
+    	---Purpose: Defines gravity level of messages
+	-- - Trace: low-level details on algorithm execution (usually for debug purposes)
+	-- - Info: informative message
+	-- - Warning: warning message
+	-- - Alarm: non-critical error
+	-- - Fail: fatal error 
+	Trace,
+        Info,
+        Warning,
+        Alarm,
+	Fail
+    end Gravity;
+
+    imported Status;
+    imported StatusType;
+    imported ExecStatus;
+
+    class Msg;
+    	---Purpose: Defines message.
+    class MsgFile;
+    	---Purpose: Defines file storing messages.
+	
+    class Messenger;
+    	---Purpose: Messenger is API class providing general-purpose interface for 
+	--          libraries that may issue text messages without knowledge
+	--          of how these messages will be further processed.
+	
+    class Algorithm;
+	---Purpose: Class Message_Algorithm is the root class for all algorithms.
+	--          It provides generic mechanism for management execution status,
+	--          collection and output of corresponding error/warning messages
+
+    deferred class Printer;
+    	---Purpose: Defines basic message printer.
+	
+	class PrinterOStream;
+	    ---Purpose: Defines printer associated with an ostream
+    
+    class ListOfMsg instantiates List from TCollection (Msg from Message);
+    
+    class SequenceOfPrinters instantiates 
+    Sequence from TCollection (Printer from Message);
+
+    -- Progress indication
+    deferred class ProgressIndicator;
+    class ProgressScale;
+    class ProgressSentry;
+    class SequenceOfProgressScale instantiates
+         Sequence from TCollection (ProgressScale from Message);
+    
+    DefaultMessenger returns Messenger from Message;
+        ---Purpose: Defines default messenger for OCCT applications.
+        --          This is global static instance of the messenger.
+	--          By default, it contains single printer directed to cout.
+	--          It can be customized according to the application needs.
+	---C++: return const &
+
+    FillTime (Hour, Minute: Integer; Second: Real) returns AsciiString from TCollection;
+    	---Purpose: Returns the string filled with values of hours, minutes and seconds.
+	-- Example:
+    	--          1. (5, 12, 26.3345) returns "05h:12m:26.33s",
+	--          2. (0,  6, 34.496 ) returns "06m:34.50s",
+	--          3. (0,  0,  4.5   ) returns "4.50s"
+
+end Message;

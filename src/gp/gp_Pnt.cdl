@@ -1,0 +1,203 @@
+---Copyright:   Matra Datavision 1991
+
+class Pnt   from gp  inherits Storable 
+
+        --- Purpose :  Defines a 3D cartesian point.
+
+uses Ax1  from gp,
+     Ax2  from gp,
+     Trsf from gp, 
+     Vec  from gp,
+     XYZ  from gp
+
+raises OutOfRange from Standard
+
+is
+
+  Create   returns Pnt;
+    	---C++: inline
+        ---Purpose : Creates a point with zero coordinates.
+
+  Create (Coord : XYZ)   returns Pnt;
+    	---C++: inline
+        --- Purpose : Creates a point from a XYZ object.
+  
+  Create (Xp, Yp, Zp : Real)   returns Pnt;
+    	---C++:inline
+        --- Purpose :
+        --  Creates a  point with its 3 cartesian's coordinates : Xp, Yp, Zp.
+
+  SetCoord (me : in out; Index : Integer; Xi : Real)
+        ---C++:inline
+        --- Purpose :
+        --  Changes the coordinate of range Index :
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified
+        --  Index = 3 => Z is modified
+     raises OutOfRange
+        --- Purpose : Raised if Index != {1, 2, 3}.
+     is static;
+
+  SetCoord (me : in out; Xp, Yp, Zp : Real)
+    	---C++: inline
+    	---Purpose: For this point, assigns  the values Xp, Yp and Zp to its three coordinates. 
+    is static;
+
+  SetX (me : in out; X : Real)                
+    	---C++: inline
+    	---Purpose: Assigns the given value to the X coordinate of this point.
+    is static;
+
+  SetY (me : in out; Y : Real)                
+    	---C++: inline
+    	---Purpose: Assigns the given value to the Y coordinate of this point.
+    is static;
+
+  SetZ (me : in out; Z : Real)
+    	---C++: inline
+    	---Purpose: Assigns the given value to the Z coordinate of this point.     	
+    is static;
+
+  SetXYZ (me : in out; Coord : XYZ)         
+     	---C++: inline 
+     	---Purpose: Assigns the three coordinates of Coord to this point. 
+     is static;
+
+  Coord (me; Index : Integer)  returns Real
+        --- Purpose :
+        --  Returns the coordinate of corresponding to the value of  Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+        --  Index = 3 => Z is returned 
+    	-- Raises OutOfRange if Index != {1, 2, 3}.
+     raises OutOfRange
+     	---C++: inline 
+        --- Purpose : Raised if Index != {1, 2, 3}.     
+     is static;
+
+  Coord (me; Xp, Yp, Zp : out Real)
+    	---C++: inline      
+    	---Purpose: For this point gives its three coordinates Xp, Yp and Zp.
+    is static;
+
+  X (me)   returns Real
+    	---C++: inline  	 
+    	---Purpose: For this point, returns its X coordinate. 	
+    is static;
+
+  Y (me)   returns Real
+    	---C++: inline                  
+    	---Purpose: For this point, returns its Y coordinate. 
+        is static;
+
+  Z (me)   returns Real
+    	---C++: inline 
+    	---Purpose: For this point, returns its Z coordinate. 
+     is static;
+
+  XYZ (me) returns XYZ                   is static;
+        ---C++: inline
+    	---C++: return const &  
+        ---Purpose: For this point, returns its three coordinates as a XYZ object.
+
+  Coord (me) returns XYZ                 is static;
+        ---C++: inline
+    	---C++: return const &  
+	---Purpose: For this point, returns its three coordinates as a XYZ object.
+
+  ChangeCoord (me : in out) returns XYZ                 is static;
+        ---C++: inline
+    	---C++: return &
+        --- Purpose:
+        -- Returns the coordinates of this point.
+        -- Note: This syntax allows direct modification of the returned value.
+
+  BaryCenter(me : in out; Alpha : Real; P : Pnt from gp; Beta : Real);
+        ---C++: inline 
+        ---Purpose: Assigns the result of the following expression to this point
+    	-- (Alpha*this + Beta*P) / (Alpha + Beta)
+
+  IsEqual (me; Other : Pnt; LinearTolerance : Real)   returns Boolean
+     is static;
+        ---C++: inline
+        --- Purpose : Comparison
+        --  Returns True if the distance between the two points is
+        --  lower or equal to LinearTolerance.
+
+  Distance (me; Other : Pnt)   returns Real        is static;
+        ---C++: inline
+        --- Purpose : Computes the distance between two points.
+
+  SquareDistance (me; Other : Pnt)   returns Real  is static;
+        ---C++: inline
+        --- Purpose : Computes the square distance between two points.
+
+  Mirror (me : in out; P : Pnt)         is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a point
+        --  with respect to the point P which is the center of 
+        --  the  symmetry.
+
+  Mirrored (me; P : Pnt)   returns Pnt  is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a point
+        --  with respect to an axis placement which is the axis
+        --  of the symmetry.
+
+  Mirror (me : in out; A1 : Ax1)       is static;
+
+  Mirrored (me; A1 : Ax1)  returns Pnt is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of a point
+        --  with respect to a plane. The axis placement A2 locates 
+        --  the plane of the symmetry : (Location, XDirection, YDirection).
+
+  Mirror (me : in out; A2 : Ax2)         is static;
+
+  Mirrored (me; A2 : Ax2)   returns Pnt  is static;
+        --- Purpose :
+        --  Rotates a point. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)       is static;
+        ---C++: inline
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns Pnt  is static;
+        ---C++: inline
+        --- Purpose : Scales a point. S is the scaling value.
+
+  Scale (me : in out; P : Pnt; S : Real)       is static;
+        ---C++: inline
+
+  Scaled (me; P : Pnt; S : Real)  returns Pnt  is static;
+        ---C++: inline
+        --- Purpose : Transforms a point with the transformation T.
+
+  Transform (me : in out; T : Trsf)         is static;
+
+  Transformed (me; T : Trsf)   returns Pnt  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Translates a point in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+  Translate (me : in out; V : Vec)        is static;
+        ---C++: inline
+
+  Translated (me; V : Vec)   returns Pnt  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a point from the point P1 to the point P2.
+
+  Translate (me : in out; P1, P2 : Pnt)        is static;
+        ---C++: inline
+
+  Translated (me; P1, P2 : Pnt)   returns Pnt  is static;
+        ---C++: inline
+
+
+fields
+
+  coord : XYZ;
+
+end;

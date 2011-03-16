@@ -1,0 +1,25 @@
+-- File:	CDF_Timer.cdl
+-- Created:	Fri Jul 17 08:03:18 1998
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+private class Timer from CDF
+uses Timer from OSD
+is
+    Create returns Timer from CDF;
+
+     
+    ShowAndRestart(me: in out; aMessage: CString from Standard);
+    
+    ShowAndStop(me: in out; aMessage: CString from Standard);
+   
+
+    Show(me: in out; aMessage: CString from Standard)
+    is private;
+
+    MustShow(me: in out)  returns Boolean from Standard;
+    
+fields
+    myTimer: Timer from OSD;
+end Timer from OSD;

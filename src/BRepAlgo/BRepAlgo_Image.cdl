@@ -1,0 +1,125 @@
+-- File:	BRepAlgo_Image.cdl
+-- Created:	Thu Oct 26 14:31:50 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Image from BRepAlgo
+
+	---Purpose: Stores link between a shape <S> and a shape <NewS>
+ 	--          obtained from <S>. <NewS> is an image of <S>.
+
+uses
+    Shape                     from TopoDS,
+    ShapeEnum                 from TopAbs,	
+    ListOfShape               from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    DataMapOfShapeShape       from TopTools
+
+raises
+    ConstructionError from Standard
+    
+is
+    Create;
+    
+    SetRoot (me : in out; S : Shape from TopoDS)
+    is static;
+    
+    
+    Bind (me : in out; OldS : Shape from TopoDS;
+	               NewS : Shape from TopoDS)				         
+    	---Purpose: Links <NewS> as image of <OldS>.
+    raises 
+	ConstructionError -- if Olds has image.    
+    is static;
+    
+
+    Bind (me : in out; OldS : Shape       from TopoDS;
+	               NewS : ListOfShape from TopTools)
+    	---Purpose: Links <NewS> as image of <OldS>.
+    raises 
+	ConstructionError -- if Olds has image.    
+    is static;
+    
+
+    Add (me : in out;  OldS : Shape from TopoDS;
+	               NewS : Shape from TopoDS)
+    	---Purpose: Add <NewS> to the image of <OldS>.		       
+    raises 
+	ConstructionError -- if Olds has not image.    
+    is static;
+    
+    
+    Add (me : in out; OldS : Shape       from TopoDS;
+	              NewS : ListOfShape from TopTools)
+    	---Purpose: Add <NewS> to the image of <OldS>.		       
+    raises 
+	ConstructionError -- if Olds has not image.    
+    is static;
+    
+    Clear(me : in out)
+    is static;
+    
+    Remove(me : in out;  S : Shape from TopoDS)
+        ---Purpose: Remove <S> to set of images.
+    raises 
+	ConstructionError -- if S is not an image.    
+    is static;
+
+    Roots (me)
+    	---C++: return const &
+    returns ListOfShape from TopTools
+    is static;
+    
+    IsImage (me; S : Shape from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    ImageFrom (me; S : Shape from TopoDS) 
+    	---Purpose: Returns the generator of <S>
+        ---C++: return const &
+    returns Shape from TopoDS  
+    is static;
+    
+    Root (me; S : Shape from TopoDS) 
+    	---Purpose: Returns the upper generator of <S>
+        ---C++: return const &
+    returns Shape from TopoDS  
+    is static;
+    
+    HasImage (me; S : Shape from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    Image (me; S : Shape from TopoDS) 
+    	---Purpose: Returns the Image of <S>.
+    	--          Returns <S> in the list if HasImage(S) is false.
+        ---C++: return const &      
+    returns ListOfShape from TopTools
+    is static;
+   
+    LastImage (me; S :        Shape from TopoDS;
+                   L : in out ListOfShape from TopTools) 
+    	---Purpose: Stores in <L> the images of images of...images of <S>.
+    	--          <L> contains only <S> if  HasImage(S) is false.
+    is static;
+    
+    Compact (me : in out)
+    	---Purpose:  Keeps only the link between roots and lastimage.
+    is static;
+
+    Filter (me        : in out; 
+    	    S         : Shape     from TopoDS;
+    	    ShapeType : ShapeEnum from TopAbs);
+	---Purpose: Deletes in the images the shape of type <ShapeType>
+	--          which are not in <S>.
+	--  Warning:  Compact() must be call before.
+	        	        
+fields
+
+    roots : ListOfShape               from TopTools;
+    up    : DataMapOfShapeShape       from TopTools;
+    down  : DataMapOfShapeListOfShape from TopTools;
+    
+end Image;

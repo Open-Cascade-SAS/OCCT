@@ -1,0 +1,52 @@
+-- File:	PDataXtd.cdl
+-- Created:	Wed May 10 10:48:16 1995
+-- Author:	Denis PASCAL 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1995
+
+
+
+package PDataXtd 
+
+	---Purpose: 
+
+
+uses Standard,
+     PDF,
+     PTopoDS,
+     PGeom,
+     PNaming, 
+     PDataStd,
+     PCollection,
+     PColStd,
+     PTopLoc,
+     PGeom, 
+     TColStd,
+     gp
+
+is
+
+
+    ---Purpose: General Data
+    --          ============ 
+
+    class Position;
+    
+    class Point;
+    
+    class Axis;
+    
+    class Plane;  
+
+    class Geometry;  -- Point | Line ...etc..
+    
+    class Constraint;
+    
+    class Placement;
+    
+    class PatternStd;
+    
+    class Shape; 
+     
+ 
+end PDataXtd;

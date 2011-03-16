@@ -1,0 +1,40 @@
+-- File:	PBRep_PolygonOnTriangulation.cdl
+-- Created:	Mon Oct 23 17:20:22 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnTriangulation from PBRep inherits CurveRepresentation from PBRep
+
+
+    	---Purpose: A representation by an array of nodes on a 
+    	--          triangulation.
+
+
+uses Location               from PTopLoc,
+     PolygonOnTriangulation from PPoly,
+     Triangulation          from PPoly
+
+is
+
+    Create(P: PolygonOnTriangulation from PPoly;
+    	   T: Triangulation          from PPoly;
+	   L: Location               from PTopLoc)
+    returns mutable PolygonOnTriangulation from PBRep;
+    
+    
+    IsPolygonOnTriangulation(me) returns Boolean
+    	---Purpose: returns True.
+    is redefined;
+
+    PolygonOnTriangulation(me) returns any PolygonOnTriangulation from PPoly;
+
+    Triangulation(me) returns any Triangulation from PPoly;
+        
+fields
+
+    myPolygon       : PolygonOnTriangulation from PPoly;
+    myTriangulation : Triangulation          from PPoly;
+
+end PolygonOnTriangulation;

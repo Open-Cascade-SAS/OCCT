@@ -1,0 +1,85 @@
+-- File:	QualifiedCirc.cdl<2>
+-- Created:	Mon Apr 15 15:32:39 1991
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class QualifiedCirc
+
+from GccEnt
+
+	---Purpose: Creates a qualified 2d Circle.
+    	-- A qualified 2D circle is a circle (gp_Circ2d circle) with a
+    	-- qualifier which specifies whether the solution of a
+    	-- construction algorithm using the qualified circle (as an argument):
+    	-- -   encloses the circle, or
+    	-- -   is enclosed by the circle, or
+    	-- -   is built so that both the circle and it are external to   one another, or
+    	-- -   is undefined (all solutions apply).
+  
+inherits Storable from Standard
+
+uses Position from GccEnt,
+     Circ2d   from gp
+
+is
+
+Create(Qualified : Circ2d   from gp     ;
+       Qualifier : Position from GccEnt ) returns QualifiedCirc from GccEnt;
+    	---Purpose: Constructs a qualified circle by assigning the qualifier
+    	-- Qualifier to the circle Qualified. Qualifier may be:
+    	-- -   GccEnt_enclosing if the solution computed by a
+    	--   construction algorithm using the qualified circle
+    	--   encloses the circle, or
+    	-- -   GccEnt_enclosed if the solution is enclosed by the circle, or
+    	-- -   GccEnt_outside if both the solution and the circle
+    	--   are external to one another, or
+    	-- -   GccEnt_unqualified if all solutions apply.
+
+Qualified(me) returns Circ2d from gp
+is static;
+    	---Purpose: Returns a 2D circle to which the qualifier is assigned.
+    
+Qualifier(me) returns Position from GccEnt
+is static;
+    	---Purpose: Returns
+    	-- -   the qualifier of this qualified circle, if it is enclosing,
+    	-- enclosed or outside, or
+    	-- -   GccEnt_noqualifier if it is unqualified.
+        
+IsUnqualified(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the Circ2d is Unqualified and false in 
+    	--          the other cases.
+
+IsEnclosing(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution computed by a construction
+    	-- algorithm using this qualified circle encloses the circle.
+
+IsEnclosed(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution computed by a construction
+    	-- algorithm using this qualified circle is enclosed by the circle.
+
+    IsOutside(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if both the solution computed by a
+    	-- construction algorithm using this qualified circle and the
+    	-- circle are external to one another.
+
+fields
+
+TheQualified : Circ2d   from gp;
+TheQualifier : Position from GccEnt;
+
+--friends
+
+--Unqualified (Obj : Circ2d) from GccEnt,
+--Enclosing   (Obj : Circ2d) from GccEnt,
+--Enclosed    (Obj : Circ2d) from GccEnt,
+--Outside     (Obj : Circ2d) from GccEnt
+
+end QualifiedCirc;
+

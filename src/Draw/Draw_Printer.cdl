@@ -1,0 +1,50 @@
+-- File:	Draw_Printer.cdl
+-- Created:	Tue Jul 31 19:12:06 2007
+-- Author:	OCC Team
+---Copyright:	Open CASCADE S.A. 2007
+
+
+class Printer from Draw inherits Printer from Message
+
+    ---Purpose: Implementation of Printer class with output directed to Draw_Interpretor
+
+uses
+
+    Interpretor from Draw,
+    Gravity from Message,
+    AsciiString from TCollection,
+    ExtendedString from TCollection
+    
+is
+
+    Create (theTcl : Interpretor from Draw);
+	---Purpose: Creates a printer connected to the interpretor.
+
+    Send (me; theString: ExtendedString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean) is redefined;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          This method must be redefined in descentant.
+
+    Send (me; theString: CString; theGravity: Gravity from Message;
+	      putEndl: Boolean) is redefined;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          Default implementation calls first method Send().
+
+    Send (me; theString: AsciiString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean) is redefined;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          Default implementation calls first method Send().
+
+fields
+
+    myTcl : Address from Standard; -- pointer to interpretor
+
+end Printer;

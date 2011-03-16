@@ -1,0 +1,30 @@
+-- File:        Hyperbola.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWHyperbola from RWStepGeom
+
+	---Purpose : Read & Write Module for Hyperbola
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Hyperbola from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWHyperbola;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Hyperbola from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Hyperbola from StepGeom);
+
+	Share(me; ent : Hyperbola from StepGeom; iter : in out EntityIterator);
+
+end RWHyperbola;

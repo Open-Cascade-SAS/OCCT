@@ -1,0 +1,30 @@
+-- File:        ExtrudedAreaSolid.cdl
+-- Created:     Mon Dec  4 12:02:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWExtrudedAreaSolid from RWStepShape
+
+	---Purpose : Read & Write Module for ExtrudedAreaSolid
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ExtrudedAreaSolid from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWExtrudedAreaSolid;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ExtrudedAreaSolid from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : ExtrudedAreaSolid from StepShape);
+
+	Share(me; ent : ExtrudedAreaSolid from StepShape; iter : in out EntityIterator);
+
+end RWExtrudedAreaSolid;

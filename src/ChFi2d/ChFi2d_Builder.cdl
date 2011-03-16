@@ -1,0 +1,286 @@
+-- File:	ChFi2d_Builder.cdl
+-- Created:	Mon Jun 12 13:53:51 1995
+-- Author:	Philippe DERVIEUX
+--		<phd@tlefon>
+---Copyright:	 Matra Datavision 1995
+-- Modified:	Tue Oct 22 09:23:11 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+--		add new method BuildNewEdge with special flag IsDegenerated (PRO4896)
+
+
+class Builder from ChFi2d 
+
+	---Purpose: This  class contains  the algorithm  used to build
+	--          fillet on planar wire.
+
+uses
+    Face                from TopoDS,
+    Edge                from TopoDS,
+    Vertex              from TopoDS,
+    ConstructionError   from ChFi2d,
+    SequenceOfShape     from TopTools,
+    DataMapOfShapeShape from TopTools,
+    Pln                 from gp,
+    Real                from Standard,
+    Boolean             from Standard
+    
+is
+
+    Create ;
+
+
+    Create ( F : Face );
+    	---Purpose: The face  <F> can be build  on a closed or an open
+    	--          wire. 
+
+    
+    Init( me : in out; F : Face );
+
+
+    Init( me : in out; RefFace, ModFace : Face );
+    
+
+    AddFillet ( me : in out; V : Vertex; Radius : Real ) returns Edge;
+    	---Purpose: Add  a fillet  of   radius  <Radius> on  the  wire
+    	--          between the two edges connected to the vertex <V>.
+    	--          <AddFillet> returns the  fillet edge. The returned
+    	--          edge has  sense only   if the status   <status> is
+    	--          <IsDone> 
+
+
+    ModifyFillet ( me : in out; Fillet : Edge; Radius : Real) 
+    returns Edge;
+    	---Purpose: modify the fillet radius and return the new fillet
+    	--          edge. this    edge has sense  only if   the status
+    	--          <status> is <IsDone>.
+    
+
+    RemoveFillet( me : in out; Fillet : Edge)
+    returns Vertex;
+    	---Purpose: removes the fillet <Fillet> and returns the vertex
+    	--          connecting the two adjacent edges to  this fillet. 
+
+    
+    AddChamfer ( me : in out; E1, E2 : Edge; D1, D2 : Real ) 
+    returns Edge;
+    	---Purpose: Add a chamfer on  the  wire between the two  edges
+    	--          connected <E1> and  <E2>. <AddChamfer> returns the
+    	--          chamfer  edge. This  edge  has  sense only if  the
+    	--          status <status> is <IsDone>.
+
+
+    AddChamfer ( me : in out; E : Edge; V : Vertex; D, Ang  : Real ) 
+    returns Edge;
+    	---Purpose: Add  a chamfer on the   wire between the two edges
+    	--          connected to the vertex <V>. The chamfer will make
+    	--          an  angle <Ang> with the edge  <E>, and one of its
+    	--          extremities  will be on  <E>  at distance <D>. The
+    	--          returned   edge has sense   only   if the   status
+    	--          <status> is <IsDone>.
+    	--  Warning: The value of <Ang> must be expressed in Radian.
+
+
+    ModifyChamfer ( me : in out; Chamfer : Edge;
+    	    	    E1 : Edge; E2 : Edge; D1, D2 : Real)
+    returns  Edge;
+    	---Purpose: modify the chamfer <Chamfer>  and returns  the new
+    	--          chamfer edge. 
+      	--          This edge as sense only  if the status <status> is
+      	--          <IsDone>.
+
+
+
+    ModifyChamfer ( me : in out; Chamfer, E : Edge; D, Ang : Real)
+    returns  Edge;
+    	---Purpose: modify the  chamfer <Chamfer>  and returns the new
+    	--          chamfer edge. This    edge as sense  only   if the
+    	--          status <status>   is  <IsDone>.
+        --  Warning: The value of <Ang> must be expressed in Radian.
+    
+
+    RemoveChamfer( me : in out; Chamfer : Edge)
+    returns Vertex;
+    	---Purpose: removes   the chamfer  <Chamfer>   and returns the
+    	--          vertex connecting  the two adjacent  edges to this
+    	--          chamfer. 
+
+
+
+    Result( me ) returns Face;
+    	---Purpose: returns the modified face
+    	---C++:     inline 
+
+
+    IsModified( me; E : Edge ) returns Boolean;
+    	---C++:     inline 
+
+
+    FilletEdges( me ) returns SequenceOfShape; 
+    	---Purpose: returns the list of new edges
+    	---C++:     return const &
+    	---C++:     inline 
+
+
+    NbFillet( me ) returns Integer;
+    	---C++: inline 
+
+
+    ChamferEdges( me ) returns SequenceOfShape; 
+    	---Purpose: returns the list of new edges
+    	---C++:     return const &
+    	---C++:     inline 
+
+
+    NbChamfer( me ) returns Integer;
+    	---C++: inline 
+
+
+    HasDescendant( me; E : Edge) returns Boolean;
+    	---C++: inline 
+    
+    
+    DescendantEdge( me; E : Edge) returns Edge;
+    	---Purpose: returns the modified edge if <E> has descendant or
+    	--          <E> in the other case.
+    	---C++:     return const &
+    	---C++:     inline 
+
+
+    BasisEdge( me; E : Edge) returns Edge;
+    	---Purpose: Returns the parent edge of  <E> 
+    	--  Warning: If <E>is a basis edge,  the returned edge would be
+    	--          equal to <E>
+      	---C++:     return const &
+
+
+    Status(me) returns ConstructionError from ChFi2d;
+    	---C++:     inline
+    
+
+    ComputeFillet ( me : in out; V : Vertex; E1, E2 : Edge; Radius : Real;
+    	    	    TrimE1, TrimE2, Fillet : out Edge)
+    is private;
+    	---Purpose: Is internaly used by <AddFillet>. 
+    	--  Warning: <TrimE1>, <TrimE2>, <Fillet> has sense only if the
+    	--          status <status> is equal to <IsDone>
+    
+
+    ComputeChamfer ( me : in out; V : Vertex; E1, E2 : Edge; 
+    	    	     D1, D2 : Real;
+    	    	     TrimE1, TrimE2, Chamfer : out Edge)
+    is private;
+    	---Purpose: Is internaly used by  <AddChamfer>. The chamfer is
+    	--          computed  from  a  vertex,   two  edges   and  two
+    	--          distances   
+    	--  Warning: <TrimE1>, <TrimE2> and <Chamfer> has sense only if
+    	--          if the status <status> is equal to <IsDone>
+    
+
+    ComputeChamfer ( me : in out; V : Vertex; E1 : Edge; D, Ang : Real;
+    	    	     E2 : Edge; TrimE1, TrimE2, Chamfer : out Edge)
+    is private;
+    	---Purpose: Is internaly used by <AddChamfer>.  The chamfer is
+    	--          computed from   an  edge,  a  vertex,   a distance
+    	--    	    and an angle
+        --  Warning: <TrimE1>,  <TrimE2>, and <Chamfer> has
+    	--          sense only   if  the status <status> is   equal to
+    	--          <IsDone>
+
+
+    BuildFilletEdge(me : in out; V : Vertex; AdjEdge1, AdjEdge2 : Edge; 
+    	    	    Radius : Real;
+    	    	    NewExtr1, NewExtr2 : out Vertex)
+    returns Edge
+    is private;
+    	---Purpose: Is   internaly  used     by  <ComputeFillet>.   
+    	--          <NewExtr1> and  <NewExtr2>  will  contains the new 
+    	--          extremities of <AdjEdge1> and <AdjEdge2>
+    	--  Warning: The  returned  edge has sense   only if the status
+    	--          <status> is equal to <IsDone>
+    	--          or to one of those specific cases :
+    	--          	<FirstEdgeDegenerated>
+    	--          	<LastEdgeDegenerated>
+    	--          	<BothEdgesDegenerated>
+
+
+    BuildChamferEdge(me : in out; V : Vertex; AdjEdge1, AdjEdge2 : Edge; 
+    	    	     D1, D2 : Real;
+    	    	     NewExtr1, NewExtr2 : out Vertex)
+    returns Edge
+    is private;
+    	---Purpose: Is   internaly  used     by  <ComputeFillet>.   
+    	--          <NewExtr1> and  <NewExtr2>  will  contains the new 
+    	--          extremities of <AdjEdge1> and <AdjEdge2>
+    	--  Warning: The  returned  edge has sense   only if the status
+    	--          <status> is equal to <IsDone>
+
+
+    BuildChamferEdge(me : in out; V : Vertex; AdjEdge2 : Edge; 
+    	    	     D, Ang : Real;
+    	    	     AdjEdge1 : Edge; NewExtr1, NewExtr2 : out Vertex)
+    returns Edge
+    is private;
+    	---Purpose: Is   internaly  used     by  <ComputeFillet>.   
+    	--          <NewExtr1> and  <NewExtr2>  will  contains the new 
+    	--          extremities of <AdjEdge1> and <AdjEdge2>
+    	--  Warning: The  returned  edge has sense   only if the status
+    	--          <status> is equal to <IsDone>
+
+
+    BuildNewWire ( me : in out; OldE1, OldE2, E1, Fillet, E2 : Edge)
+    is private;
+    	---Purpose: replaces in  the  new face  <newFace> <OldE1>  and
+    	--          <OldE2>  by <E1>, <Fillet> and <E2>
+	--	    or by <Fillet> and <E2> if <E1> is degenerated
+	--	    or by <E1> and <Fillet> if <E2> is degenerated
+	--	    or by <Fillet> if <E1> and <E2> are degenerated .
+    
+    
+    BuildNewEdge ( me ; E1 : Edge; OldExtr, NewExtr : Vertex)
+    returns Edge
+    is private;
+    	---Purpose: Changes <OldExtr> of <E1> by <NewExtr>
+    
+    
+    BuildNewEdge ( me ; E1 : Edge; OldExtr, NewExtr : Vertex;
+    	    	    	 IsDegenerated :  out Boolean)
+    returns Edge
+    is private;
+    	---Purpose: Changes <OldExtr> of <E1> by <NewExtr>
+        --	    returns E1 and IsDegenerated = Standard_True
+	--	    if the new edge is degenerated         
+    
+
+    UpDateHistory( me : in out; E1, E2, TrimE1, TrimE2, NewEdge : Edge; 
+    	    	   Id : Integer)
+    is private;
+    	---Purpose: Writes <NewEdge> in  <fillets> if <Id> is equal to
+    	--          1, or in <chamfers> if <Id> is Equal to 2.
+    	--          Writes  the  modifications  in  <history> : 
+    	--          <TrimE1> is given by <E1>, <TrimE2> by <E2>
+	--          if <TrimE1> and <TrimE2> are not degenerated.
+    
+
+    UpDateHistory( me : in out; E1, E2, TrimE1, TrimE2 : Edge)
+    is private;
+    	---Purpose: Writes the  modifications in  <history> . <TrimE1>
+      	--          is given by <E1>, <TrimE2> by <E2>.
+
+
+    IsAFillet( me; E : Edge) returns Boolean is private;
+    
+    
+    IsAChamfer( me; E : Edge) returns Boolean is private;
+
+
+fields
+
+    status      : ConstructionError   from ChFi2d;
+    refFace     : Face                from TopoDS;
+    newFace     : Face                from TopoDS;
+    fillets     : SequenceOfShape     from TopTools;
+    chamfers    : SequenceOfShape     from TopTools;
+    history     : DataMapOfShapeShape from TopTools;
+
+end Builder;

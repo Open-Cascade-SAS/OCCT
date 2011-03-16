@@ -1,0 +1,22 @@
+-- File:	StepFEA_FeaModel3d.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaModel3d from StepFEA
+inherits FeaModel from StepFEA
+
+    ---Purpose: Representation of STEP entity FeaModel3d
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr
+
+
+is
+    Create returns FeaModel3d from StepFEA;
+	---Purpose: Empty constructor
+
+end FeaModel3d;

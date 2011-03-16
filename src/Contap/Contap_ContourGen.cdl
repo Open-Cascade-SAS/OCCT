@@ -1,0 +1,271 @@
+-- File:	Contap_ContourGen.cdl
+-- Created:	Fri Feb  5 09:39:18 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class ContourGen from Contap
+    (TheVertex      as any;
+     TheArc         as any;
+     TheSurface     as any;
+     TheArcTool     as any;  -- as ArcTool     from Contap(TheArc)
+     TheSurfaceTool as any;  -- as SurfaceTool from Contap(TheSurface)
+     TheContTool    as any;  -- as ContTool    from Contap(TheVertex,TheArc,
+                             --                            TheSurface)
+     TheTopolTool   as Transient)-- as TopolTool from IntStart(TheVertex,
+                                 --                            TheArc)
+
+	---Purpose: 
+
+
+uses PathPoint               from IntSurf,
+     PathPointTool           from IntSurf,
+     SequenceOfPathPoint     from IntSurf,
+     InteriorPoint           from IntSurf,
+     InteriorPointTool       from IntSurf,
+     SequenceOfInteriorPoint from IntSurf,
+     Pnt                     from gp,
+     Vec                     from gp
+     
+
+raises NotDone           from StdFail,
+       OutOfRange        from Standard,
+       ConstructionError from Standard
+
+    class ThePoint instantiates Point from Contap
+    	(TheVertex,
+	 TheArc);
+    
+    class TheSequenceOfPoint instantiates Sequence from TCollection
+    	(ThePoint); 
+	
+    class TheHSequenceOfPoint instantiates HSequence from TCollection
+    	(ThePoint,TheSequenceOfPoint);
+
+
+    class TheLine instantiates Line from Contap
+    	(TheVertex,
+	 TheArc,
+	 ThePoint,
+	 TheHSequenceOfPoint);
+	 
+
+    class TheSequenceOfLine instantiates Sequence from TCollection
+    	(TheLine);
+
+
+    class TheSurfProps instantiates SurfProps from Contap
+    	(TheSurface,
+	 TheSurfaceTool);
+
+
+    class TheSurfFunction instantiates SurfFunction from Contap
+	(TheSurface,
+	 TheSurfaceTool,
+	 TheSurfProps from Contap,
+         TheContTool);
+
+    class TheArcFunction instantiates ArcFunction from Contap
+    	(TheArc,
+	 TheSurface,
+	 TheArcTool,
+    	 TheSurfaceTool,
+	 TheSurfProps from Contap,
+         TheContTool);
+
+
+    class TheSearch instantiates SearchOnBoundaries from IntStart
+    	(TheVertex,
+	 TheArc,
+	 TheArcTool,
+         TheContTool,
+         TheTopolTool,
+	 TheArcFunction from Contap);
+
+
+    class TheIWalking instantiates IWalking from IntWalk
+    	(PathPoint               from IntSurf,
+         PathPointTool           from IntSurf,
+	 SequenceOfPathPoint     from IntSurf,
+         InteriorPoint           from IntSurf,
+	 InteriorPointTool       from IntSurf,
+         SequenceOfInteriorPoint from IntSurf,
+	 TheSurface,
+         TheSurfaceTool,
+	 TheSurfFunction         from Contap);
+
+
+    class TheSearchInside instantiates SearchInside from IntStart
+        (TheSurface,
+         TheSurfaceTool,
+	 TheTopolTool,
+	 TheContTool,
+         TheSurfFunction from Contap);
+
+is
+
+    Create
+    
+    	returns ContourGen from Contap;
+
+
+    Create(Direction: Vec from gp)
+    
+    	returns ContourGen from Contap;
+
+
+    Create(Direction: Vec from gp; Angle: Real from Standard)
+    
+    	returns ContourGen from Contap;
+
+
+    Create(Eye: Pnt from gp)
+    
+    	returns ContourGen from Contap;
+
+
+    Create(Surf: TheSurface; Domain: TheTopolTool; 
+           Direction: Vec from gp)
+
+	---Purpose: Creates the contour in a given direction.
+
+    	returns ContourGen from Contap;
+
+
+    Create(Surf: TheSurface; Domain: TheTopolTool; 
+           Direction: Vec from gp; Angle: Real from Standard)
+
+	---Purpose: Creates the contour in a given direction.
+
+    	returns ContourGen from Contap;
+
+
+    Create(Surf: TheSurface; Domain: TheTopolTool; 
+           Eye: Pnt from gp)
+
+	---Purpose: Creates the contour for a perspective view.
+
+    	returns ContourGen from Contap;
+
+
+    Perform(me: in out; Surf: TheSurface; Domain: TheTopolTool)
+
+	---Purpose: Creates the contour in a given direction.
+
+    	raises ConstructionError from Standard
+    	is static;
+
+
+    Perform(me: in out; Surf: TheSurface; Domain: TheTopolTool; 
+                        Direction: Vec from gp)
+
+	---Purpose: Creates the contour in a given direction.
+
+    	is static;
+
+
+    Perform(me: in out; Surf: TheSurface; Domain: TheTopolTool; 
+                        Direction: Vec from gp; Angle: Real from Standard)
+
+	---Purpose: Creates the contour in a given direction.
+
+    	is static;
+
+
+    Perform(me: in out; Surf: TheSurface; Domain: TheTopolTool; 
+                        Eye: Pnt from gp)
+
+	---Purpose: Creates the contour for a perspective view.
+
+    	is static;
+
+
+    Init(me: in out; Direction: Vec from gp)
+    
+    	is static;
+
+
+    Init(me: in out; Direction: Vec from gp; Angle: Real from Standard)
+    
+    	is static;
+
+
+    Init(me: in out; Eye: Pnt from gp)
+    
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns true if the is no line.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    NbLines(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+	
+	
+    Line(me; Index: Integer from Standard)
+    
+    	returns TheLine from Contap
+	---C++: return const& 
+	---C++: inline
+
+	raises NotDone    from StdFail,
+	       OutOfRange from Standard
+	
+	is static;
+
+
+    SurfaceFunction(me : in out)
+    returns TheSurfFunction
+	---Purpose: Returns    a     reference   on     the   internal
+	--          SurfaceFunction.  This is used to compute tangents
+	--          on the lines.
+        ---C++: return &
+	---C++: inline
+    is static;
+
+
+    Perform(me: in out; Domain: TheTopolTool)
+			   
+	is static private;
+
+
+    PerformAna(me: in out; Domain: TheTopolTool)
+			   
+	is static private;
+
+
+fields
+
+    done     : Boolean           from Standard;
+    slin     : TheSequenceOfLine from Contap;
+    solrst   : TheSearch         from Contap;
+    solins   : TheSearchInside   from Contap;
+    mySFunc  : TheSurfFunction   from Contap;
+    myAFunc  : TheArcFunction    from Contap;
+    modeset  : Boolean           from Standard;
+
+end ContourGen;

@@ -1,0 +1,37 @@
+-- File:	TDF_DeltaOnModification.cdl
+--      	---------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct 10 1997	Creation
+
+
+deferred class DeltaOnModification from TDF
+    inherits AttributeDelta from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a MODIFICATION action.
+	--          
+	--          Applying this AttributeDelta means GOING BACK to
+	--          the attribute previously registered state.
+
+uses
+
+    Attribute from TDF
+
+-- raises
+
+is
+
+    Initialize(anAttribute: Attribute from TDF)
+    	returns mutable DeltaOnModification from TDF;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+
+end DeltaOnModification;

@@ -1,0 +1,121 @@
+// File gp_Trsf.lxx, JCV 03/06/90
+// Modif JCV 04/10/90 ajout des methodes Form  Scale  IsNegative
+// Modif JCV 10/12/90 ajout de la methode Translationpart
+
+
+#include <Standard_OutOfRange.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+
+inline gp_Trsf::gp_Trsf () : 
+scale(1.0),
+shape(gp_Identity),
+matrix(1,0,0, 0,1,0, 0,0,1),
+loc(0.0, 0.0, 0.0)
+{}
+
+inline gp_Trsf::gp_Trsf (const gp_Trsf2d& T) : 
+scale(T.ScaleFactor()),
+shape(T.Form()),
+loc(T.TranslationPart().X(),T.TranslationPart().Y(), 0.0)
+{
+  const gp_Mat2d& M = T.HVectorialPart();
+  matrix(1,1) = M(1,1);
+  matrix(1,2) = M(1,2);
+  matrix(2,1) = M(2,1);
+  matrix(2,2) = M(2,2);
+  matrix(3,3) = 1.;
+}
+
+inline void gp_Trsf::SetMirror (const gp_Pnt& P) 
+{
+  shape = gp_PntMirror;
+  scale = -1.0;
+  loc = P.XYZ();
+  matrix.SetIdentity ();
+  loc.Multiply(2.0);
+}
+
+inline void gp_Trsf::SetTranslation (const gp_Vec& V) 
+{
+  shape = gp_Translation;
+  scale = 1.;
+  matrix.SetIdentity ();
+  loc = V.XYZ();
+}
+
+inline void gp_Trsf::SetTranslation(const gp_Pnt& P1,
+				    const gp_Pnt& P2) 
+{
+  shape = gp_Translation;
+  scale = 1.0;
+  matrix.SetIdentity ();
+  loc = (P2.XYZ()).Subtracted (P1.XYZ());
+}
+
+inline Standard_Boolean gp_Trsf::IsNegative() const 
+{ return (scale < 0.0); }
+
+inline const gp_XYZ& gp_Trsf::TranslationPart () const
+{ return loc; }
+
+inline const gp_Mat& gp_Trsf::HVectorialPart () const
+{ return matrix; }
+
+inline Standard_Real gp_Trsf::Value (const Standard_Integer Row, 
+				     const Standard_Integer Col) const 
+{
+  Standard_OutOfRange_Raise_if
+    (Row < 1 || Row > 3 || Col < 1 || Col > 4, " ");
+  if (Col < 4) return scale * matrix.Value (Row, Col);
+  else         return loc.Coord (Row);
+}
+
+inline  gp_TrsfForm gp_Trsf::Form () const
+{ return shape; }
+
+inline  Standard_Real gp_Trsf::ScaleFactor () const
+{ return scale; }
+
+inline gp_Trsf gp_Trsf::Inverted() const
+{ 
+  gp_Trsf T = *this;
+  T.Invert();
+  return T;
+}
+
+inline gp_Trsf gp_Trsf::Multiplied (const gp_Trsf& T) const
+{
+  gp_Trsf Tresult(*this);
+  Tresult.Multiply(T);
+  return Tresult;
+}
+
+inline gp_Trsf gp_Trsf::Powered (const Standard_Integer N)
+{
+  gp_Trsf T = *this;
+  T.Power (N);
+  return T;
+}
+
+inline void gp_Trsf::Transforms (Standard_Real& X,
+				 Standard_Real& Y,
+				 Standard_Real& Z) const 
+{
+  gp_XYZ Triplet (X, Y, Z);
+  Triplet.Multiply (matrix);
+  if (scale != 1.0) Triplet.Multiply (scale);
+  Triplet.Add(loc);
+  X = Triplet.X();
+  Y = Triplet.Y();
+  Z = Triplet.Z();
+}
+
+inline void gp_Trsf::Transforms (gp_XYZ& Coord) const
+{
+  Coord.Multiply (matrix);
+  if (scale != 1.0) Coord.Multiply (scale);
+  Coord.Add(loc);
+}
+

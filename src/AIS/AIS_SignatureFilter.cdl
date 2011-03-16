@@ -1,0 +1,63 @@
+-- File:	AIS_SignatureFilter.cdl
+-- Created:	Tue Mar  4 17:29:20 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SignatureFilter from AIS inherits TypeFilter from AIS
+
+	---Purpose: Selects Interactive Objects through their signatures
+    	-- and types. The signature provides an
+    	-- additional   characterization of an object's type, and
+    	-- takes the form of an index. The filter questions each
+    	-- Interactive Object in local context to determine
+    	-- whether it has an non-null owner, and if so, whether
+    	-- it has the desired signature. If the object returns true
+    	-- in each case, it is kept. If not, it is rejected.
+    	-- By default, the   interactive object has a None   type
+    	-- and a signature of 0. If you want to give a particular
+    	-- type and signature to your Interactive Object, you
+    	-- must redefine two virtual methods:   Type and Signature.
+    	-- This filter is only used in an open local contexts.
+    	-- In the Collector viewer, you can only locate
+    	-- Interactive Objects which answer positively to the
+    	-- positioned filters when a local context is open.
+    	-- Warning
+    	-- Some signatures have already been used by standard
+    	-- objects delivered in AIS. These include:
+    	-- -   signature 0 - Shape
+    	-- -   signature 1 - Point
+    	-- -   signature 2 - Axis
+    	-- -   signature 3 - Trihedron
+    	-- -   signature 4 - PlaneTrihedron
+    	-- -   signature 5 - Line
+    	-- -   signature 6 - Circle
+    	-- -   signature 7 - Plane
+        
+        
+        
+uses
+    
+    KindOfInteractive from AIS,
+    EntityOwner from SelectMgr
+
+is
+
+    Create(aGivenKind      : KindOfInteractive from AIS;
+           aGivenSignature : Integer from Standard)
+    returns mutable SignatureFilter from AIS;
+    	--- Purpose: Initializes the signature filter, adding the signature
+    	-- specification, aGivenSignature, to that for type,
+    	-- aGivenKind, in AIS_TypeFilter.
+        
+    IsOk (me;anobj : EntityOwner from SelectMgr)
+    returns Boolean from Standard is redefined static;
+    	---Purpose: Returns False if the transient is not an AIS_InteractiveObject.
+    	--          Returns False if the signature of InteractiveObject
+    	--          is not the same as the stored one in the filter...
+              
+
+fields
+    mySig  : Integer           from Standard;
+end SignatureFilter;

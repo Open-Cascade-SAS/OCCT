@@ -1,0 +1,76 @@
+-- File:	TDF_AttributeDelta.cdl
+--      	----------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep  8 1997	Creation
+
+
+
+deferred class AttributeDelta from TDF inherits TShared from MMgt
+
+	---Purpose: This class discribes the services we need to
+	--           implement Delta and Undo/Redo services.
+	--           
+	--          AttributeDeltas are applied in an unpredictable
+	--          order. But by the redefinition of the method
+	--          IsNowApplicable, a condition can be verified
+	--          before application. If the AttributeDelta is not
+	--          yet applicable, it is put at the end of the
+	--          AttributeDelta list, to be treated later. If a
+	--          dead lock if found on the list, the
+	--          AttributeDeltas are forced to be applied in an
+	--          unpredictable order.
+
+
+uses
+
+    Label     from TDF,
+    Attribute from TDF
+    
+is
+
+    Initialize(anAttribute: Attribute from TDF);
+    
+
+    Apply(me : mutable)
+    	is deferred;
+    	---Purpose: Applies the delta to the attribute.
+    
+    Label(me)
+    	returns Label from TDF;
+	---Purpose: Returns the label concerned by <me>.
+
+    Attribute(me)
+    	returns Attribute from TDF;
+	---Purpose: Returns the reference attribute.
+
+    ID(me)
+    	returns GUID from Standard;
+	---Purpose: Returns the ID of the attribute concerned by <me>.
+
+
+    ---Category: Miscelleaneous
+    --           --------------------------------------------------------------
+
+    Dump(me; OS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is virtual;
+	---Purpose: Dumps the contents.
+	--          
+	---C++: return &
+	---C++: alias operator<<
+
+fields
+
+    myAttribute : Attribute from TDF;
+    myLabel     : Label from TDF;
+
+end AttributeDelta;
+
+
+
+

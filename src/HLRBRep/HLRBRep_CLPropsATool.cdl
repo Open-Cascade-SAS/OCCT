@@ -1,0 +1,76 @@
+-- File:	HLRBRep_CLPropsATool.cdl
+-- Created:	Tue Apr 20 18:34:23 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class CLPropsATool from HLRBRep
+
+uses
+    Curve from HLRBRep,
+    Pnt2d from gp,
+    Vec2d from gp
+
+is
+    Value(myclass; A :     Address from Standard;
+                   U :     Real    from Standard;
+                   P : out Pnt2d   from gp);
+    	---Purpose: Computes the  point <P> of  parameter <U>   on the
+    	--          Curve from HLRBRep <C>.
+    	--
+    	---C++: inline          
+         	
+    D1   (myclass; A  :     Address from Standard;
+                   U  :     Real    from Standard;
+                   P  : out Pnt2d   from gp;
+                   V1 : out Vec2d   from gp);
+    	---Purpose: Computes the point <P>  and  first derivative <V1>
+    	--          of parameter <U> on the curve <C>.
+    	--
+    	---C++: inline          
+
+    D2   (myclass; A      :     Address from Standard;
+                   U      :     Real    from Standard;
+                   P      : out Pnt2d   from gp;
+                   V1, V2 : out Vec2d from gp);
+    	---Purpose: Computes the point <P>,  the first derivative <V1>
+    	--          and second derivative <V2> of parameter <U> on the
+    	--          curve <C>.
+    	--
+    	---C++: inline          
+    
+    D3   (myclass; A          :     Address from Standard;
+                   U          :     Real    from Standard; 
+                   P          : out Pnt2d   from gp;
+                   V1, V2, V3 : out Vec2d   from gp);
+    	---Purpose: Computes the point <P>, the first derivative <V1>,
+    	--          the second derivative  <V2>   and third derivative
+    	--          <V3> of parameter <U> on the curve <C>.
+    	--
+    	---C++: inline          
+
+    Continuity(myclass; A : Address from Standard)
+    returns Integer from Standard;
+     	---Purpose: returns the order  of continuity of the curve <C>.
+     	--          returns 1 :  first  derivative only is  computable
+     	--          returns 2  : first and  second derivative only are
+     	--          computable.  returns  3 : first,  second and third
+     	--          are computable.
+    	--
+    	---C++: inline          
+
+    FirstParameter(myclass; A : Address from Standard)
+    returns Real from Standard;
+     	---Purpose: returns the first parameter bound of the curve.
+     	--          
+    	---C++: inline          
+     
+    LastParameter(myclass; A : Address from Standard)
+    returns Real from Standard;
+	---Purpose: returns the  last  parameter bound  of  the curve.
+	--          FirstParameter must be less than LastParamenter.
+    	--
+    	---C++: inline          
+
+end CLPropsATool;
+

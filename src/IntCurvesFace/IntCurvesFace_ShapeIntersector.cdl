@@ -1,0 +1,175 @@
+-- File:	IntCurvesFace_ShapeIntersector.cdl
+-- Created:	Tue Jan 27 15:42:18 1998
+-- Author:	Laurent BUCHARD
+--		<lbr@cracbox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class ShapeIntersector from IntCurvesFace
+
+uses 
+    	Lin               from gp,
+	HCurve            from Adaptor3d,
+        Shape             from TopoDS,
+	Face              from TopoDS,
+	Pnt               from gp,
+	State             from TopAbs,
+	TransitionOnCurve from IntCurveSurface,
+	SequenceOfInteger from TColStd,
+	SequenceOfReal    from TColStd,
+	SeqOfPtr          from BRepTopAdaptor
+	
+is 
+ 
+    -- ========================= i n i t i a l i s a t i o n s ================   
+    Create
+    	-- empty constructor
+    returns ShapeIntersector from IntCurvesFace;    
+
+    Load(me: in out; Sh : Shape from TopoDS;
+                     Tol: Real  from Standard)     
+    is static;
+    
+    
+    Perform(me: in out;  L    : Lin     from gp;
+                         PInf : Real    from Standard;
+                         PSup : Real    from Standard)
+			 
+      	---Purpose: Perform the intersection between the 
+	--          segment L and the loaded shape.
+	--          
+	--          PInf is the smallest parameter on the line 
+	--          PSup is the highest  parammter on the line
+	--          
+	--          For an infinite line PInf and PSup can be 
+	--          +/- RealLast. 
+
+    is static;
+
+    PerformNearest(me: in out;  L    : Lin     from gp;
+                         PInf : Real    from Standard;
+                         PSup : Real    from Standard)
+			 
+      	---Purpose: Perform the intersection between the 
+	--          segment L and the loaded shape.
+	--          
+	--          PInf is the smallest parameter on the line 
+	--          PSup is the highest  parammter on the line
+	--          
+	--          For an infinite line PInf and PSup can be 
+	--          +/- RealLast. 
+
+    is static;
+
+    Perform(me: in out;  HCu  : HCurve  from Adaptor3d;
+                         PInf : Real    from Standard;
+                         PSup : Real    from Standard)
+	---Purpose : same method for a HCurve from Adaptor3d.
+	--           PInf an PSup can also be - and + INF. 		     
+    is static;		     
+			     
+   
+    -- ============================= r e s u l t s ============================ 
+    -- === 
+    -- ===          (ordered by increasing parameter on the curve)
+    -- ===
+   
+    IsDone(me)  
+    	---Purpose: True is returned when the intersection have been computed.
+    	---C++: inline
+    returns Boolean from Standard
+    is static;
+    
+    
+    NbPnt(me) 
+    	---C++: inline
+    returns Integer from Standard
+    is static;
+    
+	 
+    UParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the U parameter of the ith intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    VParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the V parameter of the ith intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    WParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the parameter of the ith intersection point 
+    	--          on the line.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+
+    Pnt(me; I : Integer from Standard)
+	---Purpose: Returns the geometric point of the ith intersection 
+	--          between the line and the surface.
+    	---C++: inline
+	---C++: return const &
+    returns Pnt from gp
+    is static;
+    
+    
+    Transition(me; I : Integer from Standard) 
+    	---Purpose: Returns the ith transition of the line on the surface.
+    	---C++: inline
+    returns TransitionOnCurve from IntCurveSurface
+    is static;
+    
+
+    State(me; I : Integer from Standard) 
+    	---Purpose: Returns the ith state of the point on the face.
+    	--          The values can be either TopAbs_IN 
+    	--             ( the point is in the face)
+    	--           or TopAbs_ON
+    	--             ( the point is on a boudary of the face).
+    	---C++: inline
+       
+    returns State from TopAbs
+    is static;
+    
+    Face(me; I : Integer from Standard)
+    	---Purpose: Returns the significant face used to determine
+    	--          the intersection. 
+    	--          
+    	---C++: inline
+    	---C++: return const &
+    returns Face from TopoDS
+    is static;
+
+    -- ================== I n t e r n a l     F u n c t i o n s ===============     
+
+
+    SortResult(me: in out)
+    	---Purpose: Internal method. Sort the result on the Curve
+    	--          parameter.
+    is static;
+
+    Destroy(me: in out);
+    ---C++: alias ~
+    
+
+
+fields
+    done                  : Boolean from Standard;
+    nbfaces               : Integer from Standard;
+    
+    PtrJetons             : Address           from Standard;
+    PtrJetonsIndex        : Address           from Standard;    	    
+    PtrIntersector        : SeqOfPtr          from BRepTopAdaptor;
+    IndexPt               : SequenceOfInteger from TColStd;	 
+    IndexFace             : SequenceOfInteger from TColStd;	
+    IndexIntPnt           : SequenceOfInteger from TColStd;	
+    IndexPar              : SequenceOfReal    from TColStd;    	    
+end ShapeIntersector from IntCurvesFace;
+
+

@@ -1,0 +1,54 @@
+-- File:	IntStart.cdl
+-- Created:	Fri Sep  4 11:44:13 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package IntStart
+
+    	---Purpose: This package provides generic algorithms to
+    	--          find specific points (points on boundaries
+    	--          and points inside a surface) used as starting
+    	--          points for marching algorithms.
+
+        ---Level: Internal
+        --
+        -- All the methods of the classes of this package are Internal.
+	--
+
+uses Standard, MMgt, TCollection, StdFail, TopAbs, GeomAbs, gp, IntSurf, math
+
+is
+
+    deferred generic class ArcTool;
+
+    deferred generic class SOBTool;
+
+    deferred generic class TopolTool;
+
+    deferred generic class SOBFunction;
+
+    generic class Segment;
+    
+    generic class PathPoint;
+
+    generic class SearchOnBoundaries, ThePathPoint, SequenceOfPathPoint, 
+                                      TheSegment, SequenceOfSegment;
+
+    deferred generic class PSurfaceTool;
+
+    deferred generic class SITool;
+
+    deferred class SITopolTool;
+
+    deferred generic class SIFunction;
+
+    generic class SearchInside;
+
+
+end IntStart;
+
+
+

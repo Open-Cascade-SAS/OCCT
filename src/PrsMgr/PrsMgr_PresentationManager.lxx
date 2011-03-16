@@ -1,0 +1,7 @@
+// File:	PrsMgr_PresentationManager.lxx
+// Created:	Thu Apr 23 11:19:22 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline Standard_Boolean PrsMgr_PresentationManager::IsImmediateModeOn() const
+{return myImmediateMode;}

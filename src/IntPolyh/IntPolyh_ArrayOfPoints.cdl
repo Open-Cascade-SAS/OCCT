@@ -1,0 +1,69 @@
+-- File:	IntPolyh_ArrayOfPoints.cdl
+-- Created:	Mon Mar  8 08:12:34 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ArrayOfPoints from IntPolyh
+
+uses
+    
+    Point from IntPolyh
+
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &
+    returns Point from IntPolyh    
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns Point from IntPolyh    
+    is static;
+    
+    Copy(me: in out; Other : ArrayOfPoints from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns ArrayOfPoints from IntPolyh
+    is static;
+    
+    GetN(me)
+    returns Integer from Standard
+    is static;
+    
+    NbPoints(me)
+    returns Integer from Standard
+    is static;
+
+    IncNbPoints(me: in out)
+    is static;
+    
+    SetNbPoints(me: in out; END: Integer from Standard)
+    is static;
+    
+    Destroy(me: in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+     	
+fields
+
+    n,fintp : Integer from Standard;
+    ptr :Address from Standard;
+    
+end ArrayOfPoints from IntPolyh;

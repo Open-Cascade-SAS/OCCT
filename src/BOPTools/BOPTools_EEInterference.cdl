@@ -1,0 +1,44 @@
+-- File:	BooleanOperations_EEInterference.cdl
+-- Created:	Tue Nov 21 15:41:16 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class EEInterference from BOPTools 
+    inherits ShapeShapeInterference from BOPTools 
+	 
+
+    	---Purpose:  
+    	--  class for storing  an Edge/Edge 
+    	--- interference     
+	--- 
+	 
+uses
+    CommonPrt  from IntTools
+
+is 
+    Create  
+    	returns  EEInterference from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor  
+    	---
+    Create  (anIndex1, anIndex2:  Integer from Standard; 
+    	     aCPart:CommonPrt  from IntTools)
+    	returns  EEInterference from BOPTools;  
+    	---Purpose:  
+    	--- Constructor  
+    	--- anIndex1,  
+    	--- anIndex2 see BOPTools_ShapeShapeInterference for details      
+    	--- aCPart   see IntTools_CommonPrt for details     
+    	---
+    CommonPrt(me) 
+    	returns CommonPrt  from IntTools; 
+    	---C++:  return  const  &	    	 
+    	---Purpose:  
+    	--- Selector  
+    	---
+fields
+  myCommonPart:  CommonPrt  from IntTools;
+
+end EEInterference;

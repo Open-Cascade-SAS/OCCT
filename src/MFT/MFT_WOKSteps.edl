@@ -1,0 +1,9 @@
+-- File:	MFT_WOKSteps.edl
+-- Author: 	bgn - Creation - 21-04-98
+-- History:	Thu Feb 12 17:23:25 Romance Standard Time 1998
+
+@if ( %Station == "wnt" ) then
+    @set  %WOKSteps_UseSourceInclude = "";
+@endif;
+
+

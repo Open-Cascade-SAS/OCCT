@@ -1,0 +1,50 @@
+-- File:	TopOpeBRep_GeomTool.cdl
+-- Created:	Thu Jun 24 17:20:00 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class GeomTool from TopOpeBRep 
+
+    ---Purpose: Provide services needed by the DSFiller
+
+uses
+
+    Curve from Geom,
+    Curve from Geom2d,
+    Face from TopoDS,
+    Shape from TopoDS,
+    Curve from TopOpeBRepDS,
+    LineInter from TopOpeBRep 
+    
+is
+
+    Create returns GeomTool from TopOpeBRep;
+    
+    MakeCurves(myclass;
+     	       min,max:Real;L:LineInter from TopOpeBRep;
+    	       S1,S2:Shape from TopoDS;
+     	       C:out Curve from TopOpeBRepDS;
+    	       PC1,PC2:out Curve from Geom2d);
+    ---Purpose: Make the  DS curve <C> and the pcurves <PC1,PC2> from
+    -- intersection line <L> lying on shapes <S1,S2>. <min,max> = <L> bounds
+
+    MakeCurve(myclass;
+     	      min,max:Real;L:LineInter from TopOpeBRep;
+     	      C : out Curve from Geom);
+
+    MakePrivateCurves
+    (myclass;  
+     min,max:Real;L:LineInter from TopOpeBRep;S1,S2:Shape from TopoDS;
+     C:out Curve from Geom;
+     PC1,PC2:out Curve from Geom2d;
+     New:out Boolean;
+     tolreached2d1,tolreached2d2:out Real);
+
+    MakeBSpline1fromWALKING3d  
+    (myclass; L:LineInter from TopOpeBRep) returns Curve from Geom;
+ 
+    MakeBSpline1fromWALKING2d 
+    (myclass;L:LineInter from TopOpeBRep;SI:Integer) returns Curve from Geom2d;
+ 
+end GeomTool from TopOpeBRep;

@@ -1,0 +1,16 @@
+// File:	AdvApp2Var_Framework.lxx
+// Created:	Mon Jun 17 18:32:29 1996
+// Author:	Philippe MANGIN
+//		<pmn@sgi29>
+
+inline const AdvApp2Var_Node& AdvApp2Var_Framework::Node(
+					    const Standard_Integer IndexNode) const 
+{
+  return myNodeConstraints.Value(IndexNode);
+}
+
+inline AdvApp2Var_Node& AdvApp2Var_Framework::ChangeNode(
+					      const Standard_Integer IndexNode)
+{
+  return myNodeConstraints.ChangeValue(IndexNode);
+}

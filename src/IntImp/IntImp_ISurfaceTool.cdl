@@ -1,0 +1,49 @@
+-- File:	ISurfaceTool.cdl
+-- Created:	Fri Mar  6 16:18:58 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred generic class ISurfaceTool from IntImp
+       ( ImplicitSurface as any)
+                                        
+	---Purpose: Template class for a tool on an
+	--          implicit surface.
+
+
+uses Vec from gp
+
+
+is
+
+    Value(myclass; Is: ImplicitSurface;
+          X, Y, Z: Real from Standard)
+	  
+    	---Purpose: Returns the value of the function.
+
+    	returns Real from Standard;
+
+    
+    Gradient(myclass; Is: ImplicitSurface;
+             X, Y, Z: Real from Standard ; V: out Vec from gp);
+	     
+    	---Purpose: Returns the gradient of the function.
+
+
+
+    ValueAndGradient(myclass; Is: ImplicitSurface; 
+                     X, Y, Z: Real from Standard;
+                     Val: out Real from Standard; Grad: out Vec from gp);
+		     
+    	---Purpose: Returns the value and the gradient.
+
+
+    Tolerance(myclass; Is: ImplicitSurface )
+    
+	---Purpose: returns the tolerance of the zero of the implicit function
+
+    	returns Real from Standard; 
+
+    
+end ISurfaceTool;

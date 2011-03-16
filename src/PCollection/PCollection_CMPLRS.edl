@@ -1,0 +1,3 @@
+@if ( ( %Station == "ao1" ) && ( %DBMS == "OBJS" ) ) then
+  @uses "OBJSCMPLRS.edl";
+@endif;

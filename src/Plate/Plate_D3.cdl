@@ -1,0 +1,26 @@
+-- File:	Plate_D3.cdl
+-- Created:	Oct 1998
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+class D3 from Plate
+---Purpose : define an order 3 derivatives of a 3d valued
+--          function of a 2d variable
+--         
+
+uses XYZ from gp
+
+is
+    Create(duuu,duuv,duvv,dvvv : XYZ from gp) returns D3;
+    Create(ref  :  D3  from  Plate) returns D3;
+
+fields
+    
+    Duuu, Duuv,Duvv,Dvvv : XYZ from gp;
+
+friends
+    class GtoCConstraint from Plate,
+    class FreeGtoCConstraint from Plate
+    
+end;

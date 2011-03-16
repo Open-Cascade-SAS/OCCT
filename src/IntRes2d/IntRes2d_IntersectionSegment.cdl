@@ -1,0 +1,152 @@
+-- File:	IntersectionSegment.cdl
+-- Created:	Fri Apr  3 14:45:13 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class IntersectionSegment from IntRes2d
+
+    ---Purpose: Definition of an intersection curve between
+    --          two 2D curves.
+
+
+inherits Storable from Standard
+
+uses IntersectionPoint from IntRes2d
+
+raises DomainError from Standard
+
+is
+
+    Create
+
+      	---Purpose: Empty constructor.
+
+    	returns IntersectionSegment from IntRes2d;
+
+
+    Create(P1,P2       : IntersectionPoint from IntRes2d; 
+           Oppos       : Boolean           from Standard;  
+           ReverseFlag : Boolean           from Standard)
+	   
+    	--Purpose: Creates   an    IntersectionSegment    from     two
+    	--         IntersectionPoint.  Oppos is  True if the  2 curves
+    	--         have the same orientation.  if ReverseFlag is True,
+    	--         P1 and P2 are the point on the  first curve, and on
+    	--         the  second curve.  else, P1  is   the point on the
+    	--         second curve and P2  the intersection point  on the
+    	--         first curve.  	
+
+    	---C++: inline
+    
+    	returns IntersectionSegment from IntRes2d;
+	
+
+    Create(P          : IntersectionPoint from IntRes2d; 
+           First      : Boolean           from Standard; 
+           Oppos      : Boolean           from Standard; 
+           ReverseFlag: Boolean           from Standard)
+	   
+	--Purpose: Creates  a  semi-infinite  segment of intersection.
+	--         if First is  set to True,  P is  the first point of
+	--         the segment. Otherwise P is  the  last point of the
+	--         segment.    P  belongs   to  the   first  curve  if
+	--         ReversedFlag is set  to False; otherwise it belongs
+	--         to the second curve.
+
+      	---C++: inline
+    
+    	returns IntersectionSegment from IntRes2d;
+
+
+    Create(Oppos: Boolean from Standard)
+    
+	---Purpose: Creates an infinite segment of intersection.
+
+ 	---C++: inline
+
+    	returns IntersectionSegment from IntRes2d;
+
+
+    IsOpposite(me)
+    
+	---Purpose: Returns TRUE if the intersection segment has got
+	--          the same orientation on both curves.
+
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static;
+	
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if the segment is  limited by a first
+	--          point.   This  point defines  the lowest parameter
+	--          admitted on the first  curve for the  segment.  If
+	--          IsOpposite  returns  False, it  defines the lowest
+	--          parameter on the  second curve, otherwise,  it  is
+	--          the highest parameter on the second curve.
+
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static;
+
+
+    FirstPoint(me)
+    
+	---Purpose: Returns the  first point   of the segment    as an
+	--          IntersectionPoint (with    a    transition).   The
+	--          exception  DomainError  is raised if HasFirstPoint
+	--          returns False.
+
+	---C++: inline
+    	---C++: return const &
+       
+    	returns IntersectionPoint from IntRes2d
+	raises  DomainError       from Standard
+	is static;
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if the segment  is  limited by a last
+	--          point.  This point  defines  the highest parameter
+	--          admitted on the  first curve for  the segment.  If
+	--          IsOpposite returns  False, it  defines the highest
+	--          parameter on  the  second curve, otherwise, it  is
+	--          the lowest parameter on the second curve.
+
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static;
+
+
+    LastPoint(me)
+    
+	---Purpose: Returns   the  last point  of the    segment as an
+	--          IntersectionPoint   (with  a    transition).   The
+	--          exception        DomainError     is   raised    if
+	--          HasLastExtremity returns False.
+
+	---C++: inline
+    	---C++: return const &
+       
+    	returns IntersectionPoint from IntRes2d
+	raises  DomainError       from Standard
+	is static;
+	
+
+fields
+
+    oppos   : Boolean           from Standard;
+    first   : Boolean           from Standard;
+    last    : Boolean           from Standard;
+    ptfirst : IntersectionPoint from IntRes2d;
+    ptlast  : IntersectionPoint from IntRes2d;
+
+end IntersectionSegment;
+ 

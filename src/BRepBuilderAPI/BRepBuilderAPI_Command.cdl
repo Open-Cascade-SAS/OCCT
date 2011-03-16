@@ -1,0 +1,56 @@
+-- File:	BRepBuilderAPI_Command.cdl
+-- Created:	Wed Jul 21 19:53:17 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+deferred class Command from BRepBuilderAPI 
+
+	---Purpose: Root class for all commands in BRepBuilderAPI.  
+	--          
+	--          Provides :
+	--          
+	--          * Managements of the notDone flag.
+	--          
+	--          * Catching of exceptions (not implemented).
+	--          
+	--          * Logging (not implemented).
+
+raises
+    NotDone from StdFail
+    
+is
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~BRepBuilderAPI_Command(){Delete() ; }"
+    
+    Initialize;
+	---Purpose: Set done to False.
+    
+    IsDone(me) returns Boolean is virtual;
+	---Level: Public
+    
+    Done(me : in out)
+	---Purpose: Set done to true.
+	---Level: Public
+    is static protected;
+    
+    NotDone(me : in out)
+	---Purpose: Set done to false.
+	---Level: Public
+    is static protected;
+    
+    
+    
+    Check(me)
+	---Purpose: Raises NotDone if done is false.
+	---Level: Public
+    raises NotDone from StdFail
+    is static;
+
+fields 
+    myDone : Boolean;
+
+end Command;

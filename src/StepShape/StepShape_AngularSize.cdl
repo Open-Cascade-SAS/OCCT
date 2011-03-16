@@ -1,0 +1,34 @@
+-- File:	StepShape_AngularSize.cdl
+-- Created:	Tue Apr 18 16:42:57 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class AngularSize from StepShape
+inherits DimensionalSize from StepShape
+
+    ---Purpose: Representation of STEP entity AngularSize
+
+uses
+    ShapeAspect from StepRepr,
+    HAsciiString from TCollection,
+    AngleRelator from StepShape
+
+is
+    Create returns AngularSize from StepShape;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDimensionalSize_AppliesTo: ShapeAspect from StepRepr;
+                       aDimensionalSize_Name: HAsciiString from TCollection;
+                       aAngleSelection: AngleRelator from StepShape);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AngleSelection (me) returns AngleRelator from StepShape;
+	---Purpose: Returns field AngleSelection
+    SetAngleSelection (me: mutable; AngleSelection: AngleRelator from StepShape);
+	---Purpose: Set field AngleSelection
+
+fields
+    theAngleSelection: AngleRelator from StepShape;
+
+end AngularSize;

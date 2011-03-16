@@ -1,0 +1,27 @@
+-- File:	StepData_EDescr.cdl
+-- Created:	Wed Apr  2 09:04:40 1997
+-- Author:	Administrateur Atelier XSTEP
+--		<xstep@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred class EDescr  from StepData    inherits TShared
+
+    ---Purpose : This class is intended to describe the authorized form for an
+    --           entity, either Simple or Plex
+
+uses CString,
+     Described from StepData
+
+is
+
+    Matches    (me; steptype : CString) returns Boolean  is deferred;
+    ---Purpose : Tells if a ESDescr matches a step type : exact or super type
+
+    IsComplex  (me) returns Boolean  is deferred;
+    ---Purpose : Tells if a EDescr is complex (ECDescr) or simple (ESDescr)
+
+    NewEntity  (me) returns mutable Described  is deferred;
+    ---Purpose : Creates a described entity (i.e. a simple one)
+
+end EDescr;

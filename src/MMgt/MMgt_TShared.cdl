@@ -1,0 +1,43 @@
+-- File:	MMgt_TShared.cdl
+-- Created:	Tue Oct 13 17:51:30 1992
+-- Author:	Ramin BARRETO, CLE (1994 Standard Light)
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+--           	 
+deferred class TShared from MMgt
+
+inherits Transient from Standard
+
+  ---Purpose: 
+-- The abstract class TShared is the root class of
+-- managed objects. TShared objects are managed
+-- by a memory manager based on reference
+-- counting. They have handle semantics. In other
+-- words, the reference counter is transparently
+-- incremented and decremented according to the
+-- scope of handles. When all handles, which
+-- reference a single object are out of scope, the
+-- reference counter becomes null and the object is
+-- automatically deleted. The deallocated memory is
+-- not given back to the system though. It is
+-- reclaimed for new objects of the same size.
+-- Warning
+-- This memory management scheme does not
+-- work for cyclic data structures. In such cases
+-- (with back pointers for example), you should
+-- interrupt the cycle in a class by using a full C++
+-- pointer instead of a handle.  
+
+uses  
+   Integer from Standard
+
+raises  
+    OutOfMemory from Standard
+  
+is
+
+    Delete(me) is redefined;
+
+end TShared from MMgt;
+
+

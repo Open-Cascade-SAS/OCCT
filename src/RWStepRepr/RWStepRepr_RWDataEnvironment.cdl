@@ -1,0 +1,35 @@
+-- File:	RWStepRepr_RWDataEnvironment.cdl
+-- Created:	Thu Dec 12 17:15:59 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWDataEnvironment from RWStepRepr
+
+    ---Purpose: Read & Write tool for DataEnvironment
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    DataEnvironment from StepRepr
+
+is
+    Create returns RWDataEnvironment from RWStepRepr;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : DataEnvironment from StepRepr);
+	---Purpose: Reads DataEnvironment
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: DataEnvironment from StepRepr);
+	---Purpose: Writes DataEnvironment
+
+    Share (me; ent : DataEnvironment from StepRepr;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWDataEnvironment;

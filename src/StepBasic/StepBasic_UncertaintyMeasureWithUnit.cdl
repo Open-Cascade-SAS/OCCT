@@ -1,0 +1,44 @@
+-- File:        UncertaintyMeasureWithUnit.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class UncertaintyMeasureWithUnit from StepBasic 
+
+inherits MeasureWithUnit from StepBasic 
+
+uses
+
+	HAsciiString from TCollection, 
+	MeasureValueMember from StepBasic,
+	Unit from StepBasic
+is
+
+	Create returns mutable UncertaintyMeasureWithUnit;
+	---Purpose: Returns a UncertaintyMeasureWithUnit
+
+
+	Init (me : mutable;
+	      aValueComponent : MeasureValueMember from StepBasic;
+	      aUnitComponent : Unit from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aValueComponent : MeasureValueMember from StepBasic;
+	      aUnitComponent : Unit from StepBasic;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+
+fields
+
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+
+end UncertaintyMeasureWithUnit;

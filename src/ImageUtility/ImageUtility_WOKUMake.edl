@@ -1,0 +1,19 @@
+--
+-- File:	ImageUtility_WOKUMake.edl
+-- Author:	Stephane Callegari
+-- History:	13-12-96 : CAL : Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %ImageUtility_WOKUMake_EDL) then
+
+  @set %ImageUtility_WOKUMake_EDL = "";
+
+  @if ( %Station == "wnt" ) then
+
+    -- Pas d'ImageUtility sur WNT
+    @set %WOKUMake_Steps = "*src xcpp.fill(src)  xcpp.src(xcpp.fill)  xcpp.header(xcpp.fill) .xcpp.template(xcpp.fill) obj.inc";
+
+  @endif;
+
+@endif;

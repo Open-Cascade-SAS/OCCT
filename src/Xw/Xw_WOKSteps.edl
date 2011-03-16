@@ -1,0 +1,21 @@
+-- Author:	Atelier CAS2000
+-- History:	Thu Jul 15 17:17:17 1999	Atelier CAS2000	Creation
+-- Copyright:	 Matra Datavision 1999
+
+
+@ifnotdefined ( %Xw_WOKSteps_EDL ) then
+---@set %Xw_WOKSteps_EDL = "";
+
+--- Insert your stuff Here
+@if ( %Station == "wnt" ) then
+    -- Pas d'Xw sur Windows NT
+    @set %WOKSteps_ObjGroup  = "";
+    @set %WOKSteps_DepGroup  = "";
+    @set %WOKSteps_LibGroup  = "";
+    @set %WOKSteps_ExecGroup = "";
+
+
+@endif;	
+
+
+@endif;

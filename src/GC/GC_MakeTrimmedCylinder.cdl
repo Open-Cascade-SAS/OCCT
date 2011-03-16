@@ -1,0 +1,97 @@
+-- File:	MakeTrimmedCylinder.cdl
+-- Created:	Mon Sep 28 11:51:57 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeTrimmedCylinder from GC inherits Root from GC
+
+    --- Purpose: Implements construction algorithms for a trimmed
+    -- cylinder limited by two planes orthogonal to its axis.
+    -- The result is a Geom_RectangularTrimmedSurface surface.
+    -- A MakeTrimmedCylinder provides a framework for:
+    -- -   defining the construction of the trimmed cylinder,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the results. In particular, the Value
+    --   function returns the constructed trimmed cylinder.
+        
+uses Pnt                       from gp,
+     Ax1                       from gp,
+     Lin                       from gp,
+     Cylinder                  from gp,
+     Circ                      from gp,
+     RectangularTrimmedSurface from Geom,
+     Real                      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create(P1,P2,P3 : Pnt from gp ) returns MakeTrimmedCylinder;
+    ---Purpose: Make a cylindricalSurface <Cyl> from Geom
+    --          Its axis is is <P1P2> and its radius is the distance 
+    --          between <P3> and <P1P2>.
+    --          The height is the distance between P1 and P2.
+
+Create(Circ   : Circ from gp       ;
+       Height : Real from Standard ) returns MakeTrimmedCylinder;
+    ---Purpose: Make a cylindricalSurface <Cyl> from gp by its base <Circ>.
+    --          Its axis is the normal to the plane defined bi <Circ>.
+    --          <Height> can be greater than zero or lower than zero.
+    --          In the first case the V parametric direction of the 
+    --          result has the same orientation as the normal to <Circ>.
+    --          In the other case it has the opposite orientation.
+
+Create(A1     : Ax1  from gp       ;
+       Radius : Real from Standard ;
+       Height : Real from Standard ) returns MakeTrimmedCylinder;
+    ---Purpose: Make a cylindricalSurface <Cyl> from gp by its 
+    --          axis <A1> and its radius <Radius>.
+    --          It returns NullObject if <Radius> is lower than zero.
+    --          <Height> can be greater than zero or lower than zero.
+    --          In the first case the V parametric direction of the 
+    --          result has the same orientation as <A1>.
+    --          In the other case it has the opposite orientation.
+   
+Create(Cyl    : Cylinder from gp       ;
+       P      : Pnt      from gp       ; 
+       Height : Real     from Standard ) returns MakeTrimmedCylinder;
+    ---Purpose: Make a RectangularTrimmedSurface <Cylinder> from gp by
+    --          a cylinder from gp.
+    --          It is trimmed by the point <P> and the heigh <Heigh>.
+    --          <Height> can be greater than zero or lower than zero.
+    --          in the first case the limit section is in the side of 
+    --          the positives V paramters of <Cyl> and in the other 
+    --          side if <Heigh> is lower than zero.
+
+Create(Cyl    : Cylinder from gp       ;
+       P1,P2  : Pnt      from gp       ) returns MakeTrimmedCylinder;
+    ---Purpose: Make a RectangularTrimmedSurface <Cylinder> from gp by
+    --          a cylinder from gp.
+    --          It is trimmed by the two points <P1> and <P2>.
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_NegativeRadius if Radius is less than 0.0, or
+    -- -   gce_ConfusedPoints if the points P1 and P2 are coincident.
+    -- -   gce_ColinearPoints if the points P1, P2 and P3 are collinear.
+        
+Value(me) returns RectangularTrimmedSurface from Geom
+    raises NotDone
+    is static;
+    ---Purpose: Returns the constructed trimmed cylinder.
+    -- Exceptions
+    -- StdFail_NotDone if no trimmed cylinder is constructed.
+    ---C++: return const&
+
+Operator(me) returns RectangularTrimmedSurface from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_RectangularTrimmedSurface() const;"
+
+fields
+
+    TheCyl : RectangularTrimmedSurface from Geom;
+    --The solution from Geom.
+    
+end MakeTrimmedCylinder;

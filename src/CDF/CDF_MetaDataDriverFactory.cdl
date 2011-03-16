@@ -1,0 +1,15 @@
+-- File:	CDF_MetaDataDriverFactory.cdl
+-- Created:	Mon Nov 17 16:43:20 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class MetaDataDriverFactory from CDF inherits Transient from Standard
+
+uses MetaDataDriver from CDF, ExtendedString from TCollection
+
+is
+    Build(me)
+    returns MetaDataDriver from CDF
+    is deferred;    
+end  MetaDataDriverFactory from CDF;

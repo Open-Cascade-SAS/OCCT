@@ -1,0 +1,1275 @@
+ 
+// File:	ProjLib_ProjectedCurve.gxx
+// Created:	Wed Aug 25 15:39:45 1993
+// Author:	Bruno DUMORTIER
+//		<dub@topsn3>
+
+//  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272
+
+#include <GeomAbs_SurfaceType.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <ProjLib_CompProjectedCurve.hxx>
+#include <ProjLib_HCompProjectedCurve.hxx>
+#include <ProjLib_ComputeApproxOnPolarSurface.hxx>
+#include <ProjLib_ComputeApprox.hxx>
+#include <ProjLib_Projector.hxx>
+#include <Handle_Adaptor3d_HCurve.hxx>
+#include <Handle_Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <ProjLib_Plane.hxx>
+#include <ProjLib_Cylinder.hxx>
+#include <ProjLib_Cone.hxx>
+#include <ProjLib_Sphere.hxx>
+#include <ProjLib_Torus.hxx>
+#include <Precision.hxx>
+#include <Handle_Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Handle_Geom2d_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Handle_Geom2d_BezierCurve.hxx>
+#include <Handle_Adaptor2d_HCurve2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <StdFail_NotDone.hxx>
+#include <gp_XY.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfVec2d.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <BSplCLib.hxx>
+#include <GeomAbs_IsoType.hxx>
+
+//=======================================================================
+//function : IsoIsDeg
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
+				   const Standard_Real      Param,
+				   const GeomAbs_IsoType    IT,
+				   const Standard_Real      TolMin,
+				   const Standard_Real      TolMax) 
+{
+    Standard_Real U1=0.,U2=0.,V1=0.,V2=0.,T;
+    Standard_Boolean Along = Standard_True;
+    U1 = S.FirstUParameter();
+    U2 = S.LastUParameter();
+    V1 = S.FirstVParameter();
+    V2 = S.LastVParameter();
+    gp_Vec D1U,D1V;
+    gp_Pnt P;
+    Standard_Real Step,D1NormMax;
+    if (IT == GeomAbs_IsoV) 
+    {
+      Step = (U2 - U1)/10;
+      D1NormMax=0.;
+      for (T=U1;T<=U2;T=T+Step) 
+      {
+        S.D1(T,Param,P,D1U,D1V);
+        D1NormMax=Max(D1NormMax,D1U.Magnitude());
+      }
+
+      if (D1NormMax >TolMax || D1NormMax < TolMin ) 
+           Along = Standard_False;
+    }
+    else 
+    {
+      Step = (V2 - V1)/10;
+      D1NormMax=0.;
+      for (T=V1;T<=V2;T=T+Step) 
+      {
+	S.D1(Param,T,P,D1U,D1V);
+        D1NormMax=Max(D1NormMax,D1V.Magnitude());
+      }
+
+      if (D1NormMax >TolMax || D1NormMax < TolMin ) 
+           Along = Standard_False;
+
+
+    }
+    return Along;
+}
+
+//=======================================================================
+//function : Interpolate
+//purpose  : 
+//=======================================================================
+
+static Handle(Geom2d_BSplineCurve) Interpolate(const Handle(TColgp_HArray1OfPnt2d)& myPoints,
+					       const Handle(TColStd_HArray1OfReal)& myParameters,
+					       const gp_Vec2d& InitialTangent, 
+					       const gp_Vec2d& FinalTangent)
+{
+  Handle(Geom2d_BSplineCurve) myCurve = NULL;
+
+// This code is extraction from Geom2dAPI_Interpolate with small correction
+// This is done to avoid of cyclic dependency if Geom2dAPI is used in ProjLib 
+
+  Standard_Integer degree,
+  ii,
+  jj,
+  index,
+  index1,
+  index2,
+  index3,
+  mult_index,
+  inversion_problem,
+  num_points,
+  num_distinct_knots,
+  num_poles  ;
+  
+  gp_Pnt2d a_point ;
+
+  Standard_Boolean myTangentRequest = Standard_True;
+
+  Handle(TColgp_HArray1OfVec2d) myTangents = 
+     new TColgp_HArray1OfVec2d(myPoints->Lower(),
+			      myPoints->Upper()) ;
+  Handle(TColStd_HArray1OfBoolean) myTangentFlags =
+      new TColStd_HArray1OfBoolean(myPoints->Lower(),
+				   myPoints->Upper()) ;
+  myTangentFlags->Init(Standard_False);
+  
+  myTangentFlags->SetValue(1,Standard_True) ;
+  myTangentFlags->SetValue(myPoints->Length(),Standard_True) ;
+  myTangents->SetValue(1,InitialTangent) ;
+  myTangents->SetValue(myPoints->Length(),FinalTangent);
+
+  num_points =
+  num_distinct_knots =
+  num_poles = myPoints->Length() ;
+  if (num_poles == 2 &&   !myTangentRequest)  {
+    degree = 1 ;
+  } 
+  else if (num_poles == 3 && !myTangentRequest) {
+    degree = 2 ;
+    num_distinct_knots = 2 ;
+  }
+  else {
+    degree = 3 ;
+    num_poles += 2 ;
+    //if (myTangentRequest) 
+      //for (ii = myTangentFlags->Lower() + 1 ; 
+	//   ii < myTangentFlags->Upper() ; ii++) {
+	//if (myTangentFlags->Value(ii)) {
+	  //num_poles += 1 ;
+	//}
+      //}
+    }
+  
+  
+  TColStd_Array1OfReal     parameters(1,num_poles) ;  
+  TColStd_Array1OfReal     flatknots(1,num_poles + degree + 1) ;
+  TColStd_Array1OfInteger  mults(1,num_distinct_knots) ;
+  TColStd_Array1OfReal     knots(1,num_distinct_knots) ;
+  TColStd_Array1OfInteger  contact_order_array(1, num_poles) ;
+  TColgp_Array1OfPnt2d       poles(1,num_poles) ;
+
+  for (ii = 1 ; ii <= degree + 1 ; ii++) {
+    flatknots.SetValue(ii,myParameters->Value(1)) ;
+    flatknots.SetValue(ii + num_poles,
+		       myParameters->Value(num_points)) ;
+  }
+  for (ii = 1 ; ii <= num_poles ; ii++) {
+    contact_order_array.SetValue(ii,0)  ;
+  }
+  for (ii = 2 ; ii < num_distinct_knots ; ii++) {
+    mults.SetValue(ii,1) ; 
+  }
+  mults.SetValue(1,degree + 1) ;
+  mults.SetValue(num_distinct_knots ,degree + 1) ;
+  
+  switch (degree) {
+  case 1:
+    for (ii = 1 ; ii <= num_poles ; ii++) {
+      poles.SetValue(ii ,myPoints->Value(ii)) ;
+    }
+    myCurve =
+      new Geom2d_BSplineCurve(poles,
+			    myParameters->Array1(),
+			    mults,
+			    degree) ;
+    //myIsDone = Standard_True ;
+    break ;
+  case 2:
+    knots.SetValue(1,myParameters->Value(1)) ;
+    knots.SetValue(2,myParameters->Value(3)) ;
+    for (ii = 1 ; ii <= num_poles ; ii++) {
+      poles.SetValue(ii,myPoints->Value(ii)) ;
+      
+    }
+    BSplCLib::Interpolate(degree,
+			  flatknots,
+			  myParameters->Array1(),
+			  contact_order_array,
+			  poles,
+			  inversion_problem) ;
+    if (!inversion_problem) {
+      myCurve =
+	new Geom2d_BSplineCurve(poles,
+			      knots,
+			      mults,
+			      degree) ;
+      //myIsDone = Standard_True ;
+    }
+    break ;
+  case 3:
+//
+// check if the boundary conditions are set
+//
+    //if (num_points >= 3) {
+//
+// cannot build the tangents with degree 3 with only 2 points
+// if those where not given in advance 
+//
+      //BuildTangents(myPoints->Array1(),
+		    //myTangents->ChangeArray1(),
+		    //myTangentFlags->ChangeArray1(),
+		    //myParameters->Array1()) ;
+    //}
+    contact_order_array.SetValue(2,1)  ;
+    parameters.SetValue(1,myParameters->Value(1)) ;
+    parameters.SetValue(2,myParameters->Value(1)) ;
+    poles.SetValue(1,myPoints->Value(1)) ;
+    for (jj = 1 ; jj <= 2 ; jj++) {
+      a_point.SetCoord(jj,myTangents->Value(1).Coord(jj)) ;
+
+    }
+    poles.SetValue(2,a_point) ;
+    mult_index = 2 ;
+    index = 3 ;
+    index1 = 2 ;
+    index2 = myPoints->Lower() + 1 ;
+    index3 = degree + 2 ;
+    if (myTangentRequest) {
+      for (ii = myParameters->Lower() + 1 ; 
+	   ii < myParameters->Upper() ; ii++) {
+	parameters.SetValue(index,myParameters->Value(ii)) ;
+	poles.SetValue(index,myPoints->Value(index2)) ;
+        flatknots.SetValue(index3,myParameters->Value(ii)) ; 
+	index += 1 ;
+        index3 += 1 ;
+	if (myTangentFlags->Value(index1)) {
+//
+// set the multiplicities, the order of the contact, the 
+// the flatknots,
+//
+	  mults.SetValue(mult_index,mults.Value(mult_index) + 1) ;
+	  contact_order_array(index) = 1 ;
+          flatknots.SetValue(index3, myParameters->Value(ii)) ;
+	  parameters.SetValue(index,
+			      myParameters->Value(ii)) ;
+	  for (jj = 1 ; jj <= 2 ; jj++) {
+            a_point.SetCoord(jj,myTangents->Value(ii).Coord(jj)) ;
+	  }
+	  poles.SetValue(index,a_point) ;
+	  index += 1  ;
+	  index3 += 1 ;
+	}
+	mult_index += 1 ;
+	index1 += 1 ;
+	index2 += 1 ;
+
+      }
+    }
+    else {
+      index1 = 2 ;
+      for(ii = myParameters->Lower()  ; ii <= myParameters->Upper()  ; ii++) {
+	parameters.SetValue(index1, 
+			    myParameters->Value(ii)) ;
+	index1 += 1 ;
+      }
+      index = 3 ;
+      for (ii = myPoints->Lower() + 1 ; ii <= myPoints->Upper() - 1 ; ii++) {
+	poles.SetValue(index,
+		       myPoints->Value(ii)) ;
+	index += 1 ;
+      }
+   
+   
+      index = degree + 1 ;
+      for(ii = myParameters->Lower()  ; ii <= myParameters->Upper()  ; ii++) {
+	flatknots.SetValue(index,
+			   myParameters->Value(ii)) ;
+	index += 1 ;
+      }
+    }
+    for (jj = 1 ; jj <= 2 ; jj++) {
+      a_point.SetCoord(jj,
+		       myTangents->Value(num_points).Coord(jj)) ;
+    }
+    poles.SetValue(num_poles-1 ,a_point) ;
+
+    contact_order_array.SetValue(num_poles - 1,1) ;
+    parameters.SetValue(num_poles,
+			myParameters->Value(myParameters->Upper())) ;
+    parameters.SetValue(num_poles -1,
+			myParameters->Value(myParameters->Upper())) ;
+
+    poles.SetValue(num_poles,
+		   myPoints->Value(num_points)) ;
+
+    BSplCLib::Interpolate(degree,
+			  flatknots,
+			  parameters,
+			  contact_order_array,
+			  poles,
+			  inversion_problem) ;
+    if (!inversion_problem) {
+      myCurve =
+	new Geom2d_BSplineCurve(poles,
+			      myParameters->Array1(),
+			      mults,
+			      degree) ;
+      //myIsDone = Standard_True ;
+    }
+    break ;
+ 
+  }
+
+
+  return myCurve;
+}
+
+//=======================================================================
+//function : TrimC3d
+//purpose  : 
+//=======================================================================
+
+static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
+		    Standard_Boolean* IsTrimmed,
+		    const Standard_Real dt,
+		    const gp_Pnt& Pole)
+{
+  Standard_Real f = myCurve->FirstParameter();
+  Standard_Real l = myCurve->LastParameter();
+
+  gp_Pnt P = myCurve->Value(f);
+
+  if(P.Distance(Pole) < Precision::Confusion()) {
+    IsTrimmed[0] = Standard_True;
+    f = f+dt;
+    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+  }
+  
+  P = myCurve->Value(l);
+  if(P.Distance(Pole) < Precision::Confusion()) {
+    IsTrimmed[1] = Standard_True;
+    l = l-dt;
+    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+  }
+}
+
+//=======================================================================
+//function : ExtendC2d
+//purpose  : 
+//=======================================================================
+
+static void ExtendC2d(Handle(Geom2d_BSplineCurve)& aRes,
+		      const Standard_Real t,
+		      const Standard_Real dt,
+		      const Standard_Real u1,
+		      const Standard_Real u2,
+		      const Standard_Real v1,
+		      const Standard_Real v2)
+{
+  gp_Pnt2d P0;
+  gp_Vec2d V01, V02;
+  aRes->D2(t, P0, V01, V02);
+  
+  gp_XY XYP1 = P0.XY() + V01.XY()*dt + .5*V02.XY()*dt*dt;
+  
+  gp_Vec2d V11 = V01 + V02*dt;
+  
+  if(XYP1.X() < u1) XYP1.SetX(u1);
+  if(XYP1.X() > u2) XYP1.SetX(u2);
+  if(XYP1.Y() < v1) XYP1.SetY(v1);
+  if(XYP1.Y() > v2) XYP1.SetY(v2);
+  
+  Handle(TColgp_HArray1OfPnt2d) aPnts = new TColgp_HArray1OfPnt2d(1, 2);
+  Handle(TColStd_HArray1OfReal) aPars = new TColStd_HArray1OfReal(1, 2);
+  
+  if(dt < 0.) {
+    aPnts->SetValue(1, gp_Pnt2d(XYP1));
+    aPnts->SetValue(2, P0);
+    aPars->SetValue(1, t + dt);
+    aPars->SetValue(2, t);
+  }
+  else {
+    aPnts->SetValue(2, gp_Pnt2d(XYP1));
+    aPnts->SetValue(1, P0);
+    aPars->SetValue(2, t + dt);
+    aPars->SetValue(1, t);
+  }
+  
+  Handle(Geom2d_BSplineCurve) aC;  
+  
+  if(dt < 0.) {
+    aC = Interpolate(aPnts, aPars, V11, V01); 
+  }
+  else {
+    aC = Interpolate(aPnts, aPars, V01, V11); 
+  }
+  
+  
+  Geom2dConvert_CompCurveToBSplineCurve aConcat(aRes);
+  aConcat.Add(aC, Precision::PConfusion());
+  
+  aRes = aConcat.BSplineCurve();
+  
+}  
+
+//=======================================================================
+//function : Project
+//purpose  : 
+//=======================================================================
+
+static void Project(ProjLib_Projector& P, Handle(Adaptor3d_HCurve)& C)
+{
+  GeomAbs_CurveType CType = C->GetType();
+  switch (CType) {
+    case GeomAbs_Line:
+      P.Project(C->Line());
+      break;
+    case GeomAbs_Circle:
+      P.Project(C->Circle());
+      break;
+    case GeomAbs_Ellipse:
+      P.Project(C->Ellipse());
+      break;
+    case GeomAbs_Hyperbola:
+      P.Project(C->Hyperbola());
+      break;
+    case GeomAbs_Parabola:
+      P.Project(C->Parabola());
+      break;
+    case GeomAbs_BSplineCurve:
+    case GeomAbs_BezierCurve:
+    case GeomAbs_OtherCurve:    // try the approximation
+      break;
+    default:
+      Standard_NoSuchObject::Raise(" ");
+  }
+}
+
+//=======================================================================
+//function : ProjLib_ProjectedCurve
+//purpose  : 
+//=======================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve()
+
+{
+  myTolerance = Precision::PApproximation();
+}
+
+
+//=======================================================================
+//function : ProjLib_ProjectedCurve
+//purpose  : 
+//=======================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
+(const Handle(Adaptor3d_HSurface)& S)
+{
+  myTolerance = Precision::PApproximation();
+  Load(S);
+}
+
+
+//=======================================================================
+//function : ProjLib_ProjectedCurve
+//purpose  : 
+//=======================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
+(const Handle(Adaptor3d_HSurface)& S,
+ const Handle(Adaptor3d_HCurve)& C)
+{
+  myTolerance = Precision::PApproximation();
+  Load(S);
+  Load(C);
+}
+
+
+//=======================================================================
+//function : ProjLib_ProjectedCurve
+//purpose  : 
+//=======================================================================
+
+ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
+(const Handle(Adaptor3d_HSurface)& S,
+ const Handle(Adaptor3d_HCurve)&   C,
+ const Standard_Real             Tol)
+{
+  myTolerance = Max(Tol, Precision::PApproximation());
+  Load(S);
+  Load(C);
+}
+
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HSurface)& S)
+{
+  mySurface = S ;
+}
+
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
+{
+  myTolerance = Max(myTolerance,Precision::PApproximation());
+  myCurve = C;
+  GeomAbs_SurfaceType SType = mySurface->GetType();    
+  GeomAbs_CurveType   CType = myCurve->GetType();
+
+  switch (SType) {
+
+    case GeomAbs_Plane:
+      {
+	ProjLib_Plane P(mySurface->Plane());
+	Project(P,myCurve);
+	myResult = P;
+      }
+      break;
+
+    case GeomAbs_Cylinder:
+      {
+	ProjLib_Cylinder P(mySurface->Cylinder());
+	Project(P,myCurve);
+	myResult = P;
+      }
+      break;
+
+    case GeomAbs_Cone:
+      {
+	ProjLib_Cone P(mySurface->Cone());
+	Project(P,myCurve);
+	myResult = P;
+      }
+      break;
+
+    case GeomAbs_Sphere:
+      {
+	ProjLib_Sphere P(mySurface->Sphere());
+	Project(P,myCurve);
+	if ( P.IsDone()) { 
+	  // on met dans la pseudo-periode ( car Sphere n'est pas
+	  // periodique en V !)
+	  P.SetInBounds(myCurve->FirstParameter());
+	}
+	myResult = P;
+      }
+      break;
+
+    case GeomAbs_Torus:
+      {
+	ProjLib_Torus P(mySurface->Torus());
+	Project(P,myCurve);
+	myResult = P;
+      }
+      break;
+
+    case GeomAbs_BezierSurface:
+    case GeomAbs_BSplineSurface:
+      {
+	
+	Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
+	Standard_Real f, l, dt;
+	const Standard_Real eps = 0.01;
+	f = myCurve->FirstParameter();
+	l = myCurve->LastParameter();
+	dt = (l-f)*eps;
+
+	Standard_Real U1=0.,U2=0.,V1=0.,V2=0;
+	const Adaptor3d_Surface& S = mySurface->Surface();
+	U1 = S.FirstUParameter();
+	U2 = S.LastUParameter();
+	V1 = S.FirstVParameter();
+	V2 = S.LastVParameter();
+
+	if(IsoIsDeg(S, U1, GeomAbs_IsoU, 0., 1.e-9) ) {
+	  //Surface has pole at U = Umin
+	  gp_Pnt Pole = mySurface->Value(U1, V1);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	}
+
+	if(IsoIsDeg(S, U2, GeomAbs_IsoU, 0., 1.e-9) ) {
+	  //Surface has pole at U = Umax
+	  gp_Pnt Pole = mySurface->Value(U2, V1);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	}
+	  
+	if(IsoIsDeg(S, V1, GeomAbs_IsoV, 0., 1.e-9) ) {
+	  //Surface has pole at V = Vmin
+	  gp_Pnt Pole = mySurface->Value(U1, V1);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	}
+
+	if(IsoIsDeg(S, V2, GeomAbs_IsoV, 0., 1.e-9) ) {
+	  //Surface has pole at V = Vmax
+	  gp_Pnt Pole = mySurface->Value(U1, V2);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	}
+
+	ProjLib_ComputeApproxOnPolarSurface polar(myCurve, 
+						  mySurface,
+						  myTolerance);
+
+	Handle(Geom2d_BSplineCurve) aRes = polar.BSpline();
+
+	if(IsTrimmed[0] || IsTrimmed[1]) {
+	  if(IsTrimmed[0]) {
+	    //Add segment before start of curve
+	    f = myCurve->FirstParameter();
+	    ExtendC2d(aRes, f, -dt, U1, U2, V1, V2);
+	  }
+	  if(IsTrimmed[1]) {
+	    //Add segment after end of curve
+	    l = myCurve->LastParameter();
+	    ExtendC2d(aRes, l, dt, U1, U2, V1, V2);
+	  }
+	}
+	  
+	myResult.SetBSpline(aRes);
+	myResult.Done();
+	myResult.SetType(GeomAbs_BSplineCurve);
+      }
+      break;
+
+    default:
+      {
+	Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
+	Standard_Real f, l, dt;
+	const Standard_Real eps = 0.01;
+	
+	if(mySurface->GetType() == GeomAbs_SurfaceOfRevolution) {
+	  //Check possible singularity
+
+	  gp_Pnt P = mySurface->AxeOfRevolution().Location();
+	  gp_Dir N = mySurface->AxeOfRevolution().Direction();
+
+	  gp_Lin L(P, N);
+
+	  f = myCurve->FirstParameter();
+	  l = myCurve->LastParameter();
+	  dt = (l-f)*eps;
+
+	  P = myCurve->Value(f);
+	  if(L.Distance(P) < Precision::Confusion()) {
+	    IsTrimmed[0] = Standard_True;
+	    f = f+dt;
+	    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+	  }
+
+	  P = myCurve->Value(l);
+	  if(L.Distance(P) < Precision::Confusion()) {
+	    IsTrimmed[1] = Standard_True;
+	    l = l-dt;
+	    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+	  }
+	}
+
+     	ProjLib_CompProjectedCurve Projector(mySurface,myCurve,
+					     myTolerance,myTolerance);
+	Handle(ProjLib_HCompProjectedCurve) HProjector = 
+	  new ProjLib_HCompProjectedCurve();
+	HProjector->Set(Projector);
+
+	// Normalement, dans le cadre de ProjLib, le resultat 
+	// doit etre une et une seule courbe !!!
+	// De plus, cette courbe ne doit pas etre Single point
+	Standard_Integer NbCurves = Projector.NbCurves();
+	Standard_Real Udeb,Ufin;
+	if (NbCurves > 0) {
+	  Projector.Bounds(1,Udeb,Ufin);
+	}
+	else {
+	  StdFail_NotDone::Raise("ProjLib CompProjectedCurve Not Done");
+	}
+	// Approximons cette courbe algorithmique.
+	Standard_Boolean Only3d = Standard_False;
+	Standard_Boolean Only2d = Standard_True;
+	GeomAbs_Shape Continuity = GeomAbs_C1;
+	Standard_Integer MaxDegree = 14;
+	Standard_Integer MaxSeg    = 16;
+
+	Approx_CurveOnSurface appr(HProjector, mySurface, Udeb, Ufin, 
+				   myTolerance, 
+				   Continuity, MaxDegree, MaxSeg, 
+				   Only3d, Only2d);
+
+	Handle(Geom2d_BSplineCurve) aRes = appr.Curve2d();
+
+	if(IsTrimmed[0] || IsTrimmed[1]) {
+	  // Treatment only for surface of revolution
+	  Standard_Real u1, u2, v1, v2;
+	  u1 = mySurface->FirstUParameter();
+	  u2 = mySurface->LastUParameter();
+	  v1 = mySurface->FirstVParameter();
+	  v2 = mySurface->LastVParameter();
+	  
+	  if(IsTrimmed[0]) {
+	    //Add segment before start of curve
+	    ExtendC2d(aRes, f, -dt, u1, u2, v1, v2);
+	  }
+	  if(IsTrimmed[1]) {
+	    //Add segment after end of curve
+	    ExtendC2d(aRes, l, dt, u1, u2, v1, v2);
+	  }
+	}
+	  
+	myResult.SetBSpline(aRes);
+	myResult.Done();
+	myResult.SetType(GeomAbs_BSplineCurve);
+      }
+  }
+  if ( !myResult.IsDone()) {
+    ProjLib_ComputeApprox Comp( myCurve, mySurface, myTolerance);
+    myResult.Done();
+    
+    // set the type
+    if ( SType == GeomAbs_Plane  &&  CType == GeomAbs_BezierCurve) {
+      myResult.SetType(GeomAbs_BezierCurve);
+      myResult.SetBezier(Comp.Bezier()) ;
+    }
+    else {
+      myResult.SetType(GeomAbs_BSplineCurve);
+      myResult.SetBSpline(Comp.BSpline()) ;
+    }
+    // set the periodicity flag
+    if ( SType == GeomAbs_Plane               && 
+	 CType == GeomAbs_BSplineCurve        &&
+	 myCurve->IsPeriodic()   ) {
+      myResult.SetPeriodic();
+    }
+    myTolerance = Comp.Tolerance();
+  }
+
+  else {
+    // On remet arbitrairement la tol atteinte a une valeur
+    // petite en attendant mieux. dub lbo 11/03/97
+    myTolerance = Min(myTolerance,Precision::Confusion());
+    
+    // Translate the projected curve to keep the first point
+    // In the canonical boundaries of periodic surfaces.
+    if (mySurface->IsUPeriodic()) {
+      // xf
+      Standard_Real aT1, aT2, aU1, aU2, aUPeriod, aUr, aUm, aUmid, dUm, dUr;
+      GeomAbs_CurveType aTypeR;
+      ProjLib_Projector aResult;
+      //
+      aT1=myCurve->FirstParameter();
+      aT2=myCurve->LastParameter();
+      aU1=mySurface->FirstUParameter();
+      aU2=mySurface->LastUParameter();
+      aUPeriod=mySurface->UPeriod();
+      //
+      aTypeR=myResult.GetType();
+      if ((aU2-aU1)<(aUPeriod-myTolerance) && aTypeR == GeomAbs_Line) {
+	aResult=myResult;
+	aResult.UFrame(aT1, aT2, aU1, aUPeriod);
+	//
+	gp_Lin2d &aLr = (gp_Lin2d &) aResult.Line();
+	aUr=aLr.Location().X();
+	gp_Lin2d &aLm = (gp_Lin2d &) myResult.Line();
+	aUm=aLm.Location().X();
+	//
+	aUmid=0.5*(aU2+aU1);
+	dUm=fabs(aUm-aUmid);
+	dUr=fabs(aUr-aUmid);
+	if (dUr<dUm) {
+	  myResult=aResult;
+	}
+      }
+      else {
+	myResult.UFrame(aT1, aT2, aU1, aUPeriod);
+      }
+      //
+      /*
+      myResult.UFrame(myCurve->FirstParameter(),
+		      myCurve->LastParameter(),
+		      mySurface->FirstUParameter(),
+		      mySurface->UPeriod());
+      */
+      //xt
+      //  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272 Begin
+      //  Correct the U isoline in periodical surface
+      // to be inside restriction boundaries.
+      if (myResult.GetType() == GeomAbs_Line) {
+	gp_Lin2d &aLine = (gp_Lin2d &) myResult.Line();
+
+	Standard_Real aPeriod = mySurface->UPeriod();
+	Standard_Real aFUPar  = mySurface->FirstUParameter();
+	Standard_Real aLUPar  = mySurface->LastUParameter();
+
+	// Check if the parametric range is lower then the period.
+	if (aLUPar - aFUPar < aPeriod - myTolerance) {
+	  Standard_Real aU = aLine.Location().X();
+
+	  if (Abs(aU + aPeriod - aFUPar) < myTolerance ||
+	      Abs(aU - aPeriod - aFUPar) < myTolerance) {
+	    gp_Pnt2d aNewLoc(aFUPar, aLine.Location().Y());
+
+	    aLine.SetLocation(aNewLoc);
+	  } else if (Abs(aU + aPeriod - aLUPar) < myTolerance ||
+		     Abs(aU - aPeriod - aLUPar) < myTolerance) {
+	    gp_Pnt2d aNewLoc(aLUPar, aLine.Location().Y());
+
+	    aLine.SetLocation(aNewLoc);
+	  }
+	}
+      }
+    }
+//  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272 End
+
+    if (mySurface->IsVPeriodic()) {
+      myResult.VFrame(myCurve->FirstParameter(),
+			 myCurve->LastParameter(),
+			 mySurface->FirstVParameter(),
+			 mySurface->VPeriod());
+//  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272 Begin
+//  Correct the V isoline in a periodical surface
+// to be inside restriction boundaries.
+      if (myResult.GetType() == GeomAbs_Line) {
+	gp_Lin2d &aLine = (gp_Lin2d &) myResult.Line();
+
+	Standard_Real aPeriod = mySurface->VPeriod();
+	Standard_Real aFVPar  = mySurface->FirstVParameter();
+	Standard_Real aLVPar  = mySurface->LastVParameter();
+
+	// Check if the parametric range is lower then the period.
+	if (aLVPar - aFVPar < aPeriod - myTolerance) {
+	  Standard_Real aV = aLine.Location().Y();
+
+	  if (Abs(aV + aPeriod - aFVPar) < myTolerance ||
+	      Abs(aV - aPeriod - aFVPar) < myTolerance) {
+	    gp_Pnt2d aNewLoc(aLine.Location().X(), aFVPar);
+
+	    aLine.SetLocation(aNewLoc);
+	  } else if (Abs(aV + aPeriod - aLVPar) < myTolerance ||
+		     Abs(aV - aPeriod - aLVPar) < myTolerance) {
+	    gp_Pnt2d aNewLoc(aLine.Location().X(), aLVPar);
+
+	    aLine.SetLocation(aNewLoc);
+	  }
+	}
+      }
+    }
+//  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272 End
+  } 
+}
+
+
+//=======================================================================
+//function : GetSurface
+//purpose  : 
+//=======================================================================
+
+const Handle(Adaptor3d_HSurface)& ProjLib_ProjectedCurve::GetSurface() const
+{
+  return mySurface;
+}
+
+
+//=======================================================================
+//function : GetCurve
+//purpose  : 
+//=======================================================================
+
+const Handle(Adaptor3d_HCurve)& ProjLib_ProjectedCurve::GetCurve() const
+{
+  return myCurve;
+}
+
+
+//=======================================================================
+//function : GetTolerance
+//purpose  : 
+//=======================================================================
+
+Standard_Real ProjLib_ProjectedCurve::GetTolerance() const 
+{
+  return myTolerance;
+}
+
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Real ProjLib_ProjectedCurve::FirstParameter() const 
+{
+  return myCurve->FirstParameter();
+}
+
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Real ProjLib_ProjectedCurve::LastParameter() const 
+{
+  return myCurve->LastParameter();
+}
+
+
+//=======================================================================
+//function : Continuity
+//purpose  : 
+//=======================================================================
+
+GeomAbs_Shape ProjLib_ProjectedCurve::Continuity() const
+{
+  Standard_NotImplemented::Raise("");
+  return GeomAbs_C0;
+}
+
+
+//=======================================================================
+//function : NbIntervals
+//purpose  : 
+//=======================================================================
+
+Standard_Integer ProjLib_ProjectedCurve::NbIntervals(const GeomAbs_Shape ) const 
+{
+  Standard_NotImplemented::Raise("");
+  return 0;
+}
+
+
+//=======================================================================
+//function : Intervals
+//purpose  : 
+//=======================================================================
+
+//void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  T,
+void ProjLib_ProjectedCurve::Intervals(TColStd_Array1OfReal&  ,
+				       const GeomAbs_Shape ) const 
+{
+  Standard_NotImplemented::Raise("");
+}
+
+
+//=======================================================================
+//function : IsClosed
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ProjLib_ProjectedCurve::IsClosed() const
+{
+  Standard_NotImplemented::Raise("");
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : IsPeriodic
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ProjLib_ProjectedCurve::IsPeriodic() const
+{
+  return myResult.IsPeriodic();
+}
+
+
+//=======================================================================
+//function : Period
+//purpose  : 
+//=======================================================================
+
+Standard_Real ProjLib_ProjectedCurve::Period() const
+{
+  Standard_NotImplemented::Raise("");
+  return 0.;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+gp_Pnt2d ProjLib_ProjectedCurve::Value(const Standard_Real ) const 
+{
+  Standard_NotImplemented::Raise("");
+  return gp_Pnt2d(0.,0.);
+}
+
+
+//=======================================================================
+//function : D0
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::D0(const Standard_Real , gp_Pnt2d& ) const
+{
+  Standard_NotImplemented::Raise("");
+}
+
+
+//=======================================================================
+//function : D1
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::D1(const Standard_Real ,
+			              gp_Pnt2d&     , 
+                                      gp_Vec2d&     ) const 
+{
+  Standard_NotImplemented::Raise("");
+}
+
+
+//=======================================================================
+//function : D2
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::D2(const Standard_Real , 
+			              gp_Pnt2d&     , 
+                                      gp_Vec2d&     , 
+                                      gp_Vec2d&     ) const 
+{
+  Standard_NotImplemented::Raise("");
+}
+
+
+//=======================================================================
+//function : D3
+//purpose  : 
+//=======================================================================
+
+void ProjLib_ProjectedCurve::D3(const Standard_Real, 
+				      gp_Pnt2d&, 
+			              gp_Vec2d&, 
+				      gp_Vec2d&, 
+			              gp_Vec2d&) const 
+{
+  Standard_NotImplemented::Raise("");
+}
+
+
+//=======================================================================
+//function : DN
+//purpose  : 
+//=======================================================================
+
+gp_Vec2d ProjLib_ProjectedCurve::DN(const Standard_Real, 
+				    const Standard_Integer) const 
+{
+  Standard_NotImplemented::Raise("");
+  return gp_Vec2d(0.,0.);
+}
+
+
+//=======================================================================
+//function : Resolution
+//purpose  : 
+//=======================================================================
+
+Standard_Real ProjLib_ProjectedCurve::Resolution(const Standard_Real) const 
+{
+  Standard_NotImplemented::Raise("");
+  return 0.;
+}
+    
+
+//=======================================================================
+//function : GetType
+//purpose  : 
+//=======================================================================
+
+GeomAbs_CurveType ProjLib_ProjectedCurve::GetType() const
+{
+  return myResult.GetType();
+}
+
+
+//=======================================================================
+//function : Line
+//purpose  : 
+//=======================================================================
+
+gp_Lin2d ProjLib_ProjectedCurve::Line() const
+{
+  return myResult.Line();
+}
+
+
+//=======================================================================
+//function : Circle
+//purpose  : 
+//=======================================================================
+
+gp_Circ2d ProjLib_ProjectedCurve::Circle() const
+{
+  return myResult.Circle();
+}
+
+
+//=======================================================================
+//function : Ellipse
+//purpose  : 
+//=======================================================================
+
+gp_Elips2d ProjLib_ProjectedCurve::Ellipse() const
+{
+  return myResult.Ellipse();
+}
+
+
+//=======================================================================
+//function : Hyperbola
+//purpose  : 
+//=======================================================================
+
+gp_Hypr2d ProjLib_ProjectedCurve::Hyperbola() const
+{
+  return myResult.Hyperbola();
+}
+
+
+//=======================================================================
+//function : Parabola
+//purpose  : 
+//=======================================================================
+
+gp_Parab2d ProjLib_ProjectedCurve::Parabola() const
+{
+  return myResult.Parabola();
+}
+
+
+
+//=======================================================================
+//function : Degree
+//purpose  : 
+//=======================================================================
+
+Standard_Integer ProjLib_ProjectedCurve::Degree() const
+{
+  Standard_NoSuchObject_Raise_if 
+    ( (GetType() != GeomAbs_BSplineCurve) &&
+      (GetType() != GeomAbs_BezierCurve),
+     "ProjLib_ProjectedCurve:Degree");
+  if (GetType() == GeomAbs_BSplineCurve) {
+    return myResult.BSpline()->Degree();
+  }
+  else if (GetType() == GeomAbs_BezierCurve) {
+    return myResult.Bezier()->Degree();
+  }
+
+  // portage WNT
+  return 0;
+}
+
+//=======================================================================
+//function : IsRational
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ProjLib_ProjectedCurve::IsRational() const 
+{
+  Standard_NoSuchObject_Raise_if 
+    ( (GetType() != GeomAbs_BSplineCurve) &&
+      (GetType() != GeomAbs_BezierCurve),
+     "ProjLib_ProjectedCurve:IsRational");
+  if (GetType() == GeomAbs_BSplineCurve) {
+    return myResult.BSpline()->IsRational();
+  }
+  else if (GetType() == GeomAbs_BezierCurve) {
+    return myResult.Bezier()->IsRational();
+  }
+  // portage WNT
+  return Standard_False;
+}
+
+//=======================================================================
+//function : NbPoles
+//purpose  : 
+//=======================================================================
+
+Standard_Integer ProjLib_ProjectedCurve::NbPoles() const
+{
+  Standard_NoSuchObject_Raise_if 
+    ( (GetType() != GeomAbs_BSplineCurve) &&
+      (GetType() != GeomAbs_BezierCurve)   
+     ,"ProjLib_ProjectedCurve:NbPoles"  );
+  if (GetType() == GeomAbs_BSplineCurve) {
+    return myResult.BSpline()->NbPoles();
+  }
+  else if (GetType() == GeomAbs_BezierCurve) {
+    return myResult.Bezier()->NbPoles();
+  }
+
+  // portage WNT
+  return 0;
+}
+
+//=======================================================================
+//function : NbKnots
+//purpose  : 
+//=======================================================================
+
+Standard_Integer ProjLib_ProjectedCurve::NbKnots() const 
+{
+  Standard_NoSuchObject_Raise_if ( GetType() != GeomAbs_BSplineCurve, 
+				  "ProjLib_ProjectedCurve:NbKnots");
+  return myResult.BSpline()->NbKnots();
+}
+
+//=======================================================================
+//function : Bezier
+//purpose  : 
+//=======================================================================
+
+Handle(Geom2d_BezierCurve) ProjLib_ProjectedCurve::Bezier() const 
+{
+ return myResult.Bezier() ;
+}
+
+//=======================================================================
+//function : BSpline
+//purpose  : 
+//=======================================================================
+
+Handle(Geom2d_BSplineCurve) ProjLib_ProjectedCurve::BSpline() const 
+{
+ return myResult.BSpline() ;
+}
+//=======================================================================
+//function : Trim
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_HCurve2d) ProjLib_ProjectedCurve::Trim 
+//(const Standard_Real First,
+// const Standard_Real Last,
+// const Standard_Real Tolerance) const 
+(const Standard_Real ,
+ const Standard_Real ,
+ const Standard_Real ) const 
+{
+  Standard_NotImplemented::Raise("");
+  return NULL ;
+}
+

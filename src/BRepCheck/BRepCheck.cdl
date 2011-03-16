@@ -1,0 +1,132 @@
+-- File:	BRepCheck.cdl
+-- Created:	Wed Dec  6 17:09:10 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+package BRepCheck 
+
+	---Purpose: This package  provides tools to check the validity
+	--          of the BRep.
+
+uses MMgt,
+     StdFail,
+     TCollection,
+     TopAbs,
+     Adaptor3d,
+     TopoDS,
+     BRep,
+     TopTools
+
+is
+
+    deferred class Result;   -- inherits TShared from MMgt
+    
+    class Vertex;            -- inherits Shape
+    
+    class Edge;              -- inherits Shape
+    
+    class Wire;              -- inherits Shape
+    
+    class Face;              -- inherits Shape
+    
+    class Shell;             -- inherits Shape
+    
+--    class Solid;             -- inherits Shape
+
+    class Analyzer;
+
+
+    enumeration Status is
+      NoError,
+      
+      -- for vertices
+      InvalidPointOnCurve,
+      InvalidPointOnCurveOnSurface,
+      InvalidPointOnSurface,
+            
+      -- for edges
+      No3DCurve,
+      Multiple3DCurve,
+      Invalid3DCurve,
+      NoCurveOnSurface,
+      InvalidCurveOnSurface,
+      InvalidCurveOnClosedSurface,
+      InvalidSameRangeFlag,
+      InvalidSameParameterFlag,
+      InvalidDegeneratedFlag,
+      
+      FreeEdge,
+      InvalidMultiConnexity,
+      InvalidRange,
+      
+      
+      -- for wires
+      EmptyWire,
+      RedundantEdge,
+      SelfIntersectingWire, -- on a face
+
+      -- for faces
+      NoSurface,
+      InvalidWire,
+      RedundantWire,
+      IntersectingWires,
+      InvalidImbricationOfWires,
+
+      -- for shells
+      EmptyShell,
+      RedundantFace,
+
+
+      -- for shapes
+      UnorientableShape,
+      NotClosed,
+      NotConnected,
+      
+      SubshapeNotInShape,
+      
+      BadOrientation,
+      BadOrientationOfSubshape,
+      
+      InvalidToleranceValue,
+
+      -- for exception
+      CheckFail
+    
+    end Status;
+
+
+    class ListOfStatus instantiates List from TCollection
+        (Status from BRepCheck);
+       
+    class DataMapOfShapeListOfStatus instantiates DataMap from TCollection 
+        (Shape          from TopoDS,
+       	 ListOfStatus   from BRepCheck,
+         ShapeMapHasher from TopTools);
+	
+	
+    class DataMapOfShapeResult instantiates DataMap from TCollection
+    	(Shape          from TopoDS,
+       	 Result         from BRepCheck,
+         OrientedShapeMapHasher from TopTools);
+	 
+	 
+    -- Package method
+
+    Add(List: in out ListOfStatus from BRepCheck; 
+        Stat: Status from BRepCheck);
+
+
+
+    Print(Stat: Status from BRepCheck;
+          OS: in out OStream from Standard);
+
+    SelfIntersection(W      : Wire from TopoDS;
+    	    	   F      : Face from TopoDS;
+                   E1 : out Edge from TopoDS;
+                   E2 : out Edge from TopoDS)
+      returns Boolean from Standard;
+      
+end BRepCheck;

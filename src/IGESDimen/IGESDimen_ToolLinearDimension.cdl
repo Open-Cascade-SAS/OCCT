@@ -1,0 +1,59 @@
+-- File:	IGESDimen_ToolLinearDimension.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolLinearDimension  from IGESDimen
+
+    ---Purpose : Tool to work on a LinearDimension. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses LinearDimension from IGESDimen,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolLinearDimension;
+    ---Purpose : Returns a ToolLinearDimension, ready to work
+
+
+    ReadOwnParams (me; ent : mutable LinearDimension;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : LinearDimension;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : LinearDimension;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a LinearDimension <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : LinearDimension) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : LinearDimension;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : LinearDimension; entto : mutable LinearDimension;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : LinearDimension;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolLinearDimension;

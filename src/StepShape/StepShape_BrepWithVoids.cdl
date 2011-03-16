@@ -1,0 +1,43 @@
+-- File:        BrepWithVoids.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BrepWithVoids from StepShape 
+
+inherits ManifoldSolidBrep from StepShape 
+
+uses
+
+	HArray1OfOrientedClosedShell from StepShape, 
+	OrientedClosedShell from StepShape, 
+	HAsciiString from TCollection, 
+	ClosedShell from StepShape
+is
+
+	Create returns mutable BrepWithVoids;
+	---Purpose: Returns a BrepWithVoids
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aOuter : mutable ClosedShell from StepShape) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aOuter : mutable ClosedShell from StepShape;
+	      aVoids : mutable HArray1OfOrientedClosedShell from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetVoids(me : mutable; aVoids : mutable HArray1OfOrientedClosedShell);
+	Voids (me) returns mutable HArray1OfOrientedClosedShell;
+	VoidsValue (me; num : Integer) returns mutable OrientedClosedShell;
+	NbVoids (me) returns Integer;
+
+fields
+
+	voids : HArray1OfOrientedClosedShell from StepShape;
+
+end BrepWithVoids;

@@ -1,0 +1,57 @@
+-- File:	TopOpeBRepTool_BoxSort.cdl
+-- Created:	Thu Jul  8 12:12:04 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class BoxSort from TopOpeBRepTool
+
+uses
+
+    Box from Bnd,
+    BoundSortBox from Bnd,
+    HArray1OfBox from Bnd,
+    HArray1OfInteger from TColStd,
+    ListOfInteger from TColStd,
+    ListIteratorOfListOfInteger from TColStd,
+    ShapeEnum from TopAbs,
+    Shape from TopoDS,
+    IndexedMapOfShape from TopTools,
+    Box from Bnd,
+    HBoxTool from TopOpeBRepTool
+    
+is
+
+    Create returns BoxSort;
+    Create(T:HBoxTool) returns BoxSort;
+    SetHBoxTool(me:in out;T:HBoxTool);
+    HBoxTool(me) returns HBoxTool;---C++: return const &
+    Clear(me:in out);
+    AddBoxes(me:in out;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    MakeHAB(me:in out;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    HAB(me) returns HArray1OfBox from Bnd;---C++:return const &
+    MakeHABCOB(myclass;HAB:HArray1OfBox from Bnd;COB:out Box from Bnd);
+    HABShape(me; I:Integer) returns Shape;---C++: return const &
+    MakeCOB(me:in out;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    AddBoxesMakeCOB(me:in out;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    Compare(me:out;S:Shape) returns ListIteratorOfListOfInteger;---C++:return const&
+    TouchedShape(me;I:ListIteratorOfListOfInteger) returns Shape;---C++:return const&
+    Box(me;S:Shape) returns Box from Bnd;---C++:return const & 
+    
+--modified by NIZNHY-PKV Mon Dec 16 10:24:42 2002  f
+    Destroy(me: out); 
+    ---C++:  alias  "Standard_EXPORT ~TopOpeBRepTool_BoxSort() {Destroy();}"
+--modified by NIZNHY-PKV Mon Dec 16 10:25:22 2002  t
+
+fields
+
+    myCOB:Box from Bnd;
+    myBSB:BoundSortBox from Bnd;
+    myIterator:ListIteratorOfListOfInteger from TColStd;
+    myLastCompareShape:Shape from TopoDS;
+    myLastCompareShapeBox:Box from Bnd;
+    myHBT:HBoxTool from TopOpeBRepTool;
+    myHAB:HArray1OfBox from Bnd;
+    myHAI:HArray1OfInteger from TColStd;    
+
+end BoxSort;

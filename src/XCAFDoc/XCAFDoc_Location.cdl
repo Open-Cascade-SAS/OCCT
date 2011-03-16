@@ -1,0 +1,66 @@
+-- File:	XCAFDoc_Location.cdl
+-- Created:	Tue Aug 15 10:34:27 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Location from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: 
+
+uses
+    Location from TopLoc,
+    Label from TDF,
+    RelocationTable from TDF
+
+is
+    Create returns Location from XCAFDoc;
+    
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF; Loc : Location from TopLoc)
+    ---Purpose: Find, or create, a Location attribute and set it's value
+    --          the Location attribute is returned.
+    returns Location from XCAFDoc;
+
+    ---Purpose: Location methods
+    --          ===============
+    
+    Set (me : mutable; Loc : Location from TopLoc);
+    
+    Get (me)
+    returns Location from TopLoc;
+
+    --IsCaptured(me) returns Boolean;
+	---Purpose: Returns True if there is a reference on the same label
+
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+--    Dump(me; anOS : in out OStream from Standard)
+--    	returns OStream from Standard
+--    	is redefined;
+--	-C++: return &
+
+fields
+    myLocation : Location from TopLoc;
+    
+end Location;

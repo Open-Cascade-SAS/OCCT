@@ -1,0 +1,40 @@
+-- File:	GeomToStep_MakeRectangularTrimmedSurface.cdl
+-- Created:	Thu Jan 25 11:07:02 1996
+-- Author:	Frederic MAUPAS
+--		<fma@pronox>
+---Copyright:	 Matra Datavision 1996
+
+class MakeRectangularTrimmedSurface from GeomToStep  
+    inherits Root from GeomToStep
+    
+    ---Purpose: This class implements the mapping between class
+    --          RectangularTrimmedSurface from Geom and the class
+    --          RectangularTrimmedSurface from  
+    --          StepGeom which describes a 
+    --          rectangular_trimmed_surface from ISO-IS 10303-42
+  
+uses RectangularTrimmedSurface from Geom,
+     RectangularTrimmedSurface from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( RTSurf : RectangularTrimmedSurface from Geom ) returns
+    MakeRectangularTrimmedSurface;
+
+Value (me) returns
+    RectangularTrimmedSurface from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theRectangularTrimmedSurface :
+    	RectangularTrimmedSurface from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeRectangularTrimmedSurface;
+
+

@@ -1,0 +1,53 @@
+-- File:	PPoly.cdl
+-- Created:	Tue Oct 24 10:30:44 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+package PPoly 
+
+	---Purpose: This  package  provides  persistent classes  to
+	--          handle :
+	--          
+	--          * 3D triangular polyhedrons.
+	--          
+	--          * 3D polygons.
+	--          
+	--          * 2D polygon.
+
+uses    PCollection,
+        PColStd,
+   	PColgp
+
+is
+
+    class Triangle;
+	---Purpose: A triangle is  a triplet  of integers (indices  of
+	--          the nodes).
+    
+    class Triangulation;
+	---Purpose: A   Triangulation  is  a   3D  polyhedron made  of
+	--          triangles.  It   is  made  of  a nodes  which  are
+	--          indexed. Nodes  have a 3d  value  and a  2d value.
+	--          Triangles are triplet of node indices.
+	--          
+	--          This is a Transient class.
+
+
+    class Polygon3D;
+    	---Purpose: A Polygon3D is  made of  indexed nodes.
+    	--          Nodes have a 3d value.
+
+    class Polygon2D;
+    	---Purpose: A Polygon2D is made of  indexed nodes.
+    	--          Nodes have a 2d value.
+	  
+    class PolygonOnTriangulation;
+    	---Purpose: A polygonOnTriangulation is made of node indices
+    	--          referencing a triangulation.
+
+    class HArray1OfTriangle
+    instantiates HArray1 from PCollection(Triangle from PPoly);
+
+end PPoly;

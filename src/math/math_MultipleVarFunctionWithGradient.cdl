@@ -1,0 +1,57 @@
+-- File:        MultipleVarFunctionWithGradient.cdl
+-- Created:     Mon May 13 15:11:12 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+
+deferred class MultipleVarFunctionWithGradient from math
+
+inherits MultipleVarFunction
+---Purpose:
+-- The abstract class MultipleVarFunctionWithGradient
+-- describes the virtual functions associated with a multiple variable function.
+uses Vector from math
+
+is
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_MultipleVarFunctionWithGradient(){Delete();}"
+    
+    NbVariables(me)
+    	---Purpose: Returns the number of variables of the function.
+
+    returns Integer
+    is deferred;
+
+
+    Value(me: in out; X: Vector; F: out Real)
+    	---Purpose: Computes the values of the Functions <F> for the   variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Gradient(me: in out; X: Vector; G: out Vector)
+    	---Purpose: Computes the gradient <G> of the functions for the   variable <X>.
+    	--         Returns True if the computation was done successfully, 
+    	--         False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Values(me: in out; X: Vector; F: out Real; G: out Vector)
+    	---Purpose: computes the value <F> and the gradient <G> of the 
+    	--          functions for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+end MultipleVarFunctionWithGradient;

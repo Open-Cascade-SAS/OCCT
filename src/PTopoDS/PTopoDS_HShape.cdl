@@ -1,0 +1,65 @@
+-- File:	HShape.cdl
+-- Created:	Tue Dec 11 16:55:01 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+-- Update:      Frederic Maupas
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class HShape from PTopoDS inherits ExternShareable from ObjMgt
+
+    ---Purpose: The PTopoDS_HShape is the Persistent view of a TopoDS_Shape.
+  -- This can be a vertex, an edge, a wire, a face, a shell, a solid and so on.
+ -- It can be shared by other objects.
+    --  a  HShape contains :
+    --          
+    --          - a reference to a TShape.
+    --          
+    --          - a Location  to put the TShape in  a local coordinate
+    --          system.
+    --          
+    --          - an Orientation.
+    --          
+    --          It inherits from ExternShareable, so that it can be shared
+    --          by other objects located outside the container.
+    
+uses
+
+    Orientation   from TopAbs,
+    TShape        from PTopoDS,
+    Location      from PTopLoc
+    
+is
+    Create returns mutable HShape from PTopoDS;
+    ---Level: Internal 
+
+    TShape(me) returns any TShape from PTopoDS
+    ---Level: Internal 
+    is static;
+
+    TShape(me : mutable; T : TShape from PTopoDS)
+    ---Level: Internal 
+    is static;
+
+    Location(me) returns Location from PTopLoc
+    ---Level: Internal 
+    is static;
+	
+    Location(me : mutable; L : Location from PTopLoc)
+    ---Level: Internal 
+    is static;
+	
+    Orientation(me) returns Orientation from TopAbs
+    ---Level: Internal 
+    is static;
+
+    Orientation(me: mutable; O : Orientation from TopAbs)
+    ---Level: Internal 
+    is static;
+    
+fields
+    myTShape   : TShape      from PTopoDS;
+    myLocation : Location    from PTopLoc;
+    myOrient   : Orientation from TopAbs;
+
+end HShape;

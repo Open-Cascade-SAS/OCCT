@@ -1,0 +1,41 @@
+// File:	TCollection_ListIterator.gxx
+// Created:	Thu Dec 17 18:19:38 1992
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//
+// The methods of Iterator needing the Node class
+// are defined in TCollection_List.gxx
+// 
+
+
+//=======================================================================
+//function : TCollection_ListIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_ListIterator::TCollection_ListIterator() :
+       current(NULL),
+       previous(NULL)
+{}
+
+//=======================================================================
+//function : TCollection_ListIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_ListIterator::TCollection_ListIterator(const TCollection_List& L) :
+       current(L.myFirst),
+       previous(NULL)
+{}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void TCollection_ListIterator::Initialize(const TCollection_List& L)
+{
+  current = L.myFirst;
+  previous = NULL;
+}

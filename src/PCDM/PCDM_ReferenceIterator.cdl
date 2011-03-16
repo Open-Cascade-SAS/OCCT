@@ -1,0 +1,48 @@
+-- File:	PCDM_ReferenceIterator.cdl
+-- Created:	Mon Dec  1 07:53:35 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class  ReferenceIterator from PCDM inherits Transient from Standard
+
+uses MetaData from CDM,  
+    SequenceOfReference from PCDM,  
+    Document from CDM, Application from CDM,
+    MessageDriver from  CDM
+is
+    Create (theMessageDriver : MessageDriver from  CDM)
+    returns mutable ReferenceIterator from PCDM;
+    ---Purpose:  Warning! The constructor does not initialization.
+
+
+    LoadReferences(me: mutable; aDocument: Document from CDM; aMetaData: MetaData from CDM; anApplication: Application from CDM; UseStorageConfiguration: Boolean from Standard);
+    
+
+    Init(me: mutable;aMetaData: MetaData from CDM)
+    is virtual;
+  
+    More(me) returns Boolean from Standard
+    is virtual private;
+
+    Next(me: mutable)
+    is virtual private;
+    
+    MetaData(me;UseStorageConfiguration: Boolean from Standard ) 
+    returns MetaData from CDM
+    is virtual private;
+
+
+    ReferenceIdentifier(me)  returns Integer from Standard
+    is virtual private;
+
+    DocumentVersion(me) returns Integer from Standard
+    ---Purpose: returns the version of the document in the reference
+    is virtual private;
+    
+fields
+    myReferences: SequenceOfReference from PCDM;
+    myIterator: Integer from Standard; 
+    myMessageDriver : MessageDriver from CDM; 
+   
+end ReferenceIterator from PCDM;

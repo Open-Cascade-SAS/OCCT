@@ -1,0 +1,45 @@
+--
+-- File:	Graphic3d_DataStructureManager.cdl
+-- Created:	Vendredi 24 fevrier 1995
+-- Author:	CAL
+--              11/97 ; CAL : retrait des DataStructure
+--
+---Copyright:	MatraDatavision 1995
+--
+
+deferred class DataStructureManager from Graphic3d inherits TShared
+
+	---Version:
+
+	---Purpose:	This class allows the definition of a manager to
+	--		which the graphic objects are associated.
+	--		It allows them to be globally manipulated.
+	--		It defines the global attributes.
+
+	---Keywords:
+
+	---Warning:
+	---References:
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Initialize;
+	---Level: Public
+	---Purpose: Initializes the manager <me>.
+	---Category: Constructors
+
+	------------------------
+	-- Category: Destructors
+	------------------------
+
+	Destroy (me: mutable)
+		is virtual;
+	---Level: Public
+	---Purpose: Deletes the manager <me>.
+	---C++: alias ~
+	---Category: Destructors
+
+end DataStructureManager from Graphic3d;

@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWActionRequestSolution.cdl
+-- Created:	Fri Nov 26 16:26:30 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWActionRequestSolution from RWStepBasic
+
+    ---Purpose: Read & Write tool for ActionRequestSolution
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ActionRequestSolution from StepBasic
+
+is
+    Create returns RWActionRequestSolution from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ActionRequestSolution from StepBasic);
+	---Purpose: Reads ActionRequestSolution
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ActionRequestSolution from StepBasic);
+	---Purpose: Writes ActionRequestSolution
+
+    Share (me; ent : ActionRequestSolution from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWActionRequestSolution;

@@ -1,0 +1,89 @@
+--
+-- File      :  Hierarchy.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Hierarchy from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines Hierarchy, Type <406> Form <10>
+        --          in package IGESBasic
+        --          Provides ability to control the hierarchy of each
+        --          directory entry attribute.
+
+uses  Integer  -- no one specific type
+
+is
+
+        Create returns mutable Hierarchy;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              nbPropVal     : Integer;
+              aLineFont     : Integer;
+              aView         : Integer;
+              anEntityLevel : Integer;
+              aBlankStatus  : Integer;
+              aLineWt       : Integer;
+              aColorNum     : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           Hierarchy
+        --       - nbPropVal     : Number of Property values = 6
+        --       - aLineFont     : indicates the line font 
+        --       - aView         : indicates the view
+        --       - aEntityLevel  : indicates the entity level 
+        --       - aBlankStatus  : indicates the blank status
+        --       - aLineWt       : indicates the line weight
+        --       - aColorNum     : indicates the color num
+        -- aLineFont, aView, aEntityLevel, aBlankStatus, aLineWt and
+        -- aColorNum can take 0 or 1. 
+        -- 0 : The directory entry attribute will apply to entities 
+        -- physically subordinate to this entity.
+        -- 1 : The directory entry attribute of this entity will not
+        -- apply to physically subordinate entities. 
+
+        NbPropertyValues (me)  returns Integer;
+        ---Purpose : returns the number of property values, which should be 6
+
+        NewLineFont (me) returns Integer;
+        ---Purpose : returns the line font
+
+        NewView (me) returns Integer;
+        ---Purpose : returns the view
+
+        NewEntityLevel (me) returns Integer;
+        ---Purpose : returns the entity level
+
+        NewBlankStatus (me) returns Integer;
+        ---Purpose : returns the blank status
+
+        NewLineWeight (me) returns Integer;
+        ---Purpose : returns the line weight
+
+        NewColorNum (me) returns Integer;
+        ---Purpose : returns the color number
+
+fields
+
+--
+-- Class    : IGESBasic_Hierarchy
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Hierarchy.
+--
+-- Reminder : A Hierarchy instance is defined by :
+--            - the line font, view, entity level, blank status, line wt
+--              and the color number
+
+        theNbPropertyValues : Integer;
+        theLineFont         : Integer;
+        theView             : Integer;
+        theEntityLevel      : Integer;
+        theBlankStatus      : Integer;
+        theLineWeight       : Integer;
+        theColorNum         : Integer;
+
+end Hierarchy;

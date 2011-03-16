@@ -1,0 +1,354 @@
+-- File:	Sweep_LinearRegularSweep.cdl
+-- Created:	Wed Jan 27 10:36:41 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred generic class LinearRegularSweep from Sweep (
+    TheShape            as any;   -- resulting topological objects.
+    TheGenShape         as any;   -- Generating topological objects.
+    TheDirShape         as any;   -- Directing topological objects.
+    TheBuilder          as any;   -- as Builder from Sweep.
+    TheGenShapeTool     as any;   -- as Tool from Sweep.
+    TheDirShapeTool     as any;   -- as Tool from Sweep.
+    TheShapeIterator    as any;   -- as Iterator from Sweep.
+    TheGenShapeIterator as any;   -- as Iterator from Sweep.
+    TheDirShapeIterator as any)   -- as Iterator from Sweep.
+
+
+	---Purpose: This  a generic  class  is  used   to build Sweept
+	--          primitives   with    a  generating  "shape"  and a
+	--          directing "line".
+    	--          
+    	--          The indexation and type analysis services required
+    	--          for the generatrix are given by <TheGenShapeTool>.
+    	--          
+    	--          The indexation and type analysis services required
+    	--          for the directrix are given by <TheDirShapeTool>.
+    	--          
+    	--          The iteration services required for the generatrix
+    	--          are given by <TheGenShapeIterator>.
+    	--          
+    	--          The iteration services required  for the directrix
+    	--          are given by <TheDirShapeIterator>.
+	--          
+	--          The topology is like a grid of shapes.  Each shape
+	--          of the grid  must be addressable without confusion
+	--          by one  or  two objects   from  the generating  or
+	--          directing   shapes.  Here are  exemples of correct
+	--          associations to address:
+	--          
+	--          - a vertex : GenVertex - DirVertex
+	--          - an edge  : GenVertex - DirEdge
+	--          -          : GenEdge   - DirVertex
+	--          - a face   : GenEdge   - DirEdge
+	--                       GenFace   - DirVertex
+	--                       ...
+    	--          
+    	--          "GenObject" is used to identify an object from the
+    	--          Generating     Shape,  and  "DirObject"  from  the
+    	--          Directing Shape.  So may they   be  from different
+    	--          types.
+    	--          
+    	--          The method Has... is given because in some special
+    	--          cases, a vertex,    an  edge or   a   face may  be
+    	--          geometricaly nonexistant or not usefull.
+
+uses
+
+    Orientation from TopAbs,
+    Array2OfBoolean from TColStd
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard,
+    RangeError from Standard,
+    DomainError from Standard
+    
+-- Nested classes
+    
+    class Array2OfShapes
+    	instantiates Array2 from TCollection (TheShape);
+    class SequenceOfShapes
+    	instantiates Sequence from TCollection (TheShape);
+
+is
+
+
+    -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+    Delete(me:out) is virtual ;
+    ---C++: alias ~
+    
+    Initialize(aBuilder  : TheBuilder;
+	       aGenShape : TheGenShape;
+	       aDirWire  : TheDirShape);
+	---Purpose: Creates a LinearRegularSweep.    <aBuilder>  gives
+	--          basic topological services.
+    
+
+    -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    --  Deferred Methods supporting the creation of the geometric part.
+
+    -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    
+    MakeEmptyVertex(me : in out; aGenV: TheGenShape; aDirV: TheDirShape)
+    returns TheShape 
+	---Purpose: Builds the vertex addressed by [aGenV,aDirV], with its
+	--          geometric part, but without subcomponents.
+    is deferred;
+    
+    MakeEmptyDirectingEdge(me: in out; aGenV: TheGenShape; aDirE: TheDirShape)
+    returns TheShape
+	---Purpose: Builds the edge addressed by [aGenV,aDirE], with its
+	--          geometric part, but without subcomponents.
+    is deferred;
+    
+    MakeEmptyGeneratingEdge(me: in out; aGenE: TheGenShape; aDirV: TheDirShape)
+    returns TheShape
+	---Purpose: Builds the edge addressed by [aGenE,aDirV], with its
+	--          geometric part, but without subcomponents.
+    is deferred;
+    
+    SetParameters(me         : in out; 
+    	    	  aNewFace   : TheShape; 
+    	      	  aNewVertex : in out TheShape;
+    	    	  aGenF      : TheGenShape; 
+    	    	  aGenV      : TheGenShape;
+    	    	  aDirV      : TheDirShape)
+	---Purpose: Sets the  parameters of the new  vertex  on the new
+	--          face. The new face and  new vertex where generated
+	--          from aGenF, aGenV and aDirV .
+    is deferred;
+    
+    SetDirectingParameter(me         : in out; 
+    	    	          aNewEdge   : TheShape; 
+    	    	    	  aNewVertex : in out TheShape;
+    	    	          aGenV      : TheGenShape;
+    	    	          aDirE      : TheDirShape; 
+    	    	    	  aDirV      : TheDirShape)
+	---Purpose: Sets the  parameter of the new  vertex  on the new
+	--          edge. The new edge and  new vertex where generated
+	--          from aGenV aDirE, and aDirV.
+    is deferred;
+
+    SetGeneratingParameter(me         : in out; 
+    	    	    	   aNewEdge   : TheShape; 
+                           aNewVertex : in out TheShape;
+    	    	    	   aGenE      : TheGenShape; 
+                           aGenV      : TheGenShape;
+    	    	    	   aDirV      : TheDirShape)
+	---Purpose: Sets the  parameter of the new  vertex  on the new
+	--          edge. The new edge and  new vertex where generated
+	--          from aGenE, aGenV and aDirV .
+    is deferred;
+
+    MakeEmptyFace(me       : in out; 
+    	    	  aGenS    : TheGenShape; 
+    	    	  aDirS    : TheDirShape)
+    returns TheShape
+	---Purpose: Builds the face  addressed by  [aGenS,aDirS], with
+	--          its geometric part, but without subcomponents. The
+	--          couple aGenS, aDirS  can be a "generating face and
+	--          a directing vertex"   or "a generating  edge and a
+	--          directing  edge".
+    is deferred;
+    
+    SetPCurve(me       : in out;
+ 	      aNewFace : TheShape; 
+              aNewEdge : in out TheShape;
+	      aGenF    : TheGenShape; 
+              aGenE    : TheGenShape;
+	      aDirV    : TheDirShape;
+    	      orien    : Orientation from TopAbs)
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenF, aGenE and aDirV.
+    is deferred;
+    
+    SetGeneratingPCurve(me       : in out;
+    	    	    	aNewFace : TheShape; 
+                        aNewEdge : in out TheShape;
+			aGenE    : TheGenShape; 
+                        aDirE    : TheDirShape;
+			aDirV    : TheDirShape;
+   	                orien    : Orientation from TopAbs)
+
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenE, aDirE and aDirV.
+    is deferred;
+    	    
+    SetDirectingPCurve(me       : in out;
+    	    	       aNewFace : TheShape; 
+                       aNewEdge : in out TheShape;
+		       aGenE    : TheGenShape; 
+		       aGenV    : TheGenShape; 
+                       aDirE    : TheDirShape;
+ 	               orien    : Orientation from TopAbs)
+		       
+	 ---Purpose: Sets the PCurve for a new edge on a new face. The
+	 --          new edge and  the  new face were generated  using
+	 --          aGenE, aDirE and aGenV.
+    is deferred;
+    
+    DirectSolid(me       : in out; 
+    	    	aGenS    : TheGenShape; 
+    	    	aDirS    : TheDirShape)
+    returns Orientation from TopAbs
+	---Purpose: Returns the Orientation of the  shell in the solid
+	--          generated by the face aGenS  with  the edge aDirS.
+	--          It is  REVERSED  if the surface is  swept  in  the
+	--          direction of the normal.
+    is deferred;
+    
+    GGDShapeIsToAdd (me;
+    	    	     aNewShape    : TheShape;
+    	    	     aNewSubShape : TheShape;
+      	    	     aGenS        : TheGenShape;
+		     aSubGenS     : TheGenShape;
+    	    	     aDirS        : TheDirShape)
+    returns Boolean from Standard
+	---Purpose: Returns   true   if  aNewSubShape    (addressed by
+	--          aSubGenS  and aDirS)  must  be added  in aNewShape
+	--          (addressed by aGenS and aDirS).
+    is deferred;
+    
+    GDDShapeIsToAdd (me;
+    	    	     aNewShape    : TheShape;
+    	    	     aNewSubShape : TheShape;
+      	    	     aGenS        : TheGenShape;
+    	    	     aDirS        : TheDirShape;
+   	    	     aSubDirS     : TheDirShape)
+    returns Boolean from Standard
+	---Purpose: Returns   true   if  aNewSubShape    (addressed by
+	--          aGenS  and aSubDirS)  must  be added  in aNewShape
+	--          (addressed by aGenS and aDirS).
+    is deferred;
+    
+    
+    SeparatedWires (me;
+    	    	     aNewShape    : TheShape;
+    	    	     aNewSubShape : TheShape;
+      	    	     aGenS        : TheGenShape;
+		     aSubGenS     : TheGenShape;
+    	    	     aDirS        : TheDirShape)
+    returns Boolean from Standard
+	---Purpose: In  some  particular  cases  the   topology  of  a
+	--          generated  face must be  composed  of  independant
+	--          closed wires,  in this case  this function returns
+	--          true.
+    is deferred;
+    
+
+    SplitShell (me; aNewShape    : TheShape)
+    returns TheShape
+	---Purpose: In  some  particular  cases  the   topology  of  a
+	--          generated  Shell must be  composed  of  independant
+	--          closed Shells,  in this case  this function returns
+	--          a Compound of independant Shells.
+    is virtual;
+    
+
+    -- """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    --  Method coding the continuities on the edges between 2 faces
+    -- """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    SetContinuity(me : in out; aGenS : TheGenShape; aDirS : TheDirShape)
+       ---Purpose: Called to propagate the continuity of  every vertex
+       --          between two edges of the  generating wire  aGenS on
+       --          the generated edge and faces.
+    is deferred;
+
+        
+    -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    --  User end methods.
+    --
+    -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    
+    -- Shapes
+    -- """"""
+
+    HasShape(me; aGenS : TheGenShape; aDirS : TheDirShape) 
+    	  returns Boolean from Standard
+	---Purpose: Returns true   if aDirS   and aGenS  addresses   a
+	--          resulting Shape. In some  specific cases the shape
+	--          can  be    geometrically   inexsistant,  then this
+	--          function returns false.
+    is deferred;
+
+    Shape(me: in out; aGenS : TheGenShape; aDirS : TheDirShape) 
+    	  returns TheShape
+	---Purpose: Returns the resulting  Shape indexed by aDirS  and
+	--          aGenS.
+    is static;
+
+
+    Shape(me: in out; aGenS : TheGenShape) 
+    	  returns TheShape
+	---Purpose: Returns  the resulting Shape  indexed by myDirWire
+	--          and aGenS.
+    is static;
+
+    Shape(me: in out) 
+    	  returns TheShape
+	---Purpose: Returns the resulting  Shape indexed by  myDirWire
+	--          and myGenShape.
+    is static;
+
+    FirstShape(me: in out) 
+    	  returns TheShape
+	---Purpose: Returns the resulting Shape  indexed by the  first
+	--          Vertex  of myDirWire and myGenShape.
+    is static;
+
+    LastShape(me: in out) 
+    	  returns TheShape
+	---Purpose: Returns the  resulting Shape  indexed by the  last
+	--          Vertex of myDirWire and myGenShape.
+    is static;
+    
+
+    FirstShape(me: in out; aGenS : TheGenShape) 
+    	  returns TheShape
+	---Purpose: Returns the resulting Shape  indexed by the  first
+	--          Vertex  of myDirWire and aGenS.
+    is static;
+
+    LastShape(me: in out; aGenS : TheGenShape) 
+    	  returns TheShape
+	---Purpose: Returns the  resulting Shape  indexed by the  last
+	--          Vertex of myDirWire and aGenS.
+    is static;
+    
+    
+    Closed(me) returns Boolean from Standard is static;
+    
+    
+fields
+
+    -- Topology builder.
+
+    myBuilder  : TheBuilder is protected;  
+
+    -- Generating shape
+    
+    myGenShape : TheGenShape is protected;
+
+    -- Directing line
+    
+    myDirWire  : TheDirShape is protected;
+
+    -- shape tools.
+
+    myGenShapeTool   : TheGenShapeTool is protected;
+    myDirShapeTool   : TheDirShapeTool is protected;
+
+    -- Array of built objects (NbGShapes,NbDShapes).
+    myShapes       : Array2OfShapes is protected;
+
+    -- Array of built objects flags (NbGShapes,NbDShapes).
+    myBuiltShapes : Array2OfBoolean from TColStd is protected;
+    	    	
+end LinearRegularSweep;

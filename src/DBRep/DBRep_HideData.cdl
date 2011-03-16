@@ -1,0 +1,73 @@
+-- File:	DBRep_HideData.cdl
+-- Created:	Thu Sep 21 18:02:09 1995
+-- Author:	Remi LEQUETTE
+--		<rle@mentox>
+---Copyright:	 Matra Datavision 1995
+
+
+class HideData from DBRep 
+
+	---Purpose: This  class stores all the informations concerning
+	--          hidden lines on a view.
+	--          
+	--          * View number
+	--          * Matrix of projection
+	--          * Type of projection, focal
+	--          * Arrays of 3d points
+	--          
+	--          A drawable shape contains a  list of such  objects
+	--          to store  the  hidden lines  for  each view.   The
+	--          IsSame method is  used  to check if   hidden lines
+	--          must be recompiled.
+
+uses
+
+    Trsf         from gp,
+    Display      from Draw,
+    Color        from Draw,
+    Shape        from TopoDS,
+    ListOfBPoint from HLRBRep
+
+is
+
+    Create returns HideData from DBRep;
+
+    Set (me     : in out;
+    	 ViewId : Integer from Standard;
+         TProj  : Trsf    from gp;
+    	 Focal  : Real    from Standard;
+         S      : Shape   from TopoDS;
+         ang    : Real    from Standard);
+	---Purpose: ViewId is the view number
+	--          TProj the projection
+	--          Focal <= 0 means parallel projection
+	--          Alg : the hidden lines
+    
+    ViewId(me) returns Integer from Standard;
+	---C++: inline
+	
+    Angle(me) returns Real from Standard;
+	---C++: inline
+	
+    IsSame(me; TProj : Trsf from gp; Focla : Real) returns Boolean;
+	---Purpose: Returns True if the projection is the same
+	
+    DrawOn(me                      :in out;
+           D                       : in out Display from Draw;
+    	   withRg1,withRgN,withHid :        Boolean from Standard;
+    	   VisCol, HidCol          :        Color   from Draw);
+
+    LastPick(me) returns Shape from TopoDS;
+	---Purpose: Returns the subshape touched by the last pick.
+	---C++: return const &
+
+fields
+    myView     : Integer      from Standard;
+    myTrsf     : Trsf         from gp;
+    myFocal    : Real         from Standard;
+    myBiPntVis : ListOfBPoint from HLRBRep;
+    myBiPntHid : ListOfBPoint from HLRBRep;
+    myPickShap : Shape        from TopoDS;
+    myAngle    : Real         from Standard;
+
+end HideData;

@@ -1,0 +1,147 @@
+-- File:	Gradient.cdl
+-- Created:	Thu Jul 25 17:06:33 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+generic class Gradient from AppParCurves
+    	    	    (MultiLine   as any;
+    	    	     ToolLine    as any)   -- as ToolLine(MultiLine)
+
+
+    ---Purpose: This algorithm uses the algorithms LeastSquare, 
+    --          ResConstraint and a gradient method to approximate a set 
+    --          of points (AppDef_MultiLine) with a minimization of the
+    --          sum(square(|F(i)-Qi|)) by changing the parameter. 
+    --          The algorithm used is from of the mathematical 
+    --          package: math_BFGS, a gradient method.
+
+
+
+uses Vector                           from math, 
+     MultipleVarFunctionWithGradient  from  math,
+     MultiCurve                       from AppParCurves,
+     HArray1OfConstraintCouple        from AppParCurves
+
+
+raises OutOfRange from Standard,
+       NotDone    from StdFail
+
+
+private class ParLeastSquare instantiates LeastSquare from AppParCurves
+    	(MultiLine, ToolLine);
+	
+private class ResConstraint instantiates ResolConstraint from AppParCurves
+    	(MultiLine, ToolLine);
+
+private class ParFunction instantiates Function from AppParCurves
+    	(MultiLine, ToolLine, ParLeastSquare, ResConstraint);
+
+class   Gradient_BFGS  from  AppParCurves 
+    inherits   BFGS  from  math 
+    uses  MultipleVarFunctionWithGradient  from math, 
+    	  Vector                           from math
+    is 
+     
+    	Create  (  F              :  in  out  MultipleVarFunctionWithGradient  from  math  ; 
+	           StartingPoint  :           Vector   from  math  ; 
+		   Tolerance3d	  :           Real     from  Standard  ; 
+		   Tolerance2d	  :           Real     from  Standard  ; 
+		   Eps    	  :           Real     from  Standard  ; 
+		   NbIterations   :           Integer  from  Standard  = 200  ); 
+
+        IsSolutionReached  ( me ; 
+    	    	    	     F  :  in  out  MultipleVarFunctionWithGradient  from  math  ) 
+		returns  Boolean  from  Standard  is  redefined  ; 
+
+	fields 
+	  
+	  myTol3d  :  Real  from  Standard  ; 
+	  myTol2d  :  Real  from  Standard  ; 
+	 
+        end  Gradient_BFGS  from  AppParCurves ;
+
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: in out Vector; Deg: Integer; 
+    	   Tol3d, Tol2d: Real; NbIterations: Integer = 200)
+	---Purpose: Tries to minimize the sum (square(||Qui - Bi*Pi||)) 
+	--          where Pui describe the approximating Bezier curves'Poles 
+	--          and Qi the MultiLine points with a parameter ui.
+	--          In this algorithm, the parameters ui are the unknowns.
+	--          The tolerance required on this sum is given by Tol.
+	--          The desired degree of the resulting curve is Deg.
+
+    returns Gradient from AppParCurves;
+    
+    
+    IsDone(me)
+	---Purpose: returns True if all has been correctly done.	
+
+    returns Boolean
+    is static;
+    
+    
+    Value(me)
+    	---Purpose: returns all the Bezier curves approximating the
+    	--          MultiLine SSP after minimization of the parameter.
+
+    returns MultiCurve from AppParCurves
+    raises NotDone from StdFail
+    is static;
+    
+    
+    Error(me; Index: Integer)
+	---Purpose: returns the difference between the old and the new 
+	--          approximation.
+	--          An exception is raised if NotDone.
+	--          An exception is raised if Index<1 or Index>NbParameters.
+
+    returns Real
+    raises NotDone from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+
+    MaxError3d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    MaxError2d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    AverageError(me)
+       ---Purpose: returns the average error between the old and the
+       --          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+fields
+
+SCU:          MultiCurve from AppParCurves;
+ParError:     Vector from math;
+AvError:      Real;
+MError3d:     Real;
+MError2d:     Real;
+Done:         Boolean;
+
+end Gradient from AppParCurves;

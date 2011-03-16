@@ -1,0 +1,23 @@
+-- File:	XSControl_Functions.cdl
+-- Created:	Tue Mar 26 18:08:36 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Functions  from XSControl
+
+    ---Purpose : Functions from XSControl gives access to actions which can be
+    --           commanded with the resources provided by XSControl: especially
+    --           Controller and Transfer
+    --           
+    --           It works by adding functions by method Init
+
+uses CString
+
+is
+
+    Init (myclass);
+    ---Purpose : Defines and loads all functions for XSControl (as ActFunc)
+
+end Functions;

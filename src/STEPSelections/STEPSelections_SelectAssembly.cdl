@@ -1,0 +1,29 @@
+-- File:	STEPSelections_SelectAssembly.cdl
+-- Created:	Thu Mar 25 12:46:08 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectAssembly from STEPSelections inherits SelectExplore from IFSelect
+
+	---Purpose: 
+
+uses
+    AsciiString from TCollection,
+    Transient,
+    EntityIterator,
+    Graph
+is
+    Create returns mutable SelectAssembly from STEPSelections;
+    
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    returns Boolean;
+    ---Purpose : Explores an entity, to take its faces
+    --           Works recursively
+    
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Assembly structures"
+
+end SelectAssembly;

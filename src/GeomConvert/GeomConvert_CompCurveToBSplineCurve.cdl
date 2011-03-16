@@ -1,0 +1,60 @@
+-- File:	GeomConvert_CompCurveToBSplineCurve.cdl
+-- Created:	Mon Sep 23 13:22:25 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+-- Modified:	Fri Jul 10 11:23:35 1998
+--              JCT : Add WithRatio,MinM
+---Copyright:	 Matra Datavision 1996
+
+
+class CompCurveToBSplineCurve from GeomConvert 
+
+	---Purpose: Concat several curve in an BSplineCurve
+
+uses
+ ParameterisationType from Convert,
+ BoundedCurve from Geom,
+ BSplineCurve from Geom
+
+--raises
+
+is
+
+    Create (BasisCurve : BoundedCurve from Geom; 
+     	    Parameterisation : ParameterisationType from Convert 
+    	    	       =  Convert_TgtThetaOver2)
+	 ---Purpose: Initialize the algorithme with one curve
+	 --        - Parameterisation is used to convert 
+    returns CompCurveToBSplineCurve;
+    
+    Add (me : in out; 
+         NewCurve   :  BoundedCurve from Geom;
+         Tolerance  :  Real from Standard;
+         After      :  Boolean from Standard = Standard_False; 
+         WithRatio  :  Boolean from Standard = Standard_True; 
+         MinM       :  Integer  from  Standard  =  0)
+	---Purpose: Append a curve in  the BSpline Return False if the
+	--          curve is not G0  with the BSplineCurve.  Tolerance
+	--             is   used to   check   continuity  and decrease
+	--          Multiplicity at the common Knot until MinM
+	--          if MinM = 0, the common Knot can be removed
+    returns Boolean;
+       
+    
+    Add (me : in out; 
+         FirstCurve : in out BSplineCurve from Geom;
+    	 SecondCurve: in out BSplineCurve from Geom;
+         After      : Boolean from Standard; 
+         WithRatio  : Boolean from Standard; 
+         MinM       : Integer from Standard)
+	---Purpose: Concat two BSplineCurves.
+    	is private;    
+    
+    BSplineCurve(me) returns BSplineCurve from Geom;
+
+fields
+ myCurve :  BSplineCurve from Geom;
+ myTol   :  Real;
+ myType  :  ParameterisationType from Convert;
+
+end CompCurveToBSplineCurve;

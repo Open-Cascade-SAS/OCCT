@@ -1,0 +1,320 @@
+-- File:	BRepMesh_FastDiscret.cdl
+-- Created:	Tue Feb 27 14:21:35 1996
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1996
+
+
+class FastDiscret from BRepMesh inherits TShared from MMgt
+
+	---Purpose: Algorithm  to mesh  a shape  with  respect of  the
+	--          frontier the deflection  and by option the  shared
+	--          components.
+
+
+uses    Boolean                   from Standard,
+    	Integer                   from Standard,
+	Box                       from Bnd,
+    	Real                      from Standard,
+	Shape                     from TopoDS,
+	Face                      from TopoDS,
+	Edge                      from TopoDS,
+	FaceAttribute             from BRepMesh,
+	Vertex                    from TopoDS,
+	Triangle                  from BRepMesh,
+	Vertex                    from BRepMesh,
+	Edge                      from BRepMesh,
+	ListOfInteger             from TColStd,
+	MapOfInteger              from TColStd,
+	SequenceOfInteger         from TColStd,
+	ListOfReal                from TColStd,
+	IndexedMapOfInteger       from TColStd,
+	SequenceOfPnt2d           from TColgp,
+	Dir                       from gp,
+	Pnt                       from gp,
+        XY                        from gp,
+	Pnt2d                     from gp,
+	DataMapOfIntegerPnt       from BRepMesh,
+	DataMapOfIntegerListOfXY  from BRepMesh,
+	DataMapOfShapePairOfPolygon from  BRepMesh,
+	Delaun                    from BRepMesh,
+	DataMapOfVertexInteger    from BRepMesh,
+	DataStructureOfDelaun     from BRepMesh,
+	ListOfVertex              from BRepMesh,
+	MapOfShape                from TopTools,
+    	HSurface                  from BRepAdaptor,
+	ClassifierPtr             from BRepMesh,	
+        IndexedMapOfReal          from TColStd,
+	Status                    from BRepMesh,
+    	DataMapOfShapeReal        from TopTools,
+	ListOfShape               from TopTools,
+	Curve                     from Geom2d,
+	MapOfInteger              from MeshDS,
+	BaseAllocator             from MeshDS,
+	DataMapOfFaceAttribute    from BRepMesh	
+	
+
+is 
+
+        Create (defle     : Real    from Standard;
+    	    	angle     : Real    from Standard;
+    	    	B         : Box     from Bnd;
+    	    	withShare : Boolean from Standard=Standard_True;
+    	    	inshape   : Boolean from Standard=Standard_False;
+    	    	relative  : Boolean from Standard=Standard_False;
+    	    	shapetrigu: Boolean from Standard=Standard_False)
+    	    returns mutable FastDiscret from BRepMesh;
+
+
+    	Create (defle     : Real    from Standard;
+    	    	shape     : Shape   from TopoDS;
+    	    	B         : Box     from Bnd;
+    	    	angle     : Real    from Standard;
+    	    	withShare : Boolean from Standard=Standard_True;
+    	    	inshape   : Boolean from Standard=Standard_False;
+    	    	relative  : Boolean from Standard=Standard_False;
+    	    	shapetrigu: Boolean from Standard=Standard_False)
+	   ---Purpose: if the  boolean    <relative>   is  True,    the
+	   --          deflection used   for the polygonalisation   of
+	   --          each edge will be <defle> * Size of Edge.
+	   --          the deflection used for the faces will be the maximum
+	   --          deflection of their edges.
+	   --          
+	   --          if <shapetrigu> is True, the triangulation, if exists
+	   --          with a correct deflection, can be used to re-triangulate 
+	   --          the shape.
+	   --          
+	   --          if   <inshape>   is   True, the      calculated
+	   --          triangulation will be stored in the shape.
+	    returns mutable FastDiscret from BRepMesh;
+
+
+    	Perform (me: mutable; shape: Shape from TopoDS) is static;
+	---Purpose: Build triangulation on the whole shape
+
+    	Add (me: mutable; face: Face from TopoDS) is static;
+	---Purpose: Record a face for further processing.
+
+    	Process (me; face: Face from TopoDS) is static;
+	---Purpose: Triangulate a face previously recorded for
+    	--          processing by call to Add(). Can be executed in
+    	--          parallel threads.
+	---C++: alias operator ()
+
+    	InternalVerticesMode(me: mutable) returns Boolean from Standard;
+	---Purpose: Returns mode defining if internal vertices on faces 
+    	-- are taken into consideration or not. If this mode is equal to true
+	-- that internal vertices on faces are considered during triangulation.
+	-- Default value is equal to false (old behaviour).
+	---C++: return &
+	 ---C++: inline
+
+    	CurrentFaceStatus(me)
+	returns Status from BRepMesh;
+
+    	Add (me     : mutable;
+	     edge   : Edge     from TopoDS;
+	     face   : Face     from TopoDS;
+	     S      : HSurface from BRepAdaptor;
+	     C      : Curve    from Geom2d;
+    	     defedge: Real     from Standard;
+             first  : Real     from Standard;
+             last   : Real     from Standard)
+	is static private;
+	
+    	Add (me     : mutable;
+             theVert: Vertex   from TopoDS;
+	     face   : Face     from TopoDS;
+	     S      : HSurface from BRepAdaptor) is private;
+
+    	Update (me: mutable; 
+    	    	Edge:    Edge     from TopoDS; 
+    	    	Face:    Face     from TopoDS; 
+                C      : Curve    from Geom2d;
+    	    	defedge: Real     from Standard;
+		first  : Real     from Standard;
+                last   : Real     from Standard)
+		 
+    	returns Boolean is private;
+	
+
+    	InternalVertices
+    	       (me         : mutable;
+	       	caro       : HSurface            from BRepAdaptor;
+    	    	inter      : in out ListOfVertex from BRepMesh;
+    	        defedge    : Real                from Standard;
+    	    	classifier : ClassifierPtr       from BRepMesh)
+	is static private;
+
+
+    	Control
+    	       (me      : mutable;
+	       	caro    : HSurface                from BRepAdaptor;
+		defface : Real                    from Standard;
+    	    	inter   : in out ListOfVertex     from BRepMesh;
+    	    	badTri  : in out ListOfInteger    from TColStd;
+    	    	nulTri  : in out ListOfInteger    from TColStd;
+		trigu   : in out Delaun           from BRepMesh;
+		isfirst : Boolean                 from Standard)
+	returns Real from Standard is static private;
+
+
+	FindUV(me: mutable; V:  Vertex  from TopoDS; 
+    	    	    	    XY: Pnt2d   from gp;
+	                    ip: Integer from Standard; 
+                            S : HSurface from BRepAdaptor; 
+                            mindist:  Real  from  Standard)
+	returns XY from gp is private;
+
+    	AddInShape(me: mutable; face   : Face                          from TopoDS;
+    	    	    	        defedge: Real                          from Standard)
+	is static private;
+
+
+-- Output :
+
+
+    	NbTriangles(me)
+	    ---Purpose: Gives the number of built triangles.
+	    returns Integer from Standard
+	    is static;
+
+    	Triangle   (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the triangle of <Index>.
+	    ---C++: return const &
+	    returns Triangle from BRepMesh
+	    is static;
+
+
+    	NbEdges    (me)
+	    ---Purpose: Gives the number of built Edges
+	    returns Integer from Standard
+	    is static;
+
+    	Edge       (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the edge of index <Index>.
+	    ---C++: return const &
+	    returns Edge from BRepMesh
+	    is static;
+
+
+    	NbVertices (me)
+	    ---Purpose: Gives the number of built Vertices.
+	    returns Integer from Standard
+	    is static;
+
+    	Vertex     (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the vertex of <Index>.
+	    ---C++: return const &
+	    returns Vertex from BRepMesh
+	    is static;
+
+    	Pnt        (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the location3d of the vertex of <Index>.
+	    ---C++: return const &
+	    returns Pnt from gp
+	    is static;
+
+    	VerticesOfDomain
+    	    	   (me; Indices : in out MapOfInteger from MeshDS)
+	    ---Purpose: Gives the list of indices of the vertices
+	    is static;
+
+
+    	EdgesOfDomain
+    	    	   (me; Indices : in out MapOfInteger from MeshDS)
+	    ---Purpose: Gives the list of indices of the edges
+	    ---C++: inline
+	    is static;
+
+
+    	TrianglesOfDomain(me; Indices: in out MapOfInteger from MeshDS)
+    	    ---Purpose: Gives the list of indices of the triangles
+	    ---C++: inline
+            is static;
+	
+
+    	NbPoint3d (me)
+	    ---Purpose: Gives the  number of different  location in 3d
+	    --          space.  It  is  different    of the number  of
+	    --          vertices if there is more than one surface.
+	    --          Even for one surface, the number can be different
+	    --          if an edge is shared.
+	    ---C++: inline
+	    returns Integer from Standard
+	    is static;
+
+    	Point3d    (me;
+    	    	    Index : Integer from Standard)
+	    ---Purpose: Gives the 3d space location of the vertex <Index>.
+	    ---C++: return const &
+	    ---C++: inline
+	    returns Pnt from gp
+	    is static;
+
+
+	GetDeflection(me)
+	    ---Purpose: returns the deflection value.
+  	    ---C++: inline
+	returns Real from Standard;
+	
+	GetAngle(me)
+	    ---Purpose: returns the deflection value.
+	    ---C++: inline
+	returns Real from Standard;
+	
+	WithShare(me)
+	    ---C++: inline
+	returns Boolean from Standard;
+	
+	InShape(me)
+	    ---C++: inline
+	returns Boolean from Standard;
+	
+        ShapeTrigu(me)
+	    ---C++: inline
+        returns Boolean from Standard;
+	
+	GetFaceAttribute(me;
+                   face    : Face from TopoDS;
+                   fattrib : in out FaceAttribute from BRepMesh)
+	    ---Purpose: returns the face deflection value.
+	returns Boolean from Standard;
+	
+	RemoveFaceAttribute(me   : mutable;
+	                    face : Face     from TopoDS);
+	    ---Purpose: remove face attribute as useless to free locate memory
+	
+        GetMapOfDefEdge(me)
+          ---C++: return const &
+          ---C++: inline
+          returns DataMapOfShapeReal from TopTools;
+		
+fields  
+    	myangle      : Real                          from Standard;
+    	mydeflection : Real                          from Standard;
+	mydtotale    : Real                          from Standard;
+    	myWithShare  : Boolean                       from Standard;
+    	vertices     : DataMapOfVertexInteger        from BRepMesh;
+    	edges        : DataMapOfShapePairOfPolygon   from BRepMesh;
+    	internaledges: DataMapOfShapePairOfPolygon   from BRepMesh;
+	nbLocat      : Integer                       from Standard;
+	Location3d   : DataMapOfIntegerPnt           from BRepMesh;
+	structure    : DataStructureOfDelaun         from BRepMesh;
+	mapattrib    : DataMapOfFaceAttribute        from BRepMesh;
+	myvemap      : IndexedMapOfInteger           from TColStd;
+	mylocation2d : DataMapOfIntegerListOfXY      from BRepMesh;
+	myrelative   : Boolean                       from Standard;
+	myshapetrigu : Boolean                       from Standard;
+	myinshape    : Boolean                       from Standard;
+	myInternalVerticesMode : Boolean             from Standard; --mode to accounting internal vertices 
+   	myfacestate  : Status                        from BRepMesh;
+        mapdefle     : DataMapOfShapeReal            from TopTools;
+    	mynottriangulated : ListOfShape              from TopTools;
+	myAllocator  : BaseAllocator                 from MeshDS;
+ 
+end FastDiscret;

@@ -1,0 +1,62 @@
+-- File:	PNaming_NamedShape.cdl
+-- Created:	Fri Apr 11 16:00:04 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+class NamedShape from PNaming inherits Attribute from PDF
+
+	---Purpose: This is the persistent attribute of the
+	--          topological naming.
+
+uses
+
+    HArray1OfShape1 from PTopoDS,
+    HArray1OfInteger from PColStd
+
+
+is
+
+
+    Create returns mutable NamedShape from PNaming;
+	---Purpose: Creates a mutable NamedShape from PNaming.
+
+    
+    NbShapes(me) returns Integer;
+	---Purpose: Returns the number of shapes.
+
+
+    OldShapes(me : mutable; theShapes : HArray1OfShape1 from PTopoDS);
+	---Purpose: Sets the field <myOldShapes>.
+    
+    OldShapes(me) returns HArray1OfShape1 from PTopoDS;
+	---Purpose: Returns the field <myOldShapes>.
+    
+
+    NewShapes(me : mutable; theShapes : HArray1OfShape1 from PTopoDS);
+	---Purpose: Sets the field <myNewShapes>.
+    
+    NewShapes(me) returns HArray1OfShape1 from PTopoDS;
+	---Purpose: Returns the field <myNewShapes>.
+    
+
+    ShapeStatus(me : mutable; theShapeStatus : Integer from Standard);
+	---Purpose: Sets the field <myShapeStatus>.
+    
+    ShapeStatus(me) returns Integer from Standard;
+	---Purpose: Returns the field <myShapeStatus>.
+    
+    Version (me : mutable; theVersion : Integer from Standard);
+    	---Purpose: Sets the field <myVersion>.
+    
+    Version (me) returns Integer from Standard;
+        ---Purpose: Returns the field <myVersion>.
+	    
+fields
+
+    myOldShapes    : HArray1OfShape1 from PTopoDS;
+    myNewShapes    : HArray1OfShape1 from PTopoDS;
+    myShapeStatus  : Integer         from Standard;
+    myVersion      : Integer         from Standard;
+
+end NamedShape;

@@ -1,0 +1,235 @@
+-- File:	Blend_Line.cdl
+-- Created:	Thu Dec  2 15:48:17 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Line from Blend
+    (TheVertex        as any;
+     TheArc           as any;
+     ThePointOnRst    as any; -- as PointOnRst from Blend(TheArc)
+     TheSequenceOfPointOnRst as any;
+     TheExtremity     as any) -- as Extremity from Blend (TheVertex,TheArc,
+                              --     ThePointOnRst,TheSequenceOfPointOnRst)
+
+
+
+inherits TShared from MMgt
+
+
+uses Point           from Blend,
+     SequenceOfPoint from Blend,
+     TypeTrans       from IntSurf
+
+
+raises OutOfRange from Standard
+
+
+is
+
+    Create
+    
+    	returns mutable Line from Blend;
+
+
+
+    Clear(me: mutable)
+    
+	---Purpose: Clears the content of the line.
+
+    	is static;
+
+
+
+    Append(me: mutable; P: Point from Blend)
+    
+	---Purpose: Adds a point in the line.
+
+	---C++: inline
+    	is static;
+
+
+    Prepend(me: mutable; P: Point from Blend)
+    
+	---Purpose: Adds a point in the line at the first place.
+
+	---C++: inline
+    	is static;
+
+    InsertBefore(me : mutable;  
+                 Index : Integer from Standard; 
+                 P : Point from Blend)  
+		 
+	---Purpose: Adds a point in the line at the first place.
+
+	---C++: inline
+    	is static;
+
+
+    Remove(me: mutable; FromIndex,ToIndex: Integer from Standard)
+    
+	---Purpose: Removes  from  <me>    all  the  items  of
+	-- positions between <FromIndex> and <ToIndex>.
+	-- Raises an exception if the indices are out of bounds.
+	---C++: inline
+      	raises OutOfRange from Standard
+    	is static;
+
+
+    Set(me: mutable; TranS1,TranS2: TypeTrans from IntSurf)
+    
+	---Purpose: Sets the value of the transition of the line on S1 and
+	--          the line on S2.
+    
+    	is static;
+
+
+    Set(me: mutable; Trans: TypeTrans from IntSurf)
+    
+	---Purpose: Sets the value of the transition of the line on a surface
+    
+    	is static;
+
+
+    SetStartPoints(me: mutable; StartPt1,StartPt2: TheExtremity)
+    
+	---Purpose: Sets the values of the start points for the line.
+    	---C++: inline
+
+    	is static;
+
+
+    SetEndPoints(me: mutable; EndPt1,EndPt2: TheExtremity)
+    
+	---Purpose: Sets tne values of the end points for the line.
+    
+	---C++: inline
+
+    	is static;
+
+
+    NbPoints(me)
+    
+	---Purpose: Returns the number of points in the line.
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the point of range Index.
+    
+    	returns Point from Blend
+	---C++: inline
+	---C++: return const&
+
+	raises OutOfRange from Standard
+	--- The exception OutOfRange is raised when Index <=0 or 
+	--  Index > NbPoints
+
+	is static;
+
+
+    TransitionOnS1(me)
+    
+	---Purpose: Returns the type of the transition of the line defined
+	--          on the first surface. The transition is "constant"
+	--          along the line.
+	--          The transition is IN if the line is oriented in such
+	--          a way that the system of vectors (N,DRac,T) is
+	--          right-handed, where
+	--                N is the normal to the first surface at a point P,
+	--                DRac is a vector tangent to the blending patch,
+	--                oriented towards the valid part of this patch,
+	--                T  is the tangent to the line on S1 at P.
+	--          The transitioon is OUT when the system of vectors is 
+	--          left-handed.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+
+	is static;
+
+
+    TransitionOnS2(me)
+    
+	---Purpose: Returns the type of the transition of the line defined
+	--          on the second surface. The transition is "constant"
+	--          along the line.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+
+	is static;
+
+
+    StartPointOnFirst(me)
+    
+	---Purpose: Returns the start point on S1.
+    
+    	returns TheExtremity
+	---C++: inline
+	---C++: return const&
+
+	is static;
+	
+
+    StartPointOnSecond(me)
+    
+	---Purpose: Returns the start point on S2
+    
+    	returns TheExtremity
+	---C++: inline
+	---C++: return const&
+
+	is static;
+
+
+    EndPointOnFirst(me)
+    
+	---Purpose: Returns the end point on S1.
+    
+    	returns TheExtremity
+	---C++: inline
+	---C++: return const&
+	
+	is static;
+
+
+    EndPointOnSecond(me)
+    
+	---Purpose: Returns the point on S2.
+    
+    	returns TheExtremity
+	---C++: inline
+	---C++: return const&
+
+	is static;
+
+
+    TransitionOnS(me)
+    
+	---Purpose: Returns the type of the transition of the line defined
+	--          on the surface.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+
+	is static;
+
+
+fields
+    seqpt  : SequenceOfPoint from Blend;
+    tras1  : TypeTrans       from IntSurf;
+    tras2  : TypeTrans       from IntSurf;
+    stp1   : TheExtremity;
+    stp2   : TheExtremity;
+    endp1  : TheExtremity;
+    endp2  : TheExtremity;
+    hass1  : Boolean         from Standard;
+    hass2  : Boolean         from Standard;
+end;

@@ -1,0 +1,35 @@
+-- File:	TDataStd_DeltaOnModificationOfExtStringArray.cdl
+-- Created:	Tue Dec  4 17:43:15 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007 
+
+
+class DeltaOnModificationOfExtStringArray from TDataStd inherits DeltaOnModification from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a MODIFICATION action.
+
+uses
+    Attribute               from TDF,
+    HArray1OfExtendedString from TColStd,
+    ExtStringArray          from TDataStd, 
+    HArray1OfInteger        from TColStd 
+    
+is
+    Create (Arr : ExtStringArray     from TDataStd)
+    	returns mutable DeltaOnModificationOfExtStringArray from TDataStd;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+fields
+ myIndxes  :  HArray1OfInteger from TColStd; 
+ myValues  :  HArray1OfExtendedString from TColStd; 
+ myUp1     :  Integer          from Standard;
+ myUp2     :  Integer          from Standard; 
+ 
+end DeltaOnModificationOfExtStringArray;
+
+

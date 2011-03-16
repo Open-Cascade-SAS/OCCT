@@ -1,0 +1,116 @@
+-- File:	Law_Composite.cdl
+-- Created:	Fri Mar 29 10:39:22 1996
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Composite from Law inherits Function from Law
+
+	---Purpose: Loi  composite constituee  d une liste  de lois de
+	--          ranges consecutifs.
+	--          Cette implementation un peu lourde permet de reunir
+	--          en une seule loi des portions de loi construites de 
+	--          facon independantes (par exemple en interactif) et 
+	--          de lancer le walking d un coup a l echelle d une 
+	--          ElSpine. 
+	--          CET OBJET REPOND DONC A UN PROBLEME D IMPLEMENTATION
+	--          SPECIFIQUE AUX CONGES!!!
+
+uses
+    Laws from Law,
+    Array1OfReal    from TColStd,
+    Shape           from GeomAbs
+      
+raises OutOfRange from Standard   
+ 
+is
+
+    Create returns mutable Composite from Law;
+    ---Purpose: Construct an empty Law
+    
+    Create (First, Last : Real; 
+    	    Tol :Real)
+	---Purpose: Construct an empty, trimed Law
+    returns mutable Composite from Law;   
+    
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+    	
+    Value(me: mutable; X: Real from Standard)
+    ---Purpose: Returns the value at parameter X.
+    returns Real from Standard;
+
+    D1(me: mutable; X: Real from Standard; F,D: out Real from Standard);
+    ---Purpose: Returns the value and the first derivative at parameter X.
+              
+    D2(me: mutable; X: Real from Standard; 
+       F,D, D2: out Real from Standard);
+    ---Purpose: Returns the value, first and second derivatives 
+    --          at parameter X.
+        
+    Trim(me; PFirst, PLast, Tol :Real from Standard) returns Function
+    
+    ---Purpose:   Returns a  law equivalent of  <me>  between
+	--        parameters <First>  and <Last>. <Tol>  is used  to
+	--        test for 3d points confusion.
+	--        It is usfule to determines the derivatives 
+	--        in these values <First> and <Last> if 
+        --        the Law is not Cn.          
+    is redefined static;    
+    
+
+    Bounds(me: mutable; PFirst,PLast : out Real from Standard);
+    ---Purpose: Returns the parametric bounds of the function.
+
+    Prepare(me: mutable; W : in out Real from Standard)
+    ---Purpose: Set the current function.
+    is static private;
+
+    ChangeElementaryLaw(me: mutable; W : Real from Standard)
+    ---C++: return &
+    returns mutable Function from Law
+    ---Purpose: Returns the elementary  function of the composite used
+    --          to compute at parameter W.
+    is static;
+
+    ChangeLaws(me : mutable)
+    ---C++: return &
+    returns Laws from Law
+    is static;
+
+    IsPeriodic(me) 
+    returns Boolean from Standard
+    is static;
+
+    SetPeriodic(me : mutable) 
+    is static;
+
+fields
+
+first     : Real from Standard;
+last      : Real from Standard;
+curfunc   : Function from Law;
+funclist  : Laws from Law;
+periodic  : Boolean from Standard;
+TFirst    : Real from Standard;
+TLast     : Real from Standard;
+PTol      : Real from Standard;
+
+end Composite;

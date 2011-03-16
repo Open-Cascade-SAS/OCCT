@@ -1,0 +1,46 @@
+-- File:	Materials_MaterialDefinition.cdl
+-- Created:	Fri Jan 14 10:24:18 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MaterialDefinition from Materials
+
+inherits
+
+    FuzzyDefinitionsDictionary from Dynamic 
+     
+    
+	---Purpose: This  inherited  class  is  useful  to create  the
+	--          abstract description  of  a material,  in  term of
+	--          authorized properties.
+
+uses
+
+    Parameter from Dynamic
+
+    
+is
+
+    Create returns mutable MaterialDefinition from Materials;
+    
+    ---Level: Internal 
+
+    ---Purpose: Creates the exhaustive definition of a material.
+
+    Switch(me ; aname , atype , avalue : CString from Standard) returns Parameter from Dynamic
+    
+    ---Level: Internal 
+
+    ---Purpose: Starting with the identifier of the parameter <aname>,
+    --          the type  of parameter <atype>  and a  string <avalue>
+    --          which describes  the values  useful  for  this type of
+    --          parameters,  creates and returns  a  Parameter  object
+    --          from Dynamic.
+    
+    is redefined;
+    
+--fields
+
+end MaterialDefinition;

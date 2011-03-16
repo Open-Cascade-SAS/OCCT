@@ -1,0 +1,20 @@
+-- File:	StepToGeom_MakeTransformation2d.cdl
+-- Created:	Tue Feb 16 11:14:36 1999
+-- Author:	Andrey BETENEV
+---Copyright:	 Matra Datavision 1999
+
+class MakeTransformation2d from StepToGeom
+
+    ---Purpose: Convert cartesian_transformation_operator_2d to gp_Trsf2d
+
+uses
+    CartesianTransformationOperator2d from StepGeom,
+    Trsf2d from gp
+
+is
+
+    Convert ( myclass; SCTO : CartesianTransformationOperator2d from StepGeom;
+                       CT : out Trsf2d from gp)
+    returns Boolean from Standard;
+
+end MakeTransformation2d;

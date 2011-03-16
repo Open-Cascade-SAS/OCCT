@@ -1,0 +1,88 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_SeqExplorer.gxx
+// Created:	Sep, 28 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+// -----------
+// constructor :
+// -----------
+PCollection_SeqExplorer::PCollection_SeqExplorer
+                                 (const Handle(PCollection_HSequence)& S )
+{
+   if (S->Length() != 0) {
+      CurrentItem  = S->GetFirst();
+      CurrentIndex = 1;
+      TheSequence  = S;
+   } 
+   else {
+      CurrentItem.Nullify();
+      CurrentIndex = 0;
+      TheSequence.Nullify();
+   }    
+}
+
+// -----------
+// Value :
+// -----------
+Item PCollection_SeqExplorer::Value(const Standard_Integer Index)
+{
+   if (Index <= 0 || Index > TheSequence->Length()) 
+                                 Standard_NoSuchObject::Raise();
+   if (Index < CurrentIndex) {
+     CurrentIndex = 1;
+     CurrentItem  = TheSequence->GetFirst();
+   }
+   while ( CurrentIndex != Index ) {
+	++CurrentIndex;
+	CurrentItem = CurrentItem->Next();
+   }
+// Return the value of the item pointed by CurrentItem
+   return CurrentItem->Value();
+}
+
+// -----------
+// Contains :
+// -----------
+//Standard_Boolean PCollection_SeqExplorer::Contains(const Item& T)
+Standard_Boolean PCollection_SeqExplorer::Contains(const Item& )
+{
+  Standard_ProgramError::Raise("PCollection_SeqExplorer::Contains : Obsolete method...");
+
+  return Standard_False;   
+}
+
+// -----------
+// Location :
+// -----------
+//Standard_Integer PCollection_SeqExplorer::Location ( const Standard_Integer N ,
+//                                           const Item& T ,
+//                                           const Standard_Integer From ,
+//                                           const Standard_Integer To)
+Standard_Integer PCollection_SeqExplorer::Location ( const Standard_Integer  ,
+                                           const Item&  ,
+                                           const Standard_Integer  ,
+                                           const Standard_Integer )
+{
+  Standard_ProgramError::Raise("PCollection_SeqExplorer::Location : Obsolete method...");
+  return 0;
+}
+
+// -----------
+// Location :
+// -----------
+//Standard_Integer PCollection_SeqExplorer::Location(const Standard_Integer N , const Item& T )
+Standard_Integer PCollection_SeqExplorer::Location(const Standard_Integer  , const Item&  )
+{
+  Standard_ProgramError::Raise("PCollection_SeqExplorer::Location : Obsolete method...");
+  return 0;
+}
+
+
+

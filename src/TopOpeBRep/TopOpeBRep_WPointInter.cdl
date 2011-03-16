@@ -1,0 +1,48 @@
+-- File:	TopOpeBRep_WPointInter.cdl
+-- Created:	Wed Nov 10 18:55:14 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class WPointInter from TopOpeBRep 
+
+  -- as WPointTool from TopOpeLine
+  -- 	 (PntOn2S from IntSurf)
+  -- 	 
+
+	---Purpose: 
+
+uses
+
+  PntOn2S from IntSurf,
+  PPntOn2S from TopOpeBRep,
+  Pnt2d from gp,
+  Pnt from gp
+  
+is
+
+  Create returns WPointInter from TopOpeBRep;
+  
+  Set(me : in out; P : PntOn2S from IntSurf) is static;
+
+  ParametersOnS1(me; U,V : out Real from Standard) is static;
+		  
+  ParametersOnS2(me; U,V : out Real from Standard) is static;
+		  
+  Parameters(me; U1,V1,U2,V2 : out Real from Standard) is static;
+	    
+  ValueOnS1(me) returns Pnt2d from gp is static;
+	
+  ValueOnS2(me) returns Pnt2d from gp is static;
+	
+  Value(me) returns Pnt from gp is static;
+   ---C++: return const &
+
+  PPntOn2SDummy(me) returns PPntOn2S from TopOpeBRep;
+
+fields
+
+    myPP2S : PPntOn2S from TopOpeBRep;
+
+end WPointInter;

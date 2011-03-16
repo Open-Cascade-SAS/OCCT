@@ -1,0 +1,26 @@
+-- File:	QADraw.cdl<2>
+-- Created:	Fri Feb  1 17:15:01 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QADraw
+    uses Draw,
+         TCollection
+is
+    
+    class DataMapOfAsciiStringOfAddress instantiates 
+		    DataMap from TCollection(AsciiString from TCollection,
+					     Address from Standard,
+					     AsciiString from TCollection);
+
+    CommonCommands(DI : in out Interpretor from Draw);
+    ---Purpose: Define specicial commands for AIS.
+
+    AdditionalCommands(DI : in out Interpretor from Draw);
+    
+    Factory (DI : out Interpretor from Draw);
+    ---Purpose: Loads all QA Draw commands. Used for plugin.
+
+end;
+    

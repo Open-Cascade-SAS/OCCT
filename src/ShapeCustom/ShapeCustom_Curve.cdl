@@ -1,0 +1,35 @@
+-- File:	ShapeCustom_Curve.cdl
+-- Created:	Tue Aug 28 14:33:05 2001
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Curve from ShapeCustom 
+
+	---Purpose: Converts BSpline curve to periodic
+
+uses
+
+    Curve from Geom
+
+is
+
+    Create returns Curve from ShapeCustom;
+    
+    Create (C: Curve from Geom) returns Curve from ShapeCustom;
+    
+    Init (me: in out; C: Curve from Geom);
+    
+    ConvertToPeriodic (me: in out; substitute: Boolean; preci: Real = -1)
+    returns Curve from Geom;
+        ---Purpose: Tries to convert the Curve to the Periodic form
+    	--          Returns the resulting curve
+    	--          Works only if the Curve is BSpline and is closed with 
+        --          Precision::Confusion()
+    	--          Else, or in case of failure, returns a Null Handle
+fields
+
+    myCurve: Curve from Geom;
+
+end Curve;

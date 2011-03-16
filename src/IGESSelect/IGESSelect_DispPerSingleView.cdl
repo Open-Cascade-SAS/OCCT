@@ -1,0 +1,46 @@
+-- File:	IGESSelect_DispPerSingleView.cdl
+-- Created:	Tue May 31 17:07:18 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class DispPerSingleView  from IGESSelect  inherits Dispatch
+
+    ---Purpose : This type of dispatch defines sets of entities attached to
+    --           distinct single views. This information appears in the
+    --           Directory Part. Drawings are taken into account too,
+    --           because of their frames (proper lists of annotations)
+    --           
+    --           Remaining data concern entities not attached to a single view.
+
+
+uses AsciiString from TCollection, EntityIterator, Graph, SubPartsIterator,
+     ViewSorter
+
+is
+
+    Create returns mutable DispPerSingleView;
+    ---Purpose : Creates a DispPerSingleView
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File per single View or Drawing Frame"
+
+    	    -- --    Evaluation    -- --
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator);
+    ---Purpose : Computes the list of produced Packets. Packets are computed
+    --           by a ViewSorter (SortSingleViews with also frames).
+
+    CanHaveRemainder (me) returns Boolean  is redefined;
+    ---Purpose : Returns True, because of entities attached to no view.
+
+    Remainder (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns Remainder which is a set of Entities.
+    --           It is supposed to be called once Packets has been called.
+
+fields
+
+    thesorter : ViewSorter;
+
+end DispPerSingleView;

@@ -1,0 +1,20 @@
+-- File:	StepToGeom_MakeAxis1Placement.cdl
+-- Created:	Mon Jun 14 11:05:20 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeAxis1Placement from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Axis1Placement from Step and Axis1Placement from Geom
+  
+uses Axis1Placement from Geom,
+     Axis1Placement from StepGeom
+     
+is 
+
+    Convert ( myclass; SA : Axis1Placement from StepGeom;
+                       CA : out Axis1Placement from Geom )
+    returns Boolean from Standard;
+    
+end MakeAxis1Placement;

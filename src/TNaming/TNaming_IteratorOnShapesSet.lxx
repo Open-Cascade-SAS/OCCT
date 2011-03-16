@@ -1,0 +1,63 @@
+// File:	TNaming_IteratorOnShapesSet.lxx
+// Created:	Tue May  6 08:40:50 1997
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline  TNaming_IteratorOnShapesSet:: TNaming_IteratorOnShapesSet()
+{}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline  TNaming_IteratorOnShapesSet:: TNaming_IteratorOnShapesSet(const TNaming_ShapesSet& S) 
+{
+  Init(S);
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void TNaming_IteratorOnShapesSet::Init(const TNaming_ShapesSet& S) 
+{
+  myIt.Initialize(S.Map());
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TNaming_IteratorOnShapesSet::More() const 
+{
+  return (myIt.More());
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void TNaming_IteratorOnShapesSet::Next()
+{
+  myIt.Next();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& TNaming_IteratorOnShapesSet::Value() const
+{
+  return myIt.Key();
+}

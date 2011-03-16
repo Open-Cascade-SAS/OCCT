@@ -1,0 +1,44 @@
+-- File:	ViewerTest_EventManager.cdl
+-- Created:	Thu Aug 27 13:53:26 1998
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EventManager from ViewerTest inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+    View                from V3d,
+    InteractiveContext  from AIS
+    
+is
+
+    Create (aView: View from V3d;
+            aCtx :InteractiveContext from AIS)
+    returns mutable EventManager from ViewerTest;
+    
+    MoveTo (me:mutable;
+            xpix, ypix  : Integer from Standard) is virtual;
+    
+    Select(me:mutable) is virtual;
+    
+    ShiftSelect(me:mutable) is virtual;
+
+    Select(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
+    
+    ShiftSelect(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
+
+    Context(me) returns InteractiveContext from AIS;
+    ---C++: inline
+    ---C++: return const&
+
+fields
+
+    myCtx : InteractiveContext  from AIS;
+    myView: View                from V3d;
+    myX   : Integer             from Standard;
+    myY   : Integer             from Standard;
+    
+end EventManager;

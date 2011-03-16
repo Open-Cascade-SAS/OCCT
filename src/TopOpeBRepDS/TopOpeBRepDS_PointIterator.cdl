@@ -1,0 +1,62 @@
+-- File:	TopOpeBRepDS_PointIterator.cdl
+-- Created:	Thu Jun 17 11:40:22 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class PointIterator from TopOpeBRepDS 
+    inherits InterferenceIterator from TopOpeBRepDS
+
+	---Purpose: 
+
+uses
+
+    State from TopAbs,
+    Orientation  from TopAbs,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS
+
+is
+
+    Create(L : ListOfInterference from TopOpeBRepDS) returns PointIterator;
+    ---Purpose: Creates an  iterator on the  points on curves
+    --          described by the interferences in <L>.
+    
+    MatchInterference(me; I : Interference from TopOpeBRepDS) 
+    returns Boolean from Standard
+    ---Purpose: Returns  True if the Interference <I>  has a 
+    --          GeometryType() TopOpeBRepDS_POINT or TopOpeBRepDS_VERTEX
+    --          returns False else.
+    is redefined;
+
+    Current(me) returns Integer from Standard
+    ---Purpose: Index of the point in the data structure.
+    is static;
+    
+    Orientation(me; S : State from TopAbs) 
+    returns Orientation from TopAbs
+    is static;
+    
+    Parameter(me) returns Real from Standard
+    	-- Edge/Point Interference
+    	-- Curve/Point Interference
+    	-- Edge/Vertex Interference
+    is static;
+    
+    IsVertex(me) returns Boolean from Standard
+    is static;
+
+    IsPoint(me) returns Boolean from Standard
+    is static;
+    
+    DiffOriented(me) returns Boolean from Standard
+    is static;
+
+    SameOriented(me) returns Boolean from Standard
+    is static;
+
+    Support(me) returns Integer from Standard
+    is static;
+
+end PointIterator from TopOpeBRepDS;

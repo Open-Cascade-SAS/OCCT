@@ -1,0 +1,56 @@
+-- File:	IGESSelect_AddFileComment.cdl
+-- Created:	Fri Aug 26 11:33:48 1994
+-- Author:	Christian CAILLET
+--		<cky@minox>
+---Copyright:	 Matra Datavision 1994
+
+
+class AddFileComment  from IGESSelect  inherits FileModifier  from IGESSelect
+
+    ---Purpose : This class allows to add comment lines on writing an IGES File
+    --           These lines are added to Start Section, instead of the only
+    --           one blank line written by default.
+
+uses CString, AsciiString from TCollection,
+     HSequenceOfHAsciiString from TColStd,
+     IGESWriter ,  ContextWrite
+
+is
+
+    Create returns mutable AddFileComment;
+    ---Purpose : Creates a new emoty AddFileComment. Use AddLine to complete it
+
+    Clear (me : mutable);
+    ---Purpose : Clears the list of file comment lines already stored
+
+    AddLine  (me : mutable; line : CString);
+    ---Purpose : Adds a line for file comment
+    --  Remark : Lines are limited to 72 useful char.s . A line of more than
+    --           72 char.s will be splited into several ones of 72 max each.
+
+    AddLines (me : mutable; lines : HSequenceOfHAsciiString from TColStd);
+    ---Purpose : Adds a list of lines for file comment
+    --           Each of them must comply with demand of AddLine
+
+    NbLines (me) returns Integer;
+    ---Purpose : Returns the count of stored lines
+
+    Line (me; num : Integer) returns CString;
+    ---Purpose : Returns a stored line given its rank
+
+    Lines (me) returns HSequenceOfHAsciiString from TColStd;
+    ---Purpose : Returns the complete list of lines in once
+
+    Perform (me; ctx : in out ContextWrite;
+    	     writer : in out IGESWriter);
+    ---Purpose : Sends the comment lines to the file (Start Section)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns specific Label, which is
+    --           "Add <nn> Comment Lines (Start Section)"
+
+fields
+
+    thelist : HSequenceOfHAsciiString from TColStd;
+
+end AddFileComment;

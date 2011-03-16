@@ -1,0 +1,55 @@
+-- File:	DNaming_TransformationDriver.cdl
+-- Created:	Thu May  7 11:50:28 2009
+-- Author:	Sergey ZARITCHNY <sergey.zaritchny@opencascade.com> 
+---Copyright:	Open CasCade SA 2009
+
+
+
+class TransformationDriver from DNaming inherits Driver from TFunction
+
+	---Purpose: 
+
+uses	
+     Label            from TDF,
+     Logbook          from TFunction,
+     Function         from TFunction,
+     ExtendedString   from TCollection,
+     NamedShape       from TNaming, 
+     Trsf             from gp
+
+is
+    Create returns mutable TransformationDriver from DNaming;
+    ---Purpose: Constructor
+
+    ---Purpose: validation
+    --          ==========
+
+    Validate(me; theLog : in out Logbook from TFunction)
+    is redefined;
+    ---Purpose: Validates labels of a function in <log>.
+    --          In regeneration mode this method must be called (by the
+    --          solver) even if the function is not executed, to build
+    --          the valid label scope.
+
+    ---Purpose: execution of function
+    --          ======================
+
+    MustExecute (me; theLog : Logbook from TFunction)
+    ---Purpose: Analyse in <log> if the loaded function must be executed
+    --          (i.e.arguments are modified) or not.
+    --          If the Function label itself is modified, the function must
+    --          be executed.
+    returns Boolean from Standard
+    is redefined;
+
+    Execute (me; theLog : in out Logbook from TFunction)
+    ---Purpose: Execute the function and push in <log> the impacted
+    --          labels (see method SetImpacted).
+    returns Integer from Standard
+    is redefined;
+ 
+    LoadNamingDS(me; theResultLabel : Label from TDF; theSourceNS : NamedShape from TNaming; 
+    	    	     theTrsf : Trsf from gp)
+    is private;      
+
+end TransformationDriver;

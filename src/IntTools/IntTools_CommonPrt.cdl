@@ -1,0 +1,188 @@
+-- File:	IntTools_CommonPrt.cdl
+-- Created:	Fri Oct 27 15:15:53 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class CommonPrt from IntTools 
+
+	---Purpose: The class  is  to  describe a  common  part  
+    	--          between two edges in  3-d space.
+
+uses
+    Edge  from  TopoDS, 
+    ShapeEnum from  TopAbs, 
+    Range  from  IntTools,
+    SequenceOfRanges  from  IntTools, 
+    Pnt from gp 
+is 
+    Create   
+    	returns  CommonPrt from IntTools; 
+    	---Purpose: 
+    	--- Empty constructor
+    	---
+     
+    Create  (aCPrt:CommonPrt from IntTools)   
+    	returns  CommonPrt from IntTools; 
+    	---Purpose: 
+    	--- Copy  constructor
+    	---
+     
+    Assign  (me:out;  Other : CommonPrt from IntTools) 
+    	returns  CommonPrt from IntTools;
+    	---C++:  alias  operator = 
+    	---C++:  return  & 
+     
+    SetEdge1  (me:out; anE:Edge from TopoDS); 	 
+    	---Purpose:
+    	--- Sets the first edge.
+	---
+    
+    SetEdge2  (me:out; anE:Edge from TopoDS); 	 
+    	---Purpose:  
+    	--- Sets the second edge. 
+	---
+     
+    SetType   (me:out; aType:ShapeEnum from  TopAbs); 
+    	---Purpose:
+    	--- Sets the type of  the common  part 
+    	--- Vertex  or  Edge
+	---
+
+    SetRange1 (me:out;  aR: Range  from  IntTools);
+    	---Purpose: 
+    	--- Sets the range of first edge. 
+	---
+     
+    SetRange1 (me:out;  tf,tl: Real from Standard);
+    	---Purpose: 
+    	--- Sets the range of first edge.  
+	---
+     
+    AppendRange2 (me:out;  aR: Range  from  IntTools);
+    	---Purpose: 
+    	--- Appends the range of second edge.
+	---
+    
+    AppendRange2 (me:out;  tf,tl: Real from Standard);
+    	---Purpose: 
+    	--- Appends the range of second edge.
+	---
+     
+    SetVertexParameter1( me:out;  tV: Real from Standard);
+    	---Purpose:
+	--- Sets a parameter of first vertex
+	---
+     
+    SetVertexParameter2( me:out;  tV: Real from Standard);
+    	---Purpose:
+	--- Sets a parameter of second vertex
+	---
+
+    Edge1     (me)   
+    	returns Edge  from  TopoDS; 
+    	---C++:  return  const& 
+    	---Purpose: 
+    	--- Returns the first edge.
+	---
+    
+    Edge2     (me)   
+    	returns Edge  from  TopoDS; 
+    	---C++:  return  const&
+    	---Purpose: 
+    	--- Returns the second edge
+	---
+    
+    Type      (me)   
+    	returns  ShapeEnum from  TopAbs; 
+    	---Purpose: 
+    	--- Returns the type of  the common  part
+	---
+    
+    Range1    (me)   
+    	returns  Range  from  IntTools;   
+    	---C++:  return  const&
+	---Purpose:
+	--- Returns the range of first edge
+	---
+     
+    Range1    (me; tf,tl:out Real from Standard);   
+    	---Purpose: 
+    	--- Returns the range of first edge. 
+	---
+     
+    Ranges2   (me) 
+    	returns  SequenceOfRanges from IntTools; 
+    	---C++:  return  const&  
+    	---Purpose: 
+    	--- Returns the  ranges of second edge.
+	---
+       
+    ChangeRanges2   (me:out) 
+    	returns  SequenceOfRanges from IntTools; 
+    	---C++:  return &  
+    	---Purpose: 
+    	--- Returns the  ranges of second edge.
+	---
+     
+    VertexParameter1(me) 
+    	returns Real from Standard;
+	---Purpose:
+	--- Returns parameter of first vertex
+	---
+      
+    VertexParameter2(me) 
+    	returns Real from Standard;
+	---Purpose:
+	--- Returns parameter of second vertex
+	---
+     
+    Copy      (me;  anOther:out  CommonPrt from IntTools); 
+    	---Purpose: 
+    	--- Copies me to anOther
+	---
+     
+    AllNullFlag(me) 
+        returns Boolean from Standard; 
+	---Purpose:
+	--- Modifier
+	---
+	 
+    SetAllNullFlag(me:out; 
+    	aFlag:Boolean from Standard); 
+	---Purpose:
+	--- Selector
+	---
+
+--
+    SetBoundingPoints(me:out; 
+	aP1: Pnt from gp;     
+	aP2: Pnt from gp);
+	---Purpose:
+	--- Modifier
+	---
+
+    BoundingPoints(me; 
+	aP1:out Pnt from gp;     
+	aP2:out Pnt from gp);
+	---Purpose:
+	--- Selector
+	---
+--
+fields
+    myEdge1  :  Edge  from  TopoDS;
+    myEdge2  :  Edge  from  TopoDS;
+    myType   :  ShapeEnum from  TopAbs; 
+    myRange1 :  Range  from  IntTools;
+    myVertPar1  :  Real from Standard;  
+    myVertPar2  :  Real from Standard;  
+    myRanges2:  SequenceOfRanges  from  IntTools;
+
+    myAllNullFlag: Boolean  from  Standard;
+--
+    myPnt1  :  Pnt from gp;
+    myPnt2  :  Pnt from gp;
+--
+
+end CommonPrt;

@@ -1,0 +1,27 @@
+-- File:	TDocStd_PathParser.cdl
+-- Created:	Fri Sep 17 17:46:17 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class PathParser from TDocStd 
+
+	---Purpose: parse an OS path
+
+uses ExtendedString from TCollection
+
+is 
+    Create (path : ExtendedString from TCollection) returns PathParser from TDocStd;
+    Parse (me : in out);
+    Trek(me) returns ExtendedString from TCollection;
+    Name(me) returns ExtendedString from TCollection;
+    Extension(me) returns ExtendedString from TCollection;
+    Path(me) returns ExtendedString from TCollection;  
+    Length (me) returns Integer from Standard;
+    
+fields 
+    myPath      : ExtendedString from TCollection;
+    myExtension : ExtendedString from TCollection;
+    myTrek      : ExtendedString from TCollection;
+    myName      : ExtendedString from TCollection;
+end;

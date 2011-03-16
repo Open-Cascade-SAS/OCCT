@@ -1,0 +1,127 @@
+// File:	Select3D_Projector.lxx
+// Created:	Thu Jul  9 12:50:25 1992
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#include <Standard_NoSuchObject.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Lin.hxx>
+#include <V3d_View.hxx>
+#include <V3d.hxx>
+
+//=======================================================================
+//function : Directions
+//purpose  : 
+//=======================================================================
+
+inline void Select3D_Projector::Directions 
+  (gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const
+{
+  D1 = myD1;
+  D2 = myD2;
+  D3 = myD3;
+}
+
+//=======================================================================
+//function : Perspective
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Select3D_Projector::Perspective() const
+{ return myPersp; }
+
+//=======================================================================
+//function : Transformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_GTrsf& Select3D_Projector::Transformation() const
+{ return myGTrsf; }
+
+//=======================================================================
+//function : InvertedTransformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_GTrsf& Select3D_Projector::InvertedTransformation() const
+{ return myInvTrsf; }
+
+//=======================================================================
+//function : FullTransformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_Trsf& Select3D_Projector::FullTransformation() const
+{ return myScaledTrsf; }
+
+//=======================================================================
+//function : Focus
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Select3D_Projector::Focus() const
+{
+  Standard_NoSuchObject_Raise_if(!myPersp,
+				 "Select3D_Projector::Not a Perpective");
+  return myFocus;
+}
+
+//=======================================================================
+//function : Transform
+//purpose  : 
+//=======================================================================
+
+inline void Select3D_Projector::Transform (gp_Vec& D) const
+{
+  gp_XYZ coord = D.XYZ();
+  if (myGTrsf.Form() == gp_Identity || myGTrsf.Form() == gp_Translation) { }
+  else if (myGTrsf.Form() == gp_PntMirror) { coord.Reverse(); }
+  else { coord.Multiply (myGTrsf.VectorialPart()); }
+  D.SetXYZ(coord);
+}
+
+//=======================================================================
+//function : Transform
+//purpose  : 
+//=======================================================================
+
+inline void Select3D_Projector::Transform (gp_Pnt& Pnt) const
+{ 
+  gp_XYZ xyz = Pnt.XYZ();
+  myGTrsf.Transforms(xyz);
+  Pnt = gp_Pnt(xyz);
+}
+
+
+inline const Handle(V3d_View)& Select3D_Projector::View() const
+{return myView;}
+
+inline void Select3D_Projector::Transform (gp_Lin& Lin, const gp_GTrsf& T) const
+{ 
+  gp_Ax1 ax1 = Lin.Position();
+  gp_XYZ xyz = ax1.Location().XYZ();
+  T.Transforms(xyz);
+  ax1.SetLocation(gp_Pnt(xyz));
+  gp_Dir dir = ax1.Direction();
+  gp_XYZ coord = dir.XYZ();
+  if (T.Form() == gp_Identity ||  T.Form() == gp_Translation)    { }
+  else if (T.Form() == gp_PntMirror) { coord.Reverse(); }
+  else {
+    coord.Multiply (T.VectorialPart());
+    Standard_Real D = coord.Modulus();
+    coord.Divide(D);
+  }
+  dir.SetXYZ(coord);
+  ax1.SetDirection(dir);
+  Lin.SetPosition(ax1);
+}
+
+inline void Select3D_Projector::Transform (gp_Pnt& Pnt, const gp_GTrsf& T) const
+{ 
+  gp_XYZ xyz = Pnt.XYZ();
+  T.Transforms(xyz);
+  Pnt = gp_Pnt(xyz);
+}
+
+

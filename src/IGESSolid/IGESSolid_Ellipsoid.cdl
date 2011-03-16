@@ -1,0 +1,114 @@
+--
+-- File      :  Ellipsoid.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Ellipsoid from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Ellipsoid, Type <168> Form Number <0>
+        --          in package IGESSolid
+        --          The ellipsoid is a solid bounded by the surface defined
+        --          by:
+        --                    X^2       Y^2       Z^2
+        --                   -----  +  -----  +  -----  =  1
+        --                    LX^2      LY^2      LZ^2
+
+uses
+
+        Pnt             from gp,
+        Dir             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable Ellipsoid;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              aSize   : XYZ;
+              aCenter : XYZ;
+              anXAxis : XYZ;
+              anZAxis : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           Ellipsoid
+        --       - aSize      : Lengths in the local X,Y,Z directions
+        --       - aCenter    : Center point of ellipsoid (default (0,0,0))
+        --       - anXAxis    : Unit vector defining local X-axis
+        --                      default (1,0,0)
+        --       - anZAxis    : Unit vector defining local Z-axis
+        --                      default (0,0,1)
+
+        Size (me) returns XYZ;
+        ---Purpose : returns the size
+
+        XLength (me) returns Real;
+        ---Purpose : returns the length in the local X-direction
+
+        YLength (me) returns Real;
+        ---Purpose : returns the length in the local Y-direction
+
+        ZLength (me) returns Real;
+        ---Purpose : returns the length in the local Z-direction
+
+        Center (me) returns Pnt;
+        ---Purpose : returns the center of the ellipsoid
+
+        TransformedCenter (me) returns Pnt;
+        ---Purpose : returns the center of the ellipsoid after applying 
+        -- TransformationMatrix
+
+        XAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local X-direction
+
+        TransformedXAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local X-direction
+        -- after applying TransformationMatrix
+
+        YAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local Y-direction
+        -- which is got by taking cross product of ZAxis and XAxis
+
+        TransformedYAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local Y-direction
+        -- (which is got by taking cross product of ZAxis and XAxis)
+        -- after applying TransformationMatrix
+
+        ZAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local Z-direction
+
+        TransformedZAxis (me) returns Dir;
+        ---Purpose : returns the vector corresponding to the local Z-direction
+        -- after applying TransformationMatrix
+
+fields
+
+--
+
+-- Class    : IGESSolid_Ellipsoid
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Ellipsoid.
+--
+-- Reminder : A Ellipsoid instance is defined by :
+--            its center at (Center), the local X & Z axes (XAxis)
+--            and (ZAxis) and the lengths along the local X, Y and Z
+--            axes. The local Y axis is got by taking the cross product
+--            of the local Z & X axes.
+
+        theSize   : XYZ;
+            --  lengths along the local X, Y, & Z directions
+
+        theCenter : XYZ;
+            -- coordinates of point of center of ellipsoid
+
+        theXAxis  : XYZ;
+            -- vector defining local X-axis
+
+        theZAxis  : XYZ;
+            -- vector defining local Z-axis
+
+end Ellipsoid;

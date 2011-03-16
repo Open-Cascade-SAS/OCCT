@@ -1,0 +1,58 @@
+-- File:	PBRep_CurveOnSurface.cdl
+-- Created:	Tue Jul  6 10:12:44 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class CurveOnSurface from PBRep inherits GCurve from PBRep
+
+	---Purpose: Representation  of a  curve   by a   curve  in the
+	--          parametric space of a surface.
+
+uses
+    Curve    from PGeom2d,
+    Surface  from PGeom,
+    Pnt2d    from gp,
+    Location from PTopLoc
+
+is
+
+    Create(PC : Curve    from PGeom2d;
+    	   CF : Real     from Standard;
+	   CL : Real     from Standard;
+    	   S  : Surface  from PGeom; 
+    	   L  : Location from PTopLoc)
+    returns mutable CurveOnSurface from PBRep;
+    	---Purpose: CF is curve first parameter
+    	--          CL is curve last parameter
+    	--          As far as they can't be computed from a Persistent Curve
+    	--          they are given in the CurveOnSurface constructor
+
+    Surface(me) returns  Surface from PGeom
+    is static;
+    	---Level: Internal 
+
+    PCurve(me) returns  Curve from PGeom2d
+    is static;
+    	---Level: Internal 
+
+    IsCurveOnSurface(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+    SetUVPoints(me : mutable; Pnt1, Pnt2 : Pnt2d from gp);
+    
+    FirstUV(me) returns Pnt2d from gp;
+
+    LastUV(me) returns Pnt2d from gp;
+    
+fields
+    
+    myPCurve      : Curve   from PGeom2d;
+    mySurface     : Surface from PGeom;
+    myUV1         : Pnt2d   from gp;
+    myUV2         : Pnt2d   from gp;
+    
+end CurveOnSurface;

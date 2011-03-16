@@ -1,0 +1,98 @@
+-- File:	GraphTools_TopologicalSortIterator.cdl
+-- Created:	Thu Dec 24 14:07:47 1992
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class TopologicalSortIterator from GraphTools
+             (Graph      as any;
+    	      Vertex     as any; 
+              GIterator  as any;
+	      TSIterator as any)
+	      
+--generic class TopologicalSorIterator from GraphTools
+--    	         (Graph     as any;
+--    	          Vertex    as any;
+--    	          GIterator as GraphIterator (Graph,Vertex))
+--	          TSIterator as TopologicalSortFromIterator
+
+	---Purpose: This  generic class defines  an  iterator to visit
+	--          each vertex of the  underlying graph,  in  such an
+	--          order that noone vertex is reach before any vertex
+	--          that point to it. In general the order produced by
+	--          topological sort  is  not unique. Usefull  for DAG
+	--          Topological Sort.
+
+raises NoSuchObject from Standard,
+       NoMoreObject from Standard
+
+    
+is
+
+    Create    	
+    	---Purpose: Create an empty algorithm. 
+    returns TopologicalSortIterator from GraphTools;
+    
+    Create (G : Graph)
+	---Purpose: Create the   algorithm setting each vertex  of <G>
+	--          reached by  GIterator tool, as initial conditions.
+	--          Use Perform   method before visting  the result of
+	--          the algorithm.
+    returns TopologicalSortIterator from GraphTools;
+    
+    FromGraph (me : in out; G : Graph); 
+	---Purpose: Add each vertex of <G>  reached by GIterator  tool
+	--          as   initial  conditions.   Use  Perform  method
+	--          before   visiting the  result  of   the algorithm.
+        ---Level: Public
+    
+    FromVertex (me : in out; V : Vertex);
+	---Purpose: Add  <V>  as  initial  condition.  This method  is
+	--          cumulative.  Use Perform method before visting the
+	--          result of the algorithm.  
+	---Level: Public
+
+    Reset (me : in out);
+	---Purpose: Reset the algorithm.   It may  be reused with  new
+	--          initial conditions.  
+	---Level: Public
+
+    Perform (me : in out; G              : Graph ;
+                          ignoreSelfLoop : Boolean from Standard;
+                          processCycle   : Boolean from Standard);    	
+    	---Purpose: Peform the  algorithm  in  <G> from initial setted
+    	--          conditions according to  the two following flags.
+	--          * <ignoreSelfLoop>  allows the  user to ignore (or
+	--          not) any vertex wich contains a self loop.
+	--          * <processCycle> allows the user to visit (or not>
+	--          vertex which is in a cycle.
+       ---Level: Public
+    
+    More (me) 
+    returns Boolean from Standard;
+       ---Level: Public
+    
+    Next (me : in out) 
+    raises NoMoreObject from Standard;
+       ---Level: Public
+    
+    Value (me) returns any Vertex
+       ---Level: Public
+    	---C++: return const &
+    raises NoSuchObject from Standard;
+
+    IsInCycle (me) returns Boolean from Standard
+	---Purpose: Returns TRUE if the current vertex is in a cycle.
+       ---Level: Public
+    raises NoSuchObject from Standard;
+    
+fields
+
+   myIterator : TSIterator; 
+
+end TopologicalSortIterator;
+
+
+
+

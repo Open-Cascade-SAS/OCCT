@@ -1,0 +1,17 @@
+-- File:        AppStdL.cdl
+-- Created:     Jun 29 11:40:00 2004
+-- Author:      Eugeny NAPALKOV 
+--  	    	<env@kivox>
+-- Copyright:   Matra Datavision 2004
+
+package AppStdL
+
+uses  
+
+    Standard, TCollection, TColStd, Resource, CDM, TDocStd
+is
+    class Application; 
+      
+end AppStdL;
+
+

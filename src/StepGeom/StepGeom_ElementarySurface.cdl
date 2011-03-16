@@ -1,0 +1,37 @@
+-- File:        ElementarySurface.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ElementarySurface from StepGeom 
+
+inherits Surface from StepGeom 
+
+uses
+
+	Axis2Placement3d from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ElementarySurface;
+	---Purpose: Returns a ElementarySurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPosition(me : mutable; aPosition : mutable Axis2Placement3d);
+	Position (me) returns mutable Axis2Placement3d;
+
+fields
+
+	position : Axis2Placement3d from StepGeom;
+
+end ElementarySurface;

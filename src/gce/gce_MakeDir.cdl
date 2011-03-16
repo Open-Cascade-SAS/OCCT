@@ -1,0 +1,73 @@
+-- File:	MakeDir.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeDir from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Dir from gp.
+    --           * Create a Dir parallel to another and passing 
+    --             through a point.
+    --           * Create a Dir passing through 2 points.
+    --           * Create a Dir from its axis (Ax1 from gp).
+    --           * Create a Dir from a point and a direction.
+
+uses Pnt  from gp,
+     Dir  from gp,
+     Vec  from gp,
+     XYZ  from gp,
+     Real from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (V : Vec)  returns MakeDir;
+    --- Purpose : Normalizes the vector V and creates a direction.
+    --            Status is "NullVector" if V.Magnitude() <= Resolution.
+
+Create (Coord : XYZ)   returns MakeDir;
+    --- Purpose : Creates a direction from a triplet of coordinates.
+    --            Status is "NullVector" if Coord.Modulus() <= 
+    --            Resolution from gp.
+
+Create ( Xv, Yv, Zv : Real)  returns MakeDir;
+    --- Purpose : Creates a direction with its 3 cartesian coordinates.
+    --            Status is "NullVector" if Sqrt(Xv*Xv + Yv*Yv + Zv*Zv) 
+    --            <= Resolution
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp) returns MakeDir;
+    ---Purpose : Make a Dir from gp <TheDir> passing through 2 
+    --           Pnt <P1>,<P2>.
+    --           Status is "ConfusedPoints" if <p1> and <P2> are confused.
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_ConfusedPoints if points P1 and P2 are coincident, or
+    -- -   gce_NullVector if one of the following is less
+    --   than or equal to gp::Resolution():
+    --   -   the magnitude of vector V,
+    --   -   the modulus of Coord,
+    --   -   Sqrt(Xv*Xv + Yv*Yv + Zv*Zv).
+    
+Value(me) returns Dir from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed unit vector.
+    -- Exceptions StdFail_NotDone if no unit vector is constructed.
+
+Operator(me) returns Dir from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Dir() const;"
+
+fields
+
+    TheDir : Dir from gp;
+    --The solution from gp.
+    
+end MakeDir;

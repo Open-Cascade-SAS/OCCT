@@ -1,0 +1,73 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// --------------------------------
+// constructor of StackIterator
+// --------------------------------
+
+PCollection_StackIterator::PCollection_StackIterator
+          (const Handle(PCollection_HStack)& S) 
+{
+     TheIterator = S->FTop();
+}
+
+// -----------------------------------
+// More : returns Standard_True if there 
+// are other items
+// -----------------------------------
+Standard_Boolean PCollection_StackIterator::More() const
+{
+       return (! TheIterator->IsEmpty());
+}
+
+// -----------------------------------------
+// Next : Set the iterator to the next item
+// -----------------------------------------
+void PCollection_StackIterator::Next()
+{
+    if (TheIterator->IsEmpty())  Standard_NoMoreObject::Raise();  
+    TheIterator = TheIterator->Tail();
+}
+
+// ---------------------------------------
+// Value : returns the current item value 
+// of the iterator
+// ---------------------------------------
+Item PCollection_StackIterator::Value() const
+{
+    if (TheIterator->IsEmpty()) Standard_NoSuchObject::Raise();
+    return TheIterator->Value();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

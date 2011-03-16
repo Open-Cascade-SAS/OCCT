@@ -1,0 +1,171 @@
+-- File:	XCAFDoc_DimTolTool.cdl
+-- Created:	Fri Jan  9 15:37:26 2004
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class DimTolTool from XCAFDoc inherits Attribute from TDF
+
+	---Purpose: Provides tools to store and retrieve attributes (colors)
+	--          of TopoDS_Shape in and from TDocStd_Document
+	--          A Document is intended to hold different 
+	--          attributes of ONE shape and it's sub-shapes
+
+uses
+    Shape from TopoDS,
+    Label from TDF,
+    LabelSequence from TDF,
+    Document from TDocStd,
+    ShapeTool from XCAFDoc,
+    RelocationTable from TDF,
+    HArray1OfReal from TColStd,
+    HAsciiString from TCollection
+
+is
+    Create returns DimTolTool from XCAFDoc;
+
+    Set (myclass; L : Label from TDF) returns DimTolTool from XCAFDoc;
+    	---Purpose: Creates (if not exist) DimTolTool.
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    
+    
+    ---API: General structure
+    
+    BaseLabel(me) returns Label from TDF;
+    	---Purpose: returns the label under which colors are stored
+    
+    ShapeTool (me: mutable) returns ShapeTool from XCAFDoc;
+    	---Purpose: Returns internal XCAFDoc_ShapeTool tool
+	---C++: return const &
+
+
+    -- Methods for DimTol:
+
+    IsDimTol (me; lab: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label belongs to a dimtoltable and
+        --          is a DimTol definition 
+    
+    GetDimTolLabels (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of D&GTs currently stored 
+        --          in the DGTtable
+    
+    FindDimTol (me; kind : Integer from Standard; aVal : HArray1OfReal from TColStd;
+    	    	    aName : HAsciiString from TCollection;
+		    aDescription : HAsciiString from TCollection;
+                    lab: out Label from TDF)
+    returns Boolean;
+    	---Purpose: Finds a dimtol definition in a DGTtable and returns
+	--          its label if found
+    	--          Returns False if dimtol is not found in DGTtable 
+    
+    FindDimTol (me; kind : Integer from Standard; aVal : HArray1OfReal from TColStd;
+    	    	    aName : HAsciiString from TCollection;
+    	    	    aDescription : HAsciiString from TCollection)
+    returns Label from TDF;
+    	---Purpose: Finds a dimtol definition in a DGTtable and returns
+	--          its label if found (or Null label else)
+    
+    AddDimTol (me; kind : Integer from Standard;
+    	    	   aVal : HArray1OfReal from TColStd;
+    	    	   aName : HAsciiString from TCollection;
+    	    	   aDescription : HAsciiString from TCollection)
+    returns Label from TDF;
+    	---Purpose: Adds a dimtol definition to a DGTtable and returns its label
+
+    SetDimTol (me; L: Label from TDF;
+		   DimTolL: Label from TDF);
+    	---Purpose: Sets a link with GUID
+    
+    SetDimTol (me; L: Label from TDF; kind : Integer from Standard;
+    	    	   aVal : HArray1OfReal from TColStd;
+    	    	   aName : HAsciiString from TCollection;
+    	    	   aDescription : HAsciiString from TCollection)
+    returns Label from TDF;
+    	---Purpose: Sets a link with GUID
+    	--          Adds a DimTol as necessary
+    
+    GetRefShapeLabel (me; DimTolL: Label from TDF; ShapeL: out Label from TDF) 
+    returns Boolean;
+    	---Purpose: Returns ShapeL defined for label DimTolL
+	--          Returns False if the DimTolL is not in DGTtable
+
+    GetRefDGTLabels (me; ShapeL: Label from TDF; DimTols: out LabelSequence from TDF) 
+    returns Boolean;
+    	---Purpose: Returns all DimTol labels defined for label ShapeL
+
+    GetDimTol (me; DimTolL: Label from TDF; kind : out Integer from Standard;
+    	    	   aVal : out HArray1OfReal from TColStd;
+    	    	   aName : out HAsciiString from TCollection;
+    	    	   aDescription : out HAsciiString from TCollection) returns Boolean;
+        ---Purpose: Returns dimtol assigned to <DimTolL>
+    	--          Returns False if no such dimtol is assigned
+    
+
+    -- Methods for Datum:
+
+    IsDatum (me; lab: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label belongs to a dimtoltable and
+        --          is a Datum definition 
+    
+    GetDatumLabels (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of Datumss currently stored 
+        --          in the DGTtable
+    
+    FindDatum (me; aName : HAsciiString from TCollection;
+		   aDescription : HAsciiString from TCollection;
+		   anIdentification : HAsciiString from TCollection;
+                   lab: out Label from TDF)
+    returns Boolean;
+    	---Purpose: Finds a datum and returns its label if found
+    
+    AddDatum (me; aName : HAsciiString from TCollection;
+    	    	  aDescription : HAsciiString from TCollection;
+    	    	  anIdentification : HAsciiString from TCollection)
+    returns Label from TDF;
+    	---Purpose: Adds a datum definition to a DGTtable and returns its label
+
+    SetDatum (me; L: Label from TDF;
+		  DatumL: Label from TDF);
+    	---Purpose: Sets a link with GUID
+    
+    SetDatum (me; L: Label from TDF; TolerL: Label from TDF;
+    	    	  aName : HAsciiString from TCollection;
+    	    	  aDescription : HAsciiString from TCollection;
+    	    	  anIdentification : HAsciiString from TCollection);
+    	---Purpose: Sets a link with GUID for Datum
+    	--          Adds a Datum as necessary
+	--          Sets connection between Datum and Tolerance
+    
+    GetDatum (me; DatumL: Label from TDF;
+    	    	  aName : out HAsciiString from TCollection;
+    	    	  aDescription : out HAsciiString from TCollection;
+                  anIdentification : out HAsciiString from TCollection) returns Boolean;
+        ---Purpose: Returns datum assigned to <DatumL>
+    	--          Returns False if no such datum is assigned
+    
+    GetDatumTolerLabels (me; DimTolL: Label from TDF; Datums: out LabelSequence from TDF) 
+    returns Boolean;
+    	---Purpose: Returns all Datum labels defined for label DimTolL
+
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+
+    myShapeTool: ShapeTool from XCAFDoc;
+    
+end DimTolTool;

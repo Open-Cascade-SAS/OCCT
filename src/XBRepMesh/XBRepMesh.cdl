@@ -1,0 +1,23 @@
+-- File:	XBRepMesh.cdl
+-- Created:	Fri Apr 11 08:54:31 2008
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2008
+
+
+package XBRepMesh 
+
+	---Purpose: 
+
+uses 
+    TopoDS,
+    BRepMesh
+
+is 
+    Discret(theShape      : Shape from TopoDS;  
+    	    theDeflection : Real from Standard; 
+    	    theAngle      : Real from Standard;
+    	    theAlgo:out PDiscretRoot from BRepMesh) 
+    	returns Integer from Standard; 
+
+end XBRepMesh;

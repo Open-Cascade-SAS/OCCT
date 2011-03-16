@@ -1,0 +1,18 @@
+inline DBC_VArrayTNode::DBC_VArrayTNode()
+{
+}
+
+inline DBC_VArrayTNode::DBC_VArrayTNode(const Item& aValue)
+{
+  myValue = aValue;
+}
+
+inline void DBC_VArrayTNode::SetValue(const Item& aValue)
+{
+  myValue = aValue;
+}
+
+inline Standard_Address DBC_VArrayTNode::Value() const 
+{
+  return (Standard_Address)&myValue;
+}

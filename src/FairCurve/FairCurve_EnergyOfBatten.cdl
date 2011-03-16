@@ -1,0 +1,74 @@
+-- File:	FairCurve_EnergyOfBatten.cdl
+-- Created:	Thu Feb  1 17:08:55 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+private class EnergyOfBatten from FairCurve inherits Energy from FairCurve
+
+	---Purpose: Energy Criterium to minimize in Batten.
+	---Category: Private use
+
+uses BattenLaw from FairCurve,  
+     DistributionOfTension from FairCurve, 
+     DistributionOfSagging from FairCurve,
+     AnalysisCode from FairCurve,
+     Vector  from  math,
+     Matrix  from math,
+     HArray1OfPnt2d from TColgp,
+     Array1OfXY  from TColgp,
+     Pnt2d from gp,
+     HArray1OfReal from TColStd
+
+
+is
+    Create( BSplOrder     : Integer;
+            FlatKnots     : HArray1OfReal;
+	    Poles         : HArray1OfPnt2d;
+    	    ContrOrder1   : Integer;
+	    ContrOrder2   : Integer;
+	    Law           : BattenLaw;
+	    LengthSliding : Real;
+	    FreeSliding   : Boolean = Standard_True;
+            Angle1        : Real = 0;
+            Angle2        : Real = 0 ) returns  EnergyOfBatten;
+	    ---Purpose: Angles corresspond to the Ox axis
+
+    
+    LengthSliding(me)
+    ---Purpose: return  the  lengthSliding = P1P2 + Sliding
+    ---C++: inline
+    returns  Real;
+ 
+     
+    Status(me) 
+    ---Purpose: return  the status 
+    ---C++: inline
+    returns  AnalysisCode;
+    
+    
+    ComputePoles(me: in out; X: Vector)
+    ---Purpose: compute  the  poles wich correspond with the variable X
+    is redefined protected; 
+    
+    Variable(me; X: out Vector)
+    ---Purpose: compute the variables <X> wich correspond with the field <MyPoles>
+    returns Boolean
+    is redefined;  
+	
+    Compute(me:in out; DerivativeOrder : Integer; Result : out Vector)
+        ---Purpose: compute the energy in intermediat format
+    returns Boolean 
+    is redefined protected;
+    
+fields
+    MyLengthSliding : Real;
+    OriginalSliding : Real;
+    MyFreeSliding   : Boolean;
+    MyBattenLaw     : BattenLaw;
+    MyTension       : DistributionOfTension;
+    MySagging       : DistributionOfSagging;
+    MyStatus        : AnalysisCode;
+    
+end EnergyOfBatten;

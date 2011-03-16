@@ -1,0 +1,7 @@
+DBC_BaseArray_objs.hxx
+DBC_DBVArray.cxx
+DBC_DBVArray.hxx
+DBC_Copy.tcl
+DBC_WOKSteps.edl
+DBC_CMPLRS.edl
+DBC_LDSHR.edl

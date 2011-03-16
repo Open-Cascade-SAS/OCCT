@@ -1,0 +1,280 @@
+-- File:	IntCurveSurface_Inter.cdl
+-- Created:	Wed Apr  7 15:46:05 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+generic class Inter from IntCurveSurface (
+    TheCurve           as any;
+    TheCurveTool       as any;
+    TheSurface         as any;
+    TheSurfaceTool     as any)
+    
+inherits Intersection from IntCurveSurface
+
+    ---Purpose: This class provides the intersections between a 
+    --          surface S(u,v) and a curve C(w) on their natural 
+    --          domains (S: (uo,vo)->(u1,v1)) and (C: wo->w1).
+    --          
+    --          The class <Intersection from IntCurveSurface>
+    --          describes the methods which are used to read 
+    --          the results.
+
+uses 
+    Box                    from Bnd,
+    Lin                    from gp,
+    Elips                  from gp,
+    Circ                   from gp,
+    Parab                  from gp,
+    Hypr                   from gp,
+    IntConicQuad           from IntAna,
+    IntersectionPoint      from IntCurveSurface,
+    IntersectionSegment    from IntCurveSurface,
+    SurfaceType            from GeomAbs,
+    --modified by NIZHNY-MKK  Tue Jul 26 14:31:08 2005
+    Array2OfPnt            from TColgp,
+    Array1OfReal           from TColStd,
+    BoundSortBox           from Bnd
+
+------------------------------------------------------------
+    class ThePolygon instantiates 
+    	Polygon from IntCurveSurface (
+	    TheCurve,
+	    TheCurveTool);
+------------------------------------------------------------
+    class ThePolygonTool instantiates 
+    	PolygonTool from IntCurveSurface ( 
+	    Pnt         from gp,
+            ThePolygon,
+            Box         from Bnd);
+------------------------------------------------------------
+    class ThePolyhedron instantiates 
+    	Polyhedron from IntCurveSurface ( 
+	    TheSurface,
+	    TheSurfaceTool);
+------------------------------------------------------------	    
+    class ThePolyhedronTool instantiates
+    	PolyhedronTool from IntCurveSurface (
+	    ThePolyhedron);
+------------------------------------------------------------
+    class TheInterference instantiates 
+    	InterferencePolygonPolyhedron from Intf (
+	    ThePolygon,
+	    ThePolygonTool,
+	    ThePolyhedron,
+	    ThePolyhedronTool);
+------------------------------------------------------------	    
+--  find a root (u,v,w) from a starting point (u0,v0,w0) of the problem :
+--     XS(u,v) = XC(w)
+--     YS(u,v) = YC(w)
+--     ZS(u,v) = ZC(w)
+--   where (XS,YS,ZS) is the point of parameters (u,v) on the 
+--   biparametric surface and (XC,YC,ZC) the point of parameter w on 
+--   the parametric curve.
+--
+    class TheCSFunction instantiates  
+        ZerCSParFunc from IntImp ( 
+	   TheSurface,
+	   TheSurfaceTool,
+	   TheCurve,
+	   TheCurveTool); 
+	   
+    class TheExactInter instantiates 
+        IntCS from IntImp (
+	    TheSurface,
+	    TheSurfaceTool,
+	    TheCurve,
+	    TheCurveTool,
+            TheCSFunction);
+------------------------------------------------------------
+--   find a root (u,v,w) from a starting point (w0) of the problem :     
+--        Q(X(w),Y(w),Z(w)) = 0 
+--        
+--   where Q(X,Y,Z) = 0    is the implicit expression of a quadric     
+--   and (X(w),Y(w),Z(w)) the point of parameter w on a parametric 
+--   curve. 
+--
+    class TheQuadCurvExactInter instantiates 
+        QuadricCurveExactInter from IntCurveSurface( 
+	    TheSurface,
+	    TheSurfaceTool,
+	    TheCurve,
+	    TheCurveTool); 
+ --------------------------------------------------------------
+ 
+is 
+
+    Create
+    	---Purpose: Empty Constructor
+    	returns Inter from IntCurveSurface;
+     
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    Surface   : TheSurface)
+        ---Purpose: Compute the Intersection between the curve and the
+        --          surface
+    is static;
+
+    
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    Polygon   : ThePolygon;
+	    Surface   : TheSurface)
+	  ---Purpose: Compute the Intersection  between the curve  and
+	  --          the surface. The   Curve is already  sampled and
+	  --          its polygon : <Polygon> is given.
+    is static;    
+    
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    ThePolygon: ThePolygon;
+	    Surface   : TheSurface;
+    	    Polyhedron: ThePolyhedron)
+	  ---Purpose: Compute the Intersection  between the curve  and
+	  --          the surface. The   Curve is already  sampled and
+	  --          its polygon : <Polygon> is given. The Surface is 
+	  --          also sampled and <Polyhedron> is given.	    
+    is static;	    
+
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    ThePolygon: ThePolygon;
+	    Surface   : TheSurface;
+    	    Polyhedron: ThePolyhedron;
+            BndBSB    : in out BoundSortBox from Bnd)
+	  ---Purpose: Compute the Intersection  between the curve  and
+	  --          the surface. The   Curve is already  sampled and
+	  --          its polygon : <Polygon> is given. The Surface is 
+	  --          also sampled and <Polyhedron> is given.	    
+    is static;	    
+
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    Surface   : TheSurface;
+    	    Polyhedron: ThePolyhedron)
+	  ---Purpose: Compute the Intersection  between the curve  and
+	  --          the surface. The Surface is already  sampled and
+	  --          its polyhedron : <Polyhedron> is given.	    
+    is static;	    
+    
+
+------------------------------------------------------------
+------ Implementation functions :
+------------------------------------------------------------
+
+    Perform(me        : in out;
+    	    Curve     : TheCurve;
+	    Surface   : TheSurface;
+    	    U0,V0,U1,V1: Real from Standard)
+        ---Purpose: Compute the Intersection between the curve and the
+        --          surface
+    is static protected;
+
+    InternalPerformCurveQuadric(me          : in out;
+    	                        Curve       : TheCurve;
+	                        Surface     : TheSurface) 
+    is static protected;
+
+    InternalPerform(me          : in out;
+    	            Curve       : TheCurve;
+	            Polygon     : ThePolygon;
+	            Surface     : TheSurface;
+    	            Polyhedron  : ThePolyhedron;
+    	    	    U1,V1,U2,V2 : Real from Standard)
+    is static protected;
+
+    InternalPerform(me          : in out;
+    	            Curve       : TheCurve;
+	            Polygon     : ThePolygon;
+	            Surface     : TheSurface;
+    	            Polyhedron  : ThePolyhedron;
+    	    	    U1,V1,U2,V2 : Real from Standard;
+    	            BSB         : in out BoundSortBox from Bnd)
+    is static protected;
+
+    InternalPerform(me          : in out;
+    	            Curve       : TheCurve;
+	            Polygon     : ThePolygon;
+	            Surface     : TheSurface;
+    	            U1,V1,U2,V2 : Real from Standard)
+    is static protected;
+    	
+    PerformConicSurf(me          : in out;
+    		     Line        : Lin from gp;
+    	             Curve       : TheCurve;
+	             Surface     : TheSurface;
+    	             U1,V1,U2,V2 : Real from Standard) 
+    is static protected;
+	
+    PerformConicSurf(me          : in out;
+    	             Circle      : Circ from gp;
+    	             Curve       : TheCurve;
+	             Surface     : TheSurface;
+    	             U1,V1,U2,V2 : Real from Standard) 
+    is static protected;
+	
+    PerformConicSurf(me          : in out;
+    	             Ellipse     : Elips from gp;
+    	             Curve       : TheCurve;
+	             Surface     : TheSurface;
+    	             U1,V1,U2,V2 : Real from Standard) 
+    is static protected;
+	
+    PerformConicSurf(me          : in out;
+    	             Parab       : Parab from gp;
+    	             Curve       : TheCurve;
+	             Surface     : TheSurface;
+    	             U1,V1,U2,V2 : Real from Standard) 
+    is static protected;
+	
+    PerformConicSurf(me          : in out;
+    	             Hyper       : Hypr from gp;
+    	             Curve       : TheCurve;
+	             Surface     : TheSurface;
+    	             U1,V1,U2,V2 : Real from Standard) 
+    is static protected;
+	
+    AppendIntAna(me : in out;
+    	   Curve    : TheCurve;
+	   Surface  : TheSurface;
+           InterAna : IntConicQuad  from IntAna)
+    is static protected; 
+
+    AppendPoint(me  : in out;
+           Curve    : TheCurve;
+	   w        : Real from Standard;
+	   Surface  : TheSurface;
+	   u,v      : Real from Standard)
+    is static protected; 
+
+    AppendSegment(me  : in out;
+           Curve      : TheCurve;
+	   u0,u1      : Real from Standard;
+	   Surface    : TheSurface)       
+    is static protected; 
+
+        --modified by NIZHNY-MKK  Tue Jul 26 14:31:11 2005.BEGIN
+    
+    DoSurface(me  : in out;
+           surface      : TheSurface;
+	   u0,u1,v0,v1  : Real from Standard;
+	   pntsOnSurface: in out Array2OfPnt from TColgp;
+	   boxSurface   : in out Box from Bnd;
+	   gap          : in out Real from Standard)       
+    is private;
+    
+    DoNewBounds(me  : in out;
+           surface      : TheSurface;
+	   u0,u1,v0,v1  : Real from Standard;
+	   pntsOnSurface: Array2OfPnt from TColgp;
+	   X,Y,Z        : Array1OfReal from TColStd;
+	   Bounds       : in out Array1OfReal from TColStd)       
+    is private; 
+    --modified by NIZHNY-MKK  Tue Jul 26 14:40:22 2005.END
+
+end Inter;
+
+        
+
+
+

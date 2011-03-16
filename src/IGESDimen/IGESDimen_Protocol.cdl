@@ -1,0 +1,33 @@
+-- File:	IGESDimen_Protocol.cdl
+-- Created:	Wed May  5 11:30:30 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Protocol  from IGESDimen  inherits  Protocol from IGESData
+
+    ---Purpose : Description of Protocol for IGESDimen
+
+uses Type, Protocol from Interface
+
+is
+
+    Create returns mutable Protocol from IGESDimen;
+
+    NbResources (me) returns Integer  is redefined;
+    ---Purpose : Gives the count of Resource Protocol. Here, two
+    --           (Protocols from IGESGraph and IGESGeom)
+
+    Resource (me; num : Integer) returns Protocol from Interface  is redefined;
+    ---Purpose : Returns a Resource, given a rank.
+
+    TypeNumber (me; atype : any Type) returns Integer  is redefined;
+    ---Purpose : Returns a Case Number, specific of each recognized Type
+    --           This Case Number is then used in Libraries : the various
+    --           Modules attached to this class of Protocol must use them
+    --           in accordance (for a given value of TypeNumber, they must
+    --           consider the same Type as the Protocol defines)
+
+end Protocol;

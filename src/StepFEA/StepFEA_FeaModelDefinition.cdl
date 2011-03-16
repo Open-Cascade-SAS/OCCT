@@ -1,0 +1,21 @@
+-- File:	StepFEA_FeaModelDefinition.cdl
+-- Created:	Sun Dec 15 10:59:25 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaModelDefinition from StepFEA
+inherits ShapeAspect from StepRepr
+
+    ---Purpose: Representation of STEP entity FeaModelDefinition
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData
+
+is
+    Create returns FeaModelDefinition from StepFEA;
+	---Purpose: Empty constructor
+
+end FeaModelDefinition;

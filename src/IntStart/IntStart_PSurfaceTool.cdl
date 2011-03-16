@@ -1,0 +1,69 @@
+-- File:	PSurfaceTool.cdl
+-- Created:	Mon May 18 09:24:52 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+deferred generic class PSurfaceTool from IntStart
+    (ThePSurface as any)
+                                   
+
+	---Purpose: Template class for a tool on a bi-parametrised
+	--          surface.
+	--          It is possible to implement this class with an 
+	--          instantiation of the SurfaceTool from Adaptor3d.
+
+
+
+is
+
+    UIntervalFirst(myclass ; S: ThePSurface)
+	   
+	---Purpose: Returns the first U parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    VIntervalFirst(myclass ; S: ThePSurface)
+	   
+	---Purpose: Returns the first V parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    UIntervalLast(myclass ; S: ThePSurface)
+	   
+	---Purpose: Returns the last U parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    VIntervalLast(myclass ; S: ThePSurface)
+	   
+	---Purpose: Returns the last V parameter of the surface.
+
+    	returns Real from Standard;
+    
+    
+    UResolution(myclass; S : ThePSurface; Tol3d: Real from Standard)
+    
+	---Purpose: Returns the numerical resolution in the U direction,
+	--          for a given resolution in 3d space.
+
+    	returns Real from Standard;
+
+
+    VResolution(myclass; S : ThePSurface; Tol3d: Real from Standard)
+    
+	---Purpose: Returns the numerical resolution in the V direction,
+	--          for a given resolution in 3d space.
+
+    	returns Real from Standard;
+
+
+
+end PSurfaceTool;
+
+

@@ -1,0 +1,173 @@
+-- File:	BOPTools_SSInterference.cdl
+-- Created:	Tue Nov 21 15:26:34 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class SSInterference from BOPTools  
+    inherits ShapeShapeInterference from BOPTools 
+
+	---Purpose: class for storing a Face/Face interference     
+	---         Each  F/F interference  contains  information  about 
+	---         1.  myPBs   - PaveBlocks (made from edges from the faces  
+    	---             that are IN-2D or ON-2D;    
+	---         2.  myCurves- Sequence of curves of intersection;      
+	---         3.  myTangentFacesFlag  - The BOOL flag indicates that  
+	---             the  faces are SD in terms of the F/F Intersector.     
+	---         4.  mySenseFlag  - value that is equal +1 or -1 depending 
+	---             on scalar product between normals to each face.  This      
+	---             valie is valid for the SDF only.        
+	---         5.  myAlonePnts  - contains 3D-points that are place 
+	---             of  intersection between the two faces    
+        ---         6.  myAloneVertices   - contains indices of vertices  
+	---             that correspond to the points  myAlonePnts; 
+	---
+
+uses   
+
+    PaveBlock        from BOPTools, 
+    PaveSet          from BOPTools,
+    ListOfPaveBlock  from BOPTools, 
+    SequenceOfCurves from BOPTools, 
+    IndexedDataMapOfIntegerState from BOPTools, 
+
+    SequenceOfCurves      from IntTools,  
+    SequenceOfPntOn2Faces from IntTools, 
+
+    ListOfInteger from  TColStd    
+    --
+is 
+    Create  
+    	returns  SSInterference from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor  
+    	---
+    Create  (anIndex1: Integer  from Standard;
+    	     anIndex2: Integer  from Standard; 
+    	     aTolR3D : Real from Standard; 
+    	     aTolR2D : Real from Standard; 
+    	     aCurves : SequenceOfCurves from IntTools; 
+    	     aPnts   : SequenceOfPntOn2Faces from IntTools) 	
+    	returns SSInterference from BOPTools;  
+    	---Purpose:   
+    	--- Constructor 
+    	--- anIndex1,  
+    	--- anIndex2 see BOPTools_ShapeShapeInterference for details     
+    	--- aTolR3D  - value of tolerance to reach in 3D-space      
+    	--- aTolR2D  - value of tolerance to reach in 2D-space      
+    	--- aCurves  see  IntTools_Curve  for details,  please 
+    	---
+    AppendBlock(me:out;   
+    	    	aPB:PaveBlock from BOPTools);      
+    	---Purpose:  
+    	--- Modifier 
+    	---
+    PaveBlocks(me) 
+    	returns ListOfPaveBlock from BOPTools; 
+    	---C++:  return const & 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    NewPaveSet(me:out) 
+    	returns PaveSet from BOPTools; 
+    	---C++:  return &	 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    TolR3D  (me) 
+    	returns Real from Standard;            
+    	---Purpose:  
+    	--- Selector  
+    	---
+    TolR2D  (me) 
+    	returns Real from Standard;
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Curves(me:out) 
+    	returns SequenceOfCurves from BOPTools; 
+    	---C++:  return &   
+    	---Purpose:  
+    	--- Selector  
+    	---
+    SetTangentFacesFlag(me:out; 
+    	    aFlag:Boolean from Standard); 
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    IsTangentFaces(me) 
+    	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    SetSenseFlag (me:out;  
+    	aFlag:Integer from Standard);      
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    SenseFlag (me)  
+    	returns Integer from Standard; 	 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    SetStatesMap(me:out; 
+    	aStatesMap:  IndexedDataMapOfIntegerState from BOPTools); 
+    	---Purpose: 
+    	--- Modifier  
+    	---
+    StatesMap(me)  
+    	returns  IndexedDataMapOfIntegerState from BOPTools;  
+    	---C++:  return const &  	
+    	---Purpose: 
+    	--- Selector  
+    	---
+    SetAlonePnts(me:out;  
+    	aPnts:SequenceOfPntOn2Faces from IntTools); 
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    AlonePnts(me) 
+    	returns SequenceOfPntOn2Faces from IntTools; 
+    	---C++:  return const &  	 
+    	---Purpose:  
+    	--- Selector
+    	---
+    AloneVertices(me:out) 
+    	returns ListOfInteger from  TColStd; 
+    	---C++:  return &  
+    	---Purpose:  
+    	--- Selector 
+    	---  
+    --modified by NIZNHY-PKV Fri Jun 30 10:05:36 2006f	
+    SetSharedEdges(me:out;  	 
+	    aLS:ListOfInteger from TColStd); 
+        ---Purpose:  
+    	--- Modifier  
+    	---    
+    SharedEdges(me)  	 
+	returns ListOfInteger from TColStd;  
+    	---C++:  return const &  
+    	---Purpose:  
+    	--- Selector 
+    	---      
+    --modified by NIZNHY-PKV Fri Jun 30 10:05:41 2006t 
+     
+fields
+    
+    myPBs         : ListOfPaveBlock from BOPTools is protected;  
+    myNewPaveSet  : PaveSet from BOPTools is protected;
+    myTolR3D      : Real from Standard is protected; 
+    myTolR2D      : Real from Standard is protected; 
+     
+    myCurves           : SequenceOfCurves from BOPTools is protected;  
+    myAlonePnts        : SequenceOfPntOn2Faces from IntTools is protected; 
+    myAloneVertices    : ListOfInteger from  TColStd is protected; 
+
+    myTangentFacesFlag : Boolean from Standard is protected; 
+    mySenseFlag        : Integer from Standard is protected;  	     
+    myStatesMap        : IndexedDataMapOfIntegerState from BOPTools is protected;
+--modified by NIZNHY-PKV Fri Jun 30 10:02:27 2006f   
+    mySharedEdges      : ListOfInteger from TColStd is protected;   
+--modified by NIZNHY-PKV Fri Jun 30 10:02:34 2006     
+end SSInterference;

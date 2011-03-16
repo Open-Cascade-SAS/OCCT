@@ -1,0 +1,36 @@
+-- File:	IGESSelect_RemoveCurves.cdl
+-- Created:	Wed Feb 24 09:52:46 1999
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RemoveCurves  from IGESSelect    inherits ModelModifier from IGESSelect
+
+    ---Purpose : Removes Curves UV or 3D (not both !) from Faces, those
+    --           designated by the Selection. No Selection means all the file
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+ 
+is
+
+    Create (UV : Boolean) returns mutable RemoveCurves;
+    ---Purpose : Creates a RemoveCurves from Faces (141/142/143/144)
+    --           UV True  : Removes UV Curves (pcurves)
+    --           UV False : Removes 3D Curves
+
+    Performing (me; ctx : in out ContextModif;
+                target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : Removes the Curves
+ 
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Remove Curves UV on Face"  or  "Remove Curves 3D on Face"
+
+fields
+
+    theUV : Boolean;
+
+end RemoveCurves;

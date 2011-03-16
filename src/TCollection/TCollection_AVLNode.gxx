@@ -1,0 +1,26 @@
+void TCollection_AVLNode::RecursiveCopy (const TCollection_AVLBaseNodePtr& ANode,const TCollection_AVLBaseNodePtr& copy)
+{
+  if (ANode) {
+    ((TCollection_AVLNode*)copy)->Value() = ((TCollection_AVLNode*)ANode)->Value();
+    if (ANode->Left()) {
+      copy->Left()  = new TCollection_AVLNode(((TCollection_AVLNode*)copy)->Value(),(TCollection_AVLBaseNodePtr)0L,(TCollection_AVLBaseNodePtr)0L);
+      TCollection_AVLNode::RecursiveCopy(ANode->Left(),copy->Left());
+    }
+    if (ANode->Right()) {
+      copy->Right()  = new TCollection_AVLNode(((TCollection_AVLNode*)copy)->Value(),(TCollection_AVLBaseNodePtr)0L,(TCollection_AVLBaseNodePtr)0L);
+      TCollection_AVLNode::RecursiveCopy(ANode->Right(),copy->Right());
+    }
+  }
+}
+
+// ----------------------------------------------------------------------
+TCollection_AVLBaseNodePtr TCollection_AVLNode::Copy(const TCollection_AVLBaseNodePtr& ANode)
+{
+  TCollection_AVLNode *copy = NULL;
+  if (ANode) {
+    copy = new TCollection_AVLNode(((TCollection_AVLNode*)ANode)->Value(),(TCollection_AVLBaseNodePtr)0L,(TCollection_AVLBaseNodePtr)0L);
+    TCollection_AVLNode::RecursiveCopy (ANode,copy);
+  }
+  return copy;
+}
+

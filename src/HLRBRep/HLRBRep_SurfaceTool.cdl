@@ -1,0 +1,211 @@
+-- File:	HLRBRep_SurfaceTool.cdl
+-- Created:	Fri Jul  2 16:59:47 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class SurfaceTool from HLRBRep 
+				 
+uses 
+   Shape          from GeomAbs,
+   SurfaceType    from GeomAbs,
+   Pln            from gp,
+   Cone           from gp,
+   Cylinder       from gp,
+   Sphere         from gp,
+   Torus          from gp, 
+   Pnt            from gp,
+   Vec            from gp,
+   Array1OfReal   from TColStd,
+   BezierSurface  from Geom,
+   BSplineSurface from Geom,
+   HSurface       from Adaptor3d,
+   HCurve         from Adaptor3d,
+   Surface        from BRepAdaptor,
+   Ax1            from gp,
+   Dir            from gp
+
+raises 
+   NoSuchObject from Standard,
+   OutOfRange   from Standard
+
+is 
+    FirstUParameter(myclass; S: Address from Standard)
+        ---C++: inline
+        returns Real from Standard;
+	
+    FirstVParameter(myclass; S: Address from Standard)
+        ---C++: inline
+        returns Real from Standard;
+
+    LastUParameter(myclass; S: Address from Standard)
+        ---C++: inline
+        returns Real from Standard;
+
+    LastVParameter(myclass; S: Address from Standard)
+        ---C++: inline
+        returns Real from Standard;
+
+    NbUIntervals(myclass; S: Address from Standard;
+    	    	          Sh : Shape from GeomAbs)
+    	---C++: inline
+    	returns Integer from Standard;
+
+    NbVIntervals(myclass; S: Address from Standard;
+    	    	    	  Sh : Shape from GeomAbs) 
+    	---C++: inline 
+        returns Integer from Standard;
+
+    UIntervals(myclass; S  : Address from Standard;
+    	    	    	T  : in out Array1OfReal from TColStd; 
+    	    	    	Sh : Shape from GeomAbs);
+    	---C++: inline
+
+    VIntervals(myclass; S  : Address from Standard;
+    	    	    	T  : in out Array1OfReal from TColStd; 
+    	    	    	Sh : Shape from GeomAbs) ;
+    	---C++: inline 
+
+   UTrim(myclass; S : Address from Standard;
+                  First, Last, Tol : Real) 
+	---C++: inline
+    returns HSurface from Adaptor3d
+    raises
+    	OutOfRange from Standard;
+	---Purpose: If <First> >= <Last> 
+    
+   VTrim(myclass; S : Address from Standard;
+                  First, Last, Tol : Real) 
+	---C++: inline
+    returns HSurface from Adaptor3d
+    raises
+    	OutOfRange from Standard;
+	---Purpose: If <First> >= <Last> 
+    
+    IsUClosed(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Boolean from Standard;
+
+    IsVClosed(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Boolean from Standard;
+    
+    IsUPeriodic(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Boolean from Standard;
+
+    UPeriod(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Real from Standard;
+	
+    IsVPeriodic(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Boolean from Standard;
+    
+    VPeriod(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Real from Standard;
+	
+    Value(myclass; S   : Address from Standard;
+    	           u,v : Real from Standard)
+	---C++: inline
+	returns Pnt from gp;
+
+    D0(myclass; S   : Address from Standard; 
+                u,v : Real from Standard;
+		P   : out Pnt from gp);
+    	---C++: inline 
+
+    D1(myclass; S      : Address from Standard; 
+                u,v    : Real from Standard; 
+                P      : out Pnt from gp;
+                D1u,D1v: out Vec from gp); 
+    	---C++: inline 
+    	
+    D2(myclass; S      : Address from Standard; 
+                u,v    : Real from Standard; 
+                P      : out Pnt from gp;
+                D1U,D1V,D2U,D2V,D2UV: out Vec from gp); 
+    	---C++: inline 
+    	
+    D3(myclass; S      : Address from Standard; 
+                u,v    : Real from Standard; 
+                P      : out Pnt from gp;
+                D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV: out Vec from gp); 
+    	---C++: inline 
+    	
+    DN(myclass; S      : Address from Standard; 
+                u,v    : Real from Standard; 
+                Nu,Nv  : Integer from Standard)
+    	---C++: inline 
+    returns Vec from gp;
+	
+    UResolution(myclass; S:Address from Standard; R3d: Real from Standard) 
+        ---C++: inline
+        returns Real from Standard;
+
+    VResolution(myclass; S:Address from Standard; R3d: Real from Standard)
+        ---C++: inline
+        returns Real from Standard;
+
+    GetType(myclass; S: Address from Standard)
+    	---C++: inline
+    	returns SurfaceType from GeomAbs;
+
+    Plane(myclass; S: Address from Standard) 
+    	---C++: inline
+    	returns Pln from gp;
+        
+    Cylinder(myclass; S : Address from Standard) returns Cylinder from gp
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Cone(myclass; S : Address from Standard) returns Cone from gp
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Torus(myclass; S : Address from Standard) returns Torus from gp    
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Sphere(myclass; S : Address from Standard) returns Sphere from gp
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    Bezier(myclass; S : Address from Standard) returns BezierSurface from  Geom
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    BSpline(myclass; S : Address from Standard) returns BSplineSurface  from  Geom
+      raises NoSuchObject from Standard;
+    	---C++: inline
+    
+    AxeOfRevolution(myclass; S: Address from Standard) returns Ax1 from  gp 
+      raises NoSuchObject from Standard;
+        ---C++: inline
+
+    Direction(myclass; S: Address from Standard) returns Dir from gp
+      raises NoSuchObject from Standard;
+        ---C++: inline
+
+    BasisCurve(myclass; S:Address from Standard) returns HCurve from Adaptor3d 
+      raises NoSuchObject from Standard;
+        ---C++: inline
+
+    BasisSurface(myclass; S:Address from Standard) returns HSurface from Adaptor3d
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    OffsetValue(myclass; S:Address from Standard) returns Real from Standard
+      raises NoSuchObject from Standard;
+    	---C++: inline
+
+    NbSamplesU(myclass; S : Address from Standard) returns Integer from Standard; 
+
+    NbSamplesV(myclass; S : Address from Standard) returns Integer from Standard;    
+
+    NbSamplesU(myclass; S : Address from Standard; u1,u2: Real from Standard) returns Integer from Standard; 
+
+    NbSamplesV(myclass; S : Address from Standard; v1,v2: Real from Standard) returns Integer from Standard;    
+
+end SurfaceTool;

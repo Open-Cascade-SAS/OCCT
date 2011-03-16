@@ -1,0 +1,17 @@
+-- File:	IGESControl_AlgoContainer.cdl
+-- Created:	Tue Feb  8 09:24:41 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class AlgoContainer from IGESControl inherits AlgoContainer from IGESToBRep
+
+    ---Purpose: 
+
+is
+
+    Create returns mutable AlgoContainer from IGESControl;
+    	---Purpose: Empty constructor
+
+end AlgoContainer;

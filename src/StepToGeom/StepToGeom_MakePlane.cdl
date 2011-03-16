@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakePlane.cdl
+-- Created:	Mon Jun 14 15:54:27 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakePlane from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Plane from StepGeom which describes a plane from
+    --          Prostep and Plane form Geom. 
+
+uses 
+     Plane from Geom,
+     Plane from StepGeom
+
+is 
+
+    Convert ( myclass; SP : Plane from StepGeom;
+                       CP : out Plane from Geom )
+    returns Boolean from Standard;
+
+end MakePlane;

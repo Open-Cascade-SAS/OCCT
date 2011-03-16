@@ -1,0 +1,215 @@
+-- File:	ProjLib.cdl
+-- Created:	Wed Aug 11 12:31:20 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package ProjLib 
+
+
+	---Purpose: The  projLib package  first provides projection of
+	--          curves on a   plane along a  given Direction.  The
+	--          result will be a 3D curve.
+
+
+	---Purpose: The ProjLib package  provides projection of curves
+	--          on surfaces to compute the curve in the parametric
+	--          space. 
+	--          
+	--          It is assumed that the curve is on the surface.
+	--          
+	--          It provides :
+	--          
+	--          * Package methods to handle the easiest cases :
+	--          
+	--            - Line, Circle, Ellipse, Parabola, Hyperbola on plane.
+	--            
+	--            - Line, Circle on cylinder.
+	--            
+	--            - Line, Circle on cone.
+	--            
+	--          * Classes to handle the general cases :
+	--          
+	--            - Plane.
+	--          
+	--            - Cylinder.
+	--            
+	--            - Cone.
+	--            
+	--            - Sphere.
+	--            
+	--            - Torus.
+	--            
+	--            
+	--          * A generic  class to handle  a Curve from Adaptor3d
+	--          on a Surface from Adaptor3d.
+	--          
+
+uses
+    GeomAbs,       -- Geometry enumeration
+    gp,            -- Elementary geometry
+    Geom,
+    Geom2d,
+    Adaptor2d,       -- Curve and Surface interface.
+    Adaptor3d,       -- Curve and Surface interface.
+    Extrema,       -- for projection of points on surface.
+    GeomAdaptor,
+    TColgp,
+    TColStd,
+    TCollection, 
+    math 
+    
+is
+
+    -- ---------------------------------------------------------------
+    --  Classes computing the projection of a 3d curve on a surface.
+    --  The result will be a 3d curve.
+    --  
+    --  Make an approximation if necessary
+    -- ---------------------------------------------------------------
+
+
+    class ProjectOnPlane ;
+	---Purpose: Project a curve on a plane.
+
+
+    class ProjectOnSurface ;
+	---Purpose: Project a curve on a  surface.  The result ( a  3D
+	--          Curve)  will be an approximation
+
+ 
+ 
+ 
+    -- ---------------------------------------------------------------
+    --  Classes computing the PCurves of  curves lying on a surface
+    --  
+    --  Make an approximation if necessary
+    -- ---------------------------------------------------------------
+
+
+    class ComputeApprox;
+    	---Purpose: Approximate the  projection of  a 3d curve   on an
+	--          analytic surface and stores the result in Approx.
+	--          The result is a 2d curve.
+
+
+    class ComputeApproxOnPolarSurface ;
+	---Purpose: Approximate the  projection  of a  3d curve  on an
+	--          polar  surface  and  stores the result  in  Approx.
+	--          The result is a  2d curve.  The evaluation of  the
+	--          current  point of the  2d  curve is done with  the
+	--          evaluation of the extrema  P3d - Surface.
+
+
+    class ProjectedCurve ;
+    	---Purpose: Compute the 2d-curve.  Try to solve the particular
+    	--          case if possible.  Otherwize, an approximation  is
+    	--          done.
+
+
+    class HProjectedCurve instantiates 
+    	GenHCurve2d from Adaptor2d (ProjectedCurve);
+
+         ---------------------------------------------
+         -- Normal projection of a curve on a surface
+         -- Computes the different parts
+         -----------------------------------------------   	    
+    class SequenceOfHSequenceOfPnt 
+    	instantiates  Sequence  from TCollection  (HSequenceOfPnt  from  TColgp); 
+ 
+    class HSequenceOfHSequenceOfPnt 
+    	instantiates  HSequence  from TCollection  (HSequenceOfPnt  from  TColgp,SequenceOfHSequenceOfPnt  from  ProjLib);  
+    class CompProjectedCurve; 
+    class HCompProjectedCurve 
+    	instantiates  GenHCurve2d  from  Adaptor2d  (CompProjectedCurve); 
+
+    private  class PrjResolve;
+    private  class PrjFunc; 
+
+
+    -- ------------------------------------------------------------
+    --  Projection of Curves on Surfaces.
+    --  
+    --  This classes evaluate   the 2d curve of  a  curve lying  on  a
+    --  surface in  some particular case.  See the description of this
+    --  classes to have more informations.
+    --  
+    --  ------------------------------------------------------------
+
+    class Projector;
+	---Purpose: Root class for projections. Stores the result.
+    
+    class Plane;
+	---Purpose: Projection on a plane.
+
+    class Cylinder;
+	---Purpose: Projection on a cylinder.
+
+    class Cone;
+	---Purpose: Projection on a cone.
+
+    class Sphere;
+	---Purpose: Projection on a sphere.
+
+    class Torus;
+	---Purpose: Projection on a torus.
+
+
+    -- methods
+
+    Project(Pl : Pln      from gp; 
+    	    P  : Pnt      from gp )  returns Pnt2d   from gp;
+
+    Project(Pl : Pln      from gp; 
+    	    L  : Lin      from gp )  returns Lin2d   from gp;
+
+    Project(Pl : Pln      from gp;
+    	    C  : Circ     from gp )  returns Circ2d  from gp;
+
+    Project(Pl : Pln      from gp; 
+            E  : Elips    from gp )  returns Elips2d from gp;
+
+    Project(Pl : Pln      from gp; 
+            P  : Parab    from gp )  returns Parab2d from gp;
+
+    Project(Pl : Pln      from gp; 
+            H  : Hypr     from gp )  returns Hypr2d  from gp;
+
+    Project(Cy : Cylinder from gp; 
+    	    P  : Pnt      from gp )  returns Pnt2d   from gp;
+
+    Project(Cy : Cylinder from gp; 
+            L  : Lin      from gp )  returns Lin2d   from gp;
+
+    Project(Cy : Cylinder from gp; 
+            Ci : Circ     from gp )  returns Lin2d   from gp;
+
+    Project(Co : Cone     from gp; 
+    	    P  : Pnt      from gp )  returns Pnt2d   from gp;
+
+    Project(Co : Cone     from gp; 
+            L  : Lin      from gp )  returns Lin2d   from gp;
+
+    Project(Co : Cone     from gp; 
+            Ci : Circ     from gp )  returns Lin2d   from gp;
+
+    Project(Sp : Sphere   from gp; 
+    	    P  : Pnt      from gp )  returns Pnt2d   from gp;
+
+    Project(Sp : Sphere   from gp; 
+            Ci : Circ     from gp )  returns Lin2d   from gp;
+
+    Project(To : Torus    from gp; 
+    	    P  : Pnt      from gp )  returns Pnt2d   from gp;
+
+    Project(To : Torus    from gp; 
+            Ci : Circ     from gp )  returns Lin2d   from gp;
+
+end ProjLib;
+
+
+
+
+

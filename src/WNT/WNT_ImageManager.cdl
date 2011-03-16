@@ -1,0 +1,163 @@
+-- File:	  WNT_ImageManager.cdl
+-- Created:	  Mon Mar 11 10:51:39 1996
+-- Author:	  PLOTNIKOV Eugeny <eugeny@maniax>
+-- Modifications: PLOTNIKOV Eugeny at July 1998 (BUC60286)
+---Copyright:	  Matra Datavision 1996
+
+
+class ImageManager from WNT inherits TShared from MMgt
+
+	---Purpose: This class defines image management
+
+ uses
+
+    Handle          from Aspect,
+    Window          from WNT,
+    SequenceOfImage from WNT,
+    TypeOfImage     from WNT,
+    Image           from WNT,
+    WindowPtr       from WNT
+
+ is
+
+    Create ( aWindow : WindowPtr from WNT )
+     returns mutable ImageManager from WNT;
+	---Purpose: Creates a class instance
+
+    Destroy ( me : mutable )
+     is virtual;
+	---Purpose: Deletes all resources associated with the class instance.
+	---C++:     alias ~
+
+    SetFormat ( me : mutable; aFormat : TypeOfImage from WNT = WNT_TOI_XWD )
+     is static;
+	---Purpose: Sets image format for output.
+
+    Add ( me : mutable; anImage : Image from WNT )
+     is static;
+	---Purpose: Adds <anImage> to manager.
+
+    Image ( me : mutable; anIndex : Integer from Standard )
+     returns Image from WNT is static;
+	---Purpose: returns Image stored at <anIndex>.
+
+    Load ( me : mutable; aFileName : CString from Standard )
+     returns Integer from Standard
+     is static;
+	---Purpose: Loads image from file and returns its index in the
+        --          sequence.
+	--  Warning: Returns 0 if loading was failed.                   
+
+    Save (
+     me;
+     aFileName               : CString from Standard;
+     aX, aY, aWidth, aHeight : Integer from Standard
+    )
+     returns Boolean from Standard
+     is static;
+	---Purpose: Stories image to the file according to <myFormat>
+        --          class field. Returns True on success, otherwise
+        --          returns False.
+
+    SaveBuffer (
+     me;
+     aFileName               : CString from Standard;
+     aX, aY, aWidth, aHeight : Integer from Standard
+    )
+     returns Boolean from Standard
+     is static;
+	---Purpose: Stories contents of the double buffer window pixmap.
+        --          See "Save" method.
+
+    Draw (
+     me      : mutable;
+     anIndex : Integer from Standard;
+     Xc, Yc  : Integer from Standard;
+     aWidth  : Integer from Standard;
+     aHeight : Integer from Standard;
+     anAngle : Real    from Standard = 0.0
+    )
+     is static;
+	---Purpose: Displays the image according to the DoubleBuffer state
+        --          of the associated window.
+
+    Delete ( me : mutable; anIndex : Integer from Standard )
+     is static;
+	---Purpose: Deletes an image at index <anIndex>.
+
+    Discard ( me : mutable; anIndex : Integer from Standard )
+     is static;
+    ---Purpose: Places an image to the trash
+
+    Scale (
+     me       : mutable;
+     anIndex  : Integer from Standard;
+     aScaleX  : Real    from Standard;
+     aScaleY  : Real    from Standard;
+     aReplace : Boolean from Standard = Standard_False
+    ) returns Handle from Aspect is static;
+	---Purpose: Scales the specified image.
+
+    Size ( me ) returns Integer from Standard is static;
+        ---Purpose: Returns number of loaded images.
+
+    ImageHandle (
+     me      : mutable;
+     anIndex : Integer from Standard
+    ) returns Handle from Aspect is static;
+	---Purpose: Returns image handle.
+
+    Dim (
+     me              : mutable;
+     anIndex         :     Integer from Standard;
+     aWidth, aHeight : out Integer from Standard
+    )
+     is static;
+	---Purpose: Returns image dimensions.
+
+    HashCode (
+     me      : mutable;
+     anIndex : Integer from Standard
+    )
+     returns Integer from Standard is redefined static;
+	---Purpose: Returns image's hash code.
+
+    Index (
+     me        : mutable;
+     aHashCode : Integer from Standard
+    )
+     returns Integer from Standard is static;
+	---Purpose: Returns image's index.
+
+    StringHashCode (
+     me      : mutable;
+     aString : CString from Standard
+    )
+     returns Integer from Standard is static;
+	---Purpose: Returns hash code of the string.
+
+    Open (
+     me        : mutable;
+     aDC       : Handle  from Aspect;
+     aWidth    : Integer from Standard;
+     aHeight   : Integer from Standard;
+     aHashCode : Integer from Standard
+    )
+     returns Integer from Standard is static;
+    ---Purpose: Creates new empty image and returns its index
+
+ fields
+
+    myWindow    : Address         from Standard is protected;
+    myImages    : SequenceOfImage from WNT      is protected;
+    myTrash     : SequenceOfImage from WNT      is protected;
+    myFormat    : TypeOfImage     from WNT      is protected;
+    myLastImage : Image           from WNT      is protected;
+    myLastIndex : Integer         from Standard is protected;
+
+ friends
+ 
+    class WDriver from WNT,
+    class Window  from WNT
+
+end ImageManager;

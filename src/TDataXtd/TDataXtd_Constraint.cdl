@@ -1,0 +1,238 @@
+-- File:	TDataXtd_Constraint.cdl
+-- Created:	Mon Apr  6 17:38:41 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009
+
+
+class Constraint from TDataXtd inherits Attribute from TDF
+
+	---Purpose: The groundwork to define constraint attributes.
+    	-- The constraint attribute contains the following sorts of data:
+    	-- -   Type whether the constraint attribute is a
+    	--   geometric constraint or a dimension
+    	-- -   Value the real number value of a numeric
+    	--   constraint such as an angle or a radius
+    	-- -   Geometries to identify the geometries
+    	--   underlying the topological attributes which
+    	--   define the constraint (up to 4)
+    	-- -   Plane for 2D constraints.
+
+
+
+uses ConstraintEnum    from TDataXtd, 
+     Attribute         from TDF,
+     Label             from TDF,
+     LabelList         from TDF,
+     LabelMap          from TDF,
+     GUID              from Standard,
+     Integer           from Standard,
+     DataSet           from TDF,
+     RelocationTable   from TDF,
+     NamedShape        from TNaming,
+     Constraint        from TDataXtd,
+     Real              from TDataStd
+
+is    
+
+ 
+    GetID (myclass)   
+        ---C++: return const &  
+	---Purpose: Returns the GUID for constraints.  
+    returns GUID from Standard;
+
+
+    Set (myclass; label : Label from TDF)  
+    	---Purpose:  Finds or creates the 2D constraint attribute
+    	-- defined by the planar topological attribute plane
+    	-- and the label label.
+    returns Constraint from TDataXtd;        
+
+    
+    ---Purpose: Constraint methods
+    --          ==================    
+
+    Create
+    returns mutable Constraint from TDataXtd;    
+    
+    Set (me : mutable; type : ConstraintEnum from TDataXtd;
+    	    	       G1   : NamedShape from TNaming);
+	---Purpose:
+    	-- Finds or creates the constraint attribute defined
+    	-- by the topological attribute G1 and the constraint type type.	       
+    Set (me : mutable; type : ConstraintEnum; 
+                       G1   : NamedShape from TNaming;
+    	               G2   : NamedShape from TNaming);
+	---Purpose:
+    	-- Finds or creates the constraint attribute defined
+    	-- by the topological attributes G1 and G2, and by
+    	-- the constraint type type.	       
+    Set (me : mutable; type : ConstraintEnum; 
+                       G1   : NamedShape from TNaming;
+    	               G2   : NamedShape from TNaming;
+		       G3   : NamedShape from TNaming);
+	---Purpose:
+    	-- Finds or creates the constraint attribute defined
+    	-- by the topological attributes G1, G2 and G3, and
+    	-- by the constraint type type.	       
+    Set (me : mutable; type : ConstraintEnum; 
+                       G1   : NamedShape from TNaming;
+    	               G2   : NamedShape from TNaming;
+		       G3   : NamedShape from TNaming;
+		       G4   : NamedShape from TNaming);		       ---Purpose:
+    	-- Finds or creates the constraint attribute defined
+    	-- by the topological attributes G1, G2, G3 and G4,
+    	-- and by the constraint type type.
+
+    
+    ---Purpose: methods to read constraint fields
+    --          =================================
+    
+    Verified(me) 
+    returns Boolean from Standard;    
+    	---Purpose:
+    	-- Returns true if this constraint attribute is valid.
+    	-- By default, true is returned.
+    	-- When the value of a dimension is changed or
+    	-- when a geometry is moved, false is returned
+    	-- until the solver sets it back to true.
+ 
+    GetType (me)
+    returns ConstraintEnum from TDataXtd;
+    	---Purpose:
+    	-- Returns the type of constraint.
+    	-- This will be an element of the
+    	-- TDataXtd_ConstraintEnum enumeration.    
+    
+    IsPlanar (me)
+    	---Purpose:    Returns true if this constraint attribute is
+    	-- two-dimensional.
+    returns Boolean from Standard;
+    
+    GetPlane(me)
+     	---C++: return const &
+    	--- Purpose: Returns the topological attribute of the plane
+    	-- used for planar - i.e., 2D - constraints.
+    	-- This plane is attached to another label.
+    	-- If the constraint is not planar, in other words, 3D,
+    	-- this function will return a null handle.
+    returns NamedShape from TNaming;
+    
+    IsDimension (me)
+    	---Purpose: Returns true if this constraint attribute is a
+    	-- dimension, and therefore has a value.
+    returns Boolean from Standard;     
+
+    GetValue(me)
+      	---C++: return const &
+    	---Purpose: Returns the value of a dimension.
+    	-- This value is a reference to a TDataStd_Real attribute.
+    	-- If the attribute is not a dimension, this value will
+    	-- be 0. Use IsDimension to test this condition.
+    returns Real from TDataStd;
+    
+    NbGeometries (me) 
+    	---Purpose:
+    	-- Returns the number of geometry attributes in this constraint attribute.
+    	-- This number will be between 1 and 4.
+    returns Integer from Standard;
+    
+    GetGeometry (me; Index : Integer from Standard)
+    	---Purpose: Returns the integer index Index used to access
+    	-- the array of the constraint or stored geometries of a dimension
+    	--  Index has a value between 1 and 4.
+    returns NamedShape from TNaming;
+    
+    
+    ---Purpose: methods to write constraint fields (use builder)
+    --          ================================== 
+
+    ClearGeometries (me : mutable);  
+        ---Purpose: Removes the geometries involved in the
+    	-- constraint or dimension from the array of
+    	-- topological attributes where they are stored.
+	
+    SetType (me : mutable; CTR :  ConstraintEnum from TDataXtd);
+    	---Purpose: Finds or creates the type of constraint CTR.
+	
+    SetPlane(me:mutable; plane : NamedShape from TNaming); 
+    	---Purpose: Finds or creates the plane of the 2D constraint
+    	-- attribute, defined by the planar topological attribute plane.    
+    SetValue (me : mutable; V : Real from TDataStd);  
+    	---Purpose:
+    	-- Finds or creates the real number value V of the dimension constraint attribute.
+    SetGeometry (me : mutable; Index : Integer from Standard; G : NamedShape from TNaming); 
+    	---Purpose:
+    	-- Finds or creates the underlying geometry of the
+    	-- constraint defined by the topological attribute G
+    	-- and the integer index Index.
+    Verified (me : mutable; status : Boolean from Standard);
+    	---Purpose:
+    	-- Returns true if this constraint attribute defined by status is valid.
+    	-- By default, true is returned.
+    	-- When the value of a dimension is changed or
+    	-- when a geometry is moved, false is returned until
+    	-- the solver sets it back to true.
+    	-- If status is false, Verified is set to false.    
+	
+    -- Category: Angle management 
+    -- ==========================
+
+    Inverted(me:mutable; status : Boolean from Standard);
+    Inverted(me) 
+    returns Boolean from Standard;    
+
+    Reversed(me:mutable; status : Boolean from Standard);
+    Reversed(me) 
+    returns Boolean from Standard;    
+
+    -- Category: Chirality management for DCM 
+    -- ======================================
+    
+    --ChangeChirality (me:mutable; status : Boolean from Standard);
+    --ChangeChirality (me)
+    --returns Boolean from Standard;
+
+
+    ---Category: Utilities
+    --           =========
+
+    CollectChildConstraints(myclass; 
+    	    	       aLabel : Label from TDF;
+    	    	       TheList:in out LabelList from TDF);
+    ---Purpose: collects constraints on Childs for label <aLabel>
+
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+
+    ID (me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+    
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute       from TDF;
+	       RT   : mutable RelocationTable from TDF);
+	       
+    Dump (me; anOS : in out OStream from Standard) 
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+    References (me; DS : DataSet from TDF) is redefined;
+
+fields
+
+    myType       : ConstraintEnum from TDataXtd;
+    myValue      : Real           from TDataStd;
+    myGeometries : Attribute      from TDF[4];
+    myPlane      : Attribute      from TDF;
+    myIsReversed : Boolean        from Standard;
+    myIsInverted : Boolean        from Standard;
+    myIsVerified : Boolean        from Standard;
+
+end Constraint;

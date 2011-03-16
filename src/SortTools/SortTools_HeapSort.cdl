@@ -1,0 +1,20 @@
+-- File:	HeapSort.cdl
+-- Created:	Tue Mar  5 10:50:42 1991
+-- Author:	Herve Legrand
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+generic class HeapSort from SortTools (Item as any;
+                                       Array as Array1 from TCollection(Item);
+                                       Comparator as any)
+
+	---Purpose: This class provides the HeapSort algorithm.
+
+is
+
+    Sort(myclass; TheArray : in out Array; Comp : Comparator);
+    ---Purpose: Sort an array using the HeapSort algorithm.
+    ---Level: Public
+ 
+end;
+

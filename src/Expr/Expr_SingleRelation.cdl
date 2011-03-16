@@ -1,0 +1,76 @@
+-- File:	SingleRelation.cdl
+-- Created:	Mon Jan 14 09:47:16 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class SingleRelation from Expr
+
+inherits GeneralRelation from Expr
+
+uses GeneralExpression from Expr,
+    NamedUnknown from Expr,
+    AsciiString from TCollection
+
+raises OutOfRange
+
+is
+
+    SetFirstMember(me :mutable; exp : GeneralExpression)
+    ---Purpose: Defines the first member of the relation
+    ---Level : Internal
+    is static;
+    
+    SetSecondMember(me :mutable; exp : GeneralExpression)
+    ---Purpose: Defines the second member of the relation
+    ---Level : Internal
+    is static;
+    
+    FirstMember(me)
+    ---Purpose: Returns the first member of the relation
+    ---Level : Internal
+    returns GeneralExpression
+    is static;
+
+    SecondMember(me)
+    ---Purpose: Returns the second member of the relation
+    ---Level : Internal
+    returns GeneralExpression
+    is static;
+
+    IsLinear(me)
+    ---Purpose: Tests if <me> is linear between its NamedUnknowns.
+    returns Boolean
+    is static;
+
+    NbOfSubRelations(me)
+    ---Purpose: Returns the number of relations contained in <me>.
+    returns Integer
+    is static;
+    
+    NbOfSingleRelations(me)
+    ---Purpose: Returns the number of SingleRelations contained in 
+    --          <me> (Always 1).
+    returns Integer
+    is static;
+
+    SubRelation(me; index : Integer)
+    ---Purpose: Returns the relation denoted by <index> in <me>.
+    --          An exception is raised if index is out of range.
+    returns any GeneralRelation
+    raises OutOfRange
+    is static;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <me> contains <exp>.
+    returns Boolean;
+    
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression);
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>.
+    
+fields
+
+    myFirstMember : GeneralExpression;
+    mySecondMember : GeneralExpression;
+
+end SingleRelation;

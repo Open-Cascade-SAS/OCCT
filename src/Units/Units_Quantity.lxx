@@ -1,0 +1,53 @@
+// File:	Units_Quantity.lxx
+// Created:	Wed Jun 24 12:48:36 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+#include <Units_UnitsSequence.hxx>
+#include <Units_Dimensions.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+//=======================================================================
+//function : Units_Quantity
+//purpose  : 
+//=======================================================================
+
+inline Units_Quantity::Units_Quantity(const Standard_CString aname,
+				      const Handle(Units_Dimensions)& adimensions,
+				      const Handle(Units_UnitsSequence)& aunitssequence)
+{
+  thename       = new TCollection_HAsciiString(aname);
+  thedimensions = adimensions;
+  theunitssequence  = aunitssequence;
+}
+
+//=======================================================================
+//function : Name
+//purpose  : 
+//=======================================================================
+
+inline TCollection_AsciiString Units_Quantity::Name() const
+{
+  return thename->String();
+}
+
+//=======================================================================
+//function : Dimensions
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_Dimensions) Units_Quantity::Dimensions() const
+{
+  return thedimensions;
+}
+
+//=======================================================================
+//function : Sequence
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_UnitsSequence) Units_Quantity::Sequence() const
+{
+  return theunitssequence;
+}

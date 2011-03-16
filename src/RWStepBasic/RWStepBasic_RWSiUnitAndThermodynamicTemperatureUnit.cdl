@@ -1,0 +1,26 @@
+-- File:	RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit.cdl
+-- Created:	Sun Dec 15 15:18:37 2002
+-- Author:	data exchange team
+--		<det@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+
+class RWSiUnitAndThermodynamicTemperatureUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for SiUnitAndThermodynamicTemperatureUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SiUnitAndThermodynamicTemperatureUnit from StepBasic
+
+is
+
+	Create returns RWSiUnitAndThermodynamicTemperatureUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SiUnitAndThermodynamicTemperatureUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndThermodynamicTemperatureUnit from StepBasic);
+
+end RWSiUnitAndThermodynamicTemperatureUnit;

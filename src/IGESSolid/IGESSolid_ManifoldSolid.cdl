@@ -1,0 +1,85 @@
+--
+-- File      :  ManifoldSolid.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ManifoldSolid from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines ManifoldSolid, Type <186> Form Number <0>
+        --          in package IGESSolid
+        --          A manifold solid is a bounded, closed, and finite volume
+        --          in three dimensional Euclidean space
+
+uses
+
+        Shell            from IGESSolid,
+        HArray1OfShell   from IGESSolid,
+        HArray1OfInteger from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable ManifoldSolid;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me             : mutable;
+              aShell         : Shell;
+              shellflag      : Boolean;
+              voidShells     : HArray1OfShell;
+              voidShellFlags : HArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           ManifoldSolid
+        --       - aShell         : pointer to the shell
+        --       - shellflag      : orientation flag of shell
+        --       - voidShells     : the void shells
+        --       - voidShellFlags : orientation of the void shells
+        -- raises exception if length of voidShells and voidShellFlags 
+        -- do not match
+
+        Shell(me) returns Shell;
+        ---Purpose : returns the Shell entity which is being referred
+
+        OrientationFlag(me) returns Boolean;
+        ---Purpose : returns the orientation flag of the shell
+
+        NbVoidShells(me)  returns Integer;
+        ---Purpose : returns the number of void shells
+
+        VoidShell(me; Index : Integer) returns Shell
+        raises OutOfRange;
+        ---Purpose : returns Index'th void shell.
+        -- raises exception if Index  <= 0 or Index > NbVoidShells()
+
+        VoidOrientationFlag(me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns Index'th orientation flag.
+        -- raises exception if Index  <= 0 or Index > NbVoidShells()
+
+fields
+
+--
+-- Class    : IGESSolid_ManifoldSolid
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ManifoldSolid.
+--
+-- Reminder : A ManifoldSolid instance is defined by :
+--            a shell bounded by more shells
+
+        theShell           : Shell;
+
+        theOrientationFlag : Boolean;
+            -- the orientation flag of the shell w.r.t. underlying face
+            -- (True = agrees)
+
+        theVoidShells      : HArray1OfShell;
+
+        theOrientFlags     : HArray1OfInteger;
+
+end ManifoldSolid;

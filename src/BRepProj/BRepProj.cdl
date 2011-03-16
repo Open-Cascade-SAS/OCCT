@@ -1,0 +1,33 @@
+-- File:	BRepProj.cdl
+-- Created:	Fri Nov 13 10:46:33 1998
+-- Author:	Jean-Michel BOULCOURT
+--		<jmb@coulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package BRepProj
+
+        ---Purpose:     The BRepProj    package  provides   Projection
+        --            Algorithms     like  Cylindrical    and  Conical
+        --          Projections.  Those algorithms have been put in an
+        --          independant package   instead of  BRepAlgo   (like
+        --          NormalProjection) because of cyclic reference with
+        --          BRepFill. So this package is not available for
+        --          the moment to BRepFill.
+        --          
+
+uses
+    gp, 
+    TopoDS,     
+    TopTools
+	      
+is
+
+    
+    class  Projection; 
+        ---Purpose: provides  conical  and  cylindrical projections of  
+        --          Edge  or Wire  on  a Shape from TopoDS. The result  
+        --          will be a Edge  or  Wire  from  TopoDS.    
+	
+
+end BRepProj;

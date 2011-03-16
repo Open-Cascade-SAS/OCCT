@@ -1,0 +1,31 @@
+-- File:	RWStepElement.cdl
+-- Created:	Thu Dec 12 17:22:36 2002
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 2002
+
+package RWStepElement
+
+uses
+
+	StepData, Interface, TCollection, TColStd, StepElement
+
+is
+
+    class RWAnalysisItemWithinRepresentation;
+    class RWCurve3dElementDescriptor;
+    class RWCurveElementEndReleasePacket;
+    class RWCurveElementSectionDefinition;
+    class RWCurveElementSectionDerivedDefinitions;
+    class RWElementDescriptor;
+    class RWElementMaterial;
+    class RWSurface3dElementDescriptor;
+    class RWSurfaceElementProperty;
+    class RWSurfaceSection;
+    class RWSurfaceSectionField;
+    class RWSurfaceSectionFieldConstant;
+    class RWSurfaceSectionFieldVarying;
+    class RWUniformSurfaceSection;
+    class RWVolume3dElementDescriptor;
+    
+end;

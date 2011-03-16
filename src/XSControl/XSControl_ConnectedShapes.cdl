@@ -1,0 +1,57 @@
+-- File:	XSControl_ConnectedShapes.cdl
+-- Created:	Wed Feb 24 17:53:29 1999
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ConnectedShapes  from XSControl    inherits SelectExplore  from IFSelect
+
+    ---Purpose : From a TopoDS_Shape, or from the entity which has produced it,
+    --           searches for the shapes, and the entities which have produced
+    --           them in last transfer, which are adjacent to it by VERTICES
+
+uses AsciiString, Transient,  Graph, EntityIterator,
+     HSequenceOfTransient from TColStd,
+     Shape from TopoDS, ShapeEnum from TopAbs,
+     TransientProcess from Transfer, TransferReader from XSControl
+
+is
+
+    Create returns ConnectedShapes;
+    ---Purpose : Creates a Selection ConnectedShapes. It remains to be set a
+    --           TransferReader
+
+    Create (TR : TransferReader) returns ConnectedShapes;
+    ---Purpose : Creates a Selection ConnectedShapes, which will work with the
+    --           current TransferProcess brought by the TransferReader
+ 
+    SetReader (me : mutable; TR : TransferReader);
+    ---Purpose : Sets a TransferReader to sort entities : it brings the
+    --           TransferProcess which may change, while the TransferReader does not
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+             explored : in out EntityIterator)
+        returns Boolean;
+    ---Purpose : Explores an entity : entities from which are connected to that
+    --           produced by this entity, including itself
+ 
+ 
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium.
+    --           "Connected Entities through produced Shapes"
+
+
+    AdjacentEntities (myclass;
+    	ashape    : Shape from TopoDS;
+    	TP : TransientProcess from Transfer;
+    	type      : ShapeEnum from TopAbs)
+    	    returns HSequenceOfTransient;
+    ---Purpose : This functions considers a shape from a transfer and performs
+    --           the search function explained above
+
+fields
+ 
+    theTR : TransferReader;
+
+end ConnectedShapes;

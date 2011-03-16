@@ -1,0 +1,27 @@
+-- File:	MoniTool_IntVal.cdl
+-- Created:	Wed Sep  3 15:25:38 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class IntVal  from MoniTool    inherits TShared  from MMgt
+
+    ---Purpose : An Integer through a Handle (i.e. managed as TShared)
+
+uses Integer
+
+is
+
+    Create (val : Integer = 0) returns mutable IntVal;
+
+    Value (me) returns Integer;
+
+    CValue (me : mutable) returns Integer;
+    ---C++ : return &
+
+fields
+
+    theval : Integer;
+
+end IntVal;

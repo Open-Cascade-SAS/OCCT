@@ -1,0 +1,75 @@
+-- File:	ProjLib_ComputeApproxOnPolarSurface.cdl
+-- Created:	Fri Oct  7 11:03:17 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ComputeApproxOnPolarSurface from ProjLib 
+
+
+
+uses
+     HCurve       from Adaptor3d,
+     HCurve2d     from Adaptor2d,
+     HSurface     from Adaptor3d,
+     BSplineCurve from Geom2d,
+     Curve        from Geom2d
+
+is
+
+    Create returns ComputeApproxOnPolarSurface from ProjLib;
+
+    Create(C : HCurve from Adaptor3d ;
+    	   S : HSurface from Adaptor3d ; 
+    	   Tol : Real = 1.0e-4)
+    returns ComputeApproxOnPolarSurface from ProjLib;
+
+--    Create(C : HCurve from Adaptor3d ;
+--    	   S : HSurface from Adaptor3d)
+    ---purpose: pour etre en phase avec ProjOnSurf 
+--    returns ComputeApproxOnPolarSurface from ProjLib;
+
+    Create(InitCurve2d : HCurve2d from Adaptor2d ;
+    	   C : HCurve from Adaptor3d ;
+    	   S : HSurface from Adaptor3d ;
+    	   Tol : Real) 
+    returns ComputeApproxOnPolarSurface from ProjLib;
+
+    Create(InitCurve2d : HCurve2d from Adaptor2d ;
+    	   InitCurve2dBis : HCurve2d from Adaptor2d ;
+    	   C : HCurve from Adaptor3d ;
+    	   S : HSurface from Adaptor3d ;
+    	   Tol : Real) 
+    returns ComputeApproxOnPolarSurface from ProjLib;
+
+    Perform(me : in out ; InitCurve2d : HCurve2d from Adaptor2d;
+    	    	    	  C : HCurve from Adaptor3d ;
+	       	    	  S : HSurface from Adaptor3d )
+    returns BSplineCurve from Geom2d;
+    
+    BuildInitialCurve2d(me : in out ; Curve :       HCurve   from Adaptor3d ;
+		       	       	      S :           HSurface from Adaptor3d )
+    returns HCurve2d from  Adaptor2d;
+
+    ProjectUsingInitialCurve2d(me : in out ; Curve :       HCurve   from Adaptor3d ;
+    	    	    	    	    	     S :           HSurface from Adaptor3d  ;
+    	    	      	    	    	     InitCurve2d : HCurve2d from  Adaptor2d )
+    returns BSplineCurve from Geom2d;
+
+    BSpline(me) returns BSplineCurve from Geom2d ;
+
+    Curve2d(me) returns Curve from Geom2d ;
+
+    IsDone(me) returns Boolean from Standard;
+ 
+fields
+
+    myProjIsDone      : Boolean      from Standard;
+    myTolerance       : Real         from Standard;
+    myBSpline         : BSplineCurve from Geom2d ;
+    my2ndCurve        : Curve        from Geom2d ;
+--    myInitCurve2d     : HCurve2d     from Adaptor3d;
+
+end ComputeApproxOnPolarSurface;
+

@@ -1,0 +1,30 @@
+-- File:        DerivedUnitElement.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDerivedUnitElement from RWStepBasic
+
+	---Purpose : Read & Write Module for DerivedUnitElement
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DerivedUnitElement from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWDerivedUnitElement;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DerivedUnitElement from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : DerivedUnitElement from StepBasic);
+
+	Share(me; ent : DerivedUnitElement from StepBasic; iter : in out EntityIterator);
+
+end RWDerivedUnitElement;

@@ -1,0 +1,27 @@
+-- File:        Organization.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWOrganization from RWStepBasic
+
+	---Purpose : Read & Write Module for Organization
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Organization from StepBasic
+
+is
+
+	Create returns RWOrganization;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Organization from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : Organization from StepBasic);
+
+end RWOrganization;

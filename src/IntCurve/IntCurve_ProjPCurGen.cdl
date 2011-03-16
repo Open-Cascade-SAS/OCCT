@@ -1,0 +1,87 @@
+-- File:	ProjPCurGen.cdl
+-- Created:	Tue Oct 13 18:27:03 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+generic class ProjPCurGen from IntCurve (
+    TheCurve         as any;
+    TheCurveTool     as any) -- as CurveTool from IntCurve(TheCurve)
+
+    ---Purpose: this class provide a tool which computes the parameter
+    --          of a point near a parametric curve.
+
+    ---Level: Internal
+
+uses Pnt2d     from gp,
+     Vec2d     from gp,
+     POnCurv2d from Extrema
+     
+     
+
+    class TheCurveLocator instantiates CurveLocator from Extrema (
+    	TheCurve,
+	TheCurveTool,
+	TheCurve,
+	TheCurveTool,
+	POnCurv2d       from Extrema,
+	Pnt2d           from gp);
+	
+    class TheLocateExtPC instantiates GenLocateExtPC from Extrema (
+	TheCurve,
+	TheCurveTool,
+	POnCurv2d      from Extrema,
+	Pnt2d          from gp,
+	Vec2d          from gp);
+
+
+
+is
+		 
+    FindParameter(myclass; C:   TheCurve;
+    	    	           Pnt: Pnt2d  from gp;
+			   Tol: Real   from Standard)
+			   
+	--- Purpose: Returns the parameter V of the point on the 
+	--           parametric curve corresponding to the Point Pnt.
+	--           The Correspondance between Pnt and the point P(V) 
+	--           on the parametric curve must be coherent with the 
+	--           way of determination of the signed distance 
+	--           between a point and the implicit curve.
+	--           Tol is the tolerance on the distance between a point
+	--           and the parametrised curve.
+	--           In that case, no bounds are given. The research of
+	--           the rigth parameter has to be made on the natural
+	--           parametric domain of the curve.
+			   
+    	returns Real from Standard;
+
+	
+    FindParameter(myclass; C:   TheCurve;
+    	    	           Pnt: Pnt2d  from gp;
+			   LowParameter,HighParameter,Tol: Real from Standard)
+			   
+	--- Purpose: Returns the parameter V of the point on the 
+	--           parametric curve corresponding to the Point Pnt.
+	--           The Correspondance between Pnt and the point P(V) 
+	--           on the parametric curve must be coherent with the 
+	--           way of determination of the signed distance 
+	--           between a point and the implicit curve.
+	--           Tol is the tolerance on the distance between a point
+	--           and the parametrised curve.
+	--           LowParameter and HighParameter give the 
+	--           boundaries of the interval in wich the parameter 
+	--           certainly lies. These parameters are given to
+	--           implement a more efficient algoritm. So, it is not
+	--           necessary to check that the returned value verifies 
+	--                LowParameter <= Value <= HighParameter.
+			   
+    	returns Real from Standard;
+	
+end ProjPCurGen;
+
+
+

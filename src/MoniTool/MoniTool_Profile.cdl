@@ -1,0 +1,205 @@
+-- File:	MoniTool_Profile.cdl
+-- Created:	Mon Dec 14 12:50:18 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Profile  from MoniTool    inherits TShared  from MMgt
+
+    ---Purpose : A Profile gives access to a set of options :
+    --           - it defines and gives access to options, by names specific
+    --             to this Profile, defaulted to basic names of the Options
+    --           - it records one or more Configurations, each of one is
+    --             identified by a name, and commands for each option a switch
+    --             value
+    --           - a Configuration may be partial, i.e. concern only a subset
+    --             of the complete list of options
+    --           - Values are accessed through a Current Configuration, which
+    --             name is fixed as ".", which can cumulate several
+    --             configurations (especially when they are partial)
+    --           
+    --           It may also bring a "fast" access to values, which has been
+    --           formerly computed from current configuration or another given
+    --           one. But its up-to-date status regarding existing
+    --           configurations is not checked : it may be recomputed or
+    --           cleared at any time. If not set, the current configuration
+    --           is then taken
+
+uses CString, Transient, AsciiString from TCollection,
+     HSequenceOfAsciiString from TColStd,
+     DictionaryOfTransient from Dico,
+     Option
+
+is
+
+    Create returns Profile;
+    ---Purpose : Creates an empty Profile, with an empty Current Configuration
+    --           (named ".")
+
+    	    --  Declaration of the Options
+
+    AddOption (me : mutable; option : Option; name : CString = "");
+    ---Purpose : Adds an Option, with a Name, by default takes the Name of the
+    --           Option
+
+    Option (me; name : CString) returns Option;
+    ---Purpose : Returns an Option from its Name. Null Handle if unknown
+
+    OptionList (me) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of Option Names
+
+    TypedValueList (me) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of Option Names which are defined on a
+    --           TypedValue/Static, i.e. for Basic Type
+
+    	    --  Declaration of the Configurations
+
+    NewConf (me : mutable; confname : CString);
+    ---Purpose : Adds a new Configuration, yet empty, then filled by AddSwitch
+    --           If <confname> already existed, it is replaced from scratch
+    --           While AddConf creates new Conf only if it does not yet exist
+    --           
+    --           Remark : the Current Configuration "." may not be changed
+
+    AddConf (me : mutable; confname : CString);
+    ---Purpose : Adds a new Configuration, yet empty, then filled by AddSwitch
+    --           If <confname> already existed, it is kept as it is
+    --           While NewConf restrts from scratch anyway
+    --           
+    --           Remark : the Current Configuration "." may not be changed
+
+    HasConf (me; confname : CString)  returns Boolean;
+    ---Purpose : Tells if <confname> is known as a Configuration
+
+    ConfList (me) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of Configuration Names, including Current "."
+
+    Conf (me; confname : CString) returns DictionaryOfTransient  is private;
+    ---Purpose : Internal
+
+    ClearConf (me : mutable; confname : CString) returns Boolean;
+    ---Purpose : Clears a configuration (does not remove it)
+    --           A cleared configuration has no effect, it can be reloaded
+
+    AddFromOtherConf (me : mutable; confname, otherconf : CString)  returns Boolean;
+    ---Purpose : Adds the definitions from the configuration <otherconf> to
+    --           those of <confname>
+    --           Returns True if done, False if confname or otherconf are unknown
+
+    SetFromCurrent (me : mutable; confname : CString) returns Boolean;
+    ---Purpose : Sets the definitions of a configuration from the actual state
+    --           (current configuration plus current state of options for those
+    --           which are not recorded in current conf)
+
+    AddSwitch (me : mutable; confname, optname : CString; casename : CString = "") returns Boolean;
+    ---Purpose : Adds to the Configuration <confname>, for the option <optname>
+    --           the command to switch it to <casename>
+    --           If <casename> is not given, records the actual current
+    --           CaseName of this Option
+    --           Returns True if done, False if <confname> or <optname> is
+    --           unknown, or <casename> not allowed for <optname>
+
+    RemoveSwitch (me : mutable; confname, optname : CString) returns Boolean;
+    ---Purpose : Removes from the Configuration <confname>, the switch for the
+    --           option <optname>. Hence, it will consider the basic default
+    --           switch for this option
+    --           Returns True if done or switch was not recorded, False if
+    --           <confname> or <optname> is unknown
+
+    SwitchList (me; confname : CString;
+    	optlist, caselist : out HSequenceOfAsciiString);
+    ---Purpose : Returns the list of switches properly concerned by a config :
+    --           two lists in parallel, <optlist> lists the names of options
+    --           and for each one, <caselist> gives the case for this config
+
+
+    	    --  Access to the state (Configuration)
+
+    SetCurrent (me : mutable; confname : CString) returns Boolean;
+    ---Purpose : Copies (Cumulates) the definition of <confname> to current
+    --           Records the current name as the last current setting
+    --           
+    --           Returns True if done, False (and does nothing> if <confname>
+    --           is not recorded as a Configuration
+    --           If no SetCurrent has been called, the last added one is taken
+    --           
+    --           Remark : SetCurrent is for the Profile : the individual
+    --           options are not switched themselves, they are only queried
+    --           To switch the options themselves, see below RecordCurrent
+    --           
+    --           Remark : for Options which are listed in the Profile but not
+    --           in the current Configuration, their current switch is taken
+
+    RecordCurrent (me : mutable);
+    ---Purpose : Records the switches of current configuration in the options
+    --           themselves
+
+    Current (me) returns AsciiString;
+    ---Purpose : Returns the name of last current configuration
+    ---C++ : return const &
+
+    CaseName (me; optname : CString; proper : Boolean = Standard_False)
+    	returns AsciiString;
+    ---Purpose : Returns the selected case name of option <optname> in current
+    --           configuration
+    --           Empty String if <optname> unknown
+    --           
+    --           If <proper> is False (D), if <optname> is not recorded in the
+    --           current configuration, the own current name of the option
+    --           itself is taken
+    --           Else, an empty string is returned
+
+    CaseValue (me; optname : CString) returns Transient;
+    ---Purpose : Returns the Value of the switch selected for option <optname>
+    --           in current configuration
+    --           Null Handle if <optname> unknown
+    --           To be down-casted as needed before use
+
+    Value (me; optname : CString; val : out Transient) returns Boolean;
+    ---Purpose : Returns the Value of the switch selected for option <optname>
+    --           in current configuration
+    --           Returns True if done, False + Null Handle if <optname> unknown
+    --           This way of returning a Transient, bound with the Type Control
+    --           avoids DownCast and ensures the value is directly usable
+
+    SetTypedValues (me; proper : Boolean = Standard_False; name : CString = "");
+    ---Purpose : For the Options which are defined with a TypedValue/Static,
+    --           takes the value defined in current configuration, and sets
+    --           the TypedValue with it
+    --           
+    --           If <proper> is False (D), takes the current value, whatever
+    --           it is properly recorded in current configuration or not
+    --           If <proper> is True, sets the value only if it is properly
+    --           recorded in the current configuration
+    --           
+    --           By default, considers all the Options with a TypedValue
+    --           If <name> is given, considers the Options of which the name
+    --           begins by <name>
+
+    	    --  Fast Access
+
+    SetFast (me : mutable; confname : CString = "");
+    ---Purpose : Recomputes fast access from the definition of a configuration
+    --           By default, the current one
+    --           Else, a configuration identified by its name
+
+    ClearFast (me : mutable);
+    ---Purpose : Clears definitions of fast access
+
+    FastValue (me; optname : CString; val : out Transient) returns Boolean;
+    ---Purpose : Gets the value corresponding to Option <optname>, as fast
+    --           If not defined as fast, check "normal" access by calling Value
+    --           Returns True if OK (either Fast or normal), False if not found
+    --           (if not found, <val> is returned Null Handle)
+
+fields
+
+    theopts  : DictionaryOfTransient;
+    theconfs : DictionaryOfTransient;
+    -- each conf is itself a DictionaryOfTransient which brings strings
+    thecurname : AsciiString;
+    thecurconf : DictionaryOfTransient;
+    thefastval : DictionaryOfTransient;
+
+end Profile;

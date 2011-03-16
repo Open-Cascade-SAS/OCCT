@@ -1,0 +1,187 @@
+--
+-- File      :  DimensionDisplayData.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+-- 
+---Copyright : MATRA-DATAVISION  1993  
+--
+
+class DimensionDisplayData from IGESDimen   inherits IGESEntity
+     
+    ---Purpose: Defines IGES Dimension Display Data, Type <406> Form <30>,
+    --          in package IGESDimen
+    --          The Dimensional Display Data Property is optional but when
+    --          present must be referenced by a dimension entity.
+    --          The information it contains could be extracted from the text,
+    --          leader and witness line data with difficulty.
+
+uses
+
+        HAsciiString from TCollection, 
+        HArray1OfInteger from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable DimensionDisplayData;
+
+            -- --specific-- --
+
+        Init(me                                 : mutable; 
+             numProps                           : Integer;
+             aDimType, aLabelPos, aCharSet      : Integer; 
+             aString                            : HAsciiString;
+             aSymbol                            : Integer; 
+             anAng                              : Real;
+             anAlign, aLevel, aPlace, anOrient  : Integer;
+             initVal                            : Real; 
+             notes, startInd, endInd            : HArray1OfInteger) 
+        raises DimensionMismatch;
+        -- This method sets the fields of the
+        -- class DimensionDisplayData
+        --       - numProps  : Number of property values (= 14)
+        --       - aDimType  : Dimension type
+        --                     0 = ordinary
+        --                     1 = Reference (usually with parentheses)
+        --                     2 = Basic (boxed)
+        --       - aLabelPos : Preffered Label position
+        --                     0 = Does not exist
+        --                     1 = Before measurement
+        --                     2 = After measurement
+        --                     3 = Above measurement
+        --                     4 = Below measurement
+        --       - aCharSet  : Character set interpretation (default = 1)
+        --                     Meaningful only if aString is non-empty
+        --                     1 = Standard ASCII
+        --                     1001 = Symbol Font 1
+        --                     1002 = Symbol Font 2
+        --                     1003 = Drafting Font
+        --       - aString   : HAsciiString
+        --       - aSymbol   : Decimal symbol
+        --                     0 = "." (period)
+        --                     1 = "," (comma)
+        --       - anAng     : Witness line angle in radians (default = pi/2)
+        --       - anAlign   : Text alignment
+        --                     0 = Horizontal
+        --                     1 = Parallel
+        --       - aLevel    : Text level
+        --                     0 = Neither above nor below the leaders (default)
+        --                     1 = Above
+        --                     2 = Below
+        --       - aPlace    : Preffered text placement
+        --                     0 = Between the witness lines (default)
+        --                     1 = Outside, near the first witness line
+        --       - anOrient  : ArrowHead orientation
+        --                     0 = In, pointing out
+        --                     1 = Out, pointing in
+        --       - initVal   : The primary dimension initial value
+        --       - notes     : List of supplemental notes
+        --                     1 = Before the rest of the dimension text
+        --                     2 = After, but starting at the same level
+        --                     3 = Above
+        --                     4 = Below
+        --       - startInd  : List of start index
+        --       - endInd    : List of end index
+        -- raises exception if lengths of notes, startInd, endInd are
+        -- not same
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values (14)
+
+        DimensionType (me) returns Integer;
+        ---Purpose : returns the dimension type
+
+        LabelPosition (me) returns Integer;
+        ---Purpose : returns the preferred label position
+
+        CharacterSet (me) returns Integer;
+        ---Purpose : returns the character set interpretation
+
+        LString (me) returns HAsciiString from TCollection;
+        ---Purpose : returns e.g., 8HDIAMETER
+
+        DecimalSymbol(me) returns Integer;
+        --returns the decimal symbol
+
+        WitnessLineAngle (me) returns Real;
+        ---Purpose : returns the witness line angle in radians
+
+        TextAlignment (me) returns Integer;
+        ---Purpose : returns the text alignment
+
+        TextLevel (me) returns Integer;
+        ---Purpose : returns the text level
+
+        TextPlacement (me) returns Integer;
+        ---Purpose : returns the preferred text placement
+
+        ArrowHeadOrientation (me) returns Integer;
+        ---Purpose : returns the arrowhead orientation
+
+        InitialValue (me) returns Real;
+        ---Purpose : returns the primary dimension initial value
+
+        NbSupplementaryNotes (me) returns Integer;
+        ---Purpose : returns the number of supplementary notes or zero
+
+        SupplementaryNote (me; Index: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th supplementary note
+        -- raises exception if Index <= 0 or Index > NbSupplementaryNotes()
+
+        StartIndex (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th note start index
+        -- raises exception if Index <= 0 or Index > NbSupplementaryNotes()
+
+        EndIndex (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th note end index
+        -- raises exception if Index <= 0 or Index > NbSupplemetaryNotes()
+
+fields
+
+--
+-- Class    : IGESDimen_DimensionDisplayData
+-- 
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DimensionDisplayData.
+--
+-- Reminder : A DimensionDisplayData instance is defined by :
+--             - The number of properties, always 14
+--             - An integer dimension type
+--             - An integer label position
+--             - An integer character set
+--             - A HAsciiString
+--             - An integer decimal symbol
+--             - The witness line angle in radians
+--             - An integer text alignment number
+--             - An integer text level number
+--             - An integer, preferred text placement
+--             - An integer arrowhead orientation
+--             - A primary dimension initial value
+--             - The number of supplementary notes
+--             - A single array of integers, representing supplementary
+--               notes
+--             - A single array of start indices for the notes
+--             - A single array of end indices for the notes
+--
+
+            theNbPropertyValues    : Integer;
+            theDimensionType       : Integer;
+            theLabelPosition       : Integer;
+            theCharacterSet        : Integer;
+            theLString             : HAsciiString;
+            theDecimalSymbol       : Integer;
+            theWitnessLineAngle    : Real;
+            theTextAlignment       : Integer;
+            theTextLevel           : Integer;
+            theTextPlacement       : Integer;
+            theArrowHeadOrientation: Integer;
+            theInitialValue        : Real;
+            theSupplementaryNotes  : HArray1OfInteger;
+            theStartIndex          : HArray1OfInteger;
+            theEndIndex            : HArray1OfInteger;
+
+end DimensionDisplayData;

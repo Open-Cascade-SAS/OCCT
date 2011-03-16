@@ -1,0 +1,53 @@
+-- File:	StepAP214_DateItem.cdl
+-- Created:	Tue Mar  9 16:48:58 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class DateItem from StepAP214 inherits ApprovalItem from StepAP214
+
+
+uses
+    	ApprovalPersonOrganization from StepBasic,
+	AppliedPersonAndOrganizationAssignment from StepAP214,
+    	AppliedOrganizationAssignment from StepAP214,
+    	Effectivity from StepBasic
+
+is
+    Create returns DateItem;
+	---Purpose : Returns a DateItem SelectType
+	
+	CaseNum (me; ent : Transient) returns Integer is redefined;
+	---Purpose: Recognizes a DateItem Kind Entity that is :
+	--        1 -> ApprovalPersonOrganization
+	--        2 -> AppliedDateAndPersonAssignment
+    	--        3 -> AppliedOrganizationAssignment
+    	--        4 -> AssemblyComponentUsageSubstitute
+	--        5 -> DocumentFile
+	--        6 -> Effectivity
+    	--        7 -> MaterialDesignation
+    	--        8 -> MechanicalDesignGeometricPresentationRepresentation
+	--        9 -> PresentationArea
+    	--        10 -> Product
+	--        11 -> ProductDefinition
+    	--        12 -> ProductDefinitionFormation
+	--        13 -> ProductDefinitionRelationship
+    	--    	  14 -> PropertyDefinition
+    	--        15 -> ShapeRepresentation
+	--        0 else
+
+	ApprovalPersonOrganization (me) returns any ApprovalPersonOrganization ;
+	---Purpose : returns Value as a ApprovalPersonOrganization (Null if another type)
+
+	AppliedPersonAndOrganizationAssignment (me) returns any AppliedPersonAndOrganizationAssignment ; 
+	---Purpose : returns Value as a AppliedDateAndPersonAssignment (Null if another type)
+
+    	AppliedOrganizationAssignment (me) returns any AppliedOrganizationAssignment ;
+    	---Purpose : returns Value as a AppliedOrganizationAssignment (Null if another type)
+
+	Effectivity (me) returns any Effectivity ;
+	---Purpose : returns Value as a Effectivity (Null if another type)
+	
+
+end DateItem;

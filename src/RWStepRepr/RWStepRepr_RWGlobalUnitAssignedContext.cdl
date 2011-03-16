@@ -1,0 +1,30 @@
+-- File:        GlobalUnitAssignedContext.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWGlobalUnitAssignedContext from RWStepRepr
+
+	---Purpose : Read & Write Module for GlobalUnitAssignedContext
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     GlobalUnitAssignedContext from StepRepr,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWGlobalUnitAssignedContext;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable GlobalUnitAssignedContext from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : GlobalUnitAssignedContext from StepRepr);
+
+	Share(me; ent : GlobalUnitAssignedContext from StepRepr; iter : in out EntityIterator);
+
+end RWGlobalUnitAssignedContext;

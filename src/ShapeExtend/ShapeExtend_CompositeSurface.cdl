@@ -1,0 +1,305 @@
+-- File:	ShapeExtend_CompositeSurface.cdl
+-- Created:	Tue Apr 27 17:28:27 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov>
+---Copyright:	 Matra Datavision 1999
+
+class CompositeSurface from ShapeExtend inherits Surface from Geom
+
+    ---Purpose: Composite surface is represented by a grid of surfaces
+    --          (patches) connected geometrically. Patches may have different
+    --          parametrisation ranges, but they should be parametrised in
+    --          the same manner so that parameter of each patch (u,v) can be converted
+    --          to global parameter on the whole surface (U,V) with help of linear
+    --          transformation: 
+    --
+    --          for any i,j-th patch
+    --          U = Ui + ( u - uijmin ) * ( Ui+1 - Ui ) / ( uijmax - uijmin )
+    --          V = Vj + ( v - vijmin ) * ( Vj+1 - Vj ) / ( vijmax - vijmin )
+    --
+    --          where
+    --
+    --          [uijmin, uijmax] * [ vijmin, vijmax] - parametric range of i,j-th patch,
+    --
+    --          Ui (i=1,..,Nu+1), Vi (j=1,..,Nv+1) - values defining global 
+    --          parametrisation by U and V (correspond to points between patches and 
+    --          bounds, (Ui,Uj) corresponds to (uijmin,vijmin) on i,j-th patch) and to
+    --          (u(i-1)(j-1)max,v(i-1)(j-1)max) on (i-1),(j-1)-th patch.
+    --
+    --          Geometrical connectivity is expressed via global parameters:
+    --          S[i,j](Ui+1,V) = S[i+1,j](Ui+1,V) for any i, j, V
+    --          S[i,j](U,Vj+1) = S[i,j+1](U,Vj+1) for any i, j, U
+    --          It is checked with Precision::Confusion() by default.
+    --
+    --  NOTE 1: This class is inherited from Geom_Surface in order to
+    --          make it more easy to store and deal with it. However, it should
+    --          not be passed to standard methods dealing with geometry since 
+    --          this type is not known to them.
+    --  NOTE 2: Not all the inherited methods are implemented, and some are 
+    --          implemented not in the full form.
+    
+uses 
+    Pnt2d            from gp,
+    Pnt              from gp,
+    Vec              from gp,
+    Trsf             from gp,
+    Trsf2d           from gp,
+    Surface          from Geom,
+    Curve            from Geom,
+    Array1OfReal     from TColStd,
+    HArray1OfReal    from TColStd,
+    HArray2OfSurface from TColGeom,
+    Shape            from GeomAbs,
+    Parametrisation  from ShapeExtend
+
+is 
+ 
+    Create returns mutable CompositeSurface from ShapeExtend; 
+    	---Purpose: Empty constructor.
+    
+    Create (GridSurf: HArray2OfSurface from TColGeom; 
+            param   : Parametrisation from ShapeExtend = ShapeExtend_Natural) 
+    returns mutable CompositeSurface from ShapeExtend; 
+    	---Purpose: Initializes by a grid of surfaces (calls Init()).
+    
+    Create (GridSurf: HArray2OfSurface from TColGeom; 
+            UJoints, VJoints : Array1OfReal from TColStd) 
+    returns mutable CompositeSurface from ShapeExtend; 
+    	---Purpose: Initializes by a grid of surfaces (calls Init()).
+    
+    Init (me: mutable; GridSurf: HArray2OfSurface from TColGeom; 
+            	       param   : Parametrisation from ShapeExtend = ShapeExtend_Natural) 
+    returns Boolean; 
+       	---Purpose: Initializes by a grid of surfaces.
+       	--          All the Surfaces of the grid must have geometrical 
+        --          connectivity as stated above.
+	--          If geometrical connectivity is not satisfied, method 
+        --          returns False. 
+        --          However, class is initialized even in that case.
+	--
+	--          Last parameter defines how global parametrisation 
+	--          (joint values) will be computed:
+	--          ShapeExtend_Natural: U1 = u11min, Ui+1 = Ui + (ui1max-ui1min), etc.
+	--          ShapeExtend_Uniform: Ui = i-1, Vj = j-1
+	--          ShapeExtend_Unitary: Ui = (i-1)/Nu, Vi = (j-1)/Nv
+
+    Init (me: mutable; GridSurf: HArray2OfSurface from TColGeom; 
+            	       UJoints, VJoints : Array1OfReal from TColStd) 
+    returns Boolean; 
+       	---Purpose: Initializes by a grid of surfaces with given global
+        --          parametrisation defined by UJoints and VJoints arrays,
+        --          each having langth equal to number of patches in corresponding
+        --          direction + 1. Global joint values should be sorted in 
+        --          increasing order.
+       	--          All the Surfaces of the grid must have geometrical 
+        --          connectivity as stated above.
+	--          If geometrical connectivity is not satisfied, method 
+        --          returns False. 
+        --          However, class is initialized even in that case.
+
+    NbUPatches (me) returns Integer;
+        ---Purpose: Returns number of patches in U direction.
+       
+    NbVPatches (me) returns Integer;
+        ---Purpose: Returns number of patches in V direction.
+       
+    Patch (me; i, j: Integer) returns Surface from Geom;
+       	---C++: return const &
+       	---Purpose: Returns one surface patch 
+       
+    Patches (me) returns HArray2OfSurface from TColGeom;
+       	---C++: return const &
+       	---Purpose: Returns grid of surfaces
+       
+    UJointValues (me) returns HArray1OfReal from TColStd;
+       	---Purpose: Returns the array of U values corresponding to joint
+        --          points between patches as well as to start and end points,
+	--          which define global parametrisation of the surface
+
+    VJointValues (me) returns HArray1OfReal from TColStd;
+       	---Purpose: Returns the array of V values corresponding to joint
+        --          points between patches as well as to start and end points,
+	--          which define global parametrisation of the surface
+
+    UJointValue (me; i: Integer) returns Real;
+        ---Purpose: Returns i-th joint value in U direction
+	--          (1-st is global Umin, (NbUPatches()+1)-th is global Umax
+	--          on the composite surface)
+
+    VJointValue (me; j: Integer) returns Real;
+        ---Purpose: Returns j-th joint value in V direction
+	--          (1-st is global Vmin, (NbVPatches()+1)-th is global Vmax
+	--          on the composite surface)
+    
+    SetUJointValues (me: mutable; UJoints: Array1OfReal from TColStd)
+    returns Boolean;
+       	---Purpose: Sets the array of U values corresponding to joint
+        --          points, which define global parametrisation of the surface.
+	--          Number of values in array should be equal to NbUPatches()+1.
+	--          All the values should be sorted in increasing order.
+	--          If this is not satisfied, does nothing and returns False.
+
+    SetVJointValues (me: mutable; VJoints: Array1OfReal from TColStd)
+    returns Boolean;
+       	---Purpose: Sets the array of V values corresponding to joint
+        --          points, which define global parametrisation of the surface
+	--          Number of values in array should be equal to NbVPatches()+1.
+	--          All the values should be sorted in increasing order.
+	--          If this is not satisfied, does nothing and returns False.
+
+    SetUFirstValue (me: mutable; UFirst: Real);
+        ---Purpose: Changes starting value for global U parametrisation (all
+	--          other joint values are shifted accordingly)
+
+    SetVFirstValue (me: mutable; VFirst: Real);
+        ---Purpose: Changes starting value for global V parametrisation (all
+	--          other joint values are shifted accordingly)
+
+    LocateUParameter(me; U: Real) returns Integer;
+    	---Purpose: Returns number of col that contains given (global) parameter
+    
+    LocateVParameter(me; V: Real) returns Integer;
+    	---Purpose: Returns number of row that contains given (global) parameter
+    
+    LocateUVPoint(me; pnt: Pnt2d from gp;
+    	    	      i  : out Integer;
+		      j  : out Integer);
+	---Purpose: Returns number of row and col of surface that contains 
+    	--          given point
+
+    Patch(me; U, V: Real) returns Surface from Geom;
+    	---C++: return const &
+       	---Purpose: Returns one surface patch that contains given (global) parameters
+    
+    Patch(me; pnt: Pnt2d from gp) returns Surface from Geom;
+       	---C++: return const &
+       	---Purpose: Returns one surface patch that contains given point
+    
+    
+    ---Advanced: Work with local parameters on patches
+    
+    ULocalToGlobal (me; i, j: Integer; u: Real) returns Real;
+        ---Purpose: Converts local parameter u on patch i,j to global parameter U
+    
+    VLocalToGlobal (me; i, j: Integer; v: Real) returns Real;
+        ---Purpose: Converts local parameter v on patch i,j to global parameter V
+    
+    LocalToGlobal (me; i, j: Integer; uv: Pnt2d from gp) returns Pnt2d from gp;
+        ---Purpose: Converts local parameters uv on patch i,j to global parameters UV
+    
+    UGlobalToLocal (me; i, j: Integer; U: Real) returns Real;
+        ---Purpose: Converts global parameter U to local parameter u on patch i,j
+    
+    VGlobalToLocal (me; i, j: Integer; V: Real) returns Real;
+        ---Purpose: Converts global parameter V to local parameter v on patch i,j
+    
+    GlobalToLocal (me; i, j: Integer; UV: Pnt2d from gp) returns Pnt2d from gp;
+        ---Purpose: Converts global parameters UV to local parameters uv on patch i,j
+    
+    GlobalToLocalTransformation (me; i, j : Integer; 
+    	    	    	    	     uFact: out Real; Trsf: out Trsf2d from gp )
+    returns Boolean;
+        ---Purpose: Computes transformation operator and uFactor descrinbing affine
+	--          transformation required to convert global parameters on composite
+	--          surface to local parameters on patch (i,j):
+	--          uv = ( uFactor, 1. ) X Trsf * UV;
+	--          NOTE: Thus Trsf contains shift and scale by V, scale by U is stored in uFact.
+	--          Returns True if transformation is not an identity
+    
+    
+    ---Inherited: methods of Geom_Geometry and Geom_Surface
+    
+    Transform (me : mutable; T : Trsf) is redefined;
+        ---Purpose: Applies transformation to all the patches
+
+    Copy (me) returns mutable like me is redefined;
+        ---Purpose: Returns a copy of the surface
+    
+    UReverse (me : mutable) is redefined;
+        ---Purpose: NOT IMPLEMENTED (does nothing)
+
+    UReversedParameter (me; U : Real) returns Real is redefined;
+	---Purpose: Returns U
+
+    VReverse (me : mutable) is redefined;
+        ---Purpose: NOT IMPLEMENTED (does nothing)
+
+    VReversedParameter (me; V : Real) returns Real is redefined;
+	---Purpose: Returns V
+
+    Bounds(me; U1, U2, V1, V2 : out Real) is redefined;
+    	---Purpose: Returns the parametric bounds of grid
+    
+    IsUClosed (me) returns Boolean is redefined;
+        ---Purpose: Returns True if grid is closed in U direction
+	--          (i.e. connected with Precision::Confusion)
+    
+    IsVClosed (me) returns Boolean is redefined;
+        ---Purpose: Returns True if grid is closed in V direction
+	--          (i.e. connected with Precision::Confusion)
+
+    IsUPeriodic (me) returns Boolean is redefined;
+        ---Purpose: Returns False
+
+    IsVPeriodic (me) returns Boolean is redefined;
+        ---Purpose: Returns False
+
+    UIso (me; U : Real) returns mutable Curve is redefined;
+        ---Purpose: NOT IMPLEMENTED (returns Null curve)
+
+    VIso (me; V : Real) returns mutable Curve is redefined;
+        ---Purpose: NOT IMPLEMENTED (returns Null curve)
+
+
+    Continuity (me) returns Shape from GeomAbs is redefined;
+        ---Purpose: returns C0
+
+    IsCNu (me; N : Integer) returns Boolean is redefined;
+        ---Purpose: returns True if N <=0 
+
+    IsCNv (me; N : Integer) returns Boolean is redefined;
+        ---Purpose: returns True if N <=0 
+
+    D0 (me; U, V : Real; P : out Pnt) is redefined;
+    	---Purpose: Computes the point of parameter U,V on the grid.
+    
+    D1 (me; U, V : Real; P : out Pnt; D1U, D1V : out Vec) is redefined;
+    	---Purpose: Computes the point P and the first derivatives in the
+        --          directions U and V at this point.
+    
+    D2 (me; U, V : Real; P : out Pnt; D1U, D1V, D2U, D2V, D2UV : out Vec) is redefined;
+        ---Purpose: Computes the point P, the first and the second derivatives in
+        --          the directions U and V at this point.
+    
+    D3 (me; U, V : Real; P : out Pnt; 
+      D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV: out Vec) is redefined;
+        ---Purpose: Computes the point P, the first,the second and the third 
+        --          derivatives in the directions U and V at this point.
+    
+    DN (me; U, V : Real; Nu, Nv : Integer) returns Vec is redefined;
+        ---Purpose: Computes the derivative of order Nu in the direction U and Nv
+        --          in the direction V at the point P(U, V).
+    
+    Value(me; pnt: Pnt2d from gp) returns Pnt from gp;
+    	 ---Purpose: Computes the point of parameter pnt on the grid.
+    
+    
+    ---Private: internal methods
+    
+    ComputeJointValues (me: mutable; param : Parametrisation from ShapeExtend = ShapeExtend_Natural);
+        ---Purpose: Computes Joint values according to parameter
+	
+    CheckConnectivity (me: mutable; prec: Real) returns Boolean;
+        ---Purpose: Checks geometrical connectivity of the patches, including
+	--          closedness (sets fields muUClosed and myVClosed)
+	
+fields 
+ 
+    myPatches     : HArray2OfSurface from TColGeom; 
+    myUJointValues: HArray1OfReal from TColStd;
+    myVJointValues: HArray1OfReal from TColStd;
+    myUClosed     : Boolean; -- closedness (periodicity) measured with Precision::Confusion()
+    myVClosed     : Boolean;
+
+end;
+    

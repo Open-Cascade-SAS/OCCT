@@ -1,0 +1,35 @@
+// File:	BRepFeat_MakeRevolutionForm.lxx
+// Created:	Fri Oct 17 17:40:24 1997
+// Author:	Olga KOULECHOVA
+//		<opt@cleox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : BRepFeat_MakeLinearForm
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm () {}
+
+
+//=======================================================================
+//function : BRepFeat_MakePrism
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm (const TopoDS_Shape& Sbase,
+							 const TopoDS_Wire& W,
+							 const Handle(Geom_Plane)& P,
+							 const gp_Ax1& Axis,
+							 const Standard_Real H1,
+							 const Standard_Real H2,
+							 const Standard_Integer Fuse,
+							 Standard_Boolean& Sliding)
+					       
+{
+  Init(Sbase, W, P, Axis, H1, H2, Fuse, Sliding);
+}
+
+
+
+

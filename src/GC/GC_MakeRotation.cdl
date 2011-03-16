@@ -1,0 +1,54 @@
+-- File:	MakeRotation.cdl
+-- Created:	Mon Sep 28 11:52:57 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeRotation
+
+from GC
+
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- rotation in 3D space. The result is a
+    -- Geom_Transformation transformation.
+    -- A MakeRotation object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result.
+
+uses Pnt            from gp,
+     Lin            from gp,
+     Ax1            from gp,
+     Dir            from gp,
+     Transformation from Geom,
+     Real           from Standard
+
+is
+
+Create(Line  : Lin from gp      ;
+       Angle : Real  from Standard) returns MakeRotation;
+    --- Purpose: Constructs a rotation through angle Angle about the axis defined by the line Line.
+Create(Axis  : Ax1  from gp      ;
+       Angle : Real from Standard) returns MakeRotation;
+    ---Purpose: Constructs a rotation through angle Angle about the axis defined by the axis Axis.
+Create(Point : Pnt  from gp      ;
+       Direc : Dir  from gp      ; 
+       Angle : Real from Standard) returns MakeRotation;
+    ---Purpose: Constructs a rotation through angle Angle about the axis
+    -- defined by the point Point and the unit vector Direc.
+    
+Value(me) returns Transformation from Geom
+    is static;
+    ---Purpose: Returns the constructed transformation.
+    ---C++: return const&
+  
+Operator(me) returns Transformation from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_Transformation() const;"
+
+fields
+
+    TheRotation : Transformation from Geom;
+
+end MakeRotation;

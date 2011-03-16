@@ -1,0 +1,29 @@
+-- File:	SCRoots.cdl
+-- Created:	Wed Sep 23 14:34:25 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class SCRoots  from IFGraph  inherits StrongComponants
+
+    	---Purpose : determines strong componants in a graph which are Roots
+
+uses Graph
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns SCRoots;
+    ---Purpose : creates with a Graph, and will analyse :
+    --           whole True  : all the contents of the Model
+    --           whole False : sub-parts which will be given later
+
+    Create (subparts : in out StrongComponants);
+    ---Purpose : creates from a StrongComponants which was already computed
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the computation
+
+    	-- --   Iteration : More-Next-etc... gives Roots (either Loop or not)
+
+end SCRoots;

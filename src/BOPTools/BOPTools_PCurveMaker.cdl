@@ -1,0 +1,41 @@
+-- File:	BOPTools_PCurveMaker.cdl
+-- Created:	Wed May 30 09:42:36 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PCurveMaker from BOPTools 
+
+	---Purpose:  
+    	--  Class provides computation p-curves for the edges and theirs  
+        --- split parts  	
+
+uses
+    PPaveFiller from BOPTools, 
+    PaveFiller from BOPTools, 
+    PInterferencePool from BOPTools,
+    PShapesDataStructure from BooleanOperations 
+    
+is   
+    Create (aFiller: PaveFiller from BOPTools)  
+    	returns PCurveMaker from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    Do(me:out);   
+    	---Purpose: 
+    	--- Launch the processor   
+    	---
+    IsDone(me) 
+    	returns Boolean from Standard;  
+    	---Purpose:  
+    	--- Returns TRUE if Ok       
+    	---
+	
+fields 
+    myFiller  : PPaveFiller from BOPTools; 
+    myDS      : PShapesDataStructure from BooleanOperations;  
+    myIsDone  : Boolean   from Standard;   
+    
+end PCurveMaker;

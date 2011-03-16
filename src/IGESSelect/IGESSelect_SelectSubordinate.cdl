@@ -1,0 +1,45 @@
+-- File:	IGESSelect_SelectSubordinate.cdl
+-- Created:	Fri Oct 11 09:30:23 1996
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SelectSubordinate  from IGESSelect  inherits SelectExtract
+
+    ---Purpose : This selections uses Subordinate Status as sort criterium
+    --           It is an integer number which can be :
+    --           0 Independant
+    --           1 Physically Dependant
+    --           2 Logically Dependant
+    --           3 Both (recorded)
+    --           + to sort :
+    --           4 : 1 or 3  ->  at least Physically
+    --           5 : 2 or 3  ->  at least Logically
+    --           6 : 1 or 2 or 3 -> any kind of dependance
+    --             (corresponds to 0 reversed)
+
+uses AsciiString from TCollection, Transient, InterfaceModel
+ 
+is
+ 
+    Create (status : Integer) returns mutable SelectSubordinate;
+    ---Purpose : Creates a SelectSubordinate with a status to be sorted
+
+    Status (me) returns Integer;
+    ---Purpose : Returns the status used for sorting
+ 
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+        returns Boolean;
+    ---Purpose : Returns True if <ent> is an IGES Entity with Subordinate
+    --           Status matching the criterium
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Selection criterium : "IGES Entity, Independant"
+    --           etc...
+
+fields
+
+    thestatus : Integer;
+
+end SelectSubordinate;

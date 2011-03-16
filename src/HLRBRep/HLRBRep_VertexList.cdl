@@ -1,0 +1,72 @@
+-- File:	HLRBRep_VertexList.cdl
+-- Created:	Thu Apr 17 20:04:00 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class VertexList from HLRBRep
+
+uses
+	Orientation                    from TopAbs,
+        Intersection                   from HLRAlgo,
+        Interference                   from HLRAlgo,
+	ListIteratorOfInterferenceList from HLRAlgo,
+	EdgeInterferenceTool           from HLRBRep 
+is
+
+    Create(T : EdgeInterferenceTool from HLRBRep;
+           I : ListIteratorOfInterferenceList from HLRAlgo)
+    returns VertexList from HLRBRep;
+
+    IsPeriodic(me) returns Boolean from Standard
+        ---Purpose: Returns True when the curve is periodic.
+    is static;
+    
+    More(me) returns Boolean from Standard
+        ---Purpose: Returns True when there are more vertices.
+    is static;
+    
+    Next(me : in out)
+        ---Purpose: Proceeds to the next vertex.
+    is static;
+    
+    Current(me) returns Intersection from HLRAlgo
+        ---Purpose: Returns the current vertex
+        --          
+	---C++: return const &
+    is static;
+    
+    IsBoundary(me) returns Boolean from Standard
+        ---Purpose: Returns True  if the current  vertex  is is on the
+        --          boundary of the edge.
+    is static;
+    
+    IsInterference(me) returns Boolean from Standard
+        ---Purpose: Returns  True   if   the current    vertex  is  an
+        --          interference. 
+    is static;
+    
+    Orientation(me) returns Orientation from TopAbs
+        ---Purpose: Returns the  orientation of the  current vertex if
+        --          it is on the boundary of the edge.
+    is static;
+    
+    Transition(me) returns Orientation from TopAbs
+        ---Purpose: Returns  the transition  of the  current vertex if
+        --          it is an interference.
+    is static;
+    
+    BoundaryTransition(me) returns Orientation from TopAbs
+        ---Purpose: Returns  the  transition  of  the  current  vertex
+        --          relative to the boundary if it is an interference.
+    is static;
+    
+fields
+	
+    myIterator   : ListIteratorOfInterferenceList from HLRAlgo;
+    myTool       : EdgeInterferenceTool           from HLRBRep;
+    fromEdge     : Boolean                        from Standard;
+    fromInterf   : Boolean                        from Standard;
+
+end VertexList;
+    

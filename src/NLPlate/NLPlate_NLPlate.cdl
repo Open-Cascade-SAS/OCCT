@@ -1,0 +1,75 @@
+-- File:	NLPlate_NLPlate.cdl
+-- Created:	Thu Apr  9 15:58:32 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+class NLPlate from NLPlate
+---Purpose: 
+--
+--       
+
+uses 
+     XY from gp,
+     XYZ from gp, 
+     StackOfPlate  from  NLPlate,
+     HGPPConstraint  from  NLPlate,
+     SequenceOfHGPPConstraint from  NLPlate, 
+     Shape   from GeomAbs,
+     Surface  from  Geom
+is
+
+    Create(InitialSurface  :  Surface  from  Geom) returns NLPlate;
+-- 
+-- Geometric Constraints
+-- 
+    Load (me : in out;  GConst : HGPPConstraint);
+
+    Solve(me : in out; ord : Integer = 2;  InitialConsraintOrder  :  Integer=1);
+
+    Solve2(me : in out; ord : Integer = 2;  InitialConsraintOrder  :  Integer=1);
+
+    IncrementalSolve(me : in out; ord : Integer = 2;  InitialConsraintOrder  :  Integer=1; 
+    	NbIncrements  :  Integer  =  4;  UVSliding  :  Boolean  =  Standard_False);
+
+    IsDone(me)
+        ---Purpose: returns True if all has been correctly done.
+    returns Boolean;
+
+    destroy(me : in out);
+     ---C++: alias ~
+ 
+    
+    Init(me: in out );
+    	---Purpose: reset the Plate in the initial state
+    	--           ( same as after Create((Surface))
+    
+    Evaluate(me ; point2d : XY from gp )  
+    returns XYZ from gp ; 
+    
+    EvaluateDerivative(me; point2d: XY  from gp;  
+                       iu,iv  : Integer)  
+    returns XYZ from gp ; 
+         
+    Continuity(me)  returns  Integer;
+
+        -- private methods :
+    Iterate(me : in out;  
+        ConstraintOrder,  ResolutionOrder  :Integer; 
+    	IncrementalLoading  : Real  =  1.0) returns Boolean
+    is  private;  
+     
+    ConstraintsSliding(me : in out;  NbIterations  :  Integer  =  3);
+    
+    MaxActiveConstraintOrder(me) returns Integer;
+    
+    
+
+fields 
+    myInitialSurface  :  Surface  from  Geom;
+    myHGPPConstraints : SequenceOfHGPPConstraint; 
+    mySOP  :  StackOfPlate;
+    OK : Boolean;
+end;
+
+

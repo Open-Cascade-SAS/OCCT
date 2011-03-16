@@ -1,0 +1,344 @@
+-- File:	TopOpeBRepTool_TOOL.cdl
+-- Created:	Thu Nov 26 10:47:25 1998
+-- Author:	Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class TOOL from TopOpeBRepTool
+uses
+    Pnt2d from gp,
+    Dir2d from gp,
+    Vec2d from gp,
+    Pnt from gp,
+    Vec from gp,
+    Dir from gp,
+    State from TopAbs,
+    Curve from Geom2d,
+    Shape from TopoDS,
+    Vertex from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    Curve from BRepAdaptor,
+    Array1OfShape from TopTools,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    C2DF from TopOpeBRepTool
+is
+
+    -- 
+    -- orientation in subshapes :
+    -- 
+    
+    OriinSor(myclass; sub, S : Shape from TopoDS; checkclo : Boolean = Standard_False)
+    returns Integer;
+    -- returns 0 if <sub> is not subshape of <S>
+    -- returns 1 if <sub> is FORWARD in <S>
+    --         2             REVERSED
+    --         3             INTERNAL
+    --         4             EXTERNAL
+    -- returns 5             CLOSING shape for <S>, if (checkclo=true)
+    OriinSorclosed(myclass; sub, S : Shape from TopoDS)
+    returns Integer;
+    -- returns 0 if <sub> is not subshape of <S>
+    -- returns 1 if <sub> is FORWARD in <S>
+    --         2             REVERSED
+
+    -- 
+    -- is closing shape :
+    -- 
+
+    ClosedE(myclass; E : Edge from TopoDS; vclo : out Vertex from TopoDS)	
+    returns Boolean;
+
+    ClosedS(myclass; F : Face from TopoDS)	
+    returns Boolean;
+
+
+    IsClosingE(myclass; E : Edge from TopoDS; F : Face from TopoDS)
+    returns Boolean;
+
+    IsClosingE(myclass; E : Edge from TopoDS; W : Shape from TopoDS; F : Face from TopoDS)
+    returns Boolean;
+
+    --
+    -- parameters on edge / face :
+    --  
+
+    Vertices(myclass; E : Edge from TopoDS; Vces : out Array1OfShape from TopTools);
+    
+    Vertex(myclass; Iv : Integer; E : Edge from TopoDS)
+    returns Vertex from TopoDS;
+
+    ParE(myclass; Iv : Integer; E : Edge from TopoDS)
+    returns Real;
+
+    OnBoundary(myclass; par : Real; E : Edge from TopoDS)
+    returns Integer;
+    -- returns 0 : if par is not in [first,last] - <e>'s parameter range
+    --         1 :           on first par
+    --         2 :           on last par.
+    --         3 :           in [first,last] range
+    --         5 :           on first/ last and <e> is closed.
+
+    UVF(myclass; par : Real; C2DF : C2DF from TopOpeBRepTool)
+    returns Pnt2d from gp;
+
+    ParISO(myclass; p2d : Pnt2d from gp; e : Edge from TopoDS; f : Face from TopoDS;
+    	   pare : out Real)
+    returns Boolean;
+    -- <par> = parameter of Pt(<p2d>,<f>) on Iso(<e>,<f>)
+    -- returns false if 2drep(<e>,<f>) is null or is not iso.
+
+    ParE2d(myclass; p2d : Pnt2d from gp; e : Edge from TopoDS; f : Face from TopoDS;
+    	   par,dist : out Real)
+    returns Boolean;
+    -- <par> = parameter of projected point pproj2d of p2d on 2drep(e,f)
+    -- avoid projections if 2drep(e,f) is uviso.
+    -- returns false if the projection fails.
+    
+    Getduv(myclass; f : Face from TopoDS; uv : Pnt2d from gp;
+    	   dir : Vec from gp; factor : Real; duv : out Dir2d from gp)
+    returns Boolean;
+    -- For <f> on quadratic surface. <dir> is normal to <f> at Pt(<f>,<uv>),
+    -- Pt( <uv>)+factor*<dir> ) is Pt( <uv>+factoruv*<duv> )
+    
+    uvApp(myclass; f : Face from TopoDS; e : Edge from TopoDS; par,eps : Real;
+    	  uvapp : out Pnt2d from gp)
+    returns Boolean;
+    -- uvapp = uv+eps*dxx, (dxx=duvmax in direction dxx2d, uv=pt2d(par,e))
+
+    --     
+    -- boundaries :
+    --     
+	 
+    TolUV(myclass; F : Face from TopoDS; tol3d : Real) 
+    returns Real;
+
+    TolP(myclass; E : Edge from TopoDS; F : Face from TopoDS)
+    returns Real;
+	 
+    minDUV(myclass; F : Face from TopoDS)
+    returns Real;
+
+    outUVbounds(myclass; uv : Pnt2d from gp; F : Face from TopoDS)
+    returns Boolean; 
+
+    stuvF(myclass; uv : Pnt2d from gp; F : Face from TopoDS;
+    	  onU,onV : out Integer); 	    	 
+    -- onX = -1 : if x < xf    	 
+    -- onX = -2 : if x > xl  	 
+    -- onX =  1 : if x = xf (a tolx de la face)    	 
+    -- onX =  2 : if x = xl (a tolx de la face)  
+    -- onX =  0 : RAS
+
+    --
+    -- tangents :
+    -- 
+
+    TggeomE(myclass; par : Real; BC : Curve from BRepAdaptor; Tg : out Vec from gp)    
+    returns Boolean;
+
+    TggeomE(myclass; par : Real; E : Edge from TopoDS; Tg : out Vec from gp)    
+    returns Boolean;
+    -- Computes tangent vector to <E> at <par>, 
+    -- if      <E> is degenerated returns null vector
+    -- else if <par> is boundary of <E> bspline, approximate vector
+    --
+    -- returns true if the compute succeeds.
+
+    TgINSIDE(myclass; v : Vertex from TopoDS; E : Edge from TopoDS; 
+       	     Tg : out Vec from gp; OvinE : out Integer)    
+    returns Boolean;
+    -- Computes tangent vector to <E> at <v>, oriented INSIDE 1d<E>,
+    -- if <OvinE> is CLOSING <Tg> is tg(vFORWARD,<E>)
+
+    Tg2d(myclass; iv : Integer; E : Edge from TopoDS;
+    	 C2DF : C2DF from TopOpeBRepTool)
+    returns Vec2d from gp;
+    -- Computes tangent vector at bound <iv>
+    --  ex : E is FORWARD, iv = 1 (vertex FORWARD in EFOR) -> tggeom2d(v,E)
+    --            REVERSED,iv = 1 (vertex REVERSED in EFOR)-> -tggeom2d(v,E)
+
+    Tg2dApp(myclass; iv : Integer; E : Edge from TopoDS;
+    	    C2DF : C2DF from TopOpeBRepTool; factor : Real)
+    returns Vec2d from gp;
+    --  Approximate tangent vector near  bound   <iv> of <C2DF>.
+    --  If <factor> is  null computes tangent vector at  bound
+    -- <iv> (iv=1..2)
+
+    tryTg2dApp(myclass; iv : Integer; E : Edge from TopoDS;
+    	       C2DF : C2DF from TopOpeBRepTool; factor : Real)
+    returns Vec2d from gp;
+    -- Approximates tangent vector only is <C2DF> gives quadratic pcurve.
+
+
+    --
+    -- normals :
+    -- 
+
+    XX(myclass; uv : Pnt2d from gp; f : Face from TopoDS; 
+       par : Real; e : Edge from TopoDS;
+       xx : out Dir from gp)
+    returns Boolean;
+
+    Nt(myclass; uv : Pnt2d from gp; f : Face from TopoDS; normt : out Dir from gp)
+    returns Boolean;
+
+    NggeomF(myclass; uv : Pnt2d from gp; F : Face from TopoDS;
+    	    ng : out Vec from gp)
+    returns Boolean;
+
+    NgApp(myclass; par : Real; E : Edge from TopoDS; F : Face from TopoDS; tola : Real;
+    	  ngApp : out Dir from gp)
+    returns Boolean;
+    -- Approximates geometric normal <ngApp>  to <F> at point(par,E), 
+    -- purpose : !( ng.IsEqual(ngApp, tola) )
+    
+    tryNgApp(myclass; par : Real; E : Edge from TopoDS; F : Face from TopoDS; tola : Real;
+    	     ng : out Dir from gp)	 
+    returns Boolean;   
+    -- if ::NgApp fails, returns ng(par,E,F)
+
+    --
+    -- orientations of subshapes :
+    -- 
+
+    tryOriEinF(myclass; par : Real; E : Edge from TopoDS; F : Face from TopoDS)
+    returns Integer;
+    -- prequesitory : <E> has 2d rep on <F>
+    -- purpose : the compute of orientation(<E>, <F>)
+    --           if <E> is not edge of <F>, uses its pcurve and <par>      
+    -- returns 0 if <sub> is not subshape of <S>
+    -- returns 1 if <sub> is FORWARD in <S>
+    --         2             REVERSED
+    --         3             INTERNAL
+    --         4             EXTERNAL
+    -- returns 5             CLOSING shape for <S>, if (checkclo=true)
+
+    --
+    -- curvatures.. :     
+    --      
+
+    IsQuad(myclass; E : Edge from TopoDS)
+    returns Boolean;
+    -- returns true if <E>'s geometry is quadratic.
+	    	
+    IsQuad(myclass; F : Face from TopoDS)
+    returns Boolean;
+    -- returns true if <E>'s geometry is quadratic.    	
+
+    CurvE(myclass; E : Edge from TopoDS; par : Real; tg0 : Dir from gp; Curv : out Real)	
+    returns Boolean;
+    -- compute for <Curv> = curvature of <E> in the plane normal to Pt(par,E)
+    --                      with normal direction <tg0>
+    -- NYI                     
+	
+    CurvF(myclass; F : Face from TopoDS; uv : Pnt2d from gp; tg0 : Dir from gp; 
+    	  Curv : out Real; direct : out Boolean)	
+    returns Boolean;
+    -- compute for <Curv> = curvature of intersection curve 
+    -- 	                    (<F>,plane normal to Pt(par,E) with normal direction <tg0>)
+    -- NYI 
+	
+    -- uviso
+    -- 
+    UVISO(myclass; PC : Curve from Geom2d;
+    	  isou,isov : out Boolean; d2d : out Dir2d from gp; o2d : out Pnt2d from gp)
+    returns Boolean;
+    UVISO(myclass; C2DF : C2DF from TopOpeBRepTool; 
+    	  isou,isov : out Boolean; d2d : out Dir2d from gp; o2d : out Pnt2d from gp)
+    returns Boolean;	
+    UVISO(myclass; E : Edge from TopoDS; F : Face from TopoDS;
+    	  isou,isov : out Boolean; d2d : out Dir2d from gp; o2d : out Pnt2d from gp)
+    returns Boolean;	
+	
+    -- closing	
+    -- 
+    IsonCLO(myclass; PC : Curve from Geom2d;
+    	    onU : Boolean; xfirst,xperiod,xtol : Real)
+    returns Boolean;
+    IsonCLO(myclass; C2DF : C2DF from TopOpeBRepTool; 
+    	    onU : Boolean; xfirst,xperiod,xtol : Real)
+    returns Boolean;
+
+    -- translation
+    -- 
+    TrslUV(myclass; t2d : Vec2d from gp; C2DF : in out C2DF from TopOpeBRepTool);
+    TrslUVModifE(myclass; t2d : Vec2d from gp; F : Face from TopoDS; E : in out Edge from TopoDS)
+    returns Boolean;
+
+
+    -- matter angles :
+    -- 
+    Matter(myclass; d1,d2,ref : Vec from gp) 
+    returns Real; 
+    -- prequesitory : e1,e2 are edges connexed by vertex v, oriented FORWARD
+    --                on the same face.
+    --                v is oriented FORWARD in e1 and REVERSED in e2
+    --                d1 = tggeom(v,e1), d2 = tggeom(v,e2)
+    -- return the 2d angle matter described between d1 and d2 (in range [0.2PI])
+    
+    Matter(myclass; d1,d2 : Vec2d from gp) 
+    returns Real; 
+
+    Matter(myclass; xx1,nt1, xx2,nt2 : Dir from gp; tola : Real; Ang : out Real)
+    returns Boolean;
+    -- Give us faces f1,f2 sharing edge e, pt = point on e 
+    -- xxi : tangent to face fi at pt oriented INSIDE 2d(fi)
+    --       normal to tg(pt,e)
+    -- nti : topological normal to fi at pt.
+    -- 
+    -- If [ 3d(f1,f2) is smaller than 3d(fi), i=1..2 ]
+    --   Ang = the 3d angle of matter described between f1 and f2
+    -- Elsewhere, returns false  
+
+    Matter(myclass; f1,f2 : Face from TopoDS; 
+    	   e : Edge from TopoDS; pare : Real;
+    	   tola : Real; Ang : out Real)
+    returns Boolean;
+    
+    MatterKPtg(myclass; f1,f2 : Face from TopoDS; e : Edge from TopoDS;
+    	       Ang : out Real)
+    returns Boolean;
+    -- <f1> and <f2> are tangent on edge <e>, compute the matter angle 
+    -- between the 2 faces (0. or 2PI) 
+
+    --
+    -- general
+    --     
+
+    Getstp3dF(myclass; p : Pnt from gp; f : Face from TopoDS; 
+    	      uv : out Pnt2d from gp; st : out State from TopAbs)
+    returns Boolean;
+    -- expensive : uses projections
+
+
+    SplitE(myclass; Eanc : Edge from TopoDS; Splits : out ListOfShape from TopTools)
+    returns Boolean;
+    -- Splits edge <Eanc> on its INTERNAL vertices if any. Returns true if split succeeds.	    
+	    
+    MkShell(myclass; lF : ListOfShape from TopTools; She : out Shape from TopoDS);	    
+
+    Remove(myclass; loS : in out ListOfShape from TopTools; 
+           toremove : Shape from TopoDS)
+    returns Boolean;
+    -- Removes all shapes equal to <toremove> from list <loS>
+    -- returns true if suceeds.
+    
+    WireToFace(myclass; Fref : Face from TopoDS; 
+               mapWlow : DataMapOfShapeListOfShape from TopTools;
+    	       lFs : out ListOfShape from TopTools)
+    returns Boolean;	
+    -- <mapWlow> = {(W,low)}
+    -- Builds up <lFs> = {a face built on <Fref> with bounds W,low}  
+
+    EdgeONFace(myclass; par : Real; ed : Edge from TopoDS; 
+    	       uv : Pnt2d from gp; fa : Face from TopoDS;
+    	       isonfa : out Boolean)
+    returns Boolean;
+    -- !!! pas encore fini xpu100299
+    -- prequesitory : Pnt(<par>, <ed>) = Pnt(<uv>,<fa>)
+    -- <isonfa> is true if <ed> is IN <fa>'s geometry.
+    -- returns true if <isonfa>'s compute succeds.
+    
+end TOOL;

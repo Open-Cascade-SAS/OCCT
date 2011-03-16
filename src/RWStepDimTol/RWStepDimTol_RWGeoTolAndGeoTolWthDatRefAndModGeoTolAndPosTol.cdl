@@ -1,0 +1,32 @@
+-- File:	RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.cdl
+-- Created:	Fri Aug 22 12:42:57 2003
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+class RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from RWStepDimTol
+
+	---Purpose : Read & Write Module for ReprItemAndLengthMeasureWithUni
+
+uses
+    Check from Interface,
+    StepReaderData from StepData,
+    StepWriter from StepData,
+    GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from StepDimTol,
+    EntityIterator from Interface
+
+is
+
+    Create returns RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
+
+    ReadStep (me; data : StepReaderData; num : Integer; ach : in out Check;
+                  ent : mutable GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from StepDimTol);
+
+    WriteStep (me; SW : in out StepWriter;
+                   ent : GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from StepDimTol);
+
+    Share(me; ent : GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from StepDimTol;
+              iter : in out EntityIterator);
+
+
+end RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;

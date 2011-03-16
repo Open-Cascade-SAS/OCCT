@@ -1,0 +1,26 @@
+-- File:	SWDRAW_ShapeFix.cdl
+-- Created:	Tue Mar  9 15:26:21 1999
+-- Author:	data exchange team
+--		<det@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeFix from SWDRAW
+
+	---Purpose: Contains commands to activate package ShapeFix
+	--          List of DRAW commands and corresponding functionalities:
+	--          edgesameparam - ShapeFix::SameParameter
+	--          settolerance  - ShapeFix_ShapeTolerance
+	--          stwire        - ShapeFix_Wire
+	--          reface        - ShapeFix_Face
+	--          repcurve      - ShapeFix_PCurves
+
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeFix
+
+end ShapeFix;

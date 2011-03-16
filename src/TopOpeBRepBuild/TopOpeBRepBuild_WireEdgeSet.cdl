@@ -1,0 +1,91 @@
+-- File:	TopOpeBRepBuild_WireEdgeSet.cdl
+-- Created:	Wed Jun 16 11:52:45 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class WireEdgeSet from TopOpeBRepBuild inherits ShapeSet from TopOpeBRepBuild
+
+---Purpose: a bound is a wire, a boundelement is an edge.
+-- The ShapeSet stores :
+--  - a list of wire (bounds),
+--  - a list of edge (boundelements) to start reconstructions,
+--  - a map of vertex giving the list of edge incident to a vertex.
+
+uses
+
+    Orientation from TopAbs,
+    Shape from TopoDS,
+    Face from TopoDS,
+    Edge from TopoDS,
+    ListOfShape from TopTools,
+    Pnt2d from gp,
+    Vec2d from gp,
+    AsciiString from TCollection    
+    
+is
+
+    Create(F:Shape;Addr:Address from Standard = NULL) 
+    returns WireEdgeSet from TopOpeBRepBuild;
+    ---Purpose: Creates a WireEdgeSet to build edges connected by vertices
+    -- on face F. Edges of the WireEdgeSet must have a representation
+    -- on surface of face F.
+
+    Face(me) returns Face;
+    ---Purpose: value of field myFace
+    ---C++: return const &
+
+    AddShape(me:in out;S:Shape) is redefined;
+    AddStartElement(me:in out;S:Shape) is redefined;
+    AddElement(me:in out;S:Shape) is redefined;
+
+    InitNeighbours(me:in out;E:Shape) is redefined;
+    FindNeighbours(me:in out) is redefined;
+    ---Purpose:
+    -- Build the list of neighbour edges of edge myCurrentShape
+    -- Initialize iterator of neighbour edges to edge myCurrentShape
+    MakeNeighboursList(me: in out;E,V:Shape) returns ListOfShape from TopTools is redefined;
+    ---C++: return const &
+    HasConnexStartElement(me) returns Boolean; -- desactivated
+
+    -- private
+    VertexConnectsEdges(me;V,E1,E2:Shape;O1,O2:out Orientation from TopAbs)
+    returns Boolean is private;
+    ---Purpose: 
+    -- Indicates whether vertex V is a good connexity vertex between
+    -- edges E1 and E2.
+    -- i.e, returns True if V is shared by E1 and E2 and if V has different 
+    -- orientations on E1 and E2.
+    -- If V is shared by E1 and E2, returns the orientation of V on E1 and E2
+
+    VertexConnectsEdgesClosing(me;V,E1,E2:Shape) returns Boolean is private;
+    NbClosingShapes(me;L:ListOfShape from TopTools) returns Integer is private;
+    LocalD1(me;F,E,V:Shape;p2:out Pnt2d from gp;v2:out Vec2d from gp) is private;
+    IsClosed(me;E:Shape) returns Boolean is private;
+    ---Purpose: indicates if the edge <E> is a closing edge of myFace
+    IsUClosed(me;E:Shape) returns Boolean is private;
+    ---Purpose: indicates if the edge <E> is a closing edge on U of myFace
+    IsVClosed(me;E:Shape) returns Boolean is private;
+    ---Purpose: indicates if the edge <E> is a closing edge on V of myFace
+    IsUVISO(myclass;E:Edge;F:Face;uiso,viso:out Boolean);
+
+    -- debug
+    SNameVEE(me;V,E1,E2:Shape) returns AsciiString from TCollection is private;
+    SNameVEL(me;V,E:Shape;L:ListOfShape) returns AsciiString from TCollection is private;
+
+    DumpSS(me:in out) is redefined;
+    SName(me;S:Shape from TopoDS;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SName(me;S:ListOfShape from TopTools;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SNameori(me;S:Shape;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SNameori(me;S:ListOfShape from TopTools;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    
+fields
+
+    myFace:Face from TopoDS;
+    myDEBVertexIndex:Integer;
+    
+end WireEdgeSet from TopOpeBRepBuild;

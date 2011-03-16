@@ -1,0 +1,76 @@
+-- File:	TDataXtd_Point.cdl
+-- Created:	Mon Apr  6 18:26:21 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008 
+
+class Point from TDataXtd inherits Attribute from TDF
+
+	---Purpose: 
+    	-- The basis to define a point attribute.
+    	-- The topological attribute must contain a vertex.
+    	-- You use this class to create reference points in a design.
+	--          
+	--  Warning:  Use TDataXtd_Geometry  attribute  to retrieve the
+	--          gp_Pnt of the Point attribute
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Pnt             from gp,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is    
+
+
+    ---Purpose: class methods
+    --          =============
+      
+    GetID(myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;   
+    	---Purpose:
+    	-- Returns the GUID for point attributes.
+
+    Set (myclass ; label : Label from TDF) 
+    	---Purpose: 
+    	-- Sets the label Label as a point attribute.
+    	-- If no object is found, a point attribute is created.
+    returns Point from TDataXtd;      
+
+    Set (myclass ; label : Label from TDF; P : Pnt from gp)
+    	---Purpose: 
+    	-- Sets the label Label as a point attribute containing the point P.
+    	-- If no object is found, a point attribute is created.
+    returns Point from TDataXtd;    
+
+    ---Purpose: Point methods
+    --          =============    
+
+    Create
+    returns mutable Point from TDataXtd;  
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+
+    
+    ID (me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);  
+
+    Dump (me; anOS : in out OStream from Standard) 
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+end Point;
+

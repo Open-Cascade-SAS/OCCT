@@ -1,0 +1,31 @@
+-- File:	IGESSelect_SelectFromDrawing.cdl
+-- Created:	Wed Jun  1 15:42:30 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectFromDrawing  from IGESSelect  inherits SelectDeduct
+
+    ---Purpose : This selection gets in all the model, the entities which are
+    --           attached to the drawing(s) given as input. This includes :
+    --           - Drawing Frame (Annotations directky referenced by Drawings)
+    --           - Entities attached to the single Views referenced by Drawings
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+raises InterfaceError
+
+is
+
+    Create returns mutable SelectFromDrawing;
+    ---Purpose : Creates a SelectFromDrawing
+
+    RootResult (me; G : Graph) returns EntityIterator  raises InterfaceError;
+    ---Purpose : Selects the Entities which are attached to the Drawing(s)
+    --           present in the Input
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the label, with is "Entities attached to Drawing"
+
+end SelectFromDrawing;

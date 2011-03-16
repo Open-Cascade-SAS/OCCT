@@ -1,0 +1,50 @@
+inline void Prs2d_Diameter::CalcTxtPos(const Standard_Boolean theFromAbs) {
+
+ if (!theFromAbs) { 
+  
+  gp_Pnt2d thePnt1(myAppX1,myAppY1), thePnt2(myAppX2,myAppY2);
+
+  if (myInside) 
+  {
+    thePnt1.SetCoord(myX1,myY1);
+    thePnt2.SetCoord(myX2,myY2);
+  }
+    
+  gp_Vec2d VX( 1., 0. ), theVecI,theVecJ,theVec(thePnt2,thePnt1);
+  Standard_Real theDist=thePnt1.Distance(thePnt2);
+  
+  theVec.Normalized();
+  
+  theVecI = theVec.Reversed()*myTextPosH/theDist;
+  theVecJ = theVec.Reversed().Rotated(PI/2)*myTextPosV/theDist;
+  
+  theVec.Rotate(-myTextAngle);
+  
+  thePnt2.Translate(theVecI);
+  thePnt2.Translate(theVecJ);
+  thePnt1.Translate(theVecI);
+  thePnt1.Translate(theVecJ);
+  
+  Standard_Real theTxtAngle = VX.Angle( theVec );
+  gp_Pnt2d pntText;
+  
+  
+  if ( theTxtAngle >= 0 && theTxtAngle <= PI/2 )
+        pntText = thePnt2.Translated(theVec/theDist);
+  else if ( theTxtAngle > PI/2 && theTxtAngle <= PI ) {
+        pntText = thePnt1.Translated(theVec.Reversed()/theDist) ;
+	theTxtAngle = VX.Angle( theVec.Reversed() );
+  } else if ( theTxtAngle >= -PI/2 && theTxtAngle < 0 )  
+        pntText = thePnt2.Translated(theVec/theDist);
+  else if ( theTxtAngle >= -PI && theTxtAngle < -PI/2 ) {
+        pntText = thePnt1.Translated(theVec.Reversed()/theDist);
+        theTxtAngle = VX.Angle( theVec.Reversed() );
+  }
+  
+  myAbsAngle=theTxtAngle;
+  myAbsX=pntText.X();
+  myAbsY=pntText.Y();
+  
+
+ } 
+}

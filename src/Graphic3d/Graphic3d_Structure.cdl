@@ -1,0 +1,1107 @@
+-- File:	Graphic3d_Structure.cdl
+-- Created:	Mercredi 12 Juin 1991
+-- Author:	NW,JPB,CAL
+--              11/97 ; CAL : gestion du GraphicClear
+--              11/97 ; CAL : ajout pointer StructPtr
+--              11/97 ; CAL : amelioration de l'effacement SetManager
+--              01/98 ; CAL : gestion du HLRValidation
+--              05/98 ; CAL : gestion du GraphicConnect et Disconnect
+--		02/00 ; GG  : Made Transform() methode not mutable.
+--		31/05/01 ; GG : Add ResetDisplayPriority() method
+--
+---Copyright:	MatraDatavision 1998
+--
+
+class Structure from Graphic3d inherits TShared
+
+	---Version:
+
+	---Purpose: This class allows the definition a graphic object.
+	--	    This graphic structure can be displayed,
+	--	    erased, or highlighted.
+	--	    This graphic structure can be connected with
+	--	    another graphic structure.
+	--  Keywords: Structure, StructureManager, Display, Erase, Highlight,
+	--	     UnHighlight, Visible, Priority, Selectable, Visible,
+	--	     Visual, Connection, Ancestors, Descendants, Transformation
+
+	---Warning:
+	---References:
+
+uses
+
+	Array2OfReal		from TColStd,
+	SequenceOfAddress	from TColStd,
+
+	Color			from Quantity,
+
+	GenId			from Aspect,
+	TypeOfHighlightMethod	from Aspect,
+
+	DataStructureManager	from Graphic3d,
+	AspectFillArea3d	from Graphic3d,
+	AspectLine3d		from Graphic3d,
+	AspectMarker3d		from Graphic3d,
+	AspectText3d		from Graphic3d,
+	CStructure		from Graphic3d,
+	GraphicDriver		from Graphic3d,
+	Group			from Graphic3d,
+	SequenceOfGroup		from Graphic3d,
+	HSequenceOfGroup	from Graphic3d,
+	SequenceOfStructure	from Graphic3d,
+	HSequenceOfStructure	from Graphic3d,
+	SetOfGroup		from Graphic3d,
+	HSetOfGroup		from Graphic3d,
+	MapOfStructure		from Graphic3d,
+	Plotter			from Graphic3d,
+	StructureManager	from Graphic3d,
+	TypeOfComposition	from Graphic3d,
+	TypeOfConnection	from Graphic3d,
+	TypeOfPrimitive		from Graphic3d,
+	TypeOfStructure		from Graphic3d,
+	Vector			from Graphic3d,
+	VertexNC		from Graphic3d,
+	Vertex			from Graphic3d,
+        TransModeFlags          from Graphic3d, 
+	Pnt                     from gp
+
+raises
+
+	PriorityDefinitionError		from Graphic3d,
+	StructureDefinitionError	from Graphic3d,
+	TransformError			from Graphic3d
+
+is
+
+	------------------------
+	-- Category: Constructor
+	------------------------
+
+	Create ( AManager	: StructureManager from Graphic3d )
+		returns mutable Structure from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a graphic object in the manager <AManager>.
+	--	    It will appear in all the views of the visualiser.
+	--  Warning: The default values AspectLine, AspectFillArea,
+	--	    AspectText and AspectMarker are NOT applied to the
+	--	    structure.
+	--	    The structure is not displayed when it is created.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	--------------------------------------------------------
+	-- Summary of Display Priorities                      --
+	--                                                    --
+	-- Structure display priorities  control the order in --
+	-- which structures are redrawn.                      --
+	--                                                    --
+	-- When  you  display  a structure, you  specify  its --
+	-- priority.  The  lower  the  value, the  lower  the --
+	-- display priority. When the display is regenerated, --
+	-- the structures  with the lowest priority are drawn --
+	-- first.                                             --
+	-- For  structures  with the  same display  priority, --
+	-- the  order in which they were displayed determines --
+	-- determines the drawing order.                      --
+	--                                                    --
+	-- CAS.CADE supports 11 structure display priorities, --
+	-- 0 to 10.                                           --
+	--------------------------------------------------------
+
+	Clear ( me		: mutable;
+		WithDestruction	: Boolean from Standard = Standard_True )
+		is virtual;
+	---Level: Public
+	---Purpose: if WithDestruction == Standard_True then
+	--		suppress all the groups of primitives in the structure.
+	--	        and it is mandatory to create a new group in <me>.
+	--	    if WithDestruction == Standard_False then
+	--		clears all the groups of primitives in the structure.
+	--	        and all the groups are conserved and empty.
+	--	    They will be erased at the next screen update.
+	--	    The structure itself is conserved.
+	--	    The transformation and the attributes of <me> are conserved.
+	--	    The childs of <me> are conserved.
+	---Category: Methods to modify the class definition
+
+	Destroy ( me	: mutable )
+		is virtual;
+	---Level: Public
+	---Purpose: Suppresses the structure <me>.
+	--	    It will be erased at the next screen update.
+	---Category: Methods to modify the class definition
+	---C++: alias ~
+
+	Display ( me	: mutable )
+		is virtual;
+	---Level: Public
+	---Purpose: Displays the structure <me> in all the views of
+	--	    the visualiser.
+	---Category: Methods to modify the class definition
+
+	Display ( me		: mutable;
+		  Priority	: Integer from Standard )
+	---Level: Public
+	---Purpose: Displays the structure <me> in all the views of
+	--	    the visualiser, while modifying its current priority.
+	--          Note: Display Priorities
+    	--          Structure display priorities control the order in which
+    	--          structures are redrawn.   When you display a
+    	--          structure, you specify its priority. The lower the value,
+    	--          the lower the display priority. When the display is
+    	--          regenerated, the structures with the lowest priority
+    	--          are drawn first. For structures with the same display
+    	--          priority, the order in which they were displayed
+    	--          determines the drawing order. Open CASCADE
+    	--          supports 11 structure display priorities, 0 to 10.
+	--          Warning: Raises PriorityDefinitionError if <Priority> is
+	--	    greater than 10 or a negative value.
+	raises PriorityDefinitionError from Graphic3d is static;
+
+	DisplayPriority ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the current display priority for the
+	--	    structure <me>.
+	---Category: Methods to modify the class definition
+
+	Erase ( me	: mutable )
+		is virtual;
+	---Level: Public
+	---Purpose: Erases the structure <me> in all the views
+	--	    of the visualiser.
+	---Category: Methods to modify the class definition
+
+	Highlight ( me		: mutable;
+		    Method	: TypeOfHighlightMethod from Aspect )
+		is static;
+	---Level: Public
+	---Purpose: Highlights the structure <me> in all the
+	--	    views of the visualiser, using the following methods:
+	--
+	--   TOHM_COLOR		= drawn in the highlight color
+	--				  (default white)
+	--	    TOHM_BLINK		= blinking
+	--   TOHM_BOUNDBOX	= enclosed by the boundary box
+	--				  (default white)
+	--
+	---Category: Methods to modify the class definition
+
+	Remove ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Suppress the structure <me>.
+	--	    It will be erased at the next screen update.
+	--  Warning: No more graphic operations in <me> after this call.
+	--  Category: Methods to modify the class definition
+
+	SetHighlightColor ( me		: mutable;
+			    AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the highlight color for the Highlight method
+	--	    with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
+	---Category: Methods to modify the class definition
+
+	SetInfiniteState ( me		: mutable;
+			   AFlag	: Boolean from Standard )
+		is static;
+	---Level: Internal
+	---Purpose: Modifies the coordinates of the boundary box
+	--	    of the structure <me>.
+	--	    if <AFlag> is Standard_True then <me> is infinite and
+	--	    the MinMaxValues method or the MinMaxCoord method return :
+	--	    XMin = YMin = ZMin = RealFirst ().
+	--	    XMax = YMax = ZMax = RealLast ().
+	--	    By default, <me> is not infinite but empty.
+	---Category: Methods to modify the class definition
+
+	SetDisplayPriority ( me		: mutable;
+			     Priority	: Integer from Standard )
+	---Level: Public
+	---Purpose: Modifies the order of displaying the structure.
+	--	    Values are between 0 et 10.
+	--	    The priority 10 being displayed first.
+	--	    The default value is 5
+	--  Category: Methods to modify the class definition
+	--  Warning: If <me> is displayed then the SetDisplayPriority
+	--	    method erase <me> and display <me> with the
+	--	    new priority.
+	--	    Raises PriorityDefinitionError if <Priority> is
+	--	    greater than 10 or a negative value.
+	raises PriorityDefinitionError from Graphic3d is static;
+
+	ResetDisplayPriority ( me		: mutable)
+		is static;
+	---Level: Public
+	---Purpose: Reset the current priority of the structure to the 
+	--	    previous priority.
+	--  Category: Methods to modify the class definition
+	--  Warning: If <me> is displayed then the SetDisplayPriority
+	--	    method erase <me> and display <me> with the
+	--	    previous priority.
+
+	SetPick ( me		: mutable;
+		  AValue	: Boolean from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the detectability indicator to Standard_True
+	--	    or Standard_False for the structure <me>.
+	--	    The default value at the definition of <me> is
+	--	    Standard_True.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectLine3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for lines
+	--	    in the structure <me>.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectFillArea3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for faces
+	--	    in the structure <me>.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectText3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for text
+	--	    in the structure <me>.
+	---Category: Methods to modify the class definition
+
+	SetPrimitivesAspect ( me	: mutable;
+			      CTX	: AspectMarker3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the default attributes for markers
+	--	    in the structure <me>.
+	---Category: Methods to modify the class definition
+
+	SetVisible ( me		: mutable;
+		     AValue	: Boolean from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the visibility indicator to Standard_True or
+	--	    Standard_False for the structure <me>.
+	--	    The default value at the definition of <me> is
+	--	    Standard_True.
+	---Category: Methods to modify the class definition
+
+	SetManager ( me			: mutable;
+		     AManager		: StructureManager from Graphic3d;
+		     WithPropagation	: Boolean from Standard = Standard_False)
+		is static;
+	---Level: Public
+	---Purpose: Moves the graphic object <me> in the manager <AManager>.
+	--	    If <WithPropagation> is Standard_True then all the connected
+	--	    graphic objects to <me> are moved.
+
+	SetVisual ( me		: mutable;
+		    AVisual	: TypeOfStructure from Graphic3d )
+		is virtual;
+	---Level: Public
+	---Purpose: Modifies the visualisation mode for the structure <me>.
+	---Warning: It is not possible to display a structure with
+	--	    an incompatible display mode.
+	--	    If the display mode is different from the current one,
+	--	    the structure is erased.
+	--
+	--	    TOS_WIREFRAME for a wireframe visualisation
+	--	    TOS_SHADING for a shaded visualisation
+	--	    TOS_ALL for all visualisations
+	--	    TOS_COMPUTED for a computed visualisation
+	--	    The default value is TOS_ALL
+	--
+	---Category: Methods to modify the class definition
+
+	SetZoomLimit ( me			: mutable;
+		       LimitInf, LimitSup	: Real from Standard )
+	---Level: Internal
+	---Purpose: Modifies the minimum and maximum zoom coefficients
+	--	    for the structure <me>.
+	--	    The default value at the definition of <me> is unlimited.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises StructureDefinitionError if <LimitInf> is
+	--	    greater than <LimitSup> or if <LimitInf> or
+	--	    <LimitSup> is a negative value.
+	raises StructureDefinitionError from Graphic3d is static;
+
+	UnHighlight ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Suppresses the highlight for the structure <me>
+	--	     in all the views of the visualiser.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Compute methods
+	----------------------------
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d )
+		returns Structure from Graphic3d is virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  AMatrix	: Array2OfReal from TColStd )
+		returns Structure from Graphic3d is virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  aStructure	: in out Structure from Graphic3d )
+		is virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	Compute ( me	: mutable;
+		  aProjector	: DataStructureManager from Graphic3d;
+		  AMatrix	: Array2OfReal from TColStd;
+		  aStructure	: in out Structure from Graphic3d )
+		is virtual;
+	---Level: Advanced
+	---Purpose: Returns the new Structure defined for the new visualization
+	---Category: Methods to modify the class definition
+
+	ReCompute ( me	: mutable );
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <me>
+	--	    if <me> is displayed and TOS_COMPUTED.
+	---Category: Methods to modify the class definition
+
+	ReCompute ( me		: mutable;
+		    aProjector	: DataStructureManager from Graphic3d );
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <me>
+	--	    if <me> is displayed in <aProjetor> and TOS_COMPUTED.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	ContainsFacet ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the structure <me> contains
+	--	    Polygons, Triangles or Quadrangles.
+	---Category: Inquire methods
+
+	Exploration ( me;
+		      ElementNumber	: Integer from Standard;
+		      AVertex		: out VertexNC from Graphic3d;
+		      AVector		: out Vector from Graphic3d )
+		returns Boolean from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Explores a structure element of <me>.
+	--	    Returns Standard_True if the exploration succeded and
+	--	    Standard_False if the exploration is done or if the
+	--	    specified structure element is not in the structure.
+	--	    <AVertex> contains the coordinates, the normal and
+	--	    the color of the vertex found in the structure element.
+	--	    <AVector> contains the normal of the face.
+	--  Warning: - The structure element number is given by
+	--	    Visual3d_ViewManager::Pick method.
+	--	    - The primitive type is given by
+	--	    Graphic3d_Structure::Type method.
+	--	    - The normal is (0.0, 0.0, 0.0) when the normal is not
+	--	    specified in the structure element.
+	--	    - The color is (0.0, 0.0, 0.0) when the color is not
+	--	    specified in the structure element.
+	--	    - To initialize the exploration, you have to call the
+	--	    Graphic3d_Structure::Type method before this method.
+	--
+	-- Programming example :
+	--
+	-- // Define a graphic device
+	-- Handle(Graphic3d_GraphicDevice) GD =
+	--			new Graphic3d_GraphicDevice ("dummy:0.0");
+	--
+	-- // Define a view manager
+	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
+	--
+	-- // Define a view
+	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
+	--
+	-- // Define a window
+	-- Handle(Aspect_Window) W = new Aspect_Window
+	--	(GD, "Graphic View 1", 0.695, 0.695, 0.600, 0.600,
+	--		Xw_WQ_3DQUALITY, Quantity_NOC_MATRAGRAY);
+	--
+	-- // Define a context pick
+	-- Visual3d_ContextPick CTXP;
+	--
+	-- // Activate the view
+	-- V->SetWindow (W);
+	-- V->Activate ();
+	--
+	-- // Create a structure
+	-- Handle(Graphic3d_Structure) S = new Graphic3d_Structure (V);
+	-- Handle(Graphic3d_Group) G = new Graphic3d_Group (S);
+	--
+	-- // Create a polygon
+	-- G->Polygon (PtsArray);
+	--
+	-- // Display the structure
+	-- S->Display ();
+	--
+	-- // Pick
+	-- Visual3d_PickDescriptor PDes (CTXP);
+	-- PDes.Clear ();
+	-- PDes = V->Pick (CTXP, W, x, y);
+	--
+	-- // Explore the top structure
+	-- Standard_Boolean Next = Standard_True;
+	-- Graphic3d_Vertex AVertex;
+	-- Graphic3d_Vector AVector;
+	-- if ((PDes.TopStructure ())->Type () == Graphic3d_TOP_POLYGON)
+	--	while (Next) {
+	--	     Next = S->Exploration (PDes.TopElementNumber (),
+	--					AVertex, AVector);
+	--	     if (Next) {
+	--	        cout << "Point " << AVertex.X () << " , "
+	--	        << AVertex.Y () << " , " << AVertex.Z () << "\n";
+	--	        if (! AVector.LengthZero ())
+	--		     cout << "Normal " << AVector.X () << " , "
+	--		     << AVector.Y () << " , " << AVector.Z () << "\n";
+	--	        cout << flush;
+	--	     }
+	--	}
+	--
+	---Category: Inquire methods
+
+	FillArea3dAspect ( me )
+		returns AspectFillArea3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Groups ( me )
+		returns HSetOfGroup from Graphic3d
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of groups included in the structure <me>.
+	---Category: Inquire methods
+
+	NumberOfGroups ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the current number of groups in the
+	--	    structure <me>.
+	---Category: Inquire methods
+
+	HighlightColor ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the highlight color for the Highlight method
+	--	    with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
+	---Category: Inquire methods
+
+	IsDeleted ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the structure <me> is deleted.
+	--	    <me> is deleted after the call Remove (me).
+	---Category: Inquire methods
+
+	IsDisplayed ( me )
+		returns Boolean from Standard
+		is virtual;
+	---Level: Public
+	---Purpose: Returns the display indicator for the structure <me>.
+	---Category: Inquire methods
+
+	IsEmpty ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the structure <me> is empty.
+	--  Warning: A structure is empty if :
+	--		it do not have group or all the groups are empties
+	--		and it do not have descendant or all the descendants
+	--		are empties.
+	---Category: Inquire methods
+
+	IsInfinite ( me	)
+		returns Boolean from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the structure <me> is infinite.
+	---Category: Inquire methods
+
+	IsHighlighted ( me )
+		returns Boolean from Standard
+		is virtual;
+	---Level: Public
+	---Purpose: Returns the highlight indicator for the structure <me>.
+	---Category: Inquire methods
+
+	IsSelectable ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the detectability indicator for the structure <me>.
+	---Category: Inquire methods
+
+	IsRotated ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the structure <me> is rotated.
+	--	    <=> The transformation != Identity, != Scale, != Translation.
+	---Category: Inquire methods
+
+	IsTransformed ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the structure <me> is transformed.
+	--	    <=> The transformation != Identity.
+	---Category: Inquire methods
+
+	IsVisible ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the visibility indicator for the structure <me>.
+	---Category: Inquire methods
+
+	Line3dAspect ( me )
+		returns AspectLine3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Marker3dAspect ( me )
+		returns AspectMarker3d from Graphic3d
+		is static;
+	---Purpose: Returns the current group of graphic attributes used
+    	-- for 3d marker primitives.
+
+	MinMaxValues ( me;
+		       XMin, YMin, ZMin	: out Real from Standard;
+		       XMax, YMax, ZMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box
+	--	    of the structure <me>.
+	--  Warning: If the structure <me> is empty or infinite then :
+	--	    XMin = YMin = ZMin = RealFirst ().
+	--	    XMax = YMax = ZMax = RealLast ().
+	---Category: Inquire methods
+
+	PrimitivesAspect ( me;
+			   CTXL	: out AspectLine3d from Graphic3d;
+			   CTXT	: out AspectText3d from Graphic3d;
+			   CTXM	: out AspectMarker3d from Graphic3d;
+			   CTXF	: out AspectFillArea3d from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Returns the current values of the default attributes.
+	---Category: Inquire methods
+
+	Text3dAspect ( me )
+		returns AspectText3d from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the values of the current default attributes.
+	---Category: Inquire methods
+
+	Type ( me;
+	       ElementNumber	: Integer from Standard )
+		returns TypeOfPrimitive from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the primitive type stored in the structure
+	--	    element <ElementNumber>.
+	--	    Initialises the exploration of this primitive.
+	--	    If the structure element is not a primitive, returns
+	--	    Graphic3d_TOP_UNDEFINED.
+	--  Warning: The structure element number is given by
+	--	    Visual3d_ViewManager::Pick method.
+	---Category: Inquire methods
+
+	Visual ( me )
+		returns TypeOfStructure from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the visualisation mode for the structure <me>.
+	---Category: Inquire methods
+
+	----------------------------------------------------
+	-- Category: Methods to manage the structure network
+	----------------------------------------------------
+
+	-----------------------------------------------------
+	-- Summary of Structure Hierarchies                --
+	--                                                 --
+	-- The root  is the top  of a  structure hierarchy --
+	-- or structure network.                           --
+	--                                                 --
+	-- The attributes of a parent structure are passed --
+	-- passed to its descendants.                      --
+	--                                                 --
+	-- The  attributes  of the  descendant  structures --
+	-- don't affect the parent.                        --
+	--                                                 --
+	-- Recursive structure networks are not supported. --
+	-----------------------------------------------------
+
+	AcceptConnection ( myclass;
+			   AStructure1	: Structure from Graphic3d;
+			   AStructure2	: Structure from Graphic3d;
+			   AType	: TypeOfConnection from Graphic3d )
+		returns Boolean from Standard;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the connection is possible between
+	--	    <AStructure1> and <AStructure2> without a creation
+	--	    of a cycle.
+	--
+	--	    It's not possible to call the method
+	--	       AStructure1->Connect (AStructure2, TypeOfConnection)
+	--	    if
+	--	    - the set of all ancestors of <AStructure1> contains
+	--	      <AStructure1> and if the
+	--	      TypeOfConnection == TOC_DESCENDANT
+	--	    - the set of all descendants of <AStructure1> contains
+	--	      <AStructure2> and if the
+	--	      TypeOfConnection == TOC_ANCESTOR
+	---Category: Methods to manage the structure network
+
+	Ancestors ( me; SG: in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of structures to which <me> is connected.
+	---Category: Methods to manage the structure network
+
+	Connect ( me		: mutable;
+		  AStructure	: Structure from Graphic3d;
+		  AType		: TypeOfConnection from Graphic3d;
+		  WithCheck	: Boolean from Standard = Standard_False );
+	---Level: Public
+	---Purpose: If Atype is TOC_DESCENDANT then add <AStructure>
+	--	    as a child structure of  <me>.
+	--	    If Atype is TOC_ANCESTOR then add <AStructure>
+	--	    as a parent structure of <me>.
+	--	    The connection propagates Display, Highlight, Erase,
+	--	    Remove, and stacks the transformations.
+	--	    No connection if the graph of the structures
+	--	    contains a cycle and <WithCheck> is Standard_True;
+	---Category: Methods to manage the structure network
+
+	Descendants ( me; SG : in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of structures connected to <me>.
+	---Category: Methods to manage the structure network
+
+	Disconnect ( me		: mutable;
+		     AStructure	: Structure from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Suppress the connection between <AStructure> and <me>.
+	---Category: Methods to manage the structure network
+
+	DisconnectAll ( me	: mutable;
+			AType	: TypeOfConnection from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: If Atype is TOC_DESCENDANT then suppress all
+	--	    the connections with the child structures of <me>.
+	--	    If Atype is TOC_ANCESTOR then suppress all
+	--	    the connections with the parent structures of <me>.
+	---Category: Methods to manage the structure network
+
+	Network ( myclass;
+		  AStructure	: Structure from Graphic3d;
+		  AType		: TypeOfConnection from Graphic3d;
+		  ASet		: in out MapOfStructure from Graphic3d );
+	---Level: Internal
+	---Purpose: Returns <ASet> the group of structures :
+	--	    - directly or indirectly connected to <AStructure> if the
+	--	      TypeOfConnection == TOC_DESCENDANT
+	--	    - to which <AStructure> is directly or indirectly connected
+	--	      if the TypeOfConnection == TOC_ANCESTOR
+	---Category: Methods to manage the structure network
+
+	SetOwner ( me	: mutable;
+		   Owner	: Address from Standard )
+		is static;
+	---Level: Advanced
+
+	Owner ( me )
+		returns Address from Standard
+		is static;
+	---Level: Advanced
+
+	SetHLRValidation ( me	: mutable;
+			   AFlag	: Boolean from Standard )
+		is static;
+	---Level: Advanced
+
+	HLRValidation ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+
+	-----------------------------------------------------------
+	-- Category: Methods to manage the structure transformation
+	-----------------------------------------------------------
+
+	Composition ( me )
+		returns TypeOfComposition from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the type of composition applied to matrices
+	--	    of transformation of <me>.
+	---Category: Methods to manage the structure transformation
+
+	SetTransform ( me	: mutable;
+		       AMatrix	: Array2OfReal from TColStd;
+		       AType	: TypeOfComposition from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the current local modelling transformation
+	--	    in the structure <me>.
+	--
+	--	    It is defined as a 4*4 real matrix.
+	--
+	--	    -------------------
+	--	    | a11 a12 a13  t1 |
+	--	    | a21 a22 a23  t2 |
+	--	    | a31 a32 a33  t3 |
+	--	    |  0   0   0   1  |
+	--	    -------------------
+	--
+	--	    TypeOfComposition : TOC_REPLACE
+	--				TOC_POSTCONCATENATE
+	--
+	-- Then the modified Local Modelling Transformation is composed
+	-- with the current Global Modelling Transformation to create a
+	-- new Composite Modelling Transformation.
+	--
+	-- The compose type specifies the role of the current local
+	-- modelling transformation (L) in composing the new value for
+	-- the current local modelling transformation (L'), which is
+	-- then combined with the current global modelling transforma-
+	-- tion (G) to calculate the new composite modelling transfor-
+	-- mation (C).
+	--
+	-- TOC_REPLACE
+	-- The transformation matrix (T) replaces the value of
+	-- current local modelling transformation (L).
+	--
+	--	L' <- T
+	--	C <- G x L'
+	--
+	-- TOC_POSTCONCATENATE
+	-- The current local modelling transformation (L) is multiplied
+	-- by the transformation matrix (T):
+	--
+	--	L' <- T x L
+	--	C <- G x L'
+	--
+	--  Category: Methods to manage the structure transformation
+	--  Warning: Raises TransformError if the matrix is not a 4x4 matrix.
+	raises TransformError from Graphic3d is static;
+
+	-- Transform ( me		: mutable;
+	Transform ( me;
+		    AMatrix	: in out Array2OfReal from TColStd )
+		is static;
+	---Level: Public
+	---Purpose: Returns the transformation associated with
+	--	    the structure <me>.
+	---Category: Methods to manage the structure transformation 
+	 
+	SetTransformPersistence( me	: mutable;
+                                 AFlag  : TransModeFlags from Graphic3d; 
+                                 APoint : Pnt from gp  )
+        ---Level: Public
+	---Purpose: Modifies the current modelling transform persistence (pan, zoom or rotate)
+        is static;
+
+        SetTransformPersistence(  me  :  mutable; 
+	                          AFlag  :  TransModeFlags  from  Graphic3d  )
+        --  Calls previous   method  with  point  (0,0,0)
+        is  static;
+	
+
+	TransformPersistenceMode( me )
+ 			returns TransModeFlags from Graphic3d
+        ---Level: Public
+	---Purpose: Get the current modelling transform persistence (pan, zoom or rotate)
+        is static; 
+	 
+	TransformPersistencePoint( me )
+ 			returns Pnt from gp
+        ---Level: Public
+	---Purpose: Get the current point of relative modelling transform persistence
+        is static;
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Add ( me	: mutable;
+	      AGroup	: Group from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Inserts in the structure <me>, the group <G>.
+	--	    It will be erased at the next screen update.
+	---Category: Private methods
+
+	ComputeVisual ( me )
+		returns TypeOfStructure from Graphic3d
+		is static;
+	---Level: Internal
+	---Category: Private methods
+
+	GroupsWithFacet ( me	: mutable;
+			ADelta	: Integer from Standard )
+		is static private;
+	---Level: Internal
+	---Purpose: Manages the number of groups in the structure <me>
+	--	    which contains facet.
+	--	    Polygons, Triangles or Quadrangles.
+	--	    <ADelta> = +1 or -1
+	---Category: Private methods
+
+	Exploration ( me )
+		is static;
+	---Level: Internal
+	---Purpose: Prints informations about the structure <me>.
+	---Category: Private methods
+
+	GraphicClear ( me	: mutable;
+		       WithDestruction	: Boolean from Standard )
+		is static;
+	---Level: Internal
+	---Purpose: Clears the structure <me>.
+	---Category: Private methods
+
+	GraphicConnect ( me	: mutable;
+			 ADaughter	: Structure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose:
+	---Category: Private methods
+
+	GraphicDisconnect ( me	: mutable;
+			    ADaughter	: Structure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose:
+	---Category: Private methods
+
+	GraphicHighlight ( me		: mutable;
+			   Method	: TypeOfHighlightMethod from Aspect )
+		is static;
+	---Level: Internal
+	---Purpose: Highlights the structure <me>.
+	---Category: Private methods
+
+	GraphicTransform ( me		: mutable;
+			   AMatrix	: Array2OfReal from TColStd )
+		is static;
+	---Level: Internal
+	---Purpose: 
+	---Category: Private methods
+
+	GraphicUnHighlight ( me	: mutable )
+		is static;
+	---Level: Internal
+	---Purpose: Suppress the highlight for the structure <me>.
+	---Category: Private methods
+
+	GroupLabels ( me	: mutable;
+		      LB, LE	: in out Integer from Standard )
+		is static private;
+	---Level: Internal
+	---Purpose: Returns the labels for a new group in the structure <me>.
+	---Category: Private methods
+
+	Identification ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the identification number of the structure <me>.
+	---Category: Private methods
+
+	MinMaxCoord ( me;
+		      XMin, YMin, ZMin	: out Real from Standard;
+		      XMax, YMax, ZMax	: out Real from Standard )
+		is static private;
+	---Level: Internal
+	---Purpose: Returns the extreme coordinates found in the
+	--	    structure <me>.
+	--  Warning: If the structure <me> is empty or infinite then :
+	--	    XMin = YMin = ZMin = RealFirst ().
+	--	    XMax = YMax = ZMax = RealLast ().
+	---Category: Private methods
+
+	Plot ( me	: mutable;
+	       aPlotter	: Plotter from Graphic3d )
+		is virtual;
+	---Level: Internal
+	---Category: Private methods
+
+	PrintNetwork ( myclass;
+		       AStructure	: Structure from Graphic3d;
+		       AType		: TypeOfConnection from Graphic3d );
+	---Level: Internal
+	---Purpose: Prints informations about the network associated
+	--	    with the structure <AStructure>.
+	---Category: Private methods
+
+	Remove ( me	: mutable;
+		 APtr	: Address from Standard;
+		 AType	: TypeOfConnection from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Suppress the adress <APtr> in the list
+	--	    of descendants or in the list of ancestors.
+	---Category: Private methods
+
+	Remove ( me	: mutable;
+		 AGroup	: Group from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Suppress in the structure <me>, the group <AGroup>.
+	--	    It will be erased at the next screen update.
+	---Category: Private methods
+
+	SetComputeVisual ( me		: mutable;
+			   AVisual	: TypeOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Category: Private methods
+
+	StructureManager ( me )
+		returns StructureManager from Graphic3d
+		is static private;
+	---Level: Internal
+	---Purpose: Returns the manager to which <me> is associated.
+	---Category: Private methods
+
+	Transforms ( myclass;
+		     ATrsf		: Array2OfReal from TColStd;
+		     X, Y, Z		: Real from Standard;
+		     NewX, NewY, NewZ	: out Real from Standard );
+	---Level: Internal
+	---Purpose: Transforms <X>, <Y>, <Z> with the transformation <ATrsf>.
+	---Category: Private methods
+
+	Transforms ( myclass;
+		     ATrsf	: Array2OfReal from TColStd;
+		     Coord	: Vector from Graphic3d )
+		returns Vector from Graphic3d;
+	---Level: Internal
+	---Purpose: Transforms <Coord> with the transformation <ATrsf>.
+	---Category: Private methods
+
+	Transforms ( myclass;
+		     ATrsf	: Array2OfReal from TColStd;
+		     Coord	: Vertex from Graphic3d )
+		returns Vertex from Graphic3d;
+	---Level: Internal
+	---Purpose: Transforms <Coord> with the transformation <ATrsf>.
+	---Category: Private methods
+
+	Update ( me )
+		is static private;
+	---Level: Internal
+	---Purpose: Calls the Update method of the StructureManager which
+	--	    contains the Structure <me>.
+	---Category: Private methods
+
+	UpdateStructure ( me	: mutable;
+			  CTXL	: AspectLine3d from Graphic3d;
+			  CTXT	: AspectText3d from Graphic3d;
+			  CTXM	: AspectMarker3d from Graphic3d;
+			  CTXF	: AspectFillArea3d from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Updates the c structure associated to <me>.
+	---Category: Private methods
+
+	CStructure ( me	)
+		returns Address from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the c structure associated to <me>.
+	---Category: Private methods
+
+--
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_Structure
+--
+-- Purpose	:	Declaration of variables specific to
+--			graphic structures.
+-- Reminder	:	A structure is defined in a manager.
+--			It is a sequence of groups of primitives.
+--
+
+	-- the associated C structure
+	MyCStructure		:	CStructure from Graphic3d;
+
+	-- the group identifier generator
+	MyGroupGenId		:	GenId from Aspect;
+
+	-- the structures to which the structure is attached
+	MyAncestors		:	SequenceOfAddress from TColStd;
+
+	-- the structures attached to the structure
+	MyDescendants		:	SequenceOfAddress from TColStd;
+
+	-- the sequence of groups
+	MyGroups		:	SequenceOfGroup from Graphic3d;
+
+	-- the graphic driver used
+	MyGraphicDriver		:	GraphicDriver from Graphic3d;
+
+	-- the highlight method of the structure
+	MyHighlightColor	:	Color from Quantity;
+	MyHighlightMethod	:	TypeOfHighlightMethod from Aspect;
+
+	-- the manager accepting the structure
+	MyPtrStructureManager		:	Address from Standard is protected;
+	MyFirstPtrStructureManager	:	Address from Standard is protected;
+	MyOwner				:	Address from Standard;
+
+	-- the type of visualisation accepted by the structure
+	MyVisual		:	TypeOfStructure from Graphic3d;
+	MyComputeVisual		:	TypeOfStructure from Graphic3d is protected;
+
+friends
+
+	-- a lot of methods of Group use the methods of Structure
+	class Group	from Graphic3d
+
+end Structure;

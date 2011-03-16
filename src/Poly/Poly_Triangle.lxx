@@ -1,0 +1,41 @@
+// File:	Poly_Triangle.lxx
+// Created:	Mon Mar  6 10:47:04 1995
+// Author:	Laurent PAINNOT
+//		<lpa@metrox>
+
+#include <Standard_OutOfRange.hxx>
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void Poly_Triangle::Set(const Standard_Integer Index, const Standard_Integer Node)
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > 3,NULL);
+  myNodes[Index-1] = Node;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Poly_Triangle::Value(const Standard_Integer Index) const 
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > 3,NULL);
+  return myNodes[Index-1];
+}
+
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& Poly_Triangle::ChangeValue
+(const Standard_Integer Index)
+{
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > 3,NULL);
+  return myNodes[Index-1];
+}
+

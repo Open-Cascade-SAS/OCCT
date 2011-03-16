@@ -1,0 +1,15 @@
+// File:	GeomAPI_ExtremaCurveSurface.lxx
+// Created:	Fri Mar 18 15:34:34 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Extrema
+//purpose  : 
+//=======================================================================
+
+inline const Extrema_ExtCS& GeomAPI_ExtremaCurveSurface::Extrema() const
+{
+  return myExtCS;
+}

@@ -1,0 +1,6 @@
+// File:	CPnts_MyRootFunction.lxx
+// Created:	Thu May  4 17:37:19 1995
+// Author:	Modelistation
+//		<model@fuegox>
+
+inline CPnts_MyRootFunction::CPnts_MyRootFunction() {}

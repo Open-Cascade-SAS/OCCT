@@ -1,0 +1,89 @@
+-- File:	TDataStd_Expression.cdl
+-- Created:	Tue Dec 16 17:32:53 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Expression from TDataStd inherits Attribute from TDF
+    
+    ---Purpose: Expression attribute. 
+    --          ====================
+    --
+    --            * Data Structure  of the Expression   is stored in a
+    --           string and references to variables used by the string
+    --
+    --  Warning:  To be consistent,  each  Variable  referenced by  the
+    --          expression must have its equivalent in the string
+
+
+uses Attribute         from TDF,
+     Label             from TDF,
+     GUID              from Standard,
+     Real              from Standard,
+     DataSet           from TDF,
+     RelocationTable   from TDF,
+     ExtendedString    from TCollection,
+     AttributeList     from TDF
+     
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;
+    
+
+    Set (myclass ; label : Label from TDF)
+    ---Purpose: Find, or create, an Expression attribute.
+    returns Expression from TDataStd;
+    
+    ---Purpose: Expressionmethods
+    --          ============
+
+    Create
+    returns mutable Expression from TDataStd;
+    
+    Name (me)
+    ---Purpose: build and return the expression name
+    returns ExtendedString from TCollection;
+    
+    SetExpression (me : mutable; E : ExtendedString from TCollection);
+    
+    GetExpression (me)
+    returns ExtendedString from TCollection;    
+    ---C++: return const &  
+
+    GetVariables (me : mutable)
+    ---C++: return &
+    returns AttributeList from TDF;    
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me) 
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myExpression : ExtendedString from TCollection;
+    myVariables  : AttributeList from TDF;   
+    
+end Expression;

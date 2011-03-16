@@ -1,0 +1,26 @@
+-- File:	DBC.cdl
+-- Created:	Mon Jan 29 16:29:37 1996
+-- Author:	Kernel
+--		<kernel@ylliox>
+---Copyright:	 Matra Datavision 1996
+
+package DBC
+
+uses PStandard
+
+is
+    class BaseArray;
+    generic class VArray,VArrayNode,VArrayTNode;
+
+    class VArrayOfInteger instantiates
+    	    VArray(Integer);
+    class VArrayOfReal instantiates
+    	    VArray(Real);
+    class VArrayOfCharacter instantiates
+    	    VArray(Character);
+    class VArrayOfExtCharacter instantiates
+   	    VArray(ExtCharacter);
+   
+    imported DBVArray;  
+
+end DBC;

@@ -1,0 +1,31 @@
+-- File:	PDataStd_Name.cdl
+-- Created:	Thu Jul 31 10:29:12 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Name from PDataStd inherits Attribute from PDF
+
+uses HExtendedString from PCollection
+
+is
+
+    Create returns mutable Name from  PDataStd;
+    
+    
+    Create (V : HExtendedString from PCollection) 
+    returns mutable Name from PDataStd;
+    
+    
+    Get (me) returns HExtendedString from PCollection;
+    
+    
+    Set (me : mutable; V : HExtendedString from PCollection);
+
+    
+fields
+
+    myValue : HExtendedString from PCollection;
+
+end Name;

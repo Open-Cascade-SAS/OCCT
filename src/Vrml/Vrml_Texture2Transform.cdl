@@ -1,0 +1,62 @@
+-- File:	Vrml_Texture2Transform.cdl
+-- Created:	Tue Feb 11 12:47:24 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@ecolox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Texture2Transform from Vrml 
+
+	---Purpose: defines a Texture2Transform node of VRML specifying properties of geometry
+	---          and its appearance.
+    	--  This  node  defines  a 2D  transformation  applied  to  texture  coordinates.   
+	--  This  affect  the  way  textures  are  applied  to  the  surfaces  of  subsequent 
+    	--  shapes. 
+    	--  Transformation  consisits  of(in  order)  a  non-uniform  scale  about  an   
+    	--  arbitrary  center  point,  a  rotation  about  that  same  point,  and 
+	--  a  translation.  This  allows  a  user  to  change  the  size  and  position  of 
+	--  the  textures  on  the  shape.
+    	--  By  default  : 
+	--    myTranslation (0 0)
+	--    myRotation (0)
+	--    myScaleFactor (1 1)
+	--    myCenter (0 0) 
+ 
+uses
+ 
+   Vec2d from gp 
+
+is
+ 
+    Create  returns  Texture2Transform from Vrml;
+ 
+    Create  ( aTranslation  :  Vec2d   from  gp;
+    	      aRotation     :  Real    from  Standard; 
+    	      aScaleFactor  :  Vec2d   from  gp;
+    	      aCenter       :  Vec2d   from  gp ) 
+        returns  Texture2Transform from Vrml;
+
+    SetTranslation ( me : in out; aTranslation : Vec2d  from  gp );
+    Translation ( me  )  returns  Vec2d  from  gp;
+
+    SetRotation ( me : in out; aRotation : Real from Standard );
+    Rotation ( me )  returns  Real from Standard;
+
+    SetScaleFactor( me : in out; aScaleFactor : Vec2d  from  gp );
+    ScaleFactor( me )  returns  Vec2d  from  gp;
+
+    SetCenter ( me : in out; aCenter : Vec2d  from  gp );
+    Center ( me )  returns  Vec2d  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myTranslation  :  Vec2d  from  gp;       -- Translation vector
+    myRotation     :  Real   from  Standard; -- Rotation
+    myScaleFactor  :  Vec2d  from  gp;       -- Scale factors
+    myCenter       :  Vec2d  from  gp;       -- Center point for scale and rotate
+    
+end Texture2Transform;
+

@@ -1,0 +1,155 @@
+// File:	MeshDS_Selector.gxx
+// Created:	Tue Jun  1 11:20:51 1993
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+#include <MeshDS_PairOfIndex.hxx>
+
+//=======================================================================
+//function : MeshDS_Selector
+//purpose  : 
+//=======================================================================
+MeshDS_Selector::MeshDS_Selector()
+     : myNodes(10, new NCollection_IncAllocator),
+       myLinks(10, new NCollection_IncAllocator),
+       myElements(10, new NCollection_IncAllocator),
+       myFrontier(10, new NCollection_IncAllocator)
+
+{}
+
+MeshDS_Selector::MeshDS_Selector(const Handle(MeshDS_Mesh2d)& theMesh)
+     : myMesh(theMesh),
+       myNodes(10, myMesh->Allocator()),
+       myLinks(10, myMesh->Allocator()),
+       myElements(10, myMesh->Allocator()),
+       myFrontier(10, myMesh->Allocator())
+{}
+
+void  MeshDS_Selector::Initialize(const Handle(MeshDS_Mesh2d)& theMesh)
+{
+  myMesh=theMesh;
+  myNodes.Clear();
+  myLinks.Clear();
+  myElements.Clear();
+  myFrontier.Clear();
+}
+
+//=======================================================================
+//function : NeighboursOfNode
+//purpose  : 
+//=======================================================================
+void  MeshDS_Selector::NeighboursOf(const Node& theNode)
+{
+  NeighboursOfNode(myMesh->IndexOf(theNode));
+}
+
+void  MeshDS_Selector::NeighboursOfNode(const Standard_Integer indexNode)
+{
+  MeshDS_ListOfInteger::Iterator itL(myMesh->LinkNeighboursOf(indexNode));
+  
+  for (; itL.More(); itL.Next()) {
+    const MeshDS_PairOfIndex& aPair = myMesh->ElemConnectedTo(itL.Value());
+    for(Standard_Integer j = 1, jn = aPair.Extent(); j <= jn; j++)
+      myElements.Add(aPair.Index(j));
+  }
+}
+
+//=======================================================================
+//function : NeighboursOfLink
+//purpose  : 
+//=======================================================================
+void  MeshDS_Selector::NeighboursOf(const Link& theLink)
+{
+  NeighboursOfNode(theLink.FirstNode());
+  NeighboursOfNode(theLink.LastNode());
+}
+
+void  MeshDS_Selector::NeighboursOfLink(const Standard_Integer indexLink)
+{
+  NeighboursOf(myMesh->GetLink(indexLink));
+}
+
+//=======================================================================
+//function : NeighboursOfElement
+//purpose  : by edge and by vertices
+//=======================================================================
+void  MeshDS_Selector::NeighboursOf(const Element& theElem)
+{
+  Standard_Integer v1, v2, v3, ev;
+  Standard_Boolean o1, o2, o3;
+  theElem.Edges(v1, v3, ev, o1, o2, o3);
+  v2=myMesh->GetLink(v1).LastNode();
+  v1=myMesh->GetLink(v1).FirstNode();
+  ev=myMesh->GetLink(v3).LastNode();
+  if (v1!=ev && v2!=ev) v3=ev;
+  else v3=myMesh->GetLink(v3).FirstNode();
+  NeighboursOfNode(v1);
+  NeighboursOfNode(v2);
+  NeighboursOfNode(v3);
+}
+
+void  MeshDS_Selector::NeighboursOfElement(const Standard_Integer indexElem)
+{
+  NeighboursOf(myMesh->GetElement(indexElem));
+}
+
+//=======================================================================
+//function : NeighboursByEdgeOf
+//purpose  : Neighbours Of an element only by edge
+//=======================================================================
+void  MeshDS_Selector::NeighboursByEdgeOf(const Element& theElem)
+{
+  Standard_Integer e[3], iEd;
+  Standard_Boolean o1, o2, o3;
+  theElem.Edges(e[0], e[1], e[2], o1, o2, o3);
+
+  for (iEd=0; iEd<3; iEd++) {
+    const MeshDS_PairOfIndex& aPair = myMesh->ElemConnectedTo(e[iEd]);
+    for(Standard_Integer j = 1, jn = aPair.Extent(); j <= jn; j++)
+      myElements.Add(aPair.Index(j));
+  }
+}
+
+
+//=======================================================================
+//function : NeighboursOfSelector
+//purpose  : 
+//=======================================================================
+void  MeshDS_Selector::NeighboursOf(const MeshDS_Selector& /*theSelector*/)
+{}
+
+//=======================================================================
+//function : AddNeighbours
+//purpose  : 
+//=======================================================================
+void  MeshDS_Selector::AddNeighbours()
+{}
+
+//=======================================================================
+//function : Nodes
+//purpose  : 
+//=======================================================================
+const MeshDS_MapOfInteger& MeshDS_Selector::Nodes()const
+{return myNodes;}
+
+//=======================================================================
+//function : Links
+//purpose  : 
+//=======================================================================
+const MeshDS_MapOfInteger& MeshDS_Selector::Links()const
+{return myLinks;}
+
+//=======================================================================
+//function : Elements
+//purpose  : 
+//=======================================================================
+const MeshDS_MapOfInteger& MeshDS_Selector::Elements()const
+{return myElements;}
+
+//=======================================================================
+//function : FrontierLinks
+//purpose  : 
+//=======================================================================
+const MeshDS_MapOfInteger& MeshDS_Selector::FrontierLinks()const
+{return myFrontier;}
+

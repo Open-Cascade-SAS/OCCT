@@ -1,0 +1,54 @@
+-- File:        OrientedPath.cdl
+-- Created:     Fri Dec  1 11:11:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OrientedPath from StepShape 
+
+inherits Path from StepShape 
+
+uses
+
+	Boolean from Standard, 
+	HArray1OfOrientedEdge from StepShape, 
+	OrientedEdge from StepShape, 
+	HAsciiString from TCollection,
+	EdgeLoop from StepShape
+is
+
+	Create returns mutable OrientedPath;
+	---Purpose: Returns a OrientedPath
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aEdgeList : mutable HArray1OfOrientedEdge from StepShape) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPathElement : mutable EdgeLoop from StepShape;
+	      aOrientation : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetPathElement(me : mutable; aPathElement : mutable EdgeLoop);
+	PathElement (me) returns mutable EdgeLoop;
+	SetOrientation(me : mutable; aOrientation : Boolean);
+	Orientation (me) returns Boolean;
+	SetEdgeList(me : mutable; aEdgeList : mutable HArray1OfOrientedEdge) is redefined;
+	EdgeList (me) returns mutable HArray1OfOrientedEdge is redefined;
+	EdgeListValue (me; num : Integer) returns mutable OrientedEdge is redefined;
+	NbEdgeList (me) returns Integer is redefined;
+
+fields
+
+	pathElement : EdgeLoop from StepShape;
+	orientation : Boolean from Standard;
+
+ -- 
+ -- NB : field <edge_list> inherited from classe <EdgeLoop> is redeclared.
+ --      it shall appears in a physical file as a *.
+ --
+
+end OrientedPath;

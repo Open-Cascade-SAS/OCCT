@@ -1,0 +1,185 @@
+-- File:	TopOpeBRep_FacesIntersector.cdl
+-- Created:	Tue Oct 11 17:53:13 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class FacesIntersector from TopOpeBRep 
+
+	---Purpose: 
+
+uses
+
+    Shape from TopoDS,
+    Face from TopoDS,
+    IndexedMapOfShape from TopTools,
+    LineInter from TopOpeBRep,
+    HArray1OfLineInter from TopOpeBRep, 
+    Intersection from IntPatch,
+    HSurface from BRepAdaptor,
+    SurfaceType from GeomAbs,
+    TopolTool from BRepTopAdaptor,
+    ShapeEnum from TopAbs,
+    Box from Bnd
+    
+is
+
+    Create returns FacesIntersector from TopOpeBRep;
+
+    Perform(me : in out; S1,S2 : Shape from TopoDS)
+	---Purpose: Computes the intersection of faces S1 and S2. 
+    is static;
+
+    Perform(me : in out; S1,S2 : Shape from TopoDS;
+    	    	    	 B1,B2 : Box from Bnd)
+	---Purpose: Computes the intersection of faces S1 and S2. 
+    is static;
+
+    IsEmpty(me : in out) returns Boolean from Standard
+    is static;
+
+    IsDone(me) returns Boolean from Standard
+    is static;
+
+    SameDomain(me) returns Boolean from Standard
+	---Purpose: Returns True if Perform() arguments are two faces with the
+	--          same surface.
+    is static;
+
+    Face(me; Index : Integer from Standard) returns Shape from TopoDS
+    	---Purpose : returns first or second intersected face.
+	---C++: return const &
+    is static;
+    
+    SurfacesSameOriented(me) returns Boolean from Standard
+	---Purpose: Returns True if Perform() arguments are two faces
+	--          SameDomain() and normals on both side.
+	--          Raise if SameDomain is False
+    is static;
+    
+    IsRestriction(me; E : Shape from TopoDS)
+    ---Purpose: returns true if edge <E> is found as same as the edge 
+    --          associated with a RESTRICTION line.
+    returns Boolean from Standard
+    is static;
+
+    Restrictions(me)
+    ---Purpose: returns the map of edges found as TopeBRepBRep_RESTRICTION
+    returns IndexedMapOfShape from TopTools
+    ---C++: return const&
+    is static;
+    
+    -- ==========================
+    -- Intersection line iterator
+    -- ==========================
+
+    PrepareLines(me : in  out) 
+    is  static; 
+    
+    Lines(me : in out ) returns HArray1OfLineInter from TopOpeBRep
+    is static;
+
+    NbLines(me) returns Integer from Standard 
+    is static;
+    
+    InitLine(me : in out)
+    is static;
+
+    FindLine(me : in out)
+    is static private;
+
+    MoreLine(me) returns Boolean from Standard 
+    is static;
+
+    NextLine(me : in out) 
+    is static;
+
+    CurrentLine(me : in out) returns LineInter from TopOpeBRep
+    ---C++: return &
+    is static;
+
+    CurrentLineIndex(me) returns Integer from Standard 
+    is static;
+ 
+    ChangeLine(me:in out; IL:Integer) returns LineInter from TopOpeBRep
+    ---C++: return &
+    is static;
+
+    -- -------
+    -- private
+    -- -------
+
+    ResetIntersection(me : in out) 
+    is static private;
+
+    -- ==================== 
+    -- Tolerance management : 
+    --
+    -- Face/Face (not same domain) algorithm needs two tolerance values. 
+    -- By default, these tolerances are deduced from shapes to intersect
+    -- such as : Tol1 = Tol2 = MAX(tolerance of shape edges)
+    -- (We may force these tolerances to values using ForceTolerances()).
+    --
+    -- The intersection tolerance values used by Perform() are
+    -- useful to the programs calling intersection in order to homogeinize
+    -- subsequent process, such as a "sensical" approximation of intersection
+    -- result curves (performed with MAX(intersection tolerances))
+    --
+    -- ====================
+
+    ForceTolerances(me : in out; tolarc,toltang : Real from Standard) 
+    is static; 
+    	---Purpose : 
+    	-- Force the tolerance values used by the next Perform(S1,S2) call.
+    
+    GetTolerances(me ; tolarc,toltang : in out Real from Standard) is static;
+    	---Purpose : 
+    	-- Return the tolerance values used in the last Perform() call
+    	-- If ForceTolerances() has been called, return the given values.
+	-- If not, return values extracted from shapes.
+
+    -- -------
+    -- private
+    -- -------
+
+    ShapeTolerances(me : in out; S1,S2 : Shape from TopoDS) is static private;
+	---Purpose: extract tolerance values from shapes <S1>,<S2>,
+	--          in order to perform intersection between <S1> and <S2>
+	--          with tolerance values "fitting" the shape tolerances.
+       	-- (called by Perform() by default, when ForceTolerances() has not 
+	--  been called)
+
+    ToleranceMax(me; S : Shape from TopoDS; T : ShapeEnum from TopAbs)
+    returns Real from Standard is static private;
+    	---Purpose : returns the max tolerance of sub-shapes of type <T>
+    	--           found in shape <S>. If no such sub-shape found, return
+    	--           Precision::Intersection()
+        -- (called by ShapeTolerances())
+
+
+fields
+
+    myIntersector       : Intersection from IntPatch;
+    myIntersectionDone  : Boolean from Standard;
+    myTol1              : Real from Standard;      -- "TolArc"
+    myTol2              : Real from Standard;      -- "TolTang"
+    myForceTolerances   : Boolean from Standard;
+    myHAL               : HArray1OfLineInter from TopOpeBRep;
+    myLine              : LineInter from TopOpeBRep;
+    myLineIndex         : Integer from Standard;
+    myLineFound         : Boolean;
+    myLineNb            : Integer from Standard;
+    myFace1             : Face from TopoDS;
+    myFace2             : Face from TopoDS;
+    mySurface1          : HSurface from BRepAdaptor;
+    mySurface2          : HSurface from BRepAdaptor;
+    mySurfaceType1      : SurfaceType from GeomAbs;
+    mySurfaceType2      : SurfaceType from GeomAbs;
+    mySurfacesSameOriented : Boolean from Standard;
+    myDomain1           : TopolTool from BRepTopAdaptor;
+    myDomain2           : TopolTool from BRepTopAdaptor;
+    myEdgeRestrictionMap : IndexedMapOfShape from TopTools;
+    myNullShape : Shape from TopoDS; -- dummy
+    
+end FacesIntersector from TopOpeBRep;

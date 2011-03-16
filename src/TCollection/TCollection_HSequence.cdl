@@ -1,0 +1,276 @@
+-- File:	TCollection_HSequence.cdl
+-- Created:	Thu Nov 26 19:33:29 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class HSequence from TCollection 
+    (Item as any;
+     TheSequence as any) -- Sequence from TCollection(Item))  
+inherits TShared from MMgt
+
+    ---Purpose: A sequence of items indexed by an integer.
+    -- Sequences have about the same goal as unidimensional
+    -- arrays (TCollection_HArray1): they are commonly used
+    -- as elementary data structures for more complex objects.
+    -- But a sequence is a structure of variable size: sequences
+    -- avoid the use of large and quasi-empty arrays. Exploring
+    -- a sequence data structure is efficient when the exploration
+    -- is done in sequence; elsewhere a sequence item takes
+    -- longer to be read than an array item. Note also that
+    -- sequences are not efficient when they have to support
+    -- numerous algorithmic explorations: a map is better for that purpose.
+    -- HSequence objects are handles to sequences.
+    -- -   HSequence sequences may be shared by several objects.
+    --  -   You may use a TCollection_Sequence structure to
+    --  have the actual sequence.
+    -- HSequence is a generic class which depends on two parameters:
+    -- -   Item, the type of element in the sequence,
+    -- -   Seq, the actual type of sequence handled by
+    --   HSequence. This is an instantiation with Item of the
+    --   TCollection_Sequence generic class.A
+
+raises
+    NoSuchObject from Standard,
+    OutOfRange from Standard
+    
+is 
+	Create returns mutable HSequence from TCollection;
+		---Purpose: Constructs an empty sequence.
+    	    	-- Use:
+    	    	-- -   the function Append or Prepend to add an item or
+    	    	--   a collection of items at the end, or at the beginning of   the sequence,
+    	    	-- -   the function InsertAfter or InsertBefore to add an
+    	    	--   item or a collection of items at any position in the sequence,
+    	    	-- -   the function SetValue or ChangeValue to assign a
+    	    	--   new value to an item of the sequence,
+    	    	-- -   the function Value to read an item of the sequence,
+    	    	-- -   the function Remove to remove an item at any position in the sequence.
+		---C++: inline
+		
+	IsEmpty(me) returns Boolean;
+		---Level: Public
+		---Purpose: returns True if the sequence <me> contains no elements.
+		---C++: inline
+    
+
+	Length(me)  returns Integer;
+		---Level: Public
+		---Purpose: Returns  the  number  of element(s) in the
+		-- sequence.  Returns zero if the sequence is empty.
+		--          
+		---C++: inline
+
+	Clear(me : mutable);
+		---Level: Public
+		---Purpose: Removes all element(s) of the sequence <me>
+		-- Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = ()
+
+	Append(me : mutable; anItem : Item);
+		---Level: Public
+		---Purpose: Appends <anItem> at the end of <me>.
+		-- Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (A B C anItem)
+
+	Append(me : mutable; aSequence : HSequence);
+		---Level: Public
+		---Purpose: Concatenates <aSequence> at the end of <me>.
+		-- Example:
+		-- before
+		--   me = (A B C)
+		--   aSequence  = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   aSequence  = (D E F)
+	
+
+	Prepend(me : mutable; anItem : Item);
+		---Level: Public
+		---Purpose: Add <anItem> at the beginning of <me>.
+		-- Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (anItem A B C )
+
+	Prepend(me : mutable; aSequence : HSequence);
+		---Purpose: Concatenates <aSequence> at the beginning of <me>.
+		-- Example:
+		-- before 
+		-- me = (A B C) 
+		-- aSequence =  (D E F)
+		-- after me = (D E F A B C) 
+		-- aSequence = (D E F)
+
+	Reverse(me : mutable);
+		---Purpose: Reverses the order of items on <me>.The first one becomes the last one and inversely.
+		-- Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (C B A)
+
+	InsertBefore(me : mutable; anIndex : Integer; anItem : Item) 
+	raises OutOfRange from Standard;
+		---Purpose: Inserts  <anItem> in  <me>  before the position <anIndex>.
+		-- Raises an exception if the anIndex is out of bounds.
+		-- Example:
+		-- before
+		--   me = (A B D), anIndex = 3, anItem = C
+		-- after
+		--   me = (A B C D )
+
+	InsertBefore(me : mutable ; anIndex : Integer; aSequence : HSequence) 
+	raises OutOfRange from Standard;
+		---Purpose: Inserts the  sequence <aSequence>  in  <me> before
+		-- the position <anIndex>.
+		-- Raises an exception if the anIndex is out of bounds.
+		-- Example:
+		-- before
+		--   me = (A B F), anIndex = 3, aSequence = (C D E)
+		-- after
+		--   me = (A B C D E F)
+		--   aSequence  = (C D E)
+
+	InsertAfter(me : mutable; anIndex : Integer; anItem : Item) 
+	raises OutOfRange from Standard;
+		---Purpose: Inserts  <anItem>  in  <me> after the  position
+		--          <anIndex>.
+		-- Raises an exception if anIndex is out of bound.
+		-- Example:
+		-- before
+		--   me = (A B C), anIndex = 3, anItem = D
+		-- after
+		--   me = (A B C D)
+
+	InsertAfter(me : mutable ; anIndex : Integer; aSequence : HSequence) 
+	raises OutOfRange from Standard;
+		---Purpose: Inserts the sequence  <aSequence> in  <me>
+		-- after the position <anIndex>.
+		-- Raises an exception if  anIndex is out of bound.
+		-- Example:         
+		-- before
+		--   me = (A B C), anIndex = 3, aSequence = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   aSequence  = (D E F)
+
+	Exchange(me : mutable; anIndex, anOtherIndex : Integer)
+    	raises OutOfRange from Standard;
+		---Purpose: Swaps   elements   which  are  located  at
+		-- positions <anIndex>  and <anOtherIndex> in <me>.
+		-- Raises  an exception if  anIndex or anOtherIndex is out of bound.
+		-- Example:
+		-- before
+		--   me = (A B C), anIndex = 1, anOtherIndex = 3            
+		-- after
+		--   me = (C B A)           
+
+
+	Split(me : mutable; anIndex : Integer) 
+    	returns mutable HSequence 
+        raises OutOfRange from Standard
+		---Purpose: Keeps in <me> the items 1 to <anIndex>-1 and
+		-- returns the items <anIndex> to the end.
+		-- Example:
+		--  before
+		--   me = (A B C D) ,anIndex = 3
+		-- after
+		--   me  =   (A B)
+		--   returns (C D)
+	is static;
+
+	SetValue(me : mutable; anIndex : Integer; anItem : Item) 
+	raises OutOfRange from Standard
+		---Purpose: Sets  <anItem> to  be   the item  at   position
+		-- <anIndex> in <me>.
+		-- Raises an exception if anIndex is out of bounds
+	    	-- Example:
+		-- before 
+		--   me = (A B D), anIndex = 3, anItem = C
+		-- after
+		--   me = (A B C)
+	is static;
+
+	Value(me; anIndex : Integer) returns any Item 
+    	raises OutOfRange from Standard
+		---Purpose: Returns  the Item  at position <anIndex>  in <me>. 
+		-- Raises an exception if the anIndex is out of bound
+		-- Example:
+		-- before 
+		--   me = (A B C), anIndex = 1
+		-- after
+		--   me = (A B C)
+		-- returns 
+		--   A
+		---C++: return const &
+    	is static;
+
+	ChangeValue(me : mutable; anIndex : Integer) returns any Item 
+    	raises OutOfRange from Standard
+		---Purpose: Returns  the Item  at position <anIndex>  in <me>. 
+		-- Raises an exception if the anIndex is out of bound.
+		-- Example:
+		-- before 
+		--   me = (A B C), anIndex = 1
+		-- after
+		--   me = (A B C)
+		-- returns 
+		--   A
+		---C++: return &
+    	is static;
+
+	Remove(me : mutable; anIndex : Integer) 
+    	raises OutOfRange from Standard;
+		---Purpose: Removes  from  <me> the  item at  position
+		-- <anIndex>.
+		-- Raises an exception if anIndex is out of bounds.
+    	    	-- Example:
+		-- before
+		--   me = (A B C), anIndex = 3
+		-- after
+		--   me = (A B)
+
+	Remove(me : mutable; fromIndex, toIndex : Integer) 
+      	raises OutOfRange from Standard;
+		---Purpose: Removes  from  <me>    all  the  items  of
+		-- positions between <fromIndex> and <toIndex>.
+		-- Raises an exception if the indices are out of bounds.
+		-- Example:
+		-- before
+		--   me = (A B C D E F), fromIndex = 1 toIndex = 3
+		-- after
+		--   me = (D E F)
+	
+	Sequence(me) returns TheSequence;
+	    ---Purpose: Returns the Seq sequence used as a field by this
+    	    -- sequence; the returned sequence is not modifiable;
+	    ---C++: return const &
+	    ---C++: inline
+
+	ChangeSequence(me : mutable) returns TheSequence;
+	    ---Purpose: -   Returns a modifiable reference on the Seq
+    	    -- sequence used as a field by this sequence, in order to modify it.
+	    ---C++: return &
+	    ---C++: inline
+  
+        ShallowCopy(me) returns mutable like me;
+            ---Purpose: function call  
+	    ---C++: function call 
+
+        -- IsSameState (me; other : like me)  returns Boolean;
+   
+fields 
+  mySequence : TheSequence;
+end;
+
+
+

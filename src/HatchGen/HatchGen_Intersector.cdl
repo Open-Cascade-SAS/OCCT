@@ -1,0 +1,117 @@
+-- File:	HatchGen_Intersector.cdl
+-- Created:	Mon Mar 21 16:53:32 1994
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:	Matra Datavision 1994
+
+deferred generic class Intersector from HatchGen
+    (TheCurveH as any ; -- as Curve from Geom2dAdaptor
+     TheCurveE as any ) -- as Curve from Geom2dAdaptor
+
+
+inherits Intersection from IntRes2d
+
+uses 
+    Lin2d from gp,
+    Dir2d from gp
+    
+
+
+
+is
+
+    Initialize
+    
+    	---Purpose: Creates an empty intersector
+
+    	is protected ;
+	
+
+    Initialize(Confusion : Real from Standard ;
+    	       Tangency  : Real from Standard)
+
+    	---Purpose: Creates an intersector.
+        is protected ; 
+
+
+    ConfusionTolerance (me)
+
+    	---Purpose: Returns the confusion tolerance of the
+    	--          intersector.
+
+    	returns Real from Standard
+	is static ;
+
+
+    SetConfusionTolerance (me : in out ;
+    	    	    	   Confusion : Real from Standard)
+
+    	---Purpose: Sets the confusion tolerance of the intersector.
+
+	is static ;
+
+
+    TangencyTolerance (me)
+
+    	---Purpose: Returns the tangency tolerance of the
+    	--          intersector.
+
+    	returns Real from Standard
+	is static ;
+
+
+    SetTangencyTolerance (me : in out ;
+    	    	    	  Tangency : Real from Standard)
+
+    	---Purpose: Sets the tangency tolerance of the intersector.
+
+	is static ;
+
+
+    Intersect (me : in out ; C1 : in out TheCurveE ; 
+    	       	    	     C2 : in out TheCurveH )
+
+    	---Purpose: Intersects the curves C1 and C2.
+    	--          The results are retreived by the usual methods
+    	--          described in IntRes2d_Intersection.
+
+    	is static ;
+
+-------------------------------------------------------------------------
+---- M e t h o d s   u s e d   b y   t h e   C l a s s i f i e r 2 d  ---
+-------------------------------------------------------------------------
+
+
+    Perform(me    : in out;
+             L    :         Lin2d from gp; 
+             P    :         Real  from Standard; 
+             Tol  :         Real  from Standard; 
+             E    :         TheCurveE)
+	     
+	---Purpose: Performs the intersection   between the  2d   line
+	--          segment (<L>, <P>) and  the  Curve <E>.  The  line
+	--          segment  is the  part  of  the  2d   line   <L> of
+	--          parameter range [0, <P>] (P is positive and can be
+	--          RealLast()). Tol is the  Tolerance on the segment.
+	--          The order  is relevant, the  first argument is the
+	--          segment, the second the Edge.
+    is static;
+	
+    LocalGeometry(me; 
+                  E :     TheCurveE ; 
+                  U :     Real  from Standard; 
+    	    	  T : out Dir2d from gp; 
+    	    	  N : out Dir2d from gp;
+                  C : out Real)
+		  
+	---Purpose: Returns in <T>,  <N> and <C>  the tangent,  normal
+	--          and  curvature of the edge  <E> at parameter value
+	--          <U>.
+    is static;
+
+    
+end Intersector from HatchGen ;
+
+
+
+

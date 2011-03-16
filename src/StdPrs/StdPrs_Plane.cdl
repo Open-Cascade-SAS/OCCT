@@ -1,0 +1,41 @@
+-- File:	StdPrs_Plane.cdl
+-- Created:	Mon Jul 24 16:39:19 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Plane from StdPrs
+	 
+inherits Root from Prs3d
+
+    	---Purpose: A framework to display infinite planes.
+          
+uses 
+    Surface           from Adaptor3d,
+    Presentation      from Prs3d,
+    Drawer            from Prs3d,
+    TypeOfLinePicking from Prs3d,
+    Length            from Quantity
+    
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+         	 aPlane       : Surface      from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+		 
+    	---Purpose: Defines display of infinite planes.
+    	-- The infinite plane aPlane is added to the display
+    	-- aPresentation, and the attributes of the display are
+    	-- defined by the attribute manager aDrawer.
+
+    Match(myclass; X,Y,Z   : Length  from Quantity;
+    	          aDistance: Length  from Quantity;
+                  aPlane   : Surface from Adaptor3d;
+    	          aDrawer  : Drawer  from Prs3d)
+    returns Boolean from Standard;
+
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          plane is less than aDistance.
+
+
+end Plane;

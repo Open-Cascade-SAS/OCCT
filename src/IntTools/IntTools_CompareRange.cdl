@@ -1,0 +1,53 @@
+-- File:	IntTools_CompareRange.cdl
+-- Created:	Tue Oct 24 14:07:14 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class CompareRange from IntTools 
+
+	---Purpose: Auxiliary class to provide a sorting Ranges, 
+        --          taking  into  account a value of Left .   
+
+uses
+    Range from IntTools
+--raises
+
+is
+    Create   
+    	returns CompareRange from IntTools; 
+	---Purpose:
+	--- Empty constructor
+	---
+	 
+    Create  (aTol:Real from Standard) 
+    	returns CompareRange from IntTools;
+	---Purpose:
+	--- Initializes me by tolerance
+	---
+	 
+    IsLower (me; Left, Right: Range from IntTools)
+	---Purpose: 
+    	--- Returns True if <Left> is lower than <Right>.
+	---
+    	returns Boolean from Standard;
+    
+    IsGreater (me; Left, Right: Range from IntTools)
+	---Level: Public
+	---Purpose: 
+    	--- Returns True if <Left> is greater than <Right>.
+	---
+    	returns Boolean from Standard;
+
+    IsEqual(me; Left, Right: Range from IntTools)
+	---Level: Public
+	---Purpose: 
+    	--- Returns True when <Right> and <Left> are equal.
+	---
+    	returns Boolean from Standard ;
+
+fields
+    myTol: Real from Standard; 
+
+end CompareRange;

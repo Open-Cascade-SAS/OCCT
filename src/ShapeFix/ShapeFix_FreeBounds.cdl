@@ -1,0 +1,97 @@
+-- File:	ShapeFix_FreeBounds.cdl
+-- Created:	Wed Sep 16 12:44:57 1998
+-- Author:	Roman LYGIN <rln@nnov.matra-dtv.fr>
+--		Pavel DURANDIN <pdn@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class FreeBounds from ShapeFix
+
+    ---Purpose: This class is intended to output free bounds of the shape
+    --          (free bounds are the wires consisting of edges referenced by the
+    --          only face).
+    --          For building free bounds it uses ShapeAnalysis_FreeBounds class.
+    --          This class complements it with the feature to reduce the number
+    --          of open wires.
+    --          This reduction is performed with help of connecting several
+    --          adjacent open wires one to another what can lead to:
+    --          1. making an open wire with greater length out of several
+    --             open wires
+    --          2. making closed wire out of several open wires
+    --
+    --          The connecting open wires is performed with a user-given
+    --          tolerance.
+    --
+    --          When connecting several open wires into one wire their previous
+    --          end vertices are replaced with new connecting vertices. After
+    --          that all the edges in the shape sharing previous vertices inside
+    --          the shape are updated with new vertices. Thus source shape can
+    --          be modified.
+    --
+    --          Since interface of this class is the same as one of
+    --          ShapeAnalysis_FreeBounds refer to its CDL for details.
+
+
+uses
+    Shape    from TopoDS,
+    Compound from TopoDS
+
+is
+
+    Create returns  FreeBounds from  ShapeFix;
+    	---Purpose: Empty constructor
+
+    Create (shape      : Shape   from TopoDS; 
+    	    sewtoler   : Real;
+	    closetoler : Real;
+    	    splitclosed: Boolean;
+    	    splitopen  : Boolean)
+    returns FreeBounds from ShapeFix;
+    	---Purpose: Builds forecasting free bounds of the <shape> and connects
+        --          open wires with tolerance <closetoler>.
+    	--          <shape> should be a compound of faces.
+        --          Tolerance <closetoler> should be greater than tolerance
+        --          <sewtoler> used for initializing sewing analyzer, otherwise
+        --          connection of open wires is not performed.
+    
+    Create (shape      : Shape   from TopoDS;
+    	    closetoler : Real;
+    	    splitclosed: Boolean;
+    	    splitopen  : Boolean)
+    returns FreeBounds from ShapeFix;
+    	---Purpose: Builds actual free bounds of the <shape> and connects
+        --          open wires with tolerance <closetoler>.
+    	--          <shape> should be a compound of shells.
+
+    GetClosedWires (me) returns Compound from TopoDS; 
+    	---Purpose: Returns compound of closed wires out of free edges.
+	---C++: inline
+	---C++: return const &
+     
+    GetOpenWires (me) returns Compound from TopoDS; 
+    	---Purpose: Returns compound of open wires out of free edges.
+	---C++: inline
+	---C++: return const &
+	
+    GetShape (me) returns Shape from TopoDS;
+    	---Purpose: Returns modified source shape.
+	---C++: inline
+	---C++: return const &
+	
+	
+    ---Level: Internal
+    Perform (me: in out) returns Boolean is private;
+	
+fields
+
+    myWires: Compound from TopoDS; 
+    myEdges: Compound from TopoDS; 
+    myShape: Shape    from TopoDS;
+    
+    myShared     : Boolean;
+    mySewToler   : Real;
+    myCloseToler : Real;
+    mySplitClosed: Boolean;
+    mySplitOpen  : Boolean;
+
+end FreeBounds;

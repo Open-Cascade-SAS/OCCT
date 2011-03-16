@@ -1,0 +1,33 @@
+-- File:	TDataStd_DeltaOnModificationOfIntArray.cdl
+-- Created:	Thu Sep  6 16:58:59 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class DeltaOnModificationOfIntArray from TDataStd inherits DeltaOnModification from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a MODIFICATION action.
+
+uses
+    Attribute        from TDF,
+    HArray1OfInteger from TColStd,
+    IntegerArray     from TDataStd
+
+is
+    Create (Arr : IntegerArray     from TDataStd)
+    	returns mutable DeltaOnModificationOfIntArray from TDataStd;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+fields
+  
+ myIndxes  :  HArray1OfInteger from TColStd; 
+ myValues  :  HArray1OfInteger from TColStd; 
+ myUp1     :  Integer          from Standard;
+ myUp2     :  Integer          from Standard;
+
+end DeltaOnModificationOfIntArray;

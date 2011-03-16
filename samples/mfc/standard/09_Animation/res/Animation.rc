@@ -1,0 +1,330 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\Common\res\OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\Common\\res\\OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "Toolbar.bmp"
+IDR_3dCHILDFRAME        BITMAP                  "child2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  21, 20
+BEGIN
+    BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_RESTART
+    BUTTON      ID_STOP
+    BUTTON      ID_Thread
+    BUTTON      ID_SHADING
+    SEPARATOR
+    BUTTON      ID_FILE_LOADGRID
+    BUTTON      ID_SENSITIVITY
+    BUTTON      ID_VIEW_DISPLAYSTATUS
+    BUTTON      ID_WALK_WALKTHRU
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_3dCHILDFRAME TOOLBAR  20, 20
+BEGIN
+    BUTTON      ID_BUTTONZoomAll
+    BUTTON      ID_BUTTONZoomWin
+    BUTTON      ID_BUTTONZoomProg
+    SEPARATOR
+    BUTTON      ID_BUTTONPan
+    BUTTON      ID_BUTTONPanGlo
+    SEPARATOR
+    BUTTON      ID_BUTTONFly
+    BUTTON      ID_BUTTONTurn
+    SEPARATOR
+    BUTTON      ID_BUTTONRot
+    BUTTON      ID_BUTTONReset
+    SEPARATOR
+    BUTTON      ID_BUTTONHlrOff
+    BUTTON      ID_BUTTONHlrOn
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About DisplayAnimation...",  ID_APP_ABOUT
+    END
+END
+
+IDR_3DTYPE MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About DisplayAnimation...",  ID_APP_ABOUT
+    END
+    POPUP "Walk"
+    BEGIN
+        MENUITEM "Sensitivity...",              ID_SENSITIVITY
+        MENUITEM "Walkthrough",                 ID_WALK_WALKTHRU
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ShadingBoxDialog DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Deviation Coefficient"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,21,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,111,65,50,14
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | WS_BORDER | WS_TABSTOP,29,30,125,17
+    LTEXT           "Fine        Default             Unpolished",IDC_STATIC,35,14,118,13
+END
+
+IDD_ThreadBoxDialog DIALOG  0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Change the animation thread"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,22,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,107,65,50,14
+    GROUPBOX        "Angle increment ",IDC_STATIC,7,7,172,49
+    EDITTEXT        IDC_Angle,65,27,48,16,ES_AUTOHSCROLL
+END
+
+IDD_SENS DIALOG  0, 0, 229, 50
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sensitivity"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Fly",IDC_STATIC,8,10,10,8
+    EDITTEXT        IDC_FLY,33,8,76,15,ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_ARROWKEYS,112,8,11,15
+    LTEXT           "Turn",IDC_STATIC,6,28,16,8
+    EDITTEXT        IDC_TURN,34,25,76,15,ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPIN2,"msctls_updown32",UDS_ARROWKEYS,112,25,11,15
+    DEFPUSHBUTTON   "OK",IDOK,170,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,170,23,50,14
+END
+
+IDD_TUNE DIALOG  0, 0, 131, 154
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Display Tuning"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Distance",IDC_STATIC,9,8,29,8
+    EDITTEXT        IDC_FOCDIST,46,5,57,14,ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPINFOC,"msctls_updown32",UDS_ARROWKEYS,107,6,11,14
+    LTEXT           "Aperture",IDC_STATIC,9,25,28,8
+    EDITTEXT        IDC_APPERTURE,46,23,57,14,ES_AUTOHSCROLL
+    CONTROL         "Spin4",IDC_SPINANG,"msctls_updown32",UDS_ARROWKEYS,107,23,11,14
+    LTEXT           "X  :",IDC_STATIC,17,52,12,8
+    LTEXT           "0.",IDC_XEYE,31,52,66,8
+    GROUPBOX        "Eye",IDC_STATIC,9,41,110,43
+    LTEXT           "Y  :",IDC_STATIC,17,62,12,8
+    LTEXT           "0.",IDC_YEYE,31,62,66,8
+    LTEXT           "Z  :",IDC_STATIC,17,72,12,8
+    LTEXT           "0.",IDC_ZEYE,31,72,66,8
+    LTEXT           "X  :",IDC_STATIC,15,98,12,8
+    LTEXT           "0.",IDC_XAT,33,98,66,8
+    GROUPBOX        "Target",IDC_STATIC,9,86,110,45
+    LTEXT           "Y  :",IDC_STATIC,15,109,12,8
+    LTEXT           "0.",IDC_YAT,33,109,66,8
+    LTEXT           "Z  :",IDC_STATIC,15,120,12,8
+    LTEXT           "0.",IDC_ZAT,33,120,66,8
+    LTEXT           "Twist :",IDC_STATIC,11,137,22,8
+    LTEXT           "0.",IDC_TWIST,35,137,77,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Matra Datavision"
+            VALUE "FileDescription", "Sample Animation MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "SampleAnimation"
+            VALUE "LegalCopyright", "Copyright (C) 1998"
+            VALUE "OriginalFilename", "SampleAnimation.EXE"
+            VALUE "ProductName", "SampleAnimation Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Animation"
+    IDR_SAMPLE3DTYPE        "\nAnimation\nAnimation\n\n\nAnimation.Document\nAnimation Document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_ANIMATION            "Build the model and start the animation\nStart the animation"
+    ID_STOP                 "Stop the animation\nStop the animation"
+    ID_RESTART              "Restart the animation\nRestart the animation"
+    ID_SHADING              "Deviation coefficient\nDeviation coefficient"
+    ID_Thread               "Change the animation thread\nAnimation thread"
+    ID_DESTRUCT             "Destruct the presentation\nDestruct the presentation"
+    ID_FILE_LOADGRID        "Load Grid Files\nLoad Grid File"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_DISPLAYSTATUS   "Show/Hide the display status Window\nShow/Hide the display status Window"
+    ID_WALK_WALKTHRU        "Toggle Walkthru On/Off\nToggle Walkthru On/Off"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

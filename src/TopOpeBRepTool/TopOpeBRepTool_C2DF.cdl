@@ -1,0 +1,34 @@
+-- File:	TopOpeBRepTool_C2DF.cdl
+-- Created:	Mon Mar 23 17:06:15 1998
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class C2DF from TopOpeBRepTool
+
+uses
+
+    Curve from Geom2d,
+    Face from TopoDS
+
+is
+
+    Create returns C2DF from TopOpeBRepTool;    
+    Create(PC : Curve from Geom2d; f2d,l2d,tol : Real; F : Face from TopoDS) 
+    returns C2DF from TopOpeBRepTool;
+    SetPC(me : in out;PC : Curve from Geom2d; f2d,l2d,tol : Real);
+    SetFace(me : in out; F : Face from TopoDS);
+    PC(me; f2d,l2d,tol : out Real) returns Curve from Geom2d;
+    ---C++: return const &
+    Face(me) returns Face from TopoDS;
+    ---C++: return const &
+    IsPC(me;PC:Curve from Geom2d) returns Boolean;
+    IsFace(me;F:Face from TopoDS) returns Boolean;
+    
+fields
+    
+    myPC : Curve from Geom2d;
+    myf2d,myl2d,mytol : Real;
+    myFace : Face from TopoDS;
+    
+end C2DF;

@@ -1,0 +1,960 @@
+-- File:	WNT_WDriver.cdl
+-- Created:	Thu Jan 25 16:02:32 1996
+-- Authors:	LAVNIKOV Alexey & PLOTNIKOV Eugeny
+---Copyright:	Matra Datavision 1996
+
+class WDriver from WNT inherits WindowDriver from Aspect
+
+	---Purpose: This class defines Windows NT window driver
+
+ uses
+ 
+    ExtendedString        from TCollection,
+    Length                from Quantity,
+    Factor                from Quantity,
+    Ratio                 from Quantity,
+    PlaneAngle            from Quantity,
+    Array1OfShortReal     from TShort,
+    TypeOfResize          from Aspect,
+    TypeOfDrawMode        from Aspect,
+    TypeOfText            from Aspect,
+    ColorMap              from Aspect,
+    TypeMap               from Aspect,
+    WidthMap              from Aspect,
+    FontMap               from Aspect,
+    MarkMap               from Aspect,
+    Window                from WNT,
+    HColorTable           from WNT,
+    HFontTable            from WNT,
+    HArray1OfInteger      from TColStd,
+    FontMapEntry          from WNT,
+
+    FontManager           from MFT,
+    HListOfMFTFonts       from WNT,
+    HArray1OfShortReal    from TShort,
+    TextManager           from WNT
+
+ raises
+ 
+    DriverDefinitionError from Aspect,
+    DriverError           from Aspect
+
+ is
+
+    Create ( aWindow : Window from WNT )
+     returns mutable WDriver from WNT
+     raises  DriverDefinitionError from Aspect;
+    	---Level:   Public
+    	---Purpose: Creates Windows NT window driver associated
+    	--          with the Windows NT window
+
+
+    Destroy ( me : mutable )
+    raises DriverError from Aspect is virtual;
+	---Level: Public
+    	---Purpose: Destroy the Driver
+    	---Category: Methods to modify the class definition
+	---C++: alias ~
+
+	SelectBuffer( me; aRetainBuffer: Integer from Standard) returns Address from Standard;
+	---Level: Public
+    	---Purpose: Selects RetainBuffer for output
+    	---Category: Methods to manage buffers
+
+
+    BeginDraw (
+     me            : mutable;
+     aDoubleBuffer : Boolean = Standard_True;
+     aRetainBuffer : Integer = 0
+    )
+        ---Purpose: Begin graphics and drawn directly to the Window or Pixmap if
+        --<aRetainBuffer> is 0 or in the retain buffer if > 0.
+    raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not open.
+        --         call BufferIsOpen() method before.
+
+    EndDraw ( me : mutable; aSynchronize : Boolean = Standard_False ) is virtual;
+	---Level:   Public
+	---Purpose: Called by the method Graphic2d_View::Update, this
+	--	    method manages the buffer flushing and Wait after up to date
+	--	    display when Synchronize is TRUE.
+	---Category: Methods to modify the class definition
+
+    ResizeSpace ( me: mutable )
+     returns TypeOfResize from Aspect
+     	---Level:   Public
+	---Purpose: Resizes the WorkSpace depending of the Window size
+	--	    MUST be call after a Resize or Move WindowDriver Event
+        --	    Returns the TypeOfResize gravity mode.
+	--  Trigger: Raises if the type of resizing is unknown.
+     raises DriverError from Aspect is virtual;
+	---Category: Methods to modify the class definition
+
+
+	---------------------------------------------
+	-- Category: Methods to set the attributes
+	---------------------------------------------
+
+
+    SetHighlightColor ( me; aColorIdx : Integer from Standard )
+     returns Boolean from Standard is static;
+    	---Level:   Public
+    	---Purpose: Sets the highlight color for the drawing. Returns False
+    	--          if the graphic device does not support palette mechanism.
+
+    SetDrawMode (
+     me    : mutable;
+     aMode : TypeOfDrawMode from Aspect
+    )
+     is virtual;
+        ---Level:   Public
+	---Purpose: Change the current drawing mode of the Driver
+	--  	    TODM_REPLACE : the primitive is drawn with his defined color.
+	--	    TODM_ERASE   : the primitive is erased from the window.
+	--	    TODM_XOR     : the primitive is xored to the window.
+	--	    TODM_XORLIGHT: the primitive is xored depending of the current
+	--			   highlight and background colors.
+
+    SetLineAttrib (
+     me         : mutable;
+     ColorIndex : Integer from Standard;
+     TypeIndex  : Integer from Standard;
+     WidthIndex : Integer from Standard
+    )
+	---Level:    Public
+	---Purpose:  Sets the line attributes.
+	--  Category: Methods to set the line attributes
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect is virtual;
+
+    SetTextAttrib (
+     me         :  mutable;
+     ColorIndex : Integer from Standard;
+     FontIndex  : Integer from Standard
+    )
+	---Level:    Public
+	---Purpose:  Sets the text attributes.
+	--  Category: Methods to set the text attributes
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect is virtual;
+
+    SetTextAttrib (
+     me           : mutable;
+     ColorIndex   : Integer    from Standard;
+     FontIndex    : Integer    from Standard;
+     aSlant       : PlaneAngle from Quantity;
+     aHScale      : Factor     from Quantity;
+     aWScale      : Factor     from Quantity;
+     isUnderlined : Boolean    from Standard = Standard_False
+    )
+	---Level:    Public
+	---Purpose:  Sets the Extended text attributes.
+	--  Category: Methods to set the text attributes
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect is virtual;
+
+    SetPolyAttrib (
+     me           : mutable;
+     ColorIndex   : Integer from Standard;
+     TileIndex    : Integer from Standard;
+     DrawEdgeFlag : Boolean from Standard = Standard_False
+    )
+	---Level:    Public
+	---Purpose:  Sets the polygon attributes.
+	--  Warning:
+	-- <ColorIndex> is the background poly color index.
+	-- <TileIndex> is the background poly fill rule index.
+	-- If <DrawEdgeFlag> is TRUE the edge of the poly is drawn with the
+	--  current line attributes.
+	--  Category: Methods to set the poly attributes
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect is virtual;
+
+	SetPolyAttrib (
+     me           : mutable;
+     ColorIndex   : Integer from Standard;
+     TileIndex    : Integer from Standard;
+	 PolygonMode  : Integer from Standard;
+     DrawEdgeFlag : Boolean from Standard = Standard_False
+    )
+	---Level:    Public
+	---Purpose:  Sets the polygon attributes.
+	--  Warning:
+    --  <PolygonMode> way to fill consecutive lines
+	--  Category: Methods to set the poly attributes
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect;
+
+    SetMarkerAttrib (
+     me             : mutable;
+     ColorIndex     : Integer from Standard;
+     EdgeWidthIndex : Integer from Standard;
+     FillMarker     : Boolean from Standard = Standard_False
+    )
+	---Level:   Public
+	---Purpose: Sets the marker attributes.
+	--  Warning:
+	-- <ColorIndex> is the edge or fill marker color index.
+	-- <EdgeWidthIndex> is the edge marker thickness index.
+	-- If <FillMarker> is TRUE the marker is filled on the first set
+	--  of consecutive drawn points.
+	--  Trigger:  Raises if one of the index is out of range.
+     raises DriverError from Aspect is virtual;
+     
+
+     	-----------------------------------------
+	-- Category: Methods to manage the images
+	-----------------------------------------
+        
+    IsKnownImage ( me : mutable; anImage : Transient from Standard )
+     returns Boolean from Standard is virtual;
+	---Level:   Public
+        ---Purpose: Returns Standard_True if the associated driver
+	--	    have stored the image and Standard_False if not.
+
+    SizeOfImageFile (
+     me;
+     anImageFile    : CString     from Standard;
+     aWidth,aHeight : out Integer from Standard
+    )
+     returns Boolean from Standard is virtual;
+	---Level:   Public
+        ---Purpose: Returns Standard_True and the Image Size in PIXEL 
+	--          if the image file exist and can be computed by the driver,
+	--          NOTE that only XWD and DIB image file type are recognized
+	--               today. 
+
+    ClearImage (
+     me        : mutable;
+     anImageId : Transient from Standard
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Clears the image in <me>.
+
+    ClearImageFile (
+     me          : mutable;
+     anImageFile : CString from Standard
+    ) 
+     is virtual;
+	---Level:   Public
+	---Purpose: Clears the image associated with the image file.
+
+    DrawImage (
+     me        : mutable;
+     anImageId : Transient from Standard;
+     aX, aY    : ShortReal from Standard
+    )
+	---Level:   Public
+	---Purpose: Draws the image in <me>.
+	--	    <aX>, <aY> is the center of the image.
+	--	    Image center must be defined in DWU space.
+     raises DriverError from Aspect is virtual;
+	---Trigger: If the anImageId is not found 
+
+    DrawImageFile (
+     me          : mutable;
+     anImageFile : CString   from Standard;
+     aX, aY      : ShortReal from Standard;
+     aScale      : Factor    from Quantity = 1.0
+    )
+	---Level:   Public
+	---Purpose: Draws the image file in <me>.
+	--	    <aX>, <aY> is the center of the image.
+	--	    <aScale> the scale factor which is apply on this image
+	--	    Image center must be defined in DWU space.
+        --	    anImageFile must be defined with the full pathname
+ 	--          of the form dev:\path\name.ext or $DIR\name.ext
+	--          with DIR defined in a setenv variable.
+     raises DriverError from Aspect is virtual;
+	---Trigger: If the anImageFile is not found 
+	--          or the Image type is neither XWD nor DIB.
+
+    FillAndDrawImage (
+     me              : mutable;
+     anImageId       : Transient from Standard;
+     aX, aY          : ShortReal from Standard;
+     Width, Height   : Integer from Standard;
+     anArrayOfPixels : Address from Standard
+    )
+	---Level:   Public
+	---Purpose: Stores a complete image and draws it in <me>.
+	--	    Image size must be defined in DWU space>
+	--  Trigger: Raises if the creation of the image failed.
+      raises DriverError from Aspect is virtual;
+
+    FillAndDrawImage (
+     me                           : mutable;
+     anImageId                    : Transient from Standard;
+     aX, aY                       : ShortReal from Standard;
+     anIndexOfLine, Width, Height : Integer from Standard;
+     anArrayOfPixels              : Address from Standard
+    )
+	---Level:   Advanced
+	---Purpose: Stores a line of an image and draws it in <me>.
+	--  Warning: 0<= anIndexOfLine < aHeight
+	--	    anIndexOfLine = 0 must be the first call
+	--  Trigger: Raises if the creation of the image failed.
+     raises DriverError from Aspect is virtual;
+
+
+	---------------------------------------
+	-- Category: Methods to draw primitives
+	---------------------------------------
+
+
+    DrawPolyline (
+     me    : mutable;
+     ListX : Array1OfShortReal from TShort;
+     ListY : Array1OfShortReal from TShort
+    )
+	---Level:   Public
+	---Purpose: Draws the polyline depending of SetLineAttrib() attributes.
+	--  Warning: Coordinates must be defined in DWU space.
+	--  Trigger: Raises if Polyline has too many points (> 1024)
+	--	    Raises if the length of <ListX> is not equal to
+	--	    the length of <ListY>.
+     raises DriverError from Aspect is virtual;
+
+    DrawPolygon (
+     me    : mutable;
+     ListX : Array1OfShortReal from TShort;
+     ListY : Array1OfShortReal from TShort
+    )
+	---Level:   Public
+	---Purpose: Draws the polygone depending of SetPolyAttrib() attributes.
+	--  Warning: Coordinates must be defined in DWU space.
+	--  Trigger: Raises if Polygone has too many points (> 1024)
+	--	    Raises if the length of <ListX> is not equal to
+	--	    the length of <ListY>.
+     raises DriverError from Aspect is virtual;
+
+    DrawSegment (
+     me     : mutable;
+     X1, Y1 : ShortReal from Standard;
+     X2, Y2 : ShortReal from Standard
+    )
+	---Level:   Public
+	---Purpose: Draws the segment depending of SetLineAttrib() attributes.
+	--  Warning: Coordinates must be defined in DWU space.
+     raises DriverError from Aspect is virtual;
+
+    DrawText (
+     me         : mutable;
+     Text       : ExtendedString from TCollection;
+     Xpos, Ypos : ShortReal      from Standard;
+     anAngle    : ShortReal      from Standard = 0.0;
+     aType      : TypeOfText     from Aspect = Aspect_TOT_SOLID
+    )
+	---Level:   Public
+	---Purpose: Draws the text depending of SetTextAttrib() attributes.
+	--  Warning: Coordinates must be defined in DWU space.
+	--  Trigger: Raises if Text has too many chars (> 1024)
+     raises DriverError from Aspect is virtual;
+
+    DrawText (
+     me         : mutable;
+     Text       : CString    from Standard;
+     Xpos, Ypos : ShortReal  from Standard;
+     anAngle    : ShortReal  from Standard = 0.0;
+     aType      : TypeOfText from Aspect = Aspect_TOT_SOLID
+    )
+	---Level  : Public
+	---Purpose: Draws the text depending of SetTextAttrib() attributes.
+	--  Warning: Coordinates must be defined in DWU space.
+	--	    Angle must be defined in RADIAN.
+	--  Trigger: Raises if Text has too many chars (> 1024)
+     raises DriverError from Aspect is virtual;
+
+    DrawPolyText (
+     me      : mutable;
+     aText   : ExtendedString from TCollection;
+     Xpos    : ShortReal      from Standard;
+     Ypos    : ShortReal      from Standard;
+     aMarge  : Ratio          from Quantity = 0.1;
+     anAngle : ShortReal      from Standard = 0.0;
+     aType   : TypeOfText     from Aspect = Aspect_TOT_SOLID
+    )
+        ---Level:   Public
+        ---Purpose: Draws an framed text depending of the
+        -- SetTextAttrib() and SetPolyAttrib() attributes.
+        --  Warning: Coordinates must be defined in DWU space.
+        --          <aMarge> defines the ratio of the space between the 
+        --          polygon borders and the bounding box of the text and 
+        --          depending of the height of the text. 
+        --  Trigger: Raises if Text has too many chars (> 1024)
+        --          or <aMarge is < 0 or > 1.
+     raises DriverError from Aspect is virtual;
+
+     DrawPolyText (
+      me      : mutable;
+      aText   : CString    from Standard;
+      Xpos    : ShortReal  from Standard;
+      Ypos    : ShortReal  from Standard;
+      aMarge  : Ratio      from Quantity = 0.1;
+      anAngle : ShortReal  from Standard = 0.0;
+      aType   : TypeOfText from Aspect = Aspect_TOT_SOLID
+     )
+        ---Level:   Public
+        ---Purpose: Draws an framed text depending of the
+        -- SetTextAttrib() and SetPolyAttrib() attributes.
+        --  Warning: Coordinates must be defined in DWU space.
+        --          <aMarge> defines the ratio of the space between the 
+        --          polygon borders and the bounding box of the text and 
+	--	    depending of the height of the text. 
+        --  Trigger: Raises if Text has too many chars (> 1024)
+        --          or <aMarge is < 0 or > 1.
+      raises DriverError from Aspect is virtual;
+
+     DrawPoint ( me : mutable; X, Y : ShortReal from Standard )
+        ---Level:   Public
+        ---Purpose: Draws a 1 PIXEL point depending of the SetMarkerAttrib() 
+	--          color attribute or add a point depending of the incremental 
+	--          BeginXxxxxx() primitive used.
+      raises DriverError from Aspect is virtual;
+
+     DrawMarker (
+      me            : mutable;
+      aMarker       : Integer   from Standard;
+      Xpos, Ypos    : ShortReal from Standard;
+      Width, Height : ShortReal from Standard;
+      Angle         : ShortReal from Standard = 0.0
+     )
+	---Level: Public
+	---Purpose: Draws the previously defined marker depending of 
+	--          the SetMarkerAttrib() attributes.
+	--  Warning: Coordinates and sizes must be defined in DWU space.
+	--	    Angle must be defined in RADIAN.
+	--	    A one pixel marker is drawn when aMarker index is undefined.
+      raises DriverError from Aspect is virtual;
+
+     DrawArc (
+      me                 : mutable;
+      X, Y               : ShortReal from Standard;
+      aXradius, aYradius : ShortReal from Standard;
+      aStartAngle        : ShortReal from Standard = 0.0;
+      anOpenAngle        : ShortReal from Standard = 6.283185
+     )
+      returns Boolean
+        ---Level:   Public
+        ---Purpose: Draws an Ellipsoid arc of center <X,Y> and Radius
+        --          <aXradius,aYradius> of relative angle <anOpenAngle> from
+        --          the base angle <aStartAngle>
+        --  Warning: Returns FALSE if the hardware can't drawing this
+        --          primitive properly,application must to simulate it.
+        --  Trigger: Raises if one of <aXradius,aYradius> is <= 0.
+      raises DriverError from Aspect is virtual;
+
+     DrawPolyArc (
+      me                   : mutable;
+      X, Y                 : ShortReal from Standard;
+      anXradius, anYradius : ShortReal from Standard;
+      aStartAngle          : ShortReal from Standard = 0.0;
+      anOpenAngle          : ShortReal from Standard = 6.283185
+     )
+      returns Boolean
+        ---Level:   Public
+        ---Purpose: Draws an filled Ellipsoid arc of center <X,Y> and Radius
+        --          <anXradius,anYradius> of relative angle <anOpenAngle> from
+        --          the base angle <aStartAngle> and  depending of the
+        --          SetPolyAttrib() attributes.
+        --  Warning: Returns FALSE if the hardware can't drawing this
+        --          primitive properly,application must to simulate it.
+        --  Trigger: Raises if one of <aXradius,aYradius> is <= 0.
+      raises DriverError from Aspect is virtual;
+
+     BeginPolyline ( me : mutable; aNumber : Integer ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a polyline primitive of <aNumber> of points.
+	--  Warning: Points must be added by the DrawPoint() method.
+
+     BeginPolygon ( me : mutable; aNumber : Integer ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a polygon primitive of <aNumber> of points .
+	--  Warning: Points must be added by the DrawPoint() method.
+ 
+     BeginSegments ( me : mutable ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a set of segments .
+	--  Warning: Segments must be added by DrawSegment() method.
+
+     BeginArcs ( me : mutable ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a set of circles or ellips .
+        --  Warning: Arcs must be added by the DrawArc() method.
+
+     BeginPolyArcs ( me : mutable ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a set of polygon circles or ellips .
+        --  Warning: Arcs must be added by the DrawPolyArc() method.
+ 
+     BeginMarkers ( me : mutable ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a set of markers .
+        --  Warning: Markers must be added by the DrawMarker() method.
+ 
+     BeginPoints ( me : mutable ) is virtual;
+        ---Level:   Public
+        ---Purpose: Begin a set of points .
+        --  Warning: Points must be added by the DrawPoint() method.
+
+     ClosePrimitive ( me : mutable )
+        ---Level:   Public
+        ---Purpose: Close the last Begining primitive
+        --  Trigger: Raises if no primitive have been opened by BeginXxxxxx().
+      raises DriverError from Aspect is virtual;
+
+
+       	---------------------------------------------
+	-- Category: Methods to define the attributes
+	---------------------------------------------
+
+
+     InitializeColorMap (
+      me       : mutable;
+      Colormap : ColorMap from Aspect
+     )
+	---Level:   Public
+	---Purpose: Defines the color map.
+	--  Level:   Public
+	--  Trigger: Raises if the definition failed.
+      raises DriverError from Aspect is virtual protected;
+	---Category: Methods to define the color indices.
+
+     InitializeTypeMap (
+      me      : mutable;
+      Typemap : TypeMap from Aspect
+     )
+	---Purpose: Defines the line type map.
+	--  Level: Public
+	--  Trigger: Raises if the definition failed.
+	raises DriverError from Aspect is virtual protected;
+	---Category: Methods to define the type of line indices.
+
+     InitializeWidthMap (
+      me       : mutable;
+      Widthmap : WidthMap from Aspect
+     )
+	---Purpose: Defines the width line map.
+	--  Level: Public
+	--  Trigger: Raises if the definition failed.
+      raises DriverError from Aspect is virtual protected;
+	---Category: Methods to define the width of line indices.
+
+     InitializeFontMap (
+      me      : mutable;
+      Fontmap : FontMap from Aspect
+     )
+	---Purpose: Defines the font map.
+	--  Level: Public
+	--  Trigger: Raises if the definition failed.
+      raises DriverError from Aspect is virtual protected;
+	---Category: Methods to define the font indices.
+
+     InitializeMarkMap (
+      me      : mutable;
+      Markmap : MarkMap from Aspect
+     )
+	---Purpose: Defines the mark map.
+	--  Level: Public
+	--  Trigger: Raises if the definition failed.
+      raises DriverError from Aspect is virtual protected;
+	---Category: Methods to define the marker indices.
+
+
+        -------------------------------------------------------------
+        -- Category: Methods to define or edit a buffer of primitives
+        -------------------------------------------------------------
+  InternalOpenBuffer (
+     me            : mutable;
+     aRetainBuffer : Integer;
+     aMono         : Boolean;
+     aPivotX       : ShortReal;
+     aPivotY       : ShortReal;
+     aColorIndex   : Integer;
+     aWidthIndex   : Integer;
+     aTypeIndex    : Integer;
+     aFontIndex    : Integer;
+     aDrawMode     : TypeOfDrawMode = Aspect_TODM_REPLACE
+    )
+    returns Address is private;
+
+    OpenBuffer (
+     me            : mutable;
+     aRetainBuffer : Integer;
+     aPivotX       : ShortReal = 0.0;
+     aPivotY       : ShortReal = 0.0; 
+     aWidthIndex   : Integer = 0;
+     aColorIndex   : Integer = 0;
+     aFontIndex    : Integer = 0;
+     aDrawMode     : TypeOfDrawMode = Aspect_TODM_REPLACE
+    )
+    returns Boolean is virtual;
+        ---Purpose: Allocate the retain buffer <aRetainBuffer> ,
+        -- Defines the DWU coordinates of the pivot point for all primitives 
+        --  contains inside.
+        -- Defines the buffer color and font index :
+        --  the default color is the highlight color of the colormap.
+        --  the default font is the default system font of the fontmap. 
+        -- The other attributes are fixed :
+        --  line type is Solid,
+        --  line width is 1 Pixel,
+        --  polygon fill mode is Solid,   
+        -- Returns TRUE if the buffer is allocated and enabled for drawing.
+
+    OpenColorBuffer (
+     me            : mutable;
+     aRetainBuffer : Integer;
+     aPivotX       : ShortReal = 0.0;
+     aPivotY       : ShortReal = 0.0;
+     aWidthIndex   : Integer = 0;
+     aColorIndex   : Integer = 0;
+     aFontIndex    : Integer = 0;
+     aDrawMode     : TypeOfDrawMode = Aspect_TODM_REPLACE
+    )
+    returns Boolean;
+        ---Purpose: Allocate the retain buffer <aRetainBuffer> ,
+        -- Defines the DWU coordinates of the pivot point for all primitives 
+        --  contains inside.
+        -- Defines the buffer color and font index :
+        --  the default color is the highlight color of the colormap.
+        --  the default font is the default system font of the fontmap. 
+        --  the default line type,
+        --  the default line width,
+        --  the default polygon fill mode,   
+        -- Returns TRUE if the buffer is allocated and enabled for drawing.
+
+
+    CloseBuffer (
+     me ; 
+     aRetainBuffer: Integer
+    )
+	---Purpose: Clear & Deallocate the retain buffer <aRetainBuffer>.
+    raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    ClearBuffer (
+     me; 
+     aRetainBuffer: Integer
+    )
+	---Purpose: Erase & Clear ALL primitives retains in the buffer <aRetainBuffer>.
+    raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    DrawBuffer ( me; aRetainBuffer : Integer )
+	---Purpose: Draw ALL primitives retains in the buffer <aRetainBuffer>.
+	--  Warning: Note that the aspect of a retain buffer drawing is 
+	-- mono-colored with the current buffer Attributes and 
+	-- Depending of the DoubleBuffer state flag at the BeginDraw() buffer time,
+	-- when DB is TRUE,an XOR method is use for drawing and erasing buffers in the
+	-- same way.In this case,some color side effect can occurs depending of the 
+	-- traversal primitive colors and the supported hardware.
+	-- when DB is FALSE and the background drawing has been generated with
+	-- DB at TRUE,no color side effect occurs because the DB is used for restoring
+	-- the drawing context at EraseBuffer() time,this is more powerfull for the
+	-- drawing quality excepted for large buffers (flicking) . 
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    EraseBuffer ( me; aRetainBuffer : Integer )
+	---Purpose: Erase ALL primitives retains in the buffer <aRetainBuffer>.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    MoveBuffer (
+     me;
+     aRetainBuffer : Integer;
+     aPivotX       : ShortReal = 0.0;
+     aPivotY       : ShortReal = 0.0
+    ) 
+	---Purpose: Erase , Translate and reDraw ALL primitives retains in the buffer 
+	--  <aRetainBuffer>.
+	--  <aPivotX,aPivotY> are the new DWU attached point absolute coordinates 
+	--  of the buffer pivot point.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened
+	--	   call BufferIsOpen() method before.
+
+    ScaleBuffer (
+     me;
+     aRetainBuffer : Integer; 
+     aScaleX       : Factor = 1.0;
+     aScaleY       : Factor = 1.0
+    )
+	---Purpose: Erase , Scale the buffer from the Pivot point and reDraw ALL primitives 
+	--  retains in the buffer <aRetainBuffer>.
+	--  <aScaleX,aScaleY> are the absolute scale factors apply on the two axis.
+	--  Warning: Note that the scalling of some primitives can provided some bad 
+	--  smoothing side effect (i.e: Circles,...)
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened or 
+	--one of <aScale> factor is <= 0.
+	--	   call BufferIsOpen() method before.
+
+    RotateBuffer (
+     me;
+     aRetainBuffer : Integer;
+     anAngle       : PlaneAngle = 0.0
+    )
+	---Purpose: Erase , Rotate the buffer from the Pivot point and reDraw ALL primitives 
+	--  retains in the buffer <aRetainBuffer>.
+	--  <anAngle> is the absolute counter-clockwise rotation angle from the 
+	--  Horizontal axis.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+    WorkSpace ( me; Width, Heigth : out Length from Quantity ) is virtual;
+	---Level:   Public
+	---Purpose: Returns the Available WorkSpace in DWU coordinates
+
+    Convert  ( me; PV : Integer from Standard )
+     returns Length from Quantity is virtual;
+	---Level:   Public
+	---Purpose: Returns the DWU value depending of
+	--	    the PIXEL value.
+
+    Convert ( me; DV : Length from Quantity )
+     returns Integer from Standard is virtual;
+	---Level: Public
+	---Purpose: Returns the PIXEL value depending of
+        --	    the DWU value.
+
+    Convert (
+     me;
+     PX, PY : Integer    from Standard;
+     DX, DY : out Length from Quantity
+    )
+     is virtual;
+	---Level: Public
+	---Purpose: Returns the DWU position depending of
+	--	    the PIXEL position .
+
+    Convert (
+     me;
+     DX, DY : Length      from Quantity;
+     PX, PY : out Integer from Standard
+    )
+     is virtual;
+	---Level: Public
+	---Purpose: Returns the PIXEL position depending of
+	--	    the DWU position .
+
+    ProcessColorIndex( me; ColorIndex : Integer) returns Integer from Standard is private;
+
+    ProcessWidthIndex( me; WidthIndex : Integer) returns Length from Quantity is private;
+
+    ProcessTypeIndex ( me; TypeIndex  : Integer) returns Integer from Standard is private;
+
+    BufferIsOpen ( me; aRetainBuffer : Integer )
+     returns Boolean is virtual;
+	---Purpose: Returns TRUE if the retain buffer <aRetainBuffer> is enabled 
+	--for drawing.
+
+    BufferIsEmpty ( me; aRetainBuffer : Integer )
+     returns Boolean is virtual;
+	---Purpose: Returns TRUE if the retain buffer has not been opened or empty. 
+	---         Returns FALSE if a lot of primitives have been stored inside
+	--          because a BeginDraw(..,<aRetainBuffer>) has been done previously.
+
+    BufferIsDrawn ( me; aRetainBuffer : Integer )
+     returns Boolean is virtual;
+        ---Purpose: Returns TRUE if the retain buffer s actually displayed at screen.
+
+    AngleOfBuffer ( me; aRetainBuffer : Integer; anAngle: out PlaneAngle )
+	---Purpose: Returns the current buffer rotate angle from the X axis.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	    call BufferIsOpen() method before.
+
+    ScaleOfBuffer ( me; aRetainBuffer : Integer; aScaleX,aScaleY : out Factor )
+	---Purpose: Returns the current buffer scale factors.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    PositionOfBuffer (
+     me;
+     aRetainBuffer    : Integer;
+     aPivotX, aPivotY : out ShortReal
+    )
+	---Purpose: Returns the current buffer position.
+     raises DriverError from Aspect is virtual;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+    TextSize (
+     me; 
+     aText           : ExtendedString from TCollection;
+     aWidth, aHeight : out ShortReal  from Standard;
+     aFontIndex      : Integer        from Standard = -1
+    )
+        ---Level: Public
+        ---Purpose: Returns the TEXT size in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        --  Trigger: Raises if font is not defined.
+     raises DriverError from Aspect is virtual;
+        ---Category: Inquire methods
+    
+    TextSize (
+      me;
+      aText                                 : ExtendedString from TCollection;
+      aWidth, aHeight, anXoffset, anYoffset : out ShortReal from Standard;
+      aFontIndex: Integer from Standard = -1)
+        ---Level: Public
+        ---Purpose: Returns the TEXT size and offsets 
+      	--	    in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        --  Trigger: Raises if font is not defined.
+    raises DriverError from Aspect is virtual;
+        ---Category: Inquire methods
+ 
+    TextSize ( 
+     me;  
+     aText                : CString from Standard;
+     aWidth, aHeight,
+     anXoffset, anYoffset : out ShortReal from Standard;
+     aFontIndex           : Integer       from Standard = -1
+    )
+        ---Level: Public
+        ---Purpose: Returns the TEXT size in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        --  Trigger: Raises if font is not defined.
+     raises DriverError from Aspect is virtual;
+        ---Category: Inquire methods
+ 
+    FontSize (
+     me;
+     aSlant :         out PlaneAngle from Quantity;
+     aSize,aBheight : out ShortReal  from Standard;
+     aFontIndex     : Integer from Standard = -1
+    )
+     returns CString from Standard
+        ---Level: Public
+        ---Purpose: Returns the font string,slant,size and
+        --  baseline height in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        --  Trigger: Raises if font is not defined.
+     raises DriverError from Aspect is virtual;
+        ---Category: Inquire methods
+ 
+	ColorBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual color indexs.
+        ---Category: Inquire methods
+
+        LocalColorIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the local colormap hardware index from a virtual driver color
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	FontBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual font indexs.
+        ---Category: Inquire methods
+
+        LocalFontIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is redefined;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the associated fontmap hardware index from a virtual driver font
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	TypeBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual type indexs.
+        ---Category: Inquire methods
+
+        LocalTypeIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the associated typemap hardware index from a virtual driver type
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	WidthBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual width indexs.
+        ---Category: Inquire methods
+
+        LocalWidthIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is redefined;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the associated widthmap hardware index from a virtual driver width
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	MarkBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is redefined;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual marker indexs.
+        ---Category: Inquire methods
+
+  LocalMarkIndex(me; anIndex : Integer from Standard)
+               returns Integer from Standard is redefined;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the local markmap hardware index from a virtual driver marker
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+
+  TextManager (me: mutable)
+  returns TextManager from WNT;
+        ---C++: return const &
+        ---Category: Inquire methods
+
+  MFT_Font (me: mutable; anIndex: Integer)
+  returns FontManager from MFT;
+        ---C++: return const &
+        ---Category: Inquire methods
+
+  MFT_Size (me: mutable; anIndex: Integer)
+  returns ShortReal;
+        ---Category: Inquire methods
+
+fields
+ 
+  myAllocators,
+  myAllocator        : Address               from Standard;
+  myWNTWindow        : Window                from WNT;
+  myPixelToUnit      : Real                  from Standard;
+
+  myColors           : HColorTable           from WNT;
+  myFonts            : HFontTable            from WNT;
+  myTypeIdxs         : HArray1OfInteger      from TColStd;
+  myWidthIdxs        : HArray1OfInteger      from TColStd;
+  myMarkerIdxs       : HArray1OfInteger      from TColStd;
+
+  myMFTFonts         : HListOfMFTFonts       from WNT;
+  myMFTSizes         : HArray1OfShortReal    from TShort;
+  myTextManager      : TextManager           from WNT;
+
+end WDriver;

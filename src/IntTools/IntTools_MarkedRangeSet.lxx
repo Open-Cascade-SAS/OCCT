@@ -1,0 +1,4 @@
+inline Standard_Integer IntTools_MarkedRangeSet::Length() const
+{
+  return myRangeNumber;
+}

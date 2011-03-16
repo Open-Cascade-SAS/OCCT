@@ -1,0 +1,38 @@
+-- File:	IGESSelect_SelectPCurves.cdl
+-- Created:	Fri Feb 26 15:19:07 1999
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectPCurves  from IGESSelect    inherits SelectExplore
+
+    ---Purpose : This Selection returns the pcurves which lie on a face
+    --           In two modes : global (i.e. a CompositeCurve is not explored)
+    --           or basic (all the basic curves are listed)
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph
+
+is
+
+    Create (basic : Boolean) returns mutable SelectPCurves;
+    ---Purpose : Creates a SelectPCurves
+    --           basic True  : lists all the components of pcurves
+    --           basic False : lists the uppest level definitions
+    --             (i.e. stops at CompositeCurve)
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : Explores an entity, to take its contained PCurves
+    --           An independant curve is IGNORED : only faces are explored
+
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Basic PCurves" or
+    --           "Global PCurves"
+
+fields
+
+    thebasic : Boolean;
+
+end SelectPCurves;

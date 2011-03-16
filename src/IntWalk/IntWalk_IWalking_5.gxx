@@ -1,0 +1,270 @@
+IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
+  (TheIWFunction& sp,
+   const Standard_Boolean Finished,
+   const math_Vector& UV,
+   const IntWalk_StatusDeflection StatusPrecedent,
+   Standard_Integer& NbDivision,
+   Standard_Real& Step,
+   const Standard_Integer StepSign)
+{
+  // Verification du pas d avancement, ET recalcul de ce pas :
+  //
+  // 1)test point confondu
+  //     si oui les autres tests ne sont pas faits
+  // 2)test angle 3d trop grand
+  //     si oui on divise le pas, on sort
+  //     angle3d = angle ((point precedent, point calcule),
+  //                       tangente precedente)
+  // 3)verification du pas d avancement en 2d
+  // 4)test point confondu
+  // 5)test angle 2d trop grand
+  // 6)test point de tangence 
+  //     si oui on sort
+  // 7)calcul de la tangente en u,v de la section 
+  // 8)test angle 3d trop grand  
+  //     angle3d = angle ((point precedent, point calcule),  
+  //                       nouvelle tangente)
+  // 9)test angle 2d trop grand
+  //10)test de changement de rive(depasser le point de tangence sans le savoir)
+  //11)calcul du pas d  avancement en fonction de la fleche
+  //12)ajustement du pas en fonction des pas precedents
+  
+  IntWalk_StatusDeflection Status = IntWalk_OK;
+
+  static const Standard_Real CosRef3D = 0.98;// regle par tests dans U4 
+                                             // correspond a 11.478 d
+  static const Standard_Real CosRef2D = 0.88; // correspond a 25 d
+  static const Standard_Integer MaxDivision = 60;  // nombre maxi de division 
+                                                   // du pas a cause de
+                                              // l  angle trop grand en 2d (U4)
+  //---------------------------------------------------------------------------------
+  //-- lbr le 4 Avril 95 : On peut se trouver ds le cas ou Status renvoie point
+  //-- confondus   si epsilon est assez grand (1e-11) . Dans ce cas on boucle 
+  //-- sans jamais changer les valeurs envoyees a Rsnld. 
+  static Standard_Integer NbPointsConfondusConsecutifs = 0 ;
+  static Standard_Integer EpsilonSembleTropGrand       = 0 ; 
+  //---------------------------------------------------------------------------------
+  Standard_Real Paramu, Paramv, StepU,StepV;
+  Standard_Real Cosi, Cosi2, Norme;
+
+  gp_Vec Corde(previousPoint.Value(), sp.Point());
+
+  Norme = Corde.SquareMagnitude();
+//  if (Norme <= epsilon*epsilon) {
+  if ((++NbPointsConfondusConsecutifs < 10) && (Norme <= epsilon)) { // le carre est deja pris dans le constructeur
+    Status = IntWalk_PointConfondu;
+    if (StatusPrecedent == IntWalk_PasTropGrand) {
+      return IntWalk_ArretSurPointPrecedent;
+    }
+
+    if(++EpsilonSembleTropGrand > 5   &&  NbPointsConfondusConsecutifs == 8)  {     //--    Provisoire 
+      if(epsilon>0.00000000001) epsilon*=0.5;                                       //--    Provisoire 
+      EpsilonSembleTropGrand = 0;                                                   //--    Provisoire 
+    }
+  }
+  else {
+    NbPointsConfondusConsecutifs = 0;   //--    Provisoire
+    EpsilonSembleTropGrand = 0;         //--    Provisoire
+    if(Norme<1e-16) Norme = 1e-16;      //--    Provisoire 
+    
+    Cosi = Corde * previousd3d;
+    if (Cosi*StepSign < 0.) { // angle 3d > pi/2 !!!!
+      Cosi2 = 0.;
+    }
+    else {
+      Cosi2 = Cosi * Cosi / previousd3d.SquareMagnitude() / Norme;
+    }
+    if (Cosi2 < CosRef3D) { //angle 3d trop grand
+      Step = Step /2.0;
+      StepU = Abs(Step*previousd2d.X());
+      StepV = Abs(Step*previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2)) 
+	Status = IntWalk_ArretSurPointPrecedent;
+      else 
+	Status = IntWalk_PasTropGrand;
+      return Status;
+    }
+  }
+
+  if (!reversed) {
+    previousPoint.ParametersOnS2(Paramu, Paramv);
+  }
+  else {
+    previousPoint.ParametersOnS1(Paramu, Paramv);
+  }
+  Standard_Real Du = UV(1) - Paramu;
+  Standard_Real Dv = UV(2) - Paramv;
+  Standard_Real Duv = Du * Du + Dv * Dv;
+  if (Abs(Du) < tolerance(1) && Abs(Dv) < tolerance(2))
+    return IntWalk_ArretSurPointPrecedent; //point confondu 2d
+  Cosi = StepSign * (Du * previousd2d.X() + 
+                     Dv * previousd2d.Y());
+  if (Cosi < 0 && Status == IntWalk_PointConfondu) 
+    return IntWalk_ArretSurPointPrecedent; // on sort car retour arriere 
+                                           // avec point confondu
+
+
+  if (sp.IsTangent()) 
+    return IntWalk_ArretSurPoint;       
+
+//si au cours du cheminement on a subdivise plus de MaxDivision pour chaque
+//pas precedent,anomalie sur le carreau;on ne fait plus rien (experience U4)
+
+  if (NbDivision < MaxDivision && 
+      Status != IntWalk_PointConfondu && 
+      StatusPrecedent!= IntWalk_PointConfondu ) {
+    Cosi2 = Cosi * Cosi / Duv;
+    if (Cosi2 < CosRef2D || Cosi < 0  ) {
+      Step = Step / 2.0;
+      StepU = Abs(Step*previousd2d.X());
+      StepV = Abs(Step*previousd2d.Y());
+
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+	Status = IntWalk_ArretSurPointPrecedent;
+      else 
+	Status = IntWalk_PasTropGrand;
+      NbDivision = NbDivision + 1;
+      return Status;
+    }
+
+    Cosi = Corde * sp.Direction3d(); 
+    Cosi2 = Cosi * Cosi / sp.Direction3d().SquareMagnitude() / Norme;
+    if (Cosi2 < CosRef3D ){ //angle 3d trop grand
+      Step = Step / 2.;
+      StepU = Abs(Step*previousd2d.X());
+      StepV = Abs(Step*previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+	Status = IntWalk_ArretSurPoint;
+      else 
+	Status = IntWalk_PasTropGrand;
+      return Status;
+    }
+    Cosi = Du * sp.Direction2d().X() + 
+           Dv * sp.Direction2d().Y();
+    Cosi2 = Cosi * Cosi / Duv;
+    if (Cosi2 < CosRef2D || 
+	sp.Direction2d() * previousd2d < 0) {
+      //angle 2d trop grand ou changement de rive       
+      Step  = Step / 2.;
+      StepU = Abs(Step*previousd2d.X());
+      StepV = Abs(Step*previousd2d.Y());
+      if (StepU < tolerance(1) && StepV < tolerance(2))
+	Status = IntWalk_ArretSurPointPrecedent;
+      else 
+	Status = IntWalk_PasTropGrand;
+      return Status;
+    }
+  }
+
+  if (!Finished) {
+
+    if (Status == IntWalk_PointConfondu) {
+      StepU = Min(Abs(1.5 * Du),pas*(UM-Um));
+      StepV = Min(Abs(1.5 * Dv),pas*(VM-Vm));
+
+      Standard_Real d2dx = Abs(previousd2d.X()); 
+      Standard_Real d2dy = Abs(previousd2d.Y()); 
+
+      if (d2dx < tolerance(1)) {
+	Step = StepV/d2dy;
+      }
+      else if (d2dy < tolerance(2)) {
+	Step = StepU/d2dx;
+      }
+      else {
+	Step = Min(StepU/d2dx,StepV/d2dy);
+      }
+
+
+
+    }
+    else {
+//   on estime la fleche courante.
+//   si fleche/2<=flechecourante<= fleche on considere que le critere est
+//   respecte.
+//   sinon ajuster le pas en fonction du pas precedent 
+
+/*
+      Standard_Real Dist = Sqrt(Norme)/3.;
+      TColgp_Array1OfPnt Poles(1,4);
+      gp_Pnt POnCurv,Milieu;
+      Poles(1) = previousPoint.Value();
+      Poles(4) = sp.Point();
+      Poles(2) = Poles(1).XYZ() + 
+	StepSign * Dist* previousd3d.Normalized().XYZ();
+      Poles(3) = Poles(4).XYZ() - 
+	StepSign * Dist*sp.Direction3d().Normalized().XYZ();
+      BzCLib::PntPole(0.5,Poles,POnCurv);
+      Milieu = (Poles(1).XYZ() + Poles(4).XYZ())*0.5;
+//      FlecheCourante = Milieu.Distance(POnCurv);
+      Standard_Real FlecheCourante = Milieu.SquareDistance(POnCurv);
+*/
+
+      // Calcul direct : 
+      // POnCurv=(((p1+p2)/2.+(p2+p3)/2.)/2. + ((p2+p3)/2.+(p3+P4)/2.)/2.)/2.
+      // soit POnCurv = p1/8. + 3.p2/8. + 3.p3/8. + p4/8.
+      // Or p2 = p1 + lambda*d1 et p3 = p4 - lambda*d4
+      // Donc POnCurv = (p1 + p4)/2. + 3.*(lambda d1 - lambda d4)/8.
+      // On calcule l'ecart avec (p1+p4)/2. . Il faut donc juste calculer
+      // la norme (au carre) de 3.*lambda (d1 - d4)/8.
+      // soit la norme de :
+      //    3.*(Sqrt(Norme)/3.)*StepSign*(d1-d4)/8.
+      // ce qui fait, en prenant le carre :
+      //         Norme * (d1-d4).SquareMagnitude()/64.
+
+      Standard_Real FlecheCourante = 
+	(previousd3d.Normalized().XYZ()-sp.Direction3d().Normalized().XYZ()).SquareModulus()*Norme/64.;
+
+  
+//      if (FlecheCourante <= 0.5*fleche) {
+      if (FlecheCourante <= 0.25*fleche*fleche) {
+
+	Standard_Real d2dx = Abs(sp.Direction2d().X()); 
+	Standard_Real d2dy = Abs(sp.Direction2d().Y()); 
+
+	StepU = Min(Abs(1.5*Du),pas*(UM-Um));
+	StepV = Min(Abs(1.5*Dv),pas*(VM-Vm));
+
+	if (d2dx < tolerance(1)) {
+	  Step = StepV/d2dy;
+	}
+	else if (d2dy < tolerance(2)) {
+	  Step = StepU/d2dx;
+	}
+	else {
+	  Step = Min(StepU/d2dx,StepV/d2dy);
+	}
+	
+      }
+      else {
+//	if (FlecheCourante > fleche) {  // pas trop grand
+	if (FlecheCourante > fleche*fleche) {  // pas trop grand
+	  Step = Step /2.;
+	  Status = IntWalk_PasTropGrand;
+	}
+	else {
+	  Standard_Real d2dx = Abs(sp.Direction2d().X()); 
+	  Standard_Real d2dy = Abs(sp.Direction2d().Y()); 
+
+	  StepU = Min(Abs(1.5*Du),pas*(UM-Um));
+	  StepV = Min(Abs(1.5*Dv),pas*(VM-Vm));
+
+	  if (d2dx < tolerance(1)) {
+	    Step = Min(Step,StepV/d2dy);
+	  }
+	  else if (d2dy < tolerance(2)) {
+	    Step = Min(Step,StepU/d2dx);
+	  }
+	  else {
+	    Step = Min(Step,Min(StepU/d2dx,StepV/d2dy));
+	  }
+	}
+      }
+    }
+  }
+  return Status;     
+}
+
+
+
+

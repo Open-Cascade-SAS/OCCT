@@ -1,0 +1,69 @@
+-- File:	IntPatch_LineConstructor.cdl
+-- Created:	Thu Nov  7 10:32:26 1996
+-- Author:	Laurent BUCHARD
+---Copyright:	 Matra Datavision 1996
+
+
+class LineConstructor from IntPatch
+
+    ---Purpose: The intersections  algorithms compute the intersection
+    --          on two surfaces and  return the intersections lines as
+    --          IntPatch_Line.  
+
+    --	        a  IntPatch   Line contains  a   geometrical part  and
+    --	        several topological informations (the    intersections
+    --	        between the intersection curve and the restrictions of
+    --	        the faces.) 
+    --	        
+    --	          The LineConstructor algorithm takes an IntPatch_Line
+    --	          and compute on this object the sections which belong
+    --	          to the two  faces (which are inside the restrictions
+    --	          of the faces)
+    --	          
+
+uses 
+    HSurface       from Adaptor3d,
+    TopolTool      from Adaptor3d,
+    SequenceOfLine from IntPatch,
+    Line           from  IntPatch,
+    SurfaceType    from GeomAbs
+
+is   
+
+    Create(mode  :  Integer  from  Standard) 
+     
+     
+     	--Purpose: ***** THE ONLY MODE SUPPORTED IS MODE=2 *****
+        --Purpose: mode = 0 .... Nothing is done  
+        --          
+        --         mode = 1 .... Only cuts the line. 
+        --         
+        --         mode = 2 .... Cuts the line and keep the valid lines
+        --         
+    	returns  LineConstructor  from  IntPatch; 
+	 
+    Perform(me:  in  out; 
+    	    SL :  SequenceOfLine from IntPatch;
+            L  :  Line         from  IntPatch;     
+            S1 :  HSurface from Adaptor3d; 
+            D1 :  TopolTool from Adaptor3d; 
+            S2 :  HSurface from Adaptor3d; 
+	    D2 :  TopolTool from Adaptor3d;
+            Tol:  Real        from Standard)
+       is  static; 
+        
+    NbLines(me) 
+     
+          returns  Integer  from  Standard 
+	  is  static; 
+	   
+    Line(me;  index:  Integer  from  Standard) 
+     	 
+	  returns  Line  from  IntPatch
+          is  static;
+
+fields
+
+    slin       : SequenceOfLine from IntPatch;
+
+end LineConstructor;

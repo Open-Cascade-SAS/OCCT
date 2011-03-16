@@ -1,0 +1,33 @@
+-- File:        BSplineSurfaceWithKnots.cdl
+-- Created:     Mon Dec  4 12:02:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWBSplineSurfaceWithKnots from RWStepGeom
+
+	---Purpose : Read & Write Module for BSplineSurfaceWithKnots
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     BSplineSurfaceWithKnots from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWBSplineSurfaceWithKnots;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable BSplineSurfaceWithKnots from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : BSplineSurfaceWithKnots from StepGeom);
+
+	Share(me; ent : BSplineSurfaceWithKnots from StepGeom; iter : in out EntityIterator);
+
+    	Check(me; ent : BSplineSurfaceWithKnots from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWBSplineSurfaceWithKnots;

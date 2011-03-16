@@ -1,0 +1,124 @@
+//-------------------------------------------------------------------
+//-- I n t W a l k _ P W a l k i n g _ 2 . g x x 
+//-------------------------------------------------------------------
+
+
+
+void IntWalk_PWalking::
+        RepartirOuDiviser(Standard_Boolean& DejaReparti,
+                          IntImp_ConstIsoparametric& ChoixIso,
+                          Standard_Boolean& Arrive) 
+
+// au voisinage d '1 point ,il y a echec du cheminement 
+// il faut diviser le pas pour essayer de continuer
+//si  le pas est trop petit ou si on est arrive sur une frontiere
+// repartir dans l autre sens si cela n a pas ete deja fait sinon arret
+
+{
+  //  Standard_Integer i;
+  if (Arrive) {    //repartir dans l autre sens
+    if (!DejaReparti ) {
+      Arrive        = Standard_False; 
+      DejaReparti   = Standard_True;
+      previousPoint = line->Value(1);
+      previoustg    = Standard_False;
+      previousd1    = firstd1;
+      previousd2    = firstd2;
+      previousd     = tgdir;
+      indextg       = line->NbPoints();
+      tgdir.Reverse();
+      line->Reverse();
+
+//-- printf("\nIntWalk_PWalking_2.gxx Reverse %3d\n",indextg);
+      sensCheminement = -1;
+      tgfirst      = tglast;
+      tglast       = Standard_False;
+      ChoixIso     = choixIsoSav;
+#if 0
+      pasuv[0]=pasSav[0];
+      pasuv[1]=pasSav[1];
+      pasuv[2]=pasSav[2];
+      pasuv[3]=pasSav[3];
+#else 
+      Standard_Real u1,v1,u2,v2;
+      Standard_Real U1,V1,U2,V2;
+      Standard_Integer nn=line->NbPoints();
+      if(nn>2) { 
+	line->Value(nn).Parameters(u1,v1,u2,v2);
+	line->Value(nn-1).Parameters(U1,V1,U2,V2);
+	pasuv[0]=Abs(u1-U1);
+	pasuv[1]=Abs(v1-V1);
+	pasuv[2]=Abs(u2-U2);
+	pasuv[3]=Abs(v2-V2);
+      }
+#endif
+	
+    }
+  }  
+  else  {
+    if (    pasuv[0]*0.5 < ResoU1
+	&&  pasuv[1]*0.5 < ResoV1
+	&&  pasuv[2]*0.5 < ResoU2
+	&&  pasuv[3]*0.5 < ResoV2
+	) {
+      if (!previoustg) {
+	tglast = Standard_True;      // EST-CE SUFFISANT ????
+      }
+      
+      if (!DejaReparti) {  //repartir dans l autre sens
+	DejaReparti       = Standard_True;
+	previousPoint     = line->Value(1);
+	previoustg        = Standard_False;
+	previousd1        = firstd1;
+	previousd2        = firstd2;
+	previousd         = tgdir;
+	indextg           = line->NbPoints();
+	tgdir.Reverse();
+	line->Reverse();
+
+//-- printf("\nIntWalk_PWalking_2.gxx Reverse %3d\n",indextg);
+
+	sensCheminement   = -1;
+	tgfirst           = tglast;
+	tglast            = Standard_False;
+	ChoixIso          = choixIsoSav;
+
+#if 0 
+	pasuv[0]=pasSav[0];
+	pasuv[1]=pasSav[1];
+	pasuv[2]=pasSav[2];
+	pasuv[3]=pasSav[3];
+#else 
+	Standard_Real u1,v1,u2,v2;
+	Standard_Real U1,V1,U2,V2;
+	Standard_Integer nn=line->NbPoints();
+	if(nn>2) { 
+	  line->Value(nn).Parameters(u1,v1,u2,v2);
+	  line->Value(nn-1).Parameters(U1,V1,U2,V2);
+	  pasuv[0]=Abs(u1-U1);
+	  pasuv[1]=Abs(v1-V1);
+	  pasuv[2]=Abs(u2-U2);
+	  pasuv[3]=Abs(v2-V2);
+	}
+#endif
+      }
+      else Arrive = Standard_True;
+    }
+    else {
+      pasuv[0]*=0.5;
+      pasuv[1]*=0.5;
+      pasuv[2]*=0.5;
+      pasuv[3]*=0.5; 
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+

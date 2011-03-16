@@ -1,0 +1,67 @@
+-- File:	StepRepr_ConfigurationItem.cdl
+-- Created:	Fri Nov 26 16:26:36 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ConfigurationItem from StepRepr
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ConfigurationItem
+
+uses
+    HAsciiString from TCollection,
+    ProductConcept from StepRepr
+
+is
+    Create returns ConfigurationItem from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aId: HAsciiString from TCollection;
+                       aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aItemConcept: ProductConcept from StepRepr;
+                       hasPurpose: Boolean;
+                       aPurpose: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Id (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Id
+    SetId (me: mutable; Id: HAsciiString from TCollection);
+	---Purpose: Set field Id
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    ItemConcept (me) returns ProductConcept from StepRepr;
+	---Purpose: Returns field ItemConcept
+    SetItemConcept (me: mutable; ItemConcept: ProductConcept from StepRepr);
+	---Purpose: Set field ItemConcept
+
+    Purpose (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Purpose
+    SetPurpose (me: mutable; Purpose: HAsciiString from TCollection);
+	---Purpose: Set field Purpose
+    HasPurpose (me) returns Boolean;
+	---Purpose: Returns True if optional field Purpose is defined
+
+fields
+    theId: HAsciiString from TCollection;
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theItemConcept: ProductConcept from StepRepr;
+    thePurpose: HAsciiString from TCollection; -- optional
+    defDescription: Boolean; -- flag "is Description defined"
+    defPurpose: Boolean; -- flag "is Purpose defined"
+
+end ConfigurationItem;

@@ -1,0 +1,202 @@
+-- File:	TopOpeBRepBuild_ShapeSet.cdl
+-- Created:	Wed Jun 16 11:52:45 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class ShapeSet from TopOpeBRepBuild
+
+---Purpose: 
+-- Auxiliary class providing an exploration of a set
+-- of shapes to build faces or solids.
+-- To build faces  : shapes are wires, elements are edges.
+-- To build solids : shapes are shells, elements are faces.
+-- The ShapeSet stores a list of shapes, a list of elements
+-- to start reconstructions, and a map to search neighbours.
+-- The map stores the connection  between elements through 
+-- subshapes of type <SubShapeType> given in constructor. 
+-- <SubShapeType> is :
+--  - TopAbs_VERTEX to connect edges
+--  - TopAbs_EDGE to connect faces
+--
+-- Signature needed by the BlockBuilder :
+--    InitStartElements(me : in out)
+--    MoreStartElements(me) returns Boolean;
+--    NextStartElement(me : in out);
+--    StartElement(me) returns Shape; ---C++: return const &
+--    InitNeighbours(me : in out; S : Shape);
+--    MoreNeighbours(me) returns Boolean;
+--    NextNeighbour(me : in out);
+--    Neighbour(me) returns Shape; ---C++: return const &
+	
+uses
+
+    ShapeEnum from TopAbs,
+    Orientation from TopAbs,
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    ListIteratorOfListOfShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    IndexedMapOfOrientedShape from TopTools,
+    ShapeExplorer from TopOpeBRepTool,
+    AsciiString from TCollection
+
+is
+
+    -- Filling methods
+
+   Create (SubShapeType:ShapeEnum from TopAbs;
+    	   checkshape:Boolean = Standard_True) returns ShapeSet;
+    ---Purpose: Creates a ShapeSet  in order to build shapes connected
+    -- by <SubShapeType>  shapes.  
+    -- <checkshape>:check (or not) the shapes, startelements, elements added.
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRepBuild_ShapeSet(){Delete() ; }"
+    
+    AddShape(me:in out;S:Shape) is virtual;
+    ---Purpose: Adds <S> to the list of shapes. (wires or shells).
+    
+    AddStartElement(me:in out;S:Shape) is virtual;
+    ---Purpose:  (S is a face or edge)
+    -- Add S to the list of starting shapes used for reconstructions.
+    -- apply AddElement(S).
+    
+    AddElement(me:in out;S:Shape) is virtual;
+    ---Purpose:  for each subshape SE of S of type mySubShapeType
+    -- - Add subshapes of S to the map of subshapes (mySubShapeMap)
+    -- - Add S to the list of shape incident to subshapes of S.
+
+    ProcessAddShape(me:in out;S:Shape) is static protected;
+    ProcessAddStartElement(me:in out;S:Shape) is static protected;
+    ProcessAddElement(me:in out;S:Shape) is static protected;
+    
+    StartElements(me) returns ListOfShape from TopTools;
+    ---Purpose: return a reference on myStartShapes
+    ---C++: return const &
+
+    -- Iteration on the shapes of AddShape()
+    InitShapes(me:in out);
+    MoreShapes(me) returns Boolean;
+    NextShape(me:in out);
+    Shape(me) returns Shape;
+    ---C++: return const &
+
+    -- Iteration on the start elements of AddStartElement()
+    InitStartElements(me:in out);
+    MoreStartElements(me) returns Boolean;
+    NextStartElement(me:in out);
+    StartElement(me) returns Shape;
+    ---C++: return const &
+    
+    -- Iteration on the neighbours of a shape of type myShapeType
+    -- through its subshapes of type mySubShapeType. 
+
+    InitNeighbours(me:in out;S:Shape) is virtual;
+    MoreNeighbours(me:in out) returns Boolean;
+    NextNeighbour(me:in out);
+    Neighbour(me) returns Shape;
+    ---C++: return const &
+
+    ChangeStartShapes(me:in out) returns ListOfShape from TopTools;
+    ---C++: return &
+
+    IsStartElement(me;S:Shape) returns Boolean;
+    IsElement(me;S:Shape) returns Boolean;
+    IsShape(me;S:Shape) returns Boolean;
+
+    NStartElement(me;S:Shape) returns Integer;
+    NElement(me;S:Shape) returns Integer;
+    NShape(me;S:Shape) returns Integer;
+
+    FindNeighbours(me:in out) is virtual;
+    ---Purpose: Build the list of neighbour shapes of myCurrentShape
+    -- (neighbour shapes and myCurrentShapes are of type t)
+    -- Initialize myIncidentShapesIter on neighbour shapes.
+    MakeNeighboursList(me:in out;E,V:Shape) returns ListOfShape from TopTools is virtual;
+    ---C++: return const &
+    MaxNumberSubShape(me:in out;Shape:Shape) returns Integer;
+
+    -- check
+    CheckShape(me:in out;checkshape:Boolean); -- field myCheckShape
+    CheckShape(me) returns Boolean; -- field myCheckShape
+    CheckShape(me:in out;S:Shape;checkgeom:Boolean = Standard_False) returns Boolean;
+
+    -- debug
+    DumpName(me;OS:in out OStream;str:AsciiString);
+    DumpCheck(me;OS:in out OStream;str:AsciiString;S:Shape;chk:Boolean);
+    DumpSS(me:in out) is virtual;
+    DumpBB(me:in out) is virtual;
+    
+    DEBName(me:in out;N:AsciiString);
+    DEBName(me) returns AsciiString;
+    ---C++: return const &       
+    DEBNumber(me:in out;I:Integer);
+    DEBNumber(me) returns Integer;
+    
+    SName(me;S:Shape;sb:AsciiString="";sa:AsciiString="")
+    returns AsciiString is virtual;
+    SNameori(me;S:Shape;sb:AsciiString="";sa:AsciiString="")
+    returns AsciiString is virtual;
+    SName(me;S:ListOfShape from TopTools;sb:AsciiString="";sa:AsciiString="")
+    returns AsciiString is virtual;
+    SNameori(me;S:ListOfShape from TopTools;sb:AsciiString="";sa:AsciiString="")
+    returns AsciiString is virtual;
+    
+fields
+
+    myShapeType : ShapeEnum from TopAbs is protected;  
+    -- shape type : edge
+    -- shape type : face
+
+    mySubShapeType : ShapeEnum from TopAbs is protected;
+    -- subshape type : vertex
+    -- subshape type : edge
+    
+    mySubShapeExplorer : ShapeExplorer from TopOpeBRepTool is protected;
+    -- explorer of edge vertices
+    -- explorer of face edges
+
+    myStartShapes : ListOfShape from TopTools is protected;
+    -- list of starting edges
+    -- list of starting faces
+
+    myStartShapesIter : ListIteratorOfListOfShape from TopTools is protected; 
+    -- myStartShapes iterator
+
+    mySubShapeMap : IndexedDataMapOfShapeListOfShape from TopTools is protected;
+    -- map of vertices
+    -- mySubShapeMap(vertex) = list of incident edges to a vertex
+    -- mySubShapeMap(edge) = list of incident faces to a edge
+
+    myIncidentShapesIter : ListIteratorOfListOfShape from TopTools is protected;
+    -- iter on list L of edges incident to a vertex, L = mySubShapeMap(vertex)
+    -- iter on list L of faces incident to a edge, L = mySubShapeMap(edge)
+
+    myShapes : ListOfShape from TopTools is protected;
+    -- list of wires which are not to be reconstructed
+    -- list of shells which are not to be reconstructed
+	
+    myShapesIter : ListIteratorOfListOfShape from TopTools is protected;
+    -- myShapes iterator
+
+    myCurrentShape : Shape from TopoDS is protected;
+    -- current edge which neighbours are searched, using FindNeighbours()
+    -- current face which neighbours are searched, using FindNeighbours()
+	
+    myCurrentShapeNeighbours : ListOfShape from TopTools is protected;
+    -- list of edges neighbour of the edge myCurrentShape
+    -- list of faces neighbour of the face myCurrentShape
+
+    -- debug
+    myDEBNumber : Integer from Standard is protected;
+    myDEBName : AsciiString is protected;
+
+    -- index of subshape is given by mySubShape
+    myOMSS : IndexedMapOfOrientedShape from TopTools is protected; -- AddStartElement
+    myOMES : IndexedMapOfOrientedShape from TopTools is protected; -- AddElement (+AddStartElement)
+    myOMSH : IndexedMapOfOrientedShape from TopTools is protected; -- AddShape
+    
+    myCheckShape : Boolean from Standard is protected;
+
+end ShapeSet from TopOpeBRepBuild;

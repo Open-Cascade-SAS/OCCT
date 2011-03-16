@@ -1,0 +1,63 @@
+-- File:	IGESBasic_ToolAssocGroupType.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolAssocGroupType  from IGESBasic
+
+    ---Purpose : Tool to work on a AssocGroupType. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses AssocGroupType from IGESBasic,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolAssocGroupType;
+    ---Purpose : Returns a ToolAssocGroupType, ready to work
+
+
+    ReadOwnParams (me; ent : mutable AssocGroupType;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : AssocGroupType;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : AssocGroupType;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a AssocGroupType <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable AssocGroupType) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a AssocGroupType
+    --           (NbData forced to 2)
+
+    DirChecker (me; ent : AssocGroupType) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : AssocGroupType;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : AssocGroupType; entto : mutable AssocGroupType;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : AssocGroupType;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolAssocGroupType;

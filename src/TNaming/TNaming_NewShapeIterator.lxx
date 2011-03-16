@@ -1,0 +1,15 @@
+// File:	TNaming_NewShapeIterator.lxx
+// Created:	Fri Dec 20 10:01:30 1996
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TNaming_NewShapeIterator::More() const
+{
+  return (myNode != 0L);
+}

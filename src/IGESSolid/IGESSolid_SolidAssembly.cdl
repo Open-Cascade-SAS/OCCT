@@ -1,0 +1,84 @@
+--
+-- File      :  SolidAssembly.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SolidAssembly from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines SolidAssembly, Type <184> Form <0>
+        --          in package IGESSolid
+        --          Solid assembly is a collection of items which possess a
+        --          shared fixed geometric relationship.
+        --          
+        --          From IGES-5.3, From 1 says that at least one item is a Brep
+        --          else all are Primitives, Boolean Trees, Solid Instances or
+        --          other Assemblies
+
+uses
+
+        HArray1OfIGESEntity           from IGESData,
+        TransformationMatrix              from IGESGeom,
+        HArray1OfTransformationMatrix from IGESGeom
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable SolidAssembly;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              allItems    : HArray1OfIGESEntity;
+              allMatrices : HArray1OfTransformationMatrix)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           SolidAssembly
+        --       - allItems    : the collection of items
+        --       - allMatrices : transformation matrices corresponding to each
+        --                       item
+        -- raises exception if the length of allItems & allMatrices 
+        -- do not match
+
+    	HasBrep (me) returns Boolean;
+	---Purpose : Tells if at least one item is a Brep, from FormNumber
+
+    	SetBrep (me : mutable; hasbrep : Boolean);
+	---Purpose : Sets or Unsets the status "HasBrep" from FormNumber
+	--           Default is False
+
+        NbItems (me) returns Integer;
+        ---Purpose : returns the number of items in the collection
+
+        Item (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th item
+        -- raises exception if Index <= 0 or Index > NbItems()
+
+        TransfMatrix (me; Index : Integer) returns TransformationMatrix
+        raises OutOfRange;
+        ---Purpose : returns the transformation matrix of the Index'th item
+        -- raises exception if Index <= 0 or Index > NbItems()
+
+fields
+
+--
+-- Class    : IGESSolid_SolidAssembly
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SolidAssembly.
+--
+-- Reminder : A SolidAssembly instance is defined by :
+--            a collection of items (Items) and transformation matrix
+--            entities (Matrices)
+
+        theItems    : HArray1OfIGESEntity;
+            --  the collection of items
+
+        theMatrices : HArray1OfTransformationMatrix from IGESGeom;
+            -- the transformation matrices
+
+end SolidAssembly;

@@ -1,0 +1,5 @@
+inline Standard_Boolean Quantity_Date::IsLeap (const Standard_Integer yy){
+
+return ( ( yy % 4 == 0 && yy % 100 != 0 || yy % 400 == 0) 
+         ? Standard_True : Standard_False );
+}

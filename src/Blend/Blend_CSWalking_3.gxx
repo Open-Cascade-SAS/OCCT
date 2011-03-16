@@ -1,0 +1,234 @@
+/*
+Standard_Boolean Blend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
+					  const Standard_Boolean OnFirst,
+					  const math_Vector& sol,
+					  math_Vector& solrst,
+					  Standard_Integer& Indexsol,
+					  Standard_Boolean& IsVtx,
+					  TheVertex& Vtx)
+     
+{
+  Standard_Integer nbarc;
+  Standard_Boolean ok,yamin;
+  Standard_Real dist,distmin,prm,pmin;
+  gp_Pnt2d pt2d;
+  math_Vector toler(1,4),infb(1,4),supb(1,4),valsol(1,4);
+
+  Handle(TheTopolTool) Iter;
+  TopAbs_State situ;
+
+  yamin = Standard_False;
+  nbarc = 0;
+  distmin = RealLast();
+  if (OnFirst) {
+    pt2d.SetCoord(sol(1),sol(2));
+    Iter = domain1;
+  }
+  else {
+    pt2d.SetCoord(sol(3),sol(4));
+    Iter = domain2;
+  }
+  Iter->Init();
+  while (Iter->More()) {
+    nbarc++;
+    if (OnFirst) {
+      ok = TheBlendTool::Project(pt2d,surf1,Iter->Value(),prm,dist);
+    }
+    else {
+      ok = TheBlendTool::Project(pt2d,surf2,Iter->Value(),prm,dist);
+    }
+    if (ok) {
+      if (dist<distmin) {
+	yamin = Standard_True;
+	distmin = dist;
+	pmin = prm;
+	Indexsol = nbarc;
+      }
+    }
+    Iter->Next();
+  }
+
+  IsVtx = Standard_False;
+  if (!yamin) {
+    return Standard_False;
+  }
+
+  Iter->Init();
+  nbarc = 1;
+  while (nbarc < Indexsol) {
+    nbarc++;
+    Iter->Next();
+  }
+
+  TheArc thearc = Iter->Value();
+  Handle(Adaptor2d_HCurve2d) thecur;
+  if (OnFirst) {
+    thecur = TheBlendTool::CurveOnSurf(thearc,surf1);
+  }
+  else {
+    thecur = TheBlendTool::CurveOnSurf(thearc,surf2);
+  }
+
+  FuncInv.Set(OnFirst,thecur);
+  
+  FuncInv.GetTolerance(toler,tolesp);
+  FuncInv.GetBounds(infb,supb);
+  solrst(1) = pmin;
+  solrst(2) = param;
+  
+  if (OnFirst) {
+    solrst(3) = sol(3);
+    solrst(4) = sol(4);
+  }
+  else {
+    solrst(3) = sol(1);
+    solrst(4) = sol(2);
+  }
+  
+  math_FunctionSetRoot rsnld(FuncInv,toler,30);
+  rsnld.Perform(FuncInv,solrst,infb,supb);
+  
+
+
+  if (!rsnld.IsDone()) {
+    cout << "RSNLD not done "<< endl << endl;
+    return Standard_False;
+  }
+      
+  // On doit verifier la valeur de la fonction
+  rsnld.Root(solrst);
+
+  if (FuncInv.IsSolution(solrst,tolesp)) {
+
+//    if (OnFirst) {
+//      situ = TheTopolTool::Classify(surf2,gp_Pnt2d(solrst(3),solrst(4)),
+//				    Max(toler(3),toler(4)));
+//				    
+//    }
+//    else {
+//      situ = TheTopolTool::Classify(surf1,gp_Pnt2d(solrst(3),solrst(4)),
+//				    Max(toler(3),toler(4)));
+//    }
+
+    if (OnFirst) {
+      situ = domain2->Classify(gp_Pnt2d(solrst(3),solrst(4)),
+			       Min(toler(3),toler(4)));
+				    
+    }
+    else {
+      situ = domain1->Classify(gp_Pnt2d(solrst(3),solrst(4)),
+			       Min(toler(3),toler(4)));
+    }
+
+
+    if ((situ != TopAbs_IN) && (situ != TopAbs_ON)) {
+      return Standard_False;
+    }
+
+    Iter->Initialize(thearc);
+    Iter->InitVertexIterator();
+    IsVtx = !Iter->MoreVertex();
+    while (!IsVtx) {
+      Vtx = Iter->Vertex();
+      if (Abs(TheBlendTool::Parameter(Vtx,thearc)-solrst(1)) <=
+	  TheBlendTool::Tolerance(Vtx,thearc)) {
+	IsVtx = Standard_True;
+      }
+      else {
+	Iter->NextVertex();
+	IsVtx = !Iter->MoreVertex();
+      }
+    }
+    if (!Iter->MoreVertex()) {
+      IsVtx = Standard_False;
+    }
+
+    return Standard_True;
+  } 
+
+  return Standard_False;
+}
+
+*/
+
+
+void Blend_CSWalking::Transition(const TheArc& A,
+				 const Standard_Real Param,
+				 IntSurf_Transition& TLine,
+				 IntSurf_Transition& TArc)
+{
+
+  gp_Pnt2d p2d;
+  gp_Vec2d dp2d;
+
+  gp_Pnt pbid;
+  gp_Vec d1u,d1v,normale,tgrst;
+
+  TheArcTool::D1(A,Param,p2d,dp2d);
+  TheSurfaceTool::D1(surf,p2d.X(),p2d.Y(),pbid,d1u,d1v);
+
+  tgrst.SetLinearForm(dp2d.X(),d1u,dp2d.Y(),d1v);
+  normale = d1u.Crossed(d1v);
+
+  IntSurf::MakeTransition(previousP.TangentOnS(),tgrst,normale,TLine,TArc);
+
+}
+
+
+void Blend_CSWalking::MakeExtremity(TheExtremity& Extrem,
+				    const Standard_Integer Index,
+				    const Standard_Real Param,
+				    const Standard_Boolean IsVtx,
+				    const TheVertex& Vtx)
+{
+
+  IntSurf_Transition Tline,Tarc;
+  Standard_Real prm,U,V;
+  Standard_Integer nbarc;
+  Handle(TheTopolTool) Iter;
+
+//  Extrem.SetValue(previousP.PointOnS(),sol(1),sol(2),tolesp);
+  previousP.ParametersOnS(U,V);
+  Extrem.SetValue(previousP.PointOnS(),U,V,previousP.Parameter(),tolesp);
+  Iter = domain;
+
+
+  Iter->Init();
+  nbarc = 1;
+
+  if (!IsVtx) {
+    while (nbarc < Index) {
+      nbarc++;
+      Iter->Next();
+    }
+    Transition(Iter->Value(),Param,Tline,Tarc);
+    Extrem.AddArc(Iter->Value(),Param,Tline,Tarc);
+  }
+
+  else {
+
+    Extrem.SetVertex(Vtx);
+    while (Iter->More()) {
+      TheArc arc = Iter->Value();
+      if (nbarc != Index) {
+	Iter->Initialize(arc);
+	Iter->InitVertexIterator();
+	while (Iter->MoreVertex()) {
+//	  if (TheTopolTool::Identical(Vtx,Iter.Vertex())) {
+	  if (Iter->Identical(Vtx,Iter->Vertex())) {
+	    prm = TheBlendTool::Parameter(Vtx,arc);
+	    Transition(arc,prm,Tline,Tarc);
+	    Extrem.AddArc(arc,prm,Tline,Tarc);
+	  }
+	  Iter->NextVertex();
+	}
+      }
+      else {
+	Transition(arc,Param,Tline,Tarc);
+	Extrem.AddArc(arc,Param,Tline,Tarc);
+      }
+      nbarc++;
+      Iter->Next();
+    }
+  }
+}

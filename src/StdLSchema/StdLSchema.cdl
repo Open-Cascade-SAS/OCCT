@@ -1,0 +1,19 @@
+-- File:	StdLSchema.cdl
+-- Created:	Mon Jun 21 16:15:21 2004
+-- Author:	Eugeny NAPALKOV <eugeny.napalkov@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+schema StdLSchema
+
+is
+
+    package PDF;
+    package PDataStd;
+    package PFunction;
+    package PDocStd;
+    package PCDM;
+
+    
+end StdSchema;
+

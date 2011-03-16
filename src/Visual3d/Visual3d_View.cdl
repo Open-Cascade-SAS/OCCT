@@ -1,0 +1,1334 @@
+--
+-- File:	Visual3d_View.cdl
+-- Created:	Mardi 17 Septembre 1991
+-- Author:	NW,JPB,CAL
+--		05-97: CAL; Ajout du Clear sur les TOS_COMPUTED.
+--		10-97: CAL; Retrait des DataStructure.
+--		11-97: CAL; Retrait de la dependance avec math.Calcul developpe.
+--		11-97: CAL; Ajout de NumberOfDisplayedStructures
+--		05-98: CAL; Perfs. Connection entre structures COMPUTED.
+--		16-09-98: BGN; Points d'entree du Triedre (S3819, Phase 1)
+--              22-09-98: BGN; S3989 (anciennement S3819)
+--                             TypeOfTriedron* from Aspect(et pas Visual3d)
+--		02-12-98: S4062. Ajout des layers.
+--		13-09-99: GG; GER61454 Adds LightLimit() and PlaneLimit() methods
+--		10-11-99: GG; Add PRO19603 Redraw( area ) method
+--		14-01-00: GG; Add IMP140100 ViewManager() method
+--		25-01-00: EUG: G003
+--			  -> Add backfacing management methods
+--			       SetBackfacingModel() & BackfacingModel().
+--			  -> Change SetAnimationModeIsOn() adding degenerate flag
+--			  -> SetDegenerateModeOn() and Off() become private.
+--			       Use instead SetComputedMode() for managing
+--				HLR in the view.
+--		THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
+--				-> Add Print methods (works only under Windows).-
+--		GG - RIC120302 Add NEW SetWindow method.
+--
+--		30-04-02: JMB; MyDisplayedStructure is now a Map instead
+--		               of a Set. Improves performance of Selection
+--		               mechanisms
+--
+
+--              SAV  - 22/10/01 -> Add EnableDepthTest() & IsDepthTestEnabled() methods.
+--              SAV  - 25/10/01 -> Add EnableGLLight() & IsGLLightEnabled() methods.
+--              VSV - 28/05/02: ZBUFFER mode of Trihedron
+--              SAV  - 23/12/02 Added methods too set background image
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994,2001
+--
+
+class View from Visual3d inherits DataStructureManager from Graphic3d
+
+	---Version:
+
+	---Purpose: Creation and edition of a view in a 3D visualiser.
+	--	    A 3D view is composed of an "orientation" part defined
+	--	    by the position of the observer, the direction of view,
+	--	    and a "mapping" part defined by the type of projection
+	--	    (parallel or perspective) and by the window-viewport
+	--	    couple which allows passage from the projected coordinate
+	--	    space into the screen space.
+    	-- Summary of 3D Viewing
+    	-- To define a view, you must define:
+    	-- -   The view orientation transformation
+    	-- -   The view mapping transformation
+    	-- -   The view representation.
+    	--  To activate a view, you must define:
+    	-- -   The associated window.
+
+
+uses
+
+    Array2OfReal            from TColStd,
+
+    Background              from Aspect,
+    GradientBackground      from Aspect,
+    GraphicDriver           from Aspect,
+    Window                  from Aspect,
+    TypeOfUpdate            from Aspect,
+    TypeOfHighlightMethod   from Aspect,
+    TypeOfTriedronEcho      from Aspect,
+    TypeOfTriedronPosition  from Aspect,
+    Handle                  from Aspect,
+    RenderingContext        from Aspect,
+    GraphicCallbackProc     from Aspect,
+    ColorScale              from Aspect,
+
+    CRawBufferData          from Image,
+
+    CBitFields8             from Graphic3d,
+    CView                   from Graphic3d,
+    GraphicDriver           from Graphic3d,
+    PtrFrameBuffer          from Graphic3d,
+    Plotter                 from Graphic3d,
+    Structure               from Graphic3d,
+    SequenceOfStructure     from Graphic3d,
+    MapOfStructure          from Graphic3d,
+
+    ContextView             from Visual3d,
+    ClipPlane               from Visual3d,
+    Layer                   from Visual3d,
+    Light                   from Visual3d,
+    SetOfClipPlane          from Visual3d,
+    SetOfLight              from Visual3d,
+    TypeOfAnswer            from Visual3d,
+    ViewMapping             from Visual3d,
+    ViewOrientation         from Visual3d,
+    ViewManager             from Visual3d,
+    ViewManagerPtr          from Visual3d,
+
+    TypeOfBackfacingModel   from Visual3d,
+
+    NameOfColor             from Quantity,
+    FillMethod              from Aspect,
+    GradientFillMethod      from Aspect,
+    ExportFormat            from Graphic3d,
+    SortType                from Graphic3d,
+    Color                   from Quantity,
+    FontAspect              from OSD
+
+raises
+    TransformError          from Visual3d,
+    ViewDefinitionError     from Visual3d
+
+is
+
+	----------------------------------------------
+	-- Summary of 3D Viewing                    --
+	--                                          --
+	-- To define a view, you must define        --
+	--                                          --
+	--	The view orientation transformation --
+	--	The view mapping transformation     --
+	--	The view representation.            --
+	--                                          --
+	-- To activate a view, you must define      --
+	--                                          --
+	--	The associated window.              --
+	----------------------------------------------
+
+	Create ( AManager	: mutable ViewManager from Visual3d )
+		returns mutable View from Visual3d;
+	---Level: Public
+	---Purpose: Creates a view in the viewer <AManager> with a default
+	--	    orientation and a default mapping.
+
+	Create ( AManager	: mutable ViewManager from Visual3d;
+		 VO		: ViewOrientation from Visual3d;
+		 VM		: ViewMapping from Visual3d;
+		 CTX		: ContextView from Visual3d )
+		returns mutable View from Visual3d;
+	---Level: Public
+	---Purpose: Creates a view in the viewer <AManager> with the orientation
+	--	    <VO>, the mapping <VM>, and the context<CTX>.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Activate ( me	: mutable )
+	---Level: Public
+	---Purpose: Activates the view <me>.
+	--	    Map the associated window on the screen and
+	--	    post the view in this window.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	Deactivate ( me	: mutable )
+	---Level: Public
+	---Purpose: Deactivates the view <me>.
+	--	    Unmap the associated window on the screen and
+	--	    unpost the view in this window.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	Destroy ( me	: mutable )
+		is redefined;
+	---Level: Public
+	---Purpose: Deletes and erases the view <me>.
+	---Category: Methods to modify the class definition
+	---C++: alias ~
+
+	Redraw ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Updates screen in all cases.
+	---Category: Methods to modify the class definition
+
+	Redraw ( me	: mutable; x,y,width,height: Integer from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Updates screen area in all cases.
+	-- area is given by his xy min corner and size in pixel coordinates
+	---Category: Methods to modify the class definition
+
+	Redraw ( me	: mutable;
+		 AnUnderLayer	: Layer from Visual3d;
+		 AnOverLayer	: Layer from Visual3d )
+		is static;
+	---Level: Internal
+	---Purpose: Updates screen in all cases.
+	---Category: Methods to modify the class definition
+
+	Redraw ( me	: mutable;
+		 AnUnderLayer	: Layer from Visual3d;
+		 AnOverLayer	: Layer from Visual3d;
+		 x,y,width,height: Integer from Standard )
+		is static;
+	---Level: Internal
+	---Purpose: Updates screen area in all cases.
+	-- area is given by his xy min corner and size in pixel coordinates
+	---Category: Methods to modify the class definition
+
+	Remove ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Deletes and erases the view <me>.
+	--  Warning: No more graphic operations in <me> after this call.
+	---Category: Methods to modify the class definition
+
+	Resized ( me	: mutable )
+	---Level: Public
+	---Purpose: Updates the view <me> after the modification
+	--	    of the associated window.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	SetBackground ( me	: mutable;
+			ABack	: Background from Aspect )
+	---Level: Internal
+	---Purpose: Modifies the default window background.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	SetBackgroundImage( me : mutable; FileName : CString from Standard;
+					  FillStyle : FillMethod from Aspect;
+					  update    : Boolean from Standard )
+	---Level: Internal
+	---Purpose:
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	SetBgImageStyle( me : mutable; FillStyle : FillMethod from Aspect;
+				       update    : Boolean from Standard )
+	---Level: Internal
+	---Purpose:
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	SetGradientBackground ( me	: mutable;
+		        	ABack	: GradientBackground from Aspect;
+				update  : Boolean from Standard )
+	---Level: Internal
+	---Purpose: Modifies the gradient window background.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	SetBgGradientStyle( me : mutable;
+                            FillStyle : GradientFillMethod from Aspect;
+                            update    : Boolean from Standard )
+	---Level: Internal
+	---Purpose:
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+        SetBackFacingModel ( me     : mutable;
+     			aModel : TypeOfBackfacingModel from Visual3d
+    	) is static;
+     	---Level   : Public
+     	---Purpose : Manages display of the back faces
+
+    	BackFacingModel ( me )
+     	returns TypeOfBackfacingModel from Visual3d is static;
+     	---Level   : Public
+     	---Purpose : Returns current state of the back faces display
+
+	SetContext ( me		: mutable;
+		     CTX	: ContextView from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Sets the context <CTX> in the view <me>.
+	---Category: Methods to modify the class definition
+
+	SetTransform ( me	: mutable;
+		       AMatrix	: Array2OfReal from TColStd )
+	---Level: Internal
+	---Purpose: Sets the transformation matrix that is applied
+	--          to <MyViewOrientation> field of the view <me>.
+	--
+	--	    <AMatrix> is defined as a 4*4 real matrix.
+	--
+	--		-------------------
+	--		| a11 a12 a13  t1 |
+	--		| a21 a22 a23  t2 |
+	--		| a31 a32 a33  t3 |
+	--		|  0   0   0   1  |
+	--		-------------------
+	--
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises TransformError if the matrix isn't a 4x4 matrix.
+	raises TransformError from Visual3d is static;
+
+	SetViewMapping ( me	: mutable;
+			 VM	: ViewMapping from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the mapping of the view <me>.
+	---Category: Methods to modify the class definition
+
+	SetViewMappingDefault ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Saves the current mapping which will be the
+	--	    reference value for the reset of the mapping
+	--	    done by the ViewmappingReset method.
+	---Category: Methods to modify the class definition
+
+	SetViewOrientation ( me	: mutable;
+			     VO	: ViewOrientation from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the orientation of <me>.
+	---Category: Methods to modify the class definition
+
+	SetViewOrientationDefault ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Saves the current orientation which will be the
+	--	    reference value for the reset of the orientation
+	--	    done by the ViewOrientationReset method.
+	---Category: Methods to modify the class definition
+
+	SetWindow ( me		: mutable;
+		    AWindow	: Window from Aspect )
+	---Level: Public
+	---Purpose: Associates the window <AWindow> to the view <me>.
+	--	    No new association if the window is already defined.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if it is impossible
+	--	    to associate a view and a window.
+	--	    (association already done or another problem)
+	--	    Modifies the viewmapping of the associated view
+	--	    when it calls the SetRatio method.
+	raises ViewDefinitionError from Visual3d is static;
+	---Purpose:
+	--	    After this call, each view is mapped in an unique window.
+	--
+	-- Programming example :
+	--
+	-- An example when we have 1 view and 1 window
+	-- -------------------------------------------
+	--
+	-- // Define a graphic device
+	-- Handle(Graphic3d_GraphicDevice) GD =
+	--			new Graphic3d_GraphicDevice ("dummy:0.0");
+	--
+	-- // Define a view manager
+	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
+	--
+	-- // Define a view
+	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
+	--
+	-- // Define a window
+	-- Handle(Xw_Window) W = new Xw_Window
+	--	(GD, "Graphic View 1", 0.695, 0.695, 0.600, 0.600,
+	--		Xw_WQ_3DQUALITY, Quantity_NOC_MATRAGRAY);
+	--
+	-- // Associate the view and the window
+	-- V->SetWindow (W);
+	--
+	-- // Map the window
+	-- W->Map ();
+	--
+	-- // Activate the view
+	-- V->Activate ();
+	--
+
+	SetWindow ( me		: mutable;
+		    AWindow	: Window from Aspect;
+		    AContext: RenderingContext from Aspect;
+		    ADisplayCB: GraphicCallbackProc from Aspect;
+		    AClientData: Address from Standard
+		  )
+	---Level: Public
+	---Purpose: Associates the window <AWindow> and context <AContext>
+	--	    to the view <me>.
+	--	    If <AContext> is not NULL the graphic context is used
+        --          directly to draw something in this view.
+	--	    Otherwise an internal context is created.
+        --          If <ADisplayCB> is not NULL then a user display CB is
+        --          call at the end of the OCC graphic traversal and just
+        --          before the swap of buffers. The <aClientData> is pass
+        --          to this call back.
+	--	    No new association if the window is already defined.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewDefinitionError if it is impossible
+	--	    to associate a view and a window.
+	--	    (association already done or another problem)
+	--	    Modifies the viewmapping of the associated view
+	--	    when it calls the SetRatio method.
+	raises ViewDefinitionError from Visual3d is static;
+	---Purpose:
+	--	    After this call, each view is mapped in an unique window.
+	--
+	-- Programming example :
+	--
+	-- An example when we have 1 view and 1 widget
+	-- -------------------------------------------
+	--
+	-- // Define a graphic device
+	-- Handle(Graphic3d_GraphicDevice) GD =
+	--			new Graphic3d_GraphicDevice ("dummy:0.0");
+	--
+	-- // Define a view manager
+	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
+	--
+	-- // Define a view
+	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
+	--
+	-- // Define a widget
+	-- Widget DA = GLwCreateMDrawingArea (Widget parent, char *name,
+        --                             ArgList arglist, Cardinal argcount);
+	-- Handle(Xw_Window) W = new Xw_Window(DA);
+	--
+	-- // Define the graphic context
+	-- GLXContext CTX = glXCreateContext(...)
+	-- // Define the graphic call back and client data
+	-- Handle(Object_View) myObject = new Object_View(...);
+	-- static void DisplayCallback( Window w, XtPointer client_data,
+	--			XtPointer call_data)
+	-- { .... }
+	-- // Associate the view and the widget
+	-- V->SetWindow (W, CTX, DisplayCallback, myObject);
+	--
+	-- // Activate the view
+	-- V->Activate ();
+	--
+
+	Update ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Updates screen in function of modifications of
+	--	    the structures.
+	---Category: Methods to modify the class definition
+
+	Update ( me		: mutable;
+		 AnUnderLayer	: Layer from Visual3d;
+		 AnOverLayer	: Layer from Visual3d )
+		is static;
+	---Level: Internal
+	---Purpose: Updates screen in function of modifications of
+	--	    the structures.
+	---Category: Methods to modify the class definition
+
+	ViewMappingReset ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Sets the value of the mapping to be the same as
+	--	    the mapping saved by the SetViewMappingDefaut method.
+	---Category: Methods to modify the class definition
+
+	ViewOrientationReset ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Sets the value of the orientation to be the same as the
+	--	    orientation saved by the SetViewOrientationDefaut method.
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Animation Mode
+	---------------------------------------------------
+
+	SetAnimationModeOn ( me	: mutable;
+		degenerate : Boolean from Standard = Standard_False )
+		is static;
+	---Level: Advanced
+	---Purpose: Activates animation mode with an optional degeneration
+	--	according to the TypeOfDegenerateModel of each graphic structure
+	--	When the animation mode is activated in the view,
+	--	all Graphic3d_Structure are stored in a graphic object.
+	--  Warning: only ONE view may have animation mode turned on
+	--	at same time.
+	---Category: Methods to modify the class definition
+
+	SetAnimationModeOff ( me	: mutable )
+		is static;
+	---Level: Advanced
+	---Purpose: Deactivates the animation mode.
+	---Category: Methods to modify the class definition
+
+	AnimationModeIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+	---Purpose: Returns the activity of the animation mode.
+	---Category: Inquire methods
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Degenerate Mode
+	---------------------------------------------------
+
+	SetDegenerateModeOn ( me	: mutable )
+		is static private;
+	---Level: Advanced
+	---Purpose: Activates degenerate mode.
+	--	When the degenerate mode is activated in the view,
+	--	all Graphic3d_Structure with the type TOS_COMPUTED
+	--	displayed in this view are not computed.
+	---Category: Methods to modify the class definition
+
+	SetDegenerateModeOff ( me	: mutable )
+		is static private;
+	---Level: Advanced
+	---Purpose: Deactivates the degenerate mode.
+	---Category: Methods to modify the class definition
+
+	DegenerateModeIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+	---Purpose: Returns the activity of the degenerate mode.
+	---Category: Inquire methods
+
+    	SetComputedMode ( me : mutable; aMode : Boolean from Standard ) is static;
+    	---Level: Advanced
+    	---Purpose: Switches computed HLR mode in the view
+    	---Category: Methods to modify the class definition
+
+    	ComputedMode ( me ) returns Boolean from Standard is static;
+    	---Level: Advanced
+    	---Purpose: Returns the computed HLR mode state
+    	---Category: Inquire methods
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Triedron methods
+	---------------------------------------------------
+
+	ZBufferTriedronSetup ( me  : mutable;
+	    	    	       XColor  : NameOfColor from Quantity = Quantity_NOC_RED;
+		    	       YColor  : NameOfColor from Quantity = Quantity_NOC_GREEN;
+    	    	       	       ZColor  : NameOfColor from Quantity = Quantity_NOC_BLUE1;
+			       SizeRatio : Real from Standard = 0.8;
+			       AxisDiametr : Real from Standard = 0.05;
+			       NbFacettes  : Integer from Standard = 12)
+		 is static;
+        ---Level: Advanced
+        ---Purpose: Customization of the ZBUFFER Triedron.
+        ---         Initializes Colors of X Y and axis
+        ---         Scale ratio defines decreasing of trihedron size when
+    	---         its position is out of a View
+
+	TriedronDisplay ( me		: mutable;
+                          APosition     : TypeOfTriedronPosition from Aspect  = Aspect_TOTP_CENTER;
+                          AColor	: NameOfColor from Quantity = Quantity_NOC_WHITE ;
+                          AScale   	: Real from Standard  =  0.02;
+    	    	    	  AsWireframe   : Boolean from Standard = Standard_True )
+		is static;
+	---Level: Public
+	---Purpose: Display of the Triedron.
+	---         Initialize position, color and length of Triedron axes.
+        ---         The scale is a percent of the window width.
+	---         If AsWireframe is FALSE triedron is shown in shaded mode
+	---         AColor is not considered for ZBUFFER mode
+	---Category:
+
+	TriedronErase ( me		: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Erases the Triedron.
+	---Category:
+
+	TriedronEcho ( me	: mutable;
+		       AType	: TypeOfTriedronEcho from Aspect  = Aspect_TOTE_NONE )
+		is static;
+	---Level: Public
+	---Purpose: Highlights the echo zone of the Triedron.
+	---Category:
+
+    ------------------------------------------
+    ---Category: Graduated trihedron
+    ------------------------------------------
+
+    GetGraduatedTrihedron(me;
+                          -- Names of axes --
+                          xname : out CString from Standard;
+                          yname : out CString from Standard;
+                          zname : out CString from Standard;
+                          -- Draw names --
+                          xdrawname : out Boolean from Standard;
+                          ydrawname : out Boolean from Standard;
+                          zdrawname : out Boolean from Standard;
+                          -- Draw values --
+                          xdrawvalues : out Boolean from Standard;
+                          ydrawvalues : out Boolean from Standard;
+                          zdrawvalues : out Boolean from Standard;
+                          -- Draw grid --
+                          drawgrid : out Boolean from Standard;
+                          -- Draw axes --
+                          drawaxes : out Boolean from Standard;
+                          -- Number of splits along axes --
+                          nbx : out Integer from Standard;
+                          nby : out Integer from Standard;
+                          nbz : out Integer from Standard;
+                          -- Offset for drawing values --
+                          xoffset : out Integer from Standard;
+                          yoffset : out Integer from Standard;
+                          zoffset : out Integer from Standard;
+                          -- Offset for drawing names of axes --
+                          xaxisoffset : out Integer from Standard;
+                          yaxisoffset : out Integer from Standard;
+                          zaxisoffset : out Integer from Standard;
+                          -- Draw tickmarks --
+                          xdrawtickmarks : out Boolean from Standard;
+                          ydrawtickmarks : out Boolean from Standard;
+                          zdrawtickmarks : out Boolean from Standard;
+                          -- Length of tickmarks --
+                          xtickmarklength : out Integer from Standard;
+                          ytickmarklength : out Integer from Standard;
+                          ztickmarklength : out Integer from Standard;
+                          -- Grid color --
+                          gridcolor : out Color from Quantity;
+                          -- X name color --
+                          xnamecolor : out Color from Quantity;
+                          -- Y name color --
+                          ynamecolor : out Color from Quantity;
+                          -- Z name color --
+                          znamecolor : out Color from Quantity;
+                          -- X color of axis and values --
+                          xcolor : out Color from Quantity;
+                          -- Y color of axis and values --
+                          ycolor : out Color from Quantity;
+                          -- Z color of axis and values --
+                          zcolor : out Color from Quantity;
+                          -- Name of font for names of axes --
+                          fontOfNames : out CString from Standard;
+                          -- Style of names of axes --
+                          styleOfNames : out FontAspect from OSD;
+                          -- Size of names of axes --
+                          sizeOfNames : out Integer from Standard;
+                          -- Name of font for values --
+                          fontOfValues : out CString from Standard;
+                          -- Style of values --
+                          styleOfValues : out FontAspect from OSD;
+                          -- Size of values --
+                          sizeOfValues : out Integer from Standard)
+    ---Purpose: Returns data of a graduated trihedron.
+    is static;
+
+    GraduatedTrihedronDisplay(me : mutable;
+                              -- Names of axes --
+                              xname : CString from Standard;
+                              yname : CString from Standard;
+                              zname : CString from Standard;
+                              -- Draw names --
+                              xdrawname : Boolean from Standard;
+                              ydrawname : Boolean from Standard;
+                              zdrawname : Boolean from Standard;
+                              -- Draw values --
+                              xdrawvalues : Boolean from Standard;
+                              ydrawvalues : Boolean from Standard;
+                              zdrawvalues : Boolean from Standard;
+                              -- Draw grid --
+                              drawgrid : Boolean from Standard;
+                              -- Draw axes --
+                              drawaxes : Boolean from Standard;
+                              -- Number of splits along axes --
+                              nbx : Integer from Standard;
+                              nby : Integer from Standard;
+                              nbz : Integer from Standard;
+                              -- Offset for drawing values --
+                              xoffset : Integer from Standard;
+                              yoffset : Integer from Standard;
+                              zoffset : Integer from Standard;
+                              -- Offset for drawing names of axes --
+                              xaxisoffset : Integer from Standard;
+                              yaxisoffset : Integer from Standard;
+                              zaxisoffset : Integer from Standard;
+                              -- Draw tickmarks --
+                              xdrawtickmarks : Boolean from Standard;
+                              ydrawtickmarks : Boolean from Standard;
+                              zdrawtickmarks : Boolean from Standard;
+                              -- Length of tickmarks --
+                              xtickmarklength : Integer from Standard;
+                              ytickmarklength : Integer from Standard;
+                              ztickmarklength : Integer from Standard;
+                              -- Grid color --
+                              gridcolor : Color from Quantity;
+                              -- X name color --
+                              xnamecolor : Color from Quantity;
+                              -- Y name color --
+                              ynamecolor : Color from Quantity;
+                              -- Z name color --
+                              znamecolor : Color from Quantity;
+                              -- X color of axis and values --
+                              xcolor : Color from Quantity;
+                              -- Y color of axis and values --
+                              ycolor : Color from Quantity;
+                              -- Z color of axis and values --
+                              zcolor : Color from Quantity;
+                              -- Name of font for names of axes --
+                              fontOfNames : CString from Standard;
+                              -- Style of names of axes --
+                              styleOfNames : FontAspect from OSD;
+                              -- Size of names of axes --
+                              sizeOfNames : Integer from Standard;
+                              -- Name of font for values --
+                              fontOfValues : CString from Standard;
+                              -- Style of values --
+                              styleOfValues : FontAspect from OSD;
+                              -- Size of values --
+                              sizeOfValues : Integer from Standard)
+    ---Purpose: Displays a graduated trihedron.
+    is static;
+
+    GraduatedTrihedronErase(me : mutable)
+    ---Purpose: Erases a graduated trihedron from the view.
+    is static;
+
+	----------------------------
+	---Category: Inquire methods
+	----------------------------
+
+	Background ( me )
+		returns Background from Aspect
+		is static;
+	---Level: Internal
+	---Purpose: Returns the value of the default window background.
+
+	GradientBackground ( me )
+		returns GradientBackground from Aspect
+		is static;
+	---Level: Internal
+	---Purpose: Returns the value of the window background.
+
+	ContainsFacet ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if one of the structures
+	--	    displayed in the view <me> contains Polygons,
+	--	    Triangles or Quadrangles.
+
+	ContainsFacet ( me;
+			ASet	: MapOfStructure from Graphic3d )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if one of the structures
+	--	    in the set <ASet> contains Polygons, Triangles
+	--	    or Quadrangles.
+
+	Context ( me )
+		returns ContextView from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the current context of the view <me>.
+	---C++: return const &
+
+	DisplayedStructures ( me; SG: in out MapOfStructure from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the set of structures displayed in
+	--	    the view <me>.
+
+	IsActive ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the activity flag of the view <me>.
+
+	IsDefined ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns True if the window associated to the view
+	--	    <me> is defined.
+
+	IsDeleted ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True is the view <me> is deleted.
+	--	    <me> is deleted after the call Remove (me).
+	---Category: Inquire methods
+
+	MinMaxValues ( me;
+		       XMin, YMin, ZMin	: out Real from Standard;
+		       XMax, YMax, ZMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    structures displayed in the view <me>.
+
+	MinMaxValues ( me;
+		       ASet		: MapOfStructure from Graphic3d;
+		       XMin, YMin, ZMin	: out Real from Standard;
+		       XMax, YMax, ZMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the boundary box of all
+	--	    structures in the set <ASet>.
+
+	MinMaxValues ( me : mutable;
+		       XMin, YMin	: out Real from Standard;
+		       XMax, YMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the projection of the
+	--	    boundary box of all structures displayed in the view <me>.
+
+	MinMaxValues ( me : mutable;
+		       ASet		: MapOfStructure from Graphic3d;
+		       XMin, YMin	: out Real from Standard;
+		       XMax, YMax	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the projection of the
+	--	    boundary box of all structures in the set <ASet>.
+
+	NumberOfDisplayedStructures ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns number of displayed structures in
+	--	    the view <me>.
+
+	Projects ( me : mutable;
+		   AX, AY, AZ		: Real from Standard;
+		   APX, APY, APZ	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the projection of the
+	--	    3d coordinates <AX>, <AY>, <AZ>.
+
+	Transform ( me )
+		returns Array2OfReal from TColStd
+		is static;
+	---Level: Public
+	---Purpose: Returns the transformation associated to the view <me>
+	---C++: return const &
+
+	ViewMapping ( me )
+		returns ViewMapping from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the current mapping of the view <me>.
+
+	ViewMappingDefault ( me )
+		returns ViewMapping from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the current reset mapping of the view <me>.
+
+	ViewOrientation ( me )
+		returns ViewOrientation from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the current orientation of the view <me>.
+
+	ViewOrientationDefault ( me )
+		returns ViewOrientation from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the current reset orientation of the view <me>.
+
+	Window ( me )
+		returns Window from Aspect
+	---Level: Public
+	---Purpose: Returns the window associated to the view <me>.
+	--  Warning: Raises ViewDefinitionError if the associated
+	--	    window isn't defined.
+	raises ViewDefinitionError from Visual3d is static;
+
+	LightLimit ( me ) returns Integer is static;
+	---Level: Public
+	---Purpose: Returns the MAX number of light associated to the view <me>.
+
+	PlaneLimit ( me ) returns Integer is static;
+	---Level: Public
+	---Purpose: Returns the MAX number of clipping planes
+	-- associated to the view <me>.
+
+	ViewManager ( me ) returns ViewManager from Visual3d is static;
+	---Level: Advanced
+	---Purpose: Returns the view manager handle which manage this view
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	AcceptDisplay ( me;
+			AStructure	: Structure from Graphic3d )
+		returns TypeOfAnswer from Visual3d
+		is static private;
+	---Level: Internal
+	---Purpose: Is it possible to display the structure
+	--	    <AStructure> in the view <me> ?
+	---Category: Private methods
+
+	ReCompute ( me	: mutable;
+		    AStructure	: Structure from Graphic3d );
+	---Level: Advanced
+	---Purpose: Computes the new presentation of the
+	--	    structure <AStructure> displayed in <me>
+	--	    with the type Graphic3d_TOS_COMPUTED.
+	---Category: Private methods
+
+	Compute ( me	: mutable ) is static private;
+	---Level: Internal
+	---Purpose: Computes the new presentation of the
+	--	    Structures displayed in <me> with the type
+	--	    Graphic3d_TOS_COMPUTED.
+	---Category: Private methods
+
+	ChangeDisplayPriority ( me		: mutable;
+				AStructure	: Structure from Graphic3d;
+				OldPriority	: Integer from Standard;
+				NewPriority	: Integer from Standard )
+		is static private;
+	---Level: Internal
+	---Purpose: Changes the display priority of the structure <AStructure>.
+	---Category: Private methods
+
+	Clear ( me		: mutable;
+		AStructure	: Structure from Graphic3d;
+		WithDestruction	: Boolean from Standard )
+		is static private;
+	---Level: Internal
+	---Purpose: Clears the structure <AStructure> to the view <me>.
+	---Category: Private methods
+
+	Connect ( me		: mutable;
+		  AMother	: Structure from Graphic3d;
+		  ADaughter	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Connects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Disconnect ( me		: mutable;
+		     AMother	: Structure from Graphic3d;
+		     ADaughter	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Disconnects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Display ( me		: mutable;
+		  AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Display the structure <AStructure> to the view <me>.
+	---Category: Private methods
+
+	Display ( me		: mutable;
+		  AStructure	: Structure from Graphic3d;
+		  AnUpdateMode  : TypeOfUpdate from Aspect )
+		is static private;
+	---Level: Internal
+	---Purpose: Display the structure <AStructure> to the view <me>.
+	---Category: Private methods
+
+	Erase ( me		: mutable;
+		AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Erases the structure <AStructure> from the view <me>.
+	---Category: Private methods
+
+	Erase ( me		: mutable;
+		AStructure	: Structure from Graphic3d;
+		AnUpdateMode	: TypeOfUpdate from Aspect )
+		is static private;
+	---Level: Internal
+	---Purpose: Erases the structure <AStructure> from the view <me>.
+	---Category: Private methods
+
+	Exploration ( me )
+		is static;
+	---Level: Internal
+	---Purpose: Prints informations about the view <me>.
+	---Category: Private methods
+
+	Highlight ( me			: mutable;
+		    AStructure		: Structure from Graphic3d;
+		    AMethod		: TypeOfHighlightMethod from Aspect )
+		is static private;
+	---Level: Internal
+	---Purpose: Highlights the structure <AStructure> in the view <me>.
+	---Category: Private methods
+
+	SetTransform ( me		: mutable;
+		       AStructure	: Structure from Graphic3d;
+		       ATrsf		: Array2OfReal from TColStd )
+		is static private;
+	---Level: Internal
+	---Purpose: Transforms the structure <AStructure> in the view <me>.
+	---Category: Private methods
+
+	UnHighlight ( me		: mutable;
+		      AStructure	: Structure from Graphic3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Suppress the highlighting on the structure <AStructure>
+	--	    in the view <me>.
+	---Category: Private methods
+
+	IsComputed ( me;
+		     AStructure	: Structure from Graphic3d )
+		returns Integer from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns an index != 0 if the structure <AStructure>
+	--	    have another structure computed for the view <me>.
+	---Category: Private methods
+
+	Identification ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the identification number of the view <me>.
+	---Category: Private methods
+
+	IsDisplayed ( me;
+		      AStructure	: Structure from Graphic3d )
+		returns Boolean from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns true if the structure <AStructure> is
+	--	    displayed in the view <me>.
+	---Category: Private methods
+
+	MatrixOfMapping ( me	: mutable )
+		returns Array2OfReal from TColStd
+		is static; -- private;
+	---C++: return const &
+	---Level: Internal
+	---Purpose: Returns the current matrix of mapping of the view <me>.
+	--  Warning: Stores the current matrix of mapping.
+
+	MatrixOfOrientation ( me	: mutable )
+		returns Array2OfReal from TColStd
+		is static; -- private;
+	---C++: return const &
+	---Level: Internal
+	---Purpose: Returns the current matrix of orientation of the view <me>.
+	--  Warning: Stores the current matrix of orientation.
+
+	SetRatio ( me	: mutable )
+		is static private;
+	---Level: Internal
+	---Purpose: Modifies the aspect ratio of the view <me> when the
+	--	    associated window is defined or resized.
+	---Category: Private methods
+
+	UpdateLights ( me	: mutable )
+		is static private;
+	---Level: Internal
+	---Purpose: Updates the lights when the associated window is defined
+	--	    and when the view is activated.
+	---Category: Private methods
+
+	UpdatePlanes ( me	: mutable )
+		is static private;
+	---Level: Internal
+	---Purpose: Updates the planes when the associated window is defined
+	--	    and when the view is activated.
+	---Category: Private methods
+
+	UpdateView ( me	: mutable )
+		is static private;
+	---Level: Internal
+	---Purpose: Updates the associated c structure before a call to the
+	--	    graphic library.
+	---Category: Private methods
+
+	-----------------------------
+	-- Category: Internal methods
+	-----------------------------
+
+	CView ( me )
+		returns Address from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the c structure associated to <me>.
+	---Category: Private methods
+
+	GraphicDriver ( me )
+		returns GraphicDriver from Aspect
+		is static;
+	---Level: Internal
+	---Purpose: Returns the associated GraphicDriver.
+	---Category: Internal methods
+
+	HaveTheSameOwner ( me;
+			   AStructure	: Structure from Graphic3d )
+		returns Integer from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns an index != 0 if the structure <AStructure>
+	--	    have the same owner than another structure in the
+	--	    sequence of the computed structures.
+	---Category: Private methods
+
+	Plot ( me;
+	       APlotter	: Plotter from Graphic3d )
+		is static;
+	---Level: Internal
+	---Purpose: Calls the method Plot for each Structure
+	--	    displayed in <me>.
+	---Category: Private methods
+
+	  Print (me; AnUnderLayer	: Layer from Visual3d;
+		 	 AnOverLayer	: Layer from Visual3d;
+			 hPrnDC: Handle from Aspect;
+			 showBackground: Boolean;
+			 filename: CString)
+	  is static;
+
+      	---Level: Internal
+      	---Purpose: print the contents of all layers of the view to the printer.
+	-- <hPrnDC> : Pass the PrinterDeviceContext (HDC),
+	-- <showBackground> : When set to FALSE then print the view without background color
+	-- (background is white)
+      	-- else set to TRUE for printing with current background color.
+	-- <filename>: If != NULL, then the view will be printed to a file.
+	--  Warning: Works only under Windows.
+
+	  Print (me; hPrnDC: Handle from Aspect;
+			 showBackground: Boolean;
+			 filename: CString)
+	  is static;
+
+      	---Level: Internal
+      	---Purpose: print the contents of the view to printer.
+	-- <hPrnDC> : Pass the PrinterDeviceContext (HDC),
+	-- <showBackground> : When set to FALSE then print the view without background color
+	-- (background is white)
+      	-- else set to TRUE for printing with current background color.
+	-- <filename>: If != NULL, then the view will be printed to a file.
+	--  Warning: Works only under Windows.
+
+	SetTransparency ( me : mutable;
+		AFlag : Boolean from Standard )
+		is static;
+	---Level: Advanced
+	---Purpose: if <AFlag> is Standard_True then the transparency
+	--	    is managed in the view <me>.
+	--	    Default Standard_False
+	---Category: Internal methods
+
+	ZBufferIsActivated ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+	---Purpose: Returns Standard_True if the ZBuffer is activated
+	--	    in the view <me> and Standard_False if not.
+	---Category: Internal methods
+
+	SetZBufferActivity ( me : mutable; AnActivity : Integer from Standard )
+		is static;
+	---Level: Advanced
+	---Purpose: Activates the ZBuffer if the integer <AnActivity>
+	--	    is equal to 1.
+	--	    Deactivates the ZBuffer if the integer <AnActivity>
+	--	    is equal to 0.
+	--	    If the integer <AnActivity> is equal to -1 then
+	--	    - the ZBuffer is activated if
+	--		me->Context ().Visualization () == Visual3d_TOV_SHADING
+	--	    - the ZBuffer is deactivated if
+	--		me->Context ().Visualization () == Visual3d_TOV_WIREFRAME
+	---Category: Internal methods
+
+	UnderLayer ( me )
+		returns Layer from Visual3d;
+	---Level: Internal
+	---Purpose: Returns the underlay of the view <me>.
+	---Category: Private methods
+	---C++: return const &
+
+	OverLayer ( me )
+		returns Layer from Visual3d;
+	---Level: Internal
+	---Purpose: Returns the underlay of the view <me>.
+	---Category: Private methods
+	---C++: return const &
+
+    	EnableDepthTest( me; enable : Boolean from Standard )
+    	is static;
+	---Level: Public
+	---Purpose: turns on/off opengl depth
+
+    	IsDepthTestEnabled( me ) returns Boolean from Standard
+    	is static;
+	---Level: Public
+	---Purpose: returns current state of the opengl depth testing
+
+    	ReadDepths( me; x,y,width,height: Integer from Standard;
+    	    	    	buffer : Address )
+	is static;
+	---Purpose: Reads depths of shown pixels of the given rectangle
+
+        FBOCreate( me : mutable; width,height: Integer from Standard )
+                  returns PtrFrameBuffer from Graphic3d
+        is static;
+        ---Level: Public
+        ---Purpose: Generate offscreen FBO in the graphic library
+
+        FBORelease( me     : mutable;
+                    fboPtr : in out PtrFrameBuffer from Graphic3d )
+        is static;
+        ---Level: Public
+        ---Purpose: Remove offscreen FBO from the graphic library
+
+        FBOGetDimensions( me                  : mutable;
+                          fboPtr              : PtrFrameBuffer from Graphic3d;
+                          width, height       : out Integer from Standard;
+                          widthMax, heightMax : out Integer from Standard )
+        is static;
+        ---Level: Public
+        ---Purpose: Read offscreen FBO configuration.
+
+        FBOChangeViewport( me                  : mutable;
+                           fboPtr              : in out PtrFrameBuffer from Graphic3d;
+                           width, height       : Integer from Standard )
+        is static;
+        ---Level: Public
+        ---Purpose: Change offscreen FBO viewport.
+
+        BufferDump( me            : mutable;
+                    buffer        : in out CRawBufferData from Image )
+                   returns Boolean from Standard
+        is static;
+        ---Level: Public
+        ---Purpose: Dump active rendering buffer into specified memory buffer.
+
+    	EnableGLLight( me; enable : Boolean from Standard )
+    	is static;
+	---Level: Public
+	---Purpose: turns on/off opengl lighting, currently used in triedron displaying
+
+    	IsGLLightEnabled( me ) returns Boolean from Standard
+    	is static;
+	---Level: Public
+	---Purpose: returns the current state of the gl lighting
+	--          currently used in triedron displaying
+
+        Export( me;
+                FileName         : CString from Standard;
+                Format           : ExportFormat from Graphic3d;
+                SortType         : SortType from Graphic3d = Graphic3d_ST_BSP_Tree;
+                Precision        : Real from Standard = 0.005;
+                ProgressBarFunc  : Address from Standard = NULL;
+                ProgressObject   : Address from Standard = NULL );
+
+fields
+
+--
+-- Classe	:	Visual3d_View
+--
+-- Purpose	:	Declaration of the variables specific to views.
+--
+-- Reminder	:	A view is defined by:
+--			- a ViewManager
+--			- a ContextView
+--			- a ViewMapping
+--			- a ViewOrientation
+--
+
+	-- the associated C structure
+	MyCView			:	CView from Graphic3d;
+
+	-- the context of the view : Aliasing, Depth-Cueing, Lights ...
+	MyContext		:	ContextView from Visual3d;
+
+	-- the current mapping of the view
+	MyViewMapping		:	ViewMapping from Visual3d;
+
+	-- the reset mapping of the view
+	MyViewMappingReset	:	ViewMapping from Visual3d;
+
+	-- the current orientation of the view
+	MyViewOrientation	:	ViewOrientation from Visual3d;
+
+	-- the reset orientation of the view
+	MyViewOrientationReset	:	ViewOrientation from Visual3d;
+
+	-- the associated window
+	MyWindow		:	Window from Aspect;
+
+	-- the transformation
+	MyTransformation	:	Array2OfReal from TColStd;
+
+	-- the matrix management
+	MyMatrixOfMapping	:	Array2OfReal from TColStd;
+	MyMatrixOfOrientation	:	Array2OfReal from TColStd;
+
+	-- association Structure_COMPUTE and Structure_Computed
+	MyTOCOMPUTESequence	:	SequenceOfStructure from Graphic3d;
+	MyCOMPUTEDSequence	:	SequenceOfStructure from Graphic3d;
+
+	-- the graphic driver used
+	MyGraphicDriver		:	GraphicDriver from Graphic3d;
+
+	-- the background of the associated window
+	MyBackground		:	Background from Aspect;
+
+	-- the gradient background of the associated window
+	MyGradientBackground	:	GradientBackground from Aspect;
+
+	-- the displayed structures in the view
+	MyDisplayedStructure	:	MapOfStructure from Graphic3d;
+
+	-- the ViewManager associated with the view
+--	MyPtrViewManager	:	Address from Standard;
+	MyPtrViewManager	:	ViewManagerPtr from Visual3d;
+
+	-- Booleans
+	MyCBitFields		:	CBitFields8 from Graphic3d;
+
+friends
+
+	class ViewManager from Visual3d
+
+end View;

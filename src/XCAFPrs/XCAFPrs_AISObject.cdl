@@ -1,0 +1,42 @@
+-- File:	XCAFPrs_AISObject.cdl
+-- Created:	Fri Aug 11 16:37:11 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class AISObject from XCAFPrs inherits Shape from AIS
+
+    ---Purpose: Implements AIS_InteractiveObject functionality
+    --          for shape in DECAF document
+
+uses
+    Shape from TopoDS,
+    PresentationManager3d from PrsMgr,
+    Presentation from Prs3d,
+    Label from TDF,
+    Style from XCAFPrs
+    
+is
+
+    Create (lab: Label from TDF);
+    	---Purpose: Creates an object to visualise the shape label
+
+    AddStyledItem (me: mutable; style: Style from XCAFPrs;
+                   shape: Shape from TopoDS;
+                   aPresentationManager : PresentationManager3d from PrsMgr;
+                   aPresentation        : mutable Presentation from Prs3d;
+    	           aMode                : Integer from Standard = 0) 
+    is private;
+
+    Compute (me                   : mutable;
+             aPresentationManager : PresentationManager3d from PrsMgr;
+             aPresentation        : mutable Presentation from Prs3d;
+    	     aMode                : Integer from Standard = 0) 
+    is redefined virtual private;
+    	---Purpose: Redefined method to compute presentation
+
+fields
+    myLabel : Label from TDF;
+
+end AISObject;

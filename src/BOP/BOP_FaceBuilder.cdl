@@ -1,0 +1,189 @@
+-- File:	BOP_FaceBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY 
+-- modified by PKV Tue Apr  3 16:57:39 2001
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+   
+
+class FaceBuilder from BOP 
+
+    ---Purpose: 
+    ---   The  algorithm to   construct Faces from a WireEdgeSet        
+    --- 
+    
+uses
+
+    Shape  from TopoDS,
+    Face   from TopoDS, 
+    Wire   from TopoDS, 
+    Edge   from TopoDS, 
+    Vertex from TopoDS, 
+      
+    ListOfShape from TopTools, 
+    SequenceOfInteger from TColStd, 
+    
+    LoopSet         from BOP,
+    BlockIterator   from BOP,
+    BlockBuilder    from BOP,
+    WireEdgeSet     from BOP,
+    FaceAreaBuilder from BOP,
+    PWireEdgeSet    from BOP
+
+is
+
+    Create  
+    	returns FaceBuilder;
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    Do(me :out;  
+    	   aWES        : WireEdgeSet from BOP;  
+    	   aForceClass : Boolean from Standard =Standard_True); 
+    	---Purpose: 
+    	--- Launches the algorithm consisting of four steps 
+    	--- 1.  Split the WES on wires       
+    	--- 2.  Make Loops from wires         
+    	--- 3.  Make Areas from Loops           
+    	--- 4.  Make Faces from Areas    
+    	---
+    DoInternalEdges (me :out) 
+    	is private;       		    	    
+    	---Purpose:  
+    	--- Processes internal edges if they exists     
+    	---
+    BuildNewFaces (me :out) 
+    	is private;  
+    	---Purpose:     
+    	--- Make Faces from Areas  
+    	---
+    WES (me) 
+    	returns  WireEdgeSet from BOP; 
+    	---C++: return const &
+    	---Purpose:     
+    	--- Selector 
+    	---
+    NewFaces (me) 
+	returns ListOfShape from TopTools; 
+    	---C++: return const &	
+    	---Purpose:     
+    	--- Selector 
+    	---
+    SetTreatment (me: out; 
+	aTreatment: Integer from Standard);  
+    	---Purpose:     
+    	--- Modifier 
+    	--- 0 -Treat internal edges,  
+    	--- 1 -Do not treat internal edges      
+    	---
+    SetManifoldFlag(me: out; 
+    	aMFlag:  Boolean from Standard); 
+    	---Purpose:     
+    	--- Modifier 
+    	---
+    SetTreatSDScales (me: out; 
+	aTreatment: Integer from Standard);  
+    	---Purpose:     
+    	--- Modifier 
+    	--- 1 -Treat scale configured same domain faces,  
+    	--- 0 -Do not treat them.     
+	---
+    
+    ManifoldFlag(me) 
+    	returns Boolean from Standard; 
+    	---Purpose:     
+    	--- Selector 
+    	---
+    Treatment (me) 
+	returns Integer from Standard; 
+    	---Purpose:     
+    	--- Selector 
+    	---
+    TreatSDScales (me) 
+	returns Integer from Standard; 
+    	---Purpose:     
+    	--- Selector 
+    	---
+    --- 
+    --- 
+    --- Faces' iterator   
+    --- 
+    InitFace(me:out)  
+    	returns Integer from Standard;
+    
+    MoreFace(me)  
+    	returns Boolean from Standard;
+    
+    NextFace(me:out);
+    ---Purpose:     
+    --- 
+    --- 
+    --- Wires' iterator 
+    ---  
+    InitWire(me:out)  
+    	returns Integer from Standard;
+     
+    MoreWire(me)  
+    	returns Boolean from Standard;
+     
+    NextWire(me:out); 
+    	
+    IsOldWire(me)  
+    	returns Boolean from Standard;
+     
+    OldWire(me)  
+    	returns Shape from TopoDS;
+    	---C++: return const &
+   
+    Wire(me)  
+    	returns Wire from TopoDS;
+    	---C++: return const &
+    	---Purpose:      
+    	---  
+
+    ---  
+    ---  Edges' iterator 
+    ---
+    FindNextValidElement(me:out);
+         
+    InitEdge(me:out)  
+    	returns Integer from Standard;
+     
+    MoreEdge(me)  
+    	returns Boolean from Standard;
+     
+    NextEdge(me : in out);
+     
+    Edge(me)  
+    	returns Edge from TopoDS;
+    	---C++: return const &
+    	---Purpose:      
+    	---
+    MakeLoops(me :out; 
+    	      SS :out WireEdgeSet from BOP) 
+    	is private;
+    	---Purpose:      
+    	--- Make Loops from wires     
+    	---
+    SDScales(me :out) 
+    	is  private; 
+    	---Purpose:   
+    	--- Treatment SD faces with a "scale" 
+    	---
+
+fields
+
+    myFace             : Face from TopoDS;
+    myLoopSet          : LoopSet         from BOP;
+    myBlockIterator    : BlockIterator   from BOP;
+    myBlockBuilder     : BlockBuilder    from BOP;
+    myFaceAreaBuilder  : FaceAreaBuilder from BOP;
+    myWES              : PWireEdgeSet    from BOP;
+    myNewFaces         : ListOfShape     from TopTools; 
+     
+    myTreatment        : Integer from Standard;           
+    myManifoldFlag     : Boolean from Standard;     
+    myTreatSDScales    : Integer from Standard;   
+    myNegatives        : SequenceOfInteger from TColStd; 
+
+end FaceBuilder;

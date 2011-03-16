@@ -1,0 +1,38 @@
+-- File:	GeomPlate_PlateG1Criterion.cdl
+-- Created:	Wed Mar  5 11:46:39 1997
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1997
+
+class PlateG1Criterion from GeomPlate inherits Criterion from AdvApp2Var
+
+
+uses
+    SequenceOfXY,SequenceOfXYZ from TColgp,
+    Patch,Context from AdvApp2Var,
+    CriterionType,CriterionRepartition from AdvApp2Var
+
+
+is
+
+    Create( Data : SequenceOfXY;
+    	    G1Data : SequenceOfXYZ;
+            Maximum : Real;
+    	    Type : CriterionType  = AdvApp2Var_Absolute;
+    	    Repart : CriterionRepartition  = AdvApp2Var_Regular)
+    returns PlateG1Criterion;
+	    
+    Value(me; P : in out Patch; C : Context )
+    is redefined;
+    
+    IsSatisfied(me; P : Patch ) returns Boolean
+    is redefined;
+    
+
+    
+fields
+    myData : SequenceOfXY;
+    myXYZ : SequenceOfXYZ;
+    
+end PlateG1Criterion;
+

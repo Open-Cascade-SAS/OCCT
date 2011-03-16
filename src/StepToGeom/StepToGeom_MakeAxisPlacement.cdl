@@ -1,0 +1,20 @@
+-- File:	StepToGeom_MakeAxisPlacemant.cdl
+-- Created:	Fri Aug 26 12:09:08 1994
+-- Author:	Frederic MAUPAS
+---Copyright:	 Matra Datavision 1994
+
+class MakeAxisPlacement from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Axis2Placement2d from Step and AxisPlacement from Geom2d
+
+uses AxisPlacement from Geom2d,
+     Axis2Placement2d from StepGeom
+     
+is 
+
+    Convert ( myclass; SA : Axis2Placement2d from StepGeom;
+                       CA : out AxisPlacement from Geom2d )
+    returns Boolean from Standard;
+
+end MakeAxisPlacement;

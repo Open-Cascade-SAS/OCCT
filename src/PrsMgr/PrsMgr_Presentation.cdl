@@ -1,0 +1,81 @@
+-- File:	PrsMgr_Presentation.cdl
+-- Created:	Wed Jan 25 08:49:40 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+-- Modified by Rob : 20-feb-1997
+-- Modified by Rob : 16-dec-1997 : kind of presentation
+---Copyright:	 Matra Datavision 1995
+
+deferred class Presentation from PrsMgr
+inherits TShared  from MMgt
+
+uses 
+
+    PresentationManager from PrsMgr,
+    KindOfPrs from PrsMgr
+
+is
+
+    Initialize(aPresentationManager: PresentationManager from PrsMgr)
+    is protected;
+
+    KindOfPresentation(me) returns KindOfPrs from PrsMgr is deferred;    
+    ---Purpose: 2D or 3D
+    
+    Display(me: mutable) is deferred private;
+    
+    Erase(me) is deferred private;
+    
+    Highlight(me: mutable) is deferred private;
+    
+    Unhighlight (me) is deferred private;
+    
+    IsHighlighted(me) returns Boolean from Standard
+    is deferred private;
+
+    IsDisplayed(me) returns Boolean from Standard
+    is deferred private;
+
+    Destroy ( me : mutable )
+    is virtual; 
+    ---Level: Public    
+    ---Purpose: Destructor
+    ---C++:     alias ~
+
+    DisplayPriority(me) returns Integer from Standard
+    is deferred private;
+    
+    SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
+    is deferred private;
+
+    Clear(me: mutable) 
+    is deferred private;
+    
+---Category: Inquire Methods
+--            
+    PresentationManager(me) returns mutable PresentationManager
+    ---Purpose: returns the PresentationManager in which the
+    --          presentation has been created.
+    is static;
+    ---C++: inline
+    ---C++: return const&
+
+
+---Category: Internal Methods
+
+    SetUpdateStatus(me:mutable; aStat : Boolean from Standard);
+    ---C++: inline
+    
+    MustBeUpdated(me) returns Boolean from Standard;
+    ---C++: inline
+
+
+fields
+
+    myPresentationManager: PresentationManager from PrsMgr is protected;
+    myMustBeUpdated      : Boolean from Standard is protected;
+
+friends
+    class PresentationManager from PrsMgr
+        
+end Presentation from PrsMgr;

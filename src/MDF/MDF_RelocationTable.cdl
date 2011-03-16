@@ -1,0 +1,109 @@
+-- File:	MDF_RelocationTable.cdl
+--      	-----------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	May  7 1997	Creation
+
+
+
+generic class RelocationTable from MDF
+    (TheSourceType as any;
+     TheTargetType as any;
+     TheOtherSourceType as any;
+     TheOtherTargetType as any;
+     TheMapType    as any)
+    inherits TShared from MMgt
+
+	---Purpose: Storage Relocation Table
+	--          (Transient->Persistent). It is a relocation
+	--          dictionnary.
+
+uses
+
+    Tool from MDF
+
+-- raises
+
+is
+
+    Create(theSelfRelocation : Boolean from Standard = Standard_False) 
+    returns mutable RelocationTable from MDF;
+	---Purpose: Creates a relocation table. 
+	--          <theSelfRelocation> status says that the relocation table allows self relocation.
+
+    SetSelfRelocation(me : mutable; theStatus : Boolean from Standard = Standard_True);
+    ---Purpose: Sets self relocation status.
+
+    IsSelfRelocation(me) 
+    ---Purpose: Returns true if the self relocation status is set.
+    returns Boolean from Standard;
+
+
+    -- Attribute relocation methods.
+    -- ---------
+
+    SetRelocation(me : mutable;
+    	    	  aSourceAttribute : TheSourceType;
+    	    	  aTargetAttribute : TheTargetType);
+	---Purpose: Sets the relocation value of <aSourceAttribute> to
+	--          <aTargetAttribute>.
+
+    HasRelocation(me : mutable;
+    	    	  aSourceAttribute :                TheSourceType;
+    	    	  aTargetAttribute : in out mutable TheTargetType)
+	returns Boolean from Standard;
+	---Purpose: Finds the relocation value of <aSourceAttribute>
+	--          and returns it into <aTargetAttribute>.
+	--          
+	--          If a value is found, returns True; False otherwise.
+
+
+    -- Transient other types object relocation methods.
+    -- ---------------------
+
+    SetOtherRelocation(me : mutable;
+    	               aSource : TheOtherSourceType;
+    	               aTarget : TheOtherTargetType);
+	---Purpose: Sets the relocation value of <aSourceTransient> to
+	--          <aTargetTransient>.
+
+    HasOtherRelocation(me : mutable;
+    	    	       aSource :                TheOtherSourceType;
+    	    	       aTarget : in out mutable TheOtherTargetType)
+	returns Boolean from Standard;
+	---Purpose: Finds the relocation value of <aSource>
+	--          and returns it into <aTarget>.
+	--          
+	--          If a value is found, returns True; False otherwise.
+
+
+    -- Try not to use the following methods...
+
+    AttributeTable(me : mutable)
+    	returns TheMapType;
+	---Purpose: Returns <myAttributeTable> to be read or
+	--          updated. Please, for a better security, avoid to
+	--          use this method.
+	--          
+	---C++: return &
+
+    OtherTable(me : mutable)
+    	returns TheMapType;
+	---Purpose: Returns <myOtherTable> to be read or
+	--          updated. Please, for a better security, avoid to
+	--          use this method.
+	--          
+	---C++: return &
+
+
+fields
+
+    myAttributeTable : TheMapType;
+    myOtherTable     : TheMapType;
+    mySelfRelocation : Boolean from Standard;
+
+end RelocationTable;

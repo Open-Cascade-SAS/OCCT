@@ -1,0 +1,74 @@
+-- File:	TNaming_Scope.cdl
+-- Created:	Wed Nov  3 16:23:24 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+private class Scope from TNaming 
+
+
+    ---Purpose: this class manage a scope of labels
+    --          ===================================
+
+
+uses Label      from TDF,
+     LabelMap   from TDF,
+     NamedShape from TNaming,
+     Shape      from TopoDS
+
+is
+
+    Create
+    ---Purpose: WithValid = FALSE
+    returns Scope from TNaming;
+
+    Create (WithValid : Boolean from Standard)
+    ---Purpose: if <WithValid> the scope is defined by the map. If not
+    --          on the whole framework.
+    returns Scope from TNaming;    
+
+    Create (valid : in out LabelMap from TDF)
+    ---Purpose: create a scope with a map. WithValid = TRUE.
+    returns Scope from TNaming;
+
+    WithValid (me)
+    returns Boolean from Standard;  
+
+    WithValid (me : in out; mode : Boolean from Standard);
+
+    ClearValid (me :  in  out);
+
+    Valid (me : in  out; L :Label from TDF);
+    
+    ValidChildren (me : in  out; L        : Label from TDF;
+                                 withroot : Boolean from Standard = Standard_True);    
+
+    Unvalid (me : in  out; L :Label from TDF);
+    
+    UnvalidChildren (me : in  out; L        : Label from TDF;
+                                   withroot : Boolean from Standard = Standard_True);
+    
+    IsValid (me; L :Label from TDF) 
+    returns Boolean  from  Standard; 
+    
+    GetValid (me)
+    ---C++: return const &
+    returns LabelMap from TDF;    
+
+    ChangeValid (me : in out)
+    ---C++: return &
+    returns LabelMap from TDF;
+
+    CurrentShape (me ; NS : NamedShape from TNaming)
+    ---Purpose:  Returns  the current  value of  <NS> according to the
+    --          Valid Scope.
+    returns Shape from TopoDS;			    
+
+
+fields
+   
+    myWithValid  : Boolean  from Standard;
+    myValid      : LabelMap from TDF;
+
+end Scope;

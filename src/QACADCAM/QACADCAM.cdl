@@ -1,0 +1,11 @@
+-- File:	QACADCAM.cdl
+-- Created:	Tue Mar 19 17:43:41 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QACADCAM
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

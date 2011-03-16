@@ -1,0 +1,32 @@
+-- File:	SelectErrorEntities.cdl
+-- Created:	Wed Nov 18 10:07:57 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectErrorEntities  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectErrorEntities sorts the Entities which are qualified
+    --           as "Error" (their Type has not been recognized) during reading
+    --           a File. This does not concern Entities which are syntactically
+    --           correct, but with incorrect data (for integrity constraints).
+
+uses AsciiString from TCollection, InterfaceModel
+
+is
+
+    Create returns mutable SelectErrorEntities;
+    ---Purpose : Creates a SelectErrorEntities
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True for an Entity which is qualified as "Error", i.e.
+    --           if <model> explicitly knows <ent> (through its Number) as
+    --           Erroneous
+
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Error Entities"
+
+end SelectErrorEntities;

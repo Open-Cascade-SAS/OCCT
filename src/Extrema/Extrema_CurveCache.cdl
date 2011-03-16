@@ -1,0 +1,86 @@
+-- File     : Extrema_CurveCache.cdl
+-- Created  : Sun Dec 28 2008
+-- Author   : Roman Lygin
+--            roman.lygin@gmail.com
+---Copyright: Roman Lygin, Open CASCADE 2008
+
+generic class CurveCache from Extrema
+    (Curve as any; -- Adaptor3d_Curve or Adaptor2d_Curve2d
+     Pnt as any;   -- gp_Pnt or gp_Pnt2d
+     ArrayOfPnt as Transient from Standard) -- TColgp_HArray1OfPnt or TColgp_HArray1OfPnt2d
+inherits Transient from Standard
+
+    ---Purpose:
+
+raises NotDone from StdFail
+
+is
+
+    Create returns mutable CurveCache from Extrema;
+
+    Create (theC: Curve; theUFirst, theULast: Real; theNbSamples: Integer;
+        theToCalculate: Boolean)returns mutable CurveCache from Extrema;
+
+    SetCurve (me: mutable; theC: Curve; theNbSamples: Integer;
+        theToCalculate: Boolean);
+    ---Purpose: Sets the \a theRank-th curve (1 or 2) and its parameters.
+    --          Caches sample points for further reuse in Perform().
+
+    SetCurve (me: mutable; theC: Curve;
+        theUFirst, theULast: Real; theNbSamples: Integer; theToCalculate: Boolean);
+        ---Purpose:
+
+    SetRange (me: mutable; Uinf, Usup: Real; theToCalculate: Boolean);
+    ---Purpose:
+
+    CalculatePoints (me: mutable);
+    ---Purpose: Calculates points along the curve and stores
+    --          them in internal array for further reuse in Perform().
+
+    IsValid (me) returns Boolean;
+    ---C++: inline
+    ---Purpose: Returns True if the points array has already been calculated
+    --          for specified curve and range
+
+    Points (me) returns ArrayOfPnt
+        raises  NotDone from StdFail;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose: Raises StdFail_NotDone if points have not yet been calculated.
+
+    CurvePtr (me) returns Address from Standard;
+    ---C++: inline
+    ---Purpose:
+
+    NbSamples (me) returns Integer;
+    ---C++: inline
+    ---Purpose:
+
+    FirstParameter (me) returns Real;
+    ---C++: inline
+    ---Purpose:
+
+    LastParameter (me) returns Real;
+    ---C++: inline
+    ---Purpose:
+
+    TrimFirstParameter (me) returns Real;
+    ---C++: inline
+    ---Purpose: For bounded curves returns FirstParameter(), for unbounded - -1e-10.
+
+    TrimLastParameter (me) returns Real;
+    ---C++: inline
+    ---Purpose: For bounded curves returns LastParameter(), for unbounded - 1e-10.
+
+fields
+
+    myC           : Address from Standard;
+    myFirst       : Real;
+    myLast        : Real;
+    myTrimFirst   : Real;
+    myTrimLast    : Real;
+    myNbSamples   : Integer;
+    myPntArray    : ArrayOfPnt;
+    myIsArrayValid: Boolean;
+
+end;

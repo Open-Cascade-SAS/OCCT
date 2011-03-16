@@ -1,0 +1,34 @@
+-- File:	ViewKindEntity.cdl
+-- Created:	Tue Apr  7 16:06:14 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class ViewKindEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for ViewKind in directory part
+    --           that is, Single view or Multiple view
+    --           An effective ViewKind entity must inherit it and define
+    --           IsSingle (True for Single, False for List of Views),
+    --           NbViews and ViewItem (especially for a List)
+
+uses Boolean
+
+raises OutOfRange
+
+is
+
+    IsSingle (me) returns Boolean  is deferred;
+    ---Purpose : says if "me" is a Single View (True) or a List of Views (False)
+
+    NbViews (me) returns Integer  is deferred;
+    ---Purpose : Returns the count of Views for a List of Views. For a Single
+    --           View, may return simply 1
+
+    ViewItem (me; num : Integer) returns ViewKindEntity
+    raises OutOfRange  is deferred;
+    ---Purpose : Returns the View n0. <num> for a List of Views. For a Single
+    --           Views, may return <me> itself
+
+end ViewKindEntity;

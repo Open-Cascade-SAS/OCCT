@@ -1,0 +1,119 @@
+-- File:	Geom2d_BSplineCurve.cdl
+-- Created:	Wed Mar 24 17:35:29 1993
+-- Author:	DUB
+--		<DUB@fuegox>
+-- Copyright:	 Matra Datavision 1993
+
+class BSplineCurveToBezierCurve   from Geom2dConvert 
+
+        --- Purpose :An algorithm to convert a BSpline curve into a series
+    	-- of adjacent Bezier curves.
+    	-- A BSplineCurveToBezierCurve object provides a framework for:
+    	-- -   defining the BSpline curve to be converted
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results.
+        --  References :
+        --  Generating the Bezier points of B-spline curves and surfaces
+        --  (Wolfgang Bohm) CAD volume 13 number 6 november 1981
+
+
+uses   
+    Array1OfReal        from TColStd, 
+    Array1OfBezierCurve from TColGeom2d,
+    BezierCurve         from Geom2d,
+    BSplineCurve        from Geom2d
+
+
+raises 
+    DimensionError    from Standard,
+    DomainError       from Standard,
+    OutOfRange        from Standard
+  
+is
+
+
+    Create (BasisCurve : BSplineCurve)  returns BSplineCurveToBezierCurve;
+        --- Purpose : Computes all the data needed to convert
+    	-- -   the BSpline curve BasisCurve, into a series of adjacent Bezier arcs.
+    	-- The result consists of a series of BasisCurve arcs
+    	-- limited by points corresponding to knot values of the curve.
+    	-- Use the available interrogation functions to ascertain
+    	-- the number of computed Bezier arcs, and then to
+    	-- construct each individual Bezier curve (or all Bezier curves).
+    	-- Note: ParametricTolerance is not used.
+      
+    Create (BasisCurve : BSplineCurve; 
+    	    U1, U2     : Real; 
+    	    ParametricTolerance : Real)
+    returns BSplineCurveToBezierCurve
+        --- Purpose : Computes all the data needed to convert
+    	--        the portion of the BSpline curve BasisCurve
+    	--   limited by the two parameter values U1 and U2
+    	--       for Example if there is a Knot Uk and
+        --  Uk < U < Uk + ParametricTolerance/2 the last curve
+        --  corresponds to the span [Uk-1, Uk] and not to  [Uk, Uk+1]
+        -- The result consists of a series of BasisCurve arcs
+    	-- limited by points corresponding to knot values of the curve.
+    	-- Use the available interrogation functions to ascertain
+    	-- the number of computed Bezier arcs, and then to
+    	-- construct each individual Bezier curve (or all Bezier curves).
+    	-- Note: ParametricTolerance is not used.
+    	--  Raises DomainError if U1 or U2 are out of the parametric bounds of the basis
+        --  curve [FirstParameter, LastParameter]. The Tolerance criterion
+        --  is ParametricTolerance.
+        --  Raised if Abs (U2 - U1) <= ParametricTolerance.
+    raises DomainError;
+   
+        
+    Arc (me : in out; Index : Integer)    returns mutable BezierCurve
+        --- Purpose :Constructs and returns the Bezier curve of index
+    	-- Index to the table of adjacent Bezier arcs
+    	-- computed by this algorithm.
+    	-- This Bezier curve has the same orientation as the
+    	-- BSpline curve analyzed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than 1 or
+    	-- greater than the number of adjacent Bezier arcs
+    	-- computed by this algorithm.
+    raises OutOfRange
+    is static;
+     
+  
+    Arcs (me : in out; Curves : in out Array1OfBezierCurve)
+        --- Purpose :Constructs all the Bezier curves whose data is
+    	-- computed by this algorithm and loads these curves
+    	-- into the Curves table.
+    	-- The Bezier curves have the same orientation as the
+    	-- BSpline curve analyzed in this framework.
+    	-- Exceptions
+    	-- Standard_DimensionError if the Curves array was
+    	-- not created with the following bounds:
+    	-- -   1 , and
+    	-- -   the number of adjacent Bezier arcs computed by
+    	--   this algorithm (as given by the function NbArcs).
+    raises DimensionError
+         is static;
+ 
+    Knots(me;  TKnots  :  out  Array1OfReal from  TColStd)  
+    	---Purpose: This methode returns the bspline's knots associated to
+	--          the converted arcs 
+	-- Raises DimensionError if the length  of Curves is not equal to
+        --  NbArcs +  1       
+    raises DimensionError
+           is static;    
+
+    NbArcs (me)   returns Integer   is static;
+        --- Purpose :
+        --  Returns the number of BezierCurve arcs.
+        --  If at the creation time you have decomposed the basis curve
+        --  between the parametric values UFirst, ULast the number of
+        --  BezierCurve arcs depends on the number of knots included inside
+        --  the interval [UFirst, ULast].
+        --  If you have decomposed the whole basis B-spline curve the number 
+        --  of BezierCurve arcs NbArcs is equal to the number of knots less
+        --  one.
+
+fields  
+
+  myCurve  : BSplineCurve from Geom2d; 
+end BSplineCurveToBezierCurve;

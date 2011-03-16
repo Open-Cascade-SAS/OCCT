@@ -1,0 +1,123 @@
+-- File:	Dispatch.cdl
+-- Created:	Tue Nov 17 14:27:26 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class Dispatch  from IFSelect  inherits TShared
+
+    ---Purpose : This class allows to describe how a set of Entities has to be
+    --           dispatched into resulting Packets : a Packet is a sub-set of
+    --           the initial set of entities.
+    --           
+    --           Thus, it can generate zero, one, or more Packets according
+    --           input set and criterium of dispatching. And it can let apart
+    --           some entities : it is the Remainder, which can be recovered
+    --           by a specific Selection (RemainderFromDispatch).
+    --           
+    --           Depending of sub-classes, a Dispatch can potentially generate
+    --           a limited or not count of packet, and a remainder or none.
+    --           
+    --           The input set is read from a specified Selection, attached to
+    --           the Dispatch : the Final Selection of the Dispatch. The input
+    --           is the Unique Root Entities list of the Final Selection
+
+uses AsciiString from TCollection, HAsciiString from TCollection,
+     SubPartsIterator, EntityIterator,
+     Graph, Selection, SelectionIterator
+
+raises InterfaceError
+
+is
+
+    SetRootName (me : mutable; name : mutable HAsciiString);
+    ---Purpose : Sets a Root Name as an HAsciiString
+    --           To reset it, give a Null Handle (then, a ShareOut will have
+    --           to define the Default Root Name)
+
+    HasRootName (me) returns Boolean;
+    ---Purpose : Returns True if a specific Root Name has been set
+    --           (else, the Default Root Name has to be used)
+
+    RootName (me) returns any HAsciiString;
+    ---Purpose : Returns the Root Name for files produced by this dispatch
+    --           It is empty if it has not been set or if it has been reset
+    ---C++ : return const &
+
+
+    SetFinalSelection (me : mutable; sel : mutable Selection);
+    ---Purpose : Stores (or Changes) the Final Selection for a Dispatch
+
+    FinalSelection (me) returns mutable Selection;
+    ---Purpose : Returns the Final Selection of a Dispatch
+    -- we 'd like : C++ : return const &
+
+    Selections (me) returns SelectionIterator;
+    ---Purpose : Returns the complete list of source Selections (starting
+    --           from FinalSelection)
+
+    CanHaveRemainder (me) returns Boolean  is virtual;
+    ---Purpose : Returns True if a Dispatch can have a Remainder, i.e. if its
+    --           criterium can let entities apart. It is a potential answer,
+    --           remainder can be empty at run-time even if answer is True.
+    --           (to attach a RemainderFromDispatch Selection is not allowed if
+    --           answer is True).
+    --           Default answer given here is False (can be redefined)
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean  is virtual;
+    ---Purpose : Returns True if a Dispatch generates a count of Packets always
+    --           less than or equal to a maximum value : it can be computed
+    --           from the total count of Entities to be dispatched : <nbent>.
+    --           If answer is False, no limited maximum is expected for account
+    --           If answer is True, expected maximum is given in argument <max>
+    --           Default answer given here is False (can be redefined)
+
+    Label (me) returns AsciiString from TCollection  is deferred;
+    ---Purpose : Returns a text which defines the way a Dispatch produces
+    --           packets (which will become files) from its Input
+
+    	--  --    Evaluation    --  --
+
+    GetEntities (me; G : Graph) returns EntityIterator;
+    ---Purpose : Gets Unique Root Entities from the Final Selection, given an
+    --           input Graph
+    --           This the starting step for an Evaluation (Packets - Remainder)
+
+    PacketsCount (me; G : Graph; count : out Integer) returns Boolean  is virtual;
+    ---Purpose : Returns True if Count of Packets is actually known, and the
+    --           value of the count in argument "count". Returns False if
+    --           this count is unknown. Input is given as a Graph.
+    --           This method is intended to be quick (used for file names)
+    --           hence if this count is long to compute (that is, as a result
+    --           of complete evaluation made by method Packets), it is
+    --           preferable to answer "unknown" by returning False
+    --           Default answer if False. Can be redefined.
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator)
+    	raises InterfaceError  is deferred;
+    ---Purpose : Returns the list of produced Packets into argument <pack>.
+    --           Each Packet corresponds to a Part, the Entities listed are the
+    --           Roots given by the Selection. Input is given as a Graph.
+    --           Thus, to create a file from a packet, it suffices to take the
+    --           entities listed in a Part of Packets (that is, a Packet)
+    --           without worrying about Shared entities
+    --           This method can raise an Exception if data are not coherent
+
+    Packeted (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of all Input Entities (see GetEntities) which
+    --           are put in a Packet. That is, Entities listed in GetEntities
+    --           but not in Remainder (see below). Input is given as a Graph.
+    ---See also : GetEntities, Remainder
+
+    Remainder (me; G : Graph) returns EntityIterator  is virtual;
+    ---Purpose : Returns Remainder which is a set of Entities. Can be empty.
+    --           Default evaluation is empty (has to be redefined if
+    --           CanHaveRemainder is redefined to return True).
+
+fields
+
+    thename  : HAsciiString;
+    thefinal : Selection;
+
+end Dispatch;

@@ -1,0 +1,79 @@
+-- File:	PPoly_Triangulation.cdl
+-- Created:	Tue Oct 24 10:37:04 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Triangulation from PPoly inherits Persistent from Standard
+
+	---Purpose: This class represents a 3d polyhedral triangulation.
+	--          
+	--          It is defined by :
+	--          
+	--          * A Deflection : This  is the distance between the
+	--          triangulation and the "ideal" surface.
+	--          
+	--          *  An  Array1 of 3d   nodes  values : Contains the
+	--          Points for the 3d  nodes. Two different  nodes may
+	--          have the same  3d point if  they are differents in
+	--          UV space.
+	--          
+	--          * An  Array1 of 2d nodes  values : Contains the UV
+	--          coordinates  for   the   nodes   in the    surface
+	--          parametric  space. This is optionnal.
+	--          
+	--          * The  Array of  triangles,   each triangle  is  a
+	--          triplet of  node indices.  A  triangle is oriented
+	--          and the  whole triangulation  must have a coherent
+	--          orientation.
+
+uses
+   HArray1OfPnt2d    from PColgp,
+   HArray1OfPnt      from PColgp,
+   HArray1OfTriangle from PPoly
+
+is
+
+    Create(Defl:       Real              from Standard;
+    	   Nodes:      HArray1OfPnt      from PColgp;
+    	   Triangles:  HArray1OfTriangle from PPoly)
+    returns mutable Triangulation from PPoly;
+    	---Purpose: Defaults with allocation of Nodes and Triangles.
+
+    Create(Defl:       Real              from Standard;
+    	   Nodes:      HArray1OfPnt      from PColgp;
+    	   UVNodes:    HArray1OfPnt2d    from PColgp;
+    	   Triangles:  HArray1OfTriangle from PPoly)
+    returns mutable Triangulation from PPoly;
+    	---Purpose: Defaults with allocation of Nodes and Triangles.
+
+    Deflection(me) returns Real;
+    
+    Deflection(me : mutable; D : Real);
+
+    NbNodes(me) returns Integer;
+	---Purpose: Null if the nodes are not yet defined.
+
+    NbTriangles(me) returns Integer;
+	---Purpose: Null if the Triangles are not yet defined.
+
+    HasUVNodes(me) returns Boolean;
+
+    Nodes(me) returns HArray1OfPnt from PColgp;
+	---Purpose: Const reference on the 3d nodes values.
+    	
+    UVNodes(me) returns HArray1OfPnt2d from PColgp;
+	---Purpose: Const reference on the 2d nodes values.
+
+    Triangles(me) returns HArray1OfTriangle from PPoly;
+	---Purpose: Const reference on the triangles.
+
+fields
+
+    myDeflection  : Real;
+    myNodes       : HArray1OfPnt      from PColgp;
+    myUVNodes     : HArray1OfPnt2d    from PColgp;
+    myTriangles   : HArray1OfTriangle from PPoly;
+
+end Triangulation;

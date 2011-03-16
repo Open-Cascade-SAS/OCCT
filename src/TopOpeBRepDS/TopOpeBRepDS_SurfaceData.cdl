@@ -1,0 +1,29 @@
+-- File:	TopOpeBRepDS_SurfaceData.cdl
+-- Created:	Wed Jun 23 10:00:09 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SurfaceData from TopOpeBRepDS
+    inherits GeometryData from TopOpeBRepDS
+
+uses
+
+    Surface from TopOpeBRepDS
+
+is  
+
+    Create returns SurfaceData  from  TopOpeBRepDS;
+    Create(S : Surface from TopOpeBRepDS)  
+    returns SurfaceData from TopOpeBRepDS;
+    
+fields 
+    
+    mySurface : Surface from TopOpeBRepDS;
+    
+friends 
+
+    class DataStructure from TopOpeBRepDS
+    
+end SurfaceData from TopOpeBRepDS; 

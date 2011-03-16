@@ -1,0 +1,151 @@
+-- File:	AIS_RadiusDimension.cdl
+-- Created:	Tue Dec  3 17:56:20 1996
+-- Author:	Jean-Pierre COMBE/Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr> 
+--              modified by  <SZY>  feb-20-98
+---Copyright:	 Matra Datavision 1996
+
+
+class RadiusDimension from AIS inherits Relation from AIS
+
+	---Purpose:  A framework to define display of radii.
+    	-- These displays serve as relational references in 3D
+    	-- presentations of surfaces, and are particularly useful
+    	-- in viewing fillets. The display consists of arrows and
+    	-- text giving the length of a radius. This display is
+    	-- recalculated if the applicative owner shape changes
+    	-- in dimension, and the text gives the modified length.
+    	-- The algorithm analyzes a length along a face as an
+    	-- arc. It then reconstructs the circle corresponding to
+    	-- the arc and calculates the radius of this circle.
+
+uses Shape                 from TopoDS,
+     Presentation          from Prs3d,
+     PresentationManager3d from PrsMgr,
+     Selection             from SelectMgr,
+     Pnt                   from gp, 
+     Lin                   from gp,
+     Circ                  from gp,
+     Projector             from Prs3d,
+    Transformation        from Geom,
+     PresentationManager2d from PrsMgr,
+     GraphicObject         from Graphic2d,    
+     ExtendedString        from TCollection,
+     ArrowSide             from DsgPrs,
+     KindOfDimension       from AIS      
+
+is
+    Create (aShape      : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)         
+    	---Purpose: Constructs the radius display object defined by the
+    	-- shape aShape, the dimension aVal, and the text aText.
+	    
+    returns mutable RadiusDimension from AIS;
+ 
+    Create (aShape      : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection;         
+	    aPosition   : Pnt            from gp;
+	    aSymbolPrs  : ArrowSide      from DsgPrs;    
+    	    anArrowSize : Real           from Standard = 0.0) 
+    	---Purpose: Constructs radius display object defined by the shape
+    	-- aShape, the dimension aVal, the position aPosition,
+    	-- the type of arrow aSymbolPrs, the arrow length
+    	-- anArrowSize and the text aText.
+    returns mutable RadiusDimension from AIS;
+
+    SetFirstShape( me: mutable; aFShape : Shape from TopoDS )
+    is redefined static; 
+    
+    KindOfDimension(me) 
+    	---Purpose: Indicates that the dimension selected is a radius.
+    	---C++: inline
+    returns KindOfDimension from AIS 
+    is redefined;
+    
+    IsMovable(me) returns Boolean from Standard 
+        ---C++: inline    
+        ---Purpose: Returns true if the radius selected is movable.
+    is redefined;    
+    
+    DrawFromCenter(me) returns Boolean from Standard
+    	---Purpose:
+    	-- Draws an arrowhead pointing towards the center of
+    	-- the shape aShape defined at construction time if
+    	-- false, and away from the center if true.
+        ---C++: inline
+    is static;
+    
+    SetDrawFromCenter(me: mutable;
+    	    	      drawfromcenter : Boolean from Standard)
+       ---C++: inline
+       ---Purpose:
+       -- Sets the Boolean drawfromcenter to true or false.
+       -- If drawfromcenter is false, the arrowhead will point
+       -- towards the center of the shape aShape defined at
+       -- construction time.
+    is static;
+    
+    -- Methods from PresentableObject
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+
+    
+--
+--     Computation private methods
+--
+
+    ComputeRadius( me: mutable; aPresentation : mutable Presentation from Prs3d )
+    is private;  
+     
+    InitFirstShape( me: mutable) 
+    is  static  private; 
+    
+fields
+
+    myCircle         : Circ    from gp; 
+    myFirstPar       : Real    from Standard; 
+    myLastPar        : Real    from Standard; 
+    myCenter         : Pnt     from gp; 
+    myEndOfArrow     : Pnt     from gp; 
+    myFirstLine      : Lin     from gp; 
+    myLastLine       : Lin     from gp;
+    mydrawFromCenter : Boolean from Standard;
+    
+end RadiusDimension;

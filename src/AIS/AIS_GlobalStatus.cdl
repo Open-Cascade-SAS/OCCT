@@ -1,0 +1,109 @@
+-- File:	AIS_GlobalStatus.cdl
+-- Created:	Fri Jan 24 14:34:35 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class GlobalStatus from AIS inherits TShared from MMgt
+
+	---Purpose: Stores  information  about objects in graphic context:
+	--          - Status Of Display : in the main viewer 
+	--                                in the  collector
+	--                                fully Erased
+	--          - Displayed Modes 
+	--          - Active Selection Modes
+	--          - is the Interactive Object Current ?
+	--          - Layer Index
+
+uses 
+    ListOfInteger from TColStd,
+    DisplayStatus from AIS,
+    NameOfColor from Quantity
+
+is
+
+    Create returns mutable GlobalStatus from AIS;
+
+    Create (aStat             : DisplayStatus from AIS;
+    	    aDispMode,aSelMode: Integer from Standard;
+	    ishilighted       : Boolean from Standard=Standard_False;
+	    TheHiCol          : NameOfColor from Quantity = Quantity_NOC_WHITE;
+	    aLayerIndex       : Integer from Standard = 0)
+	    returns mutable GlobalStatus from AIS;
+
+		    ---Category: Modifications.
+
+    SetGraphicStatus(me:mutable; aStat :  DisplayStatus from AIS);
+    ---C++: inline
+    AddDisplayMode(me:mutable; aMode: Integer from Standard);
+    ---C++: inline    
+    AddSelectionMode(me:mutable; aMode : Integer from Standard);
+    ---C++: inline    
+    SetLayerIndex (me: mutable ; AnIndex : Integer from Standard);
+    ---C++: inline  
+    SetHilightStatus (me: mutable; aStat:Boolean from Standard);
+    ---C++: inline    
+    SetHilightColor(me:mutable;aHiCol : NameOfColor from Quantity);
+    ---C++: inline    
+
+
+
+    IsSubIntensityOn(me) returns Boolean from Standard;
+    ---C++: inline
+    SubIntensityOn (me: mutable);
+    ---C++: inline    
+    SubIntensityOff (me: mutable);
+    ---C++: inline    
+
+    
+
+    RemoveDisplayMode(me:mutable; aMode : Integer from Standard);
+
+    RemoveSelectionMode(me:mutable; aMode : Integer from Standard);
+    ClearSelectionModes(me:mutable);
+
+
+ 		    ---Category: Information.
+
+   
+    GraphicStatus(me) returns DisplayStatus from AIS;
+    ---C++: inline
+	    
+    DisplayedModes(me) returns ListOfInteger from TColStd;
+    ---C++: return const &
+    ---C++: inline
+    ---Purpose: keeps the information of displayed modes in the 
+    --          main viewer.
+    --          (The convention is that the object is displayed
+    --          with the mode 0 in the collector...)
+    
+    SelectionModes(me) returns ListOfInteger from TColStd;
+    ---C++: return const &
+    ---C++: inline
+    ---Purpose: keeps the active selection modes of the object
+    --          in the main viewer.
+    --          (The convention is that the active selection mode
+    --          for an object in the collector is the mode 0).
+
+    IsHilighted(me) returns Boolean from Standard;
+    ---C++: inline
+
+    HilightColor(me) returns NameOfColor from Quantity;
+    ---C++: inline
+
+    IsDModeIn(me; aMode : Integer from Standard) returns Boolean from Standard;
+
+    IsSModeIn(me; aMode : Integer from Standard) returns Boolean from Standard;
+    
+    
+fields
+
+    myStatus     : DisplayStatus from AIS;
+    myDispModes  : ListOfInteger from TColStd;
+    mySelModes   : ListOfInteger from TColStd;
+    myLayerIndex : Integer       from Standard;
+    myIsHilit    : Boolean       from Standard;
+    myHiCol      : NameOfColor   from Quantity;
+    mySubInt     : Boolean;
+end GlobalStatus;

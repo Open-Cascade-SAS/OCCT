@@ -1,0 +1,82 @@
+-- File:	BezierCurve.cdl<2>
+-- Created:	Fri May 22 10:25:55 1992
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+
+class BezierCurve
+
+
+from DrawTrSurf
+
+
+inherits Curve from DrawTrSurf
+
+
+uses BezierCurve from Geom,
+     Color from Draw,
+     Display from Draw,
+     Drawable3D from Draw
+
+
+is
+
+
+  Create (C : BezierCurve from Geom)
+        --- Purpose :
+        --  creates a drawable Bezier curve from a Bezier curve of 
+        --  package Geom.
+     returns mutable BezierCurve from DrawTrSurf;
+
+
+  Create (C : BezierCurve from Geom;
+          CurvColor, PolesColor : Color from Draw;
+          ShowPoles : Boolean; Discret : Integer;Deflection : Real;
+          DrawMode : Integer)
+     returns mutable BezierCurve from DrawTrSurf;
+
+
+  DrawOn (me; dis : in out Display from Draw)
+     is redefined static;
+
+
+  ShowPoles (me : mutable)
+     is static;
+
+
+  ClearPoles (me : mutable)
+     is static;
+     
+  
+  FindPole(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+           Index : in out Integer)
+        --- Purpose :
+        --  Returns in <Index> the index of the first pole  of the
+        --  curve projected by the Display <D> at a distance lower
+        --  than <Prec> from <X,Y>. If no pole  is found  index is
+        --  set to 0, else index is always  greater than the input
+        --  value of index.
+  is static;
+
+
+  SetPolesColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+     
+
+  PolesColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+    
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+  
+      
+fields
+
+  drawPoles  : Boolean;
+  polesLook  : Color from Draw;
+
+end BezierCurve;

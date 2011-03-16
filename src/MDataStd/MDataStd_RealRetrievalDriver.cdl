@@ -1,0 +1,38 @@
+-- File:	MDataStd_RealRetrievalDriver.cdl
+-- Created:	Wed Apr  9 16:55:12 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+class RealRetrievalDriver from MDataStd  inherits ARDriver from MDF
+
+	---Purpose: 
+
+uses RRelocationTable from MDF,
+     Attribute        from PDF,
+     Attribute        from TDF, 
+     MessageDriver    from CDM
+
+is
+
+
+    Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
+    returns mutable RealRetrievalDriver from MDataStd;
+    
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Real from PDataStd.
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable  from MDF);
+
+end RealRetrievalDriver;

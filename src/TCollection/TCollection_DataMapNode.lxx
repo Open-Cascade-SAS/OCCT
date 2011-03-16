@@ -1,0 +1,16 @@
+inline TCollection_DataMapNode::TCollection_DataMapNode(const TheKey& K, const TheItem& I,const TCollection_MapNodePtr& n) 
+: TCollection_MapNode(n),myKey(K)
+{
+  myValue = I;
+}
+
+inline TheKey& TCollection_DataMapNode::Key() const
+{
+  return (TheKey&)myKey;
+}
+
+inline TheItem& TCollection_DataMapNode::Value() const
+{
+  return (TheItem&)myValue;
+}
+

@@ -1,0 +1,30 @@
+-- File:	TPrsStd_ConstraintDriver.cdl
+-- Created:	Fri Aug  1 11:21:30 1997
+-- Author:	SMO
+---Copyright:	 Matra Datavision 1997
+
+class ConstraintDriver from TPrsStd inherits Driver from TPrsStd
+---Purpose: An implementation of TPrsStd_Driver for constraints.
+uses
+
+  GUID               from Standard,
+  InteractiveObject  from AIS,
+  Label              from TDF
+is
+
+    Create
+    returns mutable ConstraintDriver from TPrsStd;
+---Purpose: Constructs an empty constraint driver.
+    Update (me : mutable ;
+           aLabel      : Label from TDF;
+	   anAISObject : in out InteractiveObject from AIS)
+    returns Boolean from Standard
+    is  redefined virtual;
+    --- Purpose: Build the AISObject (if null) or update it.
+    --           No compute is done.
+    --           Returns <True> if informations was found
+    --           and AISObject updated. 
+	   
+
+end ConstraintDriver;
+

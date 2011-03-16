@@ -1,0 +1,29 @@
+-- File:	BRepLib_MakeVertex.cdl
+-- Created:	Tue Jul  6 17:57:32 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class MakeVertex from BRepLib inherits MakeShape from BRepLib
+
+	---Purpose: Provides methods to build vertices.
+
+uses
+    Pnt    from gp,
+    Vertex from TopoDS
+
+is
+    Create (P : Pnt from gp) 
+	---Level: Public
+	returns MakeVertex from BRepLib;
+    
+    Vertex(me) returns Vertex from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Vertex() const;"
+	---Level: Public 
+    is static;
+
+end MakeVertex;

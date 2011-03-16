@@ -1,0 +1,88 @@
+-- File:	TopOpeBRepTool_mkTondgE.cdl
+-- Created:	Mon Mar 22 17:58:04 1999
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class mkTondgE from TopOpeBRepTool
+uses 
+    Pnt2d from gp,
+    Dir from gp,
+    Edge from TopoDS,
+    Face from TopoDS,
+    ListOfShape from TopTools,
+    DataMapOfShapeReal from TopTools     
+is
+
+    Create returns mkTondgE from TopOpeBRepTool;
+    	
+    Initialize(me : in out;
+    	       dgE : Edge from TopoDS; 
+    	       F : Face from TopoDS;
+	       uvi : Pnt2d from gp; Fi : Face from TopoDS)
+    returns Boolean;
+    -- <dgE> degenerated edge interfers with <Fi> at <uvi>.
+    -- purpose : the compute of interferences on <dgE> / <Fi>
+
+    SetclE(me : in out; clE : Edge from TopoDS)
+    returns Boolean;
+
+    IsT2d(me) returns Boolean;  
+	   
+    SetRest(me : in out; 
+    	    pari : Real; Ei : Edge from TopoDS)
+    returns Boolean;
+    -- <dgE> interfers with <Ei> at <pari>
+    -- returns false if <Ei> has no impact on the output transitions.
+
+    GetAllRest(me : in out; lEi : out ListOfShape from TopTools)
+    returns Integer;
+    -- finds out <lEi> = {ei / uvi is IN1d(ei)}
+    -- fills up field <mylEi>; these edges impact on the output transitions.
+    -- (!!!!!!!!!!!! works only for uvi on isos )
+    Par(me; index : Integer; pari : out Real) returns Boolean; 
+    Ei(me; index : Integer; ei : out Edge from TopoDS) returns Boolean;     
+    -- returns false if myEpari<index> is dummy.
+
+    MkTonE(me : in out; mkT : out Integer; par1,par2 : out Real)
+    returns Boolean; 
+    -- purpose : the compute of transitions on <dgE> vs <myFi>.
+    --    call the method if ( !IsT2d() ) 
+    --
+    -- set mkT to  0 : no transition is to compute
+    --             1 : compute transition FORWARD on <dgE> at Par(1)
+    --             2 :                    REVERSED on <dgE> at Par(2)
+    --             3 : compute transitions at Par(1) and Par(2)
+    -- returns false if the compute fails.
+    
+    MkTonE(me : in out; Ei : Edge from TopoDS; mkT : out Integer; par1,par2 : out Real)
+    returns Boolean; 
+    -- purpose : the compute of transitions on <dgE> vs <Ei> of <myFi>.
+    --           Ei is in list lEi / 
+    --           SetRest(..Ei..) has been called before, and returned tru.
+    -- 
+    -- !!!! NYIXPU240399 : returns 0 if <myf> has no closing edge connexed to <myed>
+    -- interference
+	
+fields    
+    mydgE  : Edge from TopoDS; -- in  
+    myF    : Face from TopoDS; -- in  
+
+    myclE  : Edge from TopoDS;
+    mydirINcle : Dir from gp;
+    
+    myFi   : Face from TopoDS; -- in
+    myuvi  : Pnt2d from gp;    -- in	
+
+    isT2d : Boolean;           -- out
+
+    myEpari : DataMapOfShapeReal from TopTools;
+
+    hasRest : Boolean;         -- out
+	
+    myngf  : Dir from gp;      
+    myngfi : Dir from gp;		    	    
+    	
+end mkTondgE from TopOpeBRepTool;
+
+

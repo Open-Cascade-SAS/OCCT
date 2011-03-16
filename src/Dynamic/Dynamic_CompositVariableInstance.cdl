@@ -1,0 +1,52 @@
+-- File:	Dynamic_CompositVariableInstance.cdl
+-- Created:	Mon Sep  5 15:02:15 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+class CompositVariableInstance from Dynamic
+
+inherits
+
+    AbstractVariableInstance from Dynamic
+	---Purpose: This  class corresponds to  the instanciation of a
+	--          variable group. It allows the setting of more than
+	--          one variable in  a variable instance. It is useful
+	--          when a  method takes  a collection  of homogeneous
+	--          objects as   argument. For   example a wire  needs
+	--          edges as argument.
+   
+uses
+
+    Variable     from Dynamic,
+    VariableNode from Dynamic
+
+
+is
+
+    Create returns mutable CompositVariableInstance from Dynamic;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Creates  a new  empty  instance of   CompositVariable-
+    --          Instance.
+    
+    Variable(me : mutable ; avariable : Variable from Dynamic)
+    
+    ---Purpose: Sets <avariable> into the collection of variable.
+    
+    is redefined;
+    
+    FirstVariableNode(me) returns VariableNode from Dynamic
+    
+    ---Purpose: Returns the first VariableNode  useful to explore  the
+    --          list of variables addressed by <me>.
+    
+    is static;
+
+fields
+
+    thefirstvariablenode : VariableNode from Dynamic;
+
+end CompositVariableInstance;

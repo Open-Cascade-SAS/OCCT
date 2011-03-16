@@ -1,0 +1,41 @@
+//-----------------------------------------------------------------------------
+//
+// inline methods for AVLSearchTree
+//
+// Author : J.P. TIRAULT
+//-----------------------------------------------------------------------------
+#include <Standard_Address.hxx>
+
+//-----------------------------------------------------------------------------
+// IsEmpty : Is the current tree empty ?
+//-----------------------------------------------------------------------------
+inline Standard_Boolean TCollection_AVLSearchTree::IsEmpty () const
+{
+  return TheRoot == NULL;
+}
+
+//-----------------------------------------------------------------------------
+// GetRoot : Returns the root of the current tree
+//-----------------------------------------------------------------------------
+inline Standard_Address TCollection_AVLSearchTree::GetRoot () const 
+{
+  return TheRoot;
+}
+
+//-----------------------------------------------------------------------------
+// GetComparator : Returns the Comparator of the current tree
+//-----------------------------------------------------------------------------
+inline Comparator TCollection_AVLSearchTree::GetComparator () const 
+{
+  return TheComparator;
+}
+
+// ---------------------------------------------------------------------------
+// SetRoot : Replaces the root of the current tree
+//-----------------------------------------------------------------------------
+inline void TCollection_AVLSearchTree::SetRoot(const Standard_Address ANode)
+{
+  TheRoot = ANode;
+}
+
+

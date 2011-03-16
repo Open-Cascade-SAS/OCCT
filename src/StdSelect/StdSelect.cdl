@@ -1,0 +1,145 @@
+-- File:	StdSelect.cdl
+-- Created:	Wed Mar  8 15:22:01 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+--Modified by ROB : Add ShapeFilters.
+--	      GG  : 5/10/99 BUC60576 Add Cone to TypeOfFace enum
+---Copyright:	 Matra Datavision 1995
+
+
+package StdSelect 
+
+	---Purpose: The StdSelect package provides the following services
+    	-- -   the definition of selection modes for topological shapes
+    	-- -   the definition of several concrete filtertandard
+    	--   Selection2d.ap classes
+    	-- -   2D and 3D viewer selectors.
+    	--  Note that each new Interactive Object must have all
+    	-- its selection modes defined.
+    	--        Standard Classes is useful to build
+	--          3D Selectable Objects, and to process
+	--          3D Selections:
+	--          
+	--          - Implementation of View Selector for dynamic selection
+	--            in Views from V3d.
+	--          
+	--          - Implementation of Tool class to decompose 3D BRep Objects
+	--            into sensitive Primitives for every desired mode of selection
+	--            (selection of vertex,edges,wires,faces,...)
+	--            
+	--          -  Implementation of dedicated Sensitives Entities:
+	--             Text for 2D Views (linked to Specific 2D projectors.)
+uses
+    MMgt,
+    Standard,
+    TCollection,
+    TopLoc,
+    TopoDS,
+    SelectMgr,
+    TopAbs,
+    TColStd,
+    gp,
+    Select3D,
+    Select2D,
+    Graphic2d,
+    Graphic3d,Visual3d,
+    Quantity,
+    Prs3d,
+    V2d,
+    V3d,
+    PrsMgr,
+    SelectBasics,
+    TopTools,
+    Bnd,
+    Geom, 
+    TColgp
+
+is
+
+    enumeration TypeOfResult is TOR_SIMPLE,TOR_MULTIPLE
+    end TypeOfResult;
+    	---Purpose: Provides values for type of result.
+    	-- These are used to specify whether the result is to
+    	-- be simple or whether it may be multiple.
+        
+    enumeration DisplayMode is DM_Wireframe,DM_Shading,DM_HLR
+    end DisplayMode;
+    
+--    enumeration TypeOfFace is AnyFace,Plane,Cylinder,Sphere,Torus,Revol;
+    enumeration TypeOfFace is AnyFace,Plane,Cylinder,Sphere,Torus,Revol,Cone;
+    	---Purpose: Provides values for different types of faces. These
+    	-- values are used to filter faces in frameworks inheriting
+    	-- StdSelect_FaceFilter.
+    
+    enumeration TypeOfEdge is AnyEdge,Line,Circle;
+    	---Purpose: Provides values for different types of edges. These
+    	-- values are used to filter edges in frameworks
+    	-- inheriting StdSelect_EdgeFilter.
+
+
+    class ViewerSelector3d;
+    	---Purpose: Viewer Selector for a view from V3d
+    	--          Accepts Only Sensitive Entities inheriting Select3D entities...
+    
+    class ViewerSelector2d;
+    	---Purpose: Viewer Selector for a view from V2d
+    	--          Accepts Only Sensitive Entities inheriting Select2D entities...
+    
+    
+    
+    
+    
+    class BRepSelectionTool;
+    	---Purpose: gives standard selections for Shapes
+
+    class BRepOwner;
+    	---Purpose: Owner classes for BRep objects 
+	--          used by BRepSelectionTool to know which entities
+	--          own the sensitive primitives created.
+	--          the hilight-unhilight methods are empty and
+	--          must be redefined by each User...
+
+
+
+
+    ---Category: Some classes...
+
+
+    class BRepHilighter;    
+    	---Purpose: manages hilight of picked shapes in a ViewerSelector.
+    	--          to be called after each pick of the selection...
+
+
+
+
+    class SensitiveText2d;
+    class TextProjector2d;
+
+
+
+    	    	---Category: Shape Filters
+    
+    class EdgeFilter;
+    class FaceFilter;
+    class ShapeTypeFilter;
+    
+    
+    ---Category: Private Classes
+
+
+    private class Prs;
+    
+    private class Shape;
+
+    private class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection
+    (EntityOwner from SelectBasics,Prs from StdSelect,MapTransientHasher from TColStd);
+
+    GetProjector (aView: View from V3d) returns Projector from Select3D;
+    	---Purpose: Returns the 3D projector for the view aView.
+    SetDrawerForBRepOwner(aSelection: mutable Selection from SelectMgr;
+			  aDrawer   : Drawer from Prs3d);
+     	---Purpose: puts The same drawer in every BRepOwner Of SensitivePrimitive
+     	--          Used Only for hilight Of BRepOwner...
+			
+
+end StdSelect;

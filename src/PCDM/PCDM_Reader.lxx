@@ -1,0 +1,34 @@
+// File:	PCDM_Reader.lxx
+// Created:	Wed Jun 25 16:31:02 2003
+// Author:	Sergey ZARITCHNY <szy@opencascade.com>
+// Copyright:	Open CASCADE 2003
+
+// const static char sccsid[] = "%Z% 5.0-20-%L%, $Date: 2003-07-17 20:53:39 $%Z%";
+//=======================================================================
+//function : GetStatus
+//purpose  : 
+//=======================================================================
+
+inline PCDM_ReaderStatus PCDM_Reader::GetStatus() const {
+  return myReaderStatus;
+}
+
+// Lastly modified by :
+// +---------------------------------------------------------------------------+
+// !       szy ! Creation                                !25-06-2003! 5.0-20-%L%!
+// +---------------------------------------------------------------------------+
+
+
+// @@SDM: begin
+
+// Copyright Open CASCADE......................................Version    5.0-20
+// Lastly modified by : szy                                    Date : 25-06-2003
+
+// File history synopsis (creation,modification,correction)
+// +---------------------------------------------------------------------------+
+// ! Developer !              Comments                   !   Date   ! Version  !
+// +-----------!-----------------------------------------!----------!----------+
+// !       szy ! Creation                                !25-06-2003! 5.0-20-%L%!
+// +---------------------------------------------------------------------------+
+
+// @@SDM: end

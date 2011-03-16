@@ -1,0 +1,79 @@
+-- File:	TEdge.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TEdge from PBRep inherits TEdge from PTopoDS
+
+	---Purpose: The TEdge from PBRep is  inherited from  the  TEdge
+	--          from TopoDS. It contains the geometric data.
+	--          
+	--          The TEdge contains :
+	--           
+	--           * Flags : SameParameter, SameRange, Degenerated
+	--          
+	--           * A tolerance.
+	--           
+	--           * A list of representations.
+	--           
+
+uses
+    CurveRepresentation       from PBRep
+
+is
+    Create returns mutable TEdge from PBRep;
+	---Purpose: Creates an empty TEdge.
+    	---Level: Internal 
+
+    Tolerance(me) returns Real
+    is static;
+    	---Level: Internal 
+    	
+    Tolerance(me : mutable; T : Real)
+    is static;
+    	---Level: Internal 
+    
+    SameParameter(me) returns Boolean
+    is static;
+    	---Level: Internal 
+    
+    SameParameter(me : mutable; S : Boolean)
+    is static;
+    	---Level: Internal 
+    
+    SameRange(me) returns Boolean
+    is static;
+    	---Level: Internal 
+    
+    SameRange(me : mutable; S : Boolean)
+    is static;
+    	---Level: Internal 
+    
+    Degenerated(me) returns Boolean
+    is static;
+    	---Level: Internal 
+    
+    Degenerated(me : mutable; S : Boolean)
+    is static;
+    	---Level: Internal 
+    
+    Curves(me) returns CurveRepresentation from PBRep
+    is static;
+    	---Level: Internal 
+    
+    Curves(me : mutable; C : CurveRepresentation from PBRep)
+    is static;
+    	---Level: Internal 
+    
+
+fields
+
+    myTolerance     : Real;
+    myFlags         : Integer;
+    myCurves        : CurveRepresentation from PBRep;
+
+end TEdge;

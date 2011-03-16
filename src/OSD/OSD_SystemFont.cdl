@@ -1,0 +1,67 @@
+-- Copyright:     OpenCASCADE
+
+-- File:          OSD_SystemFont.cdl
+-- Created:       20.01.2008
+-- Author:        Alexander A. BORODIN
+-- Updated:       
+
+
+class SystemFont from OSD inherits TShared from MMgt
+
+ ---Purpose: Structure for store of Font System Information
+
+uses FontAspect,
+     HAsciiString from TCollection
+     
+
+is
+ Create returns SystemFont;
+    ---Purpose: Creates empty font object
+    ---Level: Public
+
+ Create (
+         FontName : HAsciiString;
+         Aspect   : FontAspect;
+         FilePath : HAsciiString )  returns SystemFont;
+    ---Purpose: Creates Font object initialized with <FontName> as name
+    ---         <FontAspect>.... TODO
+    ---Level: Public
+
+ Create (
+         XLFD     : HAsciiString;
+         FilePath : HAsciiString ) returns SystemFont;
+    ---Purpose: TODO
+    ---Level: Public
+ 
+ FontName (me)
+        returns HAsciiString;
+    --- Purpose: Returns font family name
+    ---Level: Public    
+        
+ FontPath (me)
+        returns HAsciiString;
+    --- Purpose: Returns font file path
+    --- Level: Public
+
+ FontAspect (me)
+        returns FontAspect from OSD;
+    --- Purpose: Returns font aspect
+    --- Level: Public
+    
+ FontHeight (me)
+        returns Integer from Standard;
+    --- Purpose: Returns font height
+    --- If returned value is equal -1 it means that font is resizable
+    --- Level: Public
+
+ IsValid( me )
+        returns Boolean;
+
+ fields
+  MyFontName:           HAsciiString;  --Font family name
+  MyFontAspect:         FontAspect;    
+  MyFaceSize:           Integer;       --height of font
+  MyFilePath:           HAsciiString;  --absolute path to font file
+  MyVerification:       Boolean;       --indicator of font initialization errors. False if initialization is failed.
+
+end SystemFont;

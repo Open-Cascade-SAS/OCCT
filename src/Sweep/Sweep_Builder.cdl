@@ -1,0 +1,56 @@
+-- File:	Sweep_Builder.cdl
+-- Created:	Fri Jan  8 18:06:12 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred generic class Builder from Sweep(TheShape as any)
+    
+
+	---Purpose: This  is   a  signature class  describing services
+	--          strictly required    by  the    Swept   Primitives
+	--          algorithms, from the Topology Data Structure .
+	--          
+
+
+uses
+
+    Orientation from TopAbs
+is
+
+    MakeCompound (me; aCompound : out TheShape)
+    	---Purpose: Returns an empty Compound.
+    is deferred;
+
+    MakeCompSolid (me; aCompSolid : out TheShape)
+    	---Purpose: Returns an empty CompSolid.
+    is deferred;
+
+    MakeSolid (me; aSolid : out TheShape)
+    	---Purpose: Returns an empty Solid.
+    is deferred;
+
+    MakeShell (me; aShell : out TheShape)
+    	---Purpose: Returns an empty Shell.
+    is deferred;
+
+    MakeWire (me; aWire : out TheShape)
+    	---Purpose: Returns an empty Wire.
+    is deferred;
+    
+    Add(me; aShape1 : in out TheShape; 
+	    aShape2 : in     TheShape;
+    	    Orient  : in     Orientation from TopAbs)
+    	---Purpose: Adds the Shape 1 in the Shape 2, set to
+    	--          <Orient> orientation.
+    is deferred;
+    
+    Add(me; aShape1 : in out TheShape; 
+	    aShape2 : in     TheShape)
+    	---Purpose: Adds the Shape 1 in the Shape 2.
+    is deferred;
+
+end Builder from Sweep;
+
+

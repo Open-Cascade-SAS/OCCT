@@ -1,0 +1,21 @@
+-- File:	WNT_WOKSteps.edl
+-- Author:	Jean GAUTIER
+-- History:	Tue Aug 12 17:21:24 1997	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1997
+
+@ifnotdefined ( %WNT_WOKSteps_EDL) then
+@set %WNT_WOKSteps_EDL = "";
+
+@if ( %Station != "wnt" ) then
+
+	@set %WOKSteps_ObjGroup = "obj.nocompil";
+	@set %WOKSteps_LibGroup = "";
+
+	@set %WOKSteps_obj_nocompil = "WOKStep_Compile";
+	
+	@set %WOKSteps_toolkit_ListWith  = "obj.nocompil";
+	@set %WOKSteps_toolkit_LinksWith = "obj.nocompil";
+
+@endif;
+
+@endif;

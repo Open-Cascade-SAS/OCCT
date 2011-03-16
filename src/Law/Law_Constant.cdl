@@ -1,0 +1,67 @@
+-- File:	Law_Constant.cdl
+-- Created:	Fri Mar 29 10:17:26 1996
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Constant from Law inherits Function from Law
+
+	---Purpose: Loi constante
+
+uses
+    Array1OfReal    from TColStd,
+    Shape           from GeomAbs
+      
+raises OutOfRange from Standard
+
+is
+
+    Create returns mutable Constant from Law;
+    
+    
+
+    Set(me: mutable; Radius,PFirst,PLast : Real from Standard)
+    ---Purpose: Set the radius and the range of the constant Law.
+    is static;
+		
+    Continuity(me) returns Shape from GeomAbs
+    	---Purpose: Returns GeomAbs_CN
+    is redefined static;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer    
+	---Purpose: Returns  1
+    is redefined static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+
+    Value(me: mutable; X: Real from Standard)
+    ---Purpose: Returns the value at parameter X.
+    returns Real from Standard;
+
+    D1(me: mutable; X: Real from Standard; F,D: out Real from Standard);
+    ---Purpose: Returns the value and the first derivative at parameter X.
+
+    D2(me: mutable; X: Real from Standard; 
+       F,D, D2: out Real from Standard);
+    ---Purpose: Returns the value, first and second derivatives 
+    --          at parameter X.
+    
+        
+    Trim(me; PFirst, PLast, Tol :Real from Standard) returns Function   
+    is redefined static;
+    
+    Bounds(me: mutable; PFirst,PLast : out Real from Standard);
+    ---Purpose: Returns the parametric bounds of the function.
+
+fields
+
+radius : Real from Standard;
+first  : Real from Standard;
+last   : Real from Standard;
+
+end Constant;

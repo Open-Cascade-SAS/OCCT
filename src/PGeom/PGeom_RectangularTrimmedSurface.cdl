@@ -1,0 +1,96 @@
+-- File:	PGeom_RectangularTrimmedSurface.cdl
+-- Created:	Tue Mar  2 14:17:28 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class RectangularTrimmedSurface from PGeom inherits BoundedSurface from PGeom
+
+        ---Purpose : Defines a portion of a surface (patch) limited by
+        --         two parametric   values in the U   direction (Umin,
+        --         Umax) and in the V direction (Vmin, Vmax).
+        --         
+	---See Also : RectangularTrimmedSurface from Geom.
+
+uses Surface  from PGeom
+
+is
+
+
+   Create returns mutable RectangularTrimmedSurface from PGeom;
+	---Purpose: Creates a RectangularTrimmedSurface with default values.
+    	---Level: Internal 
+
+
+   Create (
+    	    aBasisSurface : Surface from PGeom;
+    	    aFirstU     : Real from Standard;
+    	    aLastU      : Real from Standard;
+    	    aFirstV     : Real from Standard;
+    	    aLastV      : Real from Standard)
+	    returns mutable RectangularTrimmedSurface from PGeom;
+	---Purpose: Creates a RectangularTrimmedSurface with these values.
+    	---Level: Internal 
+
+
+  BasisSurface (me: mutable; aBasisSurface: Surface from PGeom);
+        ---Purpose :  Set the value  of  the  field basisSurface  with
+        --         <aBasisSurface>.
+    	---Level: Internal 
+
+
+  BasisSurface (me) returns Surface from PGeom;
+        ---Purpose : Returns the value of the field basisSurface.
+    	---Level: Internal 
+
+
+  FirstU(me : mutable; aFirstU: Real from Standard);
+        ---Purpose : Set the value of the field firstU with <aFirstU>.
+    	---Level: Internal 
+
+
+  FirstU(me) returns  Real from Standard;
+        ---Purpose : Returns the value of the field firstU.
+    	---Level: Internal 
+
+
+  LastU(me : mutable; aLastU: Real from Standard);
+        ---Purpose : Set the value of the field lastU with <aLastU>.
+    	---Level: Internal 
+
+
+  LastU(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field lastU.
+    	---Level: Internal 
+
+
+  FirstV(me : mutable; aFirstV: Real);
+        ---Purpose : Set the value of the field firstV with <aFirstV>.
+    	---Level: Internal 
+
+
+  FirstV(me) returns  Real from Standard;
+        ---Purpose : Returns the value of the field firstV.
+    	---Level: Internal 
+
+
+  LastV(me : mutable; aLastV: Real);
+        ---Purpose : Set the value of the field lastV with <aLastV>.
+    	---Level: Internal 
+
+
+  LastV(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field lastV.
+    	---Level: Internal 
+
+
+fields
+
+   basisSurface : Surface from PGeom;
+   firstU     : Real from Standard;
+   lastU      : Real from Standard;
+   firstV     : Real from Standard;
+   lastV      : Real from Standard;
+
+end;

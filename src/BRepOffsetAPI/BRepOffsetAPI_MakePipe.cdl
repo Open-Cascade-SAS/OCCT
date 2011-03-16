@@ -1,0 +1,78 @@
+-- File:	BRepOffsetAPI_MakePipe.cdl
+-- Created:	Tue Jul 12 10:19:39 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakePipe from BRepOffsetAPI inherits MakeSweep from BRepPrimAPI
+
+    	---Purpose: Describes functions to build pipes.
+    	-- A pipe is built a basis shape (called the profile) along
+    	-- a wire (called the spine) by sweeping.
+    	-- The profile must not contain solids.
+    	-- A MakePipe object provides a framework for:
+    	-- - defining the construction of a pipe,
+    	-- - implementing the construction algorithm, and
+    	-- - consulting the result.
+    	-- Warning
+    	-- The MakePipe class implements pipe constructions
+    	-- with G1 continuous spines only.
+uses
+    Pipe        from BRepFill,
+    Wire        from TopoDS,
+    Shape       from TopoDS,
+    Edge        from TopoDS,
+    ListOfShape from TopTools
+
+is
+ 
+    
+    Create( Spine   : Wire  from TopoDS;
+    	    Profile : Shape from TopoDS )
+	---Purpose: Constructs a pipe by sweeping the shape Profile along
+    	-- the wire Spine.The angle made by the spine with the profile is
+    	-- maintained along the length of the pipe.
+    	-- Warning
+    	-- Spine must be G1 continuous; that is, on the connection
+    	-- vertex of two edges of the wire, the tangent vectors on
+    	-- the left and on the right must have the same direction,
+    	-- though not necessarily the same magnitude.
+        -- Exceptions
+    	-- Standard_DomainError if the profile is a solid or a
+    	-- composite solid.
+    returns MakePipe from BRepOffsetAPI;
+    
+
+    Pipe(me) returns Pipe from BRepFill
+	---C++: return const &
+	---Level: Advanced
+    is static;
+
+
+    Build(me : in out)
+    is redefined;
+	---Purpose: Builds the resulting shape (redefined from MakeShape).
+	---Level: Public    
+
+
+    FirstShape (me : in out)
+    ---Purpose: Returns the  TopoDS  Shape of the bottom of the prism.
+    returns Shape from TopoDS;
+
+
+    LastShape (me : in out)
+    ---Purpose: Returns the TopoDS Shape of the top of the prism.
+    returns Shape from TopoDS;
+
+
+    Generated (me: in out; SSpine, SProfile : Shape from TopoDS)
+        ---Level: Public
+    returns Shape from TopoDS;
+
+
+fields
+
+    myPipe : Pipe from BRepFill;
+
+end MakePipe; 

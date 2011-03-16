@@ -1,0 +1,24 @@
+-- File:	Dico.cdl
+-- Created:	Tue Jul 28 16:05:33 1992
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1992
+
+package Dico
+
+    ---Purpose : Defines alphanumeric dictionaries and iterators on them
+    --           Those are generic classes (Iterator is nested in Dictionary)
+    --           Three default instantiations are offered :
+    --           with Integer and Handle Objects (Persistent and Transient)
+
+uses TCollection, MMgt, Standard
+
+is
+
+    generic class Dictionary,Iterator,StackItem;
+
+    class DictionaryOfInteger    instantiates Dictionary (Integer);
+    class DictionaryOfTransient  instantiates Dictionary (Transient);
+
+
+end Dico;

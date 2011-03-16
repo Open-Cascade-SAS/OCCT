@@ -1,0 +1,63 @@
+-- File:	IGESGeom_ToolConicArc.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolConicArc  from IGESGeom
+
+    ---Purpose : Tool to work on a ConicArc. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses ConicArc from IGESGeom,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolConicArc;
+    ---Purpose : Returns a ToolConicArc, ready to work
+
+
+    ReadOwnParams (me; ent : mutable ConicArc;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : ConicArc;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : ConicArc;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a ConicArc <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable ConicArc) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a ConicArc
+    --           (FormNumber recomputed according case Ellips-Parab-Hyperb)
+
+    DirChecker (me; ent : ConicArc) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : ConicArc;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : ConicArc; entto : mutable ConicArc;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : ConicArc;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolConicArc;

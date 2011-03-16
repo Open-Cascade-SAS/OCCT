@@ -1,0 +1,30 @@
+-- File:        PointOnSurface.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPointOnSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for PointOnSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PointOnSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPointOnSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PointOnSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : PointOnSurface from StepGeom);
+
+	Share(me; ent : PointOnSurface from StepGeom; iter : in out EntityIterator);
+
+end RWPointOnSurface;

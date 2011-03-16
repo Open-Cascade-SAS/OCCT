@@ -1,0 +1,23 @@
+-- File:        CGM.cdl
+-- Created:     Wed Jun 25 14:40:34 1997
+-- Author:      Laurent GARRIGA
+-- Copyright:   Matra Datavision 1994
+
+package CGM
+
+uses
+  Aspect,
+  PlotMgt,
+  TCollection,
+  Quantity,
+  TShort,
+  TColStd,
+  Standard,
+  TColQuantity
+    
+is
+  class Driver;
+  ---Purpose: Creates the CGM driver.
+  ---Category: Classes
+
+end CGM;

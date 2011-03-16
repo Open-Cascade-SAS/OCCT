@@ -1,0 +1,110 @@
+-- File:	IGESCAFControl_Writer.cdl
+-- Created:	Thu Aug 17 09:52:56 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class Writer from IGESCAFControl inherits Writer from IGESControl
+
+    	---Purpose: Provides a tool to write DECAF document to the
+	-- IGES file. Besides transfer of shapes (including 
+    	-- assemblies) provided by IGESControl, supports also 
+    	-- colors and part names
+    	-- IGESCAFControl_Writer writer(); 
+    	--   Methods for writing IGES file:
+    	-- writer.Transfer (Document);
+    	-- writer.Write("filename") or writer.Write(OStream)  or 
+    	-- writer.Perform(Document,"filename");
+    	--   Methods for managing the writing of attributes.
+    	--   Colors
+    	-- writer.SetColorMode(colormode);
+    	-- Standard_Boolean colormode = writer.GetColorMode();
+    	--   Layers
+    	-- writer.SetLayerMode(layermode);
+    	-- Standard_Boolean layermode = writer.GetLayerMode();
+    	-- Names
+    	-- writer.SetNameMode(namemode);
+    	-- Standard_Boolean namemode = writer.GetNameMode();
+    
+uses
+    AsciiString from TCollection,
+    Shape from TopoDS,
+    MapOfShape from TopTools,
+    WorkSession from XSControl,
+    Document from TDocStd,
+    Style from XCAFPrs,
+    DataMapOfShapeStyle from XCAFPrs,
+    DataMapOfStyleTransient from XCAFPrs
+is
+
+    Create returns Writer;
+    	---Purpose: Creates a writer with an empty
+    	-- IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
+
+    Create (WS : mutable WorkSession from XSControl;
+    	    	 scratch : Boolean = Standard_True) returns Writer;
+    	---Purpose: Creates a reader tool and attaches it to an already existing Session
+    	--          Clears the session if it was not yet set for IGES
+
+    Transfer (me : in out; doc : Document from TDocStd)
+    returns Boolean;
+    	---Purpose: Transfers a document to a IGES model
+    	--          Returns True if translation is OK
+
+    Perform (me : in out; doc : Document from TDocStd;
+    	    	    	  filename: AsciiString from TCollection)
+    returns Boolean;
+
+    Perform (me : in out; doc : Document from TDocStd; filename: CString)
+    returns Boolean;
+    ---Purpose : Transfers a document and writes it to a IGES file
+    --           Returns True if translation is OK
+
+    ---Scope: Internal methods
+
+    WriteAttributes (me: in out; doc: Document from TDocStd) 
+    returns Boolean is protected;
+    	---Purpose: Reads colors from DECAF document and assigns them
+	--          to corresponding IGES entities
+
+    MakeColors (me: in out; S: Shape from TopoDS; settings: DataMapOfShapeStyle from XCAFPrs;
+		    colors: in out DataMapOfStyleTransient from XCAFPrs;
+    	    	    Map: in out MapOfShape from TopTools;
+    	    	    inherit: Style from XCAFPrs) is private;
+	---Purpose: Recursively iterates on subshapes and assigns colors
+	--          to faces and edges (if set)
+
+    WriteLayers (me: in out; doc: Document from TDocStd) 
+    returns Boolean is protected;
+    	---Purpose: Reads layers from DECAF document and assigns them
+	--          to corresponding IGES entities
+
+    WriteNames (me: in out; doc: Document from TDocStd)
+    returns Boolean is protected;
+    	---Purpose: Recursivile iterates on subshapes and assign names 
+    	--          to IGES entity
+
+    --- Work with fileds for different mode of writing IGES file.
+
+    SetColorMode(me: in out; colormode: Boolean from Standard);
+    	---Purpose: Set ColorMode for indicate write Colors or not.
+
+    GetColorMode(me) returns Boolean;
+
+    SetNameMode(me: in out; namemode: Boolean from Standard);
+    	---Purpose: Set NameMode for indicate write Name or not.
+    
+    GetNameMode(me) returns Boolean;
+
+    SetLayerMode(me: in out; layermode: Boolean from Standard);
+    	---Purpose: Set LayerMode for indicate write Layers or not.
+
+    GetLayerMode(me) returns Boolean; 
+
+fields
+
+    myColorMode: Boolean;
+    myNameMode:  Boolean;
+    myLayerMode: Boolean;
+
+end Writer;

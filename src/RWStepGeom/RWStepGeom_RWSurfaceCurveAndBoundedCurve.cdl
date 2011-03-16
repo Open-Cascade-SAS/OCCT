@@ -1,0 +1,30 @@
+-- File:	RWStepGeom_RWSurfaceCurveAndBoundedCurve.cdl
+-- Created:	Mon Feb 15 10:46:33 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RWSurfaceCurveAndBoundedCurve from RWStepGeom 
+
+	---Purpose: Read StepGeom_SurfaceCurveAndBoundedCurve
+
+uses
+    Check from Interface,
+    StepReaderData from StepData,
+    StepWriter from StepData,
+    SurfaceCurveAndBoundedCurve from StepGeom,
+    EntityIterator from Interface
+
+is
+    
+    Create returns RWSurfaceCurveAndBoundedCurve;
+    
+    ReadStep (me; data : StepReaderData; num : Integer;
+	          ach : in out Check; ent : mutable SurfaceCurveAndBoundedCurve from StepGeom);
+
+    WriteStep (me; SW : in out StepWriter; ent : SurfaceCurveAndBoundedCurve from StepGeom);
+
+    Share (me; ent : SurfaceCurveAndBoundedCurve from StepGeom; iter : in out EntityIterator);
+
+end RWSurfaceCurveAndBoundedCurve;

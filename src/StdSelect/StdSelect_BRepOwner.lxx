@@ -1,0 +1,22 @@
+#include <StdSelect_Shape.hxx>
+
+inline Standard_Boolean  StdSelect_BRepOwner::HasHilightMode() const
+{return myCurMode == -1;}
+
+inline void StdSelect_BRepOwner::SetHilightMode(const Standard_Integer HiMod)
+{myCurMode=HiMod;}
+inline void StdSelect_BRepOwner::ResetHilightMode()
+{myCurMode =-1;}
+inline Standard_Integer  StdSelect_BRepOwner::HilightMode() const
+{return myCurMode;}
+
+inline const TopoDS_Shape& StdSelect_BRepOwner::Shape() const
+{return myShape;}
+
+inline Standard_Boolean StdSelect_BRepOwner::HasShape() const
+{return !myShape.IsNull();}
+
+inline Standard_Boolean StdSelect_BRepOwner::ComesFromDecomposition() const
+{return myFromDecomposition;}
+
+

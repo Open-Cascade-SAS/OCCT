@@ -1,0 +1,142 @@
+-- File:	PCollection_HStack.cdl
+-- Created:	Mon Sep 2 14:48:13 1991
+-- Author:	Mireille MERCIEN
+--		<apc@topsn1>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+generic class HStack from PCollection (Item as Storable) 
+inherits Persistent
+
+    ---Purpose: A stack is a list of items in which items are
+    -- added and removed from the same end, called the 
+    -- top of the stack.
+
+raises   NoSuchObject from Standard
+
+
+    class StackNode instantiates HSingleList from PCollection(Item);
+
+    class StackIterator from PCollection 
+    	    	    	    	    	   
+        ---Purpose: Iterator of the Stack class.
+
+    raises NoMoreObject from Standard,
+           NoSuchObject from Standard
+    is     
+ 
+     	Create(S : HStack from PCollection) 
+    	returns StackIterator from PCollection;
+        ---Purpose: Creates an iterator on the stack S.
+        -- Set the iterator at the beginning of the stack S.
+
+     	More(me) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns True if there are other items.
+
+     	Next(me: in out) raises NoMoreObject from Standard;
+        ---Level: Public
+	---Purpose: Sets the iterator to the next item.
+	    
+	Value(me) returns any Item raises NoSuchObject from Standard;
+        ---Level: Public
+	---Purpose: Returns the item value corresponding to 
+	-- the current position of the iterator.
+
+    fields
+    	 TheIterator : StackNode;
+    end;
+
+
+is
+     Create returns mutable HStack from PCollection;
+       ---Purpose: Creates an empty stack.
+
+     Depth(me) returns Integer from Standard;
+       ---Level: Public
+       ---Purpose: Returns the number of items in the stack.
+       ---Example: if me = (A B C) 
+       -- returns 3
+
+     IsEmpty(me) returns Boolean from Standard;
+       ---Level: Public
+       ---Purpose: Returns True if the stack contains no item.
+
+     Top(me) returns any Item 
+       ---Level: Public
+       ---Purpose: Returns the item on the top of the stack.
+       -- Raises an exception if the stack is empty.
+       ---Example: before
+       --   me = (A B C) 
+       -- after
+       --   me = (A B C)
+       -- returns 
+       --   C
+      raises NoSuchObject from Standard;
+
+     FTop(me) returns StackNode; 
+       ---Level: Public
+       ---Purpose: Returns the field TheTop (the top of the stack).
+
+     Push(me : mutable; T : Item);
+       ---Level: Public
+       ---Purpose: Inserts an item on the top of the stack.
+       ---Example: before
+       --   me = (A B) , T = C
+       -- after
+       --   me = (A B C)
+
+     Pop(me : mutable) raises NoSuchObject from Standard;
+       ---Level: Public
+       ---Purpose: Removes an item from the top of the stack.
+       -- Raises an exception if the stack is empty.
+       ---Example: before
+       --   me = (A B C) 
+       -- after    
+       --   me = (A B)
+       -- returns
+       --   C
+
+     Clear(me : mutable);
+       ---Level: Public
+       ---Purpose: Removes all the items from the stack.
+       ---Example: before
+       --   me = (A B C) 
+       -- after
+       --   me = ()
+ 
+     ChangeTop(me:mutable; T : Item) raises NoSuchObject from Standard;
+       ---Level: Public
+       ---Purpose: Replaces the top of the stack with T.
+       -- Raises an exception if the stack is empty.
+       ---Example: before
+       --   me = (A B C) , T = D
+       -- after
+       --   me = (A B D)
+
+
+     ShallowCopy(me) 
+        returns mutable like me 
+        is redefined;
+        ---Level: Advanced
+	---C++: function call
+
+
+     ShallowDump (me; s: in out OStream) 
+        is redefined;
+        ---Level: Advanced
+    	---C++: function call
+
+
+
+fields
+     TheTop   : StackNode;
+     TheDepth : Integer from Standard;
+     
+end; 
+
+
+
+
+
+

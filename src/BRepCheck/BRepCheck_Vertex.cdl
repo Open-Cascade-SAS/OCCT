@@ -1,0 +1,36 @@
+-- File:	BRepCheck_Vertex.cdl
+-- Created:	Thu Dec  7 11:07:45 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Vertex from BRepCheck inherits Result from BRepCheck
+
+	---Purpose: 
+
+uses Shape from TopoDS,
+     Vertex from TopoDS
+
+is
+
+    Create(V: Vertex from TopoDS)
+    
+    	returns mutable Vertex from BRepCheck;
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS);
+    
+
+
+    Minimum(me: mutable);
+    
+
+    
+    Blind(me: mutable);
+    
+   
+    Tolerance(me: mutable) returns Real from Standard 
+    is static;
+
+end Vertex;

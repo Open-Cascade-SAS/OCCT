@@ -1,0 +1,974 @@
+-- File:	ChFi3d_Builder.cdl
+-- Created:	Tue Nov  9 17:40:22 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class Builder from ChFi3d 
+
+	---Purpose: Root  class  for calculation of  surfaces (fillets,
+	--          chamfers)  destined  to smooth edges  of
+	--          a gap on a Shape and the reconstruction of  the   Shape.
+
+uses 
+    Spine                       from ChFiDS,
+    ListOfStripe                from ChFiDS,
+    SequenceOfSurfData          from ChFiDS,
+    SurfData                    from ChFiDS,
+    Stripe                      from ChFiDS,
+    StripeMap                   from ChFiDS,
+    Map                         from ChFiDS,
+    CommonPoint                 from ChFiDS,
+    Regularities                from ChFiDS,
+    HElSpine                    from ChFiDS,
+    ErrorStatus                 from ChFiDS, 
+    HDataStructure              from TopOpeBRepDS,
+    HBuilder                    from TopOpeBRepBuild,
+    AppFunction                 from Blend,
+    Function                    from Blend,
+    CSFunction                  from Blend,
+    FuncInv                     from Blend,
+    SurfRstFunction             from Blend,
+    RstRstFunction              from Blend,
+    SurfPointFuncInv            from Blend,
+    SurfCurvFuncInv             from Blend,
+    CurvPointFuncInv            from Blend,
+    Approx                      from AppBlend,
+    Line                        from BRepBlend,
+    DataMapOfShapeListOfInteger from TopTools,
+    ListOfShape                 from TopTools,
+    Shape                       from TopoDS,
+    Face                        from TopoDS,
+    Edge                        from TopoDS,
+    Vertex                      from TopoDS,
+    State                       from TopAbs,
+    Orientation                 from TopAbs,
+    HCurve                      from Adaptor3d,
+    HCurve2d                    from Adaptor2d,
+    HSurface                    from Adaptor3d,
+    HCurve2d                    from BRepAdaptor,
+    Surface                     from BRepAdaptor,
+    HSurface                    from BRepAdaptor,
+    TopolTool                   from Adaptor3d,
+    TopolTool                   from BRepTopAdaptor,
+    Vector                      from math,
+    Shape                       from GeomAbs,
+    Surface                     from Geom,
+    Curve                       from Geom2d, 
+    Pnt2d                       from gp
+    
+raises 
+    OutOfRange from Standard,
+    NoSuchObject from Standard,
+    ConstructionError from Standard
+
+is
+
+    -- Construction et donnees generales.
+    -------------------------------------
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~ChFi3d_Builder(){Delete() ; }"
+    
+    Initialize(S : Shape from TopoDS; Ta : Real from Standard);  
+
+
+    SetParams(me : in out; 
+    	      Tang, Tesp, T2d, TApp3d, TolApp2d, Fleche: Real from Standard);
+
+
+    SetContinuity(me : in out; 
+                  InternalContinuity : Shape from GeomAbs;
+		  AngularTolerance   : Real);
+
+
+    -- Acquisition et interrogation concernant les trajets.
+    -------------------------------------------------------
+
+    Remove(me : in out; E : Edge from TopoDS) 
+    ---Purpose: extracts from  the list the contour containing edge E.
+    --          
+    is static; 
+    
+    Contains(me;E : Edge from TopoDS) 
+    ---Purpose: gives the number of  the contour containing E or 0
+    --          if E does  not  belong to  any  contour.
+    returns Integer from  Standard
+    is static;
+    
+    Contains(me;E : Edge from TopoDS; IndexInSpine : out Integer from Standard) 
+    ---Purpose: gives  the number of  the contour containing E or 0
+    --          if E does  not  belong  to  any  contour. 
+    --	        Sets in IndexInSpine the index of E in the contour if it's found
+    returns Integer from  Standard
+    is static;
+    
+    NbElements(me) returns Integer is static;
+    ---Purpose: gives the number of  disjoint contours on  which 
+    --          the  fillets  are  calculated 
+    
+    Value(me; I : Integer) returns Spine from ChFiDS
+    ---Purpose: gives the n'th set  of edges (contour)
+    raises OutOfRange from Standard
+    ---Purpose: if I >NbElements()
+    is static;
+    
+    
+    Length(me; IC : Integer from Standard) returns Real from Standard
+     ---Purpose: returns the length of  the contour of index IC.
+    is static; 
+    
+    
+    FirstVertex(me;IC : Integer from Standard)
+    returns Vertex from TopoDS
+     ---Purpose: returns the First vertex V of
+     --          the contour of index IC.
+    is static;
+    
+    
+    LastVertex(me;IC : Integer from Standard)
+    returns Vertex from TopoDS
+     ---Purpose: returns the Last vertex V of
+     --          the contour of index IC.
+    is static;
+    
+    
+    Abscissa(me; 
+	     IC : Integer from Standard;
+	     V  : Vertex  from TopoDS) 
+    returns Real from Standard
+     ---Purpose: returns the abscissa of the vertex V on
+     --          the contour of index IC.
+    is static;
+    
+    
+    RelativeAbscissa(me; 
+		     IC : Integer from Standard;
+		     V  : Vertex  from TopoDS) 
+    returns Real from Standard
+     ---Purpose: returns the relative abscissa([0.,1.]) of the 
+     --          vertex V on the contour of index IC.
+    is static;
+    
+    
+    ClosedAndTangent(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+     ---Purpose: returns true if the contour of index IC is closed
+     --          an tangent.
+    is static; 
+    
+    
+    Closed(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+     ---Purpose: returns true if the contour of index IC is closed
+    is static; 
+    
+    
+    -- Le calcul et la recuperation des resultats.
+    ----------------------------------------------
+
+    Compute(me : in out)
+    ---Purpose: calculation general 
+    --          -geometrie sur l ensemble des aretes,
+    --          -reconstruction topologique
+    is static;
+
+    IsDone(me) returns Boolean from Standard is static;
+    ---Purpose: returns True if the computation  is  success
+    
+    Shape(me) returns Shape from TopoDS 
+    ---Purpose: if (Isdone()) rend le resultat.
+    raises NoSuchObject from Standard
+    ---Purpose: if (!Isdone())
+    is static;
+    
+    Generated(me : in out; EouV : Shape from TopoDS)
+    ---Purpose: Advanced  function for the history
+    returns ListOfShape from TopTools
+    ---C++: return const &    	
+    is static;
+
+    NbFaultyContours(me)
+    ---Purpose: Returns the number of contours on  which the calculation 
+    --          has failed.
+    returns Integer from Standard is static;
+
+    FaultyContour(me; I : Integer from Standard)
+    ---Purpose: Returns the number of  I'th contour on  which the calculation 
+    --          has failed.
+    returns Integer from Standard is static;
+
+    NbComputedSurfaces(me; IC : Integer from Standard)
+    ---Purpose: Returns the number of  surfaces calculated  on  the contour IC.
+    returns Integer from Standard is static;
+
+    ComputedSurface(me; IC, IS : Integer from Standard)
+    ---Purpose: Returns the IS'th surface calculated on  the contour IC.
+    returns Surface from Geom is static;
+
+    NbFaultyVertices(me)
+    ---Purpose: Returns the number of vertices on  which the calculation
+    --          has failed.
+    returns Integer from Standard is static;
+
+    FaultyVertex(me; IV : Integer from Standard)
+    ---Purpose: Returns the IV'th vertex on  which the calculation has failed.
+    returns Vertex from TopoDS is static;
+
+    HasResult(me) returns Boolean from Standard is static;
+    ---Purpose: returns True if  a partial result has  been  calculated
+    
+    BadShape(me) returns Shape from TopoDS 
+    ---Purpose: if (HasResult()) returns partial result
+    raises NoSuchObject from Standard
+    ---Purpose: if (!HasResult())
+    is static;
+
+    StripeStatus(me;IC:Integer from Standard) returns ErrorStatus from ChFiDS 
+    ---Purpose: for the stripe IC ,indication on the cause
+    --          of  failure WalkingFailure,TwistedSurface,Error, Ok 
+    is static;
+    
+    Reset(me : in out)
+    ---Purpose: Reset all  results of   compute and returns the  algorythm
+    --          in  the  state  of  the  last  acquisition to
+    --          enable modification of contours or areas.
+    is static;
+    
+    Builder(me) returns HBuilder from TopOpeBRepBuild
+    ---Purpose: Returns the Builder of  topologic operations.
+    is static;
+    
+       
+    ---pour implementation
+    ----------------------
+
+    --- Simulation
+    
+    SimulKPart(me; SD : mutable SurfData from ChFiDS)
+    is deferred protected; 
+    
+    SimulSurf(me              : in out; 
+              Data            : out SurfData from ChFiDS;
+              Guide           : HElSpine from ChFiDS;
+              Spine           : Spine from ChFiDS; 
+              Choix           : Integer from Standard;
+              S1              : HSurface from BRepAdaptor;
+              I1              : TopolTool from Adaptor3d;
+              S2              : HSurface from BRepAdaptor;
+              I2              : TopolTool from Adaptor3d;
+              TolGuide        : Real from Standard;
+              First,Last      : in out Real from Standard;
+              Inside,Appro    : Boolean from Standard;
+	      Forward         : Boolean from Standard;
+              RecOnS1,RecOnS2 : Boolean from Standard;
+              Soldep          : Vector from math;
+              Intf,Intl       : in out Boolean from Standard)
+    returns  Boolean
+    is deferred protected;	
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      PC1                  : HCurve2d from BRepAdaptor;
+              Sref1                : HSurface from BRepAdaptor;
+	      PCref1               : HCurve2d from BRepAdaptor;
+	      Decroch1             : out Boolean from Standard;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      Or2                  : Orientation from TopAbs;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP,RecS,RecRst     : Boolean from Standard;
+              Soldep               : Vector from math)
+    is virtual protected;	
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      Or1                  : Orientation from TopAbs;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      PC2                  : HCurve2d from BRepAdaptor;
+              Sref2                : HSurface from BRepAdaptor;
+	      PCref2               : HCurve2d from BRepAdaptor;
+	      Decroch2             : out Boolean from Standard;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP,RecS,RecRst     : Boolean from Standard;
+              Soldep               : Vector from math)
+
+    is virtual protected;	
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      PC1                  : HCurve2d from BRepAdaptor;
+              Sref1                : HSurface from BRepAdaptor;
+	      PCref1               : HCurve2d from BRepAdaptor;
+	      Decroch1             : out Boolean from Standard;
+	      Or1                  : Orientation from TopAbs;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      PC2                  : HCurve2d from BRepAdaptor;
+              Sref2                : HSurface from BRepAdaptor;
+	      PCref2               : HCurve2d from BRepAdaptor;
+	      Decroch2             : out Boolean from Standard;
+              Or2                  : Orientation from TopAbs;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP1,RecRst1        : Boolean from Standard;
+              RecP2,RecRst2        : Boolean from Standard;
+              Soldep               : Vector from math)
+
+    is virtual protected;	
+
+    SimulData(me                   : in out;
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Lin                  : out Line from BRepBlend;
+              S1                   : HSurface from Adaptor3d;
+              I1                   : TopolTool from Adaptor3d;
+              S2                   : HSurface from Adaptor3d;
+              I2                   : TopolTool from Adaptor3d;
+              Func                 : in out Function from Blend;
+              FInv                 : in out FuncInv from Blend;
+	      PFirst               : Real from Standard;
+              MaxStep              : Real from Standard;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              Soldep               : Vector from math;
+    	      NbSecMin             : Integer from Standard;
+              RecOnS1              : Boolean from Standard = Standard_False; 
+              RecOnS2              : Boolean from Standard = Standard_False)
+    returns Boolean from Standard is static protected;
+
+    SimulData(me               : in out;
+  	      Data             : in out SurfData from ChFiDS;
+  	      HGuide           : HElSpine from ChFiDS;
+  	      Lin              : in out Line from BRepBlend;
+  	      S1               : HSurface from Adaptor3d;
+  	      I1               : TopolTool from Adaptor3d;
+  	      S2               : HSurface from Adaptor3d;
+  	      PC2              : HCurve2d from  Adaptor2d;
+  	      I2               : TopolTool from Adaptor3d;
+	      Decroch          : out Boolean from Standard;
+  	      Func             : in out SurfRstFunction from Blend;
+  	      FInv             : in out FuncInv from Blend;
+  	      FInvP            : in out SurfPointFuncInv from Blend;
+  	      FInvC            : in out SurfCurvFuncInv from Blend;
+  	      PFirst           : Real from Standard;
+  	      MaxStep          : Real from Standard;
+  	      Fleche           : Real from Standard;
+  	      TolGuide         : Real from Standard;
+  	      First            : in out Real from Standard;
+  	      Last             : in out Real from Standard;
+  	      Soldep           : Vector from math;
+    	      NbSecMin         : Integer from Standard;
+  	      Inside           : Boolean from Standard;
+  	      Appro            : Boolean from Standard;
+  	      Forward          : Boolean from Standard;
+              RecP,RecS,RecRst : Boolean from Standard)
+    returns Boolean from Standard is static protected;
+
+
+    SimulData(me               : in out;
+  	      Data             : in out SurfData from ChFiDS;
+  	      HGuide           : HElSpine from ChFiDS;
+  	      Lin              : in out Line from BRepBlend;
+  	      S1               : HSurface from Adaptor3d;
+	      PC1              : HCurve2d from  Adaptor2d;
+  	      I1               : TopolTool from Adaptor3d;
+	      Decroch1         : out Boolean from Standard;
+  	      S2               : HSurface from Adaptor3d;
+  	      PC2              : HCurve2d from  Adaptor2d;
+  	      I2               : TopolTool from Adaptor3d;
+	      Decroch2         : out Boolean from Standard;
+	      Func             : in out RstRstFunction   from Blend;
+    	      FInv1            : in out SurfCurvFuncInv  from Blend;
+    	      FInvP1           : in out CurvPointFuncInv from Blend;
+    	      FInv2            : in out SurfCurvFuncInv  from Blend;
+    	      FInvP2           : in out CurvPointFuncInv from Blend;
+  	      PFirst           : Real from Standard;
+  	      MaxStep          : Real from Standard;
+  	      Fleche           : Real from Standard;
+  	      TolGuide         : Real from Standard;
+  	      First            : in out Real from Standard;
+  	      Last             : in out Real from Standard;
+  	      Soldep           : Vector from math;
+    	      NbSecMin         : Integer from Standard;
+  	      Inside           : Boolean from Standard;
+  	      Appro            : Boolean from Standard;
+  	      Forward          : Boolean from Standard;
+              RecP1, RecRst1   : Boolean from Standard;
+              RecP2, RecRst2   : Boolean from Standard)
+    returns Boolean from Standard is static protected;
+
+    --- Calcul veritable
+
+    SetRegul(me : in out) is deferred protected;
+
+    FaceTangency(me ;E0,E1 : Edge from TopoDS; V : Vertex from TopoDS) 
+    returns Boolean
+    is static private;
+
+    PerformElement(me : in out ;CElement : Spine) 
+    returns  Boolean  from  Standard
+    is static protected;
+
+    PerformExtremity(me : in out ;CElement : Spine)
+    is static protected;
+
+    PerformSetOfSurf(me    : in out; 
+                     S     : in out Stripe from ChFiDS;
+                     Simul : Boolean from Standard = Standard_False)
+    is static protected;	
+
+    PerformSetOfKPart(me    : in out; 
+                      S     : in out Stripe from ChFiDS;
+                      Simul : Boolean from Standard = Standard_False)
+    is static protected;	
+
+    PerformSetOfKGen(me    : in out; 
+                     S     : in out Stripe from ChFiDS;
+                     Simul : Boolean from Standard = Standard_False)
+    is static protected;	
+
+    PerformSetOfSurfOnElSpine
+    (me      : in out;
+     ES      :        HElSpine  from ChFiDS;
+     St      : in out Stripe    from ChFiDS;
+     It1,It2 : in out TopolTool from BRepTopAdaptor;
+     Simul   : Boolean from Standard = Standard_False)
+    is static private;
+
+    Trunc(me        : in out; 
+          SD        : SurfData from ChFiDS;
+          Spine     : Spine from ChFiDS; 
+          S1        : HSurface from Adaptor3d;
+          S2        : HSurface from Adaptor3d;
+          iedge     : Integer from Standard;
+          isfirst   : Boolean from Standard;
+          cntlFiOnS : Integer from Standard) -- eap, occ354
+    is static protected;
+
+    SplitKPart(me          : in out; 
+               Data        : SurfData from ChFiDS;
+               SetData     : out SequenceOfSurfData from ChFiDS;
+               Spine       : Spine from ChFiDS; 
+               Iedge       : Integer from Standard;
+               S1          : HSurface from Adaptor3d;
+               I1          : TopolTool from Adaptor3d;
+               S2          : HSurface from Adaptor3d;
+               I2          : TopolTool from Adaptor3d;
+               Intf,Intl   : in out Boolean from Standard)
+
+    returns Boolean from Standard is static;	
+    ---Purpose: Methode, implementee dans les heritants, calculant
+    --          les elements de construction de la surface (conge
+    --          ou chanfrein). 
+  
+    CallPerformSurf(me          : in out;  
+    	    	Stripe          : in out Stripe from ChFiDS;
+                Simul           : Boolean from Standard;
+                SeqSD           : in  out SequenceOfSurfData from ChFiDS; 
+		SD              : in  out SurfData from ChFiDS;
+                Guide           : HElSpine from ChFiDS;
+                Spine           : Spine from ChFiDS; 
+                HS1,  HS3       : HSurface from BRepAdaptor; 
+		P1,  P3         : Pnt2d  from  gp;
+                I1              : in  out  TopolTool from Adaptor3d;
+                HS2,  HS4       : HSurface from BRepAdaptor;   
+		P2,  P4         : Pnt2d  from  gp;
+                I2              : in  out  TopolTool from Adaptor3d;
+                MaxStep         : Real from Standard;
+                Fleche          : Real from Standard;
+                TolGuide        : Real from Standard;
+                First,Last      : in out Real from Standard;
+                Inside,Appro    : Boolean from Standard;
+                Forward         : Boolean from Standard;
+                RecOnS1,RecOnS2 : Boolean from Standard;
+                Soldep          : in  out  Vector from math;
+                Intf,Intl       : in out Boolean from Standard; 
+                Surf1,Surf2     : in  out  HSurface from BRepAdaptor)
+    is protected;
+     
+    PerformSurf(me              : in out; 
+                Data            : out SequenceOfSurfData from ChFiDS;
+                Guide           : HElSpine from ChFiDS;
+                Spine           : Spine from ChFiDS; 
+                Choix           : Integer from Standard;
+                S1              : HSurface from BRepAdaptor;
+                I1              : TopolTool from Adaptor3d;
+                S2              : HSurface from BRepAdaptor;
+                I2              : TopolTool from Adaptor3d;
+                MaxStep         : Real from Standard;
+                Fleche          : Real from Standard;
+                TolGuide        : Real from Standard;
+                First,Last      : in out Real from Standard;
+                Inside,Appro    : Boolean from Standard;
+                Forward         : Boolean from Standard;
+                RecOnS1,RecOnS2 : Boolean from Standard;
+                Soldep          : Vector from math;
+                Intf,Intl       : in out Boolean from Standard)
+    returns  Boolean
+    is deferred protected;	
+    ---Purpose: Methode, implementee dans les heritants, calculant
+    --          les elements de construction de la surface (conge
+    --          ou chanfrein).  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		PC1                  : HCurve2d from BRepAdaptor;
+                Sref1                : HSurface from BRepAdaptor;
+		PCref1               : HCurve2d from BRepAdaptor;
+		Decroch1             : out Boolean from Standard;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		Or2                  : Orientation from TopAbs;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP,RecS,RecRst     : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is virtual protected;	
+    ---Purpose: Method, implemented  in inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/face.  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		Or1                  : Orientation from TopAbs;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		PC2                  : HCurve2d from BRepAdaptor;
+                Sref2                : HSurface from BRepAdaptor;
+		PCref2               : HCurve2d from BRepAdaptor;
+		Decroch2             : out Boolean from Standard;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP,RecS,RecRst     : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is virtual protected;	
+    ---Purpose: Method, implemented in  inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/face.  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		PC1                  : HCurve2d from BRepAdaptor;
+                Sref1                : HSurface from BRepAdaptor;
+		PCref1               : HCurve2d from BRepAdaptor;
+		Decroch1             : out Boolean from Standard;
+		Or1                  : Orientation from TopAbs;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		PC2                  : HCurve2d from BRepAdaptor;
+                Sref2                : HSurface from BRepAdaptor;
+		PCref2               : HCurve2d from BRepAdaptor;
+		Decroch2             : out Boolean from Standard;
+		Or2                  : Orientation from TopAbs;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP1,RecRst1        : Boolean from Standard;
+                RecP2,RecRst2        : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is virtual protected;	
+    ---Purpose: Method, implemented in inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/edge.  
+
+    PerformFilletOnVertex(me   : in out; 
+                          Index: Integer from Standard)
+    is static private;	 
+     
+    PerformSingularCorner(me    : in out ; 
+                          Index : Integer from Standard)
+    is static private;	    
+
+    PerformOneCorner(me            : in out ; 
+                     Index         : Integer from Standard;
+                     PrepareOnSame : Boolean from Standard = Standard_False)
+    is static private;	
+    
+    IntersectMoreCorner(me : in out ;
+    	    	     Index : Integer from Standard)
+    is static private;
+
+    PerformMoreSurfdata(me    : in out ; 
+                     Index : Integer from Standard)
+    is static private;	
+    
+    PerformTwoCornerbyInter(me    : in out ; 
+                            Index : Integer from Standard)
+    returns Integer	    
+    is static;
+
+    PerformTwoCorner(me    : in out ; 
+                     Index : Integer from Standard)
+    is deferred protected;	
+
+
+    PerformThreeCorner(me    : in out ; 
+                       Index : Integer from Standard)
+    is deferred protected;	
+
+    PerformMoreThreeCorner(me    : in out ; 
+                  	  Index : Integer from Standard;
+                          nbcourb : Integer from Standard)
+    is static protected;	
+	
+    PerformIntersectionAtEnd (me    : in out ; 
+                     Index : Integer from Standard)
+    is static private;	
+
+    ExtentAnalyse(me : in out)
+    is static private;    
+    	      
+    ExtentOneCorner(me : in out; 
+                    V  : Vertex from TopoDS;
+                    S  : Stripe from ChFiDS)
+    is deferred protected;
+
+    ExtentTwoCorner(me : in out; 
+    	    	V  : Vertex       from TopoDS;
+		LS : ListOfStripe from ChFiDS)
+    is deferred protected;
+
+    ExtentThreeCorner(me : in out; 
+    	    	      V  : Vertex       from TopoDS;
+		      LS : ListOfStripe from ChFiDS)
+    is deferred protected;
+
+    FindFace(me;
+             V     : Vertex from TopoDS;
+             P1,P2 : CommonPoint from ChFiDS; 
+             Fv    : out Face from TopoDS) 
+    returns Boolean from Standard
+    is static private;
+	
+    FindFace(me;
+             V     : Vertex from TopoDS;
+             P1,P2 : CommonPoint from ChFiDS; 
+             Fv    : out Face from TopoDS;
+    	     Favoid: Face from TopoDS) 
+    returns Boolean from Standard
+    is static private;
+    
+    MoreSurfdata(me;
+            Index : Integer from Standard ) 
+    returns Boolean from Standard
+    is static private;
+
+    StartSol(me;
+             Spine   :        Spine   from ChFiDS;
+             HS      : in out HSurface from BRepAdaptor;
+             P       : in out Pnt2d    from gp;
+             HC      : in out HCurve2d from BRepAdaptor;
+             W       : in out Real     from Standard;
+             SD      :        SurfData from ChFiDS;
+             isFirst :        Boolean  from Standard;
+             OnS     :        Integer  from Standard;
+             HSref   : in out HSurface from BRepAdaptor;
+             HCref   : in out HCurve2d from BRepAdaptor; 
+    	     RecP    :    out Boolean  from Standard;
+             RecS    :    out Boolean  from Standard;
+             RecRst  :    out Boolean  from Standard;
+             C1Obst  :    out Boolean  from Standard;	      
+	     HSbis   : in out HSurface from BRepAdaptor; 
+             Pbis    : in out Pnt2d    from gp;
+	     Decroch :        Boolean  from Standard;
+             Vref    :        Vertex   from TopoDS)
+    returns Boolean from Standard
+    is static private;
+
+    StartSol(me;
+             S       :        Stripe    from ChFiDS;
+             HGuide  :        HElSpine  from ChFiDS;
+             HS1,HS2 : in out HSurface  from BRepAdaptor;
+             I1,I2   : in out TopolTool from BRepTopAdaptor;
+             P1,P2   : in out Pnt2d     from gp;
+             First   : in out Real      from Standard)
+    is static private;		 
+
+    PerformFirstSection(me ;
+                        S         :        Spine     from ChFiDS;
+                        HGuide    :        HElSpine  from ChFiDS;
+	                Choix     :        Integer   from Standard;
+                        S1,S2     : in out HSurface  from BRepAdaptor;
+                        I1,I2     :        TopolTool from Adaptor3d;
+			Par       :        Real      from Standard;
+			SolDep    : in out Vector    from math;
+                        Pos1,Pos2 :    out State     from TopAbs)
+    returns Boolean from Standard
+    is deferred protected;		 
+
+    SearchFace(me;  
+               Sp   : Spine       from ChFiDS;
+               Pc   : CommonPoint from ChFiDS;
+               FRef : Face        from TopoDS;
+               FVoi : out Face    from TopoDS) 
+    returns Boolean from Standard		       
+    is static protected;	       
+
+    ConexFaces(me;
+               Sp       :      Spine    from ChFiDS;
+               IEdge    :      Integer  from Standard;
+               RefChoix :      Integer  from Standard;
+               HS1,HS2  : out  HSurface from BRepAdaptor)
+    is static private;				    
+    	
+    StripeOrientations(me; 
+                       Sp         :     Spine       from ChFiDS;
+                       Or1,Or2    : out Orientation from TopAbs;
+                       ChoixConge : out Integer     from Standard) 
+    returns Boolean from Standard is static protected;
+
+    ComputeData(me              : in out;
+                Data            : out SurfData from ChFiDS;
+                Guide           : HElSpine from ChFiDS;
+		Spine           : Spine    from ChFiDS;
+                Lin             : out Line from BRepBlend;
+                S1              : HSurface from Adaptor3d;
+                I1              : TopolTool from Adaptor3d;
+                S2              : HSurface from Adaptor3d;
+                I2              : TopolTool from Adaptor3d;
+                Func            : in out Function from Blend;
+                FInv            : in out FuncInv from Blend;
+                PFirst          : Real from Standard;
+                MaxStep         : Real from Standard;
+                Fleche          : Real from Standard;
+                TolGuide        : Real from Standard;
+                First,Last      : in out Real from Standard;
+                Inside,Appro    : Boolean from Standard;
+                Forward         : Boolean from Standard;
+                Soldep          : Vector from math;
+                Intf,Intl       : in out Boolean from Standard;
+                Gd1,Gd2,Gf1,Gf2 : out Boolean from Standard;
+                RecOnS1         : Boolean from Standard = Standard_False; 
+                RecOnS2         : Boolean from Standard = Standard_False)
+    ---Purpose: Calculates  a Line of contact face/face.
+    returns Boolean from Standard is static protected;
+
+    ComputeData(me               : in out;
+    	    	Data             : in out SurfData from ChFiDS;
+    	    	HGuide           : HElSpine from ChFiDS;
+    	    	Lin              : in out Line from BRepBlend;
+    	    	S1               : HSurface from Adaptor3d;
+    	    	I1               : TopolTool from Adaptor3d;
+    	    	S2               : HSurface from Adaptor3d;
+    	    	PC2              : HCurve2d from  Adaptor2d;
+    	    	I2               : TopolTool from Adaptor3d;
+		Decroch          : out Boolean from Standard;
+    	    	Func             : in out SurfRstFunction from Blend;
+    	    	FInv             : in out FuncInv from Blend;
+    	    	FInvP            : in out SurfPointFuncInv from Blend;
+    	    	FInvC            : in out SurfCurvFuncInv from Blend;
+    	    	PFirst           : Real from Standard;
+    	    	MaxStep          : Real from Standard;
+    	    	Fleche           : Real from Standard;
+    	    	TolGuide         : Real from Standard;
+    	    	First            : in out Real from Standard;
+    	    	Last             : in out Real from Standard;
+    	    	Soldep           : Vector from math;
+    	    	Inside           : Boolean from Standard;
+    	    	Appro            : Boolean from Standard;
+    	    	Forward          : Boolean from Standard;
+                RecP,RecS,RecRst : Boolean from Standard)
+    ---Purpose: Calculates a Line of contact edge/face.
+    returns Boolean from Standard is static protected;
+
+
+    ComputeData(me               : in out;
+    	    	Data             : in out SurfData from ChFiDS;
+    	    	HGuide           : HElSpine from ChFiDS;
+    	    	Lin              : in out Line from BRepBlend;
+    	    	S1               : HSurface from Adaptor3d;
+		PC1              : HCurve2d from  Adaptor2d;
+    	    	I1               : TopolTool from Adaptor3d;
+		Decroch1         : out Boolean from Standard;
+    	    	S2               : HSurface from Adaptor3d;
+    	    	PC2              : HCurve2d from  Adaptor2d;
+    	    	I2               : TopolTool from Adaptor3d;
+		Decroch2         : out Boolean from Standard;
+    	    	Func             : in out RstRstFunction   from Blend;
+    	    	FInv1            : in out SurfCurvFuncInv  from Blend;
+    	    	FInvP1           : in out CurvPointFuncInv from Blend;
+    	    	FInv2            : in out SurfCurvFuncInv  from Blend;
+    	    	FInvP2           : in out CurvPointFuncInv from Blend;
+    	    	PFirst           : Real from Standard;
+    	    	MaxStep          : Real from Standard;
+    	    	Fleche           : Real from Standard;
+    	    	TolGuide         : Real from Standard;
+    	    	First            : in out Real from Standard;
+    	    	Last             : in out Real from Standard;
+    	    	Soldep           : Vector from math;
+    	    	Inside           : Boolean from Standard;
+    	    	Appro            : Boolean from Standard;
+    	    	Forward          : Boolean from Standard;
+                RecP1, RecRst1   : Boolean from Standard;
+                RecP2, RecRst2   : Boolean from Standard)
+    ---Purpose: Calculated a Line of contact edge/edge.
+    returns Boolean from Standard is static protected;
+
+
+    CompleteData(me              : in out;
+                 Data            : in out SurfData from ChFiDS;
+                 Func            : in out Function from Blend;
+                 Lin             : in out Line from BRepBlend;
+                 S1              : HSurface from Adaptor3d;
+                 S2              : HSurface from Adaptor3d;
+                 Or1             : Orientation from TopAbs;
+                 Gd1,Gd2,Gf1,Gf2 : Boolean from Standard;
+    	    	 Reversed        : Boolean from Standard = Standard_False)
+    returns Boolean from Standard is static protected;
+	
+    CompleteData(me       : in out;
+                 Data     : in out SurfData from ChFiDS;
+                 Func     : in out SurfRstFunction from Blend;
+                 Lin      : in out Line from BRepBlend;
+                 S1       : HSurface from Adaptor3d;
+                 S2       : HSurface from Adaptor3d;
+                 Or       : Orientation from TopAbs;
+                 Reversed : Boolean from Standard)
+    returns Boolean from Standard is static protected;
+    
+    CompleteData(me       : in out;
+                 Data     : in out SurfData from ChFiDS;
+                 Func     : in out RstRstFunction from Blend;
+                 Lin      : in out Line from BRepBlend;
+                 S1       : HSurface from Adaptor3d;
+                 S2       : HSurface from Adaptor3d;
+                 Or       : Orientation from TopAbs)
+    returns Boolean from Standard is static protected;
+    
+    
+    
+    StoreData(me              : in out;
+              Data            : in out SurfData from ChFiDS;
+              Approx          : Approx from AppBlend;
+              Lin             : Line from BRepBlend;
+              S1              : HSurface from Adaptor3d;
+              S2              : HSurface from Adaptor3d;
+              Or1             : Orientation from TopAbs;
+              Gd1,Gd2,Gf1,Gf2 : Boolean from Standard;
+    	      Reversed        : Boolean from Standard = Standard_False)
+    returns Boolean from Standard is static protected;    
+
+    CompleteData(me              : in out;
+                 Data            : in out SurfData from ChFiDS;
+		 Surfcoin        : Surface from Geom;
+                 S1              : HSurface from Adaptor3d;
+                 PC1             : Curve from Geom2d;
+                 S2              : HSurface from Adaptor3d;
+                 PC2             : Curve from Geom2d;
+                 Or              : Orientation from TopAbs;
+    	    	 On1             : Boolean from Standard;
+                 Gd1,Gd2,Gf1,Gf2 : Boolean from Standard)
+    returns Boolean from Standard is static protected;
+
+fields
+
+-- La piece d entree
+myShape        : Shape from TopoDS;
+
+-- Donnees numeriques (tolerances) REMARQUE : il faut virer les tol2d!!!
+angular        : Real from Standard;              -- tangence entre aretes
+tolappangle    : Real from Standard is protected; -- approx angulaire      
+tolesp         : Real from Standard is protected; -- confusion 3d          : def 1.e-4
+tol2d          : Real from Standard is protected; -- confusion 2d          : def 1.e-5
+tolapp3d       : Real from Standard is protected; -- approx 3d             : def 1.e-4
+tolapp2d       : Real from Standard is protected; -- approx 2d             : def 1.e-5
+fleche         : Real from Standard is protected; -- fleche du walking     : def 1.e-6
+
+-- Continuite pour la geometrie approximee
+myConti        : Shape from GeomAbs is protected;
+
+-- Maps de pointeurs arrieres pour travailler
+myEFMap        : Map from ChFiDS is protected;
+myESoMap       : Map from ChFiDS is protected;
+myEShMap       : Map from ChFiDS is protected;
+myVFMap        : Map from ChFiDS is protected;
+myVEMap        : Map from ChFiDS is protected;
+
+-- Les outils de stockage et de reconstruction
+myDS           : HDataStructure from TopOpeBRepDS is protected;
+myCoup         : HBuilder from TopOpeBRepBuild is protected;
+
+-- Les outils de stockage interne
+myListStripe   : ListOfStripe from ChFiDS is protected;
+myVDataMap     : StripeMap from ChFiDS is protected;
+myRegul        : Regularities from ChFiDS is protected;
+
+-- Les stripes dont le calcul a plante
+badstripes     : ListOfStripe from ChFiDS is protected;
+
+-- Les vertex au voisinage desquels la finition a plante
+badvertices    : ListOfShape from TopTools is protected;
+
+-- donnees calculees pendant le compute pour l historique 
+myGenerated    : ListOfShape from TopTools;
+myEVIMap       : DataMapOfShapeListOfInteger from TopTools is protected;
+
+-- flag si tout s est bien passe
+done           : Boolean from Standard is protected;
+
+-- le resultat
+myShapeResult  : Shape from TopoDS;
+
+-- flag si il y a un resultat partiel(badshape)
+hasresult      : Boolean from Standard is protected;
+
+-- resultat partiel eventuel
+badShape       : Shape from TopoDS;
+
+
+end Builder;

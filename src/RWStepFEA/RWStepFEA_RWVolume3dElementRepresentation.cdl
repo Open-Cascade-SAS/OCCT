@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWVolume3dElementRepresentation.cdl
+-- Created:	Thu Dec 12 17:51:08 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWVolume3dElementRepresentation from RWStepFEA
+
+    ---Purpose: Read & Write tool for Volume3dElementRepresentation
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    Volume3dElementRepresentation from StepFEA
+
+is
+    Create returns RWVolume3dElementRepresentation from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : Volume3dElementRepresentation from StepFEA);
+	---Purpose: Reads Volume3dElementRepresentation
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: Volume3dElementRepresentation from StepFEA);
+	---Purpose: Writes Volume3dElementRepresentation
+
+    Share (me; ent : Volume3dElementRepresentation from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWVolume3dElementRepresentation;

@@ -1,0 +1,318 @@
+-- File:	VrmlConverter_Drawer.cdl
+-- Created:	Fri Feb 21 13:42:51 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Drawer from VrmlConverter inherits TShared from MMgt
+
+	---Purpose: qualifies the aspect properties for  
+        --          the VRML conversation of a specific kind of object. 
+	--          This includes for example color, maximal chordial deviation, etc...
+
+	
+uses
+ 
+    LineAspect    from VrmlConverter,
+    PointAspect from VrmlConverter,
+    ShadingAspect from VrmlConverter,
+    IsoAspect from VrmlConverter,
+    TypeOfDeflection from Aspect, 
+    Length from Quantity
+
+is
+    Create returns mutable Drawer from VrmlConverter;
+
+---Category: deviation definition.
+-- 
+-- All drawings of curves or patches are made with respect to a maximal 
+-- chordial deviation. This deviation is absolute and given through
+-- the method: SetMaximalChordialDeviation.
+-- 
+-- In the case of drawing shapes, it is allowed to ask for a relative
+-- deviation.
+-- This deviation will be: SizeOfObject * DeviationCoefficient where
+-- DeviationCoefficient can be set through the method: SetDeviationCoefficient.
+-- 
+
+--
+-- For drawing algorithms using discretisation, a default number of
+-- points has been set to 17. It is possible to use the method SetDiscret
+-- to change this number.
+--
+
+
+    SetTypeOfDeflection (me:mutable; 
+    	                aTypeOfDeflection: TypeOfDeflection from  Aspect);  
+    ---Purpose: by default: TOD_Relative; however, except for the shapes, 
+    --          the drawing  will be made using the absolute deviation.
+    --          
+    TypeOfDeflection(me) returns TypeOfDeflection from Aspect;
+    
+    SetMaximalChordialDeviation (me: mutable; 
+    	    	    	       aChordialDeviation: Length from Quantity)
+    ---Purpose: Defines the maximal chordial deviation when drawing any curve;
+    --          If this  value is  one  of  the  obvious  parameters  of  methods, 
+    --          current  value  from  Drawer won't be used.
+    --          This value is used by:
+    --          
+    --                   VrmlConverter_DeflectionCurve
+    --                   VrmlConverter_WFDeflectionRestrictedFace
+    --                   VrmlConverter_WFDeflectionShape
+    is static;
+    
+    MaximalChordialDeviation (me) returns Length from Quantity
+    ---Purpose: returns the maximal chordial deviation.
+    --          Default value: 0.1
+    is static;
+	    
+    SetDeviationCoefficient(me: mutable; aCoefficient: Real from Standard)
+    ---Purpose: default 0.001
+    is static;
+
+    DeviationCoefficient(me) returns Real from Standard 
+    is static;
+    
+    SetDiscretisation(me: mutable; d: Integer from Standard)
+    	---Purpose: default: 17 points.
+    --          Defines the Discretisation  (myNbPoints) when drawing any curve;
+    --          If this  value is  one  of  the  obvious  parameters  of  methods, 
+    --          current  value  from  Drawer won't be used.
+    --          This value is used by:
+    --          
+    --                   VrmlConverter_Curve
+    --                   VrmlConverter_WFRestrictedFace
+    --                   VrmlConverter_WFShape
+
+    is static;
+
+    Discretisation(me) returns Integer from Standard
+    is static;
+ 
+    SetMaximalParameterValue(me: mutable; Value: Real from Standard)
+    ---Purpose: defines the maximum value allowed  for the first and last
+    --          parameters of an infinite curve.
+    --          Default value: 500. 
+    --                   VrmlConverter_Curve
+    --                   VrmlConverter_WFRestrictedFace
+    --                   VrmlConverter_WFShape
+    is static;
+    
+    MaximalParameterValue(me) returns Real from Standard
+    is static;
+    
+
+    SetIsoOnPlane (me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: enables the drawing of isos on planes.
+    --          By default there are no isos on planes.
+    is static;
+    
+    IsoOnPlane(me) returns Boolean from Standard 
+    ---Purpose: returns True if the drawing of isos on planes is enabled.
+    is static;
+
+
+-- 
+-- Attributes for the U Isoparametric lines of patches.
+--    
+    UIsoAspect (me: mutable) returns mutable IsoAspect from VrmlConverter
+    ---Purpose: Defines the attributes which are used when drawing an 
+    --          U isoparametric curve of a face. Defines the number
+    --          of U isoparametric curves to be drawn for a single face.
+    --          The default values are the same default values from Vrml package.
+    --  
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFRestrictedFace
+    --          VrmlConverter_WFDeflectionRestrictedFace
+    is static;    
+    
+    SetUIsoAspect (me:mutable; anAspect: IsoAspect from VrmlConverter) 
+    is static;
+
+-- Attributes for the V Isoparametric line of patches.
+
+
+    VIsoAspect (me: mutable) returns mutable IsoAspect from VrmlConverter
+    ---Purpose: Defines the attributes which are used when drawing an 
+    --          V isoparametric curve of a face. Defines the number
+    --          of V isoparametric curves to be drawn for a single face.
+    --          The default values are the same default values from Vrml package.
+    --         
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFRestrictedFace 
+    --          VrmlConverter_WFDeflectionRestrictedFace
+    is static;    
+    
+    SetVIsoAspect (me:mutable;anAspect: IsoAspect from VrmlConverter)
+    is static;
+
+-- Attributes for the free boundaries
+
+    FreeBoundaryAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: 
+    --          The default values are the same default values from Vrml package.
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFShape 
+    --          VrmlConverter_WFDeflectionShape
+    is static;
+    
+    SetFreeBoundaryAspect(me:mutable;anAspect: LineAspect from VrmlConverter)
+    is static;
+    
+    SetFreeBoundaryDraw (me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: enables the drawing the free boundaries
+    --          By default the free boundaries  are drawn.
+    
+    is static;
+    
+    FreeBoundaryDraw(me) returns Boolean from Standard 
+    ---Purpose: returns True if the drawing of the free boundaries is enabled.
+    is static;
+    
+
+-- Attributes for the wires
+
+    WireAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: 
+    --          The default values are the same default values from Vrml package.
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFShape 
+    --          VrmlConverter_WFDeflectionShape
+    is static;    
+
+    SetWireAspect(me:mutable;anAspect: LineAspect from VrmlConverter)
+    is static;
+    
+    SetWireDraw (me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: enables the drawing the wire
+    --          By default the wire  are drawn.
+    
+    is static;
+    
+    WireDraw(me) returns Boolean from Standard 
+    ---Purpose: returns True if the drawing of the wire is enabled.
+    is static;
+    
+
+-- Attributes for the unfree boundaries
+
+    UnFreeBoundaryAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: 
+    --          The default values are the same default values from Vrml package.
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFShape 
+    --          VrmlConverter_WFDeflectionShape
+    is static;
+
+    SetUnFreeBoundaryAspect(me:mutable; anAspect: LineAspect from VrmlConverter)
+    is static;
+    
+    SetUnFreeBoundaryDraw (me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: enables the drawing the unfree boundaries
+    --          By default the unfree boundaries  are drawn.
+    is static;
+    
+    UnFreeBoundaryDraw(me) returns Boolean from Standard 
+    ---Purpose: returns True if the drawing of the unfree boundaries is enabled.
+    is static;
+    
+
+-- 
+--  Attributes for the lines.
+-- 
+
+    LineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: 
+    --          The default values are the same default values from Vrml package.
+    is static;
+    
+    SetLineAspect(me:mutable; anAspect: LineAspect from VrmlConverter)
+    is static;
+    
+--
+--  Attributes for the points
+-- 
+    PointAspect(me: mutable) returns mutable PointAspect from VrmlConverter
+    --          The default values are the same default values from Vrml package.
+    --          These attributes are used by the following algorithms:
+    --          VrmlConverter_WFShape 
+    --          VrmlConverter_WFDeflectionShape 
+    is static;
+    
+    SetPointAspect(me:mutable; anAspect: PointAspect from VrmlConverter) 
+    is static;
+
+
+--  Attributes for the faces:
+--  
+    ShadingAspect (me: mutable) returns mutable ShadingAspect from VrmlConverter
+    ---Purpose: 
+    --          The default values are the same default values from Vrml package.
+    is static;
+
+    SetShadingAspect(me:mutable; anAspect: ShadingAspect from VrmlConverter) 
+    is static;
+    
+
+--  Attributes for hidden lines removal. 
+--          These attributes are used by the following algorithms:
+--                     VrmLConverter_HLRShape.
+
+
+    DrawHiddenLine(me) returns Boolean from Standard 
+    ---Purpose: returns Standard_True if the hidden lines are to be drawn.
+    --          By default the hidden lines are not drawn.
+    is static;
+    
+    EnableDrawHiddenLine(me: mutable)
+    ---Purpose: sets DrawHiddenLine  =  Standard_True  -  the hidden lines are drawn.
+    is static;
+
+    DisableDrawHiddenLine(me: mutable)
+    ---Purpose: sets DrawHiddenLine  =  Standard_False  -  the hidden lines are not drawn.
+    is static;
+
+    HiddenLineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: returns LineAspect  for  the hidden lines.
+    --          The default values are the same default values from Vrml package.
+    is static;
+
+    SetHiddenLineAspect(me:mutable; anAspect: LineAspect from VrmlConverter) 
+    ---Purpose: sets LineAspect  for  the hidden lines.
+    is static;
+    
+    SeenLineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    ---Purpose: returns LineAspect  for  the seen lines.
+    --          The default values are the same default values from Vrml package.
+    is static;
+
+    SetSeenLineAspect(me:mutable; anAspect: LineAspect from VrmlConverter) 
+    ---Purpose: sets LineAspect  for  the seen lines.
+    is static;
+   
+    
+fields
+ 
+            myUIsoAspect: IsoAspect from VrmlConverter;
+            myVIsoAspect: IsoAspect from VrmlConverter;
+	    myNbPoints  : Integer   from Standard;
+	    myIsoOnPlane: Boolean from Standard;
+	    myFreeBoundaryAspect: LineAspect from VrmlConverter;
+            myFreeBoundaryDraw: Boolean from Standard;
+    	    myUnFreeBoundaryAspect: LineAspect from VrmlConverter;
+            myUnFreeBoundaryDraw: Boolean from Standard;
+	    myWireAspect: LineAspect from VrmlConverter;
+            myWireDraw: Boolean from Standard;
+	    myLineAspect: LineAspect from VrmlConverter;
+            myShadingAspect: ShadingAspect from VrmlConverter;
+            myChordialDeviation: Length from Quantity;
+	    myTypeOfDeflection: TypeOfDeflection from Aspect;
+            myMaximalParameterValue: Real from Standard;
+            myDeviationCoefficient: Real from Standard;
+            myPointAspect: PointAspect from VrmlConverter;
+	    myDrawHiddenLine: Boolean from Standard;
+	    myHiddenLineAspect: LineAspect from VrmlConverter;
+	    mySeenLineAspect: LineAspect from VrmlConverter;
+    	   
+end Drawer;

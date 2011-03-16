@@ -1,0 +1,53 @@
+-- File:	VrmlConverter_WFDeflectionRestrictedFace.cdl
+-- Created:	Tue Feb 18 17:17:14 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+    	---Purpose: WFDeflectionRestrictedFace    -    computes    the
+    	--          wireframe   presentation   of  faces       with  
+    	--          restrictions by  displaying  a given  number of  U
+    	--          and/or  V  isoparametric  curves,  converts his
+    	--          into VRML objects   and writes (adds) them  into
+    	--          anOStream.    All   requested properties  of the
+    	--          representation  are  specify in  aDrawer of Drawer
+    	--          class (Prs3d).    This kind  of the presentation
+    	--          is     converted       into   IndexedFaceSet   and
+    	--          IndexedLineSet ( VRML ).
+ 
+        --          The  isoparametric  curves  are drawn  with  respect to a
+        --          maximal chordial  deviation. The presentation includes
+        --          the restriction curves.   
+
+class WFDeflectionRestrictedFace from VrmlConverter 
+
+
+uses
+ 
+    HSurface     from BRepAdaptor,
+    Length       from Quantity,
+    Drawer       from VrmlConverter
+    
+is
+ 
+    Add(myclass; anOStream: in out OStream from Standard; 
+        	 aFace        : HSurface     from BRepAdaptor;
+    	    	 aDrawer      : Drawer       from VrmlConverter);
+		 
+    AddUIso(myclass; anOStream: in out OStream from Standard; 
+        	     aFace        : HSurface     from BRepAdaptor;
+    	    	     aDrawer      : Drawer       from VrmlConverter);
+		 
+    AddVIso(myclass; anOStream: in out OStream from Standard; 
+        	     aFace        : HSurface     from BRepAdaptor;
+    	    	     aDrawer      : Drawer       from VrmlConverter);
+		 
+    Add(myclass;  anOStream: in out OStream from Standard; 
+    	          aFace        : HSurface     from BRepAdaptor;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  Deflection   : Length       from Quantity;
+		  NBUiso,NBViso: Integer      from Standard;
+		  aDrawer      : Drawer       from VrmlConverter);
+
+
+end WFDeflectionRestrictedFace;

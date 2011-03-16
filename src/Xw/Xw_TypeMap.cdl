@@ -1,0 +1,100 @@
+--
+-- File:	Xw_TypeMap.cdl
+-- Created:	24/08/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class TypeMap from Xw inherits Transient
+
+	---Version: 0.0
+
+	---Purpose: This class defines a TypeMap object.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+
+	TypeMap		from Aspect,
+	TypeMapEntry	from Aspect,
+	LineStyle 	from Aspect
+
+raises
+
+	TypeMapDefinitionError	from Aspect,
+	BadAccess		from Aspect
+
+is
+
+	Create
+	returns mutable TypeMap from Xw
+	is protected ;
+	---Level: Internal
+
+	Create ( Connexion : CString from Standard ) 
+	returns mutable TypeMap from Xw 
+	---Level: Public
+	---Purpose: Creates a TypeMap with unallocated TypeMapEntry.
+	--  Warning: Raises if TypeMap creation failed according
+	--	    to the supported hardware
+	raises TypeMapDefinitionError from Aspect ;
+
+	SetEntry ( me : mutable ; 
+		   Entry : TypeMapEntry from Aspect )
+	---Level: Public
+	---Purpose: Modifies an entry already defined or Add the Entry
+	--	    in the type map <me> if it don't exist.
+	--  Warning: Raises if TypeMap size is exceeded,
+	--	    or TypeMap is not defined properly,
+	--	    or TypeMapEntry Index is out of range according
+	--	    to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	SetEntries ( me : mutable ; 
+		     Typemap : TypeMap from Aspect ) 
+	---Level: Public
+	---Purpose: Modifies all entries from a new Typemap
+	--  Warning: Raises if TypeMap size is exceeded,
+	--	    or TypeMap is not defined properly,
+	--	    or One of new TypeMapEntry Index is out of range according
+	--	    to the supported hardware
+	raises BadAccess from Aspect is virtual;
+
+	Destroy ( me : mutable ) is virtual;
+	---Level: Public
+	---Purpose: Destroies the Typemap
+	---C++: alias ~
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	FreeTypes ( me )
+	returns Integer from Standard 
+	---Level: Public
+	---Purpose: Returns the Number of Free Types in the Typemap
+	--	    depending of the HardWare
+	--  Warning: Raises if TypeMap is not defined properly
+	raises BadAccess from Aspect is static;
+
+	ExtendedTypeMap ( me )
+	returns Address from Standard
+	is static protected ;
+	---Level: Internal
+	---Purpose: Returns extended data typemap structure pointer.
+	---Category: Inquire methods
+
+
+fields
+
+	MyExtendedDisplay	: Address from Standard ;
+	MyExtendedTypeMap 	: Address from Standard ;
+
+friends
+
+	class GraphicDevice from Xw
+
+end TypeMap ;

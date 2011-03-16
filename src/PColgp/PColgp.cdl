@@ -1,0 +1,99 @@
+-- File:	PColgp.cdl
+-- Created:	Mon Mar 22 13:54:47 1993
+-- Author:	Philippe DAUTRY
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+
+package PColgp  
+
+        ---Purpose :   This package  provides   some instantiations of
+        --         generic classes  from PCollection with objects from gp. 
+	 
+uses PCollection, gp
+
+is
+
+
+
+    -- HArray1 of 2D objects.
+
+  class HArray1OfCirc2d
+    instantiates HArray1 from PCollection (Circ2d from gp);
+  class HArray1OfDir2d
+    	instantiates HArray1 from PCollection (Dir2d from gp);
+  class HArray1OfLin2d
+    	instantiates HArray1 from PCollection (Lin2d from gp);
+  class HArray1OfPnt2d
+    	instantiates HArray1 from PCollection (Pnt2d from gp);
+  class HArray1OfVec2d
+    	instantiates HArray1 from PCollection (Vec2d from gp);
+  class HArray1OfXY
+    	instantiates HArray1 from PCollection (XY from gp);
+
+
+    -- HArray1 of 3D objects.
+
+  class HArray1OfDir
+    	instantiates HArray1 from PCollection (Dir from gp);
+  class HArray1OfPnt
+    	instantiates HArray1 from PCollection (Pnt from gp);
+  class HArray1OfVec
+    	instantiates HArray1 from PCollection (Vec from gp);
+  class HArray1OfXYZ
+    	instantiates HArray1 from PCollection (XYZ from gp);
+
+
+    -- HArray2 of 2D objects.
+
+  class HArray2OfCirc2d
+    	instantiates HArray2 from PCollection (Circ2d from gp);
+  class HArray2OfDir2d
+    	instantiates HArray2 from PCollection (Dir2d from gp);
+  class HArray2OfLin2d
+    	instantiates HArray2 from PCollection (Lin2d from gp);
+  class HArray2OfPnt2d
+    	instantiates HArray2 from PCollection (Pnt2d from gp);
+  class HArray2OfVec2d
+    	instantiates HArray2 from PCollection (Vec2d from gp);
+  class HArray2OfXY
+    	instantiates HArray2 from PCollection (XY from gp);
+
+
+    -- HArray2 of 3D objects.
+
+  class HArray2OfDir
+    	instantiates HArray2 from PCollection (Dir from gp);
+  class HArray2OfPnt
+    	instantiates HArray2 from PCollection (Pnt from gp);
+  class HArray2OfVec
+    	instantiates HArray2 from PCollection (Vec from gp);
+  class HArray2OfXYZ
+    	instantiates HArray2 from PCollection (XYZ from gp);
+
+
+    -- HSequences of 2D objects.
+
+  class HSequenceOfDir
+    	instantiates HSequence  from PCollection (Dir from gp);
+  class HSequenceOfPnt
+    	instantiates HSequence  from PCollection (Pnt from gp);
+  class HSequenceOfVec
+    	instantiates HSequence  from PCollection (Vec from gp);
+  class HSequenceOfXYZ
+    	instantiates HSequence  from PCollection (XYZ from gp);
+
+
+    -- HSequences of 2D objects.
+
+--  class HSequenceOfDir2d
+--    	instantiates HSequence  from PCollection (Dir2d from gp);
+--  class HSequenceOfPnt2d
+--    	instantiates HSequence  from PCollection (Pnt2d from gp);
+--  class HSequenceOfVec2d
+--    	instantiates HSequence  from PCollection (Vec2d from gp);
+--  class HSequenceOfXY
+--    	instantiates HSequence  from PCollection (XY from gp);
+
+
+end PColgp;

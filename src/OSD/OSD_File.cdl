@@ -1,0 +1,225 @@
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:         OSD_File.cdl
+-- Created:      Mon Feb 17 17:25:04 1992
+-- Author:       Stephan GARNAUD
+--               <sga@sparc4>
+-- Updated by:   J.P. TIRAULT September,1 1993
+--               The methods Read and Write have been overloaded. Now they
+--               accept as input/output buffer both an AsciiString and an
+--               address to a structure.
+-- Updated by:   J.P. TIRAULT January, 15 1995
+--               The method Read has been overloaded to read a line up to 
+--               character LF (LineFeed)
+-- Updated by:   J.P. TIRAULT June, 15 1995
+--               Adds a data member for FILE* associated to the file
+-- Updated by:   E. PLOTNIKOV October 21 1999
+--                Set access method for myFILE field as 'protected' to
+--                 use it in sub-classes
+
+
+class File from OSD inherits FileNode
+
+    ---Purpose: Basic tools to manage files
+    --  Warning: 'ProgramError' is raised when somebody wants to use the methods
+    --          Read, Write, Seek, Close when File is not open. 
+
+    uses  
+    	    Address from Standard,
+    	    LockType from OSD, 
+    	    Protection from OSD,  
+    	    Path from OSD, 
+    	    Printer from OSD, 
+    	    OpenMode from OSD,
+    	    FromWhere from OSD, 
+    	    KindFile from OSD, 
+            AsciiString from TCollection
+
+    raises ProgramError
+
+ is
+  Create returns File;
+     ---Purpose: Creates File object.
+     ---Level: Public
+
+  Create (Name : Path) returns File;
+     ---Purpose: Instantiates the object file, storing its name
+     ---Level: Public
+
+  Build (me : in out; Mode : OpenMode; Protect : Protection)
+     ---Purpose: CREATES a file if it doesn't already exists or empties
+     --          an existing file.
+     --          After 'Build', the file is open.
+     --          If no name was given, ProgramError is raised.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Open (me : in out; Mode : OpenMode ; Protect : Protection)
+     ---Purpose: Opens a File with specific attributes
+     --          This works only on already existing file.
+     --          If no name was given, ProgramError is raised.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Append (me : in out; Mode : OpenMode; Protect : Protection)
+     ---Purpose: Appends data to an existing file.
+     --          If file doesn't exist, creates it first.
+     --          After 'Append', the file is open.
+     --          If no name was given, ProgramError is raised.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Read (me : in out; Buffer : out AsciiString ; Nbyte : Integer)
+     ---Purpose: Attempts to read Nbyte bytes from the file associated with 
+     --          the object file.
+     --          Upon successful completion, Read returns the number of 
+     --          bytes actually read and placed in the Buffer. This number 
+     --          may be less than Nbyte if the number of bytes left in the file
+     --          is less than Nbyte bytes. In this case only number of read
+     --          bytes will be placed in the buffer.
+     ---Level: Public
+
+     raises ProgramError is static;
+
+
+  ReadLine (me : in out; Buffer : out AsciiString ; NByte : Integer; 
+    NbyteRead : out Integer)
+     ---Purpose:  Reads bytes from the data pointed to by the object file 
+     --           into the buffer <Buffer>.
+     --           Data is read until <NByte-1> bytes have been read, 
+     --           until	a newline character is read and transferred into 
+     --           <Buffer>, or until an EOF (End-of-File) condition is 
+     --           encountered.
+     --           Upon successful completion, Read returns the number of 
+     --           bytes actually read into <NByteRead> and placed into the 
+     --           Buffer <Buffer>. 
+     ---Level: Public
+
+     raises ProgramError is static;
+
+  Read (me : in out; Buffer : out Address ; Nbyte    : Integer ; 
+                                            Readbyte : out Integer )
+     ---Purpose: Attempts to read Nbyte bytes from the files associated with 
+     --          the object File.
+     --          Upon successful completion, Read returns the number of 
+     --          bytes actually read and placed in the Buffer. This number 
+     --          may be less than Nbyte if the number of bytes left in the file
+     --          is less than Nbyte bytes. For this reason the output 
+     --          parameter Readbyte will contain the number of read bytes.
+     ---Level: Public
+
+     raises ProgramError is static;
+
+  Write (me : in out; Buffer: AsciiString ; Nbyte: Integer )
+     ---Purpose: Attempts to write Nbyte bytes from the AsciiString to the file
+     --          associated to the object File.
+     ---Level: Public
+
+     raises ProgramError is static;
+
+  Write (me : in out; Buffer: Address ; Nbyte: Integer )
+     ---Purpose: Attempts to write Nbyte bytes from the buffer pointed
+     --          to by Buffer to the file associated to the object File.
+     ---Level: Public
+     raises ProgramError is static;
+
+
+  Seek (me : in out; Offset : Integer ; Whence: FromWhere )
+     ---Purpose: Sets the seek pointer associated with the open file
+     ---Warning: This is very slow on VMS.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Close (me : in out)
+     ---Purpose: Closes the file (and deletes a descriptor)
+     ---Level: Public
+     raises ProgramError is static;
+
+  IsAtEnd (me : in out) returns Boolean
+     ---Purpose: Returns TRUE if the seek pointer is at end of file.
+     ---Level: Public
+     raises ProgramError is static;
+
+  KindOfFile (me) returns KindFile;
+     ---Purpose: Returns the kind of file. A file can be a
+     --          file, a directory or a link.
+
+  BuildTemporary (myclass) returns File;
+     ---Purpose: Makes a temporary File
+     --          This returned file is already open !
+     --          This file is non-persistent and will be automatically
+     --          removed when its process finishes.
+     ---Level: Public
+                                                    
+  SetLock (me : in out ; Lock : LockType)
+     ---Purpose: Locks current file
+     ---Level: Public
+     raises ProgramError is static;
+
+  UnLock (me : in out)
+     ---Purpose: Unlocks current file
+     ---Level: Public
+     raises ProgramError is static;
+
+  GetLock (me : in out) returns LockType
+     ---Purpose: Returns the current lock state
+     ---Level: Public
+     raises ProgramError is static;
+
+  IsLocked (me : in out) returns Boolean
+     ---Purpose: Returns TRUE if this file is locked.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Size (me: out) returns Integer
+     ---Purpose: Returns actual number of bytes of <me>.
+     ---Level: Public
+     raises ProgramError is static;
+
+  Print (me : in out; WhichPrinter : Printer)
+     ---Purpose: Prints a file on selected printer.
+     ---Level: Public
+     raises ProgramError is static;
+
+  IsOpen (me) returns Boolean
+     ---Purpose: Returns TRUE if <me> is open.
+     ---Level: Public
+     raises ProgramError is static;
+
+  IsReadable (me : in out)     returns Boolean from Standard ;
+     ---Purpose: returns TRUE if the file exists and if the user
+     --          has the autorization to read it.
+
+  IsWriteable(me : in out)     returns Boolean from Standard ;
+     ---Purpose: returns TRUE if the file can be read and overwritten.
+
+  IsExecutable(me : in out)     returns Boolean from Standard ;
+     ---Purpose: returns TRUE if the file can be executed.
+
+  ReadLastLine (me: in out; aLine: out AsciiString ; aDelay: in Integer ;
+    aNbTries: in Integer)  returns Boolean
+     ---Purpose: Enables to emulate unix "tail -f" command.
+     -- If a line is available in the file <me> returns it.
+     -- Otherwise attemps to read again aNbTries times in the file
+     -- waiting aDelay seconds between each read.
+     -- If meanwhile the file increases returns the next line, otherwise
+     -- returns FALSE.
+     raises ProgramError is static;
+    
+  Edit(me: in out)
+    returns Boolean from Standard;
+    ---Purpose: find an editor on the system and edit the given file
+    ---Level: Public    
+
+ fields
+    ImperativeFlag : Boolean; -- Says if lock is imperative or not
+    myLock         : LockType;
+    myMode         : OpenMode;
+    myIO           : Integer is protected; -- Stores peculiar I/O informations
+    myFILE         : Address is protected;
+    myBuffer       : CString ;
+    myCurrPtr      : CString ;
+    myEndPtr       : CString ;
+end File from OSD;
+
+

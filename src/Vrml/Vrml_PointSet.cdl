@@ -1,0 +1,43 @@
+-- File:	Vrml_PointSet.cdl
+-- Created:	Tue Feb  4 15:36:47 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class PointSet from Vrml 
+
+	---Purpose: defines a PointSet node of VRML specifying geometry shapes.
+
+	--  This node represents a set of points located at the current coordinates. PointSet uses the
+        --  current coordinates in order, starting at the index specified by the startIndex field. The
+       	--  number of points in the set is specified by the numPoints field. A value of -1 for this field
+       	--  indicates that all remaining values in the current coordinates are to be used as points. 
+       	--  The points are drawn with the current material and texture. 
+
+	--  Treatment of the current material and normal binding is as follows: PER_PART,
+       	--  PER_FACE, and PER_VERTEX bindings bind one material or normal to each point. The
+       	--  DEFAULT material binding is equal to OVERALL. The DEFAULT normal binding is
+       	--  equal to PER_VERTEX. The startIndex is also used for materials or normals when the
+       	--  binding indicates that they should be used per vertex. 
+is
+
+    Create ( aStartIndex : Integer from Standard = 0;
+    	     aNumPoints  : Integer from Standard = -1 )
+        returns PointSet from Vrml;
+
+    SetStartIndex ( me : in out; aStartIndex :  Integer from Standard );
+    StartIndex ( me ) returns Integer from Standard;
+    
+    SetNumPoints ( me : in out; aNumPoints :  Integer from Standard );
+    NumPoints ( me )  returns Integer from Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+    
+fields
+
+    myStartIndex : Integer from Standard;   -- Index of 1st coordinate of shape
+    myNumPoints  : Integer from Standard;   -- Number of points to draw
+    
+end PointSet;

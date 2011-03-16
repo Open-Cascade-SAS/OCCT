@@ -1,0 +1,31 @@
+-- File:	RWStepAP203.cdl
+-- Created:	Tue Nov  9 16:06:23 1999
+-- Author:	data exchange team
+--		<det@doomox>
+---Copyright:	 Matra Datavision 1999
+
+
+package RWStepAP203 
+
+    ---Purpose: Reading & Writing tools for classes from StepAP203
+
+uses
+    Interface,
+    StepData,
+    StepAP203
+
+is
+
+    class RWCcDesignApproval;
+    class RWCcDesignCertification;
+    class RWCcDesignContract;
+    class RWCcDesignDateAndTimeAssignment;
+    class RWCcDesignPersonAndOrganizationAssignment;
+    class RWCcDesignSecurityClassification;
+    class RWCcDesignSpecificationReference;
+    class RWChange;
+    class RWChangeRequest;
+    class RWStartRequest;
+    class RWStartWork;
+
+end RWStepAP203;

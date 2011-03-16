@@ -1,0 +1,170 @@
+--
+-- File      :  TextFontDef.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class TextFontDef from IGESGraph  inherits IGESEntity
+
+        ---Purpose : defines IGES Text Font Definition Entity, Type <310>
+        --           in package IGESGraph
+        --
+        --           Used to define the appearance of characters in a text font.
+        --           It may be used to describe a complete font or a
+        --           modification to a subset of characters in another font.
+
+uses
+
+        HAsciiString               from TCollection,
+        HArray1OfInteger           from TColStd,
+        HArray1OfHArray1OfInteger  from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable TextFontDef;
+
+        -- specific for the entity
+
+        Init (me                : mutable;
+              aFontCode         : Integer;
+              aFontName         : HAsciiString;
+              aSupersededFont   : Integer;
+              aSupersededEntity : TextFontDef;
+              aScale            : Integer;
+              allASCIICodes     : HArray1OfInteger;
+              allNextCharX      : HArray1OfInteger;
+              allNextCharY      : HArray1OfInteger;
+              allPenMotions     : HArray1OfInteger;
+              allPenFlags       : HArray1OfHArray1OfInteger;
+              allMovePenToX     : HArray1OfHArray1OfInteger;
+              allMovePenToY     : HArray1OfHArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           TextFontDef
+        --      - aFontCode         : Font Code
+        --      - aFontName         : Font Name
+        --      - aSupersededFont   : Number of superseded font
+        --      - aSupersededEntity : Text Definition Entity
+        --      - aScale            : No. of grid units = 1 text height unit
+        --      - allASCIICodes     : ASCII codes for characters
+        --      - allNextCharX & Y  : Grid locations of the next
+        --                            character's origin (Integer vals)
+        --      - allPenMotions     : No. of pen motions for the characters
+        --      - allPenFlags       : Pen up/down flags,
+        --                            0 = Down (default), 1 = Up
+        --      - allMovePenToX & Y : Grid locations the pen will move to
+        -- This method initializes the fields of the class TextFontDef.
+        -- An exception is raised if the lengths of allASCIICodes,
+        -- allNextChars, allPenMotions, allPenFlags and allMovePenTo
+        -- are not same.
+
+        FontCode (me) returns Integer;
+        ---Purpose : returns the font code.
+
+        FontName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the font name.
+
+        IsSupersededFontEntity (me) returns Boolean;
+        ---Purpose : True if this definition supersedes another
+        --           TextFontDefinition Entity,
+        -- False if it supersedes value.
+
+        SupersededFontCode (me) returns Integer;
+        ---Purpose : returns the font number which this entity modifies.
+
+        SupersededFontEntity (me) returns TextFontDef;
+        ---Purpose : returns the font entity which this entity modifies.
+
+        Scale (me) returns Integer;
+        ---Purpose : returns the number of grid units which equal one text height unit.
+
+        NbCharacters (me) returns Integer;
+        ---Purpose : returns the number of characters in this definition.
+
+        ASCIICode (me; Chnum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the ASCII code of Chnum'th character.
+        -- Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
+
+        NextCharOrigin (me; Chnum : Integer; NX,NY : out Integer)
+        raises OutOfRange;
+        ---Purpose : returns grid location of origin of character next to Chnum'th char.
+        -- Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
+
+        NbPenMotions (me; Chnum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns number of pen motions for Chnum'th character.
+        -- Exception OutOfRange is raised if Chnum <= 0 or Chnum > NbCharacters
+
+        IsPenUp (me; Chnum : Integer; Motionnum : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns pen status(True if 1, False if 0) of Motionnum'th motion
+        -- of Chnum'th character.
+        -- Exception raised if Chnum <= 0 or Chnum > NbCharacters or
+        -- Motionnum <= 0 or Motionnum >  NbPenMotions
+
+        NextPenPosition (me; Chnum : Integer; Motionnum : Integer;
+	    IX,IY : out Integer)
+        raises OutOfRange;
+        -- returns, for Motionnum'th motion of Chnum'th character,
+        -- the grid location to which the pen is to move.
+        -- Exception raised if Chnum <= 0 or Chnum > NbCharacters or
+        -- Motionnum <= 0 or Motionnum >  NbPenMotions
+
+fields
+
+-- Class    : IGESDraw_TextFontDef
+--
+-- Purpose  : Declaration of the variables specific to a TextFontDef.
+--
+-- Reminder : A Text Font Definition Entity is defined by :
+--              - a font code,
+--              - a font name,
+--              - number of the font or pointer to the TextFontDef which
+--                this definition supersedes,
+--              - number of grid units which equal one text height unit,
+--              - ASCII codes for each character in this definition,
+--              - Grid locations of next character's origin, for each char
+--              - number of pen motions for each character,
+--              - status of pen flag for each motion of each character,
+--              - Grid location to which pen is to move, for each motion
+--                of each character
+--
+
+        theFontCode             : Integer;
+
+        theFontName             : HAsciiString;
+
+        theSupersededFontCode   : Integer;
+
+        theSupersededFontEntity : TextFontDef;
+
+        theScale                : Integer;
+
+        theASCIICodes           : HArray1OfInteger;
+        -- ASCII code for each character
+
+        theNextCharOriginX      : HArray1OfInteger;
+        theNextCharOriginY      : HArray1OfInteger;
+        -- For each character, Grid location of next character's origin
+
+        theNbPenMotions         : HArray1OfInteger;
+        -- Number of pen motions for each character(Length = NbCharacters)
+        -- is (NM1 ,NM2 ....... NMn)
+
+        thePenMotions           : HArray1OfHArray1OfInteger;
+        -- Status of Pen up/down flag for each character
+        --                       flag : 0 = Down(Default)
+        --                              1 = Up
+        -- Note : Inner HArray1 are of lengths NM1, NM2... NMn respectively
+
+        thePenMovesToX          : HArray1OfHArray1OfInteger;
+        thePenMovesToY          : HArray1OfHArray1OfInteger;
+        --  For each character, Grid location to which the pen is to move
+        -- Note : Inner HArray1 are of lengths NM1, NM2... NMn respectively
+
+end TextFontDef;

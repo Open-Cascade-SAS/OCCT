@@ -1,0 +1,24 @@
+-- File:	CMPLRS.edl
+-- Author: 	euclid
+-- History:	Fri Feb 20 16:16:22 MET 1998
+
+@if ( %DebugMode == "False" ) then
+
+	@if ( %Station == "sun" ) then
+    		@set  %CMPLRS_CXX_ModeOpt = " -O3 -DNo_Exception ";  
+	@endif;
+
+	@if ( %Station == "ao1" ) then
+    		@string  %CMPLRS_CXX_ModeOpt += " -O3 -DNo_Exception ";  
+	@endif;
+
+	@if ( %Station == "sil" ) then
+    		@set  %CMPLRS_CXX_ModeOpt = " -O2 -DNo_Exception ";  
+	@endif;
+
+	@if ( %Station == "hp" ) then
+    		@set  %CMPLRS_CXX_ModeOpt = " +O3 -DNo_Exception ";  
+	@endif;
+
+@endif;
+

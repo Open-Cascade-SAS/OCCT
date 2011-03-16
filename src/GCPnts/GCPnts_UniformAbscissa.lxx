@@ -1,0 +1,36 @@
+#include <StdFail_NotDone.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
+inline Standard_Boolean GCPnts_UniformAbscissa::IsDone () const
+{
+  return myDone;
+}
+
+inline Standard_Real GCPnts_UniformAbscissa::Abscissa () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+                             "GCPnts_UniformAbscissa::Abscissa()");
+  return myAbscissa;
+}
+
+inline Standard_Integer GCPnts_UniformAbscissa::NbPoints () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+			 "GCPnts_UniformAbscissa::NbPoints()");
+  return myNbPoints;
+}
+
+
+inline Standard_Real GCPnts_UniformAbscissa::Parameter
+                      (const Standard_Integer Index) const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+			 "GCPnts_UniformAbscissa::Parameter()");
+  return myParams->Value(Index) ;
+}
+
+
+
+
+
+

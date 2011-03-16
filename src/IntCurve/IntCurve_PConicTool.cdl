@@ -1,0 +1,67 @@
+-- File:	PConicTool.cdl
+-- Created:	Thu Mar 26 16:22:34 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+private class PConicTool from IntCurve
+
+	---Purpose: Implementation of the ParTool from IntImpParGen
+	--          for conics of gp, using the class PConic from IntCurve.
+
+        ---Level: Internal
+
+uses Pnt2d    from gp,
+     Vec2d    from gp,
+     Lin2d    from gp,
+     XY       from gp,
+     PConic from IntCurve
+
+is
+
+
+    EpsX (myclass; C: PConic)
+    	--Purpose: Tolerance used by mathematical algorithms 
+    	--         usually about 1e-10
+    	returns Real from Standard;
+
+
+    NbSamples(myclass; C: PConic)
+    	--Purpose: returns the number of samples on the parametric curve
+    	returns Integer from Standard;
+
+    NbSamples(myclass; C: PConic; U0,U1: Real from Standard)
+    	--Purpose: returns the number of samples on the parametric curve
+    	returns Integer from Standard;
+ 
+
+    Value (myclass; C: PConic from IntCurve; X: Real from Standard)
+    	--Purpose: Returns the   geometric  point which  lies   at the
+    	--         parameter x on the parametric curve.
+    	returns Pnt2d from gp;
+
+
+    D1 (myclass; C: PConic from IntCurve; U: Real from Standard ; 
+                 P: out Pnt2d; T: out Vec2d);
+    	--Purpose: Computes the Value, First and  Second Derivative at
+    	--         the parameter U on the curve.
+
+
+    D2 (myclass; C: PConic from IntCurve; U: Real from Standard ; 
+                 P: out Pnt2d; T,N: out Vec2d);
+		 
+    	--Purpose: Computes the Value, First and  Second Derivative at
+    	--         the parameter U on the curve.
+	 		 
+end PConicTool;
+
+
+
+
+
+
+
+
+

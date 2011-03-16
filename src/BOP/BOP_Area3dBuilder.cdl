@@ -1,0 +1,51 @@
+-- File:	BOP_Area3dBuilder.cdl
+-- Created:	Mon Jun 25 12:45:07 2001
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2001
+
+class Area3dBuilder from BOP inherits AreaBuilder from BOP
+
+    ---Purpose: 
+    	
+    -- The algorithm is used to construct Solids from a LoopSet,
+    -- where the Loop is the composite topological object of the boundary,
+    -- here it is a Shell(s) or block(s) of Faces.
+    -- The LoopSet gives an iteration on Loops.
+    -- For each Loop  it indicates if it is on the boundary (shell) or if it
+    -- results from  an interference (block of faces).
+    -- The result of the algorithm is an iteration on areas.
+    -- An area is described by a set of Loops. 
+    
+uses
+    LoopSet from BOP,
+    LoopClassifier from BOP
+
+is
+
+    Create returns Area3dBuilder from BOP;
+    	---Purpose:  
+    	--- Empty  Constructor 
+    	---
+    Create(LS:out LoopSet from BOP;
+    	   LC:out LoopClassifier from BOP;
+    	   ForceClass: Boolean from Standard = Standard_False)
+    	returns Area3dBuilder from BOP;
+    	---Purpose:  
+    	--- Creates an  object to build solids on
+    	--- the (shells,  blocks of faces) of <LS>,  
+    	--- using the classifier <LC>. 
+	---
+    
+    InitAreaBuilder(me:                in out;
+    	    	    LS:out LoopSet from BOP;
+	    	    LC:out LoopClassifier from BOP;
+    	    	    ForceClass: Boolean from Standard)
+    	is redefined;
+    	---Purpose:  
+    	--- Initialize the object to find the areas of
+    	--- the shapes described by <LS>, 
+    	--- using the classifier <LC>. 
+	---
+    
+end Area3dBuilder from BOP;

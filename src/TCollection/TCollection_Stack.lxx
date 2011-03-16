@@ -1,0 +1,26 @@
+// File:	TCollection_Stack.lxx
+// Created:	Mon Jan 18 14:28:49 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_Stack::IsEmpty() const
+{
+  return myDepth == 0;
+}
+
+
+//=======================================================================
+//function : Depth
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_Stack::Depth() const
+{
+  return myDepth;
+}

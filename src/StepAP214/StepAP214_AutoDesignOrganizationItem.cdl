@@ -1,0 +1,29 @@
+-- File:	StepAP214_AutoDesignOrganizationItem.cdl
+-- Created:	Tue Aug  4 11:43:35 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class AutoDesignOrganizationItem  from StepAP214    
+    inherits AutoDesignGeneralOrgItem  from StepAP214
+
+    -- adds : document,  physically_modelled_product_definition
+
+uses
+    Document from StepBasic,
+    PhysicallyModeledProductDefinition from StepBasic
+
+is
+
+    Create returns AutoDesignOrganizationItem;
+
+    CaseNum (me; ent : Transient) returns Integer  is redefined;
+    -- adds : 9  Document
+    --       10  PhysicallyModeledProductDefinition
+
+    Document (me) returns Document;
+
+    PhysicallyModeledProductDefinition (me) returns PhysicallyModeledProductDefinition;
+
+end AutoDesignOrganizationItem;

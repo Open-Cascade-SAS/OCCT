@@ -1,0 +1,42 @@
+-- File:        PointOnCurve.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PointOnCurve from StepGeom 
+
+inherits Point from StepGeom 
+
+uses
+
+	Curve from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PointOnCurve;
+	---Purpose: Returns a PointOnCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisCurve : mutable Curve from StepGeom;
+	      aPointParameter : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
+	BasisCurve (me) returns mutable Curve;
+	SetPointParameter(me : mutable; aPointParameter : Real);
+	PointParameter (me) returns Real;
+
+fields
+
+	basisCurve : Curve from StepGeom;
+	pointParameter : Real from Standard;
+
+end PointOnCurve;

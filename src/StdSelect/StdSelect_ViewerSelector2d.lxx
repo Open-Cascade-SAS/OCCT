@@ -1,0 +1,3 @@
+inline Handle(Select2D_Projector) StdSelect_ViewerSelector2d
+::Projector () const
+{return myprj;}

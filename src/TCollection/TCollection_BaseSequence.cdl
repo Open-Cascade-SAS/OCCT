@@ -1,0 +1,161 @@
+-- File:	TCollection_Sequence.cdl
+-- Created:	Fri Sep 11 17:34:39 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+
+class BaseSequence from TCollection 
+
+	---Purpose: Definition of a base class for all instanciations
+	--          of sequence.
+	--          
+	--          The methods : Clear, Remove accepts a pointer to a
+	--          function  to use  to delete the  nodes. This allow
+	--          proper    call of  the  destructor  on  the Items.
+	--          Without adding a  virtual function pointer to each
+	--          node or each sequence.
+
+raises
+    
+    NoSuchObject from Standard,
+    OutOfRange from Standard
+
+is 
+
+	Create returns  BaseSequence is protected;
+		---Purpose: Creation of an empty sequence.
+		
+	Create(Other : BaseSequence) returns BaseSequence from TCollection
+		---Purpose: Creation by copy of existing Sequence.
+		--  Warning: This constructor prints a warning message.
+		-- We recommand to use the operator =.
+	is private;
+	
+	IsEmpty(me) returns Boolean;
+        	---Level: Public
+		---Purpose: returns True if the sequence <me> contains no elements.
+		---C++: inline
+	
+	Length(me)  returns Integer from Standard;
+        	---Level: Public
+		---Purpose: Returns  the  number  of element(s) in the
+		-- sequence.  Returns zero if the sequence is empty.
+		---C++: inline
+
+	Clear(me : in out; DelNode : Address) is protected;
+        	---Level: Private
+
+	PAppend(me : in out; Node : Address)
+	is protected;
+
+	PAppend(me : in out; S : in out BaseSequence)
+        	---Level: Public
+		---Purpose: Concatenates <S> at the end of <me>. 
+		-- <S> is cleared.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		--   S  = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = ()
+	is protected;
+
+	PPrepend(me : in out; Node : Address)
+    	is protected;
+
+	PPrepend(me : in out; S : in out BaseSequence)
+        	---Level: Public
+		---Purpose: Concatenates <S> at the beginning of <me>.
+		-- <S> is cleared.
+		--  Example:
+		-- before 
+		-- me = (A B C) S =  (D E F)
+		-- after me = (D E F A B C) 
+		-- S = ()
+	is protected;
+
+	Reverse(me : in out);
+        	---Level: Public
+		---Purpose: Reverses the order of items on <me>.
+		--  Example:
+		-- before
+		--   me = (A B C)
+		-- after
+		--   me = (C B A)
+
+	PInsertAfter(me : in out; Index : Integer from Standard; Node : Address ) 
+	raises OutOfRange from Standard
+        is protected;
+	
+	PInsertAfter(me : in out; Index : Integer from Standard; S : in out BaseSequence) 
+	raises OutOfRange from Standard
+        	---Level: Public
+		---Purpose: Inserts the sequence <S> in <me> after the
+		-- position <Index>. <S> is cleared.
+		-- Raises an exception if the index is out of bound.
+		--  Example:          
+		-- before
+		--   me = (A B C), Index = 3, S = (D E F)
+		-- after
+		--   me = (A B C D E F)
+		--   S  = ()
+	is protected;
+
+
+
+	Exchange(me : in out; I, J : Integer from Standard) 
+    	raises OutOfRange from Standard;
+        	---Level: Public
+		---Purpose: Swaps  elements  which    are  located  at
+		-- positions <I> and <J> in <me>.
+		-- Raises an exception if I or J is out of bound.
+		--  Example:
+		-- before
+		--   me = (A B C), I = 1, J = 3            
+		-- after
+		--   me = (C B A)           
+
+              
+	PSplit(me : in out; Index : Integer from Standard; Sub : in out BaseSequence) 
+        raises OutOfRange from Standard 
+        	---Level: Public
+		---Purpose: Keeps in <me> the items 1 to <Index>-1 and
+		-- puts  in  <Sub> the  items <Index>  to the end.
+		--  Example:
+		-- before
+		--   me = (A B C D) ,Index = 3
+		-- after
+		--   me  = (A B)
+		--   Sub = (C D)
+	is protected;
+
+	Remove(me : in out; Index : Integer from Standard; DelNode : Address) 
+    	raises OutOfRange from Standard
+    	is protected;
+
+	Remove(me : in out; FromIndex, ToIndex : Integer from Standard; DelNode : Address) 
+      	raises OutOfRange from Standard
+    	is protected;
+	
+	Find(me; Index : Integer from Standard) returns Address from Standard
+            ---Level: Internal
+	    ---Purpose: Returns the node at position <index>.
+	is protected;
+
+	Nullify(me : in out ) is private;
+	    ---Level: Internal
+            ---Purpose: Clear all fields.
+            --          
+
+fields 
+  FirstItem 	: Address from Standard is protected;
+  LastItem  	: Address from Standard is protected;
+  CurrentItem   : Address from Standard is protected;
+  CurrentIndex  : Integer from Standard is protected;
+  Size 		: Integer from Standard is protected;    
+end;
+
+
+

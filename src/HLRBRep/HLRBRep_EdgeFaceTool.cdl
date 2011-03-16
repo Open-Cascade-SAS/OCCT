@@ -1,0 +1,36 @@
+-- File:	HLRBRep_EdgeFaceTool.cdl
+-- Created:	Mon Oct 18 19:19:43 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class EdgeFaceTool from HLRBRep
+
+	---Purpose: The EdgeFaceTool computes the  UV coordinates at a
+	--          given parameter on a Curve and a Surface.  It also
+	--          compute the signed  curvature value in a direction
+	--          at a given u,v point on a surface.
+
+uses
+    Address  from Standard,
+    Boolean  from Standard,
+    Real     from Standard,
+    Dir      from gp
+
+is
+    CurvatureValue(myclass;
+                   F  : Address from Standard; -- as Surface from HLRBRep
+                   U  : Real    from Standard;
+                   V  : Real    from Standard;
+                   Tg : Dir     from gp)       -- as tangent of the  edge
+    returns Real from Standard;                -- at U,V point.
+    
+    UVPoint(myclass;
+            Par :     Real    from Standard;
+            E   :     Address from Standard; -- as Curve   from HLRBRep
+            F   :     Address from Standard; -- as Surface from HLRBRep
+	    U,V : out Real    from Standard)
+    	---Purpose: return True if U and V are found.
+    returns Boolean from Standard;
+    
+end EdgeFaceTool;

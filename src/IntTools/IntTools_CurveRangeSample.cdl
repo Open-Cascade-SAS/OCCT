@@ -1,0 +1,40 @@
+-- File:	IntTools_CurveRangeSample.cdl
+-- Created:	Wed Oct  5 16:26:08 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class CurveRangeSample from IntTools inherits BaseRangeSample from IntTools
+uses
+    Range from IntTools
+is
+
+    Create
+    	returns CurveRangeSample from IntTools;
+
+    Create(theIndex: Integer from Standard)
+    	returns CurveRangeSample from IntTools;
+
+    SetRangeIndex(me: in out; theIndex: Integer from Standard);
+	---C++: inline
+
+    GetRangeIndex(me)
+    	returns Integer from Standard;
+	---C++: inline
+	
+    IsEqual(me; Other: CurveRangeSample from IntTools)
+    	returns Boolean from Standard;
+	---C++: inline
+
+    GetRange(me; theFirst, theLast: Real from Standard; 
+    	    	 theNbSample: Integer from Standard)
+    	returns Range from IntTools;
+
+    GetRangeIndexDeeper(me; theNbSample: Integer from Standard)
+    	returns Integer from Standard;
+	---C++: inline
+
+fields
+    myIndex: Integer from Standard;
+
+end CurveRangeSample from IntTools;

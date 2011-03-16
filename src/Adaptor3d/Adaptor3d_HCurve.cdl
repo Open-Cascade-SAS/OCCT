@@ -1,0 +1,214 @@
+-- File:	Adaptor3d_HCurve.cdl
+-- Created:	Wed Feb 23 11:56:42 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class HCurve from Adaptor3d inherits TShared from MMgt
+
+	---Purpose: Root class for 3D curves manipulated by handles, on
+    	-- which geometric algorithms work.
+    	-- An adapted curve is an interface between the
+    	-- services provided by a curve and those required of
+    	-- the curve by algorithms which use it.
+    	-- Two derived concrete classes are provided:
+    	-- - GeomAdaptor_HCurve for a curve from the Geom package
+    	-- - Adaptor3d_HCurveOnSurface for a curve lying
+    	--   on a surface from the Geom package.
+  
+
+uses 
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     CurveType       from GeomAbs,
+     Vec             from gp,
+     Pnt             from gp,
+     Circ            from gp,
+     Elips           from gp,
+     Hypr            from gp,
+     Parab           from gp,
+     Lin             from gp,
+     BezierCurve     from Geom,
+     BSplineCurve    from Geom,
+     Curve           from Adaptor3d
+     
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+
+
+    --
+    --  Access to the curve
+    --  
+    
+    Curve(me) returns Curve from Adaptor3d
+	---Purpose: Returns a pointer to the Curve inside the HCurve.
+	--          
+	---C++: return const &
+    is deferred;
+    
+    GetCurve(me:mutable) returns Curve from Adaptor3d
+	---Purpose: Returns a pointer to the Curve inside the HCurve.
+	--          
+	---C++: return &
+    is deferred;
+
+    --
+    --     Curve  methods,  they are  provided  for convenience.  Each
+    --     method M() is defined inline as :
+    --     
+    --     Adaptor3d_HCurve::M() { Curve().M(); }
+    --     
+    --     See the class Curve for comments on the methods.
+    --     
+    
+    FirstParameter(me) returns Real;
+	---C++: inline
+
+    LastParameter(me) returns Real;
+	---C++: inline
+    
+    Continuity(me) returns Shape from GeomAbs ;
+	---C++: inline
+    
+    NbIntervals(me: mutable; S : Shape from GeomAbs) returns Integer;
+	---C++: inline
+    
+    Intervals(me: mutable; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+	--          
+	---C++: inline
+    raises
+    	OutOfRange from Standard 
+    is static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+	--          
+	---C++: inline
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is static;
+
+
+    IsClosed(me) returns Boolean;
+	---C++: inline
+     
+    IsPeriodic(me) returns Boolean;
+	---C++: inline
+    
+    Period(me) returns Real
+	    ---C++: inline
+    raises
+    	DomainError from Standard;
+     
+    Value(me; U : Real) returns Pnt from gp;
+	---C++: inline
+    
+    D0 (me; U : Real; P : out Pnt from gp);
+	---C++: inline
+    
+    D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+	    ---C++: inline
+     raises 
+    	DomainError from Standard;
+    
+    D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+	    ---C++: inline
+     raises 
+    	DomainError from Standard;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+	    ---C++: inline
+     raises 
+    	DomainError from Standard;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+	    ---C++: inline
+     raises  
+    	DomainError from Standard,
+        OutOfRange from Standard;
+
+    Resolution(me; R3d : Real) returns Real;
+	---C++: inline
+        
+    GetType(me) returns CurveType from GeomAbs;
+	---C++: inline
+
+     Line(me) returns Lin from gp
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+     
+     Circle(me) returns Circ from gp
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+     
+     Ellipse(me) returns Elips from gp
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+     
+     Hyperbola(me) returns  Hypr from gp
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+     
+     Parabola(me) returns Parab from gp
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+     
+     Degree(me) returns Integer
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+
+     
+     IsRational(me) returns Boolean
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+
+     
+     NbPoles(me) returns Integer
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+
+    
+     NbKnots(me) returns Integer
+     	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard ;
+     
+
+     Bezier(me) returns BezierCurve from Geom
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+    
+     BSpline(me) returns BSplineCurve from Geom
+	    ---C++: inline
+     raises 
+    	NoSuchObject from Standard;
+         
+
+end HCurve;
+
+
+     

@@ -1,0 +1,117 @@
+-- File:	DsgPrs_LengthPresentation.cdl
+-- Created:	Thu Jun  3 09:41:39 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+-- modified : Rob le 26-mars-96 rajout de methodes pour representation simple...
+---Copyright:	 Matra Datavision 1993
+
+
+
+class LengthPresentation from DsgPrs
+    	---Purpose: Framework for displaying lengths.
+    	-- The length displayed is indicated by line segments
+    	-- and text alone or by a combination of line segment,
+    	-- text and   arrows at either or both of its ends.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection,
+    ArrowSide from DsgPrs,
+    
+    Pln from gp,
+    Surface from Geom
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Draws a line segment representing a length in the
+    	-- display aPresentation.
+    	-- This segment joins the points AttachmentPoint1 and
+    	-- AttachmentPoint2, along the direction aDirection.
+    	-- The text aText will be displayed at the offset point OffsetPoint.
+    	-- The line and text attributes are specified by the
+    	-- attribute manager aDrawer.
+        
+    Add( myclass; aPresentation    : Presentation   from Prs3d;
+    	    	  aDrawer          : Drawer         from Prs3d;
+		  aText            : ExtendedString from TCollection;
+                  AttachmentPoint1 : Pnt            from gp;
+		  AttachmentPoint2 : Pnt            from gp;
+		  aDirection       : Dir            from gp;
+		  OffsetPoint      : Pnt            from gp;
+	    	  ArrowSide        : ArrowSide      from DsgPrs );
+	---Purpose: Draws a line segment representing a length in the
+    	-- display aPresentation.
+    	-- This segment joins the points AttachmentPoint1 and
+    	-- AttachmentPoint2, along the direction aDirection.
+    	-- The text aText will be displayed at the offset point
+    	-- OffsetPoint. The value of the enumeration ArrowSide
+    	-- controls whether arrows will be displayed at either or
+    	-- both ends of the length.
+    	-- The line, text and arrow attributes are specified by the
+    	-- attribute manager aDrawer.
+		   
+    Add( myclass; aPresentation    : Presentation   from Prs3d;
+    	    	  aDrawer          : Drawer         from Prs3d;
+		  aText            : ExtendedString from TCollection;
+                  AttachmentPoint1 : Pnt            from gp;
+		  AttachmentPoint2 : Pnt            from gp;
+		  PlaneOfFaces     : Pln            from gp;
+		  aDirection       : Dir            from gp;
+		  OffsetPoint      : Pnt            from gp;
+	    	  ArrowSide        : ArrowSide      from DsgPrs );
+	---Purpose: Draws a line segment representing a length in the
+    	-- display aPresentation.
+    	-- This segment joins the points AttachmentPoint1 and
+    	-- AttachmentPoint2, along the direction aDirection.
+    	-- The text aText will be displayed at the offset point
+    	-- OffsetPoint. The value of the enumeration ArrowSide
+    	-- controls whether arrows will be displayed at either or
+    	-- both ends of the length.
+    	-- The plane PlaneOfFaces is used if length is null.
+    	-- The line, text and arrow attributes are specified by the
+    	-- attribute manager aDrawer.
+		   
+    Add( myclass; aPresentation    : Presentation   from Prs3d;
+    	    	  aDrawer          : Drawer         from Prs3d;
+		  aText            : ExtendedString from TCollection;
+		  SecondSurf       : Surface        from Geom;
+                  AttachmentPoint1 : Pnt            from gp;
+		  AttachmentPoint2 : Pnt            from gp;
+		  aDirection       : Dir            from gp;
+		  OffsetPoint      : Pnt            from gp;
+	    	  ArrowSide        : ArrowSide      from DsgPrs );
+	---Purpose: Draws a line segment representing a length in the
+    	-- display aPresentation.
+    	-- This segment joins the points AttachmentPoint1 and
+    	-- AttachmentPoint2, along the direction
+    	-- aDirection.   AttachmentPoint2 lies on the curvilinear
+    	-- faces SecondSurf. The text aText will be displayed at
+    	-- the offset point OffsetPoint. The value of the
+    	-- enumeration ArrowSide controls whether arrows will
+    	-- be displayed at either or both ends of the length.
+    	-- The line, text and arrow attributes are specified by the
+    	-- attribute manager aDrawer.
+
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer      : Drawer from Prs3d;
+	Pt1          : Pnt from gp;
+	Pt2          : Pnt from gp;
+	ArrowSide    : ArrowSide from DsgPrs);
+	---Purpose: Draws a line segment representing a length in the
+    	-- display aPresentation.
+    	-- This segment joins the points AttachmentPoint1 and
+    	-- AttachmentPoint2, along the direction aDirection.
+    	-- The value of the enumeration ArrowSide controls
+    	-- whether arrows will be displayed at either or both ends of the length.
+    	-- The line and arrow attributes are specified by the attribute manager aDrawer.
+
+end LengthPresentation;

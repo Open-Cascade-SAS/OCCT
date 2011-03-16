@@ -1,0 +1,205 @@
+-- File:	Contap_Line.cdl
+-- Created:	Fri Feb  5 12:13:00 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Line from Contap
+    (TheVertex           as any;
+     TheArc              as any;
+     ThePoint            as any;       --as Point from Contap(TheVertex,TheArc)
+     TheHSequenceOfPoint as Transient) --as HSequence from TCollection
+                                       --     (ThePoint)
+
+	---Purpose: 
+
+uses Pnt            from gp,
+     LineOn2S       from IntSurf,
+     PntOn2S        from IntSurf,
+     TypeTrans      from IntSurf,
+     Lin            from gp,
+     Circ           from gp,
+     Dir            from gp,
+     IType          from Contap -- duplique IntPatch_IType. Mettre ds  IntSurf
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+    Create
+
+       	returns Line from Contap;
+
+	
+    SetLineOn2S(me: in out; L: LineOn2S from IntSurf)
+    
+        is static;
+	
+    Clear(me: in out)
+    
+    	is static;
+
+    LineOn2S(me)
+    
+    	returns LineOn2S from IntSurf
+	---C++: inline
+	---C++: return const&
+	is static;
+
+    ResetSeqOfVertex(me: in out)
+    
+	is static;    
+
+    Add(me: in out; P: PntOn2S from IntSurf)
+    
+	---C++: inline
+    	is static;
+
+    SetValue(me: in out; L: Lin from gp)
+    
+    	is static;
+
+
+    SetValue(me: in out; C: Circ from gp)
+    
+    	is static;
+
+
+    SetValue(me: in out; A: TheArc)
+    
+    	is static;
+
+
+    Add(me: in out; P: ThePoint)
+    
+    	is static;
+
+
+    NbVertex(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me; Index: Integer from Standard)
+    
+    	returns ThePoint
+	---C++: return &
+	---C++: inline
+
+	raises OutOfRange from Standard
+	
+	is static;
+
+
+    TypeContour(me)
+    
+	---Purpose: Returns Contap_Lin for a line, Contap_Circle for
+	--          a circle, and Contap_Walking for a Walking line,
+	--          Contap_Restriction for a part of  boundarie.
+    
+    	returns IType from Contap
+	---C++: inline
+	
+	is static;
+
+
+    NbPnts(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+	-- The exception DomainError is raised if TypeContour does not return
+	-- Contap_Walking.
+	
+	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	returns PntOn2S from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard
+	-- The exception DomainError is raised if TypeContour does not return
+	-- Contap_Walking.
+	-- The exception OutOfRange is raised if Index<=0 or Index>NbPoints.
+	
+	is static;
+
+
+    Line(me)
+    
+    	returns Lin from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	-- The exception DomainError is raised if TypeContour does not return
+	-- Contap_Lin.
+	
+	is static;
+
+
+    Circle(me)
+    
+    	returns Circ from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	-- The exception DomainError is raised if TypeContour does not return
+	-- Contap_Circle.
+	
+	is static;
+
+
+
+    Arc(me)
+    
+    	returns any TheArc
+	---C++: return const&
+	
+	raises DomainError from Standard
+	-- The exception DomainError is raised if TypeContour does not return
+	-- Contap_Restriction.
+	
+	is static;
+
+
+    SetTransitionOnS(me: in out; T: TypeTrans from IntSurf) 
+    
+    	---Purpose: Set The Tansition of the line.
+    	--          
+	is static;
+	
+	
+	
+    TransitionOnS(me) 
+    
+    	---Purpose: returns IN if at the "left" of the line, the normale of the 
+    	--          surface is oriented to the observator.  
+    	
+    
+    	returns TypeTrans from IntSurf
+	is static;
+
+
+fields
+
+    Trans   : TypeTrans            from IntSurf;
+    curv    : LineOn2S             from IntSurf;
+    svtx    : TheHSequenceOfPoint;
+    thearc  : TheArc;
+    typL    : IType                from Contap;
+    pt      : Pnt                  from gp;
+    dir1    : Dir                  from gp;
+    dir2    : Dir                  from gp;
+    rad     : Real                 from Standard;
+
+end Line;

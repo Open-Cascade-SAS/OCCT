@@ -1,0 +1,21 @@
+-- File:	BRepFill_Edge3DLaw.cdl
+-- Created:	Mon Jul 27 13:29:02 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class Edge3DLaw from BRepFill inherits LocationLaw  from  BRepFill 
+
+	---Purpose: Build Location Law, with a  Wire.
+
+uses
+  Wire  from  TopoDS,
+  LocationLaw from GeomFill 
+
+is 
+    Create (Path   :  Wire  from  TopoDS; 
+            Law    :  LocationLaw from GeomFill)  
+    returns Edge3DLaw from BRepFill; 
+
+end Edge3DLaw;

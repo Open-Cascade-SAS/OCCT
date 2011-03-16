@@ -1,0 +1,232 @@
+-- File:       NewtonFunctionSetRoot.cdl
+-- Created:    Tue May 14 14:33:12 1991
+-- Author:     Laurent PAINNOT
+--             <lpa@topsn3>
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class NewtonFunctionSetRoot from math
+    	---Purpose:
+    	-- This class computes the root of a set of N functions of N variables,
+    	-- knowing an initial guess at the solution and using the
+    	-- Newton Raphson algorithm. Knowledge of all the partial
+    	-- derivatives (Jacobian) is required.
+
+uses Vector from math, Matrix from math, IntegerVector from math,
+     FunctionSetWithDerivatives from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       DimensionError from Standard
+
+is
+
+    Create(F: in out FunctionSetWithDerivatives;
+           XTol: Vector; FTol: Real;
+           NbIterations: Integer = 100)
+       	---Purpose:
+    	-- This constructor should be used in a sub-class to initialize
+    	-- correctly all the fields of this class. 
+    	-- The range (1, F.NbVariables()) must be especially respected for
+    	-- all vectors and matrix declarations.
+    
+   returns NewtonFunctionSetRoot;   
+   
+   
+    Create(F: in out FunctionSetWithDerivatives;
+           FTol: Real; NbIterations: Integer = 100)
+       	---Purpose:
+    	-- This constructor should be used in a sub-class to initialize
+    	-- correctly all the fields of this class. 
+    	-- The range (1, F.NbVariables()) must be especially respected for
+    	-- all vectors and matrix declarations.
+    	-- The method SetTolerance must be called before performing the
+    	-- algorithm.
+    
+   returns NewtonFunctionSetRoot;   
+   
+   
+
+   Create(F: in out FunctionSetWithDerivatives;
+    	  StartingPoint: Vector;
+	  XTol: Vector; FTol: Real;
+	  NbIterations: Integer = 100)
+    	---Purpose:
+    	-- The Newton method is done to improve the root of the function F 
+    	-- from the initial guess StartingPoint.
+    	-- The tolerance required on the root is given by Tolerance.
+    	-- The solution is found when :
+    	--    abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
+    	-- The maximum number of iterations allowed is given by NbIterations.
+
+    returns NewtonFunctionSetRoot;
+    
+
+
+   Create(F: in out FunctionSetWithDerivatives;
+    	  StartingPoint: Vector;
+    	  InfBound, SupBound: Vector;
+	  XTol: Vector; FTol: Real;
+	  NbIterations: Integer = 100)
+    	---Purpose:
+    	-- The Newton method is done to improve the root of the function F 
+    	-- from the initial guess StartingPoint.
+    	-- The tolerance required on the root is given by Tolerance.
+    	-- The solution is found when :
+    	--    abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
+    	-- The maximum number of iterations allowed is given by NbIterations.
+
+    returns NewtonFunctionSetRoot;
+
+
+    Delete(me:out) is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~math_NewtonFunctionSetRoot(){Delete();}"
+    
+    SetTolerance(me: in out; XTol: Vector)
+    	---Purpose: Initializes the tolerance values for the unknowns.
+
+    is static;
+    
+
+    Perform(me: in out; F:in  out FunctionSetWithDerivatives;
+            StartingPoint: Vector;
+    	    InfBound, SupBound: Vector)
+        ---Purpose: Improves the root of function F from the initial guess
+    	-- StartingPoint. infBound and supBound may be given, to constrain the solution.
+    	-- Warning
+    	-- This method must be called when the solution is not computed by the constructors.
+
+    is static;
+
+    
+
+    IsSolutionReached(me: in out; F: in out FunctionSetWithDerivatives)
+    	---Purpose:
+    	-- This method is called at the end of each iteration to check if the
+    	-- solution is found.
+    	-- Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the
+    	-- possible solution Vector Sol and can be inspected to decide whether
+    	-- the solution is reached or not.
+
+    returns Boolean
+    is virtual;
+    
+    
+    IsDone(me)
+	---Purpose: Returns true if the computations are successful, otherwise returns false.
+      	---C++: inline
+    returns Boolean
+    is static;
+
+
+    Root(me)
+    	---Purpose: Returns the value of the root of function F.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+       	---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Root(me; Root: out Vector)
+       ---Purpose: outputs the root vector in Root.
+       -- Exception NotDone is raised if the root was not found.
+       -- Exception DimensionError is raised if the range of Root is
+       -- not equal to the range of the StartingPoint.
+    	---C++: inline
+
+    raises NotDone,
+    	   DimensionError
+    is static;
+    
+    
+    StateNumber(me)
+    	---Purpose: Outputs the state number associated with the solution
+        --          vector root. 
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+    
+    Derivative(me)
+	---Purpose: Returns the matrix value of the derivative at the root.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    	---C++: return const&
+    returns Matrix
+    raises NotDone
+    is static;
+    
+    
+    Derivative(me; Der: out Matrix)
+	---Purpose: Outputs the matrix value of the derivative at the root in
+        -- Der.
+        -- Exception NotDone is raised if the root was not found.
+        -- Exception DimensionError is raised if the range of Der is
+        -- not equal to the range of the StartingPoint.
+        ---C++: inline
+    raises NotDone,
+    	   DimensionError
+    is static;
+    
+    
+    FunctionSetErrors(me)
+    	---Purpose: Returns the vector value of the error done on the 
+        -- functions at the root.
+        -- Exception NotDone is raised if the root was not found.
+    	---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+
+
+    FunctionSetErrors(me; Err: out Vector)
+    	---Purpose: Outputs the vector value of the error done on the 
+        -- functions at the root in Err.
+        -- Exception NotDone is raised if the root was not found.
+        -- Exception DimensionError is raised if the range of Err is
+        -- not equal to the range of the StartingPoint.
+   	---C++: inline
+    raises NotDone,
+    	   DimensionError
+    is static;
+    
+    
+    NbIterations(me)
+    	---Purpose: Returns the number of iterations really done 
+        -- during the computation of the Root.
+        -- Exception NotDone is raised if the root was not found.
+        ---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:       Boolean;
+State:      Integer;
+TolX:       Vector is protected;
+TolF:       Real is protected;
+Iter:       Integer;
+Indx:       IntegerVector is protected;
+Scratch:    Vector is protected;
+Sol:        Vector is protected;
+DeltaX:     Vector is protected;
+FValues:    Vector is protected;
+Jacobian:   Matrix is protected;
+Itermax:    Integer;
+
+end NewtonFunctionSetRoot;

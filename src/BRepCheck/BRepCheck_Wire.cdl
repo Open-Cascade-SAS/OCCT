@@ -1,0 +1,128 @@
+-- File:	BRepCheck_Wire.cdl
+-- Created:	Tue Dec 12 17:47:00 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+--           	 
+--  modified by eap Fri Dec 21 12:17:40 2001 (bug OCC35)
+--  Closed2d() added
+
+
+class Wire from BRepCheck inherits Result from BRepCheck
+
+        ---Purpose: 
+
+uses Shape  from TopoDS,
+     Face   from TopoDS,
+     Wire   from TopoDS,
+     Edge   from TopoDS,
+     IndexedDataMapOfShapeListOfShape  from  TopTools,
+     Status from BRepCheck
+
+is
+
+    Create(W: Wire from TopoDS)
+
+        returns mutable Wire from BRepCheck;
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS);
+        ---Purpose: if <ContextShape> is  a  face, consequently checks
+    	--          SelfIntersect(),   Closed(),   Orientation()   and
+    	--          Closed2d until faulty is found
+
+    Minimum(me: mutable);
+        ---Purpose: checks that the  wire  is  not empty and "connex".
+    	--          Called by constructor
+
+    Blind(me: mutable);
+        ---Purpose: Does nothing
+    
+
+
+    Closed(me: mutable; Update: Boolean from Standard = Standard_False)
+        ---Purpose: Checks if the  oriented  edges of the wire  give a
+	--          closed  wire.   If the  wire   is closed,  returns
+	--          BRepCheck_NoError.    Warning :  if the first  and
+	--          last  edge   are  infinite,   the  wire   will  be
+	--          considered as a closed one.  If <Update> is set to
+	--          Standard_True, registers the status in the list.
+	--          May return (and registers):
+	--          **BRepCheck_NotConnected,   if    wire    is   not
+	--          topologically closed
+	--          **BRepCheck_RedundantEdge, if an  edge  is in wire
+	--          more than 3 times  or  in  case of 2 occurences if
+	--          not with FORWARD and REVERSED orientation.
+	--          **BRepCheck_NoError
+        returns Status from BRepCheck
+        is static;
+
+    Closed2d(me: mutable; F     : Face from TopoDS;
+                          Update: Boolean from Standard = Standard_False)
+        ---Purpose: Checks if edges of the  wire give a wire closed in
+        --          2d space. 
+        --          Returns BRepCheck_NoError,  or BRepCheck_NotClosed
+        --          If <Update> is set to Standard_True, registers the
+        --          status in the list.
+        returns Status from BRepCheck
+        is static;
+
+    Orientation(me: mutable; F     : Face from TopoDS;
+                             Update: Boolean from Standard = Standard_False)
+        ---Purpose: Checks   if  the oriented edges   of  the wire are
+	--          correctly oriented.  An  internal call is made  to
+	--          the  method Closed.   If no face  exists, call the
+	--          method with   a  null  face  (TopoDS_face()).   If
+	--          <Update> is  set  to Standard_True,  registers the
+	--          status in the list. 
+	--          May return (and registers):
+	--          BRepCheck_InvalidDegeneratedFlag, 
+	--          BRepCheck_BadOrientationOfSubshape,
+	--          BRepCheck_NotClosed,
+	--          BRepCheck_NoError
+        returns Status from BRepCheck
+        is static;
+
+    SelfIntersect(me: mutable; F     :     Face    from TopoDS;
+                               E1,E2 : out Edge    from TopoDS;
+                               Update:     Boolean from Standard = Standard_False)
+
+	---Purpose: Checks if  the wire intersect   itself on the face
+	--          <F>.  <E1>  and <E2>   are the first  intersecting
+	--          edges  found.  <E2>  may  be a  null  edge when  a
+	--          self-intersecting edge is found.If <Update> is set
+	--          to Standard_True,   registers  the  status in  the
+	--          list.
+	--          May return (and register):
+	--          BRepCheck_EmptyWire,
+	--          BRepCheck_SelfIntersectingWire,
+	--          BRepCheck_NoCurveOnSurface,
+	--          BRepCheck_NoError
+    	returns Status from BRepCheck
+    	is static;
+
+    
+
+    GeometricControls(me)
+    	---Purpose: report SelfIntersect() check would be (is) done
+    	returns Boolean from Standard
+	is static;
+
+    GeometricControls(me: mutable; B: Boolean from Standard)
+        ---Purpose: set SelfIntersect() to be checked
+	is static;
+
+
+
+fields
+
+--    myNbori : Integer from Standard; -- not used (eap) 
+    myCdone : Boolean from Standard;  -- Closed() or Oriented() is done
+    myCstat : Status  from BRepCheck; -- result of Closed() or Oriented()
+    myMapVE : IndexedDataMapOfShapeListOfShape from TopTools;
+    myGctrl : Boolean from Standard;  -- do check SelfIntersect() or not
+   
+end Wire;
+
+
+

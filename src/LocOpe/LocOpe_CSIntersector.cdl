@@ -1,0 +1,202 @@
+-- File:	LocOpe_CSIntersector.cdl
+-- Created:	Tue Jun 11 09:11:57 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class CSIntersector from LocOpe
+
+	---Purpose: This class provides the intersection between a set
+	--          of axis or a circle and the faces of a shape.  The
+	--          intersection  points  are   sorted  in  increasing
+	--          parameter along each axis or circle.
+
+
+uses Shape             from TopoDS,
+     PntFace           from LocOpe,
+     Orientation       from TopAbs,
+     SequenceOfLin     from LocOpe,
+     SequenceOfCirc    from LocOpe,
+     SequenceOfCurve   from TColGeom
+
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+is
+
+    Create
+	---Purpose: Empty constructor.
+    	returns CSIntersector from LocOpe;
+	---C++: inline
+
+
+    Create(S:Shape from TopoDS)
+	---Purpose: Creates  and performs the intersection     betwwen
+	--          <Ax1> and <S>.
+	---C++: inline
+    	returns CSIntersector from LocOpe;
+
+
+    Init(me: in out; S:Shape from TopoDS)
+	---Purpose: Performs the intersection between <Ax1 and <S>.
+	is static;
+
+
+    Perform(me: in out; Slin: SequenceOfLin from LocOpe)
+    
+    	is static;
+
+
+    Perform(me: in out; Scir: SequenceOfCirc from LocOpe)
+    
+    	is static;
+
+
+    Perform(me: in out; Scur: SequenceOfCurve from TColGeom)
+    
+    	is static;
+
+
+    IsDone(me)
+	---Purpose: Returns <Standard_True>  if the  intersection  has
+	--          been done.
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    NbPoints(me; I: Integer from Standard)
+	---Purpose: Returns  the number of   intersection point on the
+	--          element of range <I>.
+    	returns Integer from Standard
+	raises NotDone from StdFail
+	-- The exception is raised when IsDone returns <Standard_False>.
+	is static;
+
+
+    Point(me; I: Integer from Standard;  Index: Integer from Standard)
+    
+	---Purpose: Returns the intersection point of range <Index> on
+	--          element of range   <I>. The points   are sorted in
+	--          increasing order of parameter along the axis.
+
+    	returns PntFace from LocOpe
+	---C++: return const&
+	raises NotDone    from StdFail,
+	       OutOfRange from Standard
+	is static;
+
+
+    LocalizeAfter(me; I       : Integer from Standard;
+                      From    : Real from Standard;
+                      Tol     : Real from Standard;
+		      Or      : out Orientation from TopAbs; 
+                      IndFrom : out Integer from Standard;
+		      IndTo   : out Integer from Standard)
+    
+	---Purpose: On  the element of range   <I>, searches the first
+	--          intersection   point  located after  the parameter
+	--          <From>,   wich orientation is not TopAbs_EXTERNAL.
+	--          If  found, returns <Standard_True>.  <Or> contains
+	--          the orientation    of  the  point,  <IndFrom>  and
+	--          <IndTo> represents  the interval  of index in  the
+	--          sequence  of intersection  point corresponding  to
+	--          the  point. (IndFrom <=   IndTo). <Tol> is used to
+	--          determine if 2 parameters are equal.
+	--          
+	--          Otherwise, returns <Standard_False>.
+    	
+    	returns Boolean from Standard
+    	raises NotDone from StdFail
+	is static;
+
+
+    LocalizeBefore(me; I       : Integer from Standard;
+                       From    : Real from Standard;
+                       Tol     : Real from Standard;
+		       Or      : out Orientation from TopAbs; 
+                       IndFrom : out Integer from Standard;
+		       IndTo   : out Integer from Standard)
+    
+	---Purpose: On the element  of range  <I>, searches the  first
+	--          intersection point   located before  the parameter
+	--          <From>,  wich orientation  is not TopAbs_EXTERNAL.
+	--          If found,  returns <Standard_True>.  <Or> contains
+	--          the   orientation  of   the point,  <IndFrom>  and
+	--          <IndTo> represents the interval   of index in  the
+	--          sequence of  intersection  point corresponding  to
+	--          the point (IndFrom  <=  IndTo). <Tol> is   used to
+	--          determine if 2 parameters are equal. 
+	--          
+	--          Otherwise, returns <Standard_False>.
+    	
+    	returns Boolean from Standard
+    	raises NotDone from StdFail
+	is static;
+
+
+    LocalizeAfter(me; I       : Integer from Standard;
+                      FromInd : Integer from Standard;
+		      Tol     : Real from Standard;
+		      Or      : out Orientation from TopAbs; 
+                      IndFrom : out Integer from Standard;
+		      IndTo   : out Integer from Standard)
+    
+	---Purpose: On the  element of  range <I>, searches  the first
+	--          intersection      point  located after the   index
+	--          <FromInd> ( >=  FromInd + 1), wich  orientation is
+	--          not    TopAbs_EXTERNAL.      If    found,  returns
+	--          <Standard_True>.  <Or> contains the orientation of
+	--          the  point, <IndFrom>  and <IndTo> represents  the
+	--          interval of index in  the sequence of intersection
+	--          point corresponding   to the  point.  (IndFrom  <=
+	--          IndTo). <Tol> is used to determine if 2 parameters
+	--          are equal.
+	--          
+	--          Otherwise, returns <Standard_False>.
+    	
+    	returns Boolean from Standard
+    	raises NotDone from StdFail
+	is static;
+
+
+    LocalizeBefore(me; I       : Integer from Standard;
+                       FromInd : Integer from Standard;
+		       Tol     : Real from Standard;
+		       Or      : out Orientation from TopAbs; 
+                       IndFrom : out Integer from Standard;
+		       IndTo   : out Integer from Standard)
+    
+	---Purpose: On  the element of  range  <I>, searches the first
+	--          intersection  point    located  before  the  index
+	--          <FromInd>  (  <= FromInd -1),  wich orientation is
+	--          not   TopAbs_EXTERNAL.  If    found,       returns
+	--          <Standard_True>.  <Or> contains the orientation of
+	--          the  point, <IndFrom>  and  <IndTo> represents the
+	--          interval of  index in the sequence of intersection
+	--          point  corresponding to   the  point  (IndFrom  <=
+	--          IndTo). <Tol> is used to determine if 2 parameters
+	--          are equal.
+	--          
+	--          Otherwise, returns <Standard_False>.
+    	
+    	returns Boolean from Standard
+    	raises NotDone from StdFail
+	is static;
+
+
+    Destroy(me: in out);
+    ---C++: alias ~
+
+
+fields
+
+    myDone   : Boolean from Standard;
+    myShape  : Shape   from TopoDS;
+    myPoints : Address from Standard;
+    myNbelem : Integer from Standard;
+
+end CSIntersector;

@@ -1,0 +1,65 @@
+-- File:        TDataStd_Tick.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class Tick from TDataStd inherits Attribute from TDF
+
+    ---Purpose: Defines a boolean attribute.
+    --          If it exists at a label - true,
+    --          Otherwise - false.
+
+uses 
+
+    Attribute         from TDF,
+    Label             from TDF,
+    GUID              from Standard,
+    Integer           from Standard,
+    DataSet           from TDF,
+    RelocationTable   from TDF
+
+is
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+
+    Set (myclass; label : Label from TDF)  
+    ---Purpose: Find, or create, a Tick attribute.
+    returns Tick from TDataStd;  
+
+
+    ---Purpose: Tick methods
+    --          ============
+
+    Create
+    returns mutable Tick from TDataStd;
+
+
+    ---Category: Inherited methods
+    --           =================
+
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump (me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+end Tick;

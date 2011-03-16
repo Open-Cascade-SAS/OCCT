@@ -1,0 +1,153 @@
+-- File:	AIS_PlaneTrihedron.cdl
+-- Created:	Fri Dec 13 15:31:07 1996
+-- Author:	Jean-Pierre COMBE/Odile Olivier
+--		<jpr@chariox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--   SAV : OCC218 06/03/02 : Added two fields and methods to be able to change 
+--                           axes labels.
+--                           X/YAxis() returns AIS_Line instead of AIS_Axis
+--                           (SAMTECH specific)
+--                           
+---Copyright:	 Matra Datavision 1996
+
+class PlaneTrihedron from AIS inherits InteractiveObject from AIS
+
+    	---Purpose: To construct a selectable 2d axis system in a 3d
+    	-- drawing. This can be placed anywhere in the 3d
+    	-- system, and provides a coordinate system for
+    	-- drawing curves and shapes in a plane.
+    	-- There are 3 selection modes:
+    	-- -   mode 0   selection of the whole plane "trihedron"
+    	-- -   mode 1   selection of the origin of the plane "trihedron"
+    	-- -   mode 2   selection of the axes.
+    	--  Warning
+    	-- For the presentation of planes and trihedra, the
+    	-- millimetre is default unit of length, and 100 the default
+    	-- value for the representation of the axes. If you modify
+    	-- these dimensions, you must temporarily recover the
+    	-- Drawer object. From inside it, take the Aspects in
+    	-- which   the values for length are stocked, for example,
+    	-- PlaneAspect for planes and FirstAxisAspect for
+    	-- trihedra. Change these values and recalculate the presentation.
+    	
+
+uses 
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Selection             from SelectMgr,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    Drawer                from Prs3d,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,
+    Line                  from AIS,
+    Point                 from AIS,
+    Plane                 from Geom,
+    KindOfInteractive     from AIS,
+    AsciiString           from TCollection
+
+is
+
+    Create(aPlane : Plane from Geom)
+    returns mutable PlaneTrihedron from AIS;
+    	---Purpose: Initializes the plane aPlane. The plane trihedron is
+    	--  constructed from this and an axis.
+        
+    Component(me: mutable) returns Plane from Geom 
+    is static;
+    	---Purpose: Returns the component specified in SetComponent.
+    
+    SetComponent(me: mutable;aPlane : Plane from Geom)
+    is static;
+    	---Purpose: Creates an instance of the component object aPlane.
+    
+    XAxis (me)   returns Line from AIS;
+   	---Purpose : Returns the "XAxis". 
+ 
+    YAxis (me)  returns Line from AIS;
+  	---Purpose : Returns the "YAxis". 
+
+    Position (me)  returns Point from AIS;
+  	---Purpose : Returns the point of origin of the plane trihedron.
+
+    SetLength(me : mutable;
+    	      theLength : Real from Standard);
+    	---Purpose: Sets the length of the X and Y axes.
+
+    GetLength(me)
+    	---Purpose: Returns the length of X and Y axes.
+    returns Real from Standard;
+
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard is redefined static;
+    	---Purpose: Returns true if the display mode selected, aMode, is valid. 
+
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard = 0) 
+    is redefined protected;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>.
+    	--          To be Used when the associated degenerated Presentations
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)is private;
+
+-- Methods from InteractiveObject
+
+    Signature(me) returns Integer from Standard is redefined;
+    	---C++: inline
+
+    Type(me) returns KindOfInteractive from AIS is redefined;
+       	---C++: inline
+       	---Purpose: Returns datum as the type of Interactive Object.
+
+    SetColor(me :mutable; aColor : NameOfColor from Quantity)
+    is redefined static ;
+    	---Purpose: Allows you to provide settings for the color aColor.
+        
+    SetColor(me :mutable; aColor : Color from Quantity)
+    is redefined static ;
+
+    SetXLabel(me : mutable; aLabel : AsciiString from TCollection);
+    	---C++: inline
+
+    SetYLabel(me : mutable; aLabel : AsciiString from TCollection);
+    	---C++: inline
+
+
+fields
+
+    myPlane     : Plane  from Geom;
+    myShapes    : InteractiveObject from AIS [3];
+    myXLabel    : AsciiString from TCollection;
+    myYLabel    : AsciiString from TCollection;
+    
+end PlaneTrihedron from AIS;

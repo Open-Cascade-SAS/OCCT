@@ -1,0 +1,60 @@
+-- File:	BOPTools_DEInfo.cdl
+-- Created:	Wed Sep 12 12:57:03 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class DEInfo from BOPTools 
+
+	---Purpose:  
+    	--  Auxiliary class for storing  information about  
+    	--- a degenerated edge 
+      	---  
+
+uses 
+    ListOfInteger from TColStd
+
+is 
+    Create 
+    	returns DEInfo from BOPTools;
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    SetVertex   (me:out; 
+    	    nV:Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	--- Sets  DS-index for the vertex to which 
+    	--- degenerated edge belongs to 	      
+    	---
+    SetFaces  	(me:out; 
+    	    aLF: ListOfInteger from TColStd); 
+    	---Purpose:  
+    	--- Modifier
+    	--- Sets  DS-indices for the faces to which 
+    	--- degenerated edge belongs to    
+    	---
+    Faces(me) 
+    	returns ListOfInteger from TColStd; 
+    	---C++:  return const & 
+    	---Purpose:  
+    	--- Selector
+    	---
+    ChangeFaces(me:out) 
+    	returns ListOfInteger from TColStd; 
+    	---C++:  return & 
+    	---Purpose:  
+    	--- Selector/Modifier
+    	---
+    Vertex(me) 
+    	returns Integer from Standard; 
+    	---Purpose:  
+    	--- Selector
+    	---
+
+fields 
+    myFaces  :  ListOfInteger from TColStd; 
+    myVertex :  Integer from Standard; 
+     
+end DEInfo;

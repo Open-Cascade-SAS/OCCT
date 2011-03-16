@@ -1,0 +1,44 @@
+-- File:	PBRep_GCurve.cdl
+-- Created:	Mon Oct 23 15:51:17 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class GCurve from PBRep inherits CurveRepresentation from PBRep
+
+	---Purpose: Root   class    for    the    geometric     curves
+	--          representation. Contains a range.
+
+uses
+
+    Location from PTopLoc,
+    Pnt      from gp
+
+is
+
+    Initialize(L : Location from PTopLoc;
+    	       First , Last : Real from Standard);
+
+    First(me) returns Real
+    is static;
+
+    Last(me) returns Real
+    is static;
+
+    First(me : mutable; F : Real)
+    is static;
+
+    Last(me : mutable; L : Real)
+    is static;
+
+    IsGCurve(me) returns Boolean from Standard
+    	---Purpose: returns TRUE
+    is redefined;
+
+fields
+
+    myFirst    : Real;
+    myLast     : Real;
+
+end GCurve;

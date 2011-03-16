@@ -1,0 +1,97 @@
+-- File:	IFSelect_GeneralModifier.cdl
+-- Created:	Tue Oct 19 17:22:55 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class GeneralModifier  from IFSelect  inherits TShared
+
+    ---Purpose : This class gives a frame for Actions which modify the effect
+    --           of a Dispatch, i.e. :
+    --           By Selections and Dispatches, an original Model can be
+    --           splitted into one or more "target" Models : these Models
+    --           contain Entities copied from the original one (that is, a
+    --           part of it). Basically, these dispatched Entities are copied
+    --           as identical to their original counterparts. Also the copied
+    --           Models reproduce the Header of the original one.
+    --           
+    --           Modifiers allow to change this copied content : this is the
+    --           way to be used for any kind of alterations, adaptations ...
+    --           They are exploited by a ModelCopier, which firstly performs
+    --           the copy operation described by Dispatches, then invokes the
+    --           Modifiers to work on the result.
+    --           
+    --           Each GeneralModifier can be attached to :
+    --           - all the Models produced
+    --           - a Dispatch (it will be applied to all the Models obtained
+    --             from this Dispatch) designated by its Ident in a ShareOut
+    --           - in addition, to a Selection (facultative) : this adds a
+    --             criterium, the Modifier is invoked on a produced Model only
+    --             if this Model contains an Entity copied from one of the
+    --             Entities designated by this Selection.
+    --             (for special Modifiers from IFAdapt, while they must work on
+    --             definite Entities, this Selection is mandatory to run)
+    --             
+    --             Remark : this class has no action attached, it only provides
+    --             a frame to work on criteria. Then, sub-classes will define
+    --             their kind of action, which can be applied at a precise step
+    --             of the production of a File : see Modifier, and in the
+    --             package IFAdapt, EntityModifier and EntityCopier
+
+
+uses AsciiString from TCollection, Selection, Dispatch
+
+is
+
+    Initialize (maychangegraph : Boolean);
+    ---Purpose : Sets the Modifier criteria to default Values
+    --           (i.e. "always applies")
+    --           <maychangegraph> must be provided at creation time, to :
+    --           - False if this GeneralModifier surely lets the graph of
+    --             dependencies unchanged (NO edition of any reference, BUT
+    --             also NO entity added or replaced or removed)
+    --           - True if there is a possibility of changing the graph of
+    --             dependencies when this modifier is applied
+
+    MayChangeGraph (me) returns Boolean;
+    ---Purpose : Returns True if this modifier may change the graph of
+    --           dependences (aknowledged at creation time)
+
+    SetDispatch (me : mutable; disp : any Dispatch);
+    ---Purpose : Attaches to a Dispatch. If <disp> is Null, Resets it
+    --           (to apply the Modifier on every Dispatch)
+
+    Dispatch (me) returns any Dispatch;
+    ---Purpose : Returns the Dispatch to be matched, Null if not set
+
+    Applies (me; disp : Dispatch) returns Boolean;
+    ---Purpose : Returns True if a Model obtained from the Dispatch <disp>
+    --           is to be treated (apart from the Selection criterium)
+    --           If Dispatch(me) is Null, returns True. Else, checks <disp>
+
+
+    SetSelection (me : mutable; sel : mutable Selection);
+    ---Purpose : Sets a Selection : a Model is treated if it contains one or
+    --           more Entities designated by the Selection
+
+    ResetSelection (me : mutable);
+    ---Purpose : Resets the Selection : this criterium is not longer active
+
+    HasSelection (me) returns Boolean;
+    ---Purpose : Returns True if a Selection is set as an additionnal criterium
+
+    Selection (me) returns mutable Selection;
+    ---Purpose : Returns the Selection, or a Null Handle if not set
+
+
+    Label (me) returns AsciiString from TCollection  is deferred;
+    ---Purpose : Returns a short text which defines the operation performed
+
+fields
+
+    thesel  : Selection;
+    thedisp : Dispatch;
+    thechgr : Boolean;
+
+end GeneralModifier;

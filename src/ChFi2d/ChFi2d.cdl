@@ -1,0 +1,99 @@
+-- File:	ChFi2d.cdl
+-- Created:	Mon Jun 12 13:33:39 1995
+-- Author:	Philippe DERVIEUX
+--		<phd@tlefon>
+---Copyright:	 Matra Datavision 1995
+-- Modified:	Tue Oct 15 10:12:02 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+--              Add ChFi2d_TangencyError (PRO3529)
+-- Modified:	Tue Oct 22 09:23:11 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+--		Add ChFi2d_FirstEdgeDegenerated, ChFi2d_LastEdgeDegenerated,
+--		ChFi2d_BothEdgesDegenerated (PRO4896)
+-- Modified:	Fri Sep 25 09:38:04 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--              ChFi2d_NotAuthorized is used if the edges are not
+--              lines or circles (BUC60288)
+
+package ChFi2d 
+
+	---Purpose: This package contains the algorithms used to build
+	--          fillets or chamfers on planar wire.
+
+uses
+    TopoDS,
+    TopTools,
+    gp
+
+is
+    
+    enumeration ConstructionError is
+	---Purpose: error     that    can   occur       during   the
+	--          fillet  construction on planar wire
+	NotPlanar,
+	    ---Purpose: the face is not planar
+	NoFace,
+	    ---Purpose: the face is null
+    	InitialisationError,
+	    ---Purpose: the two  faces used for the initialisation are
+	    --          uncompatible.
+	ParametersError,
+	    ---Purpose: the  parameters  as  distances   or  angle for
+	    --          chamfer are less or equal to zero.
+    	Ready,
+	    ---Purpose: the initialization has been succesfull.
+	IsDone,
+	ComputationError,
+	    ---Purpose: the algorithm could not find a solution.
+	ConnexionError,
+	    ---Purpose: the vertex given  to locate the fillet  or the
+	    --          chamfer  is not connected to 2 edges.
+	TangencyError,
+	    ---Purpose: the two edges connected to the vertex are tangent.
+
+ 
+	FirstEdgeDegenerated,
+	    ---Purpose: the first edge is degenerated.
+	LastEdgeDegenerated,
+	    ---Purpose: the last edge is degenerated.
+	BothEdgesDegenerated,
+	    ---Purpose: the two edges are degenerated.
+    	NotAuthorized
+	    ---Purpose: One or the two  edges connected to the  vertex
+	    --          is a fillet or a chamfer
+	    --          One or the two  edges connected to the  vertex
+	    --          is not a line or a circle
+	
+    end ConstructionError;
+
+
+    class Builder;
+
+
+    CommonVertex( E1, E2 :     Edge   from TopoDS; 
+    	    	  V      : out Vertex from TopoDS)
+    returns Boolean
+    is private;
+    	---Warning: <V> has sense only if the value <True> is returned    
+
+
+    FindConnectedEdges( F      :     Face   from TopoDS;
+    	    	        V      :     Vertex from TopoDS;
+    	    	        E1, E2 : out Edge   from TopoDS)
+    returns ConstructionError from ChFi2d
+    is private;
+
+    	---Warning: <E1> and <E2> has sense only if the returned value
+    	--          is <IsDone>
+
+
+end ChFi2d;
+
+
+
+
+
+

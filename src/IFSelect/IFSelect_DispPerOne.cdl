@@ -1,0 +1,39 @@
+-- File:	DispPerOne.cdl
+-- Created:	Tue Nov 17 18:35:40 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class DispPerOne  from IFSelect  inherits Dispatch
+
+    ---Purpose : A DispPerOne gathers all the input Entities into as many
+    --           Packets as there Root Entities from the Final Selection,
+    --           that is, one Packet per Entity
+
+uses AsciiString from TCollection, Graph, SubPartsIterator
+
+is
+
+    Create returns mutable DispPerOne;
+    ---Purpose : Creates a DispPerOne
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File per Input Entity"
+
+    	--  --    Evaluation    --  --
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True, maximum limit is given as <nbent>
+
+    PacketsCount (me; G : Graph; count : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True (count is easy to know) and count is the length
+    --           of the input list (RootResult from FinalSelection)
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator);
+    ---Purpose : Returns the list of produced Packets. It defines one Packet
+    --           per Entity given by RootResult from the Final Selection.
+
+end DispPerOne;

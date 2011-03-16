@@ -1,0 +1,512 @@
+
+-- File:	Graphic2d_GraphicObject.cdl
+-- Created:	Tue Jun 22 16:52:21 1993
+-- Authors:	Jean Louis FRENKEL, Gerard GRAS
+--		<jlf@stylox>
+-- Modified:	GG 27/04/00 G002 Add empty constructor and 
+--		SetView() method.
+--              GG 14/04/00 G002 Add SetPickedIndex() method
+--      TCl : 12-06-00 : G002 : new method Pick( Xmin, Ymin, Xmax, Ymax,...)
+
+--      SAV : 14/11/01 Added PickByCircle() picking by a circle. 
+--      SAV : 16/08/02 Added field to control object status. 
+--      
+---Copyright:	 Matra Datavision 1993
+
+class GraphicObject from Graphic2d inherits TShared from MMgt
+
+    	---Purpose: Creates a 2D graphic object in a view.
+	--	    A graphic object is a primitives manager.
+
+
+uses
+	ViewPtr			        from Graphic2d,
+	Drawer                  from Graphic2d,
+	View                    from Graphic2d,
+	IndexedMapOfTransient   from TColStd,
+	Primitive		        from Graphic2d,
+	CBitFields8	        	from Graphic2d,
+        TypeOfComposition	    from Graphic2d,
+	Length                  from Quantity,
+	GTrsf2d			        from gp,
+        PickMode                from Graphic2d,
+	HSequenceOfInteger      from TColStd,
+	DisplayStatus           from Graphic2d
+
+raises
+	OverrideColorError	from Graphic2d,
+	OutOfRange		from Standard
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create returns mutable GraphicObject from Graphic2d;
+	---Level: Public
+	---Purpose: Creates an unattached graphic object,
+	--   	    the attachment will be realized more later
+	--	    using the method SetView().
+
+	Create (aView: View from Graphic2d)
+	returns mutable GraphicObject from Graphic2d;
+	---Level: Public
+	---Purpose: Creates a graphic object in the view <aView>.
+	--	    A graphic object manages a sequence of primitives.
+	--	    By default a graphic object is :
+	--	    - empty.
+	--	    - plottable.
+	--	    - drawable.
+	--	    - pickable.
+	--	    - not displayed.
+	--	    - not highlighted.
+	--	    - a relative drawing priority of 0
+	---Category: Constructors
+
+	-------------------------------------------------
+	-- Category: Methods to manage the transformation
+	-------------------------------------------------
+
+	SetView( me: mutable; aView: View from Graphic2d );
+	---Level: Public
+	---Purpose: Attach the graphic object to this view
+
+	SetTransform (me : mutable; aTrsf : in GTrsf2d from gp;
+	  aType : TypeOfComposition from Graphic2d = Graphic2d_TOC_REPLACE)
+	is static;
+	---Level: Public
+	---Purpose: Sets the transformation <aTrsf> applied to
+	--	    the primitives according to the composition type.
+	---Category: Methods to manage the transformation
+
+	Transform (me)
+	returns GTrsf2d from gp
+	is static;
+	---Level: Public
+	---Purpose: Returns the transformation applied to
+	--	    the primitives.
+	---C++: return const &
+
+	IsTransformed (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the associated
+	--	    transformation is not the Identity.
+
+	----------------------------------------
+	-- Category: Methods to manage the layer
+	----------------------------------------
+
+	SetLayer (me: mutable; aLayer: Integer from Standard)
+	is static;
+	---Level: Internal
+	---Purpose: Modifies the layer of the graphic object <me>.
+	---Category: Methods to manage the layer
+
+	Layer (me)
+	returns Integer from Standard
+	is static;
+	---Level: Internal
+	---Purpose: Returns the layer of the graphic object <me>.
+	---Category: Methods to manage the layer
+
+	-------------------------------------------------
+	-- Category: Methods to manage the drawing priority 
+	-------------------------------------------------
+
+	SetPriority (me: mutable; aPriority: Integer from Standard)
+	---Level: Public
+	---Purpose: Modifies the drawing priority of the graphic object <me>.
+	--	    <aPriority> of 0 is the lowest priority. 
+	--	    <aPriority> of MaxPriority() is the highest priority. 
+	raises OutOfRange from Standard is static;
+	---Trigger: If <aPriority> is < 0 or > MaxPriority()
+	---Category: Methods to manage the priority
+
+	Priority (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the drawing priority of the graphic object
+
+	MaxPriority (me) returns Integer from Standard is virtual;
+	---Level: Public
+	---Purpose: Returns the max usable relative priority of the 
+	--         "standard" graphic object. 	
+
+	------------------------------------------
+	-- Category: Methods to manage the plotter
+	------------------------------------------
+
+	EnablePlot (me: mutable)
+	is static;
+	---Level: Internal
+	---Purpose: Allows the drawing of graphic object <me> on a plotter.
+	---Category: Methods to manage the plotter
+
+	DisablePlot (me: mutable)
+	is static;
+	---Level: Internal
+	---Purpose: Forbids the drawing of graphic object <me> on a plotter.
+	---Category: Methods to manage the plotter
+
+	IsPlottable (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is plottable, Standard_False if not.
+	---Category: Methods to manage the plotter
+
+	------------------------------------------
+	-- Category: Methods to manage the drawing
+	------------------------------------------
+
+	EnableDraw (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Allows the drawing of graphic object <me>.
+	---Category: Methods to manage the drawing
+
+	DisableDraw (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Forbids the drawing of graphic object <me>.
+	---Category: Methods to manage the drawing
+
+	IsDrawable (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is drawable, Standard_False if not.
+	---Category: Methods to manage the drawing
+
+	IsIn (me; aPrimitive: Primitive from Graphic2d)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the primitive <aPrimitive>
+	--	    is in the graphic object <me>, Standard_False if not.
+	---Category: Methods to manage the drawing
+
+	RemovePrimitive (me: mutable; aPrimitive: Primitive from Graphic2d)
+	is static;
+	---Level: Public
+	---Purpose: Removes the primitive <aPrimitive> from <me>.
+	---Category: Methods to manage the drawing
+
+	RemovePrimitives (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Removes all the primitives from <me>.
+	---Category: Methods to manage the drawing
+
+	Remove (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Removes <me> from the associated view.
+	--	    If <me> was displayed or highlighted, <me>
+	--	    is removed from the display list of the associated view.
+	---Category: Methods to manage the drawing
+
+	------------------------------------------
+	-- Category: Methods to manage the picking
+	------------------------------------------
+
+	EnablePick (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Allows the picking on the graphic object <me>.
+	---Category: Methods to manage the picking
+
+	DisablePick (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Forbids the picking on the graphic object <me>.
+	---Category: Methods to manage the picking
+
+	IsPickable (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is pickable, Standard_False if not.
+	---Category: Methods to manage the picking
+
+	---------------------------------------------
+	-- Category: Methods to manage the visibility
+	---------------------------------------------
+
+	Display (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Allows the drawing of the graphic object <me>.
+	---Category: Methods to manage the visibility
+
+	Erase (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Forbids the drawing of the graphic object <me>.
+	---Category: Methods to manage the visibility
+
+	IsDisplayed (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is displayed, Standard_False if not.
+	---Category: Methods to manage the visibility
+
+	--------------------------------------------
+	-- Category: Methods to manage the highlight
+	--------------------------------------------
+
+	Highlight (me: mutable)
+	---Level: Public
+	---Purpose: Highlights the graphic object <me> with the
+	--	    override color of the view.
+	---Category: Methods to manage the highlight
+	--  Warning: Raises if the default override color of the view
+	--	    has not been defined.
+	raises OverrideColorError from Graphic2d is static;
+
+	Highlight (me: mutable; aColorIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Highlights the graphic object <me> with the
+	--	    specified color.
+	---Category: Methods to manage the highlight
+
+	Unhighlight (me: mutable)
+	is static;
+	---Level: Public
+	---Purpose: Suppress the highlight the graphic object <me>.
+	---Category: Methods to manage the highlight
+
+	IsHighlighted (me)
+	returns Boolean from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is highlighted, Standard_False if not.
+	---Category: Methods to manage the highlight
+
+	SetOffSet (me: mutable;
+		anOffSet: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Specifies an offset applied to the original color
+	--	index when drawing a primitives, those already created
+	--	and the future one.
+	--  Warning: To reset the real color of the primitives when drawing
+	--	then you have to call this method with <anOffSet> = 0.
+
+	OffSet (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the offset applied to the original color
+	--	    index of all primitives in the graphic object <me>.
+	---Category: Methods to manage the highlight
+
+	OverrideColor (me)	
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the current overridel color apply to
+	--	   this graphic object.
+	---Category: Methods to manage the highlight
+
+	SetOverrideColor(me: mutable; indColor: Integer from Standard );
+	---Level: Public
+	---Purpose: Sets the current overridel color apply to
+	--	   this graphic object.
+	---Category: Methods to manage the highlight
+
+
+	----------------------
+	-- Category: Inquiries 
+	----------------------
+
+	Length(me) returns Integer from Standard is static;
+	---Level: Public
+	---Purpose: Returns the number of primitive of the graphic object. 
+	---Category: Inquiries
+
+	Primitive(me; aRank: Integer from Standard) 
+				returns mutable Primitive from Graphic2d
+	---Level: Public
+	---Purpose: Returns the primitive of rank <aRank> 
+	--from the graphic object. 
+	raises OutOfRange from Standard is static;
+	---Trigger: If <aRank> is < 1 or > Length()
+	---Category: Inquiries
+
+	MinMax (me; Minx, Maxx, Miny, Maxy: out Length from Quantity)
+		returns Boolean from Standard is virtual;
+	---Level: Public
+	---Purpose: Returns the min max values of <me>.
+	--  Warning: All markers are ignored.
+	--  Warning: If <me> is empty or not displayed or 
+	--	    contains markers and nothing else
+	--	    returns FALSE and
+	--	    Minx = Miny = RealFirst ()
+	--	    Maxx = Maxy = RealLast ()
+	---Category: Inquiries
+
+	MarkerMinMax (me;
+		Minx, Maxx, Miny, Maxy: out Length from Quantity)
+		returns Boolean from Standard is virtual;
+	---Level: Public
+	---Purpose: Returns the min max values of all markers in <me>.
+	--  Warning: If <me> is empty or not displayed or without markers
+	--	    returns FALSE and
+	--	    Minx = Miny = RealFirst ()
+	--	    Maxx = Maxy = RealLast ()
+	---Category: Inquiries
+
+
+    	SetPickedIndex (me : mutable; anIndex: Integer from Standard)
+            is static protected;
+    	---Level: Public
+    	---Purpose: Sets the index of the picked primitive if any.
+    	---Category: Methods to manage picking
+
+	PickedIndex(me) returns Integer from Standard;
+	---Level: Public
+	---Purpose: Returns the last picked primitive index in this.
+	--  Warning: This is available only if the Pick() method has
+	--	   returned Standard_True.
+	---Category: Inquiries
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Draw (me: mutable;
+		aDrawer: Drawer from Graphic2d;
+		Reset: Boolean from Standard)
+	is virtual protected;
+	---Level: Internal
+	---Purpose: Drawn the last Undrawn primitives managed by the
+	--	    graphic object <me> in the drawer <aDrawer>.
+	--	    Called by the methods :
+	--		- Graphic2d_View::TinyUpdate ()
+	---Category: Private methods
+
+	Draw (me: mutable;
+		aDrawer: Drawer from Graphic2d;
+		aPrimitive: Primitive from Graphic2d)
+	is virtual protected;
+	---Level: Internal
+	---Purpose: Drawn a primitive managed by the
+	--	    graphic object <me> in the drawer <aDrawer>.
+	--	    Called by the method Graphic2d_View::Update (aPrimitive)
+	---Category: Private methods
+
+	Redraw (me: mutable;
+		aDrawer: Drawer from Graphic2d)
+	is static private;
+	---Level: Internal
+	---Purpose: Drawn all the primitives managed by the
+	--	    graphic object <me> in the drawer <aDrawer>.
+	--	    Called by the method :
+	--		- Graphic2d_View::Update (aViewMapping, x, y, scale)
+	---Category: Private methods
+
+	Pick (me : mutable; X, Y: Real from Standard;
+		aPrecision: Real from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard
+	is virtual protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is picked, Standard_False if not.
+	--	    Called by the method Graphic2d_View::Pick
+	---Category: Protected methods
+
+	PickByCircle (me : mutable; X, Y, Radius : Real from Standard;
+		                    aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard
+	is virtual protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the graphic object <me>
+	--	    is picked, Standard_False if not.
+	--	    Called by the method Graphic2d_View::PickByCircle
+	---Category: Private methods
+
+	Pick( me: mutable; Xmin, Ymin, Xmax, Ymax: Real from Standard;
+		  aDrawer: Drawer from Graphic2d; 
+		  aPickMode: PickMode from Graphic2d = Graphic2d_PM_INCLUDE )
+	returns Boolean from Standard is virtual protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the primitive <me> is:
+	--          included in rectangle (<aPickMode = PM_INCLUDE>),
+	--          excluded from rectangle (<aPickMode = PM_EXLUDE>),
+	--          intersected by rectangle (<aPickMode = PM_INTERSECT>),
+	--          defined by Xmin, Ymin, Xmax, Ymax. 
+	--	        Standard_False if not.
+
+    	PickList( me ) returns HSequenceOfInteger from TColStd;
+	---Level: Internal
+	---Purpose: Returns the sequence of picked primitives.
+	
+	View (me)
+	returns mutable View from Graphic2d
+	is static private;
+	---Level: Internal
+	---Purpose: Returns the view which manages <me>.
+	--	    Called by the constructor of Primitive.
+	---Category: Private methods
+
+	AddPrimitive (me: mutable; aPrimitive: Primitive from Graphic2d)
+	is static private;
+	---Level: Internal
+	---Purpose: Adds the primitive <aPrimitive> in <me>.
+	--	    Called by the constructor of Primitive.
+	---Category: Private methods
+
+	SetIndex (me: mutable; aPrimitive: Primitive from Graphic2d)
+	is static private;
+	---Level: Internal
+	---Purpose: Sets the current index in the GraphicObject <me>
+	--	    to the index of the primitive <aPrimitive>.
+	---Category: Private methods
+
+	IsUpToDate (me) returns Boolean from Standard 
+	is static protected;
+	---Level: Internal
+	---Purpose: Returns TRUE when the graphic object is 
+	--	up to date at screen;
+
+	BasePriority (me) returns Integer from Standard is virtual private;
+	---Level: Public
+	---Purpose: Returns the min usable absolute priority of the 
+	--         "standard" graphic object. 	
+
+fields
+	myViewPtr:		    ViewPtr from Graphic2d;
+	myPrimitives:		IndexedMapOfTransient   from TColStd;
+	myLayer:		    Integer from Standard;
+	myTrsf:			    GTrsf2d from gp;
+	myCBitFields:		CBitFields8 from Graphic2d;
+	myOverrideColor:	Integer from Standard is protected;
+	myCurrentIndex:		Integer from Standard is protected;
+	myOffSet:		    Integer from Standard is protected;
+--	myPickedIndex:		Integer from Standard is protected;
+	myPickedIndex:		Integer from Standard;
+	myIsUpToDate:		Boolean from Standard is protected;
+	myIsTransformed:	Boolean from Standard is protected;
+	myPriority:		    Integer from Standard;
+    myPickIndices:	    HSequenceOfInteger from TColStd;
+    
+    	myDisplayStatus :        DisplayStatus from Graphic2d;
+
+friends
+	class Primitive from Graphic2d,
+ 	class View from Graphic2d,
+	class TransientManager from Graphic2d
+
+end GraphicObject from Graphic2d;

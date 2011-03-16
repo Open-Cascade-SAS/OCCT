@@ -1,0 +1,87 @@
+-- File:        BracketedRoot.cdl
+-- Created:     Tue May 14 14:10:21 1991
+-- Author:      Laurent Painnot
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+
+class BracketedRoot from math
+     	---Purpose: This class implements the Brent method to find the root of a function
+     	-- located within two bounds. No knowledge of the derivative is required.
+
+uses Matrix from math, 
+     Vector from math, 
+     Function from math,
+     OStream from Standard
+
+raises NotDone
+
+is
+
+    Create(F: in out Function;
+    	   Bound1, Bound2, Tolerance: Real;
+	   NbIterations: Integer = 100; ZEPS : Real =1.0e-12)
+	---Purpose:   
+    	-- The Brent method is used to find the root of the function F between 
+    	-- the bounds Bound1 and Bound2 on the function F.
+    	-- If F(Bound1)*F(Bound2) >0 the Brent method fails.  
+    	-- The tolerance required for the root is given by Tolerance.
+    	-- The solution is found when :
+    	--    abs(Xi - Xi-1) <= Tolerance;
+    	-- The maximum number of iterations allowed is given by NbIterations.
+
+    returns BracketedRoot;
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+
+
+    Root(me)
+        ---Purpose: returns the value of the root.
+        -- Exception NotDone is raised if the minimum was not found.
+     	---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Value(me)
+        ---Purpose: returns the value of the function at the root.
+        -- Exception NotDone is raised if the minimum was not found.
+      	---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+    NbIterations(me)
+        ---Purpose: returns the number of iterations really done during the
+        -- computation of the Root.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+
+    returns Integer
+    raises NotDone
+    is static;
+    
+
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+
+    is static;
+
+
+
+fields
+
+Done:      Boolean;
+TheRoot:   Real;
+TheError:  Real;
+NbIter:    Integer;
+
+end BracketedRoot;

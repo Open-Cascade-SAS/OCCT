@@ -1,0 +1,42 @@
+-- File:	DsgPrs_FilletRadiusPresentation.cdl
+-- Created:	Mon Dec  8 11:40:57 1997
+-- Author:	Serguei ZARITCHNY
+--		<xab@zozox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class FilletRadiusPresentation from DsgPrs
+
+        ---Purpose: A framework for displaying radii of fillets.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection,
+    ArrowSide from DsgPrs,
+    TrimmedCurve from Geom,
+    Circle  from Geom,
+    Ax1 from gp
+is
+    Add( myclass; aPresentation : Presentation from Prs3d;
+    	    	  aDrawer       : Drawer from Prs3d;
+		  thevalue      : Real from Standard;
+		  aText         : ExtendedString from TCollection;
+		  aPosition     : Pnt from gp;
+		  aNormalDir    : Dir from gp;
+		  aBasePnt      : Pnt from gp;
+		  aFirstPoint   : Pnt from gp;
+		  aSecondPoint  : Pnt from gp;
+		  aCenter       : Pnt from gp;
+		  ArrowPrs      : ArrowSide from DsgPrs; 
+		  drawRevers    : Boolean from Standard; 
+    	    	  DrawPosition  : out Pnt from gp;
+    	    	  EndOfArrow    : out Pnt from gp;
+    	    	  TrimCurve     : out TrimmedCurve from Geom;
+    	    	  HasCircle     : out Boolean from Standard);
+    	---Purpose: Adds a display of the radius of a fillet to the
+    	-- presentation aPresentation. The display ttributes
+    	-- defined by the attribute manager aDrawer. the value
+    	-- specifies the length of the radius.
+		  
+end FilletRadiusPresentation;

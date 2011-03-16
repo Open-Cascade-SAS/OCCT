@@ -1,0 +1,47 @@
+--
+-- File:	AlienImage_AlienImage.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+deferred class AlienImage from AlienImage inherits TShared from MMgt
+
+	---Purpose: This class defines an Alien image.
+	-- Alien Image is X11 .xwd image or SGI .rgb image for example
+
+uses
+	File  		from OSD,
+	Image 		from Image
+
+raises
+	TypeMismatch 	from Standard
+
+is
+	Initialize ;
+
+	Read ( me : in out mutable ; afile : in out File from OSD )
+	  returns Boolean from Standard is deferred;
+	---Level: Public
+	---Purpose: Reads content of a  AlienImage object from a file .
+	--         Returns True if file is a XWD file .
+
+	Write( me : in immutable ; afile : in out File from OSD )
+	  returns Boolean from Standard is deferred ;
+	---Level: Public
+	---Purpose: Writes content of a  AlienImage object to a file .
+
+	ToImage  ( me : in immutable ) 
+	  returns mutable Image from Image 
+          raises TypeMismatch from Standard is deferred ;
+	---Level: Public
+	---Purpose : Converts a AlienImage object to a Image object.
+
+	FromImage( me : in out mutable ; anImage : in Image from Image )
+          raises TypeMismatch from Standard is deferred ;
+	---Level: Public
+	---Purpose : Converts a Image object to a AlienImage object.
+
+end AlienImage;
+ 

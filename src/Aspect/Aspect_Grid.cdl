@@ -1,0 +1,167 @@
+-- File:	Aspect_Grid.cdl
+-- Created:	Thu Mar  2 14:23:42 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+-- Updated:	GG IMP230300 Add grid color parameters in constructor
+--		and add new methods SetColors() & Colors()
+---Copyright:	 Matra Datavision 1995
+
+deferred class Grid from Aspect
+inherits TShared from MMgt
+
+uses
+    PlaneAngle, Length from Quantity,
+    GridDrawMode from Aspect,
+    Color from Quantity
+is 
+
+    Initialize(anXOrigin: Length from Quantity = 0.0;
+	       anYOrigin: Length from Quantity = 0.0;
+               aRotationAngle: PlaneAngle from Quantity = 0;
+	       aColor: Color from Quantity = Quantity_NOC_GRAY50;
+	       aTenthColor: Color from Quantity = Quantity_NOC_GRAY70);
+	       
+    ---Purpose: creates a new grid. By default this grid is not
+    --          active.
+    
+    ---Category: grid definition methods
+
+    SetXOrigin(me: mutable; anOrigin: Length from Quantity) 
+    is static;
+    ---Level: Public
+    ---Purpose: defines the x Origin of the grid.
+
+    SetYOrigin(me: mutable; anOrigin: Length from Quantity) 
+    is static;
+    ---Level: Public
+    ---Purpose: defines the y Origin of the grid.
+
+    SetRotationAngle(me: mutable; anAngle: PlaneAngle from Quantity)
+    is static;
+    ---Level: Public
+    ---Purpose: defines the orientation of the the grid.
+    
+    Rotate(me: mutable; anAngle: PlaneAngle from Quantity)
+    is static;
+    ---Level: Public
+    ---Purpose: Rotate the grid from a relative angle.
+    
+    Translate(me: mutable; aDx, aDy: Length from Quantity)
+    is static;
+    ---Level: Public
+    ---Purpose: Translate the grid from a relative distance.
+
+    SetColors ( me  : mutable;
+                    aColor     : Color from Quantity;
+                    aTenthColor     : Color from Quantity )
+    is virtual;
+    ---Level: Public
+    ---Purpose: Change the colors of the grid
+    
+---Category: Pick methods
+--           
+    Hit(me; X,Y: Length from Quantity; gridX, gridY : out Length from Quantity)
+    is static;
+    ---Level: Public
+    ---Purpose: returns the point of the grid the closest to the point X,Y
+    --          if the grid is active. If the grid is not active returns
+    --          X,Y.
+    
+    Compute(me; X,Y: Length from Quantity; gridX, gridY : out Length from Quantity)
+    is deferred;
+    ---Level: Internal
+    ---Purpose: returns the point of the grid the closest to the point X,Y
+---Category: Managment methods.
+
+    Activate(me: mutable)
+    is static;
+    ---Level: Public
+    ---Purpose: activates the grid. The Hit method will return
+    --          gridx and gridx computed according to the steps
+    --          of the grid.
+    
+    Deactivate(me: mutable)
+    is static;
+    ---Level: Public
+    ---Purpose: deactivates the grid. The hit method will return
+    --          gridx and gridx as the enter value X & Y.
+    
+---Category: inquire methods
+
+    XOrigin(me) returns Length from Quantity
+    is static;
+    ---Level: Public
+    ---Purpose: returns the x Origin of the grid.
+    
+    YOrigin(me) returns Length from Quantity
+    is static;
+    ---Level: Public
+    ---Purpose: returns the x Origin of the grid.
+    
+    
+    RotationAngle(me) returns PlaneAngle from Quantity
+    is static;
+    ---Level: Public
+    ---Purpose: returns the x Angle of the grid.
+    
+    
+    IsActive(me) returns Boolean from Standard
+    is static;
+    ---Level: Public
+    ---Purpose: Returns TRUE when the grid is active.
+
+    Colors(me ; aColor,aTenthColor: out Color from Quantity)
+    is static;
+    ---Level: Public
+    ---Purpose: Returns the colors of the grid.
+    
+---Category: display methods
+
+    SetDrawMode(me: mutable; aDrawMode: GridDrawMode from Aspect)
+    is static;
+    ---Level: Public
+    ---Purpose: Change the grid aspect.
+
+    DrawMode(me) returns GridDrawMode from Aspect
+    is static;
+    ---Level: Public
+    ---Purpose: Returns the grid aspect.
+    
+    Display(me: mutable)
+    is virtual;
+    ---Level: Public
+    ---Purpose: Display the grid at screen.
+    
+    Erase(me)
+    is virtual;
+    ---Level: Public
+    ---Purpose: Erase the grid from screen.
+    
+    IsDisplayed(me) 
+    returns Boolean from Standard
+    is virtual;
+    ---Level: Public
+    ---Purpose: Returns TRUE when the grid is displayed at screen.
+    
+    UpdateDisplay(me: mutable)
+    is virtual protected;
+    ---Level: Internal
+    ---Purpose: Updates the grid parameters.
+    
+    Init(me: mutable)
+    is deferred;
+    ---Level: Internal
+    
+    
+fields
+
+    myRotationAngle: PlaneAngle from Quantity is protected;
+    myXOrigin: Length from Quantity is protected;
+    myYOrigin: Length from Quantity is protected;
+    myColor: Color from Quantity is protected;
+    myTenthColor: Color from Quantity is protected;
+    myIsActive :Boolean from Standard;
+    myIsDisplayed: Boolean from Standard;    
+    myDrawMode: GridDrawMode from Aspect;
+
+end Grid from Aspect;

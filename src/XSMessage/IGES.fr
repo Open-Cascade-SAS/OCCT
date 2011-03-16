@@ -1,0 +1,766 @@
+!PHASE CHARGEMENT
+! les messages generaux sont factorises dans le fichier general pour XSTEP
+.9
+Debut de la lecture du fichier IGES.
+!
+.10
+Fin de la lecture du fichier IGES.
+!
+.12
+L'Entete et le Contenu du fichier IGES sont charges.
+!
+.18
+Erreur de syntaxe dans le fichier IGES à la ligne %d de la section %s.
+!
+.19
+Erreur de syntaxe dans le fichier IGES à la ligne %d de la section %s.(le numero ligne est incorrect).
+!
+.20
+Il n'y a pas de Terminate Section, veuillez verifier la fin du fichier. Le processus continue.
+!
+.27
+Entite %s : Directory Entry : Il n'y pas de parametre. Le processus continue.
+!
+.28
+Entite %s : Directory Entry : Le parametre 1 (Type de l'entite) est invalide.
+!
+.29
+Entite %s, Type %d : Directory Entry : Le champ 4 (Line Font Pattern) est invalide (Pointeur non nul ou Entier entre 0 et 5 attendu).
+!
+.30
+Entite %s, Type %d : Directory Entry : Le champ 5 (Level) est invalide (Pointeur ou Entier non nul attendu).
+!
+.31
+Entite %s, Type %d : Directory Entry : Le champ 6 (View) est invalide (Pointeur ou Entier non nul attendu).
+!
+.32
+Entite %s, Type %d : Directory Entry : Le champ 7 (Transformation Matrix) est invalide (Pointeur non nul ou Entier Zero attendu).
+!
+.33
+Entite %s, Type %d : Directory Entry : Le champ 8 (Label Display Associativity) est invalide (Pointeur non nul ou Entier Zero attendu).
+!
+.34
+Entite %s, Type %d : Directory Entry : Le champ 13 (Color Number) est invalide (Pointeur non nul ou Entier entre 0 et 8 attendu).
+!
+.35
+L'entite %s est nulle.
+!
+.36
+L'entite %s est inconnue.
+!
+.37
+Entite %s, Type %d : La liste d'associativites est invalide.
+!
+.38
+Entite %s, Type %d : La liste de proprietes est invalide.
+!PHASE ANALYSE
+.39
+Global Section : Nombre de parametres invalides (%d ou %d parametres attendus).
+!
+.40
+Global Section (Parametres 1 et 2) : Parameter Delimiter Character et Record Delimiter Character doivent etre differents.
+!
+.41
+Global Section (Parametre 2) : Le parametre Record Delimiter Character est invalide. Caractere Virgule pris par defaut.
+!
+.42
+Global Section (Parametre 2) : Le parametre Record Delimiter Character est invalide. Caractere Point Virgule pris par defaut.
+!
+.43
+Global Section (Parametre 8) : Le parametre Single Precision Magnitude est invalide (Entier Positif attendu). Valeur 38 prise pas defaut.
+!
+.44
+Global Section (Parametre 9) : Le parametre Single Precision Significance est invalide (Entier Positif attendu). Valeur 6 prise pas defaut.
+!
+.45
+Global Section (Parametre 10) : Le parametre Double Precision Magnitude est invalide (Entier Positif attendu). Valeur 308  prise pas defaut.
+!
+.46
+Global Section (Parametre 11) : Le parametre Double Precision Significance est invalide (Entier Positif attendu). Valeur 15 prise pas defaut.
+!
+.47
+Global Section (Parametre 13) : Le parametre Model Space Scale est invalide (Positif attendu). Valeur 1.0 prise pas defaut.
+!
+.48
+.Global Section (Parametre 14) : Le parametre Unit Flag est invalide (Entier entre 1 et 11 attendu). Valeur 2 prise pas defaut : Millimeters.
+!
+.49
+Global Section (Parametre 15) : Le parametre Unit Name n'est pas traite.Valeur 2 prise pas defaut : Millimeters.
+!
+.50
+Global Section (Parametre 15) : Le parametre Unit Name n'est pas defini, ignore.
+!
+.51
+Global Section (Parametre 14 et 15) : Le parametre Unit Flag ne correspond pas au parametre Unit Name : Unit Name ignore.
+!
+.52
+Global Section i)(Parametre 19) : Le parametre Minimum Resolution est invalide (Reel Positif attendu). Valeur 0.0 prise pas defaut.
+!
+.53
+Global Section (Parametre 23) : Le parametre Version Flag est invalide (Entier entre 1 et 11 attendu). Valeur 3 prise pas defaut : Version 2.0.
+!
+.54
+Global Section (Parametre 24) : Le parametre Drafting Standard Flag est invalide (Entier entre  0 et 7 attendu). Valeur 0 prise pas defaut : No standard.
+!
+.55
+Global Section (Parametre 25) : Le parametre Last change Date n'est pas defini.
+!
+.56
+Global Section (Parametre 18) : Le parametre Date n'est pas defini.
+!
+.57
+Global Section (Parametre %d) : Format de date invalide.
+!
+.58
+Directory Entry (Champ 1) : Le champ Entity Type Number est invalide 
+!
+.59
+Directory Entry (Champ 3) : Le champ Structure est indefini.
+!
+.60
+Directory Entry (Champ 4) : Le champ Line Font Pattern est invalide (Pointeur ou Entier entre 0 et 5 attendu). Valeur 0 prise par defaut.
+!
+.61
+Directory Entry (Champ 5) : Le champ Level est invalide (Pointeur ou Entier attendu). Valeur 0 prise par defaut.
+!
+.62
+Directory Entry (Champ 6) : Le champ View est invalide (Pointeur ou Zero attendu). Valeur 0 prise par defaut.
+!
+.63
+Directory Entry (Champ 7): Le champ Transformation Matrix  est invalide (Pointeur ou Zero attendu). Valeur 0 prise par defaut.
+!
+.64
+Directory Entry (Champ 8): Le champ Label Display Entity est invalide (Pointeur ou Zero attendu). Valeur 0 prise par defaut.
+!
+.65
+Directory Entry (Field 9) : Le champ Blank Status est invalide (Entier attendu : 0 ou 1). 
+!
+.66
+Directory Entry (Champ 9) : Le champ Subordinate Entity Switch est  invalide (Entier  entre 0 et 3 attendu). 
+!
+.67
+Directory Entry (Champ 9) : Le champ Entity Use Flag est invalide (Entier  entre 0 et 6 attendu). 
+!
+.68
+Directory Entry (Champ 9) : Le champ Hierarchy est invalide (Entier  entre 0 et 2 attendu).
+!
+.69
+Directory Entry (Champ 12) : Le champ Line Weight Number n'est pas defini. 
+!
+.70
+Directory Entry (Champ 13) : Le champ Color Number est invalide (Pointeur ou Entier entre 0 et 8 attendu). 
+!
+.71
+Directory Entry (Champ 15) : Le champ Form Number est invalide.
+!
+.72
+Directory Entry (Champ 19): Le champ Entity Subscript Number est invalide (Entier attendu).
+!Type 116
+.73
+Parameter Data : Le parametre %d (Coordinate of Point) est invalide (Reel attendu).
+!Type 116
+.74
+Parameter Data : Le parametre %d (Display Symbol) est invalide (Entite Subfigure Definition, Type 308 attendue).
+!Type 100
+.75
+Parameter Data : Le parametre 1 ( ZT displacement of Arc) est invalide (Reel attendu).
+!Type 100
+.76
+Parameter Data : Le parametre %d (Arc Center ) est invalide (Reel attendu).
+!Type 100
+.77
+Parameter Data : Le parametre %d (Start Point) est invalide (Reel attendu).
+!Type 100
+.78
+Parameter Data : Le parametre %d (Terminate Point) est invalide (Reel attendu).
+!Type 102
+.79
+Parameter Data : Le parametre 1 (Number of Entities) est invalide :%d (Entier Positif attendu).
+!Type 102
+.80
+Parameter Data : Certains pointeurs de liste d'entites sont nuls ou negatifs : ignores (Entites Point, Connect Point ou Paramerterized Curve attendues).
+!Type 104
+.81
+Parameter Data : Le parametre %d (Conic Coefficient) est invalide (Reel attendu).
+!Type 104
+.82
+Parameter Data : Le parametre 7 (Coordinate of Plane) est invalide (Reel attendu).
+!Type 104
+.83
+Parameter Data : Le parametre %d (Starting Point) est invalide (Reel attendu).
+!Type 104
+.84
+Parameter Data : Le parametre %d (Terminate Point) est invalide (Reel attendu).
+!Type 106
+.85
+Parameter Data : Le parametre 1 (Interpretation Flag) est invalide (Entier attendu : %d).
+!Type 106
+.86
+Parameter Data : Le parametre 2 (Number of n-tuples) est invalide  (Entier Positif attendu).
+!Type 106
+.87
+Parameter Data : Le parametre 3 (Common Z Displacement) est invalide (Reel attendu).
+!Type 106
+.88
+Parameter Data : Tous les parametres Data Point ne sont pas de type Reel.
+!Type 110
+.89
+Parameter Data : Le parametre %d (Starting Point) est invalide (Reel attendu).
+!Type 110
+.90
+Parameter Data : Le parametre %d (Terminate Point) est invalide (Reel attendu).
+!Type 112
+.91
+Parameter Data : Le parametre 1 (Spline Type) est invalide (Entier entre 1 et 6 attendu).
+!Type 112
+.92
+Parameter Data : Le parametre 2 (Degree of Continuity) est invalide (Entier attendu).
+!Type 112
+.93
+Parameter Data : Le parametre 3 (Number of Dimensions) est invalide (Entier attendu : 2 ou 3).
+!Type 112
+.94
+Parameter Data : Le parametre 4 (Number of Segments) est invalide (Entier Positif attendu).
+!Type 112
+.95
+Parameter Data : Tous les parametres  Break Point ne sont pas de type Reel.
+!Type 112
+.96
+Parameter Data : L'entite est plane mais les parametres BZ, CZ. DZ ne sont pas nuls
+!Type 126
+.97
+Parameter Data : Le parametre %d (Upper Index of Sum) est invalide (Entier Positif attendu).
+!Type 126
+.98
+Parameter Data : Le parametre %d (Degree of Basis Functions) est invalide (Entier attendu) : Valeur 0 prise par defaut.
+!Type 126
+.99
+Parameter Data : Le parametre %d (Planar/Non Planar Flag) est invalide (Booleen attendu).
+!Type 126
+.100
+Parameter Data : Le parametre %d (Open/Closed Flag) est invalide (Booleen attendu).
+!Type 126
+.101
+Parameter Data : Le parametre %d (Rational/Polynomial Flag) est invalide (Booleen attendu).
+!Type 126
+.102
+Parameter Data : Le parametre  %d (NonPeriodic/Periodic Flag) est invalide (Booleen attendu).
+!Type 126
+.103
+Parameter Data : Tous les parametres Knot Sequence ne sont pas de type Reel.
+!Type 126
+.104
+Parameter Data : Tous les parametres Weight ne sont pas de type Reel Positif.
+!Type 126
+.105
+Parameter Data : Le parametre %d (Control Point) est invalide (Reel attendu).
+!Type 126
+.106
+Parameter Data : Le parametre %d (Starting Value) est invalide (Reel attendu).
+!Type 126
+.107
+Parameter Data : Le parametre %d (Ending Value) est invalide (Reel attendu).
+!Type 126
+.108
+Parameter Data : Le parametre %d (Unit Normal) est invalide (Reel attendu).
+!Type 126
+.109
+Parameter Data : Le parametre %d (Unit Normal) n'est pas defini pour une courbe plane.
+!Type 130
+.110
+Parameter Data  : Le parametre 1 (Curve Entity to be offset) est invalide (Entite Curve attendue). 
+!Type 130
+.111
+Parameter Data : Le parametre 2 (Offset Distance Flag) est invalide (Entier entre 1 et 3 attendu).
+!Type 130
+.112
+Parameter Data  : Le parametre 3 (Curve Entity whose coordinate describes the offset) est invalide (Entite Curve attendue). 
+!Type 130
+.113
+Parameter Data : Le parametre 4 (Particular Coordinate) est invalide (Entier attendu).
+!Type 130
+.114
+Parameter Data : Le parametre 5 (Tapered Offset Type Flag) est invalide (Entier attendu).
+!Type 130
+.115
+Parameter Data : Le parametre 6 (First Offset distance) est invalide (Reel attendu).
+!Type 130
+.116
+Parameter Data : Le parametre 7 (Arc Length of Fisrt Offset Distance) est invalide (Reel attendu).
+!Type 130
+.117
+Parameter Data : Le parametre 8 (Second Offset Distance) est invalide (Reel attendu).
+!Type 130
+.118
+Parameter Data : Le parametre 9 (Arc Length of Second Offset Distance) est invalide (Reel attendu).
+!Type 130
+.119
+Parameter Data : Le parametre 13 (Offset Curve Starting Parameter Value) est invalide (Reel attendu).
+!Type 130
+.120
+Parameter Data : Le parametre 14 (Offset Curve Ending Parameter Value) est invalide (Reel attendu).
+!Type 130
+.121
+Parameter Data : Le parametre %d (Unit Vector Normal to plane) est invalide (Reel attendu).
+!Type 130
+.122
+Parameter Data : Le parametre 1 (Type of Bounded Surface Representation) est invalide (Entier attendu : 0 ou 1 ).
+!Type 141
+.123
+Parameter Data : Le parametre 2 (Trimming Curves Representation) est invalide (Entier entre 0 et 3 attendu).
+!Type 141
+.124
+Parameter Data  : Le parametre 3 (Untrimmed Surface) est invalide (Entite Untrimmed Surface attendue). 
+!Type 141
+.125
+Parameter Data : Surface %d non parametrique (parametre 3).
+!Type 141
+.126
+Parameter Data : Le parametre 4 (Number of Curves est invalide  (Positif attendu).
+!Type 141
+.127
+Parameter Data  : Le parametre 5 (Model Space Curve) est invalide (Entite Curve attendue). 
+!Type 141
+.128
+Parameter Data : Le parametre 6 (Orientation Flag) est invalide (Entier attendu : 1 ou 2).
+!Type 141
+.129
+Parameter Data : Le parametre 7 (Number of Associated Parameter Space Curves) est invalide (Entier attendu : 0).
+!Type 141
+.130
+Parameter Data : Certains pointeurs de la liste d'entites Parameter Space Curve sont nuls ou negatifs : ignores (Entites Curve attendues).
+!Type 142
+.131
+Parameter Data : Le parametre 2 (Surface on which the curve lies) est invalide (Entite Surface attendue).
+!Type 142
+.132
+Parameter Data : Le parametre 3 (Curve 2D) est invalide (Entite Curve attendue).
+!Type 142
+.133
+Parameter Data : Le parametre 4 (Curve 3D) est invalide (Entite Curve attendue).
+!Type 142
+.134
+Parameter Data : Les pointeurs sur les courbes 2D et  sont nuls (parameter 3 et 4) (Entites Curve attendues).
+!Type 108
+.135
+Parameter Data : Le parametre %d (Coefficient Of Plane) est invalide (Reel attendu).
+!Type 108
+.136
+Parameter Data : Le parametre 5 (Closed Curve) est invalide (Entite Curve attendue).
+!Type 108
+.137
+Parameter Data : Le parametre 5 est invalide (Pointeur nul attendu lorsque le champ Form Number est 0).
+!Type 108
+.138
+Parameter Data : Le parametre 9 (DisplaySymbol Size) est invalide (Reel attendu).
+!Type 108
+.139
+Parameter Data : Le parametre %d (Coordinate of Display Symbol) est invalide (Reel attendu).
+!Type 114
+.140
+Parameter Data  : Le parametre 1 (Spline Boundary Type) est invalide (Entier entre 1 et 6 attendu).
+!Type 114
+.141
+Parameter Data : Le parametre 3 (Number of U Segments) est invalide (Entier Positif attendu).
+!Type 114
+.142
+Parameter Data : Le parametre 4 (Number of V Segments) est invalide (Entier Positif attendu).
+!Type 114
+.143
+Parameter Data : Tous les parametres Breakpoint in U ne sont de type Reel.
+!Type 114
+.144
+Parameter Data : Tous les  parametres Breakpoint in V ne sont pas de type Reel.
+!Type 114
+.145
+Parameter Data : Tous les parametres  %s Coefficient of Patch ne sont pas de type Reels.
+!Type 114
+.146
+Parameter Data : Le parametre %d (Last Z Coefficient of Patch) est invalide (Reel attendu).
+!Type 114
+.147
+Parameter Data : Le nombre de parametres %c Coefficient of Patch est invalide (Entier attendu : 16).
+!Type 118
+.148
+Parameter Data : Le parametre 1 (First Curve) est invalide (Entite Curve attendue).
+!Type 118
+.149
+Parameter Data : Le parametre 2 (Second Curve) est invalide (Entite Curve attendue).
+!Type 118
+.150
+Parameter Data : Le parametre 3 (Direction Flag) est invalide (Entier 0 ou 1 attendu).
+!Type 118
+.151
+Parameter Data : Le parametre 4 (Developable Surface Flag) est invalide (Entier 0 ou 1 attendu).
+!Type 120
+.152
+Parameter Data  : Le parametre 1 (Axis of Revolution) est invalide (Entite attendue).
+!Type 120
+.153
+Parameter Data : Le parametre 2 (Generatrix Entity) est invalide (Entite attendue).
+!Type 120
+.154
+Parameter Data : Le parametre 3 (Start Angle) est invalide (Reel attendu).
+!Type 120
+.155
+Parameter Data : Le parametre 4 (Terminate Angle est invalide (Reel attendu).
+!Type 122
+.156
+Parameter Data : Le parametre 1 (Generatrix Entity) est invalide (Entite Curve attendue).
+!Type 122
+.157
+Parameter Data : Le parametre %d (Coordinate of the Terminate Point) est invalide (Reel attendu).
+!Type 128
+.158
+Parameter Data : Valeur supplementaire invalide (Reel attendu).
+!Type 128
+.159
+Parameter Data : Valeur Reelle supplementaire : ignore.
+!Type 128
+.160
+Parameter Data : Invalid Number of First Knots sequence (Nombre attendu : %d).
+!Type 128
+.161
+Parameter Data : Invalid Number of Second Knots Sequence (Nombre attendu : %d).
+!Type 140
+.162
+Parameter Data : Le parametre %d (Coordinate of Offset Indicator) est invalide (Reel attendu).
+!Type 140
+.163
+Parameter Data : Le parametre 4 (Offset Distance) est invalide (Reel attendu).
+!Type 140
+.164
+Parameter Data  : Le parametre 5 (Surface Entity to be offset) est invalide (Entite Surface attendue).
+!Type 143
+.165
+Parameter Data : Le parametre 1 (Bounded Surface Representation Type) est invalide (Entier 0 ou 1 attendu).
+!Type 143
+.166
+Parameter Data : Le parametre 2(Surface Entity to be Bounded) est invalide (Entite Surface attendue).
+!Type 143
+.167
+Parameter Data : Le parametre 3 (Number of Boundary Entities) est invalide (Entier Positif attendu).
+!Type 143
+.168
+Parameter Data : Le parametre %d  (Boundary Entity) est invalide (Entite Boundary, Type 141 attendue).
+!Type 144
+.169
+Parameter Data : Le parametre 1 (Surface to be trimmed) est invalide (Entite Surface attendue).
+!Type 144
+.170
+Parameter Data : Le parametre 2 (Outer Boundary Type) est invalide (Entier 0 ou 1 attendu).
+!Type 144
+.171
+Parameter Data : Le parametre 3 ( Number of Inner Boundary Closed Curves) est invalide (Entier Positif attendu).
+!Type 144
+.172
+Parameter Data : Le parametre 4 (Outer Boundary) est invalide (Entite Curve on a Parametric Surface, Type 142 attendue).
+!Type 144
+.173
+Parameter Data : Le parametre %d (Inner Boundary) est invalide (Entite Curve on a Parametric Surface, Type 142 attendue).
+!Type 190
+.174
+Parameter Data : Le parametre 1 (Point on the Surface) est invalide (Entite Point, Type 116 attendue).
+!Type 190
+.175
+Parameter Data : Le parametre 2 (Surface Normal Direction) est invalide (Entite Direction attendue).
+!Type 190
+.176
+Parameter Data : Le parametre 3 (Reference Direction) est invalide (Entite Direction attendue).
+!Type 190
+.177
+Parameter Data : Le parametre 3 est invalide (Pointeur nul attendu lorsque le champ Form Number est 1).
+!Type 186
+.178
+Parameter Data : Le parametre 1 (Shell) est invalide (Entite Closed Shell, Type 514, Form 1 attendue).
+!Type 186
+.179
+Parameter Data : Le parametre %d (Void Shell) est invalide (Entite Closed Shell, Type 514, Form 1 attendue).
+!Type 186
+.180
+Parameter Data : Le parametre %d (Orientation Flag) est invalide (Booleen attendu).
+!Type 186
+.181
+Parameter Data : Le parametre 3 (Number of Void Shells) est invalide (Entier Positif  attendu).
+!Type 502
+.182
+Parameter Data : Le parametre 1 (Number of Vertex Tuples) est invalide (Entier Positif  attendu).
+!Type 502
+.183
+Parameter Data : Le parametre % (Coordinate of Vertex) est invalide (Reel attendu).
+!Type 504
+.184
+Parameter Data : Le parametre 1 (Number of Edge Tuples) est invalide (Entier Positif attendu).
+!Type 504
+.185
+Parameter Data : Le parametre 2 (Model Space Curve) est invalide (Entite Curve attendue).
+!Type 504
+.186
+Parameter Data : Le parametre %d (Start Vertex Index) est invalide (Entier attendu).
+!Type 504
+.187
+Parameter Data : Le parametre %d (Terminate Vertex Index) est invalide (Entier attendu).
+!Type 504
+.188
+Parameter Data : Le parametre %d (Start Vertex List Entity) est invalide (Entite Vertex List, Type 502 attendue).
+!Type 504
+.189
+Parameter Data : Le parametre %d (Terminate Vertex List Entity) est invalide (Entite Vertex List, Type 502 attendue).!T
+!Type 508
+.190
+Parameter Data : Le parametre %d (Edge Type) est invalide (Entier 0 ou 1 attendu).
+!Type 508
+.191
+Parameter Data : Le parametre %d (List Index) est invalide (Entier  attendu).
+!Type 508
+.192
+Parameter Data : Le parametre %d (Number of Parameter Curves) est invalide (Entier Positif  attendu).
+!Type 508
+.193
+Parameter Data : Le parametre % Vertex or Edge List Entity) est invalide (Entite Vertex List ou Edge List Entity, Type 502 ou 504 attendue).
+!Type 508
+.194
+Parameter Data : Le parametre % (Parameter Space Curve) est invalide (Entite Curve attendue).
+!Type 508
+.195
+Parameter Data : Le parametre %d (Isoparametric Flag) est invalide (Booleen attendu).
+!Type 510
+.196
+Parameter Data : Le parametre 1 (Surface) est invalide (Entite Surface attendue).
+!Type 510
+.197
+Parameter Data : Le parametre 2 (Number of Loops) est invalide (Entier Positif  attendu).
+!Type 510
+.198
+Parameter Data : Le parametre 3 (Outer Loop flag) est invalide (Booleen attendu).
+!Type 510
+.199
+Parameter Data : Le parametre %d (Loop of the Face) est invalide (Entite Loop, Type 508 attendue).
+!Type 514
+.200
+Parameter Data : Le parametre 1 (Number of Faces) est invalide (Entier Positif  attendu).
+!Type 514
+.201
+Parameter Data : Le parametre 2 (Face) est invalide (Entite Face, Type 510 attendue).
+!Type 402, Form 1 ou 7
+.202
+Form %d : Parameter Data : Le parametre 1 (Number of Entries) est invalide (Entier  attendu).
+!Type 402, Form 1 ou 7
+.203
+Form %d : Parameter Data : Certains pointeurs de la liste d'entites sont nuls ou negatifs : ignores (Entites attendues).
+!Type 402
+.204
+Form 9 : Parameter Data : Le parametre 1 (Number of Parent Entity) est invalide (Entier attendu : 1).
+!Type 402
+.205
+Form 9 : Parameter Data : Le parametre 2 (Number of children) est invalide (Entier Positif attendu).
+!Type 402
+.206
+Form 9 : Parameter Data : Le parametre 3 (Parent Entity) est invalide (Entite attendue).
+!Type 402
+.207
+Form 9 : Parameter Data : Certains pointeurs de la liste d'entites filles sont nuls ou negatifs (Entites attendues).
+!Type 308
+.208
+Parameter Data : Le parametre 1 (Depth of Subfigure) est invalide (Entier attendu).
+!Type 308
+.209
+Parameter Data  : Le parametre 2 (Subfigure Name) est invalide (Chaine au format Hollerith attendue).
+!Type 308
+.210
+Parameter Data : Le parametre 3 (Number of Entities) est invalide (Entie Positif attendu).
+!Type 308
+.211
+Parameter Data : Certains pointeurs de la liste d'entites associees sont nuls ou negatifs : ignores (Entites attendues).
+!Type 408
+.212
+Parameter Data : Le parametre 1 (Subfigure definition entity) est invalide (Entite Subfigure Definition Entity, Type 308 attendue).
+!Type 408
+.213
+Parameter Data : Le parametre %d (Translation data) est invalide (Reel attendu).
+!Type 408
+.214
+Parameter Data :  Le parametre 5 (Scale Factor) est invalide (Reel attendu). Valeur 1.0 prise par defaut.
+!Type 124
+.215
+Parameter Data : Tous les elements de la matrice  ne sont pas de type Reel.
+!
+.216
+Reference nulle.
+!
+.217
+Entite nulle.
+!
+.218
+Type incorrect.
+!
+.219
+Pointeur negatif.
+!RAJOUT
+.220
+Le nombre d'associativites est invalide (Entier attendu).
+!
+.221
+Le nombre de proprietes est invalide (Entier attendu).
+!PHASE TRANSFERT
+.222
+Entite %s, Type %d : L'entite pointe sur un objet invalide : Arret de la conversion de l'entite.
+!
+.223
+Entite %s, Type %d : L'Edge resultant n'est pas Same Parameter.
+!
+.224
+Entite %s, Type %d : Erreur logicielle : Arret de la conversion de l'entite.
+!
+.225
+Entite %s, Type %d : L'entite est vide.
+!
+.226
+Entite %s, Type %d : Directory Entry (Parametre 7) : L'entite Transformation Matrix pointe sur un objet invalide.
+!
+.227
+Entite %s, Type %d : Les entites Type 116 ou 132 ne peuvent pas se suivre dans une entite Type 102.
+!
+.228
+Entite %s, Type %d : Reference à une entite de type %d illegal.
+!
+.229
+Entite %s, Type %d : La courbe a ete inversee.
+!
+.230
+Entite %s, Type %d : La courbe etait legerement deconnectee.: repare.
+!
+.231
+Entite %s, Type %d : La courbe etait trop deconnectee.: reparation impossible.
+!
+.232
+Entite %s, Type %d :L'entite n'est pas fermee.
+!
+.233
+Entite %s, Type %d : Erreur logicielle : Courbe 2D invalide, recalculee à partir de la courbe 3D.
+!
+.234
+Entite %s, Type %d : Erreur logicielle : Courbe 3D invalide, recalculee à partir de la courbe 2D.
+!
+.235
+Entite %s, Type %d : Erreur logicielle : Courbe 2D et 3D  invalides.
+!
+.236
+Entite %s, Type %d : L'entite s'auto-intersectait, repare.
+!
+.237
+Entite %s, Type %d : Parameter Data : Le parametre 2 (Offset distance flag) different de 1 n'est pas implemente.
+!
+.238
+Entite %s, Type %d : La longeur de la courbe est incorrecte par rapport au parametre 14 (Offset curve ending) de l'entite %s Type %d. 
+!
+.239
+Entite %s, Type %d :La courbe B-Spline de continuite C0 ne peut pas etre divisee en courbes C1. Le resultat est nul.
+!
+.240
+Entite %s, Type %d : La courbe B-Spline de continuite C0 a ete divisee en courbes C1.
+!
+.241
+Entity %s, Type %d : Parameter Data : Le parametre 1 (Type of bounded surface representation = 0) n'est pas implementee.
+!
+.242
+Entite %s, Type %d : Entite non implementee.
+!
+.243
+Entite %s, Type %d : Parameter Data : (Parametres 1 à 6) Les coefficients  ne satisfont pas l'equation de la conique.
+!
+.244
+Entite %s, Type %d : Parameter Data (Parametres 8 à 11) : Les coordonnees de debut et de fin de l'arc sont les memes.
+!
+.245
+Entite %s, Type %d : La transformation ne sera pas appliquee à l'objet 2D.
+!
+.246
+Entite %s, Type %d : Parameter Data : Le parametre 4 (Number of segments) est inferieur à 1.
+!
+.247
+Entite %s, Type %d :L'equation polynomiale est incorrecte.
+!
+.248
+Entite %s, Type %d :Erreur durant la creation des points de contrôle.
+!
+.249
+Entite %s, Type %d : Parameter Data :Le parametre 1 (Spline Type > 3 ) n'est pas implemente.
+!
+.250
+Entite %s, Type %d : Le resultat n'est pas garanti C0.
+!
+.251
+Entite %s, Type %d : Parameter Data : Le parametre 2 (Degree of basis functions) est inferieur à 0 ou superieur au degre maximum.
+!
+.252
+Entite %s, Type %d : Parameter Data : Nombre de points incorrect (2 ou plus attendus).
+!
+.253
+Entite %s, Type %d : Erreur de conversion : %sStarting multiplicity > %s degree + 1.
+!
+.254
+Entite %s, Type %d : Erreur de conversion : %sEnding multiplicity > %s degree + 1.
+!
+.255
+Entite %s, Type %d : %sMultiplicity of knot %d > %s degree, repare.
+!
+.256
+Entite %s, Type %d : Sum of %smultiplicities is not equal to the sum (number of poles + %sdegree + 1).
+!
+.257
+Entite %s, Type %d : Tous les poids ne sont pas positifs.
+!
+.258
+Entite %s, Type %d : L'entite est polynomiale.
+!
+.259
+Entite %s, Type %d : Le point de depart et d'arrivee de la ligne%s sont les memes.
+!
+.260
+Entite %s, Type %d, Form %d : le vecteur est ignore.
+!
+.261
+Entite %s, Type %d : La surface resultante est continue C0.
+!
+.262
+Entity %s, Type %d : La surface de base est continue C0 et elle est convertie en shell. Seule la premiere face du shell est decalee.
+!
+.263
+Entite %s, Type %d : L'entite pointe sur un objet invalide, ignore.
+!
+.264
+Entite %s, Type %d : L'entite n'a pas pu etre transferee, ignore.
+!
+.265
+Entite %s, Type %d : L'entite n'est pas coplanaire à l'entite %s, Type %d.
+!
+.266
+Entite %s, Type %d : Parameter Data : Le parametre 3 ou 4 (Number of U ou V segments) est inferieur à 1.
+!
+.267
+Entite %s, Type %d : Parameter Data : Le parametre 3 ou 4 (Degree of first or second basis functions) est inferieur à 0 ou superieur au degre maximum.
+!
+.268
+Entite %s, Type %d : Parameter Data : Le nombre de coordonnees XYZ des points de contrôle (selon la direction %s) est inferieur à 2.
+!
+.269
+Entite %s, Type %d :Erreur de construction des points de contrôle. Le resultat est nul.
+!
+.270
+Entite %s, Type %d : Erreur logicielle lors de la conversion du Vertex numero %d.
+!
+.271
+Entite %s, Type %d : Le resultat de la conversion de l'entite n'est pas implemente.
+!
+.272
+Debut de la phase "Analyse" du fichier IGES %s.
+!
+.273
+Fin de la phase "Analyse" du fichier IGES %s (Temps ecoule : %s).
+!
+.274
+Debut de la phase "Transfert" du fichier IGES %s.
+!
+.275
+Fin de la phase "Transfert" du fichier IGES %s (Temps ecoule : %s).

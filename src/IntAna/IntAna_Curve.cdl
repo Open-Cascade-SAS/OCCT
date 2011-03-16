@@ -1,0 +1,236 @@
+-- File:	Curve.cdl
+-- Created:	Tue Jun 30 15:41:37 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+class Curve from IntAna 
+
+	---Purpose: Definition of a parametric Curve which is the result
+	--          of the intersection between two quadrics.
+
+uses Pnt         from gp,
+     Vec         from gp,
+     Ax3         from gp,
+     Cone        from gp,
+     Cylinder    from gp,
+     SurfaceType from GeomAbs
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+	---Purpose: Empty Constructor
+
+    	returns Curve from IntAna;
+
+
+    SetCylinderQuadValues(me :in out; 
+    	    	    	  Cylinder: Cylinder from gp; 
+      	    	    	  Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1 : Real;
+    	                  Tol,DomInf,DomSup : Real;
+			  TwoZForATheta : Boolean from Standard;
+    	    	    	  ZIsPositive   : Boolean from Standard) 
+			      
+	---Purpose: Sets the parameters used to compute Points and Derivative
+	--          on the curve.
+
+        is static;
+    
+    SetConeQuadValues(me :in out; 
+    	    	    	  Cone: Cone from gp; 
+      	    	    	  Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1 : Real;
+    	                  Tol,DomInf,DomSup : Real;
+			  TwoZForATheta : Boolean from Standard;
+    	    	    	  ZIsPositive   : Boolean from Standard) 
+			      
+	---Purpose: Sets  the parameters used    to compute Points  and
+	--          Derivative on the curve.
+
+        is static;
+    
+
+    IsOpen(me)
+
+	---Purpose: Returns TRUE if the curve is not  infinite  at the
+	--          last parameter or at the first parameter of the domain.
+
+    	returns Boolean from Standard
+	
+	is static;
+
+
+    Domain(me ; Theta1,Theta2 : out Real)
+    
+    	---Purpose: Returns the paramatric domain of the curve.
+
+    	raises DomainError from Standard
+    	--     The exception DomainError is raised if IsRestricted 
+    	--       returns False.
+
+    	is static;
+
+
+    IsConstant(me)
+    
+    	---Purpose: Returns TRUE if the function is constant.
+
+    	returns Boolean from Standard
+	
+	is static;
+
+
+    IsFirstOpen(me)
+    
+    	---Purpose: Returns TRUE if the domain is open at the beginning.
+
+    	returns Boolean from Standard
+	
+	is static;
+
+
+    IsLastOpen(me)
+    
+    	---Purpose: Returns TRUE if the domain is open at the end.
+
+    	returns Boolean from Standard
+	
+	is static;
+
+
+    Value(me: in out ;  
+    	    Theta: Real from Standard)
+     
+    	---Purpose: Returns the point at parameter Theta on the curve.
+
+    	returns Pnt from gp
+
+    	raises DomainError from Standard
+    	--     The exception DomainError is raised if Theta is not in
+    	--     the domain.
+
+    	is static;
+
+
+    D1u(me: in out ; Theta: Real from Standard;
+                     P: out Pnt from gp; V: out Vec from gp)
+    
+    	---Purpose: Returns the point and the first derivative at parameter
+    	--          Theta on the curve.
+  
+    	returns Boolean from Standard
+  
+    	raises DomainError from Standard
+    	--     The exception DomainError is raised if Theta is not in
+    	--     the domain.
+
+    	is static;
+
+
+    FindParameter(me; P: Pnt from gp; Para: out Real from Standard)
+    
+	---Purpose: Tries to find the parameter of the point P on the curve.
+	--          If the method returns False, the "projection" is
+	--          impossible, and the value of Para is not significant.
+	--          If the method returns True, Para is the parameter of the
+	--          nearest intersection between the curve and the iso-theta
+	--          containing P.
+    
+    	returns Boolean from Standard
+	
+	is static;
+
+
+--------------------------------------------------------------- 
+--                                                              
+--  Implementation :                                                               
+--                                                              
+
+
+    SetIsFirstOpen(me : in out; Flag: Boolean from Standard)
+    
+    	---Purpose: If flag is True, the Curve is not defined at the 
+    	--          first parameter of its domain.
+    	--          
+    	is static;	
+
+    SetIsLastOpen(me : in out; Flag: Boolean from Standard) 
+    
+    	---Purpose: If flag is True, the Curve is not defined at the 
+    	--          first parameter of its domain.
+        is static;
+
+
+    InternalValue(me; Theta1,Theta2: Real from Standard)
+
+    	---Purpose: Protected function.
+        
+    	returns Pnt from gp
+	
+    	is static protected;
+
+
+    InternalUVValue(me; Param: Real from Standard;
+                        U,V,A,B,C,Co,Si,Di: out Real from Standard)
+			
+	---Purpose: Protected function. 
+    
+    	is static; 
+	
+-- 
+    SetDomain(me:out; 
+	    Theta1:Real from Standard;
+    	    Theta2:Real from Standard) 
+    	raises DomainError from Standard; 
+--
+
+fields
+    
+    	Z0Cte:      Real from Standard;
+    	Z0Sin:      Real from Standard;
+    	Z0Cos:      Real from Standard;
+    	Z0SinSin:   Real from Standard;
+    	Z0CosCos:   Real from Standard;
+    	Z0CosSin:   Real from Standard;
+
+    	Z1Cte:      Real from Standard;
+    	Z1Sin:      Real from Standard;
+    	Z1Cos:      Real from Standard;
+    	Z1SinSin:   Real from Standard;
+    	Z1CosCos:   Real from Standard;
+    	Z1CosSin:   Real from Standard;
+
+    	Z2Cte:      Real from Standard;
+    	Z2Sin:      Real from Standard;
+    	Z2Cos:      Real from Standard;
+    	Z2SinSin:   Real from Standard;
+    	Z2CosCos:   Real from Standard;
+    	Z2CosSin:   Real from Standard;
+
+	TwoCurves      : Boolean from Standard;
+	TakeZPositive  : Boolean from Standard;
+        Tolerance      : Real from Standard; 
+	DomainInf      : Real from Standard;
+	DomainSup      : Real from Standard;
+	
+	RestrictedInf  : Boolean from Standard;
+	RestrictedSup  : Boolean from Standard;
+
+
+        LastZ  : Real from Standard;
+	LastDZ : Real from Standard;
+
+    	firstbounded : Boolean from Standard;
+	lastbounded  : Boolean from Standard;
+
+
+    	typequadric    : SurfaceType from GeomAbs;
+       
+	RCyl           : Real from Standard;
+        Angle          : Real from Standard;
+        Ax3            : Ax3  from gp;
+	
+end Curve;

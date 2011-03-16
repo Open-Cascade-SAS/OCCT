@@ -1,0 +1,849 @@
+// File:	IntCurveSurface_Polyhedron.gxx
+// Created:	Wed Feb  3 11:33:09 1993
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array2OfReal.hxx>
+
+#include <Bnd_Array1OfBox.hxx>
+
+#include <Standard_ConstructionError.hxx>
+
+//#if  defined (WNT) || !defined (DEB) 
+#include <stdio.h>
+//#endif
+
+#define CHECKBOUNDS 0
+
+
+//-----------------------------------------------------
+#define LONGUEUR_MINI_EDGE_TRIANGLE 1e-15
+
+
+//=======================================================================
+//function : IntCurveSurface_Polyhedron
+//purpose  : 
+//=======================================================================
+IntCurveSurface_Polyhedron::IntCurveSurface_Polyhedron (const ThePSurface&     Surface,
+							const Standard_Integer nbdU,
+							const Standard_Integer nbdV,
+							const Standard_Real    u1,
+							const Standard_Real    v1,
+							const Standard_Real    u2,
+							const Standard_Real    v2)
+     : nbdeltaU((nbdU<3)? 3 : nbdU),
+       nbdeltaV((nbdV<3)? 3 : nbdV),
+       TheDeflection(Epsilon(100.)),
+       C_MyPnts(NULL),C_MyU(NULL),C_MyV(NULL),C_MyIsOnBounds(NULL)
+{
+  Standard_Integer t = (nbdeltaU+1)*(nbdeltaV+1)+1; 
+  gp_Pnt           *CMyPnts = new gp_Pnt[t];         C_MyPnts = (void *)CMyPnts;
+  Standard_Real    *CMyU    = new Standard_Real[t];  C_MyU    = (void *)CMyU;  
+  Standard_Real    *CMyV    = new Standard_Real[t];  C_MyV    = (void *)CMyV;
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:46 2001 Begin
+  Standard_Boolean *CMyIsOnBounds = new Standard_Boolean[t];
+
+  C_MyIsOnBounds = (void *)CMyIsOnBounds;
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:47 2001 End
+  Init(Surface,u1,v1,u2,v2);
+}
+
+//=======================================================================
+//function : IntCurveSurface_Polyhedron
+//purpose  : 
+//=======================================================================
+IntCurveSurface_Polyhedron::IntCurveSurface_Polyhedron (const ThePSurface&     Surface,
+							const TColStd_Array1OfReal&    Upars,
+							const TColStd_Array1OfReal&    Vpars)
+    : nbdeltaU(Upars.Length()-1),
+      nbdeltaV(Vpars.Length()-1),
+      TheDeflection(Epsilon(100.)),
+      C_MyPnts(NULL),C_MyU(NULL),C_MyV(NULL),C_MyIsOnBounds(NULL)
+{
+  Standard_Integer t = (nbdeltaU+1)*(nbdeltaV+1)+1; 
+  gp_Pnt           *CMyPnts = new gp_Pnt[t];         C_MyPnts = (void *)CMyPnts;
+  Standard_Real    *CMyU    = new Standard_Real[t];  C_MyU    = (void *)CMyU;  
+  Standard_Real    *CMyV    = new Standard_Real[t];  C_MyV    = (void *)CMyV;
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:46 2001 Begin
+  Standard_Boolean *CMyIsOnBounds = new Standard_Boolean[t];
+
+  C_MyIsOnBounds = (void *)CMyIsOnBounds;
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:47 2001 End
+  Init(Surface, Upars, Vpars);
+}
+
+
+void IntCurveSurface_Polyhedron::Destroy() { 
+  //-- printf("\n IntCurveSurface_Polyhedron::Destroy\n");
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;       if(C_MyPnts) delete [] CMyPnts;
+  Standard_Real *CMyU = (Standard_Real *)C_MyU;   if(C_MyU)    delete [] CMyU;
+  Standard_Real *CMyV = (Standard_Real *)C_MyV;   if(C_MyV)    delete [] CMyV;
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:46 2001 Begin
+  Standard_Boolean *CMyIsOnBounds = (Standard_Boolean *)C_MyIsOnBounds;
+
+  if(C_MyIsOnBounds)    delete [] CMyIsOnBounds;
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:03:47 2001 End
+
+  C_MyPnts=C_MyU=C_MyV=C_MyIsOnBounds=NULL;
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
+				      const Standard_Real U0,
+				      const Standard_Real V0,
+				      const Standard_Real U1,
+				      const Standard_Real V1) { 
+  static Standard_Integer DebugDump = 0;
+  Standard_Integer i1,i2;
+  Standard_Real    U,V;
+  Standard_Real    U1mU0sNbdeltaU = (U1-U0)/(Standard_Real)nbdeltaU;
+  Standard_Real    V1mV0sNbdeltaV = (V1-V0)/(Standard_Real)nbdeltaV;
+  gp_Pnt TP;
+  Standard_Integer Index=1;
+  //-- --------------------------------------------------
+  //-- Index varie de 1 -> (nbdu+1)*(nbdv+1)
+  //-- V est la colonne
+  //-- U est la ligne 
+  //-- --------------------------------------------------
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;
+  Standard_Real *CMyU = (Standard_Real *)C_MyU;
+  Standard_Real *CMyV = (Standard_Real *)C_MyV;
+  Standard_Boolean *CMyIsOnBounds = (Standard_Boolean *)C_MyIsOnBounds;
+
+  for (i1 = 0, U = U0; i1 <= nbdeltaU; i1++, U+= U1mU0sNbdeltaU) {
+    for (i2 = 0, V = V0; i2 <= nbdeltaV; i2++, V+= V1mV0sNbdeltaV ) {
+      ThePSurfaceTool::D0(Surface,U,V,TP);
+      //-- Point(TP,i1, i2,U,V);
+      CMyPnts[Index] = TP;
+      CMyU[Index]    = U;
+      CMyV[Index]    = V;
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:07:51 2001
+      CMyIsOnBounds[Index] = (i1 == 0 || i1 == nbdeltaU ||
+			      i2 == 0 || i2 == nbdeltaV);
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:07:52 2001
+      TheBnd.Add(TP);
+      Index++;
+    }
+  }
+  //-- Calcul de la deflection Triangle <-> Point milieu
+  Standard_Real tol=0.0; Standard_Integer nbtriangles = NbTriangles();
+  for (i1=1; i1<=nbtriangles; i1++) {
+    Standard_Real tol1 = DeflectionOnTriangle(Surface,i1);
+    if(tol1>tol) tol=tol1;
+  }
+  //-- Calcul de la deflection Bord <-> Point milieu
+
+
+  DeflectionOverEstimation(tol*1.2);
+  FillBounding();
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 11:23:33 2001 Begin
+  Standard_Real aDeflection;
+
+  TheBorderDeflection = RealFirst();
+
+// Compute the deflection on the lower bound (U-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, U0, V0, V1, Standard_True);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the upper bound (U-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, U1, V0, V1, Standard_True);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the lower bound (V-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, V0, U0, U1, Standard_False);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the upper bound (V-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, V1, U0, U1, Standard_False);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
+
+  if(DebugDump) { 
+    Dump();
+  }
+}
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
+				      const TColStd_Array1OfReal& Upars,
+				      const TColStd_Array1OfReal& Vpars) { 
+  static Standard_Integer DebugDump = 0;
+  Standard_Integer i1,i2;
+  Standard_Real    U,V;
+  gp_Pnt TP;
+  Standard_Integer Index=1;
+  //-- --------------------------------------------------
+  //-- Index varie de 1 -> (nbdu+1)*(nbdv+1)
+  //-- V est la colonne
+  //-- U est la ligne 
+  //-- --------------------------------------------------
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;
+  Standard_Real *CMyU = (Standard_Real *)C_MyU;
+  Standard_Real *CMyV = (Standard_Real *)C_MyV;
+  Standard_Boolean *CMyIsOnBounds = (Standard_Boolean *)C_MyIsOnBounds;
+  Standard_Integer i0 = Upars.Lower(), j0 = Vpars.Lower();
+
+  for (i1 = 0; i1 <= nbdeltaU; i1++) {
+    U = Upars(i1+i0);
+    for (i2 = 0; i2 <= nbdeltaV; i2++) {
+      V = Vpars(i2+j0);
+      ThePSurfaceTool::D0(Surface,U,V,TP);
+      //-- Point(TP,i1, i2,U,V);
+      CMyPnts[Index] = TP;
+      CMyU[Index]    = U;
+      CMyV[Index]    = V;
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:07:51 2001
+      CMyIsOnBounds[Index] = (i1 == 0 || i1 == nbdeltaU ||
+			      i2 == 0 || i2 == nbdeltaV);
+//  Modified by Sergey KHROMOV - Fri Dec  7 12:07:52 2001
+      TheBnd.Add(TP);
+      Index++;
+    }
+  }
+  //-- Calcul de la deflection Triangle <-> Point milieu
+  Standard_Real tol=0.0; Standard_Integer nbtriangles = NbTriangles();
+  for (i1=1; i1<=nbtriangles; i1++) {
+    Standard_Real tol1 = DeflectionOnTriangle(Surface,i1);
+    if(tol1>tol) tol=tol1;
+  }
+  //-- Calcul de la deflection Bord <-> Point milieu
+
+
+  DeflectionOverEstimation(tol*1.2);
+  FillBounding();
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 11:23:33 2001 Begin
+  Standard_Real aDeflection;
+
+  TheBorderDeflection = RealFirst();
+  Standard_Real U0 = Upars(i0);
+  Standard_Real V0 = Vpars(j0);
+  Standard_Real U1 = Upars(Upars.Upper());
+  Standard_Real V1 = Vpars(Vpars.Upper());
+
+// Compute the deflection on the lower bound (U-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, U0, V0, V1, Standard_True);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the upper bound (U-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, U1, V0, V1, Standard_True);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the lower bound (V-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, V0, U0, U1, Standard_False);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+// Compute the deflection on the upper bound (V-isoline) of the surface.
+  aDeflection = ComputeBorderDeflection(Surface, V1, U0, U1, Standard_False);
+
+  if (aDeflection > TheBorderDeflection)
+    TheBorderDeflection = aDeflection;
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
+
+  if(DebugDump) { 
+    Dump();
+  }
+}
+//=======================================================================
+//function : DeflectionOnTriangle
+//purpose  : 
+//=======================================================================
+Standard_Real IntCurveSurface_Polyhedron::DeflectionOnTriangle (const ThePSurface& Surface,
+								const Standard_Integer Triang) const 
+{
+  Standard_Integer i1,i2,i3;    
+  Triangle(Triang,i1,i2,i3);
+  //-- Calcul de l equation du plan
+  Standard_Real u1,v1,u2,v2,u3,v3;
+  gp_Pnt P1,P2,P3;
+  P1 = Point(i1,u1,v1);
+  P2 = Point(i2,u2,v2);
+  P3 = Point(i3,u3,v3);
+  if(P1.SquareDistance(P2)<=LONGUEUR_MINI_EDGE_TRIANGLE) return(0);
+  if(P1.SquareDistance(P3)<=LONGUEUR_MINI_EDGE_TRIANGLE) return(0);
+  if(P2.SquareDistance(P3)<=LONGUEUR_MINI_EDGE_TRIANGLE) return(0);
+  gp_XYZ XYZ1=P2.XYZ()-P1.XYZ();
+  gp_XYZ XYZ2=P3.XYZ()-P2.XYZ();
+  gp_XYZ XYZ3=P1.XYZ()-P3.XYZ();
+  gp_Vec NormalVector((XYZ1^XYZ2)+(XYZ2^XYZ3)+(XYZ3^XYZ1));
+  NormalVector.Normalize();
+  //-- Standard_Real PolarDistance = NormalVector * P1.XYZ();
+  //-- Calcul du point u,v  au centre du triangle
+  Standard_Real u = (u1+u2+u3)/3.0;
+  Standard_Real v = (v1+v2+v3)/3.0;
+  gp_Pnt P =  ThePSurfaceTool::Value(Surface,u,v);
+  gp_Vec P1P(P1,P);
+  return(Abs(P1P.Dot(NormalVector)));
+}
+//=======================================================================
+//function : Parameters
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Parameters( const Standard_Integer Index
+					    ,Standard_Real &U
+					    ,Standard_Real &V) const 
+{
+#if CHECKBOUNDS 
+  if(Index<0 || Index>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::Parameters\n");
+  }
+#endif
+  Standard_Real *CMyU = (Standard_Real *)C_MyU;
+  U = CMyU[Index];
+  Standard_Real *CMyV = (Standard_Real *)C_MyV;
+  V = CMyV[Index];
+}
+//=======================================================================
+//function : DeflectionOverEstimation
+//purpose  : Set
+//=======================================================================
+void IntCurveSurface_Polyhedron::DeflectionOverEstimation(const Standard_Real flec)
+{
+  if(flec<0.0001) {  
+    TheDeflection=0.0001;
+    TheBnd.Enlarge(0.0001);
+  }
+  else { 
+    TheDeflection=flec;
+    TheBnd.Enlarge(flec);
+  }    
+}
+//=======================================================================
+//function : DeflectionOverEstimation
+//purpose  : Get
+//=======================================================================
+Standard_Real IntCurveSurface_Polyhedron::DeflectionOverEstimation() const
+{
+  return TheDeflection;
+}
+//=======================================================================
+//function : Bounding
+//purpose  : 
+//=======================================================================
+const Bnd_Box& IntCurveSurface_Polyhedron::Bounding() const
+{
+  return TheBnd;
+}
+//=======================================================================
+//function : FillBounding
+//purpose  :  
+//=======================================================================
+void IntCurveSurface_Polyhedron::FillBounding()
+{
+  TheComponentsBnd=new Bnd_HArray1OfBox(1, NbTriangles());
+  Bnd_Box Boite;
+  Standard_Integer np1, np2, np3;
+  Standard_Integer nbtriangles = NbTriangles();
+  for (Standard_Integer iTri=1; iTri<=nbtriangles; iTri++) {
+    Triangle(iTri, np1, np2, np3);
+    gp_Pnt p1(Point(np1));
+    gp_Pnt p2(Point(np2));
+    gp_Pnt p3(Point(np3));
+    Boite.SetVoid();
+    if(p1.SquareDistance(p2)>LONGUEUR_MINI_EDGE_TRIANGLE) {
+      if(p1.SquareDistance(p3)>LONGUEUR_MINI_EDGE_TRIANGLE) {
+	if(p2.SquareDistance(p3)>LONGUEUR_MINI_EDGE_TRIANGLE) {
+	  Boite.Add(p1);
+	  Boite.Add(p2);
+	  Boite.Add(p3);
+	  Boite.Enlarge(TheDeflection);
+	}  
+      }
+    }
+    Boite.Enlarge(TheDeflection);
+    TheComponentsBnd->SetValue(iTri,Boite); 
+  }
+}
+//=======================================================================
+//function : ComponentsBounding
+//purpose  : 
+//=======================================================================
+const Handle(Bnd_HArray1OfBox)& 
+      IntCurveSurface_Polyhedron::ComponentsBounding() const
+{
+ return TheComponentsBnd;
+}
+//=======================================================================
+//function : NbTriangles
+//purpose  : 
+//=======================================================================
+Standard_Integer IntCurveSurface_Polyhedron::NbTriangles  () const
+{
+  return nbdeltaU*nbdeltaV*2;
+}
+//=======================================================================
+//function : NbPoints
+//purpose  : 
+//=======================================================================
+Standard_Integer IntCurveSurface_Polyhedron::NbPoints () const
+{
+  return (nbdeltaU+1)*(nbdeltaV+1);
+}
+//=======================================================================
+//function : TriConnex
+//purpose  : 
+//=======================================================================
+Standard_Integer IntCurveSurface_Polyhedron::TriConnex
+  (const Standard_Integer Triang,
+   const Standard_Integer Pivot,
+   const Standard_Integer Pedge,
+   Standard_Integer&      TriCon,
+   Standard_Integer&      OtherP) const
+{
+#ifdef DEB
+  Standard_Integer nbdeltaUp1 = nbdeltaU + 1;
+  Standard_Integer nbdeltaUm2 = nbdeltaU + nbdeltaU;
+#endif
+  Standard_Integer Pivotm1    = Pivot-1;
+  Standard_Integer nbdeltaVp1 = nbdeltaV+1;
+  Standard_Integer nbdeltaVm2 = nbdeltaV + nbdeltaV;
+
+// Pivot position in the MaTriangle :
+  Standard_Integer ligP = Pivotm1/nbdeltaVp1;
+  Standard_Integer colP = Pivotm1 - ligP * nbdeltaVp1;
+
+// Point sur Edge position in the MaTriangle and edge typ :
+#ifndef DEB  
+  Standard_Integer ligE =0, colE =0, typE =0;
+#else
+  Standard_Integer ligE, colE, typE;
+#endif
+  if (Pedge!=0) {
+    ligE= (Pedge-1)/nbdeltaVp1;
+    colE= (Pedge-1) - (ligE * nbdeltaVp1);
+  // Horizontal
+    if      (ligP==ligE) typE=1;
+  // Vertical
+    else if (colP==colE) typE=2;
+  // Oblique
+    else                 typE=3;
+  }
+  else {
+    typE=0;
+  }
+
+// Triangle position General case :
+#ifndef DEB
+  Standard_Integer linT =0, colT =0;
+  Standard_Integer linO =0, colO =0;
+  Standard_Integer t =0, tt =0;
+#else
+  Standard_Integer linT, colT;
+  Standard_Integer linO, colO;
+  Standard_Integer t,tt;
+#endif
+  if (Triang!=0) {
+    t = (Triang-1)/(nbdeltaVm2);
+    tt= (Triang-1)-t*nbdeltaVm2;
+    linT= 1+t;
+    colT= 1+tt;
+    if (typE==0) {
+      if (ligP==linT) {
+	ligE=ligP-1;
+	colE=colP-1;
+	typE=3;
+      }
+      else {
+	if (colT==ligP+ligP) {
+	  ligE=ligP;
+	  colE=colP-1;
+	  typE=1;
+	}
+	else {
+	  ligE=ligP+1;
+	  colE=colP+1;
+	  typE=3;
+	}
+      }
+    }
+    switch (typE) {
+    case 1:  // Horizontal
+      if (linT==ligP) {
+	linT++;
+	linO=ligP+1;
+	colO=(colP>colE)? colP : colE; //--colO=Max(colP, colE);
+      }
+      else {
+	linT--;
+	linO=ligP-1;
+	colO=(colP<colE)? colP : colE;	//--colO=Min(colP, colE);
+      }
+      break;
+    case 2:  // Vertical
+      if (colT==(colP+colP)) {
+        colT++;
+	linO=(ligP>ligE)? ligP : ligE; 	//--linO=Max(ligP, ligE);
+	colO=colP+1;;
+      }
+      else {
+        colT--;
+	linO=(ligP<ligE)? ligP : ligE; 	//--linO=Min(ligP, ligE);
+	colO=colP-1;;
+      }
+      break;
+    case 3:  // Oblique
+      if ((colT&1)==0) {
+	colT--;
+	linO=(ligP>ligE)? ligP : ligE;	//--linO=Max(ligP, ligE);
+	colO=(colP<colE)? colP : colE;	//--colO=Min(colP, colE);
+      }
+      else {
+	colT++;
+	linO=(ligP<ligE)? ligP : ligE;	//--linO=Min(ligP, ligE);
+	colO=(colP>colE)? colP : colE;	//--colO=Max(colP, colE);
+      }
+      break;
+    }
+  }
+  else {
+    // Unknown Triangle position :
+    if (Pedge==0) {
+      // Unknown edge :
+      linT=(1>ligP)? 1 : ligP;      //--linT=Max(1, ligP);
+      colT=(1>(colP+colP))? 1 : (colP+colP);       //--colT=Max(1, colP+colP);
+      if (ligP==0) linO=ligP+1;
+      else         linO=ligP-1;
+      colO=colP;
+    }
+    else {
+      // Known edge We take the left or down connectivity :
+      switch (typE) {
+      case 1:  // Horizontal
+	linT=ligP+1;
+	colT=(colP>colE)? colP : colE; 	//--colT=Max(colP,colE);
+	colT+=colT;
+	linO=ligP+1;
+	colO=(colP>colE)? colP : colE;	//--colO=Max(colP,colE);
+	break;
+      case 2:  // Vertical
+	linT=(ligP>ligE)? ligP : ligE;	//--linT=Max(ligP, ligE);
+	colT=colP+colP;
+	linO=(ligP<ligE)? ligP : ligE; 	//--linO=Min(ligP, ligE);
+	colO=colP-1;
+	break;
+      case 3:  // Oblique
+	linT=(ligP>ligE)? ligP : ligE; 	//--linT=Max(ligP, ligE);
+	colT=colP+colE;
+	linO=(ligP>ligE)? ligP : ligE;	//--linO=Max(ligP, ligE);
+	colO=(colP<colE)? colP : colE;	//--colO=Min(colP, colE);
+	break;
+      }
+    }
+  }
+
+  TriCon=(linT-1)*nbdeltaVm2 + colT;
+
+  if (linT<1) {
+    linO=0;
+    colO=colP+colP-colE;
+    if (colO<0) {colO=0;linO=1;}
+    else if (colO>nbdeltaV) {colO=nbdeltaV;linO=1;}
+    TriCon=0;
+  }
+  else if (linT>nbdeltaU) {
+    linO=nbdeltaU;
+    colO=colP+colP-colE;
+    if (colO<0) {colO=0;linO=nbdeltaU-1;}
+    else if (colO>nbdeltaV) {colO=nbdeltaV;linO=nbdeltaU-1;}
+    TriCon=0;
+  }
+
+  if (colT<1) {
+    colO=0;
+    linO=ligP+ligP-ligE;
+    if (linO<0) {linO=0;colO=1;}
+    else if (linO>nbdeltaU) {linO=nbdeltaU;colO=1;}
+    TriCon=0;
+  }
+  else if (colT>nbdeltaV) {
+    colO=nbdeltaV;
+    linO=ligP+ligP-ligE;
+    if (linO<0) {linO=0;colO=nbdeltaV-1;}
+    else if (linO>nbdeltaU) {linO=nbdeltaU;colO=nbdeltaV-1;}
+    TriCon=0;
+  }
+
+  OtherP=linO*nbdeltaVp1 + colO+1;
+
+  return TriCon;
+}
+
+
+//=======================================================================
+//function : PlaneEquation
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::PlaneEquation (const Standard_Integer Triang,
+					gp_XYZ&        NormalVector,
+					Standard_Real& PolarDistance)  const
+{
+  Standard_Integer i1,i2,i3;
+  Triangle(Triang,i1,i2,i3);
+
+  //--  gp_XYZ v1=Point(i2).XYZ()-Point(i1).XYZ();
+  //--  gp_XYZ v2=Point(i3).XYZ()-Point(i2).XYZ();
+  //--  gp_XYZ v3=Point(i1).XYZ()-Point(i3).XYZ();
+
+  gp_XYZ Pointi1(Point(i1).XYZ());
+  gp_XYZ Pointi2(Point(i2).XYZ());
+  gp_XYZ Pointi3(Point(i3).XYZ());
+  
+
+  gp_XYZ v1= Pointi2 - Pointi1;
+  gp_XYZ v2= Pointi3 - Pointi2;
+  gp_XYZ v3= Pointi1 - Pointi3;
+
+  if(v1.SquareModulus()<=LONGUEUR_MINI_EDGE_TRIANGLE) { NormalVector.SetCoord(1.0,0.0,0.0); return; } 
+  if(v2.SquareModulus()<=LONGUEUR_MINI_EDGE_TRIANGLE) { NormalVector.SetCoord(1.0,0.0,0.0); return; } 
+  if(v3.SquareModulus()<=LONGUEUR_MINI_EDGE_TRIANGLE) { NormalVector.SetCoord(1.0,0.0,0.0); return; } 
+
+  NormalVector= (v1^v2)+(v2^v3)+(v3^v1);
+  NormalVector.Normalize();
+  PolarDistance = NormalVector * Point(i1).XYZ();
+}
+//=======================================================================
+//function : Contain
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntCurveSurface_Polyhedron::Contain (const Standard_Integer Triang,
+						      const gp_Pnt& ThePnt) const
+{
+  Standard_Integer i1,i2,i3;
+  Triangle(Triang,i1,i2,i3);
+  gp_XYZ Pointi1(Point(i1).XYZ());
+  gp_XYZ Pointi2(Point(i2).XYZ());
+  gp_XYZ Pointi3(Point(i3).XYZ());
+  
+  gp_XYZ v1=(Pointi2-Pointi1)^(ThePnt.XYZ()-Pointi1);
+  gp_XYZ v2=(Pointi3-Pointi2)^(ThePnt.XYZ()-Pointi2);
+  gp_XYZ v3=(Pointi1-Pointi3)^(ThePnt.XYZ()-Pointi3);
+  if (v1*v2 >= 0. && v2*v3 >= 0. && v3*v1>=0.) 
+    return Standard_True;
+  else 
+    return Standard_False;
+}
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Dump() const
+{
+
+}
+//=======================================================================
+//function : Size
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Size (Standard_Integer& nbdu,
+			      Standard_Integer& nbdv) const
+{
+  nbdu=nbdeltaU;
+  nbdv=nbdeltaV;
+}
+//=======================================================================
+//function : Triangle
+//purpose  : 
+//=======================================================================
+void IntCurveSurface_Polyhedron::Triangle (const Standard_Integer Index,
+				  Standard_Integer& P1,
+				  Standard_Integer& P2,
+				  Standard_Integer& P3) const
+{
+  Standard_Integer line=1+((Index-1)/(nbdeltaV*2));
+  Standard_Integer colon=1+((Index-1)%(nbdeltaV*2));
+  Standard_Integer colpnt=(colon+1)/2;
+
+// General formula = (line-1)*(nbdeltaV+1)+colpnt
+  
+//  Position of P1 = MesXYZ(line,colpnt);
+  P1= (line-1)*(nbdeltaV+1) + colpnt;
+
+//  Position of P2= MesXYZ(line+1,colpnt+((colon-1)%2));
+  P2= line*(nbdeltaV+1) + colpnt+((colon-1)%2);
+
+//  Position of P3= MesXYZ(line+(colon%2),colpnt+1);
+  P3= (line-1+(colon%2))*(nbdeltaV+1) + colpnt + 1;
+}
+//=======================================================================
+//function : Point
+//=======================================================================
+const gp_Pnt& IntCurveSurface_Polyhedron::Point(const Standard_Integer Index
+						,Standard_Real& U
+						,Standard_Real& V) const 
+{
+#if CHECKBOUNDS 
+  if(Index<0 || Index>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::Parameters\n");
+  }
+#endif
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;
+  Standard_Real *CMyU = (Standard_Real *)C_MyU;
+  Standard_Real *CMyV = (Standard_Real *)C_MyV;
+  U=CMyU[Index];
+  V=CMyV[Index];
+  return CMyPnts[Index];
+}
+//=======================================================================
+//function : Point
+//=======================================================================
+const gp_Pnt& IntCurveSurface_Polyhedron::Point(const Standard_Integer Index) const {
+#if CHECKBOUNDS 
+  if(Index<0 || Index>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::Parameters\n");
+  }
+#endif
+  
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;
+  return CMyPnts[Index];
+}
+//=======================================================================
+//function : Point
+//=======================================================================
+//void IntCurveSurface_Polyhedron::Point (const gp_Pnt& p, 
+//					const Standard_Integer lig,
+//					const Standard_Integer col,
+//					const Standard_Real u,
+//					const Standard_Real v) 
+void IntCurveSurface_Polyhedron::Point (const gp_Pnt& , 
+					const Standard_Integer ,
+					const Standard_Integer ,
+					const Standard_Real ,
+					const Standard_Real ) 
+{
+  printf("\n IntCurveSurface_Polyhedron::Point : Ne dois pas etre appelle\n");
+}
+//=======================================================================
+//function : Point
+//=======================================================================
+void IntCurveSurface_Polyhedron::Point (const Standard_Integer Index,gp_Pnt& P) const
+{
+#if CHECKBOUNDS 
+  if(Index<0 || Index>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::Parameters\n");
+  }
+#endif
+  
+  gp_Pnt *CMyPnts     = (gp_Pnt *)C_MyPnts;
+  P = CMyPnts[Index];
+}
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 10:12:47 2001 Begin
+
+//=======================================================================
+//function : IsOnBound
+//purpose  : This method returns true if the edge based on points with 
+//           indices Index1 and Index2 represents a boundary edge.
+//=======================================================================
+
+Standard_Boolean IntCurveSurface_Polyhedron::IsOnBound
+                                 (const Standard_Integer Index1,
+				  const Standard_Integer Index2) const
+{
+#if CHECKBOUNDS 
+  if(Index1<0 || Index1>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::IsOnBound\n");
+  }
+  if(Index2<0 || Index2>((nbdeltaU+1)*(nbdeltaV+1))) { 
+    printf("\n Erreur IntCurveSurface_Polyhedron::IsOnBound\n");
+  }
+#endif
+  Standard_Boolean *CMyIsOnBounds = (Standard_Boolean *)C_MyIsOnBounds;
+  Standard_Integer  aDiff         = Abs(Index1 - Index2);
+  Standard_Integer  i;
+
+// Check if points are neighbour ones.
+  if (aDiff != 1 && aDiff != nbdeltaV + 1)
+    return Standard_False;
+
+  for (i = 0; i <= nbdeltaU; i++) {
+    if ((Index1 == 1 + i*(nbdeltaV + 1)) && (Index2 == Index1 - 1))
+      return Standard_False;
+
+    if ((Index1 == (1 + i)*(nbdeltaV + 1)) && (Index2 == Index1 + 1))
+      return Standard_False;
+  }
+
+  return (CMyIsOnBounds[Index1] && CMyIsOnBounds[Index2]);
+}
+
+//=======================================================================
+//function : ComputeBorderDeflection
+//purpose  : This method computes and returns a deflection of isoline 
+//           of given parameter on Surface.
+//=======================================================================
+
+Standard_Real IntCurveSurface_Polyhedron::ComputeBorderDeflection
+                              (const ThePSurface      &Surface,
+			       const Standard_Real     Parameter,
+			       const Standard_Real     PMin,
+			       const Standard_Real     PMax,
+			       const Standard_Boolean  isUIso) const
+{
+  Standard_Integer aNbSamples;
+  Standard_Integer i;
+  
+  if (isUIso)
+    aNbSamples = nbdeltaV;
+  else
+    aNbSamples = nbdeltaU;
+
+  Standard_Real aDelta      = (PMax - PMin)/aNbSamples;
+  Standard_Real aPar        = PMin;
+  Standard_Real aDeflection = RealFirst();
+  gp_XYZ        aP1;
+  gp_XYZ        aP2;
+  gp_XYZ        aPMid;
+  gp_XYZ        aPParMid;
+
+  for (i = 0; i <= aNbSamples; i++, aPar+= aDelta) {
+    if (isUIso) {
+      aP1      = ThePSurfaceTool::Value(Surface, Parameter, aPar).XYZ();
+      aP2      = ThePSurfaceTool::Value(Surface, Parameter, aPar + aDelta).XYZ();
+      aPParMid = ThePSurfaceTool::Value(Surface, Parameter, aPar + aDelta/2.).XYZ();
+    } else {
+      aP1      = ThePSurfaceTool::Value(Surface, aPar,             Parameter).XYZ();
+      aP2      = ThePSurfaceTool::Value(Surface, aPar + aDelta,    Parameter).XYZ();
+      aPParMid = ThePSurfaceTool::Value(Surface, aPar + aDelta/2., Parameter).XYZ();
+    }
+    aPMid = (aP2 + aP1)/2.;
+
+    Standard_Real aDist = (aPMid - aPParMid).Modulus();
+
+    if (aDist > aDeflection)
+      aDeflection = aDist;
+  }
+
+  return aDeflection;
+}
+
+//  Modified by Sergey KHROMOV - Fri Dec  7 11:21:52 2001 End

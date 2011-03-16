@@ -1,0 +1,53 @@
+
+-- File:	V2d_BackgroundGraphicObject.cdl
+-- Created:	Thu Feb 19 13:16:21 1998
+-- Authors:	Gerard GRAS
+--		<gg@photox>
+---Copyright:	 Matra Datavision 1993
+
+private class BackgroundGraphicObject from V2d inherits GraphicObject from Graphic2d 
+
+	---Version:
+
+	---Purpose: Creates a 2D background graphic object in a view.
+	--	    A graphic object is a primitives manager
+	--	    which drawn before all the others graphic objects
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	View                    from Graphic2d
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+        Create (aView: View from Graphic2d)
+        returns mutable BackgroundGraphicObject from V2d;
+        ---Level: Public
+        ---Purpose: Creates a graphic object in the view <aView>.
+        --          A graphic object manages a sequence of primitives.
+        ---Category: Constructors
+
+	-------------------------------------------------
+	-- Category: Methods to manage the drawing priority 
+	-------------------------------------------------
+
+	MaxPriority (me) returns Integer from Standard is redefined;
+	---Level: Public
+	---Purpose: Returns the max usable relative priority of the 
+	--         "hiding" graphic object. 	
+
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+
+        BasePriority (me) returns Integer from Standard is redefined private;
+        ---Level: Internal
+        ---Purpose: Returns the min usable absolute priority of the
+        --         "hiding" graphic object.  
+
+end BackgroundGraphicObject from V2d;

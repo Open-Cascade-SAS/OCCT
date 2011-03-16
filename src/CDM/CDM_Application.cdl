@@ -1,0 +1,62 @@
+-- File:	CDM_Application.cdl
+-- Created:	Wed Oct 22 15:05:47 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copy:	 Matra Datavision 1997
+
+deferred class Application from CDM inherits Transient from Standard
+
+uses Document           from CDM,
+     MetaData           from CDM,
+     Reference          from CDM,
+     MessageDriver      from CDM,
+     Manager            from Resource,
+     ExtendedString     from TCollection
+is
+
+    Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard)
+    returns mutable Document from CDM
+    is deferred private;
+
+
+    DocumentVersion(me: mutable; aMetaData: MetaData from CDM)
+    returns Integer from Standard
+    is deferred private;
+    ---Purpose: returns -1 if the metadata has no modification counter.
+    
+    SetDocumentVersion(me; aDocument: Document from CDM; aMetaData: MetaData from CDM)
+    is protected;
+
+    SetReferenceCounter(me:mutable ; aDocument: Document from CDM; aReferenceCounter: Integer from Standard)
+    is protected;
+    
+    Resources(me: mutable)
+    returns Manager from Resource
+    is deferred;
+    ---Purpose: the manager returned by  this virtual  method will be
+    --          used to search for Format`.Retrieval  resource items. 
+    --          
+    
+    MessageDriver(me: mutable) returns MessageDriver from CDM
+    is virtual;
+    ---Purpose: By default returns a NullMessageDriver;
+
+    BeginOfUpdate(me:mutable; aDocument: Document from CDM)
+    is virtual;
+    ---Purpose: this method is called before the update of a document.
+    --         By default, writes in MessageDriver().
+
+    EndOfUpdate(me:mutable; aDocument: Document from CDM; Status: Boolean from Standard; ErrorString: ExtendedString from TCollection)
+    is virtual;
+    ---Purpose: this method is called affter the update of a document.
+    --         By default, writes in MessageDriver().
+
+    Write(me: mutable; aString: ExtString from Standard);
+    ---Purpose: writes the string in the application MessagerDriver.
+
+friends     
+
+    class Reference from CDM,
+    class MetaData from CDM
+
+end Application from CDM;

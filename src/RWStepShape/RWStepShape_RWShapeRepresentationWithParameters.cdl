@@ -1,0 +1,35 @@
+-- File:	RWStepShape_RWShapeRepresentationWithParameters.cdl
+-- Created:	Wed Jun  4 13:34:33 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWShapeRepresentationWithParameters from RWStepShape
+
+    ---Purpose: Read & Write tool for ShapeRepresentationWithParameters
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ShapeRepresentationWithParameters from StepShape
+
+is
+    Create returns RWShapeRepresentationWithParameters from RWStepShape;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ShapeRepresentationWithParameters from StepShape);
+	---Purpose: Reads ShapeRepresentationWithParameters
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ShapeRepresentationWithParameters from StepShape);
+	---Purpose: Writes ShapeRepresentationWithParameters
+
+    Share (me; ent : ShapeRepresentationWithParameters from StepShape;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWShapeRepresentationWithParameters;

@@ -1,0 +1,27 @@
+-- File:        ProductCategory.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWProductCategory from RWStepBasic
+
+	---Purpose : Read & Write Module for ProductCategory
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ProductCategory from StepBasic
+
+is
+
+	Create returns RWProductCategory;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ProductCategory from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ProductCategory from StepBasic);
+
+end RWProductCategory;

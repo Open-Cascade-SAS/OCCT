@@ -1,0 +1,143 @@
+-- File:	BRepAlgo_DSAccess.cdl
+-- Created:	Wed Aug 13 16:01:14 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class TopOpe from BRepAlgo
+
+    ---Purpose: 
+
+uses
+
+    Wire           from TopoDS,
+    Shape          from TopoDS,
+    ListOfInteger  from TColStd,  
+    SetOfInteger   from TColStd,
+    MapOfInteger   from TColStd,
+    ListOfShape    from TopTools,
+    State          from TopAbs,
+    EdgeConnector  from BRepAlgo,
+    DataMapOfShapeShape from TopTools, 
+    
+    PDSFiller            from BOPTools,  
+    PBuilder             from BOP,
+    HistoryCollector     from BOP 
+    
+is
+    
+    Create returns TopOpe from BRepAlgo;
+    
+    Init(me: in out);
+    ---Purpose: Clean the internal data structure, including the
+    --          Shapes of Load().
+
+
+-- Remplissage de la SD
+
+    Load(me : in out; S : Shape from TopoDS);
+    ---Purpose: Load the shape in the DS.
+    --          
+
+    Load(me : in out; S1, S2 : in out Shape from TopoDS);
+    ---Purpose: Load the shapes in the DS without intersecting them.
+
+    Intersect(me : in out);
+    ---Purpose: Intersect two shapes at input and load the DS with 
+    --          their intersection. Clear TopOpeBRepBuild_HBuilder if
+    --          necessary
+
+    Intersect(me : in out; S1, S2 : Shape from TopoDS);
+    ---Purpose: Intersect faces contained in two given shapes
+    --          load the DS with them. Clear TopOpeBRepBuild_HBuilder
+    --          if necessary
+
+    ToCompleteIntersection(me : in out); 
+    
+-- Construction of Sections
+
+--    GetSectionEdgeSet(me : in out; S1,S2 : Shape from TopoDS)
+--    ---Purpose: return the compounds of Edge connected with section 
+    --          that contain the sections between faces contained in
+    --          S1 and S2.
+    --          return an empty list of Shape if S1 or S2 do not
+    --          contain faces.
+    --          call GetSectionEdgeSet() if it is not done already
+--    ---C++: return const &
+--    returns ListOfShape from TopTools;
+
+    GetSectionEdgeSet(me : in out)
+    ---Purpose: return all compounds of connected edges
+    --          of section contained in the DS
+    ---C++: return const &
+    returns ListOfShape from TopTools;
+    
+
+    SuppressEdgeSet(me : in out);
+    ---Purpose: Invalidate a line of complete section.  
+    --          A group of Edges connected by Vertexes. Can be a Wire. 
+    --          Can be a group of connected Edges that do not form a
+    --          standard Wire. 
+              
+
+-- Reconstruction des Shapes
+
+    Merge(me : in out; state1 : State from TopAbs;
+    	    	       state2 : State from TopAbs)
+    ---C++: return const &
+    returns Shape from TopoDS;
+
+    Merge(me : in out; state1 : State from TopAbs)
+    ---C++: return const &
+    returns Shape from TopoDS;
+
+    PaveBlocksNotEmpty(me : in out)
+    returns Boolean from Standard; 
+    
+-- Access  to  fields 
+
+    Builder(me)
+    ---C++: return const &
+    returns PBuilder from BOP;
+
+    DSFiller(me)
+    ---C++: return const &
+    returns PDSFiller from BOPTools; 
+     
+    History(me)
+    ---C++: return const &
+    returns HistoryCollector from BOP; 
+     
+
+    Destroy (me: in out); 
+    ---C++: alias "Standard_EXPORT virtual ~BRepAlgo_TopOpe(){Destroy();}" 
+
+fields 
+
+    myDSFiller    : PDSFiller  from BOPTools;
+    myBuilder     : PBuilder       from BOP; 
+    myHistory     : HistoryCollector from BOP;
+    
+    myEC  : EdgeConnector  from BRepAlgo;
+    myS1  : Shape from TopoDS;
+    myS2  : Shape from TopoDS;
+    myState1,myState2 : State from TopAbs;
+    
+    myListOfCompoundOfEdgeConnected : ListOfShape from TopTools;
+    myCurrentList                   : ListOfShape from TopTools;
+    myRecomputeBuilderIsDone : Boolean from Standard;
+    myGetSectionIsDone       : Boolean from Standard;
+    myResultShape            : Shape from TopoDS;
+
+    myWire : Wire from TopoDS;
+    myListOfVertex : ListOfShape from TopTools; 
+    myModified     : ListOfShape from TopTools;
+    myEmptyShape : Shape from TopoDS;
+    myEmptyListOfShape : ListOfShape from TopTools;
+    myEmptyListOfInteger : ListOfInteger from TColStd;
+
+    myCompoundWireMap : DataMapOfShapeShape from TopTools; 
+    mySetOfKeepPoint  : SetOfInteger  from  TColStd;
+    
+
+end TopOpe from BRepAlgo;

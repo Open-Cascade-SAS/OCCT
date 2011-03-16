@@ -1,0 +1,39 @@
+-- File:	GeomToStep_MakeHyperbola.cdl
+-- Created:	Thu May  4 17:39:49 1995
+-- Author:	Dieter THIEMANN
+--		<dth@bibox>
+---Copyright:	 Matra Datavision 1995
+
+
+class MakeHyperbola from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between the class
+    --          Hyperbola from Geom and the class Hyperbola from
+    --          StepGeom which describes a Hyperbola from ProSTEP
+
+
+uses Hyperbola from Geom,
+     Hyperbola from Geom2d,
+     Hyperbola from StepGeom
+     
+raises NotDone from StdFail
+
+is
+
+Create ( C : Hyperbola from Geom2d) returns MakeHyperbola;
+
+Create ( C : Hyperbola from Geom) returns MakeHyperbola;
+
+
+Value (me) returns Hyperbola from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+
+fields
+
+    theHyperbola : Hyperbola from StepGeom;
+    	-- The solution from StepGeom
+
+end MakeHyperbola;

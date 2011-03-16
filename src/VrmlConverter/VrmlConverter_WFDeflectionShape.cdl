@@ -1,0 +1,35 @@
+-- File:	VrmlConverter_WFDeflectionShape.cdl
+-- Created:	Wed Feb 19 16:35:54 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@heron.niznhy.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+           	 
+    	---Purpose: WFDeflectionShape -   computes    the    wireframe
+    	--          presentation of compound set  of faces,  edges and
+    	--          vertices by displaying a  given number of U and/or
+    	--          V isoparametric  curves,   converts this  one into  VRML
+    	--          objects and writes (adds) them into anOStream.
+        --          All requested properties of the representation are
+        --          specify in aDrawer. 
+        --          This kind of the presentation  is  converted  into
+        --          IndexedLineSet and PointSet ( VRML ).
+
+        --          The isoparametric curves are drawn  with respect to
+        --          a given maximal chordial deviation.
+
+class WFDeflectionShape from VrmlConverter 
+
+uses
+ 
+    Shape            from TopoDS,
+    Length           from Quantity,
+    Drawer           from VrmlConverter
+
+is
+ 
+    Add(myclass; anOStream: in out OStream from Standard;
+    	    	 aShape       : Shape        from TopoDS;
+                 aDrawer      : Drawer       from VrmlConverter);
+	
+	 
+end WFDeflectionShape;

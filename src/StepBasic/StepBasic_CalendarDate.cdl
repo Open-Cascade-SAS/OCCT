@@ -1,0 +1,40 @@
+-- File:        CalendarDate.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CalendarDate from StepBasic 
+
+inherits Date from StepBasic 
+
+uses
+
+	Integer from Standard
+is
+
+	Create returns mutable CalendarDate;
+	---Purpose: Returns a CalendarDate
+
+
+	Init (me : mutable;
+	      aYearComponent : Integer from Standard) is redefined;
+
+	Init (me : mutable;
+	      aYearComponent : Integer from Standard;
+	      aDayComponent : Integer from Standard;
+	      aMonthComponent : Integer from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDayComponent(me : mutable; aDayComponent : Integer);
+	DayComponent (me) returns Integer;
+	SetMonthComponent(me : mutable; aMonthComponent : Integer);
+	MonthComponent (me) returns Integer;
+
+fields
+
+	dayComponent : Integer from Standard;
+	monthComponent : Integer from Standard;
+
+end CalendarDate;

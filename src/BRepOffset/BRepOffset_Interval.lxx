@@ -1,0 +1,73 @@
+// File:	BRepOffset_Interval.lxx
+// Created:	Fri Oct 20 18:08:49 1995
+// Author:	Yves FRICAUD
+//		<yfr@stylox>
+
+
+
+//=======================================================================
+//function : First
+//purpose  : 
+//=======================================================================
+
+inline void BRepOffset_Interval::First(const Standard_Real U)
+{
+  f = U;
+}
+
+
+//=======================================================================
+//function : Last
+//purpose  : 
+//=======================================================================
+
+inline void BRepOffset_Interval::Last(const Standard_Real U)
+{
+  l = U;
+}
+
+
+//=======================================================================
+//function : Type
+//purpose  : 
+//=======================================================================
+
+inline void BRepOffset_Interval::Type(const BRepOffset_Type T)
+{
+  type = T;
+}
+
+
+//=======================================================================
+//function : First
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRepOffset_Interval::First() const 
+{
+  return f;
+}
+
+
+//=======================================================================
+//function : Last
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRepOffset_Interval::Last() const 
+{
+  return l;
+}
+
+
+//=======================================================================
+//function : Type
+//purpose  : 
+//=======================================================================
+
+inline BRepOffset_Type BRepOffset_Interval::Type() const 
+{
+  return type;
+}
+
+

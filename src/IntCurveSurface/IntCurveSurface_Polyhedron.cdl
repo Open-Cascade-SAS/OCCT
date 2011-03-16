@@ -1,0 +1,277 @@
+-- File:	IntCurveSurface_Polyhedron.cdl
+-- Created:	Wed Feb  3 11:24:14 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Polyhedron from IntCurveSurface (
+   ThePSurface       as any;
+   ThePSurfaceTool   as any)
+   
+   
+   ---Purpose: This class provides a linear approximation of the PSurface.
+   --          
+
+
+   
+uses    XYZ          from gp,
+    	Pnt          from gp,
+    	Array2OfPnt  from TColgp,
+	Array2OfReal from TColStd,
+	Box          from Bnd,
+	HArray1OfBox from Bnd, 
+	Array1OfReal from TColStd   
+
+
+raises  OutOfRange from Standard
+
+
+is      
+
+	Create(Surface     : ThePSurface;
+	       nbdU,nbdV   : Integer from Standard;
+	       U1,V1,U2,V2 : Real    from Standard)
+	    -- Create a polyhedron on a sub-domain.
+	    -- the numbre of samples on each parametric direction is given.
+	    returns Polyhedron from IntCurveSurface;
+		
+	Create(Surface     : ThePSurface;
+	       Upars,  Vpars : Array1OfReal from TColStd)
+	    -- Create a polyhedron on a sub-domain.
+	    -- the numbre of samples on each parametric direction is given.
+	    returns Polyhedron from IntCurveSurface;
+		
+			
+    	Destroy(me: in out);
+	    ---C++: alias ~
+
+    	DeflectionOverEstimation
+    	     (me : in out; flec : Real from Standard)
+	     is static;
+
+    	DeflectionOnTriangle(me; Surface : ThePSurface;
+                                 Index : Integer from Standard)
+             returns Real from Standard
+	     is static;
+
+    	UMinSingularity(me : in out; Sing : Boolean from Standard)
+	     is static;
+
+    	UMaxSingularity(me : in out; Sing : Boolean from Standard)
+	     is static;
+
+    	VMinSingularity(me : in out; Sing : Boolean from Standard)
+	     is static;
+
+    	VMaxSingularity(me : in out; Sing : Boolean from Standard)
+	     is static;
+
+    	Size(me;nbdu, nbdv : in out Integer)
+	     ---Purpose: get the size of the discretization. 
+             is static;
+
+
+        Init(me:in out;
+             Surface     : ThePSurface;
+    	     U1,V1,U2,V2 : Real         from Standard)
+	     -- Implementation function.
+             is static protected;
+
+        Init(me:in out;
+             Surface     : ThePSurface;
+	     Upars, Vpars : Array1OfReal from TColStd)
+	     -- Implementation function.
+             is static protected;
+
+
+    	NbTriangles    (me)
+              ---Purpose: Give the number of triangles in this double array of 
+    	      ---triangles (nbdu*nbdv*2).
+              returns Integer
+              is static;
+
+
+    	Triangle(me; Index    : in Integer;
+                 P1,P2,P3 : out Integer)
+              ---Purpose: Give the 3 points of the triangle of addresse Index in 
+              --          the double array of triangles. 
+              raises OutOfRange from Standard
+              is static;
+
+
+
+    	TriConnex      (me;
+    	    	    	Triang      : in Integer;
+    	            	Pivot,Pedge : in Integer;
+		    	TriCon      : out Integer;
+		    	OtherP      : out Integer)
+    	---Purpose: Give the addresse Tricon of the triangle connexe to the 
+    	--          triangle of address Triang by the edge Pivot Pedge and
+    	--          the third point of this connexe triangle. When we are 
+    	--          on a free edge TriCon==0 but the function return the 
+    	--          value of the triangle in the other side of Pivot on 
+    	--          the free edge. Used to turn around a vertex.
+        returns Integer from Standard
+        raises OutOfRange from Standard
+        is static;
+
+
+    	NbPoints       (me)
+    	---Purpose: Give the number of point in the double array of 
+    	--          triangles ((nbdu+1)*(nbdv+1)).
+   	returns Integer from Standard
+	is static;
+
+    	Point          (me       : in out ;
+    	    		thePnt   : in Pnt from gp;
+    	    	    	lig, col : in Integer;
+    	                U,V      : in Real from Standard)
+	---Purpose: Set the value of a field of the double array of 
+    	--          points. 
+        raises OutOfRange from Standard
+        is static;
+
+    
+    	Point          (me;
+    	    	    	Index : in Integer;
+                        U,V   : out Real from Standard)
+    	---Purpose: Give the point of index i in the MaTriangle. 
+    	---C++: return const &
+        returns Pnt from gp
+        raises OutOfRange from Standard
+        is static;
+
+    	Point          (me;
+    	    	    	Index : in Integer)
+    	---Purpose: Give the point of index i in the MaTriangle. 
+    	---C++: return const &
+        returns Pnt from gp
+        raises OutOfRange from Standard
+        is static;
+
+
+    	Point          (me;
+    	    	    	Index : in Integer;
+    	    	    	P : out Pnt from gp)
+    	---Purpose: Give the point of index i in the MaTriangle. 
+        raises OutOfRange from Standard
+        is static;
+
+
+    	Bounding       (me)
+    	---Purpose: Give the bounding box of the MaTriangle. 
+        ---C++: return const &
+        returns Box from Bnd
+        is static;
+
+    	FillBounding   (me : in out)
+    	---Purpose: Compute the array of boxes. The box <n> corresponding 
+    	--          to the triangle <n>.
+   	is static;
+
+
+    	ComponentsBounding
+       	    	       (me)
+    	    	    	returns HArray1OfBox from Bnd
+		    	is static;
+    	---Purpose: Give the array of boxes. The box <n> corresponding 
+    	--          to the triangle <n>.
+        ---C++: return const &
+
+
+    	DeflectionOverEstimation
+    	    	       (me)
+		    	returns Real from Standard
+		    	is static;
+
+    	HasUMinSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasUMaxSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasVMinSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+    	HasVMaxSingularity
+    	    	       (me) 
+    	    	    	returns Boolean from Standard
+		    	is static;
+
+       PlaneEquation  (me;
+		    Triang	  : in Integer from Standard;
+		    NormalVector  : out XYZ from gp;
+		    PolarDistance : out Real from Standard)
+		    raises OutOfRange from Standard
+		    is static;
+        ---Purpose: Give the plane equation of the triangle of addresse Triang.
+
+
+        Contain	   (me;
+		    Triang	  : in Integer from Standard;
+		    ThePnt	  : in Pnt from gp)
+		    returns Boolean
+		    raises OutOfRange from Standard
+		    is static;
+        ---Purpose: Give the plane equation of the triangle of addresse Triang.
+
+        Parameters(me; Index :       Integer from Standard;
+                   U,V   :  out  Real from Standard) 
+    	raises OutOfRange from Standard;
+
+-- Modified by Sergey KHROMOV - Fri Dec  7 10:04:01 2001 Begin
+    	IsOnBound(me;  Index1:       Integer  from  Standard; 
+    	    	       Index2:       Integer  from  Standard) 
+    	---Purpose: This method returns true if the edge based on points with 
+    	--          indices Index1 and Index2 represents a boundary edge. It is 
+    	--          necessary to take into account the boundary deflection for 
+    	--          this edge.
+    	returns  Boolean  from  Standard;
+
+    	GetBorderDeflection(me) 
+	---Purpose: This method returns a border deflection.
+	---C++: inline  
+	returns  Real  from  Standard;
+
+    	ComputeBorderDeflection(me;  Surface  :  ThePSurface; 
+    	    	    	    	     Parameter:  Real        from  Standard; 
+				     PMin     :  Real        from  Standard; 
+				     PMax     :  Real        from  Standard; 
+    	    	    	    	     isUIso   :  Boolean     from  Standard) 
+    	---Purpose: This method computes and returns a deflection of isoline 
+    	--          of given parameter on Surface.
+	returns  Real  from  Standard 
+    	is  private;
+ 
+-- Modified by Sergey KHROMOV - Fri Dec  7 10:04:08 2001 End
+
+ -- Test needings :   
+
+     	    Dump       (me)
+		    	is static;
+
+ fields     
+     	    nbdeltaU           : Integer           from Standard;
+     	    nbdeltaV           : Integer           from Standard;
+    	    TheBnd             : Box               from Bnd;
+    	    TheComponentsBnd   : HArray1OfBox          from Bnd;
+    	    TheDeflection      : Real              from Standard;
+     	    C_MyPnts           : Address           from Standard;
+	    C_MyU              : Address           from Standard;
+    	    C_MyV              : Address           from Standard;
+	    UMinSingular       : Boolean           from Standard;
+	    UMaxSingular       : Boolean           from Standard;
+	    VMinSingular       : Boolean           from Standard;
+	    VMaxSingular       : Boolean           from Standard;
+-- Modified by Sergey KHROMOV - Fri Dec  7 12:00:42 2001  Begin
+    	    TheBorderDeflection: Real              from Standard;
+    	    C_MyIsOnBounds     : Address           from Standard;
+-- Modified by Sergey KHROMOV - Fri Dec  7 12:00:43 2001  End
+end Polyhedron;

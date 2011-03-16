@@ -1,0 +1,173 @@
+--
+-- File:	Graphic3d_Vector.cdl
+-- Created:	Jeudi 29 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class Vector from Graphic3d
+
+	---Purpose: This class allows the creation and update
+	--	    of a 3D vector.
+
+uses
+
+	Vertex	from Graphic3d
+
+raises
+
+	VectorError	from Graphic3d
+
+is
+
+	Create
+		returns Vector from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a vector with 1.0, 0.0, 0.0 coordinates.
+
+	Create ( AX, AY, AZ	: Real from Standard )
+		returns Vector from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a vector with <AX>, <AY>, <AZ> coordinates.
+
+	Create ( APoint1, APoint2	: Vertex from Graphic3d )
+		returns Vector from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a vector from 2 points <APoint1> and <APoint2>.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Normalize ( me	: in out )
+	---Level: Public
+	---Purpose: Normalises <me>.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises VectorError if <me> is null.
+	raises VectorError from Graphic3d is static;
+
+	SetCoord ( me			: in out;
+		   Xnew, Ynew, Znew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the coordinates of the vector <me>.
+	---Category: Methods to modify the class definition
+
+	SetXCoord ( me		: in out;
+		    Xnew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the X coordinate of the vector <me>.
+	---Category: Methods to modify the class definition
+
+	SetYCoord ( me		: in out;
+		    Ynew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the Y coordinate of the vector <me>.
+	---Category: Methods to modify the class definition
+
+	SetZCoord ( me		: in out;
+		    Znew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the Z coordinate of the vector <me>.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Coord ( me;
+		AX, AY, AZ	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the vector <me>.
+	---Category: Inquire methods
+
+	IsNormalized ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if <me> has length 1.
+	---Category: Inquire methods
+
+	LengthZero ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if <me> has length zero.
+	---Category: Inquire methods
+
+	X ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the X coordinates of the vector <me>.
+	---Category: Inquire methods
+
+	Y ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the Y coordinate of the vector <me>.
+	---Category: Inquire methods
+
+	Z ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the Z coordinate of the vector <me>.
+	---Category: Inquire methods
+
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	IsParallel ( myclass;
+		     AV1	: Vector from Graphic3d;
+		     AV2	: Vector from Graphic3d )
+		returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Returns Standard_True if the vector <AV1> and
+	--	    <AV2> are parallel.
+	---Category: Class methods
+
+	NormeOf ( myclass;
+		  AX, AY, AZ	: Real from Standard )
+		returns Real from Standard;
+	---Level: Public
+	---Purpose: Returns the norm of the vector <AX>, <AY>, <AZ>.
+	---Category: Class methods
+
+	NormeOf ( myclass;
+		  AVector	: Vector from Graphic3d )
+		returns Real from Standard;
+	---Level: Public
+	---Purpose: Returns the norm of the vector <AVector>.
+	---Category: Class methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_Vector
+--
+-- Purpose	:	Declaration of variables specific to vectors
+--
+-- Reminder	:	A vector is defined by its components or by
+--			two points
+--			It can be normalised.
+--
+
+	-- the coordinates of a vector
+	MyX		:	ShortReal from Standard;
+	MyY		:	ShortReal from Standard;
+	MyZ		:	ShortReal from Standard;
+
+	-- the norm of a vector
+	MyNorme		:	ShortReal from Standard;
+
+end Vector;

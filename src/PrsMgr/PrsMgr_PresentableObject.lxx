@@ -1,0 +1,11 @@
+// File:	PrsMgr_PresentableObject.lxx
+// Created:	Fri Jul  4 15:18:54 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline PrsMgr_TypeOfPresentation3d PrsMgr_PresentableObject::TypeOfPresentation3d() const 
+{return myTypeOfPresentation3d;}
+
+
+inline const TopLoc_Location& PrsMgr_PresentableObject::Location() const
+{return myLocation;}

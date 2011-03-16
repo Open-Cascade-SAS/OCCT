@@ -1,0 +1,331 @@
+-- File:	AppBlend_AppSurf.cdl
+-- Created:	Mon Dec 13 16:29:23 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+-- Modified:	Fri Jul 10 11:23:35 1998
+--              JCT : Add SpApprox in Perform
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class AppSurf from AppBlend
+    (TheSectionGenerator as any;
+     TheLine             as Transient)
+     inherits Approx from AppBlend
+
+	---Purpose: Bspline approximation of a surface.
+
+uses Array2OfPnt             from TColgp,
+     HArray2OfPnt            from TColgp,
+     Array2OfReal            from TColStd,
+     HArray2OfReal           from TColStd,
+     Array1OfReal            from TColStd,
+     HArray1OfReal           from TColStd,
+     Array1OfInteger         from TColStd,
+     HArray1OfInteger        from TColStd,
+     Array1OfPnt2d           from TColgp,
+     SequenceOfArray1OfPnt2d from TColgp, 
+     ParametrizationType     from Approx,
+     Shape                   from GeomAbs
+     
+
+raises NotDone     from StdFail,
+       DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+
+    Create
+    
+    	returns AppSurf from AppBlend;
+	
+	
+    Create(Degmin,Degmax: Integer from Standard;
+    	   Tol3d,Tol2d : Real from Standard;
+	   NbIt: Integer from Standard;
+           KnownParameters : Boolean from Standard = Standard_False)
+    
+    	returns AppSurf from AppBlend;
+	
+	
+    Init(me: in out; Degmin,Degmax: Integer from Standard;
+    	             Tol3d,Tol2d : Real from Standard;
+	             NbIt: Integer from Standard;
+                     KnownParameters : Boolean from Standard = Standard_False)
+    
+    	is static;
+	
+    SetParType(me: in out; ParType : ParametrizationType     from Approx)
+    ---Purpose: Define the type of parametrization used in the approximation 
+    is static;   
+
+	
+    SetContinuity(me: in out; C : Shape from GeomAbs)
+    ---Purpose: Define the Continuity used in the approximation 
+    is static;   
+
+
+    SetCriteriumWeight(me : in out; 
+    	    	       W1,  W2, W3 : Real)
+    ---Purpose: define the Weights  associed to the criterium used in
+    --          the  optimization.
+    --          
+    raises DomainError -- if Wi <= 0
+    is static;			
+
+    
+    ParType(me)
+    ---Purpose: returns the type of parametrization used in the approximation  
+    returns  ParametrizationType     from Approx
+    is static;   
+
+	
+    Continuity(me)
+    ---Purpose: returns the Continuity used in the approximation  
+    returns  Shape from GeomAbs
+    is static;   
+
+
+    CriteriumWeight(me ; 
+    	    	    W1,  W2, W3 : out Real)
+    ---Purpose: returns the Weights (as percent) associed  to the criterium used in
+    --          the  optimization.
+    is static;		
+
+    Perform(me: in out; Lin:    TheLine;
+                        SecGen: in out TheSectionGenerator;
+           	    	SpApprox : Boolean from Standard = Standard_False)
+			
+    	is static;
+  
+    PerformSmoothing(me: in out; Lin:    TheLine;
+                        SecGen: in out TheSectionGenerator)
+			
+    	is static;
+
+
+    Perform(me: in out; Lin:    TheLine;
+                        SecGen: in out TheSectionGenerator;
+                        NbMaxP: Integer from Standard)
+			
+    	is static;
+
+
+    InternalPerform(me: in out; Lin:    TheLine;
+                        SecGen: in out TheSectionGenerator;
+           	    	SpApprox : Boolean from Standard;
+    	    	    	UseVariational:  Boolean from Standard)
+			
+    	is static  private;
+ 
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    SurfShape(me; UDegree,VDegree  : out Integer from Standard;
+                  NbUPoles,NbVPoles: out Integer from Standard;
+                  NbUKnots,NbVKnots: out Integer from Standard)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    Surface(me; TPoles          : out Array2OfPnt from TColgp;
+    	        TWeights        : out Array2OfReal from TColStd;
+		TUKnots,TVKnots : out Array1OfReal from TColStd;
+		TUMults,TVMults : out Array1OfInteger from TColStd)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    UDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    VDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    SurfPoles(me)
+    
+    	returns Array2OfPnt from TColgp
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfWeights(me)
+    
+    	returns Array2OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    NbCurves2d(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    Curves2dShape(me; Degree,NbPoles,NbKnots: out Integer from Standard)
+    
+    	raises NotDone from StdFail,
+	       DomainError from Standard
+
+        is static;
+	
+	
+    Curve2d(me; Index: Integer from Standard;
+                TPoles   : out Array1OfPnt2d from TColgp;
+		TKnots   : out Array1OfReal from TColStd;
+		TMults   : out Array1OfInteger from TColStd)
+		
+    	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+
+    	is static;     
+
+
+    Curves2dDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+	
+	
+    Curve2dPoles(me; Index: Integer from Standard)
+    
+    	returns Array1OfPnt2d from TColgp
+	---C++: inline
+	---C++: return const&
+	
+	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+	is static;
+	
+
+    Curves2dKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+
+
+    Curves2dMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+
+
+    TolReached(me; Tol3d, Tol2d : out Real from Standard)
+	---C++: inline
+	raises NotDone from StdFail
+	is static; 
+	 
+    TolCurveOnSurf(me; Index  :  Integer  from Standard) 
+	returns  Real from Standard  
+	raises NotDone from StdFail
+        is static; 	
+
+
+fields
+
+    done         : Boolean                 from Standard;
+    dmin         : Integer                 from Standard;
+    dmax         : Integer                 from Standard;
+    tol3d        : Real                    from Standard;
+    tol2d        : Real                    from Standard;
+    nbit         : Integer                 from Standard;
+    udeg         : Integer                 from Standard;
+    vdeg         : Integer                 from Standard;
+    knownp       : Boolean                 from Standard;
+    tabPoles     : HArray2OfPnt            from TColgp;
+    tabWeights   : HArray2OfReal           from TColStd;
+    tabUKnots    : HArray1OfReal           from TColStd;
+    tabVKnots    : HArray1OfReal           from TColStd;
+    tabUMults    : HArray1OfInteger        from TColStd;
+    tabVMults    : HArray1OfInteger        from TColStd;
+    seqPoles2d   : SequenceOfArray1OfPnt2d from TColgp;
+    tol3dreached : Real                    from Standard;
+    tol2dreached : Real                    from Standard; 
+    paramtype    : ParametrizationType     from Approx; 
+    continuity   : Shape                   from GeomAbs; 
+    critweights  : Real[3]; 
+    
+end AppSurf;

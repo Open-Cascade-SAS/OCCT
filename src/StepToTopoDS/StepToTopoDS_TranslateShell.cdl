@@ -1,0 +1,50 @@
+-- File:	StepToTopoDS_TranslateShell.cdl
+-- Created:	Fri Dec 16 14:46:06 1994
+-- Author:	Frederic MAUPAS
+--		<fma@stylox>
+---Copyright:	 Matra Datavision 1994
+
+class TranslateShell from StepToTopoDS
+    inherits Root from StepToTopoDS
+    
+    ---Purpose:
+    --         
+
+uses
+    
+    Shape               from TopoDS,
+    TranslateShellError from StepToTopoDS,
+    Tool                from StepToTopoDS,
+    ConnectedFaceSet    from StepShape,
+    NMTool              from StepToTopoDS
+
+raises NotDone from StdFail
+     
+is
+
+    Create returns TranslateShell;
+    
+    Create (CFS    : ConnectedFaceSet from StepShape;
+            T      : in out Tool      from StepToTopoDS;
+            NMTool : in out NMTool    from StepToTopoDS)
+    	returns TranslateShell;
+	    
+    Init (me     : in out;
+          CFS    : ConnectedFaceSet from StepShape;
+          T      : in out Tool      from StepToTopoDS;
+          NMTool : in out NMTool    from StepToTopoDS);
+
+    Value (me) returns Shape from TopoDS
+    	raises NotDone
+	is static;
+	---C++: return const &
+
+    Error (me) returns TranslateShellError from StepToTopoDS;
+    
+fields
+
+    myError  : TranslateShellError from StepToTopoDS;
+    
+    myResult : Shape               from TopoDS;
+
+end TranslateShell;

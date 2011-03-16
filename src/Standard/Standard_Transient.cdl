@@ -1,0 +1,81 @@
+-- File:	Standard_Transient.cdl
+-- Created:	Mon Aug 24 13:11:56 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun3>
+
+deferred class Transient from Standard 
+
+    ---Purpose: Abstract class which forms the root of the entire 
+    --          Transient class hierarchy.
+    ---Warning: This CDL file is actually a stub, even if it attempts to be correct. 
+    --          See actual header in Standard_Transient_proto.hxx
+
+uses
+    Type from Standard,
+    Boolean from Standard,
+    Integer from Standard
+    
+is
+
+        Initialize;
+    	    ---Purpose: Empty constructor
+	    ---Warning: Copy constructor and assignment operators cannot be 
+	    --          declared cleanly in CDL, so we use "C++ alias" for that
+    	    ---C++: alias "Standard_Transient(const Standard_Transient&) : count(0) {}"
+    	    ---C++: alias "Standard_Transient& operator= (const Standard_Transient&) { return *this; }"
+
+	HashCode (me; Upper : Integer ) returns Integer is virtual;
+	    ---Purpose: Returns a hashed value denoting <me>. This value is in
+	    --         the range 1..<Upper>.
+	    ---C++:  function call
+	    ---Level: Advanced
+
+        Delete(me) is  virtual;
+            ---Purpose: Memory deallocator for transient classes
+            ---Level: Advanced
+    	    ---C++: alias "Standard_EXPORT virtual ~Standard_Transient();"
+            
+	DynamicType (me) returns Type is virtual;
+            ---Purpose: Returns a type information object about this object.
+            ---Level: Advanced
+            
+	IsInstance (me; TheType : Type) returns Boolean is static;
+            ---Purpose: Returns a true value if this is an instance of Type.
+            ---Level: Advanced
+            
+	IsInstance (me; TheTypeName : CString) returns Boolean is static;
+            ---Purpose: Returns a true value if this is an instance of TypeName.
+            ---Level: Advanced
+            
+	IsKind (me; TheType : Type) returns Boolean is static;
+	    ---Purpose: Returns true if this is an instance of Type or an
+	    --          instance of any class that inherits from Type.
+	    --          Note that multiple inheritance is not supported by OCCT RTTI mechanism.
+	    ---Level: Advanced
+	    
+	IsKind (me; TheTypeName : CString) returns Boolean is static;
+	    ---Purpose: Returns true if this is an instance of TypeName or an
+	    --         instance of any class that inherits from TypeName.
+	    --          Note that multiple inheritance is not supported by OCCT RTTI mechanism.
+	    ---Level: Advanced
+	    
+	This (me) returns mutable Transient
+	    ---Purpose: Returns a Handle which references this object.
+	    ---Warning: Must never be called to objects created in stack.
+	    ---Level: Advanced
+	is virtual protected;
+ 
+ ---Level: Advanced 
+
+        GetRefCount(me) 
+	    ---Purpose: get the reference counter
+	    --          of this object.
+	    returns  Integer  from  Standard; 
+
+     fields
+        count : Integer from Standard;
+	
+end Transient from Standard;
+
+
+

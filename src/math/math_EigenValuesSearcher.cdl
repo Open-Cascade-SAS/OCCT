@@ -1,0 +1,57 @@
+-- File:	math_EigenValuesSearcher.cdl
+-- Created:	Thu Dec 15 17:12:52 2005
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox>
+---Copyright:	 Matra Datavision 2005
+
+class EigenValuesSearcher from math
+        ---Purpose: This class finds eigen values and vectors of
+        --          real symmetric tridiagonal matrix
+
+uses 
+     
+    Array1OfReal  from TColStd, 
+    HArray1OfReal from TColStd, 
+    HArray2OfReal from TColStd, 
+    Vector        from math
+    
+raises 
+ 
+    NotDone from StdFail
+
+is 
+    Create(Diagonal    : Array1OfReal from TColStd; 
+    	   Subdiagonal : Array1OfReal from TColStd)
+    returns EigenValuesSearcher
+    raises NotDone;  -- if length(Subdiagonal) != length(Diagonal)-1 
+    
+    IsDone(me)
+     	---Purpose: Returns Standard_True if computation is performed 
+        --          successfully.
+    returns Boolean from Standard;
+
+    Dimension(me)
+     	---Purpose: Returns the dimension of matrix
+    returns Integer from Standard;
+
+    EigenValue(me; Index : Integer from Standard)
+     	---Purpose: Returns the Index_th eigen value of matrix
+        --          Index must be in [1, Dimension()]
+    returns Real from Standard;
+
+    EigenVector(me; Index : Integer from Standard)
+     	---Purpose: Returns the Index_th eigen vector of matrix
+        --          Index must be in [1, Dimension()]
+    returns Vector from math;
+     
+fields 
+
+    myDiagonal    : HArray1OfReal from TColStd;
+    mySubdiagonal : HArray1OfReal from TColStd;  
+    
+    myIsDone       : Boolean from Standard; 
+    myN            : Integer from Standard;
+    myEigenValues  : HArray1OfReal from TColStd; 
+    myEigenVectors : HArray2OfReal from TColStd;
+
+end EigenValuesSearcher;

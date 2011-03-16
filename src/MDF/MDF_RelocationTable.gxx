@@ -1,0 +1,117 @@
+// File:	MDF_RelocationTable.gxx
+//      	-----------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	May  7 1997	Creation
+
+
+
+#include TheSourceType_hxx
+#include TheTargetType_hxx
+#include TheOtherSourceType_hxx
+#include TheOtherTargetType_hxx
+
+
+
+//=======================================================================
+//function : MDF_RelocationTable
+//purpose  : 
+//=======================================================================
+
+MDF_RelocationTable::MDF_RelocationTable(const Standard_Boolean theSelfRelocation):mySelfRelocation(theSelfRelocation) {}
+
+//=======================================================================
+//function : SetSelfRelocation
+//purpose  : 
+//=======================================================================
+
+void MDF_RelocationTable::SetSelfRelocation(const Standard_Boolean theStatus) {
+  mySelfRelocation = theStatus;
+}
+
+//=======================================================================
+//function : IsSelfRelocation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MDF_RelocationTable::IsSelfRelocation() const {
+  return mySelfRelocation;
+}
+
+//=======================================================================
+//function : SetRelocation
+//purpose  : 
+//=======================================================================
+
+void MDF_RelocationTable::SetRelocation
+(const TheSourceType& aSourceAttribute,
+ const TheTargetType& aTargetAttribute) 
+{ myAttributeTable.Bind (aSourceAttribute, aTargetAttribute); }
+
+
+
+//=======================================================================
+//function : HasRelocation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MDF_RelocationTable::HasRelocation
+(const TheSourceType& aSourceAttribute,
+ TheTargetType&       aTargetAttribute) 
+{
+  Standard_Boolean isFound = myAttributeTable.IsBound (aSourceAttribute);
+  if (isFound) aTargetAttribute = TheTargetType::DownCast(myAttributeTable.Find(aSourceAttribute));
+  else if (mySelfRelocation) isFound = Standard_True;
+  return isFound;
+}
+
+
+//=======================================================================
+//function : SetOtherRelocation
+//purpose  : 
+//=======================================================================
+
+void MDF_RelocationTable::SetOtherRelocation
+(const TheOtherSourceType& aSource,
+ const TheOtherTargetType& aTarget) 
+{ myOtherTable.Bind (aSource, aTarget); }
+
+
+//=======================================================================
+//function : HasOtherRelocation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MDF_RelocationTable::HasOtherRelocation
+(const TheOtherSourceType& aSource,
+ TheOtherTargetType&      aTarget) 
+{
+  Standard_Boolean isFound = myOtherTable.IsBound (aSource);
+  if (isFound) aTarget = myOtherTable.Find (aSource);
+  else if (mySelfRelocation) isFound = Standard_True;
+  return isFound;
+}
+
+
+//=======================================================================
+//function : AttributeTable
+//purpose  : 
+//=======================================================================
+
+TheMapType& MDF_RelocationTable::AttributeTable()
+{ return myAttributeTable; }
+
+ 
+//=======================================================================
+//function : OtherTable
+//purpose  : 
+//=======================================================================
+
+TheMapType& MDF_RelocationTable::OtherTable()
+{ return myOtherTable; }
+
+ 

@@ -1,0 +1,70 @@
+--
+-- File      :  RegionRestriction.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class RegionRestriction from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines RegionRestriction, Type <406> Form <2>
+        --          in package IGESAppli
+        --          Defines regions to set an application's restriction
+        --          over a region.
+
+uses  Integer  -- no one specific type
+
+is
+
+        Create returns mutable RegionRestriction;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              nbPropVal  : Integer;
+              aViasRest  : Integer;
+              aCompoRest : Integer;
+              aCktRest   : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           RegionRestriction
+        --       - nbPropVal  : Number of property values, always = 3
+        --       - aViasRest  : Electrical Vias restriction
+        --       - aCompoRest : Electrical components restriction
+        --       - aCktRest   : Electrical circuitry restriction
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : is always 3
+
+        ElectricalViasRestriction (me) returns Integer;
+        ---Purpose : returns the Electrical vias restriction
+        -- is 0, 1 or 2
+
+        ElectricalComponentRestriction (me) returns Integer;
+        ---Purpose : returns the Electrical components restriction
+        -- is 0, 1 or 2
+
+        ElectricalCktRestriction (me) returns Integer;
+        ---Purpose : returns the Electrical circuitry restriction
+        -- is 0, 1 or 2
+
+fields
+
+--
+-- Class    : IGESAppli_RegionRestriction
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class RegionRestriction.
+--
+-- Reminder : A RegionRestriction instance is defined by :
+--            - Number of property values (always = 3)
+--            - Electrical vias restriction
+--            - Electrical components restriction
+--            - Electrical circuitry restriction
+
+        theNbPropertyValues  : Integer;
+        theElectViasRestrict : Integer;
+        theElectCompRestrict : Integer;
+        theElectCktRestrict  : Integer;
+
+end RegionRestriction;

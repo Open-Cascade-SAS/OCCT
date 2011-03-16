@@ -1,0 +1,112 @@
+-- File:	SelectBasics_SensitiveEntity.cdl
+-- Created:	Mon Jan 23 11:05:19 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class SensitiveEntity from SelectBasics inherits TShared from MMgt
+
+	---Purpose: root class ; the inheriting classes will be able to give
+	--          sensitive Areas for the dynamic selection algorithms
+
+uses 
+    EntityOwner,
+    ListOfBox2d,
+    Array1OfPnt2d from TColgp, 
+    Box2d from Bnd
+
+is
+
+
+    Initialize (OwnerId            : EntityOwner;
+    	    	aSensitivityFactor : ShortReal from Standard =1);
+    
+    
+    Set (me:mutable ; TheOwnerId : EntityOwner) is static;
+    ---Level: Public 
+    
+
+    OwnerId(me) returns any EntityOwner is static;
+    ---Level: Public 
+    ---C++: return const&
+    	    
+    
+    Areas(me:mutable; aresult : in out ListOfBox2d ) is deferred;  
+    ---Level: Public 
+    ---Purpose: to be implemented specifically by each type of
+    --          sensitive  primitive .
+    --          
+    
+    Matches (me  :mutable; 
+             X,Y : Real from Standard;
+             aTol: Real from Standard;
+             DMin: out Real from Standard) 
+    returns Boolean
+    is deferred;
+    ---Level: Public 
+    ---Purpose: returns True if the object is very close to the
+    --          sensitive areas it gave to the selector...
+    --          returns the minimum distance found if no match;
+    --          
+    --          to be implemented specifically by each type of
+    --          sensitive  primitive .
+    
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard)
+    returns Boolean
+    is deferred;    
+    ---Level: Public 
+    ---Purpose: returns True if the box (Xmin,YMin)------(Xmax,Ymax)
+    --          contains the SensitiveEntity. 
+    --          Necessary for selection using elastic boxes,or segments.
+
+
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard)
+    returns Boolean
+    is deferred;    
+    ---Level: Public 
+    ---Purpose: returns True if the polyline xi,yi
+    --          contains the SensitiveEntity. 
+    --          Necessary for selection using polyline selection
+
+    NeedsConversion(me) returns Boolean is deferred ;
+    
+    Is3D(me) returns Boolean from Standard is deferred;
+    ---Purpose: returns True if able to give 3D information
+    --          (Depth,...). See Select3D
+    
+    Depth(me) returns Real from Standard is virtual;
+    ---Level: Internal 
+    ---Purpose:  Sort Selected entities according to depth...
+
+    MaxBoxes(me) returns Integer is deferred;
+    ---Purpose: returns the max number of boxes the entity is able to give
+    --          at a time
+
+
+    SetSensitivityFactor(me:mutable; aFactor:ShortReal from Standard);
+    ---C++: inline
+
+    SensitivityFactor(me) returns ShortReal from Standard;
+    ---C++: inline
+    ---Purpose: allows a better sensitivity for
+    --          a specific entity in selection algorithms
+    --          useful for small sized entities.
+
+
+fields
+    
+    myOwnerId       : EntityOwner from SelectBasics is protected;
+    mySFactor       : ShortReal from Standard;
+end SensitiveEntity;
+
+
+
+
+

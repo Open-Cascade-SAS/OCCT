@@ -1,0 +1,52 @@
+-- File:        LProp3d_CurveTool.cdl
+-- Created:     Fri Aug  2 17:14:29 2002
+-- Author:      Alexander KARTOMIN  (akm)
+--              <a-kartomin@opencascade.com>
+-- NB:          This originates from BRepLProp being abstracted of BRep.
+---Copyright:   Matra Datavision 2002
+
+class CurveTool from LProp3d
+
+uses Vec   from gp,
+     Pnt   from gp,
+     Dir   from gp,
+     HCurve from Adaptor3d
+
+is
+
+    Value(myclass; C : HCurve from Adaptor3d; U : Real; P : out Pnt);
+    ---Purpose: Computes the point <P> of parameter <U> on the HCurve <C>.
+        
+    D1   (myclass; C : HCurve from Adaptor3d; 
+          U : Real; P : out Pnt; V1 : out Vec);
+    ---Purpose: Computes the point <P> and first derivative <V1> of 
+    --          parameter <U> on the HCurve <C>.
+
+    D2   (myclass; C : HCurve from Adaptor3d; 
+          U : Real; P : out Pnt; V1, V2 : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <V1> and second
+    --          derivative <V2> of parameter <U> on the HCurve <C>.
+    
+    D3   (myclass; C : HCurve from Adaptor3d; 
+          U : Real; P : out Pnt; V1, V2, V3 : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <V1>, the 
+    --          second derivative <V2> and third derivative <V3> of 
+    --          parameter <U> on the HCurve <C>.
+
+     Continuity(myclass; C : HCurve from Adaptor3d) returns Integer;
+     ---Purpose: returns the order of continuity of the HCurve <C>.
+     --          returns 1 : first derivative only is computable
+     --          returns 2 : first and second derivative only are computable.
+     --          returns 3 : first, second and third are computable.
+
+     FirstParameter(myclass; C : HCurve from Adaptor3d) returns Real;
+     ---Purpose: returns the first parameter bound of the HCurve.
+     --          
+     
+     LastParameter(myclass; C : HCurve from Adaptor3d) returns Real;
+     ---Purpose: returns the last parameter bound of the HCurve.
+     --          FirstParameter must be less than LastParamenter.
+
+end CurveTool;
+
+

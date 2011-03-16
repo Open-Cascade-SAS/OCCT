@@ -1,0 +1,267 @@
+-- File:	SelectMgr_SelectionManager.cdl
+-- Created:	Mon Feb 13 13:36:01 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+-- Modified by ROB : Wed Oct 98 
+--               Add One Method : RecomputeSelection 
+--               Modification of Update Method (just computes the 
+--               flagged selections)
+---Copyright:	 Matra Datavision 1995
+
+
+class SelectionManager from SelectMgr inherits TShared from MMgt
+
+	---Purpose: A framework to manage selection from the point of
+    	-- view of viewer selectors. These can be added and
+    	-- removed, and selection modes can be activated and
+    	-- deactivated. In addition, objects may be known to all
+    	-- selectors or only to some.
+
+uses
+    AsciiString      from TCollection,
+    ViewerSelector   from SelectMgr,
+    SelectableObject from SelectMgr,
+    CString          from Standard,
+    MapOfTransient   from TColStd,
+    TypeOfUpdate     from SelectMgr,
+    DataMapOfObjectSelectors from SelectMgr
+    
+	
+is
+
+    
+    Create  returns mutable SelectionManager from SelectMgr;
+    	--- Purpose: Constructs an empty selection manager object.   
+
+    ---Category: Management of the view selectors
+
+
+    Add     (me:mutable ; aSelector :ViewerSelector from SelectMgr)is static;
+    	---Purpose: Adds the viewer selector aSelector to this framework.
+    
+    Remove  (me:mutable; aSelector :ViewerSelector from SelectMgr) is static;
+    	---Level: Public 
+    	---Purpose:
+    
+    Contains (me;aSelector :ViewerSelector from SelectMgr) returns Boolean is static; 
+    	---Purpose:
+    	-- Returns true if this framework contains the viewer selector aSelector.
+
+    Contains(me;aSelectableObject: SelectableObject from SelectMgr) returns Boolean is static;
+    	---Purpose: Returns true if this framework contains the
+    	-- selectable object aSelectableObject.
+    
+
+    	---Category: about Presentable Objects which want to be pickable...
+    	--           Loading Phase!!! No Mode Activation !
+    
+      
+    Load(me       : mutable;
+         anObject : SelectableObject from SelectMgr ;
+         aMode    : Integer =-1) is static;
+    	---Purpose:  Loads and computes one  mode of
+    	--        selection if  <aMode> notequal -1 ;
+    	--         if  <anObject> already has a
+    	--        selection with this mode, it's emptied and the sensitive
+    	--        entities are computed  for this mode else one  Selection
+    	--        is created with this mode before computing.
+    	           
+    
+
+    Load(me        : mutable; 
+    	 anObject  : SelectableObject from SelectMgr ;
+    	 aSelector : ViewerSelector from SelectMgr;
+         aMode     : Integer = -1 ) is static;
+    	---Purpose:   Local    object  available for
+    	--        <aSelector> Only.  the sensitive entities for  selection
+    	--        of mode <aMode> are computed if <aMode> not equal -1.
+    	--        if <aMode> =-1 oc compute is done
+
+
+    Remove(me:mutable; anObject:SelectableObject from SelectMgr) is static;
+    	---Level: Public 
+    	---Purpose: removes the object from All the ViewerSelectors where it was; 
+    
+
+    Remove(me:mutable; anObject  :SelectableObject from SelectMgr;
+    	    	       aSelector :ViewerSelector from SelectMgr) is static;
+    	---Level: Public 
+    	---Purpose: removes the object from aSelector; 
+
+    
+	
+    ---Category: Activation/desactivation phase.....
+    --           Activation of desired selection modes in active views
+    --           all the combinations activate/desactivate a mode of selection for
+    --           an object in a view, in all the views, ....
+    
+
+    
+    Activate(me           : mutable; 
+    	     anObject     : SelectableObject from SelectMgr;
+    	     aMode        : Integer = 0;
+             AutomaticProj: Boolean = Standard_True)
+    is static;
+    	---Purpose: Activates the selection mode aMode in a selector
+    	-- for the selectable object anObject.
+    
+    Activate(me            : mutable; 
+    	     anObject      : SelectableObject from SelectMgr;
+    	     aMode         : Integer;
+	     aSelector     : ViewerSelector from SelectMgr;
+             AutomaticProj : Boolean = Standard_True) is static;
+    	---Purpose: Activates the selection mode aMode in the selector
+    	-- aSelector for the selectable object anObject. 
+
+    Deactivate (me       : mutable ;
+    	    	anObject : SelectableObject from SelectMgr);
+    	---Purpose: Deactivate all the activated modes in any
+    	--          Selector for <anObject>
+    
+    
+    Deactivate (me       : mutable ;
+    	    	anObject : SelectableObject from SelectMgr;
+    	    	aMode    : Integer) is static; 
+    	---Level: Public 
+    	---Purpose: Deactivates the Mode <aMode> in every Selector where
+    	--          it was activated
+
+
+    Deactivate(me        : mutable ; 
+    	       anObject  : SelectableObject from SelectMgr;
+               aMode     : Integer;
+   	       aSelector : ViewerSelector from SelectMgr) is static;
+    	--- Purpose: Deactivates the selection mode aMode in the
+    	-- selector aSelector for the selectable object anObject.
+
+
+    Deactivate(me        : mutable ; 
+    	       anObject  : SelectableObject from SelectMgr;
+   	       aSelector : ViewerSelector     from SelectMgr) is static;
+    	---Purpose: Deactivates all selection modes in the selector
+    	--  aSelector for the selectable object anObject.
+
+
+    Sleep (me:mutable; aSelector    :ViewerSelector from SelectMgr) is static;
+    	---Purpose: Ensures that no object in the selector aSelector will be active.
+
+
+    Sleep(me:mutable; anObject : SelectableObject from SelectMgr); 
+    	---Level: Public 
+    	---Purpose: the objet is temporarily deactivated everywhere it was activated.
+
+    Sleep(me:mutable;
+    	  anObject : SelectableObject from SelectMgr;
+	  aSelector: ViewerSelector   from SelectMgr)is static ;
+    	---Level: Public 
+    	---Purpose: Different from Deactivate; this method
+    	--          deactivates the activated modes of an object,
+    	--          but just for a time; when the Awake Method is called
+    	--          the sleeping modes are reactivated.
+    
+    
+    Awake (me            : mutable; 
+    	   aSelector     : ViewerSelector from SelectMgr;
+    	   AutomaticProj : Boolean = Standard_True) is static;
+    	---Level: Public     
+    	---Purpose: activates all the deactivated objects in a selector.
+    
+    
+    Awake(me            : mutable;
+    	  anObject      : SelectableObject from SelectMgr;
+    	  AutomaticProj : Boolean = Standard_True) is static;
+    
+    Awake (me            : mutable;
+    	   anObject      : SelectableObject from SelectMgr;
+    	   aSelector     : ViewerSelector from SelectMgr;
+    	   AutomaticProj : Boolean = Standard_True) is static;
+    	---Level: Public     
+    	---Purpose: activates all the deactivated modes 
+    	--          of an object in a selector
+    
+    IsActivated(me;
+    	    	anObject : SelectableObject from SelectMgr) 
+    returns Boolean from Standard;
+    	---Purpose: Returns true if the selection is active for the selectable object anObject.
+     
+    IsActivated(me;
+    	    	anObject : SelectableObject from SelectMgr;
+    	    	aMode    : Integer from Standard)  returns Boolean from Standard;
+    	---Purpose: Returns true if the selection mode aMode is active for the selectable object anObject.
+		
+    IsActivated(me;
+    	    	anObject  : SelectableObject from SelectMgr;
+	        aSelector : ViewerSelector   from SelectMgr;
+		aMode     : Integer          from Standard) returns Boolean from Standard;
+    	---Purpose: Returns true if the selection mode aMode is active for the selectable
+    	--          object anObject in the viewer selector aSelector.
+
+
+    RecomputeSelection(me          : mutable;
+         	       anIObj      : SelectableObject from SelectMgr;
+		       ForceUpdate : Boolean from Standard  = Standard_False;
+    	    	       aMode       : Integer from Standard = -1);
+    	---Purpose: computes Selections in <anIObj> if they are
+    	--          activated in at least one Selector.
+    	--          puts a recompute flag in each selection which is not active.
+    	--          if <aMode>=-1 all the selection modes will have to be
+    	--          recomputed.
+    	--          if <ForceUpdate>  = True, all selections are recomputed,
+    	--          even if they are not active.
+
+
+    Update(me             : mutable;
+    	   anObject       : SelectableObject from SelectMgr;
+	   ForceUpdate    : Boolean from Standard = Standard_True) is static;
+    	---Level: Public 
+    	---Purpose: updates the selectionModes of <anObject>
+    	--          According to 
+    	--          . the stored type of update in each selection
+    	--          mode,
+    	--          . the activation status of each selection mode
+    	--          if <ForceUpdate> == True Recompute
+
+    Update(me          : mutable;
+    	   anObject    : SelectableObject from SelectMgr;
+    	   aSelector   : ViewerSelector from SelectMgr;
+    	   ForceUpdate : Boolean from Standard = Standard_True) is static;
+    	---Level: Public 
+
+
+    SetUpdateMode(me       : mutable;
+    	    	  anObject : SelectableObject from SelectMgr;
+		  aType    : TypeOfUpdate    from SelectMgr) is static;
+		  
+		  
+    SetUpdateMode(me       :mutable;
+    	    	  anObject : SelectableObject from SelectMgr;
+		  aSelMode : Integer from Standard;
+		  aType    : TypeOfUpdate    from SelectMgr) is static;
+    	    	
+
+    ---Category: Internal Verification methods ...
+    
+    Status (me) returns AsciiString from TCollection is static; 
+
+    Status (me; anObject : SelectableObject from SelectMgr) 
+    returns AsciiString from TCollection is static; 
+
+    LoadMode(me:mutable;anObject: SelectableObject from SelectMgr;aMode:Integer) is static private;
+
+
+fields
+
+    -- myselectors : selectors dedicated to one particular view;
+    -- myglobal    : objects which will be selectable in all the views
+    -- mylocal     : objects with the selectors where they are selectable
+
+
+    myselectors : MapOfTransient           from TColStd;
+    myglobal    : MapOfTransient           from TColStd;
+    mylocal     : DataMapOfObjectSelectors from SelectMgr;
+
+
+end SelectionManager;
+
+
+

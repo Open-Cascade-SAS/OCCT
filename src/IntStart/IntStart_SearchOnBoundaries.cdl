@@ -1,0 +1,168 @@
+-- File:	SearchOnBoundaries.cdl
+-- Created:	Fri Sep  4 11:43:50 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class SearchOnBoundaries from IntStart (
+  TheVertex            as any;
+  TheArc               as any;
+  TheArcTool           as any;  -- as ArcTool   from IntStart(TheArc)
+  TheSOBTool           as any;  -- as SOBTool   from IntStart(TheVertex,TheArc)
+  TheTopolTool         as Transient;  -- as TopolTool from IntStart
+                                      -- (TheVertex,TheArc)
+  TheFunction          as any)  -- as SOBFunction from IntStart(TheArc)
+
+
+	---Purpose: This class implements algorithmes to find the intersection
+	--          points and curves between the arcs of restriction
+	--          of a surface (parametric or implicit), used through
+	--          the classes TheArcTool, TheSOBTool and TheTopolTool,
+	--          and an implicit surface (natural quadric : Pln, Cylinder,
+	--          Cone, Sphere from gp)..
+
+
+raises NotDone           from StdFail,
+       OutOfRange        from Standard,
+       ConstructionError from Standard
+
+
+    class ThePathPoint instantiates PathPoint from IntStart
+            (TheVertex,TheArc);
+
+    class SequenceOfPathPoint instantiates Sequence from TCollection
+	    (ThePathPoint);
+
+    class TheSegment instantiates Segment from IntStart
+            (TheVertex,
+             TheArc,
+             ThePathPoint);
+
+    class SequenceOfSegment instantiates Sequence from TCollection
+            (TheSegment);
+
+
+is
+
+    Create
+    
+	---Purpose: Empty constructor.
+
+    	returns SearchOnBoundaries from IntStart;
+
+
+    Perform(me    : in out;
+    	    F     : in out TheFunction;
+            Domain: TheTopolTool;
+            TolBoundary,TolTangency : Real from Standard)
+
+       	---Purpose: Algorithm to find the points and parts of curves of Domain
+       	--          (domain of of restriction of a surface) which verify
+       	--          F = 0.
+       	--          TolBoundary defines if a curve is on Q.
+       	--          TolTangency defines if a point is on Q.
+
+    	raises ConstructionError from Standard
+	--     The exception ConstructionError is raised if one of the bounds
+	--     of an arc of the domain is infinite. See the method Bounds
+	--     of the class SOBTool.
+
+       	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns True if the calculus was successful.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;
+
+
+    AllArcSolution(me)
+    
+	---Purpose: Returns true if all arc of the Arcs are solution (inside
+	--          the surface).
+	--          An exception is raised if IsDone returns False.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+
+
+    NbPoints(me)
+    
+    	---Purpose: Returns the number of resulting points.
+    	--          An exception is raised if IsDone returns False (NotDone).
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+    
+        is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the resulting point of range Index.
+	--          The exception NotDone is raised if IsDone() returns
+	--          False.
+	--          The exception OutOfRange is raised if
+	--          Index <= 0 or Index > NbPoints.
+    
+    	returns ThePathPoint from IntStart
+	---C++: return const&
+	---C++: inline
+	
+	raises NotDone    from StdFail,
+	       OutOfRange from Standard
+
+    	is static;
+
+
+    NbSegments(me)
+   
+    	---Purpose: Returns the number of the resulting segments.
+    	--          An exception is raised if IsDone returns False (NotDone).
+
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+
+    	is static;
+
+
+    Segment(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the resulting segment of range Index.
+	--          The exception NotDone is raised if IsDone() returns
+	--          False.
+	--          The exception OutOfRange is raised if
+	--          Index <= 0 or Index > NbPoints.
+
+    	returns TheSegment from IntStart
+	---C++: return const&
+	---C++: inline
+
+	raises NotDone    from StdFail,
+	       OutOfRange from Standard
+
+    	is static;
+
+
+fields
+
+    done : Boolean                  from Standard;
+    all  : Boolean                  from Standard;
+    sseg : SequenceOfSegment        from IntStart;
+    spnt : SequenceOfPathPoint      from IntStart;
+
+end SearchOnBoundaries;

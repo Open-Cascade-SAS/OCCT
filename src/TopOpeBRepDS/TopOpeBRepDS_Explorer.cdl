@@ -1,0 +1,62 @@
+-- File:	TopOpeBRepDS_Explorer.cdl
+-- Created:	Tue Jan  5 16:52:59 1999
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class Explorer from TopOpeBRepDS
+
+uses
+
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    Vertex from TopoDS,
+    ShapeEnum from TopAbs,
+    HDataStructure from TopOpeBRepDS
+
+raises
+
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create returns Explorer;
+
+    Create(HDS:HDataStructure;T:ShapeEnum = TopAbs_SHAPE;findkeep : Boolean = Standard_True) returns Explorer;
+    
+    Init(me:in out;HDS:HDataStructure;T:ShapeEnum = TopAbs_SHAPE;findkeep : Boolean = Standard_True);
+
+    Type(me) returns ShapeEnum from TopAbs;
+
+    More(me) returns Boolean;
+
+    Next(me : in out) raises NoMoreObject; -- when More returned False
+
+    Current(me) returns Shape raises NoSuchObject from Standard; -- when More returns False;
+    ---C++: return const &
+
+    Index(me) returns Integer raises NoSuchObject from Standard; -- when More returns False;
+
+    Face(me) returns Face raises NoSuchObject from Standard; -- when More returns False;
+    ---C++: return const &
+
+    Edge(me) returns Edge raises NoSuchObject from Standard; -- when More returns False;
+    ---C++: return const &
+
+    Vertex(me) returns Vertex raises NoSuchObject from Standard; -- when More returns False;
+    ---C++: return const &        
+
+
+    Find(me:in out) is private;
+    
+fields
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    myT : ShapeEnum from TopAbs;
+    myI,myN : Integer;
+    myB : Boolean;
+    myFK : Boolean;
+
+end Explorer from TopOpeBRepDS;

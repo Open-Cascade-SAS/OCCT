@@ -1,0 +1,10 @@
+inline TCollection_SequenceNode::TCollection_SequenceNode(const SeqItem& I, const TCollection_SeqNodePtr& n, const TCollection_SeqNodePtr& p)
+: TCollection_SeqNode(p,n)
+{
+  myValue = I;
+}
+
+inline SeqItem& TCollection_SequenceNode::Value() const
+{
+  return (SeqItem&)myValue;
+}

@@ -1,0 +1,85 @@
+-- File:	ShapeUpgrade_SplitSurface.cdl
+-- Created:	Mon Mar 16 17:28:27 1998
+-- Author:	Pierre BARRAS
+--		<pbs@sgi84>
+---Copyright:	 Matra Datavision 1998
+
+class SplitSurface from ShapeUpgrade inherits TShared from MMgt
+
+    ---Purpose: Splits a Surface with a criterion.
+    
+uses     
+    HArray1OfInteger from TColStd,
+    HSequenceOfReal    from TColStd,
+    HArray2OfSurface from TColGeom,
+    Surface          from Geom,
+    Status           from  ShapeExtend,
+    CompositeSurface from ShapeExtend    
+
+is 
+ 
+    Create returns mutable SplitSurface from ShapeUpgrade; 
+    	---Purpose: Empty constructor.
+    
+    Init (me: mutable; S: Surface from Geom);  
+       	---Purpose: Initializes with single supporting surface.
+	
+    Init (me: mutable; S: Surface from Geom; UFirst,ULast,VFirst,VLast : Real);  
+       	---Purpose: Initializes with single supporting surface with bounding parameters.
+	
+    SetUSplitValues(me: mutable; UValues : HSequenceOfReal from TColStd);
+    ---Purpose: Sets U parameters where splitting has to be done
+    
+    SetVSplitValues(me: mutable; VValues : HSequenceOfReal from TColStd);
+    ---Purpose: Sets V parameters where splitting has to be done
+    
+    Build (me: mutable; Segment: Boolean) is virtual;
+       	---Purpose: Performs splitting of the supporting surface.
+       	--          If resulting surface is B-Spline and Segment is True,
+       	--          the result is composed with segments of the surface bounded
+       	--          by the U and V SplitValues (method Geom_BSplineSurface::Segment
+       	--          is used).
+       	--          If Segment is False, the result is composed with
+       	--          Geom_RectangularTrimmedSurface all based on the same complete
+       	--          surface.
+	--          Fields myNbResultingRow and myNbResultingCol must be set to
+	--          specify the size of resulting grid of surfaces.
+    Compute(me: mutable; Segment: Boolean = Standard_True) is virtual;
+    ---Purpose: Calculates points for correction/splitting of the surface.
+    
+    Perform(me: mutable; Segment: Boolean = Standard_True);
+    ---Purpose: Performs correction/splitting of the surface.
+	---     First defines splitting values by method Compute(), then calls method Build(). 
+    USplitValues(me) returns HSequenceOfReal from TColStd;
+    ---C++: return const &
+    --- Purpose : returns all the U splitting values including the  
+       --  First and Last parameters of the input surface
+    VSplitValues(me) returns HSequenceOfReal from TColStd;
+    ---C++: return const &
+    --- Purpose : returns all the splitting V values including the  
+       --  First and Last parameters of the input surface
+    
+
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status 
+	-- OK    - no splitting is needed
+	-- DONE1 - splitting required and gives more than one patch
+	-- DONE2 - splitting is required, but gives only single patch (initial)
+	-- DONE3 - geometric form of the surface or parametrisation is modified
+
+    ResSurfaces(me) returns CompositeSurface from ShapeExtend;
+    ---C++: return const &
+    ---Purpose: Returns obtained surfaces after splitting as CompositeSurface
+
+fields 
+ 
+    myUSplitValues     : HSequenceOfReal from TColStd is protected;  
+    myVSplitValues     : HSequenceOfReal from TColStd is protected;  
+    myNbResultingRow   : Integer is protected;
+    myNbResultingCol   : Integer is protected;
+    mySurface          : Surface from Geom is protected;
+    myStatus           : Integer is protected;
+    myResSurfaces      : CompositeSurface from ShapeExtend is protected;    
+
+end;
+    

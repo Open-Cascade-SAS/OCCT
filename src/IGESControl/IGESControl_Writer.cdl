@@ -1,0 +1,98 @@
+-- File:	IGESControl_Writer.cdl
+-- Created:	Tue Jan 30 18:57:48 1996
+-- Author:      Christian CAILLET
+--		<cky@paris1>
+---Copyright:	 Matra Datavision 1996
+
+
+class Writer  from IGESControl
+
+    	---Purpose : This class creates and writes
+    	-- IGES files from CAS.CADE models. An IGES file can be written to
+    	-- an existing IGES file or to a new one.
+    	-- The translation can be performed in one or several
+    	-- operations. Each translation operation
+    	-- outputs a distinct root entity in the IGES file.
+    	--   To write an IGES file it is possible to use the following sequence:
+    	-- To modify the IGES file header or to change translation
+    	-- parameters it is necessary to use class Interface_Static (see
+    	-- IGESParameters and GeneralParameters).
+
+uses CString, OStream, Transient,     Shape from TopoDS,
+     FinderProcess, BasicEditor from IGESData, IGESModel, IGESEntity
+
+is
+
+    Create returns Writer;
+    	---Purpose : Creates a writer object with the
+    	-- default unit (millimeters) and write mode (Face).
+    	-- IGESControl_Writer (const Standard_CString unit,
+    	-- const Standard_Integer modecr = 0);
+
+    Create (unit : CString; modecr : Integer = 0) returns Writer;
+    	---Purpose : Creates a writer with given
+    	-- values for units and for write mode.
+    	-- unit may be any unit that is accepted by the IGES standard.
+    	-- By default, it is the millimeter.
+    	-- modecr defines the write mode and may be:
+    	-- - 0: Faces (default)
+    	-- - 1: BRep.
+
+    Create (model : mutable IGESModel; modecr : Integer = 0) returns Writer;
+    	---Purpose : Creates a writer object with the
+    	-- prepared IGES model model in write mode.
+    	-- modecr defines the write mode and may be:
+    	-- - 0: Faces (default)
+    	-- - 1: BRep.
+
+    Model (me) returns IGESModel;
+    	---Purpose : Returns the IGES model to be written in output.
+
+    TransferProcess    (me) returns mutable FinderProcess;
+    SetTransferProcess (me : in out; TP : mutable FinderProcess);
+    	---Purpose : Returns/Sets the TransferProcess : it contains final results
+    	--           and if some, check messages
+
+    AddShape (me : in out; sh : Shape) returns Boolean;
+    	---Purpose : Translates a Shape to IGES Entities and adds them to the model
+    	--           Returns True if done, False if Shape not suitable for IGES or null
+
+    AddGeom  (me : in out; geom : Transient) returns Boolean;
+    	---Purpose : Translates a Geometry (Surface or Curve) to IGES Entities and
+    	--           adds them to the model
+    	--           Returns True if done, False if geom is neither a Surface or
+    	--           a Curve suitable for IGES or is null
+
+    AddEntity (me : in out; ent : IGESEntity) returns Boolean;
+    	---Purpose : Adds an IGES entity (and the ones it references) to the model
+
+    ComputeModel (me : in out);
+    	---Purpose : Computes the entities found in
+    	-- the model, which is ready to be written.
+    	-- This contrasts with the default computation of headers only.
+
+    Write (me : in out; S : in out OStream; fnes : Boolean = Standard_False)
+    	returns Boolean;
+    	---Purpose : Computes then writes the model to an OStream
+    	--           Returns True when done, false in case of error
+
+    Write (me : in out; file : CString; fnes : Boolean = Standard_False)
+    	returns Boolean;
+    	---Purpose : Prepares and writes an IGES model
+    	-- either to an OStream, S or to a file name,CString.
+    	-- Returns True if the operation was performed correctly and 
+    	-- False if an error occurred (for instance,
+    	-- if the processor could not create the file).
+
+    PrintStatsTransfer (me; what : Integer; mode : Integer = 0);
+    	---Purpose : Prints Statistics about Transfer
+
+fields
+
+    theTP  : FinderProcess;
+    themod : IGESModel;
+    thedit : BasicEditor from IGESData;
+    thecr  : Integer;  -- mode ecr
+    thest  : Boolean;  -- computed ?
+
+end Writer;

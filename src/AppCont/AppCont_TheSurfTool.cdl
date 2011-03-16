@@ -1,0 +1,27 @@
+-- File:	AppCont_TheSurfTool.cdl
+-- Created:	Wed Apr 28 18:12:58 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class TheSurfTool from AppCont(Surf as any)
+
+    ---Purpose: Template for describing a continuous surface.
+
+
+uses Pnt           from gp,
+     Vec           from gp
+
+is
+
+
+    D0(myclass; S: Surf; U, V: Real; Pt: out Pnt);
+    	---Purpose: returns the point of the surface at <U, V>.
+
+
+    D1(myclass; S: Surf; U, V: Real; Pt: out Pnt; V1U, V1V: out Vec);
+    	---Purpose: returns the derivative and the point values of the surface
+    	--          at the parameters <U, V> .
+
+end TheSurfTool;

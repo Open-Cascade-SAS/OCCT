@@ -1,0 +1,36 @@
+-- File:	PBRep_PointOnSurface.cdl
+-- Created:	Wed Aug 11 11:49:29 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class PointOnSurface from PBRep inherits PointsOnSurface from PBRep
+
+uses
+    Surface  from PGeom,
+    Location from PTopLoc
+
+is
+
+    Create(P1,P2 : Real;
+    	   S : Surface from PGeom;
+	   L : Location from PTopLoc)
+    returns mutable PointOnSurface from PBRep;
+    	---Level: Internal 
+    
+    Parameter2(me) returns Real
+    is static;
+    	---Level: Internal 
+		
+    IsPointOnSurface(me) returns Boolean from Standard
+    	---Purpose: Returns True
+    is redefined;
+
+fields
+
+    myParameter2 : Real;
+
+end PointOnSurface;

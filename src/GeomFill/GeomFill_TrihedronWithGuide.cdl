@@ -1,0 +1,38 @@
+-- File:	GeomFill_TrihedronWithGuide.cdl
+-- Created:	Wed Jul  8 11:37:35 1998
+-- Author:	Stephanie HUMEAU
+--		<shu@sun17>
+---Copyright:	 Matra Datavision 1998
+
+deferred  class TrihedronWithGuide from GeomFill  
+inherits TrihedronLaw from GeomFill
+
+	---Purpose: To define Trihedron along one Curve with a guide
+	--          
+	--          
+	--          
+      
+uses 
+    HCurve from  Adaptor3d, 
+    Real  from  Standard 
+
+raises 
+    OutOfRange,  NotImplemented   
+
+is  
+     
+    Guide(me) 
+    returns  HCurve  from  Adaptor3d 
+    is  deferred;  
+     
+    Origine(me  :  mutable; 
+    	    Param1  :  Real; 
+    	    Param2  :  Real) 
+    is deferred;
+          
+fields 
+    myGuide  :  HCurve  from  Adaptor3d  is  protected; 
+    myTrimG  :  HCurve  from  Adaptor3d  is  protected; 
+
+end TrihedronWithGuide;
+    

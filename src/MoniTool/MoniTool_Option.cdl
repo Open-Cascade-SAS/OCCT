@@ -1,0 +1,135 @@
+-- File:	MoniTool_Option.cdl
+-- Created:	Mon Dec 14 10:28:14 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Option  from MoniTool    inherits TShared  from MMgt
+
+    ---Purpose : An Option gives a way of recording an enumerated list of
+    --           instances of a given class, each instance being identified
+    --           by a case name.
+    --           
+    --           Also, an Option allows to manage basic types through a Typed
+    --           Value (which also applies to Static Parameter). It may record
+    --           an enumerated list of values for a TypedValue or Static
+    --           Parameter, each of them is recorded as a string (HAsciiString)
+    --           
+    --           An Option is defined by the type of the class to be optioned,
+    --           or (mutually exclusive) the TypedValue/Static of which values
+    --           are to be optioned, a specific name, a list of named values.
+    --           It brings a current case with its name and value
+    --           It may also have a default case (the first recorded one if not
+    --           precised)
+    --           
+    --           An Option may be created from another one, by sharing its Type
+    --           and its list of Items (one per case), with the same name or
+    --           another one. It may then be duplicated to break this sharing.
+
+uses CString, Transient, Type from Standard,
+     AsciiString from TCollection, HSequenceOfAsciiString from TColStd,
+     DictionaryOfTransient from Dico, TypedValue from MoniTool
+
+is
+
+    Create (atype : Type; aname : CString) returns mutable Option;
+    ---Purpose : Creates an Option from scratch, with a Type and a Name
+
+    Create (aval : TypedValue; aname : CString = "") returns mutable Option;
+    ---Purpose : Creates an Option for a TypedValue (for basic, non-cdl-typed,
+    --           value : integer, real, string ...)
+    --           If <name> is not given, the name of the TypedValue is taken
+    --           Remark that Type is then enforced to TCollection_HAsciiString
+
+    Create (other : Option; aname : CString = "") returns mutable Option;
+    ---Purpose : Creates an Option from another one, the name can be redefined
+    --           The Type remains the same. The list of Items, too, it can also
+    --           be later duplicated by call to Duplicate
+
+    Add (me : mutable; name : CString; val : Transient) returns Boolean;
+    ---Purpose : Adds an item : value and name (replaces it if name is already
+    --           recorded)
+    --           Returns True when done, False if <val> is not Kind of the
+    --           definition Type
+    --           For a TypedValue, val must be a HAsciiString, its content must
+    --           satisfy the definition of the TypedValue
+
+    AddBasic (me : mutable; name : CString; val : CString = "") returns Boolean;
+    ---Purpose : Short-cut to add an item for a TypedValue (basic type) : name
+    --           is the name of the case, val is its value as a CString
+    --           If val is not provided, val = name is assumed
+    --           Returns True when done, False if this Option is not for a
+    --           TypedValue or if the new value does not satisfy the definition
+    --           of the TypedValue
+
+    Duplicate (me : mutable);
+    ---Purpose : Duplicates the list of items
+    --           It starts with the same definitions as before Duplicate, but
+    --           it is not longer shared with other options
+
+    Name (me) returns AsciiString;
+    ---Purpose : Returns the Name of the Option
+    ---C++ : return const &
+
+    Type (me) returns Type;
+    ---Purpose : Returns the Type of the Option
+
+    TypedValue (me) returns TypedValue;
+    ---Purpose : Returns the TypedValue of the Option, or a Null Handle
+
+    Items (me) returns DictionaryOfTransient  is private;
+    ---Purpose : Returns the list of items, to be shared (to copy an option)
+
+    Item (me; name : CString; val : out Transient)  returns Boolean;
+    ---Purpose : Gives the value bound with a name, in val
+    --           Returns True if <name> is found, False else
+    --           This way of returning a Transient, bound with the Type Control
+    --           avoids DownCast and ensures the value is directly usable
+
+    ItemList (me) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of available item names
+
+    Aliases (me; name : CString; exact : Boolean = Standard_True)
+    	returns HSequenceOfAsciiString;
+    ---Purpose : Returns the list of cases, other than <name>, which bring the
+    --           same value as <name>
+    --           Empty list (not a Null Handle) if no alias, or <name> unknown
+    --           if <exact> is True (D), exact name is required, no completion
+    --           if <exact> is False and <name> is not complete, but addresses
+    --           only one item, completion is done and the list includes the
+    --           complete name
+
+    	--  Switch actions
+
+    Switch (me : mutable; name : CString) returns Boolean;
+    ---Purpose : Commands the Option to switch on an item name
+    --           Returns True when done, False if <name> is not recorded
+    --             (in that case, former switch remains unchanged)
+    --           If no switch has been called, it is active on the last added
+    --           items
+
+    CaseName (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Name of the currently switched item (Case)
+    ---C++ : return const &
+
+    CaseValue (me) returns Transient;
+    ---Purpose : Returns the Value of the currently switch item
+    --           To be down-casted as needed before use
+
+    Value (me; val : out Transient);
+    ---Purpose : Returns the Value of the currently switch item
+    --           This way of returning a Transient, bound with the Type Control
+    --           avoids DownCast and ensures the value is directly usable
+    --           For a TypedValue, returns the corresponding HAsciiString
+
+fields
+
+    thename  : AsciiString;
+    thetype  : Type;
+    thevalue : TypedValue;
+    theitems : DictionaryOfTransient;
+    thecase  : AsciiString;
+    theval   : Transient;
+
+end Option;

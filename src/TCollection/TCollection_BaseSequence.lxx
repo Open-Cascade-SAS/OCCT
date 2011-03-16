@@ -1,0 +1,12 @@
+
+ inline Standard_Boolean TCollection_BaseSequence::IsEmpty() const 
+{
+  return Size == 0;
+}
+
+ inline Standard_Integer TCollection_BaseSequence::Length() const 
+{
+  return Size;
+
+}
+

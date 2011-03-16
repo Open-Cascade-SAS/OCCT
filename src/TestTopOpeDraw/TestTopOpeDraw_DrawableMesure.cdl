@@ -1,0 +1,64 @@
+-- File:	TestTopOpeDraw_DrawableMesure.cdl
+-- Created:	Wed Mar 19 08:58:22 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class DrawableMesure from TestTopOpeDraw inherits DrawableC3D from TestTopOpeDraw
+
+uses
+
+    Interpretor from Draw,
+    Mesure from TestTopOpeTools,
+    PMesure from TestTopOpeTools,
+    Display from Draw,
+    Color from Draw,
+    Pnt from gp,
+    AsciiString from TCollection,
+    HArray1OfPnt from TColgp,
+    Array1OfPnt from TColgp,
+    HArray1OfDrawableP3D from TestTopOpeDraw
+
+is
+
+    Create(M : Mesure from TestTopOpeTools;
+     CurveColor : Color from Draw ;
+     TextColor : Color from Draw;
+     ScaleX : Real from Standard = 1.0;
+     ScaleY : Real from Standard = 1.0)
+    returns mutable DrawableMesure from TestTopOpeDraw;
+
+    SetScale(me : mutable; ScaleX : Real from Standard;
+    	    	    	   ScaleY : Real from Standard);
+
+    SetScaleX(me : mutable; ScaleX : Real from Standard);
+
+    SetScaleY(me : mutable; ScaleY : Real from Standard);
+
+    SetName(me : mutable;  Name : AsciiString from TCollection);
+
+    Pnt(me) returns Pnt from gp
+    is redefined;
+    
+    Pnts(me) returns HArray1OfPnt from TColgp;
+    ---C++: return const&
+
+    Clear(me : mutable);
+
+    Whatis(me; I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command.
+    is redefined;
+
+    DrawOn(me; dis : in out Display from Draw)
+    is redefined;
+    
+fields
+
+    myP           : HArray1OfPnt  from TColgp;
+    myCurveColor  : Color         from Draw;
+    myAXE1,myAXE2 : DrawableC3D from TestTopOpeDraw;
+    myHDP,myHADP1,myHADP2 : HArray1OfDrawableP3D from TestTopOpeDraw; 
+    myScaleX      : Real          from Standard;
+    myScaleY      : Real          from Standard;
+
+end DrawableMesure;

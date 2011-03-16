@@ -1,0 +1,57 @@
+-- File:	PGeom_ConicalSurface.cdl
+-- Created:	Tue Mar  2 10:32:37 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class ConicalSurface from PGeom inherits ElementarySurface from PGeom
+
+        ---Purpose : This class defines the infinite conical surface .
+        -- 
+	---See Also : ConicalSurface from Geom.
+
+uses Ax3      from gp
+
+is
+
+
+  Create returns mutable ConicalSurface from PGeom;
+	---Purpose: Creates a ConicalSurface with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition  : Ax3 from gp;
+    	  aRadius    : Real from Standard;
+    	  aSemiAngle : Real from Standard)
+     returns mutable ConicalSurface from PGeom;
+	---Purpose: Creates a ConicalSurface with these values.
+    	---Level: Internal 
+
+
+  Radius (me: mutable; aRadius: Real from Standard);
+        ---Purpose : Set the field radius with <aRadius>.
+    	---Level: Internal 
+
+
+  Radius (me) returns Real from Standard;
+        ---Purpose : Returns the value of the field radius.
+    	---Level: Internal 
+     
+     
+  SemiAngle (me : mutable; aSemiAngle : Real from Standard);
+        ---Purpose : Set the value of the field semiAngle with <aSemiAngle>.
+    	---Level: Internal 
+
+
+  SemiAngle (me) returns Real from Standard;
+        --- Purpose : Returns the value of the field semiAngle.
+    	---Level: Internal 
+
+
+fields
+
+  radius    : Real from Standard;
+  semiAngle : Real from Standard;
+
+end;

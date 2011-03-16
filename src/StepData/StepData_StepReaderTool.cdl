@@ -1,0 +1,86 @@
+-- File:	StepReaderTool.cdl
+-- Created:	Tue Feb 11 16:48:58 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class StepReaderTool  from StepData  inherits FileReaderTool
+
+    ---Purpose : Specific FileReaderTool for Step; works with FileReaderData
+    --           provides references evaluation, plus access to litteral data
+    --           and specific methods defined by FileReaderTool
+    --           Remarks : works with a ReaderLib to load Entities
+
+uses Integer, Boolean,  Transient,
+     InterfaceModel,    Check,           GeneralLib,  ReaderLib,
+     StepReaderData,    FileRecognizer,  Protocol from StepData
+
+is
+
+    	-- --   File data storing and access (specific)   -- --
+
+    Create (reader : mutable StepReaderData; protocol : Protocol from StepData)
+    	returns StepReaderTool;
+    ---Purpose : creates StepReaderTool to work with a StepReaderData according
+    --           to a Step Protocol. Defines the ReaderLib at this time
+
+    	-- --   setting empty entities before loading model   -- --
+
+    Prepare (me : in out; optimize : Boolean = Standard_True);
+    ---Purpose : Bounds empty entities to records, uses default Recognition
+    --           provided by ReaderLib and ReaderModule. Also calls computation
+    --           of references (SetEntityNumbers from StepReaderData)
+    --           Works only on data entities (skips header)
+    --           <optimize> given False allows to test some internal algorithms
+    --           which are normally avoided (see also StepReaderData)
+
+    Prepare (me : in out; reco : mutable FileRecognizer;
+    	    	    	  optimize : Boolean = Standard_True);
+    ---Purpose : Bounds empty entities to records, works with a specific
+    --           FileRecognizer, stored and later used in Recognize
+    --           Works only on data entities (skips header)
+    --           <optimize : same as above
+
+    Recognize (me : in out; num : Integer;
+    	       ach : in out Check; ent : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : recognizes records, by asking either ReaderLib (default) or
+    --           FileRecognizer (if defined) to do so. <ach> is to call
+    --           RecognizeByLib
+
+    	-- --   managing Header  -- --
+    	--   Header is defined as a list of StepEntities (without ident)
+
+    PrepareHeader (me : in out; reco : mutable FileRecognizer);
+    ---Purpose : bounds empty entities and sub-lists to header records
+    --           works like Prepare + SetEntityNumbers, but for header
+    --           (N.B.: in Header, no Ident and no reference)
+    --           FileRecognizer is to specify Entities which are allowed to be
+    --           defined in the Header (not every type can be)
+
+    	-- --   loading entities into the model   -- --
+
+    BeginRead (me : in out; amodel : mutable InterfaceModel);
+    ---Purpose : fills model's header; that is, gives to it Header entities
+    --           and commands their loading. Also fills StepModel's Global
+    --           Check from StepReaderData's GlobalCheck
+
+    AnalyseRecord (me : in out;
+        num : Integer; anent : mutable Transient; acheck : in out Check)
+	    returns Boolean;
+    ---Purpose : fills an entity, given record no; works by using a ReaderLib
+    --           to load each entity, which must be a Transient
+    --           Actually, returned value is True if no fail, False else
+
+    EndRead (me : in out; amodel : mutable InterfaceModel) is redefined;
+    ---Purpose : Ends file reading after reading all the entities
+    --           Here, it binds in the model, Idents to Entities (for checks)
+
+fields
+
+    thereco   : FileRecognizer;
+    theglib   : GeneralLib;
+    therlib   : ReaderLib;
+
+end StepReaderTool;

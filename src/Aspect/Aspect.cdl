@@ -1,0 +1,904 @@
+-- Package:     Aspect
+-- Author:      NW,JPB,CAL
+-- Created:     Jeudi 22 Aout 1991
+-- Updated:     Vendredi 2 Octobre 1992
+--              Mercredi 31 mars 1993
+--              Lundi 16 janvier 1995 
+-- Reason :     Traitement des Markers (G400)
+--
+-- Copyright:   MatraDatavision 1991,1992,1993
+--
+-- Purpose:     Specifications definitives
+--
+--
+-- File:        Aspect.cdl
+-- Created:     Jeudi 22 Aout 1991
+-- Author:      NW,JPB,CAL
+-- Modified:    15/01/98 ; FMN : Ajout Hidden Line
+-- Modified:    07/07/98 ; DCB : Adding plotmode enum
+-- Modified: 07-07-98 by DCB (S3602 study)
+--    Adding plotmode enum
+-- Modified: 20-07-98 by DCB (S3602 study)
+--   Adding Plotter and PlotterConfigTool classes
+--   to plotters (PLO)
+-- Modified: 22-07-98 by DCB
+--   Adding DriverPtr, PlotterDriverPtr, WindowDriverPtr
+--   pointers.
+-- Modified: 24/08/98 ; CAL : S3892. Ajout grilles 3d.
+-- Modified: 16-09-98 by BGN (S3989) 
+---   Adding TypeOfTriedronEcho, TypeOfTriedronPosition.
+-- Modified: 30-11-98 ; FMN : S4069. Textes always visible.
+-- Modified: 30/10/98 : DCB : S4046
+--   Adding class PlotterParameter and changing the Plotter's class
+--   implementation according to new PLO specifications (S3604 ???)
+--   Also new classes : (H)Array1OfPlotterParameter
+--   New enumeration : TypeOfPlotterParameter.
+--   New exception : PlotterParameterError.
+-- Modified: 25-NOV-98 : DCB
+--   Removing all plotters specific implementation from Aspect.
+--   These classes and enums will now be located in PlotMgt.
+-- Modified: 17-NOV-99 : GG GER61351
+--   Add TypeOfFacingModel enum 
+-- Modified: 20-JAN-00 : GG 
+--   Add GDM_None in enum GridDrawMode.
+-- Modified: 25-JAN-00 : VKH
+--   Add class PixMap
+-- Modified: 26-JAN-00 : EUG/GG G003
+--   Add enum TypeOfDegenerateModel
+-- Modified: 23-FEB-00 : GG
+--   Returns format name in ValuesOfFOSP() internal method.
+-- Modified: 27-03-02 RIC120302 GG Add imported class 
+-- Display, Drawable, RenderingContext, GraphicCallbackProc
+-- Modified: 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+-- Modified: 21-06-04 STV Added Aspect_ColorScale class
+
+---Copyright:   MatraDatavision 1991,1992,1993
+------------------------------------------------------------------------
+
+package Aspect
+
+        ---Version:
+
+        ---Purpose: This package contains the group of graphic elements common
+        --          to different types of visualisers. It allows the description
+        --          of a screen background, a window, an edge, and groups of
+        --          graphic attributes that can be used in describing 2D
+        --          and 3D objects.
+
+        ---Keywords: Window, Aspect, FillArea, Line, Marker, Edge
+        --           Highlight, Hatch, Background, GradientBackground, Color map,
+        --           Type map, Width map, Font map
+        ---Warning:
+        ---References:
+
+uses
+        TCollection,
+        TColStd,
+        TShort,
+        Quantity,
+        TColQuantity,
+        Resource,
+        Viewer,
+        MMgt
+
+is
+        ---------------------------
+        -- Category: Imported types
+        ---------------------------
+        imported FStream;
+        -- waiting for RBA creating this class in Standard ...  
+
+        imported IFStream;
+        -- G002A study 
+
+        imported CLayer2d;
+        ---Purpose: Defines the C structure <alayer>
+        ---Category: Imported types
+
+        imported RGBPixel;
+        ---Purpose:
+
+        primitive Handle;
+        primitive Drawable;
+        ---Purpose:
+        -- To manage Drawable
+
+        primitive Display;
+        ---Purpose:
+        -- To manage Display 
+
+        primitive RenderingContext;
+        ---Purpose:
+        -- To manage 2D or 3D graphic context
+
+        imported GraphicCallbackProc;
+        ---Purpose:
+        -- To manage client post display 
+
+        -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+        imported PolygonOffsetMode;
+        ---Purpose: 
+        -- Enumeration for polygon offset modes
+
+        ---------------------
+        -- Category: Pointers
+        ---------------------
+
+        pointer DriverPtr to Driver from Aspect;
+        pointer WindowDriverPtr to WindowDriver from Aspect;
+     
+        ---Category: Pointers
+
+        -----------------------
+        -- Category: Exceptions
+        -----------------------
+
+        exception AspectLineDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception AspectFillAreaDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception AspectMarkerDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception BadAccess inherits DomainError;
+        ---Category: Exceptions
+
+        exception ColorMapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception EdgeDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception IdentDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception TypeMapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception WidthMapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception FontMapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception MarkMapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception WindowDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception WindowError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception PixmapDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception PixmapError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception DriverDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception DriverError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception GraphicDeviceDefinitionError inherits OutOfRange;
+        ---Category: The exceptions
+
+        exception LineStyleDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception LineWidthDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception PolyStyleDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception FontStyleDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception MarkerStyleDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception UndefinedMap inherits OutOfRange;
+        ---Category: Exceptions
+        
+        ------------------------------
+        -- Category: Classes Color map
+        ------------------------------
+
+        deferred class ColorMap;
+        ---Purpose: Defines a color map.
+        ---Category: Classes Color map
+
+        class ColorCubeColorMap;
+        ---Purpose: Associates a index and a color in the "ColorCube" space.
+        ---Category: Classes Color map
+
+        class ColorRampColorMap;
+        ---Purpose: Associates a index and a color in the linear "ColorRamp"
+        --          space.
+        ---Category: Classes Color map
+
+        class GenericColorMap;
+        ---Purpose: Associates an index and a color.
+        ---Category: Classes Color map
+
+        class ColorMapEntry;
+        ---Purpose: Defines an entry in the color map :
+        --          an index and a color.
+        ---Category: Classes Color map
+
+        ------------------------------
+        -- Category: Classes Pixel
+        ------------------------------
+
+        deferred class Pixel;
+        ---Purpose: Defines a picture element.
+        ---Category: Classes Pixel
+
+        class IndexPixel;
+        ---Purpose: 
+        ---Category: Classes Pixel
+
+        class ColorPixel;
+        ---Purpose: 
+        ---Category: Classes Pixel
+
+        ---------------------------
+        -- Category: Classes Aspect
+        ---------------------------
+
+        deferred class AspectLine;
+        ---Purpose: Creates and updates a group of graphic attributes
+        --          for primitives 'Line'
+        ---Category: Classes Aspect
+
+        deferred class AspectMarker;
+        ---Purpose: Creates and updates a group of graphic attributes
+        --          for primitives 'Marker'.
+        ---Category: Classes Aspect
+
+        deferred class AspectFillArea;
+        ---Purpose: Creates and updates a group of graphic attributes
+        --          for primitives 'Face'.
+        ---Category: Classes Aspect
+
+        --------------------
+        -- Category: Classes
+        --------------------
+
+        class Background;
+        ---Purpose: Defines a window background
+        ---Category: Classes
+
+        class GradientBackground;
+        ---Purpose: Defines a window gradient background
+        ---Category: Classes
+
+        class Edge;
+        ---Purpose: Defines an edge.
+        ---Category: Classes
+
+        class GenId;
+        ---Purpose: Creates and controles all identifiers.
+        ---Category: Classes
+
+        deferred class GraphicDriver;
+        ---Purpose: Defines a graphic driver (3d library)
+
+        class FontStyle;
+        ---Purpose: Defines a Font Style
+        ---Category: The classes
+
+        class FontMapEntry;
+        ---Purpose: Defines an entry in the Font map :
+        --          an index and a text Font.
+        ---Category: Classes Font map
+
+        class FontMap;
+        ---Purpose: Associates an index and a text Font entry.
+        ---Category: The classes
+
+        class WidthMapEntry;
+        ---Purpose: Defines an entry in the Width map :
+        --          an index and a line Width.
+        ---Category: Classes Width map
+
+        class WidthMap;
+        ---Purpose: Associates an index and a line width entry.
+        ---Category: The classes
+
+        class LineStyle;
+        ---Purpose: Defines a Line Style
+        ---Category: The classes
+
+        class TypeMap;
+        ---Purpose: Associates an index and a line type entry.
+        ---Category: The classes
+
+        class TypeMapEntry;
+        ---Purpose: Defines an entry in the Type map :
+        --          an index and a line style.
+        ---Category: Classes Type map
+
+        class MarkerStyle;
+        ---Purpose: Defines a Marker Style
+        ---Category: The classes
+
+        class MarkMap;
+        ---Purpose: Associates an index and a Marker entry.
+        ---Category: The classes
+
+        class MarkMapEntry;
+        ---Purpose: Defines an entry in the Marker map :
+        --          an index and a marker style.
+        ---Category: Classes Mark map
+
+        deferred class Window;
+        ---Purpose: Defines a window.
+        ---Category: Classes
+
+        deferred class PixMap;
+        ---Purpose: Defines a pixmap(bitmap)
+        ---Category: Classes
+        
+        deferred class GraphicDevice;
+        ---Purpose: Defines a physical graphic device allowing to
+        --          shares graphical ressources.
+        ---Category: Classes
+
+        deferred class Driver;
+        ---Purpose: Defines a virtual driver.
+        ---Category: Classes
+
+        deferred class WindowDriver;
+        ---Purpose: Defines a virtual driver associated to a window.
+        ---Category: Classes
+
+        deferred class Grid;
+        class RectangularGrid;
+        class CircularGrid;
+
+        deferred class ColorScale;
+        ---Purpose: Defines a color scale for viewer.
+
+        -------------------------
+        -- Category: Enumerations
+        -------------------------
+
+        enumeration HatchStyle is       HS_HORIZONTAL,
+                                        HS_HORIZONTAL_WIDE,
+                                        HS_VERTICAL,
+                                        HS_VERTICAL_WIDE,
+                                        HS_DIAGONAL_45,
+                                        HS_DIAGONAL_45_WIDE,
+                                        HS_DIAGONAL_135,
+                                        HS_DIAGONAL_135_WIDE,
+                                        HS_GRID,
+                                        HS_GRID_WIDE,
+                                        HS_GRID_DIAGONAL,
+                                        HS_GRID_DIAGONAL_WIDE
+        end HatchStyle;
+        ---Purpose: Definition of all available hatch styles.
+        --
+        --          HS_HORIZONTAL
+        --          HS_HORIZONTAL_WIDE
+        --          HS_VERTICAL
+        --          HS_VERTICAL_WIDE
+        --          HS_DIAGONAL_45
+        --          HS_DIAGONAL_45_WIDE
+        --          HS_DIAGONAL_135
+        --          HS_DIAGONAL_135_WIDE
+        --          HS_GRID
+        --          HS_GRID_WIDE
+        --          HS_GRID_DIAGONAL
+        --          HS_GRID_DIAGONAL_WIDE
+        --
+        ---Category: Enumerations
+
+        enumeration InteriorStyle is    IS_EMPTY,
+                                        IS_HOLLOW,
+                                        IS_HATCH,
+                                        IS_SOLID,
+                                        IS_HIDDENLINE
+        end InteriorStyle;
+        ---Purpose: Definition of interior types for primitive
+        --          faces.
+        --
+        --          IS_EMPTY    no interior.
+        --          IS_HOLLOW   display the boundaries of the surface.
+        --          IS_HATCH    display hatched with a hatch style.
+        --          IS_SOLID    display the interior entirely filled.
+        --          IS_HIDDENLINE       display in hidden lines removed.
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfColorMap is   TOC_Generic,
+                                        TOC_ColorCube,
+                                        TOC_ColorRamp 
+        end TypeOfColorMap;
+        ---Purpose: Definition of the color map types
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfConstraint is TOC_BOTTOM_LEFT,
+                                        TOC_BOTTOM_RIGHT,
+                                        TOC_TOP_LEFT, 
+                                        TOC_TOP_RIGHT
+        end TypeOfConstraint;
+        ---Purpose: Definition of the attachment for the layers
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfDrawMode is   TODM_REPLACE,
+                                        TODM_ERASE,
+                                        TODM_XOR,
+                                        TODM_XORLIGHT
+        end TypeOfDrawMode;
+        ---Purpose: Definition of the draw modes
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfEdge is       TOE_VISIBLE,
+                                        TOE_INVISIBLE
+        end TypeOfEdge;
+        ---Purpose: Definition of edge visibility
+        --
+        --          TOE_VISIBLE         Edge is displayed
+        --          TOE_INVISIBLE       Edge is not displayed
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfHighlightMethod is    TOHM_COLOR,
+                                                TOHM_BLINK,
+                                                TOHM_BOUNDBOX
+        end TypeOfHighlightMethod;
+        ---Purpose: Definition of a highlight method
+        --
+        --          TOHM_COLOR          drawn in the highlight color
+        --                              (default white)
+        --          TOHM_BLINK          blinking
+        --          TOHM_BOUNDBOX       enclosed by the boundary box
+        --                              (default white)
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfLine is       TOL_SOLID,
+                                        TOL_DASH,
+                                        TOL_DOT,
+                                        TOL_DOTDASH,
+                                        TOL_USERDEFINED
+        end TypeOfLine;
+        ---Purpose: Definition of line types
+        --
+        --          TOL_SOLID           continuous
+        --          TOL_DASH            dashed 2.0,1.0 (MM)
+        --          TOL_DOT             dotted 0.2,0.5 (MM)
+        --          TOL_DOTDASH         mixed  10.0,1.0,2.0,1.0 (MM)
+        --          TOL_USERDEFINED     defined by Users
+        ---Category: Enumerations
+
+        enumeration WidthOfLine is      WOL_THIN,
+                                        WOL_MEDIUM,
+                                        WOL_THICK,
+                                        WOL_VERYTHICK,
+                                        WOL_USERDEFINED
+        end WidthOfLine;
+        ---Purpose: Definition of line types
+        --
+        --          WOL_THIN            thin line (1 pixel width)
+        --          WOL_MEDIUM          medium width of 0.5 MM
+        --          WOL_THICK           thick width of 0.7 MM
+        --          WOL_VERYTHICK       very thick width of 1.5 MM
+        --          WOL_USERDEFINED     defined by Users
+        ---Category: Enumerations
+
+        enumeration TypeOfFont is       TOF_DEFAULT,
+                                        TOF_COURIER,
+                                        TOF_HELVETICA,
+                                        TOF_TIMES,
+                                        TOF_USERDEFINED
+        end TypeOfFont;
+        ---Purpose: Definition of line types
+        --
+        --          TOF_DEFAULT         Default system font
+        --          TOF_COURIER         
+        --          TOF_HELVETICA       
+        --          TOF_USERDEFINED     defined by Users
+        ---Category: Enumerations
+
+        enumeration TypeOfText is       TOT_SOLID,
+                                        TOT_OUTLINE
+        end TypeOfText;
+        ---Purpose: Definition of Text types
+        --
+        --          TOF_SOLID           Default text 
+        --          TOF_OUTLINE         
+        ---Category: Enumerations
+
+        enumeration TypeOfStyleText is  TOST_NORMAL,
+                                        TOST_ANNOTATION
+        end TypeOfStyleText;
+        ---Purpose: Define the style of the text.       
+        --
+        --          TOST_NORMAL         Default text. The text is displayed like any other graphic object.
+        --                              This text can be hidden by another object that is nearest from the 
+        --                              point of view. 
+        --          TOST_ANNOTATION     The text is always visible. The texte is displayed 
+        --                              over the other object according to the priority.
+        ---Category: Enumerations
+
+        enumeration TypeOfDisplayText is        TODT_NORMAL,
+                                                TODT_SUBTITLE,
+                                                TODT_DEKALE,
+                                                TODT_BLEND
+        end TypeOfDisplayText;
+        ---Purpose: Define the display type of the text.        
+        --
+        --          TODT_NORMAL         Default display. Text only.     
+        --          TODT_SUBTITLE       There is a subtitle under the text.
+        --          TODT_DEKALE         The text is displayed with a 3D style.
+        --          TODT_BLEND          The text is displayed in XOR.
+        ---Category: Enumerations
+
+        enumeration TypeOfMarker is     TOM_POINT,
+                                        TOM_PLUS,
+                                        TOM_STAR,
+                                        TOM_O,
+                                        TOM_X,
+                                        TOM_O_POINT,
+                                        TOM_O_PLUS,
+                                        TOM_O_STAR,
+                                        TOM_O_X,
+                                        TOM_BALL,
+                                        TOM_RING1,
+                                        TOM_RING2,
+                                        TOM_RING3,
+                                        TOM_USERDEFINED 
+        end TypeOfMarker;
+        ---Purpose: Definition of types of markers
+        --
+        --          TOM_POINT   point   .
+        --          TOM_PLUS    plus    +
+        --          TOM_STAR    star    *
+        --          TOM_O       circle  O
+        --          TOM_X       cross   x
+        --          TOM_O_POINT a point in a circle
+        --          TOM_O_PLUS  a plus in a circle
+        --          TOM_O_STAR  a star in a circle
+        --          TOM_O_X     a cross in a circle
+        --          TOM_BALL    a ball with 1 color and different saturations
+        --          TOM_RING1   a large ring
+        --          TOM_RING2   a medium ring
+        --          TOM_RING3   a small ring
+        --          TOM_USERDEFINED     defined by Users
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfUpdate is     TOU_ASAP,
+                                        TOU_WAIT
+        end TypeOfUpdate;
+        ---Purpose: Definition of screen refresh mode
+        --
+        --          TOU_ASAP    as soon as possible
+        --          TOU_WAIT    on demand (Update)
+        --
+        ---Category: Enumerations
+
+        enumeration TypeOfDeflection is TOD_RELATIVE,
+                                        TOD_ABSOLUTE
+        end TypeOfDeflection;
+        ---Purpose: Defines if the maximal chordial deflection used when
+        --          drawing an object is absolute  or relative to the size 
+        --          of the object.
+
+        enumeration TypeOfResize is     TOR_UNKNOWN,
+                                        TOR_NO_BORDER,
+                                        TOR_TOP_BORDER,
+                                        TOR_RIGHT_BORDER,
+                                        TOR_BOTTOM_BORDER,
+                                        TOR_LEFT_BORDER,
+                                        TOR_TOP_AND_RIGHT_BORDER,
+                                        TOR_RIGHT_AND_BOTTOM_BORDER,
+                                        TOR_BOTTOM_AND_LEFT_BORDER,
+                                        TOR_LEFT_AND_TOP_BORDER
+        end TypeOfResize;
+        ---Purpose: Defines the type of Resize Window method applied
+        --          by the user.
+
+        enumeration CardinalPoints is   CP_North,
+                                        CP_NorthEast,
+                                        CP_East,
+                                        CP_SouthEast,
+                                        CP_South,
+                                        CP_SouthWest,
+                                        CP_West,
+                                        CP_NorthWest,
+                                        CP_Center
+        end CardinalPoints;
+
+        enumeration TypeOfRenderingMode is TORM_IMMEDIAT,
+                                           TORM_RETAIN,
+                                           TORM_CLEAR_AND_RETAIN
+        end TypeOfRenderingMode;
+        ---Purpose: Definition of the rendering modes
+
+        enumeration TypeOfColorSpace is TOCS_BlackAndWhite,
+                                        TOCS_GreyScale,
+                                        TOCS_RGB
+        end TypeOfColorSpace;
+        ---Purpose:
+
+        enumeration FormatOfSheetPaper is
+                                        FOSP_A0,        -- 0.841 x 1.189   (M)
+                                        FOSP_A1,        -- 0.594 x 0.841   (M)
+                                        FOSP_A2,        -- 0.420 x 0.594   (M)
+                                        FOSP_A3,        -- 0.297 x 0.420   (M)
+                                        FOSP_A4,        -- 0.210 x 0.297   (M)
+                                        FOSP_A5,        -- 0.1485 x 0.210  (M)
+                                        FOSP_K_LONG,    -- 1.016 x 3.6322  (M)
+                                        FOSP_K_SHORT,   -- 1.016 x 1.397   (M)
+                                        FOSP_J_LONG,    -- 0.8636 x 4.4704 (M)
+                                        FOSP_J_SHORT,   -- 0.8636 x 1.397  (M)
+                                        FOSP_H_LONG,    -- 0.7112 x 3.6322 (M)
+                                        FOSP_H_SHORT,   -- 0.7112 x 1.1176 (M)
+                                        FOSP_G_LONG,    -- 0.2794 x 2.286  (M)
+                                        FOSP_G_SHORT,   -- 0.2794 x 0.5715 (M)
+                                        FOSP_F,         -- 0.7112 x 1.016  (M)
+                                        FOSP_E,         -- 0.8636 x 1.1176 (M)
+                                        FOSP_D,         -- 0.5588 x 0.8636 (M)
+                                        FOSP_C,         -- 0.4318 x 0.5588 (M)
+                                        FOSP_B,         -- 0.2794 x 0.4318 (M)
+                                        FOSP_A,         -- 0.2159 x 0.2794 (M)
+                                        FOSP_UNKNOWN    -- User defined
+        end FormatOfSheetPaper;
+        ---Purpose:
+
+        enumeration TypeOfPrimitive is
+                                        TOP_UNKNOWN,
+                                        TOP_POLYLINE,
+                                        TOP_POLYGON,
+                                        TOP_SEGMENTS,
+                                        TOP_ARCS,
+                                        TOP_POLYARCS,
+                                        TOP_POINTS,
+                                        TOP_MARKERS
+        end TypeOfPrimitive;
+        ---Purpose:
+
+        enumeration GridDrawMode is GDM_Lines,
+                                    GDM_Points,
+                                    GDM_None
+        end GridDrawMode;
+        ---Purpose: Defines the grid draw mode. The grid may be drawn
+        --          by using lines or points.
+
+        enumeration GridType is GT_Rectangular,
+                                GT_Circular
+        end GridType;
+        ---Purpose: Defines the grid type : Rectangular or Circular.
+
+        --------- Start DCB modification ----------------------------------------
+        enumeration PlotMode is
+                                        PM_DPLOTTER,
+                                        PM_FILEONLY,
+                                        PM_NPLOTTER
+        end PlotMode;
+        ---Purpose: Defines plot mode for plotter drivers derived from
+        --          Aspect_PlotterDriver:
+        --          1) PM_DPLOTTER - send file to plotter and delete file
+        --          2) PM_FILEONLY - do not send file to the plotter
+        --          3) PM_NPLOTTER - send file to the plotter but not delete a file
+ 
+  
+        enumeration ListingType is
+                                        LPID_DIRPLOT,
+                                        LPID_DIRPARPLO,
+                                        LPID_ALLDIRS
+        end ListingType;
+        ---Purpose: Defines where to search plotter files (PLO)
+
+      enumeration PlotterOrigin is
+        PO_CENTER,
+        PO_BOTTOMLEFT,
+        PO_TOPLEFT,
+        PO_TOPRIGHT,
+        PO_BOTTOMRIGHT,
+        PO_UNKNOWN
+      end PlotterOrigin;
+        --------- Stop  DCB modification ----------------------------------------
+
+
+        enumeration TypeOfTriedronEcho is       TOTE_NONE,
+                                                TOTE_ORIGIN,
+                                                TOTE_AXIS_X,
+                                                TOTE_AXIS_Y,
+                                                TOTE_AXIS_Z,
+                                                TOTE_TEXT_X,
+                                                TOTE_TEXT_Y,
+                                                TOTE_TEXT_Z, 
+                                                TOTE_01,
+                                                TOTE_02,
+                                                TOTE_03,
+                                                TOTE_04,
+                                                TOTE_05,
+                                                TOTE_06,
+                                                TOTE_07,
+                                                TOTE_08,
+                                                TOTE_09,
+                                                TOTE_10
+        end TypeOfTriedronEcho;
+        ---Purpose: Definition of the Triedron echo zone to highlight
+        --
+        --          TOTE_NONE           no echo zone
+        --          TOTE_ORIGIN         a box on origin of the Triedron
+        --          TOTE_AXIS_X         highlights the X axis
+        --          TOTE_AXIS_Y         highlights the Y axis
+        --          TOTE_AXIS_Z         highlights the Z axis
+        --          TOTE_TEXT_X         highlights the X character
+        --          TOTE_TEXT_Y         highlights the Y character
+        --          TOTE_TEXT_Z         highlights the Z character
+        --          TOTE_01 to TOTE_10  not yet implemented.
+        ---Category: The enumerations
+
+
+        enumeration TypeOfTriedronPosition is   TOTP_CENTER,
+                                                TOTP_LEFT_LOWER,
+                                                TOTP_LEFT_UPPER,
+                                                TOTP_RIGHT_LOWER,
+                                                TOTP_RIGHT_UPPER,
+                                                TOTP_01,
+                                                TOTP_02,
+                                                TOTP_03,
+                                                TOTP_04,
+                                                TOTP_05,
+                                                TOTP_06,
+                                                TOTP_07,
+                                                TOTP_08,
+                                                TOTP_09,
+                                                TOTP_10
+        end TypeOfTriedronPosition;
+        ---Purpose: Definition of the Triedron position in the views
+        --
+        --          TOTP_CENTER         at the center of the view
+        --          TOTP_LEFT_LOWER     at the left lower corner
+        --          TOTP_LEFT_UPPER     at the left upper corner
+        --          TOTP_RIGHT_LOWER    at the right lower corner
+        --          TOTP_RIGHT_UPPER    at the right upper corner
+        --          TOTP_01 to TOTP_10  not yet implemented.
+        ---Category: The enumerations
+
+        enumeration TypeOfLayer is      TOL_OVERLAY, 
+                                        TOL_UNDERLAY
+        end TypeOfLayer;
+        ---Purpose: Modes of drawing for the objects in a layer
+        --
+        --          TOL_OVERLAY, the graphic of the layer is draw
+        --                       after the 3d graphic.
+        --          TOL_UNDERLAY, the graphic of the layer is draw
+        --                       before the 3d graphic.
+        ---Category: The enumerations
+
+        enumeration TypeOfFacingModel is TOFM_BOTH_SIDE,
+                                         TOFM_BACK_SIDE,
+                                         TOFM_FRONT_SIDE
+        end TypeOfFacingModel;
+
+        enumeration TypeOfDegenerateModel is
+         TDM_NONE,
+         TDM_TINY,
+         TDM_WIREFRAME,
+         TDM_MARKER,
+         TDM_BBOX,
+         TDM_AUTO
+        end TypeOfDegenerateModel;
+        ---Purpose: Defines type of degeneration model of the
+        --          graphic structure.
+        ---Category: The enumerations
+
+        enumeration FillMethod is
+          FM_NONE,
+          FM_CENTERED,
+          FM_TILED,
+          FM_STRETCH
+        end FillMethod;
+        ---Purpose: Defines the fill methods to
+        --      write bitmaps in a window.
+
+        enumeration GradientFillMethod is
+          GFM_NONE,
+          GFM_HOR,
+          GFM_VER,
+          GFM_DIAG1,
+          GFM_DIAG2,
+          GFM_CORNER1,
+          GFM_CORNER2,
+          GFM_CORNER3,
+          GFM_CORNER4
+        end GradientFillMethod;
+        ---Purpose: Defines the fill methods to
+        --      write gradient background in a window.
+
+        enumeration TypeOfColorScaleData is
+          TOCSD_AUTO,
+          TOCSD_USER
+        end TypeOfColorScaleData;
+        ---Purpose: Defines the using type of colors and labels
+
+        enumeration TypeOfColorScalePosition is
+          TOCSP_NONE,
+          TOCSP_LEFT,
+          TOCSP_RIGHT,
+          TOCSP_CENTER
+        end TypeOfColorScalePosition;
+        ---Purpose: Defines the type of position for color scale labels
+
+        enumeration TypeOfColorScaleOrientation is
+          TOCSO_NONE,
+          TOCSO_LEFT,
+          TOCSO_RIGHT,
+          TOCSO_CENTER
+        end TypeOfColorScaleOrientation;
+        ---Purpose: Defines the type of color scale orientation
+
+        ---------------------------------
+        -- Category: Instantiated classes
+        ---------------------------------
+
+        class Array1OfEdge instantiates
+                Array1 from TCollection (Edge from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfColorMapEntry instantiates
+                Sequence from TCollection (ColorMapEntry from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfTypeMapEntry instantiates
+                Sequence from TCollection (TypeMapEntry from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfWidthMapEntry instantiates
+                Sequence from TCollection (WidthMapEntry from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfFontMapEntry instantiates
+                Sequence from TCollection (FontMapEntry from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfMarkMapEntry instantiates
+                Sequence from TCollection (MarkMapEntry from Aspect);
+        ---Category: Instantiated classes
+
+        class SequenceOfColor instantiates
+                Sequence from TCollection(Color from Quantity);
+
+        ----------------------------
+        -- Category: Package methods
+        ----------------------------
+
+        ValuesOfFOSP (aFOSP : FormatOfSheetPaper from Aspect;
+                        aWidth, aHeight : out Length from Quantity)
+        returns CString from Standard;
+        ---Level: Internal
+        ---Purpose: Returns the format size according to the default 
+        --      LENGTH unit of the required format <aFOSP>.
+        --      Returns more the normalized format name.
+        ---Category: Package methods
+
+        ToCString (aString: ExtendedString from TCollection)
+                        returns CString from Standard;
+        ---Level: Internal
+        ---Purpose: Translates an ExtendedString to a CString
+        --          depending of the local format.
+        ---Category: Package methods
+
+        Inverse ( aMat : Array2OfReal from TColStd;
+                  Inv  : out Array2OfReal from TColStd )
+                returns Boolean from Standard;
+        ---Level: Internal
+        ---Purpose: Inverses <aMat> a 4x4 matrix.
+
+end Aspect;

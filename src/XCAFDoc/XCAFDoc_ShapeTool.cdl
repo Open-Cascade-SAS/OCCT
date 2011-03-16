@@ -1,0 +1,472 @@
+-- File:	XCAFDoc_ShapeTool.cdl
+-- Created:	Thu Jun 15 17:25:45 2000
+-- Author:	Edward AGAPOV
+-- 		<eap@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapeTool from XCAFDoc inherits Attribute from TDF
+
+    ---Purpose:  A tool to store shapes in an XDE
+-- document in the form of assembly structure, and to maintain this structure.
+-- The API provided by this class allows to work with this
+-- structure regardless of its low-level implementation.
+-- All the shapes are stored on child labels of a main label which is
+-- XCAFDoc_DocumentTool::LabelShapes(). The label for assembly also has
+-- sub-labels, each of which represents the instance of
+-- another shape in that assembly (component). Such sub-label
+-- stores reference to the label of the original shape in the form
+-- of TDataStd_TreeNode with GUID XCAFDoc::ShapeRefGUID(), and its
+-- location encapsulated into the NamedShape.
+-- For correct work with an XDE document, it is necessary to use
+-- methods for analysis and methods for working with shapes.
+-- For example:
+-- if ( STool->IsAssembly(aLabel) )
+-- { Standard_Boolean subchilds = Standard_False; (default) 
+-- Standard_Integer nbc = STool->NbComponents
+-- (aLabel[,subchilds]); 
+-- }
+-- If subchilds is True, commands also consider sub-levels. By
+-- default, only level one is checked.
+-- In this example, number of children from the first level of
+-- assembly will be returned. Methods for creation and initialization:
+-- Constructor: 
+-- XCAFDoc_ShapeTool::XCAFDoc_ShapeTool() 
+-- Getting a guid:
+-- Standard_GUID GetID (); 
+-- Creation (if does not exist) of ShapeTool on label L: 
+-- Handle(XCAFDoc_ShapeTool) XCAFDoc_ShapeTool::Set(const TDF_Label& L)  
+--   Analyze whether shape is a simple shape or an instance or a
+-- component of an assembly or it is an assembly ( methods of analysis).
+-- For example:
+-- STool->IsShape(aLabel) ;
+-- Analyze that the label represents a shape (simple
+-- shape, assembly or reference) or 
+-- STool->IsTopLevel(aLabel);
+-- Analyze that the label is a label of a top-level shape.
+--   Work with simple shapes, assemblies and instances (
+-- methods for work with shapes).
+-- For example:
+--   Add shape:
+-- Standard_Boolean makeAssembly;
+-- // True to interpret a Compound as an Assembly, False to take it
+-- as a whole
+-- aLabel = STool->AddShape(aShape, makeAssembly);
+--        Get shape:
+-- TDF_Label aLabel...
+-- // A label must be present if
+--  (aLabel.IsNull()) { ... no such label : abandon .. }
+-- TopoDS_Shape aShape;
+-- aShape = STool->GetShape(aLabel);
+-- if (aShape.IsNull())
+-- { ... this label is not for a Shape ... }
+--   To get a label from shape.
+-- Standard_Boolean findInstance = Standard_False;
+-- (this is default value)
+-- aLabel = STool->FindShape(aShape [,findInstance]);
+-- if (aLabel.IsNull()) 
+--  { ... no label found for this shape ... }
+
+uses
+    Document from TDocStd,
+    TreeNode from TDataStd,
+    Location from TopLoc,
+    Label from TDF,
+    LabelSequence from TDF,
+    LabelMap from TDF,
+    Shape from TopoDS,
+    SequenceOfShape from TopTools,
+    HAsciiString from TCollection,
+    RelocationTable from TDF,
+    SequenceOfHAsciiString from TColStd,
+    GraphNode from XCAFDoc,
+    AttributeSequence from TDF,
+    DataMapOfShapeLabel from XCAFDoc
+    
+is
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;    
+
+
+    Set (myclass; L : Label from TDF) returns ShapeTool from XCAFDoc;
+    ---Purpose: Create (if not exist) ShapeTool from XCAFDoc on <L>.
+
+
+    
+    
+    Create returns ShapeTool from XCAFDoc;
+    	---Purpose: Creates an empty tool
+    
+    --Create (Doc: Document from TDocStd) returns ShapeTool from XCAFDoc;
+    	---Purpose: Creates a tool to work with a document <Doc>
+    	--          Attaches to label XCAFDoc::LabelShapes()
+
+    
+    
+    ---API: Analysis
+
+    IsTopLevel (me; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is a label of top-level shape,
+	--          as opposed to component of assembly or subshape
+
+    IsFree (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is not used by any assembly, i.e.
+	--          contains sublabels which are assembly components
+	--          This is relevant only if IsShape() is True
+    	--    	    	    (There  is  no  Father TreeNode on  this  <L>)
+
+    IsShape (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label represents a shape (simple shape,
+        --          assembly or reference)
+
+    IsSimpleShape (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is a label of simple shape
+
+    IsReference (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Return true if <L> is a located instance of other shape 
+    	--          i.e. reference
+    
+    IsAssembly (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is a label of assembly, i.e.
+	--          contains sublabels which are assembly components
+	--          This is relevant only if IsShape() is True
+
+    IsComponent (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Return true if <L> is reference serving as component 
+        --          of assembly
+    
+    IsCompound (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is a label of compound, i.e.
+	--          contains some sublabels
+	--          This is relevant only if IsShape() is True
+
+    IsSubShape (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Return true if <L> is subshape of the top-level shape
+    
+    IsSubShape (me; shapeL: Label from TDF; 
+    	    	    sub: Shape from TopoDS) 
+    returns Boolean;
+    	---Purpose: Checks whether shape <sub> is subshape of shape stored on
+        --          label shapeL
+
+    ---API: Work with top-level structure of shapes 
+
+    SearchUsingMap (me; S: Shape from TopoDS; L: out Label from TDF;
+                        findWithoutLoc: Boolean; findSubshape: Boolean)
+    returns Boolean from Standard;
+
+    Search (me; S: Shape from TopoDS; L: out Label from TDF; 
+    	    	findInstance: Boolean = Standard_True;
+    	    	findComponent: Boolean = Standard_True;
+    	    	findSubshape: Boolean = Standard_True)
+    returns Boolean from Standard;
+    	---Purpose: General tool to find a (sub) shape in the document
+        --        * If findInstance is True, and S has a non-null location,
+        --          first tries to find the shape among the top-level shapes 
+        --          with this location
+        --        * If not found, and findComponent is True, tries to find the shape
+	--          among the components of assemblies
+        --        * If not found, tries to find the shape without location
+	--          among top-level shapes 
+	--        * If not found and findSubshape is True, tries to find a 
+	--          shape as a subshape of top-level simple shapes
+	--          Returns False if nothing is found
+    
+    FindShape (me; S: Shape from TopoDS; L: out Label from TDF; 
+    	    	   findInstance: Boolean = Standard_False) 
+    returns Boolean from Standard;
+    	---Purpose: Returns the label corresponding to shape S
+	--          (searches among top-level shapes, not including subcomponents
+	--          of assemblies)
+	--          If findInstance is False (default), searches for the 
+        --          non-located shape (i.e. among original shapes)
+	--          If findInstance is True, searches for the shape with the same 
+        --          location, including shape instances
+    	--          Return True if <S> is found.
+    
+    FindShape (me; S: Shape from TopoDS; 
+    	    	   findInstance: Boolean = Standard_False) 
+    returns Label from TDF;
+    	---Purpose: Does the same as previous method
+        --          Returns Null label if not found
+    
+    GetShape (myclass; L: Label from TDF;
+		       S: out Shape from TopoDS) returns Boolean from Standard;
+    	---Purpose: To get TopoDS_Shape from shape's label
+	--          For component, returns new shape with correct location
+    	--          Returns False if label does not contain shape
+    
+    GetShape (myclass; L: Label from TDF) returns Shape from TopoDS;
+    	---Purpose: To get TopoDS_Shape from shape's label
+	--          For component, returns new shape with correct location
+    	--          Returns Null shape if label does not contain shape
+
+    NewShape (me) returns Label from TDF;
+    	---Purpose: Creates new (empty) top-level shape.
+        --          Initially it holds empty TopoDS_Compound
+
+    SetShape (me:mutable; L: Label from TDF; S: Shape from TopoDS);
+    	---Purpose: Sets representation (TopoDS_Shape) for top-level shape
+
+    AddShape (me:mutable; S: Shape from TopoDS; 
+    	                  makeAssembly: Boolean = Standard_True;
+	                  makePrepare : Boolean = Standard_True)
+    returns Label from TDF;
+    	---Purpose: Adds a new top-level (creates and returns a new label)
+    	--          If makeAssembly is True, treats TopAbs_COMPOUND shapes 
+        --          as assemblies (creates assembly structure).
+	--          NOTE: <makePrepare> replace components without location
+    	--          in assmebly by located components to avoid some problems.
+
+    addShape (me:mutable; S: Shape from TopoDS;
+    	      makeAssembly: Boolean = Standard_True)
+    returns Label from TDF is private;
+    	---Purpose: Adds a new top-level (creates and returns a new label)
+	--          For internal use. Used by public method AddShape.
+
+    RemoveShape (me; L: Label from TDF) returns Boolean;
+    	---Purpose: Removes shape (whole label and all its sublabels)
+	--          Returns False (and does nothing) if shape is not free
+	--          or is not top-level shape
+    
+    Init (me: mutable);
+    	---Purpose: set hasComponents into false
+    
+    ComputeShapes (me: mutable; L: Label from TDF);
+    	---Purpose: recursive
+
+    ComputeSimpleShapes (me: mutable);
+    	---Purpose: Compute a sequence of simple shapes
+    
+    GetShapes (me; Labels: out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of all top-level shapes
+    
+    GetFreeShapes (me; FreeLabels : out LabelSequence from TDF);
+    	---Purpose: Returns a sequence of all top-level shapes
+	--          which are free (i.e. not referred by any other)
+    
+    GetUsers (myclass; L: Label from TDF;
+    	               Labels : out LabelSequence from TDF; 
+    	    	       getsubchilds: Boolean from Standard = Standard_False)
+    returns Integer;
+    	---Purpose: Returns list of labels which refer shape L as component
+	--          Returns number of users (0 if shape is free)
+
+    GetLocation (myclass; L: Label from TDF)
+    returns Location from TopLoc;
+    	---Purpose: Returns location of instance
+
+    GetReferredShape (myclass; L: Label from TDF; 
+    	    	    	       Label: out Label from TDF)
+    returns Boolean;
+    	---Purpose: Returns label which corresponds to a shape referred by L
+	--          Returns False if label is not reference
+
+    ---API: Work with assembly structure 
+
+    NbComponents (myclass; L: Label from TDF; 
+    	    	       getsubchilds: Boolean from Standard = Standard_False)
+    returns Integer; 
+    	---Purpose: Returns number of Assembles components
+
+    GetComponents (myclass; L: Label from TDF;
+    	    	            Labels : out LabelSequence from TDF;
+    	    	    	    getsubchilds: Boolean from Standard = Standard_False)
+    returns Boolean;
+    	---Purpose: Returns list of components of assembly
+	--          Returns False if label is not assembly
+
+    AddComponent (me; assembly, comp: Label from TDF; 
+    	    	      Loc: Location from TopLoc) 
+    returns  Label  from  TDF;
+    	---Purpose: Adds a component given by its label and location to the assembly
+	--          Note: assembly must be IsAssembly() or IsSimpleShape()
+
+    AddComponent (me:mutable; assembly: Label from TDF; 
+    	    	      comp: Shape from TopoDS; expand: Boolean = Standard_False) 
+    returns  Label  from  TDF;
+    	---Purpose: Adds a shape (located) as a component to the assembly
+	--          If necessary, creates an additional top-level shape for 
+        --          component and return the Label of component. 
+	--          If expand is True and component is Compound, it will
+	--          be created as assembly also
+	--          Note: assembly must be IsAssembly() or IsSimpleShape()
+
+    RemoveComponent (me; comp: Label from TDF);
+    	---Purpose: Removes a component from its assembly
+
+    UpdateAssembly (me; L: Label from TDF);
+    	---Purpose: Update an assembly at label <L>
+
+    ---API: work with sub-shapes of shape
+
+    FindSubShape (me; shapeL: Label from TDF; 
+    	    	      sub: Shape from TopoDS;
+    	    	      L: out Label from TDF) 
+    returns Boolean;
+    	---Purpose: Finds a label for subshape <sub> of shape stored on
+        --          label shapeL
+	--          Returns Null label if it is not found
+
+    AddSubShape (me; shapeL: Label from TDF; 
+    	    	     sub: Shape from TopoDS) 
+    returns Label from TDF;
+    	---Purpose: Adds a label for subshape <sub> of shape stored on
+        --          label shapeL
+	--          Returns Null label if it is not subshape
+
+    FindMainShapeUsingMap (me; sub: Shape from TopoDS) 
+    returns Label from TDF;
+
+    FindMainShape (me; sub: Shape from TopoDS) 
+    returns Label from TDF;
+    	---Purpose: Performs a search among top-level shapes to find
+	--          the shape containing <sub> as subshape
+	--          Checks only simple shapes, and returns the first found
+	--          label (which should be the only one for valid model)
+
+    GetSubShapes (myclass; L: Label from TDF;
+    	    	           Labels : out LabelSequence from TDF)
+    returns Boolean;
+    	---Purpose: Returns list of labels identifying subshapes of the given shape
+	--          Returns False if no subshapes are placed on that label
+
+    ---API: Auxiliary
+
+    BaseLabel(me) returns Label from TDF;
+    	---Purpose: returns the label under which shapes are stored
+    
+    Dump(me; deep : Boolean from Standard = Standard_False);
+    
+    DumpShape(myclass; L:  Label from TDF;
+		       level :Integer from Standard = 0;
+		       deep : Boolean from Standard = Standard_False);
+    ---Purpose: Print in cout type of shape found on <L> label
+    --          and the entry of <L>, with <level> tabs before.
+    --          If <deep>, print also TShape and Location addresses
+        
+    --- Private
+    
+    MakeReference (myclass; L, refL: Label from TDF; loc: Location from TopLoc)
+    is private;
+    	---Purpose: Makes a shape on label L to be a reference to shape refL
+	--          with location loc
+
+    
+            ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    IsExternRef (myclass; L: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if the label is a label of external references, i.e.
+	--          there are some reference on the no-step files, which are
+	--          described in document only their names
+
+    SetExternRefs (me; SHAS: SequenceOfHAsciiString from TColStd) returns Label from TDF;
+    	---Purpose: Sets the names of references on the no-step files
+
+    SetExternRefs (me; L: Label from TDF; SHAS: SequenceOfHAsciiString from TColStd);
+    	---Purpose: Sets the names of references on the no-step files
+
+    GetExternRefs (myclass; L: Label from TDF; SHAS: in out SequenceOfHAsciiString from TColStd);
+    	---Purpose: Gets the names of references on the no-step files
+
+    ---API: Work with SHUO (Specified Higher Usage Occurrance) structure
+
+    SetSHUO (me; Labels : LabelSequence from TDF;
+    	     MainSHUOAttr : in out GraphNode from XCAFDoc)
+    returns Boolean;
+    	---Purpose: Sets the SHUO structure between upper_usage and next_usage
+	--          create multy-level (if number of labels > 2) SHUO from first to last
+	--          Initialise out <MainSHUOAttr> by main upper_usage SHUO attribute.
+	--          Returns FALSE if some of labels in not component label
+	     
+    GetSHUO (myclass; SHUOLabel : Label from TDF;
+    	     aSHUOAttr : in out GraphNode from XCAFDoc)
+    returns Boolean;
+    	---Purpose: Returns founded SHUO GraphNode attribute <aSHUOAttr>
+	--          Returns false in other case
+    
+    GetAllComponentSHUO (myclass; CompLabel : Label from TDF;
+    	     	    	 SHUOAttrs : in out AttributeSequence from TDF)
+    returns Boolean;
+    	---Purpose: Returns founded SHUO GraphNodes of indicated component
+	--          Returns false in other case
+    
+    GetSHUOUpperUsage (myclass; NextUsageL: Label from TDF;
+		       Labels : out LabelSequence from TDF)
+    returns Boolean;
+    	---Purpose: Returns the sequence of labels of SHUO attributes,
+    	--          which is upper_usage for this next_usage SHUO attribute
+	--                                          (that indicated by label)
+	--          NOTE: returns upper_usages only on one level (not recurse)
+	--          NOTE: do not clear the sequence before filling
+    
+    GetSHUONextUsage (myclass; UpperUsageL: Label from TDF;
+		       Labels : out LabelSequence from TDF)
+    returns Boolean;
+    	---Purpose: Returns the sequence of labels of SHUO attributes,
+    	--          which is next_usage for this upper_usage SHUO attribute
+	--                                          (that indicated by label)
+	--          NOTE: returns next_usages only on one level (not recurse)
+	--          NOTE: do not clear the sequence before filling
+
+    RemoveSHUO (me; SHUOLabel : Label from TDF)
+    returns Boolean;
+    	---Purpose: Remove SHUO from component sublabel, 
+    	--                                remove all dependencies on other SHUO.
+	--          Returns FALSE if cannot remove SHUO dependencies.
+	--          NOTE: remove any styles that associated with this SHUO.
+
+    FindComponent (me; theShape : Shape from TopoDS;
+		   Labels : out LabelSequence from TDF)
+    returns Boolean;
+    	---Purpose: Serach the path of labels in the document,
+	--          that corresponds the component from any assembly
+	--          Try to search the sequence of labels with location that
+	--          produce this shape as component of any assembly
+	--          NOTE: Clear sequence of labels before filling
+
+    GetSHUOInstance (me; theSHUO : GraphNode from XCAFDoc)
+    returns Shape from TopoDS;
+    	---Purpose: Search for the component shape that styled by shuo
+    	--          Returns null shape if no any shape is found.
+	
+    SetInstanceSHUO (me; theShape : Shape from TopoDS)
+    returns GraphNode from XCAFDoc;
+    	---Purpose: Search for the component shape by labelks path
+	--          and set SHUO structure for founded label structure
+    	--          Returns null attribute if no component in any assembly found.
+
+    GetAllSHUOInstances (me; theSHUO : GraphNode from XCAFDoc;
+    	    	    	 theSHUOShapeSeq : in out SequenceOfShape from TopTools)
+    returns Boolean from Standard;
+    	---Purpose: Seaching for component shapes that styled by shuo
+    	--          Returns empty sequence of shape if no any shape is found.
+	
+    FindSHUO (myclass; Labels : LabelSequence from TDF;
+    	      theSHUOAttr : in out GraphNode from XCAFDoc)
+    returns Boolean from Standard;
+    	---Purpose: Searchs the SHUO by labels of components
+	--          from upper_usage componet to next_usage
+    	--          Returns null attribute if no SHUO found
+	
+fields
+    myShapeLabels   : DataMapOfShapeLabel from XCAFDoc; --skl 15.10.2003
+    mySubShapes     : DataMapOfShapeLabel from XCAFDoc;
+    mySimpleShapes  : DataMapOfShapeLabel from XCAFDoc;
+    hasSimpleShapes : Boolean from Standard;
+
+end ShapeTool;

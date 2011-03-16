@@ -1,0 +1,88 @@
+// File     : Extrema_CurveCache.lxx
+// Created  : Sun Dec 28 2008
+// Author   : Roman Lygin
+//            roman.lygin@gmail.com
+// Copyright: Roman Lygin, Open CASCADE 2008
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : IsValid
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Extrema_CurveCache::IsValid() const
+{
+  return myIsArrayValid;
+}
+
+//=======================================================================
+//function : Points
+//purpose  : 
+//=======================================================================
+
+inline const Handle(ArrayOfPnt)& Extrema_CurveCache::Points() const
+{
+  StdFail_NotDone_Raise_if (!myIsArrayValid, "Extrema_CurveCache::Points()")
+  return myPntArray;
+}
+
+//=======================================================================
+//function : CurvePtr
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address Extrema_CurveCache::CurvePtr() const
+{
+  return myC;
+}
+
+//=======================================================================
+//function : NbSamples
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Extrema_CurveCache::NbSamples() const
+{
+  return myNbSamples;
+}
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Extrema_CurveCache::FirstParameter() const
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Extrema_CurveCache::LastParameter() const
+{
+  return myLast;
+}
+
+//=======================================================================
+//function : TrimFirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Extrema_CurveCache::TrimFirstParameter() const
+{
+  return myTrimFirst;
+}
+
+//=======================================================================
+//function : TrimLastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Extrema_CurveCache::TrimLastParameter() const
+{
+  return myTrimLast;
+}

@@ -1,0 +1,37 @@
+-- File:	StepElement_CurveElementEndReleasePacket.cdl
+-- Created:	Thu Dec 12 17:29:00 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementEndReleasePacket from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity CurveElementEndReleasePacket
+
+uses
+    CurveElementFreedom from StepElement
+
+is
+    Create returns CurveElementEndReleasePacket from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aReleaseFreedom: CurveElementFreedom from StepElement;
+                       aReleaseStiffness: Real);
+	---Purpose: Initialize all fields (own and inherited)
+
+    ReleaseFreedom (me) returns CurveElementFreedom from StepElement;
+	---Purpose: Returns field ReleaseFreedom
+    SetReleaseFreedom (me: mutable; ReleaseFreedom: CurveElementFreedom from StepElement);
+	---Purpose: Set field ReleaseFreedom
+
+    ReleaseStiffness (me) returns Real;
+	---Purpose: Returns field ReleaseStiffness
+    SetReleaseStiffness (me: mutable; ReleaseStiffness: Real);
+	---Purpose: Set field ReleaseStiffness
+
+fields
+    theReleaseFreedom: CurveElementFreedom from StepElement;
+    theReleaseStiffness: Real;
+
+end CurveElementEndReleasePacket;

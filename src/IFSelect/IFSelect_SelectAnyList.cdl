@@ -1,0 +1,114 @@
+-- File:	IFSelect_SelectAnyList.cdl
+-- Created:	Wed Dec  9 11:57:08 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectAnyList  from IFSelect  inherits SelectDeduct
+
+
+    ---Purpose : A SelectAnyList kind Selection selects a List of an Entity, as
+    --           well as this Entity contains some. A List contains sub-entities
+    --           as one per Item, or several (for instance if an Entity binds
+    --           couples of sub-entities, each item is one of these couples).
+    --           Remark that only Entities are taken into account (neither
+    --           Reals, nor Strings, etc...)
+    --           
+    --           To define the list on which to work, SelectAnyList has two
+    --           deferred methods : NbItems (which gives the length of the
+    --           list), FillResult (which fills an EntityIterator). They are
+    --           intended to get a List in an Entity of the required Type (and
+    --           consider that list is empty if Entity has not required Type)
+    --           
+    --           In addition, remark that some types of Entity define more than
+    --           one list in each instance : a given sub-class of SelectAnyList
+    --           must be attached to one list
+    --           
+    --           SelectAnyList keeps or rejects a sub-set of the list,
+    --           that is the Items of which rank in the list is in a given
+    --           range (for instance form 2nd to 6th, etc...)
+    --           Range is defined by two Integer values. In order to allow
+    --           external control of them, these values are not directly
+    --           defined as fields, but accessed through IntParams, that is,
+    --           referenced as Transient (Handle) objects
+    --
+    --           Warning : the Input can be any kind of Selection, BUT its
+    --           RootResult must have zero (empty) or one Entity maximum
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph, IntParam
+
+raises OutOfRange, InterfaceError
+
+is
+
+    KeepInputEntity (me; iter : in out EntityIterator) is deferred;
+    ---Purpose : Keeps Input Entity, as having required type. It works by
+    --           keeping in <iter>, only suitable Entities (SelectType can be
+    --           used). Called by RootResult (which waits for ONE ENTITY MAX)
+
+    NbItems (me; ent : Transient) returns Integer  is deferred;
+    ---Purpose : Returns count of Items in the list in the Entity <ent>
+    --           If <ent> has not required type, returned value must be Zero
+
+
+    SetRange (me : mutable; rankfrom, rankto : mutable IntParam);
+    ---Purpose : Sets a Range for numbers, with a lower and a upper limits
+
+    SetOne  (me : mutable; rank : mutable IntParam);
+    ---Purpose : Sets a unique number (only one Entity will be sorted as True)
+
+    SetFrom (me : mutable; rankfrom : mutable IntParam);
+    ---Purpose : Sets a Lower limit but no upper limit
+
+    SetUntil (me : mutable; rankto : mutable IntParam);
+    ---Purpose : Sets an Upper limit but no lower limit (equivalent to lower 1)
+
+    HasLower (me) returns Boolean;
+    ---Purpose : Returns True if a Lower limit is defined
+
+    Lower (me) returns mutable IntParam;
+    ---Purpose : Returns Lower limit (if there is; else, value is senseless)
+
+    LowerValue (me) returns Integer;
+    ---Purpose : Returns Integer Value of Lower Limit (0 if none)
+
+    HasUpper (me) returns Boolean;
+    ---Purpose : Returns True if a Lower limit is defined
+
+    Upper (me) returns mutable IntParam;
+    ---Purpose : Returns Upper limit (if there is; else, value is senseless)
+
+    UpperValue (me) returns Integer;
+    ---Purpose : Returns Integer Value of Upper Limit (0 if none)
+
+
+    RootResult (me; G : Graph) returns EntityIterator  raises InterfaceError;
+    ---Purpose : Returns the list of selected entities (list of entities
+    --           complying with rank criterium)
+    --           Error if the input list has more than one Item
+
+    FillResult (me; n1,n2 : Integer; ent : Transient;
+    	res : in out EntityIterator)  is deferred;
+    ---Purpose : Puts into <res>, the sub-entities of the list, from n1 to
+    --           n2 included. Remark that adequation with Entity's type and
+    --           length of list has already been made at this stage
+    --           Called by RootResult
+
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Componants of List "
+    --           then Specific List Label, then, following cases :
+    --           " From .. Until .." or "From .." or "Until .." or "Rank no .."
+    --           Specific type is given by deferred method ListLabel
+
+    ListLabel (me) returns AsciiString from TCollection  is deferred;
+    ---Purpose : Returns the specific label for the list, which is included as
+    --           a part of Label
+
+fields
+
+    thelower : IntParam;
+    theupper : IntParam;
+
+end SelectAnyList;

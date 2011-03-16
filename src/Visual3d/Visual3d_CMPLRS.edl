@@ -1,0 +1,21 @@
+-- File:        Visual3d_CMPLRS.edl
+-- Author:      Jean GAUTIER
+-- History:     Thu Oct  3 13:12:20 1996        Jean GAUTIER    Creation
+--              01-11-97 : BGN : Portage HP/OpenGL
+--                         => mise en coherence des options de compilations.
+-- Copyright:   Matra Datavision 1996
+--
+  @uses "CSF.edl" ;
+
+@ifnotdefined ( %Visual3d_CMPLRS_EDL) then
+  @set %Visual3d_CMPLRS_EDL = "";
+
+  --@uses "Visual3d.edl";
+
+    @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " " %CSF_X11_INCLUDE ;
+
+  @if ( %Station == "hp" ) then
+    @string %CMPLRS_CXX_Command +=  " +a1";
+  @endif;
+
+@endif;

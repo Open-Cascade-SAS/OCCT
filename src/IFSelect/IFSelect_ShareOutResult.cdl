@@ -1,0 +1,147 @@
+-- File:	ShareOutResult.cdl
+-- Created:	Tue Nov 17 16:40:23 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class ShareOutResult  from IFSelect
+
+    ---Purpose : This class gives results computed from a ShareOut : simulation
+    --           before transfer, helps to list entities ...
+    --           Transfer itself will later be performed, either by a
+    --           TransferCopy to simply divide up a file, or a TransferDispatch
+    --           which can be parametred with more details
+
+uses AsciiString from TCollection, SequenceOfInteger from TColStd,
+     InterfaceModel,   EntityIterator,   CopyTool,
+     Graph,  SubPartsIterator, ShareOut, Dispatch, PacketList
+
+raises NoSuchObject, InterfaceError
+
+is
+
+    Create (sho : mutable ShareOut; mod : InterfaceModel) returns ShareOutResult;
+    ---Purpose : Creates a ShareOutResult from a ShareOut, to work on a Model
+    --           (without any more precision; uses Active Protocol)
+
+    Create (sho : mutable ShareOut; G : Graph) returns ShareOutResult;
+    ---Purpose : Creates a ShareOutResult from a ShareOut, to work on a Graph
+    --           already computed, which defines the Input Model and can
+    --           specialize some Entities
+
+    Create (disp : Dispatch; mod : InterfaceModel) returns ShareOutResult;
+    ---Purpose : Creates a ShareOutResult from a unique Dispatch, to work on
+    --           a Model. As if it was a ShareOut with only one Dispatch
+    --           (without any more precision; uses Active Protocol)
+    --           Allows to compute the effect of a single Dispatch
+
+    Create (disp : Dispatch; G : Graph) returns ShareOutResult;
+    ---Purpose : Creates a ShareOutResult from a unique Dispatch, to work on
+    --           a Graph. As if it was a ShareOut with only one Dispatch
+    --           Allows to compute the effect of a single Dispatch
+
+    ShareOut (me) returns mutable ShareOut;
+    ---Purpose : Returns the ShareOut used to create the ShareOutResult
+    --           if creation from a Dispatch, returns a Null Handle
+
+
+    Graph (me) returns Graph;
+    ---Purpose : Returns the Graph used to create theShareOutResult
+    ---C++ : return const &
+
+    Reset (me : in out);
+    ---Purpose : Erases computed data, in order to command a new Evaluation
+
+    Evaluate (me : in out);
+    ---Purpose : Evaluates the result of a ShareOut : determines Entities to be
+    --           forgotten by the ShareOut, Entities to be transferred several
+    --           times (duplicated), prepares an iteration on the packets to be
+    --           produced
+    --           Called the first time anyone question is asked, or after a
+    --           call to Reset. Works by calling the method Prepare.
+
+    	-- --   Simulation Results    -- --
+
+    Packets (me : in out; complete : Boolean = Standard_True) returns PacketList;
+    ---Purpose : Returns the list of recorded Packets, under two modes :
+    --           - <complete> = False, the strict definition of Packets, i.e.
+    --             for each one, the Root Entities, to be explicitely sent
+    --           - <complete> = True (Default), the completely evaluated list,
+    --             i.e. which really gives the destination of each entity :
+    --             this mode allows to evaluate duplications
+    --           Remark that to send packets, iteration remains preferable
+    --           (file names are managed)
+
+    NbPackets (me : in out) returns Integer;
+    ---Purpose : Returns the total count of produced non empty packets
+    --           (in out : calls Evaluate as necessary)
+
+    	--  --    Transfer Operation    -- --
+
+    Prepare (me : in out);
+    ---Purpose : Prepares the iteration on the packets
+    --           This method is called by Evaluate, but can be called anytime
+    --           The iteration consists in taking each Dispatch of the ShareOut
+    --           beginning by the first one, compute its packets, then iterate
+    --           on these packets. Once all these packets are iterated, the
+    --           iteration passes to the next Dispatch, or stops.
+    --           For a creation from a unique Dispatch, same but with only
+    --           this Dispatch.
+    --           Each packet can be listed, or really transferred (producing
+    --           a derived Model, from which a file can be generated)
+    --           
+    --           Prepare sets the iteration to the first Dispatch, first Packet
+
+    More (me : in out) returns Boolean;
+    ---Purpose : Returns True if there is more packets in the current Dispatch,
+    --           else if there is more Dispatch in the ShareOut
+
+    Next (me : in out);
+    ---Purpose : Passes to the next Packet in the current Dispatch, or if there
+    --           is none, to the next Dispatch in the ShareOut
+
+    NextDispatch (me : in out);
+    ---Purpose : Passes to the next Dispatch, regardless about remaining packets
+
+    Dispatch (me) returns Dispatch;
+    ---Purpose : Returns the current Dispatch
+
+    DispatchRank (me) returns Integer;
+    ---Purpose : Returns the Rank of the current Dispatch in the ShareOut
+    --           Returns Zero if there is none (iteration finished)
+
+    PacketsInDispatch (me; numpack, nbpacks : out Integer);
+    ---Purpose : Returns Number (rank) of current Packet in current Dispatch,
+    --           and total count of Packets in current Dispatch, as arguments
+
+    PacketRoot (me : in out) returns EntityIterator  raises NoSuchObject;
+    ---Purpose : Returns the list of Roots of the current Packet (never empty)
+    --           (i.e. the Entities to be themselves asked for transfer)
+    --           Error if there is none (iteration finished)
+
+    PacketContent (me : in out) returns EntityIterator  raises NoSuchObject;
+    ---Purpose : Returns the complete content of the current Packet (i.e.
+    --           with shared entities, which will also be put in the file)
+
+    FileName (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the File Name which corresponds to current Packet
+    --           (computed by ShareOut)
+    --           If current Packet has no associated name (see ShareOut),
+    --           the returned value is Null
+
+
+fields
+
+    theshareout : ShareOut;
+    thedispatch : Dispatch;
+    theeval     : Boolean;
+    thedispnum  : Integer;  -- rank of current dispatch in ShareOut
+    thepacknum  : Integer;  -- global rank of packet in the result
+    thepackdisp : Integer;  -- rank of packet in Dispatch
+    thenbindisp : Integer;  -- count of packets in Dispatch
+    thedisplist : SequenceOfInteger from TColStd;
+    thegraph    : Graph             is protected;
+    thedispres  : SubPartsIterator  is protected;
+
+end ShareOutResult;

@@ -1,0 +1,149 @@
+-- File:	STEPControl_ActorRead.cdl
+-- Created:	Wed Dec 21 15:51:21 1994
+-- Author:	Dieter THIEMANN
+--		<dth@paris1>
+---Copyright:	 Matra Datavision 1994
+
+
+class ActorRead from STEPControl
+    inherits ActorOfTransientProcess from Transfer
+
+    ---Purpose : This class performs the transfer of an Entity from
+    --           AP214 and AP203, either Geometric or Topologic.
+    --           
+    --           I.E. for each type of Entity, it invokes the appropriate Tool
+    --           then returns the Binder which contains the Result
+
+uses 
+
+    TransientProcess                    from Transfer, 
+    Binder                              from Transfer, 
+    Trsf                                from gp,
+    Axis2Placement3d                    from StepGeom,
+    Representation                      from StepRepr,
+    RepresentationRelationship          from StepRepr,
+    ProductDefinition                   from StepBasic,
+    NextAssemblyUsageOccurrence         from StepRepr,
+    ShapeRepresentation                 from StepShape,
+    ContextDependentShapeRepresentation from StepShape,
+    ShapeRepresentationRelationship     from StepRepr,
+    GeometricRepresentationItem         from StepGeom,
+    MappedItem                          from StepRepr,
+    FaceSurface                         from StepShape,
+    ShapeBinder                         from TransferBRep,
+    NMTool                              from StepToTopoDS, -- To proceed with non-manifold cases (ssv; 13.11.2010)
+    Shell                               from TopoDS,
+    ListOfShape                         from TopTools,
+    Compound                            from TopoDS,
+    IndexedDataMapOfShapeListOfShape        from TopTools
+
+is
+
+    Create  returns mutable ActorRead from STEPControl;
+
+    Recognize (me : mutable; start : Transient) returns Boolean is redefined;
+
+    Transfer (me : mutable; start : Transient; 
+                            TP : mutable TransientProcess from Transfer)
+    	returns mutable Binder from Transfer is redefined;
+    -- calls TransferShape
+
+    TransferShape (me         : mutable; 
+    	           start      : Transient; 
+                   TP         : mutable TransientProcess from Transfer;
+                   isManifold : Boolean = Standard_True)
+    	returns mutable Binder from Transfer;
+
+    ---Private: unit and uncertainty context management
+
+    PrepareUnits (me : mutable; rep: Representation from StepRepr; 
+    	    	    	    	TP: mutable TransientProcess from Transfer);
+    	---Purpose: set units and tolerances context by given ShapeRepresentation
+    
+    ResetUnits (me: mutable);
+    	---Purpose: reset units and tolerances context to default 
+        ---         (mm, radians, read.precision.val, etc.)
+
+    ComputeTransformation (me: mutable; Origin, Target: Axis2Placement3d from StepGeom;
+    	    	    	    	    	OrigContext, TargContext: Representation from StepRepr;
+    	    	    	    	    	TP: mutable TransientProcess from Transfer;
+    	    	    	    	    	Trsf: out Trsf from gp)
+    returns Boolean;
+	---Purpose: Computes transformation defined by two axis placements (in MAPPED_ITEM
+	--          or ITEM_DEFINED_TRANSFORMATION) taking into account their 
+	--          representation contexts (i.e. units, which may be different)
+	--          Returns True if transformation is computed and is not an identity.
+
+    ComputeSRRWT (me: mutable; SRR: RepresentationRelationship from StepRepr;
+    	    	    	       TP: mutable TransientProcess from Transfer;
+    	    	    	       Trsf: out Trsf from gp)
+    returns Boolean;
+	---Purpose: Computes transformation defined by given
+        --          REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION
+	
+     TransferEntity(me: mutable; PD : ProductDefinition from StepBasic;
+    	    	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers product definition entity
+       
+     
+    TransferEntity(me: mutable; NAUO  : NextAssemblyUsageOccurrence from StepRepr;
+    	  	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers next assembly usage occurence entity
+       
+    TransferEntity(me: mutable; sr  : ShapeRepresentation from StepShape;
+    	  	    TP :  mutable TransientProcess from Transfer;
+    	    	    isBound : out Boolean ) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers shape representation entity
+       
+       
+    TransferEntity(me: mutable; CDSR  : ContextDependentShapeRepresentation from StepShape;
+    	  	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers context dependent shape representation entity  
+       
+    TransferEntity(me: mutable; und  : ShapeRepresentationRelationship from StepRepr;
+    	  	    TP :  mutable TransientProcess from Transfer;
+    	    	    nbrep : Integer =0) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers  shape representation relationship entity    
+       	
+       
+    TransferEntity(me         : mutable; 
+                   git        : GeometricRepresentationItem from StepGeom;
+                   TP         : mutable TransientProcess from Transfer;
+                   isManifold : Boolean) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers  geometric representation item entity such as ManifoldSolidBRep ,...etc
+       
+    TransferEntity(me: mutable; mapit  : MappedItem from StepRepr;
+    	  	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers  mapped item
+       
+     TransferEntity(me: mutable; fs  : FaceSurface from StepShape;
+    	  	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Transfers  FaceSurface entity  
+              
+    OldWay(me: mutable; start : Transient;
+    	  	    TP :  mutable TransientProcess from Transfer) returns mutable ShapeBinder from TransferBRep is protected;
+       ---Purpose:Tranlates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is equal Off. 
+    
+    closeIDEASShell(me            : mutable;
+                    shell         : in Shell from TopoDS;
+                    closingShells : in ListOfShape from TopTools)
+    returns Shell from TopoDS
+    is private;
+
+    computeIDEASClosings(me              : mutable;
+                         comp            : in Compound from TopoDS;
+                         shellClosingMap : in out IndexedDataMapOfShapeListOfShape from TopTools)
+    is private;    
+   
+fields
+
+--    theUnitFactor : Real;                   -- Conversion unit factor.
+--    theVTol       : Real;                   -- Tolerance for Vertices
+--    theETol       : Real;                   -- Tolerance for Edges
+--    theFTol       : Real;                   -- Tolerance for Faces
+    myNMTool : NMTool from StepToTopoDS; -- To proceed with non-manifold cases (ssv; 13.11.2010)
+    myPrecision : Real;
+    myMaxTol : Real;
+    mySRContext: Representation from StepRepr; -- context for unuts
+
+end ActorRead;

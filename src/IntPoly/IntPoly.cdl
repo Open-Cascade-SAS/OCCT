@@ -1,0 +1,59 @@
+-- File:	IntPoly.cdl
+-- Created:	Mon Jul 17 10:25:09 1995
+-- Author:	Stagiaire Alain JOURDAIN
+--		<ajo@phobox>
+---Copyright:	 Matra Datavision 1995
+
+
+package IntPoly
+
+    	  ---Purpose:
+
+
+uses    Standard,
+    	TCollection,
+    	gp,
+        TColStd,
+	TColgp,
+    	TopoDS,
+    	TopAbs,
+    	TopExp,
+        TopLoc,
+	Poly
+	
+is   class SequenceOfSequenceOfPnt2d
+    	instantiates Sequence from TCollection (SequenceOfPnt2d from TColgp);
+
+     class Pnt2dHasher;
+
+     class IndexedMapOfPnt2d
+     	instantiates IndexedMap from TCollection (Pnt2d       from gp,
+                                                  Pnt2dHasher from IntPoly);
+        
+     class PlaneSection;
+     
+     class SequenceOfSequenceOfPnt
+    	instantiates Sequence from TCollection (SequenceOfPnt from TColgp);
+
+     class PntHasher;
+
+     class IndexedMapOfPnt
+     	instantiates IndexedMap from TCollection (Pnt       from gp,
+                                                  PntHasher from IntPoly);
+        
+     class ShapeSection;
+
+
+end IntPoly;
+
+
+
+
+
+
+
+
+
+
+
+

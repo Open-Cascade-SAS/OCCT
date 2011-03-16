@@ -1,0 +1,64 @@
+-- File:        FunctionSetWithDerivatives.cdl
+-- Created:     Mon May 13 15:33:43 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+deferred class FunctionSetWithDerivatives from math 
+
+inherits FunctionSet 
+
+    ---Purpose: This abstract class describes the virtual functions associated
+    --          with a set of N Functions each of M independant variables.
+
+uses Vector from math, Matrix from math
+
+
+is
+
+    NbVariables(me)
+    	---Purpose: Returns the number of variables of the function.
+
+    returns Integer
+    is deferred;
+    
+    
+    NbEquations(me)
+    	---Purpose: Returns the number of equations of the function.
+
+    returns Integer
+    is deferred;
+    
+    
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: Computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: Returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+    
+end FunctionSetWithDerivatives;

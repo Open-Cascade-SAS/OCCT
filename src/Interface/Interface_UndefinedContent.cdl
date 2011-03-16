@@ -1,0 +1,141 @@
+-- File:	UndefinedContent.cdl
+-- Created:	Tue Feb  4 13:56:27 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class UndefinedContent  from Interface  inherits TShared
+
+    ---Purpose : Defines resources for an "Undefined Entity" : such an Entity
+    --           is used to describe an Entity which complies with the Norm,
+    --           but of an Unknown Type : hence it is kept under a literal
+    --           form (avoiding to loose data). UndefinedContent offers a way
+    --           to store a list of Parameters, as literals or references to
+    --           other Entities
+    --           
+    --           Each Interface must provide one "UndefinedEntity", which must
+    --           have same basic description as all its types of entities :
+    --           the best way would be double inheritance : on the Entity Root
+    --           of the Norm and on an general "UndefinedEntity"
+    --           
+    --           While it is not possible to do so, the UndefinedEntity of each
+    --           Interface can define its own UndefinedEntity by INCLUDING
+    --           (in a field) this UndefinedContent
+    --           
+    --           Hence, for that UndefinedEntity, define a Constructor which
+    --           creates this UndefinedContent, plus access methods to it
+    --           (or to its data, calling methods defined here).
+    --           
+    --           Finally, the Protocols of each norm have to Create and
+    --           Recognize Unknown Entities of this norm
+    ---See Also : Protocol
+
+uses Transient, HAsciiString from TCollection,
+     HArray1OfInteger from TColStd,  HArray1OfHAsciiString from Interface,
+     ParamType, EntityList, CopyTool
+
+raises OutOfRange, NoSuchObject, InterfaceMismatch, InterfaceError
+
+is
+
+    Create returns mutable UndefinedContent;
+    ---Purpose : Defines an empty UndefinedContent
+
+    	-- --    Access to Parameters    -- --
+
+    NbParams   (me) returns Integer  is static;
+    ---Purpose : Gives count of recorded parameters
+
+    NbLiterals (me) returns Integer  is static;
+    ---Purpose : Gives count of Literal Parameters
+
+    ParamData (me; num : Integer; ptype : out ParamType;
+    	    	   ent : out mutable Transient;
+    	    	   val : out HAsciiString from TCollection)
+    	     	       returns Boolean  is static;
+    ---Purpose : Returns data of a Parameter : its type, and the entity if it
+    --           designates en entity ("ent") or its literal value else ("str")
+    --           Returned value (Boolean) : True if it is an Entity, False else
+
+    ParamType (me; num : Integer) returns ParamType
+    	raises OutOfRange  is static;
+    ---Purpose : Returns the ParamType of a Param, given its rank
+    --           Error if num is not between 1 and NbParams
+
+    IsParamEntity (me; num : Integer) returns Boolean
+    	raises OutOfRange  is static;
+    ---Purpose : Returns True if a Parameter is recorded as an entity
+    --           Error if num is not between 1 and NbParams
+
+    ParamEntity (me; num : Integer) returns mutable Transient
+    ---Purpose : Returns Entity corresponding to a Param, given its rank
+        raises InterfaceError, OutOfRange  is static;
+    --           Error if out of range or if Param num does not designate
+    --           an Entity
+
+    ParamValue (me; num : Integer) returns HAsciiString from TCollection
+    ---Purpose : Returns litteral value of a Parameter, given its rank
+    	raises InterfaceError, OutOfRange  is static;
+    --           Error if num is out of range, or if Parameter is not literal
+
+
+    Reservate (me : mutable; nb,nblit : Integer)  is static;
+    ---Purpose : Manages reservation for parameters (internal use)
+    --           (nb : total count of parameters, nblit : count of literals)
+
+    AddLiteral (me : mutable; ptype : ParamType;
+	val : HAsciiString from TCollection)  is static;
+    ---Purpose : Adds a literal Parameter to the list
+
+    AddEntity  (me : mutable; ptype : ParamType; ent : mutable Transient)
+    	is static;
+    ---Purpose : Adds a Parameter which references an Entity
+
+    RemoveParam (me : mutable; num : Integer)
+    ---Purpose : Removes a Parameter given its rank
+    	raises OutOfRange  is static;
+    --           Error if num is out of range
+
+    SetLiteral (me : mutable; num : Integer; ptype : ParamType;
+	val : HAsciiString from TCollection)
+    ---Purpose : Sets a new value for the Parameter <num>, to a literal value
+    --           (if it referenced formerly an Entity, this Entity is removed)
+    	raises OutOfRange  is static;
+    --           Error if num is out of range
+
+    SetEntity  (me : mutable; num : Integer; ptype : ParamType;
+    	    	ent : mutable Transient)
+    ---Purpose : Sets a new value for the Parameter <num>, to reference an
+    --           Entity. To simply change the Entity, see the variant below
+    	raises OutOfRange  is static;
+    --           Error if num is out of range
+
+    SetEntity  (me : mutable; num : Integer; ent : mutable Transient)
+    ---Purpose : Changes the Entity referenced by the Parameter <num>
+    --           (with same ParamType)
+    	raises InterfaceError, OutOfRange  is static;
+    --           Error if num is out of range or if <num> is not for an Entity
+
+
+    EntityList (me) returns EntityList  is static;
+    ---Purpose : Returns globally the list of param entities. Note that it can
+    --           be used as shared entity list for the UndefinedEntity
+
+
+    GetFromAnother (me : mutable;
+    	    	    other : UndefinedContent; TC : in out CopyTool)
+    	    	    	is static;
+    ---Purpose : Copies contents of undefined entities; deigned to be called by
+    --           GetFromAnother method from Undefined entity of each Interface
+    --           (the basic operation is the same regardless the norm)
+
+fields
+
+    thenbparams : Integer;  -- total count of parameters
+    thenbstr    : Integer;  -- count of literal parameters
+    theparams   : HArray1OfInteger from TColStd;
+    thevalues   : HArray1OfHAsciiString from Interface;
+    theentities : EntityList;
+
+end UndefinedContent;

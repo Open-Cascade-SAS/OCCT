@@ -1,0 +1,315 @@
+-- File:	BRepBuilderAPI_MakeFace.cdl
+-- Created:	Mon Jul 12 11:35:23 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+--		xab: 29Nov96  correction de doc
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeFace from BRepBuilderAPI inherits MakeShape from BRepBuilderAPI 
+
+	---Purpose: Provides methods to build faces.
+	--          
+	--          A face may be built :
+	--          
+	--          * From a surface.
+	--          
+	--             - Elementary surface from gp.
+	--             
+	--             - Surface from Geom.
+	--             
+	--          * From a surface and U,V values.
+	--          
+	--          * From a wire.
+	--            
+	--            - Find the surface automatically if possible.
+	--          
+	--          * From a surface and a wire.
+	--          
+	--            - A flag Inside is given, when this flag is True
+	--            the  wire is  oriented to bound a finite area on
+	--            the surface.
+	--          
+	--          * From a face and a wire.
+	--            
+	--            - The new wire is a perforation.
+        
+uses
+    Pln       from gp,
+    Cylinder  from gp,
+    Cone      from gp,
+    Sphere    from gp,
+    Torus     from gp,
+    Surface   from Geom,
+    Face      from TopoDS,
+    Wire      from TopoDS,
+    FaceError from BRepBuilderAPI,
+    MakeFace  from BRepLib
+    
+raises
+    NotDone    from StdFail
+
+is
+
+    Create  
+	---Purpose: Not done.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+    
+    Create(F : Face from TopoDS)  
+	---Purpose: Load a face. Usefull to add wires.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    ----------------------------------------------
+    -- From a surface
+    ----------------------------------------------
+
+    Create(P : Pln from gp)
+	---Purpose: Make a face from a plane.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cylinder from gp)
+	---Purpose: Make a face from a cylinder.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cone from gp)
+	---Purpose: Make a face from a cone.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Sphere from gp)
+	---Purpose: Make a face from a sphere.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Torus from gp)
+	---Purpose: Make a face from a torus.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Surface from Geom)
+	---Purpose: Make a face from a Surface.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    ----------------------------------------------
+    -- From a surface and U,V values
+    ----------------------------------------------
+
+    Create(P : Pln from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a plane.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cylinder from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a cylinder.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cone from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a cone.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Sphere from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a sphere.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Torus from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a torus.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Surface from Geom; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a Surface.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    ----------------------------------------------
+    -- From a wire
+    ----------------------------------------------
+
+    Create(W         : Wire    from TopoDS;
+    	   OnlyPlane : Boolean from Standard = Standard_False)
+	---Purpose: Find a surface from the wire and make a face.
+	--          if <OnlyPlane> is true, the computed surface will be
+	--          a plane. If it is not possible to find a plane, the
+	--          flag NotDone will be set.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    ----------------------------------------------
+    -- From a surface and a wire
+    ----------------------------------------------
+
+    Create(P : Pln from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a plane and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cylinder from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a cylinder and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Cone from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a cone and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Sphere from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a sphere and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(C : Torus from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a torus and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    Create(S : Surface from Geom; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a Surface and a wire.
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+
+    ----------------------------------------------
+    -- From face and wire.
+    ----------------------------------------------
+
+    Create(F : Face from TopoDS; W : Wire from TopoDS)
+	---Purpose: Adds the wire <W> in the face <F>
+	---Level: Public
+    returns MakeFace from BRepBuilderAPI;
+    
+    	---Purpose: A general method to create a face is to give
+    	-- -      a surface S as the support (the geometric domain) of the face,
+    	-- -      and a wire W to bound it.
+    	-- The bounds of the face can also be defined by four parameter values
+    	-- umin, umax, vmin, vmax which determine isoparametric limitations on
+    	-- the parametric space of the surface. In this way, a patch is
+    	-- defined. The parameter values are optional. If they are omitted, the
+    	-- natural bounds of the surface are used. A wire is automatically
+    	-- built using the defined bounds. Up to four edges and four vertices
+    	-- are created with this wire (no edge is created when the
+    	-- corresponding parameter value is infinite).
+    	-- Wires can then be added using the function Add to define other
+    	-- restrictions on the face. These restrictions represent holes. More
+    	-- than one wire may be added by this way, provided that the wires do
+    	-- not cross each other and that they define only one area on the
+    	-- surface. (Be careful, however, as this is not checked).
+    	--  Forbidden addition of wires
+    	-- Note that in this schema, the third case is valid if edges of the
+    	-- wire W are declared internal to the face. As a result, these edges
+    	-- are no longer bounds of the face.
+    	-- A default tolerance (Precision::Confusion()) is given to the face,
+    	-- this tolerance may be increased during construction of the face
+    	-- using various algorithms.
+    	-- Rules applied to the arguments
+    	-- For the surface:
+    	-- -      The surface must not be a 'null handle'.
+    	-- -      If the surface is a trimmed surface, the basis surface is used.
+    	-- -      For the wire: the wire is composed of connected edges, each
+    	--    edge having a parametric curve description in the parametric
+    	--    domain of the surface; in other words, as a pcurve.
+    	-- For the parameters:
+    	-- -      The parameter values must be in the parametric range of the
+    	--    surface (or the basis surface, if the surface is trimmed). If this
+    	--    condition is not satisfied, the face is not built, and the Error
+    	--    function will return BRepBuilderAPI_ParametersOutOfRange.
+    	-- -      The bounding parameters p1 and p2 are adjusted on a periodic
+    	--    surface in a given parametric direction by adding or subtracting
+    	--    the period to obtain p1 in the parametric range of the surface and
+    	--    such p2, that p2 - p1 <= Period, where Period is the period of the
+    	--    surface in this parametric direction.
+    	-- -      A parameter value may be infinite. There will be no edge and
+    	--    no vertex in the corresponding direction.
+       
+
+    Init(me : in out; F : Face from TopoDS)
+	---Purpose:  Initializes (or reinitializes) the
+    	-- construction of a face by creating a new object which is a copy of
+    	-- the face F, in order to add wires to it, using the function Add.
+    	-- Note: this complete copy of the geometry is only required if you
+    	-- want to work on the geometries of the two faces independently.
+    is static;
+
+    Init(me : in out; S : Surface from Geom; Bound : Boolean = Standard_True)
+	---Purpose: Initializes (or reinitializes) the construction of a face on
+    	-- the surface S. If Bound is true (the default value), a wire is
+    	-- automatically created from the natural bounds of the
+    	-- surface S and added to the face in order to bound it. If
+    	-- Bound is false, no wire is added. This option is used
+    	-- when real bounds are known. These will be added to
+    	-- the face after this initialization, using the function Add.
+      is static;
+
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real) 
+	---Purpose:  Initializes (or reinitializes) the construction of a face on
+    	-- the surface S, limited in the u parametric direction by
+    	-- the two parameter values UMin and UMax and in the
+    	-- v parametric direction by the two parameter values VMin and VMax.
+    	-- Warning
+    	--  Error returns:
+    	-- -      BRepBuilderAPI_ParametersOutOfRange
+    	--    when the parameters given are outside the bounds of the
+    	--    surface or the basis surface of a trimmed surface.
+    is static;
+
+    Add(me : in out; W : Wire from TopoDS)
+	---Purpose: Adds the wire W to the constructed face as a hole.
+    	-- Warning
+    	-- W must not cross the other bounds of the face, and all
+    	-- the bounds must define only one area on the surface.
+    	-- (Be careful, however, as this is not checked.)
+    	-- Example
+    	-- // a cylinder
+    	--    gp_Cylinder C = ..;
+    	-- // a wire
+    	-- TopoDS_Wire W = ...;
+    	-- BRepBuilderAPI_MakeFace MF(C);
+    	-- MF.Add(W);
+    	-- TopoDS_Face F = MF;
+    is static;
+
+
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    IsDone(me) returns Boolean
+	---Purpose: Returns true if this algorithm has a valid face.
+    is redefined;
+
+    Error(me) returns FaceError from BRepBuilderAPI
+	---Purpose: Returns the construction status
+        --   BRepBuilderAPI_FaceDone if the face is built, or
+    	-- -   another value of the BRepBuilderAPI_FaceError
+    	--   enumeration indicating why the construction failed, in
+    	--   particular when the given parameters are outside the
+    	--   bounds of the surface.
+    is static;
+
+    Face(me) returns Face from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Face() const;"
+    	---Purpose: Returns the constructed face.
+    	-- Exceptions
+    	-- StdFail_NotDone if no face is built.
+    raises 
+    	NotDone from StdFail
+    is static;
+    
+fields
+    myMakeFace : MakeFace from BRepLib;
+
+end MakeFace;

@@ -1,0 +1,67 @@
+--
+-- File      :  DrawingSize.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DrawingSize from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESDrawingSize, Type <406> Form <16>
+        --          in package IGESGraph
+        --
+        --          Specifies the drawing size in drawing units. The
+        --          origin of the drawing is defined to be (0,0) in
+        --          drawing space
+
+uses  Integer, Real  -- no one specific type
+
+
+is
+
+        Create returns mutable DrawingSize;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me      : mutable;
+              nbProps : Integer;
+              aXSize  : Real;
+              aYSize  : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           DrawingSize
+        --      - nbProps : Number of property values (NP = 2)
+        --      - aXSize  : Extent of Drawing along positive XD axis
+        --      - aYSize  : Extent of Drawing along positive YD axis
+
+        -- Specific Access Methods : According to each type of Entity
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me> (NP = 2)
+
+        XSize (me) returns Real;
+        ---Purpose : returns the extent of Drawing along positive XD axis
+
+        YSize (me) returns Real;
+        ---Purpose : returns the extent of Drawing along positive YD axis
+
+fields
+
+--
+-- Class    : IGESGraph_DrawingSize
+--
+-- Purpose  : Declaration of the variables specific to a Drawing Size.
+--
+-- Reminder : A Drawing Size is defined by :
+--                  - Number of property values
+--                  - X Size
+--                  - Y Size
+--
+
+        theNbPropertyValues : Integer;
+
+        theXSize            : Real;
+
+        theYSize            : Real;
+
+end DrawingSize;

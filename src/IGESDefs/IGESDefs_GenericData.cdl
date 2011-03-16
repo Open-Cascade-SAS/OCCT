@@ -1,0 +1,126 @@
+--
+-- File      : GenericData.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class GenericData from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES Generic Data, Type <406> Form <27>
+        --          in package IGESDefs
+        --          Used to communicate information defined by the system
+        --          operator while creating the model. The information is
+        --          system specific and does not map into one of the
+        --          predefined properties or associativities. Properties
+        --          and property values can be defined by multiple
+        --          instances of this property.
+
+uses
+
+        HAsciiString           from TCollection,
+        HArray1OfReal          from TColStd,
+        HArray1OfTransient     from TColStd,
+        HArray1OfInteger       from TColStd,
+        HArray1OfHAsciiString  from Interface,
+        HArray1OfIGESEntity    from IGESData
+
+raises DimensionMismatch, OutOfRange, NullObject
+
+is
+
+        Create returns mutable GenericData;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              nbPropVal : Integer;
+              aName     : HAsciiString;
+              allTypes  : HArray1OfInteger;
+              allValues : HArray1OfTransient from TColStd)
+        ---Purpose : This method is used to set the fields of the class
+        --           GenericData
+        --       - nbPropVal : Number of property values
+        --       - aName     : Property Name
+        --       - allTypes  : Property Types
+        --       - allValues : Property Values
+        raises DimensionMismatch;
+        -- if lengths of allTypes and allValues are not same
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+
+        Name (me) returns HAsciiString from TCollection;
+        ---Purpose : returns property name
+
+        NbTypeValuePairs (me) returns Integer;
+        ---Purpose : returns the number of TYPE/VALUE pairs
+
+        Type (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th property value data type
+        -- raises exception if Index <= 0 or Index > NbTypeValuePairs()
+
+        Value (me; Index : Integer) returns Transient
+        --The Transient returned depends of Type :
+        ---Purpose :    HArray1OfInteger (length 1), HArray1OfReal (length 1) for
+        --    Integer, Real, Boolean (= Integer 0/1),
+        --    HAsciiString for String (the value itself),
+        --    IGESEntity for Entity (the value itself)
+            raises OutOfRange;
+        -- raises exception if Index <= 0 or Index > NbTypeValuePairs()
+
+
+    ValueAsInteger (me; ValueNum : Integer) returns Integer
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Index out of Range, or not an Integer
+
+    ValueAsReal    (me; ValueNum : Integer) returns Real
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as a Real
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Index out of Range, or not a Real
+
+    ValueAsString  (me; ValueNum : Integer)
+    	returns HAsciiString from TCollection
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
+            raises OutOfRange, NullObject;
+    --   Error if Index out of Range, or not a String
+
+    ValueAsEntity  (me; ValueNum : Integer) returns IGESEntity
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Index out of Range, or not a Entity
+
+    ValueAsLogical (me; ValueNum : Integer) returns Boolean
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as a Boolean
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Index out of Range, or not a Logical
+
+fields
+
+--
+-- Class    : IGESDefs_GenericData
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class GenericData.
+--
+-- Reminder : A GenericData instance is defined by :
+--            - Number of property values
+--            - Property Name
+--            - Property Types
+--            - Property Values
+--            The values can be of type either no value, integer, real,
+--            string, pointer or boolean. Accordingly we store them in a
+--            Transient Object of appropriate Type :
+--            - HArray1OfInteger/OfReal of length 1, for Integer, Real, Logical
+--            - a single HAsciiString for String
+--            - a single IGESEntity for Entity (Pointer)
+
+        theNbPropertyValues : Integer;
+        theName             : HAsciiString;
+        theTypes            : HArray1OfInteger;
+        theValues           : HArray1OfTransient from TColStd;
+
+end GenericData;

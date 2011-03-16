@@ -1,0 +1,32 @@
+-- File:	StepAP203_CcDesignSecurityClassification.cdl
+-- Created:	Fri Nov 26 16:26:33 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class CcDesignSecurityClassification from StepAP203
+inherits SecurityClassificationAssignment from StepBasic
+
+    ---Purpose: Representation of STEP entity CcDesignSecurityClassification
+
+uses
+    SecurityClassification from StepBasic,
+    HArray1OfClassifiedItem from StepAP203
+
+is
+    Create returns CcDesignSecurityClassification from StepAP203;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aSecurityClassificationAssignment_AssignedSecurityClassification: SecurityClassification from StepBasic;
+                       aItems: HArray1OfClassifiedItem from StepAP203);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Items (me) returns HArray1OfClassifiedItem from StepAP203;
+	---Purpose: Returns field Items
+    SetItems (me: mutable; Items: HArray1OfClassifiedItem from StepAP203);
+	---Purpose: Set field Items
+
+fields
+    theItems: HArray1OfClassifiedItem from StepAP203;
+
+end CcDesignSecurityClassification;

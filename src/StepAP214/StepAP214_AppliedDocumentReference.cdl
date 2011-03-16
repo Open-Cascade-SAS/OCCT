@@ -1,0 +1,37 @@
+-- File:	StepAP214_AppliedDocumentReference.cdl
+-- Created:	Wed Mar 10 11:40:15 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class AppliedDocumentReference from StepAP214 inherits DocumentReference from StepBasic
+ 
+
+	
+uses
+     Document from StepBasic,
+     HAsciiString from TCollection,
+     DocumentReferenceItem from StepAP214,
+     HArray1OfDocumentReferenceItem from StepAP214
+	
+is
+    
+    Create returns AppliedDocumentReference;
+
+    Init (me : mutable;
+           aAssignedDocument : Document;
+           aSource : HAsciiString;
+    	   aItems  : HArray1OfDocumentReferenceItem);
+
+    Items (me) returns HArray1OfDocumentReferenceItem ;
+    SetItems (me : mutable; aItems : HArray1OfDocumentReferenceItem);
+    ItemsValue (me; num : Integer) returns DocumentReferenceItem;
+    NbItems (me) returns Integer;
+
+    	
+fields
+    
+    items : HArray1OfDocumentReferenceItem;
+
+end AppliedDocumentReference;

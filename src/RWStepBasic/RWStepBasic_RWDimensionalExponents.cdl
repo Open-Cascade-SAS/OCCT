@@ -1,0 +1,27 @@
+-- File:        DimensionalExponents.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDimensionalExponents from RWStepBasic
+
+	---Purpose : Read & Write Module for DimensionalExponents
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DimensionalExponents from StepBasic
+
+is
+
+	Create returns RWDimensionalExponents;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DimensionalExponents from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : DimensionalExponents from StepBasic);
+
+end RWDimensionalExponents;

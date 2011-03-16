@@ -1,0 +1,102 @@
+-- File:        Bnd.cdl
+-- Created:     Tue Jan  8 09:53:22 1991
+-- Author:      Didier Piffault
+--              <rle@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+--- Modified by  hl1 (juillet 96) : ajout de SeqOfBox
+
+
+
+
+       --------------------------------------------------------
+       ---              I n f o r m a t i o n               ---
+       ---                                                  ---
+       ---  The Bnd_Tool class is now in the package Intf.  ---
+       --------------------------------------------------------
+
+
+
+
+
+package Bnd 
+
+        ---Purpose: Supports the Boundings Volumes.  A Bounding Volume
+        --          is used to bound a shape to optimising algorithms.
+        --          If  a point is  outside the Bounding   Volume of a
+        --          shape it is also  outside the shape.  The contrary
+        --          is not necessarily true.
+        --          
+        --          Various classes are  then implemented to  describe
+        --          the usual  Bounding volumes. Not  all  classes are
+        --          implemented.
+        --          
+        --          in 3D :
+        --          Box                -- Implemented
+        --          BoundSortBox       -- Implemented
+        --          
+        --          in 2D :
+        --          Box2d              -- Implemented
+        --          BoundSortBox2d     -- Implemented
+        --          
+        --          
+
+        ---Level : Public. 
+        --  All methods of all  classes will be public.
+
+        
+uses    Standard,
+        TCollection,
+        TColStd,
+        gp
+
+
+is  class Box;
+        ---Purpose: A box parallel to the main axes.
+        --          A 3D Bounding.
+    class Array1OfBox instantiates Array1 from TCollection
+                                   (Box from Bnd);
+    class HArray1OfBox instantiates HArray1 from TCollection
+                                   (Box from Bnd,
+                                    Array1OfBox from Bnd);
+
+
+    class Box2d;
+        ---Purpose: A rectangle parallel to the main axes.
+        --          A 2D Bounding.
+    class Array1OfBox2d instantiates Array1 from TCollection
+                                   (Box2d from Bnd);
+    class HArray1OfBox2d instantiates HArray1 from TCollection
+                                   (Box2d from Bnd,
+                                    Array1OfBox2d from Bnd);
+
+
+    class BoundSortBox2d;
+        ---Purpose: A tool to sort a set of Box2d  and compare with an
+        --          other Box2d to find the list of touched items.
+
+
+    class BoundSortBox;
+        ---Purpose: A tool to sort a  set of Box  and compare with  an
+        --          other Box to find the list of touched items.
+
+
+    class SeqOfBox instantiates Sequence from TCollection (Box from Bnd);
+        ---Purpose: This sequence used to store the bounding boxes of sub-Shapes.
+    
+    --- Optimized boxes (no Gap, no infinity supported)
+    generic class B2x;
+    generic class B3x;
+
+    class B2d instantiates B2x from Bnd (Real from Standard);
+    -- 2D box with double-precision coordinates
+
+    class B2f instantiates B2x from Bnd (ShortReal from Standard);
+    -- 2D box with single-precision coordinates
+
+    class B3d instantiates B3x from Bnd (Real from Standard);
+    -- 3D box with double-precision coordinates
+
+    class B3f instantiates B3x from Bnd (ShortReal from Standard);
+    -- 3D box with single-precision coordinates
+
+end Bnd;

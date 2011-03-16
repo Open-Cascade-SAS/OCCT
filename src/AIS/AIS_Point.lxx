@@ -1,0 +1,15 @@
+// File:	AIS_Point.lxx
+// Created:	Thu Mar  6 11:52:52 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+
+inline AIS_KindOfInteractive AIS_Point::Type() const 
+{return AIS_KOI_Datum;}
+
+
+inline Standard_Integer AIS_Point::Signature() const 
+{return 1;}
+
+inline Standard_Boolean  AIS_Point::HasMarker() const
+{return myHasTOM;}

@@ -1,0 +1,45 @@
+-- File:	TopOpeBRepDS_Association.cdl
+-- Created:	Tue Aug 18 16:28:50 1998
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Association from TopOpeBRepDS inherits TShared from MMgt
+
+	---Purpose: 
+
+uses
+    Interference                            from TopOpeBRepDS,
+    ListOfInterference                      from TopOpeBRepDS,
+    DataMapOfInterferenceListOfInterference from TopOpeBRepDS
+
+is
+
+    Create returns mutable Association from TopOpeBRepDS;
+    
+    Associate  (me : mutable; I,K : Interference from TopOpeBRepDS) 
+    is static;
+     
+    Associate  (me : mutable; 
+    	    	I  : Interference      from TopOpeBRepDS;
+    	    	LI : ListOfInterference from TopOpeBRepDS) 
+    is static;
+    HasAssociation (me ; I : Interference from TopOpeBRepDS)
+    returns Boolean from Standard
+    is static;
+    
+    Associated (me : mutable ; I : Interference from TopOpeBRepDS) 
+    ---C++: return &
+    returns ListOfInterference from TopOpeBRepDS
+    is static;
+    
+    AreAssociated (me; I,K : Interference from TopOpeBRepDS)
+    returns Boolean from Standard
+    is static;
+    
+fields
+
+    myMap : DataMapOfInterferenceListOfInterference from TopOpeBRepDS;
+    
+end Association;

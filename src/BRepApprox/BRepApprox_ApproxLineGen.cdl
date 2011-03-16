@@ -1,0 +1,46 @@
+-- File:	BRepApprox_ApproxLineGen.cdl
+-- Created:	Thu Jul 20 15:08:07 1995
+-- Author:	Modelistation
+--		<model@meteox>
+---Copyright:	 Matra Datavision 1995
+
+
+generic class ApproxLineGen from BRepApprox
+    (TheCurve        as any;
+     TheCurve2d      as any)
+inherits TShared from MMgt
+    
+   
+uses
+
+    PntOn2S           from IntSurf,
+    LineOn2S          from IntSurf
+     
+is 
+     
+    Create(CurveXYZ: TheCurve;
+      	   CurveUV1: TheCurve2d;
+    	   CurveUV2: TheCurve2d)
+    returns mutable ApproxLineGen from BRepApprox;
+
+    Create(lin: LineOn2S from IntSurf; Tang: Boolean from Standard)
+    returns mutable ApproxLineGen from BRepApprox;
+	 
+    NbPnts(me) 
+    returns Integer from Standard
+    is static;
+	 
+    Point(me: mutable; Index: Integer from Standard)
+    returns PntOn2S from IntSurf
+    is static;
+	 
+fields 
+
+    curvxyz  : TheCurve;
+    curvuv1  : TheCurve2d;
+    curvuv2  : TheCurve2d;
+    pnton2s  : PntOn2S    from IntSurf;
+    linon2s  : LineOn2S   from IntSurf;
+
+end ApproxLineGen from BRepApprox;
+

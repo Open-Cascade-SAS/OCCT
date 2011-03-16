@@ -1,0 +1,72 @@
+-- File:	TDF_SelfContainedCopy.cdl
+-- Created:	Thu Jun 24 14:23:31 1999
+-- Author:	Sergey ZARITCHNY
+--		<szy@philipox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class CopyLabel from TDF 
+
+	---Purpose: 
+
+uses
+ 
+    Boolean             from Standard,
+    Label               from TDF,
+    Attribute           from TDF,
+    DataSet             from TDF,
+    RelocationTable     from TDF,
+    AttributeMap        from TDF,
+    LabelMap            from TDF,
+    IDFilter            from TDF
+
+
+is
+ 
+    Create  returns  CopyLabel  from TDF; 
+    ---Purpose: Empty  constructor  
+    
+    Create(aSource,  aTarget  :  Label  from  TDF) 
+      returns  CopyLabel  from TDF;  
+    ---Purpose: CopyTool  
+    
+    Load(me  :  in  out;  aSource,  aTarget  :  Label  from  TDF);  
+    ---Purpose: Loads  src  and  tgt  labels 
+     
+    UseFilter(me  :  in  out;  aFilter : IDFilter from TDF); 
+    ---Purpose:  Sets  filter
+
+    ExternalReferences(myclass;  Lab  :  Label  from  TDF; 
+    	    	    	    	 aExternals:in  out  AttributeMap  from  TDF; 
+    	    	    	    	 aFilter   :  IDFilter  from  TDF) 
+      returns  Boolean  from  Standard; 
+    ---Purpose: Check  external  references and  if  exist  fills  the  aExternals  Map 
+     
+    ExternalReferences(myclass;  aRefLab, Lab  :  Label  from  TDF; 
+    	    	    	   aExternals    :  in  out  AttributeMap  from  TDF; 
+			   aFilter       :  IDFilter  from  TDF;
+    	    	    	   aDataSet      :  in  out  DataSet  from  TDF) ;
+    ---Purpose: Check  external  references and  if  exist  fills  the  aExternals  Map 
+     
+    Perform(me:in  out);  
+    ---Purpose:  performs  algorithm  of  selfcontained  copy 
+     
+    IsDone(me) 
+      returns  Boolean  from  Standard;  
+    ---C++:  inline      
+	 
+    RelocationTable(me)     	 
+      returns  RelocationTable  from  TDF;  
+    ---Purpose: returns  relocation  table 
+    ---C++: return const&
+    
+fields
+ 
+    myRT        :  RelocationTable  from  TDF;
+    mySL        :  Label            from  TDF; --  source  label
+    myTL        :  Label            from  TDF; --  target  label 
+    myFilter    :  IDFilter         from  TDF;
+    myMapOfExt  :  AttributeMap     from  TDF; --  map  of  attribute  with  external  reference
+    myIsDone    :  Boolean          from  Standard;
+
+end CopyLabel;

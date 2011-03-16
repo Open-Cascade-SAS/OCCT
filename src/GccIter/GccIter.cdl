@@ -1,0 +1,64 @@
+-- File:	GccIter.cdl
+-- Created:	Thu Apr  4 14:27:40 1991
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+package GccIter
+
+    ---Purpose :
+    --           This package provides an implementation of analytics 
+    --           algorithms (using only non persistant entities) used 
+    --           to create 2d lines or circles with geometric constraints.
+    --
+    -- Exceptions :
+    -- 	            IsParallel which inherits DomainError. This exception 
+    -- 	            is raised in the class Lin2dTanObl when we want to 
+    -- 	            find the intersection point between the solution and 
+    -- 	            the second argument with a null angle.
+
+uses GccEnt,
+     GccInt,
+     GccAna,
+     StdFail,
+     gp,
+     math
+
+is
+
+enumeration Type1 is CuCuCu,CiCuCu,CiCiCu,CiLiCu,LiLiCu,LiCuCu;
+
+enumeration Type2 is CuCuOnCu,CiCuOnCu,LiCuOnCu,CuPtOnCu,
+                     CuCuOnLi,CiCuOnLi,LiCuOnLi,CuPtOnLi,
+		     CuCuOnCi,CiCuOnCi,LiCuOnCi,CuPtOnCi;
+
+enumeration Type3 is CuCu,CiCu;
+
+generic class FunctionTanCuCu;
+
+generic class FunctionTanCirCu;
+
+generic class FunctionTanCuCuCu;
+
+generic class FunctionTanCuCuOnCu;
+
+generic class FunctionTanCuPnt;
+
+generic class FunctionTanObl;
+
+generic class Lin2dTanObl, FuncTObl;
+    -- Create a 2d line TANgent to a 2d curve and OBLic to a 2d line.
+
+generic class Lin2d2Tan, FuncTCuCu, FuncTCirCu, FuncTCuPt;
+    -- Create a 2d line TANgent to 2 2d entities.
+
+generic class Circ2d3Tan, FuncTCuCuCu;
+    -- Create a 2d circle TANgent to 3 2d entities.
+
+generic class Circ2d2TanOn, FuncTCuCuOnCu;
+    -- Create a 2d circle TANgent to a 2d entity and centered ON a 2d 
+    -- entity (not a point).
+
+exception IsParallel inherits DomainError from Standard;
+
+end GccIter;

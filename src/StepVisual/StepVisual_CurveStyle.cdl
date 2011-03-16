@@ -1,0 +1,46 @@
+-- File:        CurveStyle.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CurveStyle from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	CurveStyleFontSelect from StepVisual, 
+	SizeSelect from StepBasic, 
+	Colour from StepVisual
+is
+
+	Create returns mutable CurveStyle;
+	---Purpose: Returns a CurveStyle
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCurveFont : CurveStyleFontSelect from StepVisual;
+	      aCurveWidth : SizeSelect from StepBasic;
+	      aCurveColour : mutable Colour from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetCurveFont(me : mutable; aCurveFont : CurveStyleFontSelect);
+	CurveFont (me) returns CurveStyleFontSelect;
+	SetCurveWidth(me : mutable; aCurveWidth : SizeSelect);
+	CurveWidth (me) returns SizeSelect;
+	SetCurveColour(me : mutable; aCurveColour : mutable Colour);
+	CurveColour (me) returns mutable Colour;
+
+fields
+
+	name : HAsciiString from TCollection;
+	curveFont : CurveStyleFontSelect from StepVisual; -- a SelectType
+	curveWidth : SizeSelect from StepBasic; -- a SelectType
+	curveColour : Colour from StepVisual;
+
+end CurveStyle;

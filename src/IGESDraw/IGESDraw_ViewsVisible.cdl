@@ -1,0 +1,83 @@
+--
+-- File      :  ViewsVisible.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ViewsVisible from IGESDraw  inherits ViewKindEntity
+
+        ---Purpose : Defines IGESViewsVisible, Type <402>, Form <3>
+        --           in package IGESDraw
+        --
+        --           If an entity is to be displayed in more than one views,
+        --           this class instance is used, which contains the Visible
+        --           views and the associated entity Displays.
+
+uses
+
+        IGESEntity              from IGESData,
+        HArray1OfIGESEntity     from IGESData,
+        HArray1OfViewKindEntity from IGESDraw
+
+raises OutOfRange
+
+is
+
+        Create returns mutable ViewsVisible;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              allViewEntities  : HArray1OfViewKindEntity;
+              allDisplayEntity : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           ViewsVisible
+        --       - allViewEntities  : All View kind entities
+        --       - allDisplayEntity : All entities whose display is specified
+
+    	InitImplied (me : mutable; allDisplayEntity : HArray1OfIGESEntity);
+	---Purpose : Changes only the list of Displayed Entities (Null allowed)
+
+    	IsSingle (me) returns Boolean;
+	---Purpose : Returns False (for a complex view)
+
+        NbViews (me) returns Integer;
+        ---Purpose : returns the Number of views visible
+
+
+        NbDisplayedEntities (me) returns Integer;
+        ---Purpose : returns the number of entities displayed in the Views or zero if
+        -- no Entities specified in these Views
+
+        ViewItem (me; Index : Integer) returns ViewKindEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th ViewKindEntity Entity
+        -- raises exception if Index  <= 0 or Index > NbViewsVisible()
+
+        DisplayedEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th entity whose display is being specified by
+        -- this associativity instance
+        -- raises exception if Index  <= 0 or Index > NbEntityDisplayed()
+
+fields
+
+--
+-- Class    : IGESDraw_ViewsVisible
+--
+-- Purpose  : Declaration of the variables specific to a ViewsVisible.
+--
+-- Reminder : A ViewsVisible is defined by :
+--                  - Number of View visible
+--                  - Pointer to each of the view entity visible
+--                  - Number of entities whose display is specified
+--                  - Pointer to each of those entities
+--
+
+        theViewEntities  : HArray1OfViewKindEntity;
+
+        theDisplayEntity : HArray1OfIGESEntity;
+
+end ViewsVisible;

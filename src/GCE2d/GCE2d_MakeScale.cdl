@@ -1,0 +1,46 @@
+-- File:	MakeScale.cdl
+-- Created:	Mon Sep 28 11:53:08 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeScale
+
+from GCE2d
+
+    	---Purpose: This class implements an elementary construction algorithm for
+    	-- a scaling transformation in 2D space. The result is a
+    	-- Geom2d_Transformation transformation.
+    	-- A MakeScale object provides a framework for:
+    	-- -   defining the construction of the transformation,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses Pnt2d          from gp,
+     Transformation from Geom2d,
+     Real           from Standard
+     
+is
+
+Create(Point : Pnt2d from gp      ;
+       Scale : Real  from Standard) returns MakeScale;
+    	---Purpose: Constructs a scaling transformation with
+    	-- -   Point as the center of the transformation, and
+    	-- -   Scale as the scale factor.
+        
+Value(me) returns Transformation from Geom2d
+    is static;
+     	---C++: return const&
+     	---Purpose: Returns the constructed transformation.
+
+Operator(me) returns Transformation from Geom2d
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_Transformation() const;"
+
+fields
+
+    TheScale : Transformation from Geom2d;
+
+end MakeScale;
+

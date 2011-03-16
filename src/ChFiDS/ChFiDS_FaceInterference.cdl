@@ -1,0 +1,80 @@
+-- File:	ChFiDS_FaceInterference.cdl
+-- Created:	Tue Nov 16 11:45:22 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class FaceInterference from ChFiDS 
+
+	---Purpose: interference face/fillet
+
+uses Curve from Geom2d,
+     Orientation from TopAbs
+
+is
+    Create returns FaceInterference from ChFiDS;
+    
+    SetInterference(me             : in out; 
+    	    	    LineIndex      : Integer from Standard;
+		    Trans          : Orientation from TopAbs; 
+    	    	    PCurv1 ,PCurv2 : Curve from Geom2d )is static;
+    ---C++: inline
+    	    	
+    SetTransition(me : in out; Trans : Orientation from TopAbs) is static;
+    
+    SetFirstParameter(me : in out; U1 : Real)    is static;
+    ---C++: inline
+    	    	
+    SetLastParameter(me : in out; U1 : Real)     is static;
+    ---C++: inline
+    	    	
+    SetParameter(me      : in out; 
+    	    	 U1      : Real from Standard;
+                 IsFirst : Boolean from Standard)
+    is static;
+  
+    LineIndex(me) returns Integer from Standard;
+    ---C++: inline
+    	    	
+    SetLineIndex(me : in out; I : Integer from Standard);
+    ---C++: inline
+    	    	
+    Transition(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    PCurveOnFace(me) returns Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return const &
+
+    PCurveOnSurf(me) returns Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return const &
+
+    ChangePCurveOnFace(me : in out) returns Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return &
+
+    ChangePCurveOnSurf(me : in out) returns Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return &
+
+    FirstParameter(me) returns Real from Standard is static ;
+    ---C++: inline
+
+    LastParameter(me) returns Real from Standard is static;
+    ---C++: inline
+
+    Parameter(me; IsFirst : Boolean from Standard) 
+    returns Real from Standard is static;
+
+fields
+
+firstParam     : Real        from Standard;
+lastParam      : Real        from Standard;
+pCurveOnFace   : Curve       from Geom2d;
+pCurveOnSurf   : Curve       from Geom2d; 
+lineindex      : Integer     from Standard;
+LineTransition : Orientation from TopAbs;
+end FaceInterference;

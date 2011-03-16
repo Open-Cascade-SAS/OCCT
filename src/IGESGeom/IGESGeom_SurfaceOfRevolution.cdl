@@ -1,0 +1,73 @@
+--
+-- File      :  SurfaceOfRevolution.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SurfaceOfRevolution from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESSurfaceOfRevolution, Type <120> Form <0>
+        --          in package IGESGeom
+        --          A surface of revolution is defined by an axis of rotation
+        --          a generatrix, and start and terminate rotation angles. The
+        --          surface is created by rotating the generatrix about the axis
+        --          of rotation through the start and terminate rotation angles.
+
+uses
+
+        Pnt         from gp,
+        Dir         from gp,
+        Vec         from gp,
+        Ax1         from gp,
+        Trsf        from gp,
+        Line        from IGESGeom
+
+is
+
+        Create returns mutable SurfaceOfRevolution;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              anAxis      : Line;
+              aGeneratrix : IGESEntity;
+              aStartAngle : Real;
+              anEndAngle  : Real);
+        ---Purpose : This method is used to set the fields of the class Line
+        --       - anAxis      : Axis of revolution
+        --       - aGeneratrix : The curve which is revolved about the axis
+        --       - aStartAngle : Start angle of the surface of revolution
+        --       - anEndAngle  : End angle of the surface of revolution
+
+        AxisOfRevolution (me) returns Line;
+        ---Purpose : returns the axis of revolution
+
+        Generatrix (me) returns IGESEntity;
+        ---Purpose : returns the curve which is revolved about the axis
+
+        StartAngle (me) returns Real;
+        ---Purpose : returns start angle of revolution
+
+        EndAngle (me) returns Real;
+        ---Purpose : returns end angle of revolution
+
+fields
+
+--
+-- Class    : IGESGeom_SurfaceOfRevolution
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SurfaceOfRevolution.
+--
+-- Reminder : A SurfaceOfRevolution instance is defined by :
+--            An axis, a generatrix curve which is rotated about
+--            the axis, the start and ending angles of rotation.
+
+        theLine       : Line;
+        theGeneratrix : IGESEntity;
+        theStartAngle : Real;
+        theEndAngle   : Real;
+
+end SurfaceOfRevolution;

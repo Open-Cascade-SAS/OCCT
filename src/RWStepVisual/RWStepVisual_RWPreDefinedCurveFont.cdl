@@ -1,0 +1,27 @@
+-- File:        PreDefinedCurveFont.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPreDefinedCurveFont from RWStepVisual
+
+	---Purpose : Read & Write Module for PreDefinedCurveFont
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PreDefinedCurveFont from StepVisual
+
+is
+
+	Create returns RWPreDefinedCurveFont;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PreDefinedCurveFont from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : PreDefinedCurveFont from StepVisual);
+
+end RWPreDefinedCurveFont;

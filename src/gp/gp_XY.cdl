@@ -1,0 +1,263 @@
+---Copyright:   Matra Datavision 1991, 1992
+		     
+class XY   from gp  inherits Storable 
+
+        --- Purpose :
+        --  This class describes a cartesian coordinate entity in 2D
+        --  space {X,Y}. This class is non persistent. This entity used
+        --  for algebraic calculation. An XY can be transformed with a 
+        --  Trsf2d or a  GTrsf2d from package gp.
+        -- It is used in vectorial computations or for holding this type
+        -- of information in data structures.
+uses  Mat2d from gp
+
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+is
+
+
+  Create   returns XY;
+        ---C++: inline
+        --- Purpose : Creates XY object with zero coordinates (0,0).
+
+  Create (X, Y : Real)  returns XY;
+        ---C++: inline
+        --- Purpose : a number pair defined by the XY coordinates
+
+  SetCoord (me : in out; Index : Integer; Xi : Real)
+        ---C++: inline
+        --- Purpose :
+        --  modifies the coordinate of range Index 
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified
+        --   Raises OutOfRange if Index != {1, 2}. 
+     raises OutOfRange
+     is static;
+
+
+  SetCoord (me : in out; X, Y : Real)    is static;
+        ---C++: inline
+        ---Purpose:  For this number pair, assigns
+        --   the values X and Y to its coordinates  
+
+  SetX (me: in out; X : Real)            is static;
+        ---C++: inline
+        ---Purpose: Assigns the given value to the X coordinate of this number pair.
+  SetY (me: in out; Y : Real)            is static;
+        ---C++: inline
+        ---Purpose: Assigns the given value to the Y  coordinate of this number pair.
+
+  Coord (me; Index : Integer)  returns Real
+        ---C++: inline
+        --- Purpose :
+        --  returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+        -- Raises OutOfRange if Index != {1, 2}.
+      raises OutOfRange
+      is static;
+
+  Coord (me; X, Y : out Real)  is static;
+        ---C++: inline
+        ---Purpose: For this number pair, returns its coordinates X and Y.
+
+  X (me)  returns Real         is static;
+        ---C++: inline
+        ---Purpose: Returns the X coordinate of this number pair.  
+
+  Y (me)  returns Real         is static;
+        ---C++: inline
+        ---Purpose: Returns the Y coordinate of this number pair. 
+
+  Modulus (me)   returns Real        is static;
+        ---C++: inline
+        --- Purpose : Computes Sqrt (X*X + Y*Y) where X and Y are the two coordinates of this number pair.
+
+  SquareModulus (me) returns Real    is static;
+        --- Purpose : Computes X*X + Y*Y where X and Y are the two coordinates of this number pair.
+        ---C++: inline
+
+  IsEqual (me; Other : XY; Tolerance : Real)   returns Boolean
+     is static;
+        --- Purpose :
+        --  Returns true if the coordinates of this number pair are
+        -- equal to the respective coordinates of the number pair
+        -- Other, within the specified tolerance Tolerance. I.e.:
+        --  abs(<me>.X() - Other.X()) <= Tolerance and
+        --  abs(<me>.Y() - Other.Y()) <= Tolerance and 
+        --- Purpose : computations
+
+  Add (me : in out; Other : XY)          is static;
+        --- Purposes : Computes the sum of this number pair and number pair Other
+        -- <me>.X() = <me>.X() + Other.X()
+        -- <me>.Y() = <me>.Y() + Other.Y()
+        ---C++: inline
+        ---C++: alias operator +=
+
+  Added (me; Other : XY)  returns XY     is static;
+        ---C++: inline
+        --- Purpose: Computes the sum of this number pair and number pair Other
+        -- new.X() = <me>.X() + Other.X()
+        -- new.Y() = <me>.Y() + Other.Y()
+        ---C++: alias operator +
+
+  Crossed (me; Right : XY)  returns Real      is static;
+        --- Purposes :
+        --  Real D = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+        ---C++: alias operator ^
+        ---C++: inline
+
+  CrossMagnitude (me; Right : XY) returns Real   is static;
+        --- Purpose :
+        --  computes the magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||
+        ---C++: inline
+
+  CrossSquareMagnitude (me; Right : XY) returns Real   is static;
+        --- Purpose :
+        --  computes the square magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||**2
+        ---C++: inline
+
+  Divide (me : in out; Scalar : Real)
+        --- Purpose : divides <me> by a real.
+        ---C++: inline
+        ---C++: alias operator /=
+     is static;
+
+  Divided (me; Scalar : Real)   returns XY    is static;
+        ---C++:inline
+        --- Purpose : Divides <me> by a real.
+        ---C++: alias operator /
+
+  Dot (me; Other : XY)  returns Real   is static;
+        --- Purpose : Computes the scalar product between <me> and Other
+        ---C++: inline
+        ---C++: alias operator *
+
+  Multiply (me : in out; Scalar : Real)    is static;
+        --- Purpose :
+        --  <me>.X() = <me>.X() * Scalar;
+        --  <me>.Y() = <me>.Y() * Scalar;
+        ---C++: inline
+        ---C++: alias operator *=
+
+  Multiply (me : in out; Other : XY)      is static;
+        --- Purpose :
+        --  <me>.X() = <me>.X() * Other.X();
+        --  <me>.Y() = <me>.Y() * Other.Y();
+        ---C++: inline
+        ---C++: alias operator *=
+
+  Multiply (me : in out; Matrix : Mat2d)
+        --- Purpose : <me> = Matrix * <me>
+        ---C++: inline
+        ---C++: alias operator *=
+     is static;
+
+  Multiplied (me; Scalar : Real)  returns XY     is static;
+        ---C++:inline
+        --- Purpose :
+        --  New.X() = <me>.X() * Scalar;
+        --  New.Y() = <me>.Y() * Scalar;
+        ---C++: alias operator *
+
+  Multiplied (me; Other : XY)   returns XY      is static;
+        ---C++:inline
+        --- Purpose :
+        --  new.X() = <me>.X() * Other.X();
+        --  new.Y() = <me>.Y() * Other.Y();
+
+  Multiplied (me; Matrix : Mat2d)  returns XY      is static;
+        --- Purpose :  New = Matrix * <me>
+        ---C++:inline
+        ---C++: alias operator *
+
+  Normalize (me : in out) 
+        ---C++: inline
+        --- Purpose :
+        --  <me>.X() = <me>.X()/ <me>.Modulus()
+        --  <me>.Y() = <me>.Y()/ <me>.Modulus()
+        -- Raises ConstructionError if <me>.Modulus() <= Resolution from gp
+     raises ConstructionError
+       
+     is static;
+
+  Normalized (me)  returns XY
+        ---C++: inline
+        --- Purpose :
+        --  New.X() = <me>.X()/ <me>.Modulus()
+        --  New.Y() = <me>.Y()/ <me>.Modulus()
+        -- Raises ConstructionError if <me>.Modulus() <= Resolution from gp
+    raises ConstructionError
+      
+     is static;
+
+  Reverse (me : in out)    is static;
+        --- Purpose :
+        --  <me>.X() = -<me>.X()
+        --  <me>.Y() = -<me>.Y()
+        ---C++: inline
+
+  Reversed (me)  returns XY    is static;
+        --- Purpose :
+        --  New.X() = -<me>.X()
+        --  New.Y() = -<me>.Y()
+        ---C++: inline
+        ---C++: alias operator -
+
+  SetLinearForm (me : in out; A1 : Real; XY1 : XY; A2 : Real; XY2 : XY)
+     is static;
+        --- Purpose :
+        --  Computes  the following linear combination and
+        -- assigns the result to this number pair:
+        --  A1 * XY1 + A2 * XY2
+        ---C++: inline
+
+  SetLinearForm (me : in out;
+                 A1 : Real; XY1 : XY; A2 : Real; XY2 : XY; XY3 : XY)
+     is static;
+        --- Purpose :
+        --  --  Computes  the following linear combination and
+        -- assigns the result to this number pair:
+        --  A1 * XY1 + A2 * XY2 + XY3
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; XY1 : XY; XY2 : XY)
+     is static;
+        --- Purpose :
+        --  Computes  the following linear combination and
+        -- assigns the result to this number pair:
+        --  A1 * XY1 + XY2
+        ---C++: inline
+
+  SetLinearForm (me : in out; XY1, XY2 : XY)
+     is static;
+        --- Purpose :
+        --   Computes  the following linear combination and
+        -- assigns the result to this number pair:
+        --  XY1 + XY2
+        ---C++: inline
+
+  Subtract (me : in out; Right : XY)    is static;
+        --- Purpose :
+        --  <me>.X() = <me>.X() - Other.X()
+        --  <me>.Y() = <me>.Y() - Other.Y()
+        ---C++: inline
+        ---C++: alias operator -=
+
+  Subtracted (me; Right : XY)   returns XY    is static;
+        --- Purpose :
+        --  new.X() = <me>.X() - Other.X()
+        --  new.Y() = <me>.Y() - Other.Y()
+        ---C++: inline
+        ---C++: alias operator -
+
+fields
+
+  x : Real;
+  y : Real;
+
+
+end;

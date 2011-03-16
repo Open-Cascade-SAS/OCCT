@@ -1,0 +1,242 @@
+-- File:	Adaptor3d_Curve.cdl
+-- Created:	Wed Mar 31 10:43:11 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Curve from Adaptor3d
+
+	---Purpose: Root class for 3D curves on which geometric
+    	-- algorithms work.
+    	-- An adapted curve is an interface between the
+    	-- services provided by a curve and those required of
+    	-- the curve by algorithms which use it.
+    	-- Two derived concrete classes are provided:
+    	-- - GeomAdaptor_Curve for a curve from the Geom package
+    	-- - Adaptor3d_CurveOnSurface for a curve lying on
+    	--   a surface from the Geom package.
+    
+    
+uses 
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     CurveType       from GeomAbs,
+     Vec             from gp,
+     Pnt             from gp,
+     Circ            from gp,
+     Elips           from gp,
+     Hypr            from gp,
+     Parab           from gp,
+     Lin             from gp,
+     BezierCurve     from Geom,
+     BSplineCurve    from Geom,
+     HCurve          from Adaptor3d
+     
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~Adaptor3d_Curve(){Delete();}"
+    
+    FirstParameter(me) returns Real
+    is virtual;
+
+    LastParameter(me) returns Real
+    is virtual;
+
+    --
+    -- Services to break the curves to the expected continuity
+    -- 
+    --  If  for example you  need the  curve to  be C2  and the method
+    --  Continuity   returns you something lower than   C2 (say C1 for
+    --  example).
+    --  
+    --  First  compute the   number  of intervals  with  the requested
+    --  continuity with the method  NbIntervals().   Note that if  the
+    --  continuity  is higher than the one   you need NbIntervals will
+    --  return 1.
+    --  
+    --  Then you get the parameters  bounding  the intervals with  the
+    --  method  Intervals,   using   an array    of  length  at  least
+    --  NbIntervals()+1.
+    -- 
+    -- If you need  to create a curve  with a restricted span you  can
+    -- use the method Trim().
+
+    
+    Continuity(me) returns Shape from GeomAbs
+	---Purpose: 
+    is virtual;
+    
+    NbIntervals(me:in out; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is virtual;
+    
+    Intervals(me:in out; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is virtual;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is virtual;
+    
+
+    IsClosed(me) returns Boolean
+    is virtual;
+     
+    IsPeriodic(me) returns Boolean
+    is virtual;
+    
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is virtual;
+     
+    Value(me; U : Real) returns Pnt from gp
+         --- Purpose : Computes the point of parameter U on the curve.
+    is virtual;
+    
+    D0 (me; U : Real; P : out Pnt from gp)
+         --- Purpose : Computes the point of parameter U on the curve.
+    is virtual;
+    
+    D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+         --- Purpose : Computes the point of parameter U on the curve with its
+         --  first derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is virtual;
+    
+    D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+     is virtual;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+     is virtual;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+     is virtual;
+
+    Resolution(me; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is virtual;   
+        
+    GetType(me) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    is virtual;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+     Line(me) returns Lin from gp
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     Circle(me) returns Circ from gp
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     Ellipse(me) returns Elips from gp
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     Hyperbola(me) returns  Hypr from gp
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     Parabola(me) returns Parab from gp
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+
+  
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is virtual;     
+          
+     Bezier(me) returns BezierCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+    
+     BSpline(me) returns BSplineCurve from Geom
+     raises 
+    	NoSuchObject from Standard
+     is virtual;
+    
+end Curve;
+
+

@@ -1,0 +1,33 @@
+-- File:        BinMDataXtd_GeometryDriver.cdl
+-- Created:     Fri Aug 24 20:16:51 2001
+-- Author:      Alexander GRIGORIEV
+-- modified     13.04.2009 Sergey Zaritchny
+-- Copyright:   Open Cascade 2001
+
+class GeometryDriver from BinMDataXtd  inherits ADriver from BinMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable GeometryDriver from BinMDataXtd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+
+end GeometryDriver;

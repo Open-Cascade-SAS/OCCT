@@ -1,0 +1,35 @@
+-- File:	StepBasic_ApprovalDateTime.cdl
+-- Created:	Wed Mar 26 14:13:59 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ApprovalDateTime  from StepBasic    inherits TShared
+
+    ---Purpose : Added from StepBasic Rev2 to Rev4
+
+uses
+    DateTimeSelect from StepBasic,
+    Approval from StepBasic
+
+is
+
+    Create returns mutable ApprovalDateTime;
+
+    Init (me : mutable;
+    	  aDateTime : DateTimeSelect;
+	  aDatedApproval : Approval);
+
+    SetDateTime (me : mutable; aDateTime : DateTimeSelect);
+    DateTime    (me) returns DateTimeSelect;
+
+    SetDatedApproval (me : mutable; aDatedApproval : Approval);
+    DatedApproval    (me) returns Approval;
+
+fields
+
+    theDateTime : DateTimeSelect;
+    theDatedApproval : Approval;
+
+end ApprovalDateTime;

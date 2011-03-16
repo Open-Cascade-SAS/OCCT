@@ -1,0 +1,425 @@
+-- File:        Vector.cdl
+-- Created:     Mon May 6 14:55:20 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class Vector from math
+
+    ---Purpose:
+    -- This class implements the real vector abstract data type.
+    -- Vectors can have an arbitrary range which must be defined at
+    -- the declaration and cannot be changed after this declaration.
+    --    math_Vector V1(-3, 5); // a vector with range [-3..5]
+    --
+    -- Vector are copied through assignement :
+    --    math_Vector V2( 1, 9);  
+    --    ....
+    --    V2 = V1;
+    --    V1(1) = 2.0; // the vector V2 will not be modified.
+    --
+    -- The Exception RangeError is raised when trying to access outside
+    -- the range of a vector :
+    --    V1(11) = 0.0 // --> will raise RangeError;
+    --
+    -- The Exception DimensionError is raised when the dimensions of two
+    -- vectors are not compatible :
+    --    math_Vector V3(1, 2);
+    --    V3 = V1;    // --> will raise DimensionError;
+    --    V1.Add(V3)  // --> will raise DimensionError;
+     
+    -- A Vector can be constructed with a a pointer to "c array". 
+    -- It allows to carry the bounds inside the Vector.
+    -- Exemple :
+    -- 	    Standard_Real tab1[10];
+    -- 	    
+    --      math_Vector A (tab1[0], 1, 10);
+    -- Vector values may be initialized and
+    -- obtained using indexes which must lie within the range
+    -- definition of the vector.
+    -- Vector objects follow "value semantics", that is, they
+    -- cannot be shared and are copied through assignment.
+    -- Note: the overview of the Vectors and Matrices
+    -- component illustrates these properties on vectors. 
+        
+uses Matrix from math,
+     SingleTabOfReal from math,
+     OStream from Standard
+
+raises DimensionError from Standard, 
+       DivideByZero   from Standard,
+       RangeError     from Standard,
+       NullValue      from Standard
+
+is
+
+    Create(Lower, Upper: Integer)
+     	---Purpose: Contructs a non-initialized vector in the range [Lower..Upper]
+    	-- Lower and Upper are the indexes of the lower and upper
+    	-- bounds of the constructed vector.
+    returns Vector;
+    
+    Create(Lower, Upper: Integer; InitialValue : Real)
+     	---Purpose: Contructs a vector in the range [Lower..Upper]
+     	--         whose values are all initialized with the value   InitialValue..
+
+    returns Vector;
+    
+    
+    Create(Tab : Address; Lower, Upper: Integer)
+        ---Purpose: Constructs a vector in the range [Lower..Upper] 
+        --          with the "c array" Tab.
+
+    returns Vector;
+    
+    
+    Init(me : in out; InitialValue: Real) 
+        ---Purpose: Initialize all the elements of a vector with InitialValue.
+    is static;
+    
+    Create(Other: Vector)
+    	---Purpose: Constructs a copy for initialization.
+    	--          An exception is raised if the lengths of the vectors are 
+    	--          different.
+
+    returns Vector
+    raises DimensionError;
+    --JR/Hpis private;
+
+    
+    SetLower(me: in out; Lower: Integer)
+       ---Purpose: Is used internally to set the Lower value of the vector.
+
+    is static protected;
+
+	          
+    Length(me)
+    	---Purpose: Returns the length of a vector
+    	---C++: inline
+    returns Integer
+    is static;
+    
+    
+    Lower(me)
+    	---Purpose: Returns the value of the Lower index of a vector.
+    	---C++: inline
+
+    returns Integer
+    is static;
+    
+    
+    Upper(me) 
+    	---Purpose: Returns the value of the Upper index of a vector.
+    	---C++: inline
+    
+    returns Integer
+    is static;
+    
+    
+    Norm(me) 
+    	---Purpose: Returns the value or the square  of the norm of this vector.
+    
+    returns Real
+    is static;
+    
+    
+    Norm2 (me) 
+    	---Purpose: Returns the value of the square of the norm of a vector.
+
+    returns Real
+    is static;
+    
+    
+    Max(me) 
+    	---Purpose: Returns the value of the Index of the maximum element of a vector.
+
+    returns Integer
+    is static;
+    
+    
+    Min(me)
+    	---Purpose: Returns the value of the Index of the minimum element  of a vector.
+
+    returns Integer
+    is static;
+    
+    
+    Normalize(me: in out)
+    	---Purpose: Normalizes this vector (the norm of the result
+    	-- is equal to 1.0) and assigns the result to this vector
+    	--   Exceptions
+    	-- Standard_NullValue if this vector is null (i.e. if its norm is
+    	-- less than or equal to Standard_Real::RealEpsilon().
+
+    raises NullValue
+    is static;
+
+    
+
+    Normalized(me)
+    	---Purpose: Normalizes this vector (the norm of the result
+    	-- is equal to 1.0) and creates a new vector
+    	--   Exceptions
+    	-- Standard_NullValue if this vector is null (i.e. if its norm is
+	-- less than or equal to Standard_Real::RealEpsilon().
+
+
+    returns Vector
+    raises NullValue
+    is static;
+    
+    
+    Invert(me: in out)
+    	---Purpose: Inverts this vector and assigns the result to this vector. 
+        --If the values of this vector were (1.,
+    	-- 2., 3., 4.), the result values are (4., 3., 2., 1.).
+     	-- Example: [1, 2, 3, 4] becomes [4, 3, 2, 1].
+
+    is static;
+
+
+    Inverse(me)
+    	---Purpose: Inverts this vector and creates a new vector. 
+        --If the values of this vector were (1.,
+    	-- 2., 3., 4.), the result values are (4., 3., 2., 1.).
+    	-- Example: if <me> = [1, 2, 3, 4], the method returns [4, 3, 2, 1].
+    
+    returns Vector
+    is static;
+
+    
+    Set(me: in out; I1, I2: Integer; V: Vector)
+    	---Purpose: sets a vector from <I1> to <I2> to the vector <V>;
+    	-- An exception is raised if I1<LowerIndex or I2>UpperIndex or I1>I2.
+    	-- An exception is raised if I2-I1+1 is different from the Length of V.
+
+    raises RangeError
+    is static;
+    
+    
+    Slice(me; I1, I2: Integer)
+    	---Purpose:Creates a new vector by inverting the values of this vector
+    	--  between indexes I1 and I2.
+    	-- If the values of this vector were (1., 2., 3., 4.,
+    	-- 5., 6.), by slicing it between indexes 2 and 5 the
+    	-- values of the resulting vector are (1., 5., 4., 3., 2., 6.)
+    	---Example: [2, 1, 2, 3, 4, 5] becomes [2, 4, 3, 2, 1, 5] between 2 and 5.
+    	-- An exception is raised if I1<LowerIndex or I2>UpperIndex.
+
+    returns Vector
+    raises RangeError
+    is static;
+    
+
+    Multiply (me: in out; Right: Real)
+    	---Purpose: returns the product of a vector and a real value.          
+    	---C++: alias operator *=
+    is static;
+
+
+    Multiplied (me; Right: Real)
+    	---Purpose: returns the product of a vector and a real value.          
+    	---C++: alias operator* 
+    returns Vector
+    is static;
+
+    TMultiplied (me; Right: Real)
+    	---Purpose: returns the product of a vector and a real value.          
+    	---C++: alias "friend math_Vector operator *(const Standard_Real Left,const math_Vector& Right);"
+    returns Vector
+    is static;
+
+
+    Divide (me: in out; Right: Real)
+    	---Purpose: divides a vector by the value <Right>.
+    	-- An exception is raised if <Right> = 0.         
+    	---C++: alias operator /=
+
+    raises DivideByZero from Standard
+    is static;
+
+
+    Divided (me; Right: Real)
+    	---Purpose: divides a vector by the value <Right>.
+    	-- An exception is raised if <Right> = 0.         
+        ---C++: alias operator/ 
+
+    returns Vector
+    raises DivideByZero from Standard
+    is static;
+
+
+    Add (me: in out; Right: Vector)
+    	---Purpose: adds the vector <Right> to a vector.
+    	-- An exception is raised if the vectors have not the same length.
+        -- Warning
+    	-- In order to avoid time-consuming copying of vectors, it
+    	-- is preferable to use operator += or the function Add whenever possible.
+          ---C++: alias operator +=
+    raises DimensionError
+    is static;
+
+
+    Added (me; Right: Vector)
+    	---Purpose: adds the vector <Right> to a vector.
+    	-- An exception is raised if the vectors have not the same length.
+    	-- An exception is raised if the lengths are not equal.
+    	---C++:alias operator+ 
+
+    returns Vector
+    raises DimensionError
+    is static;
+
+    
+    Multiply (me: in out; Left: Vector; Right: Matrix)
+    	---Purpose: sets a vector to the product of the vector <Left>
+    	--          with the matrix <Right>.
+ 
+    raises DimensionError
+    is static;
+
+ 
+    Multiply (me: in out; Left: Matrix; Right: Vector)
+    	---Purpose:sets a vector to the product of the matrix <Left> 
+    	--         with the vector <Right>.
+
+    raises DimensionError
+    is static;
+
+
+    TMultiply (me: in out; TLeft: Matrix; Right: Vector)
+    	---Purpose: sets a vector to the product of the transpose
+    	--           of the matrix <TLeft> by the vector <Right>.
+
+    raises DimensionError
+    is static;
+
+
+    TMultiply (me: in out; Left: Vector; TRight: Matrix)
+    	---Purpose: sets a vector to the product of the vector 
+    	--          <Left> by the transpose of the matrix <TRight>. 
+ 
+    raises DimensionError
+    is static;
+
+
+    Add (me: in out; Left, Right: Vector)
+    	---Purpose: sets a vector to the sum of the vector <Left> 
+    	--          and the vector <Right>. 
+    	-- An exception is raised if the lengths are different.
+ 
+
+    raises DimensionError
+    is static;
+
+     
+    Subtract(me: in out; Left, Right: Vector)
+    	---Purpose: sets a vector to the Subtraction of the
+    	--           vector <Right> from the vector <Left>. 
+        -- An exception is raised if the vectors have not the same length.
+     	--  Warning
+    	-- In order to avoid time-consuming copying of vectors, it
+    	-- is preferable to use operator -= or the function
+    	-- Subtract whenever possible.
+    raises DimensionError
+    is static;
+
+    
+    Value(me; Num: Integer)
+    	---Purpose: accesses (in read or write mode) the value of index Num of 
+    	--          a vector.
+    	---C++: alias operator() 
+    	---C++: return & 
+   	---C++: inline
+    
+    returns Real
+    raises RangeError from Standard
+    is static;
+
+   
+    Initialized(me: in out; Other: Vector)
+    	---Purpose: Initialises a vector by copying <Other>.
+    	--          An exception is raised if the Lengths are differents.
+    	---C++: alias operator= 
+    	---C++: return & 
+
+    returns Vector
+    raises DimensionError
+    is static;
+
+
+
+    Multiplied(me; Right: Vector)
+    	---Purpose: returns the inner product of 2 vectors.
+    	-- An exception is raised if the lengths are not equal.
+    	---C++: alias operator* 
+
+    returns Real
+    raises DimensionError
+    is static;
+
+
+    Multiplied(me; Right: Matrix)
+    	---Purpose: returns the product of a vector by a matrix.
+    	---C++: alias  operator* 
+
+    returns Vector
+    raises DimensionError
+    is static;
+   
+   
+   Opposite(me : in out)
+    	---Purpose: returns the opposite of a vector.
+    	---C++: alias operator-
+
+   returns Vector
+   is static;
+
+
+   Subtract(me: in out; Right: Vector)
+    	---Purpose: returns the subtraction of <Right> from <me>.
+    	-- An exception is raised if the vectors have not the same length.
+    	---C++: alias  operator-=
+
+   raises DimensionError
+   is static;
+
+
+   Subtracted(me; Right: Vector)
+    	---Purpose: returns the subtraction of <Right> from <me>.
+    	-- An exception is raised if the vectors have not the same length.
+    	---C++: alias  operator-
+
+   returns Vector
+   raises DimensionError
+   is static;
+
+
+   Multiply(me: in out; Left: Real; Right: Vector)
+	---Purpose: returns the multiplication of a real by a vector.
+	--          <me> = <Left> * <Right>
+
+   raises DimensionError
+   is static;
+
+
+   Dump(me; o: in out OStream)
+   	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+   is static;
+
+
+fields 
+
+LowerIndex:   Integer;
+UpperIndex:   Integer;
+Array:        SingleTabOfReal;
+
+friends
+class  Matrix from math
+
+
+end Vector;

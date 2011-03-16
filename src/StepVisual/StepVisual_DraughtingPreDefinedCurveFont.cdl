@@ -1,0 +1,20 @@
+-- File:        DraughtingPreDefinedCurveFont.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DraughtingPreDefinedCurveFont from StepVisual 
+
+inherits PreDefinedCurveFont from StepVisual 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable DraughtingPreDefinedCurveFont;
+	---Purpose: Returns a DraughtingPreDefinedCurveFont
+
+
+end DraughtingPreDefinedCurveFont;

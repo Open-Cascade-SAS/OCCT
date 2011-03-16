@@ -1,0 +1,132 @@
+// File:	TCollection_SList.gxx
+// Created:	Fri Feb 26 14:18:34 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+#include <Standard_NoSuchObject.hxx>
+
+//=======================================================================
+//function : TCollection_SList
+//purpose  : 
+//=======================================================================
+
+TCollection_SList::TCollection_SList()
+{}
+
+//=======================================================================
+//function : TCollection_SList
+//purpose  : 
+//=======================================================================
+
+TCollection_SList::TCollection_SList(const Item& anItem,
+				     const TCollection_SList& aTail) : 
+       myNode(new TCollection_SListNode(anItem,aTail))
+{}
+
+//=======================================================================
+//function : TCollection_SList
+//purpose  : 
+//=======================================================================
+
+TCollection_SList::TCollection_SList(const TCollection_SList& Other) : 
+       myNode(Other.myNode)
+{
+}
+
+//=======================================================================
+//function : Assign
+//purpose  : 
+//=======================================================================
+
+TCollection_SList& TCollection_SList::Assign(const TCollection_SList& Other)
+{
+  if (this == &Other) return *this;
+  Clear();
+  myNode = Other.myNode;
+
+  return *this;
+}
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+
+void TCollection_SList::Clear()
+{
+  if (!myNode.IsNull()) {
+    myNode.Nullify();
+  }
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Item& TCollection_SList::Value() const
+{
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  return myNode->Value();
+}
+
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+
+Item& TCollection_SList::ChangeValue()
+{
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  return myNode->Value();
+}
+
+//=======================================================================
+//function : SetValue
+//purpose  : 
+//=======================================================================
+
+void TCollection_SList::SetValue(const Item& anItem)
+{
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  myNode->Value() = anItem;
+}
+
+//=======================================================================
+//function : Tail
+//purpose  : 
+//=======================================================================
+
+const TCollection_SList& TCollection_SList::Tail() const
+{
+  if (!myNode.IsNull()) 
+    return  myNode->Tail();
+  else
+    return *this;
+}
+
+//=======================================================================
+//function : ChangeTail
+//purpose  : 
+//=======================================================================
+
+TCollection_SList& TCollection_SList::ChangeTail()
+{
+  if (!myNode.IsNull()) 
+    return myNode->Tail();
+  else
+    return *this;
+}
+
+//=======================================================================
+//function : SetTail
+//purpose  : 
+//=======================================================================
+
+void TCollection_SList::SetTail(const TCollection_SList& aList)
+{
+  if (!myNode.IsNull())
+    myNode->Tail() = aList;
+  else
+    Assign(aList);
+}

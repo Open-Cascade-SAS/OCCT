@@ -1,0 +1,81 @@
+--
+-- File      :  WitnessLine.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class WitnessLine from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines WitnessLine, Type <106> Form <40>
+        --          in package IGESDimen
+        --          Contains one or more straight line segments associated
+        --          with drafting entities of various types
+
+uses
+
+        Pnt         from gp,
+        Pnt2d       from gp,
+        XY          from gp,
+        XYZ         from gp,
+        HArray1OfXY from TColgp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable WitnessLine;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              dataType   : Integer;
+              aDisp      : Real;
+              dataPoints : HArray1OfXY);
+        ---Purpose : This method is used to set the fields of the class
+        --           WitnessLine
+        --       - dataType   : Interpretation Flag, always = 1
+        --       - aDispl     : Common z displacement
+        --       - dataPoints : Data points
+
+        Datatype (me) returns Integer;
+        ---Purpose : returns Interpretation Flag, always = 1
+
+        NbPoints (me) returns Integer;
+        ---Purpose : returns number of Data Points
+
+        ZDisplacement (me) returns Real;
+        ---Purpose : returns common Z displacement
+
+        Point (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns Index'th. data point
+        -- raises exception if Index <= 0 or Index > NbPoints
+
+        TransformedPoint (me; Index : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns data point after Transformation.
+        -- raises exception if Index <= 0 or Index > NbPoints
+
+fields
+
+--
+-- Class    : IGESDimen_WitnessLine
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class WitnessLine.
+--
+-- Reminder : A WitnessLine instance is defined by :
+--            - InterpretFlag : Interpretation Flag, always = 1
+--            - ZDisplacement : Common z displacement
+--            - DataPoints    : Data points
+-- A WitnessLine Entity contains one or more straight line segments
+-- associated with drafting entities of various types. Each line segment
+-- may be visible or invisible.
+
+        theDatatype      : Integer;
+        theZDisplacement : Real;
+        theDataPoints    : HArray1OfXY;
+
+end WitnessLine;

@@ -1,0 +1,47 @@
+-- File:	TopOpeBRepDS_TOOL.cdl
+-- Created:	Mon Jan 25 14:23:13 1999
+-- Author:      Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class TOOL from TopOpeBRepDS
+uses
+    Edge from TopoDS,
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    Config from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS
+is
+
+    EShareG(myclass; HDS : HDataStructure; E: Edge from TopoDS; 
+     	    lEsd : out ListOfShape from TopTools)
+    returns Integer;
+    -- Fills up <lEsd> with edges sharing geometric domain with <E>, 
+    -- using interferences attached to <E>.
+    -- Returns <lEsd>'s length.
+
+    ShareG(myclass; HDS : HDataStructure; is1,is2 : Integer)
+    returns Boolean;
+    -- Returns true if shapes <is1> and <is2> share geometric domain.
+
+    GetEsd(myclass; HDS : HDataStructure; S : Shape; ie : Integer; iesd : out Integer)
+    returns Boolean;
+    -- Gets edge<iesd> in shape <S>, edge<ie> shares geometric domain with edge<iesd>
+    -- Returns true if <iesd> is found
+
+    ShareSplitON(myclass; HDS : HDataStructure; MspON : DataMapOfShapeListOfShapeOn1State;
+    	      	 i1, i2 : Integer; spON : out Shape)
+    returns Boolean;
+    -- Gets <spON> splitON shared  by  shapes  <i1>  an <i2> (shapes same domain) 
+    -- Returns true if <spON> is found.
+
+    GetConfig(myclass; HDS : HDataStructure; MEspON : DataMapOfShapeListOfShapeOn1State;
+    	      ie, iesd : Integer; conf : out Integer)
+    returns Boolean;
+    -- Gives relative orientation conf = 1 : SAMEORIENTED
+    --                                   2 : DIFFORIENTED.
+    -- edges <ie>, <iesd> are same domain.
+    -- Returns true if <conf> is found.
+
+end TOOL;

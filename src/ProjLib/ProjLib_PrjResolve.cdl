@@ -1,0 +1,59 @@
+-- File:	ProjLib_PrjResolve.cdl
+-- Created:	Thu Nov  6 13:47:17 1997
+-- Author:	Roman BORISOV
+--		<rbv@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private  class PrjResolve from ProjLib 
+
+	---Purpose: 
+
+uses     
+    Pnt2d     from gp,
+    Surface from Adaptor3d, 
+    Curve  from  Adaptor3d, 
+    SurfacePtr from Adaptor3d, 
+    CurvePtr  from Adaptor3d
+
+raises   
+    	DomainError from Standard, 
+	ConstructionError,
+    	NotDone     from StdFail
+
+is
+    Create (C: Curve  from  Adaptor3d; S: Surface from Adaptor3d;  Fix: Integer)
+    	returns PrjResolve 
+    	raises  ConstructionError;
+    	
+     
+    Perform(me:  in  out;  t,  U,  V:  Real;  Tol,  Inf,  Sup:  Pnt2d;  FTol:  Real  from  Standard  =  -1;  StrictInside:  Boolean  from  Standard  =  Standard_False) 
+---Purpose: Calculates the ort from  C(t)  to  S  with a close point.
+    	--          The close point is defined by the parameter values
+    	--          U0 and V0.
+    	--          The function F(u,v)=distance(S(u,v),C(t)) has an
+    	--          extremum when gradient(F)=0. The algorithm searchs
+    	--          a zero near the close point.
+    	raises  DomainError;
+	    	-- if U0,V0 are outside the definition ranges of the 
+	    	-- surface.
+     
+    
+    IsDone (me)  returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+ 
+    Solution (me) returns Pnt2d  from  gp
+    	---Purpose: Returns the point of the extremum distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+fields
+     
+    myCurve    :  CurvePtr    from  Adaptor3d; 
+    mySurface  :  SurfacePtr  from  Adaptor3d;	     
+    myDone     :  Boolean     from  Standard;
+    mySolution :  Pnt2d       from  gp; 
+    myFix      :  Integer     from  Standard; 
+     
+end PrjResolve;

@@ -1,0 +1,93 @@
+//-Copyright:	 Matra Datavision 1992
+//-Version: 
+
+//-History:
+//  Version	Date         Purpose
+//              07/01/93     Creation   
+
+//-Language     C++2.0
+
+//-Declarations
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+//=======================================================================
+// Function : DoubleMapIterator
+//=======================================================================
+
+PCollection_DoubleMapIterator::PCollection_DoubleMapIterator
+  ( const Handle(PCollection_HDoubleMap) &aDoubleMap )
+{
+  Standard_Boolean Found = Standard_False;
+
+  myBuckets = aDoubleMap->GetArrayKey();
+// Sets the index and the node on the first "no empty" entry
+  if ( aDoubleMap->IsEmpty() ) myCurrentIndex = myBuckets->Length() + 1;
+  else myCurrentIndex = 1;
+  
+  while ( myCurrentIndex <= myBuckets->Length() && !Found ) {
+    if ( ! myBuckets->Value(myCurrentIndex).IsNull() ) {
+      myCurrentNode = myBuckets->Value(myCurrentIndex);
+      Found = Standard_True;
+    }
+    else myCurrentIndex++;
+  }
+}
+
+//=======================================================================
+// Function : More
+//=======================================================================
+
+Standard_Boolean PCollection_DoubleMapIterator::More() const
+{
+  Standard_Boolean Ok = ( myCurrentIndex <= myBuckets->Length()) && 
+                        (! myCurrentNode.IsNull());
+
+  return Ok;
+}
+						      
+//=======================================================================
+// Function : Next
+//=======================================================================
+
+void PCollection_DoubleMapIterator::Next()
+{
+  Standard_Boolean Found = Standard_False;
+  Standard_Boolean HasMore = ( myCurrentIndex <= myBuckets->Length()) && 
+                        (! myCurrentNode.IsNull());
+
+  if ( !HasMore ) Standard_NoMoreObject::Raise();
+
+  myCurrentNode = myCurrentNode->NextKey();
+  if ( myCurrentNode.IsNull() ) {
+    myCurrentIndex++;
+    while ( myCurrentIndex <= myBuckets->Length() && !Found ) {
+      myCurrentNode = myBuckets->Value(myCurrentIndex);
+      if ( myCurrentNode.IsNull() ) 
+	myCurrentIndex++;
+      else
+	Found = Standard_True;
+    }
+  }
+    
+}
+						      
+//=======================================================================
+// Function : KeyValue
+//=======================================================================
+
+Key PCollection_DoubleMapIterator::KeyValue () const
+{
+  if ( myCurrentNode.IsNull() ) Standard_NoSuchObject::Raise();
+  return myCurrentNode->GetKey();
+}
+						      
+//=======================================================================
+// Function : ItemValue
+//=======================================================================
+
+Item PCollection_DoubleMapIterator::ItemValue () const
+{
+  if ( myCurrentNode.IsNull() ) Standard_NoSuchObject::Raise();
+  return myCurrentNode->GetItem();
+}

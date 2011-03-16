@@ -1,0 +1,86 @@
+-- File:	TopoDSToStep_WireframeBuilder.cdl
+-- Created:	Fri Mar 17 11:15:25 1995
+-- Author:	Dieter THIEMANN
+--		<dth@cinox>
+---Copyright:	 Matra Datavision 1995
+
+
+class WireframeBuilder from TopoDSToStep
+    inherits Root from TopoDSToStep
+
+    ---Purpose: This builder Class provides services to build
+    --          a ProSTEP Wireframemodel from a Cas.Cad BRep.                 
+
+uses
+
+    FinderProcess           from Transfer,
+    Edge                    from TopoDS,
+    Face                    from TopoDS,
+    Shape                   from TopoDS,
+    Tool                    from TopoDSToStep,
+    BuilderError            from TopoDSToStep,
+    HSequenceOfTransient    from TColStd,
+    DataMapOfShapeTransient from MoniTool
+
+raises NotDone from StdFail 
+    
+is 
+
+--  -----------------------------------------------------------
+--  Constructor
+--  -----------------------------------------------------------
+
+    Create returns WireframeBuilder from TopoDSToStep;
+    
+    Create(S  : Shape from TopoDS;
+    	   T  : in out Tool from TopoDSToStep;
+	   FP : mutable FinderProcess from Transfer)
+    	returns WireframeBuilder from TopoDSToStep;
+    
+    Init(me : in out;
+    	 S  : Shape from TopoDS;
+    	 T  : in out Tool from TopoDSToStep;
+	 FP : mutable FinderProcess from Transfer);
+    
+--  -----------------------------------------------------------    
+--  Get the Result
+--  -----------------------------------------------------------
+
+    Error(me) returns BuilderError from TopoDSToStep;
+    
+    Value (me) returns HSequenceOfTransient from TColStd
+    	raises NotDone
+    	is static;
+    	---C++: return const &
+
+    -- Working methods (moved from TopoDSToGBWire)
+
+    GetTrimmedCurveFromEdge (me; E: Edge from TopoDS;
+    			         F: Face from TopoDS;
+		    	         M: in out DataMapOfShapeTransient from MoniTool;
+    	    	    	         L: in out HSequenceOfTransient from TColStd)
+     	            	         returns Boolean from Standard;
+    --- Purpose: Extraction of Trimmed Curves from TopoDS_Edge for the 
+    --  Creation of a GeometricallyBoundedWireframeRepresentation
+
+    GetTrimmedCurveFromFace (me; F: Face from TopoDS;
+		    	         M: in out DataMapOfShapeTransient from MoniTool;
+    	    	    	         L: in out HSequenceOfTransient from TColStd)
+     	            	         returns Boolean from Standard;
+    --- Purpose: Extraction of Trimmed Curves from TopoDS_Face for the 
+    --  Creation of a GeometricallyBoundedWireframeRepresentation
+
+    GetTrimmedCurveFromShape (me; S: Shape from TopoDS;
+		    	          M: in out DataMapOfShapeTransient from MoniTool;
+    	    	    	          L: in out HSequenceOfTransient from TColStd)
+     	            	          returns Boolean from Standard;
+    --- Purpose: Extraction of Trimmed Curves from any TopoDS_Shape for the 
+    --  Creation of a GeometricallyBoundedWireframeRepresentation
+    
+fields
+
+    myResult : HSequenceOfTransient from TColStd;
+    
+    myError  : BuilderError         from TopoDSToStep;
+
+end WireframeBuilder;

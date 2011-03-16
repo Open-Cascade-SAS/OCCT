@@ -1,0 +1,93 @@
+-- File:	ShapeUpgrade_RemoveInternalWires.cdl
+-- Created:	Thu Aug 10 11:21:43 2006
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Open CASCADE 2006
+
+
+class RemoveInternalWires from ShapeUpgrade inherits Tool from ShapeUpgrade 
+
+	---Purpose: Removes all internal wires having area less than specified min area
+
+uses
+    Shape from TopoDS,
+    SequenceOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    Status from ShapeExtend
+is
+    Create returns RemoveInternalWires from ShapeUpgrade; 
+        ---Purpose: Creates empty  constructor.
+
+    Create (theShape : Shape from TopoDS) returns RemoveInternalWires from ShapeUpgrade;
+    
+    Init (me: mutable; theShape : Shape from TopoDS);
+        ---Purpose: Initialize by a Shape.
+	
+    Perform (me: mutable) returns Boolean;
+    ---Purpose:Removes all internal wires having area less than area specified as minimal allowed area
+    
+    Perform (me: mutable; theSeqShapes : SequenceOfShape from TopTools) returns Boolean;
+    ---Purpose:If specified sequence of shape contains -
+    --	       1.wires then these wires will be removed if they have area less than allowed min area.
+    --         2.faces than internal wires from these faces will be removed if they have area less than allowed min area.
+    
+    GetResult(me) returns Shape from TopoDS;
+    ---C++: inline
+    ---Purpose:Get result shape
+    
+    MinArea(me: mutable) returns Real;
+    ---C++: inline
+    ---C++: return &
+    ---Purpose:Set min area allowed for holes( all holes having area less than mi area will be removed)
+    
+    RemoveFaceMode(me: mutable) returns Boolean;
+    ---C++: inline
+    ---C++: return &
+    ---Purpose:Set mode which manage removing faces which have outer wires consisting only from edges
+    --         belonginig to removed internal wires.
+    ----       By default it is equal to true.
+   
+    RemovedFaces(me) returns SequenceOfShape from TopTools;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:Returns sequence of removed faces.
+    
+    RemovedWires(me) returns SequenceOfShape from TopTools;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:Returns sequence of removed faces.
+    
+    Status(me; theStatus : Status from ShapeExtend) returns Boolean;
+    ---C++: inline
+    ---Purpose:Queries status of last call to Perform()
+    --        : OK - nothing was done
+    --        :DONE1 - internal wires were removed
+    --        :DONE2 - small faces were removed.
+    --        :FAIL1 - initial shape is not specified
+    --        :FAIL2 - specified sub-shape is not belonged to inotial shape.
+    
+    removeSmallWire (me:mutable;theFace: Shape from TopoDS; theWire : Shape from TopoDS) is private;
+    ---Purpose:Removes internal wires having area of contour less than specified MinArea
+
+    removeSmallFaces(me:mutable) is private;
+    ---Purpose:Removes faces having outer wire consisting 
+    --         from removed edges(belonging small internal wires)
+    
+    Clear(me:mutable)is protected;
+    ---Purpose:Clear all sequences and temporary map;
+    
+    
+fields
+
+    myShape : Shape from TopoDS;
+    myResult : Shape from TopoDS;
+    myMinArea : Real;
+    myRemoveFacesMode : Boolean;
+    myEdgeFaces : IndexedDataMapOfShapeListOfShape from TopTools;--map of containing all edges and corresponding them edges
+    myRemoveEdges : DataMapOfShapeListOfShape from TopTools;
+    myRemovedFaces : SequenceOfShape from TopTools;
+    myStatus: Integer is protected;
+    myRemoveWires : SequenceOfShape from TopTools;
+    
+end RemoveInternalWires;

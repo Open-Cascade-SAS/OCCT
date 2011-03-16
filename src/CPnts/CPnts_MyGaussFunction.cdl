@@ -1,0 +1,34 @@
+-- File:	MyGaussFunction.cdl
+-- Created:	Fri Jul 19 16:42:31 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+private class MyGaussFunction from CPnts 
+inherits Function from math
+
+uses
+    RealFunction from CPnts
+
+is
+
+    Create returns MyGaussFunction;
+	---C++: inline
+
+    Init(me : in out;
+    	   F : RealFunction from CPnts;
+           D : Address from Standard);
+	---Purpose: F  is a pointer on a  function  D is a client data
+	--          
+	--          Each value is computed with F(D)
+    
+    Value(me: in out; X : Real; F : out Real)
+    returns Boolean
+    is static;
+
+fields
+
+    myFunction : RealFunction from CPnts;
+    myData     : Address      from Standard;
+
+end MyGaussFunction;

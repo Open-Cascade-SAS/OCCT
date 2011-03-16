@@ -1,0 +1,108 @@
+ 
+-- File:	BSplineCurve2d.cdl
+-- Created:	Fri May 22 10:46:49 1992
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+
+class BSplineCurve2d
+
+
+from DrawTrSurf
+
+
+inherits Curve2d from DrawTrSurf
+
+
+uses BSplineCurve from Geom2d,
+     Color from Draw,
+     MarkerShape from Draw,
+     Display from Draw,
+     Drawable3D from Draw
+
+
+is
+
+
+  Create (C : BSplineCurve from Geom2d)
+        --- Purpose :
+        --  creates a drawable BSpline curve from a BSpline curve of 
+        --  package Geom2d.
+     returns mutable BSplineCurve2d from DrawTrSurf;
+
+
+  Create (C : BSplineCurve from Geom2d;
+          CurvColor, PolesColor, KnotsColor : Color from Draw;
+          KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
+          ShowPoles, ShowKnots : Boolean; Discret : Integer)
+     returns mutable BSplineCurve2d from DrawTrSurf;
+
+
+  DrawOn (me; dis : in out Display from Draw)
+     is redefined static;
+
+  ShowPoles (me : mutable)
+     is static;
+
+  ShowKnots (me : mutable)
+     is static;
+     
+  ClearPoles (me : mutable)
+     is static;
+  
+  ClearKnots (me : mutable)
+     is static;
+
+  FindPole(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+           Index : in out Integer)
+    ---Purpose: Returns in <Index> the index of the first pole  of the
+    --          curve projected by the Display <D> at a distance lower
+    --          than <Prec> from <X,Y>. If no pole  is found  index is
+    --          set to 0, else index is always  greater than the input
+    --          value of index.
+  is static;
+
+  FindKnot(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+           Index : in out Integer)
+  is static;
+
+  SetPolesColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+  SetKnotsColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+  SetKnotsShape (me : mutable; Shape : MarkerShape from Draw)
+        ---C++: inline
+     is static;
+
+  KnotsShape (me)  returns MarkerShape from Draw
+        ---C++: inline
+     is static;
+  
+  KnotsColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+  
+  PolesColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+    
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+  
+      
+fields
+
+  drawPoles  : Boolean;
+  drawKnots  : Boolean;
+  knotsForm  : MarkerShape from Draw;
+  knotsLook  : Color from Draw;
+  knotsDim   : Integer;
+  polesLook  : Color from Draw;
+
+end BSplineCurve2d;

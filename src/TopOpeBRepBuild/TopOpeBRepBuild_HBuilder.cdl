@@ -1,0 +1,229 @@
+-- File:	TopOpeBRepBuild_HBuilder.cdl
+-- Created:	Mon Jun 14 10:23:56 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class HBuilder from TopOpeBRepBuild inherits TShared from MMgt
+
+---Purpose: The HBuilder  algorithm    constructs   topological
+--          objects  from   an    existing  topology  and  new
+--          geometries attached to the topology. It is used to
+--          construct the result of a topological operation;
+--          the existing  topologies are the parts involved in
+--          the  topological  operation and the new geometries
+--          are the intersection lines and points.
+
+uses
+
+    State from TopAbs,
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    BuildTool from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    Builder from TopOpeBRepBuild,
+
+    DataMapOfShapeInteger from TopTools,
+    DataMapOfIntegerInteger from TColStd,
+    DataMapOfIntegerListOfInteger from TColStd,
+    ListOfInteger from TColStd, 
+    --modified by NIZHNY-MZV  Thu Apr 20 10:12:48 2000 
+    Builder1  from  TopOpeBRepBuild
+    
+raises
+
+    NoSuchObject from Standard
+
+is
+    
+    Create (BT : BuildTool from TopOpeBRepDS) returns mutable HBuilder;
+
+    BuildTool(me) returns BuildTool from TopOpeBRepDS;
+    ---C++: return const &
+
+    Perform (me : mutable; HDS : mutable HDataStructure from TopOpeBRepDS)
+    is static;
+    ---Purpose: 
+    -- Stores the data structure <HDS>,  
+    -- Create shapes from the new geometries described in <HDS>.
+
+    Perform (me : mutable; HDS : mutable HDataStructure from TopOpeBRepDS; 
+    	     	    	   S1,S2 : Shape from TopoDS)
+    is static;
+    ---Purpose: 
+    -- Same as previous + evaluates if an operation performed on shapes S1,S2 
+    -- is a particular case.
+    
+    Clear(me : mutable)
+    is static;
+    ---Purpose: Removes all split and merge already performed.
+    -- 	        Does NOT clear the handled DS.
+    
+    DataStructure(me) returns HDataStructure from TopOpeBRepDS
+    is static;
+    ---Purpose: returns the DS handled by this builder
+    
+    ChangeBuildTool(me : mutable) returns BuildTool from TopOpeBRepDS
+    is static;
+    ---C++: return &
+
+    MergeShapes(me : mutable; 
+    	    	S1 : Shape from TopoDS; TB1 : State from TopAbs;
+    	    	S2 : Shape from TopoDS; TB2 : State from TopAbs)
+    is static;
+    ---Purpose: Merges the two shapes <S1> and <S2> keeping the
+    --          parts of states <TB1>,<TB2> in <S1>,<S2>.
+
+    MergeSolids(me : mutable; 
+    	    	S1 : Shape from TopoDS; TB1 : State from TopAbs;
+    	    	S2 : Shape from TopoDS; TB2 : State from TopAbs)
+    is static;
+    ---Purpose: Merges  the two solids <S1>   and <S2> keeping the
+    --          parts in each solid of states <TB1> and <TB2>.
+
+    MergeSolid(me : mutable; S : Shape from TopoDS; TB : State from TopAbs)
+    is static;
+    ---Purpose: Merges the solid <S>  keeping the
+    --          parts of state <TB>.
+    
+    IsSplit(me; S : Shape from TopoDS; ToBuild : State from TopAbs)
+    returns Boolean 
+    is static;
+    ---Purpose: 
+    -- Returns True if the shape <S> has been split.
+    
+    Splits(me; S : Shape from TopoDS; ToBuild : State from TopAbs)
+    returns ListOfShape from TopTools
+    raises NoSuchObject from Standard -- if S is not IsSplit()
+    is static;
+    ---Purpose: 
+    -- Returns the split parts <ToBuild> of shape <S>.
+    ---C++: return const &
+
+    IsMerged(me; S : Shape from TopoDS; ToBuild : State from TopAbs) 
+    returns Boolean from Standard
+    is static;
+    ---Purpose: 
+    -- Returns True if the shape <S> has been merged.
+    
+    Merged(me; S : Shape from TopoDS; ToBuild : State from TopAbs)
+    returns ListOfShape from TopTools
+    raises NoSuchObject from Standard -- if <S> is not IsMerged()
+    is static;
+    ---Purpose: 
+    -- Returns the merged parts <ToBuild> of shape <S>.
+    ---C++: return const &
+
+    NewVertex(me; I : Integer ) returns Shape from TopoDS
+    is static;
+    ---Purpose: 
+    -- Returns the vertex created on point <I>.
+    ---C++: return const &
+    
+    NewEdges(me; I : Integer ) returns ListOfShape from TopTools
+    is static;
+    ---Purpose: 
+    -- Returns the edges created on curve <I>.
+    ---C++: return const &
+    
+    ChangeNewEdges(me : mutable; I : Integer ) 
+    returns ListOfShape from TopTools
+    is static;
+    ---Purpose: 
+    -- Returns the edges created on curve <I>.
+    ---C++: return &
+    
+    NewFaces(me; I : Integer ) returns ListOfShape from TopTools
+    is static;
+    ---Purpose: 
+    -- Returns the faces created on surface <I>.
+    ---C++: return const &
+    
+    Section(me : mutable) returns ListOfShape from TopTools;
+    ---C++: return const &
+    
+    InitExtendedSectionDS(me : mutable; k : Integer = 3);
+    -- k = 1 : section edges built on intersection curves
+    -- k = 2 : section edges built on edges
+    -- k = 3 : all section edges
+    InitSection(me : mutable; k : Integer = 3);
+    -- k = 1 : section edges built on intersection curves
+    -- k = 2 : section edges built on edges
+    -- k = 3 : all section edges
+    MoreSection(me) returns Boolean;
+    NextSection(me:mutable);
+    CurrentSection(me) returns Shape from TopoDS;
+    ---C++: return const &
+
+    MakeEdgeAncestorMap(me : mutable) is private;
+
+    GetDSEdgeFromSectEdge(me : mutable; E : Shape from TopoDS; rank : Integer)
+    returns Integer;
+    
+    GetDSFaceFromDSEdge(me : mutable; indexEdg, rank : Integer) 
+    ---C++: return &
+    returns ListOfInteger from TColStd;
+
+    MakeCurveAncestorMap(me : mutable) is private;
+
+    GetDSCurveFromSectEdge(me : mutable; SectEdge : Shape from TopoDS) 
+    returns Integer;
+    
+    GetDSFaceFromDSCurve(me : mutable; indexCur, rank : Integer) 
+    returns Integer;
+
+    GetDSPointFromNewVertex(me : mutable; NewVert : Shape from TopoDS)
+    returns Integer;
+
+    EdgeCurveAncestors(me : mutable;E : Shape from TopoDS;
+    	    	    	  F1,F2 : out Shape from TopoDS;
+    	    	    	  IC : out Integer) returns Boolean;
+    ---Purpose: search for the couple of face F1,F2 
+    -- (from arguments of supra Perform(S1,S2,HDS)) method which 
+    -- intersection gives section edge E built on an intersection curve.
+    -- returns True if F1,F2 have been valued.
+    -- returns False if E is not a section edge built 
+    -- on intersection curve IC. 
+
+    EdgeSectionAncestors(me : mutable; E : Shape from TopoDS;
+    	    	    	 LF1,LF2 : out ListOfShape from TopTools;
+			 LE1,LE2 : out ListOfShape from TopTools) returns Boolean;
+    ---Purpose: search for the couple of face F1,F2 
+    -- (from arguments of supra Perform(S1,S2,HDS)) method which 
+    -- intersection gives section edge E built on at least one edge .
+    -- returns True if F1,F2 have been valued.
+    -- returns False if E is not a section edge built 
+    -- on at least one edge of S1 and/or S2.
+    -- LE1,LE2 are edges of S1,S2 which common part is edge E.
+    -- LE1 or LE2 may be empty() but not both. 
+
+    IsKPart(me : mutable) returns Integer from Standard is static;
+    ---Purpose: Returns 0 is standard operation, != 0 if particular case
+
+    MergeKPart(me : mutable; TB1,TB2 : State from TopAbs) is static;
+
+    ChangeBuilder(me : mutable)
+    ---C++: return &
+    returns Builder from TopOpeBRepBuild;
+     
+fields
+
+    myBuilder : Builder1 from TopOpeBRepBuild is protected;
+    
+    -- Edge of mySection / index Edge Splitted ON of 1 or of 2
+    mySectEdgeDSEdges1 : DataMapOfShapeInteger from TopTools;
+    mySectEdgeDSEdges2 : DataMapOfShapeInteger from TopTools;
+    -- Index of Edge of the DS splitted ON / List of Faces of 1 or of 2
+    myDSEdgesDSFaces1 : DataMapOfIntegerListOfInteger from TColStd;
+    myDSEdgesDSFaces2 : DataMapOfIntegerListOfInteger from TColStd;
+    myMakeEdgeAncestorIsDone : Boolean from Standard;
+    -- Edge of mySection / index of Curve of the DS
+    mySectEdgeDSCurve : DataMapOfShapeInteger from TopTools;
+    myMakeCurveAncestorIsDone : Boolean from Standard;
+    -- new Vertex / index of point of the DS
+    myNewVertexDSPoint : DataMapOfShapeInteger from TopTools;
+    myMakePointAncestorIsDone : Boolean from Standard;
+    myEmptyShape : Shape from TopoDS;
+    myEmptyIntegerList : ListOfInteger from TColStd;
+    
+end HBuilder from TopOpeBRepBuild;

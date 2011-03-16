@@ -1,0 +1,46 @@
+-- File:	PGeom2d_Line.cdl
+-- Created:	Tue Apr  6 17:29:25 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Line from PGeom2d inherits Curve from PGeom2d
+
+        ---Purpose :   Defines   an   infinite   line.  	   The
+        --         parametrization range is ]-infinite, +infinite[.
+        --         
+	---See Also : Line from Geom2d.
+
+uses Ax2d from gp
+
+is
+
+
+  Create returns mutable Line;
+        ---Purpose : Creates a line with default values.
+	---Level: Internal 
+
+
+  Create (aPosition : Ax2d from gp)   returns mutable Line;
+        ---Purpose : Creates   a  line  located    in  3D space   with
+        --         <aPosition>.  The Location   of <aPosition> is  the
+        --         origin of the line.
+	---Level: Internal 
+
+
+  Position (me : mutable; aPosition : Ax2d from gp);
+        --- Purpose : Set the value of the field position with <aPosition>.
+	---Level: Internal 
+
+
+  Position (me) returns Ax2d from gp;
+        --- Purpose : Returns the value of the field position.
+	---Level: Internal 
+
+
+fields
+
+  position : Ax2d from gp;
+
+end;

@@ -1,0 +1,111 @@
+-- File:	PBRep.cdl
+-- Created:	Fri Jul 16 11:09:46 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>          	 
+---Copyright:	 Matra Datavision 1993
+
+
+package PBRep 
+
+	---Purpose: This  package    describes  a persistent  Boundary
+	--          Representation  Data Structure inherited from  the
+	--          abstract Topology  defined in the PTopoDS package.
+	--          The  geometric data  are provided by the PGeom and
+	--          PGeom2d packages.
+
+uses
+    gp,          -- Elementary geometry
+    PTopLoc,     -- Local coordinate systems
+    TopAbs,      -- Enumerations : Orientation, ShapeType
+    PTopoDS,     -- Abstract topological data structure
+    GeomAbs,     -- Enumerations : Shape
+    PGeom,       -- 3D geometry : curves and surfaces
+    PGeom2d,     -- 2D geometry : curves in parametric space
+    PPoly,       -- Persistent Triangulations and Polygons
+    PColStd      -- Persistent Standard Collection 
+    
+is
+
+    deferred class CurveRepresentation;
+	---Purpose: Root for curve representations.
+
+    deferred class GCurve;
+	---Purpose: Root class  for geometric curves  representations.
+	--          Contains a first an a last parameter.
+ 
+    class Curve3D;
+	---Purpose: Representation by a 3d curve.
+    
+    class CurveOnSurface;
+	---Purpose: Representation by a curve in the  parametric space
+	--          of a surface.
+
+    class CurveOnClosedSurface;
+	---Purpose: Representation  by two   curves in the  parametric
+	--          space of a surface.
+
+    class Polygon3D;
+	---Purpose: Representation by a 3D polygon.
+
+    class PolygonOnTriangulation;
+	---Purpose: Representation by    an array  of  indices  on   a
+	--          triangulation.
+	
+    class PolygonOnClosedTriangulation;
+	---Purpose: Representation   by two  arrays  of indices   on a
+	--          triangulation.
+	
+    class PolygonOnSurface;
+	---Purpose: Representation by 2d polygon in the parametric space
+	--          of a surface.
+
+    class PolygonOnClosedSurface;
+	---Purpose: Representation by two 2d polygons in the parametric
+	--          space of the  surface.
+	
+    class CurveOn2Surfaces;
+	---Purpose: Geometric continuity bewtween two surfaces.
+	
+    deferred class PointRepresentation;
+	---Purpose: Root for point representations.
+  
+    class PointOnCurve;
+	---Purpose: Representation by a parameter on a 3D curve.
+	
+    deferred class PointsOnSurface;
+	---Purpose: Root for points on surface.
+    
+    class PointOnCurveOnSurface;
+	---Purpose: Representation by   a parameter on  a curve   on a
+	--          surface. 
+
+    class PointOnSurface;
+	---Purpose: Representation by two parameters on a surface.
+
+    class TFace;
+	---Purpose: The TFace class  is inherited from  the TFace from
+	--          TopoDS.
+	
+    class TEdge;
+	---Purpose: The TEdge  class is  inherited from the TEdge from
+	--          TopoDS.
+
+    class TVertex;
+	---Purpose: The TVertex  class  is  inherited from the TVertex
+	--          from TopoDS.
+
+    class TFace1;
+	---Purpose: The TFace class  is inherited from  the TFace from
+	--          TopoDS.
+	
+    class TEdge1;
+	---Purpose: The TEdge  class is  inherited from the TEdge from
+	--          TopoDS.
+
+    class TVertex1;
+	---Purpose: The TVertex  class  is  inherited from the TVertex
+	--          from TopoDS.
+
+end PBRep;

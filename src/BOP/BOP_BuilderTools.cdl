@@ -1,0 +1,91 @@
+-- File:	BOP_BuilderTools.cdl
+-- Created:	Fri Nov  2 11:38:01 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class BuilderTools from BOP 
+
+    ---Purpose: 
+    	--  Some  handy tools used by classes    
+	--  BOP_ShellShell, 
+	--  BOP_ShellSolid, 
+	--  BOP_SolidSolid  
+	--  to build a result  
+
+uses
+  
+    IndexedMapOfInteger from TColStd,  
+     
+    State     from TopAbs,  
+    ShapeEnum from TopAbs, 
+     
+    Face from TopoDS, 
+    Edge from TopoDS,   
+     
+    ListOfShape from TopTools, 
+      
+    StateOfShape from BooleanOperations, 
+      
+    IndexedDataMapOfIntegerIndexedMapOfInteger from BOPTColStd, 	
+     
+    CArray1OfSSInterference from BOPTools,  
+     
+    Operation            from BOP,
+    ListOfConnexityBlock from BOP     
+    
+    
+is
+
+    StateToCompare(myclass; 
+	    iRank :Integer from Standard; 
+	    anOp  :Operation from BOP) 
+	returns StateOfShape from BooleanOperations;  
+    
+    ToReverseSection(myclass; 
+	    iRank :Integer from Standard; 
+	    anOp  :Operation from BOP) 
+	returns Boolean from Standard;   
+	 
+    ToReverseFace(myclass; 
+	    iRank :Integer from Standard; 
+	    anOp  :Operation from BOP) 
+	returns Boolean from Standard;  
+	 
+    OrientSectionEdgeOnF1(myclass; 
+	    aF1   :Face from TopoDS; 
+	    aF2   :Face from TopoDS;  
+    	    iRank :Integer from Standard;  
+	    anOp  :Operation from BOP;
+	    aE    :out Edge from TopoDS); 
+	 
+    IsSameDomainFaceWithF1(myclass; 
+    	    nF1 :Integer from Standard; 
+    	    nF2 :Integer from Standard; 
+    	    aFFM:IndexedMapOfInteger from TColStd; 
+	    aFFs:out CArray1OfSSInterference from BOPTools)  
+	returns Boolean from Standard;     
+
+    IsPartIN2DToKeep(myclass;  
+    	    aSt   :State from TopAbs;
+	    iRank :Integer from Standard;  
+	    anOp  :Operation from BOP)	
+	returns Boolean from Standard;   	 
+
+    IsPartOn2dToKeep(myclass;  
+    	    aSt   :State from TopAbs;
+	    iRank :Integer from Standard;  
+	    anOp  :Operation from BOP)	
+	returns Boolean from Standard;  
+	 
+    DoMap(myclass;  
+    	    aFFs  :out  CArray1OfSSInterference from BOPTools; 
+    	    aFFMap:out  IndexedDataMapOfIntegerIndexedMapOfInteger from BOPTColStd);      
+
+    MakeConnexityBlocks(myclass;  
+    	    aLE        :  ListOfShape from TopTools;  
+	    aType      :  ShapeEnum   from TopAbs;  
+	    aLConBlks  : out ListOfConnexityBlock from BOP); 
+
+end BuilderTools;

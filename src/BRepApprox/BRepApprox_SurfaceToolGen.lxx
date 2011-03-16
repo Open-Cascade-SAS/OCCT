@@ -1,0 +1,225 @@
+// File:	BRepApprox_SurfaceToolGen.lxx
+// Created:	Thu Jul 20 15:41:41 1995
+// Author:	Modelistation
+//		<model@meteox>
+
+
+#include TheSurface_hxx
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <Handle_Geom_BezierSurface.hxx>
+#include <Handle_Geom_BSplineSurface.hxx>
+#include <Handle_Adaptor3d_HSurface.hxx>
+#include <Handle_Adaptor3d_HCurve.hxx>
+
+
+
+inline Standard_Real BRepApprox_SurfaceToolGen::FirstUParameter(const TheSurface& Surf){  return Surf.FirstUParameter(); }
+inline Standard_Real BRepApprox_SurfaceToolGen::FirstVParameter(const TheSurface& Surf){  return Surf.FirstVParameter();}
+inline Standard_Real BRepApprox_SurfaceToolGen::LastUParameter(const TheSurface& Surf){  return Surf.LastUParameter();}
+inline Standard_Real BRepApprox_SurfaceToolGen::LastVParameter(const TheSurface& Surf){  return Surf.LastVParameter();}
+
+inline Standard_Integer BRepApprox_SurfaceToolGen::NbUIntervals(const TheSurface& Surf,
+							  const GeomAbs_Shape S){
+  return Surf.NbUIntervals(S);
+}
+
+inline Standard_Integer BRepApprox_SurfaceToolGen::NbVIntervals(const TheSurface& Surf,
+							  const GeomAbs_Shape S){
+  return Surf.NbVIntervals(S);
+}
+
+inline void  BRepApprox_SurfaceToolGen::UIntervals(const TheSurface& Surf,
+							TColStd_Array1OfReal& Tab,
+							const GeomAbs_Shape S){
+  Surf.UIntervals(Tab,S);
+}
+
+inline void  BRepApprox_SurfaceToolGen::VIntervals(const TheSurface& Surf,
+							TColStd_Array1OfReal& Tab,
+							const GeomAbs_Shape S){
+  Surf.VIntervals(Tab,S);
+}
+
+
+inline Handle_Adaptor3d_HSurface  BRepApprox_SurfaceToolGen::UTrim(const TheSurface& Surf,
+								   const Standard_Real F,
+								   const Standard_Real L,
+								   const Standard_Real Tol) { 
+  return Surf.UTrim(F,L,Tol);
+}
+
+inline Handle_Adaptor3d_HSurface BRepApprox_SurfaceToolGen::VTrim(const TheSurface& Surf,
+								  const Standard_Real F,
+								  const Standard_Real L,
+								  const Standard_Real Tol) { 
+  return Surf.VTrim(F,L,Tol);
+}
+
+
+
+
+inline Standard_Boolean BRepApprox_SurfaceToolGen::IsUClosed(const TheSurface& S)
+{
+  return S.IsUClosed();
+}
+
+inline Standard_Boolean BRepApprox_SurfaceToolGen::IsVClosed(const TheSurface& S)
+{
+  return S.IsVClosed();
+}
+
+inline Standard_Boolean BRepApprox_SurfaceToolGen::IsUPeriodic(const TheSurface& S)
+{
+  return S.IsUPeriodic();
+}
+
+inline Standard_Real BRepApprox_SurfaceToolGen::UPeriod(const TheSurface& S)
+{
+  return S.UPeriod();
+}
+
+inline Standard_Boolean BRepApprox_SurfaceToolGen::IsVPeriodic(const TheSurface& S)
+{
+  return S.IsVPeriodic();
+}
+
+inline Standard_Real BRepApprox_SurfaceToolGen::VPeriod(const TheSurface& S)
+{
+  return S.VPeriod();
+}
+
+inline gp_Pnt BRepApprox_SurfaceToolGen::Value(const TheSurface& S,
+					 const Standard_Real U,
+					 const Standard_Real V )
+{
+  return S.Value(U,V);
+}
+
+inline void BRepApprox_SurfaceToolGen::D0(const TheSurface& S,
+				    const Standard_Real U,
+				    const Standard_Real V,
+				    gp_Pnt& P)
+{
+  S.D0(U,V,P);
+}
+
+inline void BRepApprox_SurfaceToolGen::D1(const TheSurface& S,
+				    const Standard_Real U,
+				    const Standard_Real V,
+				    gp_Pnt& P,
+				    gp_Vec& D1U,
+				    gp_Vec& D1V) 
+{
+  S.D1(U,V,P,D1U,D1V);
+}
+
+inline void BRepApprox_SurfaceToolGen::D2(const TheSurface& S,
+				    const Standard_Real U,
+				    const Standard_Real V,
+				    gp_Pnt& P,
+				    gp_Vec& D1U,
+				    gp_Vec& D1V,
+				    gp_Vec& D2U,
+				    gp_Vec& D2V,
+				    gp_Vec& D2UV)
+{
+  S.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+}
+
+inline void BRepApprox_SurfaceToolGen::D3(const TheSurface& S,
+				    const Standard_Real U,
+				    const Standard_Real V,
+				    gp_Pnt& P,
+				    gp_Vec& D1U,
+				    gp_Vec& D1V, 
+				    gp_Vec& D2U,
+				    gp_Vec& D2V,
+				    gp_Vec& D2UV,
+				    gp_Vec& D3U,
+				    gp_Vec& D3V,
+				    gp_Vec& D3UUV,
+				    gp_Vec& D3UVV)
+{
+  S.D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+}
+
+inline gp_Vec BRepApprox_SurfaceToolGen::DN(const TheSurface& S,
+				      const Standard_Real U,
+				      const Standard_Real V,
+				      const Standard_Integer Nu,
+				      const Standard_Integer Nv)
+{
+  return S.DN(U,V,Nu,Nv);
+}
+
+inline Standard_Real BRepApprox_SurfaceToolGen::UResolution(const TheSurface& S,
+						      const Standard_Real R3d)
+{
+  return S.UResolution(R3d);
+}
+
+inline Standard_Real BRepApprox_SurfaceToolGen::VResolution(const TheSurface& S,
+						      const Standard_Real R3d)
+{
+  return S.VResolution(R3d);
+}
+
+inline GeomAbs_SurfaceType BRepApprox_SurfaceToolGen::GetType(const TheSurface& S )
+{
+  return S.GetType();
+}
+
+inline gp_Pln BRepApprox_SurfaceToolGen::Plane(const TheSurface& S)
+{
+  return S.Plane();
+}
+
+inline gp_Cylinder BRepApprox_SurfaceToolGen::Cylinder(const TheSurface& S) 
+{
+  return S.Cylinder();
+}
+
+inline gp_Cone BRepApprox_SurfaceToolGen::Cone(const TheSurface& S) 
+{
+  return S.Cone();
+}
+
+inline gp_Sphere BRepApprox_SurfaceToolGen::Sphere(const TheSurface& S) 
+{
+  return S.Sphere();
+}
+
+inline gp_Torus BRepApprox_SurfaceToolGen::Torus(const TheSurface& S) 
+{
+  return S.Torus();
+}
+
+
+inline Handle(Geom_BezierSurface) BRepApprox_SurfaceToolGen::Bezier(const TheSurface& S) { 
+  return(S.Bezier());
+}
+
+inline Handle(Geom_BSplineSurface) BRepApprox_SurfaceToolGen::BSpline(const TheSurface& S) { 
+  return(S.BSpline());
+}
+
+
+inline gp_Ax1  BRepApprox_SurfaceToolGen::AxeOfRevolution(const TheSurface& S) { 
+  return(S.AxeOfRevolution());
+}
+
+inline gp_Dir  BRepApprox_SurfaceToolGen::Direction(const TheSurface& S) { 
+  return(S.Direction());
+}
+
+inline Handle(Adaptor3d_HCurve)  BRepApprox_SurfaceToolGen::BasisCurve(const TheSurface& S) { 
+  return(S.BasisCurve());
+}

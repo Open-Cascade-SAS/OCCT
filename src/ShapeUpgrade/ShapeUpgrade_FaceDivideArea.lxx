@@ -1,0 +1,6 @@
+inline Standard_Real& ShapeUpgrade_FaceDivideArea::MaxArea() 
+{
+  return myMaxArea;
+}
+
+ 

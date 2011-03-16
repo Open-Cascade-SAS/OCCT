@@ -1,0 +1,90 @@
+-- File:	LocOpe_PntFace.cdl
+-- Created:	Mon May 29 14:46:39 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PntFace from LocOpe
+
+	---Purpose: 
+
+uses Pnt         from gp,
+     Face        from TopoDS,
+     Orientation from TopAbs
+     
+
+is
+
+    Create
+	---Purpose: Empty constructor. Useful only for the list.
+    	returns PntFace from LocOpe;
+
+
+    Create (P: Pnt from gp; F: Face from TopoDS;
+            Or: Orientation from TopAbs; Param,UPar,VPar: Real from Standard) 
+	    
+    	returns PntFace from LocOpe;
+	---C++: inline
+
+    Pnt(me)
+    
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+	is static;
+
+
+    Face(me)
+    
+    	returns Face from TopoDS
+	---C++: return const&
+	---C++: inline
+	is static;
+
+    Orientation(me)
+    
+    	returns Orientation from TopAbs
+	---C++: inline
+	is static;
+
+
+    ChangeOrientation(me: in out)
+    
+    	returns Orientation from TopAbs
+	---C++: return &
+	---C++: inline
+	is static;
+
+
+    Parameter(me)
+    
+    	returns Real from Standard
+	---C++: inline
+	is static;
+
+
+    UParameter(me)
+    
+    	returns Real from Standard
+	---C++: inline
+	is static;
+
+
+    VParameter(me)
+    
+    	returns Real from Standard
+	---C++: inline
+	is static;
+
+
+fields
+
+    myPnt  : Pnt         from gp;
+    myFace : Face        from TopoDS;
+    myOri  : Orientation from TopAbs;
+    myPar  : Real        from Standard;
+    myUPar : Real        from Standard;
+    myVPar : Real        from Standard;
+
+end PntFace;

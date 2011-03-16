@@ -1,0 +1,22 @@
+-- File:        AnnotationTextOccurrence.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class AnnotationTextOccurrence from StepVisual 
+
+inherits AnnotationOccurrence from StepVisual 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfPresentationStyleAssignment from StepVisual
+
+is
+
+	Create returns mutable AnnotationTextOccurrence;
+	---Purpose: Returns a AnnotationTextOccurrence
+
+
+end AnnotationTextOccurrence;

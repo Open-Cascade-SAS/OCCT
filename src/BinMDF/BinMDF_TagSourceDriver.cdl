@@ -1,0 +1,35 @@
+-- File:	BinMDF_TagSourceDriver.cdl
+-- Created:	Tue Nov 19 12:00:41 2002
+-- Author:	Edward AGAPOV
+--		<eap@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Open Cascade 2002
+
+
+class TagSourceDriver from BinMDF  inherits ADriver from BinMDF
+
+        ---Purpose: TDF_TagSource Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF,
+    MessageDriver    from CDM
+
+is
+    Create (theMessageDriver : MessageDriver from CDM)
+        returns mutable TagSourceDriver from BinMDF;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+
+end TagSourceDriver;
+

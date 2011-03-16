@@ -1,0 +1,57 @@
+-- File:	IGESSelect_SetGlobalParameter.cdl
+-- Created:	Wed Jun  1 17:01:32 1994
+-- Author:	Modelistation
+--		<model@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SetGlobalParameter  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Sets a Global (Header) Parameter to a new value, directly given
+    --           Controls the form of the parameter (Integer, Real, String
+    --           with such or such form), but not the consistence of the new
+    --           value regarding the rest of the file.
+    --           
+    --           The new value is given under the form of a HAsciiString, even
+    --           for Integer or Real values. For String values, Hollerith forms
+    --           are accepted but not mandatory
+    --  Warning : a Null (not set) value is not accepted. For an empty string,
+    --           give a Text Parameter which is empty
+
+uses AsciiString from TCollection, HAsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create (numpar : Integer) returns mutable SetGlobalParameter;
+    ---Purpose : Creates an SetGlobalParameter, to be applied on Global
+    --           Parameter <numpar>
+
+    GlobalNumber (me) returns Integer;
+    ---Purpose : Returns the global parameter number to which this modifiers
+    --           applies
+
+    SetValue (me : mutable; text : mutable HAsciiString);
+    ---Purpose : Sets a Text Parameter for the new value
+
+    Value (me) returns mutable HAsciiString;
+    ---Purpose : Returns the value to set to the global parameter (Text Param)
+
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : only <target> is used : the form of the new
+    --           value is checked regarding the parameter number (given at
+    --           creation time).
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Sets Global Parameter <numpar> to <new value>"
+
+fields
+
+    thenum : Integer;
+    theval : HAsciiString from TCollection;
+
+end SetGlobalParameter;

@@ -1,0 +1,21 @@
+// File:	HLRAlgo_PolyInternalSegment.lxx
+// Created:	Tue Dec  3 17:09:42 1996
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : HLRAlgo_PolyInternalSegment
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_PolyInternalSegment::HLRAlgo_PolyInternalSegment ()
+{}
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_PolyInternalSegment::Indices () const
+{ return (Standard_Address)myIndices; }
+

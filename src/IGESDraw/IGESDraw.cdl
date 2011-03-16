@@ -1,0 +1,167 @@
+--
+-- File      : IGESDraw.cdl
+-- Created   : Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Niraj RANGWALA)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESDraw
+
+
+        ---Purpose : This package contains the group of classes necessary for
+        --           Structure Entities implied in Drawings and Structured
+        --           Graphics (Sets for drawing, Drawings and Views).
+
+uses
+
+        Standard,
+        TCollection,
+        gp,
+	TColgp,
+	TColStd,
+	Message,
+        Interface,
+        IGESData,
+        IGESDimen,
+        IGESBasic,
+        IGESGraph,
+        IGESGeom
+
+is
+
+     class ConnectPoint;
+     -- type <132> form <0>
+     ---Purpose : Connect Point Entity describes a point of connection for
+     --           zero, one or more entities. It is referenced from Composite
+     --           curve, or Network Subfigure Definition/Instance, or the Flow
+     --           Associative Instance, or it may stand alone.
+
+     class NetworkSubfigureDef;
+     -- type <320> form <0>
+     ---Purpose : This class differs from the ordinary subfigure definition
+     --           in that it defines a specialized subfigure, one whose
+     --           instances may participate in networks.
+
+     class ViewsVisible;
+     -- type <402> form <3>
+     ---Purpose : If an entity is to be displayed in more than one views,
+     --           this class instance is used, which contains the Visible
+     --           views and the associated entity Displays.
+
+     class ViewsVisibleWithAttr;
+     -- type <402> form <4>
+     ---Purpose : This class is extension of Class ViewsVisible.  It is used
+     --           for those entities that are visible in multiple views, but
+     --           must have a different line font, color number, or
+     --           line weight in each view.
+
+     class LabelDisplay;
+     -- type <402> form <5>
+     ---Purpose : Permits one or more displays for the
+     --           entity labels of an entity
+
+     class Planar;
+     -- type <402> form <16>
+     ---Purpose : Indicates that a collection of entities is coplanar. The
+     --           entities may be geometric, annotative, and/or structural.
+
+     class SegmentedViewsVisible;
+     -- type <402> form <19>
+     ---Purpose : Permits the association of display parameters with the
+     --           segments of curves in a given view
+
+     class Drawing;
+     -- type <404> form <0>
+     ---Purpose : Specifies a drawing as a collection of annotation entities
+     --           defined in drawing space, and views which together
+     --           constitute a single representation of a part
+
+     class DrawingWithRotation;
+     -- type <404> form <1>
+     ---Purpose : Permits rotation, in addition to transformation and
+     --           scaling, between the view and drawing coordinate systems
+
+     class View;
+     -- type <410> form <0>
+     ---Purpose : Used to define a framework for specifying a viewing
+     --           orientation of an object in three dimensional model
+     --           space (X,Y,Z). The framework is also used to support
+     --           the projection of all or part of model space onto a
+     --           view volume.
+
+     class RectArraySubfigure;
+     -- type <412> form 0
+     ---Purpose : Used to produce copies of an object called the base entity,
+     --           arranging them in equally spaced rows and columns
+
+     class CircArraySubfigure;
+     -- type <414> form <0>
+     ---Purpose : Used to produce copies of an object called the base entity,
+     --           arranging them around the edge of an imaginary circle
+     --           whose center and radius are specified
+
+     class NetworkSubfigure;
+     -- type <420> form <0>
+     ---Purpose : Used to specify each instance of Network Subfigure
+     --           definition Entity (Type <320>).
+
+     class PerspectiveView;
+     -- type <410> form <1>
+     ---Purpose : Supports a perspective view.
+     --           Any geometric projection is defined by a view plane
+     --           and the projectors that pass through the view plane.
+     --           Projectors can be visualized as rays of light that
+     --           form an image by passing through the viewed object
+     --           and striking the view plane.
+     --           The projectors are defined via a point called the
+     --           Center-of-Projection or the eye-point.
+     --           A perspective view is formed by all projectors that
+     --           emanate from the Center-of-Projection and pass
+     --           through the view plane.
+
+    	--    Tools for Entities    --
+
+     class ToolConnectPoint;
+     class ToolNetworkSubfigureDef;
+     class ToolViewsVisible;
+     class ToolViewsVisibleWithAttr;
+     class ToolLabelDisplay;
+     class ToolPlanar;
+     class ToolSegmentedViewsVisible;
+     class ToolDrawing;
+     class ToolDrawingWithRotation;
+     class ToolView;
+     class ToolRectArraySubfigure;
+     class ToolCircArraySubfigure;
+     class ToolNetworkSubfigure;
+     class ToolPerspectiveView;
+
+     -- Definition and Exploitation of Entities defined in this Package
+
+     class Protocol;
+     class ReadWriteModule;
+     class GeneralModule;
+     class SpecificModule;
+
+     -- The class instantiations :
+
+     class  Array1OfConnectPoint   instantiates
+    	  Array1 from TCollection (ConnectPoint);
+     class  Array1OfViewKindEntity instantiates
+          Array1 from TCollection (ViewKindEntity from IGESData);
+
+     class HArray1OfConnectPoint   instantiates  HArray1 from TCollection
+    	 (ConnectPoint,Array1OfConnectPoint);
+     class HArray1OfViewKindEntity instantiates  HArray1 from TCollection
+    	 (ViewKindEntity from IGESData,Array1OfViewKindEntity);
+
+     -- Package Methods :
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESDraw;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESDraw;

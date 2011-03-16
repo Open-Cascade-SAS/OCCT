@@ -1,0 +1,35 @@
+-- File:	RWStepRepr_RWShapeAspectDerivingRelationship.cdl
+-- Created:	Wed Jun  4 14:17:23 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWShapeAspectDerivingRelationship from RWStepRepr
+
+    ---Purpose: Read & Write tool for ShapeAspectDerivingRelationship
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ShapeAspectDerivingRelationship from StepRepr
+
+is
+    Create returns RWShapeAspectDerivingRelationship from RWStepRepr;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ShapeAspectDerivingRelationship from StepRepr);
+	---Purpose: Reads ShapeAspectDerivingRelationship
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ShapeAspectDerivingRelationship from StepRepr);
+	---Purpose: Writes ShapeAspectDerivingRelationship
+
+    Share (me; ent : ShapeAspectDerivingRelationship from StepRepr;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWShapeAspectDerivingRelationship;

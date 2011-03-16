@@ -1,0 +1,41 @@
+-- File:        RectangularCompositeSurface.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RectangularCompositeSurface from StepGeom 
+
+inherits BoundedSurface from StepGeom 
+
+uses
+
+	HArray2OfSurfacePatch from StepGeom, 
+	SurfacePatch from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable RectangularCompositeSurface;
+	---Purpose: Returns a RectangularCompositeSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSegments : mutable HArray2OfSurfacePatch from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSegments(me : mutable; aSegments : mutable HArray2OfSurfacePatch);
+	Segments (me) returns mutable HArray2OfSurfacePatch;
+	SegmentsValue (me; num1 : Integer;  num2 : Integer) returns mutable SurfacePatch;
+	NbSegmentsI (me) returns Integer;
+	NbSegmentsJ (me) returns Integer;
+
+fields
+
+	segments : HArray2OfSurfacePatch from StepGeom;
+
+end RectangularCompositeSurface;

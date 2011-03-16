@@ -1,0 +1,60 @@
+-- File:      XmlMXCAFDoc_LocationDriver.cxx
+-- Created:   11.09.01 09:29:57
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+class LocationDriver from XmlMXCAFDoc  inherits ADriver from XmlMDF
+
+
+
+        ---Purpose: Attribute Driver.
+
+uses    Location         from TopLoc,
+        Element          from XmlObjMgt,
+        SRelocationTable from XmlObjMgt,
+        RRelocationTable from XmlObjMgt,
+        Persistent       from XmlObjMgt,
+        MessageDriver    from CDM,
+        Attribute        from TDF,
+        LocationSetPtr   from TopTools
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable LocationDriver from XmlMXCAFDoc;
+
+
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+
+
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+    Translate (me; theLoc    : Location from TopLoc;
+                        theParent : in out Element from XmlObjMgt;
+                        theMap    : in out SRelocationTable from XmlObjMgt);
+        ---Purpose: Translate a non storable Location to a storable Location.
+        ---Level: Internal
+
+    Translate (me; theParent : Element from XmlObjMgt;
+                        theLoc    : in out Location from TopLoc;
+                        theMap    : in out RRelocationTable from XmlObjMgt)
+    returns Boolean from Standard;
+        ---Purpose: Translate a storable Location to a non storable Location.
+        ---Level: Internal
+
+    SetSharedLocations(me: mutable;
+                       theLocations:  in LocationSetPtr  from TopTools);
+    ---C++: inline
+
+fields
+    myLocations : LocationSetPtr   from TopTools;
+end LocationDriver;

@@ -1,0 +1,51 @@
+-- File:	IntRes2d.cdl
+-- Created:	Fri Apr  3 14:41:30 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+package IntRes2d
+
+
+    ---Purpose: This package provides the definition of the results of
+    --          the intersection between 2D curves and the definition
+    --          of a domain on a 2D curve.
+    ---Level: Public 
+    -- 
+    -- All the methods of all the classes of this package are public.
+    --
+
+uses
+
+    Standard, TCollection, gp, StdFail
+
+is
+
+
+    class IntersectionPoint;
+    
+    class IntersectionSegment;
+
+    class Transition;
+
+    class Domain;
+
+    deferred class Intersection;
+
+    enumeration Position is Head,Middle,End;
+
+    enumeration TypeTrans is In,Out,Touch,Undecided;
+
+    enumeration Situation is Inside, Outside, Unknown;
+
+    class SequenceOfIntersectionPoint instantiates
+    	       Sequence from TCollection (IntersectionPoint);
+
+    class SequenceOfIntersectionSegment instantiates
+    	       Sequence from TCollection (IntersectionSegment);
+
+
+end IntRes2d; 
+
+

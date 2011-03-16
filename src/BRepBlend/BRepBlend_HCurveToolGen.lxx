@@ -1,0 +1,154 @@
+// File:	BRepBlend_HCurveToolGen.lxx
+// Created:	Thu Oct 22 12:14:59 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+
+
+#include CurveGen_hxx
+
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
+
+#include <gp_Vec.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Hypr.hxx>
+
+
+#include <Handle_Geom_BezierCurve.hxx>
+#include <Handle_Geom_BSplineCurve.hxx>
+
+#include <TColStd_Array1OfReal.hxx>
+
+//============================================================
+inline Standard_Real BRepBlend_HCurveToolGen::FirstParameter (const CurveGen& C) {
+  return(C->FirstParameter());
+}
+//============================================================
+inline Standard_Real BRepBlend_HCurveToolGen::LastParameter (const CurveGen& C) {
+  return(C->LastParameter());
+}
+//============================================================
+inline GeomAbs_Shape BRepBlend_HCurveToolGen::Continuity (const CurveGen& C) {
+  return(C->Continuity());
+}
+//============================================================
+inline Standard_Integer BRepBlend_HCurveToolGen::NbIntervals(const CurveGen& C,const GeomAbs_Shape Sh) {
+  return(C->NbIntervals(Sh));
+}
+//============================================================
+inline void BRepBlend_HCurveToolGen::Intervals(const CurveGen& C,
+							     TColStd_Array1OfReal& Tab,
+							     const GeomAbs_Shape Sh) {
+  C->Intervals(Tab,Sh);
+}
+//============================================================
+inline Standard_Boolean BRepBlend_HCurveToolGen::IsClosed(const CurveGen& C) {
+  return(C->IsClosed());
+}
+//============================================================
+inline Standard_Boolean BRepBlend_HCurveToolGen::IsPeriodic(const CurveGen& C) {
+  return(C->IsPeriodic());
+}
+//============================================================
+inline Standard_Real BRepBlend_HCurveToolGen::Period(const CurveGen& C) {
+  return(C->Period());
+}
+//============================================================
+inline gp_Pnt BRepBlend_HCurveToolGen::Value (const CurveGen& C,
+						const Standard_Real U) {
+  return(C->Value(U));
+}
+//============================================================
+inline void BRepBlend_HCurveToolGen::D0(const CurveGen& C,
+					  const Standard_Real U,
+					  gp_Pnt& P) {
+  C->D0(U,P);
+}
+//============================================================
+inline void BRepBlend_HCurveToolGen::D1 (const CurveGen& C,
+					   const Standard_Real U,
+					   gp_Pnt& P,
+					   gp_Vec& T) {
+  C->D1(U,P,T);
+}
+//============================================================
+inline void BRepBlend_HCurveToolGen::D2 (const CurveGen& C,
+					   const Standard_Real U,
+					   gp_Pnt& P,
+					   gp_Vec& T,
+					   gp_Vec& N) {
+  
+  C->D2(U,P,T,N);
+}
+//============================================================
+inline void BRepBlend_HCurveToolGen::D3 (const CurveGen& C,
+					   const Standard_Real U,
+					   gp_Pnt& P,
+					   gp_Vec& V1,
+					   gp_Vec& V2,
+					   gp_Vec& V3) {
+  
+  C->D3(U,P,V1,V2,V3);
+}
+//============================================================
+inline gp_Vec BRepBlend_HCurveToolGen::DN (const CurveGen& C,
+					     const Standard_Real U,
+					     const Standard_Integer N) { 
+  
+  return(C->DN(U,N));
+}
+//============================================================
+inline Standard_Real BRepBlend_HCurveToolGen::Resolution(const CurveGen& C,
+							   const Standard_Real R3d) {
+  return(C->Resolution(R3d));
+}
+//============================================================
+inline GeomAbs_CurveType BRepBlend_HCurveToolGen::GetType(const CurveGen& C) {
+  return(C->GetType());
+}
+//============================================================
+inline gp_Lin BRepBlend_HCurveToolGen::Line (const CurveGen& C) {
+  return(C->Line());
+}
+//============================================================
+inline gp_Circ BRepBlend_HCurveToolGen::Circle (const CurveGen& C) {
+  return(C->Circle());
+}
+//============================================================
+inline gp_Elips BRepBlend_HCurveToolGen::Ellipse (const CurveGen& C) {
+  return(C->Ellipse());
+}
+//============================================================
+inline gp_Parab BRepBlend_HCurveToolGen::Parabola (const CurveGen& C) {
+  return(C->Parabola());
+}
+//============================================================
+inline gp_Hypr BRepBlend_HCurveToolGen::Hyperbola (const CurveGen& C) {
+  return(C->Hyperbola());
+}
+//============================================================
+inline Handle(Geom_BezierCurve) BRepBlend_HCurveToolGen::Bezier (const CurveGen& C) {
+  return(C->Bezier());
+}
+//============================================================
+inline Handle(Geom_BSplineCurve) BRepBlend_HCurveToolGen::BSpline (const CurveGen& C) {
+  return(C->BSpline());
+}
+//============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+

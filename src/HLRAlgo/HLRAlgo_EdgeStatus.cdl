@@ -1,0 +1,117 @@
+-- File:	EdgeStatus.cdl
+-- Created:	Tue Feb 18 10:36:07 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class EdgeStatus from HLRAlgo
+
+	---Purpose: This class describes the Hidden  Line status of an
+	--          Edge. It contains :
+	--          
+	--            The Bounds of the Edge and their tolerances
+	--            
+	--            Two flags indicating if the edge is full visible
+	--            or full hidden.
+	--
+	--            The Sequence  of visible Intervals  on the Edge.
+
+uses
+    Integer   from Standard,
+    ShortReal from Standard,
+    Real      from Standard,
+    Boolean   from Standard,
+    Intervals from Intrv
+    
+raises
+    OutOfRange
+
+is
+    Create returns EdgeStatus from HLRAlgo;
+    
+    Create(Start    : Real      from Standard;
+           TolStart : ShortReal from Standard;
+           End      : Real      from Standard;
+           TolEnd   : ShortReal from Standard)
+    returns EdgeStatus from HLRAlgo;
+	---Purpose: Creates a  new  EdgeStatus.  Default visible.  The
+	--          Edge is   bounded by the  interval  <Start>, <End>
+	--          with the tolerances <TolStart>, <TolEnd>.
+	
+    Initialize(me : in out;
+               Start    : Real      from Standard;
+               TolStart : ShortReal from Standard;
+               End      : Real      from Standard;
+               TolEnd   : ShortReal from Standard)
+	---Purpose: Initialize  an  EdgeStatus.  Default visible.  The
+	--          Edge is   bounded by the  interval  <Start>, <End>
+	--          with the tolerances <TolStart>, <TolEnd>.
+    is static;
+	
+    Bounds (me;Start    : out Real      from Standard;
+               TolStart : out ShortReal from Standard;
+               End      : out Real      from Standard;
+               TolEnd   : out ShortReal from Standard)
+    	---C++: inline
+    is static;
+    
+    NbVisiblePart(me) returns Integer from Standard
+    is static;
+    
+    VisiblePart(me; Index    :     Integer   from Standard;
+                    Start    : out Real      from Standard;
+                    TolStart : out ShortReal from Standard;
+                    End      : out Real      from Standard;
+                    TolEnd   : out ShortReal from Standard)
+    is static;
+    
+    Hide(me : in out; Start      : Real      from Standard;
+                      TolStart   : ShortReal from Standard;
+                      End        : Real      from Standard;
+                      TolEnd     : ShortReal from Standard;
+    	    	      OnFace     : Boolean   from Standard;
+                      OnBoundary : Boolean   from Standard) 
+	---Purpose: Hides  the  interval  <Start>,    <End>   with the
+	--          tolerances <TolStart>,  <TolEnd>. This interval is
+	--          subtracted from the visible  parts.  If the hidden
+	--          part is on ( or under ) the face the flag <OnFace>
+	--          is True ( or False ).  If the hidden  part is on (
+	--          or  inside  ) the boundary  of  the  face the flag
+	--          <OnBoundary> is True ( or False ).
+    is static;
+    
+    HideAll(me : in out)
+    	---C++: inline
+	---Purpose: Hide the whole Edge.
+    is static;
+
+    ShowAll(me : in out)
+    	---C++: inline
+	---Purpose: Show the whole Edge.
+    is static;
+
+    AllHidden(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    AllHidden(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    AllVisible(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    AllVisible(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+fields
+    myStart       : Real      from Standard;
+    myEnd         : Real      from Standard;
+    myTolStart    : ShortReal from Standard;
+    myTolEnd      : ShortReal from Standard;
+    myFlags       : Boolean   from Standard;
+    myVisibles    : Intervals from Intrv;
+
+end EdgeStatus;

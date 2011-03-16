@@ -1,0 +1,37 @@
+-- File:	BParab.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BParab  from GccInt  
+
+inherits Bisec from GccInt 
+
+     	---Purpose: Describes a parabola as a bisecting curve between two
+    	-- 2D geometric objects (such as lines, circles or points).
+
+uses Parab2d from gp,
+     IType  from GccInt
+
+is
+
+Create(Parab : Parab2d) returns mutable BParab;
+    	---Purpose: Constructs a bisecting curve whose geometry is the 2D parabola Parab.
+    
+Parabola(me) returns Parab2d from gp
+    is redefined;
+    	---Purpose: Returns a 2D parabola which is the geometry of this bisecting curve. 
+    
+ArcType(me) returns IType from GccInt
+    is static;
+    	---Purpose: Returns GccInt_Par, which is the type of any GccInt_BParab bisecting curve.
+
+fields
+
+    par : Parab2d from gp;
+    	---Purpose: The bisecting line.
+
+end BParab;    
+

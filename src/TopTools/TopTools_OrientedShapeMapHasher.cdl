@@ -1,0 +1,29 @@
+-- File:	TopTools_OrientedShapeMapHasher.cdl
+-- Created:	Mon Aug 30 16:10:24 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class OrientedShapeMapHasher from TopTools 
+
+uses
+    Shape from TopoDS
+
+is
+
+    HashCode(myclass; S : Shape from TopoDS; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	--
+	---C++: inline
+	
+    IsEqual(myclass; S1, S2 : Shape from TopoDS) returns Boolean;
+	---Purpose: Returns True when the two keys are equal. Two same
+	--          keys must have the same hashcode,  the contrary is
+	--          not necessary.
+	--          
+	---C++: inline
+	
+
+end OrientedShapeMapHasher;

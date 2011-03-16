@@ -1,0 +1,213 @@
+// File:	IntCurve_ExactIntersectionPoint.gxx
+// Created:	Wed Dec 15 16:18:55 1999
+// Author:	Atelier CAS2000
+//		<cas@cageox.paris1.matra-dtv.fr>
+
+
+#include <math_Vector.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
+#include <gp_Vec2d.hxx>
+
+
+
+//======================================================================
+//===   
+//======================================================================
+IntCurve_ExactIntersectionPoint::IntCurve_ExactIntersectionPoint(const TheCurve& C1,const TheCurve& C2,const Standard_Real Tol)
+    : done(Standard_False),
+      nbroots(0),
+      myTol(Tol*Tol),
+      FctDist(C1,C2),
+      ToleranceVector(1,2),
+      BInfVector(1,2),
+      BSupVector(1,2),
+      StartingPoint(1,2),
+      Root(1,2),
+      anErrorOccurred(Standard_False)
+    {
+      ToleranceVector.Value(1) = TheCurveTool::EpsX(C1);
+      ToleranceVector.Value(2) = TheCurveTool::EpsX(C2);
+    }
+  //----------------------------------------------------------------------
+void IntCurve_ExactIntersectionPoint::Perform( const IntCurve_ThePolygon2d& Poly1
+					      ,const IntCurve_ThePolygon2d& Poly2
+					      ,Standard_Integer&            NumSegOn1
+					      ,Standard_Integer&            NumSegOn2
+					      ,Standard_Real&               ParamOnSeg1
+					      ,Standard_Real&               ParamOnSeg2) {
+    //----------------------------------------------------------------------
+    //-- On prend comme bornes de recherches  : 
+    //--
+    //--   Segment      :      i-1        i           i+1        i+2      
+    //--
+    //--                  |---------|-----X-------|---------|----------|
+    //--                Inf                                Sup
+    //--                  
+    if(NumSegOn1 >= Poly1.NbSegments() && ParamOnSeg1==0.0) { 
+      NumSegOn1--; ParamOnSeg1 = 1.0;
+    }
+    if(NumSegOn2 >= Poly2.NbSegments() && ParamOnSeg2==0.0) { 
+      NumSegOn2--; ParamOnSeg2 = 1.0;
+    }
+    if(NumSegOn1 <=0) { 
+      NumSegOn1=1; ParamOnSeg1 = 0.0;
+    }
+    if(NumSegOn2 <=0) { 
+      NumSegOn2=1; ParamOnSeg2 = 0.0;
+    }
+    
+    StartingPoint.Value(1) = Poly1.ApproxParamOnCurve(NumSegOn1,ParamOnSeg1);
+    if(NumSegOn1<=2) BInfVector.Value(1)= Poly1.InfParameter(); 
+    else  BInfVector.Value(1)= Poly1.ApproxParamOnCurve(NumSegOn1-1,(Standard_Real)0.0); 
+    if(NumSegOn1 >= (Poly1.NbSegments() -2)) BSupVector.Value(1)= Poly1.SupParameter();
+    else BSupVector.Value(1)= Poly1.ApproxParamOnCurve(NumSegOn1+2,(Standard_Real)0.0);
+    
+    StartingPoint.Value(2) = Poly2.ApproxParamOnCurve(NumSegOn2,ParamOnSeg2);
+    if(NumSegOn2<=2) BInfVector.Value(2)= Poly2.InfParameter();
+    else BInfVector.Value(2)= Poly2.ApproxParamOnCurve(NumSegOn2-1,(Standard_Real)0.0);
+    if(NumSegOn2 >= (Poly2.NbSegments() -2)) BSupVector.Value(2)= Poly2.SupParameter();
+    else BSupVector.Value(2)= Poly2.ApproxParamOnCurve(NumSegOn2+2,(Standard_Real)0.0);
+    
+
+    IntCurve_ExactIntersectionPoint::MathPerform();
+    if(nbroots == 0) { 
+//      Standard_Real DeflectionOn1 = Poly1.DeflectionOverEstimation();
+      Poly1.DeflectionOverEstimation();
+//      Standard_Real DeflectionOn2 = Poly2.DeflectionOverEstimation();
+      Poly2.DeflectionOverEstimation();
+      // if(DeflectionOn2 > Poly1.BeginOfSeg(NumSegOn1).Distance(Poly1.EndOfSeg(NumSegOn1))) {
+	{
+	//-- On risque de donner des bornes sur la courbe 1 trop etroites. 
+	Standard_Integer diff=1;
+	Standard_Real AnBinfVector = BInfVector.Value(1);
+	Standard_Real AnBsupVector = BSupVector.Value(1);
+	//---------------- On elargit les bornes par la gauche --------------------
+	do { 
+	  diff++;
+	  if((NumSegOn1-diff)<=1) { 
+	    BInfVector.Value(1)= Poly1.InfParameter(); 
+	    diff=0;
+	  }
+	  else BInfVector.Value(1)= Poly1.ApproxParamOnCurve(NumSegOn1-diff,(Standard_Real)0.0); 
+	  IntCurve_ExactIntersectionPoint::MathPerform();
+	  //-- le 18 nov 97 
+	  if(diff>3) diff+=NumSegOn1/2;	  
+	}
+	while( nbroots==0 && diff!=0);
+	//---------------- On elargit les bornes par la droite --------------------	
+	if(nbroots==0) { 
+	  BInfVector.Value(1) = AnBinfVector;
+	  diff=1;
+	  do { 
+	    diff++;
+	    if((NumSegOn1+diff) >= (Poly1.NbSegments() -1)) { 
+	      BSupVector.Value(1)= Poly1.SupParameter();
+	      diff=0;
+	    }
+	    else BSupVector.Value(1)= Poly1.ApproxParamOnCurve(NumSegOn1+1+diff,(Standard_Real)0.0);
+	    IntCurve_ExactIntersectionPoint::MathPerform();
+	    //-- le 18 nov 97 
+	    if(diff>3) diff+=1+(Poly1.NbSegments()-NumSegOn1)/2;
+	  }
+	  while( nbroots==0 && diff!=0);
+	}
+	BSupVector.Value(1) = AnBsupVector;
+      }
+    
+      if(nbroots==0) { 
+	//-- On risque de donner des bornes sur la courbe 1 trop etroites. 
+	Standard_Integer diff=1;
+	Standard_Real AnBinfVector = BInfVector.Value(2);
+	Standard_Real AnBsupVector = BSupVector.Value(2);
+	//---------------- On elargit les bornes par la gauche --------------------
+	do { 
+	  diff++;
+	  if((NumSegOn2-diff)<=1) { 
+	    BInfVector.Value(2)= Poly2.InfParameter(); 
+	    diff=0;
+	  }
+	  else BInfVector.Value(2)= Poly2.ApproxParamOnCurve(NumSegOn2-diff,(Standard_Real)0.0); 
+	  IntCurve_ExactIntersectionPoint::MathPerform();
+	  //-- le 18 nov 97 
+	  if(diff>3) diff+=NumSegOn2/2;
+	}
+	while( nbroots==0 && diff!=0);
+	//---------------- On elargit les bornes par la droite --------------------	
+	if(nbroots==0) { 
+	  BInfVector.Value(2) = AnBinfVector;
+	  diff=1;
+	  do { 
+	    diff++;
+	    if((NumSegOn2+diff) >= (Poly2.NbSegments() -1)) { 
+	      BSupVector.Value(2)= Poly2.SupParameter();
+	      diff=0;
+	    }
+	    else BSupVector.Value(2)= Poly2.ApproxParamOnCurve(NumSegOn2+1+diff,(Standard_Real)0.0);
+	    IntCurve_ExactIntersectionPoint::MathPerform();
+	    //-- le 18 nov 97 
+	    if(diff>3) diff+=1+(Poly2.NbSegments()-NumSegOn2)/2;
+	  }
+	  while( nbroots==0 && diff!=0);
+	}
+	BSupVector.Value(2) = AnBsupVector;
+      }
+    }
+  }
+  //----------------------------------------------------------------------
+void IntCurve_ExactIntersectionPoint::Perform( const Standard_Real Uo
+	       ,const Standard_Real Vo
+	       ,const Standard_Real UInf
+	       ,const Standard_Real VInf
+	       ,const Standard_Real USup
+	       ,const Standard_Real VSup) { 
+    
+    done = Standard_True;
+    
+    BInfVector.Value(1) = UInf;
+    BInfVector.Value(2) = VInf;
+    BSupVector.Value(1) = USup;
+    BSupVector.Value(2) = VSup;
+    StartingPoint.Value(1) = Uo;
+    StartingPoint.Value(2) = Vo;
+    
+    IntCurve_ExactIntersectionPoint::MathPerform();
+    
+  }
+  //----------------------------------------------------------------------
+Standard_Integer IntCurve_ExactIntersectionPoint::NbRoots() const { return(nbroots); } 
+  //----------------------------------------------------------------------
+
+void IntCurve_ExactIntersectionPoint::Roots(Standard_Real& U,Standard_Real& V) {
+    U=Root.Value(1);
+    V=Root.Value(2); 
+  }
+  //----------------------------------------------------------------------
+
+void IntCurve_ExactIntersectionPoint::MathPerform(void) {
+    math_FunctionSetRoot Fct( FctDist
+			     ,StartingPoint
+			     ,ToleranceVector
+			     ,BInfVector
+			     ,BSupVector
+			     ,50);
+    
+    if(Fct.IsDone()) { 
+      Fct.Root(Root); nbroots = 1; 
+      math_Vector XY(1,2);
+      FctDist.Value(Root,XY);
+      Standard_Real dist2 = ((XY(1)*XY(1)+XY(2)*XY(2)));
+      if(dist2 > myTol) nbroots = 0;
+    }
+    else { 
+      anErrorOccurred = Standard_True;
+      nbroots = 0; 
+    }
+  }
+    
+//======================================================================
+
+Standard_Boolean IntCurve_ExactIntersectionPoint::AnErrorOccurred() const
+{
+  return anErrorOccurred;
+}

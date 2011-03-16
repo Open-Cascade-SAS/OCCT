@@ -1,0 +1,43 @@
+-- File:	Vrml_Cube.cdl
+-- Created:	Wed Dec 25 14:54:39 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Cube from Vrml 
+
+	---Purpose: defines a Cube node of VRML specifying geometry shapes.
+    	-- This  node  represents  a  cuboid aligned with  the coordinate  axes. 
+        -- By  default ,  the  cube  is  centred  at  (0,0,0) and  measures  2  units
+	-- in  each  dimension, from -1  to  +1. 
+    	-- A cube's width is its extent along its object-space X axis, its height is  
+    	-- its extent along the object-space Y axis, and its depth is its extent along its
+	-- object-space Z axis. 
+is
+
+    Create ( aWidth  : Real from Standard = 2;
+    	     aHeight : Real from Standard = 2;
+	     aDepth  : Real from Standard = 2 )
+        returns Cube from Vrml;
+    
+    SetWidth ( me : in out; aWidth : Real from Standard );
+    Width ( me  )  returns Real  from  Standard;
+    
+    SetHeight ( me : in out; aHeight : Real from Standard );
+    Height ( me  )  returns Real  from  Standard;
+    
+    SetDepth ( me : in out; aDepth : Real from Standard );
+    Depth ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+
+    myWidth  : Real from Standard;  -- Size in x dimension
+    myHeight : Real from Standard;  -- Size in y dimension
+    myDepth  : Real from Standard;  -- Size in z dimension
+
+end Cube;
+

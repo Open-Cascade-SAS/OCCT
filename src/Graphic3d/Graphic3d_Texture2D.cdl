@@ -1,0 +1,57 @@
+-- File:	Graphic3d_Texture2D.cdl
+-- Created:	Mon Jul 28 10:35:29 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+-- Modified :   GG 10/01/2000 IMP 
+--              Add NumberOfTextures() and TextureName() methods
+--		Add Name() and IsRepeat() method
+---Copyright:	 Matra Datavision 1997
+
+deferred  class  Texture2D  from  Graphic3d 
+    
+inherits  TextureMap  from  Graphic3d  
+
+    ---Purpose: This abstract class for managing 2D textures
+
+uses  
+    TypeOfTexture  from  Graphic3d,
+    NameOfTexture2D  from  Graphic3d, 
+    StructureManager from  Graphic3d 
+
+    
+raises
+    OutOfRange from Standard
+ 
+is 
+    Initialize(SM  :  StructureManager  from  Graphic3d;
+    	       aFileName  :  CString  from  Standard; 
+    	       aType      :  TypeOfTexture  from  Graphic3d);
+	        
+    Initialize(SM  :  StructureManager  from  Graphic3d; 
+	       aName  :  NameOfTexture2D  from  Graphic3d;
+    	       aType :  TypeOfTexture  from  Graphic3d); 
+
+    Name(me) returns NameOfTexture2D from Graphic3d;
+    ---Purpose:
+    -- Returns the name of the predefined textures or NOT_2D_UNKNOWN
+    -- when the name is given as a filename.
+    ---Level: Public
+
+    NumberOfTextures(myclass) returns Integer from Standard;
+    ---Purpose:
+    -- Returns the number of predefined textures.
+    ---Level: Public
+
+    TextureName(myclass; aRank: Integer from Standard)
+        returns CString from Standard
+        raises OutOfRange from Standard;
+    ---Purpose:
+    -- Returns the name of the predefined texture of rank <aRank>
+    ---Trigger: when <aRank> is < 1 or > NumberOfTextures.
+    ---Level: Public
+
+fields
+    myName: NameOfTexture2D from Graphic3d;
+
+end  Texture2D; 
+

@@ -1,0 +1,59 @@
+-- File:	DrawableEdgeTool.cdl
+-- Created:	Thu Aug 27 16:28:55 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class DrawableEdgeTool from HLRTest inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses
+    Boolean  from Standard,
+    Integer  from Standard,
+    Display  from Draw,
+    Algo     from HLRBRep,
+    Data     from HLRBRep,
+    EdgeData from HLRBRep
+
+is
+    Create(Alg     : Algo    from HLRBRep;
+           Visible : Boolean from Standard;
+           IsoLine : Boolean from Standard;
+           Rg1Line : Boolean from Standard;
+           RgNLine : Boolean from Standard;
+           ViewId  : Integer from Standard)
+    returns mutable DrawableEdgeTool from HLRTest;
+    
+    DrawOn(me; D : in out Display from Draw);
+    
+    InternalDraw(me; D   :in out Display from Draw;
+                     typ :       Integer from Standard)
+    is static private;
+    
+    DrawFace(me; D      : in out Display from Draw;
+                 typ    :        Integer from Standard;
+                 nCB    :        Integer from Standard;
+                 iface  :        Integer from Standard;
+		 e2,iCB : in out Integer from Standard;
+                 DS     : in out Data    from HLRBRep)
+    is static private;
+    
+    DrawEdge(me; D      : in out Display  from Draw;
+                 inFace :        Boolean  from Standard;
+                 typ    :        Integer  from Standard;
+                 nCB    :        Integer  from Standard;
+                 ie     :        Integer  from Standard;
+		 e2,iCB : in out Integer  from Standard;
+                 ed     : in out EdgeData from HLRBRep)
+    is static private;
+    
+fields
+    myAlgo    : Algo    from HLRBRep;
+    myVisible : Boolean from Standard;
+    myIsoLine : Boolean from Standard;
+    myRg1Line : Boolean from Standard;
+    myRgNLine : Boolean from Standard;
+    myViewId  : Integer from Standard;
+
+end DrawableEdgeTool;

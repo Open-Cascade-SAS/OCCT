@@ -1,0 +1,32 @@
+-- File:	TDF_RemovalDelta.cdl
+--      	--------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Oct 10 1997	Creation
+
+
+deferred class DeltaOnRemoval from TDF
+    inherits AttributeDelta from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a REMOVAL action.
+	--          
+	--          Applying this AttributeDelta means ADDING its
+	--          attribute.
+
+uses
+
+    Attribute from TDF
+
+-- raises
+
+is
+
+    Initialize(anAtt : Attribute from TDF);
+	---Purpose: Initializes a TDF_DeltaOnRemoval.
+
+end DeltaOnRemoval;

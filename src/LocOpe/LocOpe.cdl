@@ -1,0 +1,139 @@
+-- File:	LocOpe.cdl
+-- Created:	Tue Apr 25 09:10:13 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+package LocOpe
+
+	---Purpose: Provides  tools to implement local     topological
+	--          operations on a shape.
+
+uses MMgt,
+     StdFail,
+     TCollection,
+     TColStd,
+     gp, 
+     Geom,
+     TColGeom,
+     TColgp,
+
+     TopAbs,
+     TopoDS,
+     TopExp,
+     TopTools,
+     BRepFill,
+     BRepAlgo,
+     BRepSweep, 
+     BOP,
+     TopOpeBRepDS
+--     TopOpeBRepBuild
+
+is
+
+    class Builder;
+
+    class SplitShape;
+
+    deferred class ProjectedWires;      -- inherits TShared from MMgt
+    
+    class WiresOnShape;                 -- inherits ProjectedWires from LocOpe
+
+
+    class Spliter;
+
+    class Generator;
+
+    deferred class GeneratedShape;      -- inherits TShared from MMgt
+    
+    class GluedShape;                   -- inherits GeneratedShape from LocOpe
+    class Prism;
+    class Revol;
+
+    class Pipe;
+
+    class DPrism;
+
+    class LinearForm;
+
+    class RevolutionForm;
+
+    class Gluer;
+
+    class FindEdges;
+
+    class FindEdgesInFace;
+
+    class DataMapOfShapePnt instantiates DataMap from TCollection
+    	(Shape          from TopoDS,
+	 Pnt            from gp,
+	 ShapeMapHasher from TopTools);
+
+    class PntFace;
+    
+    class CurveShapeIntersector;
+    
+    class CSIntersector;
+    
+
+    class BuildShape;
+
+    class SplitDrafts;
+
+
+    class SequenceOfPntFace instantiates Sequence from TCollection
+    	(PntFace from LocOpe);
+
+    class SequenceOfLin instantiates Sequence from TCollection
+    	(Lin from gp);
+
+    class SequenceOfCirc instantiates Sequence from TCollection
+    	(Circ from gp);
+
+    private class HBuilder;    -- inherits HBuilder from TopOpeBRepBuild
+
+    private class BuildWires;   -- used in LocOpe_Spliter
+
+    enumeration Operation is
+    	FUSE,
+	CUT,
+	INVALID
+    end Operation;
+
+
+    Closed(W: Wire from TopoDS; OnF: Face from TopoDS)
+	---Purpose: Returns Standard_True  when the wire <W> is closed
+	--          on the face <OnF>.
+    	returns Boolean from Standard;
+    
+
+    Closed(E: Edge from TopoDS; OnF: Face from TopoDS)
+	---Purpose: Returns Standard_True  when the edge <E> is closed
+	--          on the face <OnF>.
+    	returns Boolean from Standard;
+
+    TgtFaces(E : Edge from TopoDS; 
+    	     F1: Face from TopoDS;
+    	     F2: Face from TopoDS)
+	---Purpose: Returns Standard_True  when the faces are tangent
+    	returns Boolean from Standard;
+
+
+    
+--    IsInside(F1: Face from TopoDS; F2: Face from TopoDS)
+-- 	---Purpose: Returns Standard_True when  the face F1 is in  the
+-- 	--          F2 .
+--    	returns Boolean from Standard;
+   
+
+    SampleEdges(S : Shape from TopoDS;
+    	        Pt: in out SequenceOfPnt from TColgp);
+
+
+end LocOpe;
+
+
+
+
+

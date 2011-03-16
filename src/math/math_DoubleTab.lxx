@@ -1,0 +1,22 @@
+// File math_DoubleTab.lxx
+// Lpa, le 7/02/92
+
+#include <math_Memory.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline Item& math_DoubleTab::Value (const Standard_Integer RowIndex,
+				    const Standard_Integer ColIndex) const
+{
+  return ((Item**)Addr)[RowIndex][ColIndex];
+}
+
+
+
+inline void math_DoubleTab::Copy(math_DoubleTab& Other)const
+{
+  memmove((void*)(& Other.Value(Other.LowR,Other.LowC)),
+	  (void*) (& Value(LowR,LowC)),
+	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Item)));
+}
+
+

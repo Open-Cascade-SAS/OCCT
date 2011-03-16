@@ -1,0 +1,37 @@
+-- File:	BinMFunction_GraphNodeDriver.cdl
+-- Created:	Thu May 11 14:45:49 2008
+-- Author:	Vlad ROMASHKO <vladislav.romashko@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2008
+
+class GraphNodeDriver from BinMFunction inherits ADriver from BinMDF
+
+    ---Purpose:  GraphNode attribute Driver.
+
+uses
+
+    MessageDriver    from CDM,
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF
+
+is
+
+    Create (theMessageDriver:MessageDriver from CDM)
+    returns mutable GraphNodeDriver from BinMFunction;
+
+    NewEmpty (me)  
+    returns mutable Attribute from TDF
+    is redefined;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+    returns Boolean from Standard is redefined;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt)
+    is redefined;
+
+end GraphNodeDriver;

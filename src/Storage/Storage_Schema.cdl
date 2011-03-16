@@ -1,0 +1,300 @@
+-- File:	Storage_Schema.cdl
+-- Created:	Tue Dec  3 10:05:16 1996
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class Schema from Storage inherits TShared from MMgt
+    	---Purpose:
+    	-- Root class for basic storage/retrieval algorithms.
+    	-- A Storage_Schema object processes:
+    	-- -   writing of a set of persistent data into a
+    	--   container (store mechanism),
+    	-- -   reading of a container to extract all the
+    	--   contained persistent data (retrieve mechanism).
+    	-- A Storage_Schema object is based on the data
+    	-- schema for the persistent data of the application, i.e.:
+    	-- -   the list of all persistent objects which may be
+    	--   known by the application,
+    	-- -   the organization of their data; a data schema
+    	--   knows how to browse each persistent object it contains.
+    	--   During the store or retrieve operation, only
+    	-- persistent objects known from the data schema
+    	-- can be processed; they are then stored or
+    	-- retrieved according to their description in the schema.
+    	-- A data schema is specific to the object classes to
+    	-- be read or written. Tools dedicated to the
+    	-- environment in use allow a description of the
+    	-- application persistent data structure.
+    	-- Storage_Schema algorithms are called basic
+    	-- because they do not support external references
+    	-- between containers.
+        
+uses SequenceOfAsciiString from TColStd,
+     HSequenceOfAsciiString from TColStd,
+     AsciiString from TCollection,
+     BaseDriver from Storage,
+     Data from Storage,
+     HeaderData from Storage,
+     MapOfCallBack from Storage,
+     CallBack from Storage,
+     CallBack from Storage,
+     RootData from Storage,
+     TypeData from Storage,
+     HArrayOfSchema from Storage,
+     SolveMode from Storage
+
+raises StreamFormatError from Storage
+       
+is 
+ 
+    Create returns Schema from Storage;
+    	---Purpose: Builds a storage/retrieval algorithm based on a
+    	-- given data schema.
+    	-- Example
+    	--   For example, if ShapeSchema is the class
+    	-- inheriting from Storage_Schema and containing
+    	-- the description of your application data schema,
+    	-- you create a storage/retrieval algorithm as follows:
+    	-- Handle(ShapeSchema) s = new
+    	-- ShapeSchema;
+    -- -------- --
+    -- USER API -- --------------------------------------------------------------
+    -- -------- --
+
+    SetVersion(me : mutable; aVersion : AsciiString from TCollection);
+    ---Purpose: returns version of the schema
+  
+    Version(me) returns AsciiString from TCollection;
+        ---Purpose: returns the version of the schema
+
+    SetName(me : mutable; aSchemaName : AsciiString from TCollection);
+        ---Purpose: set the schema's name
+
+    Name(me) returns AsciiString from TCollection;
+        ---Purpose: returns the schema's name
+
+    Write(me; s : in out BaseDriver from Storage; 
+              aData : mutable Data from Storage);
+        ---Purpose: Writes the data aggregated in aData into the
+    	-- container defined by the driver s. The storage
+    	-- operation is performed according to the data
+    	-- schema with which this algorithm is working.
+    	-- Note: aData may aggregate several root objects
+    	-- to be stored together.
+
+    Read(me; s : in out BaseDriver from Storage) 
+        returns mutable Data from Storage;
+        ---Purpose:  Returns the data read from the container defined
+    	-- by the driver s. The retrieval operation is
+    	-- performed according to the data schema with
+    	-- which this algorithm is working.
+    	-- These data are aggregated in a Storage_Data
+    	-- object which may be browsed in order to extract
+    	-- the root objects from the container.
+
+    ReadHeaderSection(me; s : in out BaseDriver from Storage)
+        returns mutable HeaderData from Storage;
+        ---Purpose: read the header part of the stream
+        --  Arguments:
+        --   s: driver to read
+
+    ReadTypeSection(me; s : in out BaseDriver from Storage) 
+        returns mutable TypeData from Storage;
+        ---Purpose: fill the TypeData with the  names of the type used
+        --          in a stream
+        --  Arguments:
+        --   s: driver to read
+
+    ReadRootSection(me; s : in out BaseDriver from Storage) 
+        returns mutable RootData from Storage;
+        ---Purpose: read root part of the file
+        --  Arguments:
+        --   s: driver to read
+
+    SchemaKnownTypes(me)
+    returns SequenceOfAsciiString from TColStd is virtual;
+        ---C++: return const &
+        ---Purpose: returns the known types of a schema
+
+    HasUnknownType(me; aDriver         : in out BaseDriver from Storage; 
+                       theUnknownTypes : out SequenceOfAsciiString from TColStd) 
+        returns Boolean from Standard;
+        ---Purpose: indicates whether  the  are  types  in  the driver
+        --          which are not known from  the schema and for which
+        --          no callbacks have been set. The unknown types can
+        --          be read in <theUnknownTypes>.
+
+    GetAllSchemaKnownTypes(me)
+        returns HSequenceOfAsciiString from TColStd;
+        ---Purpose: returns the all known types  of a schema and their
+        --          nested schemes.
+
+    SetNestedSchemas(me : mutable; theSchemas : HArrayOfSchema from Storage);
+
+    ClearNestedSchemas(me : mutable);
+
+    NestedSchemas(me) returns HArrayOfSchema from Storage;
+
+    ICreationDate(myclass) returns AsciiString from TCollection;
+        ---Purpose: return a current date string 
+	
+    CheckTypeMigration(myclass; theTypeName : AsciiString from TCollection; 
+    	    	    	    	theNewName  : in out AsciiString from TCollection) 
+        returns Boolean from Standard;		 
+	---Purpose: returns True if theType migration is identified 
+	
+        -- --------------------------- --
+        -- USER API : CALLBACK SUPPORT -- 
+        -- --------------------------- -- 
+
+        ---Purpose: the callback support provides a way to read a file
+        --          with a incomplete schema.
+        --          ex. : A file contains 3 types a,b and c.
+        --                The  application's  schema  contains  only 2
+        --                type a and b. If you try to read the file in
+        --                the application, you  will  have an error.To
+        --                bypass this  problem  you  can  give to your
+        --                application's schema  a  callback  used when
+        --                the schema dosent  know  how  to handle this
+        --                type.
+        ---Warning: : the callback  can  only  be used with persistent
+        --          types (not with  storable  types). the constructor
+        --          function  can  return  a   null  handle  the  read
+        --          function can be empty
+
+    AddReadUnknownTypeCallBack(me : mutable; 
+                               aTypeName : AsciiString from TCollection; 
+                               aCallBack : CallBack from Storage);
+        ---Purpose: add two functions to the callback list
+
+    RemoveReadUnknownTypeCallBack(me : mutable; 
+                                  aTypeName : AsciiString from TCollection);
+        ---Purpose: remove a callback for a type
+
+    InstalledCallBackList(me)
+    	returns HSequenceOfAsciiString from TColStd;
+        ---Purpose: returns  a  list  of   type  name  with  installed
+        --          callback.
+
+    ClearCallBackList(me : mutable);
+        ---Purpose: clear all callback from schema instance.
+
+    UseDefaultCallBack(me : mutable);
+        ---Purpose: install  a  callback  for  all  unknown  type. the
+        --          objects with unknown types  will be skipped. (look
+        --          SkipObject method in BaseDriver)
+    
+    DontUseDefaultCallBack(me : mutable);
+        ---Purpose: tells schema to uninstall the default callback.
+
+    IsUsingDefaultCallBack(me) returns Boolean from Standard;
+        ---Purpose: ask if the schema is using the default callback.
+    
+    SetDefaultCallBack(me : mutable; f : CallBack from Storage);
+        ---Purpose: overload the  default  function  for build.(use to
+        --          set an  error  message  or  skip  an  object while
+        --          reading an unknown type).
+
+    ResetDefaultCallBack(me : mutable);      
+        ---Purpose: reset  the  default  function  defined  by Storage
+        --          package.
+
+    DefaultCallBack(me) returns CallBack from Storage;
+        ---Purpose: returns   the   read   function   used   when  the
+        --          UseDefaultCallBack() is set.
+
+    -- ---------------- --
+    -- INTERNAL METHODS -- 
+    -- ---------------- --
+
+    SetNested(me : mutable) returns Boolean from Standard is private;
+    IsNested(me) returns Boolean from Standard is protected;
+    UnsetNested(me : mutable) returns Boolean from Standard is private;
+
+    ResolveUnknownType(me; aTypeName : AsciiString from TCollection;
+                           aPers : Persistent from Standard; 
+                           aMode : SolveMode from Storage)
+        returns CallBack from Storage is protected;
+
+    CallBackSelection(me; tName : AsciiString from TCollection)
+    returns CallBack from Storage is virtual;
+        ---Level: Internal
+
+    AddTypeSelection(me; sp : Persistent from Standard)
+    returns CallBack from Storage is virtual;
+        ---Level: Internal
+
+    HasTypeBinding(me; aTypeName : AsciiString from TCollection)
+        returns Boolean from Standard is protected;
+        ---Level: Internal
+        ---C++: inline
+
+    BindType(me; aTypeName : AsciiString from TCollection; 
+                 aCallBack : CallBack from Storage) is protected;
+        ---Level: Internal
+
+    TypeBinding(me; aTypeName :  AsciiString from TCollection)
+        returns CallBack from Storage is protected;
+        ---Level: Internal
+
+    WritePersistentObjectHeader(me : mutable; 
+                                sp : Persistent; 
+                                s : in out BaseDriver from Storage);
+        ---C++: inline
+        ---Level: Internal
+
+    ReadPersistentObjectHeader(me : mutable; s : in out BaseDriver from Storage);
+        ---C++: inline
+        ---Level: Internal
+
+    WritePersistentReference(me : mutable; sp : Persistent; 
+                                           s : in out BaseDriver from Storage);
+        ---C++: inline
+    ReadPersistentReference(me : mutable; sp : in out Persistent;
+                                          s : in out BaseDriver from Storage);
+        ---Level: Internal
+
+    AddPersistent(me; sp : Persistent; tName : CString) returns Boolean;
+        ---Level: Internal
+
+    PersistentToAdd(me; sp : Persistent) returns Boolean;
+        ---Level: Internal
+
+    Clear(me) is private;
+        ---Level: Internal
+
+    IReadHeaderSection(me; s : in out BaseDriver from Storage;
+                           iData : mutable HeaderData from Storage) returns Boolean 
+        raises StreamFormatError is private;
+        ---Level: Internal
+
+    IReadTypeSection(me; s : in out BaseDriver from Storage;
+                         tData : mutable TypeData from Storage) returns Boolean
+        raises StreamFormatError is private;
+        ---Level: Internal
+
+    IReadRootSection(me; s : in out BaseDriver from Storage; 
+                         rData : mutable RootData from Storage) returns Boolean
+        raises StreamFormatError is private;
+        ---Level: Internal
+
+    ISetCurrentData(myclass; dData : mutable Data from Storage) is private;
+        ---Level: Internal
+
+    ICurrentData(myclass) returns mutable Data from Storage is private;
+        ---Level: Internal
+        ---C++: return &
+
+fields
+
+    myCallBack           : MapOfCallBack from Storage;
+    myCallBackState      : Boolean from Standard;
+    myDefaultCallBack    : CallBack from Storage;
+
+    myName               : AsciiString from TCollection;
+    myVersion            : AsciiString from TCollection;
+    myArrayOfSchema      : HArrayOfSchema from Storage;
+    myNestedState        : Boolean from Standard;
+
+end;

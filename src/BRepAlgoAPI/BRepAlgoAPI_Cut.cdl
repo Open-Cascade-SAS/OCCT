@@ -1,0 +1,36 @@
+-- File:	BRepAlgoAPI_Cut.cdl
+-- Created:	Thu Oct 14 18:27:02 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Cut from BRepAlgoAPI inherits BooleanOperation from BRepAlgoAPI
+	---Purpose:  The class Cut provides a Boolean
+    	-- cut operation on a pair of arguments (Boolean Subtraction).
+    	-- The class Cut provides a framework for:
+    	--   -      Defining the construction of a cut shape
+    	--   -      Implementing the building algorithm
+    	--   -      Consulting the result
+
+uses
+    Shape from TopoDS,
+    DSFiller from BOPTools, 
+    Operation from BOP
+
+is
+    Create (S1,S2 : Shape from TopoDS)  
+    	returns Cut from BRepAlgoAPI;  
+	---Purpose: Shape aS2 cuts shape aS1. The
+    	-- resulting shape is a new shape produced by the cut operation.
+	
+    Create (S1,S2 : Shape from TopoDS; 
+    	    aDSF  : DSFiller  from BOPTools; 
+    	    bFWD  : Boolean from Standard=Standard_True)  
+    	returns Cut from BRepAlgoAPI;	 
+    	--- Purpose: Constructs a new shape cut from
+    	-- shape aS1 by shape aS2 using aDSFiller (see
+    	-- BRepAlgoAPI_BooleanOperation Constructor).
+        
+end Cut;

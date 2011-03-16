@@ -1,0 +1,32 @@
+-- File:	math_CompareOfValueAndWeight.cdl
+-- Created:	Tue Dec 20 13:24:41 2005
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox>
+---Copyright:	 Matra Datavision 2005
+
+class CompareOfValueAndWeight from math 
+
+uses 
+
+    ValueAndWeight from math         
+
+is 
+    Create; 
+     
+    IsLower (me; Left, Right: ValueAndWeight)
+	---Level: Public
+	---Purpose: Returns True if <Left.Value()> is lower than <Right.Value()>.
+    returns Boolean from Standard;
+
+    IsGreater (me; Left, Right: ValueAndWeight)
+	---Level: Public
+	---Purpose: Returns True if <Left.Value()> is greater than <Right.Value()>.
+    returns Boolean from Standard;
+
+    IsEqual(me; Left, Right: ValueAndWeight)
+	---Level: Public
+	---Purpose: returns True when <Right> and <Left> are equal.
+    returns Boolean from Standard;
+
+end;
+    

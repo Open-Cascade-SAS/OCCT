@@ -1,0 +1,56 @@
+-- File:	PrefKernel.cdl
+-- Created:	Thu Apr 20 17:23:58 1995
+-- Author:	Tony GEORGIADES
+--		<tge@kikox>
+--		Modified Tue Sep 19 1995 by Jean-Louis Frenkel
+--		Modified Tue Jan 19 1999 by Louis Dusuzeau
+---Copyright:	 Matra Datavision 1995
+
+package Resource
+    ---Purpose: Resources management.
+    --          A RESOURCE is a parameter saved on a file and used to
+    --          initialize a variable.
+
+uses
+    TCollection,MMgt,SortTools,TColStd
+is 
+
+   enumeration FormatType is     
+    	SJIS,
+	EUC,
+	ANSI,
+	GB
+   end FormatType ;
+    	---Purpose:
+    	-- List of non ASCII format types which may be
+    	-- converted into the Unicode 16 bits format type.
+    	-- Use the functions provided by the
+    	-- Resource_Unicode class to convert a string
+    	-- from one of these non ASCII format to Unicode, and vice versa.
+
+   class DataMapOfAsciiStringAsciiString instantiates
+    	 DataMap from TCollection(AsciiString from TCollection,
+	    	    	    	 AsciiString from TCollection,
+	    	    	    	 AsciiString from TCollection) ;
+
+   class DataMapOfAsciiStringExtendedString instantiates
+    	 DataMap from TCollection(AsciiString from TCollection,
+	    	    	    	  ExtendedString from TCollection,
+	    	    	    	  AsciiString from TCollection) ;
+	 
+   class QuickSortOfArray1 instantiates
+    	 QuickSort from SortTools(AsciiString from TCollection,
+    	    	    	    	  Array1OfAsciiString from TColStd,
+	    	    	    	  LexicalCompare from Resource) ;
+				  
+---Class:
+   class LexicalCompare ;
+   
+   class Manager;
+   ---Purpose: Defines a resource structure and its management methods.
+
+   class Unicode;
+
+   exception NoSuchResource inherits NoSuchObject from Standard;
+
+end Resource;

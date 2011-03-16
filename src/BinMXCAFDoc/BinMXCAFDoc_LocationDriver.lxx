@@ -1,0 +1,16 @@
+// File:	BinMXCAFDoc_LocationDriver.lxx
+// Created:	Tue Feb  8 14:33:30 2011
+// Author:	Oleg AGASHIN
+//		<oan@opencascade.com>
+
+//=======================================================================
+//function : SetSharedLocations
+//purpose  : 
+//=======================================================================
+inline void BinMXCAFDoc_LocationDriver::SetSharedLocations(const BinTools_LocationSetPtr& theLocations)
+{ 
+  if( myLocations != theLocations )
+  {
+    myLocations = theLocations;
+  }
+}

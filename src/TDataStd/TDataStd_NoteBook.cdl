@@ -1,0 +1,81 @@
+-- File:	TDataStd_NoteBook.cdl
+-- Created:	Tue Jul 29 14:32:05 1997
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1997
+
+
+class NoteBook from TDataStd inherits Attribute from TDF
+
+    	---Purpose: NoteBook Object attribute
+
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     Real            from TDataStd,
+     Integer         from TDataStd,
+     GUID            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF
+
+is  
+
+    ---Purpose: class methods
+    --          =============
+    
+    Find (myclass; current : Label from TDF; N : in out NoteBook from TDataStd)
+    ---Purpose: try to retrieve a NoteBook attribute at <current> label
+    --           or in  fathers  label of  <current>. Returns True  if
+    --          found and set <N>.
+    returns Boolean from Standard;
+    
+    New (myclass; label : Label from TDF)   
+    ---Purpose:  Create  an  enpty   NoteBook attribute,  located  at
+    --          <label>. Raises if <label> has attribute
+    returns NoteBook from TDataStd;
+    
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+    ---Purpose: NoteBook methods
+    --          ===============
+
+    Create
+    returns mutable NoteBook from TDataStd; 
+    
+
+    Append (me : mutable; value  : Real    from Standard; 
+                          isExported : Boolean from Standard = Standard_False)    
+    ---Purpose:  Tool to Create  an  Integer  attribute from  <value>,
+    --          Insert it in   a  new son  label   of <me>. The   Real
+    --          attribute is returned.
+    returns Real from TDataStd;
+    
+    Append (me : mutable; value  : Integer from Standard; 
+                          isExported : Boolean from Standard = Standard_False)    
+    ---Purpose: Tool to Create  an Real attribute from <value>, Insert
+    --          it  in a new son label  of <me>. The Integer attribute
+    --          is returned.
+    returns Integer from TDataStd;
+
+    
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+    
+end NoteBook;

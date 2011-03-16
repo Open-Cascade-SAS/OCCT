@@ -1,0 +1,133 @@
+-- File:	BRepFilletAPI_LocalOperation.cdl
+-- Created:	Thu Jan 29 14:05:20 1998
+-- Author:	Laurent BOURESCHE
+--		<lbo@pomalox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+deferred class LocalOperation from BRepFilletAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Construction of fillets on the edges of a Shell.
+
+uses
+
+    Shape             from TopoDS,
+    Edge              from TopoDS,
+    Vertex            from TopoDS,
+    ListOfShape       from TopTools,
+    SecHArray1        from ChFiDS
+    
+is
+
+    ------------------------------------------------------------------
+    --- Add d contour 
+    ------------------------------------------------------------------
+
+    Add(me : in out; E : Edge from TopoDS) 
+   	---Purpose: Adds a  contour in  the  builder  (builds a
+    	--          contour  of tangent edges).
+    	---Level: Public
+    is deferred;
+
+    ResetContour(me     : in out; 
+                 IC     : Integer from Standard) 
+   	---Purpose: Reset the contour of index IC, there is nomore 
+   	--          information in the contour.
+    	---Level: Public
+    is deferred;
+
+    NbContours(me) 
+	---Purpose: Number of contours. 
+	---Level: Advanced
+    returns Integer from Standard is deferred;
+
+    Contour(me; E : Edge from TopoDS) 
+        ---Purpose: Returns the index of  the  contour containing the edge
+        --          E, returns 0 if E doesn't belong to any contour.
+	---Level: Public
+    returns Integer from Standard is deferred;
+
+    NbEdges(me; I : Integer from Standard) 
+        ---Purpose: Number of Edges in the contour I. 
+        --          
+	---Level: Advanced
+    returns Integer from Standard 	
+    is deferred;
+    
+    Edge(me; I,J : Integer from Standard) 
+        ---Purpose: Returns the Edge J in the contour I. 
+        --          
+        ---C++: return const &
+	---Level: Advanced
+    returns Edge from TopoDS 
+    is deferred;
+
+    Remove(me : in out; E : Edge from TopoDS) 
+        ---Purpose: remove the contour containing the Edge E.
+	---Level: Advanced
+    is deferred;
+
+    Length(me; IC : Integer from Standard) returns Real from Standard
+    ---Purpose: returns the length the contour of index IC.
+    is deferred; 
+
+    FirstVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the first Vertex of the contour of index IC.
+	---Level: Advanced
+    is deferred;
+
+    LastVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the last Vertex of the contour of index IC.
+	---Level: Advanced
+    is deferred;
+
+    Abscissa(me; 
+    	     IC : Integer from Standard;
+             V  : Vertex  from TopoDS) 
+    returns Real from Standard
+    ---Purpose: returns the abscissa of the vertex V on
+    --          the contour of index IC.
+    is deferred;
+
+    RelativeAbscissa(me; 
+    	    	     IC : Integer from Standard;
+                     V  : Vertex  from TopoDS) 
+    returns Real from Standard
+    ---Purpose: returns the relative abscissa([0.,1.]) of the 
+    --          vertex V on the contour of index IC.
+    is deferred;
+
+    ClosedAndTangent(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+    ---Purpose: returns true if the contour of index IC is closed
+    --          an tangent.
+    is deferred; 
+
+    Closed(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+    ---Purpose: returns true if the contour of index IC is closed
+    is deferred; 
+
+    Reset(me : in out)
+    ---Purpose: Reset all the fields updated   by Build operation  and
+    --          leave the  algorithm in  the  same state  than  before
+    --          build    call.  It   allows   contours    and   radius
+    --          modifications  to build the result another time.
+    ---Level: Advanced
+    is deferred;
+ 
+    -------------------------------
+    ---Methods for quick simulation
+    -------------------------------
+
+    Simulate(me : in out; IC : Integer from Standard)
+    is deferred;
+
+    NbSurf(me; IC : Integer from Standard)
+    returns Integer from Standard
+    is deferred;
+	 
+    Sect(me; IC, IS : Integer from Standard)
+    returns mutable SecHArray1 from ChFiDS
+    is deferred;
+
+end LocalOperation;

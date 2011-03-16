@@ -1,0 +1,43 @@
+-- File:	ShapeUpgrade_SplitCurve3d.cdl
+-- Created:	Thu Mar 12 11:14:13 1998
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class SplitCurve3d from ShapeUpgrade inherits SplitCurve from ShapeUpgrade 
+
+    ---Purpose: Splits a 3d curve with a criterion.
+    
+uses     
+    Curve          from Geom,
+    HArray1OfCurve from TColGeom
+   
+is 
+ 
+    Create returns mutable SplitCurve3d from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+
+    Init (me: mutable; C: Curve from  Geom);
+       	---Purpose: Initializes with curve with its first and last parameters.
+	
+    Init (me: mutable; C          : Curve from  Geom;
+    	    	       First, Last: Real);
+       	---Purpose: Initializes with curve with its parameters.
+	
+    Build (me: mutable; Segment: Boolean) is redefined;
+       ---Purpose: If Segment is True, the result is composed with
+       --  segments of the curve bounded by the SplitValues.  If
+       --  Segment is False, the result is composed with trimmed
+       --  Curves all based on the same complete curve.
+       --  
+    
+    GetCurves(me) returns  HArray1OfCurve  from  TColGeom;
+       ---C++: return const &
+
+fields 
+ 
+    myCurve          : Curve  from  Geom is protected;
+    myResultingCurves: HArray1OfCurve  from TColGeom is protected;
+    
+end;
+    

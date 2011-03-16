@@ -1,0 +1,56 @@
+-- File:	BRepBuilderAPI_NurbsConvert.cdl
+-- Created:	Fri Dec  9 09:02:17 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+class NurbsConvert from BRepBuilderAPI inherits ModifyShape from BRepBuilderAPI
+
+	---Purpose: Conversion of the complete geometry of a shape into
+    	-- NURBS geometry. For example, all curves supporting
+    	-- edges of the basis shape are converted into BSpline
+    	-- curves, and all surfaces supporting its faces are
+    	-- converted into BSpline surfaces.
+
+uses 
+
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    ShapeModification from BRepBuilderAPI,
+    ListOfShape       from TopTools
+     
+is
+
+    Create returns NurbsConvert from BRepBuilderAPI;
+    	---Purpose: Constructs a framework for converting the geometry of a
+    	-- shape into NURBS geometry. Use the function Perform
+    	-- to define the shape to convert.
+    Create(S: Shape from TopoDS; 
+           Copy: Boolean from Standard  =  Standard_False)
+
+    	returns NurbsConvert from BRepBuilderAPI;
+	---Purpose:  Builds a new shape by converting the geometry of the
+    	-- shape S into NURBS geometry. Specifically, all curves
+    	-- supporting edges of S are converted into BSpline
+    	-- curves, and all surfaces supporting its faces are
+    	-- converted into BSpline surfaces.
+    	-- Use the function Shape to access the new shape.
+    	-- Note: the constructed framework can be reused to
+    	-- convert other shapes. You specify these with the
+    	-- function Perform.
+
+    Perform(me: in out; S   : Shape   from TopoDS; 
+                        Copy: Boolean from Standard  =  Standard_False)
+
+	---Purpose: Builds a new shape by converting the geometry of the
+    	-- shape S into NURBS geometry.
+    	-- Specifically, all curves supporting edges of S are
+    	-- converted into BSpline curves, and all surfaces
+    	-- supporting its faces are converted into BSpline surfaces.
+    	-- Use the function Shape to access the new shape.
+    	-- Note: this framework can be reused to convert other
+    	-- shapes: you specify them by calling the function Perform again.
+    	is static;
+
+end NurbsConvert;

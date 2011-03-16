@@ -1,0 +1,53 @@
+-- File:	BRepOffset_Interval.cdl
+-- Created:	Fri Oct 20 17:17:13 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Interval from BRepOffset 
+
+	---Purpose: 
+
+uses
+    Type from BRepOffset
+    
+is
+
+    Create;
+    
+    Create (U1,U2 : Real from Standard;
+    	    Type  : Type from BRepOffset)
+    returns Interval from BRepOffset;
+    
+    First (me : in out; U : Real from Standard)
+    	---C++: inline
+    is static;
+    
+    Last  (me : in out; U : Real from Standard)
+        ---C++: inline
+    is static;    
+    
+    Type  (me : in out; T : Type from BRepOffset)
+       ---C++: inline
+    is static;
+    
+    First (me) returns Real from Standard
+       ---C++: inline
+    is static;    
+    
+    Last  (me) returns Real from Standard
+       ---C++: inline
+    is static;
+    
+    Type  (me) returns Type from BRepOffset
+       ---C++: inline
+    is static;    
+    
+
+fields
+
+    f,l  : Real from Standard;
+    type : Type from BRepOffset;
+    
+end Interval;

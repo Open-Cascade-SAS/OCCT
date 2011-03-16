@@ -1,0 +1,40 @@
+-- File:        SurfaceOfRevolution.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceOfRevolution from StepGeom 
+
+inherits SweptSurface from StepGeom 
+
+uses
+
+	Axis1Placement from StepGeom, 
+	HAsciiString from TCollection, 
+	Curve from StepGeom
+is
+
+	Create returns mutable SurfaceOfRevolution;
+	---Purpose: Returns a SurfaceOfRevolution
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptCurve : mutable Curve from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptCurve : mutable Curve from StepGeom;
+	      aAxisPosition : mutable Axis1Placement from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAxisPosition(me : mutable; aAxisPosition : mutable Axis1Placement);
+	AxisPosition (me) returns mutable Axis1Placement;
+
+fields
+
+	axisPosition : Axis1Placement from StepGeom;
+
+end SurfaceOfRevolution;

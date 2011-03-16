@@ -1,0 +1,80 @@
+// File:	Geom2dHatch_Intersector.lxx
+// Created:	Wed Mar 23 11:29:27 1994
+// Author:	Jean Marc LACHAUME
+//		<jml@phylox>
+
+
+//=======================================================================
+// Function : Geom2dHatch_Intersector
+// Purpose  : Constructor.
+//=======================================================================
+
+inline Geom2dHatch_Intersector::Geom2dHatch_Intersector
+  (const Standard_Real Confusion,
+   const Standard_Real Tangency) :
+       Geom2dInt_GInter () ,
+       myConfusionTolerance (Confusion) ,
+       myTangencyTolerance  (Tangency)
+{
+}
+
+//=======================================================================
+// Function : ConfusionTolerance
+// Purpose  : Returns the confusion tolerance of the intersector.
+//=======================================================================
+
+inline Standard_Real Geom2dHatch_Intersector::ConfusionTolerance
+  () const
+{
+  return myConfusionTolerance ;
+}
+
+//=======================================================================
+// Function : SetConfusionTolerance
+// Purpose  : Sets the confusion tolerance of the intersector.
+//=======================================================================
+
+inline void Geom2dHatch_Intersector::SetConfusionTolerance
+  (const Standard_Real Confusion)
+{
+  myConfusionTolerance = Confusion ;
+}
+
+//=======================================================================
+// Function : TangencyTolerance
+// Purpose  : Returns the tangency tolerance of the intersector.
+//=======================================================================
+
+inline Standard_Real Geom2dHatch_Intersector::TangencyTolerance
+  () const
+{
+  return myTangencyTolerance ;
+}
+
+//=======================================================================
+// Function : SetTangencyTolerance
+// Purpose  : Sets the tangency tolerance of the intersector.
+//=======================================================================
+
+inline void Geom2dHatch_Intersector::SetTangencyTolerance
+  (const Standard_Real Tangency)
+{
+  myTangencyTolerance = Tangency ;
+}
+
+//=======================================================================
+// Function : Intersect
+// Purpose  : Intersects the curves C1 and C2.
+//=======================================================================
+#include <Adaptor2d_Curve2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+
+inline void Geom2dHatch_Intersector::Intersect
+  (const Geom2dAdaptor_Curve& C1,
+   const Geom2dAdaptor_Curve& C2)
+{
+     Geom2dInt_GInter::Perform(C1, 
+			    C2, 
+			    myConfusionTolerance, myTangencyTolerance) ; 
+  
+}

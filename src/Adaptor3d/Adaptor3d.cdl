@@ -1,0 +1,228 @@
+-- File:	Adaptor3d.cdl
+-- Created:	Thu Oct  8 10:33:07 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Davision 1992
+
+
+
+
+package Adaptor3d 
+
+	---Purpose: The  Adaptor3d package   is  used to  help  defining
+	--          reusable  geometric  algorithms. i.e.  that can be
+	--          used on curves and surfaces.
+	--          
+	--          It defines general services for 3 kind of objects :
+	--          
+	--          - the 2d curve.     Curve2d
+	--          - the 3d curve.     Curve
+	--          - the 3d surface.   Surface
+	--          
+	--          The services are :
+	--          
+	--           - Usual services found in Geom or Geom2d :
+	--           
+	--               * parameter range, value and derivatives, etc...
+	--               
+	--           - Continuity breakout services :
+	--           
+	--               * Allows to  divide a curve or  a surfaces in
+	--               parts with a given derivation order.
+	--               
+	--           - Special geometries detection services :
+	--           
+	--               * Allows to  test  for special cases that can
+	--               be processed more easily :
+	--                 - Conics, Quadrics, Bezier, BSpline ...
+	--                 
+	--                 And to  get the correponding  data form the
+	--                 package  gp  or   Geom.   The  special type
+	--                 OtherCurve  means  that no special case has
+	--                 been  detected  and the  algorithm  may use
+	--                 only the evaluation methods (D0, D1, ...)
+	--                 
+	--            
+	--          For   each category  Curve2d,  Curve,   Surface we
+	--          define   three  classes,  we  illustrate  now  the
+	--          principles  with the  Curve,  the same  applies to
+	--          Curve2d and Surface.
+	--          
+	--          The  class Curve  is the   abstract root  for  all
+	--          Curves used by algorithms,  it is handled by value
+	--          and   provides as  deferred  methods  the services
+	--          described above.
+	--          
+	--          Some  services  (breakout) requires  to create new
+	--          curves,     this   leads   to   memory  allocation
+	--          considerations (who create  the curve, who deletes
+	--          it ?). To  solve this problem elegantly the  curve
+	--          will  return a  HCurve, the    HCurve is a   curve
+	--          handled by reference   so it will   be deallocated
+	--          automatically when it is not used.
+	--          
+	--          A third class GenHCurve is provided, this class is
+	--          generic and its utility   is to provide  automatic
+	--          generation  of  the  HCurve  class  when you  have
+	--          written the Curve class.
+	--          
+	--             
+	--          * Let us show an example (with 2d curves) :
+	--          
+	--            Imagine an  algorithm to intersect  curves, this
+	--            algorithms  is written to  process  Curve2d from
+	--            Adaptor3d :
+	--            
+	--            A method may look like :
+	--            
+	--            Intersect(C1,C2 : Curve2d from Adaptor3d);
+	--            
+	--            Which will look like in C++
+	--            
+	--            Intersect(const Adaptor2d_Curve2d& C1,
+	--                      const Adaptor2d_Curve2d& C2)
+	--            {
+	--             // you can call any method
+	--             Standard_Real first1 = C1.FirstParameter();
+	--             
+	--             // but avoid  to copy in an Adaptor3d_Curve which
+	--             // is an Abstract class, use a reference or a pointer
+	--            
+	--             const Adaptor3d_Curve& C  = C1;
+	--             const Adaptor3d_Curve *pC = &C1;
+	--             
+	--             // If you  are interseted in Intervals you must
+	--             // store them in a  HCurve to ensure they are kept
+	--             // in memory. Then a referrence may be used.
+	--             
+	--             Handle(Adaptor3d_HCurve) HCI = C1.Interval(1);
+	--             
+	--             const Adaptor3d_Curve& CI = HCI->Curve();
+	--             pC = &(HCI->Curve());
+	--            
+	--            
+	--          *  The   Adaptor3d  provides  also  Generic  classes
+	--          implementing algorithmic curves and surfaces.
+	--          
+	--              - IsoCurve       : Isoparametric curve on a surface.
+	--              - CurveOnSurface :  2D curve in the parametric
+	--              space of a surface.
+	--              
+	--              
+	--              - OffsetCurve2d : 2d offset curve
+	--              - ProjectedCurve : 3d curve projected on a plane
+	--              - SurfaceOfLinearExtrusion 
+	--              - SurfaceOfRevolution
+	--              
+	--              They are instantiated with HCurve, HSurface, HCurved2d
+
+uses 
+    Standard,
+    MMgt,
+    TColStd,
+    GeomAbs,
+    TopAbs,
+    TColgp,
+    gp,
+    Geom2d,
+    Geom, 
+    math, 
+    Adaptor2d
+
+is
+
+      deferred class Curve; 
+      	---Purpose: Root of the 3d curve.
+
+      pointer CurvePtr to Curve from Adaptor3d;
+
+      deferred class HCurve;
+        ---Purpose: deferred  class for  the  curves manipulated  with
+        --          Handle.
+
+      generic class GenHCurve;
+      	---Purpose: Generic  class  used to create a  curve inheriting
+      	--          from HCurve.
+      
+              
+      deferred class Surface;
+        ---Purpose: Root of the surface.
+      
+      pointer SurfacePtr to Surface from Adaptor3d;
+
+      deferred class HSurface;
+        ---Purpose: deferred class for  the  surfaces manipulated with
+        --          Handle.
+
+      generic class GenHSurface;
+      	---Purpose: Generic class used to  create a surface inheriting
+      	--          from  HSurface.
+      
+
+      --
+      --  The  following  classes  are  used  to  define  an  abstract
+      --  simplified  "topology"  for  surfaces.   This  is   used  by
+      --  algorithm as mass properties or surface intersections.
+      --  
+
+
+      class HVertex;
+
+      class HSurfaceTool;
+
+      class TopolTool;
+    
+      --
+      --  The   following  classes  provides  algorithmic   curves and
+      --  surface, they are inheriting from  Curve and Surface and the
+      --  correponding HCurve and HSurface is instantiated.
+      --  
+      --  
+
+
+      class IsoCurve;
+      ---Purpose: Algorithmic 3d curv, isoparametric on a surface.
+
+      class HIsoCurve instantiates GenHCurve from Adaptor3d
+        (IsoCurve from Adaptor3d);
+              
+
+      class CurveOnSurface;
+       ---Purpose: Algorithmic 3d curve from a surface and a 2d  curve
+       --          in the parameter space.
+       
+      pointer CurveOnSurfacePtr to CurveOnSurface from Adaptor3d;
+
+      class HCurveOnSurface instantiates GenHCurve from Adaptor3d
+        (CurveOnSurface from Adaptor3d);
+	
+	
+
+      class OffsetCurve;
+      ---Purpose: Algorithmic 2d curve.
+
+       class HOffsetCurve instantiates GenHCurve2d from Adaptor2d
+        (OffsetCurve  from Adaptor3d);
+      
+    
+      class SurfaceOfRevolution;
+      ---Purpose: Algorithmic Surface from a Curve and an Axis
+      --          Curve and Axis are coplanar.
+      --          Curve doesn't intersect Axis.
+      
+      class HSurfaceOfRevolution instantiates GenHSurface from Adaptor3d
+       (SurfaceOfRevolution from Adaptor3d);
+      
+      
+      
+      class SurfaceOfLinearExtrusion;    
+      ---Purpose: Algorithmic Surface from a curve and a direction
+
+      class HSurfaceOfLinearExtrusion instantiates GenHSurface from Adaptor3d
+       (SurfaceOfLinearExtrusion from Adaptor3d);
+
+      private  class  InterFunc; 
+      ---Purpose: function to find the Cn discontinuity point. Used to
+      --          find the roots of the functions 
+
+end Adaptor3d;

@@ -1,0 +1,105 @@
+--
+-- File      :  IGESDefs.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+package IGESDefs
+
+        ---Purpose : To embody general definitions of Entities
+        --           (Parameters, Tables ...)
+
+uses
+
+        Standard,
+        TCollection,
+	TColStd,
+	Message,
+        Interface,
+        IGESData,
+        IGESBasic,
+        IGESGraph
+
+is
+
+        class   AssociativityDef;
+        -- Type 302, Form 5001-9999
+        ---Purpose : This class permits the preprocessor to define an
+        --           associativity schema. i.e., by using it preprocessor
+        --           defines the type of relationship.
+
+        class   MacroDef;
+        -- Type 306, Form 0
+        ---Purpose : This Class specifies the action of a specific MACRO.
+        --           After specification MACRO can be used as necessary
+        --           by means of MACRO class instance entity.
+
+        class   UnitsData;
+        -- Type 316, Form 0
+        ---Purpose : This class stores data about a model's
+        --           fundamental units.
+
+        class   AttributeDef;
+        -- Type 322, Form 0,1,2
+        ---Purpose : This is class is used to support the concept of well
+        --           defined collection of attributes, whether it is a table
+        --           or a single row of attributes.
+
+        class   TabularData;
+        -- Type 406,  Form 11
+        ---Purpose : This Class is used to provide a Structure to accomodate
+        --           point form data.
+
+        class   GenericData;
+        -- Type 406,  Form 27
+        ---Purpose : This Class is used to communicate information which is
+        --           defined by the system operator while creating the model.
+        --           The information is system specific and does not map into
+        --           one of the predefined properties or associativities.
+        --           Properties and property values can be defined by multiple
+        --           instances of this property.
+
+        class   AttributeTable;
+        -- Type 422, Form 0,1
+        ---Purpose : This class is used to represent an occurence of
+        --           Attribute Table. This Class may be independent
+        --           or dependent or pointed at by other Entities.
+
+    	--    Tools for Entities    --
+
+        class ToolAssociativityDef;
+        class ToolMacroDef;
+        class ToolUnitsData;
+        class ToolAttributeDef;
+        class ToolTabularData;
+        class ToolGenericData;
+        class ToolAttributeTable;
+
+	-- Definition and Exploitation of Entities defined in this Package
+
+        class Protocol;
+	class ReadWriteModule;
+	class GeneralModule;
+	class SpecificModule;
+
+        -- Instantiations
+
+     class  Array1OfTabularData instantiates  Array1 from TCollection(TabularData);
+
+     class HArray1OfTabularData instantiates HArray1 from TCollection
+    	(TabularData,Array1OfTabularData);
+     class HArray1OfHArray1OfTextDisplayTemplate instantiates
+    --	HArray1 (HArray1OfTextDisplayTemplate,Array1OfHArray1OfTextDisplayTemplate);
+      JaggedArray from Interface (HArray1OfTextDisplayTemplate from IGESGraph);
+
+        -- Package Methods
+
+    Init;
+    ---Purpose : Prepares dynamic data (Protocol, Modules) for this package
+
+    Protocol  returns Protocol from IGESDefs;
+    ---Purpose : Returns the Protocol for this Package
+
+end IGESDefs;

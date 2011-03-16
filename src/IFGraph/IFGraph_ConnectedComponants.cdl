@@ -1,0 +1,27 @@
+-- File:	ConnectedComponants.cdl
+-- Created:	Wed Sep 23 14:19:57 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class ConnectedComponants  from IFGraph  inherits SubPartsIterator
+
+    	---Purpose : determines Connected Componants in a Graph. They define
+    	--           disjoined sets of Entities
+
+uses Graph
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns ConnectedComponants;
+    ---Purpose : creates with a Graph, and will analyse :
+    --           whole True  : all the contents of the Model
+    --           whole False : sub-parts which will be given later
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the computation
+
+    	-- --   Iteration : More-Next-etc... will give the Connected Componants
+
+end ConnectedComponants;

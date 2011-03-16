@@ -1,0 +1,57 @@
+-- File:	StepRepr_CharacterizedDefinition.cdl
+-- Created:	Thu May 11 16:37:59 2000 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class CharacterizedDefinition from StepRepr
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type CharacterizedDefinition
+
+uses
+    CharacterizedObject from StepBasic,
+    ProductDefinition from StepBasic,
+    ProductDefinitionRelationship from StepBasic,
+    ProductDefinitionShape from StepRepr,
+    ShapeAspect from StepRepr,
+    ShapeAspectRelationship from StepRepr,
+    DocumentFile from StepBasic
+
+is
+    Create returns CharacterizedDefinition from StepRepr;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of CharacterizedDefinition select type
+	--          1 -> CharacterizedObject from StepBasic
+	--          2 -> ProductDefinition from StepBasic
+	--          3 -> ProductDefinitionRelationship from StepBasic
+	--          4 -> ProductDefinitionShape from StepRepr
+	--          5 -> ShapeAspect from StepRepr
+	--          6 -> ShapeAspectRelationship from StepRepr
+	--          7 -> DocumentFile from StepBasic
+	--          0 else
+
+    CharacterizedObject (me) returns CharacterizedObject from StepBasic;
+	---Purpose: Returns Value as CharacterizedObject (or Null if another type)
+
+    ProductDefinition (me) returns ProductDefinition from StepBasic;
+	---Purpose: Returns Value as ProductDefinition (or Null if another type)
+
+    ProductDefinitionRelationship (me) returns ProductDefinitionRelationship from StepBasic;
+	---Purpose: Returns Value as ProductDefinitionRelationship (or Null if another type)
+
+    ProductDefinitionShape (me) returns ProductDefinitionShape from StepRepr;
+	---Purpose: Returns Value as ProductDefinitionShape (or Null if another type)
+ 
+    ShapeAspect (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns Value as ShapeAspect (or Null if another type)
+
+    ShapeAspectRelationship (me) returns ShapeAspectRelationship from StepRepr;
+	---Purpose: Returns Value as ShapeAspectRelationship (or Null if another type)
+
+    DocumentFile (me) returns DocumentFile from StepBasic;
+	---Purpose: Returns Value as DocumentFile (or Null if another type)
+
+end CharacterizedDefinition;

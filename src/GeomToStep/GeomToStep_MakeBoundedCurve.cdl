@@ -1,0 +1,40 @@
+-- File:	GeomToStep_MakeBoundedCurve.cdl
+-- Created:	Mon Jun 21 11:31:39 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeBoundedCurve from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          BoundedCurve from Geom, Geom2d and the class BoundedCurve from 
+    --          StepGeom which describes a BoundedCurve from prostep.
+    --          As BoundedCurve is an abstract BoundedCurve this class 
+    --          is an access to the sub-class required.
+  
+uses BoundedCurve from Geom,
+     BoundedCurve from Geom2d,
+     BoundedCurve from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( C : BoundedCurve from Geom ) returns MakeBoundedCurve;
+
+Create ( C : BoundedCurve from Geom2d ) returns MakeBoundedCurve;
+
+Value (me) returns BoundedCurve from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+ 
+fields
+
+    theBoundedCurve : BoundedCurve from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeBoundedCurve;
+
+
+

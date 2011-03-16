@@ -1,0 +1,49 @@
+-- File:	XSDRAW_Vars.cdl
+-- Created:	Wed Jul 22 18:27:38 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+
+class Vars  from XSDRAW    inherits    Vars  from XSControl
+
+    ---Purpose : Vars for DRAW session (i.e. DBRep and DrawTrSurf)
+
+uses CString, Transient,
+     Pnt from gp, Pnt2d from gp,
+     Geometry from Geom, Curve from Geom, Curve from Geom2d, Surface from Geom,
+     Shape from TopoDS
+
+is
+
+    Create returns mutable Vars from XSDRAW;
+
+    Set (me : mutable; name : CString; val : Transient)  is redefined;
+
+--    Get (me; name : CString) returns Transient  is redefined; unused here
+
+
+    GetGeom (me; name : in out CString) returns Geometry  is redefined;
+
+    GetCurve2d (me; name : in out CString) returns Curve from Geom2d  is redefined;
+
+    GetCurve   (me; name : in out CString) returns Curve from Geom  is redefined;
+
+    GetSurface (me; name : in out CString) returns Surface from Geom  is redefined;
+
+    SetPoint   (me : mutable; name : CString; val : Pnt   from gp)  is redefined;
+
+    SetPoint2d (me : mutable; name : CString; val : Pnt2d from gp)  is redefined;
+
+    GetPoint   (me; name : in out CString; pnt : out Pnt   from gp) returns Boolean  is redefined;
+
+    GetPoint2d (me; name : in out CString; pnt : out Pnt2d from gp) returns Boolean  is redefined;
+
+
+    SetShape   (me : mutable; name : CString; val : Shape from TopoDS)  is redefined;
+
+    GetShape   (me; name : in out CString) returns Shape from TopoDS  is redefined;
+
+end Vars;

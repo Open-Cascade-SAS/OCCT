@@ -1,0 +1,29 @@
+-- File:	StepBasic_ConversionBasedUnitAndAreaUnit.cdl
+-- Created:	Tue Oct 12 13:17:00 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class ConversionBasedUnitAndAreaUnit from StepBasic inherits ConversionBasedUnit from StepBasic
+
+	---Purpose: 
+
+uses
+
+    AreaUnit from StepBasic
+
+is
+
+    Create returns mutable ConversionBasedUnitAndAreaUnit from StepBasic;
+    	---Purpose: Returns a ConversionBasedUnitAndAreaUnit
+    
+    SetAreaUnit(me: mutable; anAreaUnit: mutable AreaUnit from StepBasic);
+    
+    AreaUnit(me) returns mutable AreaUnit from StepBasic;
+    
+fields
+
+    areaUnit: AreaUnit from StepBasic;
+    
+end ConversionBasedUnitAndAreaUnit;

@@ -1,0 +1,139 @@
+generic class HArray2 from PCollection (Item as Storable) 
+inherits Persistent
+
+	---Purpose: The class HArray2 represents bi-dimensionnal 
+	-- arrays fixed size known at run time. 
+	-- The range of the index is user defined. 
+	--  Warning: Programs clients of such class must be independant
+	-- of the range of the first element. Then, a C++ for
+	-- loop must be written like this
+	--    for (i = A->LowerRow(); i <= A->UpperRow(); i++)
+	--           for (j = A->LowerCol(); j <= A->UpperCol(); j++)
+
+raises 
+    RangeError from Standard,
+    OutOfRange from Standard
+
+
+    class FieldOfHArray2 instantiates VArray from DBC (Item);
+
+is
+
+	Create (R1, R2, C1, C2: Integer from Standard) 
+               returns mutable HArray2 from PCollection
+		raises RangeError from Standard;
+		---Purpose: Creates an array of lower bound <R1><C1> and 
+                -- upper bound <R2><C2>. Range Error is raised 
+                -- when <R2> is less than <R1> or <C2> is less than <C1>.
+
+	Create (R1, R2, C1, C2: Integer from Standard ; V : Item) 
+                returns mutable HArray2 from PCollection
+		  raises RangeError from Standard;
+		---Purpose: Creates an array of lower bound <R1><C1> and 
+                -- upper bound <R2><C2>. RangeError is raised 
+                -- when <R2> is less than <R1> or <C2> is less
+		-- than <C1>.
+		-- The array is initialized with V.
+
+	ColLength (me) returns Integer from Standard
+		is static ;
+		---Purpose: Returns the number of rows of <me>.
+                --Example
+    	    	-- PCollection_HArray2
+    	    	-- myTable(1,100, 1, 50);
+    	    	-- Standard_Integer noOfRows =
+    	    	-- myTable->ColLength();
+
+	LowerCol (me) returns Integer from Standard
+		is static ;
+		---Purpose: Returns the lower column number of the array.
+                ---Level: Public
+    	    	---C++: inline
+
+	LowerRow (me) returns Integer from Standard
+		is static ;
+		---Purpose: Returns the lower row number of the array.
+                ---Level: Public
+    	    	---C++: inline
+
+	RowLength (me) returns Integer from Standard
+		is static;
+		---Purpose: Returns the number of columns of <me>.
+                -- Example
+    	    	-- PCollection_HArray2
+    	    	-- myTable(1,100, 1, 50);
+    	    	-- Standard_Integer noOfColumns =
+    	    	-- myTable->RowLength();
+
+	SetValue (me : mutable; Row, Col: Integer from Standard; Value: Item) 
+		raises OutOfRange from Standard
+		is static ;
+                ---Level: Public
+		---Purpose: Assigns Value to the element which is at index
+    	    	-- (Row, Column) of this array.
+    	    	-- Example
+    	    	-- PCollection_HArray2
+    	    	-- myTable(1,100,1,50);
+    	    	-- myTable->SetValue(3,5, 1551);
+    	    	-- assert (myTable(3,5) == 1551);
+    	    	-- Exceptions
+    	    	-- Standard_OutOfRange if the index (Row,
+    	    	-- Column) is not within the bounds of this array. 
+
+	UpperCol (me) returns Integer from Standard
+		is static ;
+                ---Level: Public
+		---Purpose: Returns the upper column number of the array.
+    	    	---C++: inline
+
+	UpperRow (me) returns Integer from Standard
+                ---Level: Public
+		is static ;
+                ---Level: Public
+		---Purpose: Returns the upper row number of the array.
+    	    	---C++: inline
+
+	Value (me; Row,Col: Integer from Standard) returns any Item
+		raises OutOfRange from Standard
+		is static;
+             	---Purpose: Returns the value of the element at index (Row,
+    	    	-- Column) of this array.
+    	    	-- Example
+    	    	-- PCollection_HArray2
+    	    	--  myTable(1,100,1,50);
+    	    	--  myTable->SetValue(3,5,1551);
+    	    	-- Standard_Integer myItem = myTable->Value(3,5);
+    	    	-- Exceptions
+    	    	-- Standard_OutOfRange if the index (Row,
+    	    	-- Column) is not within the bounds of this array.
+
+    	ShallowCopy(me) 
+                returns mutable like me 
+                is redefined;
+                ---Purpose: Returns a new array containing a copy of the
+    	    	-- values (of the elements) in this array. 
+
+    	ShallowDump (me; s: in out OStream) 
+                is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+
+    	Field (me) returns FieldOfHArray2 
+                is private;
+                ---Level: Internal
+   	    	---Purpose: Returns the field Data. Private method.
+
+        Datas(me) returns Address
+                ---Level: Internal
+    	    	is private;
+
+fields 
+
+	myLowerRow    : Integer from Standard ;
+	myLowerCol    : Integer from Standard ;
+        myUpperRow    : Integer from Standard ;
+        myUpperCol    : Integer from Standard ;
+	Data          : FieldOfHArray2    ;
+
+end HArray2 ;

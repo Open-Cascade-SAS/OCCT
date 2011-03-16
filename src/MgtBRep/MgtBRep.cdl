@@ -1,0 +1,137 @@
+-- File:	MgtBRep.cdl
+-- Created:	Mon Jun 14 19:03:50 1993
+-- Author:	Remi LEQUETTE
+--		<rle@zerox>
+-- Update:      Frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+package MgtBRep 
+
+	---Purpose: The MgtBRep package  provides methods to translate
+	--          data  between  the  BRep    package and the  PBRep
+	--          package.
+	--          
+	--          That  is   to    translate  persistent  BRep  data
+	--          structures  in  Transient BRep data structures and
+	--          vice-versa.
+	--          
+	--          The MgtBRep package uses :
+	--          
+	--          * The  MgtBas  package to bind  a  transient and a
+	--          persistent object.
+	--          
+	--          * The  MgtTopoDS package to provide basic methods
+	--          to translate TopoDS and PTopoDS data.
+	--          
+	--          * The MgtTopLoc package to translate Locations.
+	--          
+	--          * The  MgtGeom,  MgtGeom2d  packages to translate
+	--          geometric data.
+	--          
+	--          * The MgtPoly package to translate triangulation data.
+	--           
+	--          The Translate methods has TriangleMode argument.
+	--          If it is MgtBRep_WithTriangle, the methods returns or 
+	--          create a Shape with triangulation.
+
+uses
+
+    PTColStd,
+    TopoDS,
+    PTopoDS,
+    MgtTopoDS,
+    BRep,
+    PBRep,
+    Geom,
+    PGeom,
+    Geom2d,
+    PGeom2d,
+    Poly,
+    TColStd,
+    MgtBRep
+
+is
+    -- -----------------------------------------------------------------------
+    -- Enumeration :
+    -- 
+    -- 	TriangleMode : WithTriangle stores the triangulation
+    -- 	               WithoutTriangle does not store the triangulation
+    --  TriangulationMode is valid for Store and Retrieve
+    -- -----------------------------------------------------------------------  
+    
+    enumeration TriangleMode is 
+    	WithTriangle,
+    	WithoutTriangle
+    end;
+    
+    -- ---------
+    -- Classe(s)
+    -- ---------
+
+    class TranslateTool;
+	---Purpose: Auxiliary class used to call the MgtTopoDS methods.
+    
+    class TranslateTool1;
+	---Purpose: Auxiliary class used to call the MgtTopoDS methods.
+    
+
+    -- ---------------
+    -- Package Methods
+    -- ---------------
+
+
+    -- from BRep to PBRep
+
+    Translate(aShape   : Shape                         from TopoDS;
+    	      aMap     : in out TransientPersistentMap from PTColStd;
+    	      aTriMode : TriangleMode                  from MgtBRep)
+    returns HShape from PTopoDS;
+	---Purpose: Translate a transient Shape to a persistent Shape.
+	--         he translation is performed according
+	--  to the map aMap and the triangulation
+ 	--  specified by aTriMode 
+    
+    Translate1(aShape   : Shape from TopoDS;
+    	       aMap     : in out TransientPersistentMap from PTColStd;
+	       aResult  : in out Shape1 from PTopoDS;
+    	       aTriMode : TriangleMode from MgtBRep);
+	---Purpose: Translate a transient Shape to a persistent Shape.
+	--	The translation is performed according to the map aMap and the
+	--   triangulation specified by aTriMode.
+	-- The map, aMap, is a tool that lets you share
+	-- topological components. When the map is
+	-- initialized, it is empty. It is built up and used by the
+	-- Translate function every time a topological
+	-- component is converted from persistent to
+	-- transient and vice versa. This is true for all
+	-- topological components that can be shared:
+	-- vertex, edge, wire, face, shell, solid, and so on.
+	-- This map allows you to share individual
+	-- components as they are translated, and also lets
+	-- you share previously converted components
+	-- when you translate other objects which share
+	-- (i.e. refer to) these components.
+	-- The triangulation mode, aTriMode, specifies
+	-- whether a representation of the object as a set
+	-- of triangles - if such a representation exists - is
+	-- to be translated or not in addition to the
+	-- canonical definition of the object.
+        
+    Translate(aShape   : HShape from PTopoDS;
+   	      aMap     : in out PersistentTransientMap from PTColStd;
+	      aResult  : in out Shape from TopoDS;
+    	      aTriMode : TriangleMode from MgtBRep);
+      	---Purpose: Translate a persistent Shape to a transient Shape.
+      	--          Used for upwards compatibility.
+	---Level: Advanced 
+    
+    Translate1(aShape   : Shape1 from PTopoDS;
+   	       aMap     : in out PersistentTransientMap from PTColStd;
+	       aResult  : in out Shape from TopoDS;
+    	       aTriMode : TriangleMode from MgtBRep);
+      	---Purpose: Translate a persistent Shape to a transient Shape.
+	---Level: Advanced 
+    
+end MgtBRep;

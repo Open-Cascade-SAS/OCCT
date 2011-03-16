@@ -1,0 +1,84 @@
+-- File:	MakeSegment.cdl
+-- Created:	Mon Sep 28 11:49:59 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeSegment from GCE2d inherits Root from GCE2d
+
+    	---Purpose: Implements construction algorithms for a line
+    	-- segment in the plane. The result is a
+    	-- Geom2d_TrimmedCurve curve.
+    	-- A MakeSegment object provides a framework for:
+    	-- -   defining the construction of the line segment,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results. In particular, the Value
+    	--   function returns the constructed line segment.
+        
+uses Pnt2d        from gp,
+     Real         from Standard,
+     Lin2d        from gp,
+     Dir2d        from gp,
+     TrimmedCurve from Geom2d
+
+raises NotDone from StdFail
+
+is
+
+Create(P1, P2 : Pnt2d from gp ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the 2 points <P1> and <P2>.
+    	--          Status is "ConfusedPoints" if <P1> and <P2> are confused.
+
+Create(P1 : Pnt2d from gp ;
+       V  : Dir2d from gp ;
+       P2 : Pnt2d from gp ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the point <P1> with 
+    	--          the direction <P> and ended by the projection of 
+    	--          <P2> on the line <P1,V>.
+    	--          Status is "ConfusedPoints" if <P1> and <P2> are confused.
+	
+Create(Line   : Lin2d  from gp       ;
+       U1, U2 : Real from Standard ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line> 
+    	--          between the two parameters U1 and U2.
+    	--          Status is "SameParamters" if <U1> is equal <U2>.
+
+Create(Line   : Lin2d  from gp       ;
+       Point  : Pnt2d  from gp       ;
+       Ulast  : Real   from Standard ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line> 
+    	--          between the point <Point> and the parameter Ulast.
+    	--          It returns NullObject if <U1> is equal <U2>.
+
+Create(Line  : Lin2d from gp ;
+       P1    : Pnt2d from gp ;
+       P2    : Pnt2d from gp ) returns MakeSegment;
+    	---Purpose: Make a segment of Line from the line <Line> 
+    	--          between the two points <P1> and <P2>.
+    	--          It returns NullObject if <P1> and <P2> are confused.
+    	-- Warning
+    	-- If the points which limit the segment are coincident
+    	-- for given points or for the projection of given points
+    	-- on the line which supports the line segment (that is,
+    	-- when IsDone returns false), the Status function
+    	-- returns gce_ConfusedPoints. This warning only
+    	-- concerns the first two constructors.
+        
+Value(me) returns TrimmedCurve from Geom2d
+    raises NotDone
+    is static;
+      	---C++: return const&
+      	---Purpose: Returns the constructed line segment.
+      	-- Exceptions StdFail_NotDone if no line segment is constructed.
+
+Operator(me) returns TrimmedCurve from Geom2d
+    is static;
+    	---C++: return const&
+    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_TrimmedCurve() const;"
+
+fields
+
+    TheSegment : TrimmedCurve from Geom2d;
+    --The solution from Geom2d.
+    
+end MakeSegment;

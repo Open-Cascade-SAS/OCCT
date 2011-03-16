@@ -1,0 +1,59 @@
+-- File:	IGESDimen_ToolCurveDimension.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolCurveDimension  from IGESDimen
+
+    ---Purpose : Tool to work on a CurveDimension. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses CurveDimension from IGESDimen,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolCurveDimension;
+    ---Purpose : Returns a ToolCurveDimension, ready to work
+
+
+    ReadOwnParams (me; ent : mutable CurveDimension;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : CurveDimension;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : CurveDimension;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a CurveDimension <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : CurveDimension) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : CurveDimension;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : CurveDimension; entto : mutable CurveDimension;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : CurveDimension;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolCurveDimension;

@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWSurfaceSectionFieldVarying.cdl
+-- Created:	Thu Dec 12 17:29:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWSurfaceSectionFieldVarying from RWStepElement
+
+    ---Purpose: Read & Write tool for SurfaceSectionFieldVarying
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    SurfaceSectionFieldVarying from StepElement
+
+is
+    Create returns RWSurfaceSectionFieldVarying from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : SurfaceSectionFieldVarying from StepElement);
+	---Purpose: Reads SurfaceSectionFieldVarying
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: SurfaceSectionFieldVarying from StepElement);
+	---Purpose: Writes SurfaceSectionFieldVarying
+
+    Share (me; ent : SurfaceSectionFieldVarying from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWSurfaceSectionFieldVarying;

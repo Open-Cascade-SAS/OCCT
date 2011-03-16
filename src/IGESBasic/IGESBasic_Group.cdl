@@ -1,0 +1,103 @@
+--
+-- File      :  Group.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Group from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines Group, Type <402> Form <1>
+        --          in package IGESBasic
+        --          The Group Associativity allows a collection of a set
+        --          of entities to be maintained as a single, logical
+        --          entity
+        --          
+        --          Group, OrderedGroup, GroupWithoutBackP, OrderedGroupWithoutBackP
+        --          share the same definition (class Group), form number changes
+        --          
+        --          non Ordered, non WithoutBackP : form  1
+        --          non Ordered,     WithoutBackP : form  7
+        --              Ordered, non WithoutBackP : form 14
+        --              Ordered,     WithoutBackP : form 15
+
+uses
+
+        Transient        ,
+	IGESEntity          from IGESData,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable Group;
+
+    	Create (nb : Integer) returns Group;
+	---Purpose : Creates a Group with a predefined count of items
+	--           (which all start as null)
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              allEntities : HArray1OfIGESEntity);
+        ---Purpose : This method is used to set the fields of the class Group
+        --       - allEntities : Used to store pointers to members of
+        --                       the Group.
+
+    	SetOrdered (me : mutable; mode : Boolean);
+	---Purpose : Sets a Group to be, or not to be  Ordered (according mode)
+
+    	SetWithoutBackP (me : mutable; mode : Boolean);
+	---Purpose : Sets a Group to be, or not to be  WithoutBackP
+
+    	IsOrdered (me) returns Boolean;
+	---Purpose : Returns True if <me> is Ordered
+
+    	IsWithoutBackP (me) returns Boolean;
+	---Purpose : Returns True if <me> is WithoutBackP
+
+    	SetUser  (me : mutable; type, form : Integer)
+	---Purpose : Enforce a new value for the type and form
+            raises OutOfRange;
+	--           The type number must be greater than 5000
+
+
+    	SetNb (me : mutable; nb : Integer);
+	---Purpose : Changes the count of item
+	--           If greater, new items are null
+	--           If lower, old items are lost
+
+        NbEntities (me)  returns Integer;
+        ---Purpose : returns the number of IGESEntities in the Group
+
+        Entity (me; Index : Integer) returns IGESEntity
+        ---Purpose : returns the specific entity from the Group
+            raises OutOfRange;
+        -- raises exception if Index <= 0 or Index > NbEntities()
+
+        Value (me; Index : Integer) returns Transient
+        ---Purpose : returns the specific entity from the Group
+            raises OutOfRange;
+        -- raises exception if Index <= 0 or Index > NbEntities()
+
+    	SetValue (me : mutable; Index : Integer; ent : IGESEntity from IGESData)
+	---Purpose : Sets a new value for item <Index>
+            raises OutOfRange;
+        -- raises exception if Index <= 0 or Index > NbEntities()
+
+fields
+
+--
+-- Class    : IGESBasic_Group
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Group.
+--
+-- Reminder : A Group instance is defined by :
+--            - an array of IGESEntity
+
+        theEntities : HArray1OfIGESEntity;
+
+end Group;

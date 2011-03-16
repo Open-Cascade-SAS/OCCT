@@ -1,0 +1,30 @@
+-- File:	StdSelect_Prs.cdl
+-- Created:	Fri Mar 17 13:42:13 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+private class Prs from StdSelect inherits Presentation from Prs3d
+
+	---Purpose: allows entities owners to be hilighted 
+	--          independantly from PresentableObjects
+
+uses
+    StructureManager from Graphic3d
+
+is
+    Create(aStructureManager: StructureManager from Graphic3d)
+    returns mutable Prs;
+
+    Manager(me) returns any StructureManager from Graphic3d;
+    	---C++: inline
+    	---C++: return const&
+
+
+fields
+
+    myManager : StructureManager from Graphic3d;
+    
+end Prs;

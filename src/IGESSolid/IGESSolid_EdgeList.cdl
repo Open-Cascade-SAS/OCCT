@@ -1,0 +1,105 @@
+--
+-- File      :  EdgeList.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class EdgeList from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines EdgeList, Type <504> Form <1>
+        --          in package IGESSolid
+        --          EdgeList is defined as a segment joining two vertices
+
+uses
+
+        HArray1OfIGESEntity  from IGESData,
+        VertexList           from IGESSolid,
+        HArray1OfVertexList  from IGESSolid,
+        HArray1OfInteger     from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable EdgeList;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              curves           : HArray1OfIGESEntity;
+              startVertexList  : HArray1OfVertexList;
+              startVertexIndex : HArray1OfInteger;
+              endVertexList    : HArray1OfVertexList;
+              endVertexIndex   : HArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           EdgeList
+        --       - curves           : the model space curves
+        --       - startVertexList  : the vertex list that contains the
+        --                            start vertices
+        --       - startVertexIndex : the index of the vertex in the
+        --                            corresponding vertex list
+        --       - endVertexList    : the vertex list that contains the
+        --                            end vertices
+        --       - endVertexIndex   : the index of the vertex in the
+        --                            corresponding vertex list
+        -- raises exception if size of curves,startVertexList,startVertexIndex,
+        -- endVertexList and endVertexIndex do no match
+
+        NbEdges (me) returns Integer;
+        ---Purpose : returns the number of edges in the edge list
+
+        Curve (me; num: Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the num'th model space curve
+        -- raises Exception if num <= 0 or num > NbEdges()
+
+        StartVertexList (me; num: Integer) returns VertexList
+        raises OutOfRange;
+        ---Purpose : returns the num'th start vertex list
+        -- raises Exception if num <= 0 or num > NbEdges()
+
+        StartVertexIndex (me; num: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the index of num'th start vertex in
+        -- the corresponding start vertex list
+        -- raises Exception if num <= 0 or num > NbEdges()
+
+        EndVertexList (me; num: Integer) returns VertexList
+        raises OutOfRange;
+        ---Purpose : returns the num'th end vertex list
+        -- raises Exception if num <= 0 or num > NbEdges()
+
+        EndVertexIndex (me; num: Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the index of num'th end vertex in
+        -- the corresponding end vertex list
+        -- raises Exception if num <= 0 or num > NbEdges()
+
+fields
+
+--
+-- Class    : IGESSolid_EdgeList
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class EdgeList.
+--
+
+        theCurves           : HArray1OfIGESEntity;
+        -- the model space curves
+
+        theStartVertexList  : HArray1OfVertexList;
+        -- the start vertex list
+
+        theStartVertexIndex : HArray1OfInteger;
+        -- the indices of the individual vertex into the start vertex list
+
+        theEndVertexList    : HArray1OfVertexList;
+        -- the terminate vertex list
+
+        theEndVertexIndex   : HArray1OfInteger;
+        -- the indices of the individual vertex into the terminate vertex list
+
+end EdgeList;

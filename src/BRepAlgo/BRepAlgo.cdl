@@ -1,0 +1,146 @@
+-- File:        BRepAlgo.cdl
+-- Created:     Fri Jan 17 15:17:44 1997
+-- Author:      Didier PIFFAULT
+--              <dpf@motox.paris1.matra-dtv.fr>
+-- Modified     David CARBONEL
+--              <d-carbonel@aix.matra-dtv.fr>
+--              Add of Sewing class		
+---Copyright:    Matra Datavision 1997
+
+package BRepAlgo
+
+        ---Purpose: 
+	-- The BRepAlgo package provides a full range of
+	-- services to perform Old Boolean Operations in Open CASCADE. 
+	--   Attention:
+	-- The New Boolean Operation has replaced the Old
+	-- Boolean Operations algorithm in the BrepAlgoAPI
+	-- package in Open CASCADE.
+
+uses
+    BRep,
+    BRepTools, 
+    BRepBuilderAPI,
+    Bnd,
+    Standard,
+    TCollection,
+    TColStd,
+    TopAbs,
+    GeomAbs,
+    GeomTools,
+    Geom,
+    Geom2d,
+    gp,
+    MMgt,
+    TopExp,
+    TopAbs,
+    TopLoc,
+    TColgp,
+    TColStd,
+    TCollection,
+    TopoDS,
+    TopTools,
+    TopOpeBRepDS,
+    TopOpeBRepBuild,
+    TopOpeBRep,
+    Adaptor3d, 
+    StdFail, 
+    BOP, 
+    BOPTools, 
+    BooleanOperations
+
+is 
+    enumeration CheckStatus is
+      OK, NOK
+    end CheckStatus;
+     
+    --BRepAlgoAPI  f 
+    deferred class BooleanOperation; 
+    class Fuse;  
+    class Cut; 
+    class Common;    
+    class Section; 
+    --BRepAlgoAPI  t 
+    
+    --
+    --  Use of face topological builder
+    --   
+    class Loop;
+    class Tool;
+    class Image; 
+    class AsDes;
+    class FaceRestrictor;
+        ---Purpose:Build all the faces limited with a set of non 
+        --         jointing and planars wires
+        --         The Wires must have correct orientations.
+        --         
+         
+    class BooleanOperations;
+        ---Purpose: 
+    class DSAccess;
+        ---Purpose: 
+    class TopOpe;
+        ---Purpose: 
+    class EdgeConnector;
+        ---Purpose: 
+    class  NormalProjection; 
+    	---Purpose: 
+  --  class  Sewing; now it is in BRepBuilderAPI
+    
+    class DataMapOfShapeBoolean instantiates
+        DataMap from TCollection(Shape          from TopoDS,
+                                 Boolean        from Standard,
+                                 ShapeMapHasher from TopTools);
+
+    class DataMapOfShapeInterference instantiates
+        DataMap from TCollection(Shape          from TopoDS,
+                                 Interference   from TopOpeBRepDS,
+                                 ShapeMapHasher from TopTools);
+
+    class  SequenceOfSequenceOfInteger  instantiates   
+        Sequence  from  TCollection(SequenceOfInteger  from  TColStd);
+
+    ConcatenateWire(Wire   :   Wire  from TopoDS;
+                    Option :   Shape from GeomAbs; 
+                    AngularTolerance  :  Real  =  1.0e-4)         
+    ---Purpose: this method makes a wire whose edges are C1 from
+    --          a Wire whose edges could be G1. It removes a vertex
+    --          between G1 edges.
+    --          Option can be G1 or C1.
+    returns Wire from TopoDS;
+
+    --BRepAlgoAPI  f 
+
+    IsValid(S: Shape from TopoDS) 
+    	returns Boolean from Standard
+	raises NullObject from Standard;
+	---Purpose: Checks if the  shape is "correct". If not, returns
+	--          <Standard_False>, else returns <Standard_True>.
+    	
+    IsValid(theArgs     : ListOfShape from TopTools;
+    	    theResult   : Shape       from TopoDS;
+    	    closedSolid : Boolean     from Standard = Standard_False;
+    	    GeomCtrl    : Boolean     from Standard = Standard_True) 
+    	returns Boolean from Standard; 
+	---Purpose: Checks if  the  Generated and Modified Faces  from
+	--          the shapes <arguments> in  the shape <result>  are
+	--          "correct". The args   may be empty, then all faces
+	--          will be checked. 
+	--          If <Closed> is True,  only  closed shape are valid. 
+	--           If <GeomCtrl>  is    False the geometry  of   new
+	--            vertices and edges   are   not verified and  the
+	--          auto-intersection of new wires are not searched.
+    	
+	 
+    IsTopologicallyValid(S: Shape from TopoDS) 
+    	returns Boolean from Standard
+	raises NullObject from Standard;
+	---Purpose: Checks if the shape is  "correct". If not, returns
+	--          <Standard_False>,  else   returns <Standard_True>.
+	--          This method differs from  the previous one in  the
+	--          fact that no   geometric contols (intersection  of
+	--          wires, pcurve validity) are performed.
+
+    --BRepAlgoAPI  t     
+
+end BRepAlgo;

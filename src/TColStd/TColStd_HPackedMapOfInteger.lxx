@@ -1,0 +1,16 @@
+// File:	TColStd_HPackedMapOfInteger.lxx
+// Created:	Tue Dec 05 14:45:46 2006
+// Author:	Sergey  KOCHETKOV
+// Copyright:   Open Cascade 2006 
+
+//! Access to the map
+inline const TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::Map () const 
+{ 
+  return myMap; 
+}
+
+//! Access to the map for modification
+inline TColStd_PackedMapOfInteger& TColStd_HPackedMapOfInteger::ChangeMap () 
+{ 
+  return myMap; 
+}

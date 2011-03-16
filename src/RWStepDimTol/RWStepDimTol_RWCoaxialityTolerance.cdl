@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWCoaxialityTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCoaxialityTolerance from RWStepDimTol
+
+    ---Purpose: Read & Write tool for CoaxialityTolerance
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CoaxialityTolerance from StepDimTol
+
+is
+    Create returns RWCoaxialityTolerance from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CoaxialityTolerance from StepDimTol);
+	---Purpose: Reads CoaxialityTolerance
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CoaxialityTolerance from StepDimTol);
+	---Purpose: Writes CoaxialityTolerance
+
+    Share (me; ent : CoaxialityTolerance from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCoaxialityTolerance;

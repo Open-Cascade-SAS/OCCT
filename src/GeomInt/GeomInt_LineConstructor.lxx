@@ -1,0 +1,69 @@
+// File:      GeomInt_LineConstructor.lxx
+// Created:   Tue Feb  7 10:12:45 1995
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 1995
+
+
+//=======================================================================
+//function : GeomInt_LineConstructor
+//purpose  : 
+//=======================================================================
+
+inline GeomInt_LineConstructor::GeomInt_LineConstructor ()
+ : done(Standard_False)
+{
+}
+
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+inline void GeomInt_LineConstructor::Load (const Handle(Adaptor3d_TopolTool)& D1,
+                                           const Handle(Adaptor3d_TopolTool)& D2,
+                                           const Handle(GeomAdaptor_HSurface)& S1,
+                                           const Handle(GeomAdaptor_HSurface)& S2)
+{
+  myDom1 = D1;
+  myDom2 = D2;
+  myHS1  = S1;
+  myHS2  = S2;
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GeomInt_LineConstructor::IsDone () const
+{
+  return done;
+}
+
+
+//=======================================================================
+//function : NbParts
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer GeomInt_LineConstructor::NbParts () const
+{
+  if (!done) { StdFail_NotDone::Raise(); }
+  return (seqp.Length() / 2);
+}
+
+
+//=======================================================================
+//function : Part
+//purpose  : 
+//=======================================================================
+inline void GeomInt_LineConstructor::Part (const Standard_Integer I,
+                                           Standard_Real& WFirst,
+                                           Standard_Real& WLast) const
+{
+  if (!done) { StdFail_NotDone::Raise(); }
+  WFirst = seqp(2*I-1);
+  WLast  = seqp(2*I);
+}

@@ -1,0 +1,100 @@
+-- File:	TNaming_Identifier.cdl
+-- Created:	Mon Mar  3 17:03:45 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class Identifier from TNaming 
+
+	---Purpose: 
+
+uses
+
+    Label            from TDF,
+    Shape            from TopoDS,
+    NamedShape       from TNaming,
+    ListOfNamedShape from TNaming,
+    ListOfShape      from TopTools,
+    NameType         from TNaming,
+    Localizer        from TNaming
+is
+
+    Create (Lab     : Label   from TDF;
+    	    S	    : Shape   from TopoDS;
+	    Context : Shape   from TopoDS;
+	    Geom    : Boolean from Standard)
+    returns Identifier from TNaming;	    
+    
+    Create (Lab     : Label      from TDF;
+    	    S	    : Shape      from TopoDS;
+	    Context : NamedShape from TNaming;
+	    Geom    : Boolean    from Standard)
+    returns Identifier from TNaming;	    
+    
+    
+    
+    ---Category: Querying
+
+    IsDone (me) returns Boolean from Standard;
+
+    Type (me) returns NameType from TNaming;
+
+    IsFeature (me : in out) returns Boolean from Standard;
+  
+    Feature   (me) returns NamedShape  from TNaming;
+    
+    
+    InitArgs (me : in out);
+    
+    MoreArgs (me) returns Boolean from Standard;
+    
+    NextArg (me : in out);
+    
+    ArgIsFeature(me) returns Boolean from Standard;	
+    
+    FeatureArg (me : in out) returns NamedShape from TNaming;
+
+    ShapeArg (me : in out) returns Shape from TopoDS;
+    
+    ShapeContext (me) returns Shape from TopoDS;
+
+    NamedShapeOfGeneration  (me) returns NamedShape from TNaming;
+
+    ---Category: Private methods.
+
+    AncestorIdentification(me        : in out; 
+    	    	    	   Localizer : in out Localizer from TNaming;
+    	    	    	   Context   :        Shape     from TopoDS);
+			   
+    PrimitiveIdentification(me        : in out; 
+    	    	    	    Localizer : in out Localizer  from TNaming;
+    	    	    	    NS        :        NamedShape from TNaming);
+
+    GeneratedIdentification(me        : in out; 
+    	    	    	    Localizer : in out Localizer  from TNaming;
+			    NS        :        NamedShape from TNaming);
+
+
+    Identification(me        : in out; 
+    	    	   Localizer : in out Localizer  from TNaming;	
+    	    	   NS        :        NamedShape from TNaming);
+
+fields
+    
+    myTDFAcces       : Label   from TDF;	
+    myShape          : Shape   from TopoDS;
+    myOneOnly        : Boolean from Standard;
+    
+    myDone           : Boolean from Standard;
+
+    myIsFeature      : Boolean          from Standard;
+    myType           : NameType         from TNaming;
+    myFeature        : NamedShape       from TNaming;
+    myPrimitiveArgs  : ListOfNamedShape from TNaming;	
+    myShapeArgs      : ListOfShape      from TopTools;
+    myNSContext      : NamedShape       from TNaming;
+    
+end Identifier;
+
+

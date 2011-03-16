@@ -1,0 +1,89 @@
+-- File:	InterferencePolygon2d.cdl
+-- Created:	Mon Sep 28 17:09:45 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class InterferencePolygon2d from Intf
+    (Polygon2d1 as any;
+     ToolPolygon2d1 as any;         -- as ToolPolygon(Pnt2d, Polygon2d1, Box2d)
+     Polygon2d2 as any;
+     ToolPolygon2d2 as any)         -- as ToolPolygon(Pnt2d, Polygon2d2, Box2d)
+    inherits Interference from Intf
+
+
+	---Purpose: Computes the  interference between two  polygons or
+	--          the    self intersection of    a  polygon  in  two
+	--          dimensions.
+
+
+uses    Pnt2d             from gp,
+    	SectionPoint      from Intf,
+    	SeqOfSectionPoint from Intf,
+    	TangentZone       from Intf,
+    	SeqOfTangentZone  from Intf
+
+
+raises  OutOfRange from Standard
+
+is
+
+-- Interface :
+
+    Create          returns InterferencePolygon2d from Intf;
+    ---Purpose: Constructs an empty interference of Polygon.
+
+
+    Create         (Obje1: in Polygon2d1 ;Obje2 : in Polygon2d2) 
+    	            returns InterferencePolygon2d from Intf;
+    ---Purpose: Constructs and computes an interference between two Polygons.
+
+
+    Create         (Obje       : in Polygon2d1) 
+    	            returns InterferencePolygon2d from Intf;
+    ---Purpose: Constructs and computes the auto interference of a Polygon.
+
+
+    Perform        (me         : in out;
+    	    	    Obje1: Polygon2d1 ;Obje2 : in Polygon2d2);
+    ---Purpose: Computes an interference between two Polygons.
+
+
+    Perform        (me         : in out;
+    	    	    Obje       : in Polygon2d1);
+    ---Purpose: Computes the self interference of a Polygon.
+
+
+    Pnt2dValue     (me;
+    	    	    Index      : in Integer)
+		    returns Pnt2d from gp
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives the  geometrical 2d point   of the  intersection
+    --          point at address <Index> in the interference.
+
+
+-- Implementation :
+
+    Interference   (me         : in out;
+    	    	    Obje1      : in Polygon2d1;
+     	    	    Obje2      : in Polygon2d2)
+    	    	    is private;
+
+    Interference   (me         : in out;
+    	    	    Obje       : in Polygon2d1)
+    	    	    is private;
+
+    Clean          (me   : in out) is private;
+
+    Intersect      (me         : in out;
+		    BegO : in Pnt2d from gp;
+		    EndO : in Pnt2d from gp;
+		    BegT : in Pnt2d from gp;
+		    EndT : in Pnt2d from gp)
+    	    	    is private;
+    ---Purpose: Computes the intersection between two segments 
+    --          <BegO><EndO> et <BegT><EndT>.
+
+end InterferencePolygon2d;

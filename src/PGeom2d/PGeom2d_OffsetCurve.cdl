@@ -1,0 +1,63 @@
+-- File:	PGeom2d_OffsetCurve.cdl
+-- Created:	Tue Apr  6 17:31:17 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class OffsetCurve from PGeom2d inherits Curve from PGeom2d
+
+        ---Purpose :
+        --  This class implements the basis services for an offset curve
+        --  in 3D space.
+        --  
+	---See Also : OffsetCurve from Geom2d.
+
+uses Curve from PGeom2d
+
+
+is
+    
+
+  Create returns mutable OffsetCurve from PGeom2d;
+    ---Purpose: Creates an OffsetCurve with default values.
+	---Level: Internal 
+
+
+  Create (
+    	    aBasisCurve : Curve from PGeom2d;
+    	    aOffsetValue : Real from Standard)
+     returns mutable OffsetCurve from PGeom2d;
+        ---Purpose : <aBasisCurve> is  the basis curve, <aOffsetValue>
+        --         is the distance between <me> and the basis curve at
+        --         any point.    <aOffsetDirection>  defines the fixed
+        --         reference direction (offset direction).
+	---Level: Internal 
+
+
+  BasisCurve (me : mutable; aBasisCurve : Curve from PGeom2d);
+	---Purpose: Set the field basisCurve with <aBasisCurve>.
+	---Level: Internal 
+      
+
+  BasisCurve (me) returns Curve from PGeom2d;
+        ---Purpose : The basis curve can be an offset curve.
+	---Level: Internal 
+
+
+  OffsetValue (me : mutable; aOffsetValue : Real from Standard);
+        ---Purpose : Set the field offsetValue with <aOffsetValue>.
+	---Level: Internal 
+
+
+  OffsetValue (me) returns Real from Standard;
+        ---Purpose : Returns the value of the field offsetValue.
+	---Level: Internal 
+
+
+fields
+
+  basisCurve      : Curve from PGeom2d;
+  offsetValue     : Real from Standard;
+
+end;

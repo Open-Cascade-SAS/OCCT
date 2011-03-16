@@ -1,0 +1,104 @@
+-- File:       SolidExplorer.cdl
+-- Created:	Thu Mar 10 14:02:10 1994
+-- Author:      Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class SolidExplorer from TopClass 
+
+	---Purpose: Provide an   exploration of a  BRep Shape   for the
+	--          classification.
+
+uses
+    Pnt          from gp,
+    Lin          from gp,
+    Face         from TopoDS,
+    Shape        from TopoDS
+
+is
+    
+    Reject(me;  P : Pnt from gp) returns Boolean
+	---Purpose: Should  return  True  if the  point  is  outside a
+	--          bounding volume of the shape.
+    is deferred;
+    
+    Segment(me: in out;  P :  Pnt from gp;
+    	                 L : out Lin from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the  shape  boundary  to
+	 --          compute  intersections. 
+	 --          
+    is deferred;
+
+    OtherSegment(me: in out;  P :  Pnt from gp;
+    	                      L : out Lin from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the  shape  boundary  to
+	 --          compute  intersections. 
+	 --          
+	 --          The First Call to this method returns a line which
+	 --          point to a point of the first face of the shape.
+	 --          The Second Call provide a line to the second face
+	 --          and so on. 
+	 --          
+	 --          if the method is called N times on a shape with F 
+	 --          faces (N>F) the line point to other points on the
+	 --          face 1,2,3 ... N 
+    is deferred;
+    
+    InitShell(me : in out)
+	---Purpose: Starts an exploration of the shells.
+    is deferred;
+    
+    MoreShells(me) returns Boolean
+	---Purpose: Returns True if there is  a current shell.
+    is deferred;
+    	
+    NextShell(me : in out)
+	---Purpose: Sets the explorer  to the  next  shell and  returns
+	--          False if there are no more wires.
+    is deferred;
+    
+    RejectShell(me; L :  Lin from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the shell  bounding volume does not
+	--          intersect the segment.
+    is deferred;
+    
+
+    
+    InitFace(me : in out)
+	---Purpose: Starts an exploration of the faces.
+    is deferred;
+    
+    MoreFaces(me) returns Boolean
+	---Purpose: Returns True if there is  a current face.
+    is deferred;
+    	
+    NextFace(me : in out)
+	---Purpose: Sets the explorer  to the  next  face and  returns
+	--          False if there are no more wires.
+    is deferred;
+    
+    CurrentFace(me) returns Face from TopoDS
+    	---Purpose: Returns the current face.
+    is deferred;
+    
+    RejectFace(me; L :  Lin from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the face  bounding volume does not
+	--          intersect the segment.
+    is deferred;
+    
+                                                                                      
+     --------------------------------------------------------------------
+
+
+end SolidExplorer;
+
+
+
+
+
+
+
+

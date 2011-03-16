@@ -1,0 +1,164 @@
+-- File:	BOPTools_PoolsFiller.cdl
+-- Created:	Tue Feb 20 12:38:40 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class DSFiller from BOPTools 
+
+	---Purpose:   
+	---  class that provides  
+        ---  1. creation of the data structure (DS)    	 
+        ---  2. creation of the interferences' pool   	 
+        ---  3. invokation of PaveFiller->Perform() to fill the DS 
+    	---
+uses
+    Shape from TopoDS,  
+    ShapesDataStructure  from BooleanOperations,
+    PShapesDataStructure from BooleanOperations, 
+    InterferencePool     from BOPTools,  
+    PInterferencePool    from BOPTools, 
+    PavePool        from BOPTools,      
+    PPaveFiller     from BOPTools,  
+    PaveFiller      from BOPTools,  
+    SSIntersectionAttribute from BOPTools,
+    SplitShapesPool from BOPTools,  
+    CommonBlockPool from BOPTools, 
+    DataMapOfIntegerListOfInteger from TColStd,
+    SetOfInteger  from  TColStd
+
+is 
+    Create  
+    	returns DSFiller from BOPTools;
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Destroy (me:out);
+    	---C++: alias ~
+    	---Purpose: Destructor 
+    	---
+    SetShapes (me:out; aS1, aS2:  Shape from TopoDS); 
+    	---Purpose: 
+    	--- Modifier	
+    	--- Sets the arguments of boolean operation           
+    	---
+    Shape1(me) 
+    	returns  Shape from TopoDS; 
+    	---C++:  return  const& 
+    	---Purpose:
+    	--- Selector           
+    	---
+    Shape2(me) 
+    	returns  Shape from TopoDS; 
+    	---C++:  return  const& 
+    	---Purpose:
+    	--- Selector           
+    	---
+    Perform (me:out); 
+    	---Purpose:
+    	--- Performs the filling of the DS
+	--- 
+	 
+    InitFillersAndPools(me:out); 
+	 
+    PartialPerform(me:out; anObjSubSet, aToolSubSet:  SetOfInteger  from  TColStd); 
+     
+    ToCompletePerform(me:out);		   
+ 
+    Perform (me:out; theSectionAttribute: SSIntersectionAttribute from BOPTools);
+    	---Purpose:
+    	--- Performs the filling of the DS
+    	---
+    DS  (me) 
+	returns  ShapesDataStructure from BooleanOperations; 
+    	---C++:  return  const&     	
+    	---Purpose:
+    	--- Selector           
+    	---
+    InterfPool (me) 
+    	returns  InterferencePool from BOPTools;
+    	---C++:  return const &   
+    	---Purpose:
+    	--- Selector           
+    	---
+    PavePool  (me) 
+    	returns  PavePool from BOPTools;  
+    	---C++:  return  const&  
+    	---Purpose:
+    	--- Selector           
+    	---
+    CommonBlockPool(me) 
+    	returns  CommonBlockPool from BOPTools; 
+    	---C++:return const &	 
+    	---Purpose:
+    	--- Selector           
+    	---
+    SplitShapesPool(me)  
+    	returns  SplitShapesPool from BOPTools;
+    	---C++:return const &	
+    	---Purpose:
+    	--- Selector           
+    	---
+    PaveFiller (me) 
+    	returns  PaveFiller from BOPTools; 
+    	---C++:return const &	
+    	---Purpose:
+    	--- Selector           
+    	---
+    Clear   (me:out) 
+    	is  private; 
+    	---Purpose:
+    	--- Clear contents of the DS and the interferences' pool            
+    	---
+    IsNewFiller(me) 
+    	returns Boolean from  Standard; 
+    	---Purpose: 
+    	--- Returns TRUE if new DS and the interferences' pool has been created           
+    	---
+    SetNewFiller(me;  
+    	    aFlag:Boolean from  Standard);	
+    	---Purpose:
+    	--- Modifier           
+    	---
+    IsDone(me) 
+    	returns  Boolean  from  Standard;  
+    	---Purpose:
+    	--- Selector               
+    	---
+    SplitFacePool(me)
+    	---C++: return const&
+    	---C++: inline
+    	returns DataMapOfIntegerListOfInteger from TColStd;
+
+    ChangeSplitFacePool(me: out)
+    	---C++: return &
+    	---C++: inline
+    	returns DataMapOfIntegerListOfInteger from TColStd;
+     
+    --modified by NIZHNY-MKK  Tue Sep  7 12:03:34 2004
+    TreatCompound(myclass; theShape: Shape from TopoDS;
+    	    	    	   theShapeResult: out Shape from TopoDS)
+    	returns Integer from Standard;
+    	---Purpose: Finds sub-shapes of theShape having equal type
+	--          and store them in theShapeResult.
+	--          Returns the following status codes:
+	--          0 - OK
+	--          1 - Error: theShape is a COMPSOLID
+	--          2 - Error: theShape is not a COMPOUND
+	--          3 - Error: theShape contains shapes of COMPSOLID type
+	--          4 - Error: Subshape of theShape have unkown type
+	--          5 - Error: theShape contains shapes of different type
+
+fields
+    myShape1      :  Shape from TopoDS;
+    myShape2      :  Shape from TopoDS;
+    myDS          :  PShapesDataStructure from BooleanOperations; 
+    myInterfPool  :  PInterferencePool    from BOPTools;  
+    myPaveFiller  :  PPaveFiller from BOPTools;   
+    myIsDone      :  Boolean from  Standard; 
+    mySplitFacePool:  DataMapOfIntegerListOfInteger from TColStd;
+     
+    myNewFiller   :  Boolean from  Standard;       
+    
+end DSFiller;

@@ -1,0 +1,341 @@
+-- File:	Blend_Point.cdl
+-- Created:	Thu Dec  2 12:23:09 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Point from Blend
+
+	---Purpose: 
+
+uses Pnt   from gp,
+     Vec   from gp,
+     Vec2d from gp
+
+raises DomainError from Standard
+
+is
+
+    Create returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard;
+	   Tg1,Tg2       : Vec from gp;
+	   Tg12d,Tg22d   : Vec2d from gp)
+    ---Purpose: Creates a point on 2 surfaces, with tangents.
+    returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard)
+    ---Purpose: Creates a point on 2 surfaces, without tangents.
+    returns Point from Blend;
+	
+    Create(Pts,Ptc       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U,V,W         : Real from Standard;
+	   Tgs,Tgc       : Vec from gp;
+	   Tg2d          : Vec2d from gp)
+    ---Purpose: Creates a point on a surface and a curve, with tangents.
+    returns Point from Blend;
+	
+    Create(Pts,Ptc       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U,V,W         : Real from Standard)
+    ---Purpose: Creates a point on a surface and a curve, without tangents.
+    returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard;
+	   PC            : Real from Standard;
+	   Tg1,Tg2       : Vec from gp;
+	   Tg12d,Tg22d   : Vec2d from gp)
+    ---Purpose: Creates a point on a surface and a curve on surface, 
+    --          with tangents.
+    returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard;
+	   PC            : Real from Standard)
+    ---Purpose: Creates a point on a surface and a curve on surface, 
+    --          without tangents.
+    returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard;
+	   PC1,PC2       : Real from Standard;
+	   Tg1,Tg2       : Vec from gp;
+	   Tg12d,Tg22d   : Vec2d from gp)
+    ---Purpose: Creates a point on two curves on surfaces, with tangents.
+    returns Point from Blend;
+	
+    Create(Pt1,Pt2       : Pnt from gp;
+    	   Param         : Real from Standard;
+    	   U1,V1,U2,V2   : Real from Standard;
+	   PC1,PC2       : Real from Standard)
+    ---Purpose: Creates a point on two curves on surfaces, with tangents.
+    returns Point from Blend;
+	
+    SetValue(me: in out;Pt1,Pt2       : Pnt from gp;
+                        Param         : Real from Standard;
+    	                U1,V1,U2,V2   : Real from Standard;
+	                Tg1,Tg2       : Vec from gp;
+	                Tg12d,Tg22d   : Vec2d from gp)
+    ---Purpose: Set the values for a point on 2 surfaces, with tangents.
+    is static;
+
+    SetValue(me: in out;Pt1,Pt2       : Pnt from gp;
+                        Param         : Real from Standard;
+    	                U1,V1,U2,V2   : Real from Standard)
+    ---Purpose: Set the values for a point on 2 surfaces, without tangents.
+    is static;
+
+    SetValue(me: in out;Pts,Ptc       : Pnt from gp;
+                        Param         : Real from Standard;
+    	                U,V,W         : Real from Standard;
+	                Tgs,Tgc       : Vec from gp;
+	                Tg2d          : Vec2d from gp)
+    ---Purpose: Set the values for a point on a surface and a curve,
+    --          with tangents.
+    is static;
+
+    SetValue(me: in out;Pts,Ptc       : Pnt from gp;
+                        Param         : Real from Standard;
+    	                U,V,W         : Real from Standard)
+    ---Purpose: Set the values for a point on a surface and a curve,
+    --          without tangents.
+    is static;
+
+    SetValue(me            : in out;
+    	     Pt1,Pt2       : Pnt from gp;
+    	     Param         : Real from Standard;
+    	     U1,V1,U2,V2   : Real from Standard;
+	     PC            : Real from Standard;
+	     Tg1,Tg2       : Vec from gp;
+	     Tg12d,Tg22d   : Vec2d from gp);
+    ---Purpose: Creates a point on a surface and a curve on surface, 
+    --          with tangents.
+	
+    SetValue(me            : in out;
+    	     Pt1,Pt2       : Pnt from gp;
+    	     Param         : Real from Standard;
+    	     U1,V1,U2,V2   : Real from Standard;
+	     PC            : Real from Standard);
+    ---Purpose: Creates a point on a surface and a curve on surface, 
+    --          without tangents.
+	
+    SetValue(me            : in out;
+    	     Pt1,Pt2       : Pnt from gp;
+    	     Param         : Real from Standard;
+    	     U1,V1,U2,V2   : Real from Standard;
+	     PC1,PC2       : Real from Standard;
+	     Tg1,Tg2       : Vec from gp;
+	     Tg12d,Tg22d   : Vec2d from gp);
+    ---Purpose: Creates a point on two curves on surfaces, with tangents.
+	
+    SetValue(me            : in out;
+    	     Pt1,Pt2       : Pnt from gp;
+    	     Param         : Real from Standard;
+    	     U1,V1,U2,V2   : Real from Standard;
+	     PC1,PC2       : Real from Standard);
+    ---Purpose: Creates a point on two curves on surfaces, without tangents.
+	
+    SetValue(me            : in out;
+    	     Pt1,Pt2       : Pnt from gp;
+    	     Param         : Real from Standard;
+	     PC1,PC2       : Real from Standard);
+    ---Purpose: Creates a point on two curves.
+	
+    Parameter(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+    
+    IsTangencyPoint(me)
+    ---Purpose: Returns Standard_True if it was not possible to compute
+    --          the tangent vectors at PointOnS1 and/or PointOnS2.
+    ---C++: inline
+    returns Boolean from Standard
+    is static;
+
+
+-- methods for a point on 2 surfaces
+
+    PointOnS1(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+    
+    PointOnS2(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+
+    ParametersOnS1(me; U,V: out Real from Standard)
+    ---C++: inline
+    is static;
+    
+    ParametersOnS2(me; U,V: out Real from Standard)
+    ---C++: inline
+    is static;
+
+    TangentOnS1(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    TangentOnS2(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    Tangent2dOnS1(me)
+    returns Vec2d from gp
+    ---C++: inline
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    Tangent2dOnS2(me)
+    returns Vec2d from gp
+    ---C++: inline
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+
+-- methods for a point on a surface and a curve
+
+    PointOnS(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+    
+    PointOnC(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+
+    ParametersOnS(me; U,V: out Real from Standard)
+    ---C++: inline
+    is static;
+    
+    ParameterOnC(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+    
+    TangentOnS(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    TangentOnC(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    Tangent2d(me)
+    returns Vec2d from gp
+    ---C++: inline
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+
+-- methods for a point on two curves
+
+    PointOnC1(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+    
+    PointOnC2(me)
+    returns Pnt from gp
+    ---C++: inline
+    ---C++: return const&
+    is static;
+
+
+    ParameterOnC1(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+    
+    ParameterOnC2(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+
+    
+    TangentOnC1(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;
+    
+    TangentOnC2(me)
+    returns Vec from gp
+    ---C++: inline
+    ---C++: return const&
+    raises DomainError from Standard
+    --- The exception is raised when IsTangencyPoint
+    --  returns Standard_True.
+    is static;   
+    
+    
+        
+fields
+    pt1    : Pnt     from gp;
+    pt2    : Pnt     from gp; 
+    tg1    : Vec     from gp;
+    tg2    : Vec     from gp;
+    prm    : Real    from Standard;
+    u1     : Real    from Standard;
+    v1     : Real    from Standard;
+    u2     : Real    from Standard;
+    v2     : Real    from Standard;
+    pc1    : Real    from Standard;
+    pc2    : Real    from Standard;
+    utg12d : Real    from Standard;
+    vtg12d : Real    from Standard;
+    utg22d : Real    from Standard;
+    vtg22d : Real    from Standard;
+    hass1  : Boolean from Standard;
+    hass2  : Boolean from Standard;    
+    hasc1  : Boolean from Standard; 
+    hasc2  : Boolean from Standard;
+    istgt  : Boolean from Standard;    
+end Point;

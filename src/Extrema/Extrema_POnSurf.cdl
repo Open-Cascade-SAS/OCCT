@@ -1,0 +1,37 @@
+-- File:	POnSurf.cdl
+-- Created:	Thu Feb 21 18:19:00 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class   POnSurf from Extrema inherits Storable from Standard
+    	---Purpose: Definition of a point on surface.
+
+uses    Pnt from gp
+
+is
+    Create returns POnSurf;
+    	---Purpose: Creation of an indefinite point on surface.
+
+    Create (U,V: Real; P: Pnt) returns POnSurf;
+    	---Purpose: Creation of a point on surface with parameter 
+    	--          values on the surface and a Pnt from gp.
+
+    Value (me) returns Pnt
+    	---Purpose: Returns the 3d point.
+    	---C++: return const&
+    	---C++: inline
+    	is static;
+
+    Parameter (me; U,V: out Real) 
+    	---Purpose: Returns the parameter values on the surface.
+    	---C++: inline
+    	is static;          
+    
+fields
+    myU: Real;
+    myV: Real;
+    myP: Pnt from gp;
+
+end POnSurf;

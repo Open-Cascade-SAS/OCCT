@@ -1,0 +1,62 @@
+-- File:	BRep_GCurve.cdl
+-- Created:	Thu Mar  9 15:21:03 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+deferred class GCurve from BRep inherits CurveRepresentation from BRep
+
+	---Purpose: Root   class    for    the    geometric     curves
+	--          representation. Contains a range.
+
+uses
+
+    Location from TopLoc,
+    Pnt      from gp
+
+is
+
+    Initialize(L : Location from TopLoc; First, Last : Real);
+
+    SetRange(me : mutable; First, Last : Real)
+	---C++: inline
+    is static;
+    
+    Range(me; First, Last : out Real)
+	---C++: inline
+    is static;
+    
+    First(me) returns Real
+	---C++: inline
+    is static;
+
+    Last(me) returns Real
+	---C++: inline
+    is static;
+
+    First(me : mutable; F : Real)
+	---C++: inline
+    is static;
+
+    Last(me : mutable; L : Real)
+	---C++: inline
+    is static;
+
+
+    D0(me; U : Real; P : out Pnt from gp)
+	---Purpose: Computes the point at parameter U.
+    is deferred;
+    
+
+    Update(me : mutable)
+	---Purpose: Recomputes any derived data after a modification.
+	--          This is called when the range is modified.
+    is virtual;
+
+fields
+    myFirst    : Real;
+    myLast     : Real;
+
+end GCurve;

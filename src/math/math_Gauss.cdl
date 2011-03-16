@@ -1,0 +1,120 @@
+-- File:        Gauss.cdl
+-- Created:     Mon May 13 15:45:42 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class Gauss from math 
+    ---Purpose:
+    -- This class implements the Gauss LU decomposition (Crout algorithm) 
+    -- with partial pivoting (rows interchange) of a square matrix and 
+    -- the different possible derived calculation : 
+    --    - solution of a set of linear equations.
+    --    - inverse of a matrix.
+    --    - determinant of a matrix.
+
+
+uses  Vector from math, 
+      IntegerVector from math, 
+      Matrix from math,
+      OStream from Standard
+
+raises NotSquare from math, 
+       DimensionError from Standard,
+       NotDone from StdFail
+
+is 
+
+    Create(A: Matrix; MinPivot: Real = 1.0e-20)
+    ---Purpose:
+    -- Given an input n X n matrix A this constructor performs its LU 
+    -- decomposition with partial pivoting (interchange of rows).
+    -- This LU decomposition is stored internally and may be used to
+    -- do subsequent calculation.
+    -- If the largest pivot found is less than MinPivot the matrix A is 
+    -- considered as singular.
+    -- Exception NotSquare is raised if A is not a square matrix.
+
+    returns Gauss
+    raises NotSquare;
+
+    
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false
+       	---C++: inline
+     returns Boolean
+     is static;
+
+
+    Solve(me; B: Vector; X : out Vector)
+    ---Purpose:
+    -- Given the input Vector B this routine returns the solution X of the set
+    -- of linear equations A . X = B. 
+    -- Exception NotDone is raised if the decomposition of A was not done
+    -- successfully. 
+    -- Exception DimensionError is raised if the range of B is not 
+    -- equal to the number of rows of A.
+    
+    raises NotDone, 
+    	   DimensionError
+    is static;
+
+
+    Solve(me; B: in out Vector)
+    ---Purpose:
+    -- Given the input Vector B this routine solves the set of linear 
+    -- equations A . X = B. B is replaced by the vector solution X. 
+    -- Exception NotDone is raised if the decomposition of A was not done
+    -- successfully.
+    -- Exception DimensionError is raised if the range of B is not 
+    -- equal to the number of rows of A.
+
+    raises DimensionError
+    is static;
+    
+    
+    Determinant(me)
+    ---Purpose:
+    -- This routine returns the value of the determinant of the previously LU 
+    -- decomposed matrix A.
+    -- Exception NotDone may be raised if the decomposition of A was not done
+    -- successfully, zero is returned if the matrix A was considered as singular.
+
+    returns Real
+    raises NotDone
+    is static;
+
+
+    Invert(me; Inv: out Matrix)
+    ---Purpose:
+    -- This routine outputs Inv the inverse of the previously LU decomposed
+    -- matrix A.
+    -- Exception DimensionError is raised if the ranges of B are not 
+    -- equal to the ranges of A.
+
+    raises DimensionError
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:     Boolean;
+Singular: Boolean is protected;
+LU:       Matrix is protected;
+Index:    IntegerVector is protected;
+D:        Real is protected;
+
+
+
+end Gauss;

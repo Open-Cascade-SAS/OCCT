@@ -1,0 +1,451 @@
+-- File:	ChFi3d_ChBuilder.cdl
+-- Created:	Wed Apr 26 10:35:08 1995
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1995
+
+class ChBuilder from ChFi3d inherits Builder from ChFi3d
+
+	---Purpose: construction tool for 3D chamfers on edges.
+
+uses
+    Shape              from TopoDS,
+    Edge               from TopoDS,
+    Face               from TopoDS,
+    Vertex             from TopoDS,
+    State              from TopAbs,
+    Orientation        from TopAbs,
+    HElSpine           from ChFiDS,
+    SequenceOfSurfData from ChFiDS,
+    SurfData           from ChFiDS,
+    Stripe             from ChFiDS,
+    ListOfStripe       from ChFiDS,
+    Spine              from ChFiDS,
+    SecHArray1         from ChFiDS,
+    Function           from Blend,
+    HCurve             from Adaptor3d,
+    HCurve2d           from BRepAdaptor,
+    HSurface           from BRepAdaptor,
+    HCurve             from Adaptor3d,
+    TopolTool          from Adaptor3d,
+    Vector             from math,
+    ChamfMethod        from ChFiDS  ,
+    Pnt2d              from gp
+    
+raises  
+    ConstructionError from Standard,
+    DomainError from Standard
+
+is
+
+	Create(S : Shape from TopoDS; Ta : Real from Standard = 1.0e-2)  
+        returns ChBuilder from ChFi3d;
+	    ---Purpose: initializes the Builder with the Shape <S> for the
+	    --          computation of chamfers
+
+
+    	Add(me : in out; E : Edge from TopoDS) 
+	    ---Purpose: initializes a contour with the edge <E> as first
+	    --          (the next are found by propagation ).
+    	    --          The two distances (parameters of the chamfer) must
+    	    --          be set after.
+        raises ConstructionError from Standard
+	    ---Purpose: if the edge <E> has more than 2 adjacent faces
+	is static;
+	
+	Add(me : in out;
+    	    Dis : Real from Standard; 
+    	    E   : Edge from TopoDS;
+    	    F   : Face from TopoDS) 
+	    ---Purpose: initializes a new contour with the edge <E> as first
+	    --          (the next are found by propagation ), and  the 
+	    --          distance <Dis> 
+        raises ConstructionError from Standard
+	    ---Purpose: if the edge <E> has more than 2 adjacent faces
+	is static; 
+	
+    	SetDist(me  : in out;
+    	    	Dis : Real;
+    	    	IC  : Integer from Standard;
+    	    	F   : Face from TopoDS) 
+	    ---Purpose: set the distance <Dis> of the fillet 
+	    --          contour of index <IC> in the DS with <Dis> on <F>.
+	raises DomainError from Standard
+	    ---Purpose: if the face <F> is not one of common faces
+	    --          of an edge of the contour <IC> 
+	is static; 
+
+    
+    	GetDist(me ;
+	      	IC  : Integer from Standard;
+	      	Dis : out Real from Standard)
+	    ---Purpose: gives the distances <Dis> of the fillet 
+	    --          contour of index <IC> in the DS 	
+        is static;
+	
+    	Add(me : in out;
+    	    Dis1, Dis2 : Real from Standard; 
+    	    E : Edge from TopoDS;
+    	    F : Face from TopoDS) 
+	    ---Purpose: initializes a new contour with the edge <E> as first
+	    --          (the next are found by propagation ), and  the 
+	    --          distance <Dis1> and <Dis2>  
+        raises ConstructionError from Standard
+	    ---Purpose: if the edge <E> has more than 2 adjacent faces
+	is static; 
+	
+    	SetDists(me : in out;
+    	    	 Dis1, Dis2 : Real;
+    	    	 IC : Integer from Standard;
+    	    	 F : Face from TopoDS) 
+	    ---Purpose: set the distances <Dis1> and <Dis2> of the fillet 
+	    --          contour of index <IC> in the DS with <Dis1> on <F>.
+	raises DomainError from Standard
+	    ---Purpose: if the face <F> is not one of common faces
+	    --          of an edge of the contour <IC> 
+	is static; 
+
+    
+    	Dists(me ;
+	      IC : Integer from Standard;
+	      Dis1, Dis2 : out Real from Standard)
+	    ---Purpose: gives the distances <Dis1> and <Dis2> of the fillet 
+	    --          contour of index <IC> in the DS 	
+        is static;              
+
+
+    	AddDA(me : in out;
+    	      Dis   : Real from Standard;
+              Angle : Real from Standard; 
+    	      E     : Edge from TopoDS;
+    	      F     : Face from TopoDS) 
+	    ---Purpose: initializes a new contour with the edge <E> as first
+	    --          (the next are found by propagation ), and  the 
+	    --          distance <Dis1> and <Angle> 
+        raises ConstructionError from Standard
+	    ---Purpose: if the edge <E> has more than 2 adjacent faces
+	is static; 
+
+
+    	SetDistAngle(me         : in out;
+    	    	     Dis        : Real    from Standard;
+    	    	     Angle      : Real    from Standard;
+    	    	     IC         : Integer from Standard;
+    	    	     F          : Face    from TopoDS) 
+	    ---Purpose: set the distance <Dis> and <Angle> of the fillet 
+	    --          contour of index <IC> in the DS with <Dis> on <F>.
+	raises DomainError from Standard
+	    ---Purpose: if the face <F> is not one of common faces
+	    --          of an edge of the contour <IC> 
+	is static; 
+
+    
+    	GetDistAngle(me ; 
+    	    	     IC         :        Integer from Standard;
+    	    	     Dis        : in out Real    from Standard;
+    	    	     Angle      : in out Real    from Standard;
+    	    	     DisOnFace1 : in out Boolean from Standard)
+	    ---Purpose: gives the distances <Dis> and <Angle> of the fillet 
+	    --          contour of index <IC> in the DS 	
+        is static;              
+
+        IsChamfer(me;
+                  IC :        Integer from Standard)
+         returns ChamfMethod from ChFiDS is static;
+    	    ---Purpose: renvoi la methode des chanfreins utilisee  
+
+        ResetContour(me : in out;
+                     IC : Integer from Standard) 
+        ---Purpose: Reset tous rayons du contour IC.
+        is static;
+
+    	---Methods for quick simulation
+    	-------------------------------
+
+        Simulate(me : in out; 
+	    	 IC : Integer from Standard);
+		 
+        NbSurf(me; IC : Integer from Standard)
+    	returns Integer from Standard;		 
+
+    	Sect(me; IC, IS : Integer from Standard)
+    	returns mutable SecHArray1 from ChFiDS;
+    
+        SimulKPart(me; SD : mutable SurfData from ChFiDS)
+        is protected; 
+
+        SimulSurf(me              : in out; 
+                  Data            : out SurfData from ChFiDS;
+    	          Guide           : HElSpine from ChFiDS;
+   	          Spine           : Spine from ChFiDS; 
+    	    	  Choix           : Integer from Standard;
+                  S1              : HSurface from BRepAdaptor;
+     	          I1              : TopolTool from Adaptor3d;
+	          S2              : HSurface from BRepAdaptor;
+	          I2              : TopolTool from Adaptor3d;
+    	          TolGuide        : Real from Standard;
+    	          First,Last      : in out Real from Standard;
+	          Inside,Appro    : Boolean from Standard;
+		  Forward         : Boolean from Standard;
+	          RecOnS1,RecOnS2 : Boolean from Standard;
+		  Soldep          : Vector from math;
+    	    	  Intf,Intl       : in out Boolean from Standard) 
+	returns  Boolean
+    	is protected;
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      PC1                  : HCurve2d from BRepAdaptor;
+              Sref1                : HSurface from BRepAdaptor;
+	      PCref1               : HCurve2d from BRepAdaptor;
+	      Decroch1             : out Boolean from Standard;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      Or2                  : Orientation from TopAbs;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP,RecS,RecRst     : Boolean from Standard;
+              Soldep               : Vector from math)
+    is redefined;	
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      Or1                  : Orientation from TopAbs;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      PC2                  : HCurve2d from BRepAdaptor;
+              Sref2                : HSurface from BRepAdaptor;
+	      PCref2               : HCurve2d from BRepAdaptor;
+	      Decroch2             : out Boolean from Standard;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP,RecS,RecRst     : Boolean from Standard;
+              Soldep               : Vector from math)
+
+    is redefined;	
+
+    SimulSurf(me                   : in out; 
+              Data                 : out SurfData from ChFiDS;
+              Guide                : HElSpine from ChFiDS;
+              Spine                : Spine from ChFiDS; 
+              Choix                : Integer from Standard;
+              S1                   : HSurface from BRepAdaptor;
+              I1                   : TopolTool from Adaptor3d;
+	      PC1                  : HCurve2d from BRepAdaptor;
+              Sref1                : HSurface from BRepAdaptor;
+	      PCref1               : HCurve2d from BRepAdaptor;
+	      Decroch1             : out Boolean from Standard;
+	      Or1                  : Orientation from TopAbs;
+              S2                   : HSurface from BRepAdaptor;
+              I2                   : TopolTool from Adaptor3d;
+	      PC2                  : HCurve2d from BRepAdaptor;
+              Sref2                : HSurface from BRepAdaptor;
+	      PCref2               : HCurve2d from BRepAdaptor;
+	      Decroch2             : out Boolean from Standard;
+              Or2                  : Orientation from TopAbs;
+              Fleche               : Real from Standard;
+              TolGuide             : Real from Standard;
+              First,Last           : in out Real from Standard;
+              Inside,Appro,Forward : Boolean from Standard;
+              RecP1,RecRst1        : Boolean from Standard;
+              RecP2,RecRst2        : Boolean from Standard;
+              Soldep               : Vector from math)
+
+    is redefined;	
+
+    	---Methods for computation
+    	--------------------------
+
+        PerformFirstSection(me ;
+                            S         :        Spine    from ChFiDS;
+                            HGuide    :        HElSpine from ChFiDS;
+	                    Choix     :        Integer  from Standard;
+                            S1,S2     : in out HSurface from BRepAdaptor;
+                            I1,I2     :        TopolTool from Adaptor3d;
+ 			    Par       :        Real      from Standard;
+		 	    SolDep    : in out Vector    from math;
+                            Pos1,Pos2 :    out State    from TopAbs)
+        returns Boolean from Standard
+        is protected;		 
+
+    PerformSurf(me              : in out; 
+                Data            : out SequenceOfSurfData from ChFiDS;
+                Guide           : HElSpine from ChFiDS;
+                Spine           : Spine from ChFiDS; 
+                Choix           : Integer from Standard;
+                S1              : HSurface from BRepAdaptor;
+                I1              : TopolTool from Adaptor3d;
+                S2              : HSurface from BRepAdaptor;
+                I2              : TopolTool from Adaptor3d;
+                MaxStep         : Real from Standard;
+                Fleche          : Real from Standard;
+                TolGuide        : Real from Standard;
+                First,Last      : in out Real from Standard;
+                Inside,Appro    : Boolean from Standard;
+                Forward         : Boolean from Standard;
+                RecOnS1,RecOnS2 : Boolean from Standard;
+                Soldep          : Vector from math;
+                Intf,Intl       : in out Boolean from Standard)
+    returns  Boolean
+    is redefined;	
+    ---Purpose: Methode, implemented in inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer).  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		PC1                  : HCurve2d from BRepAdaptor;
+                Sref1                : HSurface from BRepAdaptor;
+		PCref1               : HCurve2d from BRepAdaptor;
+		Decroch1             : out Boolean from Standard;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		Or2                  : Orientation from TopAbs;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP,RecS,RecRst     : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is redefined;	
+    ---Purpose: Method, implemented in  the inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/face.  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		Or1                  : Orientation from TopAbs;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		PC2                  : HCurve2d from BRepAdaptor;
+                Sref2                : HSurface from BRepAdaptor;
+		PCref2               : HCurve2d from BRepAdaptor;
+		Decroch2             : out Boolean from Standard;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP,RecS,RecRst     : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is redefined;	
+    ---Purpose: Method, implemented in inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/face.  
+
+    PerformSurf(me                   : in out; 
+                Data                 : out SequenceOfSurfData from ChFiDS;
+                Guide                : HElSpine from ChFiDS;
+                Spine                : Spine from ChFiDS; 
+                Choix                : Integer from Standard;
+                S1                   : HSurface from BRepAdaptor;
+                I1                   : TopolTool from Adaptor3d;
+		PC1                  : HCurve2d from BRepAdaptor;
+                Sref1                : HSurface from BRepAdaptor;
+		PCref1               : HCurve2d from BRepAdaptor;
+		Decroch1             : out Boolean from Standard;
+		Or1                  : Orientation from TopAbs;
+                S2                   : HSurface from BRepAdaptor;
+                I2                   : TopolTool from Adaptor3d;
+		PC2                  : HCurve2d from BRepAdaptor;
+                Sref2                : HSurface from BRepAdaptor;
+		PCref2               : HCurve2d from BRepAdaptor;
+		Decroch2             : out Boolean from Standard;
+		Or2                  : Orientation from TopAbs;
+                MaxStep              : Real from Standard;
+                Fleche               : Real from Standard;
+                TolGuide             : Real from Standard;
+                First,Last           : in out Real from Standard;
+                Inside,Appro,Forward : Boolean from Standard;
+                RecP1,RecRst1        : Boolean from Standard;
+                RecP2,RecRst2        : Boolean from Standard;
+                Soldep               : Vector from math)
+
+    is redefined;	
+    ---Purpose: Method, implemented in  inheritants, calculates
+    --          the elements of construction of  the surface (fillet
+    --          or chamfer) contact edge/edge.  
+
+    	PerformTwoCorner(me    : in out ; 
+                         Index : Integer from Standard)
+	is protected;	
+    	    ---Purpose: computes  the  intersection of two chamfers on
+    	    --          the vertex of index <Index> in myVDataMap.
+
+    	PerformThreeCorner(me    : in out ; 
+                           Index : Integer from Standard)
+    	is protected;
+	    ---Purpose: computes the intersection of three chamfers on
+	    --          the vertex of index <Index> in myVDataMap.
+
+
+    	ExtentOneCorner(me : in out; 
+	    	    	V  : Vertex from TopoDS;
+			S  : Stripe from ChFiDS)
+	is protected;
+	    ---Purpose: extends  the spine  of  the Stripe  <S> at  the
+	    --         	extremity of the vertex <V>.
+
+
+	ExtentTwoCorner(me : in out; 
+	    	    	V  : Vertex       from TopoDS;
+			LS : ListOfStripe from ChFiDS)
+	is protected;
+	    ---Purpose: extends the spine of the 2 stripes of <LS> at the
+	    --         	extremity of the vertex <V>
+
+
+	ExtentThreeCorner(me : in out; 
+	    	    	  V  : Vertex       from TopoDS;
+			  LS : ListOfStripe from ChFiDS)
+	is protected;
+	    ---Purpose: extends the spine of the 2 stripes of <LS> at the
+	    --         	extremity of the vertex <V>
+
+
+	SetRegul(me : in out) is protected;
+	    ---Purpose: set the regularities 
+
+	
+        ConexFaces(me;
+                   Sp       :      Spine    from ChFiDS;
+              	   IEdge    :      Integer  from Standard;
+                   F1, F2   : out  Face     from TopoDS)
+	is static private;		
+
+        FindChoiceDistAngle(me;
+                            Choice  : Integer  from Standard;
+                            DisOnF1 : Boolean  from Standard)
+    	returns Integer  from Standard
+        is static;
+
+end ChBuilder;
+
+

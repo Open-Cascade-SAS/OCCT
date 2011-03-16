@@ -1,0 +1,29 @@
+-- File:	BOPTools_PaveBlockMapHasher.cdl
+-- Created:	Thu Dec 11 14:09:07 2003
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2003
+
+
+class PaveBlockMapHasher from BOPTools 
+
+	---Purpose: 
+
+uses 
+    PaveBlock from BOPTools
+
+--raises
+
+is 
+    HashCode(myclass;  
+    	    aPB   : PaveBlock from BOPTools;  
+    	    Upper : Integer from Standard)  
+    	returns Integer from Standard;
+
+    IsEqual(myclass;  
+    	    aPB1   : PaveBlock from BOPTools; 
+    	    aPB2   : PaveBlock from BOPTools) 
+    	returns Boolean from Standard;
+--fields
+
+end PaveBlockMapHasher;

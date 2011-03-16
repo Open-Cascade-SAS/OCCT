@@ -1,0 +1,316 @@
+-- File:	Dictionary.cdl
+-- Created:	Tue Jul 28 16:06:13 1992
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Dictionary  from Dico  (TheItem as any)  inherits TShared
+
+    ---Purpose : Defines an alphanumeric dictionary in a cellular way,
+    --           corresponding to an indexed tree.
+    --           (note that an "entry" is a cell with a value associated,
+    --            other cells are accessed by dictionary nmanagenent only) 
+    --           For each level, cells follow by "next" chaining.
+    --           To pass to next level, cells follow by "sub" chaining
+    --           
+    --  Warning : Because of implementation as a tree of cells, beware about
+    --           size of TheItem class if it is not identified by Handle) : if
+    --           this size is big, it can cause problems of memory spending
+
+uses OStream, Integer, Boolean, Character, AsciiString --, Iterator
+
+raises NoSuchObject
+
+
+    	-- --   Nested class : Iterator (on Dictionary)   -- --
+
+    class Iterator
+
+    ---Purpose : Defines an iterator on a Dictionary
+    --           Iteration is alphabetic (due to dictionary construction)
+    --           Each entry is defined by its Name and its item Value
+    --	         Remark : The stack used by the Iterator is able to give
+    --	         complete name by scanning it
+
+    uses Boolean, AsciiString  -- , StackItem , Dictionary
+
+    raises NoSuchObject
+
+    is
+
+    	Create (acell : Dictionary) returns Iterator;
+        ---Purpose : Creates an iterator which will work on all the dictionary
+    
+    	Create (acell : Dictionary; basename : CString) returns Iterator;
+        ---Purpose : Creates an iterator which will consider only entries
+        --           which name begin by the string given as basename (subpart)
+
+    	Create (acell : Dictionary; basename : AsciiString) returns Iterator;
+        ---Purpose : Creates an iterator which will consider only entries
+        --           which name begin by the string given as basename (subpart)
+        --           Same as above, but basename is String instead of CString
+    
+    	Start (me : in out)  is static;
+    	---Purpose : Allows to Start a new Iteration from beginning
+    
+    	More (me : in out) returns Boolean  is static;
+    	---Purpose : Returns True if there are more entries to return
+    
+    	Next (me : in out)  is static;
+    	---Purpose : Go to the next entry
+    	--           (if there is not, Value will raise an exception)
+    
+    	Value (me) returns any TheItem
+    	---Purpose : Returns item value of current entry
+    	    raises NoSuchObject  is static;
+    	--           Exception raised if there is no current Item
+    	---C++ : return const &
+    
+    	Name  (me) returns AsciiString
+    	---Purpose : Returns name of current entry
+    	    raises NoSuchObject  is static;
+    	--           Exception raised if there is no current Item
+
+    	AppendStack (me : in out; val : Dictionary)  is static private;
+	---Purpose : Appends a new value to the Iteration Stack
+
+    fields
+
+    	thebase : Dictionary;
+    	thename : AsciiString;    -- base name (if not empty)
+    	thelast : StackItem; -- Iteration Stack
+    	thenb   : Integer;
+    	themore : Boolean;   -- More called before Next ?
+    	theinit : Boolean;   -- current cell processed ?
+    	thenext : Boolean;   -- unstack -> Next cell to choose
+
+    end Iterator;
+
+
+    private class StackItem  inherits TShared
+    
+    	---Purpose : Defines an Item for the Stack used by the Iterator
+
+    --  uses Dictionary
+
+    is
+    
+    	Create returns mutable StackItem;
+	---Purpose : Creates a StackItem with no Previous one
+    
+    	Create (previous : mutable StackItem) returns mutable StackItem;
+	---Purpose : Creates a StackItem with a Previous one
+
+    	Previous (me) returns mutable StackItem  is static;
+	---Purpose : Returns the Previous Item (is Null if no Previous defined)
+
+    	Value (me) returns Dictionary  is static;
+	---Purpose : Returns the Dictionary Cell corresponding to an Item
+
+    	SetValue (me : mutable; cval : Dictionary)  is static;
+	---Purpose : Sets a new Dictionary Cell as Value of an Item
+
+     fields
+     
+     	thevalue : Dictionary;
+	theprev  : StackItem;
+
+    end StackItem;
+
+is
+
+    	    	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+    	    	--                                           --
+    	    	-- --  Description of Dictionary itself   -- --
+    	    	--                                           --
+    	    	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+    	-- (methods having a String argument are duplicated String-CString)
+
+    Create returns mutable Dictionary;
+    ---Purpose : Creates a Dictionary cell.
+    --           A Dictionary is always created then handled by its first cell
+    --           After creating a Dictionary, user can call methods HasItem,
+    --           Item, SetItem ... (internal cells and entries are also
+    --           defined as objects from the same class)
+    --           Also iteration can be made, by an Iterator on this Dictionary
+
+    SetChar (me : mutable; car : Character)  is static private;
+    ---Purpose : Defines cell's character (internal use, to build dict. tree)
+
+
+    HasItem (me; name : CString; exact : Boolean = Standard_False)
+    	returns Boolean  is static;
+    ---Purpose : Returns True if an Item is bound to a Name in the Dictionnary
+    --           <exact> : if True, commands exact matching
+    --             if False, accept completion, only if ONE AND ONLY ONE
+    --             Dictionnary Entry has <name> as beginning of its name
+
+    HasItem (me; name : AsciiString; exact : Boolean = Standard_True)
+    	returns Boolean  is static;
+    ---Purpose : Works as above method but accepts a String from TCollection
+
+    Item (me; name : CString; exact : Boolean = Standard_True)
+    	returns any TheItem
+    ---Purpose : Returns item bound to a name in the Dictionnary
+    --           <exact> : same as for HasItem
+    	raises NoSuchObject  is static;
+    --           Error if <name> corresponds to no entry
+    ---C++ : return const &
+
+    Item (me; name : AsciiString; exact : Boolean = Standard_True)
+        returns any TheItem  raises NoSuchObject  is static;
+    ---Purpose : Works as above method but accepts a String from TCollection
+    ---C++ : return const &
+
+
+    GetItem (me; name : CString; anitem : out any TheItem;
+    	     exact : Boolean = Standard_True)
+    	returns Boolean  is static;
+    ---Purpose : Gathers HasItem and Item, in a less regular but faster way
+    --           If return is True, <anitem> is returned too, else it is not
+    --           <exact> : same as for HasItem
+
+    GetItem (me; name : AsciiString; anitem : out TheItem;
+    	     exact : Boolean = Standard_True)
+    	returns Boolean  is static;
+    ---Purpose : Works as above method but accepts a String from TCollection
+    
+    SetItem (me : mutable; name : CString;
+        anitem : any TheItem; exact : Boolean = Standard_True)  is static;
+    ---Purpose : Binds an item to a dictionnary entry
+    --           If <name> is already known in the dictionary, its value
+    --           is changed. Else, the dictionary entry is created.
+    --           If <exact> is given False, completion is tried, it is accepted
+    --           If it gives a UNIQUE entry : hence this one will be modified
+    --           Else, new entry is created with the exact name given
+
+    SetItem (me : mutable; name : AsciiString;
+    	anitem : any TheItem; exact : Boolean = Standard_True)  is static;
+    ---Purpose : Works as above method but accepts a String from TCollection
+
+    NewItem (me : mutable; name : CString; isvalued : out Boolean;
+    	     exact : Boolean = Standard_True)  returns any TheItem
+    ---Purpose : Returns the Item AS AN ADDRESS which corresponds to a Name,
+    --           in order to be changed or set.
+    --           If this name is not yet recorded, the Dictionary creates it.
+    --           <isvalued> is returned True if the Item is recorded in the
+    --           Dictionary, False else, in that case the Item is reserved and
+    --           the name is noted as beeing valued now.
+    	raises NoSuchObject  is static;
+    --	         Error if no Item could be found or created (this means that
+    --	         the Dictionary is corrupted and should be rebuilt)
+    ---C++ : return &
+
+    NewItem (me : mutable; name : AsciiString; isvalued : out Boolean;
+    	     exact : Boolean = Standard_True)  returns any TheItem
+    ---Purpose : Works as above method but accepts a String from TCollection
+    	raises NoSuchObject  is static;
+    --           Error as above
+    ---C++ : return &
+
+    RemoveItem (me : mutable; name : CString;
+    	cln : Boolean = Standard_True; exact : Boolean = Standard_True)
+    	returns Boolean  is static;
+    ---Purpose : Removes a dictionary entry given by its name then Returns True
+    --           If the entry does not exists, Does nothing then Returns False
+    --           <exact> : as for HasItem, if completion works, the found entry
+    --           is removed (else returned value is False)
+    --           <cln> commands cleaning dictionary (to recover memory space)
+    --           For an isolated call, it is recommanded to give it at True
+    --           For a sequence of calls, rather give False, then call Clean
+
+    RemoveItem (me : mutable; name : AsciiString;
+    	cln : Boolean = Standard_True; exact : Boolean = Standard_True)
+    	returns Boolean  is static;
+    ---Purpose : Works as above method but accepts a String from TCollection
+
+    Clean (me : mutable)  is static;
+    ---Purpose : Deletes physically in one step the entries which were removed
+    --           (can be used for a more efficient Memory Management : first
+    --           Remove several Items (<cln> = False), then Clean the Memory)
+
+
+    IsEmpty (me) returns Boolean  is static;
+    ---Purpose : Returns True if no Item is recorded
+
+    Clear (me : mutable)  is static;
+    ---Purpose : Clears all the Dictionary : all recorded Items are removed
+
+    Copy (me) returns mutable Dictionary  is static;
+    ---Purpose : Copies the Dictionary as a Tree, without Copying the Items
+
+    	-- --    Internal methods    -- --
+    
+    HasSub (me) returns Boolean  is static private;
+    ---Purpose : Returns True if this cell has a subcell
+
+    Sub (me) returns mutable Dictionary  is static private;
+    ---Purpose : Returns subcell
+
+    HasNext (me) returns Boolean  is static private;    
+    ---Purpose : Returns True if this cell has a next cell
+
+    Next (me) returns mutable Dictionary  is static private;
+    ---Purpose : Returns next cell
+    
+    SetSub  (me : mutable; acell : mutable Dictionary)  is static private;
+    ---Purpose : Defines subcell
+
+    SetNext (me : mutable; acell : mutable Dictionary)  is static private;
+    ---Purpose : Defines next cell
+
+    SearchCell (me; name : CString; lmax : Integer;
+    	        car : Character; level : Integer;
+    	    	acell : out mutable Dictionary; reslev : out Integer;
+    	        stat : out Integer)  is static private;
+    ---Purpose : Internal method used to get an entry from a given name
+
+    NewCell (me : mutable; name : CString; namlen : Integer;
+    	     acell : in out mutable Dictionary; reslev,stat : Integer)
+	     is static private;
+    ---Purpose : Internal method used to create a new entry for a name
+
+    Complete (me; acell : out mutable Dictionary) returns Boolean  is static;
+    ---Purpose : Internal routine used for completion (returns True if success)
+
+    HasIt (me) returns Boolean  is static private;
+    ---Purpose : Returns True if a cell has an associated item value
+
+    It (me) returns any TheItem  is static private;
+    ---Purpose : Returns item value associated to a cell
+    ---C++ : return const &
+
+    ItAdr (me : mutable) returns any TheItem  is static private;
+    ---Purpose : Returns item address associated to a cell
+    ---C++ : return &
+
+    SetIt (me : mutable; anitem : any TheItem)  is static private;
+    ---Purpose : Binds an item value to a cell
+
+    DeclIt (me : mutable)  is static private;
+    ---Purpose : Declares a cell as Valued : used by NewItem (when an Item
+    --           is created if it did not exist and is returned)
+
+    RemoveIt (me : mutable)  is static private;
+    ---Purpose : Removes item bound to a cell (cancels effect of DeclIt)
+
+    CellChar (me) returns Character  is static private;
+    ---Purpose : Returns cell's character as a node feature
+
+    GetCopied (me : mutable; fromcell : Dictionary)  is static private;
+    ---Purpose : Performs Copy from an original <fromcell> to <me>
+    --           Called by Copy
+
+fields
+
+    thecars : Character[4];
+    thesub  : Dictionary;
+    thenext : Dictionary;
+    theitem : TheItem;
+
+friends
+
+    class Iterator
+
+end Dictionary;

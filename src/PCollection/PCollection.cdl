@@ -1,0 +1,155 @@
+-- File:	PCollection.cdl
+-- Created:	Tue Feb  9 18:44:30 1993
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1993
+
+
+package PCollection
+
+uses 
+    Standard,
+    DBC,
+    MMgt,
+    PMMgt,
+    TCollection
+ 
+is
+          
+        enumeration AccessMode is
+    	    Read,
+	    Update
+        end AccessMode;
+
+    
+        generic class HArray1, FieldOfHArray1 ;   
+
+        generic class HArray2, FieldOfHArray2 ;   
+
+        generic class HSingleList;
+	    ---Purpose: The private generic class SingleList represents
+	    -- a sequence of 0 or more linked items.
+
+ 	 generic class HDoubleList;
+	    ---Purpose: A List is a sequence of zero or more items
+    	    -- Each item has two pointers (backward,forward)
+
+
+	generic class HSequence,SeqNode,SeqExplorer;
+
+		---Purpose: Generic sequence of elements
+		-- indexed by an integer in the range 1..N.
+
+	generic class HQueue,QueueNode,QueueIterator;
+
+    	        ---Purpose: A queue is a sequence of items in which items 
+     	        -- are added at one end (called the back of the queue) 
+     	        -- and removed at the other end (calledthe front).
+                -- The Queue is empty if there are no elements.
+
+	
+	generic class HSet,SetNode,SetIterator;
+ 
+      	        ---Purpose: A set is an unordered collection of items
+     	    	-- We can not have duplicated items in a given set.
+
+
+	generic class HStack,StackNode,StackIterator;
+
+   		---Purpose: A stack is a list of items in which items are
+                -- added and removed from the same end, called the 
+                -- top of the stack.
+
+	generic class Hash;
+	
+	---Purpose: Definition of hash function. This class is used by Map 
+	-- class and may be redefined by user.
+
+	generic class HDataMap,MapNode,Array,MapIterator;
+
+   		---Purpose: A map is a Collection of bindings
+	    	-- between two objects. One is considered as
+	    	-- the key and a hash code value must be 
+	    	-- computed for it.
+
+	generic class HDoubleMap,
+                      DoubleMapNode,
+                      ArrayDoubleMap,
+                      DoubleMapIterator;
+                ---Purpose: A double map is a collection of bindings 
+                -- between two objects.
+                -- It can be retrieved either by its Key or its Item; 
+                -- A hash code value must be computed for both.
+
+	generic class HIndexedDataMap,
+	              IndexedDataMapNode,
+		      ArrayIndexedDataMap;
+                ---Purpose: The IndexedDataMap is a hashed set of objects of 
+                -- Type Key, called Keys. Keys can be inserted in 
+                -- the Map but not removed. The Map keeps the number 
+                -- of keys called NbKeys. Each time a Key is inserted
+                -- the Map tests if this Key is already in the Map. 
+                -- If it is, nothing is done. If not, NbKeys is 
+                -- incremented and it's value is bound to the Key 
+                -- and called the Index.
+
+        deferred generic class Compare ;
+    	                            
+	     ---Purpose: Defines a comparison operator which can be used by
+	     -- any ordered structure.   The  way to compare items
+	     -- has  to be described  in  subclasses, which  inherit
+	     -- from instantiations of Compare.
+
+        private deferred class PrivCompareOfInteger 
+                            instantiates Compare from PCollection(Integer); 
+
+        private deferred class PrivCompareOfReal 
+                            instantiates Compare from PCollection(Real); 
+
+        class CompareOfInteger;
+	
+	class CompareOfReal;
+		
+        enumeration Side is Left , Right;
+
+        generic class HAVLSearchTree,
+                      AVLNode,
+                      AVLNodeStack, 
+                      AVLIterator ;
+
+        exception IsNotRoot inherits Failure;
+        exception IsNullTree inherits Failure;
+        exception IsContained inherits Failure;
+
+        generic class HArbitraryTree,
+                      SeqArbitraryTree,
+                      StackArbitraryTree, 
+                      ATPreOrderIterator ,
+                      ATPostOrderIterator, 
+                      ATInOrderIterator ;	    
+
+        generic class HDirectedGraph,
+	              Vertex,
+		      Edge,
+		      SetOfVertex,
+		      SetOfEdge,
+		      StackOfVertex,
+		      QueueOfVertex,
+		      FrontEdgesIterator,
+		      BackEdgesIterator,
+		      DepthFirstIterator,
+		      BreadthFirstIterator,
+		      AdjacentVerticesIterator,
+		      VerticesIterator,
+		      RootsIterator,
+		      LeavesIterator,
+		      EdgesIterator;
+
+        class HAsciiString;
+
+	class HExtendedString;
+	
+	
+end PCollection;
+
+

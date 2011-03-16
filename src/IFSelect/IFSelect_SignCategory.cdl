@@ -1,0 +1,24 @@
+-- File:	IFSelect_SignCategory.cdl
+-- Created:	Fri Jan 26 18:13:19 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class SignCategory  from IFSelect  inherits Signature
+
+    ---Purpose : This Signature returns the Category of an entity, as recorded
+    --           in the model
+
+uses CString, Transient, InterfaceModel
+
+is
+
+    Create returns mutable SignCategory;
+    ---Purpose : Returns a SignCategory
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the Signature for a Transient object, as its Category
+    --           recorded in the model
+
+end SignCategory;

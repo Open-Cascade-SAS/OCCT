@@ -1,0 +1,69 @@
+// File:	BRepCheck_Result.lxx
+// Created:	Thu Dec  7 10:49:37 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : Status
+//purpose  : 
+//=======================================================================
+
+inline const BRepCheck_ListOfStatus& BRepCheck_Result::Status() const
+{
+  return myMap(myShape);
+}
+
+//=======================================================================
+//function : IsMinimum
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepCheck_Result::IsMinimum() const
+{
+  return myMin;
+}
+
+//=======================================================================
+//function : IsBlind
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepCheck_Result::IsBlind() const
+{
+  return myBlind;
+}
+
+
+//=======================================================================
+//function : MoreShapeInContext
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepCheck_Result::MoreShapeInContext () const
+{
+  return myIter.More();
+}
+
+
+//=======================================================================
+//function : ContextualShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& BRepCheck_Result::ContextualShape () const
+{
+  return myIter.Key();
+}
+
+
+//=======================================================================
+//function : StatusOnShape
+//purpose  : 
+//=======================================================================
+
+inline const BRepCheck_ListOfStatus& BRepCheck_Result::StatusOnShape () const
+{
+  return myIter.Value();
+}
+

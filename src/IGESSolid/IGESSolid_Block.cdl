@@ -1,0 +1,108 @@
+--
+-- File      :  Block.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Block from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Block, Type <150> Form Number <0>
+        --          in package IGESSolid
+        --          The Block is a rectangular parallelopiped, defined with
+        --          one vertex at (X1, Y1, Z1) and three edges lying along
+        --          the local +X, +Y, +Z axes.
+
+uses
+
+        Dir              from gp,
+        Pnt              from gp,
+        XYZ              from gp
+
+is
+
+        Create returns mutable Block;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                             : mutable; 
+              aSize, aCorner, aXAxis, aZAxis : XYZ);
+        ---Purpose : This method is used to set the fields of the class Block
+        --       - aSize   : Length in each local directions
+        --       - aCorner : Corner point coordinates. Default (0,0,0)
+        --       - aXAxis  : Unit vector defining local X-axis
+        --                       default (1,0,0)
+        --       - aZAxis  : Unit vector defining local Z-axis
+        --                       default (0,0,1)
+
+        Size (me) returns XYZ;
+        ---Purpose : returns the size of the block
+
+        XLength (me) returns Real;
+        ---Purpose : returns the length of the Block along the local X-direction
+
+        YLength (me) returns Real;
+        ---Purpose : returns the length of the Block along the local Y-direction
+
+        ZLength (me) returns Real;
+        ---Purpose : returns the length of the Block along the local Z-direction
+
+        Corner (me) returns Pnt;
+        ---Purpose : returns the corner point coordinates of the Block
+
+        TransformedCorner (me) returns Pnt;
+        ---Purpose : returns the corner point coordinates of the Block after applying
+        -- the TransformationMatrix
+
+        XAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local X-axis
+
+        TransformedXAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local X-axis after applying 
+        -- TransformationMatrix
+
+        YAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local Y-axis
+        -- it is the cross product of ZAxis and XAxis
+
+        TransformedYAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local Y-axis after applying 
+        -- TransformationMatrix
+
+        ZAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local X-axis
+
+        TransformedZAxis  (me) returns Dir;
+        ---Purpose : returns the direction defining the local Z-axis after applying 
+        -- TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_Block
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Block.
+--
+-- Reminder : A Block instance is defined by :
+--            - a vertex at (X1,Y1,Z1) and three edges lying along the local
+--            - +X, +Y, and +Z axes. The local X and Z axis are defined by
+--            - the unit vectors (I1,J1,K1) and (I2,J2,K2) respectively. The
+--            - local Y-axis is derived by taking the cross product of Z into
+--            - X. The block is specified by the positive lengths (LX,LY,LZ)
+--            - along these axes.
+
+        theSize   : XYZ;
+            -- length in the local axes
+
+        theCorner : XYZ;
+            -- corner point coordinates
+
+        theXAxis  : XYZ;
+            -- unit vector defining local X-axis
+
+        theZAxis  : XYZ;
+            -- unit vector defining local Z-axis
+
+end Block;

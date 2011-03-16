@@ -1,0 +1,77 @@
+-- File:	TDF_TagSource.cdl
+-- Created:	Mon Aug  4 15:32:05 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+
+class TagSource from TDF inherits Attribute from TDF
+
+	---Purpose: This attribute manage   a tag provider   to create
+	--          child labels of a given one.
+
+uses GUID            from Standard,
+     Attribute       from TDF,
+     Label           from TDF,
+     RelocationTable from TDF
+     
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF)   
+    ---Purpose: Find, or create, a  TagSource attribute. the TagSource
+    --          attribute is returned.
+    returns TagSource from TDF;
+    
+    NewChild (myclass; L : Label from TDF)
+    ---Purpose: Find (or create) a  tagSource attribute located at <L>
+    --          and make a new child label.
+    returns Label from TDF;
+    
+    ---Purpose: TagSource methods
+    --          =================
+
+    Create
+    returns mutable TagSource from TDF;
+    
+    NewTag (me : mutable)
+    returns Integer from Standard;
+
+    NewChild (me : mutable)
+    returns Label from TDF;
+
+    Get (me) returns Integer from Standard;
+
+    Set (me : mutable; T : Integer from Standard);
+    
+    ---Purpose: TDF_Attribute methods
+    --          =====================
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+fields
+    
+    myTag : Integer from Standard;
+    
+end TagSource;
+

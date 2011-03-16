@@ -1,0 +1,29 @@
+-- File:	TopOpeBRepBuild_Tools2d.cdl
+-- Created:	Mon Nov 29 12:32:59 1999
+-- Author:	Peter KURNEV
+--		<pkv@irinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Tools2d from TopOpeBRepBuild 
+
+	---Purpose: 
+
+uses
+    IndexedDataMapOfShapeVertexInfo from TopOpeBRepBuild,
+    Wire  from  TopoDS,
+    ListOfShape from TopTools 
+    
+is
+
+   MakeMapOfShapeVertexInfo  (myclass;  
+    aWire:Wire  from  TopoDS;
+    aMap:out  IndexedDataMapOfShapeVertexInfo  from  TopOpeBRepBuild);
+
+   DumpMapOfShapeVertexInfo   (myclass;   
+    aMap: IndexedDataMapOfShapeVertexInfo  from  TopOpeBRepBuild);
+
+
+   Path  (myclass; aWire:Wire  from  TopoDS; aResList:out  ListOfShape from TopTools);
+    
+end Tools2d;

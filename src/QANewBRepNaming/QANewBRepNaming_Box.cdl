@@ -1,0 +1,47 @@
+-- File:	QANewBRepNaming_Box.cdl
+-- Created:	Fri Sep 24 16:01:58 1999
+-- Author:	Sergey ZARITCHNY
+--		<s-zaritchny@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+class Box from QANewBRepNaming  inherits  TopNaming from QANewBRepNaming
+
+    ---Purpose: To load the Box results 
+
+uses MakeBox from BRepPrimAPI,
+     Shape   from TopoDS,
+     Label   from TDF,
+     TypeOfPrimitive3D from QANewBRepNaming
+
+is
+ 
+    Create  returns  Box from QANewBRepNaming;
+ 
+    Create  (ResultLabel :  Label from TDF) 
+    returns  Box from QANewBRepNaming;
+
+    Init(me : in out; ResultLabel : Label from TDF);
+
+
+    Load (me; MakeShape : in out MakeBox from BRepPrimAPI; Type : TypeOfPrimitive3D from QANewBRepNaming);
+      ---Purpose : Load  the box in  the data  framework  
+
+    Back (me)   returns Label from TDF;
+      ---Purpose : Returns the label of the back face of a box .
+    
+    Bottom (me) returns Label from TDF;
+      ---Purpose : Returns the label of the  bottom face of a box .
+    
+    Front (me)  returns Label from TDF;
+      ---Purpose : Returns the label of the  front face of a box .
+
+    Left (me)   returns Label from TDF;
+      ---Purpose : Returns the label of the  left face of a box .
+
+    Right (me)  returns Label from TDF;
+      ---Purpose : Returns the  label of the  right face of a box .
+
+    Top (me)    returns Label from TDF;
+      ---Purpose : Returns the  label of the  top face of a box . 
+    
+end Box;

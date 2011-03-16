@@ -1,0 +1,25 @@
+-- File:	HLRAlgo_TriangleData.cdl
+-- Created:	Fri Oct 29 15:19:08 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class TriangleData from HLRAlgo
+
+uses
+    Address from Standard,
+    Integer from Standard,
+    Boolean from Standard
+
+is
+    Create returns TriangleData from HLRAlgo;
+    	---C++: inline
+    
+    Indices(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices : Integer from Standard[4];
+
+end TriangleData;

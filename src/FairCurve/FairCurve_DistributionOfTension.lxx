@@ -1,0 +1,5 @@
+ inline void FairCurve_DistributionOfTension::SetLengthSliding(const Standard_Real LengthSliding)
+{
+  MyLengthSliding = LengthSliding;
+}
+

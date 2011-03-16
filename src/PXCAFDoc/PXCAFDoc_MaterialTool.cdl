@@ -1,0 +1,12 @@
+-- File:	PXCAFDoc_MaterialTool.cdl
+-- Created:	Wed Dec 10 12:24:08 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class MaterialTool from PXCAFDoc inherits Attribute from PDF
+
+is
+    Create returns MaterialTool from PXCAFDoc;
+
+end MaterialTool;

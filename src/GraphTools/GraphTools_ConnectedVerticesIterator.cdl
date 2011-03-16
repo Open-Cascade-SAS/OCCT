@@ -1,0 +1,93 @@
+-- File:	GraphTools_ConnectedVerticesIterator.cdl
+-- Created:	Thu Mar 18 17:41:39 1993
+-- Author:	Denis PASCAL
+--		<dp@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class ConnectedVerticesIterator  from GraphTools 
+    	(Graph      as any;
+     	 Vertex     as any;
+         GIterator  as any;
+	 CVIterator as any)	
+
+--generic class ConnectedVerticesIterator from GraphTools
+--            (Graph     as any;
+--    	       Vertex    as any;
+--	       GIterator as GraphIterator  (Graph,Vertex))
+--	       CVIterator as ConnectedVerticesFromIterator
+
+    ---Purpose: In a graph,  returns subsets of a  list of vertices in
+    --          which all vertices are connected.
+    
+is
+
+    Create    	
+    	---Purpose: Create an empty algorithm.
+    returns ConnectedVerticesIterator from GraphTools;
+    
+    Create (G : Graph)
+	---Purpose: Create the   algorithm setting each vertex  of <G>
+	--          reached by  GIterator tool, as initial conditions.
+	--          Use Perform   method before visting  the result of
+	--          the algorithm.
+    returns ConnectedVerticesIterator from GraphTools;
+    
+    FromGraph (me : in out; G : Graph);	
+    	---Purpose: Add each vertex of <G>  reached by GIterator  tool
+	--          as   initial  conditions.   Use  Perform  method
+	--          before   visiting the  result  of   the algorithm.
+        ---Level: Public;
+    
+    FromVertex (me : in out; V : Vertex);
+    	---Purpose: Add <V>  as   research condition.  This  method is
+	--          cumulative.  User must used  Perform method before
+	--          visting the result of the algorithm.
+       ---Level: Public
+
+    Reset (me : in out);
+	---Purpose: Reset  the algorithm.  It may  be  reused with new
+	--          initial conditions.  
+	---Level: Public
+
+    Perform (me : in out; G : Graph);       
+    	---Purpose: Peform the  algorithm  in  <G> from initial  setted
+       --          conditions.  
+       ---Level: Public
+    
+    More(me)
+	---Purpose: Returns   TRUE  if  there  are   others subset  of
+	--          connected vertices.
+        ---Level: Public
+    returns Boolean from Standard;
+    
+    Next (me : in out);
+	---Purpose: Set the iterator  to the next  subset of connected
+	--          vertices.
+        ---Level: Public
+    
+    NbVertices (me)
+    returns Integer from Standard;
+	---Purpose: Returns number of vertices  of the current  subset
+	--          of connected vertices.
+        ---Level: Public
+    
+    Value (me; index : Integer from Standard)
+    returns any Vertex;
+    ---Purpose: Returns a vertex  member of   the  current subset   of
+    --          connected vertices.
+    ---Level: Public
+    ---C++: return const&         
+    
+fields
+
+    myIterator : CVIterator;
+    
+end ConnectedVerticesIterator;
+
+
+
+
+
+
+

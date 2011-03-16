@@ -1,0 +1,42 @@
+// File math_Vector.lxx
+// lpa, le 29/10/91
+
+#include <Standard_DimensionError.hxx>
+
+inline Standard_OStream& operator<<(Standard_OStream& o, 
+				    const math_Vector& vec) 
+{
+  vec.Dump(o);
+  return o;
+}
+
+inline math_Vector operator* (const Standard_Real Left,
+			      const math_Vector& Right) 
+{
+  return Right.Multiplied(Left);
+}
+
+
+inline Standard_Integer math_Vector::Length() const
+       { return UpperIndex - LowerIndex +1;}
+   // length of a vector.
+
+
+inline Standard_Integer math_Vector::Lower() const
+       { return LowerIndex;}
+   // value of the lower index of a vector.
+
+
+inline Standard_Integer math_Vector::Upper() const
+       {return UpperIndex;}
+   // value of the Upper index of a vector.
+
+
+inline Standard_Real& math_Vector::Value(const Standard_Integer Num) const {
+
+  Standard_RangeError_Raise_if(Num < LowerIndex || Num > UpperIndex, " ");
+  
+  return Array(Num);
+} 
+
+

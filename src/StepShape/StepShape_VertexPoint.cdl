@@ -1,0 +1,40 @@
+-- File:        VertexPoint.cdl
+-- Created:     Fri Dec  1 11:11:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class VertexPoint from StepShape 
+
+inherits Vertex from StepShape 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+-- inherits GeometricRepresentationItem from StepShape 
+
+uses
+
+	Point from StepGeom,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable VertexPoint;
+	---Purpose: Returns a VertexPoint
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aVertexGeometry : mutable Point from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetVertexGeometry(me : mutable; aVertexGeometry : mutable Point);
+	VertexGeometry (me) returns mutable Point;
+
+fields
+
+	vertexGeometry : Point from StepGeom;
+
+end VertexPoint;

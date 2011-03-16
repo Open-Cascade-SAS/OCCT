@@ -1,0 +1,33 @@
+-- File:	StepFEA_FeaGroup.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaGroup from StepFEA
+inherits Group from StepBasic
+
+    ---Purpose: Representation of STEP entity FeaGroup
+
+uses
+    HAsciiString from TCollection,
+    FeaModel from StepFEA
+
+is
+    Create returns FeaGroup from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aGroup_Name: HAsciiString from TCollection;
+                       aGroup_Description: HAsciiString from TCollection;
+                       aModelRef: FeaModel from StepFEA);
+	---Purpose: Initialize all fields (own and inherited)
+
+    ModelRef (me) returns FeaModel from StepFEA;
+	---Purpose: Returns field ModelRef
+    SetModelRef (me: mutable; ModelRef: FeaModel from StepFEA);
+	---Purpose: Set field ModelRef
+
+fields
+    theModelRef: FeaModel from StepFEA;
+
+end FeaGroup;

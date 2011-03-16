@@ -1,0 +1,162 @@
+-- File:	Voxel_CollisionDetection.cdl
+-- Created:	Mon Jul 14 13:18:04 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class CollisionDetection from Voxel
+
+    ---Purpose: Detects collisions between shapes.
+
+uses
+
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    BoolDS from Voxel,
+    Box from Bnd
+    
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns CollisionDetection from Voxel;
+
+
+    ---Category: Initialization
+    --           ==============
+    
+    Create(deflection : Real from Standard;
+    	   nbx : Integer from Standard;
+    	   nby : Integer from Standard;
+    	   nbz : Integer from Standard)
+    ---Purpose: A constructor.
+    --          It defines deflection of triangulation for the shapes.
+    --          As lower the deflection is, as proper the triangulation is generated.
+    --          Also, it defines number of splits along X, Y and Z axes for generation of voxels.
+    --          As greater the numbers are, as greater number of voxels is used for detection of collision.
+    returns CollisionDetection from Voxel;
+    
+    AddShape(me : in out;
+    	     shape : Shape from TopoDS)
+    ---Purpose: Adds a shape.
+    --          Returns an index of the shape.
+    returns Integer from Standard;
+
+    ReplaceShape(me : in out;
+    	    	 ishape : Integer from Standard;
+    	    	 shape : Shape from TopoDS)
+    ---Purpose: Replaces a shape by another one.
+    --          <ishape> is an index of the shape.
+    --          This method is useful for moving shape, for example.
+    returns Boolean from Standard;
+
+    SetDeflection(me : in out;
+    	    	  deflection : Real from Standard);
+    ---Purpose: Defines the deflection of triangulation of shapes.
+
+    SetNbVoxels(me : in out;
+    	    	nbx : Integer from Standard;
+    	    	nby : Integer from Standard;
+    	    	nbz : Integer from Standard);
+    ---Purpose: Defines the number of voxels along X, Y and Z axes.
+
+    SetBoundaryBox(me : in out;
+    	    	   box: Box from Bnd);
+    ---Purpose: Defines a user-defined boundary box for generation of voxels.
+    --          If this method is not called, the algorithm calculates the boundary box itself.
+
+    SetUsageOfVolume(me : in out;
+    	    	     usage : Boolean from Standard);
+    ---Purpose: Defines usage of volume of shapes in collision detection algorithm.
+    --          Beware, usage of volume a little bit decreases the speed of algorithm.
+
+    KeepCollisions(me : in out;
+    	    	   keep : Boolean from Standard);
+    ---Purpose: Doesn't clean the collision points on new call to the method Compute().
+    --          It allows to see the collisions for a moving shape.
+
+
+    ---Category: Computation
+    --           ===========
+
+    -- Call the method in the following order:
+    -- Voxelize(); 
+    -- Compute();
+
+    Voxelize(me : in out;
+    	     ishape : Integer from Standard = -1)
+    ---Purpose: Prepares data for computation of collisions.
+    --          It checks the inner parameters (number of voxels along X, Y and Z axes) and 
+    --          voxelizes the shapes.
+    --          If the shape is not changed since the last call to this method,
+    --          this method may be not called for this shape.
+    --          <ishape> - is the index of the shape for processing by this method.
+    --          If it is equal to -1, all shapes will be processed.
+    returns Boolean from Standard;
+
+    Compute(me : in out)
+    ---Purpose: Computes the collisions.
+    --          This method may be called many times if, for example, the shapes are being moved.
+    returns Boolean from Standard;
+    
+    
+    ---Category: Result (collisions)
+    --           ===================
+
+    HasCollisions(me)
+    ---Purpose: Returns true if a collision is detected.
+    returns Boolean from Standard;
+    
+    GetCollisions(me)
+    ---C++: return const &
+    ---Purpose: Returns the collided voxels.
+    returns BoolDS from Voxel;
+    
+
+    ---Category: Some internal methods
+    --           =====================
+
+    Destroy(me : in out);
+    ---C++: alias ~
+    ---Purpose: A destructor.
+
+    Clear(me : in out)
+    ---Purpose: An internal method for cleaning the intermediate data.
+    is private;
+
+    CheckVoxels(me;
+    	    	voxels : BoolDS from Voxel)
+    ---Purpose: An internal method, which checks correspondance 
+    --          of voxels to the parameters defined by user.
+    returns Boolean from Standard
+    is private;
+
+
+fields
+
+    -- Initial data.
+    myShapes : ListOfShape from TopTools;
+    myDeflection : Real from Standard;
+    myNbX : Integer from Standard;
+    myNbY : Integer from Standard;
+    myNbZ : Integer from Standard;
+    myUsageOfVolume : Boolean from Standard;
+    myKeepCollisions : Boolean from Standard;
+
+    -- User-defined boundary box of shapes.
+    myX : Real from Standard;
+    myY : Real from Standard;
+    myZ : Real from Standard;
+    myXLen : Real from Standard;
+    myYLen : Real from Standard;
+    myZLen : Real from Standard;
+
+    -- An array of voxels of all shapes.
+    myVoxels : Address from Standard;
+
+    -- The result.
+    myCollisions : BoolDS from Voxel;
+    myHasCollisions : Boolean from Standard;
+
+
+end CollisionDetection;

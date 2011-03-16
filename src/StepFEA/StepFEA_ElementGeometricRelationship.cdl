@@ -1,0 +1,46 @@
+-- File:	StepFEA_ElementGeometricRelationship.cdl
+-- Created:	Tue Feb  4 10:39:08 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ElementGeometricRelationship from StepFEA
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ElementGeometricRelationship
+
+uses
+    ElementOrElementGroup from StepFEA,
+    AnalysisItemWithinRepresentation from StepElement,
+    ElementAspect from StepElement
+
+is
+    Create returns ElementGeometricRelationship from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aElementRef: ElementOrElementGroup from StepFEA;
+                       aItem: AnalysisItemWithinRepresentation from StepElement;
+                       aAspect: ElementAspect from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    ElementRef (me) returns ElementOrElementGroup from StepFEA;
+	---Purpose: Returns field ElementRef
+    SetElementRef (me: mutable; ElementRef: ElementOrElementGroup from StepFEA);
+	---Purpose: Set field ElementRef
+
+    Item (me) returns AnalysisItemWithinRepresentation from StepElement;
+	---Purpose: Returns field Item
+    SetItem (me: mutable; Item: AnalysisItemWithinRepresentation from StepElement);
+	---Purpose: Set field Item
+
+    Aspect (me) returns ElementAspect from StepElement;
+	---Purpose: Returns field Aspect
+    SetAspect (me: mutable; Aspect: ElementAspect from StepElement);
+	---Purpose: Set field Aspect
+
+fields
+    theElementRef: ElementOrElementGroup from StepFEA;
+    theItem: AnalysisItemWithinRepresentation from StepElement;
+    theAspect: ElementAspect from StepElement;
+
+end ElementGeometricRelationship;

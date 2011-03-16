@@ -1,0 +1,28 @@
+-- File:	TopOpeBRepDS_CurveData.cdl
+-- Created:	Wed Jun 23 10:00:09 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveData from TopOpeBRepDS
+     inherits GeometryData from TopOpeBRepDS
+
+uses
+
+    Curve from TopOpeBRepDS
+
+is  
+
+    Create returns CurveData  from  TopOpeBRepDS;
+    Create(C : Curve from TopOpeBRepDS) returns CurveData from TopOpeBRepDS;
+    
+fields 
+    
+    myCurve : Curve from TopOpeBRepDS;
+    
+friends 
+
+    class DataStructure from TopOpeBRepDS
+    
+end CurveData from TopOpeBRepDS; 

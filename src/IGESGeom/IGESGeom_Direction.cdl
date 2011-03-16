@@ -1,0 +1,52 @@
+--
+-- File      :  Direction.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Direction from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESDirection, Type <123> Form <0>
+        --          in package IGESGeom
+        --          A direction entity is a non-zero vector in Euclidean 3-space
+        --          that is defined by its three components (direction ratios)
+        --          with respect to the coordinate axes. If x, y, z are the
+        --          direction ratios then (x^2 + y^2 + z^2) > 0
+
+uses
+
+        Vec         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable Direction;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aDirection : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           Direction
+        --       - aDirection : Direction ratios, Z is 0 by default
+
+        Value (me) returns Vec;
+
+        TransformedValue (me) returns Vec;
+        ---Purpose : returns the Direction value after applying Transformation matrix
+
+fields
+
+--
+-- Class    : IGESGeom_Direction
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Direction.
+--
+-- Reminder : A Direction instance is defined by :
+--            The three direction ratios along the three coordinate axes
+
+        theDirection : XYZ;
+
+end Direction;

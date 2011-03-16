@@ -1,0 +1,28 @@
+-- File:        Protocol.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class Protocol from StepAP214 inherits Protocol from StepData
+	---Purpose : Protocol for StepAP214 Entities
+	--           It requires StepAP214 as a Resource
+
+uses Protocol from Interface,
+     CString from Standard
+
+is
+	Create returns mutable Protocol from StepAP214;
+	TypeNumber (me; atype : any Type) returns Integer is redefined;
+	---Purpose :Returns a Case Number for each of the StepAP214 Entities
+	SchemaName(me) returns CString from Standard is redefined;
+	-- was C++ : return const
+
+    NbResources (me) returns Integer  is redefined;
+    ---Purpose : Returns count of Protocol used as Resources (level one)
+
+    Resource (me; num : Integer) returns Protocol from Interface  is redefined;
+    ---Purpose : Returns a Resource, given its rank (between 1 and NbResources)
+
+end Protocol;

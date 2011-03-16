@@ -1,0 +1,57 @@
+--
+-- File      :  Point.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Point from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESPoint, Type <116> Form <0>
+        --          in package IGESGeom
+
+uses
+
+        SubfigureDef from IGESBasic,
+        Pnt          from gp,
+        XYZ          from gp
+is
+
+        Create returns mutable Point;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aPoint : XYZ; aSymbol : SubfigureDef);
+        ---Purpose : This method is used to set the fields of the class Point
+        --       - aPoint  : Coordinates of point
+        --       - aSymbol : SubfigureDefinition entity specifying the
+        --                   display symbol if there exists one, or zero
+
+        Value (me) returns Pnt;
+        ---Purpose : returns co-ordinates of the point
+
+        TransformedValue (me) returns Pnt;
+        ---Purpose : returns co-ordinates of the point after applying Transf. Matrix
+
+        HasDisplaySymbol (me) returns Boolean;
+        ---Purpose : returns True if symbol exists
+
+        DisplaySymbol (me) returns SubfigureDef;
+        ---Purpose : returns display symbol entity if it exists
+
+fields
+
+--
+-- Class    : IGESGeom_Point
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Point.
+--
+-- Reminder : A Point instance is defined by :
+--            The coordinates of the point and display symbol if any
+
+        thePoint  : XYZ;
+        theSymbol : SubfigureDef;
+
+end Point;

@@ -1,0 +1,49 @@
+-- File:	TopOpeBRep_Hctxff2d.cdl
+-- Created:	Thu Oct 29 12:39:50 1998
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class Hctxff2d from TopOpeBRep inherits TShared from  MMgt
+
+uses
+
+    Shape from TopoDS,
+    Face from TopoDS,
+    HSurface from BRepAdaptor,
+    Surface from BRepAdaptor,
+    SurfaceType from GeomAbs
+
+is
+
+    Create returns mutable Hctxff2d from TopOpeBRep;
+    SetFaces(me:mutable; F1,F2:Face);
+    SetHSurfaces(me:mutable; S1,S2:HSurface from BRepAdaptor);
+    SetHSurfacesPrivate(me:mutable) is private;
+    SetTolerances(me:mutable;Tol1,Tol2:Real);
+    GetTolerances(me;Tol1,Tol2:out Real);
+    GetMaxTolerance(me) returns Real;
+    Face(me;I:Integer) returns Face;---C++ : return const &
+    HSurface(me;I:Integer) returns HSurface from BRepAdaptor;
+    SurfacesSameOriented(me) returns Boolean;
+    FacesSameOriented(me) returns Boolean;
+    FaceSameOrientedWithRef(me;I:Integer) returns Boolean;
+
+fields
+
+    myFace1 : Face from TopoDS;
+    mySurface1 : HSurface from BRepAdaptor;
+    mySurfaceType1 : SurfaceType from GeomAbs;
+    myf1surf1F_sameoriented : Boolean;
+
+    myFace2 : Face from TopoDS;
+    mySurface2 : HSurface from BRepAdaptor;
+    mySurfaceType2 : SurfaceType from GeomAbs;
+    myf2surf1F_sameoriented : Boolean;
+
+    mySurfacesSameOriented : Boolean;
+    myFacesSameOriented : Boolean;
+    
+    myTol1,myTol2 : Real;
+    
+end Hctxff2d from TopOpeBRep;

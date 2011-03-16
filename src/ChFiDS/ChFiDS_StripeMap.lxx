@@ -1,0 +1,26 @@
+// File:	ChFiDS_StripeMap.lxx
+// Created:	Tue Jan 18 14:00:47 1994
+// Author:	Isabelle GRIGNON
+//		<isg@nonox>
+
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+
+
+inline Standard_Integer ChFiDS_StripeMap::Extent() const {
+  return mymap.Extent();
+}
+
+//=======================================================================
+//function : FindKey
+//purpose  : 
+//=======================================================================
+
+
+inline const TopoDS_Vertex& ChFiDS_StripeMap::FindKey
+(const Standard_Integer I) const {
+  return mymap.FindKey(I);  
+}
+

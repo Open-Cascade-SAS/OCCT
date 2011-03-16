@@ -1,0 +1,17 @@
+-- File:	CMPLRS.edl
+-- Author:	Christian CAILLET
+-- History:	Wed May 21 10:57:28 1997
+-- Copyright:	Matra Datavision 1997
+
+-- Pb compil gros code HP-UX sous WOK++
+-- trop de warning -> shut up
+
+@if ( %Station == "hp" || %Station == "sil" ) then
+
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w ";
+
+-- Pb optimiseur (O2) pas fiable
+
+  @set %ModeOpt = "+O1";
+
+@endif;

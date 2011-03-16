@@ -1,0 +1,43 @@
+-- File:	HLRTest_OutLiner.cdl
+-- Created:	Wed Apr  5 16:38:22 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class OutLiner from HLRTest inherits Drawable3D from Draw
+	---Purpose: 
+
+uses
+    OStream,
+    Display     from Draw,
+    Interpretor from Draw,
+    OutLiner    from HLRTopoBRep,
+    Shape       from TopoDS
+
+is
+    Create(S : Shape from TopoDS)
+    returns mutable OutLiner from HLRTest; 
+    
+    OutLiner(me) returns OutLiner from HLRTopoBRep;
+	---C++: inline
+
+    DrawOn(me; dis : in out Display from Draw);
+	---Purpose: Does nothhing,
+    
+    Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+    is redefined;
+	
+    Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+    is redefined;
+
+    Whatis(me; I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+    is redefined;
+
+fields
+    myOutLiner : OutLiner from HLRTopoBRep;
+
+end OutLiner;

@@ -1,0 +1,40 @@
+-- File:        ShellBasedSurfaceModel.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ShellBasedSurfaceModel from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	HArray1OfShell from StepShape, 
+	Shell from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable ShellBasedSurfaceModel;
+	---Purpose: Returns a ShellBasedSurfaceModel
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSbsmBoundary : mutable HArray1OfShell from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSbsmBoundary(me : mutable; aSbsmBoundary : mutable HArray1OfShell);
+	SbsmBoundary (me) returns mutable HArray1OfShell;
+	SbsmBoundaryValue (me; num : Integer) returns Shell;
+	NbSbsmBoundary (me) returns Integer;
+
+fields
+
+	sbsmBoundary : HArray1OfShell from StepShape; -- a SelectType
+
+end ShellBasedSurfaceModel;

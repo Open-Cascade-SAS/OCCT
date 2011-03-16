@@ -1,0 +1,34 @@
+-- File:	StepFEA_CurveElementIntervalConstant.cdl
+-- Created:	Thu Dec 12 17:51:04 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementIntervalConstant from StepFEA
+inherits CurveElementInterval from StepFEA
+
+    ---Purpose: Representation of STEP entity CurveElementIntervalConstant
+
+uses
+    CurveElementLocation from StepFEA,
+    EulerAngles from StepBasic,
+    CurveElementSectionDefinition from StepElement
+
+is
+    Create returns CurveElementIntervalConstant from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aCurveElementInterval_FinishPosition: CurveElementLocation from StepFEA;
+                       aCurveElementInterval_EuAngles: EulerAngles from StepBasic;
+                       aSection: CurveElementSectionDefinition from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Section (me) returns CurveElementSectionDefinition from StepElement;
+	---Purpose: Returns field Section
+    SetSection (me: mutable; Section: CurveElementSectionDefinition from StepElement);
+	---Purpose: Set field Section
+
+fields
+    theSection: CurveElementSectionDefinition from StepElement;
+
+end CurveElementIntervalConstant;

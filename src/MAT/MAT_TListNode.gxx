@@ -1,0 +1,13 @@
+// File:	MAT_TListNode.gxx
+// Created:	Wed Jun 24 12:47:46 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+
+//=======================================================================
+//function : Dummy
+//purpose  : 
+//=======================================================================
+
+void MAT_TListNode::Dummy()const {}

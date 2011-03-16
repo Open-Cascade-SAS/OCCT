@@ -1,0 +1,32 @@
+-- File:        XmlMNaming_NamingDriver.cdl
+
+class NamingDriver from XmlMNaming inherits ADriver from XmlMDF
+
+        ---Purpose: 
+
+uses
+    RRelocationTable    from XmlObjMgt,
+    SRelocationTable    from XmlObjMgt,
+    Persistent          from XmlObjMgt,
+    Element             from XmlObjMgt,
+    Attribute           from TDF,
+    MessageDriver       from CDM,
+    ShapeSet            from BRepTools
+
+is
+    Create (aMessageDriver: MessageDriver from CDM)
+        returns mutable NamingDriver from XmlMNaming;
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste(me; theSource     : Persistent from XmlObjMgt;
+              theTarget     : mutable Attribute from TDF;
+              theRelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; theSource     : Attribute from TDF;
+              theTarget     : in out Persistent from XmlObjMgt;
+              theRelocTable : out SRelocationTable from XmlObjMgt);
+
+end NamingDriver;

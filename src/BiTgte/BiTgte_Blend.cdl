@@ -1,0 +1,348 @@
+-- File:	BiTgte_Blend.cdl
+-- Created:	Mon Dec 16 10:25:05 1996
+-- Author:	Bruno DUMORTIER
+--		<dub@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Blend from BiTgte 
+
+	---Purpose: 
+
+uses
+
+    Shape                            from TopoDS,
+    Face                             from TopoDS,
+    Edge                             from TopoDS,
+    MapOfShape                       from TopTools,
+    ListOfShape                      from TopTools,
+    Curve                            from Geom2d,
+    Curve                            from Geom,
+    Surface                          from Geom,
+    Analyse                          from BRepOffset,
+    Inter3d                          from BRepOffset,
+    Offset                           from BRepOffset,
+    Image                            from BRepAlgo,
+    AsDes                            from BRepAlgo,
+    DataMapOfShapeOffset             from BRepOffset,
+    DataMapOfShapeBox                from BiTgte,
+    ContactType                      from BiTgte,
+    DataMapOfShapeListOfShape        from TopTools,
+    IndexedMapOfShape                from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    DataMapOfShapeDataMapOfShapeListOfShape from BRepFill,
+    HArray1OfInteger                 from TColStd
+
+raises
+    NotDone    from StdFail,
+    OutOfRange from Standard
+    
+
+is
+    --- 
+    ---  Initilisations
+    --- 
+
+    Create
+    returns Blend from BiTgte;
+    
+    Create (S      : Shape   from TopoDS;
+    	    Radius : Real    from Standard;
+	    Tol    : Real    from Standard;
+    	    NUBS   : Boolean from Standard)
+	---Purpose: <S>: Shape to be rounded
+	--          <Radius>: radius of the fillet
+	--          <Tol>: Tol3d used in approximations
+	--          <NUBS>: if true,  generate only NUBS surfaces,
+	--                  if false, generate analytical surfaces if possible
+	--                  
+    returns Blend from BiTgte;
+    
+    Init (me     : in out;
+    	  S      : Shape   from TopoDS;
+    	  Radius : Real    from Standard;
+	  Tol    : Real    from Standard;
+          NUBS   : Boolean from Standard)
+    is static;
+    
+    Clear (me : in out)
+	---Purpose: Clear all the Fields.
+    is static;
+
+    SetFaces(me     : in out;
+    	     F1, F2 : Face from TopoDS)
+	---Purpose:  Set two faces   of <myShape> on which the  Sphere
+    --                    must roll.
+    is static;
+
+    SetEdge(me   : in out;
+    	    Edge : Edge from TopoDS)
+	---Purpose: Set an edge of <myShape> to be rounded.
+    is static;
+    
+    SetStoppingFace (me   : in out;
+    	    	     Face : Face from TopoDS)
+	---Purpose: Set a face on which the fillet must stop.
+    is static;
+
+
+    ---
+    ---  Computation
+    --- 
+
+    Perform (me         : in out;
+    	     BuildShape : Boolean from Standard = Standard_True)
+	---Purpose: Compute the generated surfaces.
+	--          If <BuildShape> is true, compute the resulting Shape.
+	--          If false, only the blending surfaces are computed.
+    is static;    
+
+
+    ---
+    ---  Quering
+    --- 
+
+    IsDone(me) 
+    returns Boolean from Standard
+	---Purpose: 
+    is static;
+
+
+    Shape(me) 
+	---Purpose: returns the result
+    returns Shape from TopoDS
+	---C++: return const &
+    is static;
+
+
+    NbSurfaces(me)
+	---Purpose: returns the Number of generated surfaces.
+    returns Integer from Standard
+    raises
+    	NotDone from StdFail
+    is static;
+
+    Surface(me; Index : Integer from Standard) 
+    returns Surface from Geom
+	---Purpose: returns the surface of range Index
+    raises
+    	NotDone from StdFail,
+	OutOfRange from Standard
+    is static;
+
+    Face(me; Index : Integer from Standard) 
+    returns Face from TopoDS
+	---Purpose: returns the surface of range Index
+	---C++: return const &
+    raises
+    	NotDone from StdFail,
+	OutOfRange from Standard
+    is static;
+
+    CenterLines(me;
+    	    	LC : in out ListOfShape from TopTools ) 
+	---Purpose: set in <LC> all the center lines
+    is static;
+
+    Surface(me; CenterLine : Shape from TopoDS)
+    returns Surface from Geom
+	---Purpose: returns  the surface generated  by the centerline.
+	--          <CenterLine> may be
+	--             - an edge  : generate a pipe.
+	--             - a vertex : generate a sphere.
+	--  Warning: returns a Null Handle if <CenterLine> generates 
+	--          no surface.
+    raises
+    	NotDone from StdFail
+    is static;
+
+    Face(me; CenterLine : Shape from TopoDS)
+    returns Face from TopoDS
+	---Purpose: returns  the face generated  by the centerline.
+	--          <CenterLine> may be
+	--             - an edge  : generate a pipe.
+	--             - a vertex : generate a sphere.
+	--  Warning: returns a Null Shape if <CenterLine> generates 
+	--          no surface.
+	---C++: return const &
+    raises
+    	NotDone from StdFail
+    is static;
+
+
+    ---
+    --- Information about FilletGeometry:
+    --- 
+    
+    ContactType(me; Index: Integer from Standard) 
+	---Purpose: returns the type of contact
+    returns ContactType from BiTgte
+    is static;
+    
+    ---
+    --- SupportShape: may be a Face, an Edge or a Vertex
+    --- 
+
+    SupportShape1 (me; Index: Integer from Standard)  
+    returns Shape from TopoDS
+    	---Purpose: gives the first support shape relative to 
+    	--          SurfaceFillet(Index);
+    	---C++: return const & 
+    raises  
+    	NotDone    from StdFail,
+        OutOfRange from Standard
+    is static;  
+    
+    SupportShape2 (me; Index : Integer from Standard) 
+    returns Shape from TopoDS
+    	---Purpose: gives the second support shape relative to 
+    	--          SurfaceFillet(Index);
+    	---C++:return const &
+    raises NotDone    from StdFail,
+           OutOfRange from Standard
+    is static;
+   
+   
+    ---
+    --- 3d Curves: the guide - lines
+    --- 
+
+    CurveOnShape1 (me; Index : Integer from Standard) 
+    returns Curve from Geom
+    	---Purpose: gives the 3d curve of SurfaceFillet(Index)
+    	--          on SupportShape1(Index)  
+    raises NotDone    from StdFail,
+           OutOfRange from Standard
+    is static;
+
+    CurveOnShape2 (me; Index : Integer from Standard)
+    returns Curve from Geom
+    	---Purpose: gives the 3d curve of SurfaceFillet(Index)
+    	--          on SupportShape2(Index)
+    raises NotDone    from StdFail,
+           OutOfRange from Standard
+    is static;
+
+
+    ---
+    --- 2d curves:
+    --- 
+
+
+    PCurveOnFace1 (me; Index : Integer from Standard)
+    returns Curve from Geom2d
+    	---Purpose: gives the PCurve associated to CurvOnShape1(Index)
+    	--          on the support face 
+	--  Warning: returns a Null Handle if SupportShape1 is not a Face
+    raises NotDone    from StdFail,
+           OutOfRange from Standard
+    is static;
+
+    PCurve1OnFillet (me; Index : Integer from Standard)
+    returns Curve from Geom2d
+    	---Purpose: gives the PCurve associated to CurveOnShape1(Index)
+    	--          on the Fillet
+    raises  NotDone    from StdFail,
+            OutOfRange from Standard
+    is static;
+    
+    PCurveOnFace2 (me; Index : Integer from Standard)
+    returns Curve from Geom2d
+    	---Purpose: gives the PCurve  associated to CurveOnShape2(Index)
+    	--          on the  support face 
+	--  Warning: returns a Null Handle if SupportShape2 is not a Face
+    raises  NotDone    from StdFail,
+            OutOfRange from Standard
+    is static;
+   
+    PCurve2OnFillet (me; Index : Integer from Standard)
+    returns Curve from Geom2d
+    	---Purpose: gives the PCurve associated to CurveOnShape2(Index)
+    	--          on the fillet
+    raises  NotDone    from StdFail,
+             OutOfRange from Standard
+    is static;
+
+
+    ---
+    --- Branches Solutions
+    --- 
+
+    NbBranches(me : in out) 
+    returns Integer from Standard
+    raises  
+    	NotDone    from StdFail
+    is static;
+
+
+    IndicesOfBranche(me; 
+    	    	     Index    :        Integer from Standard;
+    	    	     From, To : in out Integer from Standard)
+	---Purpose:  Set in <From>,<To>   the indices of the faces  of
+	--  the branche <Index>.
+	--  
+	--  i.e: Branche<Index> = Face(From) + Face(From+1) + ..+ Face(To)
+    is static;
+
+    --- 
+    --- Internal methods:
+    --- 
+
+
+    ComputeCenters (me : in out)
+	---Purpose: Computes the center lines
+    is static;
+
+    ComputeSurfaces( me    : in out)
+	---Purpose: Perform the generated surfaces.
+    is static private;
+
+    ComputeShape(me : in out)
+	---Purpose: Build the resulting shape
+	--          All the faces must be computed
+    is static private;
+    
+    Intersect(me : in out;
+    	      Init    :        Shape             from TopoDS; 
+	      Face    :        Face              from TopoDS;
+	      MapSBox :        DataMapOfShapeBox from BiTgte;
+	      OF1     :        Offset            from BRepOffset;
+	      Inter   : in out Inter3d           from BRepOffset)
+    returns Boolean from Standard
+	---Purpose: Computes the intersections with <Face> and all the
+	--           OffsetFaces stored  in <myMapSF>.  Returns <True>
+	--          if an intersections ends on a boundary of a Face.
+    is static private;
+    
+    
+fields
+
+    myRadius         : Real                 from Standard;   
+    myTol            : Real                 from Standard; 
+    myNubs           : Boolean              from Standard;
+    myShape          : Shape                from TopoDS;     -- Shape Initial
+    myResult         : Shape                from TopoDS;     -- Shape Resultat
+    myBuildShape     : Boolean              from Standard;
+
+    myAncestors      : IndexedDataMapOfShapeListOfShape from TopTools;
+    myCreated        : DataMapOfShapeDataMapOfShapeListOfShape from BRepFill;
+    myCutEdges       : DataMapOfShapeListOfShape from TopTools;
+
+    myFaces          : MapOfShape           from TopTools;
+    myEdges          : MapOfShape           from TopTools;
+     
+    myStopFaces      : MapOfShape           from TopTools;
+    myAnalyse        : Analyse	            from BRepOffset;
+    
+    myCenters        : IndexedMapOfShape    from TopTools;
+    myMapSF          : DataMapOfShapeOffset from BRepOffset;
+    myInitOffsetFace : Image                from BRepAlgo;	
+    myImage          : Image                from BRepAlgo;	     
+    myImageOffset    : Image                from BRepAlgo;
+    myAsDes          : AsDes                from BRepAlgo;
+
+    myNbBranches     : Integer              from Standard;
+    myIndices        : HArray1OfInteger     from TColStd;     
+    myDone           : Boolean              from Standard;
+
+end Blend;

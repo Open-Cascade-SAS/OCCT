@@ -1,0 +1,53 @@
+-- File:	TopoDSToStep_MakeStepEdge.cdl
+-- Created:	Wed Nov 30 10:20:56 1994
+-- Author:	Frederic MAUPAS
+--		<fma@bibox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakeStepEdge from TopoDSToStep 
+    inherits Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Edge from TopoDS and TopologicalRepresentationItem from
+    --          StepShape. 
+  
+uses Edge                          from TopoDS,
+     TopologicalRepresentationItem from StepShape,
+     Tool                          from TopoDSToStep,
+     MakeEdgeError                 from TopoDSToStep,
+     FinderProcess                 from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+    Create returns MakeStepEdge;
+    
+    Create(E  : Edge from TopoDS;
+  	   T  : in out Tool from TopoDSToStep;
+	   FP : mutable FinderProcess from Transfer)
+         returns MakeStepEdge;
+    
+    Init(me : in out;
+    	 E  : Edge from TopoDS;
+     	 T  : in out Tool from TopoDSToStep;
+         FP : mutable FinderProcess from Transfer);
+
+	    
+    Value (me) returns TopologicalRepresentationItem from StepShape
+    	raises NotDone
+    	is static;
+    	---C++: return const&
+        
+    Error(me) returns MakeEdgeError from TopoDSToStep;
+
+fields
+
+    myResult : TopologicalRepresentationItem from StepShape;
+
+    myError  : MakeEdgeError from TopoDSToStep;
+    
+end MakeStepEdge;
+
+

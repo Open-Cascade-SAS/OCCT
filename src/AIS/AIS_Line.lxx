@@ -1,0 +1,25 @@
+// File:	AIS_Line.lxx
+// Created:	Thu Mar  6 14:26:11 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline AIS_KindOfInteractive AIS_Line::Type() const 
+{return AIS_KOI_Datum;}
+
+
+inline Standard_Integer AIS_Line::Signature() const 
+{return 5;}
+
+inline const Handle(Geom_Line)& AIS_Line::Line() const 
+{return myComponent;}
+inline void AIS_Line::Points( Handle(Geom_Point)& PStart,
+			      Handle(Geom_Point)& PEnd) const 
+{  PStart = myStartPoint; PEnd   = myEndPoint;}
+inline void AIS_Line::SetLine(const Handle(Geom_Line)& L)
+{myComponent =L;myLineIsSegment=Standard_False;}
+inline void AIS_Line::SetPoints(const  Handle(Geom_Point)& PStart,
+				const Handle(Geom_Point)& PEnd)
+{
+  myStartPoint=PStart;
+  myEndPoint = PEnd;
+  myLineIsSegment=Standard_True;
+}

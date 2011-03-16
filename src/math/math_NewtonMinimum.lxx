@@ -1,0 +1,48 @@
+// File:	math_NewtonMinimum.lxx
+// Created:	Fri May  3 09:38:48 1996
+// Author:	Philippe MANGIN
+//		<pmn@sgi38>
+
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean math_NewtonMinimum::IsDone() const 
+{
+  return Done;
+}
+
+inline const math_Vector& math_NewtonMinimum::Location() const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   return TheLocation;
+}
+
+inline void math_NewtonMinimum::Location(math_Vector& Loc) const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   Loc = TheLocation;
+}
+
+inline Standard_Real math_NewtonMinimum::Minimum() const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   return TheMinimum;
+}
+
+inline const math_Vector& math_NewtonMinimum::Gradient() const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   return TheGradient;
+}
+
+inline void math_NewtonMinimum::Gradient(math_Vector& Grad) const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   Grad = TheGradient;
+}
+
+inline Standard_Integer math_NewtonMinimum::NbIterations() const 
+{
+   StdFail_NotDone_Raise_if(!Done, "NewtonMinimum");
+   return nbiter;
+}
+

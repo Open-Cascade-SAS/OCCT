@@ -1,0 +1,42 @@
+-- File:        GlobalUnitAssignedContext.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GlobalUnitAssignedContext from StepRepr 
+
+inherits RepresentationContext from StepRepr 
+
+uses
+
+	HArray1OfNamedUnit from StepBasic, 
+	NamedUnit from StepBasic, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable GlobalUnitAssignedContext;
+	---Purpose: Returns a GlobalUnitAssignedContext
+
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aContextIdentifier : mutable HAsciiString from TCollection;
+	      aContextType : mutable HAsciiString from TCollection;
+	      aUnits : mutable HArray1OfNamedUnit from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetUnits(me : mutable; aUnits : mutable HArray1OfNamedUnit);
+	Units (me) returns mutable HArray1OfNamedUnit;
+	UnitsValue (me; num : Integer) returns mutable NamedUnit;
+	NbUnits (me) returns Integer;
+
+fields
+
+	units : HArray1OfNamedUnit from StepBasic;
+
+end GlobalUnitAssignedContext;

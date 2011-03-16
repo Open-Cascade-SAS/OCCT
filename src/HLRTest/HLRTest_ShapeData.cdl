@@ -1,0 +1,74 @@
+-- File:	HLRTest_ShapeData.cdl
+-- Created:	Fri Aug 21 17:10:30 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class ShapeData from HLRTest inherits TShared from MMgt
+
+    	---Purpose: Contains the colors of a shape.
+
+uses
+    Color from Draw
+    
+is
+    Create(CVis,COVis,CIVis,CHid,COHid,CIHid : Color from Draw)
+    returns mutable ShapeData from HLRTest; 
+    
+    VisibleColor(me: mutable; CVis : Color from Draw)
+    	---C++: inline
+    is static;
+
+    VisibleOutLineColor(me: mutable; COVis : Color from Draw)
+    	---C++: inline
+    is static;
+
+    VisibleIsoColor(me: mutable; CIVis : Color from Draw)
+    	---C++: inline
+    is static;
+
+    HiddenColor(me: mutable; CHid : Color from Draw)
+    	---C++: inline
+    is static;
+
+    HiddenOutLineColor(me: mutable; COHid : Color from Draw)
+    	---C++: inline
+    is static;
+
+    HiddenIsoColor(me: mutable; CIHid : Color from Draw)
+    	---C++: inline
+    is static;
+
+    VisibleColor(me) returns Color from Draw
+    	---C++: inline
+    is static;
+
+    VisibleOutLineColor(me) returns Color from Draw
+    	---C++: inline
+    is static;
+
+    VisibleIsoColor(me) returns Color from Draw
+    	---C++: inline
+    is static;
+
+    HiddenColor(me)  returns Color from Draw
+    	---C++: inline
+    is static;
+
+    HiddenOutLineColor(me)  returns Color from Draw
+    	---C++: inline
+    is static;
+
+    HiddenIsoColor(me)  returns Color from Draw
+    	---C++: inline
+    is static;
+
+fields
+    myVColor  : Color from Draw;
+    myVOColor : Color from Draw;
+    myVIColor : Color from Draw;
+    myHColor  : Color from Draw;
+    myHOColor : Color from Draw;
+    myHIColor : Color from Draw;
+
+end ShapeData;

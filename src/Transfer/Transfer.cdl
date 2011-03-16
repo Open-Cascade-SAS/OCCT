@@ -1,0 +1,97 @@
+-- File:	Transfer.cdl
+-- Created:	Mon Feb  3 10:34:50 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+package Transfer
+
+    ---Purpose : Defines general Transfer engine, which provides tools and
+    --           workframe for all kinds of file (non-direct) Interfaces.
+    --           Works on the basis of data provided by package Interface
+    --           (especially InterfaceModel).
+
+uses TCollection, TColStd, MMgt, Standard, Dico, MoniTool, Interface,  Message
+
+is
+
+    class DataInfo;  -- used in Mapper
+
+    deferred class Finder;
+    	generic class Mapper;
+	class TransientMapper  instantiates Mapper
+    	    (Transient, MapTransientHasher from TColStd, DataInfo);
+    class FindHasher;
+
+    deferred class Binder;
+    	class VoidBinder;
+    	generic class SimpleBinder;
+    	class SimpleBinderOfTransient;
+	class BinderOfTransientInteger;
+        class TransientListBinder;
+    	class MultipleBinder;
+
+    class ResultFromTransient;
+    class ResultFromModel;
+
+    class TransferIterator;
+    generic class TransferProcess;
+    generic class TransferMap;
+    generic class Iterator;
+    generic class Actor;
+
+    class ProcessForTransient   instantiates TransferProcess
+    	(Transient,  MapTransientHasher from TColStd,
+    	 HSequenceOfTransient  from TColStd);
+    ---Purpose : Manages Transfer of Transient Objects. Produces also
+    --           ActorOfTransientProcess       (deferred class),
+    --           IteratorOfTransientProcess    (for Results),
+    --           TransferMapOfTransientProcess (internally used)
+    --           Normally uses as TransientProcess, which adds some specifics
+
+    class TransientProcess;    -- inherits TransferForTransient
+    class ActorOfTransientProcess;
+
+    class SequenceOfFinder instantiates
+    	 Sequence from TCollection (Finder);
+    class HSequenceOfFinder instantiates
+    	HSequence from TCollection (Finder,SequenceOfFinder);
+
+    class ProcessForFinder      instantiates TransferProcess
+    	(Finder,     FindHasher,   HSequenceOfFinder);
+
+    class FinderProcess;
+    class ActorOfFinderProcess;
+
+    class TransferOutput;
+    class TransferInput;
+
+    class DispatchControl;
+    class TransferDispatch;
+    class ActorDispatch;
+    
+    class MapContainer;
+
+    class SequenceOfBinder instantiates
+    	 Sequence from TCollection (Binder);
+    class HSequenceOfBinder instantiates
+    	HSequence from TCollection (Binder,SequenceOfBinder);
+
+    enumeration StatusResult is  StatusVoid, StatusDefined, StatusUsed;
+    ---Purpose : result status of transferring an entity (see Transcriptor)
+
+    enumeration StatusExec is
+    	StatusInitial, StatusRun, StatusDone, StatusError,StatusLoop;
+    ---Purpose : execution status of an individual transfer (see Transcriptor)
+
+    enumeration UndefMode is
+    	UndefIgnore, UndefFailure, UndefContent, UndefUser;
+    ---Purpose : used on processing Undefined Entities (see TransferOutput)
+
+    	-- --  Exceptions  -- --
+
+    exception TransferFailure   inherits InterfaceError  from Interface;
+    exception TransferDeadLoop  inherits TransferFailure from Transfer;
+
+end Transfer;

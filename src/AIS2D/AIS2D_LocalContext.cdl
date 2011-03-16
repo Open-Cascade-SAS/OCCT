@@ -1,0 +1,213 @@
+-- File     : AIS2D_LocalContext.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+private class LocalContext from AIS2D inherits TShared from MMgt
+
+	---Purpose: defines a specific context  for selection: One can
+	--          loads  InteractiveObjects  with   a mode   to be
+	--          activated  associate InteractiveObjects   with a
+	--          set of  temporary   selectable Objects
+	--          
+
+uses
+
+   ListOfInteger         from TColStd,
+   SequenceOfInteger     from TColStd,
+   MapOfTransient        from TColStd,
+   NameOfColor           from Quantity,
+   PlaneAngle            from Quantity,
+   Length                from Quantity,
+   GridType              from Aspect,
+   GridDrawMode          from Aspect,
+   View                  from V2d,
+   Primitive             from Graphic2d,
+   InteractiveObject     from AIS2D,
+   InteractiveContext    from AIS2D,
+   LocalStatus           from AIS2D,
+   StatusOfPick          from AIS2D,
+   StatusOfDetection     from AIS2D,
+   PToListOfInt          from AIS2D,
+   DataMapOfLocStat      from AIS2D,
+   ClearMode             from AIS2D 
+								   
+is
+
+   Create returns mutable LocalContext from AIS2D;
+   ---Purpose: Constructor By Default, the  displayed objects are 
+   --          automatically loaded.
+
+   Create ( aCtx                : InteractiveContext from AIS2D;
+    	    anIndex             : Integer            from Standard;
+    	    LoadDisplayed       : Boolean            from Standard = Standard_True;
+    	    AcceptStdModes      : Boolean            from Standard = Standard_True;
+    	    AcceptErase         : Boolean            from Standard = Standard_False )
+	    returns mutable LocalContext from AIS2D;
+   ---Purpose: Constructor 
+
+  -- *************************************************************
+  --        Editing general Display Services 
+  -- *************************************************************
+	
+   Display( me              : mutable;
+            anIObj          : InteractiveObject from AIS2D;
+            DisplayMode     : Integer from Standard = 0;
+ 	        AllowDecomp     : Boolean from Standard = Standard_True; 
+   	        ActivationMode  : Integer from Standard = 0 )
+    returns Boolean from Standard;
+   ---Level: Internal
+   ---Purpose: 
+
+   Load( me             : mutable;
+         anIObj         : InteractiveObject from AIS2D;
+         AllowDecomp    : Boolean from Standard = Standard_True; 
+         ActivationMode : Integer from Standard = 0)
+    returns Boolean from Standard;
+   ---Level: Internal
+   ---Purpose: 
+
+   Erase( me     : mutable;
+          anIObj : InteractiveObject from AIS2D )
+    returns Boolean from Standard;
+   ---Level: Internal
+   ---Purpose: 
+
+   Remove( me       : mutable;
+           aSelObj  : InteractiveObject from AIS2D )
+    returns Boolean from Standard;
+   ---Level: Internal
+   ---Purpose: 
+
+   LoadContextObjects( me: mutable );
+   UnloadContextObjects( me: mutable );
+
+   Terminate( me: mutable );
+   ---Level: Internal
+   ---Purpose: 
+
+   Clear( me: mutable; aType: ClearMode from AIS2D = AIS2D_CM_All );
+   ---Purpose: according to <aType>, clears the  different parts of
+   --          the selector (filters, modeof activation, objects...)
+
+   HighlightPicked( me: mutable; UpdateVwr: Boolean from Standard = Standard_True ) ;
+   UnhighlightPicked( me: mutable; UpdateVwr: Boolean from Standard = Standard_True ) ;
+
+   UpdateSelected( me        : mutable;
+                   UpdateVwr : Boolean from Standard = Standard_True ); 
+   SetSelected( me           : mutable;
+                anIObj       : InteractiveObject from AIS2D;
+    	    	UpdateVwr    : Boolean from Standard=Standard_True );
+    ---Purpose: useful  to  update selection with objects  coming from
+    --          Collector or stack
+
+   AddOrRemoveSelected( me        : mutable;
+    	    	    	 anIObj    : InteractiveObject from AIS2D;
+    	    	    	 UpdateVwr : Boolean from Standard = Standard_True );
+    ---Purpose: useful  to  update selection with objects  coming from
+    --          Collector or stack
+  
+   --***************************************************************************
+   --         Information about Detection
+   --***************************************************************************
+   
+   IsSelected( me; anIObj: InteractiveObject from AIS2D) returns Boolean  from  Standard;
+   SelectedIO( me ) returns InteractiveObject from AIS2D;
+   
+
+   -- *******************************************************************************
+   --	       	  Management Of Temporary Attributes
+   -- *******************************************************************************	
+   
+   SetDisplayPriority( me      : mutable;
+                       anIObj  : InteractiveObject from AIS2D;
+    	    	       Prior   : Integer from Standard);
+   
+   DisplayedObjects( me; theMapToFill: in out MapOfTransient from TColStd )
+      returns Integer from Standard;
+
+   IsDisplayed( me; anIObj: InteractiveObject from AIS2D) returns Boolean from Standard;
+   IsDisplayed( me; anIObj: InteractiveObject from AIS2D;
+    	    	aMode: Integer from Standard)
+    returns Boolean from Standard;
+
+   Unhighlight( me:mutable; anIObj: InteractiveObject from AIS2D);
+   IsHighlight( me; anIObj: InteractiveObject from AIS2D) returns Boolean from Standard;
+   IsHighlight( me;
+     	    	anIObj    : InteractiveObject from AIS2D;
+    	    	WithColor : out Boolean from Standard;
+		        HiCol     : out NameOfColor from Quantity)
+    returns Boolean from Standard;
+   
+    
+   IsIn( me; anIObj: InteractiveObject from AIS2D) returns Boolean from Standard;
+
+   SubIntensityOn( me: mutable; anIObj: InteractiveObject from AIS2D ); 
+   SubIntensityOff( me: mutable; anIObj: InteractiveObject from AIS2D ); 
+   
+  --****************************************************************
+  --            Graphic Detection and Selection
+  --****************************************************************
+  UnhighLastDetect( me: mutable; aView: View from V2d) returns Boolean from Standard;
+  MoveTo( me: mutable; Xpix, Ypix: Integer from Standard; aView: View from V2d)
+          returns StatusOfDetection from AIS2D;
+  Select( me: mutable; UpdateVwr: Boolean from Standard = Standard_True )
+       returns StatusOfPick from AIS2D;
+      
+  ShiftSelect( me: mutable; UpdateVwr: Boolean from Standard = Standard_True)
+       returns StatusOfPick from AIS2D;
+	  	  
+   --**********************************************************************************
+  
+  --**********************************************************************************
+
+  ClearSelected( me: mutable; UpdateVwr: Boolean from Standard=Standard_True );  
+  ClearObjects( me:mutable ) is static private;
+  ClearDetected( me:mutable ) is static private;
+
+  IsValidForSelection( me; anIObj: InteractiveObject from AIS2D) returns Boolean from Standard is static private;
+
+  DrawObject( me: mutable; anObj: InteractiveObject from AIS2D; aDispMode: Integer from Standard ) 
+    is private;
+
+  DetectedIndex(me:mutable) returns Integer from Standard is static private;
+  Status( me; anObject: InteractiveObject from AIS2D )
+    returns any LocalStatus from AIS2D is private;
+    ---C++: return const&
+     
+fields
+
+    myICTX          : InteractiveContext    from AIS2D;
+	myActiveObjects : DataMapOfLocStat      from AIS2D;  
+
+    myLastPicked     : InteractiveObject from AIS2D;
+    myLastinMain     : InteractiveObject from AIS2D;
+    myLastSelPrim    : Primitive         from Graphic2d;
+	myLastPickPrim   : Primitive         from Graphic2d;
+	myLastPickElInd  : Integer           from Standard;
+	myLastSelElInd   : Integer           from Standard;
+
+    myLoadDisplayed	 : Boolean               from Standard;
+    myAcceptStdMode  : Boolean               from Standard;
+    myAcceptErase    : Boolean               from Standard;        
+    
+	myListOfStdMode : ListOfInteger         from TColStd;
+    	
+    myAutoHighlight : Boolean               from Standard;
+    myLastIndex     : Integer               from Standard;
+    myLastGood      : Integer               from Standard;
+
+    myDetectedSeq   : SequenceOfInteger     from TColStd;
+    myCurDetected   : Integer               from Standard;
+	myResetDetect   : Boolean               from Standard;
+
+friends 
+
+    KeepTemporary from  InteractiveContext from AIS2D(me:mutable; anIObj:InteractiveObject from AIS2D; WhichMode: Integer from Standard = -1) 
+
+end LocalContext;
+
+
+
+
+

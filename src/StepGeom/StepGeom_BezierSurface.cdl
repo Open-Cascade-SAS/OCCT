@@ -1,0 +1,24 @@
+-- File:        BezierSurface.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BezierSurface from StepGeom 
+
+inherits BSplineSurface from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable BezierSurface;
+	---Purpose: Returns a BezierSurface
+
+
+end BezierSurface;

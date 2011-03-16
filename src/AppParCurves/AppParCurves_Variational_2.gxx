@@ -1,0 +1,102 @@
+// File:	AppParCurves_Variational_2.gxx
+// Created:	Mon Dec  7 09:29:07 1998
+// Author:	Igor FEOKTISTOV
+//		<ifv@paradox.nnov.matra-dtv.fr>
+
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <PLib_Base.hxx>
+#include <PLib_JacobiPolynomial.hxx>
+#include <PLib_HermitJacobi.hxx>
+#include <FEmTool_HAssemblyTable.hxx>
+
+
+
+//=======================================================================
+//function : Optimization
+//purpose  :  (like FORTRAN subroutine MINIMI)
+//=======================================================================
+void AppParCurves_Variational::Optimization(Handle(AppParCurves_SmoothCriterion)& J,
+					    FEmTool_Assembly& A,
+					    const Standard_Boolean ToAssemble,
+					    const Standard_Real EpsDeg,
+					    Handle(FEmTool_Curve)& Curve,
+					    const TColStd_Array1OfReal& Parameters) const
+{
+  Standard_Integer MxDeg = Curve->Base()->WorkDegree(),
+                   NbElm = Curve->NbElements(),
+                   NbDim = Curve->Dimension();
+
+  Handle(FEmTool_HAssemblyTable) AssTable;
+
+  math_Matrix H(0, MxDeg, 0, MxDeg);
+  math_Vector G(0, MxDeg), Sol(1, A.NbGlobVar());
+
+  Standard_Integer el, dim;
+
+  A.GetAssemblyTable(AssTable);
+  Standard_Integer NbConstr = myNbPassPoints + myNbTangPoints + myNbCurvPoints;
+
+  Standard_Real CBLONG = J->EstLength();
+
+  // Updating Assembly
+  if (ToAssemble) 
+    A.NullifyMatrix();
+  A.NullifyVector();
+
+  
+  for (el = 1; el <= NbElm; el++) {
+    if (ToAssemble) {
+      J->Hessian(el, 1, 1, H);
+      for(dim = 1; dim <= NbDim; dim++)
+	A.AddMatrix(el, dim, dim, H);
+    }
+
+  for(dim = 1; dim <= NbDim; dim++) {
+      J->Gradient(el, dim, G);
+      A.AddVector(el, dim, G);
+    }
+  }
+
+
+  // Solution of system 
+  if (ToAssemble) {
+    if(NbConstr != 0) { //Treatment of constraints
+      AssemblingConstraints(Curve, Parameters, CBLONG, A);
+    }      
+    A.Solve();
+  }
+  A.Solution(Sol);
+
+
+  // Updating J
+  J->SetCurve(Curve);
+  J->InputVector(Sol, AssTable);
+
+  // Updating Curve and reduction of degree
+  
+  Standard_Integer Newdeg;
+  Standard_Real MaxError;
+  
+  if(NbConstr == 0) {
+    for(el = 1; el <= NbElm; el++) {
+      Curve->ReduceDegree(el, EpsDeg, Newdeg, MaxError);
+    }
+  }
+  else {
+    
+    TColStd_Array1OfReal& TabInt = Curve->Knots();
+    Standard_Integer Icnt = 1, p0 = Parameters.Lower() - myFirstPoint, point;
+    for(el = 1; el <= NbElm; el++) {     
+      while((Icnt < NbConstr) && 
+	    (Parameters(p0 + myTypConstraints->Value(2 * Icnt - 1)) <= TabInt(el))) Icnt++;
+      point = p0 + myTypConstraints->Value(2 * Icnt - 1);
+      if(Parameters(point) <= TabInt(el) || Parameters(point) >= TabInt(el + 1))
+	Curve->ReduceDegree(el, EpsDeg, Newdeg, MaxError);
+      else
+	if(Curve->Degree(el) < MxDeg) Curve->SetDegree(el, MxDeg);
+    }
+  }   
+}
+

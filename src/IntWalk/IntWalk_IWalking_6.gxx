@@ -1,0 +1,113 @@
+//-- File IntWalk_IWalking_6.gxx
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+void IntWalk_IWalking::AddPointInCurrentLine
+         (const Standard_Integer N,
+	  const ThePointOfPath& PathPnt,
+	  const Handle(IntWalk_TheIWLine)& CurrentLine) const {
+
+
+  IntSurf_PntOn2S Psol;
+  Psol.SetValue(ThePointOfPathTool::Value3d(PathPnt),
+		reversed,ustart1(N),vstart1(N));
+  CurrentLine->AddPoint(Psol);
+}
+
+
+void IntWalk_IWalking::MakeWalkingPoint
+         (const Standard_Integer Case, 
+	  const Standard_Real U, 
+	  const Standard_Real V,
+	  TheIWFunction& sp,
+	  IntSurf_PntOn2S& Psol )
+
+{
+
+// Case == 1      : make a WalkinkPoint.
+// Case == 2      : make a WalkinkPoint.
+//                  The computation of the tangency on is done  
+// Case == 10 + i : make a WalkinkPoint according to i.
+//                  but F is updated according to U and V
+// Case == other  : the exception Standard_Failure is raised.
+
+  if (Case == 1) 
+    Psol.SetValue(sp.Point(),reversed, U, V);
+  else if (Case == 2) {
+#ifdef DEB
+    Standard_Boolean foo = sp.IsTangent(); 
+#endif
+    Psol.SetValue(sp.Point(),reversed, U, V);
+  }
+  else if (Case == 11 || Case == 12 ) {
+    static math_Vector UV(1, 2);
+    static math_Vector FF(1, 1);
+    static math_Matrix DD(1, 1, 1, 2); 
+    UV(1) = U;
+    UV(2) = V;
+    sp.Values(UV, FF, DD);
+    MakeWalkingPoint(Case - 10, U, V, sp, Psol); 
+  }
+  else {
+    Standard_ConstructionError::Raise();
+  }
+
+
+}
+
+
+
+void IntWalk_IWalking::OpenLine(const Standard_Integer N,
+                                const IntSurf_PntOn2S& Psol,
+				const ThePOPIterator& Pnts1,
+				TheIWFunction& sp,
+                                const Handle(IntWalk_TheIWLine)& Line )
+// **************** ouverture de la ligne et repartir dans l autre sens********
+
+{
+  ThePointOfPath PathPnt;
+
+  static math_Vector UV(1, 2);
+  static math_Vector FF(1, 1);
+  static math_Matrix DD(1, 1, 1, 2); 
+
+  previousPoint = Line->Value(1);  
+  if (!reversed) {
+    previousPoint.ParametersOnS2(UV(1),UV(2));
+  }
+  else {
+    previousPoint.ParametersOnS1(UV(1),UV(2));
+  }
+  sp.Values(UV, FF, DD);
+  previousd3d = sp.Direction3d();
+  previousd2d = sp.Direction2d();
+
+  if (N>0) { //point de depart donne en entree
+    PathPnt = Pnts1.Value(N);
+    //marque la ligne comme ouverte avec point d arret donne
+    Line->AddStatusFirst(Standard_False,Standard_True,N,PathPnt); 
+
+
+    AddPointInCurrentLine(N,PathPnt,Line);
+
+  }
+  else  {
+    if (N <0) Line->AddPoint(Psol);                      
+    Line->AddStatusFirst(Standard_False,Standard_False);
+       //marque la ligne comme ouverte sans point d arret donne
+  }
+  Line->Reverse();  //inverser la ligne        
+  Line->SetTangentVector(previousd3d.Reversed(),Line->NbPoints());
+}
+
+
+
+
+
+
+
+

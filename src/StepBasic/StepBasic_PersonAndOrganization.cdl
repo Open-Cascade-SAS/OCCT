@@ -1,0 +1,36 @@
+-- File:        PersonAndOrganization.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PersonAndOrganization from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	Person from StepBasic, 
+	Organization from StepBasic
+is
+
+	Create returns mutable PersonAndOrganization;
+	---Purpose: Returns a PersonAndOrganization
+
+	Init (me : mutable;
+	      aThePerson : mutable Person from StepBasic;
+	      aTheOrganization : mutable Organization from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetThePerson(me : mutable; aThePerson : mutable Person);
+	ThePerson (me) returns mutable Person;
+	SetTheOrganization(me : mutable; aTheOrganization : mutable Organization);
+	TheOrganization (me) returns mutable Organization;
+
+fields
+
+	thePerson : Person from StepBasic;
+	theOrganization : Organization from StepBasic;
+
+end PersonAndOrganization;

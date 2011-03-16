@@ -1,0 +1,39 @@
+-- File:	BOP_SectionHistoryCollector.cdl
+-- Created:	Tue Apr 29 11:24:24 2003
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Open CASCADE 2003
+
+class SectionHistoryCollector from BOP inherits HistoryCollector from BOP
+
+uses
+    Shape from TopoDS,
+    Operation from BOP,
+    PDSFiller from BOPTools,
+    ListOfShape from TopTools,
+    IndexedMapOfShape from TopTools, 
+    IndexedDataMapOfShapeListOfShape from TopTools
+
+is
+    Create(theShape1   : Shape from TopoDS;
+    	   theShape2   : Shape from TopoDS)
+    	returns SectionHistoryCollector from BOP;
+
+    SetResult(me: mutable; theResult: Shape from TopoDS;
+    	    	    	   theDSFiller: PDSFiller from BOPTools)
+    	is redefined virtual;
+
+
+    -- private
+    FillFaceSection(me: mutable; theDSFiller : PDSFiller from BOPTools;
+    	    	    	    	 theResultMap: IndexedMapOfShape from TopTools) 
+    is private;
+    
+    FillEdgeSection(me: mutable; theEdge     : Shape                            from TopoDS; 
+    	    	    	    	 theDSFiller : PDSFiller                        from BOPTools; 
+    	    	    	    	 theResultMap: IndexedMapOfShape                from TopTools; 
+    	    	    	    	 theVEMapRes : IndexedDataMapOfShapeListOfShape from TopTools; 
+    	    	    	    	 theEFMap    : IndexedDataMapOfShapeListOfShape from TopTools) 
+    is private;
+
+end SectionHistoryCollector from BOP;

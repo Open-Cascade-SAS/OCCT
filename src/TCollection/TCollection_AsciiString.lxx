@@ -1,0 +1,116 @@
+
+#include <Standard_OutOfRange.hxx>
+#include <Standard_CString.hxx>
+
+//definition global methods for using in NCollection
+//------------------------------------------------------------------------
+//  HashCode
+//------------------------------------------------------------------------
+inline Standard_Integer HashCode(const TCollection_AsciiString& astring,
+						   const Standard_Integer Upper)
+{
+  return TCollection_AsciiString::HashCode(astring,Upper);
+}
+
+
+//------------------------------------------------------------------------
+//  IsEqual
+//------------------------------------------------------------------------
+inline Standard_Boolean IsEqual(const TCollection_AsciiString& string1,
+						  const TCollection_AsciiString& string2)
+{
+  return TCollection_AsciiString::IsEqual(string1,string2);
+}
+
+
+
+// ----------------------------------------------------------------------------
+// ToCString
+// ----------------------------------------------------------------------------
+inline Standard_CString TCollection_AsciiString::ToCString()const
+{
+  return mystring;
+}
+
+// ----------------------------------------------------------------------------
+inline Standard_Integer TCollection_AsciiString::Length() const
+{
+ return mylength;
+}
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_AsciiString& other) const
+{
+  return TCollection_AsciiString( *this , other ) ;
+}
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_CString other) const 
+{
+ return TCollection_AsciiString( *this , other ) ;
+}
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Character other) const 
+{
+ return TCollection_AsciiString( *this , other ) ;
+}
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Integer other) const 
+{
+
+ return TCollection_AsciiString( *this , TCollection_AsciiString(other) ) ;
+}
+
+inline TCollection_AsciiString TCollection_AsciiString::Cat(const Standard_Real other) const 
+{
+
+ return TCollection_AsciiString( *this , TCollection_AsciiString(other) ) ;
+}
+
+//------------------------------------------------------------------------
+//  HashCode
+//------------------------------------------------------------------------
+inline Standard_Integer TCollection_AsciiString::HashCode(const TCollection_AsciiString& astring,
+						   const Standard_Integer Upper)
+{
+  return ::HashCode(astring.ToCString(),Upper);
+}
+
+
+//------------------------------------------------------------------------
+//  IsEqual
+//------------------------------------------------------------------------
+inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
+						  const TCollection_AsciiString& string2)
+{
+  return string1.IsEqual(string2);
+}
+
+//------------------------------------------------------------------------
+//  IsEqual
+//------------------------------------------------------------------------
+inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_AsciiString& string1,
+						  const Standard_CString string2)
+{
+  return string1.IsEqual( string2 );
+}
+
+//------------------------------------------------------------------------
+//  HASHCODE
+//------------------------------------------------------------------------
+inline Standard_Integer TCollection_AsciiString::HASHCODE(const TCollection_AsciiString& astring,
+						   const Standard_Integer Upper)
+{
+  return ::HASHCODE( astring.ToCString() , astring.Length() , Upper );
+}
+
+// ----------------------------------------------------------------------------
+// SubString
+// ----------------------------------------------------------------------------
+inline TCollection_AsciiString TCollection_AsciiString::SubString(const Standard_Integer FromIndex,
+							   const Standard_Integer ToIndex) const
+{
+
+  if (ToIndex > mylength || FromIndex <= 0 || FromIndex > ToIndex ) Standard_OutOfRange::Raise();
+
+  return TCollection_AsciiString( &mystring [ FromIndex - 1 ] ,
+                                  ToIndex - FromIndex + 1 ) ;
+}

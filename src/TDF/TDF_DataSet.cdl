@@ -1,0 +1,114 @@
+-- File:	TDF_DataSet.cdl
+--      	---------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 11 1997	Creation
+
+
+class DataSet from TDF
+    inherits TShared from MMgt
+
+	---Purpose: This class is a set of TDF informations like
+	--          labels and attributes.
+
+uses
+
+    OStream              from Standard,
+    Label                from TDF,
+    Attribute            from TDF,
+    LabelList            from TDF,
+    LabelMap             from TDF,
+    AttributeMap         from TDF
+
+-- raises
+
+is
+
+    Create
+    	returns mutable DataSet from TDF;
+	---Purpose: Creates an  empty   DataSet  object.
+
+    Clear(me : mutable);
+	---Purpose: Clears all information.
+
+    IsEmpty(me) returns Boolean from Standard;
+	---Purpose: Returns true if there is at least one label or one
+	--          attribute.
+	---C++: inline
+
+    -- Label set informations
+
+    AddLabel(me : mutable;
+    	     aLabel : Label from TDF);
+	---Purpose: Adds <aLabel> in  the  current  data  set.
+	---C++: inline
+
+    ContainsLabel(me; aLabel : Label from TDF)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if the label  <alabel>   is in the data set.
+	---C++: inline
+
+    Labels(me : mutable)
+    	returns LabelMap from TDF;
+	---Purpose: Returns the map of labels in this data set.
+    	-- This map can be used directly, or updated.
+	--          
+	---C++: inline
+	---C++: return &
+
+
+    -- Attribute set informations
+
+    AddAttribute(me : mutable;
+    	     	 anAttribute : Attribute from TDF);
+	---Purpose: Adds <anAttribute> into the current data  set.
+	---C++: inline
+
+    ContainsAttribute(me; anAttribute : Attribute from TDF)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if <anAttribute> is in the data set.
+	---C++: inline
+
+    Attributes(me : mutable)
+    	returns AttributeMap from TDF;
+	---Purpose: Returns the map of attributes in the  current  data   set.
+    	--  This map can be used directly, or updated.
+	--          
+	---C++: inline
+	---C++: return &
+
+    -- Root informations
+
+    AddRoot(me : mutable; aLabel : Label from TDF);
+	---Purpose: Adds a root label to <myRootLabels>.
+	--          
+	---C++: inline
+
+    Roots(me : mutable)
+    	returns LabelList from TDF;
+	---Purpose: Returns <myRootLabels> to be used or updated.
+	--          
+	---C++: inline
+	---C++: return &
+
+    -- Miscellaneous
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard;
+	---Purpose: Dumps the minimum information about <me> on
+	--          <aStream>.
+	--          
+	---C++: return &
+    	---C++: alias operator<<
+
+fields
+
+    myRootLabels      : LabelList     from TDF;
+    myLabelMap        : LabelMap      from TDF;
+    myAttributeMap    : AttributeMap  from TDF;
+
+end DataSet;

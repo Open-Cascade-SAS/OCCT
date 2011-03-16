@@ -1,0 +1,76 @@
+-- File:	Image_AveragePixelInterpolation.cdl
+-- Created:	Tue Jul 27 18:47:06 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+
+class AveragePixelInterpolation from Image inherits PixelInterpolation from Image
+
+	---Purpose: The class AveragePixelInterpolation is used to compute a SubPixel 
+	--            value on non integer Image coordinate
+	--          AveragePixelInterpolation redefined a new method to compute a
+	--	      SubPixel value .
+	--	    SubPixel value is the average of the three nearest Pixel in 
+	--	      the Image .
+	--	    If V1, V2, V3, V4 is the value of the three nearest Image 
+	--	      Pixel V = ( V1+V2+V3 ) / 3 is the Image SubPixel value
+	--	      on non integer coordinate (FX,FY)
+
+
+uses
+
+    Image 		from Image,
+    Pixel       	from Aspect,
+    ColorPixel       	from Aspect,
+    IndexPixel       	from Aspect,
+    DColorImage 	from Image,
+    DIndexedImage 	from Image
+
+is
+
+    	Create returns AveragePixelInterpolation from Image ;
+	---Level: Public
+    	---Purpose: Create a AveragePixelInterpolation  object.
+
+	Interpolate( me ; aImage   : Image from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out Pixel from Aspect ) 
+		returns Boolean from Standard is redefined ;
+	---Level: Public
+    	---Purpose: Redefined the method to compute SubPixel's value 
+	--	      on non integer Image coordinate.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's use
+	--	    check if the SubPixel coordinate FX,FY is outside of image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DColorImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out ColorPixel from Aspect ) 
+		returns Boolean from Standard  is redefined;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DColorImage and ColorPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's use
+	--	    check if the SubPixel coordinate FX,FY is outside of image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+
+	Interpolate( me ; aImage   : DIndexedImage from Image ;
+		          FX,FY      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out IndexPixel from Aspect ) 
+		returns Boolean from Standard  is redefined;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DIndexedImage and IndexPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's use
+	--	    check if the SubPixel coordinate X,Y is outside of image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+end AveragePixelInterpolation from Image;

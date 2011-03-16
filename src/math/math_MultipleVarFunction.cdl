@@ -1,0 +1,53 @@
+-- File:        MultipleVarFunction.cdl
+-- Created:     Mon May 13 15:05:02 1991
+-- Author:      Laurent Painnot
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+deferred class MultipleVarFunction from math
+    	---Purpose:
+    	-- Describes the virtual functions associated with a multiple variable function.
+uses Vector from math
+
+is
+
+    NbVariables(me)
+    	---Purpose:
+        -- Returns the number of variables of the function
+
+    returns Integer
+    is deferred;
+
+
+    Value(me: in out; X: Vector; F: out Real)
+    	---Purpose: Computes the values of the Functions <F> for the 
+    	--          variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--      otherwise false.
+
+    returns Boolean
+    is deferred;
+    
+   
+    GetStateNumber(me: in out)
+    	---Purpose: return the state of the function corresponding to the latestt
+    	--          call of any methods associated to the function. This 
+    	--          function is called by each of the algorithms described 
+    	--          later which define the function Integer 
+    	--          Algorithm::StateNumber(). The algorithm has the 
+    	--          responsibility to call this function when it has found
+    	--          a solution (i.e. a root or a minimum) and has to maintain
+    	--          the association between the solution found and this
+    	--          StateNumber.
+    	--          Byu default, this method returns 0 (which means for the 
+    	--          algorithm: no state has been saved). It is the 
+    	--          responsibility of the programmer to decide if he needs
+    	--          to save the current state of the function and to return
+    	--          an Integer that allows retrieval of the state.
+
+    returns Integer
+    is virtual;
+
+end MultipleVarFunction;

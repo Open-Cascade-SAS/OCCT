@@ -1,0 +1,46 @@
+-- File:	StepToTopoDS_Root.cdl
+-- Created:	Wed Jul 28 11:50:02 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+private deferred class Root from StepToTopoDS
+
+    ---Purpose : This class implements the common services for
+    --           all classes of StepToTopoDS which report error
+    --	    	  and sets and returns precision.
+
+is
+
+    Initialize returns Root from StepToTopoDS;
+
+    IsDone(me) returns Boolean is static;
+    ---C++: inline
+    
+    Precision(me) returns Real from Standard is static;
+    ---Purpose : Returns the value of "MyPrecision"
+    ---C++: inline
+        
+    SetPrecision(me : in out ; preci : Real from Standard) is static;
+    ---Purpose : Sets the value of "MyPrecision"
+    ---C++: inline
+    
+    MaxTol(me) returns Real from Standard is static;
+    ---Purpose : Returns the value of "MaxTol"
+    ---C++: inline
+    
+    SetMaxTol(me : in out ; maxpreci : Real from Standard) is static;
+    ---Purpose : Sets the value of MaxTol
+    ---C++: inline
+
+fields
+
+    done     : Boolean is protected;
+    --Equal True if everything is ok, False otherwise.
+    myPrecision : Real from Standard;    
+    myMaxTol    : Real from Standard;
+
+end Root;
+
+
+

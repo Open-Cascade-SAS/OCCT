@@ -1,0 +1,65 @@
+-- File:	TopOpeBRepTool_SolidClassifier.cdl
+-- Created:	Tue Aug 27 16:19:20 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class SolidClassifier from TopOpeBRepTool
+
+uses 
+
+    State from TopAbs,
+    Shell from TopoDS,
+    Solid from TopoDS,
+    Pnt from gp,
+    PSoClassif from TopOpeBRepTool, 
+--modified by NIZNHY-PKV Mon Dec 16 10:37:26 2002  f        
+--    IndexedDataMapOfSolidClassifier from TopOpeBRepTool, 
+    IndexedDataMapOfShapeAddress from TopTools, 
+--modified by NIZNHY-PKV Mon Dec 16 10:37:30 2002  t
+    Builder from BRep
+    
+is
+
+    Create returns SolidClassifier from TopOpeBRepTool;
+    
+    Clear(me : in out) is static;
+ 
+--modified by NIZNHY-PKV Mon Dec 16 10:37:57 2002  f 
+    Destroy(me: out); 
+    ---C++:  alias  "Standard_EXPORT  ~TopOpeBRepTool_SolidClassifier() {Destroy();}" 
+--modified by NIZNHY-PKV Mon Dec 16 10:38:00 2002  t
+
+    LoadSolid(me : in out; S : Solid) is static;
+
+    Classify(me : in out; S : Solid; P : Pnt; Tol : Real)
+    ---Purpose: compute the position of point <P> regarding with the
+    -- geometric domain of the solid <S>. 
+    returns State from TopAbs
+    is static;
+
+    LoadShell(me : in out; S : Shell) is static;
+
+    Classify(me : in out; S : Shell; P : Pnt; Tol : Real)
+    ---Purpose: compute the position of point <P> regarding with the
+    -- geometric domain of the shell <S>. 
+    returns State from TopAbs
+    is static;
+
+    State(me) returns State from TopAbs
+    is static;    
+
+fields
+
+    myPClassifier : PSoClassif from TopOpeBRepTool;  -- as BRepClass3d_SolidClassifier*  
+--modified by NIZNHY-PKV Mon Dec 16 10:59:22 2002  f    
+--    myClassifierMap : IndexedDataMapOfSolidClassifier from TopOpeBRepTool;  
+    myShapeClassifierMap:  IndexedDataMapOfShapeAddress from TopTools;
+--modified by NIZNHY-PKV Mon Dec 16 10:59:28 2002  t    
+    myState : State from TopAbs;   
+     
+    myShell : Shell from TopoDS;
+    mySolid : Solid from TopoDS;
+    myBuilder : Builder from BRep; 
+     
+end SolidClassifier from TopOpeBRepTool;

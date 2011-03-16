@@ -1,0 +1,39 @@
+-- File:	IGESSelect_SelectFaces.cdl
+-- Created:	Wed Oct  1 17:39:46 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SelectFaces  from IGESSelect  inherits SelectExplore
+
+    ---Purpose : This selection returns the faces contained in an IGES Entity
+    --           or itself if it is a Face
+    --           Face means :
+    --           - Face (510) of a ManifoldSolidBrep
+    --           - TrimmedSurface (144)
+    --           - BoundedSurface (143)
+    --           - Plane with a Bounding Curve (108, form not 0)
+    --           - Also, any Surface which is not in a TrimmedSurface, a
+    --             BoundedSurface, or a Face (FREE Surface)
+    --           -> i.e. a Face for which Natural Bounds will be considered
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph
+
+is
+
+
+    Create returns mutable  SelectFaces;
+
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    	returns Boolean;
+    ---Purpose : Explores an entity, to take its faces
+    --           Works recursively
+
+
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Faces"
+
+end SelectFaces;

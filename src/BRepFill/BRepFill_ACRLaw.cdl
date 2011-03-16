@@ -1,0 +1,31 @@
+-- File:   BRepFill_Edge3DLaw.cdl  
+-- Created: Tue Sep  1   13:29:02 1998
+-- Author:	Stephanie HUMEAU
+--		<shu@sun17>
+---Copyright:	 Matra Datavision 1998
+
+
+class ACRLaw from BRepFill inherits LocationLaw  from  BRepFill 
+
+	---Purpose: Build Location Law,  with a Wire.   dans le cas du
+	--          contour guide et triedre par Abscisse Curviligne
+	--          Reduite
+	--          
+	       
+       
+
+uses
+  Wire  from  TopoDS,
+  LocationLaw from GeomFill, 
+  LocationGuide from GeomFill, 
+  HArray1OfReal from TColStd
+
+is 
+    Create (Path   :  Wire  from  TopoDS;  
+            Law    : LocationGuide from GeomFill)  
+    returns ACRLaw from BRepFill; 
+    
+fields 
+     OrigParam  : HArray1OfReal  from TColStd; 
+ 
+end ACRLaw;

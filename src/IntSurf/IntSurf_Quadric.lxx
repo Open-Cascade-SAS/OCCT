@@ -1,0 +1,47 @@
+#ifndef gp_Pln_HeaderFile
+#include <gp_Pln.hxx>
+#endif
+#ifndef gp_Sphere_HeaderFile
+#include <gp_Sphere.hxx>
+#endif
+#ifndef gp_Cylinder_HeaderFile
+#include <gp_Cylinder.hxx>
+#endif
+#ifndef gp_Cone_HeaderFile
+#include <gp_Cone.hxx>
+#endif
+#ifndef GeomAbs_SurfaceType_HeaderFile
+#include <GeomAbs_SurfaceType.hxx>
+#endif
+
+
+inline GeomAbs_SurfaceType IntSurf_Quadric::TypeQuadric () const {
+
+  return typ;
+}
+
+
+inline gp_Pln IntSurf_Quadric::Plane () const {
+
+  return gp_Pln(ax3);
+}
+
+
+inline gp_Sphere IntSurf_Quadric::Sphere () const {
+
+  return gp_Sphere(ax3,prm1);
+}
+
+
+inline gp_Cylinder IntSurf_Quadric::Cylinder () const {
+
+  return gp_Cylinder(ax3,prm1);
+}
+
+
+inline gp_Cone IntSurf_Quadric::Cone () const {
+
+  return gp_Cone(ax3,prm2,prm1);
+}
+
+

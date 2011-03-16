@@ -1,0 +1,205 @@
+-- File:	BOP_SDFWESFiller.cdl
+-- Created:	Wed Jun  6 12:37:44 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class SDFWESFiller from BOP 
+
+	---Purpose:  
+    	--  The  algorithm that fills a wire edges set (WES) 
+    	--  for a couple of faces that are same domain 
+    	--- 
+	
+uses 
+    Face from TopoDS, 
+    ListOfShape from TopTools,
+    DSFiller  from BOPTools, 
+    PDSFiller from BOPTools, 
+    IndexedDataMapOfIntegerState from BOPTools,  
+    
+    Operation    from BOP,  
+    WireEdgeSet  from BOP,
+    PWireEdgeSet from BOP 
+    
+    
+--raises
+
+is 
+    Create   
+    	returns SDFWESFiller from BOP; 
+    	---Purpose:  
+    	--- Empty constructor
+    	---
+    Create  (nF1: Integer from Standard; 
+    	     nF2: Integer from Standard; 
+    	     aDSF: DSFiller from BOPTools);
+    	---Purpose:  
+    	--- Constructor
+    	--- nF1, nF2 - indices of faces in the DataStructue (DS)    
+    	---
+    SetStatesMap(me:out; 
+    	aStatesMap:  IndexedDataMapOfIntegerState from BOPTools); 
+    	---Purpose: 
+    	--- Modifier  
+    	---
+    SetFaces(me:out; 
+    	nF1: Integer from Standard;  
+    	nF2: Integer from Standard);  
+    	---Purpose: 
+    	--- Modifier  
+    	---
+    SetDSFiller(me:out; 
+    	aDSF: DSFiller from BOPTools); 
+    	---Purpose: 
+    	--- Modifier  
+    	---
+    SetOperation (me:out; 
+    	    	  anOp:Operation from BOP);   
+    	---Purpose: 
+    	--- Modifier  
+    	---
+    SetSenseFlag (me:out;  
+    	aFlag:Integer from Standard); 
+    	---Purpose: 
+    	--- Modifier 
+    	--- Assigns sensitivity flag for the faces in accordance 
+    	--- with scalar product between theirs normalls 
+    	--- 1  for same sense;  -1 for different sense      
+    	---
+
+    Prepare(me:out); 
+    	---Purpose: 
+    	--- Prepares data for the algorithm 
+    	---
+    Do  (me:out; 
+    	 aWES:WireEdgeSet from BOP); 
+    	---Purpose:  
+    	--- Performs the algorithm 
+    	---
+    DSFiller(me) 
+    	returns DSFiller from BOPTools; 
+    	---C++:  return const & 
+    	---Purpose: 
+    	--- Selector  
+    	---
+    StatesMap(me)  
+    	returns  IndexedDataMapOfIntegerState from BOPTools;  
+    	---C++:  return const &  	
+    	---Purpose: 
+    	--- Selector  
+    	---
+    Faces(me; 
+    	nF1:out Integer from Standard;  
+    	nF2:out Integer from Standard); 
+    	---Purpose: 
+    	--- Selector  
+    	---
+    SenseFlag (me)  
+    	returns Integer from Standard; 	     
+    	---Purpose: 
+    	--- Selector  
+    	---
+    Operation  (me) 
+    	returns Operation from BOP; 
+    	---Purpose: 
+    	--- Selector  
+    	---
+    AssignStates (me:out;      
+    	    	    nF1: Integer from Standard;  
+    	    	    nF2: Integer from Standard) 
+    	is  private;  
+    	---Purpose: 
+    	--- Assigns the 2D-State for split parts of  
+    	--- the edges having 3D-Curves of given faces       	     
+    	--- Internal  Purpose
+    	---
+    PrepareOnParts(me:out) 
+    	is  private;  
+    	---Purpose: 
+    	--- Prepares ON 2D parts to filled the WES  
+    	--- Internal Purpose 
+    	---
+    PrepareWESForZone(me:out;      
+    	    	    nF1: Integer from Standard;  
+    	    	    nF2: Integer from Standard) 
+    	is  private;
+    	---Purpose: 
+    	--- Fills the WES by split parts of the edges for         
+    	--- the Common Zone  
+    	--- Internal Purpose 
+    	---
+    PrepareWESForCut(me:out;      
+    	    	    nF1: Integer from Standard;  
+    	    	    nF2: Integer from Standard) 
+    	is  private;
+    	---Purpose: 
+    	--- Fills the WES by split parts of the edges for         
+    	--- the Cut operation 
+    	--- Internal Purpose 
+    	--- 
+    PrepareOnParts(me:out; 
+    	    	    nF1: Integer from Standard;  
+    		    nF2: Integer from Standard; 
+    	    	    Op : Operation from BOP) 
+    	is  private; 
+    	---Purpose: 
+    	--- Fills the WES by split parts (ON 2D) of the edges 
+    	--- Internal Purpose  
+    	---
+    PrepareFaces(me; 
+		   nF1: Integer from Standard;  
+    		   nF2: Integer from Standard;  
+		   aF1:out Face from TopoDS;
+		   aF2:out Face from TopoDS) 
+    	is  private;
+    	---Purpose: 
+    	--- Make orientation of the faces consistent  
+    	--- Internal Purpose 
+    	---
+    AssignDEStates (me:out; 
+    	    	    nF1: Integer from Standard;  
+    		    nF2: Integer from Standard) 
+    	is  private; 
+    	---Purpose:  
+    	--- Assigns the 2D-State for split parts of  
+    	--- the edges that do not have 3D-Curves of given faces   
+    	--- Internal Purpose 
+    	---
+    AssignDEStates (me:out; 
+    	    	    nF1: Integer from Standard;  
+    		    nE1: Integer from Standard; 
+    		    nF2: Integer from Standard) 
+    	is  private; 
+    	---Purpose: 
+    	--- Assigns the 2D-State for split parts of  
+    	--- the edge  nE1 that do not have 3D-Curves from face nF1 
+    	---
+    	--- Internal Purpose 
+    	---
+    UpdateDEStates3D  (me:out); 
+    	---Purpose:	 
+    	--- Update 3D-State for edges    
+    	---
+    RejectedOnParts(me) 
+    	returns ListOfShape from TopTools; 
+    ---C++: return const &   
+    ---Purpose:   
+    --  Returns all split edges of nF1 that are CB with 
+    --  splis of nF1 but not included in myWES,     
+    
+fields
+ 
+    myDSFiller  : PDSFiller from BOPTools; 
+    myOperation : Operation from BOP;
+    myNF1       : Integer from Standard; 
+    myNF2       : Integer from Standard; 
+      
+    myWES       : PWireEdgeSet from BOP; 
+    myStatesMap:  IndexedDataMapOfIntegerState from BOPTools;
+    mySenseFlag:  Integer from Standard;   
+    myRejectedOnParts: ListOfShape  from TopTools;  
+     
+end SDFWESFiller;
+

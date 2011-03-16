@@ -1,0 +1,43 @@
+-- File:	MPrsStd_AISPresentationStorageDriver.cdl
+-- Created:	Thu Jul  8 17:20:30 1999
+-- Author:	Sergey RUIN
+--		<s-ruin@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+
+class AISPresentationStorageDriver from MPrsStd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+
+is
+
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable AISPresentationStorageDriver from MPrsStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: AISPresentation from TPrsStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end AISPresentationStorageDriver;
+

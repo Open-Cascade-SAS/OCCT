@@ -1,0 +1,56 @@
+// File:	MeshAlgo_IndexedPntComparator.gxx
+// Created:	Tue Apr  5 11:50:40 1994
+// Author:	Didier PIFFAULT
+//		<dpf@zerox>
+
+//=======================================================================
+//function : MeshAlgo_IndexedPntComparator
+//purpose  : 
+//=======================================================================
+
+#include <BRepMesh_Vertex.hxx>
+
+
+MeshAlgo_IndexedPntComparator::MeshAlgo_IndexedPntComparator
+  (const Direction& theDir,
+   const Standard_Real theTol,
+   const HandledStructureOfPnt& HDS)
+:  IndexedStructure(HDS),DirectionOfSort(theDir), Tolerance(theTol)
+{}
+
+//=======================================================================
+//function : IsLower
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_IndexedPntComparator::IsLower
+  (const Standard_Integer Left, const Standard_Integer Right) const
+{
+  return ((IndexedStructure->GetNode(Left).Coord()*DirectionOfSort) <
+           (IndexedStructure->GetNode(Right).Coord()*DirectionOfSort));
+}
+
+//=======================================================================
+//function : IsGreater
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_IndexedPntComparator::IsGreater
+  (const Standard_Integer Left, const Standard_Integer Right) const
+{
+  return ((IndexedStructure->GetNode(Left).Coord()*DirectionOfSort) >
+           (IndexedStructure->GetNode(Right).Coord()*DirectionOfSort));
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean MeshAlgo_IndexedPntComparator::IsEqual
+  (const Standard_Integer Left, const Standard_Integer Right) const
+{
+  return (IndexedStructure->GetNode(Left).Coord().IsEqual
+	  (IndexedStructure->GetNode(Right).Coord(), Tolerance));
+}
+

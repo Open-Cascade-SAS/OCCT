@@ -1,0 +1,41 @@
+-- File:	CurveLocator.cdl
+-- Created:	Tue Jul 21 11:02:33 1992
+-- Author:	Laurent PAINNOT
+--		<lpa@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+generic class CurveLocator from Extrema 
+    (Curve1 as any;
+     Tool1  as any;   -- as ToolCurve(Curve1)
+     Curve2 as any;
+     Tool2  as any;   -- as ToolCurve(Curve2)
+     POnC   as any;
+     Pnt    as any)
+					
+     
+is
+
+    Locate (myclass; P: Pnt; C: Curve1; NbU: Integer; Papp: out POnC);
+    ---Purpose: Among a set of points {C(ui),i=1,NbU}, locate the point
+    --          P=C(uj) such that:
+    --           distance(P,C) = Min{distance(P,C(ui))}
+
+
+    Locate (myclass; P: Pnt; C: Curve1; NbU: Integer; Umin, Usup: Real;Papp: out POnC);
+    ---Purpose: Among a set of points {C(ui),i=1,NbU}, locate the point
+    --          P=C(uj) such that:
+    --           distance(P,C) = Min{distance(P,C(ui))}
+    --           The research is done between umin and usup.
+
+
+   Locate (myclass; C1: Curve1; C2: Curve2; NbU, NbV: Integer; Papp1, Papp2: out POnC);
+    ---Purpose: Among two sets of points {C1(ui),i=1,NbU} and
+    --          {C2(vj),j=1,NbV}, locate the two points P1=C1(uk) and 
+    --          P2=C2(vl) such that:
+    --           distance(P1,P2) = Min {distance(C1(ui),C2(vj))}.
+
+
+end CurveLocator;

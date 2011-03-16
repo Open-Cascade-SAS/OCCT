@@ -1,0 +1,48 @@
+
+-- File:	Aspect_ColorPixel.cdl
+-- Created:	Fri Jul 23 16:25:00 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+class ColorPixel from Aspect inherits Pixel from Aspect
+
+uses
+    Color   from Quantity
+is
+
+    Create returns ColorPixel from Aspect;
+	---Level: Public
+
+    Create(aColor: Color from Quantity) returns ColorPixel from Aspect;
+	---Level: Public
+
+    Value (me) returns Color from Quantity is static ;
+	---Level: Public
+	   ---C++: return const &
+
+    SetValue(me: in out; aColor: Color from Quantity) is static ;
+	---Level: Public
+
+    Print( me ; s : in out OStream from Standard ) is redefined static ;
+	---Level: Public
+	---Purpose : Prints the contents of <me> on the stream <s>
+
+    HashCode (me; Upper : Integer ) returns Integer is redefined static ;
+	---Level: Public
+	---Purpose: Returns a hashed value denoting <me>. This value is in
+	--         the range 1..<Upper>.
+	---C++:  function call
+
+    	IsEqual(me; Other : ColorPixel from Aspect) returns Boolean;
+	    ---C++: alias operator==
+
+    	IsNotEqual(me; Other : ColorPixel from Aspect) returns Boolean;
+           ---C++: alias operator!=
+
+
+
+fields
+    myColor: Color from Quantity;
+
+end ColorPixel from Aspect;

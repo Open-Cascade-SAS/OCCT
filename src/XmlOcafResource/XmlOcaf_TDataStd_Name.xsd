@@ -1,0 +1,24 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+	elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Open Cascade Application Framework: Definition of attribute TDataStd_Name
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TDataStd_Name.xsd
+  </documentation>
+</annotation>
+
+<element name="TDataStd_Name" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="extstring" type="string" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

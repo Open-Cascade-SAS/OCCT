@@ -1,0 +1,34 @@
+-- File:	StepAP203_CcDesignPersonAndOrganizationAssignment.cdl
+-- Created:	Fri Nov 26 16:26:32 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class CcDesignPersonAndOrganizationAssignment from StepAP203
+inherits PersonAndOrganizationAssignment from StepBasic
+
+    ---Purpose: Representation of STEP entity CcDesignPersonAndOrganizationAssignment
+
+uses
+    PersonAndOrganization from StepBasic,
+    PersonAndOrganizationRole from StepBasic,
+    HArray1OfPersonOrganizationItem from StepAP203
+
+is
+    Create returns CcDesignPersonAndOrganizationAssignment from StepAP203;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aPersonAndOrganizationAssignment_AssignedPersonAndOrganization: PersonAndOrganization from StepBasic;
+                       aPersonAndOrganizationAssignment_Role: PersonAndOrganizationRole from StepBasic;
+                       aItems: HArray1OfPersonOrganizationItem from StepAP203);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Items (me) returns HArray1OfPersonOrganizationItem from StepAP203;
+	---Purpose: Returns field Items
+    SetItems (me: mutable; Items: HArray1OfPersonOrganizationItem from StepAP203);
+	---Purpose: Set field Items
+
+fields
+    theItems: HArray1OfPersonOrganizationItem from StepAP203;
+
+end CcDesignPersonAndOrganizationAssignment;

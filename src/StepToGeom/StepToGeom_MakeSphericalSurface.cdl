@@ -1,0 +1,21 @@
+-- File:	StepToGeom_MakeSphericalSurface.cdl
+-- Created:	Mon Jun 14 16:15:22 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeSphericalSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between class
+    --          SphericalSurface from StepGeom which describes a
+    --          spherical_surface from Prostepand SphericalSurface from Geom
+
+uses SphericalSurface from Geom,
+     SphericalSurface from StepGeom
+
+is 
+
+    Convert ( myclass; Surf : SphericalSurface from StepGeom; 
+                       CS : out SphericalSurface from Geom )
+    returns Boolean from Standard;
+
+end MakeSphericalSurface;

@@ -1,0 +1,111 @@
+// File:	LProp_NumericCurInf.gxx
+// Created:	Mon Sep  5 18:01:59 1994
+// Author:	Yves FRICAUD
+//		<yfr@ecolox>
+
+#include <math_FunctionRoots.hxx>
+#include <math_BracketedRoot.hxx>
+#include <Precision.hxx>
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+LProp_NumericCurInf::LProp_NumericCurInf()
+{
+}
+//=======================================================================
+//function : PerformCurExt
+//purpose  : 
+//=======================================================================
+void LProp_NumericCurInf::PerformCurExt (const Curve& C,LProp_CurAndInf& Result)
+{
+  PerformCurExt(C,Tool::FirstParameter(C),Tool::LastParameter(C),Result);
+}
+
+//=======================================================================
+//function : PerformCurExt
+//purpose  : 
+//=======================================================================
+void LProp_NumericCurInf::PerformCurExt (const Curve&        C,
+					 const Standard_Real UMin,
+					 const Standard_Real UMax,
+					 LProp_CurAndInf&    Result)
+{
+  isDone = Standard_True;
+
+  Standard_Real    EpsH = 1.e-4*(UMax - UMin);
+  Standard_Real    Tol  = Precision::PConfusion();
+
+  // la premiere recherce se fait avec une tolerance assez grande
+  // car la derivee de la fonction est estimee assez grossierement.
+
+  LProp_FCurExt    F(C,EpsH);
+  Standard_Integer NbSamples = 100;
+  Standard_Boolean SolType;
+
+  math_FunctionRoots SolRoot (F,UMin,UMax,NbSamples,EpsH,EpsH,EpsH);
+
+  if (SolRoot.IsDone()) {
+    for (Standard_Integer j = 1; j <= SolRoot.NbSolutions(); j++) {
+      Standard_Real Param = SolRoot.Value(j);
+      // la solution est affinee.
+      math_BracketedRoot BS (F,
+			     Param - EpsH,
+			     Param + EpsH,
+			     Tol);
+      if (BS.IsDone()) {Param = BS.Root();}
+      SolType = F.IsMinKC(Param);
+      Result.AddExtCur(Param,SolType);
+    }
+  }
+  else {
+    isDone = Standard_False;
+  }
+}
+
+//=======================================================================
+//function : PerformInf
+//purpose  : 
+//=======================================================================
+void LProp_NumericCurInf::PerformInf(const Curve& C,LProp_CurAndInf& Result)
+{  
+  PerformInf(C,Tool::FirstParameter(C),Tool::LastParameter(C),Result);
+}
+
+//=======================================================================
+//function : PerformInf
+//purpose  : 
+//=======================================================================
+void LProp_NumericCurInf::PerformInf(const Curve& C,					 
+				     const Standard_Real UMin,
+				     const Standard_Real UMax,
+				     LProp_CurAndInf& Result)
+{
+  isDone = Standard_True;
+  LProp_FCurNul    F(C);
+  Standard_Real    EpsX = 1.e-6;
+  Standard_Real    EpsF = 1.e-6;
+  Standard_Integer NbSamples = 30;
+
+  math_FunctionRoots SolRoot (F,UMin,UMax,NbSamples,EpsX,EpsF,EpsX);
+
+  if (SolRoot.IsDone()) {
+    for (Standard_Integer j = 1; j <= SolRoot.NbSolutions(); j++) {
+      Result.AddInflection(SolRoot.Value(j));
+    }
+  }
+  else {
+    isDone = Standard_False;
+  }  
+}
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+Standard_Boolean LProp_NumericCurInf::IsDone() const
+{
+  return isDone;
+}
+

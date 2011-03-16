@@ -1,0 +1,52 @@
+-- File:	TNaming_IteratorOnShapesSet.cdl
+-- Created:	Tue May  6 08:34:53 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class IteratorOnShapesSet from TNaming 
+
+	---Purpose: 
+
+uses
+    ShapesSet               from TNaming,
+    Shape                   from TopoDS,
+    MapIteratorOfMapOfShape from TopTools
+    
+raises
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+    Create returns IteratorOnShapesSet;
+         ---C++: inline
+
+    Create (S : ShapesSet from TNaming) returns IteratorOnShapesSet;    	
+    	 ---C++: inline
+    
+    Init (me : in out; S : ShapesSet from TNaming);
+	---Purpose: Initialize the iteration
+    	---C++: inline
+    
+    More (me) returns Boolean;
+	---Purpose: Returns True if there is a current Item in
+	--          the iteration.
+    	---C++: inline
+    
+    Next (me : in out)
+    	---Purpose: Move to the next Item 
+    	---C++: inline
+    raises
+	NoMoreObject from Standard;
+    
+    Value(me) returns Shape from TopoDS
+    	---C++: return const&
+    raises
+	NoSuchObject from Standard;
+
+
+fields
+    myIt    : MapIteratorOfMapOfShape from TopTools;
+
+end IteratorOnShapesSet;

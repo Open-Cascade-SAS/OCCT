@@ -1,0 +1,30 @@
+-- File:	StepBasic_CertificationAssignment.cdl
+-- Created:	Fri Nov 26 16:26:34 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class CertificationAssignment from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity CertificationAssignment
+
+uses
+    Certification from StepBasic
+
+is
+    Create returns CertificationAssignment from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAssignedCertification: Certification from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AssignedCertification (me) returns Certification from StepBasic;
+	---Purpose: Returns field AssignedCertification
+    SetAssignedCertification (me: mutable; AssignedCertification: Certification from StepBasic);
+	---Purpose: Set field AssignedCertification
+
+fields
+    theAssignedCertification: Certification from StepBasic;
+
+end CertificationAssignment;

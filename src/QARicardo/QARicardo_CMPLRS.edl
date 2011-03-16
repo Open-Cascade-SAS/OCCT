@@ -1,0 +1,14 @@
+-- File:	QARicardo_CMPLRS.edl
+-- Author:	QA Admin
+-- History:	Thu May 16 18:38:53 2002	QA Admin	Creation
+-- Copyright:	 Matra Datavision 2002
+
+@ifnotdefined ( %QARicardo_CMPLRS_EDL) then
+@set %QARicardo_CMPLRS_EDL = "";
+
+  @uses "CSF.edl" ;
+
+  @string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE  %CMPLRS_CXX_Options ;
+
+
+@endif;

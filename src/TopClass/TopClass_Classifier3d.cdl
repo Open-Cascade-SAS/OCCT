@@ -1,0 +1,80 @@
+-- File:	Classifier3d.cdl
+-- Created:	Wed Mar 30 09:38:14 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+generic class Classifier3d from TopClass 
+    	(TheIntersector as any)  -- as Intersection3d from TopClass
+
+	---Purpose: 
+
+uses
+    Lin             from gp,
+    CurveTransition from TopTrans,
+    Orientation     from TopAbs,
+    State           from TopAbs,
+    Face            from TopoDS
+
+raises
+    DomainError from Standard
+    
+is
+    Create returns Classifier3d from TopClass;
+	---Purpose: Creates an undefined classifier.
+	
+    Reset(me : in out; L   : Lin  from gp;
+                       P   : Real from Standard; 
+                       Tol : Real from Standard)
+	---Purpose: Starts  a  classification process.   The  point to
+	--          classify is the origin of  the  line <L>.  <P>  is
+	--          the original length of the segment on <L>  used to
+	--          compute  intersections.   <Tol> is the   tolerance
+	--          attached to the intersections.
+    is static;
+    
+    Compare(me : in out; F   : Face        from TopoDS;
+                         Or  : Orientation from TopAbs)
+	---Purpose: Updates  the classification process with  the face
+	--          <F> from the boundary. 
+    raises
+    	DomainError  -- The classifier has not been set
+    is static;
+
+    Parameter(me) returns Real
+	---Purpose: Returns the current value of the parameter.
+	---C++: inline
+    is static;
+
+    HasIntersection(me) returns Boolean from Standard
+    	---Purpose: Returns True if an intersection is computed.
+    is static;
+
+    Intersector(me : in out) returns TheIntersector
+	---Purpose: Returns the intersecting algorithm.
+	--          
+	---C++: inline
+	---C++: return &
+    is static;
+    
+    State(me) returns State from TopAbs
+	---Purpose: Returns the current state of the point.
+	--          
+	---C++: inline
+    is static;
+    
+
+fields
+    isSet          : Boolean          from Standard;
+    myFace         : Face             from TopoDS;
+    myLin          : Lin              from gp;
+    myParam        : Real             from Standard;
+    myTolerance    : Real             from Standard;
+    myState        : State            from TopAbs;
+    hasIntersect   : Boolean          from Standard;
+    myIntersector  : TheIntersector;
+    
+end Classifier3d;
+

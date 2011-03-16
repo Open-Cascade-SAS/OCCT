@@ -1,0 +1,368 @@
+-- File:        TDF_Label.cdl
+-- Created:     Tue Feb  4 10:59:33 1997
+-- Author:      DAUTRY Philippe
+--              <fid@fox.paris1.matra-dtv.fr>
+---Copyright:    Matra Datavision 1997
+
+---Version:     0.0
+---History:     Version Date            Purpose
+--              0.0     Feb  4 1997     Creation
+
+
+class Label from TDF 
+
+        ---Purpose: This class provides basic operations  to define
+    	-- a label in a data structure.
+    	-- A label is a feature in the feature hierarchy. A
+        --          label is always connected to a Data from TDF. 
+        -- To a label is attached attributes containing the
+        --          software components information.
+        --          
+        --          Label information:
+        --          
+        --          It is possible to know the tag, the father, the
+        --          depth in the tree of the label, if the label is
+        --          root, null or equal to another label.
+        --          
+        --          Comfort methods:
+        --          Some methods useful on a label.
+        --          
+        --          Attributes:
+        --          
+        --          It is possible to get an attribute in accordance
+        --          to an ID, or the yougest previous version of a
+        --          current attribute.
+
+uses
+
+    GUID         from Standard,
+    LabelNodePtr        from TDF,
+    Data                from TDF,
+    Attribute           from TDF,
+    IDFilter            from TDF,
+    AttributeIndexedMap from TDF
+
+raises
+
+    DomainError  from Standard,
+    OutOfRange   from Standard,
+    NullObject   from Standard
+
+is
+    Create returns Label from TDF;
+	---Purpose: Constructs an empty label object.
+    
+    Create(aNode : LabelNodePtr from TDF) returns Label from TDF
+        is private;
+        ---Purpose: Reserved to the friends.
+
+
+    Nullify(me : in out);
+        ---Purpose: Nullifies the label.
+        --          
+        ---C++: inline
+
+    ---Category:Label information
+    -- ==========================
+
+    Data(me) returns Data from TDF;
+        ---Purpose: Returns the Data owning <me>.
+        --          
+        ---C++: inline
+
+    Tag(me) returns Integer;
+        ---Purpose: Returns the tag of the label. 
+        -- This is the integer assigned randomly to a label
+    	--  in a data framework. This integer is used to
+    	-- identify this label in an entry.
+        --              
+        ---C++: inline
+    
+    Father(me) returns Label from TDF;
+        ---Purpose: Returns the label father. This label may be null
+        --          if the label is root.
+        --              
+        ---C++: inline
+        ---C++: return const
+   
+    IsNull(me) returns Boolean from Standard;
+        ---Purpose: Returns True if the <aLabel> is null, i.e. it has
+        --          not been included in the data framework.
+        --          
+        ---C++: inline
+
+    Imported(me; aStatus : Boolean from Standard);
+        ---Purpose: Sets or unsets <me> and all its descendants as
+        --          imported label, according to <aStatus>.
+
+    IsImported(me) returns Boolean from Standard;
+        ---Purpose: Returns True if the <aLabel> is imported.
+        --          
+        ---C++: inline
+
+    IsEqual(me; aLabel : Label from TDF) returns Boolean from Standard;
+        ---Purpose: Returns True if the <aLabel> is equal to me (same
+        --           LabelNode*).
+        ---C++: inline
+        ---C++: alias operator ==
+
+    IsDifferent(me; aLabel : Label from TDF) returns Boolean from Standard;
+        ---Puprpose: Returns True if the <aLabel> is different than me
+        --           (not same LabelNode*).
+        --           
+        ---C++: inline
+        ---C++: alias operator !=
+
+    IsRoot(me) returns Boolean from Standard;
+        ---Puprpose: Returns True if the label is root.
+        ---C++: inline
+
+    
+    ---Category: Attribute methods
+    -- ===========================
+  
+    ---Warning: : becomes obsolete week 10
+--    IsA (me; anID : GUID from Standard) returns Boolean from Standard;
+--    Resume (me; anAttribute : Attribute from TDF)  raises DomainError from Standard;  
+--    Add (me; anAttribute : Attribute from TDF) raises DomainError from Standard;
+--    Forget (me; anAttribute : Attribute from TDF) raises DomainError from Standard;
+--    Forget (me; aguid : GUID from Standard) returns Boolean from Standard;
+--    ForgetAll (me; clearChildren : Boolean from Standard = Standard_True);
+
+
+    IsAttribute (me; anID : GUID from Standard) returns Boolean from Standard;
+    ---Purpose: Returns true if <me> owns an attribute with <anID> as ID.
+                              
+    AddAttribute (me; anAttribute : Attribute from TDF) 
+        ---Purpose: Adds an Attribute  to the current label. Raises if
+        --          there is already one.
+    raises DomainError from Standard;
+
+    ForgetAttribute (me; anAttribute : Attribute from TDF) 
+        ---Purpose:  Forgets an  Attribute   from the  current  label,
+        --          setting its   forgotten status true and  its valid
+        --           status false. Raises if   the attribute is not in
+        --          the structure.
+    raises DomainError from Standard;
+
+    ForgetAttribute (me; aguid : GUID from Standard) 
+        ---Purpose: Forgets the  Attribute of  GUID <aguid> from   the
+        --          current label   . If the   attribute doesn't exist
+        --          returns False. Otherwise returns True.
+    returns Boolean from Standard;
+
+    ForgetAllAttributes (me; clearChildren : Boolean from Standard = Standard_True);
+        ---Purpose: Forgets all the attributes. Does it on also on the
+        --          sub-labels if <clearChildren> is set to true. Of
+        --          course, this method is compatible with Transaction
+        --          & Delta mecanisms.
+    
+    ResumeAttribute (me; anAttribute : Attribute from TDF)
+        ---Purpose: Undo Forget action, setting its forgotten status
+        --          false and its valid status true. Raises if the
+        --          attribute is not in the structure.
+    raises DomainError from Standard;
+
+    FindAttribute (me;
+                   anID         : GUID from Standard;
+                   anAttribute  : in out Attribute from TDF)
+        returns Boolean from Standard;
+        ---Purpose: Finds an attribute of the current label, according
+        --          to <anID>.
+    -- If anAttribute is not a valid one, false is returned.
+        --          
+        --        The method returns True if found, False otherwise.
+        --          
+        --          A removed attribute cannot be found.
+                              
+    FindAttribute (me;
+                   anID         : GUID from Standard;
+                   aTransaction : Integer from Standard;
+                   anAttribute  : in out Attribute from TDF)
+        returns Boolean from Standard;
+        ---Purpose: Finds an attribute of the current label, according
+        --          to <anID> and <aTransaction>. This attribute
+        --          has/had to be a valid one for the given
+        --          transaction index . So, this attribute is not
+        --          necessary a valid one.
+        --          
+        --          The method returns True if found, False otherwise.
+        --          
+        --          A removed attribute cannot be found nor a backuped
+        --          attribute of a removed one.
+                              
+    MayBeModified(me)
+        returns Boolean from Standard;
+        ---Purpose: Returns true if <me> or a DESCENDANT of <me> owns
+        --          attributes not yet available in transaction 0. It
+        --          means at least one of their attributes is new,
+        --          modified or deleted.
+        --          
+        ---C++: inline
+
+    AttributesModified(me)
+        returns Boolean from Standard;
+        ---Purpose: Returns true if <me> owns attributes not yet
+        --          available in transaction 0. It means at least one
+        --          attribute is new, modified or deleted.
+        --          
+        ---C++: inline
+
+    HasAttribute(me) returns Boolean from Standard;
+        ---Purpose: Returns true if this label has at least one attribute.
+    
+    NbAttributes(me) returns Integer;
+        ---Purpose: Returns the number of attributes.
+
+
+    ---Category: Label comfort methods
+    --================================
+
+    Depth(me) returns Integer from Standard;
+        ---Purpose: Returns the depth of the label in the data framework.
+    	-- This corresponds to the number of fathers which
+    	-- this label has, and is used in determining
+    	-- whether a label is root, null or equivalent to another label.
+    	-- Exceptions:
+    	-- Standard_NullObject if this label is null. This is
+    	-- because a null object can have no depth.
+
+    IsDescendant(me; aLabel : Label from TDF) returns Boolean from Standard;
+        ---Purpose: Returns True if <me> is a descendant of
+        --          <aLabel>. Attention: every label is its own
+        --          descendant.
+
+    Root(me) returns Label from TDF;
+        ---Purpose: Returns the root label Root of the data structure.
+    	-- This has a depth of 0.
+    	-- Exceptions:
+    	-- Standard_NullObject if this label is null. This is
+    	-- because a null object can have no depth.
+	---C++:  return const
+  
+    HasChild(me) returns Boolean from Standard;
+        ---Purpose: Returns true if this label has at least one child.
+        ---C++: inline
+    
+    NbChildren(me) returns Integer;
+        ---Purpose: Returns the number of children.
+
+    FindChild(me; aTag   : Integer from Standard;
+                  create : Boolean from Standard = Standard_True)
+        returns Label from TDF
+        raises NullObject, DomainError, OutOfRange from Standard;
+        ---Purpose: Finds a child label having <aTag> as tag. Creates
+     	-- The tag aTag identifies the label which will be the parent.
+    	-- If create is true and no child label is found, a new one is created.
+    	-- Example:
+    	-- //creating a label with tag 10 at Root
+    	-- TDF_Label lab1 = aDF->Root().FindChild(10);
+    	-- //creating labels 7 and 2 on label 10
+    	-- TDF_Label lab2 = lab1.FindChild(7);
+    	-- TDF_Label lab3 = lab1.FindChild(2);  
+    
+    NewChild (me)
+        returns Label from TDF
+        raises NullObject, DomainError, OutOfRange from Standard;
+        ---Purpose: Create  a new child   label of me  using autoamtic
+        --          delivery tags provided by TagSource.
+        ---C++: inline
+
+
+
+    ---Category: Miscelleaneous
+    -- ========================
+
+
+    Transaction(me) returns Integer from Standard;
+        ---Purpose: Returns the current transaction index.
+
+
+    HasLowerNode(me; otherLabel : Label from TDF)
+        returns Boolean from Standard;
+        ---Purpose: Returns true if node address of <me> is lower than
+        --          <otherLabel> one. Used to quickly sort labels (not
+        --          on entry criterion).
+        --          
+        -- -C++: inline
+
+    HasGreaterNode(me; otherLabel : Label from TDF)
+        returns Boolean from Standard;
+        ---Purpose: Returns true if node address of <me> is greater
+        --          than <otherLabel> one. Used to quickly sort labels
+        --          (not on entry criterion).
+        --          
+        -- -C++: inline
+
+    Dump(me; anOS : in out OStream from Standard)
+        returns OStream from Standard;
+        ---Purpose: Dumps the minimum information about <me> on
+        --          <aStream>.
+        --          
+        ---C++: return &
+        ---C++: alias operator<<
+
+
+    ExtendedDump(me;
+                 anOS : in out OStream from Standard;
+                 aFilter : IDFilter from TDF;
+                 aMap : in out AttributeIndexedMap from TDF);
+        ---Purpose: Dumps the label on <aStream> and its attributes
+        --          rank in <aMap> if their IDs are kept by <IDFilter>.
+
+
+    EntryDump(me; anOS : in out OStream from Standard);
+        ---Purpose: Dumps the label entry.
+
+
+    ---Category: Private methods
+    -- =========================
+
+
+
+    AddToNode(me; toNode : LabelNodePtr from TDF;
+                  anAttribute : Attribute from TDF)
+        raises DomainError from Standard
+        is private;
+        ---Purpose: Adds an Attribute to <toNode>. Raises if there is
+        --          already one.
+
+    ForgetFromNode(me; fromNode : LabelNodePtr from TDF;
+                       anAttribute : Attribute from TDF)
+        raises DomainError from Standard
+        is private;
+        ---Purpose: Forgets an Attribute from <fromNode>.  Raises if
+        --          the attribute is not in the structure.
+
+    ResumeToNode (me; fromNode : LabelNodePtr from TDF;
+                      anAttribute : Attribute from TDF)
+        raises DomainError, NullObject from Standard
+        is private;
+        ---Purpose: Resumes a forgotten Attribute to <toNode>.  Raises
+        --          if the attribute is not in the structure.
+
+    FindOrAddChild(me; aTag : Integer from Standard;
+                       create : Boolean from Standard)
+        returns LabelNodePtr from TDF
+        is private;
+
+    InternalDump(me; anOS : in out OStream from Standard;
+                     aFilter : IDFilter from TDF;
+                     aMap : in out AttributeIndexedMap from TDF;
+                     extended : Boolean from Standard)
+        is private;
+
+
+fields
+
+    myLabelNode : LabelNodePtr from TDF;
+
+friends
+
+    class ChildIterator      from TDF,
+    class Attribute          from TDF,
+    class AttributeIterator  from TDF,
+    class Data               from TDF,
+    class LabelMapHasher     from TDF
+
+end Label;

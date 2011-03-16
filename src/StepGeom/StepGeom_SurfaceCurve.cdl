@@ -1,0 +1,49 @@
+-- File:        SurfaceCurve.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceCurve from StepGeom 
+
+inherits Curve from StepGeom 
+
+uses
+
+	HArray1OfPcurveOrSurface from StepGeom, 
+	PreferredSurfaceCurveRepresentation from StepGeom, 
+	PcurveOrSurface from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable SurfaceCurve;
+	---Purpose: Returns a SurfaceCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCurve3d : mutable Curve from StepGeom;
+	      aAssociatedGeometry : mutable HArray1OfPcurveOrSurface from StepGeom;
+	      aMasterRepresentation : PreferredSurfaceCurveRepresentation from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCurve3d(me : mutable; aCurve3d : mutable Curve);
+	Curve3d (me) returns mutable Curve;
+	SetAssociatedGeometry(me : mutable; aAssociatedGeometry : mutable HArray1OfPcurveOrSurface);
+	AssociatedGeometry (me) returns mutable HArray1OfPcurveOrSurface;
+	AssociatedGeometryValue (me; num : Integer) returns PcurveOrSurface;
+	NbAssociatedGeometry (me) returns Integer;
+	SetMasterRepresentation(me : mutable; aMasterRepresentation : PreferredSurfaceCurveRepresentation);
+	MasterRepresentation (me) returns PreferredSurfaceCurveRepresentation;
+
+fields
+
+	curve3d : Curve from StepGeom;
+	associatedGeometry : HArray1OfPcurveOrSurface from StepGeom; -- a SelectType
+	masterRepresentation : PreferredSurfaceCurveRepresentation from StepGeom; -- an Enumeration
+
+end SurfaceCurve;

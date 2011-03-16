@@ -1,0 +1,57 @@
+-- File:	HLRTopoBRep.cdl
+-- Created:	Tue Aug 10 11:51:13 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+package HLRTopoBRep
+
+	---Purpose: This     Package  provides  some       topological
+	--          reconstruction services needed  by the Hidden Line
+	--          Removal Algorithms   using OutLine  and    IsoLine
+	--          facilities, applied  to an object represented by a
+	--          BRep data structure.
+
+uses
+    Standard,
+    MMgt,
+    TCollection,
+    TColStd,
+    TopoDS,
+    TopTools,
+    TopExp,
+    gp,
+    Geom2d,
+    IntSurf,
+    BRepAdaptor,
+    BRepTopAdaptor,
+    Contap,
+    HLRAlgo
+    
+is
+    class VData;
+
+    class ListOfVData            instantiates List    from TCollection 
+    	(VData from HLRTopoBRep);
+
+    class MapOfShapeListOfVData  instantiates DataMap from TCollection
+    	(Shape          from TopoDS,
+         ListOfVData    from HLRTopoBRep,
+         ShapeMapHasher from TopTools);
+
+    class FaceData;
+
+    class DataMapOfShapeFaceData instantiates DataMap from TCollection
+    	(Shape          from TopoDS,
+	 FaceData       from HLRTopoBRep,
+	 ShapeMapHasher from TopTools);
+					
+    class Data;
+
+    class FaceIsoLiner;
+    
+    class OutLiner;
+
+    class DSFiller;
+
+end HLRTopoBRep;

@@ -1,0 +1,85 @@
+-- File:	BRepFill_NSections.cdl
+-- Created:	Tue Dec 29 17:00:36 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+---Copyright:	 Matra Datavision 1998
+
+
+class NSections from BRepFill inherits  SectionLaw  from  BRepFill
+
+	---Purpose: Build Section Law, with N Sections
+	--          
+        ---Level: Advanced
+       
+uses 
+ SectionLaw          from  GeomFill,  
+ HArray1OfSectionLaw from  GeomFill, 
+ BSplineSurface             from  Geom, 
+ HArray2OfShape      from  TopTools,  
+ SequenceOfReal      from  TColStd,  
+ SequenceOfShape     from  TopTools,  
+ Shape               from  GeomAbs,
+ Vertex              from  TopoDS, 
+ Wire                from  TopoDS,  
+ Edge                from  TopoDS,  
+ Shape               from  TopoDS, 
+ Function            from  Law
+
+is  
+  Create (S:SequenceOfShape  from  TopTools;   
+          Build :  Boolean = Standard_True)   
+     ---Purpose: Construct    
+  returns NSections from BRepFill;  
+   
+  Create (S  :  SequenceOfShape  from  TopTools; 
+  	  P  :  SequenceOfReal  from  TColStd; 
+	  VF,VL :  Real; 
+          Build :  Boolean = Standard_True)   
+     ---Purpose: Construct    
+  returns NSections from BRepFill;  
+   
+
+  IsVertex(me) 
+    ---Purpose: Say if the input shape is a  vertex. 
+  returns  Boolean   
+  is  redefined; 
+   
+  IsConstant(me) 
+    ---Purpose: Say if the Law is  Constant.        
+  returns  Boolean   
+  is  redefined;        
+
+  ConcatenedLaw(me)  
+   ---Purpose: Give the law build on a concatened section         
+  returns SectionLaw from GeomFill 
+  is  redefined;    
+  
+  Continuity(me; Index  :  Integer; 
+    	         TolAngular  :  Real)
+  returns  Shape  from  GeomAbs  
+  is  redefined;  
+   
+  VertexTol(me; Index  :  Integer;   
+                Param  :  Real) 
+  returns  Real   
+  is  redefined;  
+  
+  Vertex(me;  Index  :  Integer; 
+              Param  :  Real) 
+  returns Vertex  from  TopoDS 
+  is  redefined;	    
+   
+  D0(me:mutable;  Param  :  Real;   
+     S  :  out  Shape  from  TopoDS)   
+    is  redefined;  
+   
+  Init(me  :  mutable;  P  : SequenceOfReal  from  TColStd; 
+    	    	    	B  : Boolean  from  Standard )  is  private;
+   
+fields
+  VFirst,  VLast : Real;
+  myShapes:  SequenceOfShape  from  TopTools;
+  myParams:  SequenceOfReal  from  TColStd;   
+  myEdges:  HArray2OfShape from  TopTools;   
+  mySurface:  BSplineSurface from  Geom;   
+end NSections;

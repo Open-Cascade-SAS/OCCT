@@ -1,0 +1,37 @@
+-- File:	TDataStd_HDataMapOfStringByte.cdl
+-- Created:	Fri Aug 17 16:56:13 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@popox.nnov.matra-dtv.fr>
+---Copyright:	Open CasCade SA 2007
+
+
+class HDataMapOfStringByte from TDataStd inherits TShared from MMgt 
+
+	---Purpose: Extension of TDataStd_DataMapOfStringByte class  
+    	--          to be manipulated by handle.
+
+uses
+    DataMapOfStringByte from TDataStd 
+    
+is
+    Create( NbBuckets: Integer from Standard = 1 )  
+    returns mutable HDataMapOfStringByte from TDataStd;    
+     
+    Create( theOther:  DataMapOfStringByte from TDataStd)  
+    returns mutable HDataMapOfStringByte from TDataStd;
+     
+    Map( me ) returns DataMapOfStringByte from TDataStd
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns DataMapOfStringByte from TDataStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields
+    
+    myMap : DataMapOfStringByte from TDataStd ;  
+   
+end HDataMapOfStringByte;

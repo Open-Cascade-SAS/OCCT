@@ -1,0 +1,33 @@
+-- File:        MDataStd_IntegerListRetrievalDriver.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class IntegerListRetrievalDriver from MDataStd inherits ARDriver from MDF
+
+uses 
+
+    RRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
+    returns mutable IntegerListRetrievalDriver from MDataStd;
+
+    VersionNumber(me) returns Integer from Standard;
+
+    SourceType(me) returns Type from Standard;
+
+    NewEmpty (me) returns mutable Attribute from TDF;
+
+    Paste(me;
+    	  Source     :         Attribute from PDF;
+    	  Target     : mutable Attribute from TDF;
+    	  RelocTable : RRelocationTable from MDF);
+
+end IntegerListRetrievalDriver;
+

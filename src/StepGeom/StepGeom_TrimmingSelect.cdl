@@ -1,0 +1,43 @@
+-- File:        TrimmingSelect.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TrimmingSelect from StepGeom    inherits SelectType
+
+	-- <TrimmingSelect> is an EXPRESS Select Type construct translation.
+	-- it gathers : CartesianPoint (Entity),ParameterValue (Real)
+
+uses
+    	SelectMember from StepData,
+	CartesianPoint,
+	Real
+is
+
+	Create returns TrimmingSelect;
+	---Purpose : Returns a TrimmingSelect SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a TrimmingSelect Kind Entity that is :
+	--        1 -> CartesianPoint
+	--        0 else (i.e. Real)
+
+    NewMember (me) returns SelectMember  is redefined;
+    ---Purpose : Returns a TrimmingMember (for PARAMETER_VALUE) as preferred
+
+    CaseMem (me; ent : SelectMember) returns Integer  is redefined;
+    ---Purpose : Recognizes a SelectMember as Real, named as PARAMETER_VALUE
+    --            1 -> ParameterValue i.e. Real
+    --            0 else (i.e. Entity)
+
+        CartesianPoint (me) returns any CartesianPoint;
+	---Purpose : returns Value as a CartesianPoint (Null if another type)
+
+    	SetParameterValue (me : in out; aParameterValue : Real);
+	---Purpose : sets the ParameterValue as Real
+         
+	ParameterValue (me) returns Real;
+	---Purpose : returns Value as a Real (0.0 if not a Real)
+
+end TrimmingSelect;

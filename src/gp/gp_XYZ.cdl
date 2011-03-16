@@ -1,0 +1,321 @@
+---Copyright:   Matra Datavision 1991
+		     
+class XYZ   from gp   inherits Storable 
+
+        --- Purpose :
+        --  This class describes a cartesian coordinate entity in 
+        --  3D space {X,Y,Z}. This entity is used for algebraic
+        --  calculation. This entity can be transformed
+        --  with a "Trsf" or a  "GTrsf" from package "gp".
+        -- It is used in vectorial computations or for holding this type
+        -- of information in data structures.
+uses  Mat from gp
+
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+is
+
+
+  Create   returns XYZ;
+    	---C++: inline
+        --- Purpose : Creates an XYZ object with zero co-ordinates (0,0,0)
+
+  Create (X, Y, Z : Real)  returns XYZ;
+        ---C++:inline
+        --- Purpose : creates an XYZ with given coordinates
+
+  SetCoord (me : in out; X, Y, Z : Real)
+        ---C++: inline
+        ---Purpose: For this XYZ object, assigns
+        --   the values X, Y and Z to its three coordinates
+     is static;
+
+  SetCoord (me : in out; Index : Integer; Xi : Real)
+        ---C++:inline
+        --- Purpose :
+        --  modifies the coordinate of range Index 
+        --  Index = 1 => X is modified
+        --  Index = 2 => Y is modified
+        --  Index = 3 => Z is modified 
+        --  Raises OutOfRange if Index != {1, 2, 3}.
+     raises OutOfRange
+     is static;
+
+  SetX (me: in out; X : Real)    is static;
+        ---C++: inline
+        ---Purpose: Assigns the given value to the X coordinate
+
+  SetY (me: in out; Y : Real)    is static;
+        ---C++: inline
+        ---Purpose: Assigns the given value to the Y coordinate
+
+  SetZ (me: in out; Z : Real)    is static;
+        ---C++: inline
+        ---Purpose: Assigns the given value to the Z coordinate
+
+   Coord (me; Index : Integer)  returns Real
+        ---C++: inline
+        --- Purpose :
+        --  returns the coordinate of range Index :
+        --  Index = 1 => X is returned
+        --  Index = 2 => Y is returned
+        --  Index = 3 => Z is returned
+        --  
+        -- Raises OutOfRange if Index != {1, 2, 3}.
+      raises OutOfRange
+      is static;
+
+  Coord (me; X, Y, Z : out Real)  is static;
+        ---C++: inline
+        --Purpose: For this XYZ object, returns:
+        -- -   its coordinates X, Y, and Z 
+    
+  X (me)  returns Real            is static;
+        ---C++: inline
+        ---Purpose: Returns the X coordinate
+
+  Y (me)  returns Real            is static;
+        ---C++: inline
+        ---Purpose: Returns the Y coordinate
+
+  Z (me)  returns Real            is static;
+        ---C++: inline
+        ---Purpose: Returns the Z coordinate
+
+  Modulus (me)         returns Real    is static;
+        --- Purpose : computes Sqrt (X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ object.
+        ---C++: inline
+
+  SquareModulus (me)  returns Real     is static;
+        --- Purpose : Computes X*X + Y*Y + Z*Z where X, Y and Z are the three coordinates of this XYZ object.
+        ---C++: inline
+
+  IsEqual (me; Other : XYZ; Tolerance : Real)   returns Boolean
+        --- Purpose :
+        --  Returns True if he coordinates of this XYZ object are
+        -- equal to the respective coordinates Other,
+        -- within the specified tolerance Tolerance. I.e.:
+        --  abs(<me>.X() - Other.X()) <= Tolerance and
+        --  abs(<me>.Y() - Other.Y()) <= Tolerance and 
+        --  abs(<me>.Z() - Other.Z()) <= Tolerance.
+     is static;
+
+
+  Add (me : in out; Other : XYZ)         is static;
+        --- Purposes :
+        -- <me>.X() = <me>.X() + Other.X()
+        -- <me>.Y() = <me>.Y() + Other.Y()
+        -- <me>.Z() = <me>.Z() + Other.Z()
+        ---C++: inline
+        ---C++: alias operator +=
+
+  Added (me; Other : XYZ)  returns XYZ   is static;
+        ---C++:inline
+        --- Purposes :
+        -- new.X() = <me>.X() + Other.X()
+        -- new.Y() = <me>.Y() + Other.Y()
+        -- new.Z() = <me>.Z() + Other.Z()
+        ---C++: alias operator +
+
+  Cross (me : in out; Right : XYZ)       is static;
+        ---C++:inline
+        ---C++: alias operator ^=
+        --- Purposes :
+        -- <me>.X() = <me>.Y() * Other.Z() - <me>.Z() * Other.Y()
+        -- <me>.Y() = <me>.Z() * Other.X() - <me>.X() * Other.Z()
+        -- <me>.Z() = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+
+  Crossed (me; Right : XYZ)   returns XYZ   is static;
+        ---C++:inline
+        ---C++: alias operator ^
+        --- Purposes :
+        -- new.X() = <me>.Y() * Other.Z() - <me>.Z() * Other.Y()
+        -- new.Y() = <me>.Z() * Other.X() - <me>.X() * Other.Z()
+        -- new.Z() = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+
+  CrossMagnitude (me; Right : XYZ)  returns Real   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Computes the magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||
+
+  CrossSquareMagnitude (me; Right : XYZ)  returns Real   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Computes the square magnitude of the cross product between <me> and
+        --  Right. Returns || <me> ^ Right ||**2
+
+  CrossCross (me : in out; Coord1, Coord2 : XYZ)   is static;
+        ---C++:inline
+        --- Purposes : Triple vector product
+        --  Computes <me> = <me>.Cross(Coord1.Cross(Coord2))
+
+  CrossCrossed (me; Coord1, Coord2 : XYZ)   returns XYZ   is static;
+        ---C++:inline
+        --- Purposes : Triple vector product
+        --  computes New = <me>.Cross(Coord1.Cross(Coord2))
+
+  Divide (me : in out; Scalar : Real)    is static;
+        --- Purpose : divides <me> by a real.
+        ---C++: inline
+        ---C++: alias operator /=
+
+  Divided (me; Scalar : Real)   returns XYZ   is static;
+        ---C++:inline
+        --- Purpose : divides <me> by a real.
+        ---C++: alias operator /
+
+  Dot (me; Other : XYZ)  returns Real
+        --- Purpose : computes the scalar product between <me> and Other
+        ---C++: inline
+        ---C++: alias operator *
+     is static;
+
+  DotCross (me; Coord1, Coord2 : XYZ)   returns Real   is static;
+        ---C++: inline
+        --- Purpose : computes the triple scalar product
+
+  Multiply (me : in out; Scalar : Real)    is static;
+        ---C++: inline
+        ---C++: alias operator *=
+        --- Purpose :
+        --  <me>.X() = <me>.X() * Scalar;
+        --  <me>.Y() = <me>.Y() * Scalar;
+        --  <me>.Z() = <me>.Z() * Scalar;
+
+  Multiply (me : in out; Other : XYZ)    is static;
+        ---C++: inline
+        ---C++: alias operator *=
+        --- Purpose :
+        --  <me>.X() = <me>.X() * Other.X();
+        --  <me>.Y() = <me>.Y() * Other.Y();
+        --  <me>.Z() = <me>.Z() * Other.Z();
+
+  Multiply (me : in out; Matrix : Mat)    is static;
+        ---C++:inline
+        ---C++: alias operator *=
+        --- Purpose : <me> = Matrix * <me>
+
+  Multiplied (me; Scalar : Real)  returns XYZ    is static;
+        ---C++:inline
+        --- Purpose :
+        --  New.X() = <me>.X() * Scalar;
+        --  New.Y() = <me>.Y() * Scalar;
+        --  New.Z() = <me>.Z() * Scalar;
+        ---C++: alias operator *
+
+  Multiplied (me; Other : XYZ)   returns XYZ    is static;
+        ---C++:inline
+        --- Purpose :
+        --  new.X() = <me>.X() * Other.X();
+        --  new.Y() = <me>.Y() * Other.Y();
+        --  new.Z() = <me>.Z() * Other.Z();
+
+  Multiplied (me; Matrix : Mat)   returns XYZ    is static;
+        ---C++:inline
+        --- Purpose :  New = Matrix * <me>
+        ---C++: alias operator *
+
+  Normalize (me : in out) 
+        ---C++:inline
+        --- Purpose :
+        --  <me>.X() = <me>.X()/ <me>.Modulus()
+        --  <me>.Y() = <me>.Y()/ <me>.Modulus()
+        --  <me>.Z() = <me>.Z()/ <me>.Modulus()
+     raises ConstructionError
+        --- Purpose : Raised if <me>.Modulus() <= Resolution from gp
+     is static;
+
+  Normalized (me)  returns XYZ
+        ---C++:inline
+        --- Purpose :
+        --  New.X() = <me>.X()/ <me>.Modulus()
+        --  New.Y() = <me>.Y()/ <me>.Modulus()
+        --  New.Z() = <me>.Z()/ <me>.Modulus()
+     raises ConstructionError
+        --- Purpose : Raised if <me>.Modulus() <= Resolution from gp
+     is static;
+
+  Reverse (me : in out)    is static;
+        ---C++:inline
+        --- Purpose :
+        --  <me>.X() = -<me>.X()
+        --  <me>.Y() = -<me>.Y()
+        --  <me>.Z() = -<me>.Z()
+
+  Reversed (me)   returns XYZ     is static;
+        ---C++:inline
+        --- Purpose :
+        --  New.X() = -<me>.X()
+        --  New.Y() = -<me>.Y()
+        --  New.Z() = -<me>.Z()
+
+  Subtract (me : in out; Right : XYZ)       is static;
+        ---C++: inline
+        ---C++: alias operator -=
+        --- Purpose :
+        --  <me>.X() = <me>.X() - Other.X()
+        --  <me>.Y() = <me>.Y() - Other.Y()
+        --  <me>.Z() = <me>.Z() - Other.Z()
+
+  Subtracted (me; Right : XYZ)   returns XYZ    is static;
+        ---C++: inline
+        ---C++: alias operator -
+        --- Purpose :
+        --  new.X() = <me>.X() - Other.X()
+        --  new.Y() = <me>.Y() - Other.Y()
+        --  new.Z() = <me>.Z() - Other.Z()
+
+  SetLinearForm (me : in out; 
+                 A1 : Real; XYZ1 : XYZ; A2 : Real; XYZ2 : XYZ;
+                 A3 : Real; XYZ3 : XYZ; XYZ4 : XYZ)
+     is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  A1 * XYZ1 + A2 * XYZ2 + A3 * XYZ3 + XYZ4
+        ---C++: inline
+
+  SetLinearForm (me : in out; 
+                 A1 : Real; XYZ1 : XYZ; A2 : Real; XYZ2 : XYZ;
+                 A3 : Real; XYZ3 : XYZ)
+     is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  A1 * XYZ1 + A2 * XYZ2 + A3 * XYZ3
+        ---C++: inline
+
+  SetLinearForm (me : in out;
+                 A1 : Real; XYZ1 : XYZ; A2 : Real; XYZ2 : XYZ;  XYZ3 : XYZ)
+     is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  A1 * XYZ1 + A2 * XYZ2 + XYZ3
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; XYZ1 : XYZ; A2 : Real; XYZ2 : XYZ)
+     is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  A1 * XYZ1 + A2 * XYZ2
+        ---C++: inline
+
+  SetLinearForm (me : in out; A1 : Real; XYZ1 : XYZ; XYZ2 : XYZ)
+     is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  A1 * XYZ1 + XYZ2
+        ---C++: inline
+
+  SetLinearForm (me : in out; XYZ1, XYZ2 : XYZ)   is static;
+        --- Purpose :
+        --  <me> is set to the following linear form :
+        --  XYZ1 + XYZ2
+        ---C++: inline
+
+fields
+  x : Real;
+  y : Real;
+  z : Real;
+
+end;

@@ -1,0 +1,99 @@
+-- File:	OSD_Thread.cdl
+-- Created:	Fri Mar 10 16:55:56 2006
+-- Author:	data exchange team
+--		<det@decex.nnov.opencascade.com>
+---Copyright:	Open CASCADE S.A.S. 2006
+
+class Thread from OSD
+
+    ---Purpose: A simple platform-intependent interface to execute 
+    --          and control threads.    
+    
+uses
+    Address from Standard,
+    ThreadId from Standard,    
+    PThread from OSD,    
+    ThreadFunction from OSD
+is
+    Create returns Thread;
+        ---Purpose: Empty constructor
+    
+    Create (func: ThreadFunction) returns Thread;
+        ---Purpose: Initialize the tool by the thread function
+	--
+	-- Note: On Windows, you might have to take an address of the thread 
+	-- function explicitly to pass it to this constructor without compiler error
+    
+    Create (other: Thread) returns Thread;
+        ---Purpose: Copy constructor
+    
+    Assign (me: in out; other: Thread);
+        ---Purpose: Copy thread handle from other OSD_Thread object.
+	---C++: alias operator =
+
+    Destroy (me: in out);
+    	---Purpose: Destructor. On Windows, closes handle to the thread.
+	--          On UNIX/Linux, does nothing.
+	---C++: alias ~
+    
+    SetPriority (me: in out; thePriority: Integer from Standard);
+        ---Putpose: Assign the thread to the given priotity, taking it
+        --        : as relative value. The absolute priotity of theThread will
+        --        : be the one of the caller of this function PLUS
+        --        : 'thePriority' parameter
+        -- Note:    Currently implemented on Windows only.
+
+    SetFunction (me: in out; func: ThreadFunction);
+        ---Purpose: Initialize the tool by the thread function.
+	--          If the current thread handle is not null, nullifies it.
+	--
+	-- Note: On Windows, you might have to take an address of the thread 
+	-- function explicitly to pass it to this method without compiler error
+	
+    Run (me: in out; data: Address = 0; WNTStackSize: Integer = 0) returns Boolean;
+    	---Purpose: Starts a thread with thread function given in constructor,
+	--          passing the specified input data (as void *) to it.
+	--          The parameter \a WNTStackSize (on Windows only)
+	--          specifies size of the stack to be allocated for the thread
+	--          (by default - the same as for the current executable).
+	--          Returns True if thread started successfully
+
+    Detach (me: in out);
+    	---Purpose: Detaches the execution thread from this Thread object,
+	--          so that it cannot be waited. 
+        --          Note that mechanics of this operation is different on 
+        --          UNIX/Linux (the thread is put to detached state) and Windows 
+        --          (the handle is closed).
+	--          However, the purpose is the same: to instruct the system to
+	--          release all thread data upon its completion.
+	
+    Wait (me) returns Boolean;
+    Wait (me; result: out Address) returns Boolean;
+    	---Purpose: Wait till the thread finishes execution.
+	--          Returns True if wait was successful, False in case of error.
+	--
+	--          If successful and \a result argument is provided, saves the pointer
+	--          (void*) returned by the thread function in \a result.
+        --
+	--          Note however that it is advisable not to rely upon returned result 
+	--          value, as it is not always the value actually returned by the thread
+	--          function. In addition, on Windows it is converted via DWORD.
+    Wait (me; time: Integer; result: out Address) returns Boolean;
+    	---Purpose: Waits for some time and if the thread is finished,
+    	--          it returns the result.
+    	--          The function returns false if the thread is not finished yet.
+
+    GetId (me) returns ThreadId;
+    	---Purpose: Returns ID of the currently controlled thread ID, 
+	--          or 0 if no thread is run
+
+    Current (myclass) returns ThreadId;
+    	---Purpose: Auxiliary: returns ID of the current thread
+
+fields
+    myFunc:     ThreadFunction from OSD;      -- A function to execute
+    myThread:   PThread        from OSD;      -- Thread handle
+    myThreadId: ThreadId       from Standard; -- Thread identifier
+    myPriority: Integer        from Standard; -- Thread priority
+
+end;

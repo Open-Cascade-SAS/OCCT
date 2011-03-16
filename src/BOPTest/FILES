@@ -1,0 +1,10 @@
+BOPTest_MTestCommands.cxx
+BOPTest_TSTCommands.cxx
+BOPTest_EFCommands.cxx
+BOPTest_LowCommands.cxx
+BOPTest_BOPCommands.cxx
+BOPTest_WSplitCommands.cxx
+BOPTest_CurveCommands.cxx
+BOPTest_TolerCommands.cxx
+BOPTest_CheckCommands.cxx
+

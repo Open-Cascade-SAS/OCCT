@@ -1,0 +1,136 @@
+-- File:	IGESToBRep_BasicCurve.cdl
+-- Created:	Mon Mar 14 14:02:21 1994
+-- Authors:	Christophe GUYOT & Frederic UNTEREINER
+--		<fun@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class BasicCurve  from IGESToBRep inherits CurveAndSurface from IGESToBRep
+
+    ---Purpose : Provides methods to transfer basic geometric curves entities 
+    --           from IGES to CASCADE.
+    --           These can be :
+    --           * Circular arc
+    --           * Conic arc
+    --           * Spline curve
+    --           * BSpline curve
+    --           * Line
+    --           * Copious data
+    --           * Point
+    --           * Transformation matrix
+
+uses   
+
+    CurveAndSurface      from IGESToBRep,
+    IGESEntity           from IGESData,
+    BSplineCurve         from IGESGeom,
+    CircularArc          from IGESGeom,
+    ConicArc             from IGESGeom,
+    CopiousData          from IGESGeom,
+    Line                 from IGESGeom,
+    Point                from IGESGeom,
+    SplineCurve          from IGESGeom,
+    TransformationMatrix from IGESGeom,
+    Curve                from Geom,
+    BezierCurve          from Geom,
+    BSplineCurve         from Geom,
+    TrimmedCurve         from Geom,
+    CartesianPoint       from Geom,
+    Transformation       from Geom,
+    Curve                from Geom2d,
+    BezierCurve          from Geom2d,
+    BSplineCurve         from Geom2d,
+    TrimmedCurve         from Geom2d,
+    CartesianPoint       from Geom2d
+
+
+is
+
+    Create returns BasicCurve;
+    ---Purpose : Creates  a tool BasicCurve  ready  to  run, with
+    --         epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+    --         optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep)  returns BasicCurve;
+    ---Purpose : Creates a tool BasicCurve ready to run and sets its
+    --         fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean)  returns BasicCurve;
+    ---Purpose : Creates a tool BasicCurve ready to run.
+
+    TransferBasicCurve     (me    : in out; 
+    	    	    	    start : IGESEntity from IGESData)
+    	returns mutable Curve from Geom;
+    ---Purpose :  Transfert  a  IGESEntity which  answer True  to  the
+    --         member : IGESToBRep::IsBasicCurve(IGESEntity).  If this
+    --         Entity could not be converted, this member returns a NullEntity.
+            
+           
+    Transfer2dBasicCurve   (me    : in out; 
+    	    	    	    start : IGESEntity from IGESData) 
+    	returns mutable Curve from Geom2d;
+    ---Purpose :  Transfert  a  IGESEntity which  answer True  to  the
+    --         member : IGESToBRep::IsBasicCurve(IGESEntity).
+    --         The IGESEntity must be a curve UV and its associed TRSF must
+    --         be planar .If this Entity could not be converted, this member 
+    --         returns a NullEntity.
+	
+    TransferBSplineCurve   (me    : in out;
+    	    	    	    start : BSplineCurve from IGESGeom)
+    	returns mutable Curve from Geom;
+	
+    Transfer2dBSplineCurve (me    : in out; 
+    	    	    	    start : BSplineCurve from IGESGeom)
+    	returns mutable Curve from Geom2d;
+	
+    TransferCircularArc    (me    : in out; 
+    	    	    	    start : CircularArc from IGESGeom)
+    	returns mutable Curve from Geom;
+	
+    Transfer2dCircularArc  (me    : in out; 
+    	    	    	    start : CircularArc from IGESGeom)
+    	returns mutable Curve from Geom2d;
+	
+    TransferConicArc       (me    : in out; 
+    	    	    	    start : ConicArc from IGESGeom)
+    	returns mutable Curve from Geom;
+	
+    Transfer2dConicArc     (me    : in out; 
+    	    	    	    start : ConicArc from IGESGeom)
+    	returns mutable Curve from Geom2d;
+
+    TransferCopiousData    (me    : in out; 
+    	    	    	    start : CopiousData from IGESGeom)
+    	returns mutable BSplineCurve from Geom;
+	
+    Transfer2dCopiousData  (me    : in out; 
+    	    	    	    start : CopiousData from IGESGeom)
+    	returns mutable BSplineCurve from Geom2d;
+
+    TransferLine           (me    : in out; 
+    	    	    	    start : Line from IGESGeom)
+    	returns mutable Curve from Geom;
+	
+    Transfer2dLine         (me    : in out; 
+    	    	    	    start : Line from IGESGeom)
+    	returns mutable Curve from Geom2d;
+
+    TransferSplineCurve    (me    : in out; 
+    	    	    	    start : SplineCurve from IGESGeom)
+       	returns mutable BSplineCurve from Geom;
+	
+    Transfer2dSplineCurve  (me    : in out; 
+    	    	    	    start : SplineCurve from IGESGeom)
+    	returns mutable BSplineCurve from Geom2d;
+
+    TransferTransformation (me    : in out;
+    	    	    	    start : TransformationMatrix from IGESGeom)
+    	returns mutable Transformation from Geom;
+	
+	
+end BasicCurve;

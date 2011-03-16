@@ -1,0 +1,14 @@
+// File:	PLib_JacobiPolynomial.lxx
+// Created:	Tue Jun  3 11:15:41 1997
+// Author:	Sergey SOKOLOV
+//		<ssm@nonox.nizhny.matra-dtv.fr>
+
+ inline Standard_Integer PLib_JacobiPolynomial::WorkDegree() const 
+{
+  return myWorkDegree;
+}
+
+ inline Standard_Integer PLib_JacobiPolynomial::NivConstr() const 
+{
+  return myNivConstr;
+}

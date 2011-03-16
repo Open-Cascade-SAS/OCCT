@@ -1,0 +1,38 @@
+-- File:	StepRepr_PropertyDefinitionRepresentation.cdl
+-- Created:	Thu Dec 12 16:02:14 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class PropertyDefinitionRepresentation from StepRepr
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity PropertyDefinitionRepresentation
+
+uses
+    RepresentedDefinition from StepRepr,
+    Representation from StepRepr
+
+is
+    Create returns PropertyDefinitionRepresentation from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDefinition: RepresentedDefinition from StepRepr;
+                       aUsedRepresentation: Representation from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Definition (me) returns RepresentedDefinition from StepRepr;
+	---Purpose: Returns field Definition
+    SetDefinition (me: mutable; Definition: RepresentedDefinition from StepRepr);
+	---Purpose: Set field Definition
+
+    UsedRepresentation (me) returns Representation from StepRepr;
+	---Purpose: Returns field UsedRepresentation
+    SetUsedRepresentation (me: mutable; UsedRepresentation: Representation from StepRepr);
+	---Purpose: Set field UsedRepresentation
+
+fields
+    theDefinition: RepresentedDefinition from StepRepr;
+    theUsedRepresentation: Representation from StepRepr;
+
+end PropertyDefinitionRepresentation;

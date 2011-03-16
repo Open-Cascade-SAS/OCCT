@@ -1,0 +1,54 @@
+-- File:	Dynamic_InterpretedMethod.cdl
+-- Created:	Thu Jan 28 14:59:01 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class InterpretedMethod from Dynamic
+
+inherits
+
+    MethodDefinition from Dynamic
+
+	---Purpose: This class derived from Method, describes an  
+	--          interpreted method. The additional field is the 
+	--          name of the file to be interpreted.
+
+uses
+
+    CString from Standard,
+    HAsciiString from TCollection,
+    AsciiString  from TCollection
+
+is
+
+    Create(aname , afile : CString from Standard) returns mutable InterpretedMethod from Dynamic;
+    
+    ---Level: Public 
+    
+    ---Purpose: Creates a new  InterpretedMethod with <aname> as  name
+    --          and <afile> as file name to be interpreted.
+    
+    Function(me : mutable ; afile : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Sets the the   name of the  file to  be interpreted to
+    --          <afile>.
+    
+    is static;
+    
+    Function(me) returns AsciiString from TCollection
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns the name of the file to be interpreted.
+    
+    is static;
+    
+fields
+
+    thefunction : HAsciiString from TCollection;
+
+end InterpretedMethod;

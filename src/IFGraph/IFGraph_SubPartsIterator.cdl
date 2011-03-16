@@ -1,0 +1,146 @@
+-- File:	SubPartsIterator.cdl
+-- Created:	Wed Sep 23 11:27:17 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class SubPartsIterator  from IFGraph
+
+    	---Purpose : defines general form for graph classes of which result is
+    	--           not a single iteration on Entities, but a nested one :
+    	--           External iteration works on sub-parts, identified by each
+    	--           class (according to its algorithm)
+    	--           Internal Iteration concerns Entities of a sub-part
+    	--           Sub-Parts are assumed to be disjoined; if they are not,
+    	--           the first one has priority
+    	--           
+    	--           A SubPartsIterator can work in two steps : first, load
+    	--           entities which have to be processed
+    	--           then, analyse to set those entities into sub-parts 
+
+uses Transient, HSequenceOfInteger, InterfaceModel, EntityIterator,
+     Graph, GraphContent
+
+raises OutOfRange, NoSuchObject, InterfaceError
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns SubPartsIterator;
+    ---Purpose : Creates with a Graph, whole or parts of it
+    --           whole True  : works on the entire Model
+    --           whole False : empty, ready to be filled
+    --           SubPartIterator is set to load entities
+
+    Create (other : in out SubPartsIterator) returns SubPartsIterator;
+    ---Purpose : Creates a SubPartIterator from another one and gets its Data
+    --           Note that only non-empty sub-parts are taken into account
+    --           PartNum is set to the last one
+
+    GetParts (me : in out; other : in out SubPartsIterator)
+    	raises InterfaceError;
+    ---Purpose : Gets Parts from another SubPartsIterator (in addition to the
+    --           ones already recorded)
+    --           Error if both SubPartsIterators are not based on the same Model
+
+    Graph (me) returns Graph  is private;
+    ---Purpose : Returns the Graph used by <me>. Used to create another
+    --           SubPartsIterator from <me>
+    ---C++ : return const &
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model with which this Iterator was created
+
+    AddPart (me : in out);
+    ---Purpose : Adds an empty part and sets it to receive entities
+
+    NbParts (me) returns Integer;
+    ---Purpose : Returns count of registered parts
+
+    PartNum (me) returns Integer;
+    ---Purpose : Returns numero of part which currently receives entities
+    --           (0 at load time)
+
+    SetLoad (me : in out);
+    ---Purpose : Sets SubPartIterator to get Entities (by GetFromEntity &
+    --           GetFromIter) into load status, to be analysed later
+
+    SetPartNum (me : in out; num : Integer)  raises OutOfRange;
+    ---Purpose : Sets numero of receiving part to a new value
+    --           Error if not in range (1-NbParts)
+
+    GetFromEntity (me : in out; ent : any Transient; shared : Boolean);
+    ---Purpose : Adds an Entity : into load status if in Load mode, to the
+    --           current part if there is one. If shared is True, adds
+    --           also its shared ones (shared at all levels)
+
+    GetFromIter (me : in out; iter : EntityIterator);
+    ---Purpose : Adds a list of Entities (into Load mode or to a Part),
+    --           given as an Iterator
+
+    Reset (me : in out);
+    ---Purpose : Erases data (parts, entities) : "me" becomes empty and in
+    --           load status
+
+    Evaluate (me : in out)  is virtual;
+    ---Purpose : Called by Clear, this method allows evaluation just before
+    --           iteration; its default is doing nothing, it is designed to
+    --           be redefined
+
+    Loaded (me) returns GraphContent;
+    ---Purpose : Returns entities which where loaded (not set into a sub-part)
+
+    LoadedGraph (me) returns Graph;
+    ---Purpose : Same as above, but under the form of a Graph
+
+    IsLoaded (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if an Entity is loaded (either set into a
+    --           sub-part or not)
+
+    IsInPart (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if an Entity is Present in a sub-part
+
+    EntityPartNum (me; ent : Transient) returns Integer;
+    ---Purpose : Returns number of the sub-part in which an Entity has been set
+    --           if it is not in a sub-part (or not loaded at all), Returns 0
+
+    	-- --   Iteration   -- --
+
+    Start (me : in out);
+    ---Purpose : Sets iteration to its beginning; calls Evaluate
+
+    More (me : in out) returns Boolean;
+    ---Purpose : Returns True if there are more sub-parts to iterate on
+    --           Note : an empty sub-part is not taken in account by Iteration
+
+    Next (me : in out);
+    ---Purpose : Sets iteration to the next sub-part
+    --           if there is not, IsSingle-Entities will raises an exception
+
+    IsSingle (me) returns Boolean  raises NoSuchObject;
+    ---Purpose : Returns True if current sub-part is single (has only one Entity)
+    --           Error if there is no sub-part to iterate now
+
+    FirstEntity (me) returns Transient  raises NoSuchObject;
+    ---Purpose : Returns the first entity of current sub-part, that is for a
+    --           Single one, the only one it contains
+    --           Error : same as above (end of iteration)
+
+    Entities (me) returns EntityIterator  raises NoSuchObject;
+    ---Purpose : Returns current sub-part, not as a "Value", but as an Iterator
+    --           on Entities it contains
+    --           Error : same as above (end of iteration)
+
+    Delete (me:out) is virtual; 
+    	---C++: alias "Standard_EXPORT virtual ~IFGraph_SubPartsIterator() { Delete(); }" 	    
+
+fields
+
+    thegraph  : Graph is protected;     -- graph of entities + stores the model
+    -- protected : allows sub-classes to create a Graph Tool directly with it
+    theparts  : HSequenceOfInteger;     -- for each part, its count of entities
+    thefirsts : HSequenceOfInteger;     -- ... number of its first Entity
+    thepart   : Integer; -- Part receiving entities (GetFromEntity,GetFromIter)
+    thecurr   : Integer;  -- Part to be iterated
+
+end SubPartsIterator;

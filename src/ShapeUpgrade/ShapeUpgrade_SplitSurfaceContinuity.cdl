@@ -1,0 +1,43 @@
+-- File:	ShapeUpgrade_SplitSurfaceContinuity.cdl
+-- Created:	Wed Apr 14 15:00:13 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class SplitSurfaceContinuity from ShapeUpgrade inherits SplitSurface from ShapeUpgrade
+
+    ---Purpose: Splits a Surface with a continuity criterion.
+    --          At the present moment C1 criterion is used only.
+    --          This tool works with tolerance. If C0 surface can be corrected
+    --          at a knot with given tolerance then the surface is corrected,
+    --          otherwise it is spltted at that knot.
+
+uses
+
+    Shape from GeomAbs
+
+is
+
+    Create returns mutable SplitSurfaceContinuity from ShapeUpgrade; 
+        ---Purpose: Empty constructor.
+	
+    SetCriterion (me: mutable; Criterion: Shape from GeomAbs);
+    	---Purpose: Sets criterion for splitting.
+	
+    SetTolerance (me: mutable; Tol: Real);
+    	---Purpose: Sets tolerance.
+	
+    --Build (me: mutable; Segment: Boolean) is redefined;
+    	--Purpose: Performs correction/splitting of the supporting surface(s).
+	---         First defines splitting values, then calls inherited method.
+    Compute(me: mutable; Segment: Boolean) is redefined;
+    --Perform(me: mutable; Segment: Boolean);
+fields
+
+    myCriterion: Shape from GeomAbs;
+    myTolerance: Real;
+    myCont     : Integer;
+    
+end SplitSurfaceContinuity;

@@ -1,0 +1,132 @@
+--
+-- File      :  AttributeTable.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class AttributeTable from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES Attribute Table, Type <422> Form <0, 1>
+        --          in package IGESDefs
+        --          This class is used to represent an occurence of
+        --          Attribute Table. This Class may be independent
+        --          or dependent or pointed at by other Entities.
+
+uses
+
+        HAsciiString           from TCollection,
+        AttributeDef           from IGESDefs,
+        HArray1OfReal          from TColStd,
+        HArray2OfTransient     from TColStd,
+        HArray1OfInteger       from TColStd,
+        HArray1OfHAsciiString  from Interface,
+        HArray1OfIGESEntity    from IGESData
+
+raises OutOfRange, NullObject
+
+is
+
+        Create returns mutable AttributeTable;
+
+        -- Specific methods for the entity
+
+        Init (me         : mutable;
+              attributes : HArray2OfTransient from TColStd);
+        ---Purpose : This method is used to set the fields of the class
+        --           AttributeTable
+        --       - attributes : Attribute instances, created as
+        --          (1,NbAttributes,1,NbRows)
+        --       - NbRows = 1 is a particular case (Form 0)
+
+        SetDefinition (me : mutable; def : AttributeDef);
+	---Purpose : Sets a Definition as Structure information
+	--           (works by calling InitMisc)
+
+    	Definition (me) returns AttributeDef;
+	---Purpose : Return the Structure information in Directory Entry,
+	-- casted as an AttributeDef
+
+        NbRows(me) returns Integer;
+        ---Purpose : returns Number of Rows. Remark that it is always 1 if Form = 0
+        -- It means that the list of Attributes (by their number, and for each
+        -- one its type and ValueCount) is repeated <NbRows> times
+
+    	NbAttributes (me) returns Integer;
+	---Purpose : returns Number of Attributes
+
+    	DataType (me; Atnum : Integer) returns Integer;
+	---Purpose : returns the Type of an Attribute, given its No. : it is read in the
+	-- Definition.
+	--  (1 : Integer, 2 : Real, 3 : String, 4 : Entity, 6 : Logical)
+
+    	ValueCount (me; Atnum : Integer) returns Integer;
+	---Purpose : returns the Count of Value for an Attribute, given its No. :
+	-- it is read in the Definition.
+
+        AttributeList (me; Attribnum : Integer; Rownum : Integer)
+            returns Transient
+	-- returns the List of Values which correspond to an Attribute,
+	-- given its No. and the No. of the Row
+	-- Remark : for Form 0, Rownum must be given equal to 1.
+        -- the Transient returned is a HArray1 of appropriate Type
+        -- (OfInteger, OfReal, OfHAsciiString, OfIGESEntity) and Length
+        --   See methods AttributeAs... for accurate access
+	    raises OutOfRange;
+        -- Error if Attribnum or RowNum OutofRange
+
+
+    AttributeAsInteger (me; AtNum, Rownum, ValNum : Integer) returns Integer
+    ---Purpose : Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Integer
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not an Integer
+
+    AttributeAsReal    (me; AtNum, Rownum, ValNum : Integer) returns Real
+    ---Purpose : Returns Attribute Value <AtNum, Rownum, rank ValNum> as a Real
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not a Real
+
+    AttributeAsString  (me; AtNum, Rownum, ValNum : Integer)
+    	returns HAsciiString from TCollection
+    ---Purpose : Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Integer
+            raises OutOfRange, NullObject;
+    --   Error if Indices out of Range, or no Value defined, or not a String
+
+    AttributeAsEntity  (me; AtNum, Rownum, ValNum : Integer) returns IGESEntity
+    ---Purpose : Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Entity
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not an Entity
+
+    AttributeAsLogical (me; AtNum, Rownum, ValNum : Integer) returns Boolean
+    ---Purpose : Returns Attribute Value <AtNum, Rownum, rank ValNum> as a Boolean
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not a Logical
+
+fields
+
+--
+-- Class    : IGESDefs_AttributeTable
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class AttributeTable.
+--
+-- Reminder : The attributes can be of type no value, integer, real, string,
+--            pointer or Boolean. Accordingly each list is stored as HArray1 of
+--            Integer, Real, HAsciiString, IGESEntity of appropriate Length
+--
+
+        theAttributes : HArray2OfTransient from TColStd;
+
+        -- if form number = 0  , only one Row
+        --      size = AVC(1) + AVC(2) + ... + AVC(NA)
+        --      where NA is Number of attributes obtained from AttributeDef
+        --            AVC(1), AVC(2),..., AVC(NA) is also obtained from the same
+        --
+        -- if form number = 1 , NbRows > 1 possible
+        --      size = NR * (AVC(1) + AVC(2) + ... + AVC(NA))
+        --      where NR is theNbRows
+        --
+        -- Ref : IGES specs for Attribute Table Definition Entity (Type 322)
+
+end AttributeTable;

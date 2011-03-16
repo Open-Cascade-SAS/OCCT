@@ -1,0 +1,56 @@
+// File:          ApproxInt_WLine.gxx
+// Created:       Mon Nov  8 10:00:00 1993
+// Author:        lbr
+// Copyright:	  Matra Datavision 1993
+
+
+
+
+ApproxInt_WLine::ApproxInt_WLine(const TheCurve&    CurveXYZ,
+				 const TheCurve2d&  CurveUV1,
+				 const TheCurve2d&  CurveUV2) { 
+  curvxyz = CurveXYZ;
+  curvuv1 = CurveUV1;
+  curvuv2 = CurveUV2;
+}
+
+
+ApproxInt_WLine::ApproxInt_WLine(const Handle(IntSurf_LineOn2S)& lin,
+				 const Standard_Boolean )
+     :linon2s(lin) 
+{ 
+}
+
+Standard_Integer ApproxInt_WLine::NbPnts() const {
+  if(!curvxyz.IsNull())
+    return(curvxyz->NbPoles());
+  if(!curvuv1.IsNull())
+    return(curvuv1->NbPoles());
+  if(!curvuv2.IsNull())
+    return(curvuv2->NbPoles());
+  return(linon2s->NbPoints());
+}
+
+IntSurf_PntOn2S ApproxInt_WLine::Point(const Standard_Integer Index) {
+  if(!linon2s.IsNull()) { 
+    if(linon2s->NbPoints()) { 
+      return(linon2s->Value(Index));
+    }
+  }
+  gp_Pnt2d P1,P2;
+  gp_Pnt   P;
+  if(!curvxyz.IsNull()) 
+    P = curvxyz->Pole(Index);
+  if(!curvuv1.IsNull())
+    P1 = curvuv1->Pole(Index);
+  if(!curvuv2.IsNull())
+    P2 = curvuv2->Pole(Index);
+
+  pnton2s.SetValue(P,
+		   P1.X(),
+		   P1.Y(),
+		   P2.X(),
+		   P2.Y());
+  return(pnton2s);
+}
+  

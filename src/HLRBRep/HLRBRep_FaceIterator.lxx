@@ -1,0 +1,99 @@
+// File:	HLRBRep_FaceIterator.lxx
+// Created:	Thu Apr 17 16:03:06 1997
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+#include <HLRAlgo_WiresBlock.hxx>
+#include <HLRAlgo_EdgesBlock.hxx>
+
+//=======================================================================
+//function : MoreEdge
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::MoreEdge () const
+{ return iWire <= nbWires;}
+
+//=======================================================================
+//function : BeginningOfWire
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::BeginningOfWire () const
+{ return iEdge == 1;}
+
+//=======================================================================
+//function : EndOfWire
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::EndOfWire () const
+{ return iEdge == nbEdges;}
+
+//=======================================================================
+//function : SkipWire
+//purpose  : 
+//=======================================================================
+
+inline void HLRBRep_FaceIterator::SkipWire ()
+{ 
+  iEdge = nbEdges;
+  NextEdge();
+}
+
+//=======================================================================
+//function : Wire
+//purpose  : 
+//=======================================================================
+
+inline Handle(HLRAlgo_EdgesBlock) HLRBRep_FaceIterator::Wire() const
+{ return myWires->Wire(iWire); }
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer HLRBRep_FaceIterator::Edge () const
+{ return myEdges->Edge(iEdge); }
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation HLRBRep_FaceIterator::Orientation() const
+{ return myEdges->Orientation(iEdge); }
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::OutLine() const
+{ return myEdges->OutLine(iEdge); }
+
+//=======================================================================
+//function : Internal
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::Internal() const
+{ return myEdges->Internal(iEdge); }
+
+//=======================================================================
+//function : Double
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::Double() const
+{ return myEdges->Double(iEdge); }
+
+//=======================================================================
+//function : IsoLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRBRep_FaceIterator::IsoLine() const
+{ return myEdges->IsoLine(iEdge); }
+

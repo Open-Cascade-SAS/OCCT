@@ -1,0 +1,42 @@
+// File:	TDataStd_RealArray.lxx
+// Created:	Tue Oct 30 17:12:09 2007
+// Author:	Sergey ZARITCHNY
+//		<sergey.zaritchny@opencascade.com>
+
+
+//=======================================================================
+//function : Array
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TColStd_HArray1OfReal) TDataStd_RealArray::Array(void) const
+{
+  return myValue; 
+}
+
+//=======================================================================
+//function : RemoveArray
+//purpose  : 
+//=======================================================================
+inline void TDataStd_RealArray::RemoveArray(void) 
+{
+  myValue.Nullify(); 
+}
+
+
+//=======================================================================
+//function : SetDelta
+//purpose  : 
+//=======================================================================
+inline void TDataStd_RealArray::SetDelta(const Standard_Boolean isDelta) 
+{
+  myIsDelta = isDelta;
+}
+//=======================================================================
+//function : GetDelta
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TDataStd_RealArray::GetDelta(void)  const
+{
+  return myIsDelta;
+}

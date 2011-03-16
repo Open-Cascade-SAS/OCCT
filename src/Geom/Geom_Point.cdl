@@ -1,0 +1,55 @@
+-- File:	Geom_Point.cdl
+-- Created:	Wed Mar 10 10:01:33 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Point from Geom inherits Geometry from Geom
+
+
+
+    	---Purpose : The abstract class Point describes the common
+    	-- behavior of geometric points in 3D space.
+    	-- The Geom package also provides the concrete class
+    	-- Geom_CartesianPoint.
+
+uses Pnt from gp
+
+is
+
+
+  Coord (me; X, Y, Z : out Real) 
+        ---Purpose : returns the Coordinates of <me>.
+     is deferred;
+
+
+  Pnt (me)  returns Pnt
+        ---Purpose : returns a non transient copy of <me>
+     is deferred;
+
+
+  X (me)  returns Real
+        ---Purpose : returns the X coordinate of <me>.
+     is deferred;
+
+
+  Y (me)  returns Real
+        ---Purpose : returns  the Y coordinate of <me>.
+     is deferred;
+
+
+  Z (me)   returns Real
+        ---Purpose : returns the Z coordinate of <me>.
+     is deferred;
+
+
+  Distance (me; Other : Point)  returns Real;
+        ---Purpose : Computes the distance between <me> and <Other>.
+
+  
+  SquareDistance (me; Other : Point)  returns Real;
+        ---Purpose : Computes the square distance between <me> and <Other>.
+
+end;
+

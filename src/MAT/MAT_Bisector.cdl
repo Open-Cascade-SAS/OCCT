@@ -1,0 +1,159 @@
+-- File:	Bisector.cdl
+-- Created:	Wed Sep 30 10:57:34 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+class Bisector from MAT
+
+	---Purpose:
+
+inherits
+
+    TShared from MMgt
+
+uses
+
+    ListOfBisector from MAT,
+    Edge from MAT
+
+is
+
+    Create
+
+    ---Purpose:
+
+    returns mutable Bisector from MAT;
+    
+    AddBisector(me ; abisector : any Bisector from MAT)
+    
+    is static;
+    
+    List(me) returns any ListOfBisector from MAT
+    
+    is static;
+    
+    FirstBisector(me) returns any Bisector from MAT
+    
+    is static;
+
+    LastBisector(me) returns any Bisector from MAT
+    
+    is static;
+
+    BisectorNumber(me : mutable ; anumber : Integer)
+    
+    is static;
+    
+    IndexNumber(me : mutable ; anumber : Integer)
+    
+    is static;
+    
+    FirstEdge(me : mutable ; anedge : any Edge from MAT)
+    
+    is static;
+    
+    SecondEdge(me : mutable ; anedge : any Edge from MAT)
+    
+    is static;
+    
+    IssuePoint(me : mutable ; apoint : Integer)
+    
+    is static;
+    
+    EndPoint(me : mutable ; apoint : Integer)
+    
+    is static;
+
+    DistIssuePoint(me : mutable ; areal : Real)
+    
+    is static;
+    
+    FirstVector(me : mutable ; avector : Integer)
+    
+    is static;
+    
+    SecondVector(me : mutable ; avector : Integer)
+    
+    is static;
+    
+    Sense(me : mutable ; asense : Real)
+    
+    is static;
+    
+    FirstParameter(me : mutable ; aparameter : Real)
+    
+    is static;
+    
+    SecondParameter(me : mutable ; aparameter : Real)
+    
+    is static;
+    
+    BisectorNumber(me) returns Integer
+    
+    is static;
+    
+    IndexNumber(me) returns Integer
+    
+    is static;
+    
+    FirstEdge(me) returns any Edge from MAT
+    
+    is static;
+    
+    SecondEdge(me) returns any Edge from MAT
+    
+    is static;
+    
+    IssuePoint(me) returns Integer
+    
+    is static;
+    
+    EndPoint(me) returns Integer
+    
+    is static;
+
+    DistIssuePoint(me) returns Real
+    
+    is static;
+			    
+    FirstVector(me) returns Integer
+    
+    is static;
+    
+    SecondVector(me) returns Integer
+    
+    is static;
+    
+    Sense(me) returns Real
+    
+    is static;
+    
+    FirstParameter(me) returns Real
+    
+    is static;
+    
+    SecondParameter(me) returns Real
+    
+    is static;
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    is static;
+    
+fields
+
+    thebisectornumber  : Integer;
+    theindexnumber     : Integer;
+    thefirstedge       : Edge from MAT;
+    thesecondedge      : Edge from MAT;
+    thelistofbisectors : ListOfBisector from MAT;
+    theissuepoint      : Integer;
+    theendpoint        : Integer;
+    thefirstvector     : Integer;
+    thesecondvector    : Integer;
+    thesense           : Real;
+    thefirstparameter  : Real;
+    thesecondparameter : Real;
+    distissuepoint     : Real;
+end Bisector;

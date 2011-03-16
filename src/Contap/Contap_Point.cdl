@@ -1,0 +1,262 @@
+-- File:	Contap_Point.cdl
+-- Created:	Thu Mar  4 17:22:45 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@form4>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Point from Contap
+    (TheVertex as any;
+     TheArc    as any)
+
+
+	---Purpose: Definition of a vertex on the contour line.
+	--          Most of the time, such a point is an intersection
+	--          between the contour and a restriction of the surface.
+	--          When it is not tyhe method IsOnArc return False.
+	--          Such a point is contains geometrical informations (see
+	--          the Value method) and logical informations.
+
+
+uses Pnt        from gp,
+     Transition from IntSurf
+     
+     
+raises DomainError from Standard
+
+is
+
+
+    Create
+    
+	---Purpose: Empty constructor.
+
+    	returns Point from Contap;
+
+
+    Create(Pt: Pnt from gp; U,V: Real from Standard)
+
+	---Purpose: Creates a point.
+
+    	returns Point from Contap;
+
+
+    SetValue(me: in out; Pt: Pnt from gp; U,V: Real from Standard)
+
+	---Purpose: Sets the values for a point.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetParameter(me: in out; Para: Real from Standard)
+    
+	---Purpose: Set the value of the parameter on the intersection line.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetVertex(me: in out; V: TheVertex)
+
+	---Purpose: Sets the values of a point which is a vertex on
+	--          the initial facet of restriction of one
+	--          of the surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetArc(me: in out; A: TheArc; Param: Real from Standard;
+                       TLine,TArc: Transition from IntSurf)
+
+	---Purpose: Sets the value of the arc and of the parameter on
+	--          this arc of the point.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetMultiple(me: in out)
+    
+	---C++: inline
+
+    	is static;
+
+
+    SetInternal(me : in out)
+	---C++: inline
+    	is static;
+	
+    Value(me)
+    
+    	---Purpose: Returns the intersection point (geometric information).
+
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+
+
+    ParameterOnLine(me)
+    
+	---Purpose: This method returns the parameter of the point
+	--          on the intersection line.
+	--          If the points does not belong to an intersection line,
+	--          the value returned does not have any sens.
+    
+    	returns Real from Standard
+	
+	---C++: inline
+
+	is static;
+
+
+    Parameters(me; U1,V1: out Real from Standard)
+    
+	---Purpose: Returns the parameters on the surface of the point.
+
+	---C++: inline
+
+    	is static;
+
+
+    IsOnArc(me)
+    
+	---Purpose: Returns True when the point is an intersection between
+	--          the contour and a restriction.
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+	
+
+    Arc(me)
+    
+	---Purpose: Returns the arc of restriction containing the
+	--          vertex.
+
+    	returns any TheArc
+	---C++: return const&
+	---C++: inline
+	
+    	raises DomainError from Standard
+	--- The exception DomianError is raised when IsOnArc 
+	--  returns Standard_False.
+	is static;
+
+
+    ParameterOnArc(me)
+    
+	---Purpose: Returns the parameter of the point on the
+	--          arc returned by the method Arc().
+
+    	returns Real from Standard
+	---C++: inline
+	
+    	raises DomainError from Standard
+	--- The exception DomianError is raised when IsOnArc 
+	--  returns Standard_False.
+	is static;
+
+
+    TransitionOnLine(me)
+    
+	---Purpose: Returns the transition of the point on the contour.
+
+    	returns Transition from IntSurf
+	---C++: inline
+	---C++: return const&
+	
+    	raises DomainError from Standard
+	--- The exception DomianError is raised when IsOnArc 
+	--  returns Standard_False.
+	is static;
+
+
+    TransitionOnArc(me)
+    
+	---Purpose: Returns the transition of the point on the arc.
+
+    	returns Transition from IntSurf
+	---C++: inline
+	---C++: return const&
+	
+    	raises DomainError from Standard
+	--- The exception DomianError is raised when IsOnArc 
+	--  returns Standard_False.
+	is static;
+
+
+    IsVertex(me)
+
+	---Purpose: Returns TRUE if the point is a vertex on the initial
+	--          restriction facet of the surface.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;	
+
+
+    Vertex(me)
+    
+    	---Purpose: Returns the information about the point when it is
+    	--          on the domain of the patch, i-e when the function
+    	--          IsVertex returns True.
+    	--          Otherwise, an exception is raised.
+    
+    	returns any TheVertex
+	---C++: return const&
+	---C++: inline
+
+    	raises DomainError from Standard
+
+    	is static;
+
+
+    IsMultiple(me)
+    
+	---Purpose: Returns True if the point belongs to several
+	--          lines.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+    IsInternal(me)
+    
+	---Purpose: Returns True if the point  is an internal one, i.e
+	--          if the  tangent to the line on  the point  and the
+	--          eye direction are parallel.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+fields
+
+    pt         : Pnt         from gp;
+    uparam     : Real        from Standard;
+    vparam     : Real        from Standard;
+    paraline   : Real        from Standard;
+    onarc      : Boolean     from Standard;
+    arc        : TheArc;
+    traline    : Transition  from IntSurf;
+    traarc     : Transition  from IntSurf;
+    prmarc     : Real        from Standard;
+    isvtx      : Boolean     from Standard;
+    vtx        : TheVertex;
+    ismult     : Boolean     from Standard;
+    myInternal : Boolean     from Standard;
+    
+end Point;

@@ -1,0 +1,97 @@
+-- File:	TDocStd_Modified.cdl
+-- Created:	Mon Jul 12 11:21:21 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+private class Modified from TDocStd inherits Attribute from TDF
+
+    ---Purpose:   Transient     attribute   wich     register modified
+    --          labels. This attribute is attached to root label.
+
+
+uses Label           from TDF,
+     Attribute       from TDF,
+     LabelMap        from TDF,
+     RelocationTable from TDF
+
+
+is
+
+    ---Purpose: API class methods
+    --          =================
+
+    IsEmpty (myclass; access : Label from TDF)
+    returns Boolean;   
+
+    Add (myclass; alabel : Label from TDF)
+    returns Boolean;    
+
+    Remove (myclass; alabel : Label from TDF)
+    returns Boolean;    
+
+    Contains (myclass; alabel : Label from TDF)
+    returns Boolean;
+
+    Get (myclass; access : Label from TDF)
+    ---Purpose: if <IsEmpty> raise an exception.
+    ---C++: return const &
+    returns LabelMap from TDF;
+
+    Clear (myclass; access : Label from TDF);
+    ---Purpose: remove all modified labels. becomes empty
+
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    ---Purpose: Modified methods
+    --          ================
+    
+    Create
+    returns mutable Modified from TDocStd;  
+    
+    IsEmpty (me)
+    returns Boolean from Standard;    
+
+    Clear (me : mutable);
+
+    AddLabel (me : mutable; L : Label from TDF)
+    ---Purpose: add <L> as modified 
+    returns Boolean from Standard;
+
+    RemoveLabel (me : mutable; L : Label from TDF)    
+    ---Purpose: remove  <L> as modified 
+    returns Boolean from Standard;
+    
+    Get (me)  
+    ---Purpose: returns modified label map
+    ---C++: return const & 
+    returns LabelMap from TDF; 
+        
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump (me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myModified : LabelMap from TDF;
+
+end Modified;

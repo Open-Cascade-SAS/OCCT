@@ -1,0 +1,39 @@
+-- File:	XDEDRAW_Common.cdl
+-- Created:	Fri Aug 15 12:15:49 2003
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open  CASCADE S.A. 2003
+
+
+-- sccsid[] = "%Z% 3.0-00-%L%, $Date: 2003-10-03 21:01:17 $%Z%";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       szy ! Creation/moved from XDEDRAWEXE          !15-08-2003! 5.1-00-%L%!
+-- +---------------------------------------------------------------------------+
+
+class Common from XDEDRAW 
+
+	---Purpose: 
+
+uses
+    Interpretor from Draw
+
+is
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+
+end Common;
+
+
+-- @@SDM: begin
+
+-- Copyright Open  CASCADE ....................................Version    5.1-00
+-- Lastly modified by : szy                                    Date : 15-08-2003
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       szy ! Creation/moved from XDEDRAWEXE          !15-08-2003! 5.1-00-%L%!
+-- +---------------------------------------------------------------------------+
+
+-- @@SDM: end

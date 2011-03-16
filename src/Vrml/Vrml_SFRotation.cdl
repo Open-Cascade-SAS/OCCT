@@ -1,0 +1,42 @@
+---Copyright:	 Matra Datavision 1997
+-- File:	Vrml_SFRotation.cdl
+-- Created:	Mon Dec 23 14:42:12 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SFRotation from Vrml 
+
+	---Purpose: defines SFRotation type of VRML field types.
+    	--          The  4  values  represent  an  axis  of  rotation  followed  by  amount  of 
+	--          right-handed  rotation  about  the  that  axis, in  radians. 
+is
+ 
+    Create returns SFRotation from Vrml;
+
+    Create ( aRotationX, aRotationY, aRotationZ : Real from Standard;
+             anAngle : Real from Standard )   
+    returns SFRotation from Vrml;
+
+    SetRotationX ( me : in out; aRotationX : Real from Standard );
+    RotationX ( me )  returns Real from Standard;
+
+    SetRotationY ( me : in out; aRotationY : Real from Standard );
+    RotationY ( me )  returns Real from Standard;
+
+    SetRotationZ ( me : in out; aRotationZ : Real from Standard );
+    RotationZ ( me )  returns Real from Standard;
+
+    SetAngle ( me : in out; anAngle : Real from Standard );
+    Angle ( me )  returns  Real from Standard;
+
+fields
+
+    myRotationX : Real from Standard;
+    myRotationY : Real from Standard;
+    myRotationZ : Real from Standard;
+    myAngle     : Real from Standard;
+
+end SFRotation;
+

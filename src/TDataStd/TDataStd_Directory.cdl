@@ -1,0 +1,85 @@
+-- File:	TDataStd_Directory.cdl
+-- Created:	Fri Jun 25 13:59:31 1999
+-- Author:	Sergey RUIN
+--		<s-ruin@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Directory from TDataStd inherits Attribute from TDF
+
+    	---Purpose: Associates a directory in the data framework with
+    	-- a TDataStd_TagSource attribute.
+    	-- You can create a new directory label and add
+    	-- sub-directory or object labels to it,
+
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF
+is
+
+
+    ---Purpose: class methods
+    --          =============
+
+
+    Find (myclass; current : Label from TDF; D : in out Directory from TDataStd)
+    	---Purpose: Searches for a directory attribute on the label
+    	-- current, or on one of the father labels of current.
+    	-- If a directory attribute is found, true is returned,
+    	-- and the attribute found is set as D.
+    returns Boolean from Standard;
+
+    New (myclass; label : Label from TDF)
+    	---Purpose:  Creates  an  enpty   Directory attribute,  located  at
+    	--          <label>. Raises if <label> has attribute
+    returns Directory from TDataStd;
+    
+    AddDirectory (myclass; dir : Directory from TDataStd)
+    	---Purpose:  Creates a new sub-label and sets the
+    	-- sub-directory dir on that label. 
+    returns Directory from TDataStd;
+
+    MakeObjectLabel (myclass; dir : Directory from TDataStd)
+    	---Purpose:  Makes new label and returns it to insert 
+    	--           other object attributes (sketch,part...etc...) 
+    returns Label from TDF;
+
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+
+    ---Purpose: Directory methods
+    --          ===============
+
+    Create
+    returns mutable Directory from TDataStd;
+    
+    ---Category: methodes de TDF_Attribute
+    --           =========================
+	
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);     
+
+    References (me; DS : DataSet from TDF) is redefined;     
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+     is redefined;
+	---C++: return &
+
+end Directory;

@@ -1,0 +1,44 @@
+-- File:        Ellipse.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Ellipse from StepGeom 
+
+inherits Conic from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement from StepGeom
+is
+
+	Create returns mutable Ellipse;
+	---Purpose: Returns a Ellipse
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom;
+	      aSemiAxis1 : Real from Standard;
+	      aSemiAxis2 : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSemiAxis1(me : mutable; aSemiAxis1 : Real);
+	SemiAxis1 (me) returns Real;
+	SetSemiAxis2(me : mutable; aSemiAxis2 : Real);
+	SemiAxis2 (me) returns Real;
+
+fields
+
+	semiAxis1 : Real from Standard;
+	semiAxis2 : Real from Standard;
+
+end Ellipse;

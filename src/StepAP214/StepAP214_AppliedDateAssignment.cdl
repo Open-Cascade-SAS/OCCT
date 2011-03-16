@@ -1,0 +1,44 @@
+-- File:        StepAP214_AppliedDateAssignment.cdl
+-- Created:     Tue Mar 9 11:11:13 1999
+-- Author:      data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+-- Copyright:   Matra-Datavision 1999
+
+
+class AppliedDateAssignment from StepAP214 
+
+inherits DateAssignment from StepBasic 
+
+uses
+
+	HArray1OfDateItem from StepAP214, 
+	DateItem from StepAP214, 
+	Date from StepBasic, 
+	DateRole from StepBasic
+is
+
+	Create returns mutable AppliedDateAssignment;
+	---Purpose: Returns a AppliedDateAssignment
+
+
+	Init (me : mutable;
+	      aAssignedDate : mutable Date from StepBasic;
+	      aRole : mutable DateRole from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aAssignedDate : mutable Date from StepBasic;
+	      aRole : mutable DateRole from StepBasic;
+	      aItems : mutable HArray1OfDateItem from StepAP214) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetItems(me : mutable; aItems : mutable HArray1OfDateItem);
+	Items (me) returns mutable HArray1OfDateItem;
+	ItemsValue (me; num : Integer) returns DateItem;
+	NbItems (me) returns Integer;
+
+fields
+
+	items : HArray1OfDateItem from StepAP214; -- a SelectType
+
+end AppliedDateAssignment;

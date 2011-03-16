@@ -1,0 +1,74 @@
+-- File:	XmlDrivers_DocumentRetrievalDriver.cdl
+-- Created:	Wed Jul 25 16:56:28 2001
+-- Author:	Julia DOROVSKIKH
+--		<jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:	Open Cascade 2001
+
+class DocumentRetrievalDriver from XmlLDrivers inherits RetrievalDriver from PCDM
+
+uses
+    ExtendedString		from TCollection,
+    SequenceOfExtendedString	from TColStd,
+    Document			from PCDM,
+    Document			from CDM,
+    Document			from TDocStd,
+    Application			from CDM,
+    ADriver		        from XmlMDF, 
+    ADriverTable		from XmlMDF,
+    RRelocationTable		from XmlObjMgt,
+    Element			from XmlObjMgt,
+    MessageDriver               from CDM
+
+is
+    Create returns mutable DocumentRetrievalDriver from XmlLDrivers;
+    -- Constructor
+
+    SchemaName		(me)
+	returns ExtendedString from TCollection is redefined virtual;
+    -- pure virtual method definition
+
+    Make		(me : mutable; PD : Document from PCDM;
+				       TD : Document from CDM)
+	is redefined virtual;
+    -- pure virtual method definition
+
+    CreateDocument	(me : mutable)
+	returns Document from CDM is redefined virtual;
+    -- pure virtual method definition
+
+    Read(me:mutable; theFileName:    ExtendedString from TCollection;
+    	    	     theNewDocument: Document    from CDM;
+    	    	     theApplication: Application from CDM) is redefined virtual;
+    -- 
+
+    ReadFromDomDocument (me : mutable; theDomElement: Element from XmlObjMgt;
+				       theNewDocument: Document from CDM;
+				       theApplication: Application from CDM)
+	is virtual protected;
+
+    MakeDocument	(me : mutable; thePDoc: Element  from XmlObjMgt;
+    	    	    	       theTDoc: Document from CDM)
+    	returns Boolean from Standard
+	is virtual protected;
+
+    AttributeDrivers	(me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from XmlMDF
+	is virtual; 
+	
+    ReadShapeSection (me:mutable; thePDoc  :  Element from XmlObjMgt; 
+    	    	    	    	  theMsgDriver : MessageDriver from CDM) 
+        returns ADriver from XmlMDF
+        is virtual protected; 
+	 
+    ShapeSetCleaning(me:mutable; theDriver : ADriver from XmlMDF) 
+        is virtual protected;  
+	
+    PropagateDocumentVersion(me:mutable; theDocVersion : Integer from Standard) 
+        is virtual protected; 
+	
+fields
+    myDrivers	: ADriverTable		from XmlMDF      is protected;
+    myRelocTable: RRelocationTable	from XmlObjMgt   is protected;
+    myFileName  : ExtendedString        from TCollection is protected;
+
+end DocumentRetrievalDriver;

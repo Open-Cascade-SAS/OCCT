@@ -1,0 +1,66 @@
+-- File:	HLRTopoBRep_FaceData.cdl
+-- Created:	Mon Mar 27 15:03:08 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class FaceData from HLRTopoBRep
+
+	---Purpose: Contains the  3 ListOfShape of  a Face  ( Internal
+	--          OutLines, OutLines on restriction and IsoLines ).
+
+uses
+    Shape       from TopoDS,
+    ListOfShape from TopTools
+
+is
+    Create returns FaceData from HLRTopoBRep;
+
+    FaceIntL(me) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    FaceOutL(me) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    FaceIsoL(me) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    AddIntL(me : in out) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return &
+    is static;
+
+    AddOutL(me : in out) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return &
+    is static;
+
+    AddIsoL(me : in out) 
+    returns ListOfShape from TopTools
+	---C++: inline
+	---C++: return &
+    is static;
+
+fields
+
+    myIntL : ListOfShape from TopTools;
+    -- For a face the list of internal OutLines.
+
+    myOutL : ListOfShape from TopTools;
+    -- For a face the list of not OutLines on restriction.
+
+    myIsoL : ListOfShape from TopTools;
+    -- For a face the list of IsoLines.
+
+end FaceData;

@@ -1,0 +1,76 @@
+-- File:	TopOpeBRepDS_ShapeShapeInterference.cdl
+-- Created:	Tue Aug 30 16:02:37 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class ShapeShapeInterference from TopOpeBRepDS 
+    inherits Interference from TopOpeBRepDS
+
+	---Purpose: 
+
+uses
+
+    Transition from TopOpeBRepDS,
+    Kind       from TopOpeBRepDS,
+    Config     from TopOpeBRepDS,
+    OStream    from Standard    
+
+is
+
+    Create(T  : Transition from TopOpeBRepDS;
+	   ST : Kind from TopOpeBRepDS;
+	   S  : Integer from Standard;
+	   GT : Kind from TopOpeBRepDS;
+	   G  : Integer from Standard;
+    	   GBound : Boolean from Standard;
+    	   C  : Config from TopOpeBRepDS)
+    
+    ---Purpose: a shape interfers on shape <G> with shape <S>.
+    -- examples : 
+    -- create a ShapeShapeInterference describing :
+    -- vertex V of edge E1 found on edge E2 :
+    -- ST,S,GT,G = TopOpeBRepDS_EDGE,E2,TopOpeBRepDS_VERTEX,V
+    -- 
+    -- create a ShapeShapeInterference describing
+    -- vertex V of edge E found on face F :
+    -- ST,S,GT,G = TopOpeBRepDS_FACE,F,TopOpeBRepDS_VERTEX,V
+    --
+    -- <GBound> indicates if shape <G> is a bound of shape <S>.
+    --     
+    -- <SCC> : 
+    -- UNSH_GEOMETRY : 
+    -- 	 <S> and <Ancestor> have any types, 
+    -- 	 <S> and <Ancestor> don't share the same geometry 
+    -- SAME_ORIENTED : 
+    -- 	 <S> and <Ancestor> have identical types, 
+    -- 	 <S> and <Ancestor> orientations are IDENTICAL.
+    -- DIFF_ORIENTED : 
+    -- 	 <S> and <Ancestor> have identical types, 
+    -- 	 <S> and <Ancestor> orientations are DIFFERENT.
+    -- 
+    returns mutable ShapeShapeInterference from TopOpeBRepDS; 
+	    
+    
+    Config(me) returns Config from TopOpeBRepDS
+    is static;
+
+    GBound(me) returns Boolean from Standard
+    is static;
+
+    SetGBound(me : mutable; b : Boolean from Standard)
+    is static;    
+        
+    Dump(me; OS : in out OStream from Standard) returns OStream
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myGBound : Boolean from Standard;
+    myC      : Config from TopOpeBRepDS;
+    
+end ShapeShapeInterference from TopOpeBRepDS;

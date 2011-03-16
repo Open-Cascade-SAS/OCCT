@@ -1,0 +1,27 @@
+-- File:	MoniTool_RealVal.cdl
+-- Created:	Wed Sep  3 15:25:38 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class RealVal  from MoniTool    inherits TShared  from MMgt
+
+    ---Purpose : A Real through a Handle (i.e. managed as TShared)
+
+uses Real
+
+is
+
+    Create (val : Real = 0.0) returns mutable RealVal;
+
+    Value (me) returns Real;
+
+    CValue (me : mutable) returns Real;
+    ---C++ : return &
+
+fields
+
+    theval : Real;
+
+end RealVal;

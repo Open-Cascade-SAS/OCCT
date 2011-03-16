@@ -1,0 +1,72 @@
+-- File:	BRepMesh_Triangle.cdl
+-- Created:	Wed Sep 22 18:11:52 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Triangle from BRepMesh 
+
+	---Purpose: 
+
+uses    Boolean from Standard,
+    	Integer from Standard,
+	DegreeOfFreedom from MeshDS
+       	
+
+
+is      Create  returns Triangle from BRepMesh;
+
+
+        Create         (e1, e2, e3 : Integer from Standard;
+	    	    	o1, o2, o3 : Boolean from Standard;
+                        canMove : DegreeOfFreedom from MeshDS)
+	    returns Triangle from BRepMesh;
+    	
+
+        Initialize     (me : in out;
+    	    	    	e1, e2, e3 : Integer from Standard;
+	    	    	o1, o2, o3 : Boolean from Standard;
+                        canMove : DegreeOfFreedom from MeshDS)
+	    is static;
+    	
+	
+	Edges          (me;
+	    	    	e1, e2, e3 : out Integer from Standard;
+	    	    	o1, o2, o3 : out Boolean from Standard)
+	    is static;
+
+
+    	Movability     (me)
+	---C++: inline
+    	    returns DegreeOfFreedom from MeshDS
+	    is static;
+
+
+	SetMovability  (me   : in out;
+    	    	    	Move : DegreeOfFreedom from MeshDS)
+	    is static;
+
+
+	HashCode       (me;
+    	    	    	Upper : Integer from Standard)
+	    returns Integer from Standard
+	---C++: function call
+    	    is static;
+
+
+	IsEqual        (me; Other : Triangle from BRepMesh)
+	    returns Boolean from Standard
+	---C++: alias operator ==
+    	    is static;
+
+
+fields  Edge1        : Integer from Standard;
+    	Orientation1 : Boolean from Standard;
+    	Edge2        : Integer from Standard;
+    	Orientation2 : Boolean from Standard;
+    	Edge3        : Integer from Standard;
+    	Orientation3 : Boolean from Standard;
+    	myMovability : DegreeOfFreedom from MeshDS;
+
+end Triangle;

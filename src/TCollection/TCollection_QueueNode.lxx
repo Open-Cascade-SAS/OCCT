@@ -1,0 +1,11 @@
+inline TCollection_QueueNode::TCollection_QueueNode(const Item& I,const TCollection_MapNodePtr& n) 
+: TCollection_MapNode(n)
+{
+  myValue = I;
+}
+
+inline Item& TCollection_QueueNode::Value() const
+{
+  return (Item&)myValue;
+}
+

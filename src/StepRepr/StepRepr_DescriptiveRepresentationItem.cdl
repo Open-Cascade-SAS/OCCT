@@ -1,0 +1,36 @@
+-- File:        DescriptiveRepresentationItem.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DescriptiveRepresentationItem from StepRepr 
+
+inherits RepresentationItem from StepRepr 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable DescriptiveRepresentationItem;
+	---Purpose: Returns a DescriptiveRepresentationItem
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+
+fields
+
+	description : HAsciiString from TCollection;
+
+end DescriptiveRepresentationItem;

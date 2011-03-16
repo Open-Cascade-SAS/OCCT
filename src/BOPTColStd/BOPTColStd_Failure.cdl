@@ -1,0 +1,25 @@
+-- File:	BOPTColStd_Failure.cdl
+-- Created:	Fri May 25 12:45:12 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Failure from BOPTColStd 
+
+	---Purpose: 
+    	--  The class provides exception objects 
+--uses
+--raises 
+
+is 
+    Create (aMessage: CString from Standard) 
+      returns Failure from BOPTColStd;  	
+    
+    Message(me) 
+      returns CString;	
+
+fields 
+    myMessage: PCharacter;
+
+end Failure;

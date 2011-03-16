@@ -1,0 +1,128 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_SortedStrgCmptsIterator.cxx
+// Created:	Wed Oct 23 16:28:16 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+//=======================================================================
+//function : GraphTools_SortedStrgCmptsIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_SortedStrgCmptsIterator::GraphTools_SortedStrgCmptsIterator ()
+{}
+
+
+
+//=======================================================================
+//function : GraphTools_SortedStrgCmptsIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_SortedStrgCmptsIterator::GraphTools_SortedStrgCmptsIterator 
+  (const Graph& G)
+{
+  FromGraph(G);
+}
+
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedStrgCmptsIterator::FromVertex
+  (const Vertex& V)
+{
+  myIterator.FromVertex(V);
+}
+
+
+//=======================================================================
+//function : FromGraph
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedStrgCmptsIterator::FromGraph
+  (const Graph& G)
+{
+  for ( GIterator it (G); it.More(); it.Next() ) {
+    myIterator.FromVertex(it.Value());
+  }
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedStrgCmptsIterator::Perform
+  (const Graph& G)
+{
+  myIterator.Perform(G);
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedStrgCmptsIterator::Reset ()
+{
+  myIterator.Reset();
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_SortedStrgCmptsIterator::More() const
+{
+  return myIterator.More();
+} 
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_SortedStrgCmptsIterator::Next()
+{ 
+  myIterator.Next();
+}
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphTools_SortedStrgCmptsIterator::NbVertices() const
+{
+  return myIterator.NbVertices();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_SortedStrgCmptsIterator::Value
+  (const Standard_Integer I) const
+{
+  return myIterator.Value(I);
+} 
+
+
+
+
+
+
+
+
+
+

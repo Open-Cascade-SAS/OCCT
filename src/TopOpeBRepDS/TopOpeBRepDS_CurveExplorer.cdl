@@ -1,0 +1,53 @@
+-- File:	TopOpeBRepDS_CurveExplorer.cdl
+-- Created:	Fri Dec  8 19:30:36 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class CurveExplorer from TopOpeBRepDS
+
+uses
+
+    DataStructure from TopOpeBRepDS,
+    Curve from TopOpeBRepDS
+    
+is
+
+    Create returns CurveExplorer from TopOpeBRepDS;
+    Create(DS : DataStructure from TopOpeBRepDS;
+           FindOnlyKeep : Boolean from Standard = Standard_True)
+     returns CurveExplorer from TopOpeBRepDS;
+
+    Init(me : in out;
+    	 DS : DataStructure from TopOpeBRepDS;
+         FindOnlyKeep : Boolean from Standard = Standard_True);
+
+    More(me) returns Boolean  is static;
+    Next(me : in out) is static;
+    Curve(me) returns Curve from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    IsCurve(me; I : Integer ) returns Boolean  is static;
+    IsCurveKeep(me; I : Integer ) returns Boolean  is static;
+    Curve(me; I : Integer ) 
+    returns Curve from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+    NbCurve(me : in out) returns Integer
+    is static;
+ 
+    Index(me) returns Integer 
+    is static;
+
+    Find(me : in out) is static private;
+        
+fields
+
+    myIndex   : Integer ;
+    myMax     : Integer ;
+    myDS      : Address ; -- (TopOpeBRepDS_DataStructure*)
+    myFound   : Boolean ;
+    myFindKeep : Boolean;
+    
+end CurveExplorer from TopOpeBRepDS;

@@ -1,0 +1,53 @@
+-- File:	DrawTrSurf_Triangulation2D.cdl
+-- Created:	Tue Jul 22 15:09:16 1997
+-- Author:	Laurent PAINNOT
+--		<lpa@penox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Triangulation2D from DrawTrSurf inherits Drawable2D from Draw
+
+	---Purpose: Used to display a 2d triangulation.
+	--          
+	--          Display internal edges in blue
+	--          Display boundary edges in red
+	--          Optional display of triangles and nodes indices.
+
+uses
+    HArray1OfInteger from TColStd,
+    Triangulation from Poly,
+    Drawable3D    from Draw,
+    Display       from Draw,
+    Interpretor   from Draw,
+    OStream
+
+is
+
+    Create(T : Triangulation from Poly)
+    returns mutable Triangulation2D from DrawTrSurf;
+    
+    Triangulation(me)
+    returns Triangulation from Poly;
+    
+    DrawOn(me; dis : in out Display);
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is redefined;
+	---Purpose: For variable copy.
+	
+    Dump(me; S : in out OStream)
+    is redefined;
+	---Purpose: For variable dump.
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+fields
+
+    myTriangulation : Triangulation from Poly;
+    myInternals     : HArray1OfInteger from TColStd;
+    myFree          : HArray1OfInteger from TColStd;
+
+end Triangulation2D;

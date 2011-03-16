@@ -1,0 +1,69 @@
+-- File:	MAT2d_CutCurve.cdl
+-- Created:	Fri Sep 23 14:10:53 1994
+-- Author:	Yves FRICAUD
+--		<yfr@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class CutCurve from MAT2d 
+
+	---Purpose: Cuts a curve at the extremas of curvature
+	--          and at the inflections. Constructs a trimmed
+	--          Curve for each interval.
+
+uses
+    Curve           from Geom2d,
+    TrimmedCurve    from Geom2d,
+    SequenceOfCurve from TColGeom2d,
+    Side            from MAT
+    
+raises 
+    OutOfRange from Standard
+    
+is
+    Create;
+    
+    Create  (C : Curve from Geom2d) returns CutCurve from MAT2d;
+    
+    Perform (me : in out; C : Curve from Geom2d) 	    
+	---Purpose: Cuts a curve at the extremas of curvature
+	--          and at the inflections.
+    is static;
+    
+    Perform (me : in out; C : Curve from Geom2d; aSide : Side from MAT)
+    	---Purpose: Cuts a curve at the inflections, and at the extremas
+    	--          of curvature where the concavity is on <aSide>. 
+    is static;
+    
+    PerformInf (me : in out; C : Curve from Geom2d)    	
+    	---Purpose: Cuts a curve at the inflections.
+    is static;
+    
+    UnModified (me) returns Boolean from Standard
+    	---Purpose: Returns True if the curve is not cut.
+    is static;
+    
+
+    NbCurves (me) returns Integer from Standard
+    	---Purpose: Returns the number of curves.
+    	--          it's allways greatest than 2.    
+    	--          
+    	raises
+    	    OutOfRange from Standard
+	    ---Purpose: raises if the Curve is UnModified;        
+    is static;
+    
+
+    Value (me ; Index : Integer from Standard) returns TrimmedCurve from Geom2d
+	---Purpose: Returns the Indexth curve.    
+        raises
+    	    OutOfRange from Standard
+	    ---Purpose: raises if Index not in the range [1,NbCurves()]
+    is static;
+
+    
+fields
+    theCurves : SequenceOfCurve from TColGeom2d;
+    
+end CutCurve;

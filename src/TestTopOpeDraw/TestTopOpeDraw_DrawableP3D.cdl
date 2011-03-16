@@ -1,0 +1,61 @@
+-- File:	TestTopOpeDraw_DrawableP3D.cdl
+-- Created:	Mon Oct 24 16:18:55 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class DrawableP3D from TestTopOpeDraw inherits Marker3D from Draw
+
+    ---Purpose: 
+
+uses  
+
+    Color           from Draw,
+    Display         from Draw,
+    Text3D          from Draw,
+    MarkerShape     from Draw,
+    CString         from Standard,
+    Pnt             from gp,
+    Pnt2d           from gp,
+    Circ            from gp
+    
+is
+
+    Create (P : Pnt from gp; PColor : Color from Draw;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP3D from TestTopOpeDraw;
+
+    Create (P : Pnt from gp; PColor : Color from Draw;
+    	    Text : CString; TextColor : Color from Draw;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP3D from TestTopOpeDraw;
+
+    Create (P : Pnt from gp; T : MarkerShape from Draw; PColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw;
+	    Size : Integer from Standard = 2;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP3D from TestTopOpeDraw;
+
+    Create (P : Pnt from gp; T : MarkerShape from Draw; 
+    	    PColor : Color from Draw;
+    	    Text : CString from Standard; TextColor : Color from Draw;
+    	    Tol : Real from Standard;
+    	    moveX : Real = 0.0; moveY : Real = 0.0)
+    returns mutable DrawableP3D from TestTopOpeDraw;
+
+    ChangePnt(me : mutable; P : Pnt);
+    
+    DrawOn(me; dis : in out Display from Draw)
+    is redefined;
+    
+fields
+
+    myPnt    : Pnt from gp;
+    myText   : CString from Standard;
+    myTextColor : Color from Draw;
+    myMoveX  : Real from Standard;
+    myMoveY  : Real from Standard;
+
+    myText3D : Text3D from Draw;
+
+end DrawableP3D;

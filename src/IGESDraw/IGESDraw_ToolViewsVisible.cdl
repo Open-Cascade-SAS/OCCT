@@ -1,0 +1,80 @@
+-- File:	IGESDraw_ToolViewsVisible.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolViewsVisible  from IGESDraw
+
+    ---Purpose : Tool to work on a ViewsVisible. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses ViewsVisible from IGESDraw,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolViewsVisible;
+    ---Purpose : Returns a ToolViewsVisible, ready to work
+
+
+    ReadOwnParams (me; ent : mutable ViewsVisible;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : ViewsVisible;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : ViewsVisible;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a ViewsVisible <ent>, from
+    --           its specific (own) parameters shared not implied (the Views)
+
+    OwnImplied (me; ent : ViewsVisible;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a ViewsVisible <ent>, from
+    --           its specific (own) implied parameters : the Displayed Entities
+
+
+    DirChecker (me; ent : ViewsVisible) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : ViewsVisible;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : ViewsVisible; entto : mutable ViewsVisible;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters shared not implied, i.e. all but
+    --           the Displayed Entities
+
+    OwnRenew   (me; entfrom : ViewsVisible; entto : mutable ViewsVisible;
+    	        TC : CopyTool)  is static;
+    ---Purpose : Copies Specific implied Parameters : the Displayed Entities
+    --           which have already been copied
+
+    OwnWhenDelete (me; ent : ViewsVisible)  is static;
+    ---Purpose : Clears specific implied parameters, which cause looping
+    --           structures; required for deletion
+
+
+    OwnDump (me; ent : ViewsVisible;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+    OwnCorrect (me; ent : mutable ViewsVisible) returns Boolean is static;
+    ---Purpose : Sets automatic unambiguous Correction on a ViewsVisible
+    --           (all displayed entities must refer to <ent> in directory part,
+    --           else the list is cleared)
+
+end ToolViewsVisible;

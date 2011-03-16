@@ -1,0 +1,110 @@
+-- File:       BracketMinimum.cdl
+-- Created:    Tue May 14 14:55:21 1991
+-- Author:     Laurent PAINNOT
+--             <lpa@topsn3>
+---Copyright:   Matra Datavision 1991, 1992
+
+
+
+class BracketMinimum from math
+     	---Purpose:Given two distinct initial points, BracketMinimum
+    	-- implements the computation of three points (a, b, c) which
+    	-- bracket the minimum of the function and verify A less than
+    	-- B, B less than C and F(A) less than F(B), F(B) less than (C).
+uses Vector from math, 
+     Matrix from math, 
+     Function from math,
+     OStream from Standard
+
+raises NotDone from StdFail
+
+is
+
+
+    Create(F: in out Function; A, B: Real)
+      	---Purpose:
+      	-- Given two initial values this class computes a
+      	-- bracketing triplet of abscissae Ax, Bx, Cx 
+      	-- (such that Bx is between Ax and Cx, F(Bx) is 
+      	-- less than both F(Bx) and F(Cx)) the Brent minimization is done 
+      	-- on the function F.
+    
+    returns BracketMinimum;
+    
+    Create(F: in out Function; A, B, FA: Real)
+      	---Purpose:
+      	-- Given two initial values this class computes a
+     	-- bracketing triplet of abscissae Ax, Bx, Cx 
+      	-- (such that Bx is between Ax and Cx, F(Bx) is 
+      	-- less than both F(Bx) and F(Cx)) the Brent minimization is done 
+     	-- on the function F.
+      	-- This constructor has to be used if F(A) is known.
+    
+    returns BracketMinimum;
+
+
+    Create(F: in out Function; A, B, FA, FB: Real)
+      	---Purpose:
+      	-- Given two initial values this class computes a
+      	-- bracketing triplet of abscissae Ax, Bx, Cx 
+      	-- (such that Bx is between Ax and Cx, F(Bx) is 
+      	-- less than both F(Bx) and F(Cx)) the Brent minimization is done 
+      	-- on the function F.
+      	-- This constructor has to be used if F(A) and F(B) are known.
+    
+    returns BracketMinimum;
+    
+
+    Perform(me: in out; F: in out Function; A, B: Real)
+    	---Purpose: Is used internally by the constructors.
+
+    is static protected;
+
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Values(me; A, B, C: out Real)
+    	---Purpose: Returns the bracketed triplet of abscissae.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+        
+    raises NotDone
+    is static;
+    
+
+
+    FunctionValues(me; FA, FB, FC: out Real)
+    	---Purpose: returns the bracketed triplet function values.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+        
+    raises NotDone
+    is static;
+
+    
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+    
+fields
+
+Done:     Boolean;
+Ax:       Real;
+Bx:       Real;
+Cx:       Real;
+FAx:      Real;
+FBx:      Real;
+FCx:      Real;
+myFA:     Boolean;
+myFB:     Boolean;
+
+end BracketMinimum;

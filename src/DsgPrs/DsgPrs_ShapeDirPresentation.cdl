@@ -1,0 +1,32 @@
+-- File:	DsgPrs_ShapeDirPresentation.cdl
+-- Created:	Fri Oct  6 12:31:52 1995
+-- Author:	Jing Cheng MEI
+--		<mei@junon>
+---Copyright:	 Matra Datavision 1995
+
+
+class ShapeDirPresentation from DsgPrs
+
+	---Purpose: A framework to define display of the normal to the
+    	-- surface of a shape.
+
+uses
+    Shape  from TopoDS,
+    Presentation from Prs3d,
+    Drawer from Prs3d
+    
+is
+
+    Add(myclass; prs: Presentation from Prs3d;
+                 aDrawer: Drawer from Prs3d;
+    	    	 shape: Shape from TopoDS; 
+                 mode: Integer from Standard);
+    	---Purpose: Adds the shape shape and the mode mode to the
+    	-- presentation object prs.
+    	-- The display attributes of the normal are defined by the
+    	-- attribute manager aDrawer.
+    	-- mode determines whether the first or the last point of
+    	-- the normal is given to the presentation object. If the
+    	-- first point: 0; if the last point, 1.
+        
+end ShapeDirPresentation;

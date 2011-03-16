@@ -1,0 +1,62 @@
+// File:	TopOpeBRepBuild_BlockIterator.lxx
+// Created:	Mon Mar  8 16:17:52 1993
+// Author:	Jean Yves LEBEY
+//		<jyl@sdsun1>
+// Copyright:    Matra Datavision	
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+inline void TopOpeBRepBuild_BlockIterator::Initialize()
+{
+  myValue = myLower;
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopOpeBRepBuild_BlockIterator::More() const
+{
+  Standard_Boolean b = (myValue <= myUpper);
+  return b;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void TopOpeBRepBuild_BlockIterator::Next()
+{
+  myValue++;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TopOpeBRepBuild_BlockIterator::Value() const
+{
+  return myValue;
+}
+
+
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TopOpeBRepBuild_BlockIterator::Extent() const
+{
+  if (myLower != 0) {
+    Standard_Integer n = myUpper - myLower + 1;
+    return n;
+  }
+  return 0;
+}
+

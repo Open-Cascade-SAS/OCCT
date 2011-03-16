@@ -1,0 +1,72 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_RootsIterator.gxx
+// Created:	Wed May 29 17:43:32 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_RootsIterator::PCollection_RootsIterator 
+     (const Handle(PCollection_HDirectedGraph)& G):MyVertexIterator(G->GetVertices()) 
+{
+  HasMore = False;
+  while ((MyVertexIterator.More()) && (!HasMore)) {
+    if (MyVertexIterator.Value()->IsRoot()) 
+       HasMore = True;
+    else
+       MyVertexIterator.Next();
+  } 
+}
+
+
+//---------------------------------------------------------------------------
+// More
+//---------------------------------------------------------------------------
+Boolean PCollection_RootsIterator::More () const 
+{
+  return HasMore;
+}
+
+
+//---------------------------------------------------------------------------
+// Next
+//---------------------------------------------------------------------------
+void PCollection_RootsIterator::Next () 
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  HasMore = False;
+  MyVertexIterator.Next();
+  while ((MyVertexIterator.More()) && (!HasMore)) {
+    if (MyVertexIterator.Value()->IsRoot()) 
+      HasMore = True;
+    else 
+      MyVertexIterator.Next();
+  } 
+} 
+
+
+//---------------------------------------------------------------------------
+// Value
+//---------------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_RootsIterator::Value () const 
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return MyVertexIterator.Value();
+}
+
+
+//---------------------------------------------------------------------------
+// Clear
+//---------------------------------------------------------------------------
+void PCollection_RootsIterator::Clear () 
+{
+// Nullify sur les champs
+  HasMore = False;
+}
+

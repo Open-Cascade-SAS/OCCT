@@ -1,0 +1,61 @@
+-- File:	HLRTest.cdl
+-- Created:	Fri Dec  6 13:47:52 1991
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+package HLRTest 
+
+	---Purpose: This package   is  a test  of  the    Hidden Lines
+	--          algorithms instantiated on the BRep Data Structure
+	--          and using the Draw package to display the results.
+
+uses
+    Standard,
+    MMgt,
+    TCollection,
+    gp,
+    TopoDS,
+    HLRAlgo,
+    HLRBRep,
+    HLRTopoBRep,
+    Draw
+
+is
+    class ShapeData;
+    
+    class DrawableEdgeTool;
+	---Purpose: Used to display the results.
+
+    class DrawablePolyEdgeTool;
+	---Purpose: Used to display the results.
+
+    class Projector;
+	---Purpose: Draw Variable Projector to test
+	
+    class OutLiner;
+	---Purpose: Draw Variable Outliner to test
+
+    Set(Name : CString;
+        P    : Projector from HLRAlgo);
+	---Purpose: Set a Projector Variable
+
+    GetProjector(Name : in out CString;
+                 P :    in out Projector from HLRAlgo) 
+    returns Boolean; 
+	---Purpose: Get a projector variable
+	--          Returns false if the variable is not a projector
+
+    Set(Name : CString;
+        S    : Shape from TopoDS);
+	---Purpose: Set a OutLiner Variable
+
+    GetOutLiner(Name : in out CString)  
+    	returns OutLiner from HLRTopoBRep;
+	---Purpose: Get a outliner variable
+	--          Returns a null handle if the variable is not a outliner
+
+    Commands(I : in out Interpretor from Draw);
+	---Purpose: Defines commands to test the Hidden Line Removal
+
+end HLRTest;

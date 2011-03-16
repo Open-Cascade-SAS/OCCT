@@ -1,0 +1,108 @@
+-- File:	Graphic3d_TextureRoot.cdl
+-- Created:	Mon Jul 28 10:26:12 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+-- Modified:	GG 10/01/2000 IMP add Path() & Type() methods.
+--		GG 10/11/2000 IMP add Image() & LoadTexture() methods.
+--		   Remove MyIsDone field
+--		   Add MyImage field
+---Copyright:	 Matra Datavision 1997
+
+deferred  class  TextureRoot  from  Graphic3d  
+    
+inherits  TShared  from  MMgt
+
+    ---Purpose: This is the texture root class enable the dialog with the GraphicDriver 
+    -- allows the loading of texture too supported formats:
+    -- X, SunRaster, Aida, Euclid, SGI rgb
+
+uses 
+    CInitTexture  from  Graphic3d,  
+    GraphicDriver  from  Graphic3d,
+    StructureManager  from  Graphic3d, 
+    TypeOfTexture  from  Graphic3d, 
+    AlienImage  from  AlienImage,
+    Path from OSD, 
+    HArray1OfReal  from  TColStd  
+
+
+is 
+    Initialize(SM        :  StructureManager  from  Graphic3d; 
+               Path      :  CString  from  Standard;
+    	       FileName  :  CString  from  Standard; 
+    	       Type      :  TypeOfTexture  from  Graphic3d);  
+    ---Purpose: Creates a texture from a file	       
+    --  Warning: Note that if <FileName> is NULL the texture must be realized
+    -- using LoadTexture(image) method.
+	        
+    Destroy(me); 
+    ---C++ : alias ~
+     
+    --
+    -- public methods
+    --
+
+    IsDone(me)  returns  Boolean  from  Standard;
+    ---Level: public
+    ---Purpose: Checks if a texture class is valide or not
+    -- returns true if the construction of the class is correct
+
+    Path(me) returns Path from OSD;
+    ---Level: public
+    ---Purpose:
+    -- Returns the full path of the defined texture.
+    ---C++: return const &
+
+    Type(me) returns TypeOfTexture from Graphic3d;
+    ---Level: public
+    ---Purpose:
+    -- Returns the texture type.
+ 
+
+    --
+    -- private methods
+    -- 
+
+    Update(me)  is  protected;
+
+    LoadTexture(me : mutable; anImage: AlienImage  from  AlienImage);
+    ---Level: advanced 
+    ---Purpose:
+    -- Updates the current texture from a requested alien image.
+
+    LoadTexture(me)  
+	       returns  AlienImage  from  AlienImage 
+	       is  private;
+
+    TextureId(me)  returns  Integer  from  Standard;   
+    ---Level: advanced 
+    ---Purpose:
+    -- returns the Texture ID which references the
+    -- texture to use for drawing. Used by the
+    -- graphic driver.
+
+    Image(me) returns AlienImage from  AlienImage;    
+    ---Level: advanced 
+    ---Purpose:
+    -- Returns the created image texture.
+
+    GetTexUpperBounds(me) returns HArray1OfReal from TColStd;    
+    ---Level: advanced 
+    ---Purpose:
+    ---Gets upper bounds of texture coordinates. This is used when sizes
+    ---of texture are not equal to the powers of two
+	       	       
+-- internal fields for managing the class		
+fields    
+    MyGraphicDriver :  GraphicDriver  from  Graphic3d;
+    MyTexId         :  Integer  from  Standard;
+    MyCInitTexture  :  CInitTexture  from  Graphic3d  is  protected;   
+--    MyIsDone        :  Boolean  from  Standard;
+    MyPath	    :  Path from OSD;
+    MyType	    :  TypeOfTexture from Graphic3d;
+    MyImage	    :  AlienImage from  AlienImage;
+    MyTexUpperBounds  : HArray1OfReal from TColStd;
+
+end  TextureRoot; 
+
+

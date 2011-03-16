@@ -1,0 +1,162 @@
+-- File:	ShapeAnalysis_FreeBoundsProperties.cdl
+-- Created:	Thu Jul 30 16:28:40 1998
+-- Author:	Pavel DURANDIN <pdn@nnov.matra-dtv.fr>
+--		Roman LYGIN <rln@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+  
+class FreeBoundsProperties from ShapeAnalysis 
+
+	---Purpose: This class is intended to calculate shape free bounds
+    	--          properties.
+	--          This class provides the following functionalities:
+	--          - calculates area of the contour,
+	--          - calculates perimeter of the contour,
+	--          - calculates ratio of average length to average width of the
+        --            contour,
+	--          - estimates average width of contour,
+	--          - finds the notches (narrow 'V'-like sub-contour) on the
+        --            contour.
+	--
+        --          For getting free bounds this class uses
+        --          ShapeAnalysis_FreeBounds class.
+	--
+	--          For description of parameters used for initializing this
+        --          class refer to CDL of ShapeAnalysis_FreeBounds.
+	--
+	--          Properties of each contour are stored in the data structure
+	--          ShapeAnalysis_FreeBoundData.
+	
+uses
+    Shape from TopoDS,
+    Wire  from TopoDS,
+    FreeBoundData         from ShapeAnalysis,
+    HSequenceOfFreeBounds from ShapeAnalysis
+    
+is  
+
+    Create returns FreeBoundsProperties from ShapeAnalysis;
+    	---Purpose: Empty constructor
+	
+    Create (shape      : Shape from TopoDS;
+            tolerance  : Real;
+    	    splitclosed: Boolean = Standard_False;
+    	    splitopen  : Boolean = Standard_False)
+    returns FreeBoundsProperties from ShapeAnalysis;
+    	---Purpose: Creates the object and calls corresponding Init.
+    	--          <shape> should be a compound of faces.
+    
+    Create (shape      : Shape from TopoDS;
+    	    splitclosed: Boolean = Standard_False;
+    	    splitopen  : Boolean = Standard_False);
+    	---Purpose: Creates the object and calls corresponding Init.
+    	--          <shape> should be a compound of shells.
+	    
+    Init (me: in out; shape      : Shape from TopoDS;
+    	    	      tolerance  : Real;
+    	    	      splitclosed: Boolean = Standard_False;
+    	    	      splitopen  : Boolean = Standard_False);
+    	---Purpose: Initializes the object with given parameters.
+    	--          <shape> should be a compound of faces.
+	
+    Init (me: in out; shape      : Shape from TopoDS;
+    	   	      splitclosed: Boolean = Standard_False;
+    	   	      splitopen  : Boolean = Standard_False);
+    	---Purpose: Initializes the object with given parameters.
+    	--          <shape> should be a compound of shells.
+    
+
+    ---Level: Public
+    
+    Perform (me: in out) returns Boolean;
+    	---Purpose: Builds and analyzes free bounds of the shape.
+	--          First calls ShapeAnalysis_FreeBounds for building free 
+    	--          bounds.
+	--          Then on each free bound computes its properties:
+	--          - area of the contour,
+	--          - perimeter of the contour,
+	--          - ratio of average length to average width of the contour,
+	--          - average width of contour,
+	--          - notches on the contour and for each notch
+	--            - maximum width of the notch.
+	---Returns: True  - if no fails and free bounds are found,
+	--          False - if fail or no free bounds are found
+			
+    IsLoaded (me) returns Boolean;
+	---Purpose: Returns True if shape is loaded 
+    	---C++: inline
+
+    Shape (me) returns Shape from TopoDS;
+	---Purpose: Returns shape
+    	---C++: inline
+    
+    Tolerance (me) returns Real;
+	---Purpose: Returns tolerance
+    	---C++: inline
+    
+    NbFreeBounds (me) returns Integer;
+	---Purpose: Returns number of free bounds
+	---C++: inline
+	    
+    NbClosedFreeBounds (me) returns Integer;
+	---Purpose: Returns number of closed free bounds
+    	---C++: inline  
+    
+    NbOpenFreeBounds (me) returns Integer;
+	---Purpose: Returns number of open free bounds
+    	---C++: inline
+    
+    ClosedFreeBounds (me) returns HSequenceOfFreeBounds from ShapeAnalysis;
+	---Purpose: Returns all closed free bounds
+	---C++: inline
+    	
+    OpenFreeBounds (me) returns HSequenceOfFreeBounds from ShapeAnalysis;
+	---Purpose: Returns all open free bounds
+    	---C++: inline	
+	
+    ClosedFreeBound (me; index: Integer) returns FreeBoundData from ShapeAnalysis;
+	---Purpose: Returns properties of closed free bound specified by its rank
+    	--          number
+	---C++: inline
+    
+    OpenFreeBound (me; index: Integer) returns FreeBoundData from ShapeAnalysis;
+	---Purpose: Returns properties of open free bound specified by its rank
+    	--          number
+	---C++: inline
+
+    
+    ---Level: Internal
+    
+    DispatchBounds (me: in out) returns Boolean;
+    
+    CheckContours (me: in out; prec: Real = 0.0) returns Boolean;
+    
+    CheckNotches (me: in out; prec: Real = 0.0) returns Boolean;
+    
+    CheckNotches(me: in out; fbData: in out FreeBoundData from ShapeAnalysis;
+    	    	    	     prec  : Real = 0.0)
+    returns Boolean;
+    
+    CheckNotches(me: in out; freebound: Wire from TopoDS;
+    	    	    	     num      : Integer;
+			     notch    : out Wire from TopoDS;
+			     distMax  : out Real;
+			     prec     : Real = 0.0)
+    returns Boolean;
+    
+    FillProperties (me: in out; fbData: in out FreeBoundData from ShapeAnalysis;
+				prec  : Real = 0.0)
+    returns Boolean;
+	
+
+fields
+    
+    myShape       : Shape from TopoDS;
+    myTolerance   : Real;
+    mySplitClosed : Boolean;
+    mySplitOpen   : Boolean;
+
+    myClosedFreeBounds: HSequenceOfFreeBounds from ShapeAnalysis;
+    myOpenFreeBounds  : HSequenceOfFreeBounds from ShapeAnalysis;
+           
+end FreeBoundsProperties;

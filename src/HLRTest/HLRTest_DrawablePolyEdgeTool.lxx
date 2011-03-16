@@ -1,0 +1,93 @@
+// File:	HLRTest_DrawablePolyEdgeTool.lxx
+// Created:	Wed Nov 15 21:43:57 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : Show
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_DrawablePolyEdgeTool::Show()
+{ myHideMode = Standard_False; }
+
+//=======================================================================
+//function : Hide
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_DrawablePolyEdgeTool::Hide()
+{ myHideMode = Standard_True; }
+
+//=======================================================================
+//function : DisplayRg1Line
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRTest_DrawablePolyEdgeTool::DisplayRg1Line (const Standard_Boolean B)
+{ myDispRg1 = B; }
+
+//=======================================================================
+//function : DisplayRg1Line
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean 
+HLRTest_DrawablePolyEdgeTool::DisplayRg1Line () const
+{ return myDispRg1; }
+
+//=======================================================================
+//function : DisplayRgNLine
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRTest_DrawablePolyEdgeTool::DisplayRgNLine(const Standard_Boolean B)
+{ myDispRgN = B; }
+
+//=======================================================================
+//function : DisplayRgNLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean 
+HLRTest_DrawablePolyEdgeTool::DisplayRgNLine () const
+{ return myDispRgN; }
+
+//=======================================================================
+//function : DisplayHidden
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRTest_DrawablePolyEdgeTool::DisplayHidden(const Standard_Boolean B)
+{ myDispHid = B; }
+
+//=======================================================================
+//function : DisplayHidden
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean 
+HLRTest_DrawablePolyEdgeTool::DisplayHidden () const
+{ return myDispHid; }
+
+//=======================================================================
+//function : Debug
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRTest_DrawablePolyEdgeTool::Debug(const Standard_Boolean B)
+{ myDebug = B; }
+
+//=======================================================================
+//function : Debug
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean 
+HLRTest_DrawablePolyEdgeTool::Debug () const
+{ return myDebug; }
+

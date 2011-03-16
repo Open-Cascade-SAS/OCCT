@@ -1,0 +1,201 @@
+// Copyright: 	Matra-Datavision 1992
+// File:	GraphTools_ConnectedVerticesFromIterator.gxx
+// Created:	Mon Oct 19 10:45:58 1992
+// Author:	Arnaud BOUZY
+//		<adn>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+
+//=======================================================================
+//function : GraphTools_ConnectedVerticesFromIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_ConnectedVerticesFromIterator::GraphTools_ConnectedVerticesFromIterator()
+{
+  myCurrent = 0;
+}
+
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesFromIterator::FromVertex(const Vertex& avert)
+{
+  initMap.Add(avert);
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesFromIterator::Reset ()
+{
+  myCurrent = 0;
+  initMap.Clear();
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesFromIterator::Perform (const Graph& aGraph)
+{
+  Standard_Integer nbvert = initMap.Extent();
+  GraphTools_ConnectMap visited;
+  Standard_Integer i;
+  for (i=1;i<=nbvert; i++) {
+    visited.Bind(initMap(i),i);
+  }
+  for (i=1;i<=nbvert; i++) {
+    if (visited(initMap(i)) == i) {
+      myCurrent = i;
+      VIterator vit(aGraph,initMap(i));
+      while (vit.More()) {
+	Visit(vit.Value(),aGraph,visited);
+	vit.Next();
+      }
+    }
+  }
+
+  tab = new TColStd_HArray1OfInteger(1,nbvert,0);
+  for (i=1; i<= nbvert; i++) {
+    tab->SetValue(i,visited(initMap(i)));
+  }
+  myCurrent = 0;
+  Next();
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_ConnectedVerticesFromIterator::More() const
+{
+  for (Standard_Integer i=1; i<= tab->Upper(); i++) {
+    if (tab->Value(i) >= myCurrent) {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesFromIterator::Next()
+{
+  Standard_Boolean found=Standard_False;
+  myCurrent++;
+  Standard_Integer nbv = tab->Upper();
+  Standard_Integer i;
+  while (!found && (myCurrent <= nbv)) {
+    for (i=1; (i<= nbv) && !found; i++) {
+      if (tab->Value(i) == myCurrent) {
+	found = Standard_True;
+      }
+    }
+    if (!found) {
+      myCurrent++;
+    }
+  }
+}
+
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphTools_ConnectedVerticesFromIterator::NbVertices() const
+{
+  if (!More()) {
+    Standard_NoSuchObject::Raise();
+  }
+  Standard_Integer res = 0;
+  for (Standard_Integer i=1; i<= tab->Upper(); i++) {
+    if (tab->Value(i) == myCurrent) {
+      res++;
+    }
+  }
+  return res;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_ConnectedVerticesFromIterator::Value
+  (const Standard_Integer index) const
+{
+  if (!More()) {
+    Standard_NoSuchObject::Raise();
+  }
+  Standard_Integer current=0;
+  for (Standard_Integer i=1; i<= tab->Upper(); i++) {
+    if (tab->Value(i) == myCurrent) {
+      current++;
+      if (current == index) {
+	return initMap(i);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : Visit
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesFromIterator::Visit
+  (const Vertex& avert,
+   const Graph& agraph, 
+   GraphTools_ConnectMap& visited)
+{
+  Standard_Boolean godown = Standard_False;
+  if (!visited.IsBound(avert)) {
+    visited.Bind(avert,myCurrent);
+    godown = Standard_True;
+  }
+  else {
+    Standard_Integer thebound = visited(avert);
+    if (thebound > myCurrent) {
+      visited(avert) = myCurrent;
+      godown = Standard_True;
+    }
+    else if (thebound < myCurrent) {
+      Standard_Integer rebind = visited(initMap(thebound));
+      for (Standard_Integer i=1; i <= initMap.Extent(); i++) {
+	if ((visited(initMap(i)) == thebound) || 
+	    (visited(initMap(i)) == rebind)) {
+	  visited(initMap(i)) = myCurrent;
+	}
+      }
+    }
+  }
+  if (godown) {
+    VIterator vit(agraph,avert);
+    while (vit.More()) {
+      Visit(vit.Value(),agraph,visited);
+      vit.Next();
+    }
+  }
+}
+
+
+
+

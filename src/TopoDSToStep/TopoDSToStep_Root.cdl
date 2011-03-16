@@ -1,0 +1,32 @@
+-- File:	TopoDSToStep_Root.cdl
+-- Created:	Wed Jul 21 17:32:08 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+private deferred class Root from TopoDSToStep
+
+    ---Purpose : This class implements the common services for
+    --           all classes of TopoDSToStep which report error.
+
+uses Real
+
+is
+
+    Initialize;
+
+    Tolerance (me : in out) returns Real;
+    ---Purpose : Returns (modifiable) the tolerance to be used for writing
+    --           If not set, starts at 0.0001
+    ---C++ : return &
+
+    IsDone(me) returns Boolean
+    	is static;
+
+fields
+
+    toler    : Real    is protected;
+    done     : Boolean is protected;
+    --Equal True if everything is ok, False otherwise.
+
+end Root;

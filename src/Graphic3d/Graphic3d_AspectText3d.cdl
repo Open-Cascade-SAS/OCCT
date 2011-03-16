@@ -1,0 +1,282 @@
+--
+-- File:    Graphic3d_AspectText3d.cdl
+-- Created: Jeudi 22 Aout 1991
+-- Author:  NW,JPB,CAL
+-- Modified FMN: 30-11-98 : S4069. Textes always visible.    
+---Copyright:   MatraDatavision 1991,1992,1993,1994
+--
+
+class AspectText3d from Graphic3d inherits TShared
+
+    ---Version:
+
+    ---Purpose: Creates and updates a group of attributes for
+    --      text primitives. This group contains the colour,
+    --      font, expansion factor (height/width ratio), and
+    --      inter-character space.
+    --
+    --          NOTE: The font name is stored in the aspect instance
+    --          so it is safe to pass it as const char* to OpenGl package
+    --          without copying the string. However, the aspect should not
+    --          be deleted until the text drawn using this aspect is no longer
+    --          visible. The best practice is to keep the aspect in the object's drawer.
+    
+uses
+
+    Color             from Quantity,
+    TypeOfStyleText   from Aspect,
+    TypeOfDisplayText from Aspect,
+    AsciiString       from TCollection,
+    FontAspect        from OSD 
+
+raises
+
+    AspectTextDefinitionError   from Graphic3d
+
+is
+
+    Create
+        returns mutable AspectText3d from Graphic3d;
+    ---Level: Public
+    ---Purpose: Creates a context table for text primitives
+    --      defined with the following default values:
+    --
+    --      Colour                    : NOC_YELLOW
+    --      Font                      : NOF_ASCII_MONO
+    --      Expansion factor          : 1.
+    --      Space between characters  : 0.
+    --      The style                 : TOST_NORMAL
+    --      The display type          : TODT_NORMAL
+
+    Create ( AColor             : Color from Quantity;
+             AFont              : CString from Standard;
+             AExpansionFactor   : Real from Standard;
+             ASpace             : Real from Standard;
+             AStyle             : TypeOfStyleText from Aspect = Aspect_TOST_NORMAL;
+             ADisplayType       : TypeOfDisplayText from Aspect = Aspect_TODT_NORMAL )
+        returns mutable AspectText3d from Graphic3d
+    ---Level: Public
+    ---Purpose: Creates a context table for text primitives
+    --      defined with the specified values.
+    --          AFont may be to take means from User(example "Courier New") 
+    --      or Font described in OpenGl_FontName(example Graphic3d_NOF_ASCII_MONO)
+    --      or use default font("Courier")
+    --
+    raises AspectTextDefinitionError from Graphic3d;
+    -- if <AExpansionFactor> is a negative value
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    SetColor ( me       : mutable;
+               AColor   : Color from Quantity )
+        is static;
+    ---Purpose: Modifies the colour of <me>.
+
+    SetExpansionFactor ( me         : mutable;
+                         AFactor    : Real from Standard )
+    ---Purpose: Modifies the expansion factor (height/width ratio)
+    --  If the factor is less than 1, the characters will
+    --  be higher than they are wide.
+    ---Category: Methods to modify the class definition
+    --  Warning: Raises AspectTextDefinitionError if <AFactor> is a
+    --      negative value .
+    raises AspectTextDefinitionError from Graphic3d is static;
+
+    SetFont ( me    : mutable;
+              AFont : CString from Standard )
+        is static;
+    ---Level: Public
+    ---Purpose: Modifies the font of <me>.
+    ---Category: Methods to modify the class definition
+    ---AFont may be to take means from User(example "Courier New") 
+    ---or Font described in OpenGl_FontName(example Graphic3d_NOF_ASCII_MONO)
+    ---or use default font("Courier")
+
+
+    SetSpace ( me       : mutable;
+               ASpace   : Real from Standard )
+        is static;
+    ---Level: Public
+    ---Purpose: Modifies the space between the characters.
+    ---Category: Methods to modify the class definition
+
+    SetStyle ( me       : mutable;
+               AStyle   : TypeOfStyleText from Aspect )
+        is static;
+    ---Level: Public
+    ---Purpose: Modifies the style of the text.
+    --      TOST_NORMAL     Default text. The text is displayed like any other graphic object.
+    --              This text can be hidden by another object that is nearest from the 
+    --              point of view. 
+    --      TOST_ANNOTATION The text is always visible. The texte is displayed 
+    --              over the other object according to the priority.
+    ---Category: Methods to modify the class definition
+
+    SetDisplayType ( me             : mutable;
+                     ADisplayType   : TypeOfDisplayText from Aspect )
+        is static;
+    ---Level: Public
+    ---Purpose: Define the display type of the text.    
+    --
+    --      TODT_NORMAL     Default display. Text only. 
+    --      TODT_SUBTITLE   There is a subtitle under the text.
+    --      TODT_DEKALE     The text is displayed with a 3D style.
+    --      TODT_BLEND      The text is displayed in XOR.
+    ---Category: Methods to modify the class definition
+
+    SetColorSubTitle ( me       : mutable;
+                       AColor   : Color from Quantity )
+        is static;
+    ---Level: Public
+    ---Purpose: Modifies the colour of the subtitle for the TODT_SUBTITLE TextDisplayType
+    ---         and the colour of backgroubd for the TODT_DEKALE TextDisplayType.
+    ---Category: Methods to modify the class definition
+
+    
+    SetTextZoomable ( me        : mutable;
+                      AFlag     : Boolean from Standard );
+    ---Level: Public
+    ---Purpose: Turns usage of text zoomable on/off
+    ---Category: Methods to modify the class definition
+
+    GetTextZoomable( me ) returns Boolean from Standard;
+    ---Level: Public 
+    ---Purpose: Returns TRUE when the Text Zoomable is on.
+
+    SetTextAngle ( me       : mutable;
+                   AAngle   : Real from Standard );
+    ---Level: Public
+    ---Purpose: Turns usage of text rotated
+    ---Category: Methods to modify the class definition
+
+    GetTextAngle( me ) returns Real from Standard;
+    ---Level: Public 
+    ---Purpose: Returns Angle of degree
+
+    SetTextFontAspect ( me          : mutable;
+                        AFontAspect : FontAspect from OSD );
+    ---Level: Public
+    ---Purpose: Turns usage of Aspect text 
+    ---Category: Methods to modify the class definition
+
+    GetTextFontAspect( me ) returns FontAspect from OSD;
+    ---Level: Public 
+    ---Purpose: Returns text FontAspect
+
+
+
+
+
+
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    Values ( me;
+             AColor             : out Color from Quantity;
+             AFont              : out CString from Standard;
+             AnExpansionFactor  : out Real from Standard;
+             ASpace             : out Real from Standard)
+            is static;
+    ---Level: Public
+    ---Purpose: Returns the current values of the group <me>.
+    ---Category: Inquire methods
+
+
+
+    Values ( me;
+             AColor             : out Color from Quantity;
+             AFont              : out CString from Standard;
+             AnExpansionFactor  : out Real from Standard;
+             ASpace             : out Real from Standard;
+             AStyle             : out TypeOfStyleText from Aspect;
+             ADisplayType       : out TypeOfDisplayText from Aspect;
+             AColorSubTitle     : out Color from Quantity
+            )
+        is static;
+    ---Level: Public
+    ---Purpose: Returns the current values of the group <me>.
+    ---Category: Inquire methods
+
+    Values ( me;
+             AColor             : out Color from Quantity;
+             AFont              : out CString from Standard;
+             AnExpansionFactor  : out Real from Standard;
+             ASpace             : out Real from Standard;
+             AStyle             : out TypeOfStyleText from Aspect;
+             ADisplayType       : out TypeOfDisplayText from Aspect;
+             AColorSubTitle     : out Color from Quantity;
+             ATextZoomable      : out Boolean from Standard;
+             ATextAngle         : out Real from Standard)
+            is static;
+    ---Level: Public
+    ---Purpose: Returns the current values of the group <me>.
+    ---Category: Inquire methods
+
+    Values ( me;
+             AColor             : out Color from Quantity;
+             AFont              : out CString from Standard;
+             AnExpansionFactor  : out Real from Standard;
+             ASpace             : out Real from Standard;
+             AStyle             : out TypeOfStyleText from Aspect;
+             ADisplayType       : out TypeOfDisplayText from Aspect;
+             AColorSubTitle     : out Color from Quantity;  
+             ATextZoomable      : out Boolean from Standard;
+             ATextAngle         : out Real from Standard;
+             ATextFontAspect    : out FontAspect from OSD)
+            is static;
+    ---Level: Public
+    ---Purpose: Returns the current values of the group <me>.
+    ---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class    :   Graphic3d_AspectText3d
+--
+-- Purpose  :   Declaration of variables specific to a context for
+--          writing 3d text
+--
+-- Reminder :   A text writing context is defined by:
+--          - the font
+--          - the colour
+--          - the scale
+--          - the space between characters
+--
+
+    -- the font utilised
+    MyFont      :   AsciiString from TCollection;
+
+    -- the colour
+    MyColor     :   Color from Quantity;
+
+    -- the scale
+    MyFactor    :   Real from Standard;
+
+    -- the space between characters
+    MySpace     :   Real from Standard;
+
+    -- the style of the text
+    MyStyle     :   TypeOfStyleText from Aspect;
+
+    -- the display type of the text
+    MyDisplayType   :   TypeOfDisplayText from Aspect;
+
+    -- the colour of the sub-title and background for the dekale.
+    MyColorSubTitle :   Color from Quantity;
+
+    -- the flag turning text zoomable on/off
+    MyTextZoomable  :   Boolean from Standard;
+    
+    -- the variable turning angle of the text
+    MyTextAngle :   Real from Standard;
+
+    -- the variable turning FontAspect of the text
+    MyTextFontAspect :  FontAspect from OSD;
+
+end AspectText3d;

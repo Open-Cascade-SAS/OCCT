@@ -1,0 +1,141 @@
+-- File:	Circ2dTanCen.cdl
+-- Created:	Thu Mar 28 17:10:45 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+generic class Circ2dTanCen from GccGeo
+    (TheCurve          as any; -- 
+     TheCurveTool      as any; -- as CurveTool(TheCurve) from GccInt
+     TheExtPC          as any; -- as ExtPC(TheCurve,TheCurveTool) from Extrema
+     TheQualifiedCurve as any) -- as QCurve from GccInt
+       	    	    	       --          (TheCurve)
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d circles tangent to a curve and 
+	--          centered on a point. 
+	--          The arguments of all construction methods are :
+	--             - The qualified element for the tangency constrains 
+	--             (QualifiedCurv).
+	--             -The center point Pcenter.
+	--             - A real Tolerance.
+	--          Tolerance is only used in the limits cases.
+    	--          For example : 
+    	--          We want to create a circle tangent to an EnclosedCurv C1
+    	--          with a tolerance Tolerance.
+    	--          If we did not use Tolerance it is impossible to 
+    	--          find a solution in the following case : Pcenter is
+    	--          outside C1.
+    	--          With Tolerance we will give a solution if the distance
+    	--          between C1 and Pcenter is lower than or equal Tolerance/2.
+
+-- inherits Entity from Standard
+
+uses Pnt2d            from gp,
+     Circ2d           from gp,
+     Array1OfCirc2d   from TColgp,
+     Array1OfPnt2d    from TColgp,
+     Array1OfReal     from TColStd,
+     Array1OfInteger  from TColStd,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt
+
+raises OutOfRange   from Standard,
+       BadQualifier from GccEnt,
+       NotDone      from StdFail
+
+is
+
+Create( Qualified1 : TheQualifiedCurve              ;
+        Pcenter    : Pnt2d             from gp      ;
+        Tolerance  : Real              from Standard) returns Circ2dTanCen
+    ---Purpose: This method implements the algorithms used to 
+    --          create 2d circles tangent to a circle and 
+    --          centered on a point. 
+raises BadQualifier;
+
+-- -- ....................................................................
+
+IsDone(me) returns Boolean from Standard
+is static;
+    ---Purpose: This method returns True if the construction 
+    --          algorithm succeeded.
+
+NbSolutions(me) returns Integer from Standard
+    	---Purpose: Returns the number of solutions and raises NotDone 
+    	--          exception if the algorithm didn't succeed.
+raises NotDone
+is static;
+        ---Purpose: It raises NotDone if the construction algorithm 
+        --          didn't succeed.
+
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Circ2d from gp
+    ---Purpose: Returns the solution number Index and raises OutOfRange 
+    --          exception if Index is greater than the number of solutions.
+    --          Be carefull: the Index is only a way to get all the 
+    --          solutions, but is not associated to theses outside the 
+    --          context of the algorithm-object.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions or less than zero.
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    -- It returns the informations about the qualifiers of the tangency 
+    -- arguments concerning the solution number Index.
+    -- It returns the real qualifiers (the qualifiers given to the 
+    -- constructor method in case of enclosed, enclosing and outside 
+    -- and the qualifiers computedin case of unqualified).
+
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+    ---Purpose: Returns informations about the tangency point between the 
+    --          result number Index and the first argument.
+    --          ParSol is the intrinsic parameter of the point PntSol 
+    --          on the solution curv.
+    --          ParArg is the intrinsic parameter of the point PntArg 
+    --          on the argument curv.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions or less than zero.
+
+fields
+
+    WellDone : Boolean from Standard;
+    -- True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    -- The number of possible solutions. We have to decide about the
+    -- status of the multiple solutions...
+
+    cirsol   : Array1OfCirc2d from TColgp;
+    ---Purpose : The solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the first argument.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    -- The tangency point between the solution and the first argument on 
+    -- the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the 
+    -- first argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    -- The parameter of the tangency point between the solution and the first 
+    -- argument on the first argument.
+
+end Circ2dTanCen;

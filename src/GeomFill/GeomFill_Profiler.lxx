@@ -1,0 +1,27 @@
+// File:	GeomFill_Profiler.lxx
+// Created:	Fri Feb 18 14:08:53 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : IsPeriodic
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GeomFill_Profiler::IsPeriodic() const
+{
+  return myIsPeriodic;
+}
+
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Curve)& GeomFill_Profiler::Curve
+       (const Standard_Integer Index) const
+{
+  return mySequence( Index);
+}

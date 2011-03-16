@@ -1,0 +1,115 @@
+-- File:	FunctionDerivative.cdl
+-- Created:	Mon Jan 14 10:53:24 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+class FunctionDerivative from Expr
+
+inherits GeneralFunction from Expr
+
+uses NamedUnknown from Expr, 
+    GeneralExpression from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection
+
+raises OutOfRange from Standard,
+    DimensionMismatch from Standard,
+    NumericError from Standard,
+    NotEvaluable from Expr
+
+is
+
+    Create(func : GeneralFunction; withX : NamedUnknown; deg : Integer)
+    ---Purpose: Creates a FunctionDerivative of degree <deg> relative 
+    --          to the <withX> variable.
+    --          Raises OutOfRange if <deg> lower or equal to zero.
+    ---Level : Advanced
+    returns mutable FunctionDerivative
+    raises OutOfRange;
+
+    NbOfVariables(me)
+    ---Purpose: Returns the number of variables of <me>.
+    returns Integer;
+
+    Variable(me; index : Integer)
+    ---Purpose: Returns the variable denoted by <index> in <me>.
+    --          Raises OutOfRange if <index> greater than 
+    --          NbOfVariables of <me>. 
+    returns NamedUnknown
+    raises OutOfRange;
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; 
+    	    	values : Array1OfReal)
+    ---Purpose: Computes the value of <me> with the given variables.
+    --          Raises DimensionMismatch if Length(vars) is different from 
+    --          Length(values).
+    returns Real
+    raises DimensionMismatch, NumericError,NotEvaluable;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> with the same form.
+    returns mutable like me;
+
+    Derivative(me; var : NamedUnknown)
+    ---Purpose: Returns Derivative of <me> for variable <var>.
+    returns GeneralFunction;
+    
+    Derivative(me; var : NamedUnknown; deg : Integer)
+    ---Purpose: Returns Derivative of <me> for variable <var> with 
+    --          degree <deg>.
+    returns GeneralFunction;
+    
+    IsIdentical(me; func : GeneralFunction)
+    ---Purpose: Tests if <me> and <func> are similar functions (same 
+    --          name and same used expression).
+    returns Boolean;
+
+    IsLinearOnVariable(me; index : Integer)
+    ---Purpose: Tests if <me> is linear on variable on range <index>
+    returns Boolean;
+    
+    Function(me)
+    ---Purpose: Returns the function of which <me> is the derivative.
+    ---Level : Internal
+    returns GeneralFunction
+    is static;
+    
+    Degree(me)
+    ---Purpose: Returns the degree of derivation of <me>.
+    ---Level : Internal
+    returns Integer
+    is static;
+    
+    DerivVariable(me)
+    ---Purpose: Returns the derivation variable of <me>.
+    ---Level : Internal
+    returns NamedUnknown
+    is static;
+    
+    GetStringName(me)
+    returns AsciiString;
+    
+    Expression(me)
+    returns GeneralExpression
+    ---Level : Internal
+    is static;
+    
+    UpdateExpression(me: mutable);
+    ---Level : Internal
+
+fields
+
+    myFunction : GeneralFunction;
+    myExp : GeneralExpression;
+    myDerivate : NamedUnknown;
+    myDegree : Integer;
+
+friends
+
+    class NamedFunction from Expr
+    
+end FunctionDerivative;
+
+

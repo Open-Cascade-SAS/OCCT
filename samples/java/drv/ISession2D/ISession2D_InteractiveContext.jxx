@@ -1,0 +1,27 @@
+#ifndef _V2d_Viewer_HeaderFile
+#include <V2d_Viewer.hxx>
+#endif
+#ifndef _PrsMgr_PresentationManager2d_HeaderFile
+#include <PrsMgr_PresentationManager2d.hxx>
+#endif
+#ifndef _SelectMgr_SelectionManager_HeaderFile
+#include <SelectMgr_SelectionManager.hxx>
+#endif
+#ifndef _StdSelect_ViewerSelector2d_HeaderFile
+#include <StdSelect_ViewerSelector2d.hxx>
+#endif
+#ifndef _AIS_InteractiveObject_HeaderFile
+#include <AIS_InteractiveObject.hxx>
+#endif
+#ifndef _V2d_View_HeaderFile
+#include <V2d_View.hxx>
+#endif
+#ifndef _Select2D_Projector_HeaderFile
+#include <Select2D_Projector.hxx>
+#endif
+#ifndef _TColStd_MapOfTransient_HeaderFile
+#include <TColStd_MapOfTransient.hxx>
+#endif
+#ifndef _ISession2D_InteractiveContext_HeaderFile
+#include <ISession2D_InteractiveContext.hxx>
+#endif

@@ -1,0 +1,41 @@
+-- File:        ShapeDefinition.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class ShapeDefinition from StepRepr inherits SelectType from StepData
+
+	-- <ShapeDefinition> is an EXPRESS Select Type construct translation.
+	-- it gathers : ProductDefinitionShape, ShapeAspect, ShapeAspectRelationship
+
+uses
+
+	ProductDefinitionShape,
+	ShapeAspect,
+	ShapeAspectRelationship
+is
+
+	Create returns ShapeDefinition;
+	---Purpose : Returns a ShapeDefinition SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a ShapeDefinition Kind Entity that is :
+	--        1 -> ProductDefinitionShape
+	--        2 -> ShapeAspect
+	--        3 -> ShapeAspectRelationship
+	--        0 else
+
+	ProductDefinitionShape (me) returns any ProductDefinitionShape;
+	---Purpose : returns Value as a ProductDefinitionShape (Null if another type)
+
+	ShapeAspect (me) returns any ShapeAspect;
+	---Purpose : returns Value as a ShapeAspect (Null if another type)
+
+	ShapeAspectRelationship (me) returns any ShapeAspectRelationship;
+	---Purpose : returns Value as a ShapeAspectRelationship (Null if another type)
+
+
+end ShapeDefinition;
+

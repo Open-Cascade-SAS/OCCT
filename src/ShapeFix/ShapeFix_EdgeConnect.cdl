@@ -1,0 +1,44 @@
+-- File:	ShapeFix_EdgeConnect.cdl
+-- Created:	Tue May 11 11:27:03 1999
+-- Author:	Sergei ZERTCHANINOV
+--		<szv@nnov>
+---Copyright:	 Matra Datavision 1999
+
+
+class EdgeConnect  from ShapeFix
+
+    ---Purpose : Makes vertices to be shared to connect edges,
+    --           updates positions and tolerances for shared vertices.
+    --           Accepts edges bounded by two vertices each.
+
+uses 
+    DataMapOfShapeShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    Edge from TopoDS, Shape from TopoDS
+
+is
+
+    Create returns EdgeConnect from ShapeFix;
+
+    Add (me : in out; aFirst : Edge from TopoDS; aSecond : Edge from TopoDS);
+    ---Purpose : Adds information on connectivity between start vertex
+    --           of second edge and end vertex of first edge,
+    --           taking edges orientation into account
+
+    Add (me : in out; aShape : Shape from TopoDS);
+    ---Purpose : Adds connectivity information for the whole shape.
+    --           Note: edges in wires must be well ordered
+    --           Note: flag Closed should be set for closed wires
+
+    Build (me : in out);
+    ---Purpose : Builds shared vertices, updates their positions and tolerances
+
+    Clear (me : in out);
+    ---Purpose : Clears internal data structure
+
+fields
+
+    myVertices : DataMapOfShapeShape from TopTools;       -- Map of pairs (vertex, shared)
+    myLists    : DataMapOfShapeListOfShape from TopTools; -- Map of pairs (shared, list of vertices/edges)
+
+end EdgeConnect;

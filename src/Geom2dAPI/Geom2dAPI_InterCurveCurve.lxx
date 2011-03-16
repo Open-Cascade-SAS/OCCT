@@ -1,0 +1,15 @@
+// File:	Geom2dAPI_InterCurveCurve.lxx
+// Created:	Thu Mar 24 14:45:33 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Intersector
+//purpose  : 
+//=======================================================================
+
+inline const Geom2dInt_GInter& Geom2dAPI_InterCurveCurve::Intersector() const
+{
+  return myIntersector;
+}

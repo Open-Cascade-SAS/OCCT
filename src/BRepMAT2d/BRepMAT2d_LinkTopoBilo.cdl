@@ -1,0 +1,98 @@
+-- File:	BRepMAT2d_LinkTopoBilo.cdl
+-- Created:	Fri Oct  7 14:30:11 1994
+-- Author:	Yves FRICAUD
+--		<yfr@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class LinkTopoBilo from BRepMAT2d 
+
+	---Purpose:Constucts links between the Face of the explorer and
+    	--         the BasicElts contained in the bisecting locus. 
+
+uses
+    Shape                            from TopoDS,
+    Wire                             from TopoDS,	    
+    Explorer                         from BRepMAT2d,
+    DataMapOfShapeSequenceOfBasicElt from BRepMAT2d,
+    DataMapOfBasicEltShape           from BRepMAT2d,
+    BisectingLocus                   from BRepMAT2d,
+    BasicElt                         from MAT
+
+raises
+    ConstructionError from Standard
+    
+is
+
+    Create  returns LinkTopoBilo from BRepMAT2d;    
+
+    Create( Explo : Explorer       from BRepMAT2d; 
+    	    BiLo  : BisectingLocus from BRepMAT2d)	
+    returns LinkTopoBilo from BRepMAT2d    
+	---Purpose: Constructs the links Between S and BiLo.
+	--          
+    raises
+    	ConstructionError from Standard;
+	---Purpose: raises if <S> is not a face.
+    
+    
+    Perform( me    : in out; 
+	     Explo : Explorer       from BRepMAT2d; 
+    	     BiLo  : BisectingLocus from BRepMAT2d)  
+    	---Purpose: Constructs the links Between S and BiLo.
+ 	--     
+    raises
+    	ConstructionError from Standard
+	---Purpose: raises if <S> is not a face or a wire.         
+    is static;
+    
+    
+    Init (me : in out; S : Shape from TopoDS)
+    	---Purpose: Initialise the Iterator on <S>
+    	--          <S> is an edge or a vertex of the initial
+    	--          wire or face.
+    raises
+    	ConstructionError from Standard
+	---Purpose: raises if <S> is not an edge or a vertex.
+    is static;
+    
+    
+    More (me : in out)	returns Boolean from Standard
+    	---Purpose: Returns True if there  is a current  BasicElt.
+    is static;
+    
+    
+    Next (me : in out)    	
+    	---Purpose: Proceed to the next BasicElt.
+    is static;
+    
+    
+    Value(me) returns BasicElt from MAT	
+    	---Purpose: Returns the current BasicElt.
+    is static;
+    
+    GeneratingShape (me ; aBE : BasicElt from MAT)
+	---Purpose: Returns the Shape linked to <aBE>.
+    returns Shape from TopoDS
+    is static;
+    
+    LinkToWire (me           : in out; 
+    	        W            : Wire           from TopoDS;
+		Explo        : Explorer       from BRepMAT2d;    
+                IndexContour : Integer        from Standard;
+                BiLo         : BisectingLocus from BRepMAT2d) 
+    is static private;
+    
+
+fields
+    myMap      : DataMapOfShapeSequenceOfBasicElt from BRepMAT2d;
+    myBEShape  : DataMapOfBasicEltShape           from BRepMAT2d;
+    myKey      : Shape                            from TopoDS;
+    current    : Integer                          from Standard; 
+    isEmpty    : Boolean                          from Standard;
+    
+end ;
+
+
+

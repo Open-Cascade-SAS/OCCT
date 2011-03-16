@@ -1,0 +1,52 @@
+-- File:	StepData_FieldListD.cdl
+-- Created:	Tue Apr  1 13:25:35 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class FieldListD  from StepData    inherits FieldList  from StepData
+
+    ---Purpose : Describes a list of fields, in a general way
+    --           This basic class is for a null size list
+    --           Subclasses are for 1, N (fixed) or Dynamic sizes
+
+uses Field from StepData, HArray1OfField from StepData
+
+raises OutOfRange
+
+is
+
+    Create (nb : Integer) returns FieldListD;
+    ---Purpose : Creates a FieldListD of <nb> Fields
+
+    SetNb  (me : in out; nb : Integer);
+    ---Purpose : Sets a new count of Fields. Former contents are lost
+
+    NbFields (me) returns Integer  is redefined;
+    ---Purpose : Returns the count of fields. Here, returns starting <nb>
+
+    Field  (me; num : Integer) returns Field
+    ---Purpose : Returns the field n0 <num> between 1 and NbFields (read only)
+	raises OutOfRange
+    --           Error if <num> out of range
+    	is redefined;
+    ---C++ : return const &
+
+    CField (me : in out; num : Integer) returns Field
+    ---Purpose : Returns the field n0 <num> between 1 and NbFields, in order to
+    --           modify its content
+	raises OutOfRange
+    --           Error if <num> out of range
+    	is redefined;
+    ---C++ : return &
+
+    Destroy (me: in out) is virtual;
+    ---C++ : alias "Standard_EXPORT virtual ~StepData_FieldListD() { Destroy(); }"
+
+
+fields
+
+    thefields : HArray1OfField;
+
+end FieldListD;

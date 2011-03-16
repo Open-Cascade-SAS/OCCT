@@ -1,0 +1,29 @@
+-- File:	StepBasic_ConversionBasedUnitAndVolumeUnit.cdl
+-- Created:	Tue Oct 12 13:21:11 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class ConversionBasedUnitAndVolumeUnit from StepBasic inherits ConversionBasedUnit from StepBasic
+
+	---Purpose: 
+
+uses
+
+    VolumeUnit from StepBasic
+
+is
+
+    Create returns mutable ConversionBasedUnitAndVolumeUnit from StepBasic;
+    	---Purpose: Returns a ConversionBasedUnitAndVolumeUnit
+    
+    SetVolumeUnit(me: mutable; aVolumeUnit: mutable VolumeUnit from StepBasic);
+    
+    VolumeUnit(me) returns mutable VolumeUnit from StepBasic;
+    
+fields
+
+   volumeUnit: VolumeUnit from StepBasic;
+
+end ConversionBasedUnitAndVolumeUnit;

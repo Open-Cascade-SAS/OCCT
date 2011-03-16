@@ -1,0 +1,42 @@
+-- File:	Vrml_TextureCoordinate2.cdl
+-- Created:	Thu Feb 13 10:03:40 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class TextureCoordinate2 from Vrml inherits  TShared  from  MMgt
+
+	---Purpose:  defines a TextureCoordinate2 node of VRML specifying properties of geometry
+	--  and its appearance.
+	--  This  node  defines  a  set  of  2D  coordinates  to  be  used  to  map  textures 
+	--  to  the  vertices  of  subsequent  PointSet,  IndexedLineSet,  or  IndexedFaceSet 
+	--  objects.  It  replaces  the  current  texture  coordinates  in  the  rendering 
+	--  state  for  the  shapes  to  use. 
+	--  Texture  coordinates  range  from  0  to  1  across  the  texture. 
+	--  The  horizontal  coordinate,  called  S,  is  specified  first,  followed   
+	--  by  vertical  coordinate,  T.
+    	--  By  default  : 
+	--    myPoint (0 0)
+
+uses
+ 
+    HArray1OfVec2d  from TColgp 
+
+is
+    Create returns  mutable TextureCoordinate2 from Vrml; 
+
+    Create  ( aPoint  :  HArray1OfVec2d   from  TColgp ) 
+    	returns  mutable TextureCoordinate2 from Vrml; 
+	  
+    SetPoint ( me : mutable;  aPoint : HArray1OfVec2d   from  TColgp );
+    Point ( me )  returns  HArray1OfVec2d   from  TColgp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myPoint  :  HArray1OfVec2d   from  TColgp;
+
+end TextureCoordinate2;

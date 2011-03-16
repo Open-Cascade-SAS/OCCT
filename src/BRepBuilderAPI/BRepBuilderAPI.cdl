@@ -1,0 +1,319 @@
+-- File:	BRepBuilderAPI.cdl
+-- Created:	Tue Jul  6 17:29:03 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package BRepBuilderAPI 
+
+	---Purpose: The  BRepBuilderAPI  package   provides  an   Application
+	--          Programming Interface  for the BRep  topology data
+	--          structure.
+	--          
+	--          The API is a set of classes aiming to provide :
+	--          
+	--          * High level and simple calls  for the most common
+	--          operations. 
+	--          
+	--          *    Keeping   an   access  on    the    low-level
+	--          implementation of high-level calls.
+	--          
+	--          * Examples  of programming of high-level operations
+	--          from low-level operations.
+	--          
+	--          * A complete coverage of modelling :
+	--          
+	--             - Creating vertices ,edges, faces, solids.
+	--             
+	--             - Sweeping operations.
+	--             
+	--             - Boolean operations.
+	--             
+	--             - Global properties computation.
+	--
+	-- 	    
+	-- 	    The API provides  classes to  build  objects:
+	-- 	    
+	-- 	    * The  constructors  of the classes  provides  the
+	-- 	    different constructions methods.
+	-- 	    
+	-- 	    * The  class keeps as fields the   different tools
+	-- 	    used to build the object.
+	-- 	    
+	-- 	    *   The class  provides  a  casting  method to get
+	-- 	    automatically the  result  with  a   function-like
+	-- 	    call. 
+	-- 	    
+	-- 	    For example to make a  vertex <V> from a point <P>
+	-- 	    one can writes :
+	-- 	    
+	-- 	    V = BRepBuilderAPI_MakeVertex(P);
+	-- 	    
+	-- 	    or
+	-- 	    
+	-- 	    BRepBuilderAPI_MakeVertex MV(P);
+	-- 	    V = MV.Vertex();
+	-- 	    
+	-- 	    
+	-- 	    For tolerances  a default precision is  used which
+	-- 	    can    be   changed    by    the   packahe  method
+	-- 	    BRepBuilderAPI::Precision. 
+	-- 	    
+	-- 	    For error handling the BRepBuilderAPI commands raise only
+	-- 	    the NotDone error. When Done is false on a command
+	-- 	    the error description can be asked to the command.
+	-- 	    
+	-- 	    In  theory  the  comands can be    called with any
+	-- 	    arguments, argument  checking  is performed by the
+	-- 	    command.
+	
+	
+
+uses
+    Standard,
+    StdFail,    
+    gp,
+    GeomAbs,
+    Geom2d,
+    Geom,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    TopLoc,
+    BRep,
+    BRepLib,
+    BRepTools,
+    TColStd, 
+    TColgp
+is
+
+    
+    enumeration EdgeError is 
+	---Purpose:  Indicates the outcome of the
+	-- construction of an edge, i.e. whether it has been successful or
+	-- not, as explained below:
+	-- -      BRepBuilderAPI_EdgeDone No    error occurred; The edge is
+	--    correctly built.
+	-- -      BRepBuilderAPI_PointProjectionFailed No parameters were given but
+	--    the projection of the 3D points on the curve failed. This
+	--    happens when the point distance to the curve is greater than
+	--    the precision value.
+	-- -      BRepBuilderAPI_ParameterOutOfRange
+	--    The given parameters are not in the parametric range
+	--   C->FirstParameter(), C->LastParameter()
+	-- -      BRepBuilderAPI_DifferentPointsOnClosedCurve
+	--    The two vertices or points are the extremities of a closed
+	--    curve but have different locations.
+	-- -      BRepBuilderAPI_PointWithInfiniteParameter
+	--    A finite coordinate point was associated with an infinite
+	--    parameter (see the Precision package for a definition of    infinite values).
+	-- -      BRepBuilderAPI_DifferentsPointAndParameter
+ 	--   The distance between the 3D point and the point evaluated
+	--    on the curve with the parameter is greater than the precision.
+	-- -      BRepBuilderAPI_LineThroughIdenticPoints
+	--    Two identical points were given to define a line (construction
+	--    of an edge without curve); gp::Resolution is used for the    confusion test.
+	EdgeDone, 
+	PointProjectionFailed, 
+	ParameterOutOfRange,
+	DifferentPointsOnClosedCurve, 
+	PointWithInfiniteParameter,
+    	DifferentsPointAndParameter,
+	LineThroughIdenticPoints
+    end EdgeError;
+
+    
+    enumeration WireError is 
+	---Purpose: Indicates the outcome of wire
+	-- construction, i.e. whether it is successful or not, as explained below:
+	-- -      BRepBuilderAPI_WireDone No
+	--    error occurred. The wire is correctly built.
+	-- -      BRepBuilderAPI_EmptyWire No
+	-- initialization of the algorithm. Only an empty constructor was used.
+	-- -      BRepBuilderAPI_DisconnectedWire
+	-- The last edge which you attempted to add was not connected to the wire.
+	-- -      BRepBuilderAPI_NonManifoldWire
+	--    The wire with some singularity.
+	WireDone, 
+        EmptyWire,
+	DisconnectedWire,
+	NonManifoldWire
+
+    end WireError;
+
+
+    enumeration  FaceError is 
+	---Purpose:  Indicates the outcome of the
+	-- construction of a face, i.e. whether it has been successful or
+	-- not, as explained below:
+	-- -      BRepBuilderAPI_FaceDone No error occurred. The face is
+	--    correctly built.
+	-- -      BRepBuilderAPI_NoFace No initialization of the
+	--    algorithm; only an empty constructor was used.
+	-- -      BRepBuilderAPI_NotPlanar
+	--    No surface was given and the wire was not planar.
+	-- -      BRepBuilderAPI_CurveProjectionFailed
+	--    Not used so far.
+	-- -      BRepBuilderAPI_ParametersOutOfRange
+	--    The parameters given to limit the surface are out of its    bounds.
+    	FaceDone, 
+	NoFace,   
+	NotPlanar,
+	CurveProjectionFailed,
+	ParametersOutOfRange
+	
+    end FaceError;
+    
+    
+    enumeration ShellError is 
+	---Purpose: Indicates the outcome of the construction of a face, i.e.
+	-- whether it is successful or not, as explained below:
+	-- -   BRepBuilderAPI_ShellDone No error occurred.
+	--   The shell is correctly built.
+	-- -   BRepBuilderAPI_EmptyShell No initialization of
+	--   the algorithm: only an empty constructor was used.
+	-- -   BRepBuilderAPI_DisconnectedShell not yet used
+	-- -   BRepBuilderAPI_ShellParametersOutOfRange
+	--   The parameters given to limit the surface are out of its bounds.
+	ShellDone,
+	EmptyShell,
+	DisconnectedShell,
+	ShellParametersOutOfRange
+	
+    end ShellError;  
+     
+    enumeration PipeError is 
+	---Purpose: Errors that can occur at (shell)pipe construction.
+
+	PipeDone, -- no error
+	PipeNotDone,  --  Error  with  status  unknown
+	PlaneNotIntersectGuide,    
+	ImpossibleContact  --  Impossible  to  rotat  the  section  like  the  rotated  section  
+                           -- have  conact  with  the  guide.
+	
+    end PipeError;    
+     
+    
+
+    enumeration ShapeModification is
+    	---Purpose: Lists the possible types of modification to a shape
+	-- following a topological operation: Preserved, Deleted,
+	-- Trimmed, Merged or BoundaryModified.
+	-- This enumeration enables you to assign a "state" to the
+	-- different shapes that are on the list of operands for
+	-- each API function. The MakeShape class then uses this
+	-- to determine what has happened to the shapes which
+	-- constitute the list of operands.
+	Preserved,   
+	Deleted, 
+	Trimmed,
+	Merged,
+	BoundaryModified
+	
+    end ShapeModification; 
+     
+    enumeration  TransitionMode  is 
+    	---Purpose: Option to manage  discontinuities in  Sweep
+       Transformed, 
+       RightCorner, 
+       RoundCorner 
+    end  TransitionMode; 
+
+    deferred class Command;
+	---Purpose: Root class for all BRepBuilderAPI commands.
+
+    deferred class MakeShape;
+	---Purpose: Root class for all shape constructions.
+
+    -- 
+    -- Construction of topology from geometry
+    -- 
+    
+    class MakeVertex;
+    
+    class MakeEdge;
+	
+    class MakeEdge2d;
+	
+    class MakePolygon;
+	
+    class MakeFace;
+
+ 
+    -- Construction of Shape through sections.
+  
+    class FindPlane;
+
+    --
+    -- Construction of Shape from several shapes
+    -- 
+
+    class  Sewing;
+	---Purpose: Provides a tool to
+	--          - identify contigous boundaries (for control
+	--            of continuity: C0, C1, ...)
+	--          - assemble contigous shapes into one shape.
+
+    -- 
+    --  Construction of composite topologies
+    --  
+
+    class MakeWire;
+    
+    class MakeShell;
+    
+    class MakeSolid;
+    
+    --
+    -- Shape modification (constant topology)
+    --      
+    
+    deferred class ModifyShape;
+
+    class Transform;
+
+    class NurbsConvert ;
+    ---Purpose: converts all 3D analytical representation of surfaces 
+    --          and curves to NURBS execpt for Planes
+    --          
+
+    class GTransform;
+
+    class Copy;
+     
+    class Collect;
+
+
+    --
+    --   Default plane for 2d edges.
+    --   
+
+    Plane(P : Plane from Geom);
+	---Purpose: Sets    the current plane.
+	---Level: Public
+    
+    Plane returns Plane from Geom;
+	---Purpose: Returns the current plane.
+	--          
+	---C++: return const &
+	---Level: Public
+
+    --
+    --   Default precison methods.
+    --   The default precision is initialized with Precision::Confusion()
+    --   
+
+    Precision(P : Real  from  Standard);
+	---Purpose: Sets the default precision.  The current Precision
+	--          is returned.
+	---Level: Public
+	
+    Precision returns Real  from  Standard;
+	---Purpose: Returns the default precision.
+	---Level: Public 
+
+
+
+end BRepBuilderAPI;

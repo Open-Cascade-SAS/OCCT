@@ -1,0 +1,49 @@
+-- File:	TopCnx.cdl
+-- Created:	Tue Aug 11 18:08:51 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package TopCnx 
+
+	---Purpose: This  algorithm  provides  algorithms  to computes
+	--          transitions when many interferences occurs  at the
+	--          same place on a shape.
+	--          
+	--          An interference is an intersection on a shape (i.e
+	--          a vertex on an  edge  or an edge  on a  face) with
+	--          data  about    the  transition (how  the  shape is
+	--          crossing  the   boundary  where the   intersection
+	--          occurs).
+	--          
+	--          There     are      three  algorithms   to  process
+	--          interferences : 
+	--          
+	--          * EdgeFaceTransition : To process interferences on
+	--          an adge crossing other edges  on the boundary of a
+	--          face.
+	--          
+	--          * EdgeSolidTransition : To   process interferences
+	--          on  an   edge  crossing  faces   and edges  on the
+	--          boundary of a solid.
+	--          
+	--          *  FaceSolidTransition : To  process interferences
+	--          on a face crossing other faces on  the boundary of
+	--          a solid.
+	--          
+	--          This package  relies on the  TopTrans  package for
+	--          the geometric computations.
+
+uses
+    Standard,
+    gp,
+    TopAbs,
+    TopTrans
+
+is
+    class EdgeFaceTransition;
+	---Purpose: Algorithm  to compute cumulated transitions  on an
+	--          edge crossing the boundary of a face.
+
+end TopCnx;

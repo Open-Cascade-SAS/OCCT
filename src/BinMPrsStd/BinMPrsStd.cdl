@@ -1,0 +1,27 @@
+-- File:	BinMPrsStd.cdl
+-- Created:	Mon May 17 10:10:30 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+package BinMPrsStd 
+
+	---Purpose: 
+
+uses 
+    BinObjMgt, 
+    TDF, 
+    BinMDF,
+    CDM
+is
+    	    ---Purpose: Storage-Retrieval drivers for graphic attributes from
+    	    --          TPrsStd
+
+	class AISPresentationDriver; 
+	
+	class PositionDriver;	
+	
+    AddDrivers(theDriverTable   : ADriverTable  from BinMDF;
+    	       theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage-retrieval driver to <theDriverTable>.
+
+end BinMPrsStd;

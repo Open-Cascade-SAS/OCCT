@@ -1,0 +1,19 @@
+ 
+  inline void DrawTrSurf_BezierCurve2d::SetPolesColor (
+  const Draw_Color& aColor) {
+
+     polesLook = aColor;    
+  }
+
+
+
+  inline Draw_Color DrawTrSurf_BezierCurve2d::PolesColor () const {
+
+     return polesLook; 
+  }
+
+
+
+
+
+

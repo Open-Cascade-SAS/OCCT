@@ -1,0 +1,87 @@
+-- File:	TNaming_ShapesSet.cdl
+-- Created:	Thu Jan  9 08:26:45 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class ShapesSet from TNaming 
+
+	---Purpose: 
+
+uses
+    Shape                   from TopoDS,
+    ShapeEnum               from TopAbs,
+    MapOfShape              from TopTools
+
+is
+    Create returns ShapesSet from TNaming;
+    	---C++: inline
+
+    Create (S    : Shape        from TopoDS;
+    	    Type : ShapeEnum    from TopAbs = TopAbs_SHAPE)
+    returns ShapesSet from TNaming;
+
+---Category: Modification
+   
+    Clear(me : in out)
+	---Level: Public
+	---Purpose: Removes all Shapes
+	---C++: inline
+    is static;
+    
+    Add(me : in out; S : Shape from TopoDS) returns Boolean
+	---Level: Public
+	---Purpose: Adds the Shape <S>
+	---C++: inline
+    is static;
+
+    Contains(me; S : Shape ) returns Boolean
+	---Level: Public
+	---Purpose: Returns True  if <S> is in <me>
+	---C++: inline
+    is static;
+    
+    Remove(me : in out; S : Shape ) returns Boolean
+	---Level: Public
+	---Purpose: Removes <S> in <me>.
+        ---C++: inline
+    is static;
+
+
+    -- Modification with an other ShapesSet--
+
+    Add    (me : in out; Shapes : ShapesSet from TNaming);
+    	---Purpose: Adds the shapes contained in <Shapes>.
+    
+    Filter (me : in out; Shapes : ShapesSet from TNaming);
+      	---Purpose: Erases in <me> the shapes not 
+     	--          contained in <Shapes>
+
+               
+    Remove (me : in out; Shapes : ShapesSet from TNaming);
+    	---Purpose: Removes in <me> the shapes contained in <Shapes>
+
+
+---Category: Querying
+    
+    IsEmpty(me) returns Boolean from Standard;
+    	---C++: inline
+
+    NbShapes (me) returns Integer from Standard;   
+    	---C++: inline
+
+    ChangeMap(me: in out) returns MapOfShape from TopTools;
+    	---C++: return &
+    	---C++: inline
+
+    Map(me) returns MapOfShape from TopTools;
+    	---C++: return const&
+    	---C++: inline
+
+fields
+    myMap   : MapOfShape              from TopTools;
+
+end ShapesSet;
+
+

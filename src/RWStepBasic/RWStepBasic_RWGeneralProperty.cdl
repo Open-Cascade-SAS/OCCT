@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWGeneralProperty.cdl
+-- Created:	Wed May 10 15:09:07 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class RWGeneralProperty from RWStepBasic
+
+    ---Purpose: Read & Write tool for GeneralProperty
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    GeneralProperty from StepBasic
+
+is
+    Create returns RWGeneralProperty from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : GeneralProperty from StepBasic);
+	---Purpose: Reads GeneralProperty
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: GeneralProperty from StepBasic);
+	---Purpose: Writes GeneralProperty
+
+    Share (me; ent : GeneralProperty from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWGeneralProperty;

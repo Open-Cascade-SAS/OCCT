@@ -1,0 +1,76 @@
+-- File:	Adaptor3d_GenHCurve.cdl
+-- Created:	Wed Feb 23 12:16:10 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class GenHCurve from Adaptor3d 
+    (TheCurve as Curve from Adaptor3d)
+
+inherits HCurve from Adaptor3d 
+
+	---Purpose: Generic class used to create a curve manipulated
+      	--          with Handle from a curve described by the class Curve.
+
+uses 
+     Curve        from Adaptor3d
+
+     
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+
+    Create
+	---Purpose: Creates an empty GenHCurve.
+    	returns mutable GenHCurve from Adaptor3d; 
+    
+
+    Create(C: TheCurve)
+    
+	---Purpose: Creates a GenHCurve from a Curve
+    	returns mutable GenHCurve from Adaptor3d; 
+
+
+    Set(me: mutable; C: TheCurve)
+    
+	---Purpose: Sets the field of the GenHCurve.
+    	is static;
+
+    Curve(me)
+    
+	---Purpose: Returns the curve used to create the GenHCurve.
+	--          This is redefined from HCurve, cannot be inline.
+	--          
+	---C++: return const &
+
+    	returns Curve from Adaptor3d;
+
+    GetCurve(me:mutable)
+    
+	---Purpose: Returns the curve used to create the GenHCurve.
+	--          This is redefined from HCurve, cannot be inline.
+	--          
+	---C++: return  &
+
+    	returns Curve from Adaptor3d;
+
+
+    ChangeCurve(me : mutable)
+    
+	---Purpose: Returns the curve used to create the GenHCurve.
+	--          
+	---C++: return &
+	---C++: inline
+
+    	returns TheCurve;
+
+fields
+
+    myCurve : TheCurve is protected;
+
+end GenHCurve;

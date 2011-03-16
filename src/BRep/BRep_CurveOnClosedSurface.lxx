@@ -1,0 +1,29 @@
+// File:	BRep_CurveOnClosedSurface.lxx
+// Created:	Thu Nov 18 12:20:00 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : SetUVPoints2
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_CurveOnClosedSurface::SetUVPoints2(const gp_Pnt2d& P1, 
+						     const gp_Pnt2d& P2)
+{
+  myUV21 = P1;
+  myUV22 = P2;
+}
+
+
+//=======================================================================
+//function : UVPoints2
+//purpose  : 
+//=======================================================================
+
+inline void  BRep_CurveOnClosedSurface::UVPoints2(gp_Pnt2d& P1, 
+						  gp_Pnt2d& P2)const 
+{
+  P1 = myUV21;
+  P2 = myUV22;
+}

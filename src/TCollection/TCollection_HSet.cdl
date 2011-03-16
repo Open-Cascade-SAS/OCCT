@@ -1,0 +1,154 @@
+-- File:	TCollection_HSet.cdl
+-- Created:	Tue Mar  2 12:10:59 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+generic class HSet from TCollection 
+    (Item   as any;
+     TheSet as any) -- as Set from TCollection(Item)) 
+ inherits TShared  from  MMgt
+
+     	---Purpose: An HSet is a collection of non-ordered items without any
+    	-- duplicates. At each transaction, the system checks there are no duplicates.
+    	-- HSet objects are handles to sets.
+    	-- HSet is a generic class which depends on two parameters:
+    	-- -   Item, the type of element in the set,
+    	-- -   Set, the actual type of set handled by HSet. This is an
+    	--   instantiation with TCollection_Set generic class.
+    
+is
+
+    Create returns mutable HSet from TCollection;
+        ---Purpose: Construction of an empty set.
+
+    Extent(me) returns Integer from Standard
+	---Level: Public
+        ---Purpose: Returns the number of items in the set me.
+	---C++: inline
+    is static;
+    	
+    IsEmpty(me) returns Boolean from Standard
+	---Level: Public
+        ---Purpose: Returns True if the set <me> is empty, Extent == 0.
+	---C++: inline
+    is static;
+
+     Clear(me : mutable)
+	---Level: Public
+	---Purpose: Removes all the items from the set.
+	---C++: inline
+    is static;
+
+
+    Add(me : mutable; T : Item) returns Boolean from Standard
+	---Level: Public
+	---Purpose: Adds <T> to  the  set if this item does not 
+        -- already exist.  Returns False  if <T>  was
+	-- already in the set.
+	---Example:         
+        -- before
+        --   me = {a,b,c,d}, T = y
+        -- after
+        --   me = {a,b,c,d,y} returns True
+	---C++: inline
+    is static;
+
+    Remove(me : mutable; T : Item) returns Boolean from Standard
+	---Level: Public
+        ---Purpose: Removes <T> from the   set and returns True. 
+        -- Returns False if  <T> was not in the set.
+        ---Example:
+        -- before
+        --   me = {a,b,c,d}, T = a
+        -- after
+        --   me = {b,c,d} returns True
+	---C++: inline
+    is static;
+ 
+    Union(me; B : HSet from TCollection) 
+    returns mutable HSet from TCollection
+        ---Purpose: creation of a set containing all the items 
+        -- of the set <me> and all the items of the set B 
+        -- which are not in <me>.
+        ---Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        -- {a,b,c,d,f}
+    is static;
+
+    Intersection(me; B : HSet from TCollection) 
+    returns mutable HSet from TCollection
+	---Level: Public
+        ---Purpose: Creation of a set containing all the 
+        -- items which are both in the set <me> and in the set B
+        ---Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        --   {a}
+    is static;		    	    	
+
+    Difference(me; B: HSet from TCollection) 
+    returns mutable HSet from TCollection
+        ---Purpose:  Compares set B with this set and deletes duplicates.
+        --Example:
+        -- before
+        --   me = {a,b,c}, B = {d,a,f}
+        -- after
+        --   me = {a,b,c}, B = {d,a,f}
+        -- returns
+        --   {b,c}
+    is static;		    	    	
+
+
+    Contains(me; T : Item) returns Boolean from Standard
+        ---Purpose: Returns True if an item is in the set me.
+	---C++: inline
+    is static;
+
+    IsASubset(me; S : HSet from TCollection) returns Boolean from Standard
+        ---Purpose: Returns True if a set is contained in the set me.
+        -- The two sets can be identical.
+	---C++: inline
+    is static;
+
+    IsAProperSubset(me; S : HSet from TCollection)
+    returns Boolean from  Standard
+        ---Purpose: Returns True S is a subset and if all its elements are strictly included in this set.
+        -- The two sets cannot be identical.
+	---C++: inline
+    is static;
+
+    ShallowCopy(me) returns mutable like me;
+	---Level: Advanced
+	---C++: function call
+
+    -- IsSameState (me; other: like me) returns Boolean;
+    -- Level: Advanced
+
+
+    
+    Set(me) returns TheSet
+	---Level: Advanced
+	---Purpose: Returns the internal set. For implementation.
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    ChangeSet(me : mutable) returns TheSet
+	---Level: Advanced
+	---Purpose: Returns the internal set. For implementation.
+	---C++: inline
+	---C++: return &
+    is static;
+
+fields
+    mySet : TheSet;
+    
+end HSet from TCollection;

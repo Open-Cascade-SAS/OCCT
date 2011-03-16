@@ -1,0 +1,44 @@
+-- File:        Hyperbola.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Hyperbola from StepGeom 
+
+inherits Conic from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement from StepGeom
+is
+
+	Create returns mutable Hyperbola;
+	---Purpose: Returns a Hyperbola
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom;
+	      aSemiAxis : Real from Standard;
+	      aSemiImagAxis : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSemiAxis(me : mutable; aSemiAxis : Real);
+	SemiAxis (me) returns Real;
+	SetSemiImagAxis(me : mutable; aSemiImagAxis : Real);
+	SemiImagAxis (me) returns Real;
+
+fields
+
+	semiAxis : Real from Standard;
+	semiImagAxis : Real from Standard;
+
+end Hyperbola;

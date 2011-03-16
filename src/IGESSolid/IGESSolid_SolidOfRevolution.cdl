@@ -1,0 +1,97 @@
+--
+-- File      :  SolidOfRevolution.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SolidOfRevolution from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines SolidOfRevolution, Type <162> Form Number <0,1>
+        --          in package IGESSolid
+        --          This entity is defined by revolving the area determined
+        --          by a planar curve about a specified axis through a given
+        --          fraction of full rotation.
+
+uses
+
+        Pnt             from gp,
+        Dir             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable SolidOfRevolution;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aCurve     : IGESEntity;
+              aFract     : Real;
+              aAxisPnt   : XYZ;
+              aDirection : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           SolidOfRevolution
+        --       - aCurve     : the curve entity that is to be revolved
+        --       - aFract     : the fraction of full rotation (default 1.0)
+        --       - aAxisPnt   : the point on the axis
+        --       - aDirection : the direction of the axis
+
+    	SetClosedToAxis (me : mutable; mode : Boolean);
+	---Purpose : Sets the Curve to be by default, Closed to Axis (Form 0)
+	--           if <mode> is True, Closed to Itself (Form 1) else
+
+    	IsClosedToAxis (me) returns Boolean;
+	---Purpose : Returns True if Form Number = 0
+        -- if Form no is 0, then the curve is closed to axis
+        -- if 1, the curve is closed to itself.
+
+
+        Curve (me) returns IGESEntity;
+        ---Purpose : returns the curve entity that is to be revolved
+
+        Fraction (me) returns Real;
+        ---Purpose : returns the fraction of full rotation that the curve is to
+        -- be rotated
+
+        AxisPoint (me) returns Pnt;
+        ---Purpose : returns the point on the axis
+
+        TransformedAxisPoint (me) returns Pnt;
+        ---Purpose : returns the point on the axis after applying Trans.Matrix
+
+        Axis (me) returns Dir;
+        ---Purpose : returns the direction of the axis
+
+        TransformedAxis (me) returns Dir;
+        ---Purpose : returns the direction of the axis after applying 
+        -- TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_SolidOfRevolution
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SolidOfRevolution.
+--
+-- Reminder : A SolidOfRevolution instance is defined by :
+--            the curve(Curve) rotated for a fraction (Fraction) of full
+--            rotation about an axis that is given by a point(X1,Y1,Z1) on
+--            the axis and the direction(I1,J1,K1)
+--
+
+        theCurve : IGESEntity;
+            --  the curve that is to be rotated
+
+        theFraction : Real;
+            -- the fraction of full rotation
+
+        theAxisPoint : XYZ;
+            -- the coordinates of the point on the axis
+
+        theAxis : XYZ;
+            -- the axis of rotation
+
+end SolidOfRevolution;

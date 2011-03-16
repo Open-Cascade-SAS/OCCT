@@ -1,0 +1,169 @@
+// File:	HLRAlgo_EdgesBlock.lxx
+// Created:	Thu Apr 20 11:31:26 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+#define EMaskOrient   ((Standard_Boolean)15)
+#define EMaskOutLine  ((Standard_Boolean)16)
+#define EMaskInternal ((Standard_Boolean)32)
+#define EMaskDouble   ((Standard_Boolean)64)
+#define EMaskIsoLine  ((Standard_Boolean)128)
+
+//=======================================================================
+//function : NbEdges
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer HLRAlgo_EdgesBlock::NbEdges() const
+{
+  return myEdges.Upper();
+}
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgesBlock::Edge (const Standard_Integer I,
+				      const Standard_Integer EI)
+{
+  myEdges(I) = EI;
+}
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+HLRAlgo_EdgesBlock::Edge (const Standard_Integer I) const
+{
+  return myEdges(I);
+}
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation 
+HLRAlgo_EdgesBlock::Orientation (const Standard_Integer I) const
+{
+  return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
+}
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_EdgesBlock::Orientation (const Standard_Integer I,
+				 const TopAbs_Orientation Or)
+{
+  myFlags(I) &= ~EMaskOrient;
+  myFlags(I) |= (((Standard_Boolean)Or) & EMaskOrient);
+}
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_EdgesBlock::OutLine (const Standard_Integer I) const
+{
+  return (myFlags(I) & EMaskOutLine) != 0;
+}
+
+//=======================================================================
+//function : OutLine
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_EdgesBlock::OutLine (const Standard_Integer I,
+			     const Standard_Boolean B)
+{
+  if (B) myFlags(I) |=  EMaskOutLine;
+  else   myFlags(I) &= ~EMaskOutLine;
+}
+
+//=======================================================================
+//function : Internal
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_EdgesBlock::Internal (const Standard_Integer I) const
+{
+  return (myFlags(I) & EMaskInternal) != 0;
+}
+
+//=======================================================================
+//function : Internal
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRAlgo_EdgesBlock::Internal (const Standard_Integer I,
+			      const Standard_Boolean B)
+{
+  if (B) myFlags(I) |=  EMaskInternal;
+  else   myFlags(I) &= ~EMaskInternal;
+}
+
+//=======================================================================
+//function : Double
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_EdgesBlock::Double (const Standard_Integer I) const
+{
+  return (myFlags(I) & EMaskDouble) != 0;
+}
+
+//=======================================================================
+//function : Double
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgesBlock::Double (const Standard_Integer I,
+					const Standard_Boolean B)
+{
+  if (B) myFlags(I) |=  EMaskDouble;
+  else   myFlags(I) &= ~EMaskDouble;
+}
+
+//=======================================================================
+//function : IsoLine
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_EdgesBlock::IsoLine (const Standard_Integer I) const
+{
+  return (myFlags(I) & EMaskIsoLine) != 0;
+}
+
+//=======================================================================
+//function : IsoLine
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgesBlock::IsoLine (const Standard_Integer I,
+					 const Standard_Boolean B)
+{
+  if (B) myFlags(I) |=  EMaskIsoLine;
+  else   myFlags(I) &= ~EMaskIsoLine;
+}
+
+//=======================================================================
+//function : MinMax
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_EdgesBlock::MinMax () const
+{ return (Standard_Address)&myMinMax; }
+

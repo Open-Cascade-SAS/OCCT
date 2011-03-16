@@ -1,0 +1,136 @@
+-- File:	GeomProjLib.cdl
+-- Created:	Wed Aug 25 18:35:56 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+package GeomProjLib
+
+---Purpose: Projection of a curve on a surface.
+
+uses 
+    gp,
+    Geom,
+    Geom2d
+    
+is
+
+     --
+     -- package methods
+     -- 
+
+     
+     Curve2d(C           :        Curve   from Geom;
+     	     First, Last :        Real    from Standard;
+     	     S           :        Surface from Geom;
+	     UFirst,ULast,
+	     VFirst,VLast:        Real    from Standard ;
+    	     Tolerance   : in out Real    from Standard )
+    	---Purpose: gives  the 2d-curve   of  a 3d-curve  lying on   a
+    	--          surface (  uses GeomProjLib_ProjectedCurve   ) 
+    	--          The 3dCurve is taken between the parametrization 
+    	--          range [First, Last]
+    	--          <Tolerance> is used as input if the projection needs
+    	--          an approximation. In this case, the reached 
+    	--          tolerance is set in <Tolerance> as output.
+     	--          WARNING :  if   the projection has  failed,   this
+    	--          method returns a null Handle.
+     returns Curve from Geom2d;
+     
+     Curve2d(C           :        Curve   from Geom;
+     	     First, Last :        Real    from Standard;
+     	     S           :        Surface from Geom;
+    	     Tolerance   : in out Real    from Standard )
+    	---Purpose: gives  the 2d-curve   of  a 3d-curve  lying on   a
+    	--          surface (  uses GeomProjLib_ProjectedCurve   ) 
+    	--          The 3dCurve is taken between the parametrization 
+    	--          range [First, Last]
+    	--          <Tolerance> is used as input if the projection needs
+    	--          an approximation. In this case, the reached 
+    	--          tolerance is set in <Tolerance> as output.
+     	--          WARNING :  if   the projection has  failed,   this
+    	--          method returns a null Handle.
+     returns Curve from Geom2d;
+
+     Curve2d(C           :        Curve   from Geom;
+     	     First, Last :        Real    from Standard;
+     	     S           :        Surface from Geom)
+    	---Purpose: gives  the 2d-curve   of  a 3d-curve  lying on   a
+    	--          surface (  uses GeomProjLib_ProjectedCurve   ) 
+    	--          The 3dCurve is taken between the parametrization 
+    	--          range [First, Last]
+    	--          If the projection needs an approximation,
+    	--          Precision::PApproximation() is used.
+     	--          WARNING :  if   the projection has  failed,   this
+    	--          method returns a null Handle.
+     returns Curve from Geom2d;
+
+     Curve2d(C : Curve   from Geom;
+     	     S : Surface from Geom )
+    	---Purpose: gives  the  2d-curve  of  a  3d-curve lying   on a
+    	--          surface   ( uses   GeomProjLib_ProjectedCurve ).
+    	--          If the projection needs an approximation,
+    	--          Precision::PApproximation() is used.
+    	--          WARNING  :  if the   projection has  failed,  this
+    	--          method returns a null Handle.
+     returns Curve from Geom2d;
+     
+         Curve2d(C : Curve   from Geom;
+    		 S : Surface from Geom ;
+                 UDeb : Real from Standard ;
+		 UFin : Real from Standard ;
+		 VDeb : Real from Standard ;
+		 VFin : Real from Standard) 
+     
+    	---Purpose: gives  the  2d-curve  of  a  3d-curve lying   on a
+    	--          surface   ( uses   GeomProjLib_ProjectedCurve ).
+    	--          If the projection needs an approximation,
+    	--          Precision::PApproximation() is used.
+    	--          WARNING  :  if the   projection has  failed,  this
+    	--          method returns a null Handle.
+    	--          can expand a little the bounds of surface
+     returns Curve from Geom2d;
+     
+     Curve2d(C           :        Curve   from Geom;
+     	     S           :        Surface from Geom;
+	     UDeb : Real from Standard ;
+	     UFin : Real from Standard ;
+	     VDeb : Real from Standard ;
+	     VFin : Real from Standard ; 
+    	     Tolerance   : in out Real    from Standard )
+	     
+        ---Purpose: gives  the  2d-curve  of  a  3d-curve lying   on a
+    	--          surface   ( uses   GeomProjLib_ProjectedCurve ).
+    	--          If the projection needs an approximation,
+    	--          Precision::PApproximation() is used.
+    	--          WARNING  :  if the   projection has  failed,  this
+    	--          method returns a null Handle.
+    	--          can expand a little the bounds of surface
+     returns Curve from Geom2d;
+     
+     
+     Project(C : Curve   from Geom;
+     	     S : Surface from Geom ) 
+	---Purpose: Constructs   the  3d-curve  from the normal
+	--          projection  of the  Curve <C> on  the surface <S>.
+	--          WARNING : if the  projection has failes returns  a
+	--          null Handle.
+     returns Curve from Geom;
+
+     
+     ProjectOnPlane(Curve               : Curve   from Geom;
+     	    	    Plane               : Plane   from Geom;
+		    Dir                 : Dir     from gp  ;
+    	    	    KeepParametrization : Boolean from Standard)
+	---Purpose: Constructs  the 3d-curves from the projection
+	--          of the  curve  <Curve> on the  plane <Plane> along
+	--          the direction <Dir>.
+	--          If <KeepParametrization> is true, the parametrization 
+	--          of the Projected Curve <PC> will be  the same as  the
+	--          parametrization of the initial curve <C>.
+	--          It meens: proj(C(u)) = PC(u) for each u.
+	--          Otherwize, the parametrization may change.
+     returns Curve from Geom;
+
+end GeomProjLib;

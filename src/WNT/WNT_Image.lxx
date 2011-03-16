@@ -1,0 +1,15 @@
+#ifndef __WNT_BITMAP_H
+# include <WNT_Bitmap.h>
+#endif  // __WNT_BITMAP_H
+
+inline Aspect_Handle WNT_Image :: HBITMAP () const {
+
+ return (  ( PWNT_Bitmap )myImage  ) -> hBmp;
+
+}  // end WNT_Image :: HBITMAP
+
+inline Standard_Address WNT_Image :: Image () const {
+
+ return myImage;
+
+}  // end WNT_Image :: HBITMAP

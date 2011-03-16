@@ -1,0 +1,30 @@
+// File:	TDataStd_TreeNode.lxx
+// Created:	Fri Nov  5 11:29:30 1999
+// Author:	Denis PASCAL
+//		<dp@dingox.paris1.matra-dtv.fr>
+
+
+inline Standard_Boolean TDataStd_TreeNode::HasFather() const
+{
+  return myFather != NULL;
+}
+
+inline Standard_Boolean TDataStd_TreeNode::HasNext() const
+{
+  return myNext != NULL;
+}
+
+inline Standard_Boolean TDataStd_TreeNode::HasPrevious() const
+{
+  return myPrevious != NULL;
+}
+
+inline Standard_Boolean TDataStd_TreeNode::HasFirst() const
+{
+  return myFirst != NULL;
+}
+
+inline Standard_Boolean TDataStd_TreeNode::HasLast() const
+{
+  return myLast != NULL;
+}

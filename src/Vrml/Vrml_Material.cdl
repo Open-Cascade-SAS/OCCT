@@ -1,0 +1,66 @@
+-- File:	Vrml_Material.cdl
+-- Created:	Mon Feb 10 16:22:40 1997
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Material from Vrml inherits  TShared  from  MMgt
+
+	---Purpose: defines a Material node of VRML specifying properties of geometry
+	---          and its appearance.
+    	--  This node defines the current surface material properties for all subsequent shapes.
+        --  Material sets several components of the current material during traversal. Different shapes
+        --  interpret materials with multiple values differently. To bind materials to shapes, use a
+        --  MaterialBinding node. 
+
+    	--  The lighting parameters defined by the Material node are the same parameters defined by
+        --  the OpenGL lighting model. 
+uses 
+ 
+    HArray1OfColor  from   Quantity, 
+    HArray1OfReal   from   TColStd
+
+is
+ 
+    Create  (  aAmbientColor   :  HArray1OfColor  from   Quantity; 
+    	       aDiffuseColor   :  HArray1OfColor  from   Quantity;
+    	       aSpecularColor  :  HArray1OfColor  from   Quantity; 
+	       aEmissiveColor  :  HArray1OfColor  from   Quantity; 
+	       aShininess      :  HArray1OfReal   from   TColStd; 
+	       aTransparency   :  HArray1OfReal   from   TColStd ) 
+	  returns mutable Material from Vrml; 
+
+    Create  returns mutable Material from Vrml;
+
+    SetAmbientColor  ( me : mutable; aAmbientColor   :  HArray1OfColor  from  Quantity );
+    AmbientColor  ( me )  returns  HArray1OfColor  from  Quantity;
+
+    SetDiffuseColor  ( me : mutable; aDiffuseColor   :  HArray1OfColor  from  Quantity );
+    DiffuseColor  ( me )  returns  HArray1OfColor  from  Quantity;
+
+    SetSpecularColor ( me : mutable; aSpecularColor  :  HArray1OfColor  from  Quantity );
+    SpecularColor ( me )  returns  HArray1OfColor  from  Quantity;
+
+    SetEmissiveColor ( me : mutable; aEmissiveColor  :  HArray1OfColor  from  Quantity );
+    EmissiveColor ( me )  returns  HArray1OfColor  from  Quantity;
+
+    SetShininess  ( me : mutable;  aShininess : HArray1OfReal from TColStd  ); 
+    Shininess  ( me )  returns  HArray1OfReal from TColStd; 
+
+    SetTransparency  ( me : mutable;
+    	    	aTransparency  :  HArray1OfReal from TColStd  ); 
+    Transparency  ( me )  returns  HArray1OfReal from TColStd; 
+
+    Print  ( me; anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myAmbientColor   :  HArray1OfColor  from   Quantity;	-- Ambient color
+    myDiffuseColor   :  HArray1OfColor  from   Quantity;	-- Diffuse color
+    mySpecularColor  :  HArray1OfColor  from   Quantity;	-- Specular color
+    myEmissiveColor  :  HArray1OfColor  from   Quantity;	-- Emissive color
+    myShininess      :  HArray1OfReal   from   TColStd;	        -- Shininess
+    myTransparency   :  HArray1OfReal   from   TColStd;    	-- Transparency
+
+end Material;

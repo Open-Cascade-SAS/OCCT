@@ -1,0 +1,57 @@
+-- File:	LinPnt2dBisec.cdl
+-- Created:	Wed Apr  3 11:29:37 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class LinPnt2dBisec
+
+from GccAna
+
+	---Purpose: Describes functions for building bisecting curves between a 2D line and a point.
+    	-- A bisecting curve between a line and a point is such a
+    	-- curve that each of its points is at the same distance from
+    	-- the circle and the point. It can be a parabola or a line,
+    	-- depending on the relative position of the line and the
+    	-- circle. There is always one unique solution.
+    	-- A LinPnt2dBisec object provides a framework for:
+    	-- - defining the construction of the bisecting curve,
+    	-- - implementing the construction algorithm, and
+    	-- - consulting the result.
+
+--inherits Storable from Standard
+
+uses Lin2d from gp,
+     Pnt2d from gp,
+     Bisec from GccInt
+
+raises ConstructionError from Standard,
+       NotDone           from StdFail
+
+is
+
+Create(Line1   : Lin2d from gp;
+       Point2  : Pnt2d from gp) returns LinPnt2dBisec
+raises ConstructionError;
+    	---Purpose: Constructs a bisecting curve between the line Line1 and the point Point2.
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose : Returns True if the algorithm succeeded.
+
+ThisSolution(me) returns Bisec from GccInt
+    	---Purpose : Returns the number of solutions.
+raises NotDone
+is static;
+    	---Purpose: It raises NotDone if the construction algorithm didn't succeed.
+
+fields
+
+    WellDone : Boolean from Standard;
+    	---Purpose:  True if the algorithm succeeded.
+
+    bissol   : Bisec from GccInt;
+    	---Purpose : The solutions.
+
+end LinPnt2dBisec;

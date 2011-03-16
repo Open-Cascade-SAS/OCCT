@@ -1,0 +1,154 @@
+-- File:	Location.cdl
+-- Created:	Wed Dec 19 16:35:30 1990
+-- Author:	Christophe MARION
+--		<cma@topsn3>
+-- Modified:    Portage NT 7-5-97 DPF (Standard_EXPORT)
+---Copyright:	 Matra Datavision 1990
+
+
+
+class Location from TopLoc
+
+        ---Purpose: A Location is a composite transition. It comprises a
+        -- series of elementary reference coordinates, i.e.
+        -- objects of type TopLoc_Datum3D, and the powers to
+        -- which these objects are raised.
+
+uses
+    Datum3D             from TopLoc,
+    ItemLocation        from TopLoc,
+    SListOfItemLocation from TopLoc,
+    Trsf                from gp
+    
+raises
+    NoSuchObject      from Standard,
+    ConstructionError from Standard
+    
+is
+
+    Create returns Location from TopLoc;
+	---Purpose: Constructs an empty local coordinate system object.
+        -- Note: A Location constructed from a default datum is said to be "empty".
+	
+    Create(T : Trsf from gp) returns Location from TopLoc
+	---Purpose: Constructs the local coordinate system object defined
+        -- by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
+    raises ConstructionError from Standard;
+
+    Create(D : Datum3D from TopLoc) returns Location from TopLoc;
+	---Purpose: Constructs the local coordinate system object defined by the 3D datum D.
+        -- Exceptions
+        -- Standard_ConstructionError if the transformation
+        -- T does not represent a 3D coordinate system.
+	
+    IsIdentity(me) returns Boolean
+	---Purpose: Returns true if this location is equal to the Identity transformation.
+   	---C++: inline
+    is static;
+    
+    Identity(me : in out)
+	---Purpose: Resets this location to the Identity transformation.
+ 	---C++: inline
+    is static;
+
+    FirstDatum(me) returns Datum3D from TopLoc
+	---Purpose: Returns    the  first   elementary  datum  of  the
+	--          Location.  Use the NextLocation function recursively to access
+ 	-- the other data comprising this location.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if this location is empty.
+    raises NoSuchObject 
+	    ---C++: return const &
+	    ---C++: inline
+    is static;
+    
+    FirstPower(me) returns Integer
+	---Purpose: Returns   the  power  elevation  of    the   first
+	--          elementary datum.
+-- Exceptions
+-- Standard_NoSuchObject if this location is empty.
+    raises NoSuchObject 
+ 	---C++: inline
+    is static;
+    
+    NextLocation(me) returns Location from TopLoc
+	---Purpose: Returns  a Location representing  <me> without the
+	--          first datum. We have the relation :
+	--          
+	--            <me> = NextLocation() * FirstDatum() ^ FirstPower() 
+ --  Exceptions
+--  Standard_NoSuchObject if this location is empty.
+    raises NoSuchObject 
+    ---C++: return const &
+    ---C++: inline
+    is static;
+
+    Transformation(me) returns Trsf from gp
+	---Purpose: Returns  the transformation    associated  to  the
+	--          coordinate system.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator gp_Trsf() const;" 
+    is static;
+    
+    Inverted(me) returns Location from TopLoc
+	---Purpose: Returns the inverse of <me>.
+	--          
+	--          <me> * Inverted() is an Identity.
+    is static;
+	
+    Multiplied(me; Other : Location from TopLoc) returns Location from TopLoc
+	---Purpose: Returns <me> * <Other>, the  elementary datums are
+	--          concatenated.
+	--          
+	---C++: alias operator*
+    is static;
+	
+    Divided(me; Other : Location from TopLoc) returns Location from TopLoc
+	---Purpose: Returns  <me> / <Other>.
+	--          
+	---C++: alias operator/
+    is static;
+	
+    Predivided(me; Other : Location from TopLoc) returns Location from TopLoc
+	---Purpose: Returns <Other>.Inverted() * <me>.
+    is static;
+	
+    Powered(me; pwr : Integer) returns Location from TopLoc
+	---Purpose: Returns me at the power <pwr>.   If <pwr>  is zero
+	--          returns  Identity.  <pwr> can  be lower  than zero
+	--          (usual meaning for powers).
+    is static;
+
+    HashCode(me; Upper : Integer) returns Integer
+	---Purpose: Returns a hashed value for this local coordinate system.
+    	-- This value is used, with map tables, to store and
+    	-- retrieve the object easily, and is in the range [ 1..Upper ].
+  	---C++:  function call
+    is static;
+    
+    IsEqual(me; Other : Location from TopLoc) returns Boolean
+	---Purpose: Returns true if this location and the location Other
+    	-- have the same elementary data, i.e. contain the same
+    	-- series of TopLoc_Datum3D and respective powers.
+    	-- This method is an alias for operator ==.
+  	---C++: alias operator ==
+    is static;
+
+    IsDifferent(me; Other : Location from TopLoc) returns Boolean
+	---Purpose: Returns true if this location and the location Other do
+    	-- not have the same elementary data, i.e. do not
+    	-- contain the same series of TopLoc_Datum3D and respective powers.
+    	-- This method is an alias for operator !=.
+  	---C++: alias operator !=
+    is static;
+
+    ShallowDump (me; S: in out OStream)
+	---Purpose: Prints the contents of <me> on the stream <s>.
+	---C++:  function call
+    is static;
+    
+fields
+    myItems : SListOfItemLocation from TopLoc;
+    
+end Location;

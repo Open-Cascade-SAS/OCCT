@@ -1,0 +1,13 @@
+---File:	 ObjMgt_ExternRef.cdl
+
+private class ExternRef from ObjMgt inherits Persistent from Standard
+
+uses HAsciiString from PCollection
+is
+
+fields
+
+    myEntryId   : HAsciiString;
+    myBindingIndex : Integer;
+
+end ExternRef;

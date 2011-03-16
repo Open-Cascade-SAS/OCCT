@@ -1,0 +1,241 @@
+-- File:	BRepBlend_AppSurface.cdl
+-- Created:	Mon Nov 25 11:51:49 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class AppSurface from BRepBlend inherits Approx from AppBlend
+
+	---Purpose:Used to Approximate the blending surfaces.
+
+uses Array2OfReal            from TColStd,
+     HArray2OfReal           from TColStd,
+     Array1OfReal            from TColStd,
+     HArray1OfReal           from TColStd,
+     Array1OfInteger         from TColStd,
+     HArray1OfInteger        from TColStd,     
+     Array1OfPnt2d           from TColgp,
+     Array2OfPnt             from TColgp,
+     HArray2OfPnt            from TColgp,
+
+     Shape                   from GeomAbs,
+     SweepFunction           from Approx, 
+     SweepApproximation      from Approx
+
+
+raises NotDone     from StdFail,
+       DomainError,
+       OutOfRange
+
+is
+    Create(Funct : in  out SweepFunction from Approx;
+    	   First,  Last  :  Real;
+           Tol3d,  Tol2d, TolAngular : Real;
+	   Continuity : Shape = GeomAbs_C0;
+	   Degmax     : Integer = 11;
+           Segmax     : Integer = 50)
+	   ---Purpose: Approximation     of   the   new  Surface  (and
+	   --          eventually the  2d    Curves   on the   support
+	   --          surfaces).     
+	   --          Normaly     the  2d    curve are
+	   --          approximated  with an  tolerance   given  by   the
+	   --          resolution on   support surfaces,  but  if this
+	   --          tolerance is too large Tol2d  is used.
+    	returns AppSurface from BRepBlend;
+	 
+		 
+    IsDone(me)
+        returns Boolean from Standard
+	---C++: inline	
+	is static;
+
+
+    SurfShape(me; UDegree,VDegree  : out Integer from Standard;
+                  NbUPoles,NbVPoles: out Integer from Standard;
+                  NbUKnots,NbVKnots: out Integer from Standard)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    Surface(me; TPoles          : out Array2OfPnt from TColgp;
+    	        TWeights        : out Array2OfReal from TColStd;
+		TUKnots,TVKnots : out Array1OfReal from TColStd;
+		TUMults,TVMults : out Array1OfInteger from TColStd)
+    	raises NotDone from StdFail
+    	is static;
+
+
+    UDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    VDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	is static;
+
+
+    SurfPoles(me)
+    
+    	returns Array2OfPnt from TColgp
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfWeights(me)
+    
+    	returns Array2OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfUMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+
+
+    SurfVMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is static;
+	
+    MaxErrorOnSurf (me) 
+    ---Purpose: returns the maximum error in the suface approximation.
+    returns Real; 
+
+    NbCurves2d(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    Curves2dShape(me; Degree,NbPoles,NbKnots: out Integer from Standard)
+    
+    	raises NotDone from StdFail,
+	       DomainError from Standard
+
+        is static;
+	
+	
+    Curve2d(me; Index: Integer from Standard;
+                TPoles   : out Array1OfPnt2d from TColgp;
+		TKnots   : out Array1OfReal from TColStd;
+		TMults   : out Array1OfInteger from TColStd)
+		
+    	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+
+    	is static;     
+
+
+    Curves2dDegree(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+	
+	
+    Curve2dPoles(me; Index: Integer from Standard)
+    
+    	returns Array1OfPnt2d from TColgp
+	---C++: inline
+	---C++: return const&
+	
+	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+	is static;
+	
+
+    Curves2dKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: inline
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+
+
+    Curves2dMults(me)    
+    	returns Array1OfInteger from TColStd
+	---C++: inline
+	---C++: return const&
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is static;
+	
+    
+    TolReached(me; Tol3d, Tol2d : out Real from Standard)
+	raises NotDone from StdFail 
+	is static;
+	
+    Max2dError (me; Index : Integer) 
+    	---Purpose: returns the maximum error in the <Index> 2d curve approximation.
+    	returns Real   
+    	raises NotDone from StdFail  
+    	is  static; 
+
+    TolCurveOnSurf(me; Index  :  Integer  from Standard) 
+	returns  Real from Standard  
+	raises NotDone from StdFail
+        is static; 	
+    
+    Dump(me; o: in out OStream);
+    ---Purpose: diplay information on approximation.
+
+fields
+    approx    : SweepApproximation from Approx; 
+end AppSurface;

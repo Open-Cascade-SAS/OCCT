@@ -1,0 +1,66 @@
+if (!($?CCHOME))   setenv CCHOME   "/opt/DEV5_1/SUNWspro/bin/CC "
+if (!($?CCFLAGS))  setenv CCFLAGS  " -xchip=ultra -xarch=v8  -G -mt "
+
+if (!($?STLPortHome)) then
+    setenv STLPortLib		"."
+else
+    if (!($?STLPortLib_CC))	setenv STLPortLib_CC	"stlport_gcc"
+    if (!($?STLPortLib)) 	setenv STLPortLib	"$STLPortHome/lib"
+    setenv STLPortLib		"$STLPortLib -l$STLPortLib_CC"
+endif
+
+${CCHOME} ${CCFLAGS} -o ${SAMPLE_ROOT}/${STATION}/lib//libTKSamples.so \
+ -L${SAMPLE_ROOT}/${STATION}/lib \
+ -L${CASROOT}/${STATION}/lib -L${STLPortLib} \
+\
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleAISBasicPackage/SampleAISBasicPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleAISDisplayModePackage/SampleAISDisplayModePackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleAISSelectPackage/SampleAISSelectPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleDisplayAnimationPackage/SampleDisplayAnimationPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryPackage/SampleGeometryPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleHLRPackage/SampleHLRPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleImportExportPackage/SampleImportExportPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/SamplesTopologyPackage/SamplesTopologyPackage.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/User/User_Cylinder.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession/ISession_Point.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession/ISession_Curve.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession/ISession_Surface.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession/ISession_Text.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession/ISession_Direction.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession2D/ISession2D_InteractiveContext.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession2D/ISession2D_SensitiveCurve.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession2D/ISession2D_Curve.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession2D/ISession2D_ObjectOwner.o \
+ ${SAMPLE_ROOT}/${STATION}/obj/ISession2D/ISession2D_Shape.o \
+\
+ -lTKernel \
+ -lTKBool \
+ -lTKGeomAlgo \
+ -lTKXSBase \
+ -lTKIGES \
+ -lTKFeat \
+ -lTKMath \
+ -lTKG3d \
+ -lTKG2d \
+ -lTKOffset \
+ -lTKGeomBase \
+ -lTKTopAlgo \
+ -lTKV3d \
+ -lTKService \
+ -lPTKernel \
+ -lTKShapeSchema \
+ -lTKShHealing \
+ -lTKBRep \
+ -lTKFillet \
+ -lTKHLR \
+ -lTKV2d \
+ -lTKPShape \
+ -lTKSTEP \
+ -lTKPrim \
+ -lsocket -lnsl -lsunmath -lm -ldl \
+ -L/usr/openwin/lib -lX11 -lXext -lXmu \
+  \
+  \
+  \
+  \
+ -lC -lc ;

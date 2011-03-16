@@ -1,0 +1,453 @@
+-- File:	QuadQuadGeo.cdl
+-- Created:	Thu Aug  6 10:51:07 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class QuadQuadGeo from IntAna
+
+    ---Purpose: Geometric intersections between two natural quadrics
+    --          (Sphere , Cylinder , Cone , Pln from gp).
+    --          The possible intersections are :
+    --           - 1 point
+    --           - 1 or 2 line(s)
+    --           - 1 Point and 1 Line
+    --           - 1 circle
+    --           - 1 ellipse
+    --           - 1 parabola
+    --           - 1 or 2 hyperbola(s).
+    --           - Empty : there is no intersection between the two quadrics.
+    --           - Same  : the quadrics are identical
+    --           - NoGeometricSolution : there may be an intersection, but it
+    --                is necessary to use an analytic algorithm to determine
+    --                it. See class IntQuadQuad from IntAna.
+
+
+uses Pln         from gp,
+     Cylinder    from gp,
+     Cone        from gp,
+     Sphere      from gp,
+     Pnt         from gp,
+     Lin         from gp,
+     Circ        from gp,
+     Elips       from gp,
+     Parab       from gp,
+     Hypr        from gp,
+     Dir         from gp,
+     ResultType  from IntAna
+
+     
+     
+raises  NotDone      from StdFail,
+    	DomainError  from Standard,
+        OutOfRange   from Standard
+is
+
+    Create
+    
+    	---Purpose: Empty constructor.
+	
+    	returns QuadQuadGeo from IntAna;
+
+	
+    Create(P1,P2        : Pln    from gp; 
+           TolAng, Tol  : Real   from Standard)
+    
+    	---Purpose: Creates the intersection between two planes.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the planes are parallel.
+    	--          Tol is the tolerance used to determine if the planes
+    	--          are identical (only when they are parallel).
+    
+    	returns QuadQuadGeo from IntAna;
+
+
+    Perform(me          : in out; 
+            P1,P2       : Pln    from gp; 
+            TolAng, Tol : Real   from Standard)
+    
+    	---Purpose: Intersects two planes.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the planes are parallel.
+    	--          Tol is the tolerance used to determine if the planes
+    	--          are identical (only when they are parallel).
+    
+    	is static;
+
+
+    Create(P : Pln      from gp; 
+           C : Cylinder from gp; 
+           Tolang,Tol: Real from Standard)
+    
+	---Purpose: Creates the intersection between a plane and a cylinder.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the axis of the cylinder is parallel to the plane.
+    	--          Tol is the tolerance used to determine if the result
+    	--          is a circle or an ellipse. If the maximum distance between
+    	--          the ellipse solution and the circle centered at the ellipse
+    	--          center is less than Tol, the result will be the circle.
+
+    	returns QuadQuadGeo from IntAna;
+	
+
+    Perform(me: in out; 
+            P : Pln      from gp; 
+            C : Cylinder from gp; 
+            Tolang,Tol: Real from Standard)
+    
+	---Purpose: Intersects a plane and a cylinder.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the axis of the cylinder is parallel to the plane.
+    	--          Tol is the tolerance used to determine if the result
+    	--          is a circle or an ellipse. If the maximum distance between
+    	--          the ellipse solution and the circle centered at the ellipse
+    	--          center is less than Tol, the result will be the circle.
+
+    	is static;
+	
+
+    Create(P : Pln    from gp; 
+           S : Sphere from gp)
+
+	---Purpose: Creates the intersection between a plane and a sphere.
+
+    	returns QuadQuadGeo from IntAna;
+	
+	
+    Perform(me: in out; 
+            P : Pln    from gp; 
+            S : Sphere from gp)
+
+	---Purpose: Intersects a plane and a sphere.
+
+    	is static;
+	
+	
+    Create(P : Pln  from gp; 
+           C : Cone from gp; 
+           Tolang,Tol: Real from Standard)
+    
+	---Purpose: Creates the intersection between a plane and a cone.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the axis of the cone is parallel or perpendicular
+    	--          to the plane, and if the generating line of the cone
+    	--          is parallel to the plane.
+    	--          Tol is the tolerance used to determine if the apex
+    	--          of the cone is in the plane.
+
+    	returns QuadQuadGeo from IntAna;
+
+		
+    Perform(me: in out; 
+            P : Pln  from gp; 
+            C : Cone from gp; 
+            Tolang,Tol: Real from Standard)
+    
+	---Purpose: Intersects a plane and a cone.
+    	--          TolAng is the angular tolerance used to determine
+    	--          if the axis of the cone is parallel or perpendicular
+    	--          to the plane, and if the generating line of the cone
+    	--          is parallel to the plane.
+    	--          Tol is the tolerance used to determine if the apex
+    	--          of the cone is in the plane.
+
+    	is static;
+
+
+    Create(Cyl1,Cyl2: Cylinder from gp; 
+           Tol      : Real     from Standard)
+
+      	---Purpose: Creates the intersection between two cylinders.
+    
+    	returns QuadQuadGeo from IntAna;
+	
+
+    Perform(me       : in out; 
+            Cyl1,Cyl2: Cylinder from gp; 
+            Tol      : Real     from Standard)
+
+      	---Purpose: Intersects two cylinders
+    
+    	is static;
+	
+
+    Create(Cyl: Cylinder from gp;  
+           Sph: Sphere   from gp; 
+           Tol: Real     from Standard)
+	   
+    	---Purpose: Creates the intersection between a Cylinder and a Sphere.
+    
+        returns QuadQuadGeo from IntAna;
+	
+	
+    Perform(me : in out; 
+            Cyl: Cylinder from gp;  
+            Sph: Sphere   from gp; 
+            Tol: Real     from Standard)
+
+	---Purpose: Intersects a cylinder and a sphere.
+
+    	is static;
+	
+	
+    Create(Cyl: Cylinder from gp;  
+           Con: Cone     from gp; 
+           Tol: Real     from Standard)
+
+        ---Purpose: Creates the intersection between a Cylinder and a Cone
+            
+        returns QuadQuadGeo from IntAna;
+
+	
+    Perform(me : in out; 
+            Cyl: Cylinder from gp;  
+            Con: Cone     from gp; 
+            Tol: Real     from Standard)
+
+	---Purpose: Intersects a cylinder and a cone.
+
+    	is static;
+
+	
+    Create(Sph1: Sphere from gp;  
+           Sph2: Sphere from gp; 
+           Tol : Real   from Standard)
+
+        ---Purpose: Creates the intersection between two Spheres.    
+
+        returns QuadQuadGeo from IntAna;
+	
+	
+    Perform(me  : in out; 
+            Sph1: Sphere from gp;  
+            Sph2: Sphere from gp; 
+            Tol : Real   from Standard)
+
+	---Purpose: Intersects a two spheres.
+
+    	is static;
+	
+	
+    Create(Sph: Sphere from gp;  
+           Con: Cone   from gp; 
+           Tol: Real   from Standard)
+    
+        ---Purpose: Creates the intersection beween a Sphere and a Cone.
+    
+        returns QuadQuadGeo from IntAna;
+
+	
+    Perform(me : in out; 
+            Sph: Sphere from gp;  
+            Con: Cone   from gp; 
+            Tol: Real   from Standard)
+
+	---Purpose: Intersects a sphere and a cone.
+
+    	is static;
+
+
+    Create(Con1: Cone from gp;  Con2: Cone from gp; Tol:Real from Standard)
+    
+        ---Purpose: Creates the intersection beween two cones.
+    
+        returns QuadQuadGeo from IntAna;
+
+
+    Perform(me  : in out; 
+            Con1: Cone from gp;  
+            Con2: Cone from gp; 
+            Tol :Real from Standard)
+
+	---Purpose: Intersects two cones.
+
+    	is static;
+
+
+    IsDone(me)
+
+    	---Purpose: Returns Standard_True if the computation was successful.
+    	--          
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static;
+
+
+    TypeInter(me)
+    
+	---Purpose: Returns the type of intersection.
+    	--          
+	---C++: inline
+    
+    	returns ResultType from IntAna
+	
+	raises NotDone from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+	
+	is static;
+	
+	
+     NbSolutions(me) 
+     
+	---Purpose: Returns the number of interesections.
+	--          The possible intersections are :
+	--           - 1 point
+	--           - 1 or 2 line(s)
+	--           - 1 Point and 1 Line
+	--           - 1 circle
+	--           - 1 ellipse
+	--           - 1 parabola
+	--           - 1 or 2 hyperbola(s).
+    	--          
+	---C++: inline
+     
+        returns Integer from Standard
+	
+	raises NotDone from StdFail
+    	--- The exception NotDone is raised if IsDone returns Standard_False.
+ 	
+	is static;
+	 
+	
+     Point(me; Num: Integer from Standard)
+     
+	---Purpose: Returns the point solution of range Num.
+     
+     	returns Pnt from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Point or TypeInter does not return IntAna_PointAndCircle.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+
+	is static;
+	
+	
+     Line(me; Num: Integer from Standard)
+     
+	---Purpose: Returns the line solution of range Num.
+     
+     	returns Lin from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Line.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+	
+	is static;
+	
+	
+     Circle(me; Num: Integer from Standard)
+     
+	---Purpose: Returns the circle solution of range Num.
+     
+     	returns Circ from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Circle or TypeInter does not return IntAna_PointAndCircle.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+
+	is static;
+	
+	
+     Ellipse(me; Num: Integer from Standard)
+
+	---Purpose: Returns the ellipse solution of range Num.
+     
+     	returns Elips from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Ellipse.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+
+	is static;
+          
+
+     Parabola(me; Num: Integer from Standard)
+
+	---Purpose: Returns the parabola solution of range Num.
+     
+     	returns Parab from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Parabola.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+
+    	is static;
+
+
+    Hyperbola(me; Num: Integer from Standard)
+
+	---Purpose: Returns the hyperbola solution of range Num.
+     
+     	returns Hypr from gp
+	
+	raises DomainError from Standard,
+	       OutOfRange  from Standard,
+	       NotDone     from StdFail
+    	--- The exception NotDone is raised if IsDone return Standard_False.
+    	--  The exception DomainError is raised if TypeInter does not return
+    	--  IntAna_Hyperbola.
+    	--  The exception OutOfRange is raised if Num < 1 or Num > NbSolutions.
+
+	is static; 
+	 
+    HasCommonGen(me)  returns  Boolean  from  Standard;	 
+    PChar(me)  returns  Pnt  from  gp; 
+    ---C++:  return  const&
+          
+    InitTolerances(me:out)  
+    	 
+    	---Purpose: Initialize the values of inner tolerances. 
+	
+    	is protected; 
+	 
+fields
+
+    done       :   Boolean      from Standard  is protected;
+    
+    nbint      :   Integer      from Standard  is protected;
+    typeres    :   ResultType   from IntAna    is protected;
+    
+    pt1        :   Pnt          from gp        is protected;
+    pt2        :   Pnt          from gp        is protected;
+
+    dir1       :   Dir          from gp        is protected;
+    dir2       :   Dir          from gp        is protected;
+
+    param1     :   Real         from Standard  is protected;
+    param2     :   Real         from Standard  is protected;
+    param1bis  :   Real         from Standard  is protected;
+    param2bis  :   Real         from Standard  is protected;
+    -- 
+    myEPSILON_DISTANCE               : Real from Standard  is protected;
+    myEPSILON_ANGLE_CONE             : Real from Standard  is protected;
+    myEPSILON_MINI_CIRCLE_RADIUS     : Real from Standard  is protected;
+    myEPSILON_CYLINDER_DELTA_RADIUS  : Real from Standard  is protected;
+    myEPSILON_CYLINDER_DELTA_DISTANCE: Real from Standard  is protected;
+    myEPSILON_AXES_PARA              : Real from Standard  is protected;
+    --  
+    myCommonGen  :  Boolean    from  Standard  is  protected; 
+    myPChar      :  Pnt        from  gp        is protected;
+     	        
+end QuadQuadGeo;

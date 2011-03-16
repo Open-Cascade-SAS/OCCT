@@ -1,0 +1,93 @@
+-- File:	SystemRelation.cdl
+-- Created:	Mon Jan 14 09:50:50 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class SystemRelation from Expr
+
+inherits GeneralRelation from Expr
+
+uses SequenceOfGeneralRelation from Expr,
+    GeneralExpression from Expr,
+    NamedUnknown from Expr,
+    AsciiString from TCollection
+
+raises OutOfRange,NoSuchObject,DimensionMismatch,NumericError
+
+is
+
+    Create(relation : GeneralRelation)
+    ---Purpose: Creates a system with one relation
+    ---Level : Advanced
+    returns mutable SystemRelation;
+
+    Add(me : mutable; relation : GeneralRelation)
+    ---Purpose: Appends <relation> in the list of components of <me>. 
+    ---Level : Advanced
+    is static;
+    
+    Remove(me : mutable; relation : GeneralRelation)
+    ---Level : Internal
+    raises NoSuchObject,DimensionMismatch
+    is static;
+
+    IsLinear(me)
+    ---Purpose: Tests if <me> is linear between its NamedUnknowns.
+    returns Boolean
+    is static;
+
+    NbOfSubRelations(me)
+    ---Purpose: Returns the number of relations contained in <me>.
+    returns Integer
+    is static;
+
+    NbOfSingleRelations(me)
+    ---Purpose: Returns the number of SingleRelations contained in 
+    --          <me>.
+    returns Integer
+    is static;
+
+    SubRelation(me; index : Integer)
+    ---Purpose: Returns the relation denoted by <index> in <me>.
+    --          An exception is raised if <index> is out of range.
+    returns any GeneralRelation
+    raises OutOfRange
+    is static;
+
+    IsSatisfied(me)
+    returns Boolean;
+
+    Simplified(me)
+    ---Purpose: Returns a GeneralRelation after replacement of
+    --          NamedUnknowns by an associated expression, and after
+    --          values computation.
+    returns mutable GeneralRelation
+    raises NumericError;
+    
+    Simplify(me : mutable)
+    ---Purpose: Replaces NamedUnknowns by associated expressions,
+    --          and computes values in <me>.
+    raises NumericError;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <me> contains <exp>.
+    returns Boolean;
+    
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression);
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>.
+    
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+    
+fields
+
+    myRelations : SequenceOfGeneralRelation;
+    
+
+end SystemRelation;

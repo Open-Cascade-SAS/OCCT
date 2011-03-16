@@ -1,0 +1,42 @@
+-- File:	GeomToStep_MakeAxis2Placement2d.cdl
+-- Created:	Fri Aug 26 09:43:44 1994
+-- Author:	Frederic MAUPAS
+--		<fma@minox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakeAxis2Placement2d from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Axis2Placement from Geom and Ax2, Ax22d from gp, and the class
+    --          Axis2Placement2d from StepGeom which describes an
+    --          axis2_placement_2d from Prostep. 
+   
+uses Ax2              from gp,
+     Ax22d            from gp,
+     Axis2Placement   from Geom,
+     Axis2Placement2d from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( A : Ax2 from gp ) returns MakeAxis2Placement2d;
+
+Create ( A : Ax22d from gp ) returns MakeAxis2Placement2d;
+
+--Create ( A : Axis2Placement from Geom ) returns MakeAxis2Placement2d;
+
+Value (me) returns Axis2Placement2d from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theAxis2Placement2d : Axis2Placement2d from StepGeom;
+    	-- TheOP solution from StepGeom
+    	
+end MakeAxis2Placement2d;
+
+

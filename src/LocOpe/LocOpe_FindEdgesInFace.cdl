@@ -1,0 +1,81 @@
+-- File:	LocOpe_FindEdgesInFace.cdl
+-- Created:	Thu Feb 15 09:20:07 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class FindEdgesInFace from LocOpe
+
+	---Purpose: 
+
+uses Shape                     from TopoDS,
+     Face                      from TopoDS,
+     Edge                      from TopoDS,
+     ListOfShape               from TopTools,
+     ListIteratorOfListOfShape from TopTools
+     
+
+raises ConstructionError from Standard,
+       NoSuchObject      from Standard,
+       NoMoreObject      from Standard
+
+is
+
+    Create
+    	returns FindEdgesInFace from LocOpe;
+	---C++: inline
+
+
+
+    Create(S: Shape from TopoDS; F: Face from TopoDS)
+    
+	---C++: inline
+    	returns FindEdgesInFace from LocOpe
+	raises ConstructionError from Standard;
+	
+	
+    Set(me: in out; S: Shape from TopoDS; F: Face from TopoDS)
+    
+	raises ConstructionError from Standard
+    	is static;
+
+
+    Init(me: in out)
+    
+	---C++: inline
+    	is static;
+
+
+    More(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    Edge(me)
+    
+    	returns Edge from TopoDS
+	---C++: return const&
+	---C++: inline
+	raises NoSuchObject from Standard
+	is static;
+
+
+    Next(me: in out)
+    
+	---C++: inline
+    	raises NoMoreObject from Standard
+	is static;
+
+
+fields
+
+    myShape : Shape                     from TopoDS;
+    myFace  : Face                      from TopoDS;
+    myList  : ListOfShape               from TopTools;
+    myIt    : ListIteratorOfListOfShape from TopTools;
+
+end FindEdgesInFace;

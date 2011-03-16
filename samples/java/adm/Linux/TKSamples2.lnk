@@ -1,0 +1,35 @@
+if (!($?CCHOME))   setenv CCHOME   "g++ "
+if (!($?CCFLAGS))  setenv CCFLAGS  " -shared "
+
+if (!($?STLPortHome)) then
+    setenv STLPortLib		"."
+else
+    if (!($?STLPortLib_CC))	setenv STLPortLib_CC	"stlport_gcc"
+    if (!($?STLPortLib)) 	setenv STLPortLib	"$STLPortHome/lib"
+    setenv STLPortLib		"$STLPortLib -l$STLPortLib_CC"
+endif
+
+${CCHOME} ${CCFLAGS} -o ${SAMPLE_ROOT}/${STATION}/lib//libTKSamples2.so \
+ -L${SAMPLE_ROOT}/${STATION}/lib \
+ -L${CASROOT}/${STATION}/lib -L${STLPortLib} \
+\
+ ${SAMPLE_ROOT}/${STATION}/obj/SampleViewer3DPackage/SampleViewer3DPackage.o \
+\
+ -lTKMath \
+ -lTKernel \
+ -lTKService \
+ -lTKV3d \
+ -lTKG2d \
+ -lTKV2d \
+ -lTKBRep \
+ -lTKGeomBase \
+ -lTKTopAlgo \
+ -lTKG3d \
+ -lTKPrim \
+ ;
+ set ld_status=$status
+ if ( $ld_status ) then
+   echo "Check failed"
+ else
+   echo "Check successed"
+ endif

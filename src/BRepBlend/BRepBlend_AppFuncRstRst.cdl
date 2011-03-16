@@ -1,0 +1,39 @@
+-- File:	BRepBlend_AppFuncRstRst.cdl
+-- Created:	Tue May 12 15:33:20 1998
+-- Author:	Philippe NOUAILLE
+--		<pne@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class AppFuncRstRst from BRepBlend inherits AppFuncRoot from BRepBlend
+	---Purpose: Function to approximate by AppSurface for Edge/Face          
+	---Level: Advanced
+
+uses 
+ Line            from BRepBlend,
+ Point           from Blend,
+ AppFunction     from Blend,
+ RstRstFunction  from Blend,
+ Vector          from math
+
+ 
+raises OutOfRange from  Standard
+
+is   
+     
+   Create(Line : in out Line from BRepBlend;
+    	  Func  : in  out RstRstFunction from Blend; 
+          Tol3d: Real;
+          Tol2d: Real)
+   returns AppFuncRstRst from BRepBlend;
+
+   Point(me;
+    	 Func  : AppFunction from Blend; 
+	 Param : Real;
+	 Sol   : Vector from math;
+	 Pnt   : in out Point from Blend);
+	
+   Vec(me;
+       Sol : in out Vector from math;
+       Pnt : Point from Blend);
+	
+end AppFuncRstRst;

@@ -1,0 +1,592 @@
+-- File:	ElCLib.cdl
+-- Created:	Tue Sep 10 08:53:41 1991
+-- Author:	Michel Chauvat
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+package ElCLib  
+
+        --- Purpose: Provides functions for basic geometric computations on
+    	-- elementary curves such as conics and lines in 2D and 3D space.
+    	-- This includes:
+    	-- -   calculation of a point or derived vector on a 2D or
+    	--   3D curve where:
+    	--   -   the curve is provided by the gp package, or
+    	--    defined in reference form (as in the gp package),
+    	--    and
+    	--   -   the point is defined by a parameter,
+    	-- -   evaluation of the parameter corresponding to a point
+    	--   on a 2D or 3D curve from gp,
+    	-- -   various elementary computations which allow you to
+    	-- position parameterized values within the period of a curve.
+    	--  Notes:
+    	-- -   ElCLib stands for Elementary Curves Library.
+    	-- -   If the curves provided by the gp package are not
+    	--   explicitly parameterized, they still have an implicit
+    	--   parameterization, analogous to that which they infer
+    	--   for the equivalent Geom or Geom2d curves.
+  
+uses    gp
+
+is
+
+  InPeriod(U, UFirst, ULast : Real) returns Real;
+  
+	---Purpose: Return a value in   the  range <UFirst, ULast>  by
+	--          adding or removing the period <ULast -  UFirst> to
+	--          <U>.
+	
+  AdjustPeriodic(UFirst, ULast, Precision : Real;
+                 U1, U2 : in out Real);
+	
+	---Purpose: Adjust U1 and  U2 in the  parametric range  UFirst
+	--          Ulast of a periodic curve, where ULast -
+    	-- UFirst is its period. To do this, this function:
+    	-- -   sets U1 in the range [ UFirst, ULast ] by
+    	--   adding/removing the period to/from the value U1, then
+    	-- -   sets U2 in the range [ U1, U1 + period ] by
+    	--   adding/removing the period to/from the value U2.
+    	--   Precision is used to test the equalities.       
+	
+
+
+       
+
+  Value (U : Real; L : Lin from gp)   returns Pnt from gp;
+        --- Purpose : For elementary curves (lines, circles and conics) from
+    	-- the gp package, computes the point of parameter U.
+    	-- The result is either:
+    	-- -   a gp_Pnt point for a curve in 3D space, or
+    	-- -   a gp_Pnt2d point for a curve in 2D space.
+
+  Value (U : Real; C : Circ from gp)   returns Pnt from gp;
+        ---C++: inline
+
+  Value (U : Real; E : Elips from gp)  returns Pnt from gp;
+        ---C++: inline
+
+  Value (U : Real; H : Hypr from gp)   returns Pnt from gp;
+        ---C++: inline
+
+  Value (U : Real; Prb : Parab from gp)     returns Pnt from gp;    
+        ---C++: inline
+
+  D1 (U : Real; L : Lin from gp; P : out Pnt from gp; V1 : out Vec from gp);
+        ---Purpose:
+    	-- For elementary curves (lines, circles and conics) from the
+    	-- gp package, computes:
+    	-- -   the point P of parameter U, and
+    	-- -   the first derivative vector V1 at this point.
+    	-- The results P and V1 are either:
+    	-- -   a gp_Pnt point and a gp_Vec vector, for a curve in 3D  space, or
+    	-- -   a gp_Pnt2d point and a gp_Vec2d vector, for a curve in 2D space.
+
+  D1 (U : Real; C : Circ from gp; P : out Pnt from gp; V1 : out Vec from gp);
+        ---C++: inline
+
+  D1 (U : Real; E : Elips from gp; P : out Pnt from gp; V1 : out Vec from gp);
+        ---C++: inline
+
+  D1 (U : Real; H : Hypr from gp; P : out Pnt from gp; V1 : out Vec from gp);
+        ---C++: inline
+
+  D1 (U : Real; Prb : Parab from gp; P : out Pnt from gp; 
+    V1 : out Vec from gp);
+        ---C++: inline
+
+  D2 (U : Real; C : Circ from gp; P : out Pnt from gp; 
+    V1, V2 : out Vec from gp);
+        ---Purpose: For elementary curves (circles and conics) from the gp
+    	-- package, computes:
+    	-- - the point P of parameter U, and
+    	-- - the first and second derivative vectors V1 and V2 at this point.
+    	--   The results, P, V1 and V2, are either:
+    	-- -   a gp_Pnt point and two gp_Vec vectors, for a curve in 3D space, or
+    	-- -   a gp_Pnt2d point and two gp_Vec2d vectors, for a curve in 2D space.
+
+  D2 (U : Real; E : Elips from gp; P : out Pnt from gp; 
+    V1, V2 : out Vec from gp);
+        ---C++: inline
+
+  D2 (U : Real; H : Hypr from gp; P : out Pnt from gp; 
+    V1, V2 : out Vec from gp);
+        ---C++: inline
+
+  D2 (U : Real; Prb : Parab from gp; P : out Pnt from gp; 
+    V1, V2 : out Vec from gp);
+        ---C++: inline
+
+  D3 (U : Real; C : Circ from gp; P : out Pnt from gp; 
+    V1, V2, V3 : out Vec from gp);
+        ---Purpose: For elementary curves (circles, ellipses and hyperbolae)
+    	-- from the gp package, computes:
+    	-- -   the point P of parameter U, and
+    	-- -   the first, second and third derivative vectors V1, V2
+    	--   and V3 at this point.
+    	-- The results, P, V1, V2 and V3, are either:
+    	-- -   a gp_Pnt point and three gp_Vec vectors, for a curve in 3D space, or
+    	-- -   a gp_Pnt2d point and three gp_Vec2d vectors, for a curve in 2D space.
+
+  D3 (U : Real; E : Elips from gp; P : out Pnt from gp; 
+    V1, V2, V3 : out Vec from gp);
+        ---C++: inline
+
+  D3 (U : Real; H : Hypr from gp; P : out Pnt from gp; 
+    V1, V2, V3 : out Vec from gp);
+ 
+  DN (U : Real; L : Lin from gp; N : Integer)       returns Vec from gp;
+        ---Purpose:
+    	-- For elementary curves (lines, circles and conics) from
+    	-- the gp package, computes the vector corresponding to
+    	-- the Nth derivative at the point of parameter U. The result is either:
+    	-- -   a gp_Vec vector for a curve in 3D space, or
+    	-- -   a gp_Vec2d vector for a curve in 2D space.
+    	--  In the following functions N is the order of derivation
+        --  and should be greater than 0
+
+  DN (U : Real; C : Circ from gp; N : Integer)      returns Vec from gp;
+        ---C++: inline
+
+  DN (U : Real; E : Elips from gp; N : Integer)     returns Vec from gp;
+        ---C++: inline
+
+  DN (U : Real; H : Hypr from gp; N : Integer)      returns Vec from gp;
+        ---C++: inline
+
+  DN (U : Real; Prb : Parab from gp; N : Integer)   returns Vec from gp;
+        ---C++: inline
+
+  Value (U : Real; L : Lin2d from gp)       returns Pnt2d from gp;
+        ---C++: inline
+     
+  Value (U : Real; C : Circ2d from gp)      returns Pnt2d from gp;
+        ---C++: inline
+
+  Value (U : Real; E : Elips2d from gp)     returns Pnt2d from gp;
+        ---C++: inline
+
+  Value (U : Real; H : Hypr2d from gp)      returns Pnt2d from gp;
+        ---C++: inline
+
+  Value (U : Real; Prb : Parab2d from gp)   returns Pnt2d from gp;
+        ---C++: inline
+
+  D1 (U : Real; L : Lin2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+        ---C++: inline
+
+  D1 (U : Real; C : Circ2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+        ---C++: inline
+
+  D1 (U : Real; E : Elips2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+        ---C++: inline
+
+  D1 (U : Real; H : Hypr2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+        ---C++: inline
+
+  D1 (U : Real; Prb : Parab2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+        ---C++: inline
+
+  D2 (U : Real; C : Circ2d from gp; P : out Pnt2d from gp; 
+    V1, V2 : out Vec2d from gp);
+        ---C++: inline
+
+  D2 (U : Real; E : Elips2d from gp; P : out Pnt2d from gp; 
+    V1, V2 : out Vec2d from gp);
+        ---C++: inline
+
+  D2 (U : Real; H : Hypr2d from gp; P : out Pnt2d from gp; 
+    V1, V2 : out Vec2d from gp);
+        ---C++: inline
+
+  D2 (U : Real; Prb : Parab2d from gp; P : out Pnt2d from gp; 
+    V1, V2 : out Vec2d from gp);
+        ---C++: inline
+
+  D3 (U : Real; C : Circ2d from gp; P : out Pnt2d from gp; 
+    V1, V2, V3 : out Vec2d from gp);
+        ---C++: inline
+
+  D3 (U : Real; E : Elips2d from gp; P : out Pnt2d from gp; 
+    V1, V2, V3 : out Vec2d from gp);
+        ---C++: inline
+
+  D3 (U : Real; H : Hypr2d from gp; P : out Pnt2d from gp; 
+    V1, V2, V3 : out Vec2d from gp);
+        ---C++: inline
+
+
+        --- Purpose :
+        --  In the following functions N is the order of derivation
+        --  and should be greater than 0
+
+  DN (U : Real; L : Lin2d from gp; N : Integer)       returns Vec2d from gp;
+        ---C++: inline
+
+  DN (U : Real; C : Circ2d from gp; N : Integer)      returns Vec2d from gp;
+        ---C++: inline
+
+  DN (U : Real; E : Elips2d from gp; N : Integer)     returns Vec2d from gp;
+        ---C++: inline
+
+  DN (U : Real; H : Hypr2d from gp; N : Integer)      returns Vec2d from gp;
+        ---C++: inline
+
+  DN (U : Real; Prb : Parab2d from gp; N : Integer)   returns Vec2d from gp;
+        ---C++: inline
+
+
+
+
+
+     
+
+  LineValue (U : Real; Pos : Ax1 from gp)
+     returns Pnt from gp;    
+   --- Purpose : Curve evaluation
+        --  The following basis functions compute the derivatives on 
+        --  elementary curves defined by their geometric characteristics.
+        --  These functions can be called without constructing a conic
+        --  from package gp. They are called by the previous functions.
+        -- Example :
+        --  A circle is defined by its position and its radius.
+
+  CircleValue (U : Real; Pos : Ax2 from gp; Radius : Real)
+     returns Pnt from gp;    
+
+  EllipseValue (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real)
+     returns Pnt from gp;    
+
+  HyperbolaValue (U : Real;  Pos : Ax2 from gp; 
+    MajorRadius, MinorRadius : Real)
+     returns Pnt from gp;    
+
+  ParabolaValue (U : Real;  Pos : Ax2 from gp; Focal : Real)
+     returns Pnt from gp;    
+
+  LineD1 (U : Real; Pos : Ax1 from gp; P : out Pnt from gp; 
+    V1 : out Vec from gp);
+
+  CircleD1 (U : Real; Pos : Ax2 from gp; Radius : Real; P : out Pnt from gp;  
+    V1 : out Vec from gp);
+
+  EllipseD1 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt from gp; V1 : out Vec from gp);
+
+  HyperbolaD1 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt from gp; V1 : out Vec from gp);
+
+  ParabolaD1 (U : Real; Pos : Ax2 from gp; Focal : Real; P : out Pnt from gp;  
+    V1 : out Vec from gp);
+
+  CircleD2 (U : Real; Pos : Ax2 from gp; Radius : Real;
+            P : out Pnt from gp; V1, V2 : out Vec from gp);
+
+  EllipseD2 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt from gp; V1, V2 : out Vec from gp);
+
+  HyperbolaD2 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt from gp; V1, V2 : out Vec from gp);
+
+  ParabolaD2 (U : Real; Pos : Ax2 from gp; Focal : Real;
+              P : out Pnt from gp; V1, V2 : out Vec from gp);
+
+  CircleD3 (U : Real; Pos : Ax2 from gp; Radius : Real;
+            P : out Pnt from gp; V1, V2, V3 : out Vec from gp);
+
+  EllipseD3 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt from gp; V1, V2, V3 : out Vec from gp);
+
+  HyperbolaD3 (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt from gp; V1, V2, V3 : out Vec from gp);
+
+
+       
+  LineDN (U : Real; Pos : Ax1 from gp; N : Integer)
+     returns Vec from gp;    
+    --- Purpose :
+        --  In the following functions N is the order of derivation
+        --  and should be greater than 0
+  CircleDN (U : Real; Pos : Ax2 from gp; Radius : Real; N : Integer)
+     returns Vec from gp;    
+
+  EllipseDN (U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;  
+    N : Integer)
+     returns Vec from gp;    
+
+  HyperbolaDN (
+     U : Real; Pos : Ax2 from gp; MajorRadius, MinorRadius : Real; N : Integer)
+     returns Vec from gp;    
+
+  ParabolaDN (U : Real; Pos : Ax2 from gp; Focal : Real; N : Integer)
+     returns Vec from gp;    
+
+
+
+
+
+  LineValue (U : Real; Pos : Ax2d from gp)
+     returns Pnt2d from gp;
+     
+  CircleValue (U : Real; Pos : Ax22d from gp; Radius : Real)
+     returns Pnt2d from gp;
+
+  EllipseValue (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real)
+     returns Pnt2d from gp;
+
+  HyperbolaValue (U : Real; Pos : Ax22d from gp; 
+    MajorRadius, MinorRadius : Real)
+     returns Pnt2d from gp;
+
+  ParabolaValue (U : Real; Pos : Ax22d from gp; Focal : Real)
+     returns Pnt2d from gp;
+
+  LineD1 (U : Real; Pos : Ax2d from gp; P : out Pnt2d from gp; 
+    V1 : out Vec2d from gp);
+
+  CircleD1 (U : Real; Pos : Ax22d from gp; Radius : Real;
+            P : out Pnt2d from gp; V1 : out Vec2d from gp);
+
+  EllipseD1 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt2d from gp; V1 : out Vec2d from gp);
+
+  HyperbolaD1 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt2d from gp; V1 : out Vec2d from gp);
+
+  ParabolaD1 (U : Real; Pos : Ax22d from gp; Focal : Real;
+              P : out Pnt2d from gp; V1 : out Vec2d from gp);
+
+  CircleD2 (U : Real; Pos : Ax22d from gp; Radius : Real;
+            P : out Pnt2d from gp; V1, V2 : out Vec2d from gp);
+
+  EllipseD2 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt2d from gp; V1, V2 : out Vec2d from gp);
+
+  HyperbolaD2 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt2d from gp; V1, V2 : out Vec2d from gp);
+
+  ParabolaD2 (U : Real; Pos : Ax22d from gp; Focal : Real;
+              P : out Pnt2d from gp; V1, V2 : out Vec2d from gp);
+
+  CircleD3 (U : Real; Pos : Ax22d from gp; Radius : Real;
+            P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp);
+
+  EllipseD3 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+             P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp);
+
+  HyperbolaD3 (U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;
+               P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp);
+
+        --- Purpose :
+        --  In the following functions N is the order of derivation
+        --  and should be greater than 0
+
+  LineDN (U : Real; Pos : Ax2d from gp; N : Integer)
+     returns Vec2d from gp;    
+
+  CircleDN (U : Real; Pos : Ax22d from gp; Radius : Real; N : Integer)
+     returns Vec2d from gp;    
+
+  EllipseDN (
+     U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real; 
+    N : Integer)
+     returns Vec2d from gp;    
+
+  HyperbolaDN (
+     U : Real; Pos : Ax22d from gp; MajorRadius, MinorRadius : Real; 
+    N : Integer)
+     returns Vec2d from gp;    
+
+  ParabolaDN (U : Real; Pos : Ax22d from gp; Focal : Real; N : Integer)
+     returns Vec2d from gp;    
+
+
+
+
+        --- Purpose :
+        --  The following functions compute the parametric value corresponding
+        --  to a given point on a elementary curve. The point should be on the
+        --  curve.
+
+
+  Parameter (L : Lin from gp; P : Pnt from gp)      returns Real;
+      	---Purpose:
+      	-- Computes the parameter value of the point P on the given curve.
+      	-- Note: In its local coordinate system, the parametric
+    	-- equation of the curve is given by the following:
+    	-- -   for the line L: P(U) = Po + U*Vo
+    	-- where Po is the origin and Vo the unit vector of its positioning axis.
+    	-- -   for the circle C: X(U) = Radius*Cos(U), Y(U) = Radius*Sin(U)
+    	-- -   for the ellipse E: X(U) = MajorRadius*Cos(U). Y(U) = MinorRadius*Sin(U)
+    	-- -   for the hyperbola H: X(U) = MajorRadius*Ch(U), Y(U) = MinorRadius*Sh(U)
+    	-- -   for the parabola Prb:
+    	-- X(U) = U**2 / (2*p)
+    	-- Y(U) = U
+    	-- where p is the distance between the focus and the directrix.
+    	-- Warning
+    	-- The point P must be on the curve. These functions are
+    	-- not protected, however, and if point P is not on the
+    	-- curve, an exception may be raised.
+
+  Parameter (L : Lin2d from gp; P : Pnt2d from gp)  returns Real;
+        ---C++: inline  
+
+        --- Purpose : parametrization 
+        --  P (U) = L.Location() + U * L.Direction()
+
+
+
+
+  Parameter (C : Circ from gp; P : Pnt from gp)      returns Real;
+        ---C++: inline
+
+  Parameter (C : Circ2d from gp; P : Pnt2d from gp)  returns Real;
+        ---C++: inline
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the circle
+        --  X (U) = Radius * Cos (U)
+        --  Y (U) = Radius * Sin (U)
+
+
+
+
+  Parameter (E : Elips from gp; P : Pnt from gp)      returns Real;
+        ---C++: inline
+
+  Parameter (E : Elips2d from gp; P : Pnt2d from gp)  returns Real;
+        ---C++: inline
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the Ellipse
+        --  X (U) = MajorRadius * Cos (U)
+        --  Y (U) = MinorRadius * Sin (U)
+
+  
+  Parameter (H : Hypr from gp; P : Pnt from gp)      returns Real;
+        ---C++: inline  
+
+  Parameter (H : Hypr2d from gp; P : Pnt2d from gp)  returns Real;
+        ---C++: inline  
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the Hyperbola
+        --  X (U) = MajorRadius * Ch (U)
+        --  Y (U) = MinorRadius * Sh (U)
+
+
+  Parameter (Prb : Parab from gp; P : Pnt from gp)      returns Real;
+        ---C++: inline  
+
+  Parameter (Prb : Parab2d from gp; P : Pnt2d from gp)  returns Real;
+        ---C++: inline  
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the parabola
+        --  Y**2 = (2*P) * X where P is the distance between the focus
+        --  and the directrix.
+
+
+  LineParameter (Pos : Ax1 from gp; P : Pnt from gp)      returns Real;
+
+  LineParameter (Pos : Ax2d from gp; P : Pnt2d from gp)   returns Real;
+  
+        --- Purpose : parametrization 
+        --  P (U) = L.Location() + U * L.Direction()
+
+
+
+  CircleParameter (Pos : Ax2 from gp; P : Pnt from gp)    returns Real;
+
+  CircleParameter (Pos : Ax22d from gp; P : Pnt2d from gp) returns Real;
+        --- Purpose : Pos is the Axis of the Circle
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the circle
+        --  X (U) = Radius * Cos (U)
+        --  Y (U) = Radius * Sin (U)
+
+
+
+  EllipseParameter (Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;  
+    P : Pnt from gp)  
+     returns Real;
+
+  EllipseParameter (Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;  
+    P : Pnt2d from gp) 
+     returns Real;
+        --- Purpose : Pos is the Axis of the Ellipse
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the Ellipse
+        --  X (U) = MajorRadius * Cos (U)
+        --  Y (U) = MinorRadius * Sin (U)
+
+  
+  HyperbolaParameter (Pos : Ax2 from gp; MajorRadius, MinorRadius : Real;  
+    P : Pnt from gp)  
+     returns Real;
+
+  HyperbolaParameter (Pos : Ax22d from gp; MajorRadius, MinorRadius : Real;  
+    P : Pnt2d from gp) 
+     returns Real;
+        --- Purpose : Pos is the Axis of the Hyperbola
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the Hyperbola
+        --  X (U) = MajorRadius * Ch (U)
+        --  Y (U) = MinorRadius * Sh (U)
+
+
+  ParabolaParameter (Pos : Ax2 from gp; P : Pnt from gp)       returns Real;
+
+  ParabolaParameter (Pos : Ax22d from gp; P : Pnt2d from gp)    returns Real;
+        --- Purpose : Pos is the mirror axis of the parabola
+  
+        --- Purpose : parametrization 
+        --  In the local coordinate system of the parabola
+        --  Y**2 = (2*P) * X where P is the distance between the focus
+        --  and the directrix.
+
+
+
+
+        --- Purpose:  The following functions build  a 3d curve from a
+        --            2d curve at a given position defined with an Ax2.
+
+
+    To3d (Pos : Ax2 from gp; P : Pnt2d from gp)      returns Pnt from gp;
+
+    To3d (Pos : Ax2 from gp; V : Vec2d from gp)      returns Vec from gp;
+
+    To3d (Pos : Ax2 from gp; V : Dir2d from gp)      returns Dir from gp;
+
+    To3d (Pos : Ax2 from gp; A : Ax2d from gp)       returns Ax1 from gp;
+
+    To3d (Pos : Ax2 from gp; A : Ax22d from gp)      returns Ax2 from gp;
+
+    To3d (Pos : Ax2 from gp; L : Lin2d from gp)      returns Lin from gp;
+
+    To3d (Pos : Ax2 from gp; C : Circ2d from gp)     returns Circ from gp;
+
+    To3d (Pos : Ax2 from gp; E : Elips2d from gp)    returns Elips from gp;
+
+    To3d (Pos : Ax2 from gp; H : Hypr2d from gp)     returns Hypr from gp;
+
+    To3d (Pos : Ax2 from gp; Prb : Parab2d from gp)  returns Parab from gp;
+
+
+    	--- Purpose:
+    	-- These functions build a 3D geometric entity from a 2D geometric entity.
+    	-- The "X Axis" and the "Y Axis" of the global coordinate
+    	-- system (i.e. 2D space) are lined up respectively with the
+    	-- "X Axis" and "Y Axis" of the 3D coordinate system, Pos.
+        
+end ElCLib;
+

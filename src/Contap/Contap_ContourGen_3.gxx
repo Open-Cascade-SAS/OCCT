@@ -1,0 +1,435 @@
+//-- Contap_ContourGen_3.gxx
+
+#define Tolpetit 1.e-10  // pour dist au carre
+#include <ElSLib.hxx>
+
+
+#include <TColStd_SequenceOfInteger.hxx>
+
+static Standard_Boolean FindLine(Contap_TheLine& Line,
+				 const TheSurface& Surf,
+				 const gp_Pnt2d& Pt2d,
+				 gp_Pnt& Ptref,
+				 Standard_Real& Paramin,
+				 gp_Vec& Tgmin,
+				 gp_Vec& Norm)
+{
+//  Standard_Integer i;
+  gp_Pnt pt,ptmin;
+  gp_Vec tg;
+  Standard_Real para,dist;
+  Standard_Real dismin = RealLast();
+
+  Contap_TheSurfProps::Normale(Surf,Pt2d.X(),Pt2d.Y(),Ptref,Norm);
+
+  if (Line.TypeContour() == Contap_Lin) {
+    gp_Lin lin(Line.Line());
+    para = ElCLib::Parameter(lin,Ptref);
+    ElCLib::D1(para,lin,pt,tg);
+    dist = pt.Distance(Ptref) + Abs(Norm.Dot(lin.Direction()));
+  }
+  else { // Contap__Circle
+    gp_Circ cir(Line.Circle());
+    para = ElCLib::Parameter(cir,Ptref);
+    ElCLib::D1(para,cir,pt,tg);
+    dist = pt.Distance(Ptref)+Abs(Norm.Dot(tg/cir.Radius()));
+  }
+  if (dist < dismin) {
+    dismin = dist;
+    Paramin = para;
+    ptmin = pt;
+    Tgmin = tg;
+  }
+  if (ptmin.SquareDistance(Ptref) <= Tolpetit) {
+    return Standard_True;
+  }
+  else {
+    return Standard_False;
+  }
+}
+
+
+static void PutPointsOnLine (const Contap_TheSearch& solrst,
+			     const TheSurface& Surf,
+			     Contap_TheSequenceOfLine& slin)
+
+{
+  Standard_Integer i,l;//,index; 
+  Standard_Integer NbPoints = solrst.NbPoints();
+
+  Standard_Real theparam;
+
+  IntSurf_Transition TLine,TArc;
+  Standard_Boolean goon;
+  
+  gp_Pnt2d pt2d;
+  gp_Vec2d d2d;
+
+  gp_Pnt ptonsurf;
+  gp_Vec vectg,normale,tgtrst;
+  Standard_Real paramlin;
+
+  
+  Standard_Integer nbLin = slin.Length();
+  for(l=1;l<=nbLin;l++) { 
+    Contap_TheLine& Line=slin.ChangeValue(l);
+    for (i=1; i<= NbPoints; i++) {
+      
+      const Contap_ThePathPointOfTheSearch& PStart = solrst.Point(i);
+      const TheArc& thearc = PStart.Arc();
+      theparam = PStart.Parameter();
+      
+      TheArcTool::D1(thearc,theparam,pt2d,d2d);
+      goon = FindLine(Line,Surf,pt2d,ptonsurf,paramlin,vectg,normale);
+      
+      Contap_ThePoint PPoint;
+
+      if (goon) {
+	gp_Vec d1u,d1v;
+	gp_Pnt bidpt;
+	TheSurfaceTool::D1(Surf,pt2d.X(),pt2d.Y(),bidpt,d1u,d1v);
+	PPoint.SetValue(ptonsurf,pt2d.X(),pt2d.Y());
+	if (normale.Magnitude() < RealEpsilon()) {
+	  TLine.SetValue();
+	  TArc.SetValue();
+	}
+	else {
+	  // Petit test qui devrait permettre de bien traiter les pointes
+	  // des cones, et les sommets d`une sphere. Il faudrait peut-etre
+	  // rajouter une methode dans SurfProps
+	  
+	  if (Abs(d2d.Y()) <= Precision::Confusion()) {
+	    tgtrst = d1v.Crossed(normale);
+	    if(d2d.X() < 0.0) 
+	      tgtrst.Reverse();
+	  }
+	  else {
+	    tgtrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
+	  }
+	  IntSurf::MakeTransition(vectg,tgtrst,normale,TLine,TArc);
+	}
+	
+	PPoint.SetArc(thearc,theparam, TLine, TArc);
+	PPoint.SetParameter(paramlin);
+	if (!PStart.IsNew()) {
+	  PPoint.SetVertex(PStart.Vertex());
+	}
+	Line.Add(PPoint);
+      }
+    }
+  }
+}
+
+
+//----------------------------------------------------------------------------------
+//-- Orientation des contours Apparents quand ceux-ci sont des lignes ou des cercles
+//-- On prend un point de la ligne ou du cercle ---> P 
+//-- On projete ce point sur la surface P ---> u,v
+//-- et on evalue la transition au point u,v
+//----------------------------------------------------------------------------------
+
+IntSurf_TypeTrans ComputeTransitionOngpLine
+  (Contap_TheSurfFunction& SFunc,
+   const gp_Lin& L)
+{ 
+  const TheSurface& Surf=SFunc.Surface();
+  GeomAbs_SurfaceType typS = TheSurfaceTool::GetType(Surf);
+  gp_Pnt P;
+  gp_Vec T;
+  ElCLib::D1(0.0,L,P,T);
+  Standard_Real u,v;
+  switch (typS) {
+  case GeomAbs_Cylinder: {
+    ElSLib::Parameters(TheSurfaceTool::Cylinder(Surf),P,u,v);
+      break;
+    }
+  case GeomAbs_Cone: {
+    ElSLib::Parameters(TheSurfaceTool::Cone(Surf),P,u,v);
+      break;
+    }
+  case GeomAbs_Sphere: { 
+    ElSLib::Parameters(TheSurfaceTool::Sphere(Surf),P,u,v);
+      break;
+    }
+#ifndef DEB
+  default:
+    break;
+#endif
+  }
+  return(ComputeTransitionOnLine(SFunc,u,v,T));
+}
+
+
+IntSurf_TypeTrans ComputeTransitionOngpCircle
+  (Contap_TheSurfFunction& SFunc,
+   const gp_Circ& C)
+{ 
+  const TheSurface& Surf=SFunc.Surface();
+  GeomAbs_SurfaceType typS = TheSurfaceTool::GetType(Surf);
+  gp_Pnt P;
+  gp_Vec T;
+  ElCLib::D1(0.0,C,P,T);
+  Standard_Real u,v;
+  switch (typS) {
+  case GeomAbs_Cylinder: {
+    ElSLib::Parameters(TheSurfaceTool::Cylinder(Surf),P,u,v);
+      break;
+    }
+  case GeomAbs_Cone: {
+    ElSLib::Parameters(TheSurfaceTool::Cone(Surf),P,u,v);
+      break;
+    }
+  case GeomAbs_Sphere: { 
+    ElSLib::Parameters(TheSurfaceTool::Sphere(Surf),P,u,v);
+      break;
+    }
+#ifndef DEB
+  default:
+    break;
+#endif
+  }
+  return(ComputeTransitionOnLine(SFunc,u,v,T));
+  
+}
+
+
+void Contap_ContourGen::PerformAna(const Handle(TheTopolTool)& Domain)
+{
+
+  done = Standard_False;
+  slin.Clear();
+
+  Standard_Real TolArc = 1.e-5;
+
+  Standard_Integer nbCont, nbPointRst, i;
+  //gp_Circ cirsol;
+  //gp_Lin linsol;
+  Contap_ContAna contana;
+  Contap_TheLine theline;
+  const TheSurface& Surf = mySFunc.Surface();
+  Contap_TFunction TypeFunc(mySFunc.FunctionType());
+  Standard_Boolean PerformSolRst = Standard_True;
+
+  GeomAbs_SurfaceType typS = TheSurfaceTool::GetType(Surf);
+
+  switch (typS) {
+  case GeomAbs_Plane: 
+    {
+      gp_Pln pl(TheSurfaceTool::Plane(Surf));
+      switch (TypeFunc) {
+      case Contap_ContourStd:
+	{
+	  gp_Dir Dirpln(pl.Axis().Direction());
+	  if (Abs(mySFunc.Direction().Dot(Dirpln)) > Precision::Angular()) {
+	    // Aucun point du plan n`est solution, en particulier aucun point
+	    // sur restriction.
+	    PerformSolRst = Standard_False;
+	  }
+	}
+	break;
+      case Contap_ContourPrs:
+	{
+	  gp_Pnt Eye(mySFunc.Eye());
+	  if (pl.Distance(Eye) > Precision::Confusion()) {
+	    // Aucun point du plan n`est solution, en particulier aucun point
+	    // sur restriction.
+	    PerformSolRst = Standard_False;
+	  }	    
+	}
+	break;
+      case Contap_DraftStd:
+	{
+	  gp_Dir Dirpln(pl.Axis().Direction());
+	  Standard_Real Sina = Sin(mySFunc.Angle());
+	  if (Abs(mySFunc.Direction().Dot(Dirpln)+ Sina) > //voir SurfFunction
+	      Precision::Angular()) {
+	  
+	    PerformSolRst = Standard_False;
+	  }
+	}
+	break;
+      case Contap_DraftPrs:
+      default:
+	{
+	}
+      }
+    }
+    break;
+
+  case GeomAbs_Sphere:
+    {
+      switch (TypeFunc) {
+      case Contap_ContourStd:
+	{
+	  contana.Perform(TheSurfaceTool::Sphere(Surf),mySFunc.Direction());
+	}
+	break;
+      case Contap_ContourPrs:
+	{
+	  contana.Perform(TheSurfaceTool::Sphere(Surf),mySFunc.Eye());
+	}
+	break;
+      case Contap_DraftStd:
+	{
+	  contana.Perform(TheSurfaceTool::Sphere(Surf),
+			  mySFunc.Direction(),mySFunc.Angle());
+	}
+	break;
+      case Contap_DraftPrs:
+      default:
+	{
+	}
+      }
+    }
+    break;
+
+  case GeomAbs_Cylinder:
+    {
+      switch (TypeFunc) {
+      case Contap_ContourStd:
+	{
+	  contana.Perform(TheSurfaceTool::Cylinder(Surf),mySFunc.Direction());
+	}
+	break;
+      case Contap_ContourPrs:
+	{
+	  contana.Perform(TheSurfaceTool::Cylinder(Surf),mySFunc.Eye());
+	}
+	break;
+      case Contap_DraftStd:
+	{
+	  contana.Perform(TheSurfaceTool::Cylinder(Surf),
+			  mySFunc.Direction(),mySFunc.Angle());
+	}
+	break;
+      case Contap_DraftPrs:
+      default:
+	{
+	}
+      }
+    }
+    break;
+
+  case GeomAbs_Cone:
+    {
+      switch (TypeFunc) {
+      case Contap_ContourStd:
+	{
+	  contana.Perform(TheSurfaceTool::Cone(Surf),mySFunc.Direction());
+	}
+	break;
+      case Contap_ContourPrs:
+	{
+	  contana.Perform(TheSurfaceTool::Cone(Surf),mySFunc.Eye());
+	}
+	break;
+      case Contap_DraftStd:
+	{
+	  contana.Perform(TheSurfaceTool::Cone(Surf),
+			  mySFunc.Direction(),mySFunc.Angle());
+	}
+	break;
+      case Contap_DraftPrs:
+      default:
+	{
+	}
+      }
+#ifndef DEB
+    default:
+      break;
+#endif
+    }
+    break;
+  }
+  
+  if (typS != GeomAbs_Plane) {
+
+    if (!contana.IsDone()) {
+      return;
+    }
+
+    nbCont = contana.NbContours();
+
+    if (contana.NbContours() == 0) {
+      done = Standard_True;
+      return;
+    }
+
+    GeomAbs_CurveType typL = contana.TypeContour();
+    if (typL == GeomAbs_Circle) {
+      theline.SetValue(contana.Circle());
+      IntSurf_TypeTrans TransCircle;
+      TransCircle = ComputeTransitionOngpCircle(mySFunc,contana.Circle());
+      theline.SetTransitionOnS(TransCircle);
+      slin.Append(theline);
+    }
+    else if (typL == GeomAbs_Line) {
+      for (i=1; i<=nbCont; i++) {
+        theline.SetValue(contana.Line(i));
+	IntSurf_TypeTrans TransLine;
+	TransLine = ComputeTransitionOngpLine(mySFunc,contana.Line(i));
+	theline.SetTransitionOnS(TransLine);
+	slin.Append(theline);
+	theline.Clear();
+      }
+      
+/*
+      if (typS == GeomAbs_Cone) {
+        Standard_Real u,v;
+	gp_Cone thecone(TheSurfaceTool::Cone(Surf));
+	ElSLib::Parameters(thecone,thecone.Apex(),u,v);
+	Contap_ThePoint vtxapex(thecone.Apex(),u,v);
+	vtxapex.SetInternal();
+	vtxapex.SetMultiple();
+	for (i=1; i<=nbCont i++) {
+          slin.ChangeValue(i).Add(vtxapex);
+	}
+      }
+*/
+    }
+  }
+
+  if(PerformSolRst) { 
+    
+    solrst.Perform(myAFunc,Domain,TolArc,TolArc);
+    if (!solrst.IsDone()) {
+      return;
+    }
+    nbPointRst = solrst.NbPoints();
+    
+    if (nbPointRst != 0) {
+      PutPointsOnLine(solrst,Surf,slin);
+    }
+    
+    if (solrst.NbSegments() !=0) {
+      ProcessSegments(solrst,slin,TolArc,mySFunc,Domain);
+    }
+    
+    
+    //-- lbr 
+    //Standard_Boolean oneremov;
+    Standard_Integer nblinto = slin.Length();
+    TColStd_SequenceOfInteger SeqToDestroy;
+    
+    //-- cout<<" Construct Contour_3   nblin = "<<nblinto<<endl;
+    for(i=1; i<= nblinto ; i++) { 
+      //-- cout<<" nbvtx : "<<slin.Value(i).NbVertex()<<endl;
+      //--if(slin.Value(i).NbVertex() > 1) { 
+      if(slin.Value(i).TypeContour() != Contap_Restriction) { 
+	LineConstructor(slin,Domain,slin.ChangeValue(i),Surf);
+	SeqToDestroy.Append(i);
+      }
+      //-- }
+    }
+    for(i=SeqToDestroy.Length(); i>=1; i--) { 
+      slin.Remove(SeqToDestroy.Value(i));
+    } 
+  }
+
+  done = Standard_True;
+}
+
+
+
+
+

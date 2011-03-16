@@ -1,0 +1,51 @@
+-- File:	HLRAlgo_WiresBlock.cdl
+-- Created:	Mon Apr  6 17:56:12 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class WiresBlock from HLRAlgo inherits TShared from MMgt
+
+	---Purpose: A WiresBlock is a set of Blocks. It is used by the
+	--          DataStructure to structure the Edges.
+	--          
+	--          A WiresBlock contains :
+	--          
+	--          * An Array  of Blocks.
+
+uses
+    Address           from Standard,
+    Boolean           from Standard,
+    Integer           from Standard,
+    EdgesBlock        from HLRAlgo,
+    Array1OfTransient from TColStd
+    
+is
+    Create(NbWires : Integer from Standard)
+	---Purpose: Create a Block of Blocks.
+    returns mutable WiresBlock from HLRAlgo;
+
+    NbWires(me) returns Integer from Standard
+    is static;
+    
+    Set(me : mutable; I  : Integer     from Standard;
+		      W  : EdgesBlock  from HLRAlgo)
+    is static;		   
+
+    Wire(me : mutable; I : Integer from Standard)
+    returns any EdgesBlock from HLRAlgo
+	---C++: return &
+    is static;
+    
+    UpdateMinMax(me : mutable; TotMinMax : Address from Standard)
+    is static;
+
+    MinMax(me) returns Address from Standard
+	---C++: inline
+    is static;
+
+fields
+    myWires  : Array1OfTransient from TColStd;
+    myMinMax : Integer           from Standard[16];
+
+end WiresBlock;

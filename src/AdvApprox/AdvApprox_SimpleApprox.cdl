@@ -1,0 +1,113 @@
+-- File:        AdvApprox_SimpleApprox.cdl
+-- Created:     Mon Oct 14 18:05:03 1996
+-- Author:      Jeannine PANTIATICI
+--              <jpi@sgi64>
+---Copyright:    Matra Datavision 1996
+
+class SimpleApprox from AdvApprox
+
+---Purpose: Approximate  a function on   an intervall [First,Last] 
+--          The result  is  a simple  polynomial  whose  degree is  as low as
+--          possible  to   satisfy  the required  tolerance  and  the
+--          maximum degree.  The maximum  error and the averrage error
+--          resulting from  approximating the function by the polynomial are computed
+          
+
+uses HArray1OfReal     from TColStd, 
+     HArray2OfReal     from TColStd, 
+     Array1OfReal      from TColStd, 
+     Array1OfInteger   from TColStd,
+     Shape             from GeomAbs,
+     Vector            from math,
+     EvaluatorFunction from AdvApprox,
+     JacobiPolynomial  from PLib     
+
+raises 
+
+    OutOfRange        from Standard,
+    ConstructionError from Standard
+
+is   
+    Create(TotalDimension  : Integer ;
+           TotalNumSS      : Integer ;
+           Continuity    : Shape from GeomAbs ; 
+           WorkDegree    : Integer ;
+           NbGaussPoints : Integer ;
+           JacobiBase    : JacobiPolynomial from PLib;
+           Func          : EvaluatorFunction from AdvApprox) 
+           
+    returns SimpleApprox from AdvApprox 
+    raises ConstructionError;     
+
+    Perform(me:in  out  ;
+           LocalDimension  : Array1OfInteger  from TColStd;         
+           LocalTolerancesArray: Array1OfReal from TColStd ;
+           First         : Real ;
+           Last          : Real ;
+           MaxDegree     : Integer) 
+    raises ConstructionError; 
+    ---Purpose: Constructs approximator tool.
+    --
+    --  Warning:
+    --     the Func should be valid reference to object of type 
+    --     inherited from class EvaluatorFunction from Approx 
+    --     with life time longer than that of the approximator tool;
+    --     
+
+    IsDone(me) 
+    returns  Boolean; 
+    
+    Degree (me)
+    returns Integer;
+    
+    Coefficients (me)
+    ---Purpose: returns the coefficients in the Jacobi Base
+    returns HArray1OfReal from TColStd;
+
+    FirstConstr (me)
+    ---Purpose: returns the constraints at First
+    returns HArray2OfReal from TColStd;
+
+    LastConstr (me)
+    ---Purpose: returns the constraints at Last
+    returns HArray2OfReal from TColStd;
+
+    SomTab (me)
+    returns HArray1OfReal from TColStd;
+
+    DifTab (me)
+    returns HArray1OfReal from TColStd;
+
+    MaxError    (me; Index : Integer)
+    returns Real;
+    
+    AverageError (me;   Index : Integer) 
+    returns Real;   
+
+    Dump(me; o: in out OStream); 
+    ---Purpose: display information on approximation
+
+fields 
+     
+    myTotalNumSS     : Integer; 
+    myTotalDimension : Integer; 
+    myNbGaussPoints  : Integer;  
+    myWorkDegree     : Integer;     
+    myNivConstr      : Integer  ;
+    myJacPol         : JacobiPolynomial from PLib; 
+    myTabPoints      : HArray1OfReal from TColStd; 
+    myTabWeights     : HArray2OfReal from TColStd;
+    myEvaluator      : Address from Standard;
+    myDegree         : Integer;
+    myCoeff          : HArray1OfReal from TColStd; 
+    myFirstConstr    : HArray2OfReal from TColStd; 
+    myLastConstr     : HArray2OfReal from TColStd; 
+    mySomTab         : HArray1OfReal from TColStd; 
+    myDifTab         : HArray1OfReal from TColStd; 
+    myMaxError       : HArray1OfReal from TColStd;
+    myAverageError   : HArray1OfReal from TColStd;  
+    done             : Boolean;
+
+end SimpleApprox;
+
+

@@ -1,0 +1,105 @@
+// File:	ShapeUpgrade_Tool.lxx
+// Created:	Tue Aug 31 15:21:41 1999
+// Author:	Pavel DURANDIN
+//		<pdn@friendox.nnov.matra-dtv.fr>
+
+
+//=======================================================================
+//function : SetContext
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_Tool::SetContext (const Handle(ShapeBuild_ReShape)& context) 
+{
+  myContext = context;
+}
+
+
+//=======================================================================
+//function : Context
+//purpose  : 
+//=======================================================================
+
+inline Handle(ShapeBuild_ReShape) ShapeUpgrade_Tool::Context() const
+{
+  return myContext;
+}
+
+
+//=======================================================================
+//function : SetPrecision
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_Tool::SetPrecision (const Standard_Real preci) 
+{
+  myPrecision = preci;
+  if(myMaxTol < myPrecision) myMaxTol = myPrecision;
+  if(myMinTol > myPrecision) myMinTol = myPrecision;
+}
+
+
+//=======================================================================
+//function : Precision
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeUpgrade_Tool::Precision() const
+{
+  return myPrecision;
+}
+
+
+//=======================================================================
+//function : SetMinTolerance
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_Tool::SetMinTolerance (const Standard_Real mintol) 
+{
+  myMinTol = mintol;
+}
+
+
+//=======================================================================
+//function : MinTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeUpgrade_Tool::MinTolerance() const
+{
+  return myMinTol;
+}
+
+
+//=======================================================================
+//function : SetMaxTolerance
+//purpose  : 
+//=======================================================================
+
+inline void ShapeUpgrade_Tool::SetMaxTolerance (const Standard_Real maxtol) 
+{
+  myMaxTol = maxtol;
+}
+
+
+//=======================================================================
+//function : MaxTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeUpgrade_Tool::MaxTolerance() const
+{
+  return myMaxTol;
+}
+
+//=======================================================================
+//function : LimitTolerance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeUpgrade_Tool::LimitTolerance(const Standard_Real toler) const
+{
+  //only maximal restriction implemented.
+  return Min(myMaxTol,toler);
+}

@@ -1,0 +1,61 @@
+-- File:	TopOpeBRepBuild_Pave.cdl
+-- Created:	Mon Nov 14 09:49:36 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class Pave from TopOpeBRepBuild 
+    inherits Loop from TopOpeBRepBuild
+
+uses
+    
+    ShapeEnum from TopAbs,
+    Shape from TopoDS, 
+    --modified by NIZHNY-MZV  Mon Feb 21 14:29:26 2000
+    Kind  from  TopOpeBRepDS
+is
+
+    Create(V : Shape from TopoDS; P : Real; bound : Boolean) returns mutable Pave;
+    ---Purpose: V = vertex, P = parameter of vertex <V>
+    --          bound = True if <V> is an old vertex
+    --          bound = False if <V> is a new vertex
+    
+    HasSameDomain(me : mutable; b : Boolean);
+    SameDomain(me : mutable; VSD : Shape from TopoDS);
+
+    HasSameDomain(me) returns Boolean from Standard;
+    SameDomain(me) returns Shape from TopoDS;
+    ---C++: return const &
+
+    Vertex(me) returns Shape from TopoDS is static;
+    ---C++: return const &
+
+    ChangeVertex(me : mutable) returns Shape from TopoDS is static;
+    ---C++: return &
+    -- used only by PaveSet
+    Parameter(me) returns Real from Standard is static;
+ 
+    --modified by NIZHNY-MZV  Mon Feb 21 14:09:47 2000 
+    Parameter(me:  mutable;  Par:  Real  from  Standard)  is static;
+    --modified by NIZHNY-MZV  Mon Feb 21 14:25:58 2000 
+    InterferenceType(me:  mutable)  returns  Kind  from  TopOpeBRepDS; 
+    ---C++: return &
+	  
+    IsShape(me) returns Boolean from Standard is redefined;
+    Shape(me) returns Shape from TopoDS is redefined;
+    ---C++: return const &
+
+    Dump(me) is redefined;
+    
+fields
+
+    myVertex  : Shape from TopoDS;
+    myParam   : Real from Standard;
+    myIsShape : Boolean from Standard;
+    myHasSameDomain : Boolean from Standard;
+    mySameDomain : Shape from TopoDS;
+
+    --modified by NIZHNY-MZV  Mon Feb 21 14:26:58 2000 
+    myIntType  :  Kind  from  TopOpeBRepDS; 
+
+end Pave from TopOpeBRepBuild;

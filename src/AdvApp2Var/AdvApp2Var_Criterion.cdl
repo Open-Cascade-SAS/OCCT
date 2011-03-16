@@ -1,0 +1,37 @@
+-- File:	AdvApp2Var_Criterion.cdl
+-- Created:	Wed Jan 15 09:45:42 1997
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+deferred class Criterion from AdvApp2Var
+
+uses
+    Patch,Context from AdvApp2Var,
+    CriterionType,CriterionRepartition from AdvApp2Var
+
+is
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~AdvApp2Var_Criterion(){Delete() ; }"
+    
+    Value(me; P : in out Patch; C : Context )
+     is deferred; 
+
+    IsSatisfied(me; P : Patch ) returns Boolean
+     is deferred; 
+
+    MaxValue(me) returns Real; 
+
+    Type(me) returns CriterionType; 
+
+    Repartition(me) returns CriterionRepartition; 
+
+   
+fields
+    myMaxValue : Real is protected;
+    myType : CriterionType is protected;
+    myRepartition : CriterionRepartition is protected;
+    
+end Criterion;

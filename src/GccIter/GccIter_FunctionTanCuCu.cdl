@@ -1,0 +1,81 @@
+-- File:        FunctionTanCuCu.cdl
+-- Created:     Thu Feb 20 7:33:43 1992
+-- Author:      Remy GILET
+--              <reg@topsn3>
+---Copyright:    Matra Datavision 1992
+
+
+generic class FunctionTanCuCu from GccIter (
+    TheCurve     as any;
+    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
+
+inherits FunctionSetWithDerivatives from math 
+
+    ---Purpose: This abstract class describes a Function of 1 Variable 
+    --          used to find a line tangent to two curves.
+
+uses Vector from math,
+     Matrix from math,
+     Circ2d from gp,
+     Pnt2d  from gp,
+     Vec2d  from gp,
+     Type3  from GccIter
+
+     
+raises ConstructionError
+
+is
+
+Create (Curv1 : TheCurve ;
+        Curv2 : TheCurve ) returns FunctionTanCuCu from GccIter;
+
+Create (Circ1 : Circ2d   from gp ;
+        Curv2 : TheCurve         ) returns FunctionTanCuCu from GccIter;
+
+InitDerivative(me                   : in out                      ;
+    	       X                    :        Vector from math     ;
+	       Point1,Point2        :    out Pnt2d  from gp       ;
+	       Tan1,Tan2,D21,D22    :    out Vec2d  from gp       )
+raises ConstructionError
+is static;
+
+NbVariables(me) returns Integer;
+    ---Purpose: returns the number of variables of the function.
+
+NbEquations(me) returns Integer;
+    ---Purpose: returns the number of equations of the function.
+
+Value (me : in out                 ;
+       X  :        Vector from math;
+       F  :    out Vector from math) returns Boolean;
+    ---Purpose: Computes the value of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Derivatives (me    : in out                 ;
+             X     :        Vector from math;
+             Deriv :    out Matrix from math) returns Boolean;
+    ---Purpose: Computes the derivative of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Values (me    : in out                 ;
+        X     :        Vector from math;
+        F     : out    Vector from math;
+        Deriv : out    Matrix from math) returns Boolean;
+    ---Purpose: Computes the value and the derivative of the function F 
+    --          for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+fields
+
+TheCurve1     : TheCurve               ;
+TheCurve2     : TheCurve               ;
+TheCirc1      : Circ2d   from gp       ;
+TheType       : Type3    from GccIter  ;
+
+end FunctionTanCuCu;
+
+
+

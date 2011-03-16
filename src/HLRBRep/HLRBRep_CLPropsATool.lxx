@@ -1,0 +1,86 @@
+// File:	HLRBRep_CLPropsATool.lxx
+// Created:	Tue Aug 18 15:40:26 1992
+// Author:	Herve LEGRAND
+//		<hl@bravox>
+
+#include <Standard_NotImplemented.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline void  HLRBRep_CLPropsATool::Value
+  (const Standard_Address A, 
+   const Standard_Real U,
+   gp_Pnt2d& P)
+{ P = ((HLRBRep_Curve*)A)->Value(U); }
+
+//=======================================================================
+//function : D1
+//purpose  : 
+//=======================================================================
+
+inline void  HLRBRep_CLPropsATool::D1
+  (const Standard_Address A, 
+   const Standard_Real U,
+   gp_Pnt2d& P,
+   gp_Vec2d& V1)
+{ ((HLRBRep_Curve*)A)->D1(U,P,V1); }
+
+//=======================================================================
+//function : D2
+//purpose  : 
+//=======================================================================
+
+inline void  HLRBRep_CLPropsATool::D2
+  (const Standard_Address A, 
+   const Standard_Real U,
+   gp_Pnt2d& P,
+   gp_Vec2d& V1,
+   gp_Vec2d& V2)
+{ ((HLRBRep_Curve*)A)->D2(U, P, V1, V2); }
+
+//=======================================================================
+//function : D3
+//purpose  : 
+//=======================================================================
+
+inline void  HLRBRep_CLPropsATool::D3
+  (const Standard_Address A, 
+   const Standard_Real U,
+   gp_Pnt2d& P,
+   gp_Vec2d& V1,
+   gp_Vec2d& V2,
+   gp_Vec2d& V3)
+{ ((HLRBRep_Curve*)A)->D3(U, P, V1, V2, V3); }
+
+//=======================================================================
+//function : Continuity
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer  HLRBRep_CLPropsATool::Continuity
+  (const Standard_Address)
+{ return GeomAbs_C2; }
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real  HLRBRep_CLPropsATool::FirstParameter
+  (const Standard_Address A)
+{ return ((HLRBRep_Curve*)A)->FirstParameter(); }
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real  HLRBRep_CLPropsATool::LastParameter
+  (const Standard_Address A)
+{ return ((HLRBRep_Curve*)A)->LastParameter(); }
+

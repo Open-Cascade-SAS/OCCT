@@ -1,0 +1,36 @@
+-- File:	GeomToStep_MakeSurfaceOfRevolution.cdl
+-- Created:	Mon Jun 14 16:20:58 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeSurfaceOfRevolution from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between class
+    --          SurfaceOfRevolution from Geom and the class
+    --          SurfaceOfRevolution from StepGeom which describes a
+    --          surface_of_revolution from Prostep
+  
+uses SurfaceOfRevolution from Geom,
+     SurfaceOfRevolution from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( RevSurf : SurfaceOfRevolution from Geom ) returns
+    MakeSurfaceOfRevolution;
+
+Value (me) returns SurfaceOfRevolution from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theSurfaceOfRevolution : SurfaceOfRevolution from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeSurfaceOfRevolution;
+
+

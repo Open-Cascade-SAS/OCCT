@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWElementDescriptor.cdl
+-- Created:	Thu Dec 12 17:29:01 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWElementDescriptor from RWStepElement
+
+    ---Purpose: Read & Write tool for ElementDescriptor
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ElementDescriptor from StepElement
+
+is
+    Create returns RWElementDescriptor from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ElementDescriptor from StepElement);
+	---Purpose: Reads ElementDescriptor
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ElementDescriptor from StepElement);
+	---Purpose: Writes ElementDescriptor
+
+    Share (me; ent : ElementDescriptor from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWElementDescriptor;

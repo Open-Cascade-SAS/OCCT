@@ -1,0 +1,108 @@
+// File:      GeomAdaptor_Surface.lxx
+// Created:   Tue May 18 16:12:12 1993
+// Author:    Bruno DUMORTIER
+// Copyright: OPEN CASCADE 1993
+
+#include <Geom_Surface.hxx>
+
+//=======================================================================
+//function : GeomAdaptor_Surface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Surface::GeomAdaptor_Surface()
+ : myTolU(0.), myTolV(0.)
+{} 
+
+//=======================================================================
+//function : GeomAdaptor_Surface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Surface::GeomAdaptor_Surface(const Handle(Geom_Surface)& S)
+ : myTolU(0.), myTolV(0.)
+{
+  Load(S);
+}
+
+//=======================================================================
+//function : GeomAdaptor_Surface
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Surface::GeomAdaptor_Surface(const Handle(Geom_Surface)& S,
+                                                const Standard_Real UFirst,
+                                                const Standard_Real ULast,
+                                                const Standard_Real VFirst,
+                                                const Standard_Real VLast,
+                                                const Standard_Real TolU,
+                                                const Standard_Real TolV)
+{
+  Load(S,UFirst,ULast,VFirst,VLast,TolU,TolV);
+}
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+inline void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S)
+{
+  Standard_Real U1,U2,V1,V2;
+  S->Bounds(U1,U2,V1,V2);
+  Load(S,U1,U2,V1,V2);
+}
+
+//=======================================================================
+//function : Surface
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Surface)& GeomAdaptor_Surface::Surface() const {
+  return mySurface;
+}
+
+//=======================================================================
+//function : FirstUParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Surface::FirstUParameter() const {
+  return myUFirst;
+}
+
+//=======================================================================
+//function : LastUParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Surface::LastUParameter() const {
+  return myULast;
+}
+
+//=======================================================================
+//function : FirstVParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Surface::FirstVParameter() const {
+  return myVFirst;
+}
+
+//=======================================================================
+//function : LastVParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Surface::LastVParameter() const {
+  return myVLast;
+}
+
+//=======================================================================
+//function : GetType
+//purpose  : 
+//=======================================================================
+
+inline GeomAbs_SurfaceType GeomAdaptor_Surface::GetType() const {
+  return mySurfaceType;
+}

@@ -1,0 +1,86 @@
+-- File:	Poly_Polygon3D.cdl
+-- Created:	Tue Mar  7 11:19:36 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon3D from Poly inherits TShared from MMgt
+
+    	---Purpose: This class Provides a polygon in 3D space. It is generally an approximate representation of a curve.
+    	-- A Polygon3D is defined by a table of nodes. Each node is
+    	-- a 3D point. If the polygon is closed, the point of closure is
+    	-- repeated at the end of the table of nodes.
+    	-- If the polygon is an approximate representation of a curve,
+    	-- you can associate with each of its nodes the value of the
+    	-- parameter of the corresponding point on the curve.
+
+uses Array1OfPnt   from TColgp,
+     Array1OfReal  from TColStd,
+     HArray1OfReal from TColStd
+
+raises NullObject from Standard
+
+is
+
+    Create(Nodes: Array1OfPnt from TColgp) 
+    returns mutable Polygon3D from Poly;
+    	---Purpose: onstructs a 3D polygon defined by the table of points, Nodes.
+    
+    Create(Nodes:      Array1OfPnt  from TColgp;
+           Parameters: Array1OfReal from TColStd) 
+    returns mutable Polygon3D from Poly;
+    	---Purpose: Constructs a 3D polygon defined by
+    	-- the table of points, Nodes, and the parallel table of
+    	--  parameters, Parameters, where each value of the table
+    	--  Parameters is the parameter of the corresponding point
+    	--  on the curve approximated by the constructed polygon.
+    	-- Warning
+    	-- Both the Nodes and Parameters tables must have the
+    	-- same bounds. This property is not checked at construction time.
+    
+    Deflection(me) returns Real;
+    	---Purpose: Returns the deflection of this polygon
+    Deflection(me : mutable; D : Real);
+    	---Purpose: Sets the deflection of this polygon to D. See more on deflection in Poly_Polygon2D
+    
+    NbNodes(me) returns Integer;
+    	---Purpose: Returns the number of nodes in this polygon.
+    	-- Note: If the polygon is closed, the point of closure is
+    	-- repeated at the end of its table of nodes. Thus, on a closed
+    	-- triangle the function NbNodes returns 4.
+    	---C++: inline
+    
+    Nodes(me) returns Array1OfPnt from TColgp
+	---Purpose:  Returns the table of nodes for this polygon.
+	---C++: return const &
+    raises NullObject from Standard;
+    	
+    
+    HasParameters(me) returns Boolean from Standard;
+    	---Purpose: Returns the table of the parameters associated with each node in this polygon.
+    	--  HasParameters function checks if   parameters are associated with the nodes of this polygon.
+    
+    Parameters(me) returns Array1OfReal from TColStd
+	---Purpose: Returns true if parameters are associated with the nodes
+    	-- in this polygon.
+	---C++: return const &
+    raises NullObject from Standard;
+    
+    ChangeParameters(me) returns Array1OfReal from TColStd
+   	---Purpose: Returns the table of the parameters associated with each node in this polygon.
+   	--        ChangeParameters function returnes the  array as shared. Therefore if the table is selected by
+   	--   reference you can, by simply modifying it, directly modify
+  	--   the data structure of this polygon.	
+        ---C++: return &
+    raises NullObject from Standard;
+    
+    
+    
+fields
+
+    myDeflection: Real          from Standard;
+    myNodes:      Array1OfPnt   from TColgp;
+    myParameters: HArray1OfReal from TColStd;
+    
+end Polygon3D;

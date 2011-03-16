@@ -1,0 +1,767 @@
+!LOADING PHASE
+! general messages have been factorised in XSTEP general file
+.9
+Beginning of the IGES file reading.
+!
+.10
+End of the IGES file reading.
+!
+.12
+Header and Content of IGES file are loaded.
+!
+.18
+Syntax error in the IGES file at line %d of the section %s.
+!
+.19
+Syntax error in the IGES file at line %d of the section %s.(The line number is incorrect).
+!
+.20
+There is no Terminate Section, please check the end of the IGES file. The process continues.
+!
+.27
+Entity %s : Directory Entry : there is no parameter. The process continues.
+!
+.28
+Entity %s : Directory Entry : The parameter 1 (Type de l'entité) is incorrect.
+!
+.29
+Entity %s, Type %d : Directory Entry : The Field 4 (Line Font Pattern) is incorrect (Not null pointer or Integer between 0 and 5 is expected). incorrect (not null pointer or integer between 0 and 5 is expected).
+!
+.30
+Entity %s, Type %d : Directory Entry : The Field 5 (Level) is incorrect (Not null pointer or not null Integer is expected).
+!
+.31
+Entity %s, Type %d : Directory Entry : The Field 6 (View) is incorrect (Not null pointer or Integer Zero is expected).
+!
+.32
+Entity %s, Type %d : Directory Entry : The Field 7 (Transformation Matrix) is incorrect (Not null pointer or Integer Zero is expected).
+!
+.33
+Entity %s, Type %d : Directory Entry : The Field 8 (Label Display Associativity) is incorrect (Not null pointer or Integer Zero is expected).
+!
+.34
+Entity %s, Type %d : Directory Entry : The Field 13 (Color Number) is incorrect (Not null pointer or Integer between 0 and 8 is expected).
+!
+.35
+Null Entity %s.
+!
+.36
+Unknown Entity %s.
+!
+.37
+Entity %s, Type %d : The Associativity list is incorrect.
+!
+.38
+Entity %s, Type %d : The Property list is incorrect.
+! ANALYSIS PHASE
+.39
+Global Section : Incorrect number of parameters (%d or %d parameters are expected).
+!
+.40
+Global Section (Parameters 1 and 2) : Parameter Delimiter Character and Record Delimiter Character must be different.
+!
+.41
+Global Section (Parameter 2) : The Parameter Delimiter Character is incorrect. Default character Coma is taken.
+!
+.42
+Global Section (Parameter 2) : The Character Record Delimiter parameter is incorrect. Default character Semicolon is taken.
+!
+.43
+Global Section (Parameter 8) : The Single Precision Magnitude parameter is incorrect (Expected Positive Integer). Default value 38 is taken.
+!
+.44
+Global Section (Parameter 9) : The Single Precision Significance parameter is incorrect (Expected Positive Integer). Default value 6 is taken.
+!
+.45
+Global Section (Parameter 10) : The Double Precision Magnitude parameter is incorrect (Expected Positive Integer). Default value 308 is taken.
+!
+.46
+Global Section (Parameter 11) : The Double Precision Significance parameter is incorrect (Expected Positive Integer). Default value 15 is taken.
+!
+.47
+Global Section (Parameter 13) : the Model Space Scale parameter is incorrect (Expected Positive). Default value 1.0 is taken.
+!
+.48
+Global Section (Parameter 14) : The Unit Flag parameter is incorrect  (Integer between 1 et 11 is expected). Default value 2 is taken : Millimeters.
+!
+.49
+Global Section (Parameter 15): The Unit Name parameter is not recognized. Default value 2 is taken : Millimeters.srl
+!
+.50
+Global Section (Parameter 15) : The Unit Name parameter is undefined, ignored
+!
+.51
+Global Section (Parameter 14 and 15) : The Unit Flag parameter doesn't correspond to the Unit Name parameter : Unit Name ignored.
+!
+.52
+Global Section (Parameter 19) : The   (Expected Positive Real). Default value 0.0 is taken.
+!
+.53
+Global Section (Parameter 23) : The Version Flag parameter is incorrect (Integer between 1 et 11 is expected. Default value 3 is taken : Version 2.0.
+!
+.54
+Global Section (Parameter 24) : The Drafting Standard Flag parameter is incorrect (Integer beetween 0 et 7). Default value 3 is taken : No standard.Global Section (Parameter 25) : Last change Date parameter is undefined.
+!
+.55
+Global Section (Parameter 25) : Last change Date parameter is undefined.
+!
+.56
+Global Section (Parameter %d) : The Date parameter is undefined.
+!
+.57
+Global Section (Parameter %d) : Incorrect Date Format.
+!
+.58
+Entity %d : Directory Entry (Field 1) : The Entity Type Number field is incorrect (Expected Integer : %d).
+!
+.59
+Entity %d, Type %d : Directory Entry (Field 3) : The Structure field is undefined.
+!
+.60
+Entity %d, Type %d : Directory Entry (Field 4) : The Line Font Pattern field is incorrect (Pointer or Integer beteween 0 and 5 is expected). Default value 0 is taken.
+!
+.61
+Entity %d, Type %d : Directory Entry (Field 5) : The Level field is incorrect (Pointer or Integer are expected). Default value 0 is taken.
+!
+.62
+Entity %d, Type %d : Directory Entry (Field 6) : The View field is incorrect (Pointer or Zero are expected). Default value 0 is taken.
+!
+.63
+Entity %d, Type %d : Directory Entry (Field 7): The Transformation Matrix field is incorrect (Pointer or Zero are expected). Default value 0 is taken.
+!
+.64
+Entity %d, Type %d : Directory Entry (Field 8): The Label Display Entity  field is incorrect (Pointer or Zero are expected). Default value 0 is taken.
+!
+.65
+Entity %d, Type %d : Directory Entry (Champ 9) : The Blank Status field is incorrect (Expected Integer : 0 or 1). 
+!
+.66
+Entity %d, Type %d : Directory Entry (Field 9) : The Subordinate Entity Switch field is incorrect (Integer between 0 and 3 is expected). 
+!
+.67
+Entity %d, Type %d : Directory Entry (Field 9) : The Entity Use Flag is incorrect  (Integer between 0 and 6 is expected). 
+!
+.68
+Entity %d, Type %d : Directory Entry (Field 9) : The Hierarchy field is Incorrect (Integer between 0 and 2 is expected). 
+!
+.69
+Entity %d, Type %d : Directory Entry (Field 12) : The Line Weight Number is undefined.
+!
+.70
+Entity %d, Type %d : Directory Entry (Field 13) : The Color Number field is incorrect (Pointer or Integer between 0 and 8 is expected).
+!
+.71
+Entity %d, Type %d : Directory Entry (Field 15) : The Form Number field is incorrect.
+!
+.72
+Entity %d, Type %d : Directory Entry (Field 19): The Entity Subscript Number field is incorrect (Integer is expected).
+!Type 116
+.73
+Parameter Data  : The parameter %d (Coordinate of Point) is incorrect (Expected Real).
+!Type 116
+.74
+Parameter Data  : The parameter %d (Display Symbol) is incorrect (Subfigure Definition Entity, Type 308 is expected).
+!Type 100
+.75
+Parameter Data  : The parameter 1 (ZT displacement of Arc) is incorrect (Expected Real).
+!Type 100
+.76
+Parameter Data  : The parameter %d (Arc Center) is incorrect (Expected Real).
+!Type 100
+.77
+Parameter Data  : The parameter %d (Start Point) is incorrect (Expected Real).
+!Type 100
+.78
+Parameter Data  : The parameter %d (Terminate Point) is incorrect (Expected Real).
+!Type 102
+.79
+Parameter Data : The parameter 1 (Number of Entities) is incorrect : %d (Expected Positive Integer).
+!Type 102
+.80
+Parameter Data : Some pointers of the Entity list are null or negative : ignored (Point, Connect Point or Parameterized Curve Entities are expected).Entity %d, Type 104, Form %d : Parameter Data : The parameter %d (Conic Coefficient)  is incorrect (Expected Real).
+!Type 104
+.81
+Parameter Data : The parameter %d (Conic Coefficient)  is incorrect (Expected Real).
+!Type 104
+.82
+Parameter Data : The parameter 7 (Coordinate of Plane) is incorrect (Expected Real).
+!Type 104
+.83
+Parameter Data : The parameter %d (Starting Point) is incorrect (Expected Real).
+!Type 104
+.84
+Parameter Data : The parameter %d (Terminate Point) is incorrect (Expected Real).
+!Type 106
+.85
+Parameter Data : The parameter 1 (Interpretation Flag) is incorrect (Expected Integer : %d).
+!Type 106
+.86
+Parameter Data : The parameter 2 (Number of n-tuples) is incorrect (Expected Positive Integer).
+!Type 106
+.87
+Parameter Data : The parameter 3 (Common Z Displacement) is incorrect (Expected Real).
+!Type 106
+.88
+Parameter Data : All Data Point parameters are not of Real type.
+!Type 110
+.89
+Parameter Data  : The parameter %d (Starting Point) is incorrect (Expected Real).
+!Type 110
+.90
+Parameter Data  : The parameter %d (Terminate Point) is incorrect (Expected Real).
+!Type 112
+.91
+Parameter Data : The parameter 1 (Spline Type) is incorrect (Integer between 1 and 6 is expected).
+!Type 112
+.92
+Parameter Data (Parameter 2) : The parameter 2 (Degree of Continuity) is incorrect (Expected Integer).
+!Type 112
+.93
+Parameter Data : The parameter 3 (Number of Dimensions) is incorrect (Expected Integer : 2 or 3).
+!Type 112
+.94
+Parameter Data : The parameter 4 (Number of Segments) is incorrect (Expected Positive Integer).
+!Type 112
+.95
+Parameter Data : All Break Point parameters are not of Real type.
+!Type 112
+.96
+Parameter Data : The entity is planar but the parameters BZ, CZ. DZ are not null.
+!Type 126
+.97
+Parameter Data : The parameter %d (Upper Index of Sum) is incorrect (Expected Positive Integer).
+!Type 126
+.98
+Parameter Data : The parameter %d (Degree of Basis Functions) is incorrect (Expected Integer) : Default value 0 is taken.
+!Type 126
+.99
+Parameter Data : The parameter %d (Planar/Non Planar Flag) is incorrect (Expected Boolean).
+!Type 126
+.100
+Parameter Data : The parameter %d (Open/Closed Flag) is incorrect (Expected Boolean).
+!Type 126
+.101
+Parameter Data : The parameter %d (Rational/Polynomial Flag) is incorrect (Expected Boolean).
+!Type 126
+.102
+Parameter Data : The parameter %d (NonPeriodic/Periodic Flag) is incorrect (Expected Boolean).
+!Type 126
+.103
+Parameter Data : All Knot Sequence parameters are not of Real type.
+!Type 126
+.104
+Parameter Data : All Weight parameters are not of Positive Real type.
+!Type 126
+.105
+Parameter Data  : The parameter %d (Control Point) is incorrect (Expected Real).
+!Type 126
+.106
+Parameter Data : The parameter %d (Starting Value) is incorrect (Expected Real).
+!Type 126
+.107
+Parameter Data : The parameter %d (Ending Value) is incorrect (Expected Real).
+!Type 126
+.108
+Parameter Data : The parameter %d (Unit Normal) is incorrect (Expected Real).
+!Type 126
+.109
+Parameter Data : The parameter %d (Unit Normal) is undefined for a planar curve.
+!Type 130
+.110
+Parameter Data : The parameter 1 (Curve Entity to be offset) is incorrect (Curve Entity is expected).
+!Type 130
+.111
+Parameter Data : The parameter 2 (Offset Distance Flag) is incorrect (Integer between 1 and 3 is expected).
+!Type 130
+.112
+Parameter Data : The parameter 3 (Curve Entity whose coordinate describes the offset) is incorrect (Curve Entity is expected).
+!Type 130
+.113
+Parameter Data : The parameter 4 (Particular Coordinate) is incorrect (Expected Integer).
+!Type 130
+.114
+Parameter Data : The parameter 5 (Tapered Offset Type Flag) is incorrect (Expected Integer).ppp
+!Type 130
+.115
+Parameter Data : The parameter 6 (First Offset distance) is incorrect (Expected Real).
+!Type 130
+.116
+Parameter Data : The parameter 7 (Arc Length of First Offset Distance) is incorrect (Expected Real).
+!Type 130
+.117
+Parameter Data : The parameter 8 (Second Offset Distance) is incorrect (Expected Real).
+!Type 130
+.118
+Parameter Data : The parameter 9 (Arc Length of Second Offset Distance) is incorrect (Expected Real).
+!Type 130
+.119
+Parameter Data : The parameter 13 (Offset Curve Starting Parameter Value) is incorrect (Expected Real).
+!Type 130
+.120
+Parameter Data : The parameter 14 (Offset Curve Ending Parameter Value) is incorrect (Expected Real).
+!Type 130
+.121
+Parameter Data  : The parameter %d (Unit Vector Normal to plane) is incorrect (Expected Real).
+!Type 141
+.122
+Parameter Data : The parameter 1 (Type of Bounded Surface Representation) is incorrect (Expected Integer : 0 or 1).
+!Type 141
+.123
+Parameter Data : The parameter 2 (Trimming Curves Representation) is incorrect (Integer between 0 and 3 is expected).
+!Type 141
+.124
+Parameter Data : The parameter 3 (Untrimmed Surface) is incorrect (Untrimmed Surface Entity is expected).
+!Type 141
+.125
+Parameter Data : Not parametric Surface %d (parameter 3).
+!Type 141
+.126
+Parameter Data :  The parameter 4 (Number of Curves) is incorrect (Expected positive).
+!Type 141
+.127
+Parameter Data : The parameter 5 (Model Space Curve) is incorrect (Curve Entity is expected).
+!Type 141
+.128
+Parameter Data (Parameter 6) : The Orientation Flag parameter is incorrect (Expected Integer : 1 or 2).
+!Type 141
+.129
+Parameter Data : The parameter 7 (Number of Associated Parameter Space Curves) is incorrect (Expected Integer : 0).
+!Type 141
+.130
+Parameter Data : Some pointers of the Parameter Space Curve list are null or negative : ignored (Curve Entities are expected).
+!Type 142
+.131
+Parameter Data : The parameter 2 (Surface on which the curve lies) is incorrect (Surface Entity is expected).
+!Type 142
+.132
+Parameter Data : Le parameter 3 (Curve 2D) is incorrect (Curve Entity is expected).
+!Type 142
+.133
+Parameter Data : Le parameter 4 (Curve 3D) is incorrect (Curve Entity is expected).
+!Type 142
+.134
+Parameter Data : The pointers of Curve 2D and 3D are null (parameter 3 and 4) (Curve Entities are expected).
+!Type 108
+.135
+Parameter Data : The parameter %d (Coefficient Of Plane) is incorrect (Expected Real).
+!Type 108
+.136
+Parameter Data : Le parameter 5 (Closed Curve) is incorrect (Curve Entity is expected).
+!Type 108
+.137
+Parameter Data  : The parameter 5 (Expected Null pointer when the Form Number field is 0).
+!Type 108
+.138
+Parameter Data : The parameter 9 (Display Symbol Size) is incorrect (Expected Real).
+!Type 108
+.139
+Parameter Data  : The parameter %d (Coordinate of Display Symbol) is incorrect (Expected Real).
+!Type 114
+.140
+Parameter Data : The parameter 1 (Spline Boundary Type) is incorrect  (Integer between 1 and 6 is expected).
+!Type 114
+.141
+Parameter Data : The parameter 3 (Number of U Segments) is incorrect (Expected Positive Integer).
+!Type 114
+.142
+Parameter Data : Le parameter 4 (Number of V Segments) is incorrect (Expected Positive Integer).
+!Type 114
+.143
+Parameter Data : All Breakpoint in U parameters are not of Real type.
+!Type 114
+.144
+Parameter Data : All Breakpoint in V parameters are not of Real type.
+!Type 114
+.145
+Parameter Data : All %s Coefficient of Patch parameter(s) are not of Real type.
+!Type 114
+.146
+Parameter Data : The parameter %d (Last Z Coefficient of Patch) is  incorrect  (Expected Real).
+!Type 114
+.147
+Parameter Data : The %s Coefficient of Patch parameters are incorrect (Expected Integer : 16).
+!Type 118
+.148
+Parameter Data : Le parameter 1 (First Curve) is incorrect (Curve Entity is expected).
+!Type 118
+.149
+EParameter Data : Le parameter 2 (Second Curve) is incorrect (Curve Entity is expected).
+!Type 118
+.150
+Parameter Data : The parameter 3 (Direction Flag) is incorrect (Integer 0 or 1 is expected).
+!Type 118
+.151
+Parameter Data : The parameter 4 (Developable Surface Flag) is incorrect (Integer 0 or 1 is expected).
+!Type 120
+.152
+Parameter Data : The parameter 1 (Axis of Revolution) is incorrect (Expected entity).
+!Type 120
+.153
+Parameter Data : The parameter 2 (Generatrix Entity) is incorrect (Expected Entity).
+!Type 120
+.154
+Parameter Data : The parameter 3 (Start Angle) is incorrect (Expected Real).
+!Type 120
+.155
+Parameter Data : The parameter 4 (Terminate Angle) is incorrect (Expected Real)
+!Type 122
+.156
+Parameter Data : The parameter 1 (Generatrix Entity) is incorrect (Expected Curve Entity).
+!Type 122
+.157
+Parameter Data  : The parameter %d (Coordinate of the Terminate Point) is incorrect (Expected Real).
+!Type 128
+.158
+Parameter Data : Incorrect Additional value (Expected Real).
+!Type 128
+.159
+Parameter Data : Additional Real value :  ignored.
+!Type 128
+.160
+Parameter Data : Invalid Number of First Knots sequence (Expected number : %d).
+!Type 128
+.161
+Parameter Data : Invalid Number of Second Knots sequence (Expected number : %d).
+!Type 140
+.162
+Parameter Data  : The parameter %d (Coordinate of Offset Indicator) is incorrect (Expected Real).
+!Type 140
+.163
+Parameter Data : The parameter 4 (Offset Distance) is incorrect (Expected Real).
+!Type 140
+.164
+Parameter Data : The parameter 5 (Surface Entity to be offset) is incorrect (Expected Surface Entity).
+!Type 143
+.165
+Parameter Data : The parameter 1 (Bounded Surface Representation Type) is incorrect (Integer 0 or 1 is expected).
+!Type 143
+.166
+Parameter Data : Le parameter 2 (Surface Entity to be Bounded) is incorrect (Surfacey Entity is expected).
+!Type 143
+.167
+Parameter Data : The parameter 3 (Number of Boundary Entities) is incorrect (Expected Positive Integer).
+!Type 143
+.168
+Parameter Data : The parameter %d (Boudary Entity)  is incorrect (Boundary Entity, Type 141 is expected).
+!Type 144
+.169
+Parameter Data : The parameter 1 (Surface to be trimmed)  is incorrect (Surface Entity is expected).
+!Type 144
+.170
+Parameter Data : The parameter 2 (Outer Boundary Type) is incorrect (Integer 0 or 1 is expected).
+!Type 144
+.171
+Parameter Data : The parameter 3 (Number of Inner Boundary Closed Curves) is incorrect (Expected Positive Integer).
+!Type 144
+.172
+Parameter Data : The parameter 4 (Outer Boundary)  is incorrect (Curve on a Parametric Surface Entity, Type 142 is expected).
+!Type 144
+.173
+Parameter Data : The parameter %d (Inner Boundary) is incorrect (Curve on a Parametric Surface Entity, Type 142 is expected).
+!Type 190
+.174
+Parameter Data : The parameter 1 (Point on the Surface) is incorrect (Point Entity, Type 116 is expected).
+!Type 190
+.175
+Parameter Data : The parameter 2 ( Surface Normal Direction) is incorrect (Direction Entity is expected).
+!Type 190
+.176
+Parameter Data : The parameter 3  (Reference Direction) is incorrect (Direction Entity is expected).
+!Type 190
+.177
+Parameter Data : The parameter 3 (Null pointer is expected when the Form Number field is 1).
+!Type 186
+.178
+Parameter Data : The parameter 1 (Shell) is incorrect (Closed Shell Entity, Type 514, Form 1 is expected).
+!Type 186
+.179
+Parameter Data : The parameter %d (Void Shell) is incorrect (Closed Shell Entity, Type 514, Form 1 is expected).
+!Type 186
+.180
+Parameter Data : The parameter %d (Orientation Flag) is incorrect (Expected Boolean).
+!Type 186
+.181
+Parameter Data : The parameter 3 (Number of Void Shells) is incorrect (Expected Positive Integer)
+!Type 502
+.182
+Parameter Data : The parameter 1 (Number of Vertex Tuples) is incorrect (Expected Positive Integer).
+!Type 502
+.183
+Parameter Data  : The parameter %d (Coordinate of Vertex) is incorrect (Expected Real).
+!Type 504
+.184
+Parameter Data : The parameter 1 (Number of Edge Tuples) is incorrect (Expected Positive Integer).
+!Type 504
+.185
+Parameter Data : The parameter 2 (Model Space Curve) is incorrect (Curve Entity is expected).
+!Type 504
+.186
+Parameter Data : The parameter %d (Start Vertex Index) is incorrect (Expected Integer).
+!Type 504
+.187
+Parameter Data : The parameter %d (Terminate Vertex Index) is incorrect (Expected Integer).
+!Type 504
+.188
+Entity %d, Type 504 : Parameter Data : The parameter %d (Start Vertex List Entity) is incorrect (Vertex List Entity, Type 502 is expected).
+!Type 504
+.189
+Entity %d, Type 504 : Parameter Data : The parameter %d (Terminate Vertex List Entity) is incorrect (Vertex List Entity, Type 502 is expected).
+!Type 508
+.190
+Parameter Da ta : The parameter %d (Edge Type) is incorrect (Integer 0 or 1 is expected).
+!Type 508
+.191
+Parameter Data : The parameter %d (List Index) is incorrect (Expected Integer).
+!Type 508
+.192
+Parameter Data : The parameter %d (Number of Parameter Curves) is incorrect (Expected Positive Integer).
+!Type 508
+.193
+Parameter Data : The parameter %d (Vertex or Edge List Entity) is incorrect (Vertex List  or Edge List Entity, Type 502 or 504 is expected).
+!Type 508
+.194
+Parameter Data : The parameter %d (Parameter Space Curve) is incorrect (Curve Entity is expected).
+!Type 508
+.195
+Parameter Data : The parameter %d (Isoparametric Flag) is incorrect (Expected Boolean).
+!Type 510
+.196
+Parameter Data : The parameter 1 (Surface) is incorrect (Surface Entity is expected).
+!Type 510
+.197
+Parameter Data : The parameter 2 (Number of Loops) is incorrect (Expected Positive Integer).
+!Type 510
+.198
+Parameter Data : The parameter 3 (Outer Loop flag) is incorrect (Expected Boolean).
+!Type 510
+.199
+Parameter Data : The parameter %d (Loop of the Face) is incorrect (Loop Entity, Type 508 is expected).
+!Type 514
+.200
+Parameter Data : The parameter 1 (Number of Faces) is incorrect (Expected Positive Integer).
+!Type 514
+.201
+Parameter Data : The parameter 2 (Face) is incorrect (Face Entity, Type 510 is expected).
+!Type 402, Form 1 or 7
+.202
+Form %d : Parameter Data : The parameter 1 (Number of Entries) is incorrect (Expected Integer).
+!Type 402, Form 1 or 7
+.203
+Form %d : Parameter Data : Some pointers of the Entity list are nul or negative : ignored (Entities are expected).
+!Type 402
+.204
+Form 9 : Parameter Data : The parameter 1 (Number of Parent Entity) is incorrect  (Expected Integer : 1).
+!Type 402
+.205
+Form 9 : Parameter Data : The parameter 2 (Number of Children) is incorrect  (Expected Positive Integer).
+!Type 402
+.206
+Form 9 : Parameter Data : The parameter 3 (Parent Entity) is incorrect (Entity expected).
+!Type 402
+.207
+Form 9 : Parameter Data : Some pointers of the Child Entity List are null or negative : ignored (Entities are expected).
+!Type 308
+.208
+Parameter Data : The parameter 1 (Depth of Subfigure) is incorrect  (Expected Integer).
+!Type 308
+.209
+Parameter Data : The parameter 2 (Subfigure Name) is incorrect : %s (Expected String in hollerith Form).
+!Type 308
+.210
+Parameter Data : The parameter 3 (Number of Entities) is incorrect  (Expected Positive Integer).
+!Type 308
+.211
+Parameter Data : Some pointers of the Associated Entity List are null or negative : ignored (Entities are expected).
+!Type 408
+.212
+Parameter Data : The parameter 1 (Subfigure definition entity) is incorrect (Subfigure definition entity, Type 308 expected).
+!Type 408
+.213
+Parameter Data  : The parameter %d (Translation data) is incorrect (Expected Real).
+!Type 408
+.214
+Parameter Data  : The parameter 5 (Scale Factor) is incorrect (Expected Real). Default value 1.0 is taken.
+!Type 124
+.215
+Parameter Data  : All parameters are not of Real type.
+!
+.216
+Null reference.
+!
+.217
+Null entity.
+!
+.218
+Incorrect Type.
+!
+.219
+Negative pointer.
+!ADDED MESSAGES
+.220
+Number of associativities is incorrect (Expected integer).
+!
+.221
+Number of properties is incorrect (Expected integer).
+
+!TRANSLATION PHASE
+.222
+Entity %s, Type %d : The entity points to an invalid object : Halt of the entity translation.
+!
+.223
+Entity %s, Type %d : The resulting edge is not Same Parameter.
+!
+.224
+Entity %s, Type %d : Software error : Halt of the translation entity.
+!
+.225
+Entity %s, Type %d : Entity is empty.
+!
+.226
+Entity %s, Type %d : Directory Entry (Parameter 7) : Transformation Matrix entity points to an invalid object.
+!
+.227
+Entity %s, Type %d : Entities Type 116 or 132 cannot appear consecutively in the Entity Type 102.
+!
+.228
+Entity %s, Type %d : Reference to illegal entity type %d.
+!
+.229
+Entity %s, Type %d : The curve has been reversed.
+!
+.230
+Entity %s, Type %d : The curve was lightly disconnected : repaired.
+!
+.231
+Entity %s, Type %d : The curve was too much disconnected : impossible reparation.
+!
+.232
+Entity %s, Type %d : The Entity is not closed
+!
+.233
+Entity %s, Type %d : Software error : Invalid 2D curve, recomputed from 3D curve.
+!
+.234
+Entity %s, Type %d : Software error : Invalid 3D curve, recomputed from 2D curve.
+!
+.235
+Entity %s, Type %d : Software error : Invalid 2D and 3D curves.
+!
+.236
+Entity %s, Type %d : The entity was self-intersecting, repaired. 
+!
+.237
+Entity %s, Type %d : Parameter Data : The parameter 2 (Offset distance flag) different from 1 is not implemented.
+!
+.238
+Entity %s, Type %d : Incorrect curve length with regard to parameter 14 (Offset curve ending) of the entity %s Type %d.
+!
+.239
+Entity %s, Type %d : B-Spline curve of continuity C0 cannot be splitted into C1 curves. Result is null.!
+!
+.240
+Entity %s, Type %d  : B-Spline curve of continuity C0 was splitted into C1 curves.
+!
+.241
+Entity %s, Type %d : Parameter Data : The parameter 1 (Type of bounded surface representation = 0) is not implemented.
+!
+.242
+Entity %s, Type %d : Not implemented entity.
+!
+.243
+Entity %s, Type %d :Parameter Data : (Parametesr 1 to 6) The coefficients don't satisfy the conic equation.
+!
+.244
+Entity %s, Type %d : Parameter Data (Parameters 8 to 11) : Start and terminate coordinates of the arc are the same.
+!
+.245
+Entity %s, Type %d : Transformation will not be applied to 2D object.
+!
+.246
+Entity %s, Type %d : Parameter Data : The parameter 4 (Number of segments) is less than 1.
+!
+.247
+Entity %s, Type %d : Polynomial equation is not correct.
+!
+.248
+Entity %s, Type %d : Error during creation of control points. 
+!
+.249
+Entity %s, Type %s : Parameter Data : The parameter 1 (Spline type > 3) is not implemented.
+!
+.250
+Entity %s, Type %d : The result is not guaranteed to be C0.
+!
+.251
+Entity %s, Type %d : Parameter Data : The parameter 2 (Degree of basis functions) is less than 0 or greater than maximum degree.
+!
+.252
+Entity %s, Type %d : Parameter Data : Incorrect number of points (2 or more are expected).
+!
+.253
+Entity %s, Type %d : Translation error : %sStarting multiplicity > %s degree + 1.
+!
+.254
+Entity %s, Type %d : Translation error : %s Ending multiplicity > %s degree + 1.
+!
+.255
+Entity %s, Type %d : %sMultiplicity of knot %d > %s degree, repaired
+!
+.256
+Entity %s, Type %d : Sum of %smultiplicities is not equal to the sum (number of poles + %sdegree + 1).
+!
+.257
+Entity %s, Type %d : All weights are not positive.
+!
+.258
+Entity %s, Type %d : The entity is polynomial.
+!
+.259
+Entity %s, Type %d : Start point and Terminate point of the %sline are the same.
+!
+.260
+Entity %s, Type %d, Form %d : The vector is ignored.
+!
+.261
+Entity %s, Type %d : Resulting surface is C0-continuous.
+!
+.262
+Entity %s, Type %d : Basis surface is C0 continious and is translated to the shell. Only the first face in the shell is offset.
+!
+.263
+Entity %s, Type %d : The entity points to an invalid object, ignored.
+!
+.264
+Entity %s, Type %d : The entity could not be translated, ignored.
+!
+.265
+Entity %s, Type %d : The entity is not coplanar to the entity %s, Type %d.
+!
+.266
+Entity %s, Type %d : Parameter Data : The parameter 3 or 4 (Number of U or V segments) is less than 1.
+!
+.267
+Entity %s, Type %d : Parameter Data : The parameter 3 or 4 (Degree of first or second basis functions) is less than 0 or greater than maximum degree.
+!
+.268
+Entity %s, Type %d : Parameter Data : Number of XYZ coordinates of control points (%s direction) is less than 2.
+!
+.269
+Entity %s, Type %d : Control points construction error. Result is null.
+!
+.270
+Entity %s, Type %d : Software error during translation of the Vertex number %d.
+!
+.271
+Entity %s, Type %d : Translation result of the entity is not implemented.
+!
+.272
+Beginning of the "Analysis" phase of the IGES file %s.
+!
+.273
+End of the "Analysis" phase of the IGES file %s (Elapsed time : %s)..
+!
+.274
+Beginning of the "Translation" phase of the IGES file %s.
+!
+.275
+End of the "Translation" phase of the IGES file %s (Elapsed time : %s)..

@@ -1,0 +1,46 @@
+-- File:	BRepBuilderAPI_MakeVertex.cdl
+-- Created:	Tue Jul  6 17:57:32 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class MakeVertex from BRepBuilderAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Describes functions to build BRepBuilder vertices directly
+    	-- from 3D geometric points. A vertex built using a
+    	-- MakeVertex object is only composed of a 3D point and
+    	-- a default precision value (Precision::Confusion()).
+    	-- Later on, 2D representations can be added, for example,
+    	-- when inserting a vertex in an edge.
+    	-- A MakeVertex object provides a framework for:
+    	-- -   defining and implementing the construction of a vertex, and
+    	-- -   consulting the result.
+
+uses
+    Pnt        from gp,
+    Vertex     from TopoDS,
+    MakeVertex from BRepLib
+
+is
+    Create (P : Pnt from gp) 
+	---Purpose: Constructs a vertex from point P.
+    	-- Example create a vertex from a 3D point.
+    	-- gp_Pnt P(0,0,10);
+    	-- TopoDS_Vertex V = BRepBuilderAPI_MakeVertex(P);
+    returns MakeVertex from BRepBuilderAPI;
+    
+    Vertex(me) returns Vertex from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Vertex() const;"
+    	---Purpose: Returns the constructed vertex.
+    is static;
+    
+fields
+
+    myMakeVertex : MakeVertex from BRepLib;	   
+	       
+
+end MakeVertex;

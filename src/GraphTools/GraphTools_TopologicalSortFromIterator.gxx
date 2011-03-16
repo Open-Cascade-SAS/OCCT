@@ -1,0 +1,213 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_TopologicalSortFromIterator.gxx
+// Created:	Wed May 29 17:42:50 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_QueueOfInteger.hxx>
+#include <GraphTools_TSNode.hxx>
+
+//=======================================================================
+//function : GraphTools_TopologicalSortFromIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_TopologicalSortFromIterator::GraphTools_TopologicalSortFromIterator () {}
+
+
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortFromIterator::FromVertex (const Vertex& V) 
+{
+  GraphTools_TSNode newnode;
+  myVertices.Add(V,newnode);    
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortFromIterator::Perform 
+  (const Graph& G,
+   const Standard_Boolean ignoreSelfLoop,
+   const Standard_Boolean processCycle)
+{
+  myIgnoreSelfLoop = ignoreSelfLoop;
+  myProcessCycle   = processCycle;
+  myCurrent        = 1;
+  mySort.Clear();
+  // algorithm DS
+  Standard_Integer i, indexcurrent, indexadjacent, nbadjacent;
+  indexcurrent = 1;
+  while (indexcurrent <= myVertices.Extent()) {
+    VIterator itV (G,myVertices.FindKey(indexcurrent));
+    for ( ; itV.More(); itV.Next()) {
+      indexadjacent = myVertices.FindIndex(itV.Value());
+      if (indexadjacent == 0) {
+        GraphTools_TSNode newnode;
+        indexadjacent = myVertices.Add(itV.Value(),newnode);
+      }
+      if (! (indexcurrent == indexadjacent && myIgnoreSelfLoop)) {
+	myVertices(indexcurrent).AddSuccessor(indexadjacent);
+	myVertices(indexadjacent).IncreaseRef();
+      }
+    }
+    indexcurrent++;
+  }
+  // current root vertices queue
+  TColStd_QueueOfInteger processQueue;
+  Standard_Integer nbVertices = myVertices.Extent();
+  for (i = 1 ; i <= nbVertices; i++) {
+    if (myVertices(i).NbRef() == 0) processQueue.Push(i);
+  }
+  // acyclic processing
+  while (!processQueue.IsEmpty()) {
+    indexcurrent = processQueue.Front();
+    mySort.Append(indexcurrent);
+    nbadjacent = myVertices(indexcurrent).NbSuccessors();
+    for (i = 1; i <= nbadjacent; i++) { 
+      indexadjacent = myVertices(indexcurrent).GetSuccessor(i);
+      myVertices(indexadjacent).DecreaseRef();
+      if (myVertices(indexadjacent).NbRef() == 0) {
+	processQueue.Push (indexadjacent);
+      }
+    }
+    processQueue.Pop();
+  }
+  // cyclic processing
+  myCycles = mySort.Length() + 1;
+  if (myProcessCycle) {
+    for (i = 1 ; i <= nbVertices; i++) {
+      if (myVertices(i).NbRef() != 0) mySort.Append(i);
+    }
+  }
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortFromIterator::Reset ()
+{
+   myVertices.Clear();
+//   myIgnoreSelfLoop : Boolean from Standard;
+//   myProcessCycle   : Boolean from Standard;
+   mySort.Clear();
+//   myCycles         : Integer from Standard;
+   myCurrent = 1;
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_TopologicalSortFromIterator::More () const 
+{
+  return myCurrent <= mySort.Length();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortFromIterator::Next () 
+{
+  if (!More()) Standard_NoMoreObject::Raise();
+  myCurrent ++;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_TopologicalSortFromIterator::Value () const {
+  if (!More()) Standard_NoSuchObject::Raise();
+  return myVertices.FindKey (mySort(myCurrent));
+}
+
+
+//=======================================================================
+//function : IsInCycle
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_TopologicalSortFromIterator::IsInCycle () const 
+{
+  if (!More()) Standard_NoSuchObject::Raise();
+  return myCurrent >= myCycles;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

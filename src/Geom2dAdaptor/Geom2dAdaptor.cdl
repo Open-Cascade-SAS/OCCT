@@ -1,0 +1,51 @@
+-- File:	Geom2dAdaptor.cdl
+-- Created:	Thu Jun  3 18:47:19 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+package Geom2dAdaptor 
+
+	---Purpose: this package  contains the geometric definition of
+	--          2d  curves compatible  with  the  Adaptor  package
+	--          templates.
+
+uses
+    Geom2d,
+    GeomAbs,
+    Adaptor2d,
+    gp,
+    Standard,
+    TColStd,
+    TColgp
+
+is
+
+ 
+      class Curve; 
+       ---Purpose: Similar to Curve2d from Adaptor2d with a Curve from Geom2d.
+
+      private class GHCurve instantiates GenHCurve2d from Adaptor2d
+    	    (Curve from Geom2dAdaptor);
+
+      class HCurve;
+	---Purpose: Inherited  from    GHCurve.   Provides a  curve
+	--          handled by reference.
+
+      --
+      --   Package methods
+      --   
+      
+      MakeCurve(HC : Curve2d from Adaptor2d) returns Curve from Geom2d
+	    ---Purpose: Creates  a 2d  curve  from  a  HCurve2d.  This
+	    --          cannot process the OtherCurves.
+      raises
+      	DomainError from Standard; -- if GeomAbs_OtherCurve
+
+end Geom2dAdaptor;
+
+
+

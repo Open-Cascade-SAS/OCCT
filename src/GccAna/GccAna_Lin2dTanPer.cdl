@@ -1,0 +1,196 @@
+-- File:	Lin2dTanPer.cdl
+-- Created:	Wed Apr  3 11:05:31 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+class Lin2dTanPer
+
+from GccAna
+
+	---Purpose: This class implements the algorithms used to 
+	--          create 2d lines tangent to a circle or a point and 
+	--          perpendicular to a line or a circle.
+    	-- Describes functions for building a 2D line perpendicular
+    	-- to a line and:
+    	-- -   tangential to a circle, or
+    	-- -   passing through a point.
+    	-- A Lin2dTanPer object provides a framework for:
+    	-- -   defining the construction of 2D line(s),
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result(s).
+        
+--inherits Storable from Standard
+
+uses   Pnt2d            from gp,
+       Lin2d            from gp, 
+       Circ2d           from gp,
+       QualifiedCirc    from GccEnt,
+       Array1OfReal     from TColStd,
+       Array1OfLin2d    from TColgp,
+       Array1OfPnt2d    from TColgp,
+       Position         from GccEnt,
+       Array1OfPosition from GccEnt
+
+raises BadQualifier      from GccEnt,
+       OutOfRange        from Standard,
+       ConstructionError from Standard,
+       NotDone           from StdFail
+
+is
+
+Create(ThePnt    : Pnt2d          from gp;
+       TheLin    : Lin2d          from gp) returns Lin2dTanPer;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d lines passing through a point and 
+	--          perpendicular to a line.
+
+Create(ThePnt    : Pnt2d          from gp;
+       TheCircle : Circ2d         from gp) returns Lin2dTanPer
+raises ConstructionError;
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d lines passing through a point and 
+	--          perpendicular to a circle.
+
+Create(Qualified1 : QualifiedCirc from GccEnt;
+       TheLin     : Lin2d         from gp    ) returns Lin2dTanPer
+raises BadQualifier;
+-- Raises BadQualifier in case of EnclosedCirc.
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d lines tangent to a circle and 
+	--          perpendicular to a line.
+
+Create(Qualified1 : QualifiedCirc from GccEnt;
+       TheCircle  : Circ2d        from gp    ) returns Lin2dTanPer
+raises BadQualifier,ConstructionError;
+-- Raises BadQualifier in case of EnclosedCirc.
+	---Purpose: This method implements the algorithms used to 
+	--          create 2d lines tangent to a circle and 
+	--          perpendicular to a circle.
+
+-- .........................................................................
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose : Returns True if the algorithm succeeded.
+
+NbSolutions(me) returns Integer from Standard
+    	---Purpose : Returns the number of solutions. 
+    	-- Raises NotDone if the construction algorithm didn't succeed.
+raises NotDone
+is static;
+ 
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    	---Purpose: Returns the qualifier Qualif1 of the tangency argument
+    	-- for the solution of index Index computed by this algorithm.
+    	-- The returned qualifier is:
+    	-- -   that specified at the start of construction when the
+    	--   solutions are defined as enclosing or outside with
+    	--   respect to the argument, or
+    	-- -   that computed during construction (i.e. enclosing or
+    	--   outside) when the solutions are defined as unqualified
+    	--   with respect to the argument, or
+    	-- -   GccEnt_noqualifier if the tangency argument is a point.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is less than zero or
+    	-- greater than the number of solutions computed by this algorithm.
+    	-- StdFail_NotDone if the construction fails. 
+        
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Lin2d from gp
+    	---Purpose : Returns the solution number Index and raises OutOfRange 
+    	--           exception if Index is greater than the number of solutions.
+    	--           Be careful: the Index is only a way to get all the 
+    	--           solutions, but is not associated to those outside the 
+    	--           context of the algorithm-object.
+    	--    Raises NotDone if the construction algorithm 
+    	--          didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+    	--          number of solutions.
+raises OutOfRange, NotDone
+is static;
+   
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;  
+          ParSol,ParArg : out Real  from Standard;
+          Pnt           : out Pnt2d from gp      )
+    	---Purpose : Returns informations about the tangency point between the 
+    	--           result number Index and the first argument.
+    	--           ParSol is the intrinsic parameter of the point on the 
+    	--           solution curv.
+    	--           ParArg is the intrinsic parameter of the point on the 
+    	--           argument curv.
+    	--           If the first argument is a point ParArg is equal zero.
+    	--    raises NotDone if the construction algorithm didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+    	--          number of solutions.
+raises OutOfRange, NotDone
+is static;
+   
+
+Intersection2 (me                                     ;
+               Index         : Integer   from Standard;
+               ParSol,ParArg : out Real  from Standard;
+               PntSol        : out Pnt2d from gp      )
+    	---Purpose : Returns informations about the intersection between the 
+    	--           solution number Index and the second argument.
+    	--           It returns the first intersection in a case of 
+    	--           Lin2dTanPer which is perpendicular to a circle .
+    	--           ParSol is the intrinsic parameter of the point on the 
+    	--           solution curv.
+    	--           ParArg is the intrinsic parameter of the point on the 
+    	--           argument curv. Raises NotDone if the construction algorithm 
+    	--          didn't succeed.
+    	--          It raises OutOfRange if Index is greater than the 
+    	--          number of solutions.
+
+raises OutOfRange, NotDone
+is static;
+   
+
+fields
+
+    WellDone : Boolean from Standard;
+    	---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    	---Purpose: The number of possible solutions. We have to decide 
+    	--          about the status of the multiple solutions...
+
+    linsol   : Array1OfLin2d from TColgp;
+    	---Purpose: The solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    	---Purpose: The qualifiers of the first argument.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the first 
+    	--          argument on the solution.
+
+    pntint2sol   : Array1OfPnt2d from TColgp;
+    	---Purpose: The tangency point between the solution and the second 
+    	--          argument on the solution.
+
+    par1sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the first argument on the solution.
+    
+    par2sol   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the second argument on the solution.
+
+    pararg1   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the first argument on the first argument.
+
+    pararg2   : Array1OfReal from TColStd;
+    	---Purpose: The parameter of the tangency point between the solution 
+    	--          and the second argument on the second argument.
+
+end Lin2dTanPer;
+

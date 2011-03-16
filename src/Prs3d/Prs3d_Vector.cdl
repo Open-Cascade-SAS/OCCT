@@ -1,0 +1,36 @@
+-- File:	Prs3d_Point.cdl
+-- Created:	Fri Apr 16 12:39:30 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+generic class Vector from Prs3d 
+    	    	(anyVector as any; 
+    	    	 VectorTool as any) -- as VectorTool from Prs3d;
+		 
+inherits Root from Prs3d
+
+uses 
+    Presentation from Prs3d,
+    Drawer from Prs3d
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aVector: anyVector;
+    	    	 aDrawer: Drawer from Prs3d);
+end Vector from Prs3d;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

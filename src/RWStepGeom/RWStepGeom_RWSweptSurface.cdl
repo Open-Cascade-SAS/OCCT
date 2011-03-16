@@ -1,0 +1,30 @@
+-- File:        SweptSurface.cdl
+-- Created:     Mon Dec  4 12:02:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSweptSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for SweptSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SweptSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSweptSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SweptSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : SweptSurface from StepGeom);
+
+	Share(me; ent : SweptSurface from StepGeom; iter : in out EntityIterator);
+
+end RWSweptSurface;

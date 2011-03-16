@@ -1,0 +1,80 @@
+-- File:	Geom2d_CartesianPoint.cdl
+-- Created:	Wed Mar 24 17:56:19 1993
+-- Author:	Philippe DAUTRY
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+class CartesianPoint from Geom2d inherits Point from Geom2d
+
+        --- Purpose : Describes a point in 2D space. A
+    	-- Geom2d_CartesianPoint is defined by a gp_Pnt2d
+    	-- point, with its two Cartesian coordinates X and Y.
+     
+
+
+uses Ax2d       from gp, 
+     Pnt2d      from gp,
+     Trsf2d     from gp,
+     Vec2d      from gp,
+     Geometry   from Geom2d
+
+is
+
+  Create (P : Pnt2d)   returns mutable CartesianPoint;
+        --- Purpose : Returns a persistent copy of P.
+
+
+  Create (X, Y : Real)   returns mutable CartesianPoint;
+
+
+
+  SetCoord (me : mutable; X, Y : Real);
+        --- Purpose : Set <me> to X, Y coordinates.
+
+
+  SetPnt2d (me : mutable; P : Pnt2d);
+        --- Purpose : Set <me> to P.X(), P.Y() coordinates.
+
+
+  SetX (me : mutable; X : Real);
+        --- Purpose : Changes the X coordinate of me.
+
+
+  SetY (me : mutable; Y : Real);
+        --- Purpose : Changes the Y coordinate of me.
+
+ 
+  Coord (me; X, Y : out Real);
+        --- Purpose : Returns the coordinates of <me>.
+
+
+  Pnt2d (me)  returns Pnt2d;
+        --- Purpose :
+        --  Returns a non persistent cartesian point with
+        --  the same coordinates as <me>.
+    	-- -C++: return const&
+
+
+  X (me)  returns Real;
+        --- Purpose : Returns the X coordinate of <me>.
+
+
+  Y (me)  returns Real;
+        --- Purpose : Returns the Y coordinate of <me>.
+
+
+
+  Transform (me : mutable; T : Trsf2d);
+
+
+
+  Copy (me)  returns mutable like me;
+     
+fields
+
+  gpPnt2d : Pnt2d;
+
+end;

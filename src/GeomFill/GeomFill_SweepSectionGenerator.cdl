@@ -1,0 +1,181 @@
+-- File:	GeomFill_SweepSectionGenerator.cdl
+-- Created:	Mon Feb 28 14:00:01 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class SweepSectionGenerator from GeomFill
+
+	---Purpose: class for instantiation of AppBlend.
+	--          evaluate the sections of a sweep surface.
+
+uses
+
+    HCurve          from Adaptor3d,
+    Ax1	            from gp,
+    Vec             from gp,
+    Trsf            from gp,
+    Array1OfPnt     from TColgp,
+    Array1OfVec     from TColgp,
+    Array1OfPnt2d   from TColgp,
+    Array1OfVec2d   from TColgp,
+    Array1OfReal    from TColStd,
+    Array1OfInteger from TColStd,
+    Curve           from Geom,
+    BSplineCurve    from Geom,
+    SequenceOfCurve from TColGeom,
+    SequenceOfTrsf  from GeomFill
+    
+raises
+
+    RangeError from Standard
+    
+is
+
+  Create returns SweepSectionGenerator from GeomFill;
+
+
+  Create( Path   : Curve from Geom;
+          Radius : Real  from Standard)
+	  ---Purpose: Create a sweept surface with a constant radius.
+  returns SweepSectionGenerator from GeomFill;
+
+
+  Create( Path      : Curve from Geom;
+          FirstSect : Curve from Geom )
+	  ---Purpose: Create a sweept surface with a constant section
+  returns SweepSectionGenerator from GeomFill;
+
+
+  Create( Path      : Curve from Geom;
+          FirstSect : Curve from Geom;
+    	  LastSect  : Curve from Geom )
+	  ---Purpose: Create a sweept surface with an evolving section 
+	  --          The section evoluate from First to Last Section
+  returns SweepSectionGenerator from GeomFill;
+
+
+  Create( Path    : Curve from Geom;
+          Curve1  : Curve from Geom;
+    	  Curve2  : Curve from Geom;
+    	  Radius  : Real from Standard )
+       	  ---Purpose: Create  a pipe  with  a constant  radius with  2
+       	  --          guide-line. 
+  returns SweepSectionGenerator from GeomFill;
+
+  Create( Path    : HCurve from Adaptor3d;
+          Curve1  : HCurve from Adaptor3d;
+    	  Curve2  : HCurve from Adaptor3d;
+    	  Radius  : Real from Standard )
+       	  ---Purpose: Create  a pipe  with  a constant  radius with  2
+       	  --          guide-line. 
+  returns SweepSectionGenerator from GeomFill;
+
+  Init( me : in out;
+        Path   : Curve from Geom;
+        Radius : Real  from Standard)
+  is static;
+  
+  Init( me : in out;
+    	Path      : Curve from Geom;
+	FirstSect : Curve from Geom)
+  is static;
+
+  Init( me : in out;
+    	Path      : Curve from Geom;
+	FirstSect : Curve from Geom;
+    	LastSect  : Curve from Geom)
+  is static;
+
+  Init( me : in out;
+    	Path      : Curve from Geom;
+	Curve1    : Curve from Geom;
+    	Curve2    : Curve from Geom;
+    	Radius    : Real  from Standard)
+  is static;
+
+  Init( me : in out;
+        Path    : HCurve from Adaptor3d;
+        Curve1  : HCurve from Adaptor3d;
+    	Curve2  : HCurve from Adaptor3d;
+    	Radius  : Real  from Standard )
+  is static;
+
+  Perform( me : in out;
+    	   Polynomial : Boolean from Standard = Standard_False)
+  is static;
+
+  GetShape(me; NbPoles   : out Integer from Standard;
+               NbKnots   : out Integer from Standard;
+               Degree    : out Integer from Standard;
+               NbPoles2d : out Integer from Standard)
+  is static;
+
+  Knots(me; TKnots: out Array1OfReal from TColStd)
+  is static;
+
+  Mults(me; TMults: out Array1OfInteger from TColStd)
+  is static;
+
+  NbSections(me)
+    ---C++: inline
+  returns Integer from Standard
+  is static;
+
+  Section(me; P        : Integer           from Standard; 
+    	      Poles    : out Array1OfPnt   from TColgp;
+	      DPoles   : out Array1OfVec   from TColgp;
+    	      Poles2d  : out Array1OfPnt2d from TColgp;
+	      DPoles2d : out Array1OfVec2d from TColgp;
+	      Weigths  : out Array1OfReal  from TColStd;
+	      DWeigths : out Array1OfReal  from TColStd)
+
+	---Purpose: Used for the first and last section 
+	--          The method returns Standard_True if the derivatives
+	--          are computed, otherwise it returns Standard_False.
+
+  returns Boolean from Standard
+  is static;
+
+  Section(me; P       : Integer           from Standard; 
+    	      Poles   : out Array1OfPnt   from TColgp;
+    	      Poles2d : out Array1OfPnt2d from TColgp;
+	      Weigths : out Array1OfReal  from TColStd)
+  is static;
+
+
+  Transformation(me; Index : Integer from Standard)
+  returns Trsf from gp
+    ---C++: return const &
+  raises
+    RangeError from Standard
+    ---Purpose: raised if <Index> not in the range [1,NbSections()]
+  is static;
+
+
+  Parameter(me; P: Integer)
+    ---Purpose: Returns  the parameter of   <P>, to impose  it for the
+    --          approximation. 
+    returns Real from Standard
+    is static;
+
+
+fields
+
+  myPath         : BSplineCurve    from Geom;
+  myFirstSect    : BSplineCurve    from Geom;
+  myLastSect     : BSplineCurve    from Geom;
+  myAdpPath      : HCurve          from Adaptor3d;
+  myAdpFirstSect : HCurve          from Adaptor3d;
+  myAdpLastSect  : HCurve          from Adaptor3d;
+  myCircPathAxis : Ax1             from gp;
+  myRadius       : Real            from Standard;
+  myIsDone       : Boolean         from Standard;
+  myNbSections   : Integer         from Standard;  
+  myTrsfs        : SequenceOfTrsf  from GeomFill;
+  myType         : Integer         from Standard;
+  myPolynomial   : Boolean         from Standard;
+  
+end SweepSectionGenerator;

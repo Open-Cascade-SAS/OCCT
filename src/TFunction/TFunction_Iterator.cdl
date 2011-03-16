@@ -1,0 +1,98 @@
+-- File:	TFunction_Iterator.cdl
+-- Created:	Mon Jan 22 13:53:39 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class Iterator from TFunction
+
+    ---Purpose: Iterator of the graph of functions
+
+uses
+
+    Label           from TDF,
+    GUID            from Standard,
+    LabelList       from TDF,
+    LabelMap        from TDF,
+    ExecutionStatus from TFunction,
+    Scope           from TFunction
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns Iterator from TFunction;
+
+    Create (Access : Label from TDF)
+    ---Purpose: A constructor.
+    --          Initializes the iterator.
+    returns Iterator from TFunction;
+
+    Init (me : in out;
+    	  Access : Label from TDF)
+    ---Purpose: Initializes the Iterator.
+    is virtual;
+    
+    SetUsageOfExecutionStatus (me : in out;
+    	    	      	       usage : Boolean from Standard);
+    ---Purpose: Defines the mode of iteration - usage or not of the execution status.
+    --          If the iterator takes into account the execution status, 
+    --          the method ::Current() returns only "not executed" functions 
+    --          while their status is not changed.
+    --          If the iterator ignores the execution status, 
+    --          the method ::Current() returns the functions
+    --          following their dependencies and ignoring the execution status.
+    
+    GetUsageOfExecutionStatus (me)
+    ---Purpose: Returns usage of execution status by the iterator.
+    returns Boolean from Standard;
+    
+    GetMaxNbThreads (me)
+    ---Purpose: Analyses the graph of dependencies and returns 
+    --          maximum number of threads may be used to calculate the model.
+    returns Integer from Standard
+    is virtual;
+    
+    Current (me)
+    ---Purpose: Returns the current list of functions.
+    --          If the iterator uses the execution status, 
+    --          the returned list contains only the functions 
+    --          with "not executed" status.
+    ---C++: return const &
+    returns LabelList from TDF
+    is virtual;
+    
+    More (me)
+    ---Purpose: Returns false if the graph of functions is fully iterated.
+    returns Boolean from Standard
+    is virtual;
+    
+    Next (me : in out)
+    ---Purpose: Switches the iterator to the next list of current functions.
+    is virtual;
+    
+    GetStatus (me;
+    	       func : Label from TDF)
+    ---Purpose: A help-function aimed to help the user to check the status of retrurned function.
+    --          It calls TFunction_GraphNode::GetStatus() inside.
+    returns ExecutionStatus from TFunction;
+    
+    SetStatus (me;
+    	       func   : Label from TDF;
+	       status : ExecutionStatus from TFunction);
+    ---Purpose: A help-function aimed to help the user to change the execution status of a function.
+    --          It calls TFunction_GraphNode::SetStatus() inside.
+
+    Dump (me; 
+    	  OS : in out OStream from Standard)
+    ---C++: return &
+    returns OStream from Standard;
+
+fields
+
+    myCurrent                : LabelList from TDF;
+    myUsageOfExecutionStatus : Boolean   from Standard;
+    myPassedFunctions        : LabelMap  from TDF;       -- an internal field.
+    myScope                  : Scope     from TFunction; -- an internal field.
+
+end Iterator;

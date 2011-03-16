@@ -1,0 +1,131 @@
+-- File:	TDataStd_IntegerArray.cdl
+-- Created:	Wed Jun 16 11:04:48 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+class IntegerArray from TDataStd inherits Attribute from TDF
+
+	---Purpose: Contains an array of integers.
+
+uses  
+     GUID                     from Standard,        
+     HArray1OfInteger         from TColStd,           
+     Attribute                from TDF,
+     Label                    from TDF, 
+     DeltaOnModification      from TDF,
+     RelocationTable          from TDF
+
+is 
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+   ---C++: return const & 
+   ---Purpose: Returns the GUID for arrays of integers.  
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF; lower, upper : Integer from Standard; 
+    	    	  isDelta : Boolean from Standard = Standard_False)
+    ---Purpose: Finds or creates on the <label> an integer array attribute 
+    -- with the specified <lower> and <upper> boundaries. 
+    -- If <isDelta> == False, DefaultDeltaOnModification is used.     
+    -- If attribute is already set, all input parameters are refused and the found
+    -- attribute is returned.
+    returns IntegerArray from TDataStd;
+
+    
+    ---Category: IntegerArray methods
+    --          ===============
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+    ---Purpose: Initialize the inner array with bounds from <lower> to <upper>
+
+    SetValue (me : mutable; Index, Value : Integer from Standard);
+    ---Purpose: Sets  the   <Index>th  element  of   the  array to <Value>
+
+    Value (me; Index : Integer from Standard)
+    ---Purpose: Return the value of  the  <Index>th element of the array
+    --
+    ---C++: alias operator ()
+    returns Integer from Standard;
+
+    Lower (me) returns Integer from Standard;      
+    ---Purpose:  Returns the lower boundary of this array of integers. 
+    
+    Upper (me) returns Integer from Standard;
+    ---Purpose: Return the upper boundary of this array of integers.
+    
+    Length (me) returns Integer from Standard;    
+    ---Purpose: Returns the length of this array of integers in
+    --          terms of the number of elements it contains.
+   
+    ChangeArray(me : mutable; newArray : HArray1OfInteger from TColStd; 
+    	    	    	      isCheckItems : Boolean = Standard_True); 	    
+    ---Purpose: Sets the inner array <myValue>  of the IntegerArray attribute to 
+    -- <newArray>. If value of <newArray> differs from <myValue>, Backup performed 
+    -- and myValue refers to new instance of HArray1OfInteger that holds <newArray>  
+    -- values 
+    -- If <isCheckItems> equal True each item of <newArray> will be checked with each 
+    -- item of <myValue> for coincidence (to avoid backup).
+    
+    Array(me) returns HArray1OfInteger from TColStd;
+    ---Purpose: Return the inner array of the IntegerArray attribute    
+    ---C++: inline 
+    ---C++: return const 
+     
+    GetDelta(me) returns Boolean from Standard;  
+    ---C++: inline  
+    
+    SetDelta(me : mutable; isDelta : Boolean from Standard);     
+    ---C++: inline  
+    ---Purpose: for  internal  use  only! 
+     
+    RemoveArray(me  : mutable) is private;      
+    ---C++: inline 
+     
+    
+    ---Category: methodes of TDF_Attribute
+    --           =========================
+
+    Create returns mutable IntegerArray from TDataStd; 
+    
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    ---Purpose: Note. Uses inside ChangeArray() method
+    
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+ 	---C++: return &
+
+    ---Category: methods to be added for using in DeltaOn Modification  
+    --           =====================================================
+   DeltaOnModification(me; anOldAttribute : Attribute from TDF)
+    	returns DeltaOnModification from TDF
+    	---Purpose : Makes a DeltaOnModification between <me> and
+    	--         <anOldAttribute>.  
+    	is redefined virtual;  
+	
+
+   
+    
+fields
+
+    myValue   : HArray1OfInteger from TColStd; 
+    myIsDelta : Boolean from Standard;    
+friends   
+
+    class DeltaOnModificationOfIntArray from TDataStd  
+    
+end IntegerArray;

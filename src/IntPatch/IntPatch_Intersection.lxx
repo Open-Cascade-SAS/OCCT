@@ -1,0 +1,56 @@
+// File       : IntPatch_Intersection.lxx
+// Created    : Wed Jui 7 18:00:00 1993
+// Author     : Modelization
+// Copyright  : OPEN CASCADE 1993
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <IntPatch_Line.hxx>
+
+inline Standard_Boolean IntPatch_Intersection::IsDone () const
+{
+  return done;
+}
+
+inline Standard_Boolean IntPatch_Intersection::IsEmpty () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return empt;
+}
+
+inline Standard_Boolean IntPatch_Intersection::TangentFaces () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return tgte;
+}
+
+inline Standard_Boolean IntPatch_Intersection::OppositeFaces () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  if (!tgte) {Standard_DomainError::Raise();}
+  return oppo;
+}
+
+inline Standard_Integer IntPatch_Intersection::NbPnts () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return spnt.Length();
+}
+
+inline const IntPatch_Point& IntPatch_Intersection::Point (const Standard_Integer Index) const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return spnt(Index);
+}
+
+inline Standard_Integer IntPatch_Intersection::NbLines () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin.Length();
+}
+
+inline const Handle(IntPatch_Line)& IntPatch_Intersection::Line (const Standard_Integer Index) const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin(Index);
+}

@@ -1,0 +1,43 @@
+-- File:        PresentationLayerAssignment.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PresentationLayerAssignment from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfLayeredItem from StepVisual, 
+	LayeredItem from StepVisual
+is
+
+	Create returns mutable PresentationLayerAssignment;
+	---Purpose: Returns a PresentationLayerAssignment
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aAssignedItems : mutable HArray1OfLayeredItem from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+	SetAssignedItems(me : mutable; aAssignedItems : mutable HArray1OfLayeredItem);
+	AssignedItems (me) returns mutable HArray1OfLayeredItem;
+	AssignedItemsValue (me; num : Integer) returns LayeredItem;
+	NbAssignedItems (me) returns Integer;
+
+fields
+
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	assignedItems : HArray1OfLayeredItem from StepVisual; -- a SelectType
+
+end PresentationLayerAssignment;

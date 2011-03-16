@@ -1,0 +1,97 @@
+-- File:        XmlObjMgt.cdl
+-- Created:     Tue Jul 17 12:30:46 2001
+-- Author:      Julia DOROVSKIKH <jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:   Matra Datavision 2001-2002
+-- History:     AGV 150202: Add parameter isClearText to SetStringValue()
+
+package XmlObjMgt 
+
+---Purpose: This package defines services to manage the storage
+--          grain of data produced by applications and those classes
+--          to manage persistent extern reference.
+
+uses
+    TCollection, TColStd, gp
+
+is
+    class Persistent;
+    ---Purpose: root for XML-persistence
+
+    class GP;
+    ---Purpose: translation of gp objects
+
+    imported DOMString;
+    imported Document;
+    imported Element;
+
+    -- Storage Relocation Table
+    alias SRelocationTable is IndexedMapOfTransient from TColStd;
+
+    -- Retrieval Relocation Table
+    alias RRelocationTable is DataMapOfIntegerTransient from TColStd;
+
+    generic class Array1; 
+
+    -- Package methods
+    IdString returns DOMString from XmlObjMgt;
+    ---C++: return const &
+    ---Purpose: Define the name of XMLattribute 'ID' (to be used everywhere)
+
+    SetExtendedString (theElement: in out Element from XmlObjMgt;
+                       theString : ExtendedString from TCollection)
+        returns Boolean from Standard;
+    ---Purpose: Add attribute <theElement extstring="theString" ...>
+
+    GetExtendedString (theElement: Element from XmlObjMgt;
+                       theString : out ExtendedString from TCollection)
+        returns Boolean from Standard;
+    ---Purpose: Get attribute <theElement extstring="theString" ...>
+
+    GetStringValue   (theElement : Element from XmlObjMgt)
+        returns DOMString from XmlObjMgt;
+    ---Purpose: Returns the first child text node
+
+    SetStringValue   (theElement : in out Element from XmlObjMgt;
+                      theData    : DOMString from XmlObjMgt;
+                      isClearText: Boolean from Standard = Standard_False);
+    ---Purpose: Add theData as the last child text node to theElement
+    --          isClearText(True) avoids analysis of the string and replacement
+    --          of characters like '<' and '&' during XML file storage.
+    --          Do NEVER set isClearText unless you have a hell of a reason
+
+    GetTagEntryString (theTarget  : DOMString from XmlObjMgt;
+                       theTagEntry: out AsciiString from TCollection)
+    returns Boolean from Standard;
+    ---Purpose: Convert XPath expression (DOMString) into TagEntry string
+    --          returns False on Error
+
+    SetTagEntryString (theSource  : out DOMString from XmlObjMgt;
+                       theTagEntry: AsciiString from TCollection);
+    ---Purpose: Convert XPath expression (DOMString) into TagEntry string
+    --          returns False on Error
+
+    FindChildElement (theSource: Element   from XmlObjMgt;
+                      theObjId : Integer   from Standard)
+    returns Element from XmlObjMgt;
+
+    FindChildByRef  (theSource : Element   from XmlObjMgt;
+                     theRefName: DOMString from XmlObjMgt)
+    returns Element from XmlObjMgt;
+
+    FindChildByName (theSource : Element   from XmlObjMgt;
+                     theName   : DOMString from XmlObjMgt)
+    returns Element from XmlObjMgt;
+
+    GetInteger      (theString : in out CString from Standard;
+                     theValue  : in out Integer from Standard)
+    returns Boolean from Standard;
+
+    GetReal         (theString : in out CString from Standard;
+                     theValue  : in out Real    from Standard)
+    returns Boolean from Standard;
+
+    GetReal         (theString : DOMString      from XmlObjMgt;
+                     theValue  : in out Real    from Standard)
+    returns Boolean from Standard;
+
+end XmlObjMgt;

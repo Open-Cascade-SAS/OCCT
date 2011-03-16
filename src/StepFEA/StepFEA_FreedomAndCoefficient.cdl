@@ -1,0 +1,38 @@
+-- File:	StepFEA_FreedomAndCoefficient.cdl
+-- Created:	Sat Dec 14 11:02:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FreedomAndCoefficient from StepFEA
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity FreedomAndCoefficient
+
+uses
+    DegreeOfFreedom from StepFEA,
+    MeasureOrUnspecifiedValue from StepElement
+
+is
+    Create returns FreedomAndCoefficient from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aFreedom: DegreeOfFreedom from StepFEA;
+                       aA: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Freedom (me) returns DegreeOfFreedom from StepFEA;
+	---Purpose: Returns field Freedom
+    SetFreedom (me: mutable; Freedom: DegreeOfFreedom from StepFEA);
+	---Purpose: Set field Freedom
+
+    A (me) returns MeasureOrUnspecifiedValue from StepElement;
+	---Purpose: Returns field A
+    SetA (me: mutable; A: MeasureOrUnspecifiedValue from StepElement);
+	---Purpose: Set field A
+
+fields
+    theFreedom: DegreeOfFreedom from StepFEA;
+    theA: MeasureOrUnspecifiedValue from StepElement;
+
+end FreedomAndCoefficient;

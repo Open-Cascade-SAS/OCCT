@@ -1,0 +1,33 @@
+-- File:	Circle3D.cdl
+-- Created:	Thu Apr 30 11:17:40 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Circle3D from Draw inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses
+    Circ from gp,
+    Color from Draw,
+    Display from Draw
+
+is
+
+    Create(C : Circ from gp; A1,A2 : Real; col : Color)
+    returns mutable Circle3D;
+    
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myCirc  : Circ from gp;
+    myA1    : Real;
+    myA2    : Real;
+    myColor : Color;
+    
+end Circle3D;
+

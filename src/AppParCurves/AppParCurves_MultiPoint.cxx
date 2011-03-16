@@ -1,0 +1,183 @@
+//File AppParCurves_MultiPoint.cxx
+//Lpa, le 3/12/91
+
+
+#include <AppParCurves_MultiPoint.ixx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+
+#include <Standard_OutOfRange.hxx>
+
+#define tabPoint   (*(Handle_TColgp_HArray1OfPnt*)&ttabPoint)
+#define tabPoint2d (*(Handle_TColgp_HArray1OfPnt2d*)&ttabPoint2d)
+
+AppParCurves_MultiPoint::AppParCurves_MultiPoint() {}
+
+
+AppParCurves_MultiPoint::AppParCurves_MultiPoint (const Standard_Integer NbPoles, 
+						  const Standard_Integer NbPoles2d)
+{
+  nbP = NbPoles;
+  nbP2d = NbPoles2d;
+  if (nbP != 0)  {
+    Handle(TColgp_HArray1OfPnt) tab3d = 
+      new TColgp_HArray1OfPnt(1, NbPoles);
+    ttabPoint = tab3d;
+  }
+  if (nbP2d != 0) {
+    Handle(TColgp_HArray1OfPnt2d) tab2d = 
+      new TColgp_HArray1OfPnt2d(1, NbPoles2d);
+    ttabPoint2d = tab2d;
+  }
+}
+
+
+
+AppParCurves_MultiPoint::AppParCurves_MultiPoint(const TColgp_Array1OfPnt& tabP)
+{
+  nbP2d = 0;
+  nbP = tabP.Length();
+  Handle(TColgp_HArray1OfPnt) tab3d = 
+    new TColgp_HArray1OfPnt(1, nbP);
+  ttabPoint = tab3d;
+  Standard_Integer Lower = tabP.Lower();
+  TColgp_Array1OfPnt& P3d = tabPoint->ChangeArray1();
+  for (Standard_Integer i = 1; i <= tabP.Length(); i++) {
+    P3d.SetValue(i, tabP.Value(Lower+i-1));
+  }
+}
+
+
+
+AppParCurves_MultiPoint::AppParCurves_MultiPoint(const TColgp_Array1OfPnt2d& tabP2d)
+{
+  nbP = 0;
+  nbP2d = tabP2d.Length();
+  Handle(TColgp_HArray1OfPnt2d) tab2d = 
+    new TColgp_HArray1OfPnt2d(1, nbP2d);
+  ttabPoint2d = tab2d;
+  Standard_Integer Lower = tabP2d.Lower();
+  TColgp_Array1OfPnt2d& P2d = tabPoint2d->ChangeArray1();
+  for (Standard_Integer i = 1; i <= nbP2d; i++) {
+    P2d.SetValue(i, tabP2d.Value(Lower+i-1));
+  }
+}
+
+
+AppParCurves_MultiPoint::AppParCurves_MultiPoint(const TColgp_Array1OfPnt&   tabP,
+						 const TColgp_Array1OfPnt2d& tabP2d)
+{
+  nbP = tabP.Length();
+  nbP2d = tabP2d.Length();
+  Handle(TColgp_HArray1OfPnt) t3d = 
+    new TColgp_HArray1OfPnt(1, nbP);
+  ttabPoint = t3d;
+
+  Handle(TColgp_HArray1OfPnt2d) t2d = 
+    new TColgp_HArray1OfPnt2d(1, nbP2d);
+  ttabPoint2d = t2d;
+
+  TColgp_Array1OfPnt& P3d = tabPoint->ChangeArray1();
+  Standard_Integer i, Lower = tabP.Lower();
+  for (i = 1; i <= nbP; i++) {
+    P3d.SetValue(i, tabP.Value(Lower+i-1));
+  }
+  Lower = tabP2d.Lower();
+  TColgp_Array1OfPnt2d& P2d = tabPoint2d->ChangeArray1();
+  for (i = 1; i <= nbP2d; i++) {
+    P2d.SetValue(i, tabP2d.Value(Lower+i-1));
+  }
+}
+
+void AppParCurves_MultiPoint::Delete()
+{}
+
+void AppParCurves_MultiPoint::Transform(const Standard_Integer CuIndex,
+					const Standard_Real    x,
+					const Standard_Real    dx,
+					const Standard_Real    y,
+					const Standard_Real    dy,
+					const Standard_Real    z,
+					const Standard_Real    dz) 
+{
+  if (Dimension(CuIndex) != 3) Standard_OutOfRange::Raise();
+
+  gp_Pnt P, newP;
+  P = Point(CuIndex);
+  newP.SetCoord(x + P.X()*dx, y + P.Y()*dy, z + P.Z()*dz);
+  tabPoint->SetValue(CuIndex, newP);
+}
+
+
+void AppParCurves_MultiPoint::Transform2d(const Standard_Integer CuIndex,
+					  const Standard_Real    x,
+					  const Standard_Real    dx,
+					  const Standard_Real    y,
+					  const Standard_Real    dy) 
+{
+  if (Dimension(CuIndex) != 2) Standard_OutOfRange::Raise();
+
+  gp_Pnt2d P, newP;
+  P = Point2d(CuIndex);
+  newP.SetCoord(x + P.X()*dx, y + P.Y()*dy);
+  SetPoint2d(CuIndex, newP);
+}
+
+
+
+
+
+void AppParCurves_MultiPoint::SetPoint (const Standard_Integer Index, 
+					const gp_Pnt&          Point) {
+  Standard_OutOfRange_Raise_if((Index <= 0) || (Index > nbP), "");
+  tabPoint->SetValue(Index, Point);
+}
+
+
+const gp_Pnt& AppParCurves_MultiPoint::Point (const Standard_Integer Index) const 
+{
+  Standard_OutOfRange_Raise_if((Index <= 0) || (Index > nbP), "");
+  return tabPoint->Value(Index);
+}
+  
+
+
+void AppParCurves_MultiPoint::SetPoint2d (const Standard_Integer Index, 
+					  const gp_Pnt2d& Point)
+ {
+  Standard_OutOfRange_Raise_if((Index <= nbP) || (Index > nbP+nbP2d), "");
+  tabPoint2d->SetValue(Index-nbP, Point);
+}
+
+
+const gp_Pnt2d& AppParCurves_MultiPoint::Point2d (const Standard_Integer Index) const 
+{
+  Standard_OutOfRange_Raise_if((Index <= nbP) || (Index > nbP+nbP2d), "");
+  return tabPoint2d->Value(Index-nbP);
+}
+  
+
+
+
+
+void AppParCurves_MultiPoint::Dump(Standard_OStream& o) const
+{
+  o << "AppParCurves_MultiPoint dump:" << endl;
+  o << "It contains " << NbPoints() << " 3d points and " << NbPoints2d() <<" 2d points." << endl;
+  /*
+    if (Dimension(i) == 3) {
+      for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
+	o << " Pole No. " << j << ": " << endl;
+	o << " Pole x = " << (tabPoint->Value(i)->Point(j)).X() << endl;
+	o << " Pole y = " << (tabPoint->Value(i)->Point(j)).Y() << endl;
+	o << " Pole z = " << (tabPoint->Value(i)->Point(j)).Z() << endl;
+      }
+    }
+    else {
+      for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
+	o << " Pole No. " << j << ": " << endl;
+	o << " Pole x = " << (tabPoint->Value(i)->Point2d(j)).X() << endl;
+	o << " Pole y = " << (tabPoint->Value(i)->Point2d(j)).Y() << endl;
+      }
+*/
+}

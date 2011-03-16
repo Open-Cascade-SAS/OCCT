@@ -1,0 +1,28 @@
+-- File:	StepAP214_GroupItem.cdl
+-- Created:	Wed Mar 10 14:47:29 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class GroupItem from StepAP214 
+inherits SelectType from StepData 
+
+uses
+
+    GeometricRepresentationItem from StepGeom
+
+
+is
+    	Create returns GroupItem;
+	---Purpose : Returns a GroupItem SelectType
+	
+    	CaseNum (me; ent : Transient) returns Integer is virtual;
+	---Purpose: Recognizes a GroupItem Kind Entity that is :
+    	--        1 ->  GeometricRepresentationItem
+	--        0 else
+	 GeometricRepresentationItem(me) returns any  GeometricRepresentationItem is virtual ;
+    	---Purpose : returns Value as a  GeometricRepresentationItem (Null if another type)
+	
+	
+end GroupItem;

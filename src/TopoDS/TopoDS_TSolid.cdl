@@ -1,0 +1,23 @@
+-- File:	TopoDS_TSolid.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class TSolid from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TSolid from TopoDS;
+    ---C++: inline
+    ---Purpose: Creates an empty TSolid.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: returns SOLID.
+
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+	---Purpose: Returns an empty TSolid.
+
+end TSolid;

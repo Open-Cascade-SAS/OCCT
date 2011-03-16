@@ -1,0 +1,142 @@
+-- File:	GeomAPI.cdl
+-- Created:	Thu Mar 17 10:00:11 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+package GeomAPI
+
+	---Purpose: The   GeomAPI   package  provides  an  Application
+	--          Programming Interface for the Geometry.
+	--          
+	--          The API is a set of  classes and methods aiming to
+	--          provide :
+	--          
+	--          * High level and simple calls  for the most common
+	--          operations. 
+	--          
+	--          *    Keeping   an   access  on    the    low-level
+	--          implementation of high-level calls.
+	--          
+	-- 	    
+	-- 	    The API  provides classes to  call the algorithmes
+	-- 	    of the Geometry
+	-- 	    
+	-- 	    * The  constructors  of the classes  provides  the
+	-- 	    different constructions methods.
+	-- 	    
+	-- 	    * The  class keeps as fields the   different tools
+	-- 	    used by the algorithmes
+	-- 	    
+	-- 	    *   The class  provides  a  casting  method to get
+	-- 	    automatically the  result  with  a   function-like
+	-- 	    call. 
+	-- 	    
+	-- 	    For example to evaluate the distance <D> between a
+	-- 	    point <P> and a curve <C>, one can writes :
+	-- 	    
+	-- 	        D = GeomAPI_ProjectPointOnCurve(P,C);
+	-- 	    
+	-- 	    or
+	-- 	    
+	-- 	        GeomAPI_ProjectPointOnCurve PonC(P,C);
+	-- 	        D = PonC.LowerDistance();
+	-- 	    
+
+
+uses
+
+    Geom,
+    Geom2d,
+    gp,
+    TColgp,
+    TColStd,
+    GeomAdaptor,
+    GeomInt,
+    IntCurveSurface,
+    Extrema,
+    GeomAbs,
+    Quantity,
+    StdFail, 
+    Approx
+			    
+
+is
+
+    ------------------------------------------------------------------
+    -- Those classes  provide algo  to  evaluate  the distance between
+    -- points curves and surfaces. 
+    ------------------------------------------------------------------
+
+    class ProjectPointOnCurve;
+
+    class ProjectPointOnSurf;
+
+    class ExtremaCurveCurve;
+    
+    class ExtremaCurveSurface;
+    
+    class ExtremaSurfaceSurface;
+
+
+
+    ------------------------------------------------------------------
+    -- Those classes provide algo to evaluate a curve  or a surface 
+    -- passing through 
+    -- an array of points.
+    ------------------------------------------------------------------
+
+    --- Approximation:
+    --  
+    class PointsToBSpline;
+	---Purpose: To fit a curve.
+    
+    class PointsToBSplineSurface;
+	---Purpose: To fit a surface.
+    
+    
+    --- Interpolation:
+    --
+    class Interpolate;
+    
+
+    ------------------------------------------------------------------
+    -- Those classes provide algo to intersect two surfaces
+    --                       and  to intersect a curve and a surface
+    ------------------------------------------------------------------
+
+    class IntSS;
+	---Purpose: To intersect two surfaces.
+
+    class IntCS;
+	---Purpose: To intersect a curve and a surface.
+
+
+    ------------------------------------------------------------------
+    -- Those methods are used to switch 3d and 2d curves
+    ------------------------------------------------------------------
+
+    To2d(C : Curve from Geom; P : Pln from gp) returns Curve from Geom2d; 
+	---Purpose: This function builds (in the
+    	-- parametric space of the plane P) a 2D curve equivalent to the 3D curve
+    	-- C. The 3D curve C is considered to be located in the plane P.
+    	-- Warning
+    	-- The 3D curve C must be of one of the following types:
+    	-- -      a line
+    	-- -      a circle
+    	-- -      an ellipse
+    	-- -      a hyperbola
+    	-- -      a parabola
+    	-- -      a Bezier curve
+    	-- -      a BSpline curve
+    	-- Exceptions Standard_NoSuchObject if C is not a defined type curve.
+
+
+    To3d(C : Curve from Geom2d; P : Pln from gp) returns Curve from Geom; 
+	---Purpose: Builds a 3D curve equivalent to the 2D curve C
+    	-- described in the parametric space defined by the local
+    	-- coordinate system of plane P.
+    	-- The resulting 3D curve is of the same nature as that of the curve C.
+
+end GeomAPI;

@@ -1,0 +1,26 @@
+// File:	Standard_ErrorHandlerCallback.lxx
+// Created:	Thu Apr 13 11:32:40 2006
+// Author:	Andrey BETENEV
+
+// If neither NO_CXX_EXCEPTION nor OCC_CONVERT_SIGNALS is defined,
+// provide empty inline implementation
+
+#if ! defined(NO_CXX_EXCEPTION) && ! defined(OCC_CONVERT_SIGNALS)
+
+inline Standard_ErrorHandlerCallback::Standard_ErrorHandlerCallback () 
+{
+}
+
+inline Standard_ErrorHandlerCallback::~Standard_ErrorHandlerCallback () 
+{
+}
+
+inline void Standard_ErrorHandlerCallback::RegisterCallback () 
+{
+}
+
+inline void Standard_ErrorHandlerCallback::UnregisterCallback () 
+{
+}
+
+#endif

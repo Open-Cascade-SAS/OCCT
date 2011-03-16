@@ -1,0 +1,200 @@
+-- File:	AppBlend_Approx.cdl
+-- Created:	Tue Aug 27 16:29:23 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+
+deferred class Approx from AppBlend
+
+
+	---Purpose: Bspline approximation of a surface.
+
+uses Array2OfPnt             from TColgp,
+     HArray2OfPnt            from TColgp,
+     Array2OfReal            from TColStd,
+     HArray2OfReal           from TColStd,
+     Array1OfReal            from TColStd,
+     HArray1OfReal           from TColStd,
+     Array1OfInteger         from TColStd,
+     HArray1OfInteger        from TColStd,
+     Array1OfPnt2d           from TColgp
+
+raises NotDone     from StdFail,
+       DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~AppBlend_Approx(){Delete() ; }"
+    
+
+
+    IsDone(me)
+        returns Boolean from Standard	
+	is deferred;
+
+
+    SurfShape(me; UDegree,VDegree  : out Integer from Standard;
+                  NbUPoles,NbVPoles: out Integer from Standard;
+                  NbUKnots,NbVKnots: out Integer from Standard)
+    	raises NotDone from StdFail
+    	is deferred;
+
+
+    Surface(me; TPoles          : out Array2OfPnt from TColgp;
+    	        TWeights        : out Array2OfReal from TColStd;
+		TUKnots,TVKnots : out Array1OfReal from TColStd;
+		TUMults,TVMults : out Array1OfInteger from TColStd)
+    	raises NotDone from StdFail
+    	is deferred;
+
+
+    UDegree(me)
+    
+    	returns Integer from Standard
+    	raises NotDone from StdFail
+	is deferred;
+
+
+    VDegree(me)
+    
+    	returns Integer from Standard
+    	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfPoles(me)
+    
+    	returns Array2OfPnt from TColgp
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfWeights(me)
+    
+    	returns Array2OfReal from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfUKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfVKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfUMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    SurfVMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail
+	is deferred;
+
+
+    NbCurves2d(me)
+    
+    	returns Integer from Standard	
+	raises NotDone from StdFail
+	is deferred;
+
+
+    Curves2dShape(me; Degree,NbPoles,NbKnots: out Integer from Standard)
+    
+    	raises NotDone from StdFail,
+	       DomainError from Standard
+
+        is deferred;
+	
+	
+    Curve2d(me; Index: Integer from Standard;
+                TPoles   : out Array1OfPnt2d from TColgp;
+		TKnots   : out Array1OfReal from TColStd;
+		TMults   : out Array1OfInteger from TColStd)
+		
+    	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+
+    	is deferred;     
+
+
+    Curves2dDegree(me)
+    
+    	returns Integer from Standard	
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is deferred;
+	
+	
+    Curve2dPoles(me; Index: Integer from Standard)
+    
+    	returns Array1OfPnt2d from TColgp
+	---C++: return const&
+	
+	raises NotDone     from StdFail,
+	       OutOfRange  from Standard,
+	       DomainError from Standard
+	is deferred;
+	
+
+    Curves2dKnots(me)
+    
+    	returns Array1OfReal from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is deferred;
+
+
+    Curves2dMults(me)
+    
+    	returns Array1OfInteger from TColStd
+	---C++: return const&
+
+	raises NotDone from StdFail,
+	       DomainError from Standard
+	is deferred;
+	
+    TolReached(me; Tol3d, Tol2d : out Real from Standard)
+	raises NotDone from StdFail
+	is deferred; 
+	 
+    TolCurveOnSurf(me; Index  :  Integer  from Standard) 
+	returns  Real from Standard  
+	raises NotDone from StdFail
+        is deferred;    
+                    
+
+end Approx;

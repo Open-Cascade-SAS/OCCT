@@ -1,0 +1,48 @@
+-- File:	GeomFill_Generator.cdl
+-- Created:	Thu Feb 17 10:44:36 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+class Generator from GeomFill inherits Profiler from GeomFill
+
+        ---Purpose: Create a surface using generating lines.  Inherits
+        --          profiler.  The  surface will be  a  BSplineSurface
+        --          passing  by   all  the  curves  described  in  the
+        --          generator. The VDegree of the resulting surface is
+        --          1.
+
+
+uses
+    Surface from Geom
+
+
+raises
+    NotDone     from StdFail,
+    DomainError from Standard
+
+is
+    Create returns Generator from GeomFill;
+    
+    Perform(me   : in out ;
+            PTol : in Real from Standard)
+	---Purpose: Converts all curves to BSplineCurves.
+	--          Set them to the common profile.
+	--          Compute the surface (degv = 1).
+	--          <PTol> is used to compare 2 knots.
+    is redefined;
+    
+    Surface(me)
+    returns Surface from Geom
+    	---C++: return const&
+    	---C++: inline
+    is static;
+    
+    
+fields
+    mySurface : Surface from Geom;
+
+end Generator;

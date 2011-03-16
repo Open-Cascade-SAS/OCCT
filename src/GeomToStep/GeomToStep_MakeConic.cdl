@@ -1,0 +1,39 @@
+-- File:	GeomToStep_MakeConic.cdl
+-- Created:	Mon Jun 21 11:18:38 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeConic from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Conic from Geom and the class Conic from StepGeom
+    --          which describes a Conic from prostep. As Conic is an abstract
+    --          Conic this class is an access to the sub-class required.
+  
+uses Conic from Geom,
+     Conic from Geom2d,	
+     Conic from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( C : Conic from Geom ) returns MakeConic;
+
+Create ( C : Conic from Geom2d ) returns MakeConic;
+
+Value (me) returns Conic from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+    
+fields
+
+    theConic : Conic from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeConic;
+
+
+

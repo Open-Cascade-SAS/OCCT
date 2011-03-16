@@ -1,0 +1,154 @@
+-- File:	StepData_SelectType.cdl
+-- Created:	Fri Mar 26 10:27:25 1993
+-- Author:	Christian CAILLET
+--		<cky@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class SelectType  from StepData  --  inherits Storable
+
+    ---Purpose : SelectType is the basis used for SELECT_TYPE definitions from
+    --           the EXPRESS form. A SELECT_TYPE in EXPRESS is an enumeration
+    --           of Types, it corresponds in a way to a Super-Type, but with
+    --           no specific Methods, and no exclusivity (a given Type can be
+    --           member of several SELECT_TYPES, plus be itself a SUB_TYPE).
+    --           
+    --           A SelectType can be field of a Transient Entity (it is itself
+    --           Storable) or only used to control an input Argument
+    --           
+    --           This class implies to designate each member Type by a Case
+    --           Number which is a positive Integer value (this allows a faster
+    --           treatement).
+    --           
+    --           With this class, a specific SelectType can :
+    --           - recognize an Entity as complying or not with its definition,
+    --           - storing it, with the garanty that the stored Entity complies
+    --             with the definition of the SelectType
+    --           - and (if judged useful) give the stored Entity under the good
+    --             Type rather than simply "Transient".
+
+uses CString, Transient, Type, Logical, SelectMember, PDescr
+
+raises TypeMismatch
+
+is
+
+    CaseNum (me; ent : Transient) returns Integer  is deferred;
+    ---Purpose : Recognizes the Type of an Entity. Returns a positive Number
+    --           which identifies the Type in the definition List of the
+    --           SelectType. Returns Zero if its Type in not in this List.
+
+    Matches (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if the Type of an Entity complies with the
+    --           definition list of the SelectType.
+    --           Also checks for a SelectMember
+    --           Default Implementation looks for CaseNum  or CaseMem positive
+
+    SetValue (me : in out; ent : any Transient)
+    ---Purpose : Stores an Entity. This allows to define a specific SelectType
+    --           class with one read method per member Type, which returns the
+    --           Value casted with the good Type.
+    	raises TypeMismatch  is static;
+    --           Error if <ent> does not match the definition List of Types.
+
+    Nullify (me : in out)  is static;
+    ---Purpose : Nullifies the Stored Entity
+
+    Value (me) returns any Transient  is static;
+    ---Purpose : Returns the Stored Entity. Can be used to define specific
+    --           read methods (see above)
+    ---C++ : return const &
+
+    IsNull (me) returns Boolean  is static;
+    ---Purpose : Returns True if there is no Stored Entity (i.e. it is Null)
+
+    	--  Entity (plain Transient)
+
+    Type (me) returns Type  is static;
+    ---Purpose : Returns the Effective (Dynamic) Type of the Stored Entity
+    --           If it is Null, returns TYPE(Transient)
+
+    CaseNumber (me) returns Integer  is static;
+    ---Purpose : Recognizes the Type of the stored Entity, or zero if it is
+    --           Null or SelectMember. Calls the first method CaseNum on Value
+
+    	--  Others (through a SelectMember)
+
+    Description (me) returns PDescr  is virtual;
+    ---Purpose : Returns the Description which corresponds to <me>
+    --           Null if no specific description to give. This description is
+    --           used to control reading an check validity.
+    --           Default returns a Null Handle, i.e. undefined description
+    --           It can suffice if CaseNum and CaseMem give enough control
+
+    NewMember   (me) returns SelectMember  is virtual;
+    ---Purpose : Returns a preferred SelectMember. Default returns a Null
+    --           By default, a SelectMember can be set according to data type
+    --           and Name : it is a SelectNamed if Name is defined
+    --           
+    --           This method allows to define, for a specific SelectType, a
+    --           specific SelectMember than SelectNamed. For instance for a
+    --           Real plus a Name, a SelectReal plus a case number is a good
+    --           solution, lighter than SelectNamed which is very multipurpose
+
+    CaseMem    (me; ent : SelectMember) returns Integer  is virtual;
+    ---Purpose : Recognize a SelectMember (kind, name). Returns a positive
+    --           value which identifies the case in the List of immediate cases
+    --           (distinct from the List of Entity Types). Zero if not
+    --           recognizes
+    --           Default returns 0, saying that no immediate value is allowed
+
+    CaseMember (me) returns Integer;
+    ---Purpose : Returns the Type of the stored SelectMember, or zero if it is
+    --            Null or Entity. Calls the method CaseMem on Value
+
+    Member (me) returns SelectMember;
+    ---Purpose : Returns Value as a SelectMember. Null if not a SelectMember
+
+    SelectName (me) returns CString;
+    ---Purpose : Returns the type name of SelectMember. If no SelectMember or
+    --           with no type name, returns an empty string
+    --           To change it, pass through the SelectMember itself
+
+    Int (me) returns Integer;
+    ---Purpose : This internal method gives access to a value implemented by an
+    --           Integer (to read it)
+
+    SetInt (me : in out; val : Integer)
+    ---Purpose : This internal method gives access to a value implemented by an
+    --           Integer (to set it) : a SelectMember MUST ALREADY BE THERE !
+    	raises TypeMismatch  is static;
+
+    Integer (me) returns Integer;
+    ---Purpose : Gets the value as an Integer
+
+    SetInteger (me : in out; val : Integer; name : CString = "")
+    ---Purpose : Sets a new Integer value, with an optional type name
+    --  Warning : If a SelectMember is already set, works on it : value and
+    --           name must then be accepted by this SelectMember
+    	raises TypeMismatch  is static;
+    --           Error if no Integer value is accepted (see CaseMem)
+
+    Boolean (me) returns Boolean;
+
+    SetBoolean (me : in out; val : Boolean; name : CString = "")
+    	raises TypeMismatch  is static;
+
+    Logical (me) returns Logical;
+
+    SetLogical (me : in out; val : Logical; name : CString = "")
+    	raises TypeMismatch  is static;
+
+    Real (me) returns Real;
+
+    SetReal (me : in out; val : Real; name : CString = "")
+    	raises TypeMismatch  is static;
+
+    Destroy (me: in out) is virtual;
+    ---C++ : alias "Standard_EXPORT virtual ~StepData_SelectType() { Destroy(); }"
+
+fields
+
+    thevalue : Transient;
+
+end SelectType;

@@ -1,0 +1,106 @@
+-- File:	BRepPrimAPI_MakeRevolution.cdl
+-- Created:	Thu Jul 22 11:25:59 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class MakeRevolution from BRepPrimAPI inherits MakeOneAxis from BRepPrimAPI
+
+	---Purpose: Describes functions to build revolved shapes.
+    	-- A MakeRevolution object provides a framework for:
+    	-- -   defining the construction of a revolved shape,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses
+    Ax2        from gp,
+    Curve      from Geom,
+    OneAxis    from BRepPrim,
+    Revolution from BRepPrim
+
+raises
+    DomainError from Standard
+
+is
+    Create(Meridian  : Curve from Geom)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Meridian  : Curve from Geom; angle : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Meridian  : Curve from Geom; VMin, VMax : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Meridian  : Curve from Geom; VMin, VMax, angle : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Axes : Ax2 from gp; Meridian  : Curve from Geom)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Axes : Ax2 from gp; Meridian  : Curve from Geom; angle : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Axes : Ax2 from gp; Meridian  : Curve from Geom; VMin, VMax : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+
+    Create(Axes : Ax2 from gp; Meridian  : Curve from Geom; VMin, VMax, angle : Real)
+    returns MakeRevolution from BRepPrimAPI
+	---Purpose: Make a revolution body by rotating a curve around Z.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if M is not in a plane containing Z.
+    	---Purpose: For all algorithms the resulting shape is composed of
+    	-- -   a lateral revolved face,
+    	-- -   two planar faces in planes parallel to the plane z =
+    	--   0, and passing by the extremities of the revolved
+    	--   portion of Meridian, if these points are not on the Z
+    	--   axis (in case of a complete revolved shape, these faces are circles),
+    	-- -   and in the case of a portion of a revolved shape, two
+    	--   planar faces to close the shape (in the planes u = 0 and u = angle).
+
+    OneAxis(me : in out) returns Address;
+	---Purpose: Returns the algorithm.
+	---Level: Advanced
+
+    Revolution(me : in out) returns Revolution from BRepPrim
+	---Purpose: Returns the algorithm.
+	--          
+	---C++: return &
+	---Level: Public
+    is static;
+
+fields 
+
+    myRevolution : Revolution from BRepPrim;
+
+end MakeRevolution;

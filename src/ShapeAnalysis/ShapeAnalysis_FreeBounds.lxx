@@ -1,0 +1,26 @@
+// File:	ShapeAnalysis_FreeBounds.lxx
+// Created:	Wed Sep 16 13:18:12 1998
+// Author:	data exchange team
+//		<det@nnov.matra-dtv.fr>
+// 25.12.98 pdn renaming methods GetWires and GetEdges to GetClosedWires and GetOpenWires respectively
+
+//=======================================================================
+//function : GetClosedWires
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetClosedWires() const
+{
+  return myWires;
+}
+
+//=======================================================================
+//function : GetOpenWires
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Compound& ShapeAnalysis_FreeBounds::GetOpenWires() const
+{
+  return myEdges;
+}
+

@@ -1,0 +1,79 @@
+-- File:	MMgt_StackManager.cdl
+-- Created:	Tue Oct 13 17:03:48 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+class StackManager from MMgt
+---Purpose:
+--   The class <StackManager> provides primitive facilities for managing
+--   stack-based storage.
+--   
+
+uses 
+    Integer from Standard
+   ,Address from Standard
+
+raises
+    OutOfMemory from Standard
+   ,ProgramError from Standard
+
+is
+    Create returns StackManager;
+    ---Purpose:
+    --   Constructs a StackManager with an empty free stack.
+    --
+    ---Level: Advanced
+    
+    Allocate(me: in out; size: Integer) returns Address
+    ---Purpose:
+    --   Returns the address of a storage of the given size located on
+    --   the top of the free stack.
+    ---Level: Advanced
+    raises OutOfMemory 
+    	   -- If the allocation fails
+    is static;
+    
+    Free(me: in out; aStack: in out Address; aSize: Integer)
+    ---Purpose:
+    --   Deallocates the storage of the given size from the free stack
+    --   and nullify the address.
+    ---Level: Advanced
+    raises ProgramError  
+    	   -- If the storage is not on the top of the stack.
+    is static;
+    
+    ShallowCopy (me) returns StackManager;
+    ---Purpose: 
+    --   There is no way to have a "ShallowCopy" of a "StackManager"
+    ---Level: Advanced
+    ---Warning:
+    --   A ProgramError will be raised with a message.
+    --   
+    ---C++:  function call
+
+    Purge(me: in out)
+    ---Purpose:
+    --   Deallocates the storage associated to stack.
+    ---Level: Advanced
+    is static private;
+    
+    ShallowDump (me; S: in out OStream);
+    ---Purpose: 
+    --   Prints the contents of <me> on the stream <s>. 
+    ---Level: Advanced
+    ---C++:  function call
+
+    Destructor(me: in out);
+    ---Purpose:
+    --    Deallocates the storage associated to stack.
+    --    Delete <me>.
+    ---Level: Advanced
+    ---C++: alias ~
+    
+fields
+    myFreeListSize: Integer;
+    myFreeList:     Address;
+
+end StackManager;
+    

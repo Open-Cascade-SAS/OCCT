@@ -1,0 +1,123 @@
+-- File:	MAT2d_MiniPath.cdl
+-- Created:	Thu Oct  7 15:41:28 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class MiniPath from MAT2d
+
+	---Purpose: MiniPath computes a path to link all the  lines in
+	--          a set of lines. The path is described as a  set of
+	--          connexions.  
+	--          
+	--          The set of connexions can be  seen as an arbitrary Tree.  
+	--          The node of the  tree are the  lines.  The arcs of the
+	--          tree are the connexions.  The ancestror  of  a line is
+	--          the connexion which ends on it. The children of a line
+	--          are the connexions which start on it.
+	--          
+	--          The children of a line are ordered by the relation 
+	--          <IsAfter> defined on the connexions.
+	--          (See MAT2s_Connexion.cdl).
+
+uses
+    Connexion                           from MAT2d,
+    SequenceOfConnexion                 from MAT2d,
+    DataMapOfIntegerConnexion           from MAT2d,
+    DataMapOfIntegerSequenceOfConnexion from MAT2d,
+    SequenceOfSequenceOfGeometry        from MAT2d
+is
+
+    Create returns MiniPath from MAT2d;
+
+    Perform(me      : in out; 
+    	    Figure  : SequenceOfSequenceOfGeometry from MAT2d;
+            IndStart: Integer;
+            Sense   : Boolean)
+       ---Purpose: Computes the path  to link the  lines in <Figure>.
+       --          the path   starts on the  line  of index <IndStart>
+       --          <Sense>  = True    if  the Circuit turns in the
+       --          trigonometric  sense.
+    is static;
+
+    RunOnConnexions(me : in out)
+    	---Purpose: Run on the set of connexions to compute the path.
+    	--          the path is an exploration of the tree which contains
+    	--          the connexions and their reverses.
+    	--          if the tree of connexions is
+    	--                  A
+    	--                 / \
+    	--                B   E
+    	--               / \   \
+    	--              C   D   F
+    	--              
+    	--          the path is A->B, B->C, C->B, B->D, D->B, B->A, A->E,
+    	--                      E->F, F->E, E->A.    
+    is static;
+
+    Path(me) 
+        ---Purpose: Returns  the  sequence of  connexions corresponding to
+        --          the  path.
+        ---C++: return const&
+    returns SequenceOfConnexion from MAT2d
+    is static;
+    
+    IsConnexionsFrom(me ; Index : Integer)
+	---Purpose: Returns <True> if there is one Connexion which starts
+	--          on line designed by <Index>.
+    returns Boolean from Standard
+    is static;
+	    
+    ConnexionsFrom(me : in out ; Index : Integer)
+	---Purpose: Returns    the  connexions  which   start  on line
+	--          designed  by <Index>.
+	--           
+	---C++: return&
+    returns SequenceOfConnexion from MAT2d
+    is static;
+    
+    IsRoot(me ; Index : Integer)
+	---Purpose: Returns <True> if the line designed by <Index> is
+	--          the root.
+    returns Boolean from Standard
+    is static;
+			    
+    Father(me : in out ; Index : Integer)
+	---Purpose: Returns    the  connexion  which ends  on line
+	--          designed  by <Index>.
+    returns mutable Connexion from MAT2d
+    is static;
+
+    Append (me        : in out;
+    	    Connexion :        Connexion from MAT2d)
+       ---Purpose: Add a connexion to the path. 
+    is static private;
+
+    ExploSons(me           : in out                                ; 
+    	      aPath        : in out SequenceOfConnexion from MAT2d ;
+              aConnexion   :        Connexion           from MAT2d )
+    is static private;
+
+    MinimumL1L2(me; 
+    	        Figure : SequenceOfSequenceOfGeometry from MAT2d;
+                L1     : Integer                               ;
+                L2     : Integer                               )
+       ---Purpose: Returns the connexion which realises the minimum of
+       --          distance between the lines of index <L1> and <L2> in
+       --          <aFigure>. The connexion is oriented from <L1> to <L2>.
+    returns mutable Connexion from MAT2d
+    is static private;
+    
+fields
+
+    theConnexions : DataMapOfIntegerSequenceOfConnexion from MAT2d;
+    theFather     : DataMapOfIntegerConnexion           from MAT2d;
+    thePath       : SequenceOfConnexion                 from MAT2d;
+    theDirection  : Real                                from Standard;
+    indStart      : Integer                             from Standard;
+    
+end MiniPath;
+
+
+
+

@@ -1,0 +1,14 @@
+// File:	TopoDS_TVertex.lxx
+// Created:	Wed Apr 10 09:42:42 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TVertex
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TVertex::TopoDS_TVertex() : TopoDS_TShape()
+{
+  Closed(Standard_True);
+  Convex(Standard_True);
+}

@@ -1,0 +1,118 @@
+-- File:	IntTools_SurfaceRangeSample.cdl
+-- Created:	Wed Oct  5 16:46:45 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class SurfaceRangeSample from IntTools
+uses
+    Range from IntTools,
+    CurveRangeSample from IntTools
+
+is
+    Create
+    	returns SurfaceRangeSample from IntTools;
+
+    Create(theIndexU, theDepthU,theIndexV, theDepthV: Integer from Standard)
+    	returns SurfaceRangeSample from IntTools;
+	
+    Create(theRangeU, theRangeV: CurveRangeSample from IntTools)
+    	returns SurfaceRangeSample from IntTools;
+
+    Create(Other: SurfaceRangeSample from IntTools)
+    	returns SurfaceRangeSample from IntTools;
+    
+    Assign(me: in out; Other: SurfaceRangeSample from IntTools)
+    	returns SurfaceRangeSample from IntTools;
+    	---C++:  alias  operator = 
+    	---C++:  return  & 
+
+    SetRanges(me: in out; theRangeU, theRangeV: CurveRangeSample from IntTools);
+    	---C++: inline
+
+    GetRanges(me; theRangeU, theRangeV: out CurveRangeSample from IntTools);
+	---C++: inline
+
+    SetIndexes(me: in out; theIndexU, theIndexV: Integer from Standard);
+	---C++: inline
+	
+    GetIndexes(me; theIndexU: out Integer from Standard;
+    	    	   theIndexV: out Integer from Standard);
+	---C++: inline
+
+    GetDepths(me; theDepthU: out Integer from Standard;
+    	    	  theDepthV: out Integer from Standard);
+	---C++: inline
+	
+    SetSampleRangeU(me: in out; theRangeSampleU: CurveRangeSample from IntTools);
+    	---C++: inline
+    
+    GetSampleRangeU(me)
+    	returns CurveRangeSample from IntTools;
+	---C++: return const &
+	---C++: inline
+
+    SetSampleRangeV(me: in out; theRangeSampleV: CurveRangeSample from IntTools);
+    	---C++: inline
+    
+    GetSampleRangeV(me)
+    	returns CurveRangeSample from IntTools;
+	---C++: return const &
+	---C++: inline
+
+    SetIndexU(me: in out; theIndexU: Integer from Standard);
+    	---C++: inline
+
+    GetIndexU(me)
+	returns Integer from Standard;
+	---C++: inline
+
+    SetIndexV(me: in out; theIndexV: Integer from Standard);
+	---C++: inline
+	
+    GetIndexV(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+--
+    SetDepthU(me: in out; theDepthU: Integer from Standard);
+    	---C++: inline
+
+    GetDepthU(me)
+	returns Integer from Standard;
+	---C++: inline
+
+    SetDepthV(me: in out; theDepthV: Integer from Standard);
+	---C++: inline
+	
+    GetDepthV(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+
+    GetRangeU(me; theFirstU, theLastU: Real from Standard; 
+    	    	 theNbSampleU: Integer from Standard)
+    	returns Range from IntTools;
+
+    GetRangeV(me; theFirstV, theLastV: Real from Standard; 
+    	    	 theNbSampleV: Integer from Standard)
+    	returns Range from IntTools;
+
+    IsEqual(me; Other: SurfaceRangeSample from IntTools)
+    	returns Boolean from Standard;
+	---C++: inline
+
+    GetRangeIndexUDeeper(me; theNbSampleU: Integer from Standard)
+    	returns Integer from Standard;
+	---C++: inline
+
+
+    GetRangeIndexVDeeper(me; theNbSampleV: Integer from Standard)
+    	returns Integer from Standard;
+	---C++: inline
+
+fields
+    myRangeU: CurveRangeSample from IntTools;
+    myRangeV: CurveRangeSample from IntTools;
+    
+end SurfaceRangeSample from IntTools;

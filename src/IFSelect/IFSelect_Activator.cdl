@@ -1,0 +1,134 @@
+-- File:	IFSelect_Activator.cdl
+-- Created:	Tue Jul 27 16:12:17 1993
+-- Author:	Christian CAILLET
+--		<cky@meteox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Activator  from IFSelect  inherits TShared
+
+    ---Purpose : Defines the general frame for working with a SessionPilot.
+    --           Each Activator treats a set of Commands. Commands are given as
+    --           alphanumeric strings. They can be of two main forms :
+    --           - classic, to list, evaluate, enrich the session (by itself) :
+    --             no specific remark, its complete execution must be described
+    --           - creation of a new item : instead of creatinf it plus adding
+    --             it to the session (which is a classic way), it is possible
+    --             to create it and make it recorded by the SessionPilot :
+    --             then, the Pilot will add it to the session; this way allows
+    --             the Pilot to manage itself named items
+    --           
+    --           In order to make easier the use of Activator, this class
+    --           provides a simple way to Select an Actor for a Command :
+    --           each sub-class of SectionActor defines the command titles it
+    --           recognizes, plus attaches a Number, unique for this sub-class,
+    --           to each distinct command title.
+    --           
+    --           Each time an action is required, the corresponding Number
+    --           can then be given to help the selection of the action to do.
+    --           
+    --           The result of an Execution must indicate if it is worth to be
+    --           recorded or not : see method Do
+
+uses CString, OStream,
+     AsciiString from TCollection,
+     HSequenceOfAsciiString from TColStd,
+     SessionPilot, ReturnStatus
+
+raises DomainError
+
+is
+
+    Adding (myclass;
+    	    actor   : Activator;
+    	    number  : Integer;
+    	    command : CString;
+	    mode    : Integer)
+    ---Purpose : Records, in a Dictionary available for all the Activators,
+    --           the command title an Activator can process, attached with
+    --           its number, proper for this Activator
+    --           <mode> allows to distinguish various execution modes
+    --             0: default mode; 1 : for xset
+    	 raises DomainError;
+    --           Error if a command title (exactly the same) is recorded more
+    --           than once
+
+    Add (me; number : Integer; command : CString)
+    ---Purpose : Allows a self-definition by an Activator of the Commands it
+    --           processes, call the class method Adding (mode 0)
+    	 raises DomainError;
+    --           Error if a command title (exactly the same) is recorded more
+    --           than once
+
+    AddSet (me; number : Integer; command : CString)
+    ---Purpose : Same as Add but specifies that this command is candidate for
+    --           xset (creation of items, xset : named items; mode 1)
+    	 raises DomainError;
+
+    Remove (myclass; command : CString);
+    ---Purpose : Removes a Command, if it is recorded (else, does nothing)
+
+
+    SetAlias (myclass; conf, command, aliasname : CString);
+    ---Purpose : Records, for a configuration named <conf>, that the command
+    --           <command> may be aliased by another command <alias>
+    --           
+    --           To be used by call to Alias (no automatic redirection)
+    --           The configuration typically refers to a norm
+
+    SetCurrentAlias (myclass; conf : CString);
+    ---Purpose : Sets <conf> as current configuration for aliases
+
+    Alias (myclass; command : CString) returns AsciiString;
+    ---Purpose : Returns, in the current configuration, what alias has been
+    --           recorded for <command>
+    --           The returned string is empty if no alias is recorded
+
+
+    Select (myclass; command : CString;
+    	number : out Integer; actor : out mutable Activator)
+	    returns Boolean;
+    ---Purpose : Selects, for a Command given by its title, an actor with its
+    --           command number. Returns True if found, False else
+
+    Mode (myclass; command : CString) returns Integer;
+    ---Purpose : Returns mode recorded for a command. -1 if not found
+
+    Commands (myclass; mode : Integer = -1; command : CString = "")
+    	returns HSequenceOfAsciiString from TColStd;
+    ---Purpose : Returns, for a root of command title, the list of possible
+    --           commands.
+    --           <mode> : -1 (D) for all commands if <commands> is empty
+    --           -1 + command : about a Group , >= 0 see Adding
+    --           By default, it returns the whole list of known commands.
+
+
+    Initialize;
+    ---Purpose : Sets the default values
+
+    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    	returns ReturnStatus  is deferred;
+    ---Purpose : Tries to execute a Command Line. <number> is the number of the
+    --           command for this Activator. It Must forecast to record the
+    --           result of the execution, for need of Undo-Redo
+    --           Must Returns : 0 for a void command (not to be recorded),
+    --           1 if execution OK, -1 if command incorrect, -2 if error
+    --           on execution
+
+    Help (me; number : Integer) returns CString  is deferred;
+    ---Purpose : Sends a short help message for a given command identified by
+    --           it number for this Activator (must take one line max)
+
+    Group (me) returns CString;
+    File  (me) returns CString;
+    SetForGroup (me : mutable; group : CString; file : CString = "");
+    ---Purpose : Group and SetGroup define a "Group of commands" which
+    --           correspond to an Activator. Default is "XSTEP"
+    --           Also a file may be attached
+
+fields
+
+    thegroup : AsciiString;
+    thefile  : AsciiString;
+
+end Activator;

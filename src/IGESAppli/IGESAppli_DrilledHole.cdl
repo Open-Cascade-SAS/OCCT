@@ -1,0 +1,85 @@
+--
+-- File      :  DrilledHole.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class DrilledHole from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines DrilledHole, Type <406> Form <6>
+        --          in package IGESAppli
+        --          Identifies an entity representing a drilled hole
+        --          through a printed circuit board.
+
+uses  Integer, Real  -- no one specific type
+
+
+is
+
+        Create returns mutable DrilledHole;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me           : mutable;
+              nbPropVal    : Integer;
+              aSize        : Real;
+              anotherSize  : Real;
+              aPlating     : Integer;
+              aLayer       : Integer;
+              anotherLayer : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           DrilledHole
+        --       - nbPropVal    : Number of property values = 5
+        --       - aSize        : Drill diameter size
+        --       - anotherSize  : Finish diameter size
+        --       - aPlating     : Plating indication flag
+        --                        False = not plating
+        --                        True  = is plating
+        --       - aLayer       : Lower numbered layer
+        --       - anotherLayer : Higher numbered layer
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : is always 5
+
+        DrillDiaSize (me) returns Real;
+        ---Purpose : returns the drill diameter size
+
+        FinishDiaSize (me) returns Real;
+        ---Purpose : returns the finish diameter size
+
+        IsPlating (me) returns Boolean;
+        ---Purpose : Returns Plating Status :
+        --           False = not plating  /  True  = is plating
+
+        NbLowerLayer (me) returns Integer;
+        ---Purpose : returns the lower numbered layer
+
+        NbHigherLayer (me) returns Integer;
+        ---Purpose : returns the higher numbered layer
+
+fields
+
+--
+-- Class    : IGESAppli_DrilledHole
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class DrilledHole.
+--
+-- Reminder : A DrilledHole instance is defined by :
+--            - Number of property values (equal to 5)
+--            - Drill diameter size
+--            - Finish diameter size
+--            - Plating indication flag
+--            - Lower numbered layer
+--            - Higher numbered layer
+
+        theNbPropertyValues : Integer;
+        theDrillDiaSize     : Real;
+        theFinishDiaSize    : Real;
+        thePlatingFlag      : Integer;
+        theNbLowerLayer     : Integer;
+        theNbHigherLayer    : Integer;
+
+end DrilledHole;

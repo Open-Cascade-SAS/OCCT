@@ -1,0 +1,49 @@
+-- File:	IFSelect_FileModifier.cdl
+-- Created:	Mon Mar 21 10:49:35 1994
+-- Author:	Christian CAILLET
+--		<cky@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred generic class  FileModifier  from IFSelect
+    	 (Writer   as any)  -- according each Interface
+    inherits GeneralModifier
+
+    ---Purpose : Allows to precise the frame work for File Modifiers able to
+    --           run with an Interface (such as STEP, VDA, IGES ...)
+    --           
+    --           Remember that File Modifiers are activated by a WorkLibrary :
+    --           if they inherit from an instantiation of FileModifier with the
+    --           data from this Interface, this will be easier to do.
+    --           They are activated before sending the file, in the order
+    --           given by the ModielCopier.
+    --           
+    --           For each Interface on which File Modifiers have to be defined,
+    --           The way to follow is firstly to instantiate FileModifier with
+    --           its specific data :
+    --           Model is the InterfaceModel specific to the considered norm
+    --           Writer is the Writer specific to the considered norm
+    --           Then to define the various classes which inherit from it and
+    --           define their method Perform
+
+uses ContextWrite
+
+is
+
+    Initialize;
+    ---Purpose : Sets a File Modifier to keep the graph of dependences
+    --           unchanges (because it works on the model already produced)
+
+    Perform (me; ctx : in out ContextWrite; writer : in out Writer)
+    	is deferred;
+    ---Purpose : Perform the action specific to each class of File Modifier
+    --           <ctx> is the ContextWrite, which brings : the model, the
+    --           protocol, the file name, plus the object AppliedModifiers
+    --           (not used here) and the CheckList
+    --           Remark that the model has to be casted for specific access
+    --           
+    --           <writer> is the Writer and is specific to each norm, on which
+    --             to act
+
+
+end FileModifier;

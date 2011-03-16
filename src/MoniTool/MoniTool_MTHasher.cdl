@@ -1,0 +1,28 @@
+-- File:	MoniTool_MTHasher.cdl
+-- Created:	Thu Dec 19 12:18:43 2001
+-- Author:	Sergey KUUL
+--		<skl@polox>
+---Copyright:	 Matra Datavision 2001
+
+
+class MTHasher from MoniTool
+
+	---Purpose: 
+	-- The auxiliary class provides hash code for mapping objects   
+
+is
+
+    HashCode(myclass; Str : CString; Upper : Integer) returns Integer;
+	---C++: inline
+	---Purpose: Returns a HasCode value for the CString <Str>  in the
+	-- range 0..Upper.
+	-- Default ::HashCode(Str,Upper)
+	
+    IsEqual(myclass; Str1, Str2 : CString) returns Boolean;
+	---C++: inline
+	---Purpose: Returns True  when the two CString are the same. Two
+	-- same strings must have the same hashcode, the
+	-- contrary is not necessary.
+	-- Default Str1 == Str2
+	
+end MTHasher;

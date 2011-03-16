@@ -1,0 +1,161 @@
+-- File:	LocOpe_SplitDrafts.cdl
+-- Created:	Wed Oct  2 14:00:07 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+
+
+class SplitDrafts from LocOpe
+
+	---Purpose: This  class  provides  a    tool to   realize  the
+	--          following operations on a shape :
+	--           - split a face of the shape with a wire,
+	--           - put draft angle on both side of the wire.
+	--          For each side, the draft angle may be different.
+
+
+uses Shape from TopoDS,
+     Face  from TopoDS,
+     Wire  from TopoDS,
+     
+     ListOfShape               from TopTools,
+     DataMapOfShapeListOfShape from TopTools,
+     
+     Pln   from gp,
+     Dir   from gp
+     
+
+raises NotDone      from StdFail,
+       NoSuchObject from Standard,
+       ConstructionError from Standard,
+       NullObject        from Standard
+
+is
+
+    Create
+	---Purpose: Empty constructor.
+    	returns SplitDrafts from LocOpe;
+	---C++: inline
+
+    Create(S: Shape from TopoDS)
+    
+	---Purpose: Creates the algoritm on the shape <S>.
+    	returns SplitDrafts from LocOpe;
+	---C++: inline
+
+
+    Init(me: in out; S: Shape from TopoDS)
+    
+	---Purpose: Initializes the algoritm with the shape <S>.
+    	is static;
+
+
+    Perform(me: in out; F           : Face    from TopoDS;
+    	                W           : Wire    from TopoDS;
+			Extractg    : Dir     from gp;
+			NPlg        : Pln     from gp;
+			Angleg      : Real    from Standard;
+			Extractd    : Dir     from gp;
+			NPld        : Pln     from gp;
+			Angled      : Real    from Standard;
+                        ModifyLeft  : Boolean from Standard = Standard_True;
+                        ModifyRight : Boolean from Standard = Standard_True)
+
+			
+	---Purpose: Splits the face <F> of the former given shape with
+	--          the wire  <W>.  The wire is  assumed to lie on the
+	--          face.    Puts a draft  angle on  both parts of the
+	--          wire.    <Extractg>,  <Nplg>, <Angleg> define  the
+	--          arguments  for   the   left  part   of the   wire.
+	--          <Extractd>,  <Npld>, <Angled> define the arguments
+	--          for the right part of the wire. The draft angle is
+	--          measured    with the  direction  <Extract>.  <Npl>
+	--          defines the neutral plane (points belonging to the
+	--          neutral plane are not  modified).  <Angle> is  the
+	--          value of the draft  angle.  If <ModifyLeft> is set
+	--          to <Standard_False>, no draft  angle is applied to
+	--          the left part of the wire. If <ModifyRight> is set
+	--          to <Standard_False>,no draft  angle  is applied to
+	--          the right part of the wire.
+	--          
+	--         
+
+    	raises ConstructionError from Standard
+	-- the exception  is raised if  the  original shape is  a null
+	-- shape, or when ModLeft = ModRight = STnadard_False.
+
+	is static;
+			
+
+    Perform(me: in out; F       : Face from TopoDS;
+    	                W       : Wire from TopoDS;
+			Extract : Dir from gp;
+			NPl     : Pln from gp;
+			Angle   : Real from Standard)
+
+	---Purpose: Splits the face <F> of the former given shape with
+	--          the  wire <W>.  The wire is  assumed to lie on the
+	--          face.  Puts a draft angle  on the left part of the
+	--          wire.   The draft    angle is   measured  with the
+	--          direction  <Extract>.   <Npl> defines the  neutral
+	--          plane (points belonging  to the neutral plane  are
+	--          not modified). <Angle> is  the value of  the draft
+	--          angle. 
+
+    	raises ConstructionError from Standard
+	-- the  exception is  raised if the  original shape  is a null
+	-- shape. 
+	is static;
+			
+
+    IsDone(me)
+    
+	---C++: inline
+    	returns Boolean from Standard
+	---Purpose: Returns <Standard_True>  if the  modification  has
+	--          been succesfully performed.
+	is static;
+
+
+    OriginalShape(me)
+    
+	---C++: return const&
+	---C++: inline
+    	returns Shape from TopoDS
+	is static;
+
+
+    Shape(me)
+    
+	---C++: return const&
+    	returns Shape from TopoDS
+	---Purpose: Returns the modified shape.
+	raises NotDone from StdFail
+	-- The exception is raised when IsDone returns <Standard_False>.
+	is static;
+
+
+
+    ShapesFromShape(me; S: Shape from TopoDS)
+
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	---Purpose: Manages the descendant shapes.
+	raises NotDone from StdFail,
+	       -- The exception is raised when IsDone returns <Standard_False>.
+	       NoSuchObject from Standard
+	       -- The exception is  raised  when <S>  is not  a  valid
+	       -- shape to be asked for descendants.
+	is static;
+
+
+
+fields
+
+    myShape  : Shape from TopoDS;
+    myResult : Shape from TopoDS;
+    myMap    : DataMapOfShapeListOfShape from TopTools;
+
+end SplitDrafts;

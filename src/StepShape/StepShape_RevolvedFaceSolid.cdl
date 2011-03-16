@@ -1,0 +1,46 @@
+-- File:	StepShape_RevolvedFaceSolid.cdl
+-- Created:	Thu Mar 11 11:39:17 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class RevolvedFaceSolid from StepShape 
+inherits SweptFaceSolid from StepShape 
+	
+
+uses
+    	Axis1Placement from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection,
+	FaceSurface from StepShape 
+
+is
+    	Create returns mutable RevolvedFaceSolid;
+	---Purpose: Returns a RevolvedFaceSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable FaceSurface from StepShape) is redefined ;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable FaceSurface from StepShape;
+	      aAxis : mutable Axis1Placement from StepGeom;
+	      aAngle : Real from Standard);
+
+	-- Specific Methods for Field Data Access --
+
+	SetAxis(me : mutable; aAxis : mutable Axis1Placement);
+	Axis (me) returns mutable Axis1Placement;
+	SetAngle(me : mutable; aAngle : Real);
+	Angle (me) returns Real;
+
+
+fields
+
+    	axis : Axis1Placement from StepGeom;
+	angle : Real from Standard;
+
+end RevolvedFaceSolid;

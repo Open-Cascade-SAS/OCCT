@@ -1,0 +1,43 @@
+-- File:	Vrml_Separator.cdl
+-- Created:	Thu Mar 27 09:30:11 1997
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Separator from Vrml 
+
+	---Purpose:  defines a Separator node of VRML specifying group properties.
+    	--  This group node performs a push (save) of the traversal state before traversing its children
+       	--  and a pop (restore) after traversing them. This isolates the separator's children from the
+       	--  rest of the scene graph. A separator can include lights, cameras, coordinates, normals,
+       	--  bindings, and all other properties. 
+       	--  Separators can also perform render culling. Render culling skips over traversal of the
+       	--  separator's children if they are not going to be rendered, based on the comparison of the
+       	--  separator's bounding box with the current view volume. Culling is controlled by the
+       	--  renderCulling field. These are set to AUTO by default, allowing the implementation to
+       	--  decide whether or not to cull. 
+uses
+ 
+    SeparatorRenderCulling from Vrml
+
+is
+    Create  ( aRenderCulling  :  SeparatorRenderCulling  from  Vrml ) 
+    	returns  Separator from Vrml; 
+     
+    Create  returns  Separator from Vrml; 
+    
+    SetRenderCulling ( me: in out; aRenderCulling : SeparatorRenderCulling from Vrml );
+    RenderCulling ( me )  returns  SeparatorRenderCulling from Vrml;
+
+    Print  ( me : in out;  anOStream: in out OStream from Standard)  
+    	    returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myRenderCulling  :  SeparatorRenderCulling  from  Vrml;
+    myFlagPrint      :  Boolean                 from  Standard; 
+    
+end Separator;
+

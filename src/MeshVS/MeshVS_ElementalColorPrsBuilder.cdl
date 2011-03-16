@@ -1,0 +1,104 @@
+-- File     : MeshVS_ElementalColorPrsBuilder.cdl
+-- Created  : 12 November 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class ElementalColorPrsBuilder from MeshVS inherits PrsBuilder from MeshVS
+
+	---Purpose: This class provides methods to create presentation of elements with
+        -- assigned colors. The class contains two color maps: map of same colors for front
+        -- and back side of face and map of different ones,
+
+uses
+  Presentation from Prs3d,
+
+  Boolean from Standard,
+  Integer from Standard,
+
+  Mesh                      from MeshVS,
+  MeshPtr                   from MeshVS,
+  DisplayModeFlags          from MeshVS,
+  DataSource                from MeshVS,
+  DataMapOfIntegerColor     from MeshVS,
+  DataMapOfIntegerTwoColors from MeshVS,
+  TwoColors                 from MeshVS,
+  BuilderPriority           from MeshVS,
+  Color                     from Quantity,
+  PackedMapOfInteger        from TColStd
+
+is
+
+  Create  ( Parent   : Mesh from MeshVS;
+            Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_ElementalColorDataPrs;
+            DS       : DataSource from MeshVS = 0;
+            Id       : Integer = -1;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_ElemColor )
+    returns mutable ElementalColorPrsBuilder from MeshVS;
+	---Purpose: Constructor
+
+  Build   ( me; Prs      : Presentation from Prs3d;
+            IDs          : PackedMapOfInteger;
+            IDsToExclude : in out PackedMapOfInteger;
+            IsElement    : Boolean;
+            DisplayMode  : Integer  ) is virtual;
+	---Purpose: Builds presentation of elements with assigned colors.
+
+  GetColors1 ( me ) returns DataMapOfIntegerColor from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of colors same for front and back side of face.
+
+  SetColors1 ( me  : mutable;
+               Map : DataMapOfIntegerColor from MeshVS );
+	---Purpose: Sets map of colors same for front and back side of face.
+
+  HasColors1 ( me ) returns Boolean;
+	---Purpose: Returns true, if map of colors isn't empty
+
+  GetColor1  ( me; ID        : Integer;
+               theColor      : out Color from Quantity )  returns Boolean;
+	---Purpose: Returns color assigned with element number ID
+
+  SetColor1  ( me : mutable;
+               ID            : Integer;
+               theColor      : Color from Quantity );
+	---Purpose: Sets color assigned with element number ID
+
+  GetColors2 ( me ) returns DataMapOfIntegerTwoColors from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of different colors for front and back side of face
+
+  SetColors2 ( me : mutable; Map : DataMapOfIntegerTwoColors from MeshVS );
+	---Purpose: Sets map of different colors for front and back side of face
+
+  HasColors2 ( me )  returns Boolean;
+	---Purpose: Returns true, if map isn't empty
+
+  GetColor2  ( me; ID    : Integer;
+               theColor  : out TwoColors from MeshVS ) returns Boolean;
+	---Purpose: Returns colors assigned with element number ID
+
+  GetColor2  ( me; ID    : Integer;
+               theColor1 : out Color from Quantity;
+               theColor2 : out Color from Quantity  )    returns Boolean;
+	---Purpose: Returns colors assigned with element number ID
+        -- theColor1 is the front element color
+        -- theColor2 is the back element color
+
+  SetColor2  ( me : mutable;
+               ID           : Integer;
+               theTwoColors : TwoColors from MeshVS );
+	---Purpose: Sets colors assigned with element number ID
+
+  SetColor2  ( me : mutable;
+               ID           : Integer;
+               theColor1    : Color from Quantity;
+               theColor2    : Color from Quantity );
+	---Purpose: Sets color assigned with element number ID
+        -- theColor1 is the front element color
+        -- theColor2 is the back element color
+
+fields
+  myElemColorMap1       : DataMapOfIntegerColor from MeshVS;
+  myElemColorMap2       : DataMapOfIntegerTwoColors from MeshVS;
+
+end ElementalColorPrsBuilder;

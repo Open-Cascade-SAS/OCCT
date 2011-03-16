@@ -1,0 +1,43 @@
+-- File:	ChFiDS_CircSection.cdl
+-- Created:	Wed Mar  6 15:47:44 1996
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1996
+
+
+class CircSection from ChFiDS 
+
+	---Purpose: A Section of fillet.
+
+uses
+    Circ from gp,
+    Lin  from gp
+is
+    Create;
+
+    Set(me  : in out;
+    	C   : Circ from gp;
+	F,L : Real from Standard)
+    is static;
+    
+    Set(me  : in out;
+    	C   : Lin  from gp;
+	F,L : Real from Standard)
+    is static;
+
+    Get(me;
+    	C   : out Circ from gp;
+	F,L : out Real from Standard)
+    is static;
+    
+    Get(me;
+    	C   : out Lin  from gp;
+	F,L : out Real from Standard)
+    is static;
+
+fields
+    myCirc : Circ from gp;
+    myLin  : Lin  from gp;
+    myF    : Real from Standard;
+    myL    : Real from Standard;
+end CircSection;

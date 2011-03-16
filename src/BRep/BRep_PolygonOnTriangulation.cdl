@@ -1,0 +1,60 @@
+-- File:	BRep_PolygonOnTriangulation.cdl
+-- Created:	Wed Mar 15 09:32:49 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnTriangulation from BRep inherits CurveRepresentation from  BRep
+
+
+    	---Purpose: A representation by an array of nodes on a 
+    	--          triangulation.
+
+
+uses Location               from TopLoc,
+     PolygonOnTriangulation from Poly,
+     Triangulation          from Poly
+
+
+is
+
+    Create(P: PolygonOnTriangulation from Poly;
+    	   T: Triangulation          from Poly;
+	   L: Location               from TopLoc)
+    returns mutable PolygonOnTriangulation from BRep;
+
+
+    IsPolygonOnTriangulation(me) returns Boolean
+    	---Purpose: returns True.
+    is redefined;
+
+    IsPolygonOnTriangulation(me; T : Triangulation from Poly;
+                            	 L : Location from TopLoc)    returns Boolean
+	---Purpose: Is it a polygon in the definition of <T> with
+	--          location <L>.
+    is redefined;
+
+    PolygonOnTriangulation(me: mutable; P: PolygonOnTriangulation from Poly)
+    	---Purpose: returns True.
+    is redefined;
+
+    Triangulation(me) returns any Triangulation from Poly
+    	---C++: return const&
+    is redefined;
+    
+    PolygonOnTriangulation(me) returns any PolygonOnTriangulation from Poly
+    	---C++: return const&
+    is redefined;
+
+    
+    Copy(me) returns mutable CurveRepresentation from BRep is virtual;
+	---Purpose: Return a copy of this representation.
+
+
+fields
+
+myPolygon       : PolygonOnTriangulation    from Poly;
+myTriangulation : Triangulation             from Poly;
+
+end PolygonOnTriangulation;

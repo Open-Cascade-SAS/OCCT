@@ -1,0 +1,58 @@
+-- File:	TopOpeBRepDS_Edge3dInterferenceTool.cdl
+-- Created:	Wed Dec 24 09:45:53 1997
+-- Author:	Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Edge3dInterferenceTool from TopOpeBRepDS
+
+---Purpose: a tool computing edge / face complex transition,
+--          Interferences of edge reference are given by
+--          I = (T on face, G = point or vertex, S = edge)
+
+uses
+    Pnt2d from gp,
+    Pnt from gp,
+    Dir from gp,
+    Shape from TopoDS, 
+    SurfaceTransition from TopTrans,
+    Interference from TopOpeBRepDS
+is
+	  
+    Create returns Edge3dInterferenceTool from TopOpeBRepDS;
+
+    InitPointVertex(me : in out; 
+            	    IsVertex : Integer;
+    	    	    VonOO    : Shape from TopoDS);
+	
+    Init(me : in out; 
+         Eref : Shape from TopoDS; 
+	 E : Shape from TopoDS;   
+	 F : Shape from TopoDS;
+         I : Interference from TopOpeBRepDS);
+    
+    Add(me : in out; 
+        Eref : Shape from TopoDS; 
+	E : Shape from TopoDS;   
+	F : Shape from TopoDS;
+        I : Interference from TopOpeBRepDS);
+
+    Transition(me; I : mutable Interference from TopOpeBRepDS)
+    is static;
+
+fields
+    
+    myFaceOriented : Integer;
+    myTool         : SurfaceTransition from TopTrans;
+    myTole         : Real; 
+    myrefdef       : Boolean;
+
+    myIsVertex     : Integer; -- 0 : geometry is a point
+                              -- 1 : geometry is a vertex of reference
+                              -- 2 : geometry is a vertex of the other shape
+                              -- 3 : geometry is a vertex on the 2 shapes
+    myVonOO        : Shape; -- only if myisvertex = 2,3
+    myP3d          : Pnt from gp;
+    myTgtref       : Dir from gp;
+
+end Edge3dInterferenceTool from TopOpeBRepDS;

@@ -1,0 +1,33 @@
+-- File:	AppBlend_Line.cdl
+-- Created:	Thu Dec 16 10:20:42 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class Line from AppBlend
+    (ThePoint as any)
+
+	---Purpose: 
+
+inherits TShared from MMgt
+
+
+is
+
+    NbPoints(me)
+    
+    	returns Integer from Standard;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	returns ThePoint
+	---C++: inline
+	---C++: return const &
+
+	is static;
+
+
+
+end Line;

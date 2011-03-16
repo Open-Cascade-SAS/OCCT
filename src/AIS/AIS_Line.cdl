@@ -1,0 +1,150 @@
+-- File:	AIS_Line.cdl
+-- Created:	Tue Jan 21 11:45:01 1997
+-- Author:	Prestataire Christiane ARMAND
+--		<car@chamalox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1997
+
+class Line from AIS inherits InteractiveObject from AIS
+
+	---Purpose: Constructs line datums to be used in construction of
+    	-- composite shapes.
+
+uses 
+    Line                  from Geom,
+    Point                 from Geom,
+    Presentation          from Prs3d,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Color			  from Quantity,
+    Selection             from SelectMgr,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,    
+    Line                  from AIS,
+    KindOfInteractive     from AIS
+
+is
+    Create(aLine : Line from Geom) 
+    returns mutable Line from AIS;
+    	---Purpose: Initializes the line aLine.
+        
+    Create(aStartPoint : Point from Geom;
+    	   aEndPoint : Point from Geom) 
+    returns mutable Line from AIS;
+    	---Purpose: Initializes a starting point aStartPoint
+    	--   and a finishing point aEndPoint for the line. 
+ 
+    Compute(me            : mutable;
+    	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard = 0) 
+    is redefined static  private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	
+
+    Compute(me            : mutable;
+            aProjector    : Projector from Prs3d;
+            aTrsf         : Transformation from Geom;
+            aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>.
+    	--          To be Used when the associated degenerated Presentations
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)is private;
+
+ 
+-- Methods from InteractiveObject
+
+    Signature(me) returns Integer from Standard is redefined;
+    	---Purpose: Returns the signature 5.
+        ---C++: inline
+       
+ Type(me) returns KindOfInteractive from AIS is redefined;
+    	---Purpose: Returns the type Datum.
+    	---C++: inline
+      
+  Line(me) returns any Line from Geom;
+    	---C++: inline
+    	---C++: return const &
+    	---Purpose: Constructs an infinite line.
+  
+    Points(me;PStart,PEnd: out Point from Geom);
+    	---Purpose: Returns the starting point PStart and the end point
+    	-- PEnd of the line set by SetPoints.
+        ---C++: inline
+	
+  SetLine(me:mutable;L : Line from Geom);
+        ---C++: inline
+        ---Purpose: instantiates an infinite line.
+	 
+    SetPoints(me:mutable;P1,P2:Point from Geom);
+    	--- Purpose:
+    	-- Sets the starting point P1 and ending point P2 of the
+    	-- infinite line to create a finite line segment.
+  	---C++: inline
+
+   SetColor(me :mutable; aColor : NameOfColor from Quantity)
+    is redefined static;
+    	---Purpose: Provides a new color setting aColor for the line in the
+    	-- drawing tool, or "Drawer". 
+    SetColor(me :mutable; aColor : Color from Quantity) 
+    is redefined static;
+         
+    SetWidth(me:mutable; aValue:Real from Standard)
+    is redefined static; 
+    	---Purpose: Provides the new width setting aValue for the line in
+    	-- the drawing tool, or "Drawer".
+    UnsetColor(me:mutable)
+    is redefined static; 
+    	---Purpose: Removes the color setting and returns the original color.    
+    UnsetWidth(me:mutable)    
+    is redefined static; 
+    	---Purpose: Removes the width setting and returns the original width.
+
+
+    ComputeInfiniteLine(me: mutable;
+                        aPresentation : mutable Presentation from Prs3d)
+    is private;
+     
+    ComputeSegmentLine(me: mutable;
+                       aPresentation : mutable Presentation from Prs3d)
+    is private;
+
+    ComputeInfiniteLineSelection(me: mutable;
+                                 aSelection : mutable Selection from SelectMgr)
+    is private;
+     
+    ComputeSegmentLineSelection(me: mutable;
+                                aSelection : mutable Selection from SelectMgr)
+    is private;
+
+fields
+
+
+    myComponent     : Line    from Geom;
+    myStartPoint    : Point   from Geom;
+    myEndPoint      : Point   from Geom;
+    myLineIsSegment : Boolean from Standard;
+    
+end Line;

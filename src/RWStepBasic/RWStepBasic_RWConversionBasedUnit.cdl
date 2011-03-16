@@ -1,0 +1,30 @@
+-- File:        ConversionBasedUnit.cdl
+-- Created:     Mon Dec  4 12:02:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWConversionBasedUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for ConversionBasedUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ConversionBasedUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWConversionBasedUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ConversionBasedUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ConversionBasedUnit from StepBasic);
+
+	Share(me; ent : ConversionBasedUnit from StepBasic; iter : in out EntityIterator);
+
+end RWConversionBasedUnit;

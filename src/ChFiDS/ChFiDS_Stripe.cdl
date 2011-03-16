@@ -1,0 +1,264 @@
+-- File:	ChFiDS_Stripe.cdl
+-- Created:	Wed Mar  9 16:52:35 1994
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Stripe from ChFiDS inherits TShared
+
+	---Purpose: data structure associe au coin
+
+uses HData from ChFiDS,
+     Spine from ChFiDS,
+     Orientation from TopAbs,
+     Curve from Geom2d
+
+is
+
+    Create returns mutable Stripe from ChFiDS;
+    
+    
+    Reset(me : mutable) is static;
+    ---Purpose: Reset everything except Spine.
+
+    SetOfSurfData(me) returns any HData from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &
+
+    Spine(me) returns any Spine from ChFiDS is static;
+    ---C++: inline
+    ---C++: return const &
+
+    OrientationOnFace1(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    OrientationOnFace2(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    Choix(me)
+    returns Integer from Standard is static;
+    ---C++: inline
+
+    ChangeSetOfSurfData(me: mutable) returns any HData from ChFiDS is static;
+    ---C++: inline
+    ---C++: return &
+
+    ChangeSpine(me : mutable) returns any Spine from ChFiDS  
+    is static;
+    ---C++: inline
+    ---C++: return &
+
+    OrientationOnFace1(me : mutable; Or1 : Orientation from TopAbs)  
+    is static;
+    ---C++: inline
+
+    OrientationOnFace2(me : mutable; Or2 : Orientation from TopAbs )
+    is static;
+    ---C++: inline
+
+    Choix(me : mutable; C : Integer from Standard)
+    is static;
+    ---C++: inline
+
+    FirstParameters(me; Pdeb,Pfin  : out Real from Standard) is static;
+    ---C++: inline
+    
+    LastParameters(me; Pdeb,Pfin  :  out Real from Standard) is static;
+    ---C++: inline
+
+    ChangeFirstParameters(me : mutable ; Pdeb,Pfin  : Real from Standard) 
+    ---C++: inline
+    is static;
+    
+    ChangeLastParameters(me : mutable ; Pdeb,Pfin  : Real from Standard) 
+    ---C++: inline
+    is static;
+    
+    FirstCurve(me) returns Integer from Standard is static;
+    ---C++: inline
+
+    LastCurve(me) returns Integer from Standard is static;
+    ---C++: inline
+
+    ChangeFirstCurve(me : mutable;Index : Integer)  is static;
+    ---C++: inline
+
+    ChangeLastCurve(me : mutable;Index : Integer )  is static;
+    ---C++: inline
+
+    FirstPCurve(me) returns any Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return const &
+
+    LastPCurve(me) returns any Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return const &
+
+    ChangeFirstPCurve(me : mutable) returns any Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return &
+
+    ChangeLastPCurve(me : mutable) returns any Curve from Geom2d is static;
+    ---C++: inline
+    ---C++: return &
+
+    FirstPCurveOrientation(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    LastPCurveOrientation(me) returns Orientation from TopAbs is static;
+    ---C++: inline
+
+    FirstPCurveOrientation(me : mutable; O : Orientation from TopAbs) 
+    is static;
+    ---C++: inline
+
+    LastPCurveOrientation(me : mutable; O : Orientation from TopAbs) 
+    is static;
+    ---C++: inline
+
+    IndexFirstPointOnS1(me) returns Integer is static;
+    ---C++: inline        
+
+    IndexFirstPointOnS2(me) returns Integer is static;
+    ---C++: inline        
+
+    IndexLastPointOnS1(me) returns Integer is static;
+    ---C++: inline        
+
+    IndexLastPointOnS2(me) returns Integer is static;
+    ---C++: inline        
+
+    ChangeIndexFirstPointOnS1(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeIndexFirstPointOnS2(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeIndexLastPointOnS1(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+    ChangeIndexLastPointOnS2(me : mutable; Index : Integer ) is static; 
+    ---C++: inline    
+
+---------------------------------------------------------------
+--  syntaxes utiles pour faire la meme chose que ci dessus   --
+--------------------------------------------------------------- 
+
+    Parameters(me; 
+               First     : Boolean from Standard;
+               Pdeb,Pfin : out Real from Standard) is static;
+
+
+    SetParameters(me        : mutable; 
+                  First     : Boolean from Standard;
+                  Pdeb,Pfin : Real from Standard) is static;
+
+
+    Curve(me; First : Boolean from Standard) 
+    returns Integer from Standard is static;
+
+    SetCurve(me    : mutable;
+       	     Index : Integer; 
+             First : Boolean from Standard)  is static;
+
+    PCurve(me; First : Boolean from Standard) 
+    returns any Curve from Geom2d is static;
+    ---C++: return const &
+
+    ChangePCurve(me    : mutable;
+                 First : Boolean from Standard)
+    returns any Curve from Geom2d is static;
+    ---C++: return &
+
+    Orientation(me; OnS : Integer from Standard)
+    returns Orientation from TopAbs
+    is static;
+
+    SetOrientation(me  : mutable; 
+          	   Or  : Orientation from TopAbs;
+                   OnS : Integer from Standard)
+    is static;
+
+    Orientation(me; First : Boolean from Standard)
+    returns Orientation from TopAbs
+    is static;
+
+    SetOrientation(me    : mutable; 
+           	   Or    : Orientation from TopAbs;
+                   First : Boolean from Standard)
+    is static;
+
+    IndexPoint(me;
+	       First : Boolean from Standard;
+	       OnS   : Integer from Standard)
+    returns Integer from Standard  
+    is static;
+
+    SetIndexPoint(me    : mutable; 
+                  Index : Integer from Standard;
+	          First : Boolean from Standard;
+	          OnS   : Integer from Standard)
+    is static;
+
+
+    SolidIndex(me)
+    returns Integer from Standard  
+    is static;
+
+    SetSolidIndex(me    : mutable; 
+                  Index : Integer from Standard)
+    is static;
+
+
+    InDS(me    : mutable;
+	 First : Boolean from Standard;
+         Nb    : Integer from Standard = 1) -- eap, Apr 29 2002, occ293
+    is static;
+    ---Purpose: Set nb of SurfData's at end put in DS
+
+    IsInDS(me;
+	   First : Boolean from Standard)
+--    returns Boolean from Standard  
+    returns Integer from Standard   -- eap, Apr 29 2002, occ293
+    is static;
+    ---Purpose: Returns nb of SurfData's at end being in DS
+
+fields
+
+
+--- donnees caracterisant les extremites.
+-----------------------------------------
+pardeb1          : Real from  Standard;
+parfin1          : Real from  Standard; 
+pardeb2          : Real from  Standard;
+parfin2          : Real from  Standard; 
+
+--- donnees globales a la bande de conges.
+------------------------------------------
+mySpine          : Spine from ChFiDS; 
+myHdata          : HData from ChFiDS;  
+pcrv1            : Curve   from Geom2d; 
+pcrv2            : Curve   from Geom2d; 
+
+myChoix          : Integer from Standard;
+indexOfSolid     : Integer from Standard;
+indexOfcurve1    : Integer from  Standard;
+indexOfcurve2    : Integer from  Standard; 
+--- donnees caracterisant les extremites.
+indexfirstPOnS1  : Integer from  Standard;
+indexlastPOnS1   : Integer from  Standard;
+indexfirstPOnS2  : Integer from  Standard;
+indexlastPOnS2   : Integer from  Standard; 
+
+ -- eap, Apr 29 2002, occ293
+begfilled        : Integer from Standard;
+endfilled        : Integer from Standard;  
+--begfilled        : Boolean from Standard;
+--endfilled        : Boolean from Standard;  
+
+myOr1            : Orientation from TopAbs;-- donnees globales a la bande de conges.
+myOr2            : Orientation from TopAbs;-- donnees globales a la bande de conges.
+orcurv1          : Orientation from TopAbs; 
+orcurv2          : Orientation from TopAbs;
+end Stripe;

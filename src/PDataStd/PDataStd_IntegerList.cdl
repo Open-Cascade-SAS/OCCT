@@ -1,0 +1,40 @@
+-- File:        PDataStd_IntegerList.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class IntegerList from PDataStd inherits Attribute from PDF
+
+uses 
+
+    HArray1OfInteger from PColStd
+
+is
+
+    Create 
+    returns mutable IntegerList from PDataStd;
+
+    Init (me : mutable; 
+    	  lower, upper : Integer from Standard);
+
+    SetValue (me: mutable; 
+    	      index : Integer from Standard; 
+    	      value : Integer from Standard);
+
+    Value (me;  
+    	   index : Integer from Standard) 
+    returns Integer from Standard;
+
+    Lower (me) 
+    returns Integer from Standard;      
+
+    Upper (me) 
+    returns Integer from Standard;   
+
+fields
+
+    myValue     :  HArray1OfInteger from PColStd;
+
+
+end IntegerList;

@@ -1,0 +1,70 @@
+-- File:	PBRep_CurveOnClosedSurface.cdl
+-- Created:	Tue Jul  6 10:16:47 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+-- Update:      Frederic MAUPAS
+---Copyright:	 Matra Datavision 1993
+
+
+class CurveOnClosedSurface from PBRep inherits CurveOnSurface from PBRep
+
+	---Purpose: Representation  of a    curve by two  pcurves   on
+	--          a closed surface.
+
+uses
+    Curve    from PGeom2d,
+    Surface  from PGeom,
+    Location from PTopLoc,
+    Pnt2d    from gp,
+    Shape    from GeomAbs
+
+is
+
+    Create(PC1, PC2 : Curve    from PGeom2d;
+    	   CF       : Real     from Standard;
+    	   CL       : Real     from Standard;
+    	   S        : Surface  from PGeom;
+	   L        : Location from PTopLoc;
+	   C        : Shape    from GeomAbs)
+    returns mutable CurveOnClosedSurface from PBRep;
+    	---Purpose: CF is curve first parameter
+    	--          CL is curve last parameter
+    	--          The two curves are SameParameter.
+    	--          As far as they can't be computed from a Persistent Curve
+    	--          they are given in the CurveOnClosedSurface constructor
+
+    PCurve2(me) returns  Curve from PGeom2d
+    is static;
+    	---Level: Internal 
+    
+    Continuity(me) returns Shape from GeomAbs
+    is static;
+    	---Level: Internal 
+
+    IsCurveOnClosedSurface(me) returns Boolean
+	---Purpose: Returns True.
+    is redefined;
+    
+    IsRegularity(me) returns Boolean
+	---Purpose: Returns True
+    is redefined;
+    
+    SetUVPoints2(me : mutable; Pnt1, Pnt2 : Pnt2d from gp);
+    
+    FirstUV2(me) returns Pnt2d from gp;
+
+    LastUV2(me) returns Pnt2d from gp;
+    
+fields
+
+    myPCurve2    : Curve from PGeom2d;
+    myContinuity : Shape from GeomAbs;
+    myUV21       : Pnt2d from gp;
+    myUV22       : Pnt2d from gp;
+
+end CurveOnClosedSurface;
+
+
+
+
+

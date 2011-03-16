@@ -1,0 +1,167 @@
+-- File:	SpotLight.cdl
+-- Created:	Wed Jan 22 17:03:34 1992
+-- Author:	GG 
+-- Update:	FDA - Oct 15 1994, 
+--		ZOV - Mars 30 1998
+---Copyright:	Matra Datavision 1992
+
+
+class SpotLight from V3d
+
+    	---Purpose: Creation and modification of a spot.
+
+      
+
+inherits PositionLight from V3d
+
+uses 
+
+	Viewer from V3d,
+	TypeOfOrientation from V3d,
+	TypeOfRepresentation from V3d,
+	Coordinate from V3d,
+	NameOfColor from Quantity,
+	PlaneAngle from Quantity,
+	Coefficient from Quantity,
+	Parameter from Quantity,
+        View from V3d,
+	Structure from Graphic3d,
+	Vertex from Graphic3d,
+	Group from Graphic3d
+
+raises BadValue from Viewer
+
+is
+
+    	Create ( VM : mutable Viewer ; X,Y,Z : Coordinate ;
+		 Direction : TypeOfOrientation = V3d_XnegYnegZpos ;
+		 Color : NameOfColor = Quantity_NOC_WHITE ; 
+		 Attenuation1 : Coefficient = 1.0 ; 
+                 Attenuation2 : Coefficient = 0.0 ; 
+		 Concentration : Coefficient = 1.0 ;
+		 Angle : PlaneAngle = 0.523599 )
+				returns mutable SpotLight
+        ---Level: Public
+	---Purpose: Creates a light source of the Spot type in the viewer.
+        --          The attenuation factor F which determines
+        --          the illumination of a surface depends on the following formula :
+        --          F = 1/(A1 + A2*Length)
+        --              A1,A2 being the 2 factors of attenuation
+        --              Length is the distance from the source to the surface.
+	--	    The default values (1.0,0.0) correspond to a minimum
+	--	    of attenuation .
+	--	    The concentration factor determines the dispersion 
+	--	    of the light on the surface, the default value
+	--	    (1.0) corresponds to a minimum of dispersion .
+        raises BadValue from Viewer;
+	---Purpose:  Warning! raises BadValue from Viewer  -
+	--	If one of the coefficients is not between 0 and 1 .
+	--	If the lighting angle is <= 0 ou > PI .
+	
+    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+	         Xp,Yp,Zp : Coordinate;
+		 Color : NameOfColor = Quantity_NOC_WHITE ;
+		 Attenuation1 : Coefficient = 1.0 ; 
+                 Attenuation2 : Coefficient = 0.0 ; 
+		 Concentration : Coefficient = 1.0 ;
+		 Angle : PlaneAngle = 0.523599 )		 
+		       returns mutable SpotLight
+	---Level: Public
+	---Purpose: Creates a light source of the Spot type in the viewer.
+	--          Xt,Yt,Zt : Coordinate of light source Target.
+	--          Xp,Yp,Zp : Coordinate of light source Position.
+	--          The others parameters describe before.
+        raises BadValue from Viewer;
+	---Purpose:  Warning! raises BadValue from Viewer  -
+	--	If one of the coefficients is not between 0 and 1 .
+	--	If the lighting angle is <= 0 ou > PI .
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Attributes of the light
+        --------------------------------------------------------
+
+    	SetPosition ( me : mutable; X,Y,Z : Coordinate ) is redefined;
+	---Level: Public
+	---Purpose: Defines the position of the light source.
+
+    	SetDirection ( me : mutable; Vx, Vy, Vz : Parameter ) raises BadValue from Viewer is static;
+	---Level: Public
+	---Purpose : Defines the direction of the light source.
+	--	If the normal vector is NULL.
+
+    	SetDirection ( me : mutable; Orientation : TypeOfOrientation ) is static;
+	---Level: Public
+	---Purpose : Defines the direction of the light source
+	--	     according to a predefined directional vector.
+
+        SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from Viewer is static;
+	---Level: Public
+    	---Purpose: Defines the coefficients of attenuation.
+	--  Warning! raises BadValue from Viewer 
+	--	    if one of the coefficient is <0 ou >1 .
+    
+        SetConcentration( me : mutable; C : Coefficient ) raises BadValue from Viewer is static;
+	---Level: Public
+    	---Purpose: Defines the coefficient of concentration.
+	--	if the coefficient is <0 ou >1 .
+	
+    	SetAngle ( me : mutable; Angle : PlaneAngle ) raises BadValue from Viewer is static;
+	---Level: Public
+	---Purpose: Defines the spot angle in RADIANS.
+	--  Warning: raises BadValue from from Viewer
+	--	If the angle is <= 0 ou > PI .
+	
+        ---------------------------------------------------
+        ---Category: display methods
+        ---------------------------------------------------
+
+        Display(me: mutable; aView: View from V3d;
+	        Representation : TypeOfRepresentation)
+ 	is redefined static;
+	---Level: Public
+	---Purpose: Display the graphic structure of light source
+	--          in the choosen view. We have three type of representation
+	--          - SIMPLE   : Only the light source is displayed.
+	--          - PARTIAL  : The light source and the light space are
+	--                       displayed.
+	--          - COMPLETE : The light source, the light space and the
+	--                       radius of light space are displayed.
+	--          We can choose the "SAMELAST" as parameter of representation
+	--          In this case the graphic structure representation will be 
+	--          the last displayed.	
+	
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+    	Direction ( me; Vx, Vy, Vz : out Parameter ) is static;
+	---Level: Public
+	---Purpose : Returns the direction of the light source defined by Vx,Vy,Vz.
+
+    	Position ( me; X,Y,Z : out Coordinate ) is redefined static;
+	---Level: Public
+	---Purpose : Returns the position of the light source.
+
+        Attenuation ( me; A1,A2 : out Coefficient ) is static;
+	---Level: Public
+        ---Purpose : Returns the attenuation factors A1,A2 of the light source.
+
+	    Concentration( me )  returns Coefficient  is static;
+	---Level: Public
+
+    	Angle ( me ) returns PlaneAngle  is static;
+	---Level: Public
+	---Purpose: Returns the spot angle.
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+                      aView   : View from V3d ) is redefined static private;
+	---Level: Internal
+	---Purpose: Defines the representation of the spot light source.
+
+end SpotLight;
+
+

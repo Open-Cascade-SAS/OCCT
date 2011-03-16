@@ -1,0 +1,380 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\OCCDemo.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\OCCDemo.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_OCC_LOGO            BITMAP  DISCARDABLE     "res\\occ_logo.bmp"
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDR_TOOLBAR1            BITMAP  DISCARDABLE     "res\\Toolbar1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  20, 20
+BEGIN
+    BUTTON      ID_BUTTONStart
+    BUTTON      ID_BUTTONPrev
+    BUTTON      ID_BUTTONRepeat
+    BUTTON      ID_BUTTONNext
+    BUTTON      ID_BUTTONEnd
+    SEPARATOR
+    BUTTON      ID_BUTTONShowResult
+    BUTTON      ID_DUMP_VIEW
+END
+
+IDR_TOOLBAR1 TOOLBAR DISCARDABLE  20, 20
+BEGIN
+    BUTTON      ID_BUTTONZoomAll
+    BUTTON      ID_BUTTONZoomWin
+    BUTTON      ID_BUTTONZoomProg
+    SEPARATOR
+    BUTTON      ID_BUTTONPan
+    BUTTON      ID_BUTTONPanGlo
+    SEPARATOR
+    BUTTON      ID_BUTTONFront
+    BUTTON      ID_BUTTONTop
+    BUTTON      ID_BUTTONLeft
+    BUTTON      ID_BUTTONBack
+    BUTTON      ID_BUTTONRight
+    BUTTON      ID_BUTTONBottom
+    BUTTON      ID_BUTTONAxo
+    SEPARATOR
+    BUTTON      ID_BUTTONRot
+    BUTTON      ID_BUTTONReset
+    SEPARATOR
+    BUTTON      ID_BUTTONWire
+    BUTTON      ID_BUTTONShade
+    BUTTON      ID_BUTTONHlrOn
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Reset",                       ID_FILE_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About OCCDemo...",           ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "A",            ID_BUTTONAxo,           VIRTKEY, CONTROL, NOINVERT
+    "B",            ID_BUTTONBack,          VIRTKEY, CONTROL, NOINVERT
+    "F",            ID_BUTTONZoomAll,       VIRTKEY, NOINVERT
+    "F",            ID_BUTTONFront,         VIRTKEY, CONTROL, NOINVERT
+    "H",            ID_BUTTONHlrOn,         VIRTKEY, SHIFT, NOINVERT
+    "L",            ID_BUTTONLeft,          VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_BUTTONBottom,        VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_BUTTONReset,         VIRTKEY, NOINVERT
+    "R",            ID_BUTTONRight,         VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_BUTTONShade,         VIRTKEY, SHIFT, NOINVERT
+    "T",            ID_BUTTONTop,           VIRTKEY, CONTROL, NOINVERT
+    VK_END,         ID_BUTTONEnd,           VIRTKEY, NOINVERT
+    VK_F11,         ID_BUTTONShowResult,    VIRTKEY, NOINVERT
+    VK_F12,         ID_DUMP_VIEW,           VIRTKEY, NOINVERT
+    VK_HOME,        ID_BUTTONStart,         VIRTKEY, NOINVERT
+    VK_NEXT,        ID_BUTTONNext,          VIRTKEY, NOINVERT
+    VK_PRIOR,       ID_BUTTONPrev,          VIRTKEY, NOINVERT
+    VK_SPACE,       ID_BUTTONRepeat,        VIRTKEY, NOINVERT
+    "W",            ID_BUTTONWire,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_APP_EXIT,            VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 34, 22, 201, 161
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "About"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "OCCDemo, Open CASCADE ",IDC_ABOUTBOX_TITLE,3,8,195,8
+    CTEXT           "Copyright (C) 2008, Open CASCADE Company",IDC_STATIC,28,
+                    99,147,8,SS_CENTERIMAGE
+    DEFPUSHBUTTON   "OK",IDOK,55,135,88,14,WS_GROUP
+    CTEXT           "http://www.opencascade.com",IDC_STATIC,50,115,98,8,
+                    SS_CENTERIMAGE
+    CONTROL         1300,IDC_STATIC,"Static",SS_BITMAP,36,27,129,62,
+                    WS_EX_CLIENTEDGE
+END
+
+IDD_ResultDialog DIALOG DISCARDABLE  0, 0, 244, 231
+STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
+CAPTION "Result Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_RICHEDIT_ResultDialog,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | 
+                    ES_READONLY | WS_BORDER | WS_VSCROLL | WS_HSCROLL | 
+                    WS_TABSTOP,0,7,243,192
+    PUSHBUTTON      "Copy selection",IDC_CopySelectionToClipboard,0,206,60,
+                    18
+    PUSHBUTTON      "Copy all",IDC_CopyAllToClipboard,65,206,60,18
+    PUSHBUTTON      "Close",IDCANCEL,183,206,60,18
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Open CASCADE Demonstration Application\0"
+            VALUE "CompanyName", "Open CASCADE, France\0"
+            VALUE "FileDescription", "OCCDemo MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "OCCDemo\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001, Open CASCADE Company\0"
+            VALUE "LegalTrademarks", "Open CASCADE\0"
+            VALUE "OriginalFilename", "OCCDemo.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "OCCDemo Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ResultDialog, DIALOG
+    BEGIN
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 224
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "OCCDemo\n\nOCCDem\n\n\nOCCDemo.Document\nOCCDem Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCCDemo"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Start demo a new\nReset"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONZoomAll        "Press to zoom the application objects in the view\nFitAll (F)"
+    ID_BUTTONZoomWin        "Press and drag MB1 to select a zoom window\nZoom Window"
+    ID_BUTTONZoomProg       "Press and drag MB1 to zoom\nDynamic Zooming"
+    ID_BUTTONPan            "Press and drag MB1 to pan\nDynamic Panning"
+    ID_BUTTONPanGlo         "Press and select a new view center t\nGlobal Panning"
+    ID_BUTTONFront          "Press to select a front View\nFront (Ctrl+F)"
+    ID_BUTTONLeft           "Press to select a left View\nLeft (Ctrl+L)"
+    ID_BUTTONTop            "Press to select a top View\nTop (Ctrl+T)"
+    ID_BUTTONBack           "Press to select a back View\nBack (Ctrl+B)"
+    ID_BUTTONRight          "Press to select a right View\nRight (Ctrl+R)"
+    ID_BUTTONBottom         "Press to select a bottom View\nBottom (Ctrl+M)"
+    ID_BUTTONAxo            "Press to select axonometric View\nAxo (Ctrl+A)"
+    ID_BUTTONRot            "Press and drag MB1 to rotate\nDynamic Rotation"
+    ID_BUTTONReset          "Press to reset view\nReset (R)"
+    ID_BUTTONWire           "Press to switch to wireframe mode\nWireframe mode (Shift+W)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONShade          "Press to switch to shading mode\nShading mode (Shift+S)"
+    ID_BUTTONHlrOn          "Press to switch to HLR mode\nHLR mode (Shift+H)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONStart          "Press to go to the first sample\nFirst sample (Home)"
+    ID_BUTTONNext           "Press to go to the next sample\nNext sample (PgDn)"
+    ID_BUTTONShowResult     "Press to toggle show of source code on/off\nSource code (F11)"
+    ID_DUMP_VIEW            "Save current frame into a GIF file\nExport view to GIF (F12)"
+    ID_BUTTONEnd            "Press to go to the last sample\nLast sample (End)"
+    ID_BUTTONPrev           "Press to go to the previous sample\nPrevious sample (PgUp)"
+    ID_BUTTONRepeat         "Press to repeat the current sample\nRepeat sample (Space)"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\OCCDemo.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

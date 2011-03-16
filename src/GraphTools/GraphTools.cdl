@@ -1,0 +1,98 @@
+-- File:	GraphTools.cdl
+-- Created:	Thu Mar  7 11:03:52 1991
+-- Author:	Denis Pascal
+--		<dp@topsn2>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package GraphTools 
+
+    ---Purpose: This package <GraphTools> provides  algorithms working
+    --          on a directed graph.  Those algorithms are generic for
+    --          user (Graph and Vertex)  data, and tool classes.
+
+
+uses Standard,
+     MMgt,
+     TCollection,
+     TColStd
+     
+is
+
+
+    class ListOfSequenceOfInteger instantiates List from TCollection
+                         (SequenceOfInteger from TColStd);
+
+-- Requirements
+-- ============
+
+-- Data
+--  Vertex
+--  Graph
+-- Tools
+    generic class GraphIterator;
+    generic class VertexIterator;
+
+-- Services (Algorithms) 
+-- =====================
+    
+    
+    ---Purpose: Depth First Search (DFS)
+    
+    generic class DFSIterator,
+                  DFSMap;
+
+
+    ---Purpose: Breath First Search (BFS)
+
+    generic class BFSIterator,
+                  BFSMap;
+
+		  
+    ---Purpose: Sorted Strong Components (SC)
+
+    generic class SortedStrgCmptsFromIterator,
+                  SCMap;
+		  
+    generic class SortedStrgCmptsIterator;
+
+
+    ---Purpose: Topological Sort (TS)
+
+    class TSNode;
+
+    generic class TopologicalSortFromIterator,
+                  TSMap;  
+		  
+    generic class TopologicalSortIterator;
+    
+    
+    ---Purpose: Connected Vertices (CV)
+
+    generic class ConnectedVerticesFromIterator,
+                  CVMap,
+    	    	  ConnectMap;
+		 
+    generic class ConnectedVerticesIterator;
+
+
+    ---Purpose: Reduced Graph (RG)
+    
+    class RGNode;
+    
+    class SC;
+    
+    class SCList instantiates List from TCollection
+                (SC from GraphTools);
+
+    generic class ReducedGraph,
+		  RGMap,
+		  SortedSCIterator,
+		  AdjSCIterator;
+
+end GraphTools;
+
+
+
+
+

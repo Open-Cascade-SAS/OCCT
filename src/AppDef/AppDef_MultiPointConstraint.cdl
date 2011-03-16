@@ -1,0 +1,286 @@
+-- File:	MultiPointConstraint.cdl
+-- Created:	Mon Dec  2 09:03:29 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+class MultiPointConstraint from AppDef
+
+    inherits MultiPoint from AppParCurves
+
+    	---Purpose: Describes a MultiPointConstraint used in a
+    	-- Multiline. MultiPointConstraints are composed
+    	-- of several two or three-dimensional points.
+    	-- The purpose is to define the corresponding
+    	-- points that share a common constraint in order
+    	-- to compute the approximation of several lines in parallel.
+    	-- Notes:
+    	-- -   The order of points of a MultiPointConstraints is very important.
+    	--   Users must give 3D points first, and then 2D points.
+    	-- -   The constraints for the points included in a
+    	--   MultiPointConstraint are always identical for
+    	--   all points, including the parameter.
+    	-- -   If a MultiPointConstraint is a "tangency"
+    	--   point, the point is also a "passing" point.
+
+
+
+uses  Pnt                from gp,
+      Pnt2d              from gp, 
+      Vec                from gp,
+      Vec2d              from gp,
+      Array1OfPnt        from TColgp,
+      Array1OfPnt2d      from TColgp,
+      Array1OfVec        from TColgp,
+      Array1OfVec2d      from TColgp,
+      Constraint         from AppParCurves,
+      OStream            from Standard,
+      TShared            from MMgt
+      
+raises OutOfRange        from Standard,
+       ConstructionError from Standard,
+       DimensionError    from Standard
+
+
+is
+
+    Create
+    	---Purpose: creates an undefined MultiPointConstraint.
+
+    returns MultiPointConstraint from AppDef;
+
+
+    Create(NbPoints, NbPoints2d: Integer)
+    	---Purpose: constructs a set of Points used to approximate a Multiline.
+    	--          These Points can be of 2 or 3 dimensions.
+    	--          Points will be initialized with SetPoint and SetPoint2d.
+
+    returns MultiPointConstraint from AppDef;
+
+
+
+    Create(tabP: Array1OfPnt)
+    	---Purpose: creates a MultiPoint only composed of 3D points.
+
+    returns MultiPointConstraint from AppDef;
+
+
+    Create(tabP: Array1OfPnt2d)
+    	---Purpose: creates a MultiPoint only composed of 2D points.
+
+    returns MultiPointConstraint from AppDef;
+    
+		
+    Create(tabP: Array1OfPnt; tabP2d: Array1OfPnt2d)
+    	---Purpose: constructs a set of Points used to approximate a Multiline.
+    	--          These Points can be of 2 or 3 dimensions.
+    	--          Points will be initialized with SetPoint and SetPoint2d.
+   
+    returns MultiPointConstraint from AppDef;   
+   
+    
+
+    Create(tabP: Array1OfPnt; tabP2d: Array1OfPnt2d;
+    	   tabVec: Array1OfVec; tabVec2d: Array1OfVec2d;
+           tabCur: Array1OfVec; tabCur2d: Array1OfVec2d)
+    	---Purpose: creates a MultiPointConstraint with a constraint of 
+    	--          Curvature.
+    	--          An exception is raised if 
+    	--          (length of <tabP> + length of <tabP2d> ) is different
+    	--          from (length of <tabVec> + length of <tabVec2d> ) or
+    	--          from (length of <tabCur> + length of <tabCur2d> )
+
+    returns MultiPointConstraint from AppDef
+    raises ConstructionError from Standard;
+
+
+
+    Create(tabP: Array1OfPnt; tabP2d: Array1OfPnt2d;
+    	   tabVec: Array1OfVec; tabVec2d: Array1OfVec2d)
+    	---Purpose: creates a MultiPointConstraint with a constraint of 
+    	--          Tangency.
+    	--          An exception is raised if 
+    	--          (length of <tabP> + length of <tabP2d> ) is different
+    	--          from (length of <tabVec> + length of <tabVec2d> )
+
+    returns MultiPointConstraint from AppDef
+    raises ConstructionError from Standard;
+
+
+
+
+    Create(tabP: Array1OfPnt; tabVec: Array1OfVec; tabCur: Array1OfVec)
+    	---Purpose: creates a MultiPointConstraint only composed of 3d points 
+    	--          with constraints of curvature.
+    	--          An exception is raised if the length of tabP is different
+    	--          from the length of tabVec or from tabCur.
+    
+    returns MultiPointConstraint from AppDef
+    raises ConstructionError;
+
+
+    Create(tabP: Array1OfPnt; tabVec: Array1OfVec)
+    	---Purpose: creates a MultiPointConstraint only composed of 3d points 
+    	--          with constraints of tangency.
+    	--          An exception is raised if the length of tabP is different
+    	--          from the length of tabVec.
+    
+    returns MultiPointConstraint
+    raises ConstructionError;
+
+    
+
+    Create(tabP2d: Array1OfPnt2d; tabVec2d: Array1OfVec2d)
+    	---Purpose: creates a MultiPointConstraint only composed of 2d points 
+    	--          with constraints of tangency.
+    	--          An exception is raised if the length of tabP is different
+    	--          from the length of tabVec2d.
+    
+    returns MultiPointConstraint from AppDef
+    raises ConstructionError from Standard;
+
+	
+    Create(tabP2d: Array1OfPnt2d; 
+           tabVec2d: Array1OfVec2d; 
+    	   tabCur2d: Array1OfVec2d)
+    	---Purpose: creates a MultiPointConstraint only composed of 2d points 
+    	--          with constraints of curvature.
+    	--          An exception is raised if the length of tabP is different
+    	--          from the length of tabVec2d or from tabCur2d.
+    
+    returns MultiPointConstraint from AppDef
+    raises ConstructionError from Standard;
+		
+
+
+    
+    SetTang(me: in out; Index: Integer; Tang: Vec)
+    	---Purpose: sets the value of the tangency of the point of range 
+    	--          Index.
+    	--          An exception is raised if Index <0 or if Index > number
+    	--          of 3d points.
+    	--          An exception is raised if Tang has an incorrect number of
+    	--          dimensions.
+    
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is static;
+
+
+    Tang(me; Index: Integer)
+    	---Purpose: returns the tangency value of the point of range Index.
+    	--          An exception is raised if Index < 0 or if Index > number 
+    	--          of 3d points.
+    
+    returns Vec from gp
+    raises OutOfRange from Standard
+    is static;
+
+
+    SetTang2d(me: in out; Index: Integer; Tang2d: Vec2d)
+    	---Purpose: sets the value of the tangency of the point of range 
+    	--          Index.
+    	--          An exception is raised if Index <number of 3d points or if
+    	--          Index > total number of Points
+    	--          An exception is raised if Tang has an incorrect number of
+    	--          dimensions.
+    
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is static;
+
+
+    Tang2d(me; Index: Integer)
+    	---Purpose: returns the tangency value of the point of range Index.
+    	--          An exception is raised if Index < number  of 3d points or
+    	--          if Index > total number of points.
+    
+    returns Vec2d from gp
+    raises OutOfRange from Standard
+    is static;
+
+
+    SetCurv(me: in out; Index: Integer; Curv: Vec)
+    	---Purpose: Vec sets the value of the normal vector at the
+    	-- point of index Index. The norm of the normal
+    	-- vector at the point of position Index is set to the normal curvature.
+    	--          An exception is raised if Index <0 or if Index > number
+    	--          of 3d points.
+    	--          An exception is raised if Curv has an incorrect number of
+    	--          dimensions.
+    
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is static;
+
+
+    Curv(me; Index: Integer)
+    	---Purpose: returns the normal vector at the point of range Index.
+    	--          An exception is raised if Index < 0 or if Index > number 
+    	--          of 3d points.
+    
+    returns Vec from gp
+    raises OutOfRange from Standard
+    is static;
+
+
+
+    SetCurv2d(me: in out; Index: Integer; Curv2d: Vec2d)
+    	---Purpose: Vec sets the value of the normal vector at the
+    	-- point of index Index. The norm of the normal
+    	-- vector at the point of position Index is set to the normal curvature.
+    	--          An exception is raised if Index <0 or if Index > number
+    	--          of 3d points.
+    	--          An exception is raised if Curv has an incorrect number of
+    	--          dimensions.
+    
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is static;
+
+
+    Curv2d(me; Index: Integer)
+    	---Purpose: returns the normal vector at the point of range Index.
+    	--          An exception is raised if Index < 0 or if Index > number 
+    	--          of 3d points.
+    
+    returns Vec2d from gp
+    is static;
+
+
+    IsTangencyPoint(me)
+    	---Purpose: returns True if the MultiPoint has a tangency value.
+
+    returns Boolean
+    raises OutOfRange from Standard
+    is static;
+
+    IsCurvaturePoint(me)
+    	---Purpose: returns True if the MultiPoint has a curvature value.
+
+    returns Boolean
+    raises OutOfRange from Standard
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current 
+    	--          state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is redefined;
+
+
+
+fields
+
+ttabTang:   TShared from MMgt;
+ttabCurv:   TShared from MMgt;
+ttabTang2d: TShared from MMgt;
+ttabCurv2d: TShared from MMgt;
+
+
+end MultiPointConstraint from AppDef;

@@ -1,0 +1,32 @@
+-- File:	PDataStd_Comment.cdl
+-- Created:	Thu Jan 15 11:45:08 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class Comment from PDataStd inherits Attribute from PDF
+
+uses HExtendedString from PCollection
+
+is
+
+    Create returns mutable Comment from  PDataStd;
+    
+    
+    Create (V : HExtendedString from PCollection) 
+    returns mutable Comment from PDataStd;
+    
+    
+    Get (me) returns HExtendedString from PCollection;
+    
+    
+    Set (me : mutable; V : HExtendedString from PCollection);
+
+
+fields
+
+    myValue : HExtendedString from PCollection;
+
+end Comment;

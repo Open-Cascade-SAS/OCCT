@@ -1,0 +1,272 @@
+-- File:	BRepFill_PipeShell.cdl
+-- Created:	Wed Jul 22 09:10:50 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class PipeShell from BRepFill inherits  TShared from MMgt 
+
+	---Purpose: Perform general sweeping construction
+uses  
+ Dir  from  gp,
+ Ax2  from  gp, 
+ Function from Law,  
+ ListOfShape  from  TopTools, 
+ HArray2OfShape   from  TopTools,
+ Shape from  TopoDS,
+ Wire  from  TopoDS,
+ Vertex  from  TopoDS, 
+ TransitionStyle  from BRepFill, 
+ Trihedron        from  GeomFill,   
+ PipeError        from  GeomFill,  
+ LocationLaw       from  BRepFill, 
+ SectionLaw        from  BRepFill,  
+ Section           from  BRepFill, 
+ Sweep             from BRepFill,
+ DataMapOfShapeListOfShape from TopTools,
+ SequenceOfSection from  BRepFill 
+
+
+raises
+ DomainError from Standard, 
+ NotDone  from  StdFail
+
+is    
+    Create( Spine   : Wire  from TopoDS)
+	---Level: Public
+    returns PipeShell from BRepFill;
+
+-- =================================
+--  Methodes Set
+-- ================================= 
+  ---Purpose: Set an sweep's mode
+   --         If no mode are setted, the mode use in MakePipe is used
+   ---See Also: GeomFill_IsCorrectedFrenet  
+
+    Set(me  :  mutable; Frenet  :  Boolean  =  Standard_False);
+    	---Purpose: Set an Frenet or an CorrectedFrenet trihedron  
+        --          to  perform  the  sweeping
+    	---Level:  Public   
+    	---See Also:GeomFill_IsCorrectedFrenet
+    
+    Set(me  :  mutable;  Axe  :  Ax2  from  gp); 
+    	---Purpose: Set  an  fixed  trihedron  to  perform  the  sweeping 
+         --         all sections will be parallel.
+    	---Level: Public       
+    	---See Also: GeomFill_IsFixed
+
+    Set(me  :  mutable;  BiNormal  :  Dir  from  gp); 
+   	---Purpose: Set an fixed  BiNormal  direction to  perform   
+                --  the sweeping        
+    	---Level: Public      
+    	---See Also: GeomFill_IsConstantNormal
+
+    Set(me  :  mutable;  SpineSupport : Shape  from  TopoDS) 
+   	---Purpose: Set support to the spine to define the BiNormal
+   	--           at   the spine, like    the  normal the surfaces.
+    	--  Warning: To  be  effective,  Each  edge  of  the  <spine>  must  
+    	    	--  have an  representaion  on   one   face  of<SpineSupport>         
+    	---Level: Public 
+    	---See Also: GeomFill_IsDarboux
+    returns  Boolean;
+
+    Set(me  :  mutable;   
+        AuxiliarySpine  :  Wire  from  TopoDS; 
+        CurvilinearEquivalence :  Boolean  =  Standard_True; 
+        KeepContact  : Boolean  =  Standard_False );
+
+	---Purpose: Set  an  auxiliary  spine  to  define  the Normal
+        --  For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
+        --    on  <AuxiliarySpine>           
+        -- If <CurvilinearEquivalence>  
+        --   Q split <AuxiliarySpine> with  the  same  length ratio
+        --   than P split  <Spline>. 
+        -- Else  the  plan  define  by  P  and  the  tangent  to  the  <Spine> 
+        --       intersect <AuxiliarySpine> in Q.
+        -- If <KeepContact> the  Normal  is  defined to  assume like  the  sweeped 
+        --                  section is  in  contact to  the  <AuxiliarySpine>
+        -- Else  the  Normal  is  defined  by the vector  PQ. 
+
+        ---Level: Public
+
+-- =================================
+--  Methodes to define section(s)
+-- ================================= 
+  ---Purpose: Give section to sweep.
+   -- Possibilities are :
+   --	- Give one or sevral profile
+   --     - Give one profile and an homotetic law.
+   --     - Automatic compute of correspondance beetween profile, and section 
+   --                 on the sweeped shape
+   --     - correspondance beetween profile, and section on the sweeped shape
+   --       defined by a vertex of the spine
+
+   --    -"WithCorrection" The profile is  rotated to have a Normal --
+   --     parallel   to  the  trihedron's    normal and   have tangent
+   --    perpendicular to the trihedron's  tangent.
+    
+
+    Add(me:mutable; 
+    	Profile  : Shape  from TopoDS; 
+        WithContact    :  Boolean  =  Standard_False; 
+        WithCorrection :  Boolean  =  Standard_False ); 
+    	---Purpose: Set an section. The corespondance with the spine, will
+    	--          be automaticaly performed.
+	---Level: Public
+  
+    Add(me:mutable; 
+    	Profile : Shape  from TopoDS;   
+        Location  :  Vertex from  TopoDS; 
+    	WithContact    :  Boolean =  Standard_False; 
+        WithCorrection :  Boolean =  Standard_False) 
+    	---Purpose: Set an section.   The corespondance with the spine, is
+    	--          given by  <Location>
+
+	---Level: Public
+    raises DomainError;  -- if the <Spine> do not contain <Location>
+
+    SetLaw(me  :mutable; 
+	   Profile  :  Shape  from TopoDS; 
+    	   L : Function from Law; 
+           WithContact    :  Boolean =  Standard_False; 
+           WithCorrection :  Boolean  =  Standard_False);
+    	---Purpose: Set  an    section  and  an   homotetic    law. 
+        -- The  homotetie's  centers  is  given  by  point  on  the  <Spine>.
+        ---Level:  Public
+
+
+    SetLaw(me  :mutable; 
+	   Profile  :  Shape  from TopoDS; 
+    	   L : Function from Law; 
+	   Location  :  Vertex from  TopoDS; 
+           WithContact    :  Boolean =  Standard_False; 
+           WithCorrection :  Boolean  =  Standard_False);
+    	---Purpose: Set  an    section  and  an   homotetic    law. 
+        --   The  homotetie  center  is  given  by  point  on  the  <Spine>
+        ---Level:  Public
+
+ 
+    Delete(me  :  mutable;  Profile : Shape from TopoDS);  
+     	---Purpose: Delete an section.
+	---Level: Public    
+    
+     
+--  ======================================== 
+--  Methodes  to perform  and  read   shape
+--  ========================================
+    IsReady(me)
+     ---Purpose: Say if <me> is ready to build the shape
+     --          return False if <me> do not have section definition        
+    returns  Boolean;   
+
+    GetStatus(me) 
+    ---Purpose: Get a status, when Simulate or Build failed.        
+    returns  PipeError  from  GeomFill;
+
+    SetTolerance(me  :  mutable; 
+    	         Tol3d  :  Real  =  1.0e-4; 
+		 BoundTol   : Real  =  1.0e-4;
+		 TolAngular : Real  =  1.0e-2); 
+		  
+    SetTransition(me  :  mutable;  
+    	          Mode  :TransitionStyle  from  BRepFill   
+    	    	    	=  BRepFill_Modified; 
+                  Angmin  :  Real  =  1.0e-2; 
+                  Angmax  :  Real  =  6.0)    
+       	---Purpose: Set the  Transition Mode to manage discontinuities
+	--          on the sweep.
+        ---Level: Public
+    is  static; 
+	
+    Simulate(me : mutable;   
+             NumberOfSection  :  Integer; 
+             Sections         : out   ListOfShape from TopTools)
+        ---Purpose: Perform simulation of the sweep : 
+         --         Somes Section are returned.
+        ---Level: Public 
+    raises  NotDone;  --  If  <me> it is not Ready
+     
+						       
+    Build(me : mutable)
+	---Purpose: Builds the resulting shape (redefined from MakeShape).
+	---Level: Public
+    returns Boolean 
+    raises  NotDone  --  If  <me> it is not Ready
+    is static; 
+
+    MakeSolid(me :  mutable) 
+	 ---Purpose: Transform the sweeping Shell in Solid. 
+	 --          If the section are not closed returns False        
+	 ---Level: Public
+    returns  Boolean 
+    raises  NotDone;  --  If  <me> is not Builded;           
+    
+    Shape (me)
+    ---Purpose: Returns the result Shape.
+    ---C++: return const & 
+    ---Level: Public 
+    returns Shape from TopoDS
+    is  static;    
+    
+    FirstShape (me)
+    ---Purpose: Returns the  TopoDS  Shape of the bottom of the sweep.
+    ---C++: return const & 
+    ---Level: Public 
+    returns Shape from TopoDS
+    is  static;
+
+    LastShape (me)
+    ---Purpose: Returns the TopoDS Shape of the top of the sweep.
+    ---C++: return const & 
+    ---Level: Public
+    returns Shape from TopoDS   
+    is  static; 
+     
+    Generated (me: mutable; 
+    	       S : Shape from TopoDS;
+    	       L : out ListOfShape from TopTools)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <S>. 
+        ---Level: Public
+    is static;  
+    
+    Prepare(me:  mutable)  is  private; 
+     
+    Place(me : mutable;  
+    	  Sec  :  Section  from  BRepFill; 
+          W    :  out  Wire   from  TopoDS; 
+    	param  :  out  Real  from  Standard)  is  private; 
+	   
+    ResetLoc(me  :  mutable)  is  private;
+
+    BuildHistory(me: mutable; theSweep: Sweep from BRepFill)
+    	is private;
+	  
+fields      
+  mySpine       :  Wire  from  TopoDS;
+  myFirst       :  Shape  from  TopoDS; 
+  myLast        :  Shape  from  TopoDS;  
+  myShape       :  Shape  from  TopoDS;   
+  mySeq         :  SequenceOfSection from BRepFill; 
+
+  myGenMap      :  DataMapOfShapeListOfShape from TopTools;
+
+  myTol3d       :  Real; 
+  myBoundTol    :  Real;  
+  myTolAngular  :  Real;  
+  angmin,  angmax  :  Real; 
+  
+  myLaw         :  Function         from  Law;    
+  myLocation    :  LocationLaw      from  BRepFill; 
+  mySection     :  SectionLaw       from  BRepFill; 
+  myFaces       :  HArray2OfShape   from  TopTools;
+  myTrihedron   :  Trihedron        from  GeomFill;
+  myTransition  :  TransitionStyle  from  BRepFill; 
+  myStatus      :  PipeError        from  GeomFill;
+end PipeShell;
+
+
+
+
+

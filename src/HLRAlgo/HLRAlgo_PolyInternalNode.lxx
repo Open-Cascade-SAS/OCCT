@@ -1,0 +1,34 @@
+// File:	HLRAlgo_PolyInternalNode.lxx
+// Created:	Fri Jan 10 22:25:51 1997
+// Author:	Christophe MARION
+//		<cma@partox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : HLRAlgo_PolyInternalNode
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_PolyInternalNode::HLRAlgo_PolyInternalNode ()
+{
+  myIndices[0] = 0;
+  myIndices[1] = 0;
+  myIndices[2] = 0;
+  myIndices[3] = 0;
+}
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_PolyInternalNode::Indices () const
+{ return (Standard_Address)myIndices; }
+
+//=======================================================================
+//function : RValues
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_PolyInternalNode::RValues () const
+{ return (Standard_Address)myRValues; }
+

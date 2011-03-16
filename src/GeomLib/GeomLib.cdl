@@ -1,0 +1,301 @@
+-- File:	GeomLib.cdl
+-- Created:	Wed Jul  7 12:38:18 1993
+-- Author:	Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1993
+-- jct : modified 15-Apr-97 : added method ExtendSurfByLength
+
+
+package GeomLib 
+
+	---Purpose: Geom    Library.    This   package   provides   an
+	--          implementation of  functions for basic computation
+	--          on geometric entity from packages Geom and Geom2d.
+
+
+uses 
+    TCollection,
+    TColStd,
+    TColgp, 
+    TColGeom, 
+    TColGeom2d,
+    Adaptor3d,
+    AdvApprox,
+    Geom, 
+    Geom2d, 
+    GeomAbs, 
+    math,     
+    gp,
+    StdFail
+
+is
+
+    enumeration InterpolationErrors is 
+	---Purpose: in case the interpolation errors out, this
+	--          tells what happened
+        NoError,
+        NotEnoughtPoints,
+	DegreeSmallerThan3,
+	InversionProblem
+	
+    end InterpolationErrors;
+
+    --    -- --------------- --
+    --  C L A S S E S  --
+    -- --------------- --
+     
+    class  Array1OfMat  instantiates   
+    Array1 from TCollection  (Mat from gp);
+
+    class MakeCurvefromApprox;
+	---Purpose: This class is used to   create the curves ( 2d  or
+	--          3d)  rational   or  not  created   by the    class
+	--          ApproxAFunction from AdvApprox.
+
+
+
+    class Interpolate ;
+       ---Purpose: this class compute the poles of a curve given some
+       --          parameters, points to interpolate and boundary conditions
+       --          in 3d 
+    class DenominatorMultiplier ;
+       ---Purpose: this defines an evaluator for a function of 2 variables
+       --          that will be used by CancelDenominatorDerivative in one
+       --          direction.
+
+
+    class CheckBSplineCurve ;
+       ---Purpose:  Checks for the end  tangents : wether or not those
+       --           are reversed regarding the third or n-3rd control
+       --           
+       --           
+    class Check2dBSplineCurve ;     
+            
+       ---Purpose:  Checks for the end  tangents : wether or not those
+       --           are reversed 
+
+    class  IsPlanarSurface;
+    
+    class Tool;
+    	---Purpose: provides various methods with Geom2d and Geom curves
+	---         and surfaces.
+
+    private  class  PolyFunc;  
+     
+    private  class  LogSample;
+
+    pointer DenominatorMultiplierPtr to DenominatorMultiplier from GeomLib ;
+    -------------------------
+    --  M E T H O D E S  --
+    -- ----------------- --
+
+    To3d (Position : in     Ax2    from gp;
+          Curve2d  : in     Curve  from Geom2d)
+    returns Curve  from Geom;
+    	---Purpose: Computes     the  curve  3d    from  package  Geom
+    	--          corresponding to curve 2d  from package Geom2d, on
+    	--          the plan defined with the local coordinate system
+    	--          Position.
+	      
+
+    GTransform( Curve : in Curve    from Geom2d;
+    	    	GTrsf : in GTrsf2d  from gp)
+    returns Curve from Geom2d;
+	---Purpose: Computes the    curve    3d  from   package   Geom
+	--          corresponding  to the curve  3d from package Geom,
+	--          transformed with the transformation <GTrsf>
+	--          WARNING : this method may return a null Handle if
+	--          it's impossible to compute the transformation of
+	--          a curve. It's not implemented when :
+	--          1) the curve is an infinite parabola or hyperbola
+	--          2) the curve is an offsetcurve
+
+    SameRange(Tolerance      : in  Real  from Standard ;
+    	      Curve2dPtr     : in  Curve from Geom2d ;
+    	      First          : in  Real  from Standard ;
+	      Last           : in  Real  from Standard ;
+	      RequestedFirst : in  Real  from Standard ;
+	      RequestedLast  : in  Real  from Standard ;
+	      NewCurve2dPtr  : out Curve from Geom2d) ;
+    
+     ---Purpose: Make the curve Curve2dPtr have the imposed
+     --          range First to List the most economic way,
+     --          that is if it can change the range without
+     --          changing the nature of the curve it will try
+     --          to do that. Otherwise it will produce a Bspline
+     --          curve that has the required range 
+     BuildCurve3d(Tolerance        : in  Real  from Standard ;
+    	    	  CurvePtr         : in out  CurveOnSurface from Adaptor3d ; 
+		  FirstParameter   : in  Real from Standard ;
+		  LastParameter    : in  Real from Standard ;
+		  NewCurvePtr      : out Curve from Geom ;
+		  MaxDeviation     : out Real from Standard ;
+		  AverageDeviation : out Real from Standard ;
+		  Continuity       : Shape  from  GeomAbs  =  GeomAbs_C1;
+    	          MaxDegree        : Integer  =  14; 
+                  MaxSegment       : Integer  =  30); 
+		   
+     AdjustExtremity(Curve : in out BoundedCurve from Geom; 
+     	             P1,  P2  :  Pnt  from  gp; 
+		     T1,  T2  :  Vec  from  gp);
+		  
+     ExtendCurveToPoint(Curve : in out BoundedCurve from Geom;
+     		        Point : Pnt from gp;
+			Cont  : Integer from Standard;
+			After : Boolean from Standard);
+     ---Purpose: Extends the bounded curve Curve to the point Point.
+-- The extension is built:
+-- -      at the end of the curve if After equals true, or
+-- -      at the beginning of the curve if After equals false.
+--   The extension is performed according to a degree of
+-- continuity equal to Cont, which in its turn must be equal to 1, 2 or 3.
+-- This function converts the bounded curve Curve into a BSpline curve.
+-- Warning
+-- -   Nothing is done, and Curve is not modified if Cont is
+--   not equal to 1, 2 or 3.
+-- -   It is recommended that the extension should not be
+--   too large with respect to the size of the bounded
+--   curve Curve: Point must not be located too far from
+--   one of the extremities of Curve.
+	 
+		  
+     ExtendSurfByLength(Surf   : in out BoundedSurface from Geom;
+     		        Length : Real from Standard;
+			Cont   : Integer from Standard;
+			InU    : Boolean from Standard;
+			After  : Boolean from Standard);
+     ---Purpose: 
+-- Extends the bounded surface Surf along one of its
+-- boundaries. The chord length of the extension is equal to Length.
+-- The direction of the extension is given as:
+-- -   the u parametric direction of Surf, if InU equals true,   or
+-- -   the v parametric direction of Surf, if InU equals false.
+-- In this parametric direction, the extension is built on the side of:
+-- -   the last parameter of Surf, if After equals true, or
+-- -   the first parameter of Surf, if After equals false.
+-- The extension is performed according to a degree of
+-- continuity equal to Cont, which in its turn must be equal to 1, 2 or 3.
+-- This function converts the bounded surface Surf into a BSpline surface.
+-- Warning
+-- -   Nothing is done, and Surf is not modified if Cont is
+--   not equal to 1, 2 or 3.
+-- -   It is recommended that Length, the size of the
+--   extension should not be too large with respect to the
+ --  size of the bounded surface Surf.
+-- -   Surf must not be a periodic BSpline surface in the
+--   parametric direction corresponding to the direction of extension.
+ 
+			   
+     	 
+     AxeOfInertia(Points      :  Array1OfPnt  from  TColgp;  
+     	          Axe         :  out  Ax2  from  gp; 
+		  IsSingular  :  out  Boolean; 
+                  Tol         :  Real  =  1.0e-7); 
+     ---Purpose: Compute   axes of inertia,  of some  points --  -- --
+     --          <Axe>.Location() is the   BaryCentre -- -- --   -- --
+     --          <Axe>.XDirection is the axe of upper inertia -- -- --
+     --          -- <Axe>.Direction is the Normal to the average plane
+     --          -- -- -- IsSingular is True if  points are on line --
+     --          Tol is used to determine singular cases.
+  
+      Inertia(Points      :  Array1OfPnt  from  TColgp;  
+     	      Bary        :  out  Pnt  from  gp;  
+	      XDir,YDir   :  out  Dir from  gp; 
+	      Xgap,YGap,ZGap  :  out  Real); 
+	  ---Level: Advanced 
+          ---Purpose:  Compute principale axes  of  inertia, and dispertion
+     --            value  of some  points.
+
+	        
+     RemovePointsFromArray(NumPoints : Integer from Standard ;
+     	                   InParameters : Array1OfReal from TColStd ;
+			   OutParameters : in out HArray1OfReal from TColStd) ;
+     ---Purpose: Warning!  This assume that the InParameter is an increasing sequence
+     --          of real number and it will not check for that : Unpredictable
+     --          result can happen if this is not satisfied. It is the caller
+     --          responsability to check for that property. 
+     --
+     --  This  method makes uniform NumPoints segments S1,...SNumPoints out
+     --          of the segment defined by the first parameter and the
+     --          last  parameter ofthe  InParameter ; keeps   only one
+     --          point of the InParameters set of parameter in each of
+     --          the uniform segments taking care of the first and the
+     --          last   parameters. For the ith segment the element of
+     --          the InParameter is the one that is the first to exceed
+     --          the midpoint of the segment and to fall before the 
+     --          midpoint of the next segment
+     --            There  will be  at  the  end at   most NumPoints + 1  if
+     --          NumPoints > 2 in the OutParameters Array 
+    
+  
+     DensifyArray1OfReal(MinNumPoints  : Integer from Standard ;
+     	                 InParameters  : Array1OfReal from TColStd ;
+			 OutParameters : in out HArray1OfReal from TColStd) ;
+     ---Purpose: this  makes sure that there  is at least MinNumPoints
+     --          in OutParameters taking into account the parameters in
+     --          the InParameters array provided those are in order,
+     --          that is the sequence of real in the InParameter is strictly
+     --          non decreasing
+     --          
+
+     FuseIntervals(Interval1, Interval2 :  Array1OfReal from TColStd; 
+     	           Fusion               :  out  SequenceOfReal	from TColStd; 
+		   Confusion            :  Real  =  1.0e-9);	     
+
+     EvalMaxParametricDistance(Curve : Curve from Adaptor3d ;
+     	                       AReferenceCurve : Curve from Adaptor3d ;
+			       Tolerance       : Real from Standard ;
+			       Parameters      : Array1OfReal from TColStd ;
+			       MaxDistance     : out Real from Standard) ;
+			       
+     ---Purpose:  this  will compute   the   maximum distance  at  the
+     --          parameters  given    in   the Parameters  array    by
+     --          evaluating each parameter  the two curves  and taking
+     --          the maximum of the evaluated distance
+     
+     EvalMaxDistanceAlongParameter(Curve       : Curve from Adaptor3d ;
+     	                       AReferenceCurve : Curve from Adaptor3d ;
+			       Tolerance       : Real from Standard ;
+			       Parameters      : Array1OfReal from TColStd ;
+			       MaxDistance     : out Real from Standard) ;
+     ---Purpose: this will compute the maximum distancef at the parameters
+     --          given in the Parameters array by projecting from the Curve
+     --          to the reference curve and taking the minimum distance
+     --          Than the maximum will be taken on those minimas. 	
+              
+     CancelDenominatorDerivative(BSurf      :  in out  BSplineSurface from Geom ;
+    	    	    	    	 UDirection : in Boolean        from Standard ;
+    	    	    	    	 VDirection : in Boolean        from Standard) ;
+     ---Purpose: Cancel,on the boudaries,the denominator  first derivative
+     --          in  the directions wished by the user and set its value to 1.
+
+ 
+--     TensorialProduct(S      : in out BSplineSurface from Geom; 
+--     	              Poles  :  Array1OfMat  from  GeomLib; 
+--		      TPoles :  Array1OfPnt  from  TColgp;	       
+--                      Knots  :  Array1OfReal  from  TColStd; 
+--		      Mults  :  Array1OfInteger  from  TColStd);
+     --  Purpose:      Compute  the   Tensorial    product  beetween an
+     --          BSplineSurface <S>(U,V) and  an Transformation Law M(v)
+     --          given by NUBS form (<Poles>, <Knots>, <Mults>).  The result
+     --          Surface is  R(U,V) = M(V)*S(U,V)+T(V). 
+      
+     NormEstim(S   :  Surface  from  Geom; 
+     	       UV  :  Pnt2d  from  gp; 
+	       Tol :  Real  from  Standard; 
+	       N   :  in  out  Dir  from  gp) 
+	        
+	       returns  Integer  from  Standard;
+     --  Purpose:  Computes  normal  of  surface  S  in  UV  point  UV
+     --          for  regular  point  N  = DU^DV
+     --          if |DU|  <  Tol  or  |DV|  <  Tol  special  treatment  is  used:
+     --          N  is  computed on  base of  normal  of  corresponding  isoline 
+     --          of  S 
+     --          returns 0 for  regular  point,   
+     --                  1 for  quasysingular (ex.: sphere  pole) 
+     --                  2 for conical singular  point      
+     --                  3 if computation impossible  (for ex. DU||DV - tangent isolines)
+
+
+end GeomLib;
+
+

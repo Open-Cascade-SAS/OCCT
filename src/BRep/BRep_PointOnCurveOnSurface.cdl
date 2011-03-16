@@ -1,0 +1,46 @@
+-- File:	BRep_PointOnCurveOnSurface.cdl
+-- Created:	Tue Aug 10 14:18:49 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class PointOnCurveOnSurface from BRep inherits  PointsOnSurface from  BRep
+
+uses
+
+    Curve    from Geom2d,
+    Surface  from Geom,
+    Location from TopLoc
+
+is
+
+    Create(P : Real;
+    	   C : Curve from Geom2d;
+	   S : Surface from Geom;
+	   L : Location from TopLoc)
+    returns mutable PointOnCurveOnSurface from BRep;
+    
+    IsPointOnCurveOnSurface(me) returns Boolean
+	---Purpose: Returns True
+    is redefined;
+
+    IsPointOnCurveOnSurface(me; PC : Curve     from Geom2d;
+    	    	    	    	S  : Surface  from Geom;
+    	    	                L  : Location from TopLoc)
+    returns Boolean
+    is redefined;
+    
+
+    PCurve(me) returns any Curve from Geom2d
+	---C++: return const &
+    is redefined;
+    
+    PCurve(me : mutable; C : Curve from Geom2d)
+    is redefined;
+    
+fields
+
+    myPCurve : Curve from Geom2d;
+
+end PointOnCurveOnSurface;

@@ -1,0 +1,101 @@
+-- File:	EntityList.cdl
+-- Created:	Mon Nov  2 15:44:34 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class EntityList  from Interface  -- inherits Storable
+
+    ---Purpose : This class defines a list of Entities (Transient Objects),
+    --           it can be used as a field of other Transient classes, with
+    --           these features :
+    --           - oriented to define a little list, that is, slower than an
+    --             Array or a Map of Entities for a big count (about 100 and
+    --             over), but faster than a Sequence
+    --           - allows to work as a Sequence, limited to Clear, Append,
+    --             Remove, Access to an Item identified by its rank in the list
+    --           - space saving, compared to a Sequence, especially for little
+    --             amounts; better than an Array for a very little amount (less
+    --             than 10) but less good for a greater amount
+    --             
+    --           Works in conjunction with EntityCluster
+    --           An EntityList gives access to a list of Entity Clusters, which
+    --           are chained (in one sense : Single List)
+    --           Remark : a new Item may not be Null, because this is the
+    --           criterium used for "End of List"
+
+uses Type, Transient, EntityCluster, EntityIterator
+
+raises OutOfRange, InterfaceError, NullObject
+
+is
+
+    Create returns EntityList;
+    ---Purpose : Creates a List as beeing empty
+
+    Clear (me : in out)  is static;
+    ---Purpose : Clears the List
+
+    Append (me : in out; ent : any Transient)
+    ---Purpose : Appends an Entity, that is to the END of the list
+    --           (keeps order, but works slowerly than Add, see below)
+    	raises NullObject  is static;
+    --           Error if <ent> is Null
+
+    Add (me : in out; ent : any Transient)
+    ---Purpose : Adds an Entity to the list, that is, with NO REGARD about the
+    --           order (faster than Append if count becomes greater than 10)
+    	raises NullObject  is static;
+    --           Error if <ent> is Null
+
+    Remove (me : in out; ent : any Transient)
+    ---Purpose : Removes an Entity from the list, if it is there
+    	raises NullObject  is static;
+    --           Error if <ent> is Null
+
+    Remove (me : in out; num : Integer)
+    ---Purpose : Removes an Entity from the list, given its rank
+    	raises OutOfRange  is static;
+    --           Error if <num> is not in range [1 - NbEntities]
+
+    IsEmpty (me) returns Boolean  is static;
+    ---Purpose : Returns True if the list is empty
+
+    NbEntities (me) returns Integer  is static;
+    ---Purpose : Returns count of recorded Entities
+
+    Value (me; num : Integer)  returns any Transient
+    ---Purpose : Returns an Item given its number. Beware about the way the
+    --           list was filled (see above, Add and Append)
+    	raises OutOfRange  is static;
+    --           Error if <num> is not in range [1 - NbEntities]
+    ---C++ : return const &
+
+    SetValue (me : in out; num : Integer; ent : any Transient)
+    ---Purpose : Returns an Item given its number. Beware about the way the
+    --           list was filled (see above, Add and Append)
+    	raises OutOfRange, NullObject  is static;
+    --           Error if <num> is not in [1 - NbEntities], or if <ent> is Null
+
+
+    FillIterator (me; iter : in out EntityIterator)  is static;
+    ---Purpose : fills an Iterator with the content of the list
+    --           (normal way to consult a list which has been filled with Add)
+
+    NbTypedEntities (me; atype : any Type) returns Integer  is static;
+    ---Purpose : Returns count of Entities of a given Type (0 : none)
+
+    TypedEntity (me; atype : any Type; num : Integer = 0) returns any Transient
+    ---Purpose : Returns the Entity which is of a given type.
+    --           If num = 0 (D), there must be ONE AND ONLY ONE
+    --           If num > 0, returns the num-th entity of this type
+    	raises InterfaceError  is static;
+    --           Error if none or several found (num=0), or not enough (num>0)
+
+fields
+
+    theval : Transient;  -- Null(zero), a Transient(one), EntityCluster(more)
+    -- Mandatory only one field
+
+end EntityList;

@@ -1,0 +1,30 @@
+-- File:        DocumentRelationship.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDocumentRelationship from RWStepBasic
+
+	---Purpose : Read & Write Module for DocumentRelationship
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DocumentRelationship from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWDocumentRelationship;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DocumentRelationship from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : DocumentRelationship from StepBasic);
+
+	Share(me; ent : DocumentRelationship from StepBasic; iter : in out EntityIterator);
+
+end RWDocumentRelationship;

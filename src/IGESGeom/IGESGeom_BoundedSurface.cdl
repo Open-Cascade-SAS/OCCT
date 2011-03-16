@@ -1,0 +1,73 @@
+--
+-- File      : BoundedSurface.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Kiran)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class BoundedSurface from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines BoundedSurface, Type <143> Form <0>
+        --          in package IGESGeom
+        --          A bounded surface is used to communicate trimmed
+        --          surfaces. The surface and trimming curves are assumed
+        --          to be represented parametrically.
+
+uses
+
+        Boundary            from IGESGeom,
+        HArray1OfBoundary   from IGESGeom
+
+raises OutOfRange
+
+is
+
+        Create returns mutable BoundedSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aType     : Integer;
+              aSurface  : IGESEntity;
+              allBounds : HArray1OfBoundary);
+        ---Purpose : This method is used to set the fields of the class
+        --           BoundedSurface
+        --       - aType     : Type of bounded surface representation
+        --       - aSurface  : Surface entity to be bounded
+        --       - allBounds : Array of boundary entities
+
+        RepresentationType (me) returns Integer;
+        ---Purpose : returns the type of Bounded surface representation
+        -- 0 = The boundary entities may only reference model space curves
+        -- 1 = The boundary entities may reference both model space curves
+        --     and associated parameter space curve representations
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the bounded surface
+
+        NbBoundaries (me) returns Integer;
+        ---Purpose : returns the number of boundaries
+
+        Boundary (me; Index : Integer) returns Boundary
+        raises OutOfRange;
+        ---Purpose : returns boundary entity
+        -- raises exception if Index <= 0 or Index > NbBoundaries()
+
+fields
+
+--
+-- Class    : IGESGeom_BoundedSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class BoundedSurface.
+--
+-- Reminder : A BoundedSurface instance is defined by :
+--            The type of bounded surface representation, the surface
+--            entity bounded and a collection of boundary entities
+
+        theType       : Integer;
+        theSurface    : IGESEntity;
+        theBoundaries : HArray1OfBoundary;
+
+end BoundedSurface;

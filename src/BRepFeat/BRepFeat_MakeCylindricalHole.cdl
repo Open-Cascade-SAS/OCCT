@@ -1,0 +1,167 @@
+-- File:	BRepFeat_MakeCylindricalHole.cdl
+-- Created:	Tue Jun 13 15:02:53 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class MakeCylindricalHole from BRepFeat inherits Builder from BRepFeat
+
+	---Purpose: Provides a tool to make cylindrical holes on a shape.
+
+uses Shape                from TopoDS,
+     Face                 from TopoDS,
+     Ax1                  from gp,
+     Status               from BRepFeat
+
+
+raises NotDone from StdFail,
+       ConstructionError from Standard
+
+is
+
+    Create
+	---Purpose: Empty constructor.
+    	returns MakeCylindricalHole from BRepFeat;
+	---C++: inline
+
+
+    Create(S: Shape from TopoDS)
+	---Purpose: Creates the tool to perform hole(s) on the shape <S>. 
+	---C++: inline
+    	returns MakeCylindricalHole from BRepFeat;
+
+
+    Create(S: Shape from TopoDS; Axis: Ax1 from gp)
+	---Purpose: Creates the tool to perform hole(s) on the shape <S>,
+	--          with the axis <Axis>. 
+	---C++: inline
+    	returns MakeCylindricalHole from BRepFeat;
+
+
+--  Init(me: in out; S: Shape from TopoDS) is inherited from BRepFeat_Builder.
+
+
+    Init(me: in out; Axis: Ax1 from gp)
+	---Purpose: Sets the axis of the hole(s).
+	---C++: inline
+    	is static;
+
+
+    Init(me: in out; S: Shape from TopoDS; Axis: Ax1 from gp)
+	---Purpose: Sets the shape and  axis on which hole(s)  will be
+	--          performed.  
+        ---C++: inline
+    	is static;
+
+
+    Perform(me: in out; Radius: Real from Standard)
+	---Purpose: Performs every  holes of   radius  <Radius>.  This
+	--          command  has the  same effect as   a cut operation
+	--          with an  infinite cylinder   defined by the  given
+	--          axis and <Radius>.
+
+    	raises ConstructionError from Standard
+	-- The exception is raised when no shape or no axis is defined.
+    	is static;
+
+
+    Perform(me: in out; Radius: Real from Standard; 
+                        PFrom,PTo: Real from Standard;
+                        WithControl: Boolean from Standard = Standard_True)
+	---Purpose: Performs evry   hole  of  radius  <Radius> located
+	--          between PFrom  and  PTo  on the  given  axis.   If
+	--          <WithControl> is set  to Standard_False no control
+	--          are  done  on   the  resulting  shape   after  the
+	--          operation is performed.
+
+    	raises ConstructionError from Standard
+	-- The exception is raised when no shape or no axis is defined.
+    	is static;
+
+
+    PerformThruNext(me: in out; 
+                     Radius: Real from Standard;
+                     WithControl: Boolean from Standard = Standard_True)
+	---Purpose: Performs the first hole of radius <Radius>, in the
+	--          direction of  the defined axis. First hole signify
+	--          first encountered after the origin of the axis. If
+	--          <WithControl> is set  to Standard_False no control
+	--          are  done  on   the  resulting  shape   after  the
+	--          operation is performed. 
+
+    	raises ConstructionError from Standard
+	-- The exception is raised when no shape or no axis is defined.
+    	is static;
+
+
+    PerformUntilEnd(me: in out; 
+                     Radius: Real from Standard;
+                     WithControl: Boolean from  Standard = Standard_True)
+	---Purpose: Performs  evry  holes of  radius  <Radius> located
+	--          after  the   origin  of   the given    axis.    If
+	--          <WithControl> is  set to Standard_False no control
+	--          are done   on   the  resulting  shape   after  the
+	--          operation is performed.
+
+    	raises ConstructionError from Standard
+	-- The exception is raised when no shape or no axis is defined.
+    	is static;
+
+
+    PerformBlind(me: in out; 
+                  Radius: Real from Standard; 
+                  Length: Real from Standard;
+		  WithControl: Boolean from  Standard = Standard_True)
+	---Purpose: Performs a  blind   hole of radius    <Radius> and
+	--          length <Length>.  The length is  measured from the
+	--          origin of the given  axis. If <WithControl> is set
+	--          to  Standard_False no  control  are done after the
+	--          operation is performed.
+
+    	raises ConstructionError from Standard
+	-- The exception is raised when no shape or no axis is defined.
+    	is static;
+
+
+    Status(me)
+	---Purpose: Returns the status after a hole is performed.
+	---C++: inline
+    	returns Status from BRepFeat
+	is static;
+
+
+--- Redefinition of BRepBuilderAPI_MakeShape methods
+--  
+--  
+
+    Build(me: in out)
+	---Purpose: Builds the    resulting shape  (redefined     from
+	--          MakeShape). Invalidates the  given parts  of tools
+	--          if  any,   and performs the  result   of the local
+	--          operation.
+
+    	is redefined;
+
+
+--- Private implementation method
+
+
+    Validate(me: in out)
+    
+    	returns Status from BRepFeat
+	is static private;
+
+
+fields
+
+    myAxis    : Ax1                  from gp;
+    myAxDef   : Boolean              from Standard;
+    myStatus  : Status               from BRepFeat;
+    myIsBlind : Boolean              from Standard;
+    myValidate: Boolean              from Standard;
+    myTopFace : Face                 from TopoDS;
+    myBotFace : Face                 from TopoDS;
+
+
+end MakeCylindricalHole;

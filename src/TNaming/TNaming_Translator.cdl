@@ -1,0 +1,46 @@
+-- File:	TNaming_Translator.cdl
+-- Created:	Wed Jun 30 16:35:46 1999
+-- Author:	Sergey ZARITCHNY
+--		<szy@philipox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+private class Translator from TNaming
+
+	---Purpose: 
+
+uses
+    Shape  from  TopoDS, 
+    DataMapOfShapeShape from  TopTools, 
+    IndexedDataMapOfTransientTransient  from TColStd
+
+is
+ 
+    Create  returns  Translator  from  TNaming; 
+     
+    Add(me  : in  out;  aShape  :  Shape  from  TopoDS); 
+     
+    Perform (me  :  in  out); 
+     
+    IsDone(me) 
+    	returns  Boolean  from  Standard;
+     
+    Copied(me;  aShape  :  Shape  from  TopoDS)   
+    returns  Shape   from  TopoDS;  
+    ---Purpose: returns copied  shape
+    ---C++  :  return  const 
+     
+    Copied(me)   
+    returns  DataMapOfShapeShape   from  TopTools; 
+     ---C++  :  return  const&
+     ---Purpose: returns  DataMap  of  results;  (shape <-> copied  shape)
+    DumpMap(me;  isWrite  :  Boolean  from  Standard  =  Standard_False); 
+    
+fields  
+
+    myIsDone           : Boolean       from Standard;
+    myMap              : IndexedDataMapOfTransientTransient  from TColStd;  
+    myDataMapOfResults : DataMapOfShapeShape  from  TopTools;
+--    myListOfShape    : ListOfShape   from  TopTools;
+--    myListOfResult   : ListOfShape   from  TopTools;
+    
+end Translator;

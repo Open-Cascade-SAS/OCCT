@@ -1,0 +1,359 @@
+-- File:	IntPatch_GLine.cdl
+-- Created:	Mon Apr  6 11:17:45 1992
+-- Author:	Jacques GOUSSARD
+---Copyright:	OPEN CASCADE 1992
+
+
+class GLine from IntPatch
+
+
+inherits Line from IntPatch
+
+	---Purpose: Implementation of an intersection line represented
+	--          by a conic.
+
+uses
+     Point             from IntPatch,
+     SequenceOfPoint   from IntPatch,
+     Lin               from gp,
+     Circ              from gp,
+     Elips             from gp,
+     Parab             from gp,
+     Hypr              from gp,
+     Ax2               from gp,
+     TypeTrans         from IntSurf,
+     Situation         from IntSurf
+
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+    Create(L: Lin from gp; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates a Line as intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(L: Lin from gp; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates a Line as intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(L: Lin from gp; Tang: Boolean from Standard)
+    
+	---Purpose: Creates a Line as intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(C: Circ from gp; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates a circle as intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(C: Circ from gp; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates a circle as intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(C: Circ from gp; Tang: Boolean from Standard)
+    
+	---Purpose: Creates a circle as intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(E: Elips from gp; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates an ellipse as intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(E: Elips from gp; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates an ellispe as intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(E: Elips from gp; Tang: Boolean from Standard)
+    
+	---Purpose: Creates an ellipse as intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(P: Parab from gp; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates a parabola as intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(P: Parab from gp; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates a parabola as intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(P: Parab from gp; Tang: Boolean from Standard)
+    
+	---Purpose: Creates a parabola as intersection line 
+	--          when the transitions are Undecided.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(H: Hypr from gp; Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates an hyperbola as intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(H: Hypr from gp; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates an hyperbola as intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    Create(H: Hypr from gp; Tang: Boolean from Standard)
+    
+	---Purpose: Creates an hyperbola as  intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable GLine from IntPatch;
+
+
+    AddVertex(me: mutable; Pnt: Point from IntPatch)
+    
+	---Purpose: To add a vertex in the list.
+
+    	is static;
+
+    
+    Replace(me: mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+	---Purpose: To replace the element of range Index in the list
+	--          of points.
+
+    	raises OutOfRange from Standard
+	---         The exception OutOfRange is raised when Index <= 0
+	--          or Index > NbVertex.
+
+	is static;
+
+
+    SetFirstPoint(me: mutable; IndFirst: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    SetLastPoint(me: mutable; IndLast: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    Line(me)
+    
+	---Purpose: Returns the Lin from gp corresponding to the intersection
+	--          when ArcType returns IntPatch_Line.
+
+    
+    	returns Lin from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when ArcType does not return
+	--  IntPatch_Line.
+	
+    	is static;
+	
+	
+    Circle(me)
+    
+	---Purpose: Returns the Circ from gp corrsponding to the intersection
+	--          when ArcType returns IntPatch_Circle.
+    
+    	returns Circ from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when ArcType does not return
+	--  IntPatch_Circle.
+
+    	is static;
+
+
+    Ellipse(me)
+    
+	---Purpose: Returns the Elips from gp corrsponding to the intersection
+	--          when ArcType returns IntPatch_Ellipse.
+    
+    	returns Elips from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when ArcType does not return
+	--  IntPatch_Ellipse.
+
+	is static;
+	
+
+    Parabola(me)
+    
+	---Purpose: Returns the Parab from gp corrsponding to the intersection
+	--          when ArcType returns IntPatch_Parabola.
+    
+    	returns Parab from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when ArcType does not return
+	--  IntPatch_Parabola.
+	
+	is static;
+
+
+    Hyperbola(me)
+    
+	---Purpose: Returns the Hypr from gp corrsponding to the intersection
+	--          when ArcType returns IntPatch_Hyperbola.
+    
+    	returns Hypr from gp
+	---C++: inline
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when ArcType does not return
+	--  IntPatch_Hyperbola.
+
+	is static;
+
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if the line has a known First point.
+	--          This point is given by the method FirstPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if the line has a known Last point.
+	--          This point is given by the method LastPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    FirstPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the FirstPoint.
+	--          An exception is raised when HasFirstPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    LastPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the LastPoint.
+	--          An exception is raised when HasLastPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    NbVertex(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the vertex of range Index on the line.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange from Standard
+	--- The exception OutOfRange is raised if Index <= 0 or
+	--  Index > NbVertex.
+	
+	is static;
+
+    ComputeVertexParameters(me: mutable; Tol: Real from Standard)
+    
+    	---Purpose: Set the parameters of all the vertex on the line.
+    	--          if a vertex is already in the line, 
+    	--             its parameter is modified
+    	--          else a new point in the line is inserted.
+        is static; 
+
+fields
+
+    pos  : Ax2             from gp;
+    par1 : Real            from Standard;
+    par2 : Real            from Standard;
+    fipt : Boolean         from Standard;
+    lapt : Boolean         from Standard;
+    indf : Integer         from Standard;
+    indl : Integer         from Standard;
+    svtx : SequenceOfPoint from IntPatch;
+
+end GLine;

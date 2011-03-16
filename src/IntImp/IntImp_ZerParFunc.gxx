@@ -1,0 +1,394 @@
+//-- File IntImp_ZerParFunc.gxx
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+#include <IntImp_ComputeTangence.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Precision.hxx>
+
+#define SURF1 (*((ThePSurface *)(surf1)))
+#define SURF2 (*((ThePSurface *)(surf2)))
+
+
+IntImp_ZerParFunc::IntImp_ZerParFunc() { 
+  Standard_ConstructionError::Raise(" Empty Constructor : IntImp_ZerParFunc");
+}
+
+IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1 ,
+				     const ThePSurface& S2) {
+    surf1 = (Standard_Address)(&S1);
+    surf2 = (Standard_Address)(&S2);
+
+    ua0 = ThePSurfaceTool::FirstUParameter(SURF1); //-- ThePSurfaceTool::UIntervalFirst(surf1);
+    va0 = ThePSurfaceTool::FirstVParameter(SURF1); //-- ThePSurfaceTool::VIntervalFirst(surf1);
+    ua1 = ThePSurfaceTool::LastUParameter(SURF1);  //-- ThePSurfaceTool::UIntervalLast(surf1);
+    va1 = ThePSurfaceTool::LastVParameter(SURF1);  //-- ThePSurfaceTool::VIntervalLast(surf1);
+
+    ub0 = ThePSurfaceTool::FirstUParameter(SURF2); //-- ThePSurfaceTool::UIntervalFirst(SURF2);
+    vb0 = ThePSurfaceTool::FirstVParameter(SURF2); //-- ThePSurfaceTool::VIntervalFirst(surf2);
+    ub1 = ThePSurfaceTool::LastUParameter(SURF2);  //-- ThePSurfaceTool::UIntervalLast(surf2);
+    vb1 = ThePSurfaceTool::LastVParameter(SURF2);  //-- ThePSurfaceTool::VIntervalLast(surf2);
+
+    ures1 = ThePSurfaceTool::UResolution(SURF1,Precision::Confusion());
+    vres1 = ThePSurfaceTool::VResolution(SURF1,Precision::Confusion());
+
+    ures2 = ThePSurfaceTool::UResolution(SURF2,Precision::Confusion());
+    vres2 = ThePSurfaceTool::VResolution(SURF2,Precision::Confusion());
+
+    compute = Standard_False;  
+    tangent = Standard_False;
+}
+
+Standard_Integer IntImp_ZerParFunc::NbVariables() const { return 3;}
+
+Standard_Integer IntImp_ZerParFunc::NbEquations() const { return 3;}
+
+Standard_Boolean IntImp_ZerParFunc::Value(const math_Vector& X,
+					  math_Vector& F) {
+
+  switch (chxIso) {
+  case IntImp_UIsoparametricOnCaro1:
+    {
+      pntsol1= ThePSurfaceTool::Value(SURF1,paramConst,X(1));
+      pntsol2= ThePSurfaceTool::Value(SURF2,X(2),X(3));
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro1:
+    {
+      pntsol1= ThePSurfaceTool::Value(SURF1,X(1),paramConst);
+      pntsol2= ThePSurfaceTool::Value(SURF2,X(2),X(3));
+    }
+    break;
+  case IntImp_UIsoparametricOnCaro2:
+    {
+      pntsol1= ThePSurfaceTool::Value(SURF1,X(1),X(2));
+      pntsol2= ThePSurfaceTool::Value(SURF2,paramConst,X(3));
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro2:
+    {
+      pntsol1= ThePSurfaceTool::Value(SURF1,X(1),X(2));
+      pntsol2= ThePSurfaceTool::Value(SURF2,X(3),paramConst);
+    }
+    break;
+  }
+
+  f[0] = F(1) = pntsol1.X() - pntsol2.X();
+  f[1] = F(2) = pntsol1.Y() - pntsol2.Y();
+  f[2] = F(3) = pntsol1.Z() - pntsol2.Z();
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerParFunc::Derivatives (const math_Vector& X,
+						 math_Matrix& D) {
+  
+  switch (chxIso) {
+  case IntImp_UIsoparametricOnCaro1:
+    {
+      ThePSurfaceTool::D1(SURF1,paramConst,X(1),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(2),X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[1].X();
+      D(1,2) =-dpuv[2].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[1].Y();
+      D(2,2) =-dpuv[2].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[1].Z();
+      D(3,2) =-dpuv[2].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro1:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),paramConst,pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(2),X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) =-dpuv[2].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) =-dpuv[2].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) =-dpuv[2].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_UIsoparametricOnCaro2:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),X(2),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,paramConst,X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) = dpuv[1].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) = dpuv[1].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) = dpuv[1].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro2:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),X(2),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(3),paramConst,pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) = dpuv[1].X();
+      D(1,3) =-dpuv[2].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) = dpuv[1].Y();
+      D(2,3) =-dpuv[2].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) = dpuv[1].Z();
+      D(3,3) =-dpuv[2].Z();
+    }
+    break;
+  }
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerParFunc::Values( const math_Vector& X,
+					   math_Vector& F,
+					   math_Matrix& D) {
+
+  switch (chxIso) {
+  case IntImp_UIsoparametricOnCaro1:
+    {
+      ThePSurfaceTool::D1(SURF1,paramConst,X(1),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(2),X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[1].X();
+      D(1,2) =-dpuv[2].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[1].Y();
+      D(2,2) =-dpuv[2].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[1].Z();
+      D(3,2) =-dpuv[2].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro1:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),paramConst,pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(2),X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) =-dpuv[2].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) =-dpuv[2].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) =-dpuv[2].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_UIsoparametricOnCaro2:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),X(2),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,paramConst,X(3),pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) = dpuv[1].X();
+      D(1,3) =-dpuv[3].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) = dpuv[1].Y();
+      D(2,3) =-dpuv[3].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) = dpuv[1].Z();
+      D(3,3) =-dpuv[3].Z();
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro2:
+    {
+      ThePSurfaceTool::D1(SURF1,X(1),X(2),pntsol1,dpuv[0],dpuv[1]);
+      ThePSurfaceTool::D1(SURF2,X(3),paramConst,pntsol2,dpuv[2],dpuv[3]);
+      D(1,1) = dpuv[0].X();
+      D(1,2) = dpuv[1].X();
+      D(1,3) =-dpuv[2].X();
+      D(2,1) = dpuv[0].Y();
+      D(2,2) = dpuv[1].Y();
+      D(2,3) =-dpuv[2].Y();
+      D(3,1) = dpuv[0].Z();
+      D(3,2) = dpuv[1].Z();
+      D(3,3) =-dpuv[2].Z();
+    }
+    break;
+  }
+  f[0] = F(1) = pntsol1.X() - pntsol2.X();
+  f[1] = F(2) = pntsol1.Y() - pntsol2.Y();
+  f[2] = F(3) = pntsol1.Z() - pntsol2.Z();
+  return Standard_True;
+}
+
+void IntImp_ZerParFunc::ComputeParameters(
+		      const IntImp_ConstIsoparametric  ChoixIso,
+                      const TColStd_Array1OfReal& Param,  
+                      math_Vector&  UVap,
+		      math_Vector&  BornInf,
+		      math_Vector&  BornSup,
+		      math_Vector&  Tolerance ) {
+
+  chxIso = ChoixIso;
+  switch (chxIso) {
+  case IntImp_UIsoparametricOnCaro1:
+    {
+      paramConst = Param(1);
+      UVap(1) = Param(2);
+      UVap(2) = Param(3);
+      UVap(3) = Param(4);
+      
+      BornInf(1) = va0;
+      BornSup(1) = va1;
+      
+      BornInf(2) = ub0;
+      BornInf(3) = vb0;
+      BornSup(2) = ub1;
+      BornSup(3) = vb1;
+      
+      Tolerance(1)= vres1;
+      Tolerance(2)= ures2;
+      Tolerance(3)= vres2;
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro1:
+    {
+      paramConst = Param(2);
+      UVap(1) = Param(1);
+      UVap(2) = Param(3);
+      UVap(3) = Param(4);
+      BornInf(1) = ua0;
+      BornSup(1) = ua1;
+      
+      BornInf(2) = ub0;
+      BornSup(2) = ub1;
+      BornInf(3) = vb0;
+      BornSup(3) = vb1;
+
+      Tolerance(1)= ures1;
+      Tolerance(2)= ures2;
+      Tolerance(3)= vres2;
+    }
+    break;
+  case IntImp_UIsoparametricOnCaro2:
+    {
+      paramConst = Param(3); 
+      UVap(1) = Param(1);
+      UVap(2) = Param(2);
+      UVap(3) = Param(4);
+      
+      BornInf(1) = ua0;
+      BornSup(1) = ua1;
+      BornInf(2) = va0;
+      BornSup(2) = va1;
+      
+      BornInf(3) = vb0;
+      BornSup(3) = vb1;
+
+      Tolerance(1)= ures1;
+      Tolerance(2)= vres1;
+      Tolerance(3)= vres2;
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro2:
+    {
+      paramConst = Param(4); 
+      UVap(1) = Param(1);
+      UVap(2) = Param(2);
+      UVap(3) = Param(3);
+      
+      BornInf(1) = ua0;
+      BornSup(1) = ua1;
+      BornInf(2) = va0;
+      BornSup(2) = va1;
+
+      BornInf(3) = ub0;
+      BornSup(3) = ub1;
+
+      Tolerance(1)= ures1;
+      Tolerance(2)= vres1;
+      Tolerance(3)= ures2;
+    }
+    break;
+  }
+
+  Standard_Real Incr1 = (BornSup(1)-BornInf(1))*0.01;
+  Standard_Real Incr2 = (BornSup(2)-BornInf(2))*0.01;
+  Standard_Real Incr3 = (BornSup(3)-BornInf(3))*0.01;
+  BornInf(1) -= Incr1;
+  BornSup(1) += Incr1;
+  BornInf(2) -= Incr2;
+  BornSup(2) += Incr2;
+  BornInf(3) -= Incr3;
+  BornSup(3) += Incr3;
+} 
+
+
+Standard_Boolean IntImp_ZerParFunc::IsTangent(
+              const math_Vector& UVap,
+              TColStd_Array1OfReal& Param,
+              IntImp_ConstIsoparametric& BestChoix) 
+{
+  switch (chxIso) {
+  case IntImp_UIsoparametricOnCaro1:
+    {
+      Param(1) = paramConst;
+      Param(2) = UVap(1) ;
+      Param(3) = UVap(2) ;
+      Param(4) = UVap(3) ;
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro1:
+    {
+      Param(2) = paramConst;
+      Param(1) = UVap(1) ;
+      Param(3) = UVap(2) ;
+      Param(4) = UVap(3) ;
+    }
+    break;
+  case IntImp_UIsoparametricOnCaro2:
+    {
+      Param(3) = paramConst;
+      Param(1) = UVap(1) ;
+      Param(2) = UVap(2) ;
+      Param(4) = UVap(3) ;
+    }
+    break;
+  case IntImp_VIsoparametricOnCaro2:
+    {
+      Param(4) = paramConst;
+      Param(1) = UVap(1) ;
+      Param(2) = UVap(2) ;
+      Param(3) = UVap(3) ;
+    }
+    break;
+  }
+
+  IntImp_ConstIsoparametric TabIso[4];
+  Standard_Real EpsUV[4];
+  EpsUV[0] = ures1;
+  EpsUV[1] = vres1;
+  
+  EpsUV[2] = ures2;
+  EpsUV[3] = vres2;
+
+
+  tangent = IntImp_ComputeTangence(dpuv,EpsUV,tgduv,TabIso);
+  if (!tangent) 
+    chxIso = TabIso[0];
+  BestChoix = chxIso;
+  return tangent;
+}
+     
+
+#undef SURF1
+#undef SURF2
+
+
+
+
+
+
+

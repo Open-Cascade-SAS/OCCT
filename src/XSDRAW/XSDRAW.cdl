@@ -1,0 +1,214 @@
+-- File:	XSDRAW.cdl
+-- Created:	Tue Mar 14 17:48:24 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+package XSDRAW
+
+    ---Purpose : Basic package to work functions of X-STEP (IFSelect & Co)
+    --           under control of DRAW
+    --           
+    --           Works with some "static" data : a SessionPilot (used to run)
+    --           with its WorkSession and Model and TransferReader, a
+    --           FinderProcess
+
+uses  TCollection, TColStd, TopTools,
+      gp, Geom, Geom2d, TopoDS, MoniTool,
+      Interface, Transfer, IFSelect, XSControl, Draw, SWDRAW
+
+is
+
+    class Functions;
+    ---Purpose : Gathers general commands for XSDRAW : initialisation control,
+    --           also commands to analyse the result of a transfer
+    --           (it is an appendix made of user callable functions)
+    --           
+    --           Loaded by LoadDraw
+
+    class Shape;
+    ---Purpose : Gathers commands which only apply to shapes/geometry, and are
+    --           not concerned by XSTEP features for files
+    --           This set of functions just enriches the standard DRAW set,
+    --           with either useful but lacking basic functions, or complements
+    --           used in transfer operations, or specific control functions
+    --           Loaded by LoadDraw
+
+    class Vars;
+    ---Purpose : Takes variables to/from the DRAW session
+
+    --class ProgressIndicator;
+    ---Purpose : Implements ProgressIndicator for DRAW
+
+    	--  Linking with DRAW function set
+
+    ChangeCommand (oldname,newname : CString);
+    ---Purpose : Changes the name under which a command of xstep is known by
+    --           Draw. This allows to avoid collisions
+    --           To be called before LoadDraw or any other xstep initialisation
+
+    RemoveCommand (oldname : CString);
+    ---Purpose : Removes a command from the interpretation list of Draw
+    --           To be called before LoadDraw or any other xstep initialisation
+
+    LoadSession returns Boolean;
+    ---Purpose : Defines the basic context to work with a X-STEP Session :
+    --           it performs the basic inits, also records the Controller
+    --           If the Controller is not yet set, it must be set after
+    --           (call to SetController)
+    --           LoadSession is called by LoadDraw
+    --           Returns True the first time, False if already called
+
+    LoadDraw (theCommands : in out Interpretor from Draw);
+    ---Purpose : Defines the context for using a X-STEP Session under DRAW
+    --           Once the various INITs have been done, a call to LoadDraw
+    --           records the defined commands for the X-STEP SessionPilot,
+    --           into the DRAW interpretation list.
+    --           "Set" commands are accessed under command xset
+    --             SDS>xset name command ...
+    --           Other commands can be accessed directly or under command xstep
+    --             SDS>command ...  and  SDS>xstep command ...  are equivalent
+    --           
+    --           Only the command xinit is accessed directly only :
+    --             SDS>xinit  (from the already defined Controller)
+    --             SDS>xinit iges  (first defines the Controller as for "iges")
+    --           
+    --           It also records the function to be called by DRAW (not
+    --           declared because specific).
+    --           And it defines the context variables, i.e. a WorkSession, then
+    --             it calls SetController with the currently defined Controller
+    --           Remark : at least, the standard commands are recorded
+    --           
+    --           See also Controller : it is part of the Context, but it must
+    --           be precised separately
+
+    Execute (command : CString; var : CString = "") returns Integer;
+    ---Purpose : Allows to execute a xstep-draw command from C++ program
+    --           Fixed form :  Execute("command args...");
+    --           Form with a variable text part : add %s for the variable :
+    --             Execute ("command args %s args..",var)  [var is a CString]
+    --           Returns the same value as returned by call from DRAW
+
+    Pilot   returns mutable SessionPilot from IFSelect;
+    ---Purpose : Returns the SessionPilot (can be used for direct call)
+
+    Session returns mutable WorkSession from XSControl;
+    ---Purpose : Returns the WorkSession defined in AddDraw (through Pilot)
+    --           It is from XSControl, it brings functionnalities for Transfers
+
+    SetController (control : Controller from XSControl);
+    ---Purpose : Defines a Controller for the command "xinit" and applies it
+    --           (i.e. calls its method Customise)
+
+    Controller  returns Controller from XSControl;
+    ---Purpose : Returns the Controller, a Null Handle if not yet defined
+
+    SetNorm  (normname : CString; profile : CString = "") returns Boolean;
+    ---Purpose : Sets a norm by its name (controller recorded as <normname> )
+    --           Returns True if done, False if this norm is unknown
+    --           If <profile> is given, also sets the norm to <profile>
+    --             (if <profile> is undefined for <normname>, it is ignored)
+
+    	--  Additionnal access to XSTEP data
+
+    Protocol  returns Protocol from Interface;
+    ---Purpose : Returns the actually defined Protocol
+
+    Model returns mutable InterfaceModel from Interface;
+    ---Purpose : Returns the Model of the Session (it is Session()->Model() )
+
+    SetModel (model : mutable InterfaceModel from Interface; file : CString = "");
+    ---Purpose : Sets a Model in session (it is Session()->SetModel(model) )
+    --           If <file> is defined, SetLoadedFile is also done
+
+    NewModel returns InterfaceModel from Interface;
+    ---Purpose : Produces a new model (from the Controller), can be Null
+    --           Does not set it in the session
+
+    Entity (num : Integer) returns Transient;
+    ---Purpose : Returns the entity n0 <num> of the Model of the Session
+    --           (it is StartingEntity)
+    --           Null Handle if <num> is not suitable
+
+    Number (ent : Transient) returns Integer;
+    ---Purpose : Returns the number of an entity in the Model (StartingNumber)
+    --           0 if <ent> unknown in the model, or null
+
+    SetTransferProcess (TP : mutable Transient);
+    ---Purpose : Sets a TransferProcess in order to analyse it (see Activator)
+    --           It can be either a FinderProcess or a TransientProcess, in
+    --           that case a new TransferReader is created on it
+
+    TransientProcess  returns TransientProcess from Transfer;
+    ---Purpose : Returns the TransferProcess : TransientProcess detained by
+    --           the TransferReader
+
+    FinderProcess  returns FinderProcess from Transfer;
+    ---Purpose : Returns the FinderProcess, detained by the TransferWriter
+
+
+    InitTransferReader (mode : Integer);
+    ---Purpose : Initialises a TransferReader, according to mode :
+    --           0 nullifies it,  1 clears it (not nullify)
+    --           2 sets it with TransientProcess & Model
+    --           3 idem plus roots of TransientProcess
+    --           Remark : called with 0 at least at each SetModel/NewModel
+
+    TransferReader returns TransferReader from XSControl;
+    ---Purpose : Returns the current TransferReader, can be null
+    --           It detains the TransientProcess
+
+    	--  Some useful functions
+
+
+    GetEntity  (name : CString = "") returns Transient;
+    ---Purpose : Takes the name of an entity, either as argument, or (if <name>
+    --           is empty) on keybord, and returns the entity
+    --           name can be a label or a number (in alphanumeric), it is
+    --           searched by NumberFromLabel from WorkSession.
+    --           If <name> doesn't match en entity, a Null Handle is returned
+
+    GetEntityNumber (name : CString = "") returns Integer;
+    ---Purpose : Same as GetEntity, but returns the number in the model of the
+    --           entity. Returns 0 for null handle
+
+    GetList (first : CString = ""; second : CString = "")
+    	returns HSequenceOfTransient from TColStd;
+    ---Purpose : Evaluates and returns a list of entity, from :
+    --           keyboard if <first> and <second> are empty, see below
+    --           first if second is empty : can be a number/label of an entity
+    --             or the name of a selection to be evaluated (standard)
+    --           first : name of a selection, evaluated from a list defined by
+    --           second
+    --           In case of failure, returns a Null Handle
+
+    FileAndVar (file, var, def : CString;
+    	    	 resfile, resvar : out AsciiString from TCollection)
+    	returns Boolean;
+    ---Purpose : Analyses given file name and variable name, with a default
+    --           name for variables. Returns resulting file name and variable
+    --           name plus status "file to read"(True) or "already read"(False)
+    --           In the latter case, empty resfile means no file available
+    --           
+    --           If <file> is null or empty or equates ".", considers Session
+    --             and returned status is False
+    --           Else, returns resfile = file and status is True
+    --           If <var> is neither null nor empty, resvar = var
+    --           Else, the root part of <resfile> is considered, if defined
+    --           Else, <def> is taken
+
+    MoreShapes (list : in out mutable HSequenceOfShape from TopTools;
+    	    	name : CString) returns Integer;
+    ---Purpose : Analyses a name as designating Shapes from DRAW variables or
+    --           XSTEP transfer (last Transfer on Reading). <name> can be :
+    --           "*" : all the root shapes produced by last Transfer (Read)
+    --                 i.e. considers roots of the TransientProcess
+    --           a name : a name of a variable DRAW
+    --           
+    --           Returns the count of designated Shapes. Their list is put in
+    --           <list>. If <list> is null, it is firstly created. Then it is
+    --           completed (Append without Clear) by the Shapes found
+    --           Returns 0 if no Shape could be found
+
+end XSDRAW;

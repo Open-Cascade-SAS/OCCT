@@ -1,0 +1,90 @@
+-- File:	TopolTool.cdl
+-- Created:	Tue Nov  3 10:59:04 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+deferred generic class TopolTool from IntStart
+           ( TheVertex as any;
+             TheArc    as any
+           )
+
+
+    ---Purpose: Template class for an iterator the restriction of
+    --          a surface.
+
+
+inherits TShared from MMgt
+
+raises DomainError from Standard
+
+is
+
+-- Arc iterator
+
+    Init(me: mutable)
+
+    	;
+
+
+    More(me: mutable)
+
+    	returns Boolean from Standard
+    	;
+
+
+    Value(me: mutable)
+
+    	returns any TheArc
+    	;
+
+
+    Next(me: mutable)
+
+    	;
+
+
+-- Iterator on the vertex of an arc of restriction
+
+
+    Initialize(me: mutable; A:TheArc)
+
+    	;
+
+
+    InitVertexIterator(me: mutable)
+
+    	;
+
+
+    MoreVertex(me: mutable)
+
+    	returns Boolean from Standard
+    	;
+
+
+
+    Vertex(me: mutable)
+    	returns any TheVertex
+    	;
+
+
+    NextVertex(me: mutable)
+
+    	;
+
+
+
+    Identical(me: mutable; V1,V2: TheVertex)
+    
+	---Purpose: Returns True if the vertices V1 and V2 are identical.
+	--          This method does not take the orientation of the
+	--          vertices in account.
+
+    	returns Boolean;
+
+
+
+end TopolTool;

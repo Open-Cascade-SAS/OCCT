@@ -1,0 +1,300 @@
+--
+-- File:	Xw_ColorMap.cdl
+-- Created:	24/08/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class ColorMap from Xw inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a GenericColorMap object.
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+
+	ColorMap		from Aspect,
+	ColorMapEntry		from Aspect,
+	Parameter		from Quantity,
+	Color 			from Quantity,
+	NameOfColor 		from Quantity,
+	TypeOfVisual		from Xw,
+	TypeOfMapping		from Xw,
+	Handle			from Aspect
+
+raises
+
+	ColorMapDefinitionError	from Aspect,
+	BadAccess from Aspect
+
+is
+
+	Create
+	returns mutable ColorMap from Xw
+	is protected;
+	---Level: Internal
+
+	Create (Connexion : CString from Standard ;
+		Visual	  : TypeOfVisual from Xw = Xw_TOV_PREFERRED_PSEUDOCOLOR;
+		Mapping	  : TypeOfMapping from Xw = Xw_TOM_COLORCUBE;
+		Ncolors	  : Integer from Standard = 0;
+		UseDefault: Boolean from Standard = Standard_True )
+	returns mutable ColorMap from Xw
+	---Level: Public
+	---Purpose: Creates a generic ColorMap with a maximum of
+	--	    unallocated ColorMapEntry.
+	--	    Sets this colormap with the best colorcube in
+	--	    the Default HardWare Colormap.
+	raises ColorMapDefinitionError from Aspect;
+        ---Error if ColorMap creation failed according
+        --       to the supported hardware
+
+	SetEntry ( me : mutable ;
+		   Index: Integer from Standard;
+		   Red,Green,Blue: Real from Standard)
+	---Level: Public
+	---Purpose: Modifies an entry in the color map <me>.
+	raises BadAccess from Aspect is virtual;
+	---Purpose:  Warning if Index is < 0 or >= MaxColors() 
+	--	   or ColorMap is not defined properly
+
+	SetEntry ( me : mutable ;
+		  Entry : ColorMapEntry from Aspect)
+	---Level: Public
+	---Purpose: Modifies an entry in the color map <me>.
+	raises BadAccess from Aspect is virtual;
+	---Purpose:  Warning if ColorMap size is exceeded.
+	--	   or ColorMap is not defined properly
+        --         or ColorMapEntry Index is out of range according
+        --         to the supported hardware,
+	--	   or the Mapping type of this colormap is READ_ONLY.
+
+	SetEntries ( me : mutable ;
+		  Colormap : ColorMap from Aspect )
+	---Level: Public
+	---Purpose: Modifies all Entries from the new colormap
+	raises BadAccess from Aspect is virtual;
+	---Purpose:  Warning if ColorMap size is exceeded.
+	--	   or ColorMap is not defined properly
+        --         or One of the new ColorMapEntry Index is out of range
+	--	   according to the supported hardware
+
+	SetHighlightColor( me : mutable ; aColor : Color from Quantity )
+	---Level: Public
+	---Purpose: Sets the Highlight Color for all Windows
+	--	    which use it .
+	--  Error if Colormap is not defined properly
+	raises BadAccess from Aspect is virtual;
+
+	Destroy( me : mutable )  is virtual;
+	---Level: Public
+	---Purpose: Destroies the Colormap
+	---C++: alias ~
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+	HighlightColor( me )
+	returns Color from Quantity  is virtual;
+	---Level: Public
+	---Purpose: Returns the highlight color .
+
+	PixelOfColor ( me ; aColor : Color from Quantity )
+	returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns a pixel value of an RGB color given as
+	--	    Quantity_Color, depending of the HardWare and
+	--	    Visual class.
+	raises BadAccess from Aspect is virtual;
+	---Error If ColorMap is not defined properly
+
+	AllocatesPixelOfColor ( me )
+	returns Integer from Standard
+	---Level: Advanced
+	---Purpose: Returns an allocated pixel of color
+	--	    writable by using the method SetColorOfPixel(..) 
+	--	    or -1 if no more pixel must be allocated.
+	--  Warning: this call take has an effect in PseudoColor model only.
+	raises BadAccess from Aspect is virtual;
+	---Error If ColorMap is not defined properly
+
+	FreePixelOfColor ( me ; aPixel: Integer from Standard );
+	---Level: Advanced
+	---Purpose: Free an allocated pixel of color
+	--  Warning: this call take has an effect in PseudoColor model only.
+
+	SetColorOfPixel ( me ; aPixel: Integer from Standard;
+			       aColor : Color from Quantity )
+	returns Boolean from Standard
+	---Level: Advanced
+	---Purpose: Returns TRUE if the allocated pixel <aPixel>
+	--	    has been updated correctly with the color <aColor>
+	raises BadAccess from Aspect is virtual;
+	---Error If ColorMap is not defined properly
+
+	Entry ( me ; Index : Integer from Standard;
+			  Red,Green,Blue: out Real from Standard )
+	returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns a pixel value and the components of the 
+	--	    corresponding  color index. 
+	raises BadAccess from Aspect is virtual;
+	---Error If ColorMap is not defined properly
+	--       or Index is < 0 or >= MaxColors().
+
+	HighlightPixel (me)
+	returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the current HighLight pixel value ,
+	--	    depending of the HardWare and Visual class
+	raises BadAccess from Aspect is virtual;
+	---Error If ColorMap is not defined properly
+
+	MaxColors ( me )
+	returns Integer from Standard is static;
+	---Level: Public
+	---Purpose: Returns the number of available colors in the colormap.
+	-- 	   or 0 if the colormap is not enabled.
+
+	MaxOverlayColors ( me )
+	returns Integer from Standard is static;
+	---Level: Public
+	---Purpose: Returns the number of available colors in the associated
+	--	   overlay colormap if any.
+	-- 	   or 0 if the overlay colormap is not enabled.
+
+	XColorMap ( me )
+	returns Handle from Aspect
+	---Level: Public
+	---Purpose: Returns the Colormap XId of the Colormap
+	--	    depending of the HardWare and Visual class
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	XColorCube ( me ; ColormapID: out Handle from Aspect;
+			 VisualID: out Integer from Standard;
+			 BasePixel: out Integer from Standard;
+			 RedMax: out Integer from Standard;
+			 RedMult: out Integer from Standard;
+			 GreenMax: out Integer from Standard;
+			 GreenMult: out Integer from Standard;
+			 BlueMax: out Integer from Standard;
+			 BlueMult: out Integer from Standard )
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Returns TRUE and the color-cube definition of the colormap 
+	--	    depending of the HardWare and Visual class
+	-- or returns FALSE if the colormap dont't have a color-cube defined.
+	-- Color computation from the colorcube :
+	-- colorindex = BasePixel + 
+	--	r*RedMax*RedMult + g*GreenMax*GreenMult + b*BlueMax*BlueMult
+	--  where r,g,b are the red,green,blue components of the color in the
+	--  range [0.,1.]
+
+	XGrayRamp ( me ; ColormapID: out Handle from Aspect;
+			 VisualID: out Integer from Standard;
+			 BasePixel: out Integer from Standard;
+			 GrayMax: out Integer from Standard;
+			 GrayMult: out Integer from Standard)
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Returns TRUE and the gray-ramp definition of the colormap 
+	--	    depending of the HardWare and Visual class
+	-- or returns FALSE if the colormap dont't have a gray-ramp defined.
+	-- Color computation from the grayramp :
+	-- colorindex = BasePixel + g*GrayMax*GrayMult
+	--  where g is the gray intensity of the color in the
+	--  range [0.,1.]
+
+	XOverlayColorMap ( me )
+	returns Handle from Aspect
+	---Level: Public
+	---Purpose: Returns the Colormap XId of the associated Overlay Colormap
+	--	    depending of the HardWare and Visual class
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	XVisual ( me )
+	returns Address from Standard
+	---Level: Public
+	---Purpose: Returns the Visual address of the Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	XOverlayVisual ( me )
+	returns Address from Standard
+	---Level: Public
+	---Purpose: Returns the Visual address of the associated Overlay Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	VisualClass ( me )
+	returns TypeOfVisual from Xw
+	---Level: Public
+	---Purpose: Returns the Visual Class of the Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	OverlayVisualClass ( me )
+	returns TypeOfVisual from Xw
+	---Level: Public
+	---Purpose: Returns the Visual Class of the associated Overlay Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	VisualID ( me )
+	returns Integer from Standard 
+	---Level: Public
+	---Purpose: Returns the Visual ID of the Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+	OverlayVisualID ( me )
+	returns Integer from Standard
+	---Level: Public
+	---Purpose: Returns the Visual ID of the associated Overlay Colormap
+	--	    depending of the HardWare
+	raises BadAccess from Aspect is static;
+	---Error If ColorMap is not defined properly
+
+        ExtendedColorMap ( me )
+	returns Address from Standard
+	is static protected ;
+	---Level: Public
+        ---Purpose: Returns extended data colormap structure pointer.
+        ---Category: Inquire methods
+
+        ExtendedOverlayColorMap ( me )
+	returns Address from Standard
+	is static protected ;
+	---Level: Public
+        ---Purpose: Returns extended data overlay colormap structure pointer.
+        ---Category: Inquire methods
+
+        PrintError(myclass) is protected;
+        ---Purpose: Print last error or raise depending of the error gravity.
+
+fields
+
+	MyExtendedDisplay	:	Address from Standard ;
+	MyExtendedColorMap 	:	Address from Standard ;
+	MyExtendedOverlayColorMap 	:	Address from Standard ;
+	MyMapping		:	TypeOfMapping from Xw ;
+
+friends
+
+	class GraphicDevice from Xw,
+	class Window from Xw
+
+end ColorMap;

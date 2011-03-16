@@ -1,0 +1,255 @@
+-- File:	BRepBlend_RstRstLineBuilder.cdl
+-- Created:	Thu Jan 23 16:25:47 1997
+-- Author:	Jacques GOUSSARD
+-- Author:	Laurent BOURESCHE
+--		<lbo@pomalox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class RstRstLineBuilder from BRepBlend 
+
+      ---Purpose: This  class processes the  data  resulting from
+      --          Blend_CSWalking  but  it  takes  in  consideration the Surface
+      --          supporting  the  curve to detect the  breakpoint.
+      --          
+      --          As  a  result, the  criteria of distribution of
+      --          points on  the line become  more flexible  because  it
+      --          should  calculate values  approached
+      --          by an approximation of continued  functions based on the
+      --          Blend_RstRstFunction.
+      --          
+      --          Thus this pseudo path necessitates 3 criteria  of
+      --          regrouping :
+      --           
+      --          1) exit of  the domain of  the  curve 
+      --          
+      --          2) exit of  the domain of  the surface  
+      --          
+      --          3) stall as there  is a solution of problem
+      --          surf/surf  within the domain  of the  surface
+      --          of support of the restriction.
+
+uses Point            from Blend,
+     Status           from Blend,
+     DecrochStatus    from Blend,
+     RstRstFunction   from Blend,
+     FuncInv          from Blend,
+     SurfCurvFuncInv  from Blend,
+     CurvPointFuncInv from Blend,
+     Vector           from math,
+     Matrix           from math,
+     State            from TopAbs,
+     Pnt              from gp,
+     Pnt2d            from gp,
+     Vec              from gp,
+     Vec2d            from gp,
+     HArray1OfReal    from TColStd,
+     Transition       from IntSurf,
+     HVertex          from Adaptor3d,
+     HSurface         from Adaptor3d,
+     HCurve2d         from Adaptor2d,
+     TopolTool        from Adaptor3d,
+     Line             from BRepBlend,
+     Extremity        from BRepBlend
+
+is
+    
+    Create(Surf1   : HSurface  from Adaptor3d;
+           Rst1    : HCurve2d  from Adaptor2d;
+    	   Domain1 : TopolTool from Adaptor3d;
+    	   Surf2   : HSurface  from Adaptor3d; 
+    	   Rst2    : HCurve2d  from Adaptor2d;
+    	   Domain2 : TopolTool from Adaptor3d)
+    returns RstRstLineBuilder from BRepBlend;
+
+    Perform(me         : in out; 
+    	    Func       : in out RstRstFunction   from Blend;
+	    Finv1      : in out SurfCurvFuncInv  from Blend;
+	    FinvP1     : in out CurvPointFuncInv from Blend;
+	    Finv2      : in out SurfCurvFuncInv  from Blend;
+	    FinvP2     : in out CurvPointFuncInv from Blend;
+            Pdep       : Real    from Standard;
+            Pmax       : Real    from Standard;
+	    MaxStep    : Real    from Standard;
+	    TolGuide   : Real    from Standard;
+            Soldep     : Vector  from math;
+            Tolesp     : Real    from Standard;
+            Fleche     : Real    from Standard;
+            Appro      : Boolean from Standard = Standard_False)
+    is static;
+
+    PerformFirstSection(me       : in out; 
+    	                Func     : in out RstRstFunction   from Blend;
+			Finv1    : in out SurfCurvFuncInv  from Blend;
+	    	    	FinvP1   : in out CurvPointFuncInv from Blend;
+	    	    	Finv2    : in out SurfCurvFuncInv  from Blend;
+	    	    	FinvP2   : in out CurvPointFuncInv from Blend;
+                        Pdep     : Real       from Standard;
+                        Pmax     : Real       from Standard;
+                        Soldep   : Vector     from math;
+                        Tolesp   : Real       from Standard; 
+			TolGuide : Real       from Standard;
+                        RecRst1  : Boolean    from Standard;
+                        RecP1    : Boolean    from Standard;
+			RecRst2  : Boolean    from Standard;
+                        RecP2    : Boolean    from Standard;
+                        Psol     : out Real   from Standard;
+                        ParSol   : out Vector from math)
+    returns Boolean from Standard
+    is static;
+
+    Complete(me     : in out;
+    	     Func   : in out RstRstFunction   from Blend;
+	     Finv1  : in out SurfCurvFuncInv  from Blend;
+	     FinvP1 : in out CurvPointFuncInv from Blend;
+	     Finv2  : in out SurfCurvFuncInv  from Blend;
+	     FinvP2 : in out CurvPointFuncInv from Blend;
+             Pmin   : Real                    from Standard)
+			
+    returns Boolean from Standard
+    is static;
+
+    InternalPerform (me     : in out;
+    	    	     Func   : in out RstRstFunction   from Blend;
+	             Finv1  : in out SurfCurvFuncInv  from Blend;
+	             FinvP1 : in out CurvPointFuncInv from Blend;
+	             Finv2  : in out SurfCurvFuncInv  from Blend;
+	             FinvP2 : in out CurvPointFuncInv from Blend;
+                     Bound : Real from Standard)
+    is static private;
+
+    Recadre1(me       : in out;
+             Func     : in out RstRstFunction  from Blend;    
+    	     Finv     : in out SurfCurvFuncInv from Blend;
+	     Solinv   : out Vector             from math;
+    	     IsVtx    : out Boolean            from Standard;
+             Vtx      : out HVertex            from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    Recadre2(me       : in out;
+             Func     : in out RstRstFunction  from Blend;    
+    	     Finv     : in out SurfCurvFuncInv from Blend;
+	     Solinv   : out Vector             from math;
+    	     IsVtx    : out Boolean            from Standard;
+             Vtx      : out HVertex            from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    Recadre1(me      : in out; 
+    	     FinvP   : in out CurvPointFuncInv from Blend;
+	     Solinv  : out Vector              from math;
+    	     IsVtx   : out Boolean             from Standard;
+             Vtx     : out HVertex             from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+
+    Recadre2(me      : in out; 
+    	     FinvP   : in out CurvPointFuncInv from Blend;
+	     Solinv  : out Vector              from math;
+    	     IsVtx   : out Boolean             from Standard;
+             Vtx     : out HVertex             from Adaptor3d)
+    returns Boolean from Standard
+    is static private;
+    
+    IsDone(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    Line(me)
+    returns Line from BRepBlend
+    ---C++: inline
+    ---C++: return const&
+    is static;
+
+    Decroch1Start(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    	
+    Decroch1End(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    
+    Decroch2Start(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    	
+    Decroch2End(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    	
+    Transition(me         : in out; 
+	       OnFirst    : Boolean from Standard;
+    	       Arc        : HCurve2d from Adaptor2d; 
+               Param      : Real from Standard;
+	       TLine,TArc : out Transition from IntSurf)
+    is static private;
+
+    MakeExtremity(me      : in out; 
+    	    	  Extrem  : in out Extremity from BRepBlend;
+		  OnFirst : Boolean from Standard;
+    	    	  Arc     : HCurve2d from Adaptor2d;
+    	          Param   : Real from Standard;
+		  IsVtx   : Boolean from Standard;
+		  Vtx     : HVertex from Adaptor3d)
+    is static private;
+
+    CheckDeflectionOnRst1(me       : in out; 
+    	    	    	  CurPoint : Point from Blend)
+    returns Status from Blend
+    is static private;
+
+    CheckDeflectionOnRst2(me       : in out; 
+    	    	    	  CurPoint : Point from Blend)
+    returns Status from Blend
+    is static private;
+
+    TestArret(me             : in out; 
+              Func           : in out RstRstFunction from Blend;
+              TestDeflection : Boolean from Standard;
+              State          : Status from Blend)
+    returns Status from Blend
+    is static private;
+
+    CheckInside(me       : in out; 
+                Func     : in out RstRstFunction from Blend;
+    	        SituOnC1 : out State from TopAbs;
+    	        SituOnC2 : out State from TopAbs;
+	        Decroch  : out DecrochStatus from Blend)
+    returns Boolean from Standard
+    is static private;
+
+fields
+
+    done         : Boolean       from Standard;
+    line         : Line          from BRepBlend;
+    sol          : Vector        from math;
+    surf1        : HSurface      from Adaptor3d;
+    domain1      : TopolTool     from Adaptor3d;
+    surf2        : HSurface      from Adaptor3d;
+    domain2      : TopolTool     from Adaptor3d;
+    rst1         : HCurve2d      from Adaptor2d;
+    rst2         : HCurve2d      from Adaptor2d;    
+   		      
+    tolesp       : Real          from Standard;
+    tolgui       : Real          from Standard;
+    pasmax       : Real          from Standard;
+    fleche       : Real          from Standard;
+    param        : Real          from Standard;
+    previousP    : Point         from Blend;
+    rebrou       : Boolean       from Standard;
+    iscomplete   : Boolean       from Standard;
+    comptra      : Boolean       from Standard;
+    sens         : Real          from Standard;
+    decrochdeb   : DecrochStatus from Blend;
+    decrochfin   : DecrochStatus from Blend;
+
+end RstRstLineBuilder from BRepBlend;
+
+
+
+

@@ -1,0 +1,149 @@
+-- File:	StdSelect_ViewerSelector3d.cdl
+-- Created:	Wed Mar 15 10:17:24 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+-- Modified by rob jun 25 98 : Add Method : Reactivate projector...		
+---Copyright:	 Matra Datavision 1995
+
+
+
+class ViewerSelector3d from StdSelect inherits ViewerSelector from SelectMgr
+
+	---Purpose: Selector Usable by Viewers from V3d 
+	--          
+
+uses
+    View      from V3d,
+    Selection from SelectMgr,
+    Projector from Select3D,
+    Group     from Graphic3d,
+    Structure from Graphic3d,
+    Array1OfReal    from TColStd, 
+    Array1OfPnt2d from TColgp
+
+is
+
+    Create  returns mutable ViewerSelector3d from StdSelect;
+    	---Purpose: Constructs an empty 3D selector object.
+    Create(aProj : Projector from Select3D) returns mutable ViewerSelector3d from StdSelect;
+    	---Purpose: Constructs a 3D selector object defined by the projector aProj. 
+
+    Convert(me:mutable;aSelection:mutable Selection from SelectMgr)
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: Processes the projection of the sensitive  primitives
+    	--          in the active view ; to be done before the selection action...
+
+
+    Set(me:mutable; aSensitivity : Integer) is static;
+    	---Purpose: Sets the sensitivity aSensitivity.
+    Set(me:mutable; aProj: Projector from Select3D) is static;
+    	---Purpose: Sets the new projector aProj to replace the one used at construction time.
+    
+
+
+    Pick (me           : mutable;XPix,YPix:Integer;
+    	  aView        : View from V3d) is static;
+    	---Level: Public 
+    	---Purpose: Picks the sensitive entity at the pixel coordinates of
+    	-- the mouse Xpix and Ypix.   The selector looks for touched areas and owners.
+
+
+    Pick (me:mutable;XPMin,YPMin,XPMax,YPMax:Integer;aView:View from V3d) is static;
+	---Purpose: Picks the sensitive entity according to the minimum
+    	-- and maximum pixel values XPMin, YPMin, XPMax
+    	-- and YPMax   defining a 2D area for selection in the 3D view aView.
+        
+    Pick (me:mutable;Polyline:Array1OfPnt2d from TColgp;aView:View from V3d) is static;
+    	---Level: Public 
+    	---Purpose: pick action  - input pixel values for polyline selection for selection.
+
+
+
+
+    ---Category: Inquire Methods
+
+    Projector (me) returns Projector from Select3D;
+    	---Level: Public 
+    	---Purpose: Returns the current Projector.
+    	---C++: inline
+    	---C++: return const&
+
+
+
+    ---Category: Internal Methods
+    --           -----------------
+
+    ReactivateProjector(me:mutable);
+    	---Level: Internal 
+    	---Purpose: Puts back the address of the current projector in sensitive primitives...
+
+    UpdateProj(me   :mutable;
+    	       aView: View from V3d) returns Boolean is static private;
+    	---Level: Internal 
+
+
+    DisplayAreas(me   :mutable;
+    	    	 aView: View from V3d) is static;
+    	---Purpose: Displays sensitive areas found in the view aView.
+
+    ClearAreas (me   :mutable;
+    	    	aView: View from V3d) is static;
+    	---Purpose: Clears the view aView of sensitive areas found in it.
+    
+    DisplaySensitive(me:mutable;aView : View from V3d) is static; 
+  
+    	--- Purpose: Displays the selection aSel found in the view aView.
+        
+    ClearSensitive(me:mutable;aView:View from V3d) is static;
+
+
+
+
+    DisplaySensitive(me:mutable;
+    	    	     aSel        : Selection from SelectMgr;
+		     aView       : View from V3d;
+    	    	     ClearOthers : Boolean from Standard = Standard_True)
+    is static;
+    
+    DisplayAreas(me:mutable;
+    	         aSel        :Selection from SelectMgr;
+		 aView       : View from V3d;
+    	         ClearOthers : Boolean from Standard = Standard_True)
+    is static;
+    
+    
+    ComputeSensitivePrs(me:mutable;aSel: Selection from SelectMgr)
+    is static private;
+    	---Level: Internal 
+
+    ComputeAreasPrs(me:mutable;aSel:Selection from SelectMgr)
+     is static private;
+    	---Level: Internal 
+
+	
+
+
+fields
+
+    myprj         : Projector    from Select3D;
+    mycoeff       : Real from Standard[14];
+    myprevcoeff   : Real from Standard[14];
+    mycenter      : Real from Standard[2];
+    myprevcenter  : Real from Standard[2];
+    mylastzoom    : Real from Standard;
+    mypixtol      : Integer ;
+    myupdatetol   : Boolean;
+    
+    
+             --areas verification...
+
+    myareagroup : Group            from Graphic3d;
+    mysensgroup : Group            from Graphic3d;
+    mystruct: Structure        from Graphic3d;
+
+    
+end ViewerSelector3d;
+
+
+

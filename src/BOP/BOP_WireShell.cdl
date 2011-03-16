@@ -1,0 +1,69 @@
+-- File:	BOP_WireShell.cdl
+-- Created:	Mon Feb  4 10:56:40 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class WireShell from BOP inherits WireShape from BOP
+
+	---Purpose: 
+    	--  The class to perform a Boolean Operations (BO)       
+	--  Common,Cut,Fuse  between arguments when one of them is  
+    	--  a wire and other argument is a shell 
+	--    	 
+uses
+    DSFiller  from BOPTools, 
+    PDSFiller from BOPTools, 
+    --modified by NIZHNY-MKK  Tue Sep  7 11:46:27 2004
+    ShapeEnum from TopAbs,
+    Operation from BOP,
+    ListOfShape from TopTools 
+is
+    Create   
+    	returns  WireShell from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    Do  (me:out) 
+    	is  redefined;  
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_WireShell(){Destroy();}"  
+    	---Purpose:  
+    	--- Destructor 
+    	---
+    BuildResult (me:out) 
+	is  redefined;	 
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    --modified by NIZHNY-MKK  Tue Sep  7 11:46:00 2004
+    CheckArgTypes(myclass; theType1, theType2: ShapeEnum from TopAbs;
+    	    	    	   theOperation: Operation from BOP) 
+	 returns Boolean from Standard;  
+    	---Purpose: 
+    	--- Check the types of arguments.      
+    	--- Returns  FALSE if types of arguments     
+    	--- are non-valid to be  treated by the         
+    	--- agorithm
+    
+    CheckArgTypes(me) 
+	returns Boolean from Standard 
+    	is  private;  
+    	---Purpose:  
+    	--- Internal  usage
+    	---
+    
+--fields
+
+end WireShell;

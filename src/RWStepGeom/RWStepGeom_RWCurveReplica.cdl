@@ -1,0 +1,30 @@
+-- File:        CurveReplica.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWCurveReplica from RWStepGeom
+
+	---Purpose : Read & Write Module for CurveReplica
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     CurveReplica from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWCurveReplica;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable CurveReplica from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : CurveReplica from StepGeom);
+
+	Share(me; ent : CurveReplica from StepGeom; iter : in out EntityIterator);
+
+end RWCurveReplica;

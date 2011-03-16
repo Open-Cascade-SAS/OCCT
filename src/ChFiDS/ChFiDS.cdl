@@ -1,0 +1,129 @@
+-- File:	ChFiDS.cdl
+-- Created:	Wed Nov 17 10:29:41 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+package ChFiDS 
+
+	---Purpose: 
+
+uses BRepAdaptor,GeomAdaptor,Geom,Geom2d,TopExp,TopoDS,TopAbs,TopTools,Law,
+     Adaptor3d,GCPnts,MMgt,TColgp,gp,GeomAbs,TColStd,TCollection,Standard
+
+is
+
+
+    enumeration State from ChFiDS is OnSame, OnDiff, AllSame, BreakPoint,  
+    	    	    	    	     FreeBoundary, Closed, Tangent  
+    end State from ChFiDS;          
+    ---Purpose: This enum describe the  different kinds of extremities
+    --          of   a   fillet.   OnSame,   Ondiff and  AllSame   are
+    --          particular cases of BreakPoint   for a corner   with 3
+    --          edges and three faces :
+    --          - AllSame means that  the three concavities are on the
+    --          same side of the Shape,
+    --          - OnDiff  means  that the  edge of  the  fillet  has a
+    --          concave side different than the two other edges,
+    --          - OnSame  means  that the  edge of  the  fillet  has a
+    --          concave side different than one of the two other edges
+    --          and identical to the third edge.
+
+    enumeration ChamfMethod from ChFiDS is 
+      Sym,
+      TwoDist,
+      DistAngle
+    end ChamfMethod from ChFiDS;
+ 	
+    enumeration ErrorStatus from ChFiDS is Ok,Error,WalkingFailure,
+                                   StartsolFailure, TwistedSurface 
+    end ErrorStatus from ChFiDS;
+    --- Purpose statuts concernant la cause de l'erreur 
+    
+
+    class Regul;
+    ---Purpose: Grouping  of indices of  a curve and  of faces/surfaces
+    --          that it  relies  on coding of regularities.
+
+    class Regularities instantiates List from TCollection
+                                    (Regul from ChFiDS);
+
+    class CircSection;
+    
+    class StripeArray1 instantiates Array1 from TCollection
+                              (Stripe from ChFiDS);
+
+    class SecArray1 instantiates Array1 from TCollection
+                              (CircSection from ChFiDS);
+
+    class SecHArray1 instantiates HArray1 from TCollection
+        (CircSection from ChFiDS,SecArray1 from ChFiDS);
+
+    class Map; 
+    ---Purpose: encapsulation of IndexedDataMapOfShapeListOfShape
+
+
+    class CommonPoint;
+    ---Purpose: point    start/end of  fillet common  to  2 adjacent  filets 
+    --          and  to an edge on  one of 2 faces participating
+    --          in  the construction of  the  fillet
+
+    class FaceInterference;
+    ---Purpose: interference face/fillet 
+
+    class SurfData;
+    ---Purpose: data structure for all information related to  the
+    --          fillet and to 2 faces vis a vis
+
+    class SequenceOfSurfData instantiates Sequence from TCollection
+    	    (SurfData from ChFiDS);
+
+    class HData instantiates HSequence from TCollection
+    	    (SurfData from ChFiDS,
+    	     SequenceOfSurfData from ChFiDS);
+	    
+    class Stripe;
+    ---Purpose: Data caracterising a band of fillet.
+
+    class ListOfStripe instantiates List from TCollection
+    	    (Stripe from ChFiDS);
+	    
+    class IndexedDataMapOfVertexListOfStripe instantiates 
+          IndexedDataMap from TCollection ( Vertex from TopoDS,
+	    	    	    	    	    ListOfStripe from ChFiDS, 
+					    ShapeMapHasher from TopTools); 
+
+    class StripeMap;
+    ---Purpose: encapsulation of IndexedDataMapOfVertexListOfStripe
+
+    class ElSpine;
+    ---Purpose: Spin  elementary  calculated   approximation d  un
+    --          troncon de spine.
+    
+    class HElSpine instantiates GenHCurve from Adaptor3d (ElSpine from ChFiDS);
+
+    class ListOfHElSpine instantiates List from TCollection
+    	    	        (HElSpine from ChFiDS);
+
+    class Spine;
+    ---Purpose: list of edges allowing the construction of fillet
+    --          or chamfer. Such edges are mutually tangent 
+    --          and cross tangent faces.
+
+
+    class FilSpine;   --- inherits Sp
+    ---Purpose: Contains more information relative to  the vector.
+          
+
+    class ChamfSpine; --- inherits Sp
+    ---Purpose: Contains characteristics of  the chamfer.
+    --          pour tous les chanfreins
+   
+    class SequenceOfSpine instantiates 
+    	    Sequence from TCollection(Spine from ChFiDS);
+
+    
+
+end ChFiDS;
+

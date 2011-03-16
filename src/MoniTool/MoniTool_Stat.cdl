@@ -1,0 +1,95 @@
+-- File:	MoniTool_Stat.cdl
+-- Created:	Thu Feb 15 16:45:14 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Stat  from MoniTool
+
+    ---Purpose : This class manages Statistics to be queried asynchronously.
+    --         
+    --           It is organized as a stack of counters, identified by their
+    --           levels, from one to ... . Each one has a total account of
+    --           items to be counted, a count of already passed items, plus a
+    --           count of "current items". The counters of higher level play on
+    --           these current items.
+    --           For instance, if a counter has been opened for 100 items, 40
+    --           already passed, 20 current, its own percent is 40, but there
+    --           is the contribution of higher level counters, rated for 20 %
+    --           of this counter.
+    --           
+    --           Hence, a counter is opened, items are added. Also items can be
+    --           add for sub-counter (of higher level), they will be added
+    --           definitively when the sub-counter will be closed. When the
+    --           count has ended, this counter is closed, the counter of
+    --           lower level cumulates it and goes on. As follows :
+    --           
+    --           Way of use :
+    --           Open(nbitems);
+    --           Add(..)  :  direct adding
+    --           Add(..)
+    --           AddSub (nsub)  :  for sub-counter
+    --             Open (nbsubs)  :  nbsubs for this sub-counter
+    --             Add (..)
+    --             Close        : the sub-counter
+    --           AddEnd()
+    --           etc...
+    --           Close          : the starting counter
+    --           
+    --           This means that a counter can be opened in a Stat, regardless
+    --           to the already opened ones :: this will be cumulated
+    --           
+    --           A Current Stat is available, but it is possible to have others
+
+uses Integer, Real, HArray1OfInteger,
+     CString, HAsciiString
+
+is
+
+    	-- --    Description of a Stat form    -- --
+
+    Create (title : CString = "") returns Stat;
+    ---Purpose : Creates a Stat form. At start, one default phase is defined,
+    --           with one default step. Then, it suffises to start with a
+    --           count of items (and cycles if several) then record items,
+    --           to have a queryable report.
+
+    Create (other : Stat) returns Stat;
+    ---Purpose : used when starting
+
+    Current (myclass) returns Stat;
+    ---C++ : return &
+
+    Open (me : in out; nb : Integer = 100) returns Integer;
+    ---Purpose : Opens a new counter with a starting count of items
+
+    OpenMore (me : in out; id : Integer; nb : Integer);
+    ---Purpose : Adds more items to be counted by Add... on current level
+
+    Add (me : in out; nb : Integer = 1);
+    ---Purpose : Directly addes items
+
+    AddSub (me : in out; nb : Integer = 1);
+    ---Purpose : Declares a count of items to be added later. If a sub-counter
+    --           is opened, its percentage multiplies this sub-count to compute
+    --           the percent of current level
+
+    AddEnd (me : in out);
+    ---Purpose : Ends the AddSub and cumulates the sub-count to current level
+
+    Close  (me : in out; id : Integer);
+
+    Level  (me) returns Integer;
+
+    Percent (me; fromlev : Integer = 0) returns Real;
+
+fields
+
+    thetit  : HAsciiString from TCollection;
+    thelev  : Integer;
+    thetot  : HArray1OfInteger;
+    thedone : HArray1OfInteger;
+    thecurr : HArray1OfInteger;
+
+end Stat;

@@ -1,0 +1,67 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_EdgesIterator.gxx
+// Created:	Wed May 29 17:43:20 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_EdgesIterator::PCollection_EdgesIterator 
+   (const Handle(PCollection_HDirectedGraph)& G):MyEdgeIterator(G->GetEdges()) 
+{
+  HasMore = MyEdgeIterator.More();
+}
+
+
+//---------------------------------------------------------------------------
+// More
+//---------------------------------------------------------------------------
+Boolean PCollection_EdgesIterator::More () const 
+{
+  return HasMore;
+}
+
+//---------------------------------------------------------------------------
+// Next
+//---------------------------------------------------------------------------
+void PCollection_EdgesIterator::Next ()  
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  MyEdgeIterator.Next();
+  HasMore = MyEdgeIterator.More();
+}
+
+
+//---------------------------------------------------------------------------
+// Value
+//---------------------------------------------------------------------------
+Handle(PCollection_Edge) PCollection_EdgesIterator::Value () const 
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return MyEdgeIterator.Value();
+}
+
+
+//---------------------------------------------------------------------------
+// Clear
+//---------------------------------------------------------------------------
+void PCollection_EdgesIterator::Clear () 
+{
+  HasMore = False;
+}
+
+
+
+
+
+
+
+
+

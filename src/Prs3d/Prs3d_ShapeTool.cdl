@@ -1,0 +1,78 @@
+-- File:	Prs3d_ShapeTool.cdl
+-- Created:	Wed Jan 27 14:23:39 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+class ShapeTool from Prs3d
+
+
+uses
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    Vertex            from TopoDS,
+    HSequenceOfShape  from TopTools,
+    Box               from Bnd,
+    Location          from TopLoc,
+    Triangulation     from Poly,
+    PolygonOnTriangulation     from Poly,
+    Polygon3D         from Poly,
+    HArray1OfInteger  from TColStd,
+    Explorer          from TopExp,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    IndexedMapOfShape                from TopTools
+
+	---Purpose: 
+is
+
+    Create ( TheShape: Shape from TopoDS) returns ShapeTool from Prs3d;
+    InitFace (me: in out);
+    MoreFace (me) returns Boolean from Standard;
+    NextFace (me: in out);
+    GetFace(me) returns Face from TopoDS;
+    	---C++: return const&
+    FaceBound(me) returns Box from Bnd;
+    IsPlanarFace(me) returns Boolean from Standard;
+
+    InitCurve (me: in out);
+    MoreCurve (me) returns Boolean from Standard;
+    NextCurve (me: in out);
+    GetCurve(me) returns Edge from TopoDS;
+    	---C++: return const&
+    CurveBound(me) returns Box from Bnd;
+    Neighbours(me) returns Integer from Standard;   
+    FacesOfEdge(me) returns HSequenceOfShape from TopTools;
+
+    InitVertex(me: in out);
+    MoreVertex(me) returns Boolean from Standard;
+    NextVertex(me: in out);
+    GetVertex(me) returns Vertex from TopoDS;
+    	---C++: return const&
+
+    HasSurface(me) returns Boolean;
+    
+    CurrentTriangulation(me; l: out Location from TopLoc) 
+    returns Triangulation from Poly;
+
+    HasCurve(me) returns Boolean;
+
+    PolygonOnTriangulation(me; Indices: out PolygonOnTriangulation from  Poly;
+    	    	    	       T:       out Triangulation          from Poly; 
+			       l:       out Location               from TopLoc); 
+			       
+    Polygon3D(me; l: out Location from TopLoc) 
+    returns Polygon3D from Poly;
+
+fields
+    myShape:        Shape                            from TopoDS;
+    myFaceExplorer: Explorer                         from TopExp;
+    myEdgeMap:      IndexedDataMapOfShapeListOfShape from TopTools;
+    myVertexMap:    IndexedMapOfShape                from TopTools;
+    myEdge :        Integer                          from Standard;
+    myVertex :      Integer                          from Standard;
+
+end ShapeTool from Prs3d;

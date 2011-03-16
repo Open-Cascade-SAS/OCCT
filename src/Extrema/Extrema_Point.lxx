@@ -1,0 +1,4 @@
+inline Standard_Real Extrema_Point::Parameter () const { return myU; }
+
+
+inline const Pnt& Extrema_Point::Value () const { return myP; }

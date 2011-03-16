@@ -1,0 +1,140 @@
+-- File:	ShapeUpgrade_WireDivide.cdl
+-- Created:	Thu Apr 15 13:06:17 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class WireDivide from ShapeUpgrade inherits Tool from ShapeUpgrade
+
+    ---Purpose: Divides edges in the wire lying on the face or free wires or
+    --          free edges with a criterion.
+    --          Splits 3D curve and pcurve(s) of the edge on the face.
+    --          Other pcurves which may be associated with the edge are simply 
+    --          copied.
+    --          If 3D curve is splitted then pcurve on the face is splitted as
+    --          well, and wice-versa.
+    --          Input shape is not modified.
+    --          The modifications made are recorded in external context 
+    --          (ShapeBuild_ReShape). This tool is applied to all edges
+    --          before splitting them in order to keep sharing.
+
+uses
+
+    Edge from TopoDS,
+    Wire from TopoDS,
+    Face from TopoDS,
+    Surface from Geom,
+    Location from TopLoc,
+    SplitCurve3d from ShapeUpgrade,
+    SplitCurve2d from ShapeUpgrade,
+    TransferParameters from ShapeAnalysis,
+    Status  from ShapeExtend,
+    HSequenceOfReal from TColStd,
+    EdgeDivide from ShapeUpgrade,
+    FixSmallCurves from ShapeUpgrade
+is
+
+    Create returns mutable WireDivide from ShapeUpgrade;
+    	---Purpose: Empty constructor
+	
+    Init (me: mutable; W: Wire from TopoDS; F: Face from TopoDS);
+        ---Purpose: Initializes by wire and face
+
+    Init (me: mutable; W: Wire from TopoDS; 
+    	    	       S: Surface from Geom); 
+        ---Purpose: Initializes by wire and surface
+
+    Load (me: mutable; W: Wire from TopoDS);
+        ---Purpose: Loads working wire
+
+    Load (me: mutable; E: Edge from TopoDS);
+        ---Purpose: Creates wire of one edge and calls Load for wire
+
+    SetFace (me: mutable; F: Face from TopoDS);
+        ---Purpose: Sets supporting surface by face
+
+    SetSurface (me: mutable; S: Surface from Geom);
+        ---Purpose: Sets supporting surface
+
+    SetSurface (me: mutable; S: Surface from Geom; L: Location from TopLoc);
+        ---Purpose: Sets supporting surface with location
+
+
+    Perform (me: mutable) is virtual;
+        ---Purpose: Computes the resulting wire by splitting all the edges
+	--          according to splitting criteria.
+	--          All the modifications made are recorded in context
+	--          (ShapeBuild_ReShape). This tool is applied to all edges
+	--          before splitting them in order to keep sharings.
+	--          If no supporting face or surface is defined, only 3d 
+	--          splitting criteria are used.
+    
+    Wire (me) returns Wire from TopoDS;
+    	---C++: return const &
+	---Purpose: Gives the resulting Wire (equal to initial one if not done
+	--          or Null if not loaded)
+    
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+	---Purpose: Queries status of last call to Perform()
+	-- OK - no edges were splitted, wire left untouched
+	-- DONE1 - some edges were splitted
+	-- FAIL1 - some edges have no 3d curve (skipped)
+	-- FAIL2 - some edges have no pcurve (skipped)
+
+    ---Level: Internal
+    
+    SetSplitCurve3dTool(me: mutable; splitCurve3dTool: SplitCurve3d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting 3D curves.
+    
+    SetSplitCurve2dTool(me: mutable; splitCurve2dTool: SplitCurve2d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting pcurves.
+	
+    SetTransferParamTool(me: mutable; TransferParam: TransferParameters from ShapeAnalysis);
+    ---Purpose: Sets the tool for Transfer parameters between curves and pcurves.
+    
+    GetSplitCurve3dTool(me) returns SplitCurve3d from ShapeUpgrade
+    is virtual protected;
+    	---Purpose: Returns the tool for splitting 3D curves.
+	---Remark: here TopoDS_Edge can be used to transfer some specific information (tolerance, etc)
+	
+    GetSplitCurve2dTool(me) returns SplitCurve2d from ShapeUpgrade
+    is virtual protected;
+    	---Purpose: Returns the tool for splitting pcurves.
+	
+    SetEdgeDivideTool (me: mutable; edgeDivideTool: EdgeDivide from ShapeUpgrade);
+    	---Purpose: Sets tool for splitting edge
+    
+    GetEdgeDivideTool (me) returns EdgeDivide from ShapeUpgrade
+    is virtual;
+    	---Purpose: returns tool for splitting edges
+	
+    GetTransferParamTool(me:mutable) returns TransferParameters from ShapeAnalysis 
+    is virtual;
+    	---Purpose: Returns the tool for Transfer of parameters.
+	
+    SetEdgeMode(me : mutable;EdgeMode : Integer);
+	---Purpose:Sets mode for splitting 3d curves from edges.
+    	-- 0 - only curve 3d from free edges.
+    	-- 1 - only curve 3d from shared edges.
+    	-- 2 -  all curve 3d. 
+	 
+    SetFixSmallCurveTool(me : mutable; FixSmallCurvesTool : FixSmallCurves from ShapeUpgrade);
+    	---Purpose:Sets tool for fixing small curves with specified min tolerance;
+	
+     GetFixSmallCurveTool(me) returns FixSmallCurves from ShapeUpgrade;
+    	---Purpose:Returns tool for fixing small curves	
+
+fields
+    
+    mySplitCurve3dTool: SplitCurve3d from ShapeUpgrade;
+    mySplitCurve2dTool: SplitCurve2d from ShapeUpgrade;
+    myEdgeDivide      : EdgeDivide from ShapeUpgrade;
+    myTransferParamTool : TransferParameters from ShapeAnalysis;
+    myFace  : Face from TopoDS is protected; -- supporting face
+    myWire  : Wire from TopoDS is protected; -- wire being splitted
+    myStatus: Integer is protected;
+    myEdgeMode : Integer is protected;
+    myFixSmallCurveTool : FixSmallCurves from ShapeUpgrade;
+
+end WireDivide;

@@ -1,0 +1,143 @@
+-- File:	IntPolyh_StartPoint.cdl
+-- Created:	Tue Apr  6 10:15:11 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class StartPoint from IntPolyh
+
+uses
+    
+    Triangle from IntPolyh
+
+    
+is
+
+
+    Create;
+    
+    Create(xx,yy,zz,uu1,vv1,uu2,vv2 : Real from Standard;
+    	   T1,E1: Integer from Standard;
+	   LAM1 : Real from Standard;
+    	   T2,E2: Integer from Standard;
+	   LAM2 : Real from Standard;
+    	   List : Integer from Standard); 
+
+    X(me) 
+    returns Real from Standard
+    is static;
+
+    Y(me) 
+    returns Real from Standard
+    is static;
+
+    Z(me) 
+    returns Real from Standard
+    is static;
+
+    U1(me) 
+    returns Real from Standard
+    is static;
+
+    V1(me) 
+    returns Real from Standard
+    is static;
+
+    U2(me) 
+    returns Real from Standard
+    is static;
+
+    V2(me) 
+    returns Real from Standard
+    is static;
+    
+    T1(me) 
+    returns Integer from Standard
+    is static;
+
+    E1(me)
+    returns Integer from Standard
+    is static;
+
+    Lambda1(me)
+    returns Real from Standard
+    is static;
+
+    T2(me) 
+    returns Integer from Standard
+    is static;
+
+    E2(me) 
+    returns Integer from Standard
+    is static;
+    
+    Lambda2(me)
+    returns Real from Standard
+    is static;
+
+    GetAngle(me)
+    returns Real from Standard
+    is static;
+
+    ChainList(me)
+    returns Integer from Standard;
+
+    GetEdgePoints(me; Triangle: Triangle from IntPolyh;
+    	    	  FirstEdgePoint,SecondEdgePoint,LastPoint: in out Integer from Standard)
+    returns Integer from Standard
+    is static;
+
+    Equal(me: in out; StPt: StartPoint from IntPolyh)
+        ---C++: alias operator =
+    is static;
+	
+    SetXYZ(me: in out;  XX,YY,ZZ: Real from Standard)
+    is static;
+
+    SetUV1(me: in out; UU1,VV1: Real from Standard)
+    is static;
+
+    SetUV2(me: in out; UU2,VV2: Real from Standard)
+    is static;
+
+    SetEdge1(me: in out; IE1: Integer from Standard)
+    is static;
+        
+    SetLambda1(me: in out; LAM1: Real from Standard)
+    is static;
+        
+    SetEdge2(me: in out; IE2: Integer from Standard)
+    is static;
+    
+    SetLambda2(me: in out; LAM2: Real from Standard)
+    is static;
+        
+    SetCoupleValue(me: in out; IT1,IT2: Integer from Standard)
+    is static;
+    
+    SetAngle(me : in out; ang:Real from Standard)
+    is static;
+
+    SetChainList(me: in out; ChList: Integer from Standard)
+    is static;
+
+    CheckSameSP(me; SP: StartPoint from IntPolyh)
+    returns Integer from Standard
+    is static;
+
+    Dump(me) 
+    is static;
+    
+    Dump(me; i: Integer from Standard)
+    is static;
+     	
+fields
+
+    x,y,z,u1,v1,u2,v2 : Real from Standard;
+    lambda1,lambda2,angle : Real from Standard;--angle: cos angle normales triangles
+    t1,e1,t2,e2,chainlist : Integer from Standard;
+    
+end StartPoint from IntPolyh;
+
+
+

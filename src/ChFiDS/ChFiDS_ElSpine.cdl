@@ -1,0 +1,183 @@
+-- File:	ChFiDS_ElSpine.cdl
+-- Created:	Thu May  4 10:35:45 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ElSpine from ChFiDS inherits Curve from Adaptor3d
+
+	---Purpose: Elementary  Spine for cheminements and approximations.
+
+uses
+    Pnt          from gp,
+    Vec          from gp,  
+    Lin          from gp,   
+    Circ         from gp,  
+    Elips        from gp,  
+    Hypr         from gp,  
+    Parab        from gp,   
+    BezierCurve  from Geom,  
+    BSplineCurve from Geom, 
+    Array1OfReal from TColStd,
+    SurfData     from ChFiDS,
+    Shape        from GeomAbs,
+    CurveType    from GeomAbs,
+    HCurve       from Adaptor3d,
+    Curve        from Geom,
+    Curve        from GeomAdaptor
+    
+raises
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+is
+
+    Create returns ElSpine from ChFiDS;
+    
+    FirstParameter(me) returns Real from Standard
+    is redefined;
+
+    LastParameter(me) returns Real from Standard
+    is redefined;
+    
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+
+    NbIntervals(me: in out; S : Shape from GeomAbs) 
+    returns Integer is redefined static;
+
+    Intervals(me: in out; 
+    	      T : in out Array1OfReal from TColStd; 
+    	      S : Shape from GeomAbs)
+    is redefined static;
+    
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+    ---Purpose: Returns    a  curve equivalent   of  <me>  between
+    --          parameters <First>  and <Last>. <Tol>  is used  to
+    --          test for 3d points confusion.
+    is redefined;
+    
+    Resolution(me; R3d : Real) returns Real
+    is redefined;
+    
+    GetType(me) returns CurveType from GeomAbs
+    is redefined;
+
+    IsPeriodic(me) returns Boolean
+    is redefined;
+
+    SetPeriodic(me : in out ; I : Boolean from Standard) is static;
+
+    Period(me) returns Real
+    is redefined;
+
+    Value(me ; AbsC : Real ) returns Pnt from gp 
+    is redefined;
+    
+    D0(me ; AbsC : Real ; P : out Pnt from gp) 
+    is redefined;
+
+    D1(me ; AbsC : Real ; P : out Pnt from gp; V1 : out Vec from gp) 
+    is redefined;
+    
+    D2(me ; AbsC : Real ; P : out Pnt from gp; 
+       V1,V2 : out Vec from gp)  
+    is redefined;
+
+    D3(me ; AbsC : Real ; P : out Pnt from gp; 
+       V1,V2, V3 : out Vec from gp)  
+    is redefined;
+     
+    FirstParameter(me : in out; P : Real from Standard);
+
+    LastParameter(me : in out; P : Real from Standard);
+
+    SetOrigin(me : in out; O : Real from Standard);
+
+    FirstPointAndTgt(me; P : out Pnt from gp; T : out Vec from gp);
+
+    LastPointAndTgt(me; P : out Pnt from gp; T : out Vec from gp);
+
+    SetFirstPointAndTgt(me : in out; P : Pnt from gp; T : Vec from gp);
+
+    SetLastPointAndTgt(me : in out; P : Pnt from gp; T : Vec from gp);
+
+    SetCurve(me : in out; C : Curve from Geom);
+
+    Previous(me) returns mutable SurfData from ChFiDS;
+    ---C++: return const &
+
+    ChangePrevious(me : in out) returns any SurfData from ChFiDS;
+    ---C++: return &
+
+    Next(me) returns mutable SurfData from ChFiDS;
+    ---C++: return const &
+
+    ChangeNext(me : in out) returns any SurfData from ChFiDS;
+    ---C++: return &
+
+   Line(me) returns Lin from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+   
+   Circle(me) returns Circ from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Ellipse(me) returns Elips from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Hyperbola(me) returns  Hypr from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Parabola(me) returns Parab from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+                   
+   Bezier(me) returns BezierCurve from Geom
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+   --Purpose:  Warning : This will NOT make a copy of the
+    --         Bezier Curve : If you want to modify
+    --         the Curve please make a copy yourself
+    --         Also it will NOT trim the surface to
+    --         myFirst/Last.
+    
+   BSpline(me) returns BSplineCurve from Geom
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+    --  Purpose : Warning : This will NOT make a copy of the
+    --         BSpline Curve : If you want to modify
+    --         the Curve please make a copy yourself
+    --         Also it will NOT trim the surface to
+    --         myFirst/Last.
+fields
+ 
+curve     : Curve    from GeomAdaptor; 
+
+ptfirst   : Pnt      from gp;
+ptlast    : Pnt      from gp;
+tgfirst   : Vec      from gp;
+tglast    : Vec      from gp;
+
+previous  : SurfData from ChFiDS;
+next      : SurfData from ChFiDS; 
+
+pfirst    : Real     from Standard;
+plast     : Real     from Standard;
+period    : Real     from Standard;
+periodic  : Boolean  from Standard; 
+
+
+end ElSpine;

@@ -1,0 +1,98 @@
+-- File:	TPrsStd_AISViewer.cdl
+-- Created:	Wed Sep 30 08:32:32 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class AISViewer from TPrsStd inherits Attribute from TDF
+
+	---Purpose: The groundwork to define an interactive viewer attribute.
+-- This attribute stores an interactive context at the root label.
+-- You can only have one instance of this class per data framework. 
+
+uses Attribute          from TDF,
+     Label              from TDF,
+     GUID               from Standard,
+     DataSet            from TDF,
+     RelocationTable    from TDF,
+     InteractiveContext from AIS,
+     Viewer             from V3d,
+     ExtendedString     from TCollection
+
+is    
+
+   ---Purpose: class methods
+    --         =============
+
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;    
+
+    Has (myclass; acces : Label from TDF)
+    ---Purpose:  returns True if   there is an AISViewer attribute  in
+    --          <acces> Data Framework.
+    returns Boolean from Standard;
+
+    New (myclass; access : Label from TDF; selector : InteractiveContext from AIS)
+    ---Purpose: create and set an  AISViewer at. Raise an exception if
+    --          Has.
+    returns AISViewer from TPrsStd; 
+
+    New (myclass; acces : Label from TDF; viewer : Viewer from V3d)   
+    ---Purpose:  create  and set an   AISAttribute at root  label. The
+    --          interactive context is  build.  Raise an exception  if
+    --          Has.
+    returns AISViewer from TPrsStd;    
+    
+    Find (myclass; acces : Label from TDF; A : in out  AISViewer from TPrsStd)
+    returns Boolean from Standard;    
+---Purpose:
+-- Finds the viewer attribute at the label access, the
+-- root of the data framework. Calling this function can be used to initialize an AIS viewer
+    Find (myclass; acces : Label from TDF; IC : in out InteractiveContext from AIS)    
+    returns Boolean from Standard;      
+
+    Find (myclass; acces : Label from TDF; V : in out  Viewer from V3d)
+    returns Boolean from Standard;    
+
+    Update (myclass; acces : Label from TDF);
+
+    
+    ---Purpose: AISViewer methods
+    --          =================
+
+    Create
+    returns mutable AISViewer from TPrsStd; 
+    
+    Update (me);
+---Purpose: Updates the viewer at the label access.
+--  access is the root of the data framework.
+    
+    SetInteractiveContext (me : mutable; ctx : InteractiveContext from AIS);  
+---Purpose: Sets the interactive context ctx for this attribute.    
+    GetInteractiveContext (me)
+    returns InteractiveContext from AIS;
+---Purpose: Returns the interactive context in this attribute.   
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)  
+    ---C++: return const & 
+    returns GUID from Standard;
+    
+    Restore(me: mutable; with : Attribute from TDF);
+    
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+    
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF); 
+	       
+fields
+
+    myInteractiveContext : InteractiveContext from AIS;
+end AISViewer;
+

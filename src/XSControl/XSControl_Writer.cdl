@@ -1,0 +1,64 @@
+-- File:	XSControl_Writer.cdl
+-- Created:	Wed May 14 15:21:58 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Writer  from XSControl
+
+    ---Purpose : This class gives a simple way to create then write a
+    --           Model compliant to a given norm, from a Shape
+    --           The model can then be edited by tools by other appropriate tools
+
+uses CString,
+     InterfaceModel from Interface, WorkSession from XSControl,
+     ReturnStatus from IFSelect,
+     Shape from TopoDS
+
+is
+
+    Create returns Writer;
+    ---Purpose : Creates a Writer from scratch
+
+    Create (norm : CString) returns Writer;
+    ---Purpose : Creates a Writer from scratch, with a norm name which
+    --           identifie a Controller
+
+    Create (WS : mutable WorkSession from XSControl;
+    	    	 scratch : Boolean = Standard_True) returns Writer;
+    ---Purpose : Creates a Writer from an already existing Session
+    --           If <scratch> is True (D), clears already recorded data
+
+    SetNorm (me : in out; norm : CString) returns Boolean;
+    ---Purpose : Sets a specific norm to <me>
+    --           Returns True if done, False if <norm> is not available
+
+    SetWS (me : in out; WS : mutable WorkSession from XSControl;
+    	    	 scratch : Boolean = Standard_True);
+    ---Purpose : Sets a specific session to <me>
+
+    WS (me) returns WorkSession from XSControl;
+    ---Purpose : Returns the session used in <me>
+
+    Model (me : in out; newone : Boolean = Standard_False) returns InterfaceModel;
+    ---Purpose : Returns the produced model. Produces a new one if not yet done
+    --           or if <newone> is True
+    --           This method allows for instance to edit product or header
+    --           data before writing
+
+    TransferShape (me : in out; sh : Shape from TopoDS; mode : Integer = 0)
+    	returns ReturnStatus;
+    ---Purpose : Transfers a Shape according to the mode
+
+    WriteFile (me : in out; filename : CString) returns ReturnStatus;
+    ---Purpose : Writes the produced model
+
+    PrintStatsTransfer (me; what : Integer; mode : Integer = 0);
+    ---Purpose : Prints Statistics about Transfer
+
+fields
+
+    thesession : WorkSession from XSControl;
+
+end Writer;

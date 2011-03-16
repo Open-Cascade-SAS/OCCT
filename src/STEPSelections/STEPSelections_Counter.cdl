@@ -1,0 +1,94 @@
+-- File:	STEPSelections_Counter.cdl
+-- Created:	Thu Feb 11 18:23:32 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Counter from STEPSelections
+
+	---Purpose: 
+
+uses
+   
+    Graph from Interface,
+    MapOfTransient from TColStd,
+    ConnectedFaceSet from StepShape,
+    CompositeCurve from StepGeom
+  
+is
+    Create returns Counter from STEPSelections;
+    
+    Count(me: in out;graph: Graph from Interface;
+    	            start: Transient);
+	  
+    Clear(me: in out);
+    
+    NbInstancesOfFaces(me)  returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    POP(me)  returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    POP2(me)  returns Integer
+    	---C++: inline
+	;
+    	---Purpose:
+    
+    NbInstancesOfShells(me) returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    NbInstancesOfSolids(me) returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    NbInstancesOfEdges(me) returns Integer;
+    	---C++: inline
+	---Purpose:
+    
+    NbInstancesOfWires(me) returns Integer;
+    	---C++: inline
+	---Purpose:
+	
+    NbSourceFaces(me)  returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    NbSourceShells(me) returns Integer;
+    	---C++: inline
+    	---Purpose:
+    
+    NbSourceSolids(me) returns Integer;
+    	---C++: inline
+    	---Purpose:
+	
+    NbSourceEdges(me) returns Integer;
+    	---C++: inline
+	---Purpose:
+	
+    NbSourceWires(me) returns Integer;
+    	---C++: inline
+	---Purpose:
+	
+   AddShell(me: in out; cfs: ConnectedFaceSet from StepShape) is private;
+   
+   AddCompositeCurve(me: in out; ccurve: CompositeCurve from StepGeom) is private;
+
+fields
+
+    myNbFaces : Integer;
+    myNbShells: Integer;
+    myNbSolids: Integer;
+    myNbEdges : Integer;
+    myNbWires : Integer;
+    
+    myMapOfFaces : MapOfTransient from TColStd;
+    myMapOfShells: MapOfTransient from TColStd;
+    myMapOfSolids: MapOfTransient from TColStd;  
+    myMapOfEdges : MapOfTransient from TColStd;
+    myMapOfWires : MapOfTransient from TColStd;
+
+end Counter;

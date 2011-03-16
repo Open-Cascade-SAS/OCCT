@@ -1,0 +1,75 @@
+-- File:	HLRAlgo_EdgeIterator.cdl
+-- Created:	Mon Jan 11 13:58:26 1993
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+class EdgeIterator from HLRAlgo
+
+uses
+    EdgeStatus from HLRAlgo,
+    Address    from Standard,
+    Integer    from Standard,
+    Boolean    from Standard,
+    ShortReal  from Standard,
+    Real       from Standard
+
+is
+    Create returns EdgeIterator from HLRAlgo;
+	---Purpose: Iterator  on the  visible or  hidden  parts of  an
+	--          edge.
+    
+    InitHidden(me : in out; status : EdgeStatus from HLRAlgo)
+    is static;
+    
+    MoreHidden(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    NextHidden(me : in out)
+    is static;
+    
+    Hidden(me; Start    : out Real      from Standard;
+               TolStart : out ShortReal from Standard;
+               End      : out Real      from Standard;
+               TolEnd   : out ShortReal from Standard)
+	---C++: inline
+	---Purpose: Returns the bounds and the tolerances
+	--          of the current Hidden Interval
+    is static;
+    
+    InitVisible(me : in out; status : EdgeStatus from HLRAlgo)
+	---C++: inline
+    is static;
+    
+    MoreVisible(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    NextVisible(me : in out)
+	---C++: inline
+    is static;
+    
+    Visible(me : in out;
+            Start    : out Real      from Standard;
+            TolStart : out ShortReal from Standard;
+            End      : out Real      from Standard;
+            TolEnd   : out ShortReal from Standard)
+	---C++: inline
+	---Purpose: Returns the bounds and the tolerances
+	--          of the current Visible Interval
+    is static;
+    
+fields
+    myNbVis       : Integer   from Standard;
+    myNbHid       : Integer   from Standard;
+    EVis          : Address   from Standard;
+    EHid          : Address   from Standard;
+    iVis          : Integer   from Standard;
+    iHid          : Integer   from Standard;
+    myHidStart    : Real      from Standard;
+    myHidEnd      : Real      from Standard;
+    myHidTolStart : ShortReal from Standard;
+    myHidTolEnd   : ShortReal from Standard;
+
+end EdgeIterator;

@@ -1,0 +1,35 @@
+// File:	TCollection_SetIterator.gxx
+// Created:	Wed Mar  3 13:32:31 1993
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//=======================================================================
+//function : TCollection_SetIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_SetIterator::TCollection_SetIterator()
+{
+}
+
+//=======================================================================
+//function : TCollection_SetIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_SetIterator::TCollection_SetIterator(const TCollection_Set& S)
+{
+  Initialize(S);
+}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+
+void TCollection_SetIterator::Initialize(const TCollection_Set& S)
+{
+  myIterator.Initialize(S.myItems);
+}
+
+ 

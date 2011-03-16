@@ -1,0 +1,82 @@
+-- File:	LocalAnalysis.cdl
+-- Created:	Wed Jul 24 14:40:18 1996
+-- Author:	Herve LOUESSARD
+--		<hl1@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+package LocalAnalysis  
+
+    ---Purpose:
+    -- This package gives tools to check the local continuity 
+    -- between two  points situated  on two curves or two surfaces. 
+
+uses
+
+    Standard,
+    StdFail,
+    LProp,
+    GeomAbs,
+    Geom,
+    Geom2d,
+    GeomLProp,
+    gp
+    
+is
+
+
+--  enumeration used to describe the  status error 
+   
+enumeration  StatusErrorType   is  NullFirstDerivative, NullSecondDerivative, 
+                                 TangentNotDefined,NormalNotDefined,
+                                 CurvatureNotDefined         
+end  StatusErrorType; 
+
+     
+    class SurfaceContinuity;
+    ---Purpose:
+    -- This  class  computes  and gives  tools to check  the  local
+    -- continuity  between two points situated  on 2  surfaces
+    
+    
+    class CurveContinuity; 
+    ---Purpose:
+    -- This  class  compute
+    -- s  and gives  tools to check  the  local
+    -- continuity  between two points situated  on 2  curves) 
+    
+    
+    
+   
+    Dump( surfconti : SurfaceContinuity from LocalAnalysis;
+          o: in out OStream);	
+    ---Purpose:
+    -- This fonction gives informations  about a  variable CurveContinuity
+	  
+    Dump( curvconti : CurveContinuity from LocalAnalysis;
+          o: in out OStream);	
+    ---Purpose:
+    -- This fonction gives informations  about a variable SurfaceContinuity 
+	  
+    	  	  
+end LocalAnalysis; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

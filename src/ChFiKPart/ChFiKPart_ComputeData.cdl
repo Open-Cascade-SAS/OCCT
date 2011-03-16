@@ -1,0 +1,70 @@
+-- File:	ChFiKPart_ComputeData.cdl
+-- Created:	Thu Dec 23 14:40:32 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+class ComputeData from ChFiKPart 
+
+	---Purpose: Methodes de classe   permettant de  remplir    une
+	--          SurfData dans  les cas  particuliers  de  conges
+	--          suivants:
+	--          - cylindre entre 2 surfaces planes,
+	--          - tore/sphere entre un plan et un cylindre othogonal,
+	--          - tore/sphere entre un plan et un cone othogonal,
+    	--
+    	--          - tore entre un plan et une droite orthogonale (rotule).
+
+uses
+    	Orientation   from TopAbs,
+        Pnt2d         from gp,
+    	HSurface      from Adaptor3d,
+    	Spine         from ChFiDS,
+	SurfData      from ChFiDS,
+	DataStructure from TopOpeBRepDS
+is
+
+    Compute(myclass;
+            DStr                    : in out DataStructure from TopOpeBRepDS;
+    	    Data                    : in out SurfData from ChFiDS;
+    	    S1,S2                   : HSurface from Adaptor3d;
+    	    Or1,Or2                 : Orientation from TopAbs;
+            Sp                      : Spine from ChFiDS;
+    	    Iedge                   : Integer from Standard)
+    ---Purpose: Computes a simple fillet in several particular
+    --          cases. 
+    returns Boolean from Standard;
+
+    ComputeCorner(myclass;
+                  DStr                    : in out DataStructure from TopOpeBRepDS;
+    	          Data                    : SurfData from ChFiDS;
+    	          S1,S2                   : HSurface from Adaptor3d;
+    	          OrFace1,OrFace2,Or1,Or2 : Orientation from TopAbs;
+                  minRad,majRad           : Real from Standard;
+		  P1S1,P2S1,P1S2,P2S2     : Pnt2d from gp)
+    ---Purpose: Computes a toric or spheric corner fillet.  
+    returns Boolean from Standard;
+
+
+    ComputeCorner(myclass;
+                  DStr                    : in out DataStructure from TopOpeBRepDS;
+    	          Data                    : SurfData from ChFiDS;
+    	          S1,S2                   : HSurface from Adaptor3d;
+    	          OrFace1,OrFace2,Or1,Or2 : Orientation from TopAbs;
+                  Rad                     : Real from Standard;
+		  PS1,P1S2,P2S2           : Pnt2d from gp)
+    ---Purpose: Computes spheric corner fillet with non iso pcurve on S2.  
+    returns Boolean from Standard;
+
+
+    ComputeCorner(myclass;
+                  DStr            : in out DataStructure from TopOpeBRepDS;
+    	          Data            : SurfData from ChFiDS;
+    	          S,S1,S2         : HSurface from Adaptor3d;
+    	          OfS,OS,OS1,OS2  : Orientation from TopAbs;
+                  Radius          : Real from Standard)
+    ---Purpose: Computes a toric corner rotule. 
+    returns Boolean from Standard;
+
+end ComputeData;
+

@@ -1,0 +1,340 @@
+// File:      Bnd_B2x.gxx
+// Created:   08.09.05 19:37:06
+// Author:    Alexander GRIGORIEV
+// Copyright: Open Cascade 2005
+
+inline Standard_Boolean _compareDist  (const RealType aHSize[2],
+                                       const RealType aDist[2])
+{
+  return (Abs(aDist[0]) > aHSize[0] || Abs(aDist[1]) > aHSize[1]);
+}
+
+inline Standard_Boolean _compareDistD (const gp_XY& aHSize, const gp_XY& aDist)
+{
+  return (Abs(aDist.X()) > aHSize.X() || Abs(aDist.Y()) > aHSize.Y());
+}
+
+//=======================================================================
+//function : Add
+//purpose  : Update the box by a point
+//=======================================================================
+
+void Bnd_B2x::Add (const gp_XY& thePnt) {
+  if (IsVoid()) {
+    myCenter[0] = RealType(thePnt.X());
+    myCenter[1] = RealType(thePnt.Y());
+    myHSize [0] = 0.;
+    myHSize [1] = 0.;
+  } else {
+    const RealType aDiff[2] = {
+      RealType(thePnt.X()) - myCenter[0],
+      RealType(thePnt.Y()) - myCenter[1]
+    };
+    if (aDiff[0] > myHSize[0]) {
+      const RealType aShift = (aDiff[0] - myHSize[0]) / 2;
+      myCenter[0] += aShift;
+      myHSize [0] += aShift;
+    } else if (aDiff[0] < -myHSize[0]) {
+      const RealType aShift = (aDiff[0] + myHSize[0]) / 2;
+      myCenter[0] += aShift;
+      myHSize [0] -= aShift;
+    }
+    if (aDiff[1] > myHSize[1]) {
+      const RealType aShift = (aDiff[1] - myHSize[1]) / 2;
+      myCenter[1] += aShift;
+      myHSize [1] += aShift;
+    } else if (aDiff[1] < -myHSize[1]) {
+      const RealType aShift = (aDiff[1] + myHSize[1]) / 2;
+      myCenter[1] += aShift;
+      myHSize [1] -= aShift;
+    }
+  }
+}
+
+//=======================================================================
+//function : Limit
+//purpose  : limit the current box with the internals of theBox
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::Limit (const Bnd_B2x& theBox)
+{
+  Standard_Boolean aResult (Standard_False);
+  const RealType diffC[2] = {
+    theBox.myCenter[0] - myCenter[0],
+    theBox.myCenter[1] - myCenter[1]
+  };
+  const RealType sumH[2] = {
+    theBox.myHSize[0] + myHSize[0],
+    theBox.myHSize[1] + myHSize[1]
+  };
+  // check the condition IsOut
+  if (_compareDist (sumH, diffC) == Standard_False) {
+    const RealType diffH[2] = {
+      theBox.myHSize[0] - myHSize[0],
+      theBox.myHSize[1] - myHSize[1]
+    };
+    if (diffC[0] - diffH[0] > 0.) {
+      const RealType aShift = (diffC[0] - diffH[0]) / 2; // positive
+      myCenter[0] += aShift;
+      myHSize [0] -= aShift;
+    } else if (diffC[0] + diffH[0] < 0.) {
+      const RealType aShift = (diffC[0] + diffH[0]) / 2; // negative
+      myCenter[0] += aShift;
+      myHSize [0] += aShift;
+    }
+    if (diffC[1] - diffH[1] > 0.) {
+      const RealType aShift = (diffC[1] - diffH[1]) / 2; // positive
+      myCenter[1] += aShift;
+      myHSize [1] -= aShift;
+    } else if (diffC[1] + diffH[1] < 0.) {
+      const RealType aShift = (diffC[1] + diffH[1]) / 2; // negative
+      myCenter[1] += aShift;
+      myHSize [1] += aShift;
+    }
+    aResult = Standard_True;
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : Transformed
+//purpose  : 
+//=======================================================================
+
+Bnd_B2x Bnd_B2x::Transformed (const gp_Trsf2d& theTrsf) const
+{
+  Bnd_B2x aResult;
+  const gp_TrsfForm aForm = theTrsf.Form();
+  const Standard_Real aScale = theTrsf.ScaleFactor();
+  const Standard_Real aScaleAbs = Abs(aScale);
+  if (aForm == gp_Identity)
+    aResult = * this;
+  else if (aForm== gp_Translation || aForm== gp_PntMirror || aForm== gp_Scale)
+  {
+    aResult.myCenter[0] =
+      (RealType)(myCenter[0] * aScale + theTrsf.TranslationPart().X());
+    aResult.myCenter[1] =
+      (RealType)(myCenter[1] * aScale + theTrsf.TranslationPart().Y());
+    aResult.myHSize[0] = (RealType)(myHSize[0] * aScaleAbs);
+    aResult.myHSize[1] = (RealType)(myHSize[1] * aScaleAbs);
+  } else {
+    gp_XY aCenter ((Standard_Real)myCenter[0],
+                   (Standard_Real)myCenter[1]);
+    theTrsf.Transforms (aCenter);
+    aResult.myCenter[0] = (RealType)aCenter.X();
+    aResult.myCenter[1] = (RealType)aCenter.Y();
+
+    const Standard_Real * aMat = &theTrsf.HVectorialPart().Value(1,1);
+    aResult.myHSize[0] = (RealType)(aScaleAbs * (Abs(aMat[0]) * myHSize[0]+
+                                                 Abs(aMat[1]) * myHSize[1]));
+    aResult.myHSize[1] = (RealType)(aScaleAbs * (Abs(aMat[2]) * myHSize[0]+
+                                                 Abs(aMat[3]) * myHSize[1]));
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : Intersection Box - Circle
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::IsOut (const gp_XY&           theCenter,
+                                 const Standard_Real    theRadius,
+                                 const Standard_Boolean isCircleHollow) const
+{
+  Standard_Boolean aResult (Standard_True);
+  if (isCircleHollow == Standard_False) {
+    // vector from the center of the circle to the nearest box face
+    const Standard_Real aDist[2] = {
+      Abs(theCenter.X()-Standard_Real(myCenter[0])) - Standard_Real(myHSize[0]),
+      Abs(theCenter.Y()-Standard_Real(myCenter[1])) - Standard_Real(myHSize[1])
+    };
+    Standard_Real aD (0.);
+    if (aDist[0] > 0.)
+      aD  = aDist[0]*aDist[0];
+    if (aDist[1] > 0.)
+      aD += aDist[1]*aDist[1];
+    aResult = (aD > theRadius*theRadius);
+  } else {
+    const Standard_Real aDistC[2] = {
+      Abs(theCenter.X()-Standard_Real(myCenter[0])),
+      Abs(theCenter.Y()-Standard_Real(myCenter[1]))
+    };
+    // vector from the center of the circle to the nearest box face
+    Standard_Real aDist[2] = {
+      aDistC[0] - Standard_Real(myHSize[0]),
+      aDistC[1] - Standard_Real(myHSize[1])
+    };
+    Standard_Real aD (0.);
+    if (aDist[0] > 0.)
+      aD  = aDist[0]*aDist[0];
+    if (aDist[1] > 0.)
+      aD += aDist[1]*aDist[1];
+    if (aD < theRadius*theRadius) {
+      // the box intersects the solid circle; check if it is completely
+      // inside the circle (in such case return isOut==True)
+      aDist[0] = aDistC[0] + Standard_Real(myHSize[0]);
+      aDist[1] = aDistC[1] + Standard_Real(myHSize[1]);
+      if (aDist[0]*aDist[0]+aDist[1]*aDist[1] > theRadius*theRadius)
+        aResult = Standard_False;
+    }
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : Intersection Box - transformed Box
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::IsOut (const Bnd_B2x&   theBox,
+                                 const gp_Trsf2d& theTrsf) const
+{
+  Standard_Boolean aResult (Standard_False);
+  const gp_TrsfForm aForm = theTrsf.Form();
+  const Standard_Real aScale = theTrsf.ScaleFactor();
+  const Standard_Real aScaleAbs = Abs(aScale);
+  if (aForm == gp_Translation || aForm == gp_Identity ||
+      aForm == gp_PntMirror   || aForm == gp_Scale)
+  {
+    aResult =
+      (Abs (RealType(theBox.myCenter[0]*aScale + theTrsf.TranslationPart().X())
+            - myCenter[0])
+         > RealType (theBox.myHSize[0]*aScaleAbs) + myHSize[0] ||
+       Abs (RealType(theBox.myCenter[1]*aScale + theTrsf.TranslationPart().Y())
+            - myCenter[1])
+         > RealType (theBox.myHSize[1]*aScaleAbs) + myHSize[1]);
+
+  }
+  else {
+    // theBox is transformed and we check the resulting (enlarged) box against
+    // 'this' box.
+    const Standard_Real * aMat = &theTrsf.HVectorialPart().Value(1,1);
+
+    gp_XY aCenter ((Standard_Real)theBox.myCenter[0],
+                   (Standard_Real)theBox.myCenter[1]);
+    theTrsf.Transforms (aCenter);
+    const Standard_Real aDist[2] = {
+      aCenter.X() - (Standard_Real)myCenter[0],
+      aCenter.Y() - (Standard_Real)myCenter[1]
+    };
+    const Standard_Real aMatAbs[4] = {
+      Abs(aMat[0]), Abs(aMat[1]), Abs(aMat[2]), Abs(aMat[3])
+    };
+    if (Abs(aDist[0]) > (aScaleAbs * (aMatAbs[0]*theBox.myHSize[0]+
+                                      aMatAbs[1]*theBox.myHSize[1]) +
+                         (Standard_Real)myHSize[0])    ||
+        Abs(aDist[1]) > (aScaleAbs * (aMatAbs[2]*theBox.myHSize[0]+
+                                      aMatAbs[3]*theBox.myHSize[1]) +
+                         (Standard_Real)myHSize[1]))
+      aResult = Standard_True;
+
+    else {
+    // theBox is rotated, scaled and translated. We apply the reverse
+    // translation and scaling then check against the rotated box 'this'
+      if ((Abs(aMat[0]*aDist[0]+aMat[2]*aDist[1])
+           > theBox.myHSize[0]*aScaleAbs + (aMatAbs[0]*myHSize[0] +
+                                            aMatAbs[2]*myHSize[1])) ||
+          (Abs(aMat[1]*aDist[0]+aMat[3]*aDist[1])
+           > theBox.myHSize[1]*aScaleAbs + (aMatAbs[1]*myHSize[0] +
+                                            aMatAbs[3]*myHSize[1])))
+        aResult = Standard_True;
+    }
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : Intersection Box - Line
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::IsOut (const gp_Ax2d& theLine) const
+{
+  if (IsVoid())
+    return Standard_True;
+  // Intersect the line containing the segment.
+  const Standard_Real aProd[3] = {
+    theLine.Direction().XY() ^ (gp_XY (myCenter[0] - theLine.Location().X(),
+                                       myCenter[1] - theLine.Location().Y())),
+    theLine.Direction().X() * Standard_Real(myHSize[1]),
+    theLine.Direction().Y() * Standard_Real(myHSize[0])
+  };
+  return (Abs(aProd[0]) > (Abs(aProd[1]) + Abs(aProd[2])));
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  : Intersection Box - Segment
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::IsOut (const gp_XY& theP0, const gp_XY& theP1) const
+{
+  Standard_Boolean aResult (Standard_True);
+  if (IsVoid() == Standard_False)
+  {
+    // Intersect the line containing the segment.
+    const gp_XY aSegDelta (theP1 - theP0);
+    const Standard_Real aProd[3] = {
+      aSegDelta ^ (gp_XY (myCenter[0], myCenter[1]) - theP0),
+      aSegDelta.X() * Standard_Real(myHSize[1]),
+      aSegDelta.Y() * Standard_Real(myHSize[0])
+    };
+    if (Abs(aProd[0]) < (Abs(aProd[1]) + Abs(aProd[2])))
+    {
+      // Intersection with line detected; check the segment as bounding box
+      const gp_XY aHSeg    (0.5 * aSegDelta.X(), 0.5 * aSegDelta.Y());
+      const gp_XY aHSegAbs (Abs(aHSeg.X()), Abs(aHSeg.Y()));
+      aResult = _compareDistD (gp_XY((Standard_Real)myHSize[0],
+                                     (Standard_Real)myHSize[1]) + aHSegAbs,
+                               theP0 + aHSeg-gp_XY((Standard_Real)myCenter[0],
+                                                   (Standard_Real)myCenter[1]));
+    }
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : IsIn
+//purpose  : Test the complete inclusion of this box in transformed theOtherBox
+//=======================================================================
+
+Standard_Boolean Bnd_B2x::IsIn (const Bnd_B2x&   theBox,
+                                const gp_Trsf2d& theTrsf) const
+{
+  Standard_Boolean aResult (Standard_False);
+  const gp_TrsfForm aForm = theTrsf.Form();
+  const Standard_Real aScale = theTrsf.ScaleFactor();
+  const Standard_Real aScaleAbs = Abs(aScale);
+  if (aForm == gp_Translation || aForm == gp_Identity ||
+      aForm == gp_PntMirror   || aForm == gp_Scale)
+  {
+    aResult =
+      (Abs (RealType(theBox.myCenter[0]*aScale + theTrsf.TranslationPart().X())
+            - myCenter[0])
+         < RealType (theBox.myHSize[0]*aScaleAbs) - myHSize[0] &&
+       Abs (RealType(theBox.myCenter[1]*aScale + theTrsf.TranslationPart().Y())
+            - myCenter[1])
+         < RealType (theBox.myHSize[1]*aScaleAbs) - myHSize[1]);
+
+  } else {
+    // theBox is rotated, scaled and translated. We apply the reverse
+    // translation and scaling then check against the rotated box 'this'
+    const Standard_Real * aMat = &theTrsf.HVectorialPart().Value(1,1);
+    gp_XY aCenter ((Standard_Real)theBox.myCenter[0],
+                   (Standard_Real)theBox.myCenter[1]);
+    theTrsf.Transforms (aCenter);
+    const Standard_Real aDist[2] = {
+      aCenter.X() - (Standard_Real)myCenter[0],
+      aCenter.Y() - (Standard_Real)myCenter[1]
+    };
+    if ((Abs(aMat[0]*aDist[0]+aMat[2]*aDist[1])
+         < theBox.myHSize[0]*aScaleAbs - (Abs(aMat[0])*myHSize[0] +
+                                          Abs(aMat[2])*myHSize[1])) &&
+        (Abs(aMat[1]*aDist[0]+aMat[3]*aDist[1])
+         < theBox.myHSize[1]*aScaleAbs - (Abs(aMat[1])*myHSize[0] +
+                                          Abs(aMat[3])*myHSize[1])))
+      aResult = Standard_True;
+  }
+  return aResult;
+}

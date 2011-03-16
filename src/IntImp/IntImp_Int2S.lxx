@@ -1,0 +1,59 @@
+#include <StdFail_NotDone.hxx>
+#include <StdFail_UndefinedDerivative.hxx>
+#include <Standard_DomainError.hxx>
+
+
+inline Standard_Boolean IntImp_Int2S::IsDone()const { return done;}
+
+inline Standard_Boolean IntImp_Int2S::IsEmpty() const
+{ 
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::IsEmpty() ");
+  return empty;
+}
+
+inline const IntSurf_PntOn2S& IntImp_Int2S::Point() const
+{ 
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::Point() ");
+  if (empty) Standard_DomainError::Raise(" IntImp_Int2S::Point() ");
+  return pint;
+}
+
+inline Standard_Boolean IntImp_Int2S::IsTangent () const {
+
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::IsTangent () ");
+  if (empty) Standard_DomainError::Raise(" IntImp_Int2S::IsTangent () ");
+  return tangent;
+}
+
+inline const gp_Dir& IntImp_Int2S::Direction () const {
+
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::Direction () ");
+  if (empty) Standard_DomainError::Raise(" IntImp_Int2S::Direction () ");
+  if (tangent) StdFail_UndefinedDerivative::Raise
+    (" IntImp_Int2S::Direction () ");
+  return d3d;
+}
+
+inline const gp_Dir2d& IntImp_Int2S::DirectionOnS1 () const {
+
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::DirectionOnS1 () ");
+  if (empty) Standard_DomainError::Raise(" IntImp_Int2S::DirectionOnS1 () ");
+  if (tangent) StdFail_UndefinedDerivative::Raise
+    (" IntImp_Int2S::DirectionOnS1 () ");
+  return d2d1;
+}
+
+inline const gp_Dir2d& IntImp_Int2S::DirectionOnS2 () const {
+
+  if (!done) StdFail_NotDone::Raise(" IntImp_Int2S::DirectionOnS2 () ");
+  if (empty) Standard_DomainError::Raise(" IntImp_Int2S::DirectionOnS2 () ");
+  if (tangent) StdFail_UndefinedDerivative::Raise
+    (" IntImp_Int2S::DirectionOnS2 () ");
+  return d2d2;
+}
+
+
+inline IntImp_TheFunction& IntImp_Int2S::Function()  {
+  return myZerParFunc;
+} 
+

@@ -1,0 +1,194 @@
+-- File:	AIS_EqualDistanceRelation.cdl
+-- Created:	Sat Jan 24 18:23:51 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@leonox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EqualDistanceRelation from AIS inherits Relation from AIS
+
+	---Purpose: A framework to display equivalent distances between
+    	-- shapes and a given plane.
+    	-- The distance is the length of a projection from the
+    	-- shape to the plane.
+    	-- These distances are used to compare shapes by this vector alone.
+
+uses
+    Shape from TopoDS,
+    Plane from Geom,
+    PresentationManager3d from PrsMgr,
+    Presentation from Prs3d,
+    Projector from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject from Graphic2d,
+    Selection from SelectMgr,
+    Pnt from gp,
+    Drawer from AIS,
+    ExtendedString from TCollection,
+    Edge from TopoDS,
+    Vertex from TopoDS,
+    Box from Bnd,
+    Dir from gp,
+    ArrowSide from DsgPrs,
+    TypeOfDist from AIS 
+    
+is
+    Create( aShape1 : Shape from TopoDS;
+    	    aShape2 : Shape from TopoDS;
+    	    aShape3 : Shape from TopoDS;
+    	    aShape4 : Shape from TopoDS;
+	    aPlane  : Plane from Geom ) 
+	---Purpose: Constructs a framework to display equivalent
+    	-- distances between the shapes aShape1, aShape2,
+    	-- aShape3, aShape4 and the plane aPlane.
+    	-- The distance is the length of a projection from the
+    	-- shape to the plane.
+    returns mutable EqualDistanceRelation from AIS;
+
+    SetShape3( me: mutable; aShape : Shape from TopoDS )
+    is static;
+    	---Purpose:
+    	-- Sets the shape aShape to be used as the shape
+    	-- aShape3 in the framework created at construction time.
+        ---C++: inline
+
+    Shape3(me) returns Shape from TopoDS 
+    is static;
+    	---Purpose:
+    	-- Returns the shape aShape3 from the framework
+    	-- created at construction time.
+    	---C++: return const &    
+    	---C++: inline
+    
+    SetShape4( me: mutable; aShape : Shape from TopoDS )
+    is static;
+        ---C++: inline
+    	---Purpose:
+    	-- Sets the shape aShape to be used as the shape
+    	-- aShape4 in the framework created at construction time.
+    
+    Shape4(me) returns Shape from TopoDS 
+    is static;
+    	---C++: return const &    
+    	---C++: inline
+    	---Purpose:
+    	-- Returns the shape aShape4 from the framework
+    	-- created at construction time.
+    
+-- Methods from PresentableObject
+
+    Compute( me            : mutable;
+  	     aPresentationManager: PresentationManager3d from PrsMgr;
+    	     aPresentation : mutable Presentation from Prs3d;
+    	     aMode         : Integer from Standard= 0 ) 
+    is redefined static private;
+    
+    Compute( me            : mutable;
+    	     aProjector    : Projector from Prs3d;
+             aPresentation : mutable Presentation from Prs3d )
+    is redefined static private;     
+
+    Compute( me                  : mutable;
+    	    aPresentationManager : PresentationManager2d from PrsMgr;
+            aPresentation        : mutable GraphicObject from Graphic2d;
+            aMode                : Integer from Standard = 0 )
+    is redefined static private;	
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: Computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+-- Methods from SelectableObject
+
+    ComputeSelection( me         : mutable;
+    	    	      aSelection : mutable Selection from SelectMgr;
+    	    	      aMode      : Integer from Standard)
+    is private;
+-- ota -- begin
+    ComputeTwoEdgesLength (myclass;
+    	    	    	   aPresentation : mutable Presentation   from Prs3d; 
+			   aDrawer       :         Drawer         from AIS; 
+			   ArrowSize     :         Real           from Standard;
+			   FirstEdge     :         Edge           from TopoDS;
+			   SecondEdge    :         Edge           from TopoDS;
+			   Plane         :         Plane          from Geom;
+			   AutomaticPos  :         Boolean        from Standard;
+			   IsSetBndBox   :         Boolean        from Standard;
+			   BndBox        :         Box            from Bnd;
+			   Position      : out     Pnt            from gp;
+			   FirstAttach   : out     Pnt            from gp;
+			   SecondAttach  : out     Pnt            from gp;
+			   FirstExtreme  : out     Pnt            from gp;
+			   SecondExtreme : out     Pnt            from gp;
+			   SymbolPrs     : out     ArrowSide      from DsgPrs );	
+			   ---Purpose: Computes the location of an intreval between  
+			   --          between two edges. FirstAttach , SecondAttach
+			   --          are the returned extreme points of the interval.
+			            
+    ComputeTwoVerticesLength(myclass; 
+    	    	    	     aPresentation : mutable Presentation   from Prs3d;
+			     aDrawer       :         Drawer         from AIS; 
+			     ArrowSize     :         Real           from Standard;
+			     FirstVertex   :         Vertex         from TopoDS;
+			     SecondVertex  :         Vertex         from TopoDS;
+			     Plane         :         Plane          from Geom;
+			     AutomaticPos  :         Boolean        from Standard;
+			     IsSetBndBox   :         Boolean        from Standard;
+			     BndBox        :         Box            from Bnd;
+			     TypeDist      :         TypeOfDist     from AIS; 
+			     Position      : out     Pnt            from gp;
+			     FirstAttach   : out     Pnt            from gp;
+			     SecondAttach  : out     Pnt            from gp;
+			     FirstExtreme  : out     Pnt            from gp;
+			     SecondExtreme : out     Pnt            from gp;
+			     SymbolPrs     : out     ArrowSide      from DsgPrs );
+    ---Purpose: Computes the interval position between two vertexs. FirstAttach,
+    --          SecondAttach are the returned extreme points of the interval.
+			            
+    ComputeOneEdgeOneVertexLength(myclass; 
+    	    	    	          aPresentation : mutable Presentation   from Prs3d;
+			          aDrawer       :         Drawer         from AIS; 
+			          ArrowSize     :         Real           from Standard;
+			          FirstShape    :         Shape          from TopoDS;
+			          SecondShape   :         Shape          from TopoDS;
+			          Plane         :         Plane          from Geom;
+			          AutomaticPos  :         Boolean        from Standard;
+			          IsSetBndBox   :         Boolean        from Standard;
+			          BndBox        :         Box            from Bnd;
+			          Position      : out     Pnt            from gp;
+			          FirstAttach   : out     Pnt            from gp;
+			          SecondAttach  : out     Pnt            from gp;
+			          FirstExtreme  : out     Pnt            from gp;
+			          SecondExtreme : out     Pnt            from gp;
+			          SymbolPrs     : out     ArrowSide      from DsgPrs );
+    	---Purpose: Compute the interval location between a vertex and an edge. Edge may be 
+    	--          a line or a circle.
+	
+-- ota -- end		    			
+			       
+fields
+
+    myShape3 : Shape from TopoDS;
+    myShape4 : Shape from TopoDS;
+    
+    myAttachPoint1 : Pnt from gp; -- the start points of constraint curves
+    myAttachPoint2 : Pnt from gp;
+    myAttachPoint3 : Pnt from gp;
+    myAttachPoint4 : Pnt from gp;
+    
+    myPoint1  : Pnt from gp; -- the end points constraint curves
+    myPoint2  : Pnt from gp;
+    myPoint3  : Pnt from gp;
+    myPoint4  : Pnt from gp;
+    
+end EqualDistanceRelation;

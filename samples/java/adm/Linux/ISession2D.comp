@@ -1,0 +1,21 @@
+if (!($?CCHOME))   setenv CCHOME   "/usr/bin/g++   "
+if (!($?CCFLAGS))  setenv CCFLAGS  "  -fPIC -DLIN -DLININTEL -DCSFDB -DNO_EXCEPTION -funsigned-char -Wall -O3 -DNDEBUG -DNo_Exception "
+
+if (!($?CCINC))   setenv CCINC    "."
+
+if (!($?STLPortHome)) then
+    setenv STLPortInclude	"."
+else
+    if (!($?STLPortInclude))	setenv STLPortInclude	"$STLPortHome/stlport"
+endif
+
+if (!(-e ${SAMPLE_ROOT}/${STATION}/obj/ISession2D)) mkdir -p ${SAMPLE_ROOT}/${STATION}/obj/ISession2D
+if (!(-e ${SAMPLE_ROOT}/${STATION}/obj/.tmp))       mkdir -p ${SAMPLE_ROOT}/${STATION}/obj/.tmp
+if (!(-e ${SAMPLE_ROOT}/${STATION}/lib))            mkdir -p ${SAMPLE_ROOT}/${STATION}/lib
+
+
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC} -I${JAVAHOME}/include -I${JAVAHOME}/include/linux -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/ISession2D/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/src/ISession2D/ISession2D_InteractiveContext.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/ISession2D//ISession2D_InteractiveContext.o 
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC} -I${JAVAHOME}/include -I${JAVAHOME}/include/linux -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/ISession2D/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/src/ISession2D/ISession2D_SensitiveCurve.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/ISession2D//ISession2D_SensitiveCurve.o 
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC} -I${JAVAHOME}/include -I${JAVAHOME}/include/linux -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/ISession2D/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/src/ISession2D/ISession2D_Curve.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/ISession2D//ISession2D_Curve.o 
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC} -I${JAVAHOME}/include -I${JAVAHOME}/include/linux -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/ISession2D/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/src/ISession2D/ISession2D_ObjectOwner.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/ISession2D//ISession2D_ObjectOwner.o 
+${CCHOME} ${CCFLAGS} -I${STLPortInclude} -I${CCINC} -I${JAVAHOME}/include -I${JAVAHOME}/include/linux -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -I${SAMPLE_ROOT}/inc  -I${SAMPLE_ROOT}/drv/ISession2D/.  -I${CASROOT}/inc   -I${CASROOT}/src/WOKTclLib     -c ${SAMPLE_ROOT}/src/ISession2D/ISession2D_Shape.cxx -o ${SAMPLE_ROOT}/${STATION}/obj/ISession2D//ISession2D_Shape.o 

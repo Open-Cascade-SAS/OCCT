@@ -1,0 +1,64 @@
+-- File:        math_GaussSetIntegration.cdl
+-- Created:     Mon Jan 22  1996
+-- Author:      Philippe MANGIN
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1996
+
+
+
+class GaussSetIntegration from math
+    ---Purpose: -- This class implements the integration of a set of N
+    --              functions of M  variables variables between the
+    --              parameter bounds Lower[a..b] and Upper[a..b].
+    --  Warning: - The case M>1 is not implemented.
+
+
+uses Vector from math,
+     IntegerVector from math, 
+     FunctionSet from math,
+     OStream from Standard,
+     NotDone from StdFail
+
+raises NotDone, NotImplemented
+
+is
+
+     Create(F: in out FunctionSet; Lower, Upper: Vector;
+     	    Order: IntegerVector)
+     ---Purpose:
+     -- The Gauss-Legendre integration with Order = points of 
+     -- integration for each unknow, is done on the function F 
+     -- between the bounds Lower and Upper.
+     returns GaussSetIntegration     
+     raises  NotImplemented;
+     
+     IsDone(me)
+     	---Purpose: returns True if all has been correctly done.
+    	---C++: inline
+
+     returns Boolean
+     is static;
+     
+     Value(me)
+     	---Purpose: returns the value of the integral.
+    	---C++: inline
+    	---C++: return const&
+
+     returns Vector
+     raises NotDone
+     is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    is static;
+
+
+
+
+fields
+
+Val: Vector;
+Done: Boolean;
+
+end GaussSetIntegration;

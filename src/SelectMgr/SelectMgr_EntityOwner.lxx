@@ -1,0 +1,10 @@
+// File:	SelectMgr_EntityOwner.lxx
+// Created:	Wed Jun 17 11:49:40 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline Standard_Integer SelectMgr_EntityOwner::State() const
+{return mystate;}
+
+inline void SelectMgr_EntityOwner::State(const Standard_Integer aStatus)
+{mystate = aStatus;}

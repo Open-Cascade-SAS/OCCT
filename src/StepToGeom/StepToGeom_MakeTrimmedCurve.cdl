@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeTrimmedCurve.cdl
+-- Created:	Fri Nov  4 10:28:03 1994
+-- Author:	Frederic MAUPAS
+---Copyright:	 Matra Datavision 1994
+
+class MakeTrimmedCurve from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          class TrimmedCurve from StepGeom which
+    --          describes a Trimmed Curve from prostep and TrimmedCurve from 
+    --          Geom. 
+
+uses TrimmedCurve from Geom,
+     TrimmedCurve from StepGeom
+
+is 
+
+    Convert ( myclass; SC : TrimmedCurve from StepGeom;
+                       CC : out TrimmedCurve from Geom )
+    returns Boolean from Standard;
+
+end MakeTrimmedCurve;

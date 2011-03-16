@@ -1,0 +1,109 @@
+-- File:	Standard_AncestorIterator.cdl
+-- Created:	Mon Aug 24 16:14:23 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun3>
+---Copyright:	 Matra Datavision 1992
+
+class AncestorIterator from Standard
+    ---Purpose:
+    -- The class <AncestorIterator> is a iterator which provides 
+    -- information about inheritance. 
+    -- An AncestorIterator object is used to scan sequentially the 
+    -- hierarchy of a type object from its direct super-type to the root.
+    --
+    -- Warning:
+    --   The near parents are first.
+    --   
+uses 
+    Boolean from Standard
+   ,Integer from Standard
+   ,Type from Standard
+
+raises 
+    NoMoreObject from Standard
+   
+is
+
+    ------------------------------------------------------------------------
+    ---Category: The Constructur of AncestorIterator.
+    ------------------------------------------------------------------------
+    Create(anOther: AncestorIterator )  returns AncestorIterator;
+    ---Purpose:
+    --   The copy constructor for a AncestorIterator . 
+    --   
+    ---Level: Advanced    
+       
+    Create(aType: Type) returns AncestorIterator;
+    ---Purpose: 
+    --   Creates an iterator on the type <aType>.
+    --   Set the iterator at the beginning of the ancestors; 
+    --   this means near parents are first.
+    ---Level: Advanced  
+   
+    ------------------------------------------------------------------------
+    ---Category: Assignation.
+    ------------------------------------------------------------------------
+    Assign(me: in out; anOther: AncestorIterator); 
+    ---Purpose:
+    --   Assigns an  AncestorIterator from another AncestorIterator.
+    --
+    ---C++: alias operator =        
+    ---Level: Advanced        
+          
+    ------------------------------------------------------------------------
+    ---Category: The methods for iterating.
+    ------------------------------------------------------------------------
+
+    More(me) returns Boolean;
+    ---Purpose: 
+    -- Returns True if there are other ancestors.
+    --
+    -- Example:
+    --
+    -- Handle(Standard_Type) type;
+    -- Standard_AncestorIterator super(TYPE(Geom_Circle));
+    -- while(super.More()) { type = super.Value();
+    --      super.Next();
+    -- }  
+
+    Next(me: in out) 
+    ---Purpose: 
+    -- Moves the position of the iterator to the next super-type. 
+    -- If the current position corresponds to a root class, it becomes undefined.
+    --
+    -- Exceptions:
+    -- Standard_NoMoreObject if the position of the iterator is undefined
+    raises NoMoreObject; -- If there are no more ancestors.
+    ---Level: Advanced  
+          
+    ------------------------------------------------------------------------
+    ---Category: The information of each ancestor.
+    ------------------------------------------------------------------------
+
+    Iterator(me) returns AncestorIterator
+    ---Purpose: 
+    --   Returns an <AncestorIterator> corresponding to the current position 
+    --   of the iterator.
+    raises NoMoreObject; -- If there are no more Ancestors.
+    ---Level: Advanced  
+
+    Value(me) returns Type 
+    ---Purpose:
+    -- Returns the type corresponding to the current position of 
+    -- the iterator.
+    --
+    -- Example:
+    --
+    -- Standard_AncestorIterator super(TYPE(Geom_Circle));
+    -- assert (super.Value() == TYPE(Geom_Conic));
+    --
+    -- Exceptions:
+    -- Standard_NoSuchObject if the position of the iterator is undefined.
+    raises NoMoreObject; -- If there are no more ancestors.
+   
+fields
+
+    myType  : Type;
+    myNbIter: Integer;
+   
+end AncestorIterator from Standard;

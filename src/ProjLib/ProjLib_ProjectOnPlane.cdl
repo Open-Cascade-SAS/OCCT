@@ -1,0 +1,302 @@
+-- File:	ProjLib_ProjectOnPlane.cdl
+-- Created:	Fri Sep  2 15:56:32 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+class ProjectOnPlane from ProjLib inherits Curve from Adaptor3d
+
+
+    ---Purpose: Class  used  to project  a 3d curve   on a plane.  The
+    --          result will be a 3d curve.
+    --          
+    --          You  can ask   the projected curve  to  have  the same
+    --          parametrization as the original curve.
+    --           
+    --          The projection can be done  along every direction  not
+    --          parallel to the plane.
+    --          
+
+
+
+uses
+
+    Shape             from GeomAbs,
+    CurveType         from GeomAbs,
+    Dir               from gp,
+    Ax3               from gp,
+    Vec               from gp,
+    Pnt               from gp,
+    Circ              from gp,
+    Elips             from gp,
+    Hypr              from gp,
+    Parab             from gp,
+    Lin               from gp,
+    Curve             from Adaptor3d,
+    HCurve            from GeomAdaptor,
+    HCurve            from Adaptor3d,
+    BezierCurve       from Geom,
+    BSplineCurve      from Geom,
+    Array1OfPnt       from TColgp,
+    Array1OfReal      from TColStd,
+    Array1OfInteger   from TColStd
+     
+raises
+    
+    OutOfRange        from Standard,
+    NoSuchObject      from Standard,
+    DomainError       from Standard,
+    ConstructionError from Standard,
+    NotImplemented    from Standard
+    
+is
+
+    Create returns ProjectOnPlane from ProjLib;
+    	---Purpose: Empty constructor.
+    
+
+    Create( Pl : Ax3 from gp) 
+	---Purpose: The projection will be normal to the Plane defined
+	--          by the Ax3 <Pl>.
+    returns ProjectOnPlane from ProjLib;
+    
+
+    Create( Pl : Ax3 from gp;
+     	    D  : Dir from gp )     
+    returns ProjectOnPlane from ProjLib
+	---Purpose: The projection will be  along the direction <D> on
+	--          the plane defined by the Ax3 <Pl>. 
+    raises 
+    	ConstructionError from Standard;
+	---Purpose: raises  if the direction  <D>  is parallel  to the
+	--          plane <Pl>.
+
+
+    Load(me : in out; 
+    	 C                   : HCurve  from Adaptor3d;
+    	 Tolerance           : Real    from Standard;
+    	 KeepParametrization : Boolean from Standard = Standard_True)
+	---Purpose: Sets the  Curve  and perform  the projection.   if
+	--          <KeepParametrization> is true, the parametrization
+	--          of the Projected Curve <PC>  will  be the same  as
+	--          the parametrization of the initial  curve <C>.  It
+	--          meens: proj(C(u)) = PC(u) for  each u.  Otherwize,
+	--          the parametrization may change.
+    is static;
+    
+
+    GetPlane(me) returns Ax3 from gp
+	---C++: return const &
+    is static;
+    
+    GetDirection (me) returns Dir from gp
+	---C++: return const &
+    is static;
+    
+    GetCurve(me) returns HCurve from Adaptor3d 
+	---C++: return const &
+    is static;
+
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    FirstParameter(me) returns Real
+    is redefined static;
+
+    LastParameter(me) returns Real
+    is redefined static;
+    
+    Continuity(me) returns Shape from GeomAbs
+    is redefined static;
+    
+    NbIntervals(me: in out; S : Shape from GeomAbs) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <S>.    And  returns   the number   of
+	--          intervals.
+    is redefined static;
+    
+    Intervals(me: in out; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined static;
+
+    Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+    raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+    is redefined static;
+    
+    
+    IsClosed(me) returns Boolean
+    is redefined static;
+     
+    IsPeriodic(me) returns Boolean
+    is redefined static;
+    
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    is redefined static;
+     
+    Value(me; U : Real) returns Pnt from gp
+        --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D0 (me; U : Real; P : out Pnt from gp)
+        --- Purpose : Computes the point of parameter U on the curve.
+    is redefined static;
+    
+    D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+    	--- Purpose : Computes the point of parameter U on the curve with its
+        --  first derivative.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is redefined static;
+    
+    D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+    is redefined static;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+    is redefined static;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+    is redefined static;
+
+    Resolution(me; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    is redefined static;   
+        
+    GetType(me) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    is redefined static;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Line(me) returns Lin from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    Circle(me) returns Circ from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    Ellipse(me) returns Elips from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    Hyperbola(me) returns  Hypr from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+    Parabola(me) returns Parab from gp
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+     
+     Degree(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     IsRational(me) returns Boolean
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+     NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+    
+     NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+     is redefined static;
+     
+
+    Bezier(me) returns BezierCurve from Geom
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    	---Purpose:  Warning ! this will NOT make a copy of the
+    	--         Bezier Curve : If you want to modify
+    	--         the Curve please make a copy yourself
+    	--         Also it will NOT trim the surface to
+    	--         myFirst/Last.
+    
+    BSpline(me) returns BSplineCurve from Geom
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    	---Purpose:  Warning ! this will NOT make a copy of the
+    	--         BSpline Curve : If you want to modify
+    	--         the Curve please make a copy yourself
+    	--         Also it will NOT trim the surface to
+    	--         myFirst/Last.
+     
+
+fields
+    
+     myCurve     : HCurve    from Adaptor3d ;
+     myPlane     : Ax3       from gp;
+     myDirection : Dir       from gp;
+     myKeepParam : Boolean   from Standard;
+     myFirstPar  : Real      from Standard;
+     myLastPar   : Real      from Standard;
+     myTolerance : Real      from Standard;
+     -- the tolerance to make the approximation if
+     -- necessary
+     myType      : CurveType from GeomAbs;
+     myResult    : HCurve    from GeomAdaptor ;
+     myIsApprox  : Boolean   from Standard;
+     
+     -- the result of the approximation 
+     
+end ProjectOnPlane;

@@ -1,0 +1,16 @@
+// File:	BRepSweep_Builder.lxx
+// Created:	Thu Feb  4 15:23:41 1993
+// Author:	Laurent BOURESCHE
+//		<lbo@phylox>
+
+//=======================================================================
+//function : Builder
+//purpose  : 
+//=======================================================================
+
+inline const BRep_Builder&  BRepSweep_Builder::Builder()const 
+{
+  return myBuilder;
+}
+
+

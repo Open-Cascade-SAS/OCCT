@@ -1,0 +1,85 @@
+#include <Standard_OutOfRange.hxx>
+
+
+void Extrema_CurveLocator::Locate (const Pnt& P, const Curve1& C, 
+				   const Standard_Integer NbU, 
+				   POnC& Papp) {
+
+/*-----------------------------------------------------------------------------
+Fonction:
+     Recherche, parmi un echantillon de 'NbU' points de la courbe C, du
+    point le plus proche du point P.
+    L'echantillonnage est fait a parametre constant sur l'intervalle de
+    definition de la courbe.
+-----------------------------------------------------------------------------*/
+
+  if (NbU < 2) { Standard_OutOfRange::Raise(); }
+
+  Standard_Real U = Tool1::FirstParameter(C);
+  Standard_Real PasU = (Tool1::LastParameter(C) - U)/ (NbU - 1);
+  Standard_Real Dist2Min = RealLast(), UMin=0;
+  Pnt PntMin;
+  Standard_Real Dist2;
+  Pnt Pt;
+  for ( Standard_Integer NoSample = 1; NoSample < NbU; NoSample++, U += PasU) {
+    Pt = Tool1::Value(C, U);
+    Dist2 = Pt.SquareDistance(P);
+    if (Dist2 < Dist2Min) {
+      Dist2Min = Dist2;
+      UMin = U;
+      PntMin = Pt;
+    }
+  }
+  Papp.SetValues(UMin,PntMin);
+}
+
+
+
+void Extrema_CurveLocator::Locate (const Pnt& P, const Curve1& C, 
+				   const Standard_Integer NbU, 
+				   const Standard_Real Umin, 
+				   const Standard_Real Usup,
+				   POnC& Papp) {
+
+/*-----------------------------------------------------------------------------
+Fonction:
+     Recherche, parmi un echantillon de 'NbU' points de la courbe C, du
+    point le plus proche du point P.
+    L'echantillonnage est fait a parametre constant sur l'intervalle de
+    definition de la courbe.
+-----------------------------------------------------------------------------*/
+
+  if (NbU < 2) { Standard_OutOfRange::Raise(); }
+  Standard_Real U1, U2, U11, U12;
+  Standard_Real Uinf = Tool1::FirstParameter(C);
+  Standard_Real Ulast = Tool1::LastParameter(C);
+
+
+  U1 = Min(Uinf, Ulast);
+  U2 = Max(Uinf, Ulast);
+  U11 = Min(Umin, Usup);
+  U12 = Max(Umin, Usup);
+
+  if (U11 < U1 - RealEpsilon()) U11 = U1;
+  if (U12 > U2 + RealEpsilon()) U12 = U2;
+
+  Standard_Real U = U11;
+  Standard_Real PasU = (U12 - U)/ (NbU - 1);
+  Standard_Real Dist2Min = RealLast(), UMin=0;
+  Pnt PntMin;
+  Standard_Real Dist2;
+  Pnt Pt;
+  for ( Standard_Integer NoSample = 1; NoSample < NbU; NoSample++, U += PasU) {
+    Pt = Tool1::Value(C, U);
+    Dist2 = Pt.SquareDistance(P);
+    if (Dist2 < Dist2Min) {
+      Dist2Min = Dist2;
+      UMin = U;
+      PntMin = Pt;
+    }
+  }
+  Papp.SetValues(UMin, PntMin);
+}
+
+
+

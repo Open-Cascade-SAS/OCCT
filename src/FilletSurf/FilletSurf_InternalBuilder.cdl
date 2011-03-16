@@ -1,0 +1,274 @@
+-- File:	BlendToy_Fillet.cdl
+-- Created:	Fri Jul 26 11:28:31 1996
+-- Authors:	Maria PUMBORIOS
+--              Laurent BOURESCHE
+--		<mps@sgi30>
+---Copyright:	 Matra Datavision 1996
+
+private class InternalBuilder from FilletSurf inherits FilBuilder from ChFi3d 
+
+  ---Purpose:  This class is private. It is  used by the class Builder
+  --           from FilletSurf. It computes geometric information about fillets.   
+
+uses
+    SurfData from ChFiDS,
+    HElSpine from ChFiDS,
+    Spine from ChFiDS,
+    SequenceOfSurfData from ChFiDS,
+    HSurface from BRepAdaptor,
+    TopolTool from Adaptor3d,
+    Shape,Edge,Face from TopoDS,
+    Surface from Geom,
+    Curve from Geom,
+    TrimmedCurve from Geom,
+    FilletShape from ChFi3d,
+    ListOfShape from TopTools,
+    Vector from math,
+    Real from Standard,
+    Curve from Geom2d,
+    Pnt from gp,
+    StatusType,ErrorTypeStatus,StatusDone  from FilletSurf,
+    HCurve2d          from BRepAdaptor,
+    Orientation       from TopAbs
+is 
+   
+
+    Create(S      : Shape from TopoDS;  
+    	   FShape : FilletShape from ChFi3d = ChFi3d_Polynomial;
+           Ta     : Real from Standard = 1.0e-2;
+           Tapp3d : Real from Standard=1.0e-4;
+           Tapp2d : Real from Standard=1.0e-5)  
+	   
+    returns InternalBuilder from FilletSurf;
+
+
+
+    Add(me : in out; 
+        E  : ListOfShape from TopTools;
+    	R  : Real from Standard)
+	
+	---Purpose: Initializes the contour with a list of Edges
+	-- 0 : no problem 
+	-- 1 : empty list 
+	-- 2 : the edges are not G1
+	-- 3 : two connected faces on a same support are not G1               
+	-- 4 : the  edge   is  not on  shape 
+	-- 5 :  NotSharpEdge: the  edge is not sharp
+    returns Integer from Standard;
+
+    
+    Perform(me : in out);
+        --- computation of the fillet  
+
+    PerformSurf(me              : in out; 
+    	    	SeqData         : out SequenceOfSurfData from ChFiDS; 
+    	        Guide           : HElSpine from ChFiDS;
+   	        Spine           : Spine from ChFiDS; 
+    	    	Choix           : Integer from Standard;
+                S1              : HSurface from BRepAdaptor;
+     	        I1              : TopolTool from Adaptor3d;
+	        S2              : HSurface from BRepAdaptor;
+	        I2              : TopolTool from Adaptor3d;
+                MaxStep         : Real from Standard;
+                Fleche          : Real from Standard;
+    	        TolGuide        : Real from Standard;
+    	        First,Last      : in out Real from Standard;
+	        Inside,Appro    : Boolean from Standard;
+                Forward         : Boolean from Standard;
+	        RecOnS1,RecOnS2 : Boolean from Standard;
+		Soldep          : Vector from math;
+    	    	Intf,Intl       : in out Boolean from Standard) 
+    returns  Boolean
+    is redefined protected;
+    ---Purpose: This  method calculates the elements of construction of the
+    --          fillet (constant or evolutive).
+    --          
+        PerformSurf(me                   : in out; 
+                    SeqData              : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+                    PC1                  : HCurve2d from BRepAdaptor;
+                    Sref1                : HSurface from BRepAdaptor;
+                    PCref1               : HCurve2d from BRepAdaptor;
+                    Decroch1             : out Boolean from Standard;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+                    Or2                  : Orientation from TopAbs;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP,RecS,RecRst     : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+        PerformSurf(me                   : in out;  
+	    	    SeqData              : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+                    Or1                  : Orientation from TopAbs;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+                    PC2                  : HCurve2d from BRepAdaptor;
+                    Sref2                : HSurface from BRepAdaptor;
+                    PCref2               : HCurve2d from BRepAdaptor;
+                    Decroch2             : out Boolean from Standard;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP,RecS,RecRst     : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+        PerformSurf(me                   : in out; 
+                    Data                 : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+		    PC1                  : HCurve2d from BRepAdaptor;
+                    Sref1                : HSurface from BRepAdaptor;
+		    PCref1               : HCurve2d from BRepAdaptor;
+		    Decroch1             : out Boolean from Standard;
+		    Or1                  : Orientation from TopAbs;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+		    PC2                  : HCurve2d from BRepAdaptor;
+                    Sref2                : HSurface from BRepAdaptor;
+		    PCref2               : HCurve2d from BRepAdaptor;
+		    Decroch2             : out Boolean from Standard;
+		    Or2                  : Orientation from TopAbs;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP1,RecRst1        : Boolean from Standard;
+                    RecP2,RecRst2        : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+    Done (me) returns Boolean from Standard;
+    
+    NbSurface(me) returns Integer from Standard;
+    ---Purpose: gives the number of NUBS surfaces  of the Fillet. 
+
+    SurfaceFillet (me;Index:Integer from Standard)
+    ---Purpose: gives the NUBS surface of index Index. 
+    ---C++: return const &
+    returns Surface from Geom; 
+   
+    TolApp3d (me;Index:Integer from Standard) returns Real from Standard;
+    ---Purpose: gives  the  3d  tolerance reached during approximation
+    --          of the surface of index Index
+   
+    
+    SupportFace1 (me;Index:Integer from Standard)
+    ---Purpose:gives the first support  face relative to SurfaceFillet(Index);
+    ---C++:return const &
+    returns Face from TopoDS;               
+                    
+    SupportFace2 (me;Index:Integer from Standard)
+    ---Purpose:gives the second support  face relative to SurfaceFillet(Index);
+    ---C++:return const &
+    returns Face from TopoDS;
+   
+    CurveOnFace1 (me;Index:Integer from Standard)
+    ---C++: return const & 
+    --- Purpose:    gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)  
+    returns Curve from Geom;
+
+    CurveOnFace2  (me;Index:Integer from Standard)
+    ---C++: return  const    & 
+    ---Purpose: gives the     3d  curve of  SurfaceFillet(Index) on SupportFace2(Index)
+    returns Curve from Geom;
+    
+    PCurveOnFace1(me;Index:Integer from Standard)
+    ---Purpose:gives the  PCurve associated to CurvOnSup1(Index)  on the support face 
+    ---C++: return const&
+    returns Curve from Geom2d;
+    
+    PCurve1OnFillet (me;Index:Integer from Standard)
+    ---Purpose: gives the PCurve associated to CurveOnFace1(Index) on the Fillet
+    ---C++: return const&
+    returns Curve from Geom2d;   
+   
+    PCurveOnFace2(me;Index:Integer from Standard)
+     ---Purpose: gives the PCurve  associated to CurveOnSup2(Index) on  the  support face 
+     ---C++: return const&
+    returns Curve from Geom2d;
+    
+    PCurve2OnFillet (me;Index:Integer from Standard)
+     ---Purpose: gives the PCurve  associated to CurveOnSup2(Index) on  the  fillet
+    ---C++: return const&
+    returns Curve from Geom2d;
+    
+    FirstParameter(me)
+    ---Purpose:gives the parameter of the fillet  on the first edge. 
+    --             
+    --              
+    --              
+    returns Real from Standard;
+
+    LastParameter (me)
+    ---Purpose: gives the  parameter of the fillet  on the last edge
+    --              
+    returns Real from Standard;
+    
+    StartSectionStatus(me)
+    -- returns: 
+    -- TwoExtremityOnEdge:  each extremity of  start section of the Fillet is
+    --                      on the edge of  the corresponding support face.  
+    -- OneExtremityOnEdge:  only one  of  the extremities of  start section  of the  Fillet 
+    --                       is on the  edge of the corresponding support face.  
+    -- NoExtremityOnEdge:   any extremity of  the start section  ofthe fillet is  on  
+    --                      the edge  of   the  corresponding support face. 
+    
+    returns StatusType from FilletSurf;
+    
+    EndSectionStatus(me)
+    -- returns: 
+    -- twoExtremityonEdge : each extremity of  end section of the Fillet is
+    --                      on the edge of  the corresponding support face.  
+    --  OneExtremityOnEdge: only one  of  the extremities of  end  section  of the  Fillet 
+    --                      is on the  edge of the corresponding support face.  
+    --  NoExtremityOnEdge : any extremity of  the end  section  of the fillet is  on  
+    --                      the edge  of   the  corresponding support face. 
+    
+    returns StatusType from FilletSurf;
+    
+    
+    Simulate (me:in out);
+     -- computes only the sections used in the computation of the fillet 
+    
+    NbSection(me;IndexSurf:Integer from Standard)
+    returns Integer from Standard;
+     -- gives the number of sections relative to SurfaceFillet(IndexSurf)
+    
+    Section(me;IndexSurf:Integer from Standard;IndexSec:Integer from Standard;    
+            Circ: out  TrimmedCurve  from  Geom);
+    --  gives the   arc of circle corresponding    to section number 
+    --  IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the 
+    --  trimmed curve is a Geom_Circle) 
+   
+end InternalBuilder;
+
+
+
+
+
+
+
+
+
+

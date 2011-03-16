@@ -1,0 +1,144 @@
+-- File:	BRep_MakeLinearForm.cdl
+-- Created:	Mon Apr 14 11:41:48 1997
+-- Author:	Olga PILLOT
+--		<opt@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+class MakeLinearForm from BRepFeat inherits RibSlot from BRepFeat
+    	---Purpose: Builds a rib or a groove along a developable, planar surface.
+    	-- The semantics of mechanical features is built around
+    	-- giving thickness to a contour. This thickness can either
+    	-- be symmetrical - on one side of the contour - or
+    	-- dissymmetrical - on both sides. As in the semantics of
+    	-- form features, the thickness is defined by construction of
+    	-- shapes in specific contexts.
+    	-- The development contexts differ, however, in case of
+    	-- mechanical features. Here they include extrusion:
+    	-- -   to a limiting face of the basis shape
+    	-- -   to or from a limiting plane
+    	-- -   to a height.
+  
+uses Shape                     from TopoDS,
+     Face                      from TopoDS,
+     Wire                      from TopoDS,
+     Edge                      from TopoDS,
+     DataMapOfShapeListOfShape from TopTools,
+     Dir                       from gp,
+     Vec                       from gp,
+     DataMapOfShapeShape       from TopTools,
+     ListOfShape               from TopTools,
+     SequenceOfCurve           from TColGeom,
+     Curve                     from Geom,
+     Plane                     from Geom,
+     Pnt                       from gp,
+     StatusError               from BRepFeat
+     
+raises ConstructionError from Standard
+
+is
+
+
+    Create
+
+    	returns MakeLinearForm from BRepFeat;
+	---Purpose: initializes the linear form class
+	---C++: inline
+
+    Create(Sbase     : Shape   from TopoDS;
+	   W         : Wire    from TopoDS;
+           P         : Plane   from Geom;
+	   Direction : Vec     from gp;	   
+    	   Direction1: Vec     from gp;
+    	   Fuse      : Integer from Standard; 
+           Modify    : Boolean from Standard)
+    
+	---Purpose:  contour W, a shape Sbase and a
+    	--   plane P are initialized to serve as the basic
+    	--   elements in the construction of the rib or groove.
+    	--   Direction and Direction1 give The vectors for
+    	--   defining the direction(s) in which thickness will be built up.
+    	--  Fuse offers a choice between:
+    	-- -   removing matter with a Boolean cut using the
+    	--   setting 0 in case of the groove
+    	-- -   adding matter with Boolean fusion using the
+    	--   setting 1 in case of the rib.
+   	---C++: inline
+ 	returns MakeLinearForm from BRepFeat;
+
+
+    Init(me: in out;  Sbase     : Shape   from TopoDS;
+	              W         : Wire    from TopoDS;
+            	      P         : Plane   from Geom;
+	    	      Direction : Vec     from gp;
+	    	      Direction1: Vec     from gp;
+    	    	      Fuse      : Integer from Standard; 
+            	      Modify    : Boolean from Standard)
+    
+    	is static;
+    	---Purpose: Initializes this construction algorithm.
+    	-- A contour W, a shape Sbase and a plane P are
+    	-- initialized to serve as the basic elements in the
+    	-- construction of the rib or groove. The vectors for
+    	-- defining the direction(s) in which thickness will be built
+    	-- up are given by Direction and Direction1.
+    	-- Fuse offers a choice between:
+    	-- -   removing matter with a Boolean cut using the setting
+    	--   0 in case of the groove
+    	-- -   adding matter with Boolean fusion using the setting 1
+    	--   in case of the rib.
+        
+    Add(me: in out; E: Edge from TopoDS; OnFace: Face from TopoDS)
+
+	---Purpose: Indicates that the edge <E> will slide on the face
+	--          <OnFace>. 
+    	-- Raises ConstructionError if the  face does not belong to the
+	-- basis shape, or the edge to the prismed shape.
+    	raises ConstructionError from Standard
+	
+	is static;
+
+
+
+    Perform(me: in out)
+    
+    	is static;
+    	---Purpose: Performs a prism from the wire to the plane along the
+    	-- basis shape Sbase. Reconstructs the feature topologically.
+
+    TransformShapeFU(me: in out; flag: Integer from Standard)
+    
+    	is static;
+    	---Purpose: Limits construction of the linear form feature by using
+    	-- one of the following three semantics:
+    	-- -   from a limiting plane
+    	-- -   to a limiting plane
+    	-- -   from one limiting plane to another.
+    	-- The setting is provided by a flag, flag, which can be set
+    	-- to from and/or until. The third semantic possibility above
+    	-- is selected by showing both from and until at the same time.
+
+    Propagate(me: in out; L: in out ListOfShape from TopTools;
+    	    	    	  F: Face from TopoDS;
+    	    	    	  FPoint, LPoint:   Pnt from gp; 
+    	    	    	  falseside : in out Boolean from Standard)
+	returns Boolean from Standard
+	is static;
+
+
+fields
+
+    myCrv      : Curve                     from Geom;
+    myDir      : Vec                       from gp;
+    myDir1     : Vec                       from gp;
+    myPln      : Plane                     from Geom;    
+    myBnd      : Real                      from Standard;
+    mySlface   : DataMapOfShapeListOfShape from TopTools;
+    myListOfEdges : ListOfShape            from TopTools;
+    myTol      : Real                      from Standard;
+
+end MakeLinearForm;
+
+
+

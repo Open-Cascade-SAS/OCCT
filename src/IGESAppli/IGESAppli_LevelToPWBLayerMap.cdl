@@ -1,0 +1,97 @@
+--
+-- File      :  LevelToPWBLayerMap.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LevelToPWBLayerMap from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines LevelToPWBLayerMap, Type <406> Form <24>
+        --          in package IGESAppli
+        --          Used to correlate an exchange file level number with
+        --          its corresponding native level identifier, physical PWB
+        --          layer number and predefined functional level
+        --          identification
+
+uses
+
+        HAsciiString           from TCollection,
+        HArray1OfInteger       from TColStd,
+        HArray1OfHAsciiString  from Interface
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable LevelToPWBLayerMap;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me              : mutable;
+              nbPropVal       : Integer;
+              allExchLevels   : HArray1OfInteger;
+              allNativeLevels : HArray1OfHAsciiString;
+              allPhysLevels   : HArray1OfInteger;
+              allExchIdents   : HArray1OfHAsciiString)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           LevelToPWBLayerMap
+        --       - nbPropVal       : Number of property values
+        --       - allExchLevels   : Exchange File Level Numbers
+        --       - allNativeLevels : Native Level Identifications
+        --       - allPhysLevels   : Physical Layer Numbers
+        --       - allExchIdents   : Exchange File Level Identifications
+        -- raises exception if allExchLevels, allNativeLevels, allPhysLevels
+        -- and all ExchIdents are not of same dimensions
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns number of property values
+
+        NbLevelToLayerDefs (me) returns Integer;
+        ---Purpose : returns number of level to layer definitions
+
+        ExchangeFileLevelNumber (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Exchange File Level Number
+        -- raises exception if Index <= 0 or Index > NbLevelToLayerDefs
+
+        NativeLevel (me; Index : Integer) returns HAsciiString from TCollection
+        raises OutOfRange;
+        ---Purpose : returns Native Level Identification
+        -- raises exception if Index <= 0 or Index > NbLevelToLayerDefs
+
+        PhysicalLayerNumber (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns Physical Layer Number
+        -- raises exception if Index <= 0 or Index > NbLevelToLayerDefs
+
+        ExchangeFileLevelIdent (me; Index : Integer)
+                    returns HAsciiString from TCollection
+        raises OutOfRange;
+        -- returns Exchange File Level Identification
+        -- raises exception if Index <= 0 or Index > NbLevelToLayerDefs
+
+fields
+
+--
+-- Class    : IGESAppli_LevelToPWBLayerMap
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class LevelToPWBLayerMap.
+--
+-- Reminder : A LevelToPWBLayerMap instance is defined by :
+--            - Number of property values
+--            - Exchange File Level Numbers
+--            - Native Level Identifications
+--            - Physical Layer Numbers
+--            - Exchange File Level Identifications
+
+        theNbPropertyValues        : Integer;
+        theExchangeFileLevelNumber : HArray1OfInteger;
+        theNativeLevel             : HArray1OfHAsciiString;
+        thePhysicalLayerNumber     : HArray1OfInteger;
+        theExchangeFileLevelIdent  : HArray1OfHAsciiString;
+
+end LevelToPWBLayerMap;

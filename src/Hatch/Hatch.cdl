@@ -1,0 +1,51 @@
+-- File:	Hatch.cdl
+-- Created:	Tue Aug 18 17:59:54 1992
+-- Author:	Remi Lequette
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package Hatch 
+
+	---Purpose: The  Hatch package provides   algorithm to compute
+	--          cross-hatchings on a 2D face.
+	--          
+	--          The  Hatcher algorithms stores a   set of lines in
+	--          the 2D plane.
+	--          
+	--          The user stores lines in the Hatcher and afterward
+	--          trim them with other lines.
+	--          
+	--          At any moment when  trimming the user can  ask for
+	--          any  line  if   it is  intersected  and how   many
+	--          intervals are defined on the line by the trim.
+
+uses
+    Standard,
+    TCollection,
+    gp
+
+is
+    enumeration LineForm is 
+	---Purpose: Form of a trimmed line
+	XLINE, YLINE, ANYLINE
+    end LineForm;
+
+
+    private class Parameter;
+	---Purpose: Used   by the Hatcher to  store  a parameter on  a
+	--          line. 
+	
+    private class SequenceOfParameter instantiates Sequence from TCollection
+    	    (Parameter from Hatch);
+
+    private class Line;
+	---Purpose: Used by the Hatcher to store a line.
+
+    private class SequenceOfLine instantiates Sequence from TCollection
+    	    (Line from Hatch);
+	    
+    class Hatcher;
+	---Purpose: The Hatching algorithm.
+
+end Hatch;

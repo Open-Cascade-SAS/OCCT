@@ -1,0 +1,37 @@
+-- File:	TDataStd_HDataMapOfStringHArray1OfInteger.cdl
+-- Created:	Fri Aug 17 17:07:35 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@popox.nnov.matra-dtv.fr>
+---Copyright:	Open CasCade SA 2007
+
+
+class HDataMapOfStringHArray1OfInteger from TDataStd inherits TShared from MMgt
+
+	---Purpose: Extension of TDataStd_DataMapOfStringHArray1OfInteger class  
+    	--          to be manipulated by handle.
+
+uses
+    DataMapOfStringHArray1OfInteger from TDataStd 
+    
+is
+    Create( NbBuckets: Integer from Standard = 1 )  
+    returns mutable HDataMapOfStringHArray1OfInteger from TDataStd;    
+     
+    Create( theOther:  DataMapOfStringHArray1OfInteger from TDataStd)  
+    returns mutable HDataMapOfStringHArray1OfInteger from TDataStd;
+     
+    Map( me ) returns DataMapOfStringHArray1OfInteger from TDataStd
+	---C++: return const &
+        ---C++: inline      
+    is static;	    	
+	  
+    ChangeMap( me: mutable ) returns DataMapOfStringHArray1OfInteger from TDataStd 
+    	---C++: return &
+        ---C++: inline 
+    is static; 	    	
+ 
+fields
+    
+    myMap : DataMapOfStringHArray1OfInteger from TDataStd ;  
+
+end HDataMapOfStringHArray1OfInteger;

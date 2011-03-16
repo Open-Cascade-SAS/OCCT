@@ -1,0 +1,37 @@
+-- File:	XmlMDataStd_AsciiStringDriver.cdl
+-- Created:	Tue Aug 21 16:31:01 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class AsciiStringDriver from XmlMDataStd inherits ADriver from XmlMDF
+
+	---Purpose: TDataStd_AsciiString attribute Driver.
+
+uses
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable AsciiStringDriver from XmlMDataStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+    ---Purpose: persistent -> transient (retrieve)
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+    ---Purpose: transient -> persistent (store)
+
+
+end AsciiStringDriver;

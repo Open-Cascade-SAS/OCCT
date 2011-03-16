@@ -1,0 +1,99 @@
+-- File:	AdvApp2Var_Patch.cdl
+-- Created:	Wed Apr 10 09:49:05 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Wed Jan 15 09:45:42 1997
+--    by:	Joelle CHAUVET
+--		G1135 : Methods CutSense with criterion, Coefficients,
+--		                CritValue, SetCritValue,
+--		        Field 'myCritValue'
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+class Patch from AdvApp2Var
+
+uses
+
+    Boolean,Integer,Real from Standard,
+    HArray1OfReal,HArray2OfReal from TColStd,
+    HArray2OfPnt from TColgp,
+    EvaluatorFunc2Var,Context,Framework,Criterion from AdvApp2Var
+
+is
+
+    Create returns Patch;
+    Create(U0,U1,V0,V1 : Real; iu,iv : Integer) returns Patch;
+    Create(P : Patch) returns Patch is private;
+    IsDiscretised(me) returns Boolean;
+    Discretise(me: in out; Conditions : Context;
+    	    	    	   Constraints: Framework;
+    	    	    	   func : EvaluatorFunc2Var);
+    IsApproximated(me) returns Boolean;
+    HasResult(me) returns Boolean;
+    MakeApprox(me: in out; Conditions : Context;
+    	    	    	   Constraints: Framework;
+    	    	    	   NumDec : Integer);
+    AddConstraints(me: in out; Conditions : Context;
+    	    	    	       Constraints: Framework);
+    AddErrors(me: in out; Constraints: Framework);
+    ChangeDomain(me: in out; a,b,c,d : Real);
+    ResetApprox(me: in out);
+    OverwriteApprox(me: in out);
+    U0(me) returns Real;
+    U1(me) returns Real;
+    V0(me) returns Real;
+    V1(me) returns Real;
+    UOrder(me) returns Integer;
+    VOrder(me) returns Integer;
+    CutSense(me) returns Integer;
+    CutSense(me; Crit : Criterion; NumDec : Integer) returns Integer;
+    NbCoeffInU(me) returns Integer;
+    NbCoeffInV(me) returns Integer;
+    ChangeNbCoeff(me: in out; NbCoeffU, NbCoeffV : Integer);
+    Poles(me; SSPIndex : Integer; Conditions : Context) returns HArray2OfPnt;
+    Coefficients(me; SSPIndex : Integer; Conditions : Context) returns HArray1OfReal;
+    MaxErrors(me) returns HArray1OfReal;
+    AverageErrors(me) returns HArray1OfReal;
+    IsoErrors(me) returns HArray2OfReal;
+    CritValue(me) returns Real;
+    SetCritValue(me: in out; dist : Real);
+
+fields
+
+    myU0, myU1    : Real;
+    myV0, myV1    : Real;
+    myOrdInU      : Integer;
+    myOrdInV      : Integer;
+    myNbCoeffInU  : Integer;
+    myNbCoeffInV  : Integer;
+    myApprIsDone  : Boolean;
+    myHasResult   : Boolean;
+    myEquation    : HArray1OfReal;
+    myMaxErrors   : HArray1OfReal;
+    myMoyErrors   : HArray1OfReal;
+    myIsoErrors   : HArray2OfReal;
+    myCutSense    : Integer;
+    myDiscIsDone  : Boolean;
+    mySosoTab     : HArray1OfReal;
+    myDisoTab     : HArray1OfReal;
+    mySodiTab     : HArray1OfReal;
+    myDidiTab     : HArray1OfReal;
+    myCritValue   : Real;
+
+end Patch;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

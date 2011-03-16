@@ -1,0 +1,81 @@
+-- File:	BRepTopAdaptor_HVertex.cdl
+-- Created:	Fri Apr  1 10:59:45 1994
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+class HVertex from BRepTopAdaptor 
+
+	---Purpose: 
+
+
+inherits HVertex from Adaptor3d
+
+uses Pnt2d       from gp,
+     Orientation from TopAbs,
+     Vertex      from TopoDS,
+     HCurve2d    from Adaptor2d,
+     HCurve2d    from BRepAdaptor
+
+is
+
+    Create(Vtx: Vertex from TopoDS; Curve: HCurve2d from BRepAdaptor)
+
+    	returns mutable HVertex from BRepTopAdaptor;
+
+
+    Vertex(me)
+    
+    	returns Vertex from TopoDS
+	---C++: inline
+	---C++: return const&
+	is static;
+
+
+    ChangeVertex(me: mutable)
+    
+    	returns Vertex from TopoDS
+	---C++: inline
+	---C++: return&
+	is static;
+
+
+    Value(me: mutable)
+    
+    	returns Pnt2d from gp
+	is redefined;
+
+
+    Parameter(me: mutable; C: HCurve2d from Adaptor2d)
+    
+    	returns Real from Standard
+	is redefined;
+
+
+    Resolution(me: mutable; C: HCurve2d from Adaptor2d)
+    
+	---Purpose: Parametric resolution (2d).
+
+    	returns Real from Standard
+	is redefined;
+
+
+    Orientation(me: mutable)
+    
+    	returns Orientation from TopAbs
+	is redefined;
+
+
+    IsSame(me: mutable; Other: mutable like me)
+    
+    	returns Boolean from Standard
+	is redefined;
+
+
+fields -- redefined from HVertex from Adaptor3d
+
+    myVtx   : Vertex   from TopoDS;
+    myCurve : HCurve2d from BRepAdaptor;
+
+end HVertex;

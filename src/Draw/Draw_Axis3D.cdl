@@ -1,0 +1,36 @@
+-- File:	Axis3D.cdl
+-- Created:	Wed Apr 29 13:43:28 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class Axis3D from Draw inherits Drawable3D from Draw
+
+	---Purpose: 
+
+uses Pnt from gp,
+    Ax3 from gp,
+    Color from Draw,
+    Display from Draw
+
+is
+
+    Create(col : Color; Size : Integer = 5)
+    returns mutable Axis3D;
+
+    Create(p : Pnt; col : Color; Size : Integer = 5)
+    returns mutable Axis3D;
+    
+    Create(A : Ax3 from gp; col : Color; Size : Integer = 5)
+    returns mutable Axis3D;
+    
+    DrawOn(me; dis : in out Display);
+
+fields
+
+    myAxes : Ax3 from gp;
+    myColor : Color;
+    mySize : Integer;
+    
+end Axis3D;

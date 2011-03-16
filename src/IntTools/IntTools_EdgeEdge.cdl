@@ -1,0 +1,310 @@
+-- File:	IntTools_EdgeEdge.cdl
+-- Created:	Thu Oct 26 10:08:05 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class EdgeEdge from IntTools 
+
+	---Purpose: The  class  provides  Edge/Edge  algorithm  to  determine 
+	--          common  parts  between two edges in  3-d space. 
+	--          Common  parts can be :  Vertices  or Edges. 
+	---    	 
+uses
+    Edge  from TopoDS, 
+    Curve from BRepAdaptor, 
+    SequenceOfRoots   from IntTools,  
+    SequenceOfRanges  from IntTools, 
+    CArray1OfReal     from IntTools, 
+    CommonPrt         from IntTools,
+    SequenceOfCommonPrts from IntTools,  
+    Range from IntTools
+--raises
+
+is 
+    Create   
+    	returns EdgeEdge from IntTools;   
+    	---Purpose:  
+    	--- Empty constructor
+	---
+	
+    SetEdge1         (me:out; anEdge:Edge from TopoDS); 
+   	---Purpose: 
+    	--- Sets the first edge
+	---
+     
+    SetTolerance1    (me:out; aTolEdge1:Real from Standard);  
+    	---Purpose: 
+    	--- Sets  the  value of tolerance pipe for the first edge
+	---
+    
+    SetEdge2         (me:out; anEdge:Edge from TopoDS);
+    	---Purpose: 
+    	--- Sets the second edge
+	---
+    
+    SetTolerance2    (me:out; aTolEdge2:Real from Standard);  
+    	---Purpose: 
+    	--- Sets  the  value of tolerance pipe for the first edge
+	---
+        
+    SetDiscretize    (me:out; aDiscret:Integer from Standard);	 
+    	---Purpose: 
+    	--- Sets  the  number of division for the shortest 
+	--- edge among the two.  The  deflection is not taken 
+    	--- into  account
+	---
+                      
+    SetDeflection    (me:out; aDeflection:Real from Standard);     
+    	---Purpose: 
+    	--- Sets the value of maximum reative deflection between 
+    	--- the two nearest points on a curve.
+	---
+     
+    SetEpsilonT      (me:out; anEpsT:Real from Standard); 
+    	---Purpose: 
+    	--- Sets the criteria of equality of two arguments, 
+    	--- i.e.  |t2-t1|<anEpsT will mean that t2=t1
+	---
+
+    SetEpsilonNull   (me:out; anEpsNull:Real from Standard);  
+    	---Purpose: 
+    	--- Sets the criteria of equality of two functions' values
+    	--- i.e.  |f(t2)-f(t1)|<anEpsNull will mean that f(t2)=f(t1)
+	---
+     
+    SetRange1        (me:out; aRange:Range from IntTools);
+
+    SetRange2        (me:out; aRange:Range from IntTools);	
+
+    SetRange1        (me:out; aFirst, aLast:Real from Standard);	
+
+    SetRange2        (me:out; aFirst, aLast:Real from Standard);	
+     
+    Perform(me:out); 
+    	---Purpose: 
+    	--- The main method of the algorithm to determine 
+    	--- common  parts  between two edges in  3-d space
+	---
+     
+    IsDone     (me)   
+    	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- True if the common  parts are found
+	---
+     
+    Order     (me)   
+    	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- False if the common parts are coherented  with Edge1, Edge2
+	---
+    
+    ErrorStatus(me) 
+    	returns Integer from Standard;  
+    	---Purpose: Returns the number that corresponds to the error. 
+    	--- The  list of error-codes is in  ...cxx file
+	---
+     
+    CommonParts(me) 
+    	returns SequenceOfCommonPrts from IntTools;   
+    	---C++:  return  const&  	    	  
+    	---Purpose: 
+    	--- Returns the common parts (Output)
+	---
+      
+    Range1       (me) 
+    	returns Range from IntTools; 
+    	---C++:  return  const&  
+
+    Range2       (me) 
+    	returns Range from IntTools; 
+    	---C++:  return  const&  	 
+
+    -----------------------------------------------------
+    --  Block  of  private methods of  the  algorithm  --
+    -----------------------------------------------------     
+
+    CheckData  (me:out)    	    is private; 
+    	---Purpose: 
+    	--- Fool-proof chechking the input data.  
+    	--- The  following  data is not  available
+    	---    *  Degenerated edges is  not  available; 
+    	---    *  Egdes,  that don't contain 3d-curve. 
+	---
+     
+    Prepare    (me:out)    	    is private; 
+    	---Purpose: 
+    	--- Preparing the main  fields  for  the  algorithm 
+    	---    *  From-Curve  (myCFrom,myTminFrom,myTmaxFrom),  	     
+    	---    *  To  -Curve  (myCTo  ,myTminTo  ,myTmaxTo  ), 
+    	---    *  myCreiteria=myTol1+myTol2  , 
+    	---    *  myProjectableRanges.
+	---
+
+    IsProjectable         (me; t:Real from Standard)   
+    	returns  Integer from Standard is private; 
+    	---Purpose: 
+    	--- Returns the flag 1 if it is possible to project 
+    	--- the point from the From-Curve at the  parameter t  
+    	--- to the To-Curve.  
+    	--- Othrwise it returns  0.
+	---
+     
+    FindProjectableRoot	  (me:out;   
+    	    	    	   t1,t2:Real from Standard; 
+    	    	    	   f1,f2:Integer from Standard; 
+    	    	    	   tRoot:out Real from Standard)  is private;	        
+    	---Purpose: 
+    	--- Find a bound of a projectable range for the From-Curve 
+    	--- using  bisection  method.    
+    	--- t1, t2  - interval for searching along t. 
+    	--- f1, f2  - values of the function IsProjectable()   
+    	--- at t1 and t2. 
+	---
+
+     
+    DistanceFunction      (me:out;t:Real from Standard)   
+    	returns  Real from Standard  is private; 
+    	---Purpose: 
+    	--- Calculates the DistanceFunction D(t). 
+    	--- D(t)=D1(t) - myCriteria; 
+    	--- where  
+    	--- D1(t) -  the lower distance between a point from 
+    	--- the  From-Curve at  parameter t  and  
+    	--- projection point of  this point on To-Curve; 
+    	--- myCriteria=myTol1+myTol2. 
+	---
+
+    DerivativeFunction    (me:out;t:Real from Standard)   
+    	returns  Real from Standard  is private; 
+    	---Purpose: 
+    	--- Calculates the first derivative of   
+    	--- the DistanceFunction D(t). 
+	---
+     
+    
+    FindSimpleRoot        (me:out; IP:Integer  from  Standard; 
+    	    	    	   ta, tb, fA:Real from Standard) 
+	returns  Real from Standard  is  private;   
+    	---Purpose: 
+    	--- Find the Root of the function on given interval  
+    	--- of the argument [ta,tb] using  bisection  method .          	 
+    	--- IP  - a  flag; 
+    	--- =1  -  use DistanceFunction; 
+    	--- =2  -  use DerivativeFunction; 
+	---
+     
+    FindGoldRoot          (me:out;  ta, tb, coeff:Real from Standard) 
+	returns  Real from Standard  is  private;   
+    	---Purpose: 
+    	--- Find the Root of the function on given interval  
+    	--- of the argument [ta,tb] using Fibonacci method . 
+	---
+     
+    FindRangeOnCurve2     (me:out;  
+    	    	    	   aCP:out CommonPrt from IntTools)  
+    	returns  Integer from Standard is private;  	  
+    	---Purpose: 
+    	--- Find the range on the curve Curve-To that  corresponds 
+    	--- to  the  given  range on the curve Curve-From. 
+	---
+     
+    GetParameterOnCurve2  (me; 
+    	    	    	   aT1:Real from Standard;   
+    	    	    	   aT2:out  Real from Standard)  
+    	returns  Integer from Standard is private ;     
+    	---Purpose: 
+    	--- Find the  value  of  the  parameter  on  the curve Curve-To 
+    	--- that corresponds  to  the  given  parameter  on the curve  
+    	--- Curve-From.
+	---
+    
+    TreatVertexType       (me:out;  am1,  am2:Real from Standard; 
+    	    	    	   aCP:out CommonPrt from IntTools)   
+    	returns  Integer from Standard is private; 
+
+    IsIntersection (me:out; 
+    	    	    t1 : Real from Standard;   
+    	    	    t2 : Real from Standard)  is  private ;     
+	 
+    FindDerivativeRoot (me:out;   
+    	    	    	t,f:CArray1OfReal from IntTools)   
+    	is private;   
+--
+    RemoveIdenticalRoots(me:out) 
+    	is private;   
+	 
+    CheckTouch(me: out; 
+    	    	aCP: CommonPrt from IntTools; 
+    	    	t1 : out Real from Standard;   
+    	    	t2 : out Real from Standard) 
+		returns Boolean from Standard 
+    	is private;   
+	 
+    CheckTouchVertex(me;  
+    	    	aCP: CommonPrt from IntTools;
+    	    	t1 : out Real from Standard;   
+    	    	t2 : out Real from Standard) 
+		returns Boolean from Standard 
+    	is private;   
+      
+    CheckInterval(me:out; 
+    	    	t1 : Real from Standard;   
+    	    	t2 : Real from Standard) 
+		returns Boolean from Standard 
+    	is private;  
+	 
+ 
+    ComputeLineLine(me:out) 
+    	is private;   
+	 
+--
+fields 
+--        Data
+    myEdge1           :  Edge  from  TopoDS;
+    myEdge2           :  Edge  from  TopoDS;
+    myTol1            :  Real  from  Standard; 
+    myTol2            :  Real  from  Standard;   
+	    
+    myDiscret         :  Integer from Standard;  
+         	     
+    myEpsT            :  Real from Standard;     	     
+    myEpsNull         :  Real from Standard;  
+    myDeflection      :  Real from Standard;   
+
+--   data  curves
+    myCFrom           :  Curve from BRepAdaptor;  
+    myTminFrom        :  Real from Standard; 	
+    myTmaxFrom        :  Real from Standard; 	
+    myTolFrom         :  Real from Standard; 	
+     
+    myCTo             :  Curve from BRepAdaptor; 
+    myTminTo          :  Real from Standard; 	
+    myTmaxTo          :  Real from Standard; 
+    myTolTo           :  Real from Standard; 
+  
+    myCriteria        :  Real from Standard; 	   
+--        IsDone
+    myIsDone          :  Boolean from Standard; 
+    myErrorStatus     :  Integer from Standard;  
+
+---  internal  members     
+    myProjectableRanges: SequenceOfRanges from IntTools;   
+    myFuncArray       :  CArray1OfReal from IntTools; 
+    myArgsArray       :  CArray1OfReal from IntTools; 
+
+    mySequenceOfRoots :  SequenceOfRoots   from IntTools;  
+    mySeqOfCommonPrts :  SequenceOfCommonPrts from IntTools;  
+
+    myOrder           :  Boolean  from  Standard;  -- 0-strait; 1-reversed 
+    myPar1            :  Real     from  Standard; 
+    myParallel        :  Boolean  from  Standard;         	 
+    myAllNullFlag     :  Boolean  from  Standard;         	 
+
+    myRange1          :  Range from IntTools; 
+    myRange2          :  Range from IntTools; 
+    
+end EdgeEdge;
+
+

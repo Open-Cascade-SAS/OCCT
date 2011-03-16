@@ -1,0 +1,93 @@
+-- File:	BOP_SolidSolid.cdl
+-- Created:	Fri May 25 14:47:03 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class SolidSolid from BOP inherits ShellSolid from BOP
+
+	---Purpose:  
+    	---        Performs Boolean Operations  (BO)  
+    	---        Common,Cut,Fuse for solids as      
+	---        arguments 
+	---
+uses 
+    DSFiller     from BOPTools, 
+     
+    WireEdgeSet  from BOP,   
+    ShellFaceSet from BOP, 
+
+    HistoryCollector from BOP,
+    IndexedDataMapOfIntegerIndexedMapOfInteger from BOPTColStd,
+    DataMapOfShapeInteger from TopTools,
+    Shape        from TopoDS,
+    State        from TopAbs,
+    
+    ListOfShape  from TopTools
+    
+    
+is 
+    Create   
+    	returns SolidSolid from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_SolidSolid(){Destroy();}"  
+    	---Purpose:   
+    	--- Destructor 
+    	---
+    DoNewFaces(me: out)    
+    	is redefined;  
+    	---Purpose:  
+    	--- See base classes, please 
+    	---
+    BuildResult (me: out)
+    	is  redefined; 
+     	---Purpose:  
+    	--- See base classes, please 
+    	---
+
+    SetHistoryCollector(me: in out; theHistory: HistoryCollector from BOP)
+    	is redefined virtual;
+
+    --- 
+    ---              P  r  i  v  a  t  e    b  l  o  c  k   
+    ---	     
+    PrepareSFS  (me:out; 
+    	    aFaces: ListOfShape from TopTools; 
+	    aSFS  : out ShellFaceSet from BOP) 
+	is  private;	     
+
+    PrepareFaceSplits(me: out)
+    	is private;
+
+    PropagateFaceStateByEdges(me: in out; theFace:           Shape from TopoDS;
+    	    	    	    	    	  theMapOfEdgeIndex: DataMapOfShapeInteger from TopTools;
+    	    	    	    	    	  theState:          out State from TopAbs)
+    	returns Boolean from Standard
+    	is private;
+	
+    ComputeStateByInsidePoints(me: in out; theFaceIndex: Integer from Standard;
+    	    	    	    	    	   theBaseFaceIndex: Integer from Standard;
+    	    	    	    	    	   theFaceRank:  Integer from Standard;
+					   theFFMap:     IndexedDataMapOfIntegerIndexedMapOfInteger from BOPTColStd;
+    	    	    	    	    	   theState:     out State from TopAbs)
+    	returns Boolean from Standard
+    	is private;
+
+    TakeOnSplit(me; theFaceIndex: Integer from Standard;
+    	    	    theBaseFaceIndex: Integer from Standard)
+    	returns Boolean from Standard
+    	is private;
+
+--fields
+end SolidSolid;

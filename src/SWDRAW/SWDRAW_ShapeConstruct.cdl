@@ -1,0 +1,22 @@
+-- File:	SWDRAW_ShapeConstruct.cdl
+-- Created:	Tue Mar  9 15:19:44 1999
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeConstruct from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeConstruct
+	--          List of DRAW commands and corresponding functionalities:
+
+uses
+
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeConstruct
+
+end ShapeConstruct;

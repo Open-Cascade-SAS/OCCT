@@ -1,0 +1,94 @@
+-- File:	DsgPrs_IdenticPresentation.cdl
+-- Created:	Fri Jan  3 17:58:43 1997
+-- Author:	Stagiaire Flore Lautheanne
+--		<fla@chariox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class IdenticPresentation from DsgPrs 
+
+	---Purpose: 
+
+uses
+
+    Presentation   from Prs3d,
+    Drawer         from Prs3d,
+    ExtendedString from TCollection,
+    Pnt            from gp,
+    Dir            from gp,
+    Ax2            from gp,
+    Elips          from gp -- jfa 10/10/2000
+
+is
+
+     Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	   aDrawer: Drawer from Prs3d;
+		   aText: ExtendedString from TCollection;
+		   aPntAttach : Pnt from gp;
+    	    	   aPntOffset : Pnt from gp);
+    	---Purpose: draws a line between <aPntAttach> and 
+    	--          <aPntOffset>.
+		  
+		   
+     Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	   aDrawer: Drawer from Prs3d;
+		   aText: ExtendedString from TCollection;
+		   aFAttach : Pnt from gp;
+		   aSAttach : Pnt from gp;
+    	    	   aPntOffset : Pnt from gp);
+    	---Purpose: draws the 'identic' presentation by 
+    	--          drawing a line between <aFAttach> and
+    	--          <aSAttach> , and a linkimg segment 
+    	--          between <aPntOffset> and its projection 
+    	--          on the precedent line.
+		   
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+    	    	  aAx2     : Ax2 from gp;
+		  aCenter  : Pnt from gp;
+		  aFAttach : Pnt from gp;
+		  aSAttach : Pnt from gp;
+    	    	  aPntOffset : Pnt from gp);	   
+    	---Purpose: draws the 'identic' presentation in the case of
+    	--          circles : draws an arc of circle between 
+    	--          <aFAttach> and <aSAttach> of center <aCenter>
+    	--          and of radius dist(aCenter, aFAttach), and
+    	--          draws a segment between <aPntOffset> and
+    	--          its projection on the arc.
+		   
+    -- jfa 16/10/2000
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+    	    	  aAx2     : Ax2 from gp;
+		  aCenter  : Pnt from gp;
+		  aFAttach : Pnt from gp;
+		  aSAttach : Pnt from gp;
+    	    	  aPntOffset : Pnt from gp;	   
+    	    	  aPntOnCirc : Pnt from gp);	   
+    	---Purpose: draws the 'identic' presentation in the case of
+    	--          circles : draws an arc of circle between 
+    	--          <aFAttach> and <aSAttach> of center <aCenter>
+    	--          and of radius dist(aCenter, aFAttach), and
+    	--          draws a segment between <aPntOffset> and <aPntOnCirc>
+	
+    -- jfa 16/10/2000
+		   
+    -- jfa 10/10/2000 for ellipses identity presentation
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+		  anEllipse: Elips from gp;
+		  aFAttach : Pnt from gp;
+		  aSAttach : Pnt from gp;
+    	    	  aPntOffset : Pnt from gp;	   
+    	    	  aPntOnElli : Pnt from gp);	   
+    	---Purpose: draws the 'identic' presentation in the case of
+    	--          ellipses: draws an arc of the anEllipse
+    	--          between <aFAttach> and <aSAttach> and
+    	--          draws a segment between <aPntOffset> and <aPntOnElli>
+	
+    -- jfa 10/10/2000 end
+		   
+end IdenticPresentation;
+

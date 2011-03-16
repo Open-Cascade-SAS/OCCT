@@ -1,0 +1,172 @@
+-- File:      IntPatch_ImpImpIntersection.cdl
+-- Created:   Thu May  7 08:47:45 1992
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1992
+
+
+class ImpImpIntersection from IntPatch
+	     
+	---Purpose: Implementation of the intersection between two
+	--          quadric patches : Plane, Cone, Cylinder or Sphere.
+
+
+uses HSurface from Adaptor3d,
+     TopolTool from Adaptor3d,
+     Point from IntPatch,
+     SequenceOfPoint from IntPatch,
+     TheSOnBounds from IntPatch,
+     SequenceOfLine from IntPatch,
+     Line           from IntPatch
+
+
+raises NotDone           from StdFail,
+       OutOfRange        from Standard,
+       DomainError       from Standard,
+       ConstructionError from Standard
+
+is
+
+
+    Create
+    
+    	returns ImpImpIntersection from IntPatch;
+
+
+    Create (S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+            S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+            TolArc,TolTang: Real from Standard)
+	    
+	returns ImpImpIntersection from IntPatch
+	
+	raises ConstructionError from Standard;
+
+
+    Perform (me: in out;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+             TolArc,TolTang: Real from Standard)
+
+	raises ConstructionError from Standard    
+
+	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns True if the calculus was succesfull.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+    	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns true if the is no intersection.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    TangentFaces(me)
+    
+	---Purpose: Returns True if the two patches are considered as
+	--          entierly tangent, i-e every restriction arc of one
+	--          patch is inside the geometric base of the otehr patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+
+
+    OppositeFaces(me)
+    
+	---Purpose: Returns True when the TangentFaces returns True and the
+	--          normal vectors evaluated at a point on the first and the
+	--          second surface are opposite. 
+	--          The exception DomainError is raised if TangentFaces
+	--          returns False.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone     from StdFail,
+               DomainError from Standard
+	
+	is static;
+
+
+    NbPnts(me)
+    
+    	---Purpose: Returns the number of "single" points.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	
+    	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbPnt.
+
+    	returns Point from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+
+    	is static;
+
+
+    NbLines(me)
+    
+    	---Purpose: Returns the number of intersection lines.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    Line(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the line of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbLine.
+
+    	returns Line from IntPatch
+	---C++: inline
+	---C++: return const&
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	
+    	is static;
+
+
+fields
+
+    done   : Boolean         from Standard;
+    empt   : Boolean         from Standard;
+    tgte   : Boolean         from Standard;
+    oppo   : Boolean         from Standard;
+    reverse: Boolean         from Standard;
+    spnt   : SequenceOfPoint from IntPatch;
+    slin   : SequenceOfLine  from IntPatch;
+    solrst : TheSOnBounds    from IntPatch;
+
+end ImpImpIntersection;

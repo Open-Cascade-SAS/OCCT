@@ -1,0 +1,46 @@
+-- File:	AdvApp2Var_Node.cdl
+-- Created:	Tue Apr  9 16:39:15 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+---Copyright:	 Matra Datavision 1996
+--           	 
+
+class Node from AdvApp2Var
+
+
+uses
+    XY,Pnt           from gp,
+    HArray2OfPnt     from TColgp,
+    HArray2OfReal    from TColStd
+    
+	 
+is
+    Create returns Node;    
+    Create(iu,iv : Integer) returns Node;   
+    Create(UV : XY from gp; iu,iv : Integer) returns Node;    
+    Create(Other : Node) returns Node is private;    
+    Coord(me) returns XY from gp;    
+    SetCoord(me : in out; x1,x2 : Real);    
+    UOrder(me) returns Integer;
+    VOrder(me) returns Integer;
+    SetPoint(me : in out; iu,iv : Integer; Cte : Pnt from gp);    
+    Point(me; iu,iv : Integer) returns Pnt from gp;    
+    SetError(me : in out; iu,iv : Integer; error : Real);    
+    Error(me; iu,iv : Integer) returns Real;     
+    
+    
+fields
+
+    myCoord            : XY               from gp;
+    myOrdInU, myOrdInV : Integer;
+    myTruePoints       : HArray2OfPnt     from TColgp;
+    myErrors           : HArray2OfReal    from TColStd;
+    
+end Node;
+
+
+
+
+
+
+

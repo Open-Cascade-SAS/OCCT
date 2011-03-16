@@ -1,0 +1,177 @@
+-- File:	Voxel_ROctBoolDS.cdl
+-- Created:	Sun Sep 01 10:36:25 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class ROctBoolDS from Voxel inherits DS from Voxel
+
+    ---Purpose: A 3D voxel model keeping a boolean flag (1 or 0)
+    --          value for each voxel, and having an opportunity to split each voxel
+    --          into 8 sub-voxels recursively.
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns ROctBoolDS from Voxel;
+
+    Create(x     : Real    from Standard;
+    	   y     : Real    from Standard;
+    	   z     : Real    from Standard;
+    	   x_len : Real    from Standard;
+    	   y_len : Real    from Standard;
+    	   z_len : Real    from Standard;
+	   nb_x  : Integer from Standard;
+	   nb_y  : Integer from Standard;
+	   nb_z  : Integer from Standard)
+    ---Purpose: A constructor initializing the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    returns ROctBoolDS from Voxel;
+
+    Init(me : in out;
+    	 x     : Real    from Standard;
+    	 y     : Real    from Standard;
+    	 z     : Real    from Standard;
+    	 x_len : Real    from Standard;
+    	 y_len : Real    from Standard;
+    	 z_len : Real    from Standard;
+	 nb_x  : Integer from Standard;
+	 nb_y  : Integer from Standard;
+	 nb_z  : Integer from Standard)
+    ---Purpose: Initialization of the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    is redefined virtual;
+
+    Destroy(me : in out);
+    ---C++: alias ~
+    ---Purpose: A destructor of the voxel model.
+
+    SetZero(me : in out);
+    ---Purpose: The method sets all values equal to 0 (false) and
+    --          releases the memory.
+
+    OptimizeMemory(me : in out);
+    ---Purpose: The method searches voxels with equal-value of sub-voxels
+    --          and removes them (remaining the value for the voxel).
+
+
+    ---Category: Set
+    --           ===
+
+    Set(me   : in out;
+    	ix   : Integer from Standard;
+    	iy   : Integer from Standard;
+    	iz   : Integer from Standard;
+	data : Boolean from Standard);
+    ---Purpose: Defines a value for voxel with co-ordinates (ix, iy, iz).
+    --          If the voxel is split into 8 sub-voxels, the split disappears.
+    --          Initial state of the model is so that all voxels have value 0 (false),
+    --          and this data doesn't occupy memory.
+    --          Memory for data is allocating during setting non-zero values (true).
+
+    Set(me    : in out;
+    	ix    : Integer from Standard;
+    	iy    : Integer from Standard;
+    	iz    : Integer from Standard;
+	ioct1 : Integer from Standard;
+	data  : Boolean from Standard);
+    ---Purpose: Defines a value for a sub-voxel of a voxel with co-ordinates (ix, iy, iz).
+    --          If the voxel is not split into 8 sub-voxels yet, this method splits the voxel.
+    --          Range of sub-voxels is 0 - 7.
+
+    Set(me    : in out;
+    	ix    : Integer from Standard;
+    	iy    : Integer from Standard;
+    	iz    : Integer from Standard;
+	ioct1 : Integer from Standard;
+	ioct2 : Integer from Standard;
+	data  : Boolean from Standard);
+    ---Purpose: Defines a value for a sub-voxel of a sub-voxel of a voxel with co-ordinates (ix, iy, iz).
+    --          If the voxel is not split into 8 sub-voxels yet, this method splits the voxel.
+    --          Range of sub-voxels is 0 - 7.
+
+
+    ---Category: Get
+    --           ===
+
+    IsSplit(me;
+    	    ix   : Integer from Standard;
+    	    iy   : Integer from Standard;
+    	    iz   : Integer from Standard)
+    ---Purpose: Returns true if the voxel is split into 8 sub-voxels.
+    returns Boolean from Standard;
+
+    Deepness(me;
+    	     ix   : Integer from Standard;
+    	     iy   : Integer from Standard;
+    	     iz   : Integer from Standard)
+    ---Purpose: Returns the deepness of splits of a voxel.
+    --          0 - no splits (::IsSplit() being called would return false).
+    --          1 - the voxel is split into 8 sub-voxels.
+    --          2 - the voxels is split into 8 sub-voxels, 
+    --              and each of the sub-voxels is split into 8 sub-sub-voxels.
+    --          3 - ...
+    returns Integer from Standard;
+
+    Get(me;
+    	ix : Integer from Standard;
+    	iy : Integer from Standard;
+    	iz : Integer from Standard)
+    ---Purpose: Returns the value of voxel with co-ordinates (ix, iy, iz).
+    --          Warning!: the returned value may not coincide with the value of its 8 sub-voxels.
+    --          Use the method ::IsSplit() to check whether a voxel has sub-voxels.
+    returns Boolean from Standard;
+
+    Get(me;
+    	ix    : Integer from Standard;
+    	iy    : Integer from Standard;
+    	iz    : Integer from Standard;
+    	ioct1 : Integer from Standard)
+    ---Purpose: Returns the value of a sub-voxel of a voxel with co-ordinates (ix, iy, iz).
+    --          If the voxel is not split, it returns the value of the voxel.
+    --          Range of sub-voxels is 0 - 7.
+    returns Boolean from Standard;
+
+    Get(me;
+    	ix    : Integer from Standard;
+    	iy    : Integer from Standard;
+    	iz    : Integer from Standard;
+    	ioct1 : Integer from Standard;
+    	ioct2 : Integer from Standard)
+    ---Purpose: Returns the value of a sub-voxel of a sub-voxel of a voxel with co-ordinates (ix, iy, iz).
+    --          If the voxel is not split, it returns the value of the voxel.
+    --          Range of sub-voxels is 0 - 7.
+    returns Boolean from Standard;
+
+    
+    ---Category: Services
+    --           ========
+
+    GetCenter(me;
+    	      ix : Integer from Standard;
+    	      iy : Integer from Standard;
+    	      iz : Integer from Standard;
+	      i  : Integer from Standard;
+	      xc : out Real from Standard;
+	      yc : out Real from Standard;
+	      zc : out Real from Standard);
+    ---Purpose: Returns the center point of a sub-voxel with co-ordinates (ix, iy, iz, i).
+
+    GetCenter(me;
+    	      ix : Integer from Standard;
+    	      iy : Integer from Standard;
+    	      iz : Integer from Standard;
+	      i  : Integer from Standard;
+	      j  : Integer from Standard;
+	      xc : out Real from Standard;
+	      yc : out Real from Standard;
+	      zc : out Real from Standard);
+    ---Purpose: Returns the center point of a sub-voxel with co-ordinates (ix, iy, iz, i, j).
+
+
+end ROctBoolDS;

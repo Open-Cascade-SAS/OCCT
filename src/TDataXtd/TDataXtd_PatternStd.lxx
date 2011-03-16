@@ -1,0 +1,105 @@
+// File:	TDataXtd_PatternStd.lxx
+// Created:	Mon Apr  6 18:10:37 2009
+// Author:	Sergey ZARITCHNY
+//		<szy@covox>
+
+//=======================================================================
+//function : Signature
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TDataXtd_PatternStd::Signature() const
+{
+  return mySignature;
+}
+
+//=======================================================================
+//function : Axis1
+//purpose  : 
+//=======================================================================
+
+inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis1() const
+{
+  return myAxis1;
+}
+
+//=======================================================================
+//function : Axis2
+//purpose  : 
+//=======================================================================
+
+inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Axis2() const
+{
+  return myAxis2;
+}
+
+//=======================================================================
+//function : Axis1Reversed
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TDataXtd_PatternStd::Axis1Reversed() const
+{
+  return myAxis1Reversed;
+}
+
+//=======================================================================
+//function : Axis2Reversed
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TDataXtd_PatternStd::Axis2Reversed() const
+{
+  return myAxis2Reversed;
+}
+
+//=======================================================================
+//function : Value1
+//purpose  : 
+//=======================================================================
+
+inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value1() const
+{
+  return myValue1;
+}
+
+//=======================================================================
+//function : Value2
+//purpose  : 
+//=======================================================================
+
+inline Handle(TDataStd_Real) TDataXtd_PatternStd::Value2() const
+{
+  return myValue2;
+}
+
+//=======================================================================
+//function : NbInstances1
+//purpose  : 
+//=======================================================================
+
+inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances1() const
+{
+  return myNb1;
+}
+
+//=======================================================================
+//function : NbInstances2
+//purpose  : 
+//=======================================================================
+
+inline Handle(TDataStd_Integer) TDataXtd_PatternStd::NbInstances2() const
+{
+  return myNb2;
+}
+
+//=======================================================================
+//function : Mirror
+//purpose  : 
+//=======================================================================
+
+inline Handle(TNaming_NamedShape) TDataXtd_PatternStd::Mirror() const
+{
+  return myMirror;
+}
+

@@ -1,0 +1,170 @@
+-- File:	BOP_ArgumentAnalyzer.cdl
+-- Created:	Fri Sep  3 14:20:31 2004
+-- Author:	Oleg FEDYAEV
+--		<ofv@merlox>
+---Copyright:	 Matra Datavision 2004
+
+class ArgumentAnalyzer from BOP
+    ---Purpose: check the validity of argument(s) for Boolean Operations
+    
+uses
+    Shape       from TopoDS,
+    Operation   from BOP,
+    CheckStatus from BOP,
+    Operation  from BOP,
+    ShapeEnum  from TopAbs,
+    ListOfCheckResult from BOP
+    
+is
+    Create
+    	returns ArgumentAnalyzer;
+	---Purpose: empty constructor
+
+    SetShape1(me: in out; TheShape: Shape from TopoDS);
+    ---Purpose: sets object shape
+
+    SetShape2(me: in out; TheShape: Shape from TopoDS);
+    ---Purpose: sets tool shape
+
+    GetShape1(me)
+    	returns Shape from TopoDS;
+	---C++: return const &
+	---Purpose: returns object shape;
+
+    GetShape2(me)
+    	returns Shape from TopoDS;
+	---C++: return const &
+	---Purpose: returns tool shape
+
+    --modified by NIZHNY-MKK  Fri Sep  3 17:14:55 2004.BEGIN
+    ---options
+    OperationType(me: in out)
+    	returns Operation from BOP;
+	---C++: return &
+	---Purpose: returns ref
+
+    StopOnFirstFaulty(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---Purpose: returns ref
+
+    ArgumentTypeMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode 
+	--          that means checking types of shapes.
+
+    SelfInterMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of self-intersection of shapes.
+
+    SmallEdgeMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of small edges.
+
+    RebuildFaceMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of possibility to split or rebuild faces.
+
+    TangentMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of tangency between subshapes.
+
+    MergeVertexMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of problem of merging vertices.
+
+    MergeEdgeMode(me: in out)
+    	returns Boolean from Standard;
+	---C++: return &
+	---C++: inline
+	---Purpose: Returns (modifiable) mode that means
+    	--          checking of problem of merging edges.
+
+--    MergeFaceMode(me: in out)
+--    	returns Boolean from Standard;
+--	---C++: return &
+--	---C++: inline
+--	---Purpose: Returns (modifiable) mode that means
+--    	--          checking of problem of merging faces.
+
+    --modified by NIZHNY-MKK  Fri Sep  3 17:15:02 2004.END
+
+    ---
+    Perform(me: out);
+    ---Purpose: performs analysis
+
+    HasFaulty(me)
+    	returns Boolean from Standard;
+	---Purpose: result of test
+
+    GetCheckResult(me)
+    	returns ListOfCheckResult from BOP;
+	---C++: return const &
+	---Purpose: returns a result of test
+
+    --- protected	
+    TestTypes(me: out)
+    	is protected;
+
+    TestSelfInterferences(me: out)
+    	is protected;
+
+    TestSmallEdge(me: out)
+    	is protected;
+
+    TestRebuildFace(me: out)
+    	is protected;
+
+    TestTangent(me: out)
+    	is protected;
+
+    TestMergeSubShapes(me: out; theType: ShapeEnum from TopAbs)
+    	is protected;
+
+    TestMergeVertex(me: out)
+    	is protected;
+
+    TestMergeEdge(me: out)
+    	is protected;
+
+--    TestMergeFace(me: out)
+--    	is protected;
+
+
+fields
+
+    myShape1      : Shape             from TopoDS;
+    myShape2      : Shape             from TopoDS;
+    myStopOnFirst : Boolean           from Standard;
+    --modified by NIZHNY-MKK  Fri Sep  3 17:08:38 2004.BEGIN
+    myOperation   : Operation         from BOP;
+    myArgumentTypeMode  : Boolean           from Standard;
+    mySelfInterMode  : Boolean           from Standard;
+    mySmallEdgeMode  : Boolean           from Standard;
+    myRebuildFaceMode: Boolean           from Standard;
+    myTangentMode     : Boolean           from Standard;
+    myMergeVertexMode: Boolean           from Standard;
+    myMergeEdgeMode  : Boolean           from Standard;
+--    myMergeFaceMode  : Boolean           from Standard;
+
+    --modified by NIZHNY-MKK  Fri Sep  3 17:08:41 2004.END
+    myResult      : ListOfCheckResult from BOP;
+    
+end ArgumentAnalyzer;

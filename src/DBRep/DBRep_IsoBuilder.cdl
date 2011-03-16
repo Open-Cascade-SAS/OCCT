@@ -1,0 +1,64 @@
+-- File:	DBRep_IsoBuilder.cdl
+-- Created:	Fri Mar 25 15:44:15 1994
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+---Copyright:	 Matra Datavision 1994
+
+
+class IsoBuilder from DBRep
+
+	---Purpose: Creation of isoparametric curves.
+
+inherits Hatcher from Geom2dHatch
+
+uses
+
+    Face from TopoDS ,
+    Face from DBRep ,
+    Array1OfReal    from TColStd ,
+    Array1OfInteger from TColStd
+    
+
+is
+
+    Create (TopologicalFace : Face    from TopoDS ;
+    	    Infinite        : Real    from Standard ;
+    	    NbIsos          : Integer from Standard)
+
+    	---Purpose: Creates the builder.
+
+    	returns IsoBuilder from DBRep ;
+
+
+    NbDomains (me)
+
+    	---Purpose: Returns the total number of domains.
+
+    	---C++: inline
+
+    	returns Integer from Standard
+    	is static ;
+
+
+    LoadIsos (me; Face : mutable Face from DBRep)
+
+    	---Purpose: Loading of the isoparametric curves in the
+    	--          Data Structure of a drawable face.
+
+    	is static ;
+
+
+fields
+
+    myInfinite : Real            from Standard ;
+    myUMin     : Real            from Standard ;
+    myUMax     : Real            from Standard ;
+    myVMin     : Real            from Standard ;
+    myVMax     : Real            from Standard ;
+    myUPrm     : Array1OfReal    from TColStd ;
+    myUInd     : Array1OfInteger from TColStd ;    
+    myVPrm     : Array1OfReal    from TColStd ;
+    myVInd     : Array1OfInteger from TColStd ;    
+    myNbDom    : Integer         from Standard ;
+    
+end IsoBuilder;

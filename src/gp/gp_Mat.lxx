@@ -1,0 +1,362 @@
+//File gp_Mat.lxx, JCV 04/12/90
+
+#include <gp.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_ConstructionError.hxx>
+
+#define Mat00 ((Standard_Real*)M)[0]
+#define Mat01 ((Standard_Real*)M)[1]
+#define Mat02 ((Standard_Real*)M)[2]
+#define Mat10 ((Standard_Real*)M)[3]
+#define Mat11 ((Standard_Real*)M)[4]
+#define Mat12 ((Standard_Real*)M)[5]
+#define Mat20 ((Standard_Real*)M)[6]
+#define Mat21 ((Standard_Real*)M)[7]
+#define Mat22 ((Standard_Real*)M)[8]
+
+#define Nat00 ((Standard_Real*)N)[0]
+#define Nat01 ((Standard_Real*)N)[1]
+#define Nat02 ((Standard_Real*)N)[2]
+#define Nat10 ((Standard_Real*)N)[3]
+#define Nat11 ((Standard_Real*)N)[4]
+#define Nat12 ((Standard_Real*)N)[5]
+#define Nat20 ((Standard_Real*)N)[6]
+#define Nat21 ((Standard_Real*)N)[7]
+#define Nat22 ((Standard_Real*)N)[8]
+
+#define Oat00 ((Standard_Real*)O)[0]
+#define Oat01 ((Standard_Real*)O)[1]
+#define Oat02 ((Standard_Real*)O)[2]
+#define Oat10 ((Standard_Real*)O)[3]
+#define Oat11 ((Standard_Real*)O)[4]
+#define Oat12 ((Standard_Real*)O)[5]
+#define Oat20 ((Standard_Real*)O)[6]
+#define Oat21 ((Standard_Real*)O)[7]
+#define Oat22 ((Standard_Real*)O)[8]
+
+inline gp_Mat::gp_Mat () {
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 =
+    Mat01 =
+      Mat02 =
+	Mat10 =
+	  Mat11 =
+	    Mat12 =
+	      Mat20 =
+		Mat21 =
+		  Mat22 = 0.0;
+}
+
+inline gp_Mat::gp_Mat (const Standard_Real a11,
+		       const Standard_Real a12,
+		       const Standard_Real a13,
+		       const Standard_Real a21,
+		       const Standard_Real a22,
+		       const Standard_Real a23,
+		       const Standard_Real a31,
+		       const Standard_Real a32,
+		       const Standard_Real a33) {
+
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 = a11;
+  Mat01 = a12;
+  Mat02 = a13;
+  Mat10 = a21;
+  Mat11 = a22;
+  Mat12 = a23;
+  Mat20 = a31;
+  Mat21 = a32;
+  Mat22 = a33;
+}
+
+inline void gp_Mat::SetDiagonal (const Standard_Real X1,
+				 const Standard_Real X2,
+				 const Standard_Real X3)
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 = X1;   Mat11 = X2;   Mat22 = X3;
+}
+
+inline void gp_Mat::SetIdentity ()
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 = Mat11 = Mat22 = 1.0;
+  Mat01 = Mat02 = Mat10  = Mat12 = Mat20 = Mat21 = 0.0;
+ }
+
+inline void gp_Mat::SetScale (const Standard_Real S)
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 = Mat11 =  Mat22 = S;
+  Mat01 = Mat02 = Mat10 = Mat12 = Mat20 = Mat21 = 0.0;
+}
+
+inline void gp_Mat::SetValue (const Standard_Integer Row, 
+			      const Standard_Integer Col, 
+			      const Standard_Real Value)
+{
+  Standard_OutOfRange_Raise_if
+    (Row < 1 || Row > 3 || Col < 1 || Col > 3, " ");
+  matrix[Row-1][Col-1] = Value;
+}
+
+inline Standard_Real gp_Mat::Determinant () const
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  return
+    Mat00 * (Mat11 * Mat22 - Mat21 * Mat12) -
+      Mat01 * (Mat10 * Mat22 - Mat20 * Mat12) +
+	Mat02 * (Mat10 * Mat21 - Mat20 * Mat11);
+}
+
+inline const Standard_Real& gp_Mat::Value (const Standard_Integer Row, 
+					   const Standard_Integer Col) const
+{
+  Standard_OutOfRange_Raise_if
+    (Row < 1 || Row > 3 || Col < 1 || Col > 3, " ");
+  return matrix[Row-1][Col-1];
+}
+
+inline Standard_Real& gp_Mat::ChangeValue (const Standard_Integer Row, 
+					   const Standard_Integer Col)
+{
+  Standard_OutOfRange_Raise_if
+    (Row < 1 || Row > 3 || Col < 1 || Col > 3, " ");
+  return matrix[Row-1][Col-1];
+}
+
+inline Standard_Boolean gp_Mat::IsSingular () const
+{
+  // Pour etre sur que Gauss va fonctionner, il faut faire Gauss ...
+  Standard_Real val = Determinant();
+  if (val < 0) val = - val;
+  return val <= gp::Resolution();
+}
+
+inline void gp_Mat::Add (const gp_Mat& Other)
+{
+  const Standard_Address M = (Standard_Address)&(      matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other.matrix[0][0]);
+  Mat00 = Mat00 + Oat00;
+  Mat01 = Mat01 + Oat01;
+  Mat02 = Mat02 + Oat02;
+  Mat10 = Mat10 + Oat10;
+  Mat11 = Mat11 + Oat11;
+  Mat12 = Mat12 + Oat12;
+  Mat20 = Mat20 + Oat20;
+  Mat21 = Mat21 + Oat21;
+  Mat22 = Mat22 + Oat22;
+}
+
+inline gp_Mat gp_Mat::Added (const gp_Mat& Other) const
+{
+  gp_Mat NewMat;
+  const Standard_Address M = (Standard_Address)&(       matrix[0][0]);
+  const Standard_Address N = (Standard_Address)&(NewMat.matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other .matrix[0][0]);
+  Nat00 = Mat00 + Oat00;
+  Nat01 = Mat01 + Oat01;
+  Nat02 = Mat02 + Oat02;
+  Nat10 = Mat10 + Oat10;
+  Nat11 = Mat11 + Oat11;
+  Nat12 = Mat12 + Oat12;
+  Nat20 = Mat20 + Oat20;
+  Nat21 = Mat21 + Oat21;
+  Nat22 = Mat22 + Oat22;
+  return NewMat;
+}
+
+inline void gp_Mat::Divide (const Standard_Real Scalar)
+{
+  Standard_Real val = Scalar;
+  if (val < 0) val = - val;
+  Standard_ConstructionError_Raise_if
+      (val <= gp::Resolution(),"gp_Mat : Divide by 0");
+  Standard_Real UnSurScalar = 1.0 / Scalar;
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 *= UnSurScalar;
+  Mat01 *= UnSurScalar; 
+  Mat02 *= UnSurScalar; 
+  Mat10 *= UnSurScalar; 
+  Mat11 *= UnSurScalar; 
+  Mat12 *= UnSurScalar; 
+  Mat20 *= UnSurScalar; 
+  Mat21 *= UnSurScalar; 
+  Mat22 *= UnSurScalar; 
+}
+
+inline gp_Mat gp_Mat::Divided (const Standard_Real Scalar) const
+{
+  Standard_Real val = Scalar;
+  if (val < 0) val = - val;
+  Standard_ConstructionError_Raise_if
+      (val <= gp::Resolution(),"gp_Mat : Divide by 0");
+  gp_Mat NewMat;
+  const Standard_Address M = (Standard_Address)&(       matrix[0][0]);
+  const Standard_Address N = (Standard_Address)&(NewMat.matrix[0][0]);
+  Standard_Real UnSurScalar = 1.0 / Scalar;
+  Nat00 = Mat00 * UnSurScalar;
+  Nat01 = Mat01 * UnSurScalar; 
+  Nat02 = Mat02 * UnSurScalar; 
+  Nat10 = Mat10 * UnSurScalar; 
+  Nat11 = Mat11 * UnSurScalar; 
+  Nat12 = Mat12 * UnSurScalar; 
+  Nat20 = Mat20 * UnSurScalar; 
+  Nat21 = Mat21 * UnSurScalar; 
+  Nat22 = Mat22 * UnSurScalar; 
+  return NewMat;
+}
+
+inline gp_Mat gp_Mat::Multiplied (const gp_Mat& Other) const
+{
+  gp_Mat NewMat = *this;
+  NewMat.Multiply(Other);
+  return NewMat;
+}
+
+inline void gp_Mat::Multiply (const gp_Mat& Other)
+{
+  const Standard_Address M = (Standard_Address)&(      matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other.matrix[0][0]);
+  Standard_Real T00,T01,T02,T10,T11,T12,T20,T21,T22;
+  T00 = Mat00 * Oat00 + Mat01 * Oat10 + Mat02 * Oat20;
+  T01 = Mat00 * Oat01 + Mat01 * Oat11 + Mat02 * Oat21;
+  T02 = Mat00 * Oat02 + Mat01 * Oat12 + Mat02 * Oat22;
+  T10 = Mat10 * Oat00 + Mat11 * Oat10 + Mat12 * Oat20;
+  T11 = Mat10 * Oat01 + Mat11 * Oat11 + Mat12 * Oat21;
+  T12 = Mat10 * Oat02 + Mat11 * Oat12 + Mat12 * Oat22;
+  T20 = Mat20 * Oat00 + Mat21 * Oat10 + Mat22 * Oat20;
+  T21 = Mat20 * Oat01 + Mat21 * Oat11 + Mat22 * Oat21;
+  T22 = Mat20 * Oat02 + Mat21 * Oat12 + Mat22 * Oat22;
+  Mat00 = T00; 
+  Mat01 = T01; 
+  Mat02 = T02; 
+  Mat10 = T10; 
+  Mat11 = T11; 
+  Mat12 = T12; 
+  Mat20 = T20; 
+  Mat21 = T21; 
+  Mat22 = T22; 
+}
+
+inline void gp_Mat::PreMultiply (const gp_Mat& Other)
+{
+  const Standard_Address M = (Standard_Address)&(      matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other.matrix[0][0]);
+  Standard_Real T00,T01,T02,T10,T11,T12,T20,T21,T22;
+  T00 = Oat00 * Mat00 + Oat01 * Mat10 + Oat02 * Mat20;
+  T01 = Oat00 * Mat01 + Oat01 * Mat11 + Oat02 * Mat21;
+  T02 = Oat00 * Mat02 + Oat01 * Mat12 + Oat02 * Mat22;    
+  T10 = Oat10 * Mat00 + Oat11 * Mat10 + Oat12 * Mat20;
+  T11 = Oat10 * Mat01 + Oat11 * Mat11 + Oat12 * Mat21;
+  T12 = Oat10 * Mat02 + Oat11 * Mat12 + Oat12 * Mat22;    
+  T20 = Oat20 * Mat00 + Oat21 * Mat10 + Oat22 * Mat20;
+  T21 = Oat20 * Mat01 + Oat21 * Mat11 + Oat22 * Mat21;
+  T22 = Oat20 * Mat02 + Oat21 * Mat12 + Oat22 * Mat22;    
+  Mat00 = T00; 
+  Mat01 = T01; 
+  Mat02 = T02; 
+  Mat10 = T10; 
+  Mat11 = T11; 
+  Mat12 = T12; 
+  Mat20 = T20; 
+  Mat21 = T21; 
+  Mat22 = T22; 
+}
+
+inline gp_Mat gp_Mat::Multiplied (const Standard_Real Scalar) const
+{
+  gp_Mat NewMat;
+  const Standard_Address M = (Standard_Address)&(       matrix[0][0]);
+  const Standard_Address N = (Standard_Address)&(NewMat.matrix[0][0]);
+  Nat00 = Scalar * Mat00;
+  Nat01 = Scalar * Mat01;
+  Nat02 = Scalar * Mat02;
+  Nat10 = Scalar * Mat10;
+  Nat11 = Scalar * Mat11;
+  Nat12 = Scalar * Mat12;
+  Nat20 = Scalar * Mat20;
+  Nat21 = Scalar * Mat21;
+  Nat22 = Scalar * Mat22;
+  return NewMat;
+}
+
+inline void gp_Mat::Multiply (const Standard_Real Scalar)
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Mat00 *= Scalar; 
+  Mat01 *= Scalar; 
+  Mat02 *= Scalar; 
+  Mat10 *= Scalar; 
+  Mat11 *= Scalar; 
+  Mat12 *= Scalar; 
+  Mat20 *= Scalar; 
+  Mat21 *= Scalar; 
+  Mat22 *= Scalar; 
+}
+
+inline gp_Mat gp_Mat::Powered (const Standard_Integer N) const
+{
+   gp_Mat MatN = *this;
+   MatN.Power (N);
+   return MatN;
+}
+
+inline void gp_Mat::Subtract (const gp_Mat& Other)
+{
+  const Standard_Address M = (Standard_Address)&(      matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other.matrix[0][0]);
+  Mat00 -= Oat00;
+  Mat01 -= Oat01;
+  Mat02 -= Oat02;
+  Mat10 -= Oat10;
+  Mat11 -= Oat11;
+  Mat12 -= Oat12;
+  Mat20 -= Oat20;
+  Mat21 -= Oat21;
+  Mat22 -= Oat22;
+}
+
+inline gp_Mat gp_Mat::Subtracted (const gp_Mat& Other) const
+{
+  gp_Mat NewMat;
+  const Standard_Address M = (Standard_Address)&(       matrix[0][0]);
+  const Standard_Address N = (Standard_Address)&(NewMat.matrix[0][0]);
+  const Standard_Address O = (Standard_Address)&(Other .matrix[0][0]);
+  Nat00 = Mat00 - Oat00;
+  Nat01 = Mat01 - Oat01;
+  Nat02 = Mat02 - Oat02;
+  Nat10 = Mat10 - Oat10;
+  Nat11 = Mat11 - Oat11;
+  Nat12 = Mat12 - Oat12;
+  Nat20 = Mat20 - Oat20;
+  Nat21 = Mat21 - Oat21;
+  Nat22 = Mat22 - Oat22;
+  return NewMat;
+}
+
+inline void gp_Mat::Transpose ()
+{
+  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
+  Standard_Real Temp;
+  Temp   = Mat01;
+  Mat01  = Mat10;
+  Mat10  = Temp;
+  Temp   = Mat02;
+  Mat02  = Mat20;
+  Mat20  = Temp;
+  Temp   = Mat12;
+  Mat12  = Mat21;
+  Mat21  = Temp;
+}
+
+inline gp_Mat gp_Mat::Transposed () const
+{
+  gp_Mat NewMat = *this;
+  NewMat.Transpose();
+  return NewMat; 
+}
+
+inline gp_Mat operator* (const Standard_Real Scalar, const gp_Mat& Mat3D)
+{ return Mat3D.Multiplied (Scalar); }
+

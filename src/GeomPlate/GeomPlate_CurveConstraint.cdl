@@ -1,0 +1,211 @@
+-- File:	GeomPlate_CurveConstraint.cdl
+-- Created:	Mon May  5 12:12:26 1997
+-- Author:	Jerome LEMONIER
+--		<jlr@sgi64>
+-- Modified:	Mon Nov  3 10:24:07 1997
+-- Author:	Joelle CHAUVET
+--		constructeur vide et champs proteges
+---Copyright:	 Matra Datavision 1997
+--           	 
+class  CurveConstraint  from  GeomPlate   inherits TShared from MMgt 
+    	---Purpose:
+    	-- Defines curves as constraints to be used to deform a surface.       
+uses  
+   Pnt  from  gp,  
+   Pnt2d  from  gp,
+   Vec   from  gp,
+   HCurveOnSurface  from  Adaptor3d,  
+   HCurve  from  Adaptor3d,  
+   HCurve2d  from  Adaptor2d,     
+   Surface  from  Geom, 
+   Curve  from  Geom2d, 
+   Function  from  Law, 
+   SLProps from GeomLProp  
+   
+raises   
+   ConstructionError  from  Standard
+is 
+ 
+Create returns  CurveConstraint from  GeomPlate; 
+    	---Purpose:
+    	-- Initializes an empty curve constraint object.
+Create (Boundary :  HCurveOnSurface  from  Adaptor3d; 
+        Order :  Integer  from  Standard ;
+        NPt  :  Integer  from  Standard  =  10;
+    	TolDist  :  Real  from  Standard  =  0.0001; 
+    	TolAng  :  Real  from  Standard  =  0.01; 
+    	TolCurv  :  Real  from  Standard  =  0.1
+ )  
+        returns  CurveConstraint from  GeomPlate
+     	raises    ConstructionError;
+	         
+    	--- Purpose: Create a constraint
+    	--  Order is the order of the constraint. The possible values for order are -1,0,1,2.
+    	--  Order i means constraints Gi
+    	--  Npt is the number of points associated with the constraint.
+    	--  TolDist is the maximum error to satisfy for G0 constraints
+    	--  TolAng is the maximum error to satisfy for G1 constraints
+    	--  TolCurv is the maximum error to satisfy for G2 constraints
+    	--  These errors can be replaced by laws of criterion.
+    	-- Raises    ConstructionError if Order is not -1 , 0,  1,  2
+	         
+Create (Boundary :  HCurve  from  Adaptor3d; 
+        Tang :  Integer  from  Standard; 
+        NPt  :  Integer  from  Standard  =  10;
+    	TolDist  :  Real  from  Standard  =  0.0001)
+        returns  CurveConstraint from  GeomPlate 
+     	raises    ConstructionError;
+    	--- Purpose: Create a constraint
+    	--  Order is the order of the constraint. The possible values for order are -1,0.
+    	--  Order i means constraints Gi
+    	--  Npt is the number of points associated with the constraint.
+    	--  TolDist is the maximum error to satisfy for G0 constraints
+    	--  These errors can be replaced by laws of criterion.
+    	-- Raises    ConstructionError if Order  is  not  0  or  -1 
+SetOrder(me : mutable ; Order : Integer from Standard);
+    	--- Purpose: Allows you to set the order of continuity required for
+    	-- the constraints: G0, G1, and G2, controlled
+    	-- respectively by G0Criterion G1Criterion and G2Criterion.
+
+Order(me) returns Integer from Standard;
+    	--- Purpose: Returns the order of constraint, one of G0, G1 or G2.
+
+NbPoints(me) returns Integer from Standard; 
+    	---Purpose: Returns the number of points on the curve used as a
+    	-- constraint. The default setting is 10. This parameter
+    	-- affects computation time, which increases by the cube of
+    	-- the number of points.
+        
+SetNbPoints(me  :  mutable  ;  NewNb  :  Integer  from  Standard); 
+    	---Purpose:
+    	-- Allows you to set the number of points on the curve
+    	-- constraint. The default setting is 10. This parameter
+    	-- affects computation time, which increases by the cube of
+    	-- the number of points.
+        
+SetG0Criterion(me : mutable ;G0Crit :Function from Law );
+    	--- Purpose:
+    	-- Allows you to set the G0 criterion. This is the law
+    	-- defining the greatest distance allowed between the
+    	-- constraint and the target surface for each point of the
+    	-- constraint. If this criterion is not set, TolDist, the
+    	-- distance tolerance from the constructor, is used.
+    
+SetG1Criterion(me : mutable ;G1Crit :Function from Law)
+raises  ConstructionError; 
+    	---Purpose:
+    	-- Allows you to set the G1 criterion. This is the law
+    	-- defining the greatest angle allowed between the
+    	-- constraint and the target surface. If this criterion is not
+    	-- set, TolAng, the angular tolerance from the constructor, is used.
+    	-- Raises  ConstructionError if  the  curve  is  not  on  a  surface
+
+SetG2Criterion(me : mutable ;G2Crit : Function from Law)
+raises  ConstructionError; 
+    	---Rurpose:
+    	-- Allows you to set the G2 criterion. This is the law
+    	-- defining the greatest difference in curvature allowed
+    	-- between the constraint and the target surface. If this
+    	-- criterion is not set, TolCurv, the curvature tolerance from
+    	-- the constructor, is used.
+    	-- Raises  ConstructionError if  the  curve  is  not  on  a  surface
+
+G0Criterion(me ;U  :  Real  from  Standard)  returns  Real  from  Standard; 
+    	---Purpose:  Returns the G0 criterion at the parametric point U on
+    	-- the curve. This is the greatest distance allowed between
+    	-- the constraint and the target surface at U.
+
+G1Criterion(me ;U  :  Real  from  Standard)  returns  Real  from  Standard 
+raises  ConstructionError; 
+    	---Purpose: Returns the G1 criterion at the parametric point U on
+    	-- the curve. This is the greatest angle allowed between
+    	-- the constraint and the target surface at U.
+    	-- Raises  ConstructionError if  the  curve  is  not  on  a  surface
+    
+G2Criterion(me ;U  :  Real  from  Standard)  returns  Real  from  Standard 
+raises  ConstructionError; 
+    	---Purpose: Returns the G2 criterion at the parametric point U on
+    	-- the curve. This is the greatest difference in curvature
+    	-- allowed between the constraint and the target surface at U.
+    	-- Raises  ConstructionError if  the  curve  is  not  on  a  surface
+
+FirstParameter  (me)  returns  Real  from  Standard; 
+
+LastParameter (me)  returns  Real  from  Standard;
+
+Length  (me)  returns  Real  from  Standard;
+
+LPropSurf  (me  :  mutable;U  :  Real  from  Standard)   
+---C++: return &
+returns SLProps from GeomLProp
+raises  ConstructionError; 
+--if  the  curve  is  not  on  a  surface
+      
+
+D0(me ;U  :  Real  from  Standard;  P :  out  Pnt);
+
+D1(me ;U  :  Real  from  Standard;  P :  out  Pnt;  V1,  V2  :  out  Vec )
+raises  ConstructionError; 
+--if  the  curve  is  not  on  a  surface
+
+D2(me ;U  :  Real  from  Standard;  P :  out  Pnt;  V1,  V2  ,  V3,  V4,  V5  :  out  Vec)
+raises  ConstructionError; 
+--if  the  curve  is  not  on  a  surface
+--    
+Curve3d  (me )  returns  HCurve from Adaptor3d;
+
+SetCurve2dOnSurf(me : mutable; Curve2d : Curve from Geom2d);
+    	---Purpose: loads a 2d curve associated the surface resulting of the constraints
+
+Curve2dOnSurf  (  me  )  returns  Curve  from  Geom2d; 
+    	---Purpose: Returns a 2d curve associated the surface resulting of the constraints
+--          
+
+ 
+--Private methods:
+--        
+
+SetProjectedCurve(me : mutable; Curve2d : HCurve2d from Adaptor2d;  TolU,TolV  :  Real  from  Standard);
+    	---Purpose:  loads a 2d curve  resulting from the normal projection of
+    	--          the curve on the initial surface 
+-- 
+ 
+ProjectedCurve  (  me  )  returns  HCurve2d  from  Adaptor2d ; 
+    	---Purpose: Returns the projected curve resulting from the normal projection of the
+    	--          curve on the initial surface
+--                    
+
+
+fields  
+
+myFrontiere : HCurveOnSurface from Adaptor3d  is  protected;    
+
+myNbPoints  :  Integer  from  Standard  is  protected; 
+
+myOrder  :  Integer  from  Standard  is  protected; 
+
+my3dCurve  :   HCurve from Adaptor3d  is  protected;
+
+myTang : Integer from Standard  is  protected;
+
+my2dCurve  :  Curve  from  Geom2d  is  protected;    
+myHCurve2d :  HCurve2d  from  Adaptor2d  is  protected; 
+myG0Crit  :  Function  from  Law   is  protected;
+myG1Crit  :  Function  from  Law   is  protected;
+myG2Crit  :  Function  from  Law   is  protected;
+myConstG0  :  Boolean  from  Standard  is  protected;
+myConstG1  :  Boolean  from  Standard  is  protected;
+myConstG2  :  Boolean  from  Standard  is  protected;
+myLProp  :     SLProps from GeomLProp  is  protected;  
+ 
+--Tolerance
+
+
+myTolDist  :  Real  from  Standard  is  protected; 
+myTolAng  :  Real  from  Standard  is  protected; 
+myTolCurv  :  Real  from  Standard  is  protected;
+myTolU     :  Real  from  Standard  is  protected; 
+myTolV     :  Real  from  Standard  is  protected;
+end;
+
+

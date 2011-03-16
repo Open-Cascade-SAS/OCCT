@@ -1,0 +1,46 @@
+-- File:	Approx_2dCurve.cdl
+-- Created:	Tue Oct 28 16:28:35 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Curve2d from Approx 
+
+	---Purpose: Makes  an  approximation  for  HCurve2d  from  Adaptor3d
+
+uses
+    HCurve2d    from  Adaptor2d, 
+    Shape  from  GeomAbs, 
+    BSplineCurve  from  Geom2d 
+    
+is
+  Create(C2D  :  HCurve2d    from  Adaptor2d; 
+    	 First, 
+	 Last, 		      
+         TolU,  TolV  :  Real; 
+	 Continuity  :  Shape  from  GeomAbs; 
+         MaxDegree  :  Integer  ; 
+         MaxSegments  :  Integer) 
+	      
+     returns  Curve2d;	 
+      
+    IsDone(me) returns Boolean from Standard;
+    
+    HasResult(me) returns  Boolean from Standard;
+   
+    Curve(me) 
+    returns  BSplineCurve  from  Geom2d; 
+     
+    MaxError2dU(me) returns  Real;  
+    MaxError2dV(me) returns  Real;
+    
+fields
+   
+  myCurve            : BSplineCurve  from  Geom2d; 
+  myIsDone           : Boolean       from  Standard;   
+  myHasResult        : Boolean       from  Standard; 
+  myMaxError2dU      : Real          from  Standard; 
+  myMaxError2dV      : Real          from  Standard; 
+  
+end Curve2d;

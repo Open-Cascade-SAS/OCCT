@@ -1,0 +1,15 @@
+// File:	HLRTest_Projector.lxx
+// Created:	Wed Apr  5 17:05:16 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : Projector
+//purpose  : 
+//=======================================================================
+
+inline const HLRAlgo_Projector & HLRTest_Projector::Projector () const 
+{
+  return myProjector;
+}
+

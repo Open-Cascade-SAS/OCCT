@@ -1,0 +1,75 @@
+-- File:	BOPTools_Curve.cdl
+-- Created:	Tue May  8 13:07:58 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Curve from BOPTools 
+
+	---Purpose:  
+    	--  Class holds the  structure for storing information about  
+    	--- intersection curve and set of paves on it     
+    	---     
+
+uses 
+    ListOfInteger from  TColStd,  
+    Curve           from IntTools, 
+    PaveSet         from BOPTools, 
+    PaveBlock       from BOPTools, 
+    ListOfPaveBlock from BOPTools 
+    
+
+is
+    Create   
+    	returns Curve from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Create  (aIC:Curve from IntTools) 
+    	returns Curve from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    SetCurve(me:out; 
+    	     aIC:Curve from IntTools); 
+    	---Purpose:  
+    	--- Modifier 
+    	---
+    Curve(me)
+    	returns Curve from IntTools; 
+    	---C++:  return const &  
+    	---Purpose:  
+    	--- Selector 
+    	---
+    Set(me:out) 
+    	returns PaveSet from BOPTools; 
+    	---C++:  return &  
+    	---Purpose:  
+    	--- Selector 
+    	--- 
+    AppendNewBlock(me:out;   
+    	    	aPB:PaveBlock from BOPTools);      
+    	---Purpose:  
+    	--- Adds the PaveBlock  <aPB> to the pave set    
+    	---
+    NewPaveBlocks(me) 
+    	returns ListOfPaveBlock from BOPTools; 
+    	---C++:  return const & 
+    	---Purpose:  
+    	--- Returns the PaveBlock-s attached to the curve      
+    	---
+    TechnoVertices (me:out) 
+    	returns ListOfInteger from TColStd; 
+    	---C++:  return &  
+    	---Purpose:  
+    	--- Returns indices TechnoVertices attached to the curve      
+    	---
+
+fields
+    myCurve  : Curve           from IntTools;
+    myPaveSet: PaveSet         from BOPTools;
+    myNewPBs : ListOfPaveBlock from BOPTools;   
+    myTechnoVertices    : ListOfInteger from  TColStd; 
+
+end Curve;

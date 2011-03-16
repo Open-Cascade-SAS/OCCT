@@ -1,0 +1,25 @@
+-- File:	IntTools_SurfaceRangeSampleMapHasher.cdl
+-- Created:	Fri Oct 14 20:55:48 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class SurfaceRangeSampleMapHasher from IntTools
+uses
+    SurfaceRangeSample from IntTools
+is
+    HashCode(myclass; K : SurfaceRangeSample from IntTools; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	--
+	---C++: inline
+	
+    IsEqual(myclass; S1, S2 : SurfaceRangeSample from IntTools) returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	--          
+	---C++: inline
+
+
+end SurfaceRangeSampleMapHasher from IntTools;

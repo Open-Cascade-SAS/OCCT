@@ -1,0 +1,18 @@
+-- File:	StepRepr_ValueRange.cdl
+-- Created:	Tue Apr 24 17:56:25 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class ValueRange  from StepRepr    inherits CompoundRepresentationItem  from StepRepr
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    Integer
+
+is
+
+    Create returns mutable ValueRange;
+
+end ValueRange;

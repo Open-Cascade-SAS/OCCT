@@ -1,0 +1,59 @@
+-- File:	TDocStd_XLinkIterator.cdl
+--      	----------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Aug 27 1997	Creation
+
+
+class XLinkIterator from TDocStd 
+
+	---Purpose: Iterates on Reference attributes.
+
+uses Document from TDocStd,
+     XLink     from TDocStd,
+     XLinkPtr  from TDocStd
+
+raises
+
+    NoMoreObject from Standard
+
+is
+
+    Create
+    returns XLinkIterator from TDocStd;
+	---Purpose: Returns an empty iterator;
+
+    Create (D : Document from TDocStd)
+    returns XLinkIterator from TDocStd;
+    	---Purpose: Creates an iterator on Reference of <D>.
+    
+    Initialize (me  : in out; D : Document from TDocStd);
+    	---Purpose: Restarts an iteration with <D>.
+    
+    More (me) returns Boolean;
+	---Purpose: Returns True if there is a current Item in the
+	--          iteration.
+	--          
+	---C++: inline
+    
+    Next (me : in out)
+    	raises NoMoreObject from Standard;
+    	---Purpose: Move to the next item; raises if there is no more item.
+    
+    Value (me) returns XLinkPtr from TDocStd;
+	---Purpose: Returns the current item; a null handle if there is none.
+	--          
+	---C++: inline
+
+    Init (me : in out; D : Document from TDocStd) is private;
+
+
+fields
+
+    myValue : XLinkPtr from TDocStd;
+
+end XLinkIterator;

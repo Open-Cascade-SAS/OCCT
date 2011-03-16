@@ -1,0 +1,30 @@
+-- File:        AdvancedFace.cdl
+-- Created:     Mon Dec  4 12:02:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWAdvancedFace from RWStepShape
+
+	---Purpose : Read & Write Module for AdvancedFace
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AdvancedFace from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWAdvancedFace;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AdvancedFace from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : AdvancedFace from StepShape);
+
+	Share(me; ent : AdvancedFace from StepShape; iter : in out EntityIterator);
+
+end RWAdvancedFace;

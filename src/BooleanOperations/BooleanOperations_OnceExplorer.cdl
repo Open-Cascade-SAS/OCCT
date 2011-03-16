@@ -1,0 +1,52 @@
+-- File:	BooleanOperations_OnceExplorer.cdl
+-- Created:	Thu Sep  7 14:37:43 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class OnceExplorer from BooleanOperations  
+    inherits Explorer from BooleanOperations
+
+	---Purpose: 
+
+uses
+    Shape     from TopoDS,
+    ShapeEnum from TopAbs,
+    ShapesDataStructure from BooleanOperations,
+    PShapesDataStructure from BooleanOperations
+
+--raises
+
+is
+    Create (SDS: ShapesDataStructure)  
+    	returns OnceExplorer from BooleanOperations;
+--modified by NIZNHY-PKV Sun Dec 15 16:24:39 2002  f 
+    Delete(me:  out)  
+    	is redefined virtual; 
+    ---C++:  alias  "Standard_EXPORT virtual ~BooleanOperations_OnceExplorer()  {Delete();}"
+--modified by NIZNHY-PKV Sun Dec 15 16:24:42 2002  t
+    
+    Init (me:in out;  
+    	    aShape: Integer;  
+    	    TargetToFind: ShapeEnum;  
+    	    TargetToAvoid: ShapeEnum = TopAbs_SHAPE) is redefined;
+    
+    Next (me:in out)  
+    	is redefined;
+    	
+    Current (me:in out)  
+    	returns Integer is redefined;
+
+    Dump (me; S : in out OStream)  
+    	is redefined; 
+
+
+fields
+
+    myArrayOfBits : Address;
+    ---Purpose: to say if we already visited a shape.
+    mySizeOfArrayOfBits : Integer;
+    ---Purpose: the size of <myArrayOfBits>.
+
+end OnceExplorer;

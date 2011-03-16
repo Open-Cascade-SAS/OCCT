@@ -1,0 +1,213 @@
+-- File:	Draw.cdl
+-- Created:	Wed Apr 24 14:09:59 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+package Draw 
+
+	---Purpose: MAQUETTE DESSIN MODELISATION
+
+uses OSD, MMgt, TCollection, TColStd, gp, Message
+
+is
+    exception Failure inherits Failure from Standard; 
+     
+    enumeration ColorKind is blanc,                 
+    	    	    	    --white in english
+    	    	    	     rouge,
+                            --red in english
+                             vert,
+    	    	    	    --green in english
+    	    	    	      bleu,
+    	    	    	    --blue in english 
+    	    	    	      cyan,
+			    -- same in english
+               	      	      or,
+    	    	    	    --gold in english 
+    	    	    	      magenta,
+    	    	    	    --same in english 
+    	    	    	      marron,
+			    --brown in english
+    	    	    	      orange,
+    	    	    	    --same in english 
+    	    	    	      rose,
+			    --pink in english 
+                     	      saumon,
+    	    	    	    --salmon in english 
+    	    	    	      violet,
+			    --same in english 
+                              jaune,
+    	    	    	    --yellow in english 
+    	    	    	      kaki,
+                            --DarkOliveGreen in english 
+                              corail;
+			    --Coral in english 
+		     
+    enumeration MarkerShape is
+    	Square, Losange, X, Plus, Circle, CircleZoom;
+	
+	---Purpose: Circle is not sensible to zoom, like 
+	--          other MarkerShape, contrarily to CircleZoom
+	
+
+
+    deferred class Drawable3D;
+    
+    deferred class Drawable2D;
+    
+    class Color;
+    
+    class Display;
+    
+    class Segment3D;
+    
+    class Segment2D;
+    
+    class Marker3D;
+    
+    class Marker2D;
+    
+    class Axis3D;
+    
+    class Axis2D;
+    
+    class Text3D;
+    
+    class Text2D;
+    
+    class Circle3D;
+    
+    class Circle2D;
+    
+    class Number;
+    
+    class Chronometer;
+    
+    class Grid;
+    
+    class Box;
+	---Purpose: a 3d box
+    
+    class SequenceOfDrawable3D instantiates 
+    	Sequence from TCollection (Drawable3D);
+	
+    class ProgressIndicator;
+
+    imported PInterp;
+	---Purpose: typedef Tcl_Interp * Draw_PInterp;
+    
+    primitive CommandFunction;
+	---Purpose: typedef Standard_Integer (*Draw_CommandFunction)
+	--          (Draw_Interpretor&, Standard_Integer, char**)
+    
+    class Interpretor;
+	---Purpose: Encapsulate the Tcl interpretor to add commands.
+
+    class Printer;
+	---Purpose: Implements a printer class to connect Message_Messenger 
+	--          tool to Draw_Interpretor output.
+
+    class VMap instantiates
+      DataMap from TCollection(Integer,
+    	    	    	       Drawable3D from Draw,
+                               MapIntegerHasher from TColStd);    
+        
+    private class MapOfFunctions instantiates DataMap from TCollection(AsciiString from TCollection ,Function from OSD, AsciiString from TCollection);
+
+    class MapOfAsciiString instantiates IndexedMap from TCollection(AsciiString from TCollection,AsciiString from TCollection); 
+     
+    Load(theDI: out Interpretor from Draw; theKey, theResourceFileName: AsciiString from TCollection)  
+--    returns Transient from Standard
+    raises Failure  from Draw;      
+     
+    Load(theDI: out Interpretor from Draw;
+         theKey, theResourceFileName: AsciiString from TCollection;
+         theDefaultsDirectory, theUserDefaultsDirectory: in out AsciiString from TCollection;
+         Verbose :  Boolean from Standard = Standard_False)  
+    raises Failure  from Draw;      
+
+    --
+    --  methods to handle variables
+    --  
+    
+    Set(Name : CString;  
+    	D : Drawable3D from Draw; 
+        Disp : Boolean from Standard);
+       ---Purpose: Sets a variable. Display it if <Disp> is true.
+    
+    Set(Name : CString;  
+    	D : Drawable3D from Draw);
+	---Purpose: Sets a    variable,  a  null   handle    clear the
+	--          vartiable. Automatic display is context driven.
+	
+    Set(Name : CString;  
+    	val : Real);
+	---Purpose: Sets a numeric variable.
+    
+    Get(Name : in out CString;  
+    	Complain : Boolean = Standard_True)
+    	returns Drawable3D from Draw;
+	---Purpose: Returns a variable  value.  Null if  the  variable
+	--          does not exist, a warning  is printed if  Complain
+	--          is True.
+	--          
+	--          The name "."   does a graphic  selection.   If the
+	--          selection is a variable <Name> is overwritten with
+	--          the name of the variable.
+	
+    Get(Name : CString;  
+    	val : out Real)  
+    	returns Boolean;
+	---Purpose: Gets a   numeric  variable. Returns  True   if the
+	--          variable exist.
+
+    Set(Name : CString; val : CString);
+	---Purpose: Sets a TCL sting variable
+	
+    Atof(Name : CString) returns Real;
+	---Purpose: Search a  numeric  variable.  If none found converts
+	--          the string to a real.
+    
+    Atoi(Name : CString) returns Integer;
+	---Purpose: Search a  numeric  variable.  If none found converts
+	--          the string to an integer.
+    
+    
+    LastPick(view,X,Y,button : out Integer);
+	---Purpose: Returns last graphic selection description.
+	
+    Repaint;
+	---Purpose: Asks to repaint the screen after the current command.
+	
+    SetProgressBar(thePI: ProgressIndicator from Draw);
+        ---Purpose: sets progress indicator
+	
+    GetProgressBar returns ProgressIndicator from Draw;
+        ---Purpose: gets progress indicator
+
+
+    --
+    --	Draw Commands
+    --		
+
+    Commands(I : in out Interpretor from Draw);
+	---Purpose: Defines all Draw commands
+
+    BasicCommands(I : in out Interpretor from Draw);
+	---Purpose: Defines Draw basic commands
+
+    VariableCommands(I : in out Interpretor from Draw);
+	---Purpose: Defines Draw variables handling commands.
+
+    GraphicCommands(I : in out Interpretor from Draw);
+	---Purpose: Defines Draw variables handling commands.
+
+    PloadCommands(I : in out Interpretor from Draw);
+	---Purpose: Defines Loads Draw plugins commands.
+
+    UnitCommands(I : in out Interpretor from Draw);
+	---Purpose: Defines Draw unit commands
+
+end Draw;

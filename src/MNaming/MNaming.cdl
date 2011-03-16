@@ -1,0 +1,37 @@
+-- File:	MNaming.cdl
+-- Created:	Fri Apr 11 15:07:14 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+package MNaming 
+
+	---Purpose: 
+
+uses TDF,
+     PDF, 
+     CDM,
+     MDF
+
+is
+
+
+    class NamedShapeRetrievalDriver;    
+    
+    class NamingRetrievalDriver; 
+
+    class NamingRetrievalDriver_1;   
+    --  New fields added
+    
+    class NamedShapeStorageDriver;   
+
+    class NamingStorageDriver;
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF;theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverSeq>.
+
+
+end MNaming;

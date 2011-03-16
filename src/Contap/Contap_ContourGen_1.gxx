@@ -1,0 +1,151 @@
+#include <Standard_ConstructionError.hxx>
+
+
+Contap_ContourGen::Contap_ContourGen () : 
+       done(Standard_False),modeset(Standard_False)
+{}
+
+Contap_ContourGen::Contap_ContourGen (const gp_Vec& Direction) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  mySFunc.Set(Direction);
+  myAFunc.Set(Direction);
+}
+
+
+Contap_ContourGen::Contap_ContourGen (const gp_Vec& Direction,
+				const Standard_Real Angle) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  mySFunc.Set(Direction,Angle);
+  myAFunc.Set(Direction,Angle);
+}
+
+Contap_ContourGen::Contap_ContourGen (const gp_Pnt& Eye) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  mySFunc.Set(Eye);
+  myAFunc.Set(Eye);
+}
+
+
+Contap_ContourGen::Contap_ContourGen (const TheSurface& Surf,
+				const Handle(TheTopolTool)& Domain,
+				const gp_Vec& Direction) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  Perform(Surf,Domain,Direction);
+}
+
+
+Contap_ContourGen::Contap_ContourGen (const TheSurface& Surf,
+				const Handle(TheTopolTool)& Domain,
+				const gp_Vec& Direction,
+				const Standard_Real Angle) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  Perform(Surf,Domain,Direction,Angle);
+}
+
+
+Contap_ContourGen::Contap_ContourGen (const TheSurface& Surf,
+				const Handle(TheTopolTool)& Domain,
+				const gp_Pnt& Eye) :
+
+       done(Standard_False),modeset(Standard_True)
+{
+  Perform(Surf,Domain,Eye);
+}
+
+
+void Contap_ContourGen::Init (const gp_Vec& Direction)
+
+{
+  done = Standard_False;
+  modeset = Standard_True;
+  mySFunc.Set(Direction);
+  myAFunc.Set(Direction);
+}
+
+
+void Contap_ContourGen::Init(const gp_Vec& Direction,
+			  const Standard_Real Angle)
+{
+  done = Standard_False;
+  modeset = Standard_True;
+  mySFunc.Set(Direction,Angle);
+  myAFunc.Set(Direction,Angle);
+}
+
+void Contap_ContourGen::Init (const gp_Pnt& Eye)
+{
+  done = Standard_False;
+  modeset = Standard_True;
+  mySFunc.Set(Eye);
+  myAFunc.Set(Eye);
+}
+
+
+void Contap_ContourGen::Perform (const TheSurface& Surf,
+			      const Handle(TheTopolTool)& Domain)
+{
+  if (!modeset) {Standard_ConstructionError::Raise();}
+  mySFunc.Set(Surf);
+  myAFunc.Set(Surf);
+
+  GeomAbs_SurfaceType typS = TheSurfaceTool::GetType(Surf);
+  switch (typS) {
+  case GeomAbs_Plane:
+  case GeomAbs_Sphere:
+  case GeomAbs_Cylinder:
+  case GeomAbs_Cone:
+    {
+      PerformAna(Domain); //Surf,Domain,Direction,0.,gp_Pnt(0.,0.,0.),1);
+    }
+    break;
+
+  default:
+    {
+      Perform(Domain); //Surf,Domain,Direction,0.,gp_Pnt(0.,0.,0.),1);
+    }
+    break;
+  }
+
+}
+			      
+
+void Contap_ContourGen::Perform (const TheSurface& Surf,
+			      const Handle(TheTopolTool)& Domain,
+			      const gp_Vec& Direction)
+
+{
+  Init(Direction);
+  Perform(Surf,Domain);
+}
+
+void Contap_ContourGen::Perform (const TheSurface& Surf,
+			      const Handle(TheTopolTool)& Domain,
+			      const gp_Vec& Direction,
+			      const Standard_Real Angle)
+
+{
+  Init(Direction,Angle);
+  Perform(Surf,Domain);
+}
+
+
+void Contap_ContourGen::Perform (const TheSurface& Surf,
+			      const Handle(TheTopolTool)& Domain,
+			      const gp_Pnt& Eye)
+
+{
+  Init(Eye);
+  Perform(Surf,Domain);
+}
+
+

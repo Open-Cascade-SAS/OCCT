@@ -1,0 +1,25 @@
+-- File:	PDataStd_UAttribute.cdl
+-- Created:	Fri Jun 11 11:41:53 1999
+-- Author:	Sergey RUIN
+---Copyright:	 Matra Datavision 1999
+
+
+class UAttribute from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses HExtendedString from PCollection
+     
+is
+
+    Create returns mutable UAttribute from PDataStd;
+
+    SetID(me: mutable; guid: HExtendedString from PCollection );
+    
+    GetID(me) returns HExtendedString from PCollection;
+    
+fields
+
+    myID     :  HExtendedString from PCollection;
+    
+end UAttribute;

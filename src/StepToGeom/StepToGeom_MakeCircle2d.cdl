@@ -1,0 +1,22 @@
+-- File:	StepToGeom_MakeCircle2d.cdl
+-- Created:	Fri Aug 26 11:42:22 1994
+-- Author:	Frederic MAUPAS
+---Copyright:	 Matra Datavision 1994
+
+class MakeCircle2d from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Circle from StepGeom which describes a circle from
+    --          Prostep and Circle from Geom2d.
+  
+uses 
+     Circle from Geom2d,
+     Circle from StepGeom
+     
+is 
+
+    Convert ( myclass; SC : Circle from StepGeom;
+                       CC : out Circle from Geom2d )
+    returns Boolean from Standard;
+
+end MakeCircle2d;

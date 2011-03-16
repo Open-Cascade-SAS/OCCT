@@ -1,0 +1,42 @@
+if (!($?CCHOME))   setenv CCHOME   "g++ "
+if (!($?CCFLAGS))  setenv CCFLAGS  " -shared "
+
+if (!($?STLPortHome)) then
+    setenv STLPortLib		"."
+else
+    if (!($?STLPortLib_CC))	setenv STLPortLib_CC	"stlport_gcc"
+    if (!($?STLPortLib)) 	setenv STLPortLib	"$STLPortHome/lib"
+    setenv STLPortLib		"$STLPortLib -l$STLPortLib_CC"
+endif
+
+${CCHOME} ${CCFLAGS} -o ${SAMPLE_ROOT}/${STATION}/lib//libTKNativePaint.so \
+ -L${SAMPLE_ROOT}/${STATION}/lib \
+ -L${CASROOT}/${STATION}/lib -L${STLPortLib} \
+${SAMPLE_ROOT}/${STATION}/obj/SampleNativePaint/CASCADEView3d.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleNativePaint/CASCADEView2d.o \
+\
+-lTKernel \
+-lTKMath \
+-lTKGeomBase \
+-lTKG2d \
+-lTKG3d \
+-lTKBRep \
+-lTKGeomAlgo \
+-lTKTopAlgo \
+-lTKPrim \
+-lTKHLR \
+-lTKService \
+-lTKV2d \
+-lTKV3d \
+-lTKjcas \
+\
+ -L${JAVAHOME}/jre/lib/i386 -ljawt \
+ -lc \
+ ;
+ set ld_status=$status
+ if ( $ld_status ) then
+   echo "Check failed"
+ else
+   echo "Check successed"
+ endif
+

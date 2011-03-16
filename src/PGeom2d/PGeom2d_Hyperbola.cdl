@@ -1,0 +1,61 @@
+-- File:	PGeom2d_Hyperbola.cdl
+-- Created:	Tue Apr  6 17:29:06 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Hyperbola from PGeom2d inherits Conic from PGeom2d
+
+        ---Purpose :Defines the main branch of an hyperbola.
+        --         
+	---See Also : Hyperbola from Geom2d.
+
+uses Ax22d from gp
+
+is
+
+
+  Create returns mutable Hyperbola from PGeom2d;
+        ---Purpose :Creates an Hyperbola with default values.
+	---Level: Internal 
+
+
+  Create (aPosition : Ax22d from gp;
+    	  aMajorRadius, aMinorRadius : Real from Standard)
+     returns mutable Hyperbola from PGeom2d;
+	---Purpose :  Creates an   Hyperbola    with      <aPosition>,
+	--         <aMajorRadius> and  <aMinorRadius> as field values.
+	--         The major  radius of the hyperbola is  on the XAxis
+	--         and   the minor  radius is  on    the YAxis of  the
+	--         hyperbola.
+	---Level: Internal 
+
+
+  MajorRadius (me : mutable; aMajorRadius : Real from Standard);
+	---Purpose: Set the value of the field majorRadius with <aMajorRadius>.
+	---Level: Internal 
+
+
+  MajorRadius (me)  returns Real from Standard;
+	---Purpose: Returns the value of the field majorRadius.
+	---Level: Internal 
+
+
+  MinorRadius (me : mutable; aMinorRadius : Real from Standard);
+	---Purpose: Set the value of the field minorRadius with <aMinorRadius>.
+	---Level: Internal 
+
+
+  MinorRadius (me)  returns Real from Standard;
+	---Purpose: Returns the value of the field minorRadius.
+	---Level: Internal 
+
+
+fields
+
+     majorRadius : Real from Standard;
+     minorRadius : Real from Standard;
+
+end;
+

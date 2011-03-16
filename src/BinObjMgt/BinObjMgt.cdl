@@ -1,0 +1,36 @@
+-- File:        BinObjMgt.cdl
+-- Created:     Tue Oct 29 15:21:30 2002
+-- Author:      Michael SAZONOV
+--              <msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2002
+
+
+package BinObjMgt 
+
+---Purpose: This package defines services to manage the storage
+--          grain of data produced by applications.
+
+uses
+    TDF,
+    Standard,
+    TCollection,
+    TColStd
+
+is
+
+        -- Storage Relocation Table
+    alias SRelocationTable is IndexedMapOfTransient from TColStd;
+
+        -- Retrieval Relocation Table
+    alias RRelocationTable is DataMapOfIntegerTransient from TColStd;
+
+    primitive PChar;            -- pointer to Character from Standard;
+    primitive PByte;            -- pointer to Byte from Standard;
+    primitive PExtChar;         -- pointer to ExtCharacter from Standard;
+    primitive PInteger;         -- pointer to Integer from Standard;
+    primitive PReal;            -- pointer to Real from Standard;
+    primitive PShortReal;       -- pointer to ShortReal from Standard;
+
+    class Persistent;
+
+end BinObjMgt;

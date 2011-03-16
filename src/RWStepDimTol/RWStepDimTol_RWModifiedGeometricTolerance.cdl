@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWModifiedGeometricTolerance.cdl
+-- Created:	Wed Jun  4 13:34:35 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWModifiedGeometricTolerance from RWStepDimTol
+
+    ---Purpose: Read & Write tool for ModifiedGeometricTolerance
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ModifiedGeometricTolerance from StepDimTol
+
+is
+    Create returns RWModifiedGeometricTolerance from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ModifiedGeometricTolerance from StepDimTol);
+	---Purpose: Reads ModifiedGeometricTolerance
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ModifiedGeometricTolerance from StepDimTol);
+	---Purpose: Writes ModifiedGeometricTolerance
+
+    Share (me; ent : ModifiedGeometricTolerance from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWModifiedGeometricTolerance;

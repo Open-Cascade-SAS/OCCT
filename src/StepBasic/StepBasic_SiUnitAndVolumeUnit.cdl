@@ -1,0 +1,34 @@
+-- File:	StepBasic_SiUnitAndVolumeUnit.cdl
+-- Created:	Tue Oct 12 13:10:34 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class SiUnitAndVolumeUnit from StepBasic inherits SiUnit from StepBasic
+
+	---Purpose: 
+
+uses
+
+    VolumeUnit from StepBasic,
+    DimensionalExponents
+
+is
+
+    Create returns mutable SiUnitAndVolumeUnit from StepBasic;
+    	---Purpose: Returns a SiUnitAndVolumeUnit
+    
+    SetVolumeUnit(me: mutable; aVolumeUnit: mutable VolumeUnit from StepBasic);
+    
+    VolumeUnit(me) returns mutable VolumeUnit from StepBasic;
+    
+    SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) is redefined;
+    
+    Dimensions(me) returns mutable DimensionalExponents is redefined;
+    
+fields
+
+   volumeUnit: VolumeUnit from StepBasic;
+
+end SiUnitAndVolumeUnit;

@@ -1,0 +1,23 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	Select2D_SensitiveEntity.lxx
+// Created:	Fri Mar 10 11:43:22 1995
+// Author:	Mister rmi
+//		<rmi>
+
+inline Standard_Boolean Select2D_SensitiveEntity::NeedsConversion ()
+const {return Standard_False;}
+
+inline Standard_Integer Select2D_SensitiveEntity::MaxBoxes ()
+const {return 1;}
+
+inline void Select2D_SensitiveEntity::SetOwnTolerance(const Standard_Real aVal)
+{myOwnTolerance = aVal;}
+
+inline void Select2D_SensitiveEntity::UnsetOwnTolerance()
+{myOwnTolerance = -1.;}
+
+inline Standard_Boolean Select2D_SensitiveEntity::HasOwnTolerance()const 
+{return (myOwnTolerance>0.) ;}
+
+inline Standard_Real Select2D_SensitiveEntity::OwnTolerance() const 
+{return myOwnTolerance;}

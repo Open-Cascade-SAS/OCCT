@@ -1,0 +1,780 @@
+// File GccGeo_Circ2d2TanRad.gxx, REG 19/07/91
+
+#include <ElCLib.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+
+// circulaire tant a une courbe et une droite ,de rayon donne
+//==============================================================
+
+//========================================================================
+// On initialise WellDone a false.                                       +
+// On recupere la courbe Cu2 et la droite L1.                            +
+// On sort en erreur dans les cas ou la construction est impossible.     +
+// On fait la parallele a Cu2 dans le bon sens.                          +
+// On fait la parallele a L1 dans le bon sens.                           +
+// On intersecte les paralleles ==> point de centre de la solution.      +
+// On cree la solution qu on ajoute aux solutions deja trouvees.         +
+// On remplit les champs.                                                +
+//========================================================================
+
+GccGeo_Circ2d2TanRad::
+   GccGeo_Circ2d2TanRad (const GccEnt_QualifiedLin&  Qualified1,
+			 const TheQCurve&            Qualified2,
+			 const Standard_Real         Radius    ,
+			 const Standard_Real         Tolerance ):
+
+//========================================================================
+// initialisation des champs.                                            +
+//========================================================================
+
+   cirsol(1,16)   ,
+   qualifier1(1,16),
+   qualifier2(1,16),
+   TheSame1(1,16) ,
+   TheSame2(1,16) ,
+   pnttg1sol(1,16),
+   pnttg2sol(1,16),
+   par1sol(1,16)  ,
+   par2sol(1,16)  ,
+   pararg1(1,16)  ,
+   pararg2(1,16)  
+{
+
+//========================================================================
+// Traitement.                                                           +
+//========================================================================
+
+   Standard_Real Tol = Abs(Tolerance);
+   Standard_Real thefirst = -100000.;
+   Standard_Real thelast  =  100000.;
+   Standard_Real firstparam;
+   Standard_Real lastparam;
+   gp_Dir2d dirx(1.,0.);
+   TColStd_Array1OfReal cote1(1,2);
+   TColStd_Array1OfReal cote2(1,2);
+   Standard_Integer nbrcote1=0;
+   Standard_Integer nbrcote2=0;
+   WellDone = Standard_False;
+   NbrSol = 0;
+   if (!(Qualified1.IsEnclosed() ||
+	 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
+       !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
+	 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
+
+     GccEnt_BadQualifier::Raise();
+     return;
+   }
+   gp_Lin2d L1 = Qualified1.Qualified();
+   Standard_Real x1dir = (L1.Direction()).X();
+   Standard_Real y1dir = (L1.Direction()).Y();
+   Standard_Real lxloc = (L1.Location()).X();
+   Standard_Real lyloc = (L1.Location()).Y();
+   gp_Pnt2d origin1(lxloc,lyloc);
+   gp_Dir2d normL1(-y1dir,x1dir);
+   TheCurve Cu2= Qualified2.Qualified();
+   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   else {
+     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
+//   =======================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsEnclosed() && Qualified2.IsOutside()) {
+//   ==========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = -Radius;
+     }
+     else if (Qualified1.IsOutside() && Qualified2.IsEnclosed()) {
+//   ===========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsOutside()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = -Radius;
+     }
+     if(Qualified1.IsEnclosed() && Qualified2.IsUnqualified()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsEnclosed()) {
+//   =========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsUnqualified()) {
+//   =============================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsOutside()) {
+//   ========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = -Radius;
+     }
+     else if(Qualified1.IsUnqualified() && Qualified2.IsUnqualified()) {
+//   =================================================================
+       nbrcote1 = 2;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     gp_Dir2d Dir(-y1dir,x1dir);
+     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+       gp_Pnt2d Point(L1.Location().XY()+cote1(jcote1)*Dir.XY());
+       gp_Lin2d Line(Point,L1.Direction()); // ligne avec deport.
+       IntRes2d_Domain D1;
+       for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
+	 Handle(TheHParGenCurve) HCu2 = new TheHParGenCurve(Cu2);
+	 TheParGenCurve C2(HCu2,cote2(jcote2));
+	 firstparam = Max(TheCurvePGTool::FirstParameter(C2),thefirst);
+	 lastparam  = Min(TheCurvePGTool::LastParameter(C2),thelast);
+	 IntRes2d_Domain D2(TheCurvePGTool::Value(C2,firstparam),firstparam,Tol,
+			    TheCurvePGTool::Value(C2,lastparam),lastparam,Tol);
+	 TheIntConicCurve Intp(Line,D1,C2,D2,Tol,Tol);
+	 if (Intp.IsDone()) {
+	   if (!Intp.IsEmpty()) {
+	     for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+	       NbrSol++;
+	       gp_Pnt2d Center(Intp.Point(i).Value());
+	       cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
+//             =======================================================
+	       gp_Dir2d dc1(origin1.XY()-Center.XY());
+	       qualifier2(NbrSol) = Qualified2.Qualifier();
+	       if (!Qualified1.IsUnqualified()) { 
+		 qualifier1(NbrSol) = Qualified1.Qualifier();
+	       }
+	       else if (dc1.Dot(normL1) > 0.0) {
+		 qualifier1(NbrSol) = GccEnt_outside;
+	       }
+	       else { qualifier1(NbrSol) = GccEnt_enclosed; }
+	       TheSame1(NbrSol) = 0;
+	       TheSame2(NbrSol) = 0;
+	       pararg1(NbrSol) = Intp.Point(i).ParamOnFirst();
+	       pararg2(NbrSol) = Intp.Point(i).ParamOnSecond();
+	       pnttg1sol(NbrSol) = ElCLib::Value(pararg1(NbrSol),L1);
+	       pnttg2sol(NbrSol) = TheTool::Value(Cu2,pararg2(NbrSol));
+	       par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg1sol(NbrSol));
+	       par2sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg2sol(NbrSol));
+	     }
+	   }
+	   WellDone = Standard_True;
+	 }
+       }
+     }
+   }
+ }
+
+// circulaire tant a une courbe et un cercle ,de rayon donne
+//=============================================================
+
+//========================================================================
+// On initialise WellDone a false.                                       +
+// On recupere la courbe Cu2 et le cercle C1.                            +
+// On sort en erreur dans les cas ou la construction est impossible.     +
+// On fait la parallele a Cu2 dans le bon sens.                          +
+// On fait la parallele a C1 dans le bon sens.                           +
+// On intersecte les paralleles ==> point de centre de la solution.      +
+// On cree la solution qu on ajoute aux solutions deja trouvees.         +
+// On remplit les champs.                                                +
+//========================================================================
+
+GccGeo_Circ2d2TanRad::
+   GccGeo_Circ2d2TanRad (const GccEnt_QualifiedCirc& Qualified1,
+			 const TheQCurve&            Qualified2,
+			 const Standard_Real         Radius    ,
+			 const Standard_Real         Tolerance ):
+
+//========================================================================
+// initialisation des champs.                                            +
+//========================================================================
+
+   cirsol(1,16)   ,
+   qualifier1(1,16),
+   qualifier2(1,16),
+   TheSame1(1,16) ,
+   TheSame2(1,16) ,
+   pnttg1sol(1,16),
+   pnttg2sol(1,16),
+   par1sol(1,16)  ,
+   par2sol(1,16)  ,
+   pararg1(1,16)  ,
+   pararg2(1,16)  
+{
+
+//========================================================================
+// Traitement.                                                           +
+//========================================================================
+
+   Standard_Real Tol = Abs(Tolerance);
+   Standard_Real thefirst = -100000.;
+   Standard_Real thelast  =  100000.;
+   Standard_Real firstparam;
+   Standard_Real lastparam;
+   gp_Dir2d dirx(1.,0.);
+   TColStd_Array1OfReal cote1(1,2);
+   TColStd_Array1OfReal cote2(1,2);
+   Standard_Integer nbrcote1=0;
+   Standard_Integer nbrcote2=0;
+   WellDone = Standard_False;
+   NbrSol = 0;
+   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
+	 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
+       !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
+	 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
+     GccEnt_BadQualifier::Raise();
+     return;
+   }
+   gp_Circ2d C1 = Qualified1.Qualified();
+   gp_Pnt2d center1(C1.Location());
+   TheCurve Cu2 = Qualified2.Qualified();
+   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   else {
+     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
+//   =======================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsEnclosed() && Qualified2.IsOutside()) {
+//   ==========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = -Radius;
+     }
+     else if (Qualified1.IsOutside() && Qualified2.IsEnclosed()) {
+//   ===========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsOutside()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = -Radius;
+     }
+     if(Qualified1.IsEnclosed() && Qualified2.IsUnqualified()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsEnclosed()) {
+//   =========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsUnqualified()) {
+//   =============================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsOutside()) {
+//   ========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = -Radius;
+     }
+     else if(Qualified1.IsUnqualified() && Qualified2.IsUnqualified()) {
+//   =================================================================
+       nbrcote1 = 2;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     Standard_Real R1 = C1.Radius();
+     TheIntConicCurve Intp;
+     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+       gp_Circ2d Circ(C1.XAxis(),R1+cote1(jcote1));
+       IntRes2d_Domain D1(ElCLib::Value(0.,Circ),   0.,Tol,
+			  ElCLib::Value(2.*PI,Circ),2.*PI,Tol);
+       D1.SetEquivalentParameters(0.,2.*PI);
+       for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
+	 Handle(TheHParGenCurve) HCu2 = new TheHParGenCurve(Cu2);
+	 TheParGenCurve C2(HCu2,cote2(jcote2));
+	 firstparam = Max(TheCurvePGTool::FirstParameter(C2),thefirst);
+	 lastparam  = Min(TheCurvePGTool::LastParameter(C2),thelast);
+	 IntRes2d_Domain D2(TheCurvePGTool::Value(C2,firstparam),firstparam,Tol,
+			    TheCurvePGTool::Value(C2,lastparam),lastparam,Tol);
+	 Intp.Perform(Circ,D1,C2,D2,Tol,Tol);
+	 if (Intp.IsDone()) {
+	   if (!Intp.IsEmpty()) {
+	     for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+	       NbrSol++;
+	       gp_Pnt2d Center(Intp.Point(i).Value());
+	       cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
+//             =======================================================
+#ifdef DEB
+	       gp_Dir2d dir1(Center.XY()-center1.XY());
+#else
+               Center.XY() ;
+               center1.XY() ;
+#endif
+	       Standard_Real distcc1 = Center.Distance(center1);
+	       if (!Qualified1.IsUnqualified()) { 
+		 qualifier1(NbrSol) = Qualified1.Qualifier();
+	       }
+	       else if (Abs(distcc1+Radius-R1) < Tol) {
+		 qualifier1(NbrSol) = GccEnt_enclosed;
+	       }
+	       else if (Abs(distcc1-R1-Radius) < Tol) {
+		 qualifier1(NbrSol) = GccEnt_outside;
+	       }
+	       else { qualifier1(NbrSol) = GccEnt_enclosing; }
+	       qualifier2(NbrSol) = Qualified2.Qualifier();
+	       TheSame1(NbrSol) = 0;
+	       TheSame2(NbrSol) = 0;
+	       pararg1(NbrSol) = Intp.Point(i).ParamOnFirst();
+	       pararg2(NbrSol) = Intp.Point(i).ParamOnSecond();
+	       pnttg1sol(NbrSol) = ElCLib::Value(pararg1(NbrSol),C1);
+	       pnttg2sol(NbrSol) = TheTool::Value(Cu2,pararg2(NbrSol));
+	       par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg1sol(NbrSol));
+	       par2sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg2sol(NbrSol));
+	     }
+	   }
+	   WellDone = Standard_True;
+	 }
+       }
+     }
+   }
+ }
+
+// circulaire tant a une courbe et un point ,de rayon donne
+//============================================================
+
+//========================================================================
+// On initialise WellDone a false.                                       +
+// On recupere la courbe Cu1 et le point P2.                             +
+// On sort en erreur dans les cas ou la construction est impossible.     +
+// On fait la parallele a Cu1 dans le bon sens.                          +
+// On fait la parallele a P2 dans le bon sens.                           +
+// On intersecte les paralleles ==> point de centre de la solution.      +
+// On cree la solution qu on ajoute aux solutions deja trouvees.         +
+// On remplit les champs.                                                +
+//========================================================================
+
+GccGeo_Circ2d2TanRad::
+   GccGeo_Circ2d2TanRad (const TheQCurve&    Qualified1,
+			 const gp_Pnt2d&     Point2    ,
+			 const Standard_Real Radius    ,
+			 const Standard_Real Tolerance ):
+
+//========================================================================
+// initialisation des champs.                                            +
+//========================================================================
+
+   cirsol(1,16)   ,
+   qualifier1(1,16),
+   qualifier2(1,16),
+   TheSame1(1,16) ,
+   TheSame2(1,16) ,
+   pnttg1sol(1,16),
+   pnttg2sol(1,16),
+   par1sol(1,16)  ,
+   par2sol(1,16)  ,
+   pararg1(1,16)  ,
+   pararg2(1,16)  
+{
+
+//========================================================================
+// Traitement.                                                           +
+//========================================================================
+
+   Standard_Real Tol = Abs(Tolerance);
+   Standard_Real thefirst = -100000.;
+   Standard_Real thelast  =  100000.;
+   Standard_Real firstparam;
+   Standard_Real lastparam;
+   gp_Dir2d dirx(1.,0.);
+   TColStd_Array1OfReal cote1(1,2);
+   Standard_Integer nbrcote1=0;
+   WellDone = Standard_False;
+   NbrSol = 0;
+   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
+	 Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
+     GccEnt_BadQualifier::Raise();
+     return;
+   }
+   TheCurve Cu1 = Qualified1.Qualified();
+   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   else {
+     if (Qualified1.IsEnclosed()) {
+//    ===========================
+       nbrcote1 = 1;
+       cote1(1) = Radius;
+     }
+     else if(Qualified1.IsOutside()) {
+//   ===============================
+       nbrcote1 = 1;
+       cote1(1) = -Radius;
+     }
+     else if(Qualified1.IsUnqualified()) {
+//   ===================================
+       nbrcote1 = 2;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+     }
+     gp_Circ2d Circ(gp_Ax2d(Point2,gp_Dir2d(1.,0.)),Radius);
+     IntRes2d_Domain D1(ElCLib::Value(0.,Circ),   0.,Tol,
+			ElCLib::Value(PI+PI,Circ),PI+PI,Tol);
+     D1.SetEquivalentParameters(0.,PI+PI);
+     TheIntConicCurve Intp;
+     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+       Handle(TheHParGenCurve) HCu1 = new TheHParGenCurve(Cu1);
+       TheParGenCurve Cu2(HCu1,cote1(jcote1));
+       firstparam = Max(TheCurvePGTool::FirstParameter(Cu2),thefirst);
+       lastparam  = Min(TheCurvePGTool::LastParameter(Cu2),thelast);
+       IntRes2d_Domain D2(TheCurvePGTool::Value(Cu2,firstparam),firstparam,Tol,
+			  TheCurvePGTool::Value(Cu2,lastparam),lastparam,Tol);
+       Intp.Perform(Circ,D1,Cu2,D2,Tol,Tol);
+       if (Intp.IsDone()) {
+	 if (!Intp.IsEmpty()) {
+	   for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+	     NbrSol++;
+	     gp_Pnt2d Center(Intp.Point(i).Value());
+	     cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
+//           =======================================================
+	     qualifier1(NbrSol) = Qualified1.Qualifier();
+	     qualifier2(NbrSol) = GccEnt_noqualifier;
+	     TheSame1(NbrSol) = 0;
+	     TheSame2(NbrSol) = 0;
+	     pararg1(NbrSol) = Intp.Point(i).ParamOnSecond();
+	     pararg2(NbrSol) = 0.;
+	     pnttg1sol(NbrSol) = TheTool::Value(Cu1,pararg1(NbrSol));
+	     pnttg2sol(NbrSol) = Point2;
+	     par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+					      pnttg1sol(NbrSol));
+	     par2sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+					      pnttg2sol(NbrSol));
+	   }
+	 }
+	 WellDone = Standard_True;
+       }
+     }
+   }
+ }
+
+// circulaire tant a deux courbes ,de rayon donne
+//==================================================
+
+//========================================================================
+// On initialise WellDone a false.                                       +
+// On recupere les courbes Cu1 et Cu2.                                   +
+// On sort en erreur dans les cas ou la construction est impossible.     +
+// On fait la parallele a Cu1 dans le bon sens.                          +
+// On fait la parallele a Cu2 dans le bon sens.                          +
+// On intersecte les paralleles ==> point de centre de la solution.      +
+// On cree la solution qu on ajoute aux solutions deja trouvees.         +
+// On remplit les champs.                                                +
+//========================================================================
+
+GccGeo_Circ2d2TanRad::
+   GccGeo_Circ2d2TanRad (const TheQCurve&    Qualified1,
+			 const TheQCurve&    Qualified2,
+			 const Standard_Real Radius    ,
+			 const Standard_Real Tolerance ):
+
+//========================================================================
+// initialisation des champs.                                            +
+//========================================================================
+
+   cirsol(1,16)   ,
+   qualifier1(1,16),
+   qualifier2(1,16),
+   TheSame1(1,16) ,
+   TheSame2(1,16) ,
+   pnttg1sol(1,16),
+   pnttg2sol(1,16),
+   par1sol(1,16)  ,
+   par2sol(1,16)  ,
+   pararg1(1,16)  ,
+   pararg2(1,16)  
+{
+
+//========================================================================
+// Traitement.                                                           +
+//========================================================================
+
+   Standard_Real Tol = Abs(Tolerance);
+   Standard_Real thefirst = -100000.;
+   Standard_Real thelast  =  100000.;
+   Standard_Real firstparam;
+   Standard_Real lastparam;
+   gp_Dir2d dirx(1.,0.);
+   TColStd_Array1OfReal cote1(1,2);
+   TColStd_Array1OfReal cote2(1,2);
+   Standard_Integer nbrcote1=0;
+   Standard_Integer nbrcote2=0;
+   WellDone = Standard_False;
+   NbrSol = 0;
+   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
+	 Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
+       !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
+	 Qualified2.IsOutside() || Qualified2.IsUnqualified())) {
+     GccEnt_BadQualifier::Raise();
+     return;
+   }
+   TheCurve Cu1 = Qualified1.Qualified();
+   TheCurve Cu2 = Qualified2.Qualified();
+   if (Radius < 0.0) { Standard_NegativeValue::Raise(); }
+   else {
+     if (Qualified1.IsEnclosed() && Qualified2.IsEnclosed()) {
+//   =======================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsEnclosed() && Qualified2.IsOutside()) {
+//   ==========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote2(1) = -Radius;
+     }
+     else if (Qualified1.IsOutside() && Qualified2.IsEnclosed()) {
+//   ===========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsOutside()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 1;
+       cote1(1) = -Radius;
+       cote2(1) = -Radius;
+     }
+     if(Qualified1.IsEnclosed() && Qualified2.IsUnqualified()) {
+//   =========================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsEnclosed()) {
+//   =========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+     }
+     else if(Qualified1.IsOutside() && Qualified2.IsUnqualified()) {
+//   =============================================================
+       nbrcote1 = 1;
+       nbrcote2 = 2;
+       cote1(1) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     if(Qualified1.IsUnqualified() && Qualified2.IsOutside()) {
+//   ========================================================
+       nbrcote1 = 2;
+       nbrcote2 = 1;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = -Radius;
+     }
+     else if(Qualified1.IsUnqualified() && Qualified2.IsUnqualified()) {
+//   =================================================================
+       nbrcote1 = 2;
+       nbrcote2 = 2;
+       cote1(1) = Radius;
+       cote1(2) = -Radius;
+       cote2(1) = Radius;
+       cote2(2) = -Radius;
+     }
+     TheIntCurveCurve Intp;
+     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+       Handle(TheHParGenCurve) HCu1 = new TheHParGenCurve(Cu1); 
+       TheParGenCurve C1(HCu1,cote1(jcote1));
+       firstparam = Max(TheCurvePGTool::FirstParameter(C1),thefirst);
+       lastparam  = Min(TheCurvePGTool::LastParameter(C1),thelast);
+#ifdef DEB
+       IntRes2d_Domain D2(TheCurvePGTool::Value(C1,firstparam),firstparam,Tol,
+			  TheCurvePGTool::Value(C1,lastparam),lastparam,Tol);
+#else
+       TheCurvePGTool::Value(C1,firstparam);
+       TheCurvePGTool::Value(C1,lastparam);
+#endif
+       for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
+	 Handle(TheHParGenCurve) HCu2 = new TheHParGenCurve(Cu2);
+	 TheParGenCurve C2(HCu2,cote2(jcote2));
+	 firstparam = Max(TheCurvePGTool::FirstParameter(C2),thefirst);
+	 lastparam  = Min(TheCurvePGTool::LastParameter(C2),thelast);
+#ifdef DEB
+	 IntRes2d_Domain D2(TheCurvePGTool::Value(C2,firstparam),firstparam,Tol,
+			    TheCurvePGTool::Value(C2,lastparam),lastparam,Tol);
+#else
+         TheCurvePGTool::Value(C2,firstparam);
+         TheCurvePGTool::Value(C2,lastparam);
+#endif
+	 Intp.Perform(C1,C2,Tol,Tol);
+	 if (Intp.IsDone()) {
+	   if (!Intp.IsEmpty()) {
+	     for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+	       NbrSol++;
+	       gp_Pnt2d Center(Intp.Point(i).Value());
+	       cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
+//             =======================================================
+	       qualifier1(NbrSol) = Qualified1.Qualifier();
+	       qualifier1(NbrSol) = Qualified1.Qualifier();
+	       TheSame1(NbrSol) = 0;
+	       TheSame2(NbrSol) = 0;
+	       pararg1(NbrSol) = Intp.Point(i).ParamOnFirst();
+	       pararg2(NbrSol) = Intp.Point(i).ParamOnSecond();
+	       pnttg1sol(NbrSol) = TheTool::Value(Cu1,pararg1(NbrSol));
+	       pnttg2sol(NbrSol) = TheTool::Value(Cu2,pararg2(NbrSol));
+	       par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg1sol(NbrSol));
+	       par2sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
+						pnttg2sol(NbrSol));
+	     }
+	   }
+	   WellDone = Standard_True;
+	 }
+       }
+     }
+   }
+ }
+
+//=========================================================================
+
+Standard_Boolean GccGeo_Circ2d2TanRad::
+   IsDone () const { return WellDone; }
+
+Standard_Integer GccGeo_Circ2d2TanRad::
+   NbSolutions () const { return NbrSol; }
+
+gp_Circ2d GccGeo_Circ2d2TanRad::
+   ThisSolution (const Standard_Integer Index) const 
+{
+  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  return cirsol(Index);
+}
+
+void GccGeo_Circ2d2TanRad::
+  WhichQualifier(const Standard_Integer Index   ,
+		       GccEnt_Position& Qualif1 ,
+		       GccEnt_Position& Qualif2 ) const
+{
+  if (!WellDone) { StdFail_NotDone::Raise(); }
+  else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+  else {
+    Qualif1 = qualifier1(Index);
+    Qualif2 = qualifier2(Index);
+  }
+}
+
+void GccGeo_Circ2d2TanRad::
+   Tangency1 (const Standard_Integer Index,
+                 Standard_Real&   ParSol,
+                 Standard_Real&   ParArg,
+                 gp_Pnt2d&        PntSol) const{
+   if (!WellDone) { StdFail_NotDone::Raise(); }
+   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   else {
+     if (TheSame1(Index) == 0) {
+       ParSol = par1sol(Index);
+       ParArg = pararg1(Index);
+       PntSol = gp_Pnt2d(pnttg1sol(Index));
+     }
+     else { StdFail_NotDone::Raise(); }
+   }
+ }
+
+void GccGeo_Circ2d2TanRad::
+   Tangency2 (const Standard_Integer Index,
+                 Standard_Real&   ParSol,
+                 Standard_Real&   ParArg,
+                 gp_Pnt2d&        PntSol) const{
+   if (!WellDone) { StdFail_NotDone::Raise(); }
+   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+   else {
+     if (TheSame2(Index) == 0) {
+       ParSol = par2sol(Index);
+       ParArg = pararg2(Index);
+       PntSol = gp_Pnt2d(pnttg2sol(Index));
+     }
+     else { StdFail_NotDone::Raise(); }
+   }
+ }
+
+Standard_Boolean GccGeo_Circ2d2TanRad::
+   IsTheSame1 (const Standard_Integer Index) const
+{
+  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+
+  if (TheSame1(Index) == 0) { return Standard_False; }
+  return Standard_True;
+}
+
+Standard_Boolean GccGeo_Circ2d2TanRad::
+   IsTheSame2 (const Standard_Integer Index) const
+{
+  if (!WellDone) { StdFail_NotDone::Raise(); }
+  if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
+
+  if (TheSame2(Index) == 0) { return Standard_False; }
+  return Standard_True;
+}
+

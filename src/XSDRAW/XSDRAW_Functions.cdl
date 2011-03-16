@@ -1,0 +1,28 @@
+-- File:	XSDRAW_Functions.cdl
+-- Created:	Thu Mar 16 17:48:13 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+class Functions  from XSDRAW
+
+    ---Purpose : Defines additionnal commands for XSDRAW to :
+    --           - control of initialisation (xinit, xnorm, newmodel)
+    --           - analyse of the result of a transfer (recorded in a
+    --             TransientProcess for Read, FinderProcess for Write) :
+    --             statistics, various lists (roots,complete,abnormal), what
+    --             about one specific entity, producing a model with the
+    --             abnormal result
+    --             
+    --           This appendix of XSDRAW is compiled separately to distinguish
+    --           basic features from user callable forms
+
+uses CString
+
+is
+
+    Init (myclass);
+    ---Purpose : Defines and loads all basic functions for XSDRAW (as ActFunc)
+
+end Functions;

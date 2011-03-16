@@ -1,0 +1,190 @@
+-- File:	IGESSolid_TopoBuilder.cdl
+-- Created:	Wed Nov 16 16:05:42 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TopoBuilder  from IGESSolid
+
+    ---Purpose : This class manages the creation of an IGES Topologic entity
+    --           (BREP : ManifoldSolid, Shell, Face)
+    --           This includes definiting of Vertex and Edge Lists,
+    --           building of Edges and Loops
+
+uses  HSequenceOfInteger,   HSequenceOfTransient,
+      XYZ, HSequenceOfXYZ,  IGESEntity,
+      VertexList, EdgeList, Loop, Face, Shell, ManifoldSolid
+
+raises DomainError
+
+is
+
+    Create returns TopoBuilder;
+    ---Purpose : Creates an empty TopoBuilder
+    --           This creates also a unique VertexList and a unique EdgeList,
+    --           empty, but which can be referenced from starting
+
+    Clear (me : in out)  is static;
+    ---Purpose : Resets the TopoBuilder for an entirely new operation
+    --           (with a new EdgeList, a new VertexList, new Shells, ...)
+
+    AddVertex (me : in out; val : XYZ) is static;
+    ---Purpose : Adds a Vertex to the VertexList
+
+    NbVertices (me) returns Integer is static;
+    ---Purpose : Returns the count of already recorded Vertices
+
+    Vertex (me; num : Integer) returns XYZ;
+    ---Purpose : Returns a Vertex, given its rank
+    ---C++ : return const &
+
+    VertexList (me) returns mutable VertexList;
+    ---Purpose : Returns the VertexList. It can be referenced, but it remains
+    --           empty until call to EndShell or EndSolid
+
+    AddEdge (me : in out; curve : mutable IGESEntity; vstart, vend : Integer)
+    ---Purpose : Adds an Edge (3D) to the EdgeList, defined by a Curve and
+    --           two number of Vertex, for start and end
+    	raises DomainError  is static;
+    --           Error if curve is Null or if vstart or vend is zero
+
+    NbEdges (me) returns Integer  is static;
+    ---Purpose : Returns the count of recorded Edges (3D)
+
+    Edge (me; num : Integer; curve : out mutable IGESEntity;
+    	      vstart, vend : out Integer)  is static;
+    ---Purpose : Returns the definition of an Edge (3D) given its rank
+
+    EdgeList (me) returns mutable EdgeList;
+    ---Purpose : Returns the EdgeList. It can be referenced, but it remains
+    --           empty until call to EndShell or EndSolid
+
+    EndLists (me : in out)  is static protected;
+    ---Purpose : Closes the definition of Vertex and Edge Lists
+    --  Warning : Called only by EndSimpleShell and EndSolid
+
+
+    MakeLoop (me : in out)  is static;
+    ---Purpose : Begins the definition of a new Loop : it is the Current Loop
+    --           All Edges (UV) defined by MakeEdge/EndEdge will be added in it
+    --           The Loop can then be referenced but is empty. It will be
+    --           filled with its Edges(UV) by EndLoop (from SetOuter/AddInner)
+
+    MakeEdge (me : in out; edgetype, edge3d, orientation : Integer)
+    ---Purpose : Defines an Edge(UV), to be added in the current Loop by EndEdge
+    --           <edgetype> gives the type of the edge
+    --           <edge3d> identifies the Edge(3D) used as support
+    --           The EdgeList is allways the current one
+    --           <orientation gives the orientation flag
+    --           It is then necessary to :
+    --           - give the parametric curves
+    --           - close the definition of this edge(UV) by EndEdge, else
+    --             the next call to MakeEdge will erase this one
+    	raises DomainError  is static;
+    --           Error if <edge3d> is null or out of range, or if
+    --             <edgetype> or <orientation> has not admitted value,
+    --             or if no current Loop is defined
+
+    AddCurveUV (me : in out; curve : mutable IGESEntity; iso : Integer)
+    ---Purpose : Adds a Parametric Curve (UV) to the current Edge(UV)
+    	raises DomainError  is static;
+    --           Error if curve is Null or not of an admitted type, or if
+    --           no current Edge(UV) is defined
+
+    EndEdge (me : in out)  is static;
+    ---Purpose : Closes the definition of an Edge(UV) and adds it to the
+    --           current Loop
+
+    EndLoop (me : in out)  is static protected;
+    ---Purpose : Closes the definition of a Loop and fills it
+    --  Warning : EndLoop should not be called directly but through
+    --           SetOuter or AddInner, which work on the current Face
+
+    MakeFace (me : in out; surface : mutable IGESEntity)
+    ---Purpose : Begins the definition of a new Face, on a surface
+    --           All Loops defined by MakeLoop will be added in it, according
+    --           the closing call : SetOuter for the Outer Loop (by default,
+    --           if SetOuter is not called, no OuterLoop is defined);
+    --           AddInner for the list of Inner Loops (there can be none)
+    	raises DomainError  is static;
+    --           Error if <surface> is Null or not of an admitted type
+
+    SetOuter (me : in out)  is static;
+    ---Purpose : Closes the current Loop and sets it Loop as Outer Loop. If no
+    --           current Loop has yet been defined, does nothing.
+
+    AddInner (me : in out)  is static;
+    ---Purpose : Closes the current Loop and adds it to the list of Inner Loops
+    --           for the current Face
+
+    EndFace (me : in out; orientation : Integer)  is static;
+    ---Purpose : Closes the definition of the current Face, fills it and adds
+    --           it to the current Shell with an orientation flag (0/1)
+
+    MakeShell (me : in out)  is static;
+    ---Purpose : Begins the definition of a new Shell (either Simple or in a
+    --           Solid)
+
+    EndShell (me : in out)  is static protected;
+    ---Purpose : Closes the definition of the current Shell
+    --  Warning : EndShell should not be called directly but through
+    --           EndSimpleShell (for a simple Shell), SetMainShell (for main
+    --           Shell of a Solid) or AddVoidShell (to a Solid)
+
+    EndSimpleShell (me : in out)  is static;
+    ---Purpose : Closes the whole definition as that of a simple Shell
+
+    SetMainShell (me : in out; orientation : Integer)  is static;
+    ---Purpose : Closes the definition of the current Shell as for the Main
+    --           Shell of a Solid, with an orientation flag (0/1)
+
+    AddVoidShell (me : in out; orientation : Integer)  is static;
+    ---Purpose : Closes the definition of the current Shell and adds it to the
+    --           list of Void Shells of a Solid, with an orientation flag (0/1)
+
+    EndSolid (me : in out) is static;
+    ---Purpose : Closes the whole definition as that of a ManifoldSolid
+    --           Its call is exclusive from that of EndSimpleShell
+
+    Shell (me) returns mutable Shell  is static;
+    ---Purpose : Returns the current Shell. The current Shell is created empty
+    --           by MakeShell and filled by EndShell
+
+    Solid (me) returns mutable ManifoldSolid  is static;
+    ---Purpose : Returns the current ManifoldSolid. It is created empty by
+    --           Create and filled by EndSolid
+
+fields
+
+    thesolid : ManifoldSolid;         -- current Solid
+    themains : Shell;
+    themflag : Integer;
+    thevoids : HSequenceOfTransient;
+    thevflag : HSequenceOfInteger;
+    theshell : Shell;                 -- current Shell
+    thefaces : HSequenceOfTransient;
+    thefflag : HSequenceOfInteger;
+    theface  : Face;                  -- current Face
+    thesurf  : IGESEntity;
+    theouter : Integer;
+    theinner : HSequenceOfTransient;
+
+    theloop  : Loop;                  -- current Loop
+    theetype : HSequenceOfInteger;
+    thee3d   : HSequenceOfInteger;
+    theeflag : HSequenceOfInteger;
+    theeuv   : HSequenceOfTransient;  -- (for Edges UV)
+    theisol  : HSequenceOfInteger;
+    thecuruv : HSequenceOfTransient;  -- current Edge(UV)
+    theiso   : HSequenceOfTransient;
+
+    theedgel : EdgeList;
+    thecur3d : HSequenceOfTransient;
+    thevstar : HSequenceOfInteger;
+    thevend  : HSequenceOfInteger;
+
+    thevertl : VertexList;
+    thepoint : HSequenceOfXYZ;
+
+end TopoBuilder;

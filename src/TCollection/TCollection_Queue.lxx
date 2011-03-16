@@ -1,0 +1,26 @@
+// File:	TCollection_Queue.lxx
+// Created:	Mon Jan 18 14:54:20 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_Queue::Length() const
+{
+  return myLength;
+}
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_Queue::IsEmpty() const
+{
+  return myLength == 0;
+}

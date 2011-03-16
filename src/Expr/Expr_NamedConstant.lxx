@@ -1,0 +1,12 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	Expr_NamedConstant.lxx
+// Created:	Mon Dec  2 14:28:46 1991
+// Author:	Arnaud BOUZY
+//		<adn>
+
+inline Standard_Real Expr_NamedConstant::GetValue () const
+{
+  return myValue;
+}
+
+

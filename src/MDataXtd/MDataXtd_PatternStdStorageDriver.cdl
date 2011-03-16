@@ -1,0 +1,44 @@
+-- File:	MDataXtd_PatternStdStorageDriver.cdl
+-- Created:	Mon Feb 16 14:28:52 1998
+-- Author:	Jing Cheng MEI
+--		<mei@pinochiox.paris1.matra-dtv.fr>
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1998
+
+
+class PatternStdStorageDriver from MDataXtd inherits ASDriver from MDF
+
+	---Purpose: 
+
+uses SRelocationTable from MDF,
+     Attribute        from TDF,
+     Attribute        from PDF, 
+     MessageDriver    from CDM
+
+
+is
+
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable PatternStdStorageDriver from MDataXtd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+
+end PatternStdStorageDriver;
+
+
+

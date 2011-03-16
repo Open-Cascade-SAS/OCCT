@@ -1,0 +1,5 @@
+#include <Standard_NoSuchObject.hxx>    
+
+inline Standard_Boolean TCollection_AVLIterator::More () const {
+  return HasMore;
+}

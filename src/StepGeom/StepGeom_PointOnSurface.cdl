@@ -1,0 +1,46 @@
+-- File:        PointOnSurface.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PointOnSurface from StepGeom 
+
+inherits Point from StepGeom 
+
+uses
+
+	Surface from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PointOnSurface;
+	---Purpose: Returns a PointOnSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisSurface : mutable Surface from StepGeom;
+	      aPointParameterU : Real from Standard;
+	      aPointParameterV : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisSurface(me : mutable; aBasisSurface : mutable Surface);
+	BasisSurface (me) returns mutable Surface;
+	SetPointParameterU(me : mutable; aPointParameterU : Real);
+	PointParameterU (me) returns Real;
+	SetPointParameterV(me : mutable; aPointParameterV : Real);
+	PointParameterV (me) returns Real;
+
+fields
+
+	basisSurface : Surface from StepGeom;
+	pointParameterU : Real from Standard;
+	pointParameterV : Real from Standard;
+
+end PointOnSurface;

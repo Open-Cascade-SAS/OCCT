@@ -1,0 +1,31 @@
+-- File:	StepBasic_DerivedUnit.cdl
+-- Created:	Wed Mar 26 14:24:04 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DerivedUnit  from StepBasic    inherits TShared
+
+    ---Purpose : Added from StepBasic Rev2 to Rev4
+
+uses
+     DerivedUnitElement from StepBasic,
+     HArray1OfDerivedUnitElement from StepBasic
+
+is
+
+    Create returns mutable DerivedUnit;
+
+    Init (me : mutable; elements : HArray1OfDerivedUnitElement from StepBasic);
+
+    SetElements (me : mutable; elements : HArray1OfDerivedUnitElement from StepBasic);
+    Elements    (me) returns HArray1OfDerivedUnitElement from StepBasic;
+    NbElements  (me) returns Integer;
+    ElementsValue (me; num : Integer) returns DerivedUnitElement from StepBasic;
+
+fields
+
+    theElements : HArray1OfDerivedUnitElement from StepBasic;
+
+end DerivedUnit;

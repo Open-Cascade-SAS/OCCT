@@ -1,0 +1,284 @@
+-- File:	ShapeAnalysis_Edge.cdl
+-- Created:	Mon Jun  8 10:40:58 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Edge from ShapeAnalysis 
+
+    ---Purpose: Tool for analyzing the edge.
+    --          Queries geometrical representations of the edge (3d curve, pcurve
+    --          on the given face or surface) and topological sub-shapes (bounding
+    --          vertices).
+    --          Provides methods for analyzing geometry and topology consistency
+    --          (3d and pcurve(s) consistency, their adjacency to the vertices).
+
+uses
+    Pnt      from gp,
+    Pnt2d    from gp,
+    Vec2d    from gp,
+    Curve    from Geom2d,
+    Curve    from Geom,
+    Surface  from Geom,
+    Vertex   from TopoDS,
+    Edge     from TopoDS,
+    Face     from TopoDS,
+    Location from TopLoc,
+    Status   from ShapeExtend
+
+is
+
+    Create returns Edge from ShapeAnalysis;
+    	---Purpose: Empty constructor; initialises Status to OK
+    
+    HasCurve3d (me; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Tells if the edge has a 3d curve
+
+    Curve3d (me; edge  : Edge from TopoDS;
+    	         C3d   : out Curve from Geom;
+    	    	 cf, cl: out Real;
+                 orient: Boolean = Standard_True)
+    returns Boolean;
+    	---Purpose: Returns the 3d curve and bounding parameteres for the edge
+    	--          Returns False if no 3d curve.
+    	--          If <orient> is True (default), takes orientation into account:
+	--          if the edge is reversed, cf and cl are toggled
+	
+    IsClosed3d (me; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Gives True if the edge has a 3d curve, this curve is closed,
+	--          and the edge has the same vertex at start and end
+
+    HasPCurve (me; edge: Edge from TopoDS;
+    	    	   face: Face from TopoDS)
+    returns Boolean;
+    	---Purpose: Tells if the Edge has a pcurve on the face.
+
+    HasPCurve (me; edge    : Edge from TopoDS;
+    	    	   surface : Surface from Geom;
+    	    	   location: Location from TopLoc)
+    returns Boolean;
+    	---Purpose: Tells if the edge has a pcurve on the surface (with location).
+
+    PCurve (me; edge  : Edge from TopoDS;
+    	    	face  : Face from TopoDS;
+                C2d   : out Curve from Geom2d;
+    	    	cf, cl: out Real;
+                orient: Boolean = Standard_True)
+    returns Boolean;
+
+    PCurve (me; edge    : Edge from TopoDS;
+    	    	surface : Surface from Geom;
+    	    	location: Location from TopLoc;
+                C2d     : out Curve from Geom2d;
+    	    	cf, cl  : out Real;
+                orient  : Boolean = Standard_True)
+    returns Boolean;
+    	---Purpose: Returns the pcurve and bounding parameteres for the edge
+	--          lying on the surface.
+    	--          Returns False if the edge has no pcurve on this surface.
+    	--          If <orient> is True (default), takes orientation into account:
+	--          if the edge is reversed, cf and cl are toggled
+ 
+    BoundUV (me; edge       : Edge from TopoDS;
+    	    	 face       : Face from TopoDS;
+    	    	 first, last: out Pnt2d from gp)
+    returns Boolean;
+
+    BoundUV (me; edge    : Edge from TopoDS;
+    	    	 surface : Surface from Geom;
+    	    	 location: Location from TopLoc;
+    	    	 first, last: out Pnt2d from gp)
+    returns Boolean;
+    	---Purpose: Returns the ends of pcurve
+	--          Calls method PCurve with <orient> equal to True
+	
+    IsSeam (me; edge: Edge from TopoDS;
+    	    	face: Face from TopoDS)
+    returns Boolean;
+    
+    IsSeam (me; edge    : Edge from TopoDS;
+    	    	surface : Surface from Geom;
+    	    	location: Location from TopLoc)
+    returns Boolean;
+    	---Purpose: Returns True if the edge has two pcurves on one surface
+	---Remark : Calls BRep_Tool::IsClosed()
+    
+    FirstVertex (me; edge: Edge from TopoDS) returns Vertex from TopoDS;
+    	---Purpose: Returns start vertex of the edge (taking edge orientation
+    	--          into account).
+    	---Remark:  Vertex orientation is always FORWARD
+
+    LastVertex (me; edge: Edge from TopoDS) returns Vertex from TopoDS;
+    	---Purpose: Returns end vertex of the edge (taking edge orientation
+        --          into account).
+    	---Remark:  Vertex orientation is always REVERSED
+    
+    GetEndTangent2d (me; edge: Edge from TopoDS; 
+    	    	    	 face: Face from TopoDS;
+    	    	    	 atEnd: Boolean; 
+    	    	    	 pos : out Pnt2d from gp;
+    	    	    	 tang: out Vec2d from gp;
+    	    	    	 dparam: Real from Standard =0.0)
+    returns Boolean;
+
+    GetEndTangent2d (me; edge: Edge from TopoDS; 
+    	    	    	 surface : Surface from Geom;
+    	    	    	 location: Location from TopLoc;
+    	    	    	 atEnd: Boolean; 
+    	    	    	 pos : out Pnt2d from gp;
+    	    	    	 tang: out Vec2d from gp;
+    	    	    	 dparam: Real from Standard =0.0)
+    returns Boolean;
+        ---Purpose: Returns tangent of the edge pcurve at its start (if atEnd is
+	--          False) or end (if True), regarding the orientation of edge.
+	--          If edge is REVERSED, tangent is reversed before return.
+	--          Returns True if pcurve is available and tangent is computed
+	--          and is not null, else False.
+		
+    CheckVerticesWithCurve3d (me: in out; edge : Edge from TopoDS;
+    	    	     	                  preci: Real = -1;
+    	    	     	                  vtx  : Integer = 0)
+    returns Boolean;
+    	---Purpose: Checks the start and/or end vertex of the edge for matching
+    	--          with 3d curve with the given precision.
+    	--          <vtx> = 1 : start vertex only
+    	--          <vtx> = 2 : end vertex only
+    	--          <vtx> = 0 : both (default)
+	--          If preci < 0 the vertices are considered with their own
+    	--          tolerances, else with the given <preci>.
+	---Returns: True if mismatching of the vertex to the curve was detected
+	--          else returns False (OK)
+	---Status : OK - ends of the 3d curve are comprised by checked vertices
+	--          FAIL1 - edge has no 3d curve
+	--          DONE1 - if first vertex of the edge does not comprise start of 3d curve
+	--          DONE2 - if last vertex of the edge does not comprise end of 3d curve
+
+    CheckVerticesWithPCurve (me: in out; edge : Edge from TopoDS;
+    	    	            	         face : Face from TopoDS;
+    	    	     	    	         preci: Real = -1;
+    	    	     	    	         vtx  : Integer = 0)
+    returns Boolean;
+
+    CheckVerticesWithPCurve (me: in out; edge    : Edge from TopoDS;
+    	    	            	         surface : Surface from Geom;
+    	    	            	         location: Location from TopLoc;
+    	    	     	    	         preci   : Real = -1;
+    	    	     	    	         vtx     : Integer = 0)
+    returns Boolean;
+    	---Purpose: Checks the start and/or end vertex of the edge for matching
+    	--          with pcurve with the given precision.
+    	--          <vtx> = 1 : start vertex
+    	--          <vtx> = 2 : end vertex
+    	--          <vtx> = 0 : both
+	--          If preci < 0 the vertices are considered with their own
+    	--          tolerances, else with the given <preci>.
+	---Returns: True if mismatching of the curves to the vertex was detected
+	--          else returns False (OK)
+	---Status : OK - ends of the 3d curve are comprised by checked vertices
+	--          FAIL1 - edge has no pcurve on a given (sur)face
+	--          DONE1 - if first vertex of the edge does not comprise start of pcurve
+	--          DONE2 - if last vertex of the edge does not comprise end of pcurve
+	
+    CheckVertexTolerance(me: in out; edge  : Edge from TopoDS;
+    	    	    	    	     face  : Face from TopoDS;
+    	    	    	    	     toler1: out Real;
+				     toler2: out Real)
+    returns Boolean;
+    CheckVertexTolerance(me: in out; edge  : Edge from TopoDS;
+    	    	    	    	     toler1: out Real;
+				     toler2: out Real)
+    returns Boolean;
+    	---Purpose: Checks if it is necessary to increase tolerances of the edge
+    	--          vertices to comprise the ends of 3d curve and pcurve on
+        --          the given face (first method) or all pcurves stored in an edge
+	--          (second one)
+	--          toler1 returns necessary tolerance for first vertex,
+	--          toler2 returns necessary tolerance for last vertex.
+	---Returns: True, if tolerances should be increased, otherwise False
+	---Status:
+	--          OK   : the original tolerances are sufficient
+	--          DONE1: the tolerance of first vertex should be increased
+	--          DONE2: the tolerance of last  vertex should be increased
+	--          FAIL1: edge has no vertice(s), no check is done
+	--          FAIL2: edge has no 3d curve, only pcurves are checked
+	--          FAIL3: edge has no pcurve on a given face, only 3d curve is checked
+
+    CheckCurve3dWithPCurve (me: in out; edge: Edge from TopoDS;
+  	    	       	                face: Face from TopoDS)
+    returns Boolean;
+
+    CheckCurve3dWithPCurve (me: in out; edge    :Edge from TopoDS;
+    	    	                        surface : Surface from Geom;
+    	    	                        location: Location from TopLoc)
+    returns Boolean;
+    	---Purpose: Checks mutual orientation of 3d curve and pcurve on the
+	--          analysis of curves bounding points
+	---Returns: Returns True if mismatching of orientation was detected,
+	--          else returns False (if OK or no curve)
+	---Status:
+    	--          OK   : orientations match each other (both go in the same
+	--                 directions), or edge is closed
+	--          DONE1: orientations mismatch each other (curves go in
+	--                 opposite directions)
+	--          FAIL1: no pcurve
+	--          FAIL2: no 3d curve
+
+    CheckPoints (me: in out; P1A, P1B: Pnt from gp;
+    	    	    	     P2A, P2B: Pnt from gp;
+			     preci1, preci2: Real)
+    returns Boolean is private;
+    	---Purpose: Check points by pairs (A and A, B and B) with precisions
+	--          (preci1 and preci2).
+	--          P1 are the points either from 3d curve or from vertices,
+	--          P2 are the points from pcurve
+	---Returns: False if status is OK, else True
+	--- Status:
+     	--          OK   : distances (P1A, P2A) and (P1B, P2B) are within
+    	--                 precisions
+	--          DONE1: distance (P1A, P2B) + (P1B, P2A) is less than
+    	--                 distance (P1A, P2A) + (P1B, P2B),
+	--                 the precisions are not taken into account in this case
+    
+
+
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status (in the form of True/False) of last Check
+	---Returns: True if status contains bit corresponding to enumerated argument
+
+    CheckSameParameter (me: in out; edge  : Edge from TopoDS;
+    	    	    	            maxdev: out Real;
+    	    	    	    	    NbControl: Integer = 23)
+    returns Boolean;
+    	---Purpose: Checks the edge to be SameParameter.
+	--          Calculates the maximal deviation between 3d curve and each
+    	--          pcurve of the edge on <NbControl> equidistant points (the same
+    	--          algorithm as in BRepCheck; default value is 23 as in BRepCheck). 
+        --          This deviation is returned in <maxdev> parameter.
+	--          If deviation is greater than tolerance of the edge (i.e.
+    	--          incorrect flag) returns False, else returns True.
+	---Returns: True if edge has either SameParameter False and/or its real
+	--          deviation of curves is more than tolerance
+	---Status : OK - Edge is SameParameter with the associated tolerance
+	--          DONE1 - if deviation of the pcurves from 3d curve is greater 
+        --                  than tolerance of edge
+	--          DONE2 - if SameParameter flag in edge is False
+	--          FAIL1 - edge does not have 3d curve
+	--          FAIL2 - if some computational problems were encountered (when
+	--                  projecting points on curves)
+		
+    CheckOverlapping(me :in out; theEdge1, theEdge2 : Edge from TopoDS; 
+    	    	     theTolOverlap:in out Real; theDomainDist : Real =0.0) returns Boolean;
+	---Purpose: Checks the first edge is overlapped with second edge.
+	--          If distance between two edges is less then theTolOverlap 
+        --          edges is overlapped.
+	--          theDomainDis - length of part of edges on wich edges is overlapped.
+	---Status : DONE3 - edges is overlapped on whole length
+	--        : DONE4 - edges is overlapped on the length equal to theDomainDist
+
+
+fields
+
+    myStatus: Integer is protected;
+    
+end Edge;

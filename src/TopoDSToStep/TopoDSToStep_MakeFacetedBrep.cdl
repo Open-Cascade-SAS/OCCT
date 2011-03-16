@@ -1,0 +1,46 @@
+-- File:	TopoDSToStep_MakeFacetedBrep.cdl
+-- Created:	Fri Jul 23 15:06:58 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeFacetedBrep from TopoDSToStep inherits
+    Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Shell or Solid from TopoDS and FacetedBrep from
+    --          StepShape. All the topology and geometry comprised 
+    --          into the shell or the solid are taken into account and
+   --           translated.
+  
+uses Shell from TopoDS,
+     Solid from TopoDS,
+     FacetedBrep from StepShape,
+     FinderProcess from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+Create ( S  : Shell from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+        returns MakeFacetedBrep;
+
+Create ( S  : Solid from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+        returns MakeFacetedBrep;
+
+Value (me) returns FacetedBrep from StepShape
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theFacetedBrep : FacetedBrep from StepShape;
+
+    	-- The solution from StepShape
+    	
+end MakeFacetedBrep;
+
+

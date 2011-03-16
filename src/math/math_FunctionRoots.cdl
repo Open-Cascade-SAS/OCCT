@@ -1,0 +1,101 @@
+-- File:        FunctionRoots.cdl
+-- Created:     Mon May 13 17:39:12 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+class FunctionRoots from math
+    ---Purpose:
+    -- This class implements an algorithm which finds all the real roots of
+    -- a function with derivative within a given range.
+    -- Knowledge of the derivative is required.
+
+uses FunctionWithDerivative from math,
+     SequenceOfReal         from TColStd,
+     SequenceOfInteger      from TColStd,
+     OStream                from Standard
+
+raises RangeError from Standard,
+       NotDone from StdFail
+
+is
+
+    Create(F: in out FunctionWithDerivative; A, B: Real;
+    	   NbSample: Integer; EpsX, EpsF, EpsNull, K : Real= 0.0) 
+
+    ---Purpose: Calculates all the real roots of a function F-K within the range 
+    -- A..B. whithout conditions on A and B
+    -- A solution X is found when
+    --   abs(Xi - Xi-1) <= Epsx and abs(F(Xi)-K) <= EpsF.
+    -- The function is considered as null between A and B if
+    -- abs(F-K) <= EpsNull within this range.
+    
+    returns FunctionRoots;
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+
+
+    IsAllNull(me)
+    	---Purpose:
+        -- returns true if the function is considered as null between A and B.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).	
+    	---C++: inline
+    returns Boolean
+    raises NotDone
+    is static;
+    
+    
+    NbSolutions(me)
+    	---Purpose: Returns the number of solutions found.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+    	---C++: inline
+    returns Integer
+    raises NotDone
+    is static;
+
+
+    Value(me; Nieme: in Integer)
+    	---Purpose: Returns the Nth value of the root of function F.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+    	---C++: inline
+
+    returns Real
+    raises NotDone, RangeError
+    is static;
+    
+    
+    StateNumber(me; Nieme: in Integer)
+    	---Purpose:
+        -- returns the StateNumber  of the Nieme root.
+        -- Exception RangeError is raised if Nieme is < 1
+        --  or Nieme > NbSolutions.
+    	---C++: inline
+
+    returns Integer
+    raises NotDone
+    is static;
+
+    
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+
+    is static;
+
+
+fields
+
+Done:       Boolean;
+AllNull:    Boolean;
+Sol:        SequenceOfReal    from TColStd;
+NbStateSol: SequenceOfInteger from TColStd;
+
+end FunctionRoots;

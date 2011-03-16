@@ -1,0 +1,30 @@
+-- File:	Select2D_Projector.cdl
+-- Created:	Fri Apr 21 16:22:34 1995
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+deferred class Projector from Select2D inherits TShared from MMgt
+
+	---Purpose: An abstract framework to define a projector.
+    	-- StdSelect_TextProjector2d inherits this framework
+    	-- and provides a projector for texts.
+        
+uses
+    Pnt2d     from gp,
+    Trsf2d from gp
+    
+is
+    Initialize;
+
+    Convert (me;aPointIn  : Pnt2d     from gp;
+    	        aPointOut : out Pnt2d from gp) is deferred;
+
+fields
+
+    mytrsf : Trsf2d from gp is protected;
+    
+
+end Projector;

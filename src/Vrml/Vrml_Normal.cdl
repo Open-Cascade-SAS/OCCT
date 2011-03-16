@@ -1,0 +1,38 @@
+-- File:	Vrml_Normal.cdl
+-- Created:	Tue Feb 11 09:43:35 1997
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Normal from Vrml inherits  TShared  from  MMgt
+
+	---Purpose: defines a Normal node of VRML specifying properties of geometry
+	---          and its appearance.
+    	--  This node defines a set of 3D surface normal vectors to be used by vertex-based shape
+      	--  nodes (IndexedFaceSet, IndexedLineSet, PointSet) that follow it in the scene graph. This
+      	--  node does not produce a visible result during rendering; it simply replaces the current
+       	--  normals in the rendering state for subsequent nodes to use. This node contains one
+       	--  multiple-valued field that contains the normal vectors. 
+uses
+ 
+  HArray1OfVec  from  TColgp 
+
+is
+ 
+    Create  (  aVector :  HArray1OfVec  from  TColgp  ) 
+      returns  mutable Normal from Vrml;
+
+    Create  returns  mutable  Normal  from  Vrml; 
+    
+    SetVector ( me  :  mutable;  aVector : HArray1OfVec  from  TColgp );
+    Vector ( me )  returns  HArray1OfVec  from  TColgp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myVector  :  HArray1OfVec  from  TColgp;  -- Normal vector(s)
+
+end Normal;

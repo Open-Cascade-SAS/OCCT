@@ -1,0 +1,42 @@
+-- File:	ShapeUpgrade_ConvertCurve2dToBezier.cdl
+-- Created:	Thu May 13 13:51:24 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class ConvertCurve2dToBezier from ShapeUpgrade inherits SplitCurve2d from ShapeUpgrade
+
+    ---Purpose: converts/splits a 2d curve to a list of beziers
+
+uses
+
+    HSequenceOfCurve from TColGeom2d,
+    HSequenceOfReal from TColStd  
+
+is
+
+    Create returns ConvertCurve2dToBezier from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    Compute(me: mutable) is redefined;
+    	---Purpose: Converts curve into a list of beziers, and stores the 
+    	--          splitting parameters on original curve.
+        
+    Build (me: mutable; Segment: Boolean) is redefined;
+    	---Purpose: Splits a list of beziers computed by Compute method according
+	--          the split values and splitting parameters.
+
+    Segments(me) returns HSequenceOfCurve from TColGeom2d is private;
+    	---Purpose: Returns the list of bezier curves correspondent to original
+	--          curve.
+    
+    SplitParams(me) returns HSequenceOfReal from TColStd;
+    	---Purpose: Returns the list of splitted parameters in original curve
+	--          parametrisation.
+    
+fields
+
+   mySegments   : HSequenceOfCurve from TColGeom2d;
+   mySplitParams: HSequenceOfReal from TColStd;
+    
+end ConvertCurve2dToBezier;

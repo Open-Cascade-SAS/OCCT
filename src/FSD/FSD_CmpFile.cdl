@@ -1,0 +1,321 @@
+-- File:	FSD_CmpFile.cdl
+-- Created:	Fri Nov 29 13:03:05 1996
+-- Author:	Christophe LEYNADIER
+--		<cle@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class CmpFile from FSD
+
+inherits BaseDriver from Storage
+
+uses Position    from Storage,
+     Error       from Storage,
+     OpenMode    from Storage,
+     AsciiString from TCollection,
+     SequenceOfAsciiString from TColStd,
+     SequenceOfExtendedString from TColStd,
+     ExtendedString from TCollection,
+     FStream     from FSD,
+     Real2String  from  OSD
+     
+raises StreamTypeMismatchError from Storage,
+       StreamFormatError from Storage,
+       StreamWriteError from Storage,
+       StreamExtCharParityError from Storage
+
+is
+    Create returns CmpFile from FSD;
+    
+    Open(me : in out; aName : AsciiString from TCollection; aMode : OpenMode from Storage) returns Error from Storage;
+        
+    IsEnd(me : in out) returns Boolean from Standard;
+
+    Tell( me : in out ) returns Position from Storage;
+        ---Purpose: return position in the file. Return -1 upon error.
+
+    IsGoodFileType(myclass; aName : AsciiString from TCollection)
+    	returns Error from Storage;
+    
+    --	INFO SECTION
+    --	write
+    --	
+    BeginWriteInfoSection(me : in out) returns Error from Storage;    
+    
+    WriteInfo(me : in out; nbObj : Integer from Standard; 
+    	    	    	   dbVersion : AsciiString from TCollection;
+    	    	    	   date : AsciiString from TCollection;
+    	    	    	   schemaName : AsciiString from TCollection;
+    	    	    	   schemaVersion : AsciiString from TCollection;
+    	    	    	   appName : ExtendedString from TCollection;
+    	    	    	   appVersion : AsciiString from TCollection;
+			   objectType : ExtendedString from TCollection;
+    	    	    	   userInfo : SequenceOfAsciiString from TColStd)
+    raises StreamWriteError;
+			   
+    EndWriteInfoSection(me : in out) returns Error from Storage;
+    
+    -- read
+    -- 
+    BeginReadInfoSection(me : in out) returns Error from Storage;
+    
+    ReadInfo(me : in out; nbObj : in out Integer from Standard; 
+    	    	    	  dbVersion : in out AsciiString from TCollection;
+    	    	    	  date : in out AsciiString from TCollection;
+    	    	    	  schemaName : in out AsciiString from TCollection;
+    	    	    	  schemaVersion : in out AsciiString from TCollection;
+    	    	    	  appName  : in out ExtendedString from TCollection;
+    	    	    	  appVersion : in out AsciiString from TCollection;
+			  objectType : in out ExtendedString from TCollection;
+    	    	    	  userInfo : in out SequenceOfAsciiString from TColStd)
+    raises StreamTypeMismatchError,StreamExtCharParityError;
+    
+    EndReadInfoSection(me : in out) returns Error from Storage;
+
+    --	COMMENTS SECTION
+    --	write
+    --	
+    BeginWriteCommentSection(me : in out) returns Error from Storage;    
+    
+    WriteComment(me : in out; userComments : SequenceOfExtendedString from TColStd)
+    raises StreamWriteError;
+			   
+    EndWriteCommentSection(me : in out) returns Error from Storage;
+    
+    -- read
+    -- 
+    BeginReadCommentSection(me : in out) returns Error from Storage;
+
+    ReadComment(me : in out;  userComments : in out SequenceOfExtendedString from TColStd)
+    raises StreamTypeMismatchError,StreamExtCharParityError;
+    
+    EndReadCommentSection(me : in out) returns Error from Storage;
+
+
+    -- TYPE SECTION
+    -- 
+    BeginWriteTypeSection(me : in out) returns Error from Storage;    
+    
+    SetTypeSectionSize(me : in out; aSize : Integer from Standard)
+    raises StreamWriteError;
+    
+    WriteTypeInformations(me : in out; typeNum : Integer from Standard; typeName : AsciiString from TCollection)
+    raises StreamWriteError;
+    
+    EndWriteTypeSection(me : in out) returns Error from Storage;
+         
+    -- read
+    BeginReadTypeSection(me : in out) returns Error from Storage;
+    
+    TypeSectionSize(me : in out) returns Integer from Standard
+    raises StreamTypeMismatchError;
+    
+    ReadTypeInformations(me : in out; typeNum : in out Integer from Standard; typeName : in out AsciiString from TCollection)
+    raises StreamTypeMismatchError;
+    
+    EndReadTypeSection(me : in out) returns Error from Storage;
+    
+    -- ROOT SECTION
+    -- write
+    -- 
+    BeginWriteRootSection(me : in out) returns Error from Storage;    
+    
+    SetRootSectionSize(me : in out; aSize : Integer from Standard)
+    raises StreamWriteError;
+    
+    WriteRoot(me : in out; rootName : AsciiString from TCollection; aRef : Integer from Standard; aType : AsciiString from TCollection)
+    raises StreamWriteError;
+    
+    EndWriteRootSection(me : in out) returns Error from Storage;
+
+    -- read
+    -- 
+    BeginReadRootSection(me : in out) returns Error from Storage;
+    
+    RootSectionSize(me : in out) returns Integer from Standard
+    raises StreamTypeMismatchError;
+    
+    ReadRoot(me : in out; rootName : in out AsciiString from TCollection; aRef : in out Integer from Standard; aType : in out AsciiString from TCollection)
+    raises StreamTypeMismatchError;
+    
+    EndReadRootSection(me : in out) returns Error from Storage;
+    
+    -- REF SECTION
+    -- write
+    -- 
+    BeginWriteRefSection(me : in out) returns Error from Storage;
+    
+    SetRefSectionSize(me : in out; aSize : Integer from Standard)
+    raises StreamWriteError;
+    
+    WriteReferenceType(me : in out; reference : Integer from Standard; typeNum : Integer from Standard)
+    raises StreamWriteError;
+    
+    EndWriteRefSection(me : in out) returns Error from Storage;
+
+    -- read
+    -- 
+    BeginReadRefSection(me : in out) returns Error from Storage;
+    
+    RefSectionSize(me : in out) returns Integer from Standard
+    raises StreamTypeMismatchError;
+    
+    ReadReferenceType(me : in out; reference : in out Integer from Standard; typeNum : in out Integer from Standard)
+    raises StreamTypeMismatchError;
+    
+    EndReadRefSection(me : in out) returns Error from Storage;
+    
+    -- DATA SECTION
+    -- write
+    -- 
+    BeginWriteDataSection(me : in out) returns Error from Storage;    
+    
+    WritePersistentObjectHeader(me : in out; aRef : Integer from Standard; aType : Integer from Standard)
+    raises StreamWriteError;
+    
+    BeginWritePersistentObjectData(me : in out)
+    raises StreamWriteError;
+    
+    BeginWriteObjectData(me : in out)
+    raises StreamWriteError;
+    
+    EndWriteObjectData(me : in out)
+    raises StreamWriteError;
+    
+    EndWritePersistentObjectData(me : in out)
+    raises StreamWriteError;
+    
+    EndWriteDataSection(me : in out) returns Error from Storage;
+    
+    -- read
+    -- 
+    BeginReadDataSection(me : in out) returns Error from Storage;
+    
+    ReadPersistentObjectHeader(me : in out; aRef : in out Integer from Standard; aType : in out Integer from Standard)
+    raises StreamTypeMismatchError,StreamFormatError;
+    
+    BeginReadPersistentObjectData(me : in out)
+    raises StreamFormatError;
+    
+    BeginReadObjectData(me : in out)
+    raises StreamFormatError;
+    
+    EndReadObjectData(me : in out)
+    raises StreamFormatError;
+    
+    EndReadPersistentObjectData(me : in out)
+    raises StreamFormatError;
+    
+    EndReadDataSection(me : in out) returns Error from Storage;
+  
+    -- 
+    SkipObject(me : in out);
+    -- 
+     
+    PutReference(me : in out; aValue : Integer from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: return &
+
+    PutCharacter(me : in out; aValue : Character from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+
+    PutExtCharacter(me : in out; aValue : ExtCharacter from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+
+    PutInteger(me : in out; aValue : Integer from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutBoolean(me : in out; aValue : Boolean from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutReal(me : in out; aValue : Real from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+    
+    PutShortReal(me : in out; aValue : ShortReal from Standard) returns like me
+    raises StreamWriteError;
+    ---C++: alias operator <<
+    ---C++: return &
+
+    GetReference(me : in out; aValue : in out Integer from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: return &
+
+    GetCharacter(me : in out; aValue : in out Character from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    GetExtCharacter(me : in out; aValue : in out ExtCharacter from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    GetInteger(me : in out; aValue : in out Integer from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetBoolean(me : in out; aValue : in out Boolean from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetReal(me : in out; aValue :in out  Real from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+    
+    GetShortReal(me : in out; aValue : in out ShortReal from Standard) returns like me
+    	raises StreamTypeMismatchError;
+    ---C++: alias operator >>
+    ---C++: return &
+
+    Close(me : in out) returns Error from Storage;
+    
+    Destroy(me : in out);
+    ---C++: alias ~
+
+    ReadLine(me : in out; buffer : in out AsciiString from TCollection) is protected;
+    ---Purpose: read from the current position to the end of line.
+    
+    ReadWord(me : in out; buffer : in out AsciiString from TCollection) is protected;
+    ---Purpose: read from the current position to the next white space or end of line.   
+
+    ReadExtendedLine(me : in out; buffer : in out ExtendedString from TCollection) 
+    raises StreamExtCharParityError 
+    is protected;
+    ---Purpose: read extended chars (unicode) from the current position to the end of line.
+
+    WriteExtendedLine(me : in out; buffer : ExtendedString from TCollection) is protected;
+    ---Purpose: write from the current position to the end of line.
+
+    ReadChar(me : in out; buffer : in out AsciiString from TCollection; rsize : Integer from Standard) is protected;
+    ---Purpose: read <rsize> character from the current position.
+
+    ReadString(me : in out; buffer : in out AsciiString from TCollection) is protected;
+    ---Purpose: read from the first none space character position to the end of line.
+    
+    FlushEndOfLine(me : in out) is protected;
+    
+    FindTag(me : in out; aTag : CString from Standard) returns Error from Storage is protected; 
+
+    MagicNumber(myclass)
+    	returns CString from Standard is private;
+    ---C++: return const
+    
+    RaiseError(me: in out ; theFailure: Type from Standard) is private;
+        
+fields
+    
+    	myStream    : FStream from FSD;
+	myRealConv  : Real2String  from  OSD;  -- ****  samtech modif	
+end;

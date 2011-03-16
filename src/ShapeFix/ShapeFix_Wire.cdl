@@ -1,0 +1,868 @@
+-- File:	ShapeFix_Wire.cdl
+-- Created:	Wed Jun  3 12:33:14 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Wire from ShapeFix inherits Root from ShapeFix
+
+    ---Purpose: This class provides a set of tools for repairing a wire.
+    --
+    --          These are methods Fix...(), organised in two levels:
+    --
+    -- Level 1: Advanced - each method in this level fixes one separate problem, 
+    --          usually dealing with either single edge or connection of the
+    --          two adjacent edges. These methods should be used carefully and
+    --          called in right sequence, because some of them depend on others.
+    --
+    -- Level 2: Public (API) - methods which group several methods of level 1 
+    --          and call them in a proper sequence in order to make some 
+    --          consistent set of fixes for a whole wire. It is possible to 
+    --          control calls to methods of the advanced level from methods of 
+    --          the public level by use of flags Fix..Mode() (see below).
+    --
+    --          Fixes can be made in three ways:
+    --       1. Increasing tolerance of an edge or a vertex
+    --       2. Changing topology (adding/removing/replacing edge in the wire
+    --          and/or replacing the vertex in the edge)
+    --       3. Changing geometry (shifting vertex or adjusting ends of edge
+    --          curve to vertices, or recomputing curves of the edge)
+    --
+    --          When fix can be made in more than one way (e.g., either
+    --          by increasing tolerance or shifting a vertex), it is choosen
+    --          according to the flags:
+    --          ModifyTopologyMode - allows modification of the topology.
+    --                               This flag can be set when fixing a wire on 
+    --                               the separate (free) face, and should be
+    --                               unset for face which is part of shell.
+    --          ModifyGeometryMode - allows modification of the geometry.
+    --
+    --          The order of descriptions of Fix() methods in this CDL 
+    --          approximately corresponds to the optimal order of calls.
+    --
+    --          NOTE: most of fixing methods expect edges in the 
+    --          ShapeExtend_WireData to be ordered, so it is necessary to make
+    --          call to FixReorder() before any other fixes
+    --
+    --          ShapeFix_Wire should be initialized prior to any fix by the 
+    --          following data:
+    --          a) Wire (ether TopoDS_Wire or ShapeExtend_Wire)
+    --          b) Face or surface
+    --          c) Precision
+    --          This can be done either by calling corresponding methods
+    --          (LoadWire, SetFace or SetSurface, and SetPrecision), or
+    --          by loading already filled ShapeAnalisis_Wire with method Load
+
+uses 
+
+    Surface   from Geom,
+    Face      from TopoDS,
+    Vertex    from TopoDS, 
+    Wire      from TopoDS, 
+    Location  from TopLoc,
+    WireData  from ShapeExtend, 
+    Status    from ShapeExtend,
+    Wire      from ShapeAnalysis,
+    WireOrder from ShapeAnalysis,
+    Edge      from ShapeFix
+
+is
+
+    Create returns Wire from ShapeFix;
+    	---Purpose: Empty Constructor, creates clear object with default flags
+
+    Create (wire: Wire from TopoDS; face: Face from TopoDS; prec: Real)
+    returns Wire from ShapeFix;
+    	---Purpose: Create new object with default flags and prepare it for use
+        --          (Loads analyzer with all the data for the wire and face)
+
+    --- Loading and extracting the wire and other working data:
+
+    ClearModes (me: mutable);
+    	---Purpose: Sets all modes to default
+
+    ClearStatuses (me: mutable);
+    	---Purpose: Clears all statuses
+    
+    Init (me: mutable; wire: Wire from TopoDS; 
+    	    	      face: Face from TopoDS; prec: Real);
+    	---Purpose: Load analyzer with all the data for the wire and face
+	--          and drops all fixing statuses 
+
+    Init (me: mutable; saw: Wire from ShapeAnalysis);
+    	---Purpose: Load analyzer with all the data already prepared
+	--          and drops all fixing statuses 
+    	--          If analyzer contains face, there is no need to set it
+    	--          by SetFace or SetSurface
+
+    Load (me: mutable; wire: Wire from TopoDS);
+    	---Purpose: Load data for the wire, and drops all fixing statuses
+    	---Note   : It is necessary to set face or surface for the wire before fixes
+    
+    Load (me: mutable; sbwd: WireData from ShapeExtend);
+    	---Purpose: Load data for the wire, and drops all fixing statuses
+    	---Note   : It is necessary to set face or surface for the wire before fixes
+    
+    SetFace (me: mutable; face: Face from TopoDS);
+    	---C++: inline
+    	---Purpose: Set working face for the wire
+    
+    SetSurface (me: mutable; surf: Surface from Geom);
+    	---C++: inline
+    	---Purpose: Set surface for the wire
+	---Remark : This function creates new face and calls SetFace
+    
+    SetSurface (me: mutable; surf: Surface from Geom; 
+    	    	    	    loc: Location from TopLoc);
+    	---C++: inline
+    	---Purpose: Set surface for the wire
+	---Remark : This function creates new face and calls SetFace
+    
+    SetPrecision (me: mutable; prec: Real) is redefined;
+    	---Purpose: Set working precision (to root and to analyzer)
+
+    IsLoaded (me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Tells if the wire is loaded 
+	---Remark:  returns myAnalyzer.IsLoadaed()
+
+    IsReady (me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Tells if the wire and face are loaded 
+	---Remark:  returns myAnalyzer.IsReady()
+
+    NbEdges (me) returns Integer;
+        ---Purpose: returns number of edges in the working wire
+	---Remark:  returns myAnalyzer.NbEdges()
+
+    Wire (me) returns Wire from TopoDS;
+    	---C++: inline
+    	---Purpose: Makes the resulting Wire (by basic Brep_Builder)
+	---Remark:  returns myAnalyzer.Wire()
+
+    WireAPIMake (me) returns Wire from TopoDS;
+    	---C++: inline
+    	---Purpose: Makes the resulting Wire (by BRepAPI_MakeWire)
+	---Remark:  returns myAnalyzer.WireAPIMake()
+
+    Analyzer (me) returns Wire from ShapeAnalysis;
+    	---Purpose: returns field Analyzer (working tool)
+
+    WireData (me) returns WireData from ShapeExtend;
+    	---C++: inline
+    	---C++: return const &
+    	---Purpose: returns working wire
+	---Remark:  calls Analyzer.WireData()
+
+    Face (me) returns Face from TopoDS;
+    	---C++: inline
+    	---C++: return const &
+    	---Purpose: returns working face (Analyzer.Face())
+
+    --- Parameters:
+
+    ModifyTopologyMode (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether it is 
+    	--          allowed to modify topology of the wire during fixing
+    	--          (adding/removing edges etc.)
+    	---Use    : This flag can be set to True for wire on separate (free) face.
+    	--          It should be set to False if the wire is on face which is a part
+    	--          of a shell.
+	---Default: False
+
+    ModifyGeometryMode (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the Fix..()
+    	--          methods are allowed to modify geometry of the edges and vertices
+	---Default: True
+	---Remark : Currently is not used
+
+    ModifyRemoveLoopMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the Fix..()
+    	--          methods are allowed to modify RemoveLoop of the edges 
+	---Default: -1
+	---Remark : Currently is not used
+
+    ClosedWireMode (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the wire
+    	--          is to be closed (by calling methods like FixDegenerated() 
+    	--          and FixConnected() for last and first edges). 
+    	---Use    : This flag should be set to False if wire is not a face boundary 
+    	--          but is a (not closed) curve on a face.
+	---Default: True
+
+    PreferencePCurveMode (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether the 2d (True)
+    	--          representation of the wire is preferable over 3d one (in the 
+    	--          case of ambiguity in FixEdgeCurves).
+	---Default: True (means that 2d representation is preferable).
+	---Remark : Currently is not used
+
+    FixGapsByRangesMode (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether tool
+    	--          tries to fix gaps first by changing curves ranges (i.e.
+    	--          using intersection, extrema, projections) or not.
+	---Default: False (means that tool will only bend curves).
+	---Remark : Currently is not used
+
+    --- Flags:
+
+    --- Level: Public (API)
+    --         These flags are only used in Perform()
+    FixReorderMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixSmallMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixConnectedMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixEdgeCurvesMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixDegeneratedMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixSelfIntersectionMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixLackingMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixGaps3dMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixGaps2dMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag for corresponding Fix..() method
+    	--          which defines whether this method will be called from the
+   	--          method APIFix():
+    	--       -1 default
+    	--        1 method will be called
+    	--        0 method will not be called
+
+    --- Level: Advanced: 
+    --         These flags are only used in FixEdgeCurves() and FixSelfIntersection()
+    --         For FixEdgeCurves():
+    FixReversed2dMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixRemovePCurveMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixAddPCurveMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixRemoveCurve3dMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixAddCurve3dMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixSeamMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixShiftedMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixSameParameterMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixVertexToleranceMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    --         For FixSelfIntersection():
+    FixNotchedEdgesMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixSelfIntersectingEdgeMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixIntersectingEdgesMode (me: mutable) returns Integer;
+    	---C++: inline
+    	---C++: return &
+    FixNonAdjacentIntersectingEdgesMode (me: mutable) returns Integer;
+	---C++: inline
+    	---C++: return &    
+    	---Purpose: Returns (modifiable) the flag for corresponding Fix..() method
+    	--          which defines whether this method will be called from the 
+    	--          corresponding Fix..() method of the public level:
+    	--       -1 default
+    	--        1 method will be called
+    	--        0 method will not be called
+
+    --- Fixing methods:
+    
+    --- Level: Public (API)
+
+    Perform (me: mutable) returns Boolean;
+    	---Purpose: This method performs all the available fixes.
+    	--          If some fix is turned on or off explicitly by the Fix..Mode() flag,
+	--          this fix is either called or not depending on that flag.
+	--          Else (i.e. if flag is default) fix is called depending on the 
+	--          situation: some fixes are not called or are limited if order of 
+        --          edges in the wire is not OK, or depending on modes
+	--
+    	--          The order of the fixes and default behaviour of Perform() are:
+    	--          FixReorder
+    	--          FixSmall (with lockvtx true if ! TopoMode or if wire is not ordered)
+    	--          FixConnected (if wire is ordered)
+    	--          FixEdgeCurves (without FixShifted if wire is not ordered)
+    	--          FixDegenerated (if wire is ordered)
+    	--          FixSelfIntersection (if wire is ordered and ClosedMode is True)
+    	--          FixLacking (if wire is ordered)
+	--
+    	---Returns: False if nothing done, else True
+    	--          Use methods Status...() to investigate the results of calls to the
+        --          each fixing method. All statuses are dropped at the start of Perform().
+
+    FixReorder (me: mutable) returns Boolean;
+    	---Purpose: Performs an analysis and reorders edges in the wire using 
+        --          class WireOrder 
+    	---Returns: False if nothing to do, True if some edges were reordered
+    	---Status : See StatusReorder() for details
+	--          FAIL1 - ShapeAnalysis_WireOrder has detected several loops
+	--          FAIL2 - ShapeAnalysis_WireOrder failed (result is incorrect)
+	--          DONE1 - Reorder done OK
+	--          DONE2 - in addition to DONE1 - some gaps remain
+	--          DONE3 - in addition to DONE1 - some edges were reversed
+
+    FixSmall (me: mutable; lockvtx: Boolean; precsmall: Real = 0.0) 
+    returns Integer;
+    	---Purpose: Applies FixSmall(num) to all edges in the wire
+    	---Returns: True if some edges were removed, else False
+    	---Status : See StatusSmall() for details
+    	--          OK   : Edge is not null-length
+    	--          DONE1: Edge is null-length and has the same vertices at begin 
+        --                 and end; removed
+    	--          DONE2: (only if lockvtx is False and ModifyTopologyMode is True)
+        --                 Edge is null-length and has different vertices at begin and end; 
+        --                 edge removed, and CheckConnected called for adjacent edges
+    	--          FAIL1: Edge cannot be checked (no 3d curve and no pcurve)
+    	--          FAIL2: Edge is null-length and has different vertices at begin 
+	--                 and end, and lockvtx is True or ModifyTopologyMode is False; 
+        --                 edge is not removed
+    	--          FAIL3: In the case of DONE2, CheckConnected has failed
+
+    FixConnected (me: mutable; prec: Real = -1.0) returns Boolean;
+    	---Purpose: Applies FixConnected(num) to all edges in the wire
+    	--          Connection between first and last edges is treated only if 
+    	--          flag ClosedMode is True
+	--          If <prec> is -1 then MaxTolerance() is taken.
+    	---Returns: True if some vertices were replaced, False if OK or fail
+    	---Status : See StatusConnected() for details
+    	--          OK   : If they are already the same, nothing done
+    	--          DONE1: Absolutely confused (gp::Resolution), set the same
+    	--          DONE2: Confused with Analyzer.Precision(), set the same
+    	--          DONE3: Confused with <prec> but not Analyzer.Precision(), set the same
+    	--          FAIL1: Not confused neither with prec nor Analyzer.Precision()
+    
+    FixEdgeCurves (me: mutable) returns Boolean;
+    	---Purpose: Groups the fixes dealing with 3d and pcurves of the edges.
+    	--          The order of the fixes and the default behaviour are:
+    	--          ShapeFix_Edge::FixReversed2d
+    	--          ShapeFix_Edge::FixRemovePCurve (only if forced)
+        --          ShapeFix_Edge::FixAddPCurve
+        --          ShapeFix_Edge::FixRemoveCurve3d (only if forced)
+        --          ShapeFix_Edge::FixAddCurve3d
+    	--          FixSeam,
+    	--          FixShifted,
+    	--          ShapeFix_Edge::FixSameParameter
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusEdgeCurves() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1, FAIL1 - FixReversed2d was fixed and/or failed
+	--          DONE2, FAIL2 - FixRemovePCurve was fixed and/or failed
+	--          DONE3, FAIL3 - FixAddPCurve was fixed and/or failed
+	--          DONE4, FAIL4 - FixRemoveCurve3d was fixed and/or failed
+	--          DONE5, FAIL5 - FixAddCurve3d was fixed and/or failed
+	--          DONE6, FAIL6 - FixSeam was fixed and/or failed
+	--          DONE7, FAIL7 - FixShifted was fixed and/or failed
+	--          DONE8, FAIL8 - FixSameParameter or FixVertexTolerance were fixed and/or failed
+
+    FixDegenerated (me: mutable) returns Boolean;
+    	---Purpose: Applies FixDegenerated(num) to all edges in the wire
+    	--          Connection between first and last edges is treated only if 
+    	--          flag ClosedMode is True
+    	---Returns: True if at least one degenerated edge was fixed or added
+    	---Status : See StatusDegenerated() for details
+    	--          OK   : Nothing done
+    	--          FAIL1: Analysis has failed
+    	--          DONE1: New degenerated edge was added
+    	--          DONE2: Edge <num> was made degenerated
+    
+    FixSelfIntersection ( me: mutable ) returns Boolean;
+    	---Purpose: Applies FixSelfIntersectingEdge(num) and 
+    	--          FixIntersectingEdges(num) to all edges in the wire and
+	--          FixIntersectingEdges(num1, num2) for all pairs num1 and num2
+	--          such that num2 >= num1 + 2
+    	--          and removes wrong edges if any
+    	---Returns: True if something was fixed, else False
+    	---Status : See StatusSelfIntersection() for details
+    	--          OK   : No intersection found
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: self-intersection was found, but not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+	--          FAIL3: intercestion of non adjacent edges found, but not fixed 
+        --                 because of limit of increasing tolerance (MaxTolerance) 
+    	--          DONE1: tolerance of vertex was increased to fix self-intersection
+    	--          DONE2: vertex was moved to fix self-intersection
+    	--          DONE3: some edges were removed because of intersection
+    	--          DONE4: pcurve(s) was(were) modified
+	--          DONE5: non adjacent intersection fixed by increasing tolerance of
+	--                 vertex(vertices)
+	--          DONE6: tolerance of edge was increased to hide intersection
+	--          DONE7: range of some edges was decreased to avoid intersection
+
+    FixLacking (me: mutable; force: Boolean = Standard_False) returns Boolean;
+    	---Purpose: Applies FixLacking(num) to all edges in the wire
+    	--          Connection between first and last edges is treated only if 
+    	--          flag ClosedMode is True
+	--          If <force> is False (default), test for connectness is done with 
+	--          precision of vertex between edges, else it is done with minimal
+	--          value of vertex tolerance and Analyzer.Precision().
+	--          Hence, <force> will lead to inserting lacking edges in replacement
+	--          of vertices which have big tolerances.
+    	---Returns: True if lacking edge was fixed, else False.
+    	---Status : See StatusLacking() for more details
+    	--          OK   : No problems detected
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: lacking edge not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+    	--          FAIL3: failed to build lacking edge (3d curve) 
+    	--          DONE1: tolerance was increased to fix lacking edge
+    	--          DONE2: lacking edge was inserted
+
+    FixClosed (me: mutable; prec: Real = -1.0) returns Boolean;
+    	---Purpose: Fixes a wire to be well closed
+    	--          It performs FixConnected, FixDegenerated and FixLacking between
+    	--          last and first edges (independingly on flag ClosedMode and modes
+        --          for these fixings)
+	--          If <prec> is -1 then MaxTolerance() is taken.
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusClosed() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1, FAIL1 - FixConnected was fixed and/or failed
+	--          DONE2, FAIL2 - FixDegenerated was fixed and/or failed
+	--          DONE3, FAIL3 - FixLacking was fixed and/or failed
+
+    FixGaps3d (me: mutable) returns Boolean;
+    	---Purpose: Fixes gaps between ends of 3d curves on adjacent edges
+	--          myPrecision is used to detect the gaps.
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusGaps3d() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1 - Some gaps in 3d were found and fixed
+	--          FAIL1 - There was no 3d curve found on some edges
+	--          FAIL2 - Method failed to fix some gaps
+
+    FixGaps2d (me: mutable) returns Boolean;
+    	---Purpose: Fixes gaps between ends of pcurves on adjacent edges
+	--          myPrecision is used to detect the gaps.
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusGaps2d() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1 - Some gaps in 2d were found and fixed
+	--          FAIL1 - There was no pcurve found on some edges
+	--          FAIL2 - Method failed to fix some gaps
+
+    --- Level: Advanced
+    
+    ---Status: For analyzing the status of the last performed method use 
+    --         LastFixStatus(status)
+    --
+    --         All the Fix.. methods below return False if the problem was not 
+    --         fixed, in this case LastFixStatus contains either FAIL or OK.
+    --         If a method returns True the LastFixStatus contains DONE,
+    --         this means that some fix was made
+    --         For detailed meaning of Status see corresponding method.
+    
+    FixReorder (me: mutable; wi: in WireOrder from ShapeAnalysis) returns Boolean;
+    	---Purpose: Reorder edges in the wire as determined by WireOrder
+    	--          that should be filled and computed before
+    	---Returns: False if nothing to do, True if some edges were reordered
+    	---Status : See LastFixStatus() for details
+	--          OK    - edges are ordered well
+	--          FAIL1 - WireOrder has detected several loops
+	--          FAIL2 - WireOrder is incorrect (wrong number of edges)
+	--          FAIL3 - WireOrder is incorrect 
+	--          DONE1 - reorder was performed successfully
+
+    FixSmall (me: mutable; num: Integer; lockvtx: Boolean; precsmall: Real)
+    returns Boolean;
+    	---Purpose: Fixes Null Length Edge to be removed
+    	--          If an Edge has Null Length (regarding preci, or <precsmall>
+    	--          - what is smaller), it should be removed
+    	--          It can be with no problem if its two vertices are the same
+    	--          Else, if lockvtx is False, it is removed and its end vertex
+    	--          is put on the preceeding edge
+    	--          But if lockvtx is True, this edge must be kept ...
+    	---Use    : Is to be used in the case if some edges can be too short, and 
+	--          should be removed (hence, if topology of the wire can be modified). 
+    	--          It is recommended to call this method before FixIntersection()
+    	--
+    	---Returns: True if null edge was removed, False if nothing done
+    	---Status : See LastFixStatus() for details
+    	--          OK   : Edge is not null-length
+    	--          DONE1: Edge is null-length and has the same vertices at begin 
+        --                 and end; removed
+    	--          DONE2: (only if lockvtx is False and ModifyTopologyMode is True)
+        --                 Edge is null-length and has different vertices at begin and end; 
+        --                 edge removed, and CheckConnected called for adjacent edges
+    	--          FAIL1: Edge cannot be checked (no 3d curve and no pcurve)
+    	--          FAIL2: Edge is null-length and has different vertices at begin 
+	--                 and end, and lockvtx is True or ModifyTopologyMode is False; 
+        --                 edge is not removed
+    	--          FAIL3: In the case of DONE2, CheckConnected has failed
+
+    FixConnected (me: mutable; num: Integer; prec: Real)
+    returns Boolean;
+    	---Purpose: Fixes connected edges (preceeding and current)
+    	--          Forces Vertices (end of preceeding-begin of current) to be
+    	--          the same one
+    	--          Tests with starting preci or, if given greater, <prec>
+	--          If <prec> is -1 then MaxTolerance() is taken.
+   	--
+    	---Use    : It is to be used if two consequent edges in the wire have not
+    	--          the same common vertex, e.g., if wire was constructed from 
+    	--          not connected edges or some operations like adding/removing an
+    	--          edge were done.
+    	--          While it may change vertices, it should not be
+    	--          called in cases when vertices may not be changed ...
+	--
+	---Remark : Replacement of vertices in the edges is made by copying these edges
+   	--
+    	---Returns: False if edges are already connected (vertices are the same) or if
+	--          it is not possible to perform fix (edges have a gap more than <prec>); 
+        --          True if disconnected situation was fixed by producing a new Vertex 
+    	--          at the middle of the former ones.
+    	---Status:
+    	--          OK   : If they are already the same, nothing done
+    	--          DONE1: Absolutely confused (gp::Resolution), set the same
+    	--          DONE2: Confused with Analyzer.Precision(), set the same
+    	--          DONE3: Confused with <prec> but not Analyzer.Precision(), set the same
+    	--          FAIL1: Not confused neither with prec nor Analyzer.Precision()
+
+    FixSeam (me: mutable; num: Integer) returns Boolean;
+    	---Purpose: Fixes a seam edge
+    	--          A Seam edge has two pcurves, one for forward. one for reversed
+    	--          The forward pcurve must be set as first
+    	--
+    	--          NOTE that correct order of pcurves in the seam edge depends on
+    	--          its orientation (i.e., on orientation of the wire, method of 
+    	--          exploration of edges etc.).
+    	--          Since wire represented by the ShapeExtend_WireData is always forward
+    	--          (orientation is accounted by edges), it will work correct if:
+    	--       1. Wire created from ShapeExtend_WireData with methods 
+    	--          ShapeExtend_WireData::Wire..() is added into the FORWARD face 
+    	--          (orientation can be applied later)
+    	--       2. Wire is extracted from the face with orientation not composed
+    	--          with orientation of the face
+   	--
+    	---Use    : This operation should be called after reversing the wire if it 
+    	--          contains seam edges. 
+    	--
+    	---Returns: True if edge is a seam and its curves were fixed (reordered), else False
+        ---Status : See StatusSeam() for details
+	--          OK - edge is not a seam or has pcurves OK
+	--          DONE1 - seam pcurves were fixed
+
+    FixShifted (me: mutable) returns Boolean;
+    	---Purpose: Fixes edges which have pcurves shifted by whole parameter 
+    	--          range on the closed surface (the case may occur if pcurve 
+    	--          of edge was computed by projecting 3d curve, which goes 
+    	--          along the seam). 
+    	--          It compares each two consequent edges and tries to connect them 
+    	--          if distance between ends is near to range of the surface.
+    	--          It also can detect and fix the case if all pcurves are connected,
+    	--          but lie out of parametric bounds of the surface.
+	--          In addition to FixShifted from ShapeFix_Wire, more
+	--          sophisticated check of degenerate points is performed,
+	--          and special cases like sphere given by two meridians 
+	--          are treated.
+    	---Use    : Is to be used if some pcurves were recomputed.
+    	--          It is recommended to use it before FixDegenerated.
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusShifted() for details
+    	--          OK: If pcurves are OK
+    	--          FAIL1: some pcurves are missing
+    	--          DONE1: some pcurves were shifted in order to ensure connection 
+        --                 between edges
+	--          DONE2: all pcurves were shifted in order to be in the parametric 
+	--                 range of a surface
+
+    FixDegenerated (me: mutable; num: Integer) returns Boolean;
+    	---Purpose: Fixes Degenerated Edge
+	--          Checks an <num-th> edge or a point between <num>th-1 and <num>th
+	--          edges for a singularity on a supporting surface.
+	--          If singularity is detected, either adds new degenerated edge 
+        --          (before <num>th), or makes <num>th edge to be degenerated.
+    	---Use    : It is to be called for faces which lie on surfaces with 
+    	--          singularities. 
+    	--          It should be called after all pcurves are correctly computed.
+    	---Returns: False if nothing done, else True
+    	---Status : See LastFixStatus() for details
+    	--          OK   : Nothing done
+    	--          FAIL1: Analysis has failed
+    	--          DONE1: New degenerated edge was added
+    	--          DONE2: Edge <num> was made degenerated
+    	--          DONE3: Edge <num> was incorrectly coded as degenerated, removed
+
+    FixSelfIntersectingEdge ( me: mutable; num: Integer )
+    returns Boolean is private;
+    	---Purpose: Detect and fix self-intersecting pcurve of edge <num>.
+	--          Fix is made by one of two methods:
+        --          - cut out the self-intersection loop on pcurve (thus 
+        --            producing C0 pcurve). This also increases tolerance of edge
+	--            in order to satisfy SameParameter requirement.
+        --          - increase tolerance of the vertex of edge nearest to the 
+        --            self-intersection point so that it comprises that point.
+        --          The first method is considered only if ModifyGeometryMode 
+        --          is True. In that case, the method which requires less 
+        --          increasing of tolerance is selected. 
+    	---Returns: True if it was done, else False
+    	---Status : See LastFixStatus() for details
+    	--          OK   : Edge is not self-intersecting
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: self-intersection was found, but not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+    	--          DONE1: tolerance was increased to fix self-intersection
+    	--          DONE4: pcurve was modified (self-intersection loop cutted out)
+
+    FixIntersectingEdges ( me: mutable; num: Integer )
+    returns Boolean is private;
+    	---Purpose: Test if two consequent edges are intersecting and fix it
+   	--          by increasing of tolerance of vertex between edges,
+    	--          shifting this vertex to the point of intersection,
+    	--          cutting edges to the intersection point.
+    	--          It also can give signal to remove edge if it whole is cut by
+    	--          intersection (if flag ModifyTopologyMode is set).
+   	--
+    	---Returns: False if nothing done, True if something was fixed.
+    	---Status : See LastFixStatus() for details
+    	--          OK   : No intersection found
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: self-intersection was found, but not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+    	--          DONE1: tolerance was increased to fix self-intersection
+    	--          DONE2: vertex was moved to fix self-intersection
+    	--          DONE3: previous or
+    	--          DONE4: current edge should be removed because of intersection
+	--          DONE6: tolerance of edge was increased to hide intersection
+	--          DONE7: range of some edges was decreased to avoid intersection
+
+    FixIntersectingEdges (me: mutable; num1  : Integer;
+    	    	    	      	      num2  : Integer)
+    returns Boolean is private;
+    	---Purpose: Tests if two edges <num1> and <num2> are intersecting and
+    	--          fix intersection by increasing of tolerance of vertex
+    	--          nearest to the point of intersection.
+   	--
+    	---Returns: False if nothing done, True if something was fixed.
+    	---Status : See LastFixStatus() for details
+    	--          OK   : No intersection found
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: self-intersection was found, but not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+    	--          DONE1: tolerance was increased to fix self-intersection
+    
+    FixLacking ( me: mutable; num: Integer; force: Boolean = Standard_False )
+    returns Boolean;
+    	---Purpose: Fixes Lacking Edge 
+    	--          Test if two adjucent edges are disconnected in 2d (while 
+        --          connected in 3d), and in that case either increase tolerance 
+        --          of the vertex or add a new edge (straight in 2d space), in 
+        --          order to close wire in 2d.
+	--          Returns True if edge was added or tolerance was increased.
+        ---Algorithm:
+        --       1. Compute the 2d gap between edges and calculate a tolerance
+  	--          which should have vertex in order to comprise the gap
+        --          (using GeomAdaptor_Surface); computed value is inctol
+        --       2. If inctol < tol of vertex, return False (everything is OK)
+        --       3. If inctol < Precision, just increase tolerance of vertex to inctol
+        --       4. Else (if both edges are not degenerated) try to add new edge 
+        --          with straight pcurve (in order to close the gap):
+        --       a) if flag MayEdit is False
+        --          1. if inctol < MaxTolerance, increase tolerance of vertex to inctol
+        --          2. else try to add degenerated edge (check that middle point of 
+        --             that pcurve is inside the vertex)
+        --       b) if MayEdit is True
+        --          1. try to replace big vertex with two new small vertices 
+        --             connected by new edge. This is made if there is a 3d space
+        --             between ends of adjacent edges.
+        --          2. if inctol < MaxTolerance, increase tolerance of vertex to inctol
+        --          3. else add either degenerated or closed edge (if middle point
+        --             of a pcurve of a new edge is inside the vertex, then
+        --             degenerated edge is added, else new edge is closed).
+        --       5. If new edge cannot be added, but inctol < MaxTolerance,
+        --          when increase tolerance of vertex to a value of inctol
+   	--
+    	---Use    : This method should be used after all pcurves in the wire are 
+    	--          correctly computed. It is not recommended to use this method 
+    	--          after FixDegenerated() and before FixSelfIntersection().
+    	--
+    	---Returns: False if nothing done, else True.
+    	---Status : See LastFixStatus() for more details
+    	--          OK   : If nothing done
+    	--          FAIL1: analysis failed (edge has no pcurve, or no vertices etc.)
+    	--          FAIL2: lacking edge not fixed because of 
+        --                 limit of increasing tolerance (MaxTolerance)
+    	--          FAIL3: failed to build lacking edge (3d curve) 
+    	--          DONE1: tolerance was increased to fix lacking edge
+    	--          DONE2: lacking edge was inserted
+    	--          DONE3: (in addition to DONE2) inserted edge is degenerated
+    	--          DONE4: (in addition to DONE2) inserted edge is closed
+    	--          DONE5: pcurves of edges were bent (only if ModifyGeometry is True)
+    
+    FixNotchedEdges(me: mutable) returns Boolean;
+    
+    FixDummySeam(me: mutable; num: Integer) is private;
+
+    FixGap3d ( me: mutable; num: Integer; convert: Boolean = Standard_False )
+    returns Boolean;
+    	---Purpose: Fixes gap between ends of 3d curves on num-1 and num-th edges.
+	--          myPrecision is used to detect the gap.
+	--          If convert is True, converts curves to bsplines to bend.
+        ---Algorithm:
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusGaps3d() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1 - A gap in 3d were found and fixed
+	--          FAIL1 - There was no 3d curve found on some edge
+	--          FAIL2 - Method failed to fix the gap
+
+    FixGap2d ( me: mutable; num: Integer; convert: Boolean = Standard_False )
+    returns Boolean;
+    	---Purpose: Fixes gap between ends of pcurves on num-1 and num-th edges.
+	--          myPrecision is used to detect the gap.
+	--          If convert is True, converts pcurves to bsplines to bend.
+        ---Algorithm:
+    	---Returns: False if nothing done, else True
+    	---Status : See StatusGaps2d() for details
+	--          OK - no problem was detected, nothing fixed
+	--          DONE1 - A gap in 2d were found and fixed
+	--          FAIL1 - There was no pcurve found on some edge
+	--          FAIL2 - Method failed to fix the gap
+
+    --- Result of fixes: 
+
+    StatusReorder          (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusSmall            (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusConnected        (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusEdgeCurves       (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusDegenerated      (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusSelfIntersection (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusLacking          (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusClosed           (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusGaps3d           (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusGaps2d           (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusNotches          (me; status: Status from ShapeExtend) returns Boolean;
+    	---C++: inline
+    StatusRemovedSegment   (me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Querying the status of perfomed API fixing procedures
+    	--          Each Status..() methods gives information about the last call to
+    	--          the corresponding Fix..() method of API level:
+    	--          OK  : no problems detected; nothing done
+    	--          DONE: some problem(s) was(were) detected and successfully fixed
+    	--          FAIL: some problem(s) cannot be fixed
+    	---Level  : Public (API)
+    LastFixStatus (me; status: Status from ShapeExtend) returns Boolean;		 
+    	---C++: inline
+    	---Purpose: Queries the status of last call to methods Fix... of 
+    	--          advanced level
+    	--          For details see corresponding methods; universal statuses are:
+    	--          OK  : problem not detected; nothing done
+    	--          DONE: problem was detected and successfully fixed
+    	--          FAIL: problem cannot be fixed
+    	---Level  : Advanced
+	
+    FixEdgeTool (me) returns Edge from ShapeFix;
+    	---Purpose: Returns tool for fixing wires.
+	---C++: inline
+
+    UpdateWire (me: mutable) is protected;
+    	---Purpose: Updates WireData if some replacements are made
+	--          This is necessary for wires (unlike other shape types)
+	--          since one edge can present in wire several times
+	
+fields
+
+    myFixEdge : Edge from ShapeFix is protected;
+    myAnalyzer: Wire from ShapeAnalysis is protected; -- working analyzer
+
+    myGeomMode:        Boolean is protected; -- may change geometry
+    myTopoMode:        Boolean is protected; -- may change topology
+    myClosedMode:      Boolean is protected; -- should wire be closed?
+    myPreference2d:    Boolean is protected; -- is 2d representation of edge preferred
+    myFixGapsByRanges: Boolean is protected; -- try to fix gaps by changing curves ranges
+
+    myFixReversed2dMode:                    Integer is protected;
+    myFixRemovePCurveMode:                  Integer is protected;
+    myFixAddPCurveMode:                     Integer is protected;
+    myFixRemoveCurve3dMode:                 Integer is protected;
+    myFixAddCurve3dMode:                    Integer is protected;
+    myFixSeamMode:                          Integer is protected;
+    myFixShiftedMode:                       Integer is protected;
+    myFixSameParameterMode:                 Integer is protected;
+    myFixVertexToleranceMode:               Integer is protected;
+    myFixNotchedEdgesMode:                  Integer is protected;
+    myFixSelfIntersectingEdgeMode:          Integer is protected;
+    myFixIntersectingEdgesMode:             Integer is protected;
+    myFixNonAdjacentIntersectingEdgesMode:  Integer is protected;
+
+    myRemoveLoopMode:                       Integer is protected;
+      -- -1 - old variant (default)
+      --  0 - try remove both 2d loop and 3d loop
+      --  1 - try insert new vertex
+
+    myFixReorderMode:          Integer is protected;
+    myFixSmallMode:            Integer is protected;
+    myFixConnectedMode:        Integer is protected;
+    myFixEdgeCurvesMode:       Integer is protected;
+    myFixDegeneratedMode:      Integer is protected;
+    myFixSelfIntersectionMode: Integer is protected;
+    myFixLackingMode:          Integer is protected;
+    myFixGaps3dMode:           Integer is protected;
+    myFixGaps2dMode:           Integer is protected;
+  
+    myLastFixStatus:          Integer is protected; -- status of last fix of advanced level
+
+    -- statuses corresponding to API methods, queried by Status..(status) methods
+    myStatusReorder:          Integer is protected;    
+    myStatusSmall:            Integer is protected;    
+    myStatusConnected:        Integer is protected;    
+    myStatusEdgeCurves:       Integer is protected;    
+    myStatusDegenerated:      Integer is protected;    
+    myStatusClosed:           Integer is protected;    
+    myStatusSelfIntersection: Integer is protected; 
+    myStatusLacking:          Integer is protected;
+    myStatusGaps3d:           Integer is protected;
+    myStatusGaps2d:           Integer is protected;
+    myStatusRemovedSegment:   Boolean is protected;
+    myStatusNotches:          Integer is protected;
+end Wire;

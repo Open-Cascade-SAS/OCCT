@@ -1,0 +1,95 @@
+-- File:	Geom2d_Direction.cdl
+-- Created:	Wed Mar 24 18:02:07 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+class Direction  from Geom2d inherits Vector from Geom2d 
+
+        --- Purpose :
+        --  The class Direction specifies a vector that is never null.
+        --  It is a unit vector.
+
+
+uses  Dir2d    from gp,
+      Pnt2d    from gp, 
+      Trsf2d   from gp,
+      Vec2d    from gp,
+      Geometry from Geom2d
+
+raises ConstructionError from Standard
+
+is
+
+
+  Create (X, Y :Real)  returns mutable Direction
+        --- Purpose : Creates a unit vector with it 2 cartesian coordinates.
+     raises ConstructionError;
+        --- Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y) <= Resolution from gp.
+
+  Create (V : Dir2d) returns mutable Direction;
+        --- Purpose : Creates a persistent copy of <me>.
+
+
+  
+  SetCoord (me : mutable; X, Y : Real)
+        --- Purpose : Assigns the coordinates X and Y to this unit vector,
+    	-- then normalizes it.
+    	-- Exceptions
+    	-- Standard_ConstructionError if Sqrt(X*X +
+    	-- Y*Y) is less than or equal to gp::Resolution().
+     raises ConstructionError;
+     
+
+  SetDir2d (me : mutable; V : Dir2d);
+        --- Purpose : Converts the gp_Dir2d unit vector V into this unit vector.
+
+
+  SetX (me : mutable; X : Real)
+        --- Purpose : 
+    	-- Assigns a value to the X coordinate of this unit vector, then normalizes it.
+    	-- Exceptions
+    	-- Standard_ConstructionError if the value assigned
+    	-- causes the magnitude of the vector to become less
+    	-- than or equal to gp::Resolution().
+     raises ConstructionError;
+    
+
+  SetY (me : mutable; Y : Real)
+        --- Purpose : Assigns a value to the Y coordinate of this unit vector, then normalizes it.
+    	-- Exceptions
+    	-- Standard_ConstructionError if the value assigned
+    	-- causes the magnitude of the vector to become less
+    	-- than or equal to gp::Resolution().
+     raises ConstructionError;
+       
+
+  Dir2d (me) returns Dir2d;
+        --- Purpose : Converts this unit vector into a gp_Dir2d unit vector.
+      
+
+  Magnitude (me)   returns Real;
+        --- Purpose : returns 1.0
+
+
+  SquareMagnitude (me)   returns Real;
+        --- Purpose : returns 1.0
+
+
+  Crossed (me; Other : Vector)  returns Real;
+        --- Purpose : Computes the cross product between <me> and <Other>.
+        ---C++: alias operator ^
+     
+
+  Transform (me : mutable; T : Trsf2d);
+
+    	---Purpose: Applies the transformation T to this unit vector, then normalizes it.
+
+
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this unit vector.     
+end;
+

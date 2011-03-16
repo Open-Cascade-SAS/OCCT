@@ -1,0 +1,13 @@
+-- File:	Prs3d_CompositeAspect.cdl
+-- Created:	Thu Feb 15 09:32:13 2000
+-- Author:	Gerard GRAS
+---Copyright:	 Matra Datavision 2000
+
+---Purpose All composite Prs3d_xxxAspect must inherits from this class
+
+deferred class CompositeAspect from Prs3d inherits TShared from MMgt 
+
+is
+
+end CompositeAspect from Prs3d;
+

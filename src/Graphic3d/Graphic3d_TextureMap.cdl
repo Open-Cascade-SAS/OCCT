@@ -1,0 +1,73 @@
+-- File:	Graphic3d_TextureMap.cdl
+-- Created:	Mon Jul 28 10:30:00 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+---Copyright:	 Matra Datavision 1997
+
+deferred  class  TextureMap  from  Graphic3d  
+    
+inherits  TextureRoot  from  Graphic3d 
+    ---Purpose:  This is an abstract class for managing texture applyable on polygons.
+
+uses 
+    TypeOfTexture  from  Graphic3d, 
+    StructureManager    from  Graphic3d 
+
+
+is  
+    Initialize(SM        :  StructureManager  from  Graphic3d; 
+    	       Path      :  CString  from  Standard;
+    	       FileName  :  CString  from  Standard; 
+    	       Type      :  TypeOfTexture  from  Graphic3d);  
+	       
+    EnableSmooth(me  :  mutable);
+    ---Level: public
+    ---Purpose:
+    -- enable texture smoothing
+
+    IsSmoothed(me) returns Boolean from Standard;
+    ---Level: public
+    ---Purpose:
+    -- Returns TRUE if the texture is smoothed.
+ 
+    DisableSmooth(me  :  mutable);
+    ---Level: public
+    ---Purpose:
+    -- disable texture smoothing
+
+    EnableModulate(me  :  mutable);
+    ---Level: public
+    ---Purpose:
+    -- enable texture modulate mode.
+    -- the image is modulate with the shading of the surface.
+
+    DisableModulate(me  :  mutable);
+    ---Level: public
+    ---Purpose:
+    -- disable texture modulate mode.
+    -- the image is directly decal on the surface.
+
+    IsModulate(me) returns Boolean from Standard;
+    ---Level: public
+    ---Purpose:
+    -- Returns TRUE if the texture is modulate.
+
+    EnableRepeat(me  :  mutable); 
+    ---Level: public
+    ---Purpose:
+    -- use this methods if you want to enable
+    -- texture repetition on your objects.
+
+    DisableRepeat(me  :  mutable); 
+    ---Level: public
+    ---Purpose:
+    -- use this methods if you want to disable
+    -- texture repetition on your objects.
+
+    IsRepeat(me) returns Boolean from Standard;
+    ---Level: public
+    ---Purpose:
+    -- Returns TRUE if the texture repeat is enable.
+
+end  TextureMap  from  Graphic3d; 
+

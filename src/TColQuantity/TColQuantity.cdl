@@ -1,0 +1,25 @@
+-- File:	TColQuantity.cdl
+-- Created:	Thu Mar  3 11:02:39 1994
+-- Author:	Jean Louis FRENKEL
+--		<jlf@pernox>
+---Copyright:	 Matra Datavision 1994
+
+
+package TColQuantity 
+
+---Purpose: the  classes of this package should be used
+--          when exporting arrays of real representing lengths, 
+--          for having benefit of the unit conversion.
+uses
+
+    TCollection,
+    Quantity
+    
+is
+    class Array1OfLength instantiates Array1 from TCollection (Length from Quantity);
+    class Array2OfLength instantiates Array2 from TCollection (Length from Quantity);
+    class HArray1OfLength        instantiates 
+    	HArray1 from TCollection  (Length from Quantity, Array1OfLength from TColQuantity); 
+    class HArray2OfLength        instantiates 
+    	HArray2 from TCollection  (Length from Quantity, Array2OfLength from TColQuantity); 
+end TColQuantity;

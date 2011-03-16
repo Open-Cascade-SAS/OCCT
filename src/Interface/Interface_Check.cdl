@@ -1,0 +1,256 @@
+-- File:	Check.cdl
+-- Created:	Mon Feb  3 15:20:02 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Check  from Interface inherits TShared
+
+    ---Purpose : Defines a Check, as a list of Fail or Warning Messages under
+    --           a literal form, which can be empty. A Check can also bring an
+    --           Entity, which is the Entity to which the messages apply
+    --           (this Entity may be any Transient Object).
+    --           
+    --           Messages can be stored in two forms : the definitive form
+    --           (the only one by default), and another form, the original
+    --           form, which can be different if it contains values to be
+    --           inserted (integers, reals, strings)
+    --           The original form can be more suitable for some operations
+    --           such as counting messages
+
+uses Integer, Boolean, Transient from Standard,
+     CString, HAsciiString from TCollection,
+     HSequenceOfHAsciiString from TColStd,
+     Msg from Message, 
+     Messenger from Message,
+     CheckStatus from Interface
+
+raises OutOfRange
+
+is
+
+    Create returns Check;
+    ---Purpose : Allows definition of a Sequence. Used also for Global Check
+    --           of an InterfaceModel (which stores global messages for file)
+
+    Create (anentity : Transient) returns Check;
+    ---Purpose : Defines a Check on an Entity
+
+
+    SendFail (me : mutable; amsg : Msg from Message);
+    ---Purpose : New name for AddFail (Msg)
+
+    AddFail (me : mutable; amess : HAsciiString from TCollection)  is static;
+    ---Purpose : Records a new Fail message
+
+    AddFail (me : mutable; amess,orig : HAsciiString from TCollection)  is static;
+    ---Purpose : Records a new Fail message under two forms : final,original
+
+    AddFail (me : mutable; amess : CString; orig : CString = "")  is static;
+    ---Purpose : Records a new Fail message given as "error text" directly
+    --           If <orig> is given, a distinct original form is recorded
+    --           else (D), the original form equates <amess>
+
+    AddFail (me : mutable; amsg : Msg from Message);
+    ---Purpose : Records a new Fail from the definition of a Msg (Original+Value)
+
+    HasFailed (me) returns Boolean  is static;
+    ---Purpose : Returns True if Check brings at least one Fail Message
+
+    NbFails (me) returns Integer  is static;
+    ---Purpose : Returns count of recorded Fails
+
+    Fail (me; num : Integer; final : Boolean = Standard_True)
+    	returns HAsciiString from TCollection
+    ---Purpose : Returns Fail Message as a String
+    --           Final form by default, Original form if <final> is False
+    	raises OutOfRange  is static;
+    --           Error if <num> is out of range
+    ---C++ : return const &
+
+    CFail (me; num : Integer; final : Boolean = Standard_True) returns CString
+    ---Purpose : Same as above, but returns a CString (to be printed ...)
+    --           Final form by default, Original form if <final> is False
+    	raises OutOfRange  is static;
+
+    Fails (me; final : Boolean = Standard_True) returns HSequenceOfHAsciiString
+    	is static;
+    ---Purpose : Returns the list of Fails, for a frontal-engine logic
+    --           Final forms by default, Original forms if <final> is False
+    --           Can be empty
+
+
+    SendWarning (me : mutable; amsg : Msg from Message);
+    ---Purpose : New name for AddWarning
+
+    AddWarning (me : mutable; amess : HAsciiString from TCollection)  is static;
+    ---Purpose : Records a new Warning message
+
+    AddWarning (me : mutable; amess,orig : HAsciiString from TCollection)  is static;
+    ---Purpose : Records a new Warning message under two forms : final,original
+
+    AddWarning (me : mutable; amess : CString; orig : CString = "")  is static;
+    ---Purpose : Records a Warning message given as "warning message" directly
+    --           If <orig> is given, a distinct original form is recorded
+    --           else (D), the original form equates <amess>
+
+    AddWarning (me : mutable; amsg : Msg from Message);
+    ---Purpose : Records a new Warning from the definition of a Msg (Original+Value)
+
+    HasWarnings (me) returns Boolean  is static;
+    ---Purpose : Returns True if Check brings at least one Warning Message
+
+    NbWarnings (me) returns Integer  is static;
+    ---Purpose : Returns count of recorded Warning messages
+
+    Warning (me; num : Integer; final : Boolean = Standard_True)
+    	returns HAsciiString from TCollection
+    ---Purpose : Returns Warning message as a String
+    --           Final form by default, Original form if <final> is False
+    	raises OutOfRange is static;
+    --           Error if <num> is out of range
+    ---C++ : return const &
+
+    CWarning (me; num : Integer; final : Boolean = Standard_True) returns CString
+    	raises OutOfRange is static;
+    ---Purpose : Same as above, but returns a CString (to be printed ...)
+    --           Final form by default, Original form if <final> is False
+
+    Warnings (me; final : Boolean = Standard_True) returns HSequenceOfHAsciiString
+    	is static;
+    ---Purpose : Returns the list of Warnings, for a frontal-engine logic
+    --           Final forms by default, Original forms if <final> is False
+    --           Can be empty
+
+    SendMsg (me : mutable; amsg : Msg from Message);
+    ---Purpose : Records an information message
+    --           This does not change the status of the Check
+
+    NbInfoMsgs (me) returns Integer;
+    ---Purpose : Returns the count of recorded information messages
+
+    InfoMsg (me; num : Integer; final : Boolean = Standard_True)
+    	returns HAsciiString from TCollection;
+    ---Purpose : Returns information message as a String
+    ---C++: return const &
+
+    CInfoMsg (me; num : Integer; final : Boolean = Standard_True) returns CString
+    	raises OutOfRange is static;
+    ---Purpose : Same as above, but returns a CString (to be printed ...)
+    --           Final form by default, Original form if <final> is False
+
+    InfoMsgs(me; final : Boolean = Standard_True) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the list of Info Msg, for a frontal-engine logic
+    --           Final forms by default, Original forms if <final> is False
+    --           Can be empty
+
+
+    Status (me) returns CheckStatus is static;
+    ---Purpose : Returns the Check Status : OK, Warning or Fail
+
+    Complies (me; status : CheckStatus) returns Boolean  is static;
+    ---Purpose : Tells if Check Status complies with a given one
+    --           (i.e. also status for query)
+
+    Complies (me; mess : HAsciiString; incl : Integer; status : CheckStatus)
+    	returns Boolean   is static;
+    ---Purpose : Tells if a message is brought by a Check, as follows :
+    --           <incl> = 0 : <mess> exactly matches one of the messages
+    --           <incl> < 0 : <mess> is contained by one of the messages
+    --           <incl> > 0 : <mess> contains one of the messages
+    --           For <status> : for CheckWarning and CheckFail, considers only
+    --             resp. Warning or Check messages. for CheckAny, considers all
+    --             other values are ignored (answer will be false)
+
+    HasEntity (me) returns Boolean  is static;
+    ---Purpose : Returns True if a Check is devoted to an entity; else, it is
+    --           global (for InterfaceModel's storing of global error messages)
+
+    Entity (me) returns any Transient  is static;
+    ---Purpose : Returns the entity on which the Check has been defined
+    ---C++ : return const &
+
+
+    Clear (me : mutable)  is static;
+    ---Purpose : Clears a check, in order to receive informations from transfer
+    --           (Messages and Entity)
+
+    ClearFails (me : mutable)  is static;
+    ---Purpose : Clears the Fail Messages (for instance to keep only Warnings)
+
+    ClearWarnings (me : mutable)  is static;
+    ---Purpose : Clears the Warning Messages (for instance to keep only Fails)
+
+    ClearInfoMsgs (me : mutable)  is static;
+    ---Purpose : Clears the Info Messages
+
+    Remove (me : mutable; mess : HAsciiString;
+    	    incl : Integer; status : CheckStatus)
+    	returns Boolean  is static;
+    ---Purpose : Removes the messages which comply with <mess>, as follows :
+    --           <incl> = 0 : <mess> exactly matches one of the messages
+    --           <incl> < 0 : <mess> is contained by one of the messages
+    --           <incl> > 0 : <mess> contains one of the messages
+    --           For <status> : for CheckWarning and CheckFail, considers only
+    --             resp. Warning or Check messages. for CheckAny, considers all
+    --             other values are ignored (nothing is done)
+    --           Returns True if at least one message has been removed, False else
+
+    Mend   (me : mutable; pref : CString; num : Integer = 0)
+    	returns Boolean  is static;
+    ---Purpose : Mends messages, according <pref> and <num>
+    --           According to <num>, works on the whole list of Fails if = 0(D)
+    --             or only one Fail message, given its rank
+    --           If <pref> is empty, converts Fail(s) to Warning(s)
+    --           Else, does the conversion but prefixes the new Warning(s) but
+    --           <pref> followed by a semi-column
+    --           Some reserved values of <pref> are :
+    --           "FM" : standard prefix "Mended" (can be translated)
+    --           "CF" : clears Fail(s)
+    --           "CW" : clears Warning(s) : here, <num> refers to Warning list
+    --           "CA" : clears all messages : here, <num> is ignored
+
+    SetEntity (me : mutable; anentity : any Transient)  is static;
+    ---Purpose : Receives an entity result of a Transfer
+
+    GetEntity (me : mutable; anentity : any Transient)  is static;
+    ---Purpose : same as SetEntity (old form kept for compatibility)
+    -- Warning : Does nothing if Entity field is not yet clear
+
+    GetMessages (me : mutable; other : Check)  is static;
+    ---Purpose : Copies messages stored in another Check, cumulating
+    --           Does not regard other's Entity. Used to cumulate messages
+
+    GetAsWarning (me : mutable; other : Check; failsonly : Boolean)  is static;
+    ---Purpose : Copies messages converted into Warning messages
+    --           If failsonly is true, only Fails are taken, and converted
+    --           else, Warnings are taken too. Does not regard Entity
+    --           Used to keep Fail messages as Warning, after a recovery
+
+
+    Print (me; S: Messenger from Message; level : Integer; final : Integer = 1);
+    ---Purpose : Prints the messages of the check to an Messenger
+    --           <level> = 1 : only fails
+    --           <level> = 2 : fails and warnings
+    --           <level> = 3 : all (fails, warnings, info msg)
+    --           <final> : if positive (D) prints final values of messages
+    --           if negative, prints originals
+    --           if null, prints both forms
+
+    Trace (me; level : Integer = -1; final : Integer = 1);
+    ---Purpose : Prints the messages of the check to the default trace file
+    --           By default, according to the default standard level
+    --           Else, according level (see method Print)
+
+fields
+
+    thefails : HSequenceOfHAsciiString;
+    thefailo : HSequenceOfHAsciiString;
+    thewarns : HSequenceOfHAsciiString;
+    thewarno : HSequenceOfHAsciiString;
+    theinfos : HSequenceOfHAsciiString;
+    theinfoo : HSequenceOfHAsciiString;
+    theent   : Transient;  -- the checked entity
+
+end Check;

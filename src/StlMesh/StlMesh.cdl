@@ -1,0 +1,65 @@
+-- File:	StlMesh.cdl
+-- Created:	Tues Sep 21 09:31:42 1995
+-- Author:	Philippe GIRODENGO
+---Copyright:   Matra Datavision 1995
+
+
+package StlMesh 
+
+	---Purpose: Implements a  basic  mesh data-structure  for  the
+	--          needs of the application fast prototyping.
+	--          
+
+uses  
+
+    MMgt,  
+    TCollection,  
+    TColStd,  
+    gp,  
+    TColgp
+
+is
+
+    class Mesh;
+    	---Purpose: Mesh definition.  The mesh contains one or several
+    	--          domains. Each  mesh   domain  contains a  set   of
+    	--          triangles. Each domain can have its own deflection
+    	--          value.
+
+
+    class MeshExplorer;
+    	---Purpose: Provides   facilities to explore  the triangles of
+    	--          each mesh domain.
+    
+
+    class MeshDomain;
+    	---Purpose: Set of triangles defined with three vertices and a
+    	--          given orientation. Internal class used to classify
+    	--          the triangles of each domain.
+
+
+    class MeshTriangle;
+        ---Purpose: triangle defined with three vertices and a given 
+        --          orientation
+
+    
+
+    class SequenceOfMeshDomain  instantiates
+          Sequence from TCollection (MeshDomain from StlMesh);
+
+
+
+    class SequenceOfMeshTriangle  instantiates
+          Sequence from TCollection (MeshTriangle from StlMesh);
+    
+    
+    class SequenceOfMesh instantiates
+    	  Sequence from TCollection (Mesh from StlMesh);
+	  ---Purpose: Sequence of meshes
+    
+    Merge (mesh1, mesh2 : in Mesh) returns Mesh;
+    ---Purpose: Make a merge of two Mesh and returns a new Mesh.
+    --          Very useful if you want to merge partMesh and CheckSurfaceMesh
+    --          for example
+
+end StlMesh;

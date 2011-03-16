@@ -1,0 +1,313 @@
+--
+-- File:    Visual3d_Layer.cdl
+-- Created: Mardi 1 decembre 1998
+-- Author:  CAL
+--
+---Copyright:   MatraDatavision 1998
+--
+
+class Layer from Visual3d inherits TShared
+
+    ---Version:
+
+    ---Purpose: This class allows to manage 2d graphics.
+    ---Keywords:
+    ---Warning:
+    ---References:
+
+uses
+
+    Color                   from Quantity,
+    PlaneAngle              from Quantity,
+
+    CLayer2d                from Aspect,
+    TypeOfConstraint        from Aspect,
+    TypeOfLayer             from Aspect,
+    TypeOfLine              from Aspect,
+    TypeOfDisplayText       from Aspect,
+
+    GraphicDriver           from Graphic3d,
+    TextPath                from Graphic3d,
+    HorizontalTextAlignment from Graphic3d,
+    VerticalTextAlignment   from Graphic3d,
+
+    ViewManager             from Visual3d,
+    LayerItem               from Visual3d,
+    NListOfLayerItem        from Visual3d,
+    
+        FontAspect          from OSD
+raises
+    LayerDefinitionError    from Visual3d
+
+is
+    -------------------------
+    -- Category: Constructors
+    -------------------------
+
+    Create (AViewer : ViewManager from Visual3d;
+        AType   : TypeOfLayer from Aspect = Aspect_TOL_OVERLAY;
+        AFlag   : Boolean from Standard = Standard_False)
+        returns mutable Layer from Visual3d;
+    ---Level: Public
+    ---Purpose: Creates a layer with the type <Atype>.
+    --      if <AFlag> == Standard_True then the layer is
+    --      "size dependent".
+    --      The mapping of the layer is dependent of each
+    --      window's size.
+    --      if <AFlag> == Standard_False then the mapping of the
+    --      layer is dependent of the highest window and the largest
+    --      window of all the views of the viewer <AViewer>.
+    --      When the viewer <AViewer> have only one view, the
+    --      result will be the same with <AFlag> == Standard_False
+    --      or <AFlag> == Standard_True.
+    ---Category: Constructors
+
+    ------------------------
+    -- Category: Destructors
+    ------------------------
+
+    Destroy (me : mutable);
+    ---Level: Public
+    ---Purpose: Suppress the layer <me>.
+    ---Category: Destructors
+    ---C++: alias ~
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    Begin (me   : mutable)
+    ---Level: Public
+    ---Purpose: Begins the definition of the layer <me>
+    --  Warning: No default attributes
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is already open.
+    ---Category: Methods to modify the class definition
+
+    End (me     : mutable)
+    ---Level: Public
+    ---Purpose: Finishs the definition of the layer <me>.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Methods to modify the class definition
+
+    Clear (me   : mutable)
+    ---Level: Public
+    ---Purpose: Clear all graphics managed by the layer <me>.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is already open.
+    ---Category: Methods to modify the class definition
+
+    ---------------------------------------
+    -- Category: Graphic definition methods
+    ---------------------------------------
+
+    BeginPolyline (me   : mutable)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a polyline with AddVertex().
+    raises LayerDefinitionError from Visual3d;
+    -- if a Begin... primitive is already open,
+    -- or   Layer is not open.
+    ---Category: Graphic definition methods
+
+    BeginPolygon (me    : mutable)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a polygon with AddEdge().
+    raises LayerDefinitionError from Visual3d;
+    -- if a Begin... primitive is already open,
+    -- or   Layer is not open.
+    ---Category: Graphic definition methods
+
+    AddVertex (me   : mutable;
+        X, Y    : Real from Standard;
+        AFlag   : Boolean from Standard = Standard_True)
+    ---Level: Public
+    ---Purpose: Puts <X, Y> as a new point in the current primitive.
+    --      If <AFlag> then it is a draw between last point and
+    --      this point else it is a move between last point and
+    --      this point.
+    raises LayerDefinitionError from Visual3d;
+    -- if a Begin... primitive is not open,
+    -- or   Layer is not open.
+    ---Category: Graphic definition methods
+
+    ClosePrimitive (me  : mutable)
+    ---Level: Public
+    ---Purpose: After this call, <me> stops the reception of
+    --      a definition of a Begin... primitive.
+    raises LayerDefinitionError from Visual3d;
+    -- if a Begin... primitive is not open,
+    -- or   Layer is not open.
+    ---Category: Graphic definition methods
+
+    DrawRectangle (me   : mutable;
+        X, Y        : Real from Standard;
+        Width, Height   : Real from Standard)
+    ---Level: Public
+    ---Purpose: Draws the rectangle at position <X,Y>.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Graphic definition methods
+
+    DrawText (me       : mutable;
+              AText   : CString from Standard;
+              X, Y    : Real from Standard;
+              AHeight : Real from Standard)
+    ---Level: Public
+    ---Purpose: Draws the string <AText> at position <X,Y>.
+    --      The attributes are given with respect to the plane of
+    --      projection.
+    --      <AHeight>   : Height of text.
+    --            (Relative to the Normalized Projection
+    --          Coordinates (NPC) Space).
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Graphic definition methods
+
+    TextSize (me;
+              AText    : CString from Standard;
+              AHeight  : Real from Standard;
+              AWidth   : in out Real from Standard;
+              AnAscent : in out Real from Standard;
+              ADescent : in out Real from Standard )
+    ---Level: Public
+    ---Purpose: Get the size of text.
+    --      The attributes are given with respect to the plane of
+    --      projection.
+    --      <AHeight>   : Height of text.
+    --            (Relative to the Normalized Projection
+    --          Coordinates (NPC) Space).
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Graphic definition methods
+
+    -----------------------------------------------------
+    -- Category: Methods to manage the graphics attributs
+    -----------------------------------------------------
+
+    SetColor (me      : mutable;
+              AColor  : Color from Quantity)
+    ---Level: Public
+    ---Purpose: Modifies the current color.
+    --  Warning: No default color
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Methods to manage the graphics attributs
+
+    SetTransparency (me              : mutable;
+                     ATransparency   : ShortReal from Standard)
+    ---Level: Public
+    ---Purpose: Modifies the current transparency.
+    --  Warning: No default transparency
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Methods to manage the graphics attributs
+
+    UnsetTransparency (me   : mutable)
+    ---Level: Public
+    ---Purpose: Unsets the transparency.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Methods to manage the graphics attributs
+
+    SetLineAttributes (me      : mutable;
+                       AType   : TypeOfLine from Aspect;
+                       AWidth  : Real from Standard)
+    ---Level: Public
+    ---Purpose: Modifies the current lines attributes.
+    --  Warning: No default attributes
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    ---Category: Methods to manage the graphics attributs
+
+    SetTextAttributes (me     : mutable;
+                       AFont   : CString from Standard;
+                       AType   : TypeOfDisplayText from Aspect;
+                       AColor  : Color from Quantity)
+    ---Level: Public
+    ---Purpose: Modifies the current texts attributes.
+    --  Warning: No default attributes
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not open.
+    
+    -------------------------------------------------------
+    -- Category: Methods to manage the graphics coordinates
+    -------------------------------------------------------
+
+    SetOrtho (me      : mutable;
+              Left    : Real from Standard;
+              Right   : Real from Standard;
+              Bottom  : Real from Standard;
+              Top     : Real from Standard;
+              Attach  : TypeOfConstraint from Aspect = Aspect_TOC_BOTTOM_LEFT)
+    ---Level: Public
+    ---Purpose: Modifies the current coordinates system of the layer <me>.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not opened.
+    ---Category: Methods to manage the graphics coordinates
+
+    SetViewport (me      : mutable;
+                 Width   : Integer from Standard;
+                 Height  : Integer from Standard)
+    ---Level: Public
+    ---Purpose: Modifies the current viewport of the layer <me>.
+    raises LayerDefinitionError from Visual3d;
+    -- if   Layer is not opened.
+    ---Category: Methods to manage the graphics coordinates
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    CLayer (me)
+        returns CLayer2d from Aspect;
+    ---Level: Public
+    ---Purpose: Returns the associated C structure.
+    ---Category: Inquire methods
+
+    Type (me)
+        returns TypeOfLayer from Aspect;
+    ---Level: Public
+    ---Purpose: Returns the type.
+    ---Category: Inquire methods
+
+        AddLayerItem( me   : mutable;
+                      Item : LayerItem from Visual3d );
+        
+    RemoveLayerItem( me   : mutable;
+                     Item : LayerItem from Visual3d );
+        
+    RemoveAllLayerItems( me: mutable );
+    
+    GetLayerItemList( me )
+            returns  NListOfLayerItem from Visual3d;
+    ---C++: return const &
+
+        RenderLayerItems(me);
+    --- Redraw all loaded layer items
+fields
+
+--
+-- Classe   :   Visual3d_Layer
+--
+-- Purpose  :   Declaration of the variables specific to layers.
+--
+-- Reminder :   A layer is defined by:
+--          - a ViewManager
+--
+
+    -- the graphic driver used
+    MyGraphicDriver     :   GraphicDriver from Graphic3d;
+
+    -- the associated C structure
+    MyCLayer        :   CLayer2d from Aspect;
+
+    -- the ViewManager associated with the view
+    MyPtrViewManager    :   Address from Standard;
+    
+    -- the List of Layer Items
+        MyListOfLayerItems      :       NListOfLayerItem from Visual3d;
+
+end Layer from Visual3d;

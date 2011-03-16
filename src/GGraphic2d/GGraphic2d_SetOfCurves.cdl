@@ -1,0 +1,102 @@
+-- File:	GGraphic2d_SetOfCurves.cdl
+-- Created:	Thu September 21 16:36:51 1995
+-- Author:	Gerard GRAS
+--		<gg@azimox>	 
+-- Modified: TCL_G002 adds new draw methods DrawElement(...) and DrawVertex(...)
+
+---Copyright:	 Matra Datavision 1993
+
+class SetOfCurves from GGraphic2d inherits Line from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive SetOfCurves
+
+	---Keywords: Primitive, Curve
+        ---Warning: This primitive must be use as possible for performance
+        --         improvment but is drawn with a global line attributes 
+        --         for all the set. 
+        --         NOTE: than the method PickedIndex() permits to known 
+        --              the last picked curve in the set. 
+	---References:
+
+uses
+	Drawer		from Graphic2d,
+	GraphicObject	from Graphic2d,
+	SequenceOfCurve from TColGeom2d,
+	Length		from Quantity,
+	Curve           from Geom2d,
+	SequenceOfShortReal from TShort,
+      FStream from Aspect 
+
+raises
+	CurveDefinitionError	from GGraphic2d,
+	OutOfRange from Standard
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d)
+	returns mutable SetOfCurves from GGraphic2d;
+	---Level: Public
+	---Purpose: Creates an empty set of curves in the graphic 
+	--         object <aGraphicObject>.
+	---Category: Constructors
+
+	Add(me : mutable; aCurve: Curve from Geom2d);
+	---Level: Public
+	---Purpose: Add a curve in the set 
+	---Category: Update method
+
+	Length(me) returns Integer from Standard;
+	---Level: Public
+	---Purpose: Returns the number of curves in the set.
+	---Category: Inquiry method
+
+	Values(me; aRank: Integer from Standard) returns Curve from Geom2d
+	---Level: Public
+	---Purpose: Returns the curve of rank <aRank> from the set.
+	---Trigger: Raises OutOfRange if <aRank> is <1 or >Length()
+	raises OutOfRange from Standard;
+	---Category: Inquiry method
+
+	--------------------------
+	-- Category: Draw and Pick
+	--------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Internal
+	---Purpose: Draws the set of curves <me>.
+
+	DrawElement( me : mutable; aDrawer: Drawer from Graphic2d;
+                 anIndex: Integer from Standard)
+        is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws element <anIndex> of the set <me>.
+
+    DrawVertex( me : mutable; aDrawer: Drawer from Graphic2d;
+                anIndex: Integer from Standard)
+        is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws vertex <anIndex> of the set <me>.
+
+	Pick (me : mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard
+	is static protected;
+	---Level: Internal
+        ---Purpose: Returns Standard_True if one curve of the set <me> 
+	--	    is picked, Standard_False if not.
+	---Warning: The PickIndex() method returns the rank of the picked
+	--	    curve if any.
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual protected;
+
+fields
+	myCurves: SequenceOfCurve from TColGeom2d;
+
+end SetOfCurves from GGraphic2d;

@@ -1,0 +1,44 @@
+-- File:        PDataStd_BooleanArray.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class BooleanArray from PDataStd inherits Attribute from PDF
+
+uses 
+
+    HArray1OfInteger from PColStd
+
+is
+
+    Create 
+    returns mutable BooleanArray from PDataStd;
+
+    SetLower (me : mutable;
+    	      lower : Integer from Standard);
+	      
+    SetUpper (me : mutable;
+    	      upper : Integer from Standard);
+
+    Lower (me) 
+    returns Integer from Standard;      
+
+    Upper (me) 
+    returns Integer from Standard;   
+
+    Set (me : mutable;
+    	 values : HArray1OfInteger from PColStd);
+	 
+    Get (me)
+    ---C++: return const &
+    returns HArray1OfInteger from PColStd;
+
+fields
+
+    myValues : HArray1OfInteger from PColStd;
+    myLower  : Integer from Standard;
+    myUpper  : Integer from Standard;
+
+
+end BooleanArray;

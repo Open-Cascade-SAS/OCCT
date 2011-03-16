@@ -1,0 +1,226 @@
+-- File:	TDF_Tool.cdl
+--      	------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+class Tool from TDF
+
+	---Purpose: This class provides general services for a data framework.
+
+uses
+
+    Data                from TDF,
+    Label               from TDF,
+    LabelList           from TDF,
+    LabelIntegerMap     from TDF,
+    IDFilter            from TDF,
+    AttributeList       from TDF,
+    AttributeMap        from TDF,
+    AttributeIndexedMap from TDF,
+    AsciiString         from TCollection,
+    ListOfInteger       from TColStd,
+    OStream             from Standard
+
+is
+
+    -- Objects counting ---------------------------------------------------
+
+    NbLabels(myclass;
+    	     aLabel : Label from TDF)
+    	returns Integer from Standard;
+	---Purpose: Returns the number of labels of the tree,
+	-- including <aLabel>. aLabel is also included in this figure.
+    	-- This information is useful in setting the size of an array.
+
+    NbAttributes(myclass;
+    	    	 aLabel : Label from TDF)
+    	returns Integer from Standard;
+	---Purpose: Returns the total number of attributes attached
+    	-- to the labels dependent on the label aLabel.
+    	-- The attributes of aLabel are also included in this figure.
+    	-- This information is useful in setting the size of an array.
+
+    NbAttributes(myclass;
+    	    	 aLabel  : Label from TDF;
+    	    	 aFilter : IDFilter from TDF)
+    	returns Integer from Standard;
+	---Purpose: Returns the number of attributes of the tree,
+	--          selected by a<Filter>, including those of
+	--          <aLabel>.
+
+
+    -- Self Contained Label -----------------------------------------------
+
+    IsSelfContained(myclass;
+    	    	    aLabel  : Label from TDF)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if <aLabel> and its descendants
+	--          reference only attributes or labels attached to
+	--          themselves.
+
+    IsSelfContained(myclass;
+    	    	    aLabel  : Label from TDF;
+    	    	    aFilter : IDFilter from TDF)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if <aLabel> and its descendants
+	--          reference only attributes or labels attached to
+	--          themselves and kept by <aFilter>.
+
+    OutReferers(myclass;
+    	    	theLabel : Label from TDF;
+    	    	theAtts   : in out AttributeMap from TDF);
+	---Purpose: Returns in <theAtts> the attributes having out
+	--          references.
+	--          
+	--          Caution: <theAtts> is not cleared before use!
+
+    OutReferers(myclass;
+    	    	aLabel               : Label    from TDF;
+    	    	aFilterForReferers   : IDFilter from TDF; 
+		aFilterForReferences : IDFilter from TDF;
+    	    	atts                 : in out AttributeMap from TDF);
+	---Purpose: Returns in <atts> the attributes having out
+	--          references and kept by <aFilterForReferers>.
+	--          It considers only the references kept by <aFilterForReferences>.
+	--          Caution: <atts> is not cleared before use!
+
+    OutReferences(myclass;
+    	    	  aLabel : Label from TDF;
+    	    	  atts   : in out AttributeMap from TDF);
+	---Purpose: Returns in <atts> the referenced attributes.
+	--          Caution: <atts> is not cleared before use!
+
+    OutReferences(myclass;
+    	    	  aLabel               : Label    from TDF;
+    	    	  aFilterForReferers   : IDFilter from TDF; 
+		  aFilterForReferences : IDFilter from TDF; 
+    	    	  atts                 : in out AttributeMap from TDF);
+	---Purpose: Returns in <atts> the referenced attributes and kept by <aFilterForReferences>. 
+	--          It considers only the referers kept by <aFilterForReferers>.
+	--          Caution: <atts> is not cleared before use!
+
+
+    -- Label Relocation ---------------------------------------------------
+
+    RelocateLabel(myclass;
+    	    	  aSourceLabel, fromRoot, toRoot : Label from TDF;
+	    	  aTargetLabel : in out Label from TDF;
+		  create : Boolean from Standard = Standard_False);
+	---Purpose: Returns the label having the same sub-entry as
+	--          <aLabel> but located as descendant as <toRoot>
+	--          instead of <fromRoot>.
+	--          
+	--          Exemple :
+	--          
+	--          aLabel = 0:3:24:7:2:7
+	--          fromRoot = 0:3:24
+	--          toRoot = 0:5
+	--          returned label = 0:5:7:2:7
+
+
+    -- Label -> Entry -----------------------------------------------------
+    
+    Entry(myclass;
+    	  aLabel  : Label from TDF;
+    	  anEntry : in out AsciiString from TCollection);
+	---Purpose: Returns the entry for the label aLabel in the form
+-- of the ASCII character string anEntry containing
+-- the tag list for aLabel.
+
+    TagList(myclass;
+    	    aLabel   : Label from TDF;
+	    aTagList : in out ListOfInteger from TColStd);
+	---Purpose: Returns the entry of <aLabel> as list of integers
+	--          in <aTagList>.
+
+    TagList(myclass;
+    	    anEntry  : AsciiString from TCollection;
+	    aTagList : in out ListOfInteger from TColStd);
+	---Purpose: Returns the entry expressed by <anEntry> as list
+	--          of integers in <aTagList>.
+
+    -- Entry -> Label -----------------------------------------------------
+
+
+    Label(myclass;
+    	  aDF     : Data from TDF;
+    	  anEntry : AsciiString from TCollection;
+	  aLabel  : in out Label from TDF;
+    	  create  : Boolean from Standard = Standard_False);
+	---Purpose: Returns the label expressed by <anEntry>; creates
+	--          the label if it does not exist and if <create> is
+	--          true.
+
+    Label(myclass;
+    	  aDF     : Data from TDF;
+    	  anEntry : CString from Standard;
+	  aLabel  : in out Label from TDF;
+    	  create  : Boolean from Standard = Standard_False);
+	---Purpose: Returns the label expressed by <anEntry>; creates
+	--          the label if it does not exist and if <create> is
+	--          true.
+
+    Label(myclass;
+    	  aDF      : Data from TDF;
+    	  aTagList : ListOfInteger from TColStd;
+	  aLabel   : in out Label from TDF;
+    	  create  : Boolean from Standard = Standard_False);
+	---Purpose: Returns the label expressed by <anEntry>; creates
+	--          the label if it does not exist and if <create> is
+	--          true.
+
+
+    -- Label count --------------------------------------------------------
+
+    CountLabels(myclass;
+    	        aLabelList : in out LabelList from TDF;
+	        aLabelMap  : in out LabelIntegerMap from TDF);
+	---Purpose: Adds the labels of <aLabelList> to <aLabelMap> if
+	--          they are unbound, or increases their reference
+	--          counters. At the end of the process, <aLabelList>
+	--          contains only the ADDED labels.
+
+    DeductLabels(myclass;
+    	         aLabelList : in out LabelList from TDF;
+	         aLabelMap  : in out LabelIntegerMap from TDF);
+	---Purpose: Decreases the reference counters of the labels of
+	--          <aLabelList> to <aLabelMap>, and removes labels
+	--          with null counter. At the end of the process,
+	--          <aLabelList> contains only the SUPPRESSED labels.
+
+
+    -- Dump ---------------------------------------------------------------
+
+    DeepDump(myclass;
+    	     anOS : in out OStream from Standard;
+    	     aDF  : Data from TDF);
+	---Purpose: Dumps <aDF> and its labels and their attributes.
+
+    ExtendedDeepDump(myclass;
+    	     	     anOS    : in out OStream from Standard;
+    	     	     aDF     : Data from TDF;
+    	     	     aFilter : IDFilter from TDF);
+	---Purpose: Dumps <aDF> and its labels and their attributes,
+	--          if their IDs are kept by <aFilter>. Dumps also the
+	--          attributes content.
+
+    DeepDump(myclass;
+    	     anOS    : in out OStream from Standard;
+    	     aLabel  : Label from TDF);
+	---Purpose: Dumps <aLabel>, its chilren and their attributes.
+
+    ExtendedDeepDump(myclass;
+    	     	     anOS    : in out OStream from Standard;
+    	     	     aLabel  : Label from TDF;
+    	     	     aFilter : IDFilter from TDF);
+	---Purpose: Dumps <aLabel>, its chilren and their attributes,
+	--          if their IDs are kept by <aFilter>. Dumps also the
+	--          attributes content.
+
+end Tool;

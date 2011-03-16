@@ -1,0 +1,41 @@
+-- File:	ShapeBuild.cdl
+-- Created:	Wed Jun  3 12:41:54 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeBuild 
+
+    ---Purpose: This package provides basic building tools for other packages in ShapeHealing.
+    -- These tools are rather internal for ShapeHealing .
+
+uses
+    gp,
+    Geom,
+    Geom2d,
+    TopAbs,
+    TopLoc,
+    TopoDS,
+    TopTools,
+    BRep,
+    ShapeExtend,
+    BRepTools
+
+is
+
+    class Vertex;
+    	---Purpose: Provides low-level functions used for constructing vertices
+	
+    class Edge;
+    	---Purpose: Provides low-level functions used for rebuilding edge
+	
+    class ReShape;
+    	---Purpose: Rebuilds a shape with substitution of some components
+
+    PlaneXOY returns Plane from Geom;
+    	---Purpose: Returns a Geom_Surface which is the Plane XOY (Z positive)
+    	--          This allows to consider an UV space homologous to a 3D space,
+    	--          with this support surface
+
+end ShapeBuild;

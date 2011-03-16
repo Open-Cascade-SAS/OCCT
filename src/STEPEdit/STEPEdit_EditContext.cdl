@@ -1,0 +1,35 @@
+-- File:	STEPEdit_EditContext.cdl
+-- Created:	Wed Jul 29 13:44:27 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EditContext  from STEPEdit    inherits Editor  from IFSelect
+
+    ---Purpose : EditContext is an Editor fit for
+    --           Product Definition Context (one per Model) , i.e. :
+    --           - ProductDefinition
+    --           - ApplicationProtocolDefinition
+    --           - ProductRelatedProductCategory
+
+uses Transient, AsciiString, HAsciiString, InterfaceModel, EditForm
+
+is
+
+    Create returns EditContext;
+
+    Label (me) returns AsciiString;
+
+    Recognize (me; form : EditForm) returns Boolean;
+
+    StringValue (me; form : EditForm;  num : Integer)
+    	returns HAsciiString from TCollection;
+
+    Apply (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+    Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+end EditContext;

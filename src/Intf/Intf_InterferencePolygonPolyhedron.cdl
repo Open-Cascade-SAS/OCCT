@@ -1,0 +1,173 @@
+-- File:	InterferencePolygonPolyhedron.cdl
+-- Created:	Tue Sep 29 12:00:14 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class InterferencePolygonPolyhedron from Intf
+    (Polygon3d as any;
+     ToolPolygon3d as any;      -- as ToolPolygon(Pnt,Polygon3d,Box)
+     Polyhedron as any;
+     ToolPolyh as any)          -- as ToolPolyhedron(Polyhedron)
+    inherits Interference from Intf
+
+	---Purpose: Computes the  interference between a polygon and a
+	--          Polyhedron.
+
+uses    Pnt               from gp,
+    	Lin               from gp,
+	XYZ               from gp,
+	Array1OfLin       from Intf,
+    	SectionPoint      from Intf,
+    	SeqOfSectionPoint from Intf,
+    	TangentZone       from Intf,
+    	SeqOfTangentZone  from Intf,
+	BoundSortBox      from Bnd
+
+is
+
+-- Interface :
+
+    Create          returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs  an  empty   interference  between Polygon   and
+    --          Polyhedron.
+
+    Create         (thePolyg : in Polygon3d; 
+    	    	    thePolyh : in Polyhedron) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs and computes an interference between the Polygon
+    --          and the Polyhedron.
+
+    Create         (theLin   : in Lin from gp;
+    	    	    thePolyh : in Polyhedron) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs  and computes  an  interference   between    the
+    --          Straight Line and the Polyhedron.
+
+    Create         (theLins  : in Array1OfLin from Intf;
+    	    	    thePolyh : in Polyhedron) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs   and   computes  an  interference   between the
+    --          Straight Lines and the Polyhedron.
+
+    Perform        (me        : in out;
+    	    	    thePolyg  : in Polygon3d; 
+    	    	    thePolyh  : in Polyhedron) 
+    ---Purpose: Computes  an interference    between the   Polygon  and the
+    --          Polyhedron.
+    is static;
+
+    Perform        (me        : in out;
+    	    	    theLin    : in Lin from gp;
+    	    	    thePolyh  : Polyhedron)
+    ---Purpose: Computes an interference between the Straight  Line and the
+    --          Polyhedron.
+    is static;
+
+    Perform        (me        : in out;
+    	    	    theLins   : in Array1OfLin from Intf;
+    	    	    thePolyh  : in Polyhedron)
+    ---Purpose: Computes an interference  between the  Straight Lines  and
+    --          the Polyhedron.
+    is static;
+
+
+
+
+    ---------------   Optimisation : On Passe le Bnd_BoundSortBox
+
+
+    Create         (thePolyg   : in Polygon3d; 
+    	    	    thePolyh   : in Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs and computes an interference between the Polygon
+    --          and the Polyhedron.
+
+    Create         (theLin   : in Lin from gp;
+    	    	    thePolyh : in Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs  and computes  an  interference   between    the
+    --          Straight Line and the Polyhedron.
+
+    Create         (theLins  : in Array1OfLin from Intf;
+    	    	    thePolyh : in Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd) 
+    	            returns InterferencePolygonPolyhedron from Intf;
+    ---Purpose: Constructs   and   computes  an  interference   between the
+    --          Straight Lines and the Polyhedron.
+
+    Perform        (me        : in out;
+    	    	    thePolyg  : in Polygon3d; 
+    	    	    thePolyh  : in Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd) 
+    ---Purpose: Computes  an interference    between the   Polygon  and the
+    --          Polyhedron.
+    is static;
+
+    Perform        (me        : in out;
+    	    	    theLin    : in Lin from gp;
+    	    	    thePolyh  : Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd)
+    ---Purpose: Computes an interference between the Straight  Line and the
+    --          Polyhedron.
+    is static;
+
+    Perform        (me        : in out;
+    	    	    theLins   : in Array1OfLin from Intf;
+    	    	    thePolyh  : in Polyhedron;
+    	    	    theBoundSB : in out BoundSortBox from Bnd)
+    ---Purpose: Computes an interference  between the  Straight Lines  and
+    --          the Polyhedron.
+    is static;
+
+
+
+    Interference   (me       : in out;
+    	    	    thePolyg : in Polygon3d;
+     	    	    thePolyh : in Polyhedron;
+                    theBoundSB : in out BoundSortBox from Bnd)
+    	    	    is static;
+    ---Purpose: Compares the boundings between the segment of <thePolyg> and
+    --          the facets of <thePolyh>.
+
+
+
+
+-- Implementation :
+
+    Interference   (me       : in out;
+    	    	    thePolyg : in Polygon3d;
+     	    	    thePolyh : in Polyhedron)
+    	    	    is static;
+    ---Purpose: Compares the boundings between the segment of <thePolyg> and
+    --          the facets of <thePolyh>.
+
+
+    Intersect      (me       : in out;
+		    BegO     : in Pnt from gp;
+		    EndO     : in Pnt from gp;
+		    Infinite : Boolean from Standard;
+		    TTri     : in Integer from Standard;
+    	    	    thePolyh : in Polyhedron)
+    	    	    is static private;
+    ---Purpose: Computes the intersection between  the segment <BegO><EndO>
+    --          and the triangle <TTri> of <thePolyh>.
+
+    Intersect      (me       : in out;
+		    BegO     : in Pnt from gp;
+		    EndO     : in Pnt from gp;
+		    Infinite : Boolean from Standard;
+		    TTri     : in Integer from Standard;
+    	    	    thePolyh : in Polyhedron;
+    	    	    TriNormal: in XYZ from gp;
+    	    	    TriDp    : in Real from Standard;
+    	    	    dBegTri  : in Real from Standard;
+    	    	    dEndTri  : in Real from Standard)
+    	    	    is static private;
+    ---Purpose: Computes the intersection between  the segment <BegO><EndO>
+    --          and the triangle <TTri> of <thePolyh>.
+
+end InterferencePolygonPolyhedron;

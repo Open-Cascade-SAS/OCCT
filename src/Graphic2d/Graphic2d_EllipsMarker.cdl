@@ -1,0 +1,124 @@
+
+-- File:	Graphic2d_EllipsMarker.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL, Gerard GRAS
+--		<jlf@stylox>
+-- Modified: TCL G002A, 28-11-00, new section "inquire methods"
+
+---Copyright:	 Matra Datavision 1993
+
+class EllipsMarker from Graphic2d inherits VectorialMarker from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive EllipsMarker 
+	--	    Every marker takes a reference point as an argument in
+	--	    its constructor. CircleMarker and EllipsMarker take
+	--	    another point as the center and PolylineMarker takes the
+	--	    first point of its list as its origin.
+	--	    The coordinates of the centre or origin point are offsets
+	--	    with respect to the reference point.
+
+	---Keywords: Primitive, EllipsMarker
+	---Warning:
+	---References:
+
+uses
+
+	Drawer          from Graphic2d,
+	GraphicObject	from Graphic2d,
+	PlaneAngle	from Quantity,
+	Length          from Quantity, 
+	FStream         from Aspect,
+	IFStream	from Aspect
+
+
+raises
+
+	EllipsDefinitionError	from Graphic2d
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		aXPosition, aYPosition: Length from Quantity;
+		X, Y: Length from Quantity;
+		MajorRadius, MinorRadius: Length from Quantity;
+	        anAngle: PlaneAngle from Quantity)
+	returns mutable EllipsMarker from Graphic2d
+	---Level: Public
+	---Purpose: Creates an ellipse marker with a reference point.
+	--	    The reference point is <aXPosition>, <aYPosition>.
+	--	    The center is <X>, <Y>.
+	--	    Angles are measured counterclockwise with 0 radian
+	--	    at 3 o'clock.
+	--  Warning: Raises EllipsDefinitionError if the
+	--          major radius or the minor radius is null.
+	raises EllipsDefinitionError from Graphic2d;
+
+	--------------------------
+	-- Category: Draw and Pick
+	--------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Internal
+	---Purpose: Draws the ellipse <me>.
+
+    DrawElement( me : mutable; aDrawer: Drawer from Graphic2d;
+                 anIndex: Integer from Standard)
+        is redefined protected;
+    	---Level: Internal
+    	---Purpose: Draws element <anIndex> of the ellips marker <me>.
+
+    DrawVertex( me : mutable; aDrawer: Drawer from Graphic2d;
+                anIndex: Integer from Standard)
+        is redefined protected;
+    	---Level: Internal
+    	---Purpose: Draws vertex <anIndex> of the ellips marker <me>.
+
+	Pick (me : mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard is static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the ellipse <me> is picked,
+	--	    Standard_False if not.
+
+    --------------------------------------
+	-- Category: Inquire methods
+	--------------------------------------
+
+    Center( me; X, Y: out Length from Quantity );  
+	---Level: Public
+	---Purpose: returns the coordinates of center
+	
+	MajorRadius( me ) returns Length from Quantity;
+	---Level: Public
+	---Purpose: returns the radius of the ellipse marker
+	
+    MinorRadius( me ) returns Length from Quantity;
+	---Level: Public
+	---Purpose: returns the radius of the ellipse marker
+	
+	Angle( me ) returns PlaneAngle from Quantity;
+	---Level: Public
+	---Purpose: returns the angle of the ellipse
+	
+	----------------------------------------------------------------------
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+	Retrieve(myclass; anIFStream: in out IFStream from Aspect;
+		aGraphicObject: GraphicObject from Graphic2d);
+
+fields
+
+	myX            : ShortReal from Standard;
+	myY            : ShortReal from Standard;
+	myMajorRadius  : ShortReal from Standard;
+	myMinorRadius  : ShortReal from Standard;
+	myAngle        : ShortReal from Standard;
+
+end EllipsMarker from Graphic2d;

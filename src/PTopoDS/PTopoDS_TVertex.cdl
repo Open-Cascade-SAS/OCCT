@@ -1,0 +1,22 @@
+-- File:	TVertex.cdl
+-- Created:	Thu Dec 13 16:39:22 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+
+deferred class TVertex from PTopoDS inherits TShape from PTopoDS
+
+	---Purpose: The vertex is a topological point in space.
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    	---Level: Internal 
+
+end TVertex;
+
+

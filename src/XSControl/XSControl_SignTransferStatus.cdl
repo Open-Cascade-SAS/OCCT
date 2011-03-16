@@ -1,0 +1,63 @@
+-- File:	XSControl_SignTransferStatus.cdl
+-- Created:	Fri Jul 31 09:08:22 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignTransferStatus  from XSControl    inherits Signature  from IFSelect
+
+    ---Purpose : This Signatures gives the Transfer Status of an entity, as
+    --           recorded in a TransferProcess. It can be :
+    --           - Void : not recorded, or recorded as void with no message
+    --             (attributes are not taken into account)
+    --           - Warning : no result, warning message(s), no fail
+    --           - Fail : no result, fail messages (with or without warning)
+    --           - Result.. : result, no message (neither warning nor fail)
+    --             Result.. i.e. Result:TypeName of the result
+    --           - Result../Warning : result, with warning but no fail
+    --           - Result../Fail : result, with fail (.e. bad result)
+    --           - Fail on run : no result yet recorded, no message, but
+    --             an exception occurred while recording the result
+    --             (this should not appear and indicates a programming error)
+
+uses CString, Transient, InterfaceModel,
+     TransientProcess, TransferReader
+
+is
+
+    Create returns mutable SignTransferStatus;
+    ---Purpose : Creates a SignTransferStatus, not initialised
+    --           it gives nothing (empty string)
+
+    Create (TR : TransferReader) returns mutable SignTransferStatus;
+    ---Purpose : Creates a SignTransferStatus, which will work on the current
+    --           TransientProcess brought by the TransferReader (its MapReader)
+
+    SetReader (me : mutable; TR : TransferReader);
+    ---Purpose : Sets a TransferReader to work
+
+    SetMap (me : mutable; TP : TransientProcess);
+    ---Purpose : Sets a precise map to sign entities
+    --           This definition oversedes the creation with a TransferReader
+
+    Map    (me) returns TransientProcess;
+    ---Purpose : Returns the TransientProcess used as precised one
+    --           Returns a Null Handle for a creation from a TransferReader
+    --           without any further setting
+
+    Reader (me) returns TransferReader;
+    ---Purpose : Returns the Reader (if created with a Reader)
+    --           Returns a Null Handle if not created with a Reader
+
+
+    Value (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the Signature for a Transient object, as its transfer
+    --           status
+
+fields
+ 
+    theTR : TransferReader;
+    theTP : TransientProcess;
+ 
+end SignTransferStatus;

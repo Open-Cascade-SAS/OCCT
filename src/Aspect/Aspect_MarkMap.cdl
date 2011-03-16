@@ -1,0 +1,68 @@
+--
+-- File:	Aspect_MarkMap.cdl
+-- Created:	13/01/95
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class MarkMap from Aspect inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a MarkMap object.
+	---Keywords:
+	---Warning:
+	---References:
+uses
+	MarkerStyle		from Aspect,
+	MarkMapEntry 		from Aspect,
+	SequenceOfMarkMapEntry 	from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+	Create returns mutable MarkMap from Aspect;
+
+        AddEntry (me : mutable; AnEntry : MarkMapEntry from Aspect)
+	---Level: Public
+        ---Purpose: Adds an entry in the mark map <me>.
+        --  Warning: Raises BadAccess if MarkMap size is exceeded.
+        raises BadAccess from Aspect;
+
+        AddEntry (me : mutable; aStyle : MarkerStyle from Aspect)
+                                        returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical marker style entry in the mark map <me>
+        -- and returns the MarkMapEntry Index if exist.
+        -- Or add a new entry and returns the computed MarkMapEntry index used.
+ 
+        Size( me ) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the Allocated markmap Size
+ 
+        Index( me ; aMarkmapIndex : Integer ) returns Integer from Standard
+        ---Level: Public
+        ---Purpose: Returns the MarkMapEntry.Index of the MarkMap
+        --          at rank <aMarkmapIndex> .
+        raises BadAccess from Aspect is static;
+        ---Trigger: Raises BadAccess if the index less than 1 or
+        --          greater than Size.
+ 
+	Dump( me ) ;
+
+	Entry ( me ;
+		AnIndex : Integer from Standard )
+	returns MarkMapEntry from Aspect
+	---Level: Public
+	---Purpose: Returns the Mark map entry with the index <AnIndex>.
+	--  Warning: Raises BadAccess if the index less than 1 or
+	--	    greater than Size.
+	raises BadAccess from Aspect is static;
+
+fields
+
+	mydata	    : 	SequenceOfMarkMapEntry from Aspect is protected;
+
+end MarkMap ;

@@ -1,0 +1,190 @@
+-- File:	AbscissaPoint.cdl
+-- Created:	Mon Jul 15 15:18:50 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+class AbscissaPoint from CPnts
+
+	---Purpose: the algorithm computes a point on a curve at a given 
+	--          distance from another point on the curve
+	--          
+	--          We can instantiates with
+	--            Curve from Adaptor3d, Pnt from gp, Vec from gp
+	--          
+	--          or  
+	--            Curve2d from Adaptor2d, Pnt2d from gp, Vec2d from gp
+
+uses
+    Curve2d from Adaptor2d,
+    Curve   from Adaptor3d,
+    MyRootFunction from CPnts
+
+raises NotDone           from StdFail,
+       ConstructionError from Standard
+      
+is
+
+  Length(myclass; C : Curve from Adaptor3d) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : Curve2d from Adaptor2d) returns Real;
+  ---Purpose: Computes the length of the Curve <C>.
+
+  Length(myclass; C : Curve from Adaptor3d; Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance. 
+
+  Length(myclass; C : Curve2d from Adaptor2d; Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> with the given tolerance.
+
+  Length(myclass; C : Curve from Adaptor3d; U1, U2 : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> between <U1> and <U2>.
+
+  Length(myclass; C : Curve2d from Adaptor2d; U1, U2 : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> between <U1> and <U2>.
+
+  Length(myclass; C : Curve from Adaptor3d; U1, U2, Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> between <U1> and <U2> with the given tolerance.
+
+  Length(myclass; C : Curve2d from Adaptor2d; U1, U2, Tol : Real) returns Real;
+  ---Purpose: Computes the length of the Curve <C> between <U1> and <U2> with the given tolerance.
+
+  Create 
+    ---Purpose: creation of a indefinite AbscissaPoint.
+  returns AbscissaPoint;
+
+  Create (C : Curve from Adaptor3d; Abscissa, U0, Resolution : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Resolution> is the error allowed in the computation.
+    --          The computed point can be outside of the curve 's bounds.
+    returns AbscissaPoint
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : Curve2d from Adaptor2d; Abscissa, U0, Resolution : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Resolution> is the error allowed in the computation.
+    --          The computed point can be outside of the curve 's bounds.
+    returns AbscissaPoint
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : Curve from Adaptor3d; Abscissa, U0, Ui, Resolution : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be closed to the final
+    --          solution
+    --          <Resolution> is the error allowed in the computation.
+    --          The computed point can be outside of the curve 's bounds.
+    returns AbscissaPoint
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+  Create (C : Curve2d from Adaptor2d; Abscissa, U0, Ui, Resolution : Real)
+    ---Purpose: the algorithm computes a point on a curve <Curve> at the 
+    --          distance <Abscissa> from the point of parameter <U0>.
+    --          <Ui> is the starting value used in the iterative process
+    --          which find the solution, it must be closed to the final
+    --          solution
+    --          <Resolution> is the error allowed in the computation.
+    --          The computed point can be outside of the curve 's bounds.
+    returns AbscissaPoint
+    raises ConstructionError;
+	-- raised when it is not possible to compute the curve's length or if
+	-- the curve is null;
+
+
+  Init(me: in out; C: Curve from Adaptor3d)
+    ---Purpose: Initializes the resolution function with <C>.
+    is static;
+
+  Init(me: in out; C: Curve2d from Adaptor2d)
+    ---Purpose: Initializes the resolution function with <C>.
+    is static; 
+    
+--  these  two  methods  are  introduced  by  rbv  to  control  the  tolerance 
+
+  Init(me: in out; C: Curve from Adaptor3d; Tol : Real)
+    ---Purpose: Initializes the resolution function with <C>.
+    is static;
+
+  Init(me: in out; C: Curve2d from Adaptor2d; Tol : Real)
+    ---Purpose: Initializes the resolution function with <C>.
+    is static;
+-- 
+
+  Init(me: in out; C: Curve from Adaptor3d; U1, U2: Real)
+    ---Purpose: Initializes the resolution function with <C>
+    --          between U1 and U2.
+    is static;
+
+  Init(me: in out; C: Curve2d from Adaptor2d; U1, U2: Real)
+    ---Purpose: Initializes the resolution function with <C>
+    --          between U1 and U2.
+    is static;
+ 
+--  these  two  methods  are  introduced  by  rbv  to  control  the  tolerance 
+  Init(me: in out; C: Curve from Adaptor3d; U1, U2, Tol: Real)
+    ---Purpose: Initializes the resolution function with <C>
+    --          between U1 and U2.
+    is static;
+
+  Init(me: in out; C: Curve2d from Adaptor2d; U1, U2, Tol: Real)
+    ---Purpose: Initializes the resolution function with <C>
+    --          between U1 and U2.
+    is static;
+
+  Perform(me: in out; Abscissa, U0, Resolution : Real)
+    ---Purpose: Computes the point at the distance <Abscissa> of
+    --          the curve.
+    is static;
+ 
+  Perform(me: in out; Abscissa, U0, Ui, Resolution : Real)
+    ---Purpose: Computes the point at the distance <Abscissa> of
+    --          the curve.
+    is static;
+    
+  AdvPerform(me: in out; Abscissa, U0, Ui, Resolution : Real)
+    ---Purpose: Computes the point at the distance <Abscissa> of
+    --          the curve; performs more appropriate tolerance managment; 
+    --          to use this method in right way it is necessary to call  
+    --          empty consructor. then call method Init with  
+    --	        Tolerance = Resolution, then call AdvPermorm.     
+    is static;  
+       
+  IsDone(me)
+    ---Purpose: True if the computation was successful, False otherwise.
+    ---C++: inline
+    returns Boolean
+    is static;
+
+
+  Parameter(me) returns Real
+    ---Purpose: Returns the parameter of the solution.
+    --          
+    ---C++: inline
+    raises NotDone from StdFail;
+      	-- if the computation was not done.
+
+
+  SetParameter(me : in out; P : Real);
+    ---Purpose: Enforce the solution, used by GCPnts.
+    --          
+    ---C++: inline
+    
+fields
+
+    myDone  : Boolean;
+    myL     : Real;
+    myParam : Real;
+    myUMin  : Real;
+    myUMax  : Real           from Standard;
+    myF     : MyRootFunction from CPnts;
+    
+end AbscissaPoint;

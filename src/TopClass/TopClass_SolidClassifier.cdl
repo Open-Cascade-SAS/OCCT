@@ -1,0 +1,78 @@
+-- File:	TopClass_SolidClassifier.cdl
+-- Created:	Wed Mar 30 18:28:29 1994
+-- Author:	Laurent BUCHARD
+--		<lbr@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+generic class SolidClassifier from TopClass
+    (TheSolidExplorer    as any;
+     TheIntersection3d   as any)
+     
+     ---Purpose: Provides an algorithm to classify a point in a solid.
+
+
+
+uses 
+    Pnt     from gp,
+    Face    from TopoDS,
+    Shape   from TopoDS,
+    State   from TopAbs
+
+raises
+    DomainError from Standard
+    
+    
+    
+is 
+       
+    Create 
+    	---Purpose: Empty constructor.
+    returns SolidClassifier from TopClass;
+    
+    
+    Create(S   : in out TheSolidExplorer;
+           P   :        Pnt from gp;
+	   Tol :        Real from Standard)
+    	---Purpose: Constructor to classify the point P with the 
+    	--          tolerance Tol on the solid S.
+    returns SolidClassifier from TopClass;
+    
+    
+    Perform(me  : in out;
+            S   : in out  TheSolidExplorer;
+            P   :         Pnt from gp;
+	    Tol :         Real from Standard);
+    	---Purpose: Classify the point P with the 
+    	--          tolerance Tol on the solid S.
+
+    
+    Rejected(me)
+    	---Purpose: Returns True if the classification has been 
+    	--          computed by rejection. 
+    	--          The State is then OUT.
+    returns Boolean from Standard;
+    
+    
+    State(me)  returns State  from TopAbs;
+    	---Purpose: Returns the result of the classification.
+    
+    IsOnAFace(me) returns Boolean from Standard;
+    	---Purpose: Returns True when the point is a point of a face.
+    
+    Face(me) 
+    	---Purpose: Returns the face used to determine the 
+    	--          classification. When the state is ON, this is the 
+    	--          face containing the point. 
+    	--          
+    	--          When Rejected() returns True, Face() has no signification.
+    returns Face from TopoDS;
+    	    
+fields
+
+    myFace         : Face       from TopoDS;
+    myState        : Integer    from Standard;  -- 1: Rejected     2: IsOnFace  3: In  4: Out
+    
+end SolidClassifier;

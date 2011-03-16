@@ -1,0 +1,103 @@
+-- File:	TopOpeBRepBuild_AreaBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class AreaBuilder from TopOpeBRepBuild 
+
+---Purpose: 
+--  The AreaBuilder algorithm is  used  to
+--  reconstruct complex  topological objects as  Faces
+--  or Solids.
+--  * Loop is  the  composite topological object of
+--  the boundary. Wire for a Face. Shell for a Solid.
+--  *  LoopSet is a  tool describing the object  to
+--  build.  It gives an iteration  on Loops.  For each
+--  Loop it tells if it is on the boundary or if it is
+--  an interference.
+--  * LoopClassifier  is an algorithm  used to test
+--  if a Loop is inside  another  Loop.
+--  The  result of the  reconstruction is an iteration
+--  on the reconstructed areas.  An  area is described
+--  by a set of Loops.
+--  A AreaBuilder is built with :
+--    - a LoopSet describing the object to reconstruct.
+--    - a LoopClassifier providing the classification algorithm.
+
+uses
+
+    State from TopAbs,
+    Loop from TopOpeBRepBuild,
+    ListOfLoop from TopOpeBRepBuild,
+    ListIteratorOfListOfLoop from TopOpeBRepBuild,
+    ListOfListOfLoop from TopOpeBRepBuild,
+    ListIteratorOfListOfListOfLoop from TopOpeBRepBuild,
+    LoopSet from TopOpeBRepBuild,
+    LoopClassifier from TopOpeBRepBuild,
+    LoopEnum from TopOpeBRepBuild
+    
+is
+
+    Create returns AreaBuilder;
+
+    Create(LS : in out LoopSet; LC : in out LoopClassifier;
+    	   ForceClass : Boolean = Standard_False) returns AreaBuilder;
+    ---Purpose: Creates a AreaBuilder to build the areas on
+    -- the shapes described by <LS> using the classifier <LC>.
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRepBuild_AreaBuilder(){Delete() ; }"
+    
+    InitAreaBuilder(me : in out;
+    	    	    LS : in out LoopSet; LC : in out LoopClassifier;
+    	    	    ForceClass : Boolean from Standard = Standard_False)
+    ---Purpose: Sets a AreaBuilder to find the areas on
+    -- the shapes described by <LS> using the classifier <LC>.
+    is virtual;
+
+    CompareLoopWithListOfLoop(me;
+    	    	    	      LC  : in out LoopClassifier;
+    	    	    	      L   : Loop;
+    	    	    	      LOL : ListOfLoop;
+    	    	    	      le  : LoopEnum) 
+    returns State from TopAbs is static protected;
+
+    Atomize(me;state : in out State from TopAbs; newstate : State from TopAbs)
+    is static protected;
+
+    InitArea(me : in out) returns Integer from Standard is static;
+    ---Purpose: Initialize iteration on areas.
+    MoreArea(me) returns Boolean from Standard is static;
+    NextArea(me : in out) is static;
+
+    InitLoop(me : in out) returns Integer from Standard is static;
+    ---Purpose: Initialize iteration on loops of current Area. 
+    MoreLoop(me) returns Boolean from Standard is static;
+    NextLoop(me : in out) is static;
+    Loop(me) returns Loop from TopOpeBRepBuild is static;
+    ---Purpose: Returns the current Loop in the current area.
+    ---C++: return const&
+    
+    ADD_Loop_TO_LISTOFLoop(me; L   : Loop;
+    	    	    	       LOL : in out ListOfLoop;
+			         s : Address = NULL) is virtual;
+
+    REM_Loop_FROM_LISTOFLoop(me; ITLOL : in out ListIteratorOfListOfLoop; 
+     	    	    	    	   LOL : in out ListOfLoop;
+			             s : Address = NULL) is virtual;
+
+    ADD_LISTOFLoop_TO_LISTOFLoop(me; LOL1 : in out ListOfLoop;
+    	    	    	             LOL2 : in out ListOfLoop;
+			               s  : Address = NULL;
+			               s1 : Address = NULL;
+			               s2 : Address = NULL) is virtual;
+
+fields
+
+    myArea         : ListOfListOfLoop is protected;
+    myAreaIterator : ListIteratorOfListOfListOfLoop is protected;
+    myLoopIterator : ListIteratorOfListOfLoop is protected;
+    myUNKNOWNRaise : Boolean is protected;
+    
+end AreaBuilder from TopOpeBRepBuild;

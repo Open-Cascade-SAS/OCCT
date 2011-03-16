@@ -1,0 +1,89 @@
+-- File:	TDataStd_Comment.cdl
+-- Created:	Thu Jan 15 10:33:38 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Comment from TDataStd inherits Attribute from TDF
+
+	---Purpose: Comment attribute. may be  associated to any label
+	--          to store user comment.
+
+uses Attribute         from TDF,
+     Label             from TDF,
+     GUID              from Standard,
+     ExtendedString    from TCollection,
+     DataSet           from TDF,
+     RelocationTable   from TDF,
+     AttributeSequence from TDF,
+     Data              from TDF
+
+
+is    
+
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)   
+  	---C++: return const & 
+    	---Purpose: Returns the GUID for comments.  
+    returns GUID from Standard;    
+
+    Set (myclass; label : Label from TDF)
+    ---Purpose:  Find, or create  a   Comment attribute.  the  Comment
+    --          attribute is returned.
+    returns Comment from TDataStd;    
+
+    Set (myclass; label : Label from TDF; string  : ExtendedString from TCollection)
+    ---Purpose: Finds, or creates a Comment attribute and sets the string.
+    --          the Comment attribute is returned.
+    returns Comment from TDataStd;
+    
+    ---Purpose: Comment methods
+    --          ============
+    
+    Create 
+    returns mutable Comment from TDataStd;
+        
+    Set (me : mutable; S : ExtendedString from TCollection);
+
+    
+    Get (me)
+    returns ExtendedString from TCollection;    
+    ---Purpose:
+    --    Returns the comment attribute.
+    ---C++: return const & 
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me)
+     	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+    AfterRetrieval(me: mutable;
+    	    	   forceIt : Boolean from Standard = Standard_False)
+    	returns Boolean from Standard
+    	is redefined static;
+
+
+fields
+
+    myString : ExtendedString from TCollection;
+
+end Comment;

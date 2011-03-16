@@ -1,0 +1,408 @@
+-- File:	ElSLib.cdl
+-- Created:	Mon Sep  9 16:39:42 1991
+-- Author:	Michel Chauvat
+---Copyright:	Matra Datavision 1991
+
+
+
+
+package ElSLib
+
+        --- Purpose :  Provides functions for basic geometric computation on
+    	-- elementary surfaces.
+    	-- This includes:
+    	-- -   calculation of a point or derived vector on a surface
+    	--   where the surface is provided by the gp package, or
+    	--   defined in canonical form (as in the gp package), and
+    	--   the point is defined with a parameter,
+    	-- -   evaluation of the parameters corresponding to a
+    	--   point on an elementary surface from gp,
+    	-- -   calculation of isoparametric curves on an elementary
+    	--   surface defined in canonical form (as in the gp package).
+    	--  Notes:
+    	-- -   ElSLib stands for Elementary Surfaces Library.
+    	-- -   If the surfaces provided by the gp package are not
+    	--   explicitly parameterized, they still have an implicit
+    	--   parameterization, similar to that which they infer on
+    	--   the equivalent Geom surfaces.
+    	--  Note: ElSLib stands for Elementary Surfaces Library.
+
+uses gp
+
+is
+
+  Value (U, V : Real; Pl : Pln from gp)       
+    returns Pnt from gp;
+        ---Purpose:  For elementary surfaces from the gp package (planes,
+    	-- cones, cylinders, spheres and tori), computes the point
+    	-- of parameters (U, V).
+     
+  Value (U, V : Real; C : Cone from gp)       
+    returns Pnt from gp;
+        ---C++: inline
+
+  Value (U, V : Real; C : Cylinder from gp)   
+    returns Pnt from gp;
+        ---C++: inline
+
+  Value (U, V : Real; S : Sphere from gp)    
+    returns Pnt from gp;
+        ---C++: inline
+
+  Value (U,V : Real; T : Torus from gp)       
+    returns Pnt from gp;
+        ---C++: inline
+
+  DN (U, V : Real; Pl : Pln from gp; Nu, Nv : Integer)       
+    returns Vec from gp;
+        ---Purpose: For elementary surfaces from the gp package (planes,
+    	-- cones, cylinders, spheres and tori), computes the
+    	-- derivative vector of order Nu and Nv in the u and v
+    	-- parametric directions respectively, at the point of
+    	-- parameters (U, V).
+
+  DN (U, V : Real; C : Cone from gp; Nu, Nv : Integer)       
+    returns Vec from gp;
+        ---C++: inline
+
+  DN (U, V : Real; C : Cylinder from gp; Nu, Nv : Integer)   
+    returns Vec from gp;
+        ---C++: inline
+
+  DN (U, V : Real; S : Sphere from gp; Nu, Nv : Integer)     
+    returns Vec from gp;
+        ---C++: inline
+
+  DN (U, V : Real; T : Torus from gp; Nu, Nv : Integer)      
+    returns Vec from gp;
+        ---C++: inline
+
+  D0 (U, V : Real; Pl : Pln from gp; P : out Pnt from gp);
+        ---Purpose:  For elementary surfaces from the gp package (planes,
+    	-- cones, cylinders, spheres and tori), computes the point P
+    	-- of parameters (U, V).inline
+
+  D0 (U, V : Real; C : Cone from gp; P : out Pnt from gp);
+        ---C++: inline
+
+  D0 (U, V : Real; C : Cylinder from gp; P : out Pnt from gp);
+        ---C++: inline
+
+  D0 (U, V : Real; S : Sphere from gp; P : out Pnt from gp);
+        ---C++: inline
+
+  D0 (U, V : Real; T : Torus from gp; P : out Pnt from gp);
+        ---C++: inline
+
+  D1 (U, V : Real; Pl : Pln from gp; P : out Pnt from gp;
+     Vu, Vv : out Vec from gp);
+        ---Purpose:
+    	-- For elementary surfaces from the gp package (planes,
+    	-- cones, cylinders, spheres and tori), computes:
+    	-- -   the point P of parameters (U, V), and
+    	-- -   the first derivative vectors Vu and Vv at this point in
+    	--   the u and v parametric directions respectively.
+
+  D1 (U, V : Real; C : Cone from gp; P : out Pnt from gp;
+    Vu, Vv : out Vec from gp);
+        ---C++: inline
+
+  D1 (U, V : Real; C : Cylinder from gp; P : out Pnt from gp;
+    Vu, Vv : out Vec from gp);
+        ---C++: inline
+
+  D1 (U, V : Real; S : Sphere from gp; P : out Pnt from gp;
+    Vu, Vv : out Vec from gp);
+        ---C++: inline
+
+  D1 (U, V : Real; T : Torus from gp; P : out Pnt from gp;
+    Vu, Vv : out Vec from gp);
+        ---C++: inline
+
+  D2 (U, V : Real; C : Cone from gp; P : out Pnt from gp;
+    Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+        ---Purpose:
+    	-- For elementary surfaces from the gp package (cones,
+    	-- cylinders, spheres and tori), computes:
+    	-- -   the point P of parameters (U, V), and
+    	-- -   the first derivative vectors Vu and Vv at this point in
+    	--   the u and v parametric directions respectively, and
+    	-- -   the second derivative vectors Vuu, Vvv and Vuv at this point.
+
+  D2 (U, V : Real; C : Cylinder from gp; P : out Pnt from gp;
+    Vu,Vv,Vuu,Vvv,Vuv : out Vec from gp);
+        ---C++: inline
+	
+  D2 (U, V : Real; S : Sphere from gp; P : out Pnt from gp;
+    Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+        ---C++: inline
+
+  D2 (U, V : Real; T : Torus from gp; P : out Pnt from gp;
+    Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+        ---C++: inline
+
+  D3 (U, V : Real; C : Cone from gp; P : out Pnt from gp; 
+      Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+        ---Purpose:
+    	-- For elementary surfaces from the gp package (cones,
+    	-- cylinders, spheres and tori), computes:
+    	-- -   the point P of parameters (U,V), and
+    	-- -   the first derivative vectors Vu and Vv at this point in
+    	--   the u and v parametric directions respectively, and
+    	-- -   the second derivative vectors Vuu, Vvv and Vuv at
+    	--   this point, and
+    	-- -   the third derivative vectors Vuuu, Vvvv, Vuuv and
+    	--   Vuvv at this point.
+
+  D3 (U, V : Real; C : Cylinder from gp; P : out Pnt from gp; 
+      Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+        ---C++: inline
+
+  D3 (U, V : Real; S : Sphere from gp; P : out Pnt from gp; 
+      Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+        ---C++: inline
+
+  D3 (U, V : Real; T : Torus from gp; P : out Pnt from gp; 
+      Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+        ---C++: inline
+
+
+
+        --- Purpose : Surface evaluation
+        --  The following functions compute the point and the
+        --  derivatives on elementary surfaces defined with their
+        --  geometric characterisitics. 
+        --  You don't need to create the surface to use these functions.
+        --  These functions are called by the previous  ones.
+        --- Example :
+        --  A cylinder is defined with its position and its radius. 
+
+
+
+  PlaneValue (U, V : Real; Pos : Ax3 from gp)                        
+    returns Pnt from gp;
+
+  CylinderValue (U, V : Real; Pos : Ax3 from gp; Radius : Real)      
+    returns Pnt from gp;
+
+  ConeValue (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real)  
+    returns Pnt from gp;
+
+  SphereValue (U, V : Real; Pos : Ax3 from gp; Radius : Real)        
+    returns Pnt from gp;
+
+  TorusValue (U, V : Real; Pos : Ax3 from gp; MajorRadius, MinorRadius : Real)
+     returns Pnt from gp;
+
+  PlaneDN (U, V : Real; Pos : Ax3 from gp; Nu, Nv : Integer)   
+    returns Vec from gp;
+
+  CylinderDN (U, V : Real; Pos: Ax3 from gp; Radius : Real; Nu, Nv : Integer)
+     returns Vec from gp;
+
+  ConeDN (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real; 
+          Nu, Nv : Integer)
+     returns Vec from gp;
+
+  SphereDN (U, V : Real; Pos: Ax3 from gp; Radius : Real; Nu, Nv : Integer)
+     returns Vec from gp;
+
+  TorusDN (U, V : Real; Pos: Ax3 from gp; MajorRadius, MinorRadius : Real;
+           Nu, Nv : Integer)
+     returns Vec from gp;
+
+  PlaneD0 (U, V : Real; Pos : Ax3 from gp; P : out Pnt from gp);
+
+  ConeD0 (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real;
+          P : out Pnt from gp);
+
+  CylinderD0 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+              P : out Pnt from gp);
+
+  SphereD0 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+            P : out Pnt from gp);
+
+  TorusD0 (U, V : Real; Pos : Ax3 from gp; MajorRadius, MinorRadius : Real;
+           P : out Pnt from gp);
+
+  PlaneD1 (U, V : Real; Pos : Ax3 from gp; P : out Pnt from gp; 
+           Vu, Vv : out Vec from gp);
+
+  ConeD1 (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real;
+          P : out Pnt from gp; Vu, Vv : out Vec from gp);
+
+  CylinderD1 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+              P : out Pnt from gp; Vu, Vv : out Vec from gp);
+
+  SphereD1 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+            P : out Pnt from gp; Vu, Vv : out Vec from gp);
+
+  TorusD1 (U, V : Real; Pos : Ax3 from gp; MajorRadius, MinorRadius : Real;
+           P : out Pnt from gp; Vu, Vv : out Vec from gp);
+
+  ConeD2 (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real;
+          P : out Pnt from gp; Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+
+  CylinderD2 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+              P : out Pnt from gp; Vu,Vv,Vuu,Vvv,Vuv : out Vec from gp);
+	
+  SphereD2 (U, V : Real; Pos : Ax3 from gp; Radius : Real;
+            P : out Pnt from gp; Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+
+  TorusD2 (U, V : Real; Pos : Ax3 from gp; MajorRadius, MinorRadius : Real;
+           P : out Pnt from gp; Vu, Vv, Vuu, Vvv, Vuv : out Vec from gp);
+
+  ConeD3 (U, V : Real; Pos : Ax3 from gp; Radius, SAngle : Real; 
+          P : out Pnt from gp;
+          Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+
+  CylinderD3 (U, V : Real; Pos : Ax3 from gp; Radius : Real; 
+              P : out Pnt from gp; 
+              Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+
+  SphereD3 (U, V : Real; Pos : Ax3 from gp; Radius : Real; P : out Pnt from gp;
+            Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+
+  TorusD3 (U, V : Real; Pos : Ax3 from gp; MajorRadius, MinorRadius : Real;
+           P : out Pnt from gp; 
+           Vu, Vv, Vuu, Vvv, Vuv, Vuuu, Vvvv, Vuuv, Vuvv : out Vec from gp);
+
+
+
+        --- Purpose :
+        --  The following functions compute the parametric values
+        --  corresponding to a given point on a elementary surface.
+        --  The point should be on the surface.
+      
+
+  Parameters (Pl : Pln from gp; P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = 
+        --  Pl.Location() + U * Pl.XDirection() + V * Pl.YDirection()
+        ---C++: inline
+
+  
+  Parameters (C : Cylinder from gp; P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location + V * ZDirection +
+        --  Radius * (Cos(U) * XDirection + Sin (U) * YDirection)
+        ---C++: inline
+
+
+  Parameters (C : Cone from gp; P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) =  Location + V * ZDirection +
+        --  (Radius + V * Tan (SemiAngle)) * 
+        --  (Cos(U) * XDirection + Sin(U) * YDirection)
+        ---C++: inline
+
+
+  Parameters (S : Sphere from gp; P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location + 
+        --  Radius * Cos (V) * (Cos (U) * XDirection + Sin (U) * YDirection) +
+        --  Radius * Sin (V) * ZDirection
+        ---C++: inline
+
+
+  Parameters (T : Torus from gp; P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location +
+        --  (MajorRadius + MinorRadius * Cos(U)) * 
+        --  (Cos(V) * XDirection - Sin(V) * YDirection) +
+        --  MinorRadius * Sin(U) * ZDirection
+        ---C++: inline
+
+
+  PlaneParameters (Pos: Ax3 from gp; P: Pnt from gp; U, V: out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = 
+        --  Pl.Location() + U * Pl.XDirection() + V * Pl.YDirection()
+
+  
+  CylinderParameters (Pos: Ax3 from gp; Radius : Real; P: Pnt from gp;
+                      U, V: out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location + V * ZDirection +
+        --  Radius * (Cos(U) * XDirection + Sin (U) * YDirection)
+
+
+  ConeParameters (Pos: Ax3 from gp; Radius, SAngle: Real; P: Pnt from gp;  
+                  U, V: out Real);
+        --- Purpose : parametrization
+        --  P (U, V) =  Location + V * ZDirection +
+        --  (Radius + V * Tan (SemiAngle)) * 
+        --  (Cos(U) * XDirection + Sin(U) * YDirection)
+
+
+  SphereParameters (Pos: Ax3 from gp; Radius: Real; P: Pnt from gp; 
+            	    U, V: out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location + 
+        --  Radius * Cos (V) * (Cos (U) * XDirection + Sin (U) * YDirection) +
+        --  Radius * Sin (V) * ZDirection
+
+
+  TorusParameters (Pos: Ax3 from gp; MajorRadius, MinorRadius: Real;
+                   P : Pnt from gp; U, V : out Real);
+        --- Purpose : parametrization
+        --  P (U, V) = Location +
+        --  (MajorRadius + MinorRadius * Cos(U)) * 
+        --  (Cos(V) * XDirection - Sin(V) * YDirection) +
+        --  MinorRadius * Sin(U) * ZDirection
+
+
+  PlaneUIso (Pos: Ax3 from gp; U : Real)
+        --- Purpose : compute the U Isoparametric gp_Lin of the plane.
+  returns Lin from gp;
+
+  
+  CylinderUIso (Pos: Ax3 from gp; Radius, U : Real)
+        --- Purpose : compute the U Isoparametric gp_Lin of the cylinder.
+  returns Lin from gp;
+
+
+  ConeUIso (Pos: Ax3 from gp; Radius, SAngle, U: Real)
+        --- Purpose : compute the U Isoparametric gp_Lin of the cone.
+  returns Lin from gp;
+
+
+  SphereUIso (Pos: Ax3 from gp; Radius, U : Real)
+        --- Purpose : compute the U Isoparametric gp_Circ of the sphere,
+        --  (the meridian is not trimmed).
+  returns Circ from gp;
+
+
+  TorusUIso (Pos: Ax3 from gp; MajorRadius, MinorRadius, U: Real)
+        --- Purpose : compute the U Isoparametric gp_Circ of the torus.
+  returns Circ from gp;
+
+
+  PlaneVIso (Pos: Ax3 from gp; V : Real)
+        --- Purpose : compute the V Isoparametric gp_Lin of the plane.
+  returns Lin from gp;
+
+  
+  CylinderVIso (Pos: Ax3 from gp; Radius, V : Real)
+        --- Purpose : compute the V Isoparametric gp_Circ of the cylinder.
+  returns Circ from gp;
+
+
+  ConeVIso (Pos: Ax3 from gp; Radius, SAngle, V : Real)
+        --- Purpose : compute the V Isoparametric gp_Circ of the cone.
+  returns Circ from gp;
+
+
+  SphereVIso (Pos: Ax3 from gp; Radius, V : Real)
+        --- Purpose : compute the V Isoparametric gp_Circ of the sphere,
+        --  (the meridian is not trimmed).
+  returns Circ from gp;
+
+
+  TorusVIso (Pos: Ax3 from gp; MajorRadius, MinorRadius, V : Real)
+        --- Purpose : compute the V Isoparametric gp_Circ of the torus.
+  returns Circ from gp;
+
+
+end ElSLib;
+

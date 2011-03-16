@@ -1,0 +1,186 @@
+-- File:	StepToTopoDS.cdl
+-- Created:	Wed Jul 28 11:00:52 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+package StepToTopoDS
+
+    --- Purpose: This package implements the mapping between AP214
+    --  Shape representation and  CAS.CAD Shape Representation.
+    --  The source schema is Part42 (which is included in AP214)
+
+uses TopoDS, StdFail, TCollection, TColStd, BRep, Geom, Geom2d,
+     GeomAdaptor, Extrema, gp, Transfer, Geom2dAPI,
+     StepRepr, StepGeom, StepShape, TopTools
+
+is
+
+    -- -----------
+    -- enumeration
+    -- -----------
+
+    enumeration BuilderError is
+    	BuilderDone,
+	BuilderOther
+    end;
+
+    enumeration TranslateShellError is
+    	TranslateShellDone,
+	TranslateShellOther
+    end;
+    
+    enumeration TranslateFaceError is
+    	TranslateFaceDone,
+	TranslateFaceOther
+    end;
+    
+    enumeration TranslateEdgeLoopError is
+    	TranslateEdgeLoopDone,
+	TranslateEdgeLoopOther
+    end;
+
+    enumeration TranslateEdgeError is
+    	TranslateEdgeDone,
+	TranslateEdgeOther
+    end;
+    
+    enumeration TranslateVertexError is
+    	TranslateVertexDone,
+	TranslateVertexOther
+    end;
+    
+    enumeration TranslateVertexLoopError is
+    	TranslateVertexLoopDone,
+	TranslateVertexLoopOther
+    end;
+    
+    enumeration TranslatePolyLoopError is
+    	TranslatePolyLoopDone,
+	TranslatePolyLoopOther
+    end;
+
+    enumeration GeometricToolError is
+    	GeometricToolDone,
+	GeometricToolIsDegenerated,
+	GeometricToolHasNoPCurve,
+	GeometricToolWrong3dParameters,
+	GeometricToolNoProjectiOnCurve,
+	GeometricToolOther
+    end;
+
+    -- ---------------
+    -- Package Classes
+    -- ---------------
+
+    private deferred class Root;
+
+    	class TranslateShell;
+    
+    	class TranslateFace;
+    
+    	class TranslateEdgeLoop;
+	
+   	class TranslateEdge;
+    
+	class TranslateVertex;
+    
+    	class TranslatePolyLoop;
+    
+    	class TranslateVertexLoop;
+    
+	class TranslateCompositeCurve;
+	
+	class TranslateCurveBoundedSurface;
+
+    	class Builder;
+	
+    	class MakeTransformed;
+
+    class GeometricTool;
+    
+--    class DegeneratedTool;
+    
+    class Tool;
+
+    class CartesianPointHasher;
+
+    class PointPair;
+    
+    class PointPairHasher;
+
+    class NMTool;
+
+    -- --------------------
+    -- Instanciated Classes
+    -- --------------------
+
+    class DataMapOfRI instantiates 
+        DataMap from TCollection
+            (RepresentationItem from StepRepr,
+ 	     Shape              from TopoDS,
+    	     MapTransientHasher from TColStd);
+
+    class DataMapOfRINames instantiates 
+        DataMap from TCollection
+            (AsciiString from TCollection,
+ 	     Shape       from TopoDS,
+    	     AsciiString from TCollection);
+
+
+    class DataMapOfTRI instantiates 
+    	DataMap from TCollection
+            (TopologicalRepresentationItem from StepShape,
+ 	     Shape                         from TopoDS,
+    	     MapTransientHasher            from TColStd);
+
+    class PointEdgeMap instantiates
+    	DataMap from TCollection
+    	    (PointPair       from StepToTopoDS,
+	     Edge            from TopoDS,
+	     PointPairHasher from StepToTopoDS);
+
+    class PointVertexMap instantiates
+    	DataMap from TCollection
+    	    	(CartesianPoint       from StepGeom,
+	    	 Vertex               from TopoDS,
+	         CartesianPointHasher from StepToTopoDS);
+
+--    class ExtPCOnS instantiates
+--    	GExtPC from Extrema(CurveOnSurface      from GeomAdaptor,
+--    	 		    CurveOnSurfaceTool  from GeomAdaptor,
+--    	    	    	    ExtPElC             from Extrema,
+--   	    	    	    Pnt                 from gp,
+--    	    	    	    Vec                 from gp,
+--    	    	    	    POnCurv             from Extrema,
+--    	    	    	    SequenceOfPOnCurv   from Extrema);
+
+    -- --------------
+    -- Package Method
+    -- --------------
+
+    DecodeBuilderError (Error : BuilderError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+    
+    DecodeShellError (Error : TranslateShellError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+
+    DecodeFaceError (Error : TranslateFaceError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+
+    DecodeEdgeError (Error : TranslateEdgeError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+
+    DecodeVertexError (Error : TranslateVertexError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+
+    DecodeVertexLoopError (Error : TranslateVertexLoopError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+
+    DecodePolyLoopError (Error : TranslatePolyLoopError from StepToTopoDS)
+    	returns HAsciiString from TCollection;
+	
+    DecodeGeometricToolError (Error : GeometricToolError from StepToTopoDS)
+    	returns CString from Standard;
+	
+end StepToTopoDS;

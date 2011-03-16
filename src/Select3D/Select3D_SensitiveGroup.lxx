@@ -1,0 +1,15 @@
+// File:	Select3D_SensitiveGroup.lxx
+// Created:	Thu Apr 16 16:17:20 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline  void Select3D_SensitiveGroup::Set(const Standard_Boolean MustMatchAllEntities) 
+{myMustMatchAll = MustMatchAllEntities;}
+
+ 
+inline  Standard_Boolean Select3D_SensitiveGroup::MustMatchAll() const
+{return myMustMatchAll;}
+
+inline const Select3D_ListOfSensitive& Select3D_SensitiveGroup::GetEntities() const
+{return myList;}
+
+ 

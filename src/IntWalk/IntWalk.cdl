@@ -1,0 +1,64 @@
+-- File:	IntWalk.cdl
+-- Created:	Thu Mar 28 11:05:24 1991
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+package IntWalk
+
+	---Purpose: This package defines the "walking" (marching?)algorithmes
+	--          for the intersection between two surfaces.
+	--          One of the surfaces is a parametric one.
+	--          If the other is an implicit one, the "IWalking" class will
+	--          be used.
+	--          If both surfaces are parametric, the "PWalking" class will
+	--          be used.
+
+        ---Level: Internal
+        --
+        -- All the methods of the classes of this package are Internal.
+	-- 
+uses   
+     Standard, MMgt, TCollection, TColStd, gp, math, StdFail, IntSurf, IntImp
+
+is
+
+    enumeration StatusDeflection is 
+                PasTropGrand, PointConfondu, ArretSurPointPrecedent,
+                ArretSurPoint, OK;
+		
+-- classe definition ressource sur surface biparametree
+
+    deferred generic class PSurfaceTool;    
+
+
+-- classes de definition pour algorithme cheminement sur une 
+-- surface biparametree
+
+    deferred generic class PathPointTool;  
+
+    deferred generic class LoopPointTool;  
+    
+    deferred generic class IWFunction;
+
+    generic class Iterator;
+    
+    
+--classes des objets resultat pour cheminement sur surface bi-parametree
+
+    generic class IWLine;
+    
+    
+--algorithme cheminement/resolution
+
+    generic class IWalking, TheIWLine, SequenceOfIWLine;
+
+    
+--algorithme/resolution pour un cheminement sur intersection entre
+-- 2 surfaces biparametrees
+
+    generic class PWalking, TheInt2S;
+
+
+end IntWalk;

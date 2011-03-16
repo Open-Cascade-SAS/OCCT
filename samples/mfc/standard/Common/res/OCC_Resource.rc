@@ -1,0 +1,577 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "OCC_Resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "OCC_Resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_OCC_LOGO            BITMAP  DISCARDABLE     "occ_logo.bmp"
+IDR_2dCHILDFRAME        BITMAP  DISCARDABLE     "2dChildFrameTB.bmp"
+IDR_3dCHILDFRAME        BITMAP  DISCARDABLE     "3dChildFrameTB.bmp"
+IDR_TB_AIS              BITMAP  MOVEABLE PURE   "AIS_TB.bmp"
+IDB_coloredmesh         BITMAP  DISCARDABLE     "coloredm.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OCC_ABOUTBOX DIALOGEX 34, 22, 201, 161
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "Sample SampleName, Open CASCADE Technology OCC_Version",
+                    IDC_ABOUTBOX_TITLE,3,8,195,8
+    CTEXT           "Copyright (C) 2001-2011, Open CASCADE S.A.S",
+                    IDC_STATIC,18,99,165,8,SS_CENTERIMAGE
+    DEFPUSHBUTTON   "OK",IDOK,56,135,88,14,WS_GROUP
+    CTEXT           "http://www.opencascade.com",IDC_STATIC,51,115,98,8,
+                    SS_CENTERIMAGE
+    CONTROL         1300,IDC_STATIC,"Static",SS_BITMAP,36,27,132,62,
+                    WS_EX_CLIENTEDGE
+END
+
+IDD_ResultDialog DIALOG DISCARDABLE  0, 0, 212, 202
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_RICHEDIT_ResultDialog,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | 
+                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,0,10,
+                    210,160
+    PUSHBUTTON      "Copy selection to clipboard",
+                    IDC_CopySelectionToClipboard,5,176,100,15
+    PUSHBUTTON      "Copy all to clipboard",IDC_CopyAllToClipboard,107,176,
+                    100,15
+END
+
+IDD_GrilleRectangulaire DIALOG DISCARDABLE  0, 0, 124, 145
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Rectangular Grid"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,38,107,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,38,124,50,14
+    EDITTEXT        IDC_RectGrid_XOrigin,73,5,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RectGrid_Yorigin,73,25,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RectGrid_XStep,73,45,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RectGrid_YStep,73,65,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RectGrid_Rotationangle,73,85,45,15,ES_AUTOHSCROLL
+    LTEXT           "X Origin",IDC_STATIC,14,7,45,15
+    LTEXT           "Y Origin",IDC_STATIC,14,27,45,15
+    LTEXT           "X Step",IDC_STATIC,14,47,45,15
+    LTEXT           "Y Step  ",IDC_STATIC,14,67,45,15
+    LTEXT           "Rotation angle ",IDC_STATIC,14,87,51,15
+END
+
+IDD_GrilleCirculaire DIALOG DISCARDABLE  0, 0, 124, 145
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Circular Grid"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,38,107,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,38,124,50,14
+    EDITTEXT        IDC_CircGrid_XOrigin,73,5,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CircGrid_Yorigin,73,25,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CirctGrid_RadiusStep,73,45,45,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CircGrid_DivNumber,73,65,45,15,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_CircGrid_RotationAngle,73,85,45,15,ES_AUTOHSCROLL
+    LTEXT           "X Origin",IDC_STATIC,0,7,55,15
+    LTEXT           "Y Origin",IDC_STATIC,0,27,55,15
+    LTEXT           "RadiusStep",IDC_STATIC,0,47,55,15
+    LTEXT           "Division number",IDC_STATIC,0,67,55,15
+    LTEXT           "Rotation angle ",IDC_STATIC,0,87,55,15
+END
+
+IDD_AISTRANSPARENCY DIALOG DISCARDABLE  0, 0, 68, 28
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Transparency"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDITAISTRANSP,15,6,27,12,ES_AUTOHSCROLL | ES_NUMBER | 
+                    WS_GROUP
+    CONTROL         "Spin1",IDC_SPINAISTRANSP,"msctls_updown32",
+                    UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,41,6,11,12
+END
+
+IDD_AISMATERIAL DIALOG DISCARDABLE  0, 0, 71, 221
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Material"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "",IDC_STATIC,15,211,8,8
+    CONTROL         "Copper",ID_OBJECT_MATERIAL_COPPER,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,43,56,10
+    CONTROL         "Aluminium",ID_OBJECT_MATERIAL_ALUMINIUM,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,3,56,10
+    CONTROL         "Chrome",ID_OBJECT_MATERIAL_CHROME,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,33,56,10
+    CONTROL         "Bronze",ID_OBJECT_MATERIAL_BRONZE,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,23,56,10
+    CONTROL         "Metilized",ID_OBJECT_MATERIAL_METALIZED,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,73,56,10
+    CONTROL         "Brass",ID_OBJECT_MATERIAL_BRASS,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,13,56,10
+    CONTROL         "Gold",ID_OBJECT_MATERIAL_GOLD,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,53,56,10
+    CONTROL         "Pewter",ID_OBJECT_MATERIAL_PEWTER,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,112,56,10
+    CONTROL         "Silver",ID_OBJECT_MATERIAL_SILVER,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,162,56,10
+    CONTROL         "Steel",ID_OBJECT_MATERIAL_STEEL,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,172,56,10
+    CONTROL         "Neon PHC",ID_OBJECT_MATERIAL_NEON_PHC,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,93,56,10
+    CONTROL         "Stone",ID_OBJECT_MATERIAL_STONE,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,182,56,10
+    CONTROL         "Obsidian",ID_OBJECT_MATERIAL_OBSIDIAN,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,103,56,10
+    CONTROL         "Jade",ID_OBJECT_MATERIAL_JADE,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,63,56,10
+    CONTROL         "Plastic",ID_OBJECT_MATERIAL_PLASTIC,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,122,56,10
+    CONTROL         "Plaster",ID_OBJECT_MATERIAL_PLASTER,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,132,56,10
+    CONTROL         "Shiny Plastic",ID_OBJECT_MATERIAL_SHINY_PLASTIC,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,152,56,10
+    CONTROL         "Satin",ID_OBJECT_MATERIAL_SATIN,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,142,56,10
+    CONTROL         "Neon GNC",ID_OBJECT_MATERIAL_NEON_GNC,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,83,56,10
+    CONTROL         "Default",ID_OBJECT_MATERIAL_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,5,201,56,10
+END
+
+IDD_COLORMESH DIALOG DISCARDABLE  0, 0, 167, 194
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Colored mesh"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,58,171,50,14
+    GROUPBOX        "Altitude",IDC_STATIC,7,7,153,58
+    CONTROL         "green to brown",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,
+                    19,22,132,16
+    CONTROL         "blue to white",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,
+                    19,42,132,16
+    CONTROL         "Custom :",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,20,70,
+                    39,16
+    LTEXT           "Red",IDC_STATIC,53,95,16,10
+    LTEXT           "Green",IDC_STATIC,71,95,21,10
+    LTEXT           "Blue",IDC_STATIC,96,95,17,10
+    LTEXT           "X",IDC_STATIC,26,115,10,10
+    LTEXT           "Y",IDC_STATIC,26,130,10,10
+    LTEXT           "Z",IDC_STATIC,26,145,10,10
+    CONTROL         "",IDC_CHECK_XRed,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    53,115,10,8
+    CONTROL         "",IDC_CHECK_XGreen,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,75,115,10,8
+    CONTROL         "",IDC_CHECK_YRed,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    53,130,10,8
+    CONTROL         "",IDC_CHECK_YGreen,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,75,130,10,8
+    CONTROL         "",IDC_CHECK_YBlue,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    96,130,10,8
+    CONTROL         "",IDC_CHECK_ZRed,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    53,145,10,8
+    CONTROL         "",IDC_CHECK_ZGreen,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,75,145,10,8
+    CONTROL         "",IDC_CHECK_ZBlue,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    96,145,10,8
+    CONTROL         "",IDC_CHECK_XBlue,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    96,115,10,8
+    LTEXT           "-1",IDC_STATIC,128,95,10,10,NOT WS_VISIBLE
+    CONTROL         "",IDC_CHECK_X1,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_TABSTOP,128,115,10,8
+    CONTROL         "",IDC_CHECK_Y1,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_TABSTOP,128,130,10,8
+    CONTROL         "",IDC_CHECK_Z1,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_TABSTOP,128,145,10,8
+    GROUPBOX        "",IDC_STATIC,21,104,120,9
+    GROUPBOX        "",IDC_STATIC,40,86,8,73
+    GROUPBOX        "",IDC_STATIC,115,86,8,73
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "MainFrame.ico"
+IDR_2DTYPE              ICON    DISCARDABLE     "2dType.ico"
+IDR_3DTYPE              ICON    DISCARDABLE     "3dType.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_2dCHILDFRAME TOOLBAR DISCARDABLE  20, 20
+BEGIN
+    BUTTON      ID_BUTTON2DFitAll
+    BUTTON      ID_BUTTON2DZoomWin
+    BUTTON      ID_BUTTON2DZoomProg
+    SEPARATOR
+    BUTTON      ID_BUTTON2DPanning
+    BUTTON      ID_BUTTON2DGlobPanning
+    SEPARATOR
+    BUTTON      ID_BUTTON2DGridRectLines
+    BUTTON      ID_BUTTON2DGridRectPoints
+    BUTTON      ID_BUTTON2DGridCircLines
+    BUTTON      ID_BUTTON2DGridCircPoints
+    BUTTON      ID_BUTTON2DGridValues
+    BUTTON      ID_BUTTON2DGridCancel
+END
+
+IDR_3dCHILDFRAME TOOLBAR DISCARDABLE  20, 20
+BEGIN
+    BUTTON      ID_BUTTONZoomAll
+    BUTTON      ID_BUTTONZoomWin
+    BUTTON      ID_BUTTONZoomProg
+    SEPARATOR
+    BUTTON      ID_BUTTONPan
+    BUTTON      ID_BUTTONPanGlo
+    SEPARATOR
+    BUTTON      ID_BUTTONFront
+    BUTTON      ID_BUTTONTop
+    BUTTON      ID_BUTTONLeft
+    BUTTON      ID_BUTTONBack
+    BUTTON      ID_BUTTONRight
+    BUTTON      ID_BUTTONBottom
+    BUTTON      ID_BUTTONAxo
+    SEPARATOR
+    BUTTON      ID_BUTTONRot
+    BUTTON      ID_BUTTONReset
+    SEPARATOR
+    BUTTON      ID_BUTTONHlrOff
+    BUTTON      ID_BUTTONHlrOn
+END
+
+IDR_TB_AIS TOOLBAR DISCARDABLE  20, 20
+BEGIN
+    BUTTON      ID_OBJECT_WIREFRAME
+    BUTTON      ID_OBJECT_SHADING
+    SEPARATOR
+    BUTTON      ID_OBJECT_COLOR
+    BUTTON      ID_OBJECT_MATERIAL
+    BUTTON      ID_OBJECT_TRANSPARENCY
+    SEPARATOR
+    BUTTON      ID_OBJECT_ERASE
+    BUTTON      ID_OBJECT_DISPLAYALL
+    SEPARATOR
+    BUTTON      ID_OBJECT_REMOVE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_Popup2D MENU DISCARDABLE 
+BEGIN
+    POPUP "Entry1"
+    BEGIN
+        MENUITEM "Background Color...",         ID_Modify_ChangeBackground
+    END
+END
+
+IDR_Popup3D MENU DISCARDABLE 
+BEGIN
+    POPUP "Background"
+    BEGIN
+        MENUITEM "Background Color...",         ID_Modify_ChangeBackground
+    END
+    POPUP "Object(s)"
+    BEGIN
+        MENUITEM "Erase",                       ID_OBJECT_ERASE
+        MENUITEM "Shading",                     ID_OBJECT_SHADING
+        MENUITEM "Wireframe",                   ID_OBJECT_WIREFRAME
+        MENUITEM "Color...",                    ID_OBJECT_COLOR
+        MENUITEM "Material...",                 ID_OBJECT_MATERIAL
+        POPUP "Material"
+        BEGIN
+            MENUITEM "Aluminium",                   ID_OBJECT_MATERIAL_ALUMINIUM
+
+            MENUITEM "Brass",                       ID_OBJECT_MATERIAL_BRASS
+            MENUITEM "Bronze",                      ID_OBJECT_MATERIAL_BRONZE
+
+            MENUITEM "Chrome",                      ID_OBJECT_MATERIAL_CHROME
+
+            MENUITEM "Copper",                      ID_OBJECT_MATERIAL_COPPER
+
+            MENUITEM "Gold",                        ID_OBJECT_MATERIAL_GOLD
+            MENUITEM "Jade",                        ID_OBJECT_MATERIAL_JADE
+            MENUITEM "Metalized",                   ID_OBJECT_MATERIAL_METALIZED
+
+            MENUITEM "Neon GNC",                    ID_OBJECT_MATERIAL_NEON_GNC
+
+            MENUITEM "Neon PHC",                    ID_OBJECT_MATERIAL_NEON_PHC
+
+            MENUITEM "Obsidian",                    ID_OBJECT_MATERIAL_OBSIDIAN
+
+            MENUITEM "Pewter",                      ID_OBJECT_MATERIAL_PEWTER
+
+            MENUITEM "Plaster",                     ID_OBJECT_MATERIAL_PLASTER
+
+            MENUITEM "Plastic",                     ID_OBJECT_MATERIAL_PLASTIC
+
+            MENUITEM "Satin",                       ID_OBJECT_MATERIAL_SATIN
+            MENUITEM "Shiny plastic",               ID_OBJECT_MATERIAL_SHINY_PLASTIC
+
+            MENUITEM "Silver",                      ID_OBJECT_MATERIAL_SILVER
+
+            MENUITEM "Steel",                       ID_OBJECT_MATERIAL_STEEL
+            MENUITEM "Stone",                       ID_OBJECT_MATERIAL_STONE
+            MENUITEM SEPARATOR
+            MENUITEM "Default",                     ID_OBJECT_MATERIAL_DEFAULT
+
+        END
+        MENUITEM "Transparency...",             ID_OBJECT_TRANSPARENCY
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS DISCARDABLE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ResultDialog, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_AISMATERIAL, DIALOG
+    BEGIN
+        RIGHTMARGIN, 67
+        BOTTOMMARGIN, 219
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_EXPORT_IMAGE    "Export image \n Export image"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information\nAbout"
+    ID_APP_EXIT             "Quit the application\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTON2DFitAll       "Press to zoom the application objects in the view\nFitAll"
+    ID_BUTTON2DZoomWin      "Press and drag MB1 to select a zoom window\nZoom Window"
+    ID_BUTTON2DZoomProg     "Press and drag MB1 to zoom\nDynamic Zooming"
+    ID_BUTTON2DPanning      "Press and drag MB1 to pan\nDynamic Panning"
+    ID_BUTTON2DGlobPanning  "Press and select a new view center\nGlobal Panning"
+    ID_BUTTON2DGridValues   "Press to edit the grid value\nEdit"
+    ID_BUTTON2DGridCircPoints 
+                            "Press to activate circular grid with points\nCircular grid with points"
+    ID_BUTTON2DGridCancel   "Press to erase the grid\nErase"
+    ID_BUTTON2DGridRectLines 
+                            "Press to activate rectangular grid with lines\nRectangular Grid with lines"
+    ID_BUTTON2DGridRectPoints 
+                            "Press to activate rectangular grid with points\nRectangular Grid with points"
+    ID_BUTTON2DGridCircLines 
+                            "Press to activate circular grid with lines\nCircular grid with lines"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCCLOSE         "Close the active window"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONZoomAll        "Press to zoom the application objects in the view\nFitAll"
+    ID_OBJECT_ERASE         "Erase selected shape\nErase"
+    ID_BUTTONZoomWin        "Press and drag MB1 to select a zoom window\nZoom Window"
+    ID_BUTTONZoomProg       "Press and drag MB1 to zoom\nDynamic Zooming"
+    ID_BUTTONPan            "Press and drag MB1 to pan\nDynamic Panning"
+    ID_BUTTONPanGlo         "Press and select a new view center\nGlobal Panning"
+    ID_BUTTONFront          "Press to select a front View\nFront "
+    ID_BUTTONLeft           "Press to select a left View\nLeft"
+    ID_BUTTONBack           "Press to select a back View\nBack"
+    ID_BUTTONRight          "Press to select a right View\nRight"
+    ID_BUTTONBottom         "Press to select a bottom View\nBottom"
+    ID_BUTTONRot            "Press and drag MB1 to rotate\nDynamic Rotation"
+    ID_BUTTONReset          "Press to reset view\nReset"
+    ID_BUTTONHlrOff         "Press to switch hidden lines mode off\nHidden off"
+    ID_BUTTONHlrOn          "Press to switch hidden lines mode on\nHidden On"
+    ID_BUTTONAxo            "Press to select axonometric View\nAxo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONTop            "Press to select a top View\nTop"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OBJECT_REMOVE        "Remove selected shape\nRemove"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OBJECT_DISPLAYALL    "Display all erased shapes\nDisplay"
+    ID_OBJECT_MATERIAL      "Change object material\nMaterial..."
+    ID_OBJECT_TRANSPARENCY  "Change object transparency\nTransparency..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OBJECT_COLOR         "Change object color\nColor..."
+    ID_OBJECT_SHADING       "Put selection in shading\nShading"
+    ID_OBJECT_WIREFRAME     "Put selection in wireframe\nWireframe"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

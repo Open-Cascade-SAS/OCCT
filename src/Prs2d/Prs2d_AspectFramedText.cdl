@@ -1,0 +1,56 @@
+-- File     : Prs2d_AspectFramedText.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class AspectFramedText from Prs2d inherits AspectRoot from Prs2d
+
+---Purpose: defines the attributes when drawing a framed text Presentation.
+
+uses 
+    
+	 NameOfColor from Quantity,
+	 WidthOfLine from Aspect,
+	 TypeOfFont from Aspect
+
+is
+ 
+    Create(  ColorInd:        NameOfColor from Quantity;
+             FrameColorInd:   NameOfColor from Quantity;
+             FrameWidthInd:   WidthOfLine from Aspect;
+             FontInd:         TypeOfFont from Aspect;
+             aSlant:          ShortReal from Standard;
+             aHScale,aWScale: ShortReal from Standard;
+             isUnderlined:    Boolean from Standard )
+	 	   returns mutable AspectFramedText from Prs2d;
+
+    SetColorOfText( me: mutable;  aColor:        NameOfColor from Quantity); 
+    SetFrameColor ( me: mutable;  aFrameColor:   NameOfColor from Quantity);  
+    SetFrameWidth ( me: mutable;  aFrameWidth:   WidthOfLine from Aspect); 
+    SetFontOfText ( me: mutable;  aFont:         TypeOfFont from Aspect);  
+    SetSlant      ( me: mutable;  aSlant:        ShortReal  from  Standard); 
+    SetHScale     ( me: mutable;  aHScale:       ShortReal  from  Standard); 
+    SetWScale     ( me: mutable;  aWScale:       ShortReal  from  Standard);  
+    SetUnderlined ( me: mutable;  anIsUnderlined:Boolean from  Standard); 
+
+    Values( me;
+	      aColorInd:        out NameOfColor from Quantity;
+            aFrameColorInd:   out NameOfColor from Quantity;
+            aFrameWidthInd:   out WidthOfLine from Aspect;
+            aFontInd:         out TypeOfFont from Aspect;
+            aSlant:           out ShortReal from Standard;
+            aHScale,aWScale:  out ShortReal from Standard;
+            isUnderlined:     out Boolean from Standard );
+    
+fields
+
+    myColor	          : NameOfColor from Quantity;
+    myFrameColor      : NameOfColor from Quantity;
+    myFont	          : TypeOfFont from Aspect;
+    myFrameWidth      : WidthOfLine from Aspect;
+    mySlant           : ShortReal from Standard;
+    myHScale          : ShortReal from Standard;
+    myWScale          : ShortReal from Standard;
+    myIsUnderlined    : Boolean from Standard;
+ 
+end AspectFramedText from Prs2d;

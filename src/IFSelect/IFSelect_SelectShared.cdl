@@ -1,0 +1,27 @@
+-- File:	SelectShared.cdl
+-- Created:	Wed Nov 18 15:50:09 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectShared  from IFSelect  inherits SelectDeduct
+
+    ---Purpose : A SelectShared selects Entities which are directly Shared
+    --           by the Entities of the Input list
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectShared;
+    ---Purpose : Creates a SelectShared;
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities (list of entities
+    --           shared by those of input list)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Shared (one level)"
+
+end SelectShared;

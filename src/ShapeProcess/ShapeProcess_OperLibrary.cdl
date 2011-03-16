@@ -1,0 +1,50 @@
+-- File:	ShapeProcess_OperLibrary.cdl
+-- Created:	Thu Aug 31 11:34:18 2000
+-- Author:	Andrey BETENEV
+--		<abv@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class OperLibrary from ShapeProcess 
+
+    ---Purpose: Provides a set of following operators
+    --
+    --          DirectFaces
+    --          FixShape
+    --          SameParameter
+    --          SetTolerance
+    --          SplitAngle
+    --          BSplineRestriction
+    --          ElementaryToRevolution
+    --          SurfaceToBSpline
+    --          ToBezier
+    --          SplitContinuity
+    --          SplitClosedFaces
+    --          FixWireGaps
+    --          FixFaceSize
+    --          DropSmallEdges
+    --          FixShape
+    --          SplitClosedEdges
+
+uses
+
+    Shape               from TopoDS,
+    UOperator           from ShapeProcess,
+    ShapeContext        from ShapeProcess,
+    Modification        from BRepTools,
+    DataMapOfShapeShape from TopTools
+
+is
+
+    Init (myclass);
+    	---Purpose: Registers all the operators
+
+    ApplyModifier (myclass; S: Shape from TopoDS;
+    	    	    	    context: ShapeContext from ShapeProcess;
+			    M: Modification from BRepTools;
+			    map: in out DataMapOfShapeShape from TopTools)
+    	---Purpose: Applies BRepTools_Modification to a shape,
+	--          taking into account sharing of components of compounds.
+    returns Shape from TopoDS;
+
+end OperLibrary;

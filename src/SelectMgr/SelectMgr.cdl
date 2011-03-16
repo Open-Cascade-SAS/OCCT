@@ -1,0 +1,273 @@
+-- File:    SelectMgr.cdl
+-- Created: Mon Feb  6 14:08:38 1995
+-- Author:  Mister rmi
+--      <rmi@photon>
+---Copyright:    Matra Datavision 1995
+
+
+
+package SelectMgr 
+
+    	---Purpose: SelectMgr manages the process of dynamic
+    	-- selection through the following services:
+    	-- -   activating and deactivating selection modes for Interactive Objects
+    	-- -   adding and removing viewer selectors
+    	-- -   definitions of abstract filter classes
+    	--  The principle of graphic selection consists in
+    	-- representing the objects which you want to select
+    	-- by a bounding box in the selection view. The object
+    	-- is selected when you use the mouse to designate
+    	-- the zone produced by the object.
+    	-- To realize this, the application creates a selection
+    	-- structure which is independent of the point of view.
+    	-- This structure is made up of sensitive primitives
+    	-- which have one owner object associated to each of
+    	-- them. The role of the sensitive primitive is to reply
+    	-- to the requests of the selection algorithm whereas
+    	-- the owner's purpose is to make the link between
+    	-- the sensitive primitive and the object to be selected.
+    	-- Each selection structure corresponds to a selection
+    	-- mode which defines the elements that can be selected.
+    	-- For example, to select a complete geometric model,
+    	-- the application can create a sensitive primitive for
+    	-- each face of the interactive object representing the
+    	-- geometric model. In this case, all the primitives
+    	-- share the same owner. On the other hand, to select
+    	-- an edge in a model, the application must create
+    	-- one sensitive primitive per edge.
+    	-- Example
+    	-- void
+    	-- InteractiveBox::ComputeSelection
+    	--       (const Handle(SelectMgr_Selection)& Sel,
+    	--        const Standard_Integer Mode){ switch(Mode){ case 0:
+    	-- // locating the whole box by making its faces sensitive ...
+    	--          {
+    	-- Handle(SelectMgr_EntityOwner)
+    	--  Ownr = new
+    	-- SelectMgr_EntityOwner(this,5);
+    	--        for(Standard_Integer
+    	-- I=1;I<=Nbfaces;I++){Sel->Add(new Select3D_SensitiveFace
+    	--                (Ownr,[array of the vertices] face I);
+    	--        break;
+    	--        }
+    	-- case 1:         // locates the   edges
+    	--          {
+    	--        for(Standard_Integer
+    	--  i=1;i<=12;i++){
+    	--                         // 1 owner per edge...
+    	--          Handle(mypk_EdgeOwner)
+    	--  Ownr = new
+    	-- mypk_EdgeOwner(this,i,6);
+    	--                         // 6->priority
+    	--          Sel->Add(new
+    	--          Select3D_SensitiveSegment
+    	--                   (Ownr,firstpt(i),lastpt(i));
+    	--        }
+    	--        }
+    	-- }
+    	-- The algorithms for creating selection structures
+    	-- store the sensitive primitives in a
+    	-- SelectMgr_Selection object. To do this, a set of
+    	-- ready-made sensitive primitives is supplied in the
+    	-- Select2D and Select3D packages. New sensitive
+    	-- primitives can be defined through inheritance
+    	-- from   SensitiveEntity. For the application to make
+    	-- its own objects selectable, it must define owner
+    	-- classes inheriting SelectMgr_EntityOwner.
+    	-- For any object inheriting from
+    	-- AIS_InteractiveObject, you redefine its
+    	-- ComputeSelection functions. In the example below
+    	-- there are different modes of selection on the
+    	-- topological shape contained within the interactive
+    	-- object -selection of the shape itself, the vertices,
+    	-- the edges, the wires, the faces.
+    	-- Example
+    	-- void
+    	-- MyPack_MyClass::ComputeSelection(
+    	--             const Handle(SelectMgr_Selection)& aSelection,
+    	--             const Standard_Integer aMode)
+    	-- {
+    	--    switch(aMode){
+    	--   case 0:
+    	--   StdSelect_BRepSelectionTool::Load(
+    	--      aSelection,this,myShape,TopAbs_SHAPE);
+    	--   break;
+    	--   }
+    	--   case 1:
+    	--   StdSelect_BRepSelectionTool::Load(
+    	--      aSelection,this,myShape,TopAbs_VERTEX);
+    	--   break;
+    	--   }
+    	--    case 2:
+    	--    StdSelect_BRepSelectionTool::Load(
+    	--       aSelection,this,myShape,TopAbs_EDGE);
+    	--    break;
+    	--    }
+    	--    case 3:
+    	--    StdSelect_BRepSelectionTool::Load(
+    	--       aSelection,this,myShape,TopAbs_WIRE);
+    	--    break;
+    	--    }
+    	--    case 4:
+    	--    StdSelect_BRepSelectionTool::Load(
+    	--       aSelection,this,myShape,TopAbs_FACE);
+    	--    break;
+    	--    }
+    	-- }
+    	-- The StdSelect_BRepSelectionTool object
+    	-- provides a high level service which will make the
+    	-- shape 'myShape' selectable when the
+    	-- AIS_InteractiveContext is asked to display your object.
+    	--   Note: The traditional way of highlighting selected entity
+    	-- owners adopted by the Open CASCADE library assumes that
+    	-- each entity owner highlights itself on its own. This approach
+    	-- has two drawbacks: 
+    	--      -      each entity owner has to maintain its own
+    	--         Prs3d_Presentation object, that results in
+    	--         large memory overhead for thousands of owners;
+    	--      -      drawing selected owners one by one is not
+    	--         efficient from the OpenGL usage viewpoint.
+    	-- That is why a different method has been introduced. On the basis of
+    	-- SelectMgr_EntityOwner::IsAutoHilight() return value an AIS_LocalContext
+    	-- object either uses the traditional way of highlighting
+    	-- (IsAutoHilight() returned true) or groups such owners according
+    	-- to their Selectable Objects and finally calls
+    	-- SelectMgr_SelectableObject::HilightSelected()
+    	-- or ClearSelected(), passing a group of owners as an argument.
+    	-- Hence, an application can derive its own interactive object and
+    	-- redefine HilightSelected(), ClearSelected() and
+    	-- HilightOwnerWithColor() virtual methods to take advantage of
+    	-- such OpenGL technique as arrays of primitives. In any case,
+    	-- these methods should at least have empty implementation.
+    	-- The AIS_LocalContext::UpdateSelected(const Handle(AIS_InteratciveObject)&,
+    	-- Standard_Boolean) method can be used for efficient redrawing a
+    	-- selection presentation for a given interactive object from an
+    	-- application code.
+    	-- Additionally, the SelectMgr_SelectableObject::ClearSelections()
+    	-- method now accepts an optional boolean argument. This parameter
+    	-- defines whether all object selections should be flagged for
+    	-- further update or not. This improved method can be used to
+    	-- re-compute an object selection (without redisplaying the object
+    	-- completely) when some selection mode is activated not for the first time.
+
+uses
+    Standard,
+    MMgt,
+    TCollection,
+    TColStd, 
+    TColgp,
+    Quantity,
+    Bnd,
+    TopLoc,
+    TopAbs,
+    TopoDS,
+    SelectBasics,
+    PrsMgr,
+    Prs3d,
+    Graphic3d
+
+
+is
+
+    enumeration StateOfSelection is
+        SOS_Activated,
+        SOS_Deactivated,
+        SOS_Sleeping,
+        SOS_Any,
+        SOS_Unknown;
+    	---Purpose: different state of a Selection in a ViewerSelector...
+
+
+    enumeration TypeOfUpdate is TOU_Full,TOU_Partial,TOU_None;
+    	---Purpose: Provides values for types of update, including
+    	-- -   full
+    	-- -   partial
+    	-- -   none.
+    deferred class SelectableObject;
+
+    deferred class ViewerSelector;
+    	---Purpose: class selector dedicated to a view ;
+    	--          contains all the sensitive Entities present 
+    	--          in a view at selection time 
+
+
+    deferred class Filter;
+
+    deferred class CompositionFilter;     
+
+    class AndFilter;
+    	---Purpose: AND filter
+    
+    class OrFilter;
+    	---Purpose: OR filter
+
+
+
+    class EntityOwner;
+    	---Purpose: Inherits EntityOwner from SelectBasics;
+    	--          knows the selectable object it was made from;
+    	--          
+
+
+    class Selection;
+    	---Purpose: set of primitives for a mode an an Object;
+    	--          In fact a Selectable Object will have one or many
+    	--          modes of selection or decomposition;
+    	--          A Selection object will contain all the primitives
+    	--          coming from one decomposition.
+
+
+
+    class  SelectionManager;
+    	---Purpose: manages all the Operations before selection -
+    	--          i.e. add specific selections for an object in a selectionview
+
+
+
+
+    ---Category: instantiations of classes from TCollection...
+
+    class SequenceOfFilter instantiates Sequence from TCollection
+    (Filter from SelectMgr);
+
+    class ListOfFilter instantiates List from TCollection
+    (Filter from SelectMgr);
+
+    class SequenceOfOwner instantiates Sequence from TCollection
+    (EntityOwner from SelectMgr);
+
+    class IndexedMapOfOwner instantiates IndexedMap from TCollection
+    (EntityOwner from SelectMgr,MapTransientHasher from TColStd);
+
+    class DataMapOfIntegerSensitive instantiates DataMap from TCollection
+        (Integer, SensitiveEntity from SelectBasics,
+         MapIntegerHasher from TColStd);
+
+    class SequenceOfSelector instantiates Sequence from TCollection
+        (ViewerSelector);
+
+    class SequenceOfSelection instantiates Sequence from TCollection
+        (Selection);
+
+
+    class DataMapOfSelectionActivation instantiates DataMap from TCollection
+    (Selection,Integer,MapTransientHasher from TColStd);
+
+    class DataMapOfObjectSelectors instantiates DataMap from TCollection
+    (SelectableObject,SequenceOfSelector,MapTransientHasher from TColStd);
+
+    private class IndexedDataMapOfOwnerCriterion
+        instantiates IndexedDataMap from TCollection
+                            (EntityOwner        from SelectBasics,
+                             SortCriterion      from SelectMgr,
+                             MapTransientHasher from TColStd);
+
+    private class SortCriterion;
+
+    pointer SOPtr to SelectableObject from SelectMgr;
+
+    imported CompareResults;
+        ---Purpose: Redefine CompareOfInteger from TCollection, to be used
+        --          in method SortResult from class ViewerSelector
+
+end SelectMgr;

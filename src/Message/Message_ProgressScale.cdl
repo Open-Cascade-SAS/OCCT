@@ -1,0 +1,108 @@
+-- File:	Message_ProgressScale.cdl
+-- Created:	Wed Feb 20 15:52:41 2002
+-- Author:	Andrey BETENEV
+--		<abv@doomox>
+---Copyright:	Open CASCADE SA 2002
+
+
+class ProgressScale from Message 
+
+    ---Purpose: Internal data structure for scale in ProgressIndicator
+    --
+    --          Basically it defines three things:
+    --          - name that can be used for generating user messages
+    --          - limits and characteristics of the current scale,
+    --            along with derived coefficients to map it into basic scale [0-1]
+    --          - methods for conversion of values from current scale
+    --            to basic one and back
+    --
+    --          NOTE: There is no special protection against bad input data
+    --          like min > max etc. except cases when it can cause exception
+
+uses
+    HAsciiString from TCollection
+is
+
+    Create returns ProgressScale from Message;
+    	---Purpose: Creates scale ranged from 0 to 100 with step 1
+
+    ---Scope: Access to fields
+
+    SetName(me : out; theName : CString);
+    	---C++:inline
+    SetName(me : out; theName : HAsciiString from TCollection);
+    	---C++:inline
+    	---Purpose: Sets scale name
+    
+    GetName(me) returns HAsciiString from TCollection;
+    	---C++:inline
+    	---Purpose: Gets scale name
+	--          Name may be Null handle if not set
+
+    SetMin(me : out; theMin : Real);
+    	---C++:inline
+    	---Purpose: Sets minimum value of scale
+    
+    GetMin(me) returns Real;
+    	---C++:inline
+    	---Purpose: Gets minimum value of scale
+
+    SetMax(me : out; theMax : Real);
+    	---C++:inline
+    	---Purpose: Sets minimum value of scale
+    
+    GetMax(me) returns Real;
+    	---C++:inline
+    	---Purpose: Gets minimum value of scale
+
+    SetRange (me: out; min, max: Real);
+    	---C++: inline
+    	---Purpose: Set both min and max
+	
+    SetStep(me : out; theStep : Real);
+    	---C++:inline
+    	---Purpose: Sets default step
+    
+    GetStep(me) returns Real;
+    	---C++:inline
+    	---Purpose: Gets default step
+
+    SetInfinite(me : out; theInfinite : Boolean = Standard_True);
+    	---C++:inline
+    	---Purpose: Sets flag for infinite scale
+    
+    GetInfinite(me) returns Boolean;
+    	---C++:inline
+    	---Purpose: Gets flag for infinite scale
+
+    SetScale (me: out; min, max, step: Real; theInfinite : Boolean = Standard_True);
+    	---C++: inline
+    	---Purpose: Set all scale parameters
+	
+    ---Scope: Mapping to base scale
+    
+    SetSpan (me: out; first, last: Real);
+    	---C++: inline
+    	---Purpose: Defines span occupied by the scale on the basis scale
+	
+    GetFirst (me) returns Real;
+    	---C++: inline
+    GetLast (me) returns Real;
+    	---C++: inline
+    	---Purpose: Return information on span occupied by the scale on the base scale
+	
+    LocalToBase (me; val: Real) returns Real;
+    BaseToLocal (me; val: Real) returns Real;
+    	---Purpose: Convert value from this scale to base one and back
+
+fields
+    
+    myName: HAsciiString from TCollection; -- name
+    
+    myMin, myMax: Real;     -- range of a scale
+    myStep : Real;          -- default step
+    myInfinite: Boolean;    -- flag for infinite scale
+
+    myFirst, myLast : Real; -- span on base scale
+
+end ProgressScale;

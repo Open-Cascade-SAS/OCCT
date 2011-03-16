@@ -1,0 +1,84 @@
+-- File:	Extrema_GLocateExtCC.cdl
+-- Created:	Wed Jul  6 15:37:56 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1994
+
+generic class GLocateExtCC from Extrema (Curve1    as any;
+    	    	    	    	    	 Tool1     as any;
+					 Curve2    as any;
+					 Tool2     as any)
+					
+    	---Purpose: It calculates the distance between two curves with
+    	--          a close point; these distances can be maximum or 
+    	--          minimum.
+
+uses   POnCurv from Extrema,
+       Pnt from gp,
+       HArray1OfPnt from TColgp
+
+raises  DomainError  from Standard,
+    	NotDone      from StdFail
+
+
+    class LCCache instantiates CurveCache from Extrema (Curve1, Pnt from gp, HArray1OfPnt from TColgp);
+
+    class ELCC    instantiates GenExtCC      from Extrema
+        (Curve1,
+         Tool1,
+         Curve2,
+         Tool2,
+         LCCache,
+         HArray1OfPnt from TColgp,
+         POnCurv,
+         Pnt,
+         Vec);
+
+
+    class LocECC    instantiates GenLocateExtCC      from Extrema
+    	(Curve1,
+	 Tool1,
+	 Curve2,
+	 Tool2,
+         POnCurv,
+         Pnt,
+         Vec);
+
+
+is
+    Create (C1: Curve1; C2: Curve2; U0,V0: Real)
+    	returns GLocateExtCC
+    	---Purpose: Calculates the distance with a close point. The
+    	--          close point is defined by a parameter value on each 
+    	--          curve.
+    	--          The function F(u,v)=distance(C1(u),C2(v)) has an 
+    	--          extremun when gradient(f)=0. The algorithm searchs
+    	--          the zero near the close point.
+    	raises  DomainError;
+    	    	-- if U0 and V0 are outside the definition ranges of the 
+    	    	-- curves.
+    
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+
+    SquareDistance (me) returns Real
+    	---Purpose: Returns the value of the extremum square distance.
+	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    Point (me; P1,P2: out POnCurv)
+    	---Purpose: Returns the points of the extremum distance. 
+    	--          P1 is on the first curve, P2 on the second one.
+    	raises  NotDone from StdFail
+    	    	-- if IsDone(me)=False.
+    	is static;
+
+fields
+    myDone  : Boolean;
+    mySqDist: Real;
+    myPoint1: POnCurv;
+    myPoint2: POnCurv;
+
+end GLocateExtCC;

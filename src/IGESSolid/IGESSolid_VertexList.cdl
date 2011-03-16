@@ -1,0 +1,58 @@
+--
+-- File      :  VertexList.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class VertexList from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines VertexList, Type <502> Form Number <1>
+        --          in package IGESSolid
+        --          A vertex is a point in R3. A vertex is the bound of an
+        --          edge and can participate in the bounds of a face.
+
+uses
+
+        Pnt          from gp,
+        XYZ          from gp,
+        HArray1OfXYZ from TColgp
+
+raises OutOfRange
+
+is
+
+        Create returns mutable VertexList;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me       : mutable; 
+              vertices : HArray1OfXYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           VertexList
+        --       - vertices : the vertices in the list
+
+        NbVertices (me) returns Integer;
+        ---Purpose : return the number of vertices in the list
+
+        Vertex (me; num : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the num'th vertex in the list
+        -- raises exception if num  <= 0 or num > NbVertices()
+
+fields
+
+--
+-- Class    : IGESSolid_VertexList
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class VertexList.
+--
+-- Reminder : A VertexList instance is defined by :
+--            an array of vertex
+--
+
+        theVertices : HArray1OfXYZ;
+
+end VertexList;

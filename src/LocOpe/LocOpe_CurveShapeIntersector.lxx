@@ -1,0 +1,79 @@
+// File:	LocOpe_CurveShapeIntersector.lxx
+// Created:	Mon May 29 16:12:04 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : LocOpe_CurveShapeIntersector
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector () :
+   myDone(Standard_False)
+{}
+
+
+//=======================================================================
+//function : LocOpe_CurveShapeIntersector
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector 
+   (const gp_Ax1& Axis,
+    const TopoDS_Shape& S)
+{
+  Init(Axis,S);
+}
+
+
+//=======================================================================
+//function : LocOpe_CurveShapeIntersector
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_CurveShapeIntersector::LocOpe_CurveShapeIntersector 
+   (const gp_Circ& C,
+    const TopoDS_Shape& S)
+{
+  Init(C,S);
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_CurveShapeIntersector::IsDone () const
+{
+  return myDone;
+}
+
+
+//=======================================================================
+//function : NbPoints
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer LocOpe_CurveShapeIntersector::NbPoints() const
+{
+  if (!myDone) {StdFail_NotDone::Raise();}
+  return myPoints.Length();
+}
+
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
+
+inline const LocOpe_PntFace& LocOpe_CurveShapeIntersector::
+   Point(const Standard_Integer I) const
+{
+  if (!myDone) {StdFail_NotDone::Raise();}
+  return myPoints(I);
+}
+    
+
+

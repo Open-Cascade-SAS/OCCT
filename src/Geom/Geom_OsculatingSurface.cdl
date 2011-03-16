@@ -1,0 +1,106 @@
+-- File:	Geom_OsculatingSurface.cdl
+-- Created:	Tue May  5 09:20:47 1998
+-- Author:	Stepan MISHIN
+--		<smn@sgi30>
+---Copyright:	 Matra Datavision 1998
+
+
+private class OsculatingSurface from Geom 
+
+	---Purpose: 
+
+uses                   Surface from Geom,
+                SequenceOfReal from TColStd,
+      SequenceOfBSplineSurface from Geom,
+     HSequenceOfBSplineSurface from Geom,
+               Array1OfBoolean from TColStd,
+	               IsoType from GeomAbs,
+                BSplineSurface from Geom,
+            HSequenceOfInteger from TColStd
+
+
+is
+    Create  returns OsculatingSurface from Geom;
+    
+    Create (BS : Surface from Geom;  Tol:  Real  from  Standard) 
+      returns OsculatingSurface from Geom; 
+    --- Purpose : detects if the  surface has punctual U  or  V 
+    --  isoparametric  curve along on  the bounds of the surface
+    --  relativly to the tolerance Tol and Builds the corresponding 
+    --  osculating surfaces.
+     
+      
+    Init(me: in out; BS : Surface from Geom;  Tol:  Real  from  Standard) 
+      is static;
+    
+
+    
+    BasisSurface (me) returns Surface from Geom
+      is static; 
+       
+    Tolerance  (me)  returns  Real  from  Standard
+    is  static;
+    
+    UOscSurf (me ; U,V : Real ; t : out Boolean from Standard; 
+                                          L : out BSplineSurface from Geom)  
+      ---Purpose: if Standard_True, L is the local osculating surface  
+      --          along U at the point U,V. 
+      returns Boolean from Standard
+      is static;
+     
+      
+    VOscSurf (me ; U,V : Real ; t : out Boolean from Standard; 
+                                          L : out BSplineSurface from Geom)  
+        ---Purpose: if Standard_True, L is the local osculating surface  
+        --          along V at the point U,V.
+      returns Boolean from Standard
+      is static;
+     
+    BuildOsculatingSurface (me ; Param : Real;  
+                                 UKnot,VKnot : Integer;
+                                 BS : BSplineSurface from Geom ;
+                                 L : out mutable  BSplineSurface from Geom) 
+    	---Purpose: returns False if the osculating surface can't be built
+    	--          
+      returns Boolean  from  Standard
+      is private;
+      
+    IsQPunctual(me ; S : Surface from Geom; 
+                    Param : Real from Standard;  
+                    IT : IsoType from GeomAbs; 
+                    TolMin,TolMax:  Real  from  Standard) 
+        ---Purpose: returns    True    if  the    isoparametric     is
+        --          quasi-punctual  
+    returns Boolean from Standard
+    is private;
+      
+    HasOscSurf   (me) returns Boolean from Standard
+      is private;
+ 
+    IsAlongU (me) returns Boolean from Standard  is  private; 
+    
+    IsAlongV (me) returns Boolean from Standard  is  private;
+
+    
+    ClearOsculFlags (me: in out)
+      is private ;
+    
+    GetSeqOfL1 (me) returns SequenceOfBSplineSurface from Geom
+      is private;
+      ---C++: return const&
+     
+    GetSeqOfL2 (me) returns SequenceOfBSplineSurface from Geom
+      is private;
+      ---C++: return const&
+
+fields
+
+  myBasisSurf  : Surface from Geom; 
+  myTol        : Real  from  Standard;
+  myOsculSurf1 : HSequenceOfBSplineSurface from Geom; 
+  myOsculSurf2 : HSequenceOfBSplineSurface from Geom;  
+  myKdeg       : HSequenceOfInteger from TColStd; 
+--  myKdeg2      : SequenceOfInteger from TColStd; 
+  myAlong      : Array1OfBoolean from TColStd;
+
+end OsculatingSurface;

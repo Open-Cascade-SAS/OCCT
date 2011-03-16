@@ -1,0 +1,30 @@
+-- File:        TextStyleWithBoxCharacteristics.cdl
+-- Created:     Mon Dec  4 12:02:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWTextStyleWithBoxCharacteristics from RWStepVisual
+
+	---Purpose : Read & Write Module for TextStyleWithBoxCharacteristics
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     TextStyleWithBoxCharacteristics from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWTextStyleWithBoxCharacteristics;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable TextStyleWithBoxCharacteristics from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : TextStyleWithBoxCharacteristics from StepVisual);
+
+	Share(me; ent : TextStyleWithBoxCharacteristics from StepVisual; iter : in out EntityIterator);
+
+end RWTextStyleWithBoxCharacteristics;

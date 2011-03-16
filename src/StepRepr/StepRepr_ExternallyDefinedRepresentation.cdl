@@ -1,0 +1,17 @@
+-- File:	StepRepr_ExternallyDefinedRepresentation.cdl
+-- Created:	Tue Jun 30 17:42:08 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ExternallyDefinedRepresentation  from StepRepr    inherits Representation  from StepRepr
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable ExternallyDefinedRepresentation;
+
+end ExternallyDefinedRepresentation;

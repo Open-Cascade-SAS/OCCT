@@ -1,0 +1,35 @@
+-- File:	ShapeFix_SplitCommonVertex.cdl
+-- Created:	Wed Feb  4 12:35:52 2004
+-- Author:	Sergey KUUL
+--		<skl@popox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2004
+
+class SplitCommonVertex from ShapeFix inherits Root from ShapeFix
+
+	---Purpose: Two wires have common vertex - this case is valid in BRep model
+        --          and isn't valid in STEP => before writing into STEP it is necessary
+        --          to split this vertex (each wire must has one vertex)
+
+uses
+    Shape from TopoDS
+    
+is
+    Create returns SplitCommonVertex;
+    ---Purpose :
+
+    Init(me: mutable; S : Shape from TopoDS); 
+    ---Purpose :
+    
+    Perform(me:mutable);	
+    ---Purpose :
+    
+    Shape(me : mutable) returns Shape from TopoDS;
+    ---Purpose :
+
+fields
+
+    myShape    : Shape from TopoDS;
+    myResult   : Shape from TopoDS;
+    myStatus   : Integer; -- error status
+
+end SplitCommonVertex;

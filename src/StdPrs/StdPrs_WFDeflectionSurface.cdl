@@ -1,0 +1,40 @@
+-- File:	StdPrs_WFDeflectionSurface.cdl
+-- Created:	Mon Jul 24 17:20:11 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class WFDeflectionSurface from StdPrs
+
+inherits Root from Prs3d
+    	--- Purpose: Draws a surface by drawing the isoparametric curves with respect to 
+    	-- a maximal chordial deviation.
+    	-- The number of isoparametric curves to be drawn and their color are
+    	-- controlled by the furnished Drawer.
+ 
+uses
+    HSurface     from Adaptor3d,
+    Curve        from Adaptor3d,
+    Presentation from Prs3d,
+    Drawer       from Prs3d
+is
+  
+ 
+ 
+    Add(myclass; aPresentation: Presentation from Prs3d;  
+    	    	 aSurface     : HSurface     from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+    	---Purpose: Adds the surface aSurface to the presentation object
+    	-- aPresentation, and defines its boundaries and isoparameters.
+    	-- The shape's display attributes are set in the attribute
+    	-- manager aDrawer. These include whether deflection
+    	-- is absolute or relative to the size of the shape.
+    	-- The surface aSurface is a surface object from
+    	-- Adaptor, and provides data from a Geom surface.
+    	-- This makes it possible to use the surface in a geometric algorithm.
+    	-- Note that this surface object is manipulated by handles.
+end WFDeflectionSurface from StdPrs;
+
+
+

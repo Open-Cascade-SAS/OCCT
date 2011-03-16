@@ -1,0 +1,86 @@
+-- File:	BOP_SolidClassifier.cdl
+
+class SolidClassifier from BOP
+
+    ---Purpose: 
+    --  The  auxiliary class to classify points with 
+    --  a solid  
+    --	     
+uses 
+
+    State from TopAbs,
+    Shell from TopoDS,
+    Solid from TopoDS,
+    Pnt   from gp,
+    PSoClassif                      from BOP,
+    IndexedDataMapOfSolidClassifier from BOP,
+    Builder from BRep
+    
+is
+
+    Create  
+    	returns SolidClassifier from BOP;
+    	---Purpose:  
+    	--- Empty  Constructor 
+    	---
+    Clear(me:out)  
+    	is static;
+    	---Purpose:  
+    	--- Clear internal state  
+    	---
+    LoadSolid(me: out;  
+    	    aS : Solid from TopoDS)  
+    	is static;
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    Classify(me:out;  
+    	    aS : Solid from TopoDS;  
+    	    aP : Pnt from gp;  
+    	    aTol: Real from Standard) 
+    returns State from TopAbs
+    	is static;
+    	---Purpose:  
+    	--- Compute the position of point <P> regarding with the
+    	--- geometric domain of the solid <S>.  
+    	---
+    	
+
+    LoadShell(me:out;  
+    	    S : Shell from TopoDS) 
+    	 is static;
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    Classify(me:out;  
+    	    aS : Shell from TopoDS;  
+    	    aP : Pnt from gp;  
+    	    aTol : Real  from  Standard) 
+    returns State from TopAbs
+    	is static;
+    	---Purpose:  
+    	--- Compute the position of point <P> regarding with the
+    	--- geometric domain of the shell <S>. 
+	---
+    State(me)  
+    	returns State from TopAbs
+    	is static;   
+    	---Purpose: 
+    	--- Returns computed 3D-State   
+    	---
+    Destroy (me:out); 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_SolidClassifier(){Destroy();}"  
+    	---Purpose: 
+    	--- Destructor   
+    	---
+    
+fields
+
+    myPClassifier   : PSoClassif from BOP;  
+    myClassifierMap : IndexedDataMapOfSolidClassifier from BOP;
+    myState         : State from TopAbs;    
+    myShell         : Shell from TopoDS;
+    mySolid         : Solid from TopoDS;
+    myBuilder       : Builder from BRep;
+    
+end SolidClassifier from BOP;

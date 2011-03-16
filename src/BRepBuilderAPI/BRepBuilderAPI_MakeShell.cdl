@@ -1,0 +1,124 @@
+-- File:	BRepBuilderAPI_MakeShell.cdl
+-- Created:	Wed Feb 16 16:56:46 1994
+-- Author:	Remi LEQUETTE
+--		<rle@zerox>
+--		xab:19Nov96 correction de doc
+---Copyright:	 Matra Datavision 1994
+
+
+
+class MakeShell from BRepBuilderAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Describes functions to build a
+    	-- shape corresponding to the skin of a surface.
+    	-- Note that the term shell in the class name has the same definition
+    	-- as that of a shell in STEP, in other words the skin of a shape,
+    	-- and not a solid model defined by surface and thickness. If you want
+    	-- to build the second sort of shell, you must use
+    	-- BRepOffsetAPI_MakeOffsetShape. A shell is made of a series of
+    	-- faces connected by their common edges.
+    	-- If the underlying surface of a face is not C2 continuous and 
+    	-- the flag Segment is True, MakeShell breaks the surface down into
+    	-- several faces which are all C2 continuous and which are
+    	-- connected along the non-regular curves on the surface.
+    	-- The resulting shell contains all these faces.
+    	-- Construction of a Shell from a non-C2 continuous Surface
+    	-- A MakeShell object provides a framework for:
+    	-- -      defining the construction of a shell,
+    	-- -      implementing the construction algorithm, and
+    	-- -      consulting the result.
+    	-- Warning
+    	-- The connected C2 faces in the shell resulting from a decomposition of
+    	-- the surface are not sewn. For a sewn result, you need to use
+    	-- BRepOffsetAPI_Sewing. For a shell with thickness, you need to use
+    	-- BRepOffsetAPI_MakeOffsetShape.
+        
+uses
+
+    Surface    from Geom,
+    Shell      from TopoDS,
+    Face       from TopoDS,
+    ShellError from BRepBuilderAPI,
+    MakeShell  from BRepLib
+    
+
+raises
+    NotDone from StdFail
+
+is
+    Create  
+	---Purpose: Constructs an empty shell framework. The Init
+    	-- function is used to define the construction arguments.
+    	-- Warning
+    	-- The function Error will return
+    	-- BRepBuilderAPI_EmptyShell if it is called before the function Init.
+    returns MakeShell from BRepBuilderAPI;
+    
+    ----------------------------------------------
+    -- From a set of face
+    ----------------------------------------------
+
+    ----------------------------------------------
+    -- From a surface
+    ----------------------------------------------
+
+    Create(S : Surface from Geom;
+    	   Segment : Boolean from Standard = Standard_False)
+	---Purpose: Constructs a shell from the surface S.
+    returns MakeShell from BRepBuilderAPI;
+    
+    Create(S : Surface from Geom; UMin, UMax, VMin, VMax : Real;
+       	   Segment : Boolean from Standard = Standard_False)
+
+	---Purpose: Constructs a shell from the surface S,
+    	--      limited in the u parametric direction by the two
+    	--      parameter values UMin and UMax, and limited in the v
+    	--      parametric direction by the two parameter values VMin and VMax.
+    returns MakeShell from BRepBuilderAPI;
+
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real;
+       	              Segment : Boolean from Standard = Standard_False)
+    	---Purpose: Defines or redefines the arguments
+    	-- for the construction of a shell. The construction is initialized
+    	-- with the surface S, limited in the u parametric direction by the
+    	-- two parameter values UMin and UMax, and in the v parametric
+    	-- direction by the two parameter values VMin and VMax.
+    	-- Warning
+    	-- The function Error returns:
+    	-- -      BRepBuilderAPI_ShellParametersOutOfRange
+    	--    when the given parameters are outside the bounds of the
+    	--    surface or the basis surface if S is trimmed
+    is static;
+
+
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    IsDone(me) returns Boolean
+	---Purpose: Returns true if the shell is built.
+    is redefined;
+
+    Error(me) returns ShellError from BRepBuilderAPI
+	---Purpose: Returns the construction status:
+    	-- -   BRepBuilderAPI_ShellDone if the shell is built, or
+    	-- -   another value of the BRepBuilderAPI_ShellError
+    	--   enumeration indicating why the construction failed.
+    	--   This is frequently BRepBuilderAPI_ShellParametersOutOfRange
+    	-- indicating that the given parameters are outside the bounds of the surface.
+    is static;
+
+    Shell(me) returns Shell from TopoDS
+	---Purpose: Returns the new Shell.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Shell() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static; 
+    
+fields
+    myMakeShell : MakeShell from BRepLib;
+
+end MakeShell;

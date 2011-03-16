@@ -1,0 +1,30 @@
+-- File:        SurfaceStyleUsage.cdl
+-- Created:     Mon Dec  4 12:02:32 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSurfaceStyleUsage from RWStepVisual
+
+	---Purpose : Read & Write Module for SurfaceStyleUsage
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SurfaceStyleUsage from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSurfaceStyleUsage;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SurfaceStyleUsage from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : SurfaceStyleUsage from StepVisual);
+
+	Share(me; ent : SurfaceStyleUsage from StepVisual; iter : in out EntityIterator);
+
+end RWSurfaceStyleUsage;

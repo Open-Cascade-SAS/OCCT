@@ -1,0 +1,36 @@
+-- File:	PDataStd_IntegerArray_1.cdl
+-- Created:	Wed Mar 26 18:21:04 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008 
+
+class IntegerArray_1 from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistence
+uses HArray1OfInteger from PColStd
+     
+     
+is
+
+    Create returns mutable IntegerArray_1 from PDataStd;
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+
+    SetValue(me: mutable; Index : Integer from Standard; Value : Integer from Standard);
+    
+    Value(me;  Index : Integer from Standard) returns Integer  from Standard;
+   
+    Lower (me) returns Integer from Standard;      
+
+    Upper (me) returns Integer from Standard;   
+ 
+    SetDelta(me : mutable; delta : Boolean from Standard);  
+    
+    GetDelta(me) returns Boolean from Standard;          
+    
+fields
+    myValue  :  HArray1OfInteger from PColStd;
+    myDelta  : Boolean from Standard;
+end IntegerArray_1;
+
+

@@ -1,0 +1,38 @@
+-- File:	StdLDrivers.cdl
+-- Created:	Sep  7 16:29:46 2000
+-- Author:	TURIN  Anatoliy <ati@nnov.matra-dtv.fr>
+-- Copyright:	Matra Datavision 2000
+
+package StdLDrivers
+
+uses  
+
+    PDF,
+    Standard,
+    TCollection,
+    CDM,
+    PCDM,
+    TDF,
+    PDF,
+    MDF,
+    TDocStd,
+    MDocStd,
+    PDocStd
+ 
+is 
+    
+    class DocumentRetrievalDriver;
+    
+    class DocumentStorageDriver;
+
+
+    ---Category: Factory methods
+    --           ==============================================================
+
+    Factory (aGUID: GUID from Standard)
+    returns Transient from Standard;
+	---Purpose: Depending from the  ID, returns a list of  storage
+	--          or retrieval attribute drivers. Used for plugin
+		   
+end PAppStdL;
+

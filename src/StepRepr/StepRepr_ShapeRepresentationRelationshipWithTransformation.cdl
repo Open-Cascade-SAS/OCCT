@@ -1,0 +1,18 @@
+-- File:	StepRepr_ShapeRepresentationRelationshipWithTransformation.cdl
+-- Created:	Tue Jun 30 18:15:14 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ShapeRepresentationRelationshipWithTransformation  from StepRepr
+    inherits RepresentationRelationshipWithTransformation  from StepRepr
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable ShapeRepresentationRelationshipWithTransformation;
+
+end ShapeRepresentationRelationshipWithTransformation;

@@ -1,0 +1,155 @@
+-- File:	BRepIntCurveSurface_Inter.cdl
+-- Created:	Mon Feb  7 15:52:37 1994
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Inter from BRepIntCurveSurface 
+
+	---Purpose: Computes the intersection between a face and a curve
+	--          
+
+uses  
+--modified by NIZNHY-PKV Sun Dec 15 16:52:33 2002  f 
+     TopolTool  from  BRepTopAdaptor, 
+     HSurface  from BRepAdaptor, 
+--modified by NIZNHY-PKV Sun Dec 15 16:52:34 2002  t
+     Shape               from TopoDS,
+     FaceClassifier      from BRepClass,
+     State               from TopAbs,
+     Explorer            from TopExp,
+     IntersectionPoint   from IntCurveSurface,
+     HInter              from IntCurveSurface,
+     Curve               from GeomAdaptor,
+     Lin                 from gp,
+     Pnt                 from gp,
+     TransitionOnCurve   from IntCurveSurface,
+     Face                from TopoDS
+    
+     
+raises 
+    NotDone from StdFail	  
+
+
+is
+
+    Create   returns Inter from BRepIntCurveSurface;
+    	--- Purpose: Empty constructor;
+    	
+    Init(me : in out;
+    	 Sh : Shape from TopoDS;
+	 Cu : Curve from GeomAdaptor;
+	 Tol: Real  from Standard)
+	    
+	--- Purpose: Load the Shape, the curve  and initialize the
+	--           tolerance used for the classification.
+    	is static;
+    
+    Init(me : in out;
+    	 Sh : Shape from TopoDS;
+	 L  : Lin   from gp;
+	 Tol: Real  from Standard)
+	    
+	--- Purpose: Load the Shape, the curve  and initialize the
+	--           tolerance used for the classification.
+    	is static;
+    
+    More(me) 
+
+  	--- Purpose: returns True if there is a current face.
+    	returns Boolean from Standard
+    	is static;
+    
+					     
+    Next(me: in out)
+
+      	--- Purpose: Sets the explorer to the next face.
+	is static;
+	
+    Find(me: in out) 
+    	---Purpose: Internal function
+    	is static protected;
+
+    Point(me)
+    	
+    	---Purpose: returns the current Intersection point.
+    	
+    	returns IntersectionPoint from IntCurveSurface
+    	raises NotDone from StdFail
+	is static;       
+
+    Pnt(me) 
+    	---Purpose: returns the current geometric Point
+    	---C++: return const & 
+    	returns Pnt from gp
+    	raises NotDone from StdFail
+	is static;
+	
+
+    U(me) 
+    	---Purpose: returns the U parameter of the current point 
+    	--          on the current face.
+    	returns Real from Standard
+    	raises NotDone from StdFail
+	is static;
+
+    V(me) 
+    	---Purpose: returns the V parameter of the current point 
+    	--          on the current face.
+    	returns Real from Standard
+    	raises NotDone from StdFail
+	is static;
+
+    W(me) 
+    	---Purpose: returns the  parameter of the current point 
+    	--          on the curve.
+    	returns Real from Standard
+    	raises NotDone from StdFail
+	is static;
+
+    State(me)
+
+	---Purpose: returns the current state  (IN or ON)
+	returns State from TopAbs
+    	raises NotDone from StdFail
+	is static;
+
+    Transition(me) 
+    
+    	---Purpose: returns the transition of the line on the surface (IN or OUT or UNKNOWN)
+    	returns TransitionOnCurve   from IntCurveSurface
+    	raises NotDone from StdFail
+	is static;
+	
+    Face(me)
+    
+    	---Purpose: returns the current face.
+        ---C++: return const &
+    	returns Face from TopoDS
+	is static;
+
+
+fields
+
+    empty          : Boolean           from Standard;
+    curveisaline   : Boolean           from Standard;
+    tolerance      : Real              from Standard;
+    line           : Lin               from gp;
+    curve          : Curve             from GeomAdaptor;
+    
+    explorer       : Explorer          from TopExp;
+    classifier     : FaceClassifier    from BRepClass;
+    --intcs          : ICSInter          from BRepIntCurveSurface;
+    intcs          : HInter             from IntCurveSurface;
+    
+    currentindex   : Integer           from Standard;
+    currentnbpoints: Integer           from Standard;
+--modified by NIZNHY-PKV Sun Dec 15 16:51:34 2002  f     
+    FastClass       :  TopolTool  from  BRepTopAdaptor; 
+    SurfForFastClass:  HSurface  from BRepAdaptor;  
+    currentstate    :  State  from  TopAbs; 
+    currentU        :  Real  from  Standard;
+    currentV        :  Real  from  Standard;
+--modified by NIZNHY-PKV Sun Dec 15 16:52:15 2002  t    
+end Inter from BRepIntCurveSurface;

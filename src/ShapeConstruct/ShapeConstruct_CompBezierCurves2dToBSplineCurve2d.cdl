@@ -1,0 +1,73 @@
+-- File:	ShapeConstruct_CompBezierCurves2dToBSplineCurve2d.cdl
+-- Created:	Tue Nov  9 10:52:26 1993
+-- Author:	Modelistation
+--		<model@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class CompBezierCurves2dToBSplineCurve2d from ShapeConstruct
+
+	---Purpose: Converts a list  of connecting Bezier Curves 2d to  a
+	--          BSplineCurve 2d.
+	--          if possible, the continuity of the BSpline will be 
+	--          increased to more than C0.
+
+
+uses
+    SequenceOfReal            from TColStd,
+    SequenceOfInteger         from TColStd,
+    Array1OfReal              from TColStd,
+    Array1OfInteger           from TColStd,
+    Array1OfPnt2d             from TColgp,
+    SequenceOfPnt2d           from TColgp,
+    SequenceOfArray1OfPoles2d from Convert
+
+
+raises
+    ConstructionError from Standard
+
+    -------------------------------------------------------------------------
+    --- Don't forget to use the method Perform before accessing the Result.
+    -------------------------------------------------------------------------
+
+is
+    Create( AngularTolerance : Real = 1.0e-4 )
+    returns CompBezierCurves2dToBSplineCurve2d from ShapeConstruct;
+
+    AddCurve( me    : in out;
+              Poles : Array1OfPnt2d from TColgp)
+    is static;
+
+
+    Perform(me: in out)
+    	---Purpose: Computes the algorithm.
+    is static;
+
+    
+    Degree(me) returns Integer from Standard
+    is static;
+    
+    NbPoles(me) returns Integer from Standard
+    is static;
+    
+    Poles(me; Poles : in out Array1OfPnt2d from TColgp)
+    is static;
+    
+    NbKnots(me) returns Integer from Standard
+    is static;
+    
+    KnotsAndMults(me;
+                  Knots : in out Array1OfReal    from TColStd;
+		  Mults : in out Array1OfInteger from TColStd)
+    is static;
+    
+    
+fields
+    mySequence          : SequenceOfArray1OfPoles2d from Convert;
+    CurvePoles          : SequenceOfPnt2d           from TColgp;
+    CurveKnots          : SequenceOfReal            from TColStd;
+    KnotsMultiplicities : SequenceOfInteger         from TColStd;
+    myDegree            : Integer                   from Standard;
+    myAngular           : Real                      from Standard;
+    myDone              : Boolean                   from Standard;
+
+end CompBezierCurves2dToBSplineCurve2d;

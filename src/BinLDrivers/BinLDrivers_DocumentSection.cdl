@@ -1,0 +1,73 @@
+-- File:        BinLDrivers_DocumentSection.cdl
+-- Created:     Sam Apr 28 2007
+-- Author:      Alexander GRIGORIEV
+--              <alexander.grigoriev@opencascade.com>
+---Copyright:   Open CASCADE 2007
+
+
+class DocumentSection from BinLDrivers
+
+    ---Purpose: More or less independent part of the saved/restored document
+    --          that is distinct from OCAF data themselves but may be referred
+    --          by them.
+
+uses
+    AsciiString      from TCollection,
+    Size             from Standard
+
+is
+    -- ===== Public methods =====
+
+    Create returns DocumentSection from BinLDrivers;
+    ---Purpose: Empty constructor
+
+    Create (theName    : AsciiString from TCollection;
+            isPostRead : Boolean from Standard)
+        returns DocumentSection from BinLDrivers;
+    ---Purpose: Constructor
+
+    Name        (me)
+        returns AsciiString from TCollection;
+    ---C++: return const&
+    ---Purpose: Query the name of the section.
+
+    IsPostRead  (me)
+        returns Boolean from Standard;
+    ---Purpose: Query the status: if the Section should be read after OCAF;
+    --          False means that the Section is read before starting to
+    --          read OCAF data.
+
+    Offset      (me)
+        returns Size from Standard;
+    ---Purpose: Query the offset of the section in the persistent file
+
+    SetOffset   (me:in out; theOffset: Size from Standard);
+    ---Purpose: Set the offset of the section in the persistent file
+
+    Length      (me)
+        returns Size from Standard;
+    ---Purpose: Query the length of the section in the persistent file
+
+    SetLength   (me:in out; theLength: Size from Standard);
+    ---Purpose: Set the length of the section in the persistent file
+
+    WriteTOC    (me: in out; theOS : in out OStream from Standard);
+    ---Purpose: Create a Section entry in the Document TOC (list of sections)
+
+    Write       (me: in out; theOS : in out OStream from Standard;
+                             theOffset: Size from Standard);
+    ---Purpose: Save Offset and Length data into the Section entry
+    --          in the Document TOC (list of sections)
+
+    ReadTOC     (myclass; theSection: out DocumentSection from BinLDrivers;
+                          theIS : in out IStream from Standard);
+    ---Purpose: Fill a DocumentSection instance from the data that are read
+    --          from TOC.
+
+fields
+
+    myName       : AsciiString from TCollection;
+    myValue      : Size from Standard [2];
+    myIsPostRead : Boolean from Standard;
+
+end DocumentSection;

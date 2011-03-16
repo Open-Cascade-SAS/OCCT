@@ -1,0 +1,40 @@
+-- File:	    Prs2d_Parallelism.cdl
+-- Created:	    October 2000
+-- Author:	    TCL
+---Copyright:	Matra Datavision 2000
+
+class Parallelism from Prs2d inherits Tolerance from Prs2d
+
+uses
+
+	GraphicObject	from Graphic2d,
+	Drawer          from Graphic2d,
+	Length		    from Quantity,
+    FStream         from Aspect 
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create( aGO                    : GraphicObject from Graphic2d;
+			aX, aY                 : Real          from Standard;
+			aLength                : Real          from Standard = 3.0;
+            anAngle                : Real          from Standard = 0.0 );
+	---Level: Public
+	---Purpose: Creates a tolerance Parallelism with the center at <aX>, <aY>; 
+	--          length of this is <aLength>;
+	--          reference point is <aXPosition>, <aYPosition>
+	---Category: Constructor
+
+    --------------------------
+	-- Category: Draw and Pick
+	--------------------------
+
+	Draw( me : mutable; aDrawer: Drawer from Graphic2d ) is static protected;
+	---Level: Internal
+	---Purpose: Draws the Parallelism <me>.
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+     
+end Parallelism from Prs2d;

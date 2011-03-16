@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWEulerAngles.cdl
+-- Created:	Thu Dec 12 15:38:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWEulerAngles from RWStepBasic
+
+    ---Purpose: Read & Write tool for EulerAngles
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    EulerAngles from StepBasic
+
+is
+    Create returns RWEulerAngles from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : EulerAngles from StepBasic);
+	---Purpose: Reads EulerAngles
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: EulerAngles from StepBasic);
+	---Purpose: Writes EulerAngles
+
+    Share (me; ent : EulerAngles from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWEulerAngles;

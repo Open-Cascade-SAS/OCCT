@@ -1,0 +1,68 @@
+--
+-- File:	ImageUtility_XWUD.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+class XWUD from ImageUtility
+
+	---Version: 0.0
+
+	---Purpose: Performs a "xwud -noclick" with a XAlienImage build
+	-- 		 from any Image , any AlienImage .
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	AlienUserImage 	from AlienImage,
+	XAlienImage  	from AlienImage,
+	File  		from OSD,
+	Image 		from Image
+
+raises
+	TypeMismatch 	from Standard
+
+is
+	XWUD( myclass ; aImage          : in Image from Image; 
+			aName           : CString from Standard;
+			xwudOptions     : CString from Standard 
+						= "-new -noclick" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a Image object to aTmpFile and
+	  --          execute a Spawn "xwud xwudOptions -in aTmpFile &" .
+
+	XWUD( myclass ; aAlienUserImage : in AlienUserImage from AlienImage; 
+			aName           : CString from Standard ;
+			xwudOptions     : CString from Standard 
+						= "-new -noclick" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a  AlienImage object to aTmpFile and
+	  --          execute a Spawn "xwud xwudOptions -in aTmpFile &" .
+
+	XWUD( myclass ; aXAlienImage    : in XAlienImage from AlienImage ;
+			xwudOptions     : CString from Standard 
+						= "-new -noclick" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a  XAlienImage object to aTmpFile and
+	  --          execute a Spawn "xwud xwudOptions -in aTmpFile &" .
+
+	XWUD( myclass ; aFile           : in File from OSD ;
+			xwudOptions     : CString from Standard 
+						= "-new -noclick" ) ;
+	---Level: Internal
+	  ---Purpose: execute a Spawn 
+	  --	"xwud -new -noclick -in /aFile.SystemName()/ &" .
+
+	XWUD( myclass ; aFileName       : CString from Standard ;
+			xwudOptions     : CString from Standard 
+						= "-new -noclick" ) ;
+	---Level: Internal
+	  ---Purpose: execute a Spawn "xwud xwudOptions -in aFileName &" .
+
+
+
+end ;

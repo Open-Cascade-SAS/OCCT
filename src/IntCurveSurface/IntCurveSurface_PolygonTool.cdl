@@ -1,0 +1,69 @@
+-- File:	IntCurveSurface_PolygonTool.cdl
+-- Created:	Fri Aug  2 08:18:37 1991
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1991
+
+
+
+
+generic class PolygonTool from IntCurveSurface(
+                  ThePoint       as any;
+                  ThePolygon     as any;
+                  TheBoundingBox as any)
+
+	---Purpose: 
+
+raises  OutOfRange from Standard
+
+
+is  
+
+
+    Bounding       (myclass; thePolygon : ThePolygon)
+    	    	    returns TheBoundingBox;
+    ---Purpose: Give the bounding box of the polygon.
+    ---C++: inline 
+    ---C++: return const &
+
+    DeflectionOverEstimation
+    	    	   (myclass; thePolygon : ThePolygon)
+    		   ---C++: inline
+		   returns Real from Standard;
+
+    Closed         (myclass; thePolygon : ThePolygon)
+    	            ---C++: inline
+    	    	    returns Boolean from Standard;
+
+    NbSegments     (myclass; thePolygon : ThePolygon)
+                    ---C++: inline
+		   returns Integer from Standard;
+
+    BeginOfSeg     (myclass; thePolygon : ThePolygon;
+    	    	    Index : in Integer)
+		    ---C++: inline
+    	    	    returns ThePoint
+    	    	    raises OutOfRange from Standard;
+                    ---C++: return const &
+    ---Purpose: Give the point of range Index in the Polygon. 
+
+    EndOfSeg       (myclass; thePolygon : ThePolygon;
+    	    	    Index : in Integer)
+		    ---C++: inline
+    	    	    returns ThePoint
+    	    	    raises OutOfRange from Standard;
+		    ---C++: return const &
+    ---Purpose: Give the point of range Index in the Polygon. 
+
+
+    Dump           (myclass; thePolygon : ThePolygon);
+		 
+end PolygonTool;
+
+
+
+
+
+
+
+

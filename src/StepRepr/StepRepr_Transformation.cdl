@@ -1,0 +1,44 @@
+-- File:	StepRepr_Transformation.cdl
+-- Created:	Tue Jun 30 14:18:56 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+-- File:        Transformation.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class Transformation from StepRepr inherits SelectType from StepData
+
+	-- <Transformation> is an EXPRESS Select Type construct translation.
+	-- it gathers : ItemDefinedTransformation, FunctionallyDefinedTransformation
+
+uses
+
+	ItemDefinedTransformation,
+	FunctionallyDefinedTransformation
+
+is
+
+	Create returns Transformation;
+	---Purpose : Returns a Transformation SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a Transformation Kind Entity that is :
+	--        1 -> ItemDefinedTransformation
+	--        2 -> FunctionallyDefinedTransformation
+	--        0 else
+
+	ItemDefinedTransformation (me) returns any ItemDefinedTransformation;
+	---Purpose : returns Value as a ItemDefinedTransformation (Null if another type)
+
+	FunctionallyDefinedTransformation (me) returns any FunctionallyDefinedTransformation;
+	---Purpose : returns Value as a FunctionallyDefinedTransformation (Null if another type)
+
+
+end Transformation;
+

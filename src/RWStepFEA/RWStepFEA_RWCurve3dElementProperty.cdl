@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWCurve3dElementProperty.cdl
+-- Created:	Thu Dec 12 17:51:03 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCurve3dElementProperty from RWStepFEA
+
+    ---Purpose: Read & Write tool for Curve3dElementProperty
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    Curve3dElementProperty from StepFEA
+
+is
+    Create returns RWCurve3dElementProperty from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : Curve3dElementProperty from StepFEA);
+	---Purpose: Reads Curve3dElementProperty
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: Curve3dElementProperty from StepFEA);
+	---Purpose: Writes Curve3dElementProperty
+
+    Share (me; ent : Curve3dElementProperty from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCurve3dElementProperty;

@@ -1,0 +1,54 @@
+-- File:	GenExp.cdl
+-- Created:	Thu Jul 18 18:13:12 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class GenExp from ExprIntrp inherits Generator from ExprIntrp
+
+	---Purpose: This class permits, from a string, to create any 
+	--          kind of expression of package Expr by using 
+	--          built-in functions such as Sin,Cos, etc, and by 
+	--          creating variables.
+
+uses GeneralExpression from Expr,
+    AsciiString from TCollection
+
+raises NoSuchObject
+
+is
+
+    Create
+    ---Purpose: Creates an empty generator
+    ---Level: Advanced 
+    returns mutable GenExp is private;
+
+    Create( myclass ) returns GenExp;
+    
+    Process(me : mutable; str : AsciiString)
+    ---Purpose: Processes given string.
+    ---Level: Advanced 
+    is static;
+
+    IsDone(me)
+    ---Purpose: Returns false if any syntax error has occurred during 
+    --          process. 
+    ---Level: Advanced 
+    returns Boolean
+    is static;
+	    
+    Expression(me)
+    ---Purpose: Returns expression generated. Raises an exception if 
+    --          IsDone answers false.
+    ---Level: Advanced 
+    returns any GeneralExpression
+    raises NoSuchObject
+    is static;
+    
+fields
+
+    done : Boolean;
+    myExpression : GeneralExpression;
+    
+end GenExp;

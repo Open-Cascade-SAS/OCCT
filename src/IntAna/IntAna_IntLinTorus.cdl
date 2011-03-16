@@ -1,0 +1,127 @@
+-- File:	IntLinTorus.cdl
+-- Created:	Thu May 16 17:47:17 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class IntLinTorus from IntAna 
+
+	---Purpose: Intersection between a line and a torus.
+
+uses Lin          from gp,
+     Torus        from gp,
+     Pnt          from gp
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+
+is
+
+    Create
+    
+    	returns IntLinTorus from IntAna;
+
+    Create(L : Lin from gp; T : Torus from gp)
+    
+    	---Purpose: Creates the intersection between a line and a torus.
+
+    	returns IntLinTorus from IntAna;
+
+
+    Perform(me: in out; L : Lin from gp; T : Torus from gp)
+    
+    	---Purpose: Intersects a line and a torus.
+
+    	is static;
+
+
+    IsDone(me)
+    
+	---Purpose: Returns True if the computation was successful.
+	--          
+	---C++: inline
+
+    	returns Boolean from Standard
+	
+	is static;
+
+
+    NbPoints(me)
+    
+    	---Purpose: Returns the number of intersection points.
+	--          
+	---C++: inline
+
+    	returns Integer from Standard
+	
+	raises NotDone     from StdFail
+    	--     The exception NotDone is raised if IsDone returns False. 
+
+	is static;
+
+
+    Value(me; Index : Integer from Standard)
+    
+    	---Purpose: Returns the intersection point of range Index.
+	--          
+	---C++: inline
+	---C++: return const&
+
+    	returns Pnt from gp
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+    	--     The exception NotDone is raised if IsDone returns False. 
+    	--     The exception OutOfRange is raised if Index <= 0 or
+    	--        Index > NbPoints
+	
+	is static;
+
+
+    ParamOnLine(me; Index : Integer from Standard)
+    
+    	---Purpose: Returns the parameter on the line of the intersection
+    	--          point of range Index.
+	--          
+	---C++: inline
+
+    	returns Real from Standard
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+    	--     The exception NotDone is raised if IsDone returns False. 
+    	--     The exception OutOfRange is raised if Index <= 0 or
+    	--        Index > NbPoints
+	
+	is static;
+
+
+    ParamOnTorus(me; Index : Integer from Standard;
+                     FI,THETA: out Real from Standard)
+    
+    	---Purpose: Returns the parameters on the torus of the intersection
+    	--          point of range Index.
+	--          
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+    	--     The exception NotDone is raised if IsDone returns False. 
+    	--     The exception OutOfRange is raised if Index <= 0 or
+    	--        Index > NbPoints
+	
+	is static;
+
+
+fields
+
+    done    : Boolean      from Standard;
+    nbpt    : Integer      from Standard;
+    thePoint: Pnt          from gp [4];
+    theParam: Real         from Standard [4];
+    theFi   : Real         from Standard [4];
+    theTheta: Real         from Standard [4];
+
+end IntLinTorus;

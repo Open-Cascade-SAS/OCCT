@@ -1,0 +1,310 @@
+-- File:        StepAP214.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package StepAP214 
+
+    ---Purpose : Complete AP214 CC1 , Revision 4
+    --           Upgrading from Revision 2 to Revision 4 : 26 Mar 1997
+    --           Splitting in sub-schemas : 5 Nov 1997
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt,
+	StepBasic, StepRepr, StepGeom, StepShape, StepVisual
+
+is
+
+   -- classes for CC2
+class AutoDesignDateAndPersonItem;		-- Select Type for
+
+	-- Product
+	-- ProductDefinition
+	-- ProductDefinitionFormation
+	-- Representation
+	
+
+
+class AutoDesignDateAndTimeItem;		-- Select Type for
+
+	-- ApprovalPersonOrganization
+	-- AutoDesignDateAndPersonAssignment
+
+
+class AutoDesignDatedItem;		-- Select Type for
+
+	-- ApprovalPersonOrganization
+	-- AutoDesignDateAndPersonAssignment
+
+
+class AutoDesignGeneralOrgItem;		-- Select Type for
+
+	-- Product
+	-- ProductDefinition
+	-- ProductDefinitionFormation
+	-- Representation
+
+    -- Added from STEP214-StepAP214 to CC2
+    class AutoDesignOrganizationItem;   -- Select Type, as above plus 2 other items
+
+class AutoDesignGroupedItem;		-- Select Type for
+
+	-- AdvancedBrepShapeRepresentation
+	-- AnnotationSymbol
+	-- CsgRepresentation
+	-- FacetedBrepShapeRepresentation
+	-- GeometricallyBoundedSurfaceShapeRepresentation
+	-- GeometricallyBoundedWireframeShapeRepresentation
+	-- ManifoldSurfaceShapeRepresentation
+	-- NonManifoldSurfaceShapeRepresentation
+	-- RepresentationItem
+	-- TemplateInstance
+
+class AutoDesignPresentedItemSelect;  -- Select, added from CC1 Rev2 to Rev4 :
+	-- ProductDefinition,
+	-- ProductDefinitionShape
+	-- RepresentationRelationship
+	-- ShapeAspect
+
+class AutoDesignReferencingItem;   -- Select Type, added in CC2
+
+
+    -- added from Cc2 to DIS 
+    
+class DateAndTimeItem;		-- Select Type 
+    	-- ApprovalPersonOrganization
+	-- AppliedDateAndPersonAssignment
+    	-- AppliedOrganizationAssignment
+    	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+	-- Effectivity
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+    	-- PropertyDefinition
+    	-- ShapeRepresentation
+
+class DateItem;
+     	-- ApprovalPersonOrganization
+	-- AppliedDateAndPersonAssignment
+    	-- AppliedOrganizationAssignment
+    	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+	-- Effectivity
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+    	-- PropertyDefinition
+    	-- ShapeRepresentation
+
+class ApprovalItem;
+	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+	-- PropertyDefinition
+    	-- ShapeRepresentation
+
+class OrganizationItem;
+	-- AppliedOrganizationAssignment
+    	-- Approval  
+    	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+	-- PropertyDefinition
+    	-- ShapeRepresentation
+	
+class DocumentReferenceItem;
+	-- Approval  
+	-- DescriptiveRepresentationItem
+    	-- MaterialDesignation
+	-- ProductDefinition
+	-- ProductDefinitionRelationship
+	-- PropertyDefinition
+    	-- Representation
+    	-- ShapeAspect
+	-- ShapeAspectRelationship
+
+
+class GroupItem;
+        -- GeometricRepresentationItem
+class PersonAndOrganizationItem;
+        -- AppliedOrganizationAssignment
+    	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+	-- PropertyDefinition
+    	-- ShapeRepresentation
+class PresentedItemSelect;
+     	-- ProductDefinition,
+	-- ProductDefinitionRelationship,
+class SecurityClassificationItem;
+	-- AssemblyComponentUsageSubstitute
+	-- DocumentFile
+    	-- MaterialDesignation
+    	-- MechanicalDesignGeometricPresentationRepresentation
+	-- PresentationArea
+    	-- Product
+	-- ProductDefinition
+    	-- ProductDefinitionFormation
+	-- ProductDefinitionRelationship
+	-- PropertyDefinition
+    	-- ShapeRepresentation
+
+--
+class Protocol;
+
+
+--deferred class ApprovalAssignment;
+	class AutoDesignApprovalAssignment;
+--deferred class DateAndTimeAssignment;
+	class AutoDesignActualDateAndTimeAssignment;
+	class AutoDesignNominalDateAndTimeAssignment;
+--deferred class DateAssignment;
+	class AutoDesignActualDateAssignment;
+	class AutoDesignNominalDateAssignment;
+--deferred class GroupAssignment;
+	class AutoDesignGroupAssignment;
+--deferred class OrganizationAssignment;
+	class AutoDesignOrganizationAssignment;
+--deferred class PersonAndOrganizationAssignment;
+	class AutoDesignDateAndPersonAssignment;
+	class AutoDesignPersonAndOrganizationAssignment;
+--deferred class PresentedItem;
+	class AutoDesignPresentedItem;
+--class Representation;
+-- Removed from Rev2 to Rev4 :		class AutoDesignViewArea;
+--deferred class SecurityClassificationAssignment;
+	class AutoDesignSecurityClassificationAssignment;
+
+--added from STEP214-CC1 to CC2
+--deferred class DocumentReference;
+	class AutoDesignDocumentReference;
+
+
+-- added from STEP214CC2 to DIS
+
+--deferred class ApprovalAssignment;
+	class AppliedApprovalAssignment;              -- replace AutoDesignApprovalAssignment;
+--deferred class DateAndTimeAssignment;
+	class AppliedDateAndTimeAssignment;          -- replace AutoDesignActualDateAndTimeAssignment;
+--deferred class DateAssignment;
+	class AppliedDateAssignment;                 -- replace AutoDesignActualDateAssignment;
+--deferred class GroupAssignment;
+	class AppliedGroupAssignment;                -- replace AutoDesignGroupAssignment;
+--deferred class OrganizationAssignment;
+	class AppliedOrganizationAssignment;         -- replace AutoDesignDateAndPersonAssignment;
+--deferred class PersonAndOrganizationAssignment;	
+    	class AppliedPersonAndOrganizationAssignment; -- replace AutoDesignPersonAndOrganizationAssignment;
+--deferred class PresentedItem;                      
+	class AppliedPresentedItem;                 -- replace AutoDesignPresentedItem;
+--deferred class SecurityClassificationAssignment;
+	class AppliedSecurityClassificationAssignment; -- replace AutoDesignSecurityClassificationAssignment;
+--deferred class DocumentReference;
+	class AppliedDocumentReference;    -- replace AutoDesignDocumentReference;
+
+-- added for external references (CAX-IF TRJ4)
+class AppliedExternalIdentificationAssignment;
+class Class;
+class ExternalIdentificationItem;
+class ExternallyDefinedClass;
+class ExternallyDefinedGeneralProperty;
+class RepItemGroup;
+
+class Array1OfAutoDesignDateAndTimeItem instantiates Array1 from TCollection (AutoDesignDateAndTimeItem);
+class HArray1OfAutoDesignDateAndTimeItem instantiates HArray1 from TCollection (AutoDesignDateAndTimeItem,Array1OfAutoDesignDateAndTimeItem from StepAP214);
+
+class Array1OfAutoDesignDatedItem instantiates Array1 from TCollection (AutoDesignDatedItem);
+class HArray1OfAutoDesignDatedItem instantiates HArray1 from TCollection (AutoDesignDatedItem,Array1OfAutoDesignDatedItem from StepAP214);
+
+class Array1OfAutoDesignGeneralOrgItem instantiates Array1 from TCollection (AutoDesignGeneralOrgItem);
+class HArray1OfAutoDesignGeneralOrgItem instantiates HArray1 from TCollection (AutoDesignGeneralOrgItem,Array1OfAutoDesignGeneralOrgItem from StepAP214);
+
+class Array1OfAutoDesignDateAndPersonItem instantiates Array1 from TCollection (AutoDesignDateAndPersonItem);
+class HArray1OfAutoDesignDateAndPersonItem instantiates HArray1 from TCollection (AutoDesignDateAndPersonItem,Array1OfAutoDesignDateAndPersonItem from StepAP214);
+
+class Array1OfAutoDesignGroupedItem instantiates Array1 from TCollection (AutoDesignGroupedItem);
+class HArray1OfAutoDesignGroupedItem instantiates HArray1 from TCollection (AutoDesignGroupedItem,Array1OfAutoDesignGroupedItem from StepAP214);
+
+    -- Added from Rev2 to Rev4
+
+class Array1OfAutoDesignPresentedItemSelect instantiates Array1 from TCollection (AutoDesignPresentedItemSelect from StepAP214);
+class HArray1OfAutoDesignPresentedItemSelect instantiates HArray1 from TCollection (AutoDesignPresentedItemSelect from StepAP214,Array1OfAutoDesignPresentedItemSelect);
+
+    -- Added from CC1 to CC2 of STEP214
+
+class Array1OfAutoDesignReferencingItem instantiates Array1 from TCollection (AutoDesignReferencingItem from StepAP214);
+class HArray1OfAutoDesignReferencingItem instantiates HArray1 from TCollection (AutoDesignReferencingItem from StepAP214,Array1OfAutoDesignReferencingItem);
+
+	-- Protocol returns Protocol from StepAP214;
+	--  : creates a Protocol
+
+    -- added from Cc2 to DIS
+    
+
+class Array1OfDateAndTimeItem instantiates Array1 from TCollection (DateAndTimeItem);
+class HArray1OfDateAndTimeItem instantiates HArray1 from TCollection (DateAndTimeItem,Array1OfDateAndTimeItem from StepAP214);
+
+class Array1OfDateItem instantiates Array1 from TCollection (DateItem);
+class HArray1OfDateItem instantiates HArray1 from TCollection (DateItem,Array1OfDateItem from StepAP214);
+
+class Array1OfApprovalItem instantiates Array1 from TCollection (ApprovalItem);
+class HArray1OfApprovalItem instantiates HArray1 from TCollection (ApprovalItem,Array1OfApprovalItem from StepAP214);
+
+class Array1OfOrganizationItem instantiates Array1 from TCollection (OrganizationItem);
+class HArray1OfOrganizationItem instantiates HArray1 from TCollection (OrganizationItem,Array1OfOrganizationItem from StepAP214);
+
+class Array1OfPersonAndOrganizationItem instantiates Array1 from TCollection (PersonAndOrganizationItem);
+class HArray1OfPersonAndOrganizationItem instantiates HArray1 from TCollection (PersonAndOrganizationItem,Array1OfPersonAndOrganizationItem from StepAP214);
+
+class Array1OfGroupItem instantiates Array1 from TCollection (GroupItem);
+class HArray1OfGroupItem instantiates HArray1 from TCollection (GroupItem,Array1OfGroupItem from StepAP214);
+
+class Array1OfSecurityClassificationItem instantiates Array1 from TCollection (SecurityClassificationItem);
+class HArray1OfSecurityClassificationItem instantiates HArray1 from TCollection (SecurityClassificationItem,Array1OfSecurityClassificationItem from StepAP214);
+
+class Array1OfPresentedItemSelect instantiates Array1 from TCollection (PresentedItemSelect);
+class HArray1OfPresentedItemSelect instantiates HArray1 from TCollection (PresentedItemSelect,Array1OfPresentedItemSelect from StepAP214);
+
+class Array1OfDocumentReferenceItem instantiates Array1 from TCollection (DocumentReferenceItem);
+class HArray1OfDocumentReferenceItem instantiates HArray1 from TCollection (DocumentReferenceItem,Array1OfDocumentReferenceItem from StepAP214);
+
+class Array1OfExternalIdentificationItem instantiates Array1 from TCollection (ExternalIdentificationItem);
+class HArray1OfExternalIdentificationItem instantiates HArray1 from TCollection (ExternalIdentificationItem,Array1OfExternalIdentificationItem from StepAP214);
+
+
+    Protocol returns Protocol from StepAP214;
+	---Purpose : creates a Protocol
+	
+end StepAP214;
+

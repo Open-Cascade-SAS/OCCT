@@ -1,0 +1,67 @@
+-- File:	SelectBasics_EntityOwner.cdl
+-- Created:	Thu Feb  9 14:58:14 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+
+deferred class EntityOwner from SelectBasics inherits TShared from MMgt
+
+	---Purpose: defines an abstract owner of sensitive primitives.
+	--           Owners are typically used to establish a connection
+	--           between sensitive entities and high-level objects (e.g. presentations).
+	--
+	--          Priority : It's possible to give a priority:
+	--           the scale : [0-9] ; the default priority is 0
+	--           it allows the predominance of one selected object upon
+	--           another one if many objects are selected at the same time
+	--            
+	--              
+	--          example : Selection of shapes : the owners are 
+	--           selectable objects (presentations)
+	--          
+	--           a user can give vertex priority [3], edges [2] faces [1] shape [0],
+	--           so that if during selection one vertex one edge and one face are
+	--           simultaneously detected, the vertex will only be hilighted.
+
+
+uses
+    Location    from TopLoc
+    
+is
+
+    Initialize (aPriority: Integer = 0) ; 
+    ---Level: Public 
+
+    Set (me:mutable; aPriority :Integer) is static;
+    ---Level: Public 
+    ---Purpose: sets the selectable priority of the owner
+    ---C++: inline
+
+    Priority(me) returns Integer is static;
+    ---Level: Public 
+    ---C++: inline
+
+    -- Deferred methods dealing with locations.
+    -- Used in Select3D package.
+    HasLocation(me) returns Boolean from Standard is deferred;
+    
+    SetLocation(me:mutable; aLoc : Location from TopLoc) is deferred;
+    
+    ResetLocation(me:mutable) is deferred;
+    
+    Location(me) returns Location from TopLoc is deferred;
+    ---C++: return const&
+
+
+
+fields
+
+    mypriority  : Integer is protected;
+
+end EntityOwner;
+
+
+

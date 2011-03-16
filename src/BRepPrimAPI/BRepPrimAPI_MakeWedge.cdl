@@ -1,0 +1,102 @@
+-- File:	BRepPrimAPI_MakeWedge.cdl
+-- Created:	Thu Jul 22 12:11:57 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class MakeWedge from BRepPrimAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Describes functions to build wedges, i.e. boxes with inclined faces.
+    	-- A MakeWedge object provides a framework for:
+    	-- -   defining the construction of a wedge,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses
+    Ax2   from gp,
+    Pnt   from gp,
+    Shell from TopoDS,
+    Solid from TopoDS,
+    Wedge from BRepPrim
+
+
+raises
+    DomainError from Standard,
+    NotDone     from StdFail
+
+
+is
+
+
+    Create( dx, dy, dz, ltx : Real)
+    returns MakeWedge from BRepPrimAPI
+	---Purpose: Make a STEP right angular wedge. (ltx >= 0)
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+
+    Create(Axes : Ax2 from gp; dx, dy, dz, ltx : Real)
+    returns MakeWedge from BRepPrimAPI
+	---Purpose: Make a STEP right angular wedge. (ltx >= 0)
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+
+    Create(dx,dy,dz,xmin,zmin,xmax,zmax : Real)
+
+    returns MakeWedge from BRepPrimAPI
+	---Purpose: Make a wedge. The face at dy is xmin,zmin xmax,zmax
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; dx,dy,dz,xmin,zmin,xmax,zmax : Real)
+    returns MakeWedge from BRepPrimAPI
+	---Purpose: Make a wedge. The face at dy is xmin,zmin xmax,zmax
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if dx,dy,dz <= Precision::Confusion()
+
+
+    ----------------------------------------
+    --  Auxiliary methods
+    ----------------------------------------
+
+    Wedge(me : in out) returns Wedge from BRepPrim
+	---Purpose: Returns the internal algorithm.
+	--          
+	---C++: return &
+	---Level: Public
+    is static;
+    
+
+    ----------------------------------------
+    --  Results
+    ----------------------------------------
+
+    Build(me : in out)
+	---Purpose: Stores the solid in myShape.
+	---Level: Public
+    is redefined;
+
+    Shell(me : in out) returns Shell from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Shell();" 
+	---Purpose: Returns the constructed box in the form of a shell.
+    is static;
+
+    Solid(me : in out) returns Solid from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Solid();" 
+	---Purpose: Returns the constructed box in the form of a solid.
+    is static;
+
+fields
+
+    myWedge : Wedge from  BRepPrim;
+
+end MakeWedge;

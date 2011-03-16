@@ -1,0 +1,40 @@
+-- File:	MeshAlgo_IndexedPntComparator.cdl
+-- Created:	Tue Apr  5 11:45:18 1994
+-- Author:	Didier PIFFAULT
+--		<dpf@zerox>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class IndexedPntComparator from MeshAlgo 
+    	(HandledStructureOfPnt as any; Direction as any)
+
+	---Purpose: Sort two point in a given direction.
+
+
+uses  Boolean from Standard
+
+
+is      Create (theDir : Direction; 
+    	    	TheTol : Real from Standard;
+    	    	HDS    : HandledStructureOfPnt) 
+    	    returns IndexedPntComparator;
+
+
+    	IsLower (me; Left, Right: Integer)
+	---Purpose: returns True if <Left> is lower than <Right>
+    	    returns Boolean from Standard;
+    
+    	IsGreater (me; Left, Right: Integer)
+	---Purpose: returns True if <Left> is greater than <Right>
+    	    returns Boolean from Standard;
+
+    	IsEqual(me; Left, Right: Integer)
+	---Purpose: returns True when <Right> and <Left> are equal.
+	    returns Boolean from Standard;
+
+
+fields  IndexedStructure : HandledStructureOfPnt;
+    	DirectionOfSort  : Direction;
+    	Tolerance        : Real from Standard;
+
+end IndexedPntComparator;

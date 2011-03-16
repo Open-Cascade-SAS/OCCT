@@ -1,0 +1,70 @@
+-- File:	BOP_CheckResult.cdl
+-- Created:	Fri Sep  3 13:40:20 2004
+-- Author:	Oleg FEDYAEV
+--		<ofv@merlox>
+---Copyright:	 Matra Datavision 2004
+
+class CheckResult from BOP
+    ---Purpose: contains information about faulty shapes and faulty types
+    ---         can't be processed by Boolean Operations
+
+uses
+
+    Shape       from TopoDS,
+    ListOfShape from TopTools,
+    CheckStatus from BOP
+
+is
+
+    Create
+    	returns CheckResult;
+    ---Purpose: empty constructor
+    
+    SetShape1(me: in out; TheShape : Shape from TopoDS);
+    ---Purpose: sets ancestor shape (object) for faulty sub-shapes
+    
+    AddFaultyShape1(me: in out; TheShape: Shape from TopoDS);
+    ---Purpose: adds faulty sub-shapes from object to a list
+    
+    SetShape2(me: in out; TheShape: Shape from TopoDS);
+    ---Purpose: sets ancestor shape (tool) for faulty sub-shapes
+    
+    AddFaultyShape2(me: in out; TheShape: Shape from TopoDS);
+    ---Purpose: adds faulty sub-shapes from tool to a list
+    
+    GetShape1(me)
+    	returns Shape from TopoDS;
+	---C++: return const &
+	---Purpose: returns ancestor shape (object) for faulties
+
+    GetShape2(me)
+    	returns Shape from TopoDS;
+	---C++: return const &
+	---Purpose: returns ancestor shape (tool) for faulties
+	
+    GetFaultyShapes1(me)
+    	returns ListOfShape from TopTools;
+	---C++: return const &
+	---Purpose: returns list of faulty shapes for object
+	
+    GetFaultyShapes2(me)
+    	returns ListOfShape from TopTools;
+	---C++: return const &
+	---Purpose: returns list of faulty shapes for tool
+
+    SetCheckStatus(me: in out; TheStatus: CheckStatus from BOP);
+    ---Purpose: set status of faulty
+    
+    GetCheckStatus(me)
+    	returns CheckStatus from BOP;
+	---Purpose: gets status of faulty
+	
+fields
+
+    myShape1 : Shape from TopoDS;
+    myShape2 : Shape from TopoDS;
+    myStatus : CheckStatus from BOP;
+    myFaulty1 : ListOfShape from TopTools;
+    myFaulty2 : ListOfShape from TopTools;
+
+end CheckResult;

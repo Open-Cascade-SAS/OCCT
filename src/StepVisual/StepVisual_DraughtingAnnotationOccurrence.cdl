@@ -1,0 +1,22 @@
+-- File:        DraughtingAnnotationOccurrence.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DraughtingAnnotationOccurrence from StepVisual 
+
+inherits AnnotationOccurrence from StepVisual 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfPresentationStyleAssignment from StepVisual, 
+	RepresentationItem from StepRepr
+is
+
+	Create returns mutable DraughtingAnnotationOccurrence;
+	---Purpose: Returns a DraughtingAnnotationOccurrence
+
+
+end DraughtingAnnotationOccurrence;

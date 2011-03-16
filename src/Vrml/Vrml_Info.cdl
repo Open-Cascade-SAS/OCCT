@@ -1,0 +1,34 @@
+-- File:	Vrml_Info.cdl
+-- Created:	Mon Feb 10 15:58:29 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Info from Vrml 
+
+	---Purpose:  defines a Info node of VRML specifying properties of geometry
+	---          and its appearance. 
+    	--  It  is  used  to  store  information  in  the  scene  graph, 
+	--  Typically  for  application-specific  purposes,  copyright  messages, 
+	--  or  other  strings.
+uses
+
+     AsciiString from TCollection
+is
+ 
+    Create  (  aString  :  AsciiString from TCollection  =  "<Undefined info>")    
+        returns Info from Vrml; 
+
+    SetString ( me : in out;  aString  :  AsciiString from TCollection ); 
+    String ( me  )  returns  AsciiString from TCollection; 
+   
+    Print  ( me;  anOStream: in out OStream from Standard ) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myString  :  AsciiString from TCollection;  -- Info string
+
+end Info;
+

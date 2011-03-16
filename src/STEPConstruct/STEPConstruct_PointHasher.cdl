@@ -1,0 +1,31 @@
+-- File:	STEPConstruct_PointHasher.cdl
+-- Created:	Wed Jan 15 13:40:33 2003
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2003
+
+
+class PointHasher from STEPConstruct 
+
+	---Purpose: 
+
+uses
+
+    Pnt from gp
+
+is
+
+    HashCode(myclass; Point : Pnt from gp;
+                        Upper : Integer)
+    returns Integer;
+    ---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+    --          range 0..Upper.
+    ---C++: inline
+	
+    IsEqual(myclass; Point1,Point2 : Pnt from gp)
+    returns Boolean;
+    ---Purpose: Returns True  when the two  keys are the same. Two
+    --          same  keys  must   have  the  same  hashcode,  the
+    --          contrary is not necessary.
+
+end PointHasher;

@@ -1,0 +1,16 @@
+-- File:	StepElement_SurfaceSectionField.cdl
+-- Created:	Thu Dec 12 17:29:04 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class SurfaceSectionField from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity SurfaceSectionField
+
+is
+    Create returns SurfaceSectionField from StepElement;
+	---Purpose: Empty constructor
+
+end SurfaceSectionField;

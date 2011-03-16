@@ -1,0 +1,125 @@
+-- File:	Quadric.cdl
+-- Created:	Wed Jul  1 10:52:36 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Quadric from IntAna
+
+
+    ---Purpose: This class provides a description of Quadrics by their
+    --          Coefficients in natural coordinate system. 
+
+
+uses Ax3      from gp,
+     Cylinder from gp,
+     Cone     from gp,
+     Sphere   from gp,
+     Pln      from gp
+     
+
+is
+
+
+    Create
+    
+    	---Purpose: Empty Constructor
+
+    	returns Quadric from IntAna;
+
+
+    Create(P : Pln from gp) 
+    
+    	---Purpose: Creates a Quadric from a Pln
+
+    	returns Quadric from IntAna;
+
+
+    Create(Sph: Sphere from gp) 
+    
+    	---Purpose:  Creates a Quadric from a Sphere
+    
+    	returns Quadric from IntAna;
+
+    
+    Create(Cyl: Cylinder from gp)
+    
+    	---Purpose:  Creates a Quadric from a Cylinder
+    
+    	returns Quadric from IntAna;
+
+
+
+    Create(Cone: Cone from gp)
+    
+    	---Purpose:  Creates a Quadric from a Cone
+    
+    	returns Quadric from IntAna;
+
+
+   SetQuadric(me: in out; P: Pln from gp) 
+    
+    	---Purpose: Initializes the quadric with a Pln
+
+    	is static;
+   
+    SetQuadric(me: in out; Sph: Sphere from gp) 
+    
+    	---Purpose: Initialize the quadric with a Sphere
+
+    	is static;
+
+    SetQuadric(me: in out; Con: Cone from gp) 
+    
+    	---Purpose: Initializes the quadric with a Cone
+
+    	is static;
+
+    SetQuadric(me: in out; Cyl: Cylinder from gp) 
+    
+    	---Purpose: Initializes the quadric with a Cylinder
+    
+    	is static;
+	
+
+
+    Coefficients(me; xCXX,xCYY,xCZZ,xCXY
+                    ,xCXZ,xCYZ,xCX,xCY,xCZ,xCCte: out Real from Standard)
+
+	---Purpose: Returns the coefficients of the polynomial equation
+	--          which define the quadric:
+	--          xCXX x**2 + xCYY y**2 + xCZZ z**2
+	--          + 2 ( xCXY x y  + xCXZ x z  + xCYZ y z  )
+	--          + 2 ( xCX x + xCY y + xCZ z )
+	--          + xCCte
+    
+    	is static;
+
+
+    NewCoefficients(me; xCXX,xCYY,xCZZ,xCXY,xCXZ
+                       ,xCYZ,xCX,xCY,xCZ,xCCte: in out Real from Standard;
+                        Axis: Ax3 from gp)
+
+	---Purpose: Returns the coefficients of the polynomial equation
+	--          ( written in the natural coordinates system )
+	--          in the local coordinates system defined by Axis
+    
+    	is static;
+
+
+fields 
+
+    CXX  : Real from Standard;
+    CYY  : Real from Standard;
+    CZZ  : Real from Standard;
+    CXY  : Real from Standard;
+    CXZ  : Real from Standard;
+    CYZ  : Real from Standard;
+    CX   : Real from Standard;
+    CY   : Real from Standard;
+    CZ   : Real from Standard;
+    CCte : Real from Standard;
+
+end Quadric;

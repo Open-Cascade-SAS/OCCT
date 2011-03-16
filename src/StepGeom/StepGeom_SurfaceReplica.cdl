@@ -1,0 +1,41 @@
+-- File:        SurfaceReplica.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceReplica from StepGeom 
+
+inherits Surface from StepGeom 
+
+uses
+
+	CartesianTransformationOperator3d from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable SurfaceReplica;
+	---Purpose: Returns a SurfaceReplica
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aParentSurface : mutable Surface from StepGeom;
+	      aTransformation : mutable CartesianTransformationOperator3d from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetParentSurface(me : mutable; aParentSurface : mutable Surface);
+	ParentSurface (me) returns mutable Surface;
+	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator3d);
+	Transformation (me) returns mutable CartesianTransformationOperator3d;
+
+fields
+
+	parentSurface : Surface from StepGeom;
+	transformation : CartesianTransformationOperator3d from StepGeom;
+
+end SurfaceReplica;

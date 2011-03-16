@@ -1,0 +1,581 @@
+-- File:	WNT_Window.cdl
+-- Created:	Fri Jan 26 13:07:39 1996
+-- Author:	PLOTNIKOV Eugeny
+-- Modified:    FMN - 23/01/98 -> Add DoMapping
+-- Modified :   GG 28/01/00 G004
+--              Add gamma correction computation just before dumping an image.
+--              GG  07/03/00 G004 Add MMSize() method
+--              TCL 26/10/00 G002 SetBackground(aName: CString) method
+--              GG - RIC120302 Add NEW HParentWindow methods.
+--              SAV 24/11/01 SetBackground(Quantity_Color)
+---Copyright:	 Matra Datavision 1996
+
+class Window from WNT inherits Window from Aspect
+
+	---Purpose: This class defines Windows NT window
+	--  Warning: The position and size for the creation of the window
+	--	    are defined in Device Screen Unit (DSU)
+	--	    floating [0,1] space.
+        --
+	--          As 3D view window is the main purpose of this class,
+	--          and 3D view does not need its background to be drawn
+	--          by the system, by default the window background is not drawn.
+	--          This can be overridden by calling ClearFlags( WDF_NOERASEBKGRND ).
+	--          See also WNT_WndProc.cxx and InterfaceGraphic_WNT.hxx.
+
+ uses
+
+    Handle             from Aspect,
+    Background         from Aspect,
+    GradientBackground from Aspect,
+    TypeOfResize       from Aspect,
+    FillMethod         from Aspect,
+    GradientFillMethod from Aspect,
+    PixMap             from Aspect,
+    NameOfColor        from Quantity,
+    Color              from Quantity,
+    Parameter          from Quantity,
+    Ratio              from Quantity,
+    GraphicDevice      from WNT,
+    WClass             from WNT,
+    Uint               from WNT,
+    Long               from WNT,
+    Dword              from WNT,
+    WindowData         from WNT,
+    Icon               from WNT,
+    ImageManager       from WNT,
+    TypeOfImage        from WNT
+
+ raises
+
+    WindowDefinitionError from Aspect,
+    WindowError           from Aspect
+
+ is
+
+    Create (
+     aDevice       : GraphicDevice from WNT;
+     aTitle        : CString       from Standard;
+     aClass        : WClass        from WNT;
+     aStyle        : Dword         from WNT = 0;
+     Xc            : Parameter     from Quantity = 0.5;
+     Yc            : Parameter     from Quantity = 0.5;
+     aWidth        : Parameter     from Quantity = 0.5;
+     aHeight       : Parameter     from Quantity = 0.5;
+     aBackColor    : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY;
+     aParent       : Handle        from Aspect = 0;
+     aMenu         : Handle        from Aspect = 0;
+     aClientStruct : Address       from Standard = 0
+    )
+     returns mutable Window from WNT
+    	---Level:   Public
+	---Purpose: Creates a Window defined by his Center and his Size
+	--	    in DSU from the Parent Window. If <aParent> is 0 then
+	--	    creates a window without parent.
+	--	    Creation of an WNT_Window automatically determines the
+	--	    smaller dimension of the screen (usually the height)
+	--	    and parametrises it as 1.0.
+	--	    The smaller dimension of the window is limited to 1.0
+	--	    We can give a value greater than 1.0 to the larger
+	--	    dimension.
+	--	    No matter how large the values passed in argument, the
+	--	    window is automatically limited to the maximum size of
+	--	    the screen.
+	--	    The ratio of width to height of a conventional screen is
+	--	    of the order of 1.3.
+	--  Trigger: Raises WindowDefinitionError if the Position out of the
+	--          Screen Space or the window creation failed.
+     raises WindowDefinitionError from Aspect;
+
+    Create (theDevice       : GraphicDevice from WNT;
+            theTitle        : CString       from Standard;
+            theClass        : WClass        from WNT;
+            theStyle        : Dword         from WNT;
+            thePxLeft       : Integer       from Standard;
+            thePxTop        : Integer       from Standard;
+            thePxWidth      : Integer       from Standard;
+            thePxHeight     : Integer       from Standard;
+            theBackColor    : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY;
+            theParent       : Handle        from Aspect = 0;
+            theMenu         : Handle        from Aspect = 0;
+            theClientStruct : Address       from Standard = 0)
+     returns mutable Window from WNT
+     ---Level:   Public
+     ---Purpose: Creates a Window defined by his position and size
+     --	    in pixles from the Parent Window.
+     --  Trigger: Raises WindowDefinitionError if the Position out of the
+     --          Screen Space or the window creation failed.
+     raises WindowDefinitionError from Aspect;
+
+    Create (
+     aDevice    : GraphicDevice from WNT;
+     aHandle    : Handle        from Aspect;
+     aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
+    )
+     returns mutable Window from WNT;
+     	---Level:   Public
+     	---Purpose: Creates a Window based on the existing window handle.
+        --          This handle equals ( aPart1 << 16 ) + aPart2.
+
+    Create (
+     aDevice    : GraphicDevice from WNT;
+     aPart1     : Integer       from Standard;
+     aPart2     : Integer       from Standard;
+     aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
+    )
+     returns mutable Window from WNT;
+     	---Level:   Public
+     	---Purpose: Creates a Window based on the existing window <aHandle>.
+
+    Destroy ( me : mutable )
+     is virtual;
+	---Level:   Public
+	---Purpose: Destroies the Window and all resourses attached to it.
+	---C++:     alias ~
+
+
+    ---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+
+    SetBackground (
+     me         : mutable;
+     Background : Background from Aspect
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Modifies the window background.
+
+    SetBackground (
+     me        : mutable;
+     BackColor : NameOfColor from Quantity
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Modifies the window background.
+
+    SetBackground (
+     me        : mutable;
+     color     : Color from Quantity
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Modifies the window background.
+
+
+    SetBackground (
+     me          : mutable;
+     aBackPixmap : Handle from Aspect
+    ) is static;
+    	---Level:   Public
+    	---Purpose: Modifies the window background.
+
+    SetBackground (
+     me          : mutable;
+     aName : CString from Standard ;
+     aMethod: FillMethod from Aspect = Aspect_FM_CENTERED
+    )  returns Boolean from Standard;
+    	---Level: Public
+    	---Purpose: Loads the window background from an image file <aName>
+    	-- defined with a supported format XWD,GIF or BMP
+    	-- and returns TRUE if the operation is successfull.
+    	--  Category: Methods to modify the class definition
+
+    SetBackground ( me : mutable ;
+	            Background : GradientBackground from Aspect ) is virtual;
+	---Level: Public
+	---Purpose: Modifies the window gradient background.
+	--  Warning: the gradient background colours is ignored when the quality
+	--	   of this window is TRANSPARENT.
+	---Category: Methods to modify the class definition
+
+    SetBackground( me      : mutable;
+                   aCol1   : Color from Quantity;
+                   aCol2   : Color from Quantity;
+		   aMethod : GradientFillMethod from Aspect = Aspect_GFM_HOR);
+        ---Level: Public
+	---Purpose: Modifies the window gradient background.
+	--  Warning: the gradient background colours are ignored when the quality
+	--	   of this window is TRANSPARENT.
+	---Category: Methods to modify the class definition
+
+    SetCursor ( me; aCursor : Handle from Aspect )
+     is static;
+     	---Level:   Public
+     	---Purpose: Sets cursor <aCursor> for ENTIRE WINDOW CLASS to which
+     	--          the Window belongs.
+
+    SetIcon (
+     me     : mutable;
+     anIcon : Handle  from Aspect;
+     aName  : CString from Standard = 0
+    )
+     is static;
+     	---Level:   Public
+     	---Purpose: Sets icon <anIcon> for window
+
+    SetIconName ( me : mutable; aName : CString from Standard )
+     is static;
+     	---Level:   Public
+     	---Purpose: Sets name for window's icon
+
+    SetDoubleBuffer (
+     me     : mutable;
+     DBmode : Boolean from Standard
+    )
+	---Level:   Public
+	---Purpose: Activates/Deactivates the Double Buffering capability
+	--	    for this window.
+	--  Warning: Double Buffering is always DISABLE by default.
+	--  Trigger: Raises if BackingStore () isn't allowed for this Window
+     raises WindowError from Aspect is virtual;
+
+    Flush ( me )
+	---Level:    Public
+	---Purpose:  Flushes all graphics to the screen and Swap the Double
+	--	     buffer if Enable
+	--  Trigger: Raises if Something is WRONG at Drawing Time.
+     raises WindowError from Aspect is virtual;
+
+    Map ( me )
+     is virtual;
+	---Level:    Public
+	---Purpose:  Opens the window <me>.
+
+    Map ( me; aMapMode : Integer from Standard )
+     is static;
+     	---Level:   Public
+     	---Purpose: Opens a window <me> according to <aMapMode>.
+     	--          This method is specific to Windows NT.
+     	--          <aMapMode> can be one of SW_xxx constants defined
+     	--          in <windows.h>. See documentation.
+
+    Unmap ( me )
+     is virtual;
+	---Level:   Public
+	---Purpose: Closes the window <me>.
+
+    DoResize ( me )
+     returns TypeOfResize from Aspect
+	---Level:   Public
+	---Purpose: Applies the resizing to the window <me>.
+     raises WindowError from Aspect is virtual;
+
+    DoMapping ( me ) returns Boolean from Standard
+	    raises WindowError from Aspect is virtual;
+   	---Level: Advanced
+    	---Purpose: Apply the mapping change to the window <me>
+    	-- and returns TRUE if the window is mapped at screen.
+    	---Category: Methods to modify the class definition
+
+
+    Clear ( me )
+     is virtual;
+	---Level:   Public
+	---Purpose: Clears the Window in the Background color.
+
+    ClearArea (
+     me;
+     Xc     : Integer from Standard;
+     Yc     : Integer from Standard;
+     Width  : Integer from Standard;
+     Height : Integer from Standard
+    )
+	---Level:    Public
+	---Purpose:  Clears the Window Area defined by his center and PIXEL
+	--           size in the Background color
+	--  Trigger:  Raises if Window is not defined properly
+     raises WindowError from Aspect is virtual;
+
+    Restore ( me )
+	---Level:   Public
+	---Purpose: Restores The Window from the BackingStored Window
+	--	    See BackingStore () method.
+     raises WindowError from Aspect is virtual;
+
+    RestoreArea (
+     me;
+     Xc     : Integer from Standard;
+     Yc     : Integer from Standard;
+     Width  : Integer from Standard;
+     Height : Integer from Standard
+    )
+	---Level:   Public
+	---Purpose: Restores The Window Area defined by his center
+	--	    and PIXEL size from the BackingStored Window
+	--	    See BackingStore () method.
+     raises WindowError from Aspect is virtual;
+
+    Dump (
+     me;
+     aFilename : CString from Standard;
+     aGammaValue: Real from Standard = 1.0
+    )
+     returns Boolean
+	---Level:   Public
+	---Purpose: Dumps the Window to an XWD,GIF or BMP filei with
+	-- an optional gamma correction value according to the graphic system.
+	-- and returns TRUE if the dump occurs normaly.
+	--  Trigger: Raises if Window is not defined properly
+     raises WindowError from Aspect is virtual;
+
+    DumpArea (
+     me;
+     aFilename : CString from Standard;
+     Xc        : Integer from Standard;
+     Yc        : Integer from Standard;
+     Width     : Integer from Standard;
+     Height    : Integer from Standard;
+     aGammaValue: Real from Standard = 1.0
+    )
+     returns Boolean from Standard
+	---Level:   Public
+	---Purpose: Dumps the Window Area defined by his center and PIXEL size
+	--	to an image file with an optional gamma correction value
+	--  and returns TRUE if the dump occurs normaly.
+	--  Trigger: Raises if Window is not defined properly
+	--	    or the area is out of the Window.
+     raises WindowError from Aspect is virtual;
+
+    ToPixMap ( me )
+    returns PixMap from Aspect
+    ---Level   : Public
+    ---Purpose : dump the full contents of the window to a pixmap.
+    is virtual;
+
+    Load ( me; aFilename : CString from Standard )
+     returns Boolean from Standard
+        ---Level:   Public
+        ---Purpose: Loads the XWD file to this Window.
+        --          Returns TRUE if the loading occurs normaly.
+        --  Warning: Note that the Window is enlarged automatically
+        --          when the image size is too large for this window.
+        --  Trigger: Raises if Window is not defined properly
+     raises WindowError from Aspect is virtual;
+
+    LoadArea (
+     me;
+     aFilename : CString from Standard;
+     Xc        : Integer from Standard;
+     Yc        : Integer from Standard;
+     Width     : Integer from Standard;
+     Height    : Integer from Standard
+    )
+     returns Boolean from Standard
+        ---Purpose: Loads the XWD file to Window Area defined by his center
+        --          and PIXEL size.
+        --          Returns TRUE if the loading occurs normaly.
+        --  Warning: Note that the Image is zoomed automatically
+        --          when the image size is too large for this window area.
+        --  Trigger: Raises if Window is not defined properly
+        --          or the area is out of the Window.
+     raises WindowError from Aspect is virtual;
+
+    SetOutputFormat ( me : mutable; aFormat : TypeOfImage from WNT )
+     is static;
+        ---Level:   Public
+        ---Purpose: Sets format of the image file created by Dump or
+        --          DumpArea methods.
+
+    SetPos ( me : mutable; X, Y, X1, Y1 : Integer from Standard )
+     is static;
+        ---Level:   Internal
+        ---Purpose: Changes variables due to window position.
+
+    SetFlags ( me : mutable; aFlags : Integer from Standard )
+     is static;
+     	---Level:   Public
+     	---Purpose: Sets user defined flags in the extra window data area.
+	--          Supported flags WDF_* are listed in InterfaceGraphic_WNT.hxx
+	--          In particular, the window backround can be turned off using this method.
+
+    ResetFlags ( me : mutable; aFlags : Integer from Standard )
+     is static;
+     	---Level:   Public
+    	---Purpose: Reset specified flags in the extra window data area.
+	--          Supported flags WDF_* are listed in InterfaceGraphic_WNT.hxx
+	--          In particular, the window backround can be turned on using this method.
+
+
+ 	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+
+    BackingStore ( me )
+     returns Boolean from Standard  is virtual;
+	---Level:   Public
+	---Purpose: Returns the BackingStore capability for this Window.
+	--	    If Answer is True Exposure can be recovered by
+	--		Restore RestoreArea methods.
+	--	    If Answer is False, Application must Redraw the
+	--	        exposed area.
+
+    DoubleBuffer ( me )
+     returns Boolean from Standard  is virtual;
+	---Level:   Public
+	---Purpose: Returns the DoubleBuffer state.
+    	---C++:     inline
+
+    IsMapped ( me )
+     returns Boolean from Standard  is virtual;
+	---Level:   Public
+	---Purpose: Returns True if the window <me> is opened
+	--	        and False if the window is closed.
+
+    Ratio ( me )
+     returns Ratio from Quantity  is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window RATIO equal to the physical
+	--	    WIDTH/HEIGHT dimensions.
+
+    Position (
+     me;
+     X1 : out Parameter from Quantity;
+     Y1 : out Parameter from Quantity;
+     X2 : out Parameter from Quantity;
+     Y2 : out Parameter from Quantity
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window POSITION in DSU
+
+    Position (
+     me;
+     X1 : out Integer from Standard;
+     Y1 : out Integer from Standard;
+     X2 : out Integer from Standard;
+     Y2 : out Integer from Standard
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window POSITION in PIXEL
+
+    Size (
+     me;
+     Width  : out Parameter from Quantity;
+     Height : out Parameter from Quantity
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window SIZE in DSU
+
+    Size (
+     me;
+     Width  : out Integer from Standard;
+     Height : out Integer from Standard
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window SIZE in PIXEL
+
+    MMSize (
+     me;
+     Width  : out Real from Standard;
+     Height : out Real from Standard
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns The Window SIZE in MM
+
+    Convert (
+     me;
+     PV : Integer from Standard
+    )
+     returns Parameter from Quantity  is virtual;
+	---Level:   Public
+	---Purpose: Returns the DSU value depending of the PIXEL value.
+
+    Convert (
+     me;
+     DV : Parameter from Quantity
+    )
+     returns Integer from Standard  is virtual;
+	---Level:   Public
+	---Purpose: Returns the PIXEL value depending of the DSU value.
+
+    Convert (
+     me;
+     PX, PY : Integer       from Standard;
+     DX, DY : out Parameter from Quantity
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns the DSU position depending of the PIXEL position.
+
+    Convert (
+     me;
+     DX, DY : Parameter   from Quantity;
+     PX, PY : out Integer from Standard
+    )
+     is virtual;
+	---Level:   Public
+	---Purpose: Returns the PIXEL position depending of the DSU position.
+
+    HWindow ( me )
+     returns Handle from Aspect is static;
+	---Level:   Public
+	---Purpose: Returns the Windows NT handle of the created window <me>.
+        ---C++:     inline
+
+    HParentWindow ( me )
+     returns Handle from Aspect is static;
+	---Level:   Public
+	---Purpose: Returns the Windows NT handle parent of the created window <me>.
+        ---C++:     inline
+
+    HPixmap ( me )
+     returns Handle from Aspect is static;
+	---Level:   Internal
+	---Purpose: Returns the Windows NT double buffer pixmap handle
+	--          of the created window <me>.
+	--	    If BackingStore () is permitted.
+        ---C++:     inline
+
+    WndProc ( me )
+     returns Address from Standard;
+        ---Level:   Internal
+        ---Purpose: Returns address of the window procedure.
+        ---C++:     inline
+
+    ImageManager ( me )
+     returns ImageManager from WNT is static;
+	---Level:   Internal
+        ---Purpose: Returns ImageManager of the Window.
+	---C++:     inline
+
+    doCreate (
+     me         : mutable;
+     aDevice    : GraphicDevice from WNT;
+     aHandle    : Handle        from Aspect;
+     aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
+    ) is static private;
+     	---Level:   Private
+     	---Purpose: private method
+
+ fields
+
+    aXLeft          : Integer      from Standard is protected; -- Window coordinates
+    aYTop           : Integer      from Standard is protected;
+    aXRight         : Integer      from Standard is protected;
+    aYBottom        : Integer      from Standard is protected;
+    myWClass        : WClass       from WNT      is protected; -- Window class
+    myHWindow       : Handle       from Aspect   is protected; -- Window handle
+    myHParentWindow : Handle       from Aspect   is protected; -- Parent window handle
+    myHPixmap       : Handle       from Aspect   is protected; -- Bitmap handle
+    myDoubleBuffer  : Boolean      from Standard is protected; -- DoubleBuffer flag
+    myExtraData     : WindowData   from WNT      is protected; -- additional data
+    myFormat        : TypeOfImage  from WNT      is protected; -- type of output image
+    myImages        : ImageManager from WNT      is protected;
+    myIcon          : Icon         from WNT      is protected;
+    myWndProc       : Address      from Standard is protected; -- address of window procedure
+    myUsrData       : Address      from Standard is protected;
+
+ friends
+
+    class WDriver from WNT,
+    class IconBox from WNT,
+    class PixMap  from WNT
+
+end Window;

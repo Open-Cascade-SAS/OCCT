@@ -1,0 +1,189 @@
+-- File:	IGESToBRep_TopoCurve.cdl
+-- Created:	Thu Apr 21 14:02:21 1994
+-- Authors:	Christophe GUYOT & Frederic UNTEREINER
+--		<fun@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TopoCurve  from IGESToBRep inherits CurveAndSurface from IGESToBRep
+
+    ---Purpose : Provides methods to transfer topologic curves entities 
+    --           from IGES to CASCADE.
+
+uses   
+
+    CurveAndSurface     from IGESToBRep,
+    IGESEntity          from IGESData,
+    HArray1OfIGESEntity from IGESData,
+    Boundary            from IGESGeom,
+    CompositeCurve      from IGESGeom,
+    OffsetCurve         from IGESGeom,
+    CurveOnSurface      from IGESGeom,
+    Point               from IGESGeom,
+    Edge                from TopoDS,
+    Face                from TopoDS,
+    Shape               from TopoDS,
+    Vertex              from TopoDS,
+    Wire                from TopoDS,
+    Curve               from Geom,
+    Surface             from Geom,
+    BSplineCurve        from Geom,
+    SequenceOfCurve     from TColGeom,
+    Curve               from Geom2d,
+    BSplineCurve        from Geom2d,
+    SequenceOfCurve     from TColGeom2d,
+    WireData            from ShapeExtend,
+    Trsf2d              from gp
+    
+is
+
+    Create returns TopoCurve;
+    ---Purpose : Creates  a tool TopoCurve  ready  to  run, with
+    --           epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+    --           optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep)  returns TopoCurve;
+    ---Purpose : Creates a tool TopoCurve ready to run and sets its 
+    --           fields as CS's.
+
+    Create(CS : TopoCurve from IGESToBRep)  returns TopoCurve;
+    ---Purpose : Creates a tool TopoCurve ready to run and sets its 
+    --           fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean)  returns TopoCurve;
+    ---Purpose : Creates a tool TopoCurve ready to run.
+
+    TransferTopoCurve        (me    : in out; 
+    	    	    	      start : IGESEntity from IGESData)
+    	returns Shape from TopoDS;
+	
+    Transfer2dTopoCurve      (me    : in out;
+    	    	   	      start : IGESEntity from IGESData;
+    	    	    	      face  : Face       from TopoDS;
+                              trans : Trsf2d     from gp;
+			      uFact : Real)
+    	returns Shape from TopoDS;
+	
+    TransferTopoBasicCurve   (me    : in out;
+    	    	    	      start : IGESEntity from IGESData)
+    	returns Shape from TopoDS;
+	
+    Transfer2dTopoBasicCurve (me    : in out;
+    	    	    	      start : IGESEntity from IGESData;
+    	    	    	      face  : Face       from TopoDS;
+                              trans : Trsf2d     from gp;
+			      uFact : Real)
+    	returns Shape from TopoDS;
+	
+    TransferPoint            (me    : in out; 
+    	    	    	    start : Point from IGESGeom)
+    	returns Vertex from TopoDS;
+	
+    Transfer2dPoint          (me    : in out; 
+    	    	    	    start : Point from IGESGeom)
+    	returns Vertex from TopoDS;
+
+    TransferCompositeCurveGeneral   (me    : in out;
+           	    	    	     start : CompositeCurve from IGESGeom; 
+    	    	    	    	     is2d  : Boolean;
+    	    	    	             face  : Face   from TopoDS;
+                                     trans : Trsf2d from gp;
+				     uFact : Real)
+    	returns Shape from TopoDS  is  private;
+	
+    TransferCompositeCurve   (me    : in out;
+    	    	    	      start : CompositeCurve from IGESGeom)
+    	returns Shape from TopoDS;
+	
+    Transfer2dCompositeCurve (me    : in out;
+    	    	    	      start : CompositeCurve from IGESGeom;
+    	    	    	      face  : Face           from TopoDS;
+			      trans : Trsf2d         from gp;
+			      uFact : Real)
+    	returns Shape from TopoDS;
+	
+    TransferOffsetCurve      (me    : in out;
+    	    	    	      start : OffsetCurve from IGESGeom)
+    	returns Shape from TopoDS;
+
+    Transfer2dOffsetCurve    (me    : in out;
+    	    	    	      start : OffsetCurve from IGESGeom;
+    	    	    	      face  : Face        from TopoDS;
+			      trans : Trsf2d      from gp;
+			      uFact : Real)
+    	returns Shape from TopoDS;
+
+    TransferCurveOnSurface   (me     : in out;
+    	    	    	      start  : CurveOnSurface from IGESGeom)
+    	returns Shape from TopoDS;
+
+    TransferCurveOnFace      (me     : in out;
+    	    	    	      face   : in out Face    from TopoDS;
+    	    	    	      start  : CurveOnSurface from IGESGeom;
+                              trans  : Trsf2d         from gp;
+			      uFact  : Real;
+                              IsCurv : Boolean        from Standard)
+    	returns Shape from TopoDS;
+    ---Purpose : Transfers a CurveOnSurface directly on a face to trim it.
+    --           The CurveOnSurface have to be defined Outer or Inner.
+ 
+    TransferBoundary         (me    : in out;
+    	    	    	      start : Boundary from IGESGeom)
+	returns Shape from TopoDS;
+
+    TransferBoundaryOnFace   (me     : in out;
+    	    	    	      face   : in out Face    from TopoDS;
+    	    	    	      start  : Boundary       from IGESGeom;
+			      trans  : Trsf2d         from gp;
+			      uFact  : Real)
+	returns Shape from TopoDS;
+    ---Purpose : Transfers a Boundary directly on a face to trim it.
+   
+    ApproxBSplineCurve       (me    : in out; 
+    	    	    	      start : BSplineCurve from Geom);
+			    	
+			    
+    NbCurves                 (me) 
+    	returns Integer;
+    ---Purpose : Returns the count of Curves in "TheCurves"
+
+
+    Curve                    (me; 
+    	    	    	      num   : Integer = 1) 
+    	returns Curve from Geom;
+    ---Purpose : Returns a Curve given its rank, by default the first one
+    --           (null Curvee if out of range) in "TheCurves"
+
+    Approx2dBSplineCurve     (me    : in out; 
+    	    	    	      start : BSplineCurve from Geom2d);
+			    	
+			    
+    NbCurves2d               (me) 
+    	returns Integer;
+    ---Purpose : Returns the count of Curves in "TheCurves2d"
+
+
+    Curve2d                  (me; 
+    	    	    	      num   : Integer = 1) 
+    	returns Curve from Geom2d;
+    ---Purpose : Returns a Curve given its rank, by default the first one
+    --           (null Curvee if out of range) in "TheCurves2d"
+    
+    SetBadCase (me: in out; value: Boolean);
+    ---Purpose: Sets TheBadCase flag
+    
+    BadCase (me) returns Boolean;
+    ---Purpose: Returns TheBadCase flag
+
+fields
+
+    TheCurves   : SequenceOfCurve from TColGeom;
+    TheCurves2d : SequenceOfCurve from TColGeom2d;
+    TheBadCase  : Boolean from Standard; 
+    
+end TopoCurve;

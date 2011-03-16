@@ -1,0 +1,107 @@
+-- File:	LocOpe_Pipe.cdl
+-- Created:	Wed Sep  4 14:41:52 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Pipe from LocOpe 
+
+	---Purpose: Defines a  pipe  (near from   Pipe from BRepFill),
+	--          with modifications provided for the Pipe feature.
+
+uses Pipe from BRepFill,
+
+     ListOfShape               from TopTools,
+     DataMapOfShapeListOfShape from TopTools,
+     Curve                     from  Geom,      
+     Shape                     from TopoDS,
+     Wire                      from TopoDS,     
+     SequenceOfPnt             from TColgp,
+     SequenceOfCurve           from TColGeom
+     
+
+raises NoSuchObject from Standard,
+       DomainError  from Standard
+
+is
+
+    Create (Spine   : Wire from TopoDS;
+    	    Profile : Shape from TopoDS)
+	    
+    	returns Pipe from LocOpe;
+
+
+    Spine(me)
+    
+    	returns Shape from TopoDS
+	---C++: inline
+	---C++: return const &
+	is static;
+
+
+    Profile(me)
+    
+    	returns Shape from TopoDS
+	---C++: inline
+	---C++: return const &
+	is static;
+
+
+    FirstShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: inline
+	---C++: return const &
+	is static;
+
+
+    LastShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: inline
+	---C++: return const &
+	is static;
+
+
+    Shape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    Shapes(me: in out; S: Shape from TopoDS)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const &
+    	raises NoSuchObject from Standard,
+	       -- The exception is raised if S is not a subshape of the profile
+               DomainError  from Standard
+	       -- The exception is raised if S is neither a vertex nor
+	       -- an edge
+	is static;
+
+
+    Curves(me: in out; Spt: SequenceOfPnt from TColgp)
+
+	---C++: return const &
+    	returns SequenceOfCurve from TColGeom
+	is static;
+
+    BarycCurve(me: in out) 
+     
+    	returns  Curve  from  Geom 
+	is  static;
+
+fields
+
+    myPipe : Pipe                      from BRepFill;
+    myMap  : DataMapOfShapeListOfShape from TopTools;
+    myRes  : Shape                     from TopoDS;
+    myGShap: ListOfShape               from TopTools;
+    myCrvs : SequenceOfCurve           from TColGeom;
+    myFirstShape : Shape             from TopoDS;
+    myLastShape  : Shape             from TopoDS;
+
+end Pipe;

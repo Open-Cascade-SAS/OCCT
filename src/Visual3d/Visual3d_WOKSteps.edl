@@ -1,0 +1,16 @@
+
+--
+-- File:        Visual3d_WOKSteps.edl
+-- Author:      Stephane Callegari
+-- History:     30-04-98 : CAL : Creation
+-- Copyright:   Matra Datavision 1998
+--
+
+@ifnotdefined ( %Visual3d_WOKSteps_EDL) then
+
+  @set %Visual3d_WOKSteps_EDL = "";
+
+  @set %WOKSteps_UseSourceInclude  = "";
+
+@endif;
+

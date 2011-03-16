@@ -1,0 +1,52 @@
+-- File:	VrmlConverter_LineAspect.cdl
+-- Created:	Wed Apr 23 15:14:48 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class LineAspect from VrmlConverter inherits TShared from MMgt
+
+	---Purpose: qualifies the aspect properties for  
+	--          the VRML conversation of a Curve and  a  DeflectionCurve . 
+
+uses 
+
+    Material    from   Vrml
+
+is
+
+    Create
+    returns mutable LineAspect from VrmlConverter;
+
+    ---Purpose: create a default LineAspect. 
+    --  Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color) 
+
+    Create  (aMaterial: Material from Vrml; 
+    	    	 OnOff: Boolean from Standard)
+    returns mutable LineAspect from VrmlConverter;
+ 
+    SetMaterial(me: mutable; aMaterial: Material from Vrml)
+    is static;
+ 
+    Material(me) returns mutable Material from Vrml 
+    is  static; 
+
+    SetHasMaterial(me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: defines the necessary of writing  own  Material from Vrml into  output  OStream. 
+    --          By default False  -  the material is not writing into OStream, 
+    --          True  -  the material is writing. 
+    is  static; 
+
+    HasMaterial(me) returns Boolean from Standard 
+    ---Purpose: returns True if the  materials is  writing into OStream.
+    is static;
+ 
+--    Copy (me)  returns mutable like me;
+    
+fields
+     
+    myMaterial		:	Material    from   Vrml;    
+    myHasMaterial       :       Boolean  from  Standard;
+    
+end LineAspect;

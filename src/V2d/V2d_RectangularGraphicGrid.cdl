@@ -1,0 +1,55 @@
+-- File:	V2d_RectangularGraphicGrid.cdl
+-- Created:	Fri Mar  3 14:20:51 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+private class RectangularGraphicGrid from V2d inherits Primitive from Graphic2d
+
+
+uses
+	Drawer          from Graphic2d,
+	GraphicObject	from Graphic2d,
+	Length          from Quantity,
+        GridDrawMode    from Aspect,
+	FStream         from Aspect 
+is
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		X, Y, alpha, beta, xo ,yo: Real from Standard;
+                aTenthColorIndex: Integer from Standard)
+	returns mutable RectangularGraphicGrid from V2d;
+
+	SetDrawMode(me: mutable; aDrawMode: GridDrawMode from Aspect)
+	is static;
+	
+	Draw (me: mutable; aDrawer: Drawer from Graphic2d)
+	is redefined static protected;
+	---Level: Internal
+	---Purpose: Draws the grid
+
+	Pick (me: mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard is redefined static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the infinite line <me> is picked,
+	--	    Standard_False if not.
+
+        DrawNetwork(me; aDrawer: Drawer from Graphic2d; 
+                        alpha,step:ShortReal from Standard;
+                        xfrom,yfrom, sizefrom: ShortReal from Standard )
+	is static private;
+
+        DrawPoints(me;  aDrawer: Drawer from Graphic2d; 
+                        xfrom,yfrom, sizefrom: ShortReal from Standard )
+	is static private;
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+
+fields
+	StepX, StepY,a1,a2,OX,OY: ShortReal from Standard;
+        DrawMode: GridDrawMode from Aspect;
+	myTenthColorIndex: Integer from Standard;
+end RectangularGraphicGrid from V2d;
+

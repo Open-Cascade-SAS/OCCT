@@ -1,0 +1,20 @@
+-- File:	StepRepr_MaterialProperty.cdl
+-- Created:	Sat Dec 14 11:01:40 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class MaterialProperty from StepRepr
+inherits PropertyDefinition from StepRepr
+
+    ---Purpose: Representation of STEP entity MaterialProperty
+
+uses
+    HAsciiString from TCollection,
+    CharacterizedDefinition from StepRepr
+
+is
+    Create returns MaterialProperty from StepRepr;
+	---Purpose: Empty constructor
+
+end MaterialProperty;

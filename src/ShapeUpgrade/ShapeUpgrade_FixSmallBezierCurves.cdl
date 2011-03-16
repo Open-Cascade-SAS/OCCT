@@ -1,0 +1,39 @@
+-- File:	ShapeUpgrade_FixSmallBezierCurves.cdl
+-- Created:	Wed Jun  7 16:50:55 2000
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class FixSmallBezierCurves from ShapeUpgrade inherits FixSmallCurves from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+
+    --HArray1OfCurve from TColGeom,
+    --HArray1OfCurve from TColGeom2d,
+    --HSequenceOfReal from TColStd,
+    Edge from TopoDS,
+    Face from TopoDS,
+    Curve from Geom,
+    Curve from Geom2d,
+    Status from ShapeExtend
+is
+
+    Create returns FixSmallBezierCurves from ShapeUpgrade;
+    ---Purpose :
+    
+    Approx(me : mutable; Curve3d :  out Curve from Geom;
+    	   	    	 Curve2d :  out Curve from Geom2d;
+    	    	    	 Curve2dR : out Curve from Geom2d;
+    	    	    	 First, Last : in out Real) returns Boolean is redefined;
+    --Perform(me : mutable; theSegments3d :in out HArray1OfCurve from TColGeom;
+    --	    	    	 theKnots3d : in out HSequenceOfReal from TColStd;
+    --	    	    	 theSegments2d :in out HArray1OfCurve from TColGeom2d;
+    --	    	    	 theKnots2d : in out HSequenceOfReal from TColStd) returns Boolean is redefined;
+    ---Purpose :
+    
+
+
+end FixSmallBezierCurves;

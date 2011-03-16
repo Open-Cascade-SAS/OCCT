@@ -1,0 +1,99 @@
+--
+-- File      :  LineWidening.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class LineWidening from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines LineWidening, Type <406> Form <5>
+        --          in package IGESAppli
+        --          Defines the characteristics of entities when they are
+        --          used to define locations of items.
+
+uses  Integer, Real  -- no one specific type
+
+is
+
+        Create returns mutable LineWidening;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              nbPropVal   : Integer;
+              aWidth      : Real;
+              aCornering  : Integer;
+              aExtnFlag   : Integer;
+              aJustifFlag : Integer;
+              aExtnVal    : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           LineWidening
+        --       - nbPropVal   : Number of property values = 5
+        --       - aWidth      : Width of metalization
+        --       - aCornering  : Cornering codes
+        --                       0 = rounded
+        --                       1 = squared
+        --       - aExtnFlag   : Extension Flag
+        --                       0 = No Extension
+        --                       1 = One-half width extension
+        --                       2 = Extn set by ExtnVal
+        --       - aJustifFlag : Justification flag
+        --                       0 = Center justified
+        --                       1 = left justified
+        --                       2 = right justified
+        --       - aExtnVal    : Extension value if aExtnFlag = 2
+
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values
+        -- is always 5
+
+        WidthOfMetalization (me) returns Real;
+        ---Purpose : returns the width of metallization
+
+        CorneringCode (me) returns Integer;
+        ---Purpose : returns the cornering code
+        --           0 = Rounded  /   1 = Squared
+
+        ExtensionFlag (me) returns Integer;
+        ---Purpose : returns the extension flag
+        -- 0 = No extension
+        -- 1 = One-half width extension
+        -- 2 = Extension set by theExtnVal
+
+        JustificationFlag (me) returns Integer;
+        ---Purpose : returns the justification flag
+        -- 0 = Centre justified
+        -- 1 = Left justified
+        -- 2 = Right justified
+
+        ExtensionValue (me) returns Real;
+        ---Purpose : returns the Extension Value
+        -- Present only if theExtnFlag = 2
+
+fields
+
+--
+-- Class    : IGESAppli_LineWidening
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class LineWidening.
+--
+-- Reminder : A LineWidening instance is defined by :
+--            - Number of property values (Should be 5)
+--            - Width of metalization
+--            - Cornering codes
+--            - Extension Flag
+--            - Justification flag
+--            - Extension value if theExtensionFlag = 2
+
+        theNbPropertyValues  : Integer;
+        theWidth             : Real;
+        theCorneringCode     : Integer;
+        theExtensionFlag     : Integer;
+        theJustificationFlag : Integer;
+        theExtensionValue    : Real;
+
+end LineWidening;

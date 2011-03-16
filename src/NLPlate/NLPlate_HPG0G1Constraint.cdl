@@ -1,0 +1,53 @@
+-- File:	NLPlate_HPG0G1Constraint.cdl
+-- Created:	Fri Apr 17 15:05:16 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+class  HPG0G1Constraint  from  NLPlate  inherits  HPG0Constraint from  NLPlate 
+---Purpose: define a PinPoint G0+G1  Constraint  used to load a Non Linear
+--          Plate
+uses
+     XY from gp,
+     XYZ from gp, 
+     D1  from  Plate
+     
+is
+    Create(UV : XY; Value : XYZ; D1T : D1 from Plate) returns mutable HPG0G1Constraint;
+    -- create a G0+G1 Constraint
+    -- 
+
+    SetOrientation(me:  mutable; Orient  :  Integer  =  0) 
+    is  redefined;
+    --  set the orientation (meaningless for non G1 Constraints) 
+    -- 	-1 means that the Surface Normal have to be -1*the Constraint Normal
+    --  0  means that G1 constraint is up to a normal inversion (default value)
+    --  1  means that the Surface Normal have to be equal to the Constraint Normal.
+    --  remarks : within the current implementation, this is effective only in case of
+    --  incremental loading computation
+
+    ActiveOrder(me)  returns  Integer 
+    is   redefined; 
+    --  returns the constraint active  order, i.e. the maximum between
+    --  -- the initial constraint i.e 1 (for G1 Constraints)
+
+    Orientation(me:  mutable)  returns  Integer
+    is  redefined;
+    --  set the orientation (meaningless for  non G1 Constraints)
+    -- 	-1 means that the Surface Normal have to be -1*the Constraint Normal
+    --  0  means that G1 constraint is up to a normal inversion (default value)
+    --  1  means that the Surface Normal have to be equal to the Constraint Normal.
+    --  remarks : within the current implementation, this is effective only in case of
+    --  incremental loading computation
+    -- 
+ 
+    G1Target(me) returns D1 from Plate
+    ---C++: return const &
+    is  redefined; 
+        
+
+fields
+    myG1Target : D1 from Plate; 
+    myOrientation  :  Integer;
+end;

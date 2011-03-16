@@ -1,0 +1,85 @@
+-- File:	TDataStd_Real.cdl
+-- Created:	Thu Feb  6 16:48:25 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Real from TDataStd inherits Attribute  from TDF
+
+    ---Purpose: The basis to define a real number attribute.
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Real            from Standard,
+     RelocationTable from TDF,
+     RealEnum        from TDataStd
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)    
+    	---C++: return const & 
+    	---Purpose:  Returns the GUID for real numbers.   
+    returns GUID from Standard;
+
+    Set (myclass ; label : Label from TDF; value : Real from Standard)
+    ---Purpose: Finds, or creates, an Real attribute and sets <value> the
+    --          Real attribute  is  returned. the  Real  dimension is
+    --          Scalar by default. use SetDimension to overwrite.
+    returns Real from TDataStd;
+    
+    ---Purpose: Real methods
+    --          ============
+
+    Create
+    returns mutable Real from TDataStd; 
+    
+    SetDimension (me : mutable; DIM : RealEnum from TDataStd);
+
+    
+    GetDimension (me)
+    returns RealEnum from TDataStd;
+
+    
+    Set (me : mutable; V : Real from Standard);
+    	---Purpose:
+    	-- Finds or creates the real number V.  
+
+    Get (me)
+    returns Real from Standard;
+    	---Purpose:
+    	-- Returns the real number value contained in the attribute.
+    IsCaptured(me) returns Boolean;
+	---Purpose: Returns True if there is a reference on the same label
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me) 
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myValue     : Real     from Standard;
+    myDimension : RealEnum from TDataStd;
+
+end Real;

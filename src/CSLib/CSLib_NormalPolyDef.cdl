@@ -1,0 +1,40 @@
+-- File:	SingularityAna_PolyStyle.cdl
+-- Created:	Fri Aug 23 10:33:30 1996
+-- Author:	Benoit TANNIOU
+--		<bt1@sgi65>
+---Copyright:	 Matra Datavision 1996
+
+private class NormalPolyDef from CSLib
+    	inherits FunctionWithDerivative from math
+
+uses
+    Array1OfReal from TColStd
+
+is
+    Create(k0:Integer; li:Array1OfReal) returns NormalPolyDef from CSLib;
+
+    Value(me: in out; X: Real; F: out Real)
+        ---Purpose: computes the value <F>of the function for the variable <X>.
+    	--          Returns True if the calculation were successfully done, 
+    	--          False otherwise.
+    returns Boolean;
+ 
+    Derivative(me: in out; X: Real; D: out Real)
+         ---Purpose: computes the derivative <D> of the function 
+         --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+    returns Boolean;
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+    returns Boolean;
+
+fields
+    myK0: Integer         from Standard;
+    myTABli: Array1OfReal from TColStd;
+    
+end NormalPolyDef;

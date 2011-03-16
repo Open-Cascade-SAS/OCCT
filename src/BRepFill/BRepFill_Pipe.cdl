@@ -1,0 +1,153 @@
+-- File:	BRepFill_Pipe.cdl
+-- Created:	Tue Jun  7 15:35:09 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+class Pipe from BRepFill 
+
+	---Purpose: Create a  shape by sweeping a shape  (the profile)
+	--          along a wire (the spine).
+	--          
+	--          For each edge  or vertex from the spine  the  user
+	--          may ask for the shape generated from each subshape
+	--          of the profile.
+
+uses
+
+    HArray2OfShape from TopTools,
+    LocationLaw  from BRepFill,
+    Shape  from TopoDS,
+    Face   from TopoDS,
+    Wire   from TopoDS,
+    Edge   from TopoDS,
+    Vertex from TopoDS,  
+    Pnt    from  gp,
+    Trsf  from  gp 
+    
+
+raises
+    DomainError from Standard, 
+    NotDone     from StdFail
+
+is
+
+    Create returns Pipe from BRepFill;
+    
+    Create ( Spine   : Wire from TopoDS; 
+    	     Profile : Shape from TopoDS;
+             GeneratePartCase : Boolean from Standard = Standard_False) 
+    returns Pipe from BRepFill;
+    
+    Perform (me : in out;  Spine   : Wire from TopoDS; 
+    	    	    	   Profile : Shape from TopoDS;
+                           GeneratePartCase : Boolean from Standard = Standard_False) 
+    is static;
+    
+    Spine(me) returns Shape from TopoDS
+	---C++ : return const &
+    is static;
+
+    Profile(me) returns Shape from TopoDS
+	---C++ : return const &
+    is static;
+
+    Shape(me) returns Shape from TopoDS
+	---C++ : return const &
+    is static;
+
+    FirstShape(me) returns Shape from TopoDS
+	---C++ : return const &
+    is static;
+
+    LastShape(me) returns Shape from TopoDS
+	---C++ : return const &
+    is static;
+
+    Face(me : in out; ESpine, EProfile : Edge from TopoDS)
+    returns Face from TopoDS
+	---Purpose: Returns the face created from an edge of the spine
+	--          and an edge of the profile.
+    raises
+    	DomainError from Standard 
+	---Purpose: if the edges are not in the spine or the profile
+	
+    is static;
+    
+    Edge(me : in out; ESpine : Edge from TopoDS; VProfile : Vertex from TopoDS)
+    returns Edge from TopoDS
+	---Purpose: Returns the edge created from an edge of the spine
+	--          and a vertex of the profile.
+    raises
+    	DomainError from Standard 
+	---Purpose: if the edge or the vertex are not in  the spine or
+	--          the profile.
+	
+    is static;
+    
+    Section(me; VSpine : Vertex from TopoDS)
+    returns Shape from TopoDS
+	---Purpose: Returns  the shape created from the profile at the
+	--          position of the vertex VSpine.
+    raises
+    	DomainError from Standard
+	---Purpose: if the vertex is not in the Spine
+    is static; 
+     
+     
+    PipeLine(me;  Point :  Pnt  from  gp)  
+	---Purpose: Create a Wire by sweeping the Point along the <spine>
+    returns  Wire  from  TopoDS 
+    raises
+    	DomainError from Standard
+	---Purpose: if the <Spine> is undefined      
+    is  static;
+
+
+    --
+    --  Private methods
+    --  
+    
+    MakeShape(me : in out; S : Shape from TopoDS; 
+    	    	    	   FirstShape,  LastShape  :  Shape  from  TopoDS)
+    returns Shape from TopoDS
+	---Purpose: Auxiliary  recursive  method  used  to  build  the
+	--          result. 
+    is static private;
+
+
+    FindEdge(me;  S : Shape from TopoDS;  
+    	          E : Edge  from  TopoDS;  
+		  Init  : in  out Integer)	 
+	---Purpose: Auxiliary recursive method used to find the edge's index
+    returns  Integer
+    is static private;
+
+    FindVertex(me;  S : Shape from TopoDS;  
+    	            V : Vertex  from  TopoDS;  
+		    Init  : in  out Integer) 
+    returns  Integer
+    is static private; 
+  
+    DefineRealSegmax(me : in out)
+    is static private; 
+    
+     
+fields
+    mySpine   : Wire  from TopoDS;
+    myProfile : Shape from TopoDS;
+    myShape   : Shape from TopoDS; 
+    myTrsf    : Trsf  from  gp; 
+    myLoc     : LocationLaw  from BRepFill;
+    mySections: HArray2OfShape from TopTools; 
+    myFaces   : HArray2OfShape from TopTools;  
+    myEdges   : HArray2OfShape from TopTools;     
+    myFirst   :  Shape  from  TopoDS; 
+    myLast    :  Shape  from  TopoDS; 
+     
+    myDegmax  : Integer from Standard;
+    mySegmax  : Integer from Standard;
+end Pipe;

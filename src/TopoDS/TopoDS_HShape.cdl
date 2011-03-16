@@ -1,0 +1,49 @@
+-- File:	TopoDS_HShape.cdl
+-- Created:	Wed Jun 28 09:19:29 1995
+-- Author:	Modelistation
+---Copyright:	 Matra Datavision 1995
+
+class HShape from TopoDS inherits TShared from MMgt
+
+    ---Purpose:Class to manipulate a Shape with  handle. 
+
+uses Shape from TopoDS
+
+is
+    Create returns mutable HShape from TopoDS;
+    ---C++: inline
+    ---Purpose: Constructs an empty shape object
+
+    Create (aShape : Shape from TopoDS)
+    returns mutable HShape from TopoDS;
+    ---C++: inline
+    ---Purpose: Constructs a shape object defined by the shape aShape.
+
+    Shape (me : mutable; aShape : Shape from TopoDS)
+    is static;
+    ---C++: inline
+    ---Purpose: Loads this shape with the shape aShape
+
+    Shape (me) returns Shape from TopoDS
+    ---C++: return const &
+    ---C++: inline
+    ---Purpose: Returns a reference to a constant TopoDS_Shape based on this shape.
+    is static;
+
+    ChangeShape (me : mutable) returns Shape from TopoDS
+    ---C++: return &
+    ---C++: inline
+    ---Purpose:
+    -- Exchanges the TopoDS_Shape object defining this
+    -- shape for another one referencing the same underlying shape
+    -- Accesses the list of shapes within the underlying
+    -- shape referenced by the TopoDS_Shape object.
+    -- Returns a reference to a TopoDS_Shape based on
+    -- this shape. The TopoDS_Shape can be modified.
+    is static;
+
+fields
+
+    myShape : Shape from TopoDS;
+
+end HShape;

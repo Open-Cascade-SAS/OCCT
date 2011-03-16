@@ -1,0 +1,82 @@
+-- File:      IntTools_LineConstructor.cdl
+-- Created:   Tue Feb  7 10:07:01 1995
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1995
+
+class LineConstructor from IntTools
+
+        ---Purpose: Splits given Line.
+
+uses Line           from IntPatch,
+     TopolTool      from Adaptor3d,
+     HSurface       from GeomAdaptor,
+     SequenceOfReal from TColStd
+
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+is
+
+    Create
+    	returns LineConstructor from IntTools;
+	---C++: inline
+	---Purpose: 
+	--- Empty constructor
+	---
+
+    Load(me: in out; D1,D2: TopolTool from Adaptor3d;
+                     S1,S2: HSurface  from GeomAdaptor)
+    	is static;
+	---C++: inline
+	---Purpose:
+	--- Initializes me by two surfaces and corresponding
+	--- tools which represent boundaries of surfaces
+	---
+
+    Perform(me: in out; L: Line from IntPatch)
+    	is static;
+	---Purpose:
+	--- Splits line
+	---
+
+    IsDone(me)
+    	returns Boolean from Standard
+	is static;
+	---C++: inline
+	---Purpose:
+	--- Returns True if splitting was successful
+	---
+
+    NbParts(me)
+    	returns Integer from Standard
+	raises NotDone from StdFail
+	is static;
+	---C++: inline
+	---Purpose:
+	--- Returns number of splits
+	---
+
+    Part(me; I: Integer from Standard; WFirst,WLast: out Real from Standard) 
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	is static;
+	---C++: inline
+	---Purpose:
+	--- Return first and last parameters 
+    	--- for given index of split
+	---
+
+    PeriodicLine(me; L: Line from IntPatch)
+    	is static private;
+
+fields
+    
+    done  : Boolean        from Standard;
+    seqp  : SequenceOfReal from TColStd;
+    myDom1: TopolTool      from Adaptor3d;
+    myDom2: TopolTool      from Adaptor3d;
+    myHS1 : HSurface        from GeomAdaptor;
+    myHS2 : HSurface        from GeomAdaptor;    
+
+end LineConstructor;

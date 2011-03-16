@@ -1,0 +1,48 @@
+-- File:	QANCollection.cdl
+-- Created:	Fri Mar  5 09:07:47 2004
+-- Author:	Mikhail KUZMITCHEV
+--		<mkv@russox>
+---Copyright:	 Matra Datavision 2004
+
+package QANCollection
+
+uses
+    Draw,
+    TCollection, 
+    TColStd,
+    gp
+
+is
+    class  ListOfPnt   instantiates  List  from  TCollection    (Pnt  from  gp);
+    class  QueueOfPnt  instantiates  Queue from  TCollection    (Pnt  from  gp);
+    class  StackOfPnt  instantiates  Stack from  TCollection    (Pnt  from  gp);
+    class  SListOfPnt  instantiates  SList from  TCollection    (Pnt  from  gp);
+    class  DataMapOfRealPnt instantiates DataMap from TCollection  
+                                        (Real from Standard, 
+                                         Pnt from gp, 
+                                         MapRealHasher from TColStd);
+    class  IndexedDataMapOfRealPnt instantiates IndexedDataMap from TCollection
+                                        (Real from Standard, 
+                                         Pnt from gp, 
+                                         MapRealHasher from TColStd);
+    class  DoubleMapOfRealInteger instantiates DoubleMap from TCollection  
+                                        (Real from Standard, 
+                                         Integer from Standard, 
+                                         MapRealHasher from TColStd, 
+                                         MapIntegerHasher from TColStd);
+
+
+---    HashCode (thePnt   : Pnt from gp;
+---              theUpper : Integer from Standard)
+---    returns Integer from Standard;
+    
+---    IsEqual (thePnt1   : Pnt from gp;
+---             thePnt2   : Pnt from gp)
+---    returns Boolean from Standard;
+    
+    Commands(DI : in out Interpretor from Draw);
+    Commands1(DI : in out Interpretor from Draw);
+    Commands2(DI : in out Interpretor from Draw);
+    Commands3(DI : in out Interpretor from Draw);
+
+end;

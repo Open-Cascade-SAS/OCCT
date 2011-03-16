@@ -1,0 +1,316 @@
+-- File:	IntPatch_RLine.cdl
+-- Created:	Mon Apr  6 11:17:45 1992
+-- Author:	Jacques GOUSSARD
+---Copyright:	 Matra Datavision 1992
+
+
+class RLine from IntPatch
+
+
+inherits Line from IntPatch 
+
+	---Purpose: Implementation of an intersection line described by a
+	--          restriction line on one of the surfaces.
+
+
+uses
+     HCurve2d        from Adaptor2d,
+     Point           from IntPatch,
+     SequenceOfPoint from IntPatch,
+     TypeTrans       from IntSurf,
+     Situation       from IntSurf,
+     PntOn2S         from IntSurf,
+     LineOn2S        from IntSurf
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+is
+
+
+    Create(Tang: Boolean from Standard;
+           Trans1,Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates a restriction as an intersection line
+	--          when the transitions are In or Out.
+    
+    	returns mutable RLine from IntPatch;
+
+
+    Create(Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates a restriction as an intersection line
+	--          when the transitions are Touch.
+    
+    	returns mutable RLine from IntPatch;
+
+
+    Create(Tang: Boolean from Standard)
+    
+	---Purpose: Creates a restriction as an intersection line
+	--          when the transitions are Undecided.
+    
+    	returns mutable RLine from IntPatch;
+
+
+    AddVertex(me: mutable; Pnt: Point from IntPatch)
+    
+	---Purpose: To add a vertex in the list.
+
+	---C++: inline
+
+    	is static;
+
+    
+    Replace(me: mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+	---Purpose: Replaces the element of range Index in the list
+	--          of points.
+ 
+	---C++: inline
+
+   	raises OutOfRange from Standard
+	---         The exception OutOfRange is raised when Index <= 0
+	--          or Index > NbVertex.
+
+	is static;
+
+
+    SetFirstPoint(me: mutable; IndFirst: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    SetLastPoint(me: mutable; IndLast: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    Add(me: mutable; L: LineOn2S from IntSurf)
+    
+	---C++: inline
+
+    	is static;
+
+
+    IsArcOnS1(me)
+    
+    	---Purpose: Returns True if the intersection is on the domain of the
+    	--          first patch.
+    	--          Returns False if the intersection is on the domain of
+    	--          the second patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;
+
+    IsArcOnS2(me)
+    
+    	---Purpose: Returns True if the intersection is on the domain of the
+    	--          first patch.
+    	--          Returns False if the intersection is on the domain of
+    	--          the second patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;
+
+    SetArcOnS1(me: mutable; A: HCurve2d from Adaptor2d)
+
+	is static;
+
+    SetArcOnS2(me: mutable; A: HCurve2d from Adaptor2d)
+
+	is static;
+
+    SetParamOnS1(me: mutable; p1,p2:  Real from Standard)
+    	--- first and last parameters  on the restriction of the first
+    	--  patch
+    	is static;
+
+    SetParamOnS2(me: mutable; p1,p2: out Real from Standard)
+    	--- first and last parameters  on the restriction of the first
+    	--  patch
+    	is static;
+
+    ArcOnS1(me)
+
+	---Purpose: Returns the concerned arc.
+
+    	returns HCurve2d from Adaptor2d
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+    ArcOnS2(me)
+
+	---Purpose: Returns the concerned arc.
+
+    	returns HCurve2d from Adaptor2d
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+    ParamOnS1(me; p1,p2: out Real from Standard)
+    	--- first and last parameters  on the restriction of the first
+    	--  patch
+    	is static;
+
+    ParamOnS2(me; p1,p2: out Real from Standard)
+    	--- first and last parameters  on the restriction of the first
+    	--  patch
+    	is static;
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if the line has a known First point.
+	--          This point is given by the method FirstPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if the line has a known Last point.
+	--          This point is given by the method LastPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    FirstPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the FirstPoint.
+	--          An exception is raised when HasFirstPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    LastPoint(me)
+    
+	---Purpose: Returns the IntPoint corresponding to the LastPoint.
+	--          An exception is raised when HasLastPoint returns False.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    NbVertex(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the vertex of range Index on the line.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange from Standard
+	--- The exception OutOfRange is raised if Index <= 0 or
+	--  Index > NbVertex.
+	
+	is static;
+
+
+    HasPolygon(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    NbPnts(me)
+    
+	---Purpose: Returns the number of intersection points.
+
+    	returns Integer from Standard
+	---C++: inline
+
+	raises DomainError from Standard
+	--- The exception DomainError is raised if HasPolygon returns False.
+
+	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the intersection point of range Index.
+
+    	returns PntOn2S from IntSurf
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange  from Standard,
+	       DomainError from Standard
+	--- The exception DomainError is raised if HasPolygon returns False.
+	--- The exception OutOfRange is raised if Index <= 0 or Index > NbPnts.
+	
+	is static;
+    
+
+    SetPoint(me:mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+    	---Purpose: Set the Point of index <Index> in the LineOn2S
+    
+    	is static;
+
+    ComputeVertexParameters(me: mutable; Tol:Real from Standard)
+    
+    	---Purpose: Set the parameters of all the vertex on the line.
+    	--          if a vertex is already in the line, 
+    	--             its parameter is modified
+    	--          else a new point in the line is inserted.
+        is static; 
+ 
+
+fields
+
+    theArcOnS1   : HCurve2d from Adaptor2d;
+    theArcOnS2   : HCurve2d from Adaptor2d;
+    onS1         : Boolean  from Standard;
+    onS2         : Boolean  from Standard;
+    
+    ParamInf1    : Real     from Standard;
+    ParamSup1    : Real     from Standard;
+    ParamInf2    : Real     from Standard;
+    ParamSup2    : Real     from Standard;
+    
+    curv         : LineOn2S        from IntSurf;
+    fipt         : Boolean         from Standard;
+    lapt         : Boolean         from Standard;
+    indf         : Integer         from Standard;
+    indl         : Integer         from Standard;
+    svtx         : SequenceOfPoint from IntPatch;
+
+end RLine;

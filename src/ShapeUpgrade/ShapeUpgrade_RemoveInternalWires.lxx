@@ -1,0 +1,62 @@
+#include <ShapeExtend.hxx>
+  
+//=======================================================================
+//function : MinArea
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real& ShapeUpgrade_RemoveInternalWires::MinArea() 
+{
+  return myMinArea;
+}
+
+ 
+//=======================================================================
+//function : RemoveFaceMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode() 
+{
+  return myRemoveFacesMode;
+}
+
+//=======================================================================
+//function : RemovedFaces
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedFaces() const
+{
+  return myRemovedFaces;
+}
+
+//=======================================================================
+//function : RemovedWires
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedWires() const
+{
+  return myRemoveWires;
+}
+
+//=======================================================================
+//function : GetResult
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape ShapeUpgrade_RemoveInternalWires::GetResult() const
+{
+  return myResult;
+}
+
+//=======================================================================
+//function : Status
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean ShapeUpgrade_RemoveInternalWires::Status(const ShapeExtend_Status theStatus) const
+{
+  return ShapeExtend::DecodeStatus ( myStatus, theStatus );
+}

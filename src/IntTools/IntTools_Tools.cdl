@@ -1,0 +1,179 @@
+-- File:	IntTools_Tools.cdl
+-- Created:	Thu Nov 16 11:40:16 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class Tools from IntTools 
+
+	---Purpose:  
+	---  The class contains handy static functions 
+	---  dealing with the geometry and topology. 
+	 
+uses
+    Shape   from  TopoDS, 
+    Vertex  from  TopoDS, 
+    Edge    from  TopoDS, 
+    Wire    from  TopoDS, 
+    Face    from  TopoDS,
+    Pnt2d   from  gp,   
+    Pnt     from  gp, 
+    Dir     from  gp,
+    CommonPrt         from IntTools, 
+    Curve             from IntTools, 
+    SequenceOfCurves  from IntTools,
+    Curve   from  Geom,
+    State   from  TopAbs
+
+is 
+    ComputeVV  (myclass;V1,V2:Vertex  from  TopoDS) 
+    	returns Integer from Standard; 
+	---Purpose:
+	--- Computes distance between vertex V1 and vertex V2,
+	--- if the distance is less than sum of vertex tolerances
+	--- returns zero,
+	--- otherwise returns negative value
+	---
+
+    HasInternalEdge  (myclass;  
+    	    	      aW: Wire  from  TopoDS) 
+    	returns  Boolean from Standard;
+	---Purpose:
+	--- Returns True if wire aW contains edges
+	--- with INTERNAL orientation
+	---
+ 
+    MakeFaceFromWireAndFace  (myclass; 
+    	    	    	      aW: Wire from TopoDS;
+    	    	    	      aF: Face from TopoDS;
+    	    	    	      aFNew:out Face from TopoDS); 
+    	---Purpose:
+	--- Build a face based on surface of given face aF
+	--- and bounded by wire aW
+	---
+		   
+    ClassifyPointByFace	  (myclass;  
+    	    	    	   aF: Face from TopoDS; 
+		    	   P:  Pnt2d  from  gp) 
+	returns State from TopAbs;
+	---Purpose:
+	--- 
+	---
+	
+    IsVertex  (myclass; E: Edge    from  TopoDS; 
+    	    	        t: Real from Standard) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Computes square distance between a point on the edge E
+	--- corresponded to parameter t and vertices of edge E.
+	--- Returns True if this distance is less than square 
+	--- tolerance of vertex, otherwise returns false.
+	---
+	    	 
+    IsVertex  (myclass; E: Edge    from  TopoDS;  
+    	    	        V: Vertex  from  TopoDS; 
+    	    	        t: Real from Standard) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if square distance between vertex V
+	--- and a point on the edge E corresponded to parameter t
+	--- is less than square tolerance of V
+	---
+	 
+    IsVertex  (myclass;  aCmnPrt: CommonPrt from  IntTools) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if IsVertx for middle parameter of fist range 
+	--- and first edge returns True
+	--- and if IsVertex for middle parameter of second range and 
+    	--- second range returns True,
+	--- otherwise returns False
+	---
+	 
+    IsMiddlePointsEqual(myclass; 
+   	    	       E1: Edge    from  TopoDS; 	           
+   	    	       E2: Edge    from  TopoDS) 
+        returns Boolean from Standard;
+	---Purpose:
+	--- Gets boundary of parameters of E1 and E2.
+	--- Computes 3d points on each corresponded to average parameters.
+	--- Returns True if distance between computed points is less than
+	--- sum of edge tolerance, otherwise returns False.
+	---
+
+    IsVertex        (myclass; 
+    	    	    aP  : Pnt  from gp;  
+		    aTolPV: Real from Standard;	
+    	    	    aV: Vertex  from TopoDS)  
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if the distance between point aP and 
+	--- vertex aV is less or equal to sum of aTolPV and 
+	--- vertex tolerance, otherwise returns False
+	---
+
+    IntermediatePoint (myclass; 
+    	    	       aFirst: Real from Standard; 
+                       aLast : Real from Standard) 
+    	returns  Real from Standard;
+	---Purpose:
+	--- Returns some value between aFirst and aLast
+	---
+    
+    SplitCurve  (myclass;  
+    	    	 aC : Curve from IntTools;  
+    	    	 aS :out SequenceOfCurves  from IntTools) 
+    	returns Integer from Standard;
+	---Purpose:
+	--- Split aC by average parameter if aC is closed in 3D.
+	--- Returns positive value if splitting has been done,
+	--- otherwise returns zero.
+	---
+	 
+    RejectLines(myclass; 
+    	    	aSIn:     SequenceOfCurves  from IntTools; 
+    	    	aSOut:out SequenceOfCurves  from IntTools);
+    	---Purpose:
+	--- Puts curves from aSIn to aSOut except those curves that
+	--- are coincide with first curve from aSIn.
+	---
+			 
+    IsDirsCoinside (myclass;  
+    	    	    D1:Dir from gp; 
+    	    	    D2:Dir from gp) 
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if D1 and D2 coinside
+	--- 
+
+    IsDirsCoinside (myclass;  
+    	    	    D1  :Dir from gp; 
+    	    	    D2  :Dir from gp; 
+    	    	    aTol:Real from Standard) 
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if D1 and D2 coinside with given tolerance  
+	---  
+
+    IsClosed    (myclass;  
+    	    	 aC : Curve from Geom)  
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Returns True if aC is BoundedCurve from Geom and
+    	--- the distance between first point
+	--- of the curve aC and last point
+	--- is less than 1.e-12
+	---
+	
+    CurveTolerance(myclass;   
+    	    	    	aC   : Curve from Geom; 
+			aTolBase : Real from Standard) 
+    	returns Real from Standard;
+	---Purpose:
+	--- Returns adaptive tolerance for given aTolBase
+	--- if aC is trimmed curve and basis curve is parabola,
+	--- otherwise returns value of aTolBase
+	---
+
+end Tools;

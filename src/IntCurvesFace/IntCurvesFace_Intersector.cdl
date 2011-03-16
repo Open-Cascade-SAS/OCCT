@@ -1,0 +1,192 @@
+-- File:	IntCurvesFace_Intersector.cdl
+-- Created:	Fri May 31 13:53:21 1996
+-- Author:	Laurent BUCHARD
+--		<lbr@sherlox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+-- Modified by skv - Wed Sep  3 15:38:56 2003 OCC578 
+-- Adding a sequence of state with two possible values: 0 means the point is 
+-- inside the face, 1 - the point is on the bound of face. This is done to get 
+-- a proper result of method State(int), which always returned TopAbs_IN before.
+
+
+
+class Intersector from IntCurvesFace
+
+uses
+
+    Lin               from gp,
+    Pnt               from gp,
+    Pnt2d             from gp,
+    Box	              from Bnd,
+    Face              from TopoDS,
+    Shape             from TopoDS,
+    State             from TopAbs,
+    TopolTool         from BRepTopAdaptor,
+    HSurface          from BRepAdaptor,
+    TransitionOnCurve from IntCurveSurface,
+    SequenceOfPnt     from IntCurveSurface,
+-- Modified by skv - Wed Sep  3 15:38:56 2003 OCC578 Begin
+    SequenceOfInteger from TColStd,
+-- Modified by skv - Wed Sep  3 15:38:56 2003 OCC578 End
+    HCurve            from Adaptor3d,
+    HInter            from IntCurveSurface,
+    SurfaceType       from GeomAbs
+    
+is
+
+    Create(F    : Face from TopoDS;
+	   aTol : Real    from Standard)
+	   
+	---Purpose: Load a Face.     
+	--          
+	--          The Tolerance <Tol> is used to determine if the 
+	--          first point of the segment is near the face. In 
+	--          that case, the parameter of the intersection point 
+	--          on the line can be a negative value (greater than -Tol).
+
+     returns Intersector from IntCurvesFace;
+
+    	          
+    Perform(me: in out;  L    : Lin     from gp;
+                         PInf : Real    from Standard;
+                         PSup : Real    from Standard)
+			 
+      	---Purpose: Perform the intersection between the 
+	--          segment L and the loaded face.
+	--          
+	--          PInf is the smallest parameter on the line 
+	--          PSup is the highest  parmaeter on the line
+	--          
+	--          For an infinite line PInf and PSup can be 
+	--          +/- RealLast. 
+
+    is static;
+
+    Perform(me: in out;  HCu  : HCurve  from Adaptor3d;
+                         PInf : Real    from Standard;
+                         PSup : Real    from Standard)
+	---Purpose : same method for a HCurve from Adaptor3d.
+	--           PInf an PSup can also be - and + INF. 		     
+    is static;		     
+			     
+
+    SurfaceType(me) 
+    	---Purpose: Return the surface type 
+    returns SurfaceType from GeomAbs
+    is static; 
+
+
+    IsDone(me)  
+    	---Purpose: True is returned when the intersection have been computed.
+    	---C++: inline
+    returns Boolean from Standard
+    is static;
+    
+    
+    NbPnt(me) 
+    	---C++: inline
+    returns Integer from Standard
+    is static;
+    
+	 
+    UParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the U parameter of the ith intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    VParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the V parameter of the ith intersection point 
+    	--          on the surface.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+    WParameter(me; I : Integer from Standard) 
+    	---Purpose: Returns the parameter of the ith intersection point 
+    	--          on the line.
+    	---C++: inline
+    returns Real from Standard
+    is static;
+
+
+    Pnt(me; I : Integer from Standard)
+	---Purpose: Returns the geometric point of the ith intersection 
+	--          between the line and the surface.
+    	---C++: inline
+	---C++: return const &
+    returns Pnt from gp
+    is static;
+    
+    
+    Transition(me; I : Integer from Standard) 
+    	---Purpose: Returns the ith transition of the line on the surface.
+    	---C++: inline
+    returns TransitionOnCurve from IntCurveSurface
+    is static;
+    
+
+    State(me; I : Integer from Standard) 
+    	---Purpose: Returns the ith state of the point on the face.
+    	--          The values can be either TopAbs_IN 
+    	--             ( the point is in the face)
+    	--           or TopAbs_ON
+    	--             ( the point is on a boudary of the face).
+    	---C++: inline
+       
+    returns State from TopAbs
+    is static;
+    
+    Face(me) 
+    	---Purpose: Returns the significant face used to determine
+    	--          the intersection. 
+    	--          
+    	---C++: inline
+    	---C++: return const &
+    returns Face from TopoDS
+    is static;
+    
+    
+    InternalCall(me: in out;
+                 HICS: HInter from IntCurveSurface;
+                 pinf: Real from Standard;
+                 psup: Real from Standard)
+    is static private;
+
+    ClassifyUVPoint(me; Puv: Pnt2d from gp) 
+    returns State from TopAbs;
+    
+    Bounding(me) 
+    returns Box from Bnd;
+
+    Destroy(me: in out);
+    ---C++: alias ~
+    
+
+fields
+    myTopolTool        :  TopolTool           from BRepTopAdaptor;
+    Hsurface           :  HSurface            from BRepAdaptor;
+    Tol                :  Real                from Standard;
+    SeqPnt             :  SequenceOfPnt       from IntCurveSurface;
+-- Modified by skv - Wed Sep  3 15:38:56 2003 OCC578 Begin
+    mySeqState         : SequenceOfInteger from TColStd; -- 0 = IN, 1 =  ON
+-- Modified by skv - Wed Sep  3 15:38:56 2003 OCC578 End
+
+--    pnt                :  Pnt                 from gp;
+--    U                  :  Real                from Standard;
+--    V                  :  Real                from Standard;
+--    W                  :  Real                from Standard;
+--    transition         :  TransitionOnCurve   from IntCurveSurface;
+
+    done               :  Boolean             from Standard;
+    nbpnt              :  Integer             from Standard;
+--     state              :  State               from TopAbs;
+    face               :  Face                from TopoDS;
+    PtrOnPolyhedron    :  Address             from Standard;
+    PtrOnBndBounding   :  Address             from Standard;
+
+
+end Intersector from IntCurvesFace;

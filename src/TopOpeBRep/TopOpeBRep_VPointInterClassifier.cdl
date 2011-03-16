@@ -1,0 +1,50 @@
+-- File:	TopOpeBRep_VPointInterClassifier.cdl
+-- Created:	Wed Nov 17 19:26:36 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phobox>
+---Copyright:	 Matra Datavision 1993
+
+class VPointInterClassifier from TopOpeBRep
+
+uses 
+
+    State from TopAbs,
+    Shape from TopoDS,
+    VPointInter from TopOpeBRep,
+    FaceClassifier from BRepClass,
+    PointClassifier from TopOpeBRep
+    
+is
+
+    Create returns VPointInterClassifier from TopOpeBRep;
+
+    VPointPosition(me : in out; F : Shape from TopoDS;
+    			        VP : in out VPointInter from TopOpeBRep;
+                                ShapeIndex : Integer from Standard;
+    	    	    	    	PC : in out PointClassifier from TopOpeBRep;
+				AssumeINON : Boolean from Standard; Tol : Real)
+    ---Purpose: compute position of VPoint <VP> regarding with face <F>.
+    -- <ShapeIndex> (= 1,2) indicates which (u,v) point of <VP> is used.
+    -- when state is ON, set VP.EdgeON() with the edge containing <VP>
+    -- and associated parameter.
+    -- returns state of VP on ShapeIndex.
+    returns State from TopAbs is static;
+        
+    Edge(me) 
+    ---Purpose: returns the edge containing the VPoint <VP> used in the
+    -- last VPointPosition() call. Edge is defined if the state previously 
+    -- computed is ON, else Edge is a null shape.
+    ---C++: return const &
+    returns Shape from TopoDS is static;
+    	
+    EdgeParameter(me) 
+    ---Purpose: returns the parameter of the VPoint <VP> on Edge()
+    returns Real from Standard is static;
+    	
+fields
+
+    mySlowFaceClassifier : FaceClassifier from BRepClass;
+    myState          : State from TopAbs;
+    myNullShape      : Shape from TopoDS; -- dummy, needed by Edge()
+    
+end VPointInterClassifier from TopOpeBRep;

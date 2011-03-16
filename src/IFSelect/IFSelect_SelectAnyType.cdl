@@ -1,0 +1,27 @@
+-- File:	SelectAnyType.cdl
+-- Created:	Wed Nov 18 10:34:22 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectAnyType  from IFSelect  inherits SelectExtract
+
+    ---Purpose : A SelectAnyType sorts the Entities of which the Type is Kind
+    --           of a given Type : this Type for Match is specific of each
+    --           class of SelectAnyType
+
+uses Type, InterfaceModel
+
+is
+
+    TypeForMatch (me) returns Type  is deferred;
+    ---Purpose : Returns the Type which has to be matched for select
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True for an Entity (model->Value(num)) which is kind
+    --           of the choosen type, given by the method TypeForMatch.
+    --           Criterium is IsKind.
+
+end SelectAnyType;

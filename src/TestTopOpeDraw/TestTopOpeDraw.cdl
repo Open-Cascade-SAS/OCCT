@@ -1,0 +1,47 @@
+-- File:	TestTopOpeDraw.cdl
+-- Created:	Mon Jan 20 16:47:16 1997
+-- Author:	Jean Yves LEBEY
+--		<jyl@bistrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package TestTopOpeDraw
+
+uses 
+
+    TopoDS,
+    Draw,
+    DrawTrSurf,
+    DBRep,
+    TCollection,
+    Geom2d,
+    Geom,
+    gp,
+    TestTopOpeTools,
+    Standard,
+    TColgp
+        
+is
+    
+    class ListOfPnt2d instantiates List from TCollection(Pnt2d from gp);
+    class DrawableSHA;
+    class DrawableSUR;
+    class DrawableC3D;
+    class DrawableC2D;
+    class DrawableP3D;
+    class Array1OfDrawableP3D instantiates Array1 from TCollection
+    (DrawableP3D from TestTopOpeDraw);
+    class HArray1OfDrawableP3D instantiates HArray1 from TCollection
+    (DrawableP3D from TestTopOpeDraw,Array1OfDrawableP3D from TestTopOpeDraw);
+    class DrawableP2D;
+
+    class DrawableMesure;
+    class Array1OfDrawableMesure instantiates Array1 from TCollection
+    (DrawableMesure from TestTopOpeDraw);
+    class HArray1OfDrawableMesure instantiates HArray1 from TCollection
+    (DrawableMesure from TestTopOpeDraw,
+     Array1OfDrawableMesure from TestTopOpeDraw);
+
+    AllCommands(I : in out Interpretor from Draw);
+    OtherCommands(I : in out Interpretor from Draw);
+
+end TestTopOpeDraw;

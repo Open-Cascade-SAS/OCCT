@@ -1,0 +1,31 @@
+-- File:	PDataStd_ExtStringArray.cdl
+-- Created:	Wed Jan 16 11:27:52 2002
+-- Author:	Michael PONIKAROV
+--		<mpv@covox>
+---Copyright:	 Matra Datavision 2002
+
+class ExtStringArray from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses HExtendedString          from PCollection,
+     HArray1OfExtendedString from PColStd
+     
+     
+is
+
+    Create returns mutable ExtStringArray from PDataStd;
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+
+    SetValue(me: mutable; Index : Integer from Standard; Value : HExtendedString from PCollection);
+    
+    Value(me;  Index : Integer from Standard) returns HExtendedString from PCollection;
+   
+    Lower (me) returns Integer from Standard;      
+
+    Upper (me) returns Integer from Standard;   
+     
+fields
+    myValue     :  HArray1OfExtendedString from PColStd;
+end ExtStringArray;

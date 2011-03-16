@@ -1,0 +1,206 @@
+-- File:	AppParCurves_MultiBSpCurve.cdl
+-- Created:	Mon Sep 20 10:27:04 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MultiBSpCurve from AppParCurves
+    inherits MultiCurve from AppParCurves
+
+    	---Purpose: This class describes a MultiBSpCurve approximating a Multiline.
+    	--    Just as a Multiline is a set of a given number of lines, a MultiBSpCurve is a set
+    	-- of a specified number of bsplines defined by:
+    	-- -   A specified number of MultiPoints - the poles of a specified number of curves
+    	-- -   The degree of approximation identical for each of the specified number of curves. 
+    	--
+    	--
+    	--   Example of a MultiBSpCurve composed of a specified number of MultiPoints:
+    	-- 
+    	--      P1______P2_____P3______P4________........_____PNbMPoints
+    	--
+    	--      Q1______Q2_____Q3______Q4________........_____QNbMPoints
+    	--      .                                               .
+    	--      .                                               .
+    	--      .                                               .
+    	--      R1______R2_____R3______R4________........_____RNbMPoints
+    	--
+    	--     
+    	--      Pi, Qi, ..., Ri are points of dimension 2 or 3.
+    	--      
+    	--      (Pi, Qi, ...Ri), i= 1,...NbPoles are MultiPoints.
+    	--      each MultiPoint has got NbPol Poles.
+    	-- MultiBSpCurves are created by the SplineValue method in the ComputeLine
+    	-- class, and by the Value method in TheVariational class. MultiBSpCurve
+    	-- provides the information required to create the BSpline defined by the approximation.
+
+uses MultiPoint              from AppParCurves,
+     HArray1OfMultiPoint     from AppParCurves,
+     Array1OfMultiPoint      from AppParCurves,
+     Array1OfPnt             from TColgp,
+     Array1OfPnt2d           from TColgp,
+     Array1OfReal            from TColStd,
+     Array1OfInteger         from TColStd,
+     HArray1OfReal           from TColStd,
+     HArray1OfInteger        from TColStd,
+     Pnt                     from gp,
+     Pnt2d                   from gp,
+     Vec                     from gp,
+     Vec2d                   from gp,
+     OStream                 from Standard
+     
+  
+raises OutOfRange        from Standard,
+       DimensionError    from Standard,
+       ConstructionError from Standard
+
+is
+
+    Create returns MultiBSpCurve;
+    	---Purpose: returns an indefinite MultiBSpCurve.
+
+
+    Create(NbPol: Integer)
+    	---Purpose: creates a MultiBSpCurve, describing BSpline curves all 
+    	--          containing the same number of MultiPoint.
+    	--          An exception is raised if Degree < 0.
+
+
+    returns MultiBSpCurve from AppParCurves
+    raises OutOfRange from Standard;
+
+
+    Create(tabMU: Array1OfMultiPoint; Knots: Array1OfReal;
+           Mults: Array1OfInteger)
+    	---Purpose: creates a MultiBSpCurve, describing BSpline curves all 
+    	--          containing the same number of MultiPoint.
+    	--          Each MultiPoint must have NbCurves Poles.
+
+    returns MultiBSpCurve from AppParCurves
+    raises ConstructionError from Standard;
+    
+
+
+    Create(SC: MultiCurve; Knots: Array1OfReal;
+           Mults: Array1OfInteger)
+    	---Purpose: creates a MultiBSpCurve, describing BSpline 
+    	--          curves, taking control points from <SC>.
+
+    returns MultiBSpCurve from AppParCurves
+    raises ConstructionError from Standard;
+
+    
+    SetKnots(me: in out; theKnots: Array1OfReal)
+    	---Purpose: Knots of the multiBSpCurve are assigned to <theknots>.
+    is static;
+
+
+    SetMultiplicities(me: in out; theMults: Array1OfInteger)
+    	---Purpose: Multiplicities of the multiBSpCurve are assigned 
+    	--          to <theMults>.
+    is static;
+    
+
+    Knots(me) 
+    	---Purpose: Returns an array of Reals containing 
+        -- the multiplicities of curves resulting from the approximation.
+      	---C++: return const&
+    returns Array1OfReal
+    is static;
+    
+    Multiplicities(me) 
+    	---Purpose: Returns an array of Reals containing the
+    	--  multiplicities of curves resulting from the approximation.
+    	---C++: return const&
+    returns Array1OfInteger
+    is static;
+
+    
+    Degree(me)
+    	---Purpose: returns the degree of the curve(s).
+    
+    returns Integer
+    is redefined;
+    
+    
+    Value(me; CuIndex: Integer; U: Real; Pt: out Pnt)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 2d.
+
+    raises OutOfRange from Standard, 
+    	   DimensionError from Standard
+    is redefined;
+    
+    
+    Value(me; CuIndex: Integer; U: Real; Pt: out Pnt2d)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 3d.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is redefined;
+
+    
+    D1(me; CuIndex: Integer; U: Real; Pt: out Pnt; V1: out Vec)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 3d.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is redefined;
+
+
+    D1(me; CuIndex: Integer; U: Real; Pt: out Pnt2d; V1: out Vec2d)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 2d.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is redefined;
+
+    D2(me; CuIndex: Integer; U: Real; Pt: out Pnt; V1: out Vec; V2: out Vec)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 3d.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is redefined;
+
+
+    D2(me; CuIndex: Integer; U: Real; Pt: out Pnt2d; 
+           V1: out Vec2d; V2: out Vec2d)
+    	---Purpose: returns the value of the point with a parameter U
+    	--          on the BSpline curve number CuIndex.
+    	--          An exception is raised if CuIndex <0 or > NbCurves.
+    	--          An exception is raised if the curve dimension is 2d.
+
+    raises OutOfRange from Standard,
+    	   DimensionError from Standard
+    is redefined;
+    
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints on the stream o information on the current 
+    	--          state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is redefined;
+    
+
+fields
+
+    myknots:   HArray1OfReal;
+    mymults:   HArray1OfInteger;
+    myDegree : Integer;
+
+end MultiBSpCurve;

@@ -1,0 +1,30 @@
+-- File:	PGeom2d_VectorWithMagnitude.cdl
+-- Created:	Tue Apr  6 17:22:10 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class VectorWithMagnitude from PGeom2d inherits Vector from PGeom2d
+
+        ---Purpose : Defines a vector  with  magnitude.  A vector with
+        --         magnitude can have a zero length.
+        --         
+	---See Also : VectorWithMagnitude from Geom2d.
+
+uses Vec2d from gp
+
+is
+
+
+  Create returns mutable VectorWithMagnitude;
+        ---Purpose : Creates a VectorWithMagnitude with default values.
+	---Level: Advanced 
+
+
+  Create (aVec : Vec2d from gp) returns mutable VectorWithMagnitude;
+        ---Purpose : Creates a VectorWithMagnitude with <aVec>.
+	---Level: Advanced 
+
+
+end;

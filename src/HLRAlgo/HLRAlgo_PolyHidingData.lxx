@@ -1,0 +1,54 @@
+// File:	HLRAlgo_PolyHidingData.lxx
+// Created:	Wed Jun 21 19:29:59 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : PolyHidingData
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_PolyHidingData::HLRAlgo_PolyHidingData ()
+{}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRAlgo_PolyHidingData::Set (const Standard_Integer Index,
+			     const Standard_Integer Minim,
+			     const Standard_Integer Maxim,
+			     const Standard_Real A,
+			     const Standard_Real B,
+			     const Standard_Real C,
+			     const Standard_Real D)
+{
+  myMinMax[0] = Index;
+  myMinMax[1] = Minim;
+  myMinMax[2] = Maxim;
+  myPlan[0]  = A;
+  myPlan[1]  = B;
+  myPlan[2]  = C;
+  myPlan[3]  = D;
+}
+
+//=======================================================================
+//function : IndexAndMinMax
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address
+HLRAlgo_PolyHidingData::IndexAndMinMax() const
+{ return (Standard_Address)myMinMax; }
+
+//=======================================================================
+//function : Plan
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address
+HLRAlgo_PolyHidingData::Plan() const
+{ return (Standard_Address)myPlan; }
+

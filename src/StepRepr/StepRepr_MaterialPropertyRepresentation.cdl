@@ -1,0 +1,34 @@
+-- File:	StepRepr_MaterialPropertyRepresentation.cdl
+-- Created:	Thu Dec 12 16:07:47 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class MaterialPropertyRepresentation from StepRepr
+inherits PropertyDefinitionRepresentation from StepRepr
+
+    ---Purpose: Representation of STEP entity MaterialPropertyRepresentation
+
+uses
+    RepresentedDefinition from StepRepr,
+    Representation from StepRepr,
+    DataEnvironment from StepRepr
+
+is
+    Create returns MaterialPropertyRepresentation from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aPropertyDefinitionRepresentation_Definition: RepresentedDefinition from StepRepr;
+                       aPropertyDefinitionRepresentation_UsedRepresentation: Representation from StepRepr;
+                       aDependentEnvironment: DataEnvironment from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    DependentEnvironment (me) returns DataEnvironment from StepRepr;
+	---Purpose: Returns field DependentEnvironment
+    SetDependentEnvironment (me: mutable; DependentEnvironment: DataEnvironment from StepRepr);
+	---Purpose: Set field DependentEnvironment
+
+fields
+    theDependentEnvironment: DataEnvironment from StepRepr;
+
+end MaterialPropertyRepresentation;

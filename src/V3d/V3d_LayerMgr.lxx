@@ -1,0 +1,15 @@
+// File:	V3d_LayerMgr.lxx
+// Created:	Thu Apr 17 12:34:25 2008
+// Author:	Customer Support
+//Copyright:	Open Cascade 2008
+
+
+inline const Handle(Visual3d_Layer)& V3d_LayerMgr::Overlay() const
+{
+  return myOverlay;
+}
+
+inline Handle(V3d_View) V3d_LayerMgr::View() const
+{
+  return Handle(V3d_View)(myView);
+}

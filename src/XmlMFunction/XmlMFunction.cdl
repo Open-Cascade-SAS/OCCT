@@ -1,0 +1,27 @@
+-- File:      XmlMFunction.cdl
+-- Created:   Mon Jul  9 12:29:49 MSK DST 2001
+-- Author:    Julia DOROVSKIKH
+---Copyright: MATRA DATAVISION 2001
+
+package XmlMFunction
+
+
+uses
+    TDF,
+    CDM,
+    XmlMDF,
+    XmlObjMgt
+
+is
+    ---Category: Classes
+    --           =============================================================
+
+    class FunctionDriver;
+    class ScopeDriver;
+    class GraphNodeDriver;
+
+    AddDrivers (aDriverTable    : ADriverTable  from XmlMDF;
+                theMessageDriver: MessageDriver from CDM);
+        ---Purpose: Adds the attribute storage drivers to <aDriverTable>.
+
+end XmlMFunction;

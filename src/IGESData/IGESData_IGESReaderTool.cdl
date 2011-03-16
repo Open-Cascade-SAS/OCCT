@@ -1,0 +1,100 @@
+-- File:	IGESReaderTool.cdl
+-- Created:	Mon Apr  6 16:10:29 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class IGESReaderTool  from IGESData  inherits FileReaderTool
+
+    ---Purpose : specific FileReaderTool for IGES
+    --           Parameters are accessed through specific objects, ParamReaders
+
+uses Integer, Boolean,  Transient,
+     Check,  InterfaceModel, GeneralLib,  ReaderLib,  ParamList,
+     IGESReaderData,  Protocol from IGESData, FileRecognizer,
+     IGESType,        IGESEntity,   DirPart,  ReadStage,   ParamReader
+
+is
+
+    Create (reader : mutable IGESReaderData; protocol : Protocol from IGESData)
+    	returns IGESReaderTool;
+    ---Purpose : creates IGESReaderTool to work with an IGESReaderData and an
+    --           IGES Protocol.
+    --           Actually, no Lib is used
+
+    	-- --   General   -- --
+
+    Prepare (me : in out; reco : mutable FileRecognizer);
+    ---Purpose : binds empty entities to records, works with the Protocol
+    --           (from IGESData) stored and later used
+    --           RQ : Actually, sets DNum into IGES Entities
+    --           Also loads the list of parameters for ParamReader
+
+    Recognize (me : in out; num : Integer;
+    	       ach : in out Check; ent : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : recognizes records by asking Protocol (on data of DirType)
+
+    	--    Loading the IGESModel    --
+
+    BeginRead (me : in out; amodel : mutable InterfaceModel);
+    ---Purpose : fills model's header, that is, its GlobalSection
+
+    AnalyseRecord (me : in out;
+    	num : Integer; anent : mutable Transient; acheck : in out Check)
+	    returns Boolean;
+    ---Purpose : fills an entity, given record no; works by calling ReadDirPart
+    --           then ReadParams (with help of a ParamReader), then if required
+    --           ReadProps and ReadAssocs, from IGESEntity
+    --           Returns True if no fail has been recorded
+
+    EndRead (me : in out; amodel : mutable InterfaceModel) is redefined;
+    ---Purpose : after reading entities, true line weights can be computed
+
+    	--    For each IGESEntity    --
+
+    ReadDir       (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    	           DP : DirPart; ach : in out Check);
+    ---Purpose : Reads directory part componants from file; DP is the litteral
+    --           directory part, IR detains entities referenced by DP
+
+    ReadOwnParams (me; ent : mutable IGESEntity;
+    	    	   IR : IGESReaderData; PR : in out ParamReader);
+    ---Purpose : Performs Reading of own Parameters for each IGESEntity
+    --           Works with the ReaderLib loaded with ReadWriteModules for IGES
+    --           In case of failure, tries UndefinedEntity from IGES
+
+    ReadProps     (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    	    	   PR : in out ParamReader);
+    ---Purpose : Reads Property List, if there is (if not, does nothing)
+    --           criterium is : current parameter of PR remains inside params
+    --           list, and Stage is "Own"
+    --           Current parameter must be a positive integer, which value
+    --           gives the length of the list; else, a Fail is produced (into
+    --           Check of PR) and reading process is stopped
+
+    ReadAssocs    (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    	    	   PR : in out ParamReader);
+    ---Purpose : Reads Associativity List, if there is (if not, does nothing)
+    --           criterium is : current parameter of PR remains inside params
+    --           list, and Stage is "Own"
+    --           Same conditions as above; in addition, no parameter must be
+    --           let after the list once read
+    --           Note that "Associated" entities are not declared "Shared"
+
+fields
+
+    thelist : ParamList;         -- (loaded once, allows optimization)
+    thereco : FileRecognizer;
+    theglib : GeneralLib;
+    therlib : ReaderLib;
+    thecnum : Integer;           -- current entity number for recognize
+    thectyp : IGESType;          -- its IGESType (for purpose of optimization)
+    thestep : ReadStage;         -- to continue an interrupted party
+    thechk  : Check;             -- check on header (kept by IGESModel)
+    thegradweight : Integer;
+    themaxweight  : Real;
+    thedefweight  : Real;
+
+end IGESReaderTool;

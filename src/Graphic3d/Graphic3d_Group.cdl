@@ -1,0 +1,1154 @@
+    --
+    -- File:    Graphic3d_Group.cdl
+    -- Created: Vendredi 6 Septembre 1991
+    -- Author:  NW,JPB,CAL
+    --      27/09/97 ; PCT : ajout du controle manuel des textures
+    --              11/97 ; CAL : ajout polyline par 2 points
+    --      16/06/2000 : ATS: Study G005 - Group store presentations of it's objects in field
+    --                        MyListOfPArray to avoid deletion of handle-manipulating 
+    --                        primitives.
+    --
+    ---Copyright:   MatraDatavision 1991,1992,1993,1994
+    --
+    class Group from Graphic3d inherits TShared
+    
+        ---Version:
+
+        ---Purpose: This class allows the definition of groups
+        --     of primitives inside of graphic objects (presentations).
+        --     A group contains the primitives and attributes
+        --     for which the range is limited to this group.
+        --     The primitives of a group can be globally suppressed.
+        --
+        --      There are two main group usage models:
+        --
+        --        1) Non-modifiable, or unbounded, group ('black box'). 
+        --           Developers can repeat a sequence of 
+        --           SetPrimitivesAspect() with AddPrimitiveArray() methods arbitrary number of times
+        --           to define arbitrary number of primitive "blocks" each having individual apect values.
+        --           Any modification of such a group is forbidden, as aspects and primitives are mixed 
+        --           in memory without any high-level logical structure, and any modification is very likely to result
+        --           in corruption of the group internal data.
+        --           It is necessary to recreate such a group as a whole when some attribute should be changed.
+        --           (for example, in terms of AIS it is necessary to re-Compute() the whole presentation each time).
+        --        2) Bounded group. Developers should specify the necessary group aspects with help of
+        --           SetGroupPrimitivesAspect() and then add primitives to the group.
+        --           Such a group have simplified organization in memory (a single block of attributes
+        --           followed by a block of primitives) and therefore it can be modified, if it is necessary to
+        --           change parameters of some aspect that has already been set, using methods:
+        --           IsGroupPrimitivesAspectSet() to detect which aspect was set for primitives;
+        --           GroupPrimitivesAspect() to read current aspect values
+        --           and SetGroupPrimitivesAspect() to set new values.
+        -- 
+        --        Developers are strongly recommended to take all the above into account when filling Graphic3d_Group
+        --        with aspects and primitives and choose the group usage model beforehand out of application needs.
+
+        ---Warning:
+        ---References:
+    
+    uses
+    
+        Array1OfInteger             from TColStd,
+        Array1OfReal                from TColStd,
+        HArray1OfByte               from TColStd,
+    
+        ExtendedString              from TCollection,
+    
+        PlaneAngle                  from Quantity,
+    
+        Array1OfEdge                from Aspect,
+        Edge                        from Aspect,
+    
+    	GroupAspect	            from Graphic3d,
+        AspectLine3d                from Graphic3d,
+        AspectMarker3d              from Graphic3d,
+        AspectText3d                from Graphic3d,
+        AspectFillArea3d            from Graphic3d,
+        HorizontalTextAlignment     from Graphic3d,
+        CBitFields4                 from Graphic3d,
+        CGroup                      from Graphic3d,
+        GraphicDriver               from Graphic3d,
+        Structure                   from Graphic3d,
+        TextPath                    from Graphic3d,
+        TypeOfPolygon               from Graphic3d,
+        Vector                      from Graphic3d,
+        Array1OfVertex              from Graphic3d,
+        Array2OfVertex              from Graphic3d,
+        Vertex                      from Graphic3d,
+        Array1OfVertexC             from Graphic3d,
+        Array2OfVertexC             from Graphic3d,
+        VertexC                     from Graphic3d,
+        Array1OfVertexN             from Graphic3d,
+        Array2OfVertexN             from Graphic3d,
+        VertexN                     from Graphic3d,
+        Array1OfVertexNC            from Graphic3d,
+        Array2OfVertexNC            from Graphic3d,
+        VertexNC                    from Graphic3d,
+        VerticalTextAlignment       from Graphic3d, 
+        VertexNT                    from Graphic3d, 
+        Array1OfVertexNT            from Graphic3d,
+        Array2OfVertexNT            from Graphic3d,
+        ArrayOfPrimitives           from Graphic3d,
+        ListOfPArray                from Graphic3d,
+        ListIteratorOfListOfPArray  from Graphic3d,
+        TransModeFlags              from Graphic3d,
+        CBounds                     from Graphic3d
+    
+    raises
+    
+        GroupDefinitionError        from Graphic3d,
+        PickIdDefinitionError       from Graphic3d,
+    OutOfRange          from Standard
+    
+    is
+        Create ( AStructure : Structure from Graphic3d )
+            returns mutable Group from Graphic3d;
+        ---Level: Public
+        ---Purpose: Creates a group in the structure <AStructure>.
+    
+        ---------------------------------------------------
+        -- Category: Methods to modify the class definition
+        ---------------------------------------------------
+    
+        Clear ( me  : mutable )
+            is static;
+        ---Level: Public
+        ---Purpose: Supress all primitives and attributes of <me>.
+        ---Category: Methods to modify the class definition
+    
+        Destroy ( me    : mutable )
+            is static;
+        ---Level: Public
+        ---Purpose: Supress the group <me> in the structure.
+        ---Category: Methods to modify the class definition
+        ---C++: alias ~
+    
+        Remove ( me : mutable )
+            is static;
+        ---Level: Public
+        ---Purpose: Supress the group <me> in the structure.
+        --  Warning: No more graphic operations in <me> after this call.
+        ---Category: Methods to modify the class definition
+
+        --SetTransformPersistence( me     : mutable;
+        --                         AFlag  : TransModeFlags from Graphic3d )
+        ---Level: Public
+    ---Purpose: Modifies the current modelling transform persistence (pan, zoom or rotate)
+        --is static;
+
+    --TransformPersistence( me )
+    --      returns TransModeFlags from Graphic3d
+        ---Level: Public
+    ---Purpose: Get the current modelling transform persistence (pan, zoom or rotate)
+        --is static;
+    
+        SetGroupPrimitivesAspect ( me   : mutable )
+            is static;
+        ---Level: Public
+        ---Purpose: Removes the context for all the line primitives
+        --      of the group.
+        ---Category: Methods to modify the class definition
+    
+        SetGroupPrimitivesAspect ( me   : mutable;
+                                   CTX  : AspectLine3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the context for all the line primitives
+        --      of the group.
+        ---Category: Methods to modify the class definition
+    
+        SetGroupPrimitivesAspect ( me   : mutable;
+                                   CTX  : AspectFillArea3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the context for all the face primitives
+        --      of the group.
+        ---Category: Methods to modify the class definition
+    
+        SetGroupPrimitivesAspect ( me   : mutable;
+                                   CTX  : AspectText3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the context for all the text primitives
+        --      of the group.
+        ---Category: Methods to modify the class definition
+    
+        SetGroupPrimitivesAspect ( me   : mutable;
+                                   CTX  : AspectMarker3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the context for all the marker primitives
+        --      of the group.
+        ---Category: Methods to modify the class definition
+    
+        SetPrimitivesAspect ( me    : mutable;
+                              CTX   : AspectLine3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the current context of the group to give
+        --      another aspect for all the line primitives created
+        --      after this call in the group.
+        ---Category: Methods to modify the class definition
+    
+        SetPrimitivesAspect ( me    : mutable;
+                              CTX   : AspectFillArea3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the current context of the group to give
+        --      another aspect for all the face primitives created
+        --      after this call in the group.
+        ---Category: Methods to modify the class definition
+    
+        SetPrimitivesAspect ( me    : mutable;
+                              CTX   : AspectText3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the current context of the group to give
+        --      another aspect for all the text primitives created
+        --      after this call in the group.
+        ---Category: Methods to modify the class definition
+    
+        SetPrimitivesAspect ( me    : mutable;
+                              CTX   : AspectMarker3d from Graphic3d )
+            is static;
+        ---Level: Public
+        ---Purpose: Modifies the current context of the group to give
+        --      another aspect for all the marker primitives created
+        --      after this call in the group.
+        ---Category: Methods to modify the class definition
+    
+        SetMinMaxValues ( me                : mutable;
+                          XMin, YMin, ZMin  : Real from Standard;
+                          XMax, YMax, ZMax  : Real from Standard )
+            is static;
+        ---Level: Public
+        ---Purpose: Sets the coordinates of the boundary box of the
+        --      group <me>.
+        ---Category: Methods to modify the class definition
+    
+        --------------------------------------------------
+        -- Category: Methods to manage the pick identifier
+        --------------------------------------------------
+    
+        PickId ( me )
+            returns Integer from Standard
+            is static;
+        ---Level: Public
+        ---Purpose: Returns the pick identifier of the group <me>.
+        --  Category: Methods to manage the pick identifier
+        --  Warning: Returns 0 if the pick identifier is not defined.
+    
+        RemovePickId ( me   : mutable )
+            is static;
+        ---Level: Public
+        ---Purpose: Removes the pick identifier of the group <me>.
+        --  Category: Methods to manage the pick identifier
+        --  Warning: Now the Pick Identifier is null.
+    
+        SetPickId ( me  : mutable;
+                    Id  : Integer from Standard )
+        ---Level: Public
+        ---Purpose: Places a pick identifier in the group <me>.
+        --  Category: Methods to manage the pick identifier
+        --  Warning: A Pick Identifier is an integer greater than zero.
+        ---     Raises PickIdDefinitionError if <Id> is a negative value.
+        raises PickIdDefinitionError from Graphic3d is static;
+    
+        -------------------------------------
+        -- Category: Methods to create Marker
+        -------------------------------------
+    
+        ---------------------------------------------
+        -- Summary of Markers                      --
+        --                                         --
+        -- They should have one or more vertices.  --
+        --                                         --
+        -- They have the following attributes.     --
+        --                                         --
+        --  Marker Type.                       --
+        --  Marker Scale Factor.               --
+        --  Marker Color.                      --
+        --                                         --
+        -- The  size, shape  and orientation  of a --
+        -- marker is not subject to transformation --
+        ---------------------------------------------
+    
+        Marker ( me         : mutable;
+                 APoint     : Vertex from Graphic3d;
+                 EvalMinMax : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates a marker in position <APoint> which will be drawn
+        --      with the current attribute (AspectMarker).
+        ---Category: Methods to create Marker
+    
+        MarkerSet ( me          : mutable;
+                    ListVertex  : Array1OfVertex from Graphic3d;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+            is static;
+        ---Purpose: Creates a group of markers defined by a table of
+        --     vertices.
+        ---Category: Methods to create Marker
+    
+        --------------------------------------
+        -- Category: Methods to create Polygon
+        --------------------------------------
+    
+        --------------------------------------------------
+        -- Summary of Polygons                          --
+        --                                              --
+        -- They are limited to one boundary.            --
+        --                                              --
+        -- The boundary should be closed.               --
+        --                                              --
+        -- They should have at least three vertices.    --
+        --                                              --
+        -- They should be planar.                       --
+        --                                              --
+        -- They should have a normal.                   --
+        --                                              --
+        -- The boundary is drawn only when the interior --
+        -- style is hollow.                             --
+        --                                              --
+        -- The boundary have the following attributes : --
+        --                                              --
+        --  Line Type.                              --
+        --  Line Width Scale Factor.                --
+        --  Line Color.                             --
+        --                                              --
+        -- They have only interior attributes :         --
+        --                                              --
+        --  Interior Style.                         --
+        --  Interior Color.                         --
+        --  Front Material.                         --
+        --  Back Material.                          --
+        --------------------------------------------------
+    
+        Polygon ( me            : mutable;
+                  ListVertex    : Array1OfVertex from Graphic3d;
+                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  ListVertex    : Array1OfVertex from Graphic3d;
+                  Normal        : Vector from Graphic3d;
+                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal to the polygon is defined normalised.
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  ListVertex    : Array1OfVertexN from Graphic3d;
+                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal is defined and normalised for each vertex.
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  ListVertex    : Array1OfVertexN from Graphic3d;
+                  Normal        : Vector from Graphic3d;
+                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal is defined for each vertex.
+        --      The normal to the polygon is defined normalised.
+        ---Category: Methods to create Polygon
+    
+     
+        Polygon ( me            : mutable;
+                  ListVertex    : Array1OfVertexNT from Graphic3d;
+                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal is defined and normalised for each vertex.
+        --          The texture coordinate is defined for each vertex.
+        ---Category: Methods to create Polygon
+    
+    
+    
+        --------------------------------------------------
+        -- Summary of Polygons with holes               --
+        --                                              --
+        -- They may have multiple boundaries.           --
+        --                                              --
+        -- Each boundary should be closed.              --
+        --                                              --
+        -- Each  boundary  should  have at  least three --
+        -- vertices.                                    --
+        --                                              --
+        -- They should be planar.                       --
+        --                                              --
+        -- They should have a normal.                   --
+        --                                              --
+        -- The boundary is drawn only when the interior --
+        -- style is hollow.                             --
+        --                                              --
+        -- The boundary have the following attributes : --
+        --                                              --
+        --  Line Type.                              --
+        --  Line Width Scale Factor.                --
+        --  Line Color.                             --
+        --                                              --
+        -- They have only interior attributes :         --
+        --                                              --
+        --  Interior Style.                         --
+        --  Interior Color.                         --
+        --  Front Material.                         --
+        --  Back Material.                          --
+        --------------------------------------------------
+    
+        Polygon ( me            : mutable;
+                  Bounds        : Array1OfInteger from TColStd;
+                  ListVertex    : Array1OfVertex from Graphic3d;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates a face with holes.
+        --      The face is described by the total number
+        --      of vertices on the external contour and around the holes,
+        --      and by the list of vertices.
+        --      The face will be drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      Bounds : total number of interior and exterior vertices
+        --      ListVertex : a list of the interior and exterior vertices
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  Bounds        : Array1OfInteger from TColStd;
+                  ListVertex    : Array1OfVertex from Graphic3d;
+                  Normal        : Vector from Graphic3d;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates a face with holes.
+        --      The face is described by the total number
+        --      of vertices on the external contour and around the holes,
+        --      and by the list of vertices.
+        --      The face will be drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal to the polygon is normalised.
+        --      Bounds : total number of interior and exterior vertices
+        --      ListVertex : a list of the interior and exterior vertices
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  Bounds        : Array1OfInteger from TColStd;
+                  ListVertex    : Array1OfVertexN from Graphic3d;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates a face with holes.
+        --      The face is described by the total number
+        --      of vertices on the external contour and around the holes,
+        --      and by the list of vertices.
+        --      The face will be drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      Bounds : total number of interior and exterior vertices
+        --      ListVertex : a list of the interior and exterior vertices
+        ---Category: Methods to create Polygon
+    
+        Polygon ( me            : mutable;
+                  Bounds        : Array1OfInteger from TColStd;
+                  ListVertex    : Array1OfVertexN from Graphic3d;
+                  Normal        : Vector from Graphic3d;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates a face with holes.
+        --      The face is described by the total number
+        --      of vertices on the external contour and around the holes,
+        --      and by the list of vertices.
+        --      The face will be drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        --      The normal to the polygon is normalised.
+        --      Bounds : total number of interior and exterior vertices
+        --      ListVertex : a list of the interior and exterior vertices
+        ---Category: Methods to create Polygon
+    
+        PolygonSet ( me           : mutable;
+                     Bounds       : Array1OfInteger from TColStd;
+                     ListVertex   : Array1OfVertex from Graphic3d;
+                     AType        : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+                     EvalMinMax   : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a set of face drawn
+        --      using the current fill attributes (AspectFillArea3d))
+        --      The first and last points are not duplicates.
+        ---Category: Methods to create Polygon
+    
+        ---------------------------------------
+        -- Category: Methods to create Polyline
+        ---------------------------------------
+    
+        --------------------------------------------
+        -- Summary of Polylines                   --
+        --                                        --
+        -- They should have two or more vertices. --
+        --                                        --
+        -- They have the following attributes.    --
+        --                                        --
+        --  Line Type.                        --
+        --  Line Width Scale Factor.          --
+        --  Line Color.                       --
+        --------------------------------------------
+    
+        Polyline ( me           : mutable;
+                   APT1         : Vertex from Graphic3d;
+                   APT2         : Vertex from Graphic3d;
+                   EvalMinMax   : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a line drawn
+        --      using the current line attributes (AspectLine)
+        ---Category: Methods to create Polyline
+    
+        Polyline ( me         : mutable;
+                   ListVertex : Array1OfVertex from Graphic3d;
+                   EvalMinMax : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a line drawn
+        --      using the current line attributes (AspectLine)
+        ---Category: Methods to create Polyline
+    
+        Polyline ( me         : mutable;
+                   ListVertex : Array1OfVertexC from Graphic3d;
+                   EvalMinMax : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Links up points to create a line drawn
+        --      using the current line attributes (AspectLine)
+        --      except for the colour which is defined
+        --      for each vertex.
+        ---Category: Methods to create Polyline
+    
+        -----------------------------------------
+        -- Category: Methods to create Quadrangle
+        -----------------------------------------
+    
+        QuadrangleMesh ( me         : mutable;
+                         ListVertex : Array2OfVertex from Graphic3d;
+                         EvalMinMax : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrilaterals from a list of
+        --      points, such that their vertices are:
+        --      Ki,j; Ki,j+1; Ki+1,j+1; Ki+1,j.
+        --      The quadrilaterals will be drawn according to the
+        --      current attributes (AspectFillArea3d).
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleMesh ( me         : mutable;
+                         ListVertex : Array2OfVertexN from Graphic3d;
+                         EvalMinMax : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrilaterals from a list of
+        --      points, such that their vertices are:
+        --      Ki,j; Ki,j+1; Ki+1,j+1; Ki+1,j.
+        --      The quadrilaterals will be drawn according to the
+        --      current attributes (AspectFillArea3d).
+        --      For each vertex the normal is given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleMesh ( me           : mutable;
+                         ListVertex   : Array2OfVertexNT from Graphic3d;
+                         EvalMinMax   : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrilaterals from a list of
+        --      points, such that their vertices are:
+        --      Ki,j; Ki,j+1; Ki+1,j+1; Ki+1,j.
+        --      The quadrilaterals will be drawn according to the
+        --      current attributes (AspectFillArea3d).
+        --      For each vertex the normal is given.
+        --      For each vertex a texture coordinate is given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleSet ( me          : mutable;
+                        ListVertex  : Array1OfVertex from Graphic3d;
+                        ListEdge    : Array1OfEdge from Aspect;
+                        EvalMinMax  : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points or if <ListEdge> contains
+        --      less than four edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleSet ( me          : mutable;
+                        ListVertex  : Array1OfVertexN from Graphic3d;
+                        ListEdge    : Array1OfEdge from Aspect;
+                        EvalMinMax  : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal is given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points or if <ListEdge> contains
+        --      less than four edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleSet ( me          : mutable;
+                        ListVertex  : Array1OfVertexNT from Graphic3d;
+                        ListEdge    : Array1OfEdge from Aspect;
+                        EvalMinMax  : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal is given.
+        --      For each vertex a texture coordinate is given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points or if <ListEdge> contains
+        --      less than four edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleSet ( me          : mutable;
+                        ListVertex  : Array1OfVertexC from Graphic3d;
+                        ListEdge    : Array1OfEdge from Aspect;
+                        EvalMinMax  : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the color is given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points or if <ListEdge> contains
+        --      less than four edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        QuadrangleSet ( me          : mutable;
+                        ListVertex  : Array1OfVertexNC from Graphic3d;
+                        ListEdge    : Array1OfEdge from Aspect;
+                        EvalMinMax  : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of quadrangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal and the color are given.
+        --  Category: Methods to create Quadrangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than four points or if <ListEdge> contains
+        --      less than four edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        -----------------------------------
+        -- Category: Methods to create Text
+        -----------------------------------
+    
+        --------------------------------------------
+        -- Summary of Texts                       --
+        --                                        --
+        -- Text  has  geometric  and nongeometric --
+        -- attributes.                            --
+        --                                        --
+        -- The geometric text attributes are :    --
+        --                                        --
+        --  Character Height.                 --
+        --  Character Up Vector.              --
+        --  Text Path.                        --
+        --  Text Alignment Horizontal.        --
+        --  Text Alignment Vertical.          --
+        --                                        --
+        -- The nongeometric text attributes are : --
+        --                                        --
+        --  Text Font.                        --
+        --  Character Spacing.                --
+        --  Character Expansion Factor.       --
+        --  Text Color.                       --
+        --------------------------------------------
+    
+        Text (  me  : mutable;
+            AText   : CString from Standard;
+            APoint  : Vertex from Graphic3d;
+            AHeight : Real from Standard;
+            AAngle  : PlaneAngle from Quantity;
+            ATp : TextPath from Graphic3d;
+            AHta    : HorizontalTextAlignment from Graphic3d;
+            AVta    : VerticalTextAlignment from Graphic3d;
+            EvalMinMax  : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates the string <AText> at position <APoint>.
+        --      The 3D point of attachment is projected. The text is
+        --      written in the plane of projection.
+        --      The attributes are given with respect to the plane of
+        --      projection.
+        --      AHeight : Height of text.
+        --            (Relative to the Normalized Projection
+        --              Coordinates (NPC) Space).
+        --      AAngle  : Orientation of the text
+        --            (with respect to the horizontal).
+        ---Category: Methods to create Text
+    
+        Text ( me   : mutable;
+               AText    : CString from Standard;
+               APoint   : Vertex from Graphic3d;
+               AHeight  : Real from Standard;
+               EvalMinMax   : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Public
+        ---Purpose: Creates the string <AText> at position <APoint>.
+        --      The 3D point of attachment is projected. The text is
+        --      written in the plane of projection.
+        --      The attributes are given with respect to the plane of
+        --      projection.
+        --      AHeight : Height of text.
+        --            (Relative to the Normalized Projection
+        --              Coordinates (NPC) Space).
+        --      The other attributes have the following default values:
+        --      AAngle  : PI / 2.
+        --      ATp     : TP_RIGHT
+        --      AHta    : HTA_LEFT
+        --      AVta    : VTA_BOTTOM
+        ---Category: Methods to create Text
+    
+        Text (  me          : mutable;
+                AText       : ExtendedString from TCollection;
+                APoint      : Vertex from Graphic3d;
+                AHeight     : Real from Standard;
+                AAngle      : PlaneAngle from Quantity;
+                ATp         : TextPath from Graphic3d;
+                AHta        : HorizontalTextAlignment from Graphic3d;
+                AVta        : VerticalTextAlignment from Graphic3d;
+                EvalMinMax  : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Internal
+        ---Purpose: Creates the string <AText> at position <APoint>.
+        --      The 3D point of attachment is projected. The text is
+        --      written in the plane of projection.
+        --      The attributes are given with respect to the plane of
+        --      projection.
+        --      AHeight : Height of text.
+        --            (Relative to the Normalized Projection
+        --              Coordinates (NPC) Space).
+        --      AAngle  : Orientation of the text
+        --            (with respect to the horizontal).
+        ---Category: Methods to create Text
+    
+        Text ( me           : mutable;
+               AText        : ExtendedString from TCollection;
+               APoint       : Vertex from Graphic3d;
+               AHeight      : Real from Standard;
+               EvalMinMax   : Boolean from Standard = Standard_True )
+            is static;
+        ---Level: Internal
+        ---Purpose: Creates the string <AText> at position <APoint>.
+        --      The 3D point of attachment is projected. The text is
+        --      written in the plane of projection.
+        --      The attributes are given with respect to the plane of
+        --      projection.
+        --      AHeight : Height of text.
+        --            (Relative to the Normalized Projection
+        --              Coordinates (NPC) Space).
+        --      The other attributes have the following default values:
+        --      AAngle  : PI / 2.
+        --      ATp     : TP_RIGHT
+        --      AHta    : HTA_LEFT
+        --      AVta    : VTA_BOTTOM
+        ---Category: Methods to create Text
+    
+        ---------------------------------------
+        ---Category: Methods to create Triangle
+        ---------------------------------------
+    
+        TriangleMesh ( me           : mutable;
+                       ListVertex   : Array1OfVertex from Graphic3d;
+                       EvalMinMax   : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates triangles from an array of points such that
+        --      the Kth triangle contains the vertices K, K+1, K+2.
+        --      The triangle will be drawn using the current fill
+        --      attributes (AspectFillArea3d)
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        TriangleMesh ( me           : mutable;
+                       ListVertex   : Array1OfVertexN from Graphic3d;
+                       EvalMinMax   : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates triangles from an array of points such that
+        --      the Kth triangle contains the vertices K, K+1, K+2.
+        --      The triangle will be drawn using the current fill
+        --      attributes (AspectFillArea3d)
+        --      The normal is given for each vertex.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        TriangleMesh ( me           : mutable;
+                       ListVertex   : Array1OfVertexNT from Graphic3d;
+                       EvalMinMax   : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates triangles from an array of points such that
+        --      the Kth triangle contains the vertices K, K+1, K+2.
+        --      The triangle will be drawn using the current fill
+        --      attributes (AspectFillArea3d)
+        --      The normal is given for each vertex.
+        --      A texture coordinate is given for each vertex.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points.
+        raises GroupDefinitionError from Graphic3d is static;
+  
+        TriangleSet ( me            : mutable;
+                      ListVertex    : Array1OfVertex from Graphic3d;
+                      ListEdge      : Array1OfEdge from Aspect;
+                      EvalMinMax    : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of triangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points or if <ListEdge> contains
+        --      less than three edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        TriangleSet ( me            : mutable;
+                      ListVertex    : Array1OfVertexN from Graphic3d;
+                      ListEdge      : Array1OfEdge from Aspect;
+                      EvalMinMax    : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of triangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal is given.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points or if <ListEdge> contains
+        --      less than three edges.
+        raises GroupDefinitionError from Graphic3d is static;
+     
+        TriangleSet ( me            : mutable;
+                      ListVertex    : Array1OfVertexNT from Graphic3d;
+                      ListEdge      : Array1OfEdge from Aspect;
+                      EvalMinMax    : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of triangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal is given.
+        --      For each vertex a texture coordinate is given.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points or if <ListEdge> contains
+        --      less than three edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        TriangleSet ( me            : mutable;
+                      ListVertex    : Array1OfVertexC from Graphic3d;
+                      ListEdge      : Array1OfEdge from Aspect;
+                      EvalMinMax    : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of triangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the color is given.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points or if <ListEdge> contains
+        --      less than three edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        TriangleSet ( me            : mutable;
+                      ListVertex    : Array1OfVertexNC from Graphic3d;
+                      ListEdge      : Array1OfEdge from Aspect;
+                      EvalMinMax    : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Creates a group of triangles defined by a table of
+        --      vertices and a table of edges, visible or not.
+        --      For each vertex the normal and the color are given.
+        --  Category: Methods to create Triangle
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than three points or if <ListEdge> contains
+        --      less than three edges.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+    AddPrimitiveArray( me      : mutable;
+                       elem    : ArrayOfPrimitives from Graphic3d;
+          EvalMinMax: Boolean from Standard = Standard_True );
+        ---Level: Public
+    ---Purpose: Adds an array of primitives for display
+
+    RemovePrimitiveArray( me       : mutable;
+                          aRank    : Integer from Standard) 
+        ---Level: Public
+    ---Purpose: Remove the array of primitives of rank <aRank> 
+        raises OutOfRange from Standard is static;
+    -- if <aRank> is < 1 or > ArrayNumber()
+
+    RemovePrimitiveArrays( me       : mutable);
+        ---Level: Public
+    ---Purpose: Remove all array of primitives 
+    
+        UserDraw ( me           : mutable;
+                   AnObject     : Address from Standard; 
+                   EvalMinMax   : Boolean from Standard = Standard_True; 
+    -- SAMTECH contribution 5 July 2007 -- BEGIN
+           ContainsFacet: Boolean from Standard = Standard_False
+    -- SAMTECH contribution 5 July 2007 -- END 
+        )
+        ---Level: Public
+        ---Purpose: Creates an UserDraw primitive
+        --  Category: Methods to create UserDraw
+        --  Warning: Raises GroupDefinitionError if ...
+        raises GroupDefinitionError from Graphic3d is static;
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+    ArrayNumber( me )
+    returns Integer from Standard;
+        ---Level: Public
+    ---Purpose: Returns the number of primitive array added in this group 
+
+    InitDefinedArray( me:mutable );
+        ---Level: Public
+    ---Purpose: Initialize the array list iterator. 
+
+    NextDefinedArray( me:mutable );
+        ---Level: Public
+    ---Purpose: Increments the array list iterator. 
+
+    MoreDefinedArray( me:mutable )
+    returns Boolean from Standard;
+        ---Level: Public
+    ---Purpose: Returns TRUE if more array exists in the list.
+
+    DefinedArray( me )
+    returns mutable ArrayOfPrimitives from Graphic3d;
+        ---Level: Public
+    ---Purpose: Returns the current array of primitives according
+    -- to the array list iterator value. 
+
+        IsGroupPrimitivesAspectSet ( me;
+                    theAspect : GroupAspect from Graphic3d )
+            returns Boolean from Standard
+            is static;
+        ---Level: Public
+        ---Purpose: Returns TRUE if aspect is set for the group.
+        ---Category: Inquire methods
+
+    	GroupPrimitivesAspect ( me;
+    				CTXL	: AspectLine3d from Graphic3d;
+    				CTXT	: AspectText3d from Graphic3d;
+    				CTXM	: AspectMarker3d from Graphic3d;
+    				CTXF	: AspectFillArea3d from Graphic3d )
+    		is static;
+    	---Level: Public
+    	---Purpose: Returns the context of all the primitives of the group.
+    	---Category: Inquire methods
+    
+    	PrimitivesAspect ( me;
+    			   CTXL	: AspectLine3d from Graphic3d;
+    			   CTXT	: AspectText3d from Graphic3d;
+    			   CTXM	: AspectMarker3d from Graphic3d;
+    			   CTXF	: AspectFillArea3d from Graphic3d )
+    		is static;
+    	---Level: Public
+    	---Purpose: Returns the last inserted context in the group <me>
+    	--	    foreach kind of primitives.
+    	---Category: Inquire methods
+
+        ContainsFacet ( me )
+            returns Boolean from Standard
+            is static;
+        ---Level: Internal
+        ---Purpose: Returns Standard_True if the group <me> contains
+        --      Polygons, Triangles or Quadrangles.
+        ---Category: Inquire methods
+    
+        IsDeleted ( me )
+            returns Boolean from Standard
+            is static;
+        ---Level: Public
+        ---Purpose: Returns Standard_True if the group <me> is deleted.
+        --      <me> is deleted after the call Remove (me) or the
+        --      associated structure is deleted.
+        ---Category: Inquire methods
+    
+        IsEmpty ( me )
+            returns Boolean from Standard
+            is static;
+        ---Level: Public
+        ---Purpose: Returns Standard_True if the group <me> is empty.
+        ---Warning: A group is empty if the MinMaxValues method returns :
+        --      XMin = YMin = ZMin = RealFirst ().
+        --      XMax = YMax = ZMax = RealLast ().
+        ---Category: Inquire methods
+    
+        MinMaxValues ( me;
+                       XMin, YMin, ZMin : out Real from Standard;
+                       XMax, YMax, ZMax : out Real from Standard )
+            is static;
+        ---Level: Public
+        ---Purpose: Returns the coordinates of the boundary box of the
+        --      group <me>.
+        ---Warning: If the group <me> is empty then :
+        --      XMin = YMin = ZMin = RealFirst ().
+        --      XMax = YMax = ZMax = RealLast ().
+        ---Category: Inquire methods
+    
+        Structure ( me )
+            returns mutable Structure from Graphic3d
+            is static;
+        ---Level: Public
+        ---Purpose: Returns the structure containing the group <me>.
+        ---Category: Inquire methods
+    
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+    
+        Exploration ( me )
+            is static;
+        ---Level: Internal
+        ---Purpose: Prints informations about the group <me>.
+        ---Category: Private methods
+    
+        Labels ( me;
+             LB, LE : in out Integer from Standard )
+            is static private;
+        ---Level: Internal
+        ---Purpose: Returns the position of the group in the structure.
+        ---Category: Private methods
+    
+        MinMaxCoord ( me;
+                      XMin, YMin, ZMin : out Real from Standard;
+                      XMax, YMax, ZMax : out Real from Standard )
+            is static private;
+        ---Level: Internal
+        ---Purpose: Returns the extreme coordinates found in the group.
+        ---Warning: If the group <me> is empty then :
+        --      XMin = YMin = ZMin = RealFirst ().
+        --      XMax = YMax = ZMax = RealLast ().
+        ---Category: Private methods
+    
+        Update ( me )
+            is static private;
+        ---Level: Internal
+        ---Purpose: Calls the Update method of the StructureManager which
+        --      contains the associated Structure of the Group <me>.
+        ---Category: Private methods
+    
+        -----------------------------
+        -- Category: Internal methods
+        -----------------------------
+    
+        BeginPrimitives ( me : mutable )
+            is static;
+        ---Level: Internal
+        ---Category: Internal methods
+    
+        EndPrimitives ( me : mutable )
+            is static;
+        ---Level: Internal
+        ---Category: Internal methods
+    
+        Bezier ( me         : mutable;
+                 ListVertex : Array1OfVertex from Graphic3d;
+                 EvalMinMax : Boolean from Standard = Standard_True )
+        ---Level: Internal
+        ---Purpose: Creates a non rational Bezier curve with a set of poles :
+        --      ListVertex. The weights are defaulted to all being 1.
+        --  Category: Methods to create Curve
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than two points.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+        Bezier ( me         : mutable;
+                 ListVertex : Array1OfVertex from Graphic3d;
+                 ListWeight : Array1OfReal from TColStd;
+                 EvalMinMax : Boolean from Standard = Standard_True )
+        ---Level: Internal
+        ---Purpose: Creates a non rational Bezier curve with a set of poles :
+        --      ListVertex and the set of weights ListWeight.
+            --      If all the weights are identical the curve is considered 
+            --      as non rational.
+        --  Category: Methods to create Curve
+        --  Warning: Raises GroupDefinitionError if <ListVertex> contains
+        --      less than two points or <ListVertex> and <ListWeight>
+        --      have not the same length or one weight value is lower
+        --      or equal to Resolution from package gp.
+        raises GroupDefinitionError from Graphic3d is static;
+    
+    --
+    
+    fields
+    
+    --
+    -- Class    :   Graphic3d_Group
+    --
+    -- Purpose  :   Declaration of variables specific to groups
+    --          of primitives.
+    --
+    -- Reminder :   A group is defined in a structure
+    --          It acts as the smallest editable entity.
+    
+        -- the associated C structure 
+        MyCGroup        :   CGroup from Graphic3d;
+    
+        -- the graphic driver used
+        MyGraphicDriver     :   GraphicDriver from Graphic3d;
+    
+        -- the state of the different contexts for primitives
+        MyCBitFields        :   CBitFields4 from Graphic3d;
+    
+        -- the structure contains the group
+        MyPtrStructure      :   Address from Standard;
+    
+        -- the min-max
+    MyBounds                :       CBounds from Graphic3d;
+
+    MyListOfPArray          :   ListOfPArray from Graphic3d;
+    MyListOfPArrayIterator  :   ListIteratorOfListOfPArray from Graphic3d;
+
+    MyMarkArray             :       HArray1OfByte from TColStd;
+    MyMarkWidth             :       Integer from Standard;
+    MyMarkHeight            :       Integer from Standard;
+
+    friends
+    
+        Remove from class Structure from Graphic3d
+            ( me : mutable; AGroup : Group from Graphic3d )
+    
+    end Group;

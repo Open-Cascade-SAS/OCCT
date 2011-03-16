@@ -1,0 +1,55 @@
+-- File:	TopOpeBRepBuild_ShellFaceSet.cdl
+-- Created:	Wed Jun 16 11:52:45 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class ShellFaceSet from TopOpeBRepBuild 
+    inherits ShapeSet from TopOpeBRepBuild
+
+---Purpose: a bound is a shell, a boundelement is a face.
+-- The ShapeSet stores :
+-- - a list of shell (bounds),
+-- - a list of face (boundelements) to start reconstructions,
+-- - a map of edge giving the list of face incident to an edge.
+
+uses
+
+    Shape from TopoDS,
+    Solid from TopoDS,
+    AsciiString from TCollection,
+    ListOfShape from TopTools
+    
+is
+
+    Create returns ShellFaceSet from TopOpeBRepBuild; 
+    ---Purpose: Creates a ShellFaceSet to build blocks of faces 
+    -- connected by edges.
+
+    Create(S : Shape from TopoDS; Addr : Address from Standard = NULL) 
+    returns ShellFaceSet from TopOpeBRepBuild; 
+    ---Purpose: Creates a ShellFaceSet to build blocks of faces 
+    -- connected by edges.
+
+    Solid(me) returns Solid from TopoDS is static;
+    ---C++: return const &
+
+    AddShape(me:in out;S:Shape) is redefined;
+    AddStartElement(me:in out;S:Shape) is redefined;
+    AddElement(me:in out;S:Shape) is redefined;
+
+    DumpSS(me:in out) is redefined;
+    SName(me;S:Shape from TopoDS;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SName(me;S:ListOfShape from TopTools;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SNameori(me;S:Shape;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+    SNameori(me;S:ListOfShape from TopTools;sb:AsciiString = "";sa:AsciiString = "")
+    returns AsciiString from TCollection is redefined;
+
+fields
+
+    mySolid : Solid from TopoDS;
+
+end ShellFaceSet from TopOpeBRepBuild;

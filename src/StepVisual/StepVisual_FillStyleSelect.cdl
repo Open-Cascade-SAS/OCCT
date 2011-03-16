@@ -1,0 +1,40 @@
+-- File:        FillStyleSelect.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class FillStyleSelect from StepVisual inherits SelectType from StepData
+
+	-- <FillStyleSelect> is an EXPRESS Select Type construct translation.
+	-- it gathers : FillAreaStyleColour, ExternallyDefinedTileStyle, FillAreaStyleTiles, ExternallyDefinedHatchStyle, FillAreaStyleHatching
+	-- Rev4 : only FillAreaStyleColour remains
+
+uses
+
+	FillAreaStyleColour
+--	ExternallyDefinedTileStyle,
+--	FillAreaStyleTiles,
+--	ExternallyDefinedHatchStyle,
+--	FillAreaStyleHatching
+is
+
+	Create returns FillStyleSelect;
+	---Purpose : Returns a FillStyleSelect SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a FillStyleSelect Kind Entity that is :
+	--        1 -> FillAreaStyleColour
+	--        2 -> ExternallyDefinedTileStyle
+	--        3 -> FillAreaStyleTiles
+	--        4 -> ExternallyDefinedHatchStyle
+	--        5 -> FillAreaStyleHatching
+	--        0 else
+
+	FillAreaStyleColour (me) returns any FillAreaStyleColour;
+	---Purpose : returns Value as a FillAreaStyleColour (Null if another type)
+
+
+end FillStyleSelect;
+

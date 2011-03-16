@@ -1,0 +1,312 @@
+-- File:      BlendFunc_ConstRad.cdl
+-- Created:   Thu Dec  2 10:18:55 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
+
+
+class ConstRad from BlendFunc
+
+inherits Function from Blend
+
+	---Purpose: 
+
+uses Vector          from math,
+     Matrix          from math,
+     Tensor          from BlendFunc,
+     Ax1             from gp,
+     Vec             from gp,
+     Vec2d           from gp,
+     Pnt             from gp,
+     Circ            from gp,
+     Array1OfPnt     from TColgp,
+     Array1OfVec     from TColgp,
+     Array1OfPnt2d   from TColgp,
+     Array1OfVec2d   from TColgp,
+     Array1OfReal    from TColStd,
+     Array1OfInteger from TColStd,
+     Point           from Blend,
+     SectionShape    from BlendFunc,
+     Shape           from GeomAbs,
+     ParameterisationType from Convert,
+     HSurface        from Adaptor3d,
+     HCurve          from Adaptor3d
+
+is
+
+    Create(S1,S2: HSurface from Adaptor3d; C: HCurve from Adaptor3d)
+    returns ConstRad from BlendFunc;
+
+    NbEquations(me)
+    ---Purpose: returns the number of equations of the function.
+    returns Integer from Standard
+    is redefined static;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    ---Purpose: computes the values <F> of the Functions for the 
+    --          variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard
+    is redefined static;
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    ---Purpose: returns the values <D> of the derivatives for the 
+    --          variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard
+    is redefined static ;
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    ---Purpose: returns the values <F> of the functions and the derivatives
+    --          <D> for the variable <X>.
+    --          Returns True if the computation was done successfully, 
+    --          False otherwise.
+    returns Boolean from Standard
+    is redefined static;
+    
+    ComputeValues(me : in out;
+    	          X     : Vector from math;
+                  Order : Integer; 
+                  ByParam : Boolean = Standard_False;
+     	    	  Param : Real = 0)
+    returns Boolean from Standard
+    is private;
+
+
+    Set(me: in out; Param: Real from Standard);
+	
+    Set(me: in out; First, Last: Real from Standard);
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard);
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math);
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    returns Boolean from Standard;
+
+    GetMinimalDistance(me) 
+    ---Purpose: Returns   the    minimal  Distance  beetween   two
+    --          extremitys of calculed sections.          
+    returns  Real  from  Standard; 
+
+    PointOnS1(me) returns Pnt from gp;
+    ---C++: return const&
+
+    PointOnS2(me) returns Pnt from gp;
+    ---C++: return const&
+
+    IsTangencyPoint(me) returns Boolean from Standard;
+
+    TangentOnS1(me) returns Vec from gp;
+    ---C++: return const&
+
+    Tangent2dOnS1(me) returns Vec2d from gp;
+    ---C++: return const&
+
+    TangentOnS2(me) returns Vec from gp;
+    ---C++: return const&
+
+    Tangent2dOnS2(me) returns Vec2d from gp;
+    ---C++: return const&
+
+    Tangent(me; 
+    	    U1,V1,U2,V2                       : Real from Standard;
+            TgFirst,TgLast,NormFirst,NormLast : out Vec from gp);
+    ---Purpose: Returns the tangent vector at the section,
+    --          at the beginning and the end of the section, and
+    --          returns the normal (of the surfaces) at
+    --          these points.
+
+    TwistOnS1(me) 
+    returns Boolean from Standard
+    is redefined;
+
+    TwistOnS2(me) 
+    returns Boolean from Standard
+    is redefined;
+
+-- methodes hors template (en plus du create)
+
+    Set(me: in out; Radius: Real from Standard; Choix: Integer from Standard)
+    ---Purpose: Inits the value of radius, and the "quadrant". 
+    is static;
+
+    Set(me: in out; TypeSection: SectionShape from BlendFunc)
+    ---Purpose: Sets  the  type  of   section generation   for the
+    --          approximations. 
+    is static;
+
+    Section(me: in out; Param: Real from Standard;
+                        U1,V1,U2,V2: Real from Standard;
+                        Pdeb,Pfin: out Real from Standard;
+                        C: out Circ from gp)
+    ---Purpose: Utile pour une visu rapide et approximative de la surface.
+    is static;
+
+--- Pour les approximations
+
+    IsRational(me) returns Boolean
+    ---Purpose: Returns  if the section is rationnal
+    is static;
+
+    GetSectionSize(me) returns Real
+    ---Purpose:  Returns the length of the maximum section
+    is static;
+    
+    GetMinimalWeight(me; Weigths  : out Array1OfReal  from TColStd)
+    ---Purpose: Compute the minimal value of weight for each poles
+    --          of all sections.
+    is static;
+
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+    ---Purpose: Returns  the number  of  intervals for  continuity
+    --          <S>. May be one if Continuity(me) >= <S>
+    is static;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+    ---Purpose: Stores in <T> the  parameters bounding the intervals
+    --          of continuity <S>.
+    --          
+    --          The array must provide  enough room to  accomodate
+    --          for the parameters. i.e. T.Length() > NbIntervals()
+    is static;
+
+    GetShape(me: in out;
+                 NbPoles   : out Integer from Standard;
+    	    	 NbKnots   : out Integer from Standard;
+                 Degree    : out Integer from Standard;
+                 NbPoles2d : out Integer from Standard)
+
+    is static;
+
+    GetTolerance(me; 
+    	    	 BoundTol, SurfTol, AngleTol : Real;
+		 Tol3d : out Vector;
+		 Tol1D : out Vector )
+    ---Purpose: Returns the tolerance to reach in approximation
+    --          to respecte
+    --          BoundTol error at the Boundary
+    --          AngleTol tangent error at the Boundary
+    --          SurfTol error inside the surface.
+    is static;
+
+    Knots(me: in out; TKnots: out Array1OfReal from TColStd)
+    is static;
+
+
+    Mults(me: in out; TMults: out Array1OfInteger from TColStd)
+    is static;
+
+    Section(me: in out ; P: Point from Blend;
+                         Poles     : out Array1OfPnt   from TColgp;
+		         DPoles    : out Array1OfVec   from TColgp;
+			 D2Poles   : out Array1OfVec   from TColgp;
+    	                 Poles2d   : out Array1OfPnt2d from TColgp;
+		         DPoles2d  : out Array1OfVec2d from TColgp;
+			 D2Poles2d : out Array1OfVec2d from TColgp;
+		         Weigths   : out Array1OfReal  from TColStd;
+			 DWeigths  : out Array1OfReal  from TColStd;
+		         D2Weigths : out Array1OfReal  from TColStd)
+    ---Purpose: Used for the first and last section 
+    returns Boolean from Standard
+    is redefined;
+
+    Section(me: in out ; P: Point from Blend;
+                         Poles    : out Array1OfPnt   from TColgp;
+		         DPoles   : out Array1OfVec   from TColgp;
+    	                 Poles2d  : out Array1OfPnt2d from TColgp;
+		         DPoles2d : out Array1OfVec2d from TColgp;
+		         Weigths  : out Array1OfReal  from TColStd;
+		         DWeigths : out Array1OfReal  from TColStd)
+    ---Purpose: Used for the first and last section 
+    returns Boolean from Standard
+    is redefined;
+
+    Section(me: in out ; P: Point from Blend;
+                         Poles    : out Array1OfPnt   from TColgp;
+    	                 Poles2d  : out Array1OfPnt2d from TColgp;
+		         Weigths  : out Array1OfReal  from TColStd)
+    is static;
+
+    AxeRot(me: in out; Prm: Real from Standard) returns Ax1 from gp
+    is static;
+
+    Resolution(me; 
+    	       IC2d : Integer from Standard;
+	       Tol  : Real from Standard;
+	       TolU, TolV : out Real from Standard);
+
+
+fields
+
+-- the basic inpout geometry
+    surf1    : HSurface from Adaptor3d;
+    surf2    : HSurface from Adaptor3d;
+    curv     : HCurve from Adaptor3d;
+    tcurv    : HCurve from Adaptor3d;
+    
+--  the basic output geometry 
+    pts1     : Pnt          from gp;
+    pts2     : Pnt          from gp;
+    istangent: Boolean      from Standard;
+    tg1      : Vec          from gp;
+    tg12d    : Vec2d        from gp;
+    tg2      : Vec          from gp;
+    tg22d    : Vec2d        from gp;
+
+--  auxiliary scalar
+    param    : Real         from Standard; 
+    ray1     : Real         from Standard;
+    ray2     : Real         from Standard;
+    choix    : Integer      from Standard;
+    myXOrder : Integer      from Standard;    
+    myTOrder : Integer      from Standard;    
+    xval     : Vector       from math;
+    tval     : Real         from Standard;    
+    
+
+--    Auxiliary Geometry
+--    the normal
+    d1u1, d1u2 : Vec        from gp;
+    d1v1, d1v2 : Vec        from gp;
+    d2u1, d2v1, d2uv1 : Vec from gp;   
+    d2u2, d2v2, d2uv2 : Vec from gp;   
+    dn1w, dn2w   : Vec      from gp;
+    d2n1w, d2n2w : Vec      from gp;    
+    nplan    : Vec          from gp;
+    nsurf1   : Vec          from gp; 
+    dns1u1, dns1u2 :  Vec   from gp;
+    dns1v1, dns1v2 :  Vec   from gp;
+    nsurf2   : Vec          from gp;
+    dnplan   : Vec          from gp;
+    d2nplan  : Vec          from gp;
+    dnsurf1  : Vec          from gp;
+    dnsurf2  : Vec          from gp;    
+    
+--  Auxilary math Object
+    dndu1, dndu2     : Vec  from gp;
+    dndv1, dndv2     : Vec  from gp;
+    d2ndu1, d2ndu2   : Vec  from gp;
+    d2ndv1, d2ndv2   : Vec  from gp;    
+    d2nduv1, d2nduv2 : Vec  from gp;
+    d2ndtu1, d2ndtu2 : Vec  from gp;     
+    d2ndtv1, d2ndtv2 : Vec  from gp;     
+    
+    E        : Vector       from math;
+    DEDX     : Matrix       from math;
+    DEDT     : Vector       from math;
+    D2EDX2   : Tensor       from BlendFunc;
+    D2EDXDT  : Matrix       from math;
+    D2EDT2   : Vector       from math;
+
+--  Information on sections
+    maxang   : Real         from Standard;
+    minang   : Real         from Standard;  
+    distmin  : Real         from Standard;
+    mySShape : SectionShape from BlendFunc;
+    myTConv  : ParameterisationType from Convert;
+
+end ConstRad;

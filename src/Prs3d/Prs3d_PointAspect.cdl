@@ -1,0 +1,85 @@
+-- File:	Prs3d_PointAspect.cdl
+-- Created:	Mon Apr 26 16:18:12 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+--   GG  : GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1993
+
+
+class PointAspect from Prs3d inherits BasicAspect from Prs3d
+ 
+    	---Purpose: This  class  defines  attributes for the points
+    	--  The points are drawn using markers, whose size does not depend on
+    	--  the zoom value of the views. 
+
+uses 
+
+    AspectMarker3d 	from Graphic3d,
+    NameOfColor 	from Quantity,
+    Color 		from Quantity,
+    TypeOfMarker 	from Aspect,
+    HArray1OfByte   	from TColStd
+
+
+is
+
+
+   Create ( aType: TypeOfMarker from Aspect;
+           aColor: Color from Quantity;
+	     aScale: Real from Standard)
+	     returns mutable PointAspect from Prs3d;
+
+    Create ( aType: TypeOfMarker from Aspect;  
+           aColor: NameOfColor from Quantity;
+	     aScale: Real from Standard)
+	     returns mutable PointAspect from Prs3d;
+
+    Create ( AColor	    : Color from Quantity;
+	     AnId           : Real from Standard;
+	     AWidth         : Integer from Standard;
+	     AHeight        : Integer from Standard;
+	     ATexture       : HArray1OfByte from TColStd)
+             returns mutable PointAspect from Prs3d;
+    	---Purpose: defines only the urer defined marker point.
+
+	     
+    SetColor (me: mutable; aColor: Color from Quantity) is static;
+ 
+    SetColor (me: mutable; aColor: NameOfColor from Quantity) 
+    	---Purpose: defines the color to be used when drawing a point.
+    	--          Default value: Quantity_NOC_YELLOW
+    is static;
+
+    SetTypeOfMarker (me: mutable; aType: TypeOfMarker from Aspect) 
+    	---Purpose: defines the type of representation to be used when drawing a point.
+    	--          Default value: Aspect_TOM_PLUS
+    is static;
+    
+    SetScale (me: mutable; aScale: Real from Standard) 
+    	---Purpose: defines the size of the marker used when drawing a point.
+    	--          Default value: 1.
+    is static;
+    
+    Aspect(me) returns AspectMarker3d from Graphic3d 
+    is static;
+    
+    Print( me; s: in out OStream from Standard);
+
+    GetTextureSize (me:mutable; AWidth     : out Integer from Standard;
+		    	    	    AHeight    : out Integer from Standard);
+    	---Level: Public
+    	---Purpose: Returns marker's texture size.		    
+
+    GetTexture (me:mutable)
+         returns HArray1OfByte from TColStd;
+    	---Level: Public
+    	---Purpose: Returns marker's texture. 
+    	---C++: return const &
+
+    
+fields
+
+    myAspect: AspectMarker3d from Graphic3d;
+
+end PointAspect from Prs3d;

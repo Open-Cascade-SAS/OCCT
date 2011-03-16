@@ -1,0 +1,90 @@
+-- File:        OrganizationalAddress.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OrganizationalAddress from StepBasic 
+
+inherits Address from StepBasic 
+
+uses
+
+	HArray1OfOrganization from StepBasic, 
+	HAsciiString from TCollection, 
+	Organization from StepBasic
+is
+
+	Create returns mutable OrganizationalAddress;
+	---Purpose: Returns a OrganizationalAddress
+
+
+	Init (me : mutable;
+	      hasAinternalLocation : Boolean from Standard;
+	      aInternalLocation : mutable HAsciiString from TCollection;
+	      hasAstreetNumber : Boolean from Standard;
+	      aStreetNumber : mutable HAsciiString from TCollection;
+	      hasAstreet : Boolean from Standard;
+	      aStreet : mutable HAsciiString from TCollection;
+	      hasApostalBox : Boolean from Standard;
+	      aPostalBox : mutable HAsciiString from TCollection;
+	      hasAtown : Boolean from Standard;
+	      aTown : mutable HAsciiString from TCollection;
+	      hasAregion : Boolean from Standard;
+	      aRegion : mutable HAsciiString from TCollection;
+	      hasApostalCode : Boolean from Standard;
+	      aPostalCode : mutable HAsciiString from TCollection;
+	      hasAcountry : Boolean from Standard;
+	      aCountry : mutable HAsciiString from TCollection;
+	      hasAfacsimileNumber : Boolean from Standard;
+	      aFacsimileNumber : mutable HAsciiString from TCollection;
+	      hasAtelephoneNumber : Boolean from Standard;
+	      aTelephoneNumber : mutable HAsciiString from TCollection;
+	      hasAelectronicMailAddress : Boolean from Standard;
+	      aElectronicMailAddress : mutable HAsciiString from TCollection;
+	      hasAtelexNumber : Boolean from Standard;
+	      aTelexNumber : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      hasAinternalLocation : Boolean from Standard;
+	      aInternalLocation : mutable HAsciiString from TCollection;
+	      hasAstreetNumber : Boolean from Standard;
+	      aStreetNumber : mutable HAsciiString from TCollection;
+	      hasAstreet : Boolean from Standard;
+	      aStreet : mutable HAsciiString from TCollection;
+	      hasApostalBox : Boolean from Standard;
+	      aPostalBox : mutable HAsciiString from TCollection;
+	      hasAtown : Boolean from Standard;
+	      aTown : mutable HAsciiString from TCollection;
+	      hasAregion : Boolean from Standard;
+	      aRegion : mutable HAsciiString from TCollection;
+	      hasApostalCode : Boolean from Standard;
+	      aPostalCode : mutable HAsciiString from TCollection;
+	      hasAcountry : Boolean from Standard;
+	      aCountry : mutable HAsciiString from TCollection;
+	      hasAfacsimileNumber : Boolean from Standard;
+	      aFacsimileNumber : mutable HAsciiString from TCollection;
+	      hasAtelephoneNumber : Boolean from Standard;
+	      aTelephoneNumber : mutable HAsciiString from TCollection;
+	      hasAelectronicMailAddress : Boolean from Standard;
+	      aElectronicMailAddress : mutable HAsciiString from TCollection;
+	      hasAtelexNumber : Boolean from Standard;
+	      aTelexNumber : mutable HAsciiString from TCollection;
+	      aOrganizations : mutable HArray1OfOrganization from StepBasic;
+	      aDescription : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetOrganizations(me : mutable; aOrganizations : mutable HArray1OfOrganization);
+	Organizations (me) returns mutable HArray1OfOrganization;
+	OrganizationsValue (me; num : Integer) returns mutable Organization;
+	NbOrganizations (me) returns Integer;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+
+fields
+
+	organizations : HArray1OfOrganization from StepBasic;
+	description : HAsciiString from TCollection;
+
+end OrganizationalAddress;

@@ -1,0 +1,61 @@
+--
+-- File      :  HighLight.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class HighLight from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESHighLight, Type <406> Form <20>
+        --          in package IGESGraph
+        --
+        --          Attaches information that an entity is to be
+        --          displayed in some system dependent manner
+
+uses  Integer  -- no one specific type
+
+
+is
+
+        Create returns mutable HighLight;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              nbProps          : Integer;
+              aHighLightStatus : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           HighLight
+        --      - nbProps          : Number of property values (NP = 1)
+        --      - aHighLightStatus : HighLight Flag
+
+        NbPropertyValues(me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        HighLightStatus(me) returns Integer;
+        ---Purpose : returns 0 if <me> is not highlighted(default),
+        --         1 if <me> is highlighted
+
+        IsHighLighted(me) returns Boolean;
+        ---Purpose : returns True if entity is highlighted
+
+fields
+
+--
+-- Class    : IGESGraph_HighLight
+--
+-- Purpose  : Declaration of the variables specific to a
+--            HighLight property.
+--
+-- Reminder : A HighLight property is defined by :
+--                  - Number of property values (NP=1)
+--                  - Flag
+--
+
+        theNbPropertyValues : Integer;
+
+        theHighLight        : Integer;
+
+end HighLight;

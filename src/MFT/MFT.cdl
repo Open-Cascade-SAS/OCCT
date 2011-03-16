@@ -1,0 +1,136 @@
+--
+-- File:	MFT.cdl
+-- Created:	Lundi 3 Mars 1997
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+package MFT
+
+	---Version:
+
+	---Purpose: This package contains a Meta Font toolkit and utilities.
+	--	    1) Enable to creates MDTV outline fonts from others specific fonts
+	--	       (i.e: PostScript fonts,Euclid3 fonts,...)
+	--	    2) Enable to retrieves a string or  extended string
+	--	       outline vector list according of the current font and
+	--	       text attribs :
+	--	       (policy,size,slant,orientation and curve precision)
+	--	    3) Enable to retrieve policy or text attribs
+	--	       (i.e: Foundry,Family,..,font or text size).
+
+	---Keywords: Font 
+
+	---References:
+
+uses
+
+	Aspect,TCollection,Quantity,MMgt,OSD,TColStd
+
+is
+
+	---------------------------
+	-- Category: Imported types 
+	---------------------------
+
+	imported FileRecord;
+	imported FileHandle;
+	imported FilePosition;
+	imported CommandDescriptor;
+
+	--------------------
+	-- Category: Classes
+	--------------------
+
+	class FontManager;
+	---Purpose: Creates a font manager.
+	--	    Enable to reads or writes a MetaFont file.
+
+	class TextManager;
+	---Purpose: Facilities to draw a font.
+
+	---------------------------------
+	-- Category: Instantiated classes
+	---------------------------------
+
+        alias ListOfFontName is SequenceOfAsciiString from TColStd;
+
+	class ListOfFontHandle instantiates
+                Sequence from TCollection (FileHandle from MFT);
+
+	alias ListOfFontReference is SequenceOfInteger from TColStd;
+
+        -------------------------
+        -- Category: Enumerations
+        -------------------------
+
+        enumeration TypeOfCommand is 
+   		TOC_UNKNOWN,
+		TOC_HSTEM,	-- Declare an horizontal stem zone 
+		TOC_VSTEM,	-- Declare a vertical stem zone
+		TOC_VMOVETO,	-- Relative vertical move
+		TOC_RLINETO,	-- Relative segment
+		TOC_HLINETO,	-- Relative horizontal segment
+		TOC_VLINETO,	-- Relative vertical segment
+		TOC_RRCURVETO,	-- Relative curve
+		TOC_CLOSEPATH,	-- Close current path
+--		TOC_CALLSUBR,	-- Call preregistered macro
+--	Must be extracted by the translator.
+--		TOC_RETURN,	-- Returns from preregistered macro
+--	Must be extracted by the translator.
+--		TOC_ESCAPE,	-- Skip ????????
+		TOC_HSBW,	-- Sets the char width horizontal vector & left sidebearing.
+		TOC_ENDCHAR,	-- End char definition
+		TOC_RMOVETO,	-- Relative move
+		TOC_HMOVETO,	-- Relative horizontal move
+		TOC_VHCURVETO,	-- Vertical and Horizontal tangential curve
+		TOC_HVCURVETO,	-- Horizontal and Vertical tangential curve
+		TOC_DOTSECTION,	-- Dot section for special chars (i.e: i,j)
+		TOC_VSTEM3,	-- Declare three vertical stem zone
+		TOC_HSTEM3,	-- Declare three horizontal stem zone
+		TOC_SEAC,	-- Accented char description
+		TOC_SBW,	-- Sets the char width vector & left sidebearing.
+--		TOC_DIV,	-- Divide operation
+--	Must be extracted by the translator.
+--		TOC_CALLOTHERSUBR,--  ????????
+--	Must be extracted by the translator.
+--		TOC_POP,	--  ????????
+--	Must be extracted by the translator.
+		TOC_SETCURRENTPOINT,-- Sets the current absolute point
+		TOC_CHARSTRING,	-- Char string command (i.e: "/dollar")
+		TOC_NUMERIC,	-- Numeric command
+		TOC_MINMAX	-- Optionnal Char bounding box
+        end TypeOfCommand ;
+        ---Purpose: Definition of the MFT font descriptor commands. 
+	--  Warning: Based on Type 1 font descriptor commands.
+
+        enumeration TypeOfValue is   
+		TOV_UNKNOWN,	
+		TOV_INTEGER,
+		TOV_FLOAT,	
+		TOV_STRING	
+        end TypeOfValue ;
+        ---Purpose: Definition of the MFT command parameters. 
+
+        -----------------------
+        -- Category: Exceptions
+        -----------------------
+
+        exception FontManagerDefinitionError inherits NoSuchObject from Standard;
+
+        exception FontManagerError inherits TypeMismatch from Standard;
+
+        ----------------------------
+        -- Category: Package methods 
+        ----------------------------
+
+        Convert ( aCommandType: TypeOfCommand from MFT)
+                returns CString from Standard is private;
+        ---Purpose: Converts the type of command to string.
+
+        Convert ( aValueType: TypeOfValue from MFT)
+                returns CString from Standard is private;
+        ---Purpose: Converts the type of value to string.
+
+end MFT;

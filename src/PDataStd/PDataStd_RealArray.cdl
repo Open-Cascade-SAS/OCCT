@@ -1,0 +1,30 @@
+-- File:	PDataStd_RealArray.cdl
+-- Created:	Fri Jun 11 11:41:53 1999
+-- Author:	Sergey RUIN
+---Copyright:	Matra Datavision 1999
+
+
+class RealArray from PDataStd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses HArray1OfReal from PColStd
+     
+     
+is
+
+    Create returns mutable RealArray from PDataStd;
+
+    Init(me : mutable; lower, upper : Integer from Standard);
+
+    SetValue(me: mutable; Index : Integer from Standard; Value : Real from Standard);
+    
+    Value(me;  Index : Integer from Standard) returns Real  from Standard;
+   
+    Lower (me) returns Integer from Standard;      
+
+    Upper (me) returns Integer from Standard;   
+     
+fields
+    myValue     :  HArray1OfReal from PColStd;
+end RealArray;

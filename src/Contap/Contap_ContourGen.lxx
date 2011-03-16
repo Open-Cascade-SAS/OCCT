@@ -1,0 +1,32 @@
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean Contap_ContourGen::IsDone () const
+{
+  return done;
+}
+
+inline Standard_Boolean Contap_ContourGen::IsEmpty () const
+{
+  return NbLines()==0;
+}
+
+inline Standard_Integer Contap_ContourGen::NbLines () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin.Length();
+}
+
+inline const Contap_TheLine & 
+Contap_ContourGen::Line (const Standard_Integer Index) const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin(Index);
+}
+
+inline Contap_TheSurfFunction & 
+Contap_ContourGen::SurfaceFunction ()
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return mySFunc;
+}
+

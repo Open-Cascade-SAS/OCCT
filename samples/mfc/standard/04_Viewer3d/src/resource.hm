@@ -1,0 +1,4 @@
+// Microsoft Visual C++ generated Help ID include file.
+// Used by Viewer3d.rc
+//
+#define HIDC_RadiusFillet               0x808f0407    // IDD_RADIUS

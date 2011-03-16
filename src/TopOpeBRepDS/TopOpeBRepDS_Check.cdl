@@ -1,0 +1,136 @@
+-- File:	TopOpeBRepDS_Check.cdl
+-- Created:	Thu Apr 10 16:08:50 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Check from TopOpeBRepDS inherits TShared from MMgt
+
+	---Purpose: a tool verifing integrity and structure of DS 
+
+uses
+
+    CString            from Standard,
+    ListOfShape        from TopTools,
+    ShapeMapHasher     from TopTools,
+    Shape              from TopoDS,
+    ShapeEnum          from TopAbs,
+
+    DataStructure      from TopOpeBRepDS,
+    HDataStructure     from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    Kind               from TopOpeBRepDS,
+    CheckStatus             from TopOpeBRepDS,
+    DataMapOfCheckStatus    from TopOpeBRepDS
+
+is
+
+    Create returns Check from TopOpeBRepDS;
+
+    Create(HDS : HDataStructure from TopOpeBRepDS) 
+    returns mutable Check from TopOpeBRepDS;
+    	
+-- Check Integrity of DS
+
+    ChkIntg(me : mutable) returns Boolean from Standard
+    ---Purpose: Check integrition of DS
+    is static;
+    
+    ChkIntgInterf(me : mutable; LI : ListOfInterference from TopOpeBRepDS)
+    returns Boolean from Standard
+    ---Purpose: Check integrition of interferences 
+    --          (les supports et les geometries de LI)
+    is static;
+    
+    CheckDS(me : mutable;i : Integer from Standard;
+    	       K : Kind    from TopOpeBRepDS)
+    returns Boolean from Standard
+    ---Purpose: Verifie que le ieme element de la DS existe, et
+    --          pour un K de type topologique, verifie qu'il est du
+    --          bon type (VERTEX, EDGE, WIRE, FACE, SHELL ou SOLID)
+    is static;
+    
+    ChkIntgSamDom(me : mutable)
+    returns Boolean from Standard
+    ---Purpose: Check integrition des champs SameDomain de la DS
+    is static;
+    
+    CheckShapes(me; LS : ListOfShape from TopTools)
+    returns Boolean from Standard
+    ---Purpose: Verifie que les Shapes existent bien dans la DS
+    --          Utile pour les Shapes SameDomain
+    --          si la liste est vide, renvoie vrai
+    is static;
+    
+-- Check Structure of DS
+
+    OneVertexOnPnt(me : mutable)
+    returns Boolean from Standard
+    ---Purpose:    Verifie que les Vertex   non   SameDomain sont bien
+    --           nonSameDomain, que  les  vertex sameDomain sont  bien
+    --          SameDomain,  que    les  Points sont  non    confondus
+    --           ni entre eux, ni avec des Vertex.
+    is static;
+
+-- Methode pour acceder a la SD
+
+    HDS(me) returns HDataStructure from TopOpeBRepDS
+    ---C++: return const &
+    is static;
+
+    ChangeHDS(me : mutable) returns HDataStructure from TopOpeBRepDS
+    ---C++: return &
+    is static;
+
+-- Print
+
+    PrintIntg(me:mutable;S  : in out OStream) 
+    ---C++: return &
+    returns OStream;
+
+    PrintMap(me : mutable;MapStat : in out DataMapOfCheckStatus from TopOpeBRepDS;
+    	    	    	  eltstr  : CString from Standard;
+    	    	    	  S       : in out OStream) 
+    ---C++: return &
+    returns OStream
+    is private;
+
+    PrintElts(me : mutable;MapStat : in out DataMapOfCheckStatus from TopOpeBRepDS;
+    	    	    	   Stat    : CheckStatus  from TopOpeBRepDS;
+    	    	    	   b       : in out Boolean from Standard;
+    	    	    	   S       : in out OStream) 
+    ---C++: return &
+    returns OStream
+    is private;
+
+    Print(me : mutable;stat : CheckStatus from TopOpeBRepDS; S  : in out OStream) 
+    ---C++: return &
+    returns OStream;
+    ---Purpose: Prints the name  of CheckStatus  <stat>  as  a String
+
+    PrintShape(me : mutable;SE : ShapeEnum from TopAbs;
+    	    		    S : in out OStream) 
+    ---C++: return &
+    returns OStream;
+    ---Purpose: Prints the name  of CheckStatus  <stat>  as  a String
+
+    PrintShape(me : mutable;index : Integer from Standard;
+    	    		       S  : in out OStream) 
+    ---C++: return &
+    returns OStream;
+    ---Purpose: Prints the name  of CheckStatus  <stat>  as  a String
+
+fields
+
+    myHDS               : HDataStructure        from TopOpeBRepDS;
+    myMapSurfaceStatus : DataMapOfCheckStatus from TopOpeBRepDS;
+    mySurfaceDone      : Boolean               from Standard;
+    myMapCurveStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
+    myCurveDone        : Boolean               from Standard;
+    myMapPointStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
+    myPointDone        : Boolean               from Standard;
+    myMapShapeStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
+    myShapeDone        : Boolean               from Standard;
+    myDone             : Boolean               from Standard;
+    
+end Check from TopOpeBRepDS;

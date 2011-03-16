@@ -1,0 +1,161 @@
+-- File:	TopOpeBRepDS_DSS.cdl
+-- Created:	Thu Feb  5 10:58:58 1998
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class DSS from TopOpeBRepDS
+
+uses 
+    
+    Shape from TopoDS,
+    ListOfShape  from TopTools,
+    Config from TopOpeBRepDS,    
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    ShapeData from TopOpeBRepDS,
+    DoubleMapOfIntegerShape from TopOpeBRepDS,
+    MapOfIntegerShapeData from TopOpeBRepDS
+
+is  
+    
+    Create returns DSS;
+
+    Clear(me:in out);
+
+    AddShape(me:in out;S:Shape) returns Integer;
+    ---Purpose: Insert a shape S. Returns the index.
+
+    AddShape(me:in out;S:Shape;I:Integer) returns Integer;
+    ---Purpose: Insert a shape S which ancestor is I = 1 or 2. Returns the index.
+    
+    KeepShape(me;I:Integer;K:Boolean = Standard_True) returns Boolean;
+
+    KeepShape(me;S:Shape;K:Boolean = Standard_True) returns Boolean;
+
+    ChangeKeepShape(me:in out;I:Integer;K:Boolean);
+    
+    ChangeKeepShape(me:in out;S:Shape;K:Boolean);
+
+    ShapeInterferences(me;S:Shape;K:Boolean = Standard_True)
+    returns ListOfInterference from TopOpeBRepDS;
+    ---C++: return const &
+
+    ChangeShapeInterferences(me:in out;S:Shape) 
+    returns ListOfInterference from TopOpeBRepDS;
+    ---C++: return &
+    
+    ShapeInterferences(me;I:Integer;K:Boolean = Standard_True) 
+    returns ListOfInterference from TopOpeBRepDS;
+    ---C++: return const &
+    
+    ChangeShapeInterferences(me:in out;I:Integer) 
+    returns ListOfInterference from TopOpeBRepDS;
+    ---C++: return &
+    
+    ShapeSameDomain(me;S:Shape) 
+    returns ListOfShape from TopTools;
+    ---C++: return const &
+    
+    ChangeShapeSameDomain(me:in out;S:Shape)
+    returns ListOfShape from TopTools;
+    ---C++: return &
+    
+    ShapeSameDomain(me;I:Integer)
+    returns ListOfShape from TopTools;
+    ---C++: return const &
+    
+    ChangeShapeSameDomain(me:in out;I:Integer) 
+    returns ListOfShape from TopTools;
+    ---C++: return &
+    
+    ChangeShapeData(me: in out)
+    returns MapOfIntegerShapeData from TopOpeBRepDS;
+    ---C++: return &
+    
+    AddShapeSameDomain(me:in out;S,SSD:Shape);
+    
+    RemoveShapeSameDomain(me:in out;S,SSD:Shape);
+    
+    -- reference
+
+    SameDomainRef(me;I:Integer) returns Integer;
+
+    SameDomainRef(me;S:Shape) returns Integer;
+
+    SameDomainRef(me:in out;I:Integer;Ref:Integer);
+
+    SameDomainRef(me:in out;S:Shape;Ref:Integer);
+
+    -- orientation
+
+    SameDomainOri(me;I:Integer) returns Config from TopOpeBRepDS;
+
+    SameDomainOri(me;S:Shape) returns Config from TopOpeBRepDS;
+
+    SameDomainOri(me:in out;I:Integer;Ori:Config from TopOpeBRepDS);
+
+    SameDomainOri(me:in out;S:Shape;Ori:Config from TopOpeBRepDS);
+
+    -- index
+
+    SameDomainInd(me;I:Integer) returns Integer;
+
+    SameDomainInd(me;S:Shape) returns Integer;
+
+    SameDomainInd(me:in out;I:Integer;Ind:Integer);
+    
+    SameDomainInd(me:in out;S:Shape;Ind:Integer);
+
+    AncestorRank(me;I:Integer) returns Integer;
+
+    AncestorRank(me;S:Shape) returns Integer;
+
+    AncestorRank(me:in out;I:Integer;Ianc:Integer);
+
+    AncestorRank(me:in out;S:Shape;Ianc:Integer);
+
+    -- interferences
+
+    AddShapeInterference(me:in out;S:Shape;I:Interference from TopOpeBRepDS);
+    
+    RemoveShapeInterference(me:in out;S:Shape;I:Interference from TopOpeBRepDS);
+
+    FillShapesSameDomain(me:in out;S1,S2:Shape);
+
+    UnfillShapesSameDomain(me:in out;S1,S2:Shape);
+
+    -- - - - - - - - - - - -         
+    -- The Topological shapes
+    -- - - - - - - - - - - -   
+
+    NbShapes(me) returns Integer;
+    
+    Shape(me;I:Integer;K:Boolean = Standard_True) returns Shape;
+    ---Purpose: returns the shape of index I stored the maps
+    ---C++: return const &
+    
+    Shape(me;S:Shape;K:Boolean = Standard_True) returns Integer;
+    ---Purpose: returns the index of shape <S>, 0 if <S> is not in the maps.
+        
+    -- - - - - - - - - - - - - - - - - - - - - 
+    -- Geometry attached to a topological shape
+    -- - - - - - - - - - - - - - - - - - - - - 
+   
+    HasGeometry(me;S:Shape) returns Boolean;
+    ---Purpose: Returns True if <S> has new geometries, i.e :
+    -- True if S is stored and has an interference list not empty
+
+    HasShape(me;S:Shape;K:Boolean = Standard_True) returns Boolean;
+    ---Purpose: Returns True if <S> is stored in the maps
+
+fields
+
+    myDMOIS:DoubleMapOfIntegerShape from TopOpeBRepDS;
+    myNbDMOIS:Integer;
+    myIMOSD:MapOfIntegerShapeData from TopOpeBRepDS; 
+    myEmptyListOfInterference:ListOfInterference from TopOpeBRepDS;
+    myEmptyListOfShape:ListOfShape from TopTools;
+    myEmptyShape:Shape from TopoDS;
+
+end DSS from TopOpeBRepDS;

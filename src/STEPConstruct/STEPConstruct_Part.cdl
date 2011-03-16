@@ -1,0 +1,98 @@
+-- File:	STEPConstruct_Part.cdl
+-- Created:	Wed Aug  4 09:42:53 1993
+-- Author:	Herve LEGRAND
+--		<hl@ecolox>
+---Copyright:	 Matra Datavision 1993
+
+class Part from STEPConstruct
+
+    ---Purpose: Provides tools for creating STEP structures associated 
+    --          with part (SDR), such as PRODUCT, PDF etc., as requied
+    --          by current schema
+    --          Also allows to investigate and modify this data
+
+uses    
+    HAsciiString                  from TCollection,
+    ShapeRepresentation           from StepShape,
+    ShapeDefinitionRepresentation from StepShape,
+    ApplicationContext            from StepBasic,
+    ProductContext                from StepBasic,
+    ApplicationContext            from StepBasic,
+    ProductDefinitionContext      from StepBasic,
+    Product                       from StepBasic,
+    ProductDefinitionFormation    from StepBasic,
+    ProductDefinition             from StepBasic,
+    ProductDefinitionShape        from StepRepr,
+    ProductRelatedProductCategory from StepBasic
+	 
+is 
+    
+    Create returns Part;
+
+    MakeSDR  (me : in out; aShape: ShapeRepresentation from StepShape;
+                           aName : HAsciiString from TCollection;
+                           AC    : ApplicationContext from StepBasic);
+			      
+    ReadSDR  (me : in out; aShape: ShapeDefinitionRepresentation from StepShape);
+			      
+    IsDone   (me) returns Boolean;
+	 
+    SDRValue (me) returns ShapeDefinitionRepresentation from StepShape;
+    	---Purpose: Returns SDR or Null if not done
+		       
+    SRValue  (me) returns ShapeRepresentation from StepShape;
+    	---Purpose: Returns SDR->UsedRepresentation() or Null if not done
+
+    PC                 (me) returns ProductContext from StepBasic;
+    PCname             (me) returns HAsciiString from TCollection;
+    PCdisciplineType   (me) returns HAsciiString from TCollection;
+    SetPCname          (me: in out; name  : HAsciiString from TCollection);
+    SetPCdisciplineType(me: in out; label : HAsciiString from TCollection);
+	 
+    AC                 (me) returns ApplicationContext from StepBasic;
+    ACapplication      (me) returns HAsciiString from TCollection;
+    SetACapplication   (me: in out; text  : HAsciiString from TCollection);
+
+    PDC                (me) returns ProductDefinitionContext from StepBasic;
+    PDCname            (me) returns HAsciiString from TCollection;
+    PDCstage           (me) returns HAsciiString from TCollection;
+    SetPDCname         (me: in out; label : HAsciiString from TCollection);
+    SetPDCstage        (me: in out; label : HAsciiString from TCollection);
+
+    Product            (me) returns Product from StepBasic;
+    Pid                (me) returns HAsciiString from TCollection;
+    Pname              (me) returns HAsciiString from TCollection;
+    Pdescription       (me) returns HAsciiString from TCollection;
+    SetPid             (me: in out; id    : HAsciiString from TCollection);
+    SetPname           (me: in out; label : HAsciiString from TCollection);
+    SetPdescription    (me: in out; text  : HAsciiString from TCollection);
+	 
+    PDF                (me) returns ProductDefinitionFormation from StepBasic;
+    PDFid              (me) returns HAsciiString from TCollection;
+    PDFdescription     (me) returns HAsciiString from TCollection;
+    SetPDFid           (me: in out; id    : HAsciiString from TCollection);
+    SetPDFdescription  (me: in out; text  : HAsciiString from TCollection);
+
+    PD                 (me) returns ProductDefinition from StepBasic;
+    PDdescription      (me) returns HAsciiString from TCollection;
+    SetPDdescription   (me: in out; text  : HAsciiString from TCollection);
+	 
+    PDS                (me) returns ProductDefinitionShape from StepRepr;
+    PDSname            (me) returns HAsciiString from TCollection;
+    PDSdescription     (me) returns HAsciiString from TCollection;
+    SetPDSname         (me: in out; label : HAsciiString from TCollection);
+    SetPDSdescription  (me: in out; text  : HAsciiString from TCollection);
+
+    PRPC               (me) returns ProductRelatedProductCategory from StepBasic;
+    PRPCname           (me) returns HAsciiString from TCollection;
+    PRPCdescription    (me) returns HAsciiString from TCollection;
+    SetPRPCname        (me: in out; label : HAsciiString from TCollection);
+    SetPRPCdescription (me: in out; text  : HAsciiString from TCollection);
+	 
+fields
+
+    myDone: Boolean;
+    mySDR : ShapeDefinitionRepresentation from StepShape;
+    myPRPC: ProductRelatedProductCategory from StepBasic;
+
+end Part;

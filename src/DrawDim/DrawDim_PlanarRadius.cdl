@@ -1,0 +1,33 @@
+-- File:	DrawDim_PlanarRadius.cdl
+-- Created:	Fri Jan 12 17:52:28 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+class PlanarRadius from DrawDim inherits PlanarDimension from DrawDim
+
+	---Purpose: 
+
+uses Shape   from TopoDS,
+     Face    from TopoDS,
+     Color   from Draw,
+     Display from Draw
+
+is
+
+    Create (plane  : Face  from TopoDS;
+            circle : Shape from TopoDS)
+    returns mutable PlanarRadius from DrawDim;    
+
+    Create (circle : Shape from TopoDS)
+    returns mutable PlanarRadius from DrawDim;
+    
+    DrawOn(me; dis : in out Display);
+    
+
+fields
+
+    myCircle : Shape from TopoDS;
+
+end PlanarRadius;

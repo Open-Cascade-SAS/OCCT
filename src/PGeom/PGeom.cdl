@@ -1,0 +1,86 @@
+-- File:	PGeom.cdl
+-- Created:	Mon Feb 22 15:36:29 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+package PGeom 
+
+        ---Purpose :  This  package contains   the definition   of the
+        --         geometric persistent objects such as point, vector,
+        --         axis placement, curves, surfaces.
+        --  
+        --  All these entities are defined in 3D space.
+        --  This package gives the possibility :
+        --    . to create geometric objects with given or default field values,
+        --    . to set field values,
+        --    . to get field values.
+
+
+uses PColStd, gp, PColgp, GeomAbs
+
+is
+
+
+  class Transformation from PGeom;
+
+
+  deferred class Geometry from PGeom;
+
+
+     deferred class Point from PGeom;
+              class  CartesianPoint from PGeom;
+
+
+     deferred class Vector from PGeom;
+              class Direction from PGeom;
+              class VectorWithMagnitude from PGeom;
+     
+
+     deferred class AxisPlacement from PGeom;
+              class Axis1Placement from PGeom;
+              class Axis2Placement from PGeom;
+
+
+     deferred class Curve from PGeom;
+
+              class Line from PGeom;
+
+              deferred class Conic from PGeom;
+                       class Circle from PGeom;
+                       class Ellipse from PGeom;
+                       class Hyperbola from PGeom;
+                       class Parabola from PGeom;
+
+              deferred class BoundedCurve from PGeom;
+                       class BezierCurve from PGeom;
+                       class BSplineCurve from PGeom;
+                       class TrimmedCurve from PGeom;
+
+              class  OffsetCurve from PGeom;
+
+
+     deferred class Surface from PGeom;
+
+              deferred class ElementarySurface from PGeom;
+                       class Plane from PGeom;
+                       class ConicalSurface from PGeom;
+                       class CylindricalSurface from PGeom;
+                       class SphericalSurface from PGeom;
+                       class ToroidalSurface from PGeom;
+
+              deferred class SweptSurface from PGeom;
+                       class SurfaceOfLinearExtrusion from PGeom;
+                       class SurfaceOfRevolution from PGeom;
+
+              deferred class BoundedSurface from PGeom;
+                       class BezierSurface from PGeom;
+                       class BSplineSurface from PGeom;
+                       class RectangularTrimmedSurface from PGeom;
+
+              
+              class OffsetSurface from PGeom;
+
+
+end PGeom;

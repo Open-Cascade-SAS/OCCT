@@ -1,0 +1,28 @@
+-- File:	Vrml_TransformSeparator.cdl
+-- Created:	Wed Feb 12 14:01:54 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class TransformSeparator from Vrml 
+
+	---Purpose:  defines a TransformSeparator node of VRML specifying group properties.
+    	--  This  group  node  is  similar  to  separator  node  in  that it  saves state
+    	--  before  traversing  its  children  and  restores  it  afterwards. 
+	--  This  node  can  be  used  to  isolate  transformations  to  light  sources   
+    	--  or  objects.
+is
+ 
+     Create  returns   TransformSeparator from Vrml; 
+
+    Print    ( me:  in  out;  anOStream: in out OStream from Standard)
+    	    returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myFlagPrint      :  Boolean                 from Standard; 
+
+end TransformSeparator;
+

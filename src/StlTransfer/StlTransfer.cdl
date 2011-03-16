@@ -1,0 +1,34 @@
+-- File: StlTransfer.cdl 
+-- Created:  Mon Nov 14  10:11:39 1994  
+-- Author: Jean Claude VAUTHIER 
+-- ---Copyright: Matra Datavision 1994
+
+
+package StlTransfer 
+
+	---Purpose: The  package   Algorithm  for Meshing   implements
+	--          facilities to compute  the Mesh data-structure, as
+	--          defined in package StlMesh, from a shape of package
+	--          TopoDS.  The triangulation  is  computed  with the
+	--          Delaunay      algorithm   implemented in   package
+	--          BRepMesh.  The  result   is  stored  in  the  mesh
+	--          data-structure Mesh from package StlMesh.
+	--          
+
+uses  
+
+    StlMesh,
+    TopoDS
+
+is
+    BuildIncrementalMesh (Shape      : in      Shape from TopoDS; 
+    	       	    	  Deflection : in      Real  from Standard; 
+    	       	          Mesh       : Mesh  from StlMesh)
+     raises ConstructionError;
+end StlTransfer;
+
+
+
+
+
+

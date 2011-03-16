@@ -1,0 +1,27 @@
+-- File:        FileSchema.cdl
+-- Created:     Thu Jun 16 18:05:55 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWFileSchema from RWHeaderSection
+
+	---Purpose : Read & Write Module for FileSchema
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     FileSchema from HeaderSection
+
+is
+
+	Create returns RWFileSchema;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable FileSchema from HeaderSection);
+
+	WriteStep (me; SW : in out StepWriter; ent : FileSchema from HeaderSection);
+
+end RWFileSchema;

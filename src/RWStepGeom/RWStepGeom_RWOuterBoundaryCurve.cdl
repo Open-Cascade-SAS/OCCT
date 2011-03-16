@@ -1,0 +1,30 @@
+-- File:        OuterBoundaryCurve.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWOuterBoundaryCurve from RWStepGeom
+
+	---Purpose : Read & Write Module for OuterBoundaryCurve
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     OuterBoundaryCurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWOuterBoundaryCurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable OuterBoundaryCurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : OuterBoundaryCurve from StepGeom);
+
+	Share(me; ent : OuterBoundaryCurve from StepGeom; iter : in out EntityIterator);
+
+end RWOuterBoundaryCurve;

@@ -1,0 +1,31 @@
+-- File:        SurfaceStyleSegmentationCurve.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceStyleSegmentationCurve from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	CurveStyle from StepVisual
+is
+
+	Create returns mutable SurfaceStyleSegmentationCurve;
+	---Purpose: Returns a SurfaceStyleSegmentationCurve
+
+	Init (me : mutable;
+	      aStyleOfSegmentationCurve : mutable CurveStyle from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStyleOfSegmentationCurve(me : mutable; aStyleOfSegmentationCurve : mutable CurveStyle);
+	StyleOfSegmentationCurve (me) returns mutable CurveStyle;
+
+fields
+
+	styleOfSegmentationCurve : CurveStyle from StepVisual;
+
+end SurfaceStyleSegmentationCurve;

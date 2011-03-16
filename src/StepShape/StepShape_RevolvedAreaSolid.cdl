@@ -1,0 +1,45 @@
+-- File:        RevolvedAreaSolid.cdl
+-- Created:     Fri Dec  1 11:11:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RevolvedAreaSolid from StepShape 
+
+inherits SweptAreaSolid from StepShape 
+
+uses
+
+	Axis1Placement from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	CurveBoundedSurface from StepGeom
+is
+
+	Create returns mutable RevolvedAreaSolid;
+	---Purpose: Returns a RevolvedAreaSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable CurveBoundedSurface from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable CurveBoundedSurface from StepGeom;
+	      aAxis : mutable Axis1Placement from StepGeom;
+	      aAngle : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetAxis(me : mutable; aAxis : mutable Axis1Placement);
+	Axis (me) returns mutable Axis1Placement;
+	SetAngle(me : mutable; aAngle : Real);
+	Angle (me) returns Real;
+
+fields
+
+	axis : Axis1Placement from StepGeom;
+	angle : Real from Standard;
+
+end RevolvedAreaSolid;

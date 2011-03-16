@@ -1,0 +1,50 @@
+-- File:	FEmTool_LinearFlexion.cdl
+-- Created:	Thu Sep 18 10:52:37 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class LinearFlexion from FEmTool inherits ElementaryCriterion from FEmTool
+
+	---Purpose: Criterium of LinearFlexion To Hermit-Jacobi  elements      
+
+uses
+   Vector  from  math, 
+   Matrix  from  math, 
+   Shape   from GeomAbs,
+   HArray2OfReal  from  TColStd, 
+   HArray2OfInteger  from TColStd   
+    
+raises 
+  NotImplemented,   
+  DomainError   
+    
+is
+    Create(WorkDegree      : Integer ; 
+           ConstraintOrder : Shape from GeomAbs)   
+    returns LinearFlexion from FEmTool;   
+     
+    DependenceTable(me)  
+    returns  HArray2OfInteger  from TColStd   
+    is  redefined;   
+
+    Value  (me  : mutable)  
+    returns  Real  is  redefined; 
+     
+    Hessian(me  :  mutable ;  
+	    Dimension1  :  Integer; 
+	    Dimension2  :  Integer;
+            H  :  out  Matrix  from  math)
+     raises  DomainError -- If DependenceTable(Dimension1,Dimension2) is False 
+     is  redefined;  
+   
+    Gradient(me  : mutable;  
+             Dimension  :  Integer;
+             G  :  out  Vector  from  math) 
+    is redefined;
+
+fields 
+RefMatrix  :  Matrix  from  math; 
+myOrder      :  Integer; 
+end LinearFlexion;

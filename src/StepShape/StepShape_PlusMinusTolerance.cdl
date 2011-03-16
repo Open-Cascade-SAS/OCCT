@@ -1,0 +1,34 @@
+-- File:	StepShape_PlusMinusTolerance.cdl
+-- Created:	Tue Apr 24 14:05:33 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class PlusMinusTolerance  from StepShape    inherits TShared
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    ToleranceMethodDefinition from StepShape,
+    DimensionalCharacteristic from StepShape
+
+is
+
+    Create returns mutable PlusMinusTolerance;
+
+    Init (me : mutable;
+    	    range : ToleranceMethodDefinition from StepShape;
+	    toleranced_dimension : DimensionalCharacteristic from StepShape);
+
+    Range (me) returns ToleranceMethodDefinition from StepShape;
+    SetRange (me : mutable; range : ToleranceMethodDefinition from StepShape);
+
+    TolerancedDimension (me) returns DimensionalCharacteristic from StepShape;
+    SetTolerancedDimension (me : mutable; toleranced_dimension : DimensionalCharacteristic from StepShape);
+
+fields
+
+    theRange : ToleranceMethodDefinition from StepShape;
+    theTolerancedDimension : DimensionalCharacteristic from StepShape;
+
+end PlusMinusTolerance;

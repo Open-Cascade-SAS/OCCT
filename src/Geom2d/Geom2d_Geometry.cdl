@@ -1,0 +1,122 @@
+-- File:	Geom2d_Geometry.cdl
+-- Created:	Wed Mar 24 18:05:00 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+deferred class Geometry from Geom2d inherits TShared from MMgt 
+
+        --- Purpose :
+        --  The general abstract class Geometry in 2D space describes
+        --  the common behaviour of all the geometric entities.
+        --  
+        --  All the objects derived from this class can be move with a
+        --  geometric transformation. Only the transformations which 
+        --  doesn't modify the nature of the geometry are available in 
+        --  this package.
+        --  The method Transform which defines a general transformation
+        --  is deferred. The other specifics transformations used the 
+        --  method Transform.
+        --  All the following transformations modify the object itself.
+    	-- Warning
+    	-- Only transformations which do not modify the nature
+    	-- of the geometry can be applied to Geom2d objects:
+    	-- this is the case with translations, rotations,
+    	-- symmetries and scales; this is also the case with
+    	-- gp_Trsf2d composite transformations which are
+    	-- used to define the geometric transformations applied
+    	-- using the Transform or Transformed functions.
+    	-- Note: Geometry defines the "prototype" of the
+    	-- abstract method Transform which is defined for each
+    	-- concrete type of derived object. All other
+    	-- transformations are implemented using the Transform method.
+
+uses  Ax2d   from gp,
+      Pnt2d  from gp,
+      Trsf2d from gp,
+      Vec2d  from gp
+
+raises ConstructionError from Standard
+
+is
+
+
+
+  Mirror (me : mutable; P : Pnt2d)
+        --- Purpose : Performs the symmetrical transformation of a Geometry
+        --  with respect to the point P which is the center of the 
+        --  symmetry and assigns the result to this geometric object.
+    is static;
+
+
+  Mirror (me : mutable; A : Ax2d)
+        --- Purpose : Performs the symmetrical transformation of a Geometry
+        --  with respect to an axis placement which is the axis of the symmetry.
+    is static;
+
+
+
+  Rotate (me : mutable; P : Pnt2d; Ang : Real)
+        --- Purpose : Rotates a Geometry. P is the center of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+    is static;
+
+
+  Scale (me : mutable; P : Pnt2d; S : Real) 
+        --- Purpose : Scales a Geometry. S is the scaling value.
+    is static;
+
+
+  Translate (me : mutable; V : Vec2d)
+        --- Purpose : Translates a Geometry.  V is the vector of the tanslation.
+    is static;
+
+  Translate (me : mutable; P1, P2 : Pnt2d)
+        --- Purpose : Translates a Geometry from the point P1 to the point P2.
+     is static;
+
+  Transform (me : mutable; T : Trsf2d) 
+        --- Purpose : Transformation of a geometric object. This tansformation 
+        --  can be a translation, a rotation, a symmetry, a scaling
+        --  or a complex transformation obtained by combination of
+        --  the previous elementaries transformations.
+        --  (see class Transformation of the package Geom2d).
+     is deferred;
+
+
+
+
+        --- Purpose : The following transformations have the same properties 
+        --  as the previous ones but they don't modified the object
+        --  itself. A copy of the object is returned.
+
+
+
+  Mirrored (me; P : Pnt2d)            returns mutable like me
+  is static;
+
+  Mirrored (me; A : Ax2d)             returns mutable like me
+  is static;
+
+  Rotated (me; P : Pnt2d; Ang : Real)  returns mutable like me
+  is static;
+
+  Scaled (me; P : Pnt2d; S : Real)     returns mutable like me
+  is static;
+
+  Transformed (me; T : Trsf2d)        returns mutable like me
+  is static;
+
+  Translated (me; V : Vec2d)          returns mutable like me
+  is static;
+
+  Translated (me; P1, P2 : Pnt2d)     returns mutable like me
+  is static;
+
+  Copy (me)  returns mutable like me is deferred;
+  
+     
+end;

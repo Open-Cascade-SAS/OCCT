@@ -1,0 +1,30 @@
+-- File:        PersonalAddress.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPersonalAddress from RWStepBasic
+
+	---Purpose : Read & Write Module for PersonalAddress
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PersonalAddress from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPersonalAddress;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PersonalAddress from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : PersonalAddress from StepBasic);
+
+	Share(me; ent : PersonalAddress from StepBasic; iter : in out EntityIterator);
+
+end RWPersonalAddress;

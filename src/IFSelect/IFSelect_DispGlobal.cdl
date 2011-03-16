@@ -1,0 +1,38 @@
+-- File:	DispGlobal.cdl
+-- Created:	Tue Nov 17 18:30:59 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class DispGlobal  from IFSelect  inherits Dispatch
+
+    ---Purpose : A DispGlobal gathers all the input Entities into only one
+    --           global Packet
+
+uses AsciiString from TCollection, Graph, SubPartsIterator
+
+is
+
+    Create returns mutable DispGlobal;
+    ---Purpose : Creates a DispGlobal
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File for all Input"
+
+    	--  --    Evaluation    --  --
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True : maximum equates 1
+
+    PacketsCount (me; G : Graph; count : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True (count of packets is well known) and count is 1
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator);
+    ---Purpose : Computes the list of produced Packets. It is made of only ONE
+    --           Packet, which gets the RootResult from the Final Selection.
+    --           Remark : the inherited exception raising is never activated.
+
+end DispGlobal;

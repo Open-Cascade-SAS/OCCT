@@ -1,0 +1,10 @@
+// File:	Adaptor3d_GenHCurve.lxx
+// Created:	Tue May  9 16:08:58 1995
+// Author:	Xavier BENVENISTE
+//		<xab@nonox>
+
+
+inline TheCurve& Adaptor3d_GenHCurve::ChangeCurve()
+{
+  return myCurve;
+}

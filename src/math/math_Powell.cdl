@@ -1,0 +1,147 @@
+-- File:        Powell.cdl
+-- Created:     Tue May 14 16:47:51 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class Powell from math
+     	---Purpose:
+     	-- This class implements the Powell method to find the minimum of
+     	-- function of multiple variables (the gradient does not have to be known).
+
+uses Vector from math, Matrix from math, MultipleVarFunction from math,
+     Status from math, OStream from Standard
+
+raises NotDone from StdFail,
+       DimensionError from Standard
+
+is
+
+    Create(F: in out MultipleVarFunction; StartingPoint: Vector; 
+    	   StartingDirections: Matrix; Tolerance: Real;
+	   NbIterations: Integer=200; ZEPS: Real=1.0e-12)
+    	---Purpose:
+    	-- Computes Powell minimization on the function F given
+    	-- StartingPoint, and an initial matrix StartingDirection
+    	-- whose columns contain the initial set of directions. The
+    	-- solution F = Fi is found when 2.0 * abs(Fi - Fi-1) =
+    	-- <Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS). The maximum
+    	--    number of iterations allowed is given by NbIterations.
+    returns Powell;
+    
+    
+    Create(F: in out MultipleVarFunction;
+    	   Tolerance: Real;
+	   NbIterations: Integer = 200;
+	   ZEPS: Real = 1.0e-12)
+    	---Purpose: is used in a sub-class to initialize correctly all the fields
+    	--          of this class.
+
+    returns Powell;
+    
+    
+    Delete(me:out) is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~math_Powell(){Delete();}"
+    
+    Perform(me: in out;F: in out MultipleVarFunction;
+    	    StartingPoint: Vector;
+	    StartingDirections: Matrix)
+	---Purpose: Use this method after a call to the initialization constructor
+    	-- to compute the minimum of function F.
+    	-- Warning
+    	-- The initialization constructor must have been called before
+    	-- the Perform method is called.
+
+    is static;
+
+
+    IsSolutionReached(me: in out; F: in out MultipleVarFunction)
+    	---Purpose:
+    	--  solution F = Fi is found when :
+    	--   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
+    	-- The maximum number of iterations allowed is given by NbIterations.
+    
+    returns Boolean
+    is virtual;
+    
+    
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Location(me)
+    	---Purpose: returns the location vector of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    	---C++: return const&
+    
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Location(me; Loc: out Vector)
+    	---Purpose: outputs the location vector of the minimum in Loc.
+        -- Exception NotDone is raised if the minimum was not found.
+    	-- Exception DimensionError is raised if the range of Loc is not
+        -- equal to the range of the StartingPoint.
+    	---C++: inline
+    
+    raises NotDone,
+    	   DimensionError
+    is static;
+    
+    
+    
+    Minimum(me)
+        ---Purpose: Returns the value of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+    
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+
+    NbIterations(me)
+    	---Purpose: Returns the number of iterations really done during the
+        -- computation of the minimum.
+        -- Exception NotDone is raised if the minimum was not found.
+    	---C++: inline
+
+    returns Integer
+    raises NotDone
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+
+fields
+
+Done:             Boolean;
+TheLocation:      Vector is protected;
+TheMinimum:       Real is protected;
+TheLocationError: Real is protected;
+Iter:             Integer;
+TheStatus:        Status;
+TheDirections:    Matrix;
+PreviousMinimum:  Real is protected;
+XTol:             Real is protected;
+EPSZ:             Real is protected;
+State:            Integer;
+Itermax:          Integer;
+
+end Powell;
+

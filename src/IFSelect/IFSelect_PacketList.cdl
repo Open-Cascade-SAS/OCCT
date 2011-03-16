@@ -1,0 +1,94 @@
+-- File:	IFSelect_PacketList.cdl
+-- Created:	Fri Sep  2 17:02:43 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class PacketList  from IFSelect  inherits TShared
+
+    ---Purpose : This class gives a simple way to return then consult a
+    --           list of packets, determined from the content of a Model,
+    --           by various criteria.
+    --           
+    --           It allows to describe several lists with entities from a
+    --           given model, possibly more than one list knowing every entity,
+    --           and to determine the remaining list (entities in no lists) and
+    --           the duplications (with their count).
+
+uses Array1OfInteger, IntList, HSequenceOfTransient, AsciiString,
+     EntityIterator, InterfaceModel
+
+raises InterfaceError
+
+is
+
+    Create (model : InterfaceModel) returns mutable PacketList;
+    ---Purpose : Creates a PackList, empty, ready to receive entities from a
+    --           given Model
+
+    SetName (me : mutable; name : CString)  is static;
+    ---Purpose : Sets a name to a packet list : this makes easier a general
+    --           routine to print it. Default is "Packets"
+
+    Name (me) returns CString  is static;
+    ---Purpose : Returns the recorded name for a packet list
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model of reference
+
+    AddPacket (me : mutable);
+    ---Purpose : Declares a new Packet, ready to be filled
+    --           The entities to be added will be added to this Packet
+
+    Add (me : mutable; ent : Transient)
+    ---Purpose : Adds an entity from the Model into the current packet for Add
+    	raises InterfaceError;
+    --           Error if <ent> is not from the Model, or if no AddPacket was
+    --           yet called
+
+    AddList (me : mutable; list : HSequenceOfTransient)
+    ---Purpose : Adds an list of entities into the current packet for Add
+    	raises InterfaceError;
+    --           Error if on of the items of <list> is not from the Model, or
+    --           if no AddPacket was yet called
+
+    NbPackets (me) returns Integer;
+    ---Purpose : Returns the count of non-empty packets
+
+    NbEntities (me; numpack : Integer) returns Integer;
+    ---Purpose : Returns the count of entities in a Packet given its rank, or 0
+
+    Entities (me; numpack : Integer) returns EntityIterator;
+    ---Purpose : Returns the content of a Packet given its rank
+    --           Null Handle if <numpack> is out of range
+
+    HighestDuplicationCount (me) returns Integer;
+    ---Purpose : Returns the highest number of packets which know a same entity
+    --           For no duplication, should be one
+
+    NbDuplicated (me; count : Integer; andmore : Boolean) returns Integer;
+    ---Purpose : Returns the count of entities duplicated :
+    --           <count> times, if <andmore> is False, or
+    --           <count> or more times, if <andmore> is True
+    --           See Duplicated for more details
+
+    Duplicated (me; count : Integer; andmore : Boolean) returns EntityIterator;
+    ---Purpose : Returns a list of entities duplicated :
+    --           <count> times, if <andmore> is False, or
+    --           <count> or more times, if <andmore> is True
+    --           Hence, count=2 & andmore=True gives all duplicated entities
+    --           count=1 gives non-duplicated entities (in only one packet)
+    --           count=0 gives remaining entities (in no packet at all)
+
+fields
+
+    themodel : InterfaceModel;
+    thedupls : Array1OfInteger;
+    thepacks : IntList;
+    theflags : Array1OfInteger;   -- for only once par packet !
+    thelast  : Integer;
+    thebegin : Boolean;
+    thename  : AsciiString;
+
+end PacketList;

@@ -1,0 +1,21 @@
+-- File:	XSDRAWSTEP.cdl
+-- Created:	Fri Jan 12 09:01:46 1996
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1996
+
+
+package XSDRAWSTEP
+
+    ---Purpose : XSDRAW for STEP AP214 and AP203
+
+uses Standard, Interface, Transfer, IFSelect, STEPControl, Draw
+
+is
+
+    Init;
+
+    InitCommands (theCommands : in out Interpretor from Draw);
+    ---Purpose : Inits commands to access product data and to write shapes
+
+end XSDRAWSTEP;

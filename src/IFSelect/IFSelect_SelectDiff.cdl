@@ -1,0 +1,32 @@
+-- File:	SelectDiff.cdl
+-- Created:	Wed Nov 18 16:40:10 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectDiff  from IFSelect  inherits SelectControl
+
+    ---Purpose : A SelectDiff keeps the entities from a Selection, the Main
+    --           Input, which are not listed by the Second Input
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectDiff;
+    ---Purpose : Creates an empty SelectDiff
+
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities : they are the Entities
+    --           gotten from the Main Input but not from the Diff Input
+
+    HasUniqueResult (me) returns Boolean  is redefined protected;
+    ---Purpose : Returns always True, because RootResult gives a Unique list
+
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Difference"
+
+end SelectDiff;

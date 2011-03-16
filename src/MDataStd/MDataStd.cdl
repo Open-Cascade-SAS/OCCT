@@ -1,0 +1,143 @@
+-- File:	MDataStd.cdl
+-- Created:	Thu Aug  7 16:12:08 1997
+-- Author:	VAUTHIER Jean-Claude 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+
+package MDataStd 
+
+	---Purpose: Storage    and  Retrieval  drivers   for modelling
+	--          attributes.   Transient  attributes are defined in
+	--          package TDataStd and persistent one are defined in
+	--          package PDataStd
+
+uses TDF,
+     PDF,
+     MDF, 
+     CDM,
+     TDataStd
+
+is
+
+    	---Purpose: Storage drivers for TDataStd attributes
+    	--          =======================================
+
+	
+        class DirectoryStorageDriver;
+
+	class UAttributeStorageDriver;
+	
+    	class NameStorageDriver;
+
+    	class CommentStorageDriver;
+
+ 	class IntegerStorageDriver;
+	
+	class IntegerArrayStorageDriver;
+	
+    	class RealStorageDriver;
+
+	class RealArrayStorageDriver;
+	
+	class ExtStringArrayStorageDriver;	
+
+    	class VariableStorageDriver;
+
+    	class ExpressionStorageDriver;
+
+    	class RelationStorageDriver;    
+	
+	class NoteBookStorageDriver;
+
+    	class TreeNodeStorageDriver;
+	
+    	 
+    --Extension 
+	class TickStorageDriver;
+        class IntegerListStorageDriver;
+        class RealListStorageDriver;
+        class ExtStringListStorageDriver;
+        class BooleanListStorageDriver;
+        class ReferenceListStorageDriver;
+        class BooleanArrayStorageDriver;
+        class ReferenceArrayStorageDriver;
+        class ByteArrayStorageDriver;
+        class NamedDataStorageDriver;
+        class AsciiStringStorageDriver; 
+        class IntPackedMapStorageDriver; 
+    
+    	---Purpose: Retrieval drivers for PDataStd attributes
+    	--          =========================================
+
+        class DirectoryRetrievalDriver;
+
+	class UAttributeRetrievalDriver;
+	
+    	class NameRetrievalDriver;
+
+    	class CommentRetrievalDriver;
+
+ 	class IntegerRetrievalDriver;
+	
+        class IntegerArrayRetrievalDriver; 
+	 
+        class IntegerArrayRetrievalDriver_1;	
+
+    	class RealRetrievalDriver;
+
+	class RealArrayRetrievalDriver; 
+	 
+	class RealArrayRetrievalDriver_1;	
+	
+	class ExtStringArrayRetrievalDriver;
+
+	class ExtStringArrayRetrievalDriver_1;  	
+
+	class VariableRetrievalDriver;
+
+    	class ExpressionRetrievalDriver;
+
+    	class RelationRetrievalDriver;	   
+
+	class NoteBookRetrievalDriver;
+
+    	class TreeNodeRetrievalDriver;
+
+	  
+	--  Extension 
+	class TickRetrievalDriver;
+        class IntegerListRetrievalDriver;
+        class RealListRetrievalDriver;
+        class ExtStringListRetrievalDriver;
+        class BooleanListRetrievalDriver;
+        class ReferenceListRetrievalDriver;
+        class BooleanArrayRetrievalDriver;
+        class ReferenceArrayRetrievalDriver;
+        class ByteArrayRetrievalDriver; 
+	class ByteArrayRetrievalDriver_1;
+        class NamedDataRetrievalDriver; 
+        class AsciiStringRetrievalDriver; 
+        class IntPackedMapRetrievalDriver;     
+    	class IntPackedMapRetrievalDriver_1;
+
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverSeq>.
+
+
+    ---Purpose: Translation of TDataStd enumerations to integer
+    --          ===============================================
+
+    RealDimensionToInteger (e : RealEnum from TDataStd)
+    returns Integer from Standard;
+
+    IntegerToRealDimension (i : Integer from Standard)
+    returns RealEnum from TDataStd;
+     
+end MDataStd;

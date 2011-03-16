@@ -1,0 +1,32 @@
+-- File:	StepData_SelectReal.cdl
+-- Created:	Mon Dec 16 16:34:16 1996
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class SelectReal  from StepData    inherits SelectMember
+
+    ---Purpose : A SelectReal is a SelectMember specialised for a basic real
+    --           type in a select which also accepts entities : this one has
+    --           NO NAME
+    --           For a named select, see SelectNamed
+
+uses CString, Logical
+
+is
+
+    Create returns mutable SelectReal;
+
+    Kind (me) returns Integer  is redefined;
+    --  fixed kind : Real
+
+    Real  (me) returns Real  is redefined;
+
+    SetReal (me : mutable; val : Real)  is redefined;
+
+fields
+
+    theval  : Real;
+
+end SelectReal;

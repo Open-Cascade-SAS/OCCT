@@ -1,0 +1,86 @@
+--
+-- File      : GeneralSymbol.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Anand NATRAJAN)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class GeneralSymbol from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines General Symbol, Type <228>, Form <0-3,5001-9999>
+        --          in package IGESDimen
+        --          Consists of zero or one (Form 0) or one (all other
+        --          forms), one or more geometry entities which define
+        --          a symbol, and zero, one or more associated leaders.
+
+uses
+
+        HArray1OfIGESEntity  from IGESData,
+        LeaderArrow              from IGESDimen,
+        GeneralNote              from IGESDimen,
+        HArray1OfLeaderArrow from IGESDimen
+
+raises OutOfRange
+
+is
+
+        Create returns mutable GeneralSymbol;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aNote      : GeneralNote;
+              allGeoms   : HArray1OfIGESEntity;
+              allLeaders : HArray1OfLeaderArrow);
+        ---Purpose : This method is used to set the fields of the class
+        --           GeneralSymbol
+        --       - aNote      : General Note, null for form 0
+        --       - allGeoms   : Geometric Entities
+        --       - allLeaders : Leader Arrows
+
+    	SetFormNumber (me : mutable; form : Integer) raises OutOfRange;
+	---Purpose : Changes FormNumber (indicates the Nature of the Symbole)
+	--           Error if not in ranges [0-3] or [> 5000]
+
+
+        HasNote (me) returns Boolean;
+        ---Purpose : returns True if there is associated General Note Entity
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns Null handle for form 0 only
+
+        NbGeomEntities (me) returns Integer;
+        ---Purpose : returns number of Geometry Entities
+
+        GeomEntity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Geometry Entity
+        -- raises exception if Index <= 0 or Index > NbGeomEntities()
+
+        NbLeaders (me) returns Integer;
+        ---Purpose : returns number of Leaders or zero if not specified
+
+        LeaderArrow (me; Index : Integer) returns LeaderArrow
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Leader Arrow
+        -- raises exception if Index <= 0 or Index > NbLeaders()
+
+fields
+
+--
+-- Class    : IGESDimen_GeneralSymbol
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class GeneralSymbol.
+--
+-- Reminder : A GeneralSymbol instance is defined by :
+--            - A General Note
+--            - An array of Geometry Entities
+--            - An array of Leader Arrows
+
+        theNote    : GeneralNote;
+        theGeoms   : HArray1OfIGESEntity;
+        theLeaders : HArray1OfLeaderArrow;
+
+end GeneralSymbol;

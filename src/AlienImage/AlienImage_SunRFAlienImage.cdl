@@ -1,0 +1,64 @@
+--
+-- File:	AlienImage_SunRFAlienImage.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+-- Modified:	02-06-98 : FMN ; Suppression appel Clear (deja fait dans ALienData)
+--
+---Copyright:	Matravision 1993
+--
+
+class SunRFAlienImage from AlienImage inherits AlienUserImage from AlienImage
+
+	
+	---Purpose: Defines a SunRF Alien image, i.e. an image using the
+-- image format for SUN workstations.
+
+uses
+	File 			from OSD,
+	AsciiString 		from TCollection,
+	ColorImage 		from Image,
+	PseudoColorImage 	from Image,
+	Image			from Image,
+	SunRFAlienData 		from AlienImage,
+	SUNRFFormat	 	from AlienImage
+
+is
+	Create returns mutable SunRFAlienImage from AlienImage;
+---Purpose: Constructs an empty SunRF alien image.
+    
+	Clear( me : in out mutable) ;
+	---Level: Public
+	---Purpose: Frees memory allocated by SunRFAlienImage
+
+	ToImage( me : in immutable ) 
+	  returns mutable Image from Image ;
+	---Level: Public
+	  ---Purpose : Converts a SunRFAlienImage object to a Image object.
+
+	FromImage( me : in out mutable ; anImage : in Image from Image ) ;
+	---Level: Public
+	  ---Purpose : Converts an Image object to a SunRFAlienImage object.
+
+	Read ( me : in out mutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	  ---Purpose: Reads the content of a  SunRFAlienImage object from a file
+	  --          Returns True if file is a XWD file .
+
+	Write( me : in immutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	  ---Purpose: Writes content of a  SunRFAlienImage object to a file
+
+	SetFormat( me : in out mutable ;
+		   aFormat : SUNRFFormat from AlienImage);
+	  ---Purpose: Sets the  SUN Raster File Format for Write method.
+
+	Format( me : in  immutable )
+	    returns SUNRFFormat from AlienImage ;
+	  ---Purpose: Returns the SUN Raster File Format .
+
+fields
+	myData : SunRFAlienData from AlienImage ;
+
+end ;
+ 

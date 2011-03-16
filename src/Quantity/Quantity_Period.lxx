@@ -1,0 +1,22 @@
+
+inline Standard_Real  Quantity_Period::MillisecondPeriod(){
+ return (1E+3);
+}
+
+inline Standard_Real  Quantity_Period::SecondPeriod(){
+ return (1E+6);
+}
+
+
+inline Standard_Real  Quantity_Period::MinutePeriod(){
+ return (60.0E+6);
+}
+
+inline Standard_Real  Quantity_Period::HourPeriod(){
+ return (3600.0E+6);
+}
+
+inline Standard_Real  Quantity_Period::DayPeriod(){
+ return (86400.0E+6);
+}
+

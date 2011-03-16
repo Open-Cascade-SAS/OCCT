@@ -1,0 +1,38 @@
+-- File:	StepFEA_CurveElementInterval.cdl
+-- Created:	Thu Dec 12 17:51:04 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementInterval from StepFEA
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity CurveElementInterval
+
+uses
+    CurveElementLocation from StepFEA,
+    EulerAngles from StepBasic
+
+is
+    Create returns CurveElementInterval from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aFinishPosition: CurveElementLocation from StepFEA;
+                       aEuAngles: EulerAngles from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    FinishPosition (me) returns CurveElementLocation from StepFEA;
+	---Purpose: Returns field FinishPosition
+    SetFinishPosition (me: mutable; FinishPosition: CurveElementLocation from StepFEA);
+	---Purpose: Set field FinishPosition
+
+    EuAngles (me) returns EulerAngles from StepBasic;
+	---Purpose: Returns field EuAngles
+    SetEuAngles (me: mutable; EuAngles: EulerAngles from StepBasic);
+	---Purpose: Set field EuAngles
+
+fields
+    theFinishPosition: CurveElementLocation from StepFEA;
+    theEuAngles: EulerAngles from StepBasic;
+
+end CurveElementInterval;

@@ -1,0 +1,58 @@
+-- File:	DispPerCount.cdl
+-- Created:	Tue Nov 17 18:38:45 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class DispPerCount  from IFSelect  inherits Dispatch
+
+    ---Purpose : A DispPerCount gathers all the input Entities into one or
+    --           several Packets, each containing a defined count of Entity
+    --           This count is a Parameter of the DispPerCount, given as an
+    --           IntParam, thus allowing external control of its Value
+
+uses AsciiString from TCollection, Graph, SubPartsIterator, IntParam
+
+raises InterfaceError
+
+is
+
+    Create returns mutable DispPerCount;
+    ---Purpose : Creates a DispPerCount with no Count (default value 1)
+
+    Count (me) returns mutable IntParam;
+    ---Purpose : Returns the Count Parameter used for splitting
+
+    SetCount (me : mutable; count : mutable IntParam);
+    ---Purpose : Sets a new Parameter for Count
+
+    CountValue (me) returns Integer;
+    ---Purpose : Returns the effective value of the count parameter
+    --           (if Count Parameter not Set or value not positive, returns 1)
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns as Label, "One File per <count> Input Entities"
+
+    	--  --    Evaluation    --  --
+
+    LimitedMax (me; nbent : Integer; max : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True, maximum count is given as <nbent>
+
+    PacketsCount (me; G : Graph; count : out Integer) returns Boolean
+    	is redefined;
+    ---Purpose : Returns True (count is easy to know) and count is computed
+    --           from length of input list (RootResult from Final Selection)
+
+    Packets (me; G : Graph; packs : in out SubPartsIterator)
+    	raises InterfaceError;
+    ---Purpose : Computes the list of produced Packets. It defines Packets in
+    --           order to have at most <Count> Entities per Packet, Entities
+    --           are given by RootResult from the Final Selection.
+
+fields
+
+    thecount : IntParam;
+
+end DispPerCount;

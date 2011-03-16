@@ -1,0 +1,88 @@
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+IntImp_ZerCSParFunc::IntImp_ZerCSParFunc(const ThePSurface& S,
+					 const TheCurve& C) {
+  surface = S;
+  curve = C;
+  p = gp_Pnt(0.0,0.0,0.0);
+  f = 0.0;
+}
+
+Standard_Integer IntImp_ZerCSParFunc::NbVariables()const { return 3;}
+
+Standard_Integer IntImp_ZerCSParFunc::NbEquations()const { return 3;}
+
+Standard_Boolean IntImp_ZerCSParFunc::Value(const math_Vector& X,
+			                    math_Vector& F){
+
+  gp_Pnt Psurf = ThePSurfaceTool::Value(surface,X(1),X(2));
+  gp_Pnt Pcurv = TheCurveTool::Value(curve,X(3));
+  Standard_Real f1,f2,f3;
+  F(1) = f1 = Psurf.X()-Pcurv.X();
+  F(2) = f2 = Psurf.Y()-Pcurv.Y();
+  F(3) = f3 = Psurf.Z()-Pcurv.Z();
+  f = f1*f1 + f2*f2 + f3*f3;
+  p = gp_Pnt((Psurf.XYZ()+Pcurv.XYZ())*0.5);
+  return Standard_True;
+}
+
+Standard_Boolean IntImp_ZerCSParFunc::Derivatives ( const math_Vector& X,
+						    math_Matrix& D) {
+  gp_Pnt Psurf,Pcurv;
+  gp_Vec D1u,D1v,D1w;
+  ThePSurfaceTool::D1(surface,X(1),X(2),Psurf,D1u,D1v);
+  TheCurveTool::D1(curve,X(3),Pcurv,D1w);
+  D(1,1) =  D1u.X();
+  D(1,2) =  D1v.X();
+  D(1,3) = -D1w.X();
+  D(2,1) =  D1u.Y();
+  D(2,2) =  D1v.Y();
+  D(2,3) = -D1w.Y();
+  D(3,1) =  D1u.Z();
+  D(3,2) =  D1v.Z();
+  D(3,3) = -D1w.Z();
+  return Standard_True;
+} 
+
+Standard_Boolean IntImp_ZerCSParFunc::Values( const math_Vector& X,
+					      math_Vector& F,
+					      math_Matrix& D) {
+  gp_Pnt Psurf,Pcurv;
+  gp_Vec D1u,D1v,D1w;
+  ThePSurfaceTool::D1(surface,X(1),X(2),Psurf,D1u,D1v);
+  TheCurveTool::D1(curve,X(3),Pcurv,D1w);
+  D(1,1) =  D1u.X();
+  D(1,2) =  D1v.X();
+  D(1,3) = -D1w.X();
+  D(2,1) =  D1u.Y();
+  D(2,2) =  D1v.Y();
+  D(2,3) = -D1w.Y();
+  D(3,1) =  D1u.Z();
+  D(3,2) =  D1v.Z();
+  D(3,3) = -D1w.Z();
+
+  Standard_Real f1,f2,f3;
+  F(1) = f1 = Psurf.X()-Pcurv.X();
+  F(2) = f2 = Psurf.Y()-Pcurv.Y();
+  F(3) = f3 = Psurf.Z()-Pcurv.Z();
+  f = f1*f1 + f2*f2 + f3*f3;
+  p = gp_Pnt((Psurf.XYZ()+Pcurv.XYZ())*0.5);
+  return Standard_True;
+}
+
+const gp_Pnt& IntImp_ZerCSParFunc::Point() const { return p;}
+
+Standard_Real IntImp_ZerCSParFunc::Root() const { return f;}
+
+const ThePSurface& IntImp_ZerCSParFunc::AuxillarSurface() const { 
+  return surface;}
+
+const TheCurve& IntImp_ZerCSParFunc::AuxillarCurve() const { 
+  return curve;}

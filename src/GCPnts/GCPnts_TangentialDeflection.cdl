@@ -1,0 +1,215 @@
+-- File:	GCPnts_TangentialDeflection.cdl
+-- Created:	Fri Nov  8 10:54:06 1996
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class TangentialDeflection from GCPnts 
+
+
+	---Purpose:  Computes a set of  points on a curve from package
+	--          Adaptor3d  such  as between  two successive   points
+	--          P1(u1)and P2(u2) :
+	--          
+    	--         . ||P1P3^P3P2||/||P1P3||*||P3P2||<AngularDeflection
+    	--         . ||P1P2^P1P3||/||P1P2||*||P1P3||<CurvatureDeflection
+    	--
+    	--         where P3 is the point of abscissa ((u1+u2)/2), with
+    	--         u1 the abscissa of the point P1 and u2 the abscissa
+    	--         of the point P2.
+    	--
+    	--         ^ is the cross product of two vectors, and ||P1P2||
+    	--         the magnitude of the vector P1P2.
+    	--
+    	--         The conditions AngularDeflection > gp::Resolution()
+    	--         and CurvatureDeflection > gp::Resolution() must be
+    	--         satisfied at the construction time.
+    	--     	
+    	--         A  minimum  number of points  can  be fixed   for a
+    	--         linear or circular element.   	        
+    	--  Example: 
+    	--          Handle(Geom_BezierCurve) C = new Geom_BezierCurve (Poles);
+    	--          GeomAdaptor_Curve Curve (C);
+    	--          Real CDeflect = 0.01;  //Curvature deflection
+    	--          Real ADeflect = 0.09; //Angular deflection
+    	--          
+    	--          GCPnts_TangentialDeflection PointsOnCurve;
+    	--          PointsOnCurve.Initialize (Curve, ADeflect, CDeflect); 
+    	--          
+    	--          Real U;
+    	--          gp_Pnt P; 
+    	--          for (Integer i=1; i<=PointsOnCurve.NbPoints();i++) {
+    	--            U = PointsOnCurve.Parameter (i);
+    	--            P = PointsOnCurve.Value (i);
+    	--          }
+    	--          
+
+
+uses 
+    SequenceOfPnt  from TColgp,
+    SequenceOfReal from TColStd,
+    Curve          from Adaptor3d, 
+    Curve2d        from Adaptor2d,
+    Pnt            from gp
+
+
+
+raises 
+    ConstructionError from Standard,
+    OutOfRange        from Standard
+ 
+
+is
+ 
+ 
+    Create  returns  TangentialDeflection; 
+
+     
+    Create (C                   : Curve; 
+    	    AngularDeflection   : Real; 	--- Deffault value 0.2; 
+    	    CurvatureDeflection : Real; 	--- Deffault value 0.05;
+    	    MinimumOfPoints     : Integer = 2;
+    	    UTol                : Real    = 1.0e-9)
+    returns TangentialDeflection raises ConstructionError;
+
+
+    Create (C                   : Curve; 
+    	    FirstParameter      : Real;
+    	    LastParameter       : Real;
+    	    AngularDeflection   : Real;  	--- Deffault value 0.2;   
+    	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
+    	    MinimumOfPoints     : Integer = 2;
+    	    UTol                : Real    = 1.0e-9)
+    returns TangentialDeflection raises ConstructionError;
+
+
+    Create (C                   : Curve2d; 
+    	    AngularDeflection   : Real;  	--- Deffault value 0.2; 
+    	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
+    	    MinimumOfPoints     : Integer = 2;
+    	    UTol                : Real    = 1.0e-9)
+    returns TangentialDeflection raises ConstructionError;
+
+
+    Create (C                   : Curve2d; 
+    	    FirstParameter      : Real;
+    	    LastParameter       : Real;
+    	    AngularDeflection   : Real;  	--- Deffault value 0.2;
+    	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
+    	    MinimumOfPoints     : Integer = 2;
+    	    UTol                : Real    = 1.0e-9)
+    returns TangentialDeflection raises ConstructionError;
+     
+
+    Initialize (me : in out;
+                C                   : Curve; 
+                AngularDeflection   : Real;  	--- Deffault value 0.2;
+                CurvatureDeflection : Real;  	--- Deffault value 0.05;
+    	    	MinimumOfPoints     : Integer = 2;
+    	    	UTol                : Real    = 1.0e-9)
+    raises ConstructionError is static;
+		
+
+    Initialize (me : in out;
+                C                   : Curve; 
+	        FirstParameter      : Real;
+	        LastParameter       : Real;
+                AngularDeflection   : Real;  	--- Deffault value 0.2;
+	        CurvatureDeflection : Real;  	--- Deffault value 0.05; 
+    	    	MinimumOfPoints     : Integer = 2;
+    	    	UTol                : Real    = 1.0e-9)
+    raises ConstructionError is static;
+
+
+    Initialize (me : in out;
+                C                   : Curve2d; 
+                AngularDeflection   : Real;  	--- Deffault value 0.2;
+                CurvatureDeflection : Real;  	--- Deffault value 0.05;
+    	    	MinimumOfPoints     : Integer = 2;
+    	    	UTol                : Real    = 1.0e-9)
+    raises ConstructionError is static;
+		
+
+    Initialize (me : in out;
+                C                   : Curve2d; 
+	        FirstParameter      : Real;
+	        LastParameter       : Real;
+                AngularDeflection   : Real;  	--- Deffault value 0.2;
+	        CurvatureDeflection : Real;  	--- Deffault value 0.05; 
+    	    	MinimumOfPoints     : Integer = 2;
+    	    	UTol                : Real    = 1.0e-9)
+    raises ConstructionError is static;
+
+
+    AddPoint(me: in out; thePnt : in Pnt from gp;
+                         theParam : in Real;
+                         theIsReplace : in Boolean = Standard_True)
+    returns Integer from Standard;
+    ---Purpose: Add point to already calculated points (or replace existing)
+    --          Returns index of new added point
+    --           or founded with parametric tolerance (replaced if theIsReplace is true)
+	    
+
+
+
+    NbPoints (me) returns Integer is static;
+        ---C++: inline
+
+
+    Parameter (me; I : Integer) 
+        ---C++: inline
+    returns Real raises OutOfRange  is static;
+
+
+    Value (me; I : Integer)     
+        ---C++: inline
+    returns Pnt raises OutOfRange is static;
+
+
+
+
+
+    PerformLinear   (me : in out; C : Curve)   is static private;
+
+    PerformLinear   (me : in out; C : Curve2d) is static private;
+
+    PerformCircular (me : in out; C : Curve)   is static private;
+
+    PerformCircular (me : in out; C : Curve2d) is static private;
+
+    PerformCurve    (me : in out; C : Curve)   is static private;
+
+    PerformCurve    (me : in out; C : Curve2d) is static private;
+    
+    EvaluateDu      (me; 
+    	             C       : in     Curve; 
+                     U       : in     Real; 
+		     P       : in out Pnt;
+		     Du      : in out Real;
+    	    	     NotDone : in out Boolean) 
+    is static private;		    
+
+    EvaluateDu      (me; 
+    	             C       : in     Curve2d; 
+                     U       : in     Real; 
+		     P       : in out Pnt;
+		     Du      : in out Real;
+                     NotDone : in out Boolean) 
+    is static private;		    
+
+
+
+fields
+ 
+    angularDeflection   : Real; 
+    curvatureDeflection : Real; 
+    uTol                : Real;
+    minNbPnts           : Integer;
+    lastu               : Real;
+    firstu              : Real;
+
+    points              : SequenceOfPnt;
+    parameters          : SequenceOfReal;
+
+end TangentialDeflection;

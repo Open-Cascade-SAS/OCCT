@@ -1,0 +1,4 @@
+
+@ifdefined ( %Draw_WOKSteps_EDL) then
+@set %WOKSteps_XcppGroup = " xcpp.fill xcpp.src xcpp.header obj.cgen obj.inc";
+@endif;

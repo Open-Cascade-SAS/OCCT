@@ -1,0 +1,76 @@
+-- File:	LibCtl.cdl
+-- Created:	Fri Jan 29 10:59:42 1993
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+package LibCtl
+
+    ---Purpose : This package gives tools to describe and control Libraries
+    --           defined as sets of Execution Modules, which can be sorted
+    --           to work on a specific Working Protocol.
+    --           
+    --           This is intended to attach functions on Objects, when these
+    --           functions can be defined by prototypes, but not as methods
+    --           directly bound to the concerned classes of objects (classes
+    --           with a minimum list of methods, or optionnal functionnalities
+    --           for a non-predefined list of classes).
+    --           
+    --           
+    --           In this scheme, to a category (basic class) of Protocol,
+    --           corresponds a general kind of object classes, e.g. Entities
+    --           processed by Interfaces, Transient Objects, or any other
+    --           (a general definition makes easier further extensions).
+    --           
+    --           Each particular Protocol class is a sub-class of the basic
+    --           Protocol class (e.g. Application Protocol of STEP).
+    --           Its own definition comprises :
+    --           - As necessary, a list of other Protocol classes, of which it
+    --             depends (this list can be empty) : the Resources
+    --           - The list of Object Classes it identifies DIRECTLY, i.e. not
+    --             through its Resources.
+    --             For each directly identified Object Class, the Protocol
+    --             gives a positive Case Number.
+    --           This is why a Protocol class must comply with ProtocolTemplate
+    --           from this Package (even if not defined from it)
+    --           
+    --           
+    --           On the other hand, for a given category of Protocols, to each
+    --           functionnality (or set of ...) is attached a Library. It is
+    --           defined with a basic Class of Module, forecast to perform the
+    --           functionnality. It can use the Case Number computed by the
+    --           Protocol, to work faster (optimization).
+    --           
+    --           Hence, one specific Module Class is attached to each specific
+    --           Protocol Class. It works on the group of Object Classes
+    --           identified by the Protocol (e.g. a specific part of STEP).
+    --           
+    --           This basic set of couples (Module,Protocol Class) is filled
+    --           before action : this can be done by static declaration.
+    --           
+    --           A Library can then be created to comply with a general Protocol
+    --           Class by getting the Modules from its basic set, those which
+    --           correspond to this Protocol and its Resources.
+    --           
+    --           
+    --           A Library is defined by instantiating Library with : the basic
+    --           class of Objects to be processed, the basic Protocol Class
+    --           (which must work on the basic class of Objects), the basic
+    --           Module Class, which brings the desired functions (deferred).
+    --           
+    --           Once defined, a Library can be used by any Tool to work on the
+    --           objects concerned by the Protocol. A Tool can be defined to
+    --           Manage an "active Protocol", that is a Protocol which is taken
+    --           by default to build the library (in this case, it must control
+    --           the consistency of data between active Protocol and the
+    --           objects it runs on).
+
+uses MMgt, Standard
+
+is
+
+    generic class Library,GlobalNode,Node;
+    deferred generic class ProtocolTemplate;    -- take it as a Template
+
+end LibCtl;

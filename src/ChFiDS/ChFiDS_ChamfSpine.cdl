@@ -1,0 +1,49 @@
+-- File:	ChFiDS_ChamfSpine.cdl
+-- Created:	Mon Apr 24 16:57:39 1995
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ChamfSpine from ChFiDS inherits Spine from ChFiDS 
+
+	---Purpose:  Provides  data specific to chamfers 
+	--         distances on  each  of faces.
+uses
+  ChamfMethod from ChFiDS           
+ 
+is
+    Create  returns  mutable ChamfSpine from ChFiDS;
+    Create (Tol : Real from Standard) returns  mutable ChamfSpine from ChFiDS;
+    
+    SetDist (me : mutable; Dis : Real from Standard) is static;
+
+    GetDist (me; Dis : in out Real from Standard) is static;    
+    
+    SetDists (me : mutable; Dis1, Dis2 : Real from Standard) is static;
+
+    Dists (me; Dis1, Dis2 : in out Real from Standard) is static;
+
+    GetDistAngle (me; 
+                  Dis, Angle : in out Real from Standard;
+                  DisOnF1    : in out Boolean from Standard) is static;
+    
+    SetDistAngle(me : mutable;
+               	 Dis, Angle : Real from Standard;
+                 DisOnF1    : Boolean from Standard) is static;
+
+              
+    IsChamfer(me) returns ChamfMethod from ChFiDS is static;
+    	---Purpose: Return the method of chamfers used 
+
+
+fields
+    d1     : Real        from Standard;
+    d2     : Real        from Standard;
+    dison1 : Boolean     from Standard;
+    angle  : Real        from Standard;
+    mChamf : ChamfMethod from ChFiDS;
+end ChamfSpine;
+
+
+

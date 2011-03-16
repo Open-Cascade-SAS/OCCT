@@ -1,0 +1,14 @@
+// File:	PLib_HermitJacobi.lxx
+// Created:	Wed Oct 22 13:45:13 1997
+// Author:	Sergey SOKOLOV
+//		<ssv@velox.nnov.matra-dtv.fr>
+
+inline  Standard_Integer PLib_HermitJacobi::WorkDegree() const
+{
+  return myJacobi->WorkDegree();
+}
+
+inline  Standard_Integer PLib_HermitJacobi::NivConstr() const
+{
+  return myJacobi->NivConstr();
+}

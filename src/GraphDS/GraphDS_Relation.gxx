@@ -1,0 +1,197 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphDS_Relation.cxx
+// Created:	Fri Oct 11 18:03:55 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+# include <Standard_NoSuchObject.hxx>
+# include <Standard_DomainError.hxx>
+
+//=======================================================================
+//function : GraphDS_Relation
+//purpose  : 
+//=======================================================================
+
+GraphDS_Relation::GraphDS_Relation 
+  (const GraphDS_Attribute& att) : myAttribute(att)
+{
+}
+
+
+//=======================================================================
+//function : GetAttribute
+//purpose  : 
+//=======================================================================
+
+const GraphDS_Attribute& GraphDS_Relation::GetAttribute ()  const
+{
+  return myAttribute;
+}
+
+
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Relation::Contains 
+  (const Handle(GraphDS_Entity)& E) const 
+{
+  return myEntities.IsBound(E);
+}
+
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Relation::IsEmpty () const
+{
+  return myEntities.IsEmpty();
+}
+
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Relation::Add 
+  (const Handle(GraphDS_Entity)& E, const GraphDS_EntityRole R) 
+{
+  myEntities.Bind(E,R);
+}
+
+//=======================================================================
+//function : SetRole
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Relation::SetRole
+  (const Handle(GraphDS_Entity)& E, const GraphDS_EntityRole R) 
+{
+  myEntities(E) = R;
+}
+
+
+//=======================================================================
+//function : Remove
+//purpose  : 
+//=======================================================================
+
+void GraphDS_Relation::Remove (const Handle(GraphDS_Entity)& E)
+{
+  myEntities.UnBind(E);
+}
+
+
+//=======================================================================
+//function : GetRole
+//purpose  : 
+//=======================================================================
+
+GraphDS_EntityRole GraphDS_Relation::GetRole
+  (const Handle(GraphDS_Entity)& E) const 
+{
+  return myEntities(E);
+}
+
+
+//=======================================================================
+//function : IsInput
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Relation::IsInput
+  (const Handle(GraphDS_Entity)& E) const 
+{
+  return (myEntities(E) != GraphDS_OnlyOutput);
+}
+
+
+//=======================================================================
+//function : IsOutput
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_Relation::IsOutput
+  (const Handle(GraphDS_Entity)& E) const 
+{
+  return (myEntities(E) != GraphDS_OnlyInput);
+}
+
+
+//=======================================================================
+//function : GetEntities
+//purpose  : 
+//=======================================================================
+
+const GraphDS_EntityRoleMap& GraphDS_Relation::GetEntities() const 
+{
+  return myEntities;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

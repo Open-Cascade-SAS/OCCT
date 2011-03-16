@@ -1,0 +1,47 @@
+-- File:	RelationIterator.cdl
+-- Created:	Mon Jan 14 10:02:45 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+class RelationIterator from Expr
+
+	---Purpose: Iterates on every basic relation contained in
+	--          a GeneralRelation.
+        ---Level : Internal
+
+uses GeneralRelation from Expr,
+    SingleRelation from Expr,
+    Array1OfSingleRelation from Expr
+
+raises NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create(rel : GeneralRelation)
+    returns RelationIterator;
+    
+    More(me)
+    ---Purpose: Returns False if no other relation remains.
+    returns Boolean
+    is static;
+    
+    Next(me : in out)
+    raises NoMoreObject
+    is static;
+    
+    Value(me)
+    ---Purpose: Returns current basic relation.
+    --          Exception is raised if no more relation remains.
+    returns  SingleRelation
+    raises NoSuchObject
+    is static;
+
+fields
+
+    myRelation : Array1OfSingleRelation;
+    current : Integer;
+
+end RelationIterator;

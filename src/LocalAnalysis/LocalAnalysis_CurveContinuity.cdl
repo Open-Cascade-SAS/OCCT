@@ -1,0 +1,315 @@
+-- File:	LocalAnalysis_CurveContinuity.cdl
+-- Created:	Fri Aug  9 10:58:30 1996
+-- Author:	Herve LOUESSARD
+--		<hl1@sgi30>
+---Copyright:	 Matra Datavision 1996
+
+class CurveContinuity  from  LocalAnalysis 
+   
+    ---Purpose: 
+    --          This class gives tools to check local continuity C0
+    --          C1 C2 G1 G2 between  two points situated on two curves
+ 
+uses 
+    Shape                        from GeomAbs,
+    Boolean, Integer, Real       from Standard,
+    Curve                        from Geom,
+    CLProps                      from GeomLProp,
+    StatusErrorType              from LocalAnalysis
+   
+raises
+    NotDone                      from StdFail
+
+is  
+
+
+    Create( Curv1: Curve from Geom; u1: Real from Standard;
+            Curv2: Curve from Geom; u2: Real from Standard;
+    	    Order: Shape from GeomAbs; 
+            EpsNul: Real from Standard= 0.001;
+	    EpsC0 : Real from Standard= 0.001;
+	    EpsC1 : Real from Standard= 0.001;
+            EpsC2 : Real from Standard= 0.001;
+            EpsG1 : Real from Standard= 0.001;
+            EpsG2 : Real from Standard= 0.001;
+            Percent :Real from Standard= 0.01;   	    
+            Maxlen: Real from  Standard =10000) 
+       ---Purpose: 
+        --        
+        --           -u1 is the parameter of the point on Curv1 
+        --           -u2 is the  parameter of the point on  Curv2 
+    	--           -Order is the required continuity:
+    	--            GeomAbs_C0    GeomAbs_C1  GeomAbs_C2 
+    	--            GeomAbs_G1 GeomAbs_G2
+    	--            
+    	--           -EpsNul  is  used to  detect a  a vector with nul
+    	--           magnitude (in mm)
+    	--           
+    	--           -EpsC0 is used for C0  continuity to confuse two
+    	--            points (in mm) 
+    	--           
+    	--           -EpsC1 is  an angular  tolerance in radians  used
+    	--            for C1 continuity  to compare the angle between 
+    	--            the first derivatives   
+    	--           
+    	--           -EpsC2 is an   angular tolerance in radians  used
+    	--           for C2  continuity to  compare the angle  between
+    	--           the second derivatives 
+    	--            
+    	--           -EpsG1 is an  angular  tolerance in radians  used
+    	--           for G1  continuity to compare  the angle  between
+    	--           the tangents
+    	--            
+    	--           -EpsG2 is  an angular  tolerance in radians  used
+    	--           for  G2 continuity to  compare  the angle between
+    	--           the normals 
+    	--            
+    	--           - percent  : percentage of  curvature variation (unitless)
+    	--           used for G2 continuity 
+    	--           
+    	--           - Maxlen is the maximum length of Curv1 or Curv2 in
+    	--           meters used to detect nul curvature (in mm) 
+    	-- 
+    	-- 
+    	-- 
+    	--           
+    	--          the constructor computes the quantities  which are 
+    	--          necessary to check the continuity in the following cases: 
+    	--              
+    	--           case  C0 
+    	--           -------- 
+    	--           - the distance between P1 and P2  with P1=Curv1 (u1)  and 
+    	--           P2=Curv2(u2) 
+    	--              
+    	--           case C1   
+    	--           ------- 
+    	--           
+    	--           - the angle  between  the first derivatives 
+    	--             dCurv1(u1)           dCurv2(u2)    
+    	--             --------     and     ---------
+    	--             du                   du      
+    	--
+    	--           - the ratio   between  the magnitudes  of the first
+    	--             derivatives 
+    	--             
+    	--            the angle value is between 0 and PI/2
+    	--           
+    	--           case  C2
+    	--           ------- 
+    	--           - the angle  between the second derivatives 
+    	--             2                   2
+    	--            d  Curv1(u1)       d Curv2(u2)
+    	--            ----------        ----------
+    	--             2                   2
+    	--            du                  du
+    	--            
+    	--            the angle value is between 0 and PI/2
+    	--            
+    	--           - the ratio between the magnitudes of  the second 
+    	--             derivatives 
+    	--       
+    	--           case G1 
+    	--           -------
+    	--           the angle between  the tangents at each point 
+    	--           
+    	--           the angle value is between 0 and PI/2
+        --             
+        --           case G2 
+        --           ------- 
+        --           -the angle between the normals at each point
+        --           
+        --            the angle value is between 0 and PI/2
+        --           
+        --           - the relative variation of curvature:
+        --            |curvat1-curvat2|
+        --            ------------------ 
+        --                              1/2
+        --            (curvat1*curvat2)
+        --    
+        --             where curvat1 is the curvature at the first point
+        --              and curvat2 the curvature at the second point
+        --                
+    returns  CurveContinuity from LocalAnalysis;
+
+
+    IsDone(me) returns Boolean from Standard;
+    -- returns true if there  is no problem in the constructor  
+    -- 
+    
+    StatusError(me) returns  StatusErrorType from LocalAnalysis; 
+    -- returns the error status:
+    -- NullFirstDerivative : one (or both) first derivative is null
+    -- NullSecondDerivative: one (or both) second derivative is null
+    -- TangentNotDefined: one (or both) tangent is undefined
+    -- NormalNotDefined: one (or both) normal is undefined 
+    
+    
+    ContinuityStatus (me) returns Shape from GeomAbs raises NotDone ;
+    -- returns the continuity required in  the constructor  
+
+
+
+
+    -- The following functions return  the quantities  
+    -- which are necessary to check continuity 
+   
+    C0Value(me) returns  Real from Standard raises NotDone ;
+    -- returns  the distance between P1 and P2  with P1=Curv1 (u1)  and 
+    -- P2=Curv2(u2) 
+    
+    C1Angle(me) returns  Real from Standard raises NotDone ;    
+     --   returns the angle  between  the first derivatives : 
+     --             dCurv1(u1)           dCurv2(u2)    
+     --             --------     and     ---------
+     --             du                   du      
+     --
+     -- the angle value is 0 and PI/2
+  
+    C1Ratio(me) returns  Real from Standard raises NotDone ;
+    -- returns   the ratio    between  the magnitudes  of  the  first
+    -- derivatives  dCurv1(u1)           dCurv2(u2)    
+    --             --------     and     ---------
+    --             du                    du  
+    
+    C2Angle(me) returns  Real from Standard raises NotDone ;  
+    --  returns the angle  between the second derivatives 
+    --             2                   2
+    --            d  Curv1(u1)       d Curv2(u2)
+    --            ----------   and   ----------
+    --             2                   2
+    --            du                  du
+    --
+    --  the angle value is between 0 and PI/2      
+    
+    C2Ratio(me) returns  Real from Standard raises NotDone; 
+    -- returns the  ratio     between the magnitudes  of     the second
+    -- derivatives                 2                  2
+    --                           d  Curv1(u1)       d  Curv2(u2)
+    --                           ----------   and   ----------
+    --                            2                   2
+    --                           du                  du
+        
+
+    G1Angle(me) returns  Real from Standard raises NotDone ;
+    -- returns  the angle between  the tangents at each point  
+    -- the angle value is between 0 and PI/2
+    
+    G2Angle(me) returns  Real from Standard raises NotDone ;
+    -- returns the angle between the normals at each point 
+    -- the angle value is between 0 and PI/2
+          
+    G2CurvatureVariation(me) returns Real from Standard raises NotDone;
+    -- returns the  relative variation of curvature 
+    
+
+
+    -- the following  functions check the local continuity  and return 
+    -- true if the required continuity is satisfied :    
+    
+    IsC0(me)   returns Boolean from Standard   
+    raises NotDone; 
+    --  returns true  if the local  continuity is  C0  that is :  
+    --  C0Value(me) < EpsC0 
+       
+    
+    
+    IsC1(me) returns Boolean from Standard     
+    raises NotDone ;     
+    -- returns true if  the local continuity is  C1  that is :  
+    -- C0Value(me) <  EpsC0 
+    -- C1Angle(me) <  EpsC1 
+        
+    
+    IsC2(me) returns Boolean from Standard   
+    raises NotDone;        
+    --  returns true  if  the local  continuity  is   C2 that   is :
+    --  C0Value(me)  < EpsC0 ,  
+    --  C1Angle(me)  < EpsC1   
+    --  C2Angle (me) < EpsC2  and 
+    --  C2Ratio  is the square of C1Ratio up to  a tolerance 
+   
+
+    
+    IsG1(me) returns Boolean from Standard   
+    raises NotDone;    
+    -- returns true is the local continuity is G1  that is 
+    -- C0Value(me) < EpsC0 and 
+    -- G1Angle(me)<  EpsG1 
+    
+    
+    IsG2(me)  returns Boolean from Standard  
+    raises NotDone;
+    -- returns true if the  local  continuity is  G2 that is  
+    -- C0Value(me) < EpsC0,  
+    -- G1Angle(me) < EpsG1   
+    -- G2Angle(me) < EpsG2  
+    -- G2CurvatureVariation < percent 
+    
+    
+     
+    --  The following function are private and used in the constructor 
+    --  
+    CurvC0(me:in out; Curv1, Curv2 : out CLProps  from GeomLProp)is private;
+    CurvC1(me:in out; Curv1, Curv2 : out CLProps from GeomLProp ) is private;  
+    CurvC2(me :in out ; Curv1, Curv2 : out CLProps from GeomLProp)is private; 
+
+    CurvG1(me:in out; Curv1, Curv2 :out CLProps from GeomLProp ) is private ; 
+
+    CurvG2(me:in out; Curv1, Curv2  :out CLProps from GeomLProp)is private ;  
+
+
+    
+ 
+fields
+    myContC0      : Real     from Standard;
+    myContC1      : Real     from Standard;            
+    myContC2      : Real     from Standard;          
+    myContG0      : Real     from Standard;
+    myContG1      : Real     from Standard;    
+    myContG2      : Real     from Standard; 
+    myCourbC1     : Real     from Standard;
+    myCourbC2     : Real     from Standard; 
+    myG2Variation : Real     from Standard;
+    myLambda1     : Real     from Standard;
+    myLambda2     : Real     from Standard;
+    myTypeCont    : Shape    from GeomAbs;
+    myepsnul      : Real     from Standard;
+    myepsC0       : Real     from Standard;
+    myepsC1       : Real     from Standard;
+    myepsC2       : Real     from Standard;
+    myepsG1       : Real     from Standard;
+    myepsG2       : Real     from Standard; 
+    myMaxLon      : Real     from Standard; 
+    myperce       : Real     from Standard; 
+    myIsDone      : Boolean  from Standard;
+    myErrorStatus : StatusErrorType  from LocalAnalysis ;
+end CurveContinuity;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

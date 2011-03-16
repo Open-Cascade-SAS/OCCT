@@ -1,0 +1,32 @@
+-- File:      XmlMDataStd_NameDriver.cdl
+-- Created:   Mon Jul  9 12:29:49 MSK DST 2001
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Matra Datavision 2001
+
+class NameDriver from XmlMDataStd  inherits ADriver from XmlMDF
+
+        ---Purpose: Attribute Driver.
+
+uses
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable NameDriver from XmlMDataStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+end NameDriver;

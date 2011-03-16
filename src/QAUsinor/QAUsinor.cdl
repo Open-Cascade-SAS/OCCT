@@ -1,0 +1,11 @@
+-- File:	QAUsinor.cdl
+-- Created:	Tue Mar 19 15:20:24 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QAUsinor
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

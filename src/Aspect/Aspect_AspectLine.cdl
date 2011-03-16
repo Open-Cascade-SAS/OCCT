@@ -1,0 +1,118 @@
+--
+-- File:	Aspect_AspectLine.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994
+--
+
+deferred class AspectLine from Aspect
+	
+inherits
+
+	TShared
+
+	---Purpose: This class allows the definition of a group
+	--	    of attributes for the LINE primitive
+	--	    The attributes are:
+	--		* Colour
+	--		* Type
+	--		* Thickness
+	--	    When any value of the group is modified
+	--	    all graphic objects using the group are modified.
+
+uses
+
+	Color		from Quantity,
+
+	TypeOfLine	from Aspect 
+
+raises
+
+	AspectLineDefinitionError	from Aspect
+
+is
+
+	Initialize;
+	---Level: Public
+	---Purpose: Initialise the constructor for Graphic3d_AspectLine3d.
+	--
+	-- Default values :
+	--		Color = Quantity_NOC_YELLOW;
+	--		Type  = Aspect_TOL_SOLID;
+	--		Width = 1.0;
+	--
+
+	Initialize ( AColor	: Color from Quantity;
+		     AType	: TypeOfLine from Aspect;
+		     AWidth	: Real from Standard )
+	---Level: Public
+	---Purpose: Initialise the values for the
+	--	    constructor of Graphic3d_AspectLine3d.
+	--
+	raises AspectLineDefinitionError from Aspect;
+	-- if the width is a negative value.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetColor ( me		: mutable;
+		   AColor	: Color from Quantity );
+	---Level: Public
+	---Purpose: Modifies the colour of <me>.
+	---Category: Methods to modify the class definition
+
+	SetType ( me	: mutable;
+		  AType	: TypeOfLine from Aspect );
+	---Level: Public
+	---Purpose: Modifies the type of <me>.
+	---Category: Methods to modify the class definition
+
+	SetWidth ( me		: mutable;
+		   AWidth	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the thickness of <me>.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises AspectLineDefinitionError if the
+	--	    width is a negative value.
+	raises AspectLineDefinitionError from Aspect;
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Values ( me;
+		 AColor	: out Color from Quantity;
+		 AType	: out TypeOfLine from Aspect;
+		 AWidth	: out Real from Standard );
+	---Level: Public
+	---Purpose: Returns the current values of the group <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_AspectLine
+--
+-- Purpose	:	Declaration of variables specific to
+--			drawing lines
+--
+-- Reminder	:	A line drawing context is defined by:
+--			- the colour
+--			- the type
+--			- the thickness
+--
+
+	-- the colour
+	MyColor	:	Color from Quantity;
+
+	-- the type
+	MyType	:	TypeOfLine from Aspect;
+
+	-- the thickness
+	MyWidth	:	Real from Standard;
+
+end AspectLine;

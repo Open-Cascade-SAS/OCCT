@@ -1,0 +1,38 @@
+-- File:      IntPatch_PrmPrmIntersection_T3Bits.cdl
+-- Created:   Thu Jan 28 14:46:57 1993
+-- Author:    Laurent BUCHARD
+---Copyright: Matra Datavision 1993
+
+class  PrmPrmIntersection_T3Bits from IntPatch
+
+uses Integer from Standard
+
+is 
+     
+    Create (size : Integer from Standard);
+
+    Destroy(me : in out);
+    ---C++: alias ~
+	 
+    Add (me : in out; t : Integer from Standard);
+    ---C++: inline
+
+    Val (me ; t : Integer from Standard) returns Integer from Standard;
+    ---C++: inline
+   	
+    Raz (me : in out; t : Integer from Standard);
+    ---C++: inline
+
+    ResetAnd (me : in  out);
+
+    And (me : in out;
+         Oth             : in out PrmPrmIntersection_T3Bits from IntPatch;
+		 indiceprecedent : in out Integer from Standard)
+    returns Integer from Standard;
+
+fields
+    -- ind   : Integer from Standard;
+    p     : Address from Standard;
+    Isize : Integer from Standard;
+
+end PrmPrmIntersection_T3Bits;

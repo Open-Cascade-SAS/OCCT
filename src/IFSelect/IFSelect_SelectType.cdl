@@ -1,0 +1,38 @@
+-- File:	SelectType.cdl
+-- Created:	Wed Nov 18 10:47:02 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectType  from IFSelect   inherits SelectAnyType
+
+    ---Purpose : A SelectType keeps or rejects Entities of which the Type
+    --           is Kind of a given Cdl Type
+
+uses Type, AsciiString from TCollection, Transient
+
+is
+
+    Create returns mutable SelectType;
+    ---Purpose : Creates a SelectType. Default is no filter
+
+    Create (atype : Type) returns mutable SelectType;
+    ---Purpose : Creates a SelectType for a given Type
+
+    SetType (me : mutable; atype : Type);
+    ---Purpose : Sets a TYpe for filter
+
+    TypeForMatch (me) returns Type;
+    ---Purpose : Returns the Type to be matched for select : this is the type
+    --           given at instantiation time
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium.
+    --           (should by gotten from Type of Entity used for instantiation)
+
+fields
+
+    thetype : Type;
+
+end SelectType;

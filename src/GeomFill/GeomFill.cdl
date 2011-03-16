@@ -1,0 +1,321 @@
+-- File:	GeomFill.cdl
+-- Created:	Tue Sep 28 11:34:33 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+    	---Purpose: Tools and Data to filling Surface and Sweep Surfaces          
+
+package GeomFill
+
+uses
+    TColgp,
+    TColGeom, 
+    TColGeom2d,
+    TColStd,
+    TCollection,
+    gp,
+    Geom,  
+    Geom2d,
+    GeomAbs, 
+    Convert,
+    Adaptor3d, 
+    GeomAdaptor,
+    Law, 
+    Extrema,
+    AppBlend, 
+    Approx, 
+    math,
+    MMgt,
+    StdFail
+    
+is
+
+    enumeration FillingStyle 
+    is StretchStyle, CoonsStyle, CurvedStyle end; 
+    	---Purpose: Defines the three filling styles used in this package
+    	-- -   GeomFill_Stretch - the style with the flattest patches
+    	-- -   GeomFill_Coons - a rounded style of patch with
+    	--   less depth than those of Curved
+    	-- -   GeomFill_Curved - the style with the most rounded patches.     
+    enumeration ApproxStyle 
+    is Section, Location end;  
+     
+    enumeration  PipeError 
+    is  PipeOk,   
+        PipeNotOk,   
+    	PlaneNotIntersectGuide,  
+    	ImpossibleContact 
+    end;
+    
+     
+    enumeration Trihedron 
+    is IsCorrectedFrenet, IsFixed, IsFrenet, IsConstantNormal, IsDarboux, 
+     IsGuideAC,  IsGuidePlan, 
+      IsGuideACWithContact,  IsGuidePlanWithContact end;
+    
+    class Filling;
+	---Purpose: Root class for Filling;
+
+      class Stretch;
+      
+      class Coons;
+      
+      class Curved;
+      
+      
+    class BezierCurves;
+    	---Purpose: class for Filling BezierCurves.
+    	--          WARNING:
+    	--            Some problems may appear with the rational Curves.
+      
+    class BSplineCurves;
+    	---Purpose: class for Filling BSplineCurves.
+    	--          WARNING:
+    	--            Some problems may appear with the rational Curves.
+      
+    class Profiler;
+	---Purpose: class for evaluation of the Common BSpline Profile
+	--          from a sequence a BSplineCurves.
+	
+    class SectionGenerator;
+	---Purpose: class for instantiation of AppBlend .
+	--          inherits Profiler.
+
+    class Line;
+        ---Purpose: class for instantiation of AppBlend
+    
+    class AppSurf instantiates AppSurf from AppBlend
+    	( SectionGenerator from GeomFill,
+	  Line             from GeomFill);
+	---Purpose: Approximate a  BSplineSurface passing by all the
+	--          curves described in the SectionGenerator
+
+
+    class SweepSectionGenerator;
+	---Purpose: class for instantiation of AppBlend.
+	--          evaluate the sections of a sweep surface.
+
+    class AppSweep instantiates AppSurf from AppBlend
+    	( SweepSectionGenerator from GeomFill,
+	  Line                  from GeomFill);
+	---Purpose: Approximate a sweep surface passing  by  all the
+	--          curves described in the SweepSectionGenerator.
+ 
+
+    class Generator;
+        ---Purpose: Create a surface using generating lines.  Inherits
+        --          profiler.  The  surface will be  a  BSplineSurface
+        --          passing  by   all  the  curves  described  in  the
+        --          generator. The VDegree of the resulting surface is
+        --          1.
+
+    class Pipe;
+	---Purpose: Create a pipe surface.         
+
+
+    --- Family of classes providing algorithms to  fill a contour with
+    --  constraints of tangency.
+
+ 
+--    class  Draft;
+    	---Purpose: Depouille
+    	        
+    class  Tensor;
+    	
+
+    class ConstrainedFilling;
+    ---Purpose: class for filling  a contour of 2, 3  or 4 curves with
+    --          tangency  constaints. The  only FillingStyle  used  is
+    --          Coons.
+    --
+
+    deferred class Boundary;      -- inherits TShared
+    ---Purpose: Root  class  defining the methods   we  need to make a
+    --          constrained boundary.   Any  new type  of  constrained
+    --          boundary must inherit this class.
+    --
+      
+    class DegeneratedBound;       -- inherits Boundary
+    ---Purpose: class    defining  a   degenerated  boundary   for   a
+    --          constrained filling   with  a   point  and  no   other
+    --          constraint. Only used to  simulate an  ordinary bound,
+    --          may not be usefull and desapear soon. 
+    --
+      
+    class SimpleBound;            -- inherits Boundary
+    ---Purpose: class  defining a boundary  for  a constrained filling
+    --          with a  3d curve  and  no other  constraint.  Contains
+    --          fields to allow a reparametrization of curve.
+    --
+      
+    class BoundWithSurf;          -- inherits Boundary
+    ---Purpose: class defining   a boundary for  a constrained filling
+    --          with a  curve and  a normals  field along  a  surface.
+    --          Contains fields  to allow a reparametrization of curve
+    --          and normals field.
+    --
+
+    class CoonsAlgPatch;          -- inherits TShared
+    ---Purpose: class defining an algorithmic patch based on 4 Curves.
+
+    deferred class TgtField;      -- inherits TShared
+    ---Purpose: Root class defining the methods we need to definine an
+    --          algorithmic tgte field.
+
+    class TgtOnCoons;             -- inherits TgteField
+    ---Purpose: Class defining  an   algorithmic  tgte field  along  a
+    --          boundary of a CoonsAlgPatch.
+
+    class CornerState;
+    ---Purpose: Class (should be a structure) storing the informations
+    --          about    continuity,     normals parallelism,    coons
+    --          conditions and bounds  tangents angle on the corner of
+    --          contour  to be filled.
+
+    --
+    --	instantiation of Sequence of Trsf
+    --		
+
+    class SequenceOfTrsf
+    	instantiates Sequence  from TCollection (Trsf from gp); 
+
+    --
+    -- private classes
+    -- 
+    
+    private class CircularBlendFunc;  
+    private class SweepFunction; 
+    private class LocFunction;
+    private class PolynomialConvertor;  
+    private class QuasiAngularConvertor; 
+    private class SnglrFunc; 
+    private class FunctionDraft;  
+    private class PlanFunc;
+    private class FunctionGuide; 
+
+    --- 
+    ---  Sweep Data
+    ---
+    deferred  class  SectionLaw; 
+    	class UniformSection; 
+	class EvolvedSection; 
+	class NSections; 
+
+    deferred  class  LocationLaw; 
+     	class  CurveAndTrihedron; 
+	class  LocationDraft; 
+	class  LocationGuide; 
+	
+    deferred  class  TrihedronLaw; 
+    	class Fixed;
+        class Frenet; 
+        class CorrectedFrenet;
+	class ConstantBiNormal; 
+	class Darboux; 
+	class DraftTrihedron; 
+	
+
+    deferred  class  TrihedronWithGuide;  
+	class GuideTrihedronAC;  
+	class GuideTrihedronPlan;
+      
+
+      
+    class  Sweep; 
+    class  SectionPlacement;
+
+    class  Array1OfSectionLaw  
+    	instantiates Array1  from TCollection (SectionLaw from GeomFill);  
+	 
+    class  HArray1OfSectionLaw  
+    	instantiates HArray1 from TCollection (SectionLaw from GeomFill, 
+                                     Array1OfSectionLaw  from  GeomFill);  
+				     
+    class  Array1OfLocationLaw  
+    	instantiates Array1  from TCollection (LocationLaw from GeomFill);  
+	 
+    class  HArray1OfLocationLaw  
+    	instantiates HArray1 from TCollection (LocationLaw from GeomFill, 
+                                     	       Array1OfLocationLaw  from  GeomFill);     
+
+    --	package methods
+    --		
+
+    Surface( Curve1 : Curve from Geom;
+    	     Curve2 : Curve from Geom) 
+    returns Surface from Geom;
+	---Purpose:
+-- Builds a ruled surface between the two curves, Curve1 and Curve2.
+    GetCircle(TConv      : ParameterisationType from Convert;
+              ns1, ns2   : Vec from gp;
+	      nplan      : Vec from gp;
+	      pt1, pt2   : Pnt from gp;
+	      Rayon      : Real from Standard;
+	      Center     : Pnt from gp;
+              Poles      : out Array1OfPnt   from TColgp;
+	      Weigths    : out Array1OfReal  from TColStd); 
+
+    GetCircle(TConv         : ParameterisationType from Convert;
+    	      ns1, ns2      : Vec from gp;
+              dn1w, dn2w    : Vec from gp;
+	      nplan, dnplan : Vec from gp;
+	      pts1, pts2    : Pnt from gp;
+	      tang1, tang2  : Vec from gp;
+	      Rayon, DRayon : Real from Standard;
+	      Center        : Pnt from gp;
+	      DCenter       : Vec from gp;
+              Poles         : out Array1OfPnt   from TColgp;
+	      DPoles        : out Array1OfVec   from TColgp;
+	      Weigths       : out Array1OfReal  from TColStd;
+	      DWeigths      : out Array1OfReal  from TColStd)
+	      ---Level: Internal
+	      returns Boolean;
+	
+    GetCircle(TConv         : ParameterisationType from Convert;
+    	      ns1, ns2      : Vec from gp;
+              dn1w, dn2w             : Vec from gp;
+	      d2n1w, d2n2w           : Vec from gp;
+	      nplan, dnplan, d2nplan : Vec from gp;
+	      pts1  , pts2           : Pnt from gp;
+	      tang1 , tang2          : Vec from gp;
+	      Dtang1, Dtang2         : Vec from gp;
+	      Rayon, DRayon, D2Rayon : Real from Standard;
+	      Center                 : Pnt from gp;
+	      DCenter, D2Center      : Vec from gp;
+              Poles         : out Array1OfPnt   from TColgp;
+	      DPoles        : out Array1OfVec   from TColgp;
+	      D2Poles       : out Array1OfVec   from TColgp;
+	      Weigths       : out Array1OfReal  from TColStd;
+	      DWeigths      : out Array1OfReal  from TColStd;
+              D2Weigths     : out Array1OfReal  from TColStd)
+	      ---Level: Internal
+	      returns Boolean;
+	        
+    GetShape(MaxAng:    Real         from  Standard;
+	     NbPoles,NbKnots,Degree : out Integer from Standard;
+             TypeConv : in  out ParameterisationType from Convert);
+
+    Knots(TypeConv : ParameterisationType from Convert; 
+    	  TKnots: out Array1OfReal from TColStd);
+
+
+    Mults(TypeConv : ParameterisationType from Convert; 
+    	  TMults: out Array1OfInteger from TColStd);
+	  
+    GetMinimalWeights(TConv      : ParameterisationType from Convert;
+    	              AngleMin   : Real;
+		      AngleMax   : Real;
+		      Weigths    : out Array1OfReal  from TColStd);	      
+	  
+    GetTolerance(TConv      : ParameterisationType from Convert;
+		 AngleMin   : Real;
+		 Radius     : Real;
+		 AngularTol : Real;
+		 SpatialTol : Real)
+	      ---Purpose: Used  by  the  generical classes to determine
+	      --          Tolerance for approximation
+	      ---Level: Internal	
+	      returns Real;
+
+end GeomFill;

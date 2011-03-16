@@ -1,0 +1,178 @@
+-- File:	TDocStd_XLink.cdl
+--      	--------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep 15 1997	Creation
+
+class XLink from TDocStd inherits Attribute from TDF
+
+	---Purpose: An attribute to store the path and the entry of
+    	-- external links.
+    	--  These refer from one data structure to a data
+    	--  structure in another document.
+
+uses
+
+    GUID            from Standard,
+    AsciiString     from TCollection,
+    Label           from TDF,
+    RelocationTable from TDF,
+    AttributeDelta  from TDF,
+    Reference       from TDF,
+    XLinkPtr         from TDocStd
+
+-- raises
+
+is
+
+    -- Class methods ---------------------------------------------------------
+
+    Set (myclass; atLabel : Label from TDF)
+    returns mutable XLink from TDocStd;
+	---Purpose: Sets an empty external reference, at the label aLabel.
+
+    -- -----------------------------------------------------------------------
+
+    Create
+    returns mutable XLink from TDocStd;
+    ---Purpose: Initializes fields.
+    
+    Update (me : mutable)
+    returns Reference from TDF;
+    
+    ---Purpose:  Updates the data referenced in this external link attribute.
+        
+    ID(me) returns GUID from Standard
+    	is redefined static;
+	---Purpose: Returns the ID of the attribute.
+	--
+	---C++: return const &             	
+  
+    GetID(myclass) returns GUID from Standard;
+	---Purpose: Returns the GUID for external links.
+	--          
+    	---C++: return const &
+
+    DocumentEntry(me : mutable; aDocEntry : AsciiString from TCollection);
+	---Purpose: Sets the name aDocEntry for the external
+    	-- document in this external link attribute.
+    
+    DocumentEntry(me)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns the contents of the document identified by aDocEntry.
+    	-- aDocEntry provides external data to this external link attribute.  
+	---C++ : return const &
+
+    LabelEntry(me : mutable; aLabel : Label from TDF);
+	---Purpose: Sets the label entry for this external link attribute with the label aLabel. 
+    	-- aLabel pilots the importation of data from the document entry.
+
+    LabelEntry(me : mutable; aLabEntry : AsciiString from TCollection);
+	---Purpose:  Sets the label entry for this external link attribute
+    	-- as a document identified by aLabEntry.
+
+    LabelEntry(me)
+    	returns AsciiString from TCollection;
+	---Purpose: Returns the contents of the field <myLabelEntry>.
+	--          
+	---C++ : return const &
+
+
+    Next (me : mutable; anXLinkPtr : XLinkPtr from TDocStd)
+    	is private;
+	---Purpose: Sets the field <myNext> with <anXLinkPtr>.
+	--          
+	---C++: inline
+
+    Next (me)
+    	returns XLinkPtr from TDocStd
+    	is private;
+	---Purpose: Returns the contents of the field <myNext>.
+	--          
+	---C++: inline
+
+
+    -- Call back methods.
+    -- ------------------
+
+    AfterAddition(me: mutable)
+    	is redefined static;
+	---Purpose: Updates the XLinkRoot attribute by adding <me>
+	--          to its list.
+
+    BeforeRemoval(me: mutable)
+    	is redefined static;
+	---Purpose: Updates the XLinkRoot attribute by removing <me>
+	--          from its list.
+
+    BeforeUndo(me: mutable;
+    	       anAttDelta : AttributeDelta from TDF;
+    	       forceIt : Boolean from Standard = Standard_False)
+    	returns Boolean from Standard
+    	is redefined;
+	---Purpose: Something to do before applying <anAttDelta>.
+
+    AfterUndo(me: mutable;
+    	      anAttDelta : AttributeDelta from TDF;
+    	      forceIt : Boolean from Standard = Standard_False)
+    	returns Boolean from Standard
+    	is redefined;
+	---Purpose: Something to do after applying <anAttDelta>.
+
+
+    -- Modification & Transaction use methods.
+    -- --------------------------------------
+
+    BackupCopy(me) returns mutable Attribute from TDF
+    	is redefined static;
+	---Purpose: Returns a null handle. Raise allways for ,it is
+	--          nonsense to use this method.
+
+    Restore(me: mutable;
+    	    anAttribute : Attribute from TDF)
+    	is redefined static;
+	---Purpose: Does nothing.
+
+
+    -- Copy use methods
+    -- ----------------
+
+    NewEmpty(me)
+    	returns mutable Attribute from TDF
+    	is redefined static;
+	---Purpose: Returns a null handle.
+
+    Paste(me;
+    	  intoAttribute    : mutable Attribute from TDF;
+	  aRelocationTable : mutable RelocationTable from TDF)
+    	is redefined static;
+	---Purpose: Does nothing.
+
+    -- Miscelleaneous
+    -- --------------
+
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined static;
+	---Purpose: Dumps the attribute on <aStream>.
+    	---C++ : return &
+
+
+
+fields
+
+    myDocEntry   : AsciiString from TCollection;
+    myLabelEntry : AsciiString from TCollection;
+    myNext       : XLinkPtr from TDocStd;
+
+friends
+
+    class XLinkRoot     from TDocStd,
+    class XLinkIterator from TDocStd
+
+end XLink from TDocStd;

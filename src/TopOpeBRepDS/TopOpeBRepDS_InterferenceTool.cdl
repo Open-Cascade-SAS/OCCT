@@ -1,0 +1,70 @@
+-- File:	TopOpeBRepDS_InterferenceTool.cdl
+-- Created:	Thu Jun 24 17:39:44 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class InterferenceTool from TopOpeBRepDS
+     
+uses
+
+    Curve        from Geom2d,
+    Orientation  from TopAbs,
+    Transition   from TopOpeBRepDS,
+    Interference from TopOpeBRepDS,
+    Config       from TopOpeBRepDS,
+    Kind         from TopOpeBRepDS
+    
+is
+
+    MakeEdgeInterference(myclass;
+			 T : Transition from TopOpeBRepDS;
+	      	    	 SK : Kind; SI : Integer;
+   	    	    	 GK : Kind; GI : Integer;
+	      	    	 P : Real from Standard) 
+    returns any Interference from TopOpeBRepDS;
+
+    MakeCurveInterference(myclass;
+    	     		  T : Transition from TopOpeBRepDS;
+	      	    	  SK : Kind; SI : Integer;
+    	    	    	  GK : Kind; GI : Integer;
+	      	    	  P : Real from Standard) 
+    returns any Interference from TopOpeBRepDS;
+
+    DuplicateCurvePointInterference(myclass; I : Interference from TopOpeBRepDS)
+    ---Purpose :  duplicate I in a new interference with Complement() transition.
+    returns any Interference from TopOpeBRepDS;
+
+    MakeFaceCurveInterference(myclass;
+		    	      Transition : Transition from TopOpeBRepDS;
+	      	    	      FaceI, CurveI : Integer from Standard;
+	      	    	      PC : Curve from Geom2d) 
+    returns any Interference from TopOpeBRepDS;
+
+    MakeSolidSurfaceInterference(myclass;
+    	      	    	    	 Transition : Transition from TopOpeBRepDS;
+	      	    	    	 SolidI, SurfaceI : Integer from Standard)
+    returns any Interference from TopOpeBRepDS;
+
+    MakeEdgeVertexInterference(myclass;
+    	      	    	       Transition : Transition from TopOpeBRepDS;
+	      	    	       EdgeI, VertexI : Integer from Standard;
+    	      	    	       VertexIsBound : Boolean from Standard;
+    	      	    	       Config : Config from TopOpeBRepDS;
+    	      	    	       param : Real from Standard)
+    returns any Interference from TopOpeBRepDS;
+
+    MakeFaceEdgeInterference(myclass;
+    	      	    	       Transition : Transition from TopOpeBRepDS;
+	      	    	       FaceI, EdgeI : Integer from Standard;
+    	      	    	       EdgeIsBound : Boolean from Standard;
+    	      	    	       Config : Config from TopOpeBRepDS)
+    returns any Interference from TopOpeBRepDS;
+
+    Parameter(myclass; CPI : Interference from TopOpeBRepDS)
+    returns Real from Standard;
+
+    Parameter(myclass; CPI : mutable Interference from TopOpeBRepDS; 
+                       Par : Real from Standard);
+    
+end InterferenceTool from TopOpeBRepDS;

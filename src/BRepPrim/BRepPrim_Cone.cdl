@@ -1,0 +1,93 @@
+-- File:	Cone.cdl
+-- Created:	Thu Nov  5 18:41:49 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Cone from BRepPrim inherits Revolution from BRepPrim
+
+	---Purpose: Implement the cone primitive.
+
+uses
+    Face from TopoDS,
+
+    Pnt from gp,
+    Ax2 from gp    
+
+raises
+    DomainError
+
+is
+
+    Create(Angle : Real; Position : Ax2 from gp; Height : Real;
+    	       Radius : Real = 0)
+    returns Cone from BRepPrim
+	   ---Purpose: the STEP definition
+	   --          Angle = semi-angle of the cone
+	   --          Position : the coordinate system
+	   --          Height : height of the cone.
+	   --          Radius : radius of truncated face at z = 0
+	   --          
+	   --          The apex is on z < 0
+	   --          
+	   --          Errors : Height < Resolution
+	   --                    Angle < Resolution / Height
+	   --                    Angle > PI/2 - Resolution / Height
+    raises DomainError;
+
+    Create(Angle : Real)
+    returns Cone from BRepPrim
+	---Purpose: infinite cone at origin on Z negative
+    raises DomainError;
+    
+    Create(Angle : Real; Apex : Pnt from gp)
+    returns Cone from BRepPrim
+	---Purpose: infinite cone at Apex on Z negative
+    raises DomainError;
+    
+    Create(Angle : Real; Axes : Ax2 from gp)
+    returns Cone from BRepPrim
+	---Purpose: infinite cone with Axes
+    raises DomainError;
+    
+    Create(R1,R2,H : Real)
+    returns Cone from BRepPrim
+	---Purpose: create a  Cone at origin  on Z axis, of height  H,
+	--          radius R1 at Z = 0, R2 at  Z = H, X is  the origin
+	--          of angles.  If R1 or  R2 is 0   there is  an apex.
+	--          Otherwise, it is a truncated cone.
+	--          
+	--          Error  : R1 and R2  < Resolution
+	--                   R1 or R2 negative
+	--                   Abs(R1-R2) < Resolution
+	--                   H < Resolution
+	--                   H negative
+    raises DomainError;
+    
+    Create(Center : Pnt from gp; R1,R2,H : Real)
+    returns Cone from BRepPrim
+	---Purpose: same as above but at a given point
+    raises DomainError;
+    
+    Create(Axes : Ax2 from gp; R1,R2,H : Real)
+    returns Cone from BRepPrim
+	---Purpose: same as above with given axes system.
+    raises DomainError;
+    
+    MakeEmptyLateralFace(me) returns Face from TopoDS
+	---Purpose: The surface normal should be directed  towards the
+	--          outside.
+    is redefined;
+    
+    SetMeridian(me : in out)
+    is static private;
+    
+    SetParameters(me : in out; R1, R2, H : Real)
+    is static private;
+    
+fields
+    myHalfAngle : Real;
+    myRadius    : Real;
+
+end Cone;

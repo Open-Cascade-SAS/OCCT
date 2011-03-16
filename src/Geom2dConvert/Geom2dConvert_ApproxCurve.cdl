@@ -1,0 +1,63 @@
+-- File:	GeomConvert_ApproxCurve.cdl
+-- Created:	Thu Sep 11 15:08:38 1997
+-- Author:	Roman BORISOV
+--		<rbv@toctox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ApproxCurve from Geom2dConvert 
+    	---Purpose: A framework to convert a 2D curve to a BSpline.
+    	--  This is done by approximation within a given tolerance.
+	
+uses 
+    Curve          from  Geom2d, 
+    BSplineCurve   from  Geom2d, 
+    Shape          from  GeomAbs,
+    OutOfRange     from  Standard          
+    
+raises  OutOfRange   from Standard
+
+is
+ 
+    Create  (Curve:  Curve  from  Geom2d; 
+    	    Tol2d:  Real; 
+    	    Order:  Shape  from  GeomAbs; 
+    	    MaxSegments:  Integer; 
+    	    MaxDegree:  Integer)  returns  ApproxCurve  from  Geom2dConvert; 
+        ---Purpose: Constructs an approximation framework defined by
+    	-- -   the 2D conic Curve
+    	-- -   the tolerance value Tol2d
+    	-- -   the degree of continuity Order
+    	-- -   the maximum number of segments allowed MaxSegments
+    	-- -   the highest degree MaxDegree which the
+    	--   polynomial defining the BSpline is allowed to have.
+     
+    Curve(me)  returns  BSplineCurve  from  Geom2d; 
+    	---Purpose: Returns the 2D BSpline curve resulting from the
+    	--  approximation algorithm.
+        
+    IsDone(me)  returns  Boolean  from  Standard; 
+    	---Purpose:  returns  Standard_True  if  the  approximation  has   
+    	-- been  done  with  within  requiered tolerance  
+     
+    HasResult(me) returns Boolean; 
+    	---Purpose: returns  Standard_True if the approximation did come out 
+    	-- with a result that  is not NECESSARELY within the required tolerance 
+    
+    MaxError(me)  returns  Real  from  Standard; 
+    	---Purpose: Returns the greatest distance between a point on the
+    	-- source conic and the BSpline curve resulting from the
+    	-- approximation. (>0 when an approximation 
+    	--  has  been  done, 0  if  no  approximation) 
+     
+    Dump(me;  o:  in  out  OStream); 
+    	---Purpose:  Print on the stream  o  information about the object
+
+fields
+    myCurve     : Curve           from  Geom2d;
+    myIsDone    : Boolean         from  Standard; 
+    myHasResult : Boolean         from  Standard; 
+    myBSplCurve : BSplineCurve    from  Geom2d; 
+    myMaxError  : Real            from  Standard; 
+    
+end ApproxCurve;

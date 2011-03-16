@@ -1,0 +1,42 @@
+-- File:	Geom2dLProp.cdl
+-- Created:	Thu Mar 26 10:42:56 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+package Geom2dLProp
+
+    ---Purpose: Handles local properties of curves and surfaces from the 
+    --          packages Geom and Geom2d.
+    -- SeeAlso: Package LProp.
+
+
+    ---Level : Public. 
+    --  All methods of all  classes will be public.
+
+uses Standard, gp, Geom2d, LProp
+
+is
+    
+    class Curve2dTool;
+    
+    class CLProps2d from Geom2dLProp 
+            instantiates CLProps from LProp(Curve         from Geom2d,
+	                                    Vec2d         from gp,
+					    Pnt2d         from gp,
+					    Dir2d         from gp,
+					    Curve2dTool   from Geom2dLProp); 
+    class CurAndInf2d; 
+    
+    private class NumericCurInf2d instantiates NumericCurInf from LProp( 
+    	    	    	    	    	       Curve         from Geom2d,
+	                                       Vec2d         from gp,
+					       Pnt2d         from gp,
+					       Dir2d         from gp,
+					       Curve2dTool   from Geom2dLProp); 
+					    
+end Geom2dLProp;    
+
+
+
+

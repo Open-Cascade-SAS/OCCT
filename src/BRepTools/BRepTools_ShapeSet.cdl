@@ -1,0 +1,151 @@
+-- File:        BRepTools_ShapeSet.cdl
+-- Created:     Mon Jul 19 15:28:48 1993
+-- Author:      Remi LEQUETTE
+--              <rle@nonox>
+---Copyright:    Matra Datavision 1993
+
+
+class ShapeSet from BRepTools inherits ShapeSet from TopTools
+
+        ---Purpose: Contains a Shape and all  its subshapes, locations
+        --          and geometries.
+        --          
+        --          The topology is inherited from TopTools.
+
+uses
+    Shape                 from TopoDS,
+    Builder               from BRep,
+    ShapeEnum             from TopAbs,
+    SurfaceSet            from GeomTools,
+    CurveSet              from GeomTools,
+    Curve2dSet            from GeomTools,
+    IndexedMapOfTransient from TColStd
+
+is
+
+    Create(isWithTriangles: Boolean from Standard = Standard_True)
+    returns  ShapeSet from BRepTools;
+        ---Purpose: Builds an empty ShapeSet.
+        --          Parameter <isWithTriangles> is added for XML Persistence
+
+    Create(B : Builder from BRep;
+           isWithTriangles: Boolean from Standard = Standard_True)
+    returns  ShapeSet from BRepTools;
+        ---Purpose: Builds an empty ShapeSet.
+        --          Parameter <isWithTriangles> is added for XML Persistence
+
+    Clear(me : in out)
+        ---Purpose: Clears the content of the set.
+    is redefined;
+        
+    AddGeometry(me : in out; S : Shape from TopoDS)
+        ---Purpose: Stores the goemetry of <S>.
+    is redefined;
+                
+    DumpGeometry(me; OS : in out OStream)
+        ---Purpose: Dumps the geometry of me on the stream <OS>.
+    is redefined;
+        
+    WriteGeometry(me : in out; OS : in out OStream)
+        ---Purpose: Writes the geometry of  me  on the stream <OS> in a
+        --          format that can be read back by Read.
+    is redefined;
+        
+    ReadGeometry(me : in out; IS : in out IStream)
+        ---Purpose: Reads the geometry of me from the  stream  <IS>.
+    is redefined;
+    
+    DumpGeometry(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Dumps the geometry of <S> on the stream <OS>.
+    is redefined;
+        
+    WriteGeometry(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Writes the geometry of <S>  on the stream <OS> in a
+        --          format that can be read back by Read.
+    is redefined;
+        
+    ReadGeometry(me : in out; T  : ShapeEnum from TopAbs;
+                              IS : in out IStream;
+                              S  : out Shape from TopoDS)
+        ---Purpose: Reads the geometry of a shape of type <T> from the
+        --          stream <IS> and returns it in <S>.
+    is redefined;
+    
+
+    AddShapes(me : in out; S1 : in out Shape from TopoDS;
+                           S2 : Shape from TopoDS)
+        ---Purpose: Inserts  the shape <S2> in  the  shape <S1>.  This
+        --          method must be   redefined  to  use   the  correct
+        --          builder.
+    is redefined;
+
+    Check(me : in out; T : ShapeEnum from TopAbs;
+                       S : in out Shape from TopoDS)
+    is redefined;
+
+        
+    ReadPolygon3D(me: in out; IS: in out IStream)
+        ---Purpose: Reads the 3d polygons  of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WritePolygon3D(me; OS: in out OStream;
+                                Compact: Boolean=Standard_True)
+        ---Purpose: Writes the 3d polygons
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+    DumpPolygon3D(me; OS: in out OStream)
+        ---Purpose: Dumps the 3d polygons
+        --          on the stream <OS>.
+    is static;
+
+    ReadTriangulation(me: in out; IS: in out IStream)
+        ---Purpose: Reads the triangulation of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WriteTriangulation(me; OS: in out OStream;
+                           Compact: Boolean=Standard_True)
+        ---Purpose: Writes the triangulation
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+    DumpTriangulation(me; OS: in out OStream)
+        ---Purpose: Dumps the triangulation
+        --          on the stream <OS>.
+    is static;
+
+    ReadPolygonOnTriangulation(me: in out; IS: in out IStream)
+        ---Purpose: Reads the polygons on triangulation of me 
+        --          from the  stream  <IS>.
+    is static;
+
+    WritePolygonOnTriangulation(me; OS: in out OStream;
+                                Compact: Boolean=Standard_True)
+        ---Purpose: Writes the polygons on triangulation 
+        --          on the stream <OS> in a format that can 
+        --          be read back by Read.
+    is static;
+
+    DumpPolygonOnTriangulation(me; OS: in out OStream)
+        ---Purpose: Dumps the polygons on triangulation 
+        --          on the stream <OS>.
+    is static;
+
+
+fields
+
+    myBuilder   :      Builder               from BRep;
+    mySurfaces  :      SurfaceSet            from GeomTools;
+    myCurves    :      CurveSet              from GeomTools;
+    myCurves2d  :      Curve2dSet            from GeomTools;
+    myPolygons2D:      IndexedMapOfTransient from TColStd;
+    myPolygons3D:      IndexedMapOfTransient from TColStd;
+    myTriangulations:  IndexedMapOfTransient from TColStd;
+    myNodes     :      IndexedMapOfTransient from TColStd;
+    myWithTriangles:   Boolean               from Standard; -- for XML Persistence
+
+end ShapeSet;

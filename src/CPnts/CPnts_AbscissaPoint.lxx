@@ -1,0 +1,33 @@
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean CPnts_AbscissaPoint::IsDone() const 
+{
+  return myDone;
+}
+ 
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real CPnts_AbscissaPoint::Parameter() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "");
+  return myParam;
+}
+
+//=======================================================================
+//function : SetParameter
+//purpose  : 
+//=======================================================================
+
+inline void  CPnts_AbscissaPoint::SetParameter(const Standard_Real P)
+{
+  myParam = P;
+  myDone = Standard_True;
+}

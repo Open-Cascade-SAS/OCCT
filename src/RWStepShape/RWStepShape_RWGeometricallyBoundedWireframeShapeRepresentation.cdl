@@ -1,0 +1,30 @@
+-- File:        GeometricallyBoundedWireframeShapeRepresentation.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWGeometricallyBoundedWireframeShapeRepresentation from RWStepShape
+
+	---Purpose : Read & Write Module for GeometricallyBoundedWireframeShapeRepresentation
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     GeometricallyBoundedWireframeShapeRepresentation from StepShape,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWGeometricallyBoundedWireframeShapeRepresentation;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable GeometricallyBoundedWireframeShapeRepresentation from StepShape);
+
+	WriteStep (me; SW : in out StepWriter; ent : GeometricallyBoundedWireframeShapeRepresentation from StepShape);
+
+	Share(me; ent : GeometricallyBoundedWireframeShapeRepresentation from StepShape; iter : in out EntityIterator);
+
+end RWGeometricallyBoundedWireframeShapeRepresentation;

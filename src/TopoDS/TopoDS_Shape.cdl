@@ -1,0 +1,344 @@
+-- File:	TopoDS_Shape.cdl
+-- Created:	Tue Dec 11 16:55:01 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class Shape from TopoDS
+
+    ---Purpose: Describes a shape which
+-- - references an underlying shape with the potential
+--   to be given a location and an orientation
+-- - has a location for the underlying shape, giving its
+--   placement in the local coordinate system
+-- - has an orientation for the underlying shape, in
+--   terms of its geometry (as opposed to orientation in
+--   relation to other shapes).
+--   Note: A Shape is empty if it references an underlying
+--   shape which has an empty list of shapes.
+    
+uses
+    Orientation   from TopAbs,
+    ShapeEnum     from TopAbs,
+
+    TShape        from TopoDS,
+    
+    Location      from TopLoc
+    
+raises
+    NullObject        from Standard,
+    DomainError       from Standard,
+    TypeMismatch      from Standard
+    
+is
+    Create returns Shape from TopoDS;
+    ---C++: inline
+	---Purpose: Creates a NULL Shape referring to nothing.
+
+    --
+    --      Data from the Shape itself
+    --      
+
+    IsNull(me) returns Boolean
+    ---C++: inline
+	---Purpose: Returns true if this shape is null. In other words, it
+    	-- references no underlying shape with the potential to
+    	-- be given a location and an orientation.
+    is static;
+	
+    Nullify(me : in out)
+   	---C++: inline
+	---Purpose: Destroys the reference to the underlying shape
+    	-- stored in this shape. As a result, this shape becomes null.
+    is static;
+
+    Location(me) returns Location from TopLoc
+	---C++: inline
+	---C++: return const &
+    	---Purpose: Returns the shape local coordinate system.
+	    is static;
+
+    Location(me : in out; Loc : Location from TopLoc)
+   	---C++: inline
+	---Purpose: Sets the shape local coordinate system.
+	    is static;
+    
+    Located(me; Loc : Location) returns Shape from TopoDS
+	---Purpose: Returns a  shape  similar to <me> with   the local
+	--          coordinate system set to <Loc>.
+	--          
+	---C++: inline
+    is static;
+	
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns the shape orientation.
+	--          
+	---C++: inline
+    is static;
+    
+    Orientation(me : in out; Orient : Orientation from TopAbs)
+	---Purpose: Sets the shape orientation.
+	---C++: inline
+    is static;
+    
+    Oriented(me; Or : Orientation from TopAbs) returns Shape from TopoDS
+	---Purpose: Returns  a    shape  similar  to  <me>   with  the
+	--          orientation set to <Or>.
+	--          
+	---C++: inline
+    is static;
+    
+    --
+    --     Data from the TShape
+    --     
+    
+    TShape(me) returns TShape from TopoDS
+	---C++: inline
+	---C++: return const &
+    is static;
+	
+    ShapeType(me) returns ShapeEnum from TopAbs
+   	---C++: inline
+	---Purpose: Returns the value of the TopAbs_ShapeEnum
+    	-- enumeration that corresponds to this shape, for
+    	-- example VERTEX, EDGE, and so on.
+    	-- Exceptions
+    	-- Standard_NullObject if this shape is null.
+    raises NullObject from Standard
+    is static;
+
+    Free(me) returns Boolean
+	---Purpose: Returns the free flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Free(me : in out; F : Boolean)
+	---Purpose: Sets the free flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Modified(me) returns Boolean
+	---Purpose: Returns the modification flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Modified(me : in out; M : Boolean)
+	---Purpose: Sets the modification flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Checked(me) returns Boolean
+        ---Purpose: Returns the checked flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+        
+    Checked(me : in out; C : Boolean)
+       ---Purpose: Sets the checked flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+        
+    Orientable(me) returns Boolean
+        ---Purpose: Returns the orientability flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Orientable(me : in out; C : Boolean)
+        ---Purpose: Sets the orientability flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Closed(me) returns Boolean
+        ---Purpose: Returns the closedness flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Closed(me : in out; C : Boolean)
+        ---Purpose: Sets the closedness flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Infinite(me) returns Boolean
+        ---Purpose: Returns the infinity flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Infinite(me : in out; C : Boolean)
+        ---Purpose: Sets the infinity flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Convex(me) returns Boolean
+        ---Purpose: Returns the convexness flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Convex(me : in out; C : Boolean)
+        ---Purpose: Sets the convexness flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    --
+    --     Methods to modify the Shape data
+    --     
+    
+    Move(me : in out; position : Location from TopLoc)
+	---Purpose: Multiplies the Shape location by <position>.
+	--          
+	---C++: inline
+    is static;
+
+    Moved(me; position : Location from TopLoc) returns Shape from TopoDS
+	---Purpose: Returns  a shape similar  to  <me> with a location
+	--          multiplied  by <position>.
+	--          
+	---C++: inline
+    is static;
+
+    Reverse(me : in out)
+	---Purpose: Reverses the orientation, using the Reverse method
+	--          from the TopAbs package.
+	--          
+    	---C++: inline
+    is static;
+	
+    Reversed(me) returns Shape from TopoDS
+	---Purpose: Returns    a shape  similar    to  <me>  with  the
+	--          orientation  reversed, using  the   Reverse method
+	--          from the TopAbs package.
+	--          
+    	---C++: inline
+    is static;
+	
+    Complement(me : in out)
+	---Purpose: Complements the orientation, using the  Complement
+	--          method from the TopAbs package.
+	--          
+    	---C++: inline
+    is static;
+	
+    Complemented(me) returns Shape from TopoDS
+	---Purpose: Returns  a   shape  similar  to   <me>   with  the
+	--          orientation complemented,  using   the  Complement
+	--          method from the TopAbs package.
+	--          
+    	---C++: inline
+    is static;
+	
+    Compose(me : in out; Orient : Orientation from TopAbs)
+	---Purpose: Updates the  Shape Orientation by composition with
+	--          <Orient>, using the Compose method from the TopAbs
+	--          package.
+	--          
+      	---C++: inline
+    is static;
+
+    Composed(me; Orient : Orientation from TopAbs) returns Shape from TopoDS
+	---Purpose: Returns  a  shape   similar   to  <me>   with  the
+	--          orientation  composed  with <Orient>,   using  the
+	--          Compose method from the TopAbs package.
+	--          
+      	---C++: inline
+    is static;
+
+    --
+    -- 	Methods to compare Shapes
+    -- 	
+	
+    IsPartner(me; other : Shape) returns Boolean
+	---Purpose: Returns True if two shapes  are partners, i.e.  if
+	--          they   share   the   same  TShape.  Locations  and
+	--          Orientations may differ.
+	--          
+    ---C++: inline
+    is static;
+
+    IsSame(me; other : Shape) returns Boolean
+	---Purpose: Returns True if two shapes are same, i.e.  if they
+	--          share  the  same TShape  with the same  Locations.
+	--          Orientations may differ.
+    ---C++: inline
+    is static;
+    
+    IsEqual(me; other : Shape) returns Boolean
+	---Purpose: Returns True if two shapes are equal, i.e. if they
+	--          share the same TShape with  the same Locations and
+	--          Orientations.
+	--          
+    ---C++: inline
+  	---C++: alias operator ==
+    is static;
+
+    IsNotEqual(me; other : Shape) returns Boolean
+	---Purpose: Negation of the IsEqual method.
+	--          
+    ---C++: inline
+	---C++: alias operator !=
+    is static;
+
+    HashCode (me; Upper : Integer ) returns Integer
+	---Purpose: Returns a hashed value  denoting <me>.  This value
+	--          is in the range  1..<Upper>.  It is  computed from
+	--          the  TShape  and the  Location. The Orientation is
+	--          not used.
+	--         
+	---C++: function call
+    is static;
+    
+    EmptyCopy(me : in out)
+	---Purpose: Replace   <me> by  a  new   Shape with the    same
+	--          Orientation and Location and a new TShape with the
+	--          same geometry and no sub-shapes.
+	--          
+	---C++: inline
+    is static;
+
+    EmptyCopied(me) returns Shape from TopoDS
+	---Purpose: Returns a new Shape with the  same Orientation and
+	--          Location and  a new TShape  with the same geometry
+	--          and no sub-shapes.
+	--          
+	---C++: inline
+    is static;
+
+    --
+    --      To set the TShape
+    --      
+
+    TShape(me : in out; T : TShape from TopoDS)
+	---C++: inline
+    is static;
+	
+fields
+    myTShape   : TShape      from TopoDS;
+    myLocation : Location    from TopLoc;
+    myOrient   : Orientation from TopAbs;
+
+end Shape;

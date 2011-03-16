@@ -1,0 +1,20 @@
+-- File:        Loop.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Loop from StepShape 
+
+inherits TopologicalRepresentationItem from StepShape 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Loop;
+	---Purpose: Returns a Loop
+
+
+end Loop;

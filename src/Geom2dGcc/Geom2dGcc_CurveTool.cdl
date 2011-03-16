@@ -1,0 +1,45 @@
+-- File:	CurveTool.cdl
+-- Created:	Thu Jun  4 16:21:49 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class CurveTool from Geom2dGcc
+
+	---Purpose: 
+
+uses Curve from Geom2dAdaptor,
+     Pnt2d from gp,
+     Vec2d from gp
+
+is
+
+    FirstParameter(myclass; C: Curve from Geom2dAdaptor)
+    	returns Real;
+
+    LastParameter(myclass; C: Curve from Geom2dAdaptor)
+    	returns Real;
+
+    EpsX (myclass                           ; 
+    	  C       : Curve from Geom2dAdaptor;
+    	  Tol     : Real  from Standard     )
+    	returns Real;
+
+    NbSamples(myclass                    ;
+    	      C       : Curve from Geom2dAdaptor)
+    	returns Integer;
+
+    Value (myclass; C: Curve from Geom2dAdaptor; X: Real)
+    	returns Pnt2d from gp;
+
+    D1 (myclass; C: Curve from Geom2dAdaptor; U: Real ; 
+                 P: out Pnt2d; T: out Vec2d);
+
+    D2 (myclass; C: Curve from Geom2dAdaptor; U: Real ; 
+                 P: out Pnt2d; T,N: out Vec2d);
+
+    D3 (myclass; C: Curve from Geom2dAdaptor; U: Real ; 
+                 P: out Pnt2d; T,N,dN: out Vec2d);
+
+end CurveTool;
+

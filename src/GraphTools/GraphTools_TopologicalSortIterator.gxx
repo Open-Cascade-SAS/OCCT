@@ -1,0 +1,142 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_TopologicalSortIterator.gxx
+// Created:	Wed May 29 17:42:50 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+
+//=======================================================================
+//function : GraphTools_TopologicalSortIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_TopologicalSortIterator::GraphTools_TopologicalSortIterator ()
+{}
+
+
+//=======================================================================
+//function : GraphTools_TopologicalSortIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_TopologicalSortIterator::GraphTools_TopologicalSortIterator 
+  (const Graph& G)
+{
+  FromGraph (G);
+}
+
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortIterator::FromVertex
+  (const Vertex& V)
+{
+  myIterator.FromVertex(V);
+}
+
+
+//=======================================================================
+//function : FromGraph
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortIterator::FromGraph
+  (const Graph& G)
+{
+  for ( GIterator it (G); it.More(); it.Next() ) {
+    myIterator.FromVertex(it.Value());
+  }
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortIterator::Perform
+  (const Graph& G,
+   const Standard_Boolean ignoreSelfLoops,
+   const Standard_Boolean processCycle) 
+{
+  myIterator.Perform(G,ignoreSelfLoops,processCycle);
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortIterator::Reset ()
+{
+  myIterator.Reset();
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_TopologicalSortIterator::More () const 
+{
+  return myIterator.More();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphTools_TopologicalSortIterator::Next () 
+{
+  myIterator.Next();
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Vertex& GraphTools_TopologicalSortIterator::Value () const 
+{
+  return myIterator.Value();
+}
+
+
+//=======================================================================
+//function : IsInCycle
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphTools_TopologicalSortIterator::IsInCycle () const 
+{
+  return myIterator.IsInCycle();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

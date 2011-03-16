@@ -1,0 +1,103 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphDS_IncidentRelationsIterator.gxx
+// Created:	Tue Sep 10 17:01:38 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <GraphDS_DataMapIteratorOfEntityRoleMap.hxx>
+
+//=======================================================================
+//function : GraphDS_IncidentRelationsIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_IncidentRelationsIterator::GraphDS_IncidentRelationsIterator ()
+{
+}
+
+
+//=======================================================================
+//function : GraphDS_IncidentRelationsIterator
+//purpose  : 
+//=======================================================================
+
+GraphDS_IncidentRelationsIterator::GraphDS_IncidentRelationsIterator 
+  (const GraphDS_RelationGraph& G,
+   const Handle(GraphDS_Relation)& R)
+{
+  Initialize (G,R);
+}
+
+
+//=======================================================================
+//function : GraphDS_Initialize
+//purpose  : 
+//=======================================================================
+
+void GraphDS_IncidentRelationsIterator::Initialize
+  (const GraphDS_RelationGraph&,
+   const Handle(GraphDS_Relation)& R)
+{
+
+  myMap.Clear();
+
+  Handle(GraphDS_Entity) ENT;  
+  Handle(GraphDS_Relation) REL;
+  GraphDS_DataMapIteratorOfEntityRoleMap itv; 
+  TColStd_MapIteratorOfMapOfTransient itr;
+
+  for (itv.Initialize(R->GetEntities());itv.More();itv.Next()) {
+    ENT = Handle(GraphDS_Entity)::DownCast(itv.Key());
+    if (itv.Value() != GraphDS_OnlyOutput) {
+      for (itr.Initialize(ENT->GetRelations()); itr.More(); itr.Next()) {
+	REL = Handle(GraphDS_Relation)::DownCast(itr.Key());
+	if (REL->IsOutput(ENT)) myMap.Add(REL);
+      }
+    }
+  }
+  myRelations.Initialize(myMap);
+}
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean GraphDS_IncidentRelationsIterator::More () const
+{
+  return myRelations.More();
+}
+
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+void GraphDS_IncidentRelationsIterator::Next () 
+{
+   myRelations.Next();
+}
+	
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Handle(GraphDS_Relation)& GraphDS_IncidentRelationsIterator::Value () const 
+{  
+  return  *((Handle(GraphDS_Relation)*)& myRelations.Key());
+  //return Handle(GraphDS_Relation)::DownCast(myRelations.Key());
+}
+
+
+
+
+
+
+
+

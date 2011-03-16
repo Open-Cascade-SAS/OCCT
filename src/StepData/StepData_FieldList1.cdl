@@ -1,0 +1,46 @@
+-- File:	StepData_FieldList1.cdl
+-- Created:	Tue Apr  1 13:18:59 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class FieldList1  from StepData    inherits FieldList  from StepData
+
+    ---Purpose : Describes a list of ONE field
+
+uses Field from StepData
+
+raises OutOfRange
+
+is
+
+    Create returns FieldList1;
+    ---Purpose : Creates a FieldList of 1 Field
+
+    NbFields (me) returns Integer  is redefined;
+    ---Purpose : Returns the count of fields. Here, returns 1
+
+    Field  (me; num : Integer) returns Field
+    ---Purpose : Returns the field n0 <num> between 1 and NbFields (read only)
+	raises OutOfRange
+    --           Error if <num> out of range
+    	is redefined;
+    ---C++ : return const &
+
+    CField (me : in out; num : Integer) returns Field
+    ---Purpose : Returns the field n0 <num> between 1 and NbFields, in order to
+    --           modify its content
+	raises OutOfRange
+    --           Error if <num> out of range
+    	is redefined;
+    ---C++ : return &
+
+    Destroy (me: in out) is virtual;
+    ---C++ : alias "Standard_EXPORT virtual ~StepData_FieldList1() { Destroy(); }"
+
+fields
+
+    thefield : Field from StepData;
+
+end FieldList1;

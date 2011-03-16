@@ -1,0 +1,34 @@
+// File:	TCollection_SetIterator.lxx
+// Created:	Tue Mar  2 16:37:40 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_SetIterator::More() const
+{
+  return myIterator.More();
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_SetIterator::Next()
+{
+  myIterator.Next();
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const Item& TCollection_SetIterator::Value() const
+{
+  return myIterator.Value();
+}

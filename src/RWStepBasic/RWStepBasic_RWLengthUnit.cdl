@@ -1,0 +1,30 @@
+-- File:        LengthUnit.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWLengthUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for LengthUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     LengthUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWLengthUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable LengthUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : LengthUnit from StepBasic);
+
+	Share(me; ent : LengthUnit from StepBasic; iter : in out EntityIterator);
+
+end RWLengthUnit;

@@ -1,0 +1,27 @@
+-- File:	PXCAFDoc_Color.cdl
+-- Created:	Wed Aug 16 12:08:45 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Color from PXCAFDoc  inherits Attribute from PDF
+
+	---Purpose: 
+
+uses
+    Color from Quantity
+
+is
+    Create returns mutable Color from PXCAFDoc;
+    
+    Create (Loc: Color from Quantity) returns mutable Color from PXCAFDoc;
+    
+    Set (me: mutable; Loc: Color from Quantity);
+    
+    Get (me) returns Color from Quantity;
+    
+fields
+    myColor : Color from Quantity;
+    
+end Color;

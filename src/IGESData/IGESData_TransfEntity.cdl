@@ -1,0 +1,24 @@
+-- File:	TransfEntity.cdl
+-- Created:	Tue Apr  7 16:00:42 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class TransfEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for Transf in directory part
+    --           an effective Transf entity must inherits it
+
+uses GTrsf
+
+is
+
+    Value (me) returns GTrsf  is deferred;
+    ---Purpose : gives value of the transformation, as a GTrsf
+    --           To be defined by an effective class of Transformation Entity
+    --  Warning : Must take in account Composition : if a TransfEntity has in
+    --           its Directory Part, a Transf, this means that it is Compound,
+    --           Value must return the global result
+
+end TransfEntity;

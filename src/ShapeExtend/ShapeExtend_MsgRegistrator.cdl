@@ -1,0 +1,63 @@
+-- File:	ShapeExtend_MsgRegistrator.cdl
+-- Created:	Fri Jan 28 19:56:33 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class MsgRegistrator from ShapeExtend inherits BasicMsgRegistrator from ShapeExtend
+
+    ---Purpose: Attaches messages to the objects (generic Transient or shape).
+    --          The objects of this class are transmitted to the Shape Healing
+    --          algorithms so that they could collect messages occurred during
+    --          processing.
+    --
+    --          Messages are added to the Maps (stored as a field) that can be
+    --          used, for instance, by Data Exchange processors to attach those
+    --          messages to initial file entities.
+
+uses
+
+    Shape                       from TopoDS,
+    Gravity                     from Message,
+    Msg                         from Message,
+    ListOfMsg                   from Message,
+    DataMapOfTransientListOfMsg from ShapeExtend,
+    DataMapOfShapeListOfMsg     from ShapeExtend
+
+is
+
+    Create returns mutable MsgRegistrator from ShapeExtend;
+    	---Purpose: Creates an object.
+	
+    
+    Send (me: mutable; object : Transient;
+    	    	       message: Msg from Message;
+    	    	       gravity: Gravity from Message) is redefined;
+    	---Purpose: Sends a message to be attached to the object.
+	--          If the object is in the map then the message is added to the
+    	--          list, otherwise the object is firstly added to the map.
+
+    Send (me: mutable; shape  : Shape from TopoDS;
+    	    	       message: Msg from Message;
+    	    	       gravity: Gravity from Message) is redefined;
+    	---Purpose: Sends a message to be attached to the shape.
+	--          If the shape is in the map then the message is added to the
+    	--          list, otherwise the shape is firstly added to the map.
+
+    MapTransient (me) returns DataMapOfTransientListOfMsg from ShapeExtend;
+    	---C++    : inline
+    	---C++    : return const&
+	---Purpose: Returns a Map of objects and message list
+	
+    MapShape (me) returns DataMapOfShapeListOfMsg from ShapeExtend;
+    	---C++    : inline
+    	---C++    : return const&
+	---Purpose: Returns a Map of shapes and message list
+
+fields
+
+    myMapTransient: DataMapOfTransientListOfMsg from ShapeExtend;
+    myMapShape: DataMapOfShapeListOfMsg from ShapeExtend;
+    
+end MsgRegistrator;

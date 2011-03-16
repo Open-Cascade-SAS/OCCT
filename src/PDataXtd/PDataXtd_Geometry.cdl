@@ -1,0 +1,33 @@
+-- File:	PDataStd_Geometry.cdl
+-- Created:	Wed Nov 19 15:48:54 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr> 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Geometry from PDataXtd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses Integer          from Standard,
+     Real             from PDataStd,
+     HAttributeArray1 from PDF
+    
+is
+
+    Create returns mutable Geometry from  PDataXtd;
+    
+    Create (Type : Integer from Standard)
+    returns mutable Geometry from PDataXtd;
+    
+    GetType (me) returns Integer from Standard;
+    
+    SetType (me : mutable; Type : Integer from Standard);
+    
+fields
+
+    myType : Integer from Standard;
+
+end Geometry;

@@ -1,0 +1,118 @@
+-- File:	LocOpe_Generator.cdl
+-- Created:	Tue Jan  9 10:35:13 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class Generator from LocOpe
+
+	---Purpose: 
+
+uses GeneratedShape      from LocOpe,
+
+     Shape               from TopoDS,
+     Face                from TopoDS,
+     Edge                from TopoDS,
+     
+     ListOfShape         from TopTools,
+     DataMapOfShapeListOfShape from TopTools
+--     DataMapOfShapeShape from TopTools
+     
+     
+     
+raises NotDone      from StdFail,
+       NullObject   from Standard,
+       NoSuchObject from Standard
+
+is
+
+    Create
+	---Purpose: Empty constructor.
+    	returns Generator from LocOpe;
+    	---C++: inline
+
+
+    Create(S: Shape from TopoDS)
+	---Purpose: Creates the algorithm on the shape <S>.
+	---C++: inline
+    	returns Generator from LocOpe;
+
+
+    Init(me: in out; S: Shape from TopoDS)
+	---Purpose: Initializes the algorithm on the shape <S>.
+	---C++: inline
+    	is static;
+
+
+    Perform(me: in out; G: GeneratedShape from LocOpe)
+			
+	raises NullObject from Standard		
+    	is static;
+
+
+    IsDone(me)
+    
+	---C++: inline
+    	returns Boolean from Standard
+	is static;
+
+
+
+    ResultingShape(me)
+	---Purpose: Returns the new shape
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+	raises NotDone from StdFail
+	is static;
+	
+
+    Shape(me)
+	---Purpose: Returns the initial shape
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+	is static;
+
+
+    DescendantFace(me: in out; F: Face from TopoDS)
+    	---Purpose: Returns  the  descendant  face  of <F>.    <F> may
+    	--          belong to the original shape or to the "generated"
+    	--          shape.  The returned    face may be   a null shape
+    	--          (when <F> disappears). 
+	---C++: return const&
+    	returns ListOfShape from TopTools
+
+
+	raises NotDone from StdFail,
+	--- The exception is raised when IsDone returns <Standard_False>.
+	       NoSuchObject from Standard
+	--- The exception is  raised when <F> does  not  belong to the
+	--  original  shape or to the "generated" one.
+	is static;
+
+
+fields
+
+    myShape     : Shape                 from TopoDS;
+    myGen       : GeneratedShape        from LocOpe;
+    myDone      : Boolean               from Standard;
+    myRes       : Shape                 from TopoDS;
+    myModShapes : DataMapOfShapeListOfShape from TopTools;
+
+end Generator;
+
+
+
+
+
+
+
+
+
+
+
+
+

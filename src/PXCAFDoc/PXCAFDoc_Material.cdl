@@ -1,0 +1,47 @@
+-- File:	PXCAFDoc_Material.cdl
+-- Created:	Wed Dec 10 09:50:52 2008
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2008
+
+class Material from PXCAFDoc inherits  Attribute from PDF
+
+	---Purpose: 
+uses
+    Real          from Standard,
+    HAsciiString  from PCollection
+is
+    Create returns mutable Material from PXCAFDoc;
+
+    Create (theName       : HAsciiString from PCollection;
+    	    theDescr      : HAsciiString from PCollection;
+	    theDensity    : Real         from Standard;
+    	    theDensName   : HAsciiString from PCollection;
+    	    theDensValType: HAsciiString from PCollection)
+    returns mutable Material from PXCAFDoc;
+    
+    GetName (me) returns HAsciiString from PCollection;
+
+    GetDescription (me) returns HAsciiString from PCollection;
+
+    GetDensity (me) returns Real from Standard;
+
+    GetDensName (me) returns HAsciiString from PCollection;
+
+    GetDensValType (me) returns HAsciiString from PCollection;
+
+    Set (me : mutable; theName       : HAsciiString from PCollection;
+                       theDescr      : HAsciiString from PCollection;
+                       theDensity    : Real         from Standard;
+                       theDensName   : HAsciiString from PCollection;
+                       theDensValType: HAsciiString from PCollection);
+    
+fields
+
+    myName        : HAsciiString from PCollection;
+    myDescr       : HAsciiString from PCollection;
+    myDensity     : Real from Standard;
+    myDensName    : HAsciiString from PCollection;
+    myDensValType : HAsciiString from PCollection;
+
+end Material from PXCAFDoc;

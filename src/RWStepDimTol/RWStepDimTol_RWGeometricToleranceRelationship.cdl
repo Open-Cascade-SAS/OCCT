@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWGeometricToleranceRelationship.cdl
+-- Created:	Wed Jun  4 13:34:35 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWGeometricToleranceRelationship from RWStepDimTol
+
+    ---Purpose: Read & Write tool for GeometricToleranceRelationship
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    GeometricToleranceRelationship from StepDimTol
+
+is
+    Create returns RWGeometricToleranceRelationship from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : GeometricToleranceRelationship from StepDimTol);
+	---Purpose: Reads GeometricToleranceRelationship
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: GeometricToleranceRelationship from StepDimTol);
+	---Purpose: Writes GeometricToleranceRelationship
+
+    Share (me; ent : GeometricToleranceRelationship from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWGeometricToleranceRelationship;

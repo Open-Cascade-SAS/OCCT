@@ -1,0 +1,30 @@
+-- File:        Line.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWLine from RWStepGeom
+
+	---Purpose : Read & Write Module for Line
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Line from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWLine;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Line from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Line from StepGeom);
+
+	Share(me; ent : Line from StepGeom; iter : in out EntityIterator);
+
+end RWLine;

@@ -1,0 +1,34 @@
+// File:	BinMNaming_NamedShapeDriver.lxx
+// Created:	Mon Jun  7 15:28:16 2004
+// Author:	Sergey ZARITCHNY <szy@opencascade.com>
+// Copyright:	Open CasCade S.A. 2004
+
+//=======================================================================
+//function : GetFormat
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer BinMNaming_NamedShapeDriver::GetFormatNb() const
+{
+  return myFormatNb;
+}
+
+//=======================================================================
+//function : SetFormat
+//purpose  : 
+//=======================================================================
+
+inline void BinMNaming_NamedShapeDriver::SetFormatNb(const Standard_Integer theFormatNb) 
+{
+  myFormatNb = theFormatNb;
+}
+
+//=======================================================================
+//function : GetShapesLocations
+//purpose  : 
+//=======================================================================
+inline BinTools_LocationSet& BinMNaming_NamedShapeDriver::GetShapesLocations()
+{
+  return myShapeSet.ChangeLocations();
+}
+

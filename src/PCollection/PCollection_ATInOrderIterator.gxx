@@ -1,0 +1,129 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_ATInOrderIterator.gxx
+// Created:	Aug, 17 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+// Purpose: Permits to iterate through an ArbitraryTree so that, from
+//          the most left leave, it reads it, then its parent, then in
+//          the same order what is on its right.
+//          IF theTree is (  A (B (C D E)) F G (H (I J K)))
+//          THEN it will read ( C B D E A F I H J K G)
+
+//-------------------------------------------------------------------
+// Create
+//-------------------------------------------------------------------
+PCollection_ATInOrderIterator::PCollection_ATInOrderIterator
+         (const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+   CurrentStack = new PCollection_StackArbitraryTree;			
+   if (ATree.IsNull()) {
+     HasMore = Standard_False;
+   }
+   else {
+//   ... stop at the last child to the left
+     RecursiveAppend( ATree);
+     CurrentTree = CurrentStack->Top();                      
+     HasMore = Standard_True;
+  }
+}
+
+//-------------------------------------------------------------------
+// More
+//-------------------------------------------------------------------
+Standard_Boolean PCollection_ATInOrderIterator::More () const
+{
+  return HasMore;
+}
+
+//-------------------------------------------------------------------
+// Value
+//-------------------------------------------------------------------
+Handle(PCollection_HArbitraryTree) 
+   PCollection_ATInOrderIterator::Value () const
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return CurrentTree;
+}
+
+//-------------------------------------------------------------------
+// Clear
+//-------------------------------------------------------------------
+void PCollection_ATInOrderIterator::Clear ()
+{
+  CurrentTree.Nullify();
+  CurrentStack.Nullify();
+  HasMore = Standard_False;
+}
+
+//-------------------------------------------------------------------
+// Next
+//-------------------------------------------------------------------
+void PCollection_ATInOrderIterator::Next ()
+{
+   if (!HasMore) Standard_NoMoreObject::Raise();
+   Handle(PCollection_HArbitraryTree) Temp;
+   Standard_Integer Nb = CurrentTree->NbChildren();
+   if( Nb > 1) {
+//   ... go to the other children (first one already visited)
+     Temp = CurrentTree->Child(2);
+     RecursiveAppend( Temp);
+   }
+   else {
+//   ... was <CurrentTree> the first child ? 
+//   ... If yes, nothing more to do than removing it
+//   ... if not, go upward, and on the right as soon as possible
+     Temp = RecursiveRemove( CurrentTree);
+     Handle(PCollection_HArbitraryTree) Left = Temp->LeftSibling();
+     if ( !Left.IsNull()) RecursiveAppend(Temp->RightSibling());
+   }
+// ... CurrentTree's updating
+   if (HasMore) CurrentTree = CurrentStack->Top();         
+}
+
+//  INTERNAL TOOLS TO MANAGE CurrentStack
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void PCollection_ATInOrderIterator::RecursiveAppend (
+             const Handle(PCollection_HArbitraryTree)& ATree) 
+{
+   CurrentStack->Push(ATree);
+// ... is there still some child ?
+   if( !ATree->IsLeaf()) {
+     RecursiveAppend(ATree->Child(1));
+   }
+}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+Handle(PCollection_HArbitraryTree) 
+   PCollection_ATInOrderIterator::RecursiveRemove (
+                const Handle(PCollection_HArbitraryTree)& ATree) {
+
+   Handle(PCollection_HArbitraryTree) Temp = ATree;
+   CurrentStack->Pop();                            
+   if( CurrentStack->IsEmpty()) {
+//   ... it's the end...
+     HasMore = Standard_False;
+   }
+   else {
+//   ... are there other trees to be removed ?
+     Handle(PCollection_HArbitraryTree) Left =  ATree->LeftSibling();
+     Handle(PCollection_HArbitraryTree) Right = ATree->RightSibling();
+     if(!Left.IsNull() && Right.IsNull()) {
+//     ... it's still necessary to go upward
+       Temp = CurrentStack->Top();           
+       Temp = RecursiveRemove( Temp);
+     }
+   }
+   return Temp;  
+}
+
+

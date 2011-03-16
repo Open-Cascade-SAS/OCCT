@@ -1,0 +1,315 @@
+-- File:	BOP.cdl
+-- Created:	Thu Mar 29 10:55:43 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+package BOP  
+
+    ---Purpose: Contains main and auxiliary classes to provide boolean operations   
+    --          (BO)   Common,  Cut,  Fuse, Section between a couple BRep shapes. 
+
+uses   
+    Geom2dInt,
+    TopoDS, 
+    TopAbs, 
+    TopTools, 
+    TopExp, 
+    gp,  
+    TColgp,
+    ProjLib, 
+    Geom2d, 
+    Geom,  
+    TColStd, 
+    TopTools,
+    TCollection,  
+    BRepClass, 
+    BRep, 
+    BRepClass3d,
+    BooleanOperations,
+    IntTools,
+    BOPTools, 
+    BOPTColStd
+
+is 
+    ---
+    ---                     E  n  u  m  e  r  a  t  i  o  n  s            
+    --- 
+    enumeration Operation is  
+    	COMMON, 
+	FUSE, 
+	CUT,  
+	CUT21,
+	SECTION, 
+	UNKNOWN
+    	end Operation;  
+	
+    enumeration LoopEnum is 
+    	ANYLOOP, 
+    	BOUNDARY, 
+    	BLOCK  
+    	end LoopEnum; 
+
+    enumeration CheckStatus is
+    	CheckUnknown,
+	BadType,
+	SelfIntersect,
+	TooSmallEdge,
+	NonRecoverableFace,
+	IncompatibilityOfVertex,
+	IncompatibilityOfEdge,
+	IncompatibilityOfFace
+	end CheckStatus;
+    ---
+    ---                          T  h  e    C  l  a  s  s  e  s  	        
+    ---   
+    
+    deferred class Builder;   
+    	---Purpose: 
+    	--- Root class for performing a BO      
+	---  
+    class WireWire;  
+	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for wires(edges)  
+	---   
+    class WireShell;  
+	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for wire(edge)/shell(face)  
+	--- 
+    class WireSolid; 
+    	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for wire(edge)/solid  
+	---  
+    class WireShape; 
+    	---Purpose: 
+    	--- Root  class  for  Wire/...  Biulders  
+	---  
+    
+    class SolidSolid; 
+     	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for solids  
+	---
+    class ShellShell; 
+     	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for shell/shell arguments  
+	--- 
+    class ShellSolid; 
+     	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse) for shell/solid arguments  
+    	---  
+     
+    class EmptyBuilder; 
+     	---Purpose: 
+    	--- Performs BO (Common,Cut,Fuse)   for shapes 
+	--- in cases when one of arguments(or both) is(are) empty
+    	---     	 
+    deferred class HistoryCollector;
+
+    class SolidSolidHistoryCollector;
+
+    class ShellSolidHistoryCollector;
+    
+    class WireSolidHistoryCollector;
+    
+    class SectionHistoryCollector;
+
+    class BuilderTools; 
+    ---Purpose: 
+    	--- Handy  tools to help building a result 
+        ---     
+    class Section;  
+    	---Purpose: 
+    	--- Performs the BO (Section) 
+    	--- for the shapes where it is valid one   
+	--- 
+    class  Refiner; 
+    	---Purpose: 
+    	--- Refines the result of the BO if necessary   
+	---    	 
+    class ShapeSet; 
+    	---Purpose: 
+    	--- Root auxiliary class for set of shapes
+        --- to build new faces from wires,new solids from shells 
+	---
+    class WireEdgeSet;  
+    	---Purpose: 
+    	--- Class for set of edges and wires to build new faces
+	---          	    	 
+    class ShellFaceSet; 
+    	---Purpose: 
+    	--- Class for set of faces and shells to build new solids
+	--- 
+    class BlockBuilder; 
+    	---Purpose: 
+	---  Auxiliary class to storage and operate with data of  
+        ---  connexity blocks inside  
+	---    	 
+    class BlockIterator;
+     	---Purpose: 
+	---  Auxiliary class to iterate data inside the given  
+    	---  connexity block 
+	---    	
+    class Loop;  
+    	---Purpose: 
+    	---  Auxiliary class containing data about an existing shape  
+    	---  (Shell,Wire)or a set of shapes (Faces,Edges) which are connex.
+	---    	
+    class LoopSet;  
+    	---Purpose: 
+    	---  Auxiliary class to storage  and  iterate on  Loop(s) 
+	---  
+
+    deferred  class LoopClassifier; 
+    	---Purpose: 
+    	---  Root class to classify loops in order to build Areas 
+	---  
+    deferred  class CompositeClassifier;  
+    	---Purpose: 
+    	---  Cclassify composite Loops, i.e, loops that can be  
+    	---  either a Shape, or a block of Elements 
+	--- 
+    class WireEdgeClassifier;   
+    	---Purpose: 
+    	---  Classify loops that consist of edges and wires
+	--- 
+    class ShellFaceClassifier;
+     	---Purpose: 
+    	---  Classify loops that consist of faces and shells
+	--- 
+    class AreaBuilder;    
+    	---Purpose: 
+    	---  Root class to provide building valid areas from        
+	---  corresponding shape sets  
+	---
+    class Area2dBuilder;    
+    	---Purpose: 
+    	---  Constructs areas for Faces from a WireEdgeSet        
+	---
+    class FaceAreaBuilder;   
+    	---Purpose: 
+    	---   constructs Loops for  Faces from a WireEdgeSet        
+	---
+    class FaceBuilder;   
+    	---Purpose: 
+    	---   construct Faces from a WireEdgeSet        
+	---
+    class Area3dBuilder; 
+    	---Purpose: 
+    	---  Constructs areas for Faces from a WireEdgeSet    
+	---
+    class SolidAreaBuilder; 
+    	---Purpose: 
+    	---  Constructs areas for Solids from a ShellFaceSet        
+	--- 
+    class SolidBuilder;
+    	---Purpose: 
+    	---  Constructs Solids from a ShellFaceSet        
+	--- 
+    class EdgeInfo; 
+    	---Purpose: 
+    	---  Auxiliary class to store data about edges on  a  face 
+    	---  that have common vertex         	 
+	--- 
+    class FaceInfo;  
+     	---Purpose: 
+    	---  Auxiliary class to store data about faces on a  shell 
+    	---  that have common edge         	 
+	--- 
+    class WireSplitter;   
+    	---Purpose: 
+    	---  The algorithm to split invalid (multiconnexed)   
+    	---  wires on a face onto valid  ones 
+	---
+    class ShellSplitter; 
+    	---Purpose: 
+    	---  The algorithm to split invalid (multiconnexed)   
+    	---  shells on a solid onto valid  ones 
+	---
+    class ConnexityBlock; 
+	---Purpose: 
+    	---  Auxiliary class to create and  store data about a set  
+    	---  of connex shapes 
+	---    	     
+    class WESCorrector;  
+    	---Purpose:   
+    	---  The algorithm to change the WES contents      
+    	---  The NewWES will contain only wires  instead of   
+	---  wires and edges. 
+	---
+    class SFSCorrector;   
+    	---Purpose: 
+    	---  The algorithm to change the SFS contents.
+    	---  The NewSFS will contain only shells  instead of   
+	---  shells and faces.
+	---
+    	 
+    class CorrectTolerances;  
+      	---Purpose: 
+	---  Auxiliary class to provide valid values  for result's tolerances'     
+    	---
+    class Draw; 
+	---Purpose: 
+	---  Auxiliary class to display intermediate results in  Draw's windows     
+    	---  for the debugging purposes 
+	---    	 
+    class SDFWESFiller; 
+    	---Purpose: 
+	---  Fills a  wire  edges set for a couple of faces that are same domain 
+	---   
+
+    class CheckResult;
+    class ArgumentAnalyzer;
+    ---
+    ---                          P  o  i  n  t  e  r  s  	        
+    ---
+    pointer PWireEdgeSet  to WireEdgeSet  from BOP;
+    pointer PShellFaceSet to ShellFaceSet from BOP;
+    pointer PBuilder to Builder from BOP;  
+
+    ---
+    ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
+    ---
+    class ListOfConnexityBlock instantiates  
+    	List from TCollection(ConnexityBlock from BOP);  
+	
+    class ListOfLoop instantiates  
+    	List from TCollection(Loop from BOP); 
+     
+    class ListOfListOfLoop instantiates  
+    	List from TCollection(ListOfLoop from BOP); 
+	 
+    class ListOfEdgeInfo  instantiates 	 
+    	List from TCollection(EdgeInfo from BOP); 	    		 
+
+    class IndexedDataMapOfVertexListEdgeInfo instantiates 
+	IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	ListOfEdgeInfo from BOP,
+                                        ShapeMapHasher from TopTools); 
+    class ListOfFaceInfo  instantiates 	 
+    	List from TCollection(FaceInfo from BOP);  
+     
+    class IndexedDataMapOfEdgeListFaceInfo instantiates 
+	IndexedDataMap from TCollection(Shape          from TopoDS,
+	    	    	    	    	ListOfFaceInfo from BOP,
+                                        ShapeMapHasher from TopTools);  
+    class SeqOfSeqOfShape instantiates  
+    	Sequence from TCollection(SequenceOfShape from TopTools); 
+
+    
+-- 
+    class SolidClassifier; 
+
+    pointer PSoClassif to SolidClassifier from BRepClass3d; 
+     
+    class IndexedDataMapOfSolidClassifier instantiates  
+    	IndexedDataMap from TCollection (Shape from TopoDS,
+     	                                 PSoClassif from BOP,
+     	                                 ShapeMapHasher from TopTools);
+					 
+    class ListOfCheckResult instantiates  
+    	List from TCollection(CheckResult from BOP);
+--
+					   
+					  
+end BOP;
+

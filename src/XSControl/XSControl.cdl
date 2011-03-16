@@ -1,0 +1,44 @@
+-- File:	XSControl.cdl
+-- Created:	Mon Mar 13 15:36:04 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+package XSControl
+
+    ---Purpose : This package provides complements to IFSelect & Co for
+    --           control of a session
+
+uses Standard , MMgt, TCollection , TColStd, Dico,
+     Interface, Transfer, IFSelect, Message,
+     TopoDS,    TopTools, TopAbs ,   Geom, Geom2d, gp
+
+is
+
+    deferred class Controller;
+    class TransferReader;
+    class TransferWriter;
+
+    class WorkSession;
+    class SelectForTransfer;
+    class SignTransferStatus;
+    class ConnectedShapes;
+
+    class Reader;
+    class Writer;
+
+    class Functions;
+    class FuncShape;
+    class Utils;
+    class Vars;
+
+    Session (pilot : SessionPilot from IFSelect) returns WorkSession from XSControl;
+    ---Purpose : Returns the WorkSession of a SessionPilot, but casts it as
+    --           from XSControl : it then gives access to Control & Transfers
+
+    Vars    (pilot : SessionPilot from IFSelect) returns Vars from XSControl;
+    ---Purpose : Returns the Vars of a SessionPilot, it is brought by Session
+    --           it provides access to external variables
+
+end XSControl;

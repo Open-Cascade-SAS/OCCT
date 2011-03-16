@@ -1,0 +1,8 @@
+@ifnotdefined ( %ViewerTest_CMPLRS ) then
+@set %ViewerTest_CMPLRS = "";
+
+  @uses "CSF.edl" ;
+
+  @string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE  %CMPLRS_CXX_Options ;
+
+@endif;

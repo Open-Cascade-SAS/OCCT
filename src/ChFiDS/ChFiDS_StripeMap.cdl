@@ -1,0 +1,56 @@
+-- File:	ChFiDS_StripeMap.cdl
+-- Created:	Wed Nov 10 16:59:25 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class StripeMap from ChFiDS 
+
+	---Purpose: 
+
+uses 
+     IndexedDataMapOfVertexListOfStripe from ChFiDS,
+     Vertex from TopoDS,
+     ListOfStripe from ChFiDS,
+     Stripe from ChFiDS
+is
+
+    Create returns StripeMap from ChFiDS;
+
+    Add(me : in out; V : Vertex from TopoDS; F : Stripe from ChFiDS) 
+    is static;
+    
+    
+    Extent(me) returns Integer
+    ---C++: inline
+    is static;
+    
+    FindFromKey(me; V: Vertex from TopoDS) 
+    returns ListOfStripe from ChFiDS 
+    ---C++: alias operator()
+    ---C++: return const &
+    is static;
+    
+    FindFromIndex(me; I : Integer from Standard) 
+    returns ListOfStripe from ChFiDS
+    ---C++: alias operator()
+    ---C++: return const &
+    is static;
+
+
+    FindKey(me; I : Integer from Standard) returns Vertex  from TopoDS
+    ---C++: inline
+    ---C++: return const &
+    is static;
+
+
+    Clear(me : in out) is static;
+
+
+fields
+
+ mymap : IndexedDataMapOfVertexListOfStripe from ChFiDS;
+
+end StripeMap;

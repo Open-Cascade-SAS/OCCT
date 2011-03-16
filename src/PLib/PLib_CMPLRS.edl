@@ -1,0 +1,16 @@
+-- File:	PLib_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+
+
+@if ( %Station == "sil" ) then
+
+	@if ( %DebugMode == "False" ) then
+	  @set %ModeOpt = "-O1";
+	  @set %CMPLRS_F77_ModeOpt = "-O1";
+	@endif;
+
+
+@endif;

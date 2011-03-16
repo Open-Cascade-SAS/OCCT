@@ -1,0 +1,130 @@
+-- File:	QANewBRepNaming_Gluing.cdl
+-- Created:	Mon Nov 26 11:45:34 2001
+-- Author:	Sergey ZARITCHNY <szy@nnov.matra-dtv.fr>
+-- Copyright:	SAMTECH S.A. 2001
+
+
+-- sccsid[] = "@(#) 3.0-00-1, 12/07/01@(#)";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       mpv ! Same history and divided shapes cases   ! 6-09-2002! 3.0-00-3!
+-- +---------------------------------------------------------------------------+
+
+class Gluing from QANewBRepNaming inherits TopNaming from QANewBRepNaming
+
+	---Purpose: Loads a result of Gluing operation in  Data Framework
+
+uses
+
+     Glue      from QANewModTopOpe,
+     Shape     from TopoDS, 
+     ShapeEnum from  TopAbs,
+     Label     from TDF,
+     LabelMap  from TDF,
+     IndexedDataMapOfShapeListOfShape from TopTools,
+     DataMapOfShapeInteger from TopTools
+
+     
+raises  NullObject from Standard 
+
+is
+
+    Create returns Gluing from QANewBRepNaming; 
+ 
+    Create(theResultLabel : Label from TDF) 
+    returns Gluing from QANewBRepNaming;
+
+    Init(me : in out; theResultLabel : Label from TDF);
+
+
+    Load (me : in out; theMkGluing : in out Glue from QANewModTopOpe);
+      ---Purpose: Loads a Gluing in a data framework  
+     
+    ---Category: Protected methods
+    --           ====================
+ 
+    ShapeType(me; theShape : Shape from TopoDS) 
+    ---Purpose: If the shape is a compound the method  
+    --          returns the underlying shape type.
+    returns ShapeEnum from TopAbs 
+    is private; 
+     
+    GetShape(me; theShape : Shape from TopoDS) 
+    ---Purpose: If the shape is a compound the method  
+    --          returns the underlying shape.
+    returns Shape from TopoDS
+    is  private;  
+     
+    LoadModifiedShapes(me; theMakeShape : in out Glue from QANewModTopOpe)
+    ---Purpose: A default implementation for naming of modified shapes of the operation
+    is  private; 
+
+    LoadDeletedShapes(me; theMakeShape : in out Glue from QANewModTopOpe)
+    ---Purpose: A default implementation for naming of modified shapes of the operation
+    is  private; 
+     
+    Content (me)
+    	---Purpose : 
+    returns Label from TDF; 
+        
+    LoadContent(me; theMakeShape : in out Glue from QANewModTopOpe)
+    ---Purpose: Loads the content of the result.
+    is private;  
+     
+    LoadResult(me; theMakeShape : in out Glue from QANewModTopOpe) 
+    ---Purpose: Loads the result.
+    is private; 
+    
+    IsResultChanged(me; theMakeShape : in out Glue from QANewModTopOpe)  
+     ---Purpose: Returns true if the result is not the same as the object shape.
+    returns Boolean from Standard is private ;  
+     
+    SetContext(me :in out; theObject, theTool : Shape from TopoDS);
+    
+    SetLog(me: in out; theLog : LabelMap from TDF);
+     
+    LoadSectionEdges(me; theMakeShape : in out Glue from QANewModTopOpe)
+    ---Purpose: Loads the deletion of the degenerated edges.
+    is private; 
+         
+    AddToTheUnique(me: in out; theUnique, theIdentifier : Shape from TopoDS) is private;
+
+    RecomputeUnique(me : in out; theMakeShape : in out Glue from QANewModTopOpe)
+    ---Purpose: Reset myShared map - shapes, which are modified by both object and tool.
+    is private; 
+
+    LoadSourceShapes(me; theSources : in out DataMapOfShapeInteger from TopTools)
+    is private;
+
+    LoadUniqueShapes(me: in out; theMakeShape : in out Glue from QANewModTopOpe;
+                                 theSources : DataMapOfShapeInteger from TopTools)
+    ---Purpose: A default implementation for naming of generated  shapes of the operation
+    is  private; 
+     
+    
+fields
+
+    myUnique  : IndexedDataMapOfShapeListOfShape from TopTools;
+
+    myContext : Shape from TopoDS;
+    myLog : LabelMap from TDF;
+
+end Gluing;
+
+    
+-- @@SDM: begin
+
+-- Copyright SAMTECH ..........................................Version    3.0-00
+-- Lastly modified by : mpv                                    Date :  6-09-2002
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       szy ! Creation                                !26-11-2001! 3.0-00-1!
+-- !       mpv ! Specific gluing operation naming        ! 1-02-2002! 3.0-00-2!
+-- !       mpv ! Same history and divided shapes cases   ! 6-09-2002! 3.0-00-3!
+-- +---------------------------------------------------------------------------+
+
+-- @@SDM: end

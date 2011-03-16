@@ -1,0 +1,111 @@
+-- File:	AIS_MultipleConnectedShape.cdl
+-- Created:	Tue Apr 22 17:40:03 1997
+-- Author:	Guest Design
+--		<g_design@hankox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class MultipleConnectedShape from AIS inherits MultipleConnectedInteractive from AIS
+
+    
+	---Purpose: Constructs an Interactive Object connected to a list of
+    	-- Interactive Objects having a Shape. These include
+    	-- AIS_Shape, and AIS_ConnectedShape.
+	-- Presentation of Hidden parts is calculated automatically.
+    	-- You define the Interactive Object by gathering
+    	-- together several other object presentations as in
+    	-- AIS_MultipleConnectedInteractive.
+        
+uses
+
+    PresentationManager3d  from PrsMgr,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,    
+    Shape                from TopoDS,
+    Projector            from Prs3d,
+    Presentation         from Prs3d,
+    Selection            from SelectMgr,
+    Integer              from Standard,
+    Transformation       from Geom,
+    KindOfInteractive    from AIS
+    
+raises
+    NotImplemented from Standard
+
+is
+
+    Create (aShape : Shape from TopoDS) 
+    returns  mutable  MultipleConnectedShape  from  AIS;
+    	---Purpose: Initializes the shape aShape, a multiple connected
+    	-- Interactive Object grouping different
+    	-- projector-dependent representations of an entity.
+    Type(me) returns KindOfInteractive from AIS
+    is redefined virtual;
+
+    Signature(me) returns Integer from Standard
+    is redefined virtual;
+
+    AcceptShapeDecomposition(me) 
+    returns Boolean from Standard is redefined virtual;
+    	---Purpose: Returns true is shape decomposition is accepted.
+
+    Set(me:mutable;ashap : Shape from TopoDS) is static;
+    	---Purpose: Constructs the reference shape ashap.
+    	---C++: inline
+
+    Shape(me)  returns Shape from TopoDS ;
+    	---Purpose: Returns the shape which is constructed in Set.
+    	---C++: inline
+    	---C++: return const&
+
+
+    Compute(me:mutable;
+    	        aProjector   :         Projector    from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined virtual protected;
+ 
+    Compute(me:mutable;
+    	        aProjector   :         Projector    from Prs3d;
+		aTrsf        :         Transformation from Geom;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined virtual protected;
+ 
+    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+                                 aMode      :        Integer   from Standard)
+    is redefined virtual protected;
+    
+    
+    
+    Compute(me:mutable;
+    	        aProjector   :         Projector    from Prs3d;
+                aPresentation: mutable Presentation from Prs3d;
+    	    	aShape       :         Shape from TopoDS)
+    is private;
+     
+    Compute(me:mutable;
+            aPresentationManager :         PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation          from Prs3d;
+            aMode                :         Integer               from Standard = 0)
+    	---Level: Internal 
+    	---Purpose: this method is redefined virtual;
+    	--          when the instance is connected to another
+    	--          InteractiveObject,this method doesn't
+    	--          compute anything, but just uses the 
+    	--          presentation of this last object, with
+    	--          a transformation if there's one stored. 
+    is redefined virtual private;
+
+    Compute(me:mutable;
+    	        aPresentationManager: PresentationManager2d from PrsMgr;
+                aPresentation: mutable GraphicObject from Graphic2d;
+                aMode: Integer from Standard = 0)
+    	---Level: Internal 
+    	---Purpose: this method should fill the presentation according to the
+    	--          enumerated mode of the application and to the display parameter
+    	--          of the application.
+		
+    raises NotImplemented from Standard
+    is redefined;
+    
+fields
+    myShape : Shape   from TopoDS; -- celle qui sert au compute Hidden lines et selection
+end MultipleConnectedShape;

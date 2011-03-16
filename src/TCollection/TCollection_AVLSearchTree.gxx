@@ -1,0 +1,568 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	TCollection_AVLSearchTree.gxx
+// Created:	Thu May 23 16:57:42 1991
+// Author:	Jean-Pierre TIRAULT
+//		Transient implementation
+//
+
+#define TCollection_AVLSearchTreeTrace 0
+// K_TRACE_A_METHOD used also in Engine.cxx, Engine_Signature.cxx,
+// Engine_Argument.cxx, Engine_MyClassCompareOfSignature.cxx and
+// TCollection_AVLSearchTree.gxx (! pour Kernel)
+#define K_TRACE_A_METHOD 0
+#if K_TRACE_A_METHOD
+extern K_Trace_a_Method ;
+#endif
+
+#include <Standard_NoSuchObject.hxx>      
+#include <Standard_Address.hxx>           
+#include <TCollection_Side.hxx>           
+#if TCollection_AVLSearchTreeTrace
+#include <Engine_Signature.hxx>
+#endif
+
+
+//-----------------------------------------------------------------------------
+// Create : creates an empty AVLSearchTCollection_AVLSearchTree
+//-----------------------------------------------------------------------------
+TCollection_AVLSearchTree::
+    TCollection_AVLSearchTree(const Comparator& AComparator) : TheRoot(NULL)
+{
+  TheComparator = AComparator;
+}
+
+
+//----------------------------------------------------------------------------
+Standard_Integer TCollection_AVLSearchTree::Extent () const
+{
+  return TCollection_AVLNode::RecursiveExtent((TCollection_AVLNode*) TheRoot);
+}
+
+
+//----------------------------------------------------------------------------
+Standard_Integer TCollection_AVLSearchTree::TotalExtent () const
+{
+  return TCollection_AVLNode::RecursiveTotalExtent((TCollection_AVLNode*)TheRoot);
+}
+
+//----------------------------------------------------------------------------
+// Find the Node where an item is located
+//----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::Find(const Item& TheItem) const
+{
+  TCollection_AVLNode* aNode = (TCollection_AVLNode*) TheRoot;
+#if TCollection_AVLSearchTreeTrace
+  cout << " ++++++++++++++++++ SEARCH1 +++++++++++++++++++++++++++++" << endl ;
+  cout << "BEGINNING OF SEARCH OF " << TheItem->PForMapOfMethods()->Name()
+       << " in " << hex << TheRoot << dec << endl ;
+#endif
+  while (aNode) {
+    if ( TheComparator.IsLower(TheItem, aNode->Value()) ) {
+      aNode = (TCollection_AVLNode*)aNode->Left();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsLower : Left : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else if ( TheComparator.IsGreater(TheItem, aNode->Value()) ) {
+      aNode = (TCollection_AVLNode*)aNode->Right();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsGreater : Right : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else {
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsEqual : " << hex << aNode
+             << dec << endl ;
+#endif
+      break;
+    }
+  }
+  if ( aNode ) {
+#if TCollection_AVLSearchTreeTrace
+    cout << "FOUND " << aNode->Value()->PForMapOfMethods()->Name() << endl ;
+#endif
+    return Standard_True;
+  }
+#if TCollection_AVLSearchTreeTrace
+  cout << " NOT FOUND" << endl ;
+#endif
+  return Standard_False;
+
+}
+
+//----------------------------------------------------------------------------
+// Find the Node where an item is located and returns the node associated
+//----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::Find(const Item&    TheItem,
+					      Standard_Address& TheNode) const
+{
+  TCollection_AVLNode* aNode = (TCollection_AVLNode*) TheRoot;
+#if TCollection_AVLSearchTreeTrace
+  cout << " ++++++++++++++++++ SEARCH2 +++++++++++++++++++++++++++++" << endl ;
+  cout << "BEGINNING OF SEARCH OF " << TheItem->PForMapOfMethods()->Name()
+       << " in " << hex << TheRoot << dec << endl ;
+#endif
+  while (aNode) {
+    if ( TheComparator.IsLower(TheItem, aNode->Value()) ) {  
+      aNode = (TCollection_AVLNode*)aNode->Left();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsLower : Left : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else if ( TheComparator.IsGreater(TheItem, aNode->Value()) ) {
+      aNode = (TCollection_AVLNode*)aNode->Right();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsGreater : Right : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else {
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsEqual : " << hex << aNode
+             << dec << endl ;
+#endif
+      break;
+    }
+  }
+  if ( aNode ) {
+    TheNode = (Standard_Address) aNode;
+#if TCollection_AVLSearchTreeTrace
+    cout << "FOUND " << aNode->Value()->PForMapOfMethods()->Name() << endl ;
+#endif
+    return Standard_True;
+  }
+#if TCollection_AVLSearchTreeTrace
+  cout << " NOT FOUND" << endl ;
+#endif
+    return Standard_False;
+
+}
+
+//----------------------------------------------------------------------------
+// Find the Node where an item is located
+//----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::Find(const Item& TheItem,
+					      Item& TheOrig) const
+{
+  TCollection_AVLNode* aNode = (TCollection_AVLNode*) TheRoot;
+#if TCollection_AVLSearchTreeTrace
+  cout << " ++++++++++++++++++ SEARCH3 +++++++++++++++++++++++++++++" << endl ;
+  cout << "BEGINNING OF SEARCH OF " << TheItem->PForMapOfMethods()->Name()
+       << " in " << hex << TheRoot << dec << endl ;
+#endif
+  while (aNode) {
+    if ( TheComparator.IsLower(TheItem, aNode->Value()) ) {
+      aNode = (TCollection_AVLNode*)aNode->Left();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsLower : Left : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else if ( TheComparator.IsGreater(TheItem, aNode->Value()) ) {
+      aNode = (TCollection_AVLNode*)aNode->Right();
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsGreater : Right : " << hex
+             << aNode << dec << endl ;
+#endif
+    }
+    else {
+#if K_TRACE_A_METHOD
+      if ( K_Trace_a_Method )
+        cout << "TCollection_AVLSearchTree::Find IsEqual : " << hex << aNode
+             << dec << endl ;
+#endif
+      break;
+    }
+  }
+  if ( aNode ) {
+    TheOrig = aNode->Value();
+#if TCollection_AVLSearchTreeTrace
+    cout << "FOUND " << aNode->Value()->PForMapOfMethods()->Name() << endl ;
+#endif
+    return Standard_True;
+  }
+#if TCollection_AVLSearchTreeTrace
+  cout << " NOT FOUND" << endl ;
+#endif
+  return Standard_False;
+
+}
+
+//----------------------------------------------------------------------------
+// RotateRight
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::RotateRight(Standard_Address& TheNode) const 
+{
+// the left child becomes the parent...
+  TCollection_AVLNode* Temp               = (TCollection_AVLNode*)((TCollection_AVLNode *)TheNode)->Left();
+  ((TCollection_AVLNode *)TheNode)->Left()  = Temp->Right();
+  Temp->Right()                 = (TCollection_AVLNode *)TheNode;
+  TheNode                     = (Standard_Address)Temp;
+}
+
+//-----------------------------------------------------------------------------
+// RotateLeft
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::
+                      RotateLeft(Standard_Address& TheNode) const 
+{
+// the right child becomes the parent...
+  TCollection_AVLNode* Temp               = (TCollection_AVLNode*)((TCollection_AVLNode *)TheNode)->Right();
+  ((TCollection_AVLNode *)TheNode)->Right() = Temp->Left();
+  Temp->Left()                  = (TCollection_AVLNode *)TheNode;
+  TheNode                     = (Standard_Address)Temp;
+}
+
+//-----------------------------------------------------------------------------
+// LeftBalance
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::LeftBalance(Standard_Address& Root) const 
+{
+  TCollection_AVLNode* TheNode = (TCollection_AVLNode*)((TCollection_AVLNode*)Root)->Left();
+  if( TCollection_AVLNode::Height(TheNode->Left()) >= TCollection_AVLNode::Height(TheNode->Right()) )  {
+    RotateRight(Root);
+    return;
+  }
+  Standard_Address Ptr = TheNode;
+  RotateLeft(Ptr);
+  TheNode     = (TCollection_AVLNode*)Ptr;
+  ((TCollection_AVLNode*)Root)->Left() = TheNode;
+  RotateRight(Root);
+}
+
+//----------------------------------------------------------------------------
+// RightBalance
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::RightBalance(Standard_Address& Root) const 
+{
+  TCollection_AVLNode* TheNode = (TCollection_AVLNode*)((TCollection_AVLNode *)Root)->Right();
+  if( TCollection_AVLNode::Height(TheNode->Right()) >= TCollection_AVLNode::Height(TheNode->Left())) {
+    RotateLeft(Root);
+    return;
+  }
+  Standard_Address Ptr = TheNode;
+  RotateRight(Ptr);
+  TheNode     = (TCollection_AVLNode*)Ptr;
+  ((TCollection_AVLNode*)Root)->Right() = TheNode;
+  RotateLeft(Root);
+}
+
+//-----------------------------------------------------------------------------
+// InsertBalance
+//-----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::InsertBalance(Standard_Address& Child,
+                                           const Standard_Address Father,
+		                           const TCollection_Side     theSide) const 
+{
+// Balance after insertion
+  switch (TCollection_AVLNode::Height(((TCollection_AVLNode*)Child)->Left()) - 
+          TCollection_AVLNode::Height(((TCollection_AVLNode*)Child)->Right())) {
+        case 2  : LeftBalance(Child);
+                  if ( Father ) 
+                     ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+                  return Standard_False;
+        case -2 : RightBalance(Child);
+                  if ( Father ) 
+                     ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+                  return Standard_False;
+        case 0  : return Standard_False;
+        default : return Standard_True;
+  }
+}
+
+//----------------------------------------------------------------------------
+// RemoveBalance
+//-----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::
+                           RemoveBalance(Standard_Address& Child, 
+                                   const Standard_Address Father,
+                  	           const TCollection_Side    theSide) const 
+{
+// Balance after Remove           
+  switch (TCollection_AVLNode::Height(((TCollection_AVLNode*)Child)->Left()) - 
+          TCollection_AVLNode::Height(((TCollection_AVLNode*)Child)->Right())) {
+         case 2  : LeftBalance(Child);
+                   if (Father) 
+                      ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+	           return Standard_True;
+         case -2 : RightBalance(Child);
+                   if ( Father ) 
+                      ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+	           return Standard_True;
+	 default : return Standard_True;
+         }
+}
+
+//---------------------------------------------------------------------------
+// RecursiveInsert
+//-----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::
+                           RecursiveInsert(
+				Standard_Address& Child,
+                                    const  Standard_Address  Father,
+				    const  TCollection_Side     theSide,
+                                    const  Item&    theItem,
+                                           Standard_Boolean& forOnce) const 
+{
+
+  TCollection_AVLNode* Temp;
+// DEC C++ need
+  Standard_Address MyTemp;
+// end of DEC C++ need
+  Standard_Boolean  Result = Standard_False;
+  Standard_Integer  Number;
+
+  //-- Firstly find where the item should be insert 
+
+  if(TheComparator.IsLower(theItem, ((TCollection_AVLNode*)Child)->Value() ) ) 
+  //---------------
+  //-- If the item is lower than the root go to left child
+
+    {
+    Temp = (TCollection_AVLNode*)((TCollection_AVLNode*)Child)->Left();
+    //-- If it's a leaf insert it
+    if ( ! Temp ) {
+      ((TCollection_AVLNode*)Child)->Left() = new TCollection_AVLNode(theItem,(TCollection_AVLNode*)0L,(TCollection_AVLNode*)0L);
+      return Standard_True;
+    }
+    //-- else recursive insert...
+    MyTemp = (Standard_Address)Temp;
+    Result = RecursiveInsert( MyTemp, Child, TCollection_Left,
+                               theItem, forOnce);
+    //-- and rebuild the tree, if no problem.
+    if(Result) return InsertBalance(Child, Father, theSide) ;
+    else return Standard_False;
+    }
+
+  else if (TheComparator.IsGreater(theItem, ((TCollection_AVLNode*)Child)->Value())) 
+  //---------------
+  //-- If the item is greater than the root go to right child
+
+    {
+    Temp = (TCollection_AVLNode*)((TCollection_AVLNode*)Child)->Right();
+    //-- If it's a leaf insert it
+    if ( ! Temp ) {
+      ((TCollection_AVLNode*)Child)->Right() = new TCollection_AVLNode(theItem,(TCollection_AVLNode*)0L,(TCollection_AVLNode*)0L); 
+      return Standard_True;
+    }
+    //-- else recursive insert...
+
+    MyTemp = (Standard_Address)Temp;
+    Result = RecursiveInsert( MyTemp, Child, TCollection_Right, 
+                               theItem, forOnce);
+    //-- and rebuild the tree, if no problem.
+    if(Result) return InsertBalance(Child, Father, theSide);
+    else  return Standard_False;
+    }
+
+  else 
+    {
+  //--------------
+  //--  Item is already there; add 1 to its count
+    if (forOnce) {
+      forOnce = Standard_False;
+    }
+    else {
+      Number = ((TCollection_AVLNode*)Child)->Count();
+      ((TCollection_AVLNode*)Child)->Count() = ++Number;
+    }
+    return Standard_False;
+  }
+}
+
+//-----------------------------------------------------------------------------
+// RecursiveRemove
+//-----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::RecursiveRemove(
+                                       Standard_Address& Child, 
+                                 const Standard_Address  Father, 
+		                 const TCollection_Side     theSide,
+                                 const Item&    TheItem,
+			         const Standard_Boolean  ForAll) const 
+{
+  Standard_Boolean Result;
+
+  if ( ! Child ) Standard_NoSuchObject::Raise();// if Child points to something
+
+  TCollection_AVLNode* TheLeft  = (TCollection_AVLNode*)((TCollection_AVLNode*)Child)->Left(); // left children
+  TCollection_AVLNode* TheRight = (TCollection_AVLNode*)((TCollection_AVLNode*)Child)->Right();// right children
+// DEC C++ need
+   Standard_Address MyTheLeft;
+   Standard_Address MyTheRight;
+//
+  if (TheComparator.IsLower(TheItem,((TCollection_AVLNode*)Child)->Value())) 
+  {                                            // TheItem < Value
+    MyTheLeft = (Standard_Address)TheLeft;
+    Result = RecursiveRemove(	    MyTheLeft, // left child becomes root
+                                      Child  , // child becomes father
+                             TCollection_Left, // go to left
+	         	     TheItem         , // same Item
+                             ForAll);
+  }
+  else if (TheComparator.IsGreater(TheItem,(((TCollection_AVLNode*)Child)->Value()))) 
+  {                                            // TheItem > Value
+    MyTheRight = (Standard_Address)TheRight;
+    Result = RecursiveRemove(       MyTheRight,// right child becomes root 
+                                         Child,// child becomes father 
+                             TCollection_Right,// go to right 
+                             TheItem          ,// same Item 
+                             ForAll);
+  }
+  else 
+  {                        
+     //-- The Item has been found
+     ((TCollection_AVLNode*)Child)->Count()--;
+     //-- Is it necessary to remove it ?
+     if (!ForAll && ((TCollection_AVLNode*)Child)->Count() > 0) return Standard_True;
+     //-- In this case we must remove it and rebuild the subtree.
+     if ( TheLeft && TheRight ) 
+      {
+      //-- The subtree has 2 children
+      TCollection_AVLNode* T;
+      TCollection_AVLNode* Temp = TheRight; // From the right child go to 
+      while ( Temp ) {          // the left leaf
+        T    = Temp;
+        Temp = (TCollection_AVLNode*)Temp->Left();
+      }
+      //-- We have the left leaf. Push it at the same level than the
+      //-- node we have removed.
+      ((TCollection_AVLNode*)Child)->Value() = T->Value() ;
+      ((TCollection_AVLNode*)Child)->Count() = T->Count() ;
+      //-- Now we must remove in the right subtree this value; because
+      //-- now it appears twice.
+      MyTheRight = (Standard_Address)TheRight;
+      Result = RecursiveRemove( MyTheRight, Child, TCollection_Right, 
+                                ((TCollection_AVLNode*)Child)->Value(), ForAll);
+      }
+     else 
+      {
+      //-- only one subtree exists (left OR right)
+      //-- First delete the node
+      delete ((TCollection_AVLNode*)Child);
+      //-- Secondly see what is the child not empty
+      if ( ! TheLeft ) { Child = (Standard_Address) TheRight; }
+      else             { Child = (Standard_Address) TheLeft;  }
+      //-- Thirdly update the father node
+// "mip-avril-94 : if (Father is null) => Raise" 
+//    ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+      if ((TCollection_AVLNode*)Father != NULL) 
+             ((TCollection_AVLNode*)Father)->SetChild((TCollection_AVLNode*)Child, theSide);
+      return Standard_True;
+      }
+  }
+  //-- Result = Standard_True means we must reorder the tree.
+  if (Result) return RemoveBalance(Child, Father, theSide);
+  return Standard_False;   //     Child has not been found for now
+       
+}
+
+//----------------------------------------------------------------------------
+// Insert
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::Insert (const Item& theItem)
+{
+  if ( ! TheRoot ) {
+     TheRoot = new TCollection_AVLNode(theItem,(TCollection_AVLNode*)0L,(TCollection_AVLNode*)0L);
+     return;
+  }
+  TCollection_AVLNode* Father = NULL;
+  Standard_Boolean forOnce = Standard_False;
+  RecursiveInsert( TheRoot, (Standard_Address)Father, TCollection_Left, theItem, 
+                   forOnce);
+}
+
+//-----------------------------------------------------------------------------
+// InsertOnce
+//-----------------------------------------------------------------------------
+Standard_Boolean TCollection_AVLSearchTree::InsertOnce (const Item& theItem)
+{
+  if ( ! TheRoot ) {
+    TheRoot = new TCollection_AVLNode(theItem,(TCollection_AVLNode*)0L,(TCollection_AVLNode*)0L);
+    return Standard_True;
+  }
+  TCollection_AVLNode* Father  = NULL;
+  Standard_Boolean  forOnce = Standard_True;
+  RecursiveInsert( TheRoot, (Standard_Address)Father, TCollection_Left, theItem, 
+                   forOnce);
+  //-- forOnce = Standard_False if the item was already in the tree
+  return forOnce;
+}
+
+//-----------------------------------------------------------------------------
+// Remove
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::Remove (const Item& theItem) 
+{
+  TCollection_AVLNode* Father = NULL;
+  //-- remove ONLY ONE item of the tree
+  RecursiveRemove( TheRoot, (Standard_Address)Father, TCollection_Left, theItem,Standard_False);
+}
+
+//----------------------------------------------------------------------------
+// RemoveAll
+//-----------------------------------------------------------------------------
+void TCollection_AVLSearchTree::RemoveAll (const Item& theItem) 
+{
+  TCollection_AVLNode* Father = NULL;
+  //-- Remove ALL item of the tree
+  RecursiveRemove( TheRoot, (Standard_Address)Father, TCollection_Left, theItem,Standard_True);
+}
+
+//----------------------------------------------------------------------------
+// Merge
+//-----------------------------------------------------------------------------
+TCollection_AVLSearchTree TCollection_AVLSearchTree::Merge(const TCollection_AVLSearchTree& aTree) const 
+{
+  Item theItem;
+  // First, make a shallowcopy and push the result into a new tree
+  //
+  TCollection_AVLSearchTree newTree = ShallowCopy();
+  // for test-- newTree.ShallowDump(cout);
+  //
+  TCollection_AVLIterator Iter( aTree );
+  //-- Secondly, make an iterator on the second tree
+  //
+  while( Iter.More()) {
+    //-- Thirdly get back its value
+    //  theItem = ((TCollection_AVLNode*)Iter.Value())->Value();
+    //
+    theItem = Iter.Value();
+    
+    //-- and push them into the new tree.
+    //
+    newTree.Insert(theItem);
+    Iter.Next();
+  }
+
+  return newTree;
+}
+
+//----------------------------------------------------------------------------
+// ShallowCopy 
+//-----------------------------------------------------------------------------
+TCollection_AVLSearchTree TCollection_AVLSearchTree::ShallowCopy() const 
+{
+  // Construct a new tree
+  // with same comparator
+  //
+  TCollection_AVLSearchTree newtree (TheComparator); 
+                         
+  // Copy an TCollection_AVLNode and put
+  // the result as root of new tree  
+  //
+  newtree.SetRoot(TCollection_AVLNode::Copy((TCollection_AVLNode*)TheRoot)) ; 
+
+  return newtree;                           
+}
+

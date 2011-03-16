@@ -1,0 +1,31 @@
+---Copyright:	 Matra Datavision 1992,1993
+---Version: 
+
+---History:
+--  Version	Date         Purpose
+--              01/04/93     Creation
+
+class HashAsciiString from PColStd 
+
+---Purpose: Redefines the HashCode for HAsciiString
+
+inherits HOfAsciiString from PColStd
+
+uses
+
+    HAsciiString  from PCollection
+    
+is
+
+    Create returns HashAsciiString;
+    ---Purpose : Empty constructor.
+
+    HashCode (me; MyKey : HAsciiString ; Upper : Integer) 
+             returns Integer is redefined;
+    ---Purpose : Returns a hashcod value of key bounded by Upper.
+
+    Compare (me; One , Two : HAsciiString) returns Boolean is redefined;
+    ---Purpose : Compare two keys and returns a boolean value
+
+end HashAsciiString;
+

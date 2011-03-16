@@ -1,0 +1,72 @@
+--
+-- File      :  Line.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Line from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESLine, Type <110> Form <0>
+        --          in package IGESGeom
+        --          A line is a bounded, connected portion of a parent straight
+        --          line which consists of more than one point. A line is
+        --          defined by its end points.
+        --          
+        --          From IGES-5.3, two other Forms are admitted (same params) :
+        --          0 remains for standard limited line (the default)
+        --          1 for semi-infinite line (End is just a passing point)
+        --          2 for full infinite Line (both Start and End are abitrary)
+
+uses
+
+        Pnt         from gp,
+        XYZ         from gp
+
+is
+
+        Create returns mutable Line;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me     : mutable; aStart : XYZ; anEnd  : XYZ);
+        ---Purpose : This method is used to set the fields of the class Line
+        --       - aStart : Start point of the line
+        --       - anEnd  : End point of the line
+
+    	Infinite (me) returns Integer;
+	---Purpose : Returns the Infinite status i.e. the Form Number : 0 1 2
+
+    	SetInfinite (me : mutable; status : Integer);
+	---Purpose : Sets the Infinite status
+	--           Does nothing if <status> is not 0 1 or 2
+
+
+        StartPoint(me) returns Pnt;
+        ---Purpose : returns the start point of the line
+
+        TransformedStartPoint(me) returns Pnt;
+        ---Purpose : returns the start point of the line after applying Transf. Matrix
+
+        EndPoint(me) returns Pnt;
+        ---Purpose : returns the end point of the line
+
+        TransformedEndPoint(me) returns Pnt;
+        ---Purpose : returns the end point of the line after applying Transf. Matrix
+
+fields
+
+--
+-- Class    : IGESGeom_Line
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Line.
+--
+-- Reminder : A Line instance is defined by :
+--            A starting and ending point
+
+        theStart : XYZ;
+        theEnd   : XYZ;
+
+end Line;

@@ -1,0 +1,77 @@
+-- File:	Prs3d_WFRestrictedFace.cdl
+-- Created:	Fri Jun 10 11:29:05 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class WFRestrictedFace from Prs3d 
+         (DrawFaceIso     as any;
+    	  RestrictionTool as any)
+	  
+inherits Root from Prs3d
+	 
+
+	---Purpose: 
+
+uses
+    HSurface             from BRepAdaptor,
+    Presentation         from Prs3d,
+    Drawer               from Prs3d, 
+    NListOfSequenceOfPnt from Prs3d,
+    Length               from Quantity
+
+--  Description of the isoparametric curves:
+--  
+
+is
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+        	 aFace: HSurface from BRepAdaptor;
+    	    	 aDrawer: Drawer from Prs3d);
+		 
+    AddUIso(myclass; aPresentation: Presentation from Prs3d; 
+        	     aFace: HSurface from BRepAdaptor;
+    	    	     aDrawer: Drawer from Prs3d);
+		 
+    AddVIso(myclass; aPresentation: Presentation from Prs3d; 
+        	     aFace: HSurface from BRepAdaptor;
+    	    	     aDrawer: Drawer from Prs3d);
+
+    Add(myclass;  aPresentation: Presentation from Prs3d; 
+    	          aFace: HSurface from BRepAdaptor;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  Deflection: Length from Quantity;
+		  NBUiso,NBViso: Integer from Standard;
+		  aDrawer: Drawer from Prs3d; 
+    	    	  Curves: out NListOfSequenceOfPnt from Prs3d);
+		   
+    Match(myclass; X,Y,Z: Length from Quantity;
+                   aDistance: Length from Quantity;
+        	   aFace: HSurface from BRepAdaptor;
+    	    	   aDrawer: Drawer from Prs3d)
+    returns Boolean from Standard;
+		 
+    MatchUIso(myclass; X,Y,Z: Length from Quantity;
+                       aDistance: Length from Quantity;
+        	       aFace: HSurface from BRepAdaptor;
+    	    	       aDrawer: Drawer from Prs3d)
+    returns Boolean from Standard;
+		 
+    MatchVIso(myclass; X,Y,Z: Length from Quantity;
+                       aDistance: Length from Quantity;
+         	       aFace: HSurface from BRepAdaptor;
+    	    	       aDrawer: Drawer from Prs3d)
+    returns Boolean from Standard;
+		 
+    Match(myclass;  X,Y,Z: Length from Quantity;
+                  aDistance: Length from Quantity;
+    	          aFace: HSurface from BRepAdaptor;
+		  DrawUIso, DrawVIso: Boolean from Standard;
+		  Deflection: Length from Quantity;
+		  NBUiso,NBViso: Integer from Standard;
+		  aDrawer: Drawer from Prs3d)
+
+    returns Boolean from Standard;	  
+		   
+end WFRestrictedFace;
+

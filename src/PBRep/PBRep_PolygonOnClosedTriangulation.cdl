@@ -1,0 +1,41 @@
+-- File:	PBRep_PolygonOnClosedTriangulation.cdl
+-- Created:	Tue Oct 24 09:16:52 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PolygonOnClosedTriangulation from PBRep 
+    
+    inherits PolygonOnTriangulation  from  PBRep
+
+
+    	---Purpose: A representation by two arrays of nodes on a 
+    	--          triangulation.
+
+
+uses PolygonOnTriangulation from PPoly,
+     Location               from PTopLoc,
+     Triangulation          from PPoly
+
+
+is
+
+    Create(P1, P2   : PolygonOnTriangulation from PPoly;
+    	   S        : Triangulation    from PPoly;
+	   L        : Location         from PTopLoc)
+    returns mutable PolygonOnClosedTriangulation from PBRep;
+
+
+    IsPolygonOnClosedTriangulation(me)    returns Boolean
+    	---Purpose: Returns True.
+    is redefined;
+
+    PolygonOnTriangulation2(me) 
+    returns any PolygonOnTriangulation from PPoly;
+
+fields
+
+    myPolygon2:  PolygonOnTriangulation from PPoly;
+
+end PolygonOnClosedTriangulation;

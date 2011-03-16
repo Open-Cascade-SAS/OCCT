@@ -1,0 +1,62 @@
+-- File:	Voxel_Selector.cdl
+-- Created:	Wed Jul 30 15:36:49 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class Selector from Voxel
+
+    ---Purpose: Detects voxels in the viewer 3d under the mouse cursor.
+
+uses
+
+    View from V3d,
+    BoolDS from Voxel,
+    ColorDS from Voxel,
+    ROctBoolDS from Voxel
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns Selector from Voxel;
+    
+    Create(view : View from V3d)
+    ---Purpose: A constructor of the selector,
+    --          which initializes the classes
+    --          by a view, where the user selects the voxels.
+    returns Selector from Voxel;
+    
+    Init(me : in out;
+    	 view : View from V3d);
+    ---Purpose: Initializes the selector by a view, 
+    --          where the user selects the voxels.
+
+    SetVoxels(me : in out;
+    	      voxels : BoolDS from Voxel);
+    ---Purpose: Defines the voxels (1bit).
+
+    SetVoxels(me : in out;
+    	      voxels : ColorDS from Voxel);
+    ---Purpose: Defines the voxels (4bit).
+
+    SetVoxels(me : in out;
+    	      voxels : ROctBoolDS from Voxel);
+    ---Purpose: Defines the voxels (1bit recursive splitting).
+
+    Detect(me : in out;
+    	   winx : Integer from Standard;
+	   winy : Integer from Standard;
+	   ix : out Integer from Standard;
+	   iy : out Integer from Standard;
+	   iz : out Integer from Standard)
+    ---Purpose: Detects a voxel under the mouse cursor.
+    returns Boolean from Standard;
+
+fields
+
+    myView : View from V3d;
+    myVoxels : Address from Standard;
+    myIsBool : Integer from Standard; -- 0 - ColorDS, 1 - BoolDS, 2 - ROctBoolDS
+    
+end Selector;

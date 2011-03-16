@@ -1,0 +1,68 @@
+-- File:	Geom_Axis1Placement.cdl
+-- Created:	Tue Mar  9 19:24:06 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+
+class Axis1Placement from Geom inherits AxisPlacement from Geom
+
+	---Purpose : Describes an axis in 3D space.
+    	-- An axis is defined by:
+    	-- - its origin, also termed the "Location point" of the axis,
+    	-- - its unit vector, termed the "Direction" of the axis.
+    	-- Note: Geom_Axis1Placement axes provide the
+    	-- same kind of "geometric" services as gp_Ax1 axes
+    	-- but have more complex data structures. The
+    	-- geometric objects provided by the Geom package
+    	-- use gp_Ax1 objects to include axes in their data
+    	-- structures, or to define an axis of symmetry or axis of rotation.
+    	-- Geom_Axis1Placement axes are used in a context
+    	-- where they can be shared by several objects
+    	-- contained inside a common data structure.
+        
+uses Ax1      from gp, 
+     Ax2      from gp,
+     Dir      from gp,
+     Pnt      from gp,
+     Trsf     from gp,
+     Geometry from Geom
+
+is
+
+
+  Create (A1 : Ax1)   returns mutable Axis1Placement;
+        ---Purpose : Returns a transient copy of A1.
+
+
+  Create (P : Pnt; V : Dir)   returns mutable Axis1Placement;
+        ---Purpose :
+        --  P is the origin of the axis placement and V is the direction
+        --  of the axis placement.
+
+  Ax1 (me)  returns Ax1;
+        ---Purpose : Returns a non transient copy of <me>.
+    	---C++: return const&
+
+  Reverse (me : mutable);
+        ---Purpose : Reverses the direction of the axis placement.
+
+  Reversed (me)  returns mutable Axis1Placement
+        ---Purpose :  Returns a copy of <me> reversed.
+     is static;
+     
+
+  SetDirection (me : mutable; V : Dir);
+        ---Purpose : Assigns V to the unit vector of this axis.
+
+  Transform (me : mutable; T : Trsf);
+    	---Purpose: Applies the transformation T to this axis.
+
+  Copy (me)  returns mutable like me;
+
+    	---Purpose: Creates a new object, which is a copy of this axis.
+  
+end;
+
+

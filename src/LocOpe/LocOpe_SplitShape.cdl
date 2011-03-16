@@ -1,0 +1,144 @@
+-- File:	LocOpe_SplitShape.cdl
+-- Created:	Tue Jul 11 16:58:44 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class SplitShape from LocOpe
+
+	---Purpose: Provides a tool to cut  : 
+	--          - edges with a vertices,
+	--          - faces with wires,   
+	--          and  rebuilds  the shape containing the edges and 
+	--          the faces.
+
+
+uses Vertex                    from TopoDS,
+     Edge                      from TopoDS,
+     Wire                      from TopoDS,
+     Face                      from TopoDS,
+     Shape                     from TopoDS,
+     ListOfShape               from TopTools,
+     MapOfShape                from TopTools,
+     DataMapOfShapeListOfShape from TopTools
+
+raises NotDone           from StdFail,
+       ConstructionError from Standard,
+       NoSuchObject      from Standard
+
+is
+
+    Create
+	---Purpose: Empty constructor.
+    	returns SplitShape from LocOpe;
+	---C++: inline      
+
+
+    Create(S: Shape from TopoDS)
+	---Purpose: Creates the process  with the shape <S>.
+    	returns SplitShape from LocOpe;
+	---C++: inline      
+
+
+    Init(me: in out; S: Shape from TopoDS)
+	---Purpose: Initializes the process on the shape <S>.
+    	is static;
+
+
+    CanSplit(me; E: Edge from TopoDS)
+	---Purpose: Tests if it is possible to split the edge <E>.
+    	returns Boolean from Standard
+	is static;
+
+
+    Add(me: in out; V: Vertex from TopoDS;
+		    P: Real   from Standard;
+    	    	    E: Edge   from TopoDS)
+		    
+	---Purpose: Adds the vertex <V> on the edge <E>, at parameter <P>.
+    	raises ConstructionError from Standard
+    	-- The exception   ConstructionError is   raised  if  CanSplit
+    	-- returns  Standard_False,  or    if  P  is not   inside  the
+    	-- parametric  bounds   <E>.  
+
+	is static;
+
+
+    Add(me: in out; W: Wire from TopoDS;
+    	            F: Face from TopoDS)
+	---Purpose: Adds the wire <W> on the face <F>.
+    	raises NoSuchObject from Standard,
+	       -- if <F> does not belong to the original shape.
+	       ConstructionError from Standard
+	       -- for  a closed wire,  if  it  is  not included in   a
+	       -- sub-face of <F>
+	       -- for an open  wire, if it does  not begin and  end on
+	       -- wire(s) of a sub-face of <F>
+	is static;
+    
+
+    Shape(me)
+	---Purpose: Returns the "original" shape.
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline      
+	is static;
+
+
+    DescendantShapes(me: in out; S: Shape from TopoDS)
+	---Purpose: Returns the list of descendant shapes of <S>.
+    	returns ListOfShape from TopTools
+	---C++: return const&
+    	raises NoSuchObject from Standard
+	is static;
+
+
+    LeftOf(me: in out; W: Wire from TopoDS; F: Face from TopoDS)
+	---Purpose: Returns the "left" part defined by the wire <W> on
+	--          the face <F>.   The  returned list of shape  is in
+	--          fact  a list of faces. The  face <F> is considered
+	--          with its topological  orientation  in the original
+	--          shape.  <W> is considered with its orientation.
+
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	raises NoSuchObject from Standard
+	-- The  exception is raised if the  shape  is null or does not
+	-- contain the face.
+	is static;
+
+
+-- 
+-- 
+-- -- Private implementation methods
+
+    AddOpenWire(me: in out; W: Wire from TopoDS; F: Face from TopoDS)
+    
+    	is static private;
+
+
+    AddClosedWire(me: in out; W: Wire from TopoDS; F: Face from TopoDS)
+    
+    	is static private;
+
+
+    Put(me: in out; S: Shape from TopoDS)
+    	is static private;
+    	
+
+    Rebuild(me: in out; S: Shape from TopoDS)
+    	returns Boolean from Standard
+    	is static private;
+    	
+
+
+fields
+
+    myDone   : Boolean                   from Standard;
+    myShape  : Shape                     from TopoDS;
+    myMap    : DataMapOfShapeListOfShape from TopTools;
+    myDblE   : MapOfShape                from TopTools;
+    myLeft   : ListOfShape               from TopTools;
+
+end SplitShape;

@@ -1,0 +1,145 @@
+-- File:	BRepPrimAPI_MakeRevol.cdl
+-- Created:	Tue Oct 12 11:45:39 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+-- Modified by skv - Fri Mar  4 15:50:09 2005
+-- Add methods for supporting history.
+
+class MakeRevol from BRepPrimAPI inherits MakeSweep from BRepPrimAPI
+
+	---Purpose: Class to make revolved sweep topologies.
+	--          
+	--          a revolved sweep is defined by :
+	--          
+	--          * A basis topology which is swept.
+	--          
+	--            The   basis topology  must   not  contain solids
+	--            (neither composite solids.).
+	--            
+	--            The basis topology  may be copied  or  shared in
+	--            the result.
+	--            
+	--          * A rotation axis and angle :
+	--          
+	--            - The axis is an Ax1 from gp.
+	--            
+	--            - The angle is in [0, 2*Pi].
+	--            
+	--            - The angle default value is 2*Pi.
+	--          
+	--          
+	--          The result is a topology with a higher dimension :
+	--          
+	--            - Vertex -> Edge.
+	--            - Edge   -> Face.
+	--            - Wire   -> Shell.
+	--            - Face   -> Solid.
+	--            - Shell  -> CompSolid.
+	--            
+	--            Sweeping a Compound sweeps  the elements  of the
+	--            compound  and creates    a  compound with    the
+	--            results. 
+	--           
+
+uses
+    Revol      from BRepSweep,
+    Shape      from TopoDS,
+    ListOfShape from TopTools,
+    Edge       from TopoDS,
+    Ax1        from gp
+
+is
+
+    Create (S    : Shape   from TopoDS;
+    	    A    : Ax1     from gp;
+	    D    : Real    from Standard;
+    	    Copy : Boolean from Standard = Standard_False)
+        ---Purpose: Builds the Revol of base S, axis  A and angle  D. If C
+        --          is true, S is copied.
+	---Level: Public
+    returns MakeRevol from BRepPrimAPI;
+
+
+    Create (S    : Shape   from TopoDS;
+    	    A    : Ax1     from gp;
+    	    Copy : Boolean from Standard = Standard_False)
+        ---Purpose: Builds the Revol of base S, axis  A and angle 2*Pi. If
+        --          C is true, S is copied.
+	---Level: Public
+    returns MakeRevol from BRepPrimAPI;
+
+
+    Revol(me) returns Revol from BRepSweep
+	---Purpose: Returns the internal sweeping algorithm.
+	--          
+	---C++: return const &
+	---Level: Public
+    is static;
+
+    
+    Build(me : in out)
+    is redefined;
+	---Purpose: Builds the resulting shape (redefined from MakeShape).
+	---Level: Public    
+
+
+    FirstShape (me : in out)
+    	---Purpose: Returns the first shape of the revol  (coinciding with
+    	--          the generating shape).
+    returns Shape from TopoDS;
+
+
+    LastShape (me : in out)
+    	---Purpose: Returns the TopoDS Shape of the end of the revol.
+    returns Shape from TopoDS;
+
+
+    Generated (me: in out; S : Shape from TopoDS)
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined;
+
+-- Modified by skv - Fri Mar  4 15:50:09 2005 Begin
+-- Add methods for supporting history. 
+
+    FirstShape (me : in out; theShape : Shape from TopoDS)
+    	---Purpose: Returns the TopoDS Shape of the beginning of the revolution,
+    	--          generated with theShape  (subShape of the generating shape).
+    returns Shape from TopoDS
+    is static;
+
+
+    LastShape (me : in out; theShape : Shape from TopoDS)
+    	---Purpose: Returns the TopoDS Shape of the end of the revolution,
+    	--          generated with  theShape (subShape of the  generating shape).
+    returns Shape from TopoDS
+    is static;
+ 
+
+    HasDegenerated(me) 
+    	---Purpose: Check if there are degenerated edges in the result.
+        ---Level: Public
+    returns Boolean from Standard 
+    is static;
+ 
+
+    Degenerated(me)
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is static;
+ 
+-- Modified by skv - Fri Mar  4 15:50:09 2005 End
+
+ 
+fields
+
+    myRevol      :  Revol       from BRepSweep; 
+    myDegenerated:  ListOfShape from TopTools;   -- skv
+    
+
+end MakeRevol;

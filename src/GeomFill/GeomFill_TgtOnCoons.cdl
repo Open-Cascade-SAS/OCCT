@@ -1,0 +1,42 @@
+-- File:	GeomFill_TgtOnCoons.cdl
+-- Created:	Mon Dec  4 11:26:10 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class TgtOnCoons from GeomFill inherits TgtField from GeomFill
+
+	---Purpose: Defines   an   algorithmic  tangents  field   on a
+	--          boundary of a CoonsAlgPatch.
+
+uses
+    Vec           from gp,
+    BSpline       from Law,
+    CoonsAlgPatch from GeomFill
+
+is
+    Create(K : CoonsAlgPatch from GeomFill;
+           I : Integer from Standard)
+    returns mutable TgtOnCoons from GeomFill;
+
+    Value(me; W : Real from Standard)
+    returns Vec from gp;
+    ---Purpose: Computes  the value  of the    field of tangency    at
+    --          parameter W.
+
+    D1(me; W : Real from Standard)
+    returns Vec from gp;
+    ---Purpose: Computes the  derivative of  the field of  tangency at
+    --          parameter W.
+
+    D1(me; W : Real from Standard; T, DT : out Vec from gp);
+    ---Purpose: Computes the value and the  derivative of the field of
+    --          tangency at parameter W.
+
+fields
+
+    myK    : CoonsAlgPatch from GeomFill;
+    ibound : Integer from Standard;
+
+end TgtOnCoons;

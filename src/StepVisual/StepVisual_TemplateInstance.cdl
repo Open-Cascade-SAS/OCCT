@@ -1,0 +1,22 @@
+-- File:        TemplateInstance.cdl
+-- Created:     Fri Dec  1 11:11:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TemplateInstance from StepVisual 
+
+inherits MappedItem from StepRepr
+
+uses
+
+	HAsciiString from TCollection, 
+	RepresentationMap from StepRepr,
+	RepresentationItem from StepRepr
+is
+
+	Create returns mutable TemplateInstance;
+	---Purpose: Returns a TemplateInstance
+
+
+end TemplateInstance;

@@ -1,0 +1,88 @@
+-- File:	BinMDataStd.cdl
+-- Created:	Wed Oct 30 14:49:06 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package BinMDataStd 
+
+        ---Purpose: Storage and Retrieval drivers for modelling attributes.
+
+uses BinMDF,
+     BinObjMgt,
+     TDF,
+     CDM
+
+is
+        ---Purpose: Storage/Retrieval drivers for TDataStd attributes
+        --          =======================================
+
+    class NameDriver;
+
+    class IntegerDriver;
+
+    class RealDriver;
+
+    class IntegerArrayDriver;
+
+    class RealArrayDriver;
+
+    class UAttributeDriver;
+
+    class DirectoryDriver;
+
+    class CommentDriver;
+
+    class VariableDriver;
+
+    class ExpressionDriver;
+
+    class RelationDriver;
+
+    class NoteBookDriver;
+
+    class TreeNodeDriver;
+
+    class ExtStringArrayDriver; 
+
+      
+    -- Extension 
+    
+    class TickDriver;  
+    
+    class AsciiStringDriver;  
+    
+    class IntPackedMapDriver;
+    
+    -- Lists: 
+    
+    class IntegerListDriver; 
+    
+    class RealListDriver; 
+    
+    class ExtStringListDriver; 
+    
+    class BooleanListDriver; 
+    
+    class ReferenceListDriver;
+    
+    -- Arrays: 
+    
+    class BooleanArrayDriver; 
+    
+    class ReferenceArrayDriver; 
+    
+    class ByteArrayDriver;  
+              
+    class NamedDataDriver;  
+    
+    
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>. 
+	 
+    SetDocumentVersion (DocVersion  : Integer from Standard); 
+    
+    DocumentVersion returns Integer from Standard; 
+    
+end BinMDataStd;

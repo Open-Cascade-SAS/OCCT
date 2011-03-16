@@ -1,0 +1,21 @@
+-- File:	Plugin.cdl
+-- Created:	Fri Feb 28 16:58:57 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package Plugin
+
+    uses TCollection,OSD
+
+is
+
+    exception Failure inherits Failure from Standard;
+
+    private class MapOfFunctions instantiates DataMap from TCollection(AsciiString from TCollection ,Function from OSD, AsciiString from TCollection);
+
+
+    Load(aGUID: GUID from Standard) returns Transient from Standard
+    raises Failure  from Plugin;
+
+end Plugin;

@@ -1,0 +1,114 @@
+-- File:	BOPTools_DEProcessor.cdl
+-- Created:	Wed Sep 12 12:08:37 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class DEProcessor from BOPTools 
+
+	---Purpose:  
+    	--   
+    	--  The  Algorithm to compute and store in interferences' pool 
+	--- and in the Data  Structure  the following values        
+    	--- for degenerated edges 
+	---         1.  Paves/Pave set(s)
+	---         2.  Split parts 
+	---         3.  States (3D) for split parts 
+        --- 
+	
+uses  
+
+    Vertex from TopoDS,
+    Edge   from TopoDS, 
+    Face   from TopoDS, 
+     
+    PPaveFiller     from BOPTools, 
+    PaveFiller      from BOPTools,   
+    ListOfPaveBlock from BOPTools,
+     
+    PShapesDataStructure from BooleanOperations, 
+    
+    IndexedDataMapOfIntegerDEInfo from BOPTools	  
+
+
+
+is
+    Create (aFiller: PaveFiller from BOPTools; 
+    	    aDim  : Integer from Standard=3) 
+    	returns  DEProcessor from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    Do(me:out);   
+    	---Purpose: 
+    	--- Launches the processor   
+    	---
+    IsDone(me) 
+    	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns TRUE if it is Ok       
+    	---
+    --- 
+    ---    Private block 
+    ---
+    ---
+    FindDegeneratedEdges (me:out) 
+    	is  private; 
+	
+    DoPaves  (me:out) 
+    	is  private; 
+	 
+    FindPaveBlocks (me:out; 
+    	    nED:Integer from Standard; 
+    	    nVD:Integer from Standard; 
+    	    nFD:Integer from Standard; 
+    	    aLPB:out ListOfPaveBlock from BOPTools) 
+    	is  private; 
+     
+    FillPaveSet (me:out; 
+    	    nED:Integer from Standard; 
+    	    nVD:Integer from Standard; 
+    	    nFD:Integer from Standard; 
+    	    aLPB:out ListOfPaveBlock from BOPTools) 
+    	is  private; 
+
+    FillSplitEdgesPool(me:out; 
+    	    nED:Integer from Standard)
+    	is  private; 
+  
+    MakeSplitEdges(me:out; 
+    	    nED:Integer from Standard;
+    	    nFD:Integer from Standard)
+    	is  private;   
+	 
+    MakeSplitEdge  (me:out;   
+        	    aS1: Edge from TopoDS; 
+		    aF : Face from TopoDS;	     
+		    aV1: Vertex from TopoDS;	     
+   	    	    aP1: Real from Standard; 
+    	    	    aV2: Vertex from TopoDS; 
+		    aP2: Real from Standard; 
+    	    	    aNewEdge:out Edge from TopoDS) 
+    	is  private; 		
+     
+    DoStates  (me:out; 
+    	    nED:Integer from Standard;
+    	    nFD:Integer from Standard)
+    	is  private;    
+	 
+    DoStates2D  (me:out; 
+    	    nED:Integer from Standard;
+    	    nFD:Integer from Standard)
+    	is  private; 
+	 
+fields 
+    myDim     : Integer from Standard;     
+    
+    myFiller  : PPaveFiller from BOPTools; 
+    myDS      : PShapesDataStructure from BooleanOperations;
+    myIsDone  : Boolean   from Standard;   
+    myDEMap   : IndexedDataMapOfIntegerDEInfo from BOPTools; 
+       
+	     
+end DEProcessor;

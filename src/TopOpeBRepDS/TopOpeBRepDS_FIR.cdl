@@ -1,0 +1,20 @@
+class FIR from TopOpeBRepDS 
+
+---Purpose: FaceInterferenceReducer
+
+uses
+
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS
+
+is
+
+    Create(HDS : HDataStructure) returns FIR from TopOpeBRepDS;
+    ProcessFaceInterferences(me:out;M:DataMapOfShapeListOfShapeOn1State);
+    ProcessFaceInterferences(me:out;I:Integer;M:DataMapOfShapeListOfShapeOn1State);
+
+fields
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    
+end FIR from TopOpeBRepDS;

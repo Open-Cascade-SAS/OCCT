@@ -1,0 +1,56 @@
+-- File:	TopOpeBRepDS_SurfaceCurveInterference.cdl
+-- Created:	Wed Jun 23 12:14:15 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class SurfaceCurveInterference from TopOpeBRepDS 
+    inherits Interference from TopOpeBRepDS
+
+    ---Purpose: an interference with a 2d curve
+
+uses
+
+    Transition  from TopOpeBRepDS,
+    Kind        from TopOpeBRepDS,
+    Curve       from Geom2d,
+    OStream     from Standard
+    
+is
+
+    Create returns mutable SurfaceCurveInterference from TopOpeBRepDS;
+
+    Create(Transition   : Transition from TopOpeBRepDS;
+	   SupportType  : Kind from TopOpeBRepDS;
+	   Support      : Integer;
+	   GeometryType : Kind from TopOpeBRepDS;
+	   Geometry     : Integer;
+    	   PC : Curve from Geom2d) 
+    returns mutable SurfaceCurveInterference from TopOpeBRepDS; 
+
+    Create(I : Interference from TopOpeBRepDS)
+    returns mutable SurfaceCurveInterference from TopOpeBRepDS; 
+	    
+    PCurve(me) returns any Curve from Geom2d is static;
+	---C++: return const &
+
+    PCurve(me : mutable; PC : Curve from Geom2d) is static;
+
+    DumpPCurve(me; OS : in out OStream from Standard; 
+                   compact : Boolean = Standard_True)
+    ---C++: return &
+    returns OStream from Standard
+    is static;
+
+    Dump(me; OS : in out OStream from Standard)
+    ---C++: return &
+    returns OStream from Standard
+    is redefined;
+    
+fields
+
+    myPCurve : Curve from Geom2d;
+
+end SurfaceCurveInterference from TopOpeBRepDS;

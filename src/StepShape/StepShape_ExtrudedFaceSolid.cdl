@@ -1,0 +1,47 @@
+-- File:	StepShape_ExtrudedFaceSolid.cdl
+-- Created:	Thu Mar 11 11:08:17 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ExtrudedFaceSolid from StepShape 
+inherits SweptFaceSolid from StepShape
+
+uses
+
+    	Direction from StepGeom, 
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	FaceSurface from StepShape
+
+is
+
+	Create returns mutable ExtrudedFaceSolid;
+	---Purpose: Returns a ExtrudedFaceSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable FaceSurface from StepShape) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable FaceSurface from StepShape;
+	      aExtrudedDirection : mutable Direction from StepGeom;
+	      aDepth : Real from Standard) ;
+
+	-- Specific Methods for Field Data Access --
+
+	SetExtrudedDirection(me : mutable; aExtrudedDirection : mutable Direction);
+	ExtrudedDirection (me) returns mutable Direction;
+	SetDepth(me : mutable; aDepth : Real);
+	Depth (me) returns Real;
+
+
+fields
+
+	extrudedDirection : Direction from StepGeom;
+	depth : Real from Standard;
+
+end ExtrudedFaceSolid;

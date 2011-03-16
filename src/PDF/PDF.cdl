@@ -1,0 +1,41 @@
+-- File:	PDF.cdl
+--      	-------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+package PDF 
+
+	---Purpose: This pakage is the persistent equivalent of
+	--          TDF. It describes persistent classes used to store
+	--          a TDF structure into a Database.
+
+
+uses
+
+    Standard,
+    PCollection,
+    PColStd
+
+is
+
+    class Data;
+    
+    
+    deferred class Attribute;
+
+    class TagSource; 
+
+    class Reference;
+
+    -- Instantiations ---------------------------------------------------
+
+    class HAttributeArray1 from PDF instantiates HArray1 from PCollection
+    	(Attribute from PDF);
+
+end PDF;

@@ -1,0 +1,40 @@
+inline void Contap_ArcFunction::Set(const gp_Dir& Direction,
+				    const Standard_Real Angle)
+{
+  myType = Contap_DraftStd;
+  myDir  = Direction;
+  myCosAng = Cos(PI/2.+Angle);
+}
+
+inline void Contap_ArcFunction::Set(const gp_Pnt& Eye,
+				    const Standard_Real Angle)
+{
+  myType = Contap_DraftPrs;
+  myEye  = Eye;
+  myCosAng = Cos(PI/2.+Angle);
+}
+
+inline void Contap_ArcFunction::Set(const gp_Dir& Direction)
+{
+  myType = Contap_ContourStd;
+  myDir  = Direction;
+}
+
+inline void Contap_ArcFunction::Set(const gp_Pnt& Eye)
+{
+  myType = Contap_ContourPrs;
+  myEye  = Eye;
+}
+
+inline void Contap_ArcFunction::Set(const TheArc& A)
+{
+  myArc = A;
+  seqpt.Clear();
+}
+
+inline const gp_Pnt& Contap_ArcFunction::Valpoint
+  (const Standard_Integer Index) const
+{
+  return seqpt(Index);
+}
+

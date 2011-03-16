@@ -1,0 +1,97 @@
+-- File:	Intersection.cdl
+-- Created:	Fri Aug 21 10:41:54 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class Intersection from HLRAlgo
+
+	---Purpose: Describes  an intersection  on   an edge to  hide.
+	--          Contains a parameter and   a state (ON =   on  the
+	--          face, OUT = above the face, IN = under the Face)
+
+uses
+    Integer     from Standard,
+    Real        from Standard,
+    ShortReal   from Standard,
+    Orientation from TopAbs,
+    State       from TopAbs
+
+is
+    Create returns Intersection from HLRAlgo;
+
+    Create(Ori    : Orientation from TopAbs;
+           Lev    : Integer     from Standard;
+           SegInd : Integer     from Standard;
+           Ind    : Integer     from Standard;
+           P      : Real        from Standard;
+           Tol    : ShortReal   from Standard;
+           S      : State       from TopAbs)
+    returns Intersection from HLRAlgo;
+    
+    Orientation(me : in out; Ori : Orientation from TopAbs)
+	---C++: inline
+    is static;
+
+    Orientation(me) returns Orientation from TopAbs
+	---C++: inline
+    is static;
+    
+    Level(me : in out; Lev : Integer from Standard)
+	---C++: inline
+    is static;
+
+    Level(me) returns Integer from Standard
+	---C++: inline
+    is static;
+    
+    SegIndex(me : in out; SegInd : Integer from Standard)
+	---C++: inline
+    is static;
+
+    SegIndex(me) returns Integer from Standard
+	---C++: inline
+    is static;
+    
+    Index(me : in out; Ind : Integer from Standard)
+	---C++: inline
+    is static;
+
+    Index(me) returns Integer from Standard
+	---C++: inline
+    is static;
+    
+    Parameter(me : in out; P : Real from Standard)
+	---C++: inline
+    is static;
+
+    Parameter(me) returns Real from Standard
+	---C++: inline
+    is static;
+    
+    Tolerance(me : in out; T : ShortReal from Standard)
+	---C++: inline
+    is static;
+    
+    Tolerance(me) returns ShortReal from Standard
+	---C++: inline
+    is static;
+    
+    State(me : in out; S : State from TopAbs)
+	---C++: inline
+    is static;
+
+    State(me) returns State from TopAbs
+	---C++: inline
+    is static;
+
+fields
+    myOrien    : Orientation from TopAbs;
+    mySegIndex : Integer     from Standard;
+    myIndex    : Integer     from Standard;
+    myLevel    : Integer     from Standard;
+    myParam    : Real        from Standard;
+    myToler    : ShortReal   from Standard;
+    myState    : State       from TopAbs;
+
+end Intersection;

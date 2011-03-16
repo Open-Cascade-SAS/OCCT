@@ -1,0 +1,56 @@
+-- File:	StepRepr_ProductConcept.cdl
+-- Created:	Fri Nov 26 16:26:38 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ProductConcept from StepRepr
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ProductConcept
+
+uses
+    HAsciiString from TCollection,
+    ProductConceptContext from StepBasic
+
+is
+    Create returns ProductConcept from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aId: HAsciiString from TCollection;
+                       aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aMarketContext: ProductConceptContext from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Id (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Id
+    SetId (me: mutable; Id: HAsciiString from TCollection);
+	---Purpose: Set field Id
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    MarketContext (me) returns ProductConceptContext from StepBasic;
+	---Purpose: Returns field MarketContext
+    SetMarketContext (me: mutable; MarketContext: ProductConceptContext from StepBasic);
+	---Purpose: Set field MarketContext
+
+fields
+    theId: HAsciiString from TCollection;
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theMarketContext: ProductConceptContext from StepBasic;
+    defDescription: Boolean; -- flag "is Description defined"
+
+end ProductConcept;

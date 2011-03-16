@@ -1,0 +1,249 @@
+-- File:	HLRTopoBRep_Data.cdl
+-- Created:	Mon Oct 24 15:33:05 1994
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+class Data from HLRTopoBRep
+
+	---Purpose: Stores  the results  of  the  OutLine and  IsoLine
+	--          processes.
+
+uses
+    Boolean                                from Standard,
+    Real                                   from Standard,
+    Address                                from Standard,
+    Face                                   from TopoDS,
+    Edge                                   from TopoDS,
+    Vertex                                 from TopoDS,
+    Shape                                  from TopoDS,
+    ListOfShape                            from TopTools,
+    MapOfShape                             from TopTools,
+    DataMapOfShapeShape                    from TopTools,
+    DataMapOfShapeListOfShape              from TopTools,
+    DataMapOfShapeFaceData                 from HLRTopoBRep,
+    MapOfShapeListOfVData                  from HLRTopoBRep,
+    ListIteratorOfListOfVData              from HLRTopoBRep,
+    DataMapIteratorOfMapOfShapeListOfVData from HLRTopoBRep
+
+is
+    Create returns Data from HLRTopoBRep;
+
+    --
+    --  Methods to Clean the Data
+    --  
+
+    Clear(me : in out)
+	---Purpose: Clear of all the maps.
+    is static;
+
+    Clean(me : in out)
+	---Purpose: Clear of all the data  not needed during and after
+	--          the hiding process.
+    is static;
+
+    --
+    --  Methods to inquire the results
+    --  
+
+    EdgeHasSplE(me; E : Edge from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns True if the Edge is split.
+    is static;
+    
+    FaceHasIntL(me; F : Face from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns True if the Face has internal outline.
+    is static;
+    
+    FaceHasOutL(me; F : Face from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns True if the Face has outlines on restriction.
+    is static;
+    
+    FaceHasIsoL(me; F : Face from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns True if the Face has isolines.
+    is static;
+    
+    IsSplEEdgeEdge(me; E1 : Edge from TopoDS;
+                       E2 : Edge from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    IsIntLFaceEdge(me; F : Face from TopoDS;
+                       E : Edge from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    IsOutLFaceEdge(me; F : Face from TopoDS;
+                       E : Edge from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    IsIsoLFaceEdge(me; F : Face from TopoDS;
+                       E : Edge from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    NewSOldS(me; New : Shape from TopoDS) 
+    returns Shape from TopoDS
+    is static;
+
+    EdgeSplE(me; E : Edge from TopoDS) 
+    returns ListOfShape from TopTools
+	---Purpose: Returns the list of the edges.
+        ---C++: inline
+	---C++: return const &
+    is static;
+
+    FaceIntL(me; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---Purpose: Returns the list of the internal OutLines.
+        ---C++: inline
+	---C++: return const &
+    is static;
+
+    FaceOutL(me; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---Purpose: Returns the list of the OutLines on restriction.
+        ---C++: inline
+	---C++: return const &
+    is static;
+
+    FaceIsoL(me; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---Purpose: Returns the list of the IsoLines.
+        ---C++: inline
+	---C++: return const &
+    is static;
+
+    IsOutV(me; V : Vertex from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns  True   if V is  an   outline vertex  on a
+	--          restriction.
+        ---C++: inline
+    is static;
+    
+    IsIntV(me; V : Vertex from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns True if V is an internal outline vertex.
+        ---C++: inline
+    is static;
+    
+    
+    --
+    --    Methods to store the results
+    --     
+    
+    AddOldS(me : in out; NewS,OldS : Shape from TopoDS)
+    is static;
+    
+    AddSplE(me : in out; E : Edge from TopoDS) 
+    returns ListOfShape from TopTools
+	---C++: return &
+    is static;
+    
+    AddIntL(me : in out; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---C++: return &
+    is static;
+
+    AddOutL(me : in out; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---C++: return &
+    is static;
+
+    AddIsoL(me : in out; F : Face from TopoDS) 
+    returns ListOfShape from TopTools
+	---C++: return &
+    is static;
+
+    AddOutV(me : in out; V : Vertex from TopoDS)
+        ---C++: inline
+    is static;
+    
+    AddIntV(me : in out; V : Vertex from TopoDS)
+        ---C++: inline
+    is static;
+    
+    --
+    --     Methods to iterate on the edges with vertices
+    --     
+    
+    InitEdge(me : in out)
+    is static;
+    
+    MoreEdge(me) returns Boolean from Standard
+        ---C++: inline
+    is static;
+    
+    NextEdge(me : in out)
+    is static;
+    
+    Edge(me) returns Edge from TopoDS
+        ---C++: inline
+	---C++: return const &
+    is static;
+    
+    --
+    --     Methods  to access the  list of vertices with parameters on
+    --     an edge
+    --     
+    
+    InitVertex(me : in out; E : Edge from TopoDS)
+	---Purpose: Start an iteration on the vertices of E.
+    is static;
+    
+    MoreVertex(me) returns Boolean from Standard
+        ---C++: inline
+    is static;
+    
+    NextVertex(me : in out)
+        ---C++: inline
+    is static;
+    
+    Vertex(me) returns Vertex from TopoDS
+	---C++: return const &
+    is static;
+    
+    Parameter(me) returns Real from Standard
+    is static;
+    
+    InsertBefore(me : in out; V : Vertex from TopoDS;
+                              P : Real   from Standard)
+	---Purpose: Insert before the current position.
+    is static;
+    
+    Append(me : in out; V : Vertex from TopoDS;
+                        P : Real   from Standard)
+    is static;
+    
+fields
+
+    myOldS : DataMapOfShapeShape from TopTools;
+    -- For a shape of the result gives a shape from the original.
+
+    mySplE : DataMapOfShapeListOfShape from TopTools;
+    -- For a splitted edge the list of split edges.
+
+    myData : DataMapOfShapeFaceData from HLRTopoBRep;
+    -- For a face the FaceData.
+
+    myOutV : MapOfShape from TopTools;
+    -- utline vertices on restriction.
+
+    myIntV : MapOfShape from TopTools;
+    -- Internal outline vertices.
+
+    myEdgesVertices : MapOfShapeListOfVData from HLRTopoBRep;
+    -- List of vertices on the edge with parameter.
+    -- Sorted by increasing parameter values.
+
+    myEIterator : DataMapIteratorOfMapOfShapeListOfVData from HLRTopoBRep;
+
+    myVIterator : ListIteratorOfListOfVData from HLRTopoBRep;
+    
+    myVList : Address from Standard;
+
+end Data;

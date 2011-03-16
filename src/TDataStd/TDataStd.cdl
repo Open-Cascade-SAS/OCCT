@@ -1,0 +1,202 @@
+-- File:	TDataStd.cdl
+-- Created:	Wed May 10 10:48:16 1995
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1995
+
+
+
+package TDataStd 
+
+	---Purpose:  This  package  defines   standard attributes for
+	--           modelling. 
+	-- These allow you to create and modify labels
+	-- and attributes for many basic data types.
+	-- Standard topological and visualization
+	-- attributes have also been created.
+	-- To find an attribute attached to a specific label,
+	-- you use the GUID of the type of attribute you
+	-- are looking for. To do this, first find this
+	-- information using the method GetID as follows: Standard_GUID anID =
+	-- MyAttributeClass::GetID();
+	-- Then, use the method Find for the label as follows:
+	-- Standard_Boolean HasAttribute
+	-- =
+	-- aLabel.Find(anID,anAttribute);
+	-- Note
+	-- For information on the relations between this
+	-- component of OCAF and the others, refer to the OCAF User's Guide.
+	
+    ---  Category: GUID - AttributeID
+    --           2a96b606-ec8b-11d0-bee7-080009dc3333	TDataStd_Integer 
+    
+    --           2a96b608-ec8b-11d0-bee7-080009dc3333	TDataStd_Name	
+    --           2a96b60f-ec8b-11d0-bee7-080009dc3333	TDataStd_Real	
+    --           2a96b610-ec8b-11d0-bee7-080009dc3333	TDataStd_Reference
+    --           2a96b616-ec8b-11d0-bee7-080009dc3333	TDataStd_Comment  
+    --           2a96b61c-ec8b-11d0-bee7-080009dc3333   TDataStd_UAttribute  	
+    --           2a96b61d-ec8b-11d0-bee7-080009dc3333   TDataStd_IntegerArray        
+    --           2a96b61e-ec8b-11d0-bee7-080009dc3333   TDataStd_RealArray
+    --           2a96b624-ec8b-11d0-bee7-080009dc3333   TDataStd_ExtStringArray
+    --           2a96b609-ec8b-11d0-bee7-080009dc3333	TDataStd_NoteBook
+    --           2a96b61f-ec8b-11d0-bee7-080009dc3333   TDataStd_Directory
+
+
+
+
+uses Standard,
+     MMgt,
+     TCollection,
+     TColStd,
+     TDF
+
+
+is
+    enumeration RealEnum is 
+        ---Purpose:
+	-- The terms of this enumeration define the
+	-- semantics of a real number value.       
+      SCALAR,
+      LENGTH,
+      ANGULAR
+    end RealEnum;    
+                  
+    ---Category:  Basic  attributes
+    --           ===================
+
+
+    class Current;
+
+    class Name;
+    
+    class Comment;
+    
+    class Integer; 
+    
+    class IntegerArray;    
+    
+    class Real;
+    
+    class RealArray;
+    
+    class ExtStringArray;
+
+    class UAttribute; 
+    
+    
+    ---Purpose: Attributes for organization
+    --          ============================
+    
+    class TreeNode;
+    pointer PtrTreeNode to TreeNode from TDataStd;  	    
+    class ChildNodeIterator;
+
+    class Directory;	
+    
+
+    ---Category: Other attributes
+    --           ================
+          
+    class NoteBook;
+    
+    class Expression;
+    
+    class Relation;
+    
+    class Variable; 
+    
+    class DeltaOnModificationOfIntArray;  
+     
+    class DeltaOnModificationOfRealArray;  
+     
+    class DeltaOnModificationOfExtStringArray; 
+     
+    class DeltaOnModificationOfIntPackedMap; 
+     
+    class DeltaOnModificationOfByteArray; 
+     
+      
+    -- Extension
+    class Tick; 
+    
+    class AsciiString;  
+    
+    class IntPackedMap; 
+
+     
+    -- Lists:
+    class IntegerList; 
+    
+    class RealList; 
+    
+    class ExtStringList; 
+    
+    class BooleanList; 
+    
+    class ReferenceList;
+
+
+    -- Arrays:
+    class BooleanArray; 
+    
+    class ReferenceArray; 
+    
+    class ByteArray;
+
+    class NamedData;         
+         					       
+    class ListOfExtendedString instantiates List from TCollection ( ExtendedString from TCollection );	 
+
+      
+    --  Extension
+    class ListOfByte instantiates List from TCollection(Byte from Standard);
+
+    class LabelArray1 instantiates Array1 from TCollection(Label from TDF); 
+    
+    class HLabelArray1 instantiates HArray1 from TCollection(Label from TDF, LabelArray1 from TDataStd);
+
+    class DataMapOfStringReal instantiates DataMap from TCollection(ExtendedString from TCollection,
+    	    	    	    	    	    	    	    	    Real from Standard,
+								    ExtendedString from TCollection);
+    class DataMapOfStringString instantiates DataMap from TCollection(ExtendedString from TCollection,
+    	    	    	    	    	    	    	    	      ExtendedString from TCollection,
+								      ExtendedString from TCollection);
+    class DataMapOfStringByte instantiates DataMap from TCollection(ExtendedString from TCollection,
+    	    	    	    	    	    	    	    	    Byte from Standard,
+								    ExtendedString from TCollection);
+    class DataMapOfStringHArray1OfInteger instantiates DataMap from TCollection(ExtendedString from TCollection,
+    	    	    	    	    	    	    	    	       	    	HArray1OfInteger from TColStd,
+								       	    	ExtendedString from TCollection);
+    class DataMapOfStringHArray1OfReal instantiates DataMap from TCollection(ExtendedString from TCollection,
+    	    	    	    	    	    	    	    	       	     HArray1OfReal from TColStd,
+								       	     ExtendedString from TCollection);
+
+    class HDataMapOfStringInteger;   
+    
+    class HDataMapOfStringReal; 
+    
+    class HDataMapOfStringString;   
+    
+    class HDataMapOfStringByte; 
+    
+    class HDataMapOfStringHArray1OfInteger;  
+    
+    class HDataMapOfStringHArray1OfReal;  
+     
+    
+    IDList (anIDList : in out IDList from TDF);
+	---Purpose: Appends to <anIDList> the list of the attributes
+	--          IDs of this package. CAUTION: <anIDList> is NOT
+	--          cleared before use.
+
+
+
+    Print (DIM : RealEnum from TDataStd; S : in out OStream) 
+    	---Purpose: Prints the name of the real dimension <DIM> as a String on
+    	--          the Stream <S> and returns <S>.
+    	---C++: return &		
+    returns OStream;   
+
+end TDataStd;
+
+
+

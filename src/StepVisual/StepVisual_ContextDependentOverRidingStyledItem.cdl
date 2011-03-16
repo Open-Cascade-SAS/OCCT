@@ -1,0 +1,49 @@
+-- File:        ContextDependentOverRidingStyledItem.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ContextDependentOverRidingStyledItem from StepVisual 
+
+inherits OverRidingStyledItem from StepVisual 
+
+uses
+
+	HArray1OfStyleContextSelect from StepVisual, 
+	StyleContextSelect from StepVisual, 
+	HAsciiString from TCollection, 
+	HArray1OfPresentationStyleAssignment from StepVisual, 
+	RepresentationItem from StepRepr, 
+	StyledItem from StepVisual
+is
+
+	Create returns mutable ContextDependentOverRidingStyledItem;
+	---Purpose: Returns a ContextDependentOverRidingStyledItem
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : mutable RepresentationItem from StepRepr;
+	      aOverRiddenStyle : mutable StyledItem from StepVisual) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : mutable RepresentationItem from StepRepr;
+	      aOverRiddenStyle : mutable StyledItem from StepVisual;
+	      aStyleContext : mutable HArray1OfStyleContextSelect from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStyleContext(me : mutable; aStyleContext : mutable HArray1OfStyleContextSelect);
+	StyleContext (me) returns mutable HArray1OfStyleContextSelect;
+	StyleContextValue (me; num : Integer) returns StyleContextSelect;
+	NbStyleContext (me) returns Integer;
+
+fields
+
+	styleContext : HArray1OfStyleContextSelect from StepVisual; -- a SelectType
+
+end ContextDependentOverRidingStyledItem;

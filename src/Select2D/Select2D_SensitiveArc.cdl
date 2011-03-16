@@ -1,0 +1,67 @@
+-- File:	Select2D_SensitiveArc.cdl
+-- Created:	Tue May 23 10:46:48 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class SensitiveArc from Select2D 
+inherits SensitiveEntity from Select2D
+
+	---Purpose: sensitive Areas for an Arc Of Circle
+	--          One gives Radius and center,and limits.
+	--          or a geometric circle.
+
+uses
+    Ax2d from gp,
+    EntityOwner from SelectBasics,
+    ListOfBox2d from SelectBasics
+
+is
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    OriginAxis   : Ax2d from gp;
+	    Angle        : Real from Standard;
+	    Radius       : Real from Standard;
+    	    MaxPoints    : Integer=9)
+    returns mutable SensitiveArc ;
+    	---Level: Public 
+    	---Purpose: Constructs a 2D sensitive arc object defined by the
+    	-- owner OwnerId, the axis of origin OriginAxis, the
+    	-- angle Angle, the radius Radius, and the maximum
+    	-- number of points MaxPoints.
+    	--          
+    	--               _.
+    	--       \ angle /|
+    	--        \_____/
+    	--         \   /  direction
+    	--          \ /
+    	--	         *
+
+    Areas (me:mutable ; aresul : in out ListOfBox2d from SelectBasics) is static;
+    	---Level: Public 
+    	---Purpose: returns the sensitive areas for a circle...    
+    
+    Matches (me  : mutable ;
+             X,Y : Real from Standard;
+             aTol: Real from Standard;
+             DMin: out Real from Standard) 
+    returns Boolean is static;     
+    	---Purpose: returns true if the minimum distance DMin
+    	--          between the postion x,y and the circle is less than aTol..
+
+	     
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+
+fields
+
+    myradius : Real;
+    myax2d   : Ax2d from gp;
+    myangle  : Real;
+    mynbpt   : Integer;
+end SensitiveArc;
+

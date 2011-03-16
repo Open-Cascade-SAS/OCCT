@@ -1,0 +1,39 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// --------------------------------
+// constructor of SetIterator
+// --------------------------------
+PCollection_SetIterator::PCollection_SetIterator
+          (const Handle(PCollection_HSet)& S) 
+{
+     TheIterator = S->Last();
+}
+
+// -----------------------------------
+// More : returns Standard_True if there 
+// are other items
+// -----------------------------------
+Standard_Boolean PCollection_SetIterator::More() const
+{
+       return   ! ( TheIterator->IsEmpty() ) ;
+}
+
+// -----------------------------------------
+// Next : set the iterator to the next item
+// -----------------------------------------
+void PCollection_SetIterator::Next()
+{
+    if (TheIterator->IsEmpty())  Standard_NoMoreObject::Raise();  
+    TheIterator = TheIterator->Tail();
+}
+
+// ---------------------------------------
+// Value : returns the current item value 
+// of the iterator
+// ---------------------------------------
+Item PCollection_SetIterator::Value() const
+{
+    if (TheIterator->IsEmpty())  Standard_NoSuchObject::Raise();  
+    return TheIterator->Value();
+}

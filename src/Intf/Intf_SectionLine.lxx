@@ -1,0 +1,16 @@
+// File:	Intf_SectionLine.lxx
+// Created:	Tue Jun 25 10:05:35 1991
+// Author:	Didier PIFFAULT
+//		<dpf@phobox>
+
+#include <Intf_SeqOfSectionPoint.hxx>
+
+//=======================================================================
+//function : NumberOfPoint
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer Intf_SectionLine::NumberOfPoints () const
+{
+  return myPoints.Length();
+}

@@ -1,0 +1,7 @@
+// File:	gp.lxx
+// Created:	Tue Jul 21 13:39:10 1992
+
+inline Standard_Real gp::Resolution  () 
+{ 
+  return RealSmall(); 
+}

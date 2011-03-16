@@ -1,0 +1,42 @@
+-- File:	MakeRotation2d.cdl
+-- Created:	Wed Aug 26 14:32:33 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeRotation2d
+
+from gce
+
+    ---Purpose: Implements an elementary construction algorithm for
+    -- a rotation in 2D space. The result is a gp_Trsf2d transformation.
+    -- A MakeRotation2d object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result.
+        
+uses Pnt2d  from gp,
+     Trsf2d from gp,
+     Real   from Standard
+
+is
+
+Create(Point : Pnt2d from gp      ;
+       Angle : Real  from Standard) returns MakeRotation2d;
+    ---Purpose: Constructs a rotation through angle Angle about the center Point.
+        
+Value(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed transformation.
+    
+Operator(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Trsf2d() const;"
+
+fields
+
+    TheRotation2d : Trsf2d from gp;
+
+end MakeRotation2d;

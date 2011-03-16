@@ -1,0 +1,95 @@
+
+--
+-- File:	Aspect_MarkMapEntry.cdl
+-- Created:	13/01/95
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1995
+--
+
+class MarkMapEntry from Aspect
+
+	---Version: 0.0
+
+	---Purpose: This class defines a markmap entrys.
+	--	    A markmap entry is an association between
+	--	    a MarkerStyle object and an index in the markmap.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	MarkerStyle from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+	Create
+	returns MarkMapEntry from Aspect;
+	---Level: Public
+	---Purpose: Creates an unallocated markmap entry
+	
+	Create ( index : Integer from Standard; 
+		 style : MarkerStyle from Aspect)
+ 	returns MarkMapEntry;
+	---Level: Public
+	---Purpose: Creates an allocated markmap entry
+
+	Create ( entry : MarkMapEntry from Aspect )
+ 	returns MarkMapEntry
+	---Level: Public
+	---Purpose: Creates an allocated markmap entry.
+	--  Warning: Raises error if the markmap entry <entry>
+	--	    is unallocated.
+	raises BadAccess from Aspect;
+
+	SetValue ( me: in out; index : Integer from Standard;
+			       style : MarkerStyle from Aspect );
+	---Level: Public
+ 	---Purpose: Sets markmap entry value and allocates it.
+ 
+	SetValue ( me: in out; entry : MarkMapEntry from Aspect);
+	---Level: Public
+ 	---Purpose: Sets markmap entry value and allocates it.
+	---C++: alias operator =
+ 
+	SetStyle ( me: in out; Style : MarkerStyle from Aspect );
+	---Level: Public
+ 	---Purpose: Sets the marker style of markmap entry.
+
+	Style ( me ) returns MarkerStyle from Aspect
+	---Warning: Raises error if the markmap entry is unallocated .
+	raises BadAccess from Aspect;
+	---C++: return const & 
+
+	SetIndex ( me: in out; index : Integer from Standard);
+	---Level: Public
+ 	---Purpose: Sets index value of a markmap entry.
+
+	Index ( me ) returns Integer from Standard 
+	---Level: Public
+ 	---Purpose: Returns index value of a markmap entry.
+	--  Warning: Raises error if the markmap entry is unallocated .
+	raises BadAccess from Aspect;
+
+	Free ( me : in out );
+	---Level: Public
+	---Purpose: Unallocates the markmap entry.
+
+	IsAllocated ( me ) returns Boolean from Standard;
+	---Level: Public
+	---Purpose: Returns True if the markmap entry is allocated.
+	--  Warning: A markmap entry is allocated when the marker and
+	--	    the index is defined.
+
+        Dump( me ) ;
+	---Level: Internal
+
+fields
+	MyStyle		: MarkerStyle from Aspect;
+	MyIndex 	: Integer from Standard;
+	MyStyleIsDef	: Boolean from Standard;
+	MyIndexIsDef	: Boolean from Standard;
+
+end MarkMapEntry from Aspect;

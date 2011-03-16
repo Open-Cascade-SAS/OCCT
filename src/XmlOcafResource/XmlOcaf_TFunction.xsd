@@ -1,0 +1,25 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+        elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Open Cascade Application Framework: Definition of attributes from TFunction
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TFunction.xsd
+  </documentation>
+</annotation>
+
+<element name="TFunction_Function" substitutionGroup="ocaf:AbstractAttribute">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbstractAttributeType">
+        <attribute name="guid" type="ocaf:GuidType" use="required"/>
+        <attribute name="failure" type="int"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

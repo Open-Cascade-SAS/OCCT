@@ -1,0 +1,20 @@
+-- File:        SolidAngleUnit.cdl
+-- Created:     Fri Jun 17 11:43:26 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SolidAngleUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable SolidAngleUnit;
+	---Purpose: Returns a SolidAngleUnit
+
+
+end SolidAngleUnit;

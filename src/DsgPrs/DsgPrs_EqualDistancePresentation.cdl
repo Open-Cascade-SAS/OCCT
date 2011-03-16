@@ -1,0 +1,61 @@
+-- File:	DsgPrs_EqualDistancePresentation.cdl
+-- Created:	Tue Jan 27 16:59:36 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EqualDistancePresentation from DsgPrs 
+
+        ---Purpose: A framework to display equal distances between shapes and a given plane.
+    	-- The distance is the length of a projection from the shape to the plane.
+    	-- These distances are used to compare two shapes by this vector alone.
+
+uses
+    Presentation from Prs3d,
+    Drawer from Prs3d,
+    Pnt from gp,
+    Dir  from gp,
+    Plane from Geom,
+    ArrowSide from DsgPrs,
+    Circ from gp
+
+is
+    Add( myclass; aPresentation : Presentation from Prs3d;
+    	    	  aDrawer       : Drawer from Prs3d;
+		  Point1        : Pnt from gp;
+		  Point2        : Pnt from gp;
+		  Point3        : Pnt from gp;
+		  Point4        : Pnt from gp;
+		  Plane         : Plane from Geom );
+	---Purpose: Adds the points Point1, Point2, Point3 Point4, and the
+    	-- plane Plane to the presentation object aPresentation.
+    	-- The display attributes of these elements is defined by the attribute manager aDrawer.
+    	-- The distance is the length of a projection from the shape to the plane.
+    	-- These distances are used to compare two shapes by this vector alone.
+
+    AddInterval( myclass; aPresentation : Presentation from Prs3d;
+    	    	  aDrawer       : Drawer from Prs3d;
+		  aPoint1       : Pnt from gp;
+		  aPoint2       : Pnt from gp;
+		  aDir          : Dir from gp;
+		  aPosition     : Pnt from gp;
+                  anArrowSide   : ArrowSide from DsgPrs;
+                  anExtremePnt1 : out Pnt from gp;
+                  anExtremePnt2 : out Pnt from gp);
+	---Purpose:  is used for presentation of interval between 
+	--           two lines or two points or between a line and a point.
+		    
+    AddIntervalBetweenTwoArcs( myclass;aPresentation : Presentation from Prs3d;
+    	    	  aDrawer       : Drawer from Prs3d;
+		  aCircle1      : Circ from gp;
+		  aCircle2      : Circ from gp;
+       		  aPoint1       : Pnt from gp;
+		  aPoint2       : Pnt from gp;
+		  aPoint3       : Pnt from gp;
+		  aPoint4       : Pnt from gp;
+                  anArrowSide   : ArrowSide from DsgPrs);  
+	---Purpose:is used for presentation of interval between two arcs. 
+	--            One of arcs can have a zero radius.
+		  
+end EqualDistancePresentation;

@@ -1,0 +1,95 @@
+
+-- -- File:	BRepTest.cdl
+-- Created:	Tue Jun 25 16:20:06 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+package BRepTest 
+
+	---Purpose: Provides commands to test BRep.
+	--          
+uses
+    Draw,
+    TCollection
+    
+is
+   	
+    AllCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines all the topology commands.
+
+    BasicCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the basic commands.
+
+    CurveCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to build edges and wires.
+	
+    Fillet2DCommands(DI : in out Interpretor from Draw);
+	---Purpose:  Defines the  commands  to perform add  fillets on
+	--          wires and  edges.
+   
+    SurfaceCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to build faces and shells.
+
+    PrimitiveCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to build primitives.
+	
+    FillingCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to build primitives.
+	
+    SweepCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to sweep shapes.
+	
+    TopologyCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines  the    commands   to perform  topological
+	--          operations. 
+
+    FilletCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines  the commands  to perform  add  fillets on
+	--          shells.
+   
+    ChamferCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines  the commands  to perform  add chamfers on
+	--          shells.
+	
+    GPropCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines commands to compute global properties.
+	
+    MatCommands(DI : in out Interpretor from Draw);
+    	---Purpose: Defines commands to compute and to explore the map of the
+    	--          Bisecting locus.
+
+
+    DraftAngleCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to modify draft angles of the
+	--          faces of a shape.
+
+
+    FeatureCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to create features on a shape.
+
+
+    OtherCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the auxiliary topology commands.
+	
+
+    ExtremaCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the extrema commands.
+	
+
+    CheckCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the checkshape command.
+
+    PlacementCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the placement  command.
+	--          
+
+    ProjectionCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to project a wire on a shape.
+	--          
+    ShellCommands(DI : in out Interpretor from Draw);
+	---Purpose: Defines the commands to prepare shell commands.
+
+end BRepTest;
+

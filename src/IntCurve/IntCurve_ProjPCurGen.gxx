@@ -1,0 +1,59 @@
+// File:	IntCurve_ProjPCurGen.gxx
+// Created:	Tue Oct 13 18:50:18 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+
+
+#include <Extrema_POnCurv2d.hxx>
+
+Standard_Real IntCurve_ProjPCurGen::FindParameter 
+  (const TheCurve& C,
+   const gp_Pnt2d& P,
+   const Standard_Real LowParameter,
+   const Standard_Real HighParameter,
+   const Standard_Real) 
+{
+  Standard_Real theparam,defaultparam;
+  Standard_Integer NbPts = TheCurveTool::NbSamples(C);
+  Standard_Real theEpsX  = TheCurveTool::EpsX(C);
+  Extrema_POnCurv2d POnC;
+  
+  IntCurve_TheCurveLocator::Locate(P,C,NbPts,LowParameter,HighParameter,POnC);
+  defaultparam = POnC.Parameter();
+  IntCurve_TheLocateExtPC Loc(P,C,defaultparam,theEpsX);
+
+  if(Loc.IsDone() == Standard_False) {
+    //-- cout<<"\n Erreur dans LocateExtPC "<<endl;
+    theparam = defaultparam;
+  }
+  else {
+    if(Loc.IsMin() == Standard_False) { 
+      //-- cout<<"\n Erreur dans LocateExtPC (Maximum trouve) "<<endl;
+      theparam = defaultparam;
+    }
+    else {
+      theparam = Loc.Point().Parameter();
+    }
+  }
+  return theparam;
+}
+
+
+Standard_Real IntCurve_ProjPCurGen::FindParameter
+  (const TheCurve& C,
+   const gp_Pnt2d& P,
+   const Standard_Real Tol) 
+{
+
+  Standard_Real theParam;
+  theParam = FindParameter( C
+			   ,P
+			   ,TheCurveTool::FirstParameter(C)
+			   ,TheCurveTool::LastParameter(C)
+			   ,Tol);
+  return theParam;
+}
+
+
+
+

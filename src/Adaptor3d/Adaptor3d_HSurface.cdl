@@ -1,0 +1,231 @@
+-- File:	Adaptor3d_HSurface.cdl
+-- Created:	Mon Feb 14 15:01:34 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class HSurface from Adaptor3d 
+
+inherits TShared from MMgt
+
+	---Purpose: Root class for surfaces manipulated by handles, on
+    	-- which geometric algorithms work.
+    	-- An adapted surface is an interface between the
+    	-- services provided by a surface and those required of
+    	-- the surface by algorithms which use it.
+    	-- A derived concrete class is provided:
+    	-- GeomAdaptor_HSurface for a surface from the Geom package. 
+    
+uses
+     Array1OfReal    from TColStd,
+     Shape           from GeomAbs,
+     SurfaceType     from GeomAbs,
+     Vec             from gp,
+     Dir             from gp,
+     Pnt             from gp,
+     Pln             from gp,
+     Cone            from gp,
+     Cylinder        from gp,
+     Sphere          from gp,
+     Torus           from gp,
+     Ax1             from gp,
+     BezierSurface   from Geom,
+     BSplineSurface  from Geom,
+     Surface         from Adaptor3d,
+     HCurve          from Adaptor3d
+
+raises
+
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard,
+    NotImplemented      from Standard
+
+
+is
+
+
+    --
+    --  Access to the surface
+    --  
+    
+    Surface(me) returns Surface from Adaptor3d
+	---Purpose: Returns a reference to the Surface inside the HSurface.
+	--          
+	---C++: return const &
+    is deferred;
+
+
+    --
+    --     Surface  methods,  they are  provided  for convenience.  Each
+    --     method M() is defined inline as :
+    --     
+    --     Adaptor3d_HSurface::M() { Surface()->M(); }
+    --     
+    --     See the class Surface for comments on the methods.
+    --     
+        --     
+    
+    FirstUParameter(me) returns Real ;
+    ---C++: inline
+
+
+    LastUParameter(me) returns Real ;
+    ---C++: inline
+    
+    FirstVParameter(me) returns Real ;
+    ---C++: inline
+
+    LastVParameter(me) returns Real ;
+    ---C++: inline
+    
+    UContinuity(me) returns Shape from GeomAbs ;
+    ---C++: inline
+    
+    VContinuity(me) returns Shape from GeomAbs ;
+    ---C++: inline
+    
+    NbUIntervals(me ; S : Shape from GeomAbs) returns Integer ; 
+    ---C++: inline
+    
+    NbVIntervals(me ; S : Shape from GeomAbs) returns Integer ; 
+    ---C++: inline
+    
+    UIntervals(me ;T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) ;
+    ---C++: inline
+
+    VIntervals(me ; T : in out Array1OfReal from TColStd; 
+    	    	S : Shape from GeomAbs ) ;
+    ---C++: inline
+    --      
+    UTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d ;
+     ---C++: inline
+     --      
+    VTrim(me; First, Last, Tol : Real) returns HSurface from Adaptor3d ;
+     ---C++: inline
+     --      
+    IsUClosed(me) returns Boolean ;
+    ---C++: inline
+     
+    IsVClosed(me) returns Boolean ;
+    ---C++: inline
+     
+    IsUPeriodic(me) returns Boolean ;
+    ---C++: inline
+    
+    UPeriod(me) returns Real ;
+    ---C++: inline
+     
+    IsVPeriodic(me) returns Boolean ;
+    ---C++: inline
+    
+    VPeriod(me) returns Real ;
+    ---C++: inline
+     
+    Value (me; U, V : Real)  returns Pnt from gp;
+    ---C++: inline
+
+    D0 (me; U, V : Real; P : out Pnt from gp) ;
+    ---C++: inline
+
+    D1 (me; U, V : Real; P : out Pnt from gp;
+            D1U, D1V : out Vec from gp) ;
+    ---C++: inline
+
+    D2 (me; U, V : Real; P : out Pnt from gp;
+            D1U, D1V, D2U, D2V, D2UV : out Vec from gp)  ; 
+    ---C++: inline
+
+
+    D3 (me; U, V : Real; P : out Pnt from gp; 
+    	    D1U, D1V, D2U, D2V, D2UV, 
+            D3U, D3V, D3UUV, D3UVV : out Vec from gp)  ; 
+    ---C++: inline
+
+    DN (me; U, V : Real; Nu, Nv : Integer)   returns Vec from gp  ; 
+    ---C++: inline
+    
+    UResolution(me; R3d : Real ) returns Real ;
+    ---C++: inline
+  
+    VResolution(me; R3d : Real ) returns Real ;
+    ---C++: inline
+  
+    GetType(me) returns SurfaceType from GeomAbs ;
+    ---C++: inline
+
+    Plane(me) returns Pln from gp ;
+    ---C++: inline
+
+    Cylinder(me) returns Cylinder from gp ;
+    ---C++: inline
+
+    Cone(me) returns Cone from gp ;
+    ---C++: inline
+
+    Sphere(me) returns Sphere from gp ;
+    ---C++: inline
+
+    Torus(me) returns Torus from gp ;
+    ---C++: inline
+
+    UDegree(me) returns Integer ;
+    ---C++: inline
+
+
+    NbUPoles(me) returns Integer ;
+        ---C++: inline
+
+    VDegree(me) returns Integer ;
+        ---C++: inline
+
+
+    NbVPoles(me) returns Integer ;
+        ---C++: inline
+
+
+    
+    NbUKnots(me) returns Integer ;
+        ---C++: inline
+
+    
+    NbVKnots(me) returns Integer ;
+        ---C++: inline
+
+    
+    IsURational(me) returns Boolean ;
+        ---C++: inline
+
+    
+    IsVRational(me) returns Boolean ;
+        ---C++: inline
+
+
+    Bezier(me) returns BezierSurface from Geom ;
+    ---C++: inline
+
+    BSpline(me) returns BSplineSurface from Geom ;
+    ---C++: inline
+
+   AxeOfRevolution(me) returns Ax1 from gp ;
+   ---C++: inline
+
+   Direction(me) returns Dir from gp ;
+   ---C++: inline
+
+   BasisCurve(me) returns HCurve from Adaptor3d ;
+    ---C++: inline
+   
+   BasisSurface(me) returns HSurface from Adaptor3d;
+    ---C++: inline
+
+   OffsetValue(me) returns Real from Standard;
+    ---C++: inline
+
+end HSurface;
+
+
+
+

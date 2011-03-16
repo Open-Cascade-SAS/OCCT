@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWSurfaceSectionFieldConstant.cdl
+-- Created:	Thu Dec 12 17:29:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWSurfaceSectionFieldConstant from RWStepElement
+
+    ---Purpose: Read & Write tool for SurfaceSectionFieldConstant
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    SurfaceSectionFieldConstant from StepElement
+
+is
+    Create returns RWSurfaceSectionFieldConstant from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : SurfaceSectionFieldConstant from StepElement);
+	---Purpose: Reads SurfaceSectionFieldConstant
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: SurfaceSectionFieldConstant from StepElement);
+	---Purpose: Writes SurfaceSectionFieldConstant
+
+    Share (me; ent : SurfaceSectionFieldConstant from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWSurfaceSectionFieldConstant;

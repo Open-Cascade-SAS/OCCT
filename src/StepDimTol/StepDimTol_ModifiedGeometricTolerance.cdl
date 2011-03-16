@@ -1,0 +1,37 @@
+-- File:	StepDimTol_ModifiedGeometricTolerance.cdl
+-- Created:	Wed Jun  4 13:34:35 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ModifiedGeometricTolerance from StepDimTol
+inherits GeometricTolerance from StepDimTol
+
+    ---Purpose: Representation of STEP entity ModifiedGeometricTolerance
+
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr,
+    LimitCondition from StepDimTol
+
+is
+    Create returns ModifiedGeometricTolerance from StepDimTol;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aGeometricTolerance_Name: HAsciiString from TCollection;
+                       aGeometricTolerance_Description: HAsciiString from TCollection;
+                       aGeometricTolerance_Magnitude: MeasureWithUnit from StepBasic;
+                       aGeometricTolerance_TolerancedShapeAspect: ShapeAspect from StepRepr;
+                       aModifier: LimitCondition from StepDimTol);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Modifier (me) returns LimitCondition from StepDimTol;
+	---Purpose: Returns field Modifier
+    SetModifier (me: mutable; Modifier: LimitCondition from StepDimTol);
+	---Purpose: Set field Modifier
+
+fields
+    theModifier: LimitCondition from StepDimTol;
+
+end ModifiedGeometricTolerance;

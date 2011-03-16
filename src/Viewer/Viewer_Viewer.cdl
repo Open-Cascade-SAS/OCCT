@@ -1,0 +1,38 @@
+-- File:	Viewer_Viewer.cdl
+-- Created:	Thu Apr  6 16:20:09 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+deferred class Viewer from Viewer inherits TShared from MMgt
+
+uses
+    AsciiString,ExtendedString from TCollection,
+    GraphicDevice from Aspect
+    
+is
+    Initialize( aDevice: GraphicDevice from Aspect;
+                aName: ExtString from Standard;
+                aDomain: CString from Standard;
+                aNextCount: Integer from Standard);
+    
+    Update(me: mutable) is deferred;
+
+
+    Device(me) returns mutable GraphicDevice from Aspect
+    is static;
+    
+    NextName(me) returns ExtString from Standard
+    is static;
+
+    Domain(me) returns CString from  Standard
+    is static;
+
+    IncrCount(me:mutable) is static protected;
+    
+fields
+    	myNextCount: Integer from Standard;
+        myDomain: AsciiString from TCollection;    
+        myName: ExtendedString from TCollection;
+        myDevice: GraphicDevice from Aspect;
+end Viewer  from Viewer;

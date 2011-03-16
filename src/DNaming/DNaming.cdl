@@ -1,0 +1,172 @@
+-- File:	DNaming.cdl
+-- Created:	Wed Jan  8 15:54:45 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Matra Datavision 1997
+
+
+package DNaming 
+
+	---Purpose: 
+
+uses 
+    Draw,
+    TCollection, 
+    TColStd, 
+    TopAbs, 
+    gp,
+    TDF, 
+    TDataStd,     
+    TFunction,
+    TNaming,
+    TopoDS,
+    TopTools, 
+    BRepPrimAPI, 
+    BRepFilletAPI, 
+    BRepBuilderAPI,
+    BRepAlgoAPI
+is
+         
+			  			       								   
+    class  BoxDriver;   
+    
+    class  CylinderDriver;    
+     
+    class  SphereDriver;
+     
+    class  SelectionDriver; 
+
+    class  BooleanOperationDriver;      
+     
+    class  FilletDriver; 
+
+    class  TransformationDriver;  
+    
+    class  PrismDriver; 
+     
+    class  RevolutionDriver;  
+     
+    class  PointDriver; 
+     
+    class  Line3DDriver;
+    
+    class DataMapOfShapeOfName instantiates
+    	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 AsciiString    from TCollection,
+                                 ShapeMapHasher from TopTools);  	 
+				  
+
+    GetReal  (theFunction : Function from TFunction; thePosition : Integer from Standard) 
+    returns Real from TDataStd; 
+     
+    GetInteger (theFunction : Function from TFunction;thePosition  : Integer from Standard) 
+    returns Integer from TDataStd;  
+      
+    GetString (theFunction : Function from TFunction; thePosition : Integer from Standard) 
+    returns Name from TDataStd;   
+    
+    ComputeAxis (theNS : NamedShape from TNaming; theAx1 : in out Ax1 from gp) 
+    returns Boolean from Standard; 
+    
+    --  manipulation  by  function  -  object
+    
+    GetFunctionResult(theFunction : Function from TFunction) 
+    returns NamedShape from TNaming;  
+     
+    GetObjectArg(theFunction : Function from TFunction; thePosition : Integer from Standard)  
+    returns UAttribute from TDataStd;   
+     
+    SetObjectArg(theFunction : Function from TFunction; thePosition : Integer from Standard; 
+    	    	 theNewValue : UAttribute from TDataStd); 
+	 
+    GetObjectValue(theObject : UAttribute from TDataStd) 
+    returns NamedShape from TNaming;     
+     
+    GetLastFunction(theObject : UAttribute from TDataStd) 
+    returns Function from TFunction;  
+    
+    GetFirstFunction(theObject : UAttribute from TDataStd) 
+    returns Function from TFunction;  
+     
+    GetPrevFunction(theFunction : Function from TFunction) 
+    returns Function from TFunction; 
+     
+    GetObjectFromFunction(theFunction : Function from TFunction)  
+    returns UAttribute from TDataStd;   
+     
+    IsAttachment(theObject : UAttribute from TDataStd) 
+    returns Boolean from Standard;
+     
+    GetAttachmentsContext (theObject : UAttribute from TDataStd) 
+    returns NamedShape from TNaming; 
+     
+    ComputeSweepDir ( theShape : Shape from TopoDS; theAxis : in out Ax1 from gp) 
+    returns Boolean from Standard;
+     
+    --  Naming short-cuts  
+    
+    LoadAndOrientModifiedShapes( 
+    	    	    	    	MakeShape          : in out MakeShape from BRepBuilderAPI;
+	      	    	    	ShapeIn            : in     Shape               from TopoDS;
+				GeneratedFrom      : in     ShapeEnum           from TopAbs;
+				Buider             : in out Builder             from TNaming;
+	      	    	    	SubShapesOfResult  : in     DataMapOfShapeShape from TopTools);
+      
+    LoadAndOrientGeneratedShapes(  
+    	    	    	    	MakeShape          : in out MakeShape from BRepBuilderAPI;
+	      	    	    	ShapeIn            : in     Shape               from TopoDS;
+				GeneratedFrom      : in     ShapeEnum           from TopAbs;
+				Buider             : in out Builder             from TNaming;
+	      	    	    	SubShapesOfResult  : in     DataMapOfShapeShape from TopTools); 
+
+    LoadDeletedShapes( 
+    	    	      MakeShape          : in out MakeShape from BRepBuilderAPI; 
+    	    	      ShapeIn            : in     Shape     from TopoDS;
+		      KindOfDeletedShape : in     ShapeEnum from TopAbs;
+		      Buider             : in out Builder   from TNaming); 
+    
+    LoadResult(theLabel : Label from TDF; MS : in out BooleanOperation from BRepAlgoAPI);
+
+	--  old  methods   	     			  			       								   				 
+    CurrentShape (ShapeEntry      : CString  from Standard; 
+    	    	  Data            : Data     from TDF)  
+    returns Shape from TopoDS;		  
+
+    GetShape (ShapeEntry  :        CString     from Standard; 
+    	      Data        :        Data        from TDF;
+    	      Shapes      : in out ListOfShape from TopTools);
+    
+
+    GetEntry (Shape      : in     Shape   from TopoDS; 
+              Data       : in     Data    from TDF; 
+              Status     : in out Integer from Standard)
+    	---Purpose: Status = 0  Not  found, 
+    	--          Status = 1  One  shape,
+    	--          Status = 2  More than one shape. 
+    returns AsciiString from TCollection; 
+     
+    LoadImportedShape(theResultLabel : Label  from TDF;  
+    	              theShape : Shape from TopoDS); 
+    ---Purpose: Loads the Shape to DF 
+     
+    LoadPrime(theResultLabel : Label  from TDF;  
+    	              theShape : Shape from TopoDS); 
+    ---Purpose: Reloads sub-shapes of the Shape to DF  
+    
+    AllCommands        (DI : in out Interpretor from Draw);
+    
+    BasicCommands      (DI : in out Interpretor from Draw);
+    ---Purpose: commands relatives to NamedShape
+
+    ToolsCommands      (DI : in out Interpretor from Draw);  
+    
+    SelectionCommands   (DI : in out Interpretor from Draw);
+    ---Purpose: commands relatives to Naming 
+     
+    ModelingCommands    (DI : in out Interpretor from Draw);   
+    ---Purpose: commands for  testing Naming  
+    
+end DNaming;
+
+
+
+

@@ -1,0 +1,12 @@
+// File math_GaussLeastSquare.lxx
+
+
+inline Standard_Boolean math_GaussLeastSquare::IsDone() const { return Done; }
+
+
+inline Standard_OStream& operator<<(Standard_OStream& o,
+				    const math_GaussLeastSquare& G)
+{
+  G.Dump(o);
+  return o;
+}

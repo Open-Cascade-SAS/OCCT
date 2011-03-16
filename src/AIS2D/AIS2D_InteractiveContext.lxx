@@ -1,0 +1,49 @@
+inline Handle(V2d_Viewer) AIS2D_InteractiveContext::CurrentViewer() const {
+
+   return myMainVwr;
+}
+ 
+inline Standard_Boolean AIS2D_InteractiveContext::IsCollectorClosed() const {
+	return myIsCollClosed;
+}
+
+inline void AIS2D_InteractiveContext::CloseCollector() {
+	myIsCollClosed = Standard_True;
+}
+
+inline Standard_Boolean AIS2D_InteractiveContext::HasOpenedContext() const {
+	return myCurLocalIndex != 0;
+}
+
+inline void AIS2D_InteractiveContext::SetPrecision( const Standard_Integer aPrec ) {
+  myDetectPrecision = aPrec;
+}
+
+inline Standard_Integer AIS2D_InteractiveContext::DetectPrecision() const {
+  return myDetectPrecision;
+}
+
+inline Quantity_NameOfColor AIS2D_InteractiveContext::HighlightColor() const {
+  return myHighlightColor;
+}
+ 
+inline Quantity_NameOfColor AIS2D_InteractiveContext::SelectionColor() const {
+  return mySelectionColor;
+}
+
+ 
+inline Quantity_NameOfColor AIS2D_InteractiveContext::SubIntensityColor() const {
+  return mySubIntensity;
+}
+
+inline Standard_Integer AIS2D_InteractiveContext::DisplayMode() const {
+	return myDisplayMode;
+}
+
+inline Graphic2d_PickMode AIS2D_InteractiveContext::GetPickMode() const {
+	return myPickMode;
+}
+
+inline void AIS2D_InteractiveContext::SetPickMode(const Graphic2d_PickMode aPickMode ) {
+	myPickMode = aPickMode;
+}

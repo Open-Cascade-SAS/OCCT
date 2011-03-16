@@ -1,0 +1,23 @@
+
+#ifndef VIEW_PXX_INCLUDED
+#define VIEW_PXX_INCLUDED
+
+#define G003	// EUG Manage computed mode activation flag
+
+// views identifiers : possible range
+#define View_IDMIN	1
+#define View_IDMAX	10000
+
+#define MyViewManager	((Visual3d_ViewManager *) MyPtrViewManager)
+
+#define MyMatOfMapIsModified	MyCBitFields.bool1
+#define MyMatOfMapIsEvaluated	MyCBitFields.bool2
+#define MyMatOfOriIsModified	MyCBitFields.bool3
+#define MyMatOfOriIsEvaluated	MyCBitFields.bool4
+#define DegenerateModeIsActive	MyCBitFields.bool5
+#define AnimationModeIsActive	MyCBitFields.bool6
+#ifdef G003
+#define ComputedModeIsActive    MyCBitFields.bool7
+#endif
+
+#endif

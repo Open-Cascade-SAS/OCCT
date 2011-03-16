@@ -1,0 +1,48 @@
+-- File:	Function.cdl
+-- Created:	Mon May  6 10:54:17 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+deferred class Function from math
+
+    	---Purpose: This abstract class describes the virtual functions 
+    	--          associated with a Function of a single variable.
+
+is
+
+    Value(me: in out; X: Real; F: out Real)
+    	---Purpose: Computes the value of the function <F> for a given value of
+    	--          variable <X>. 
+    	--          returns True if the computation was done successfully,
+    	--          False otherwise.
+
+    returns Boolean
+    is deferred;
+
+
+    GetStateNumber(me: in out)
+    	---Purpose: returns the state of the function corresponding to the 
+    	--          latest call of any methods associated with the function.
+    	--          This function is called by each of the algorithms 
+    	--          described later which defined the function Integer 
+    	--          Algorithm::StateNumber(). The algorithm has the 
+    	--          responsibility to call this function when it has found
+    	--          a solution (i.e. a root or a minimum) and has to maintain
+    	--          the association between the solution found and this
+    	--          StateNumber.
+    	--          Byu default, this method returns 0 (which means for the 
+    	--          algorithm: no state has been saved). It is the 
+    	--          responsibility of the programmer to decide if he needs
+    	--          to save the current state of the function and to return
+    	--          an Integer that allows retrieval of the state.
+
+    returns Integer
+    is virtual;
+
+    
+end Function;
+
+
+

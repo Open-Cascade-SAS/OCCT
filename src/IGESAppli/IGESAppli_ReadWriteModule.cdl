@@ -1,0 +1,37 @@
+-- File:	IGESAppli_ReadWriteModule.cdl
+-- Created:	Mon Sep  6 19:22:12 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class ReadWriteModule  from IGESAppli   inherits ReadWriteModule from IGESData
+
+    ---Purpose : Defines basic File Access Module for IGESAppli (specific parts)
+    --           Specific actions concern : Read and Write Own Parameters of
+    --           an IGESEntity.
+
+uses Transient, FileReaderData,
+     IGESEntity, DirPart, IGESReaderData, ParamReader, IGESWriter
+
+raises DomainError
+
+is
+
+    Create returns mutable ReadWriteModule from IGESAppli;
+    ---Purpose : Creates a ReadWriteModule & puts it into ReaderLib & WriterLib
+
+    CaseIGES (me; typenum, formnum : Integer) returns Integer;
+    ---Purpose : Defines Case Numbers for Entities of IGESAppli
+
+    ReadOwnParams (me; CN : Integer; ent : mutable IGESEntity;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError;
+    ---Purpose : Reads own parameters from file for an Entity of IGESAppli
+
+    WriteOwnParams (me; CN : Integer;  ent : IGESEntity;
+    	    	    IW : in out IGESWriter);
+    ---Purpose : Writes own parameters to IGESWriter
+
+end ReadWriteModule;

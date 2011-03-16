@@ -1,0 +1,126 @@
+-- File:	MAT2d_Circuit.cdl
+-- Created:	Thu Nov 18 16:01:02 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Circuit from MAT2d 
+
+inherits 
+
+    TShared from MMgt
+    
+	---Purpose: Constructs a circuit on a set of lines.
+	--          
+	--           
+
+uses
+
+    SequenceOfInteger                from TColStd,
+    Geometry                         from Geom2d,
+    SequenceOfGeometry               from TColGeom2d,
+    SequenceOfBoolean                from TColStd,
+    SequenceOfConnexion              from MAT2d,
+    BiInt                            from MAT2d,
+    Connexion                        from MAT2d,
+    SequenceOfSequenceOfGeometry     from MAT2d,
+    DataMapOfIntegerConnexion        from MAT2d,    
+    MiniPath                         from MAT2d,
+    DataMapOfBiIntSequenceOfInteger  from MAT2d
+
+is
+
+    Create returns mutable Circuit from MAT2d;
+
+---Category:  Computation
+
+    Perform(me          : mutable ; 
+            aFigure     : in out SequenceOfSequenceOfGeometry; 
+	    IsClosed    :        SequenceOfBoolean from TColStd;
+            IndRefLine  :        Integer;
+            Trigo       :        Boolean)
+    is static;	    
+    
+    PassByLast(me ; C1,C2 : Connexion from MAT2d) 
+    returns Boolean
+    is static private;
+    
+    Side (me ; C : Connexion from MAT2d; Line : SequenceOfGeometry)
+    returns Real 
+    is static private;
+
+    UpDateLink(me : mutable ; 
+               IFirst,ILine,ICurveFirst,ICurveLast: Integer)
+    is static private;
+    
+    SortRefToEqui(me : mutable ; aBiInt : BiInt from MAT2d)
+    is static private;
+
+    InitOpen(me ; Line : in out SequenceOfGeometry)
+    is static private;
+    
+    InsertCorner(me ; Line : in out SequenceOfGeometry)
+    is static private;
+    
+    DoubleLine(me ; 
+               Line       : in out  SequenceOfGeometry;
+               Connexions : in out  SequenceOfConnexion from MAT2d; 
+	       Father     : mutable Connexion from MAT2d;
+	       Side       : Real)
+    is static private;
+    
+    ConstructCircuit(me          : mutable ;
+                     aFigure     : SequenceOfSequenceOfGeometry;
+                     IndRefLine  : Integer;
+                     aPath       : MiniPath from MAT2d)
+    is static private;		     
+
+ ---Category: Querying
+
+    NumberOfItems(me) 
+       ---Purpose: Returns the Number of Items .
+    returns Integer is static;
+    
+    Value(me ; Index : Integer)
+       ---Purpose: Returns the item at position <Index> in <me>. 
+    returns Geometry from Geom2d
+    is static;
+
+    LineLength(me ; IndexLine : Integer)
+       ---Purpose: Returns the number of items on the line <IndexLine>.
+    returns Integer from Standard
+    is static;
+
+    RefToEqui(me ; IndLine : Integer; IndCurve : Integer)
+       ---Purpose: Returns the set of index of the items in <me>corresponding 
+       --          to the curve <IndCurve> on the line <IndLine> from the 
+       --          initial figure.
+       --           
+       ---C++: return const&
+    returns SequenceOfInteger from TColStd
+    is static;
+    
+    Connexion(me ; Index : Integer)
+	---Purpose:  Returns the Connexion on the item <Index> in me. 
+    returns Connexion from MAT2d
+    is static;
+    
+    ConnexionOn(me ; Index : Integer)
+       ---Purpose: Returns <True> is there is a connexion on the item <Index>
+       --          in <me>.
+    returns Boolean from Standard
+    is static;
+    
+fields
+    
+    direction    : Real;
+    geomElements : SequenceOfGeometry              from TColGeom2d;    
+    connexionMap : DataMapOfIntegerConnexion       from MAT2d;
+    linkRefEqui  : DataMapOfBiIntSequenceOfInteger from MAT2d;
+    linesLength  : SequenceOfInteger               from TColStd; 
+    
+end Circuit;
+
+

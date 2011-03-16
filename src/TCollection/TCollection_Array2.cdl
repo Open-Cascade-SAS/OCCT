@@ -1,0 +1,172 @@
+-- File:	TCollection_Array2.cdl
+-- Created:	Wed Dec  9 12:22:03 1992
+---Copyright:	 Matra Datavision 1992
+
+generic class Array2 from TCollection (Array2Item as any)
+
+	---Purpose: The class Array2 represents bi-dimensionnal arrays 
+	--          of fixed size dynamically dimensioned at construction time. 
+	--          As with a C array, the access time to an Array2 indexed
+    	--          item is constant and independent of the array size. Arrays
+        --          are commonly used as elementary data structures for more complex objects.
+    	--          Array2 is a generic class, which depends on Item, the type of element in the array.
+    	--          Warning
+    	--          Array2 indexes start and end at a user-defined position.
+    	--          Thus, when accessing an item you must base the indexes
+    	--          on the lower and upper bounds of the array.
+
+raises
+    RangeError from Standard,
+    OutOfRange from Standard,
+    OutOfMemory from Standard,
+    DimensionMismatch from Standard
+
+   
+
+is
+    
+    Create (R1, R2, C1, C2: Integer from Standard) 
+    returns  Array2 from TCollection
+    	---Purpose: Creates an array of lower bound <R1><C1> and upper
+    	--          bound <R2><C2>.    Range from  Standard  error  is
+    	--          raised when <R2> is less than <R1> or <C2> is less
+    	--          than <C1>.
+    raises 
+    	RangeError  from Standard,
+    	OutOfMemory from Standard;
+
+    Create (AnArray : Array2) 
+    returns Array2 from TCollection
+    	---Purpose: creates an Array2 by copy of an Array2.
+    raises OutOfMemory from Standard is private ;
+
+    Create (Item : Array2Item; R1, R2, C1, C2: Integer from Standard) 
+    returns  Array2 from TCollection
+    	---Purpose: Creates an double array sharing datas with a C array.
+    	--          Examples:
+    	--            Item tab[100][200];
+    	--            Array2OfItem thetab (tab[0][0],1,100,1,200);
+    	--               or
+    	--            Item tab[10000];
+    	--            Array2OfItem thetab (tab[0],1,100,1,100);
+    	--            
+    	--  Warning: The validity of R1,R2,C1,C2 values are under the responsability
+    	--          of the user.
+    	--          The C array must be a validate address during the life of
+    	--          the Array2.
+    raises
+    	RangeError  from Standard,
+    	OutOfMemory from Standard;
+	
+    Init(me : in out; V : Array2Item);
+	---Purpose: Initializes this array with the value <Value>.
+
+    Destroy (me : in out );
+        ---Level: Advanced
+    	---Purpose: Frees   the allocated   area corresponding to  the
+    	--          array.   If  the array    was  constructed from  a
+    	--          DoubleArray the Destroy doesn't delete the area.
+        --          
+        ---C++: alias ~
+
+    Assign (me: in out; Other: Array2) 
+    returns Array2 from TCollection
+    	---Purpose: Copies the contents of <Other> into <me>.
+    	--          <Other> and <me> must have the same dimension.
+    	-- Example
+    	-- TColStd_Array2OfInteger tab1(1,10,1,10);
+    	-- TColStd_Array2OfInteger tab2(11,20,11,20);
+    	-- tab1.Init(4);
+    	-- tab2 = tab1;
+    	-- assert ( tab2(15,15) == 4 );
+    	-- Exceptions
+    	-- Standard_DimensionMismatch if this array and array
+    	-- Other do not have the same dimensions.
+        ---C++: alias operator =
+	---C++: return const &    
+    raises DimensionMismatch from Standard;
+
+    ColLength (me) returns Integer from Standard;
+        ---Level: Public
+    	---Purpose: Return the number of rows of <me>.
+    	--          
+	---C++: inline
+
+    RowLength (me) returns Integer from Standard;
+        ---Level: Public
+    	---Purpose: Returns the number of columns of <me>.
+    	--          
+        ---C++: inline
+
+    LowerCol (me) returns Integer from Standard;
+        ---Level: Public
+    	---Purpose: Returns the lower column number of the array.
+    	--          
+	---C++: inline
+
+    LowerRow (me) returns Integer from Standard;
+        ---Level: Public
+    	---Purpose:  Returns the lower row number of the array.
+    	--          
+	---C++: inline
+
+    UpperCol (me) returns Integer from Standard;
+        ---Level: Public
+    	---Purpose:  Returns the upper column number of the array.
+    	--          
+	---C++: inline
+
+    UpperRow (me) returns Integer from Standard
+        ---Level: Public
+    	---Purpose:  Returns the upper row number of the array.
+    	--          
+	---C++: inline
+    is static ;
+
+    SetValue (me : in out; Row, Col: Integer from Standard; Value: Array2Item) 
+    	---Purpose: Purpose
+    	-- Assigns the value Value to the (Row,Col) item of this array.
+    	-- Example
+    	-- TColStd_Array2OfInteger array(0,100,0,100);
+    	-- array.SetValue(3,3,1515);
+    	-- assert ( array(3,3) == 1515 );
+    	-- Exceptions
+    	-- Standard_OutOfRange if Row or Col lies outside the bounds of this array.
+    	---C++: inline
+        raises OutOfRange from Standard;
+
+
+    Value (me; Row,Col: Integer from Standard) returns any Array2Item
+        ---Level: Public
+    	---Purpose: Returns the value of the element of index 
+        --          <Row><Col>
+    	--
+    	---C++: alias operator()
+    	---C++: return const &
+        ---C++: inline
+    raises OutOfRange from Standard;
+
+
+    ChangeValue (me: in out; Row,Col: Integer from Standard) returns any Array2Item
+        ---Level: Public
+    	---Purpose: Returns the value of the element of index 
+        --          <Row><Col>
+    	--
+    	---C++: alias operator()
+    	---C++: return &
+        ---C++: inline
+    raises OutOfRange from Standard;
+
+    Allocate (me: in out) raises OutOfMemory is private;
+    	---Level: Private
+
+fields
+
+	myLowerRow    : Integer from Standard ;
+	myLowerColumn : Integer from Standard ;
+        myUpperRow    : Integer from Standard ;
+        myUpperColumn : Integer from Standard ;
+	myDeletable   : Boolean;
+    	myData        : Address;
+	
+end Array2 ;

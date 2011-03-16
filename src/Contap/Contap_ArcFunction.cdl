@@ -1,0 +1,129 @@
+-- File:	Contap_ArcFunction.cdl
+-- Created:	Thu Jun  3 12:32:05 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class ArcFunction from Contap 
+    (TheArc          as any;
+     TheSurface      as any;
+     TheArcTool      as any; -- as ArcTool from Contap()
+     TheSurfaceTool  as any; -- as SurfaceTool from Contap()
+     TheSurfProps    as any; -- as SurfProps from Contap(TheSurface,
+                             --                          TheSurfaceTool)
+     TheContTool     as any) -- as ContTool from Contap()
+
+
+inherits FunctionWithDerivative from math
+
+uses Pnt           from gp,
+     Dir           from gp,
+     SequenceOfPnt from TColgp,
+     TFunction     from Contap, 
+    --modified by NIZNHY-PKV Thu Mar 29 16:52:28 2001  f
+     Quadric       from IntSurf 
+    --modified by NIZNHY-PKV Thu Mar 29 16:52:31 2001  t
+
+
+is
+
+    Create
+    
+    	returns ArcFunction from Contap;
+
+
+    Set(me: in out; S: TheSurface)
+    
+    	is static;
+
+    Set(me: in out; Direction: Dir from gp)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; Direction: Dir from gp; Angle: Real from Standard)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; Eye: Pnt from gp)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; Eye: Pnt from gp; Angle: Real from Standard)
+    
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; A: TheArc)
+    
+	---C++: inline
+    	is static;
+
+
+    Value(me: in out; X: Real from Standard; F: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    Derivative(me: in out; X: Real from Standard; D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    Values(me: in out; X: Real from Standard; F,D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    NbSamples(me)
+    
+    	returns Integer from Standard
+	is static;
+
+
+    GetStateNumber(me: in out)
+
+    	returns Integer from Standard
+    	is redefined;
+	
+	
+    Valpoint(me; Index: Integer from Standard)
+    
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+	is static; 
+	 
+--modified by NIZNHY-PKV Thu Mar 29 16:51:24 2001  f 
+    Quadric(me) 
+    	returns Quadric from IntSurf
+	---C++: return const&
+	is static;  
+--modified by NIZNHY-PKV Thu Mar 29 16:51:31 2001  t	
+     
+    
+
+fields
+
+    myArc    : TheArc;
+    mySurf   : TheSurface;
+    myMean   : Real          from Standard;
+    myType   : TFunction     from Contap;
+    myDir    : Dir           from gp;
+    myCosAng : Real          from Standard;
+    myEye    : Pnt           from gp;
+    solpt    : Pnt           from gp;
+    seqpt    : SequenceOfPnt from TColgp;
+--modified by NIZNHY-PKV Thu Mar 29 16:51:41 2001f
+    myQuad : Quadric       from IntSurf; 
+--modified by NIZNHY-PKV Thu Mar 29 16:51:47 2001t  
+
+end ArcFunction;

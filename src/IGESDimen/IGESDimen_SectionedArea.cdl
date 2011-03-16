@@ -1,0 +1,117 @@
+--
+-- File      :  SectionedArea.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SectionedArea from IGESDimen  inherits IGESEntity
+
+    ---Purpose: defines IGES Sectioned Area, Type <230> Form <0>,
+    --          in package IGESDimen
+    --          A sectioned area is a portion of a design which is to be
+    --          filled with a pattern of lines. Ordinarily, this entity
+    --          is used to reveal or expose shape or material characteri-
+    --          stics defined by other entities. It consists of a pointer
+    --          to an exterior definition curve, a specification of the
+    --          pattern of lines, the coordinates of a point on a pattern
+    --          line, the distance between the pattern lines, the angle
+    --          between the pattern lines and the X-axis of definition
+    --          space, and the specification of any enclosed definition
+    --          curves (commonly known as islands).
+
+
+uses
+
+        Pnt                     from gp,
+        XYZ                     from gp,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable SectionedArea;
+
+            -- --specific-- --
+        Init(me          : mutable;
+             aCurve      : IGESEntity;
+             aPattern    : Integer;
+             aPoint      : XYZ;
+             aDistance   : Real;
+             anAngle     : Real;
+             someIslands : HArray1OfIGESEntity);
+        -- This method is used to set fields of the
+        -- class SectionedArea
+        --       - aCurve      : The exterior definition curve (closed)
+        --       - aPattern    : The fill pattern code
+        --       - aPoint      : The passing point of the pattern lines
+        --       - aDistance   : Normal distance between adjacent lines
+        --       - anAngle     : Angle between XT axis to sectioning lines
+        --                       (default Pi/4)
+        --       - someIslands : The interior definition curves
+
+    	SetInverted (me : mutable; mode : Boolean);
+	---Purpose : Sets the cross hatches to be inverted or not,
+	--           according value of <mode> (corresponds to FormNumber)
+
+    	IsInverted (me) returns Boolean;
+	---Purpose : Returns True if cross hatches as Inverted, else they are
+	--           Standard (Inverted : Form=1, Standard : Form=0)
+
+        ExteriorCurve(me) returns IGESEntity;
+        ---Purpose : returns the exterior definition curve
+
+        Pattern(me) returns Integer;
+        ---Purpose : returns fill pattern code
+
+        PassingPoint(me) returns Pnt;
+        ---Purpose : returns point thru which line should pass
+
+        TransformedPassingPoint(me) returns Pnt;
+        ---Purpose : returns point thru which line should pass after Transformation
+
+        ZDepth(me) returns Real;
+        ---Purpose : returns the Z depth
+
+        Distance(me) returns Real;
+        ---Purpose : returns the normal distance between lines
+
+        Angle(me) returns Real;
+        ---Purpose : returns the angle of lines with XT axis
+
+        NbIslands(me) returns Integer;
+        ---Purpose : returns the number of island curves
+
+        IslandCurve(me; Index: Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the interior definition curves, returns Null Handle
+        -- exception raised if Index <= 0 or Index > NbIslands()
+
+fields
+
+--
+-- Class    : IGESDimen_SectionedArea
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SectionedArea.
+--
+-- Reminder : A SectionedArea instance is defined by :
+--                     - An Exterior Curve
+--                - An Integer representing the pattern
+--                - The coordinates thru which a line should pass
+--                - The Z-depth of the lines
+--                - The normal distance between adjacent lines
+--                - The angle in radians from XT-axis to section lines
+--                - A Single Array of Interior Definition Curves
+--
+
+        theExteriorCurve: IGESEntity;
+        thePattern      : Integer;
+        thePassingPoint : XYZ;
+        theDistance     : Real;
+        theAngle        : Real;
+        theIslandCurves : HArray1OfIGESEntity;
+
+end SectionedArea;

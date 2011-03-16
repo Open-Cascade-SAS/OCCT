@@ -1,0 +1,17 @@
+--
+-- File:	Graphic3d_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:12:20 1996	Jean GAUTIER	Creation
+--              01-11-97 : BGN : Portage HP/OpenGL
+--                         => mise en coherence des options de compilations.
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %Graphic3d_CMPLRS_EDL) then
+  @set %Graphic3d_CMPLRS_EDL = "";
+  @uses "CSF.edl";
+
+  --@uses "Graphic3d.edl";
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " " %CSF_X11_INCLUDE ;
+
+@endif;

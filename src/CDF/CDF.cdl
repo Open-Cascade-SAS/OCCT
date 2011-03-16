@@ -1,0 +1,108 @@
+-- File:	CDF.cdl
+-- Created:	Thu Aug  7 16:06:58 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+package CDF
+
+
+uses CDM, PCDM, TCollection, TColStd, Storage, Resource, Quantity, OSD
+
+is
+    class Directory;
+    class DirectoryIterator;
+    
+    class Session;
+    
+    enumeration TypeOfActivation is TOA_New,TOA_Modified,TOA_Unchanged
+    end TypeOfActivation from CDF;
+    
+    deferred class Application;
+
+
+---Category: Store in Database related classes.
+--           
+    private class StoreList;
+
+    enumeration StoreStatus is  
+    SS_OK,  
+    SS_DriverFailure,  
+    SS_WriteFailure,  
+    SS_Failure
+    end StoreStatus from CDF;
+
+
+---Category: Retrieve from Database related classes.
+--           
+
+---Category: API for Store and retrieve
+--           
+    
+    class Store;
+
+    
+    enumeration TryStoreStatus is TS_OK,TS_NoCurrentDocument,TS_NoDriver,TS_NoSubComponentDriver
+    end TryStoreStatus;
+    
+    enumeration RetrievableStatus is  
+    RS_OK, 
+    RS_AlreadyRetrievedAndModified, 
+    RS_AlreadyRetrieved, 
+    RS_UnknownDocument, 
+    RS_NoDriver, 
+    RS_UnknownFileDriver, 
+    RS_WrongResource,
+    RS_OpenError,  
+    RS_NoVersion, 
+    RS_NoModel, 
+    RS_NoSchema, 
+    RS_NoDocument, 
+    RS_ExtensionFailure,
+    RS_WrongStreamMode, 
+    RS_FormatFailure, 
+    RS_TypeFailure,
+    RS_TypeNotFoundInSchema, 
+    RS_UnrecognizedFileFormat, 
+    RS_MakeFailure,	
+    RS_PermissionDenied, 
+    RS_DriverFailure
+    end RetrievableStatus;
+
+    enumeration SubComponentStatus is SCS_Consistent, SCS_Unconsistent,SCS_Stored,SCS_Modified
+    end SubComponentStatus;
+    
+    enumeration StoreSetNameStatus  is  
+    SSNS_OK, 
+    SSNS_ReplacingAnExistentDocument, 
+    SSNS_OpenDocument
+    end StoreSetNameStatus;
+    
+    
+    ---Category: MetaData management
+    --           
+
+    deferred class MetaDataDriver;
+    ---Purpose: this class list the method that must be available for
+    --          a specific DBMS
+     
+    exception MetaDataDriverError inherits Failure from Standard;
+    ---Purpose: this exception is used in the deferred methods.
+    --          Programmer implementing such methods may use this
+    --          exception or any exception inheriting MetaDataDriverError.
+
+
+    deferred class MetaDataDriverFactory;
+
+
+    private class Timer;
+    
+    GetLicense(anApplicationIdentifier: Integer from Standard);
+    
+    IsAvailable(anApplicationIdentifier: Integer from Standard)
+    returns Boolean from Standard;
+
+end CDF;
+

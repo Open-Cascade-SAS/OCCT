@@ -1,0 +1,21 @@
+-- File:	StepDimTol_SurfaceProfileTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class SurfaceProfileTolerance from StepDimTol
+inherits GeometricTolerance from StepDimTol
+
+    ---Purpose: Representation of STEP entity SurfaceProfileTolerance
+
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr
+
+is
+    Create returns SurfaceProfileTolerance from StepDimTol;
+	---Purpose: Empty constructor
+
+end SurfaceProfileTolerance;

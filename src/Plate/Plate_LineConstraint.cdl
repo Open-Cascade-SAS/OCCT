@@ -1,0 +1,35 @@
+-- File:	Plate_LineConstraint.cdl
+-- Created:	Thu May  7 11:33:37 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class LineConstraint from Plate
+---Purpose: constraint a point to belong to a straight line
+--          
+--          
+
+uses 
+ XY from gp, 
+ Lin  from  gp,
+ LinearScalarConstraint from Plate
+
+is
+    Create(point2d : XY ; lin  :  Lin  from  gp; 
+           iu : Integer = 0; iv : Integer = 0) returns LineConstraint;
+-- constraint the iu th  derivative in u and iv  th derivative in v at
+-- the point2d parametre to belong to the lin  line.
+
+    -- Accessors :
+    LSC(me) returns  LinearScalarConstraint ;
+    ---C++: inline 
+    ---C++: return const &
+
+
+fields
+    myLSC : LinearScalarConstraint;
+    
+end;
+

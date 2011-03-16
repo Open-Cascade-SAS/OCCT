@@ -1,0 +1,95 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NotImplemented.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_SeqNode.gxx
+// Created:	Sep, 24 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+// -----------
+// constructor :
+// -----------
+PCollection_SeqNode::PCollection_SeqNode
+      (const Handle(PCollection_SeqNode)& TheLast , const Item& TheItem )
+{
+   MyItem = TheItem;
+   MyPrevious = TheLast;
+   MyNext.Nullify();
+}
+
+PCollection_SeqNode::PCollection_SeqNode
+      (const Item& TheItem , const Handle(PCollection_SeqNode)& TheFirst)
+{
+   MyItem = TheItem;
+   MyNext = TheFirst;
+   MyPrevious.Nullify();
+
+}
+
+PCollection_SeqNode::PCollection_SeqNode
+      (const Handle(PCollection_SeqNode)& ThePrevious , 
+       const Handle(PCollection_SeqNode)& TheNext ,
+       const Item& TheItem) 
+{
+   MyItem     = TheItem;
+   MyNext     = TheNext;
+   MyPrevious = ThePrevious;
+}   
+
+// -----------
+// Value
+// -----------
+Item PCollection_SeqNode::Value() const 
+{
+   return MyItem;
+}
+
+// -----------
+// Next
+// -----------
+Handle(PCollection_SeqNode) PCollection_SeqNode::Next() const 
+{
+   return MyNext;
+}
+
+// -----------
+// Previous
+// -----------
+Handle(PCollection_SeqNode) PCollection_SeqNode::Previous() const 
+{
+   return MyPrevious;
+}
+
+// -----------
+// SetValue
+// -----------
+void PCollection_SeqNode::SetValue(const Item& TheItem) 
+{
+   MyItem = TheItem;
+} 
+
+// -----------
+// SetNext
+// -----------
+void PCollection_SeqNode::SetNext(const Handle(PCollection_SeqNode)& TheNext)
+{
+   MyNext = TheNext;
+}
+
+// -----------
+// SetPrevious
+// -----------
+void PCollection_SeqNode::
+         SetPrevious(const Handle(PCollection_SeqNode)& ThePrevious)
+{
+   MyPrevious = ThePrevious;
+}
+
+
+
+
+
+

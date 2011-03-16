@@ -1,0 +1,94 @@
+-- File:	HLRBRep_FaceIterator.cdl
+-- Created:	Thu Apr 17 15:55:18 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class FaceIterator from HLRBRep
+
+uses
+    Integer     from Standard,
+    Boolean     from Standard,
+    Orientation from TopAbs,
+    WiresBlock  from HLRAlgo,
+    EdgesBlock  from HLRAlgo,
+    FaceData    from HLRBRep
+
+is
+    Create returns FaceIterator from HLRBRep;
+
+    InitEdge(me : in out;
+             fd :    out FaceData from HLRBRep)
+	---Purpose: Begin an exploration of the edges of the face <fd>
+    is static;
+    
+    MoreEdge(me) returns Boolean from Standard
+	---C++: inline
+    is static;
+    
+    NextEdge(me : in out)
+    is static;
+    
+    BeginningOfWire(me) returns Boolean from Standard
+	---Purpose: Returns True if the current edge is the first of a
+	--          wire.
+	--          
+	---C++: inline
+    is static;
+    
+    EndOfWire(me) returns Boolean from Standard
+	---Purpose: Returns True if the current edge is the  last of a
+	--          wire.
+	--          
+	---C++: inline
+    is static;
+    
+    SkipWire(me : in out)
+	---Purpose: Skip the current wire in the exploration.
+	--          
+	---C++: inline
+    is static;
+    
+    Wire(me) returns any EdgesBlock from HLRAlgo
+	---Purpose: Returns the edges of the current wire.
+	--          
+	---C++: inline
+    is static;
+    
+    Edge(me) returns Integer from Standard
+	---C++: inline
+    is static;
+    
+    Orientation(me) returns Orientation from TopAbs
+	---C++: inline
+    is static;
+	
+    OutLine(me)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Internal(me)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Double(me)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    IsoLine(me)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+fields
+    iWire   : Integer    from Standard;
+    nbWires : Integer    from Standard;
+    iEdge   : Integer    from Standard;
+    nbEdges : Integer    from Standard;
+    myWires : WiresBlock from HLRAlgo;
+    myEdges : EdgesBlock from HLRAlgo;
+    
+end FaceIterator;

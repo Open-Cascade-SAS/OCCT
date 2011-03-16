@@ -1,0 +1,19 @@
+-- File:	StepBasic_DesignContext.cdl
+-- Created:	Mon Oct  7 18:08:36 1996
+-- Author:	Christian CAILLET
+--		<cky@freetax>
+---Copyright:	 Matra Datavision 1996
+
+class DesignContext  from StepBasic
+
+inherits ProductDefinitionContext  from StepBasic
+
+    ---Purpose : class added to Schema AP214 around April 1996
+
+uses Integer
+
+is
+
+    Create returns mutable DesignContext;
+
+end DesignContext;

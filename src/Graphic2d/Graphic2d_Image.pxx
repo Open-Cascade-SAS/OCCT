@@ -1,0 +1,7 @@
+
+#ifndef IMAGE_PXX_INCLUDED
+#define IMAGE_PXX_INCLUDED
+
+static Standard_Integer TheSmallSize = 64*64;
+
+#endif

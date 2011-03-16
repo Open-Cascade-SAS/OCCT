@@ -1,0 +1,57 @@
+-- File:	MoniTool_Element.cdl
+-- Created:	Fri Nov  4 10:59:26 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class Element  from MoniTool  inherits TShared
+
+    ---Purpose : a Element allows to map any kind of object as a Key for a Map.
+    --           This works by defining, for a Hash Code, that of the real Key,
+    --           not of the Element which acts only as an intermediate.
+    --           When a Map asks for the HashCode of a Element, this one returns
+    --           the code it has determined at creation time
+
+uses CString, Type, Transient, AttrList from MoniTool
+
+is
+
+    SetHashCode (me : mutable; code : Integer)  is static protected;
+    ---Purpose : Stores the HashCode which corresponds to the Value given to
+    --           create the Mapper
+
+    GetHashCode (me) returns Integer  is static;
+    ---Purpose : Returns the HashCode which has been stored by SetHashCode
+    --           (remark that HashCode could be deferred then be defined by
+    --            sub-classes, the result is the same)
+
+    Equates (me; other : Element) returns Boolean  is deferred;
+    ---Purpose : Specific testof equallity : to be defined by each sub-class,
+    --           must be False if Elements have not the same true Type, else
+    --           their contents must be compared
+
+    ValueType    (me) returns Type  is virtual;
+    ---Purpose : Returns the Type of the Value. By default, returns the
+    --           DynamicType of <me>, but can be redefined
+
+    ValueTypeName (me) returns CString  is virtual;
+    ---Purpose : Returns the name of the Type of the Value. Default is name
+    --           of ValueType, unless it is for a non-handled object
+
+    	-- --    Attributes
+
+    ListAttr (me) returns AttrList;
+    ---Purpose : Returns (readonly) the Attribute List
+    ---C++ : return const &
+
+    ChangeAttr (me : mutable) returns AttrList;
+    ---Purpose : Returns (modifiable) the Attribute List
+    ---C++ : return &
+
+fields
+
+    thecode : Integer;
+    theattrib : AttrList;
+
+end Element;

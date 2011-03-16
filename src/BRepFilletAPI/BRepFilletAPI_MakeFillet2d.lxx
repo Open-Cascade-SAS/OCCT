@@ -1,0 +1,85 @@
+// File:	BRepFilletAPI_MakeFillet2d.lxx
+// Created:	Thu Aug 31 15:07:45 1995
+// Author:	Remi LEQUETTE
+//		<rle@mentox>
+
+//=======================================================================
+//function : IsModified
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepFilletAPI_MakeFillet2d::IsModified(const TopoDS_Edge& E) const 
+{
+  return myMakeChFi2d.IsModified(E);
+}
+
+//=======================================================================
+//function : FilletEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_SequenceOfShape& BRepFilletAPI_MakeFillet2d::FilletEdges() const 
+{
+  return myMakeChFi2d.FilletEdges();
+}
+
+//=======================================================================
+//function : NbFillet
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer BRepFilletAPI_MakeFillet2d::NbFillet() const 
+{
+  return myMakeChFi2d.NbFillet();
+}
+
+//=======================================================================
+//function : ChamferEdges
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_SequenceOfShape& BRepFilletAPI_MakeFillet2d::ChamferEdges() const 
+{
+  return myMakeChFi2d.ChamferEdges();
+}
+
+//=======================================================================
+//function : NbChamfer
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer BRepFilletAPI_MakeFillet2d::NbChamfer() const 
+{
+    return myMakeChFi2d.NbChamfer();
+}
+
+//=======================================================================
+//function : HasDescendant
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepFilletAPI_MakeFillet2d::HasDescendant(const TopoDS_Edge& E) const 
+{
+  return myMakeChFi2d.HasDescendant(E);
+}
+
+//=======================================================================
+//function : DescendantEdge
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Edge& BRepFilletAPI_MakeFillet2d::DescendantEdge(const TopoDS_Edge& E) const 
+{
+  return myMakeChFi2d.DescendantEdge(E);
+}
+
+//=======================================================================
+//function : Status
+//purpose  : 
+//=======================================================================
+
+inline ChFi2d_ConstructionError BRepFilletAPI_MakeFillet2d::Status() const 
+{
+  return myMakeChFi2d.Status();
+}
+

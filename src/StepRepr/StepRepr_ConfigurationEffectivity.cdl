@@ -1,0 +1,34 @@
+-- File:	StepRepr_ConfigurationEffectivity.cdl
+-- Created:	Fri Nov 26 16:26:36 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ConfigurationEffectivity from StepRepr
+inherits ProductDefinitionEffectivity from StepBasic
+
+    ---Purpose: Representation of STEP entity ConfigurationEffectivity
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionRelationship from StepBasic,
+    ConfigurationDesign from StepRepr
+
+is
+    Create returns ConfigurationEffectivity from StepRepr;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aEffectivity_Id: HAsciiString from TCollection;
+                       aProductDefinitionEffectivity_Usage: ProductDefinitionRelationship from StepBasic;
+                       aConfiguration: ConfigurationDesign from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Configuration (me) returns ConfigurationDesign from StepRepr;
+	---Purpose: Returns field Configuration
+    SetConfiguration (me: mutable; Configuration: ConfigurationDesign from StepRepr);
+	---Purpose: Set field Configuration
+
+fields
+    theConfiguration: ConfigurationDesign from StepRepr;
+
+end ConfigurationEffectivity;

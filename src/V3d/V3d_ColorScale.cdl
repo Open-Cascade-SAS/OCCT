@@ -1,0 +1,92 @@
+-- File:    V3d_ColorScale.cdl
+-- Created: 24/06/2004
+-- Author:  STV
+--
+---Copyright:   Open Cascade 2004
+--
+
+private class ColorScale from V3d inherits ColorScale from Aspect
+
+    ---Purpose: A colorscale class
+uses
+
+       --View           from V3d,
+       LayerMgr         from V3d,
+       LayerMgrPointer  from V3d,
+       --Layer          from Visual3d,
+       Color          from Quantity,
+       ExtendedString from TCollection
+
+is
+
+       ---Category: Public
+
+       Create(aMgr : LayerMgr from V3d)
+       returns ColorScale from V3d;
+       ---Purpose: Returns returns ColorScale from V3d.
+    
+       --View(me)
+       --returns View from V3d;
+       ---Purpose: Returns View from V3d.
+    
+       Display(me : mutable);
+
+       Erase(me : mutable);
+
+       IsDisplayed(me)
+       returns Boolean from Standard;
+
+       ---Category: Protected
+
+       UpdateColorScale(me : mutable)
+       is redefined protected;
+
+       --BeginPaint(me : mutable)
+       --returns Boolean from Standard
+       --is redefined protected;
+
+       --EndPaint(me : mutable)
+       --returns Boolean from Standard
+       --is redefined protected;
+
+       PaintRect(me : mutable; X, Y, W, H : Integer from Standard;
+                               aColor     : Color from Quantity;
+                               aFilled    : Boolean from Standard = Standard_False)
+       is redefined;
+
+       PaintText(me : mutable; aText  : ExtendedString from TCollection;
+                               X, Y   : Integer from Standard;
+                               aColor : Color from Quantity)
+       is redefined;
+
+       TextWidth(me; aText : ExtendedString from TCollection)
+       returns Integer from Standard
+       is redefined;
+
+       TextHeight(me; aText : ExtendedString from TCollection)
+       returns Integer from Standard
+       is redefined;
+
+       TextSize( me;
+                AText    : ExtendedString from TCollection;
+                AHeight  : Integer from Standard;
+                AWidth   : in out Integer from Standard;
+                AnAscent : in out Integer from Standard;
+                ADescent : in out Integer from Standard );
+
+       DrawScale(me : mutable);
+
+    ---Category: Private
+
+       --Overlay(me)
+       --returns Layer from Visual3d
+       --is private;
+
+fields
+
+       --myView     : View from V3d;
+       myLayerMgr : LayerMgrPointer from V3d;
+       --myOverlay  : Layer from Visual3d;
+       myDisplay  : Boolean from Standard;
+
+end ColorScale;

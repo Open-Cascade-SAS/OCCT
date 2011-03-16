@@ -1,0 +1,95 @@
+-- File:	Select3D_SensitivePoint.cdl
+-- Created:	Thu Feb 23 09:46:31 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+class SensitivePoint from Select3D 
+inherits SensitiveEntity from Select3D
+
+	---Purpose: A framework to define sensitive 3D points.
+
+uses
+    Pnt             from gp,
+    Pnt2d           from gp,
+    Projector       from Select3D,
+    Lin             from gp,
+    EntityOwner     from SelectBasics,
+    ListOfBox2d     from SelectBasics,
+    Location        from TopLoc,
+    Box2d             from Bnd,
+    Array1OfPnt2d     from TColgp, 
+    Pnt               from Select3D,
+    Pnt2d             from Select3D
+
+is
+
+    Create (OwnerId : EntityOwner from SelectBasics;
+    	    Point   : Pnt from gp)
+    returns mutable SensitivePoint;
+    	---Purpose: Constructs a sensitive point object defined by the
+    	-- owner OwnerId and the point Point. 
+
+
+    Project (me:mutable;aProjector : Projector from Select3D) 
+    is redefined static;
+    ---Level: Public 
+    ---Purpose:Converts the stored 3D point into a 2D point according 
+    --         to <aProjector> ; this method is called by the selection Manager.
+
+    
+    Areas(me:mutable; aresult : in out ListOfBox2d from SelectBasics) 
+    is redefined static;
+    ---Level: Public 
+    ---Purpose: stores in <aresult> the 2D sensitive box which represents 
+    --          the point area in the selection process. 
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is redefined static;
+    
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is redefined static;    
+    ---Level: Public 
+    ---Purpose: returns true if the X,Y position matches the point
+    --          else gives the distance between them.
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    ---Level: Public 
+    
+
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static;
+
+      
+    Point(me) returns Pnt from gp;
+    ---Purpose: Returns the point used at the time of construction.
+
+
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+
+fields
+
+    mypoint   : Pnt from Select3D;
+    myprojpt  : Pnt2d from Select3D;
+    
+    
+end SensitivePoint;
+
+

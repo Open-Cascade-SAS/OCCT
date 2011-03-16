@@ -1,0 +1,39 @@
+-- File:        SurfaceSideStyle.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceSideStyle from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfSurfaceStyleElementSelect from StepVisual, 
+	SurfaceStyleElementSelect from StepVisual
+is
+
+	Create returns mutable SurfaceSideStyle;
+	---Purpose: Returns a SurfaceSideStyle
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aStyles : mutable HArray1OfSurfaceStyleElementSelect from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetStyles(me : mutable; aStyles : mutable HArray1OfSurfaceStyleElementSelect);
+	Styles (me) returns mutable HArray1OfSurfaceStyleElementSelect;
+	StylesValue (me; num : Integer) returns SurfaceStyleElementSelect;
+	NbStyles (me) returns Integer;
+
+fields
+
+	name : HAsciiString from TCollection;
+	styles : HArray1OfSurfaceStyleElementSelect from StepVisual; -- a SelectType
+
+end SurfaceSideStyle;

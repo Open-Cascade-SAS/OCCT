@@ -1,0 +1,206 @@
+-- File:	Bisector_BisecAna.cdl
+-- Created:	Thu May 19 10:55:33 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+class BisecAna from Bisector
+
+    --- Purpose :
+
+inherits
+
+    Curve from Bisector
+    
+uses
+    Shape             from GeomAbs,
+    CurveType         from GeomAbs,
+    Curve             from Geom2d,
+    Geometry          from Geom2d,    
+    TrimmedCurve      from Geom2d,
+    Point             from Geom2d,
+    Bisec             from GccInt,	    
+    Pnt2d             from gp,
+    Vec2d             from gp,
+    Trsf2d            from gp
+
+raises DomainError    from Standard,
+       RangeError     from Standard
+
+is
+    Create returns mutable BisecAna;
+    
+    Perform(me        : mutable                                ;
+            Cu1       : Curve   from Geom2d                    ;
+            Cu2       : Curve   from Geom2d                    ;
+            P         : Pnt2d   from gp                        ;
+            V1        : Vec2d   from gp                        ;
+            V2        : Vec2d   from gp                        ;
+            Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard                  ;
+    	    oncurve   : Boolean from Standard = Standard_True  );
+	   
+    	--- Purpose : Performs  the bisecting line  between the  curves
+    	--            <Cu1> and <Cu2>. 
+    	--            <oncurve> is True if the point <P> is common to <Cu1>
+    	--            and <Cu2>.
+
+    Perform(me        : mutable                              ;
+    	    Cu        : Curve   from Geom2d                  ;
+    	    Pnt       : Point   from Geom2d                  ;
+    	    P         : Pnt2d   from gp                      ; 
+    	    V1        : Vec2d   from gp                      ;
+    	    V2        : Vec2d   from gp                      ; 
+    	    Sense     : Real    from Standard                ;
+    	    Tolerance : Real    from Standard                ;
+    	    oncurve   : Boolean from Standard = Standard_True);
+
+    	--- Purpose : Performs  the bisecting line  between the  curve
+    	--            <Cu1> and the point <Pnt>. 
+    	--            <oncurve> is True if the point <P> is the point <Pnt>. 
+
+    Perform(me        : mutable                                ;
+    	    Pnt       : Point   from Geom2d                    ;
+    	    Cu        : Curve   from Geom2d                    ;
+    	    P         : Pnt2d   from gp                        ;
+    	    V1        : Vec2d   from gp                        ;
+    	    V2        : Vec2d   from gp                        ; 
+    	    Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard                  ;
+    	    oncurve   : Boolean from Standard = Standard_True  );
+
+    	--- Purpose : Performs  the bisecting line  between the  curve
+    	--            <Cu> and the point <Pnt>. 
+    	--            <oncurve> is True if the point <P> is the point <Pnt>.
+    
+   
+    Perform(me        : mutable                                ;
+    	    Pnt1      : Point   from Geom2d                    ;
+            Pnt2      : Point   from Geom2d                    ;
+            P         : Pnt2d   from gp                        ;
+    	    V1        : Vec2d   from gp                        ;
+      	    V2        : Vec2d   from gp                        ; 
+            Sense     : Real    from Standard                  ;
+    	    Tolerance : Real    from Standard = 0.0            ;
+    	    oncurve   : Boolean from Standard = Standard_True  ) ;
+
+    	--- Purpose : Performs  the bisecting line  between the two points
+    	--            <Pnt1>  and <Pnt2>.
+   
+    Init ( me       : mutable;
+    	   bisector : TrimmedCurve from Geom2d)
+    is static;
+
+    IsExtendAtStart (me) returns Boolean from Standard
+    is static;
+    
+    IsExtendAtEnd   (me) returns Boolean from Standard
+    is static;
+
+    SetTrim(me : mutable ; Cu : Curve from Geom2d);
+    	--- Purpose : Trim <me> by a domain defined by the curve <Cu>.
+    	--            This domain is the set of the points which are
+    	--            nearest from <Cu> than the extremitis of <Cu>.
+
+    SetTrim(me : mutable ; uf,  ul  :  Real  from  Standard);
+    	--- Purpose : Trim <me> by a domain defined by uf  and  ul
+ 
+    Distance(me    : mutable                        ;
+	     P     :        Pnt2d   from gp         ;
+	     Bis   :        Bisec   from GccInt     ;
+             V1    :        Vec2d   from gp         ;
+             V2    :        Vec2d   from gp         ; 
+             Sense :        Real    from Standard   ;
+             U     :    out Real    from Standard   ;
+    	     sense :    out Boolean from Standard   ;
+    	     ok    :    out Boolean from Standard   ) 
+	 
+	 --- Purpose : Returns the distance between the point <P> and
+	 --            the bisecting <Bis>.
+    returns Real 
+    is private;
+    
+    
+    Reverse (me : mutable)
+    is static;
+    
+    ReversedParameter(me; U : Real) returns Real
+    is static;
+    
+    IsCN (me; N : Integer)  returns Boolean
+        --- Purpose : Returns the order of continuity of the curve. 
+     raises RangeError
+        --- Purpose : Raised if N < 0. 
+    is static;
+    
+    Copy (me)  returns mutable like me   
+    is static;    
+        
+    Transform (me : mutable; T : Trsf2d) 
+    is static; 
+    
+    FirstParameter(me) returns Real
+    is static;
+
+    LastParameter(me) returns Real
+    is static; 
+    
+    IsClosed (me)   returns Boolean
+    is static;
+    
+    IsPeriodic (me)  returns Boolean
+    is static;
+    
+    Continuity (me)   returns Shape from GeomAbs
+    is static;
+    
+    D0(me; U : Real; P : out Pnt2d)
+    is static;
+     
+    D1 (me; U : Real; P : out Pnt2d; V1 : out Vec2d)
+    is static;
+
+    D2 (me; U : Real; P : out Pnt2d; V1, V2 : out Vec2d)
+    is static;
+    
+    D3 (me; U : Real; P : out Pnt2d; V1, V2, V3 : out Vec2d)
+    is static;
+    
+    DN (me; U : Real; N : Integer)   returns Vec2d
+    is static;     
+    
+    Geom2dCurve (me) returns Curve from Geom2d
+    is static;
+    
+    Parameter (me ; P : Pnt2d from gp) returns Real
+    is static;
+    
+    ParameterOfStartPoint (me) returns Real
+    is static;
+    
+    ParameterOfEndPoint (me) returns Real
+    is static;
+    
+    NbIntervals (me) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <C1>.    And  returns   the number   of
+	--          intervals.
+    is static;
+
+    IntervalFirst(me ; Index : Integer from Standard) returns Real
+       ---Purpose: Returns  the  first  parameter    of  the  current
+       --          interval. 
+    is static;
+    
+    IntervalLast(me ; Index : Integer from Standard) returns Real
+       ---Purpose: Returns  the  last  parameter    of  the  current
+       --          interval. 
+    is static;
+
+    Dump (me; Deep : Integer = 0; Offset : Integer = 0) is static;
+    
+fields  
+
+    thebisector  : TrimmedCurve from Geom2d;
+    
+end BisecAna;

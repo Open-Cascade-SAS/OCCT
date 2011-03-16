@@ -1,0 +1,251 @@
+// File:	HatchGen_Hatcher.lxx
+// Created:	Tue Jan  3 10:12:02 1995
+// Author:	Laurent BUCHARD
+//		<lbr@mastox>
+
+#define RAISE_IF_NOSUCHOBJECT 0
+#define TRACE 0
+
+#include <StdFail_NotDone.hxx>
+
+#include HatchGen_Element_hxx
+#include HatchGen_Elements_hxx
+#include TheIntersector_hxx
+#include TheCurveE_hxx
+#include HatchGen_Hatching_hxx
+//=======================================================================
+// Function : Intersector
+// Purpose  : Returns the associated intersector.
+//=======================================================================
+
+inline const TheIntersector& HatchGen_Hatcher::Intersector ()
+{
+  return myIntersector ;
+}
+
+//=======================================================================
+// Function : ChangeIntersector
+// Purpose  : Returns the associated intersector.
+//=======================================================================
+
+inline TheIntersector& HatchGen_Hatcher::ChangeIntersector ()
+{
+  return myIntersector ;
+}
+
+//=======================================================================
+// Function : Confusion2d
+// Purpose  : Returns the 2d confusion tolerance.
+//=======================================================================
+
+inline Standard_Real HatchGen_Hatcher::Confusion2d () const
+{
+  return myConfusion2d ;
+}
+
+//=======================================================================
+// Function : Confusion3d
+// Purpose  : Returns the 3d confusion tolerance.
+//=======================================================================
+
+inline Standard_Real HatchGen_Hatcher::Confusion3d () const
+{
+  return myConfusion3d ;
+}
+
+//=======================================================================
+// Function : KeepPoints
+// Purpose  : Returns the flag about the points consideration.
+//=======================================================================
+
+inline Standard_Boolean HatchGen_Hatcher::KeepPoints () const
+{
+  return myKeepPoints ;
+}
+
+//=======================================================================
+// Function : KeepSegments
+// Purpose  : Returns the flag about the segments consideration.
+//=======================================================================
+
+inline Standard_Boolean HatchGen_Hatcher::KeepSegments () const
+{
+  return myKeepSegments ;
+}
+
+//=======================================================================
+// Function : Clear
+// Purpose  : Removes all the hatchings and all the elements.
+//=======================================================================
+
+inline void HatchGen_Hatcher::Clear ()
+{
+  if (myNbHatchings != 0) ClrHatchings () ;
+  if (myNbElements  != 0) ClrElements  () ;
+}
+
+//=======================================================================
+// Function : Element
+// Purpose  : Returns the IndE-th element.
+//=======================================================================
+
+inline HatchGen_Element& HatchGen_Hatcher::Element (const Standard_Integer IndE)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
+#endif
+  HatchGen_Element& Element = myElements.ChangeFind (IndE) ;
+  return Element ;
+}
+
+//=======================================================================
+// Function : ElementCurve
+// Purpose  : Returns the curve associated to the IndE-th element.
+//=======================================================================
+
+inline const TheCurveE& HatchGen_Hatcher::ElementCurve (const Standard_Integer IndE) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
+#endif
+  const HatchGen_Element& Element = myElements.Find (IndE) ;
+  return Element.Curve() ;
+}
+
+
+//=======================================================================
+// Function : Hatching
+// Purpose  : Returns the IndH-th hatching.
+//=======================================================================
+
+inline HatchGen_Hatching& HatchGen_Hatcher::Hatching (const Standard_Integer IndH)
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  return Hatching ;
+}
+
+//=======================================================================
+// Function : HatchingCurve
+// Purpose  : Returns the curve associated to the IndH-th hatching.
+//=======================================================================
+
+inline const TheCurveH& HatchGen_Hatcher::HatchingCurve (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.Curve() ;
+}
+
+//=======================================================================
+// Function : NbPoints
+// Purpose  : Returns the number of intersection points of the IndH-th
+//            hatching.
+//=======================================================================
+
+inline Standard_Integer HatchGen_Hatcher::NbPoints (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.NbPoints() ;
+}
+
+//=======================================================================
+// Function : Point
+// Purpose  : Returns the IndP-th intersection point of the IndH-th
+//            hatching.
+//=======================================================================
+
+inline const HatchGen_PointOnHatching& HatchGen_Hatcher::Point (const Standard_Integer IndH,
+							 const Standard_Integer IndP) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_OutOfRange_Raise_if (IndP < 0 || IndP > Hatching.NbPoints(), "") ;
+#endif
+  const HatchGen_PointOnHatching& PntH = Hatching.Point (IndP) ;
+  return PntH ;
+}
+
+//=======================================================================
+// Function : TrimDone
+// Purpose  : Returns the fact that all the intersections were computed
+//            for the IndH-th hatching. 
+//=======================================================================
+
+inline Standard_Boolean HatchGen_Hatcher::TrimDone (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.TrimDone() ;
+}
+//=======================================================================
+// Function : TrimFailed
+// Purpose  : Returns the fact that all the intersections failed
+//            for the IndH-th hatching. 
+//=======================================================================
+
+inline Standard_Boolean HatchGen_Hatcher::TrimFailed (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.TrimFailed() ;
+}
+
+//=======================================================================
+// Function : IsDone
+// Purpose  : Returns the fact that all the domains were computed
+//            for the IndH-th hatching. 
+//=======================================================================
+
+inline Standard_Boolean HatchGen_Hatcher::IsDone (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.IsDone() ;
+}
+//=======================================================================
+// Function : Status
+// Purpose  : Returns the status about the IndH-th hatching. 
+//=======================================================================
+
+inline HatchGen_ErrorStatus HatchGen_Hatcher::Status (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  return Hatching.Status() ;
+}
+//=======================================================================
+// Function : NbDomains
+// Purpose  : Returns the number of domains of the IndH-th hatching.
+//=======================================================================
+
+inline Standard_Integer HatchGen_Hatcher::NbDomains (const Standard_Integer IndH) const
+{
+#if RAISE_IF_NOSUCHOBJECT
+  Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
+#endif
+  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  StdFail_NotDone_Raise_if (!Hatching.IsDone(), "HatchGen_Hatcher::NbDomains") ;
+  return Hatching.NbDomains() ;
+}
+
+
+

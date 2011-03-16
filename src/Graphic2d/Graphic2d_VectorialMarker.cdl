@@ -1,0 +1,84 @@
+
+-- File:	Graphic2d_VectorialMarker.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@pernox>
+---Copyright:	Matra Datavision 1993
+
+-- Modified:	Jeudi 26 Janvier 1995
+-- by:		CAL
+--		The old name of this was Marker.
+
+deferred class VectorialMarker from Graphic2d inherits Line from Graphic2d
+
+	---Version:
+
+	---Purpose: Groups all the primitives which behaves like
+	--	    geometrical marker.
+	--	    for example : EllipsMarker, CircleMarker ...
+	--	    A marker is a primitive which retains its original
+	--	    on-screen size no matter how the view is zoomed.
+	--	    For example, markers are used as symbols of dimension.
+	--	    Every marker takes a reference point as an argument in
+	--	    its constructor. CircleMarker and EllipsMarker take
+	--	    another point as the center and PolylineMarker takes the
+	--	    first point of its list as its origin.
+	--	    The coordinates of the centre or origin point are offsets
+	--	    with respect to the reference point.
+
+	---Keywords: Primitive, VectorialMarker
+	---Warning:
+	---References:
+
+uses
+	GraphicObject	from Graphic2d,
+	Length		from Quantity
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Initialize (aGraphicObject: GraphicObject from Graphic2d;
+		aXPosition, aYPosition: Length from Quantity);
+	---Level: Public
+	---Purpose: Creates a marker at <aXPosition>, <aYPosition>
+	---Category: Constructors
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetPosition (me: mutable;
+		aXPosition, aYPosition: Length from Quantity)
+	is static;
+	---Level: Public
+	---Purpose: Modifies the marker position.
+	--  Warning: If the associated GraphicObject is transformed
+	--	    the position will be transformed.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	XPosition (me) returns Length from Quantity
+	is static;
+	---Level: Public
+	---Purpose: Returns the x position of the marker
+	--  Warning: If the associated GraphicObject is transformed
+	--	    the returned position is the transformed position.
+	---Category: Inquire methods
+
+	YPosition (me) returns Length from Quantity is static;
+	---Level: Public
+	---Purpose: Returns the y position of the marker
+	--  Warning: If the associated GraphicObject is transformed
+	--	    the returned position is the transformed position.
+	---Category: Inquire methods
+
+fields
+	myXPosition:	ShortReal from Standard is protected;
+	myYPosition:	ShortReal from Standard is protected;
+
+end VectorialMarker from Graphic2d;

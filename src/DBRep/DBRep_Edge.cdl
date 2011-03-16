@@ -1,0 +1,41 @@
+-- File:	DBRep_Edge.cdl
+-- Created:	Thu Jul 15 10:10:01 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Edge from DBRep inherits TShared from MMgt
+
+uses
+    Edge    from TopoDS,
+    Color   from Draw
+
+is
+    Create (E : Edge from TopoDS; C : Color from Draw)
+    returns mutable Edge from DBRep;
+    
+    Edge(me) returns Edge from TopoDS
+	---C++: return const &
+	---C++: inline
+    is static;
+
+    Edge(me : mutable; E : Edge from TopoDS)
+	---C++: inline
+    is static;
+
+    Color(me) returns Color from Draw
+	---C++: return const &
+	---C++: inline
+    is static;
+
+    Color(me : mutable; C : Color from Draw)
+	---C++: inline
+    is static;
+
+fields
+    myEdge  : Edge  from TopoDS;
+    myColor : Color from Draw;
+
+end Edge;

@@ -1,0 +1,50 @@
+-- File:        EdgeCurve.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class EdgeCurve from StepShape 
+
+inherits Edge from StepShape 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+-- inherits GeometricRepresentationItem from StepShape 
+
+uses
+
+	Curve from StepGeom, 
+	Boolean from Standard, 
+	HAsciiString from TCollection, 
+	Vertex from StepShape
+is
+
+	Create returns mutable EdgeCurve;
+	---Purpose: Returns a EdgeCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aEdgeStart : mutable Vertex from StepShape;
+	      aEdgeEnd : mutable Vertex from StepShape) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aEdgeStart : mutable Vertex from StepShape;
+	      aEdgeEnd : mutable Vertex from StepShape;
+	      aEdgeGeometry : mutable Curve from StepGeom;
+	      aSameSense : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetEdgeGeometry(me : mutable; aEdgeGeometry : mutable Curve);
+	EdgeGeometry (me) returns mutable Curve;
+	SetSameSense(me : mutable; aSameSense : Boolean);
+	SameSense (me) returns Boolean;
+
+fields
+
+	edgeGeometry : Curve from StepGeom;
+	sameSense : Boolean from Standard;
+
+end EdgeCurve;

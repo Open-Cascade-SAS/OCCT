@@ -1,0 +1,59 @@
+-- File:	DsgPrs_DiameterPresentation.cdl
+-- Created:	Wed Aug 21 15:29:40 1996
+-- Author:	Jacques MINOT
+--		<jmi@anotax.paris1.matra-dtv.fr> 
+--              modified 12-january-98  by  Sergey ZARITCHNY
+--		<szy@orthodox.nnov.matra-dtv.fr> 
+---Copyright:	 Matra Datavision 1996
+
+class DiameterPresentation from DsgPrs
+        
+    	---Purpose: A framework for displaying diameters in shapes.  
+        
+        
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Circ from gp,
+    Drawer from Prs3d,
+    ArrowSide from DsgPrs,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation   : Presentation   from Prs3d;
+    	    	  aDrawer         : Drawer         from Prs3d;
+		  aText           : ExtendedString from TCollection;
+                  AttachmentPoint : Pnt            from gp;
+		  aCircle         : Circ           from gp; 
+	          ArrowSide: ArrowSide             from DsgPrs;
+    	    	  IsDiamSymbol    : Boolean        from Standard );
+	---Purpose: Draws the diameter of the circle aCircle displayed in
+    	-- the presentation aPresentation and with attributes
+    	-- defined by the attribute manager aDrawer. The point
+    	-- AttachmentPoint defines the point of contact
+    	-- between the circle and the diameter presentation.
+    	-- The value of the enumeration ArrowSide controls
+    	-- whether arrows will be displayed at either or both
+    	-- ends of the length. The text aText labels the diameter.
+		   
+
+    Add( myclass; aPresentation   : Presentation   from Prs3d;
+    	    	  aDrawer         : Drawer         from Prs3d;
+		  aText           : ExtendedString from TCollection;
+                  AttachmentPoint : Pnt            from gp;
+		  aCircle         : Circ           from gp; 
+		  uFirst          : Real           from Standard; 
+		  uLast           : Real           from Standard;
+	          ArrowSide       : ArrowSide      from DsgPrs; 
+    	    	  IsDiamSymbol    : Boolean        from Standard);
+	---Purpose: Draws the diameter of the arc anArc displayed in the
+    	-- presentation aPresentation and with attributes
+    	-- defined by the attribute manager aDrawer. The point
+    	-- AttachmentPoint defines the point of contact
+    	-- between the arc and the diameter presentation. The
+    	-- value of the enumeration ArrowSide controls whether
+    	-- arrows will be displayed at either or both ends of the
+    	-- length. The parameters uFirst and uLast define the
+    	-- first and last points of the arc. The text aText labels the diameter.
+
+end DiameterPresentation;

@@ -1,0 +1,247 @@
+-- File     : Prs2d_Dimension.cdl
+-- Created  : November  2000
+-- Author   : Tanya COOL
+---Copyright: Open CASCADE 2000
+
+deferred class Dimension from Prs2d inherits Line from Graphic2d
+
+ ---Purpose: Groups all dimensions
+
+uses
+
+	Drawer		   from Graphic2d,
+	GraphicObject	   from Graphic2d,
+	Pnt2d              from gp,
+	ExtendedString     from TCollection,
+	ArrowSide          from Prs2d,
+	TypeOfArrow        from Prs2d,
+	Array1OfShortReal  from TShort,
+        HArray1OfPnt2d     from TColgp
+
+raises
+
+	CircleDefinitionError	from Graphic2d
+
+is
+	Initialize( aGO           : GraphicObject  from Graphic2d;
+	            aText         : ExtendedString from TCollection;
+		    aTxtScale     : Real           from Standard;
+                    anArrAngle    : Real           from Standard;
+		    anArrLength   : Real           from Standard;
+	            anArrType     : TypeOfArrow    from Prs2d;
+		    anArrow       : ArrowSide      from Prs2d;
+                    IsRevArrow    : Boolean        from Standard )
+
+	returns mutable Dimension from Prs2d;
+
+	---Purpose: creates a dimension
+    
+	-----------------------------------------------------
+	-- Category: Modification of the properties
+	-----------------------------------------------------
+
+	SetText( me: mutable; aText: ExtendedString from TCollection );
+	    ---C++: inline
+   	    ---Level: Public
+	    ---Purpose: Sets the text to this dimension
+	          	
+    	SetTextScale( me: mutable; aTS: Real from Standard );
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the scale of text to this dimension
+
+        SetTextFont( me: mutable; aTF: Integer from Standard );
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the index of the font of this text to this dimension
+
+        SetFontOfSymb( me: mutable; aFS: Integer from Standard );
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the index of the font of the symbol to this dimension
+
+    	SetArrowType( me: mutable; anArrT: TypeOfArrow from Prs2d );
+	    ---C++: inline
+    	    ---Level: Public
+	    ---Purpose: Sets the type of arrows to this dimension
+
+        SetArrowSides( me: mutable; anArrS: ArrowSide from Prs2d);
+	    ---C++: inline
+    	    ---Level: Public
+	    ---Purpose: Sets the number of arrows to this dimension
+
+        DrawSymbol( me: mutable; isDraw: Boolean from Standard );
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the flag for drawing additional symbol
+
+    	SetSymbolCode( me: mutable; aCode: Integer from Standard );
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the ASCII code of the symbol
+    	
+	CalcTxtPos(me:mutable; theFromAbs: 
+    	    	    Boolean from Standard=Standard_False) is deferred protected;
+	
+	SetTextAbsPos(me:mutable; Xp,Yp: Real from Standard )
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the CalcTxtPos(Standard_True)
+    	    --                   myAbsX=Xp
+	    -- 	                 myAbsY=Yp
+
+	    is static;
+	    
+	SetTextAbsAngle(me:mutable; Ap: Real from Standard)
+    	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the CalcTxtPos(Standard_True)
+    	    --                   myAbsAngle=Ap
+	    is static;
+	    
+    	SetTextRelPos(me:mutable; Xp,Yp: Real from Standard )
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the CalcTxtPos(Standard_False)
+    	    --	                 myAbsX=Xp
+	    -- 	                 myAbsY=Yp
+	    is static;
+	
+	SetTextRelAngle(me:mutable; Ap: Real from Standard )
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Sets the CalcTxtPos(Standard_False)
+    	    --	                 myAbsAngle=Ap
+	    is static;
+	
+    	-----------------------------------------------------
+    	-- Category: Inquire methods
+    	-----------------------------------------------------
+
+	Text( me ) returns ExtendedString from TCollection;
+    	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns text of this dimension
+
+    	TextAbsX(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns X - coordinat of text in absolute axis 
+    	    -- add by enk Wed Dec 11 10:34 2002
+	    
+	TextAbsY(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns Y - coordinat of text in absolute axis
+	    -- add by enk Wed Dec 11 10:34 2002
+	    
+	TextAbsAngle(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns angle of text in absolute axis
+    	    -- add by enk Wed Dec 11 10:34 2002
+	    	    
+    	TextRelH(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the horizontal position of text
+    	    --Add by enk Mon Nov 25 09:43
+	    
+    	TextRelV(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the vertical position of text
+    	    --Add by enk Mon Nov 25 09:43
+     	
+    	TextRelAngle(me) returns Real from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the angle of text
+    	    --Add by enk Mon Nov 25 09:43
+    	
+    	TextScale( me ) returns Real from Standard ;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the scale of text of this dimension
+    
+    	TextFont( me ) returns Integer from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the index of the font of this text of this dimension
+
+        FontOfSymb( me ) returns Integer from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Returns the index of the font of the symbol of this dimension
+
+        ArrowType( me ) returns TypeOfArrow from Prs2d;
+	    ---C++: inline
+    	    ---Level: Public
+	    ---Purpose: Indicates the type of arrows of this dimension
+
+    	ArrowSides( me ) returns ArrowSide from Prs2d;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Indicates the number of arrows of this dimension
+	
+    	ArrowAngle( me ) returns Real from Standard;
+    	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Indicates the angle of arrow of this dimension
+	
+    	ArrowLength( me ) returns Real from Standard;
+    	    ---C++: inline
+    	    ---Level: Public
+	    ---Purpose: Indicates the length of arrow of this dimension
+    
+    	ArrowIsReversed( me ) returns Boolean from Standard;
+    	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Return true if arrows are reversed, false - in otherwise
+	
+    	IsDrawSymbol( me ) returns Boolean from Standard;
+	    ---C++: inline
+	    ---Level: Public
+	    ---Purpose: Return true if symbol is drawn, false - in otherwise
+	
+        SymbolCode( me ) returns Integer from Standard;
+	    ---C++: inline
+    	    ---Level: Public
+	    ---Purpose: Return ASCII code of the symbol
+	    
+	ArrayOfFirstArrowPnt( me ) returns HArray1OfPnt2d from TColgp;
+	    ---Level: Public
+	    ---C++: return const
+
+	ArrayOfSecondArrowPnt( me ) returns HArray1OfPnt2d from TColgp;
+	    ---Level: Public
+	    ---C++: return const
+        
+fields
+ 
+	myText       : ExtendedString    from TCollection is protected;
+    	myTextScale  : Real              from Standard    is protected;
+	
+    	myTextPosH   : Real              from Standard    is protected;----------------------------------
+    	myTextPosV   : Real              from Standard    is protected;--Add by enk Fri Nov 22 17:55 2002
+	myTextAngle  : Real              from Standard    is protected;----------------------------------
+	myAbsX       : Real              from Standard    is protected;----------------------------------
+	myAbsY       : Real              from Standard    is protected;--Add by enk Fri Dec 6  11:30 2002
+	myAbsAngle   : Real              from Standard    is protected;----------------------------------
+	
+	
+    	myTextFont   : Integer           from Standard    is protected;
+    	mySymbFont   : Integer           from Standard    is protected;
+	myXVert1     : Array1OfShortReal from TShort      is protected;
+	myYVert1     : Array1OfShortReal from TShort      is protected;
+	myXVert2     : Array1OfShortReal from TShort      is protected;
+	myYVert2     : Array1OfShortReal from TShort      is protected;
+	myArrType    : TypeOfArrow       from Prs2d       is protected;
+	myArrow      : ArrowSide         from Prs2d       is protected;
+    	myArrowAng   : Real              from Standard    is protected;
+	myArrowLen   : Real              from Standard    is protected;
+    	myIsRevArr   : Boolean           from Standard    is protected;
+    	myIsSymbol   : Boolean           from Standard    is protected;
+    	mySymbCode   : Integer           from Standard    is protected;
+	
+end Dimension from Prs2d;

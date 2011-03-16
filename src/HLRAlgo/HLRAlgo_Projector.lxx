@@ -1,0 +1,84 @@
+// File:	HLRAlgo_Projector.lxx
+// Created:	Thu Jul  9 12:50:25 1992
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#include <Standard_NoSuchObject.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+
+//=======================================================================
+//function : Directions
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_Projector::Directions (gp_Vec2d& D1,
+			       gp_Vec2d& D2,
+			       gp_Vec2d& D3) const
+{
+  D1 = myD1;
+  D2 = myD2;
+  D3 = myD3;
+}
+
+//=======================================================================
+//function : Perspective
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_Projector::Perspective() const
+{ return myPersp; }
+/*
+//=======================================================================
+//function : Transformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_Trsf & HLRAlgo_Projector::Transformation() const
+{ return myTrsf; }
+*/
+//=======================================================================
+//function : InvertedTransformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_Trsf & HLRAlgo_Projector::InvertedTransformation() const
+{ return myInvTrsf; }
+
+//=======================================================================
+//function : FullTransformation
+//purpose  : 
+//=======================================================================
+
+inline const gp_Trsf & HLRAlgo_Projector::FullTransformation() const
+{ return myScaledTrsf; }
+
+//=======================================================================
+//function : Focus
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real HLRAlgo_Projector::Focus() const
+{
+  Standard_NoSuchObject_Raise_if
+    (!myPersp,"HLRAlgo_Projector::Not a Perspective");
+  return myFocus;
+}
+
+//=======================================================================
+//function : Transform
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_Projector::Transform (gp_Vec& D) const
+{ D.Transform(myTrsf); }
+
+//=======================================================================
+//function : Transform
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_Projector::Transform (gp_Pnt& Pnt) const
+{ Pnt.Transform(myTrsf); }
+

@@ -1,0 +1,42 @@
+-- File:	MAT2d_SketchExplorer.cdl
+-- Created:	Mon Jul 12 12:07:58 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class SketchExplorer from MAT2d
+
+	---Purpose: SketchExplorer  is  an iterator on  a  sketch.   A
+	--          sketch is a set of contours, each contour is a set
+	--          of curves from Geom2d.
+
+uses
+
+    Curve           from Geom2d
+is
+    
+    NumberOfContours(me)
+	--- Purpose : Returns the number of contours in the figure.
+    returns Integer;
+       
+    Init(me : in out ; ContourIndex : Integer );
+	--- Purpose : Initializes the curves explorer on the contour
+	--            of range <ContourIndex>.           
+   
+    More(me) returns Boolean from Standard;
+       	--- Purpose: Returns False if  there is no  more curves on the
+       	--           current contour.
+    
+    Next(me : in out);
+	--- Purpose  : Moves to the next curve of the current contour.
+    
+    Value(me) returns Curve from Geom2d; 
+        --- Purpose : Returns the current curve on the current contour.
+    
+
+end SketchExplorer;
+
+
+
+

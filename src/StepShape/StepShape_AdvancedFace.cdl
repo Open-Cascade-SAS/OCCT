@@ -1,0 +1,23 @@
+-- File:        AdvancedFace.cdl
+-- Created:     Fri Dec  1 11:11:12 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class AdvancedFace from StepShape 
+
+inherits FaceSurface from StepShape 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfFaceBound from StepShape, 
+	Surface from StepGeom, 
+	Boolean from Standard
+is
+
+	Create returns mutable AdvancedFace;
+	---Purpose: Returns a AdvancedFace
+
+
+end AdvancedFace;

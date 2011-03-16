@@ -1,0 +1,58 @@
+-- File:	BRepFill_TrimShellCorner.cdl
+-- Created:	Tue Oct 21 17:43:29 2003
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2003
+
+class TrimShellCorner from BRepFill
+
+uses
+    Ax2    from  gp,
+    Shape  from  TopoDS,
+    Wire   from  TopoDS,
+    Face   from  TopoDS,
+    ListOfShape    from  TopTools,
+    HArray2OfShape from  TopTools,
+    DataMapOfShapeListOfShape  from  TopTools
+
+is
+    Create(theFaces         : HArray2OfShape from  TopTools;
+    	   theAxeOfBisPlane : Ax2  from  gp;
+    	   theSecPlane      : Face from TopoDS)
+	 returns TrimShellCorner from BRepFill;
+
+    Create(theFaces         : HArray2OfShape from  TopTools;
+	   theAxeOfBisPlane :  Ax2  from  gp;
+	   theSpine         :  Wire  from  TopoDS;
+    	   theSecPlane      : Face from TopoDS)
+	 returns TrimShellCorner from BRepFill;
+
+    SetSpine(me: in out; theSpine:  Wire  from  TopoDS);
+
+    AddBounds(me  :  in  out; Bounds : HArray2OfShape from  TopTools);
+
+    AddUEdges(me  :  in  out; theUEdges : HArray2OfShape from  TopTools);
+
+    Perform(me :  in  out);
+
+    IsDone(me)  returns  Boolean from Standard; 
+    
+    HasSection(me)  returns  Boolean from Standard;
+
+    Modified(me:in  out; S  :  Shape  from  TopoDS;
+    	    	    	 theModified: out ListOfShape  from  TopTools);
+
+fields
+    myAxeOfBisPlane     : Ax2   from  gp;
+    myShape1 : Shape from TopoDS;
+    myShape2 : Shape from TopoDS;
+    mySpine  : Wire from TopoDS;
+    mySecPln : Face from TopoDS;
+    myBounds : HArray2OfShape from  TopTools;
+    myUEdges : HArray2OfShape from  TopTools;
+    myFaces  : HArray2OfShape from  TopTools;
+    myDone   : Boolean from Standard;
+    myHasSection: Boolean from Standard;
+    myHistMap:  DataMapOfShapeListOfShape  from  TopTools; 
+
+end TrimShellCorner from BRepFill;

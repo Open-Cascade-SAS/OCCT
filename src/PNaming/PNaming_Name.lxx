@@ -1,0 +1,37 @@
+// File:	PNaming_Name.lxx
+// Created:	Tue Oct 28 10:21:01 1997
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+
+
+inline   void PNaming_Name::Type(const Standard_Integer T) 
+{myType = T;}
+
+inline   void PNaming_Name::ShapeType(const Standard_Integer T) 
+{myShapeType = T;}
+
+inline   void PNaming_Name::Arguments(const Handle(PNaming_HArray1OfNamedShape)& Args)
+{myArgs = Args;}
+
+inline   void PNaming_Name::StopNamedShape(const Handle(PNaming_NamedShape)& NS)
+{myStop = NS;}
+
+inline   void PNaming_Name::Index(const Standard_Integer I) 
+{myIndex = I;}
+
+inline   Standard_Integer PNaming_Name::Type() const
+{return myType;}
+
+inline   Standard_Integer PNaming_Name::ShapeType() const 
+{return myShapeType;}
+
+inline   Handle_PNaming_HArray1OfNamedShape PNaming_Name::Arguments() const
+{return myArgs;}
+
+inline   Handle_PNaming_NamedShape PNaming_Name::StopNamedShape() const
+{return myStop;}
+
+inline   Standard_Integer PNaming_Name::Index() const
+{return myIndex;}
+

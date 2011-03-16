@@ -1,0 +1,30 @@
+-- File:        SolidAngleMeasureWithUnit.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSolidAngleMeasureWithUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for SolidAngleMeasureWithUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SolidAngleMeasureWithUnit from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSolidAngleMeasureWithUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SolidAngleMeasureWithUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : SolidAngleMeasureWithUnit from StepBasic);
+
+	Share(me; ent : SolidAngleMeasureWithUnit from StepBasic; iter : in out EntityIterator);
+
+end RWSolidAngleMeasureWithUnit;

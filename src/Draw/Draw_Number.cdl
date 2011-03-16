@@ -1,0 +1,46 @@
+-- File:	Draw_Number.cdl
+-- Created:	Mon Aug 16 09:37:03 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Number from Draw inherits Drawable3D from Draw
+
+	---Purpose: To store nummbers in variables.
+
+uses
+    Display from Draw,
+    OStream,
+    Interpretor from Draw
+
+is
+    Create (V : Real) returns mutable Number from Draw;
+
+    Value(me) returns Real
+    is static;
+    
+    Value(me : mutable; V : Real)
+    is static;
+
+    DrawOn(me; dis : in out Display);
+	---Purpose: Does nothhing,
+    
+    Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+    is redefined;
+	
+    Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+    is redefined;
+
+    Whatis(me; I : in out Interpretor from Draw) is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+fields
+
+    myValue : Real;
+
+end Number;

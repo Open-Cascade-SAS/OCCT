@@ -1,0 +1,310 @@
+-- File:        StepBasic.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+package StepBasic 
+
+    ---Purpose : Collects definitions of STEP entities from Part 41 of ISO10303
+
+uses
+
+
+	TCollection, TColStd, StepData, Interface, MMgt
+
+is
+
+
+
+enumeration AheadOrBehind is
+
+	aobAhead,
+	aobExact,
+	aobBehind
+end;
+
+enumeration SiPrefix is     -- reordered from Rev2 to Rev4
+
+	spExa,
+	spPeta,
+	spTera,
+	spGiga,
+	spMega,
+	spKilo,
+	spHecto,
+	spDeca,
+	spDeci,
+	spCenti,
+	spMilli,
+	spMicro,
+	spNano,
+	spPico,
+	spFemto,
+	spAtto
+end;
+
+enumeration SiUnitName is   -- reordered from Rev2 to Rev4
+
+	sunMetre,
+	sunGram,
+	sunSecond,
+	sunAmpere,
+	sunKelvin,
+	sunMole,
+	sunCandela,
+	sunRadian,
+	sunSteradian,
+	sunHertz,
+	sunNewton,
+	sunPascal,
+	sunJoule,
+	sunWatt,
+	sunCoulomb,
+	sunVolt,
+	sunFarad,
+	sunOhm,
+	sunSiemens,
+	sunWeber,
+	sunTesla,
+	sunHenry,
+	sunDegreeCelsius,
+	sunLumen,
+	sunLux,
+	sunBecquerel,
+	sunGray,
+	sunSievert
+end;
+
+enumeration Source is       -- reordered from Rev2 to Rev4
+
+	sMade,
+	sBought,
+	sNotKnown
+end;
+
+
+class DateTimeSelect;		-- Select Type for
+
+	-- Date
+	-- LocalTime
+	-- DateAndTime
+
+
+class MeasureValueMember;       -- Select Type for (all Real members)
+
+
+class PersonOrganizationSelect;		-- Select Type for
+
+	-- Person
+	-- Organization
+	-- PersonAndOrganization
+
+
+class SizeSelect;		-- Select Type for
+
+	-- PositiveLengthMeasure i.e. Real (SizeMember)
+	-- MeasureWithUnit
+
+class SizeMember;
+
+
+
+--class Protocol;
+
+
+class Address;
+	class OrganizationalAddress;
+	class PersonalAddress;
+class ApplicationContext;
+class ApplicationContextElement;
+	class ProductContext;
+	class MechanicalContext; --FMA le 24-07-96
+	class ProductDefinitionContext;
+	    class DesignContext; --CKY le 7-OCT-1996
+class ApplicationProtocolDefinition;
+class Approval;
+deferred class ApprovalAssignment;
+class ApprovalPersonOrganization;
+class ApprovalRelationship;
+class ApprovalRole;
+class ApprovalStatus;
+class CoordinatedUniversalTimeOffset;
+class Date;
+	class CalendarDate;
+	class OrdinalDate;
+	class WeekOfYearAndDayDate;
+class DateAndTime;
+deferred class DateAndTimeAssignment;
+deferred class DateAssignment;
+class DateRole;
+class DateTimeRole;
+class DimensionalExponents;
+-- Removed from Rev2 to Rev4 :class DrawingDefinition;
+class LocalTime;
+class MeasureWithUnit;
+	class LengthMeasureWithUnit;
+	class PlaneAngleMeasureWithUnit;
+	class RatioMeasureWithUnit;
+	class SolidAngleMeasureWithUnit;
+	class TimeMeasureWithUnit;      -- Added from Rev2 to Rev4
+	class UncertaintyMeasureWithUnit;
+	class MassMeasureWithUnit; -- added by skl 10.02.2004 for TRJ13
+class NamedUnit;
+	class ConversionBasedUnit;
+	class LengthUnit;
+	class PlaneAngleUnit;
+	class RatioUnit;      -- Added from Rev2 to Rev4
+	class SolidAngleUnit; -- Hand added by FMA for Rev4
+	class TimeUnit;       -- Added from Rev2 to Rev4
+	class SiUnit;
+	class AreaUnit;
+	class VolumeUnit;
+	-- complexes :
+	class SiUnitAndLengthUnit;
+	class SiUnitAndPlaneAngleUnit;
+	class SiUnitAndRatioUnit;      -- Added from Rev2 to Rev4
+	class SiUnitAndSolidAngleUnit; -- Hand added by FMA for Rev4
+	class SiUnitAndTimeUnit;       -- Added from Rev2 to Rev4
+	class SiUnitAndAreaUnit;
+	class SiUnitAndVolumeUnit;
+	class SiUnitAndMassUnit;       -- Added for AP209 (skl 15.12.2002)
+	class SiUnitAndThermodynamicTemperatureUnit; -- Added for AP209 (skl 15.12.2002)
+	class ConversionBasedUnitAndLengthUnit;
+	class ConversionBasedUnitAndPlaneAngleUnit;
+	class ConversionBasedUnitAndRatioUnit;      -- Added from Rev2 to Rev4
+	class ConversionBasedUnitAndSolidAngleUnit; -- Hand added by FMA
+	class ConversionBasedUnitAndTimeUnit;       -- Added from Rev2 to Rev4
+	class ConversionBasedUnitAndAreaUnit;
+	class ConversionBasedUnitAndVolumeUnit;
+	class ConversionBasedUnitAndMassUnit; -- added by skl 10.02.2004 for TRJ13
+class Organization;
+deferred class OrganizationAssignment;
+class OrganizationRole;
+class Person;
+class PersonAndOrganization;
+deferred class PersonAndOrganizationAssignment;
+class PersonAndOrganizationRole;
+class Product;
+class ProductCategory;
+	class ProductRelatedProductCategory;
+		class ProductType;
+class ProductDefinition;
+class ProductDefinitionFormation;
+	class ProductDefinitionFormationWithSpecifiedSource;
+class SecurityClassification;
+deferred class SecurityClassificationAssignment;
+class SecurityClassificationLevel;
+
+    -- Added from AP214 CC1  Rev2 to Rev4
+class ApprovalDateTime;
+class DerivedUnit;
+class DerivedUnitElement;
+
+    -- ABV 08.09.99 for CAX TRJ 2: correct implementation of units
+class Unit;
+
+    -- Added from AP214 CC1 to CC2
+
+class Document;
+class DigitalDocument;
+deferred class DocumentReference;
+class DocumentRelationship;
+class DocumentType;
+class DocumentUsageConstraint;
+class Effectivity;
+    class ProductDefinitionEffectivity;
+class ProductDefinitionRelationship;
+
+class ProductDefinitionWithAssociatedDocuments;
+class PhysicallyModeledProductDefinition;
+
+    -- Added from AP214 CC2 to DIS
+
+class CharacterizedObject;
+class DocumentFile;    
+
+    -- Added for AP203
+class Action;
+class ActionAssignment;
+class ActionMethod;
+class ActionRequestAssignment;
+class VersionedActionRequest;
+class Certification;
+class CertificationAssignment;
+class CertificationType;
+class Contract;
+class ContractAssignment;
+class ContractType;
+class ProductConceptContext;
+class ProductCategoryRelationship;
+class ActionRequestSolution;
+
+-- added for external references (CAX-IF TRJ4)
+class DocumentRepresentationType;
+class ExternalSource;
+class ExternallyDefinedItem;
+class GeneralProperty;
+class ObjectRole;
+class RoleAssociation;
+class RoleSelect;
+class SourceItem;
+class EffectivityAssignment;
+class ExternalIdentificationAssignment;
+class IdentificationAssignment;
+class IdentificationRole;
+class NameAssignment;
+class Group;
+class GroupAssignment;
+class GroupRelationship;
+
+
+--added for AP209
+class EulerAngles;
+class MassUnit;
+class ThermodynamicTemperatureUnit;
+class ProductDefinitionFormationRelationship;
+
+-- added for external references (AP214 CAX-IF TRJ11 2003)
+class DocumentProductAssociation;
+class DocumentProductEquivalence;
+class ProductOrFormationOrDefinition;
+
+    	--  Instantiations
+
+class Array1OfProductDefinition instantiates Array1 from TCollection (ProductDefinition);
+class HArray1OfProductDefinition instantiates HArray1 from TCollection (ProductDefinition,Array1OfProductDefinition from StepBasic);
+
+class Array1OfApproval instantiates Array1 from TCollection (Approval);
+class HArray1OfApproval instantiates HArray1 from TCollection (Approval,Array1OfApproval from StepBasic);
+
+class Array1OfUncertaintyMeasureWithUnit instantiates Array1 from TCollection (UncertaintyMeasureWithUnit);
+class HArray1OfUncertaintyMeasureWithUnit instantiates HArray1 from TCollection (UncertaintyMeasureWithUnit,Array1OfUncertaintyMeasureWithUnit from StepBasic);
+
+class Array1OfNamedUnit instantiates Array1 from TCollection (NamedUnit);
+class HArray1OfNamedUnit instantiates HArray1 from TCollection (NamedUnit,Array1OfNamedUnit from StepBasic);
+
+class Array1OfOrganization instantiates Array1 from TCollection (Organization);
+class HArray1OfOrganization instantiates HArray1 from TCollection (Organization,Array1OfOrganization from StepBasic);
+
+class Array1OfPerson instantiates Array1 from TCollection (Person);
+class HArray1OfPerson instantiates HArray1 from TCollection (Person,Array1OfPerson from StepBasic);
+
+class Array1OfProductContext instantiates Array1 from TCollection (ProductContext);
+class HArray1OfProductContext instantiates HArray1 from TCollection (ProductContext,Array1OfProductContext from StepBasic);
+
+class Array1OfProduct instantiates Array1 from TCollection (Product);
+class HArray1OfProduct instantiates HArray1 from TCollection (Product,Array1OfProduct from StepBasic);
+
+class Array1OfDerivedUnitElement instantiates Array1 from TCollection (DerivedUnitElement from StepBasic);
+class HArray1OfDerivedUnitElement instantiates HArray1 from TCollection (DerivedUnitElement from StepBasic,Array1OfDerivedUnitElement from StepBasic);
+
+-- Added from AP214 CC1 to CC2
+class Array1OfDocument instantiates Array1 from TCollection (Document);
+class HArray1OfDocument instantiates HArray1 from TCollection (Document,Array1OfDocument from StepBasic);
+
+--	Protocol returns Protocol from StepBasic;
+	---Purpose : creates a Protocol
+
+end StepBasic;
+

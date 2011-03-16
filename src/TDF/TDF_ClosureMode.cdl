@@ -1,0 +1,66 @@
+-- File:	TDF_ClosureMode.cdl
+--      	-------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	May 26 1997	Creation
+
+
+class ClosureMode from TDF
+
+	---Purpose: This class provides options closure management.
+
+-- uses
+
+-- raises
+
+is
+
+    Create(aMode : Boolean from Standard = Standard_True)
+    	returns ClosureMode from TDF;
+	---Purpose: Creates an objet with all modes set to <aMode>.
+
+
+    Descendants(me : in out; aStatus : Boolean from Standard);
+	---Purpose: Sets the mode "Descendants" to <aStatus>.
+	--          
+	--          "Descendants" mode means we add to the data set
+	--          the children labels of each USER GIVEN label. We
+	--          do not do that with the labels found applying
+	--          UpToFirstLevel option.
+	--          
+	---C++: inline
+
+    Descendants(me) returns Boolean from Standard;
+	---Purpose: Returns true if the mode "Descendants" is set.
+	--          
+	---C++: inline
+
+
+    References(me : in out; aStatus : Boolean from Standard);
+	---Purpose: Sets the mode "References" to <aStatus>.
+	--          
+	--          "References" mode means we add to the data set
+	--          the descendants of an attribute, by calling the
+	--          attribute method Descendants().
+	--          
+	---C++: inline
+
+    References(me) returns Boolean from Standard;
+	---Purpose: Returns true if the mode "References" is set.
+	--          
+	---C++: inline
+
+
+fields
+
+    myFlags : Integer from Standard;
+    -- Bit Mask Use
+    -- 0   1    Descendants
+    -- 1   2    References
+    -- 2   4    Unused
+
+end ClosureMode;

@@ -1,0 +1,23 @@
+-- File:	Draw_Drawable2D.cdl
+-- Created:	Mon Apr 18 18:04:34 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+deferred class Drawable2D from Draw inherits Drawable3D from Draw
+
+uses
+    Pnt2d from gp,
+    Pnt   from gp
+
+is
+
+
+    Is3D(me) returns Boolean
+	---Purpose: Returns False.
+    is redefined;
+    
+end Drawable2D;

@@ -1,0 +1,59 @@
+-- File:	BOP_ConnexityBlock.cdl
+-- Created:	Fri Apr 13 10:12:22 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class ConnexityBlock from BOP 
+
+	---Purpose: 
+    	---  Auxiliary class to store data about set  
+    	---  of connex shapes 
+	--- 
+	
+uses
+    ListOfShape               from TopTools,
+    IndexedMapOfOrientedShape from TopTools
+
+is 
+    Create
+    	returns ConnexityBlock from BOP; 
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    SetShapes    (me:out; 
+        anEdges: ListOfShape from TopTools); 
+    	---Purpose:  
+    	--- Modifier
+    	---
+    SetShapes    (me:out; 
+    	nEdges: IndexedMapOfOrientedShape from TopTools); 
+    	---Purpose:  
+    	--- Modifier
+    	---
+    SetRegularity(me:out;  
+    		   aFlag:Boolean from Standard);    	    	    
+    	---Purpose:  
+    	--- Modifier
+    	---
+    Shapes  (me) 
+    	returns ListOfShape from TopTools; 
+    	---C++:  return const &  
+    	---Purpose:  
+    	--- Selector
+    	---
+    IsRegular(me) 
+        returns Boolean from Standard;  
+    	---Purpose:  
+    	--- Selector 
+    	--- Returns TRUE if all elements in the block are 
+    	--- biconnexity     	
+    	---
+    
+fields
+    
+    myRegularity  :  Boolean from Standard;  
+    myShapes      :  ListOfShape from TopTools; 
+
+end ConnexityBlock;

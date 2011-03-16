@@ -1,0 +1,11 @@
+// Copyright: 	Matra-Datavision 1994
+// File:	Expr_PolyExpression.lxx
+// Created:	Wed Jan  5 15:28:45 1994
+// Author:	Arnaud BOUZY
+//		<adn>
+
+inline const Handle(Expr_GeneralExpression)& Expr_PolyExpression::Operand (const Standard_Integer index) const
+{
+  return myOperands(index);
+}
+

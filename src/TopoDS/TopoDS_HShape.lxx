@@ -1,0 +1,57 @@
+// File:	TopoDS_HShape.lxx
+// Created:	Wed Jun 28 09:49:01 1995
+// Author:	Modelistation
+
+
+//=======================================================================
+//function : TopoDS_HShape
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_HShape::TopoDS_HShape()
+{
+}
+
+
+//=======================================================================
+//function : TopoDS_HShape
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_HShape::TopoDS_HShape(const TopoDS_Shape& aShape)
+ : myShape(aShape)
+{
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline void TopoDS_HShape::Shape(const TopoDS_Shape& aShape)
+{
+  myShape = aShape;
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& TopoDS_HShape::Shape() const
+{
+  return myShape;
+}
+
+
+//=======================================================================
+//function : ChangeShape
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape& TopoDS_HShape::ChangeShape()
+{
+  return myShape;
+}

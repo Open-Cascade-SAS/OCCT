@@ -1,0 +1,135 @@
+-- File:	ShapeFix_Shape.cdl
+-- Created:	Wed Aug 12 11:42:02 1998
+-- Author:	DATA EXCHANGE TEAM
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Shape from ShapeFix inherits Root from ShapeFix
+
+	---Purpose: Fixing shape in general
+
+uses
+
+    Shape               from TopoDS,
+    Solid               from ShapeFix,
+    Shell               from ShapeFix,
+    Face                from ShapeFix,
+    Wire                from ShapeFix,
+    Edge                from ShapeFix,
+    Status              from ShapeExtend,
+    MapOfShape from TopTools,
+    BasicMsgRegistrator from ShapeExtend
+    
+is
+
+    Create returns Shape from ShapeFix;
+    	---Purpose: Empty Constructor
+
+    Create (shape: Shape from TopoDS)
+    returns Shape from ShapeFix;
+    	---Purpose: Initislises by shape.
+
+    Init (me: mutable; shape: Shape from TopoDS);
+    	---Purpose: Initislises by shape.
+
+    Perform (me: mutable) returns Boolean;
+    	---Purpose: Iterates on sub- shape and performs fixes
+
+    SameParameter (me: mutable; shape: Shape from TopoDS; force: Boolean) is protected;
+
+    Shape (me) returns Shape from TopoDS;
+    	---Purpose: Returns resulting shape
+
+    FixSolidTool (me) returns Solid from ShapeFix;
+    	---Purpose: Returns tool for fixing solids.
+	---C++:inline
+
+    FixShellTool (me) returns Shell from ShapeFix;
+    	---Purpose: Returns tool for fixing shells.
+	---C++:inline
+
+    FixFaceTool (me) returns Face from ShapeFix;
+    	---Purpose: Returns tool for fixing faces.
+	---C++:inline
+
+    FixWireTool (me) returns Wire from ShapeFix;
+    	---Purpose: Returns tool for fixing wires.
+	---C++:inline
+
+    FixEdgeTool (me) returns Edge from ShapeFix;
+    	---Purpose: Returns tool for fixing edges.
+	---C++:inline
+
+    Status (me; status : Status from  ShapeExtend) returns Boolean;
+    	---Purpose: Returns the status of the last Fix.	
+	--          This can be a combination of the following flags:
+	--          ShapeExtend_DONE1: some free edges were fixed
+	--          ShapeExtend_DONE2: some free wires were fixed
+	--          ShapeExtend_DONE3: some free faces were fixed
+	--          ShapeExtend_DONE4: some free shells were fixed
+	--          ShapeExtend_DONE5: some free solids were fixed
+	--          ShapeExtend_DONE6: shapes in compound(s) were fixed
+
+    SetMsgRegistrator (me: mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is redefined;
+	---Purpose: Sets message registrator
+
+    SetPrecision (me: mutable; preci: Real) is redefined;
+    	---Purpose: Sets basic precision value (also to FixSolidTool)
+
+    SetMinTolerance (me: mutable; mintol: Real) is redefined;
+    	---Purpose: Sets minimal allowed tolerance (also to FixSolidTool)
+
+    SetMaxTolerance (me: mutable; maxtol: Real) is redefined;
+    	---Purpose: Sets maximal allowed tolerance (also to FixSolidTool)
+
+    FixSolidMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Solid, by default True.
+
+    FixFreeShellMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Shell, by default True.
+
+    FixFreeFaceMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Face, by default True.
+
+    FixFreeWireMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying fixes of 
+        --          ShapeFix_Wire, by default True.
+
+    FixSameParameterMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying 
+        --          ShapeFix::SameParameter after all fixes, by default True.
+	
+    FixVertexPositionMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for applying 
+        --          ShapeFix::FixVertexPosition before all fixes, by default False.
+fields  
+
+    myResult    : Shape from TopoDS is protected;
+    myFixSolid  : Solid  from ShapeFix is protected;
+    myMapFixingShape  : MapOfShape from TopTools is protected;
+    
+    myFixSolidMode         : Integer is protected;
+    myFixShellMode         : Integer is protected;
+    myFixFaceMode          : Integer is protected;
+    myFixWireMode          : Integer is protected;
+    myFixSameParameterMode : Integer is protected;
+    myFixVertexPositionMode : Integer is protected;
+    myStatus    : Integer is protected;
+
+end Shape;

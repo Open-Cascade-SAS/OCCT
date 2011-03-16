@@ -1,0 +1,85 @@
+-- File:	FEmTool_Assembly.cdl
+-- Created:	Wed Oct 29 16:51:32 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Assembly from FEmTool
+
+	---Purpose: Assemble and solve system from (one dimensional) Finite Elements  
+
+uses 
+    Array2OfInteger  from  TColStd, 
+    HAssemblyTable  from  FEmTool, 
+    Matrix  from  math, 
+    Vector  from  math,	     
+    ProfileMatrix  from  FEmTool, 
+    SeqOfLinConstr  from  FEmTool, 
+    SequenceOfReal  from  TColStd 
+    
+raises   
+        NotDone  from  StdFail, 
+        DimensionError, 
+	DomainError
+is 
+    Create(Dependence :  Array2OfInteger  from  TColStd; 
+           Table      :  HAssemblyTable  from  FEmTool)   
+    returns  Assembly from FEmTool; 
+     
+    NullifyMatrix(me : in  out); 
+    ---Purpose: Nullify all Matrix 's Coefficient
+           
+    AddMatrix(me  : in  out;   
+              Element    :  Integer; 
+	      Dimension1 :  Integer; 
+	      Dimension2 :  Integer; 
+              Mat  :  Matrix  from  math)
+    ---Purpose: Add an elementary Matrix in the assembly Matrix 
+    	raises  DomainError; --  if  Dependence(Dimension1,Dimension2)  is  False
+              
+    NullifyVector(me : in  out);                
+    ---Purpose:  Nullify  all  Coordinate of  assembly  Vector (second member)
+     
+    AddVector(me  :  in  out; 
+              Element    :  Integer; 
+	      Dimension  :  Integer; 
+              Vec  :  Vector  from  math);  
+    ---Purpose: Add an elementary Vector in the assembly Vector (second member)     
+
+    ResetConstraint(me : in  out);                
+    ---Purpose: Delete all Constraints.
+    
+    NullifyConstraint(me : in  out);                
+    ---Purpose: Nullify all Constraints.   
+     
+    AddConstraint(me : in  out; 
+            IndexofConstraint :  Integer;
+            Element           :  Integer; 
+            Dimension         :  Integer;	     
+            LinearForm        :  Vector  from  math;
+            Value             :  Real); 
+	         
+     
+    Solve(me  :  in  out)  returns  Boolean; 
+    ---Purpose: Solve the assembly system         
+    --          Returns Standard_False if the computation failed.
+     
+    Solution(me;  Solution : out  Vector  from  math) 
+    raises  NotDone  from  StdFail;  -- if the system is not solved.  
+     
+    NbGlobVar(me) 
+    returns  Integer; 
+     
+    GetAssemblyTable(me;  AssTable  :  out  HAssemblyTable  from  FEmTool);
+	      
+fields  
+    myDepTable  :  Array2OfInteger;
+    myRefTable  :  HAssemblyTable; 
+    IsSolved    :  Boolean;
+    H           :  ProfileMatrix  from  FEmTool;  
+    B	        :  Vector  from  math;
+    GHGt        :  ProfileMatrix  from  FEmTool; 
+    G	        :  SeqOfLinConstr  from  FEmTool; 
+    C           :  SequenceOfReal  from  TColStd;     
+end Assembly;
+

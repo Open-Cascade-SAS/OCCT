@@ -1,0 +1,36 @@
+-- File:	BPoint.cdl
+-- Created:	Fri Oct  4 16:40:04 1991
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+class BPoint from GccInt  
+
+inherits Bisec from GccInt 
+     ---Purpose: Describes a point as a bisecting object between two 2D geometric objects.
+        
+uses Pnt2d from gp,
+     IType  from GccInt
+
+
+is
+
+Create(Point : Pnt2d) returns mutable BPoint;
+    ---Purpose: Constructs a bisecting object whose geometry is the 2D point Point.
+    
+Point(me) returns Pnt2d from gp
+    is redefined;
+    ---Purpose: Returns a 2D point which is the geometry of this bisecting object.
+    
+ArcType(me) returns IType from GccInt
+    is static;
+    --- Purpose: Returns GccInt_Pnt, which is the type of any GccInt_BPoint bisecting object.
+    
+fields
+
+    pnt : Pnt2d from gp;
+    ---Purpose: The bisecting line.
+
+end BPoint;    
+

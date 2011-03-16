@@ -1,0 +1,225 @@
+-- File:	TPrsStd_AISPresentation.cdl
+-- Created:	Wed Sep 30 08:38:35 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !      ivan ! SetMode                                 ! 5-04-2001! 3.0-00-1!
+-- +---------------------------------------------------------------------------+
+
+
+
+class AISPresentation from TPrsStd inherits Attribute from TDF
+
+	---Purpose: An attribute to associate an
+-- AIS_InteractiveObject to a label in an AIS viewer.
+-- This attribute works in collaboration with TPrsStd_AISViewer.
+-- Note that all the Set... and Unset... attribute
+-- methods as well as the query methods for
+-- visualization attributes and the HasOwn... test
+-- methods are shortcuts to the respective
+-- AIS_InteractiveObject settings.
+
+uses GUID                 from Standard,
+     AttributeIndexedMap  from TDF,
+     DataSet              from TDF,
+     AttributeDelta       from TDF,
+     Label                from TDF,
+     RelocationTable      from TDF,
+     InteractiveObject    from AIS,
+     Length               from Quantity,
+     NameOfColor          from Quantity,
+     PlaneAngle           from Quantity,
+     NameOfMaterial       from Graphic3d,
+     Drawer               from AIS
+is
+
+    GetID (myclass) returns GUID from Standard;
+    	---Purpose: Returns the GUID for TPrsStd_AISPresentation attributes.
+    	---C++: return const &
+
+    Set (myclass;  L : Label from TDF; driver : GUID from Standard)
+    	---Purpose: Creates or retrieves the presentation attribute on
+    	-- the label L, and sets the GUID driver.
+    returns AISPresentation from TPrsStd;        
+
+    Unset (myclass;  L : Label from TDF);
+    ---Purpose: Delete (if exist) the presentation attribute associated to the label <L>.
+
+
+    Set (myclass;  master : Attribute from TDF)
+   	 ---Purpose:  Creates or retrieves the AISPresentation
+   	 -- attribute attached to master.
+  	 -- The GUID of the driver will be the GUID of master.
+    	 -- master is the attribute you want to display.
+    returns AISPresentation from TPrsStd;
+
+
+    ---Category: Presentation attribute implementation
+    --          ======================================
+    
+    Create returns mutable AISPresentation from TPrsStd;
+    
+    SetDisplayed(me : mutable; B : Boolean from Standard);
+    
+    Display (me : mutable; update : Boolean from Standard = Standard_False);
+    	---Purpose: Display presentation of object in AIS viewer.
+    	--          If <update> = True then AISObject is recomputed and all 
+    	--          the visualization settings are applied
+    
+    Erase (me : mutable; remove : Boolean from Standard = Standard_False);
+    	---Purpose: Removes the presentation of this AIS
+    	-- presentation attribute from the TPrsStd_AISViewer.
+    	-- If remove is true, this AIS presentation attribute
+    	-- is removed from the interactive context.
+    
+    Update (me : mutable);
+    ---Purpose: Recompute presentation of object and apply the visualization settings
+    
+    
+    GetDriverGUID (me) returns GUID from Standard; 
+     
+    SetDriverGUID (me: mutable ; guid : GUID from Standard);
+    
+    IsDisplayed (me)
+    returns Boolean from Standard;    
+---Purpose:
+-- Returns true if this AIS presentation attribute is displayed.
+    GetAIS (me) returns InteractiveObject from AIS;
+    ---Purpose: Returns AIS_InteractiveObject stored in the presentation attribute
+    
+    AISUpdate (me : mutable)
+    ---Purpose: Updates AIS_InteractiveObject stored in the attribute
+    --          and applies the visualization settings
+    is private;
+
+    AISDisplay (me : mutable)
+    ---Purpose: Displays AIS_InteractiveObject stored in the attribute
+    is private;
+
+    AISErase (me : mutable; remove : Boolean from Standard = Standard_False)
+    ---Purpose: Erases AIS_InteractiveObject stored in the attribute in 
+    --          the viewer; If <remove> = True then AISObject is removed 
+    --          from AIS_InteractiveContext instead of simple erasing in the viewer
+    is private;
+    
+    ---Category: Visualization settings of AIS_InteractiveObject
+    --          ================================================
+    
+    Material(me) returns NameOfMaterial from Graphic3d;
+
+---Purpose:
+-- Returns the material setting for this presentation attribute.    
+    SetMaterial(me : mutable; aName : NameOfMaterial from Graphic3d); 
+---Purpose:        Sets the material aName for this presentation  attribute.    
+    HasOwnMaterial(me) returns Boolean from Standard; 
+---Purpose: Returns true if this presentation attribute already has a material setting.    
+    UnsetMaterial(me : mutable);
+---Purpose: Removes the material setting from this presentation attribute.
+    SetTransparency(me : mutable; aValue : Real from Standard=0.6);
+--- Purpose:
+-- Sets the transparency value aValue for this
+-- presentation attribute.
+-- This value is 0.6 by default.    
+    Transparency(me) returns Real from Standard;
+    
+    HasOwnTransparency(me) returns Boolean from Standard;
+---Purpose: Returns true if this presentation attribute already has a transparency setting.    
+    UnsetTransparency(me : mutable);
+---Purpose: Removes the transparency setting from this presentation attribute.  
+    Color(me) returns NameOfColor from Quantity;
+    
+    SetColor(me: mutable; aColor : NameOfColor from Quantity);
+---Purpose: Sets the color aColor for this presentation attribute.    
+    HasOwnColor(me) returns Boolean from Standard;
+---Purpose: Returns true if this presentation attribute already has a color setting.    
+    UnsetColor(me : mutable); 
+---Purpose: Removes the color setting from this presentation attribute.    
+    Width(me) returns Real from Standard ;
+    
+    SetWidth(me: mutable; aWidth : Real from Standard);
+---Purpose: Sets the width aWidth for this presentation attribute.    
+    HasOwnWidth(me) returns Boolean from Standard;
+---Purpose: Returns true if this presentation attribute already has a width setting.
+    UnsetWidth(me : mutable); 
+---Purpose: Removes the width setting from this presentation attribute.     
+    Mode(me)  returns  Integer  from  Standard;  
+     
+    SetMode(me: mutable; theMode : Integer from Standard);  
+    
+    HasOwnMode(me) returns Boolean from Standard;
+ 
+    UnsetMode(me : mutable); 
+
+    SelectionMode(me) returns Integer from Standard;
+    
+    SetSelectionMode(me: mutable; theSelectionMode : Integer from Standard);  
+
+    HasOwnSelectionMode(me) returns Boolean from Standard;
+ 
+    UnsetSelectionMode(me : mutable); 
+
+		
+    ---Category: Methods of TDF_Attribute
+    --           ========================
+    
+    ID(me)returns GUID from Standard;
+    ---C++: return const &
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;    
+ 
+    Restore(me: mutable; with : Attribute from TDF);
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);     
+
+    BackupCopy(me) returns mutable Attribute from TDF is redefined;
+    
+    ---Category: Callbacks for viewer updating
+    --           =============================
+
+    AfterAddition (me: mutable)
+    is redefined;    
+
+    BeforeRemoval (me: mutable)
+    is redefined;
+
+    BeforeForget(me: mutable)
+    is redefined;
+
+    AfterResume(me: mutable)	
+    is redefined;    
+    
+    BeforeUndo (me: mutable; anAttDelta : AttributeDelta from TDF;
+                             forceIt    : Boolean from Standard = Standard_False)
+    returns Boolean from Standard
+    is redefined;
+    
+    AfterUndo (me: mutable; anAttDelta : AttributeDelta from TDF;
+                            forceIt    : Boolean from Standard = Standard_False)
+    ---Purpose: update AIS viewer according to delta
+    returns Boolean from Standard
+    is redefined;
+   
+fields
+
+    myDriverGUID       : GUID                 from Standard;    
+    myTransparency     : Real                 from Standard;
+    myColor            : NameOfColor          from Quantity;
+    myMaterial         : NameOfMaterial       from Graphic3d;
+    myWidth            : Real                 from Standard; 
+    myMode             : Integer              from Standard;
+    mySelectionMode    : Integer              from Standard;
+    isDisplayed        : Boolean              from Standard; 
+    hasOwnColor        : Boolean              from Standard;
+    hasOwnMaterial     : Boolean              from Standard;
+    hasOwnTransparency : Boolean              from Standard;    
+    hasOwnWidth        : Boolean              from Standard;  
+    hasOwnMode         : Boolean              from Standard;
+    hasOwnSelectionMode: Boolean              from Standard;
+    myAIS              : InteractiveObject    from AIS;    
+end AISPresentation;
+

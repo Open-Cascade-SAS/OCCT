@@ -1,0 +1,28 @@
+// File:	PLib.lxx
+// Created:	Fri Sep  1 16:13:30 1995
+// Author:	Laurent BOURESCHE
+//		<lbo@phylox>
+
+static Standard_Integer maxbinom = -1;
+static Standard_Address binom;
+
+inline  TColStd_Array1OfReal&  PLib::NoWeights()
+{
+  return (*((TColStd_Array1OfReal*) NULL ));
+}
+
+inline  TColStd_Array2OfReal&  PLib::NoWeights2()
+{
+  return (*((TColStd_Array2OfReal*) NULL ));
+}
+
+inline Standard_Real PLib::Bin(const Standard_Integer N,
+			       const Standard_Integer P)
+{
+  return (Standard_Real)((Standard_Integer**)binom)[N][P];
+}
+
+inline void PLib::Binomial(const Standard_Integer N)
+{
+  if (N > maxbinom) PLib::InternalBinomial(N,maxbinom,binom);
+}

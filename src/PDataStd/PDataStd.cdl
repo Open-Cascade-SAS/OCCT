@@ -1,0 +1,101 @@
+-- File:	PDataStd.cdl
+-- Created:	Wed May 10 10:48:16 1995
+-- Author:	Denis PASCAL
+---Copyright:	 Matra Datavision 1995
+
+
+
+package PDataStd 
+
+	---Purpose: 
+
+
+uses Standard,
+     PDF,
+     PCollection,
+     PColStd,
+     TColStd
+
+
+is
+
+
+    ---Purpose: General Data
+    --          ============
+
+    class Name;
+    
+    class Comment;
+    
+    ---Purpose: Basic Data for Modeling
+    --          =======================
+
+    class Integer; 
+    
+    class IntegerArray; 
+     
+    class IntegerArray_1; 
+    
+    class Real;
+
+    class RealArray; 
+    
+    class RealArray_1;     
+    
+    class ExtStringArray; 
+     
+    class ExtStringArray_1;
+
+    class TreeNode;	    
+    
+    class Expression;
+    
+    class Relation;
+    
+    class Variable;
+    
+    ---Purpose: Document Data for Modeling
+    --          ==========================
+    
+    class NoteBook; 
+ 
+    class UAttribute;
+        
+    class Directory;
+
+     
+    -- Extension    
+    class Tick;
+    
+    -- Lists:
+    class IntegerList;
+    class RealList;
+    class ExtStringList;
+    class BooleanList;
+    class ReferenceList;
+
+    -- Arrays:
+    class BooleanArray;
+    class ReferenceArray;
+    class ByteArray;
+    class ByteArray_1; 
+    
+    class NamedData; 
+    class AsciiString; 
+    class IntPackedMap;  
+    class IntPackedMap_1;
+     
+
+    class HArray1OfHAsciiString instantiates
+    	    	    HArray1 from PCollection (HAsciiString from PCollection);
+
+        class HArray1OfHArray1OfInteger instantiates HArray1 from  PCollection( 
+		HArray1OfInteger  from  PColStd); 
+		 
+	class HArray1OfHArray1OfReal instantiates HArray1 from  PCollection( 
+		HArray1OfReal  from  PColStd); 
+		 
+	class HArray1OfByte instantiates HArray1 from  PCollection( 
+		Byte  from  Standard);   
+		
+end PDataStd;

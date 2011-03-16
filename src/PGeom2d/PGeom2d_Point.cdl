@@ -1,0 +1,17 @@
+-- File:	PGeom2d_Point.cdl
+-- Created:	Tue Apr  6 17:32:52 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Point from PGeom2d inherits Geometry from PGeom2d
+
+	---Purpose: This abstract  class describe  common behaviour of
+	--          all points.
+	--          
+	---See Also : Point from Geom2d.
+
+is
+
+end;

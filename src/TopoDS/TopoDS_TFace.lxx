@@ -1,0 +1,12 @@
+// File:	TopoDS_TFace.lxx
+// Created:	Fri Apr 12 11:41:10 1991
+// Author:	Remi LEQUETTE
+
+//=======================================================================
+//function : TopoDS_TFace
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_TFace::TopoDS_TFace() : TopoDS_TShape()
+{
+}

@@ -1,0 +1,75 @@
+// File:	BRep_GCurve.lxx
+// Created:	Wed Mar 15 13:46:18 1995
+// Author:	Laurent PAINNOT
+//		<lpa@metrox>
+
+
+
+
+//=======================================================================
+//function : SetRange
+//purpose  : 
+//=======================================================================
+
+inline void BRep_GCurve::SetRange(const Standard_Real First, 
+				  const Standard_Real Last)
+{
+  myFirst = First;
+  myLast  = Last;
+  Update();
+}
+
+//=======================================================================
+//function : Range
+//purpose  : 
+//=======================================================================
+
+inline void BRep_GCurve::Range(Standard_Real& First, 
+			       Standard_Real& Last) const 
+{
+  First = myFirst;
+  Last  = myLast;
+}
+
+//=======================================================================
+//function : First
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRep_GCurve::First() const 
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : Last
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRep_GCurve::Last() const 
+{
+  return myLast;
+}
+
+//=======================================================================
+//function : First
+//purpose  : 
+//=======================================================================
+
+inline void BRep_GCurve::First(const Standard_Real F)
+{
+  myFirst = F;
+  Update();
+}
+
+//=======================================================================
+//function : Last
+//purpose  : 
+//=======================================================================
+
+inline void BRep_GCurve::Last(const Standard_Real L)
+{
+  myLast = L;
+  Update();
+}
+

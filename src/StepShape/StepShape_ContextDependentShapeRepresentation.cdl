@@ -1,0 +1,33 @@
+-- File:	StepShape_ContextDependentShapeRepresentation.cdl
+-- Created:	Wed Jul  1 12:34:49 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ContextDependentShapeRepresentation  from StepShape    inherits TShared from MMgt
+
+uses
+     ShapeRepresentationRelationship from StepRepr,
+     ProductDefinitionShape from StepRepr
+
+is
+
+    Create returns mutable ContextDependentShapeRepresentation;
+
+    Init (me : mutable;
+    	  aRepRel : ShapeRepresentationRelationship;
+	  aProRel : ProductDefinitionShape);
+
+    RepresentationRelation (me) returns ShapeRepresentationRelationship;
+    SetRepresentationRelation (me : mutable; aRepRel : ShapeRepresentationRelationship);
+
+    RepresentedProductRelation (me) returns ProductDefinitionShape;
+    SetRepresentedProductRelation (me : mutable; aProRel : ProductDefinitionShape);
+
+fields
+
+    theRepRel : ShapeRepresentationRelationship;
+    theProRel : ProductDefinitionShape;
+
+end ContextDependentShapeRepresentation;

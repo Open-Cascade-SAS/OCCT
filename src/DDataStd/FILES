@@ -1,0 +1,11 @@
+EXTERNLIB
+DDataStd_TreeBrowser.tcl
+DDataStd_TreeCommands.cxx
+DDataStd_NamedShapeCommands.cxx
+DDataStd_BasicCommands.cxx
+DDataStd_DatumCommands.cxx
+DDataStd_ConstraintCommands.cxx
+DDataStd_DrawDisplayCommands.cxx
+DDataStd_ObjectCommands.cxx
+DDataStd_NameCommands.cxx
+DDataStd_Sample.cxx

@@ -1,0 +1,527 @@
+-- File:	BRepFilletAPI_MakeFillet.cdl
+-- Created:	Fri Jun 17 13:39:07 1994
+-- Author:	Modeling
+--		<modeling@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakeFillet from BRepFilletAPI inherits LocalOperation from BRepFilletAPI
+
+        ---Purpose: Describes functions to build fillets on the broken edges of a shell or solid.
+        -- A MakeFillet object provides a framework for:
+        -- -   initializing the construction algorithm with a given shape,
+        -- -   acquiring the data characterizing the fillets,
+        -- -   building the fillets and constructing the resulting shape, and
+        -- -   consulting the result. 
+        
+        
+uses
+
+    Array1OfPnt2d     from TColgp,
+    Shape             from GeomAbs,
+    Surface           from Geom , 
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    Vertex            from TopoDS,
+    Function          from Law,
+    ListOfShape       from TopTools,
+    SecHArray1        from ChFiDS,
+    ErrorStatus      from ChFiDS,
+    FilBuilder        from ChFi3d,
+    FilletShape       from ChFi3d,
+    HBuilder          from TopOpeBRepBuild,
+    MapOfShape        from TopTools,
+    ShapeModification from BRepBuilderAPI
+    
+raises
+    NotDone     from StdFail ,
+    NoSuchObject from Standard
+is
+
+    Create(S : Shape from TopoDS; 
+           FShape: FilletShape from ChFi3d = ChFi3d_Rational)
+    	---Purpose: Initializes   the computation    of   the  fillets.
+    	--          <FShape> sets   the type   of fillet  surface. The
+    	--          default value is ChFi3d_Rational (classical  nurbs
+    	--          representation of  circles).   ChFi3d_QuasiAngular
+    	--          corresponds to  a  nurbs representation of circles
+    	--          which   parameterisation matches  the  circle one.
+    	--          ChFi3d_Polynomial  corresponds to  a    polynomial
+    	--          representation of circles.
+    	---Level: Public
+    returns MakeFillet from BRepFilletAPI;
+
+    SetParams(me : in out; 
+    	      Tang, Tesp, T2d, TApp3d, TolApp2d, Fleche: Real from Standard)
+	---Level: Advanced
+    is static;
+
+    SetContinuity(me : in out; 
+                  InternalContinuity : Shape from GeomAbs;
+		  AngularTolerance   : Real);
+	---Purpose: Changes     the      parameters     of  continiuity
+	--          InternalContinuity to produce fillet'surfaces with
+	--          an continuity   Ci (i=0,1 or    2). 
+	--          By defaultInternalContinuity = GeomAbs_C1.
+	--          AngularTolerance  is the G1 tolerance between fillet
+	--          and support'faces. 
+
+  
+
+    Add(me : in out; E : Edge from TopoDS) 
+   	---Purpose: Adds a  fillet contour in  the  builder  (builds a
+    	--          contour  of tangent edges).
+    	--          The Radius must be set after.
+    	--          
+    	---Level: Public
+    is static;
+
+    Add(me : in out; Radius : Real; E : Edge from TopoDS) 
+   	---Purpose: Adds a  fillet description in  the  builder
+   	--          - builds a contour  of tangent edges,
+   	--          - sets the radius. 
+    	--          
+    	---Level: Public
+    is static;
+
+    Add(me : in out; R1,R2 : Real; E : Edge from TopoDS) 
+   	---Purpose: Adds a  fillet description in  the  builder
+   	--          - builds a contour  of tangent edges,
+   	--          - sets a linear radius evolution law between 
+   	--            the first and last vertex of the spine. 
+    	--          
+    	---Level: Public
+    is static;
+
+    Add(me : in out; L : Function from Law; E : Edge from TopoDS) 
+   	---Purpose: Adds a  fillet description in  the  builder
+   	--          - builds a contour  of tangent edges,
+   	--          - sest the radius evolution law. 
+    	--          
+    	---Level: Public
+    is static;
+
+    Add(me : in out; UandR : Array1OfPnt2d from TColgp; E : Edge from TopoDS) 
+   	---Purpose: Adds a  fillet description in  the  builder
+   	--          - builds a contour  of tangent edges,
+   	--          - sets the radius evolution law interpolating the values
+   	--          given in the array UandR :
+   	--          
+   	--          p2d.X() = relative parameter on the spine [0,1]
+   	--          p2d.Y() = value of the radius.
+   	--          
+    	---Level: Public
+    is static;
+
+    SetRadius(me     : in out; 
+              Radius : Real from Standard;
+              IC     : Integer from Standard;
+              IinC   : Integer from Standard)
+   	---Purpose: Sets the parameters of the fillet
+        -- along the contour of index IC generated using the Add function
+        -- in the internal data structure of
+        -- this algorithm, where Radius is the radius of the fillet.
+    is static;
+
+    SetRadius(me     : in out; 
+              R1,R2  : Real from Standard;
+              IC     : Integer from Standard;
+              IinC   : Integer from Standard)
+   	---Purpose: Sets the parameters of the fillet
+        -- along the contour of index IC generated using the Add function
+        -- in the internal data structure of this algorithm, where the radius of the
+        --   fillet evolves according to a linear evolution law defined
+        --   from R1 to R2, between the first and last vertices of the contour of index IC.
+    is static;
+
+    SetRadius(me : in out; 
+              L    : Function from Law; 
+              IC   : Integer from Standard;
+              IinC : Integer from Standard)
+   	---Purpose: Sets the parameters of the fillet
+        -- along the contour of index IC generated using the Add function
+        -- in the internal data structure of this algorithm, where the radius of the
+        --   fillet evolves according to the evolution law L, between the
+        --   first and last vertices of the contour of index IC.
+    is static;
+
+    SetRadius(me    : in out; 
+              UandR : Array1OfPnt2d from TColgp;
+    	      IC    : Integer from Standard;
+              IinC  : Integer from Standard)
+   	---Purpose: Sets the parameters of the fillet
+        -- along the contour of index IC generated using the Add function
+        -- in the internal data structure of this algorithm,
+        -- where the radius of the fillet evolves according to the evolution law
+        -- which interpolates the set of parameter and radius pairs given
+        -- in the array UandR as follows:
+        -- -   the X coordinate of a point in UandR defines a
+        --   relative parameter on the contour (i.e. a parameter between 0 and 1),
+        -- -          the Y coordinate of a point in UandR gives the
+        --   corresponding value of the radius, and the radius evolves
+        --   between the first and last vertices of the contour of index IC.
+    is static;
+
+    ResetContour(me     : in out; 
+                 IC     : Integer from Standard) 
+   	---Purpose: Erases the radius information on the contour of index
+        -- IC in the internal data structure of this algorithm.
+        -- Use the SetRadius function to reset this data.
+        -- Warning
+        -- Nothing is done if IC is outside the bounds of the table of contours.
+    is static;
+
+    IsConstant(me     : in out; 
+    	       IC     : Integer from Standard)
+    returns Boolean from Standard
+	---Purpose: Returns true if the radius of the fillet along the contour of index IC
+        --   in the internal data structure of this algorithm is constant,
+        --   Warning
+        -- False is returned if IC is outside the bounds of the table
+        -- of contours or if E does not belong to the contour of index IC.
+    is static; 
+
+    Radius(me     : in out; 
+    	   IC     : Integer from Standard)
+    returns Real from Standard
+	---Purpose: Returns the radius of the fillet along the contour of index IC in the
+        --  internal data structure of this algorithm
+        --     Warning
+        -- -   Use this function only if the radius is constant.
+        -- -   -1. is returned if IC is outside the bounds of the
+        --   table of contours or if E does not belong to the contour of index IC.
+        is static; 
+
+  
+    IsConstant(me     : in out; 
+    	       IC     : Integer from Standard;
+    	       E      : Edge from TopoDS) 
+    returns Boolean from Standard
+	---Purpose: Returns true if the radius of the fillet along the edge E of the
+        --  contour of index IC in the internal data structure of
+        --  this algorithm is constant.
+        --   Warning
+        -- False is returned if IC is outside the bounds of the table
+        -- of contours or if E does not belong to the contour of index IC.
+    is static; 
+
+    Radius(me     : in out; 
+    	   IC     : Integer from Standard;
+    	   E      : Edge from TopoDS) 
+    returns Real from Standard
+	---Purpose: Returns the radius of the fillet along the edge E of the contour of index
+        -- IC in the internal data structure of this algorithm.
+        -- Warning
+        -- -   Use this function only if the radius is constant.
+        -- -   -1 is returned if IC is outside the bounds of the
+        -- table of contours or if E does not belong to the contour of index IC.
+    is static; 
+
+    SetRadius(me     : in out; 
+    	      Radius : Real; 
+    	      IC     : Integer from Standard;
+    	      E      : Edge from TopoDS) 
+	---Purpose: Assigns Radius as the radius of the fillet on the edge E
+    is static;
+    
+    SetRadius(me     : in out; 
+    	      Radius : Real; 
+    	      IC     : Integer from Standard;
+    	      V      : Vertex from TopoDS) 
+        --Purpose: Assigns Radius as the radius of the fillet on the vertex V.
+        --  These two functions are only used on contours where
+        -- the radius has not been defined. They enable radius
+        -- values to be assigned locally either to points on the
+        -- contour (in particular, the first and last vertices) or to
+        -- portions of the contour. During construction of the fillet,
+        -- an interpolation using the given values is carried out.
+        -- Warning
+        -- Nothing is done if:
+        -- -   the edge E does not belong to the contour of index IC, or
+        -- -   IC is outside the bound of the table of contours, or
+    is static; 
+    
+    
+        
+    GetBounds(me     : in out; 
+    	      IC     : Integer from Standard;
+    	      E      : Edge from TopoDS;
+    	      F,L    : out Real from Standard)
+    returns Boolean from Standard; 
+
+    GetLaw(me     : in out; 
+    	   IC     : Integer from Standard;
+    	   E      : Edge from TopoDS)
+    returns mutable Function from Law; 
+
+    SetLaw(me     : in out; 
+    	   IC     : Integer from Standard;
+    	   E      : Edge from TopoDS;
+    	   L      : Function from Law);
+
+    
+
+    ------------------------------------------------------------------
+
+    SetFilletShape(me: in out; FShape: FilletShape from ChFi3d)
+	---Purpose: Assigns FShape as the type of fillet shape built by this algorithm.
+    is static;
+
+    GetFilletShape(me)
+	---Purpose: Returns the type of fillet shape built by this algorithm.
+    returns FilletShape from ChFi3d
+    is static;
+
+    NbContours(me) 
+	---Purpose: Returns the number of contours generated using the
+        -- Add function in the internal data structure of this algorithm.
+    returns Integer from Standard is static;
+
+    Contour(me; E : Edge from TopoDS) 
+        ---Purpose: Returns the index of the contour in the internal data
+        -- structure of this algorithm which contains the edge E of the shape.
+        -- This function returns 0 if the edge E does not belong to any contour.
+        -- Warning
+        -- This index can change if a contour is removed from the
+        -- internal data structure of this algorithm using the function Remove.
+    returns Integer from Standard is static;
+
+    NbEdges(me; I : Integer from Standard) 
+        ---Purpose: Returns the number of edges in the contour of index I in
+        -- the internal data structure of this algorithm.
+        -- Warning
+        -- Returns 0 if I is outside the bounds of the table of contours.
+    returns Integer from Standard 	
+    is static;
+    
+    Edge(me; I,J : Integer from Standard) 
+        ---Purpose: Returns the edge of index J in the contour of index I in
+        -- the internal data structure of this algorithm.
+        -- Warning
+        -- Returns a null shape if:
+        -- -   I is outside the bounds of the table of contours, or
+        -- -   J is outside the bounds of the table of edges of the index I contour.
+        ---C++: return const &
+    returns Edge from TopoDS 
+    is static;
+
+    Remove(me : in out; E : Edge from TopoDS) 
+        ---Purpose: Removes the contour in the internal data structure of
+        -- this algorithm which contains the edge E of the shape.
+        -- Warning
+        -- Nothing is done if the edge E does not belong to the
+        -- contour in the internal data structure of this algorithm.
+    is static;
+
+    Length(me; IC : Integer from Standard) returns Real from Standard
+        ---Purpose: Returns the length of the contour of index IC in the
+        -- internal data structure of this algorithm.
+        -- Warning
+        -- Returns -1. if IC is outside the bounds of the table of contours.
+    is static; 
+
+    FirstVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the first vertex of the contour of index IC
+        -- in the internal data structure of this algorithm.
+        -- Warning
+        -- Returns a null shape if IC is outside the bounds of the table of contours.
+    is static;
+
+    LastVertex(me; IC : Integer from Standard) returns Vertex from TopoDS
+        ---Purpose: Returns the  last vertex of the contour of index IC
+        -- in the internal data structure of this algorithm.
+        -- Warning
+        -- Returns a null shape if IC is outside the bounds of the table of contours.
+    is static;
+
+    Abscissa(me; 
+    	     IC : Integer from Standard;
+             V  : Vertex  from TopoDS) 
+    returns Real from Standard
+        ---Purpose: Returns the curvilinear abscissa of the vertex V on the
+        -- contour of index IC in the internal data structure of this algorithm.
+        -- Warning
+        -- Returns -1. if:
+        -- -   IC is outside the bounds of the table of contours, or
+        -- -   V is not on the contour of index IC.
+      is static;
+
+    RelativeAbscissa(me; 
+    	    	     IC : Integer from Standard;
+                     V  : Vertex  from TopoDS) 
+    returns Real from Standard
+        ---Purpose: Returns the relative curvilinear abscissa (i.e. between 0
+        -- and 1) of the vertex V on the contour of index IC in the
+        -- internal data structure of this algorithm.
+        -- Warning
+        -- Returns -1. if:
+        -- -   IC is outside the bounds of the table of contours, or
+        -- -   V is not on the contour of index IC.
+    is static;
+
+    ClosedAndTangent(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+        ---Purpose: Returns true if the contour of index IC in the internal
+        -- data structure of this algorithm is closed and tangential
+        -- at the point of closure.
+        -- Warning
+        -- Returns false if IC is outside the bounds of the table of contours.
+    is static; 
+
+    Closed(me; IC : Integer from Standard) 
+    returns Boolean from Standard
+        ---Purpose: Returns true if the contour of index IC in the internal
+        -- data structure of this algorithm is closed.
+        -- Warning
+        -- Returns false if IC is outside the bounds of the table of contours.
+    is static; 
+
+    Build(me : in out)
+    is redefined;
+        ---Purpose: Builds the fillets on all the contours in the internal data
+        -- structure of this algorithm and constructs the resulting shape.
+        -- Use the function IsDone to verify that the filleted shape
+        -- is built. Use the function Shape to retrieve the filleted shape.
+        -- Warning
+        -- The construction of fillets implements highly complex
+        -- construction algorithms. Consequently, there may be
+        -- instances where the algorithm fails, for example if the
+        -- data defining the radius of the fillet is not compatible
+        -- with the geometry of the initial shape. There is no initial
+        -- analysis of errors and they only become evident at the
+        -- construction stage.
+        -- Additionally, in the current software release, the
+        -- following cases are not handled:
+        -- -   the end point of the contour is the point of
+        --   intersection of 4 or more edges of the shape, or
+        -- -   the intersection of the fillet with a face which limits
+        --   the contour is not fully contained in this face.
+ 
+    Reset(me : in out)
+        ---Purpose: Reinitializes this algorithm, thus canceling the effects of the Build function.
+        -- This function allows modifications to be made to the
+        -- contours and fillet parameters in order to rebuild the shape.
+    is static;
+ 
+    Builder(me) returns HBuilder from TopOpeBRepBuild
+        ---Purpose: Returns the internal topology building algorithm.
+        ---Level: Advanced
+    is static;
+
+
+    -------------------------------------------
+    -- Methods usefull for historical utilities --
+    -------------------------------------------
+    Generated (me: in out; EorV : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <EorV>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined virtual;
+    
+
+    Modified (me: in out; F : Shape from TopoDS)
+    	---Purpose: Returns the list  of shapes modified from the shape
+    	--          <F>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined virtual;
+
+
+    IsDeleted (me: in out; F : Shape from TopoDS)
+    returns Boolean
+    is redefined virtual;
+
+    -------------------------------------------
+    -- Methods usefull for BRepCtx utilities --
+    -------------------------------------------
+
+    NbSurfaces(me)
+    	---Purpose: returns the number of surfaces
+    	--          after the shape creation.
+	---Level: Public
+    returns Integer from Standard;
+
+
+    NewFaces(me: in out; I: Integer) 
+    	---Purpose: Return the faces created for surface <I>.
+    	---C++:     return const &
+	---Level: Public
+    returns ListOfShape from TopTools;
+
+    -------------------------------
+    ---Methods for quick simulation
+    -------------------------------
+
+    Simulate(me : in out; 
+	     IC : Integer from Standard);
+
+    NbSurf(me; IC : Integer from Standard)
+    returns Integer from Standard;
+	 
+    Sect(me; IC, IS : Integer from Standard)
+    returns mutable SecHArray1 from ChFiDS;
+
+
+    -------------------------------------
+    --- Methods for managing errors 
+    -------------------------------------
+
+    NbFaultyContours(me)
+    ---Purpose: Returns the number of contours where the computation 
+    -- of the fillet failed 
+    returns Integer from Standard is static;
+
+    FaultyContour(me; I : Integer from Standard)
+    ---Purpose: for each I in [1.. NbFaultyContours] returns the index IC of 
+    -- the contour where the computation of the fillet failed.  
+    -- the method NbEdges(IC) gives the number of edges in the contour IC
+    -- the method Edge(IC,ie) gives the edge number ie of the contour IC          
+    returns Integer from Standard is static;
+
+    NbComputedSurfaces(me; IC : Integer from Standard)
+    ---Purpose: returns the number of surfaces which have been 
+    --          computed on the contour IC 
+    returns Integer from Standard is static;
+
+    ComputedSurface(me; IC, IS : Integer from Standard)
+    ---Purpose: returns the surface number IS concerning the contour IC
+    returns Surface from Geom is static;
+
+    NbFaultyVertices(me)
+    ---Purpose: returns the number of vertices where the computation failed
+    returns Integer from Standard is static;
+
+    FaultyVertex(me; IV : Integer from Standard)
+    ---Purpose: returns the vertex where the computation failed
+    returns Vertex from TopoDS is static;
+
+    HasResult(me) returns Boolean from Standard is static;
+    ---Purpose: returns true if a part of the result has been computed
+    -- if the filling in a corner failed a shape with a hole is returned
+    
+    BadShape(me) returns Shape from TopoDS 
+    ---Purpose: if (HasResult()) returns the partial result  
+    raises NoSuchObject from Standard
+    is static;
+    
+    StripeStatus(me;IC : Integer from Standard) returns ErrorStatus from ChFiDS 
+    ---Purpose: returns the status concerning the contour IC in case of error  
+    -- ChFiDS_Ok : the computation is Ok
+    -- ChFiDS_StartsolFailure : the computation can't start, perhaps the 
+    --                          the radius is too big 
+    -- ChFiDS_TwistedSurface : the computation failed because of a twisted 
+    --                         surface
+    -- ChFiDS_WalkingFailure : there is a problem in the walking 
+    -- ChFiDS_Error:  other error different from above  
+    is static;
+
+fields
+
+    myBuilder : FilBuilder from ChFi3d;
+    myMap     : MapOfShape from TopTools;
+
+end MakeFillet;

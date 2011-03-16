@@ -1,0 +1,26 @@
+// File:	Plate_PinpointConstraint.lxx
+// Created:	Mon May 25 09:04:50 1998
+// Author:	Andre LIEUTIER
+//		<alr@sgi63>
+inline  const gp_XY& Plate_PinpointConstraint::Pnt2d() const
+{
+  return pnt2d;
+}
+
+ 
+inline  const Standard_Integer& Plate_PinpointConstraint::Idu() const
+{
+  return idu;
+}
+
+ 
+inline  const Standard_Integer& Plate_PinpointConstraint::Idv() const
+{
+  return idv;
+}
+
+ 
+inline  const gp_XYZ& Plate_PinpointConstraint::Value() const
+{
+  return value;
+}

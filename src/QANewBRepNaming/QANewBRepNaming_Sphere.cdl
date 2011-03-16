@@ -1,0 +1,64 @@
+-- File:	QANewBRepNaming_Sphere.cdl
+-- Created:	Fri Aug 22 14:43:58 1997
+-- Author:	VAUTHIER Jean-Claude
+---Copyright:	 Open CASCADE 2003
+
+
+class Sphere from QANewBRepNaming inherits TopNaming from QANewBRepNaming
+
+    ---Purpose: To load the Sphere results 
+
+uses 
+ 
+    MakeSphere from BRepPrimAPI,
+    Label      from TDF,
+    TypeOfPrimitive3D from QANewBRepNaming
+
+is
+     
+    Create returns Sphere from QANewBRepNaming;
+      
+    Create(ResultLabel : Label from TDF) 
+    returns Sphere from QANewBRepNaming;
+      
+    Init(me : in out; ResultLabel : Label from TDF);
+     
+    
+    Load (me; mkSphere : in out MakeSphere from BRepPrimAPI; Type : TypeOfPrimitive3D from QANewBRepNaming);
+
+    Bottom (me)
+    ---Purpose: Returns the label of the bottom
+    --          face of the Sphere.
+    returns Label from TDF;
+
+    Top (me)
+    ---Purpose: Returns the label of the top
+    --          face of the Sphere.
+    returns Label from TDF;
+
+    Lateral (me)
+    ---Purpose: Returns the label of the lateral
+    --          face of the Sphere.
+    returns Label from TDF;
+
+    StartSide (me)
+    ---Purpose: Returns the label of the first
+    --          side of the Sphere.
+    returns Label from TDF;
+        
+    EndSide (me)
+    ---Purpose: Returns the label of the second
+    --          side of the Sphere.
+    returns Label from TDF;
+
+    Meridian (me)
+    ---Purpose: Returns the label of the meridian
+    --          edges of the Sphere.
+    returns Label from TDF;
+
+    Degenerated (me)
+    ---Purpose: Returns the label of the degenerated
+    --          edges of the Sphere.
+    returns Label from TDF;
+
+end Sphere;

@@ -1,0 +1,28 @@
+//=======================================================================
+//function : FixShellTool
+//purpose  : 
+//=======================================================================
+
+inline  Handle(ShapeFix_Shell) ShapeFix_Solid::FixShellTool() const
+{
+  return myFixShell;
+}
+
+//=======================================================================
+//function : FixShellMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Solid::FixShellMode() 
+{
+  return myFixShellMode;
+} 
+//=======================================================================
+//function : CreateOpenSolidMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeFix_Solid::CreateOpenSolidMode() 
+{
+  return myCreateOpenSolidMode;
+} 

@@ -1,0 +1,219 @@
+-- File:        TopTools_ShapeSet.cdl
+-- Created:     Thu Jul  1 17:13:36 1993
+-- Author:      Remi LEQUETTE
+--              <rle@phylox>
+---Copyright:    Matra Datavision 1993
+
+--     
+class ShapeSet from TopTools
+
+        ---Purpose: A ShapeSets    contains  a  Shape    and all   its
+        --          sub-shapes and locations.  It  can be dump,  write
+        --          and read.
+        --          
+        --          Methods to handle the geometry can be redefined.
+        --          
+
+uses
+
+    Shape             from TopoDS,
+    IndexedMapOfShape from TopTools,
+    LocationSet       from TopTools,
+    ShapeEnum         from TopAbs,
+    AsciiString       from TCollection,
+    ProgressIndicator from Message
+    
+is
+
+    Create returns  ShapeSet from TopTools;
+        ---Purpose: Builds an empty ShapeSet.
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopTools_ShapeSet(){Delete() ; }"
+
+    SetFormatNb(me : out; theFormatNb : Integer) is static;
+    FormatNb(me) returns Integer is static;
+        ---Purpose: two formats available for the moment:
+        --          First: does not write CurveOnSurface UV Points into the file
+        --                 on reading calls Check() method.
+        --          Second: stores CurveOnSurface UV Points.
+        --          On reading format is recognized from Version string.
+
+    Clear(me : in out)
+        ---Purpose: Clears the content of the set.  This method can be
+        --          redefined.
+    is virtual;
+         
+    Add(me : in out; S : Shape from TopoDS) returns Integer
+        ---Purpose: Stores <S> and its sub-shape. Returns the index of <S>.
+        --          The method AddGeometry is called on each sub-shape.
+    is static;
+        
+    Shape(me; I : Integer) returns Shape from TopoDS
+        ---Purpose: Returns the sub-shape of index <I>.
+        --          
+        ---C++: return const &
+    is static;
+    
+    Index(me; S : Shape from TopoDS) returns Integer
+        ---Purpose: Returns the index of <S>.
+    is static;
+        
+    Locations(me) returns LocationSet from TopTools
+        ---C++: return const &
+    is static;
+    
+    ChangeLocations(me : in out) returns LocationSet from TopTools
+        ---C++: return &
+    is static;
+
+    DumpExtent(me; OS : in out OStream) returns OStream
+        ---Purpose: Dumps the number of objects in me on the stream <OS>.
+        -- (Number of shapes of each type)
+        ---C++: return &
+    is static;        
+
+    DumpExtent(me; S : in out AsciiString from TCollection)
+        ---Purpose: Dumps the number of objects in me in the string S
+        -- (Number of shapes of each type)
+    is static;
+        
+
+    Dump(me; OS : in out OStream)
+        ---Purpose: Dumps the content of me on the stream <OS>.
+        --          
+        --          Dumps the shapes from first to last.
+        --            For each Shape 
+        --               Dump the type, the flags, the subshapes
+        --               calls DumpGeometry(S)
+        --               
+        --          
+        --          Dumps the geometry calling DumpGeometry.
+        --          
+        --          Dumps the locations.
+    is virtual;
+        
+    Write(me: in out; OS : in out OStream)
+        ---Purpose: Writes the content of  me  on the stream <OS> in a
+        --          format that can be read back by Read.
+        --          
+        --          Writes the locations.
+        --          
+        --          Writes the geometry calling WriteGeometry.
+        --          
+        --          Dumps the shapes from last to first.
+        --            For each shape  :
+        --              Write the type.
+        --              calls WriteGeometry(S).
+        --              Write the flags, the subshapes.
+    is virtual;
+        
+    Read(me : in out; IS : in out IStream)
+        ---Purpose: Reads the content of me from the  stream  <IS>. me
+        --          is first cleared.
+        --          
+        --          Reads the locations.
+        --          
+        --          Reads the geometry calling ReadGeometry.
+        --          
+        --          Reads the shapes.
+        --            For each shape 
+        --              Reads the type.
+        --              calls ReadGeometry(T,S).
+        --              Reads the flag, the subshapes.
+    is virtual;
+    
+    Dump(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Dumps   on  <OS>    the  shape  <S>.   Dumps   the
+        --          orientation, the index of the TShape and the index
+        --          of the Location.
+    is static;
+    
+    Write(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Writes   on  <OS>   the shape   <S>.    Writes the
+        --          orientation, the index of the TShape and the index
+        --          of the Location.
+    is static;
+    
+    Read(me; S : in out Shape from TopoDS; IS : in out IStream)
+        ---Purpose: Reads from <IS> a shape and returns it in S.
+    is static;
+    
+    Read(me; S : in out Shape from TopoDS; IS : in out IStream;
+             NbShapes : Integer)
+        ---Purpose: Reads  from <IS>  a shape  and  returns  it in  S.
+        --          <NbShapes> is the number of tshapes in the set.
+    is static private;
+    
+    --
+    --  Auxliary methods for the geometry.  They can  be redefined. In
+    --  this class the perform nothing.
+    --  
+    
+    AddGeometry(me : in out; S : Shape from TopoDS)
+        ---Purpose: Stores the geometry of <S>.
+    is virtual;
+        
+    DumpGeometry(me; OS : in out OStream)
+        ---Purpose: Dumps the geometry of me on the stream <OS>.
+    is virtual;
+        
+    WriteGeometry(me : in out; OS : in out OStream)
+        ---Purpose: Writes the geometry of  me  on the stream <OS> in a
+        --          format that can be read back by Read.
+    is virtual;
+        
+    ReadGeometry(me : in out; IS : in out IStream)
+        ---Purpose: Reads the geometry of me from the  stream  <IS>.
+    is virtual;
+    
+    DumpGeometry(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Dumps the geometry of <S> on the stream <OS>.
+    is virtual;
+        
+    WriteGeometry(me; S : Shape from TopoDS; OS : in out OStream)
+        ---Purpose: Writes the geometry of <S>  on the stream <OS> in a
+        --          format that can be read back by Read.
+    is virtual;
+        
+    ReadGeometry(me : in out; T  : ShapeEnum from TopAbs;
+                              IS : in out IStream;
+                              S  : out Shape from TopoDS)
+        ---Purpose: Reads the geometry of a shape of type <T> from the
+        --          stream <IS> and returns it in <S>.
+    is virtual;
+    
+    
+    AddShapes(me : in out; S1 : in out Shape from TopoDS;
+                           S2 : Shape from TopoDS)
+        ---Purpose: Inserts  the shape <S2> in  the  shape <S1>.  This
+        --          method must be   redefined  to  use   the  correct
+        --          builder.
+    is virtual;
+
+
+    Check(me : in out; T : ShapeEnum from TopAbs;
+                       S : in out Shape from TopoDS)
+       ---Purpose: This method is   called after  each  new  completed
+       --          shape. <T> is the  type. <S> is  the shape. In this
+       --          class it does nothing, but it gives the opportunity
+       --          in derived  classes to perform  extra  treatment on
+       --          shapes.
+    is virtual;
+    
+    NbShapes(me) returns Integer;
+    ---Purpose:Returns number of shapes read from file.
+        
+    SetProgress(me : in out; PR : ProgressIndicator from Message);
+
+    GetProgress(me) returns ProgressIndicator from Message;
+
+fields
+    myShapes    : IndexedMapOfShape from TopTools;
+    myLocations : LocationSet       from TopTools;
+    myFormatNb  : Integer           from Standard; -- jfa 26.09.2001
+    myProgress  : ProgressIndicator from Message;
+
+end ShapeSet;
+
+

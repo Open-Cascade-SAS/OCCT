@@ -1,0 +1,24 @@
+-- File:	IFSelect_SelectIncorrectEntities.cdl
+-- Created:	Fri Sep  2 11:03:13 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectIncorrectEntities  from IFSelect  inherits SelectFlag
+
+    ---Purpose : A SelectIncorrectEntities sorts the Entities which have been
+    --           noted as Incorrect in the Graph of the Session
+    --             (flag "Incorrect")
+    --           It can find a result only if ComputeCheck has formerly been
+    --           called on the WorkSession. Else, its result will be empty.
+
+uses AsciiString from TCollection, InterfaceModel, Graph, EntityIterator
+
+is
+
+    Create returns mutable SelectIncorrectEntities;
+    ---Purpose : Creates a SelectIncorrectEntities
+    --           i.e. a SelectFlag("Incorrect")
+
+end SelectIncorrectEntities;

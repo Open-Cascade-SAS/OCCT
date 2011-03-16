@@ -1,0 +1,72 @@
+#include <Standard_DomainError.hxx>
+
+inline const gp_Pnt& Blend_Extremity::Value () const
+{
+  return pt;
+}
+
+inline void Blend_Extremity::SetTangent(const gp_Vec& Tangent)
+{
+  hastang = Standard_True;
+  tang = Tangent;
+}
+
+inline Standard_Boolean Blend_Extremity::HasTangent () const
+{
+  return hastang;
+}
+
+inline const gp_Vec& Blend_Extremity::Tangent () const
+{
+  if (!hastang) {Standard_DomainError::Raise();} 
+  return tang;
+}
+
+inline void Blend_Extremity::Parameters(Standard_Real& U,
+					Standard_Real& V) const
+{
+  U = u;
+  V = v;
+}
+
+inline Standard_Real Blend_Extremity::Tolerance() const
+{
+  return tol;
+}
+
+
+inline Standard_Boolean Blend_Extremity::IsVertex() const
+{
+  return isvtx;
+}
+
+
+inline const TheVertex& Blend_Extremity::Vertex () const
+{
+  if (!isvtx) {Standard_DomainError::Raise();}
+  return vtx;
+}
+
+inline Standard_Integer Blend_Extremity::NbPointOnRst () const
+{
+  return seqpt.Length();
+}
+
+inline const ThePointOnRst& Blend_Extremity::PointOnRst
+  (const Standard_Integer Index) const
+{
+  return seqpt(Index);
+}
+
+inline Standard_Real Blend_Extremity::Parameter() const
+
+{
+  return u;
+}
+
+inline Standard_Real Blend_Extremity::ParameterOnGuide() const
+
+{
+  return param;
+}
+

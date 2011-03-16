@@ -1,0 +1,21 @@
+-- File:	TopOpeBRepDS_Marker.cdl
+-- Created:	Thu Apr  1 15:43:03 1999
+-- Author:	Jean Yves LEBEY
+--		<jyl@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class Marker from TopOpeBRepDS inherits TShared from MMgt    	
+uses
+    HArray1OfBoolean from TColStd,
+    AsciiString from TCollection
+is
+    Create returns mutable Marker;
+    Reset(me:mutable);
+    Set(me:mutable;i:Integer;b:Boolean);
+    Set(me:mutable;b:Boolean;n:Integer;a:Address);
+    GetI(me;i:Integer) returns Boolean;
+    Allocate(me:mutable;n:Integer);    
+fields
+    myhe : HArray1OfBoolean from TColStd;
+    myne : Integer;   
+end Marker from TopOpeBRepDS;

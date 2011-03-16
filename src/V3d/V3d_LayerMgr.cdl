@@ -1,0 +1,69 @@
+-- File:    V3d_LayerMgr.cdl
+-- Created: 17/04/2008
+-- Author:  Customer Support
+--
+---Copyright:   Open Cascade 2008
+--
+
+class LayerMgr from V3d inherits TShared from MMgt
+
+    ---Purpose: Class to manage layers
+
+uses
+
+    ExtendedString from TCollection,
+    Color from Quantity,
+    Layer from Visual3d,
+    ColorScale from Aspect,
+    ColorScale from V3d,
+    ColorScaleLayerItem from V3d,
+    View from V3d,
+    ViewPointer from V3d
+    
+
+is
+
+    ---Category: Public
+
+    Create (aView : View from V3d)
+    returns mutable LayerMgr from V3d;
+    
+    Overlay (me)
+    returns mutable Layer from Visual3d;
+    ---C++: return const &
+    ---C++: inline
+
+    View (me)
+    returns mutable View from V3d;
+    ---C++: inline
+
+    ColorScaleDisplay (me : mutable);
+    ColorScaleErase (me : mutable);
+    ColorScaleIsDisplayed (me) returns Boolean from Standard;
+    ColorScale (me) returns mutable ColorScale from Aspect;
+
+    Compute (me : mutable);
+    ---Purpose: Recompute layer with objects
+
+    Resized(me : mutable);
+
+    ---Category: Protected
+
+    Begin (me : mutable) returns Boolean from Standard is virtual protected;
+    ---Purpose: Begin layers recomputation
+
+    Redraw (me : mutable) is virtual protected;
+    ---Purpose: Perform layers recomputation
+
+    End (me : mutable) is virtual protected;
+    ---Purpose: End layers recomputation
+
+fields
+
+    myView       : ViewPointer from V3d is protected;
+    myOverlay    : Layer from Visual3d is protected;
+    myColorScale : ColorScale from V3d is protected;
+    
+    myColorScaleLayerItem: ColorScaleLayerItem from V3d is protected;
+
+end LayerMgr;

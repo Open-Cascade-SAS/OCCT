@@ -1,0 +1,70 @@
+// File:	TDataStd_IntPackedMap.lxx
+// Created:	Thu Jan 24 15:50:56 2008
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+//Copyright:    Open CasCade SA 2008
+
+#include <TColStd_HPackedMapOfInteger.hxx>
+//=======================================================================
+//function : GetHMap
+//purpose  : 
+//=======================================================================
+inline const Handle(TColStd_HPackedMapOfInteger)&  TDataStd_IntPackedMap::GetHMap () const
+{
+  return myMap;
+}
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+
+inline const TColStd_PackedMapOfInteger&  TDataStd_IntPackedMap::GetMap () const
+{
+  return  myMap->Map();
+}
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean  TDataStd_IntPackedMap::IsEmpty() const
+{
+  return myMap->Map().IsEmpty();
+}
+
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+inline Standard_Integer TDataStd_IntPackedMap::Extent() const
+{
+  return myMap->Map().Extent();
+}
+
+//=======================================================================
+//function : RemoveMap
+//purpose  : 
+//=======================================================================
+inline void TDataStd_IntPackedMap::RemoveMap(void) 
+{
+  myMap.Nullify(); 
+}
+
+
+//=======================================================================
+//function : SetDelta
+//purpose  : 
+//=======================================================================
+inline void TDataStd_IntPackedMap::SetDelta(const Standard_Boolean isDelta) 
+{
+  myIsDelta = isDelta;
+}
+//=======================================================================
+//function : GetDelta
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TDataStd_IntPackedMap::GetDelta(void)  const
+{
+  return myIsDelta;
+}

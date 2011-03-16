@@ -1,0 +1,233 @@
+-- File:        HLRBRep_CurveTool.cdl
+-- Created:	Mon Jul 17 16:25:23 1995
+-- Author:	Modelistation
+--		<model@mastox>
+---Copyright:	 Matra Datavision 1995
+
+class CurveTool from HLRBRep
+
+uses 
+    Array1OfReal from TColStd,
+    Shape        from GeomAbs,
+    CurveType    from GeomAbs,
+    Vec2d        from gp,
+    Pnt2d        from gp,
+    Circ2d       from gp,
+    Elips2d      from gp,
+    Hypr2d       from gp,
+    Parab2d      from gp,
+    Lin2d        from gp,
+    BezierCurve  from Geom2d,
+    BSplineCurve from Geom2d
+     
+raises
+    OutOfRange   from Standard,
+    NoSuchObject from Standard,
+    DomainError  from Standard
+ 
+is
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    FirstParameter(myclass; C: Address from Standard)
+    returns Real from Standard;
+    	---C++: inline
+
+    LastParameter(myclass; C: Address from Standard)
+    returns Real from Standard;
+    	---C++: inline    
+
+    --
+    -- Services to break the curves to the expected continuity
+    -- 
+    --  If  for example you  need the  curve to  be C2  and the method
+    --  Continuity   returns you something lower than   C2 (say C1 for
+    --  example).
+    --  
+    --  First  compute the   number  of intervals  with  the requested
+    --  continuity with the method  NbIntervals().   Note that if  the
+    --  continuity  is higher than the one   you need NbIntervals will
+    --  return 1.
+    --  
+    --  Then you get the parameters  bounding  the intervals with  the
+    --  method  Intervals,   using   an array    of  length  at  least
+    --  NbIntervals()+1.
+    -- 
+    -- If you need  to create a curve  with a restricted span you  can
+    -- use the method Trim().
+
+    
+    Continuity(myclass; C: Address from Standard)
+    returns Shape from GeomAbs;
+	---Purpose: 
+	---C++: inline
+    
+    NbIntervals(myclass; C: Address from Standard)
+    returns Integer from Standard;
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(myclass) >= <S>
+	---C++: inline
+    
+    Intervals(myclass; C :        Address      from Standard;
+                       T : in out Array1OfReal from TColStd) 
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard;
+    ---C++: inline
+
+    GetInterval (myclass; C      :     Address      from Standard
+                        ; Index  :     Integer      from Standard
+		        ; Tab    :     Array1OfReal from TColStd
+    	    	        ; U1, U2 : out Real         from Standard);
+        ---Purpose : output the bounds of interval of index <Index>
+        --           used if Type == Composite.
+        ---C++: inline
+        
+
+    IsClosed(myclass; C: Address from Standard)
+    returns Boolean from Standard;
+    ---C++: inline    
+     
+    IsPeriodic(myclass; C: Address from Standard)
+    returns Boolean from Standard;
+    ---C++: inline
+    
+    Period(myclass; C: Address from Standard)
+    returns Real from Standard
+    raises DomainError from Standard; -- if the curve is not periodic
+    ---C++: inline	
+     
+    Value(myclass; C: Address from Standard; U : Real)
+    returns Pnt2d from gp;
+         --- Purpose : Computes the point of parameter U on the curve.
+    ---C++: inline
+    
+    D0 (myclass; C :     Address from Standard;
+                 U :     Real    from Standard;
+                 P : out Pnt2d   from gp);
+         --- Purpose : Computes the point of parameter U on the curve.
+    ---C++: inline
+    
+    D1 (myclass; C :     Address from Standard;
+                 U :     Real    from Standard;
+                 P : out Pnt2d   from gp;
+                 V : out Vec2d   from gp)
+         --- Purpose : Computes the point  of parameter U on the curve
+         --  with its first derivative.
+     raises DomainError from Standard;
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    ---C++: inline
+    
+    D2 (myclass; C      :     Address from Standard;
+                 U      :     Real    from Standard;
+                 P      : out Pnt2d   from gp;
+                 V1, V2 : out Vec2d   from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+     raises DomainError from Standard;
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+    ---C++: inline
+
+    D3 (myclass; C          : Address   from Standard;
+                 U          : Real      from Standard;
+                 P          : out Pnt2d from gp;
+                 V1, V2, V3 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises DomainError from Standard;
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+    ---C++: inline
+        
+    DN (myclass; C : Address from Standard;
+                 U : Real    from Standard;
+                 N : Integer from Standard)
+    returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard;
+        --- Purpose : Raised if N < 1.            
+    ---C++: inline
+
+    Resolution(myclass; C   : Address from Standard;
+                        R3d : Real    from Standard)
+    returns Real from Standard;
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    ---C++: inline
+        
+    GetType(myclass; C: Address from Standard)
+    returns CurveType from GeomAbs;
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    ---C++: inline
+
+    TheType(myclass; C: Address from Standard)
+    returns CurveType from GeomAbs;
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    ---C++: inline
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Line(myclass; C: Address from Standard) returns Lin2d from gp
+    raises NoSuchObject from Standard;
+    ---C++: inline
+     
+    Circle(myclass; C: Address from Standard) returns Circ2d from gp
+    raises NoSuchObject from Standard;
+    ---C++: inline
+     
+    Ellipse(myclass; C: Address from Standard) returns Elips2d from gp
+    raises NoSuchObject from Standard;
+    ---C++: inline
+     
+    Hyperbola(myclass; C: Address from Standard) returns  Hypr2d from gp
+    raises NoSuchObject from Standard;
+    ---C++: inline
+     
+    Parabola(myclass; C: Address from Standard) returns Parab2d from gp
+    raises NoSuchObject from Standard;
+    ---C++: inline
+     
+    Bezier(myclass; C: Address from Standard)
+    returns BezierCurve from Geom2d
+    raises NoSuchObject from Standard;
+    ---C++: inline
+    
+    BSpline(myclass; C: Address from Standard)
+    returns BSplineCurve from Geom2d
+    raises NoSuchObject from Standard;
+    ---C++: inline
+
+    EpsX(myclass; C:Address from Standard) 
+    ---C++: inline
+    returns Real from Standard;
+
+    NbSamples(myclass; C    : Address from Standard;
+                       U0,U1: Real    from Standard) 
+    returns Integer from Standard;
+
+    NbSamples(myclass; C: Address from Standard)
+    returns Integer from Standard;
+
+end CurveTool;

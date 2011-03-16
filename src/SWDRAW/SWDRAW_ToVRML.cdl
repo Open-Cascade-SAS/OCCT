@@ -1,0 +1,71 @@
+-- File:	SWDRAW_ToVRML.cdl
+-- Created:	Mon Aug  3 18:40:15 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ToVRML  from SWDRAW
+
+    ---Purpose : Writes a Shape to a File in VRML Format
+
+uses CString, OStream, AsciiString from TCollection, Shape from TopoDS
+
+is
+
+    Create returns ToVRML;
+
+    EmissiveColorRed   (me : in out) returns Real;
+    ---C++ : return &
+    EmissiveColorGreen (me : in out) returns Real;
+    ---C++ : return &
+    EmissiveColorBlue  (me : in out) returns Real;
+    ---C++ : return &
+    DiffuseColorRed    (me : in out) returns Real;
+    ---C++ : return &
+    DiffuseColorGreen  (me : in out) returns Real;
+    ---C++ : return &
+    DiffuseColorBlue   (me : in out) returns Real;
+    ---C++ : return &
+    Transparency       (me : in out) returns Real;
+    ---C++ : return &
+    AmbientIntensity   (me : in out) returns Real;
+    ---C++ : return &
+    SpecularColorRed   (me : in out) returns Real;
+    ---C++ : return &
+    SpecularColorGreen (me : in out) returns Real;
+    ---C++ : return &
+    SpecularColorBlue  (me : in out) returns Real;
+    ---C++ : return &
+    Shininess          (me : in out) returns Real;
+    ---C++ : return &
+    Texture            (me : in out) returns AsciiString;
+    ---C++ : return &
+    CreaseAngle        (me : in out) returns Real;
+    ---C++ : return &
+    Deflection         (me : in out) returns Real;
+    ---C++ : return &
+
+
+    Write (me; shape : Shape from TopoDS; filename : CString) returns Boolean;
+    ---Purpose : conversion of a Shape into VRML format for 3d visualisation
+
+fields
+
+  myEmissiveColorRed   : Real;  -- def 0.3
+  myEmissiveColorGreen : Real;  -- def 0.3
+  myEmissiveColorBlue  : Real;  -- def 0.3
+  myDiffuseColorRed    : Real;  -- def 0.3
+  myDiffuseColorGreen  : Real;  -- def 0.3
+  myDiffuseColorBlue   : Real;  -- def 0.5
+  myTransparency       : Real;  -- def 0.0
+  myAmbientIntensity   : Real;  -- def 0.3
+  mySpecularColorRed   : Real;  -- def 0.7
+  mySpecularColorGreen : Real;  -- def 0.7
+  mySpecularColorBlue  : Real;  -- def 0.8
+  myShininess          : Real;  -- def 0.1
+  myTexture            : AsciiString;  -- def " [] "
+  myCreaseAngle        : Real;  -- def 1.57
+  myDeflection         : Real;  -- def 0.005
+
+end ToVRML;

@@ -1,0 +1,117 @@
+-- File:	IGESConvGeom_GeomBuilder.cdl
+-- Created:	Wed Nov 16 14:16:50 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class GeomBuilder  from IGESConvGeom
+
+    ---Purpose : This class provides some useful basic tools to build IGESGeom
+    --           curves, especially :
+    --           define a curve in a plane in 3D space (ex. Circular or Conic
+    --             arc, or Copious Data defined in 2D)
+    --           make a CopiousData from a list of points/vectors
+
+uses XY from gp, XYZ from gp, Trsf, Ax1, Ax2, Ax3,
+     HSequenceOfXYZ, HArray1OfXY, HArray1OfXYZ,
+     TransformationMatrix, CopiousData
+
+raises DomainError
+
+is
+
+    Create returns GeomBuilder;
+    ---Purpose : Creates a GeomBuilder at initial state.
+
+    Clear (me : in out) is static;
+    ---Purpose : Clears list of Points/Vectors and data about Transformation
+
+    AddXY  (me : in out; val : XY  from gp) is static;
+    ---Purpose : Adds a XY (Z=0) to the list of points
+
+    AddXYZ (me : in out; val : XYZ from gp) is static;
+    ---Purpose : Adds a XYZ to the list of points
+
+    AddVec (me : in out; val : XYZ from gp) is static;
+    ---Purpose : Adds a Vector part to the list of points. It will be used
+    --           for CopiousData, datatype=3, only.
+    --           AddXY and AddXYZ consider a null vector part (0,0,0)
+    --           AddVec adds to the last added XY or XYZ
+
+    NbPoints (me) returns Integer  is static;
+    ---Purpose : Returns the count of already recorded points
+
+    Point (me; num : Integer) returns XYZ  is static;
+    ---Purpose : Returns a point given its rank (if added as XY, Z will be 0)
+
+    MakeCopiousData (me; datatype : Integer; polyline : Boolean = Standard_False)
+    	returns mutable CopiousData
+    ---Purpose : Makes a CopiousData with the list of recorded Points/Vectors
+    --           according to <datatype>, which must be 1,2 or 3
+    --           If <polyline> is given True, the CopiousData is coded as a
+    --           Polyline, but <datatype> must not be 3
+    --           <datatype> = 1 : Common Z is computed as average of all Z
+    --           <datatype> = 1 or 2 : Vectors are ignored
+    	raises DomainError;
+    --           Error if : <datatype> is not 1,2 or 3; or NbPoints is 0
+
+    MakeXY  (me) returns mutable HArray1OfXY  is static;
+    ---Purpose : Returns the list of points as a HArray1OfXY. Z are ignored.
+
+    MakeXYZ (me) returns mutable HArray1OfXYZ  is static;
+    ---Purpose : Returns the list of points as a HArray1OfXYZ
+
+
+    Position (me) returns Trsf from gp  is static;
+    ---Purpose : Returns the Position in which the method EvalXYZ will
+    --           evaluate a XYZ. It can be regarded as defining a local system.
+    --           It is initially set to Identity
+
+    SetPosition (me : in out; pos : Trsf from gp)  is static;
+    ---Purpose : Sets final position from an already defined Trsf
+
+    SetPosition (me : in out; pos : Ax3  from gp)  is static;
+    ---Purpose : Sets final position from an Ax3
+
+    SetPosition (me : in out; pos : Ax2  from gp)  is static;
+    ---Purpose : Sets final position from an Ax2
+
+    SetPosition (me : in out; pos : Ax1  from gp)  is static;
+    ---Purpose : Sets final position from an Ax1
+    --           (this means that origin point and Z-axis are defined, the
+    --           other axes are defined arbitrarily)
+
+    IsIdentity (me) returns Boolean  is static;
+    ---Purpose : Returns True if the Position is Identity
+
+    IsTranslation (me) returns Boolean  is static;
+    ---Purpose : Returns True if the Position is a Translation only
+    --           Remark : Identity and ZOnly will answer True
+
+    IsZOnly (me) returns Boolean  is static;
+    ---Purpose : Returns True if the Position corresponds to a Z-Displacement,
+    --           i.e. is a Translation only, and only on Z
+    --           Remark : Identity will answer True
+
+    EvalXYZ (me; val : XYZ from gp; X,Y,Z : out Real)  is static;
+    ---Purpose : Evaluates a XYZ value in the Position already defined.
+    --           Returns the transformed coordinates.
+    --           For a 2D definition, X,Y will then be used to define a XY and
+    --           Z will be regarded as a Z Displacement (can be ignored)
+
+    MakeTransformation (me; unit : Real = 1)
+    	returns mutable TransformationMatrix  is static;
+    ---Purpose : Returns the IGES Transformation which corresponds to the
+    --           Position. Even if it is an Identity : IsIdentity should be
+    --           tested first.
+    --           <unit> is the unit value in which the model is created :
+    --             it is used to convert translation part
+
+fields
+
+    theXYZ : HSequenceOfXYZ;
+    theVec : HSequenceOfXYZ;
+    thepos : Trsf from gp;
+
+end GeomBuilder;

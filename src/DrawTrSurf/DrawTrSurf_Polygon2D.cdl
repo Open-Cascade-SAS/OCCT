@@ -1,0 +1,54 @@
+-- File:	DrawTrSurf_Polygon2D.cdl
+-- Created:	Fri Mar 10 10:11:24 1995
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class Polygon2D from DrawTrSurf inherits Drawable2D from Draw
+
+    	---Purpose: Used to display a 2d polygon.
+    	--          
+    	--          Optional display of nodes.
+
+
+uses Polygon2D   from Poly,
+     Display     from Draw,
+     Drawable3D  from Draw,
+     Interpretor from Draw,
+     OStream
+is
+
+    Create(P: Polygon2D from Poly)
+    returns mutable Polygon2D from DrawTrSurf;
+    
+    Polygon2D(me) returns Polygon2D from Poly;
+    
+    ShowNodes(me: mutable; B: Boolean);
+    
+    ShowNodes(me) returns Boolean;
+    
+    DrawOn(me; dis: in out Display);
+    
+    Copy(me) returns mutable Drawable3D from Draw
+    is redefined;
+	---Purpose: For variable copy.
+
+
+    Dump(me; S : in out OStream)
+    is redefined;
+	---Purpose: For variable dump.
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is redefined;
+	---Purpose: For variable whatis command. Set  as a result  the
+	--          type of the variable.
+
+
+fields
+
+    myPolygon2D:  Polygon2D from Poly;
+    myNodes:      Boolean;
+
+end Polygon2D;

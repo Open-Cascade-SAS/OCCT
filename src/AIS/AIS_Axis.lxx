@@ -1,0 +1,58 @@
+// File:	AIS_Axis.lxx
+// Created:	Mon Mar  3 14:54:41 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : Component
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Line)& AIS_Axis::Component() const 
+{
+  return myComponent;
+}
+
+//=======================================================================
+//function : Axis2Placement
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Axis2Placement)& AIS_Axis::Axis2Placement() const 
+{
+  return myAx2;
+}
+
+//=======================================================================
+//function : TypeOfAxis:
+//purpose  : 
+//=======================================================================
+inline AIS_TypeOfAxis AIS_Axis::TypeOfAxis() const 
+{
+  return myTypeOfAxis;
+}
+
+//=======================================================================
+//function : SetTypeOfAxis
+//purpose  : 
+//=======================================================================
+
+inline void AIS_Axis::SetTypeOfAxis(const AIS_TypeOfAxis aTypeAxis)
+{
+  myTypeOfAxis = aTypeAxis;
+}
+
+//=======================================================================
+//function : IsXYZAxis
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_Axis::IsXYZAxis() const 
+{
+  return myIsXYZAxis;
+}
+inline AIS_KindOfInteractive AIS_Axis::Type() const 
+{return AIS_KOI_Datum;}
+
+
+inline Standard_Integer AIS_Axis::Signature() const 
+{return 2;}

@@ -1,0 +1,81 @@
+--
+-- File      :  Shell.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Shell from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Shell, Type <514> Form Number <1>
+        --          in package IGESSolid
+        --          Shell entity is a connected entity of dimensionality 2
+        --          which divides R3 into two arcwise connected open subsets,
+        --          one of which is finite. Inside of the shell is defined to
+        --          be the finite region.
+        --          From IGES-5.3, Form can be <1> for Closed or <2> for Open
+
+uses
+
+        Face             from IGESSolid,
+        HArray1OfFace    from IGESSolid,
+        HArray1OfInteger from TColStd
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable Shell;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              allFaces  : HArray1OfFace;
+              allOrient : HArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class Shell
+        --       - allFaces  : the faces comprising the shell
+        --       - allOrient : the orientation flags of the shell
+        -- raises exception if length of allFaces & allOrient do not match
+
+    	IsClosed (me) returns Boolean;
+	---Purpose : Tells if a Shell is Closed, i.e. if its FormNumber is 1
+	--           (this is the default)
+
+    	SetClosed (me : mutable; closed : Boolean);
+	---Purpose : Sets or Unsets the Closed status (FormNumber = 1 else 2)
+
+        NbFaces (me) returns Integer;
+        ---Purpose : returns the number of the face entities in the shell
+
+        Face (me; Index : Integer) returns Face
+        raises OutOfRange;
+        ---Purpose : returns the Index'th face entity of the shell
+        -- raises exception if Index <= 0 or Index > NbFaces()
+
+        Orientation (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns the orientation of Index'th face w.r.t the direction of
+        -- the underlying surface
+        -- raises exception if Index <= 0 or Index > NbFaces()
+
+fields
+
+--
+-- Class    : IGESSolid_Shell
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Shell.
+--
+-- Reminder : A Shell instance is defined by :
+--            a number of face entities defined with their orientation
+--            with respect to the direction of the underlying surface
+
+        theFaces       : HArray1OfFace;
+            -- the faces comprising the shell
+
+        theOrientation : HArray1OfInteger;
+            -- the orientation of the corresponding face
+
+end Shell;

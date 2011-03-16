@@ -1,0 +1,76 @@
+-- File:	UndefinedEntity.cdl
+-- Created:	Tue Feb 11 15:51:36 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class UndefinedEntity  from StepData  inherits TShared
+
+    ---Purpose : Undefined entity specific to Step Interface, in which StepType
+    --           is defined at each instance, or is a SubList of another one
+    --           Uses an UndefinedContent, that from Interface is suitable.
+    --           Also an Entity defined by STEP can be "Complex Type" (see
+    --           ANDOR clause in Express).
+
+uses AsciiString from TCollection, HAsciiString from TCollection,
+     UndefinedContent, Check, CopyTool, EntityIterator,
+     StepReaderData, StepWriter
+
+is
+
+    Create returns mutable UndefinedEntity;
+    ---Purpose : creates an Unknown entity
+
+    Create (issub : Boolean) returns mutable UndefinedEntity;
+    ---Purpose : Creates a SubList of an Unknown entity : it is an Unknown
+    --           Entity with no Type, but flagged as "SUB" if issub is True
+
+    UndefinedContent (me) returns mutable UndefinedContent;
+    ---Purpose : Returns the UndefinedContent which brings the Parameters
+
+
+    IsSub (me) returns Boolean;
+    ---Purpose : Returns True if an Unndefined Entity is SubPart of another one
+
+    Super (me) returns mutable UndefinedEntity;
+    ---Purpose : Returns the "super-entity" of a sub-part
+
+    IsComplex (me) returns Boolean;
+    ---Purpose : Returns True if <me> defines a Multiple Type Entity (see ANDOR)
+
+    Next (me) returns mutable UndefinedEntity;
+    ---Purpose : For a Multiple Type Entity, returns the Next "Componant"
+    --           For more than two Types, iterative definition (Next->Next...)
+    --           Returns a Null Handle for the end of the List
+
+
+    StepType (me) returns CString;
+    ---Purpose : gives entity type, read from file
+    --           For a Complex Type Entity, gives the first Type read, each
+    --           "Next" gives its "partial" type
+    -- was C++ : return const
+
+    ReadRecord (me : mutable;
+                SR : StepReaderData; num : Integer; ach : in out Check);
+    ---Purpose : reads data from StepReaderData (i.e. from file), by filling
+    --           StepType and parameters stored in the UndefinedContent
+
+    WriteParams (me; SW : in out StepWriter);
+    ---Purpose : write data to StepWriter, taken from UndefinedContent
+
+    GetFromAnother (me : mutable; other : like me;
+    	    	    TC : in out CopyTool);
+    ---Purpose : reads another UndefinedEntity from StepData
+
+    FillShared     (me; list : in out EntityIterator from Interface);
+    ---Purpose : Fills the list of shared entities
+
+fields
+
+    thetype : HAsciiString from TCollection;
+    thecont : UndefinedContent;
+    thesub  : Boolean;
+    thenext : UndefinedEntity;  -- for a Multiple Type Entity
+
+end UndefinedEntity;

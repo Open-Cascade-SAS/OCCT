@@ -1,0 +1,46 @@
+-- File:	BRep_Curve3D.cdl
+-- Created:	Tue Jul  6 10:09:31 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Curve3D from BRep inherits GCurve from BRep
+
+	---Purpose: Representation of a curve by a 3D curve.
+
+uses
+    Pnt                 from gp,
+    Location            from TopLoc,
+    Curve               from Geom,
+    CurveRepresentation from BRep
+
+is
+
+    Create(C : Curve    from Geom;
+    	   L : Location from TopLoc) 
+    returns mutable Curve3D from BRep;
+
+    D0(me; U : Real; P : out Pnt from gp);
+	---Purpose: Computes the point at parameter U.
+
+    IsCurve3D(me) returns Boolean
+	 ---Purpose: Returns True.
+    is redefined;
+	
+    Curve3D(me) returns any Curve from Geom
+	---C++: return const &
+    is redefined;
+
+    Curve3D(me : mutable; C : Curve from Geom)
+    is redefined;
+	
+    Copy(me) returns mutable CurveRepresentation from BRep;
+	---Purpose: Return a copy of this representation.
+
+fields
+    
+    myCurve : Curve from Geom;
+
+end Curve3D;

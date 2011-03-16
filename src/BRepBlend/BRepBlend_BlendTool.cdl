@@ -1,0 +1,104 @@
+-- File      : BRepBlend_BlendTool.cdl
+-- Created   : Mon Dec  6 09:49:19 1993
+-- Author    : Jacques GOUSSARD
+---Copyright : Matra Datavision 1993
+
+class BlendTool from BRepBlend
+
+	---Purpose: 
+
+uses 
+     Pnt2d     from gp,
+     State     from TopAbs,
+     HCurve2d from Adaptor2d,
+     HSurface from Adaptor3d,
+     HVertex from Adaptor3d
+
+is
+
+    Project(myclass; P: Pnt2d from gp;
+                     S: HSurface from Adaptor3d ;
+                     C: HCurve2d from Adaptor2d ;
+                     Paramproj: out Real from Standard;
+                     Dist: out Real from Standard)
+
+	---Purpose: Projects the point P on the arc C.
+	--          If the methods returns Standard_True, the projection is
+	--          successful, and Paramproj is the parameter on the arc
+	--          of the projected point, Dist is the distance between
+	--          P and the curve..
+	--          If the method returns Standard_False, Param proj and Dist
+	--          are not significant.
+	--          
+
+	returns Boolean from Standard;
+
+    Inters (myclass; P1,P2: Pnt2d from gp;
+                     S: HSurface from Adaptor3d ;
+                     C: HCurve2d from Adaptor2d ;
+                     Param: out Real from Standard;
+                     Dist: out Real from Standard)
+	returns Boolean from Standard;
+
+    Parameter(myclass; V: HVertex from Adaptor3d; A: HCurve2d from Adaptor2d )
+    
+	---Purpose: Returns the parameter of the vertex V on the edge A.
+    
+	---C++: inline
+    	returns Real from Standard;
+
+
+    Tolerance(myclass; V: HVertex from Adaptor3d; A: HCurve2d from Adaptor2d )
+
+	---Purpose: Returns the parametric tolerance on the arc A
+	--          used to consider that the vertex and another point meet,
+	--          i-e if Abs(Parameter(Vertex)-Parameter(OtherPnt))<=
+	--          Tolerance, the points are "merged".
+
+	---C++: inline
+    	returns Real from Standard;
+
+
+-- Methodes pour Rayon constant, en plus des 2 precedentes
+
+
+    SingularOnUMin(myclass; S:HSurface from Adaptor3d )
+    	returns Boolean from Standard;
+    	---C++: inline
+
+    SingularOnUMax(myclass; S:HSurface from Adaptor3d ) 
+    	returns Boolean from Standard;
+    	---C++: inline
+
+    SingularOnVMin(myclass; S:HSurface from Adaptor3d )
+    	returns Boolean from Standard;
+    	---C++: inline
+
+    SingularOnVMax(myclass; S:HSurface from Adaptor3d )
+    	returns Boolean from Standard;
+    	---C++: inline
+
+    NbSamplesU(myclass; S: HSurface from Adaptor3d ;
+                        u1,u2: Real from Standard)
+        returns Integer from Standard;
+
+    NbSamplesV(myclass; S: HSurface from Adaptor3d ;
+                        v1,v2: Real from Standard)
+        returns Integer from Standard;
+
+
+    Bounds(myclass; C: HCurve2d from Adaptor2d ; 
+                    Ufirst,Ulast: out Real from Standard);
+
+	---Purpose: Returns the parametric limits on the arc C.
+	--          These limits must be finite : they are either
+	--          the real limits of the arc, for a finite arc,
+	--          or a bounding box for an infinite arc.
+
+
+    CurveOnSurf(myclass; C: HCurve2d from Adaptor2d ; S: HSurface from Adaptor3d )
+	---C++: inline
+    	returns HCurve2d from Adaptor2d ;
+
+
+end BlendTool;

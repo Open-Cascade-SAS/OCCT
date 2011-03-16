@@ -1,0 +1,32 @@
+-- File:	PGeom_Plane.cdl
+-- Created:	Tue Mar  2 10:23:54 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Plane from PGeom inherits ElementarySurface from PGeom
+
+        ---Purpose : This class describes the infinite plane.
+        --         
+	---See Also : Plane from Geom.
+
+
+uses Ax3      from gp
+
+is
+
+
+  Create returns mutable Plane from PGeom;
+	---Purpose: Create a plane with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition : Ax3 from gp)
+    	returns mutable Plane from PGeom;
+	---Purpose: Creates a Plane with these field values.
+    	---Level: Internal 
+
+
+end;
+

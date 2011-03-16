@@ -1,0 +1,312 @@
+-- File:        TDataStd_NamedData.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class NamedData from TDataStd inherits Attribute from TDF
+
+    ---Purpose: Contains a named data.
+
+uses 
+ 
+    GUID from Standard,
+    Attribute from TDF,
+    Label from TDF,
+    RelocationTable from TDF,
+    ExtendedString from TCollection,
+    HArray1OfInteger from TColStd,
+    HArray1OfReal from TColStd,
+    DataMapOfStringInteger from TColStd,
+    DataMapOfStringReal from TDataStd,
+    DataMapOfStringString from TDataStd,
+    DataMapOfStringByte from TDataStd,
+    DataMapOfStringHArray1OfInteger from TDataStd,
+    DataMapOfStringHArray1OfReal from TDataStd, 
+    HDataMapOfStringInteger from TDataStd,
+    HDataMapOfStringReal from TDataStd,
+    HDataMapOfStringString from TDataStd,
+    HDataMapOfStringByte from TDataStd,
+    HDataMapOfStringHArray1OfInteger from TDataStd,
+    HDataMapOfStringHArray1OfReal from TDataStd
+
+is 
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const & 
+    ---Purpose: Returns the ID of the named data attribute.
+    returns GUID from Standard;
+
+    Set (myclass; label : Label from TDF)
+    ---Purpose: Finds or creates a named data attribute.
+    returns NamedData from TDataStd;
+
+    
+    ---Category: NamedData methods
+    --           =================
+
+    Create
+    returns mutable NamedData from TDataStd; 
+
+
+    ---Category: Integers
+    --           ========    
+
+    HasIntegers (me)
+    ---Purpose: Returns true if at least one named integer value is  
+    --          kept in the attribute. 
+    ---C++: inline
+    returns Boolean from Standard;      
+
+    HasInteger (me;
+    	    	theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains specified by Name  
+    --          integer value.
+    returns Boolean from Standard; 
+     
+--    InitIntegers(me : mutable)     
+--    ---Purpose: Initializes internal container of Integers (to be used before access).
+--    --          Returns True if succeed.
+--    returns Boolean from Standard;
+
+    GetInteger (me : mutable;
+    	    	theName : ExtendedString from TCollection)
+    ---Purpose: Returns the integer value specified by the Name.
+    --          It returns 0 if internal map doesn't contain the specified 
+    --          integer (use HasInteger() to check before).
+    returns Integer from Standard;
+
+    SetInteger (me : mutable;
+    	    	theName : ExtendedString from TCollection;
+		theInteger : Integer from Standard);
+    ---Purpose: Defines a named integer.
+    --          If the integer already exists, it changes its value to <theInteger>.
+
+    GetIntegersContainer (me : mutable)
+    ---Purpose: Returns the internal container of named integers.
+    ---C++: return const &
+    returns DataMapOfStringInteger from TColStd;
+
+    ChangeIntegers (me : mutable;
+    	    	 theIntegers : DataMapOfStringInteger from TColStd);
+    ---Purpose: Replace the container content by new content of the <theIntegers>.
+
+
+    ---Category: Reals
+    --           =====    
+
+    HasReals (me)
+    ---Purpose: Returns true if at least one named real value is  
+    --          kept in the attribute. 
+    ---C++: inline
+    returns Boolean from Standard;
+
+    HasReal (me;
+    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains a real specified by Name.
+    returns Boolean from Standard;
+
+    GetReal (me : mutable;
+    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns the named real.
+    --          It returns 0.0 if there is no such a named real
+    --          (use HasReal()).
+    returns Real from Standard;
+
+    SetReal (me : mutable;
+    	     theName : ExtendedString from TCollection;
+	     theReal : Real from Standard);
+    ---Purpose: Defines a named real.
+    --          If the real already exists, it changes its value to <theReal>.
+
+    GetRealsContainer (me: mutable)
+    ---Purpose: Returns the internal container of named reals.
+    ---C++: return const &
+    returns DataMapOfStringReal from TDataStd;
+
+    ChangeReals (me : mutable;
+    	      theReals : DataMapOfStringReal from TDataStd);
+    ---Purpose: Replace the container content by new content of the <theReals>.
+
+    ---Category: Strings
+    --           =======    
+
+    HasStrings (me)
+    ---Purpose: Returns true if there are some named strings in the attribute. 
+    ---C++: inline    
+    returns Boolean from Standard;
+
+    HasString (me;
+    	       theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains this named string.
+    returns Boolean from Standard;
+
+    GetString (me : mutable;
+    	       theName : ExtendedString from TCollection)
+    ---Purpose: Returns the named string.
+    --          It returns an empty string if there is no such a named string
+    --          (use HasString()).
+    ---C++: return const &
+    returns ExtendedString from TCollection;
+
+    SetString (me : mutable;
+    	     theName : ExtendedString from TCollection;
+	     theString : ExtendedString from TCollection);
+    ---Purpose: Defines a named string.
+    --          If the string already exists, it changes its value to <theString>.
+
+    GetStringsContainer (me : mutable)
+    ---Purpose: Returns the internal container of named strings.
+    ---C++: return const &
+    returns DataMapOfStringString from TDataStd;
+
+    ChangeStrings (me : mutable;
+    	        theStrings : DataMapOfStringString from TDataStd);
+    ---Purpose: Replace the container content by new content of the <theStrings>.
+
+
+    ---Category: Bytes (unsigned chars)
+    --           ======================
+
+    HasBytes (me)
+    ---Purpose: Returns true if there are some named bytes in the attribute. 
+    ---C++: inline    
+    returns Boolean from Standard;
+
+    HasByte (me;
+    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains this named byte.
+    returns Boolean from Standard;
+
+    GetByte (me : mutable;
+    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns the named byte.
+    --          It returns 0 if there is no such a named byte
+    --          (use HasByte()).
+    returns Byte from Standard;
+
+    SetByte (me : mutable;
+    	     theName : ExtendedString from TCollection;
+	     theByte : Byte from Standard);
+    ---Purpose: Defines a named byte.
+    --          If the byte already exists, it changes its value to <theByte>.
+
+    GetBytesContainer (me : mutable)
+    ---Purpose: Returns the internal container of named bytes.
+    ---C++: return const &
+    returns DataMapOfStringByte from TDataStd;
+
+    ChangeBytes (me : mutable;
+    	      theBytes : DataMapOfStringByte from TDataStd);
+    ---Purpose: Replace the container content by new content of the <theBytes>.
+
+
+    ---Category: Arrays of integers
+    --           ==================
+
+    HasArraysOfIntegers (me)
+    ---Purpose: Returns true if there are some named arrays of integer values in the attribute. 
+    ---C++: inline    
+    returns Boolean from Standard;
+
+    HasArrayOfIntegers (me;
+    	    	    	theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains this named array of integer values.
+    returns Boolean from Standard;
+
+    GetArrayOfIntegers (me : mutable;
+    	    	    	theName : ExtendedString from TCollection)
+    ---Purpose: Returns the named array of integer values.
+    --          It returns a NULL Handle if there is no such a named array of integers
+    --          (use HasArrayOfIntegers()).
+    ---C++: return const &
+    returns HArray1OfInteger from TColStd;
+
+    SetArrayOfIntegers (me : mutable;
+    	    	        theName : ExtendedString from TCollection;
+		        theArrayOfIntegers : HArray1OfInteger from TColStd);
+    ---Purpose: Defines a named array of integer values.
+    --          If the array already exists, it changes its value to <theArrayOfIntegers>.
+
+    GetArraysOfIntegersContainer (me : mutable)
+    ---Purpose: Returns the internal container of named arrays of integer values.
+    ---C++: return const &
+    returns DataMapOfStringHArray1OfInteger from TDataStd;
+
+    ChangeArraysOfIntegers (me : mutable;
+    	    	    	 theArraysOfIntegers : DataMapOfStringHArray1OfInteger from TDataStd);
+    ---Purpose: Replace the container content by new content of the <theArraysOfIntegers>.
+
+
+    ---Category: Arrays of reals
+    --           ===============
+
+    HasArraysOfReals (me)
+    ---Purpose: Returns true if there are some named arrays of real values in the attribute. 
+    ---C++: inline    
+    returns Boolean from Standard;
+
+    HasArrayOfReals (me;
+    	    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns true if the attribute contains this named array of real values.
+    returns Boolean from Standard;
+
+    GetArrayOfReals (me : mutable;
+    	    	     theName : ExtendedString from TCollection)
+    ---Purpose: Returns the named array of real values.
+    --          It returns a NULL Handle if there is no such a named array of reals
+    --          (use HasArrayOfReals()).
+    ---C++: return const &
+    returns HArray1OfReal from TColStd;
+
+    SetArrayOfReals (me : mutable;
+    	    	     theName : ExtendedString from TCollection;
+		     theArrayOfReals : HArray1OfReal from TColStd);
+    ---Purpose: Defines a named array of real values.
+    --          If the array already exists, it changes its value to <theArrayOfReals>.
+
+    GetArraysOfRealsContainer (me : mutable)
+    ---Purpose: Returns the internal container of named arrays of real values.
+    ---C++: return const &
+    returns DataMapOfStringHArray1OfReal from TDataStd;
+
+    ChangeArraysOfReals (me : mutable;
+    	    	      theArraysOfReals : DataMapOfStringHArray1OfReal from TDataStd);
+    ---Purpose: Replace the container content by new content of the <theArraysOfReals>.
+
+
+    ---Category: Methodes of TDF_Attribute
+    --           =========================
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myIntegers         : HDataMapOfStringInteger from TDataStd;
+    myReals            : HDataMapOfStringReal from TDataStd;
+    myStrings          : HDataMapOfStringString from TDataStd;
+    myBytes            : HDataMapOfStringByte from TDataStd;
+
+    myArraysOfIntegers : HDataMapOfStringHArray1OfInteger from TDataStd;
+    myArraysOfReals    : HDataMapOfStringHArray1OfReal from TDataStd;
+
+end NamedData;

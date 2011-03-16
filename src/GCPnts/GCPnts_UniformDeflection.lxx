@@ -1,0 +1,49 @@
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GCPnts_UniformDeflection::IsDone () const
+{
+  return myDone;
+}
+
+//=======================================================================
+//function : Deflection
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GCPnts_UniformDeflection::Deflection () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+			 "GCPnts_UniformDeflection::Deflection()");
+  return myDeflection;
+}
+
+//=======================================================================
+//function : NbPoints
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer GCPnts_UniformDeflection::NbPoints () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+			 "GCPnts_UniformDeflection::NbPoints()");
+  return myParams.Length();
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GCPnts_UniformDeflection::Parameter
+                      (const Standard_Integer Index) const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, 
+                             "GCPnts_UniformDeflection::Parameter()");
+  return myParams(Index);
+}
+

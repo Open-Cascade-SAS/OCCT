@@ -1,0 +1,175 @@
+-- File:	PDataStd_NamedData.cdl
+-- Created:	Tue Jun 26 14:23:20 2007
+-- Author:	Sergey ZARITCHNY
+--		<szy@friendox>
+---Copyright:	 Open CASCADE 2007
+
+
+class NamedData from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistence of NamedData
+
+uses
+    HExtendedString from PCollection,
+    HArray1OfExtendedString from PColStd, 
+    HArray2OfInteger  from  PColStd, 
+    HArray1OfInteger  from  PColStd, 
+    HArray1OfReal  from  PColStd, 
+    HArray1OfByte  from  PDataStd, 
+    HArray2OfInteger  from TColStd, 
+    HArray1OfHArray1OfInteger from PDataStd, 
+    HArray1OfHArray1OfReal from PDataStd
+is
+
+    Create 
+    returns mutable NamedData from PDataStd;
+
+    Init (me : mutable; theDimension:  HArray2OfInteger  from TColStd);
+    ---Purpose: 6 pairs of (lower, upper) <theDimension> should be  initialized
+    --  if  (upper  -  lower)  ==  0  and (upper  |  lower) == 0, the corresponding  
+    --  array is empty (not requested) 
+    
+    SetIntDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : Integer from Standard); 
+     
+    IntDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns Integer from Standard;        
+     
+    SetRealDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : Real from Standard); 
+     
+    RealDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns Real from Standard;        
+         
+    SetStrDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : HExtendedString from PCollection); 
+     
+    StrDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns HExtendedString from PCollection; 
+     
+    SetByteDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : Byte from Standard); 
+     
+    ByteDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns Byte from Standard;        
+     
+    SetArrIntDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : HArray1OfInteger from PColStd); 
+     
+    ArrIntDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns HArray1OfInteger from PColStd;
+
+    SetArrRealDataItem (me: mutable; 
+    	      index : Integer from Standard; 
+    	      key   : HExtendedString from PCollection; 
+    	      value : HArray1OfReal from PColStd); 
+     
+    ArrRealDataItemValue(me; 
+	      index : Integer from Standard; 
+	      key   : out HExtendedString from PCollection) 
+    returns HArray1OfReal from PColStd;
+
+
+    LowerI (me) 
+    returns Integer from Standard;      
+
+    UpperI (me) 
+    returns Integer from Standard; 
+     
+    LowerR (me) 
+    returns Integer from Standard;      
+
+    UpperR (me) 
+    returns Integer from Standard;     
+
+    LowerS (me) 
+    returns Integer from Standard;      
+
+    UpperS (me) 
+    returns Integer from Standard; 
+
+    LowerB (me) 
+    returns Integer from Standard;      
+
+    UpperB (me) 
+    returns Integer from Standard;  
+     
+    LowerAI (me) 
+    returns Integer from Standard;      
+
+    UpperAI (me) 
+    returns Integer from Standard;  
+
+    LowerAR (me) 
+    returns Integer from Standard;      
+
+    UpperAR (me) 
+    returns Integer from Standard; 
+     
+    HasIntegers (me)
+    ---Purpose: Returns true if at least one named integer value is kept. 
+    returns Boolean from Standard;  
+     
+    HasReals (me)
+    ---Purpose: Returns true if at least one named real value is kept. 
+    returns Boolean from Standard; 
+     
+    HasStrings (me)
+    ---Purpose: Returns true if at least one named string value is kept.
+    returns Boolean from Standard; 
+     
+    HasBytes (me)
+    ---Purpose: Returns true if at least one named byte value is kept.
+    returns Boolean from Standard; 
+     
+    HasArraysOfIntegers (me)
+    ---Purpose: Returns true if at least one named array of integer values is kept.
+    returns Boolean from Standard; 
+     
+    HasArraysOfReals (me)
+    ---Purpose: Returns true if at least one named array of real values is kept.
+    returns Boolean from Standard;
+     
+fields
+ 
+    myDimensions     :  HArray2OfInteger  from  PColStd; 
+    
+    myIntKeys        :  HArray1OfExtendedString from PColStd;  
+    myIntValues      :  HArray1OfInteger from PColStd;   
+    
+    myRealKeys       :  HArray1OfExtendedString from PColStd;  
+    myRealValues     :  HArray1OfReal from PColStd;    
+    
+    myStrKeys        :  HArray1OfExtendedString from PColStd; 
+    myStrValues      :  HArray1OfExtendedString from PColStd; 
+     
+    myByteKeys       :  HArray1OfExtendedString from PColStd;   
+    myByteValues     :  HArray1OfByte from PDataStd;    
+     
+    myArrIntKeys     :  HArray1OfExtendedString from PColStd;  
+    myArrIntValues   :  HArray1OfHArray1OfInteger from PDataStd; 
+     
+    myArrRealKeys    :  HArray1OfExtendedString from PColStd;  
+    myArrRealValues  :  HArray1OfHArray1OfReal from PDataStd;  
+    
+end NamedData;

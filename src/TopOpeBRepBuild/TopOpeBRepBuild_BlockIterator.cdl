@@ -1,0 +1,38 @@
+-- File:	TopOpeBRepBuild_BlockIterator.cdl
+-- Created:	Thu Feb 25 18:01:55 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class BlockIterator from TopOpeBRepBuild 
+
+---Purpose: Iterator on the elements of a block.
+
+raises
+
+    NoMoreObject from Standard
+
+is
+
+    Create returns BlockIterator from TopOpeBRepBuild;
+    Create(Lower,Upper : Integer from Standard) 
+    returns BlockIterator from TopOpeBRepBuild;
+    
+    Initialize(me : in out) is static;
+    ---C++: inline
+    More(me) returns Boolean from Standard is static;
+    ---C++: inline
+    Next(me : in out) raises NoMoreObject is static;
+    ---C++: inline
+    Value(me) returns Integer from Standard is static;
+    ---C++: inline
+    Extent(me) returns Integer from Standard is static;
+    ---C++: inline
+
+fields
+
+    myLower : Integer from Standard;
+    myUpper : Integer from Standard;
+    myValue : Integer from Standard;
+
+end BlockIterator from TopOpeBRepBuild;

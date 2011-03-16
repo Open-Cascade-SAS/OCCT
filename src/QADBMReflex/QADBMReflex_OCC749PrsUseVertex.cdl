@@ -1,0 +1,35 @@
+-- File:	QADBMReflex_OCC749PrsUseVertex.cdl
+-- Created:	Mon Oct  7 15:01:08 2002
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2002
+
+class OCC749PrsUseVertex from QADBMReflex inherits OCC749Prs from QADBMReflex
+
+uses
+    PresentationManager3d from PrsMgr,
+    Presentation          from Prs3d,
+    Selection             from SelectMgr,
+    Color                 from Quantity,
+    MaterialAspect        from Graphic3d
+
+is
+    Create( Reflection     : Boolean from Standard;
+    	    InteriorColor  : Color from Quantity;
+    	    EdgeColor      : Color from Quantity;
+    	    EdgeColor2     : Color from Quantity;
+    	    XCount         : Integer from Standard;
+    	    YCount         : Integer from Standard;
+    	    BoxSize        : Integer from Standard;
+    	    MaterialAspect : MaterialAspect from Graphic3d;
+    	    Material       : Boolean from Standard;
+    	    Timer          : Boolean from Standard )
+     returns mutable OCC749PrsUseVertex from QADBMReflex;
+
+    Compute(me                   : mutable;
+            aPresentationManager : PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation from Prs3d;
+    	    aMode                : Integer from Standard = 0)
+    is redefined virtual protected;
+
+end OCC749PrsUseVertex;

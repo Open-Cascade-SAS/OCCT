@@ -1,0 +1,396 @@
+-- File:        BinObjMgt_Persistent.cdl
+-- Created:     Wed Oct 30 09:17:21 2002
+-- Author:      Michael SAZONOV
+--              <msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2002
+
+class Persistent from BinObjMgt
+    ---Purpose: Binary persistent representation of an object.
+    --          Really it is used as a buffer for read/write an object.
+    --          
+    --          It takes care of Little/Big endian by inversing bytes
+    --          in objects of standard types (see FSD_FileHeader.hxx
+    --          for the default value of DO_INVERSE).
+
+uses
+    Integer             from Standard,
+    Address             from Standard,
+    OStream             from Standard,
+    IStream             from Standard,
+    SequenceOfAddress   from TColStd,
+    AsciiString         from TCollection,
+    ExtendedString      from TCollection,
+    Label               from TDF,
+    Data                from TDF,
+    PChar               from BinObjMgt,
+    PExtChar            from BinObjMgt,
+    PInteger            from BinObjMgt,
+    PReal               from BinObjMgt,
+    PShortReal          from BinObjMgt,
+    PByte               from BinObjMgt
+
+is
+
+    Create
+        returns Persistent from BinObjMgt;
+        ---Purpose: Empty constructor
+
+    -------------------------------------------
+    ---Category: API for attribute drivers
+    -------------------------------------------
+
+    PutCharacter (me : in out; theValue : Character from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutByte (me : in out; theValue : Byte from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutExtCharacter (me : in out; theValue : ExtCharacter from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutInteger (me : in out; theValue : Integer from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutBoolean (me : in out; theValue : Boolean from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: inline
+        ---C++: return &
+
+    PutReal (me : in out; theValue : Real from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutShortReal (me : in out; theValue : ShortReal from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutCString (me : in out; theValue : CString from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+        ---Purpose: Offset in output buffer is not aligned
+
+    PutAsciiString (me : in out; theValue : AsciiString from TCollection)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+        ---Purpose: Offset in output buffer is word-aligned
+
+    PutExtendedString (me : in out; theValue : ExtendedString from TCollection)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+        ---Purpose: Offset in output buffer is word-aligned
+
+    PutLabel (me : in out; theValue : Label from TDF)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutGUID (me : in out; theValue : GUID from Standard)
+        returns like me;
+        ---C++: alias operator <<
+        ---C++: return &
+
+    PutCharArray (me : in out; theArray : PChar from BinObjMgt;
+                               theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of char, theLength is the number of elements
+
+    PutByteArray (me : in out; theArray : PByte from BinObjMgt;
+                               theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of unsigned chars, theLength is the number of elements
+
+    PutExtCharArray (me : in out; theArray : PExtChar from BinObjMgt;
+                                  theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of ExtCharacter, theLength is the number of elements
+
+    PutIntArray (me : in out; theArray : PInteger from BinObjMgt;
+                              theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of int, theLength is the number of elements
+
+    PutRealArray (me : in out; theArray : PReal from BinObjMgt;
+                               theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of double, theLength is the number of elements
+
+    PutShortRealArray (me : in out; theArray : PShortReal from BinObjMgt;
+                                    theLength: Integer from Standard)
+        returns like me;
+        ---C++: return &
+        ---Purpose: Put C array of float, theLength is the number of elements
+
+    GetCharacter (me : in; theValue : out Character from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetByte (me : in; theValue : out Byte from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetExtCharacter (me : in; theValue : out ExtCharacter from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetInteger (me : in; theValue : out Integer from Standard)
+        returns like me; 
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetBoolean (me : in; theValue : out Boolean from Standard)
+        returns like me; 
+        ---C++: alias operator >>
+        ---C++: inline
+        ---C++: return const &
+
+    GetReal (me : in; theValue : out  Real from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetShortReal (me : in; theValue : out ShortReal from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetAsciiString (me : in; theValue : out AsciiString from TCollection)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetExtendedString (me : in; theValue : out ExtendedString from TCollection)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetLabel (me : in; theDS : Data from TDF;
+                       theValue : out Label from TDF)
+        returns like me;
+        ---C++: return const &
+
+    GetGUID (me : in; theValue : out GUID from Standard)
+        returns like me;
+        ---C++: alias operator >>
+        ---C++: return const &
+
+    GetCharArray (me : in; theArray : PChar from BinObjMgt;
+                           theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of char, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    GetByteArray (me : in; theArray : PByte from BinObjMgt;
+                           theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of unsigned chars, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    GetExtCharArray (me : in; theArray : PExtChar from BinObjMgt;
+                              theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of ExtCharacter, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    GetIntArray (me : in; theArray : PInteger from BinObjMgt;
+                          theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of int, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    GetRealArray (me : in; theArray : PReal from BinObjMgt;
+                           theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of double, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    GetShortRealArray (me : in; theArray : PShortReal from BinObjMgt;
+                                theLength: Integer from Standard)
+        returns like me;
+        ---C++: return const &
+        ---Purpose: Get C array of float, theLength is the number of elements;
+        --          theArray must point to a 
+        --          space enough to place theLength elements
+
+    Position (me) returns Integer from Standard;
+        ---C++: inline
+        ---Purpose: Tells the current position for get/put
+
+    SetPosition (me; thePos : Integer from Standard)
+        returns Boolean from Standard;
+        ---C++: inline
+        ---Purpose: Sets the current position for get/put.
+        --          Resets an error state depending on the validity of thePos.
+        --          Returns the new state (value of IsOK())
+
+    Truncate (me : in out);
+        ---C++: inline
+        ---Purpose: Truncates the buffer by current position,
+        --          i.e. updates mySize
+
+    IsError (me) returns Boolean from Standard;
+        ---C++: inline
+        ---C++: alias operator !
+        ---Purpose: Indicates an error after Get methods or SetPosition
+
+    IsOK (me) returns Boolean from Standard;
+        ---C++: inline
+        ---C++: alias "operator Standard_Boolean () const { return IsOK(); }"
+        ---Purpose: Indicates a good state after Get methods or SetPosition
+
+    -------------------------------------------
+    ---Category: API for retrieval/storage driver
+    -------------------------------------------
+
+    Init (me: in out);
+        ---Purpose: Initializes me to reuse again
+
+    SetId (me:out; theId: Integer from Standard)
+        is static;
+        ---C++: inline
+        ---Purpose: Sets the Id of the object
+
+    SetTypeId (me:out; theId: Integer from Standard)
+        is static;
+        ---C++: inline
+        ---Purpose: Sets the Id of the type of the object
+
+    Id (me) returns Integer from Standard
+        is static;
+        ---C++: inline
+        ---Purpose: Returns the Id of the object
+
+    TypeId (me) returns Integer from Standard
+        is static;
+        ---C++: inline
+        ---Purpose: Returns the Id of the type of the object
+
+    Length (me) returns Integer from Standard
+        is static;
+        ---C++: inline
+        ---Purpose: Returns the length of data
+
+    Write (me: in out; theOS: in out OStream from Standard)
+        returns OStream from Standard is static;
+        ---C++: return &
+        ---Purpose: Stores <me> to the stream.
+        --          inline Standard_OStream& operator<< (Standard_OStream&,
+        --          BinObjMgt_Persistent&) is also available
+
+    Read (me: in out; theIS: in out IStream from Standard)
+        returns IStream from Standard is static;
+        ---C++: return &
+        ---Purpose: Retrieves <me> from the stream.
+        --          inline Standard_IStream& operator>> (Standard_IStream&,
+        --          BinObjMgt_Persistent&) is also available
+
+    Destroy (me: in out);
+        ---C++: alias ~
+        ---Purpose: Frees the allocated memory;
+        --          This object can be reused after call to Init
+
+    -------------------------------------------
+    ---Category: Private methods
+    -------------------------------------------
+
+    alignOffset (me; theSize: Integer from Standard;
+                     toClear: Boolean from Standard = Standard_False)
+        is private;
+        ---C++: inline
+        ---Purpose: Aligns myOffset to the given size;
+        --          enters the next piece if the end of the current one is reached;
+        --          toClear==true means to fill unused space by 0
+
+    prepareForPut (me: in out; theSize: Integer from Standard)
+        returns Integer from Standard is private;
+        ---C++: inline
+        ---Purpose: Prepares the room for theSize bytes;
+        --          returns the number of pieces except for the current one
+        --          are to be occupied
+
+    incrementData (me: in out; theNbPieces: Integer from Standard)
+        is private;
+        ---Purpose: Allocates theNbPieces more pieces
+
+    noMoreData (me; theSize: Integer from Standard)
+        returns Boolean from Standard is private;
+        ---C++: inline
+        ---Purpose: Checks if there is no more data of the given size starting
+        --          from the current position in myData
+
+    putArray (me : in out; theArray : Address from Standard;
+                           theSize  : Integer from Standard)
+        is private;
+        ---Purpose: Puts theLength bytes from theArray
+
+    getArray (me : in; theArray : Address from Standard;
+                       theSize  : Integer from Standard)
+        is private;
+        ---Purpose: Gets theLength bytes into theArray
+
+    inverseExtCharData (me : in out;
+                        theIndex, theOffset, theSize : Integer from Standard)
+        is private;
+        ---Purpose: Inverses bytes in the data addressed by the given values
+
+    inverseIntData (me : in out;
+                        theIndex, theOffset, theSize : Integer from Standard)
+        is private;
+        ---Purpose: Inverses bytes in the data addressed by the given values
+
+    inverseRealData (me : in out;
+                        theIndex, theOffset, theSize : Integer from Standard)
+        is private;
+        ---Purpose: Inverses bytes in the data addressed by the given values
+
+    inverseShortRealData (me : in out;
+                        theIndex, theOffset, theSize : Integer from Standard)
+        is private;
+        ---Purpose: Inverses bytes in the data addressed by the given values
+
+fields
+    -- Sequence of pieces of data; the 1st piece is as follows:
+    --   (int) [0] the TypeId
+    --   (int) [1] the Id
+    --   (int) [2] the length of data of the object in bytes
+    --   the remainder is for data of the object
+    myData              : SequenceOfAddress from TColStd;
+    -- Current position: the piece index (start from 1) and offset (start from 0)
+    myIndex             : Integer from Standard;
+    myOffset            : Integer from Standard;
+    -- The size of filled data
+    mySize              : Integer from Standard;
+    myIsError           : Boolean from Standard;
+
+end Persistent;

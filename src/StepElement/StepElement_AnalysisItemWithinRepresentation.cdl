@@ -1,0 +1,53 @@
+-- File:	StepElement_AnalysisItemWithinRepresentation.cdl
+-- Created:	Thu Dec 12 17:28:59 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class AnalysisItemWithinRepresentation from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity AnalysisItemWithinRepresentation
+
+uses
+    HAsciiString from TCollection,
+    RepresentationItem from StepRepr,
+    Representation from StepRepr
+
+is
+    Create returns AnalysisItemWithinRepresentation from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       aDescription: HAsciiString from TCollection;
+                       aItem: RepresentationItem from StepRepr;
+                       aRep: Representation from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+    Item (me) returns RepresentationItem from StepRepr;
+	---Purpose: Returns field Item
+    SetItem (me: mutable; Item: RepresentationItem from StepRepr);
+	---Purpose: Set field Item
+
+    Rep (me) returns Representation from StepRepr;
+	---Purpose: Returns field Rep
+    SetRep (me: mutable; Rep: Representation from StepRepr);
+	---Purpose: Set field Rep
+
+fields
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection;
+    theItem: RepresentationItem from StepRepr;
+    theRep: Representation from StepRepr;
+
+end AnalysisItemWithinRepresentation;

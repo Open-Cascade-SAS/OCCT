@@ -1,0 +1,121 @@
+--Copyright:      Matra Datavision 1993
+-- File:          Quantity_Period.cdl
+-- Created:       January 4th, 1993
+-- Author:        J.P. BOUDIER - J.P. TIRAULT
+--
+
+class Period from Quantity
+
+    	---Purpose: Manages date intervals. For example, a Period object
+    	-- gives the interval between two dates.
+    	-- A period is expressed in seconds and microseconds.
+
+inherits Storable from Standard
+
+raises PeriodDefinitionError
+
+is
+
+  Create ( dd, hh, mn, ss : Integer ; mis , mics : Integer = 0)
+          returns Period
+	  raises  PeriodDefinitionError;
+    	---Purpose: Creates a Period
+    	--          With:      0 <= dd
+    	--                     0 <= hh 
+    	--                     0 <= mn 
+    	--                     0 <= ss 
+    	--                     0 <= mis
+    	--                     0 <= mics 
+   
+  Create ( ss : Integer; mics : Integer = 0 ) 
+          returns Period
+	  raises  PeriodDefinitionError;
+    	---Purpose: Creates a Period with a number of seconds and microseconds.
+    	--  Exceptions
+    	-- Quantity_PeriodDefinitionError:
+    	-- -   if the number of seconds expressed either by:
+    	--   -   dd days, hh hours, mn minutes and ss seconds, or
+    	--   -   Ss
+    	-- is less than 0.
+    	-- -   if the number of microseconds expressed either by:
+    	--   -   mis milliseconds and mics microseconds, or
+    	--   -   Mics    
+    	-- is less than 0.
+
+  Values (me ; dd, hh, mn, ss, mis, mics : out Integer) is static;
+    	---Purpose: Decomposes this period into a number of days,hours,
+    	--          minutes,seconds,milliseconds and microseconds
+    	--          Example of return values:
+    	--          2 days, 15 hours, 0 minute , 0 second
+    	--          0 millisecond and 0 microsecond
+
+  Values (me; ss , mics : out Integer) is static;
+    	---Purpose: Returns the number of seconds in Ss and the
+    	-- number of remainding microseconds in Mics of this period.
+   	-- Example of return values: 3600 seconds and 0 microseconds
+
+  SetValues (me : out; dd,hh, mn, ss : Integer;  mis, mics : Integer = 0) 
+     is static;
+    	---Purpose: Assigns to this period the time interval defined
+    	--    -   with dd days, hh hours, mn minutes, ss
+    	--   seconds, mis (defaulted to 0) milliseconds and
+    	--   mics (defaulted to 0) microseconds; or
+        
+  SetValues (me : out; ss : Integer ; mics : Integer = 0 ) is static ;
+    	---Purpose: Assigns to this period the time interval defined
+    	-- -   with Ss seconds and Mics (defaulted to 0) microseconds.
+	--  Exceptions
+    	-- Quantity_PeriodDefinitionError:
+    	-- -   if the number of seconds expressed either by:
+    	--   -   dd days, hh hours, mn minutes and ss seconds, or
+    	--   -   Ss
+    	-- is less than 0.
+    	-- -   if the number of microseconds expressed either by:
+    	--   -   mis milliseconds and mics microseconds, or
+    	--   -   Mics    
+    	-- is less than 0.
+    
+  Subtract (me ; anOther : Period) returns Period is static;
+    	---Purpose: Subtracts one Period from another and returns the difference.
+    	---C++: alias operator -
+
+  Add (me ; anOther : Period) returns Period is static;
+    	---Purpose: Adds one Period to another one.
+    	---C++: alias operator +
+
+
+  IsEqual (me ; anOther : Period) returns Boolean is static ;
+    	---Purpose: Returns TRUE if both <me> and <other> are equal.
+    	---C++: alias operator ==
+
+  IsShorter (me ; anOther : Period) returns Boolean is static;
+    	---Purpose: Returns TRUE if <me> is shorter than <other>.
+    	---C++: alias operator <
+
+  IsLonger (me ; anOther : Period) returns Boolean is static;
+    	---Purpose: Returns TRUE if <me> is longer then <other>.
+    	---C++: alias operator >
+      
+  IsValid (myclass ; dd, hh, mn, ss : Integer ; mis , mics : Integer = 0)
+          returns Boolean;
+    	---Purpose: Checks the validity of a Period in form (dd,hh,mn,ss,mil,mic)
+    	--          With:      0 <= dd
+    	--                     0 <= hh 
+    	--                     0 <= mn 
+    	--                     0 <= ss 
+    	--                     0 <= mis
+    	--                     0 <= mics 
+
+  IsValid (myclass ; ss : Integer ; mics : Integer = 0)
+          returns Boolean;
+    	---Purpose: Checks the validity of a Period in form (ss,mic)
+    	--          With:      0 <= ss
+    	--                     0 <= mics 
+
+ fields
+  mySec         : Integer;   
+  myUSec        : Integer;   
+
+end Period from Quantity;
+
+

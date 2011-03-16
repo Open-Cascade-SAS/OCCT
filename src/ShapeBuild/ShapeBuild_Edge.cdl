@@ -1,0 +1,136 @@
+-- File:	ShapeBuild_Edge.cdl
+-- Created:	Tue Jun  9 11:11:14 1998
+-- Author:	data exchange team
+--		<det@toctox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Edge from ShapeBuild 
+
+    ---Purpose: This class provides low-level operators for building an edge
+    --          3d curve, copying edge with replaced vertices etc.
+
+uses
+    Trsf2d   from gp,
+    Curve    from Geom,
+    Surface  from Geom,
+    Curve    from Geom2d,
+    Location from TopLoc,
+    Vertex   from TopoDS,
+    Face     from TopoDS,
+    Edge     from TopoDS
+
+is
+
+    CopyReplaceVertices (me; edge: Edge from TopoDS; V1, V2: Vertex from TopoDS)
+    returns Edge from TopoDS;
+        ---Purpose: Copy edge and replace one or both its vertices to a given
+        --          one(s). Vertex V1 replaces FORWARD vertex, and V2 - REVERSED,
+        --          as they are found by TopoDS_Iterator. 
+        --          If V1 or V2 is NULL, the original vertex is taken
+
+    CopyRanges (me; toedge, fromedge: Edge from TopoDS;
+    	    	    alpha: Real = 0;
+    	    	    beta: Real = 1);
+	---Purpose: Copies ranges for curve3d and all common pcurves from 
+        --          edge <fromedge> into edge <toedge>. 
+    
+    SetRange3d (me; edge: Edge from TopoDS; first, last : Real);
+    	---Purpose: Sets range on 3d curve only.
+	
+    CopyPCurves (me; toedge, fromedge: Edge from TopoDS);
+	---Purpose: Makes a copy of pcurves from edge <fromedge> into edge
+        --          <toedge>. Pcurves which are already present in <toedge>,
+	--          are replaced by copies, other are copied. Ranges are also
+	--          copied.
+	
+    Copy (me; edge: Edge from TopoDS; sharepcurves: Boolean = Standard_True) 
+    returns Edge from TopoDS;
+	---Purpose: Make a copy of <edge> by call to CopyReplaceVertices()
+	--          (i.e. construct new TEdge with the same pcurves and vertices).
+	--          If <sharepcurves> is False, pcurves are also replaced by 
+	--          their copies with help of method CopyPCurves
+    
+    RemovePCurve (me; edge: Edge from TopoDS; face: Face from TopoDS);
+    	---Purpose : Removes the PCurve(s) which could be recorded in an Edge for
+    	--           the given Face
+
+    RemovePCurve (me; edge: Edge from TopoDS; surf: Surface from Geom);
+    	---Purpose : Removes the PCurve(s) which could be recorded in an Edge for
+    	--           the given Surface
+
+    RemovePCurve (me; edge: Edge from TopoDS; surf: Surface from Geom;
+    	    	      loc: Location from TopLoc);
+    	---Purpose : Removes the PCurve(s) which could be recorded in an Edge for
+    	--           the given Surface, with given Location
+    
+    ReplacePCurve (me; edge: Edge from TopoDS; pcurve: Curve from Geom2d;
+    	    	       face: Face from TopoDS);
+    	---Purpose : Replace the PCurve in an Edge for the given Face
+	--           In case if edge is seam, i.e. has 2 pcurves on that face,
+	--           only pcurve corresponding to the orientation of the edge is 
+        --           replaced
+
+    ReassignPCurve (me; edge: Edge from TopoDS; 
+    	    	    	old, sub: Face from TopoDS)
+    returns Boolean;    
+        ---Purpose: Reassign edge pcurve lying on face <old> to another face <sub>. 
+	--          If edge has two pcurves on <old> face, only one of them will be 
+        --          reassigned, and other will left alone. Similarly, if edge already 
+        --          had a pcurve on face <sub>, it will have two pcurves on it.
+	--          Returns True if succeeded, False if no pcurve lying on <old> found.
+    
+    TransformPCurve(me; pcurve: Curve  from Geom2d; 
+    	    	    	trans : Trsf2d from gp;
+			uFact : Real;
+    	    	    	aFirst: in out Real;
+    	    	    	aLast : in out Real)
+    returns Curve from Geom2d;
+    	---Purpose: Transforms the PCurve with given matrix and affinity U factor. 
+
+    RemoveCurve3d (me; edge: Edge from TopoDS);
+    	---Purpose : Removes the Curve3D recorded in an Edge
+
+    BuildCurve3d (me; edge: Edge from TopoDS) returns Boolean;
+    	---Purpose: Calls BRepTools::BuildCurve3D
+	---Returns: True if curve computed OK, False if any error occured
+	
+	
+	---Extension of BRepAPI_MakeEdge
+	
+    MakeEdge (me; edge : out Edge from TopoDS;
+    	    	  curve: Curve from Geom;
+    	    	  L    : Location from TopLoc);
+    	---Purpose: Makes edge with curve and location
+
+    MakeEdge (me; edge  : out Edge from TopoDS;
+    	    	  curve : Curve from Geom;
+    	    	  L     : Location from TopLoc;
+                  p1, p2: Real);
+    	---Purpose: Makes edge with curve, location and range [p1, p2]
+
+    MakeEdge (me; edge  : out Edge from TopoDS;
+                  pcurve: Curve from Geom2d;
+                  face  : Face from TopoDS) ;
+    	---Purpose: Makes edge with pcurve and face
+
+    MakeEdge (me; edge  : out Edge from TopoDS;
+                  pcurve: Curve from Geom2d;
+                  face  :Face from TopoDS; 
+    	          p1, p2: Real) ;
+    	---Purpose: Makes edge with pcurve, face and range [p1, p2]
+
+    MakeEdge (me; edge  : out Edge from TopoDS;
+                  pcurve: Curve from Geom2d;
+                  S     : Surface from Geom;
+                  L     : Location from TopLoc) ;
+    	---Purpose: Makes edge with pcurve, surface and location
+
+    MakeEdge (me; edge  : out Edge from TopoDS;
+                  pcurve: Curve from Geom2d;
+                  S     : Surface from Geom;
+                  L     : Location from TopLoc;
+                  p1, p2: Real) ;
+    	---Purpose: Makes edge with pcurve, surface, location and range [p1, p2]
+	
+end Edge;

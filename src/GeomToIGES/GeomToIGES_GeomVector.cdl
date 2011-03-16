@@ -1,0 +1,53 @@
+-- File:	GeomToIGES_GeomVector.cdl
+-- Created:	Fri Nov 18 11:33:11 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+class GeomVector from GeomToIGES inherits GeomEntity from GeomToIGES
+
+    ---Purpose: This class implements the transfer of the Vector from Geom
+    --          to IGES . These can be :
+    --          . Vector
+    --              * Direction
+    --              * VectorWithMagnitude
+  
+uses
+ 
+    Vector               from Geom,
+    VectorWithMagnitude  from Geom,
+    Direction            from Geom,
+    Direction            from IGESGeom,
+    GeomEntity           from GeomToIGES
+     
+is 
+    
+    Create returns GeomVector from GeomToIGES;
+
+
+    Create(GE : GeomEntity from GeomToIGES)  
+    	 returns GeomVector from GeomToIGES;
+    ---Purpose : Creates a tool GeomVector ready to run and sets its
+    --         fields as GE's.
+
+    TransferVector   (me    : in out;
+                      start : Vector from Geom)
+    	 returns mutable Direction from IGESGeom;
+    ---Purpose :  Transfert  a  GeometryEntity which  answer True  to  the
+    --            member : BRepToIGES::IsGeomVector(Geometry).  If this
+    --            Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferVector   (me    : in out;
+                      start : VectorWithMagnitude from Geom)
+    	 returns mutable Direction from IGESGeom;
+
+
+    TransferVector   (me    : in out;
+                      start : Direction from Geom)
+    	 returns mutable Direction from IGESGeom;
+
+
+end GeomVector;
+
+

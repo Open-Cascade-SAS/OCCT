@@ -1,0 +1,34 @@
+-- File:	BinMDocStd_XLinkDriver.cdl
+-- Created:	Thu May 13 15:27:23 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+class XLinkDriver from BinMDocStd inherits ADriver from BinMDF
+
+        ---Purpose: XLink attribute Driver.
+
+uses
+    MessageDriver    from CDM,
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    Attribute        from TDF
+
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable XLinkDriver from BinMDocStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF
+    	is redefined;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard is redefined;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt)
+    	is redefined;
+
+end XLinkDriver;

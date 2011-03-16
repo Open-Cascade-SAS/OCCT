@@ -1,0 +1,71 @@
+-- File:	Select2D_SensitiveBox.cdl
+-- Created:	Tue Jan 31 13:57:07 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+
+class SensitiveBox from Select2D 
+inherits SensitiveEntity from Select2D
+
+	---Purpose: defines a Sensitive Box (inside or boundary)
+
+uses
+    Pnt2d from gp,
+    Box2d from Bnd,
+    ListOfBox2d from SelectBasics,    
+    EntityOwner from SelectBasics,
+    TypeOfSelection
+
+is
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    Center       : Pnt2d from gp;
+    	    Height,Width : Real from Standard;
+    	    Type         : TypeOfSelection = Select2D_TOS_INTERIOR)
+    returns mutable SensitiveBox;
+    	---Purpose: Constructs a sensitive box object defined by the
+    	-- owner OwnerId, the center point Center, the height
+    	-- Height, the width Width, and the selection type Type.
+    	-- Type can be:
+    	-- -   interior
+    	-- -   boundary.
+
+    Create (OwnerId             : EntityOwner from SelectBasics;
+    	    Xmin,YMin,XMax,YMax : Real;
+    	    Type         : TypeOfSelection = Select2D_TOS_INTERIOR) 
+    returns mutable SensitiveBox;
+    
+    	---Purpose: Constructs a sensitive box object defined by the
+    	-- owner OwnerId, the coordinates Xmin, YMin, XMax,
+    	-- YMax, and the selection type Type.
+    	-- Xmin, YMin define the minimum point in the lower left
+    	-- hand corner of the box, and   XMax, YMax define the
+    	-- maximum point in the upper right hand corner of the box.
+    	-- Type can be:
+    	-- -   interior
+    	-- -   boundary.    
+
+    Areas   (me:mutable ; aresul : in out ListOfBox2d from SelectBasics) is static;
+    
+    
+    Matches (me   : mutable; 
+    	     X,Y  : Real from Standard;
+    	     aTol : Real from Standard;
+    	     DMin : out Real from Standard)
+    returns Boolean is static;
+    
+    
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+
+
+fields
+
+    mybox    : Box2d from Bnd;
+    mytype   : TypeOfSelection;
+    
+
+end SensitiveBox;

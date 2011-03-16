@@ -1,0 +1,28 @@
+-- File:	StepGeom_TrimmingMember.cdl
+-- Created:	Thu Mar 27 15:44:34 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class TrimmingMember  from StepGeom    inherits SelectReal  from StepData
+
+    ---Purpose : For immediate members of TrimmingSelect, i.e. :
+    --           ParameterValue (a Real)
+
+uses CString
+
+is
+
+    Create returns mutable TrimmingMember;
+
+    HasName (me) returns Boolean  is redefined;
+    -- returns True
+
+    Name (me) returns CString  is redefined;
+    -- allways returns PARAMETER_VALUE
+
+    SetName (me : mutable; name : CString)  returns Boolean  is redefined;
+    -- does nothing (only one case) and returns True
+
+end TrimmingMember;

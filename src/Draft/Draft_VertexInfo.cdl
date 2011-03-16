@@ -1,0 +1,92 @@
+-- File:	Draft_VertexInfo.cdl
+-- Created:	Wed Aug 31 16:47:03 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+class VertexInfo from Draft
+
+	---Purpose: 
+
+uses Pnt                       from gp,
+     Edge                      from TopoDS,
+     ListOfShape               from TopTools,
+     ListOfReal                from TColStd,
+     ListIteratorOfListOfShape from TopTools
+
+raises DomainError  from Standard,
+       NoMoreObject from Standard
+
+is
+
+    Create
+    
+    	returns VertexInfo from Draft;
+	
+	
+    Add(me: in out; E: Edge from TopoDS)
+    
+    	is static;
+
+
+    Geometry(me)
+    
+    	returns Pnt from gp
+	is static;
+	---C++: return const&
+
+
+    Parameter(me: in out; E: Edge from TopoDS)
+    
+    	returns Real from Standard
+	raises DomainError from Standard
+	is static;
+
+
+    InitEdgeIterator(me: in out)
+
+    	is static;
+
+    
+    Edge(me)
+    	returns Edge from TopoDS
+	is static;
+	---C++: return const&
+
+
+    NextEdge(me: in out)
+    
+    	raises NoMoreObject from Standard
+    	is static;
+
+
+    MoreEdge(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+
+    ChangeGeometry(me: in out)
+    
+    	returns Pnt from gp
+	is static;
+	---C++: return &
+
+
+    ChangeParameter(me: in out; E: Edge from TopoDS)
+    
+    	returns Real from Standard
+	is static;
+	---C++: return &
+
+
+fields
+
+    myGeom    : Pnt  from gp;
+    myEdges   : ListOfShape from TopTools;
+    myParams  : ListOfReal  from TColStd;
+    myItEd    : ListIteratorOfListOfShape from TopTools;
+
+end VertexInfo;

@@ -1,0 +1,128 @@
+-- File:	BRepPrimAPI_MakePrism.cdl
+-- Created:	Tue Oct 12 11:26:48 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+ 
+-- Modified by skv - Fri Mar  4 15:50:09 2005
+-- Add methods for supporting history.
+
+class MakePrism from BRepPrimAPI inherits MakeSweep from BRepPrimAPI
+
+	---Purpose: Describes functions to build linear swept topologies, called prisms.
+    	-- A prism is defined by:
+    	-- -   a basis shape, which is swept, and
+    	-- -   a sweeping direction, which is:
+    	--   -   a vector for finite prisms, or
+    	--   -   a direction for infinite or semi-infinite prisms.
+    	-- The basis shape must not contain any solids.
+    	-- The profile generates objects according to the following rules:
+    	-- -   Vertices generate Edges
+    	-- -   Edges generate Faces.
+    	-- -   Wires generate Shells.
+    	-- -   Faces generate Solids.
+    	-- -   Shells generate Composite Solids
+    	-- A MakePrism object provides a framework for:
+    	-- -   defining the construction of a prism,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+	          
+
+uses
+    Prism      from BRepSweep,
+    Shape      from TopoDS,
+    ListOfShape from TopTools,
+    Edge       from TopoDS,
+    Vec        from gp,
+    Dir        from gp
+
+is
+
+
+    Create (S    : Shape from TopoDS;
+    	    V    : Vec from gp;
+    	    Copy : Boolean from Standard = Standard_False;
+            Canonize: Boolean from Standard = Standard_True)
+        ---Purpose: Builds the prism of base S and vector V. If C is true,
+        --          S is copied. If Canonize is true then generated surfaces
+        --          are attempted to be canonized in simple types
+	---Level: Public
+    returns MakePrism from BRepPrimAPI;
+
+
+    Create (S         : Shape from TopoDS;
+    	    D         : Dir from gp;
+	    Inf       : Boolean from Standard = Standard_True;
+    	    Copy      : Boolean from Standard = Standard_False;
+            Canonize  : Boolean from Standard = Standard_True)
+	---Purpose: Builds a semi-infinite or an infinite prism of base S.
+        --          If Inf is true the prism  is infinite, if Inf is false
+        --          the prism is semi-infinite (in the direction D).  If C
+        --          is true S is copied (for semi-infinite prisms).
+        --          If Canonize is true then generated surfaces
+        --          are attempted to be canonized in simple types
+	---Level: Public
+    returns MakePrism from BRepPrimAPI;
+
+
+    Prism(me) returns Prism from BRepSweep
+	---Purpose: Returns the internal sweeping algorithm.
+	--          
+	---C++: return const &
+	---Level: Advanced
+    is static;
+    
+
+    Build(me : in out)
+	---Purpose: Builds the resulting shape (redefined from MakeShape).
+	---Level: Public  
+    is redefined;
+    
+
+    FirstShape (me : in out)
+    ---Purpose: Returns the  TopoDS  Shape of the bottom of the prism.
+    returns Shape from TopoDS;
+
+
+    LastShape (me : in out)
+    	---Purpose: Returns the TopoDS Shape of the top of the prism.
+        -- In the case of a finite prism, FirstShape returns the
+    	-- basis of the prism, in other words, S if Copy is false;
+    	-- otherwise, the copy of S belonging to the prism.
+    	-- LastShape returns the copy of S translated by V at the
+    	-- time of construction.
+    returns Shape from TopoDS;
+
+
+    Generated (me: in out; S : Shape from TopoDS)
+        ---Purpose: Returns ListOfShape from TopTools.
+        ---C++: return const &	
+    returns ListOfShape from TopTools
+    is redefined;
+ 
+-- Modified by skv - Fri Mar  4 15:50:09 2005 Begin
+-- Add methods for supporting history. 
+
+    FirstShape (me : in out; theShape : Shape from TopoDS)
+    	    ---Purpose: Returns the TopoDS Shape of the bottom  of the  prism.
+    	    --          generated  with  theShape (subShape of the  generating shape).
+    returns Shape from TopoDS
+    is static;
+
+
+    LastShape (me : in out; theShape : Shape from TopoDS)
+    ---Purpose: Returns the  TopoDS  Shape of the top  of  the  prism.
+    --          generated  with  theShape (subShape of the  generating shape).
+    returns Shape from TopoDS
+    is static;
+ 
+
+-- Modified by skv - Fri Mar  4 15:50:09 2005 End
+
+
+fields
+
+    myPrism : Prism from BRepSweep;
+
+end MakePrism;

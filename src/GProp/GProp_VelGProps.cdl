@@ -1,0 +1,56 @@
+-- File:	GProp_VelGProps.cdl
+-- Created:	Wed Dec  2 16:14:27 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class VelGProps from GProp  inherits GProps
+
+        --- Purpose :
+        --  Computes the global properties of a geometric solid 
+        --  (3D closed region of space) 
+        --  The solid can be elementary(definition in the gp package) 
+
+
+uses   	Cone     from gp,
+	Cylinder from gp,
+        Pnt      from gp,
+	Sphere   from gp,
+	Torus    from gp
+
+
+is
+
+
+  Create returns VelGProps;
+
+  
+  Create (S : Cylinder; Alpha1, Alpha2, Z1, Z2 : Real; VLocation : Pnt)   
+     returns VelGProps;
+
+
+  Create (S : Cone; Alpha1, Alpha2, Z1, Z2 : Real; VLocation : Pnt) 
+     returns VelGProps;
+
+
+  Create (S : Sphere; Teta1, Teta2, Alpha1, Alpha2 : Real; VLocation : Pnt)
+     returns VelGProps;
+
+
+  Create (S : Torus; Teta1, Teta2, Alpha1, Alpha2 : Real; VLocation : Pnt)
+     returns VelGProps;
+
+
+  SetLocation(me : in out ;VLocation :Pnt);
+  
+  Perform(me : in out;S : Cylinder; Alpha1, Alpha2, Z1, Z2 : Real);
+
+  Perform(me : in out;S : Cone; Alpha1, Alpha2, Z1, Z2 : Real);
+
+  Perform(me : in out;S : Sphere; Teta1, Teta2, Alpha1, Alpha2 : Real);
+
+  Perform(me : in out;S : Torus; Teta1, Teta2, Alpha1, Alpha2 : Real);
+
+end VelGProps;
+

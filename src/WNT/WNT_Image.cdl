@@ -1,0 +1,46 @@
+-- File:	WNT_Image.cdl
+-- Created:	Th Mar 28 09:48:57 1996
+-- Author:	PLOTNIKOV Eugeny
+--		<eugeny@maniax>
+---Copyright:	 Matra Datavision 1996
+
+
+class Image from WNT inherits TShared from MMgt
+
+	---Purpose: Internal class for image management
+
+ uses
+
+    Handle from Aspect
+
+ is
+
+    Create ( aBitmap : Handle from Aspect; aHashCode : Integer from Standard )
+     returns mutable Image from WNT;
+    	---Purpose: Creates a class.
+
+    Destroy ( me : mutable ) is virtual;
+	---Level:   Public
+	---Purpose: Destroys all ressources attached to the Image
+    ---C++:     alias ~
+
+    HBITMAP ( me ) returns Handle from Aspect;
+    ---Level:   Public
+    ---Purpose: Returns bitmap handle
+    ---C++:     inline
+
+    Image ( me ) returns Address from Standard;
+    ---Level:   Public
+    ---Purpose: Returns pointer to internal structure
+    ---C++:     inline
+
+ fields
+
+    myImage    : Address from Standard is protected;
+    myHashCode : Integer from Standard is protected;
+
+ friends
+ 
+    class ImageManager from WNT
+
+end Image;

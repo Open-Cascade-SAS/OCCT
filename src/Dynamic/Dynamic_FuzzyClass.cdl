@@ -1,0 +1,204 @@
+-- File:	Dynamic_FuzzyClass.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class FuzzyClass from Dynamic
+
+inherits
+
+    TShared from MMgt    
+
+	---Purpose: This class is the root class to dynamically define
+	--          objects    of  a   given type    but  with various
+	--          definitions. This root class contains a  parameter
+	--          list which describes in the definition context all
+	--          the useful information and in the instance context
+	--          only the redefined  values. This class is deferred
+	--          because no instance has to be created.
+
+
+    uses
+
+    CString from Standard,
+    Integer from Standard,
+    Real    from Standard,
+    Boolean from Standard,
+    OStream from Standard,
+    Parameter     from Dynamic,
+    ParameterNode from Dynamic,
+    AsciiString   from TCollection
+
+is
+
+    Initialize;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates a FuzzyClass.
+    
+    Type(me) returns AsciiString from TCollection
+    
+    ---Level: Public 
+    
+    ---Purpose: This  deferred method must   returns  the type of  the
+    --          object. If the instance is of the type FuzzyDefinition
+    --          the method simply  returns the field <thetype>. If the
+    --          instance is of the type FuzzyInstance the method calls
+    --          the Type method on the true definition.
+    
+    is deferred;
+    
+    FirstParameter(me) returns ParameterNode from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns the  head of the  list of parameters.  For the
+    --          FuzzyDefinition class  this method returns the head of
+    --          the exaustive list  of parameters defining the  object
+    --          and for the FuzzyInstance it  just returns the head of
+    --          the overloaded values.
+    
+    is static;
+    
+    Parameter(me ; aparameter : CString from Standard) returns Boolean from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns true if there is a parameter with <aparameter> 
+    --          as name, false otherwise.
+    
+    is static;
+    
+    Parameter(me : mutable ; aparameter : any Parameter from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  another parameter <aparameter> to the sequence of
+    --          parameters.
+    
+    is static;
+    
+    Parameter(me : mutable ; aparameter : CString  from Standard; avalue : Boolean from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  to the instance <me>  the parameter <aparameter>
+    --          with the boolean value <avalue>.
+    
+    is virtual;
+
+    Parameter(me : mutable ; aparameter : CString from Standard; avalue : Integer from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  to the instance <me>  the parameter <aparameter>
+    --          with the integer value <avalue>.
+    
+    is virtual;
+    
+    Parameter(me : mutable ; aparameter : CString from Standard; avalue : Real from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the real value <avalue>.
+    
+    is virtual;
+    
+    Parameter(me : mutable ; aparameter : CString  from Standard; astring : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the string <astring>.
+
+    is virtual;
+    
+    Parameter(me : mutable ; aparameter : CString from Standard; anobject : any Transient)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  to the  instance  <me>  the parameter <aparameter>
+    --          with the object value <anobject>.
+
+    is virtual;
+    
+    Value(me ; aparameter : CString from Standard;
+    	        avalue : out Boolean from Standard) returns Boolean from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns   True, if there   is a parameter <aparameter>
+    --          previously stored  in the instance   <me> and there is
+    --          the corresponding boolean value in the output argument
+    --          <avalue>, False otherwise.
+
+    is virtual;    
+    
+    Value(me ; aparameter : CString from Standard; 
+               avalue : out Integer from Standard)  
+    returns Boolean from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns True,   if  there is  a   parameter <aparameter>
+    --          previously stored in  the  instance  <me> and there is
+    --          the corresponding integer value in the output argument
+    --          <avalue>, False otherwise.
+
+    is virtual;    
+    
+    Value(me ; aparameter : CString from Standard;
+               avalue : out Real) 
+    returns Boolean from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns True,   if  there  is a   parameter <aparameter>
+    --          previously stored in the  instance <me>  and  there is
+    --          the corresponding  real value   in the output argument
+    --          <avalue>, False otherwise.
+    
+    is virtual;    
+    
+    Value(me ; aparameter : CString from Standard; avalue : out AsciiString from TCollection)  
+    returns Boolean from Standard  
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns True, if  there   is  a parameter   <aparameter>
+    --          previously stored  in the  instance <me> and  there is
+    --          the  corresponding  string  in  the  output   argument
+    --          <avalue>, False otherwise.
+
+    is virtual;    
+    
+    Value(me ; aparameter : CString from Standard; avalue : out any Transient) 
+    returns Boolean from Standard
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns  True,  if  there is  a   parameter <aparameter>
+    --          previously stored  in the instance <me> and   there is
+    --          the corresponding object value  in  the output argument
+    --          <avalue>, False otherwise.
+    
+    is virtual;
+    
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+
+    is virtual;    
+    
+fields
+
+    thefirstparameternode : ParameterNode from Dynamic;
+
+end FuzzyClass;

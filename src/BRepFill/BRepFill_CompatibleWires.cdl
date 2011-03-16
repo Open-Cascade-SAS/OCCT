@@ -1,0 +1,119 @@
+-- File:	BRepFill_CompatibleWires.cdl
+-- Created:	Thu Jul  2 16:47:35 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+---Copyright:	 Matra Datavision 1998
+
+
+class CompatibleWires from BRepFill
+
+	---Purpose: Constructs a sequence of Wires agreed each other 
+	--          so that the surface passing through these sections
+	--           is not twisted
+
+uses
+
+    Edge from TopoDS, 
+    SequenceOfShape from TopTools,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape  from TopTools
+    
+raises
+    ConstructionError from Standard,
+    NoSuchObject      from Standard
+
+is
+
+    Create returns CompatibleWires from BRepFill;
+
+    Create ( Sections  :  SequenceOfShape     from TopTools)
+    returns CompatibleWires from BRepFill;
+
+    Init ( me    : in out;
+    	   Sections  :  SequenceOfShape     from TopTools)
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    SetPercent ( me    : in out;    percent  :  Real   =  0.01)
+    is static;
+    
+    Perform (me : in out; 
+    	     WithRotation  :  Boolean  =  Standard_True)
+	---Purpose: Performs  CompatibleWires According  to  the orientation
+	--          and the origin of  each other
+    raises
+    	ConstructionError from Standard
+    is static;
+        
+    IsDone ( me) 
+    returns Boolean from Standard
+    is static;
+
+
+
+    Shape(me) returns SequenceOfShape from TopTools
+	---Purpose: returns the generated sequence.
+	---C++ : return const &
+    is static;
+    
+    GeneratedShapes (me ; SubSection : Edge from TopoDS)
+        ---Purpose: Returns   the  shapes  created  from   a  subshape
+        --          <SubSection> of a section.
+        --          
+        ---C++ : return const &          
+    returns ListOfShape from TopTools
+    is static;			 
+
+    Generated (me)
+    	---C++: return const  &
+    returns DataMapOfShapeListOfShape from TopTools
+    is static;
+    
+    SameNumberByPolarMethod (me : in out; 
+    	     WithRotation  :  Boolean  =  Standard_True)
+	   ---Purpose:  Insert cutting  points  on  closed wires to  have same
+	   --          number of edges. The sequence of shapes must
+	   --          be a sequence of wires.
+    is static private;
+
+    SameNumberByACR (me : in out;  report  : Boolean from Standard )
+	   ---Purpose:  Insert cutting  points  on  open wires to  have same
+	   --          number of edges. The sequence of shapes must
+	   --          be a sequence of wires.
+    is static private;
+
+    ComputeOrigin  (me : in out;  polar  : Boolean from Standard )
+	   ---Purpose:  Computes  origins and orientation  on closed wires to
+	   --          avoid twisted results. The sequence of shapes must
+	   --          be a sequence of wires. <polar> must be true  
+	   --          if SameNumberByPolarMethod was used before. 
+    is static private;
+
+    SearchOrigin (me : in  out)
+	   ---Purpose:  Computes  origins and orientation  on open wires to
+	   --          avoid twisted results. The sequence of shapes must
+	   --          be a sequence of wires. 
+    
+    is static private;
+    
+fields
+
+    myInit      : SequenceOfShape from TopTools;
+    myWork      : SequenceOfShape from TopTools;
+    myPercent   : Real   from Standard;
+    myDegen1    : Boolean   from Standard;
+    myDegen2    : Boolean   from Standard;
+    myIsDone    : Boolean   from Standard;
+    myMap       : DataMapOfShapeListOfShape from TopTools; 
+
+end CompatibleWires;
+
+
+
+
+
+
+
+
+

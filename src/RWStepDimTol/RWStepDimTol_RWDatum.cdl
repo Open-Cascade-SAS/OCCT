@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWDatum.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWDatum from RWStepDimTol
+
+    ---Purpose: Read & Write tool for Datum
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    Datum from StepDimTol
+
+is
+    Create returns RWDatum from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : Datum from StepDimTol);
+	---Purpose: Reads Datum
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: Datum from StepDimTol);
+	---Purpose: Writes Datum
+
+    Share (me; ent : Datum from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWDatum;

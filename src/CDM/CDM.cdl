@@ -1,0 +1,59 @@
+-- File:        CDM.cdl
+-- Created:     Tue May  6 10:39:52 1997
+-- Author:      Jean-Louis Frenkel, Remi Lequette
+--              <rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:    Matra Datavision 1997
+
+package CDM
+
+
+uses TCollection,TColStd,Resource
+
+is
+
+    enumeration CanCloseStatus is CCS_OK, CCS_NotOpen, CCS_UnstoredReferenced,CCS_ModifiedReferenced,CCS_ReferenceRejection
+    end CanCloseStatus from CDM;
+
+
+    class MetaData;
+
+    deferred class MessageDriver;
+
+    deferred class Document;
+
+    class ReferenceIterator;
+    
+    class NullMessageDriver; 
+    ---Purpose: a MessageDriver that writes nowhere.
+
+    class COutMessageDriver;
+    ---Purpose: aMessageDriver for output to COUT (only ASCII strings)
+
+---Category: classes to manager automatic naming of documents.
+
+    private alias NamesDirectory is DataMapOfStringInteger from TColStd;
+    ---Purpose: this map will allows to get a directory object from a name.
+
+    private class PresentationDirectory instantiates DataMap from TCollection 
+    ---Purpose: this map will allows to get a directory object from a name.
+        (ExtendedString from TCollection,
+         Document from CDM,
+         ExtendedString from TCollection);
+         
+    private pointer DocumentPointer to Document from CDM;
+    private class Reference;    
+
+    private class ListOfReferences instantiates List from TCollection(Reference from CDM);
+    deferred class Application;
+    
+    private class MetaDataLookUpTable instantiates DataMap from TCollection(ExtendedString from TCollection, MetaData from CDM, ExtendedString from TCollection);
+         
+         
+---Category: reusable classes
+
+    class DocumentHasher instantiates MapHasher from TCollection(Document from CDM);
+    class MapOfDocument instantiates Map from TCollection(Document from CDM, DocumentHasher from CDM);
+    class ListOfDocument instantiates List from TCollection(Document from CDM);
+    class StackOfDocument instantiates Stack from TCollection(Document from CDM);
+
+end CDM;

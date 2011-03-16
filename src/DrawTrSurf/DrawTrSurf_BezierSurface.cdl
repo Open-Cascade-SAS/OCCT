@@ -1,0 +1,75 @@
+-- File:	BezierSurface.cdl
+-- Created:	Fri May 22 10:41:09 1992
+-- Author:	Jean Claude VAUTHIER
+--		<jcv@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+
+class BezierSurface 
+
+from DrawTrSurf
+
+inherits Surface from DrawTrSurf
+
+uses BezierSurface from Geom,
+     Color from Draw,
+     MarkerShape from Draw,
+     Display from Draw,
+     Drawable3D from Draw
+
+is
+
+
+  Create (S : BezierSurface from Geom)
+        --- Purpose :
+        --  creates a drawable Bezier curve from a Bezier curve of 
+        --  package Geom.
+     returns mutable BezierSurface from DrawTrSurf;
+
+
+
+  Create (S : BezierSurface from Geom;
+          NbUIsos, NbVIsos : Integer;
+          BoundsColor, IsosColor, PolesColor : Color from Draw;
+          ShowPoles : Boolean; Discret : Integer;Deflection : Real;
+          DrawMode : Integer)
+     returns mutable BezierSurface from DrawTrSurf;
+
+
+  DrawOn (me; dis : in out Display from Draw)
+     is redefined static;
+
+
+  ShowPoles  (me : mutable)
+     is static;
+
+
+  ClearPoles (me : mutable)
+     is static;
+  
+
+  FindPole(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+           UIndex, VIndex : in out Integer)
+  is static;
+  
+
+  SetPolesColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+
+  PolesColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+    
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+  
+  
+fields
+
+  drawPoles   : Boolean;
+  polesLook  : Color from Draw;
+
+end BezierSurface;

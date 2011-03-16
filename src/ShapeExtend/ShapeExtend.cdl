@@ -1,0 +1,126 @@
+-- File:	ShapeExtend.cdl
+-- Created:	Tue Jul 21 09:12:57 1998
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+package ShapeExtend 
+
+    ---Purpose: This package provides general tools and data structures common
+    --	        for other packages in SHAPEWORKS and extending CAS.CADE
+    --          structures.
+    --          The following items are provided by this package:
+    --          - enumeration Status used for coding status flags in methods 
+    --            inside the SHAPEWORKS
+    --          - enumeration Parametrisation used for setting global parametrisation
+    --            on the composite surface
+    --          - class CompositeSurface representing a composite surface
+    --            made of a grid of surface patches
+    --          - class WireData representing a wire in the form of ordered 
+    --            list of edges
+    --          - class MsgRegistrator for attaching messages to the objects
+    --          - tools for exploring the shapes
+    -- -       tools for creating       new shapes. 
+uses
+
+    TCollection,
+    gp,
+    Geom,
+    GeomAbs,
+    TColStd,
+    TColGeom,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    Message
+    
+is
+
+    enumeration Status is 
+	---Purpose: This enumeration is used in
+	-- ShapeHealing toolkit for representing flags in the
+	-- return statuses of class methods.
+	-- The status is a field of the class which is set by one or
+	-- several methods of that class.
+	-- It is used for reporting about errors and other situations
+	-- encountered during execution of the method.
+	-- There are defined 8 values for DONE and 8 for FAIL flags:
+	--      ShapeExtend_DONE1 ...      ShapeExtend_DONE8, 
+	--      ShapeExtend_FAIL1 ...      ShapeExtend_FAIL8 
+	-- and also enumerations for representing combinations of flags:
+	--      ShapeExtend_OK - no flags at all, 
+	--      ShapeExtend_DONE - any of flags DONEi, 
+	--      ShapeExtend_FAIL - any of flags FAILi. 
+	-- The class that uses statuses provides a method(s) which
+	-- answers whether the flag corresponding to a given
+	-- enumerative value is (are) set:
+	-- Standard_Boolean Status(const ShapeExtend_Status test);
+	-- Note that status can have several flags set simultaneously.
+	-- Status(ShapeExtend_OK) gives True when no flags are set.
+	OK,     --  Nothing done, everything OK
+	DONE1,  --  Something was done, case 1
+	DONE2,  --  Something was done, case 2
+	DONE3,  --  Something was done, case 3
+	DONE4,  --  Something was done, case 4
+	DONE5,  --  Something was done, case 5
+	DONE6,  --  Something was done, case 6
+	DONE7,  --  Something was done, case 7
+	DONE8,  --  Something was done, case 8
+	DONE,   --  Something was done (any of DONE#)
+    	FAIL1,  --  The method failed, case 1
+    	FAIL2,  --  The method failed, case 2
+    	FAIL3,  --  The method failed, case 3
+    	FAIL4,  --  The method failed, case 4
+    	FAIL5,  --  The method failed, case 5
+    	FAIL6,  --  The method failed, case 6
+    	FAIL7,  --  The method failed, case 7
+    	FAIL8,  --  The method failed, case 8
+	FAIL    --  The mathod failed (any of FAIL# occured)
+    end Status;
+
+    enumeration Parametrisation is
+    	---Purpose: Defines kind of global parametrisation on the composite surface
+	Natural, -- each patch of the 1st row and column adds its range, Ui+1 = Ui + URange(i,1), etc.
+	Uniform, -- each patch gives range 1.: Ui = i-1, Vj = j-1
+	Unitary  -- uniform parametrisation with global range [0,1]
+    end Parametrisation;
+    
+    deferred class ComplexCurve;
+
+    class CompositeSurface;
+        ---Purpose: Defines surface composed of grid of connected patches
+
+    class WireData;
+    	---Purpose: Defines data structure for work on a wire as a list of edges
+	
+    class BasicMsgRegistrator;
+    	---Purpose: Abstract class to send messages to the objects
+	
+    	class MsgRegistrator;
+    	    ---Purpose: Collects messages to be attached messages to the objects
+	
+    class Explorer;
+    	---Purpose: Exploring of shapes (compounds)
+	
+    class DataMapOfShapeListOfMsg instantiates DataMap from TCollection
+    	(Shape          from TopoDS,
+         ListOfMsg      from Message,
+         ShapeMapHasher from TopTools);
+    
+    class DataMapOfTransientListOfMsg instantiates DataMap from TCollection
+    	(Transient,
+         ListOfMsg          from Message,
+         MapTransientHasher from TColStd);
+	 
+    Init;
+    	---Purpose: Inits using of ShapeExtend.
+	--          Currently, loads messages output by ShapeHealing algorithms.
+    	    	
+    EncodeStatus ( status: Status from ShapeExtend ) returns Integer;
+    	---Purpose: Encodes status (enumeration) to a bit flag
+
+    DecodeStatus ( flag: Integer; status: Status from ShapeExtend ) returns Boolean;
+    	---Purpose: Tells if a bit flag contains bit corresponding to enumerated status
+
+end ShapeExtend;

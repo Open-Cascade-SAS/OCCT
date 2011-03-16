@@ -1,0 +1,22 @@
+--
+-- File:	ImageUtility_WOKSteps.edl
+-- Author:	Stephane Callegari
+-- History:	13-10-98 : CAL : Creation
+-- Copyright:	Matra Datavision 1998
+--
+
+@ifnotdefined ( %ImageUtility_WOKSteps_EDL) then
+
+  @set %ImageUtility_WOKSteps_EDL = "";
+
+  @if ( %Station == "wnt" ) then
+
+    -- Pas d'ImageUtility sur WNT
+    @set %WOKSteps_ObjGroup  = "";
+    @set %WOKSteps_DepGroup  = "";
+    @set %WOKSteps_LibGroup  = "";
+    @set %WOKSteps_ExecGroup = "";
+
+  @endif;
+
+@endif;

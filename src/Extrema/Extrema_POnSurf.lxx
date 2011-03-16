@@ -1,0 +1,9 @@
+
+inline void Extrema_POnSurf::Parameter ( Standard_Real& U, Standard_Real& V) const
+{
+  U = myU;
+  V = myV;
+}
+
+
+inline const gp_Pnt& Extrema_POnSurf::Value () const { return myP; }

@@ -1,0 +1,44 @@
+-- File:	PGeom2d_Conic.cdl
+-- Created:	Tue Apr  6 17:19:48 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Conic from PGeom2d inherits Curve from PGeom2d
+
+        ---Purpose : Defines the general   characteristics of a  conic
+        --         curve : Ellipse, Circle, Hyperbola, Parabola.
+        --  
+	---See Also : Conic from Geom2d
+
+uses  Ax22d from gp
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+	---Level: Internal 
+
+
+    Initialize(aPosition: Ax22d from gp);
+	---Purpose: Initializes the field position with <aPosition>.
+	---Level: Internal 
+
+
+  Position (me : mutable; aPosition : Ax22d from gp);
+        ---Purpose : Set the value of the field position with <aPosition>.
+	---Level: Internal 
+
+
+  Position (me)   returns Ax22d from gp;
+        ---Purpose : Returns the value of the field <position>.
+	---Level: Internal 
+
+
+fields
+
+  position : Ax22d from gp is protected;
+
+end;

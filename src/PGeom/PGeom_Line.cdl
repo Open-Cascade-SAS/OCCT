@@ -1,0 +1,46 @@
+-- File:	PGeom_Line.cdl
+-- Created:	Mon Feb 22 18:11:04 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Line from PGeom inherits Curve from PGeom
+
+        ---Purpose :   Defines   an   infinite   line.  	   The
+        --         parametrization range is ]-infinite, +infinite[.
+        --         
+	---See Also : Line from Geom.
+
+uses Ax1 from gp
+
+is
+
+
+  Create returns mutable Line;
+        ---Purpose : Creates a line with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition : Ax1 from gp)   returns mutable Line;
+        ---Purpose : Creates   a  line  located    in  3D space   with
+        --         <aPosition>.  The Location   of <aPosition> is  the
+        --         origin of the line.
+    	---Level: Internal 
+
+
+  Position (me : mutable; aPosition : Ax1 from gp);
+        --- Purpose : Set the value of the field position with <aPosition>.
+    	---Level: Internal 
+
+
+  Position (me) returns Ax1 from gp;
+        --- Purpose : Returns the value of the field position.
+    	---Level: Internal 
+
+
+fields
+
+  position : Ax1 from gp;
+
+end;

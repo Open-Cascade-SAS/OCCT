@@ -1,0 +1,53 @@
+-- File:	Line.cdl
+-- Created:	Tue Aug 18 19:56:50 1992
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+private class Line from Hatch
+
+	---Purpose: Stores a Line in the Hatcher. Represented by :
+	--          
+	--          * A Lin2d from gp, the geometry of the line.
+	--          
+	--          * Bounding parameters for the line.
+	--          
+	--          * A sorted List  of Parameters, the  intersections
+	--          on the line.
+
+uses
+    Real                from Standard,
+    Integer             from Standard,
+    Boolean             from Standard,
+    Lin2d               from gp,
+    LineForm            from Hatch,
+    SequenceOfParameter from Hatch
+
+is
+
+    Create;
+    
+    Create(L : Lin2d from gp; T : LineForm from Hatch)
+    returns Line from Hatch;
+    
+    AddIntersection(me       : in out; 
+                    Par1     : Real    from Standard;
+		    Start    : Boolean from Standard;
+                    Index    : Integer from Standard;
+                    Par2     : Real    from Standard;
+    	    	    theToler : Real    from Standard)
+	---Purpose: Insert a new intersection in the sorted list.
+    is static;
+    
+fields
+
+    myLin    : Lin2d               from gp;
+    myForm   : LineForm            from Hatch;
+    myInters : SequenceOfParameter from Hatch;
+
+friends
+    class Hatcher from Hatch
+
+end Line;

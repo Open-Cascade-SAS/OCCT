@@ -1,0 +1,43 @@
+-- File:	GeomToStep_MakeEllipse.cdl
+-- Created:	Fri Sep  2 08:22:18 1994
+-- Author:	Frederic MAUPAS
+--		<fma@minox>
+---Copyright:	 Matra Datavision 1994
+
+
+class MakeEllipse from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Ellipse from Geom, and Circ from gp, and the class
+    --          Ellipse from StepGeom which describes a Ellipse from
+    --          Prostep. 
+  
+uses Elips from gp,
+     Elips2d from gp,
+     Ellipse from Geom,
+     Ellipse from Geom2d,
+     Ellipse from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( C : Elips from gp ) returns MakeEllipse;
+
+Create ( C : Ellipse from Geom ) returns MakeEllipse;
+
+Create ( C : Ellipse from Geom2d ) returns MakeEllipse;
+
+Value (me) returns Ellipse from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+  
+fields
+
+    theEllipse : Ellipse from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeEllipse;
+
+

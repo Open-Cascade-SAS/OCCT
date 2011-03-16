@@ -1,0 +1,5 @@
+#include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.ixx>
+
+
+StepVisual_MechanicalDesignGeometricPresentationRepresentation::StepVisual_MechanicalDesignGeometricPresentationRepresentation ()  {}
+

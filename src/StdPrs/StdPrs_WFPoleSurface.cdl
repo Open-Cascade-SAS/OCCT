@@ -1,0 +1,33 @@
+-- File:	StdPrs_WFPoleSurface.cdl
+-- Created:	Mon Jul 24 16:50:27 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class WFPoleSurface from StdPrs
+
+inherits Root from Prs3d
+    	--- Purpose: The number of lines to be drawn is controlled 
+    	-- by the NetworkNumber of the given Drawer.
+uses
+    Surface      from Adaptor3d,
+    Presentation from Prs3d,
+    Drawer       from Prs3d
+    	
+
+is
+   
+ 
+    Add(myclass; aPresentation: Presentation from Prs3d;  
+    	    	 aSurface     : Surface      from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+    	---Purpose: Adds the surface aSurface to the presentation object aPresentation.
+    	-- The shape's display attributes are set in the attribute manager aDrawer.
+    	-- The surface aSurface is a surface object from
+    	-- Adaptor3d, and provides data from a Geom surface.
+    	-- This makes it possible to use the surface in a geometric algorithm.
+end WFPoleSurface;
+
+
+

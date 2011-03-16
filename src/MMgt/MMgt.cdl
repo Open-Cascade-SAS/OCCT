@@ -1,0 +1,27 @@
+-- File:	MMgt.cdl
+-- Created:	Tue Oct 13 16:47:50 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+package MMgt 
+
+---Purpose:
+--   The package <MMgt> provides storage management facilities, and classes
+--   which can manage their own storage. 
+--
+
+uses Standard
+
+is
+    class StackManager;
+    ---Purpose:
+    --   Facility for stack-based storage management.
+    --   
+    deferred class TShared;
+    ---Purpose:
+    --   Abstract base class providing reference counting for storage 
+    --   allocation and deallocation.
+    --   
+
+end MMgt;

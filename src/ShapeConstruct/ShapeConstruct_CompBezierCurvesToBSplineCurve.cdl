@@ -1,0 +1,72 @@
+-- File:	ShapeConstruct_CompBezierCurvesToBSplineCurve.cdl
+-- Created:	Wed Oct 20 11:54:50 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+class CompBezierCurvesToBSplineCurve from ShapeConstruct 
+
+	---Purpose: Converts a list  of connecting Bezier Curves to  a
+	--          BSplineCurve.
+	--          if possible, the continuity of the BSpline will be 
+	--          increased to more than C0.
+
+uses
+    Array1OfReal            from TColStd,
+    SequenceOfReal          from TColStd,
+    SequenceOfInteger       from TColStd,
+    Array1OfInteger         from TColStd,
+    Array1OfPnt             from TColgp,
+    SequenceOfPnt           from TColgp,
+    SequenceOfArray1OfPoles from Convert
+
+    -------------------------------------------------------------------------
+    --- Don't forget to use the method Perform before accessing the Result.
+    -------------------------------------------------------------------------
+
+raises
+    ConstructionError from Standard
+
+is
+    Create ( AngularTolerance : Real = 1.0e-4 )
+    returns CompBezierCurvesToBSplineCurve from ShapeConstruct;
+
+    AddCurve( me    : in out;
+              Poles : Array1OfPnt from TColgp)
+    is static;
+
+
+    Perform(me: in out)
+    	---Purpose: Computes the algorithm.
+    is static;
+    
+    
+    Degree(me) returns Integer from Standard
+    is static;
+    
+    NbPoles(me) returns Integer from Standard
+    is static;
+    
+    Poles(me; Poles : in out Array1OfPnt from TColgp)
+    is static;
+    
+    NbKnots(me) returns Integer from Standard
+    is static;
+    
+    KnotsAndMults(me;
+                  Knots : in out Array1OfReal    from TColStd;
+		  Mults : in out Array1OfInteger from TColStd)
+    is static;
+    
+    
+fields
+    mySequence          : SequenceOfArray1OfPoles from Convert;
+    CurvePoles          : SequenceOfPnt           from TColgp;
+    CurveKnots          : SequenceOfReal          from TColStd;
+    KnotsMultiplicities : SequenceOfInteger       from TColStd;
+    myDegree            : Integer                 from Standard;
+    myAngular           : Real                    from Standard;   
+    myDone              : Boolean                 from Standard;
+
+end CompBezierCurvesToBSplineCurve;

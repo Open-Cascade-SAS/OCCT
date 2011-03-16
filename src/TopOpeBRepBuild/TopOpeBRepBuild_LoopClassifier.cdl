@@ -1,0 +1,26 @@
+-- File:	TopOpeBRepBuild_LoopClassifier.cdl
+-- Created:	Wed Mar  3 17:29:13 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+deferred class LoopClassifier from TopOpeBRepBuild 
+
+---Purpose: classify loops in order to build Areas
+
+uses
+
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Loop from TopOpeBRepBuild
+    
+is
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRepBuild_LoopClassifier(){Delete() ; }"
+    
+    Compare(me : in out; L1,L2 : Loop from TopOpeBRepBuild) 
+    returns State from TopAbs is deferred;
+    ---Purpose: Returns the state of loop <L1> compared with loop <L2>.
+
+end LoopClassifier from TopOpeBRepBuild;

@@ -1,0 +1,390 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\Common\res\OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\Common\\res\\OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "Toolbar.bmp"
+IDR_UNDOREDO            BITMAP  DISCARDABLE     "UndoRedoTB.bmp"
+IDR_ACTIONS             BITMAP  DISCARDABLE     "ActionsTB.bmp"
+IDR_TB_AIS              BITMAP  MOVEABLE PURE   "AIS_TB.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_UNDOREDO TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_EDIT_UNDO
+    BUTTON      ID_EDIT_REDO
+END
+
+IDR_ACTIONS TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_CREATEBOX
+    BUTTON      ID_CREATECYL
+    BUTTON      ID_CUT
+    BUTTON      ID_MODIFY
+//    BUTTON      ID_DFBR
+END
+
+IDR_TB_AIS TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_OBJECT_WIREFRAME
+    BUTTON      ID_OBJECT_SHADING
+    SEPARATOR
+    BUTTON      ID_OBJECT_COLOR
+    BUTTON      ID_OBJECT_MATERIAL
+    BUTTON      ID_OBJECT_TRANSPARENCY
+    SEPARATOR
+    BUTTON      ID_OBJECT_DELETE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Ocaf...",              ID_APP_ABOUT
+    END
+END
+
+IDR_3DTYPE MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        POPUP "Export"
+        BEGIN
+            MENUITEM "BRep...",                     ID_FILE_EXPORT_BREP
+            MENUITEM SEPARATOR
+            MENUITEM "Image...",                    ID_FILE_EXPORT_IMAGE
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "New Window &3D",              ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About OCAF...",              ID_APP_ABOUT
+    END
+END
+
+IDR_Popup3D MENU DISCARDABLE 
+BEGIN
+    POPUP "BackGround"
+    BEGIN
+        MENUITEM "Background Color...",         ID_Modify_ChangeBackground
+    END
+    POPUP "Object(s)"
+    BEGIN
+        MENUITEM "Delete",                      ID_OBJECT_DELETE
+        MENUITEM "Shading",                     ID_OBJECT_SHADING
+        MENUITEM "Wireframe",                   ID_OBJECT_WIREFRAME
+        MENUITEM "Color...",                    ID_OBJECT_COLOR
+        MENUITEM "Material...",                 ID_OBJECT_MATERIAL
+        POPUP "Material"
+        BEGIN
+            MENUITEM "Aluminium",                   ID_OBJECT_MATERIAL_ALUMINIUM
+
+            MENUITEM "Brass",                       ID_OBJECT_MATERIAL_BRASS
+            MENUITEM "Bronze",                      ID_OBJECT_MATERIAL_BRONZE
+
+            MENUITEM "Chrome",                      ID_OBJECT_MATERIAL_CHROME
+
+            MENUITEM "Copper",                      ID_OBJECT_MATERIAL_COPPER
+
+            MENUITEM "Gold",                        ID_OBJECT_MATERIAL_GOLD
+            MENUITEM "Jade",                        ID_OBJECT_MATERIAL_JADE
+            MENUITEM "Metalized",                   ID_OBJECT_MATERIAL_METALIZED
+
+            MENUITEM "Neon GNC",                    ID_OBJECT_MATERIAL_NEON_GNC
+
+            MENUITEM "Neon PHC",                    ID_OBJECT_MATERIAL_NEON_PHC
+
+            MENUITEM "Obsidian",                    ID_OBJECT_MATERIAL_OBSIDIAN
+
+            MENUITEM "Pewter",                      ID_OBJECT_MATERIAL_PEWTER
+
+            MENUITEM "Plaster",                     ID_OBJECT_MATERIAL_PLASTER
+
+            MENUITEM "Plastic",                     ID_OBJECT_MATERIAL_PLASTIC
+
+            MENUITEM "Satin",                       ID_OBJECT_MATERIAL_SATIN
+            MENUITEM "Shiny plastic",               ID_OBJECT_MATERIAL_SHINY_PLASTIC
+
+            MENUITEM "Silver",                      ID_OBJECT_MATERIAL_SILVER
+
+            MENUITEM "Steel",                       ID_OBJECT_MATERIAL_STEEL
+            MENUITEM "Stone",                       ID_OBJECT_MATERIAL_STONE
+            MENUITEM SEPARATOR
+            MENUITEM "Default",                     ID_OBJECT_MATERIAL_DEFAULT
+
+        END
+        MENUITEM "Transparency...",             ID_OBJECT_TRANSPARENCY
+        MENUITEM SEPARATOR
+        MENUITEM "Modify attributes",           ID_MODIFY
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_NEWBOX DIALOG DISCARDABLE  0, 0, 90, 170
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "     Box parameters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,4,149,38,14
+    PUSHBUTTON      "Cancel",IDCANCEL,45,149,38,14
+    LTEXT           "Name",IDC_STATIC,12,132,24,11
+    EDITTEXT        IDC_NAME,36,130,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_X,36,15,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "X",IDC_STATIC,14,18,8,8
+    EDITTEXT        IDC_Y,36,32,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Y",IDC_STATIC,14,35,8,8
+    EDITTEXT        IDC_Z,36,48,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Z",IDC_STATIC,14,51,8,8
+    GROUPBOX        "Position",IDC_STATIC,4,7,79,59
+    EDITTEXT        IDC_L,36,76,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "L",IDC_STATIC,14,79,8,8
+    EDITTEXT        IDC_H,36,94,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "H",IDC_STATIC,14,97,8,8
+    EDITTEXT        IDC_W,36,110,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "W",IDC_STATIC,14,113,8,8
+    GROUPBOX        "Dimension",IDC_STATIC,4,66,79,61
+END
+
+IDD_NEWCYL DIALOG DISCARDABLE  0, 0, 90, 151
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "  Cylinder parameters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,4,130,38,14
+    PUSHBUTTON      "Cancel",IDCANCEL,45,130,38,14
+    LTEXT           "Name",-1,13,116,24,11
+    EDITTEXT        IDC_NAME,37,114,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_X,36,15,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "X",-1,14,18,8,8
+    EDITTEXT        IDC_Y,36,32,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Y",-1,14,35,8,8
+    EDITTEXT        IDC_Z,36,48,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Z",-1,14,51,8,8
+    GROUPBOX        "Position",-1,4,7,79,59
+    EDITTEXT        IDC_R,36,76,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "R",-1,14,79,8,8
+    EDITTEXT        IDC_H,36,94,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "H",-1,14,97,8,8
+    GROUPBOX        "Dimension",-1,4,67,79,44
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Open CASCADE Company\0"
+            VALUE "FileDescription", "Ocaf MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "Ocaf\0"
+            VALUE "LegalCopyright", "Copyright (C) 2003\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "Ocaf.EXE\0"
+            VALUE "ProductName", "Ocaf Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "OCAF"
+    IDR_3DTYPE              "\nOCAF\nOCAF\nOCAF Files(*.sta)\n.sta\nOcaf.Document\nOCAF  Document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_CREATEBOX            "Create a box using function driver\nBox"
+    ID_CUT                  "Cut operation\nCut"
+    ID_CREATECYL            "Create a cylinder using function driver\nCylinder"
+    ID_MODIFY               "Modify and recompute selected object\nModification"
+//    ID_DFBR                 "Loading DF browser\nData Framework browser"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Ocaf"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

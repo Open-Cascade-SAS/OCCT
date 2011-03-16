@@ -1,0 +1,46 @@
+-- File:	PPrsStd_AISPresentation.cdl
+-- Created:	Thu Jul 8 16:36:22 1999
+-- Author:	Sergey RUIN
+--		<s-ruin@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+class AISPresentation from PPrsStd 
+    inherits Attribute from PDF
+
+	---Purpose: 
+    
+uses    HExtendedString from PCollection
+is
+
+    Create returns mutable AISPresentation from PPrsStd;
+	
+    IsDisplayed(me) returns Boolean from Standard;
+    SetDisplayed(me : mutable; B : Boolean from Standard);
+
+    SetDriverGUID(me: mutable; guid: HExtendedString from PCollection );     
+    GetDriverGUID(me) returns HExtendedString from PCollection; 
+    
+    Color(me) returns Integer from Standard;
+    SetColor(me : mutable; C : Integer from Standard);
+    
+    Transparency(me) returns Real from Standard;
+    SetTransparency(me : mutable; T : Real from Standard);    
+    
+    Material(me) returns Integer from Standard;
+    SetMaterial(me : mutable; M : Integer from Standard);    
+   
+    Width(me) returns Real from Standard;
+    SetWidth(me : mutable; W : Real from Standard);
+    
+    
+fields
+
+    myIsDisplayed         : Boolean              from Standard;
+    myDriverGUID          : HExtendedString      from PCollection; 
+    myTransparency        : Real                 from Standard;
+    myColor               : Integer              from Standard;
+    myMaterial            : Integer              from Standard;
+    myWidth               : Real                 from Standard;
+end AISPresentation;

@@ -1,0 +1,64 @@
+-- File:	Storage_RootData.cdl
+-- Created:	Thu Feb  6 17:00:10 1997
+-- Author:	Kernel
+--		<kernel@parigox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class RootData from Storage
+
+inherits TShared from MMgt
+
+uses SequenceOfAsciiString from TColStd,
+     AsciiString from TCollection,
+     MapOfPers from Storage,
+     HSeqOfRoot from Storage,
+     Error from Storage,
+     Root from Storage
+     
+raises NoSuchObject from Standard
+
+is
+
+    Create returns mutable RootData from Storage;
+    
+    NumberOfRoots(me) returns Integer from Standard;
+    ---Purpose: returns the number of roots.
+
+    AddRoot(me : mutable;  aRoot : Root from Storage);
+    ---Purpose: add a root to <me>. If a root with same name is present, it
+    --          will be replaced by <aRoot>.
+    
+    Roots(me) returns mutable HSeqOfRoot from Storage;
+    
+    Find(me; aName : AsciiString from TCollection) returns mutable Root from Storage;
+    ---Purpose: find a root with name <aName>.
+    
+    IsRoot(me; aName : AsciiString from TCollection) returns Boolean from Standard;
+    ---Purpose: returns Standard_True if <me> contains a root named <aName>
+    
+    RemoveRoot(me : mutable; aName : AsciiString from TCollection);
+    ---Purpose: remove the root named <aName>.
+
+    ErrorStatus(me) returns Error from Storage;
+    ErrorStatusExtension(me) returns AsciiString from TCollection;
+    
+    ClearErrorStatus(me : mutable);
+    
+    -- PRIVATE
+
+    UpdateRoot(me : mutable; aName : AsciiString from TCollection; aPers : mutable Persistent from Standard) 
+    raises NoSuchObject
+    is private;
+
+    SetErrorStatus(me : mutable; anError : Error from Storage) is private;
+    SetErrorStatusExtension(me : mutable; anErrorExt : AsciiString from TCollection) is private;    
+
+    fields
+    
+      myObjects            : MapOfPers from Storage;
+      myErrorStatus        : Error from Storage;
+      myErrorStatusExt     : AsciiString      from TCollection;
+      
+    friends class Schema from Storage
+    
+end;

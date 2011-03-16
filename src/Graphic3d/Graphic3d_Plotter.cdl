@@ -1,0 +1,94 @@
+--
+-- File:	Graphic3d_Plotter.cdl
+-- Created:	Vendredi 18 avril 1997
+-- Author:	JLF, CAL
+--
+---Copyright:	MatraDatavision 1997
+--
+
+deferred class Plotter from Graphic3d inherits TShared from MMgt
+
+	---Version:
+
+	---Purpose: This class allows the definition of a plotter
+
+	---Keywords:
+
+	---Warning:
+	---References:
+
+uses
+
+	DataStructureManager	from Graphic3d
+
+raises
+
+	PlotterDefinitionError	from Graphic3d
+
+is
+
+	Initialize
+	---Level: Public
+	---Purpose: Initialise the constructor of the plotter.
+	--  Warning: Raises InitialisationError if the initialisation
+	--	    of the plotter failed.
+	raises PlotterDefinitionError from Graphic3d;
+	-- if the initialisation of the plotter failed.
+
+	Destroy ( me     : mutable )
+		is virtual;
+	---Level: Public
+	---Purpose: Deletes the plotter <me>.
+	---C++: alias ~
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	BeginPlot ( me		: mutable;
+		    aProjector	: DataStructureManager from Graphic3d )
+        	returns Boolean from Standard
+        	raises PlotterDefinitionError from Graphic3d
+		is virtual;
+        ---Level: Public
+	---Purpose:
+        --  Warning: Returns Standard_True if plotting is enabled in the view.
+        --	    Raises PlotterDefinitionError from Graphic3d
+        --	    if plotting has already started.
+        ---Category: Methods to modify the class definition
+
+	EndPlot ( me	: mutable )
+        	raises PlotterDefinitionError from Graphic3d
+		is virtual;
+        ---Level: Public
+        ---Purpose: Stops the plotting.
+        --  Warning: Raises PlotterDefinitionError from Graphic3d
+        --	    if plotting has not started yet.
+        ---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	PlottingState ( me )
+		returns Boolean from Standard
+		is deferred;
+        ---Level: Public
+        ---Purpose: 
+        ---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_Plotter
+--
+-- Purpose	:	Declaration of variables specific to plotters
+--
+-- Reminder	:	A plotter 
+
+	-- the update display mode
+	MyPlottingState		:	Boolean from Standard is protected;
+
+end Plotter from Graphic3d;

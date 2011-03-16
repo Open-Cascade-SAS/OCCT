@@ -1,0 +1,32 @@
+-- File:	STEPSelections_SelectInstances.cdl
+-- Created:	Tue Mar 23 15:10:13 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectInstances from STEPSelections inherits SelectExplore from IFSelect
+
+	---Purpose: 
+
+uses
+    
+    AsciiString from TCollection,
+    EntityIterator,
+    Graph
+is
+    
+    Create returns mutable SelectInstances;
+
+    RootResult(me; G : Graph) returns EntityIterator;
+
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    returns Boolean;
+    
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Instances"
+    
+    HasUniqueResult (me) returns Boolean is redefined protected;
+
+end SelectInstances;

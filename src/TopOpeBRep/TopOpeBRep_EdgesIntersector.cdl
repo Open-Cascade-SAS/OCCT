@@ -1,0 +1,164 @@
+-- File:	TopOpeBRep_EdgesIntersector.cdl
+-- Created:	Thu Oct 13 11:19:34 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class EdgesIntersector from TopOpeBRep 
+
+uses
+
+    Pnt                 from gp,
+    Orientation         from TopAbs,
+    Shape               from TopoDS,
+    Face                from TopoDS,
+    Edge                from TopoDS,
+    Vertex              from TopoDS,
+    Transition          from TopOpeBRepDS,
+    Config              from TopOpeBRepDS,
+    Curve               from Geom2dAdaptor,
+    Domain              from IntRes2d,
+    IntersectionPoint   from IntRes2d,
+    IntersectionSegment from IntRes2d,
+    Transition          from IntRes2d,
+    GInter              from Geom2dInt,
+    SequenceOfIntersectionPoint   from IntRes2d,
+    SequenceOfIntersectionSegment from IntRes2d,
+    P2Dstatus           from TopOpeBRep,
+    Point2d             from TopOpeBRep,
+    SequenceOfPoint2d   from TopOpeBRep,
+    SurfaceType         from GeomAbs,
+    Surface             from BRepAdaptor,
+    HSurface            from BRepAdaptor,
+    AsciiString         from TCollection,
+    Box from Bnd
+
+is
+
+    Create returns EdgesIntersector from TopOpeBRep;
+    
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~TopOpeBRep_EdgesIntersector(){Delete() ; }"
+    
+    SetFaces(me : in out; F1,F2 : Shape);
+    SetFaces(me : in out; F1,F2 : Shape;B1,B2 : Box from Bnd);
+
+    ForceTolerances(me : in out; Tol1,Tol2 : Real); -- Set myTol1,myTol2
+    Dimension(me : in out; D:Integer);
+    Dimension(me) returns Integer;
+
+    ---Purpose: set working space dimension D = 1 for E &|| W, 2 for E in F
+    Perform(me : in out; E1,E2 : Shape; 
+    	    	    	 ReduceSegments : Boolean = Standard_True);
+    
+    IsEmpty(me : in out) returns Boolean;
+    HasSegment(me) returns Boolean; ---Purpose: true if at least one intersection segment.
+    SameDomain(me) returns Boolean; ---Purpose: = mySameDomain.
+    Edge(me; Index : Integer) returns Shape; ---C++: return const &
+    Curve(me; Index : Integer) returns Curve from Geom2dAdaptor; ---C++: return const &
+    Face(me; Index : Integer) returns Shape; ---C++: return const &
+    Surface(me; Index : Integer) returns Surface from BRepAdaptor; ---C++: return const &
+    SurfacesSameOriented(me) returns Boolean;
+    FacesSameOriented(me) returns Boolean;
+
+    ToleranceMax(me) returns Real;
+    Tolerances(me;tol1,tol2 : out Real); -- = myTol1,myTol2
+    Tolerance2(me) returns Real; -- =  myTol2
+    NbPoints(me) returns Integer; -- = nyNbPoints
+    NbSegments(me) returns Integer; -- = myNbSegments
+    Dump(me:in out;str:AsciiString from TCollection;ie1:Integer = 0;ie2:Integer = 0);
+
+    -- Intersection points
+    InitPoint(me : in out; selectkeep : Boolean = Standard_True);
+    MorePoint(me) returns Boolean;
+    NextPoint(me : in out);
+    Find(me : in out) is private;
+    Points(me) returns SequenceOfPoint2d from TopOpeBRep;---C++: return const &
+    Point(me) returns Point2d from TopOpeBRep;---C++: return const &
+    Point(me;I:Integer) returns Point2d from TopOpeBRep;---C++: return const &
+
+    -- -------
+    -- private
+    -- -------
+
+    ComputeSameDomain(me : in out) returns Boolean is private;
+    ---Purpose: process if current edges can be considered as SameDomain    
+    SetSameDomain(me : in out; B : Boolean) returns Boolean is private;
+    ---Purpose: set field mySameDomain to B and return B value    
+    MakePoints2d(me:in out) is private;
+    ReduceSegments(me:in out) is private;
+    ReduceSegment(me;P1,P2:out Point2d;Pn:out Point2d) returns Boolean is virtual;
+
+    Segment1(me) returns IntersectionSegment from IntRes2d is private; ---C++: return const &
+    IsOpposite1(me) returns Boolean is private;
+    InitPoint1(me : in out) is private;
+    MorePoint1(me) returns Boolean is private;
+    NextPoint1(me : in out) is private;
+    Point1(me) returns IntersectionPoint from IntRes2d is private;---C++: return const &
+    Status1(me) returns P2Dstatus from TopOpeBRep;
+    Transition1(me; Index : Integer; EO : Orientation) returns Transition from TopOpeBRepDS is private;
+    Parameter1(me; Index : Integer) returns Real is private;
+    IsVertex1(me : in out; Index : Integer) returns Boolean is private;
+    Vertex1(me : in out; Index : Integer) returns Shape is private;---C++ : return const &
+    Value1(me) returns Pnt from gp is private;
+    IsPointOfSegment1(me) returns Boolean is private;
+    Index1(me) returns Integer is private;
+    EdgesConfig1(me) returns Config from TopOpeBRepDS is private;
+    ---Purpose: geometric configuration of E1,E2 at current intersection point :
+    -- UNSHGEOMETRY if the edges do not share geometry.
+    -- SAMEORIENTED if the edges share geometry and are same oriented.
+    -- DIFFORIENTED if the edges share geometry and are not same oriented.
+
+
+fields
+
+    myFace1 : Face from TopoDS;
+    myFace2 : Face from TopoDS;
+    mySurface1 : HSurface from BRepAdaptor;
+    mySurface2 : HSurface from BRepAdaptor;
+    mySurfaceType1 : SurfaceType from GeomAbs;
+    mySurfaceType2 : SurfaceType from GeomAbs;
+    mySurfacesSameOriented : Boolean;
+    myFacesSameOriented : Boolean;
+    myDomain1 : Domain from IntRes2d;
+    myDomain2 : Domain from IntRes2d;
+    
+    myEdge1 : Edge from TopoDS;
+    myEdge2 : Edge from TopoDS;
+    myCurve1 : Curve from Geom2dAdaptor;
+    myCurve2 : Curve from Geom2dAdaptor;
+
+    myTol1 : Real;
+    myTol2 : Real;
+    myTolForced : Boolean;
+    myIntersector : GInter  from Geom2dInt;
+    
+    mylpnt : SequenceOfIntersectionPoint   from IntRes2d;
+    mylseg : SequenceOfIntersectionSegment from IntRes2d;    
+    
+    myNbPoints : Integer; -- myIntersector.NbPoints()
+    myNbSegments : Integer; -- myIntersector.Segments()
+
+    myTrueNbPoints : Integer; -- myNbPoints + (2*myNbSegments)
+    myPointIndex : Integer; -- [1..myTrueNbPoints]
+    
+    -- IsVertex() private fields
+    myIsVertexPointIndex : Integer;
+    myIsVertexIndex : Integer; -- value = 0,1,2
+    myIsVertexValue : Boolean;
+    myIsVertexVertex : Vertex  from TopoDS;
+
+    myDimension : Integer;
+
+    -- tangent edges
+    myHasSegment : Boolean;
+    mySameDomain : Boolean;
+
+    myf1surf1F_sameoriented : Boolean;
+    myf2surf1F_sameoriented : Boolean;
+
+    mysp2d : SequenceOfPoint2d from TopOpeBRep;
+    myip2d, mynp2d : Integer;
+    myselectkeep : Boolean;
+    
+end EdgesIntersector from TopOpeBRep;

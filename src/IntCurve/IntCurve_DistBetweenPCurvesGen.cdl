@@ -1,0 +1,101 @@
+-- File:	DistBetweenPCurvesGen.cdl
+-- Created:	Wed Oct 21 16:37:20 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class DistBetweenPCurvesGen from IntCurve (
+    TheCurve        as any;
+    TheCurveTool    as any) -- as CurveTool from IntCurve(TheCurve)
+    
+    
+inherits FunctionSetWithDerivatives from math
+
+
+       ---Purpose: provides a set of 2 function of 2 variables.
+       --             f1(u,v) = X1(u) - X2(v)
+       --             f2(u,v) = Y1(u) - Y2(v)
+       --          where (X1(u),Y1(u)) = ParamCurve1.Value(u)
+       --          and   (X2(v),Y2(v)) = ParamCurve2.Value(v)
+       --          
+       --          The Jacobian Matrix is : 
+       --          
+       --       |   df1   df1  |        |  T1x(u)     - T2x(v) |
+       --       |   ---   ---  |   =    |                      |
+       --       |   du    dv   |        |  T1y(u)     - T2y(v) |
+       --       |              |       
+       --       |              |        
+       --       |   df2   df2  |        
+       --       |   ---   ---  |        
+       --       |   du    dv   |        
+       --       
+       --       where T1(u) = (T1x(u),T1y(u)) is the tangent vector at
+       --             the curve1 at the parameter u.
+       --       and
+       --             T2(u) = (T2x(u),T2y(u)) is the tangent vector at
+       --             the curve2 at the parameter u.
+
+
+       ---Level: Internal 
+
+uses   Vector    from math,
+       Matrix    from math
+
+is 
+
+    Create(curve1: TheCurve; 
+           curve2: TheCurve) 
+    
+    returns DistBetweenPCurvesGen;
+    
+
+    NbVariables(me) 
+    	---Purpose: returns 2.
+    returns Integer from Standard
+    is static;
+
+
+    NbEquations(me)
+    	---Purpose: returns 2.
+    returns Integer from Standard
+    is static;
+    
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is static;
+
+ 
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is static;
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean
+    is static;
+    
+    
+fields 
+    
+    thecurve1 : Address from Standard; --- TheCurve;
+    thecurve2 : Address from Standard; --- TheCurve;
+    
+    
+end DistBetweenPCurvesGen;
+
+

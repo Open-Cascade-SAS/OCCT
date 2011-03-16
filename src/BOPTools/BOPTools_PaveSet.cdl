@@ -1,0 +1,48 @@
+-- File:	BOPTools_PaveSet.cdl
+-- Created:	Thu Feb  8 12:39:32 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class PaveSet from BOPTools 
+
+	---Purpose: 
+    	-- class for storing/sorting paves that   
+    	-- belong to an edge
+
+uses
+    ListOfPave from BOPTools, 
+    Pave       from BOPTools
+
+is 
+    Create 
+    	returns PaveSet from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    ChangeSet(me:out) 
+    	returns ListOfPave from BOPTools; 
+    	---C++:  return & 
+    	---Purpose:  
+    	--- Access to the  list  
+    	---
+    Set(me) 
+    	returns ListOfPave from BOPTools; 
+    	---C++:  return const & 	   
+    	---Purpose:  
+    	--- Access to the  list const 
+    	---
+    Append  (me:out; aPave:Pave from BOPTools);
+    	---Purpose:  
+    	--- Appends <aPave>  to the  list  
+    	---
+    SortSet (me:out); 
+    	---Purpose:  
+    	--- Sorts  list in increasing order of paves' parameters 
+    	---
+
+fields 
+    myPaveList: ListOfPave from BOPTools; 
+
+end PaveSet;

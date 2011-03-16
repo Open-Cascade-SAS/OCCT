@@ -1,0 +1,63 @@
+--
+-- File:	ImageUtility_X11Dump.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+class X11Dump from ImageUtility
+
+uses
+	X11Display 	from ImageUtility,
+	X11Window  	from ImageUtility,
+	X11XImage  	from ImageUtility,
+	X11GC		from ImageUtility,
+	Image 		from Image,
+	AsciiString 	from TCollection
+
+raises
+	TypeMismatch 	from Standard
+
+is
+	Create( DisplayName : AsciiString from TCollection ;
+	        aImage      : Image from Image )
+		returns X11Dump from ImageUtility ;
+	---Level: Internal
+	---Purpose : Create a new X11 Display,Window,Colormap,GC,XImage suitable
+	--		for aImage .
+
+	Create( aX11Dump    : X11Dump from ImageUtility ;
+		aImage      : Image from Image )
+		returns X11Dump from ImageUtility ;
+	---Level: Internal
+	---Purpose : Create a new X11 XImage and share Display,Window,Colormap,
+	--	     GC with a previous aX11Dump ;
+
+	X11GC ( me ) 
+		returns X11GC from ImageUtility
+		is static;
+	X11Window ( me ) 
+		returns X11Window from ImageUtility
+		is static;
+	X11Display ( me ) 
+		returns X11Display from ImageUtility
+		is static;
+	X11XImage ( me )
+		returns X11XImage from ImageUtility
+		is static;
+
+	UpdateX11Colormap ( me )
+		is static;
+	UpdateX11XImage ( me : in out )
+		is static;
+	DisplayX11XImage ( me )
+		is static;
+
+fields
+	myDisplay : X11Display from ImageUtility ;
+	myWindow  : X11Window  from ImageUtility ;
+	myXImage  : X11XImage  from ImageUtility ;
+	myGC      : X11GC      from ImageUtility ;
+	myImage   : Image from Image ;
+end ;

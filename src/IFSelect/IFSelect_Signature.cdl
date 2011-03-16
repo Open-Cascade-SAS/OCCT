@@ -1,0 +1,96 @@
+-- File:	IFSelect_Signature.cdl
+-- Created:	Thu Apr 21 11:17:01 1994
+-- Author:	Christian CAILLET
+--		<cky@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class Signature  from IFSelect    inherits SignType  from Interface
+
+    ---Purpose : Signature provides the basic service used by the classes
+    --             SelectSignature and Counter (i.e. Name, Value), which is :
+    --           - for an entity in a model, give a characteristic string, its
+    --             signature
+    --           This string has not to be unique in the model, but gives a
+    --           value for such or such important feature.
+    --           Exemples : Dynamic Type; Category; etc
+
+uses CString, Transient, AsciiString, HSequenceOfAsciiString from TColStd,
+     InterfaceModel
+
+is
+
+    Initialize (name : CString);
+    ---Purpose : Initializes a Signature with its name
+
+    	--  Possible Cases (for information and help choosing)
+
+    SetIntCase (me : mutable; hasmin : Boolean; valmin : Integer;
+    	        hasmax : Boolean; valmax : Integer);
+    ---Purpose : Sets the information data to tell "integer cases" with
+    --           possible min and max values
+    --           To be called when creating
+
+    IsIntCase (me; hasmin : out Boolean; valmin : out Integer;
+    	           hasmax : out Boolean; valmax : out Integer) returns Boolean;
+    ---Purpose : Tells if this Signature gives integer values
+    --           and returns values from SetIntCase if True
+
+    AddCase (me : mutable; acase : CString);
+    ---Purpose : Adds a possible case
+    --           To be called when creating, IF the list of possible cases for
+    --           Value is known when starting
+    --           For instance, for CDL types, rather do not fill this,
+    --           but for a specific enumeration (such as a status), can be used
+
+    CaseList (me) returns HSequenceOfAsciiString;
+    ---Purpose : Returns the predefined list of possible cases, filled by AddCase
+    --           Null Handle if no predefined list (hence, to be counted)
+    --           Useful to filter on  really possible vase, for instance, or
+    --           for a help
+
+
+    Name (me) returns CString;
+    ---Purpose : Returns an identification of the Signature (a word), given at
+    --           initialization time
+
+--    Value (me; ent : any Transient; model : InterfaceModel)
+--    	returns CString  is deferred;
+--    	  inherited from SignType
+    ---Purpose : Returns the Signature for a Transient object. It is specific
+    --           of each sub-class of Signature. For a Null Handle, it should
+    --           provide ""
+    --           It can work with the model which contains the entity
+
+    Label (me) returns AsciiString;
+    ---Purpose : The label of a Signature uses its name as follow :
+    --           "Signature : <name>"
+
+
+    Matches (me; ent : Transient; model : InterfaceModel;
+    	    	 text : AsciiString; exact : Boolean)
+    returns Boolean  is virtual;
+    ---Purpose : Tells if the value for <ent> in <model> matches a text, with
+    --           a criterium <exact>.
+    --           The default definition calls MatchValue
+    --           Can be redefined
+
+    MatchValue (myclass;  val : CString; text : AsciiString; exact : Boolean)
+	returns Boolean;
+    ---Purpose : Default procedure to tell if a value <val> matches a text
+    --           with a criterium <exact>. <exact> = True requires equality,
+    --           else only contained (no reg-exp)
+
+    IntValue   (myclass;  val : Integer) returns CString;
+    ---Purpose : This procedure converts an Integer to a CString
+    --           It is a convenient way when the value of a signature has the
+    --           form of a simple integer value
+    --           The value is to be used immediately (one buffer only, no copy)
+
+fields
+
+    thecasi : Integer[3];
+    thecasl : HSequenceOfAsciiString;
+    thename : AsciiString  is protected;
+
+end Signature;

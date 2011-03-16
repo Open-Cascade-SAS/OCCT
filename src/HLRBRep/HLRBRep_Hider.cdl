@@ -1,0 +1,38 @@
+-- File:	HLRBRep_Hider.cdl
+-- Created:	Thu Apr 17 19:43:52 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Hider from HLRBRep
+
+uses
+    Integer         from Standard,
+    Boolean         from Standard,
+    Real            from Standard,
+    ShortReal       from Standard,
+    ListOfInteger   from TColStd,
+    MapOfShapeTool  from BRepTopAdaptor,
+    Data            from HLRBRep
+
+is
+    Create(DS : Data from HLRBRep)
+    returns Hider from HLRBRep;
+	---Purpose: Creates a Hider processing  the set  of  Edges and
+	--          hiding faces described by <DS>.  Stores the hidden
+	--          parts in <DS>.
+
+    OwnHiding(me : in out; FI : Integer from Standard)
+	---Purpose: own hiding the side face number <FI>.
+    is static;
+
+    Hide(me : in out; FI :        Integer from Standard;
+                      MST: in out MapOfShapeTool from BRepTopAdaptor)
+	---Purpose: Removes from the edges,   the parts hidden by  the
+	--          hiding face number <FI>.
+    is static;
+
+fields
+    myDS : Data from HLRBRep;
+
+end Hider;

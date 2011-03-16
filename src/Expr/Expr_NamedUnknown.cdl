@@ -1,0 +1,123 @@
+-- File:	NamedUnknown.cdl
+-- Created:	Thu Jan 10 12:16:44 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class NamedUnknown from Expr
+
+inherits NamedExpression from Expr 
+
+    ---Purpose: This class describes any variable of an expression. 
+    --          Assignment is treated directly in this class.
+
+uses GeneralExpression from Expr, 
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection
+
+raises NotAssigned from Expr, 
+    OutOfRange from Standard, 
+    NumericError from Standard,
+    InvalidAssignment from Expr,
+    InvalidOperand from Expr,
+    NotEvaluable from Expr
+
+is
+
+    Create(name : AsciiString)
+    returns mutable NamedUnknown;
+
+    IsAssigned(me)
+    ---Purpose: Tests if an expression is assigned to <me>.
+    ---C++: inline
+    returns Boolean
+    is static;
+
+    AssignedExpression(me)
+    ---Purpose: If exists, returns the assigned expression.
+    --          An exception is raised if the expression does not exist.
+    ---C++: return const &
+    returns any GeneralExpression
+    raises NotAssigned
+    is static;
+
+    Assign(me : mutable; exp: GeneralExpression)
+    ---Purpose: Assigns <me> to <exp> expression.
+    --          Raises exception if <exp> refers to <me>.
+    raises InvalidAssignment
+    is static;
+
+    Deassign(me : mutable)
+    ---Purpose: Supresses the assigned expression
+    ---C++: inline
+    is static;
+
+    NbSubExpressions(me)
+    ---Purpose: Returns the number of sub-expressions contained
+    --          in <me> ( >= 0)
+    returns Integer
+    is static;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: Returns the <I>-th sub-expression of <me>
+    --          raises OutOfRange if <I> > NbSubExpressions(me)
+    ---C++: return const &
+    returns any GeneralExpression
+    raises OutOfRange
+    is static;
+
+    Simplified(me) 
+    ---Purpose: Returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression and after
+    --          values computation.
+    returns any GeneralExpression
+    raises NumericError
+    is static;
+
+    ShallowSimplified(me)
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression
+    raises NumericError
+    is static;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    ContainsUnknowns(me) 
+    ---Purpose: Tests if <me> contains NamedUnknown.
+    returns Boolean
+    is static;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> is contained in <me>.
+    returns Boolean
+    is static;
+
+    IsLinear(me)
+    returns Boolean;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    returns any GeneralExpression;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression)
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>
+    --          Raises InvalidOperand if <with> contains <me>.
+    raises InvalidOperand;
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    returns Real
+    raises NotEvaluable,NumericError;
+
+fields
+
+    myExpression : GeneralExpression;
+
+end NamedUnknown;

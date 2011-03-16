@@ -1,0 +1,153 @@
+-- File:	Units.cdl
+-- Created:	Mon Jun 22 18:23:44 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+-- Modified     Wed Apr  2 14:10:05 1997 by Gerard GRAS    
+--		Add FirstQuantity access methods
+-- Modified     Mon Apr  7 16:52:40 1997 by Patrick BOSINCO
+--		Add Dimensions access methods
+---Copyright:	 Matra Datavision 1992
+
+
+package Units 
+
+	---Purpose: This  package provides all the  facilities  to create
+	--          and question a dictionary of  units,  and also  to
+	--          manipulate measurements which are real values with
+	--          units.
+
+uses
+
+    TCollection,
+    TColStd
+
+is
+            
+    class Dimensions;
+    
+    class Unit;
+    
+    class UtsSequence instantiates
+          Sequence from TCollection (Unit from Units);
+    class UnitsSequence instantiates 
+    	  HSequence from TCollection(Unit from Units, UtsSequence);
+    
+    private class ShiftedUnit;
+
+    class Token ;
+    
+    class ShiftedToken ;
+    
+    class TksSequence instantiates
+           Sequence from TCollection (Token from Units);
+    class TokensSequence instantiates 
+    	   HSequence from TCollection(Token from Units, TksSequence);
+    
+    class Quantity;
+    
+    class QtsSequence instantiates
+          Sequence from TCollection (Quantity from Units);
+    class QuantitiesSequence instantiates 
+    	  HSequence from TCollection(Quantity from Units, QtsSequence);
+    
+    class UnitsDictionary;
+    
+    class UnitsSystem;
+    
+    class Explorer;
+    
+    private class Sentence;
+    
+    private class MathSentence;
+    
+    private class UnitSentence;
+    
+    class Lexicon;
+    
+    private class UnitsLexicon;
+    
+    class Measurement;
+    
+    exception NoSuchUnit inherits NoSuchObject from Standard;
+    exception NoSuchType inherits NoSuchObject from Standard;
+    
+    UnitsFile(afile : CString);
+    
+    ---Level: Public
+    
+    ---Purpose: Defines the location of the file containing all the 
+    --          information useful in creating the dictionary of all 
+    --          the units known to the system.
+    
+    LexiconFile(afile : CString);
+    
+    ---Level: Public
+    
+    ---Purpose: Defines the location of the file containing the lexicon 
+    --          useful in manipulating composite units.
+    
+    DictionaryOfUnits(amode : Boolean = Standard_False) returns UnitsDictionary from Units;
+    
+    ---Level: Advanced
+    
+    ---Purpose: Returns a unique instance of the dictionary of units.
+    --          If <amode> is True, then it forces the recomputation of 
+    --          the dictionary of units.
+    
+    Quantity(aquantity : CString from Standard) returns Quantity from Units;
+    
+    ---Level: Advanced
+    
+    ---Purpose: Returns a unique quantity instance corresponding to <aquantity>.
+
+    FirstQuantity(aunit : CString from Standard) returns CString from Standard;
+
+    ---Level: Advanced
+
+    ---Purpose: Returns the first quantity string founded from the unit <aUnit>.
+
+    LexiconUnits(amode : Boolean = Standard_True) returns Lexicon from Units;
+    
+    ---Level: Internal
+    
+    ---Purpose: Returns a unique instance of the Units_Lexicon.
+    --          If <amode> is True, it forces the recomputation of 
+    --          the dictionary of units, and by consequence the 
+    --          completion of the Units_Lexicon.
+    
+    LexiconFormula returns Lexicon from Units;
+    
+    ---Level: Internal 
+
+    ---Purpose: Return a unique instance of LexiconFormula.
+    
+    NullDimensions returns Dimensions from Units;
+    
+    ---Level: Internal
+    
+    ---Purpose: Returns always the same instance of Dimensions.
+    
+    Convert(avalue : Real ; afirstunit , asecondunit : CString) returns Real;
+    
+    ---Level: Public
+    
+    ---Purpose: Converts <avalue> expressed in <afirstunit> into the <asecondunit>.
+            
+    ToSI(aData: Real from Standard; aUnit: CString from Standard) returns Real from Standard;
+
+    ToSI(aData: Real from Standard; aUnit: CString from Standard;
+         aDim : out Dimensions from Units) returns Real from Standard;
+
+    FromSI(aData: Real from Standard; aUnit: CString from Standard) returns Real from Standard;
+
+    FromSI(aData: Real from Standard; aUnit: CString from Standard;
+           aDim : out Dimensions from Units ) returns Real from Standard;
+
+    Dimensions(aType : CString from Standard)
+    returns Dimensions from Units
+    raises NoSuchObject from Standard;
+    ---Level: Public
+    ---Purpose: return the dimension associated to the Type
+
+end Units;
+

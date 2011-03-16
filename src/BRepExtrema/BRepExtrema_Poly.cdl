@@ -1,0 +1,22 @@
+-- File:	BRepExtrema_Poly.cdl
+-- Created:	Fri Sep  8 10:53:43 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class Poly from BRepExtrema
+
+uses
+    Boolean from Standard,
+    Shape   from TopoDS,
+    Pnt     from gp
+    
+is
+    Distance(myclass; S1,S2 :     Shape from TopoDS;
+                      P1,P2 : out Pnt   from gp;
+                      dist  : out Real  from Standard)
+    	---Purpose: returns Standard_True if OK.
+    returns Boolean from Standard;
+		      
+end Poly;
+

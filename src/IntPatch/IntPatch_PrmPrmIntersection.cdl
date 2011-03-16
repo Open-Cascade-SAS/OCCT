@@ -1,0 +1,352 @@
+-- File:      IntPatch_PrmPrmIntersection.cdl
+-- Created:   Thu Jan 28 14:46:57 1993
+-- Author:    Laurent BUCHARD
+---Copyright: Matra Datavision 1993
+
+class PrmPrmIntersection from IntPatch
+    
+    ---Purpose: Implementation  of   the Intersection      between two
+    --          bi-parametrised surfaces.
+    --          
+    --          To  avoid  multiple constructions of  the approximated
+    --          polyhedron  of the    surfaces, the algorithm  can  be
+    --          called whith the  two  surfaces  and their  associated
+    --          polyhedron.
+    --          
+    
+    
+uses
+     Polyhedron                from IntPatch,
+     HSurface                  from Adaptor3d,
+     TopolTool                 from Adaptor3d,
+     Line                      from IntPatch,
+     SequenceOfLine            from IntPatch, 
+     PrmPrmIntersection_T3Bits from IntPatch, 
+     LineOn2S                  from IntSurf,
+     --amv
+     ListOfPntOn2S             from IntSurf
+
+raises OutOfRange from Standard,
+       NotDone    from StdFail
+
+is 
+
+    Create  
+
+	    ---Purpose : Empty Constructor
+
+	      returns PrmPrmIntersection from IntPatch;
+	      
+    Perform(me:in out; 
+                Caro1       : HSurface from Adaptor3d;
+	        Polyhedron1 : Polyhedron from IntPatch;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+	        Polyhedron2 : Polyhedron from IntPatch;
+		Domain2     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+
+     	    ---Purpose: Performs the intersection between <Caro1>  and
+	    --          <Caro2>.  Associated Polyhedrons <Polyhedron1>
+	    --          and <Polyhedron2> are given.
+
+    	    is static;
+    Perform(me:in out; 
+                Caro1       : HSurface from Adaptor3d;
+	        Polyhedron1 : Polyhedron from IntPatch;
+		Domain1     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+
+
+    	    is static;
+
+
+    Perform(me :in out;
+                Caro1       : HSurface from Adaptor3d;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+		Domain2     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard;
+		--amv
+    	    	ClearFlag   : Boolean from Standard = Standard_True)
+
+       	    ---Purpose: Performs the intersection between <Caro1>  and
+	    --          <Caro2>. The method computes the polyhedron on 
+	    --          each surface.
+
+    	    is static;	    
+
+    --amv
+    Perform(me :in out;
+                Caro1       : HSurface from Adaptor3d;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+		Domain2     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard;
+    	    	ListOfPnts: in out ListOfPntOn2S from IntSurf;
+    	        RestrictLine: Boolean from Standard)
+
+       	    ---Purpose: Performs the intersection between <Caro1>  and
+	    --          <Caro2>. The method computes the polyhedron on 
+	    --          each surface.
+
+    	    is static;
+	    
+    Perform(me :in out;
+                Caro1       : HSurface from Adaptor3d;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+		Domain2     : TopolTool from Adaptor3d;
+		U1,V1,U2,V2 : Real from Standard;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+
+       	    ---Purpose: Performs the intersection between <Caro1>  and
+	    --          <Caro2>. The method computes the polyhedron on 
+	    --          each surface.
+
+    	    is static;
+	    
+	    
+    Perform(me :in out;
+                Caro1       : HSurface from Adaptor3d;
+		Domain1     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+
+       	    ---Purpose: Performs the intersection between <Caro1>  and
+	    --          <Caro2>. The method computes the polyhedron on 
+	    --          each surface.
+
+    	    is static;
+	
+	     
+	
+		     
+    Perform(me:in out;    
+                Caro1       : HSurface from Adaptor3d;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+	        Polyhedron2 : Polyhedron from IntPatch;
+		Domain2     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+		
+    	    ---Purpose: Performs  the intersection between <Caro1> and
+    	    --          <Caro2>.
+	    --          
+	    --          The polyhedron which approximates     <Caro2>,
+	    --          <Polyhedron2> is given. The other one is 
+	    --          computed.
+
+    	    is static;
+
+
+    Perform(me:in out; 
+                Caro1       : HSurface from Adaptor3d;
+	        Polyhedron1 : Polyhedron from IntPatch;
+		Domain1     : TopolTool from Adaptor3d;
+                Caro2       : HSurface from Adaptor3d; 
+		Domain2     : TopolTool from Adaptor3d;
+                TolTangency,
+                Epsilon,
+                Deflection,
+                Increment   : Real from Standard)
+		
+    	    ---Purpose: Performs  the intersection between <Caro1> and
+    	    --          <Caro2>.
+	    --          
+	    --          The polyhedron which approximates     <Caro1>,
+	    --          <Polyhedron1> is given. The other one is 
+	    --          computed.
+
+    	    is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns true if the calculus was succesfull.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+    	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns true if the is no intersection.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises  NotDone from StdFail
+    	is static;
+
+
+    NbLines(me)
+    
+    	---Purpose: Returns the number of intersection lines.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises  NotDone from StdFail
+    	is static;
+
+
+    Line(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the line of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbLine.
+
+    	returns  Line from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+    	is static;
+
+    NewLine(me; Caro1       : HSurface from Adaptor3d;
+    	    	Caro2       : HSurface from Adaptor3d;
+                IndexLine,
+    	    	LowPoint,
+    	    	HighPoint,
+    	    	NbPoints: Integer from Standard)
+    
+    	---Purpose: Computes about <NbPoints>  Intersection Points  on
+    	--          the Line <IndexLine> between  the Points of  Index
+    	--          <LowPoint> and <HighPoint>.
+    	--          
+    	--          All  the points  of the line  of index <IndexLine>
+    	--          with an index  between <LowPoint>  and <HighPoint>
+    	--          are in the returned  line. New Points are inserted
+    	--          between existing points  if  those  points are not
+    	--          too closed.
+    	--          
+    	--          An exception is raised if Index<=0 or Index>NbLine.
+    	--          or if IsDone returns False
+
+    	returns  Line from IntPatch
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	
+    	is static;
+ 
+    	
+    GrilleInteger  (  me  ; 
+    	             ix  : Integer  from  Standard  ; 
+		     iy  : Integer  from  Standard  ; 
+		     iz  : Integer  from  Standard  )
+    	returns  Integer  from  Standard   
+    	is  static  ;
+	---C++: inline
+
+    IntegerGrille  (  me   ; 
+    	    	     t   : Integer  from  Standard  ;  
+    	             ix  : in  out  Integer  from  Standard  ; 
+		     iy  : in  out  Integer  from  Standard  ; 
+		     iz  : in  out  Integer  from  Standard  )
+    	is  static  ;
+	---C++: inline
+
+     DansGrille	(  me  ; 
+    	    	   t   :          Integer  from  Standard  )  
+    	returns  Integer  from  Standard  
+    	is  static  ;
+    	---C++: inline
+   
+
+		     
+     NbPointsGrille  (  me  ) 
+    	returns  Integer  from  Standard  
+    	is  static  ;
+	---C++: inline
+      	    	         
+      
+    RemplitLin (  me  ;
+    	          x1  : Integer  from  Standard  ; 
+		  y1  : Integer  from  Standard  ; 
+		  z1  : Integer  from  Standard  ;
+    	          x2  : Integer  from  Standard  ; 
+		  y2  : Integer  from  Standard  ; 
+		  z2  : Integer  from  Standard  ; 
+		  Map : in  out  PrmPrmIntersection_T3Bits  from  IntPatch  ) 
+    	is  static  ;
+		  
+    RemplitTri  (  me  ; 
+    	          x1  : Integer  from  Standard  ; 
+		  y1  : Integer  from  Standard  ; 
+		  z1  : Integer  from  Standard  ;
+    	          x2  : Integer  from  Standard  ; 
+		  y2  : Integer  from  Standard  ; 
+		  z2  : Integer  from  Standard  ; 
+    	          x3  : Integer  from  Standard  ; 
+		  y3  : Integer  from  Standard  ; 
+		  z3  : Integer  from  Standard  ; 
+		  Map : in  out  PrmPrmIntersection_T3Bits  from  IntPatch  ) 
+    	is  static  ;
+
+          
+     Remplit  (  me  ; 
+     	    	 a  :  Integer  from  Standard  ; 
+     	    	 b  :  Integer  from  Standard  ; 
+     	    	 c  :  Integer  from  Standard  ; 
+		 Map : in  out  PrmPrmIntersection_T3Bits  from  IntPatch  ) 
+    	is  static  ;
+		 
+     CodeReject  (  me  ; 
+    	          x1  : Real  from  Standard  ; 
+		  y1  : Real  from  Standard  ; 
+		  z1  : Real  from  Standard  ;
+    	          x2  : Real  from  Standard  ; 
+		  y2  : Real  from  Standard  ; 
+		  z2  : Real  from  Standard  ; 
+    	          x3  : Real  from  Standard  ; 
+		  y3  : Real  from  Standard  ; 
+		  z3  : Real  from  Standard  ) 
+     	returns  Integer  from  Standard  
+   	is  static  ;
+     
+     PointDepart  (  me  ; 
+		     LineOn2S  : in  out  LineOn2S  from    IntSurf  ;  
+		     S1        :          HSurface from Adaptor3d  ; 
+    	             SU1       :          Integer  from  Standard  ;
+    	             SV1       :           Integer  from  Standard  ;
+		     S2        :          HSurface from Adaptor3d  ;  
+    	             SU2       :          Integer  from  Standard  ;
+    	             SV2       :          Integer  from  Standard  )
+    	is  static  ;
+     
+		     
+
+fields
+
+    done   : Boolean                                 from Standard;
+    empt   : Boolean                                 from Standard;
+    Preci  : Real                                    from Standard;
+    Fleche : Real                                    from Standard;
+    Pas    : Real                                    from Standard;
+    SLin   : SequenceOfLine                          from IntPatch;
+
+end PrmPrmIntersection;

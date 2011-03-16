@@ -1,0 +1,56 @@
+-- File:	MakeRotation.cdl
+-- Created:	Wed Aug 26 14:32:33 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeRotation
+
+from gce
+
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- rotation in 3D space. The result is a gp_Trsf transformation.
+    -- A MakeRotation object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result. 
+
+uses Pnt  from gp,
+     Lin  from gp,
+     Ax1  from gp,
+     Dir  from gp,
+     Trsf from gp,
+     Real from Standard
+
+is
+
+Create(Line  : Lin  from gp      ;
+       Angle : Real from Standard) returns MakeRotation;
+    ---Purpose: Constructs a rotation through angle Angle about the axis defined by the line Line.
+        
+Create(Axis  : Ax1  from gp      ;
+       Angle : Real from Standard) returns MakeRotation;
+    ---Purpose: Constructs a rotation through angle Angle about the axis defined by the axis Axis.
+        
+Create(Point : Pnt  from gp      ;
+       Direc : Dir  from gp      ; 
+       Angle : Real from Standard) returns MakeRotation;
+    ---Purpose:
+    -- Constructs a rotation through angle Angle about the axis defined by:
+    -- the point Point and the unit vector Direc.
+        
+Value(me) returns Trsf from gp
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed transformation.
+    
+Operator(me) returns Trsf from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Trsf() const;"
+
+fields
+
+    TheRotation : Trsf from gp;
+
+end MakeRotation;

@@ -1,0 +1,24 @@
+-- File:	StepToGeom_MakeBoundedSurface.cdl
+-- Created:	Tue Jun 22 12:37:10 1993
+-- Author:	Martine LANGLOIS
+---Copyright:	 Matra Datavision 1993
+
+class MakeBoundedSurface from StepToGeom
+
+    ---Purpose: This class implements the mapping between classes 
+    --          BoundedSurface from 
+    --          StepGeom which describes a BoundedSurface from 
+    --          prostep and the class BoundedSurface from Geom.
+    --          As BoundedSurface is an abstract BoundedSurface this class 
+    --          is an access to the sub-class required.
+
+uses BoundedSurface from Geom,
+     BoundedSurface from StepGeom
+
+is 
+
+    Convert ( myclass; SS : BoundedSurface from StepGeom;
+                       CS : out BoundedSurface from Geom )
+    returns Boolean from Standard;
+
+end MakeBoundedSurface;

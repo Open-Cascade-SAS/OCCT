@@ -1,0 +1,24 @@
+-- File:	PMMgt.cdl
+-- Created:	Tue Oct 13 16:47:50 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+package PMMgt 
+
+---Purpose:
+--   The package <PMMgt> provides storage management facilities, and classes
+--   which can manage their own storage. 
+--
+
+uses MMgt
+
+is
+    deferred class PManaged;
+    ---Purpose:
+    --   Abstract base class providing protocols for persistent 
+    --   storage allocation and deallocation.
+    --   
+    
+
+end PMMgt;

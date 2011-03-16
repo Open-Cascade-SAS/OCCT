@@ -1,0 +1,35 @@
+// Copyright: 	Matra-Datavision 1995
+// File:	Select3D_SensitiveSegment.lxx
+// Created:	Thu Feb 23 09:07:24 1995
+// Author:	Mister rmi
+//		<rmi>
+
+
+
+inline void Select3D_SensitiveSegment::Set(const Standard_Integer MaxRect)
+{mymaxrect = MaxRect;}
+
+inline void Select3D_SensitiveSegment::StartPoint (const gp_Pnt& start)
+{
+  mystart = start;
+}
+
+inline void Select3D_SensitiveSegment::EndPoint (const gp_Pnt& end)
+{
+  myend = end;
+}
+
+inline gp_Pnt Select3D_SensitiveSegment::StartPoint () const
+{return mystart;}
+
+inline gp_Pnt Select3D_SensitiveSegment::EndPoint () const
+{return myend;}
+
+inline gp_Pnt2d Select3D_SensitiveSegment::StartPoint2d () const
+{return myprojstart;}
+
+inline gp_Pnt2d Select3D_SensitiveSegment::EndPoint2d () const
+{return myprojend;}
+
+inline Standard_Integer Select3D_SensitiveSegment::MaxBoxes()
+const {return mymaxrect;}

@@ -1,0 +1,129 @@
+// File:	HLRAlgo_PolyInternalData.lxx
+// Created:	Mon Jan 11 13:58:26 1993
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColgp_HArray1OfDir.hxx>
+#include <HLRAlgo_HArray1OfTData.hxx>
+#include <HLRAlgo_HArray1OfPISeg.hxx>
+#include <HLRAlgo_HArray1OfPINod.hxx>
+
+//=======================================================================
+//function : DecTData
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_PolyInternalData::DecTData ()
+{ myNbTData--; }
+
+//=======================================================================
+//function : DecPISeg
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_PolyInternalData::DecPISeg ()
+{ myNbPISeg--; }
+
+//=======================================================================
+//function : DecPINod
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_PolyInternalData::DecPINod ()
+{ myNbPINod--; }
+
+//=======================================================================
+//function : NbTData
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+HLRAlgo_PolyInternalData::NbTData () const
+{ return myNbTData; }
+
+//=======================================================================
+//function : NbPISeg
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+HLRAlgo_PolyInternalData::NbPISeg () const
+{ return myNbPISeg; }
+
+//=======================================================================
+//function : NbPINod
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+HLRAlgo_PolyInternalData::NbPINod () const
+{ return myNbPINod; }
+
+//=======================================================================
+//function : Planar
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_PolyInternalData::Planar () const
+{ return myPlanar; }
+
+//=======================================================================
+//function : Planar
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRAlgo_PolyInternalData::Planar (const Standard_Boolean B)
+{ myPlanar = B; }
+
+//=======================================================================
+//function : IntOutL
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean
+HLRAlgo_PolyInternalData::IntOutL () const
+{ return myIntOutL; }
+
+//=======================================================================
+//function : IntOutL
+//purpose  : 
+//=======================================================================
+
+inline void
+HLRAlgo_PolyInternalData::IntOutL (const Standard_Boolean B)
+{ myIntOutL = B; }
+
+//=======================================================================
+//function : TData
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Array1OfTData &
+HLRAlgo_PolyInternalData::TData () const
+{ return myTData->ChangeArray1(); }
+
+//=======================================================================
+//function : PINod
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Array1OfPINod &
+HLRAlgo_PolyInternalData::PINod () const
+{ return myPINod->ChangeArray1(); }
+
+//=======================================================================
+//function : PISeg
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_Array1OfPISeg &
+HLRAlgo_PolyInternalData::PISeg () const
+{ return myPISeg->ChangeArray1(); }
+

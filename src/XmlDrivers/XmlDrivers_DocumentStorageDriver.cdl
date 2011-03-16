@@ -1,0 +1,28 @@
+-- File:	XmlDrivers_DocumentStorageDriver.cdl
+-- Created:	Wed Jul 25 16:56:28 2001
+-- Author:	Julia DOROVSKIKH
+--		<jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:	Open Cascade 2001
+
+class DocumentStorageDriver from XmlDrivers inherits DocumentStorageDriver from XmlLDrivers
+
+uses
+    ExtendedString              from TCollection,
+    ADriverTable		from XmlMDF, 
+    Element                     from XmlObjMgt,
+    MessageDriver               from CDM
+
+is
+    Create (theCopyright: ExtendedString from TCollection)
+    	returns mutable DocumentStorageDriver from XmlDrivers;
+    -- Constructor
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from XmlMDF
+	is redefined virtual;
+
+    WriteShapeSection (me:mutable; thePDoc  : out Element from XmlObjMgt)  
+        returns Boolean from Standard
+        is redefined virtual; 
+    
+end DocumentStorageDriver;

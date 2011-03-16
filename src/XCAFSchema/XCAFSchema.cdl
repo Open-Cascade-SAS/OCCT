@@ -1,0 +1,15 @@
+-- File:	XCAFSchema.cdl
+-- Created:	Fri May 26 10:46:53 2000
+-- Author:	Edward AGAPOV
+--		<eap@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+schema XCAFSchema 
+
+    ---Purpose: Schema
+
+is
+
+    package PXCAFDoc;
+    
+end XCAFSchema;

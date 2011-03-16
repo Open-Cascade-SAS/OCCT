@@ -1,0 +1,127 @@
+// File math_DoubleTab.gxx
+// Lpa, le 7/02/92
+
+
+#include <math_Memory.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Integer.hxx>
+
+void math_DoubleTab::Allocate()
+{
+  Standard_Integer RowNumber = UppR - LowR + 1;
+  Standard_Integer ColNumber = UppC - LowC + 1;
+
+  Item** TheAddr = (Item**) Standard::Allocate(RowNumber * sizeof(Item*));
+  Item* Address;
+  if(isAllocated) 
+    Address = (Item*) Standard::Allocate(RowNumber * ColNumber * sizeof(Item));
+  else
+    Address = (Item*) Addr;
+  Address -= LowC;
+  
+  for (Standard_Integer Index = 0; Index < RowNumber; Index++) {
+    TheAddr[Index] = Address;
+    Address += ColNumber;
+  }
+  
+  TheAddr -= LowR;
+  Addr = (Standard_Address) TheAddr;
+}
+
+math_DoubleTab::math_DoubleTab(const Standard_Integer LowerRow,
+			       const Standard_Integer UpperRow,
+			       const Standard_Integer LowerCol,
+			       const Standard_Integer UpperCol) :
+  isAllocated(Standard_True),
+  LowR(LowerRow),
+  UppR(UpperRow),
+  LowC(LowerCol),
+  UppC(UpperCol)
+{
+  Allocate();
+}
+
+
+math_DoubleTab::math_DoubleTab(const Item& Tab,
+			       const Standard_Integer LowerRow,
+			       const Standard_Integer UpperRow,
+			       const Standard_Integer LowerCol,
+			       const Standard_Integer UpperCol) :
+  Addr((void *) &Tab),
+  isAllocated(Standard_False),
+  LowR(LowerRow),
+  UppR(UpperRow),
+  LowC(LowerCol),
+  UppC(UpperCol)
+{
+  Allocate();
+}
+
+void math_DoubleTab::Init(const Item& InitValue) 
+{
+  for (Standard_Integer i = LowR; i <= UppR; i++) {
+    for (Standard_Integer j = LowC; j <= UppC; j++) {
+      ((Item**) Addr)[i][j] = InitValue;
+    }
+  }
+}
+
+
+
+math_DoubleTab::math_DoubleTab(const math_DoubleTab& Other) :
+  isAllocated(Standard_True),
+  LowR(Other.LowR),
+  UppR(Other.UppR),
+  LowC(Other.LowC),
+  UppC(Other.UppC)
+{
+  Allocate();
+
+  Standard_Address target = (Standard_Address) &Value(LowR,LowC);
+  Standard_Address source = (Standard_Address) &Other.Value(LowR,LowC);
+
+  memmove(target,source,
+	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Item)));
+
+}
+
+
+void math_DoubleTab::Free()
+{
+  Standard_Integer RowNumber = UppR - LowR + 1;
+  Standard_Integer ColNumber = UppC - LowC + 1;
+
+  // free the data
+  if(isAllocated) {
+    Standard_Address it = (Standard_Address)&Value(LowR,LowC);
+    Standard::Free(it);
+  }
+  // free the pointers
+  Standard_Address it = (Standard_Address)(((Item**)Addr) + LowR);
+  Standard::Free (it);
+  Addr = 0;
+}
+
+
+
+void math_DoubleTab::SetLowerRow(const Standard_Integer LowerRow)
+{
+  Item** TheAddr = (Item**)Addr;
+  Addr = (Standard_Address) (TheAddr + LowR - LowerRow);
+  UppR = UppR - LowR + LowerRow;
+  LowR = LowerRow;
+}
+
+
+void math_DoubleTab::SetLowerCol(const Standard_Integer LowerCol)
+{
+  Item** TheAddr = (Item**) Addr;
+  for (Standard_Integer Index = LowR; Index <= UppR; Index++) {
+    TheAddr[Index] = TheAddr[Index] + LowC - LowerCol;
+  }
+
+  UppC = UppC - LowC + LowerCol;
+  LowC = LowerCol;
+}
+

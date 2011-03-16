@@ -1,0 +1,68 @@
+-- File:	BinTools_LocationSet.cdl
+-- Created:	Tue Jun 15 12:01:40 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+class LocationSet from BinTools 
+
+	---Purpose: The class LocationSet stores a set of location in
+	--          a relocatable state.
+	--          
+	--          It can be created from Locations.
+	--          
+	--          It can create Locations.
+
+
+uses
+    Location             from TopLoc,
+    IndexedMapOfLocation from TopLoc
+
+raises
+    OutOfRange           from Standard
+
+is
+    Create returns LocationSet from BinTools;
+	---Purpose: Returns an empty set of locations.
+	
+    Clear(me : in out)
+	---Purpose: Clears the content of the set.
+    is static;
+	
+    Add(me : in out; L : Location from TopLoc) returns Integer
+	---Purpose: Incorporate a new Location in the  set and returns
+	--          its index.
+    is static;
+    
+    Location(me; I : Integer) returns Location from TopLoc
+	---Purpose: Returns the location of index <I>.
+	--          
+	---C++: return const &
+    raises
+    	OutOfRange from Standard
+    is static;
+
+    Index(me; L : Location from TopLoc) returns Integer
+	---Purpose: Returns the index of <L>.
+    is static; 
+     
+    NbLocations(me) returns Integer
+	---Purpose: Returns number of locations.
+    is static; 
+    	
+    Write(me; OS : in out OStream)
+	---Purpose: Writes the content of  me  on the stream <OS> in a
+	--          format that can be read back by Read.
+    is static;
+	
+    Read(me : in out; IS : in out IStream)
+	---Purpose: Reads the content of me from the  stream  <IS>. me
+	--          is first cleared.
+	--          
+    is static;
+	
+fields
+ 
+    myMap : IndexedMapOfLocation from TopLoc;
+
+end LocationSet;
+

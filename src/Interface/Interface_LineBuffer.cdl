@@ -1,0 +1,117 @@
+-- File:	Interface_LineBuffer.cdl
+-- Created:	Thu Apr 15 10:08:17 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class LineBuffer  from Interface
+
+    ---Purpose : Simple Management of a Line Buffer, to be used by Interface
+    --           File Writers.
+    --           While a String is suitable to do that, this class ensures an
+    --           optimised Memory Management, because this is a hard point of
+    --           File Writing.
+
+uses Integer, Boolean, Character, CString,
+     AsciiString from TCollection, HAsciiString from TCollection
+
+raises OutOfRange
+
+is
+
+    Create (size : Integer = 10) returns LineBuffer;
+    ---Purpose : Creates a LineBuffer with an absolute maximum size
+    --           (Default value is only to satisfy compiler requirement)
+
+    SetMax (me : in out; max : Integer)
+    ---Purpose : Changes Maximum allowed size of Buffer.
+    --           If <max> is Zero, Maximum size is set to the initial size.
+    	raises OutOfRange  is static;
+    --           Error if <max> is greater than <size> given at Creation time.
+
+    SetInitial (me : in out; initial : Integer)
+    ---Purpose : Sets an Initial reservation for Blank characters
+    --           (this reservation is counted in the size of the current Line)
+    	raises OutOfRange  is static;
+    --           Error if <initial> is greater than current Maximum size
+
+    SetKeep (me : in out)  is static;
+    ---Purpose : Sets a Keep Status at current Length. It means that at next
+    --           Move, the new line will begin by characters between Keep + 1
+    --           and current Length
+
+    CanGet (me : in out; more : Integer) returns Boolean  is static;
+    ---Purpose : Returns True if there is room enough to add <more> characters
+    --           Else, it is required to Dump the Buffer before refilling it
+    --           <more> is recorded to manage SetKeep status
+
+    Content (me) returns CString  is static;
+    ---Purpose : Returns the Content of the LineBuffer
+    -- was C++ : return const
+
+    Length (me) returns Integer  is static;
+    ---Purpose : Returns the Length of the LineBuffer
+
+    Clear (me : in out)  is static;
+    ---Purpose : Clears completely the LineBuffer
+
+    FreezeInitial (me : in out) is static;
+    ---Purpose : Inhibits effect of SetInitial until the next Move (i.e. Keep)
+    --           Then Prepare will not insert initial blanks, but further ones
+    --           will. This allows to cancel initial blanks on an internal Split
+    --           A call to SetInitial has no effect on this until Move
+
+    Prepare (me : in out)  is static private;
+    ---Purpose : Prepares Move : Inserts Initial Blanks if required, and
+    --           determines if SetKeep can be supported (it cannot be if Length
+    --           + Next String to get (see CanGet) overpass Max Size)
+
+    Keep (me : in out)  is static private;
+    ---Purpose : Keeps characters from SetKeep. If SetKeep is Zero, equivalent
+    --           to Clear
+
+    Move (me : in out; str : in out AsciiString from TCollection)  is static;
+    ---Purpose : Fills a AsciiString <str> with the Content of the Line Buffer,
+    --           then Clears the LineBuffer
+
+    Move (me : in out; str : mutable HAsciiString from TCollection)  is static;
+    ---Purpose : Same as above, but <str> is known through a Handle
+
+    Moved (me : in out) returns mutable HAsciiString from TCollection;
+    ---Purpose : Same as above, but generates the HAsciiString
+
+
+    Add (me : in out; text : CString)
+    ---Purpose : Adds a text as a CString. Its Length is evaluated from the
+    --           text (by C function strlen)
+    	raises OutOfRange  is static;
+    --           Error if there remains no room enough
+
+    Add (me : in out; text : CString; lntext : Integer)
+    ---Purpose : Adds a text as a CString. Its length is given as <lntext>
+    	raises OutOfRange  is static;
+    --           Error if there remains no room enough
+
+    Add (me : in out; text : AsciiString from TCollection)
+    ---Purpose : Adds a text as a AsciiString from TCollection
+    	raises OutOfRange  is static;
+    --           Error if there remains no room enough
+
+    Add (me : in out; text : Character)
+    ---Purpose : Adds a text made of only ONE Character
+    	raises OutOfRange  is static;
+    --           Error if there remains no room enough
+
+fields
+
+    theline : AsciiString from TCollection;
+    themax  : Integer;
+    theinit : Integer;
+    thekeep : Integer;
+    theget  : Integer;
+    thelen  : Integer;
+    thefriz : Integer;
+    thekept : Character;
+
+end LineBuffer;

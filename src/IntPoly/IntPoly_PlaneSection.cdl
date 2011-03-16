@@ -1,0 +1,105 @@
+-- File:	IntPoly_PlaneSection.cdl
+-- Created:	Mon Jul 17 10:30:44 1995
+-- Author:	Stagiaire Alain JOURDAIN
+--		<ajo@phobox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PlaneSection from IntPoly
+
+  ---Purpose: determines the section of a triangulated shape by a plane.
+  --          The section is a set of edges. 
+
+
+uses  Real                      from Standard,
+      Integer                   from Standard,
+      Boolean                   from Standard,
+      Shape                     from TopoDS,
+      Edge                      from TopoDS,
+      Trsf                      from gp,
+      Pln                       from gp,
+      Pnt                       from gp,
+      Pnt2d                     from gp,
+      SequenceOfPnt2d           from TColgp,
+      SequenceOfSequenceOfPnt2d from IntPoly,
+      IndexedMapOfPnt2d         from IntPoly,
+      Pnt2dHasher               from IntPoly
+      
+is    Create
+      returns PlaneSection from IntPoly;
+	
+      Create (S : Shape from TopoDS;
+      	      P : Pln   from gp)
+      returns PlaneSection from IntPoly;
+	
+      Section (me : in out)
+      is static;
+
+      Intersect (me : in out; Point1    :     Pnt   from gp;
+                              Point2    :     Pnt   from gp;
+                              Point3    :     Pnt   from gp;
+                              OutPoint1 : out Pnt2d from gp;
+                              OutPoint2 : out Pnt2d from gp)
+      ---Purpose: determines the 2 2D-points resulting of the intersection
+      --          of the triangle (Point1,Point2,Point3) by the plane
+      returns Boolean from Standard;	 
+
+      Insert (me : in out; OldPnt : Pnt2d from gp;
+                           ComPnt : Pnt2d from gp;
+                           NewPnt : Pnt2d from gp)
+      ---Purpose: sees whether OldPnt and NewPnt begins or ends a section
+      --          created before and adds the 2 others points.
+      --          If not, creates a section
+      is static;
+      
+      Concat (me : in out; BegPnt :     Pnt2d from gp;
+                           EndPnt :     Pnt2d from gp;
+                           OutPnt : out Pnt2d from gp)
+      ---Purpose: sees whether BegPnt or EndPnt begins or ends a section
+      --          created before, and returns the other point to continue 
+      --          the construction
+      --          Returns 2 if the construction is 'Forward'
+      --          Returns 1 if the construction is 'Previous'
+      --          Returns 0 if not and creates a section
+      returns Integer from Standard;
+      
+      ConcatSection (me : in out; Section   : in out SequenceOfPnt2d from TColgp; 
+                                  NbSection :        Integer         from Standard;
+				  Index     :        Integer         from Standard)
+      ---Purpose: sees whether Section begins or ends another one in  mySection,
+      --          from the rank 'Index' to the last one 'NbSection'
+      is static;
+      
+      ForwConstruction (me : in out; Point : Pnt2d from gp)
+      ---Purpose: builds a section from Point in this way  
+      --                       ___   ___   ___   ___
+      --               Point--/__/--/__/--/__/--/__/--->
+      is static;
+
+      PrevConstruction (me : in out; Point : Pnt2d from gp)
+      ---Purpose: builds a section from Point in this way  
+      --                    ___   ___   ___   ___
+      --               <---/__/--/__/--/__/--/__/--Point
+       is static;
+
+      NbEdges (me : in out)
+      returns Integer from Standard;
+      
+      Edge (me : in out; Index : Integer from Standard)
+      ---Purpose: builds an edge from a sequence of Pnt2d
+      --          this is a part of the section
+      returns Edge from TopoDS;
+      
+
+fields
+      myShape         : Shape                     from TopoDS;
+      myTransform     : Trsf                      from gp;
+      myBackTransform : Trsf                      from gp;
+      mySection       : SequenceOfSequenceOfPnt2d from IntPoly;
+      myMapBegPoints  : IndexedMapOfPnt2d         from IntPoly;
+      myMapEndPoints  : IndexedMapOfPnt2d         from IntPoly;
+      myCpt           : Integer                   from Standard;
+      myIndex         : Integer                   from Standard;
+      myNbEdges       : Integer                   from Standard;
+      
+end PlaneSection;

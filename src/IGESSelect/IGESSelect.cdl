@@ -1,0 +1,100 @@
+-- File:	IGESSelect.cdl
+-- Created:	Tue May 31 13:36:04 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+package IGESSelect
+
+    ---Purpose : This package defines the library of the most used tools for
+    --           IGES Files : Selections & Modifiers specific to the IGES norm,
+    --           and the most needed converters
+
+uses MMgt, TCollection, TColStd, Dico, Message,
+     Geom, Interface, IFGraph, IFSelect, IGESData
+
+is
+
+    class EditHeader;
+    class EditDirPart;
+
+    class IGESTypeForm;
+    class IGESName;
+    class SignStatus;
+    class SignLevelNumber;
+    class SignColor;
+
+    class CounterOfLevelNumber;
+    class ViewSorter;
+
+    class DispPerSingleView;    -- Packets for SingleViews (+ Drawing Frame)
+    class DispPerDrawing;       -- Packets for Drawings
+
+    class SelectVisibleStatus;  -- Select visible or blanked entities
+    class SelectSubordinate;    -- Select according Subordinate Status
+    class SelectLevelNumber;    -- Select according a level number
+    class SelectName;           -- Select according Name (Short/Name Property)
+
+    class SelectFromSingleView; -- Select items associated with some views
+    class SelectFromDrawing;    -- Select items concerned by some drawings
+    class SelectSingleViewFrom; -- Pick single views attached to some items
+    class SelectDrawingFrom;    -- Pick drawings which concern some items
+
+    class SelectBypassGroup;    -- Select bypassing groups
+    class SelectBypassSubfigure; -- Select bypassing subfigures
+    class SelectBasicGeom;      -- Select basic curves3d (drops surfaces,etc)
+    class SelectFaces;          -- Select some geometries : Faces
+    class SelectPCurves;        -- Select PCurves of Faces
+
+
+    deferred class ModelModifier  instantiates
+    	ModelModifier from IFSelect (IGESModel from IGESData, Protocol from IGESData);
+    deferred class FileModifier   instantiates
+    	FileModifier  from IFSelect (IGESWriter from IGESData);
+
+    class FloatFormat;          -- File Modifier to control Float Format
+    class AddFileComment;       --  "      "     to add comment start lines
+
+    class UpdateFileName;       -- Set new file name
+    class UpdateCreationDate;   -- Set new creation date
+    class UpdateLastChange;     -- Set new last change date
+    class SetVersion5;          -- Set the version to IGES5 (with LastChange)
+    class SetGlobalParameter;   -- Set the value of a global parameter
+
+    class AutoCorrect;          -- Does the absolutely evident corrections
+    class ComputeStatus;        -- Recompute SubordinateStatus & UseFlag
+    class RebuildDrawings;      -- Rebuild drawings in transferred models
+    class RebuildGroups;        -- Rebuild groups in transferred models
+    class AddGroup;             -- Adds a Group with slected entities
+
+    class ChangeLevelNumber;    -- Changes Level Number (single) to new value
+    class ChangeLevelList;      -- Changes Level List to single Level Number
+
+    class SplineToBSpline;      -- Convert Spline(112/126) to BSpline(114/128)
+
+    class RemoveCurves;         -- Remove Curves on Surface (141..144)
+    class SetLabel;             -- Sets or Clears ShortLabel
+
+    class WorkLibrary;
+    class Activator;
+    class Dumper;
+
+    Run;
+    ---Purpose : Simply gives a prompt for a conversational action on standard
+    --           input/output. Returns the status of a 
+
+    WhatIges (ent : IGESEntity from IGESData; G : Graph from Interface;
+    	      sup : out IGESEntity from IGESData; index : out Integer)
+    	returns Integer;
+    ---Purpose : Gives a quick analysis of an IGES Entity in the context of a
+    --           model (i.e. a File) described by a Graph.
+    --           Returned values are :
+    --           <sup> : the most meaningfull super entity, if any (else Null)
+    --           <index> : meaningfull index relating to super entity, if any
+    --           <returned> : a status which helps exploitation of <sup>, by
+    --             giving a case
+    --             (normally, types of <ent> and <sup> should suffice to
+    --             known the case)
+
+end IGESSelect;

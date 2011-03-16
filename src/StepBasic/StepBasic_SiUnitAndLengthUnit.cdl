@@ -1,0 +1,41 @@
+-- File:        SiUnitAndLengthUnit.cdl
+-- Created:     Fri Dec  1 11:11:34 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SiUnitAndLengthUnit from StepBasic inherits SiUnit from StepBasic 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    LengthUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    SiPrefix from StepBasic, 
+    SiUnitName from StepBasic
+    
+is
+
+    Create returns mutable SiUnitAndLengthUnit;
+	---Purpose: Returns a SiUnitAndLengthUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; hasAprefix: Boolean from Standard;
+	               aPrefix   : SiPrefix from StepBasic;
+	               aName     : SiUnitName from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetLengthUnit(me: mutable; aLengthUnit: mutable LengthUnit);
+    
+    LengthUnit (me) returns mutable LengthUnit;
+
+fields
+
+    lengthUnit: LengthUnit from StepBasic;
+
+end SiUnitAndLengthUnit;

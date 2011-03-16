@@ -1,0 +1,160 @@
+--
+-- File      :  AttributeDef.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class AttributeDef from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES Attribute Table Definition Entity,
+        --          Type <322> Form [0, 1, 2] in package IGESDefs.
+        --          This is class is used to support the concept of well
+        --          defined collection of attributes, whether it is a table
+        --          or a single row of attributes.
+
+uses
+
+        HAsciiString           from TCollection,
+        HArray1OfInteger       from TColStd,
+        HArray1OfTransient     from TColStd,
+        HArray1OfReal          from TColStd,
+        HArray1OfHAsciiString  from Interface,
+        HArray1OfIGESEntity    from IGESData,
+        TextDisplayTemplate    from IGESGraph,
+        HArray1OfTextDisplayTemplate          from IGESGraph,
+        HArray1OfHArray1OfTextDisplayTemplate from IGESDefs
+
+raises DimensionMismatch, OutOfRange, NullObject
+
+is
+
+        Create returns mutable AttributeDef;
+
+        -- Specific methods for the entity
+
+        Init(me                 : mutable;
+             aName              : HAsciiString;
+             aListType          : Integer;
+             attrTypes          : HArray1OfInteger;
+             attrValueDataTypes : HArray1OfInteger;
+             attrValueCounts    : HArray1OfInteger;
+             attrValues         : HArray1OfTransient from TColStd;
+             attrValuePointers  : HArray1OfHArray1OfTextDisplayTemplate)
+        raises DimensionMismatch;
+        -- This method is used to set the fields of the
+        -- class AttributeDef
+        --       - aName              : Attribute Table Names
+        --       - aListType          : Attribute List Types
+        --       - attrTypes          : Attribute Types
+        --       - attrValueDataTypes : Attribute Value Data Types
+        --       - attrValueCounts    : Attribute Value Counts
+        --       - attrValues         : Attribute Values
+        --       - attrValuePointers  : Attribute Value Pointers to 
+        --                              TextDisplayTemplate
+        -- raises exceptions if lengths of attrTypes, attrValueDataTypes,
+        -- and attrValueCounts are not same
+
+    	HasTableName (me) returns Boolean;
+	---Purpose : Returns True if a Table Name is defined
+
+        TableName(me) returns HAsciiString from TCollection;
+        ---Purpose : returns the Attribute Table name, or comment
+        -- (default = null, no name : seeHasTableName)
+
+        ListType(me) returns Integer;
+        ---Purpose : returns the Attribute List Type
+
+        NbAttributes(me) returns Integer;
+        ---Purpose : returns the Number of Attributes
+
+        AttributeType(me ; num : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the num'th Attribute Type
+        -- raises exception if num <= 0 or num > NbAttributes()
+
+        AttributeValueDataType(me ; num : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the num'th Attribute value data type
+        -- raises exception if num <= 0 or num > NbAttributes()
+
+        AttributeValueCount(me; num : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the num'th Attribute value count
+        -- raises exception if num <= 0 or num > NbAttributes()
+
+        HasValues(me) returns Boolean;
+        ---Purpose : returns false if Values are defined (i.e. for Form = 1 or 2)
+
+        HasTextDisplay(me) returns Boolean;
+        ---Purpose : returns false if TextDisplays are defined (i.e. for Form = 2)
+
+        AttributeTextDisplay(me ; AttrNum : Integer; PointerNum : Integer)
+        returns TextDisplayTemplate
+        raises OutOfRange;
+        -- returns Null handle if form is 0 or 1
+        -- returns PointerNum'th TextDisplayTemplate of AttrNum'th attribute
+        -- raises exception if
+        --      AttrNum <= 0 or num > NbAttributes()
+        --      PointerNum <=0 or PointerNum > AttributeValueCount(AttrNum)
+
+
+        AttributeList (me ; AttrNum : Integer)  returns Transient
+	---Purpose : Returns the List of Attributes <AttrNum>, as a Transient.
+	---Purpose :           Its effective Type depends of the Type of Attribute :
+	--           HArray1OfInteger for Integer, Logical(0-1),
+	--           HArray1OfReal for Real, HArray1OfHSaciiString for String,
+	--           HArray1OfIGESEntity for Entity (Pointer)
+	--           See methods AttributeAs... for an accurate access
+            raises OutOfRange;
+        -- Error if AttrNum <= 0 or num > NbAttributes()
+        --          PointerNum <=0 or PointerNum > AttributeValueCount(AttrNum)
+
+    AttributeAsInteger (me; AttrNum, ValueNum : Integer) returns Integer
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not an Integer
+
+    AttributeAsReal    (me; AttrNum, ValueNum : Integer) returns Real
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as a Real
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not a Real
+
+    AttributeAsString  (me; AttrNum, ValueNum : Integer)
+    	returns HAsciiString from TCollection
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
+            raises OutOfRange, NullObject;
+    --   Error if Indices out of Range, or no Value defined, or not a String
+
+    AttributeAsEntity  (me; AttrNum, ValueNum : Integer) returns IGESEntity
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not a Entity
+
+    AttributeAsLogical (me; AttrNum, ValueNum : Integer) returns Boolean
+    ---Purpose : Returns Attribute Value <AttrNum, rank ValueNum> as a Boolean
+            raises OutOfRange, NullObject;
+    ---Purpose :   Error if Indices out of Range, or no Value defined, or not a Logical
+
+fields
+
+--
+--  Class    : IGESDefs_AttributeDef
+--
+--  Purpose  : Declaration of variables specific to AttributeDef.
+--
+--  Reminder : An AttributeDef Entity provides a template for the
+--             instance of attribute tables. It includes a table
+--             name and for each attribute, an attribute type,
+--             data type, and a count.
+
+        theName               : HAsciiString;
+        theListType           : Integer;
+        theAttrTypes          : HArray1OfInteger;
+        theAttrValueDataTypes : HArray1OfInteger;
+        theAttrValueCounts    : HArray1OfInteger;
+        theAttrValues         : HArray1OfTransient from TColStd;
+        theAttrValuePointers  : HArray1OfHArray1OfTextDisplayTemplate;
+
+end AttributeDef;

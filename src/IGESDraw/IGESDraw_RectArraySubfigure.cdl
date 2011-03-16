@@ -1,0 +1,142 @@
+--
+-- File      :  RectArraySubfigure.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class RectArraySubfigure from IGESDraw 	
+inherits IGESEntity 
+
+        --- Purpose : Defines IGES Rectangular Array Subfigure Instance Entity,
+        --            Type <412> Form Number <0> in package IGESDraw 
+        --            Used to produce copies of object called the base entity,
+        --            arranging them in equally spaced rows and columns
+
+uses
+
+        HArray1OfInteger from TColStd,
+        XYZ              from gp,
+        Pnt              from gp 
+
+
+raises OutOfRange
+
+is
+
+        Create returns mutable RectArraySubfigure;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me            : mutable;
+              aBase         : IGESEntity;
+              aScale        : Real;
+              aCorner       : XYZ;
+              nbCols        : Integer;
+              nbRows        : Integer;
+              hDisp         : Real;
+              vtDisp        : Real;
+              rotationAngle : Real;
+              doDont        : Integer;
+              allNumPos     : HArray1OfInteger);
+        ---Purpose : This method is used to set the fields of the class
+        --           RectArraySubfigure
+        --       - aBase         : a base entity which is replicated
+        --       - aScale        : Scale Factor
+        --       - aCorner       : lower left hand corner for the entire array
+        --       - nbCols        : Number of columns of the array
+        --       - nbRows        : Number of rows of the array
+        --       - hDisp         : Column separations
+        --       - vtDisp        : Row separation
+        --       - rotationAngle : Rotation angle specified in radians
+        --       - allDont       : DO-DON'T flag to control which portion
+        --                         to display
+        --       - allNumPos     : List of positions to be or not to be
+        --                         displayed
+
+        BaseEntity (me) returns IGESEntity;
+        ---Purpose : returns the base entity, copies of which are produced
+
+        ScaleFactor (me) returns Real;
+        ---Purpose : returns the scale factor
+
+        LowerLeftCorner (me) returns Pnt;
+        ---Purpose : returns coordinates of lower left hand corner for the entire array
+
+        TransformedLowerLeftCorner (me) returns Pnt;
+        ---Purpose : returns Transformed coordinates of lower left corner for the array
+
+        NbColumns (me) returns Integer;
+        ---Purpose : returns number of columns in the array
+
+        NbRows (me) returns Integer;
+        ---Purpose : returns number of rows in the array
+
+        ColumnSeparation (me) returns Real;
+        ---Purpose : returns horizontal distance between columns
+
+        RowSeparation (me) returns Real;
+        ---Purpose : returns vertical distance between rows
+
+        RotationAngle (me) returns Real;
+        ---Purpose : returns rotation angle in radians
+
+        DisplayFlag (me) returns Boolean;
+        ---Purpose : returns True if (ListCount = 0) i.e., all elements to be displayed
+
+        ListCount (me) returns Integer;
+        ---Purpose : returns 0 if all replicated entities to be displayed
+
+        DoDontFlag (me) returns Boolean;
+        ---Purpose : returns 0 if half or fewer of the elements of  the array are defined
+        --         1 if half or more of the elements are defined
+
+        PositionNum (me; Index : Integer) returns Boolean;
+        ---Purpose : returns whether Index is to be processed (DO)
+        -- or not to be processed(DON'T)
+        -- if (ListCount = 0) return theDoDontFlag
+
+        ListPosition (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the Index'th value position
+        -- raises exception if Index <= 0 or Index > ListCount()
+
+fields
+
+--
+-- Class    : IGESDraw_RectArraySubfigure
+--
+-- Purpose  : Declaration of the variables specific to a RectArraySubfigure.
+--
+-- Reminder : A  Rectangular Array Subfigure Instance is defined by :
+--                  - a base entity which is replicated
+--                  - Number of columns and rows of the array
+--                  - Column and row separations
+--                  - lower left hand corner for the entire array
+--                  - angle of rotation specified in radians
+--                  - a DO-DON'T flag to control which portion to display
+--                  - List of positions.
+--
+
+        theBaseEntity        : IGESEntity;
+
+        theScaleFactor       : Real;
+
+        theLowerLeftCorner   : XYZ;
+
+        theNbColumns         : Integer;
+
+        theNbRows            : Integer;
+
+        theColumnSeparation  : Real;
+
+        theRowSeparation     : Real;
+
+        theRotationAngle     : Real;
+
+        theDoDontFlag        : Integer;
+
+        thePositions         : HArray1OfInteger;
+
+end RectArraySubfigure;

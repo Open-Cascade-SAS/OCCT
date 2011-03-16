@@ -1,0 +1,59 @@
+-- File:	IGESDimen_ToolFlagNote.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolFlagNote  from IGESDimen
+
+    ---Purpose : Tool to work on a FlagNote. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses FlagNote from IGESDimen,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolFlagNote;
+    ---Purpose : Returns a ToolFlagNote, ready to work
+
+
+    ReadOwnParams (me; ent : mutable FlagNote;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : FlagNote;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : FlagNote;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a FlagNote <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : FlagNote) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : FlagNote;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : FlagNote; entto : mutable FlagNote;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : FlagNote;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolFlagNote;

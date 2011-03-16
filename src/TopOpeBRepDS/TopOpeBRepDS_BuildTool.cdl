@@ -1,0 +1,245 @@
+-- File:	TopOpeBRepDS_BuildTool.cdl
+-- Created:	Thu Jun 17 14:35:07 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class BuildTool from TopOpeBRepDS 
+
+	---Purpose: Provides  a  Tool  to  build  topologies. Used  to
+	--          instantiate the Builder algorithm.
+
+uses
+
+    Orientation from TopAbs,
+    Shape       from TopoDS,
+    Vertex      from TopoDS,
+    Edge        from TopoDS,
+    Face        from TopoDS,
+    Surface     from TopOpeBRepDS,
+    Curve       from TopOpeBRepDS,
+    Curve       from Geom,
+    Point       from TopOpeBRepDS,
+    DataStructure from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    Curve       from Geom2d,
+    Surface from Geom,
+    Builder     from BRep,
+    GeomTool    from TopOpeBRepTool,
+    CurveTool from TopOpeBRepTool,
+    OutCurveType from TopOpeBRepTool
+
+is
+
+    Create returns BuildTool from TopOpeBRepDS;
+
+    Create (OutCurveType : OutCurveType from TopOpeBRepTool)
+    returns BuildTool from TopOpeBRepDS;
+
+    Create (GT : GeomTool from TopOpeBRepTool) 
+    returns BuildTool from TopOpeBRepDS;
+
+    GetGeomTool(me) returns GeomTool from TopOpeBRepTool
+    ---C++: return const &
+    is static;
+
+    ChangeGeomTool(me : in out) returns GeomTool from TopOpeBRepTool
+    ---C++: return &
+    is static;
+
+    MakeVertex(me; V : out Shape from TopoDS; P : Point from TopOpeBRepDS)
+    is static;
+    
+    --- ================================================================
+    --- supprimer la syntaxe sans DS
+    MakeEdge(me; E : out Shape from TopoDS; C : Curve from TopOpeBRepDS)
+    is static;
+
+    MakeEdge(me; E : out Shape from TopoDS; 
+    	    	 C : Curve from TopOpeBRepDS;
+    	    	 DS : DataStructure from TopOpeBRepDS)
+    is static;
+    --- ================================================================
+
+    MakeEdge(me; E : out Shape from TopoDS; 
+    	      	 C : Curve from Geom;
+    	    	 Tol : Real from Standard)
+    is static;
+
+    MakeEdge(me; E : out Shape from TopoDS)
+    is static;
+
+    MakeWire(me; W : out Shape from TopoDS)
+    is static;
+    
+    MakeFace(me; F : out Shape from TopoDS; S : Surface from TopOpeBRepDS)
+    is static;
+
+    MakeShell(me; Sh : out Shape from TopoDS)
+    is static;
+    
+    MakeSolid(me; S : out Shape from TopoDS)
+    is static;
+    
+    CopyEdge(me; Ein : Shape from TopoDS; 
+    	    	 Eou : in out Shape from TopoDS)
+	---Purpose: Make an edge <Eou> with the curve of the edge <Ein>
+    is static;
+        
+    GetOrientedEdgeVertices(me; E  : out Edge from TopoDS;
+	                        Vmin, Vmax : out Vertex from TopoDS;
+	                        Parmin : out Real from Standard;
+	                        Parmax : out Real from Standard) 
+    is static;
+    
+    UpdateEdgeCurveTol(me; F1, F2 : Face from TopoDS;
+	                   E : out Edge from TopoDS;
+	                   C3Dnew : Curve from Geom;
+    	    	           tol3d : Real from Standard;
+    	    	           tol2d1 : Real from Standard;
+    	    	           tol2d2 : Real from Standard;
+    	    	           newtol : out Real from Standard;
+    	    	           newparmin : out Real from Standard;
+    	    	           newparmax : out Real from Standard) 
+    is static;
+    
+    ApproxCurves(me; C : Curve from TopOpeBRepDS;
+		     E  : out Edge from TopoDS;
+	             inewC : out Integer from Standard;
+    	    	     HDS : HDataStructure from TopOpeBRepDS) 
+    is static;
+    
+    ComputePCurves(me; C : Curve from TopOpeBRepDS;
+    	               E  : out Edge from TopoDS;
+                       newC : out Curve from TopOpeBRepDS;
+    	    	       CompPC1 : Boolean from Standard;
+    	    	       CompPC2 : Boolean from Standard;
+    	    	       CompC3D : Boolean from Standard) 
+    is static;
+
+    PutPCurves(me; newC : Curve from TopOpeBRepDS;
+    	           E  : out Edge from TopoDS;
+    	    	   CompPC1 : Boolean from Standard;
+    	    	   CompPC2 : Boolean from Standard) 
+    is static;
+
+    RecomputeCurves(me; C : Curve from TopOpeBRepDS;
+    	                oldE : Edge from TopoDS;
+    	                E  : out Edge from TopoDS;
+	                inewC : out Integer from Standard;
+    	    	        HDS : HDataStructure from TopOpeBRepDS) 
+    is static;
+
+    CopyFace(me; Fin : Shape from TopoDS; Fou : in out Shape from TopoDS)
+	---Purpose: Make a face <Fou> with the surface of the face <Fin>
+    is static;
+    
+    AddEdgeVertex(me; 
+    	    	  Ein : Shape from TopoDS; 
+    	    	  Eou : in out Shape from TopoDS; 
+    	    	  V : Shape from TopoDS)
+    is static;
+    
+    AddEdgeVertex(me; 
+    	    	  E : in out Shape from TopoDS; 
+    	    	  V : Shape from TopoDS)
+    is static;
+    
+    AddWireEdge(me; W : in out Shape from TopoDS; E : Shape from TopoDS)
+    is static;
+    
+    AddFaceWire(me; F : in out Shape from TopoDS; W : Shape from TopoDS)
+    is static;
+    
+    AddShellFace(me; Sh : in out Shape from TopoDS; F : Shape from TopoDS)
+    is static;
+    
+    AddSolidShell(me; S : in out Shape from TopoDS; Sh : Shape from TopoDS)
+    is static;
+    
+    Parameter(me; E : Shape from TopoDS; 
+    	    	  V : Shape from TopoDS;  
+    	          P : Real)
+	---Purpose: Sets the parameter <P>  for  the vertex <V> on the
+	--          edge <E>.
+    is static;
+
+    Range(me; E : Shape from TopoDS;
+    	      first,last : Real from Standard)
+	---Purpose: Sets the range of edge <E>.
+    is static;
+
+    UpdateEdge(me; Ein : Shape from TopoDS;
+    		   Eou : in out Shape from TopoDS)
+	---Purpose: Sets the range of edge <Eou> from <Ein>
+	--          only when <Ein> has a closed geometry.
+    is static;
+
+    Parameter(me; C : Curve from TopOpeBRepDS;
+                  E : in out Shape from TopoDS;
+    	    	  V : in out Shape from TopoDS)
+	---Purpose: Compute the parameter of  the vertex <V>, supported
+	--          by   the edge <E>, on the curve  <C>.
+    is static;
+    
+    Curve3D(me; E : in out Shape from TopoDS; 
+    	        C : Curve from Geom;
+    	    	Tol : Real from Standard)  
+	---Purpose: Sets the  curve <C> for the edge  <E>
+    is static;
+
+    TranslateOnPeriodic(me; F : in out Shape from TopoDS; 
+    	       	    	    E : in out Shape from TopoDS; 
+    	       	    	    C : in out Curve from Geom2d)
+    is static private;
+
+    PCurve(me; F : in out Shape from TopoDS; 
+    	       E : in out Shape from TopoDS; 
+    	       C : Curve from Geom2d)
+	---Purpose: Sets  the pcurve <C> for  the edge <E> on the face
+	--          <F>.  If OverWrite is True the old pcurve if there
+	--          is one  is overwritten, else the  two  pcurves are
+	--          set.
+    is static;
+
+    PCurve(me; F : in out Shape from TopoDS; 
+    	       E : in out Shape from TopoDS; 
+    	       CDS : Curve from TopOpeBRepDS;
+    	       C : Curve from Geom2d)
+    is static;
+    
+    Orientation(me; S : in out Shape from TopoDS ; O : Orientation from TopAbs)
+    is static;
+
+    Orientation(me; S : Shape from TopoDS) returns Orientation from TopAbs
+    is static;
+
+    Closed(me; S : in out Shape from TopoDS; B : Boolean from Standard)
+    is static;
+
+    Approximation(me) returns Boolean from Standard
+    is static;
+
+    UpdateSurface(me; F : Shape from TopoDS; SU : Surface from Geom) is static;
+
+    UpdateSurface(me; E,oldF,newF : Shape from TopoDS) is static;
+
+    OverWrite(me) returns Boolean from Standard is static;
+
+    OverWrite(me : in out; O : Boolean from Standard) is static;
+
+    Translate(me) returns Boolean from Standard is static;
+
+    Translate(me : in out; T : Boolean from Standard) is static;
+
+fields
+    
+    myBuilder   : Builder from BRep;
+    myCurveTool : CurveTool from TopOpeBRepTool;
+    myOverWrite : Boolean from Standard;
+    myTranslate : Boolean from Standard; -- consigne de recadrage des pcurves 
+                                         -- sur surfaces periodiques  
+    
+end BuildTool from TopOpeBRepDS;

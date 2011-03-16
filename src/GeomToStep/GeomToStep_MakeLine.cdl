@@ -1,0 +1,44 @@
+-- File:	GeomToStep_MakeLine.cdl
+-- Created:	Mon Jun 14 15:51:51 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeLine from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Line from Geom and Lin from gp, and the class
+    --          Line from StepGeom which describes a line from
+    --          Prostep. 
+  
+uses Lin  from gp,
+     Lin2d from gp,
+     Line from Geom,
+     Line from Geom2d,
+     Line from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( L : Lin from gp ) returns MakeLine;
+
+Create ( L : Lin2d from gp ) returns MakeLine;
+
+Create ( C : Line from Geom ) returns MakeLine;
+
+Create ( C : Line from Geom2d ) returns MakeLine;
+
+Value (me) returns Line from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+ 
+fields
+
+    theLine : Line from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeLine;
+
+

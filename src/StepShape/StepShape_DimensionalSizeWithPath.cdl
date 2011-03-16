@@ -1,0 +1,33 @@
+-- File:	StepShape_DimensionalSizeWithPath.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class DimensionalSizeWithPath from StepShape
+inherits DimensionalSize from StepShape
+
+    ---Purpose: Representation of STEP entity DimensionalSizeWithPath
+
+uses
+    ShapeAspect from StepRepr,
+    HAsciiString from TCollection
+
+is
+    Create returns DimensionalSizeWithPath from StepShape;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDimensionalSize_AppliesTo: ShapeAspect from StepRepr;
+                       aDimensionalSize_Name: HAsciiString from TCollection;
+                       aPath: ShapeAspect from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Path (me) returns ShapeAspect from StepRepr;
+	---Purpose: Returns field Path
+    SetPath (me: mutable; Path: ShapeAspect from StepRepr);
+	---Purpose: Set field Path
+
+fields
+    thePath: ShapeAspect from StepRepr;
+
+end DimensionalSizeWithPath;

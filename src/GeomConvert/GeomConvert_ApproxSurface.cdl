@@ -1,0 +1,78 @@
+
+-- File:	GeomConvert_ApproxSurface.cdl
+-- Created:	Tue Aug 26 10:44:03 1997
+-- Author:	Stepan MISHIN
+--		<smn@toctox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ApproxSurface from GeomConvert 
+
+        ---Purpose: A framework to convert a surface to a BSpline
+    	-- surface. This is done by approximation to a BSpline
+    	-- surface within a given tolerance.
+        
+uses 
+
+    Pnt             from gp,
+    Surface         from Geom,
+    OffsetSurface   from Geom,
+    BSplineSurface  from Geom, 
+    Shape           from GeomAbs,     
+    ApproxAFunc2Var from AdvApp2Var, 
+    OutOfRange      from Standard 
+    
+raises OutOfRange from Standard
+
+is
+    
+    Create(Surf: Surface from Geom;
+    	   Tol3d: Real; 
+           UContinuity : Shape from GeomAbs;
+           VContinuity : Shape from GeomAbs;
+           MaxDegU : Integer;
+       	   MaxDegV : Integer;	   
+    	   MaxSegments: Integer; 
+	   PrecisCode : Integer) returns ApproxSurface ;
+    	---Purpose: Constructs a surface approximation framework defined by
+    	-- -   the conic Surf
+    	-- -   the tolerance value Tol3d
+    	-- -   the degree of continuity UContinuity, VContinuity
+    	--  in the directions of the U and V parameters
+    	-- -   the highest degree MaxDegU, MaxDegV which
+    	--   the polynomial defining the BSpline curve may
+    	--   have in the directions of the U and V parameters
+    	-- -   the maximum number of segments MaxSegments
+    	--   allowed in the resulting BSpline curve
+    	-- -   the index of precision PrecisCode.  
+
+
+    Surface(me)   returns BSplineSurface from Geom;
+    	---Purpose: Returns the BSpline surface resulting from the approximation algorithm.
+    
+
+    IsDone(me)    returns  Boolean  from  Standard; 
+    	--- Purpose: Returns Standard_True if the approximation has be done
+      
+    HasResult(me) returns Boolean;
+    	--- Purpose: Returns true if the approximation did come out with a result that
+    	--  is not NECESSARILY within the required tolerance or a result
+    	--  that is not recognized with the wished continuities. 
+    
+    MaxError(me)  returns Real  from  Standard;
+    	--- Purpose: Returns the greatest distance between a point on the
+    	-- source conic surface and the BSpline surface
+    	-- resulting from the approximation (>0 when an approximation
+        --   has been done, 0 if no  approximation )
+     
+    Dump(me ; o : in out OStream);
+    	---Purpose: Prints on the stream o informations on the current state of the object.
+             
+fields
+ 
+    mySurf     : Surface         from Geom;
+    myIsDone   : Boolean         from Standard; 
+    myHasResult: Boolean         from Standard; 
+    myBSplSurf : BSplineSurface  from Geom; 
+    myMaxError : Real            from Standard;
+end;

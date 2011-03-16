@@ -1,0 +1,17 @@
+-- File:	StepRepr_PromissoryUsageOccurrence.cdl
+-- Created:	Tue Jun 30 17:14:09 1998
+-- Author:	Administrateur Atelier XSTEP
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class PromissoryUsageOccurrence  from StepRepr    inherits AssemblyComponentUsage
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable PromissoryUsageOccurrence;
+
+end PromissoryUsageOccurrence;

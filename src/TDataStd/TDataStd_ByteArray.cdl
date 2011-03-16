@@ -1,0 +1,142 @@
+-- File:        TDataStd_ByteArray.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE 2007
+
+class ByteArray from TDataStd inherits Attribute from TDF
+
+    ---Purpose: An array of Byte (unsigned char) values.
+
+uses 
+    GUID                from Standard,
+    Attribute           from TDF,
+    Label               from TDF,
+    RelocationTable     from TDF, 
+    DeltaOnModification from TDF,
+    HArray1OfByte       from TColStd
+
+is 
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const & 
+    ---Purpose: Returns an ID for array.
+    returns GUID from Standard;
+
+    Set (myclass; 
+    	 label : Label from TDF; 
+    	 lower, upper : Integer from Standard; 
+    	 isDelta : Boolean from Standard = Standard_False)
+    ---Purpose: Finds or creates an attribute with the array. 
+    -- If <isDelta> == False, DefaultDeltaOnModification is used.     
+    -- If attribute is already set, all input parameters are refused 
+    -- and the found attribute is returned.
+    returns ByteArray from TDataStd;
+
+    
+    ---Category: ByteArray methods
+    --           =================
+
+    Init (me : mutable; 
+    	  lower, upper : Integer from Standard);
+    ---Purpose: Initialize the inner array with bounds from <lower> to <upper>  
+
+    SetValue (me : mutable; 
+    	      index :Integer from Standard; 
+    	      value : Byte from Standard);
+    ---Purpose: Sets the <Index>th element of the array to <Value>
+
+    Value (me; 
+    	   Index : Integer from Standard)
+    ---Purpose: Return the value of the <Index>th element of the array.
+    ---C++: alias operator ()
+    returns Byte from Standard;
+
+    Lower (me) 
+    ---Purpose: Returns the lower boundary of the array.
+    returns Integer from Standard;      
+
+    Upper (me) 
+    ---Purpose: Returns the upper boundary of the array.
+    returns Integer from Standard;
+    
+    Length (me) 
+    ---Purpose: Returns the number of elements in the array.
+    returns Integer from Standard;    
+
+    
+    ---Category: Advanced area
+    --           =============
+
+    InternalArray (me)
+    ---C++: return const
+    ---C++: inline 
+    returns HArray1OfByte from TColStd;
+    
+    ChangeArray (me : mutable;
+    	    	      newArray : HArray1OfByte from TColStd; 
+    	    	    	      isCheckItems : Boolean = Standard_True);
+    ---Purpose: Sets the inner array <myValue>  of the attribute to 
+    -- <newArray>. If value of <newArray> differs from <myValue>, Backup performed 
+    -- and myValue refers to new instance of HArray1OfInteger that holds <newArray>  
+    -- values. 
+    -- If <isCheckItems> equal True each item of <newArray> will be checked with each 
+    -- item of <myValue> for coincidence (to avoid backup).
+
+    GetDelta(me) returns Boolean from Standard;  
+    ---C++: inline       
+     
+    SetDelta(me : mutable; isDelta : Boolean from Standard);     
+    ---C++: inline      
+    ---Purpose: for internal  use  only!  
+     
+    RemoveArray(me  : mutable) is private;      
+    ---C++: inline  
+
+	  
+    ---Category: Methodes of TDF_Attribute
+    --           =========================
+    Create    
+    returns mutable ByteArray from TDataStd; 
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; 
+    	     with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    
+    Dump (me; 
+    	  OS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+    ---Category: methods to be added for using in DeltaOn Modification  
+    --           =====================================================
+    DeltaOnModification(me; anOldAttribute : Attribute from TDF)
+    	returns DeltaOnModification from TDF
+    	---Purpose : Makes a DeltaOnModification between <me> and
+    	--         <anOldAttribute>.  
+    	is redefined virtual;  
+	
+ 
+
+fields
+
+    myValue   : HArray1OfByte from TColStd;
+    myIsDelta : Boolean from Standard;    
+
+friends   
+    class DeltaOnModificationOfByteArray from TDataStd   
+    
+end ByteArray;

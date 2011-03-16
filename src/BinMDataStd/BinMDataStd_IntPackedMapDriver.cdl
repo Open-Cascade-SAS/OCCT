@@ -1,0 +1,35 @@
+-- File:	BinMDataStd_IntPackedMapDriver.cdl
+-- Created:	Wed Aug  1 14:22:51 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class IntPackedMapDriver from BinMDataStd inherits ADriver from BinMDF
+
+	---Purpose: TDataStd_IntPackedMap attribute Driver.
+
+uses
+    SRelocationTable from BinObjMgt,
+    RRelocationTable from BinObjMgt,
+    Persistent       from BinObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+is
+    Create (theMessageDriver:MessageDriver from CDM)
+        returns mutable IntPackedMapDriver from BinMDataStd;
+
+    NewEmpty (me)  returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from BinObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from BinObjMgt)
+        returns Boolean from Standard;
+    ---Purpose: persistent -> transient (retrieve)
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from BinObjMgt;
+              RelocTable : out SRelocationTable from BinObjMgt);
+    ---Purpose: transient -> persistent (store)
+
+end IntPackedMapDriver;

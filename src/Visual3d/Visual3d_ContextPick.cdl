@@ -1,0 +1,140 @@
+--
+-- File:	Visual3d_ContextPick.cdl
+-- Created:	Lundi 25 Novembre 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class ContextPick from Visual3d
+
+	---Version:
+
+	---Purpose: This class allows the creation and update of
+	--	    a pick context for one view of the viewer.
+	--	    A context allows the control of different parameters
+	--	    before the activation of a pick.
+	--
+	--	    * the pick aperture.
+	--	    * the depth of pick, the number of sub-structures selected.
+	--	    * the order of picking, the possibility to traverse
+	--	      the pick structures starting from the root
+	--	      or the leaves.
+
+	---Keywords: Pick, Context, Aperture, Depth, Order, Structure
+
+	---Warning:
+	---References:
+
+uses
+
+	TypeOfOrder     from Visual3d
+
+raises
+
+	ContextPickDefinitionError	from Visual3d
+
+is
+
+	Create
+		returns ContextPick from Visual3d;
+	---Level: Public
+	---Purpose: Creates a context from default values
+	--
+	--	    Aperture	: 4.0
+	--	    Depth	: 10
+	--	    Order	: TOO_TOPFIRST
+
+	Create ( Aperture	: Real from Standard;
+		 Depth		: Integer from Standard;
+		 Order		: TypeOfOrder from Visual3d )
+		returns ContextPick from Visual3d
+	---Level: Public
+	---Purpose: Creates a context with the values defined
+	--  Warning: Raises ContextPickDefinitionError if <Depth> or
+	--	    <Aperture> is a negative value.
+	raises ContextPickDefinitionError;
+
+	-----------------------------------------------------
+	-- Category: Methods to modifies the class definition
+	-----------------------------------------------------
+
+	SetAperture ( me	: in out;
+		      Aperture	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the size of the pick window.
+	--  Category: Methods to modifies the class definition
+	--  Warning: Raises ContextPickDefinitionError if <Aperture> is
+	--	    a negative value.
+	raises ContextPickDefinitionError is static;
+
+	SetDepth ( me		: in out;
+		   Depth	: Integer from Standard )
+	---Level: Public
+	---Purpose: Modifies the pick depth a priori.
+	--  Category: Methods to modifies the class definition
+	--  Warning: Raises ContextPickDefinitionError if <Depth> is
+	--	    a negative value.
+	raises ContextPickDefinitionError is static;
+
+	SetOrder ( me		: in out;
+		   Order	: TypeOfOrder from Visual3d ) is static;
+	---Level: Public
+	---Purpose: Modifies the order of picking.
+	--
+	--	    TypeOfOrder : TOO_TOPFIRST
+	--			  TOO_BOTTOMFIRST
+	--
+	---Category: Methods to modifies the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Aperture ( me )
+		returns Real from Standard is static;
+	---Level: Public
+	---Purpose: Returns the size of the pick window <me>.
+	---Category: Inquire methods
+
+	Depth ( me )
+		returns Integer from Standard is static;
+	---Level: Public
+	---Purpose: Returns the effective pick depth of <me>.
+	---Category: Inquire methods
+
+	Order ( me )
+		returns TypeOfOrder from Visual3d is static;
+	---Level: Public
+	---Purpose: Returns the order of picking of <me>.
+	--
+	--	    TypeOfOrder	: TOO_TOPFIRST
+	--			  TOO_BOTTOMFIRST
+	--
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ContextPick
+--
+-- Purpose	:	Declaration of variables specific to
+--			pick contexts
+--
+-- Reminders	:	A pick context is defined by:
+--			- the pick aperture
+--			- the depth demanded
+--			- the order of traversing the structure
+
+	-- aperture of pick
+	MyAperture	:	Real from Standard;
+
+	-- depth of pick
+	MyDepth		:	Integer from Standard;
+
+	-- order of traversing pick structures
+	MyOrder		:	TypeOfOrder from Visual3d;
+
+end ContextPick;

@@ -1,0 +1,128 @@
+-- File:	Extrema_GLocateExtPC.cdl
+-- Created:	Tue Dec 14 16:24:56 1993
+-- Author:	Christophe MARION
+--		<cma@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class  GLocateExtPC from Extrema(
+    TheCurve          as any;
+    TheCurveTool      as any;
+    TheExtPElC        as any;
+    ThePoint          as any;
+    TheVector         as any;
+    ThePOnC           as any;
+    TheSequenceOfPOnC as any)
+
+    	---Purpose: It calculates the distance between a point and a
+    	--          curve with a close point.
+    	--          This distance can be a minimum or a maximum.
+
+uses CurveType      from GeomAbs
+
+
+raises  DomainError from Standard,
+        NotDone     from StdFail
+	
+    class ELPC    instantiates GExtPC      from Extrema
+    	(TheCurve,
+         TheCurveTool,
+	 TheExtPElC,
+         ThePoint,
+         TheVector,
+         ThePOnC,
+         TheSequenceOfPOnC);
+
+
+    class LocEPC  instantiates GenLocateExtPC      from Extrema
+    	(TheCurve,
+	 TheCurveTool,
+         ThePOnC,
+         ThePoint,
+         TheVector);
+
+
+is
+
+    Create returns GLocateExtPC;
+
+    Create (P: ThePoint; C: TheCurve; U0: Real; TolF: Real)
+    	returns GLocateExtPC
+    	---Purpose: Calculates the distance with a close point.
+    	--          The close point is defined by the parameter value
+    	--          U0.
+    	--          The function F(u)=distance(P,C(u)) has an extremum
+    	--          when g(u)=dF/du=0. The algorithm searchs a zero 
+    	--          near the close point.
+    	--          TolF is used to decide to stop the iterations.
+    	--          At the nth iteration, the criteria is:
+    	--           abs(Un - Un-1) < TolF.
+    	raises  DomainError;
+	    	-- if U0 is outside the definition range of the curve.
+
+
+    Create (P: ThePoint; C: TheCurve; U0: Real; Umin, Usup: Real; TolF: Real)
+    	returns GLocateExtPC
+    	---Purpose: Calculates the distance with a close point.
+    	--          The close point is defined by the parameter value
+    	--          U0.
+    	--          The function F(u)=distance(P,C(u)) has an extremum
+    	--          when g(u)=dF/du=0. The algorithm searchs a zero 
+    	--          near the close point.
+    	--          Zeros are searched between Umin et Usup.
+    	--          TolF is used to decide to stop the iterations.
+    	--          At the nth iteration, the criteria is:
+    	--           abs(Un - Un-1) < TolF.
+    	raises  DomainError;
+	    	-- if U0 is outside the definition range of the curve.
+
+    Initialize(me: in out; C: TheCurve; Umin, Usup: Real; TolF: Real)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+
+    Perform(me: in out; P: ThePoint; U0: Real)
+	---Purpose: 
+
+    is static;
+    
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+
+    SquareDistance (me) returns Real
+    	---Purpose: Returns the value of the extremum square distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    IsMin (me) returns Boolean
+    	---Purpose: Returns True if the extremum distance is a minimum.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    Point (me) returns ThePOnC
+    	---Purpose: Returns the point of the extremum distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+
+    
+fields
+    mypp:       ThePOnC;
+    myC:        Address        from Standard;
+    mydist2:     Real           from Standard;
+    myismin:    Boolean        from Standard;
+    myDone :    Boolean        from Standard;
+    myumin:     Real           from Standard;
+    myusup:     Real           from Standard;
+    mytol:      Real           from Standard;
+    myLocExtPC: LocEPC         from Extrema;
+    myExtremPC: ELPC           from Extrema;
+    type:       CurveType      from GeomAbs;
+    numberext:  Integer        from Standard;
+
+end GLocateExtPC;

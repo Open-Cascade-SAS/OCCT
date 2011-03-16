@@ -1,0 +1,27 @@
+// File:	BRepMesh_Classifier.lxx
+// Created:	Wed Nov  5 12:29:52 2003
+// Author:	Open CASCADE Support
+//		<support@opencascade.com>
+// Copyright:	 Open CASCADE 2003
+
+
+
+//=======================================================================
+//function : State
+//purpose  : 
+//=======================================================================
+
+inline BRepMesh_Status BRepMesh_Classifier::State() const
+{
+  return myState;
+}
+
+//=======================================================================
+//function : NaturalRestriction
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepMesh_Classifier::NaturalRestriction() const
+{
+  return isnatural;
+}

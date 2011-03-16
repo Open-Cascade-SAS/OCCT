@@ -1,0 +1,37 @@
+-- File:	PDataStd_TreeNode.cdl
+-- Created:	Thu Jun 17 10:56:43 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class TreeNode from PDataStd inherits Attribute from PDF 
+
+uses 
+     
+    Attribute from PDF, 
+    GUID      from Standard 
+
+is
+
+    Create returns mutable TreeNode from PDataStd;
+        
+    First(me) returns TreeNode from PDataStd;
+	 
+    SetFirst(me : mutable; F : TreeNode from PDataStd);    
+    
+    Next(me) returns TreeNode from PDataStd;
+        
+    SetNext(me : mutable; F : TreeNode from PDataStd);    
+    
+    SetTreeID(me : mutable; GUID : GUID from Standard);
+
+    GetTreeID(me) returns GUID from Standard;
+
+fields
+
+    myFirst  : TreeNode from PDataStd;  
+    myNext   : TreeNode from PDataStd;  
+    myTreeID : GUID     from Standard;
+
+end TreeNode;
+ 

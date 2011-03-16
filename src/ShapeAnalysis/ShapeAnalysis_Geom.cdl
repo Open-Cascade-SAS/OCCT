@@ -1,0 +1,41 @@
+-- File:	ShapeAnalysis_Geom.cdl
+-- Created:	Wed Jun  3 12:00:12 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Geom from ShapeAnalysis 
+
+    ---Purpose: Analyzing tool aimed to work on primitive geometrical objects
+
+uses
+    HArray2OfReal from TColStd,
+    Trsf from gp,
+    Pln from gp,
+    Array1OfPnt from TColgp
+
+raises
+   OutOfRange from Standard
+    
+is
+    NearestPlane (myclass; Pnts: Array1OfPnt from TColgp;
+    	    	     	   aPln: out Pln from gp;
+    	    	    	   Dmax: out Real)
+    returns Boolean;
+    	---Purpose : Builds a plane out of a set of points in array
+	--           Returns in <dmax> the maximal distance between the produced
+	--           plane and given points
+
+    PositionTrsf (myclass; coefs: HArray2OfReal from TColStd;
+                    	   trsf: out Trsf from gp;
+    	    	           unit, prec : Real)
+    returns Boolean
+    	---Purpose: Builds transfromation object out of matrix.
+	--          Matrix must be 3 x 4.
+    	--          Unit is used as multiplier.
+    raises OutOfRange from Standard;
+    	--          If numer of rows is greater than 3 or number of columns is
+    	--          greater than 4
+
+end Geom;

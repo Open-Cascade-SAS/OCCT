@@ -1,0 +1,71 @@
+-- File:	TransferBRep_ShapeListBinder.cdl
+-- Created:	Mon Oct  3 10:50:11 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ShapeListBinder  from TransferBRep  inherits Binder from Transfer
+
+    ---Purpose : This binder binds several (a list of) shapes with a starting
+    --           entity, when this entity itself corresponds to a simple list
+    --           of shapes. Each part is not seen as a sub-result of an
+    --           independant componant, but as an item of a built-in list
+
+uses CString, Type,
+     ShapeEnum from TopAbs,  Shape from TopoDS ,
+      Vertex from TopoDS,  Edge  from TopoDS,  Wire  from TopoDS,
+      Face   from TopoDS,  Shell from TopoDS,  Solid from TopoDS,
+      CompSolid from TopoDS,    Compound from TopoDS ,
+      HSequenceOfShape from TopTools
+
+raises TypeMismatch, OutOfRange
+
+is
+
+    Create returns mutable ShapeListBinder;
+
+    Create (list : mutable HSequenceOfShape from TopTools)
+    	 returns mutable ShapeListBinder;
+
+    IsMultiple (me) returns Boolean  is redefined;
+    -- returns True if more than one result
+
+    ResultType (me) returns Type;
+    -- returns TopoDS_Shape
+
+    ResultTypeName (me) returns CString;
+    -- returns list(TopoDS_Shape)
+
+    AddResult (me : mutable; res : Shape);
+    ---Purpose : Adds an item to the result list
+
+    Result (me) returns HSequenceOfShape from TopTools;
+
+    SetResult (me : mutable; num : Integer; res : Shape);
+    ---Purpose : Changes an already defined sub-result
+
+    NbShapes (me) returns Integer;
+
+    Shape (me; num : Integer) returns Shape
+    	raises OutOfRange;
+    ---C++ : return const &
+
+    ShapeType (me; num : Integer) returns ShapeEnum;
+
+    -- different sub-types for the Result. Shape(num) returns a Shape
+
+    Vertex    (me; num : Integer) returns Vertex    raises TypeMismatch, OutOfRange;
+    Edge      (me; num : Integer) returns Edge      raises TypeMismatch, OutOfRange;
+    Wire      (me; num : Integer) returns Wire      raises TypeMismatch, OutOfRange;
+    Face      (me; num : Integer) returns Face      raises TypeMismatch, OutOfRange;
+    Shell     (me; num : Integer) returns Shell     raises TypeMismatch, OutOfRange;
+    Solid     (me; num : Integer) returns Solid     raises TypeMismatch, OutOfRange;
+    CompSolid (me; num : Integer) returns CompSolid raises TypeMismatch, OutOfRange;
+    Compound  (me; num : Integer) returns Compound  raises TypeMismatch, OutOfRange;
+
+fields
+
+    theres :  HSequenceOfShape from TopTools;
+
+end ShapeListBinder;

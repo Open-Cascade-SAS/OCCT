@@ -1,0 +1,32 @@
+-- File:	Prs3d_RadiusAspect.cdl
+-- Created:	Thu Jun  3 09:28:46 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+class RadiusAspect from Prs3d inherits CompositeAspect from Prs3d
+
+    	---Purpose: defines the attributes when drawing a Radius Presentation.
+uses 
+
+    AspectLine3d from Graphic3d,
+    NameOfColor from Quantity,
+    TypeOfLine from Aspect
+
+is
+
+-- 
+--  Attributes for the lines.
+-- 
+    Create (aColor: NameOfColor from Quantity;
+	    aType: TypeOfLine from Aspect;
+    	    aWidth: Real from Standard)
+	    returns mutable RadiusAspect from Prs3d;
+    	---Purpose: Constructs the framework to define the display of radii.
+    	-- This consists of the attributes:
+    	-- -   the color aColor
+    	-- -   the type of line aType and
+    	-- -   the width aWidth of the line.
+
+
+end RadiusAspect from Prs3d;

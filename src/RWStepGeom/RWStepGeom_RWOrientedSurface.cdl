@@ -1,0 +1,35 @@
+-- File:	RWStepGeom_RWOrientedSurface.cdl
+-- Created:	Fri Jan  4 17:42:44 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class RWOrientedSurface from RWStepGeom
+
+    ---Purpose: Read & Write tool for OrientedSurface
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    OrientedSurface from StepGeom
+
+is
+    Create returns RWOrientedSurface from RWStepGeom;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : OrientedSurface from StepGeom);
+	---Purpose: Reads OrientedSurface
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: OrientedSurface from StepGeom);
+	---Purpose: Writes OrientedSurface
+
+    Share (me; ent : OrientedSurface from StepGeom;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWOrientedSurface;

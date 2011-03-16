@@ -1,0 +1,372 @@
+-- File:	TNaming.cdl
+-- Created:	Mon Mar 17 15:09:19 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+package TNaming 
+
+	---Purpose: A topological attribute can be seen as a hook
+    	-- into the topological structure. To this hook,
+    	-- data can be attached and references defined.
+    	--  It is used for keeping and access to
+    	-- topological objects and their evolution. All
+    	-- topological objects are stored in the one
+    	-- user-protected TNaming_UsedShapes
+    	-- attribute at the root label of the data
+    	-- framework. This attribute contains map with all
+    	-- topological shapes, used in this document.
+    	-- To all other labels TNaming_NamedShape
+    	-- attribute can be added. This attribute contains
+    	-- references (hooks) to shapes from the
+    	-- TNaming_UsedShapes attribute and evolution
+    	-- of these shapes. TNaming_NamedShape
+    	-- attribute contains a set of pairs of hooks: old
+    	-- shape and new shape (see the figure below).
+    	-- It allows not only get the topological shapes by
+    	-- the labels, but also trace evolution of the
+    	-- shapes and correctly resolve dependent
+    	-- shapes by the changed one. 
+    	-- If shape is just-created, then the old shape for
+    	-- accorded named shape is an empty shape. If
+    	-- a shape is deleted, then the new shape in this named shape is empty.
+    	-- Different algorithms may dispose sub-shapes
+    	-- of the result shape at the individual label depending on necessity: 
+        --   -  If a sub-shape must have some extra attributes (material of
+	--      each face or color of each edge). In this case a specific sub-shape is
+    	--      placed to the separate label (usually, sub-label of the result shape label)
+    	--      with all attributes of this sub-shape. 
+	--   -  If topological naming is needed, a necessary and sufficient
+    	--      (for selected sub-shapes identification) set of sub-shapes is
+	--      placed to the child labels of the result
+    	--      shape label. As usual, as far as basic solids and closed shells are
+    	--      concerned, all faces of the shape are disposed. Edges and vertices
+    	--      sub-shapes can be identified as intersection of contiguous faces.
+    	--      Modified/generated shapes may be placed to one named shape and
+    	--      identified as this named shape and source named shape that also can be
+    	--      identified with used algorithms. 
+    	--   TNaming_NamedShape may contain a few
+    	-- pairs of hooks with the same evolution. In this
+    	-- case topology shape, which belongs to the
+    	-- named shape, is a compound of new shapes.
+    	--   The data model contains both the topology
+    	-- and the hooks, and functions handle both
+    	-- topological entities and hooks. Consider the
+    	-- case of a box function, which creates a solid
+    	-- with six faces and six hooks. Each hook is
+    	-- attached to a face. If you want, you can also
+    	-- have this function create hooks for edges and
+    	-- vertices as well as for faces. For the sake of
+    	-- simplicity though, let's limit the example.
+    	--   Not all functions can define explicit hooks for
+    	-- all topological entities they create, but all
+    	-- topological entities can be turned into hooks
+    	-- when necessary. This is where topological naming is necessary. 
+ 
+ 
+    ---Category: GUID
+    --           c4ef4200-568f-11d1-8940-080009dc3333	TNaming_NamedShape
+    --           c4ef4201-568f-11d1-8940-080009dc3333	TNaming_UsedShapes
+
+
+uses Standard,
+     TCollection,  
+     TColStd,
+     TopLoc,
+     TopTools,
+     TopoDS,	
+     TDF,
+     TopAbs, 
+     gp
+
+
+is 
+    ---Category: classes to copy shapes
+    --           ======================
+
+    class CopyShape;
+     
+    class TranslateTool;
+    ---Purpose: tool to copy underlying TShape of a Shape
+
+    private class Translator;   
+    ---Purpose: only  for  Shape  Copy  test - to move in DNaming
+				      
+
+    ---Category: classes to store shapes and their evolution in the framework
+    --           ============================================================
+
+    enumeration Evolution is
+     	PRIMITIVE,
+    	GENERATED, 
+    	MODIFY, 
+    	DELETE, 
+	REPLACE,
+    	SELECTED  
+    end Evolution;
+     	---Purpose: Defines the type of evolution in old shape - new shape pairs.
+	-- The definitions - in the form of the terms of
+	-- the enumeration - are needed by the
+	-- TNaming_NamedShape attribute and
+	-- indicate what entities this attribute records as follows:
+	-- -   PRIMITIVE
+	--   -   New entities; in each pair, old shape is a
+	--    null shape and new shape is a created
+	--    entity.
+	-- -   GENERATED
+	--   -   Entities created from other entities; in
+	--    each pair, old shape is the generator and
+	--    new shape is the created entity.
+	-- -   MODIFY
+	--   -   Split or merged entities, in each pair, old
+	--    shape is the entity before the operation
+	--    and new shape is the new entity after the
+	--    operation.
+	-- -   DELETE
+	--   -   Deletion of entities; in each pair, old
+	--    shape is a deleted entity and new shape is null.
+	-- -   SELECTED
+	--   -   Named topological entities; in each pair,
+	--    the new shape is a named entity and the
+	--    old shape is not used.
+	--   
+	-- For a split which generates multiple faces, the
+	-- attribute will contain many pairs with the same
+	-- old shape; for a merge, it will contain many
+	-- pairs with the same new shape.
+	-- Finally, an example of delete would be a face
+	-- removed by a Boolean operation.
+        
+    class NamedShape;   
+    ---Purpose: attribute to store shapes and their evolution
+    
+
+    private class UsedShapes;
+    ---Purpose: global attribute located under root label to store all
+    --          the shapes handled by the framework
+   
+
+   
+    class Builder;
+    ---Purpose: API to build a NamedShape  attribute. 
+    
+    class Tool;
+    ---Purpose: methods to interogate naming data
+
+    class Iterator;
+    ---Purpose:  Iterates on all the evolutions in an attribute.
+
+    class NewShapeIterator;
+    ---Purpose:  To iterate  on all  the  shapes created  from a given
+    --          shape.
+	
+    class OldShapeIterator;
+    ---Purpose: To iterate on all the shapes which created a given
+    --          shape.
+
+    class SameShapeIterator;
+    ---Purpose:  To iterate on   all  the label which contained  a
+    --          given shape.
+
+
+    class NamedShapeHasher instantiates MapHasher from TCollection(NamedShape from TNaming) ;
+	
+    class MapOfNamedShape  instantiates Map from TCollection(NamedShape from TNaming,
+	                                                     NamedShapeHasher from TNaming) ;
+		
+    class ListOfNamedShape instantiates List from TCollection (NamedShape from TNaming); 
+	 
+
+    ---Purpose: classes to store selected shape (involve naming algorithm)
+    --          =========================================================
+
+
+    enumeration NameType is 
+    ---Purpose: to store naming characteristcs
+    	UNKNOWN,
+	IDENTITY,
+	MODIFUNTIL,
+    	GENERATION,
+   	INTERSECTION,
+    	UNION,
+   	SUBSTRACTION,
+    	CONSTSHAPE,
+	FILTERBYNEIGHBOURGS, 
+	ORIENTATION, 
+	WIREIN
+    end NameType;	    
+    
+    class Name;
+    ---Purpose: store the arguments of Naming.
+
+    class Naming;  
+    ---Purpose: Perform Topological naming when the topology is not 
+    --          already attached to a specific label. 	 
+
+    class Selector;
+    ---Purpose: API to select shapes (identification and solving)
+
+
+
+    ---Category: Private classes for TNaming
+    --           ===========================
+
+    private class DeltaOnRemoval;
+
+    private class DeltaOnModification;
+
+
+    pointer PtrAttribute to NamedShape from TNaming;  	
+	
+    imported Node;
+	
+    pointer PtrNode to Node from TNaming;  	
+
+    private class RefShape;
+	
+    pointer PtrRefShape to RefShape  from TNaming; 
+	
+    private class DataMapOfShapePtrRefShape instantiates 
+    	DataMap from TCollection (Shape          from TopoDS,
+    	    	    	    	  PtrRefShape    from TNaming,
+    	    	    	  	  ShapeMapHasher from TopTools);
+    
+
+    pointer PtrDataMapOfShapePtrRefShape to DataMapOfShapePtrRefShape from TNaming;
+
+   
+    ---Category: private classes for ANaming
+    --           ===========================
+
+
+    private class Scope;    
+
+    private class Identifier;
+
+    private class Localizer;
+	    	
+    private class ShapesSet;
+
+    private class IteratorOnShapesSet;
+
+    private class DataMapOfShapeShapesSet instantiates DataMap from TCollection 
+    	    	    	    	    	    	      (Shape          from TopoDS,
+    	    	    	    	                       ShapesSet      from TNaming,
+    	    	    	  	                       ShapeMapHasher from TopTools);    
+							     
+    private class ListOfMapOfShape instantiates List from TCollection (MapOfShape from TopTools);					     
+    private  class ListOfIndexedDataMapOfShapeListOfShape instantiates List from TCollection 
+    	                  (IndexedDataMapOfShapeListOfShape from TopTools);
+	
+
+    private class NamingTool;
+
+
+    ---Category: package methods for NamedShape
+    --           ==============================
+
+    Substitute (labelsource : Label from TDF;
+    	       	labelcible  : Label from TDF; 
+    	        mapOldNew   : in out DataMapOfShapeShape from TopTools);
+    ---Purpose: Subtituter les  shapes  sur les structures de   source
+    --          vers cible 
+ 
+
+    Update (label       : Label from TDF; 
+    	    mapOldNew   : in out DataMapOfShapeShape from TopTools);
+    ---Purpose: Mise a jour des shapes du label  et de ses fils en
+    --          tenant compte des  substitutions decrite par
+    --          mapOldNew.   
+    --          
+    --  Warning: le  remplacement du shape est  fait    dans tous  
+    --          les    attributs  qui  le contiennent meme si ceux
+    --          ci ne sont pas associees a des sous-labels de <Label>.
+    
+    Displace (label     : Label    from TDF;
+              aLocation : Location from TopLoc; 
+              WithOld   : Boolean  from Standard = Standard_True);
+    ---Purpose: Application de la Location sur les shapes du label
+    --          et  de   ses   sous   labels.   
+    
+    ChangeShapes (label :        Label from TDF;
+        	  M     : in out DataMapOfShapeShape from TopTools);
+    ---Purpose: Remplace  les  shapes du label et  des sous-labels
+    --          par des copies.
+    
+    Transform (label           : Label from TDF;
+    	       aTransformation : Trsf  from gp);
+    ---Purpose: Application de la transformation sur les shapes du
+    --          label et de ses sous labels. 
+    --  Warning: le  remplacement du shape est  fait    dans tous  
+    --          les    attributs  qui  le contiennent meme si ceux
+    --          ci ne sont pas associees a des sous-labels de <Label>. 
+    
+    
+    Replicate (NS : NamedShape from TNaming;
+               T  : Trsf       from gp;
+               L  : Label      from TDF);
+    ---Purpose: Replicates the named shape with the transformation <T>
+    --          on the label <L> (and sub-labels if necessary)
+    --          (TNaming_GENERATED is set)
+    
+    Replicate (SH : Shape      from TopoDS;
+               T  : Trsf       from gp;
+               L  : Label      from TDF);
+    ---Purpose: Replicates the shape with the transformation <T>
+    --          on the label <L> (and sub-labels if necessary)
+    --          (TNaming_GENERATED is set)
+     
+
+    MakeShape(MS : MapOfShape from TopTools) 
+    returns Shape from TopoDS; 
+    ---Purpose: Builds shape from map content  
+     
+    FindUniqueContext(S : Shape from TopoDS; Context : Shape from TopoDS) 
+    returns Shape from TopoDS; 
+     ---Purpose: Find unique context of shape <S>  
+     
+    FindUniqueContextSet(S : Shape from TopoDS; Context : Shape from TopoDS; 
+    	    	    	 Arr : in out HArray1OfShape from TopTools)      
+    returns Shape from TopoDS; 
+     ---Purpose: Find unique context of shape <S>,which is pure concatenation 
+     --          of atomic shapes (Compound). The result is concatenation of  
+     --          single contexts 
+     
+    SubstituteSShape(accesslabel  : Label from TDF;
+    	    	     From         : Shape from TopoDS;
+    	             To           : in out Shape  from TopoDS) 
+    returns Boolean from Standard;
+    ---Purpose: Subtitutes shape in source structure
+
+      
+    ---Purpose: Print of TNaming enumeration
+    --          =============================
+
+    IDList(anIDList : in out IDList from TDF);
+    ---Purpose: Appends to <anIDList> the list of the attributes
+    --          IDs of this package. CAUTION: <anIDList> is NOT
+    --          cleared before use.
+
+
+    Print (EVOL : Evolution from TNaming; S : in out OStream) 
+    	---Purpose: Prints the  evolution  <EVOL> as  a String on  the
+    	--          Stream <S> and returns <S>.  
+    	---C++: return &
+    returns OStream;   
+
+    Print (NAME : NameType from TNaming; S : in out OStream) 
+    	---Purpose: Prints the name of name type <NAME> as a String on
+    	--          the Stream <S> and returns <S>.
+    	---C++: return &		
+    returns OStream; 
+
+    Print (ACCESS : Label from TDF; S : in out OStream) 
+    	---Purpose: Prints the content of UsedShapes private  attribute as a String Table on
+    	--          the Stream <S> and returns <S>.
+    	---C++: return &		
+    returns OStream; 
+         
+
+end TNaming;
+

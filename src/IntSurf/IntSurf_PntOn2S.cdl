@@ -1,0 +1,122 @@
+-- File:	PntOn2S.cdl
+-- Created:	Wed May  6 14:08:15 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class PntOn2S from IntSurf 
+
+	---Purpose: This class defines the geometric informations
+	--          for an intersection point between 2 surfaces :
+	--          The coordinates ( Pnt from gp ), and two
+	--          parametric coordinates.
+
+
+uses Pnt from gp
+
+is
+
+
+    Create
+    
+	---Purpose: Empty constructor.
+    
+    	returns PntOn2S from IntSurf;
+
+
+    SetValue(me: in out; Pt: Pnt from gp)
+    
+	---Purpose: Sets the value of the point in 3d space.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetValue(me: in out; Pt: Pnt from gp; OnFirst: Boolean from Standard;
+             U,V: Real from Standard)
+    
+	---Purpose: Sets the values of the point in 3d space, and
+	--          in the parametric space of one of the surface.
+
+    	is static;
+
+
+    SetValue(me: in out; Pt: Pnt from gp; U1,V1,U2,V2: Real from Standard)
+    
+	---Purpose: Sets the values of the point in 3d space, and
+	--          in the parametric space of each surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    SetValue(me: in out; OnFirst: Boolean from Standard;
+                         U,V: Real from Standard)
+    
+	---Purpose: Set the values of the point in the parametric
+	--          space of one of the surface.
+
+    	is static;
+
+
+    SetValue(me: in out; U1,V1, U2, V2: Real from Standard)
+    
+	---Purpose: Set the values of the point in the parametric
+	--          space of one of the surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    Value(me)
+    
+	---Purpose: Returns the point in 3d space.
+
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+
+	is static;
+
+
+
+    ParametersOnS1(me; U1,V1: out Real from Standard)
+
+	---Purpose: Returns the parameters of the point on the first surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    ParametersOnS2(me; U2,V2: out Real from Standard)
+
+	---Purpose: Returns the parameters of the point on the second surface.
+
+	---C++: inline
+
+    	is static;
+
+
+    Parameters(me; U1,V1,U2,V2: out Real from Standard)
+
+	---Purpose: Returns the parameters of the point on both surfaces.
+
+	---C++: inline
+
+    	is static;
+
+
+fields
+
+    pt  : Pnt     from gp;
+    u1  : Real    from Standard;
+    v1  : Real    from Standard;
+    u2  : Real    from Standard;
+    v2  : Real    from Standard;
+
+end PntOn2S;

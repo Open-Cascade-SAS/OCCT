@@ -1,0 +1,236 @@
+-- File:	Int2S.cdl
+-- Created:	Tue Apr 30 17:09:26 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+generic class Int2S from IntImp
+    (ThePSurface     as any;
+     ThePSurfaceTool as any)  -- as PSurfaceTool from IntImp (ThePSurface)
+
+	
+        ---Purpose: Determination of the intersection between 2 surfaces
+	--          from an point close to the solution.
+
+
+uses Array1OfReal       from TColStd,
+     ConstIsoparametric from IntImp,
+     PntOn2S            from IntSurf,
+     Dir                from gp,
+     Dir2d              from gp,
+     FunctionSetRoot    from math
+
+raises NotDone             from StdFail,
+       DomainError         from Standard,
+       ConstructionError   from Standard,
+       UndefinedDerivative from StdFail
+
+	     
+    class TheFunction instantiates ZerParFunc from IntImp
+         (ThePSurface, ThePSurfaceTool);
+
+
+is
+
+    Create 
+    	---Purpose: Raises Construction Error
+    
+    	returns Int2S from IntImp;
+
+    Create( Param: Array1OfReal from TColStd;
+            S1,S2: ThePSurface;
+            TolTangency: Real)
+	    
+	---Purpose: compute the solution point with the close point
+
+    	returns Int2S from IntImp;
+
+
+    Create( S1,S2: ThePSurface;
+            TolTangency: Real from Standard)
+	    
+        ---Purpose: initialize the parameters to compute the solution point
+        --          it 's possible to write to optimize:
+        --            IntImp_Int2S inter(S1,S2,Func,TolTangency);
+        --            math_FunctionSetRoot rsnld(inter.Function());
+        --            while ...{
+        --               Param(1)=...
+        --               Param(2)=...
+        --               param(3)=...
+        --               inter.Perform(Param,rsnld);
+        --            }   
+
+    	returns Int2S from IntImp;
+
+
+    Perform(me : in out; Param : Array1OfReal from TColStd;
+    	                 Rsnld : in out FunctionSetRoot from math)
+    
+     ---Purpose: returns the best constant isoparametric to find
+     --          the next intersection's point +stores the solution
+     --          point (the solution point is found with the close point
+     --          to intersect the isoparametric with the other patch;
+     --          the choice of the isoparametic is calculated)
+
+        returns ConstIsoparametric from IntImp
+	
+    	is static;
+
+
+    Perform(me : in out;
+            Param : Array1OfReal from TColStd;
+	    Rsnld : in out FunctionSetRoot from math;
+            ChoixIso :  ConstIsoparametric from IntImp)
+	    
+     ---Purpose: returns the best constant isoparametric to find
+     --          the next intersection's point +stores the solution
+     --          point (the solution point is found with the close point
+     --          to intersect the isoparametric with the other patch;
+     --          the choice of the isoparametic is given by ChoixIso) 
+
+    	returns ConstIsoparametric from IntImp
+	
+    	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns TRUE if the creation completed without failure.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+        is static;
+
+
+    IsEmpty(me)
+    
+	---Purpose: Returns TRUE when there is no solution to the problem.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+    	is static;
+
+    
+    Point(me)
+    
+    	---Purpose: Returns the intersection point.
+
+    	returns PntOn2S from IntSurf
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone     from StdFail,
+	       DomainError from Standard
+    	--          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+	
+        is static;
+
+
+    IsTangent(me)
+    
+	---Purpose: Returns True if the surfaces are tangent at the
+	--          intersection point.
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone     from StdFail,
+	       DomainError from Standard
+    	--          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+	
+	is static;
+
+
+    Direction(me)
+
+	---Purpose: Returns the tangent at the intersection line.
+
+    	returns Dir from gp
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone             from StdFail,
+	       DomainError         from Standard,
+	       UndefinedDerivative from StdFail
+    	--          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+    	--          The exception UndefinedDerivative is raised if IsTangent
+    	--          returns True.
+
+	is static;
+
+
+    DirectionOnS1(me)
+
+	---Purpose: Returns the tangent at the intersection line in the
+	--          parametric space of the first surface.
+
+    	returns Dir2d from gp
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone             from StdFail,
+	       DomainError         from Standard,
+	       UndefinedDerivative from StdFail
+    	--          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+    	--          The exception UndefinedDerivative is raised if IsTangent
+    	--          returns True.
+
+	is static;
+
+
+    DirectionOnS2(me)
+
+	---Purpose: Returns the tangent at the intersection line in the
+	--          parametric space of the second surface.
+
+    	returns Dir2d from gp
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone             from StdFail,
+	       DomainError         from Standard,
+	       UndefinedDerivative from StdFail
+    	--          The exception NotDone is raised if IsDone is false.
+    	--          The exception DomainError is raised if IsEmpty is true.
+    	--          The exception UndefinedDerivative is raised if IsTangent
+    	--          returns True.
+
+	is static;
+
+
+    Function(me: in out)
+    	---Purpose: return the math function which 
+    	--          is used to compute the intersection
+
+    	returns TheFunction
+    	---C++: return &
+	---C++: inline
+
+    	is static;
+    
+
+fields
+
+    done         : Boolean from Standard;
+    empty        : Boolean from Standard;
+    pint         : PntOn2S from IntSurf;
+    tangent      : Boolean from Standard;
+    d3d          : Dir     from gp;
+    d2d1         : Dir2d   from gp;
+    d2d2         : Dir2d   from gp;
+    myZerParFunc : TheFunction;
+    tol          : Real    from Standard;
+    
+    ua0,va0,ua1,va1 : Real from Standard; -- surf1 
+    ub0,vb0,ub1,vb1 : Real from Standard; -- surf2  
+    ures1,ures2,vres1,vres2 : Real from Standard; -- U et V Resolution
+
+end Int2S;

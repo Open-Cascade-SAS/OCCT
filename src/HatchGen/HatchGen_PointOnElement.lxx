@@ -1,0 +1,25 @@
+// File:	HatchGen_PointOnElement.lxx
+// Created:	Tue Jan  3 10:32:44 1995
+// Author:	Laurent BUCHARD
+//		<lbr@mastox>
+
+
+//=======================================================================
+// Function : SetIntersectionType
+// Purpose  : Sets the intersection type at this point.
+//=======================================================================
+
+inline void HatchGen_PointOnElement::SetIntersectionType (const HatchGen_IntersectionType Type)
+{
+  myType = Type ;
+}
+
+//=======================================================================
+// Function : IntersectionType
+// Purpose  : Returns the intersection type at this point.
+//=======================================================================
+
+inline HatchGen_IntersectionType HatchGen_PointOnElement::IntersectionType () const
+{
+  return myType ;
+}

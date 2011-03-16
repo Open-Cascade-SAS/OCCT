@@ -1,0 +1,20 @@
+inline TCollection_IndexedMapNode::TCollection_IndexedMapNode(const TheKey& K1,const Standard_Integer K2,const TCollection_MapNodePtr& n1,const TCollection_MapNodePtr& n2) 
+: TCollection_MapNode(n1),myKey1(K1),myKey2(K2),myNext2(n2)
+{
+}
+
+inline TheKey& TCollection_IndexedMapNode::Key1() const
+{
+  return (TheKey&)myKey1;
+}
+
+inline Standard_Integer& TCollection_IndexedMapNode::Key2() const
+{
+  return (Standard_Integer&)myKey2;
+}
+
+
+inline TCollection_MapNodePtr& TCollection_IndexedMapNode::Next2() const
+{
+  return (TCollection_MapNodePtr&)myNext2;
+}

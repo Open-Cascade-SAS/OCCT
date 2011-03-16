@@ -1,0 +1,110 @@
+-- File:	IntCurve.cdl
+-- Created:	Wed Mar  4 13:52:01 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+package IntCurve
+
+    ---Purpose: This package provides algorithmes to intersect 2D curves,
+    --          with domains.
+    --          
+    --          class IntConicConic : Algorithm used to intersect 2 conics 
+    --                                from gp with domains.
+    --                                
+    --          class IntConicCurveGen : Generic algorithm used to intersect 
+    --                                   a conic from gp, and a parametrised
+    --                                   curve.
+    --                                   The parametrised Curve can 
+    --                                   not be a Composite curve and 
+    --                                   can not be a conic.
+    --                                   
+    --          class IntCurveCurveGen : Generic algorithm used to intersect 2
+    --                                   curves. The resources on a curve are
+    --                                   discribed in the class CurveTool.
+    --
+    --          class UserIntConicCurveGen: Generic algorithm used to  
+    --                                      intersect a Conic from gp 
+    --                                      and a parametrised curve. 
+    --                                      This curve can be either a  
+    --                                      composite curve or a conic. 
+    --
+
+
+    ---Level: Advanced 
+    -- 
+    -- The Classes <PConicTool,
+    --              IConicTool,
+    --              PConic,
+    --              ProjectOnPConicTool,
+    --              IntConicCurveGen, 
+    --              ProjPCurGen,
+    --              UserIntConicCurveGen,
+    --              IntPolyPolyGen,
+    --              ToolPolygon,
+    --              Polygon2dGen,
+    --              DistBetweenPCurvesGen>    are  Internal 
+    --
+    -- The Classe   <IntCurveCurveGen>        is   Advanced 
+    --
+    --
+
+
+
+uses Standard , math, gp, TColgp, GeomAbs,
+     IntImpParGen, IntRes2d, Extrema,
+     StdFail, Bnd, Intf, TColStd
+     
+
+is 
+
+    class IntConicConic;
+    ---Purpose: Intersection between 2 conics from gp.
+
+    generic class DistBetweenPCurvesGen;
+    
+    generic class Polygon2dGen;
+
+    generic class ToolPolygon;
+ 
+    generic class IntPolyPolyGen,ThePolygon2d,
+                                 ThePolygon2dTool,
+                                 InterferencePoly2d,
+                                 TheDistBetweenPCurves, 
+    	    	    	    	 ExactIntersectionPoint;
+
+    generic class UserIntConicCurveGen;
+
+    generic class ProjPCurGen,TheCurveLocator,TheLocateExtPC;
+    
+    generic class IntConicCurveGen,TheIntersector;
+    ---Purpose: Intersection between a conic from gp and a bounded parametric curve.
+
+    generic class IntCurveCurveGen,TheProjPCur,
+                                   TheIntConicCurve,
+                                   IntConicCurve,
+                                   TheIntPCurvePCurve;
+				   
+    ---Purpose: Intersection between 2 2d curves.
+    
+    private class ProjectOnPConicTool;
+    
+    class PConic;
+
+    class IConicTool;
+
+    private class PConicTool;
+	      
+    private class IntImpConicParConic
+         instantiates Intersector from IntImpParGen
+             (IConicTool           from IntCurve,
+	      PConic               from IntCurve,
+	      PConicTool           from IntCurve,
+    	      ProjectOnPConicTool  from IntCurve);
+	
+
+ 	
+end IntCurve;    
+

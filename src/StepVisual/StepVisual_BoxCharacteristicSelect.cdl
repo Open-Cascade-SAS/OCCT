@@ -1,0 +1,36 @@
+-- File:	StepVisual_BoxCharacteristicSelect.cdl
+-- Created:	Wed Dec  6 18:22:37 1995
+-- Author:	Frederic MAUPAS
+--		<fma@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class BoxCharacteristicSelect from StepVisual
+
+    -- Hand made Select Type
+
+uses
+
+    Real from Standard
+    
+is
+
+    Create returns BoxCharacteristicSelect;
+    
+    TypeOfContent(me) returns Integer from Standard;
+    -- 1 box_height,
+    -- 2 box_width,
+    -- 3 box_slant_angle,
+    -- 4 box_rotate_angle)
+
+    SetTypeOfContent(me : in out; aType : Integer from Standard);
+    
+    RealValue(me) returns Real from Standard;
+    
+    SetRealValue(me : in out; aValue : Real from Standard);
+    
+fields
+
+    theRealValue     : Real from Standard;
+    theTypeOfContent : Integer from Standard;
+    
+end BoxCharacteristicSelect;

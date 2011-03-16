@@ -1,0 +1,138 @@
+-- File:	ShapeFix_WireSegment.cdl
+-- Created:	Tue Apr 27 10:42:17 1999
+-- Author:	Andrey BETENEV
+--		<abv@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class WireSegment from ShapeFix 
+
+	---Purpose: This class is auxiliary class used in ComposeShell.
+        --          It is intended for representing segment of the wire 
+        --          (or whole wire). The segment itself is represented by 
+        --          ShapeExtend_WireData. In addition, some associated data 
+	--          necessary for computations are stored:
+	--
+	--        * Orientation flag - determines current use of the segment
+	--          and used for parity checking:
+	--
+	--          TopAbs_FORWARD and TopAbs_REVERSED - says that segment was
+	--          traversed once in the corresponding direction, and hence
+	--          it should be traversed once more in opposite direction;
+	--
+	--          TopAbs_EXTERNAL - the segment was not yet traversed in any 
+        --          direction (i.e. not yet used as boundary)
+	--
+	--          TopAbs_INTERNAL - the segment was traversed in both 
+        --          directions and hence is out of further work.
+	--
+	--          Segments of initial bounding wires are created with 
+        --          orientation REVERSED (for outer wire) or FORWARD (for inner 
+	--          wires), and segments of splitting seams - with orientation 
+	--          EXTERNAL.
+
+uses
+    Orientation from TopAbs,
+    Edge        from TopoDS,
+    Wire        from TopoDS,
+    Vertex      from TopoDS,
+    WireData    from ShapeExtend,
+    HSequenceOfInteger from TColStd
+
+is
+    Create returns WireSegment;
+        ---Purpose: Creates empty segment.
+
+    Create (wire: WireData from ShapeExtend; 
+    	    ori: Orientation from TopAbs = TopAbs_EXTERNAL)
+    returns WireSegment;
+        ---Purpose: Creates segment and initializes it with wire and orientation.
+
+    Create (wire: Wire from TopoDS; 
+    	    ori: Orientation from TopAbs = TopAbs_EXTERNAL)
+    returns WireSegment;
+        ---Purpose: Creates segment and initializes it with wire and orientation.
+
+    Clear (me: in out);
+        ---Purpose: Clears all fields.
+	
+    Load (me: in out; wire: WireData from ShapeExtend);
+        ---Purpose: Loads wire.
+	
+    WireData (me) returns WireData from ShapeExtend;
+        ---Purpose: Returns wire.
+	---C++: return const &
+	
+    Orientation (me: in out; ori: Orientation from TopAbs);
+        ---Purpose: Sets orientation flag.
+
+    Orientation (me) returns Orientation from TopAbs;
+        ---Purpose: Returns orientation flag.
+
+    FirstVertex (me) returns Vertex from TopoDS;
+    	---Purpose: Returns first vertex of the first edge in the wire
+	--          (no dependance on Orientation()).
+
+    LastVertex (me) returns Vertex from TopoDS;
+    	---Purpose: Returns last vertex of the last edge in the wire
+	--          (no dependance on Orientation()).
+
+    IsClosed (me) returns Boolean;
+        ---Purpose: Returns True if FirstVertex() == LastVertex()
+
+    ---Scope: work with edges and synchronous maintaining patch indices
+
+    NbEdges (me) returns Integer;
+        ---Purpose: Returns Number of edges in the wire
+
+    Edge (me; i: Integer) returns Edge from TopoDS;
+        ---Purpose: Returns edge by given index in the wire
+
+    SetEdge (me: in out; i: Integer; edge: Edge from TopoDS);
+    	---Purpose: Replaces edge at index i by new one.
+
+    AddEdge (me: in out; i: Integer; edge: Edge from TopoDS);
+    	---Purpose: Insert a new edge with index i and implicitly defined
+	--          patch indices (indefinite patch). 
+        --          If i==0, edge is inserted at end of wire.
+
+    AddEdge (me: in out; i: Integer; edge: Edge from TopoDS; 
+                         iumin, iumax, ivmin, ivmax: Integer);
+    	---Purpose: Insert a new edge with index i and explicitly defined
+	--          patch indices. If i==0, edge is inserted at end of wire.
+
+    SetPatchIndex (me: in out; i: Integer; iumin, iumax, ivmin, ivmax: Integer);
+    	---Purpose: Set patch indices for edge i.
+	
+    DefineIUMin (me: in out; i: Integer; iumin: Integer);
+    DefineIUMax (me: in out; i: Integer; iumax: Integer);
+    DefineIVMin (me: in out; i: Integer; ivmin: Integer);
+    DefineIVMax (me: in out; i: Integer; ivmax: Integer);
+    	---Purpose: Modify minimal or maximal patch index for edge i.
+	--          The corresponding patch index for that edge is modified so
+	--          as to satisfy eq. iumin <= myIUMin(i) <= myIUMax(i) <= iumax
+	
+    GetPatchIndex (me; i: Integer; iumin, iumax, ivmin, ivmax: out Integer);
+    	---Purpose: Returns patch indices for edge i.
+	
+    CheckPatchIndex (me; i: Integer) returns Boolean;
+        ---Purpose: Checks patch indices for edge i to satisfy equations
+	--          IUMin(i) <= IUMax(i) <= IUMin(i)+1
+    
+    -- for non-manifold faces if face contains INTERNAL vertices
+    SetVertex(me: in out; theVertex: Vertex from TopoDS);
+    --SetVertex(me: in out; theVertex: Vertex from TopoDS;iumin, iumax, ivmin, ivmax: Integer );
+    GetVertex(me) returns Vertex from TopoDS;
+    IsVertex(me) returns Boolean;
+	
+fields
+
+    myWire  : WireData from ShapeExtend;
+    myVertex : Vertex from TopoDS;
+    myOrient: Orientation from TopAbs;
+    myIUMin : HSequenceOfInteger from TColStd; -- indices
+    myIUMax : HSequenceOfInteger from TColStd; -- for
+    myIVMin : HSequenceOfInteger from TColStd; -- patch
+    myIVMax : HSequenceOfInteger from TColStd; -- 
+
+end WireSegment;

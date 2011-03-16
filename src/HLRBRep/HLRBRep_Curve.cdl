@@ -1,0 +1,326 @@
+-- File:	HLRBRep_Curve.cdl
+-- Created:	Thu Apr  1 15:09:20 1993
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class Curve from HLRBRep
+	
+	---Purpose: Defines a 2d curve by projection of  a 3D curve on
+	--          a    plane     with  an     optional   perspective
+	--          transformation.
+
+uses
+    Integer         from Standard,    
+    Boolean         from Standard,    
+    ShortReal       from Standard,    
+    Real            from Standard,    
+    Address         from Standard,    
+    Pnt             from gp,
+    Vec             from gp,
+    Pnt2d           from gp,
+    Vec2d           from gp,
+    Dir2d           from gp,
+    Circ2d          from gp,
+    Elips2d         from gp,
+    Hypr2d          from gp,
+    Parab2d         from gp,
+    Lin2d           from gp,
+    Shape           from GeomAbs,
+    CurveType       from GeomAbs,
+    Array1OfPnt2d   from TColgp,
+    Array1OfReal    from TColStd,
+    Array1OfInteger from TColStd,
+    Edge            from TopoDS,
+    Curve           from BRepAdaptor
+     
+raises
+    NoSuchObject        from Standard,
+    DomainError         from Standard,
+    OutOfRange          from Standard,
+    UndefinedDerivative from StdFail
+
+     
+is
+    Create returns Curve from HLRBRep;
+	---Purpose: Creates an undefined Curve.
+    
+    Projector(me : in out; Proj : Address from Standard)
+    	---C++: inline
+    is static;
+
+    Curve(me : in out) returns Curve from BRepAdaptor
+	---Purpose: Returns the 3D curve.
+	---C++: return &
+    	---C++: inline
+    is static;
+    
+    Curve(me : in out; E : Edge from TopoDS)
+	---Purpose: Sets the 3D curve to be projected.
+    is static;
+    
+    Parameter2d(me; P3d : Real from Standard) returns Real from Standard
+	---Purpose: Returns the parameter   on the 2d  curve  from the
+	--          parameter on the 3d curve.
+    is static;
+    
+    Parameter3d(me; P2d : Real from Standard) returns Real from Standard
+	---Purpose: Returns the parameter   on the 3d  curve  from the
+	--          parameter on the 2d curve.
+    is static;
+    
+    Update(me : in out; TotMin : Address from Standard;
+                        TotMax : Address from Standard)
+    returns Real from Standard
+	---Purpose: Update the minmax and the internal data
+    is static;
+
+    UpdateMinMax(me : in out; TotMin : Address from Standard;
+                              TotMax : Address from Standard)
+    returns Real from Standard
+	---Purpose: Update the minmax returns tol for enlarge;
+    is static;
+
+    Z(me; U : Real from Standard) returns Real from Standard
+        --- Purpose :  Computes the Z    coordinate  of the  point  of
+        --  parameter U on the curve in the viewing coordinate system
+    is static;
+    
+    Value3D(me; U : Real from Standard) returns Pnt from gp
+        --- Purpose  :  Computes the 3D point   of parameter U  on the
+        --  curve.
+        --  
+    	---C++: inline
+    is static;
+
+    D0 (me; U :     Real from Standard;
+            P : out Pnt  from gp)
+        --- Purpose  :  Computes the 3D point   of parameter U  on the
+        --  curve.
+        --  
+    	---C++: inline
+    is static;
+
+    D1(me; U :     Real from Standard;
+           P : out Pnt  from gp ;
+           V : out Vec  from gp)
+        --- Purpose :  Computes the point of parameter  U on the curve
+        --  with its first derivative.
+        --  
+    	---C++: inline
+    is static;
+
+    Tangent(me; AtStart :     Boolean from Standard;
+                P       : out Pnt2d   from gp;
+                D       : out Dir2d   from gp)
+        --- Purpose : Depending on <AtStart> computes the 2D point and
+        --  tangent on the curve  at sart (or at  end).  If the  first
+        --  derivative is null look after  at start (or before at end)
+        --  with the second derivative.
+        --
+    raises
+    	UndefinedDerivative from StdFail
+    is static;
+    
+    --
+    --     Global methods - Apply to the whole curve.
+    --     
+    
+    FirstParameter(me) returns Real from Standard
+    	---C++: inline
+    is static;
+
+    LastParameter(me) returns Real from Standard
+    	---C++: inline
+    is static;
+    
+    Continuity(me) returns Shape from GeomAbs
+    	---C++: inline
+    is static;
+    
+    NbIntervals(me: in out; S : Shape from GeomAbs)
+    returns Integer from Standard
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <S>.    And  returns   the number   of
+	--          intervals.
+    	---C++: inline
+    is static;
+
+    Intervals(me: in out; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard
+    ---C++: inline
+    ;
+
+    IsClosed(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    IsPeriodic(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    Period(me) returns Real
+    raises
+    	DomainError from Standard -- if the curve is not periodic
+    	---C++: inline
+    is static;
+     
+    Value(me; U : Real from Standard) returns Pnt2d from gp
+        --- Purpose : Computes the point of parameter U on the curve.
+        --  
+    	---C++: inline
+    is static;
+
+    D0 (me; U :     Real  from Standard;
+            P : out Pnt2d from gp)
+        --- Purpose : Computes the point of parameter U on the curve.
+    is static;
+
+    D1 (me; U :     Real  from Standard;
+            P : out Pnt2d from gp;
+            V : out Vec2d from gp)
+        --- Purpose : Computes the point  of  parameter U on the curve
+        --  with its first derivative.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+    is static;
+
+    D2 (me; U     :     Real  from Standard;
+            P     : out Pnt2d from gp ;
+            V1,V2 : out Vec2d from gp)
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C2.
+    is static;
+    
+    D3 (me; U          :     Real  from Standard;
+            P          : out Pnt2d from gp;
+            V1, V2, V3 : out Vec2d from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+    raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C3.
+    is static;
+        
+    DN (me; U : Real    from Standard; 
+            N : Integer from Standard) returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    raises  
+    	DomainError from Standard,
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not CN.
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+    is static;
+
+    Resolution(me; R3d : Real) returns Real
+         ---Purpose :  Returns the parametric  resolution corresponding
+         --         to the real space resolution <R3d>.
+    	---C++: inline
+    is static;
+        
+    GetType(me) returns CurveType from GeomAbs
+	---Purpose: Returns  the  type of the   curve  in the  current
+	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
+	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
+    	---C++: inline
+    is static;
+
+    --
+    --     The following methods must  be called when GetType returned
+    --     the corresponding type.
+    --     
+
+    Line(me) returns Lin2d from gp
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    Circle(me) returns Circ2d from gp
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    Ellipse(me) returns Elips2d from gp
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    Hyperbola(me) returns  Hypr2d from gp
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+    Parabola(me) returns Parab2d from gp
+    raises
+    	NoSuchObject from Standard
+    is static;
+
+
+    IsRational(me) returns Boolean from Standard
+        ---C++:inline
+    is static;
+    
+    Degree(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    NbPoles(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+
+    Poles(me; TP : in out Array1OfPnt2d from TColgp)
+    raises 
+    	NoSuchObject from Standard, -- if rational
+    	OutOfRange   from Standard  -- if TP has not length NbPoles
+    is static;
+    
+    PolesAndWeights(me; TP : in out Array1OfPnt2d from TColgp;
+                        TW : in out Array1OfReal  from TColStd)
+    raises 
+    	NoSuchObject from Standard, -- if not rational
+    	OutOfRange   from Standard  -- if TW has not length NbPoles
+    is static;
+    
+    NbKnots(me) returns Integer from Standard
+    raises 
+    	NoSuchObject from Standard
+    	---C++: inline
+    is static;
+     
+    Knots(me; kn: out Array1OfReal from TColStd)
+    is static;
+    
+    Multiplicities(me; mu: out Array1OfInteger from TColStd)
+    is static;
+    
+
+fields
+    myCurve : Curve     from BRepAdaptor;
+    myType  : CurveType from GeomAbs;
+    myProj  : Address   from Standard;
+    
+    -- description of the line in the plane containing the line and the eye
+
+    myOX    : Real from Standard;
+    myOZ    : Real from Standard;
+    myVX    : Real from Standard;
+    myVZ    : Real from Standard;
+    myOF    : Real from Standard;
+    
+end Curve;

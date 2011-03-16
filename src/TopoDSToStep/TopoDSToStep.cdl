@@ -1,0 +1,152 @@
+-- File:	TopoDSToStep.cdl
+-- Created:	Fri Nov 25 08:31:25 1994
+-- Author:	Frederic MAUPAS
+--		<fma@stylox>
+---Copyright:	 Matra Datavision 1993
+
+package TopoDSToStep
+
+    ---Purpose: This package implements the mapping between CAS.CAD
+    --  Shape representation and AP214 Shape Representation.
+    --  The target schema is pms_c4 (a subset of AP214)
+    --  
+    --  How to use this Package :
+    --  
+    --  Entry point are context dependent. It can be :
+    --     MakeManifoldSolidBrep
+    --     MakeBrepWithVoids
+    --     MakeFacetedBrep
+    --     MakeFacetedBrepAndBrepWithVoids
+    --     MakeShellBasedSurfaceModel
+    --  Each of these classes call the Builder
+    --  The class tool centralizes some common informations.   
+
+uses TopoDS, StdFail, TCollection, TColStd, TopTools, Transfer, MoniTool,
+     BRepTools, TopLoc, GeomAbs, Geom2d, Geom, gp,
+     StepGeom, StepShape
+
+is
+
+--  ------------------------------------------------------
+--  Enumeration
+--  ------------------------------------------------------
+
+    enumeration BuilderError is
+    	BuilderDone,
+	NoFaceMapped,
+	BuilderOther
+    end BuilderError;
+    
+    enumeration MakeFaceError is
+    	FaceDone,
+	InfiniteFace,
+	NonManifoldFace,
+	NoWireMapped,
+    	FaceOther
+    end MakeFaceError;
+    
+    enumeration MakeWireError is
+    	WireDone,
+	NonManifoldWire,
+    	WireOther
+    end MakeWireError;
+    
+    enumeration MakeEdgeError is
+    	EdgeDone,
+	NonManifoldEdge,
+    	EdgeOther
+    end MakeEdgeError;
+    
+    enumeration MakeVertexError is
+    	VertexDone,
+    	VertexOther
+    end MakeVertexError;
+    
+    enumeration FacetedError is
+	FacetedDone,    
+    	SurfaceNotPlane,
+	PCurveNotLinear
+    end FacetedError;
+
+--  ------------------------------------------------------
+--  Package Classes
+--  ------------------------------------------------------
+
+    private deferred class Root;
+
+    class MakeManifoldSolidBrep;
+
+    class MakeBrepWithVoids;
+
+    class MakeFacetedBrep;
+
+    class MakeFacetedBrepAndBrepWithVoids;
+
+    class MakeShellBasedSurfaceModel;
+
+    class MakeGeometricCurveSet;
+    
+    class Builder;
+    
+    class WireframeBuilder;
+    
+    class Tool;
+    
+    class FacetedTool;
+    
+    class MakeStepFace;
+    
+    class MakeStepWire;
+    
+    class MakeStepEdge;
+    
+    class MakeStepVertex;
+    
+--    private class DirectModification;
+--    private class ConicalSurfModif;
+    
+--  ------------------------------------------------------
+--  Instanciated Class
+--  ------------------------------------------------------
+
+--    class DataMapOfShape instantiates
+--    	  DataMap from TCollection 
+--    	    (Shape                         from TopoDS,
+--    	     TopologicalRepresentationItem from StepShape,
+--	     ShapeMapHasher                from TopTools);
+
+--  ------------------------------------------------------
+--  Package Method
+--  ------------------------------------------------------
+
+    DecodeBuilderError(E : BuilderError from TopoDSToStep)
+    	returns HAsciiString from TCollection;   
+   
+    DecodeFaceError(E : MakeFaceError from TopoDSToStep)
+    	returns HAsciiString from TCollection;
+	
+    DecodeWireError(E : MakeWireError from TopoDSToStep)
+    	returns HAsciiString from TCollection;   
+   
+    DecodeEdgeError(E : MakeEdgeError from TopoDSToStep)
+    	returns HAsciiString from TCollection;
+	
+    DecodeVertexError(E : MakeVertexError from TopoDSToStep)
+    	returns HAsciiString from TCollection;
+	
+--    DirectFaces(S : Shape from TopoDS)
+--    	returns Shape from TopoDS;
+	---Purpose: Returns a new shape without undirect surfaces.
+	
+    AddResult (FP: FinderProcess from Transfer;
+     	       Shape: Shape from TopoDS;
+	       entity: Transient from Standard);
+	---Purpose: Adds an entity into the list of results (binders) for
+	--          shape stored in FinderProcess
+
+    AddResult (FP: FinderProcess from Transfer;
+     	       Tool: Tool from TopoDSToStep);
+	---Purpose: Adds all entities recorded in Tool into the map of results
+	--          (binders) stored in FinderProcess
+
+end TopoDSToStep;

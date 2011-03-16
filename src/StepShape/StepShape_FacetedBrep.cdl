@@ -1,0 +1,21 @@
+-- File:        FacetedBrep.cdl
+-- Created:     Fri Dec  1 11:11:20 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FacetedBrep from StepShape 
+
+inherits ManifoldSolidBrep from StepShape 
+
+uses
+
+	HAsciiString from TCollection, 
+	ClosedShell from StepShape
+is
+
+	Create returns mutable FacetedBrep;
+	---Purpose: Returns a FacetedBrep
+
+
+end FacetedBrep;

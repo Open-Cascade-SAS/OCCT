@@ -1,0 +1,82 @@
+-- File:	Draw_Grid.cdl
+-- Created:	Thu Feb  3 15:29:46 1994
+-- Author:	Jean Marc LACHAUME
+--		<jml@phylox>
+---Copyright:	 Matra Datavision 1994
+
+class Grid from Draw inherits Drawable3D from Draw
+
+uses
+    Display from Draw
+
+is
+
+    Create
+     
+    	---Purpose: Creates a grid.
+
+	returns mutable Grid from Draw ;
+
+
+    Steps (me : mutable; StepX, StepY, StepZ : Real from Standard)
+    
+    	---Purpose: Sets the steps along the X, Y & Z axis.
+
+    	is static ;
+
+
+    StepX (me)
+    
+    	---Purpose: Returns the step along the X axis.
+
+	---C++: inline
+
+    	returns Real from Standard
+    	is static ;
+
+
+    StepY (me)
+    
+    	---Purpose: Returns the step along the Y axis.
+
+	---C++: inline
+
+    	returns Real from Standard
+    	is static ;
+
+
+    StepZ (me)
+    
+    	---Purpose: Returns the step along the Z axis.
+
+	---C++: inline
+
+    	returns Real from Standard
+    	is static ;
+
+
+    IsActive (me)
+
+    	---Purpose: Returns if the grid is active or not.
+
+	---C++: inline
+
+    	returns Boolean from Standard
+	is static ;
+
+
+    DrawOn (me; Out : in out Display from Draw)
+
+    	---Purpose: Displays the grid.
+
+    	is static ;
+
+
+fields
+
+  myStepX    : Real    from Standard ;
+  myStepY    : Real    from Standard ;
+  myStepZ    : Real    from Standard ;
+  myIsActive : Boolean from Standard ;
+
+end Grid ;

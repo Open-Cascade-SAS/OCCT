@@ -1,0 +1,68 @@
+--
+-- File      :  PWBDrilledHole.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PWBDrilledHole from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines PWBDrilledHole, Type <406> Form <26>
+        --          in package IGESAppli
+        --          Used to identify an entity that locates a drilled hole
+        --          and to specify the characteristics of the drilled hole
+
+uses  Integer, Real  -- no one specific type
+
+is
+
+        Create returns mutable PWBDrilledHole;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              nbPropVal  : Integer;
+              aDrillDia  : Real;
+              aFinishDia : Real;
+              aCode      : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           PWBDrilledHole
+        --       - nbPropVal  : number of property values, always = 3
+        --       - aDrillDia  : Drill diameter size
+        --       - aFinishDia : Finish diameter size
+        --       - aCode      : Function code for drilled hole
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns number of property values, always = 3
+
+        DrillDiameterSize (me) returns Real;
+        ---Purpose : returns Drill diameter size
+
+        FinishDiameterSize (me) returns Real;
+        ---Purpose : returns Finish diameter size
+
+        FunctionCode (me) returns Integer;
+        ---Purpose : returns Function code for drilled hole
+        -- is 0, 1, 2, 3, 4, 5 or 5001-9999
+
+fields
+
+--
+-- Class    : IGESAppli_PWBDrilledHole
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PWBDrilledHole.
+--
+-- Reminder : A PWBDrilledHole instance is defined by :
+--            - number of property values, always = 3
+--            - Drill diameter size
+--            - Finish diameter size
+--            - Function code for drilled hole
+
+        theNbPropertyValues : Integer;
+        theDrillDiameter    : Real;
+        theFinishDiameter   : Real;
+        theFunctionCode     : Integer;
+
+end PWBDrilledHole;

@@ -1,0 +1,107 @@
+-- File:	TDF_Delta.cdl
+--      	-------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep  8 1997	Creation
+
+
+class Delta from TDF inherits TShared from MMgt
+
+	---Purpose: A delta set is available at <aSourceTime>. If
+	--          applied, it restores the TDF_Data in the state it
+	--          was at <aTargetTime>.
+
+uses
+
+    OStream                  from Standard,
+    ExtendedString           from TCollection,
+    LabelList                from TDF,
+    AttributeDelta           from TDF,
+    AttributeDeltaList       from TDF
+
+raises
+
+    OutOfRange from Standard
+
+is
+
+
+    Create;
+	---Purpose: Creates a delta.
+
+    Validity(me : mutable;
+    	     aBeginTime   : Integer from Standard;
+    	     anEndTime    : Integer from Standard)
+    	is protected;
+	---Purpose: Validates <me> at <aBeginTime>. If applied, it
+	--          restores the TDF_Data in the state it was at
+	--          <anEndTime>. Reserved to TDF_Data.
+
+    
+    AddAttributeDelta (me : mutable;
+    	    	       anAttributeDelta : AttributeDelta from TDF)
+    	is protected;
+	---Purpose: Adds an AttributeDelta to the list. Reserved to
+	--          TDF_Data.
+
+    IsEmpty (me) returns Boolean from Standard;
+	---Purpose: Returns true if there is nothing to undo.
+	--          
+	---C++: inline    
+
+    BeforeOrAfterApply(me; before : Boolean from Standard) is private;
+
+    Apply (me : mutable) is private;
+    
+    IsApplicable (me; aCurrentTime : Integer from Standard)
+    	returns Boolean from Standard;
+	---Purpose: Returns true if the Undo action of <me> is
+	--          applicable at <aCurrentTime>.
+	-- 
+	---C++: inline
+
+    BeginTime (me) returns Integer;
+	---Purpose: Returns the field <myBeginTime>.
+	---C++: inline
+    
+    EndTime (me) returns Integer;
+	---Purpose: Returns the field <myEndTime>.
+	---C++: inline    
+
+    Labels(me; aLabelList : in out LabelList from TDF);
+	---Purpose: Adds in <aLabelList> the labels of the attribute deltas.
+	--          Caution: <aLabelList> is not cleared before use.
+
+    AttributeDeltas (me) returns AttributeDeltaList from TDF;
+	---Purpose: Returns the field <myAttDeltaList>.
+	---C++: inline    
+	---C++: return const &
+
+    Name(me) returns ExtendedString from TCollection;
+   	---Purpose: Returns a name associated with this delta.
+	---C++: inline   
+    
+    SetName(me : mutable; theName : ExtendedString from TCollection);
+    	---Purpose: Associates a name <theName> with this delta
+	---C++: inline
+
+
+    Dump(me; OS : in out OStream from Standard);
+
+fields
+
+    myBeginTime    : Integer            from Standard;
+    myEndTime      : Integer            from Standard;
+    myAttDeltaList : AttributeDeltaList from TDF;
+    myName         : ExtendedString     from TCollection;
+    
+friends
+
+    class Data from TDF
+
+end Delta;
+

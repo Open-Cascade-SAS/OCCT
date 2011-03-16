@@ -1,0 +1,42 @@
+-- File:	TopoDSToStep_MakeBrepWithVoids.cdl
+-- Created:	Fri Jul 23 12:47:21 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeBrepWithVoids from TopoDSToStep inherits
+    Root from TopoDSToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Solid from TopoDS and BrepWithVoids from
+    --          StepShape. All the topology and geometry comprised 
+    --          into the shell or the solid are taken into account and
+    --          translated.
+  
+uses Solid from TopoDS,
+     BrepWithVoids from StepShape,
+     FinderProcess from Transfer
+          
+raises NotDone from StdFail
+     
+is 
+
+Create ( S  : Solid from TopoDS;
+         FP : mutable FinderProcess from Transfer)
+        returns MakeBrepWithVoids;
+
+Value (me) returns BrepWithVoids from StepShape
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theBrepWithVoids : BrepWithVoids from StepShape;
+
+    	-- The solution from StepShape
+    	
+end MakeBrepWithVoids;
+
+

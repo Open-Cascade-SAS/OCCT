@@ -1,0 +1,48 @@
+-- File:	TopOpeBRep_VPointInterIterator.cdl
+-- Created:	Fri May  7 17:03:26 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class VPointInterIterator from TopOpeBRep
+
+    -- ==========================
+    -- Restriction Point iterator
+    -- ==========================
+
+uses
+
+    LineInter from TopOpeBRep,
+    PLineInter from TopOpeBRep,
+    VPointInter from TopOpeBRep
+
+is
+
+    Create returns VPointInterIterator from TopOpeBRep;
+    Create(LI : LineInter from TopOpeBRep)  
+    returns VPointInterIterator from TopOpeBRep;
+
+    Init(me:in out; LI : LineInter from TopOpeBRep;
+    	    	    checkkeep : Boolean from Standard = Standard_False) is static;
+    Init(me:in out) is static;
+    More(me) returns Boolean is static;
+    Next(me:in out) is static;
+ 
+    CurrentVP(me:in out) returns VPointInter from TopOpeBRep is static;
+    ---C++: return const &
+
+    CurrentVPIndex(me) returns Integer is static;
+
+    ChangeCurrentVP(me:in out) returns VPointInter from TopOpeBRep is static;
+    ---C++: return &
+
+    PLineInterDummy(me) returns PLineInter from TopOpeBRep;
+    
+fields
+
+    myLineInter : PLineInter from TopOpeBRep;
+    myVPointIndex : Integer;    
+    myVPointNb : Integer;
+    mycheckkeep : Boolean from Standard;
+
+end VPointInterIterator from TopOpeBRep;

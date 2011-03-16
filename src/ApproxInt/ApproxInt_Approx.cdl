@@ -1,0 +1,170 @@
+-- File:	ApproxInt_Approx.cdl
+-- Created:	Wed Mar 17 10:55:07 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class Approx from ApproxInt (
+    ThePSurface        as any;
+    ThePSurfaceTool    as any;
+    TheISurface        as any;
+    TheISurfaceTool    as any;
+    TheWLine           as Transient)
+    
+uses 
+    MCurvesToBSpCurve from Approx,
+    MultiBSpCurve     from AppParCurves,
+    Pnt               from gp,
+    Pnt2d             from gp,
+    Vec               from gp,
+    Vec2d             from gp,
+    ParametrizationType from Approx   
+     
+raises 
+    OutOfRange    from Standard,
+    NotDone       from StdFail
+    
+class ThePrmPrmSvSurfaces instantiates PrmPrmSvSurfaces from ApproxInt (
+    ThePSurface,
+    ThePSurfaceTool,
+    TheWLine); 
+
+class TheImpPrmSvSurfaces instantiates ImpPrmSvSurfaces from ApproxInt (
+    ThePSurface,
+    ThePSurfaceTool,
+    TheISurface,
+    TheISurfaceTool,
+    TheWLine); 
+
+class TheMultiLine instantiates MultiLine from ApproxInt (
+    TheWLine,
+    SvSurfaces  from ApproxInt);
+
+class TheMultiLineTool instantiates MultiLineTool from ApproxInt(
+    TheMultiLine,
+    SvSurfaces  from ApproxInt);
+    
+class TheComputeLine instantiates BSplComputeLine from Approx (
+    TheMultiLine,
+    TheMultiLineTool);
+
+class TheComputeLineBezier instantiates ComputeLine from Approx (
+    TheMultiLine,
+    TheMultiLineTool);
+
+is
+
+    Create
+    returns Approx from ApproxInt;
+
+    Perform(me: in out;
+            Surf1,Surf2 : ThePSurface;
+            aLine       : TheWLine;
+            ApproxXYZ   : Boolean from Standard = Standard_True;
+    	    ApproxU1V1  : Boolean from Standard = Standard_True;
+    	    ApproxU2V2  : Boolean from Standard = Standard_True;
+    	    indicemin   : Integer from Standard = 0;
+    	    indicemax   : Integer from Standard = 0)
+    is static;
+    
+    Perform(me: in out;
+            aLine       : TheWLine;
+            ApproxXYZ   : Boolean from Standard = Standard_True;
+    	    ApproxU1V1  : Boolean from Standard = Standard_True;
+    	    ApproxU2V2  : Boolean from Standard = Standard_True;
+    	    indicemin   : Integer from Standard = 0;
+    	    indicemax   : Integer from Standard = 0)	    
+    is static;
+
+    
+    SetParameters(me: in out; Tol3d               : Real    from Standard;
+                              Tol2d               : Real    from Standard;
+			      DegMin              : Integer from Standard;
+			      DegMax              : Integer from Standard;
+			      NbIterMax           : Integer from Standard;
+                              ApproxWithTangency  : Boolean from Standard = Standard_True; 
+                              Parametrization     : ParametrizationType from Approx = Approx_ChordLength)
+    is static;
+
+    SetParameters(me: in out; Tol3d               : Real    from Standard;
+                              Tol2d               : Real    from Standard;
+			      RelativeTol         : Boolean from Standard;
+			      DegMin              : Integer from Standard;
+			      DegMax              : Integer from Standard;
+			      NbIterMax           : Integer from Standard;
+			      NbPntMax            : Integer from Standard;
+                              ApproxWithTangency  : Boolean from Standard = Standard_True; 
+                              Parametrization     : ParametrizationType from Approx = Approx_ChordLength)
+    is static;
+
+    Perform(me:in out) 
+    is static;
+
+    TolReached3d(me) returns Real from Standard
+    is static;
+
+    TolReached2d(me) returns Real from Standard
+    is static;
+
+    IsDone(me) returns Boolean from Standard 
+    is static;
+    
+    NbMultiCurves(me) returns Integer from Standard 
+    is static ;
+    
+    Value(me; Index: Integer from Standard) 
+    	---C++: return const &
+    returns MultiBSpCurve from AppParCurves 
+    is static;
+
+
+
+---- private methods
+
+    Perform(me: in out ;Surf1       : ThePSurface;
+    	                Surf2       : TheISurface;
+	                aLine       : TheWLine;
+                        ApproxXYZ   : Boolean from Standard;
+    	                ApproxU1V1  : Boolean from Standard;
+    	                ApproxU2V2  : Boolean from Standard;
+                        indicemin   : Integer from Standard;
+    	                indicemax   : Integer from Standard)			      
+
+    is static private;
+
+    Perform(me: in out ;Surf1       : TheISurface;
+    	                Surf2       : ThePSurface;
+	                aLine       : TheWLine;
+                        ApproxXYZ   : Boolean from Standard;
+    	                ApproxU1V1  : Boolean from Standard;
+    	                ApproxU2V2  : Boolean from Standard;
+                        indicemin   : Integer from Standard;
+    	                indicemax   : Integer from Standard) 
+    is static private;
+    
+    UpdateTolReached(me: in out)
+    is static private;
+
+fields
+    myComputeLine       : TheComputeLine       from ApproxInt;
+    myComputeLineBezier : TheComputeLineBezier from ApproxInt;    
+    myBezToBSpl         : MCurvesToBSpCurve    from Approx;
+    myTolReached        : Boolean              from Standard; 
+    myApproxBez         : Boolean              from Standard;
+    
+    myWithTangency      : Boolean               from Standard;
+    myTol3d             : Real                  from Standard;
+    myTol2d             : Real                  from Standard;
+    myRelativeTol       : Boolean               from Standard;
+    myDegMin            : Integer               from Standard;
+    myDegMax            : Integer               from Standard;    
+    myNbPntMax          : Integer               from Standard;        
+    myNbIterMax         : Integer               from Standard;        
+
+    myMinFactorXYZ      : Real                  from Standard;    
+    myMinFactorUV       : Real                  from Standard;
+    myTolReached3d      : Real                  from Standard;    
+    myTolReached2d      : Real                  from Standard;
+
+end Approx;    

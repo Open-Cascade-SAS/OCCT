@@ -1,0 +1,335 @@
+--
+-- File:        Graphic3d_AspectFillArea3d.cdl
+-- Created:     Lundi 4 Novembre 1991
+-- Author:      NW,JPB,CAL
+-- Modified:    1/08/97 ; PCT : Ajout texture mapping
+--              16/01/98 ; FMN : Ajout Hiddenline
+--              0312/99  ; GG : BUC60488 Why the field DistinguishModeActive
+--                      field is not accessible properly ?
+--                      workaround : Move the Material fields at end.
+--              26/01/00 ; EUG/GG degeneration management (G003)
+--                       Add SetDegenerateModel() and DegenerateModel() methods
+--              29/09/00 ; GG degeneration management (G003)
+--                       Add SetDefaultDegenerateModel() and DefaultDegenerateModel() methods
+--              22/03/04 ; OCC4895 SAN High-level interface for controlling polygon offsets
+--
+---Copyright:   MatraDatavision 1991,1992,1993
+--
+
+class AspectFillArea3d from Graphic3d inherits AspectFillArea from Aspect
+
+        ---Version:
+
+        ---Purpose: This class permits the creation and updating of
+        --          a graphic attribute context for opaque 3d
+        --          primitives (polygons, triangles, quadrilaterals)
+        --  Keywords: Face, FillArea, Triangle, Quadrangle, Polygon,
+        --           TriangleMesh, QuadrangleMesh, Edge, Border, Interior,
+        --           Color, Type, Width, Style, Hatch, Material,
+        --           BackFaceRemoval, DistinguishMode
+
+        ---Warning:
+        ---References:
+
+uses
+
+        Color           from Quantity,
+        Ratio           from Quantity,
+
+        TypeOfLine      from Aspect,    
+        InteriorStyle   from Aspect,
+        TypeOfDegenerateModel from Aspect, 
+
+        MaterialAspect  from Graphic3d,
+        TextureMap      from Graphic3d
+
+is
+
+        Create
+                returns mutable AspectFillArea3d from Graphic3d;
+        ---Level: Public
+        ---Purpose: Creates a context table for fill area primitives
+        --          defined with the following default values:
+        --
+        --          InteriorStyle       : IS_EMPTY
+        --          InteriorColor       : NOC_CYAN1
+        --          EdgeColor           : NOC_WHITE
+        --          EdgeLineType        : TOL_SOLID
+        --          EdgeWidth           : 1.0
+        --          FrontMaterial       : NOM_BRASS
+        --          BackMaterial        : NOM_BRASS
+        --
+        --          Display of back-facing filled polygons.
+        --          No distinction between external and internal
+        --          faces of FillAreas.
+        --          The edges are not drawn.
+        --          Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
+
+
+        Create ( Interior       : InteriorStyle from Aspect;
+                 InteriorColor  : Color from Quantity;
+                 EdgeColor      : Color from Quantity;
+                 EdgeLineType   : TypeOfLine from Aspect;
+                 EdgeWidth      : Real from Standard;
+                 FrontMaterial  : MaterialAspect from Graphic3d;
+                 BackMaterial   : MaterialAspect from Graphic3d )
+                returns mutable AspectFillArea3d from Graphic3d;
+
+        ---Level: Public
+        ---Purpose: Creates a context table for fill area primitives
+        --          defined with the specified values.
+        --
+        --          Display of back-facing filled polygons.
+        --          No distinction between external and internal
+        --          faces of FillAreas.
+        --          The edges are not drawn.
+        --          Polygon offset parameters: mode = Aspect_POM_None, factor = 1., units = 0.
+    	-- Warning
+    	-- EdgeWidth is the "line width scale factor".   The
+    	-- nominal line width is 1 pixel.   The width of the line is
+    	-- determined by applying the line width scale factor to
+    	-- this nominal line width.   The supported line widths
+    	-- vary by 1-pixel units.
+
+        ---------------------------------------------------
+        -- Category: Methods to modify the class definition
+        ---------------------------------------------------
+
+        AllowBackFace ( me      : mutable )
+                is static;
+        ---Purpose: Allows the display of back-facing filled
+        --          polygons.
+
+        SetBackMaterial ( me            : mutable;
+                          AMaterial     : MaterialAspect from Graphic3d )
+                is static;
+        ---Level: Public
+        ---Purpose: Modifies the surface material of internal faces
+        ---Category: Methods to modify the class definition
+
+        SetDistinguishOn ( me   : mutable )
+                is static;
+        ---Level: Public
+        ---Purpose: Allows distinction between external and internal
+        --          faces of FillAreas.
+        ---Category: Methods to modify the class definition
+
+        SetDistinguishOff ( me  : mutable )
+                is static;
+        ---Level: Public
+        ---Purpose: Forbids distinction between external and internal
+        --          faces of FillAreas.
+        ---Category: Methods to modify the class definition
+
+        SetEdgeOn ( me  : mutable )
+                is static;
+        ---Level: Public
+        ---Purpose: The edges of FillAreas are drawn.
+        ---Category: Methods to modify the class definition
+
+        SetEdgeOff ( me : mutable )
+                is static;
+        ---Level: Public
+        ---Purpose: The edges of FillAreas are not drawn.
+        ---Category: Methods to modify the class definition
+
+        SetFrontMaterial ( me           : mutable;
+                           AMaterial    : MaterialAspect from Graphic3d )
+                is static;
+        ---Level: Public
+        ---Purpose: Modifies the surface material of external faces
+        ---Category: Methods to modify the class definition
+
+        SuppressBackFace ( me   : mutable )
+                is static;
+        ---Level: Public
+        ---Purpose: Suppress the display of back-facing filled
+        --          polygons.
+        --          A back-facing polygon is defined as a polygon whose
+        --          vertices are in a clockwise order with respect
+        --          to screen coordinates.
+        ---Category: Methods to modify the class definition
+
+ 
+        SetTextureMap(me  :  mutable; 
+                      ATexture  :  TextureMap  from Graphic3d);
+ 
+        SetTextureMapOn(me  :  mutable);
+        SetTextureMapOff(me :  mutable);
+
+        SetDefaultDegenerateModel ( myclass;
+                aModel     : TypeOfDegenerateModel from Aspect =
+                                                Aspect_TDM_WIREFRAME;
+                aRatio : Ratio from Quantity = 0.0);
+        ---Level: Public
+        ---Purpose: Sets the default model of degeneration for the polygons
+        --      which is taking in account at creation time of any
+        --      graphic structure until the model is change using
+        --      SetDegenerateModel() method.
+        ---Category: Methods to manage the structure degeneration
+
+        SetDegenerateModel ( me : mutable;
+                aModel     : TypeOfDegenerateModel from Aspect =
+                                                Aspect_TDM_WIREFRAME;
+                aRatio : Ratio from Quantity = 0.0);
+        ---Level: Public
+        ---Purpose: Sets the model of degeneration for the polygons
+        --   according to the degenerate ratio >= 0. & <= 1. where :
+        --   <aRatio> = 0. indicate that all polygons of the graphic structure
+        --      are displayed.
+        --   <aRatio> = 1. indicate that nothing is displayed in the graphic
+        --      structure.
+        --   When <ARatio> is > 0 & < 1. the corresponding amount
+        --   of polygons are displayed in the graphic structure with a
+        --   random method.     
+        --  Warning: the degenerate structure is shown only when
+        -- the animation and degenerate flags are set to TRUE
+        -- in V3d_View::SetAnimationMode(..)
+        ---Category: Methods to manage the structure degeneration
+        
+        -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+        SetPolygonOffsets ( me : mutable;
+                            aMode   : Integer from Standard;
+                            aFactor : Real from Standard = 1.0;
+                            aUnits  : Real from Standard = 0.0 );
+        ---Level: Public
+        ---Purpose: Sets up OpenGL polygon offsets mechanism.
+        --          <aMode> parameter can contain various combinations of 
+        --          Aspect_PolygonOffsetMode enumeration elements (Aspect_POM_None means
+        --          that polygon offsets are not changed).
+        --          If <aMode> is different from Aspect_POM_Off and Aspect_POM_None, then <aFactor> and <aUnits> 
+        --          arguments are used by graphic renderer to calculate a depth offset value:
+        --          
+        --          offset = <aFactor> * m + <aUnits> * r, where
+        --          m - maximum depth slope for the polygon currently being displayed,
+        --          r - minimum window coordinates depth resolution (implementation-specific)
+        --
+        --          Deafult settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 0.
+        --
+        --          Negative offset values move polygons closer to the viewport,
+        --          while positive values shift polygons away.
+        --          Consult OpenGL reference for details (glPolygonOffset function description).
+        ---Category: Methods to modify the class definition
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+        BackFace ( me )
+                returns Boolean from Standard
+                is static;
+        ---Level: Public
+        ---Purpose: Returns the Back Face Removal status.
+        --          Standard_True if SuppressBackFace is activated.
+        ---Category: Inquire methods
+
+        Distinguish ( me )
+                returns Boolean from Standard
+                is static;
+        ---Level: Public
+        ---Purpose: Returns the Distinguish Mode status.
+        ---Category: Inquire methods
+
+        Edge ( me )
+                returns Boolean from Standard
+                is static;
+        ---Level: Public
+        ---Purpose: Returns Standard_True if the edges are drawn and
+        --          Standard_False if the edges are not drawn.
+        ---Category: Inquire methods
+
+        BackMaterial ( me )
+                returns MaterialAspect from Graphic3d
+                is static;
+        ---Level: Public
+        ---Purpose: Returns the surface material of internal faces
+        ---Category: Inquire methods
+
+        FrontMaterial ( me )
+                returns MaterialAspect from Graphic3d
+                is static;
+        ---Level: Public
+        ---Purpose: Returns the surface material of external faces
+        ---Category: Inquire methods
+
+ 
+        TextureMap(me) 
+            returns  TextureMap  from  Graphic3d; 
+             
+        TextureMapState(me) 
+            returns  Boolean  from  Standard;
+
+        DegenerateModel ( me ;
+                aRatio: out Ratio from Quantity )
+                returns TypeOfDegenerateModel from Aspect;
+        ---Level: Public
+        ---Purpose: returns the current degeneration model and ratio
+        --  for the polygons
+        ---Category: Inquire methods
+
+        DefaultDegenerateModel ( myclass ;
+                aRatio: out Ratio from Quantity )
+                returns TypeOfDegenerateModel from Aspect;
+        ---Level: Public
+        ---Purpose: returns the default degeneration model and ratio
+        --  for the polygons
+        ---Category: Inquire methods
+        
+        -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+        PolygonOffsets ( me;
+                         aMode   : out Integer from Standard;
+                         aFactor : out Real from Standard;
+                         aUnits  : out Real from Standard );
+        ---Level: Public
+        ---Purpose: Returns current polygon offsets settings.
+        ---Category: Inquire methods    
+        
+        
+--
+
+fields
+
+--
+-- Class        :       Graphic3d_AspectFillArea3d
+--
+-- Purpose      :       Declaration of variables specific to
+--                      the context of drawing 3d faces
+--
+-- Reminder     :       A context for drawing 3d faces inherits a context
+--                      defined by :
+--                      - the interior style of the face
+--                      - the edge style of the face
+--                      - the colour
+--                      It also possesses a definition of the materials for the
+--                      internal and external faces.
+--
+--
+
+
+        -- flag to distinguish between internal and external faces
+        DistinguishModeActive   :       Boolean from Standard;
+
+        -- flag to draw the edges or not
+        EdgeModeActive          :       Boolean from Standard;
+
+        -- display flag for reversed polygons.
+        BackFaceRemovalActive   :       Boolean from Standard;
+
+        MyTextureMap            :       TextureMap  from  Graphic3d; 
+        MyTextureMapState       :       Boolean  from  Standard;
+
+        -- the material
+        MyFrontMaterial         :       MaterialAspect from Graphic3d;
+        MyBackMaterial          :       MaterialAspect from Graphic3d;
+
+        -- the degenate model
+        MyDegenerateModel       :       TypeOfDegenerateModel from Aspect;
+        MyDegenerateRatio       :       Ratio from Quantity;
+        
+        -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+        -- polygon offsets
+        MyPolygonOffsetMode     :       Integer from Standard;
+        MyPolygonOffsetFactor   :       Real from Standard;
+        MyPolygonOffsetUnits    :       Real from Standard;
+
+end AspectFillArea3d;

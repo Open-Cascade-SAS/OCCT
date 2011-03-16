@@ -1,0 +1,71 @@
+#include <StdFail_NotDone.hxx>
+#include <IntSurf_LineOn2S.hxx>
+
+inline Standard_Boolean IntWalk_PWalking::IsDone() const {
+  return done; 
+}
+
+inline Standard_Integer IntWalk_PWalking::NbPoints() const {
+  if(!done) StdFail_NotDone::Raise();
+  return line->NbPoints();
+}
+
+inline const IntSurf_PntOn2S& IntWalk_PWalking::Value
+  (const Standard_Integer Index) const
+{
+  if (!done) StdFail_NotDone::Raise();
+  return line->Value(Index);
+}
+
+
+inline const Handle(IntSurf_LineOn2S)& IntWalk_PWalking::Line () const {
+
+  if (!done) StdFail_NotDone::Raise();
+  return line;
+}
+
+
+inline Standard_Boolean IntWalk_PWalking::TangentAtFirst() const{ 
+  if(!done) StdFail_NotDone::Raise();
+  return tgfirst;
+}
+
+inline Standard_Boolean IntWalk_PWalking::TangentAtLast() const{ 
+  if(!done) StdFail_NotDone::Raise();
+  return tglast;
+}
+
+inline Standard_Boolean IntWalk_PWalking::IsClosed() const{ 
+  if(!done) StdFail_NotDone::Raise();
+  return close;
+}
+
+inline const gp_Dir& IntWalk_PWalking::TangentAtLine
+  (Standard_Integer& Index) const
+{
+  if(!done) StdFail_NotDone::Raise();
+  Index = indextg;
+  return tgdir;
+}
+
+#define REGLAGE 0
+
+inline void IntWalk_PWalking::AddAPoint(Handle(IntSurf_LineOn2S)& theLine,
+					const IntSurf_PntOn2S& POn2S) { 
+#if REGLAGE
+  Standard_Integer n=theLine->NbPoints();
+  if(n) { 
+    gp_Vec V(POn2S.Value(),theLine->Value(n).Value());
+    Standard_Real u1,v1,u2,v2;
+    Standard_Real U1,V1,U2,V2;
+    POn2S.Parameters(u1,v1,u2,v2);
+    theLine->Value(n).Parameters(U1,V1,U2,V2);
+    printf("\n%3d: (%10.5g)(%+12.5g %+12.5g %+12.5g) (%+12.5g %+12.5g) (%+12.5g %+12.5g)",n,
+	   V.Magnitude(),V.X(),V.Y(),V.Z(),U1-u1,V1-v1,U2-u2,V2-v2);
+    fflush(stdout);
+  }
+#endif
+  theLine->Add(POn2S);  
+}
+
+

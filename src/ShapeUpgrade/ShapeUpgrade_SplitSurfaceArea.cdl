@@ -1,0 +1,30 @@
+-- File:	ShapeUpgrade_SplitSurfaceArea.cdl
+-- Created:	Mon Aug  7 11:35:17 2006
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Open CASCADE 2006
+
+
+class SplitSurfaceArea from ShapeUpgrade inherits SplitSurface from ShapeUpgrade
+
+	---Purpose:Split surface in the parametric space 
+        -- in according specified number of splits on the 
+
+
+
+is
+    Create returns mutable SplitSurfaceArea from ShapeUpgrade; 
+    	---Purpose: Empty constructor.
+    
+    NbParts(me: mutable) returns Integer;
+    ---C++: inline
+    ---C++: return &
+    ---Purpose:Set number of split for surfaces
+    
+    Compute(me: mutable; Segment: Boolean = Standard_True) is redefined;
+    
+fields
+
+myNbParts : Integer; -- number of splitting
+
+end SplitSurfaceArea;

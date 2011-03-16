@@ -1,0 +1,595 @@
+#include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
+#if defined(HAVE_MALLOC_H)
+#include "malloc.h"
+#endif
+#include "recfile.ph" 
+/*  enregistrement d'un fichier d'interface sous forme de records
+    gere les scopes
+
+    Ce fichier comprend 3 parties
+    - les routines traitant les char*, avec la notion de texte courant
+    - les declarations des donnees de travail proprement dites pour le fichier
+    - le corps des programmes d'enregistrement
+*/
+
+
+/*           ROUTINES UTILITAIRES de traitement des textes (char*)          */
+
+/*     Gestion du texte courant : c'est un texte alloue dynamiquement
+       rec_restext en alloue un (jete le precedent alloue si pas lu)
+       rec_gettext lit le texte en cours, qui ne sera pas desalloue ensuite
+       rec_settext en force un autre en jetant le precedent (idem rec_newtext)
+       tandis que rec_newtext alloue un texte, sans lien avec le courant
+*/
+
+#define Maxcar 50000
+
+  static struct carpage {
+    struct carpage* next;        /*  chainage des pages de caracteres  */
+    int             used;        /*  place deja prise  */
+    char  cars[Maxcar+1];        /*  page de caracteres  */
+  } *onecarpage;
+
+  static char* restext = NULL ;  /* texte courant  (allocation dynamique) */
+  /* static int   resalloc = 0 ;*/    /*   alloue (memoire a liberer) ou non   */
+
+static char txt_cart_p[]   = "CARTESIAN_POINT";
+
+void rec_restext(newtext,lentext)         /* destine a etre appele de l'exterieur */
+char* newtext; int lentext;
+{
+  char *res, *text;
+  if(strcmp(newtext,txt_cart_p)==0) {
+    restext = txt_cart_p;
+    return;
+  }
+  
+  if (onecarpage->used > Maxcar-lentext-1) {   /* allouer nouvelle page */
+    struct carpage *newpage;
+    int sizepage = sizeof(struct carpage);
+    if (lentext >= Maxcar) sizepage += (lentext+1 - Maxcar);
+    newpage = (struct carpage*) malloc (sizepage);
+    newpage->next = onecarpage;
+    onecarpage = newpage;
+    onecarpage->used = 0;
+  }
+  restext  = onecarpage->cars + onecarpage->used;
+  onecarpage->used += (lentext + 1);
+/*   strcpy   */
+  res = restext ; text = newtext;
+  while (*text != '\0') { *res=*text ; res++ ; text++ ; }
+  *res = '\0' ;
+}
+
+void rec_gettext(r)
+char* *r ;
+{ *r = restext; }
+/*  Le resultat retourne (pointeur) est destine a etre inclus dans un struct */
+
+void rec_settext(s)
+char* s ;    /* substituer le texte courant par un autre deja alloue */
+{  restext = s ;  }
+
+char* rec_newtext(r)
+/*  routine utilitaire creant une chaine dynamique a partir d'un char[]  */
+char* r ;
+{
+  char* savrestext; char* s0;
+  savrestext = restext;
+  rec_restext(r,strlen(r)); s0 = restext;
+  restext = savrestext;
+  return (s0);
+}
+
+
+
+static int modeprint = 0 ;  /* CONTROLE D'IMPRESSION (pour appel depuis yacc)*/
+
+/*      DECLARATIONS des donnees de travail (en cours d'enregistrement)     */
+
+static int  typarg ;       /* type du dernier argument lu */
+static int  nbrec  = 0;    /* nombre total d'enregistrements de donnees */
+static int  nbhead = 0;    /* nb de records pris par le Header */
+static int  nbpar  = 0;    /* nb de parametres lus au total */
+static int  yarec  = 0;    /* presence Record deja cree (1 apres Ident) */
+
+static struct rec {          /*  DESCRIPTION D'UN RECORD  */
+  char* ident ;       /* identifieur du record  (en #12345...) ou scope-end */
+  char* type  ;       /* type du record  (peut etre sublist) */
+/*  int nbarg ;          nombre de parametres (arguments) du record, not used */
+  struct unarg* first ;  /* 1er argument */
+/*  struct unarg* last  ;dernier argument, not used */
+  struct rec*   next  ;  /* record suivant */
+}  *currec ;           /* currec meme : record courant */
+
+#define Maxrec 5000
+static struct recpage {
+  struct recpage*  next;
+  int              used;
+  struct rec       args[Maxrec+1];
+} *onerecpage;
+
+static struct rec* firstrec ;  /* 1er record du fichier */
+static struct rec* lastrec  ;  /* dernier record du fichier */
+
+static char* curtype;          /* type dernier record (ou = sublist) */
+static char* subarg ;          /* ident dernier record (sub-list eventuel) */
+static int   numsub ;          /* numero de sous-liste en cours */
+
+
+static struct unarg {          /*  DESCRIPTION D'UN ARGUMENT  */
+  int type ;     /* type de l'arg, dans une liste courte : entier, reel ... */
+  char* val ;    /* valeur alphanum de l'arg */
+  struct unarg* next ;  /* argument suivant dans la liste pour ce record */
+}  *curarg ;
+
+#define Maxarg 10000
+static struct argpage {        /*  Allocation optimisee des arguments  */
+  struct argpage*  next;
+  int              used;
+  struct unarg     args[Maxarg+1];
+} *oneargpage;
+
+
+static struct scope {          /*  DESCRIPTION D'UN SCOPE  */
+                        /* les scopes sont empilables sans limite */
+  struct scope* prev;   /* scope precedent, auquel il faudra revenir */
+  struct rec*   rec;    /* record interrompu par le scope (a reprendre) */
+}   *curscope ;         /*  curscope est le scope en cours */
+
+
+/*               Constantes litterales               */
+static char txt_sublist[]  = "/* (SUB) */" ;
+static char txt_scope[]    = "SCOPE" ;
+static char txt_endscope[] = "ENDSCOPE" ;
+static char txt_nil[]      = " " ;
+static char sub1[]         = "$1" ;  /* optimisation ... */
+static char sub2[]         = "$2" ;
+static char argtype1[] = "(IF#TnEHBx";  /* types arguments (2 1es lettres) */
+static char argtype2[] = ")nlIxdnxix";
+static char idzero[]   = "#0";
+
+
+/*              Trace pour controle            */
+void recfile_modeprint(mode)
+int mode ;
+{  modeprint = mode;  }
+
+static int   lastno;
+extern int   steplineno;
+extern int   modcom;
+extern int   modend;
+
+void rec_inityyll ()
+{  
+  steplineno = 0;
+  modcom = 0;
+  modend = 0;
+  lastno = -1;
+}
+
+
+/*   INITIALISATION   */
+
+void rec_debfile()
+{
+  /*initialization of recpage*/
+  onerecpage = (struct recpage*) malloc ( sizeof(struct recpage) );
+  onerecpage->used = 0; onerecpage->next = NULL;
+
+  onecarpage = (struct carpage*) malloc ( sizeof(struct carpage) );
+  onecarpage->used = 0; onecarpage->next = NULL;  restext = NULL;
+  yarec = 0;  nbhead = nbrec = nbpar = 0 ; firstrec = NULL ; lastrec = NULL ;
+  curtype = txt_sublist;
+  currec = NULL ; curarg = NULL ;
+  curscope = NULL ;
+  oneargpage = (struct argpage*) malloc ( sizeof(struct argpage) );
+  oneargpage->next = NULL; oneargpage->used = 0;
+  rec_inityyll();
+}
+
+/*   INTERMEDIAIRE : passage de Header a Data    */
+void rec_finhead()  {  nbhead = nbrec;  }
+
+/*   CONCLUSION  :  actuellement, ne fait rien   */
+
+void rec_finfile()  {  }
+
+
+/*   GESTION DES RECORDS   */
+
+/*   ENREGISTRER UN RECORD (deja pret)    */
+void static rec_new(newrec)
+struct rec* newrec ;    /*  nouveau record a enregistrer  */
+{
+ nbrec ++ ;
+ if ( firstrec == NULL ) firstrec = newrec ;
+ if ( lastrec  != NULL ) lastrec->next = newrec ;
+ lastrec = newrec ;
+}
+
+/*  type du dernier argument lu  */
+void rec_typarg(argtype)
+int argtype ;
+{  typarg = argtype;  }
+
+/*   ENREGISTRER UNE ENTITE (record courant)   */
+void rec_newent()
+{
+ rec_new(currec) ;     /*  le record courant (currec) est enregistre  */
+
+/*  gestion des sous-listes : si currec a un suivant note (cf pointeur suite),
+    alors c'est une sous-liste et le suivant est son contenant
+    EN CE CAS, il faut memoriser cette sous-liste en argument courant
+    En effet, d'une part la liste est reconnue comme un argument, d'autre part
+    part elle se termine par ")" : c'est donc ici qu'elle sera enregistree */
+
+ rec_typarg (rec_argSub) ;
+
+ subarg = currec->ident ;      /* si sous-liste, sera argument du contenant */
+/*                          rec_check(1) ;    */
+ currec = currec->next ;       /* si nul, c'est qu'une autre entite suit */
+ lastrec->next = NULL ;
+}
+
+
+static struct rec*rec_newrec()
+{
+  struct rec* newrec;
+  if (onerecpage->used >= Maxrec) {
+    struct recpage* newrecpage;
+    newrecpage = (struct recpage*) malloc ( sizeof (struct recpage) );
+    newrecpage->next = onerecpage;
+    onerecpage = newrecpage;
+    onerecpage->used = 0;
+  }
+  newrec = &(onerecpage->args[onerecpage->used]);
+  onerecpage->used++;
+
+  return newrec;
+}
+
+
+/*   RECORD COURANT :   */
+
+/*   creer et preciser l'identifieur   */
+void rec_ident()
+{
+  currec = rec_newrec();
+  /*currec = (struct rec*) malloc (sizeof (struct rec)) ;*/
+  /*currec->nbarg = 0 ;*/
+  rec_gettext(&(currec->ident)) ;
+  currec->next = NULL ; currec->first = NULL ; /*currec->last = NULL ;*/
+  yarec = 1;
+}
+
+/*   preciser le type ; demarrage de la description de l'entite  */
+void rec_type()
+{
+/* Pour le header : pas d'ident, donc en simuler un : derive de rec_ident */
+  if (!yarec) {
+    /*currec = (struct rec*) malloc (sizeof (struct rec)) ;*/
+    currec = rec_newrec();
+    /*currec->nbarg = 0 ;*/
+    currec->ident = idzero;  /* Ident bidon (il en faut un ...) */
+    currec->next = NULL ; currec->first = NULL ; /*currec->last = NULL ;*/
+  }
+  rec_gettext(&(currec->type)) ;
+  yarec = numsub = 0 ;      /* debut de l'entite */
+}
+
+/*  type d une liste qui n est pas une entite mais un argument
+    par defaut (cf rec_deblist) il n est pas defini donc mis = "/ (SUB) /" */
+void rec_listype()
+{  rec_gettext(&(curtype));  }
+
+/*  ajouter un argument (type & valeur deja connus) */
+void rec_newarg()
+{
+  struct unarg *newarg;
+  nbpar ++;
+  /*currec->nbarg ++ ;*/
+/*  newarg = (struct unarg*) malloc (sizeof (struct unarg)) ;  */
+  if (oneargpage->used >= Maxarg) {
+    struct argpage* newargpage;
+    newargpage = (struct argpage*) malloc ( sizeof(struct argpage) );
+    newargpage->next = oneargpage;
+    oneargpage = newargpage;
+    oneargpage->used = 0;
+  }
+  newarg = &(oneargpage->args[oneargpage->used]);
+  oneargpage->used ++;
+
+  newarg->type = typarg ;
+  if (typarg == rec_argSub) newarg->val = subarg ;
+  else rec_gettext (&(newarg->val));
+
+/*  if (currec->first == NULL) currec->first = newarg;
+  else currec->last->next = newarg;
+  currec->last = newarg;*/
+  if (currec->first == NULL) currec->first = newarg;
+  else {
+    struct unarg* nextarg = currec->first;
+    while(nextarg->next != NULL)
+      nextarg = nextarg->next;
+    nextarg->next = newarg;
+
+  }
+  newarg->next = NULL ;
+/*                          rec_check(0) ;    */
+}
+
+/*   Ajouter une sous-liste
+
+     Une ouverture de parentheses A L'INTERIEUR d'une liste de parametres
+     signale une sous-liste : c'est une entite non identifiee, directement
+     utilisee comme argument de la liste contenante) d'un type reserve(SUB)
+
+     Elle est enregistree avec un identifieur special : '$' suivi d'un numero
+     de sous-liste dans l'entite en cours.
+
+     Son enregistrement consiste a definir un nouveau record courant, pour la
+     sous-liste, qui note comme suivant l'ancien courant, qui est son contenant
+     A la fin de la sous-liste, elle est enregistree comme toute entite (cf
+     rec_new) mais le suivant devient le nouveau courant dont l'enregistrement
+     des parametres continue
+
+     La premiere ouverture de parentheses dans l'entite est celle de la liste
+     principale de parametres et non d'une sous-liste
+*/
+
+void rec_deblist()
+{
+ if (numsub > 0) {            /* enregistrement d'une sous-liste */
+  /* int i ; */ struct rec* subrec ;
+    /* creation du nouvel enregistrement et chainage au precedent */
+  subrec = rec_newrec();
+  /*subrec = (struct rec*) malloc (sizeof (struct rec)) ;*/
+  switch (numsub) {
+  case 1: subrec->ident = sub1; break;
+  case 2: subrec->ident = sub2; break;
+  default: {
+    char bufsub[10];
+    if (numsub > 9) sprintf (bufsub,"$%d",numsub) ;
+    else {  bufsub[0] = '$'; bufsub[1] = numsub + 48; bufsub[2] = '\0';  }
+    subrec->ident = rec_newtext(bufsub) ;
+    }
+  }
+  subrec->type  = curtype ;
+  curtype = txt_sublist;      /* type reserve par defaut */
+  /*subrec->nbarg = 0 ;*/ subrec->next = currec ;
+  subrec->first = NULL ; /*subrec->last = NULL ;*/
+    /* les arguments de la sous-liste vont suivre ;
+       elle meme est argument de son contenant, ce qui est pris en compte
+       a la fermeture de la parenthese */
+  currec = subrec ;           /* substitution finale */
+ }
+ numsub ++ ;   /* numero de la prochaine sous-liste (la principale est en 0) */
+/*                          rec_check(0) ;    */
+}
+
+
+/*   Affichage du contenu d'un record   */
+void rec_print(unrec)
+struct rec* unrec ;
+{
+ int numa = 0;  int numl = 0;  int argl = 0;
+ if (unrec == NULL) {  printf ("Non defini\n") ; return;  }
+ printf ("Ident : %s  Type : %s  Nb.Arg.s : %s\n",
+          unrec->ident,unrec->type, (unrec->first ? unrec->first->val : "")) ;
+ if (modeprint < 2) return ;
+ curarg = unrec->first ;
+ while (curarg != NULL) {
+   numa ++;  argl = strlen(curarg->val) + 18;  numl += argl;
+   if (numl > 132) {  printf("\n");  numl = argl;  }
+   printf ("  - Arg.%d[%c%c] : %s",
+	   numa,argtype1[curarg->type],argtype2[curarg->type],curarg->val);
+   curarg = curarg->next ;
+ }
+ if (argl > 0) printf("\n");
+ return ;
+}
+
+/*   GESTION DES SCOPES   */
+
+/*  Ouverture de scope :
+  un scope est un record particulier (pas de type ni d'argument)
+  d'une part il est enregistre, d'autre part il faut gerer le record en cours
+  En effet, une entite step etait en cours d'enregistrement (ident deja connu),
+  mais son type et ses arguments seront fournis apres fermeture du scope ...
+  Il faut donc la mettre de cote (c'est currec), pour la restaurer ensuite
+
+  Mais ATTENTION, il y a l'EXPORT : au ENDSCOPE, peut etre attachee une liste
+  d'Idents : ce sont les idents internes au SCOPE mais declares visibles de
+  l'exterieur du SCOPE (en plus de l''entite sur laquelle il porte)
+*/
+
+void scope_debut()
+{
+/*   ouverture du scope et sauvegarde de l'entite en cours   */
+ struct scope* newscope; struct rec* unscope;
+ newscope = (struct scope*) malloc (sizeof (struct scope)) ;
+ newscope->rec  = currec ;
+ newscope->prev = curscope ;
+ curscope = newscope ;
+
+/*   enregistrement de ce scope comme un record   */
+ unscope = rec_newrec();
+ /*unscope = (struct rec*) malloc (sizeof (struct rec)) ;*/
+ unscope->ident = txt_scope ;
+ unscope->type  = txt_nil ;
+ unscope->first = NULL;
+ /*unscope->nbarg = 0 ;*/
+ rec_new(unscope) ;
+}
+
+/*   Fermeture de scope :
+   La fin de scope est, comme son debut, un enregistrement special.
+   Il faut donc l'enregistrer.
+   Il faut aussi restaurer l'entite concernee par le scope, afin de terminer
+   son enregistrement (manquent ses arguments)  */
+
+void scope_fin()
+{ struct scope* oldscope ; struct rec* unscope;
+ if (curscope == NULL) return ;   /* cela dit, c'est anormal ... */
+
+/*   enregistrement de cette fin de scope comme un record   */
+ unscope = rec_newrec();
+/* unscope = (struct rec*) malloc (sizeof (struct rec)) ;*/
+ unscope->ident = txt_endscope ;
+ unscope->type  = txt_nil ;
+ unscope->first = NULL;
+ /*unscope->nbarg = 0 ;*/
+
+/*  Si on doit prendre en compte une Export List ...  */
+ if (subarg[0] == '$') {
+   if (modeprint > 0) {
+     printf("Export List : (List in Record n0 %d) -- ",nbrec);
+     rec_print(lastrec);
+   }
+   currec = unscope;
+   typarg = rec_argSub;
+   rec_newarg();
+ }
+ rec_new(unscope) ;
+
+/*   fermeture effective du scope   */
+ currec   = curscope->rec ;      /* restaurer l'entite en cours d'enreg. */
+ yarec    = 1;
+ oldscope = curscope ;
+ curscope = oldscope->prev ;     /*  restauration de l'etat precedent  */
+ free (oldscope) ;               /*  suppression "physique"  */
+}
+
+
+/*   CONCLUSION  :  retour des valeurs pour constituer la liste des records,
+                    sous forme de directory / tableau
+
+     La liberation de la memoire est faite par lir_file_fin, en une fois
+*/
+
+void lir_file_nbr(nbh,nbr,nbp)
+int* nbh; int* nbr; int* nbp;
+/*  initialise le traitement et retourne la taille du directory et du header */
+{
+ currec = firstrec ;
+/*                       rec_check(0) ;    */
+ *nbh = nbhead;  *nbr = nbrec;  *nbp = nbpar;
+}
+
+void lir_file_fin(mode)
+int mode;
+/*  fin du traitement : regroupe les liberations de memoire en une phase  */
+/*  mode = 1 : rec+arg. 2 : carpage; 3 : 1+2  */
+{
+  if (mode & 1) {
+    while(onerecpage != NULL) {
+      struct recpage* newpage; newpage = onerecpage->next;
+      free(onerecpage);
+      onerecpage = newpage;
+    }
+
+
+/*    struct rec* oldrec;
+    oldrec = NULL;
+    currec = firstrec;
+    while (currec != NULL) {
+      oldrec = currec;
+      currec = currec->next;*/
+/* liberation memoire pour type & ident : si scope-endscope rien a liberer
+   si sous-liste : type pas a liberer, ident partage aussi par l'argument sera
+   libere par lui ... donc ici aussi, rien a liberer. CQFD  */
+/*      free (oldrec) ;
+    }*/
+    while (oneargpage != NULL) {
+      struct argpage* newpage; newpage = oneargpage->next;
+      free (oneargpage);
+      oneargpage = newpage;
+    }
+  }
+  if (mode & 2) {
+    while (onecarpage != NULL) {
+      struct carpage* newpage; newpage = onecarpage->next;
+      free (onecarpage);
+      onecarpage = newpage;
+    }
+  }
+}
+
+int lir_file_rec(ident,type,nbarg)
+/*   retourne les parametres du record courant
+     retour de fonction ; 1 si ok, 0 si liste epuisee   */
+char* *ident ; char* *type ; int *nbarg ;
+{
+ if (currec == NULL) return (0) ;
+/*                                   rec_check(2) ;    */
+ *ident = currec->ident ;
+ *type  = currec->type ;
+ *nbarg = (currec->first != NULL);
+ curarg = currec->first ;    /* prepare lecture arg.s */
+ return (1) ;
+}
+
+void lir_file_finrec()
+/*  fait le menage et passe au record suivant
+    ne pas appeler apres l'indication de fin mais apres chaque record ok !   */
+{
+ currec = currec->next ;
+/*                                   rec_check(2) ;   */
+}
+
+int lir_file_arg(type,val)
+int* type ; char* *val ;
+/*  lit l'argument courant (au debut le 1er), fait le menage, prepare suivant
+    retourne 1 si ok, 0 si c'est fini
+    attention, suppose que nbarg > 0 ... (bref, pas de protection)   */
+{
+ if (curarg == NULL) return (0) ;
+ *type = curarg->type ;
+ *val  = curarg->val ;
+ curarg = curarg->next ;
+ return (1) ;
+}
+
+
+/*   Verification de l'integrite des donnees   */
+
+/*   Affiche ce qui ne va pas, mais aussi accede a tout : ainsi, les adresses
+     verolees aparaissent au grand jour du dbx   */
+
+void rec_check(mode)
+int mode ;       /* =1 pas de controle nbrec (en cours d'enregistrement) */
+{
+  struct rec* lerec ; struct unarg* larg ; int nr,na ;
+  lerec = firstrec ;
+  if (mode == 2) lerec = currec ;
+  nr = 0 ;
+  while (lerec != NULL) {
+    nr ++ ;
+    if (lerec->ident == NULL) printf("Record %d : ident null\n",nr) ;
+    if (lerec->type  == NULL) printf("Record %d : type  null\n",nr) ;
+    /*if (mode < 2 && (lerec->nbarg < 0 || lerec->nbarg > 10) ) printf
+      ("N.B.: Record %d : nbarg pas entre 0 & 10, vaut %d\n",nr,lerec->nbarg);
+    */
+    na = 0 ;
+    larg = lerec->first ;
+    while (larg != NULL) {
+      na ++ ;
+      if (larg->type < 0 || larg->type > 9) printf
+	("Record %d , Arg. %d : type incorrect : %d\n",nr,na,larg->type) ;
+      if (larg->val == NULL) printf("Record %d , Arg %d : val null\n",nr,na) ;
+      larg = larg->next ;
+    }
+    /*if (na != lerec->nbarg) printf
+      ("Record %d : arglist pourrie, nb note %d relu %d\n",nr,lerec->nbarg,na) ;*/
+    lerec = lerec->next ;
+  }
+  if (mode == 0 && nr != nbrec) printf
+    ("Liste des records pourrie, nb note %d relu %d\n",nbrec,nr) ;
+}
+
+void steperror (char *mess);
+int  steplex (void);
+

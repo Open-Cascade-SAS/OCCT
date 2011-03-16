@@ -1,0 +1,160 @@
+-- File:	IntTools_MarkedRangeSet.cdl
+-- Created:	Wed Sep 26 16:06:40 2001
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2001
+
+class MarkedRangeSet from IntTools
+
+    	---Purpose: class MarkedRangeSet provides continuous set of ranges marked with flags
+
+uses
+    SequenceOfInteger from TColStd,
+    CArray1OfReal     from IntTools,
+    SequenceOfReal    from TColStd,
+    Range             from IntTools
+
+is
+    Create returns MarkedRangeSet from IntTools;
+    	---Purpose:
+	--- Empty constructor
+	---
+
+    Create(theFirstBoundary, theLastBoundary: Real from Standard;
+    	   theInitFlag: Integer from Standard) returns MarkedRangeSet from IntTools;
+    	---Purpose: 
+    	--- build set of ranges which consists of one range with 
+	--- boundary values theFirstBoundary and theLastBoundary
+	---
+
+    Create(theSortedArray: CArray1OfReal from IntTools;
+    	   theInitFlag: Integer from Standard) returns MarkedRangeSet from IntTools;
+    	---Purpose: 
+    	--- Build set of ranges based on the array of progressive sorted values
+	---
+	--  Warning: 
+    	--- The constructor do not check if the values of array are not sorted
+    	--- It should be checked before function invocation
+	---
+
+    SetBoundaries(me: in out; theFirstBoundary, theLastBoundary: Real from Standard;
+    	    	    	      theInitFlag: Integer from Standard);
+    	---Purpose: 
+    	--- build set of ranges which consists of one range with 
+    	--- boundary values theFirstBoundary and theLastBoundary
+	---
+
+    SetRanges(me: in out; theSortedArray: CArray1OfReal from IntTools;
+    	    	    	  theInitFlag: Integer from Standard);
+    	---Purpose: 
+    	--- Build set of ranges based on the array of progressive sorted values
+	---
+	--  Warning: 
+    	--- The function do not check if the values of array are not sorted
+    	--- It should be checked before function invocation
+	---
+
+    InsertRange(me: in out; theFirstBoundary, theLastBoundary: Real from Standard;
+    	    	    	    theFlag: Integer from Standard)
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Inserts a new range marked with flag theFlag
+	--- It replace the existing ranges or parts of ranges
+    	--- and their flags.
+	--- Returns True if the range is inside the initial boundaries,
+	--- otherwise or in case of some error returns False
+	---
+
+    InsertRange(me: in out; theRange: Range from IntTools;
+    	    	    	    theFlag: Integer from Standard)
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Inserts a new range marked with flag theFlag
+	--- It replace the existing ranges or parts of ranges
+    	--- and their flags.
+	--- Returns True if the range is inside the initial boundaries,
+	--- otherwise or in case of some error returns False
+	---
+
+    InsertRange(me: in out; theFirstBoundary, theLastBoundary: Real from Standard;
+    	    	    	    theFlag: Integer from Standard;
+    	    	    	    theIndex: Integer from Standard)
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Inserts a new range marked with flag theFlag
+	--- It replace the existing ranges or parts of ranges
+    	--- and their flags.
+	--- The index theIndex is a position where the range will be inserted.
+	--- Returns True if the range is inside the initial boundaries,
+	--- otherwise or in case of some error returns False
+	---
+    
+    InsertRange(me: in out; theRange: Range from IntTools;
+    	    	    	    theFlag: Integer from Standard;
+    	    	    	    theIndex: Integer from Standard)
+    	returns Boolean from Standard;
+	---Purpose:
+	--- Inserts a new range marked with flag theFlag
+	--- It replace the existing ranges or parts of ranges
+    	--- and their flags.
+	--- The index theIndex is a position where the range will be inserted.
+	--- Returns True if the range is inside the initial boundaries,
+	--- otherwise or in case of some error returns False
+	---
+
+    SetFlag(me: in out; theIndex: Integer from Standard;
+    	    	    	theFlag:  Integer from Standard);
+    	---Purpose:
+	--- Set flag theFlag for range with index theIndex
+	---
+
+    Flag(me; theIndex: Integer from Standard)
+    	returns Integer from Standard;
+	---Purpose:
+	--- Returns flag of the range with index theIndex
+	---
+
+    GetIndex(me; theValue: Real from Standard)
+    	returns Integer from Standard;
+	---Purpose: 
+    	--- Returns index of range which contains theValue.
+    	--- If theValue do not belong any range returns 0.
+	---
+
+    GetIndices(me: in out; theValue: Real from Standard)
+    	returns SequenceOfInteger from TColStd;
+	---C++: return const &
+
+
+    GetIndex(me; theValue: Real from Standard;
+    	    	 UseLower : Boolean from Standard)
+    	returns Integer from Standard;
+	---Purpose: 
+    	--- Returns index of range which contains theValue
+    	--- If theValue do not belong any range returns 0.
+    	--- If UseLower is Standard_True then lower boundary of the range
+    	--- can be equal to theValue, otherwise upper boundary of the range
+    	--- can be equal to theValue.
+	---
+
+    Length(me) 
+    	returns Integer from Standard;
+    	---C++: inline
+	---Purpose:
+	--- Returns number of ranges
+	---
+	
+    Range(me; theIndex: Integer from Standard)
+    	returns Range from IntTools;
+	---Purpose:
+	--- Returns the range with index theIndex.
+	--- the Index can be from 1 to Length()
+	---
+
+fields
+    myRangeSetStorer : SequenceOfReal from TColStd;
+    myRangeNumber    : Integer from Standard;
+    myFlags          : SequenceOfInteger from TColStd;
+    myFoundIndices   : SequenceOfInteger from TColStd;
+
+end MarkedRangeSet from IntTools;

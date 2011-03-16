@@ -1,0 +1,71 @@
+-- File:	BRepBuilderAPI_FindPlane.cdl
+-- Created:	Thu Nov  2 11:36:39 1995
+-- Author:	Jing Cheng MEI
+--		<mei@junon>
+---Copyright:	 Matra Datavision 1995
+
+
+class FindPlane from BRepBuilderAPI
+
+	---Purpose: Describes functions to find the plane in which the edges
+    	-- of a given shape are located.
+    	-- A FindPlane object provides a framework for:
+    	-- -   extracting the edges of a given shape,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+        
+uses
+    
+    Shape    from TopoDS,
+    Plane    from Geom
+
+raises
+
+    NoSuchObject from Standard
+
+is
+
+    Create 
+    returns FindPlane from BRepBuilderAPI;
+    	---Purpose: Initializes an empty algorithm. The function Init is then used to define the shape. 
+    
+    Create (S         : Shape   from TopoDS; 
+    	    Tol       : Real    from Standard = -1)
+    returns FindPlane from BRepBuilderAPI;
+	---Purpose:  Constructs the plane containing the edges of the shape S.
+    	-- A plane is built only if all the edges are within a distance
+    	-- of less than or equal to tolerance from a planar surface.
+    	-- This tolerance value is equal to the larger of the following two values:
+    	-- -   Tol, where the default value is negative, or
+    	-- -   the largest of the tolerance values assigned to the individual edges of S.
+    	--   Use the function Found to verify that a plane is built.
+    	-- The resulting plane is then retrieved using the function Plane.
+
+    Init (me : in out; 
+          S         : Shape   from TopoDS; 
+    	  Tol       : Real    from Standard = -1);
+	---Purpose: Constructs the plane containing the edges of the shape S.
+    	-- A plane is built only if all the edges are within a distance
+    	-- of less than or equal to tolerance from a planar surface.
+    	-- This tolerance value is equal to the larger of the following two values:
+    	-- -   Tol, where the default value is negative, or
+    	-- -   the largest of the tolerance values assigned to the individual edges of S.
+    	--   Use the function Found to verify that a plane is built.
+    	-- The resulting plane is then retrieved using the function Plane.
+    
+    Found(me)
+    returns Boolean from Standard;
+    	---Purpose: Returns true if a plane containing the edges of the
+    	-- shape is found and built. Use the function Plane to consult the result.   
+    Plane(me)
+    returns mutable Plane from Geom;
+    	---Purpose: Returns the plane containing the edges of the shape.
+    	-- Warning
+    	-- Use the function Found to verify that the plane is built. If
+    	-- a plane is not found, Plane returns a null handle.   
+        
+fields
+
+    myPlane     : Plane from Geom;
+
+end FindPlane;

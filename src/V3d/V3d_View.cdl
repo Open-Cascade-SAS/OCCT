@@ -1,0 +1,1773 @@
+--
+-- File:        V3d_View.cdl
+-- Created:     Wed Jan 15 14:47:42 1992
+-- Author:      GG
+-- Modified:    FMN - 24/12/97 -> Suppression GEOMLITE
+--              CQO - 24/12/97 -> BUC50037
+--              stt:25-02-98; S3558: ajout IfManageStandardEvent
+--              stt:08-04-98; suppr IfManageStandardEvent
+--              CAL - 18/08/98 -> S3892. Ajout grilles 3d.
+--              BGN - 16-09-98; Points d'entree du Triedre (S3819, Phase 1)
+--              22-09-98 ; BGN : S3989 (anciennement S3819)
+--                               TypeOfTriedron* from Aspect(et pas V3d)
+--              CAL - 21/10/98 -> Speciale. Ajout methode Tumble.
+--              29-OCT-98 : DCB : Adding ScreenCopy () method.
+--      GG - 10/11/99 : PRO19603 Adding Redraw( area ) method
+--      GG - 15/12/99 : GER61351 Adding SetBackgroundColor()
+--                   and    BackgroundColor() methods
+--      GG - 24/01/00 : -> Remove internal PixToRef() method, use Convert()
+--                method instead.
+--              -> Rename internal RefToPix() to Convert() method.
+--              -> Add ConvertToGrid() methods,
+--                 the Compute() internal method become private.
+--              -> Add SetProjModel() method.
+--      EUG - 25/01/00 : G003
+--              -> Add methods SetAnimationMode() and
+--                  AnimationMode()
+--              -> Add methods SetComputedMode() and
+--                  ComputedMode()
+--                 Warning : SetDegenerateModeOn() and Off()
+--                 become obsolete.
+--              -> Add methods SetBackFacingModel() and
+--                  BackFacingModel()
+--      VKH - 15/11/99 : G004
+--              -> Add method Dump()
+--      GG  - IMP210200
+--              -> Add Transparency() method
+--
+--      THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
+--              -> Add Print method (works only under Windows).
+--
+--      GG  - IMP231100
+--              -> Add IsActiveLight() & IsActivePlane() methods
+--      SZV - IMP100701
+--              -> Add ToPixMap() method
+--              GG - RIC120302 Add NEW SetWindow method.
+--
+--              SAV - 22/10/01
+--                              -> Add EnableDepthTest() & IsDepthTestEnabled().
+--              VSV - 28/05/02: ZBUFFER mode of Trihedron
+--
+--              SAV - 23/12/02  -> Added methods to set background image
+--
+--              NKV - 23/07/07  -> Define custom projection and model view matrixes
+--
+--              NKV - 08/02/07  -> Add ConvertWithProj() method
+--
+---Copyright:   Matra Datavision 1992
+--
+
+deferred class View from V3d
+
+        ---Purpose: Defines the application object VIEW for the
+        --          VIEWER application.
+        --          The methods of this class allow the editing
+        --          and inquiring the parameters linked to the view.
+        --          (Projection,Mapping,Zclipping,DepthCueing,AntiAliasing
+        --           et Conversions) .
+        --  Warning: The default parameters are defined by the class
+        --          Viewer (Example : SetDefaultViewSize()).
+        --          Certain methods are mouse oriented, and it is
+        --          necessary to know the difference between the start and
+        --          the continuation of this gesture in putting the method
+        --          into operation.
+        --          Example : Shifting the eye-view along the screen axes.
+        --
+        --              View->Move(10.,20.,0.,True)     (Starting motion)
+        --              View->Move(15.,-5.,0.,False)    (Next motion)
+
+
+inherits
+
+        View from Viewer
+
+uses
+
+        -- S3892
+        Ax3                     from gp,
+        LayerMgr                from V3d,
+        ColorScale              from V3d,
+        ColorScale              from Aspect,
+        Array2OfReal            from TColStd,
+        Grid                    from Aspect,
+        Handle                  from Aspect,
+        Structure               from Graphic3d,
+        Group                   from Graphic3d,
+
+        ListOfTransient                   from V3d,
+        ListIteratorOfListOfTransient     from TColStd,
+        TypeOfView                        from V3d,
+        TypeOfAxe                         from V3d,
+        TypeOfOrientation                 from V3d,
+        TypeOfShadingModel                from V3d,
+        TypeOfSurfaceDetail               from V3d,
+        TextureEnv                        from Graphic3d,
+        TypeOfVisualization               from V3d,
+        TypeOfZclipping                   from V3d,
+        TypeOfProjectionModel             from V3d,
+        TypeOfBackfacingModel             from V3d,
+        Viewer                            from V3d,
+        Light                             from V3d,
+        Plane                             from V3d,
+        View                              from Visual3d,
+        ViewMapping                       from Visual3d,
+        ViewOrientation                   from Visual3d,
+        ContextView                       from Visual3d,
+        Vector                            from Graphic3d,
+        Vertex                            from Graphic3d,
+        Plotter                           from Graphic3d,
+        Window                            from Aspect,
+        PixMap                            from Image,
+        TypeOfImage                       from Image,
+        Background                        from Aspect,
+        GradientBackground                from Aspect,
+        PlotterDriver                     from PlotMgt,
+        TypeOfColor                       from Quantity,
+        NameOfColor                       from Quantity,
+        Color                             from Quantity,
+        Length                            from Quantity,
+        PlaneAngle                        from Quantity,
+        Parameter                         from Quantity,
+        Factor                            from Quantity,
+        Ratio                             from Quantity,
+        Coefficient                       from Quantity,
+        Coordinate                        from V3d,
+        Array2OfReal                      from TColStd,
+        ViewerPointer                     from V3d,
+        TransientManager                  from Visual3d,
+        TypeOfTriedronEcho                from Aspect,
+        TypeOfTriedronPosition            from Aspect,
+        FormatOfSheetPaper                from Aspect,
+        RenderingContext                  from Aspect,
+        GraphicCallbackProc               from Aspect,
+        FillMethod                        from Aspect,
+        GradientFillMethod                from Aspect,
+        FontAspect                        from OSD
+
+raises
+
+        BadValue from Viewer, TypeMismatch from Standard,
+        MultiplyDefined from Standard,UnMapped from V3d
+
+is
+
+        Initialize ( VM : mutable Viewer; Type : TypeOfView from V3d = V3d_ORTHOGRAPHIC );
+        ---Purpose: Initialises the view.
+
+        Initialize ( VM : mutable Viewer ; V : View from V3d; Type : TypeOfView from V3d = V3d_ORTHOGRAPHIC );
+        ---Purpose: Initialises the view by copying.
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Status of the view
+        --------------------------------------------------------
+
+        SetWindow ( me : mutable ; IdWin : Window )
+        ---Purpose: Activates the view in the window specified and Map the
+        --          Window to the screen.
+        raises MultiplyDefined from Standard;
+        ---Level: Public
+        ---Purpose:  Warning! raises MultiplyDefined from Standard
+        --      if the view is already activated in a window.
+        --  Warning: The view is centered and resized to preserve
+        --          the height/width ratio of the window.
+
+        SetWindow ( me            : mutable ;
+                    aWindow       : Window from Aspect;
+                    aContext      : RenderingContext from Aspect;
+                    aDisplayCB    : GraphicCallbackProc from Aspect;
+                    aClientData   : Address from Standard
+          )
+        ---Purpose: Activates the view in the specified Window
+        --      If <aContext> is not NULL the graphic context is used
+        --          to draw something in this view.
+        --      Otherwise an internal graphic context is created.
+        --      If <aDisplayCB> is not NULL then a user display CB is
+        --      call at the end of the OCC graphic traversal and just
+        --      before the swap of buffers. The <aClientData> is pass
+        --      to this call back.
+        raises MultiplyDefined from Standard;
+        ---Level: Public
+        ---Purpose:  Warning! raises MultiplyDefined from Standard
+        --      if the view is already activated in a window.
+        --  Warning: The view is centered and resized to preserve
+        --          the height/width ratio of the window.
+
+        SetMagnify (me: mutable; IdWin            : Window;
+                                 aPreviousView    : View from V3d;
+                                 x1 , y1 , x2 , y2: Integer from Standard)
+        is static;
+
+        Remove ( me );
+        ---Level: Public
+        ---Purpose: Destroys the view.
+
+        Update ( me ) is redefined static;
+        ---Level: Public
+        ---Purpose: Updates the display of the view.
+        --          Must be called to update the view
+        --          when the update mode is deferred (WAIT) .
+
+        Redraw ( me );
+        ---Level: Public
+        ---Purpose: Redisplays the view even if there has not
+        --          been any modification.
+        --          Must be called if the view is shown.
+        --          (Ex: DeIconification ) .
+
+        Redraw ( me ;x,y,width,height: Integer from Standard);
+        ---Level: Public
+        ---Purpose: Redisplays the view area after esxposure.
+    -- [x,y] define the min xy area position
+    -- [width,height] the size of the area in pixel unit.
+
+        MustBeResized ( me : mutable )
+        ---Level: Public
+        ---Purpose: Must be called when the window supporting the
+        --          view changes size.
+        raises UnMapped from V3d;
+        ---Purpose:      if the view is not mapped on a window.
+        --  Warning: The view is centered and resized to preserve
+        --          the height/width ratio of the window.
+
+        DoMapping ( me : mutable );
+        ---Level: Advanced
+        ---Purpose: Must be called when the window supporting the
+        --          view is mapped or unmapped.
+
+        IsEmpty ( me ) returns Boolean;
+        ---Level: Public
+        ---Purpose: Returns the status of the view regarding
+        --          the displayed structures inside
+        --          Returns True is The View is empty
+
+        UpdateLights (me);
+        ---Level: Public
+        ---Purpose: Updates the lights of the view. The view is redrawn.
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Attributes of the view
+        --------------------------------------------------------
+
+        SetBackgroundColor ( me : mutable ;
+                        Type : TypeOfColor; V1, V2, V3 : Parameter );
+        ---Level: Public
+        ---Purpose: Defines the background colour of the view
+        --          by supplying :
+        --          the colour definition type,
+        --          and the three corresponding values.
+
+        SetBackgroundColor ( me : mutable ; Color : Color from Quantity );
+        ---Level: Public
+        ---Purpose: Defines the background colour of the view
+        --          by supplying :
+        --          the colour object.
+
+        SetBackgroundColor ( me : mutable ; Name : NameOfColor );
+        ---Level: Public
+        ---Purpose: Defines the background colour of the view
+        --          by supplying :
+        --          the colour name in the form Quantity_NOC_xxxx .
+
+        SetBgGradientColors ( me : mutable ;
+                              Color1 : Color from Quantity;
+                              Color2 : Color from Quantity;
+                              FillStyle : GradientFillMethod from Aspect = Aspect_GFM_HOR;
+                              update    : Boolean from Standard = Standard_False );
+        ---Level: Public
+        ---Purpose: Defines the gradient background colours of the view
+        --          by supplying :
+        --          the colour objects.
+
+        SetBgGradientColors ( me : mutable ;
+                              Color1 : NameOfColor;
+                              Color2 : NameOfColor;
+                              FillStyle : GradientFillMethod from Aspect = Aspect_GFM_HOR;
+                              update    : Boolean from Standard = Standard_False );
+        ---Level: Public
+        ---Purpose: Defines the gradient background colours of the view
+        --          by supplying :
+        --          the colour names in the form Quantity_NOC_xxxx .
+
+        SetBgGradientStyle( me      ;
+                            AMethod : GradientFillMethod from Aspect = Aspect_GFM_HOR;
+                            update  : Boolean from Standard = Standard_False);
+        ---Level: Public
+        ---Purpose: Defines the gradient background fill method of the view
+
+        SetBackgroundImage( me : mutable; FileName  : CString from Standard;
+              FillStyle : FillMethod from Aspect = Aspect_FM_CENTERED;
+                  update    : Boolean from Standard = Standard_False );
+
+        SetBgImageStyle( me : mutable; FillStyle : FillMethod from Aspect;
+                                   update    : Boolean from Standard = Standard_False );
+
+        SetAxis ( me : mutable; X,Y,Z : Coordinate ;
+                                Vx,Vy,Vz : Parameter )
+        ---Level: Public
+        ---Purpose: Definition of an axis from its origin and
+        --          its orientation .
+        --          This will be the current axis for rotations and movements.
+        raises BadValue from Viewer;
+        ---Purpose:  Warning! raises BadValue from Viewer if the vector normal is NULL. .
+
+        SetShadingModel ( me : mutable; Model : TypeOfShadingModel );
+        ---Level: Public
+        ---Purpose: Defines the shading model for the
+        --          visualisation ZBUFFER mode.
+        --          Various models are available.
+
+        SetSurfaceDetail(me  : mutable; SurfaceDetail : TypeOfSurfaceDetail);
+        ---Level: Public
+        ---Purpose: select the kind of rendering for texture mapping
+        --          no texture mapping by default
+
+        SetTextureEnv(me  : mutable; ATexture  :  TextureEnv  from  Graphic3d);
+        ---Level: Public
+        ---Purpose: set the environment texture to use
+        --          no environment texture by default
+
+        SetVisualization ( me : mutable;
+                                Mode : TypeOfVisualization from V3d );
+        ---Level: Public
+        ---Purpose: Defines the visualisation mode in the view.
+
+        SetAntialiasingOn ( me : mutable );
+        ---Level: Public
+        ---Purpose: Activates antialiasing in the view.
+
+        SetAntialiasingOff ( me : mutable );
+        ---Level: Public
+        ---Purpose: Desactivates antialiasing in the view.
+
+        SetZClippingDepth ( me : mutable; Depth : Length );
+        ---Level: Public
+        ---Purpose: Defines the depth of the medium clipping plane.
+
+        SetZClippingWidth ( me : mutable; Width : Length )
+        ---Level: Public
+        ---Purpose: Defines the thicknes around the medium clippling plane.   .
+                raises BadValue from Viewer;
+        --      If the thickness is <= 0
+
+        SetZClippingType ( me : mutable; Type : TypeOfZclipping );
+        ---Level: Public
+        ---Purpose: Defines the type of ZClipping.
+
+        SetZCueingDepth ( me : mutable; Depth : Length );
+        ---Level: Public
+        ---Purpose: Defines the depth of the medium plane.
+
+        SetZCueingWidth ( me : mutable; Width : Length )
+        ---Level: Public
+        ---Purpose: Defines the thickness around the medium plane.
+                raises BadValue from Viewer;
+        --      If thickness is <= 0
+
+        SetZCueingOn ( me : mutable );
+        ---Level: Public
+        ---Purpose: Activates ZCueing in the view.
+
+        SetZCueingOff ( me : mutable );
+        ---Level: Public
+        ---Purpose: Desactivates ZCueing in the view.
+
+        SetLightOn( me : mutable ; MyLight : Light from V3d )
+        ---Level: Public
+        ---Purpose: Activates MyLight in the view.
+                raises BadValue from Viewer;
+        --      If No More Light can be activated in MyView .
+
+        SetLightOn( me : mutable )
+        ---Level: Public
+        ---Purpose: Activates all the lights defined in this view.
+                raises BadValue from Viewer;
+        --      If No More Light can be activated in MyView .
+
+        SetLightOff( me : mutable ; MyLight : Light  from V3d );
+        ---Level: Public
+        ---Purpose: Desactivate MyLight in this view.
+
+        SetLightOff( me : mutable );
+        ---Level: Public
+        ---Purpose: Deactivate all the Lights defined in this view.
+
+    IsActiveLight( me ; aLight: Light  from V3d )
+        returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns TRUE when the light is active in this view.
+
+        SetTransparency( me : mutable ; AnActivity : Boolean = Standard_False);
+        ---Level: Public
+        ---Purpose: Activate/Deactivate the transparency in this view.
+
+        SetPlaneOn( me : mutable ; MyPlane : Plane from V3d )
+        ---Level: Public
+        ---Purpose: Activates the clipping plane in this view.
+                raises BadValue from Viewer ;
+        ---Purpose:      If No More Plane can be activated in MyView .
+
+        SetPlaneOn( me : mutable )
+        ---Level: Public
+        ---Purpose: Activate all the clipping planes defined in
+        --          this view.
+                raises BadValue from Viewer;
+        ---Purpose:      If No More Plane can be activated in MyView .
+
+        SetPlaneOff( me : mutable ; MyPlane : Plane  from V3d );
+        ---Level: Public
+        ---Purpose: Desactivates the clipping plane defined
+        --          in this view.
+
+        SetPlaneOff( me : mutable );
+        ---Level: Public
+        ---Purpose: Deactivate all clipping planes defined
+        --          in this view.
+
+    IsActivePlane( me ; aPlane: Plane  from V3d )
+        returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns TRUE when the plane is active in this view.
+
+        ---------------------------------------------------
+        --           Triedron methods
+        ---------------------------------------------------
+
+    ZBufferTriedronSetup ( me      : mutable;
+                           XColor  : NameOfColor from Quantity = Quantity_NOC_RED;
+                           YColor  : NameOfColor from Quantity = Quantity_NOC_GREEN;
+                           ZColor  : NameOfColor from Quantity = Quantity_NOC_BLUE1;
+                   SizeRatio : Real from Standard = 0.8;
+                   AxisDiametr : Real from Standard = 0.05;
+                   NbFacettes  : Integer from Standard = 12)
+         is static;
+        ---Level: Advanced
+        ---Purpose: Customization of the ZBUFFER Triedron.
+        ---         XColor,YColor,ZColor - colors of axis
+        ---         SizeRatio - ratio of decreasing of the trihedron size when its phisical
+        ---                     position comes out of the view
+        ---         AxisDiametr - diameter relatively to axis length
+        ---         NbFacettes - number of facettes of cylinders and cones
+
+        TriedronDisplay ( me            : mutable;
+                          APosition     : TypeOfTriedronPosition from Aspect  = Aspect_TOTP_CENTER;
+                          AColor        : NameOfColor from Quantity = Quantity_NOC_WHITE ;
+                          AScale        : Real from Standard  =  0.02;
+                          AMode         : TypeOfVisualization from V3d = V3d_WIREFRAME )
+                is static;
+        ---Level: Advanced
+        ---Purpose: Display of the Triedron.
+        ---         Initialize position, color and length of Triedron axes.
+        ---         The scale is a percent of the window width.
+        ---Category:
+
+        TriedronErase ( me : mutable )
+                is static;
+        ---Level: Advanced
+        ---Purpose: Erases the Triedron.
+        ---Category:
+
+        TriedronEcho ( me       : mutable;
+                       AType    : TypeOfTriedronEcho from Aspect  = Aspect_TOTE_NONE )
+                is static;
+        ---Level: Advanced
+        ---Purpose: Highlights the echo zone of the Triedron.
+        ---Category:
+
+        ---------------------------------
+        ---Category: Graduated trihedron
+        ---------------------------------
+
+        GetGraduatedTrihedron(me;
+                              -- Names of axes --
+                              xname : out CString from Standard;
+                              yname : out CString from Standard;
+                              zname : out CString from Standard;
+                              -- Draw names --
+                              xdrawname : out Boolean from Standard;
+                              ydrawname : out Boolean from Standard;
+                              zdrawname : out Boolean from Standard;
+                              -- Draw values --
+                              xdrawvalues : out Boolean from Standard;
+                              ydrawvalues : out Boolean from Standard;
+                              zdrawvalues : out Boolean from Standard;
+                              -- Draw grid --
+                              drawgrid : out Boolean from Standard;
+                              -- Draw axes --
+                              drawaxes : out Boolean from Standard;
+                              -- Number of splits along axes --
+                              nbx : out Integer from Standard;
+                              nby : out Integer from Standard;
+                              nbz : out Integer from Standard;
+                              -- Offset for drawing values --
+                              xoffset : out Integer from Standard;
+                              yoffset : out Integer from Standard;
+                              zoffset : out Integer from Standard;
+                              -- Offset for drawing names of axes --
+                              xaxisoffset : out Integer from Standard;
+                              yaxisoffset : out Integer from Standard;
+                              zaxisoffset : out Integer from Standard;
+                              -- Draw tickmarks --
+                              xdrawtickmarks : out Boolean from Standard;
+                              ydrawtickmarks : out Boolean from Standard;
+                              zdrawtickmarks : out Boolean from Standard;
+                              -- Length of tickmarks --
+                              xtickmarklength : out Integer from Standard;
+                              ytickmarklength : out Integer from Standard;
+                              ztickmarklength : out Integer from Standard;
+                              -- Grid color --
+                              gridcolor : out Color from Quantity;
+                              -- X name color --
+                              xnamecolor : out Color from Quantity;
+                              -- Y name color --
+                              ynamecolor : out Color from Quantity;
+                              -- Z name color --
+                              znamecolor : out Color from Quantity;
+                              -- X color of axis and values --
+                              xcolor : out Color from Quantity;
+                              -- Y color of axis and values --
+                              ycolor : out Color from Quantity;
+                              -- Z color of axis and values --
+                              zcolor : out Color from Quantity;
+                              -- Name of font for names of axes --
+                              fontOfNames : out CString from Standard;
+                              -- Style of names of axes --
+                              styleOfNames : out FontAspect from OSD;
+                              -- Size of names of axes --
+                              sizeOfNames : out Integer from Standard;
+                              -- Name of font for values --
+                              fontOfValues : out CString from Standard;
+                              -- Style of values --
+                              styleOfValues : out FontAspect from OSD;
+                              -- Size of values --
+                              sizeOfValues : out Integer from Standard)
+        ---Purpose: Returns data of a graduated trihedron.
+        is static;
+
+        GraduatedTrihedronDisplay(me : mutable;
+                                  -- Names of axes --
+                                  xname : CString from Standard = "X\0";
+                                  yname : CString from Standard = "Y\0";
+                                  zname : CString from Standard = "Z\0";
+                                  -- Draw names --
+                                  xdrawname : Boolean from Standard = Standard_True;
+                                  ydrawname : Boolean from Standard = Standard_True;
+                                  zdrawname : Boolean from Standard = Standard_True;
+                                  -- Draw values --
+                                  xdrawvalues : Boolean from Standard = Standard_True;
+                                  ydrawvalues : Boolean from Standard = Standard_True;
+                                  zdrawvalues : Boolean from Standard = Standard_True;
+                                  -- Draw grid --
+                                  drawgrid : Boolean from Standard = Standard_True;
+                                  -- Draw axes --
+                                  drawaxes : Boolean from Standard = Standard_True;
+                                  -- Number of splits along axes --
+                                  nbx : Integer from Standard = 3;
+                                  nby : Integer from Standard = 3;
+                                  nbz : Integer from Standard = 3;
+                                  -- Offset for drawing values --
+                                  xoffset : Integer from Standard = 10;
+                                  yoffset : Integer from Standard = 10;
+                                  zoffset : Integer from Standard = 10;
+                                  -- Offset for drawing names of axes --
+                                  xaxisoffset : Integer from Standard = 30;
+                                  yaxisoffset : Integer from Standard = 30;
+                                  zaxisoffset : Integer from Standard = 30;
+                                  -- Draw tickmarks --
+                                  xdrawtickmarks : Boolean from Standard = Standard_True;
+                                  ydrawtickmarks : Boolean from Standard = Standard_True;
+                                  zdrawtickmarks : Boolean from Standard = Standard_True;
+                                  -- Length of tickmarks --
+                                  xtickmarklength : Integer from Standard = 10;
+                                  ytickmarklength : Integer from Standard = 10;
+                                  ztickmarklength : Integer from Standard = 10;
+                                  -- Grid color --
+                                  gridcolor : Color from Quantity = Quantity_NOC_WHITE;
+                                  -- X name color --
+                                  xnamecolor : Color from Quantity = Quantity_NOC_RED;
+                                  -- Y name color --
+                                  ynamecolor : Color from Quantity = Quantity_NOC_GREEN;
+                                  -- Z name color --
+                                  znamecolor : Color from Quantity = Quantity_NOC_BLUE1;
+                                  -- X color of axis and values --
+                                  xcolor : Color from Quantity = Quantity_NOC_RED;
+                                  -- Y color of axis and values --
+                                  ycolor : Color from Quantity = Quantity_NOC_GREEN;
+                                  -- Z color of axis and values --
+                                  zcolor : Color from Quantity = Quantity_NOC_BLUE1;
+                                  -- Name of font for names of axes --
+                                  fontOfNames : CString from Standard = "Arial";
+                                  -- Style of names of axes --
+                                  styleOfNames : FontAspect from OSD = OSD_FA_Bold;
+                                  -- Size of names of axes --
+                                  sizeOfNames : Integer from Standard = 12;
+                                  -- Name of font for values --
+                                  fontOfValues : CString from Standard = "Arial";
+                                  -- Style of values --
+                                  styleOfValues : FontAspect from OSD = OSD_FA_Regular;
+                                  -- Size of values --
+                                  sizeOfValues : Integer from Standard = 12)
+        ---Purpose: Displays a graduated trihedron.
+        is static;
+
+        GraduatedTrihedronErase(me : mutable)
+        ---Purpose: Erases a graduated trihedron from the view.
+        is static;
+
+        ---------------------------------------------------
+        --           Color Scale methods
+        ---------------------------------------------------
+
+        SetLayerMgr(me : mutable; aMgr : LayerMgr from V3d);
+
+        ColorScaleDisplay(me : mutable);
+
+        ColorScaleErase(me : mutable);
+
+        ColorScaleIsDisplayed(me)
+        returns Boolean from Standard;
+
+        ColorScale(me)
+        returns ColorScale from Aspect;
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Projection of the view
+        --------------------------------------------------------
+
+        SetFront(me: mutable);
+        ---Level: Public
+        ---Purpose: modify the Projection of the view perpendicularly to
+        --          the privileged plane of the viewer.
+
+        Rotate ( me : mutable ; Ax,Ay,Az : PlaneAngle ;
+                                Start    : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Rotates the eye about the coordinate system of
+        --          reference of the screen
+        --          for which the origin is the view point of the projection,
+        --          with a relative angular value in RADIANS with respect to
+        --          the initial position expressed by Start = Standard_True
+        raises BadValue from Viewer;
+        ---Purpose:  Warning! raises BadValue from Viewer
+        --      If the eye, the view point, or the high point are
+        --          aligned or confused.
+
+        Rotate ( me : mutable ; Ax,Ay,Az : PlaneAngle ;
+                                X,Y,Z    : Coordinate ;
+                                Start    : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Rotates the eye about the coordinate system of
+        --          reference of the screen
+        --          for which the origin is Gravity point {X,Y,Z},
+        --          with a relative angular value in RADIANS with respect to
+        --          the initial position expressed by Start = Standard_True
+                raises BadValue from Viewer;
+        ---Purpose:      If the eye, the view point, or the high point are
+        --          aligned or confused.
+
+        Rotate ( me : mutable ; Axe      : TypeOfAxe ; Angle : PlaneAngle ;
+                                X,Y,Z    : Coordinate ;
+                                Start    : Boolean = Standard_True );
+        ---Level: Public
+        ---Purpose: Rotates the eye about one of the coordinate axes of
+        --          of the view for which the origin is the Gravity point{X,Y,Z}
+        --          with an relative angular value in RADIANS with
+        --          respect to the initial position expressed by
+        --          Start = Standard_True
+
+        Rotate ( me : mutable ; Axe    : TypeOfAxe ; Angle : PlaneAngle ;
+                                Start : Boolean = Standard_True ) ;
+        ---Level: Public
+        ---Purpose: Rotates the eye about one of the coordinate axes of
+        --          of the view for which the origin is the view point of the
+        --          projection with an relative angular value in RADIANS with
+        --          respect to the initial position expressed by
+        --          Start = Standard_True
+
+        Rotate ( me : mutable ; Angle : PlaneAngle ;
+                                Start : Boolean = Standard_True );
+        ---Level: Public
+        ---Purpose: Rotates the eye around the current axis a relative
+        --          angular value in RADIANS with respect to the initial
+        --          position expressed by Start = Standard_True
+
+        Move ( me : mutable ; Dx,Dy,Dz : Length ;
+                              Start    : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Movement of the eye parallel to the coordinate system
+        --          of reference of the screen a distance relative to the
+        --          initial position expressed by Start = Standard_True.
+                raises BadValue from Viewer;
+        --      If the eye, the view point, or the high point are
+        --      aligned or confused.
+
+        Move ( me : mutable ; Axe   : TypeOfAxe ; Length : Length ;
+                              Start : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Movement of the eye parallel to one of the axes of the
+        --          coordinate system of reference of the view a distance
+        --          relative to the initial position expressed by
+        --          Start = Standard_True.
+                raises BadValue from Viewer;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        Move ( me : mutable ; Length : Length ;
+                              Start  : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Movement of the eye parllel to the current axis
+        --          a distance relative to the initial position
+        --          expressed by Start = Standard_True
+                raises BadValue from Viewer;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        Translate ( me : mutable ; Dx,Dy,Dz : Length ;
+                                   Start    : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Movement of the ye and the view point parallel to the
+        --          frame of reference of the screen a distance relative
+        --          to the initial position expressed by
+        --          Start = Standard_True
+                raises BadValue from Viewer;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        Translate ( me : mutable ; Axe   : TypeOfAxe ; Length : Length ;
+                                   Start : Boolean = Standard_True );
+        ---Level: Public
+        ---Purpose: Movement of the eye and the view point parallel to one
+        --          of the axes of the fame of reference of the view a
+        --          distance relative to the initial position
+        --          expressed by Start = Standard_True
+
+        Translate ( me : mutable ; Length : Length ;
+                                   Start  : Boolean = Standard_True );
+        ---Level: Public
+        ---Purpose: Movement of the eye and view point parallel to
+        --          the current axis a distance relative to the initial
+        --          position expressed by Start = Standard_True
+
+         Place (me: mutable; x,y: Integer from Standard;
+                      aZoomFactor: Factor from Quantity = 1)
+        ---Level: Public
+         ---Purpose: places the point of the view corresponding
+         --          at the pixel position x,y at the center of the window
+         --          and updates the view.
+         is redefined static;
+
+        Turn ( me : mutable ; Ax,Ay,Az : PlaneAngle ;
+                              Start    : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Rotation of the view point around the frame of reference
+        --          of the screen for which the origin is the eye of the
+        --          projection with a relative angular value in RADIANS
+        --          with respect to the initial position expressed by
+        --          Start = Standard_True
+                raises BadValue from Viewer;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        Turn ( me : mutable ; Axe : TypeOfAxe ; Angle : PlaneAngle ;
+                              Start : Boolean = Standard_True )
+       ;
+        ---Level: Public
+        ---Purpose: Rotation of the view point around one of the axes of the
+        --          frame of reference of the view for which the origin is
+        --          the eye of the projection with an angular value in
+        --          RADIANS relative to the initial position expressed by
+        --          Start = Standard_True
+
+        Turn ( me : mutable ; Angle : PlaneAngle ;
+                              Start : Boolean = Standard_True );
+        ---Level: Public
+        ---Purpose: Rotation of the view point around the current axis an
+        --          angular value in RADIANS relative to the initial
+        --          position expressed by Start = Standard_True
+
+        SetTwist ( me : mutable ; Angle : PlaneAngle )
+        ---Level: Public
+        ---Purpose: Defines the angular position of the high point of
+        --          the reference frame of the view with respect to the
+        --          Y screen axis with an absolute angular value in
+        --          RADIANS.
+                raises BadValue from Viewer;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        SetEye( me : mutable ; X,Y,Z : Coordinate )
+        ---Level: Public
+        ---Purpose: Defines the position of the eye..
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        SetDepth( me : mutable ; Depth : Length )
+        ---Level: Public
+        ---Purpose: Defines the Depth of the eye from the view point
+        --          without update the projection .
+                raises BadValue from Viewer ;
+        --      If the Depth is <= 0.
+
+        SetProj( me : mutable ; Vx,Vy,Vz : Parameter )
+        ---Level: Public
+        ---Purpose: Defines the orientation of the projection.
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        SetProj( me : mutable ; Orientation : TypeOfOrientation )
+        ---Level: Public
+        ---Purpose: Defines the orientation of the projection .
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+        --          Updates the view
+
+        SetAt( me : mutable ; X,Y,Z : Coordinate )
+        ---Level: Public
+        ---Purpose: Defines the position of the view point.
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        SetUp( me : mutable ; Vx,Vy,Vz : Parameter )
+        ---Level: Public
+        ---Purpose: Defines the orientation of the high point.
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+
+        SetUp( me : mutable ; Orientation : TypeOfOrientation )
+        ---Level: Public
+        ---Purpose: Defines the orientation(SO) of the high point.
+                raises BadValue from Viewer ;
+        --      If the eye, view point, or high point are aligned or confused.
+
+    SetViewOrientation ( me : mutable; VO   : ViewOrientation from Visual3d );
+    ---Level: Public
+    ---Purpose: Modifies the orientation of the view.
+
+        SetViewOrientationDefault( me : mutable );
+        ---Level: Public
+        ---Purpose: Saves the current state of the orientation of the view
+        --          which will be the return state at ResetViewOrientation.
+
+        ResetViewOrientation ( me : mutable );
+        ---Level: Public
+        ---Purpose: Resets the orientation of the view.
+        --          Updates the view
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the Mapping of the view
+        --------------------------------------------------------
+
+        Panning ( me : mutable ; Dx , Dy      : Length ;
+                                 aZoomFactor  : Factor from Quantity = 1;
+                                 Start        : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose:       translates the center of the view and zooms the view.
+        --       Updates the view.
+        raises BadValue from Viewer ;
+
+        SetCenter ( me : mutable ; Xc , Yc : Coordinate )
+        ---Level: Public
+        ---Purpose: Defines the centre of the view.
+        --          Updates the view.
+                raises BadValue from Viewer ;
+        --      If one of the dimensions of the projection is NULL.
+
+        SetCenter ( me : mutable ; X,Y: Integer from Standard)
+        ---Level: Public
+        ---Purpose: Defines the centre of the view from a pixel position.
+        --          Updates the view.
+                raises BadValue from Viewer ;
+        --      If one of the dimensions of the projection is NULL.
+
+        SetSize ( me : mutable ; Size : Length )
+        ---Level: Public
+        ---Purpose: Defines the size of the view while preserving the
+        --          center and height/width ratio of the window supporting
+        --          the view.
+        --          NOTE than the Depth of the View is NOT modified .
+                raises BadValue from Viewer ;
+        --      If the size of the view is <= 0
+
+        SetZSize ( me : mutable ; Size : Length )
+        ---Level: Public
+        ---Purpose: Defines the Depth size of the view
+        --          Front Plane will be set to Size/2.
+        --          Back  Plane will be set to -Size/2.
+        --          Any Object located Above the Front Plane or
+        --                             behind the Back Plane will be Clipped .
+        --          NOTE than the XY Size of the View is NOT modified .
+                raises BadValue from Viewer ;
+        --      If the size of the view is <= 0
+
+        SetZoom ( me : mutable ; Coef : Factor ; Start : Boolean = Standard_True )
+        ---Level: Public
+        ---Purpose: Zooms the view by a factor relative to the initial
+        --          value expressed by Start = Standard_True
+        --          Updates the view.
+                raises BadValue from Viewer ;
+        --      If the zoom coefficient is <= 0
+
+        SetScale ( me : mutable ; Coef : Factor )
+        ---Level: Public
+        ---Purpose: Zooms the view by a factor relative to the value
+        --          initialised by SetViewMappingDefault().
+        --          Updates the view.
+                raises BadValue from Viewer ;
+        --      If the zoom coefficient is <= 0
+
+    SetAxialScale ( me : mutable ; Sx, Sy, Sz : Real from Standard )
+        ---Level: Public
+        ---Purpose: Sets  anisotropic (axial)  scale  factors  <Sx>, <Sy>, <Sz>  for  view <me>.
+    -- Anisotropic  scaling  operation  is  performed  through  multiplying
+    -- the current view  orientation  matrix  by  a  scaling  matrix:
+    -- || Sx  0   0   0 ||
+    -- || 0   Sy  0   0 ||
+    -- || 0   0   Sz  0 ||
+    -- || 0   0   0   1 ||
+        -- Updates the view.
+                raises BadValue from Viewer ;
+        --      If the one of factors <= 0
+
+        FitAll ( me : mutable ; Coef : Coefficient = 0.01;
+                      FitZ: Boolean from Standard = Standard_False; update : Boolean from Standard = Standard_True )
+        ---Level: Public
+        ---Purpose: Automatic zoom/panning. Objects in the view are visualised
+        --          so as to occupy the maximum space while respecting the
+        --          margin coefficient and the initial height /width ratio.
+        --          NOTE than the original Z size of the view is NOT modified .
+                raises BadValue from Viewer ;
+        --      If the margin coefficient is <0 ou >= 1 or
+        --      Updates the view
+
+        ZFitAll ( me : mutable ;  Coef : Coefficient = 1.0 )
+        ---Level: Public
+        ---Purpose: Automatic Depth Panning. Objects visible in the view are
+        --          visualised so as to occupy the maximum Z amount of space
+        --          while respecting the margin coefficient .
+        --          NOTE than the original XY size of the view is NOT modified .
+                raises BadValue from Viewer ;
+        --      If the margin coefficient is <0 ou or
+        --      If No Objects are displayed in the view
+
+        DepthFitAll( me : mutable ;   Aspect : Coefficient = 0.01;
+                                      Margin : Coefficient = 0.01 );
+        ---Level: Public
+        ---Purpose: Adjusts the viewing volume so as not to clip the displayed objects by front and back
+        --          and back clipping planes. Also sets depth value automatically depending on the
+        --          calculated Z size and Aspect parameter.
+        --          NOTE than the original XY size of the view is NOT modified .
+
+        FitAll ( me : mutable ; Umin, Vmin, Umax, Vmax : Coordinate )
+        ---Level: Public
+        ---Purpose: Centres the defined projection window so that it occupies
+        --          the maximum space while respecting the initial
+        --          height/width ratio.
+        --          NOTE than the original Z size of the view is NOT modified .
+                raises BadValue from Viewer;
+        --              If the defined projection window has zero size.
+
+
+        WindowFit ( me : mutable ; Xmin, Ymin, Xmax, Ymax : Integer)
+        ---Level: Public
+        ---Purpose: Centres the defined PIXEL window so that it occupies
+        --          the maximum space while respecting the initial
+        --          height/width ratio.
+        --          NOTE than the original Z size of the view is NOT modified .
+                raises BadValue from Viewer
+        --              If the defined projection window has zero size.
+        is redefined static;
+
+    SetViewingVolume ( me : mutable ; Left, Right, Bottom, Top, ZNear, ZFar : Real from Standard)
+        ---Level: Public
+        ---Purpose: Sets Z and XY size of the view according to given values
+    --          with respecting the initial view depth (eye position)
+                raises BadValue from Viewer;
+        --              If the ZNear<0, ZFar<0 or ZNear>=Zfar.
+
+    SetViewMapping ( me : mutable; VM   : ViewMapping from Visual3d );
+    ---Level: Public
+    ---Purpose: Modifies the mapping of the view.
+
+        SetViewMappingDefault( me : mutable );
+        ---Level: Public
+        ---Purpose: Saves the current view mapping. This will be the
+        --          state returned from ResetViewmapping.
+
+        ResetViewMapping ( me : mutable );
+        ---Level: Public
+        ---Purpose: Resets the centring of the view.
+        --          Updates the view
+
+        Reset ( me : mutable; update : Boolean from Standard = Standard_True );
+        ---Level: Public
+        ---Purpose: Resets the centring and the orientation of the view
+        --          Updates the view
+        ---------------------------------------------------
+        ---Category: Inquire methods
+        ---------------------------------------------------
+
+        Convert( me ; Vp : Integer ) returns Length
+        ---Level: Public
+        ---Purpose : Converts the PIXEL value
+        --           to a value in the projection plane.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        Convert( me ; Xp,Yp : Integer ; Xv,Yv : out Coordinate )
+        ---Level: Public
+        ---Purpose : Converts the point PIXEL into a point projected
+        --           in the reference frame of the projection plane.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        Convert( me ; Vv : Length ) returns Integer
+        ---Level: Public
+        ---Purpose : Converts tha value of the projection plane into
+        --           a PIXEL value.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        Convert( me ; Xv,Yv : Coordinate ; Xp,Yp : out Integer )
+        ---Level: Public
+        ---Purpose : Converts the point defined in the reference frame
+        --           of the projection plane into a point PIXEL.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        Convert( me ; Xp,Yp : Integer ; X,Y,Z : out Coordinate)
+        ---Level: Public
+        ---Purpose : Converts the projected point into a point
+        --           in the reference frame of the view corresponding
+        --           to the intersection with the projection plane
+        --           of the eye/view point vector.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        ConvertWithProj( me ; Xp,Yp : Integer ; X,Y,Z : out Coordinate ; Vx,Vy,Vz : out Parameter)
+        ---Level: Public
+        ---Purpose : Converts the projected point into a point
+        --           in the reference frame of the view corresponding
+        --           to the intersection with the projection plane
+        --           of the eye/view point vector and returns the
+        --           projection ray for further computations.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        ConvertToGrid( me ; Xp,Yp : Integer ; Xg,Yg,Zg : out Coordinate)
+        ---Level: Public
+        ---Purpose : Converts the projected point into the nearest grid point
+        --           in the reference frame of the view corresponding
+        --           to the intersection with the projection plane
+        --           of the eye/view point vector and display the grid marker.
+    --  Warning: When the grid is not active the result is identical
+    --     to the above Convert() method.
+    -- How to use :
+    -- 1) Enable the grid echo display
+    --    myViewer->SetGridEcho(Standard_True);
+    -- 2) When application receive a move event :
+    --   2.1) Check if any object is detected
+    --     if( myInteractiveContext->MoveTo(x,y) == AIS_SOD_Nothing ) {
+    --   2.2) Check if the grid is active
+        --     if( myViewer->Grid()->IsActive() ) {
+    --   2.3) Display the grid echo and gets the grid point
+        --       myView->ConvertToGrid(x,y,X,Y,Z);
+    --   2.4) Else this is the standard case
+        --     } else myView->Convert(x,y,X,Y,Z);
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        ConvertToGrid( me ; X,Y,Z : Coordinate ; Xg,Yg,Zg : out Coordinate)
+        ---Level: Public
+        ---Purpose : Converts the point into the nearest grid point
+        --           and display the grid marker.
+    ---Warning: When the grid is not active the result is identical
+    --     to the previous point.
+        raises UnMapped from V3d;
+        --      If the view is not mapped on the window.
+
+        Convert( me ; X,Y,Z : Coordinate; Xp,Yp : out Integer) ;
+        ---Level: Public
+        ---Purpose : Projects the point defined in the reference frame of
+        --           the view into the projected point in the associated window.
+
+--        RefToPix( me ; X,Y,Z : Coordinate; Xp,Yp : out Integer) ;
+--        ---Purpose : Projects the point defined in the reference frame of
+--        --           the view into the projected point in the associated window.
+--  Obsolete : Use Convert(X,Y,Z,Xp,Yp);
+
+--        PixToRef( me ; Xp,Yp : Integer; X,Y,Z : out Coordinate) ;
+--        ---Purpose : Converts the projected point in the associated window of
+--        --           the view into the point defined in the reference frame.
+--  Obsolete : Use Convert(Xp,Yp,X,Y,Z);
+
+        Project( me ; X,Y,Z : Coordinate; Xp,Yp : out Coordinate) ;
+        ---Level: Public
+        ---Purpose : Converts the point defined in the user space of
+        --           the view to the projected view plane point at z 0.
+
+        BackgroundColor( me; Type : TypeOfColor ; V1, V2, V3 : out Parameter) ;
+        ---Level: Public
+        ---Purpose: Returns the Background color values of the view
+        --          depending of the color Type.
+
+        BackgroundColor( me ) returns Color from Quantity;
+        ---Level: Public
+        ---Purpose: Returns the Background color object of the view.
+
+        GradientBackgroundColors( me;
+                                  Color1 : out Color from Quantity;
+                                  Color2 : out Color from Quantity) ;
+        ---Level: Public
+        ---Purpose: Returns the gradient background colour objects of the view.
+
+	GradientBackground ( me ) returns GradientBackground from Aspect;
+	---Level: Public
+	---Purpose: Returns the gradient background of the view.
+
+        Scale ( me ) returns Factor ;
+        ---Level: Public
+        ---Purpose: Returns the current value of the zoom expressed with
+        --          respect to SetViewMappingDefault().
+
+    AxialScale ( me ; Sx, Sy, Sz : out Real from Standard ) ;
+        ---Level: Public
+        ---Purpose: Returns the current values of the anisotropic (axial) scale factors.
+
+        Center ( me; Xc,Yc : out Coordinate );
+        ---Level: Public
+        ---Purpose: Returns the centre of the view.
+
+        Size ( me; Width, Height : out Length );
+        ---Level: Public
+        ---Purpose: Returns the height and width of the view.
+
+        ZSize ( me ) returns Real ;
+        ---Level: Public
+        ---Purpose: Returns the Depth of the view .
+
+        Eye( me ; X,Y,Z : out Coordinate );
+        ---Level: Public
+        ---Purpose: Returns the position of the eye.
+
+        FocalReferencePoint (me ; X,Y,Z : out Coordinate );
+        ---Level: Public
+        ---Purpose: Returns the position of point which emanating the
+        --          projections.
+
+        ProjReferenceAxe( me ; Xpix,Ypix           : Integer ;
+                               XP,YP,ZP,VX,VY,VZ   : out Coordinate );
+        ---Level: Public
+        ---Purpose: Returns the coordinate of the point (Xpix,Ypix)
+        --          in the view (XP,YP,ZP), and the projection vector of the
+        --          view passing by the point (for PerspectiveView).
+
+        Depth( me ) returns Length ;
+        ---Level: Public
+        ---Purpose: Returns the Distance between the Eye and View Point.
+
+        Proj( me ; Vx,Vy,Vz : out Parameter );
+        ---Level: Public
+        ---Purpose: Returns the projection vector.
+
+        At( me ; X,Y,Z : out Coordinate );
+        ---Level: Public
+        ---Purpose: Returns the position of the view point.
+
+        Up( me ; Vx,Vy,Vz : out Parameter );
+        ---Level: Public
+        ---Purpose: Returns the vector giving the position of the high point.
+
+        Twist( me ) returns PlaneAngle ;
+        ---Level: Public
+        ---Purpose: Returns in RADIANS the orientation of the view around
+        --          the visual axis measured from the Y axis of the screen.
+
+        ShadingModel ( me ) returns TypeOfShadingModel ;
+        ---Level: Public
+        ---Purpose: Returns the current shading model.
+
+        SurfaceDetail(me) returns  TypeOfSurfaceDetail;
+        ---Level: Public
+        -- purpose: returns the current SurfaceDetail mode
+
+        TextureEnv(me)  returns  TextureEnv  from  Graphic3d;
+        ---Level: Public
+        -- purpose: return the current environment texture used
+
+        Transparency(me) returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: Returns the transparency activity.
+
+        Visualization ( me ) returns TypeOfVisualization from V3d;
+        ---Level: Public
+        ---Purpose: Returns the current visualisation mode.
+
+        Antialiasing ( me ) returns Boolean;
+        ---Level: Public
+        ---Purpose: Indicates if the antialiasing is active (True) or
+        --          inactive (False).
+
+        ZCueing ( me; Depth, Width : out Length ) returns Boolean ;
+        ---Level: Public
+        ---Purpose: Returns activity and information on the Zcueing.
+        --          <Depth> : Depth of plane.
+        --          <Width> : Thickness around the plane.
+
+        ZClipping ( me; Depth, Width : out Length ) returns TypeOfZclipping;
+        ---Level: Public
+        ---Purpose: Returns current information on the ZClipping.
+        --          <Depth> : Depth of plane.
+        --          <Width> : Thickness around the plane.
+        --          <TypeOfZclipping>  :        "BACK"
+        --                                      "FRONT"
+        --                                      "SLICE"
+        --                                      "OFF"
+
+        IfMoreLights( me ) returns Boolean;
+        ---Level: Advanced
+        ---Purpose: Returns True if One light more can be
+        --          activated in this View.
+
+        InitActiveLights(me: mutable);
+        ---Level: Advanced
+        ---Purpose: initializes an iteration on the active Lights.
+
+        MoreActiveLights (me) returns Boolean from Standard;
+        ---Level: Advanced
+        ---Purpose: returns true if there are more active Light(s) to return.
+
+        NextActiveLights (me: mutable);
+        ---Level: Advanced
+        ---Purpose : Go to the next active Light
+        --           (if there is not, ActiveLight will raise an exception)
+
+        ActiveLight(me) returns mutable Light from V3d;
+        ---Level: Advanced
+
+        IfMorePlanes( me ) returns Boolean;
+        ---Level: Advanced
+        ---Purpose: Returns True if One clipping plane more can be
+        --          activated in this View.
+
+        InitActivePlanes(me: mutable);
+        ---Level: Advanced
+        ---Purpose: initializes an iteration on the active Planes.
+
+        MoreActivePlanes (me) returns Boolean from Standard;
+        ---Level: Advanced
+        ---Purpose: returns true if there are more active Plane(s) to return.
+
+        NextActivePlanes (me: mutable);
+        ---Level: Advanced
+        ---Purpose : Go to the next active Plane
+        --           (if there is not, ActivePlane will raise an exception)
+
+        ActivePlane(me) returns mutable Plane from V3d;
+        ---Level: Advanced
+
+        Viewer ( me ) returns mutable Viewer from V3d;
+        ---Level: Advanced
+        ---Purpose: Returns the viewer in which the view has been created.
+
+        IfWindow ( me ) returns Boolean;
+        ---Level: Public
+        ---Purpose: Returns True if MyView is associated with a window .
+
+        Window ( me ) returns mutable Window from Aspect
+        ---Level: Public
+        ---Purpose: Returns the Aspect Window associated with the view.
+                raises BadValue from Viewer;
+        --      If MyView is not associated with a window
+
+        Type( me ) returns TypeOfView from V3d;
+        ---Level: Public
+        ---Purpose: Returns the Type of the View
+
+        Pan ( me : mutable; Dx, Dy: Integer from Standard;
+                             aZoomFactor: Factor from Quantity = 1);
+        ---Level: Public
+        ---Purpose: translates the center of the view and zooms the view.
+        --       and updates the view.
+
+        Zoom ( me : mutable; X1 , Y1 , X2 , Y2 : Integer from Standard)
+        is static;
+        ---Level: Public
+        ---Purpose: Zoom the view according to a zoom factor computed
+        -- from the distance between the 2 mouse position <X1,Y1>,<X2,Y2>
+
+        Zoom ( me: mutable; X,Y: Integer from Standard)
+        is static;
+        ---Level: Public
+        ---Purpose: Zoom the view according to a zoom factor computed
+        -- from the distance between the last and new mouse position <X,Y>
+
+        StartZoomAtPoint(me : mutable;
+                         xpix, ypix : Integer from Standard);
+        ---Level: Public
+        ---Purpose: Defines the point (pixel) of zooming (for the method ZoomAtPoint()).
+
+        ZoomAtPoint(me : mutable;
+                    mouseStartX, mouseStartY, mouseEndX, mouseEndY : Integer from Standard);
+        ---Level: Public
+        ---Purpose: Zooms the model at a pixel defined by the method StartZoomAtPoint().
+
+        AxialScale  ( me: mutable; Dx, Dy: Integer from Standard;  Axis:  TypeOfAxe  from  V3d );
+        ---Level: Public
+        ---Purpose: Performs  anisotropic scaling  of  <me>  view  along  the  given  <Axis>.
+            -- The  scale  factor  is  calculated on a basis of
+            -- the mouse pointer displacement <Dx,Dy>.
+        -- The  calculated  scale  factor  is  then  passed  to  SetAxialScale(Sx,  Sy,  Sz)  method.
+
+        StartRotation(me : mutable ; X,Y :Integer from Standard;
+               zRotationThreshold: Ratio from Quantity = 0.0);
+        ---Level: Public
+    ---Purpose: Begin the rotation of the view arround the screen axis
+    -- according to the mouse position <X,Y>.
+    --  Warning: Enable rotation around the Z screen axis when <zRotationThreshold>
+    -- factor is > 0 soon the distance from the start point and the center
+    -- of the view is > (medium viewSize * <zRotationThreshold> ).
+    -- Generally a value of 0.4 is usable to rotate around XY screen axis
+    -- inside the circular treshold area and to rotate around Z screen axis
+    -- outside this area.
+
+        Rotation(me:mutable;  X,Y :Integer from Standard);
+        ---Level: Public
+    ---Purpose: Continues the rotation of the view
+    -- with an angle computed from the last and new mouse position <X,Y>.
+
+        FitAll ( me : mutable ; aWindow: Window from Aspect;
+                      Umin, Vmin, Umax, Vmax : Coordinate )
+        is static private;
+        ---Level: Public
+    ---Purpose: Change the scale factor and position of the view
+    -- such as the bounding box <Umin, Vmin, Umax, Vmax> is contains
+    -- in the view.
+
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+
+        SetFocale( me : mutable ; Focale : Length )
+        ---Purpose: Change View Plane Distance for Perspective Views
+        raises TypeMismatch from Standard
+        ---Purpose:  Warning! raises TypeMismatch from Standard if the view
+        --          is not a perspective view.
+        is static ;
+
+        Focale( me ) returns Length;
+        ---Purpose: Returns the View Plane Distance for Perspective Views
+
+        View ( me) returns mutable View from Visual3d is static ;
+        ---Level: Advanced
+        ---Purpose: Returns the associated Visual3d view.
+
+        ViewMapping ( me ) returns ViewMapping from Visual3d is static;
+    ---Level: Advanced
+    ---Purpose: Returns the current mapping of the view.
+
+    ViewOrientation ( me ) returns ViewOrientation from Visual3d is static;
+    ---Level: Advanced
+    ---Purpose: Returns the current orientation of the view.
+
+        ScreenAxis( myclass ; Vpn,Vup        : Vector from Graphic3d ;
+                              Xaxe,Yaxe,Zaxe : out Vector from Graphic3d )
+                                        returns Boolean is private ;
+        ---Purpose: Determines the screen axes in the reference
+        --          framework of the view.
+
+        InitMatrix ( myclass ; Matrix : out Array2OfReal from TColStd ) is private ;
+
+        Multiply( myclass ;
+                 Left, Right : Array2OfReal from TColStd ;
+                 Matrix      : out Array2OfReal from TColStd )
+                 returns Boolean from Standard is private ;
+
+        RotAxis( myclass ; Vrp      : Vertex from Graphic3d ;
+                           Axe      : Vector from Graphic3d ; Angle : PlaneAngle ;
+                           Matrix   : out Array2OfReal from TColStd ) is private ;
+        ---Purpose: Determines the rotation matrice around an axis
+        --          for a given angle.
+
+        TrsPoint( myclass ; P      : Vertex from Graphic3d ;
+                            Matrix : Array2OfReal from TColStd )
+                                returns Vertex from Graphic3d is private ;
+        ---Purpose: Transforms the point P according to the matrice Matrix .
+
+        TrsPoint( myclass ; V : Vector from Graphic3d ;
+                                Matrix : Array2OfReal from TColStd )
+                                returns Vector from Graphic3d is private ;
+        ---Purpose: Transforms the vector V according to the matrice Matrix .
+
+        -----------------------------------------
+        ---Category: TransientManager methods
+        -----------------------------------------
+
+         TransientManagerBeginDraw(me; DoubleBuffer: Boolean = Standard_False;
+                                       RetainMode  : Boolean = Standard_False)
+        ---Level: Public
+        ---Purpose: Begins any graphics in the view <aView>
+        --          Redraw any structured graphics in the back buffer before
+        --          if <DoubleBuffer> is TRUE.
+        --          Restore the front buffer from the back before
+        --          if <DoubleBuffer> is FALSE.
+        --          if <RetainMode> is TRUE.
+        --          the graphic managed itself exposure,resizing ...
+        --          if <RetainMode> is FALSE.
+        --          the application must managed itself exposure,resizing ...
+        --
+                returns Boolean from Standard;
+
+         TransientManagerClearDraw(me);
+        ---Level: Public
+        ---Purpose: Clear all transient graphics in the view <aView>
+
+
+         TransientManagerBeginAddDraw(me)
+        ---Level: Public
+        ---Purpose: Begins any add graphics in the view <aView>
+        --          Redraw any structured graphics in the back buffer before
+        --          the application must managed itself exposure,resizing ...
+        --  Warning: Returns TRUE if transient drawing is enabled in
+        --         the associated view.
+        --          Returns FALSE ,if nothing works because something
+        --         is wrong for the transient principle :
+        --
+                returns Boolean from Standard;
+
+        ---------------------------------------------------
+        -- Category: Methods to modify the class definition
+        --           Animation Mode
+        ---------------------------------------------------
+
+        SetAnimationModeOn ( me : mutable )
+                is static;
+        ---Level: Advanced
+        ---Purpose: Activates animation mode.
+        --      When the animation mode is activated in the view,
+        --      all Graphic3d_Structure are stored in a graphic object.
+        ---Category: Methods to modify the class definition
+
+        SetAnimationModeOff ( me        : mutable )
+                is static;
+        ---Level: Advanced
+        ---Purpose: Deactivates the animation mode.
+        ---Category: Methods to modify the class definition
+
+        AnimationModeIsOn ( me )
+                returns Boolean from Standard
+                is static;
+        ---Level: Advanced
+        ---Purpose: Returns the activity of the animation mode.
+        ---Category: Inquire methods
+
+        SetAnimationMode ( me                : mutable;
+                           anAnimationFlag   : Boolean from Standard = Standard_True;
+                           aDegenerationFlag : Boolean from Standard = Standard_False
+        ) is static;
+        ---Level    : Advanced
+        ---Purpose  : Enable/Disable animation/degeneration mode
+        ---Category : Methods to modify the class definition
+
+    AnimationMode ( me; isDegenerate: out Boolean from Standard )
+                returns Boolean from Standard
+                is static;
+        ---Level    : Advanced
+        ---Purpose  : Returns the animation and degenerate status.
+        ---Category: Inquire methods
+
+        ---------------------------------------------------
+        -- Category: Methods to modify the class definition
+        --           Degenerate Mode
+        ---------------------------------------------------
+
+        SetDegenerateModeOn ( me        : mutable )
+                is static;
+        ---Level    : Obsolete
+        ---Purpose: Activates degenerate mode.
+        --      When the degenerate mode is activated in the view,
+        --      all Graphic3d_Structure with the type TOS_COMPUTED
+        --      displayed in this view are not computed.
+    --  Warning: Obsolete method , use SetComputedMode()
+        ---Category: Methods to modify the class definition
+
+        SetDegenerateModeOff ( me       : mutable )
+                is static;
+        ---Level    : Obsolete
+        ---Purpose: Deactivates the degenerate mode.
+        --  Category: Methods to modify the class definition
+        --  Warning: if the computed mode has been disabled in the
+        --          viewer the mode will remain degenerated.
+    --  Warning: Obsolete method , use SetComputedMode()
+
+        DegenerateModeIsOn ( me )
+                returns Boolean from Standard
+                is static;
+        ---Level    : Obsolete
+        ---Purpose: Returns the activity of the degenerate mode.
+        ---Category: Inquire methods
+
+        SetComputedMode ( me : mutable; aMode : Boolean from Standard )
+        is static;
+        ---Level: Advanced
+        ---Purpose: Switches computed HLR mode in the view
+        ---Category: Methods to modify the class definition
+
+        ComputedMode ( me )
+        returns Boolean from Standard
+        is static;
+        ---Level: Advanced
+        ---Purpose: Returns the computed HLR mode state
+        ---Category: Inquire methods
+
+        MinMax ( me; Umin,Vmin, Umax,Vmax : out Coordinate ) returns Integer
+        ---Purpose: Returns the objects number and the projection window
+        --          of the objects contained in the view.
+        is static private;
+
+        MinMax ( me; Xmin,Ymin,Zmin, Xmax,Ymax,Zmax : out Coordinate )
+        returns Integer
+        ---Purpose: Returns the objects number and the box encompassing
+        --          the objects contained in the view
+        is static private;
+
+        Gravity ( me; X,Y,Z : out Coordinate ) returns Integer
+        ---Purpose: Returns the Objects number and the gravity center
+        --          of ALL viewable points in the view
+        is static private;
+
+        Init(me: mutable) is private;
+
+        ---Category: for compatibility.
+
+        WindowFitAll ( me : mutable ; Xmin, Ymin, Xmax, Ymax : Integer);
+        ---Purpose: idem than WindowFit
+
+        SetPlotter ( me : mutable; aPlotter : Plotter from Graphic3d )
+        ---Purpose: Set a plotter for plotting the contents of the view
+        --          field MyPlotter
+        is virtual;
+
+        Plot ( me : mutable )
+        ---Purpose: Create a 2D View for plotting the contents of the view
+        raises BadValue from Viewer;
+        --      if the plotter is undefined.
+
+        Compute ( me; AVertex   : Vertex from Graphic3d )
+                returns Vertex from Graphic3d
+                is static private;
+        ---Level: Internal
+        ---Purpose: Returns a new vertex when the grid is activated.
+
+        SetGrid ( me    : mutable;
+                  aPlane: Ax3 from gp;
+                  aGrid : Grid from Aspect )
+                is static;
+        ---Level: Internal
+        ---Purpose: Defines or Updates the definition of the
+        --          grid in <me>
+        ---Category: Methods to modify the class definition
+
+        SetGridGraphicValues ( me       : mutable;
+                               aGrid    : Grid from Aspect )
+                is static;
+        ---Level: Internal
+        ---Purpose: Defines or Updates the graphic definition of the
+        --          grid in <me>
+        ---Category: Methods to modify the class definition
+
+        SetGridActivity ( me    : mutable;
+                          aFlag : Boolean from Standard )
+                is static;
+        ---Level: Internal
+        ---Purpose: Defines or Updates the activity of the
+        --          grid in <me>
+        ---Category: Methods to modify the class definition
+
+        Tumble ( me            : mutable;
+                 NbImages      : Integer from Standard = 314;
+                 AnimationMode : Boolean from Standard = Standard_False )
+                returns Real from Standard
+                is static;
+        ---Level   : Advanced
+        ---Purpose: Animates the view <me>
+        --          Returns the number of images per second
+        --          if <AnimationMode> is Standard_True, the animation mode
+        --          is activated.
+
+        ScreenCopy (me               : mutable;
+                    aPlotterDriver   : PlotterDriver from PlotMgt;
+                    fWhiteBackground : Boolean from Standard = Standard_True;
+                    aScale           : Factor from Quantity = 1.0
+        ) is static;
+        ---Purpose: dump the view
+
+        Dump ( me: mutable;
+               theFile: CString from Standard;
+               theBufferType : TypeOfImage from Image = Image_TOI_RGB )
+    returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: dump the full contents of the view at the same
+        --          scale in the file <theFile>. The file name
+        --          extension must be one of ".png",".bmp",".jpg",".gif".
+        --          Returns FALSE when the dump has failed
+
+        Dump ( me: mutable;
+               theFile   : CString from Standard;
+               theFormat : FormatOfSheetPaper from Aspect;
+               theBufferType : TypeOfImage from Image = Image_TOI_RGB )
+    returns Boolean from Standard;
+        ---Level: Public
+        ---Purpose: dump the full contents of the view with a
+        --          different scale according  to the required sheet
+        --          paper size (format) and the ratio
+        --          width/height of the view.
+    --          and returns FALSE when the dump has failed
+    --  Warning : the file name extension must be one of
+    --      ".png",".bmp",".jpg",".gif"
+    --       but make becarefull about the time to dump and
+    --       resulting file size especially for the A0 format.
+    --       NOTE that you can use after any standard system utility
+    --       for editing or sending the image file to a laser printer.
+    --       (i.e: Microsoft Photo Editor on Windows system
+    --        or Image Viewer on SUN system)
+
+      Print (me; hPrnDC: Handle from Aspect = NULL;
+             showDialog: Boolean = Standard_True;
+             showBackground: Boolean = Standard_True;
+             filename: CString = NULL)
+      is static;
+
+        ---Level: Public
+        ---Purpose: print the contents of the view to printer with preview.
+    -- <hPrnDC> : If you have already an PrinterDeviceContext (HDC),
+    -- then you can pass it to the print routines.
+        -- If you don't have an PrinterDeviceContext, then this parameter should
+    -- be NULL.
+    -- <showDialog> : If hPrnDC == NULL, then you can force the print routines to
+    -- open a Print Dialog box.
+        -- If you want to do this, then set showDialog to TRUE
+        -- If you don't want to see a dialog (only possible, if you have a hPrnDC
+    -- or the dialog box was opened once before) then set <showDialog> to FALSE.
+    -- <showBackground> : When set to FALSE then print the view without background color
+    -- (background is white)
+        -- else set to TRUE for printing with current background color.
+    -- <filename>: If != NULL, then the view will be printed to a file.
+    --  Warning: Works only under Windows.
+
+        ToPixMap ( me : mutable;
+                   theWidth  : Integer from Standard;
+                   theHeight : Integer from Standard;
+                   theBufferType : TypeOfImage from Image = Image_TOI_RGB;
+                   theForceCentered : Boolean from Standard = Standard_True )
+        returns PixMap from Image;
+        ---Level   : Public
+        ---Purpose : dump the full contents of the view
+        --        to a pixmap of pixel size <theWidth>*<theHeight> and
+        --        buffer type <theBufferType>. If <theForceCentered> is true
+        --        view scene will be centered.
+
+    SetProjModel( me : mutable;
+        amOdel: TypeOfProjectionModel from V3d = V3d_TPM_SCREEN )
+        is static;
+         ---Level   : Advanced
+         ---Purpose : Manages projection model
+
+    ProjModel( me )
+        returns TypeOfProjectionModel from V3d
+        is static;
+         ---Level   : Advanced
+         ---Purpose : Returns the current projection model
+
+        SetBackFacingModel ( me     : mutable;
+            aModel : TypeOfBackfacingModel from V3d = V3d_TOBM_AUTOMATIC)
+            is static;
+         ---Level   : Public
+         ---Purpose : Manages display of the back faces
+     -- When <aModel> is TOBM_AUTOMATIC the object backfaces
+     -- are displayed only for surface objects and
+     -- never displayed for solid objects.
+     -- this was the previous mode.
+     --      <aModel> is TOBM_ALWAYS_DISPLAYED the object backfaces
+     --       are always displayed both for surfaces or solids.
+     --      <aModel> is TOBM_NEVER_DISPLAYED the object backfaces
+     --       are never displayed.
+
+        BackFacingModel ( me )
+            returns TypeOfBackfacingModel from V3d
+        is static;
+         ---Level   : Public
+         ---Purpose : Returns current state of the back faces display
+
+        EnableDepthTest( me; enable : Boolean from Standard = Standard_True )
+        is static;
+     ---Level: Public
+     ---Purpose: turns on/off opengl depth testing
+
+        IsDepthTestEnabled( me ) returns Boolean from Standard
+        is static;
+     ---Level: Public
+     ---Purpose: returns the current state of the depth testing
+
+        EnableGLLight( me; enable : Boolean from Standard = Standard_True )
+        is static;
+     ---Level: Public
+     ---Purpose: turns on/off opengl lighting, currently used in triedron displaying
+
+        IsGLLightEnabled( me ) returns Boolean from Standard
+        is static;
+     ---Level: Public
+     ---Purpose: returns the current state of the gl lighting
+     --          currently used in triedron displaying
+
+
+fields
+
+        MyType :                TypeOfView from V3d is protected ;
+        MyViewer :              ViewerPointer from V3d ;
+        MyActiveLights:         ListOfTransient from V3d;
+        MyActivePlanes:         ListOfTransient from V3d;
+
+        MyView :                View from Visual3d is protected ;
+        MyViewMapping :         ViewMapping from Visual3d is protected ;
+        MyViewOrientation :     ViewOrientation from Visual3d ;
+        MyViewContext :         ContextView from Visual3d ;
+        MyBackground:           Background from Aspect ;
+        MyGradientBackground:   GradientBackground from Aspect ;
+        MyDefaultViewAxis:      Vector from Graphic3d ;
+        MyDefaultViewPoint:     Vertex from Graphic3d ;
+
+        MyWindow:               Window from Aspect;
+
+        MyPlotter:              Plotter from Graphic3d;
+
+        myActiveLightsIterator: ListIteratorOfListOfTransient from TColStd;
+        myActivePlanesIterator: ListIteratorOfListOfTransient from TColStd;
+
+        sx,sy: Integer from Standard;
+        rx,ry: Real from Standard;
+        gx,gy,gz: Real from Standard;
+        myComputedMode: Boolean from Standard;
+        SwitchSetFront: Boolean from Standard;
+        MyZoomAtPointX, MyZoomAtPointY : Integer from Standard;
+
+        -- the 3d grid
+        MyGrid                  :       Grid from Aspect;
+        MyPlane                 :       Ax3 from gp;
+
+        --MyColorScale            :       ColorScale from V3d;
+        MyLayerMgr              :       LayerMgr from V3d;
+
+        -- the transformation between XoY and the grid plane
+        MyTrsf                  :       Array2OfReal from TColStd;
+
+        -- echo
+        MyGridEchoStructure             :       Structure from Graphic3d;
+        MyGridEchoGroup                 :       Group from Graphic3d;
+
+    MyProjModel         :   TypeOfProjectionModel from V3d is protected;
+    MyAnimationFlags        :   Integer from Standard;
+
+    MyTransparencyFlag      : Boolean from Standard;
+friends
+
+        SetViewOn from class Viewer from V3d ( me : mutable ),
+        SetViewOn from class Viewer from V3d ( me : mutable ; View : View from V3d ),
+        SetViewOff from class Viewer from V3d ( me : mutable ),
+        SetViewOff from class Viewer from V3d ( me : mutable ; View : View from V3d )
+
+end View;

@@ -1,0 +1,38 @@
+-- File:      GeomAdaptor_HCurve.cdl
+-- Created:   Fri Aug 25 14:35:04 1995
+-- Author:    Remi LEQUETTE
+---Copyright: Matra Datavision 1995
+ 
+
+
+class HCurve from GeomAdaptor inherits GHCurve from GeomAdaptor
+
+    	---Purpose: An interface between the services provided by any
+    	-- curve from the package Geom and those required of
+    	-- the curve by algorithms which use it.
+
+uses
+    Curve from Geom,
+    Curve from GeomAdaptor
+
+raises
+    ConstructionError from Standard
+
+is
+
+    Create returns mutable HCurve from GeomAdaptor;
+    	---C++: inline
+    
+    Create( AS : Curve from GeomAdaptor) returns mutable HCurve from GeomAdaptor;
+    	---C++: inline
+
+    Create( S : Curve from Geom) returns mutable HCurve from GeomAdaptor;
+    	---C++: inline
+    
+    Create( S : Curve from Geom; UFirst,ULast : Real) 
+    returns  mutable HCurve from GeomAdaptor
+    	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
+    	---C++: inline
+    raises ConstructionError from Standard;
+    
+end HCurve;

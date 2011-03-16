@@ -1,0 +1,77 @@
+-- File:	ProjLib_Sphere.cdl
+-- Created:	Tue Aug 24 11:23:41 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class Sphere from ProjLib inherits Projector from ProjLib
+
+	---Purpose: Projects elementary curves on a sphere.
+
+uses
+    CurveType  from GeomAbs,
+    Sphere     from gp,
+    Lin        	   from gp,
+    Circ       	   from gp,
+    Elips      	   from gp,
+    Parab      	   from gp,
+    Hypr       	   from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Parab2d    from gp,
+    Hypr2d     from gp
+
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create returns Sphere from ProjLib;
+	---Purpose: Undefined projection.
+
+    Create(Sp : Sphere from gp) returns Sphere from ProjLib;
+	---Purpose: Projection on the sphere <Sp>.
+
+    Create(Sp : Sphere  from gp;
+           C  : Circ from gp) returns Sphere from ProjLib;
+	---Purpose: Projection of the circle <C> on the sphere <Sp>.
+
+
+
+    Init(me : in out;
+    	 Sp : Sphere from gp)
+    is static;
+	 
+     Project(me : in out;
+     	     L  : Lin from gp)
+     is redefined;
+ 
+    Project(me : in out;
+    	    C  : Circ from gp)
+    is redefined;
+
+     Project(me : in out;
+     	     E  : Elips from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     P  : Parab from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     H  : Hypr from gp)
+     is redefined;
+	     
+    SetInBounds(me: in out;
+    	    	U : Real from Standard)
+    	---Purpose: Set the point of parameter U on C in the natural
+    	--          restrictions of the sphere.
+    is static;		
+    
+
+fields
+
+    mySphere : Sphere from gp;
+
+end Sphere;

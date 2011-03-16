@@ -1,0 +1,44 @@
+// File:      XmlObjMgt_Array1.lxx
+// Created:   01.08.01 17:42:23
+// Author:    Alexander GRIGORIEV
+// Copyright: Open Cascade 2001
+
+//=======================================================================
+//function : Element
+//purpose  : 
+//=======================================================================
+
+inline const XmlObjMgt_Element& XmlObjMgt_Array1::Element () const 
+{
+  return myElement;
+}
+
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer XmlObjMgt_Array1::Length () const 
+{
+  return myLast - myFirst + 1;
+}
+
+//=======================================================================
+//function : Lower
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer XmlObjMgt_Array1::Lower () const
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : Upper
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer XmlObjMgt_Array1::Upper () const
+{
+  return myLast;
+}

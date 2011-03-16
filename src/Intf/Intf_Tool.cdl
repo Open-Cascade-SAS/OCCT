@@ -1,0 +1,110 @@
+-- File:	Intf_Tool.cdl
+-- Created:	Wed Jun 23 18:17:43 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Tool from Intf
+
+	---Purpose: Provides services to create box for infinites 
+	--          lines in a given contexte. 
+
+uses    Integer from Standard,
+    	Real from Standard,
+	Box2d from Bnd,
+	Lin2d from gp,
+	Hypr2d from gp,
+	Parab2d from gp,
+	Conic from IntAna2d,
+	Box from Bnd,
+	Lin from gp,
+	Hypr from gp,
+	Parab from gp
+
+
+raises  OutOfRange  from Standard
+
+
+is      Create returns Tool from Intf;
+
+    	Lin2dBox   (me         : in out;
+    	    	    theLin2d   : in  Lin2d   from gp;
+    	    	    bounding   : in  Box2d   from Bnd;
+    	    	    boxLin     : out Box2d   from Bnd)
+    	    is static;
+
+    	Hypr2dBox  (me         : in out;
+    	    	    theHypr2d  : in  Hypr2d  from gp;
+    	    	    bounding   : in  Box2d   from Bnd;
+    	    	    boxHypr    : out Box2d   from Bnd)
+    	    is static;
+
+    	Inters2d   (me         : in out;
+    	    	    theCurve   : in  Hypr2d  from gp;
+    	    	    Domain     : in  Box2d   from Bnd)
+    	    	returns Integer from Standard is static private;
+
+    	Parab2dBox (me         : in out;
+    	    	    theParab2d : in  Parab2d from gp;
+    	    	    bounding   : in  Box2d   from Bnd;
+    	    	    boxHypr    : out Box2d   from Bnd)
+    	    is static;
+
+    	Inters2d   (me         : in out;
+    	    	    theCurve   : in  Parab2d from gp;
+    	    	    Domain     : in  Box2d   from Bnd)
+    	    	returns Integer from Standard is static private;
+
+
+    	LinBox     (me       : in out;
+    	    	    theLin   : in  Lin from gp;
+    	    	    bounding : in  Box from Bnd;
+    	    	    boxLin   : out Box from Bnd)
+    	    is static;
+
+    	HyprBox    (me       : in out;
+    	    	    theHypr  : in  Hypr from gp;
+    	    	    bounding : in  Box  from Bnd;
+    	    	    boxHypr  : out Box  from Bnd)
+    	    is static;
+
+    	Inters3d   (me         : in out;
+    	    	    theCurve   : in  Hypr  from gp;
+    	    	    Domain     : in  Box   from Bnd)
+    	    	returns Integer from Standard is static private;
+
+    	ParabBox   (me       : in out;
+    	    	    theParab : in  Parab from gp;
+    	    	    bounding : in  Box   from Bnd;
+    	    	    boxHypr  : out Box   from Bnd)
+    	    is static;
+
+    	Inters3d   (me         : in out;
+    	    	    theCurve   : in Parab from gp;
+    	    	    Domain     : in Box   from Bnd)
+    	    	returns Integer from Standard is static private;
+
+
+    	NbSegments (me)
+	    	returns Integer from Standard
+    	    is static;
+
+    	BeginParam (me;
+	    	    SegmentNum : Integer from Standard)
+		returns Real from Standard
+    	    	raises OutOfRange  from Standard
+    	    is static;
+
+    	EndParam   (me;
+	    	    SegmentNum : Integer from Standard)
+		returns Real from Standard
+    	    	raises OutOfRange  from Standard
+    	    is static;
+
+
+fields  nbSeg         : Integer from Standard;
+    	beginOnCurve  : Real    from Standard [6];
+    	endOnCurve    : Real    from Standard [6];
+
+end Tool;

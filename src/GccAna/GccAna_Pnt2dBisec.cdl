@@ -1,0 +1,61 @@
+-- File:	Pnt2dBisec.cdl
+-- Created:	Wed Apr  3 11:29:37 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class Pnt2dBisec
+
+from GccAna
+
+	---Purpose: This class implements the algorithms used to 
+	--          create the bisecting line between two 2d points 
+    	-- Describes functions for building a bisecting line between two 2D points.
+    	-- The bisecting line between two points is the bisector of
+    	-- the segment which joins the two points, if these are not coincident.
+    	-- The algorithm does not find a solution if the two points are coincident.
+    	-- A Pnt2dBisec object provides a framework for:
+    	-- -   defining the construction of the bisecting line,
+    	-- -   implementing the construction algorithm, and consulting the result.
+
+uses Pnt2d           from gp,
+     Lin2d           from gp
+
+raises NotDone       from StdFail
+
+is
+
+Create(Point1    : Pnt2d from gp ;
+       Point2    : Pnt2d from gp ) returns Pnt2dBisec;
+
+    	---Purpose: Constructs a bisecting line between the points Point1 and Point2.
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true (this construction algorithm never fails).
+        
+HasSolution(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if this algorithm has a solution, i.e. if the
+    	-- two points are not coincident.
+        
+ThisSolution(me) returns Lin2d from gp
+raises NotDone
+is static;
+    	---Purpose : Returns a line, representing the solution computed by this algorithm.
+
+fields
+
+    WellDone : Boolean from Standard;
+    -- True if the algorithm succeeded.
+
+    HasSol : Boolean from Standard;
+    -- True if there is a solution.
+
+    linsol   : Lin2d from gp;
+    ---Purpose : The solutions.
+
+end Pnt2dBisec;
+
+

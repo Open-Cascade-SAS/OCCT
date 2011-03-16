@@ -1,0 +1,58 @@
+-- File:	PNaming_Name.cdl
+-- Created:	Fri Oct 24 11:05:24 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Name from PNaming inherits Persistent from Standard
+
+	---Purpose: 
+
+uses
+   NamedShape          from PNaming,
+   HArray1OfNamedShape from PNaming
+
+is
+    Create returns mutable Name from PNaming;
+    
+    Type      (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    ShapeType (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    Arguments (me :mutable ; Args : HArray1OfNamedShape from PNaming);
+    ---C++: inline
+
+    StopNamedShape (me : mutable; arg : NamedShape  from PNaming);
+    ---C++: inline
+ 
+    Type      (me) returns Integer from Standard;
+    ---C++: inline
+    
+    ShapeType (me) returns Integer from Standard;
+    ---C++: inline
+
+    Arguments (me) returns HArray1OfNamedShape from PNaming;
+    ---C++: inline
+
+    StopNamedShape (me) returns NamedShape  from PNaming;
+     ---C++: inline
+
+    Index(me : mutable; I : Integer from Standard);
+    ---C++: inline
+
+    Index(me) returns Integer from Standard;
+    ---C++: inline
+
+fields 
+
+    myType      : Integer             from Standard;
+    myShapeType : Integer             from Standard;
+    myArgs      : HArray1OfNamedShape from PNaming;
+    myStop      : NamedShape          from PNaming;
+    myIndex     : Integer             from Standard;
+
+end Name;

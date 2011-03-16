@@ -1,0 +1,44 @@
+-- File:	GeomToStep_MakeVector.cdl
+-- Created:	Mon Jun 14 15:10:06 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeVector from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Vector from Geom, Geom2d and Vec, Vec2d from gp, and the class
+    --          Vector from StepGeom which describes a Vector from
+    --          Prostep. 
+  
+uses Vec from gp,
+     Vec2d from gp,
+     Vector from Geom,
+     Vector from Geom2d,
+     Vector from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( V : Vec from gp ) returns MakeVector;
+
+Create ( V : Vec2d from gp ) returns MakeVector;
+
+Create ( V : Vector from Geom ) returns MakeVector;
+
+Create ( V : Vector from Geom2d ) returns MakeVector;
+
+Value (me) returns Vector from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    theVector : Vector from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeVector;
+
+

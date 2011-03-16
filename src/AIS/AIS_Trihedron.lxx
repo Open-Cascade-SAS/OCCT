@@ -1,0 +1,10 @@
+// File:	AIS_Trihedron.lxx
+// Created:	Thu Mar  6 14:27:58 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+inline const Handle(Geom_Axis2Placement)& AIS_Trihedron::Component() const
+{return myComponent;}
+
+inline Standard_Boolean AIS_Trihedron::HasOwnSize() const 
+{return myHasOwnSize;}

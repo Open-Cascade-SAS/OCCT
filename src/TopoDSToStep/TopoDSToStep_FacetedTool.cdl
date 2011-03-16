@@ -1,0 +1,30 @@
+-- File:	TopoDSToStep_FacetedTool.cdl
+-- Created:	Thu Feb 16 10:18:55 1995
+-- Author:	Dieter THIEMANN
+--		<dth@cinox>
+---Copyright:	 Matra Datavision 1995
+
+
+class FacetedTool from TopoDSToStep
+
+    ---Purpose: This Tool Class provides Information about Faceted Shapes
+    --          to be mapped to STEP.
+
+uses
+
+    Shape  from TopoDS,
+    FacetedError from TopoDSToStep
+
+is    
+    
+--  -----------------------------------------------------------
+--  just class methods
+--  -----------------------------------------------------------
+
+
+    CheckTopoDSShape(myclass; SH : Shape from TopoDS)
+		     returns FacetedError from TopoDSToStep;
+
+
+end FacetedTool from TopoDSToStep;
+

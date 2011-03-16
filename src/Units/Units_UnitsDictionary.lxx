@@ -1,0 +1,65 @@
+// File:	Units_UnitsDictionary.lxx
+// Created:	Wed Jun 24 12:50:13 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+#include <Units_QuantitiesSequence.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_Explorer.hxx>
+
+//=======================================================================
+//function : Sequence
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
+{
+  return thequantitiessequence;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
+{
+  Standard_Integer index;
+  switch (alevel) {
+  case 2: 
+    if( !thequantitiessequence.IsNull() ) {
+      for(index=1;index<=thequantitiessequence->Length();index++)
+        thequantitiessequence->Value(index)->Dump(0,1);
+    }
+    break;
+    
+  case 1:
+  default:
+    Units_Explorer explorer(this);
+    cout<<" UNITS DICTIONARY : "<<endl;
+    for(;explorer.MoreQuantity();explorer.NextQuantity())
+      {
+	cout<<explorer.Quantity()<<endl;;
+	for(; explorer.MoreUnit(); explorer.NextUnit())
+	  cout<<"  "<<explorer.Unit()<<endl;
+      }
+
+  
+  }
+}
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+inline void Units_UnitsDictionary::Dump(const Handle(Units_Dimensions)& adimensions) const
+{
+  Standard_Integer index;
+  for(index=1;index<=thequantitiessequence->Length();index++)
+    {
+      if(thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))
+	thequantitiessequence->Value(index)->Dump(0,1);
+    }
+}
+

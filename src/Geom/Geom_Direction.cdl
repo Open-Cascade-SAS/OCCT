@@ -1,0 +1,127 @@
+-- File:	Geom_Direction.cdl
+-- Created:	Wed Mar 10 09:40:08 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Direction from Geom inherits Vector from Geom
+
+        ---Purpose :
+        --  The class Direction specifies a vector that is never null.
+        --  It is a unit vector.
+
+
+uses  Dir      from gp,
+      Pnt      from gp, 
+      Trsf     from gp,
+      Vec      from gp,
+      Geometry from Geom
+
+raises ConstructionError from Standard
+
+is
+
+
+  Create (X, Y, Z :Real)  returns mutable Direction
+        ---Purpose : Creates a unit vector with it 3 cartesian coordinates.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+
+  Create (V : Dir) returns mutable Direction;
+        ---Purpose : Creates a transient copy of <me>.
+
+
+  SetCoord (me : mutable; X, Y, Z : Real)
+        ---Purpose : Sets <me> to X,Y,Z coordinates.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+
+
+  SetDir (me : mutable; V : Dir);
+        ---Purpose : Converts the gp_Dir unit vector V into this unit vector.
+
+
+  SetX (me : mutable; X : Real)
+        ---Purpose : Changes the X coordinate of <me>.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+
+
+  SetY (me : mutable; Y : Real)
+        ---Purpose : Changes the Y coordinate of <me>.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+
+
+  SetZ (me : mutable; Z : Real)
+        ---Purpose : Changes the Z coordinate of <me>.
+     raises ConstructionError;
+        ---Purpose : 
+        --  Raised if Sqrt( X*X + Y*Y + Z*Z) <= Resolution from gp.
+
+
+  Dir (me) returns Dir;
+        ---Purpose :
+        --  Returns the non transient direction with the same 
+        --  coordinates as <me>.
+
+
+  Magnitude (me)   returns Real;
+        ---Purpose : returns 1.0 which is the magnitude of any unit vector.
+
+
+  SquareMagnitude (me)   returns Real;
+        ---Purpose : returns 1.0 which is the square magnitude of any unit vector.    
+    
+  Cross (me : mutable; Other : Vector)
+        ---Purpose :
+        --  Computes the cross product between <me> and <Other>.
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if the two vectors are parallel because it is
+        --  not possible to have a direction with null length.
+
+
+  CrossCross (me : mutable; V1, V2 : Vector)
+        ---Purpose :
+        --  Computes the triple vector product  <me> ^(V1 ^ V2).
+     raises ConstructionError;
+        ---Purpose :
+        --  Raised if V1 and V2 are parallel or <me> and (V1 ^ V2) are
+        --  parallel
+
+
+  Crossed (me; Other : Vector)  returns mutable like me
+        ---Purpose :
+        --  Computes the cross product between <me> and <Other>.
+        --  A new direction is returned.
+
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if the two vectors are parallel because it is 
+        --  not possible to have a direction with null length.
+     is static;
+     
+
+  CrossCrossed (me; V1, V2 : Vector)   returns mutable like me
+        ---Purpose :
+        --  Computes the triple vector product <me> ^(V1 ^ V2).
+     raises ConstructionError
+        ---Purpose :
+        --  Raised if V1 and V2 are parallel or <me> and (V1 ^ V2) are
+        --  parallel
+     is static;
+ 
+
+  Transform (me : mutable; T : Trsf);
+    	---Purpose: Applies the transformation T to this unit vector, then normalizes it.
+  
+  Copy (me) returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this unit vector.
+end;
+

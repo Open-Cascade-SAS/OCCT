@@ -1,0 +1,537 @@
+// File:	ShapeFix_Wire.lxx
+// Created:	Fri Jan 21 10:04:04 2000
+// Author:	data exchange team
+//		<det@nnov>
+
+// pdn 05.01.98: renaming method ...Little to ...Small
+
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+
+//=======================================================================
+//function : SetFace
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Wire::SetFace(const TopoDS_Face& face) 
+{
+  myAnalyzer->SetFace ( face );
+}
+ 
+//=======================================================================
+//function : SetSurface
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Wire::SetSurface(const Handle(Geom_Surface)& surf) 
+{
+  myAnalyzer->SetSurface ( surf );
+}
+ 
+//=======================================================================
+//function : SetSurface
+//purpose  : 
+//=======================================================================
+
+inline  void ShapeFix_Wire::SetSurface(const Handle(Geom_Surface)& surf,const TopLoc_Location& loc) 
+{
+  myAnalyzer->SetSurface ( surf, loc );
+}
+ 
+//=======================================================================
+//function : IsLoaded
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::IsLoaded() const
+{
+  return myAnalyzer->IsLoaded();
+}
+ 
+//=======================================================================
+//function : IsReady
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::IsReady() const
+{
+  return myAnalyzer->IsReady();
+}
+
+//=======================================================================
+//function : Wire
+//purpose  : 
+//=======================================================================
+
+inline  TopoDS_Wire ShapeFix_Wire::Wire() const
+{
+  return myAnalyzer->WireData()->Wire();
+}
+
+//=======================================================================
+//function : WireAPIMake
+//purpose  : 
+//=======================================================================
+
+inline  TopoDS_Wire ShapeFix_Wire::WireAPIMake() const
+{
+  return myAnalyzer->WireData()->WireAPIMake();
+}
+ 
+//=======================================================================
+//function : Analyzer
+//purpose  : 
+//=======================================================================
+
+inline Handle(ShapeAnalysis_Wire) ShapeFix_Wire::Analyzer() const
+{
+  return myAnalyzer;
+}
+
+//=======================================================================
+//function : WireData
+//purpose  : 
+//=======================================================================
+
+inline const Handle(ShapeExtend_WireData)& ShapeFix_Wire::WireData() const
+{
+  return myAnalyzer->WireData();
+}
+
+//=======================================================================
+//function : Face
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Face& ShapeFix_Wire::Face() const
+{
+  return myAnalyzer->Face();
+}
+ 
+//=======================================================================
+//function : ModifyTopologyMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::ModifyTopologyMode() 
+{
+  return myTopoMode;
+}
+
+//=======================================================================
+//function : ModifyGeometryMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::ModifyGeometryMode() 
+{
+  return myGeomMode;
+}
+
+//=======================================================================
+//function : ModifyRemoveLoopMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::ModifyRemoveLoopMode() 
+{
+  return myRemoveLoopMode;
+}
+
+//=======================================================================
+//function : ClosedWireMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::ClosedWireMode() 
+{
+  return myClosedMode;
+}
+
+//=======================================================================
+//function : PreferencePCurveMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::PreferencePCurveMode() 
+{
+  return myPreference2d;
+}
+
+//=======================================================================
+//function : FixGapsByRangesMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean& ShapeFix_Wire::FixGapsByRangesMode() 
+{
+  return myFixGapsByRanges;
+}
+
+//=======================================================================
+//function : Fix..Mode for high-level fixes
+
+//=======================================================================
+//function : FixReorderMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixReorderMode()
+{
+  return myFixReorderMode;
+}
+ 
+//=======================================================================
+//function : FixSmallMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixSmallMode()
+{
+  return myFixSmallMode;
+}
+
+//=======================================================================
+//function : FixConnectedMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixConnectedMode()
+{
+  return myFixConnectedMode;
+}
+ 
+//=======================================================================
+//function : FixEdgeCurvesMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixEdgeCurvesMode()
+{
+  return myFixEdgeCurvesMode;
+}
+ 
+//=======================================================================
+//function : FixDegeneratedMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixDegeneratedMode()
+{
+  return myFixDegeneratedMode;
+}
+ 
+//=======================================================================
+//function : Fix..Mode for low-level fixes
+ 
+//=======================================================================
+//function : FixReversed2dMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixReversed2dMode()
+{
+  return myFixReversed2dMode;
+}
+ 
+//=======================================================================
+//function : FixRemovePCurveMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixRemovePCurveMode()
+{
+  return myFixRemovePCurveMode;
+}
+ 
+//=======================================================================
+//function : FixRemoveCurve3dMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixRemoveCurve3dMode()
+{
+  return myFixRemoveCurve3dMode;
+}
+ 
+//=======================================================================
+//function : FixAddPCurveMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixAddPCurveMode()
+{
+  return myFixAddPCurveMode;
+}
+ 
+//=======================================================================
+//function : FixAddCurve3dMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixAddCurve3dMode()
+{
+  return myFixAddCurve3dMode;
+}
+ 
+//=======================================================================
+//function : FixSeamMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixSeamMode()
+{
+  return myFixSeamMode;
+}
+
+//=======================================================================
+//function : FixShiftedMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixShiftedMode()
+{
+  return myFixShiftedMode;
+}
+ 
+//=======================================================================
+//function : FixSameParameterMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixSameParameterMode()
+{
+  return myFixSameParameterMode;
+}
+ 
+//=======================================================================
+//function : FixVertexToleranceMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixVertexToleranceMode()
+{
+  return myFixVertexToleranceMode;
+}
+ 
+//=======================================================================
+//function : FixLackingMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixLackingMode()
+{
+  return myFixLackingMode;
+}
+
+//=======================================================================
+//function : FixSelfIntersectionMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixSelfIntersectionMode()
+{
+  return myFixSelfIntersectionMode;
+}
+ 
+//=======================================================================
+//function : FixGaps3dMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixGaps3dMode() 
+{
+  return myFixGaps3dMode;
+}
+
+//=======================================================================
+//function : FixGaps2dMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixGaps2dMode() 
+{
+  return myFixGaps2dMode;
+}
+
+//=======================================================================
+//function : FixNotchedEdgesMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Wire::FixNotchedEdgesMode()
+{
+  return myFixNotchedEdgesMode;
+}
+
+//=======================================================================
+//function : FixSelfIntersectingEdgeMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixSelfIntersectingEdgeMode()
+{
+  return myFixSelfIntersectingEdgeMode;
+}
+ 
+//=======================================================================
+//function : FixIntersectingEdgesMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixIntersectingEdgesMode()
+{
+  return myFixIntersectingEdgesMode;
+}
+
+//=======================================================================
+//function : FixNonAdjacentIntersectingEdgesMode
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Integer& ShapeFix_Wire::FixNonAdjacentIntersectingEdgesMode()
+{
+  return myFixNonAdjacentIntersectingEdgesMode;
+}
+
+//=======================================================================
+//function : Status.. for high-level methods
+
+//=======================================================================
+//function : StatusReorder
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusReorder(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusReorder, status ); 
+}
+ 
+//=======================================================================
+//function : StatusSmall
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusSmall(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusSmall, status ); 
+}
+
+//=======================================================================
+//function : StatusConnected
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusConnected(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusConnected, status ); 
+}
+
+//=======================================================================
+//function : StatusEdgeCurves
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusEdgeCurves(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusEdgeCurves, status ); 
+}
+
+//=======================================================================
+//function : StatusDegenerated
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusDegenerated(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusDegenerated, status ); 
+}
+ 
+//=======================================================================
+//function : StatusLacking
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusLacking(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusLacking, status ); 
+}
+ 
+//=======================================================================
+//function : StatusSelfIntersection
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusSelfIntersection(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusSelfIntersection, status ); 
+}
+
+//=======================================================================
+//function : StatusGaps3d
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusGaps3d(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusGaps3d, status );
+}
+
+//=======================================================================
+//function : StatusGaps2d
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusGaps2d(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusGaps2d, status );
+}
+ 
+//=======================================================================
+//function : StatusClosed
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusClosed(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusClosed, status ); 
+}
+//=======================================================================
+//function : StatusNotches
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusNotches(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myStatusNotches, status ); 
+} 
+//=======================================================================
+//function : LastFixStatus - Status for low-level methods (common)
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::LastFixStatus(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus ( myLastFixStatus, status ); 
+}
+
+//=======================================================================
+//function : FixEdgeTool
+//purpose  : 
+//=======================================================================
+
+inline  Handle(ShapeFix_Edge) ShapeFix_Wire::FixEdgeTool() const
+{
+  return myFixEdge;
+}
+
+//=======================================================================
+//function : StatusRemovedSegment
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wire::StatusRemovedSegment() const
+{
+  return myStatusRemovedSegment;
+}

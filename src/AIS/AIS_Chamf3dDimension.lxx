@@ -1,0 +1,22 @@
+// File:	AIS_Chamf3dDimension.lxx
+// Created:	Fri Feb 28 10:12:51 1997
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+
+//=======================================================================
+//function : KindOfDimension
+//purpose  : 
+//=======================================================================
+inline AIS_KindOfDimension AIS_Chamf3dDimension::KindOfDimension() const 
+{
+  return AIS_KOD_LENGTH;
+}
+
+//=======================================================================
+//function : IsMovable
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean AIS_Chamf3dDimension::IsMovable() const 
+{
+  return Standard_True;
+}

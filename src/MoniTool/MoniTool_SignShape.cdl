@@ -1,0 +1,27 @@
+-- File:	MoniTool_SignShape.cdl
+-- Created:	Wed Feb  4 18:23:38 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignShape  from MoniTool    inherits SignText  from MoniTool
+
+    ---Purpose : Signs HShape according to its real content (type of Shape)
+    --           Context is not used
+
+uses CString, Transient, AsciiString
+
+is
+
+    Create returns mutable SignShape;
+
+    Name (me) returns CString;
+    ---Purpose : Returns "SHAPE"
+
+    Text  (me; ent : any Transient; context : any Transient)
+    	returns AsciiString from TCollection;
+    ---Purpose : Returns for a HShape, the string of its ShapeEnum
+    --           The Model is absolutely useless (may be null)
+
+end SignShape;

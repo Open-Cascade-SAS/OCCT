@@ -1,0 +1,141 @@
+-- File:	NLPlate_HGPPConstraint.cdl
+-- Created:	Thu Apr  9 16:41:52 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+deferred class  HGPPConstraint  from  NLPlate inherits TShared from MMgt
+---Purpose: define a PinPoint geometric Constraint used to load a Non Linear Plate
+--  
+uses
+     XY from gp,
+     XYZ from gp,
+     D1 from Plate,
+     D2 from Plate,
+     D3 from Plate
+     
+is
+    SetUVFreeSliding(me: mutable; UVFree : Boolean) 
+    is  virtual;
+    -- If True, allow the UV value to be modified during optimization
+    -- this is meaningless (has no effect) on non G0 Constraints
+    -- 
+
+    SetIncrementalLoadAllowed(me: mutable; ILA : Boolean) 
+    is  virtual;
+    -- If True, allow the Constraint to be loaded incrementally during optimization
+    -- 
+
+    SetActiveOrder(me: mutable; ActiveOrder : Integer) 
+    is  virtual;
+    -- Set the order until which order the constraint is active
+    -- -1  means "inactive Constraint"
+    --  0  means only G0 part of the Constraint is Active (or inactive Constraint in case of non G0 Constraint)
+    --  1  means only G0 and G1 part  of the Constraint is Active ..
+    --  etc...
+    --  default Value is the Constraint Order ( 0,1,2 or 3).
+
+    SetUV(me:  mutable;  UV  :  XY) 
+    is  virtual;
+    -- set the UV associated to the Constraint. 
+
+    SetOrientation(me:  mutable; Orient  :  Integer  =  0) 
+    is  virtual;
+    --  set the orientation (meaningless for non G1 Constraints) 
+    -- 	-1 means that the Surface Normal have to be -1*the Constraint Normal
+    --  0  means that G1 constraint is up to a normal inversion (default value)
+    --  1  means that the Surface Normal have to be equal to the Constraint Normal.
+    --  remarks : within the current implementation, this is effective only in case of
+    --  incremental loading computation
+
+
+    SetG0Criterion(me : mutable; TolDist  : Real  from  Standard) is  virtual; 
+    -- set the accuracy with which we want to match the G0 constraint
+    -- the dimension is a length
+
+    SetG1Criterion(me : mutable; TolAng   : Real  from  Standard) is  virtual;
+    -- set the accuracy with which we want to match the G1 constraint
+    -- the dimension is an angle in radian (or no dimension)
+
+    SetG2Criterion(me : mutable; TolCurv  : Real  from  Standard) is  virtual;
+    -- set the accuracy with which we want to match the G2 constraint
+    -- the dimension is the inverse of a length
+
+    SetG3Criterion(me : mutable; TolG3  : Real  from  Standard) is  virtual;
+    -- set the accuracy with which we want to match the G3 constraint
+    -- the dimension is the inverse of a square of a length
+
+
+    UVFreeSliding(me)  returns  Boolean 
+    is  virtual;
+    -- If True, allow the UV value to be modified during optimization
+    -- this is meaningless on non G0 Constraints
+    -- 
+
+    IncrementalLoadAllowed(me)  returns  Boolean 
+    is virtual;
+    -- If True, allow the Constraint to be loaded incrementally during optimization
+    -- 
+
+    ActiveOrder(me)  returns  Integer 
+    is  deferred; 
+    -- returns the constraint active order, i.e. the maximum between the initial 
+    -- constraint order (G0,G1..) and the value set by the SetActiveOrder method
+    -- 
+
+    UV(me) returns XY 
+    ---C++: return const &
+    is  virtual;
+    -- get the UV associated to the Constraint. 
+    -- If UVFreeSliding is TRUE, it may be different from the initial given value
+    -- 
+    Orientation(me:  mutable)  returns  Integer
+    is  virtual;
+    --  set the orientation (meaningless for  non G1 Constraints)
+    -- 	-1 means that the Surface Normal have to be -1*the Constraint Normal
+    --  0  means that G1 constraint is up to a normal inversion (default value)
+    --  1  means that the Surface Normal have to be equal to the Constraint Normal.
+    --  remarks : within the current implementation, this is effective only in case of
+    --  incremental loading computation
+    -- 
+
+
+    IsG0(me) returns Boolean 
+    is  deferred;
+
+    G0Target(me) returns XYZ 
+    ---C++: return const &
+    is  virtual; 
+    
+    G1Target(me) returns D1 from Plate
+    ---C++: return const &
+    is  virtual; 
+        
+    G2Target(me) returns D2 from Plate
+    ---C++: return const &
+    is  virtual;
+
+    G3Target(me) returns D3 from Plate
+    ---C++: return const &
+    is  virtual;
+        G0Criterion(me)  returns  Real  from  Standard  is  virtual; 
+    -- return the accuracy with which we want to match the G0 constraint
+    -- the dimension is a length
+
+    G1Criterion(me)  returns  Real  from  Standard is  virtual ;
+    -- return the accuracy with which we want to match the G1 constraint
+    -- the dimension is an angle in radian (or no dimension)
+
+    G2Criterion(me)  returns  Real  from  Standard  is  virtual;
+    -- return the accuracy with which we want to match the G2 constraint
+    -- the dimension is the inverse of a length
+
+    G3Criterion(me)  returns  Real  from  Standard  is  virtual;
+    -- return the accuracy with which we want to match the G3 constraint
+    -- the dimension is the inverse of a square of a length
+    
+
+fields
+    myUV : XY from gp  is  protected;
+    myActiveOrder : Integer  is  protected;
+end;

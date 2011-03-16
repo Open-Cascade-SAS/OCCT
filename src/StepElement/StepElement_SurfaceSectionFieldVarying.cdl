@@ -1,0 +1,37 @@
+-- File:	StepElement_SurfaceSectionFieldVarying.cdl
+-- Created:	Thu Dec 12 17:29:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class SurfaceSectionFieldVarying from StepElement
+inherits SurfaceSectionField from StepElement
+
+    ---Purpose: Representation of STEP entity SurfaceSectionFieldVarying
+
+uses
+    HArray1OfSurfaceSection from StepElement
+
+is
+    Create returns SurfaceSectionFieldVarying from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDefinitions: HArray1OfSurfaceSection from StepElement;
+                       aAdditionalNodeValues: Boolean);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Definitions (me) returns HArray1OfSurfaceSection from StepElement;
+	---Purpose: Returns field Definitions
+    SetDefinitions (me: mutable; Definitions: HArray1OfSurfaceSection from StepElement);
+	---Purpose: Set field Definitions
+
+    AdditionalNodeValues (me) returns Boolean;
+	---Purpose: Returns field AdditionalNodeValues
+    SetAdditionalNodeValues (me: mutable; AdditionalNodeValues: Boolean);
+	---Purpose: Set field AdditionalNodeValues
+
+fields
+    theDefinitions: HArray1OfSurfaceSection from StepElement;
+    theAdditionalNodeValues: Boolean;
+
+end SurfaceSectionFieldVarying;

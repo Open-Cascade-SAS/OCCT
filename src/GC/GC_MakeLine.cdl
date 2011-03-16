@@ -1,0 +1,78 @@
+-- File:	MakeLine.cdl
+-- Created:	Mon Sep 28 11:48:51 1992
+-- Author:	Remi GILET
+--		<reg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class MakeLine from GC inherits Root from GC
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Line from Geom.
+    --           * Create a Line parallel to another and passing 
+    --             through a point.
+    --           * Create a Line passing through 2 points.
+    -- A MakeLine object provides a framework for:
+    -- -   defining the construction of the line,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the results. In particular, the Value
+    --   function returns the constructed line.
+        
+uses Pnt       from gp,
+     Lin       from gp,
+     Ax1       from gp,
+     Dir       from gp,
+     Line      from Geom,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A1 : Ax1 from gp) returns MakeLine;
+    --- Purpose :
+    --  Creates a line located in 3D space with the axis placement A1.
+    --  The Location of A1 is the origin of the line. 
+
+Create (L : Lin from gp) returns MakeLine;
+    --- Purpose :
+    --  Creates a line from a non persistent line from package gp.
+
+Create (P : Pnt from gp;
+    	V : Dir from gp) returns MakeLine;
+    --- Purpose :
+    --  P is the origin and V is the direction of the line.
+
+Create(Lin    :     Lin from gp;
+       Point  :     Pnt from gp) returns MakeLine;
+    ---Purpose : Make a Line from Geom <TheLin> parallel to another 
+    --           Lin <Lin> and passing through a Pnt <Point>.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp) returns MakeLine;
+    ---Purpose : Make a Line from Geom <TheLin> passing through 2 
+    --           Pnt <P1>,<P2>.
+    --           It returns false if <p1> and <P2> are confused.
+    -- Warning
+    -- If the points P1 and P2 are coincident (that is, when
+    -- IsDone returns false), the Status function returns gce_ConfusedPoints.
+        
+Value(me) returns Line from Geom
+    raises NotDone
+    is static;
+    ---Purpose:  Returns the constructed line.
+    -- Exceptions StdFail_NotDone if no line is constructed.
+    ---C++: return const&
+
+Operator(me) returns Line from Geom
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator Handle_Geom_Line() const;"
+
+fields
+
+    TheLine : Line from Geom;
+    --The solution from Geom.
+    
+end MakeLine;
+
+

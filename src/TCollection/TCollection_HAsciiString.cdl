@@ -1,0 +1,582 @@
+-- File:	TCollection_HAsciiString.cdl
+-- Created:	Tue Dec 15 10:53:08 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+class HAsciiString from TCollection 
+inherits TShared from MMgt
+
+    ---Purpose: A variable-length sequence of ASCII characters
+    -- (normal 8-bit character type). It provides editing
+    -- operations with built-in memory management to
+    -- make HAsciiString objects easier to use than ordinary character arrays.
+    -- HAsciiString objects are handles to strings.
+    -- -   HAsciiString strings may be shared by several objects.
+    -- -   You may use an AsciiString object to get the actual string.
+    -- Note: HAsciiString objects use an AsciiString string as a field.
+
+uses AsciiString from TCollection
+    ,HExtendedString from TCollection
+    
+raises 
+    NullObject, 
+    OutOfRange, 
+    NumericError, 
+    NegativeValue
+is
+
+ Create returns mutable HAsciiString from TCollection;
+   ---Purpose: Initializes a HAsciiString to an empty AsciiString.
+
+ Create ( message : CString ) 
+         returns mutable HAsciiString from TCollection
+   ---Purpose: Initializes a HAsciiString with a CString.
+   raises NullObject;
+
+ Create ( aChar : Character) 
+         returns mutable HAsciiString from TCollection;
+   ---Purpose: Initializes a HAsciiString with a single character.
+
+ Create ( length : Integer; filler : Character)
+         returns mutable HAsciiString from TCollection;
+   ---Purpose: Initializes a HAsciiString with <length> space allocated.
+   -- and filled with <filler>.This is useful for buffers.
+
+ Create ( value : Integer ) 
+         returns mutable HAsciiString from TCollection
+   ---Purpose: Initializes a HAsciiString with an integer value
+   raises NullObject;
+
+ Create ( value : Real ) 
+         returns mutable HAsciiString from TCollection
+   ---Purpose: Initializes a HAsciiString with a real value
+   raises NullObject;
+
+ Create ( aString : AsciiString from TCollection) 
+         returns mutable HAsciiString from TCollection;
+   ---Purpose: Initializes a HAsciiString with a HAsciiString.
+
+ Create ( aString : HAsciiString from TCollection) 
+         returns mutable HAsciiString from TCollection;
+   ---Purpose: Initializes a HAsciiString with a HAsciiString.
+
+ Create ( aString : HExtendedString from TCollection;
+          replaceNonAscii: Character from Standard) 
+         returns mutable HAsciiString from TCollection
+         raises OutOfRange from Standard;
+   ---Purpose: Initializes a HAsciiString with a HAsciiString.
+   --          If replaceNonAscii is non-null charecter, it will be used 
+   --          in place of any non-ascii character found in the source string.
+   --          Otherwise, raises OutOfRange exception if at least one character
+   --          in the source string is not in the "Ascii range".
+
+ AssignCat (me : mutable ; other : CString) 
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Appends <other>  to me.
+   raises NullObject;
+
+ AssignCat (me : mutable ; other : HAsciiString from TCollection); 
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Appends <other>  to me.
+   --  Example:  aString = aString + anotherString
+
+ Capitalize(me : mutable);
+   ---Level: Public
+   ---Purpose: Converts the first character into its corresponding 
+   -- upper-case character and the other characters into lowercase.
+   --  Example: 
+   -- before
+   --   me = "hellO "
+   -- after
+   --   me = "Hello "
+
+ Cat (me ; other : CString) 
+        returns mutable HAsciiString from TCollection;
+   ---Level: Public
+   ---Purpose:  Creates a new string by concatenation of this
+   -- ASCII string and the other ASCII string.
+   --  Example:  
+   --    aString = aString + anotherString
+   --    aString = aString + "Dummy"   
+   --    aString contains "I say "
+   --    aString = aString + "Hello " + "Dolly"
+   -- gives "I say Hello Dolly"
+   --  Warning: To catenate more than one CString, you must put a String before.
+   -- So the following example is WRONG !
+   --      aString = "Hello " + "Dolly"  THIS IS NOT ALLOWED
+   -- This rule is applicable to AssignCat (operator +=) too.
+
+ Cat (me ; other : HAsciiString from TCollection) 
+        returns mutable HAsciiString from TCollection;
+   ---Level: Public
+   ---Purpose: Creates a new string by concatenation of this
+   -- ASCII string and the other ASCII string.
+   --  Example:  aString = aString + anotherString
+
+ Center(me : mutable; 
+        Width : Integer from Standard;
+        Filler : Character from Standard) 
+ raises NegativeValue from Standard;
+   ---Purpose: Modifies this ASCII string so that its length
+   -- becomes equal to Width and the new characters
+   -- are equal to Filler. New characters are added
+   -- both at the beginning and at the end of this string.
+   -- If Width is less than the length of this ASCII string, nothing happens.
+   -- Example
+   -- Handle(TCollection_HAsciiString)
+   -- myAlphabet
+   --    = new
+   -- TCollection_HAsciiString
+   -- ("abcdef");
+   -- myAlphabet->Center(9,' ');
+   -- assert ( !strcmp(
+   -- myAlphabet->ToCString(),
+   --        " abcdef ") );
+
+ ChangeAll(me : mutable; aChar, NewChar : Character;
+           CaseSensitive : Boolean=Standard_True);
+   ---Purpose: Replaces all characters equal to aChar by
+   -- NewChar in this ASCII string. The substitution is
+   -- case sensitive if CaseSensitive is true (default value).
+   -- If you do not use the default case sensitive
+   -- option, it does not matter whether aChar is upper-case or not.
+   -- Example
+   -- Handle(TCollection_HAsciiString)
+   -- myMistake = new
+   -- TCollection_HAsciiString
+   -- ("Hather");
+   -- myMistake->ChangeAll('H','F');
+   -- assert ( !strcmp(
+   -- myMistake->ToCString(),
+   -- "Father") ); 
+ 
+ Clear (me : mutable);
+   ---Level: Public
+   ---Purpose: Removes all characters contained in <me>.
+   -- This produces an empty HAsciiString.
+
+ FirstLocationInSet(me; Set : HAsciiString from TCollection;
+                    FromIndex : Integer from Standard; 
+                    ToIndex   : Integer from Standard)
+ returns Integer
+ raises OutOfRange from Standard;
+   ---Level: Public
+   ---Purpose: Returns the index of the first character of <me> that is 
+   -- present in <Set>.
+   -- The search begins to the index FromIndex and ends to the
+   -- the index ToIndex.
+   -- Returns zero if failure.
+   -- Raises an exception if FromIndex or ToIndex is out of range
+   --  Example:
+   -- before 
+   --   me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7
+   -- after
+   --   me = "aabAcAa"
+   -- returns
+   --   1
+
+ FirstLocationNotInSet(me; Set : HAsciiString from TCollection;
+                       FromIndex : Integer; 
+                       ToIndex   : Integer) returns Integer
+ raises OutOfRange from Standard;
+   ---Level: Public
+   ---Purpose: Returns the index of the first character of <me> 
+   -- that is not present in the set <Set>.
+   -- The search begins to the index FromIndex and ends to the
+   -- the index ToIndex in <me>.
+   -- Returns zero if failure.
+   -- Raises an exception if FromIndex or ToIndex is out of range.
+   --  Example:
+   -- before 
+   --   me = "aabAcAa", S = "Aa", FromIndex = 1, Toindex = 7
+   -- after
+   --   me = "aabAcAa"
+   -- returns
+   --   3
+
+ Insert (me : mutable; where : Integer; what : Character)
+   ---Level: Public
+   ---Purpose: Insert a Character at position <where>.
+   --  Example:
+   --    aString contains "hy not ?"
+   --    aString.Insert(1,'W'); gives "Why not ?"
+   --    aString contains "Wh"
+   --    aString.Insert(3,'y'); gives "Why"
+   --    aString contains "Way"
+   --    aString.Insert(2,'h'); gives "Why"
+   raises OutOfRange;
+
+ Insert (me : mutable; where : Integer; what : CString )
+   ---Level: Public
+   ---Purpose: Insert a HAsciiString at position <where>.
+   raises OutOfRange;
+
+ Insert (me : mutable; where : Integer; what : HAsciiString from TCollection)
+   ---Level: Public
+   ---Purpose: Insert a HAsciiString at position <where>.
+   raises OutOfRange;
+
+ InsertAfter(me : mutable; Index : Integer; 
+             other : HAsciiString from TCollection)
+ raises OutOfRange from Standard;
+   ---Purpose: Inserts the other ASCII string a after a specific index in the string <me>
+   --  Example:
+   -- before
+   --   me = "cde" , Index = 0 , other = "ab"  
+   -- after
+   --   me = "abcde" , other = "ab"
+
+ InsertBefore(me : mutable; Index : Integer; 
+              other : HAsciiString from TCollection)
+ raises OutOfRange from Standard;
+   ---Purpose: Inserts the other ASCII string a before a specific index in the string <me>
+   -- Raises an exception if Index is out of bounds
+   --  Example:
+   -- before
+   --   me = "cde" , Index = 1 , other = "ab"  
+   -- after
+   --   me = "abcde" , other = "ab"
+
+ IsEmpty(me) returns Boolean from Standard;
+   ---Purpose:  Returns True if the string <me> contains zero character
+
+ IsLess (me ; other : HAsciiString from TCollection) returns Boolean;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is 'ASCII' less than <other>.
+
+ IsGreater (me ; other : HAsciiString from TCollection) returns Boolean;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is 'ASCII' greater than <other>.
+
+ IntegerValue(me) returns Integer
+   ---Level: Public
+   ---Purpose: Converts a HAsciiString containing a numeric expression to 
+   -- an Integer.
+   --  Example: "215" returns 215.
+   raises NumericError;
+
+ IsIntegerValue(me) returns Boolean from Standard;
+   ---Purpose: Returns True if the string contains an integer value.
+   
+ IsRealValue(me) returns Boolean from Standard;
+   ---Purpose: Returns True if the string contains a real value.
+
+ IsAscii(me) returns Boolean from Standard;
+   ---Level: Public
+   ---Purpose: Returns True if the string contains only ASCII characters
+   -- between ' ' and '~'.
+   -- This means no control character and no extended ASCII code.
+         
+ IsDifferent(me ; S : HAsciiString from TCollection)
+   ---Level: Public
+   ---Purpose: Returns True if the string S not contains same characters than 
+   -- the string <me>.
+ returns Boolean from Standard;
+ 
+ IsSameString(me ; S : HAsciiString from TCollection)
+   ---Level: Public
+   ---Purpose: Returns True if the string S contains same characters than the
+   -- string <me>.
+ returns Boolean from Standard;
+ 
+ IsSameString(me ; S : HAsciiString from TCollection ;
+                   CaseSensitive : Boolean from Standard)
+   ---Level: Public
+   ---Purpose: Returns True if the string S contains same characters than the
+   -- string <me>.
+ returns Boolean from Standard;
+ 
+ LeftAdjust(me :  mutable);
+   ---Level: Public
+   ---Purpose: Removes all space characters in the begining of the string
+
+ LeftJustify(me : mutable; Width : Integer; 
+               Filler : Character from Standard) 
+ raises NegativeValue from Standard;
+   ---Level: Public
+   ---Purpose: Left justify.
+   -- Length becomes equal to Width and the new characters are
+   -- equal to Filler
+   -- if Width < Length nothing happens
+   -- Raises an exception if Width is less than zero
+   --  Example:
+   -- before
+   --   me = "abcdef" , Width = 9 , Filler = ' '
+   -- after
+   --   me = "abcdef   " 
+
+ Length (me) returns Integer;
+   ---C++: inline
+   ---Level: Public
+   ---Purpose: Returns number of characters in <me>.
+   -- This is the same functionality as 'strlen' in C.
+
+ Location(me; other : HAsciiString from TCollection;
+          FromIndex : Integer; 
+          ToIndex   : Integer) 
+ returns Integer
+ raises OutOfRange from Standard;
+   ---Level: Public
+   ---Purpose: returns an index in the string <me> of the first occurence
+   -- of the string S in the string <me> from the starting index
+   -- FromIndex to the ending index ToIndex
+   -- returns zero if failure
+   -- Raises an exception if FromIndex or ToIndex is out of range.
+   --  Example:
+   -- before 
+   --   me = "aabAaAa", S = "Aa", FromIndex = 1, ToIndex = 7
+   -- after
+   --   me = "aabAaAa"
+   -- returns
+   --   4
+
+ Location(me; N : Integer; C : Character from Standard; 
+          FromIndex : Integer; 
+          ToIndex   : Integer) 
+ returns Integer
+ raises OutOfRange from Standard;
+   ---Level: Public
+   ---Purpose: Returns the index of the nth occurence of the character C
+   -- in the string <me> from the starting index FromIndex to the
+   -- ending index ToIndex.
+   -- Returns zero if failure.
+   -- Raises an exception if FromIndex or ToIndex is out of range
+   --  Example:
+   -- before 
+   --   me = "aabAa", N = 3, C = 'a', FromIndex = 1, ToIndex = 5
+   -- after
+   --   me = "aabAa"
+   -- returns 5
+
+ LowerCase (me : mutable);
+   ---Level: Public
+   ---Purpose: Converts <me> to its lower-case equivalent.
+
+ Prepend(me : mutable; other : HAsciiString from TCollection);
+   ---Level: Public
+   ---Purpose: Inserts the other string at the begining of the string <me>
+   --  Example:
+   -- before
+   --   me = "cde" , S = "ab"
+   -- after
+   --   me = "abcde" , S = "ab"
+
+ Print (me ; astream : out OStream);
+   ---Purpose: Prints this string on the stream <astream>.
+
+ RealValue(me) returns Real
+   ---Level: Public
+   ---Purpose: Converts a string containing a numeric expression to a Real.
+   --  Example: 
+   --  "215" returns 215.0.
+   --  "3.14159267" returns 3.14159267.
+   raises NumericError;
+
+ RemoveAll(me :mutable; C : Character from Standard;
+           CaseSensitive : Boolean from Standard);
+   ---Level: Public
+   ---Purpose: Remove all the occurences of the character C in the string
+   --  Example:
+   -- before
+   --   me = "HellLLo", C = 'L' , CaseSensitive = True
+   -- after
+   --   me = "Hello"
+
+ RemoveAll(me : mutable; what : Character);
+   ---Level: Public
+   ---Purpose: Removes every <what> characters from <me>
+
+ Remove (me : mutable ; where : Integer ; ahowmany : Integer=1)
+   ---Level: Public
+   ---Purpose: Erases <ahowmany> characters from position <where>,
+   -- <where> included.
+   --  Example:
+   --    aString contains "Hello"
+   --    aString.Erase(2,2) erases 2 characters from position 1
+   -- This gives "Hlo".
+ raises OutOfRange from Standard;
+
+ RightAdjust(me : mutable);
+   ---Level: Public
+   ---Purpose: Removes all space characters at the end of the string.
+
+ RightJustify(me : mutable; 
+              Width : Integer;
+              Filler : Character from Standard) 
+ raises NegativeValue from Standard;
+   ---Level: Public
+   ---Purpose: Right justify.
+   -- Length becomes equal to Width and the new characters are
+   -- equal to Filler
+   -- if Width < Length nothing happens
+   -- Raises an exception if Width is less than zero
+   --  Example:
+   -- before
+   --   me = "abcdef" , Width = 9 , Filler = ' '
+   -- after
+   --   me = "   abcdef" 
+
+ Search (me ; what : CString) returns Integer
+   ---Level: Public
+   ---Purpose: Searches a CString in <me> from the beginning 
+   -- and returns position of first item <what> matching.
+   -- It returns -1 if not found.
+   --  Example:
+   --   aString contains "Sample single test"
+   --   aString.Search("le") returns 5
+   --
+   raises NullObject from Standard;
+
+ Search (me ; what : HAsciiString from TCollection) returns Integer;
+   ---Level: Public
+   ---Purpose: Searches a String in <me> from the beginning 
+   -- and returns position of first item <what> matching.
+   -- it returns -1 if not found.
+
+ SearchFromEnd (me ; what : CString) returns Integer
+   ---Level: Public
+   ---Purpose: Searches a CString in a String from the end 
+   -- and returns position of first item <what> matching.
+   -- It returns -1 if not found.
+   --  Example:     
+   -- aString contains "Sample single test"
+   -- aString.SearchFromEnd("le") returns 12
+   raises NullObject from Standard;
+
+ SearchFromEnd (me ; what : HAsciiString from TCollection) returns Integer;
+   ---Level: Public
+   ---Purpose: Searches a HAsciiString in another HAsciiString from the end 
+   -- and returns position of first item <what> matching.
+   -- It returns -1 if not found.
+
+ SetValue(me : mutable; where : Integer; what : Character)
+   ---Level: Public
+   ---Purpose: Replaces one character in the string at position <where>.
+   -- If <where> is less than zero or greater than the length of <me>
+   -- an exception is raised.
+   --  Example:  
+   --  aString contains "Garbake"
+   --  astring.Replace(6,'g')  gives <me> = "Garbage"
+   raises OutOfRange from Standard;
+
+ SetValue(me : mutable; where : Integer; what : CString)
+   ---Level: Public
+   ---Purpose: Replaces a part of <me> in the string at position <where>.
+   -- If <where> is less than zero or greater than the length of <me>
+   -- an exception is raised.
+   --  Example:
+   --  aString contains "Garbake"
+   --  astring.Replace(6,'g')  gives <me> = "Garbage"
+   raises OutOfRange from Standard;
+
+ SetValue(me : mutable; where : Integer; what : HAsciiString from TCollection)
+   ---Level: Public
+   ---Purpose: Replaces a part of <me> by another string.
+   raises OutOfRange from Standard;
+
+ Split(me : mutable; where : Integer) 
+ returns mutable HAsciiString from TCollection
+   ---Level: Public
+   ---Purpose: Splits a HAsciiString into two sub-strings.
+   --  Example: 
+   --  aString contains "abcdefg"
+   --  aString.Split(3) gives <me> = "abc" and returns "defg"
+   raises OutOfRange from Standard;
+
+ SubString(me; FromIndex, ToIndex : Integer) 
+ ---Level: Public
+ ---Purpose: Creation of a sub-string of the string <me>.
+ -- The sub-string starts to the index Fromindex and ends
+ -- to the index ToIndex.
+ -- Raises an exception if ToIndex or FromIndex is out of 
+ -- bounds
+ --  Example: 
+ -- before
+ --   me = "abcdefg", ToIndex=3, FromIndex=6
+ -- after
+ --   me = "abcdefg"
+ -- returns
+ --   "cdef"
+ returns mutable HAsciiString from TCollection
+ raises OutOfRange from Standard;
+
+ ToCString(me) returns CString;
+   ---Level: Public
+   ---Purpose: Returns pointer to string (char *)
+   -- This is useful for some casual manipulations
+   -- Because this "char *" is 'const', you can't modify its contents.
+   ---C++: inline
+
+ Token (me ; separators : CString=" \t" ; whichone : Integer=1) 
+ returns mutable HAsciiString from TCollection
+   ---Level: Public
+   ---Purpose: Extracts <whichone> token from <me>.
+   -- By default, the <separators> is set to space and tabulation.
+   -- By default, the token extracted is the first one (whichone = 1).
+   -- <separators> contains all separators you need.
+   -- If no token indexed by <whichone> is found, it returns an empty String.
+   --  Example:
+   --    aString contains "This is a     message"
+   --    aString.Token()  returns "This" 
+   --    aString.Token(" ",4) returns "message"
+   --    aString.Token(" ",2) returns "is"
+   --    aString.Token(" ",9) returns ""
+   -- Other separators than space character and tabulation are allowed
+   --    aString contains "1234; test:message   , value"
+   --    aString.Token("; :,",4) returns "value"
+   --    aString.Token("; :,",2) returns "test"
+   raises NullObject from Standard;
+
+ Trunc (me : mutable ; ahowmany  : Integer)
+   ---Level: Public
+   ---Purpose: Truncates <me> to <ahowmany> characters.
+   --  Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
+   raises OutOfRange from Standard;
+
+ UpperCase (me : mutable);
+   ---Level: Public
+   ---Purpose: Converts <me> to its upper-case equivalent.
+
+ UsefullLength(me) returns Integer;
+   ---Level: Public
+ ---Purpose: Length of the string ignoring all spaces (' ') and the 
+ -- control character at the end.
+
+ Value(me ; where : Integer) returns Character
+   ---Level: Public
+   ---Purpose: Returns character at position <where> in <me>.
+   -- If <where> is less than zero or greater than the lenght of
+   -- <me>, an exception is raised.
+   --  Example: 
+   --   aString contains "Hello"
+   --   aString.Value(2) returns 'e'
+   raises OutOfRange from Standard;
+ 
+ String(me) returns AsciiString from TCollection;
+   ---C++: return const &
+   ---C++: inline
+   ---Level: Advanced
+   ---Purpose: Returns the field myString.
+ 
+ ShallowCopy(me) returns mutable like me;
+   ---Level: Advanced
+      ---C++: function call  
+
+ ShallowDump(me ; s: in out OStream); 
+   ---Level: Avanced
+   ---C++: function call  
+ 
+ IsSameState (me ; other : like me) 
+   ---Level: Advanced
+      returns Boolean;
+
+ fields
+
+    myString : AsciiString from TCollection; 
+
+end;
+
+

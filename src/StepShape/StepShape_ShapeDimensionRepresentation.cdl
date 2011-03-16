@@ -1,0 +1,21 @@
+-- File:	StepShape_ShapeDimensionRepresentation.cdl
+-- Created:	Tue Apr 18 16:42:59 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ShapeDimensionRepresentation from StepShape
+inherits ShapeRepresentation from StepShape
+
+    ---Purpose: Representation of STEP entity ShapeDimensionRepresentation
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr
+
+is
+    Create returns ShapeDimensionRepresentation from StepShape;
+	---Purpose: Empty constructor
+
+end ShapeDimensionRepresentation;

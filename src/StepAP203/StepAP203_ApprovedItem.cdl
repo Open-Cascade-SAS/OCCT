@@ -1,0 +1,77 @@
+-- File:	StepAP203_ApprovedItem.cdl
+-- Created:	Fri Nov 26 16:26:26 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ApprovedItem from StepAP203
+inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type ApprovedItem
+
+uses
+    ProductDefinitionFormation from StepBasic,
+    ProductDefinition from StepBasic,
+    ConfigurationEffectivity from StepRepr,
+    ConfigurationItem from StepRepr,
+    SecurityClassification from StepBasic,
+    ChangeRequest from StepAP203,
+    Change from StepAP203,
+    StartRequest from StepAP203,
+    StartWork from StepAP203,
+    Certification from StepBasic,
+    Contract from StepBasic
+
+is
+    Create returns ApprovedItem from StepAP203;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of ApprovedItem select type
+	--          1 -> ProductDefinitionFormation from StepBasic
+	--          2 -> ProductDefinition from StepBasic
+	--          3 -> ConfigurationEffectivity from StepRepr
+	--          4 -> ConfigurationItem from StepRepr
+	--          5 -> SecurityClassification from StepBasic
+	--          6 -> ChangeRequest from StepAP203
+	--          7 -> Change from StepAP203
+	--          8 -> StartRequest from StepAP203
+	--          9 -> StartWork from StepAP203
+	--          10 -> Certification from StepBasic
+	--          11 -> Contract from StepBasic
+	--          0 else
+
+    ProductDefinitionFormation (me) returns ProductDefinitionFormation from StepBasic;
+	---Purpose: Returns Value as ProductDefinitionFormation (or Null if another type)
+
+    ProductDefinition (me) returns ProductDefinition from StepBasic;
+	---Purpose: Returns Value as ProductDefinition (or Null if another type)
+
+    ConfigurationEffectivity (me) returns ConfigurationEffectivity from StepRepr;
+	---Purpose: Returns Value as ConfigurationEffectivity (or Null if another type)
+
+    ConfigurationItem (me) returns ConfigurationItem from StepRepr;
+	---Purpose: Returns Value as ConfigurationItem (or Null if another type)
+
+    SecurityClassification (me) returns SecurityClassification from StepBasic;
+	---Purpose: Returns Value as SecurityClassification (or Null if another type)
+
+    ChangeRequest (me) returns ChangeRequest from StepAP203;
+	---Purpose: Returns Value as ChangeRequest (or Null if another type)
+
+    Change (me) returns Change from StepAP203;
+	---Purpose: Returns Value as Change (or Null if another type)
+
+    StartRequest (me) returns StartRequest from StepAP203;
+	---Purpose: Returns Value as StartRequest (or Null if another type)
+
+    StartWork (me) returns StartWork from StepAP203;
+	---Purpose: Returns Value as StartWork (or Null if another type)
+
+    Certification (me) returns Certification from StepBasic;
+	---Purpose: Returns Value as Certification (or Null if another type)
+
+    Contract (me) returns Contract from StepBasic;
+	---Purpose: Returns Value as Contract (or Null if another type)
+
+end ApprovedItem;

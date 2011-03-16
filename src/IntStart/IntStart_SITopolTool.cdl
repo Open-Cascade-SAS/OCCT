@@ -1,0 +1,30 @@
+-- File:	IntStart_SITopolTool.cdl
+-- Created:	Wed Mar 30 15:11:14 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+
+deferred class SITopolTool from IntStart 
+
+	---Purpose: template class for a topological tool.
+	--          This tool is linked with the surface on which
+	--          the classification has to be made.
+
+
+inherits TShared from MMgt
+
+uses State from TopAbs,
+     Pnt2d from gp
+
+
+is
+
+    Classify(me: mutable; P: Pnt2d from gp; Tol: Real from Standard)
+    
+    	returns State from TopAbs
+	is deferred;
+
+
+end SITopolTool;

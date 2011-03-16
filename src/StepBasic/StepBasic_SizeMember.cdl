@@ -1,0 +1,28 @@
+-- File:	StepBasic_SizeMember.cdl
+-- Created:	Fri Mar 28 13:40:18 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class SizeMember  from StepBasic    inherits SelectReal  from StepData
+
+    ---Purpose : For immediate members of SizeSelect, i.e. :
+    --           ParameterValue (a Real)
+
+uses CString
+
+is
+
+    Create returns mutable SizeMember;
+
+    HasName (me) returns Boolean  is redefined;
+    -- returns True
+
+    Name (me) returns CString  is redefined;
+    -- returns POSITIVE_LENGTH_MEASURE
+
+    SetName (me : mutable; name : CString)  returns Boolean  is redefined;
+    -- does nothing (only one case) and returns True
+
+end SizeMember;

@@ -1,0 +1,28 @@
+-- File:	StepShape_PrecisionQualifier.cdl
+-- Created:	Tue Apr 24 14:12:24 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+
+class PrecisionQualifier  from StepShape    inherits TShared
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    Integer
+
+is
+
+    Create returns mutable PrecisionQualifier;
+
+    Init (me : mutable; precision_value : Integer);
+
+    PrecisionValue (me) returns Integer;
+    SetPrecisionValue (me : mutable; precision_value : Integer);
+
+fields
+
+    thePrecisionValue : Integer;
+
+end PrecisionQualifier;

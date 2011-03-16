@@ -1,0 +1,117 @@
+// File:	BRepMesh_FastDiscret.lxx
+// Created:	Fri Sep 26 16:39:53 2003
+// Author:	Open CASCADE Support
+//		<support@opencascade.com>
+// Copyright:	 Open CASCADE 2003
+
+#include <BRepMesh_DataStructureOfDelaun.hxx>
+
+//=======================================================================
+//function : InternalVerticesMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& BRepMesh_FastDiscret::InternalVerticesMode ()
+{
+  return myInternalVerticesMode;
+}
+
+//=======================================================================
+//function : GetDeflection
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRepMesh_FastDiscret::GetDeflection() const
+{
+  return mydeflection;
+}
+
+//=======================================================================
+//function : GetAngle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real BRepMesh_FastDiscret::GetAngle() const
+{
+  return myangle;
+}
+
+//=======================================================================
+//function : GetMapOfDefEdge
+//purpose  : 
+//=======================================================================
+
+inline const TopTools_DataMapOfShapeReal& BRepMesh_FastDiscret::GetMapOfDefEdge() const
+{
+  return mapdefle;
+}
+
+//=======================================================================
+//function : EdgesOfDomain
+//purpose  : 
+//=======================================================================
+
+inline void BRepMesh_FastDiscret::EdgesOfDomain(MeshDS_MapOfInteger&  Indices) const 
+{ 
+  Indices = structure->LinkOfDomain();
+}
+
+//=======================================================================
+//function : TrianglesOfDomain
+//purpose  : 
+//=======================================================================
+
+inline void BRepMesh_FastDiscret::TrianglesOfDomain(MeshDS_MapOfInteger&  Indices) const 
+{ 
+  Indices = structure->ElemOfDomain();
+}
+
+//=======================================================================
+//function : NbPoint3d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer BRepMesh_FastDiscret::NbPoint3d() const
+{
+  return nbLocat;
+}
+
+//=======================================================================
+//function : Point3d
+//purpose  : 
+//=======================================================================
+
+inline const gp_Pnt& BRepMesh_FastDiscret::Point3d(const Standard_Integer Index) const
+{
+  return Location3d(Index);
+}
+
+//=======================================================================
+//function : WithShare
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepMesh_FastDiscret::WithShare() const
+{
+  return myWithShare;
+}
+
+//=======================================================================
+//function : InShape
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepMesh_FastDiscret::InShape() const
+{
+  return myinshape;
+}
+
+//=======================================================================
+//function : ShapeTrigu
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean BRepMesh_FastDiscret::ShapeTrigu() const
+{
+  return myshapetrigu;
+}

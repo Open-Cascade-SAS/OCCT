@@ -1,0 +1,20 @@
+-- File:	StepRepr_StructuralResponseProperty.cdl
+-- Created:	Sun Dec 15 10:59:25 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class StructuralResponseProperty from StepRepr
+inherits PropertyDefinition from StepRepr
+
+    ---Purpose: Representation of STEP entity StructuralResponseProperty
+
+uses
+    HAsciiString from TCollection,
+    CharacterizedDefinition from StepRepr
+
+is
+    Create returns StructuralResponseProperty from StepRepr;
+	---Purpose: Empty constructor
+
+end StructuralResponseProperty;

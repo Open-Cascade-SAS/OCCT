@@ -1,0 +1,62 @@
+-- File:	BOP_HistoryCollector.cdl
+-- Created:	Thu Mar 20 15:38:25 2003
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	Open CASCADE 2003
+
+deferred class HistoryCollector from BOP inherits TShared from MMgt
+uses
+    Shape from TopoDS,
+    Operation from BOP,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    PDSFiller from BOPTools
+
+is
+    Initialize;
+    
+    Initialize(theShape1   : Shape from TopoDS;
+    	       theShape2   : Shape from TopoDS;
+	       theOperation: Operation from BOP);
+
+    Generated (me: mutable; S : Shape from TopoDS)
+    	returns ListOfShape from TopTools
+	is virtual;
+    	---C++:  return const & 
+	
+    SetResult(me: mutable; theResult: Shape from TopoDS;
+    	    	    	   theDSFiller: PDSFiller from BOPTools)
+    	is virtual;
+
+    Modified (me: mutable; S : Shape from TopoDS)
+    	returns ListOfShape from TopTools
+	is virtual;
+	---C++:  return const & 
+
+    IsDeleted (me: mutable; S : Shape from TopoDS)
+    	returns Boolean from Standard
+	is virtual;
+
+    HasGenerated (me)
+    	returns Boolean from Standard
+	is virtual;
+
+    HasModified (me)
+    	returns Boolean from Standard
+	is virtual;
+
+    HasDeleted (me)
+    	returns Boolean from Standard
+	is virtual;
+
+fields
+    myEmptyList: ListOfShape from TopTools is protected;
+    myOp      : Operation from BOP is protected;
+    myGenMap  : DataMapOfShapeListOfShape from TopTools is protected;
+    myModifMap: DataMapOfShapeListOfShape from TopTools is protected;
+    myS1         : Shape from TopoDS is protected;
+    myS2         : Shape from TopoDS is protected;
+    myResult     : Shape from TopoDS is protected;
+    myHasDeleted : Boolean from Standard is protected;
+
+end HistoryCollector from BOP;

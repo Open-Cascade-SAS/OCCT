@@ -1,0 +1,27 @@
+--
+-- File:	Aspect_Pixel.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	MatraDatavision 1993
+--
+
+deferred class Pixel from Aspect inherits Storable
+
+	---Version: 0.0
+
+	---Purpose: This class defines a Pixel.
+	---Keywords:
+	---Warning:
+	---References:
+is
+
+	Initialize;
+	---Level: Public
+
+	Print( me ; s : in out OStream ) is deferred ;
+	---Level: Public
+	---Purpose : Prints the contents of <me> on the stream <s>
+	---C++: alias "friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream&,const Aspect_Pixel& );"
+
+end Pixel from Aspect;

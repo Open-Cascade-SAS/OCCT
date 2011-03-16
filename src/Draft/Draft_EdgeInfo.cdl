@@ -1,0 +1,149 @@
+-- File:	Draft_EdgeInfo.cdl
+-- Created:	Wed Aug 31 15:57:34 1994
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+class EdgeInfo from Draft
+
+	---Purpose: 
+
+uses Curve   from Geom,
+     Curve   from Geom2d,
+     Pnt     from gp,
+     Face    from TopoDS
+
+raises DomainError from Standard
+
+is
+
+
+    Create
+    
+    	returns EdgeInfo from Draft;
+
+
+    Create(HasNewGeometry: Boolean from Standard)
+    
+    	returns EdgeInfo from Draft;
+
+
+    Add(me: in out; F: Face from TopoDS)
+    
+    	is static;
+
+
+    RootFace(me: in out; F: Face from TopoDS)
+    
+    	is static;
+
+
+    Tangent(me: in out; P: Pnt from gp)
+    
+    	is static;
+
+
+    IsTangent(me; P: out Pnt from gp)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    NewGeometry(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+    SetNewGeometry(me: in out; NewGeom : Boolean from Standard)
+    
+	is static;
+
+
+    Geometry(me)
+
+    	returns Curve from Geom
+	is static;
+	---C++: return const&
+
+
+    FirstFace(me)
+    
+    	returns Face from TopoDS
+	is static;
+	 ---C++: return const&
+
+
+    SecondFace(me)
+    
+    	returns Face from TopoDS
+	is static;
+	 ---C++: return const&
+
+    FirstPC(me)
+    
+    	returns Curve from Geom2d
+	is static;
+	 ---C++: return const&
+
+
+    SecondPC(me)
+    
+    	returns Curve from Geom2d
+	is static;
+	 ---C++: return const&
+
+
+    ChangeGeometry(me: in out)
+    
+    	returns Curve from Geom
+	is static;
+	---C++: return &
+
+
+    ChangeFirstPC(me: in out)
+    
+    	returns Curve from Geom2d
+	is static;
+	---C++: return &
+
+
+    ChangeSecondPC(me: in out)
+    
+    	returns Curve from Geom2d
+	is static;
+	---C++: return &
+
+
+    RootFace(me)
+    
+	---C++: return const&
+    	returns Face from TopoDS
+	is static;
+
+    Tolerance(me: in out; tol: Real from Standard)
+	is static;
+
+    Tolerance(me)
+    
+    	returns Real from Standard
+	is static;
+
+fields
+
+    myNewGeom : Boolean from Standard;
+    myGeom    : Curve   from Geom;
+    myFirstF  : Face    from TopoDS;
+    mySeconF  : Face    from TopoDS;
+    myFirstPC : Curve   from Geom2d;
+    mySeconPC : Curve   from Geom2d;
+    myRootFace: Face    from TopoDS;
+    myTgt     : Boolean from Standard;
+    myPt      : Pnt     from gp;
+    myTol     : Real    from Standard;
+
+end EdgeInfo;
+
+
+
+

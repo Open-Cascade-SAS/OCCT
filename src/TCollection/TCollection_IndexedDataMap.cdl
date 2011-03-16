@@ -1,0 +1,208 @@
+-- File:	TCollection_IndexedDataMap.cdl
+-- Created:	Fri Jan  8 17:49:04 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class IndexedDataMap from TCollection 
+    (TheKey    as any;
+     TheItem   as any;
+     Hasher as any) -- as MapHasher(TheKey)
+inherits BasicMap from TCollection
+
+    	---Purpose: An indexed map is used to store keys and to  bind
+	-- an index to them.  Each  new key stored in the map
+	-- gets an index.  Index are  incremented as keys are
+	-- stored in the map. A key can be found by the index
+	-- and an index by the key.  No  key but the last can
+	-- be  removed so the  indices   are in the range 1..
+	-- Extent.  An Item is stored with each key.
+	-- 
+	-- This   class is   similar  to  IndexedMap     from
+	-- TCollection  with the Item as  a new feature. Note
+	-- the important difference on  the operator  ().  In
+	-- the IndexedMap this operator returns  the Key.  In
+	-- the IndexedDataMap this operator returns the Item.
+	-- An IndexedDataMap is an ordered
+    	-- map, which allows a linear iteration on its contents. It
+    	-- combines the behavior of:
+    	-- -   an array because data may be accessed with an index,
+    	-- -   and a map because data may also be accessed with a key.
+    	-- IndexedDataMap is a generic class which depends on three parameters:
+    	-- -   Key is the type of key for an entry in the map,
+    	-- -   Item is the type of element associated with a key in the map,
+    	-- -   Hasher is the type of hasher on keys.
+    	--   Notes:
+    	-- -   IndexedDataMap is similar to
+    	--   TCollection_IndexedMap with the item as a new
+    	--   feature. Note, however, the important difference with operator ():
+    	--   -   for an IndexedMap this operator returns the key, but
+    	--   -   for an IndexedDataMap it returns the item.
+    	-- -   It is recommended not to explore an IndexedDataMap
+    	--   map with an iterator: you just use indexes.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required for a Hasher object.
+  
+raises
+    DomainError  from Standard,
+    OutOfRange   from Standard,
+    NoSuchObject from Standard
+
+    class IndexedDataMapNode from TCollection 
+    inherits MapNode from TCollection
+    uses MapNodePtr from TCollection
+    is
+      Create(K1 : TheKey; K2 : Integer; I : TheItem; n1,n2 : MapNodePtr from TCollection) returns IndexedDataMapNode from TCollection;
+      ---C++: inline
+            Key1(me) returns TheKey;
+      ---C++: return &
+      ---C++: inline
+
+      Key2(me) returns Integer;
+      ---C++: return &
+      ---C++: inline
+
+      Next2(me) returns MapNodePtr from TCollection;
+      ---C++: return &
+      ---C++: inline
+      
+      Value(me) returns TheItem;
+      ---C++: return &
+      ---C++: inline
+
+    fields  
+    	myKey1 : TheKey;
+	myKey2 : Integer from Standard;
+	myValue : TheItem;
+	myNext2 : MapNodePtr from TCollection;
+    end;
+    
+is
+
+    Create(NbBuckets : Integer = 1) returns IndexedDataMap from TCollection;
+	---Purpose: Constructs an IndexedDataMap with NbBuckets
+    	-- (defaulted to 1) buckets.
+    	-- Note that the map will be automatically redimensioned
+    	-- during its use if the number of entries becomes too large.
+    	-- Use:
+    	-- -   the function Add to add an entry (key, item, index) in the map,
+    	-- -   operator() to read an item from an index, or to
+    	--   assign a new value to this item,
+    	-- -   the function FindFromKey or ChangeFromKey to
+    	--   read an item from a key, or to assign a new value to this item,
+    	-- -   the function RemoveLast to remove the last entry from the map,
+    	-- -   and other available edition and querying functions.
+        
+
+    Create(Other : IndexedDataMap from TCollection)
+    returns IndexedDataMap from TCollection
+	---Purpose: As  copying  Map  is an expensive  operation it is
+	-- incorrect  to  do  it implicitly. This constructor
+	-- will raise an  error if the Map  is not  empty. To copy the 
+	-- content of a  Map use the  Assign  method (operator =).
+    raises DomainError from Standard
+    is private;
+    
+    Assign(me : in out; Other : IndexedDataMap from TCollection) 
+    returns IndexedDataMap from TCollection
+	---Purpose: Replace the content of this map by  the content of
+	-- the map <Other>.
+	---C++: alias operator =
+	---C++: return &
+    is static;
+    
+    ReSize(me : in out; NbBuckets : Integer)
+	---Purpose: Changes the  number    of  buckets of  <me>  to be
+	-- <NbBuckets>. The entries (key + item + index) already
+    	-- stored in this map are maintained.
+    is static;
+    
+    Clear(me : in out)
+	---Purpose: Removes all keys in the map.
+	---C++: alias ~
+    is static;
+    
+    Add(me : in out; K : TheKey; I : TheItem) returns Integer
+	---Purpose: Adds  the Key  <K> to the  Map <me>.   Returns the
+	-- index of  the  Key.  The key is new  in the map if
+	-- Extent  has  been  incremented.  The Item  <I>  is
+	-- stored with the key. If the key was already in the
+	-- map the previous item is not replaced by <I>.
+    is static;
+
+    Substitute(me : in out; I : Integer; K : TheKey; T : TheItem)
+	---Purpose: Substitutes the Key at  index <I>  with  <K>.  <I>
+	-- must be a valid index, <K> must  be a new key. <T>
+	-- becomes the Item stored with <K>.
+        -- Trigger: Raises OutOfRange if I < 1 or I > Extent.
+        -- Raises DomainError if Contains(K).
+    raises
+    	OutOfRange  from Standard, 
+	DomainError from Standard   
+    is static;
+    
+    RemoveLast(me : in out)
+	---Purpose: Removes  the last key entered  in the map, i.e the
+	-- key of index Extent().
+    	--        I must be a valid index and K must be a new key.
+    	-- Exceptions
+    	-- -   Standard_OutOfRange if the index I is less than 1 or
+    	--   greater than the number of entries in this map.
+    	-- -   Standard_DomainError if the key K is already in this map.
+    raises
+    	OutOfRange  from Standard  
+    is static;
+
+    Contains(me; K : TheKey) returns Boolean
+	---Purpose: Returns True if the key <K>  is stored  in the map <me>. 
+    is static;
+    
+    FindKey(me; I : Integer) returns any TheKey
+	---Purpose: Returns the Key of index <I>.
+    	--       Exceptions
+    	-- Standard_OutOfRange if I is less than 1 or greater than
+    	-- the number of entries in this map.
+    	---C++: return const &
+    raises OutOfRange from Standard 
+    is static;
+    
+    FindFromIndex(me; I : Integer) returns any TheItem
+	---Level: Public
+	---Purpose: Returns the Item of index <I>.
+        ---Trigger: Raises OutOfRange if I < 1 or I > Extent
+	---C++: alias operator ()
+	---C++: return const &
+    raises OutOfRange from Standard 
+    is static;
+    
+    ChangeFromIndex(me : in out; I : Integer) returns any TheItem
+	---Level: Public
+	---Purpose: Returns  the  Item of index <I>.  The Item  can be
+	-- modified with the syntax aMap(Index) = newItem.
+        ---Trigger: Raises OutOfRange if I < 1 or I > Extent
+	---C++: alias operator ()
+	---C++: return &
+    raises OutOfRange from Standard 
+    is static;
+    
+    FindIndex(me; K : TheKey) returns Integer
+	---Purpose: Returns the index of the key <K>.
+	-- Returns 0 if K is not in the map.
+    is static;
+    
+    FindFromKey(me; K : TheKey) returns any TheItem
+	---Purpose: Returns the Item of the key <K>
+        -- Trigger: Raises NoSuchObject if K is not in the map.
+    raises NoSuchObject from Standard 
+    ---C++: return const &
+    is static;
+    
+    ChangeFromKey(me : in out; K : TheKey) returns any TheItem
+	---Purpose: Returns the Item of the key <K>
+        -- Trigger: Raises NoSuchObject if K is not in the map.
+    raises NoSuchObject from Standard 
+    ---C++: return &
+    is static;
+    
+end IndexedDataMap;

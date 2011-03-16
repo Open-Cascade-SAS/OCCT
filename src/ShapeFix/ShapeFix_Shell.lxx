@@ -1,0 +1,34 @@
+// File:	ShapeFix_Shell.lxx
+// Created:	Tue Aug 10 11:47:36 1999
+// Author:	Galina KULIKOVA
+//		<gka@nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : FixFaceTool
+//purpose  : 
+//=======================================================================
+
+inline  Handle(ShapeFix_Face) ShapeFix_Shell::FixFaceTool() 
+{
+  return myFixFace;
+}
+
+//=======================================================================
+//function : FixFaceMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Shell::FixFaceMode() 
+{
+  return myFixFaceMode;
+}
+
+//=======================================================================
+//function : FixOrientationMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Shell::FixOrientationMode() 
+{
+  return myFixOrientationMode;
+}

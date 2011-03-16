@@ -1,0 +1,76 @@
+-- File:	Cylinder.cdl
+-- Created:	Thu Nov  5 18:37:18 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Cylinder from BRepPrim inherits Revolution from BRepPrim
+
+	---Purpose: Cylinder primitive.
+
+uses
+    Face from TopoDS,
+    
+    Pnt from gp,
+    Ax2 from gp    
+
+raises
+    DomainError
+
+is
+
+    Create(Position : Ax2 from gp; Radius : Real; Height : Real)
+    returns Cylinder from BRepPrim
+	   ---Purpose: the STEP definition
+	   --          Position : center of a Face and Axis
+	   --          Radius : radius of cylinder
+	   --          Height : distance between faces
+	   --                   on positive side
+	   --          
+	   --          Errors : Height < Resolution
+	   --                   Radius < Resolution
+    raises DomainError;
+
+    Create(Radius : Real)
+    returns Cylinder from BRepPrim
+	---Purpose: infinite Cylinder at origin on Z negative
+    raises DomainError;
+    
+    Create(Center : Pnt from gp; Radius : Real)
+    returns Cylinder from BRepPrim
+	---Purpose: infinite Cylinder at Center on Z negative
+    raises DomainError;
+    
+    Create(Axes : Ax2 from gp; Radius : Real)
+    returns Cylinder from BRepPrim
+	---Purpose: infinite Cylinder at Axes on Z negative
+    raises DomainError;
+    
+    Create(R,H : Real)
+    returns Cylinder from BRepPrim
+	---Purpose: create a Cylinder  at origin on Z  axis, of  
+	--          height H and radius R
+	--          Error  : Radius  < Resolution
+	--                   H < Resolution
+	--                   H negative
+    raises DomainError;
+    
+    Create(Center : Pnt from gp; R,H : Real)
+    returns Cylinder from BRepPrim
+	---Purpose: same as above but at a given point
+    raises DomainError;
+    
+    MakeEmptyLateralFace(me) returns Face from TopoDS
+	---Purpose: The surface normal should be directed  towards the
+	--          outside.
+    is redefined;
+    
+    SetMeridian(me : in out)
+    is static private;
+    
+fields
+    myRadius : Real;
+
+end Cylinder;
+

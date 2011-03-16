@@ -1,0 +1,30 @@
+-- File:	ViewerTest_Tool.cdl
+-- Created:	Thu Oct 15 10:20:43 1998
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Tool from ViewerTest
+
+	---Purpose: to build and initialize ViewerTest static variables.
+	--          ====================================================
+
+uses Viewer             from V3d,
+     InteractiveContext from AIS
+
+
+is    
+
+    MakeViewer (myclass; title : CString from Standard) 
+    ---Purpose: create a new <context>. ViewerTest variables are not initialized;
+    returns Viewer from V3d;
+
+    MakeContext (myclass; title : CString from Standard) 
+    ---Purpose: create a new <context>. ViewerTest variables are not initialized;
+    returns InteractiveContext from AIS;
+    
+    InitViewerTest (myclass; current : InteractiveContext from AIS);
+    ---Purpose: init variables of ViewerTest with <current>
+
+end Tool;

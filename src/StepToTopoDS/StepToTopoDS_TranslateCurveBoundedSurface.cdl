@@ -1,0 +1,40 @@
+-- File:	StepToTopoDS_TranslateCurveBoundedSurface.cdl
+-- Created:	Fri Feb 12 13:30:22 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class TranslateCurveBoundedSurface from StepToTopoDS 
+    inherits Root from StepToTopoDS
+    ---Purpose: Translate curve_bounded_surface into TopoDS_Face
+
+uses
+    TransientProcess from Transfer,
+    CurveBoundedSurface from StepGeom,
+    Face                from TopoDS
+
+is
+    Create returns TranslateCurveBoundedSurface;
+        ---Purpose: Create empty tool
+
+    Create (CBS: CurveBoundedSurface from StepGeom;
+    	    TP: TransientProcess from Transfer)
+    	returns TranslateCurveBoundedSurface;
+        ---Purpose: Translate surface
+	
+    Init (me: in out;
+          CBS: CurveBoundedSurface from StepGeom;
+    	  TP: TransientProcess from Transfer)
+    	returns Boolean;
+        ---Purpose: Translate surface
+	
+    Value (me) returns Face from TopoDS;
+        ---Purpose: Returns result of last translation or null wire if failed.
+	---C++: return const &
+
+fields
+
+    myFace: Face from TopoDS;
+
+end TranslateCurveBoundedSurface;

@@ -1,0 +1,123 @@
+-- File:	BRepLib_MakePolygon.cdl
+-- Created:	Thu Jul 29 11:39:48 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakePolygon from BRepLib  inherits MakeShape from BRepLib 
+
+	---Purpose: Class to build polygonal wires.
+	--          
+	--          A polygonal wire may be build from
+	--          
+	--          - 2,4,3 points.
+	--          
+	--          - 2,3,4 vertices.
+	--          
+	--          - any number of points.
+	--          
+	--          - any number of vertices.
+	--          
+	--          
+	--          When a point or vertex is added to the  polygon if
+	--          it is identic  to the previous  point no  edge  is
+	--          built. The method added can be used to test it.
+
+uses
+    Wire   from TopoDS,
+    Edge   from TopoDS,
+    Vertex from TopoDS,
+    Pnt    from gp
+
+raises
+    NotDone           from StdFail
+
+is
+    Create 
+    returns MakePolygon from BRepLib;
+	---Purpose: Creates an empty MakePolygon.
+	---Level: Public
+	
+    Create(P1, P2 : Pnt from gp)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+    Create(P1, P2, P3 : Pnt from gp; 
+           Close : Boolean = Standard_False)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+    Create(P1, P2, P3, P4 : Pnt from gp; 
+           Close : Boolean = Standard_False)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+    Create(V1, V2 : Vertex from TopoDS)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+    Create(V1, V2, V3 : Vertex from TopoDS; 
+    	   Close : Boolean = Standard_False)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+    Create(V1, V2, V3, V4 : Vertex from TopoDS; 
+           Close : Boolean = Standard_False)
+	---Level: Public
+    returns MakePolygon from BRepLib;
+
+
+    Add(me : in out; P : Pnt from gp)
+	---Level: Public
+    is static;
+
+    Add(me : in out; V : Vertex from TopoDS)
+	---Level: Public
+    is static;
+    
+    Added(me) returns Boolean
+	---Purpose: Returns  True if  the last   vertex  or point  was
+	--          succesfully added.
+	---Level: Public
+    is static;
+    
+    Close(me : in out)
+	---Level: Public
+    is static;
+    
+    FirstVertex(me) returns Vertex from TopoDS
+	---C++: return const &
+	---Level: Public
+    is static;
+
+    LastVertex(me) returns Vertex from TopoDS
+	---C++: return const &
+	---Level: Public
+    is static;
+    
+    Edge(me) returns Edge from TopoDS
+	---Purpose: Returns the last edge added to the polygon.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Edge() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+
+    Wire(me) returns Wire from TopoDS
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Wire() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+
+fields
+
+    myFirstVertex : Vertex from TopoDS;
+    myLastVertex  : Vertex from TopoDS;
+    myEdge        : Edge from TopoDS;
+
+end MakePolygon;

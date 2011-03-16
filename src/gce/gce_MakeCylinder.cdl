@@ -1,0 +1,88 @@
+-- File:	MakeCylinder.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCylinder from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Cylinder from gp.
+    --           * Create a Cylinder coaxial to another and passing 
+    --             through a point.
+    --           * Create a Cylinder coaxial to another at a distance
+    --             <Dist>.
+    --           * Create a Cylinder with 3 points.
+    --           * Create a Cylinder by its axis and radius.
+    --           * Create a cylinder by its circular base.
+
+uses Pnt       from gp,
+     Ax1       from gp,
+     Ax2       from gp,
+     Circ      from gp,
+     Cylinder  from gp,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A2     : Ax2  from gp      ;
+    	Radius : Real from Standard)  returns MakeCylinder;
+    --- Purpose :<A2> is the local cartesian coordinate system of <me>.
+    --           The status is "NegativeRadius" if R < 0.0
+
+Create(Cyl   : Cylinder from gp;
+       Point : Pnt      from gp) returns MakeCylinder;
+    ---Purpose : Makes a Cylinder from gp <TheCylinder> coaxial to another 
+    --           Cylinder <Cylinder> and passing through a Pnt <Point>.
+
+Create(Cyl  : Cylinder  from gp      ;
+       Dist : Real      from Standard) returns MakeCylinder;
+    ---Purpose : Makes a Cylinder from gp <TheCylinder> coaxial to another 
+    --           Cylinder <Cylinder> at the distance <Dist> which can 
+    --           be greater or lower than zero.
+    --           The radius of the result is the absolute value of the
+    --           radius of <Cyl> plus <Dist>
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp;
+       P3     :     Pnt from gp) returns MakeCylinder;
+    ---Purpose : Makes a Cylinder from gp <TheCylinder> with 3 points
+    --           <P1>,<P2>,<P3>.
+    --           Its axis is <P1P2> and its radius is the distance 
+    --           between <P3> and <P1P2>
+
+Create(Axis   : Ax1  from gp      ;
+       Radius : Real from Standard) returns MakeCylinder;
+    ---Purpose: Makes a Cylinder by its axis <Axis> and radius <Radius>.
+
+Create(Circ   : Circ from gp) returns MakeCylinder;
+    ---Purpose: Makes a Cylinder by its circular base.
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_NegativeRadius if:
+    --   -   Radius is less than 0.0, or
+    --   -   Dist is negative and has an absolute value
+    --    which is greater than the radius of Cyl; or
+    -- -   gce_ConfusedPoints if points P1 and P2 are coincident.
+        
+Value(me) returns Cylinder from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed cylinder.
+    -- Exceptions StdFail_NotDone if no cylinder is constructed.
+    
+Operator(me) returns Cylinder from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Cylinder() const;"
+
+fields
+
+    TheCylinder : Cylinder from gp;
+    --The solution from gp.
+    
+end MakeCylinder;

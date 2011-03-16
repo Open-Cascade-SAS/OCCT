@@ -1,0 +1,54 @@
+-- File:	GeomLib_Tool.cdl
+-- Created:	Tue Mar 18 11:06:16 2003
+-- Author:	Oleg FEDYAEV
+--		<ofv@merlox>
+---Copyright:	 Open CASCADE 2003
+
+class Tool from GeomLib
+
+---Purpose:   The methods of this class compute the parameter(s) of a given point on a
+-- curve or a surface. The point must be located either
+-- on the curve (surface) itself or relatively to the latter at
+-- a distance less than the tolerance value.
+-- Return FALSE if the point is beyond the tolerance
+-- limit or if computation fails.
+-- Max Tolerance value is currently limited to 1.e-4 for
+-- geometrical curves and 1.e-3 for BSpline, Bezier and
+-- other parametrical curves.
+        
+uses Surface from Geom,
+     Curve   from Geom,
+     Curve   from Geom2d,
+     Pnt     from gp,
+     Pnt2d   from gp,
+     Real    from Standard,
+     Boolean from Standard
+is
+
+    Parameter(myclass; Curve     : in Curve from Geom;
+    	    	       Point     : in Pnt   from gp;
+		       Tolerance : in Real  from Standard;
+		       U         : out Real from Standard)
+     returns Boolean from Standard;
+     ---Purpose: 
+-- Extracts the parameter of a 3D point lying on a 3D curve
+-- or at a distance less than the tolerance value.
+     
+    Parameters(myclass; Surface   : in Surface from Geom;
+    	    	        Point     : in Pnt     from gp;
+    	    	        Tolerance : in Real    from Standard;
+     	    	        U         : out Real   from Standard;
+    	    	    	V         : out Real   from Standard)
+     returns Boolean from Standard;
+     ---Purpose: Extracts the parameter of a 3D point lying on a surface
+-- or at a distance less than the tolerance value. 
+     
+    Parameter(myclass; Curve     : in Curve from Geom2d;
+    	    	       Point     : in Pnt2d from gp;
+    	    	       Tolerance : in Real  from Standard;
+     	    	       U         : out Real from Standard)
+     returns Boolean from Standard;
+     ---Purpose: Extracts the parameter of a 2D point lying on a 2D curve
+-- or at a distance less than the tolerance value. 
+
+end Tool;

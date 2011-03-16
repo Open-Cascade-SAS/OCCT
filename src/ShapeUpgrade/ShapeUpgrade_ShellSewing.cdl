@@ -1,0 +1,47 @@
+-- File:	ShapeUpgrade_ShellSewing.cdl
+-- Created:	Wed Jun  3 12:39:36 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ShellSewing from ShapeUpgrade 
+
+    ---Purpose: This class provides a tool for applying sewing algorithm from
+    --          BRepAlgo: it takes a shape, calls sewing for each shell, 
+    --          and then replaces sewed shells with use of ShapeBuild_ReShape
+
+uses 
+    Shape from TopoDS,
+    IndexedMapOfShape from TopTools,
+    ReShape from ShapeBuild
+
+is
+
+    Create returns ShellSewing;
+    ---Purpose: Creates a ShellSewing, empty
+
+    ApplySewing (me: in out; shape: Shape from TopoDS; tol: Real = 0.0)
+    	returns Shape from TopoDS;
+    ---Purpose: Builds a new shape from a former one, by calling Sewing from
+    --          BRepOffsetAPI. Rebuilt solids are oriented to be "not infinite"
+    --           
+    --          If <tol> is not given (i.e. value 0. by default), it is
+    --          computed as the mean tolerance recorded in <shape>
+    --           
+    --          If no shell has been sewed, this method returns the input
+    --          shape
+
+    Init (me: in out; shape: Shape from TopoDS) is private;
+
+    Prepare (me: in out; tol: Real) returns Integer is private;
+    
+    Apply (me: in out; shape: Shape from TopoDS; tol: Real) 
+    returns Shape from TopoDS is private;
+    
+fields
+
+    myShells: IndexedMapOfShape from TopTools;
+    myReShape: ReShape from ShapeBuild;
+
+end ShellSewing;

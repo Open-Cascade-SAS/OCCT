@@ -1,0 +1,24 @@
+-- File:	IGESControl_ToolContainer.cdl
+-- Created:	Tue Feb  8 09:25:35 2000
+-- Author:	data exchange team
+--		<det@kinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class ToolContainer from IGESControl inherits ToolContainer from IGESToBRep
+
+    ---Purpose: 
+
+uses
+
+    IGESBoundary from IGESToBRep
+    
+is
+
+    Create returns mutable ToolContainer from IGESControl;
+    	---Purpose: Empty constructor
+	
+    IGESBoundary (me) returns IGESBoundary from IGESToBRep is redefined;
+    	---Purpose: Returns IGESControl_IGESBoundary
+
+end ToolContainer;

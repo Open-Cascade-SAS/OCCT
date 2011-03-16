@@ -1,0 +1,327 @@
+-- File:	XSControl_Controller.cdl
+-- Created:	Mon Mar 13 15:37:52 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+deferred class Controller  from XSControl  inherits TShared
+
+    ---Purpose : This class allows a general X-STEP engine to run generic
+    --           functions on any interface norm, in the same way. It includes
+    --           the transfer operations. I.e. it gathers the already available
+    --           general modules, the engine has just to know it
+    --           
+    --           The important point is that a given X-STEP Controller is
+    --           attached to a given couple made of an Interface Norm (such as
+    --           IGES-5.1) and an application data model (CasCade Shapes for
+    --           instance).
+    --           
+    --           A Controller brings a Profile, this allows to have several
+    --           variants on the same basic definition, for instance keep the
+    --           norm definition but give several transfer actors, etc
+    --           
+    --           Finally, Controller can be gathered in a general dictionary then
+    --           retreived later by a general call (method Recorded)
+    --           
+    --           It does not manage the produced data, but the Actors make the
+    --           link between the norm and the application
+
+uses CString,  AsciiString, SequenceOfTransient, SequenceOfInteger,
+     DictionaryOfTransient, DictionaryOfInteger,
+     HArray1OfHAsciiString   from Interface,
+     HSequenceOfHAsciiString from TColStd,
+     Protocol         from Interface,
+     Signature        from IFSelect,
+     InterfaceModel   from Interface,
+     CheckIterator    from Interface,
+     ActorOfTransientProcess from Transfer,
+     ActorOfFinderProcess    from Transfer,
+     FinderProcess    from Transfer,
+     Shape            from TopoDS,
+     WorkLibrary      from IFSelect,
+     Profile          from IFSelect,
+     WorkSession      from XSControl,
+     ReturnStatus     from IFSelect
+
+raises DomainError
+
+is
+
+    Initialize (longname, shortname : CString);
+    ---Purpose : Initializing with names
+    --           <longname>  is for the complete, official, long  name
+    --           <shortname> is for the short name used for resources
+
+    SetNames   (me : mutable; longname, shortname : CString);
+    ---Purpose : Changes names
+    --           if a name is empty, the formerly set one remains
+    --           Remark : Does not call Record or AutoRecord
+
+    AutoRecord (me)  raises DomainError;
+    ---Purpose : Records <me> is a general dictionary under Short and Long
+    --           Names (see method Name)
+
+    Record   (me; name : CString)  raises DomainError;
+    ---Purpose : Records <me> in a general dictionary under a name
+    --           Error if <name> already used for another one
+
+    Recorded (myclass; name : CString) returns mutable Controller;
+    ---Purpose : Returns the Controller attached to a given name
+    --           Returns a Null Handle if <name> is unknown
+
+    ListRecorded (myclass; mode : Integer = 0) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the list of names of recorded norms, according to mode
+    --           = 0 (D) : all the recorded names
+    --           < 0 : for each distinct norm, its resource (short) name
+    --           > 0 : for each distinct norm, its complete (long)  name
+
+    Name          (me; rsc : Boolean = Standard_False) returns CString;
+    ---Purpose : Returns a name, as given when initializing :
+    --           rsc = False (D) : True Name attached to the Norm (long name)
+    --           rsc = True : Name of the ressource set (i.e. short name)
+
+    Profile       (me) returns Profile from IFSelect;
+    ---Purpose : Returns the Profile
+    --           It starts with a first configuration Base (empty) and the
+    --           following options :
+    --           protocol    for the Protocol
+    --           sign-type   for the SignType (Default Signature for Type)
+    --           access      for the WorkLibrary
+    --           tr-read  for ActorRead  (import processor)
+    --           tr-write for ActorWrite (export processor)
+
+    DefineProfile (me : mutable; confname : CString);
+    ---Purpose : Considers the current state of the Controller as defining a
+    --           configuration, newly created or already existing
+
+    SetProfile (me : mutable; confname : CString) returns Boolean;
+    ---Purpose : Sets the Controller in a given Configuration of its Profile
+    --           Calls SettingProfile (which can be redefined)
+    --           
+    --           Returns True if done, False if <confname> unknown
+
+    SettingProfile (me : mutable; confname : CString)
+    	returns Boolean  is virtual;
+    ---Purpose : This method is called by SetProfile, it can be redefined
+    --           for specific sub-class of Controller
+    --           The default does nothing
+
+    ApplyProfile (me : mutable; WS : WorkSession from XSControl; confname : CString)
+    	returns Boolean;
+    ---Purpose : Applies a Configuration of the Profile to the WorkSession
+    --           I.E. calls SetProfile then fills WorkSession with definitions
+
+    ApplyingProfile (me : mutable; WS : WorkSession from XSControl; confname : CString)
+    	returns Boolean  is virtual;
+    ---Purpose : Called by ApplyProfile, can be redefined for specific
+    --           sub-class of Controller
+    --           The default does nothing
+
+
+    Protocol      (me) returns Protocol from Interface;
+    ---Purpose : Returns the Protocol attached to the Norm (from field)
+
+    SignType      (me) returns Signature from IFSelect;
+    ---Purpose : Returns the SignType attached to the norm (from field)
+
+    WorkLibrary   (me) returns WorkLibrary from IFSelect;
+    ---Purpose : Returns the WorkLibrary attached to the Norm. Remark that it
+    --           has to be in phase with the Protocol  (read from field)
+
+    NewModel      (me) returns mutable InterfaceModel from Interface  is deferred;
+    ---Purpose : Creates a new empty Model ready to receive data of the Norm
+    --           Used to write data from Imagine to an interface file
+
+    ActorRead     (me; model : InterfaceModel)
+                 returns mutable ActorOfTransientProcess from Transfer  is deferred;
+    ---Purpose : Returns the Actor for Read attached to the pair (norm,appli)
+    --           It can be adapted for data of the input Model, as required
+    --           Can be read from field then adapted with Model as required
+
+    ActorWrite    (me) returns mutable ActorOfFinderProcess from Transfer
+    	is virtual;
+    ---Purpose : Returns the Actor for Write attached to the pair (norm,appli)
+    --           Read from field. Can be redefined
+
+    UpdateStatics (me; mode : Integer; criter : CString = "")  is virtual;
+    ---Purpose : Updates static values
+    --           <mode> precises the kind of updating : (see Items from Static)
+    --           -1 : a precise static item : criter = its name
+    --           0  : all items of a family : criter = the family name
+    --           1  : all items which match regexp name : criter = regexp name
+    --           By default (criter empty) should consider all relevant statics
+    --           If <name> is defined, can consider only this static item
+    --           The provided default method does nothing, to be redefined
+
+
+    	--  Writing Actions (can be redefined from ActorWrite using)
+    	--  These actions are ran under control of a TransferWriter
+
+    SetModeWrite (me : mutable; modemin, modemax : Integer; shape : Boolean = Standard_True);
+    ---Purpose : Sets mininum and maximum values for modetrans (write)
+    --           Erases formerly recorded bounds and values
+    --           Actually only for shape
+    --           Then, for each value a little help can be attached
+
+    SetModeWriteHelp (me : mutable; modetrans : Integer; help : CString;
+    	    	      shape : Boolean = Standard_True);
+    ---Purpose : Attaches a short line of help to a value of modetrans (write)
+
+    ModeWriteBounds (me; modemin, modemax : out Integer;
+    	    	     shape : Boolean = Standard_True)    returns Boolean;
+    ---Purpose : Returns recorded min and max values for modetrans (write)
+    --           Actually only for shapes
+    --           Returns True if bounds are set, False else (then, free value)
+
+    IsModeWrite (me; modetrans : Integer; shape : Boolean = Standard_True)
+    	returns Boolean;
+    ---Purpose : Tells if a value of <modetrans> is a good value(within bounds)
+    --           Actually only for shapes
+
+    ModeWriteHelp (me; modetrans : Integer; shape : Boolean = Standard_True)
+    	returns CString;
+    ---Purpose : Returns the help line recorded for a value of modetrans
+    --           empty if help not defined or not within bounds or if values are free
+
+
+    RecognizeWriteTransient (me; obj : Transient; modetrans : Integer = 0)
+    	returns Boolean  is virtual;
+    ---Purpose : Tells if <obj> (an application object) is a valid candidate
+    --           for a transfer to a Model.
+    --           By default, asks the ActorWrite if known (through a
+    --           TransientMapper). Can be redefined
+
+    TransferWriteTransient (me; obj : Transient;
+                        FP        : mutable FinderProcess  from Transfer;
+                        model     : mutable InterfaceModel from Interface;
+                        modetrans : Integer = 0)
+    	returns ReturnStatus  is virtual;
+    ---Purpose : Takes one Transient Object and transfers it to an
+    --             InterfaceModel (already created, e.g. by NewModel)
+    --           (result is recorded in the model by AddWithRefs)
+    --           FP records produced results and checks
+    --           
+    --           Default uses ActorWrite; can be redefined as necessary
+    --           Returned value is a status, as follows :
+    --             0  OK ,  1 No Result ,  2 Fail (e.g. exception raised)
+    --             -1 bad conditions ,  -2 bad model or null model
+    --           For type of object not recognized : should return 1
+
+    RecognizeWriteShape (me; shape : Shape from TopoDS; modetrans: Integer = 0)
+    	returns Boolean  is virtual;
+    ---Purpose : Tells if a shape is valid for a transfer to a model
+    --           Asks the ActorWrite (through a ShapeMapper)
+
+    TransferWriteShape (me; shape : Shape from TopoDS;
+                        FP        : mutable FinderProcess  from Transfer;
+                        model     : mutable InterfaceModel from Interface;
+                        modetrans : Integer = 0)
+    	returns ReturnStatus  is virtual;
+    ---Purpose : Takes one Shape and transfers it to an
+    --             InterfaceModel (already created, e.g. by NewModel)
+    --           Default uses ActorWrite; can be redefined as necessary
+    --           Returned value is a status, as follows :
+    --             Done  OK ,  Void : No Result ,  Fail : Fail (e.g. exception)
+    --             Error : bad conditions , bad model or null model
+    	--  Resolution of file clusters
+    	--  According to each norm, there can (or not) be files of which
+    	--  definition is not complete but refers to other files : this defines
+    	--  a file cluster.
+    	--  It can then be resolved by two calls :
+    	--  - ClusterContext prepares the resolution, specific of each case
+    	--  - ResolveCluster performs the resolution, its result consists in
+    	--    having all data gathered in one final model
+
+    ClusterContext (me; WS : WorkSession) returns mutable Transient is virtual;
+    ---Purpose : Prepares and returns a context to resolve a cluster
+    --           All data to be used are detained by the WorkSession
+    --           The definition of this context is free and proper to each case
+    --           remark that it is aimed to be used in ResolveCluster
+    --           
+    --           The context must be prepared, but resolution must not have
+    --           began
+    --           
+    --           If no cluster has to be resolved, should return a null handle
+    --           This is the default case, which can be redefined
+
+    ResolveCluster (me; WS : mutable WorkSession; context : mutable Transient)
+    	returns CheckIterator  is virtual;
+    ---Purpose : Performs the resolution itself, from the starting data and
+    --           the cluster context
+    --           
+    --           Can fill a CheckList as necessary (especially when one or
+    --           more references remain unresolved)
+    --           
+    --           Default does nothing and returns an empty CheckList
+
+    	--  Additional Items as required (free list), each item is named
+
+    AddControlItem (me : mutable; item : any Transient; name : CString);
+    ---Purpose : Adds an item in the control list
+    --           A control item of a controller is accessed by its name which
+    --           is specific of a kind of item (i.e. a kind of functionnality)
+    --           Adds or replaces if <name> is already recorded
+
+    ControlItem (me; name : CString) returns any Transient;
+    ---Purpose : Returns a control item from its name, Null if <name> unknown
+    --           To be used then, it just remains to be down-casted
+
+    	--  To Help Session Customising  --
+
+    TraceStatic    (me : mutable; name : CString; use : Integer);
+    ---Purpose : Records the name of a Static to be traced for a given use
+
+    AddSessionItem (me : mutable; item : Transient; name : CString;
+    	    	    setapplied : CString = "");
+    ---Purpose : Records a Session Item, to be added for customisation of the
+    --           Work Session. It must have a specific name.
+    --           <setapplied> is used if <item> is a GeneralModifier, to decide
+    --           to which hook list it will be applied, if not empty (else,
+    --           not applied to any hook list)
+    --           ACTUAL : only one hook list is managed : "send"
+    --           Remark : this method is to be called at Create time, the
+    --           recorded items will be used by Customise
+    --  Warning : if <name> conflicts, the last recorded item is kept
+
+    SessionItem (me; name : CString) returns Transient;
+    ---Purpose : Returns an item given its name to record in a Session
+    --           If <name> is unknown, returns a Null Handle
+
+    IsApplied (me; item : Transient) returns Boolean;
+    ---Purpose : Returns True if <item> is recorded as <setapplied = True>
+
+    Customise (me: mutable; WS : in out WorkSession) is virtual;
+    ---Purpose : Customises a WorkSession, by adding to it the recorded items
+    --           (by AddSessionItem), then by calling a specific method
+    --           Customising, set by default to do nothing
+
+    Customising (me : mutable; WS : in out WorkSession);    -- is virtual
+    ---Purpose : Specific customisation method, which can be redefined
+    --           Default does nothing
+    AdaptorSession(me) returns DictionaryOfTransient;
+    
+fields
+
+    theProfile  : Profile;
+
+    theShortName       : AsciiString  is protected;
+    theLongName        : AsciiString  is protected;
+
+    theAdaptorLibrary  : WorkLibrary  is protected;
+    theAdaptorProtocol : Protocol     is protected;
+    theSignType        : Signature    is protected;
+    theAdaptorRead     : ActorOfTransientProcess  is protected;
+    theAdaptorWrite    : ActorOfFinderProcess     is protected;
+
+    theItems : DictionaryOfTransient;
+
+    theAdaptorSession  : DictionaryOfTransient    is protected;
+    theAdaptorApplied  : SequenceOfTransient;
+    theAdaptorHooks    : HSequenceOfHAsciiString from TColStd;
+    theParams          : SequenceOfTransient from TColStd;
+    theParamUses       : SequenceOfInteger   from TColStd;
+
+    theModeWriteShapeN : HArray1OfHAsciiString   from Interface;
+
+end Controller;

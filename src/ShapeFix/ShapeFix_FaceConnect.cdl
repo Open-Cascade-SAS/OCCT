@@ -1,0 +1,43 @@
+-- File:	ShapeFix_FaceConnect.cdl
+-- Created:	Fri Jun 18 11:27:03 1999
+-- Author:	Sergei ZERTCHANINOV
+--		<szv@nnov>
+---Copyright:	 Matra Datavision 1999
+
+
+class FaceConnect  from ShapeFix
+
+    ---Purpose : 
+
+uses 
+    DataMapOfShapeListOfShape from TopTools,
+    Face from TopoDS, Shell from TopoDS
+
+is
+
+    Create returns FaceConnect from ShapeFix;
+
+    Add (me : in out; aFirst : Face from TopoDS; aSecond : Face from TopoDS)
+    returns Boolean from Standard;
+    ---Purpose : 
+
+    Build (me : in out; shell : Shell from TopoDS;
+    	   sewtoler : Real from Standard; fixtoler : Real from Standard)
+    returns Shell from TopoDS;
+    ---Purpose : 
+
+    Clear (me : in out);
+    ---Purpose : Clears internal data structure
+
+fields
+
+    myConnected    : DataMapOfShapeListOfShape from TopTools;
+    	-- Map of pairs (face, list of connected faces) - to store connectivity info
+    myOriFreeEdges : DataMapOfShapeListOfShape from TopTools;
+    	-- Map of pairs (face, list of original free edges)
+    myResFreeEdges : DataMapOfShapeListOfShape from TopTools;
+    	-- Map of pairs (free edge, list of result free edges)
+    myResSharEdges : DataMapOfShapeListOfShape from TopTools;
+    	-- Map of pairs (free edge, list of result shared edges)
+
+end FaceConnect;

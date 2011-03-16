@@ -1,0 +1,32 @@
+-- File:	NLPlate.cdl
+-- Created:	Wed Apr  8 18:27:28 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+package NLPlate
+
+uses
+     Plate, Geom, TCollection, TColStd,
+     math, gp, TColgp,  GeomAbs
+is
+
+    class NLPlate;
+-- Constraints Class
+    deferred  class HGPPConstraint; 
+    class  HPG0Constraint; 
+    class  HPG0G1Constraint;
+    class  HPG0G2Constraint;
+    class  HPG0G3Constraint;
+    class  HPG1Constraint;
+    class  HPG2Constraint;
+    class  HPG3Constraint;
+--  
+
+-- utilities and internal Classes
+    class StackOfPlate instantiates Stack from TCollection  
+                                       (Plate from Plate);   
+    class SequenceOfHGPPConstraint instantiates Sequence from TCollection  
+                                       (HGPPConstraint);   
+end NLPlate;

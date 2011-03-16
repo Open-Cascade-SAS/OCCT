@@ -1,0 +1,29 @@
+-- File:	IGESSelect_SelectVisibleStatus.cdl
+-- Created:	Tue May 31 17:48:31 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectVisibleStatus  from IGESSelect  inherits SelectExtract
+
+    ---Purpose : This selection looks at Blank Status of IGES Entities
+    --           Direct  selection keeps Visible Entities (Blank = 0),
+    --           Reverse selection keeps Blanked Entities (Blank = 1)
+
+
+uses AsciiString from TCollection, Transient, InterfaceModel
+
+is
+
+    Create returns mutable SelectVisibleStatus;
+    ---Purpose : Creates a SelectVisibleStatus
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True if <ent> is an IGES Entity with Blank Status = 0
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Selection criterium : "IGES Entity, Status Visible"
+
+end SelectVisibleStatus;

@@ -1,0 +1,78 @@
+-- File:	PCDM_ReadWriter.cdl
+-- Created:	Tue Dec  9 08:28:48 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private deferred class ReadWriter from PCDM inherits Transient from Standard
+
+uses
+    ExtendedString from TCollection,  
+    AsciiString from TCollection, 
+    Data from Storage, 
+    Document from CDM, 
+    MessageDriver from CDM,
+    SequenceOfExtendedString from TColStd,  
+    BaseDriver from Storage,  
+    OpenMode from Storage, 
+    SequenceOfReference from PCDM
+
+is
+
+    
+    Version(me) returns AsciiString from TCollection
+    is deferred;
+    ---Purpose: returns PCDM_ReadWriter_1.
+    
+    WriteReferenceCounter(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    is deferred;
+    
+    WriteReferences(me; aData: mutable Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection)
+    is deferred;
+
+    
+    WriteExtensions(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    is deferred;
+
+    
+    WriteVersion(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    is deferred;
+
+    
+    ReadReferenceCounter(me; theFileName: ExtendedString from TCollection;   
+			     theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard
+    is deferred;
+
+    ReadReferences(me; aFileName: ExtendedString from TCollection; theReferences: in out  SequenceOfReference from PCDM; theMsgDriver: MessageDriver from CDM)
+    is deferred;
+
+    ReadExtensions(me; aFileName: ExtendedString from TCollection; theExtensions: in out  SequenceOfExtendedString from TColStd; theMsgDriver: MessageDriver from CDM)
+    is deferred;
+    
+    ReadDocumentVersion(me; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)
+    returns Integer from Standard
+    is deferred;
+
+---Category: commom methods
+
+
+    Open(myclass; aDriver: in out BaseDriver from Storage; aFileName: ExtendedString from TCollection; anOpenMode: OpenMode from  Storage);
+    
+    Reader(myclass; aFileName: ExtendedString from TCollection)
+    returns ReadWriter from PCDM;
+    ---Purpose: returns the convenient Reader for a File.
+    --          
+    
+    Writer(myclass)
+    returns ReadWriter from PCDM;
+    
+
+    WriteFileFormat(myclass; aData: mutable Data from Storage; aDocument: Document from CDM);
+    
+    FileFormat(myclass; aFileName: ExtendedString from TCollection)
+    returns ExtendedString from TCollection;
+    ---Purpose: tries  to get a format  in the  file.  returns an empty
+    --          string if the file could not be read or does not have 
+    --          a FileFormat information.
+end ReadWriter from PCDM;

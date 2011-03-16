@@ -1,0 +1,53 @@
+--
+-- File:	ImageUtility_XWD.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+class XWD from ImageUtility
+
+	---Version: 0.0
+
+	---Purpose: Performs a "xwd" and creates a XAlienImage and an Image
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	XAlienImage	from AlienImage,
+	File		from OSD,
+	Image 		from Image
+
+raises
+	TypeMismatch 	from Standard
+
+is
+	Create returns XWD from ImageUtility ;
+	---Level: Internal
+	---Purpose: Create a XWD object .
+
+	XWD( me : in out ; xwdOptions : CString from Standard = "" )
+		returns Boolean from Standard
+		is static;
+	---Level: Internal
+	---Purpose: execute a Spawn "xwd xwudOptions -out aTmpFile" .
+
+	XAlienImage( me )
+		returns XAlienImage from AlienImage
+		is static;
+	---Level: Internal
+	---Purpose: returns the XAlienImage created from "xwd".
+
+	Image( me )
+		returns Image from Image
+		is static;
+	---Level: Internal
+	---Purpose: returns the Image created from "xwd".
+
+fields
+	myXAlienImage : XAlienImage from AlienImage;
+	myImage : Image		from Image;
+end ;

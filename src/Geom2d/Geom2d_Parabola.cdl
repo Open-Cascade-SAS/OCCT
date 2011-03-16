@@ -1,0 +1,225 @@
+-- File:	Geom2d_Parabola.cdl
+-- Created:	Wed Mar 24 18:22:05 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991, 1992
+
+
+class Parabola from Geom2d inherits Conic from Geom2d
+
+
+        --- Purpose : Describes a parabola in the plane (2D space).
+    	-- A parabola is defined by its focal length (i.e. the
+    	-- distance between its focus and its apex) and is
+    	-- positioned in the plane with a coordinate system
+    	-- (gp_Ax22d object) where:
+    	-- - the origin is the apex of the parabola, and
+    	-- - the "X Axis" defines the axis of symmetry; the
+    	--   parabola is on the positive side of this axis.
+    	-- This coordinate system is the local coordinate
+    	-- system of the parabola.
+    	-- The orientation (direct or indirect) of the local
+    	-- coordinate system gives an explicit orientation to the
+    	-- parabola, determining the direction in which the
+    	-- parameter increases along the parabola.
+    	-- The Geom_Parabola parabola is parameterized as follows:
+    	-- P(U) = O + U*U/(4.*F)*XDir + U*YDir, where:
+    	-- - P is the point of parameter U,
+    	-- - O, XDir and YDir are respectively the origin, "X
+    	--   Direction" and "Y Direction" of its local coordinate system,
+    	-- - F is the focal length of the parabola.
+    	-- The parameter of the parabola is therefore its Y
+    	-- coordinate in the local coordinate system, with the "X
+    	-- Axis" of the local coordinate system defining the
+    	-- origin of the parameter.
+    	-- The parameter range is ] -infinite,+infinite [.
+
+uses  Ax2d     from gp,
+      Ax22d    from gp,
+      Parab2d  from gp,
+      Pnt2d    from gp,
+      Trsf2d   from gp,
+      Vec2d    from gp,
+      Geometry from Geom2d
+
+raises ConstructionError from Standard,
+       RangeError        from Standard
+
+
+is
+
+
+
+
+  Create (Prb : Parab2d)   returns mutable Parabola;
+        --- Purpose : Creates a parabola from a non persistent one.
+
+
+  Create (MirrorAxis : Ax2d; Focal : Real;
+          Sense: Boolean from Standard = Standard_True)   
+  returns mutable Parabola
+	--- Purpose :
+	--  Creates a parabola with its "MirrorAxis" and it's focal 
+	--  length "Focal".
+	--  MirrorAxis is the axis of symmetry of the curve, it is the
+	--  "XAxis". The "YAxis" is parallel to the directrix of the
+	--  parabola and is in the direct sense if Sense is True. 
+	--  The "Location" point of "MirrorAxis" is the vertex of the parabola
+     raises ConstructionError;
+	--- Purpose : Raised if Focal < 0.0
+
+  Create (Axis : Ax22d; Focal : Real)   returns mutable Parabola
+	--- Purpose :
+	--  Creates a parabola with its Axis and it's focal 
+	--  length "Focal".
+	--  The XDirection of Axis is the axis of symmetry of the curve, 
+	--  it is the "XAxis". The "YAxis" is parallel to the directrix of the
+	--  parabola. The "Location" point of "Axis" is the vertex
+	--  of the parabola.
+     raises ConstructionError;
+	--- Purpose : Raised if Focal < 0.0
+
+
+  Create (D : Ax2d; F : Pnt2d)  returns mutable Parabola;
+        --- Purpose :
+        --  D is the directrix of the parabola and F the focus point.
+        --  The symmetry axis "XAxis" of the parabola is normal to the
+        --  directrix and pass through the focus point F, but its
+        --  "Location" point is the vertex of the parabola.
+        --  The "YAxis" of the parabola is parallel to D and its "Location"
+        --  point is the vertex of the parabola.
+
+
+  SetFocal (me : mutable; Focal : Real)
+        --- Purpose : Assigns the value Focal to the focal length of this parabola.
+    	-- Exceptions Standard_ConstructionError if Focal is negative.
+     raises ConstructionError;
+
+
+  SetParab2d (me : mutable; Prb : Parab2d);
+        --- Purpose: Converts the gp_Parab2d parabola Prb into this parabola.
+  
+  Parab2d (me)  returns Parab2d;
+        --- Purpose :
+        --  Returns the non persistent parabola from gp with the same 
+        --  geometric properties as <me>.
+
+
+  ReversedParameter(me; U : Real) returns Real is redefined static;
+  	---Purpose: Computes the parameter on the reversed parabola
+    	-- for the point of parameter U on this parabola.
+    	-- For a parabola, the returned value is -U.
+
+
+  FirstParameter (me)  returns Real is redefined static;
+        --- Purpose : Returns RealFirst from Standard.
+
+
+  LastParameter (me)   returns Real is redefined static;
+        --- Purpose : Returns  RealLast from Standard.
+
+
+  IsClosed (me)    returns Boolean is redefined static;
+        --- Purpose : Returns False
+
+
+  IsPeriodic (me)   returns Boolean is redefined static;
+        --- Purpose : Returns False
+
+
+  Directrix (me)   returns Ax2d;
+	--- Purpose : The directrix is parallel to the "YAxis" of the parabola.
+        --  The "Location" point of the directrix is the intersection
+        --  point between the directrix and the symmetry axis ("XAxis") of the parabola.
+
+
+  Eccentricity (me)    returns Real is redefined static;
+        --- Purpose : Returns the eccentricity e = 1.0
+
+
+  Focus (me)   returns Pnt2d;
+    	---Purpose: Computes the focus of this parabola The focus is on the
+    	-- positive side of the "X Axis" of the local coordinate system of the parabola.
+
+  Focal (me)  returns Real;
+	--- Purpose :  Computes the focal length of this parabola. 
+    	-- The focal length is the distance between the apex and the focus of the parabola.
+	
+
+
+  Parameter (me)   returns Real;
+    	--- Purpose : Computes the parameter of this parabola, which is
+    	-- the distance between its focus and its directrix. This
+    	-- distance is twice the focal length.
+    	-- If P is the parameter of the parabola, the equation of
+    	-- the parabola in its local coordinate system is: Y**2 = 2.*P*X.
+	
+
+  D0(me; U : Real; P : out Pnt2d) is redefined static;
+	---Purpose: Returns in P the point of parameter U.
+        --  If U = 0 the returned point is the origin of the XAxis and 
+        --  the YAxis of the parabola and it is the vertex of the parabola.
+        --  P = S + F * (U * U * XDir +  * U * YDir)
+        --  where S is the vertex of the parabola, XDir the XDirection and
+        --  YDir the YDirection of the parabola's local coordinate system.
+
+
+  D1 (me; U : Real; P : out Pnt2d; V1 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U and the first derivative V1.
+
+
+  D2 (me; U : Real; P : out Pnt2d; V1, V2 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+
+
+  D3 (me; U : Real; P : out Pnt2d; V1, V2, V3 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U, the first second and third
+        --  derivatives V1 V2 and V3.
+        
+
+  DN (me; U : Real; N : Integer)   returns Vec2d
+        --- Purpose : For the point of parameter U of this parabola,
+    	-- computes the vector corresponding to the Nth derivative.
+    	-- Exceptions Standard_RangeError if N is less than 1.
+           raises RangeError
+     is redefined static;
+
+  Transform (me : mutable; T : Trsf2d) is redefined static;
+    	---Purpose: Applies the transformation T to this parabola.
+    
+  TransformedParameter(me; U : Real; T : Trsf2d from gp) returns Real
+	---Purpose: Computes the parameter on the transformed
+    	-- parabola, for the point of parameter U on this parabola.
+    	-- For a parabola, the returned value is equal to U
+    	-- multiplied by the scale factor of transformation T.
+     is redefined static;  
+
+  ParametricTransformation(me; T : Trsf2d from gp) returns Real
+	---Purpose: Returns a  coefficient to compute the parameter on
+	--          the transformed  curve  for  the transform  of the
+	--          point on <me>.
+	--          
+	--          Transformed(T)->Value(U * ParametricTransformation(T))
+	--          
+	--          is the same point as
+	--          
+	--          Value(U).Transformed(T)
+	--          
+	--          This methods returns T.ScaleFactor()
+     is redefined static;  
+
+
+  Copy (me)  returns mutable like me
+  is redefined static;
+    	---Purpose: Creates a new object, which is a copy of this parabola.     
+fields
+
+  focalLength : Real;
+
+end;

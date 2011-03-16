@@ -1,0 +1,71 @@
+-- File:	BRepAlgo_EdgeConnector.cdl
+-- Created:	Fri Aug 22 11:45:19 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class EdgeConnector from BRepAlgo inherits TShared from MMgt
+
+    ---Purpose: Used by DSAccess to reconstruct an EdgeSet of connected edges. The result produced by
+    --           MakeBlock is a list of non-standard TopoDS_wire,
+    --          which  can present connexions of edge  of  order > 2 
+    --           in certain  vertex. The method  IsWire
+    --            indicates standard/non-standard character of  all wire produced.
+
+uses
+
+    ListOfShape    from TopTools,
+    MapOfShape from TopTools,
+    Shape from TopoDS,
+    Edge from TopoDS,
+    HDataStructure from TopOpeBRepDS,
+    ShapeSet from TopOpeBRepBuild,
+    BlockBuilder from TopOpeBRepBuild,
+    DataMapOfShapeBoolean from BRepAlgo
+    
+is
+
+    Create returns EdgeConnector from BRepAlgo;
+    
+    Add(me : mutable; e : Edge from TopoDS);
+    ---Purpose: 
+    
+    Add(me : mutable; LOEdge : in out ListOfShape from TopTools);
+    ---Purpose: 
+    
+    AddStart(me : mutable; e : Shape from TopoDS);
+    ---Purpose: 
+    
+    AddStart(me : mutable; LOEdge : in out ListOfShape from TopTools);
+    ---Purpose: 
+
+    ClearStartElement(me : mutable);
+    
+    MakeBlock(me : mutable)
+    ---Purpose: returns a list of wire non standard
+    ---C++: return &
+    returns ListOfShape from TopTools;
+    
+    Done(me : mutable);
+
+    IsDone(me)
+    ---Purpose: NYI
+    ---Purpose: returns true if proceeded  to MakeBlock()
+    returns Boolean from Standard;
+
+    IsWire(me : mutable; W : Shape from TopoDS) 
+    ---Purpose: NYI
+    ---Purpose: returns true if W is  a Wire standard.
+    --          W must belong  to the list returned  by MakeBlock.
+    returns Boolean from Standard;
+
+fields
+
+    myListeOfEdge : ListOfShape from TopTools;
+    myListeOfStartEdge : ListOfShape from TopTools;
+    myResultMap : DataMapOfShapeBoolean from BRepAlgo;
+    myResultList : ListOfShape from TopTools;
+    myBlockB : BlockBuilder from TopOpeBRepBuild;
+    myIsDone : Boolean from Standard;
+    
+end EdgeConnector from BRepAlgo;

@@ -1,0 +1,86 @@
+-- File:	Geom2d_Vector.cdl
+-- Created:	Wed Mar 24 18:26:25 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+
+deferred class Vector from Geom2d inherits Geometry from Geom2d
+
+        --- Purpose :  The abstract class Vector describes the common
+    	-- behavior of vectors in 2D space.
+    	-- The Geom2d package provides two concrete
+    	-- classes of vectors: Geom2d_Direction (unit vector)
+    	-- and Geom2d_VectorWithMagnitude.
+
+uses Ax2d  from gp, 
+     Pnt2d from gp,
+     Vec2d from gp
+
+raises DomainError             from Standard,
+       VectorWithNullMagnitude from gp
+
+is
+
+
+  Reverse (me : mutable);
+        --- Purpose : Reverses the vector <me>.
+
+
+  Reversed (me) returns mutable like me
+        --- Purpose : Returns a copy of <me> reversed.
+     is static;
+
+
+  Angle (me; Other : Vector)   returns Real
+        --- Purpose : Computes the angular value, in radians, between this
+    	-- vector and vector Other. The result is a value
+    	-- between -Pi and Pi. The orientation is from this
+    	-- vector to vector Other.
+    	--    Raises VectorWithNullMagnitude if one of the two vectors is a vector with
+        --  null magnitude because the angular value is indefinite.
+        raises VectorWithNullMagnitude;
+       
+  Coord (me; X, Y : out Real);
+        --- Purpose : Returns the coordinates of <me>.
+
+
+  Magnitude (me)  returns Real
+        --- Purpose : Returns the  Magnitude of <me>.
+     is deferred;
+
+
+  SquareMagnitude (me)  returns Real
+        --- Purpose : Returns the square magnitude of <me>.
+     is deferred;
+
+  
+  X (me)  returns Real;
+        --- Purpose : Returns the X coordinate of <me>.
+
+
+  Y (me)  returns Real;
+        --- Purpose : Returns the Y coordinate of <me>.
+
+
+  Crossed (me; Other : Vector)   returns Real
+        --- Purpose : Cross product of <me> with the vector <Other>.
+     is deferred;
+
+
+  Dot (me; Other : Vector)  returns Real;
+        --- Purpose : Returns the scalar product of 2 Vectors.
+
+
+  Vec2d (me)  returns Vec2d;
+        --- Purpose : Returns a non persistent copy of <me>.
+
+
+
+fields
+
+  gpVec2d : Vec2d is protected;
+
+end;

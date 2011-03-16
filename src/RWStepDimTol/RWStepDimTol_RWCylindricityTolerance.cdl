@@ -1,0 +1,35 @@
+-- File:	RWStepDimTol_RWCylindricityTolerance.cdl
+-- Created:	Wed Jun  4 13:34:34 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCylindricityTolerance from RWStepDimTol
+
+    ---Purpose: Read & Write tool for CylindricityTolerance
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CylindricityTolerance from StepDimTol
+
+is
+    Create returns RWCylindricityTolerance from RWStepDimTol;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CylindricityTolerance from StepDimTol);
+	---Purpose: Reads CylindricityTolerance
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CylindricityTolerance from StepDimTol);
+	---Purpose: Writes CylindricityTolerance
+
+    Share (me; ent : CylindricityTolerance from StepDimTol;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCylindricityTolerance;

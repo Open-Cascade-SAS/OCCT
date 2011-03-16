@@ -1,0 +1,40 @@
+-- File:	StepAP214_AppliedApprovalAssignment.cdl
+-- Created:	Wed Mar 10 09:38:58 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class AppliedApprovalAssignment from StepAP214 
+inherits ApprovalAssignment from StepBasic 
+	
+
+uses
+    	HArray1OfApprovalItem from StepAP214,
+    	ApprovalItem from StepAP214,
+    	Approval from StepBasic
+is
+
+    	Create returns mutable AppliedApprovalAssignment;
+	---Purpose: Returns a AppliedApprovalAssignment
+
+
+	Init (me : mutable;
+	      aAssignedApproval : mutable Approval from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aAssignedApproval : mutable Approval from StepBasic;
+	      aItems : mutable HArray1OfApprovalItem from StepAP214) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetItems(me : mutable; aItems : mutable HArray1OfApprovalItem);
+	Items (me) returns mutable HArray1OfApprovalItem;
+	ItemsValue (me; num : Integer) returns ApprovalItem;
+	NbItems (me) returns Integer;
+
+fields
+
+    items : HArray1OfApprovalItem from StepAP214;
+
+end AppliedApprovalAssignment;

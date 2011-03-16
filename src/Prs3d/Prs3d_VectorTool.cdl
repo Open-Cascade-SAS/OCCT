@@ -1,0 +1,17 @@
+-- File:	Prs3d_VectorTool.cdl
+-- Created:	Fri Apr 16 13:36:55 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@phylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred generic class VectorTool from Prs3d ( Vector as any)
+    --- template for drawing  a vector.
+uses 
+    Vec from gp,
+    Pnt from gp
+
+is
+    Location (myclass; aVector: Vector) returns Pnt from gp;
+    Vec ( myclass; aVector: Vector ) returns Vec from gp;
+
+end VectorTool from Prs3d;

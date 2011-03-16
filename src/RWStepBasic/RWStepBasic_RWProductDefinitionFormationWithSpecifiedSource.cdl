@@ -1,0 +1,30 @@
+-- File:        ProductDefinitionFormationWithSpecifiedSource.cdl
+-- Created:     Mon Dec  4 12:02:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWProductDefinitionFormationWithSpecifiedSource from RWStepBasic
+
+	---Purpose : Read & Write Module for ProductDefinitionFormationWithSpecifiedSource
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ProductDefinitionFormationWithSpecifiedSource from StepBasic,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWProductDefinitionFormationWithSpecifiedSource;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ProductDefinitionFormationWithSpecifiedSource from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : ProductDefinitionFormationWithSpecifiedSource from StepBasic);
+
+	Share(me; ent : ProductDefinitionFormationWithSpecifiedSource from StepBasic; iter : in out EntityIterator);
+
+end RWProductDefinitionFormationWithSpecifiedSource;

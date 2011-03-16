@@ -1,0 +1,71 @@
+-- File:	PTopLoc_Location.cdl
+-- Created:	Wed Mar  3 16:39:18 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Location from PTopLoc inherits Storable
+
+	---Purpose: A Storable  composed local coordinate system. Made
+	--          with local   coordinate systems raised   to  power
+	--          elevation.
+	--          
+	--          A Location is either :
+	--          
+	--          * The Identity.
+	--          
+	--          * The product  of a Datum3D raised  to a power and
+	--          an other Location called the next Location.
+
+uses
+    Datum3D      from PTopLoc,
+    ItemLocation from PTopLoc
+
+raises
+    NoSuchObject from Standard
+
+is
+    Create returns Location from PTopLoc;
+	---Purpose: Creates an Identity Location.
+	---Level: Internal 
+	
+    Create(D : Datum3D from PTopLoc; 
+    	   P : Integer from Standard;
+	   N : Location from PTopLoc) 
+    returns Location from  PTopLoc;
+	---Purpose: Creates a location being the product.
+	--          N * D ^ P
+	---Level: Internal 
+    
+    IsIdentity(me) returns Boolean from Standard
+	---Purpose: True when the location is an identity.
+	---Level: Internal 
+    is static;
+    
+    Datum3D(me) returns Datum3D from PTopLoc
+	---Purpose: Returns the first Datum. An error is raised if the
+	--          location is an identity.
+	---Level: Internal 
+    raises NoSuchObject from Standard
+    is static;
+
+    Power(me)   returns Integer from Standard
+	---Purpose: Returns the power elevation of the first datum. An
+	--          error is raised if the location is an identity.
+	---Level: Internal 
+    raises NoSuchObject from Standard
+    is static;
+    
+    Next(me)    returns Location from PTopLoc
+	---Purpose: Returns next Location. An error is raised if the
+	--          location is an identity.
+	---Level: Internal 
+    raises NoSuchObject from Standard
+    is static;
+    
+fields
+    myData : ItemLocation from PTopLoc;
+
+end Location;

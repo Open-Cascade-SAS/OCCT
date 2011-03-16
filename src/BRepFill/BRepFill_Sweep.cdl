@@ -1,0 +1,170 @@
+-- File:	BRepFill_Sweep.cdl
+-- Created:	Fri Nov 21 14:07:48 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class Sweep from BRepFill 
+
+	---Purpose: Topological Sweep Algorithm
+	---Level: Advanced
+
+uses 
+   SectionLaw   from  BRepFill, 
+   LocationLaw  from  BRepFill, 
+   ApproxStyle  from  GeomFill, 
+   TransitionStyle  from  BRepFill,
+   HCurve       from  Adaptor3d, 
+   Shape        from  GeomAbs, 
+   HArray2OfShape      from  TopTools, 
+   ListOfShape         from  TopTools, 
+   DataMapOfShapeShape from TopTools,
+   Wire         from  TopoDS, 
+   Shape        from  TopoDS,  
+   Trsf         from  gp
+   
+raises
+    NotDone,   
+    OutOfRange,   
+    ConstructionError 
+is
+   Create(Section  :  SectionLaw  from  BRepFill;  
+          Location :  LocationLaw from  BRepFill; 
+          WithKPart:  Boolean)    
+   returns Sweep  from  BRepFill; 
+    
+   SetBounds(me  :  in  out;   
+    	     FirstShape,  LastShape  :  Wire  from  TopoDS);
+     
+   SetTolerance(me  :  in  out;   
+    	    	Tol3d  :  Real; 
+      	    	BoundTol   : Real  =  1.0; 
+    	    	Tol2d      : Real  =  1.0e-5;   
+                TolAngular : Real  =  1.0e-2); 
+   ---Purpose: Set Approximation Tolerance
+    	   --    Tol3d : Tolerance to surface approximation
+	   --    Tol2d : Tolerance used to perform curve approximation
+	   --            Normaly the 2d curve are approximated with a 
+           --            tolerance given by the resolution on support surfaces, 
+           --            but if this tolerance is too large Tol2d is used.
+           --    TolAngular : Tolerance (in radian) to control the angle 
+           --                 beetween tangents on the section law and
+           --                 tangent of iso-v on approximed surface
+  
+   SetAngularControl(me:  in  out; 
+   		     AngleMin  :  Real  =  0.01; 
+		     AngleMax  :  Real  =  6.0)  
+   ---Purpose: Tolerance  To controle Corner management.
+   --          
+   --   If the discontinuity is lesser than <AngleMin> in radian The
+   --   Transition Performed will be alway "Modified"
+   -- 
+        
+   --   If the discontinuity is greater  than <AngleMax> in radian The
+   --   Transition "Round" replace the Transition "Right"          
+   is  static; 
+		     
+   Build(me : in  out; 
+         Transition : TransitionStyle  =  BRepFill_Modified;    
+         Approx     : ApproxStyle = GeomFill_Location; 
+         Continuity : Shape  from  GeomAbs   = GeomAbs_C2;
+	 Degmax     : Integer = 11;
+         Segmax     : Integer = 30); 
+	 
+   ---Purpose: Build the Sweeep  Surface
+   --    Transition define Transition strategy
+   --    Approx define Approximation Strategy
+   --    - GeomFill_Section : The composed Function Location X Section
+   --                         is directly approximed.
+   --    - GeomFill_Location : The location law is approximed, and the
+   --                          SweepSurface is bulid algebric composition
+   --                          of approximed location law and section law
+   --                          This option is Ok, if Section.Surface() methode
+   --                          is effective.
+   --    Continuity : The continuity in v waiting on the surface 
+   --    Degmax     : The maximum degree in v requiered on the surface 
+   --    Segmax     : The maximum number of span in v requiered on 
+   --                 the surface.
+    
+   CorrectApproxParameters(me:  in  out)
+   returns  Boolean  is  private; 
+   
+   BuildWire(me : in  out; 
+             Transition : TransitionStyle)
+   returns  Boolean  is  private; 
+	  
+   BuildShell(me : in  out;   
+            Transition : TransitionStyle;              
+            Vf,  Vl    : Integer;    
+            ExtendFirst :  Real  =  0.0; 
+            ExtendLast  :  Real  =  0.0)  
+   returns Boolean is  private;
+      
+   IsDone(me) 
+    ---Purpose: Say if the Shape is Build.          
+   returns  Boolean;  
+    
+   Shape(me)   
+    ---Purpose: returns the Sweeping Shape
+   returns  Shape  from TopoDS; 
+    
+   ErrorOnSurface(me) 
+    ---Purpose: Get the Approximation  error.       
+   returns  Real;
+     
+   SubShape(me)  
+    returns  HArray2OfShape from  TopTools;     
+
+   InterFaces(me)   
+    returns  HArray2OfShape from  TopTools; 
+   
+   Sections(me)   
+    returns  HArray2OfShape from  TopTools; 
+    
+   PerformCorner(me  :  in  out;  Index  :  Integer;   
+                 Transition  :  TransitionStyle; 
+                 Bounds      :  HArray2OfShape  from  TopTools)  
+   is  private; 
+    
+   EvalExtrapol(me;  Index  :  Integer; 
+                Transition  :   TransitionStyle)   
+   returns  Real 
+   is  private; 
+    
+   MergeVertex(me; 
+               V1  :  Shape  from  TopoDS; 
+               V2  :  in  out Shape  from  TopoDS) 
+   returns  Boolean  is  private;  
+    
+   UpdateVertex(me; Ipath,  Isec  :  Integer; 
+                Error,  Param  :  Real; 
+		V  :  in  out Shape  from  TopoDS) 
+   is  private; 
+   
+fields
+  isDone           :  Boolean; 
+  KPart            :  Boolean;  
+  myTol3d          :  Real; 
+  myBoundTol       :  Real; 
+  myTol2d          :  Real;   
+  myTolAngular     :  Real; 
+  myAngMin         :  Real; 
+  myAngMax         :  Real; 
+  myApproxStyle    :  ApproxStyle from GeomFill; 
+  myContinuity     :  Shape from  GeomAbs; 
+  myDegmax         :  Integer; 
+  mySegmax         :  Integer;
+  myShape          :  Shape from  TopoDS; 
+  myLoc            :  LocationLaw  from  BRepFill; 
+  mySec            :  SectionLaw   from  BRepFill; 
+  myUEdges         :  HArray2OfShape  from  TopTools;  
+  myVEdges         :  HArray2OfShape  from  TopTools;   
+  myVEdgesModified :  DataMapOfShapeShape from TopTools;
+  myFaces          :  HArray2OfShape  from  TopTools; 
+  myAuxShape       :  ListOfShape     from  TopTools;   
+     
+  Error            :  Real;  
+  FirstShape, 
+  LastShape        :  Wire  from  TopoDS; 
+end Sweep;

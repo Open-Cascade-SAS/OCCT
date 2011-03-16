@@ -1,0 +1,109 @@
+-- File:	IntPolyh.cdl
+-- Created:	Wed Mar  3 11:13:59 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+-- Modified by skv - Thu Sep 25 18:04:05 2003 OCC567 
+-- Definition of new pointer to MaillageAffinage 
+-- which is used in Intersection class.
+
+package IntPolyh 
+
+	---Purpose:  This   package  provides algorithms    to compute
+	--           starting   points for   the     surface  surface
+	--           intersection  packages. Those  starting points are
+	--           used if   the  two   surfaces are  bi-parametric
+	--           surfaces (bezier, nurbs, algorithm surfaces ...)
+	--          
+    	--  This package provides methods 
+    	--     
+    	--      to compute meshes on the  two surfaces. The meshes can
+    	--      be refined if  necessary.  It is the major improvement
+    	--      to  the Intf  package which   gives  the same  kind of
+    	--      ressources.
+        --
+        --      to intersect the two meshes
+        --
+        --      to give approximated starting-points. Those points are
+        --      organised in lines, when  the points belong to a  same
+        --      section line, or returned as isolated points when they
+        --      can neither  define a  new  line nor  be  linked to an
+        --      existant line.
+        --      
+        --  A  starting-point   contains 3d   information,  parametric
+        --  ionformation and  quality criterion. (i.e.   X,Y,Z, U1,V1,
+        --  U2,V2,  Incidence).  Incidence  is  a real wich   gives an
+        --  estimated   angle    between the two   surfaces  near  the
+        --  intersection point.
+        --  
+        --  
+
+uses
+    TCollection,
+    TColStd,
+    gp, 	      
+    Bnd,
+    Adaptor3d
+ 
+is 
+
+    class Intersection;
+	---Purpose:  the main   algorithm.  Algorythm   outputs are --
+	--            lines  and  points like   discribe   in the last
+	--          paragraph.  The Algorythm provides direct acces to
+	--            the elements of those   lines  and points. Other
+	--          classes  of this package  are for internal use and
+	--          only concern the algorithmic part.
+
+    ------------------------------------------------------------
+    ----   Internal classes and algorithms 
+    ------------------------------------------------------------
+    class Couple;
+	---Purpose: couple of triangles
+
+    class ArrayOfCouples;	
+
+    class Point;
+    
+    class ArrayOfPoints;
+    
+    class StartPoint;
+    
+    class ArrayOfStartPoints;
+    
+    class SeqOfStartPoints instantiates Sequence from TCollection
+        (StartPoint from IntPolyh);
+
+    class Edge;
+    
+    class ArrayOfEdges;
+
+    class Triangle;
+    
+    class ArrayOfTriangles;
+   
+    class MaillageAffinage;
+    	---Purpose: Provide the algorythms used in the package
+
+    class SectionLine;
+    
+    class ArrayOfSectionLines;
+    
+--    class TangentZone; For the moment we use the StartPoint Class
+    
+    class ArrayOfTangentZones;
+
+    -- Modified by skv - Thu Sep 25 18:04:05 2003 OCC567 End
+    pointer PMaillageAffinage to MaillageAffinage from IntPolyh;
+    -- Modified by skv - Thu Sep 25 18:04:07 2003 OCC567 Begin
+end;
+
+
+
+
+
+
+
+
+

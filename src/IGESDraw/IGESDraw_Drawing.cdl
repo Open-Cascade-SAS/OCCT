@@ -1,0 +1,112 @@
+--
+-- File      :  Drawing.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Drawing from IGESDraw  inherits IGESEntity
+
+        ---Purpose: defines IGESDrawing, Type <404> Form <0>
+        --          in package IGESDraw
+        --
+        --          Specifies a drawing as a collection of annotation entities
+        --          defined in drawing space, and views which together
+        --          constitute a single representation of a part
+
+uses
+
+        HArray1OfIGESEntity     from IGESData,
+        ViewKindEntity          from IGESData,
+        HArray1OfViewKindEntity from IGESDraw,
+        Pnt2d                   from gp,
+        XYZ                     from gp,
+        XY                      from gp,
+        HArray1OfXY             from TColgp
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable Drawing;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                : mutable;
+              allViews          : HArray1OfViewKindEntity;
+              allViewOrigins    : HArray1OfXY;
+              allAnnotations    : HArray1OfIGESEntity)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           Drawing
+        --     - allViews       : Pointers to DEs of View entities
+        --     - allViewOrigins : Origin coordinates of transformed Views
+        --     - allAnnotations : Pointers to DEs of Annotation entities
+        -- raises exception if Lengths of allViews and allViewOrigins are
+        -- not same.
+
+        NbViews (me) returns Integer;
+        ---Purpose : returns the number of view pointers in <me>
+
+        ViewItem (me; ViewIndex : Integer) returns ViewKindEntity
+        raises OutOfRange;
+        ---Purpose : returns the ViewKindEntity indicated by ViewIndex
+        -- raises an exception if ViewIndex <= 0 or ViewIndex > NbViews().
+
+        ViewOrigin (me; TViewIndex : Integer) returns Pnt2d
+        raises OutOfRange;
+        ---Purpose : returns the Drawing space coordinates of the origin of the
+        -- Transformed view indicated by TViewIndex
+        -- raises an exception if TViewIndex <= 0 or TViewIndex > NbViews().
+
+        NbAnnotations (me) returns Integer;
+        ---Purpose : returns the number of Annotation entities in <me>
+
+        Annotation (me; AnnotationIndex : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Annotation entity in this Drawing, indicated by the
+        -- AnnotationIndex
+        -- raises an exception if AnnotationIndex <= 0 or
+        -- AnnotationIndex > NbAnnotations().
+
+    	    --  infered informations
+
+        ViewToDrawing(me; NumView : Integer; ViewCoords : XYZ)
+        returns XY;
+        -- returns the Transformation of a View from View space to
+        -- Drawing space.
+
+    	DrawingUnit (me; value : out Real) returns Boolean;
+	---Purpose : Returns the Drawing Unit Value if it is specified (by a
+	--           specific property entity)
+	--           If not specified, returns False, and val as zero :
+	--           unit to consider is then the model unit in GlobalSection
+
+    	DrawingSize (me; X,Y : out Real) returns Boolean;
+	---Purpose : Returns the Drawing Size if it is specified (by a
+	--           specific property entity)
+	--           If not specified, returns False, and X,Y as zero :
+	--           unit to consider is then the model unit in GlobalSection
+
+fields
+
+--
+-- Class    : IGESDraw_Drawing
+--
+-- Purpose  : Declaration of the variables specific to a
+--            Drawing Entity.
+--
+-- Reminder : A Drawing Entity is defined by :
+--                    - Pointers to DEs of View entities
+--                    - Origin coordinates of transformed views
+--                    - Pointers to DEs of Annotation entities
+--
+
+         theViews             : HArray1OfViewKindEntity;
+
+         theViewOrigins       : HArray1OfXY;
+
+         theAnnotations       : HArray1OfIGESEntity;
+
+end Drawing;

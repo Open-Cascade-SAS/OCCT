@@ -1,0 +1,68 @@
+// File:	AIS_Selection.lxx
+// Created:	Tue Jun 23 15:45:23 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+#define OCC189   //SAV: 18/03/02 array was replaced with list.
+
+#define USE_MAP    //san : 18/04/03 USE_MAP - additional datamap is used to speed up access 
+                   //to certain owners in <myresult> list
+
+#if !defined( OCC189 ) && !defined( USE_MAP )
+#include <TColStd_HArray1OfTransient.hxx>
+#else
+#include <TColStd_MapOfTransient.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#endif
+
+
+#if !defined( OCC189 ) && !defined( USE_MAP )
+inline const Handle(TColStd_HArray1OfTransient)& AIS_Selection::Objects() const
+#else
+inline const AIS_NListTransient& AIS_Selection::Objects() const       
+#endif
+{
+  return myresult;
+}
+
+inline void AIS_Selection::Init()
+{
+#if !defined( OCC189 ) && !defined( USE_MAP )
+  mycuri=1;
+#else
+  myIterator = AIS_NListTransient::Iterator ( myresult );  
+#endif
+}
+
+inline Standard_Boolean AIS_Selection::More() const 
+{
+#if !defined( OCC189 ) && !defined( USE_MAP )  
+  return (myresult.IsNull() ? Standard_False : (mycuri<=myNb));
+#else
+  return myIterator.More();
+#endif
+}
+inline void AIS_Selection::Next () {
+#if !defined( OCC189 ) && !defined( USE_MAP )    
+  mycuri++;
+#else
+  myIterator.Next();
+#endif
+}
+inline const Handle(Standard_Transient)& AIS_Selection::Value() const 
+{
+#if !defined( OCC189 ) && !defined( USE_MAP )   
+  return myresult->Value(mycuri);
+#else
+  return myIterator.Value();  
+#endif
+}
+
+inline Standard_Integer AIS_Selection::NbStored() const
+{
+#if !defined( OCC189 ) && !defined( USE_MAP )    
+  return myNb;
+#else
+  return myresult.Extent();
+#endif
+}

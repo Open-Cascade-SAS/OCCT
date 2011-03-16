@@ -1,0 +1,128 @@
+-- File:	FreeFormatEntity.cdl
+-- Created:	Fri Dec 18 11:20:13 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class FreeFormatEntity  from IGESData  inherits UndefinedEntity
+
+    ---Purpose : This class allows to create IGES Entities in a literal form :
+    --           their definition is free, but they are not recognized as
+    --           instances of specific classes.
+    --           
+    --           This is a way to define test files without having to create
+    --           and fill specific classes of Entities, or creating an IGES
+    --           File ex nihilo, with respect for all format constraints
+    --           (such a way is very difficult to run and to master).
+    --           
+    --           This class has the same content as an UndefinedEntity, only
+    --           it gives way to act on its content
+
+uses HAsciiString from TCollection,  HSequenceOfInteger from TColStd,
+     ParamType, IGESEntity,  HArray1OfIGESEntity,  IGESWriter
+
+raises OutOfRange, InterfaceError
+
+is
+
+    Create returns mutable FreeFormatEntity;
+    ---Purpose : Creates a completely empty FreeFormatEntity
+
+    SetTypeNumber (me : mutable; typenum : Integer);
+    ---Purpose : Sets Type Number to a new Value, and Form Number to Zero
+
+    SetFormNumber (me : mutable; formnum : Integer);
+    ---Purpose : Sets Form Number to a new Value (to called after SetTypeNumber)
+
+    -- Setting Directory informations : see general methods provided by
+    -- IGESEntity itself : InitTransf, InitView, InitLineFont, InitLevel,
+    -- InitColor, InitStatus, SetLabel, InitMisc, AddProperty, Associate
+
+    	-- --    Access to Parameters    -- --
+    	-- (own Parameters, in addition to Properties and Associativities
+    	-- list, and to Directory informations)
+
+    NbParams   (me) returns Integer;
+    ---Purpose : Gives count of recorded parameters
+
+    ParamData (me; num : Integer; ptype : out ParamType;
+    	    	   ent : out mutable IGESEntity;
+                   val : out HAsciiString from TCollection)
+    	     	       returns Boolean;
+    ---Purpose : Returns data of a Parameter : its type, and the entity if it
+    --           designates en entity ("ent") or its literal value else ("str")
+    --           Returned value (Boolean) : True if it is an Entity, False else
+
+    ParamType (me; num : Integer) returns ParamType  raises OutOfRange;
+    ---Purpose : Returns the ParamType of a Param, given its rank
+    --           Error if num is not between 1 and NbParams
+
+    IsParamEntity (me; num : Integer) returns Boolean  raises OutOfRange;
+    ---Purpose : Returns True if a Parameter is recorded as an entity
+    --           Error if num is not between 1 and NbParams
+
+    ParamEntity (me; num : Integer) returns mutable IGESEntity
+        raises InterfaceError, OutOfRange;
+    ---Purpose : Returns Entity corresponding to a Param, given its rank
+    --           Error if out of range or if Param num does not designate
+    --           an Entity
+
+    IsNegativePointer (me; num : Integer) returns Boolean;
+    ---Purpose : Returns True if <num> is noted as for a "Negative Pointer"
+    --           (see AddEntity for details). Senseful only if IsParamEntity
+    --           answers True for <num>, else returns False.
+
+    ParamValue (me; num : Integer) returns HAsciiString from TCollection
+    	raises InterfaceError, OutOfRange;
+    ---Purpose : Returns litteral value of a Parameter, given its rank
+    --           Error if num is out of range, or if Parameter is not literal
+
+    NegativePointers (me) returns HSequenceOfInteger from TColStd;
+    ---Purpose : Returns the complete list of Ramks of Parameters which have
+    --           been noted as Negative Pointers
+    --  Warning : It is returned as a Null Handle if none was noted
+
+    AddLiteral (me : mutable; ptype : ParamType;
+        val : HAsciiString from TCollection);
+    ---Purpose : Adds a literal Parameter to the list (as such)
+
+    AddLiteral (me : mutable; ptype : ParamType; val : CString);
+    ---Purpose : Adds a literal Parameter to the list (builds an HAsciiString)
+
+    AddEntity (me : mutable; ptype : ParamType;
+    	       ent : mutable IGESEntity; negative : Boolean = Standard_False);
+    ---Purpose : Adds a Parameter which references an Entity. If the Entity is
+    --           Null, the added parameter will define a "Null Pointer" (0)
+    --           If <negative> is given True, this will command Sending to File
+    --           (see IGESWriter) to produce a "Negative Pointer"
+    --           (Default is False)
+
+    AddEntities (me : mutable; ents : HArray1OfIGESEntity)
+    	raises InterfaceError;
+    ---Purpose : Adds a set of Entities, given as a HArray1OfIGESEntity
+    --           Causes creation of : an Integer Parameter which gives count
+    --           of Entities, then the list of Entities of the Array
+    --           Error if an Entity is not an IGESEntity
+    --           All these Entities will be interpreted as "Positive Pointers"
+    --           by IGESWriter
+
+    AddNegativePointers (me : mutable; list : HSequenceOfInteger from TColStd);
+    ---Purpose : Adds a list of Ranks of Parameters to be noted as Negative
+    --           Pointers (this will be taken into account for Parameters
+    --           which are Entities)
+
+    ClearNegativePointers (me : mutable);
+    ---Purpose : Clears all informations about Negative Pointers, hence every
+    --           Entity kind Parameter will be send normally, as Positive
+
+
+    WriteOwnParams (me; IW : in out IGESWriter)  is redefined;
+    ---Purpose : WriteOwnParams is redefined for FreeFormatEntity to take
+    --           into account the supplementary information "Negative Pointer"
+
+fields
+
+    thenegptrs : HSequenceOfInteger from TColStd;
+
+end FreeFormatEntity;

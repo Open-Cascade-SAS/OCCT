@@ -1,0 +1,30 @@
+-- File:        AssemblyComponentUsageSubstitute.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWAssemblyComponentUsageSubstitute from RWStepRepr
+
+	---Purpose : Read & Write Module for AssemblyComponentUsageSubstitute
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     AssemblyComponentUsageSubstitute from StepRepr,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWAssemblyComponentUsageSubstitute;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable AssemblyComponentUsageSubstitute from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : AssemblyComponentUsageSubstitute from StepRepr);
+
+	Share(me; ent : AssemblyComponentUsageSubstitute from StepRepr; iter : in out EntityIterator);
+
+end RWAssemblyComponentUsageSubstitute;

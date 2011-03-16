@@ -1,0 +1,67 @@
+-- File:	BRepMesh_GeomTool.cdl
+-- Created:	Wed Sep 29 16:25:06 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class GeomTool from BRepMesh
+       	---Purpose: 
+
+uses 
+     Pnt                  from gp,
+     Vec                  from gp,
+     Dir                  from gp,
+     Pnt2d                from gp,
+     IsoType              from GeomAbs,
+     TangentialDeflection from GCPnts,
+     Curve                from BRepAdaptor,
+     HSurface             from BRepAdaptor
+     
+
+
+is
+
+    Create (C : in out Curve from BRepAdaptor;
+            Ufirst,Ulast,AngDefl, Deflection : Real;
+            nbpointsmin: Integer = 2)
+    	returns GeomTool;
+    
+    Create (S        : HSurface from BRepAdaptor;
+            ParamIso : Real;
+            Type     : IsoType  from GeomAbs;
+    	    Ufirst,Ulast,AngDefl,Deflection : Real;
+    	    nbpointsmin: Integer = 2) returns GeomTool;
+
+    AddPoint(me : in out; thePnt : in Pnt from gp;
+                          theParam : in Real;
+                          theIsReplace : in Boolean = Standard_True)
+    returns Integer from Standard;
+    ---Purpose: Add point to already calculated points (or replace existing)
+    --          Returns index of new added point
+    --           or founded with parametric tolerance (replaced if theIsReplace is true)
+	    
+    NbPoints(me) returns Integer from Standard;
+    
+    Value(me; IsoParam : Real ; Index : Integer ; 
+          W : out Real; P : out Pnt from gp; UV : out Pnt2d from gp);
+	      
+    Value(me;C : Curve from BRepAdaptor;
+             S : HSurface from BRepAdaptor;
+             Index : Integer from Standard; 
+    	     W : out Real; P : out Pnt from gp; UV : out Pnt2d from gp);    
+	
+    D0(myclass; F : HSurface  from BRepAdaptor;U,V : Real; P : out Pnt);
+	
+    Normal(myclass; F : HSurface from BRepAdaptor;U,V : Real ; P : out Pnt from gp; 
+    	    	    	    	    	   Nor : out  Dir from gp)
+    returns Boolean from Standard;
+    ---Purpose: return false if the normal can not be computed 
+
+fields
+
+pnts                : TangentialDeflection from GCPnts;
+parametric          : IsoType           from GeomAbs;
+
+end GeomTool;

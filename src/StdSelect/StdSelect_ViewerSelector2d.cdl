@@ -1,0 +1,78 @@
+-- File:	StdSelect_ViewerSelector2d.cdl
+-- Created:	Thu Feb 23 17:08:17 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+class ViewerSelector2d from StdSelect inherits ViewerSelector from SelectMgr
+
+	---Purpose: A viewer selection framework.
+    	-- The objects defined in this framework can be passed to a selection manager.
+        
+uses
+
+    View          from V2d,
+    Projector     from Select2D,
+    Selection     from SelectMgr,
+    GraphicObject from Graphic2d
+
+is
+
+    Create returns mutable ViewerSelector2d from StdSelect;
+
+    	--- Purpose: Constructs an empty viewer selection framework.
+    
+    Create (aProjector: Projector from Select2D) 
+    returns mutable ViewerSelector2d from StdSelect;
+    	---Purpose: Constructs the viewer selection framework defined by
+    	-- the projector aProjector.
+    
+    Set(me:mutable; aSensitivity : Integer) is static;
+    	---Level: Public 
+    	---Purpose: Sets a pixel tolerance for the selection.
+    	--         will be converted for picking in a view.
+
+
+    Set(me:mutable; aProjector: Projector from Select2D) is static;
+    	---Purpose: Sets the new projector aProjector.   
+
+    Convert(me:mutable;aSelection:mutable Selection from SelectMgr) 
+    is redefined static;
+
+    Pick (me           : mutable;XPix,YPix:Integer;
+    	  aView        : View from V2d) is static;
+    	---Purpose: Returns the pixel coordinates of the mouse Xpix, Ypix
+    	-- in the view aView. 
+
+    Pick (me:mutable;XPMin,YPMin,XPMax,YPMax:Integer;aView:View from V2d) is static;
+    	---Purpose: Returns the minimum and maximum pixel coordinates
+    	-- XPMin, YPMin and XPMax, YPMax defining a 2D area in the view aView.
+
+
+
+    Projector (me) returns any Projector from Select2D;
+    	---Purpose: Returns the projector which defines this framework.
+    	---C++: inline
+
+    	
+    DisplayAreas (me:mutable;aView:View from V2d) is static;
+    	---Purpose: Displays the active areas in the given view;
+
+
+
+    ClearAreas(me:mutable) is static;    
+    	---Purpose: Clear the displayed sensitive areas from this framework..
+	
+
+
+fields
+
+    myprj    : Projector from Select2D;
+    mypixtol : Integer;
+    
+    mygo     : GraphicObject from Graphic2d;
+    
+end ViewerSelector2d;
+
+

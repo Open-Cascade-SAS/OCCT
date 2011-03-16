@@ -1,0 +1,56 @@
+// File:	GeomFill_Pipe.lxx
+// Created:	Wed Apr 13 14:25:05 1994
+// Author:	Eric BONNARDEL
+//		<ebo@fuegox>
+
+
+//=======================================================================
+//function : const
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Surface)& GeomFill_Pipe::Surface() const 
+{
+  return mySurface;
+}
+
+//=======================================================================
+//function : ExchangeUV
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GeomFill_Pipe::ExchangeUV() const 
+{
+  return myExchUV;
+}
+
+//=======================================================================
+//function : GenerateParticularCase
+//purpose  : 
+//=======================================================================
+
+inline void GeomFill_Pipe::GenerateParticularCase(const Standard_Boolean B)
+{
+  myKPart = B;
+}
+
+
+//=======================================================================
+//function : GenerateParticularCase
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GeomFill_Pipe::GenerateParticularCase() const
+{
+  return myKPart;
+}
+
+//=======================================================================
+//function :  ErrorOnSurf
+//purpose  : 
+//=======================================================================
+inline Standard_Real GeomFill_Pipe::ErrorOnSurf() const
+{
+  return myError;
+}
+

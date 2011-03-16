@@ -1,0 +1,209 @@
+-- File:	BRepOffsetAPI_ThruSections.cdl
+-- Created:	Mon Jul 17 16:24:52 1995
+-- Author:	Jing Cheng MEI
+--		<mei@junon>
+-- Modified:	Mon Jan 12 10:46:37 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		new method ArrangeWires
+-- Modified:	Mon Jan 19 10:11:49 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		new methods CreateKPart and DetectKPart
+-- Modified:	Mon Feb 23 09:28:33 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		modification of ArrangeWires
+--		for sections with different number of elements
+-- Modified:	Mon Apr  6 16:24:40 1998
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+--		CreateKPart and DetectKPart moved in BRepFill
+-- Modified:	Wed Jul  1 14:33:22 1998
+-- Author:	Jing-Cheng MEI
+--              <mei@pinochiox>
+--              Add history
+--		CreateKPart and DetectKPart moved in BRepFill
+---Copyright:	 Matra Datavision 1995
+
+
+
+class ThruSections from BRepOffsetAPI inherits MakeShape from BRepBuilderAPI
+
+    	---Purpose: Describes functions to build a loft. This is a shell or a
+    	-- solid passing through a set of sections in a given
+    	-- sequence. Usually sections are wires, but the first and
+    	-- the last sections may be vertices (punctual sections).						    	
+
+uses
+
+    Wire                from TopoDS, 
+    Vertex              from TopoDS,
+    SequenceOfShape     from TopTools,
+    Face                from TopoDS,
+    Shape               from TopoDS,
+    DataMapOfShapeShape from TopTools,  
+    Array1OfShape  from TopTools, 
+    BSplineSurface  from  Geom,
+    -- 
+    Shape               from GeomAbs, 
+    ParametrizationType     from Approx
+
+raises DomainError from Standard
+       
+is 
+    
+    Create(isSolid : Boolean from Standard = Standard_False;
+           ruled   : Boolean from Standard = Standard_False;
+           pres3d  : Real =1.0e-06)
+    returns ThruSections from BRepOffsetAPI;
+    	---Purpose: Initializes an algorithm for building a shell or a solid
+    	-- passing through a set of sections, where:
+    	-- -          isSolid is set to true if the construction algorithm is
+    	--   required to build a solid or to false if it is required to build
+    	--   a shell (the default value),
+    	-- -          ruled is set to true if the faces generated between
+    	--   the edges of two consecutive wires are ruled surfaces or to
+    	--   false (the default value) if they are smoothed out by approximation,
+    	-- -          pres3d defines the precision criterion used by the
+    	--   approximation algorithm; the default value is 1.0e-6.
+    	--   Use AddWire and AddVertex to define the
+    	-- successive sections of the shell or solid to be built.
+
+    Init(me: in out; isSolid : Boolean from Standard = Standard_False;
+                     ruled   : Boolean from Standard = Standard_False;
+                     pres3d  : Real =1.0e-06);
+    	---Purpose: Initializes this algorithm for building a shell or a solid
+    	-- passing through a set of sections, where:
+    	-- - isSolid is set to true if this construction algorithm is
+    	--   required to build a solid or to false if it is required to
+    	--   build a shell. false is the default value;
+    	-- - ruled is set to true if the faces generated between the
+    	--   edges of two consecutive wires are ruled surfaces or
+    	-- to false (the default value) if they are smoothed out by approximation,
+    	-- - pres3d defines the precision criterion used by the
+    	--   approximation algorithm; the default value is 1.0e-6.
+    	--   Use AddWire and AddVertex to define the successive
+    	-- sections of the shell or solid to be built.
+        
+    AddWire(me: in out; wire: Wire from TopoDS); 
+    	---Purpose: Adds the wire wire to the set of
+    	-- sections through which the shell or solid is built.
+    	-- Use the Build function to construct the shape.    
+    
+    AddVertex(me: in out; aVertex: Vertex from TopoDS);
+    	---Purpose: Adds the vertex Vertex (punctual section) to the set of sections
+    	-- through which the shell or solid is built. A vertex may be added to the
+    	-- set of sections only as first or last section. At least one wire
+    	-- must be added to the set of sections by the method AddWire.
+    	-- Use the Build function to construct the shape.    
+    
+    CheckCompatibility(me: in out;  
+                       check : Boolean from Standard = Standard_True);
+    
+    SetSmoothing(me: in out; UseSmoothing : Boolean  from  Standard)
+    ---Purpose: Define the approximation algorithm  
+    is static;   
+
+    SetParType(me: in out; ParType : ParametrizationType     from Approx)
+    ---Purpose: Define the type of parametrization   used in the approximation 
+    is static;   
+
+	
+    SetContinuity(me: in out; C : Shape from GeomAbs)
+    ---Purpose: Define the Continuity used in the approximation 
+    is static;   
+
+    SetCriteriumWeight(me : in out; 
+    	    	       W1,  W2, W3 : Real)
+    ---Purpose: define the Weights  associed to the criterium used in
+    --          the  optimization.
+    --          
+    raises DomainError -- if Wi <= 0
+    is static;			
+
+    SetMaxDegree(me : in out;  MaxDeg  : Integer  from  Standard)
+    ---Purpose: Define the maximal U degree of result surface  
+    is static;   
+
+    ParType(me)
+    ---Purpose: returns the type of parametrization used in the approximation  
+    returns  ParametrizationType     from Approx
+    is static;   
+
+	
+    Continuity(me)
+    ---Purpose: returns the Continuity used in the approximation  
+    returns  Shape from GeomAbs
+    is static;   
+
+    MaxDegree(me)
+    ---Purpose: returns the maximal U degree of result surface  
+    returns  Integer  from  Standard
+    is static;   
+
+    UseSmoothing(me)
+    ---Purpose: Define the approximation algorithm   
+    returns  Boolean  from  Standard
+    is static;   
+
+    CriteriumWeight(me ; W1,  W2, W3 : out Real)
+    ---Purpose: returns the Weights associed  to the criterium used in
+    --          the  optimization.
+    is static;		
+
+    Build(me: in out)
+    is redefined;
+
+    CreateRuled(me: in out)
+    is private;
+
+    CreateSmoothed(me: in out)
+    is private;
+
+    FirstShape (me)
+    	---Purpose: Returns the TopoDS Shape of the bottom of the loft if solid
+    returns Shape from TopoDS;
+	---C++ : return const &
+
+    LastShape (me)
+    	---Purpose: Returns the TopoDS Shape of the top of the loft if solid
+    returns Shape from TopoDS;
+	---C++ : return const &
+
+    GeneratedFace (me; Edge : Shape from TopoDS)
+    	---Purpose: if Ruled
+    	--            Returns the Face generated by each edge
+    	--            except the last wire
+    	--          if smoothed
+    	--            Returns the Face generated by each edge of the first wire
+    returns Shape from TopoDS;
+
+    TotalSurf(me; shapes: Array1OfShape from TopTools; 
+                  NbSect: Integer from  Standard; 
+		  NbEdges: Integer  from  Standard; 
+		  w1Point: Boolean  from  Standard; 
+		  w2Point: Boolean  from  Standard; 
+		  vClosed: Boolean  from  Standard) 
+		   
+		  returns BSplineSurface from Geom 
+		  is private;
+
+fields
+    myWires     : SequenceOfShape from TopTools;
+    myIsSolid   : Boolean from Standard;
+    myIsRuled   : Boolean from Standard;
+    myWCheck    : Boolean from Standard;
+    myPres3d    : Real from Standard;
+    myFirst     : Face  from  TopoDS; 
+    myLast      : Face  from  TopoDS;
+    myGenerated : DataMapOfShapeShape from TopTools;  
+    --  Approximation parameters
+    myContinuity: Shape  from  GeomAbs; 
+    myParamType : ParametrizationType from Approx; 
+    myDegMax    : Integer from Standard; 
+    myCritWeights : Real[3]; 
+    myUseSmoothing : Boolean  from  Standard;
+
+end ThruSections;
+

@@ -1,0 +1,75 @@
+-- File:	ProjLib_Cone.cdl
+-- Created:	Tue Aug 24 11:18:15 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class Cone from ProjLib inherits Projector from ProjLib
+
+	---Purpose: Projects elementary curves on a cone.
+
+uses
+    CurveType  from GeomAbs,
+    Cone       from gp,
+    Lin        	   from gp,
+    Circ       	   from gp,
+    Elips      	   from gp,
+    Parab      	   from gp,
+    Hypr       	   from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Parab2d    from gp,
+    Hypr2d     from gp
+
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create returns Cone from ProjLib;
+	---Purpose: Undefined projection.
+
+    Create(Co : Cone from gp) returns Cone from ProjLib;
+	---Purpose: Projection on the cone <Co>.
+
+    Create(Co : Cone from gp;
+           L  : Lin from gp) returns Cone from ProjLib;
+	---Purpose: Projection of the line <L> on the cone <Co>.
+
+    Create(Co : Cone  from gp;
+           C  : Circ from gp) returns Cone from ProjLib;
+	---Purpose: Projection of the circle <C> on the cone <Co>.
+
+
+
+    Init(me : in out;
+    	 Co : Cone from gp)
+    is static;
+	 
+    Project(me : in out;
+    	    L  : Lin from gp)
+    is redefined;
+    
+    Project(me : in out;
+    	    C  : Circ from gp)
+    is redefined;
+
+     Project(me : in out;
+     	     E  : Elips from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     P  : Parab from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     H  : Hypr from gp)
+     is redefined;
+	     
+
+fields
+
+    myCone : Cone from gp;
+
+end Cone;

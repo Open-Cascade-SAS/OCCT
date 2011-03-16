@@ -1,0 +1,36 @@
+-- File:        TextStyle.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TextStyle from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	TextStyleForDefinedFont from StepVisual
+is
+
+	Create returns mutable TextStyle;
+	---Purpose: Returns a TextStyle
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCharacterAppearance : mutable TextStyleForDefinedFont from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetCharacterAppearance(me : mutable; aCharacterAppearance : mutable TextStyleForDefinedFont);
+	CharacterAppearance (me) returns mutable TextStyleForDefinedFont;
+
+fields
+
+	name : HAsciiString from TCollection;
+	characterAppearance : TextStyleForDefinedFont from StepVisual;
+
+end TextStyle;

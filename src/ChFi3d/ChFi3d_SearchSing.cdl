@@ -1,0 +1,44 @@
+-- File:	ChFi3d_SearchSing.cdl
+-- Created:	Fri Mar 28 11:11:47 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+private class SearchSing from ChFi3d inherits FunctionWithDerivative from math
+
+	---Purpose: F(t) = (C1(t) - C2(t)).(C1'(t) - C2'(t));
+
+uses Curve from Geom
+
+is
+    Create(C1, C2 : Curve from Geom)
+    returns SearchSing from ChFi3d;
+
+    Value(me: in out; X: Real; F: out Real)
+    	---Purpose: computes the value of the function <F> for the 
+    	--          variable <X>. 
+    	--          returns True if the computation was done successfully,
+    	--          False otherwise.
+    returns Boolean;
+    
+    Derivative(me: in out; X: Real; D: out Real)
+         ---Purpose: computes the derivative <D> of the function 
+         --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+
+    returns Boolean;    
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+
+    returns Boolean;
+
+fields
+myC1 : Curve from Geom;
+myC2 : Curve from Geom;
+end SearchSing;

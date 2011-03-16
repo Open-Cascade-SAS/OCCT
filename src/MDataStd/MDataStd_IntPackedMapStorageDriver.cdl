@@ -1,0 +1,38 @@
+-- File:	MDataStd_IntPackedMapStorageDriver.cdl
+-- Created:	Thu Aug 23 10:17:07 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+
+class IntPackedMapStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: Storage driver for IntPackedMap attribute
+
+uses
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+is
+
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable IntPackedMapStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+end IntPackedMapStorageDriver;

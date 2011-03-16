@@ -1,0 +1,9 @@
+// File:	Plate_PlaneConstraint.lxx
+// Created:	Mon May 25 09:11:17 1998
+// Author:	Andre LIEUTIER
+//		<alr@sgi63>
+ 
+inline const Plate_LinearScalarConstraint& Plate_PlaneConstraint::LSC() const
+{
+  return myLSC;
+}

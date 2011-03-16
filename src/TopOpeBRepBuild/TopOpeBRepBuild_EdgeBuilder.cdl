@@ -1,0 +1,44 @@
+-- File:	TopOpeBRepBuild_EdgeBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class EdgeBuilder from TopOpeBRepBuild 
+    inherits Area1dBuilder from TopOpeBRepBuild 
+
+uses
+    
+    Shape from TopoDS,
+    PaveSet from TopOpeBRepBuild,
+    PaveClassifier from TopOpeBRepBuild,
+    LoopSet from TopOpeBRepBuild,
+    LoopClassifier from TopOpeBRepBuild
+    
+is
+
+    Create returns EdgeBuilder;
+
+    Create(LS : in out PaveSet; LC : in out PaveClassifier;
+    	   ForceClass : Boolean = Standard_False) returns EdgeBuilder;
+    ---Purpose: Creates a EdgeBuilder to find the areas of
+    -- the shapes described by <LS> using the classifier <LC>.
+    
+    InitEdgeBuilder(me : in out;
+    	    	    LS : in out LoopSet; LC : in out LoopClassifier;
+    	    	    ForceClass : Boolean = Standard_False) is static;
+
+    -- Output methods 
+    InitEdge(me : in out) is static;
+    MoreEdge(me) returns Boolean from Standard is static;
+    NextEdge(me : in out) is static;
+    
+    -- Exploration of the vertex of current edge
+    InitVertex(me : in out) is static;
+    MoreVertex(me) returns Boolean from Standard is static;
+    NextVertex(me : in out) is static;
+    Vertex(me) returns Shape from TopoDS is static;
+    ---C++: return const &
+    Parameter(me) returns Real is static;
+    
+end EdgeBuilder from TopOpeBRepBuild;

@@ -1,0 +1,13 @@
+// File:	TopoDS_Shell.lxx
+// Created:	Tue Apr 16 17:42:40 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Shell
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shell::TopoDS_Shell ()
+{
+}

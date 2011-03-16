@@ -1,0 +1,299 @@
+-- File:	PWalking.cdl
+-- Created:	Fri Apr  3 10:27:42 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class PWalking from IntWalk (
+    ThePSurface           as any;
+    ThePSurfaceTool       as any) -- as PSurfaceTool from IntWalk(ThePSurface)
+
+    
+    ---Purpose: This class implements an algorithm to determine the
+    --          intersection between 2 parametrized surface, marching from
+    --          a starting point. The intersection line
+    --          starts and ends on the natural surface 's  boundaries .
+
+
+uses XY                  from gp,
+     StatusDeflection    from IntWalk,
+     ConstIsoparametric  from IntImp,
+     Array1OfReal        from TColStd,
+     PntOn2S             from IntSurf,
+     LineOn2S            from IntSurf,
+     Dir                 from gp,
+     Dir2d               from gp
+     
+     
+raises OutOfRange from Standard,
+       NotDone    from StdFail
+       
+
+    class TheInt2S instantiates Int2S from IntImp
+             (ThePSurface, ThePSurfaceTool);
+
+is
+
+
+    Create ( Caro1 , 
+             Caro2       : ThePSurface ; 
+             TolTangency,
+             Epsilon,
+             Deflection,
+             Increment   : Real from Standard)
+	    
+	---Purpose: Constructor used to set the data to compute intersection
+	--          lines between Caro1 and Caro2.
+    	--          Deflection is the maximum deflection admitted between two 
+    	--          consecutive points on the resulting polyline.
+    	--          TolTangency is the tolerance to find a tangent point.
+    	--          Func is the criterion which has to be evaluated at each
+    	--          solution point (each point of the line).
+    	--          It is necessary to call the Perform method to compute 
+    	--          the intersection lines.
+    	--          la ligne trouvee part d'un point sur ou dans les 2 domaines
+    	--          naturelles des surfaces .Elle peut etre fermee ;dans les 
+    	--          cas standard si elle est ouverte elle s arrete  et commence
+    	--          a une frontiere d 'un des domaines.Si une ligne ouverte 
+    	--          s arrete en plein milieu d'un domaine ,on s'arrete sur 
+    	--          point de tangence.
+    	--          Epsilon  tolerance au carre de confusion de points      
+
+    	returns PWalking;
+	
+
+    Create ( Caro1 , 
+             Caro2       : ThePSurface ; 
+             TolTangency,
+             Epsilon,
+             Deflection,
+             Increment   : Real from Standard;
+             U1,V1,U2,V2 :Real from Standard)
+	    
+	---Purpose: Returns the intersection line containing the exact
+	--          point Poin. This line is a polygonal line.
+    	--          Deflection is the maximum deflection admitted between two 
+    	--          consecutive points on the resulting polyline.
+    	--          TolTangency is the tolerance to find a tangent point.
+    	--          Func is the criterion which has to be evaluated at each
+    	--          solution point (each point of the line).
+    	--          la ligne trouvee part d'un point sur ou dans les 2 domaines
+    	--          naturelles des surfaces .Elle peut etre fermee ;dans les 
+    	--          cas standard si elle est ouverte elle s arrete  et commence
+    	--          a une frontiere d 'un des domaines.Si une ligne ouverte 
+    	--          s arrete en plein milieu d'un domaine ,on s'arrete sur 
+    	--          point de tangence.
+    	--          Epsilon  tolerance au carre de confusion de points      
+
+    	returns PWalking;
+
+	
+    Perform(me :in out;ParDep : Array1OfReal  from TColStd)
+		       
+    	---Purpose: calcule la ligne d 'intersection
+
+    	is static;
+
+    Perform(me :in out;ParDep : Array1OfReal  from TColStd;
+    	    	u1min,v1min,u2min,v2min,u1max,v1max,u2max,v2max: Real from Standard)
+		       
+    	---Purpose: calcule  la  ligne d 'intersection le  reglage des
+    	--          pas est fait a partir des valeurs min max sur u et
+    	--           v.  (si ces donnees ne   sont pas presentes comme
+    	--          dans la methode precedente, les pas initiaux sont
+    	--          calcules a partir des min max uv des faces).
+
+    	is static;
+
+
+    PerformFirstPoint(me :in out;
+                      ParDep    : Array1OfReal  from TColStd;
+                      FirstPoint: in out PntOn2S from IntSurf)
+    
+    	---Purpose: calcule le premier point d'une ligne d'intersection
+    	--          
+
+    	returns Boolean from Standard
+
+    	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns true if the calculus was successful.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    NbPoints(me)
+    
+    	---Purpose: Returns the number of points of the resulting polyline.
+    	--          An exception is raised if IsDone returns False.
+
+	returns Integer from Standard
+	---C++: inline
+
+	raises NotDone from StdFail
+
+	is static;
+
+
+    Value(me ; Index : Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index on the polyline. 
+    	--          An exception is raised if IsDone returns False.
+    	--          An exception is raised if Index<=0 or Index>NbPoints.
+
+    	returns  PntOn2S from IntSurf
+	---C++: inline
+	---C++: return const&
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	
+	is static;
+
+
+    Line(me)
+    
+    	returns mutable LineOn2S from IntSurf
+	---C++: inline
+	---C++: return const&
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    TangentAtFirst(me)
+    
+    	---Purpose: Returns True if the surface are tangent at the first point
+    	--          of the line.
+    	--          An exception is raised if IsDone returns False.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+	raises NotDone from StdFail
+
+	is static;
+
+
+    TangentAtLast(me)
+    
+    	---Purpose: Returns true if the surface are tangent at the last point
+    	--          of the line.
+    	--          An exception is raised if IsDone returns False.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    IsClosed(me)
+    
+    	---Purpose: Returns True if the line is closed.
+    	--          An exception is raised if IsDone returns False.
+
+	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	is static;
+
+
+    TangentAtLine(me; Index: out Integer from Standard)
+    
+    	returns Dir from gp
+	---C++: return const&
+	---C++: inline
+
+	raises NotDone from StdFail
+	is static;
+
+
+--private
+
+    TestDeflection(me : in out)
+
+    	returns StatusDeflection from IntWalk
+	is static;
+	
+
+    TestArret(me : in out; DejaReparti : Boolean from Standard;
+                           Param : in out Array1OfReal from TColStd;
+                           ChoixIso : out ConstIsoparametric from IntImp)
+
+
+    	returns Boolean from Standard
+	is static;
+	
+
+    RepartirOuDiviser(me : in out; DejaReparti : in out Boolean from Standard;
+                      ChoixIso : out  ConstIsoparametric from IntImp;
+		      Arrive : in out Boolean from Standard )
+		      
+	is static;
+
+    AddAPoint ( me    : in out  ; 
+    	    	line  : in  out  LineOn2S  from  IntSurf  ;     
+		POn2S :          PntOn2S   from  IntSurf  ) ;
+	---C++: inline
+		
+    ExtendLineInCommonZone(me: in out; theChoixIso: ConstIsoparametric  from IntImp;
+    	    	    	    	       theDirectionFlag: Boolean from Standard)
+    	returns Boolean from Standard
+	is private;
+
+fields
+
+    done               : Boolean  from Standard;
+    line               : LineOn2S from IntSurf;
+    close              : Boolean  from Standard;
+    tgfirst            : Boolean  from Standard;
+    tglast             : Boolean  from Standard;
+    indextg            : Integer  from Standard;
+    tgdir              : Dir      from gp;
+
+    fleche             : Real     from Standard;   -- fleche maxi autorisee
+    pasMax             : Real     from Standard;   -- ratio  uv maximum autorise
+    tolconf            : Real     from Standard;   -- tol de confusion de 2 points
+    pasuv              : Real     from Standard[4];-- pas uv sur les caros 
+    pasSav             : Real     from Standard[4];-- premier pas sauvegarde
+    pasInit            : Real     from Standard[4];-- sauvegarde des pas 
+
+    Um1                : Real from Standard;
+    UM1                : Real from Standard;
+    Vm1                : Real from Standard;
+    VM1                : Real from Standard;    
+    
+    Um2                : Real from Standard;
+    UM2                : Real from Standard;
+    Vm2                : Real from Standard;
+    VM2                : Real from Standard;  
+    
+    ResoU1             : Real from Standard;
+    ResoU2             : Real from Standard;
+    ResoV1             : Real from Standard;
+    ResoV2             : Real from Standard;
+
+    sensCheminement    : Integer  from Standard;
+    choixIsoSav        : ConstIsoparametric  from IntImp; 
+                       -- sauvegarde du choix 1 iere iso
+    previousPoint      : PntOn2S  from IntSurf;              
+                       -- point d 'intersection precedent
+    previoustg         : Boolean  from Standard;
+    previousd          : Dir      from gp;
+    previousd1         : Dir2d    from gp;
+    previousd2         : Dir2d    from gp;
+    firstd1            : Dir2d    from gp;
+    firstd2            : Dir2d    from gp;
+
+    myIntersectionOn2S : TheInt2S ;
+
+end PWalking;

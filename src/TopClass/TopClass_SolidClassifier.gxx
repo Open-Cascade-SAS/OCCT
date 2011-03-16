@@ -1,0 +1,182 @@
+//-- TopClass_SolidClassifier.gxx
+
+#ifdef DEB
+Standard_EXPORT Standard_Boolean TopClass_GettraceFC();
+#endif
+
+#include <gp_Lin.hxx>
+
+//extern void DrawSegment(const gp_Pnt& P1,const gp_Lin& L,const Standard_Real par);
+//extern Standard_Boolean DebugDrawSegment;
+
+TopClass_SolidClassifier::TopClass_SolidClassifier() 
+{ 
+}
+
+
+TopClass_SolidClassifier::TopClass_SolidClassifier(TheSolidExplorer& S,
+						   const gp_Pnt&  P,
+						   const Standard_Real Tol) { 
+  Perform(S,P,Tol);
+}
+
+
+void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
+				       const gp_Pnt&  P,
+				       const Standard_Real Tol) { 
+#ifdef DEB
+  Standard_Boolean trace = TopClass_GettraceFC();
+#endif
+
+  myState = 0;
+  if(SolidExplorer.Reject(P) == Standard_False) { 
+
+    //-- There is no rejection between the Shape loaded in the SolidExplorer
+    //-- and the point P.
+
+    gp_Lin L;
+    Standard_Real Par;
+    //-- We compute the intersection betwwen the line builded in the Solid Explorer
+    //-- and the shape.
+
+    SolidExplorer.Segment(P,L,Par);
+
+    TheIntersection3d Intersector;
+    
+    Standard_Real parmin = RealLast();
+
+    for(SolidExplorer.InitShell();
+	SolidExplorer.MoreShell();
+	SolidExplorer.NextShell()) { 
+
+      if(SolidExplorer.RejectShell(L) == Standard_False) { 
+
+	for(SolidExplorer.InitFace(); 
+	    SolidExplorer.MoreFace(); 
+	    SolidExplorer.NextFace()) {
+	  
+	  if(SolidExplorer.RejectFace(L) == Standard_False) { 
+	    
+	    Intersector.Perform(L,Par,Tol,SolidExplorer.CurrentFace());
+	    
+	    if(Intersector.IsDone()) { 
+	      if(Intersector.HasAPoint()) { 
+		if(Intersector.WParameter() < parmin) {
+ 
+		  parmin = Intersector.WParameter();
+		  if(Abs(parmin)<=Tol) { 
+#ifdef DEB
+		    if (trace) {
+		      //-- #########################################
+		      cout<<" parmin = "<<parmin<< " avec Par = "<<Par;
+		      cout<<" ds TopClass_SolidClassifier.gxx  "<<endl;
+		      //-- #########################################
+		    }
+#endif
+		    myState = 2;
+		    myFace  = Intersector.Face(); 
+		  }
+		  else if(Intersector.State()==TopAbs_IN) { 
+
+		    //-- The intersection point between the line and a face F 
+		    // -- of the solid is in the face F 
+
+		    if(Intersector.Transition() == IntCurveSurface_Out) { 
+		      //-- The line is going from inside the solid to outside 
+		      //-- the solid.
+		      myState = 3; //-- IN --
+		    }
+		    else if(Intersector.Transition() == IntCurveSurface_In) { 
+		      myState = 4; //-- OUT --
+		    }
+		    else {
+#ifdef DEB
+		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx"<<endl;
+#endif
+		    }
+		    myFace  = Intersector.Face();
+		  }
+		  else if(Intersector.State()==TopAbs_ON)  {
+		    //-- The intersection point between the line and a face F 
+		    //-- of the solid is in the face F 
+
+		    if(Intersector.Transition() == IntCurveSurface_Out) { 
+		      //-- The line is going from inside the solid to outside 
+		      //-- the solid.
+		      myState = 3; //-- IN --
+		    }
+		    else if(Intersector.Transition() == IntCurveSurface_In) { 
+		      myState = 4; //-- OUT --
+		    }
+		    else { 
+#ifdef DEB
+		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx "<<endl;
+#endif
+		    }
+#ifdef DEB
+		    //-- #########################################
+//		    cout<<" Intersector.State() == TopAbs_ON";
+//		    cout<<" ds TopClass_SolidClassifier.gxx "<<endl;
+//		    cout<<" Transition : ";
+//		    if(myState==3) { cout<<" IN "; } 
+//		    else if(myState==4) { cout<<" OUT "; } 
+//		    else { cout<<" PB "; } 
+//		    cout<<endl;
+		    //-- #########################################
+#endif		    
+		    //-- myState = 2;
+		    myFace  = Intersector.Face();
+		  }
+		}
+		else { 
+		  //-- No point has been found by the intersector.
+		  //-- Or a Point has been found with a greater parameter.
+		}
+	      } //-- Intersector Has a point 
+	      else { 
+		//-- The intersector failed.
+	      } 
+	    } //-- Face has not been rejected
+	    else { 
+	      myState = 1;
+	    }
+	  }
+	} //-- Exploration of the faces
+      } //-- Shell has not been rejected
+      else { 
+	myState=1; 
+      }
+    } //-- Exploration of the shells
+
+#ifdef DEB
+    //#################################################
+    SolidExplorer.DumpSegment(P,L,parmin,State());
+    //#################################################
+#endif
+
+  } //-- Solid has not been rejected
+  else { 
+    myState = 1;
+  }
+}
+
+
+TopAbs_State TopClass_SolidClassifier::State() const { 
+  if(myState==2)  return(TopAbs_ON);
+  if(myState==4)        return(TopAbs_OUT);          //--
+  else if(myState==3)   return(TopAbs_IN);           //-- 
+  return(TopAbs_OUT);             
+}
+
+TopoDS_Face TopClass_SolidClassifier::Face() const {  
+  return(myFace);
+}
+
+Standard_Boolean TopClass_SolidClassifier::Rejected() const { 
+  return(myState==1); 
+}
+
+  
+Standard_Boolean TopClass_SolidClassifier::IsOnAFace() const { 
+  return(myState==2);
+}

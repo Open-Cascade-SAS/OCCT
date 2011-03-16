@@ -1,0 +1,220 @@
+-- File:	TopOpeBRepBuild_Builder1.cdl
+-- Created:	Wed Sep 29 09:33:29 1999
+-- Author:	Maxim ZVEREV
+--		<mzv@irinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class Builder1 from TopOpeBRepBuild inherits  Builder  from  TopOpeBRepBuild
+
+	---Purpose: extension  of  the  class  TopOpeBRepBuild_Builder  dedicated 
+	---         to  avoid  bugs  in  "Rebuilding Result" algorithm  for  the  case  of  SOLID/SOLID  Boolean  Operations  
+
+uses
+    HBuilder from TopOpeBRepBuild , 
+    BuildTool  from  TopOpeBRepDS, 
+    Shape  from  TopoDS,  
+    Edge  from  TopoDS, 
+    Face  from  TopoDS,
+    ListOfShape  from  TopTools,   
+    SequenceOfShape  from  TopTools,
+    ShellFaceSet from   TopOpeBRepBuild,  
+    WireEdgeSet  from  TopOpeBRepBuild,
+    GTopo  from  TopOpeBRepBuild, 
+    IndexedMapOfShape  from  TopTools, 
+    IndexedDataMapOfShapeListOfShape  from  TopTools,  
+    DataMapOfOrientedShapeInteger from  TopTools , 
+    HDataStructure  from  TopOpeBRepDS, 
+    IndexedMapOfOrientedShape  from  TopTools,
+    IndexedDataMapOfShapeShape from TopTools , 
+    State  from  TopAbs, 
+    IndexedDataMapOfShapeWithState  from  TopOpeBRepDS, 
+    DataMapOfShapeState from TopOpeBRepDS,
+    PaveSet  from  TopOpeBRepBuild, 
+    DataMapOfShapeListOfShape  from  TopTools
+--raises
+
+is
+    Create(BT:  BuildTool  from  TopOpeBRepDS)  returns   
+    Builder1 from TopOpeBRepBuild ;  
+
+        
+    ---------------------      BASE  CLASS  REDEFINITIONS  
+    --modified by NIZHNY-MZV  Sat May  6 10:07:00 2000 
+    Destroy(me:  out)  is  redefined  virtual; 
+    ---C++:  alias  "Standard_EXPORT virtual ~TopOpeBRepBuild_Builder1()  {  Destroy() ; }"
+
+    Clear(me:in out)  is  redefined;
+    ---Purpose: Removes all splits and merges already performed.
+    -- Does NOT clear the handled DS  (except  ShapeWithStatesMaps).
+ 
+    Perform (me:in out;HDS:mutable HDataStructure  from  TopOpeBRepDS )  is  redefined; 
+     
+    Perform(me:  out;  HDS  :  HDataStructure  from  TopOpeBRepDS; 
+    	    S1  :  Shape  from  TopoDS; 
+	    S2  :  Shape  from  TopoDS)  is  redefined;
+ 
+    MergeKPart(me:in out)  is  redefined;
+    MergeKPart(me:in out;TB1,TB2:State)  is  redefined;  
+    
+    GFillSolidSFS(me:in out;  SO1:  Shape  from  TopoDS; 
+    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	      G:  GTopo from   TopOpeBRepBuild; 
+    	    	    	      SFS:in out ShellFaceSet  from  TopOpeBRepBuild)  is  redefined; 
+			      
+    GFillShellSFS(me:in out;SH1:  Shape  from  TopoDS; 
+    	    	    	    LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    G:  GTopo  from  TopOpeBRepBuild; 
+    	    	    	    SFS: in out ShellFaceSet  from  TopOpeBRepBuild)  is  redefined;  
+			    
+    GWESMakeFaces(me:  out;  FF:  Shape  from  TopoDS; 
+    	    	    	     WES  :  out  WireEdgeSet  from  TopOpeBRepBuild; 
+			     LOF  :  out  ListOfShape   from  TopTools)  is  redefined;  
+
+				      
+    ---------------------  END  BASE  CLASS  REDEFINITIONS  							    								  
+
+
+    ---------------------  NEW  METHODS
+    ---Category:  split  edges  and  fill  ShapeWithState  Map
+    PerformShapeWithStates(me:out)is  protected;   
+    
+    PerformShapeWithStates(me:out;    
+    	                   anObj:Shape from  TopoDS;  
+                           aTool:Shape from  TopoDS)  
+                            is protected;
+                          
+	
+    StatusEdgesToSplit    (me:out;   
+                           anObj:Shape from  TopoDS;  
+                           anEdgesToSplitMap:IndexedMapOfShape from TopTools; 
+			   anEdgesToRestMap:IndexedMapOfShape from TopTools) 
+                            is protected;  				     
+			    
+    SplitEdge             (me:out; 
+                           anEdge:Shape  from  TopoDS;  
+			   aLNew: out ListOfShape from TopTools;
+                           aDataMapOfShapeState:out DataMapOfShapeState from TopOpeBRepDS) 
+                            is protected;  	 
+
+    GFillSplitsPVS        (me:  out; 
+    	    	    	   anEdge:  Shape  from  TopoDS; 
+			   G1  :  GTopo  from  TopOpeBRepBuild; 
+			   PVS  :  out  PaveSet  from  TopOpeBRepBuild);
+
+    PerformFacesWithStates(me:out;  
+                           anObj:Shape from  TopoDS;   
+    	                   aFaces:IndexedMapOfShape from  TopTools; 
+                           aSplF :out DataMapOfShapeState from TopOpeBRepDS)   
+                            is protected;  
+
+    ---Category:  Fill  Non-same  domain  faces 
+    
+    GFillFaceNotSameDomSFS(me:in out; F1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild; 
+    	    	    	    	      SFS:  in out ShellFaceSet  from  TopOpeBRepBuild); 
+				       
+    GFillFaceNotSameDomWES(me:in out; F1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild; 
+    	    	    	    	      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+				       
+    GFillWireNotSameDomWES(me:in out; W1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild;  
+				      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+				       
+    GFillEdgeNotSameDomWES(me:in out; E1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild;  
+				      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+     
+    ---Category:  Fill  Same  domain  faces 
+    
+    GFillFaceSameDomSFS(me:in out; F1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild; 
+    	    	    	    	      SFS:  in out ShellFaceSet  from  TopOpeBRepBuild); 
+				       
+    GFillFaceSameDomWES(me:in out; F1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild; 
+    	    	    	    	      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+				       
+    GFillWireSameDomWES(me:in out; W1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild;  
+				      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+				       
+    GFillEdgeSameDomWES(me:in out; E1:  Shape  from  TopoDS; 
+    	    	    	    	      LSO2:  ListOfShape  from  TopTools; 
+    	    	    	    	      G:  GTopo  from  TopOpeBRepBuild;  
+				      WES:  in out WireEdgeSet  from  TopOpeBRepBuild);  
+
+    PerformONParts(me:  in  out;  F:  Shape  from  TopoDS; 
+    		   SDfaces:  IndexedMapOfShape  from  TopTools; 												    
+    	    	   G:  GTopo  from  TopOpeBRepBuild; 
+		   WES:  in out WireEdgeSet  from  TopOpeBRepBuild);
+		   
+
+    PerformPieceIn2D(me:  in  out;  aPieceToPerform  :  Edge  from  TopoDS; 
+    	    	    	    	    aOriginalEdge  :    Edge  from  TopoDS; 
+				    edgeFace  :         Face  from  TopoDS; 
+				    toFace  :           Face  from  TopoDS; 
+    	    	    	    	    G:  GTopo  from  TopOpeBRepBuild; 
+				    keep  :  out  Boolean  from  Standard);				     
+								     
+
+    PerformPieceOn2D(me:  in  out;  aPieceObj  :  Shape  from  TopoDS; 
+    	    	    	    	    aFaceObj  :  Shape  from  TopoDS; 
+				    aEdgeObj  :  Shape  from  TopoDS; 
+				    aListOfPieces  :  out  ListOfShape  from  TopTools; 
+    	    	    	    	    aListOfFaces  :  out  ListOfShape  from  TopTools; 
+    	    	    	    	    aListOfPiecesOut2d:out  ListOfShape  from TopTools	) 
+				    returns  Integer  from  Standard; 
+
+    TwoPiecesON	(me  :  in  out;  aSeq  :  SequenceOfShape  from  TopTools; 
+    	    	    	    	  aListOfPieces  :  out  ListOfShape  from  TopTools; 
+    	    	    	    	  aListOfFaces  :  out  ListOfShape  from  TopTools; 
+    	    	    	    	  aListOfPiecesOut2d  :  out  ListOfShape  from  TopTools) 
+				  returns  Integer  from  Standard;					      
+
+    IsSame2d          (me:out;	aSeq:SequenceOfShape from TopTools;
+    	                aListOfPiecesOut2d:out ListOfShape from TopTools) 
+                        returns  Integer  from  Standard is protected;	  
+
+    ---Category:  Tools,  Correctors  and  auxiliary  methods      
+
+    CorrectResult2d   (me:out;  aResult:out  Shape  from  TopoDS) 
+    	    	    	returns  Integer  from  Standard;
+    --modified by NIZHNY-MZV  Thu Feb 10 13:22:40 2000
+    OrientateEdgeOnFace(me;  EdgeToPerform  :  out  Edge  from  TopoDS; 
+    	    	    	     baseFace  :  Face  from  TopoDS; 
+			     edgeFace  :  Face  from  TopoDS; 
+			     G1  :  GTopo  from  TopOpeBRepBuild; 
+			     stateOfFaceOri  :  out  Boolean  from  Standard)  is  protected;
+    
+fields 
+    mySameDomMap  :  IndexedMapOfShape  from  TopTools; 
+    mySDFaceToFill  :  Shape  from  TopoDS; 
+    myBaseFaceToFill  :  Shape  from  TopoDS; 
+    myMapOfEdgeFaces  :  IndexedDataMapOfShapeListOfShape  from  TopTools; 
+    myMapOfEdgeWithFaceState  :  DataMapOfOrientedShapeInteger  from  TopTools; 
+    myProcessedPartsOut2d  :  IndexedMapOfShape  from  TopTools; 
+    myProcessedPartsON2d  :  IndexedMapOfShape  from  TopTools; 
+    mySplitsONtoKeep  :  IndexedMapOfShape  from  TopTools;
+
+    mySourceShapes  :  IndexedMapOfOrientedShape  from  TopTools;
+  
+    myMapOfCorrect2dEdges:  IndexedDataMapOfShapeShape from TopTools;  
+    
+     -- new faces to split with their splits 
+    myFSplits:DataMapOfShapeListOfShape  is  protected;
+    -- new edges to split with their splits 
+    myESplits:DataMapOfShapeListOfShape  is  protected;
+
+friends
+    class HBuilder from TopOpeBRepBuild 
+    
+end Builder1;

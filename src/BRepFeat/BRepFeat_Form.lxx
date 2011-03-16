@@ -1,0 +1,85 @@
+// File:	BRepFeat_Form.lxx
+// Created:	Thu Feb  6 14:55:23 1997
+// Author:	Olga PILLOT
+//		<opt@partox.paris1.matra-dtv.fr>
+
+
+//=======================================================================
+//function : BRepFeatForm
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_Form::BRepFeat_Form () : 
+   mySbOK(Standard_False),myGSOK(Standard_False),mySFOK(Standard_False),
+   mySUOK(Standard_False),myGFOK(Standard_False)
+{}
+
+//=======================================================================
+//function : BasisShapeValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::BasisShapeValid()
+{
+  mySbOK = Standard_True;
+}
+//=======================================================================
+//function : PerfSelectionValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::PerfSelectionValid()
+{
+  myPSOK = Standard_True;
+}
+
+//=======================================================================
+//function : GeneratedShapeValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::GeneratedShapeValid()
+{
+  myGSOK = Standard_True;
+}
+//=======================================================================
+//function : ShapeFromValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::ShapeFromValid()
+{
+  mySFOK = Standard_True;
+}
+//=======================================================================
+//function : ShapeUntilValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::ShapeUntilValid()
+{
+  mySUOK = Standard_True;
+}
+
+//=======================================================================
+//function : GluedFacesValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::GluedFacesValid()
+{
+  myGFOK = Standard_True;
+}
+
+//=======================================================================
+//function : SketchFaceValid
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_Form::SketchFaceValid()
+{
+  mySkOK = Standard_True;
+}
+
+
+

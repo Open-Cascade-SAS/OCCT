@@ -1,0 +1,48 @@
+-- File:	TNaming_RefShape.cdl
+-- Created:	Tue Dec 17 14:55:50 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+private class RefShape from TNaming 
+
+uses
+   Label       from TDF,
+   NamedShape  from TNaming, 	
+   Shape       from TopoDS,
+   PtrNode     from TNaming     
+
+is
+    Create returns RefShape from TNaming;
+	---C++: inline    
+    
+    Create (S : Shape from TopoDS) returns RefShape from TNaming;
+	---C++: inline    
+    
+    Shape    (me : in out; S    : Shape    from TopoDS);
+    	---C++: inline
+    
+    FirstUse (me : in out; aPtr : PtrNode from TNaming);
+	---C++: inline
+
+    ---Category: Querying
+
+    FirstUse (me) returns PtrNode from TNaming;
+	---C++: inline    
+    
+    Shape (me) returns Shape    from TopoDS;
+	---C++: return const&
+    	---C++: inline
+
+    Label (me) returns Label from TDF;
+    
+    NamedShape (me) returns NamedShape from TNaming;
+
+	    
+fields
+
+    myShape      : Shape    from TopoDS;
+    myFirstUse   : PtrNode  from TNaming;	
+
+end RefShape;

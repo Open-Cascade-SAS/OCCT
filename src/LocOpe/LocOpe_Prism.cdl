@@ -1,0 +1,115 @@
+-- File:	LocOpe_Prism.cdl
+-- Created:	Mon Feb 24 14:56:51 1997
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+ 
+class Prism from LocOpe 
+
+	---Purpose: Defines a prism (using Prism from BRepSweep)
+	--          with modifications provided for the Prism feature.
+
+ 
+uses DataMapOfShapeListOfShape from TopTools,
+     ListOfShape               from TopTools,
+     
+     Shape from TopoDS,
+     SequenceOfCurve from TColGeom, 
+     Curve            from  Geom, 
+     Vec              from  gp
+     
+
+raises NoSuchObject from Standard,
+       NotDone      from StdFail
+
+is
+
+    Create
+    	  	    
+	returns Prism from LocOpe;     
+
+ 
+    Create (Base : Shape  from  TopoDS;
+    	    V    : Vec    from  gp)
+	    
+	returns Prism from LocOpe;     
+
+    Create (Base   : Shape from TopoDS;
+    	    V      : Vec   from  gp; 
+	    Vectra :  Vec  from  gp)
+
+    	returns Prism from LocOpe;
+
+
+    Perform(me:  in  out;  Base:  Shape  from  TopoDS; 
+    	    	    	   V   :  Vec  from  gp) 
+			    
+	is  static;
+
+
+    Perform(me:  in  out;  Base     :  Shape  from  TopoDS; 
+    	    	    	   V,Vtra   :  Vec  from  gp) 
+			    
+	is  static;
+
+
+    FirstShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    LastShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    Shape(me)
+    
+    	returns Shape from TopoDS 
+	raises  NotDone  from  StdFail
+	---C++: return const &
+	is static;
+
+
+    Shapes(me; S: Shape from TopoDS)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const &
+    	raises NoSuchObject from Standard
+	       -- The exception is raised if S is not a subshape of the profile
+	is static;
+
+
+    Curves(me;  SCurves:  in  out  SequenceOfCurve  from  TColGeom)
+    
+	is static;
+ 
+
+    BarycCurve(me) 
+     
+    	returns  Curve  from  Geom 
+	is  static;
+  
+    IntPerf(me:  in  out) 
+     
+    	is  static  private;
+ 
+
+fields
+
+    myBase       : Shape             from  TopoDS;
+    myVec        : Vec               from  gp; 
+    myTra        : Vec               from  gp; 
+    myIsTrans    : Boolean           from  Standard;
+    myDone       : Boolean           from  Standard; 
+    myRes        : Shape             from TopoDS;
+    myFirstShape : Shape             from TopoDS;
+    myLastShape  : Shape             from TopoDS;
+    myMap        : DataMapOfShapeListOfShape    from TopTools;
+     
+end Prism;     

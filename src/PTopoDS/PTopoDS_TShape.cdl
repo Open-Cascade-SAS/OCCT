@@ -1,0 +1,123 @@
+-- File:	TShape.cdl
+-- Created:	Thu Dec 13 15:30:10 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+-- Update:      Frederic Maupas
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+deferred class TShape from PTopoDS inherits Persistent from Standard
+
+	---Purpose: A TShape  is a topological  structure describing a
+	--          set of points in a 2D or 3D space.
+	--          
+
+    	--  All the information stored are potentially frozen.  So has
+    	--  the "free"  information no  sense in  the D.B. context.  A
+    	--  Shape from PTopoDS translated in  a Shape from TopoDS will
+    	--  be automatically frozen (not free).
+
+uses
+    HArray1OfHShape from PTopoDS,
+    HShape          from PTopoDS,
+    ShapeEnum       from TopAbs
+
+is
+    Initialize;
+	---Level: Internal 
+	
+    ShapeType(me) returns ShapeEnum from TopAbs
+	---Purpose: Returns the type as a term of the ShapeEnum enum :
+	--          VERTEX, EDGE, WIRE, FACE, ....
+    	---Level: Internal 
+    is deferred;
+
+    Modified(me) returns Boolean
+	---Purpose: Returns the modification flag.
+    	---Level: Internal 
+    is static;
+    
+    Modified(me : mutable; M : Boolean)
+	---Purpose: Sets the modification flag.
+    	---Level: Internal 
+    is static;
+    
+    Checked(me) returns Boolean
+       ---Purpose: Returns the checked flag.
+    	---Level: Internal 
+    is static;
+        
+    Checked(me : mutable; C : Boolean)
+       ---Purpose: Sets the checked flag.
+    	---Level: Internal 
+    is static;
+        
+    Orientable(me) returns Boolean
+       ---Purpose: Returns the orientability flag.
+    	---Level: Internal 
+    is static;
+    
+    Orientable(me : mutable; C : Boolean)
+       ---Purpose: Sets the orientability flag.
+    	---Level: Internal 
+    is static;
+    
+    Closed(me) returns Boolean
+       ---Purpose: Returns the closedness flag.
+    	---Level: Internal 
+    is static;
+    
+    Closed(me : mutable; C : Boolean)
+       ---Purpose: Sets the closedness flag.
+    	---Level: Internal 
+    is static;
+    
+    Infinite(me) returns Boolean
+       ---Purpose: Returns the infinity flag.
+    	---Level: Internal 
+    is static;
+    
+    Infinite(me : mutable; C : Boolean)
+       ---Purpose: Sets the infinity flag.
+    	---Level: Internal 
+    is static;
+    
+    Convex(me) returns Boolean
+       ---Purpose: Returns the convexness flag.
+    	---Level: Internal 
+    is static;
+    
+    Convex(me : mutable; C : Boolean)
+       ---Purpose: Sets the convexness flag.
+    	---Level: Internal 
+    is static;
+    
+    
+    Shapes(me) returns HArray1OfHShape from PTopoDS
+       ---Purpose: Sets the hshape list
+    	---Level: Internal 
+    is static;
+    
+    Shapes(me; I : Integer from Standard) returns HShape from PTopoDS
+       ---Purpose: Sets the i th element of the HShape list
+       ---Level: Internal 
+    is static;
+
+    Shapes(me: mutable; S : HArray1OfHShape from PTopoDS)
+       ---Purpose: Returns the HShape list
+        ---Level: Internal 
+    is static;
+    
+    Shapes(me: mutable; I : Integer from Standard; S : HShape from PTopoDS)
+       ---Purpose: Returns the i th element of the hshape list
+        ---Level: Internal 
+    is static;
+    
+    
+fields
+
+    myShapes  : HArray1OfHShape from PTopoDS;
+    myFlags   : Integer         from Standard;
+
+end TShape;
+

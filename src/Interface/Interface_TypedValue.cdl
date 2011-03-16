@@ -1,0 +1,94 @@
+-- File:	Interface_TypedValue.cdl
+-- Created:	Mon Feb 23 12:32:29 1998
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class TypedValue  from Interface    inherits TypedValue  from MoniTool
+
+    ---Purpose : Now strictly equivalent to TypedValue from MoniTool,
+    --           except for ParamType which remains for compatibility reasons
+    --           
+    --           This class allows to dynamically manage .. typed values, i.e.
+    --           values which have an alphanumeric expression, but with
+    --           controls. Such as "must be an Integer" or "Enumerative Text"
+    --           etc
+    --           
+    --           Hence, a TypedValue brings a specification (type + constraints
+    --           if any) and a value. Its basic form is a string, it can be
+    --           specified as integer or real or enumerative string, then
+    --           queried as such.
+    --           Its string content, which is a Handle(HAsciiString) can be
+    --           shared by other data structures, hence gives a direct on line
+    --           access to its value.
+
+uses CString, Type from Standard,
+     AsciiString from TCollection, HAsciiString from TCollection,
+     HSequenceOfAsciiString  from TColStd, HArray1OfAsciiString  from TColStd,
+     HSequenceOfHAsciiString from TColStd,
+     DictionaryOfInteger from Dico,
+     ParamType from Interface , ValueType from MoniTool,
+     ValueSatisfies from Interface, ValueInterpret from Interface
+
+raises InterfaceError
+
+is
+
+    Create (name : CString;
+    	    type : ParamType from Interface = Interface_ParamText;
+	    init : CString = "")  returns mutable TypedValue;
+    ---Purpose : Creates a TypedValue, with a name
+    --           
+    --           type gives the type of the parameter, default is free text
+    --           Also available : Integer, Real, Enum, Entity (i.e. Object)
+    --           More precise specifications, titles, can be given to the
+    --           TypedValue once created
+    --           
+    --           init gives an initial value. If it is not given, the
+    --           TypedValue begins as "not set", its value is empty
+
+    Type   (me) returns ParamType from Interface;
+    ---Purpose : Returns the type
+    --           I.E. calls ValueType then makes correspondance between
+    --             ParamType from Interface (which remains for compatibility
+    --              reasons) and ValueType from MoniTool
+
+    ParamTypeToValueType (myclass; typ : ParamType from Interface)
+    	returns ValueType from MoniTool;
+    ---Purpose : Correspondance ParamType from Interface  to
+    --               ValueType from MoniTool
+
+    ValueTypeToParamType (myclass; typ : ValueType from MoniTool)
+    	returns ParamType from Interface;
+    ---Purpose : Correspondance ParamType from Interface  to
+    --               ValueType from MoniTool
+
+fields
+
+    thename   : AsciiString;
+    thedef    : AsciiString;
+    thelabel  : AsciiString;
+    thetype   : ParamType from Interface;
+    theotyp   : Type from Standard;  -- for object
+
+    thelims   : Integer;  -- status for integer/enum/real limits
+    themaxlen : Integer;
+    theintlow : Integer;
+    theintup  : Integer;
+    therealow : Real;
+    therealup : Real;
+    theunidef : AsciiString;
+
+    theenums  : HArray1OfAsciiString    from TColStd;
+    theeadds  : DictionaryOfInteger;
+
+    theinterp : ValueInterpret;
+    thesatisf : ValueSatisfies;
+    thesatisn : AsciiString;
+
+    theival   : Integer;
+    thehval   : HAsciiString from TCollection;
+    theoval   : Transient;
+
+end Static;

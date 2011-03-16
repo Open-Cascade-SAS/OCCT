@@ -1,0 +1,22 @@
+-- File:        PS.cdl
+-- Created:     Tue Feb 22 08:43:34 1994
+-- Author:      Jean Louis FRENKEL
+--              <jlf@minox>
+---Copyright:    Matra Datavision 1994
+
+package PS 
+
+uses
+  Aspect,
+  PlotMgt,
+  TCollection,
+  Quantity,
+  TShort,
+  MFT
+
+is
+  class Driver;
+  ---Purpose: Creates the PS driver.
+  ---Category: Classes
+
+end PS;

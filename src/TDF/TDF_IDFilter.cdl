@@ -1,0 +1,129 @@
+-- File:	TDF_IDFilter.cdl
+--      	----------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	May 26 1997	Creation
+
+
+class IDFilter from TDF
+
+	---Purpose: This class offers filtering services around an ID list.
+
+uses
+
+    GUID      from Standard,
+    IDList    from TDF,
+    IDMap     from TDF,
+    Attribute from TDF
+
+-- raises
+
+is
+
+    Create(ignoreMode : Boolean from Standard = Standard_True)
+    	returns IDFilter from TDF;
+	---Purpose: Creates an ID/attribute filter based on an ID
+	--          list. The default mode is "ignore all but...".
+	--          
+	--          This filter has 2 working mode: keep and ignore.
+	--          
+	--          Ignore/Exclusive mode: all IDs are ignored except
+	--          these set to be kept, using Keep(). Of course, it
+	--          is possible set an kept ID to be ignored using
+	--          Ignore().
+	--          
+	--          Keep/Inclusive mode: all IDs are kept except these
+	--          set to be ignored, using Ignore(). Of course, it
+	--          is possible set an ignored ID to be kept using
+	--          Keep().
+
+
+    Create(aFilter : IDFilter from TDF)
+    	returns IDFilter from TDF
+	is private;
+	---Purpose: Private, to forbid implicit or hidden accesses to
+	--          the copy constructor.
+
+    -- Mode methods.
+
+    IgnoreAll(me : in out; ignore : Boolean from Standard);
+	---Purpose: The list of ID is cleared and the filter mode is
+	--          set to ignore mode if <keep> is true; false
+	--          otherwise.
+
+    IgnoreAll(me) returns Boolean from Standard;
+	---Purpose: Returns true is the mode is set to "ignore all
+	--          but...".
+	--          
+    	---C++: inline
+
+
+    -- Keep/Ignore methods.
+
+    Keep(me : in out; anID : GUID from Standard);
+	---Purpose: An attribute with <anID> as ID is to be kept and
+	--          the filter will answer true to the question
+	--          IsKept(<anID>).
+
+    Keep(me : in out; anIDList : IDList from TDF);
+	---Purpose: Attributes with ID owned by <anIDList> are to be kept and
+	--          the filter will answer true to the question
+	--          IsKept(<anID>) with ID from <anIDList>.
+
+    Ignore(me : in out; anID :  GUID from Standard);
+	---Purpose: An attribute with <anID> as ID is to be ignored and
+	--          the filter will answer false to the question
+	--          IsKept(<anID>).
+
+    Ignore(me : in out; anIDList : IDList from TDF);
+	---Purpose: Attributes with ID owned by <anIDList> are to be
+	--          ignored and the filter will answer false to the
+	--          question IsKept(<anID>) with ID from <anIDList>.
+
+
+    -- Question methods.
+
+    IsKept(me; anID :  GUID from Standard) returns Boolean from Standard;
+	---Purpose: Returns true if the ID is to be kept.
+	--          
+    	---C++: inline
+
+    IsKept(me; anAtt : Attribute from TDF) returns Boolean from Standard;
+	---Purpose: Returns true if the attribute is to be kept.
+	--          
+    	---C++: inline
+
+    IsIgnored(me; anID :  GUID from Standard) returns Boolean from Standard;
+	---Purpose: Returns true if the ID is to be ignored.
+	--          
+    	---C++: inline
+
+    IsIgnored(me; anAtt : Attribute from TDF) returns Boolean from Standard;
+	---Purpose: Returns true if the attribute is to be ignored.
+	--          
+    	---C++: inline
+
+
+    -- Miscelleaneous
+
+    IDList(me; anIDList : in out IDList from TDF);
+	---Purpose: Copies the list of ID to be kept or ignored in
+	--          <anIDList>. <anIDList> is cleared before use.
+
+    Copy(me : in out; fromFilter : IDFilter from TDF);
+	---Purpose: Copies into <me> the contents of
+	--          <fromFilter>. <me> is cleared before copy.
+
+    Dump(me; anOS : in out OStream from Standard);
+	---Purpose: Writes the contents of <me> to <OS>.
+
+fields
+
+    myIgnore : Boolean from Standard;
+    myIDMap  : IDMap   from TDF;
+
+end IDFilter;

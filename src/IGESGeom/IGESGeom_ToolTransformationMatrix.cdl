@@ -1,0 +1,63 @@
+-- File:	IGESGeom_ToolTransformationMatrix.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolTransformationMatrix  from IGESGeom
+
+    ---Purpose : Tool to work on a TransformationMatrix. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses TransformationMatrix from IGESGeom,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolTransformationMatrix;
+    ---Purpose : Returns a ToolTransformationMatrix, ready to work
+
+
+    ReadOwnParams (me; ent : mutable TransformationMatrix;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : TransformationMatrix;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : TransformationMatrix;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a TransformationMatrix <ent>, from
+    --           its specific (own) parameters
+
+    OwnCorrect (me; ent : mutable TransformationMatrix) returns Boolean  is static;
+    ---Purpose : Sets automatic unambiguous Correction on a TransformationMatrix
+    --           (FormNumber if 0 or 1, recomputed according Positive/Negative)
+
+    DirChecker (me; ent : TransformationMatrix) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : TransformationMatrix;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : TransformationMatrix; entto : mutable TransformationMatrix;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : TransformationMatrix;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolTransformationMatrix;

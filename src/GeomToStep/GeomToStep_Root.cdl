@@ -1,0 +1,23 @@
+-- File:	GeomToStep_Root.cdl
+-- Created:	Mon Jun 14 11:44:56 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+private deferred class Root from GeomToStep
+
+    ---Purpose : This class implements the common services for
+    --           all classes of GeomToStep which report error.
+
+is
+
+    IsDone(me) returns Boolean
+    	is static;
+
+fields
+
+    done     : Boolean is protected;
+    --Equal True if everything is ok, False otherwise.
+
+end Root;
+

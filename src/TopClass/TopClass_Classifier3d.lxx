@@ -1,0 +1,26 @@
+// File:	TopClass_Classifier3d.lxx
+// Created:	Wed Mar 30 14:12:48 1994
+// Author:	Laurent BUCHARD
+//		<lbr@fuegox>
+
+inline Standard_Real TopClass_Classifier3d::Parameter() const
+{
+  return myParam;
+}
+
+//=======================================================================
+inline TheIntersector& TopClass_Classifier3d::Intersector()
+{
+  return(myIntersector);
+}
+
+//=======================================================================
+inline Standard_Boolean TopClass_Classifier3d::HasIntersection() const
+{
+  return(hasIntersect);
+}
+//=======================================================================
+inline  TopAbs_State TopClass_Classifier3d::State() const
+{
+  return(myState);
+}

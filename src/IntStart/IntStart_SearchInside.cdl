@@ -1,0 +1,96 @@
+-- File:	SearchInside.cdl
+-- Created:	Fri May 15 11:02:58 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class SearchInside from IntStart (
+       ThePSurface     as any;
+       ThePSurfaceTool as any;  -- as PSurfaceTool from IntStart (ThePSurface)
+       TheTopolTool    as Transient; -- as SITopolTool from IntStart
+       TheSITool       as any;  -- as SITool       from IntStart (ThePSurface)
+       TheFunction     as any)  -- as SIFunction from IntStart(ThePSurface)
+
+
+	---Purpose: 
+
+uses InteriorPoint           from IntSurf,
+     SequenceOfInteriorPoint from IntSurf
+
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+
+is
+
+    Create
+    
+    	returns SearchInside from IntStart;
+
+
+    Create (F: in out TheFunction; Surf: ThePSurface; T: TheTopolTool;
+            Epsilon : Real from Standard)
+    
+    	returns SearchInside from IntStart;
+
+
+    Perform(me: in out; F: in out TheFunction; Surf: ThePSurface;
+                        T: TheTopolTool;
+                        Epsilon: Real from Standard)
+    
+    	is static;
+
+    Perform(me: in out; F: in out TheFunction; Surf: ThePSurface;
+                        UStart,VStart: Real from Standard)
+    
+    	is static;
+
+
+    IsDone(me)
+    
+    	returns Boolean
+	---C++: inline
+	
+	is static;
+
+
+    NbPoints(me)
+    
+	---Purpose: Returns the number of points.
+	--          The exception NotDone if raised if IsDone 
+	--          returns False.
+    
+    	returns Integer
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+
+
+    Value(me; Index: Integer)
+    
+	---Purpose: Returns the point of range Index.
+	--          The exception NotDone if raised if IsDone 
+	--          returns False.
+	--          The exception OutOfRange if raised if
+	--          Index <= 0 or Index > NbPoints.
+
+    	returns InteriorPoint from IntSurf
+	---C++: return const&
+	---C++: inline
+	
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+    	is static;
+
+
+fields
+
+    done : Boolean                 from Standard;
+    list : SequenceOfInteriorPoint from IntSurf;
+
+end SearchInside;

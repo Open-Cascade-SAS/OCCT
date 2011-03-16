@@ -1,0 +1,88 @@
+
+-- File:	Graphic2d_InfiniteLine.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL, Gerard GRAS
+--		<jlf@stylox>
+-- Modified: TCL G002A, 28-11-00, new section "inquire methods"
+
+---Copyright:	 Matra Datavision 1993
+
+class InfiniteLine from Graphic2d inherits Line from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive InfiniteLine
+
+	---Keywords: Primitive, InfiniteLine
+	---Warning:
+	---References:
+
+uses
+	Drawer          from Graphic2d,
+	GraphicObject	from Graphic2d,
+	Length          from Quantity, 
+	FStream         from Aspect,
+	IFStream	from Aspect
+
+
+raises
+	InfiniteLineDefinitionError	from Graphic2d
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		X, Y, DX, DY: Length from Quantity)
+	returns mutable InfiniteLine from Graphic2d
+	---Level: Public
+	---Purpose: Creates an infinite line.
+	--	    The reference point is <X>, <Y>.
+	--	    The slope is <DX>, <DY>.
+	--  Warning: Raises InfiniteLineDefinitionError if the
+	--          <DX> and <DY> are null.
+	raises InfiniteLineDefinitionError from Graphic2d;
+
+	--------------------------
+	-- Category: Draw and Pick
+	--------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Internal
+	---Purpose: Draws the infinite line <me>.
+
+	Pick (me : mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard is static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the infinite line <me> is picked,
+	--	    Standard_False if not.
+
+	--------------------------------------
+	-- Category: Inquire methods
+	--------------------------------------
+
+    Reference( me; X, Y: out Length from Quantity );  
+	---Level: Public
+	---Purpose: returns the coordinates of the reference point
+	
+	Slope( me; dX, dY: out Length from Quantity );
+	---Level: Public
+	---Purpose: returns the slope <dX>, <dY>
+
+	----------------------------------------------------------------------
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+	Retrieve(myclass; anIFStream: in out IFStream from Aspect;
+		aGraphicObject: GraphicObject from Graphic2d);
+fields
+
+	myX:	ShortReal from Standard;
+	myY:	ShortReal from Standard;
+	myDX:	ShortReal from Standard;
+	myDY:	ShortReal from Standard;
+
+end InfiniteLine from Graphic2d;

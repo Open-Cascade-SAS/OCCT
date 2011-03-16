@@ -1,0 +1,80 @@
+--
+-- File:	Aspect_WidthMap.cdl
+-- Created:	23/03/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class WidthMap from Aspect inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a WidthMap object.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	WidthOfLine		from Aspect,
+	WidthMapEntry 		from Aspect,
+	SequenceOfWidthMapEntry	from Aspect,
+	Length			from Quantity
+
+raises
+	BadAccess 	from Aspect
+
+is
+	Create
+	returns mutable WidthMap from Aspect;
+	---Level: Public
+        ---Purpose: Creates a width map.
+
+        AddEntry (me : mutable; AnEntry : WidthMapEntry from Aspect)
+	---Level: Public
+        ---Purpose: Adds an entry in the Width map <me>.
+        --  Warning: Raises BadAccess if WidthMap size is exceeded.
+        raises BadAccess from Aspect;
+
+        AddEntry (me : mutable; aStyle : WidthOfLine from Aspect)
+                                        returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical line width entry in the width map <me>
+        -- and returns the WidthMapEntry Index if exist.
+        -- Or add a new entry and returns the computed WidthMapEntry index used.
+
+        AddEntry (me : mutable; aStyle : Length from Quantity)
+                                        returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical line width entry in the width map <me>
+        -- and returns the WidthMapEntry Index if exist.
+        -- Or add a new entry and returns the computed WidthMapEntry index used.
+
+        Size( me ) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the Allocated widthmap Size
+ 
+        Index( me ; aWidthmapIndex : Integer ) returns Integer from Standard
+        ---Level: Public
+        ---Purpose: Returns the WidthMapEntry.Index of the WidthMap
+        --          at rank <aWidthmapIndex> .
+        raises BadAccess from Aspect is static;
+        ---Trigger: Raises BadAccess if the index less than 1 or
+        --          greater than Size.
+ 
+	Entry ( me ;
+		AnIndex : Integer from Standard )
+	returns WidthMapEntry from Aspect
+	---Level: Public
+	---Purpose: Returns the Width map entry with the index <AnIndex>.
+	--  Warning: Raises BadAccess if the index less than 1 or
+	--	    greater than Size.
+	raises BadAccess from Aspect is static;
+
+	Dump ( me ) ;
+	---Level: Internal
+
+fields
+	mydata : SequenceOfWidthMapEntry from Aspect is protected;
+
+end WidthMap ;

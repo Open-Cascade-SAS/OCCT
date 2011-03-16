@@ -1,0 +1,175 @@
+-- File:	DrawTrSurf.cdl
+-- Created:	Mon Jun 24 11:23:25 1991
+-- Author:	Christophe MARION
+--		<cma@phobox>
+---Copyright:	 Matra Datavision 1991
+
+
+
+package DrawTrSurf 
+
+	---Purpose: This  package supports the   display of parametric
+	--          curves and surfaces.
+	--          
+	--          The  Drawable deferred  classes is  inherited from
+	--          the Drawable3D  class  from  the package Draw,  it
+	--          adds methods to  draw 3D Curves  and  Curves on 3D
+	--          Surfaces.
+	--          
+	--          The classes Curve Curve2d and Surface are drawable
+	--          and  can be  used  to  draw a   single  curve from
+	--          packages Geom or Geom2d or a surface from Geom.
+	--          
+	--          The  Triangulation  and Polygon  from the  package
+	--          Poly are also supported.
+
+uses
+   MMgt,
+   TCollection,
+   TColStd,
+   Draw,
+   Adaptor3d,
+   Adaptor2d,
+   GeomAbs,
+   Geom,
+   Geom2d,
+   gp,
+   Poly
+
+is
+    
+   deferred class Drawable;
+   
+   class Point;
+   
+   class Curve;
+   
+      class BSplineCurve;
+      
+      class BezierCurve;
+      
+
+   class Curve2d;
+   
+      class BSplineCurve2d;
+      
+      class BezierCurve2d;
+
+   class Triangulation2D;
+
+   class Surface;
+
+      class BSplineSurface;
+
+      class BezierSurface;
+
+   class Triangulation;
+
+   class Polygon3D;
+
+   class Polygon2D;
+
+
+    --     
+    -- package methods to handle named points curves and surface.
+    -- 
+
+    Set(Name : CString; G : Pnt from gp);
+	---Purpose: Sets <G> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; G : Pnt2d from gp);
+	---Purpose: Sets <G> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; G : Geometry from Geom);
+	---Purpose: Sets <G> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; C : Curve from Geom2d);
+	---Purpose: Sets <C> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; T : Triangulation from Poly);
+	---Purpose: Sets <T> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; P : Polygon3D from Poly);
+	---Purpose: Sets <P> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    Set(Name : CString; P : Polygon2D from Poly);
+	---Purpose: Sets <P> in the variable <Name>.  Overwrite the
+	--          variable if already set.
+    
+    
+    -- if the variable name is a void string a graphic selection is made.
+    
+    Get(Name : in out CString) returns Geometry from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+
+    GetPoint(Name :  in out CString; P : in out Pnt from gp)
+    returns Boolean;
+	---Purpose: Gets the variable. Returns False if none and print
+	--          a warning message.
+    
+    GetPoint2d(Name :  in out CString; P : in out Pnt2d from gp)
+    returns Boolean;
+	---Purpose: Gets the variable. Returns False if none and print
+	--          a warning message.
+    
+    GetCurve(Name : in out CString) returns Curve from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBezierCurve(Name :  in out CString) returns BezierCurve from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBSplineCurve(Name :  in out CString) returns BSplineCurve from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetCurve2d(Name :   in out CString) returns Curve from Geom2d;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBezierCurve2d(Name : in out CString) returns BezierCurve from Geom2d;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBSplineCurve2d(Name : in out CString) returns BSplineCurve from Geom2d;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetSurface(Name : in out CString) returns Surface from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBezierSurface(Name : in out CString) returns BezierSurface from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetBSplineSurface(Name : in out CString) returns BSplineSurface from Geom;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetTriangulation(Name : in out CString) returns Triangulation from  Poly;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetPolygon3D(Name : in out CString) returns Polygon3D from  Poly;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    GetPolygon2D(Name : in out CString) returns Polygon2D from  Poly;
+	---Purpose: Get  the variable <S>.  Returns a  null  handle if
+	--          none, and print a warning message.
+    
+    
+    
+    BasicCommands(I : in out Interpretor from Draw);
+	---Purpose: defines display commands.
+    
+end DrawTrSurf;

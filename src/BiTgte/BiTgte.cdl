@@ -1,0 +1,60 @@
+-- File:	BiTgte.cdl
+-- Created:	Mon Dec 16 10:24:04 1996
+-- Author:	Bruno DUMORTIER
+--		<dub@brunox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+package BiTgte 
+
+	---Purpose: 
+
+uses
+    Adaptor3d,
+    Bnd,
+    GeomAbs,
+    Geom2d,
+    Geom,
+    TopoDS,
+    TopTools,
+    BRepAlgo,
+    BRepFill,
+    BRepOffset,
+    TCollection,
+    TColStd,
+    TColgp,
+    gp
+
+is
+    enumeration ContactType is
+    	FaceFace,
+	FaceEdge,
+	FaceVertex,
+    	EdgeEdge,
+	EdgeVertex,
+	VertexVertex
+    end ContactType;
+
+    class Blend;
+	---Purpose: Root class 
+
+    private class CurveOnEdge;
+	---Purpose: private class used  to create a filler rolling  on
+	--          an edge.
+
+    private class HCurveOnEdge instantiates 
+    	GenHCurve from Adaptor3d(CurveOnEdge from BiTgte);
+
+    private class CurveOnVertex;
+	---Purpose: private class used  to create a filler rolling  on
+	--          an edge.
+
+    private class HCurveOnVertex instantiates 
+    	GenHCurve from Adaptor3d(CurveOnVertex from BiTgte);
+
+    private class DataMapOfShapeBox instantiates 
+       	DataMap from TCollection(Shape          from TopoDS,
+	    	    	    	 Box            from Bnd,
+				 ShapeMapHasher from TopTools);
+
+end BiTgte;

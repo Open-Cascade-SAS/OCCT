@@ -1,0 +1,166 @@
+-- File:	Extrema_GExtCC2d.cdl
+-- Created:	Wed Jul  6 14:54:25 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1994
+
+generic class GExtCC2d from Extrema (Curve1    as any;
+    	    	    	    	     Tool1     as any;
+    	    	    	    	     Curve2    as any;
+    	    	    	    	     Tool2     as any)
+
+	---Purpose: It calculates all the distance between two curves.
+	--          These distances can be maximum or minimum.
+
+uses POnCurv2d           from Extrema,
+     SequenceOfPOnCurv2d from Extrema,
+     ExtElC2d            from Extrema,
+     Pnt2d               from gp,
+     HArray1OfPnt2d      from TColgp,
+     SequenceOfReal      from TColStd
+
+
+raises  InfiniteSolutions from StdFail,
+    	NotDone           from StdFail,
+    	OutOfRange        from Standard
+	
+    class CCache2d instantiates CurveCache from Extrema (Curve1, Pnt2d from gp, HArray1OfPnt2d from TColgp);
+
+    class ECC2d    instantiates GenExtCC      from Extrema
+        (Curve1,
+         Tool1,
+         Curve2,
+         Tool2,
+         CCache2d,
+         HArray1OfPnt2d from TColgp,
+         POnCurv2d,
+         Pnt2d,
+         Vec2d);
+
+is
+
+    Create returns GExtCC2d;
+    
+
+    Create (C1: Curve1;  C2: Curve2;
+            TolC1: Real = 1.0e-10; TolC2: Real = 1.0e-10) returns GExtCC2d;
+      	---Purpose: It calculates all the distances.
+
+
+    Create (C1: Curve1;
+    	    C2: Curve2;
+	    U1: Real  from Standard;
+	    U2: Real  from Standard;
+	    V1: Real  from Standard;
+	    V2: Real  from Standard;
+            TolC1: Real = 1.0e-10;
+            TolC2: Real = 1.0e-10) returns GExtCC2d;
+      	---Purpose: It calculates all the distances.
+
+
+    Initialize(me: in out; C2: Curve2;
+    	       V1, V2: Real  from Standard; 
+    	       TolC1: Real = 1.0e-10;
+    	       TolC2: Real = 1.0e-10)
+    	---Purpose: initializes the fields.
+    is static;
+    
+    
+    Perform(me: in out; C1: Curve1;
+    	    U1, U2: Real  from Standard)
+    is static;
+    
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)= True.
+    	is static;
+
+
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the two curves are parallel.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+
+    SquareDistance (me; N: Integer =1) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True and N > 1.
+    	    	OutOfRange
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+    Points (me; N: Integer; P1,P2: out POnCurv2d)
+    	---Purpose: Returns the points of the Nth extremum distance.
+    	--          P1 is on the first curve, P2 on the second one.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True.
+    	    	OutOfRange
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+    TrimmedSquareDistances(me; dist11, distP12, distP21, distP22: out Real;
+                     P11, P12, P21, P22: out Pnt2d)
+    	---Purpose: if the curve is a trimmed curve,
+    	--          dist11 is a square distance between the point on C1
+    	--          of parameter FirstParameter and the point of 
+    	--          parameter FirstParameter on C2.
+
+    is static;
+    
+    Results(me: in out; AlgExt: ExtElC2d from Extrema;
+    	    Ut11, Ut12, Ut21, Ut22: Real;
+    	    Period1 : Real from Standard = 0.0;
+            Period2 : Real from Standard = 0.0)
+
+    is static protected;    	
+
+--  modified by NIZHNY-EAP Thu Jan 27 16:53:25 2000 ___BEGIN___
+    Results(me: in out;AlgExt: ECC2d; C : Curve1;
+--  modified by NIZHNY-EAP Thu Jan 27 16:53:26 2000 ___END___
+    	    Ut11, Ut12, Ut21, Ut22: Real;
+    	    Period1 : Real from Standard = 0.0;
+            Period2 : Real from Standard = 0.0)
+
+    is static protected;
+
+
+fields
+    myDone:   Boolean;
+    myIsPar:  Boolean;
+    mypoints: SequenceOfPOnCurv2d from Extrema;
+    mySqDist:  SequenceOfReal      from TColStd;
+    mynbext:  Integer;
+    inverse:  Boolean;
+    myC:      Address from Standard;
+    myu1:     Real;
+    myu2:     Real;
+    myv1:     Real;
+    myv2:     Real;
+    mytolc1:  Real;
+    mytolc2:  Real;
+    P1f:      Pnt2d;
+    P1l:      Pnt2d;
+    P2f:      Pnt2d;
+    P2l:      Pnt2d;
+    mydist11: Real;
+    mydist12: Real;
+    mydist21: Real;
+    mydist22: Real;
+    
+
+
+end GExtCC2d;

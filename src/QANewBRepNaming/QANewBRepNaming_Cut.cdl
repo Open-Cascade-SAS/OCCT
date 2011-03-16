@@ -1,0 +1,46 @@
+-- File:	QANewBRepNaming_Cut.cdl
+-- Created:	Tue Oct 31 14:42:07 2000
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	Open CASCADE 2003 
+
+-- sccsid[] = "@(#) 3.0-00-3, 01/10/01@(#)";
+
+-- Lastly modified by :
+-- +---------------------------------------------------------------------------+
+-- !       szy ! Adopted                                 ! 9-06-2003! 3.0-00-%L%!
+-- +---------------------------------------------------------------------------+
+
+class Cut from QANewBRepNaming inherits BooleanOperationFeat from QANewBRepNaming
+
+uses
+ 
+    Label from TDF, 
+    BooleanOperation from BRepAlgoAPI
+
+is
+ 
+    Create returns Cut from QANewBRepNaming;
+
+    Create(ResultLabel : Label from TDF) 
+    returns Cut from QANewBRepNaming;
+
+    Load (me; MakeShape : in out BooleanOperation from BRepAlgoAPI);
+
+
+end Cut;
+
+-- @@SDM: begin
+
+
+-- File history synopsis (creation,modification,correction)
+-- +---------------------------------------------------------------------------+
+-- ! Developer !              Comments                   !   Date   ! Version  !
+-- +-----------!-----------------------------------------!----------!----------+
+-- !       vro ! Creation                                !31-10-2000! 3.0-00-3 !
+-- !       vro ! Redesign                                !13-12-2000! 3.0-00-3 !
+-- !       szy ! Adopted                                 ! 9-06-2003! 3.0-00-%L%!
+-- +---------------------------------------------------------------------------+
+-- Lastly modified by : szy                                    Date :  9-06-2003 
+
+-- @@SDM: end

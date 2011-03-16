@@ -1,0 +1,56 @@
+-- File:	AdvApp2Var_Network.cdl
+-- Created:	Wed Apr 10 16:46:25 1996
+-- Author:	Joelle CHAUVET
+--		<jct@sgi38>
+-- Modified:	Mon Dec  9 10:30:56 1996
+--    by:	Joelle CHAUVET
+--		G1135 : Empty constructor
+---Copyright:	 Matra Datavision 1996
+           	 
+
+class Network from AdvApp2Var
+
+uses
+
+    Boolean,Integer,Real from Standard,
+    SequenceOfReal,HArray1OfReal from TColStd,
+    IsoType from GeomAbs,
+    Patch, SequenceOfPatch, Framework from AdvApp2Var
+
+raises NoSuchObject from Standard 
+
+is
+    Create returns Network;
+    Create(Net : SequenceOfPatch; TheU,TheV : SequenceOfReal) returns Network;
+    FirstNotApprox(me; Index :  out Integer)
+    ---Purpose: search the Index of the first Patch not approximated,
+    --          if all Patches are approximated Standard_False is returned
+    returns Boolean; 
+    ChangePatch(me: in out; Index : Integer) 
+    ---C++: alias operator()
+    ---C++: return &
+    ---C++: inline
+    returns Patch;
+    UpdateInU(me: in out; CuttingValue : Real);
+    UpdateInV(me: in out; CuttingValue : Real);
+    SameDegree(me : in out; iu, iv : Integer; ncfu, ncfv : out Integer);
+    NbPatch(me) returns Integer;
+    NbPatchInU(me) returns Integer;
+    NbPatchInV(me) returns Integer;
+    UParameter(me; Index : Integer) returns Real;
+    VParameter(me; Index : Integer) returns Real;
+    Patch(me; UIndex, VIndex : Integer) 
+    ---C++: alias operator()
+    ---C++: return const &
+    ---C++: inline
+    returns Patch;
+    
+
+fields
+
+    myNet         : SequenceOfPatch;
+    myUParameters : SequenceOfReal;
+    myVParameters : SequenceOfReal;
+
+end Network;
+

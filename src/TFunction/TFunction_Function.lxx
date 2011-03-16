@@ -1,0 +1,22 @@
+// File:	TFunction_Function.lxx
+// Created:	Fri Jun 11 18:32:55 1999
+// Author:	Vladislav ROMASHKO
+//		<vro@flox.nnov.matra-dtv.fr>
+
+inline const Standard_GUID& TFunction_Function::GetDriverGUID() const
+{
+  return myDriverGUID;
+}
+
+inline Standard_Boolean TFunction_Function::Failed() const
+{
+  return myFailure;
+}
+
+inline Standard_Integer TFunction_Function::GetFailure() const
+{
+  return myFailure;
+}
+
+
+

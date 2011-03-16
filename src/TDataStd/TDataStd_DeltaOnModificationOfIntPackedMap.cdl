@@ -1,0 +1,34 @@
+-- File:	TDataStd_DeltaOnModificationOfIntPackedMap.cdl
+-- Created:	Wed Jan 23 10:59:04 2008
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+class DeltaOnModificationOfIntPackedMap from TDataStd inherits DeltaOnModification from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a MODIFICATION action.
+
+uses
+    Attribute        from TDF,
+    IntPackedMap     from TDataStd, 
+    HPackedMapOfInteger from TColStd    
+
+
+is
+
+    Create (Arr : IntPackedMap     from TDataStd)
+    	returns mutable DeltaOnModificationOfIntPackedMap from TDataStd;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+fields
+  
+ myAddition  :  HPackedMapOfInteger from TColStd; 
+ myDeletion  :  HPackedMapOfInteger from TColStd;
+  
+end DeltaOnModificationOfIntPackedMap;
+

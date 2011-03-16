@@ -1,0 +1,414 @@
+-- File:	Units_Token.cdl
+-- Created:	Mon Jun 22 17:36:23 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Token from Units 
+inherits
+
+    TShared  from MMgt
+    
+	---Purpose: This class defines an elementary word contained in
+	--          a Sentence object.
+
+uses
+
+    AsciiString from TCollection,
+    Dimensions from Units
+
+
+is
+
+    Create returns mutable Token from Units;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a empty token.
+
+    Create(aword : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and returns  a token.   <aword>  is  a string
+    --          containing the available word.
+    
+    returns mutable Token from Units;
+    
+    Create(atoken : Token from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a  token.  <atoken> is  copied  in
+    --          the returned token.
+    
+    returns mutable Token from Units;
+    
+    Create(aword , amean : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates  and  returns a  token.   <aword> is  a string
+    --          containing the  available word and  <amean>  gives the
+    --          signification of the token.
+    
+    returns mutable Token from Units;
+    
+    Create(aword , amean : CString ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates   and  returns a  token.   <aword> is a string
+    --          containing   the available  word,  <amean> gives   the
+    --          signification of the token and <avalue> is the numeric
+    --          value of the dimension.
+    
+    returns mutable Token from Units;
+    
+    Create(aword , amean : CString ; avalue : Real ; adimension : Dimensions from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns  a  token.  <aword> is   a  string
+    --          containing the   available   word, <amean>   gives the
+    --          signification of  the  token, <avalue> is  the numeric
+    --          value  of the dimension,  and <adimensions>   is   the
+    --          dimension of the given word <aword>.
+    
+    returns mutable Token from Units;
+    
+    Creates(me) returns mutable Token from Units
+
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a  token, which is a ShiftedToken. 
+
+    is virtual;
+
+    Length(me) returns Integer
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns the length of the word.
+    
+    is static;
+    
+    Word(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose : Returns the string <theword>
+    
+    is static;
+    
+    Word(me : mutable ; aword : CString)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Sets the field <theword> to <aword>.
+    
+    is static;
+    
+    Mean(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the significance of the word  <theword>, which
+    --          is in the field <themean>.
+    
+    is static;
+    
+    Mean(me : mutable ; amean : CString)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Sets the field <themean> to <amean>.
+    
+    is static;
+
+    Value(me) returns Real
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the value stored in the field <thevalue>.
+    
+    is static;
+    
+    Value(me : mutable ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Sets the field <thevalue> to <avalue>.
+    
+    is static;
+
+    Dimensions(me) returns mutable Dimensions from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the dimensions of the token <thedimensions>.
+    
+    is static;
+    
+    Dimensions(me : mutable ; adimensions : Dimensions from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Sets the field <thedimensions> to <adimensions>.
+    
+    is static;
+    
+    Update(me : mutable ; amean : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Updates     the  token  <me>    with  the   additional
+    --          signification  <amean> by  concatenation   of the  two
+    --          strings   <themean>    and   <amean>.   If    the  two
+    --          significations are  the same  , an information message
+    --          is written in the output device.
+    --          
+    ---Purpose: 
+    
+    is static;
+
+    Add(me ; aninteger : Integer) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) operator +(const Handle(Units_Token)&,const Standard_Integer);"
+    
+    ---Purpose: 
+    
+    is static;
+    
+    Add(me ; atoken : Token from Units) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) operator +(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns a  token which is  the addition  of  <me>  and
+    --          another token <atoken>. The  addition  is  possible if
+    --          and only if the dimensions are the same.
+    
+    is static;
+    
+    Subtract(me ; atoken : Token from Units) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) operator -(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns a token  which is the  subtraction of <me> and
+    --          another token <atoken>. The subtraction is possible if
+    --          and only if the dimensions are the same.
+    
+    is static;
+    
+    Multiply(me ; atoken : Token from Units) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) operator *(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns a  token  which  is the  product of   <me> and
+    --          another token <atoken>.
+    
+    is static;
+    
+    Multiplied(me ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---Purpose: This   virtual method is   called  by  the Measurement
+    --          methods,  to  compute    the   measurement   during  a
+    --          conversion.
+    
+    returns Real is virtual;
+    
+    Divide(me ; atoken : Token from Units) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) operator /(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns a token which is the division of <me> by another
+    --          token <atoken>.
+    
+    is static;
+    
+    Divided(me ; avalue : Real)
+    
+    ---Level: Internal 
+    
+    ---Purpose: This  virtual  method  is  called by  the  Measurement
+    --          methods,   to   compute   the measurement  during    a
+    --          conversion.
+    
+    returns Real is virtual;
+    
+    Power(me ; atoken : Token from Units) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns a token which is <me> to the power  of another
+    --          token <atoken>.  The computation  is possible  only if
+    --          <atoken> is a dimensionless constant.
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) pow(const Handle(Units_Token)&,const Handle(Units_Token)&);"    
+    
+    is static;
+    
+    Power(me ; anexponent : Real) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns a token which is <me> to the power  of <anexponent>.
+    
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Token) pow(const Handle(Units_Token)&,const Standard_Real);"
+    
+    is static;
+    
+    IsEqual(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Token)&,const Standard_CString);"
+    
+    ---Purpose: Returns true if  the  field <theword> and  the  string
+    --          <astring> are the same, false otherwise.
+    
+    is static;
+    
+    IsEqual(me ; atoken : Token from Units) returns Boolean
+    
+    ---Level: Internal 
+    
+--    -- C++: alias "friend Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns true  if the  field  <theword> and  the string
+    --          <theword> contained  in  the  token <atoken>  are  the
+    --          same, false otherwise.
+    
+    is static;
+    
+    IsNotEqual(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator !=(const Handle(Units_Token)&,const Standard_CString);"
+        
+    ---Purpose: Returns false if  the field <theword>  and the  string
+    --          <astring> are the same, true otherwise.
+    
+    is static;
+    
+    IsNotEqual(me ; atoken : Token from Units) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    -- C++: alias "friend Standard_EXPORT Standard_Boolean operator !=(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns false if  the field <theword>  and the  string
+    --          <theword> contained  in the  token  <atoken>  are  the
+    --          same, true otherwise.
+    
+    is static;
+    
+    IsLessOrEqual(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator <=(const Handle(Units_Token)&,const Standard_CString);"
+
+    ---Purpose: Returns   true  if the   field <theword>  is  strictly
+    --          contained at  the beginning  of the string  <astring>,
+    --          false otherwise.
+    
+    is static;
+    
+    IsGreater(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator >(const Handle(Units_Token)&,const Standard_CString);"
+    
+    ---Purpose: Returns false  if   the field   <theword> is  strictly
+    --          contained at  the  beginning  of the string <astring>,
+    --          true otherwise.
+    
+    is static;
+    
+    IsGreater(me ; atoken : Token from Units) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator >(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns false  if   the field   <theword> is  strictly
+    --          contained at  the  beginning  of the string <astring>,
+    --          true otherwise.
+    
+    is static;
+    
+    IsGreaterOrEqual(me ; atoken : Token from Units) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator >=(const Handle(Units_Token)&,const Handle(Units_Token)&);"
+    
+    ---Purpose: Returns true  if  the string <astring>   is   strictly
+    --          contained   at the  beginning  of  the field <theword>
+    --          false otherwise.
+    
+    is static;
+
+    Destroy ( me : mutable ) is virtual;
+    ---Level: Internal 
+    ---Purpose: Destroies the Token
+    ---C++: alias ~
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging
+
+    is virtual;
+    
+fields
+
+    theword       : AsciiString from TCollection;
+    themean       : AsciiString from TCollection;
+    thevalue      : Real;
+    thedimensions : Dimensions from Units;
+
+end Token;

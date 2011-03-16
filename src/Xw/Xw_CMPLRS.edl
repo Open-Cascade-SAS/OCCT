@@ -1,0 +1,41 @@
+@ifnotdefined ( %Xw_CMPLRS_EDL) then
+  @set %Xw_CMPLRS_EDL = "";
+
+  @uses "CSF.edl";
+
+  @if ( %Station == "wnt" ) then
+    -- Pas de compile sur WNT
+    @set %WOKUMake_Steps = "src";
+  @endif;
+
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -DITYPE_REF ";
+--  @string %CMPLRS_C_Options   = %CMPLRS_C_Options   " -DHAVE_X11_EXTENSIONS_MULTIBUF_H ";
+
+  @if ( %Station == "sun" ) then
+    @string %CMPLRS_C_Options   += %CSF_X11_INCLUDE " -DHAVE_X11_EXTENSIONS_TRANSOLV_H  -DHAVE_X11_EXTENSIONS_MULTIBUF_H " ;
+    @string %CMPLRS_CXX_Options += %CSF_X11_INCLUDE " -DHAVE_X11_EXTENSIONS_TRANSOLV_H  -DHAVE_X11_EXTENSIONS_MULTIBUF_H " ;
+  @endif;
+
+  @if ( %Station == "sil" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -ansi ";
+    @string %CMPLRS_C_Options   += " -DHAVE_X11_EXTENSIONS_READDISPLAY_H ";
+    @string %CMPLRS_CXX_Options += " -DHAVE_X11_EXTENSIONS_READDISPLAY_H ";
+  @endif;
+
+  @if ( %Station == "ao1" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -std1";
+  @endif;
+
+  @if ( %Station == "hp" ) then
+    @string %CMPLRS_C_Options   = %CSF_X11_INCLUDE " " %CSF_XMU_INCLUDE %CMPLRS_C_Options ;
+    @string %CMPLRS_C_Options   = %CMPLRS_C_Options " -Ac";
+    @string %CMPLRS_CXX_Options = %CSF_X11_INCLUDE " " %CSF_XMU_INCLUDE %CMPLRS_CXX_Options ;
+
+  @endif;
+
+  @string %CMPLRS_C_Options = %CMPLRS_C_Options " -DXW";
+  --@string %CMPLRS_C_Options = %CMPLRS_C_Options " -DXW -DTRACE";
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -DXW";
+  --@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -DXW -DTRACE";
+
+@endif;

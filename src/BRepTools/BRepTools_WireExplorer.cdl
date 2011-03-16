@@ -1,0 +1,109 @@
+-- File:	BRepTools_WireExplorer.cdl
+-- Created:	Thu Jan 21 17:55:54 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class WireExplorer from BRepTools
+
+	---Purpose: The WireExplorer is a tool to explore the edges of
+	--          a wire in a connection order.
+	--          
+	--          i.e. each edge is connected to the previous one by
+	--          its origin.
+	--      If a wire is not closed returns only a segment of edges which
+-- length depends on started in exploration edge. If wire has
+-- singularities (for example, loops) WireExplorer can return not all
+-- edges in a wire. it depends on type of singularity.
+
+uses
+
+    Orientation from TopAbs,
+    Wire        from TopoDS,
+    Edge        from TopoDS,
+    Vertex      from TopoDS,
+    Face        from TopoDS,
+    DataMapOfShapeListOfShape from TopTools,
+    MapOfShape                from TopTools
+raises
+    DomainError  from Standard,
+    NoSuchObject from Standard,
+    NoMoreObject from Standard
+
+is
+    Create returns WireExplorer from BRepTools;
+---Purpose: Constructs an empty explorer (which can be initialized using Init)
+    
+    Create(W : Wire from TopoDS ) returns WireExplorer from BRepTools
+	---Purpose: Initializes an exploration  of the wire <W> face F is used to
+ --   involve 2D analysis while exploration). 
+    raises DomainError from Standard;
+    
+    Create(W : Wire from TopoDS;
+    	   F : Face from TopoDS) returns WireExplorer from BRepTools
+	---Purpose: Initializes an exploration  of the wire <W>.
+	--          F is used to select the edge connected to the 
+	--          previous in the parametric representation of <F>.
+    raises DomainError from Standard;
+
+    Init(me : in out; W  : Wire from TopoDS)
+	---Purpose: Initializes an exploration of the wire <W>.
+    raises DomainError from Standard
+    is static;
+    
+    Init(me : in out; W  : Wire from TopoDS;
+    	    	      F  : Face from TopoDS)
+	---Purpose: Initializes an exploration of the wire <W>.
+	--          F is used to select the edge connected to the 
+	--          previous in the parametric representation of <F>.
+	--          
+    raises DomainError from Standard
+    is static;
+    
+    More(me) returns Boolean
+	---Purpose: Returns True if there  is a current  edge.
+    is static;
+    
+    Next(me : in out)
+	---Purpose: Proceeds to the next edge.
+    raises
+	NoMoreObject from Standard 
+    is static;
+    
+    Current(me) returns Edge from TopoDS
+	---Purpose: Returns the current edge. 
+    raises
+    	NoSuchObject from Standard
+	---C++: return const &
+    is static;
+    
+    Orientation(me) returns Orientation from TopAbs
+	---Purpose: Returns an Orientation for the current edge.
+    is static;
+    
+    CurrentVertex(me) returns Vertex from TopoDS
+	---Purpose: Returns the vertex connecting the current  edge to
+	--          the previous one.
+    raises
+    	NoSuchObject from Standard
+	--          
+	---C++: return const &
+    is static;
+    
+   Clear(me : in out)
+	---Purpose: Clears the content of the explorer.
+    is static;
+    
+fields
+    myMap    : DataMapOfShapeListOfShape from TopTools;
+    myEdge   : Edge   from TopoDS;
+    myVertex : Vertex from TopoDS;
+    myFace   : Face   from TopoDS;
+    myDoubles: MapOfShape from TopTools;
+    myReverse: Boolean from Standard; 
+    myTolU   : Real  from  Standard; 
+    myTolV   : Real  from  Standard; 
+
+end WireExplorer;

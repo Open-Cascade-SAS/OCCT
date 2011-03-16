@@ -1,0 +1,26 @@
+-- File:	BRepAlgo_Fuse.cdl
+-- Created:	Thu Oct 14 18:24:07 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Fuse from BRepAlgo inherits BooleanOperation from BRepAlgo
+
+	---Purpose: Describes functions for performing a topological
+    	-- fusion operation (Boolean union).
+    	-- A Fuse object provides the framework for:
+    	-- - defining the construction of a fused shape,
+    	-- - implementing the construction algorithm, and
+    	-- - consulting the result.
+        
+uses
+    Shape from TopoDS
+
+is
+    Create (S1,S2 : Shape from TopoDS) returns Fuse from BRepAlgo;  
+	---Purpose: Fuse S1 and S2.
+	---Level: Public 
+	
+end Fuse;

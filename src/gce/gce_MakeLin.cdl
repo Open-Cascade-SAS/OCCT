@@ -1,0 +1,65 @@
+-- File:	MakeLin.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeLin from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Lin from gp.
+    --           * Create a Lin parallel to another and passing 
+    --             through a point.
+    --           * Create a Lin passing through 2 points.
+    --           * Create a lin from its axis (Ax1 from gp).
+    --           * Create a lin from a point and a direction.
+
+uses Pnt  from gp,
+     Lin  from gp,
+     Ax1  from gp,
+     Dir  from gp,
+     Real from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A1 : Ax1 from gp)  returns MakeLin;
+    --- Purpose : Creates a line located along the axis A1.
+
+
+Create (P : Pnt from gp; 
+    	V : Dir from gp) returns MakeLin;
+    --- Purpose : 
+    --  <P> is the location point (origin) of the line and
+    --  <V> is the direction of the line.
+
+Create(Lin    :     Lin from gp;
+       Point  :     Pnt from gp) returns MakeLin;
+    ---Purpose : Make a Lin from gp <TheLin> parallel to another 
+    --           Lin <Lin> and passing through a Pnt <Point>.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp) returns MakeLin;
+    ---Purpose : Make a Lin from gp <TheLin> passing through 2 
+    --           Pnt <P1>,<P2>.
+    --           It returns false if <p1> and <P2> are confused.
+
+Value(me) returns Lin from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    --- Purpose: Returns the constructed line.
+    -- Exceptions StdFail_NotDone is raised if no line is constructed.
+
+Operator(me) returns Lin from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Lin() const;"
+
+fields
+
+    TheLin : Lin from gp;
+    --The solution from gp.
+    
+end MakeLin;

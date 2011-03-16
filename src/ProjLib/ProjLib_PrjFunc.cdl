@@ -1,0 +1,70 @@
+-- File:	ProjLib_NbIntFunc.cdl
+-- Created:	Thu Nov  6 12:10:36 1997
+-- Author:	Roman BORISOV
+--		<rbv@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+private  class PrjFunc from ProjLib inherits  FunctionSetWithDerivatives from math
+
+	---Purpose: 
+
+uses   
+    Vector from math,  
+    Matrix from math, 
+    CurvePtr  from  Adaptor3d,
+    SurfacePtr  from  Adaptor3d,
+    Pnt2d  from  gp 
+
+raises  ConstructionError
+
+is
+    Create  (C: CurvePtr  from  Adaptor3d; FixVal:  Real  from  Standard;  S:  SurfacePtr  from  Adaptor3d; Fix: Integer)   
+    returns  PrjFunc 
+    raises  ConstructionError;
+
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function.
+
+    returns Integer;
+    
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+
+    returns Integer;
+    
+    Value(me: in out; X: Vector  from  math; F: out Vector  from  math)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean;
+    
+    Derivatives(me: in out; X: Vector  from  math; D: out Matrix  from  math)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean;
+    
+    Values(me: in out; X: Vector  from  math; F: out Vector  from  math; D: out Matrix  from  math)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean;
+  
+    Solution(me)  returns  Pnt2d  from  gp; 
+    	---Purpose:  returns  point  on  surface
+
+fields 
+
+    myCurve      :  CurvePtr    from  Adaptor3d; 
+    mySurface    :  SurfacePtr  from  Adaptor3d; 
+    myt          :  Real        from  Standard;
+    myU,  myV    :  Real        from  Standard;	
+    myFix        :  Integer     from  Standard; 
+    myNorm       :  Real        from  Standard;     
+end PrjFunc;

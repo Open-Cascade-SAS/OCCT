@@ -1,0 +1,439 @@
+// File:	ApproxInt_ImpPrmSvSurfaces.gxx
+// Created:	Wed Mar 17 12:42:28 1993
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+
+#include <TColStd_Array1OfReal.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <StdFail_NotDone.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <Precision.hxx>
+
+#define       ComputeParametersOnImplicitSurface(MyISurf,P,u,v)  MyISurf.Parameters(P,u,v)
+
+#define Debug(expr)  cout<<" expr :"<<expr;
+#define MyISurf MyZerImpFunc.ISurface()
+#define MyPSurf MyZerImpFunc.PSurface()
+
+//--------------------------------------------------------------------------------
+ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const TheISurface& ISurf
+						       ,const ThePSurface& PSurf):
+       MyHasBeenComputed(Standard_False),
+       MyHasBeenComputedbis(Standard_False),
+       MyImplicitFirst(Standard_True),
+       MyZerImpFunc(PSurf,ISurf)
+{ 
+}
+//--------------------------------------------------------------------------------
+ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const ThePSurface& PSurf
+						       ,const TheISurface& ISurf):
+       MyHasBeenComputed(Standard_False),
+       MyHasBeenComputedbis(Standard_False),
+       MyImplicitFirst(Standard_False),
+       MyZerImpFunc(PSurf,ISurf)
+{ 
+}
+//--------------------------------------------------------------------------------
+void ApproxInt_ImpPrmSvSurfaces::Pnt(const Standard_Real u1,
+				     const Standard_Real v1,
+				     const Standard_Real u2,
+				     const Standard_Real v2,
+				     gp_Pnt& P) { 
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+#ifdef DEB
+  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
+#else
+  this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
+#endif
+  P=MyPnt;
+}
+//--------------------------------------------------------------------------------
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Tangency(const Standard_Real u1,
+						      const Standard_Real v1,
+						      const Standard_Real u2,
+						      const Standard_Real v2,
+						      gp_Vec& T) { 
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
+  T=MyTg;
+  return(t);
+}
+//--------------------------------------------------------------------------------
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf1(const Standard_Real u1,
+							     const Standard_Real v1,
+							     const Standard_Real u2,
+							     const Standard_Real v2,
+							     gp_Vec2d& T) { 
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
+  T=MyTguv1;
+  return(t);
+}
+//--------------------------------------------------------------------------------
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf2(const Standard_Real u1,
+							     const Standard_Real v1,
+							     const Standard_Real u2,
+							     const Standard_Real v2,
+							     gp_Vec2d& T) { 
+  gp_Pnt aP;
+  gp_Vec aT;
+  gp_Vec2d aTS1,aTS2;
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
+  T=MyTguv2;
+  return(t);
+}
+//--------------------------------------------------------------------------------
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1
+						     ,Standard_Real& v1
+						     ,Standard_Real& u2
+						     ,Standard_Real& v2
+						     ,gp_Pnt& P
+						     ,gp_Vec& Tg
+						     ,gp_Vec2d& Tguv1
+						     ,gp_Vec2d& Tguv2) { 
+  
+  Standard_Real tu1=u1;
+  Standard_Real tu2=u2;
+  Standard_Real tv1=v1;
+  Standard_Real tv2=v2;
+  
+  if(MyHasBeenComputed) { 
+    if(  (MyParOnS1.X()==u1)&&(MyParOnS1.Y()==v1)
+       &&(MyParOnS2.X()==u2)&&(MyParOnS2.Y()==v2)) {
+      return(MyIsTangent);
+    }
+    else if(MyHasBeenComputedbis == Standard_False) { 
+      MyTgbis         = MyTg;
+      MyTguv1bis      = MyTguv1;
+      MyTguv2bis      = MyTguv2;
+      MyPntbis        = MyPnt;
+      MyParOnS1bis    = MyParOnS1;
+      MyParOnS2bis    = MyParOnS2;
+      MyIsTangentbis  = MyIsTangent;
+      MyHasBeenComputedbis = MyHasBeenComputed; 
+    }
+  }
+
+  if(MyHasBeenComputedbis) { 
+    if(  (MyParOnS1bis.X()==u1)&&(MyParOnS1bis.Y()==v1)
+       &&(MyParOnS2bis.X()==u2)&&(MyParOnS2bis.Y()==v2)) {
+
+      gp_Vec            TV(MyTg);
+      gp_Vec2d          TV1(MyTguv1);
+      gp_Vec2d          TV2(MyTguv2);
+      gp_Pnt            TP(MyPnt);
+      gp_Pnt2d          TP1(MyParOnS1);
+      gp_Pnt2d          TP2(MyParOnS2);
+      Standard_Boolean  TB=MyIsTangent;
+
+      MyTg        = MyTgbis;
+      MyTguv1     = MyTguv1bis;
+      MyTguv2     = MyTguv2bis;
+      MyPnt       = MyPntbis;
+      MyParOnS1   = MyParOnS1bis;
+      MyParOnS2   = MyParOnS2bis;
+      MyIsTangent = MyIsTangentbis;
+
+      MyTgbis         = TV;
+      MyTguv1bis      = TV1;
+      MyTguv2bis      = TV2;
+      MyPntbis        = TP;
+      MyParOnS1bis    = TP1;
+      MyParOnS2bis    = TP2;
+      MyIsTangentbis  = TB;
+
+      return(MyIsTangent);
+    }
+  }
+
+
+  static math_Vector BornInf(1,2),BornSup(1,2),F(1,1),X(1,2),Tolerance(1,2);
+  static math_Matrix D(1, 1, 1, 2); 
+
+  Standard_Real binfu,bsupu,binfv,bsupv;
+  binfu = ThePSurfaceTool::FirstUParameter(MyPSurf);
+  binfv = ThePSurfaceTool::FirstVParameter(MyPSurf);
+  bsupu = ThePSurfaceTool::LastUParameter(MyPSurf);
+  bsupv = ThePSurfaceTool::LastVParameter(MyPSurf);
+  BornInf(1) = binfu; BornSup(1) = bsupu; 
+  BornInf(2) = binfv; BornSup(2) = bsupv;
+
+  //--- ThePSurfaceTool::GetResolution(MyPSurf,Tolerance(1),Tolerance(2));
+  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
+
+  Standard_Real TranslationU=0.0;
+  Standard_Real TranslationV=0.0;
+
+  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+  Rsnld.SetTolerance(Tolerance);
+  if(MyImplicitFirst) { 
+    if(u2<binfu-0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(MyPSurf);
+	do {  TranslationU+=d; } while(u2+TranslationU < binfu);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+    }
+    else if(u2>bsupu+0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(MyPSurf);
+	do { TranslationU-=d; } while(u2+TranslationU > bsupu);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      } 
+    }
+    if(v2<binfv-0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(MyPSurf);
+	do { TranslationV+=d; }	while(v2+TranslationV < binfv);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+    }
+    else if(v2>bsupv+0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(MyPSurf);
+	do { TranslationV-=d; } while(v2+TranslationV > bsupv);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      } 
+    }
+    X(1) = u2+TranslationU; 
+    X(2) = v2+TranslationV;
+  }
+  else { 
+    if(u1<binfu-0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(MyPSurf);
+	do {  TranslationU+=d; 	} while(u1+TranslationU < binfu);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+    }
+    else if(u1>bsupu+0.0000000001) { 
+      if(ThePSurfaceTool::IsUPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::UPeriod(MyPSurf);
+	do { TranslationU-=d; } while(u1+TranslationU > bsupu);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      } 
+    }
+    if(v1<binfv-0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(MyPSurf);
+	do { TranslationV+=d; }	while(v1+TranslationV < binfv);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+    }
+    else if(v1>bsupv+0.0000000001) { 
+      if(ThePSurfaceTool::IsVPeriodic(MyPSurf)) { 
+	Standard_Real d = ThePSurfaceTool::VPeriod(MyPSurf);
+	do { TranslationV-=d; }	while(v1+TranslationV > bsupv);
+      }
+      else { 
+	MyIsTangent=MyIsTangentbis=Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      } 
+    }
+    X(1) = u1+TranslationU;
+    X(2) = v1+TranslationV;
+  }
+  
+  //----------------------------------------------------
+  //-- Pour eviter de coller le point de depart de la 
+  //-- recherche sur une des bornes (Rsnld -> NotDone)
+  //-- 
+  if(X(1)-0.0000000001 <= binfu) X(1)=X(1)+0.0000001;
+  if(X(1)+0.0000000001 >= bsupu) X(1)=X(1)-0.0000001;
+  if(X(2)-0.0000000001 <= binfv) X(2)=X(2)+0.0000001;
+  if(X(2)+0.0000000001 >= bsupv) X(2)=X(2)-0.0000001;
+  
+
+  Standard_Real PourTesterU = X(1);
+  Standard_Real PourTesterV = X(2);
+  
+
+  /* ***************************************************************
+  cout<<" Envoi a Rsnld : "; Debug(X(1)); Debug(X(2)); 
+  Debug(BornInf(1)); Debug(BornInf(2));
+  Debug(BornSup(1)); Debug(BornSup(2)); cout<<endl;
+  Debug(u1); Debug(v1); Debug(u2); Debug(v2); Debug(MyImplicitFirst); 
+  cout<<endl;
+  **************************************************************** */
+
+  Rsnld.Perform(MyZerImpFunc,X,BornInf,BornSup);
+  if(Rsnld.IsDone()) { 
+    MyHasBeenComputed = Standard_True;
+    Rsnld.Root(X);
+    
+    Standard_Real DistAvantApresU = Abs(PourTesterU-X(1));
+    Standard_Real DistAvantApresV = Abs(PourTesterV-X(2));
+ 
+    MyPnt = P = ThePSurfaceTool::Value(MyPSurf,X(1),X(2));
+    
+    if(   (DistAvantApresV <= 0.001 )
+       && (DistAvantApresU <= 0.001 )) { 
+      
+      gp_Vec PD1U,PD1V;
+      gp_Vec ID1U,ID1V;
+      
+      
+      if(MyImplicitFirst) { 
+	u2 = X(1)-TranslationU; 
+	v2 = X(2)-TranslationV;
+	ComputeParametersOnImplicitSurface(MyISurf,P,u1,v1);
+	if(MyISurf.TypeQuadric() != GeomAbs_Plane) { 
+	  while(u1-tu1>PI)  u1-=PI+PI;
+	  while(tu1-u1>PI)  u1+=PI+PI;
+	}
+	MyParOnS1.SetCoord(tu1,tv1);
+	MyParOnS2.SetCoord(tu2,tv2);
+	ThePSurfaceTool::D1(MyPSurf,X(1),X(2),P,PD1U,PD1V);
+	MyISurf.D1(u1,v1,P,ID1U,ID1V);
+      }
+      else { 
+	u1 = X(1)-TranslationU;
+	v1 = X(2)-TranslationV;
+	ComputeParametersOnImplicitSurface(MyISurf,P,u2,v2);
+	if(MyISurf.TypeQuadric() != GeomAbs_Plane) { 
+	  while(u2-tu2>PI)  u2-=PI+PI;
+	  while(tu2-u2>PI)  u2+=PI+PI;
+	}
+	MyParOnS1.SetCoord(tu1,tv1);
+	MyParOnS2.SetCoord(tu2,tu2);
+	ThePSurfaceTool::D1(MyPSurf,X(1),X(2),P,PD1U,PD1V);
+	MyISurf.D1(u2,v2,P,ID1U,ID1V);
+      }
+      
+      
+      gp_Vec VNormaleImp = MyISurf.Normale(MyPnt);
+      gp_Vec VNormalePrm = PD1U.Crossed(PD1V);
+      if(   VNormaleImp.SquareMagnitude() <= gp::Resolution()
+	 || VNormalePrm.SquareMagnitude() <= gp::Resolution()) { 
+	MyIsTangent = Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+      
+      gp_Dir NormaleImp(VNormaleImp);
+      gp_Dir NormalePrm(VNormalePrm);
+      
+      gp_Vec VNImp(NormaleImp);
+      gp_Vec VNPrm(NormalePrm);
+      MyTg = VNImp.Crossed(VNPrm);
+      Standard_Real NmyTg = MyTg.Magnitude();
+      if(NmyTg < 0.000001) { 
+	MyIsTangent = Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+      MyTg.SetCoord(MyTg.X()/NmyTg,MyTg.Y()/NmyTg,MyTg.Z()/NmyTg);
+      
+      
+      MyTg              = NormaleImp.Crossed(NormalePrm);
+      Tg = MyTg;
+      
+      Standard_Real TUTV,TgTU,TgTV,TUTU,TVTV,DIS;
+      Standard_Real DeltaU,DeltaV;
+      TUTU = PD1U.Dot(PD1U);
+      TVTV = PD1V.Dot(PD1V);
+      TUTV = PD1U.Dot(PD1V);
+      TgTU = MyTg.Dot(PD1U);
+      TgTV = MyTg.Dot(PD1V);
+      DIS  = TUTU * TVTV - TUTV * TUTV;
+      
+      if(DIS<1e-10 && DIS>-1e-10) {
+	MyIsTangent = Standard_False;
+	MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+	return(Standard_False);
+      }
+
+
+      DeltaU = (TgTU * TVTV - TgTV * TUTV ) / DIS ; 
+      DeltaV = (TgTV * TUTU - TgTU * TUTV ) / DIS ;
+      
+      if(MyImplicitFirst) { 
+	MyTguv1.SetCoord( MyTg.Dot(ID1U)/(ID1U.Dot(ID1U))
+			 ,MyTg.Dot(ID1V)/(ID1V.Dot(ID1V)));
+	MyTguv2.SetCoord(DeltaU,DeltaV);
+	Tguv1 = MyTguv1;
+	Tguv2 = MyTguv2;
+      }
+      else { 
+	MyTguv1.SetCoord(DeltaU,DeltaV);
+	MyTguv2.SetCoord( MyTg.Dot(ID1U)/(ID1U.Dot(ID1U))
+			 ,MyTg.Dot(ID1V)/(ID1V.Dot(ID1V)));
+	Tguv1 = MyTguv1;
+	Tguv2 = MyTguv2;
+      }
+      MyIsTangent=Standard_True;
+      return(Standard_True); 
+    }
+    else { 
+      
+      //-- cout<<" ApproxInt_ImpImpSvSurfaces.gxx : Distance apres recadrage Trop Grande "<<endl;
+    
+      MyIsTangent=Standard_False;
+      MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+      return(Standard_False);
+    }
+  }
+  else { 
+    MyIsTangent = Standard_False;
+    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+    return(Standard_False);
+  }
+}
+
+//--------------------------------------------------------------------------------
+
+
+
+
+

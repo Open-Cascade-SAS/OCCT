@@ -1,0 +1,104 @@
+-- File:	FuncExtCC.cdl
+-- Created:	Wed Jul 24 14:31:49 1991
+-- Author:	Michel CHAUVAT
+--		<mca@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+private generic class FuncExtCC from Extrema 
+(Curve1    as any;
+ Tool1     as any;-- as ToolCurve(Curve1);
+ Curve2    as any;
+ Tool2     as any;-- as ToolCurve(Curve2);
+ POnC      as any;
+ Pnt       as any;
+ Vec       as any )
+ 
+ 
+inherits FunctionSetWithDerivatives from math
+    ---Purpose: Fonction permettant de rechercher les extrema de la 
+    --          distance entre 2 courbes.
+
+uses    Vector            from math,
+	Matrix            from math,
+	SequenceOfReal    from TColStd
+
+raises  OutOfRange from Standard
+
+private class SeqPOnC instantiates Sequence from TCollection(POnC);
+
+is
+
+    Create (thetol: Real = 1.0e-10) returns FuncExtCC;
+    ---Purpose:
+
+    Create (C1: Curve1; C2: Curve2; thetol: Real = 1.0e-10) returns FuncExtCC;
+    ---Purpose:
+
+    SetCurve (me: in out; theRank: Integer; C1: Curve1);
+    ---C++: inline
+    ---Purpose:
+
+    SetTolerance (me: in out; theTol: Real);
+    ---C++: inline
+    ---Purpose:
+
+    NbVariables (me) returns Integer is redefined;
+    ---C++: inline
+
+    NbEquations (me) returns Integer is redefined;
+    ---C++: inline
+
+    Value (me: in out; UV: Vector; F: out Vector) returns Boolean is redefined;
+    	---Purpose: Calcul de Fi(U,V).
+
+    Derivatives (me: in out; UV: Vector; DF: out Matrix)
+    	returns Boolean;
+    	---Purpose: Calcul de Fi'(U,V).
+
+    Values (me: in out; UV: Vector; F: out Vector; DF: out Matrix)
+    	returns Boolean;
+    	---Purpose: Calcul de Fi(U,V) et Fi'(U,V).
+
+    GetStateNumber (me: in out) returns Integer
+    	---Purpose: Memorise l'extremum trouve.
+    	is redefined;
+
+    NbExt (me) returns Integer;
+        ---C++: inline
+    	---Purpose: Renvoie le nombre d'extrema trouves.
+
+    SquareDistance (me; N: Integer) returns Real
+        ---C++: inline
+    	---Purpose: Renvoie la valeur de la Nieme distance.
+    	raises  OutOfRange;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    Points (me; N: Integer; P1,P2: out POnC)
+    	---Purpose: Renvoie les points de la Nieme distance extremale.
+    	raises  OutOfRange;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    CurvePtr (me; theRank: Integer) returns Address;
+        ---C++: inline
+        ---Purpose: Returns a pointer to the curve specified in the constructor
+        --          or in SetCurve() method.
+
+    Tolerance (me) returns Real;
+        ---C++: inline
+        ---Purpose: Returns a tolerance specified in the constructor
+        --          or in SetTolerance() method.
+
+fields
+    myC1    : Address from Standard;
+    myC2    : Address from Standard;
+    myTol   : Real;
+    myU     : Real;          -- valeur courante de U
+    myV     : Real;          -- valeur courante de V
+    myP1    : Pnt;   -- point courant C1(U)
+    myP2    : Pnt;   -- point courant C2(U)
+
+    mySqDist: SequenceOfReal from TColStd;
+    myPoints: SeqPOnC;
+
+end FuncExtCC;

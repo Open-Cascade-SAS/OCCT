@@ -1,0 +1,66 @@
+if (!($?CCHOME))   setenv CCHOME   "/opt/DEV5_1/SUNWspro/bin/CC "
+if (!($?CCFLAGS))  setenv CCFLAGS  " -xchip=ultra -xarch=v8  -G -mt "
+
+if (!($?STLPortHome)) then
+    setenv STLPortLib		"."
+else
+    if (!($?STLPortLib_CC))	setenv STLPortLib_CC	"stlport_gcc"
+    if (!($?STLPortLib)) 	setenv STLPortLib	"$STLPortHome/lib"
+    setenv STLPortLib		"$STLPortLib -l$STLPortLib_CC"
+endif
+
+${CCHOME} ${CCFLAGS} -o ${SAMPLE_ROOT}/${STATION}/lib//libSampleGeometryJni.so \
+ -L${SAMPLE_ROOT}/${STATION}/lib \
+ -L${CASROOT}/${STATION}/lib -L${STLPortLib} \
+\
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_AIS_InteractiveContext_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_ISession2D_InteractiveContext_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_SampleGeometryPackage_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_TCollection_AsciiString_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V2d_Viewer_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V2d_View_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V3d_Viewer_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_V3d_View_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_Viewer_Viewer_java.o \
+${SAMPLE_ROOT}/${STATION}/obj/SampleGeometryJni/SampleGeometryJni_Viewer_View_java.o \
+\
+ -lTKjcas \
+ -lTKPrim \
+ -lTKFillet \
+ -lPTKernel \
+ -lTKPShape \
+ -lTKOffset \
+ -lTKShHealing \
+ -lTKXSBase \
+ -lTKIGES \
+ -lTKShapeSchema \
+ -lTKSTEP \
+ -lTKFeat \
+ -lTKSamples \
+ -lTKGeomAlgo \
+ -lTKGeomBase \
+ -lTKV3d \
+ -lTKernel \
+ -lTKBool \
+ -lTKTopAlgo \
+ -lTKBRep \
+ -lTKV2d \
+ -lTKService \
+ -lTKHLR \
+ -lTKG2d \
+ -lTKMath \
+ -lTKG3d \
+ -lsocket -lnsl -lsunmath -lm -ldl \
+  \
+  \
+  \
+  \
+ -L/usr/openwin/lib -lX11 -lXext -lXmu \
+  \
+ -L/usr/openwin/lib -ldps \
+ -lC -lc ;
+ set ld_status=$status
+ if ( $?LD_LIBRARY_PATH ) then
+  set ld_library_path=$LD_LIBRARY_PATH
+ endif
+

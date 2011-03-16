@@ -1,0 +1,14 @@
+-- File:	StepVisual_CameraImage3dWithScale.cdl
+-- Created:	Wed Mar 26 15:24:33 1997
+-- Author:	Administrateur Atelier XSTEP
+--		<xstep@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CameraImage3dWithScale  from StepVisual    inherits CameraImage  from StepVisual
+
+is
+
+    Create returns mutable CameraImage3dWithScale;
+
+end CameraImage3dWithScale;

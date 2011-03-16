@@ -1,0 +1,50 @@
+-- File:	IntCurvesFace.cdl
+-- Created:	Fri May 31 13:50:31 1996
+-- Author:	Laurent BUCHARD
+--		<lbr@sherlox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+package IntCurvesFace
+
+----------------------------------------------------------------------
+-- This package provide algorithms to  compute the intersection points
+-- between a Face [a  Shape] and a set of  curves (The face [shape] is
+-- loaded, then for each curve is given to compute the intersection).
+-- 
+-- Intersector [  ShapeIntersector ] can be  used when the caller have
+-- to intersect more than one curve with the face [the shape].
+-- 
+-- 
+-- If there is  only one curve, or  if  the face  has no restrictions,
+-- someother algorithms can be called. 
+--    
+-- see for example the packages : 
+-- 
+--      ** BRepIntCurveSurface :  ( One Curve   <->   One  Shape )
+--      ** IntCurveSurface     :  ( One Curve   <->   One  Surface)
+--     
+----------------------------------------------------------------------
+
+
+uses 
+    gp              ,
+    TopAbs          ,
+    TopoDS          ,
+    BRepTopAdaptor  ,
+    BRepAdaptor     ,
+    Adaptor3d         ,
+    Bnd             ,
+    IntCurveSurface ,
+    TColStd         ,
+    GeomAbs
+    
+is
+
+    class Intersector;            -- Intersection between a Face and a set of curves 
+    
+    class ShapeIntersector;       -- Intersection between a Shape and a set of curves 
+                                  -- Note ( has an empty constructor )
+    
+end;
+

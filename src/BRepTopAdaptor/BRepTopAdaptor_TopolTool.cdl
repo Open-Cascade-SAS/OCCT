@@ -1,0 +1,230 @@
+-- File:	BRepTopAdaptor_TopolTool.cdl
+-- Created:	Fri Apr  1 11:01:17 1994
+-- Author:	Modelistation
+--		<model@nonox>
+---Copyright:	 Matra Datavision 1994
+
+
+class TopolTool from BRepTopAdaptor 
+
+
+inherits TopolTool from Adaptor3d
+
+uses HSurface    from Adaptor3d,
+     HCurve2d    from Adaptor2d,
+     HCurve2d    from BRepAdaptor,
+     HVertex     from Adaptor3d,
+     Pnt2d       from gp,
+     Pnt         from gp,
+     State       from TopAbs,
+     Orientation from TopAbs,
+     Explorer    from TopExp,
+     Face        from TopoDS, 
+     FClass2d    from BRepTopAdaptor,
+     ListOfTransient from TColStd,
+     ListIteratorOfListOfTransient from TColStd
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+    	returns mutable TopolTool from BRepTopAdaptor;
+
+
+    Create(Surface: HSurface from Adaptor3d)
+    
+    	returns mutable TopolTool from BRepTopAdaptor;
+
+    Initialize(me: mutable)
+    is redefined;
+
+
+    Initialize(me: mutable; S: HSurface from Adaptor3d)
+    is redefined;
+    
+
+    Initialize(me: mutable; Curve: HCurve2d from Adaptor2d)
+    is redefined;
+    
+
+
+--- Arc iterator
+
+
+    Init(me: mutable)
+    is redefined;
+
+
+    More(me: mutable)
+    
+    	returns Boolean from Standard
+	is redefined;
+
+
+    Value(me: mutable)
+    
+    	returns mutable HCurve2d from Adaptor2d
+        raises DomainError from Standard
+	is redefined;
+	
+
+    Next(me: mutable)
+    is redefined;
+ 
+
+ --modified by NIZNHY-PKV Wed Mar 21 11:37:11 2001  f  
+    Edge  (me) 
+    	returns Address from Standard 
+    	is redefined; 
+--modified by NIZNHY-PKV Wed Mar 21 11:37:17 2001  t	 
+
+--- Vertex iterator
+
+
+    InitVertexIterator(me: mutable)
+    is redefined;
+    
+
+    MoreVertex(me: mutable)
+    
+    	returns Boolean from Standard
+	is redefined;
+
+
+    Vertex(me: mutable)
+    
+    	returns mutable HVertex from Adaptor3d
+	raises DomainError from Standard
+	is redefined;
+
+
+    NextVertex(me: mutable)
+    is redefined;
+
+
+
+    Classify(me: mutable; P2d: Pnt2d from gp;
+		          Tol: Real from Standard;
+    	    	    	  RecadreOnPeriodic : Boolean from Standard = Standard_True)
+
+
+    	returns State from TopAbs
+	is redefined;
+
+
+    IsThePointOn(me: mutable; P2d: Pnt2d from gp;
+	         Tol: Real from Standard;
+    	    	 RecadreOnPeriodic : Boolean from Standard = Standard_True)
+	---Purpose (caution: see the code for specifications) 
+    	returns Boolean from Standard
+	is redefined;
+
+
+    Orientation(me: mutable; C: HCurve2d from Adaptor2d)
+
+    	---Purpose: If the function returns the orientation of the arc.
+    	--          If the orientation is FORWARD or REVERSED, the arc is
+    	--          a "real" limit of the surface.
+    	--          If the orientation is INTERNAL or EXTERNAL, the arc is
+    	--          considered as an arc on the surface.
+
+    	returns Orientation from TopAbs
+	is redefined;
+
+    Orientation(me: mutable; C: HVertex from Adaptor3d)
+
+    	---Purpose: If the function returns the orientation of the arc.
+    	--          If the orientation is FORWARD or REVERSED, the arc is
+    	--          a "real" limit of the surface.
+    	--          If the orientation is INTERNAL or EXTERNAL, the arc is
+    	--          considered as an arc on the surface.
+
+    	returns Orientation from TopAbs
+	is redefined;
+
+    Destroy(me: mutable);
+    	---C++: alias ~
+
+
+    Has3d(me)
+	---Purpose: answers if arcs and vertices may have 3d representations,
+	--          so that we could use Tol3d and Pnt methods.
+	returns Boolean from Standard
+    is redefined;
+
+
+    Tol3d(me; C: HCurve2d from Adaptor2d)
+	---Purpose: returns 3d tolerance of the arc C
+	returns Real from Standard
+	raises DomainError from Standard
+    is redefined;
+
+
+    Tol3d(me; V: HVertex from Adaptor3d)
+	---Purpose: returns 3d tolerance of the vertex V
+	returns Real from Standard
+	raises DomainError from Standard
+    is redefined;
+
+
+    Pnt(me; V: HVertex from Adaptor3d)
+	---Purpose: returns 3d point of the vertex V
+	returns Pnt from gp
+	raises DomainError from Standard
+    is redefined;
+
+
+--- samples tools
+
+    ComputeSamplePoints(me: mutable)
+    is redefined;
+    
+
+    NbSamplesU(me: mutable) 
+    	---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is redefined;
+
+    
+    NbSamplesV(me: mutable) 
+    	---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is redefined;
+    
+    NbSamples(me: mutable)
+        ---Purpose: compute the sample-points for the intersections algorithms
+    returns Integer from Standard
+    is redefined;    
+    
+    SamplePoint(me: mutable; Index: Integer from Standard;
+                             P2d  : out Pnt2d   from gp;
+                             P3d  : out Pnt     from gp)
+    is redefined;
+    
+    DomainIsInfinite(me: mutable) 
+        	returns Boolean from Standard
+    is redefined;
+    
+    
+fields -- redefined from TopolTool from Adaptor3d
+
+    myVIterator : Explorer from TopExp;
+    myFace      : Face     from TopoDS;
+    myFClass2d  : Address  from Standard;
+    myCurve     : HCurve2d from BRepAdaptor;
+    -- MSV: replace myEIterator by myCIterator to return the same HCurve2d
+    --      for the same edge each time the user calls Value()
+    myCurves    : ListOfTransient from TColStd;
+    myCIterator : ListIteratorOfListOfTransient from TColStd;
+    
+    --myS         : HSurface from Adaptor3d;  now inherits myS from Adaptor3d_TopolTool
+    myU0        : Real     from Standard;
+    myV0        : Real     from Standard;
+    myDU        : Real     from Standard;
+    myDV        : Real     from Standard;
+    --myNbSamplesU: Integer  from Standard;   now inherits myS from Adaptor3d_TopolTool
+    --myNbSamplesV: Integer  from Standard;   now inherits myS from Adaptor3d_TopolTool    
+
+end TopolTool;

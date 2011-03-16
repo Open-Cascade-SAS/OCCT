@@ -1,0 +1,266 @@
+-- File:	Approx_AFunction.cdl
+-- Created:	Mon May 29 13:16:08 1995
+-- Author:	Xavier BENVENISTE
+--		<xab@nonox>
+---Copyright:	 Matra Datavision 1995
+
+class ApproxAFunction from AdvApprox 
+
+uses Array1OfInteger   from TColStd,
+     Vector            from math,
+     HArray1OfInteger  from TColStd,
+     Array1OfReal      from TColStd,
+     Array1OfPnt2d     from TColgp,
+     Array1OfPnt       from TColgp,
+     HArray1OfReal     from TColStd,
+     HArray1OfPnt2d    from TColgp,
+     HArray1OfPnt      from TColgp,
+     HArray2OfReal     from TColStd,
+     HArray2OfPnt2d    from TColgp,
+     HArray2OfPnt      from TColgp,
+     Pnt               from gp,
+     Pnt2d             from gp,
+     Shape             from GeomAbs,
+     EvaluatorFunction from AdvApprox,
+     Cutting           from AdvApprox
+     
+raises 
+
+    OutOfRange        from Standard,
+    ConstructionError from Standard
+
+is   
+    Create(Num1DSS    : Integer ;
+    	   Num2DSS    : Integer ;
+	   Num3DSS    : Integer ;
+	   OneDTol    : HArray1OfReal from TColStd ;
+	   TwoDTol    : HArray1OfReal from TColStd ;
+	   ThreeDTol  : HArray1OfReal from TColStd ;
+	   First      : Real ;
+	   Last       : Real ;
+	   Continuity : Shape from GeomAbs ;
+	   MaxDeg     : Integer ;
+	   MaxSeg     : Integer ;
+	   Func       : EvaluatorFunction from AdvApprox) 
+	   
+    returns ApproxAFunction from AdvApprox 
+    raises ConstructionError; 
+   
+    ---Purpose: Constructs approximator tool.
+    --
+    --  Warning:
+    --     the Func should be valid reference to object of type 
+    --     inherited from class EvaluatorFunction from Approx 
+    --     with life time longer than that of the approximator tool;
+    --     
+    --	  the result should be formatted in the following way :
+    -- <--Num1DSS--> <--2 * Num2DSS--> <--3 * Num3DSS-->
+    -- R[0] ....     R[Num1DSS].....                   R[Dimension-1] 
+    --
+    --  the order in which each Subspace appears should be consistent
+    --  with the tolerances given in the create function and the
+    --  results will be given in that order as well that is :
+    --  Curve2d(n)  will correspond to the nth entry
+    --  described by Num2DSS, Curve(n) will correspond to
+    --  the nth entry described by Num3DSS 
+    --  The same type of schema applies to the Poles1d, Poles2d and 
+    --  Poles.
+
+
+    Create(Num1DSS    : Integer ;
+    	   Num2DSS    : Integer ;
+	   Num3DSS    : Integer ;
+	   OneDTol    : HArray1OfReal from TColStd ;
+	   TwoDTol    : HArray1OfReal from TColStd ;
+	   ThreeDTol  : HArray1OfReal from TColStd ;
+	   First      : Real ;
+	   Last       : Real ;
+	   Continuity : Shape from GeomAbs ;
+	   MaxDeg     : Integer ;
+	   MaxSeg     : Integer ;
+	   Func       : EvaluatorFunction from AdvApprox;
+           CutTool    : Cutting from AdvApprox)
+	   
+      ---Purpose: Approximation with user methode of cutting
+
+      returns ApproxAFunction from AdvApprox 
+      raises ConstructionError;
+
+    Perform(me:in out; 
+            Num1DSS    : Integer ;
+    	    Num2DSS    : Integer ;
+	    Num3DSS    : Integer ;
+    	    CutTool    : Cutting from AdvApprox) 
+	    is private;
+    	    
+    Approximation(myclass; 
+                  TotalDimension  : Integer; 
+    	    	  TotalNumSS      : Integer;
+		  LocalDimension  : Array1OfInteger;
+		  First           : Real;
+	          Last            : Real;
+	          Evaluator       : in out EvaluatorFunction;
+		  CutTool         : Cutting from AdvApprox;
+	          ContinuityOrder : Integer; 
+    	    	  NumMaxCoeffs    : Integer; 
+    	    	  MaxSegments     : Integer;   
+	          TolerancesArray : Array1OfReal;
+	          code_precis     : Integer;
+	          NumCurves       : in out Integer;
+	          NumCoeffPerCurveArray : in out Array1OfInteger;
+	          LocalCoefficientArray : in out Array1OfReal;
+	          IntervalsArray        : in out Array1OfReal; 
+	          ErrorMaxArray         : in out Array1OfReal;
+	          AverageErrorArray     : in out Array1OfReal;
+	          ErrorCode             : in out Integer);
+    
+     
+    IsDone(me) returns Boolean 
+    ---C++: inline
+    ;
+    --  True if the approximation succeeded within the imposed
+    --  tolerances 
+    HasResult(me) returns Boolean 
+    ---C++: inline
+    ;
+    -- True if the approximation did come out with a result that
+    --  is not NECESSARELY within the required tolerance
+    --  
+    Poles1d (me) 
+    ---C++: inline 
+    ---Purpose: returns the poles from the algorithms as is 
+    returns HArray2OfReal from TColStd ;
+    
+    Poles2d (me) 
+    ---Purpose: returns the poles from the algorithms as is
+    ---C++: inline 
+    returns HArray2OfPnt2d from TColgp ;
+
+    Poles   (me) 
+    ---Purpose: -- returns the poles from the algorithms as is 
+    ---C++: inline 
+    returns  HArray2OfPnt from TColgp ;
+    
+    NbPoles(me) returns Integer 
+    ---Purpose:  as the name says
+    ;
+
+    Poles1d (me; Index : Integer ;
+   		 P : in out Array1OfReal from TColStd) 
+    ---Purpose: returns the poles at Index from the 1d subspace
+    raises OutOfRange ;
+
+    
+    Poles2d (me; Index : Integer ;
+   		 P : in out Array1OfPnt2d from TColgp) 
+    ---Purpose:  returns the poles at Index from the 2d subspace
+    raises OutOfRange ;
+    
+    Poles   (me; Index : Integer ;
+   		 P : in out Array1OfPnt from TColgp) 
+ 
+    ---Purpose:  returns the poles at Index from the 3d subspace
+    raises OutOfRange ;
+    
+    Degree(me)  returns Integer 
+    ---C++: inline
+    ;
+    
+    NbKnots(me) returns Integer 
+    ---C++: inline
+    ;
+    NumSubSpaces(me; Dimension : Integer) returns Integer 
+    ---C++: inline
+    ; 
+    Knots(me) 
+    ---C++: inline
+    returns HArray1OfReal    from TColStd ;
+    
+    Multiplicities(me) 
+    ---C++: inline
+    returns HArray1OfInteger from TColStd ;
+    
+    MaxError    (me; Dimension : Integer)
+    ---Purpose:  returns the error as is in the algorithms
+    returns HArray1OfReal from TColStd ;
+    
+    AverageError(me; Dimension : Integer)
+
+    ---Purpose: returns the error as is in the algorithms
+    returns HArray1OfReal from TColStd ;
+    
+    MaxError (me; Dimension : Integer ;
+   		  Index : Integer)    returns Real 
+    ;
+    
+    AverageError(me; Dimension : Integer;
+    	    	    Index : Integer) returns Real 
+    ;
+    
+        
+    Dump(me; o: in out OStream);
+    ---Purpose: diplay information on approximation.
+
+fields
+    -- Input fields 
+    -- 
+    myNumSubSpaces : Integer[3] ;
+    -- Number of subspaces [0] = number of 1 dimensional subspaces
+    --                     [1] = number of 2 dimensional subspaces
+    --                     [2] = number of 3 dimensional subspaces
+    
+    my1DTolerances   : HArray1OfReal from TColStd ;
+    my2DTolerances   : HArray1OfReal from TColStd ;
+    my3DTolerances   : HArray1OfReal from TColStd ;
+
+    --     -- self explanatory : one tolerance per subspace 
+    myFirst          : Real ;
+    -- first parameter for the approximation
+    myLast           : Real ;
+    -- last parameter for the approximation 
+    myContinuity     : Shape from GeomAbs ;
+    
+    -- continuity requested for the approximation
+    ---Warning:
+    --   The evaluator of the function to approximate
+    --   must provide the derivatives up to the requested
+    --   order otherwise this will NOT WORK
+    myMaxDegree      : Integer ;
+    -- maximum degree for the approximation
+     ---Warning:
+    --   Because of the unstable evaluation after degree 14
+    --   this is limited to 14
+    myMaxSegments    : Integer ;
+    -- maximum of segment allowed 
+    -- Output fields 
+    -- 
+    myDone           : Boolean ;
+    -- tells if the approximation succeeded within the requested
+    -- tolerance
+    myHasResult      : Boolean ;
+    -- tells if the approximation returned a result although
+    -- it might not be within the requested tolerance. In
+    -- that case myDone will be false
+    -- 
+    my1DPoles        : HArray2OfReal     from TColStd ;
+    -- 1D poles if myNumSubSpaces[0] > 0
+    my2DPoles        : HArray2OfPnt2d    from TColgp  ;
+    -- 2D poles if myNumSubSpaces[1] > 0 
+    my3DPoles        : HArray2OfPnt      from TColgp ;
+    -- 3D poles if myNumSubSpaces[2] > 0
+    myKnots          : HArray1OfReal     from TColStd ;
+    myMults          : HArray1OfInteger  from TColStd ;
+    myDegree         : Integer ;
+    
+    myEvaluator      : Address from Standard;   
+    -- 
+    -- The Errors 
+    -- 
+    my1DMaxError     : HArray1OfReal     from TColStd ;
+    my1DAverageError : HArray1OfReal     from TColStd ;
+    my2DMaxError     : HArray1OfReal     from TColStd ;
+    my2DAverageError : HArray1OfReal     from TColStd ;
+    my3DMaxError     : HArray1OfReal     from TColStd ;
+    my3DAverageError : HArray1OfReal     from TColStd ;
+    
+end ApproxAFunction ;

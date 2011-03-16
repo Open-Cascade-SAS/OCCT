@@ -1,0 +1,74 @@
+-- File:	HatchGen_ElementGen.cdl
+-- Created:	Wed Nov 10 18:10:00 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@sdsun1>
+-- Copyright:   Matra Datavision 1993
+
+generic class ElementGen from HatchGen (TheElementCurve as any)
+
+uses
+    Orientation from TopAbs
+
+is
+
+
+    Create
+    
+    	returns ElementGen from HatchGen;
+
+    Create (Other : ElementGen  from HatchGen) 
+    
+    	---Purpose: Magic constructor.
+
+	returns ElementGen from HatchGen ;
+     
+
+    Create (Curve       : TheElementCurve ;
+    	    Orientation : Orientation from TopAbs = TopAbs_FORWARD)
+    
+    	---Purpose: Creates an element.
+
+	returns ElementGen from HatchGen ;
+
+
+    Curve (me)
+    
+    	---Purpose: Returns the curve associated to the element.
+
+    	---C++: return const &
+
+        returns TheElementCurve
+        is static ;
+
+
+    ChangeCurve (me : in out)
+    
+    	---Purpose: Returns the curve associated to the element.
+
+    	---C++: return &
+
+        returns TheElementCurve
+        is static ;
+
+
+    Orientation (me : in out ; Orientation : Orientation from TopAbs)
+
+    	---Purpose: Sets the orientation of the element.
+
+    	is static ;
+
+
+    Orientation (me)
+
+    	---Purpose: Returns the orientation of the element.
+
+    	returns Orientation from TopAbs
+    	is static ;
+
+
+fields
+
+    myCurve       : TheElementCurve ;
+    myOrientation : Orientation from TopAbs ;
+
+end ElementGen from HatchGen ;

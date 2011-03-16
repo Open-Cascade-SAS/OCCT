@@ -1,0 +1,54 @@
+-- File:	Graphic2d.cdl
+-- Created:	Tue Jun 22 16:27:10 1993
+-- Author:	Jean Louis FRENKEL, Gerard Gras.
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+package GGraphic2d
+
+	---Version:
+
+	---Purpose: This package permits the creation of 2d graphic curves
+	--          and set of curves in a   in a visualiser.
+	--	    It moved from the Graphic2d package to this package
+	--	    since it required services from the UL GEOMETRY
+	--	    
+
+	---Keywords: Drawer, View, Graphic Object, Primitive, Line,
+	--	     Circle, Polyline, Ellips, Curve, Image, Text, HidingText,
+	--	     FramedText, Paragraph
+	---Warning:
+	---References:
+
+uses
+        Graphic2d,
+	Aspect,
+	Geom2d,
+	Image,
+	MMgt,
+	gp,
+	OSD,
+	Quantity,
+	TCollection,
+	TColStd,
+	TShort,
+	TColGeom2d
+
+is
+        class Curve ;
+	---Category: Set of primitive curves
+	--           
+	class SetOfCurves;
+	---Category: Set Of Graphic primitives
+
+
+	-----------------------
+	-- Category: Exceptions
+	-----------------------
+
+
+	exception CurveDefinitionError inherits OutOfRange;	
+	---Category: Exceptions
+		
+end GGraphic2d;
+

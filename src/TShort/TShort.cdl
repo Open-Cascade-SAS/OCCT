@@ -1,0 +1,50 @@
+package TShort 
+
+                             
+uses TCollection
+
+is
+
+
+--                  Instantiations de TCollection                         --
+--                  *****************************                         --
+------------------------------------------------------------------------
+
+--          
+-- Instantiations Array1 -- *************************************************************
+--       
+    class Array1OfShortReal instantiates Array1 from TCollection (ShortReal);
+
+--          
+-- Instantiations HArray1 -- **************************************************************
+--       
+    class HArray1OfShortReal instantiates 
+    	HArray1 from TCollection (ShortReal, Array1OfShortReal from TShort);
+
+--          
+-- Instantiations Array2 -- ***************************************************************************
+--       
+    class Array2OfShortReal instantiates 
+	Array2 from TCollection (ShortReal);
+
+--          
+-- Instantiations HArray2
+-- ****************************************************************************
+--       
+    class HArray2OfShortReal instantiates 
+    	HArray2 from TCollection ( ShortReal,
+	    	    	    	   Array2OfShortReal from TShort);
+--                    
+--       Instantiations Sequence      *****************************************************
+--       
+    class SequenceOfShortReal instantiates 
+	Sequence from TCollection (ShortReal); 
+
+--                    
+--       Instantiations HSequence      ***********************************************
+--       
+class HSequenceOfShortReal instantiates 
+	HSequence from TCollection (ShortReal,
+    	    	    	    	    SequenceOfShortReal from TShort);
+end TShort;
+

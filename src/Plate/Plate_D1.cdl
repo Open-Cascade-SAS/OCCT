@@ -1,0 +1,34 @@
+-- File:	Plate_D1.cdl
+-- Created:	Thu Oct 19 17:38:21 1995
+-- Author:	Andre LIEUTIER
+--		<ds@sgi63>
+---Copyright:	 Matra Datavision 1995
+--           	 
+class D1 from Plate
+---Purpose : define an order 1 derivatives of a 3d valued
+--          function of a 2d variable
+--         
+
+uses XYZ from gp
+
+is
+    Create(du,dv : XYZ from gp) returns D1;
+    Create(ref  :  D1  from  Plate) returns D1;
+    -- Accessors :
+    DU(me)  returns  XYZ  from  gp;
+    ---C++: inline 
+    ---C++: return const &
+    DV(me)  returns  XYZ  from  gp;
+    ---C++: inline 
+    ---C++: return const &
+
+fields
+    
+    Du, Dv : XYZ from gp;
+
+friends
+    class GtoCConstraint from Plate,
+    class FreeGtoCConstraint from Plate
+end;
+
+

@@ -1,0 +1,58 @@
+-- File:	BRepFill_CurveConstraint.cdl
+-- Created:	Fri Oct 31 10:54:23 1997
+-- Author:	Joelle CHAUVET
+--		<jct@sgi64>
+---Copyright:	 Matra Datavision 1997
+
+class  CurveConstraint  from  BRepFill  inherits  CurveConstraint  from  GeomPlate 
+
+uses 
+   Pnt  from  gp,  
+   Pnt2d  from  gp,
+   Vec   from  gp,
+   HCurveOnSurface  from  Adaptor3d,  
+   HCurve  from  Adaptor3d,
+   Surface  from  Geom, 
+   Curve  from  Geom2d, 
+   Function  from  Law, 
+   SLProps from GeomLProp  
+   
+raises   
+   ConstructionError  from  Standard
+is 
+ 
+Create (Boundary :  HCurveOnSurface  from  Adaptor3d; 
+        Order :  Integer  from  Standard ;
+        NPt  :  Integer  from  Standard  =  10;
+    	TolDist  :  Real  from  Standard  =  0.0001; 
+    	TolAng  :  Real  from  Standard  =  0.01; 
+    	TolCurv  :  Real  from  Standard  =  0.1
+ )  
+        returns  CurveConstraint from  BRepFill
+     	raises    ConstructionError;
+	--purpose : if Order is not -1 , 0,  1,  2
+	--         
+--- Purpose: Create a constraint
+--  Order is the order of the constraint. The possible values for order are -1,0,1,2.
+--  Order i means constraints Gi
+--  Npt is the number of points associated with the constraint.
+--  TolDist is the maximum error to satisfy for G0 constraints
+--  TolAng is the maximum error to satisfy for G1 constraints
+--  TolCurv is the maximum error to satisfy for G2 constraints
+--  These errors can be replaced by laws of criterion.
+
+Create (Boundary :  HCurve  from  Adaptor3d; 
+        Tang :  Integer  from  Standard; 
+        NPt  :  Integer  from  Standard  =  10;
+    	TolDist  :  Real  from  Standard  =  0.0001)
+       returns  CurveConstraint from  BRepFill 
+     	raises    ConstructionError;
+	--purpose  :  if Order  is  not  0  or  -1 
+-- Purpose: Create a constraint
+--  Order is the order of the constraint. The possible values for order are -1,0.
+--  Order i means constraints Gi
+--  Npt is the number of points associated with the constraint.
+--  TolDist is the maximum error to satisfy for G0 constraints
+--  These errors can be replaced by laws of criterion.
+
+end;

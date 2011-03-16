@@ -1,0 +1,57 @@
+-- File:        XmlMNaming_NamedShapeDriver.cdl
+-- Created:     Sep 14 2001
+-- Author:      Alexander GRIGORIEV
+---Copyright:   Open Cascade 2001
+
+class NamedShapeDriver from XmlMNaming inherits ADriver from XmlMDF
+
+        ---Purpose: 
+
+
+uses
+    RRelocationTable    from XmlObjMgt,
+    SRelocationTable    from XmlObjMgt,
+    Persistent          from XmlObjMgt,
+    Element             from XmlObjMgt,
+    Attribute           from TDF,
+    MessageDriver       from CDM,
+    ShapeSet            from BRepTools,
+    LocationSet         from TopTools
+
+is
+    Create (aMessageDriver: MessageDriver from CDM)
+        returns mutable NamedShapeDriver from XmlMNaming;
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF
+        is redefined;
+
+    Paste(me; theSource     : Persistent from XmlObjMgt;
+              theTarget     : mutable Attribute from TDF;
+              theRelocTable : out RRelocationTable from XmlObjMgt)
+        returns Boolean from Standard
+        is redefined;
+
+    Paste(me; theSource     : Attribute from TDF;
+              theTarget     : in out Persistent from XmlObjMgt;
+              theRelocTable : out SRelocationTable from XmlObjMgt)
+        is redefined;
+
+    ReadShapeSection (me: mutable; anElement: Element from XmlObjMgt);
+      ---Purpose: Input the shapes from DOM element
+
+    WriteShapeSection (me: mutable; anElement: in out Element from XmlObjMgt);
+      ---Purpose: Output the shapes into DOM element
+
+    Clear (me:mutable);
+      ---Purpose: Clear myShapeSet
+
+    GetShapesLocations(me: mutable) returns LocationSet from TopTools; 
+    ---Purpose: get the format of topology  
+    ---C++: return &
+    ---C++: inline 
+    
+fields
+    myShapeSet          : ShapeSet from BRepTools;
+
+end NamedShapeDriver;

@@ -1,0 +1,250 @@
+-- File:	BRepFill_Filling.cdl
+-- Created:	Wed Aug 26 11:47:28 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Filling from BRepFill
+
+	---Purpose: N-Side Filling
+	--  This algorithm avoids to build a face from:
+	--  * a set of edges defining the bounds of the face and some
+	--    constraints the surface support has to satisfy
+	--  * a set of edges and points defining some constraints
+	--    the support surface has to satisfy
+	--  * an initial surface to deform for satisfying the constraints
+	--  * a set of parameters to control the constraints.
+	--
+	--  The support surface of the face is computed by deformation
+	--  of the initial surface in order to satisfy the given constraints.
+	--  The set of bounding edges defines the wire of the face.
+	--
+	--  If no initial surface is given, the algorithm computes it
+	--  automatically.
+	--  If the set of edges is not connected (Free constraint)
+	--  missing edges are automatically computed.
+	--
+	--  Limitations:
+	--  * If some constraints are not compatible
+	--    The algorithm does not take them into account.
+	--    So the constraints will not be satisfyed in an area containing
+	--    the incompatibilitries.
+	--  * The constraints defining the bound of the face have to be
+	--    entered in order to have a continuous wire.
+	--
+	--  Other Applications:
+	--  * Deformation of a face to satisfy internal constraints
+	--  * Deformation of a face to improve Gi continuity with
+	--    connected faces
+	
+	---Level: Advanced
+
+uses
+    Shape from TopoDS,
+    Edge  from TopoDS,
+    Face  from TopoDS,
+    Pnt   from gp,
+    Shape from GeomAbs,
+    BuildPlateSurface          from GeomPlate,
+    SequenceOfEdgeFaceAndOrder from BRepFill,
+    SequenceOfFaceAndOrder     from BRepFill,
+    SequenceOfPointConstraint  from GeomPlate,
+    MapOfShape  from TopTools,
+    SequenceOfPnt from TColgp
+
+raises
+    NotDone,
+    OutOfRange,
+    ConstructionError
+
+is
+    Create( Degree      : Integer from Standard = 3;
+    	    NbPtsOnCur  : Integer from Standard = 15;
+	    NbIter      : Integer from Standard = 2;
+	    Anisotropie : Boolean from Standard = Standard_False;
+	    Tol2d       : Real    from Standard = 0.00001;
+	    Tol3d       : Real    from Standard = 0.0001;
+	    TolAng      : Real    from Standard = 0.01;
+	    TolCurv     : Real    from Standard = 0.1;
+	    MaxDeg      : Integer from Standard = 8;
+	    MaxSegments : Integer from Standard = 9 )
+    ---Purpose: Constructor
+    --
+    returns Filling from BRepFill;
+    
+
+    SetConstrParam( me : in out; Tol2d   : Real    from Standard = 0.00001;
+    	    	    	    	 Tol3d   : Real    from Standard = 0.0001;
+				 TolAng  : Real    from Standard = 0.01;
+				 TolCurv : Real    from Standard = 0.1 );
+    ---Purpose: Sets the values of Tolerances used to control the constraint.
+    --	Tol2d:
+    --	Tol3d:   it is the maximum distance allowed between the support surface
+    --	         and the constraints
+    --	TolAng:  it is the maximum angle allowed between the normal of the surface
+    --	         and the constraints
+    --	TolCurv: it is the maximum difference of curvature allowed between
+    --	         the surface and the constraint
+    
+    SetResolParam( me : in out; Degree      : Integer from Standard = 3;
+    	    	    	    	NbPtsOnCur  : Integer from Standard = 15;
+				NbIter      : Integer from Standard = 2;
+				Anisotropie : Boolean from Standard = Standard_False );
+    ---Purpose: Sets the parameters used for resolution.
+    --	The default values of these parameters have been chosen for a good
+    --	ratio quality/performance.
+    --	Degree:      it is the order of energy criterion to minimize for computing
+    --	             the deformation of the surface.
+    --	             The default value is 3
+    --	             The recommanded value is i+2 where i is the maximum order of the
+    --	             constraints.
+    --	NbPtsOnCur:  it is the average number of points for discretisation
+    --	             of the edges.
+    --	NbIter:      it is the maximum number of iterations of the process.
+    --	             For each iteration the number of discretisation points is
+    --	             increased.
+    --	Anisotropie: 
+    
+    SetApproxParam( me : in out; MaxDeg      : Integer from Standard = 8;
+				 MaxSegments : Integer from Standard = 9 );
+    ---Purpose: Sets the parameters used for approximation of the surface
+    --
+    
+
+    LoadInitSurface( me : in out; aFace : Face from TopoDS );
+    ---Purpose: Loads the initial Surface
+    
+
+    Add( me : in out; anEdge : Edge from TopoDS;
+    	    	      Order  : Shape from GeomAbs;
+		      IsBound : Boolean from Standard = Standard_True )
+    returns Integer from Standard
+    ---Purpose: Adds a new constraint which also defines an edge of the wire
+    --	        of the face
+    --	Order: Order of the constraint:
+    --	       GeomAbs_C0 : the surface has to pass by 3D representation
+    --	                    of the edge
+    --	       GeomAbs_G1 : the surface has to pass by 3D representation
+    --	                    of the edge and to respect tangency with the first
+    --	                    face of the edge
+    --	       GeomAbs_G2 : the surface has to pass by 3D representation
+    --	                    of the edge and to respect tangency and curvature
+    --	                    with the first face of the edge.
+    raises ConstructionError from Standard;
+    -- if the edge has no representation on a face and Order is
+    -- GeomAbs_G1 or GeomAbs_G2.
+    
+    Add( me : in out; anEdge  : Edge from TopoDS;
+    	    	      Support : Face from TopoDS;
+		      Order   : Shape from GeomAbs;
+		      IsBound : Boolean from Standard = Standard_True )
+    returns Integer from Standard
+    ---Purpose: Adds a new constraint which also defines an edge of the wire
+    --	        of the face
+    --	Order: Order of the constraint:
+    --	       GeomAbs_C0 : the surface has to pass by 3D representation
+    --	                    of the edge
+    --	       GeomAbs_G1 : the surface has to pass by 3D representation
+    --	                    of the edge and to respect tangency with the
+    --	                    given face
+    --	       GeomAbs_G2 : the surface has to pass by 3D representation
+    --	                    of the edge and to respect tangency and curvature
+    --	                    with the given face.
+    raises ConstructionError from Standard;
+    -- if the edge has no 2d representation on the given face
+    
+    Add( me : in out; Support : Face from TopoDS;
+		      Order   : Shape from GeomAbs )
+    returns Integer from Standard;
+    ---Purpose: Adds a free constraint on a face. The corresponding edge has to
+    --	be automatically recomputed.
+    --	It is always a bound.
+    
+    Add( me : in out; Point : Pnt from gp )
+    returns Integer from Standard;
+    ---Purpose: Adds a punctual constraint
+    
+    Add( me : in out; U, V    : Real from Standard;
+    	    	      Support : Face from TopoDS;
+		      Order   : Shape from GeomAbs )
+    returns Integer from Standard;
+    ---Purpose: Adds a punctual constraint.
+    
+
+    AddConstraints( me : in out; SeqOfConstraints : SequenceOfEdgeFaceAndOrder from BRepFill )
+    ---Purpose: Adds constraints to builder
+    is private;
+
+    BuildWires( me; EdgeMap  : in out MapOfShape from TopTools;
+    	    	    WireList : out MapOfShape from TopTools )
+    ---Purpose: Builds wires of maximum length
+    is private;
+    
+    FindExtremitiesOfHoles( me; WireMap : in out MapOfShape from TopTools;
+    	    	    	    	PntSeq  : out SequenceOfPnt from TColgp )
+    ---Purpose: Finds extremities of future edges to fix the holes between wires.
+    --          Can properly operate only with convex contour
+    is private;
+    
+    Build( me : in out );
+    ---Purpose: Builds the resulting faces
+    
+    IsDone(me) returns Boolean from Standard;
+    
+    Face(me) returns Face from TopoDS;
+    -- returns the resulting face
+    
+
+    G0Error(me) returns Real from Standard;
+    -- returns the max distance between the result and the constraints
+    
+    G1Error(me) returns Real from Standard;
+    -- returns the max angle between the result and the constraints
+    
+    G2Error(me) returns Real from Standard;
+    -- returns the max difference of curvature between the result and the constraints
+    
+    
+    G0Error( me : in out; Index : Integer from Standard ) returns Real from Standard;
+    -- returns the max distance between the result and the constraint Index
+    
+    G1Error( me : in out; Index : Integer from Standard ) returns Real from Standard;
+    -- returns the max angle between the result and the constraint Index
+    
+    G2Error( me : in out; Index : Integer from Standard ) returns Real from Standard;
+    -- returns the max difference of curvature between the result and the constraint Index
+    
+fields
+
+    myBuilder         : BuildPlateSurface          from GeomPlate;
+    myBoundary        : SequenceOfEdgeFaceAndOrder from BRepFill; 
+    myConstraints     : SequenceOfEdgeFaceAndOrder from BRepFill;
+    myFreeConstraints : SequenceOfFaceAndOrder     from BRepFill;
+    myPoints          : SequenceOfPointConstraint  from GeomPlate;
+    
+    myFace            : Face from TopoDS;
+    
+    myInitFace    : Face    from TopoDS;
+    
+    -- Tolerances
+    myTol2d       : Real    from Standard;
+    myTol3d       : Real    from Standard;
+    myTolAng      : Real    from Standard;
+    myTolCurv     : Real    from Standard;
+    
+    -- Parameters of approximation
+    myMaxDeg      : Integer from Standard;
+    myMaxSegments : Integer from Standard;
+    
+    -- Parameters of resolution
+    myDegree      : Integer from Standard;
+    myNbPtsOnCur  : Integer from Standard;
+    myNbIter      : Integer from Standard;
+    myAnisotropie : Boolean from Standard;
+    
+    myIsInitFaceGiven : Boolean from Standard; 
+     
+    myIsDone : Boolean from Standard; 
+     
+end Filling;

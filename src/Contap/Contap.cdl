@@ -1,0 +1,85 @@
+-- File:	Contap.cdl
+-- Created:	Fri Feb  5 11:50:39 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+package Contap
+
+	---Purpose: 
+
+uses Standard,StdFail,MMgt, GeomAbs, TopAbs, TCollection, gp, TColgp,
+     math, IntSurf, IntStart, IntWalk,
+     Geom2d, TColStd, Geom, Adaptor3d,  Adaptor2d
+
+is
+
+    deferred generic class ArcTool;        -- template class
+    
+    deferred generic class SurfaceTool;    -- template class
+    
+    deferred generic class TopolTool;      -- template class
+    
+    generic class Point;
+
+    generic class Line;
+
+    generic class SurfFunction;
+    
+    generic class ArcFunction;
+    
+    generic class SurfProps;
+
+    generic class ContourGen, ThePoint,TheSequenceOfPoint,TheHSequenceOfPoint,
+                              TheLine, TheSequenceOfLine,
+			      TheSurfProps, TheSurfFunction, TheArcFunction,
+                              TheSearch, TheIWalking, TheSearchInside;
+    	    	    	      ---TheLineConstructor;
+
+    class ContAna;		   
+
+    enumeration TFunction is
+    	ContourStd,
+	ContourPrs,
+	DraftStd,
+	DraftPrs
+    end TFunction;	
+
+    enumeration IType is  -- a replacer dans IntSurf et fusionner avec IntPatch
+    -- type of the line of contour
+
+    	Lin,       -- pour conflit avec deferred class Line
+    	Circle,
+        Walking,
+    	Restriction
+    end IType;
+	
+    generic class HContToolGen;
+    
+    generic class HCurve2dToolGen;
+    
+    class HCurve2dTool instantiates 
+    	HCurve2dToolGen from Contap ( 
+	    HCurve2d from Adaptor2d);
+
+    class HContTool instantiates 
+        HContToolGen from Contap (
+    	 HVertex       from Adaptor3d,
+	 HCurve2d      from Adaptor2d,
+	 HSurface      from Adaptor3d,
+    	 HCurve2dTool  from Contap,
+	 HSurfaceTool  from Adaptor3d);
+	 
+    class Contour instantiates ContourGen from Contap
+    	(HVertex       from Adaptor3d,
+	 HCurve2d      from Adaptor2d,
+	 HSurface      from Adaptor3d,
+	 HCurve2dTool  from Contap,
+	 HSurfaceTool  from Adaptor3d,
+	 HContTool     from Contap,
+	 TopolTool     from Adaptor3d);
+
+
+end Contap;
+

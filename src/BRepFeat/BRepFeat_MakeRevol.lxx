@@ -1,0 +1,30 @@
+// File:	BRepFeat_MakeRevol.lxx
+// Created:	Tue Feb 13 14:43:36 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : BRepFeat_MakeRevol
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol () {}
+
+
+//=======================================================================
+//function : BRepFeat_MakeRevol
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol (const TopoDS_Shape& Sbase,
+					       const TopoDS_Shape& Pbase,
+					       const TopoDS_Face& Skface,
+					       const gp_Ax1& Axis,
+					       const Standard_Integer Fuse,
+					       const Standard_Boolean Modify)
+					       
+{
+  Init(Sbase,Pbase,Skface,Axis,Fuse,Modify);
+}
+

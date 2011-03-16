@@ -1,0 +1,70 @@
+-- File:	QANewModTopOpe_Tools.cdl
+-- Created:	Tue May  6 17:49:59 2003
+-- Author:	Michael KLOKOV
+
+
+class Tools from QANewModTopOpe
+uses
+    Edge from TopoDS,
+    Shape from TopoDS,
+    State from TopAbs,
+    PDSFiller from BOPTools,
+    ListOfShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools
+
+is
+
+    NbPoints(myclass; theDSFiller: PDSFiller from BOPTools)
+    	returns Integer from Standard;
+
+    NewVertex(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	       theIndex   : Integer from Standard)
+    	returns Shape from TopoDS;
+
+    HasSameDomain(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	    	   theFace    : Shape from TopoDS)
+    	returns Boolean from Standard;
+    
+    SameDomain(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	    	theFace    : Shape from TopoDS;
+    	    	    	theResultList: out ListOfShape from TopTools);
+
+    IsSplit(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	     theEdge    : Shape from TopoDS;
+    	    	     theState   : State from TopAbs)
+    	returns Boolean from Standard;
+	---Warning: This method could be called only after boolean operation,
+	---         arguments of which was solids or compounds of solids.
+	---
+
+    Splits(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	    theEdge    : Shape from TopoDS;
+    	    	    theState   : State from TopAbs;
+    	    	    theResultList: out ListOfShape from TopTools);
+	---Warning: This method could be called only after boolean operation,
+	---         arguments of which was solids or compounds of solids.
+	---
+
+    SplitE(myclass; theEdge  : Edge from TopoDS;
+    	    	    theSplits: out ListOfShape from TopTools)
+    	returns Boolean from Standard;
+
+    EdgeCurveAncestors(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	    	    	theEdge    : Shape from TopoDS;
+				theFace1   : out Shape from TopoDS;
+				theFace2   : out Shape from TopoDS)
+    	returns Boolean from Standard;
+    
+    EdgeSectionAncestors(myclass; theDSFiller: PDSFiller from BOPTools;
+    	    	    	    	  theEdge    : Shape from TopoDS;
+    	    	    	    	  LF1,LF2    : out ListOfShape from TopTools;
+				  LE1,LE2 : out ListOfShape from TopTools)
+    	returns Boolean from Standard;
+
+    BoolOpe(myclass; theFace1: Shape from TopoDS;
+    	    	     theFace2: Shape from TopoDS;
+		     IsCommonFound: out Boolean from Standard;
+    	    	     theHistoryMap: out IndexedDataMapOfShapeListOfShape from TopTools)
+    	returns Boolean from Standard;
+
+end Tools from QANewModTopOpe;

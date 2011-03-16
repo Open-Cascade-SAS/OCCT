@@ -1,0 +1,45 @@
+-- File:        Axis2Placement2d.cdl
+-- Created:     Fri Dec  1 11:11:14 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Axis2Placement2d from StepGeom 
+
+inherits Placement from StepGeom 
+
+uses
+
+	Direction from StepGeom, 
+	Boolean from Standard, 
+	HAsciiString from TCollection, 
+	CartesianPoint from StepGeom
+is
+
+	Create returns mutable Axis2Placement2d;
+	---Purpose: Returns a Axis2Placement2d
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aLocation : mutable CartesianPoint from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aLocation : mutable CartesianPoint from StepGeom;
+	      hasArefDirection : Boolean from Standard;
+	      aRefDirection : mutable Direction from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetRefDirection(me : mutable; aRefDirection : mutable Direction);
+	UnSetRefDirection (me:mutable);
+	RefDirection (me) returns mutable Direction;
+	HasRefDirection (me) returns Boolean;
+
+fields
+
+	refDirection : Direction from StepGeom;   -- OPTIONAL can be NULL
+	hasRefDirection : Boolean from Standard;
+
+end Axis2Placement2d;

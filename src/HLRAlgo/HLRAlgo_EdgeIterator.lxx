@@ -1,0 +1,76 @@
+// File:	HLRAlgo_EdgeIterator.lxx
+// Created:	Mon Jan 11 13:58:26 1993
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#include <HLRAlgo_EdgeStatus.hxx>
+
+//=======================================================================
+//function : MoreHidden
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_EdgeIterator::MoreHidden () const
+{ return iHid <= myNbHid + 1; }
+
+//=======================================================================
+//function : Hidden
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_EdgeIterator::Hidden (Standard_Real& Start,
+			      Standard_ShortReal& TolStart,
+			      Standard_Real& End  ,
+			      Standard_ShortReal& TolEnd) const
+{
+  Start    = myHidStart;
+  TolStart = myHidTolStart;
+  End      = myHidEnd;
+  TolEnd   = myHidTolEnd;
+}
+
+//=======================================================================
+//function : InitVisible
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_EdgeIterator::InitVisible (const HLRAlgo_EdgeStatus& status)
+{
+  EVis    = (Standard_Address)&status;
+  iVis    = 1;
+  myNbVis = ((HLRAlgo_EdgeStatus*)EVis)->NbVisiblePart();
+}
+
+//=======================================================================
+//function : MoreVisible
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible () const
+{ return iVis <= myNbVis; }
+
+//=======================================================================
+//function : NextVisible
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeIterator::NextVisible ()
+{ iVis++; }
+
+//=======================================================================
+//function : Visible
+//purpose  : 
+//=======================================================================
+
+inline void 
+HLRAlgo_EdgeIterator::Visible (Standard_Real& Start,
+			       Standard_ShortReal& TolStart,
+			       Standard_Real& End  ,
+			       Standard_ShortReal& TolEnd)
+{ 
+  ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart
+    (iVis,Start,TolStart,End,TolEnd);
+}
+

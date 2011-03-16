@@ -1,0 +1,90 @@
+-- File:	TDataStd_Relation.cdl
+-- Created:	Wed Dec 10 11:05:48 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Relation from TDataStd inherits Attribute from TDF
+    
+    ---Purpose: Relation attribute. 
+    --          ==================
+    --
+    --            *  Data Structure of  the  Expression is stored in a
+    --           string and references to variables used by the string
+    --
+    --  Warning:  To be consistent,  each  Variable  referenced by  the
+    --          relation must have its equivalent in the string
+
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     Real            from Standard,
+     DataSet         from TDF,
+     RelocationTable from TDF,
+     ExtendedString  from TCollection,
+     AttributeList   from TDF
+     
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+    GetID (myclass)    
+    	---C++: return const & 
+    returns GUID from Standard;
+    
+
+    Set (myclass ; label : Label from TDF)
+    ---Purpose: Find, or create, an Relation attribute.
+    returns Relation from TDataStd;
+    
+    ---Purpose: Real methods
+    --          ============
+
+    Create
+    returns mutable Relation from TDataStd;
+    
+    Name (me)
+    ---Purpose: build and return the relation name
+    returns ExtendedString from TCollection;
+    
+    SetRelation (me : mutable; E : ExtendedString from TCollection);
+    
+    GetRelation (me)
+    returns ExtendedString from TCollection; 
+    ---C++: return const &
+    
+    GetVariables (me : mutable)
+    ---C++: return &
+    returns AttributeList from TDF;    
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID (me) 
+    ---C++: return const &  
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump(me; anOS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+fields
+
+    myRelation   : ExtendedString from TCollection;
+    myVariables  : AttributeList from TDF;  
+
+end Relation;

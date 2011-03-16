@@ -1,0 +1,130 @@
+-- File:	Intersector.cdl
+-- Created:	Mon Mar  2 10:41:48 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class Intersector from IntImpParGen ( 
+	 ImpTool             as any; -- as ImpTool from IntImpParGen
+	 ParCurve            as any;
+	 ParTool             as any; -- as ParTool from IntImpParGen(ParCurve)   
+         ProjectOnPCurveTool as any) -- as ProjectOnPCurveToolGen from IntCurve
+
+inherits Intersection from IntRes2d
+
+      	---Purpose: Calculates all the IntersectionPoints 
+      	--          and IntersectionSegments between an implicit curve
+      	--          (see class ImpTool) and a parametrised curve (see class
+      	--          ParTool) on their domains.
+      	--          The results of the intersection are stored in the 
+      	--          Intersection class from IntRes2d.
+      	--          The parametrised curve has to be bounded (the domain
+      	--          of this curve must verify HasFirstPoint returns True
+      	--          and HasLastPoint returns True).
+
+
+
+uses IntersectionPoint             from IntRes2d,
+     IntersectionSegment           from IntRes2d,
+     SequenceOfIntersectionPoint   from IntRes2d,
+     SequenceOfIntersectionSegment from IntRes2d,
+     Domain                        from IntRes2d, 
+     Pnt2d                         from gp,
+     Array1OfReal                  from TColStd  
+
+
+raises ConstructionError from Standard
+ 
+
+    class MyImpParTool instantiates ImpParTool from IntImpParGen(
+                   ImpTool,
+                   ParCurve,    
+                   ParTool);
+
+
+
+is
+
+    Create
+
+    	---Purpose: Empty constructor.
+
+    	returns Intersector from IntImpParGen;
+
+
+    Create ( ITool      : ImpTool;        
+             Dom1       : Domain from IntRes2d;         
+             PCurve     : ParCurve;        
+             Dom2       : Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+    
+	---Purpose: Intersection between an implicit curve and
+	--          a parametrised curve.
+	--          The exception ConstructionError is raised if the domain
+	--          of the parametrised curve does not verify HasFirstPoint
+	--          and HasLastPoint return True.
+    
+    	returns Intersector       from IntImpParGen
+    	raises  ConstructionError from Standard;
+
+
+    Perform (me: in out;
+    	     ITool      : ImpTool;        
+             Dom1       : Domain from IntRes2d;         
+             PCurve     : ParCurve;        
+             Dom2       : Domain from IntRes2d;
+    	     TolConf,Tol: Real from Standard)
+    
+	---Purpose: Intersection between an implicit curve and
+	--          a parametrised curve.
+	--          The exception ConstructionError is raised if the domain
+	--          of the parametrised curve does not verify HasFirstPoint
+	--          and HasLastPoint return True.
+    
+    
+    	raises ConstructionError from Standard
+	is static;	
+
+	 FindU  (   me   ; 
+	            parameter    :            Real  from  Standard  ;
+    	    	    point        :  in  out   Pnt2d from  gp; 
+    	    	    TheParCurev  :            ParCurve; 
+    	    	    TheImpTool   :            ImpTool)
+	    returns  Real  from  Standard
+	    is static ; 
+		 	
+	    
+ 	 FindV  (  me ;   
+	           parameter          :           Real      from  Standard ; 
+    	    	   point              :  in  out  Pnt2d     from  gp  ; 
+    	           TheImpTool         :           ImpTool   ;
+    	           ParCurve           :           ParCurve  ; 
+		   TheParCurveDomain  :           Domain    from  IntRes2d  ; 
+		   V0                 :           Real      from  Standard ; 
+		   V1                 :           Real      from  Standard ; 
+		   Tolerance          :           Real      from  Standard )
+	    returns  Real  from  Standard 
+	    is static; 
+
+	  And_Domaine_Objet1_Intersections  (  me  ; 
+	           TheImpTool         :           ImpTool   ; 
+		   TheParCurve        :           ParCurve  ; 
+		   TheImpCurveDomain  :           Domain    from  IntRes2d  ;  
+		   TheParCurveDomain  :           Domain    from  IntRes2d  ;  
+		   NbResultats        :  in  out  Integer  from  Standard  ; 
+    	    	   Inter2_And_Domain2 :  in  out  Array1OfReal  from  TColStd  ;
+		   Inter1             :  in  out  Array1OfReal  from  TColStd  ; 
+		   Resultat1          :  in  out  Array1OfReal  from  TColStd  ; 
+		   Resultat2          :  in  out  Array1OfReal  from  TColStd  ;  
+		   EpsNul             :           Real  from  Standard ) 
+	    is static; 
+		   
+		   
+end Intersector;
+
+
+
+
+
+

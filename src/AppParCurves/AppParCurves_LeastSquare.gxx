@@ -1,0 +1,1553 @@
+// File AppParCurves_LeastSquare.gxx
+// lpa, le 27/07/91
+// pmn, 30/10/98 : Protection dans les cas surcontraint -> "isready"
+
+// Approximation d une MultiLine de points decrite par le tool MLineTool.
+// Ce programme utilise les moindres carres pour le cas suivant:
+// passage et tangences aux extremites.
+
+
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#define No_Standard_DimensionError
+
+#include <math_Householder.hxx>
+#include <math_Crout.hxx>
+#include <AppParCurves.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_Array1OfVec2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <StdFail_NotDone.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <math_Recipes.hxx>
+#include <math_Crout.hxx>
+
+
+
+static int FlatLength(const TColStd_Array1OfInteger& Mults) {
+  
+  Standard_Integer sum = 0;
+  for (Standard_Integer i = Mults.Lower(); i <= Mults.Upper(); i++) {
+    sum += Mults.Value(i);
+  }
+  return sum;
+}
+
+
+AppParCurves_LeastSquare::
+  AppParCurves_LeastSquare(const MultiLine&    SSP,
+	       const Standard_Integer          FirstPoint,
+	       const Standard_Integer          LastPoint,
+	       const AppParCurves_Constraint   FirstCons,
+	       const AppParCurves_Constraint   LastCons,
+	       const math_Vector&              Parameters,
+	       const Standard_Integer          NbPol):
+               SCU(NbPol),
+               mypoles(1, NbPol,
+		   1, NbBColumns(SSP)),
+               A(FirstPoint, LastPoint, 1, NbPol),
+               DA(FirstPoint, LastPoint, 1, NbPol),
+               B2(TheFirstPoint(FirstCons, FirstPoint), 
+		  Max(TheFirstPoint(FirstCons, FirstPoint),
+		      TheLastPoint(LastCons, LastPoint)),
+		  1, NbBColumns(SSP)),
+               mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
+               Vflatknots(1, 1),
+               Vec1t(1, NbBColumns(SSP)),
+               Vec1c(1, NbBColumns(SSP)),
+               Vec2t(1, NbBColumns(SSP)),
+               Vec2c(1, NbBColumns(SSP)),
+               theError(FirstPoint, LastPoint, 
+			1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+               myindex(FirstPoint, LastPoint, 0),
+               nbpoles(NbPol)
+{
+  FirstConstraint = FirstCons;  
+  LastConstraint  = LastCons;
+  Init(SSP, FirstPoint, LastPoint);
+  Perform(Parameters);		
+}
+
+
+
+AppParCurves_LeastSquare::
+  AppParCurves_LeastSquare(const MultiLine&              SSP,
+			   const Standard_Integer        FirstPoint,
+			   const Standard_Integer        LastPoint,
+			   const AppParCurves_Constraint FirstCons,
+			   const AppParCurves_Constraint LastCons,
+			   const Standard_Integer        NbPol):
+               SCU(NbPol),
+               mypoles(1, NbPol,
+		   1, NbBColumns(SSP)),
+               A(FirstPoint, LastPoint, 1, NbPol),
+               DA(FirstPoint, LastPoint, 1, NbPol), 
+               B2(TheFirstPoint(FirstCons, FirstPoint), 
+		  Max(TheFirstPoint(FirstCons, FirstPoint),
+		      TheLastPoint(LastCons, LastPoint)),
+		  1, NbBColumns(SSP)),
+               mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
+               Vflatknots(1, 1),
+               Vec1t(1, NbBColumns(SSP)),
+               Vec1c(1, NbBColumns(SSP)),
+               Vec2t(1, NbBColumns(SSP)),
+               Vec2c(1, NbBColumns(SSP)),
+               theError(FirstPoint, LastPoint, 
+			1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+               myindex(FirstPoint, LastPoint, 0),
+               nbpoles(NbPol)
+{
+  FirstConstraint = FirstCons;  
+  LastConstraint  = LastCons;
+  Init(SSP, FirstPoint, LastPoint);
+}
+
+
+AppParCurves_LeastSquare::
+  AppParCurves_LeastSquare(const MultiLine&       SSP,
+	       const TColStd_Array1OfReal&        Knots,
+	       const TColStd_Array1OfInteger&     Mults,
+	       const Standard_Integer             FirstPoint,
+	       const Standard_Integer             LastPoint,
+	       const AppParCurves_Constraint      FirstCons,
+	       const AppParCurves_Constraint      LastCons,
+	       const math_Vector&                 Parameters,
+	       const Standard_Integer             NbPol):
+               SCU(NbPol),
+               mypoles(1, NbPol,
+		   1, NbBColumns(SSP)),
+               A(FirstPoint, LastPoint, 1, NbPol),
+               DA(FirstPoint, LastPoint, 1, NbPol),
+               B2(TheFirstPoint(FirstCons, FirstPoint), 
+		  Max(TheFirstPoint(FirstCons, FirstPoint),
+		      TheLastPoint(LastCons, LastPoint)),
+		  1, NbBColumns(SSP)),
+               mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
+               Vflatknots(1, FlatLength(Mults)),
+               Vec1t(1, NbBColumns(SSP)),
+               Vec1c(1, NbBColumns(SSP)),
+               Vec2t(1, NbBColumns(SSP)),
+               Vec2c(1, NbBColumns(SSP)),
+               theError(FirstPoint, LastPoint, 
+			1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+               myindex(FirstPoint, LastPoint, 0),
+               nbpoles(NbPol)
+{
+  FirstConstraint = FirstCons;  
+  LastConstraint  = LastCons;
+  myknots = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
+  myknots->ChangeArray1() = Knots;
+  mymults = new TColStd_HArray1OfInteger(Mults.Lower(), Mults.Upper());
+  mymults->ChangeArray1() = Mults;
+  SCU.SetKnots(Knots);
+  SCU.SetMultiplicities(Mults);
+  Init(SSP, FirstPoint, LastPoint);
+  Perform(Parameters);		
+}
+
+
+
+AppParCurves_LeastSquare::
+  AppParCurves_LeastSquare(const MultiLine&               SSP,
+			   const TColStd_Array1OfReal&    Knots,
+			   const TColStd_Array1OfInteger& Mults,
+			   const Standard_Integer         FirstPoint,
+			   const Standard_Integer         LastPoint,
+			   const AppParCurves_Constraint  FirstCons,
+			   const AppParCurves_Constraint  LastCons,
+			   const Standard_Integer         NbPol):
+               SCU(NbPol),
+               mypoles(1, NbPol,
+		   1, NbBColumns(SSP)),
+               A(FirstPoint, LastPoint, 1, NbPol),
+               DA(FirstPoint, LastPoint, 1, NbPol),
+               B2(TheFirstPoint(FirstCons, FirstPoint), 
+		  Max(TheFirstPoint(FirstCons, FirstPoint),
+		      TheLastPoint(LastCons, LastPoint)),
+		  1, NbBColumns(SSP)),
+               mypoints(FirstPoint, LastPoint, 1, NbBColumns(SSP)),
+               Vflatknots(1, FlatLength(Mults)),
+               Vec1t(1, NbBColumns(SSP)),
+               Vec1c(1, NbBColumns(SSP)),
+               Vec2t(1, NbBColumns(SSP)),
+               Vec2c(1, NbBColumns(SSP)),
+               theError(FirstPoint, LastPoint, 
+			1, ToolLine::NbP3d(SSP)+ToolLine::NbP2d(SSP), 0.0),
+               myindex(FirstPoint, LastPoint, 0),
+               nbpoles(NbPol)
+{
+  myknots = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
+  myknots->ChangeArray1() = Knots;
+  mymults = new TColStd_HArray1OfInteger(Mults.Lower(), Mults.Upper());
+  mymults->ChangeArray1() = Mults;
+  SCU.SetKnots(Knots);
+  SCU.SetMultiplicities(Mults);
+  FirstConstraint = FirstCons;  
+  LastConstraint  = LastCons;
+  Init(SSP, FirstPoint, LastPoint);
+}
+
+
+
+void AppParCurves_LeastSquare::Init(const MultiLine& SSP, 
+				    const Standard_Integer FirstPoint,
+				    const Standard_Integer LastPoint)
+{
+  // Variable de controle
+  iscalculated = Standard_False;
+  isready = Standard_True;
+
+  myfirstp = FirstPoint;
+  mylastp = LastPoint;
+  FirstP = TheFirstPoint(FirstConstraint, myfirstp);
+  LastP  = TheLastPoint(LastConstraint, mylastp);
+
+  // Reperage des contraintes aux extremites:
+  // ========================================
+  Standard_Integer i, j, k, i2;
+
+  nbP2d = ToolLine::NbP2d(SSP);
+  nbP   = ToolLine::NbP3d(SSP);
+  gp_Pnt Poi;
+  gp_Pnt2d Poi2d;
+//  gp_Vec V3d;
+//  gp_Vec2d V2d;
+  Standard_Integer mynbP2d = nbP2d, mynbP = nbP;
+  if (nbP2d == 0) mynbP2d = 1;
+  if (nbP == 0) mynbP = 1;
+  TColgp_Array1OfPnt TabP(1, mynbP);
+  TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
+  TColgp_Array1OfVec TabV(1, mynbP);
+  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+
+
+  deg = nbpoles-1;
+
+  if (!mymults.IsNull()) {
+    Standard_Integer sum = 0;
+    for (i = mymults->Lower(); i <= mymults->Upper(); i++) {
+      sum += mymults->Value(i);
+    }
+    deg = sum -nbpoles-1;
+    k = 1;
+    Standard_Real val;
+    for (i = myknots->Lower(); i <= myknots->Upper(); i++) {
+      for (j = 1; j <= mymults->Value(i); j++) {
+	val = myknots->Value(i);
+	Vflatknots(k) = val;
+	k++;
+      }
+    }
+  }
+
+
+  Affect(SSP, FirstPoint, FirstConstraint, Vec1t, Vec1c);
+
+  Affect(SSP, LastPoint, LastConstraint, Vec2t, Vec2c);
+
+  for (j = myfirstp; j <= mylastp; j++) {
+    i2 = 1;
+    if (nbP != 0 && nbP2d != 0) ToolLine::Value(SSP, j, TabP,TabP2d);
+    else if (nbP2d != 0)        ToolLine::Value(SSP, j, TabP2d);
+    else                        ToolLine::Value(SSP, j, TabP);
+    for (i = 1; i <= nbP; i++) {
+      (TabP(i)).Coord(mypoints(j,i2),mypoints(j,i2+1),mypoints(j,i2+2));
+      i2 += 3;
+    }
+    for (i = 1;i <= nbP2d; i++) {
+      (TabP2d(i)).Coord(mypoints(j, i2), mypoints(j, i2+1));
+      i2 += 2;
+    }
+  }
+
+  AppParCurves_MultiPoint Pole1(nbP, nbP2d), PoleN(nbP, nbP2d);
+
+  if (FirstConstraint == AppParCurves_PassPoint ||
+      FirstConstraint == AppParCurves_TangencyPoint ||
+      FirstConstraint == AppParCurves_CurvaturePoint) {
+    i2 = 1;
+    for (i = 1; i <= nbP; i++) {
+      Poi.SetCoord(mypoints(myfirstp, i2), 
+		   mypoints(myfirstp, i2+1), 
+		   mypoints(myfirstp, i2+2));
+      Pole1.SetPoint(i, Poi);
+      i2 += 3;
+    }
+    for (i = 1; i <= nbP2d; i++) {
+      Poi2d.SetCoord(mypoints(myfirstp, i2), mypoints(myfirstp, i2+1));
+      Pole1.SetPoint2d(i+nbP, Poi2d);
+      i2 += 2;
+    }
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(1, i) = mypoints(myfirstp, i);
+  }
+  
+
+
+  if (LastConstraint == AppParCurves_PassPoint ||
+      LastConstraint == AppParCurves_TangencyPoint ||
+      FirstConstraint == AppParCurves_CurvaturePoint) {
+    i2 = 1;
+    for (i = 1; i <= nbP; i++) {
+      Poi.SetCoord(mypoints(mylastp, i2), 
+		   mypoints(mylastp, i2+1), 
+		   mypoints(mylastp, i2+2));
+      PoleN.SetPoint(i, Poi);
+      i2 += 3;
+    }
+    for (i = 1; i <= nbP2d; i++) {
+      Poi2d.SetCoord(mypoints(mylastp, i2), 
+		     mypoints(mylastp, i2+1));
+      PoleN.SetPoint2d(i+nbP, Poi2d);
+      i2 += 2;
+    }
+    
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(nbpoles, i) = mypoints(mylastp, i);
+  }
+
+
+  if (FirstConstraint == AppParCurves_NoConstraint) { 
+    resinit = 1;
+    SCU.SetValue(1, Pole1);
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      resfin = nbpoles;
+    }
+    else if (LastConstraint == AppParCurves_PassPoint) {
+      resfin = nbpoles-1;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_TangencyPoint) {
+      resfin = nbpoles-2;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_CurvaturePoint) {
+      resfin = nbpoles-3;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+  }
+  else if (FirstConstraint == AppParCurves_PassPoint) {
+    resinit = 2;
+    SCU.SetValue(1, Pole1);
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      resfin = nbpoles;
+    }
+    else if (LastConstraint == AppParCurves_PassPoint) {
+      resfin = nbpoles-1;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_TangencyPoint) {
+      resfin = nbpoles-2;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_CurvaturePoint) {
+      resfin = nbpoles-3;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+  }
+  else if (FirstConstraint == AppParCurves_TangencyPoint) {
+    resinit = 3;
+    SCU.SetValue(1, Pole1);
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      resfin = nbpoles;
+    }
+    if (LastConstraint == AppParCurves_PassPoint) {
+      resfin = nbpoles-1;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    if (LastConstraint == AppParCurves_TangencyPoint) {
+      resfin = nbpoles-2;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_CurvaturePoint) {
+      resfin = nbpoles-3;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+  }
+  else if (FirstConstraint == AppParCurves_CurvaturePoint) {
+    resinit = 4;
+    SCU.SetValue(1, Pole1);
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      resfin = nbpoles;
+    }
+    if (LastConstraint == AppParCurves_PassPoint) {
+      resfin = nbpoles-1;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    if (LastConstraint == AppParCurves_TangencyPoint) {
+      resfin = nbpoles-2;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+    else if (LastConstraint == AppParCurves_CurvaturePoint) {
+      resfin = nbpoles-3;
+      SCU.SetValue(nbpoles, PoleN);
+    }
+  }
+
+  Standard_Integer Nincx = resfin-resinit+1;
+  if  (Nincx<1) { //Impossible d'aller plus loin
+    isready = Standard_False;
+    return;
+  } 
+  Standard_Integer Neq = LastP-FirstP+1;
+  
+  NA = 3*nbP+2*nbP2d;
+  Nlignes = NA*Neq;
+  Ninc = NA*Nincx;
+  if (FirstConstraint >= AppParCurves_TangencyPoint) Ninc++;
+  if (LastConstraint >= AppParCurves_TangencyPoint) Ninc++;
+}
+
+
+
+
+void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
+
+  done = Standard_False;
+  if (!isready) {
+    return;
+  }
+  Standard_Integer i, j, k, Ci, Nincx, Neq, i2, k1, k2;
+  Standard_Integer nbpol1 = nbpoles-1, Ninc1 = Ninc-1;
+  Standard_Real AD1, A0;
+//  gp_Pnt Pt;
+//  gp_Pnt2d Pt2d;
+  iscalculated = Standard_False;
+
+  // calcul de la matrice A et DA des fonctions d approximation:
+  ComputeFunction(Parameters);
+
+  if (FirstConstraint != AppParCurves_TangencyPoint && 
+      LastConstraint != AppParCurves_TangencyPoint) { 
+    if (FirstConstraint == AppParCurves_NoConstraint) { 
+      if (LastConstraint == AppParCurves_NoConstraint ) {
+	
+	math_Householder HouResol(A, mypoints); 
+	if (!(HouResol.IsDone())) {
+	  done = Standard_False;
+	  return;
+	}
+	done = Standard_True;
+	mypoles = HouResol.AllValues();
+	return;
+	
+      }
+      else {
+	for (j = FirstP; j <= LastP; j++) {
+	  AD1 = A(j, nbpoles);
+	  for (i = 1; i <= B2.ColNumber(); i++) {
+	    B2(j, i) = mypoints(j,i) - AD1*mypoles(nbpoles, i);
+	  }
+	}
+      }
+    }
+    else if (FirstConstraint == AppParCurves_PassPoint) {
+      if (LastConstraint == AppParCurves_NoConstraint) {
+	for (j = FirstP; j <= LastP; j++) {
+	  A0 = A(j, 1);
+	  for (i = 1; i <= B2.ColNumber(); i++) {
+	    B2(j, i) =  mypoints(j, i)- A0*mypoles(1, i);
+	  }
+	}
+      }
+      else if (LastConstraint == AppParCurves_PassPoint) {
+	for (j = FirstP; j <= LastP; j++) {
+	  A0 = A(j, 1);
+	  AD1 = A(j, nbpoles);
+	  for (i = 1; i <= B2.ColNumber(); i++) {
+	    B2(j, i) = mypoints(j, i) - A0 * mypoles(1, i) 
+	                          - AD1* mypoles(nbpoles, i);
+	  }
+	}
+      }
+    }
+
+    // resolution:
+
+    Standard_Integer Nincx = resfin-resinit+1;
+    if (Nincx < 1) { 
+      done = Standard_True;
+      return;
+    }
+    math_IntegerVector Index(1, Nincx);
+    SearchIndex(Index);
+    math_Matrix mytab(resinit, resfin, 1, B2.ColNumber(),0.0);
+    math_Vector TheAA(1, Index(Nincx), 0.0);
+    math_Vector myTABB(1, Nincx, 0.0);
+    
+    MakeTAA(TheAA, mytab);
+    Standard_Integer Error = DACTCL_Decompose(TheAA, Index);
+    
+    Standard_Integer kk2;
+    for (j = 1; j <= B2.ColNumber(); j++) {
+      kk2 = 1;
+      for (i = resinit; i <= resfin; i++) {
+	myTABB(kk2) = mytab(i, j);
+	kk2++;
+      }
+      Error = DACTCL_Solve(TheAA, myTABB, Index);
+      
+      i2 = 1;
+      for (k = resinit; k <= resfin; k++) {
+	mypoles(k, j)  = myTABB.Value(i2);
+	i2++;
+      }
+    }
+    done = Standard_True;
+  }
+
+  // ===========================================================
+  // cas de tangence:
+  // ===========================================================
+
+  Nincx = resfin-resinit+1;
+  Neq = LastP-FirstP+1;
+  Standard_Integer deport = 0, Nincx2 = 2*Nincx;
+  
+  math_IntegerVector InternalIndex(1, Nincx);
+  SearchIndex(InternalIndex);
+  math_IntegerVector Index(1, Ninc);
+  
+  Standard_Integer l = 1;
+  if (resinit <= resfin) {
+    for (j = 0; j <= NA-1; j++) {
+      deport = j*InternalIndex(Nincx);
+      for (i = 1; i <= Nincx; i++) {
+	Index(l) = InternalIndex(i) + deport;
+	l++;
+      }
+    }
+  }
+      
+  if (resinit > resfin) Index(1) = 1;
+  if (Ninc1 > 1) {
+    if (FirstConstraint >= AppParCurves_TangencyPoint &&
+	LastConstraint >= AppParCurves_TangencyPoint) 
+      Index(Ninc1) = Index(Ninc1 - 1) + Ninc1;
+  }
+  if (FirstConstraint >= AppParCurves_TangencyPoint ||
+      LastConstraint >= AppParCurves_TangencyPoint) 
+    Index(Ninc) = Index(Ninc-1) + Ninc;
+  
+
+  math_Vector TheA(1, Index(Ninc), 0.0);
+  math_Vector myTAB(1, Ninc, 0.0);
+  
+  MakeTAA(TheA, myTAB);
+  
+  Standard_Integer Error = DACTCL_Decompose(TheA, Index);
+  Error = DACTCL_Solve(TheA, myTAB, Index);
+  
+  if (!Error) done = Standard_True;
+  
+  if (FirstConstraint >= AppParCurves_TangencyPoint &&
+      LastConstraint >= AppParCurves_TangencyPoint) {
+    lambda1 = myTAB.Value(Ninc1);
+    lambda2 = myTAB.Value(Ninc);
+  }
+  else if (FirstConstraint >= AppParCurves_TangencyPoint)
+    lambda1 = myTAB.Value(Ninc);
+  else if (LastConstraint >= AppParCurves_TangencyPoint)
+    lambda2 = myTAB.Value(Ninc);
+
+
+  
+  // Les resultats sont stockes dans mypoles.
+  //=========================================
+  k = 1;
+  i2 = 1;
+  for (Ci = 1; Ci <= nbP; Ci++) {
+    k1 = k+1; k2 = k+2;
+    for (j = resinit; j <= resfin; j++) {
+      mypoles(j, k)  = myTAB.Value(i2);
+      mypoles(j, k1) = myTAB.Value(i2+Nincx);
+      mypoles(j, k2) = myTAB.Value(i2+Nincx2);
+      i2++;
+    }
+    
+    if (FirstConstraint >= AppParCurves_TangencyPoint) {
+      mypoles(2, k)        = mypoints(myfirstp, k)   + lambda1*Vec1t(k);
+      mypoles(2, k1)       = mypoints(myfirstp, k1)  + lambda1*Vec1t(k1);
+      mypoles(2, k2)       = mypoints(myfirstp, k2)  + lambda1*Vec1t(k2);
+    }
+    if (LastConstraint >= AppParCurves_TangencyPoint) {
+      mypoles(nbpol1, k)   = mypoints(mylastp,  k)   - lambda2*Vec2t(k);
+      mypoles(nbpol1, k1)  = mypoints(mylastp,  k1)  - lambda2*Vec2t(k1);
+      mypoles(nbpol1, k2)  = mypoints(mylastp,  k2)  - lambda2*Vec2t(k2);
+    }
+    k += 3; i2 += Nincx2;
+  }
+
+  for (Ci = 1; Ci <= nbP2d; Ci++) {
+    k1 = k+1; k2 = k+2;
+    for (j = resinit; j <= resfin; j++) {
+      mypoles(j, k)  = myTAB.Value(i2);
+      mypoles(j, k1) = myTAB.Value(i2+Nincx);
+      i2++;
+    }
+    if (FirstConstraint >= AppParCurves_TangencyPoint) {
+      mypoles(2, k)       = mypoints(myfirstp, k)  + lambda1*Vec1t(k);
+      mypoles(2, k1)      = mypoints(myfirstp, k1) + lambda1*Vec1t(k1);
+    }
+    if (LastConstraint >= AppParCurves_TangencyPoint) {
+      mypoles(nbpol1, k)  = mypoints(mylastp,  k)  - lambda2*Vec2t(k);
+      mypoles(nbpol1, k1) = mypoints(mylastp,  k1) - lambda2*Vec2t(k1);
+    }
+    k += 2; i2 += Nincx;
+  }
+  
+}
+
+void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
+				       const math_Vector&  V1t,
+				       const math_Vector&  V2t,
+				       const Standard_Real l1,
+				       const Standard_Real l2) 
+{
+  done = Standard_False;
+  if (!isready) {
+    return;
+  }
+  Standard_Integer i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
+  resinit = 3; resfin = nbpoles-2;
+  Standard_Integer Nincx = resfin-resinit+1;
+  Ninc = NA*Nincx + 2;
+  FirstConstraint = AppParCurves_TangencyPoint;
+  LastConstraint = AppParCurves_TangencyPoint;
+  for (i = 1; i <= Vec1t.Upper(); i++) {
+    Vec1t(i) = V1t(i+lower1-1);
+    Vec2t(i) = V2t(i+lower2-1);
+  }
+  Perform (Parameters, l1, l2);
+}
+
+
+void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
+				       const math_Vector&  V1t,
+				       const math_Vector&  V2t,
+				       const math_Vector&  V1c,
+				       const math_Vector&  V2c,
+				       const Standard_Real l1,
+				       const Standard_Real l2) {
+  done = Standard_False;
+  if (!isready) {
+    return;
+  }
+  Standard_Integer i, lower1 = V1t.Lower(), lower2 = V2t.Lower();
+  Standard_Integer lowc1 = V1c.Lower(), lowc2 = V2c.Lower();
+  resinit = 4; resfin = nbpoles-3;
+  Standard_Integer Nincx = resfin-resinit+1;
+  Ninc = NA*Nincx + 2;
+  FirstConstraint = AppParCurves_CurvaturePoint;
+  LastConstraint = AppParCurves_CurvaturePoint;
+
+  for (i = 1; i <= Vec1t.Upper(); i++) {
+    Vec1t(i) = V1t(i+lower1-1);
+    Vec2t(i) = V2t(i+lower2-1);
+    Vec1c(i) = V1c(i+lowc1-1);
+    Vec2c(i) = V2c(i+lowc2-1);
+  }
+  Perform (Parameters, l1, l2);
+}
+
+
+
+void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
+				       const Standard_Real l1,
+				       const Standard_Real l2) {
+  done = Standard_False;
+  if (!isready) {
+    return;
+  }
+  if (FirstConstraint < AppParCurves_TangencyPoint &&
+      LastConstraint  < AppParCurves_TangencyPoint) {
+    Perform(Parameters);
+    return;
+  }
+  iscalculated = Standard_False;
+
+  lambda1 = l1;
+  lambda2 = l2;
+  Standard_Integer i, j, k, i2;
+  Standard_Real AD0, AD1, AD2, A0, A1, A2;
+//  gp_Pnt Pt, P1, P2;
+//  gp_Pnt2d Pt2d, P12d, P22d;
+  Standard_Real l11 = deg*l1, l22 = deg*l2;
+
+  ComputeFunction(Parameters);
+
+  if (FirstConstraint >= AppParCurves_TangencyPoint) {
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(2, i) = mypoints(myfirstp, i) + l1*Vec1t(i);
+  }
+
+
+  if (FirstConstraint == AppParCurves_CurvaturePoint) {
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(3, i) = 2*mypoles(2, i)-mypoles(1, i) 
+	          + l11*l11*Vec1c(i)/(deg*(deg-1));
+  }
+
+
+  if (LastConstraint >= AppParCurves_TangencyPoint) {
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(nbpoles-1, i) = mypoints(mylastp, i) - l2*Vec2t(i);
+  }
+
+
+  if (LastConstraint == AppParCurves_CurvaturePoint) {
+    for (i = 1; i <= mypoles.ColNumber(); i++)
+      mypoles(nbpoles-2, i) = 2*mypoles(nbpoles-1, i) - mypoles(nbpoles, i)
+	                  + l22*l22*Vec2c(i)/(deg*(deg-1));
+  }
+
+  if (resinit > resfin) {
+    done = Standard_True;
+    return;
+  }
+
+  if (FirstConstraint == AppParCurves_NoConstraint) { 
+    if (LastConstraint == AppParCurves_TangencyPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1); 
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i);
+	}
+      }
+    }
+    if (LastConstraint == AppParCurves_CurvaturePoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1); AD2 = A(j, nbpoles-2);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i)
+		                - AD2 * mypoles(nbpoles-2, i);
+	}
+      }
+    }
+  }
+  else if (FirstConstraint == AppParCurves_PassPoint) {
+    if (LastConstraint == AppParCurves_TangencyPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+		                - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i);
+	}
+      }
+    }
+    if (LastConstraint == AppParCurves_CurvaturePoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1); AD2 = A(j, nbpoles-2);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+		                - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i)
+		                - AD2 * mypoles(nbpoles-2, i);
+	}
+      }
+    }
+  }
+  else if (FirstConstraint == AppParCurves_TangencyPoint) {
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1); A1 = A(j, 2);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+	                            - A1  * mypoles(2, i);
+	}
+      }
+    }
+    else if (LastConstraint == AppParCurves_PassPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);  AD0 = A(j, nbpoles); A1 = A(j, 2);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+	                            - AD0 * mypoles(nbpoles, i)
+	                            - A1  * mypoles(2, i);
+	}
+      }
+    }
+    else if (LastConstraint == AppParCurves_TangencyPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);  AD0 = A(j, nbpoles); A1 = A(j, 2); AD1 = A(j, nbpoles-1);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+	                            - AD0 * mypoles(nbpoles, i)
+	                            - A1  * mypoles(2, i)
+		                    - AD1 * mypoles(nbpoles-1, i);
+	}
+      }
+    }
+  }
+  else if (FirstConstraint == AppParCurves_CurvaturePoint) {
+    if (LastConstraint == AppParCurves_NoConstraint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);  A1 = A(j, 2);  A2 = A(j, 3);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0 * mypoles(1, i)
+	                        - A1 * mypoles(2, i)
+	                        - A2 * mypoles(3, i);
+	}
+      }
+    }
+    else if (LastConstraint == AppParCurves_PassPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);  A1 = A(j, 2);  A2 = A(j, 3);  AD0 = A(j, nbpoles);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i)
+	                        - A1  * mypoles(2, i)
+	                        - A2  * mypoles(3, i)
+		                - AD0 * mypoles(nbpoles, i);
+	}
+      }
+    }
+    else if (LastConstraint == AppParCurves_TangencyPoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);	  A1 = A(j, 2);	  A2 = A(j, 3);
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+	                        - A1  * mypoles(2, i)
+	                        - A2  * mypoles(3, i)
+		                - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i);
+	}
+      }
+    }
+    else if (LastConstraint == AppParCurves_CurvaturePoint) {
+      for (j = FirstP; j <= LastP; j++) {
+	A0 = A(j, 1);	  A1 = A(j, 2);	  A2 = A(j, 3);
+	AD0 = A(j, nbpoles);  AD1 = A(j, nbpoles-1); AD2 = A(j, nbpoles-2);
+	for (i = 1; i <= B2.ColNumber(); i++) {
+	  B2(j, i) = mypoints(j, i) - A0  * mypoles(1, i) 
+	                        - A1  * mypoles(2, i)
+	                        - A2  * mypoles(3, i)
+		                - AD0 * mypoles(nbpoles, i)
+		                - AD1 * mypoles(nbpoles-1, i)
+		                - AD2 * mypoles(nbpoles-2, i);
+	}
+      }
+    }
+  }
+  
+  Standard_Integer Nincx = resfin-resinit+1;
+
+  math_Matrix mytab(resinit, resfin, 1, B2.ColNumber(),0.0);
+  math_IntegerVector Index(1, Nincx);
+  SearchIndex(Index);
+  math_Vector AA(1, Index(Nincx), 0.0);
+  MakeTAA(AA, mytab);
+
+  math_Vector myTABB(1, Nincx, 0.0);
+
+  Standard_Integer Error = DACTCL_Decompose(AA, Index);
+  
+  Standard_Integer kk2;
+  for (j = 1; j <= B2.ColNumber(); j++) {
+    kk2 = 1;
+    for (i = resinit; i <= resfin; i++) {
+      myTABB(kk2) = mytab(i, j);
+      kk2++;
+    }
+    
+    Error = DACTCL_Solve(AA, myTABB, Index);
+    
+    i2 = 1;
+    for (k = resinit; k <= resfin; k++) {
+      mypoles(k, j)  = myTABB.Value(i2);
+      i2++;
+    }
+
+  }
+  
+  done = Standard_True;
+
+}
+
+
+
+
+void AppParCurves_LeastSquare::Affect(const MultiLine& SSP,
+				      const Standard_Integer Index,
+				      AppParCurves_Constraint& Cons,
+				      math_Vector& Vt,
+				      math_Vector& Vc)
+{
+  // Vt: vecteur tangent, Vc: vecteur courbure.
+
+  if (Cons >= AppParCurves_TangencyPoint) {
+    Standard_Integer i, i2 = 1;
+    Standard_Boolean Ok;
+    Standard_Integer mynbP2d = nbP2d, mynbP = nbP;
+    if (nbP2d == 0) mynbP2d = 1;
+    if (nbP == 0) mynbP = 1;
+    TColgp_Array1OfPnt TabP(1, mynbP);
+    TColgp_Array1OfPnt2d TabP2d(1, mynbP2d);
+    TColgp_Array1OfVec TabV(1, mynbP);
+    TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+    
+    if (Cons == AppParCurves_CurvaturePoint) {
+      if (nbP != 0 && nbP2d != 0) {
+	Ok = ToolLine::Curvature(SSP, Index,TabV,TabV2d);
+	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+      }
+      else if (nbP2d != 0) {
+	Ok = ToolLine::Curvature(SSP, Index, TabV2d);
+	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+      }
+      else {
+	Ok = ToolLine::Curvature(SSP, Index, TabV);
+	if (!Ok) { Cons = AppParCurves_TangencyPoint;}
+      }
+      if (Ok) {
+	for (i = 1; i <= nbP; i++) {
+	  (TabV(i)).Coord(Vc(i2), Vc(i2+1), Vc(i2+2));
+	  i2 += 3;
+	}
+	for (i = 1; i <= nbP2d; i++) {
+	  (TabV2d(i)).Coord(Vc(i2), Vc(i2+1));
+	  i2 += 2;
+	}
+      }
+    }
+
+    i2 = 1;
+    if (Cons >= AppParCurves_TangencyPoint) {
+      if (nbP != 0 && nbP2d != 0) {
+	Ok = ToolLine::Tangency(SSP, Index, TabV, TabV2d);
+	if (!Ok) { Cons = AppParCurves_PassPoint;}
+      }
+      else if (nbP2d != 0) {
+	Ok = ToolLine::Tangency(SSP, Index, TabV2d);
+	if (!Ok) { Cons = AppParCurves_PassPoint;}
+      }
+      else {
+	Ok = ToolLine::Tangency(SSP, Index, TabV);
+	if (!Ok) { Cons = AppParCurves_PassPoint;}
+      }
+      if (Ok) {
+	for (i = 1; i <= nbP; i++) {
+	  (TabV(i)).Coord(Vt(i2), Vt(i2+1), Vt(i2+2));
+	  i2 += 3;
+	}
+	for (i = 1; i <= nbP2d; i++) {
+	  (TabV2d(i)).Coord(Vt(i2), Vt(i2+1));
+	  i2 += 2;
+	}
+      }
+    }
+  }
+}
+
+
+
+Standard_Integer AppParCurves_LeastSquare::NbBColumns(
+		                     const MultiLine& SSP) const
+{
+  Standard_Integer BCol;
+  BCol = (ToolLine::NbP3d(SSP))*3 +
+         (ToolLine::NbP2d(SSP))*2;
+  return BCol;
+}
+
+
+void AppParCurves_LeastSquare::Error(Standard_Real& F, 
+				     Standard_Real& MaxE3d,
+				     Standard_Real& MaxE2d)
+{
+
+  if (!done) {StdFail_NotDone::Raise();}
+  Standard_Integer i, j, k, i2, indexdeb, indexfin;
+  Standard_Integer i21, i22;
+  Standard_Real AA, BB, CC, Fi, FX, FY, FZ, AIJ;
+  MaxE3d = MaxE2d = 0.0;
+  F = 0.0;
+  i2 = 1;
+  math_Vector Px(1, nbpoles), Py(1, nbpoles), Pz(1, nbpoles);
+  Standard_Integer l;
+
+  for (k = 1 ; k <= nbP+nbP2d; k++) {
+    i21 = i2+1; i22 = i2+2;
+    for (i = 1; i <= nbpoles; i++) {
+      Px(i) = mypoles(i, i2);
+      Py(i) = mypoles(i, i21);
+      if (k <= nbP) Pz(i) = mypoles(i, i22);
+    }
+    for (i = FirstP; i <= LastP; i++) {
+      AA = 0.0; BB = 0.0; CC = 0.0;
+      indexdeb = myindex(i) + 1;
+      indexfin = indexdeb + deg;
+      l = (i-1)*(deg+1)-indexdeb+1;
+      for (j = indexdeb; j <= indexfin; j++) {
+	AIJ = A(i, j);
+	AA += AIJ*Px(j);
+	BB += AIJ*Py(j);
+	if (k <= nbP) CC += AIJ*Pz(j);
+      }
+      FX = AA-mypoints(i, i2);
+      FY = BB-mypoints(i, i21);
+      Fi= FX*FX + FY*FY;
+      if (k <= nbP) {
+	FZ = CC-mypoints(i, i22);
+	Fi += FZ*FZ;
+	if (Fi > MaxE3d) MaxE3d = Fi;
+      }
+      else {
+	if (Fi > MaxE2d) MaxE2d = Fi;
+      }
+      theError(i, k) = Fi;
+      F += Fi;
+    }
+    if (k <= nbP) i2 += 3;
+    else i2 += 2;
+  }
+  MaxE3d = Sqrt(MaxE3d);
+  MaxE2d = Sqrt(MaxE2d);
+}
+
+
+void AppParCurves_LeastSquare::ErrorGradient(math_Vector& Grad, 
+					     Standard_Real& F, 
+					     Standard_Real& MaxE3d,
+					     Standard_Real& MaxE2d)
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  Standard_Integer i, j, k, i2, indexdeb, indexfin;
+  Standard_Real AA, BB, CC, Fi, FX, FY, FZ, AIJ;
+//  Standard_Real DAIJ, DAA, DBB, DCC, Gr, gr1= 0.0, gr2= 0.0;
+  Standard_Real DAIJ, DAA, DBB, DCC, Gr;
+  MaxE3d = MaxE2d = 0.0;
+//  Standard_Integer i21, i22, diff = (deg-1);
+  Standard_Integer i21, i22;
+  F = 0.0;
+  i2 = 1;
+  math_Vector Px(1, nbpoles), Py(1, nbpoles), Pz(1, nbpoles);
+
+  for (k = Grad.Lower(); k <= Grad.Upper(); k++) Grad(k) = 0.0;
+
+  for (k = 1 ; k <= nbP+nbP2d; k++) {
+    i21 = i2+1; i22 = i2+2;
+    for (i = 1; i <= nbpoles; i++) {
+      Px(i) = mypoles(i, i2);
+      Py(i) = mypoles(i, i21);
+      if (k <= nbP) Pz(i) = mypoles(i, i22);
+    }
+    for (i = FirstP; i <= LastP; i++) {
+      AA = 0.0; BB = 0.0; CC = 0.0; DAA = 0.0; DBB = 0.0; DCC = 0.0;
+      indexdeb = myindex(i) + 1;
+      indexfin = indexdeb + deg;
+      for (j = indexdeb; j <= indexfin; j++) {
+	AIJ = A(i, j); DAIJ = DA(i, j);
+	AA += AIJ*Px(j); DAA += DAIJ*Px(j);
+	BB += AIJ*Py(j); DBB += DAIJ*Py(j);
+	if (k <= nbP) {
+	  CC += AIJ*Pz(j);
+	  DCC += DAIJ*Pz(j);
+	}
+      }
+      FX = AA-mypoints(i, i2);
+      FY = BB-mypoints(i, i2+1);
+      Fi = FX*FX + FY*FY;
+      Gr = 2.0*(DAA*FX + DBB*FY);
+
+      if (k <= nbP) {
+	FZ = CC-mypoints(i, i2+2);
+	Fi += FZ*FZ;
+	Gr += 2.0*DCC*FZ;
+	if (Fi > MaxE3d) MaxE3d = Fi;
+      }
+      else {
+	if (Fi > MaxE2d) MaxE2d = Fi;
+      }
+      theError(i, k) = Fi;
+      Grad(i) += Gr;
+      F += Fi;
+    }
+    if (k <= nbP) i2 += 3;
+    else i2 += 2;
+  }
+  MaxE3d = Sqrt(MaxE3d);
+  MaxE2d = Sqrt(MaxE2d);
+
+}
+
+
+const math_Matrix& AppParCurves_LeastSquare::Distance()
+{
+  if (!iscalculated) {
+    for (Standard_Integer i = myfirstp; i <= mylastp; i++) {
+      for (Standard_Integer  j = 1; j <= nbP+nbP2d; j++) {
+	theError(i, j) = Sqrt(theError(i, j));
+      }
+    }
+    iscalculated = Standard_True;
+  }
+  return theError;
+}
+
+
+Standard_Real AppParCurves_LeastSquare::FirstLambda() const
+{
+  return lambda1;
+}
+
+Standard_Real AppParCurves_LeastSquare::LastLambda() const
+{
+  return lambda2;
+}
+
+
+
+Standard_Boolean AppParCurves_LeastSquare::IsDone() const
+{
+  return done;
+}
+
+
+AppParCurves_MultiCurve AppParCurves_LeastSquare::BezierValue() 
+{
+  if (!myknots.IsNull()) Standard_NoSuchObject::Raise();
+  return (AppParCurves_MultiCurve)(BSplineValue());
+}
+
+
+const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue() 
+{
+  if (!done) {StdFail_NotDone::Raise();}
+
+  Standard_Integer i, j, j2, npoints = nbP+nbP2d;;
+  gp_Pnt Pt;
+  gp_Pnt2d Pt2d;
+  Standard_Integer ideb = resinit, ifin = resfin;
+  if (ideb >= 2) ideb = 2;
+  if (ifin <= nbpoles-1) ifin = nbpoles-1;
+
+  // On met le resultat dans les curves correspondantes
+  for (i = ideb; i <= ifin; i++) {
+    j2 = 1;
+    AppParCurves_MultiPoint MPole(nbP, nbP2d);
+    for (j = 1; j <= nbP; j++) {
+      Pt.SetCoord(mypoles(i, j2), mypoles(i, j2+1), mypoles(i,j2+2));
+      MPole.SetPoint(j, Pt);
+      j2 += 3;
+    }
+    for (j = nbP+1;j <= npoints; j++) {
+      Pt2d.SetCoord(mypoles(i, j2), mypoles(i, j2+1));
+      MPole.SetPoint2d(j, Pt2d);
+      j2 += 2;
+    }
+    SCU.SetValue(i, MPole);
+  }
+  return SCU;
+}
+
+
+
+const math_Matrix& AppParCurves_LeastSquare::FunctionMatrix() const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return A;
+}
+
+
+const math_Matrix& AppParCurves_LeastSquare::DerivativeFunctionMatrix() const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return DA;
+}
+
+
+
+
+Standard_Integer AppParCurves_LeastSquare::
+                 TheFirstPoint(const AppParCurves_Constraint FirstCons, 
+			       const Standard_Integer        FirstPoint) const
+{
+  if (FirstCons == AppParCurves_NoConstraint) 
+    return FirstPoint;
+  else 
+    return FirstPoint + 1;
+}
+
+
+
+Standard_Integer AppParCurves_LeastSquare::
+                 TheLastPoint(const AppParCurves_Constraint LastCons,
+			      const Standard_Integer LastPoint) const
+{
+  if (LastCons == AppParCurves_NoConstraint)
+    return LastPoint;
+  else 
+    return LastPoint - 1;
+}
+
+
+void AppParCurves_LeastSquare::ComputeFunction(const math_Vector& Parameters) 
+{
+  if (myknots.IsNull()) {
+    AppParCurves::Bernstein(nbpoles, Parameters, A, DA);  
+  }
+  else {
+    AppParCurves::SplineFunction(nbpoles, deg, Parameters,
+				 Vflatknots, A, DA, myindex);
+  }
+}
+
+
+
+const math_Matrix& AppParCurves_LeastSquare::Points() const
+{
+  return mypoints;
+}
+
+const math_Matrix& AppParCurves_LeastSquare::Poles() const
+{
+  return mypoles;
+}
+
+
+
+const math_IntegerVector& AppParCurves_LeastSquare::KIndex() const
+{
+  return myindex;
+}
+
+
+
+
+void AppParCurves_LeastSquare::MakeTAA(math_Vector& TheA,
+				       math_Vector& myTAB)
+{
+  Standard_Integer i, j, k, Ci, i2, i21, i22;
+  Standard_Real xx = 0.0, yy = 0.0;
+
+  Standard_Integer Nincx = resfin-resinit+1;
+  Standard_Integer Nrow, Neq = LastP-FirstP+1;
+
+  Standard_Integer Ninc1;
+
+  if (FirstConstraint >= AppParCurves_TangencyPoint &&
+      LastConstraint >= AppParCurves_TangencyPoint)  {
+    Ninc1 = Ninc-1;
+  }
+  else Ninc1 = Ninc;
+
+  Standard_Integer myfirst = A.LowerRow();
+  Standard_Integer ix, iy, iz;
+  Standard_Integer mylast = myfirst+Nlignes-1;
+  Standard_Integer k1;
+  Standard_Real taf1 = 0.0, taf2 = 0.0, taf3 = 0.0, 
+  tab1 = 0.0, tab2 = 0.0;
+  Standard_Integer nb, inc, jinit, jfin, u;
+  Standard_Integer indexdeb, indexfin;
+  Standard_Integer NA1 = NA-1;
+  Standard_Real v1=0, v2=0, b;
+  Standard_Real Ai2, Aid, Akj;
+  math_Vector  myB(myfirst, mylast, 0.0),
+               myV1(myfirst, mylast, 0.0), 
+               myV2(myfirst, mylast, 0.0);
+  math_Vector TheV1(1, Ninc, 0.0), TheV2(1, Ninc, 0.0);
+
+
+  for (i = FirstP; i <= LastP; i++) {
+    Ai2 = A(i, 2);
+    Aid = A(i, nbpoles-1);
+    if (FirstConstraint >= AppParCurves_PassPoint) xx = A(i, 1);
+    if (FirstConstraint >= AppParCurves_TangencyPoint) xx += Ai2;
+    if (LastConstraint >= AppParCurves_PassPoint) yy = A(i, nbpoles);
+    if (LastConstraint >= AppParCurves_TangencyPoint) yy += Aid;
+    i2 = 1;
+    Nrow = myfirst-FirstP;
+    for (Ci = 1; Ci <= nbP; Ci++) {
+      i21 = i2+1; i22 = i2+2;
+      ix = i+Nrow; iy = ix+Neq; iz = iy+Neq;
+      if (FirstConstraint >= AppParCurves_TangencyPoint) {
+	myV1(ix) =  Ai2*Vec1t(i2);
+	myV1(iy) =  Ai2*Vec1t(i21);
+	myV1(iz) =  Ai2*Vec1t(i22);
+      }
+      if (LastConstraint >= AppParCurves_TangencyPoint) {
+	myV2(ix) = -Aid*Vec2t(i2);
+	myV2(iy) = -Aid*Vec2t(i21);
+	myV2(iz) = -Aid*Vec2t(i22);
+      }
+      myB(ix)  = mypoints(i, i2)  - xx*mypoints(myfirstp, i2) 
+	                          - yy*mypoints(mylastp,  i2);
+      myB(iy)  = mypoints(i, i21) - xx*mypoints(myfirstp, i21) 
+	                          - yy*mypoints(mylastp,  i21);
+      myB(iz)  = mypoints(i, i22) - xx*mypoints(myfirstp, i22) 
+	                          - yy*mypoints(mylastp,  i22);
+      i2 += 3;
+      Nrow = Nrow + 3*Neq;
+    }	
+    
+    for (Ci = 1; Ci <= nbP2d; Ci++) {
+      i21 = i2+1; i22 = i2+2;
+      ix = i+Nrow; iy = ix+Neq;
+      if (FirstConstraint >= AppParCurves_TangencyPoint) {
+	myV1(ix) =  Ai2*Vec1t(i2);
+	myV1(iy) =  Ai2*Vec1t(i21);
+      }
+      if (LastConstraint >= AppParCurves_TangencyPoint) {
+	myV2(ix) = -Aid*Vec2t(i2);
+	myV2(iy) = -Aid*Vec2t(i21);
+      }
+      myB(ix)  = mypoints(i, i2)  - xx*mypoints(myfirstp, i2) 
+	                          - yy*mypoints(mylastp,  i2);
+      myB(iy)  = mypoints(i, i21) - xx*mypoints(myfirstp, i21) 
+	                          - yy*mypoints(mylastp,  i21);
+      Nrow = Nrow + 2*Neq;
+      i2 += 2;
+    }
+  } 
+  
+  
+  
+  // Construction de TA*A et TA*B:
+  
+  for (k = FirstP; k <= LastP; k++) {
+    indexdeb = myindex(k)+1;
+    indexfin = indexdeb + deg; 
+    jinit = Max(resinit, indexdeb);
+    jfin = Min(resfin, indexfin);
+    k1 = k + myfirst - FirstP;
+    for (i = 0; i <= NA1; i++) {
+      nb = i*Neq + k1;
+      if (FirstConstraint >= AppParCurves_TangencyPoint)
+	v1 = myV1(nb); 
+      if (LastConstraint >= AppParCurves_TangencyPoint)
+	v2 = myV2(nb); 
+      b = myB(nb);
+      inc = i*Nincx-resinit+1;
+      for (j = jinit; j <= jfin; j++) {
+	Akj = A(k, j);
+	u = j+inc;
+	if (FirstConstraint >= AppParCurves_TangencyPoint)
+	  TheV1(u) += Akj*v1;
+	if (LastConstraint >= AppParCurves_TangencyPoint)
+	  TheV2(u) += Akj*v2;
+	myTAB(u) += Akj*b;
+      }
+      if (FirstConstraint >= AppParCurves_TangencyPoint) {
+	taf1 += v1*v1; 
+	tab1 += v1*b;
+      }
+      if (LastConstraint >= AppParCurves_TangencyPoint) {
+	taf2 += v2*v2;
+        tab2 += v2*b;
+      }
+      if (FirstConstraint >= AppParCurves_TangencyPoint && 
+          LastConstraint >= AppParCurves_TangencyPoint) {
+	taf3 += v1*v2;
+      }
+    }
+  }
+  
+
+  if (FirstConstraint >= AppParCurves_TangencyPoint) {
+    TheV1(Ninc1) = taf1;
+    myTAB(Ninc1) = tab1;
+  }
+  if (LastConstraint >= AppParCurves_TangencyPoint) {
+    TheV2(Ninc)  = taf2;
+    myTAB(Ninc)  = tab2;
+  }
+  if (FirstConstraint >= AppParCurves_TangencyPoint && 
+      LastConstraint >= AppParCurves_TangencyPoint) {
+    TheV2(Ninc1) = taf3;
+  }
+
+  
+  if (resinit <= resfin) {
+    math_IntegerVector Index(1, Nincx);
+    SearchIndex(Index);
+    math_Vector AA(1, Index(Nincx));
+    MakeTAA(AA);
+    
+    Standard_Integer kk = 1;
+    for (k = 1; k <= NA; k++)   {
+      for(i = 1; i <= AA.Length(); i++) {
+	TheA(kk) = AA(i);
+	kk++;
+      }
+    }
+  }
+  
+  Standard_Integer length = TheA.Length();
+  
+  if (FirstConstraint >= AppParCurves_TangencyPoint && 
+      LastConstraint >= AppParCurves_TangencyPoint) {
+    for (j = 1; j <= Ninc1; j++) 
+      TheA(length- 2*Ninc+j+1) = TheV1(j);
+    for (j = 1; j <= Ninc; j++) 
+      TheA(length- Ninc+j) = TheV2(j);
+  }
+
+
+  else if (FirstConstraint >= AppParCurves_TangencyPoint) {
+    for (j = 1; j <= Ninc; j++) 
+      TheA(length- Ninc+j) = TheV1(j);
+  }
+
+  else if (LastConstraint >= AppParCurves_TangencyPoint) {
+    for (j = 1; j <= Ninc; j++) 
+      TheA(length- Ninc+j) = TheV2(j);
+  }
+}
+
+
+
+
+void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA,
+				       math_Matrix& myTAB)
+{
+  Standard_Integer i, j, k;
+  Standard_Integer indexdeb, indexfin, jinit, jfin;
+  Standard_Integer iinit, ifin;
+  Standard_Real Akj;
+  math_Matrix TheA(resinit, resfin, resinit, resfin);
+  TheA.Init(0.0);
+
+  for (k = FirstP ; k <= LastP; k++) {
+    indexdeb = myindex(k)+1;
+    indexfin = indexdeb + deg;
+    jinit = Max(resinit, indexdeb);
+    jfin = Min(resfin, indexfin);
+    for (i = jinit; i <= jfin; i++) {
+      Akj = A(k, i);
+      for (j = jinit; j <= i; j++) {
+	TheA(i, j) += A(k, j) * Akj;
+      }
+      for (j = 1; j <= B2.ColNumber(); j++) {
+	myTAB(i, j) += Akj*B2(k, j);
+      }
+    }
+  }
+
+  Standard_Integer len;
+  if (!myknots.IsNull()) len = myknots->Length();
+  else len = 2;
+  Standard_Integer d, i2 = 1;
+  iinit = resinit;
+  jinit = resinit;
+  ifin = Min(resfin, deg+1);
+  for (k = 2; k <= len; k++) {
+    for (i = iinit; i <= ifin; i++) {
+      for (j = jinit; j <= i; j++) {
+	AA(i2) = TheA(i, j);
+	i2++;
+      }
+    }
+    if (!mymults.IsNull()) {
+      iinit = ifin+1;
+      d = ifin + mymults->Value(k);
+      ifin = Min(d, resfin);
+      jinit = Max(resinit, d - deg);
+    }
+  }
+}
+
+
+void AppParCurves_LeastSquare::MakeTAA(math_Vector& AA)
+{
+  Standard_Integer i, j, k;
+  Standard_Integer indexdeb, indexfin, jinit, jfin;
+  Standard_Integer iinit, ifin;
+  Standard_Real Akj;
+  math_Matrix TheA(resinit, resfin, resinit, resfin, 0.0);
+
+
+  for (k = FirstP ; k <= LastP; k++) {
+    indexdeb = myindex(k)+1;
+    indexfin = indexdeb + deg;
+    jinit = Max(resinit, indexdeb);
+    jfin = Min(resfin, indexfin);
+    for (i = jinit; i <= jfin; i++) {
+      Akj = A(k, i);
+      for (j = jinit; j <= i; j++) {
+	TheA(i, j) += A(k, j) * Akj;
+      }
+    }
+  }
+
+  
+  Standard_Integer i2 = 1;
+  iinit = resinit;
+  jinit = resinit;
+  ifin = Min(resfin, deg+1);
+  Standard_Integer len, d;
+  if (!myknots.IsNull()) len = myknots->Length();
+  else len = 2;
+  for (k = 2; k <= len; k++) {
+    for (i = iinit; i <= ifin; i++) {
+      for (j = jinit; j <= i; j++) {
+	AA(i2) = TheA(i, j);
+	i2++;
+      }
+    }
+    if (!mymults.IsNull()) {
+      iinit = ifin+1;
+      d = ifin + mymults->Value(k);
+      ifin = Min(d, resfin);
+      jinit = Max(resinit, d - deg);
+    }
+  }
+  
+}
+
+
+
+void AppParCurves_LeastSquare::SearchIndex(math_IntegerVector& Index)
+{
+  Standard_Integer iinit, jinit, ifin;
+  Standard_Integer i, j, k, d, i2 = 1;
+  Standard_Integer len;
+  Standard_Integer Nincx = resfin-resinit+1;
+  Index(1) = 1;
+
+  if (myknots.IsNull()) {
+    if (resinit <= resfin) {
+      Standard_Integer l = 1;
+      for (i = 2; i <= Nincx; i++) {
+	l++;
+	Index(l) = Index(l-1)+i;
+      }
+    }
+    
+  }
+  else {
+    iinit = resinit;
+    jinit = resinit;
+    ifin = Min(resfin, deg+1);
+    len = myknots->Length();
+    
+    for (k = 2; k <= len; k++) {
+      for (i = iinit; i <= ifin; i++) {
+	for (j = jinit; j <= i; j++) {
+	  if (i2 != 1) 
+	    Index(i2) = Index(i2-1) + i-jinit+1;
+	}
+	i2++;
+      }
+      iinit = ifin+1;
+      d = ifin + mymults->Value(k);
+      ifin = Min(d, resfin);
+      jinit = Max(resinit, d - deg);
+    }
+  }
+}

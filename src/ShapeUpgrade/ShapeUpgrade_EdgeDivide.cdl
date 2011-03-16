@@ -1,0 +1,72 @@
+-- File:	ShapeUpgrade_EdgeDivide.cdl
+-- Created:	Wed May 24 17:06:59 2000
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2000
+
+
+class EdgeDivide from ShapeUpgrade inherits Tool from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+
+    Edge from TopoDS,
+    Face from TopoDS,
+    HSequenceOfReal from TColStd,
+    SplitCurve3d from ShapeUpgrade,
+    SplitCurve2d from ShapeUpgrade
+
+is
+
+    Create returns mutable EdgeDivide from ShapeUpgrade;
+    	---Purpose: Empty constructor
+    
+    Clear (me: mutable);
+    
+    SetFace(me: mutable; F: Face from TopoDS);
+    	---C++: inline
+    	---Purpose: Sets supporting surface by face
+    
+    Compute(me: mutable; E: Edge from TopoDS) 
+    returns Boolean is virtual;
+    
+    HasCurve2d(me) returns Boolean;
+    	---C++: inline
+    
+    HasCurve3d(me) returns Boolean;
+    	---C++: inline
+    
+    Knots2d(me) returns HSequenceOfReal from TColStd;
+    	---C++: inline
+    
+    Knots3d(me) returns HSequenceOfReal from TColStd;
+    	---C++: inline
+    
+    SetSplitCurve2dTool(me: mutable; splitCurve2dTool: SplitCurve2d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting pcurves.
+    
+    SetSplitCurve3dTool(me: mutable; splitCurve3dTool: SplitCurve3d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting 3D curves.
+    
+    GetSplitCurve2dTool(me) returns SplitCurve2d from ShapeUpgrade
+    is virtual;
+    	---Purpose: Returns the tool for splitting pcurves.
+    
+    GetSplitCurve3dTool(me) returns SplitCurve3d from ShapeUpgrade
+    is virtual;
+    	---Purpose: Returns the tool for splitting 3D curves.
+	---Remark: here TopoDS_Edge can be used to transfer some specific information (tolerance, etc)
+    
+fields
+
+    myFace      : Face from TopoDS is protected;
+    myHasCurve2d: Boolean is protected;
+    myHasCurve3d: Boolean is protected;
+    myKnots2d   : HSequenceOfReal from TColStd is protected;
+    myKnots3d   : HSequenceOfReal from TColStd is protected;
+    
+    mySplitCurve3dTool: SplitCurve3d from ShapeUpgrade;
+    mySplitCurve2dTool: SplitCurve2d from ShapeUpgrade;
+
+end EdgeDivide;

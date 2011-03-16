@@ -1,0 +1,27 @@
+-- File:        GeometricRepresentationContext.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWGeometricRepresentationContext from RWStepGeom
+
+	---Purpose : Read & Write Module for GeometricRepresentationContext
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     GeometricRepresentationContext from StepGeom
+
+is
+
+	Create returns RWGeometricRepresentationContext;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable GeometricRepresentationContext from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : GeometricRepresentationContext from StepGeom);
+
+end RWGeometricRepresentationContext;

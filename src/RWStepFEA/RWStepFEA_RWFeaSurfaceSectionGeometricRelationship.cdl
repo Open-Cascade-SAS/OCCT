@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWFeaSurfaceSectionGeometricRelationship.cdl
+-- Created:	Wed Jan 22 17:31:43 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWFeaSurfaceSectionGeometricRelationship from RWStepFEA
+
+    ---Purpose: Read & Write tool for FeaSurfaceSectionGeometricRelationship
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    FeaSurfaceSectionGeometricRelationship from StepFEA
+
+is
+    Create returns RWFeaSurfaceSectionGeometricRelationship from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : FeaSurfaceSectionGeometricRelationship from StepFEA);
+	---Purpose: Reads FeaSurfaceSectionGeometricRelationship
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: FeaSurfaceSectionGeometricRelationship from StepFEA);
+	---Purpose: Writes FeaSurfaceSectionGeometricRelationship
+
+    Share (me; ent : FeaSurfaceSectionGeometricRelationship from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWFeaSurfaceSectionGeometricRelationship;

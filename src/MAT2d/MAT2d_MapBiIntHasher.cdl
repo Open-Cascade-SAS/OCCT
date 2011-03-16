@@ -1,0 +1,26 @@
+-- File:	MAT2d_MapBiIntHasher.cdl
+-- Created:	Fri Nov 19 12:14:13 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class MapBiIntHasher from MAT2d 
+
+	---Purpose: 
+
+uses
+    BiInt from MAT2d
+
+is
+    HashCode(myclass; 
+             Key1   : BiInt from MAT2d; 
+             Upper  : Integer          )
+	     
+        ---C++: inline
+    returns Integer;
+
+    IsEqual(myclass; Key1, Key2 : BiInt from MAT2d) 
+       ---C++: inline
+    returns Boolean;
+
+end MapBiIntHasher;

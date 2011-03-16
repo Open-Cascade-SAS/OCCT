@@ -1,0 +1,246 @@
+-- File:	HatchGen_HatchingGen.cdl
+-- Created:	Wed Nov 10 18:10:00 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@sdsun1>
+-- Copyright:	Matra Datavision 1993
+
+generic class HatchingGen from HatchGen (TheHatchingCurve as any)
+
+uses
+    ErrorStatus      from HatchGen ,
+    PointOnHatching  from HatchGen ,
+    PointsOnHatching from HatchGen ,
+    Domain           from HatchGen ,
+    Domains          from HatchGen , 
+    Pnt2d            from gp
+
+raises
+    OutOfRange   from Standard
+
+is
+
+     Create
+       
+       returns HatchingGen from HatchGen;
+
+
+    Create (Curve : TheHatchingCurve)
+    
+    	---Purpose: Creates a hatching.
+
+	returns HatchingGen from HatchGen ;
+
+
+    Curve (me)
+    
+    	---Purpose: Returns the curve associated to the hatching.
+
+    	---C++: return const &
+
+        returns TheHatchingCurve
+        is static ;
+
+
+    ChangeCurve (me : in out)
+    
+    	---Purpose: Returns the curve associated to the hatching.
+
+    	---C++: return &
+
+        returns TheHatchingCurve
+        is static ;
+
+
+    TrimDone (me : in out ; Flag : Boolean from Standard)
+
+    	---Purpose: Sets the flag about the trimming computations to the
+    	--          given value.
+
+    	is static ;
+
+
+    TrimDone (me)
+
+    	---Purpose: Returns the flag about the trimming computations.
+
+    	returns Boolean from Standard
+	is static ;
+
+
+    TrimFailed (me : in out ; Flag : Boolean from Standard)
+
+    	---Purpose: Sets the flag about the trimming failure to the
+    	--          given value.
+
+    	is static ;
+
+
+    TrimFailed (me)
+
+    	---Purpose: Returns the flag about the trimming failure.
+
+    	returns Boolean from Standard
+	is static ;
+
+
+    IsDone (me : in out ; Flag : Boolean from Standard)
+
+    	---Purpose: Sets the flag about the domains computation to the
+    	--          given value.
+
+    	is static ;
+
+
+    IsDone (me)
+
+    	---Purpose: Returns the flag about the domains computation.
+
+    	returns Boolean from Standard
+	is static ;
+
+
+    Status (me : in out ; Status : ErrorStatus from HatchGen)
+
+    	---Purpose: Sets the error status.
+
+    	is static ;
+
+
+    Status (me)
+
+    	---Purpose: Returns the error status.
+
+    	returns ErrorStatus from HatchGen
+	is static ;
+
+
+---Category: Points on hatching.
+
+    AddPoint (me : in out ; Point     : PointOnHatching from HatchGen ;
+    	    	    	    Confusion : Real            from Standard)
+    
+    	---Purpose: Adds an intersection point to the hatching.
+
+	is static ;
+
+
+    NbPoints (me)
+    
+    	---Purpose: Returns the number of intersection points
+    	--          of the hatching.
+
+        returns Integer from Standard
+        is static ;
+
+
+    Point (me ; Index : Integer from Standard)
+    
+    	---Purpose: Returns the Index-th intersection point of the
+    	--          hatching.
+    	--          The exception OutOfRange is raised if
+    	--          Index < 1 or Index > NbPoints.
+
+    	---C++: return const &
+
+    	returns PointOnHatching from HatchGen
+    	raises OutOfRange from Standard
+   	is static ;
+
+
+    ChangePoint (me : in out ; Index : Integer from Standard)
+    
+    	---Purpose: Returns the Index-th intersection point of the
+    	--          hatching.
+    	--          The exception OutOfRange is raised if
+    	--          Index < 1 or Index > NbPoints.
+
+    	---C++: return &
+
+    	returns PointOnHatching from HatchGen
+    	raises OutOfRange from Standard
+   	is static ;
+
+
+    RemPoint (me : in out ; Index : Integer from Standard)
+    
+    	---Purpose: Removes the Index-th intersection point of the
+    	--          hatching.
+    	--          The exception OutOfRange is raised if
+    	--          Index < 1 or Index > NbPoints.
+
+    	raises OutOfRange from Standard
+    	is static ;
+
+
+    ClrPoints (me : in out)
+    
+    	---Purpose: Removes all the intersection points of the hatching.
+
+    	is static ;
+
+
+---Category: Domains.
+
+
+    AddDomain (me : in out ; Domain : Domain from HatchGen)
+    
+    	---Purpose: Adds a domain to the hatching.
+
+	is static ;
+
+
+    NbDomains (me)
+    
+    	---Purpose: Returns the number of domains of the hatching.
+
+        returns Integer from Standard
+        is static ;
+
+
+    Domain (me ; Index : Integer from Standard)
+    
+    	---Purpose: Returns the Index-th domain of the hatching.
+    	--          The exception OutOfRange is raised if
+    	--          Index < 1 or Index > NbDomains.
+
+    	---C++: return const &
+
+    	returns Domain from HatchGen
+    	raises OutOfRange from Standard
+   	is static ;
+
+
+    RemDomain (me : in out ; Index : Integer from Standard)
+    
+    	---Purpose: Removes the Index-th domain of the hatching.
+    	--          The exception OutOfRange is raised if
+    	--          Index < 1 or Index > NbDomains.
+
+    	raises OutOfRange from Standard
+    	is static ;
+
+
+    ClrDomains (me : in out)
+    
+    	---Purpose: Removes all the domains of the hatching.
+
+    	is static ;
+
+
+    ClassificationPoint (me) 
+    	---Purpose: Returns a point on the curve. 
+    	--          This point will be used for the classification.
+    returns Pnt2d from gp
+    is static;
+       
+fields
+
+    myCurve      : TheHatchingCurve ;
+    myTrimDone   : Boolean          from Standard ;
+    myTrimFailed : Boolean          from Standard ;
+    myPoints     : PointsOnHatching from HatchGen ;
+    myIsDone     : Boolean          from Standard ;
+    myStatus     : ErrorStatus      from HatchGen ;
+    myDomains    : Domains          from HatchGen ;
+
+end HatchingGen from HatchGen ;

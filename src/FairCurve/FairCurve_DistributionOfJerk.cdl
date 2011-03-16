@@ -1,0 +1,39 @@
+-- File:	FairCurve_DistributionOfMVC.cdl
+-- Created:	Mon Apr  1 08:52:11 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+private class DistributionOfJerk from FairCurve inherits  DistributionOfEnergy  from FairCurve
+
+	---Purpose: Compute the "Jerk" distribution.
+
+uses  Vector        from math, 
+      FunctionSet   from math,
+      HArray1OfReal  from TColStd,
+      HArray1OfPnt2d from TColgp,
+      BattenLaw  from FairCurve
+
+
+is
+    Create( BSplOrder :  Integer;
+            FlatKnots :  HArray1OfReal;
+	    Poles     :  HArray1OfPnt2d;
+	    DerivativeOrder : Integer; 
+	    Law       :  BattenLaw;
+            NbValAux  : Integer = 0) returns DistributionOfJerk;
+	    
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the functions for the 
+    	--          variable <X>.
+    	--          returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean is redefined;
+    
+
+fields
+    MyLaw           : BattenLaw;
+end DistributionOfJerk;

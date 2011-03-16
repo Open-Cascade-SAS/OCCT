@@ -1,0 +1,106 @@
+--
+-- File:	Visual3d_ClipPlane.cdl
+-- Created:	Vendredi 6 Septembre 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994
+--
+
+class ClipPlane from Visual3d inherits TShared
+
+	---Version:
+
+	---Purpose: This class allows the definition and update
+	--	    of clipping planes in the space model.
+
+	---Keywords: Clipping Plane, Model Clipping
+
+	---Warning:
+	---References:
+
+uses
+
+	CPlane	from Graphic3d
+
+is
+
+	Create ( ACoefA		: Real from Standard;
+		 ACoefB		: Real from Standard;
+		 ACoefC		: Real from Standard;
+		 ACoefD		: Real from Standard )
+		returns mutable ClipPlane from Visual3d;
+	---Level: Internal
+	---Purpose: Creates a clipping plane from the equation :
+	--	    <ACoefA>*X + <ACoefB>*Y + <ACoefC>*Z + <ACoefD> = 0.0
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetPlane ( me		: mutable;
+		   ACoefA	: Real from Standard;
+		   ACoefB	: Real from Standard;
+		   ACoefC	: Real from Standard;
+		   ACoefD	: Real from Standard )
+		is static;
+	---Level: Internal
+	---Purpose: Modifies the plane equation.
+	---Category: Methods to modify the class definition
+
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	Limit ( myclass )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Maximum number of activatable clipping planes.
+	---Category: Class methods
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Plane ( me;
+		ACoefA	: out Real from Standard;
+		ACoefB	: out Real from Standard;
+		ACoefC	: out Real from Standard;
+		ACoefD	: out Real from Standard )
+		is static;
+	---Level: Internal
+	---Purpose: Returns the values of the clipping plane <me>.
+	---Category: Inquire methods
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Identification ( me )
+		returns Integer from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns the plane identification.
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ClipPlane
+--
+-- Purpose	:	Declaration of variables specific to the
+--			clipping plane model
+--
+-- Reminders	:	A clipping plane is defined by its equation
+--			Equation : A*X + B*Y + C*Z + D = 0
+--
+
+	-- the associated C structure
+	MyCPlane	:	CPlane from Graphic3d;
+
+friends
+
+	class View from Visual3d
+
+end ClipPlane;

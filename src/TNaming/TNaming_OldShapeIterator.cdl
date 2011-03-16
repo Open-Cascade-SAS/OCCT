@@ -1,0 +1,96 @@
+-- File:	TNaming_OldShapeIterator.cdl
+-- Created:	Mon Dec 16 17:40:21 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class OldShapeIterator from TNaming 
+
+	---Purpose: Iterates on all the ascendants of a shape
+
+uses
+    Shape       from TopoDS,
+    NamedShape  from TNaming,
+    UsedShapes  from TNaming,
+    Iterator    from TNaming,
+    Label       from TDF,
+    PtrNode     from TNaming
+    
+raises
+     NoMoreObject from Standard,
+     NoSuchObject from Standard 
+     
+is
+
+    Create(aShape      : Shape      from TopoDS; 
+    	   Transaction : Integer    from Standard;
+    	   Shapes      : UsedShapes from TNaming)
+    returns OldShapeIterator from TNaming 
+    is private;
+
+    Create(aShape      : Shape      from TopoDS; 
+    	   Shapes      : UsedShapes from TNaming)
+    returns OldShapeIterator from TNaming 
+    is private;    
+
+    Create(aShape      : Shape      from TopoDS; 
+    	   Transaction : Integer    from Standard;
+    	   access      : Label from TDF)
+    returns OldShapeIterator from TNaming;
+
+    Create(aShape      : Shape      from TopoDS; 
+    	   access      : Label from TDF)
+    returns OldShapeIterator from TNaming;
+    
+    
+    Create(anIterator : OldShapeIterator from TNaming)
+    returns OldShapeIterator from TNaming;
+	---Purpose: Iterates from the current Shape in <anIterator>
+	
+    Create(anIterator  : Iterator from TNaming)
+    returns OldShapeIterator from TNaming;
+	---Purpose: Iterates from the current Shape in <anIterator>
+	
+    More(me) returns Boolean;
+    	---C++: inline
+
+    Next(me : in out)
+    raises
+       NoMoreObject from Standard;
+				
+    Label(me) returns Label from TDF
+    raises
+	NoSuchObject from Standard;
+    
+    NamedShape(me) returns NamedShape from TNaming
+    raises
+	NoSuchObject from Standard;
+		
+		
+    Shape(me) returns Shape from TopoDS
+	---C++: return const&
+    raises
+	NoSuchObject from Standard;
+	
+    IsModification(me) returns Boolean;
+	---Purpose: True if the  new  shape is a modification  (split,
+	--          fuse,etc...) of the old shape.
+
+
+    
+fields
+    
+    myNode  : PtrNode from TNaming;	
+    myTrans : Integer from Standard; -- is < 0 means in Current Transaction.
+
+friends
+
+    class Tool      from TNaming,
+    class Localizer from TNaming,
+    class Naming    from TNaming 
+    
+end OldShapeIterator;
+
+
+

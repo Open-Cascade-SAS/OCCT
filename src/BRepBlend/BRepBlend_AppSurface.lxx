@@ -1,0 +1,96 @@
+// File:	BRepBlend_AppSurface.lxx
+// Created:	Tue Nov 26 10:21:03 1996
+// Author:	Philippe MANGIN
+//		<pmn@sgi29>
+
+
+#include <StdFail_NotDone.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_HArray2OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+
+
+inline Standard_Boolean BRepBlend_AppSurface::IsDone() const
+{
+  return approx.IsDone();
+}
+
+
+inline Standard_Integer BRepBlend_AppSurface::UDegree() const
+{
+  return approx.UDegree();
+}
+
+inline Standard_Integer BRepBlend_AppSurface::VDegree() const
+{
+  return approx.VDegree();
+}
+
+inline const TColgp_Array2OfPnt& 
+BRepBlend_AppSurface::SurfPoles() const
+{
+  return approx.SurfPoles();
+}
+
+inline const TColStd_Array2OfReal& 
+BRepBlend_AppSurface::SurfWeights() const
+{
+  return approx.SurfWeights();
+}
+
+
+inline const TColStd_Array1OfReal& 
+BRepBlend_AppSurface::SurfUKnots() const
+{
+   return approx.SurfUKnots(); 
+}
+
+inline const TColStd_Array1OfReal& 
+BRepBlend_AppSurface::SurfVKnots() const
+{
+   return approx.SurfVKnots(); 
+}
+
+inline const TColStd_Array1OfInteger& 
+BRepBlend_AppSurface::SurfUMults() const
+{
+   return approx.SurfUMults(); 
+}
+
+inline const TColStd_Array1OfInteger& 
+BRepBlend_AppSurface::SurfVMults() const
+{
+  return approx.SurfVMults(); 
+}
+
+inline Standard_Integer BRepBlend_AppSurface::NbCurves2d() const
+{
+ return approx.NbCurves2d();
+}
+
+inline Standard_Integer BRepBlend_AppSurface::Curves2dDegree() const
+{
+  return approx.Curves2dDegree();
+}
+
+inline const TColgp_Array1OfPnt2d& 
+BRepBlend_AppSurface::Curve2dPoles(const Standard_Integer Index) const
+{
+  return  approx.Curve2dPoles(Index);
+}
+
+inline const TColStd_Array1OfReal& 
+BRepBlend_AppSurface::Curves2dKnots() const
+{
+   return approx.Curves2dKnots();
+}
+
+inline const TColStd_Array1OfInteger& 
+BRepBlend_AppSurface::Curves2dMults () const
+{
+   return approx.Curves2dMults(); 
+}
+
+

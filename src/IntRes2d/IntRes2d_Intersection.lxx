@@ -1,0 +1,75 @@
+// File:	IntRes2d_Intersection.lxx
+// Created:	Wed May 27 16:17:41 1992
+// Author:	Laurent BUCHARD
+//		<lbr@topsn3>
+
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+
+inline Standard_Boolean IntRes2d_Intersection::IsDone() const {
+  return done;
+}
+
+//----------------------------------------------------------------------
+inline IntRes2d_Intersection::IntRes2d_Intersection() {
+  done=reverse=Standard_False;
+}
+//----------------------------------------------------------------------
+inline IntRes2d_Intersection::IntRes2d_Intersection(const IntRes2d_Intersection& Other) {
+  done=reverse=Standard_False;
+  lpnt = Other.lpnt;
+  lseg = Other.lseg;
+}
+//----------------------------------------------------------------------
+inline Standard_Boolean IntRes2d_Intersection::IsEmpty() const {
+  if (!done) {StdFail_NotDone::Raise();}
+  return ((lpnt.Length() == 0) && (lseg.Length() == 0));
+}
+//----------------------------------------------------------------------
+inline Standard_Integer IntRes2d_Intersection::NbPoints() const {
+  if (!done) {StdFail_NotDone::Raise();}
+  return lpnt.Length();
+}
+//----------------------------------------------------------------------
+inline const IntRes2d_IntersectionPoint&
+  IntRes2d_Intersection::Point( const Standard_Integer N) const {
+    if (!done) {StdFail_NotDone::Raise();}
+    return lpnt(N);
+  }
+//----------------------------------------------------------------------
+inline Standard_Integer IntRes2d_Intersection::NbSegments() const {
+  if (!done) {StdFail_NotDone::Raise();}
+  return lseg.Length();
+}
+//----------------------------------------------------------------------
+inline const IntRes2d_IntersectionSegment& 
+  IntRes2d_Intersection::Segment(const Standard_Integer N) const {
+    if (!done) {StdFail_NotDone::Raise();}
+    return lseg(N);
+  }
+//----------------------------------------------------------------------
+inline void IntRes2d_Intersection::Append(const IntRes2d_IntersectionSegment& Seg) {
+  lseg.Append(Seg);
+}
+//----------------------------------------------------------------------
+inline void IntRes2d_Intersection::Append(const IntRes2d_IntersectionPoint& Pnt) {
+  lpnt.Append(Pnt);
+}
+//----------------------------------------------------------------------
+inline void IntRes2d_Intersection::ResetFields() {
+  if(done) {
+    lseg.Clear();
+    lpnt.Clear();
+    done=Standard_False;
+  }
+}
+//----------------------------------------------------------------------
+inline void IntRes2d_Intersection::SetReversedParameters(const Standard_Boolean flag) {
+  reverse=flag;
+}
+//----------------------------------------------------------------------
+inline Standard_Boolean IntRes2d_Intersection::ReversedParameters() const {
+  return(reverse);
+}

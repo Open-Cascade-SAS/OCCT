@@ -1,0 +1,57 @@
+-- File:	StepBasic_DocumentProductAssociation.cdl
+-- Created:	Tue Jan 28 12:40:35 2003 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class DocumentProductAssociation from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity DocumentProductAssociation
+
+uses
+    HAsciiString from TCollection,
+    Document from StepBasic,
+    ProductOrFormationOrDefinition from StepBasic
+
+is
+    Create returns DocumentProductAssociation from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aName: HAsciiString from TCollection;
+                       hasDescription: Boolean;
+                       aDescription: HAsciiString from TCollection;
+                       aRelatingDocument: Document from StepBasic;
+                       aRelatedProduct: ProductOrFormationOrDefinition from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Name (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Name
+    SetName (me: mutable; Name: HAsciiString from TCollection);
+	---Purpose: Set field Name
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+    HasDescription (me) returns Boolean;
+	---Purpose: Returns True if optional field Description is defined
+
+    RelatingDocument (me) returns Document from StepBasic;
+	---Purpose: Returns field RelatingDocument
+    SetRelatingDocument (me: mutable; RelatingDocument: Document from StepBasic);
+	---Purpose: Set field RelatingDocument
+
+    RelatedProduct (me) returns ProductOrFormationOrDefinition from StepBasic;
+	---Purpose: Returns field RelatedProduct
+    SetRelatedProduct (me: mutable; RelatedProduct: ProductOrFormationOrDefinition from StepBasic);
+	---Purpose: Set field RelatedProduct
+
+fields
+    theName: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection; -- optional
+    theRelatingDocument: Document from StepBasic;
+    theRelatedProduct: ProductOrFormationOrDefinition from StepBasic;
+    defDescription: Boolean; -- flag "is Description defined"
+
+end DocumentProductAssociation;

@@ -1,0 +1,160 @@
+-- File:	MAT2d_BisectingLocus.cdl
+-- Created:	Tue Jul  6 12:24:44 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class BisectingLocus from MAT2d (Explorer as any) 
+    -- as SketchExplorer from MAT2d   
+
+	---Purpose  : BisectingLocus generates and contains the Bisecting_Locus
+	--            of a set of lines from Geom2d, defined by <ExploSet>.
+	--             
+	--            If the set of lines contains closed lines:
+	--            ------------------------------------------
+	--            These lines cut the plane  in areas. 
+	--            One map can  be  computed for each area.
+	--  
+	--            Bisecting locus computes a map in an area. 
+	--            The area is defined by a side (MAT_Left,MAT_Right) 
+	--            on one of the closed lines.
+	-- 
+	--            If the set of lines contains only open lines:
+	--            --------------------------------------------
+	--            the map recovers all the plane.
+	--  
+	--  Warning: Assume the orientation of the   closed  lines  are
+	--          compatible. 
+	--          
+	--          Assume the explo contains only lines located in the 
+	--          area where the bisecting locus will be computed.
+	--          
+	--          Assume a line don't cross itself or an other line.
+	--
+	--  Remark: 
+	--         the  curves  coming   from   the  explorer can   be
+	--         decomposed in different parts. It  the  case for the
+	--         curves other than circles or lines.
+	--         
+    	--         The map of bisecting  locus is described by a graph.
+    	--         - The  BasicsElements  correspond  to elements on
+    	--           the figure described by the Explorer.
+    	--         - The Arcs correspond to the bisectors.
+    	--         - The Nodes are the extremities of the arcs.
+
+uses
+    Graph                    from MAT,
+    Arc                      from MAT,
+    BasicElt                 from MAT,
+    Node                     from MAT,
+    Side                     from MAT,
+    DataMapOfIntegerBasicElt from MAT,
+    DataMapOfBiIntInteger    from MAT2d,           
+    Bisec                    from Bisector,
+    Geometry                 from Geom2d,
+    Pnt2d                    from gp,
+    Tool2d                   from MAT2d
+    
+is
+    Create returns BisectingLocus from MAT2d;
+    
+---Category: Construction.
+
+    Compute (me        : in out ; 
+    	     anExplo   : in out Explorer;
+             LineIndex :        Integer       = 1;
+             aSide     :        Side from MAT = MAT_Left )
+	--- Purpose : Computation of the Bisector_Locus in a set of Lines 
+	--            defined in <anExplo>.
+	--            The bisecting locus are computed on the side <aSide>
+	--            from the line <LineIndex> in <anExplo>. 
+    is static;
+    
+---Category: Querying.
+
+    IsDone (me) returns Boolean from Standard
+	---Purpose: Returns True if Compute has succeeded.
+    is static;
+
+    Graph(me) returns Graph from MAT
+    	--- Purpose : Returns <theGraph> of <me>.
+    is static;
+    
+    NumberOfContours (me)
+    	---Purpose: Returns the number of contours.
+    returns Integer from Standard
+    is static;
+    
+    NumberOfElts( me ; IndLine : Integer) 
+	---Purpose: Returns the number of BasicElts on the line
+	--          <IndLine>.
+    returns Integer from Standard
+    is static;
+
+    NumberOfSections (me; IndLine : Integer; Index : Integer)
+	---Purpose: Returns the number of sections of a curve.
+	--          this curve is the Indexth curve in the IndLineth contour
+	--          given by anExplo. 
+	--          
+    returns Integer from Standard
+    is static;
+    
+    BasicElt ( me ; IndLine : Integer ; Index : Integer)
+    	---Purpose: Returns the BasicElts located at the position
+    	--          <Index> on the contour designed by <IndLine>.
+    	--  Remark: the BasicElts on a contour are sorted.
+    	--                    
+    returns BasicElt from MAT
+    is static;
+    
+    GeomElt(me ; aBasicElt : BasicElt from MAT) 
+    	--- Purpose : Returns the geometry linked to the <BasicElt>.
+    returns Geometry from Geom2d
+    is static;
+    
+    GeomElt(me ; aNode : Node from MAT) 
+       	--- Purpose : Returns the geometry of  type <gp> linked to
+    	--            the <Node>.
+    returns Pnt2d from gp
+    is static;
+    
+    GeomBis(me ; anArc : Arc from MAT ; Reverse :in out Boolean from Standard) 
+       	--- Purpose  : Returns the  geometry of type <Bissec> 
+    	--             linked   to the arc <ARC>. 
+    	--             <Reverse> is False when the FirstNode of <anArc>
+    	--             correspond to the first point of geometry.
+    	--             
+    returns Bisec from Bisector
+    is static;
+    
+---Category: private methods.
+    
+    Fusion(me : in out)
+    is static private;
+
+    RenumerationAndFusion
+       (me         : in out;
+        IndexLine  : Integer;
+	LengthLine : Integer;
+        IndexLast  : in out Integer;
+	NewMap     : in out DataMapOfIntegerBasicElt from MAT) 
+    is static private;
+    
+fields
+
+    theGraph    : Graph                 from MAT;
+    theTool     : Tool2d                from MAT2d;
+    isDone      : Boolean               from Standard;
+    nbSect      : DataMapOfBiIntInteger from MAT2d;
+    nbContours  : Integer               from Standard;	
+    
+end BisectingLocus;
+
+
+
+
+
+
+
+

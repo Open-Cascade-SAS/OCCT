@@ -1,0 +1,149 @@
+-- File:	Select3D_SensitiveGroup.cdl
+-- Created:	Thu Apr 16 14:57:09 1998
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SensitiveGroup from Select3D inherits SensitiveEntity from Select3D
+
+	---Purpose: A framework to define selection of a sensitive group
+    	--          by a sensitive entity which is a set of 3D sensitive entities.
+    	--          Remark: 2 modes are possible for rectangle selection
+    	--          the group is considered selected
+    	--          1) when all the entities inside are selected in the rectangle
+    	--          2) only one entity inside is selected by the rectangle
+    	--          By default the "Match All entities" mode is set.
+
+uses
+    Pnt                      from gp,
+    Projector                from Select3D,
+    Lin                      from gp,
+    EntityOwner              from SelectBasics,
+    SensitiveEntity          from Select3D,
+    ListOfSensitive          from Select3D,
+    ListOfBox2d              from SelectBasics,
+    Array1OfPnt2d            from TColgp,
+    Box2d                    from Bnd,
+    Location                 from TopLoc
+
+
+is
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    MatchAll     : Boolean from Standard = Standard_True)
+    returns mutable SensitiveGroup from Select3D;
+    	---Purpose: Constructs an empty sensitive group object.
+    	-- This is a set of sensitive 3D entities. The sensitive
+    	-- entities will be defined using the function Add to fill
+    	-- the entity owner OwnerId. If MatchAll is false, nothing can be added.
+
+    Create(OwnerId       : EntityOwner from SelectBasics;
+    	   TheList       : in out ListOfSensitive from Select3D;
+    	   MatchAll      : Boolean from Standard = Standard_True)
+    returns mutable SensitiveGroup from Select3D;
+    	---Purpose: Constructs a sensitive group object defined by the list
+    	-- TheList and the entity owner OwnerId. If MatchAll is false, nothing is done.
+
+    Add (me   :mutable; LL: in out ListOfSensitive from Select3D);
+    	---Purpose: Adds the list of sensitive entities LL to the empty
+    	-- sensitive group object created at construction time.
+	
+    Add (me   :mutable;aSensitive : SensitiveEntity from Select3D);
+    	---Purpose: Adds the sensitive entity aSensitive to the non-empty
+    	-- sensitive group object created at construction time.
+
+    Remove(me:mutable; aSensitive :SensitiveEntity from Select3D);
+
+    Clear(me:mutable) ;
+    	---Purpose: Removes all sensitive entities from the list used at the
+    	-- time of construction, or added using the function Add.
+
+    IsIn(me;aSensitive: SensitiveEntity from Select3D)
+    returns Boolean from Standard;
+    	---Purpose: Returns true if the sensitive entity aSensitive is in
+    	-- the list used at the time of construction, or added using the function Add.
+    Set(me:mutable; MustMatchAllEntities: Boolean from Standard);
+    	---Purpose: Sets the requirement that all sensitive entities in the
+	-- list used at the time of construction, or added using
+	-- the function Add must be matched.
+    	---C++: inline
+    MustMatchAll(me) returns Boolean from Standard;
+    	---Purpose: Returns true if all sensitive entities in the list used
+    	-- at the time of construction, or added using the function Add must be matched.
+    	---C++: inline
+
+
+
+
+    Project (me:mutable;aProjector : Projector from Select3D) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+
+    Areas   (me:mutable ; boxes : in out ListOfBox2d from SelectBasics) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: gives the 2D boxes which represent the segment in the 
+    	--          selection process...
+
+
+    MaxBoxes(me) returns Integer from Standard is redefined static;
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is redefined static;
+
+
+    SetLocation(me:mutable;aLoc:Location from TopLoc) is redefined static;
+    	---Purpose:  propagation of location on all the sensitive inside...
+    ResetLocation(me:mutable) is redefined static;
+    	---Purpose:  propagation of location on all the sensitive inside...    
+
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is  redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard) 
+    returns Boolean
+    is static;
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    	---Level: Public 
+    
+
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static;
+    	---Purpose: returns the depth of the touched entity
+
+    
+    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is redefined virtual; 
+     
+    GetEntities(me)
+    returns ListOfSensitive from Select3D; 
+    ---Purpose: Gets group content 
+    ---C++: inline
+    ---C++: return const&
+
+
+fields
+    myList         : ListOfSensitive from Select3D;
+    myMustMatchAll : Boolean from Standard;
+    myLastRank     : Integer from Standard;
+    myLastTol      : ShortReal from Standard;
+    myX,myY	   : ShortReal from Standard;
+end SensitiveGroup;
+

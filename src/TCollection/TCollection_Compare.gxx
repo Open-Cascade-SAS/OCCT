@@ -1,0 +1,39 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	TCollection_Compare.gxx
+// Created:	Thu Aug 27 12:06:34 1992
+// Author:	Mireille MERCIEN
+//              <mip@sdsun3>           	 
+//           	Copyright:	 Matra Datavision 1992
+
+#include <Standard_NotImplemented.hxx>
+
+// -----------
+// IsLower :
+// -----------
+Standard_Boolean TCollection_Compare::IsLower (const Item& ,
+                                     const Item& ) const
+{
+  Standard_NotImplemented::Raise();
+  return Standard_False;
+}
+
+// -----------
+// IsGreater :
+// -----------
+Standard_Boolean TCollection_Compare::IsGreater (const Item& ,
+                                     const Item& ) const
+{
+  Standard_NotImplemented::Raise();
+  return Standard_False;
+}
+
+// -----------
+// IsEqual :
+// -----------
+Standard_Boolean TCollection_Compare::IsEqual (const Item& Left,
+                                     const Item& Right) const
+{
+   return (Left == Right) ;
+}
+
+

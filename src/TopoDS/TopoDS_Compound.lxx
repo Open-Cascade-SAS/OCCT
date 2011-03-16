@@ -1,0 +1,13 @@
+// File:	TopoDS_Compound.lxx
+// Created:	Tue Apr 16 17:48:35 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Compound
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Compound::TopoDS_Compound ()
+{
+}

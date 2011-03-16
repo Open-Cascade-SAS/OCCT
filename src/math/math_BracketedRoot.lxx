@@ -1,0 +1,32 @@
+// file math_BracketedRoot.lxx
+
+#include <StdFail_NotDone.hxx>
+
+inline Standard_Boolean math_BracketedRoot::IsDone() const { return Done; }
+
+inline Standard_OStream& operator<<(Standard_OStream& o,
+				    const math_BracketedRoot& Br)
+{
+  Br.Dump(o);
+  return o;
+}
+
+
+inline Standard_Real math_BracketedRoot::Root () const {
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return TheRoot;
+}
+
+
+inline  Standard_Real math_BracketedRoot::Value () const {
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return TheError;
+}
+
+
+inline  Standard_Integer math_BracketedRoot::NbIterations ()const {
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return NbIter;
+}
+
+

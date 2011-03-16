@@ -1,0 +1,331 @@
+--
+-- File:	Visual3d_Light.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994
+--
+
+class Light from Visual3d inherits TShared
+
+	---Version:
+
+	---Purpose: This class defines and updates light sources.
+	--	    There is no limit to the number of light sources defined.
+	--	    Only the number of active sources is limited.
+	--
+	--	    TypeOfLightSource = TOLS_AMBIENT
+	--				TOLS_DIRECTIONAL
+	--				TOLS_POSITIONAL
+	--				TOLS_SPOT
+	--
+	--	    Angle is a radian value.
+	--	    Concentration, Attenuation are in the [0,1] interval.
+	--
+
+	---Keywords: Light, View, Context, Ambient, Directional, Positional,
+	--	     Spot, Angle, Concentration, Attenuation, Color, Shading
+
+	---Warning:
+	---References:
+
+uses
+
+	Color			from Quantity,
+
+	CLight			from Graphic3d,
+	Vector			from Graphic3d,
+	Vertex			from Graphic3d,
+
+	TypeOfLightSource	from Visual3d
+
+raises
+
+	LightDefinitionError	from Visual3d
+
+is
+
+	Create
+		returns mutable Light from Visual3d;
+	---Level: Public
+	---Purpose: Creates a light from default values.
+	--	    Light sources are created in a visualiser
+	--	    and are activated in one of its views.
+	--
+	--	    Type	= TOLS_AMBIENT
+	--	    Color	= WHITE
+
+	Create ( Color		: Color from Quantity )
+		returns mutable Light from Visual3d;
+	---Level: Public
+	---Purpose: Creates an AMBIENT light source.
+	--	    Light sources are created in a visualiser
+	--	    and are activated in one of its views.
+
+	Create ( Color		: Color from Quantity;
+		 Direction	: Vector from Graphic3d; 
+    	    	 Headlight      : Boolean  from  Standard  =  Standard_False )
+		returns mutable Light from Visual3d
+	---Level: Public
+	---Purpose: Creates a DIRECTIONAL light source.
+	--	    Light sources are created in a visualiser
+	--	    and are activated in one of its views.
+	--  Warning: Raises LightDefinitionError if <Direction> is null.
+	raises LightDefinitionError;
+
+	Create ( Color		: Color from Quantity;
+		 Position	: Vertex from Graphic3d;
+		 Fact1, Fact2	: Real from Standard )
+		returns mutable Light from Visual3d
+	---Level: Public
+	---Purpose: Creates a POSITIONAL light source.
+	--	    Light sources are created in a visualiser
+	--	    and are activated in one of its views.
+	--  Warning: Raises LightDefinitionError 
+	--	    if <Fact1> and <Fact2> are null.
+	--	    if <Fact1> is a negative value or greater than 1.0.
+	--	    if <Fact2> is a negative value or greater than 1.0.
+	raises LightDefinitionError;
+
+	Create ( Color		: Color from Quantity;
+		 Position	: Vertex from Graphic3d;
+		 Direction	: Vector from Graphic3d;
+		 Concentration	: Real from Standard;
+		 Fact1, Fact2	: Real from Standard;
+		 AngleCone	: Real from Standard )
+		returns mutable Light from Visual3d
+	---Level: Public
+	---Purpose: Creates a SPOT light source.
+	--	    Light sources are created in a visualiser
+	--	    and are activated in one of its views.
+	--	    <Concentration> specifies the intensity distribution of 
+	--	    the light.
+	--	    <AngleCone> specifies the angle (radians) of the cone 
+	--	    created by the spot.
+	-- 	    the global attenuation is equal :
+	--	    1 / (Fact1 + Fact2 * (norm(ObjectPosition - LightPosition)))
+	--  Warning: Raises LightDefinitionError
+	--	    if <Direction> is null.
+	--	    if <Concentration> is a negative value or greater than 1.0.
+	--	    if <Fact1> and <Fact2> are null.
+	--	    if <Fact1> is a negative value or greater than 1.0.
+	--	    if <Fact2> is a negative value or greater than 1.0.
+	--	    if <AngleCone> is a negative value or greater than PI/2.
+	raises LightDefinitionError;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetAngle ( me		: mutable;
+		   AngleCone	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the angle (radians) of the cone created by the spot.
+	--	    Works only on TOLS_SPOT lights. 
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError
+	--	    if the type of the light is not TOLS_SPOT.
+	--	    if <AngleCone> is a negative value or greater than PI/2.
+	raises LightDefinitionError is static;
+
+	SetAttenuation1 ( me	: mutable;
+			  Fact1	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the attenuation factor of the light.
+	--	    Works only on the TOLS_POSITIONAL and TOLS_SPOT lights.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError
+	--	    if the type of the light is not TOLS_SPOT or TOLS_POSITIONAL.
+	--	    if <Fact1> is a negative value or greater than 1.0.
+	raises LightDefinitionError is static;
+
+	SetAttenuation2 ( me	: mutable;
+			  Fact2	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the attenuation factor of the light.
+	--	    Works only on the TOLS_POSITIONAL and TOLS_SPOT lights.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError
+	--	    if the type of the light is not TOLS_POSITIONAL or TOLS_SPOT.
+	--	    if <Fact2> is a negative value or greater than 1.0..
+	raises LightDefinitionError is static;
+
+	SetColor ( me		: mutable;
+		   Color	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the colour of the light.
+	---Category: Methods to modify the class definition
+
+	SetConcentration ( me			: mutable;
+			   Concentration	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the intensity distribution of the light.
+	--	    Works only on the TOLS_SPOT lights.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError
+	--	    if the type of the light is not TOLS_SPOT.
+	--	    if <Concentration> is a negative value or greater than 1.0.
+	raises LightDefinitionError is static;
+
+	SetDirection ( me		: mutable;
+		       Direction	: Vector from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the light direction.
+	--	    Works only on the TOLS_DIRECTIONAL and TOLS_SPOT lights.
+	--	    Default z
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError
+	--	    if the type of the light is not TOLS_DIRECTIONAL
+	--	    or TOLS_SPOT.
+	--	    if <Direction> is null.
+	raises LightDefinitionError is static;
+
+	SetPosition ( me	: mutable;
+		      Position	: Vertex from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the position of the light.
+	--	    Works only on the TOLS_POSITIONAL and TOLS_SPOT lights.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises LightDefinitionError 
+	--	    if the type of the light is not TOLS_POSITIONAL or TOLS_SPOT.
+	raises LightDefinitionError is static;
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+        Headlight  ( me ) 
+	    	returns  Boolean  from  Standard  is  static; 
+	---Level: Public
+        ---Purpose:  Returns the headlight  state of the light <me>
+        ---Category: Inquire methods
+		
+	Color ( me )
+		returns Color from Quantity is static;
+	---Level: Public
+	---Purpose: Returns the colour of the light <me>.
+	---Category: Inquire methods
+
+	LightType ( me )
+		returns TypeOfLightSource from Visual3d is static;
+	---Level: Public
+	---Purpose: Returns the light type of <me>.
+	--
+	--	    TypeOfLightSource = TOLS_AMBIENT
+	--				TOLS_DIRECTIONAL
+	--				TOLS_POSITIONAL
+	--				TOLS_SPOT
+	--
+	---Category: Inquire methods
+
+	Values ( me;
+		 Color		: out Color from Quantity )
+	---Level: Public
+	---Purpose: Returns the definition of <me> if <me> is
+	--	    a light source of the TOLS_AMBIENT type.
+	--  Category: Inquire methods
+	--  Warning: Raises LightDefinitionError 
+	--	    if the type of the light is not TOLS_AMBIENT.
+	raises LightDefinitionError is static;
+
+	Values ( me;
+		 Color		: out Color from Quantity;
+		 Direction	: out Vector from Graphic3d )
+	---Level: Public
+	---Purpose: Returns the definition of <me> if <me> is
+	--	    a light source of the TOLS_DIRECTIONAL type.
+	--  Category: Inquire methods
+	--  Warning: Raises LightDefinitionError 
+	--	    if the type of the light is not TOLS_DIRECTIONAL.
+	raises LightDefinitionError is static;
+
+	Values ( me;
+		 Color		: out Color from Quantity;
+		 Position	: out Vertex from Graphic3d;
+		 Fact1,Fact2	: out Real from Standard )
+	---Level: Public
+	---Purpose: Returns the definition of <me> if <me> is
+	--	    a light source of the TOLS_POSITIONAL type.
+	--  Category: Inquire methods
+	--  Warning: Raises LightDefinitionError 
+	--	    if the type of the light is not TOLS_POSITIONAL.
+	raises LightDefinitionError is static;
+
+	Values ( me;
+		 Color		: out Color from Quantity;
+		 Position	: out Vertex from Graphic3d;
+		 Direction	: out Vector from Graphic3d;
+		 Concentration	: out Real from Standard;
+		 Fact1,Fact2	: out Real from Standard;
+		 AngleCone	: out Real from Standard )
+	---Level: Public
+	---Purpose: Returns the definition of <me> if <me> is
+	--	    a light source of the TOLS_SPOT type.
+	--  Category: Inquire methods
+	--  Warning: Raises LightDefinitionError 
+	--	    if the type of the light is not TOLS_SPOT.
+	raises LightDefinitionError is static;
+
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	Limit ( myclass )
+		returns Integer from Standard;
+	---Level: Internal
+	---Purpose: Maximum number of activatable light sources.
+	---Category: Class methods
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Identification ( me )
+		returns Integer from Standard
+		is static private;
+	---Level: Internal
+	---Purpose: Returns the light identification.
+	---Category: Private methods
+
+	IsValid ( myclass;
+		  AAngle	: Real from Standard )
+		returns Boolean from Standard
+		is private;
+	---Level: Internal
+	---Purpose: Returns True if <AAngle> is a valid
+	--	    spot light spread angle.
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_Light
+--
+-- Purpose	:	Declaration of variables specific to light sources
+--
+-- Reminder	:	A light source is defined by:
+--			- its type
+--			- its colour
+--			- the attenuation factor ( positional and spot only)
+--			- its angle ( spot only )
+--			- its concentration ( spot only )
+--			- its direction ( directional and spot only )
+--			- its position ( positional and spot only )
+--
+--			It is actived in a context of view.
+--
+
+	-- the type
+	MyType		:	TypeOfLightSource from Visual3d;
+
+	-- the associated C structure
+	MyCLight	:	CLight from Graphic3d;
+
+friends
+
+	class View from Visual3d
+
+end Light;

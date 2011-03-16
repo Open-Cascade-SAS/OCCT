@@ -1,0 +1,46 @@
+--
+-- File      :  ExternalRefFile.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ExternalRefFile from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines ExternalRefFile, Type <416> Form <1>
+        --          in package IGESBasic
+        --          Used when entire reference file is to be instanced
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable ExternalRefFile;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aFileIdent : HAsciiString);
+        ---Purpose : This method is used to set the field of the class
+        --           ExternalRefFile
+        --       - aFileIdent : External Reference File Identifier
+
+        FileId (me) returns HAsciiString from TCollection;
+        ---Purpose : returns External Reference File Identifier
+
+fields
+
+--
+-- Class    : IGESBasic_ExternalRefFile
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ExternalRefFile.
+--
+-- Reminder : A ExternalRefFile instance is defined by :
+--            - an External Reference File Identifier
+
+        theExtRefFileIdentifier : HAsciiString from TCollection;
+
+end ExternalRefFile;

@@ -1,0 +1,147 @@
+// File:	ChFiDS_FaceInterference.lxx
+// Created:	Thu Nov 18 12:07:39 1993
+// Author:	Isabelle GRIGNON
+//		<isg@zerox>
+
+//=======================================================================
+//function : SetInterference
+//purpose  : 
+//=======================================================================
+
+  inline void ChFiDS_FaceInterference:: SetInterference
+  (const Standard_Integer LineIndex,
+   const TopAbs_Orientation Trans, 
+   const Handle(Geom2d_Curve)& PCurv1,
+   const Handle(Geom2d_Curve)& PCurv2)
+{
+  lineindex = LineIndex;
+  LineTransition = Trans;
+  pCurveOnFace = PCurv1;
+  pCurveOnSurf = PCurv2;
+}
+
+
+//=======================================================================
+//function : SetLineIndex
+//purpose  : 
+//=======================================================================
+
+  inline void ChFiDS_FaceInterference::SetLineIndex
+  (const Standard_Integer I)
+{
+  lineindex = I;
+}
+
+//=======================================================================
+//function : SetFirstParameter
+//purpose  : 
+//=======================================================================
+
+ inline void  ChFiDS_FaceInterference::SetFirstParameter(
+				      const Standard_Real U1)
+{
+  firstParam = U1;
+}
+
+
+//=======================================================================
+//function : SetLastParameter
+//purpose  : 
+//=======================================================================
+
+ inline void  ChFiDS_FaceInterference::SetLastParameter(
+					const Standard_Real U1)
+{
+  lastParam = U1;
+}
+
+
+//=======================================================================
+//function : LineIndex
+//purpose  : 
+//=======================================================================
+
+ inline Standard_Integer ChFiDS_FaceInterference::LineIndex()const 
+{
+  return lineindex;
+}
+
+
+//=======================================================================
+//function : Transition
+//purpose  : 
+//=======================================================================
+
+ inline TopAbs_Orientation  ChFiDS_FaceInterference::Transition()const 
+{
+  return LineTransition;
+}
+
+
+//=======================================================================
+//function : PCurveOnFace
+//purpose  : 
+//=======================================================================
+
+ inline const Handle(Geom2d_Curve)&  
+  ChFiDS_FaceInterference::PCurveOnFace()const 
+{
+  return pCurveOnFace;
+}
+
+//=======================================================================
+//function : PCurveOnSurf
+//purpose  : 
+//=======================================================================
+
+ inline const Handle(Geom2d_Curve)&  ChFiDS_FaceInterference::PCurveOnSurf()const 
+{
+  return pCurveOnSurf;
+}
+
+
+//=======================================================================
+//function : ChangePCurveOnFace
+//purpose  : 
+//=======================================================================
+
+ inline Handle(Geom2d_Curve)&  
+  ChFiDS_FaceInterference::ChangePCurveOnFace() 
+{
+  return pCurveOnFace;
+}
+
+//=======================================================================
+//function : ChangePCurveOnSurf
+//purpose  : 
+//=======================================================================
+
+ inline Handle(Geom2d_Curve)&  
+  ChFiDS_FaceInterference::ChangePCurveOnSurf()
+{
+  return pCurveOnSurf;
+}
+
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+ inline  Standard_Real ChFiDS_FaceInterference:: FirstParameter()const 
+{
+  return firstParam;
+}
+
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+ inline  Standard_Real  ChFiDS_FaceInterference:: LastParameter()const 
+{
+  return lastParam;
+}
+
+

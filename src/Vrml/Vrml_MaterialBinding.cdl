@@ -1,0 +1,39 @@
+-- File:	Vrml_MaterialBinding.cdl
+-- Created:	Tue Feb 11 09:10:24 1997
+-- Author:	Alexander BRIVIN and Dmitry TARASOV
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class MaterialBinding from Vrml 
+
+	---Purpose: defines a MaterialBinding node of VRML specifying properties of geometry
+	---          and its appearance.
+    	--  Material nodes may contain more than one material. This node specifies how the current
+        --  materials are bound to shapes that follow in the scene graph. Each shape node may
+        --  interpret bindings differently. For example, a Sphere node is always drawn using the first
+        --  material in the material node, no matter what the current MaterialBinding, while a Cube
+        --  node may use six different materials to draw each of its six faces, depending on the
+        --  MaterialBinding. 
+uses
+ 
+    MaterialBindingAndNormalBinding from  Vrml
+
+is
+ 
+    Create ( aValue : MaterialBindingAndNormalBinding  from  Vrml )
+        returns MaterialBinding from Vrml;
+
+    Create returns MaterialBinding from Vrml; 
+    
+    SetValue ( me:in out; aValue : MaterialBindingAndNormalBinding from  Vrml );
+    Value ( me )  returns  MaterialBindingAndNormalBinding from  Vrml;
+
+    Print  ( me; anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myValue  :   MaterialBindingAndNormalBinding  from  Vrml;
+
+end MaterialBinding;

@@ -1,0 +1,326 @@
+-- File:        IntegerVector.cdl
+-- Created:     Mon May 6 14:55:20 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class IntegerVector from math
+
+    	---Purpose:
+    	-- This class implements the real IntegerVector abstract data type.
+    	-- IntegerVectors can have an arbitrary range which must be define at
+    	-- the declaration and cannot be changed after this declaration.
+    	-- Example: math_IntegerVector V1(-3, 5); // an IntegerVector with
+    	--  range [-3..5]
+    	--
+    	-- IntegerVector is copied through assignement :
+    	--    math_IntegerVector V2( 1, 9);  
+    	--    ....
+    	--    V2 = V1;
+    	--    V1(1) = 2.0; // the IntegerVector V2 will not be modified.
+    	--
+    	-- The Exception RangeError is raised when trying to access outside
+    	-- the range of an IntegerVector :
+    	--    V1(11) = 0 // --> will raise RangeError;
+    	--
+    	-- The Exception DimensionError is raised when the dimensions of two
+    	-- IntegerVectors are not compatible :
+    	--    math_IntegerVector V3(1, 2);
+    	--    V3 = V1;    // --> will raise DimensionError;
+    	--    V1.Add(V3)  // --> will raise DimensionError;
+     
+uses Matrix from math,
+     SingleTabOfInteger from math,
+     OStream from Standard
+
+raises DimensionError from Standard, 
+       DivideByZero from Standard,
+       RangeError from Standard
+
+is
+
+    Create(First, Last: Integer)
+     	---Purpose: contructs an IntegerVector in the range [Lower..Upper]
+
+    returns IntegerVector;
+    
+    Create(First, Last: Integer; InitialValue : Integer)
+     	---Purpose: contructs an IntegerVector in the range [Lower..Upper]
+     	--          with all the elements set to InitialValue.
+
+    returns IntegerVector;
+    
+    
+    Init(me : in out; InitialValue: Integer);
+        ---Purpose: Initialize an IntegerVector with all the elements 
+        --          set to InitialValue.
+    
+    
+    Create(Tab : Address; First, Last: Integer)
+        ---Purpose: constructs an IntegerVector in the range [Lower..Upper] 
+        --          which share the "c array" Tab.
+
+    returns IntegerVector;
+    
+    
+    Create(Other: IntegerVector)
+    	---Purpose: constructs a copy for initialization.
+    	--          An exception is raised if the lengths of the IntegerVectors 
+    	--          are different.
+
+    returns IntegerVector
+    raises DimensionError;
+
+    
+    SetFirst(me: in out; First: Integer)
+       ---Purpose: is used internally to set the Lower value of the 
+       --          IntegerVector.
+
+    is static protected;
+
+	          
+    Length(me)
+    	---Purpose: returns the length of an IntegerVector
+    	---C++: inline
+
+    returns Integer
+    is static;
+    
+    
+    Lower(me)
+    	---Purpose: returns the value of the Lower index of an IntegerVector.
+    	---C++: inline
+
+    returns Integer
+    is static;
+    
+    
+    Upper(me) 
+    	---Purpose: returns the value of the Upper index of an IntegerVector.
+    	---C++: inline
+
+    returns Integer
+    is static;
+    
+    
+    Norm(me) 
+    	---Purpose: returns the value of the norm of an IntegerVector.
+    
+    returns Real
+    is static;
+    
+    
+    Norm2 (me) 
+    	---Purpose: returns the value of the square of the norm of an 
+    	--          IntegerVector.
+
+    returns Real
+    is static;
+    
+    
+    Max(me) 
+    	---Purpose: returns the value of the Index of the maximum element of
+    	--           an IntegerVector.
+
+    returns Integer
+    is static;
+    
+    
+    Min(me)
+    	---Purpose: returns the value of the Index of the minimum element
+    	--          of an IntegerVector.
+
+    returns Integer
+    is static;
+    
+    
+    Invert(me: in out)
+    	---Purpose: inverses an IntegerVector.
+    	---Example: [1, 2, 3, 4] becomes [4, 3, 2, 1].
+
+    is static;
+
+
+    Inverse(me)
+    	---Purpose: returns the inverse IntegerVector of an IntegerVector.
+    
+    returns IntegerVector
+    is static;
+    
+    
+    Set(me: in out; I1, I2: Integer; V: IntegerVector)
+    	---Purpose: sets an IntegerVector from <I1> to <I2> to the 
+    	--          IntegerVector <V>;
+    	-- An exception is raised if I1<LowerIndex or I2>UpperIndex or I1>I2.
+    	-- An exception is raised if I2-I1+1 is different from the Length of V.
+
+    raises DimensionError
+    is static;
+    
+    
+    Slice(me; I1, I2: Integer)
+    	---Purpose: slices the values of the IntegerVector between <I1> and 
+    	--          <I2>:
+    	-- Example: [2, 1, 2, 3, 4, 5] becomes [2, 4, 3, 2, 1, 5] between 2 and 5.
+    	-- An exception is raised if I1<LowerIndex or I2>UpperIndex.
+
+    returns IntegerVector
+    raises DimensionError
+    is static;
+    
+
+    Multiply (me: in out; Right: Integer)
+    	---Purpose: returns the product of an IntegerVector by an integer value.
+    	---C++: alias operator *=
+
+    raises DimensionError from Standard
+    is static;
+
+
+    Multiplied (me; Right: Integer)
+    	---Purpose: returns the product of an IntegerVector by an integer value.
+    	---C++: alias operator* 
+
+    returns IntegerVector
+    raises DimensionError from Standard
+    is static;
+
+    TMultiplied (me; Right: Integer)
+    	---Purpose: returns the product of a vector and a real value.          
+    	---C++: alias "friend math_IntegerVector operator *(const Standard_Integer Left,const math_IntegerVector& Right);"
+    returns IntegerVector
+    is static;
+
+    Add (me: in out; Right: IntegerVector)
+    	---Purpose: adds the IntegerVector <Right> to an IntegerVector.
+    	-- An exception is raised if the IntegerVectors have not the same 
+    	-- length.
+    	-- An exception is raised if the lengths are not equal.
+        ---C++: alias operator +=
+
+    raises DimensionError
+    is static;
+
+
+    Added (me; Right: IntegerVector)
+    	---Purpose: adds the IntegerVector <Right> to an IntegerVector.
+    	-- An exception is raised if the IntegerVectors have not the same 
+    	-- length.
+    	-- An exception is raised if the lengths are not equal.
+    	---C++:alias operator+ 
+
+    returns IntegerVector
+    raises DimensionError
+    is static;
+
+
+
+    Add (me: in out; Left, Right: IntegerVector)
+    	---Purpose: sets an IntegerVector to the sum of the IntegerVector 
+    	--          <Left> and the IntegerVector <Right>. 
+    	-- An exception is raised if the lengths are different.
+
+    raises DimensionError
+    is static;
+
+     
+    Subtract(me: in out; Left, Right: IntegerVector)
+    	---Purpose: sets an IntegerVector to the substraction of 
+    	--          <Right> from <Left>.
+        -- An exception is raised if the IntegerVectors have not the same 
+        -- length.
+
+    raises DimensionError
+    is static;
+
+    
+    Value(me; Num: Integer)
+    	---Purpose: accesses (in read or write mode) the value of index Num of 
+    	--          an IntegerVector.
+    	---C++: alias operator() 
+    	---C++: return & 
+    	---C++: inline
+    
+    returns Integer
+    raises RangeError from Standard
+    is static;
+
+   
+    Initialized(me: in out; Other: IntegerVector)
+    	---Purpose: Initialises an IntegerVector by copying <Other>.
+    	--          An exception is raised if the Lengths are different.
+    	---C++: alias operator= 
+    	---C++: return & 
+
+    returns IntegerVector
+    raises DimensionError
+    is static;
+
+
+
+    Multiplied(me; Right: IntegerVector)
+    	---Purpose: returns the inner product of 2 IntegerVectors.
+    	-- An exception is raised if the lengths are not equal.
+    	---C++: alias operator* 
+
+    returns Integer
+    raises DimensionError
+    is static;
+   
+   
+   Opposite(me: in out)
+    	---Purpose: returns the opposite of an IntegerVector.
+    	---C++: alias operator-
+
+   returns IntegerVector
+   is static;
+
+
+   Subtract(me: in out; Right: IntegerVector)
+    	---Purpose: returns the subtraction of <Right> from <me>.
+    	-- An exception is raised if the IntegerVectors have not the same length.
+    	---C++: alias  operator-=
+
+   raises DimensionError
+   is static;
+
+
+   Subtracted(me; Right: IntegerVector)
+    	---Purpose: returns the subtraction of  <Right> from <me>.
+    	-- An exception is raised if the IntegerVectors have not the same length.
+    	---C++: alias  operator-
+
+   returns IntegerVector
+   raises DimensionError
+   is static;
+
+
+   Multiply(me: in out; Left: Integer; Right: IntegerVector)
+	---Purpose: returns the multiplication of an integer by an 
+	--          IntegerVector.
+
+   raises DimensionError
+   is static;
+
+
+   Dump(me; o: in out OStream)
+   	---Purpose: Prints on the stream o information on the current state 
+   	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+   is static;
+
+
+fields 
+
+FirstIndex:   Integer;
+LastIndex:   Integer;
+Array:        SingleTabOfInteger;
+
+friends
+class  Matrix from math
+
+
+end IntegerVector;

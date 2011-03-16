@@ -1,0 +1,60 @@
+-- File:	XSControl_FuncShape.cdl
+-- Created:	Thu Mar 16 17:48:13 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+class FuncShape  from XSControl
+
+    ---Purpose : Defines additionnal commands for XSControl to :
+    --           - control of initialisation (xinit, xnorm, newmodel)
+    --           - analyse of the result of a transfer (recorded in a
+    --             TransientProcess for Read, FinderProcess for Write) :
+    --             statistics, various lists (roots,complete,abnormal), what
+    --             about one specific entity, producing a model with the
+    --             abnormal result
+    --             
+    --           This appendix of XSControl is compiled separately to distinguish
+    --           basic features from user callable forms
+
+uses CString, AsciiString from TCollection,
+     WorkSession from XSControl, HSequenceOfShape from TopTools
+
+is
+
+    Init (myclass);
+    ---Purpose : Defines and loads all functions which work on shapes for XSControl (as ActFunc)
+
+    MoreShapes (myclass; session : WorkSession from XSControl;
+    	    	list : in out mutable HSequenceOfShape from TopTools;
+                name : CString) returns Integer;
+    ---Purpose : Analyses a name as designating Shapes from a Vars or from
+    --           XSTEP transfer (last Transfer on Reading). <name> can be :
+    --           "*" : all the root shapes produced by last Transfer (Read)
+    --                 i.e. considers roots of the TransientProcess
+    --           a name : a name of a variable DRAW
+    --           
+    --           Returns the count of designated Shapes. Their list is put in
+    --           <list>. If <list> is null, it is firstly created. Then it is
+    --           completed (Append without Clear) by the Shapes found
+    --           Returns 0 if no Shape could be found
+
+    FileAndVar (myclass; session : WorkSession from XSControl;
+    	    	file, var, def : CString;
+                 resfile, resvar : out AsciiString from TCollection)
+        returns Boolean;
+    ---Purpose : Analyses given file name and variable name, with a default
+    --           name for variables. Returns resulting file name and variable
+    --           name plus status "file to read"(True) or "already read"(False)
+    --           In the latter case, empty resfile means no file available
+    --           
+    --           If <file> is null or empty or equates ".", considers Session
+    --             and returned status is False
+    --           Else, returns resfile = file and status is True
+    --           If <var> is neither null nor empty, resvar = var
+    --           Else, the root part of <resfile> is considered, if defined
+    --           Else, <def> is taken
+
+
+end FuncShape;

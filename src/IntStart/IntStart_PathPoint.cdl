@@ -1,0 +1,118 @@
+-- File:	PathPoint.cdl
+-- Created:	Thu Oct 22 12:21:02 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class PathPoint from IntStart
+    (TheVertex as any;
+     TheArc    as any)
+
+	---Purpose: This class describes a point on an arc which
+	--          solution intersection between 2 surfaces.
+
+uses Pnt          from gp,
+     Vec          from gp,
+     Dir2d        from gp
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+	returns PathPoint from IntStart;
+
+
+    Create(P: Pnt from gp; Tol: Real from Standard;
+           V: TheVertex; A: TheArc; Parameter: Real from Standard)
+
+    	returns PathPoint from IntStart;
+	
+
+    Create(P: Pnt from gp; Tol: Real from Standard;
+           A: TheArc; Parameter: Real from Standard)
+	
+	returns PathPoint from IntStart;
+
+
+    SetValue(me: in out; P: Pnt from gp; Tol: Real from Standard;
+                         V: TheVertex; A: TheArc;
+                         Parameter: Real from Standard)
+
+	---C++: inline
+    
+    	is static;
+
+
+    SetValue(me: in out; P: Pnt from gp; Tol: Real from Standard;
+                         A: TheArc; Parameter: Real from Standard)
+	
+	---C++: inline
+    
+	is static;
+
+
+    Value(me)
+    
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+    
+	is static;
+
+
+    Tolerance(me)
+    
+    	returns Real from Standard
+	---C++: inline
+    
+	is static;
+
+
+    IsNew(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+    
+	is static;
+    
+
+    Vertex(me)
+    
+    	returns any TheVertex
+	---C++: return const&
+	---C++: inline
+    
+	raises DomainError from Standard
+	is static;
+
+
+    Arc(me)
+    
+    	returns any TheArc
+	---C++: return const&
+	---C++: inline
+    
+	is static;
+
+
+    Parameter(me)
+    
+    	returns Real        from Standard
+	---C++: inline
+    
+	raises  DomainError from Standard
+	is static;
+
+fields
+
+    point : Pnt          from gp;
+    tol   : Real         from Standard;
+    isnew : Boolean      from Standard;
+    vtx   : TheVertex;
+    arc   : TheArc;
+    param : Real         from Standard;
+
+end PathPoint;

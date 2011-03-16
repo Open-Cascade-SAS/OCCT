@@ -1,0 +1,65 @@
+-- File:	ShapeProcess.cdl
+-- Created:	Mon Aug 21 18:51:20 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package ShapeProcess 
+
+    	---Purpose: Shape Processing module
+	-- allows to define and apply general Shape Processing as a
+	-- customizable sequence of Shape Healing operators. The
+	-- customization is implemented via user-editable resource
+	-- file which defines sequence of operators to be executed
+	-- and their parameters.
+
+uses
+
+    Dico,
+    Resource,
+    TCollection,
+    TColStd,
+    GeomAbs,
+    TopAbs,
+    TopoDS,
+    TopTools,
+    BRepTools,
+    Message,
+    ShapeExtend,
+    ShapeBuild
+
+is
+
+    class Context; 
+    	---Purpose: Provides general context for processing (resource file)
+    	class ShapeContext;
+	    ---Purpose: Extends context to support processing of the shape
+
+    deferred class Operator;
+    	---Purpose: Defines interface to Operator which do the job
+	primitive OperFunc;
+	class UOperator;
+	    ---Purpose: Customizable operator-container loaded by OperFunc
+
+    class OperLibrary;
+    	---Purpose: Provides standard set of operators
+
+    class DictionaryOfOperator instantiates 
+    	  Dictionary from Dico (Operator from ShapeProcess);
+
+    RegisterOperator (name: CString; op: Operator from ShapeProcess)
+    returns Boolean;
+    	---Purpose: Registers operator to make it visible for Performer
+
+    FindOperator (name: CString; op: out Operator from ShapeProcess)
+    returns Boolean;
+    	---Purpose: Finds operator by its name
+
+    Perform (context: Context from ShapeProcess; seq: CString) 
+    returns Boolean;
+    	---Purpose: Performs a specified sequence of operators on Context
+	--          Resource file and other data should be already loaded
+	--          to Context (including description of sequence seq)
+
+end ShapeProcess;

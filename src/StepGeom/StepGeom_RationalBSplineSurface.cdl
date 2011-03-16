@@ -1,0 +1,59 @@
+-- File:        RationalBSplineSurface.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class RationalBSplineSurface from StepGeom 
+
+inherits BSplineSurface from StepGeom 
+
+uses
+
+	HArray2OfReal from TColStd, 
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable RationalBSplineSurface;
+	---Purpose: Returns a RationalBSplineSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData;
+	      aWeightsData : mutable HArray2OfReal from TColStd) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetWeightsData(me : mutable; aWeightsData : mutable HArray2OfReal);
+	WeightsData (me) returns mutable HArray2OfReal;
+	WeightsDataValue (me; num1 : Integer;  num2 : Integer) returns Real;
+	NbWeightsDataI (me) returns Integer;
+	NbWeightsDataJ (me) returns Integer;
+
+fields
+
+	weightsData : HArray2OfReal from TColStd;
+
+end RationalBSplineSurface;

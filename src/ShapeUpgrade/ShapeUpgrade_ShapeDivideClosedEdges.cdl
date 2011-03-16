@@ -1,0 +1,25 @@
+-- File:	ShapeUpgrade_ShapeDivideClosedEdges.cdl
+-- Created:	Thu May 25 09:59:16 2000
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapeDivideClosedEdges from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+
+    Shape from TopoDS
+
+is
+
+    Create (S: Shape from TopoDS) returns ShapeDivideClosedEdges from ShapeUpgrade;
+    	---Purpose: Initialises tool with shape and default parameter.
+    
+    SetNbSplitPoints (me: in out; num: Integer);
+    	---Purpose: Sets the number of cuts applied to divide closed edges.
+	--          The number of resulting faces will be num+1.
+
+end ShapeDivideClosedEdges;

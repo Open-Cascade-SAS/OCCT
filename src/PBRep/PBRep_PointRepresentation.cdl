@@ -1,0 +1,63 @@
+-- File:	PBRep_PointRepresentation.cdl
+-- Created:	Wed Aug 11 11:34:20 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class PointRepresentation from PBRep inherits Persistent
+
+	---Purpose: Root class for points representations.
+
+uses
+    Location from PTopLoc
+
+is
+    Initialize(P : Real;
+    	       L : Location from PTopLoc);
+    	---Level: Internal 
+	       
+    Location(me) returns Location from PTopLoc
+    is static;
+    	---Level: Internal 
+		
+    Parameter(me) returns Real
+    is static;
+    	---Level: Internal 
+		
+    Parameter(me : mutable; P : Real)
+    is static;
+    	---Level: Internal 
+		
+    Next(me) returns PointRepresentation from PBRep
+    is static;
+    	---Level: Internal 
+		
+    Next(me : mutable; N :  PointRepresentation from PBRep)
+    is static;
+    	---Level: Internal 
+
+    ------------------------------------------------------
+    -- What kind of representation : used to speed Mapping
+    ------------------------------------------------------
+
+    IsPointOnCurve(me)          returns Boolean
+	---Purpose: A point on a 3d curve.
+    is virtual;
+	
+    IsPointOnCurveOnSurface(me) returns Boolean
+	---Purpose: A point on a 2d curve on a surface.
+    is virtual;
+
+    IsPointOnSurface(me)        returns Boolean
+	---Purpose: A point on a surface.
+    is virtual;
+    
+fields
+    
+    myLocation  : Location from PTopLoc;
+    myParameter : Real;
+    myNext      : PointRepresentation from PBRep;
+
+end PointRepresentation;

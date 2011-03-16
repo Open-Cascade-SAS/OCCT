@@ -1,0 +1,50 @@
+// File:	DrawTrSurf_Drawable.lxx
+// Created:	Tue Jul 16 09:22:58 1991
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+
+
+
+   inline void DrawTrSurf_Drawable::SetDrawMode (
+   const Standard_Integer DrawMode) {
+
+     myDrawMode = DrawMode;
+   }
+
+
+   inline void DrawTrSurf_Drawable::SetDiscretisation (
+   const Standard_Integer Discret) {
+
+     myDiscret = Discret;
+   }
+
+
+   inline void DrawTrSurf_Drawable::SetDeflection (
+   const Standard_Real Deflection) {
+
+     myDeflection = Deflection;
+   }
+
+
+   inline Standard_Integer DrawTrSurf_Drawable::GetDiscretisation () const {
+
+     return myDiscret;
+   }
+
+   inline Standard_Integer DrawTrSurf_Drawable::GetDrawMode () const {
+
+     return myDrawMode;
+   }
+
+   inline Standard_Real DrawTrSurf_Drawable::GetDeflection () const {
+
+     return myDeflection;
+   }
+
+
+
+
+
+
+

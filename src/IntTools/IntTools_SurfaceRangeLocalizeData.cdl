@@ -1,0 +1,180 @@
+-- File:	IntTools_SurfaceRangeLocalizeData.cdl
+-- Created:	Fri Oct 14 19:27:27 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class SurfaceRangeLocalizeData from IntTools
+uses
+    Box from Bnd,
+    SurfaceRangeSample from IntTools,
+    MapOfSurfaceSample from IntTools,
+    ListOfSurfaceRangeSample from IntTools,
+    DataMapOfSurfaceSampleBox from IntTools, 
+    Pnt                       from gp, 
+    HArray1OfReal             from TColStd, 
+    HArray2OfPnt              from TColgp
+
+is
+    Create
+    	returns SurfaceRangeLocalizeData from IntTools;
+
+    Create(theNbSampleU: Integer from Standard;
+	   theNbSampleV: Integer from Standard;
+    	   theMinRangeU: Real from Standard;
+    	   theMinRangeV: Real from Standard)
+    	returns SurfaceRangeLocalizeData from IntTools;
+
+    Create(Other: SurfaceRangeLocalizeData from IntTools)
+    	returns SurfaceRangeLocalizeData from IntTools;
+	
+    Assign(me: in out; Other: SurfaceRangeLocalizeData from IntTools)
+    	returns SurfaceRangeLocalizeData from IntTools;
+    	---C++:  alias  operator = 
+    	---C++:  return  & 
+
+    GetNbSampleU(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+    GetNbSampleV(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+    GetMinRangeU(me)
+    	returns Real from Standard;
+	---C++: inline
+
+    GetMinRangeV(me)
+    	returns Real from Standard;
+	---C++: inline
+
+    AddOutRange(me: in out; theRange: SurfaceRangeSample from IntTools);
+    
+    AddBox(me: in out; theRange: SurfaceRangeSample from IntTools;
+    	    	       theBox: Box from Bnd);
+
+    FindBox(me; theRange: SurfaceRangeSample from IntTools;
+    	    	theBox: out Box from Bnd)
+    	returns Boolean from Standard;
+
+    IsRangeOut(me; theRange: SurfaceRangeSample from IntTools)
+    	returns Boolean from Standard;
+
+    ListRangeOut(me; theList: out ListOfSurfaceRangeSample from IntTools);
+    
+    RemoveRangeOutAll(me: in out);
+
+-- Modified by skv - Wed Nov  2 18:37:33 2005 Optimization Begin 
+    SetGridDeflection(me: in out; theDeflection: Real from Standard);
+    	---Purpose: Set the grid deflection. 
+	---C++: inline
+
+    GetGridDeflection(me)
+    	---Purpose: Query the grid deflection. 
+	---C++: inline
+    returns Real from Standard;
+
+    SetRangeUGrid(me: in out; theNbUGrid: Integer from Standard);
+    	---Purpose: Set the range U of the grid of points.
+
+    GetRangeUGrid(me) 
+    	---Purpose: Query the range U of the grid of points. 
+	---C++: inline
+    returns Integer from Standard;
+
+    SetUParam(me: in out; theIndex:  Integer from Standard; 
+                          theUParam: Real    from Standard); 
+    	---Purpose: Set the U parameter of the grid points at that index.
+	---C++: inline
+
+    GetUParam(me; theIndex: Integer from Standard)
+    	---Purpose: Query the U parameter of the grid points at that index. 
+	---C++: inline
+    returns Real from Standard;
+
+    SetRangeVGrid(me: in out; theNbVGrid: Integer from Standard);
+    	---Purpose: Set the range V of the grid of points.
+
+    GetRangeVGrid(me) 
+    	---Purpose: Query the range V of the grid of points. 
+	---C++: inline
+    returns Integer from Standard;
+
+    SetVParam(me: in out; theIndex:  Integer from Standard; 
+                          theVParam: Real    from Standard); 
+    	---Purpose: Set the V parameter of the grid points at that index.
+	---C++: inline
+
+    GetVParam(me; theIndex: Integer from Standard)
+    	---Purpose: Query the V parameter of the grid points at that index. 
+	---C++: inline
+    returns Real from Standard;
+
+    SetGridPoint(me: in out; theUIndex: Integer from Standard; 
+                             theVIndex: Integer from Standard; 
+                             thePoint:  Pnt     from gp); 
+    	---Purpose: Set the grid point. 
+	---C++: inline
+
+    GetGridPoint(me; theUIndex: Integer from Standard; 
+                     theVIndex: Integer from Standard) 
+    	---Purpose: Set the grid point. 
+	---C++: inline  
+	---C++: return const &
+    returns Pnt from gp; 
+
+    SetFrame(me: in out; theUMin: Real from Standard; 
+    	    	    	 theUMax: Real from Standard; 
+    	    	    	 theVMin: Real from Standard; 
+    	    	    	 theVMax: Real from Standard); 
+    	---Purpose: Sets the frame area. Used to work with grid points.
+
+    GetNBUPointsInFrame(me) 
+    	---Purpose: Returns the number of grid points on U direction in frame. 
+	---C++: inline  
+    returns Integer from Standard; 
+
+    GetNBVPointsInFrame(me) 
+    	---Purpose: Returns the number of grid points on V direction in frame.
+	---C++: inline  
+    returns Integer from Standard; 
+    
+    GetPointInFrame(me; theUIndex: Integer from Standard; 
+                        theVIndex: Integer from Standard) 
+    	---Purpose: Returns the grid point in frame. 
+	---C++: return const & 
+    returns Pnt from gp; 
+    
+    GetUParamInFrame(me; theIndex: Integer from Standard)
+    	---Purpose: Query the U parameter of the grid points 
+    	--          at that index in frame. 
+    returns Real from Standard;
+
+    GetVParamInFrame(me; theIndex: Integer from Standard)
+    	---Purpose: Query the V parameter of the grid points 
+    	--          at that index in frame. 
+    returns Real from Standard;
+
+    ClearGrid(me: in out); 
+    	---Purpose: Clears the grid of points. 
+
+-- Modified by skv - Wed Nov  2 18:37:33 2005 Optimization End
+
+fields
+    myNbSampleU: Integer from Standard;
+    myNbSampleV: Integer from Standard;
+    myMinRangeU: Real from Standard;
+    myMinRangeV: Real from Standard;
+    myMapRangeOut: MapOfSurfaceSample from IntTools;
+    myMapBox     : DataMapOfSurfaceSampleBox from IntTools; 
+    myUParams    : HArray1OfReal from TColStd;
+    myVParams    : HArray1OfReal from TColStd; 
+    myGridPoints : HArray2OfPnt  from TColgp; 
+    myUIndMin    : Integer       from Standard;
+    myUIndMax    : Integer       from Standard;
+    myVIndMin    : Integer       from Standard;
+    myVIndMax    : Integer       from Standard;
+    myDeflection : Real          from Standard;
+
+end SurfaceRangeLocalizeData from IntTools;

@@ -1,0 +1,79 @@
+-- File:	BRepCheck_Shell.cdl
+-- Created:	Tue Jan  2 14:26:45 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Shell from BRepCheck inherits Result from BRepCheck
+
+	---Purpose: 
+
+uses Shape  from TopoDS,
+     Shell  from TopoDS, 
+     ListOfShape from TopTools,
+     IndexedDataMapOfShapeListOfShape  from  TopTools,
+     Status from BRepCheck
+
+is
+
+    Create(S: Shell from TopoDS)
+    
+    	returns mutable Shell from BRepCheck;
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS);
+    
+
+
+    Minimum(me: mutable);
+    
+
+    
+    Blind(me: mutable);
+
+
+    Closed(me: mutable; Update: Boolean from Standard = Standard_False)
+	---Purpose: Checks if the oriented  faces of the shell  give a
+	--          closed shell.    If the  wire is  closed,  returns
+	--          BRepCheck_NoError.If      <Update>     is  set  to
+	--          Standard_True, registers the status in the list.
+    	returns Status from BRepCheck
+	is static;
+
+
+    Orientation(me: mutable; Update: Boolean from Standard = Standard_False)
+	---Purpose: Checks if the   oriented faces  of  the shell  are
+	--          correctly oriented.  An internal  call is  made to
+	--          the  method  Closed.   If  <Update>    is set   to
+	--          Standard_True, registers the status in the list.
+    	returns Status from BRepCheck
+	is static;
+
+
+    SetUnorientable(me: mutable)
+    
+    	is static;
+
+
+    IsUnorientable(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    NbConnectedSet (me: mutable; theSets : in out ListOfShape from TopTools)
+    
+    	returns Integer from Standard;
+
+
+fields
+
+    myNbori : Integer from Standard;
+    myCdone : Boolean from Standard;
+    myCstat : Status  from BRepCheck;
+    myOdone : Boolean from Standard;
+    myOstat : Status  from BRepCheck;
+    myMapEF : IndexedDataMapOfShapeListOfShape  from  TopTools;
+
+end Shell;

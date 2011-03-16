@@ -1,0 +1,52 @@
+-- File:	Draw_Segment2D.cdl
+-- Created:	Mon Apr 18 18:06:10 1994
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+class Segment2D from Draw inherits Drawable2D from Draw
+
+	---Purpose: 
+
+uses Pnt2d from gp,
+    Color from Draw,
+    Display from Draw,
+    Interpretor from Draw
+
+is
+
+    Create(p1,p2 : Pnt2d; col : Color)
+    returns mutable Segment2D;
+    
+    DrawOn(me; dis : in out Display);
+    
+    First(me) returns Pnt2d from gp
+	---C++: return const&
+    is static;
+
+    First(me : mutable; P : Pnt2d from gp)
+    is static;
+
+    Last(me) returns Pnt2d from gp
+	---C++: return const&
+    is static;
+
+    Last(me : mutable; P : Pnt2d from gp)
+    is static;
+	
+    Dump(me; S : in out OStream)
+    is redefined;
+
+    Whatis(me; I : in out Interpretor from Draw)
+    is redefined;
+
+fields
+
+    myFirst : Pnt2d;
+    myLast  : Pnt2d;
+    myColor : Color;
+    
+end Segment2D;

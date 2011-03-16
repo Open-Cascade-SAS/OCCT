@@ -1,0 +1,99 @@
+-- File:	IGESCAFControl_Reader.cdl
+-- Created:	Tue Aug 15 12:01:29 2000
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Reader from IGESCAFControl inherits Reader from IGESControl
+
+    ---Purpose: Provides a tool to read IGES file and put it into
+    --          DECAF document. Besides transfer of shapes (including 
+    --          assemblies) provided by IGESControl, supports also 
+    --          colors and part names
+    --          IGESCAFControl_Reader reader; Methods for translation of an IGES file:
+    --          reader.ReadFile("filename");
+    --          reader.Transfer(Document); or 
+    --          reader.Perform("filename",doc);
+    --          Methods for managing reading attributes.
+    --          Colors
+    --          reader.SetColorMode(colormode);
+    --          Standard_Boolean colormode = reader.GetColorMode();
+    --          Layers
+    --          reader.SetLayerMode(layermode);
+    --          Standard_Boolean layermode = reader.GetLayerMode();
+    --          Names
+    --          reader.SetNameMode(namemode);
+    --          Standard_Boolean namemode = reader.GetNameMode();
+       
+uses
+    AsciiString from TCollection,
+    WorkSession from XSControl,
+    Document from TDocStd
+
+is
+
+    Create returns Reader;
+    	---Purpose: Creates a reader with an empty
+    	--          IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
+
+    Create (WS : mutable WorkSession from XSControl;
+    	    	 scratch : Boolean = Standard_True) returns Reader;
+    	---Purpose: Creates a reader tool and attaches it to an already existing Session
+    	-- 	    Clears the session if it was not yet set for IGES
+
+    Transfer (me: in out; doc: in out Document from TDocStd) 
+    returns Boolean;
+    	---Purpose: Translates currently loaded IGES file into the document
+	--          Returns True if succeeded, and False in case of fail
+
+    Perform (me: in out; filename: AsciiString from TCollection; 
+    	    	         doc: in out Document from TDocStd) returns Boolean;
+
+    Perform (me: in out; filename: CString; doc: in out Document from TDocStd) 
+    returns Boolean;
+    	---Purpose: Translate IGES file given by filename into the document
+	--          Return True if succeeded, and False in case of fail
+
+    ---Scope: protected methods
+
+    ReadColors (me; doc: in out Document from TDocStd) 
+    returns Boolean is protected;
+    	---Purpose: Reads colors of IGES entities and sets
+	--          corresponding color assignments in the DECAF document
+
+    ReadNames (me; doc: in out Document from TDocStd) 
+    returns Boolean is protected;
+    	---Purpose: Reads Names of IGES entities and sets
+	--          corresponding name to label with shape in the DECAF document
+
+    ReadLayers (me; doc: in out Document from TDocStd) 
+    returns Boolean is protected;
+    	---Purpose: Reads layers of parts defined in the IGES model and 
+	--          set reference between shape and layers in the DECAF document
+	
+    --- Work with fileds for different mode of reading IGES file.
+
+    SetColorMode(me: in out; colormode: Boolean from Standard);
+    	---Purpose: Set ColorMode for indicate read Colors or not.
+
+    GetColorMode(me) returns Boolean;
+
+    SetNameMode(me: in out; namemode: Boolean from Standard);
+    	---Purpose: Set NameMode for indicate read Name or not.
+    
+    GetNameMode(me) returns Boolean;
+
+    SetLayerMode(me: in out; layermode: Boolean from Standard);
+    	---Purpose: Set LayerMode for indicate read Layers or not.
+
+    GetLayerMode(me) returns Boolean; 
+
+fields
+
+    myColorMode: Boolean;
+    myNameMode:  Boolean;
+    myLayerMode: Boolean;
+    
+end Reader;
+    

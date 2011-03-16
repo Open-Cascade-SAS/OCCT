@@ -1,0 +1,22 @@
+
+inline IntSurf_Couple::IntSurf_Couple() :
+  firstInteger(0),secondInteger(0)
+{}
+
+
+
+inline IntSurf_Couple::IntSurf_Couple(const Standard_Integer Index1,
+                               const Standard_Integer Index2):
+  firstInteger(Index1),secondInteger(Index2)
+{}
+
+
+inline Standard_Integer IntSurf_Couple::First() const
+{
+  return firstInteger;
+}
+
+inline Standard_Integer IntSurf_Couple::Second() const {
+  return secondInteger;
+}
+

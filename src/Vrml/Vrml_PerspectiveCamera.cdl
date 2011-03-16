@@ -1,0 +1,51 @@
+-- File:	Vrml_PerspectiveCamera.cdl
+-- Created:	Wed Feb 12 11:01:37 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class PerspectiveCamera from Vrml 
+
+	---Purpose: specifies a PerspectiveCamera node of VRML specifying properties of cameras. 
+    	--  A perspective camera defines a perspective projection from a viewpoint. The viewing
+       	--  volume for a perspective camera is a truncated right pyramid. 
+uses
+ 
+     Vec         from gp, 
+     SFRotation  from  Vrml
+is
+                                                    --  defaults  :
+    Create  returns  PerspectiveCamera from Vrml;   --  myPosition(0 0 1) Camera looks along the negative Z-axis
+ 						    --  myOrientation(0 0 1 0)
+						    --  myFocalDistance(5)
+						    --  myHeightAngle(0.785398)
+    Create  ( aPosition      :  Vec         from  gp; 
+    	      aOrientation   :  SFRotation  from  Vrml; 
+    	      aFocalDistance :  Real        from  Standard; 
+    	      aHeightAngle   :  Real        from  Standard ) 
+    	returns  PerspectiveCamera from Vrml; 
+
+    SetPosition ( me : in out;  aPosition : Vec  from  gp );
+    Position ( me  )  returns Vec  from  gp;
+
+    SetOrientation ( me : in out;  aOrientation : SFRotation  from  Vrml );
+    Orientation ( me )  returns SFRotation  from  Vrml;
+
+    SetFocalDistance ( me : in out;  aFocalDistance : Real  from  Standard );
+    FocalDistance ( me )  returns Real  from  Standard;
+
+    SetAngle ( me : in out;  aHeightAngle : Real  from  Standard );
+    Angle ( me )  returns  Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myPosition      :  Vec         from  gp;       -- Location of viewpoint
+    myOrientation   :  SFRotation  from  Vrml;     -- Orientation (rotation with respect to (0,0,-1) vector)     
+    myFocalDistance :  Real        from  Standard; -- Distance from viewpoint to point of focus.
+    myHeightAngle   :  Real        from  Standard; -- Angle (in radians) of field
+    	    	    	    	    	    	   -- of  view, in  height  direction
+end PerspectiveCamera;

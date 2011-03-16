@@ -1,0 +1,105 @@
+-- File:	IGESReaderData.cdl
+-- Created:	Mon Apr  6 16:10:29 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class IGESReaderData  from IGESData  inherits FileReaderData
+
+    ---Purpose : specific FileReaderData for IGES
+    --           contains header as GlobalSection, and for each Entity, its
+    --           directory part as DirPart, list of Parameters as ParamSet
+    --           Each Item has a DirPart, plus classically a ParamSet and the
+    --           correspondant recognized Entity (inherited from FileReaderData)
+    --           Parameters are accessed through specific objects, ParamReaders
+
+uses Integer, Boolean, CString,  HAsciiString, HSequenceOfHAsciiString,
+     ParamType,     ParamSet, Check,
+     GlobalSection, DirPart,  Array1OfDirPart, IGESType, ReadStage
+
+is
+
+    Create (nbe,nbp : Integer) returns mutable IGESReaderData;
+    ---Purpose : creates IGESReaderData correctly dimensionned (for arrays)
+    --           <nbe> count of entities, that is, half nb of directory lines
+    --           <nbp> : count of parameters
+
+    AddStartLine (me : mutable; aval : CString);
+    ---Purpose : adds a start line to start section
+
+    StartSection (me) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the Start Section in once
+
+    AddGlobal (me : mutable; atype : ParamType; aval : CString);
+    ---Purpose : adds a parameter to global section's parameter list
+
+    SetGlobalSection (me : mutable);
+    ---Purpose : reads header (as GlobalSection) content from the ParamSet
+    --           after it has been filled by successive calls to AddGlobal
+
+    GlobalSection (me) returns GlobalSection;
+    ---Purpose : returns header as GlobalSection
+    ---C++ : return const &
+
+    SetDirPart (me : mutable; num : Integer;
+      i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,i17 : Integer;
+      res1,res2,label,subs : CString);
+    ---Purpose : fills a DirPart, designated by its rank (that is, (N+1)/2 if N
+    --           is its first number in section D)
+
+    DirPart (me; num : Integer) returns DirPart;
+    ---Purpose : returns DirPart identified by record no (half Dsect number)
+    ---C++ : return const &
+
+    DirValues (me; num : Integer;
+      i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,i17 : out Integer;
+      res1,res2,label,subs : out CString);
+    ---Purpose : returns values recorded in directory part n0 <num>
+
+    DirType (me; num : Integer) returns IGESType;
+    ---Purpose : returns "type" and "form" info from a directory part
+
+    	-- --   General   -- --
+
+    NbEntities (me) returns Integer  is redefined;
+    ---Purpose : Returns count of recorded Entities (i.e. size of Directory)
+
+    FindNextRecord (me; num : Integer) returns Integer;
+    ---Purpose : determines next suitable record from num; that is num+1 except
+    --           for last one which gives 0
+
+    SetEntityNumbers (me : mutable);
+    ---Purpose : determines reference numbers in EntityNumber fields (called by
+    --           SetEntities from IGESReaderTool)
+    --           works on "Integer" type Parameters, because IGES does not
+    --           distinguish Integer and Entity Refs : every Integer which is
+    --           odd and less than twice NbRecords can be an Entity Ref ...
+    --           (Ref Number is then (N+1)/2 if N is the Integer Value)
+
+    	--    Loading the IGESModel    --
+
+    GlobalCheck (me) returns Check;
+    ---Purpose : Returns the recorded Global Check
+
+    SetDefaultLineWeight (me : mutable; defw : Real);
+    ---Purpose : allows to set a default line weight, will be later applied at
+    --           load time, on Entities which have no specified line weight
+
+    DefaultLineWeight (me) returns Real;
+    ---Purpose : Returns the recorded Default Line Weight, if there is
+    --           (else, returns 0)
+
+fields
+
+    thecnum : Integer;           -- current entity number for recognize
+    thectyp : IGESType;          -- its IGESType (for purpose of optimization)
+    thestar : HSequenceOfHAsciiString;  -- start section
+    theparh : ParamSet;          -- ParamSet reading global parameters
+    thehead : GlobalSection;
+    thedirs : Array1OfDirPart;
+    thestep : ReadStage;         -- to continue an interrupted party
+    thedefw : Real;              -- default line weight (if desired)
+    thechk  : Check;             -- check on header (kept by IGESModel)
+
+end IGESReaderData;

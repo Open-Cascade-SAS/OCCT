@@ -1,0 +1,192 @@
+
+-- File:	Graphic2d_Line.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL, Gerard GRAS
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred class Line from Graphic2d inherits Primitive from Graphic2d
+
+	---Version:
+
+	---Purpose: Groups all the primitives which behaves like
+	--	    geometrical lines.
+	--	    for example: Polyline, Circle ...
+
+	---Keywords: Primitive, Line
+	---Warning:
+	---References:
+
+uses
+	GraphicObject		from Graphic2d,
+	Drawer			from Graphic2d,
+	TypeOfPolygonFilling	from Graphic2d,
+	Array1OfShortReal	from TShort,
+	FStream			from Aspect,
+	IFStream		from Aspect
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Initialize (aGraphicObject: GraphicObject from Graphic2d);
+	---Level: Public
+	---Purpose: Defines a line with the following default values :
+	--		- Color Index = 1 (the first user defined color)
+	--		- Width Index = 0 (default 1 pixel width)
+	--		- Type Index = 0  (default solid line)
+	--		- Draw Edge = Standard_True
+	--		- Type Of Polygon Filling = Graphic2d_TOPF_EMPTY
+	--		- Pattern Index = 0 (default solid polygon filling)
+	--		- Interior Color Index = 1 (the first user defined color)
+	---Category: Constructors
+
+	----------------------------------------------
+	-- Category: Methods to manage line attributes
+	----------------------------------------------
+
+	SetWidthIndex (me: mutable; anIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Defines the index, in the width map, of the line width.
+	--  Warning: Note that the index 0 can be undefined as a WidthMapEntry,
+	--	    in this case the default line width of 1 pixel is taken.
+	---Category: Methods to manage line attributes
+
+	SetTypeIndex (me: mutable; anIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Defines the index, in the type map, of the line type.
+	--  Warning: Note that the index 0 can be undefined as a TypeMapEntry,
+	--  	    in this case the default line type SOLID is taken.
+	---Category: Methods to manage line attributes
+
+	SetInteriorColorIndex (me: mutable; anIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Defines the index, in the color map, of the interior
+	--	    color.
+	--  Warning: The type of polygon filling must be :
+	--		Graphic2d_TOPF_FILLED
+	---Category: Methods to manage line attributes
+
+	SetDrawEdge (me: mutable; aDraw: Boolean from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Defines if the edges are drawn or not.
+	--  Warning: The type of polygon filling must be :
+	--		Graphic2d_TOPF_FILLED or
+	--		Graphic2d_TOPF_PATTERNED
+	---Category: Methods to manage line attributes
+
+	SetInteriorPattern (me: mutable; anIndex: Integer from Standard)
+	is static;
+	---Level: Public
+	---Purpose: Defines the pattern for closed lines.
+	--  Warning: The type of polygon filling must be :
+	--		Graphic2d_TOPF_PATTERNED
+	---Category: Methods to manage line attributes
+
+	SetTypeOfPolygonFilling (me: mutable;
+		aType: TypeOfPolygonFilling from Graphic2d)
+	is static;
+	---Level: Public
+	---Purpose: Defines the pattern for closed lines.
+	--	TypeOfPolygonFilling is :
+	--		- Graphic2d_TOPF_EMPTY
+	--		- Graphic2d_TOPF_FILLED
+	--		- Graphic2d_TOPF_PATTERNED
+	---Category: Methods to manage line attributes
+
+	DrawLineAttrib(me; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Public
+	---Purpose: Sets line attributes and polyline attributes
+	--	    in the drawer <aDrawer>.
+	---Category: Methods to manage line attributes
+
+	DrawMarkerAttrib(me; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Public
+	---Purpose: Sets marker attributes -in the drawer <aDrawer>.
+	---Category: Methods to manage line attributes
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	InteriorColorIndex (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the interior color used.
+	---Category: Inquire methods
+
+	InteriorPattern (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the interior pattern used.
+	---Category: Inquire methods
+
+	TypeOfPolygonFilling (me)
+	returns TypeOfPolygonFilling from Graphic2d
+	is static;
+	---Level: Public
+	---Purpose: Returns the type of polygon filling used.
+	---Category: Inquire methods
+
+	TypeIndex (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the line type index used.
+	---Category: Inquire methods
+
+	WidthIndex (me)
+	returns Integer from Standard
+	is static;
+	---Level: Public
+	---Purpose: Returns the line width index used.
+	---Category: Inquire methods
+
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	IsOn (myclass;
+		aX, aY, aX1, aY1, aX2, aY2,
+		aPrecision: ShortReal from Standard)
+	returns Boolean from Standard
+	is protected ;
+	---Level: Internal
+	---Purpose: Returns Standard_True if (<aX>, <aY>) belongs to
+	--	    the segment (<aX1>, <aY1>), (<aX2>, <aY2>).
+	---Category: Class methods
+
+	IsIn (myclass; aX, aY :ShortReal from Standard ;
+		X, Y : Array1OfShortReal from TShort;
+		aPrecision : ShortReal from Standard)
+	returns Boolean from Standard
+	is protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if (<aX>, <aY>) is inside the
+	--	    wire defined by the array <X> and <Y>.
+	---Category: Class methods
+
+	----------------------------------------------------------------------
+
+	Save(me; aFStream: in out FStream from Aspect);
+	Retrieve(me: mutable; anIFStream: in out IFStream from Aspect);
+
+fields
+	myWidthIndex:		Integer from Standard;
+	myTypeIndex:		Integer from Standard;
+	myPatternIndex:		Integer from Standard;
+	myInteriorColorIndex:	Integer from Standard;
+	myTypeOfPolygonFilling:	TypeOfPolygonFilling from Graphic2d
+		is protected;
+	myDrawEdge:		Boolean from Standard
+		is protected;
+
+end Line from Graphic2d;

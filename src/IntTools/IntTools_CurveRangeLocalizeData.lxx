@@ -1,0 +1,17 @@
+// File:	IntTools_CurveRangeLocalizeData.lxx
+// Created:	Fri Oct 14 19:58:59 2005
+// Author:	Mikhail KLOKOV
+//		<mkk@kurox>
+
+inline Standard_Integer IntTools_CurveRangeLocalizeData::GetNbSample() const
+{
+  return myNbSampleC;
+}
+
+ 
+inline Standard_Real IntTools_CurveRangeLocalizeData::GetMinRange() const
+{
+  return myMinRangeC;
+}
+
+ 

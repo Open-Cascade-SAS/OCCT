@@ -1,0 +1,109 @@
+-- File:	BRepExtrema_ExtCF.cdl
+-- Created:	Wed Feb  9 12:57:57 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@phylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ExtCF from BRepExtrema
+
+uses
+    Integer           from Standard,
+    Real              from Standard,
+    Boolean           from Standard,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    HSurface          from BRepAdaptor,
+    ExtCS             from Extrema,
+    SequenceOfReal    from TColStd,
+    SequenceOfPOnCurv from Extrema,
+    SequenceOfPOnSurf from Extrema,
+    Pnt               from gp
+     
+raises 
+    NotDone      from StdFail,
+    OutOfRange   from Standard,
+    TypeMismatch from Standard
+
+is
+    Create returns ExtCF from BRepExtrema;
+
+    Create(V : Edge   from TopoDS;
+           E : Face   from TopoDS)
+    	---Purpose: It calculates all the distances.
+    returns ExtCF from BRepExtrema;
+
+    Initialize(me: in out; E : Face from TopoDS)
+    	---Purpose: 
+    is static;
+    
+    Perform(me: in out; V : Edge   from TopoDS;
+     	    	    	E : Face   from TopoDS)
+    	---Purpose: An exception is raised if the fields have not been
+    	--          initialized.
+    	--          Be careful: this method uses the Face only for 
+    	--          classify not for the fields.
+    raises TypeMismatch from Standard
+    is static;
+    
+    IsDone(me) returns Boolean from Standard
+    	---Purpose: True if the distances are found.
+    is static;
+    
+    NbExt(me) returns Integer from Standard
+    	---Purpose: Returns the number of extremum distances.
+    raises NotDone from StdFail
+    is static;
+
+    
+    SquareDistance(me; N : Integer from Standard) returns Real from Standard
+    	---Purpose: Returns the value of the <N>th extremum square distance.
+    raises NotDone    from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the curve is on a parallel surface.
+    is static;
+
+
+    ParameterOnEdge(me; N : Integer from Standard) returns Real
+    	---Purpose: Returns the parameters on the  Edge  of the  <N>th
+    	--          extremum distance.
+    raises NotDone    from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+
+    ParameterOnFace(me; N : Integer from Standard; U, V: out Real) 
+    	---Purpose: Returns the parameters on the  Face  of the  <N>th
+    	--          extremum distance.
+    raises NotDone    from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+    
+    PointOnEdge(me; N : Integer from Standard) returns Pnt from gp
+    	---Purpose: Returns the Point of the <N>th extremum distance.
+    raises NotDone    from StdFail, 
+    	   OutOfRange from Standard
+    is static;
+
+
+    PointOnFace(me; N : Integer from Standard) returns Pnt from gp
+    	---Purpose: Returns the Point of the <N>th extremum distance.
+    raises NotDone    from StdFail, 
+    	   OutOfRange from Standard
+    is static;
+    
+    
+fields
+    myExtrem    : ExtCS             from Extrema;
+    mynbext     : Integer           from Standard;
+    mySqDist    : SequenceOfReal    from TColStd;
+    myPointsOnS : SequenceOfPOnSurf from Extrema;
+    myPointsOnC : SequenceOfPOnCurv from Extrema;
+    myHS        : HSurface          from BRepAdaptor;
+    
+end ExtCF;

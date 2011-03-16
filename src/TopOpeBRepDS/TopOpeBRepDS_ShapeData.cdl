@@ -1,0 +1,45 @@
+-- File:	TopOpeBRepDS_DataStructure.cdl
+-- Created:	Wed Jun 23 10:00:09 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class ShapeData from TopOpeBRepDS
+
+uses 
+    
+    ListOfInterference from TopOpeBRepDS,
+    ListOfShape from TopTools,
+    Config from TopOpeBRepDS,
+    Orientation from TopAbs
+    
+is  
+    
+    Create returns ShapeData;
+    Interferences(me) returns ListOfInterference;
+    ---C++:return const & 
+    ChangeInterferences(me:in out) returns ListOfInterference;
+    ---C++:return &
+    
+    Keep(me) returns Boolean from Standard
+    is static;
+    ChangeKeep(me : in out; B : Boolean from Standard)
+    is static;
+
+fields
+
+    myInterferences : ListOfInterference from TopOpeBRepDS;
+    mySameDomain    : ListOfShape from TopTools;
+    mySameDomainRef : Integer from Standard;
+    mySameDomainOri : Config from TopOpeBRepDS;
+    mySameDomainInd : Integer;
+    myOrientation : Orientation from TopAbs;
+    myOrientationDef : Boolean;
+    myAncestorRank : Integer; -- 1 or 2
+    myKeep      : Boolean from Standard;
+
+friends 
+    
+    class DataStructure from TopOpeBRepDS
+
+end ShapeData from TopOpeBRepDS;

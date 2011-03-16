@@ -1,0 +1,201 @@
+--
+-- File:	Aspect_AspectFillArea.cdl
+-- Created:	Lundi 4 Novembre 1991
+-- Author:	NW,JPB,CAL
+-- Modified:    15/01/98 ; FMN : Ajout Hidden Line
+--              08/01/03 ; SAV : Added method and field to control back face interior
+--                               color
+--
+---Copyright:	MatraDatavision 1991,1992,1993,1994
+--
+
+deferred class AspectFillArea from Aspect
+
+	---Purpose: Group of attributes for the FACE primitives.
+	-- The attributes are:
+	--	* type of interior
+	--	* type of hatch
+	--	* interior colour
+	--	* border colour
+	--	* type of border
+	--	* thickness of border
+	-- when the value of the group is modified, all graphic
+	-- objects using this group are modified.
+
+
+inherits
+
+	TShared
+
+uses
+
+	Color		from Quantity,
+
+	HatchStyle	from Aspect,
+	InteriorStyle	from Aspect,
+	TypeOfLine	from Aspect
+
+raises
+
+	AspectFillAreaDefinitionError	from Aspect
+
+is
+
+	Initialize;
+	---Level: Public
+	---Purpose: Initialise the constructor
+	--	    of Graphic3d_AspectFillArea3d.
+	--
+	-- default values :
+	--
+	--	InteriorStyle	= Aspect_IS_EMPTY;
+	--	InteriorColor	= Quantity_NOC_CYAN1;
+	--	EdgeColor	= Quantity_NOC_WHITE;
+	--	EdgeType	= Aspect_TOL_SOLID;
+	--	EdgeWidth	= 1.0;
+	--	HatchStyle	= Aspect_HS_VERTICAL;
+
+	Initialize ( InteriorStyle	: InteriorStyle from Aspect;
+		     InteriorColor	: Color from Quantity;
+		     EdgeColor		: Color from Quantity;
+		     EdgeLineType	: TypeOfLine from Aspect;
+		     EdgeLineWidth	: Real from Standard )
+	---Level: Public
+	---Purpose: Initialise the values for the constructor of
+	--	    Graphic3d_AspectFillArea3d.
+	--
+	-- InteriorStyle :
+	--	    IS_EMPTY	no interior.
+	--	    IS_HOLLOW	display the boundaries of the surface.
+	--	    IS_HATCH	display hatched with a hatch style.
+	--	    IS_SOLID	display the interior entirely filled.
+	--
+	-- EdgeLineType :
+	--	    TOL_SOLID	continuous
+	--	    TOL_DASH	dashed
+	--	    TOL_DOT	dotted
+	--	    TOL_DOTDASH	mixed
+	--
+	-- default values :
+	--	HatchStyle	= Aspect_HS_VERTICAL;
+	--
+	--  Warning: Raises AspectFillAreaDefinitionError if the
+	--	    width is a negative value.
+	raises AspectFillAreaDefinitionError from Aspect;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetEdgeColor ( me	: mutable;
+		       AColor	: Color from Quantity );
+	---Level: Public
+	---Purpose: Modifies the colour of the edge of the face
+	---Category: Methods to modify the class definition
+
+	SetEdgeLineType ( me	: mutable;
+			  AType	: TypeOfLine from Aspect );
+	---Level: Public
+	---Purpose: Modifies the edge line type
+	---Category: Methods to modify the class definition
+
+	SetEdgeWidth ( me	: mutable;
+		       AWidth	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the edge thickness
+	--
+	--  Category: Methods to modify the class definition
+	--
+	--  Warning: Raises AspectFillAreaDefinitionError if the
+	--	    width is a negative value.
+	raises AspectFillAreaDefinitionError from Aspect;
+
+	SetHatchStyle ( me	: mutable;
+			AStyle	: HatchStyle from Aspect );
+	---Level: Public
+	---Purpose: Modifies the hatch type used when InteriorStyle
+	--	    is IS_HATCH
+	---Category: Methods to modify the class definition
+
+	SetInteriorColor ( me		: mutable;
+			   AColor	: Color from Quantity );
+	---Level: Public
+	---Purpose: Modifies the colour of the interior of the face
+	---Category: Methods to modify the class definition
+	
+	SetBackInteriorColor( me : mutable; color : Color from Quantity );
+	---Level: Public
+	---Purpose: Modifies the colour of the interior of the back face
+	---Category: Methods to modify the class definition
+
+	SetInteriorStyle ( me		: mutable;
+			   AStyle	: InteriorStyle from Aspect );
+	---Level: Public
+	---Purpose: Modifies the interior type used for rendering
+	--
+	-- InteriorStyle : IS_EMPTY	no interior
+	--		   IS_HOLLOW	display the boundaries of the surface
+	--		   IS_HATCH	display hatching
+	--		   IS_SOLID	display interior entirely filled
+	--
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	HatchStyle ( me )
+		returns HatchStyle from Aspect;
+	---Level: Public
+	---Purpose: Returns the hatch type used when InteriorStyle
+	--	    is IS_HATCH
+	---Category: Inquire methods
+
+	Values ( me;
+		 AStyle		: out InteriorStyle from Aspect;
+		 AIntColor	: out Color from Quantity;
+		 AEdgeColor	: out Color from Quantity;
+		 AType		: out TypeOfLine from Aspect;
+		 AWidth		: out Real from Standard );
+
+	Values ( me;
+		 AStyle		: out InteriorStyle from Aspect;
+		 AIntColor	: out Color from Quantity;
+		 BackIntColor : out Color from Quantity;
+		 AEdgeColor	: out Color from Quantity;
+		 AType		: out TypeOfLine from Aspect;
+		 AWidth		: out Real from Standard );
+	---Level: Public
+	---Purpose: Returns the current values of the <me> group.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Aspect_AspectFillArea
+--
+-- Purpose	:	Declaration of specific variables in the context of
+--			drawing faces
+--
+-- Reminder	:	The drawing context of a face is defined by:
+--			- the interior style and color of the face
+--			- the style, color and thickness of the face edge
+--
+
+	-- the interior
+	MyInteriorStyle	:	InteriorStyle from Aspect;
+	MyInteriorColor	:	Color from Quantity;
+
+	MyBackInteriorColor : Color from Quantity;
+
+	-- the edge
+	MyEdgeColor	:	Color from Quantity;
+	MyEdgeType	:	TypeOfLine from Aspect;
+	MyEdgeWidth	:	Real from Standard;
+
+	-- the hatch
+	MyHatchStyle	:	HatchStyle from Aspect;
+
+end AspectFillArea;

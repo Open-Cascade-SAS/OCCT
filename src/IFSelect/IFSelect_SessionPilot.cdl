@@ -1,0 +1,207 @@
+-- File:	IFSelect_SessionPilot.cdl
+-- Created:	Tue Jul 27 12:26:12 1993
+-- Author:	Christian CAILLET
+--		<cky@meteox>
+---Copyright:	 Matra Datavision 1993
+
+
+class SessionPilot  from IFSelect  inherits Activator
+
+    ---Purpose : A SessionPilot is intended to make easier the use of a
+    --           WorkSession. It receives commands, under alphanumeric form,
+    --           then calls a library of Activators to interprete and run them.
+    --           
+    --           Then, WorkSession just records data required to work :
+    --           Rules for Selection, Dispatch ... ; File Data (InterfaceModel
+    --           and results of Evaluations and Transfer as required).
+    --           SessionPilot records and works with alphanumeric commands and
+    --           their results (under a very simple form). It calls a list of
+    --           Activators to perform the actions.
+    --           
+    --           A Command can have several forms :
+    --           - classic execution, to list, evaluate, or enrich the session
+    --           - command which creates a new item (a Selection for instance)
+    --             such a command should not add it to the session, but make it
+    --             recorded by the Pilot (method RecordItem). The Pilot will
+    --             add the item in the session, with no name
+    --           -> such a command may be called :
+    --             - directly, it will add an item with no name
+    --             - by command xset, in the following form :
+    --             xset name command ...  calls the command and adds the item
+    --               to the session under the specified name (if not yet known)
+    --           
+    --           Thus, to a specific Norm or way of working, only Activators
+    --           change. A specific Initialisation can be done by starting
+    --           with a specific set of commands.
+    --           
+    --           In addition, SessionPilot is a sub-type of Activator, to
+    --           recognize some built-in commands : exit/x, help/?, control of
+    --           command line, and commands xstep xset ... See method Do
+    --           
+    --           At least, empty lines and comment lines (beginning by '#')
+    --           are skipped (comment lines are display if read from file)
+
+uses CString, OStream, Transient, AsciiString from TCollection,
+     Array1OfAsciiString,  SequenceOfAsciiString, Array1OfInteger,
+     SequenceOfInteger,    SequenceOfTransient,
+     WorkSession, WorkLibrary,     ReturnStatus,   -- Activator
+     Selection,   Dispatch,        Modifier, SignCounter, PrintCount
+
+is
+
+    Create (prompt : CString = "") returns mutable SessionPilot;
+    ---Purpose : Creates an empty SessionPilot, with a prompt which will be
+    --           displayed on querying commands. If not precised (""), this
+    --           prompt is set to "Test-XSTEP>"
+
+    Session (me) returns mutable WorkSession;
+    ---Purpose : Returns the WorkSession which is worked on
+
+    Library (me) returns mutable WorkLibrary;
+    ---Purpose : Returns the WorKlibrary (Null if not set). WorkLibrary is used
+    --           to Read and Write Files, according to the Norm
+
+    RecordMode (me) returns Boolean;
+    ---Purpose : Returns the Record Mode for Commands. Default is False.
+
+    SetSession (me : mutable; WS : mutable WorkSession);
+    ---Purpose : Sets a WorkSession to be worked on
+
+    SetLibrary (me : mutable; WL : mutable WorkLibrary);
+    ---Purpose : Sets a WorkLibrary
+
+    SetRecordMode (me : mutable; mode : Boolean);
+    ---Purpose : Changes the RecordMode.
+
+    SetCommandLine (me : mutable; command : AsciiString from TCollection);
+    ---Purpose : Sets the value of the Command Line to be interpreted
+    --           Also prepares the interpretation (splitting by blanks)
+
+    CommandLine (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Command Line to be interpreted
+    ---C++ : return const &
+
+    CommandPart (me; numarg : Integer = 0) returns CString;
+    ---Purpose : Returns the part of the command line which begins at argument
+    --           <numarg> between 0 and NbWords-1 (by default, all the line)
+    --           Empty string if out of range
+
+    NbWords (me) returns Integer;
+    ---Purpose : Returns the count of words of the Command Line, separated by
+    --           blanks : 0 if empty, one if a command without args, else it
+    --           gives the count of args minus one.
+    --  Warning : limited to 10 (command title + 9 args)
+
+    Word (me; num : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns a word given its rank in the Command Line. Begins at 0
+    --           which is the Command Title, 1 is the 1st arg., etc...
+    ---C++ : return const &
+
+    Arg  (me; num : Integer) returns CString;
+    ---Purpose : Returns a word given its rank, as a CString.
+    --           As for Word, begins at 0 (the command name), etc...
+
+    RemoveWord (me : mutable; num : Integer) returns Boolean;
+    ---Purpose : Removes a word given its rank. Returns True if Done, False if
+    --           <num> is out of range
+
+    NbCommands (me) returns Integer;
+    ---Purpose : Returns the count of recorded Commands
+
+    Command (me; num : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns a recorded Command, given its rank (from 1)
+    ---C++ : return const &
+
+    RecordItem (me : mutable; item : any Transient) returns ReturnStatus;
+    ---Purpose : Allows to associate a Transient Value with the last execution
+    --           as a partial result
+    --           Returns RetDone if item is not Null, RetFail if item is Null
+    --           Remark : it is nullified for each Perform
+
+    RecordedItem (me) returns any Transient;
+    ---Purpose : Returns the Transient Object which was recorded with the
+    --           current Line Command. If none was, returns a Null Handle
+
+    Clear (me : mutable);
+    ---Purpose : Clears the recorded informations (commands, objects)
+
+    	-- --    Execution    -- --
+
+    ReadScript (me : mutable; file : CString = "") returns ReturnStatus;
+    ---Purpose : Reads commands from a Script File, named <file>. By default
+    --           (file = ""), reads from standard input with a prompt
+    --           Else (reading from a file), the read commands are displayed
+    --           onto standard output. Allows nested reads. Reading is stopped
+    --           either by command x or exit, or by reaching end of file
+    --           Return Value follows the rules of Do : RetEnd for normal end,
+    --           RetFail if script could not be opened
+
+    Perform (me : mutable) returns ReturnStatus;
+    ---Purpose : Executes the Command, itself (for built-in commands, which
+    --           have priority) or by using the list of Activators.
+    --           The value returned is : RetVoid if nothing done (void command)
+    --           RetDone if execution OK, RetEnd if END OF SESSION, RetError if
+    --           command unknown or incorrect, RetFail if error on execution
+    --           If execution is OK and RecordMode is set, this Command Line is
+    --           recorded to the list (see below).
+
+    ExecuteAlias (me : mutable; aliasname : AsciiString from TCollection)
+    	returns ReturnStatus;
+    ---Purpose : Executes the Commands, except that the command name (word 0)
+    --           is aliased. The rest of the command line is unchanged
+    --           If <alias> is empty, Executes with no change
+    --           
+    --           Error status is returned if the alias is unknown as command
+
+    Execute (me : mutable; command : AsciiString from TCollection)
+    	returns ReturnStatus;
+    ---Purpose : Sets the Command then tries to execute it. Return value :
+    --           same as for Perform
+
+    ExecuteCounter (me : mutable; counter : mutable SignCounter;
+    	    	    numword : Integer; mode : PrintCount = IFSelect_CountByItem)
+    	returns ReturnStatus;
+    ---Purpose : Executes a Counter in a general way
+    --           If <numword> is greater than count of command words, it counts
+    --           all the model. Else it considers the word <numword> as the
+    --           identifier of a Selection
+    --           <mode> gives the mode of printing results, default is
+    --           CountByItem
+
+    Number(me; val : CString) returns Integer;
+    ---Purpose : Interprets a string value as an entity number :
+    --           if it gives an integer, returns its value
+    --           else, considers it as ENtityLabel (preferably case sensitive)
+    --           in case of failure, returns 0
+
+    Do   (me : mutable; number : Integer; session : mutable SessionPilot)
+    	returns ReturnStatus;
+    ---Purpose : Processes specific commands, which are :
+    --           x or exit for end of session
+    --           ? or help for help messages
+    --           xcommand to control command lines (Record Mode, List, Clear,
+    --             File Output ...)
+    --           xsource to execute a command file (no nesting allowed),
+    --             in case of error, source is stopped and keyword recovers
+    --           xstep is a simple prefix (useful in a wider environment, to
+    --             avoid conflicts on command names)
+    --           xset control commands which create items with names
+
+    Help (me; number : Integer) returns CString;
+    ---Purpose : Help for specific commands (apart from general command help)
+
+fields
+
+    thesession : WorkSession;
+    theprompt  : AsciiString from TCollection;
+    thecommand : AsciiString from TCollection;
+    thenbwords : Integer;
+    thewords   : Array1OfAsciiString;
+    thewordeb  : Array1OfInteger;
+    therecord  : Boolean;
+
+    thenumrec  : Integer;
+    theobjrec  : Transient;
+    thecomlist : SequenceOfAsciiString;
+
+end SessionPilot;

@@ -1,0 +1,303 @@
+
+-- File:	Aspect_WindowDriver.cdl
+-- Created:	Wed Dec  8 09:18:54 1993
+-- Author:	Jean Louis FRENKEL, Stephane CALLEGARI
+--		<jlf@stylox>
+---Copyright:	 Matra Datavision 1993
+
+deferred class WindowDriver from Aspect inherits Driver from Aspect
+
+---Purpose: defines the WINDOW oriented output driver. 
+--  Warning: A limited number of mono attribute and translatable BUFFERS can be defined
+--          for retaining a lot of primitives for DRAGGING .
+--
+
+uses
+	TypeOfResize from Aspect,
+	Window from Aspect,
+	TypeOfDrawMode from Aspect,
+	Factor from Quantity,
+	PlaneAngle from Quantity,
+	ExtendedString from TCollection
+    
+raises
+	DriverError	from Aspect
+
+is
+	Initialize(aWindow: Window from Aspect);
+
+        BeginDraw (me: mutable;
+                   DoubleBuffer: Boolean = Standard_True;
+                   aRetainBuffer: Integer = 0)
+        ---Purpose: Begin graphics and drawn directly to the Window or Pixmap if
+        --<aRetainBuffer> is 0 or in the retain buffer if > 0.
+                raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not open.
+        --         call BufferIsOpen() method before.
+
+	ResizeSpace(me : mutable)
+	returns TypeOfResize from Aspect
+	raises DriverError from Aspect
+	is deferred;
+ 
+	Window(me) returns Window from Aspect;
+
+	SetDrawMode (me: mutable;
+		aMode: TypeOfDrawMode from Aspect)
+	is deferred;
+        ---Level: Public
+	---Purpose: Change the current drawing mode of the Driver
+	--  	    XW_REPLACE : the primitive is drawn with his defined color.
+	--	    XW_ERASE   : the primitive is erased from the window.
+	--	    XW_XOR     : the primitive is xored to the window.
+	--	    XW_XORLIGHT: the primitive is xored depending of the current
+	--			highlight and background colors.
+
+        -------------------------------------------------------------
+        -- Category: Methods to define or edit a buffer of primitives
+        -------------------------------------------------------------
+
+        OpenBuffer (me: mutable; aRetainBuffer: Integer;
+				 aPivotX: ShortReal = 0.0;
+				 aPivotY: ShortReal = 0.0; 
+                                 aWidthIndex: Integer = 0;
+                                 aColorIndex: Integer = 0;
+                                 aFontIndex: Integer = 0;
+				 aDrawMode: TypeOfDrawMode = Aspect_TODM_REPLACE)
+					returns Boolean is deferred;
+        ---Purpose: Allocate the retain buffer <aRetainBuffer> ,
+        -- Defines the DWU coordinates of the pivot point for all primitives 
+        --contains inside.
+        -- Defines the buffer color and font index :
+        --  the default color is the highlight color of the colormap.
+        --  the default font is the default system font of the fontmap. 
+        -- The other attributes are fixed :
+        --  line type is Solid,
+        --  line width is 1 Pixel,
+        --  polygon fill mode is Solid,   
+        --  Warning: The number of allocated buffers is limited,it's 
+        --recommended to close unused buffers some time! 
+	--	    The TypeOfDrawMode REPLACE is enabled only if the
+	--	    background drawing has been drawn with the DoubleBuffer
+	--	    flag set to ENABLE at the last BeginDraw time.
+	--	    The TypeOfDrawMode XOR is enabled in any case.
+	--	    The other TypeOfDrawMode are not authorized.
+        -- Returns TRUE if the buffer is allocated and enabled for drawing.
+
+        CloseBuffer (me; aRetainBuffer: Integer)
+	---Purpose: Clear & Deallocate the retain buffer <aRetainBuffer>.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        ClearBuffer (me; aRetainBuffer: Integer)
+	---Purpose: Erase & Clear ALL primitives retains in the buffer <aRetainBuffer>.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        DrawBuffer (me; aRetainBuffer: Integer)
+	---Purpose: Draw ALL primitives retains in the buffer <aRetainBuffer>.
+	--  Warning: Note that the aspect of a retain buffer drawing is 
+	-- mono-colored with the current buffer Attributes and 
+	-- Depending of the DoubleBuffer state flag at the BeginDraw() buffer time,
+	-- when DB is TRUE,an XOR method is use for drawing and erasing buffers in the
+	-- same way.In this case,some color side effect can occurs depending of the 
+	-- traversal primitive colors and the supported hardware.
+	-- when DB is FALSE and the background drawing has been generated with
+	-- DB at TRUE,no color side effect occurs because the DB is used for restoring
+	-- the drawing context at EraseBuffer() time,this is more powerfull for the
+	-- drawing quality excepted for large buffers (flicking) . 
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        EraseBuffer (me; aRetainBuffer: Integer)
+	---Purpose: Erase ALL primitives retains in the buffer <aRetainBuffer>.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        MoveBuffer (me; aRetainBuffer: Integer;
+				 aPivotX: ShortReal = 0.0;
+				 aPivotY: ShortReal = 0.0) 
+	---Purpose: Erase , Translate and reDraw ALL primitives retains in the buffer 
+	--<aRetainBuffer>.
+	--<aPivotX,aPivotY> are the new DWU attached point absolute coordinates 
+	--of the buffer pivot point.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened
+	--	   call BufferIsOpen() method before.
+
+        ScaleBuffer (me; aRetainBuffer: Integer; aScaleX: Factor = 1.0;
+						 aScaleY: Factor = 1.0)
+	---Purpose: Erase , Scale the buffer from the Pivot point and reDraw ALL primitives 
+	--retains in the buffer <aRetainBuffer>.
+	--<aScaleX,aScaleY> are the absolute scale factors apply on the two axis.
+	--  Warning: Note that the scalling of some primitives can provided some bad 
+	--smoothing side effect (i.e: Circles,...)
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened or 
+	--one of <aScale> factor is <= 0.
+	--	   call BufferIsOpen() method before.
+
+        RotateBuffer (me; aRetainBuffer: Integer; anAngle: PlaneAngle = 0.0)
+	---Purpose: Erase , Rotate the buffer from the Pivot point and reDraw ALL primitives 
+	--retains in the buffer <aRetainBuffer>.
+	--<anAngle> is the absolute counter-clockwise rotation angle from the 
+	--Horizontal axis.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        ----------------------------
+        -- Category: Inquire methods
+        ----------------------------
+
+        BufferIsOpen(me; aRetainBuffer : Integer) returns Boolean is deferred;
+	---Purpose: Returns TRUE if the retain buffer <aRetainBuffer> is enabled 
+	--for drawing.
+
+        BufferIsEmpty(me; aRetainBuffer : Integer) returns Boolean is deferred;
+	---Purpose: Returns TRUE if the retain buffer has not been opened or empty. 
+	---         Returns FALSE if a lot of primitives have been stored inside
+	--         because a BeginDraw(..,<aRetainBuffer>) has been done previously.
+
+        BufferIsDrawn(me; aRetainBuffer : Integer) returns Boolean is deferred;
+        ---Purpose: Returns TRUE if the retain buffer s actually displayed at screen.
+
+	AngleOfBuffer(me; aRetainBuffer : Integer; anAngle: out PlaneAngle)
+	---Purpose: Returns the current buffer rotate angle from the X axis.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+	ScaleOfBuffer(me; aRetainBuffer : Integer; aScaleX,aScaleY: out Factor)
+	---Purpose: Returns the current buffer scale factors.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+	PositionOfBuffer(me; aRetainBuffer : Integer; aPivotX,aPivotY: out ShortReal )
+	---Purpose: Returns the current buffer position.
+		raises DriverError from Aspect is deferred;
+        ---Trigger: Raises if the retain buffer is not opened.
+	--	   call BufferIsOpen() method before.
+
+        TextSize (me; aText: ExtendedString from TCollection;
+                      aWidth, aHeight: out ShortReal from Standard;
+                      aFontIndex: Integer from Standard = -1)
+        ---Level: Public
+        ---Purpose: Returns the TEXT size in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        ---Trigger: Raises if font is not defined.
+                raises DriverError from Aspect is deferred;
+        ---Category: Inquire methods
+
+        TextSize (me; aText: ExtendedString from TCollection;
+                      aWidth, aHeight, anXoffset, anYoffset: out ShortReal from Standard;
+                      aFontIndex: Integer from Standard = -1)
+        ---Level: Public
+        ---Purpose: Returns the TEXT size and offsets 
+	--	    in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        ---Trigger: Raises if font is not defined.
+                raises DriverError from Aspect is deferred;
+        ---Category: Inquire methods
+ 
+        FontSize (me; aSlant: out PlaneAngle from Quantity;
+                      aSize,aBheight: out ShortReal from Standard;
+                      aFontIndex: Integer from Standard = -1)
+                                returns CString from Standard
+        ---Level: Public
+        ---Purpose: Returns the font string,slant,size and
+        --baseline height in DWU space depending
+        --          of the required FontIndex if aFontIndex is >= 0
+        --          or the current FontIndex if < 0 (default).
+        ---Trigger: Raises if font is not defined.
+                raises DriverError from Aspect is deferred;
+        ---Category: Inquire methods
+
+	ColorBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual color indexs.
+        ---Category: Inquire methods
+
+        LocalColorIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the local colormap hardware index from a virtual driver color
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	FontBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual font indexs.
+        ---Category: Inquire methods
+
+        LocalFontIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is deferred;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the associated fontmap hardware index from a virtual driver font
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	TypeBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual type indexs.
+        ---Category: Inquire methods
+
+        LocalTypeIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the associated typemap hardware index from a virtual driver type
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	WidthBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual width indexs.
+        ---Category: Inquire methods
+
+        LocalWidthIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is deferred;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the associated widthmap hardware index from a virtual driver width
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+	MarkBoundIndexs(me; aMinIndex,aMaxIndex : out Integer from Standard)
+								is deferred;
+        ---Level: Advanced
+        ---Purpose: 
+        -- Returns the min and max driver virtual marker indexs.
+        ---Category: Inquire methods
+
+        LocalMarkIndex(me; anIndex : Integer from Standard)
+                                returns Integer from Standard is deferred;
+        ---Level: Advanced
+        ---Purpose:
+        -- Returns the local markmap hardware index from a virtual driver marker
+        -- index or returns -1 if the index is not defined.
+        ---Category: Inquire methods
+ 
+fields
+	MyWindow : Window from Aspect is protected;
+	MyDrawMode : TypeOfDrawMode from Aspect is protected;
+	MyRetainBuffer : Integer from Standard is protected;
+    
+end WindowDriver from Aspect;

@@ -1,0 +1,15 @@
+// File:	HLRTest_OutLiner.lxx
+// Created:	Wed Apr  5 17:10:19 1995
+// Author:	Christophe MARION
+//		<cma@ecolox>
+
+//=======================================================================
+//function : OutLiner
+//purpose  : 
+//=======================================================================
+
+inline Handle(HLRTopoBRep_OutLiner) HLRTest_OutLiner::OutLiner() const 
+{
+  return myOutLiner;
+}
+

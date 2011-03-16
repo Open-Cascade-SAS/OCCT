@@ -1,0 +1,76 @@
+-- File:	VrmlConverter_Projector.cdl
+-- Created:	Fri Jun 6 16:50:09 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Projector from VrmlConverter inherits TShared from MMgt
+
+	---Purpose: 
+    	--     defines projector  and calculates properties of cameras and lights from Vrml
+	--     ( OrthograpicCamera, PerspectiveCamera, DirectionalLight, PointLight, SpotLight  
+    	--     and  MatrixTransform  )  to display all scene  shapes  with  arbitrary locations 
+	--     for requested the Projection Vector,  High Point Direction and the Focus
+	--     and adds them ( method Add ) to anOSream.
+
+uses
+ 
+    Projector from HLRAlgo,
+    Array1OfShape  from  TopTools, 
+    Length    from Quantity,
+    PerspectiveCamera  from Vrml, 
+    OrthographicCamera  from Vrml, 
+    DirectionalLight  from  Vrml, 
+    PointLight  from Vrml,
+    SpotLight  from Vrml,
+    TypeOfCamera from VrmlConverter, 
+    TypeOfLight from VrmlConverter,
+    MatrixTransform  from Vrml
+
+is
+
+    Create ( Shapes:  Array1OfShape from TopTools; 
+    	     Focus: Length from Quantity;        
+	     DX, DY, DZ: Length from Quantity;                             -- Projection Vector
+	     XUp, YUp, ZUp: Length from Quantity;                          -- High Point Direction
+	     Camera:  TypeOfCamera from VrmlConverter  = VrmlConverter_NoCamera;
+   	     Light:   TypeOfLight from VrmlConverter   = VrmlConverter_NoLight ) 
+    returns mutable Projector from VrmlConverter; 
+    
+
+    SetCamera ( me: mutable; aCamera : TypeOfCamera from VrmlConverter );
+    Camera ( me )  returns  TypeOfCamera from VrmlConverter;
+    
+    SetLight ( me: mutable; aLight : TypeOfLight from VrmlConverter );
+    Light ( me )  returns  TypeOfLight from VrmlConverter;
+
+
+    Add(me;   anOStream: in out OStream from Standard);
+    	---Purpose:  
+        --    Adds  into anOStream  if  they  are  defined in  Create.
+    	--      PerspectiveCamera,
+    	--      OrthographicCamera, 
+    	--      DirectionLight,
+    	--      PointLight,
+    	--      SpotLight 
+        --   with  MatrixTransform  from VrmlConverter;
+ 
+      
+    Projector(me) returns Projector from HLRAlgo
+    is static;
+				       
+fields
+ 
+    myProjector:           Projector          from HLRAlgo;
+    myPerspectiveCamera:   PerspectiveCamera  from Vrml; 
+    myOrthographicCamera:  OrthographicCamera from Vrml; 
+    myDirectionalLight:    DirectionalLight   from Vrml; 
+    myPointLight:          PointLight         from Vrml;
+    mySpotLight:           SpotLight          from Vrml;
+    myTypeOfCamera:    	   TypeOfCamera       from VrmlConverter;
+    myTypeOfLight:    	   TypeOfLight        from VrmlConverter;
+    myMatrixTransform:     MatrixTransform    from Vrml;
+
+end Projector;
+
+

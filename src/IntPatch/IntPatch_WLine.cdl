@@ -1,0 +1,328 @@
+-- File:	IntPatch_WLine.cdl
+-- Created:	Mon May 27 13:18:45 1991
+-- Author:	Isabelle GRIGNON
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class WLine from IntPatch
+
+inherits Line from IntPatch 
+
+	---Purpose: Definition of set of points as a result of the intersection
+	--          between 2 parametrised patches.
+
+uses
+     HCurve2d        from Adaptor2d,
+     Point           from IntPatch,
+     SequenceOfPoint from IntPatch,
+     PntOn2S         from IntSurf,
+     LineOn2S        from IntSurf,
+     TypeTrans       from IntSurf,
+     Situation       from IntSurf,
+     Box2d           from Bnd,
+     Box             from Bnd,
+     Pnt2d           from gp,
+     Pnt             from gp
+
+raises OutOfRange  from Standard,
+       DomainError from Standard
+is
+    Create(Line: LineOn2S from IntSurf; Tang: Boolean from Standard;
+           Trans1, Trans2: TypeTrans from IntSurf)
+    
+	---Purpose: Creates a WLine as an intersection when the 
+	--          transitions are In or Out.
+    
+    	returns mutable WLine from IntPatch;
+
+
+    Create(Line: LineOn2S from IntSurf; Tang: Boolean from Standard;
+           Situ1,Situ2: Situation from IntSurf)
+    
+	---Purpose: Creates a WLine as an intersection when the 
+	--          transitions are Touch.
+    
+    	returns mutable WLine from IntPatch;
+
+
+    Create(Line: LineOn2S from IntSurf; Tang: Boolean from Standard)
+    
+	---Purpose: Creates a WLine as an intersection when the 
+	--          transitions are Undecided.
+    
+    	returns mutable WLine from IntPatch;
+
+
+    AddVertex(me: mutable; Pnt: Point from IntPatch)
+    
+	---Purpose: Adds a vertex in the list.
+
+	---C++: inline
+
+    	is static;
+
+    
+    SetPoint(me:mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+    	---Purpose: Set the Point of index <Index> in the LineOn2S
+    
+    	is static;
+    
+    
+    Replace(me: mutable; Index: Integer from Standard; Pnt: Point from IntPatch)
+    
+	---Purpose: Replaces the element of range Index in the list
+	--          of points.
+	--          The exception OutOfRange is raised when
+	--          Index <= 0 or Index > NbVertex.
+
+	---C++: inline
+
+    	raises OutOfRange from Standard
+	
+	is static;
+
+
+    SetFirstPoint(me: mutable; IndFirst: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    SetLastPoint(me: mutable; IndLast: Integer from Standard) is static;
+
+	---C++: inline
+
+
+    NbPnts(me)
+    
+	---Purpose: Returns the number of intersection points.
+
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the intersection point of range Index.
+
+    	returns PntOn2S from IntSurf
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange from Standard
+	--- The exception OutOfRange is raised if Index <= 0 or Index > NbPnts.
+	
+	is static;
+
+
+    HasFirstPoint(me)
+    
+	---Purpose: Returns True if the line has a known First point.
+	--          This point is given by the method FirstPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    HasLastPoint(me)
+    
+	---Purpose: Returns True if the line has a known Last point.
+	--          This point is given by the method LastPoint().
+    
+    	returns Boolean from Standard
+	---C++: inline
+	
+	is static;
+
+
+    FirstPoint(me)
+    
+	---Purpose: Returns the Point corresponding to the FirstPoint.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when HasFirstPoint
+	--  returns False.
+	
+	is static;
+
+
+    LastPoint(me)
+    
+	---Purpose: Returns the Point corresponding to the LastPoint.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when HasFirstPoint
+	--  returns False.
+	
+	is static;
+
+
+    FirstPoint(me; Indfirst: out Integer from Standard)
+    
+	---Purpose: Returns the Point corresponding to the FirstPoint.
+	--          Indfirst is the index of the first in the list
+	--          of vertices.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when HasFirstPoint
+	--  returns False.
+	
+	is static;
+
+
+    LastPoint(me; Indlast: out Integer from Standard)
+    
+	---Purpose: Returns the Point corresponding to the LastPoint.
+	--          Indlast is the index of the last in the list
+	--          of vertices.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises DomainError from Standard
+	--- The exception DomainError is raised when HasFirstPoint
+	--  returns False.
+	
+	is static;
+
+
+    NbVertex(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	
+	is static;
+
+
+    Vertex(me; Index: Integer from Standard)
+    
+	---Purpose: Returns the vertex of range Index on the line.
+    
+    	returns Point from IntPatch
+	---C++: inline
+	---C++: return const&
+	
+	raises OutOfRange from Standard	
+	--- The exception OutOfRange is raised if Index <= 0 or
+	--  Index > NbVertex.
+
+	is static;
+
+
+    ComputeVertexParameters(me: mutable; Tol: Real from Standard)
+    
+    	---Purpose: Set the parameters of all the vertex on the line.
+    	--          if a vertex is already in the line, 
+    	--             its parameter is modified
+    	--          else a new point in the line is inserted.
+        is static; 
+
+    Curve(me) 
+    
+       returns LineOn2S from IntSurf
+       is static;
+       
+
+    IsOutSurf1Box(me: mutable; P1: Pnt2d from gp )
+    	returns Boolean from Standard
+	is static;
+
+    IsOutSurf2Box(me: mutable; P1: Pnt2d from gp )
+    	returns Boolean from Standard
+	is static;
+	
+    IsOutBox(me: mutable; P: Pnt from gp)
+    	returns Boolean from Standard
+	is static;
+
+
+    SetPeriod(me: mutable; pu1,pv1,pu2,pv2: Real from Standard)
+    	is static;
+	
+
+    U1Period(me) 
+    	returns Real from Standard
+	is static;
+
+    V1Period(me) 
+    	returns Real from Standard
+	is static;
+
+    U2Period(me) 
+    	returns Real from Standard
+	is static;
+
+    V2Period(me) 
+    	returns Real from Standard
+	is static;
+	
+
+
+    SetArcOnS1(me: mutable ; A : HCurve2d from Adaptor2d)
+    	is static;
+	
+    HasArcOnS1(me)
+    	returns Boolean from Standard
+	is static;
+    
+    GetArcOnS1(me) 
+    	---C++: return const&
+        returns HCurve2d from Adaptor2d;
+
+    SetArcOnS2(me: mutable ; A : HCurve2d from Adaptor2d)
+    	is static;
+	
+    HasArcOnS2(me)
+    	returns Boolean from Standard
+	is static;
+    
+    GetArcOnS2(me) 
+    	---C++: return const&
+        returns HCurve2d from Adaptor2d;
+
+    Dump(me)
+    
+    	is static;
+
+ 
+fields
+
+    curv : LineOn2S        from IntSurf;
+    fipt : Boolean         from Standard;
+    lapt : Boolean         from Standard;
+    indf : Integer         from Standard;
+    indl : Integer         from Standard;
+    svtx : SequenceOfPoint from IntPatch;
+    
+    Buv1 : Box2d        from Bnd;
+    Buv2 : Box2d        from Bnd;
+    Bxyz : Box          from Bnd;
+
+    u1period : Real from Standard;
+    v1period : Real from Standard;
+    u2period : Real from Standard;
+    v2period : Real from Standard;
+    
+    hasArcOnS1   : Boolean from Standard;
+    theArcOnS1   : HCurve2d from Adaptor2d;
+    hasArcOnS2   : Boolean from Standard;
+    theArcOnS2   : HCurve2d from Adaptor2d;
+    
+end WLine;

@@ -1,0 +1,27 @@
+-- File:	StepSelect_Activator.cdl
+-- Created:	Thu Apr 20 18:45:34 1995
+-- Author:	Christian CAILLET
+--		<cky@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Activator  from StepSelect  inherits Activator  from IFSelect
+
+    ---Purpose : Performs Actions specific to StepSelect, i.e. creation of
+    --           Step Selections and Counters, plus dumping specific to Step
+
+uses CString, SessionPilot, ReturnStatus
+
+is
+
+    Create returns mutable Activator from StepSelect;
+
+
+    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    	returns ReturnStatus;
+    ---Purpose : Executes a Command Line for StepSelect
+
+    Help (me; number : Integer) returns CString;
+    ---Purpose : Sends a short help message for StepSelect commands
+
+end Activator;

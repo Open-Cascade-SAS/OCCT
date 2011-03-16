@@ -1,0 +1,93 @@
+-- File:	TFace.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TFace from BRep inherits TFace from TopoDS
+
+	---Purpose: The Tface from BRep  is  based  on the TFace  from
+	--          TopoDS. The TFace contains :
+	--          
+	--          * A suface, a tolerance and a Location.
+	--          
+	--          * A NaturalRestriction flag,   when this  flag  is
+	--          True the  boundary of the  face is known to be the
+	--          parametric space (Umin, UMax, VMin, VMax).
+	--          
+	--          *  An    optional Triangulation.   If  there  is a
+	--          triangulation the surface can be absent.
+	--          
+	--          The  Location is  used   for the Surface.
+	--          
+	--          The triangulation  is in the same reference system
+	--          than the TFace.     A point on mySurface must   be
+	--          transformed with myLocation,  but  not a point  on
+	--          the triangulation.
+	--          
+	--          The Surface may  be shared by different TFaces but
+	--          not the  Triangulation, because the  Triangulation
+	--          may be modified by  the edges. 
+	--          
+uses
+    Surface       from Geom,
+    Location      from TopLoc,
+    TShape        from TopoDS,
+    Triangulation from Poly
+    
+is
+
+    Create returns mutable TFace from BRep;
+	---Purpose: Creates an empty TFace.
+	
+    Surface(me) returns any Surface from Geom;
+	---C++: inline
+	---C++: return const &
+    
+    Triangulation(me) returns any Triangulation from Poly;
+	---C++: inline
+	---C++: return const &
+    	
+    Location(me) returns Location from TopLoc;
+	---C++: inline
+	---C++: return const &
+    	
+    Tolerance(me) returns Real;
+	---C++: inline
+
+    Surface(me : mutable; S : Surface from Geom);
+	---C++: inline
+    	
+    Triangulation(me : mutable; T : Triangulation from Poly);
+	---C++: inline
+    	
+    Location(me : mutable; L : Location from TopLoc);
+	---C++: inline
+
+    Tolerance(me : mutable; T : Real);
+	---C++: inline
+
+    NaturalRestriction(me) returns Boolean;
+	---C++: inline
+    
+    NaturalRestriction(me : mutable; N : Boolean);
+	---C++: inline
+    
+    EmptyCopy(me) returns mutable TShape from TopoDS
+	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
+	--          The new Face has no triangulation.
+    is redefined;
+    
+fields
+
+    mySurface            : Surface       from Geom;
+    myTriangulation      : Triangulation from Poly;
+    myLocation           : Location      from TopLoc;
+    myTolerance          : Real;
+    myNaturalRestriction : Boolean;
+
+end TFace;
+

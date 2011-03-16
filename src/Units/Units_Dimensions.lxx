@@ -1,0 +1,95 @@
+// File:	Units_Dimensions.lxx
+// Created:	Wed Jun 24 12:50:25 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+//=======================================================================
+//function : Mass
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::Mass() const
+{
+  return themass;
+}
+    
+//=======================================================================
+//function : Length
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::Length() const
+{
+ return thelength;
+}
+   
+//=======================================================================
+//function : Time
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::Time() const
+{
+ return thetime;
+}
+    
+//=======================================================================
+//function : ElectricCurrent
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::ElectricCurrent() const
+{
+ return theelectriccurrent;
+}
+    
+//=======================================================================
+//function : ThermodynamicTemperature
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::ThermodynamicTemperature() const
+{
+ return thethermodynamictemperature;
+}
+    
+//=======================================================================
+//function : AmountOfSubstance
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::AmountOfSubstance() const
+{
+ return theamountofsubstance;
+}
+    
+//=======================================================================
+//function : LuminousIntensity
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::LuminousIntensity() const
+{
+ return theluminousintensity;
+}
+    
+//=======================================================================
+//function : PlaneAngle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::PlaneAngle() const
+{
+ return theplaneangle;
+}
+    
+//=======================================================================
+//function : SolidAngle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Units_Dimensions::SolidAngle() const
+{
+ return thesolidangle;
+}

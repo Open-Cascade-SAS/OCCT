@@ -1,0 +1,20 @@
+inline TCollection_AsciiString Storage_BaseDriver::Name() const
+{
+  return myName;
+}
+
+inline Storage_OpenMode Storage_BaseDriver::OpenMode() const
+{
+  return myOpenMode;
+}
+
+inline void Storage_BaseDriver::SetName(const TCollection_AsciiString& aName)
+{
+  myName = aName;
+}
+
+inline void Storage_BaseDriver::SetOpenMode(const Storage_OpenMode aMode)
+{
+  myOpenMode = aMode;
+}
+

@@ -1,0 +1,35 @@
+-- File:      XmlMFunction_GraphNodeDriver.cdl
+-- Created:   05.03.08 13:27:31
+-- Author:    Vlad ROMASHKO
+-- Copyright: Open Cascade 2008
+
+class GraphNodeDriver from XmlMFunction  inherits ADriver from XmlMDF
+
+        ---Purpose: XML persistence driver for dependencies of a function.
+
+uses
+
+    SRelocationTable from XmlObjMgt,
+    RRelocationTable from XmlObjMgt,
+    Persistent       from XmlObjMgt,
+    MessageDriver    from CDM,
+    Attribute        from TDF
+
+is
+
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable GraphNodeDriver from XmlMFunction;
+
+    NewEmpty (me)  
+    returns mutable Attribute from TDF;
+
+    Paste(me; Source     : Persistent from XmlObjMgt;
+              Target     : mutable Attribute from TDF;
+              RelocTable : out RRelocationTable from XmlObjMgt)
+    returns Boolean from Standard;
+
+    Paste(me; Source     : Attribute from TDF;
+              Target     : in out Persistent from XmlObjMgt;
+              RelocTable : out SRelocationTable from XmlObjMgt);
+
+end GraphNodeDriver;

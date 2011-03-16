@@ -1,0 +1,247 @@
+-- File:	Resources_Manager.cdl
+-- Created:	Thu Apr 20 17:34:44 1995
+-- Author:	Tony GEORGIADES
+--		<tge@kikox>
+--		Modified Tue Sep 19 1995 by Jean-Louis Frenkel
+--		Modified Tue Jan 19 1999 by Louis Dusuzeau
+--		Modified Fri Feb 15 2002 by Sergey Telkov
+---Copyright:	Matra Datavision 1995
+
+class Manager from Resource inherits TShared from MMgt
+        ---Purpose: Defines a resource structure and its management methods.
+
+uses
+
+    AsciiString from TCollection,
+    ExtendedString from TCollection,
+    DataMapOfAsciiStringAsciiString from Resource,
+    DataMapOfAsciiStringExtendedString from Resource
+
+raises TypeMismatch from Standard, NoSuchResource from Resource,
+       OutOfRange from Standard
+is
+
+---Category: class constructor
+
+     Create(aName: CString from Standard;Verbose: Boolean from Standard = Standard_False)
+     returns mutable Manager from Resource;
+     ---Purpose: Create a Resource manager.
+     --          Attempts to find the two following files:
+     --          $CSF_`aName`Defaults/aName
+     --          $CSF_`aName`UserDefaults/aName
+     --          and load them respectively into a reference and a user resource structure.
+     --
+     --          If CSF_ResourceVerbose defined, seeked files will be printed.
+     --
+     --         FILE SYNTAX
+     --              The syntax of a resource file is a sequence of resource
+     --              lines terminated by newline characters or end of file.  The
+     --              syntax of an individual resource line is:
+
+     --              ResourceLine   = Comment | IncludeFile | ResourceSpec | <empty line>
+     --              Comment        = "!" {<any character except null or newline>}
+     --              IncludeFile    = "#" WhiteSpace "include" WhiteSpace FileName WhiteSpace
+     --              FileName       = <valid filename for operating system>
+     --              ResourceSpec   = WhiteSpace ResourceName WhiteSpace ":" WhiteSpace Value
+     --              ResourceName   =  NameChar {NameChar}
+     --              WhiteSpace     = {<space> | <horizontal tab>}
+     --              NameChar       = "a"-"z" | "A"-"Z" | "0"-"9" | "_" | "-"
+     --              Value          = {<any character except null or unescaped newline>}
+
+     --              Elements separated by vertical bar (|) are alternatives.
+     --              Curly braces ({...}) indicate zero or more repetitions of
+     --              the enclosed elements. Quotes ("...") are used around literal
+     --              characters.
+
+     --              IncludeFile lines are interpreted by replacing the line with
+     --              the contents of the specified file.  The word "include" must
+     --              be in lowercase.  The filename is interpreted relative to
+     --              the directory of the file in which the line occurs (for
+     --              example, if the filename contains no directory or contains a
+     --              relative directory specification).
+
+     --              A resource database never contains more than one entry for a
+     --              given ResourceName.  If a resource file contains multiple
+     --              lines with the same ResourceName, the last line in the file
+     --              is used.
+
+     --              Any whitespace character before or after the name or colon
+     --              in a ResourceSpec are ignored.  To allow a Value to begin
+     --              with whitespace, the two-character sequence ``\space''
+     --              (backslash followed by space) is recognized and replaced by
+     --              a space character, and the two-character sequence ``\tab''
+     --              (backslash followed by horizontal tab) is recognized and
+     --              replaced by a horizontal tab character.
+     --              Finally, the two-character sequence ``\\'' is recognized and
+     --              replaced with a single backslash.
+     --              These substitutions are done at the beginning of the value
+     --              and never inside.
+
+     Create(aName: CString from Standard;
+    	    aDefaultsDirectory: in out AsciiString from TCollection;
+    	    anUserDefaultsDirectory: in out AsciiString from TCollection;
+    	    Verbose: Boolean from Standard = Standard_False)
+     returns mutable Manager from Resource;
+
+     Save(me)
+     returns Boolean from Standard;
+     ---Purpose: Save the user resource structure in the specified file.
+     --          Creates the file if it does not exist.
+     ---Level: Public
+
+ ---Category: Querying...
+
+     --	A resource is search first in the user structure and then in the reference
+     -- structure. The resource name is case sensitive.
+
+     Find(me; aResource: CString from Standard)
+     returns Boolean from Standard;
+     ---Purpose: returns True if the Resource does exist.
+     ---Level: Public
+
+     Integer(me; aResourceName: in CString from Standard)
+     returns Integer from Standard
+     raises NoSuchResource from Resource, TypeMismatch from Standard 
+     is virtual;
+
+     ---Purpose: Gets the value of an integer resource according to its
+     --          instance and its type.
+     ---Level: Public
+
+     Real(me; aResourceName: in CString from Standard)
+     returns Real from Standard
+     raises NoSuchResource from Resource, TypeMismatch from Standard 
+     is virtual;
+     ---Purpose: Gets the value of a real resource according to its instance
+     --          and its type.
+     ---Level: Public
+
+     Value(me; aResourceName: in CString from Standard)
+     returns CString from Standard
+     raises NoSuchResource from Resource, TypeMismatch from Standard
+     is virtual;
+     ---Purpose: Gets the value of a CString resource according to its instance
+     --          and its type.
+     ---Level: Public
+
+     ExtValue(me: mutable; aResourceName: in CString from Standard)
+     returns ExtString from Standard
+     raises NoSuchResource from Resource, TypeMismatch from Standard
+     is virtual;
+     ---Purpose: Gets the value of an ExtString resource according to its instance
+     --          and its type.
+     ---Level: Public
+
+ ---Category: Modifying or creating a resource...
+
+     --	This can be done only in user resource structure, even if the resource
+     --	already exists in the reference structure.
+
+     SetResource(me:mutable;
+		 aResourceName:    in CString from Standard;
+		 aValue:          in Integer from Standard)
+     is virtual;
+     ---Purpose: Sets the new value of an integer resource.
+     --          If the resource does not exist, it is created.
+     ---Level: Public
+
+     SetResource(me: mutable;
+		 aResourceName:    in CString from Standard;
+		 aValue:         in Real from Standard)
+     is virtual;
+     ---Purpose: Sets the new value of a real resource.
+     --          If the resource does not exist, it is created.
+     ---Level: Public
+
+     SetResource(me: mutable;
+		 aResourceName:    in CString from Standard;
+		 aValue:         in CString from Standard)
+     is virtual;
+     ---Purpose: Sets the new value of an CString resource.
+     --          If the resource does not exist, it is created.
+     ---Level: Public
+
+     SetResource(me: mutable;
+		 aResourceName:    in CString from Standard;
+		 aValue:         in ExtString from Standard)
+     is virtual;
+     ---Purpose: Sets the new value of an ExtString resource.
+     --          If the resource does not exist, it is created.
+     ---Level: Public
+
+---Category: Private methods.
+
+     Load (me: mutable ;
+    	   aDirectory: in out AsciiString from TCollection;
+           aName:      in out AsciiString from TCollection;
+	   aMap:       in out DataMapOfAsciiStringAsciiString)
+     is static private;
+     ---Level: Internal
+
+fields
+
+    myName      : AsciiString from TCollection;
+    myRefMap    : DataMapOfAsciiStringAsciiString from Resource ;
+    myUserMap   : DataMapOfAsciiStringAsciiString from Resource ;
+    myExtStrMap : DataMapOfAsciiStringExtendedString from Resource ;
+    myVerbose   : Boolean from Standard;
+
+end Manager;
+
+
+
+-- Examples
+-- Let's consider the Mesh application.
+--
+-- A reference file is furnished:
+--
+-- $MESHHOME/inc/Mesh and CSF_MeshDefaults points to $MESHHOME/inc
+--
+--
+--Mesh.Strategy:	TransBoundary
+--Mesh.TransBoundary.DiscontinuityAngle:	.8
+--Mesh.Type.Objective:	Surfaces
+--Mesh.Type.Node.Geometry:	Point
+--Mesh.Type.Line.Geometry:	Segment
+--Mesh.Type.Surface.Geometry:	Quadrangle
+--Mesh.Type.Volume.Geometry:	Tetrahedral
+--Mesh.Type.Point.Element:	PointA
+--Mesh.Type.Segment.Element:	SegmentA
+--Mesh.Type.Triangle.Element:	TriangleA
+--Mesh.Type.Quadrangle.Element:	QuadrangleA
+--Mesh.Type.TriQuad.Element:	TriQuadA
+--Mesh.Type.Tetrahedral.Element:	TetrahedralA
+--Mesh.Type.Point.Method:	Mapped
+--Mesh.Type.Segment.Method:	ShellExtrusion
+--Mesh.Type.Triangle.Method:	Frontal
+--Mesh.Type.Quadrangle.Method:	Mapped
+--Mesh.Type.TriQuad.Method:	Mapped
+--Mesh.Type.Tetrahedral.Method:	DelaunayTetra
+--Mesh.Constraints.DistributionMode.AverageLengthDefinition:	MaxLengthRatio
+--Mesh.Constraints.AverageLength.ByNumberOfNodes:	100
+--Mesh.Constraints.AverageLength.ByRatio:	10
+--Mesh.Constraints.DistributionMode.NumberOfDivisions:	4
+--Mesh.Constraints.DistributionMode.MaximumDeflection:	10
+--Mesh.Constraints.DistributionMode.Position:	Centered
+--Mesh.Constraints.DistributionMode.ArithmRatio:	10
+--Mesh.Constraints.DistributionMode.GeomCoeff:	2.0
+--Mesh.Constraints.DistributionMode.Circles.MiniDivision:	5
+--Mesh.Constraints.ElementsQuality.Triangle:	Hard
+--Mesh.Constraints.ElementsQuality.Quadrangle:	Normal
+--Mesh.Constraints.ElementsQuality.Tetrahedral:	Tolerant
+--Mesh.Constraints.ElementsQuality.Quadrangle.Criterium:	0.2
+--Mesh.Constraints.ElementsQuality.Tetrahedral.Criterium:	0.15
+--Mesh.Constraints.ElementsQuality.Triangle.Criterium:	0.1
+--Mesh.Edition.SmoothIterationNumber:	10
+--Mesh.Edition.NodesPastingTolerance:	0.3
+--Mesh.Control.Length:	10.0
+--Mesh.Control.Surface:	100.0
+--Mesh.Control.Volume:	10000.0
+--Mesh.Control.Warp:	0.6
+--Mesh.Control.AspectRatio:	2.0
+--
+-- A user file is (or is not) furnished:
+--
+--
+-- $HOME/Mesh and CSF_MeshUserDefaults points to $HOME
+-- which can override some or all the previous values.

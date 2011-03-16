@@ -1,0 +1,174 @@
+-- File:	AIS_ConnectedInteractive.cdl
+-- Created:	Wed Jan  8 13:33:22 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+ class ConnectedInteractive from AIS inherits InteractiveObject from AIS
+
+	---Purpose: Defines an Interactive Object through a connection to
+    	-- another Interactive   Object, which serves as a
+    	-- reference, and which is located elsewhere in the viewer.
+    	-- This allows you to use the Connected Interactive
+    	-- Object without having to recalculate presentation,
+    	-- selection or graphic structure. These are deduced
+    	-- from your reference object.
+    	-- The relation between the connected interactive object
+    	-- and its source is generally one of geometric transformation.
+    	-- Warning
+    	-- An Interactive entity which is view (or projector)
+    	-- dependent requires recalculation of views in hidden
+    	-- parts mode depending on the position of the
+    	-- projector in each view. You should derive the entity's
+    	-- inheritance from ConnectedInteractive and redefine
+    	-- its compute method to enable this type of calculation.
+
+uses
+    Location              from TopLoc,
+    Transformation        from Geom,
+    PresentationManager3d from PrsMgr,
+    GraphicObject         from Graphic2d,
+    PresentationManager2d from PrsMgr,
+    Presentation          from Prs3d,
+    TypeOfPresentation3d  from PrsMgr,
+    Selection             from SelectMgr,
+    Projector             from Prs3d,
+    KindOfInteractive     from AIS
+raises
+    NotImplemented from Standard
+
+is
+
+    Create (aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) 
+    returns  mutable  ConnectedInteractive  from  AIS;
+    	---Purpose:
+    	-- Disconnects the previous view and sets highlight
+    	-- mode to 0. This highlights the wireframe presentation
+    	-- aTypeOfPresentation3d.
+    	-- Top_AllView deactivates hidden line removal.
+    
+    Type(me) returns KindOfInteractive from AIS 
+    is redefined virtual;
+  	---Purpose: Returns KOI_Object
+
+    Signature(me) returns Integer from Standard
+    is redefined virtual;
+	---Purpose: Returns 1
+
+
+    Connect(me          : mutable; 
+    	    anotherIObj : InteractiveObject from AIS) is virtual;
+    	---Purpose: Establishes the connection between the Connected
+    	-- Interactive Object, anotherIobj, and its reference
+    	-- entity. If a previous connection with an Interactive
+    	-- Object already exists, it is removed by Disconnect.
+    	-- The second syntax also initiates the location of the
+    	-- Connected Interactive Object.
+
+    Connect(me:mutable;
+    	    anotherIobj: InteractiveObject from AIS;
+	    aLocation : Location from TopLoc) is virtual;
+        ---Purpose: 
+	    
+
+    HasConnection(me) returns Boolean from Standard;
+        ---C++: inline
+    	---Purpose:
+    	-- Returns true if there is a connection established
+    	-- between the presentation and its source reference.
+	
+    ConnectedTo(me) returns any InteractiveObject from AIS;
+     	---C++: inline
+	---C++: return const&
+    	---Purpose:
+    	-- Returns the connection with the reference Interactive Object.
+
+	    
+    Disconnect(me:mutable);
+	---Purpose: Clears the connection with a source reference. The
+    	-- presentation will no longer be displayed.
+    	-- Warning Must be done before deleting the presentation.
+
+    Compute(me                   : mutable;
+            aPresentationManager : PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation from Prs3d;
+            aMode                : Integer from Standard = 0)
+	---Level: Public 
+	---Purpose: Calculates the view aPresentation and its updates.
+    	-- The latter are managed by aPresentationManager.
+    	-- The display mode aMode is 0 by default.
+    	--    this method is redefined virtual;
+	--          when the instance is connected to another
+    	--          InteractiveObject,this method doesn't
+    	--          compute anything, but just uses the 
+	--          presentation of this last object, with
+	--          a transformation if there's one stored. 
+    is redefined virtual private;
+
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+	---Purpose: Computes the presentation according to a point of view
+	--          given by <aProjector>. 
+	--          To be Used when the associated degenerated Presentations 
+	--          have been transformed by <aTrsf> which is not a Pure
+	--          Translation. The HLR Prs can't be deducted automatically
+	--          WARNING :<aTrsf> must be applied
+	--           to the object to display before computation  !!!
+
+
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined;     
+
+    Compute(me:mutable;
+    	        aPresentationManager: PresentationManager2d from PrsMgr;
+                aPresentation: mutable GraphicObject from Graphic2d;
+                aMode: Integer from Standard = 0)
+    	---Level: Internal 
+    	---Purpose: this method should fill the presentation according to the
+    	--          enumerated mode of the application and to the display parameter
+    	--          of the application.
+		
+    raises NotImplemented from Standard
+    is redefined;
+    
+    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+                                 aMode      : Integer) is redefined virtual private;
+	---Level: Public 
+	---Purpose: Recovers and calculates any sensitive primitive,
+    	-- aSelection, available in Shape mode, specified by
+    	-- aMode. As a rule, these are sensitive faces.
+    	-- This method is defined as virtual. This enables you to
+    	-- implement it in the creation of a new class of
+    	-- Interactive Object. You need to do this and in so
+    	-- doing, redefine this method, if you create a class
+    	-- which enriches the list of signatures and types.
+
+    AcceptShapeDecomposition(me) returns Boolean from Standard is 
+    redefined virtual;
+	---C++: inline
+
+
+    UpdateLocation(me:mutable) is redefined virtual;
+
+    UpdateLocation(me:mutable;aSel:Selection from SelectMgr) is redefined virtual;
+	---Purpose: For this class, the  location effect is treated in the
+	--           compute   &     computeSelection  methods.  So     the
+	--        UpdateLocation Methods are redefined to do nothing else
+
+--   UpdateLocation(me:mutable;P : mutable Presentation from Prs3d) is redefined virtual;
+    
+fields
+
+    myReference    : InteractiveObject from AIS is protected;
+        ---Purpose: To have the time to Disconnect below, the old is kept for a while. 
+    myOldReference : InteractiveObject from AIS is protected; 
+
+end ConnectedInteractive;
+
+

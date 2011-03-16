@@ -1,0 +1,9 @@
+@ifnotdefined (%Standard_CMPLRS_EDL) then
+
+@set %Standard_CMPLRS_EDL="";
+
+@if ( %Station != "sun" ) then
+  @string %CMPLRS_CXX_INCLUDE = %CMPLRS_CXX_INCLUDE " " %CSF_TBB_INCLUDES ;
+@endif;
+
+@endif;

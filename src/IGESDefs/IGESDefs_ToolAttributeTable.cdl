@@ -1,0 +1,59 @@
+-- File:	IGESDefs_ToolAttributeTable.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolAttributeTable  from IGESDefs
+
+    ---Purpose : Tool to work on a AttributeTable. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses AttributeTable from IGESDefs,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolAttributeTable;
+    ---Purpose : Returns a ToolAttributeTable, ready to work
+
+
+    ReadOwnParams (me; ent : mutable AttributeTable;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : AttributeTable;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : AttributeTable;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a AttributeTable <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : AttributeTable) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : AttributeTable;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : AttributeTable; entto : mutable AttributeTable;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : AttributeTable;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolAttributeTable;

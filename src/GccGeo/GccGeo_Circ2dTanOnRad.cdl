@@ -1,0 +1,263 @@
+-- File:	Circ2dTanOnRad.cdl
+-- Created:	Wed Apr  3 10:42:09 1991
+-- Author:	Remi GILET
+--		<reg@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+generic class Circ2dTanOnRad from GccGeo (
+    TheCurve         as any; --
+    TheTool          as any; --
+    TheQCurve        as any; -- as QualifiedCurv from GccEnt (TheCurve)
+    TheParGenCurve   as any; -- as ParGenCurve from GccGeo 
+    	    	             --               (TheCurve)
+    TheHParGenCurve  as Transient;
+    TheCurvePGTool   as any; -- as CurvePGTool from GccGeo 
+    	    	             --               (Thecurve,
+    	    	             --                TheTool,
+    	    	             --                TheParGenCurve)
+    TheIntConicCurve as any; -- as IntConicCurveOfGOffsetInter
+    TheIntCurveCurve as any) -- as GOffSetInter from Geom2dInt
+    	    	    	     --                (TheParGenCurve,
+    	    	    	     --                 TheCurvePGTool)
+
+	---Purpose: This class implements the algorithms used to 
+	--          create a 2d circle tangent to a 2d entity, 
+	--          centered on a 2d entity and with a given radius.
+	--          More than one argument must be a curve.
+	--          The arguments of all construction methods are :
+	--             - The qualified element for the tangency constrains 
+	--             (QualifiedCirc, QualifiedLin, QualifiedCurvPoints).
+	--             - The Center element (circle, line, curve).
+	--             - A real Tolerance.
+	--          Tolerance is only used in the limits cases.
+    	--          For example : 
+    	--          We want to create a circle tangent to an OutsideCurv Cu1
+    	--          centered on a line OnLine with a radius Radius and with
+    	--          a tolerance Tolerance.
+    	--          If we did not use Tolerance it is impossible to 
+    	--          find a solution in the following case : OnLine is 
+    	--          outside Cu1. There is no intersection point between Cu1
+    	--          and OnLine. The distance between the line and the 
+    	--          circle is greater than Radius.
+    	--          With Tolerance we will give a solution if the 
+    	--          distance between Cu1 and OnLine is lower than or 
+    	--          equal Tolerance.
+
+-- inherits Entity from Standard
+
+uses Lin2d            from gp, 
+     Circ2d           from gp,  
+     Pnt2d            from gp,
+     Array1OfCirc2d   from TColgp,
+     Array1OfPnt2d    from TColgp,
+     QualifiedCirc    from GccEnt,
+     QualifiedLin     from GccEnt,
+     Array1OfReal     from TColStd,
+     Array1OfInteger  from TColStd,
+     Position         from GccEnt,
+     Array1OfPosition from GccEnt
+     
+raises NegativeValue from Standard,
+       OutOfRange    from Standard,
+       BadQualifier  from GccEnt,
+       NotDone       from StdFail
+
+is
+
+-- On a line .............................................................
+
+Create(Qualified1 :        TheQCurve              ;
+       OnLine     :        Lin2d     from gp      ;
+       Radius     :        Real      from Standard;
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles tangent to a curve and centered on a 2d Line 
+    --          with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue, BadQualifier;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+-- -- On a circle ...........................................................
+
+Create(Qualified1 :        TheQCurve              ;
+       OnCirc     :        Circ2d    from gp      ;
+       Radius     :        Real      from Standard;
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles tangent to a curve and centered on a 2d Circle 
+    --          with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue, BadQualifier;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+-- On a curve ............................................................
+
+Create(Qualified1 :        QualifiedCirc from GccEnt  ;
+       OnCurv     :        TheCurve                   ;
+       Radius     :        Real          from Standard;
+       Tolerance  :        Real          from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles tangent to a circle and centered on a 2d curve 
+    --          with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue, BadQualifier;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+Create(Qualified1 :        QualifiedLin  from GccEnt  ;
+       OnCurv     :        TheCurve                   ;
+       Radius     :        Real          from Standard;
+       Tolerance  :        Real          from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles tangent to a 2d Line and centered on a 2d curve 
+    --          with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue, BadQualifier;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+Create(Qualified1 :        TheQCurve              ;
+       OnCurv     :        TheCurve               ;
+       Radius     :        Real      from Standard;
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles tangent to a 2d curve and centered on a 2d curve 
+    --          with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue, BadQualifier;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+Create(Point1     :        Pnt2d    from gp      ;
+       OnCurv     :        TheCurve              ;
+       Radius     :        Real     from Standard;
+       Tolerance  :        Real     from Standard) returns Circ2dTanOnRad 
+    ---Purpose: This methods implements the algorithms used to create 
+    --          2d Circles passing through a 2d point and centered on a 
+    --          2d curve with a given radius.
+    --          Tolerance is used to find solution in every limit cases.
+raises NegativeValue;
+    ---Purpose: raises NegativeValue in case of NegativeRadius.
+
+-- -- ....................................................................
+
+IsDone(me) returns Boolean from Standard
+is static;
+    	---Purpose: This method returns True if the construction 
+    	--          algorithm succeeded.
+
+NbSolutions(me) returns Integer from Standard
+    	---Purpose: This method returns the number of solutions.
+raises NotDone
+is static;
+    	---Purpose: It raises NotDone if the construction algorithm 
+    	--          didn't succeed.
+
+ThisSolution(me                           ;
+    	     Index : Integer from Standard) returns Circ2d from gp
+    ---Purpose: Returns the solution number Index and raises OutOfRange 
+    --   	exception if Index is greater than the number of solutions.
+    --          Be careful: the Index is only a way to get all the 
+    --          solutions, but is not associated to theses outside the 
+    --          context of the algorithm-object.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions.
+
+WhichQualifier(me                                  ;
+    	       Index   :     Integer  from Standard;
+	       Qualif1 : out Position from GccEnt  )
+raises OutOfRange, NotDone
+is static;
+    -- It returns the informations about the qualifiers of the tangency 
+    -- arguments concerning the solution number Index.
+    -- It returns the real qualifiers (the qualifiers given to the 
+    -- constructor method in case of enclosed, enclosing and outside 
+    -- and the qualifiers computedin case of unqualified).
+
+Tangency1(me                                     ;
+          Index         : Integer   from Standard;
+          ParSol,ParArg : out Real  from Standard;
+          PntSol        : out Pnt2d from gp      )
+    ---Purpose: Returns informations about the tangency point between the 
+    --          result number Index and the first argument.
+    --          ParSol is the intrinsic parameter of the point on the 
+    --          solution curv.
+    --          ParArg is the intrinsic parameter of the point on the 
+    --          argument curv.
+    --          PntSol is the tangency point on the solution curv.
+    --          PntArg is the tangency point on the argument curv.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions.
+
+CenterOn3 (me                                     ;
+           Index         : Integer   from Standard;
+           ParArg        : out Real  from Standard;
+           PntSol        : out Pnt2d from gp      )
+    ---Purpose: Returns informations about the center (on the curv) 
+    --          of the result.
+    --          ParArg is the intrinsic parameter of the point on 
+    --          the argument curv.
+    --          PntSol is the center point of the solution curv.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions.
+
+IsTheSame1(me                           ;
+           Index : Integer from Standard) returns Boolean from Standard
+    ---Purpose: Returns True if the solution number Index is equal to 
+    --          the first argument and False in the other cases.
+raises OutOfRange, NotDone
+is static;
+    ---Purpose: It raises NotDone if the construction algorithm 
+    --          didn't succeed.
+    --          It raises OutOfRange if Index is greater than the 
+    --          number of solutions.
+
+fields
+
+    WellDone : Boolean from Standard;
+    ---Purpose: True if the algorithm succeeded.
+
+    NbrSol   : Integer from Standard;
+    ---Purpose: The number of possible solutions. We have to decide about the
+    --          status of the multiple solutions...
+
+    cirsol   : Array1OfCirc2d from TColgp;
+    ---Purpose : The solutions.
+
+    qualifier1 : Array1OfPosition from GccEnt;
+    -- The qualifiers of the first argument.
+
+    TheSame1 : Array1OfInteger from TColStd;
+    ---Purpose: 1 if the solution and the first argument are the same in the 
+    -- tolerance of Tolerance.
+    -- 0 in the other cases.
+
+    pnttg1sol   : Array1OfPnt2d from TColgp;
+    ---Purpose: The tangency point between the solution and the first 
+    --          argument on the solution.
+
+    pntcen3   : Array1OfPnt2d from TColgp;
+    ---Purpose: The center point of the solution on the first argument.
+
+    par1sol   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the first argument on thesolution.
+
+    pararg1   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the tangency point between the solution 
+    --          and the first argument on the first argument.
+
+    parcen3   : Array1OfReal from TColStd;
+    ---Purpose: The parameter of the center point of the solution on the 
+    --          second argument.
+
+end Circ2dTanOnRad;

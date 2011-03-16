@@ -1,0 +1,31 @@
+-- File:	MoniTool_ElemHasher.cdl
+-- Created:	Fri Nov  4 11:06:49 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class ElemHasher  from MoniTool
+
+    ---Purpose : ElemHasher defines HashCode for Element, which is : ask a
+    --           Element its HashCode !  Because this is the Element itself
+    --           which brings the HashCode for its Key
+    --           
+    --           This class complies to the template given in TCollection by
+    --           MapHasher itself
+
+uses Element
+
+is
+
+    HashCode (myclass; K : Element; Upper : Integer) returns Integer;
+    ---Purpose : Returns a HashCode in the range <0,Upper> for a Element :
+    --           asks the Element its HashCode then transforms it to be in the
+    --           required range
+
+    IsEqual (myclass; K1, K2 : Element) returns Boolean;
+    ---Purpose : Returns True if two keys are the same.
+    --           The test does not work on the Elements themselves but by
+    --           calling their methods Equates
+
+end ElemHasher;

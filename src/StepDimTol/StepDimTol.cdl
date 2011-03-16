@@ -1,0 +1,64 @@
+-- File:        StepStepDimTol.cdl
+-- Created:     Mon June  2 11:11:09 2003
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   
+
+package StepDimTol
+
+
+    ---Purpose :Collects definition of STEP GD&T entities TR12J
+    	
+
+uses    TCollection,
+     	StepRepr, 
+    	StepShape,
+    	StepVisual,
+	StepBasic,
+    	TColStd, 
+    	StepData, 
+    	Interface, 
+    	MMgt
+
+is 
+
+enumeration LimitCondition is 
+   MaximumMaterialCondition,
+   LeastMaterialCondition,
+   RegardlessOfFeatureSize
+end;
+    
+    class ShapeToleranceSelect;
+    class AngularityTolerance;
+    class CircularRunoutTolerance;
+    class ConcentricityTolerance;
+    class CylindricityTolerance;
+    class CoaxialityTolerance;
+    class FlatnessTolerance;
+    class LineProfileTolerance;
+    class ParallelismTolerance;
+    class PerpendicularityTolerance;
+    class PositionTolerance;
+    class RoundnessTolerance;
+    class StraightnessTolerance;
+    class SurfaceProfileTolerance;
+    class SymmetryTolerance;
+    class TotalRunoutTolerance;
+    
+    class GeometricTolerance;
+    class GeometricToleranceRelationship;
+    class GeometricToleranceWithDatumReference;
+    class ModifiedGeometricTolerance;
+     
+    class Datum;
+    class DatumFeature;
+    class DatumReference;
+    class CommonDatum;
+    class DatumTarget;
+    class PlacedDatumTargetFeature;
+
+    class GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
+
+    class Array1OfDatumReference instantiates Array1 from TCollection (DatumReference);
+    class HArray1OfDatumReference instantiates HArray1 from TCollection (DatumReference,Array1OfDatumReference from StepDimTol);
+    
+end StepDimTol;

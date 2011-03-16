@@ -1,0 +1,48 @@
+-- File:	Bisector_Curve.cdl
+-- Created:	Fri Mar 18 10:18:20 1994
+-- Author:	Yves FRICAUD
+--		<yfr@viandox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class Curve from Bisector 
+
+	---Purpose: 
+
+inherits
+    Curve from Geom2d
+
+uses
+    Pnt2d from gp
+
+is
+    
+    Parameter ( me ; P : Pnt2d from gp) returns Real
+    is deferred;
+    
+    IsExtendAtStart (me) returns Boolean from Standard
+    is deferred;
+    
+    IsExtendAtEnd   (me) returns Boolean from Standard
+    is deferred;
+
+    NbIntervals (me) returns Integer
+	---Purpose: If necessary,  breaks the  curve in  intervals  of
+	--          continuity  <C1>.    And  returns   the number   of
+	--          intervals.
+    is deferred;
+
+    IntervalFirst(me; Index : Integer from Standard) returns Real
+       ---Purpose: Returns  the  first  parameter    of  the  current
+       --          interval. 
+    is deferred;
+    
+    IntervalLast(me; Index : Integer from Standard) returns Real
+       ---Purpose: Returns  the  last  parameter    of  the  current
+       --          interval. 
+    is deferred;
+    
+end Curve;
+
+
+

@@ -1,0 +1,144 @@
+--
+-- File      :  NetworkSubfigureDef.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NetworkSubfigureDef from IGESDraw  inherits IGESEntity
+
+        ---Purpose : defines IGESNetworkSubfigureDef,
+        --           Type <320> Form Number <0> in package IGESDraw
+        --
+        --           This class differs from the ordinary subfigure definition
+        --           in that it defines a specialized subfigure, one whose
+        --           instances may participate in networks.
+        --
+        --           The Number of associated(child) Connect Point Entities
+        --           in the Network Subfigure Instance must match the number
+        --           in the Network Subfigure Definition, their order must
+        --           be identical, and any unused points of connection in
+        --           the instance must be indicated by a null(zero) pointer.
+        --
+
+uses
+
+        HArray1OfIGESEntity   from IGESData,
+        ConnectPoint          from IGESDraw,
+        HArray1OfConnectPoint from IGESDraw,
+        TextDisplayTemplate   from IGESGraph,
+        HAsciiString          from TCollection
+
+raises OutOfRange
+
+is
+
+        Create returns mutable NetworkSubfigureDef;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me               : mutable;
+              aDepth           : Integer;
+              aName            : HAsciiString;
+              allEntities      : HArray1OfIGESEntity;
+              aTypeFlag        : Integer;
+              aDesignator      : HAsciiString;
+              aTemplate        : TextDisplayTemplate;
+              allPointEntities : HArray1OfConnectPoint);
+        ---Purpose : This method is used to set fields of the class
+        --           NetworkSubfigureDef
+        --       - aDepth           : Depth of Subfigure
+        --                            (indicating the amount of nesting)
+        --       - aName            : Subfigure Name
+        --       - allEntities      : Associated subfigures Entities exclusive
+        --                            of primary reference designator and
+        --                            Control Points.
+        --       - aTypeFlag        : Type flag determines which Entity
+        --                            belongs in which design
+        --                            (Logical design or Physical design)
+        --       - aDesignator      : Designator HAsciiString and its Template
+        --       - allPointEntities : Associated Connect Point Entities
+
+        Depth (me) returns Integer;
+        ---Purpose : returns Depth of Subfigure(indication the amount of nesting)
+        -- Note : The Depth is inclusive of both Network Subfigure Definition
+        --        Entity and the Ordinary Subfigure Definition Entity.
+        --        Thus, the two may be nested.
+
+        Name (me) returns HAsciiString from TCollection;
+        ---Purpose : returns the Subfigure Name
+
+        NbEntities (me) returns Integer;
+        ---Purpose : returns Number of Associated(child) entries in subfigure exclusive
+        -- of primary reference designator and Control Points
+
+        Entity (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the Index'th IGESEntity in subfigure exclusive of primary
+        -- reference designator and Control Points
+        -- raises exception if Index  <=0 or Index > NbEntities()
+
+        TypeFlag (me) returns Integer;
+        ---Purpose : return value = 0 : Not Specified
+        --              = 1 : Logical  design
+        --              = 2 : Physical design
+
+        Designator (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Primary Reference Designator
+
+        HasDesignatorTemplate (me) returns Boolean;
+        ---Purpose : returns True if Text Display Template is specified for
+        -- primary designator else returns False
+
+        DesignatorTemplate (me) returns TextDisplayTemplate;
+        ---Purpose : if Text Display Template specified then return TextDisplayTemplate
+        -- else return NULL Handle
+
+        NbPointEntities (me) returns Integer;
+        ---Purpose : returns the Number Of Associated(child) Connect Point Entities
+
+        HasPointEntity (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns True is Index'th Associated Connect Point Entity is present
+        -- else returns False
+        -- raises exception if Index is out of bound
+
+        PointEntity (me; Index : Integer) returns ConnectPoint
+        raises OutOfRange;
+        ---Purpose : returns the Index'th Associated Connect Point Entity
+        -- raises exception if Index <= 0 or Index > NbPointEntities()
+
+fields
+
+--
+-- Class    : IGESDraw_NetworkSubfigureDef
+--
+-- Purpose  : Declaration of the variables specific to a NetworkSubfigureDef.
+--
+-- Reminder : A NetworkSubfigureDef is defined by :
+--                  - Depth of Subfigure(indicating the amount of nesting)
+--                  - Subfigure Name
+--                  - Associated subfigures Entities exclusive
+--                    of primary reference designator and Control Points.
+--                  - Type flag determines which Entity belongs in which design
+--                      (Logical design or Physical design)
+--                  - Designator HAsciiString and its Template
+--                  - Associated Connect Point Entities
+--
+
+        theDepth                : Integer;
+
+        theName                 : HAsciiString;
+
+        theEntities             : HArray1OfIGESEntity;
+
+        theTypeFlag             : Integer;
+
+        theDesignator           : HAsciiString;
+
+        theDesignatorTemplate   : TextDisplayTemplate;
+
+        thePointEntities        : HArray1OfConnectPoint;
+
+end NetworkSubfigureDef;

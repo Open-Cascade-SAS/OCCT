@@ -1,0 +1,313 @@
+-- File:	GeomConvert_CompBezierSurfaceToBSplineSurfaces.cdl
+-- Created:	Thu Jun  6 18:11:13 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class CompBezierSurfacesToBSplineSurface from GeomConvert 
+
+	---Purpose: An algorithm to convert a grid of adjacent
+    	-- non-rational Bezier surfaces into a BSpline surface.
+    	-- A CompBezierSurfacesToBSplineSurface object
+    	-- provides a framework for:
+    	-- -   defining the grid of adjacent Bezier surfaces
+    	--   which is to be converted into a BSpline surface,
+    	-- -   implementing the computation algorithm, and
+    	-- -   consulting the results.
+    	-- Warning
+    	-- Do not attempt to convert rational Bezier surfaces using such an algorithm.
+    	-- Input is array of Bezier patch        
+        --           1    2    3     4  -> VIndex [1, NbVPatches] -> VDirection
+        --         -----------------------
+        --    1    |    |    |    |      |
+        --         -----------------------
+        --    2    |    |    |    |      |
+        --         -----------------------
+        --    3    |    |    |    |      |
+        --         -----------------------
+        --  UIndex [1, NbUPatches]  Udirection  
+        --         
+    	--  Warning! Patches must have compatible parametrization
+	
+uses  
+    Array2OfBezierSurface from TColGeom,
+    HArray2OfPnt from TColgp,
+    Array1OfReal from TColStd,
+    HArray1OfReal from TColStd,
+    Shape from GeomAbs,
+    HArray1OfInteger from TColStd
+
+raises
+    DimensionError    from Standard,
+    NotImplemented    from Standard,
+    ConstructionError from Standard
+
+is
+ Create(Beziers          :  Array2OfBezierSurface) 
+    	---Purpose :  Computes all the data needed to build a "C0"
+    	-- continuous BSpline surface equivalent to the grid of
+    	-- adjacent non-rational Bezier surfaces Beziers.
+    	-- Each surface in the Beziers grid becomes a natural
+    	-- patch, limited by knots values, on the BSpline surface
+    	-- whose data is computed. Surfaces in the grid must
+    	-- satisfy the following conditions:
+    	-- -   Coincident bounding curves between two
+    	--   consecutive surfaces in a row of the Beziers grid
+    	--   must be u-isoparametric bounding curves of these two surfaces.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive surfaces in a column of the Beziers
+    	--   grid must be v-isoparametric bounding curves of these two surfaces.
+    	--   The BSpline surface whose data is computed has the
+    	-- following characteristics:
+    	-- -   Its degree in the u (respectively v) parametric
+    	--   direction is equal to that of the Bezier surface
+    	--   which has the highest degree in the u
+    	--   (respectively v) parametric direction in the Beziers grid.
+    	-- -   It is a "Piecewise Bezier" in both u and v
+    	--   parametric directions, i.e.:
+    	--   -   the knots are regularly spaced in each
+    	--    parametric direction (i.e. the difference between
+    	--    two consecutive knots is a constant), and
+    	--   -   all the multiplicities of the surface knots in a
+    	--    given parametric direction are equal to
+    	--    Degree, which is the degree of the BSpline
+    	--    surface in this parametric direction, except for
+    	--    the first and last knots for which the multiplicity is
+    	--    equal to Degree + 1.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive columns of Bezier surfaces in the
+    	--   Beziers grid become u-isoparametric curves,
+    	--   corresponding to knots values of the BSpline surface.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive rows of Bezier surfaces in the Beziers
+    	--   grid become v-isoparametric curves
+    	--   corresponding to knots values of the BSpline surface.
+    	--  Use the available consultation functions to access the
+    	--  computed data. This data may be used to construct the BSpline surface.
+    	-- Warning
+    	-- The surfaces in the Beziers grid must be adjacent, i.e.
+    	-- two consecutive Bezier surfaces in the grid (in a row
+    	-- or column) must have a coincident bounding curve. In
+    	-- addition, the location of the parameterization on each
+    	-- of these surfaces (i.e. the relative location of u and v
+    	-- isoparametric curves on the surface) is of importance
+    	-- with regard to the positioning of the surfaces in the
+    	-- Beziers grid. Care must be taken with respect to the
+    	-- above, as these properties are not checked and an
+    	-- error may occur if they are not satisfied.
+    	-- Exceptions
+    	-- Standard_NotImplemented if one of the Bezier
+    	-- surfaces of the Beziers grid is rational.       
+ returns CompBezierSurfacesToBSplineSurface
+ raises NotImplemented; 
+  
+ Create(Beziers          :  Array2OfBezierSurface; 
+        Tolerance        :  Real; 
+        RemoveKnots      :  Boolean  =  Standard_True) 
+    	---Purpose : Build an Ci uniform (Rational) BSpline surface
+    	--           The higest Continuity Ci is imposed, like the
+    	--           maximal deformation is lower than <Tolerance>. 
+    	--  Warning:  The Continuity C0 is imposed without any check.    
+ returns CompBezierSurfacesToBSplineSurface
+ raises NotImplemented;
+
+ Create(Beziers          :  Array2OfBezierSurface;
+        UKnots           :  Array1OfReal;
+	VKnots           :  Array1OfReal;
+        UContinuity      :  Shape = GeomAbs_C0;
+        VContinuity      :  Shape = GeomAbs_C0;
+        Tolerance        :  Real  = 1.0e-4)
+    	---Purpose :  Computes all the data needed to construct a BSpline
+    	-- surface equivalent to the adjacent non-rational
+    	-- Bezier surfaces Beziers grid.
+    	-- Each surface in the Beziers grid becomes a natural
+    	-- patch, limited by knots values, on the BSpline surface
+    	-- whose data is computed. Surfaces in the grid must
+    	-- satisfy the following conditions:
+    	-- -   Coincident bounding curves between two
+    	--   consecutive surfaces in a row of the Beziers grid
+    	--   must be u-isoparametric bounding curves of these two surfaces.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive surfaces in a column of the Beziers
+    	-- grid must be v-isoparametric bounding curves of these two surfaces.
+    	--   The BSpline surface whose data is computed has the
+    	-- following characteristics:
+    	-- -   Its degree in the u (respectively v) parametric
+    	--   direction is equal to that of the Bezier surface
+    	--   which has the highest degree in the u
+    	--   (respectively v) parametric direction in the Beziers grid.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive columns of Bezier surfaces in the
+    	--   Beziers grid become u-isoparametric curves
+    	--   corresponding to knots values of the BSpline surface.
+    	-- -   Coincident bounding curves between two
+    	--   consecutive rows of Bezier surfaces in the Beziers
+    	--   grid become v-isoparametric curves
+    	--   corresponding to knots values of the BSpline surface.
+    	-- Knots values of the BSpline surface are given in the two tables:
+    	-- -   UKnots for the u parametric direction (which
+    	--   corresponds to the order of Bezier surface columns in the Beziers grid), and
+    	-- -   VKnots for the v parametric direction (which
+    	--  corresponds to the order of Bezier surface rows in the Beziers grid).
+    	--   The dimensions of UKnots (respectively VKnots)
+    	-- must be equal to the number of columns (respectively,
+    	-- rows) of the Beziers grid, plus 1 .
+    	-- UContinuity and VContinuity, which are both
+    	-- defaulted to GeomAbs_C0, specify the required
+    	-- continuity on the BSpline surface. If the required
+    	-- degree of continuity is greater than 0 in a given
+    	-- parametric direction, a deformation is applied locally
+    	-- on the initial surface (as defined by the Beziers grid)
+    	-- to satisfy this condition. This local deformation is not
+    	-- applied however, if it is greater than Tolerance
+    	-- (defaulted to 1.0 e-7). In such cases, the
+    	-- continuity condition is not satisfied, and the function
+    	-- IsDone will return false. A small tolerance value
+    	-- prevents any modification of the surface and a large
+    	-- tolerance value "smoothes" the surface.
+    	-- Use the available consultation functions to access the
+    	-- computed data. This data may be used to construct the BSpline surface.
+    	-- Warning
+    	-- The surfaces in the Beziers grid must be adjacent, i.e.
+    	-- two consecutive Bezier surfaces in the grid (in a row
+    	-- or column) must have a coincident bounding curve. In
+    	-- addition, the location of the parameterization on each
+    	-- of these surfaces (i.e. the relative location of u and v
+    	-- isoparametric curves on the surface) is of importance
+    	-- with regard to the positioning of the surfaces in the
+    	-- Beziers grid. Care must be taken with respect to the
+    	-- above, as these properties are not checked and an
+    	-- error may occur if they are not satisfied.
+    	-- Exceptions
+    	-- Standard_DimensionMismatch:
+    	-- -   if the number of knots in the UKnots table (i.e. the
+    	--   length of the UKnots array) is not equal to the
+    	--   number of columns of Bezier surfaces in the
+    	--   Beziers grid plus 1, or
+    	-- -   if the number of knots in the VKnots table (i.e. the
+    	--   length of the VKnots array) is not equal to the
+    	--   number of rows of Bezier surfaces in the Beziers grid, plus 1.
+    	--   Standard_ConstructionError:
+    	-- -   if UContinuity and VContinuity are not equal to
+    	--   one of the following values: GeomAbs_C0,
+    	--   GeomAbs_C1, GeomAbs_C2 and GeomAbs_C3; or
+    	-- -   if the number of columns in the Beziers grid is
+    	--   greater than 1, and the required degree of
+    	--   continuity in the u parametric direction is greater
+    	--   than that of the Bezier surface with the highest
+    	--   degree in the u parametric direction (in the Beziers grid), minus 1; or
+    	-- -   if the number of rows in the Beziers grid is
+    	--   greater than 1, and the required degree of
+    	--   continuity in the v parametric direction is greater
+    	--   than that of the Bezier surface with the highest
+    	--   degree in the v parametric direction (in the Beziers grid), minus 1 .
+    	--   Standard_NotImplemented if one of the Bezier
+    	-- surfaces in the Beziers grid is rational.
+ returns CompBezierSurfacesToBSplineSurface 
+ raises ConstructionError,
+        DimensionError,    
+	NotImplemented;  
+  
+ Perform (me : in out; Beziers : Array2OfBezierSurface) 
+    	---Purpose :  It used internaly by the constructors. 
+ is private;
+
+ NbUKnots (me)   returns Integer;
+       	---Purpose :  Returns the number of knots in the U direction 
+       	-- of the BSpline surface whose data is computed in this framework.
+    	---C++: inline
+
+ NbUPoles (me)  returns Integer;
+     	---Purpose : Returns number of poles in the U direction
+     	-- of the BSpline surface whose data is computed in this framework. 
+     	---C++: inline
+
+ NbVKnots (me)  returns Integer;
+        ---Purpose : Returns the number of knots in the V direction
+    	-- of the BSpline surface whose data is computed in this framework.   
+        ---C++: inline
+
+ NbVPoles (me)  returns Integer;
+        ---Purpose : Returns the number of poles in the V direction
+        -- of the BSpline surface whose data is computed in this framework.     
+        ---C++: inline
+ 
+ Poles(me)
+     	---Purpose :  Returns the table of poles of the BSpline surface
+     	-- whose data is computed in this framework.
+     	---C++: inline
+     	---C++: return const & 
+     returns HArray2OfPnt;
+
+   
+ UKnots (me)
+    	---Purpose : Returns the knots table for the u parametric
+    	-- direction of the BSpline surface whose data is computed in this framework.
+    	---C++: inline
+     	---C++: return const &
+    	returns  HArray1OfReal;
+   
+ UDegree (me)  returns Integer;
+        ---Purpose : Returns the degree for the u  parametric
+    	-- direction of the BSpline surface whose data is computed in this framework.
+        ---C++: inline
+
+ VKnots (me)
+    	---Purpose : Returns the knots table for the v parametric
+    	-- direction of the BSpline surface whose data is computed in this framework.     	
+    	---C++: inline
+     	---C++: return const &
+    	returns HArray1OfReal;      
+      
+       
+ VDegree (me) 
+    	---Purpose : Returns the degree for the v  parametric
+    	-- direction of the BSpline surface whose data is computed in this framework.
+    	---C++: inline
+    returns Integer;
+
+ UMultiplicities (me)
+        ---Purpose :  
+    	-- Returns the multiplicities table for the u 
+        -- parametric direction of the knots of the BSpline
+    	-- surface whose data is computed in this framework.
+    	---C++: inline
+        ---C++: return const &
+ returns  HArray1OfInteger;
+
+ VMultiplicities (me)
+     	---Purpose : -- Returns the multiplicities table for the v 
+        -- parametric direction of the knots of the BSpline
+    	-- surface whose data is computed in this framework.
+    	---C++: inline
+	---C++: return const &
+     returns  HArray1OfInteger;
+
+ IsDone(me) 
+    	---Purpose : Returns true if the conversion was successful.
+    	-- Unless an exception was raised at the time of
+    	-- construction, the conversion of the Bezier surface
+    	-- grid assigned to this algorithm is always carried out.
+    	-- IsDone returns false if the constraints defined at the
+    	-- time of construction cannot be respected. This occurs
+    	-- when there is an incompatibility between a required
+    	-- degree of continuity on the BSpline surface, and the
+    	-- maximum tolerance accepted for local deformations
+    	-- of the surface. In such a case the computed data
+    	-- does not satisfy all the initial constraints.
+ returns Boolean ;	
+
+
+fields
+myUDegree    : Integer;
+myVDegree    : Integer;
+myVMults     : HArray1OfInteger;
+myUMults     : HArray1OfInteger;
+myUKnots     : HArray1OfReal;
+myVKnots     : HArray1OfReal;
+myPoles      : HArray2OfPnt;
+isrational   : Boolean;
+myDone       : Boolean;
+
+end CompBezierSurfacesToBSplineSurface;

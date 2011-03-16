@@ -1,0 +1,119 @@
+-- File:	BRepOffsetAPI_MakeDraft.cdl
+-- Created:	Wed Jan 13 12:03:48 1999
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1999
+
+
+class MakeDraft from BRepOffsetAPI inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: Build a draft surface along a wire
+
+	 -- The wire can be defined by
+         -- - a wire
+         -- - a face  (the forward wire)
+         -- - a shell (the free bounds)
+         -- The Draft geometry is defined by
+         -- A wire, a direction and angle between the line section 
+         -- and the dircection
+	 -- The Draft can be limited by 
+	 -- a length of the segment to sweep
+	 -- a surface
+	 -- a shape
+
+uses 
+  Shape  from  TopoDS, 
+  Shell  from  TopoDS,
+  Dir    from  gp,  
+  ListOfShape from TopTools,  
+  TransitionMode  from  BRepBuilderAPI, 
+  Draft           from  BRepFill,
+  Surface  from  Geom
+
+raises 
+  NotDone, 
+  NoSuchObject
+
+is  
+
+  Create(Shape  :  Shape  from  TopoDS; 
+         Dir    :  Dir  from  gp; 
+	 Angle  :  Real)  
+    	---Purpose: Constructs the draft surface object defined by the shape
+    	-- Shape, the direction Dir, and the angle Angle.
+    	-- Shape must be a TopoDS_Wire, Topo_DS_Face or
+    	-- TopoDS_Shell with free boundaries.
+    	-- Exceptions
+    	-- Standard_NotDone if Shape is not a TopoDS_Wire,
+    	-- Topo_DS_Face or TopoDS_Shell with free boundaries.
+  returns MakeDraft from BRepOffsetAPI;  
+   
+  SetOptions(me : in out; 
+             Style  :   TransitionMode  from  BRepBuilderAPI =  BRepBuilderAPI_RightCorner; 
+	     AngleMin :  Real  =  0.01; 
+	     AngleMax :  Real  =  3.0)  
+    	---Purpose: Sets the options of this draft tool.
+    	-- If a transition has to be performed, it can be defined by
+    	-- the mode Style as RightCorner or RoundCorner,
+    	-- RightCorner being a corner defined by a sharp angle,
+    	-- and RoundCorner being a rounded corner.
+    	-- AngleMin is an angular tolerance used to detect
+    	-- whether a transition has to be performed or not.
+    	-- AngleMax sets the maximum value within which a
+    	-- RightCorner transition can be performed.
+    	-- AngleMin and AngleMax are expressed in radians.
+  is  static;  
+	       
+  SetDraft(me:  in  out;  IsInternal  :  Boolean  =  Standard_False)   
+    	---Purpose: Sets the direction of the draft for this object.
+    	-- If IsInternal is true, the draft is internal to the argument
+    	-- Shape used in the constructor.
+  is  static;
+
+  Perform(me  :  in  out; 
+          LengthMax  :  Real)
+    	---Purpose: Performs the draft using the length LengthMax as the
+    	-- maximum length for the corner edge between two draft faces.
+  is  static; 
+	     
+
+  Perform(me  :  in  out; 
+          Surface  : Surface  from  Geom;    
+          KeepInsideSurface  :  Boolean  =  Standard_True) 
+    	---Purpose: Performs the draft up to the surface Surface.
+    	-- If KeepInsideSurface is true, the part of Surface inside
+    	-- the draft is kept in the result.
+	
+  is  static; 
+   
+  Perform(me  :  in  out; 
+          StopShape  : Shape  from  TopoDS; 
+          KeepOutSide  :  Boolean  =  Standard_True) 
+    	---Purpose: Performs the draft up to the shape StopShape.
+    	-- If KeepOutSide is true, the part of StopShape which is
+    	-- outside the Draft is kept in the result.
+  is  static;   
+
+  Shell(me)   
+    	---Purpose: Returns the shell resulting from performance of the
+    	-- draft along the wire.         
+  returns  Shell  from  TopoDS    
+  raises  NotDone; 
+        
+--  Error(me) returns MakeDraftError from BRepBuilderAPI
+--     ---Level: Public
+--  is static;
+   
+  Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the  list   of shapes generated   from the
+    	--          shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+  returns ListOfShape from TopTools
+  is redefined;     
+   
+fields   
+  myDraft  :  Draft   from  BRepFill;
+  
+
+end MakeDraft;

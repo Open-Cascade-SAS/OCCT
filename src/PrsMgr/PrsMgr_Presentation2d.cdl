@@ -1,0 +1,106 @@
+-- File:	PrsMgr_Presentation2d.cdl
+-- Created:	Thu Oct 21 13:09:32 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+--Modified by rob Dec-16-97 		
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Presentation2d from PrsMgr inherits Presentation from PrsMgr
+        
+    	---Purpose: A framework to manage 2D displays, graphic entities
+    	-- and their updates. Plotters, Highlights, Minima
+    	-- maxima, immediate display. 
+        
+uses
+    GraphicObject from Graphic2d,
+    PresentationManager2d from PrsMgr,
+    KindOfPrs from PrsMgr
+is
+    Create(aPresentationManager2d: PresentationManager2d from PrsMgr) 
+    returns  mutable Presentation2d from PrsMgr
+    is private;
+    	---Purpose: Creates a framework to manage displays and graphic
+    	-- entities with the 2D view aStructureManager.
+        
+    KindOfPresentation(me) returns KindOfPrs from PrsMgr is redefined static;
+    
+    Destroy(me: mutable) is redefined;
+    ---Level: Public    
+    ---Purpose: Destructor.
+    ---C++:     alias ~
+
+    Display(me: mutable) is redefined static private;
+    
+    Erase(me) is redefined static private;
+    
+    Highlight(me: mutable) is redefined static private;
+    
+    Unhighlight (me) is redefined static private;
+    
+    IsDisplayed(me) returns Boolean from Standard
+    is redefined static private;
+    
+    IsHighlighted(me) returns Boolean from Standard
+    is redefined static private;
+
+    DisplayPriority(me) returns Integer from Standard
+    is redefined static private;
+    
+    SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
+    is redefined static private;
+   
+
+    Clear(me:mutable)
+    	---Purpose: removes the whole content of the presentation.
+              
+    is redefined;
+
+    Highlight(me; anIndex: Integer from Standard) 
+    is static private;
+    	
+    ---Category: 2d specialized methods.
+	
+    EnablePlot (me)
+    	---Purpose: Allows the drawing on a plotter of the graphic object
+    	-- aPresentableObject with the display mode aMode.
+    is static private;
+ 
+    DisablePlot (me)
+    	---Purpose: Forbids the drawing on a plotter of the graphic object
+    	-- aPresentableObject with the display mode aMode.
+    is static private;
+    
+    IsPlottable (me)
+    returns Boolean from Standard
+    	---Purpose: Returns true if the graphic object aPresentableObject
+    	-- with the display mode aMode can be plotted.
+    is static private;
+
+    SetOffset (me: mutable;anOffset: Integer from Standard)
+    is static ;
+    	---Purpose: Specifies an Offset applied to the original color
+    	--	    index of all primitives in the graphic object <me>.
+    	--  Warning: To reset the real color of the primitives
+        --	    you have to call this method with <anOffset> = 0.
+
+    Offset (me)	returns Integer from Standard
+    is static ;
+    	---Level: Public
+    	---Purpose: Returns the Offset applied to the original color
+    	--	    index of all primitives in the graphic object <me>.
+    	---Category: Methods to manage the highlight
+
+    Presentation (me) returns mutable GraphicObject from Graphic2d
+    is static ;
+
+fields
+
+    myStructure: GraphicObject from Graphic2d;
+
+friends 
+    class PresentationManager2d from PrsMgr,
+    class PresentableObject from PrsMgr
+
+end Presentation2d from PrsMgr;

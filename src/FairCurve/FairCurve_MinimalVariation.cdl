@@ -1,0 +1,133 @@
+-- File:	FairCurve_MinimalVariation.cdl
+-- Created:	Mon Feb 26 13:54:16 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class MinimalVariation from FairCurve inherits Batten from FairCurve
+
+	---Purpose: Computes a 2D curve using an algorithm which
+    	-- minimizes tension, sagging, and jerk energy. As in
+    	-- FairCurve_Batten, two reference points are used.
+    	-- Unlike that class, FairCurve_MinimalVariation
+    	-- requires curvature settings at the first and second
+    	-- reference points. These are defined by the rays of
+    	-- curvature desired at each point.
+
+uses Pnt2d from gp,
+     Vec2d from gp,
+     AnalysisCode from FairCurve
+
+raises NegativeValue, NullValue, DomainError
+
+is
+    Create (P1,P2 : Pnt2d; Heigth : Real; Slope : Real = 0; PhysicalRatio  :  Real  =  0)
+
+  	---Purpose: Constructs the two contact points P1 and P2  and the geometrical
+    	--          characteristics of the batten (elastic beam)  
+    	--   These include the real number values for height of
+    	-- deformation Height, slope value Slope, and kind of
+    	-- energy PhysicalRatio. The kinds of energy include:
+    	-- -   Jerk (0)
+    	-- -   Sagging (1).
+    	-- Note that the default setting for Physical Ration is in FairCurve_Batten
+        --          Other parameters are initialized as follow :
+    	--           - FreeSliding = False
+    	--           - ConstraintOrder1 = 1
+    	--           - ConstraintOrder2 = 1 
+    	--           - Angle1 = 0
+    	--           - Angle2 = 0
+    	--           - Curvature1 = 0
+    	--           - Curvature2 = 0
+    	--           - SlidingFactor = 1
+        -- Warning
+    	-- If PhysicalRatio equals 1, you cannot impose constraints on curvature.
+    	-- Exceptions
+    	-- NegativeValue if Height is less than or equal to 0.
+    	-- NullValue if the distance between P1 and P2 is less
+    	-- than or equal to the tolerance value for distance in
+    	-- Precision::Confusion: P1.IsEqual(P2,
+    	-- Precision::Confusion()). The function
+    	-- gp_Pnt2d::IsEqual tests to see if this is the case.
+    returns MinimalVariation
+    raises  NegativeValue,
+   	    NullValue;    
+    
+    
+--      Definition Methods   ------------------------------------
+--  
+    ---Purpose:  Definition of the geometricals constraints
+   
+    SetCurvature1 (me : in out; Curvature : Real);
+    	---C++: inline
+    	---Purpose: Allows you to set a new constraint on curvature at the first point.
+
+    SetCurvature2 (me : in out; Curvature : Real);
+    	---C++: inline
+    	---Purpose: Allows you to set a new constraint on curvature at the second point.
+    	--      
+    SetPhysicalRatio (me : in out; Ratio : Real)
+    	---C++: inline
+    	---Purpose:  Allows you to set the physical ratio Ratio.
+    	-- The kinds of energy which you can specify include:
+    	--          0 is only "Jerk" Energy
+    	--          1 is only "Sagging" Energy like batten
+        --  Warning: if Ratio is 1 it is impossible to impose curvature constraints.
+    	--  Raises  DomainError if Ratio < 0 or Ratio > 1
+     raises  DomainError; 
+     
+
+    Compute (me :in out;  
+    	     ACode : in out  AnalysisCode;
+    	     NbIterations : Integer = 50;  
+    	     Tolerance    : Real = 1.0e-3 )
+    	---Purpose: Computes the curve with respect to the constraints,
+    	-- NbIterations and Tolerance. The tolerance setting
+    	-- allows you to control the precision of computation, and
+    	-- the maximum number of iterations allows you to set a limit on computation time.
+     returns Boolean
+     is redefined; 
+	
+     Compute (me :in out;
+             DeltaP1 : Vec2d;
+	     DeltaP2 : Vec2d;
+	     DeltaAngle1 : Real;
+	     DeltaAngle2 : Real;
+	     DeltaCurvature1 : Real;
+	     DeltaCurvature2 : Real;
+    	     ACode : in out  AnalysisCode;
+    	     NbIterations : Integer;  
+    	     Tolerance: Real )
+    	---Purpose: compute the curve with respect of the delta-constraints.
+    returns Boolean is private;
+   
+    GetCurvature1  (me)
+    	---C++: inline
+    	---Purpose: Returns the first established curvature.
+    returns  Real;
+    
+    GetCurvature2  (me)
+       	---C++: inline
+ 	---Purpose: Returns the second established curvature.
+    returns  Real; 
+    
+    GetPhysicalRatio(me)
+    	---C++: inline
+    	---Purpose       : Returns the physical ratio, or kind of energy.
+    returns  Real;    
+    
+    Dump(me ; o : in out OStream)
+        ---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.	
+    is redefined;
+    
+fields
+   OldCurvature1 : Real; 
+   OldCurvature2 : Real;
+   OldPhysicalRatio : Real;
+   NewCurvature1 : Real;
+   NewCurvature2 : Real;
+   NewPhysicalRatio : Real;
+end MinimalVariation;

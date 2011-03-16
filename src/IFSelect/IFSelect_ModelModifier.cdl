@@ -1,0 +1,63 @@
+-- File:	IFSelect_ModelModifier.cdl
+-- Created:	Mon Mar 21 16:07:03 1994
+-- Author:	Christian CAILLET
+--		<cky@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred generic class  ModelModifier  from IFSelect
+    	(Model    as InterfaceModel; Proto as Protocol from Interface)
+    inherits Modifier
+
+    ---Purpose : Allows to precise the frame work for Model Modifiers able to
+    --           run with an Interface (such as STEP, VDA, IGES ...)
+    --           
+    --           Acts as a Modifier but properly casts Model and Protocol
+    --           according to each Interface, and refuses to work if cast
+    --           has failed (i.e. if it is not used in good context)
+    --           
+    --           Then, it is finer to make specific Model Modifier inherit
+    --           from an instantiated ModelModifier, instead of Modifier itself
+    --           (though it is not mandatory)
+    --           
+    --           For each Interface on which Model Modifiers have to be defined,
+    --           The way to follow is firstly to instantiate ModelModifier with
+    --           its specific data :
+    --           Model is the InterfaceModel specific to the considered norm
+    --           Then to define the various classes which inherit from it and
+    --           define their method Perform
+
+uses CString, InterfaceModel, Protocol from Interface,  CopyTool, ContextModif
+
+is
+
+    Initialize (maychangegraph : Boolean);
+    ---Purpose : Calls inherited Initialize, transmits to it the information
+    --           <maychangegraph>
+
+    Perform (me; ctx  : in out ContextModif;
+    	     target   : mutable InterfaceModel;
+    	     protocol : Protocol from Interface;
+    	     TC       : in out CopyTool);
+    ---Purpose : The inherited Perform does the required cast (and refuses to
+    --           go further if cast has failed) then calls the instantiated
+    --           Performing
+
+    PerformProtocol (me; ctx : in out ContextModif;
+    	     target : mutable Model;
+    	     proto  : Proto;
+    	     TC     : in out CopyTool)  is virtual;
+    ---Purpose : Specific Perform with Protocol. It is defined to let the
+    --           Protocol unused and to call Performing without Protocol
+    --           (most current case). It can be redefined if specific action
+    --           requires Protocol.
+
+    Performing (me; ctx : in out ContextModif;
+    	     target : mutable Model;
+    	     TC     : in out CopyTool)  is deferred;
+    ---Purpose : Specific Perform, without Protocol. If Performing with
+    --           Protocol is redefined, Performing without Protocol must
+    --           though be defined to do nothing (not called, but demanded
+    --           by the linker)
+
+end ModelModifier;

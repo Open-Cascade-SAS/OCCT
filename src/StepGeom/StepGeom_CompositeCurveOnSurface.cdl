@@ -1,0 +1,22 @@
+-- File:        CompositeCurveOnSurface.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CompositeCurveOnSurface from StepGeom 
+
+inherits CompositeCurve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfCompositeCurveSegment from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable CompositeCurveOnSurface;
+	---Purpose: Returns a CompositeCurveOnSurface
+
+
+end CompositeCurveOnSurface;

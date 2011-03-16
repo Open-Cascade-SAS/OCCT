@@ -1,0 +1,40 @@
+-- File:        SiUnitAndTimeUnit.cdl
+-- Created:     Fri Jun 17 11:43:44 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SiUnitAndTimeUnit from StepBasic inherits SiUnit from StepBasic 
+
+	--- This class is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    TimeUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    SiPrefix from StepBasic, 
+    SiUnitName from StepBasic
+
+is
+
+    Create returns mutable SiUnitAndTimeUnit;
+	---Purpose: Returns a SiUnitAndTimeUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic) is redefined;
+
+    
+    Init (me: mutable; hasAprefix: Boolean from Standard;
+		       aPrefix   : SiPrefix from StepBasic;
+		       aName     : SiUnitName from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetTimeUnit(me: mutable; aTimeUnit: mutable TimeUnit);
+    
+    TimeUnit (me) returns mutable TimeUnit;
+
+fields
+
+    timeUnit: TimeUnit from StepBasic;
+
+end SiUnitAndTimeUnit;

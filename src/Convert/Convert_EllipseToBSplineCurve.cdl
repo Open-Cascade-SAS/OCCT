@@ -1,0 +1,52 @@
+-- File:	 EllipseToBSplineCurve.cdl
+-- Created:	 Thu Oct 10 14:38:50 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+
+class EllipseToBSplineCurve   from Convert   inherits ConicToBSplineCurve
+
+        --- Purpose :
+        --  This algorithm converts a ellipse into a rational B-spline curve.
+        --  The ellipse is represented an Elips2d from package gp with
+        --  the parametrization :
+        --  P (U) = 
+        --  Loc + (MajorRadius * Cos(U) * Xdir + MinorRadius * Sin(U) * Ydir)
+        --  where Loc is the center of the ellipse, Xdir and Ydir are the 
+        --  normalized directions of the local cartesian coordinate system of
+        --  the ellipse. The parametrization range is U [0, 2PI].
+        --- KeyWords :
+        --  Convert, Ellipse, BSplineCurve, 2D .
+
+uses Elips2d              from gp,
+     ParameterisationType from Convert
+
+raises DomainError from Standard
+
+is
+
+  Create (E : Elips2d;
+    	   Parameterisation : ParameterisationType from Convert 
+    	    = Convert_TgtThetaOver2 )   returns EllipseToBSplineCurve;
+        --- Purpose : The equivalent B-spline curve has the same orientation
+        --  as the ellipse E.
+
+
+  Create (E : Elips2d; U1, U2 : Real;
+           Parameterisation : ParameterisationType from Convert 
+    	    = Convert_TgtThetaOver2 )   returns EllipseToBSplineCurve
+        --- Purpose : 
+        --  The ellipse E is limited between the parametric values U1, U2.
+        --  The equivalent B-spline curve is oriented from U1 to U2 and has
+        --  the same orientation as E.
+     raises DomainError;
+        --- Purpose :
+        --  Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
+
+
+
+end EllipseToBSplineCurve;
+

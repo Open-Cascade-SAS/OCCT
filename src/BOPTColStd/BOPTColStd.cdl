@@ -1,0 +1,76 @@
+-- File:	BOPTColStd.cdl
+-- Created:	Wed Nov 22 15:59:15 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+package BOPTColStd 
+     
+    ---Purpose: 
+     ---         Contains auxiliary classes used  by   
+    ---          boolean  operations algorithm.  
+    
+uses  
+    gp,   
+    TopoDS,  
+    TopTools,
+    TCollection, 
+    TColStd  
+---
+is    
+
+    generic class CArray1;
+    ---Purpose:  
+    --  The class represents unidimensionnal arrays
+    --  of fixed size known at run time.  
+    --  Run-time boundary check is performed
+    --  The range of the index is user defined from 0 to Length-1 
+    --
+    class  Dump; 
+    --  The class provides dump service used for debugging   
+    --  purposes 
+    --  
+    class Failure;       
+    --  The class provides exception objects 
+    --  
+    class ShapeWithRank;         	 
+    --  The auxiliary class provides structure to store a shape 
+    --  and its rank 
+    ---     
+    class ShapeWithRankHasher; 
+    --  The auxiliary class provides hash code for mapping 
+    --  ShapeWithRank objects 
+    ---   
+    ---
+    ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
+    ---       
+    class  CArray1OfInteger  instantiates  
+    	CArray1 from BOPTColStd(Integer from Standard);  
+	 
+    class CArray1OfShape instantiates  
+    	CArray1 from BOPTColStd(Shape from TopoDS);  
+	 
+    class CArray1OfPnt2d instantiates  
+    	CArray1 from BOPTColStd(Pnt2d from gp);   
+     
+    class  IndexedDataMapOfIntegerInteger  instantiates 
+    	IndexedDataMap from TCollection  (Integer, 
+	    	    	    	    	  Integer,  
+	    	    	    	    	  MapIntegerHasher from TColStd);  
+    class  ListOfListOfShape instantiates 
+    	List from TCollection (ListOfShape from TopTools);
+
+    class  IndexedDataMapOfIntegerIndexedMapOfInteger  instantiates 
+    	IndexedDataMap from TCollection  (Integer, 
+	    	    	    	    	  IndexedMapOfInteger from TColStd,    
+	    	    	    	    	  MapIntegerHasher from TColStd); 
+
+    class  IndexedDataMapOfSWRInteger instantiates 
+    	IndexedDataMap from TCollection  (ShapeWithRank, 
+	    	    	    	    	  Integer from Standard,    
+	    	    	    	    	  ShapeWithRankHasher from BOPTColStd);
+    
+    
+     
+
+end  BOPTColStd;

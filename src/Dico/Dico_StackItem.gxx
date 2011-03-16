@@ -1,0 +1,17 @@
+//#include <Dico_StackItem.ixx>
+
+
+    Dico_StackItem::Dico_StackItem ()
+      {  theprev.Nullify();  }
+
+    Dico_StackItem::Dico_StackItem (const Handle(Dico_StackItem)& previous)
+      {  theprev = previous;  }
+
+    Handle(Dico_StackItem) Dico_StackItem::Previous () const
+      {  return theprev;  }
+
+    Handle(Dico_Dictionary) Dico_StackItem::Value () const
+      {  return thevalue;  }
+
+    void Dico_StackItem::SetValue (const Handle(Dico_Dictionary)& val)
+      {  thevalue = val;  }

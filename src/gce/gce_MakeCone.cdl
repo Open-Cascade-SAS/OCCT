@@ -1,0 +1,147 @@
+-- File:	MakeCone.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeCone from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Cone from gp.
+    --           * Create a Cone coaxial to another and passing 
+    --             through a point.
+    --           * Create a Cone coaxial to another at a distance
+    --             <Dist>.
+    --           * Create a Cone by 4 points.
+    --           * Create a Cone by its axis and 2 points.
+    --           * Create a Cone by 2 points and 2 radius.
+    --           * Create a Cone by an Ax2 an angle and the radius of 
+    --             its reference section.
+
+uses Pnt       from gp,
+     Ax1       from gp,
+     Lin       from gp,
+     Cone      from gp,
+     Ax2       from gp,
+     Real      from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A2     : Ax2  from gp       ; 
+    	Ang    : Real from Standard ; 
+    	Radius : Real from Standard )   returns MakeCone;
+    --- Purpose :
+    --  Creates an infinite conical surface. A2 locates the cone
+    --  in the space and defines the reference plane of the surface.
+    --  Ang is the conical surface semi-angle between 0 and PI/2 radians.
+    --  Radius is the radius of the circle in the reference plane of
+    --  the cone.
+    --  If Radius is lower than 0.0 the status is "
+    --  If Ang < Resolution from gp  or Ang >= (PI/2) - Resolution.
+
+Create(Cone  : Cone from gp;
+       Point : Pnt  from gp) returns MakeCone;
+    ---Purpose : Makes a Cone from gp <TheCone> coaxial to another 
+    --           Cone <Cone> and passing through a Pnt <Point>.
+
+Create(Cone : Cone  from gp      ;
+       Dist : Real  from Standard) returns MakeCone;
+    ---Purpose : Makes a Cone from gp <TheCone> coaxial to another 
+    --           Cone <Cone> at the distance <Dist> which can 
+    --           be greater or lower than zero.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp;
+       P3     :     Pnt from gp;
+       P4     :     Pnt from gp) returns MakeCone;
+    ---Purpose : Makes a Cone from gp <TheCone> by four points <P1>,
+    --           <P2>,<P3> and <P4>.
+    --           Its axis is <P1P2> and the radius of its base is
+    --           the distance between <P3> and <P1P2>.
+    --           The distance between <P4> and <P1P2> is the radius of 
+    --           the section passing through <P4>.
+    --           If <P1> and <P2> are confused or <P3> and <P4> are
+    --           confused we have the status "ConfusedPoints"
+    --           if <P1>,<P2>,<P3>,<P4> are colinear we have the 
+    --           status "ColinearPoints"
+    --           If <P3P4> is perpendicular to <P1P2> we have the 
+    --           status "NullAngle".
+    --           <P3P4> is colinear to <P1P2> we have the status 
+    --           "NullAngle".
+
+Create(Axis   : Ax1  from gp;
+       P1,P2  : Pnt  from gp) returns MakeCone;
+    ---Purpose: Makes a Cone by its axis <Axis> and and two points.
+    --          The distance between <P1> and the axis is the radius 
+    --          of the section passing through <P1>.
+    --          The distance between <P2> and the axis is the radius 
+    --          of the section passing through <P2>.
+    --          If <P1P2> is colinear to <Axis> we have the status
+    --          "NullAngle"
+    --          If <P3P4> is perpendicular to <Axis> we have the status
+    --          "NullAngle"
+    --          If <P1> and <P2> are confused we have the status 
+    --          "ConfusedPoints"
+
+Create(Axis   : Lin  from gp;
+       P1,P2  : Pnt  from gp) returns MakeCone;
+    ---Purpose: Makes a Cone by its axis <Axis> and and two points.
+    --          The distance between <P1> and the axis is the radius 
+    --          of the section passing through <P1>
+    --          The distance between <P2> and the axis is the radius 
+    --          of the section passing through <P2>
+    --          If <P1P2> is colinear to <Axis> we have the status
+    --          "NullAngle"
+    --          If <P3P4> is perpendicular to <Axis> we have the status
+    --          "NullAngle"
+    --          If <P1> and <P2> are confused we have the status 
+    --          "ConfusedPoints"
+
+Create(P1     :     Pnt  from gp      ;
+       P2     :     Pnt  from gp      ;
+       R1     :     Real from Standard;
+       R2     :     Real from Standard) returns MakeCone;
+    ---Purpose: Makes a Cone with two points and two radius.
+    --          The axis of the solution is the line passing through 
+    --          <P1> and <P2>.
+    --          <R1> is the radius of the section passing through <P1> 
+    --          and <R2> the radius of the section passing through <P2>.
+    --          If <P1> and <P2> are confused we have the status "NullAxis".
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_NegativeRadius if Radius, R1 or R2 is less than 0.0;
+    -- -   gce_BadAngle if Ang is less than
+    --   gp::Resolution() or greater than Pi/2.- gp::Resolution();
+    -- -   gce_ConfusedPoints if P1 and P2 or P3 and P4 are coincident;
+    -- -   gce_NullAxis if the points P1 and P2, are coincident (5th syntax only);
+    -- -   gce_NullAngle if:
+    --   -   the vector joining P1 to P2 is parallel to either
+    --    Axis or the line joining P3 to P4, or
+    --   -   R1 and R2 are equal, (that is, their difference is
+    --    less than gp::Resolution()); or
+    -- -   gce_NullRadius if:
+    -- -   the vector joining P1 to P2 is perpendicular to the line joining P3 to P4,
+    --   -   the vector joining P1 to P2 is perpendicular to Axis, or
+    --   -   P1, P2, P3, and P4 are collinear.
+        
+Value(me) returns Cone from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed cone.
+    -- Exceptions StdFail_NotDone if no cone is constructed.
+
+Operator(me) returns Cone from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Cone() const;"
+
+fields
+
+    TheCone : Cone from gp;
+    --The solution from gp.
+    
+end MakeCone;

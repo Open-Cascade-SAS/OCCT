@@ -1,0 +1,137 @@
+-- File:	BRepFeat_MakePipe.cdl
+-- Created:	Tue Sep  3 11:13:22 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+
+
+class MakePipe from BRepFeat inherits Form from BRepFeat
+
+	---Purpose: Constructs compound shapes with pipe
+    	-- features. These can be depressions or protrusions.
+    	-- The semantics of pipe feature creation is based on the construction of shapes:
+    	-- -   along a length
+    	-- -   up to a limiting face
+    	-- -   from a limiting face to a height.
+    	-- The shape defining construction of the pipe feature can be either the supporting edge or
+    	-- the concerned area of a face.
+    	-- In case of the supporting edge, this contour
+    	-- can be attached to a face of the basis shape
+    	-- by binding. When the contour is bound to this
+    	-- face, the information that the contour will
+    	-- slide on the face becomes available to the relevant class methods.
+    	-- In case of the concerned area of a face, you
+    	-- could, for example, cut it out and move it to a
+    	-- different height which will define the limiting
+    	-- face of a protrusion or depression.
+
+uses Shape                     from TopoDS,
+     Face                      from TopoDS,
+     Wire                      from TopoDS,
+     Edge                      from TopoDS,
+     DataMapOfShapeListOfShape from TopTools,
+     DataMapOfShapeShape       from TopTools,
+     SequenceOfCurve           from TColGeom,
+     Curve                     from Geom,
+     StatusError               from BRepFeat
+
+raises ConstructionError from Standard
+
+is
+
+
+    Create
+    	returns MakePipe from BRepFeat;
+	---Purpose: initializes the pipe class.
+	---C++: inline
+
+
+    Create(Sbase     : Shape   from TopoDS;
+           Pbase     : Shape   from TopoDS;
+           Skface    : Face    from TopoDS;
+	   Spine     : Wire    from TopoDS;
+           Fuse      : Integer from Standard;
+           Modify    : Boolean from Standard)
+    
+	---Purpose : A face Pbase is selected in the
+    	-- shape Sbase to serve as the basis for the
+    	-- pipe. It will be defined by the wire Spine.
+    	-- Fuse offers a choice between:
+    	-- -   removing matter with a Boolean cut using the setting 0
+    	-- -   adding matter with Boolean fusion using the setting 1.
+    	--   The sketch face Skface serves to determine
+    	-- the type of operation. If it is inside the basis
+    	-- shape, a local operation such as glueing can be performed.
+    		---C++: inline
+    	    	returns MakePipe from BRepFeat;
+
+
+    Init(me: in out; Sbase     : Shape   from TopoDS;
+                     Pbase     : Shape   from TopoDS;
+                     Skface    : Face    from TopoDS;
+	             Spine     : Wire    from TopoDS;
+	             Fuse      : Integer from Standard;
+                     Modify    : Boolean from Standard)
+    
+    	is static;
+    	---Purpose: Initializes this algorithm for adding pipes to shapes.
+    	-- A face Pbase is selected in the shape Sbase to
+    	-- serve as the basis for the pipe. It will be defined by the wire Spine.
+    	-- Fuse offers a choice between:
+    	-- -   removing matter with a Boolean cut using the setting 0
+    	-- -   adding matter with Boolean fusion using the setting 1.
+    	--  The sketch face Skface serves to determine
+    	-- the type of operation. If it is inside the basis
+    	-- shape, a local operation such as glueing can be performed.
+
+    Add(me: in out; E: Edge from TopoDS; OnFace: Face from TopoDS)
+
+	---Purpose: Indicates that the edge <E> will slide on the face
+	--          <OnFace>. Raises ConstructionError  if the  face does not belong to the
+	-- basis shape, or the edge to the prismed shape.
+    	raises ConstructionError from Standard
+	
+	is static;
+
+
+    Perform(me: in out)
+    
+    	is static;
+
+
+    Perform(me: in out; Until: Shape from TopoDS)
+    
+    	is static;
+
+
+    Perform(me: in out; From : Shape from TopoDS;
+                        Until: Shape from TopoDS)
+    
+    	is static;
+
+    	---Purpose: Assigns one of the following semantics
+    	-- -   to a face Until
+    	-- -   from a face From to a height Until.
+    	-- Reconstructs the feature topologically according to the semantic option chosen.
+
+    Curves(me: in out; S : in out SequenceOfCurve from TColGeom);
+    
+
+    BarycCurve(me: in out)    
+    	returns Curve from Geom;
+
+
+fields
+
+--    mySbase  : Shape                     from TopoDS;
+    myPbase  : Shape                     from TopoDS;
+    mySkface : Face                      from TopoDS;
+    mySlface : DataMapOfShapeListOfShape from TopTools;
+    mySpine  : Wire                      from TopoDS;
+    myCurves : SequenceOfCurve           from TColGeom;
+    myBCurve : Curve                     from Geom;
+    myStatusError : StatusError          from BRepFeat;
+
+end MakePipe;

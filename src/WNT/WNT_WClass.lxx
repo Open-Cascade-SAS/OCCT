@@ -1,0 +1,17 @@
+inline Standard_CString WNT_WClass :: Name () const {
+
+ return lpszName;
+
+}  // end WNT_WClass :: Name
+
+inline Aspect_Handle WNT_WClass :: Instance () const {
+
+ return hInstance;
+
+}  // end WNT_WClass :: Instance
+
+inline Standard_Address WNT_WClass :: WndProc () const {
+
+ return lpfnWndProc;
+
+}  // end WNT_WClass :: WndProc

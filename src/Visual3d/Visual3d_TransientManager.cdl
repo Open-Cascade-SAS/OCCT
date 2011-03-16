@@ -1,0 +1,420 @@
+--
+-- File:    Visual3d_TransientManager.cdl
+-- Created: Tuesday 10,October 1995
+-- Author:  GG
+--      05-97: CAL; Ajout du Clear sur les TOS_COMPUTED.
+--
+---Copyright:   MatraDatavision 1995
+--
+
+class TransientManager from Visual3d inherits TShared
+
+    ---Version:
+
+    ---Purpose: This class allows to manage transient graphics
+    --      above one View.
+    --      A simple way to drawn something very quicly above
+    --      a complex scene (Hilighting,Sketching,...)
+    --      All transient graphics will be drawn with
+    --      the projection defined by the view with the current
+    --      attributes depending of the primitive type :
+    --      Lines,Markers,Polygons,Texts
+    --      All transient graphics will be erased at the next
+    --      View::BeginDraw().
+    --      If RetainMode is active,
+    --      All transient graphics will be kept at the
+    --      next View::Update(),Redraw(). The transient graphics
+    --      is stored by this object and graphic library, the 
+    --      graphic managed itself exposure,resizing,...
+    --      The method View::ClearDraw() is necessary to erase
+    --      all transient graphics.
+    --      If RetainMode is deactivate,
+    --      All transient graphics will be erased at the
+    --      next View::Update(),Redraw().
+    --      Remember that nothing is stored by this object and
+    --      graphic library,the application must managed itself
+    --      exposure,resizing,...
+    --      If double_buffering is activate,
+    --      all graphics are drawn in the back buffer and flushed
+    --      in the front buffer at the end of drawing but nothing
+    --      is done for to separate transient from structured
+    --      graphics,the only way to regenerate the structured
+    --      view is to Redraw() the view.
+    --      If double_buffering is deactivate,
+    --      the back buffer is preserved and used for restoring 
+    --      the front buffer at begin drawing time.I recommend
+    --      to use the second way (without DB) if you want
+    --      to preserve the graphics and the performances!
+    
+    
+uses
+
+    Array2OfReal             from TColStd,
+
+    ExtendedString           from TCollection,
+
+    PlaneAngle               from Quantity,
+
+    Structure                from Graphic3d,
+    AspectLine3d             from Graphic3d,
+    AspectFillArea3d         from Graphic3d,
+    AspectText3d             from Graphic3d,
+    AspectMarker3d           from Graphic3d,
+    TypeOfComposition        from Graphic3d,
+    TextPath                 from Graphic3d,
+    HorizontalTextAlignment  from Graphic3d,
+    VerticalTextAlignment    from Graphic3d,
+
+    View            from Visual3d
+
+raises
+    TransientDefinitionError from Visual3d,
+    TransformError            from Graphic3d
+
+is
+    -------------------------
+    -- Category: Constructors
+    -------------------------
+
+    Create returns mutable TransientManager from Visual3d;
+    ---Purpose: Creates a TransientManager <aView>.
+    ---Category: Constructors
+
+    ------------------------
+    -- Category: Destructors
+    ------------------------
+
+    Destroy (me : mutable);
+    ---Level: Public
+    ---Purpose: Suppress the TransientManager <me>.
+    ---Category: Destructors
+    ---C++: alias ~
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    BeginDraw (myclass;
+           aView : View from Visual3d;
+           DoubleBuffer: Boolean = Standard_False;
+           RetainMode: Boolean = Standard_False)
+    returns Boolean from Standard
+    ---Level: Public
+    ---Purpose: Begins any graphics in the view <aView>
+    --      Redraw any structured graphics in the back buffer before
+    --      if <DoubleBuffer> is TRUE.
+    --          Restore the front buffer from the back before
+    --      if <DoubleBuffer> is FALSE.
+    --      if <RetainMode> is TRUE.
+    --          the graphic managed itself exposure,resizing ...
+    --      if <RetainMode> is FALSE.
+    --          the application must managed itself exposure,resizing ...
+    --  
+    --  Warning: Returns TRUE if transient drawing is enabled in
+    --     the associated view.
+    --          Returns FALSE ,if nothing works because something
+    --     is wrong for the transient principle :
+    --     Immediat mode is not implemented depending of the
+    --     graphic library used.
+    --         MBX,PIXMAP double buffering don't works depending of
+    --         the graphic board and the visual of the window supporting 
+    --         the view.
+    --  Warning: No default attributes
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is already opened.
+    -- or   the associated view is not mapped on a window.
+    raises TransientDefinitionError from Visual3d;
+    
+    EndDraw (myclass;
+         Synchronize: Boolean = Standard_False)
+    ---Level: Public
+    ---Purpose: Flush all graphics to the front buffer.
+    --  Synchronize graphics to the screen if <Synchronize> is
+    --  TRUE (make becarefull to the performances!).
+        --  Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+    ClearDraw (myclass; aView : View from Visual3d; 
+                            aFlush : Boolean from Standard = Standard_True)
+    ---Level: Public
+    ---Purpose: Clear all transient graphics in the view <aView>
+    ---         updates a scene if <aFlush> = true
+        --  Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is already opened.
+    -- or   the associated view is not mapped on a window.
+    raises TransientDefinitionError from Visual3d;
+    
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    BeginAddDraw (myclass;
+           aView : View from Visual3d)
+    returns Boolean from Standard
+    ---Level: Public
+    ---Purpose: Begins any add graphics in the view <aView>
+    --          the application must managed itself exposure,resizing ...
+    --  
+    --  Warning: Returns TRUE if transient drawing is enabled in
+    --     the associated view.
+    --          Returns FALSE ,if nothing works because something
+    --     is wrong for the transient principle :
+    --     Immediat mode is not implemented depending of the
+    --     graphic library used.
+    --         MBX,PIXMAP double buffering don't works depending of
+    --         the graphic board and the visual of the window supporting 
+    --         the view.
+    --  Warning: No default attributes
+        -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is already opened.
+    -- or   the associated view is not mapped on a window.
+    raises TransientDefinitionError from Visual3d;
+    
+    EndAddDraw (myclass)
+    ---Purpose: Flush all add graphics to the front buffer.
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+raises TransientDefinitionError from Visual3d;
+
+    ---------------------------------------
+    -- Category: Graphic definition methods
+    ---------------------------------------
+
+    BeginPolyline (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a polyline with AddVertex().
+        --  Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is already opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    BeginPolygon (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a polygon with AddVertex().
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is already opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    BeginTriangleMesh (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a triangle mesh with AddVertex().
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is already opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    BeginMarker (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a marker with AddVertex().
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is already opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    BeginBezier (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> is ready to receive
+    --      a definition of a curve with AddVertex().
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is already opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    AddVertex (myclass;
+               X, Y, Z : Real from Standard;
+               AFlag   : Boolean from Standard = Standard_True)
+    ---Level: Public
+    ---Purpose: Puts <X, Y, Z> as a new point in the current primitive.
+    --      If <AFlag> then it is a draw between last point and
+    --      this point else it is a move between last point and
+    --      this point.
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is not opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    AddVertex (myclass;
+               X, Y, Z, W  : Real from Standard;
+               AFlag        : Boolean from Standard = Standard_True)
+    ---Level: Public
+    ---Purpose: Puts <X, Y, Z, W> as a new point coordinates and
+    --      weight in the current primitive.
+    --      If <AFlag> then it is a draw between last point and
+    --      this point else it is a move between last point and
+    --      this point.
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is not opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    AddVertex (myclass;
+               X, Y, Z     : Real from Standard;
+               NX, NY, NZ  : Real from Standard;
+               AFlag       : Boolean from Standard = Standard_True)
+    ---Level: Public
+    ---Purpose: Puts <X, Y, Z> as a new point in the current primitive.
+    --          Puts <NX, NY, NZ> as a new normal in the current 
+    --      primitive.
+    --      If <AFlag> then it is a draw between last point and
+    --      this point else it is a move between last point and
+    --      this point.
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is not opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    ClosePrimitive (myclass)
+    ---Level: Public
+    ---Purpose: After this call, <me> stops the reception of
+    --      a definition of a Begin... primitive.
+        --  Raises TransientDefinitionError from Visual3d;
+    -- if a Begin... primitive is not opened,
+    -- or   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    DrawText (myclass;
+              AText   : ExtendedString from TCollection;
+              X, Y, Z : Real from Standard;
+              AHeight : Real from Standard;
+              AAngle  : PlaneAngle from Quantity = 0.0;
+              ATp     : TextPath from Graphic3d = Graphic3d_TP_RIGHT;
+              AHta    : HorizontalTextAlignment from Graphic3d = Graphic3d_HTA_LEFT;
+              AVta    : VerticalTextAlignment from Graphic3d = Graphic3d_VTA_BOTTOM)
+        ---Purpose: Drawn the string <AText> at position <X,Y,Z>.
+        --     The 3D point of attachment is projected. The text is
+        --          written in the plane of projection.
+        --  The attributes are given with respect to the plane of
+        --          projection.
+        --          AHeight     : Height of text.
+        --             (Relative to the Normalized Projection
+        --                          Coordinates (NPC) Space).
+        --          AAngle      : Orientation of the text
+        --                  (with respect to the horizontal).
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    DrawStructure (myclass;
+                AStructure   : Structure from Graphic3d)
+        ---Purpose: Drawn the structure <AStructure>.
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    ------------------------------------------------
+    -- Summary of attributes                      --
+    ------------------------------------------------
+
+    SetPrimitivesAspect (myclass;
+        CTX : AspectLine3d from Graphic3d)
+    ---Level: Public
+    ---Purpose: Modifies the current lines attributes.
+    --  Warning: No default attributes
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+    SetPrimitivesAspect (myclass;
+        CTX : AspectFillArea3d from Graphic3d)
+    ---Level: Public
+    ---Purpose: Modifies the current faces attributes
+    --  Warning: No default attributes
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+
+    SetPrimitivesAspect (myclass;
+        CTX : AspectText3d from Graphic3d)
+    ---Level: Public
+    ---Purpose: Modifies the current texts attributes
+    --  Warning: No default attributes
+    --    Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+    SetPrimitivesAspect (myclass;
+        CTX : AspectMarker3d from Graphic3d)
+    ---Level: Public
+    ---Purpose: Modifies the current markers attributes
+    --  Warning: No default attributes
+    -- Raises TransientDefinitionError from Visual3d;
+    -- if   Drawing is not opened.
+    raises TransientDefinitionError from Visual3d;
+    
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    MinMaxValues (myclass;
+                  XMin, YMin, ZMin    : out Real from Standard;
+                  XMax, YMax, ZMax    : out Real from Standard);
+    ---Level: Public
+    ---Purpose: Returns the coordinates of the boundary box
+    --      of the Transient graphics actually drawn
+    --      since BeginDraw() has been call.
+    --  Warning: If nothing has been drawn then :
+    --      XMin = YMin = ZMin = RealFirst ().
+    --      XMax = YMax = ZMax = RealLast ().
+    ---Category: Inquire methods
+
+    MinMaxValues (myclass;
+                  UMin, VMin  : out Real from Standard;
+                  UMax, VMax  : out Real from Standard);
+    ---Level: Public
+    ---Purpose: Returns the coordinates of the boundary box projection
+    --      of the Transient graphics actually drawn
+    --      since BeginDraw() has been call.
+    --  Warning: If nothing has been drawn then :
+    --      XMin = YMin = ZMin = RealFirst ().
+    --      XMax = YMax = ZMax = RealLast ().
+    ---Category: Inquire methods
+
+    -----------------------------------------------------------
+    -- Category: Methods to manage the graphics transformation
+    -----------------------------------------------------------
+
+    SetTransform (myclass;
+        AMatrix : Array2OfReal from TColStd;
+        AType   : TypeOfComposition from Graphic3d =
+                    Graphic3d_TOC_REPLACE)
+    ---Level: Public
+    ---Purpose: Modifies the current local modelling transformation
+    --      of the transient graphics.
+    --
+    --      It is defined as a 4*4 real matrix.
+    --
+    --      -------------------
+    --      | a11 a12 a13  t1 |
+    --      | a21 a22 a23  t2 |
+    --      | a31 a32 a33  t3 |
+    --      |  0   0   0   1  |
+    --      -------------------
+    --
+    --      TypeOfComposition : TOC_REPLACE
+    --              TOC_POSTCONCATENATE
+    --
+    ---Category: Methods to manage the graphic transformation
+    -- Raises TransformError from Graphic3d
+    -- if   Drawing is not opened.
+    -- or the matrix is not a 4x4 matrix.
+    raises TransformError from Graphic3d;
+    
+end TransientManager from Visual3d;

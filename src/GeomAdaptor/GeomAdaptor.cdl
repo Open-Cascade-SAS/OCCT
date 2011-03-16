@@ -1,0 +1,57 @@
+-- File:      GeomAdaptator.cdl
+-- Created:   Thu Oct  8 10:33:07 1992
+-- Author:    Isabelle GRIGNON
+---Copyright: Matra Davision 1992
+
+
+package GeomAdaptor 
+
+	---Purpose: this package contains the  geometric definition of
+	--          curve and surface necessary to use algorithmes.
+
+uses 
+    Geom,
+    GeomAbs,
+    Adaptor3d,
+    gp,
+    Standard,
+    TColStd,
+    Geom2dAdaptor,
+    TColgp,
+    Precision
+
+is
+      class Curve; 
+        ---Purpose: creation of the loaded curve the curve is C1 by piece.
+        --          Inherits  Curve from Adaptor3d 
+
+      class Surface;
+        ---Purpose: creation of the loaded surface the surface is C1 by piece 
+        --          Inherits  Surface from Adaptor3d 
+
+      private class GHSurface instantiates GenHSurface from Adaptor3d
+      	    (Surface from GeomAdaptor);
+	    
+      class HSurface;
+	---Purpose: Inherited  from    GHSurface.   Provides a  surface
+	--          handled by reference.
+
+      private class GHCurve instantiates GenHCurve from Adaptor3d
+            (Curve from GeomAdaptor);
+      
+      class HCurve;
+	---Purpose: Inherited  from    GHCurve.   Provides a  curve
+	--          handled by reference.
+
+    
+      MakeCurve( C : Curve from Adaptor3d)
+	---Purpose: Build a Geom_Curve using the informations from the 
+	--          Curve from Adaptor3d
+      returns Curve from Geom;
+      
+      MakeSurface( S : Surface from Adaptor3d)
+	---Purpose: Build a Geom_Surface using the informations from the 
+	--          Surface from Adaptor3d
+      returns Surface from Geom;
+      
+end GeomAdaptor;

@@ -1,0 +1,70 @@
+-- File:	HLRTopoBRep_OutLiner.cdl
+-- Created:	Wed Aug  3 16:06:05 1994
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+class OutLiner from HLRTopoBRep inherits TShared from MMgt
+
+uses
+    Integer        from Standard,
+    Shape          from TopoDS,
+    Face           from TopoDS,
+    Projector      from HLRAlgo,
+    Data           from HLRTopoBRep,
+    MapOfShapeTool from BRepTopAdaptor
+is
+    Create
+    returns mutable OutLiner from HLRTopoBRep;
+
+    Create (OriSh : Shape from TopoDS)
+    returns mutable OutLiner from HLRTopoBRep;
+
+    Create (OriS : Shape from TopoDS;
+            OutS : Shape from TopoDS)
+    returns mutable OutLiner from HLRTopoBRep;
+
+    OriginalShape(me : mutable; OriS : Shape from TopoDS)
+    	---C++: inline
+    is static;
+
+    OriginalShape(me : mutable) returns Shape from TopoDS
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    OutLinedShape(me : mutable; OutS : Shape from TopoDS)
+    	---C++: inline
+    is static;
+
+    OutLinedShape(me : mutable) returns Shape from TopoDS
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    DataStructure(me : mutable) returns Data from HLRTopoBRep
+    	---C++: inline
+    	---C++: return &
+    is static;
+
+    Fill(me : mutable;
+         P     :        Projector      from HLRAlgo;
+	 MST   :in out  MapOfShapeTool from BRepTopAdaptor;
+         nbIso :        Integer        from Standard)
+    is static;
+    
+    ProcessFace(me : mutable; F :        Face           from TopoDS;
+                              S : in out Shape          from TopoDS;
+                              M : in out MapOfShapeTool from BRepTopAdaptor)  
+	---Purpose: Builds faces from F and add them to S.
+    is static private;
+
+    BuildShape(me : mutable; M : in out MapOfShapeTool from BRepTopAdaptor)
+    is static private;
+    
+fields
+    myOriginalShape : Shape from TopoDS;
+    myOutLinedShape : Shape from TopoDS;
+    myDS            : Data  from HLRTopoBRep;
+
+end OutLiner;

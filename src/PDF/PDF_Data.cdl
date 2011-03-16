@@ -1,0 +1,64 @@
+-- File:	PDF_Data.cdl
+--      	------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Mar 13 1997	Creation
+
+
+class Data from PDF
+    inherits Persistent from Standard
+
+	---Purpose: Persistent equivalent of Data from TDF.
+
+uses
+
+    HArray1OfInteger from PColStd,
+    HAttributeArray1 from PDF
+
+-- raises
+
+is
+
+    Create
+    	returns mutable Data from PDF;
+
+    Create(aVersionNumber : Integer from Standard)
+    	returns mutable Data from PDF;
+
+    VersionNumber(me)
+    	returns Integer from Standard;
+	---Purpose: Returns the value of the field <myVersion>.
+	---C++: inline
+
+
+    Labels(me : mutable;
+    	   theLabels : HArray1OfInteger from PColStd);
+	---Purpose: Sets the field <myLabels> with <theLabels>.
+	---C++: inline
+
+    Labels(me)
+    	returns HArray1OfInteger from PColStd;
+	---Purpose: Returns the value of the field <myLabels>.
+	---C++: inline
+
+    Attributes(me : mutable;
+    	   theAttributes : HAttributeArray1 from PDF);
+	---Purpose: Sets the field <myAttributes> with <theAttributes>.
+	---C++: inline
+
+    Attributes(me)
+    	returns HAttributeArray1 from PDF;
+	---Purpose: Returns the value of the field <myAttributes>.
+	---C++: inline
+
+fields
+
+    myVersion    : Integer          from Standard;
+    myLabels     : HArray1OfInteger from PColStd;
+    myAttributes : HAttributeArray1 from PDF;
+
+end Data;

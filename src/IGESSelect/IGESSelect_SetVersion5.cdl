@@ -1,0 +1,36 @@
+-- File:	IGESSelect_SetVersion5.cdl
+-- Created:	Wed Jun  1 16:26:02 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SetVersion5  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Sets IGES Version (coded in global parameter 23) to be at least
+    --           IGES 5.1 . If it is older, it is set to IGES 5.1, and
+    --           LastChangeDate (new Global n0 25) is added (current time)
+    --           Else, it does nothing (i.e. changes neither IGES Version nor
+    --           LastChangeDate)
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create returns mutable SetVersion5;
+    ---Purpose : Creates an SetVersion5, which uses the system Date for Last
+    --           Change Date
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : only <target> is used : IGES Version (coded)
+    --           is upgraded to 5.1 if it is older, and it this case the new
+    --           global parameter 25 (LastChangeDate) is set to current time
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Update IGES Version to 5.1"
+
+end SetVersion5;

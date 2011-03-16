@@ -1,0 +1,17 @@
+-- File:	PGeom_Point.cdl
+-- Created:	Mon Feb 22 17:13:10 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Point from PGeom inherits Geometry from PGeom
+
+	---Purpose: This abstract  class describe  common behaviour of
+	--          all points.
+	--          
+	---See Also : Point from Geom.
+
+is
+
+end;

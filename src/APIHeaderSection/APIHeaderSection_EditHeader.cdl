@@ -1,0 +1,29 @@
+-- File:	APIHeaderSection_EditHeader.cdl
+-- Created:	Wed Jul  8 16:19:47 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EditHeader  from APIHeaderSection    inherits Editor  from IFSelect
+
+uses Transient, AsciiString, HAsciiString, InterfaceModel, EditForm
+
+is
+
+    Create returns EditHeader;
+
+    Label (me) returns AsciiString;
+
+    Recognize (me; form : EditForm) returns Boolean;
+
+    StringValue (me; form : EditForm;  num : Integer)
+    	returns HAsciiString from TCollection;
+
+    Apply (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+    Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+
+end EditHeader;

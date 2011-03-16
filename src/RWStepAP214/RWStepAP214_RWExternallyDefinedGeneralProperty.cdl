@@ -1,0 +1,35 @@
+-- File:	RWStepAP214_RWExternallyDefinedGeneralProperty.cdl
+-- Created:	Wed May 10 15:09:07 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class RWExternallyDefinedGeneralProperty from RWStepAP214
+
+    ---Purpose: Read & Write tool for ExternallyDefinedGeneralProperty
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ExternallyDefinedGeneralProperty from StepAP214
+
+is
+    Create returns RWExternallyDefinedGeneralProperty from RWStepAP214;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ExternallyDefinedGeneralProperty from StepAP214);
+	---Purpose: Reads ExternallyDefinedGeneralProperty
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ExternallyDefinedGeneralProperty from StepAP214);
+	---Purpose: Writes ExternallyDefinedGeneralProperty
+
+    Share (me; ent : ExternallyDefinedGeneralProperty from StepAP214;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWExternallyDefinedGeneralProperty;

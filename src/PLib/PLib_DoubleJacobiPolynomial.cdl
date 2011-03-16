@@ -1,0 +1,70 @@
+-- File:	PLib_DoubleJacobiPolynomial.cdl
+-- Created:	Tue May 27 09:44:41 1997
+-- Author:	Sergey SOKOLOV
+--		<ssm@nonox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DoubleJacobiPolynomial from PLib 
+
+	---Purpose: 
+
+uses Array1OfReal,HArray1OfReal from TColStd, 
+     JacobiPolynomial from PLib
+
+is  
+    Create returns DoubleJacobiPolynomial; 
+    
+    Create ( JacPolU, JacPolV : JacobiPolynomial from  PLib)  
+      returns DoubleJacobiPolynomial;
+
+    MaxErrorU ( me; Dimension, DegreeU, DegreeV, dJacCoeff : Integer; 
+    	    	JacCoeff : Array1OfReal from TColStd ) returns Real;
+     
+    MaxErrorV ( me; Dimension, DegreeU, DegreeV, dJacCoeff : Integer; 
+    	    	JacCoeff : Array1OfReal from TColStd ) returns Real;
+    
+    MaxError ( me; Dimension, MinDegreeU, MaxDegreeU,  
+    	       MinDegreeV, MaxDegreeV, dJacCoeff : Integer; 
+    	       JacCoeff : Array1OfReal from TColStd; Error : Real ) returns Real;
+
+    ReduceDegree ( me; Dimension, MinDegreeU, MaxDegreeU,  
+    	       	   MinDegreeV, MaxDegreeV, dJacCoeff : Integer; 
+    	       	   JacCoeff : Array1OfReal from TColStd; EpmsCut : Real; 
+    	    	   MaxError : in out Real;  NewDegreeU, NewDegreeV : in out Integer);
+
+    AverageError ( me; Dimension, DegreeU, DegreeV, dJacCoeff : Integer; 
+    	    	   JacCoeff : Array1OfReal from TColStd ) returns Real;
+
+    WDoubleJacobiToCoefficients ( me; Dimension, DegreeU, DegreeV : Integer; 
+    	    	                  JacCoeff : Array1OfReal from TColStd; 
+    	    	    	    	  Coefficients : out Array1OfReal from TColStd ); 
+				   
+    U (me) 
+--- Purpose: returns myJacPolU;
+    ---C++: inline
+    returns JacobiPolynomial from PLib;
+
+    V (me) 
+--- Purpose: returns myJacPolV;
+    ---C++: inline
+    returns JacobiPolynomial from PLib;
+
+    TabMaxU (me) 
+--- Purpose: returns myTabMaxU;
+    ---C++: inline
+    returns HArray1OfReal from TColStd;
+
+    TabMaxV (me) 
+--- Purpose: returns myTabMaxV;
+    ---C++: inline
+    returns HArray1OfReal from TColStd;
+
+fields
+ 
+    myJacPolU     : JacobiPolynomial from PLib;
+    myJacPolV     : JacobiPolynomial from PLib; 
+    myTabMaxU     : HArray1OfReal from TColStd;
+    myTabMaxV     : HArray1OfReal from TColStd;
+    
+end DoubleJacobiPolynomial;

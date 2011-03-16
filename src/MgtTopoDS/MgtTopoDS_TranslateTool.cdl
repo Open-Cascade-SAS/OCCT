@@ -1,0 +1,287 @@
+-- File:	MgtTopoDS_TranslateTool.cdl
+-- Created:	Tue Mar  9 15:17:13 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phobox>
+-- Update:      frederic MAUPAS
+--              <fma@pronox>
+---Copyright:	 Matra Datavision 1993
+
+
+    
+deferred class TranslateTool from MgtTopoDS inherits TShared from MMgt
+    
+	---Purpose: The TranslateTool class is provided to support the
+	--          translation of inherited parts of topological data
+	--          structures.
+
+uses
+
+    TransientPersistentMap from PTColStd,
+    PersistentTransientMap from PTColStd,
+    Shape                  from TopoDS,
+    HShape                 from PTopoDS
+    
+raises
+    TypeMismatch from Standard
+
+is
+
+    --
+    --     The Add method is used to insert a shape in an other shape.
+    --     
+    
+    Add(me;
+    	S1 : in out Shape from TopoDS;
+    	S2 : Shape from TopoDS)
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    --
+    --       The Make methods should create a new empty  object of the
+    --       given type with  the given Model.   They should raise the
+    --       TypeMismatch   exception  if  the Model   is  not of  the
+    --       expected type.
+    --       
+
+
+    MakeVertex(me; 
+    	       S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeVertex(me; 
+    	       S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeEdge(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeEdge(me; 
+    	     S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeWire(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeWire(me; 
+    	     S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeFace(me; 
+    	     S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeFace(me; 
+    	     S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeShell(me; 
+    	      S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeShell(me; 
+    	      S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeSolid(me; 
+    	      S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeSolid(me; 
+    	      S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeCompSolid(me; 
+    	    	  S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeCompSolid(me; 
+    	    	  S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeCompound(me; 
+    	    	 S  : out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    MakeCompound(me; 
+    	    	 S  : mutable HShape from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard
+    is deferred;
+    
+    --
+    --     The Update methods should transfer the data from  the first
+    --     shape to the second.
+    --     
+    --     When an update method  is redefined it  should transfer the
+    --     data then call the Update  redefined method to transfer the
+    --     inherited data.
+    --     
+    
+    UpdateShape(me;
+    	        S1 :         Shape  from TopoDS;
+		S2 : mutable HShape from PTopoDS)
+	---Purpose: Basic update method
+	---Level: Internal 
+    is static;
+    
+    UpdateShape(me;
+    	         S1 :        HShape from PTopoDS;
+		 S2 : in out Shape  from TopoDS)
+	---Purpose: Basic update method
+	---Level: Internal 
+    is static;
+    
+    UpdateVertex(me;
+    	         S1 :         Shape                  from TopoDS;
+		 S2 : mutable HShape                 from PTopoDS;
+    	    	 M  : in out  TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateVertex(me;
+    	         S1 :        HShape                 from PTopoDS;
+		 S2 : in out Shape                  from TopoDS;
+    	    	 M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateEdge(me;
+    	       S1 :         Shape                  from TopoDS;
+	       S2 : mutable HShape                 from PTopoDS;
+    	       M  : in out  TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateEdge(me;
+    	       S1 :        HShape                 from PTopoDS;
+	       S2 : in out Shape                  from TopoDS;
+    	       M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateWire(me;
+    	       S1 :         Shape  from TopoDS;
+	       S2 : mutable HShape from PTopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateWire(me;
+    	       S1 :        HShape from PTopoDS;
+	       S2 : in out Shape  from TopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateFace(me;
+    	       S1 :         Shape                  from TopoDS;
+	       S2 : mutable HShape                 from PTopoDS;
+    	       M  : in out  TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateFace(me;
+    	       S1 :        HShape                 from PTopoDS;
+	       S2 : in out Shape                  from TopoDS;
+   	       M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateShell(me;
+    	        S1 :         Shape  from TopoDS;
+	        S2 : mutable HShape from PTopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateShell(me;
+    	        S1 :         HShape from PTopoDS;
+	        S2 : in out  Shape  from TopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateSolid(me;
+    	        S1 :         Shape  from TopoDS;
+	        S2 : mutable HShape from PTopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateSolid(me;
+    	        S1 :        HShape from PTopoDS;
+	        S2 : in out Shape  from TopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateCompSolid(me;
+    	            S1 :         Shape  from TopoDS;
+	            S2 : mutable HShape from PTopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateCompSolid(me;
+    	            S1 :        HShape from PTopoDS;
+	            S2 : in out Shape  from TopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateCompound(me;
+    	           S1 :         Shape  from TopoDS;
+	           S2 : mutable HShape from PTopoDS)
+	---Level: Internal 
+    is virtual;
+    
+    UpdateCompound(me;
+    	           S1 :        HShape from PTopoDS;
+	           S2 : in out Shape  from TopoDS)
+	---Level: Internal 
+    is virtual;
+    
+end TranslateTool;
+

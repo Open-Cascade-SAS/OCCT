@@ -1,0 +1,89 @@
+// File:      GeomAdaptor_Curve.lxx
+// Created:   Thu Apr 29 11:54:32 1993
+// Author:    Bruno DUMORTIER
+// Copyright: OPEN CASCADE 1993
+
+#include <gp_Pnt.hxx>
+#include <Geom_Curve.hxx>
+
+//=======================================================================
+//function : GeomAdaptor_Curve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Curve::GeomAdaptor_Curve()
+{
+}
+
+//=======================================================================
+//function : GeomAdaptor_Curve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Curve::GeomAdaptor_Curve(const Handle(Geom_Curve)& C)
+{
+  Load(C,C->FirstParameter(),C->LastParameter());
+}
+
+//=======================================================================
+//function : GeomAdaptor_Curve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_Curve::GeomAdaptor_Curve(const Handle(Geom_Curve)& C,
+                                            const Standard_Real UFirst,
+                                            const Standard_Real ULast)
+{
+  if (UFirst > ULast) Standard_ConstructionError::Raise();
+  Load(C,UFirst,ULast);
+}
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+inline void GeomAdaptor_Curve::Load(const Handle(Geom_Curve)& C)
+{
+  Load(C,C->FirstParameter(),C->LastParameter());
+}
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Curve::FirstParameter() const
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GeomAdaptor_Curve::LastParameter() const
+{
+  return myLast;
+}
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Geom_Curve)& GeomAdaptor_Curve::Curve() const 
+{ 
+  return myCurve;
+}
+
+//=======================================================================
+//function : GetType
+//purpose  : 
+//=======================================================================
+
+inline GeomAbs_CurveType GeomAdaptor_Curve::GetType() const
+{
+  return myTypeCurve;
+}

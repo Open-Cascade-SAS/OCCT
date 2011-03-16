@@ -1,0 +1,44 @@
+-- File:        ToroidalSurface.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ToroidalSurface from StepGeom 
+
+inherits ElementarySurface from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement3d from StepGeom
+is
+
+	Create returns mutable ToroidalSurface;
+	---Purpose: Returns a ToroidalSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aMajorRadius : Real from Standard;
+	      aMinorRadius : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetMajorRadius(me : mutable; aMajorRadius : Real);
+	MajorRadius (me) returns Real;
+	SetMinorRadius(me : mutable; aMinorRadius : Real);
+	MinorRadius (me) returns Real;
+
+fields
+
+	majorRadius : Real from Standard;
+	minorRadius : Real from Standard;
+
+end ToroidalSurface;

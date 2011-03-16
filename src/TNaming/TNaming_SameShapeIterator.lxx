@@ -1,0 +1,14 @@
+// File:	TNaming_SameShapeIterator.lxx
+// Created:	Thu Apr 24 17:49:46 1997
+// Author:	Yves FRICAUD
+//		<yfr@claquox.paris1.matra-dtv.fr>
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TNaming_SameShapeIterator::More() const
+{
+  return (myNode != 0L);
+}

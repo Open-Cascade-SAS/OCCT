@@ -1,0 +1,147 @@
+-- File:	BRepFeat_Gluer.cdl
+-- Created:	Fri Mar  8 09:12:54 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Gluer from BRepFeat inherits MakeShape from BRepBuilderAPI
+
+	---Purpose: One of the most significant aspects
+    	-- of BRepFeat functionality is the use of local operations as opposed
+    	-- to global ones. In a global operation, you would first
+    	-- construct a form of the type you wanted in your final feature, and
+    	-- then remove matter so that it could fit into your initial basis object.
+    	-- In a local operation, however, you specify the domain of the feature
+    	-- construction with aspects of the shape on which the feature is being
+    	-- created. These semantics are expressed in terms of a member
+    	-- shape of the basis shape from which - or up to which - matter will be
+    	-- added or removed. As a result, local operations make calculations
+    	-- simpler and faster than global operations.
+    	-- Glueing uses wires or edges of a face in the basis shape. These are
+    	-- to become a part of the feature. They are first cut out and then
+    	-- projected to a plane outside or inside the basis shape. By
+    	-- rebuilding the initial shape incorporating the edges and the
+    	-- faces of the tool, protrusion features can be constructed.
+
+
+uses Shape             from TopoDS,
+     Face              from TopoDS,
+     Edge              from TopoDS,
+     ListOfShape       from TopTools,
+     
+     Gluer             from LocOpe,
+     Operation         from LocOpe,
+
+     ShapeModification from BRepBuilderAPI
+
+
+is
+
+
+    Create
+	---Purpose: Initializes an empty constructor
+    	returns Gluer from BRepFeat;
+	---C++: inline
+	
+
+    Create(Snew: Shape from TopoDS;
+           Sbase : Shape from TopoDS)
+	---Purpose: Initializes the shapes to be glued, the new shape
+    	-- Snew and the basis shape Sbase.
+	returns Gluer from BRepFeat;
+	---C++: inline
+
+	
+    Init(me: in out; Snew: Shape from TopoDS;
+                     Sbase : Shape from TopoDS)
+	---Purpose: Initializes the new shape Snew and the basis shape
+    	-- Sbase for the local glueing operation.
+		---C++: inline
+    	    	is static;
+
+
+    Bind(me: in out; Fnew  : Face from TopoDS;
+    	             Fbase : Face from TopoDS)
+	---Purpose: Defines a contact between Fnew on the new shape
+    	-- Snew and Fbase on the basis shape Sbase. Informs
+    	-- other methods that Fnew in the new shape Snew is
+    	-- connected to the face Fbase in the basis shape Sbase.
+    	-- The contact faces of the glued shape must not have
+    	-- parts outside the contact faces of the basis shape.
+    	-- This indicates that glueing is possible.
+		---C++: inline
+    	    	is static;
+
+
+    Bind(me: in out; Enew : Edge from TopoDS;
+                     Ebase: Edge from TopoDS)
+	---Purpose: nforms other methods that the edge Enew in the new
+    	-- shape is the same as the edge Ebase in the basis
+    	-- shape and is therefore attached to the basis shape. This
+    	-- indicates that glueing is possible.
+    		---C++: inline
+    	    	is static;
+
+
+
+    OpeType(me)
+
+    	returns Operation from LocOpe
+	---Purpose: Determine which operation type to use glueing or sliding.
+		---C++: inline
+    	    	is static;
+
+
+    BasisShape(me)
+    
+    	returns Shape from TopoDS
+	---Purpose: Returns the basis shape of the compound shape.
+	---C++: return const&
+	---C++: inline
+    	is static;
+
+
+    GluedShape(me)
+
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+    	--- Purpose: Returns the resulting compound shape.
+	is static;
+
+
+-- Methods redefined from BRepBuilderAPI_MakeShape
+
+    Build(me : in out)
+	---Purpose: This is  called by  Shape().  It does  nothing but
+	--          may be redefined.
+	---Level: Public
+    is redefined;
+	
+
+    -----------------------------------------------------------
+    --- the following methods do nothing and must be redefined
+    --- for faces modifications and creations.
+
+    IsDeleted(me: in out; F: Shape from TopoDS) 
+    	---Purpose: returns the status of the Face after
+    	--          the shape creation. 
+	---Level: Public
+    returns Boolean from Standard
+    is redefined;
+    
+    
+    Modified(me: in out; F: Shape from TopoDS)
+    	---Purpose: returns the list of generated Faces.
+    	---C++:     return const &
+	---Level: Public
+    returns ListOfShape from TopTools
+    is redefined;
+    
+
+fields
+
+    myGluer: Gluer from LocOpe;
+
+end Gluer;

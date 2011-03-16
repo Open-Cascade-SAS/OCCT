@@ -1,0 +1,46 @@
+-- File:	MoniTool_TimerSentry.cdl
+-- Created:	Tue Dec 13 12:35:33 2001
+-- Author:	Sergey KUUl
+---Copyright:	 Matra Datavision 2001
+
+class TimerSentry from MoniTool
+
+    ---Purpose: A tool to facilitate using MoniTool_Timer functionality
+    --          by automatically ensuring consistency of start/stop actions
+    --
+    --          When instance of TimerSentry is created, a timer 
+    --          with corresponding name is started
+    --          When instance is deleted, timer stops
+
+uses
+    Timer from MoniTool
+    
+is
+
+    Create (cname: CString from Standard) 
+    returns TimerSentry from MoniTool;
+        ---C++: inline
+        ---Purpose: Constructor creates an instance and runs the corresponding timer
+    
+    Create (timer: Timer from MoniTool) 
+    returns TimerSentry from MoniTool;
+        ---C++: inline
+        ---Purpose: Constructor creates an instance and runs the corresponding timer
+    
+    Destroy(me: in out);
+        ---C++: inline
+    	---Purpose: Destructor stops the associated timer
+        ---C++: alias "Standard_EXPORT ~MoniTool_TimerSentry () { Destroy(); }"
+
+    Timer (me) returns Timer from MoniTool;
+        ---C++: inline
+
+    Stop (me: in out);
+        ---C++: inline
+    	---Purpose: Manually stops the timer
+
+fields
+
+    myTimer: Timer from MoniTool;
+
+end TimerSentry;

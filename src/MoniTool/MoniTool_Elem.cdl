@@ -1,0 +1,53 @@
+-- File:	MoniTool_Elem.cdl
+-- Created:	Fri Nov  4 10:47:55 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class Elem from MoniTool
+    (TheKey    as  any;
+     TheHasher as  any;
+     TheInfo   as  any)
+        inherits Element
+
+    ---Purpose : an Elem defines an Element for a specific input class
+    --           its definition includes the value of the Key to be mapped,
+    --           and the HashCoder associated to the class of the Key
+    --           
+    --           TheKey defines the class to be keyed
+    --           TheHasher is the associated Hasher
+    --           TheInfo   is an additionnal class which helps to provide
+    --             informations on the value (template : see DataInfo)
+
+uses CString
+
+is
+
+    Create (akey : any TheKey) returns mutable Elem;
+    ---Purpose : Creates a Elem with a Value. This Value can then not be
+    --           changed. It is used by the Hasher to compute the HashCode,
+    --           which will then be stored for an immediate reading.
+
+    Value (me) returns any TheKey  is static;
+    ---Purpose : Returns the contained value
+    ---C++ : return const &
+
+    Equates (me; other : Element) returns Boolean;
+    ---Purpose : Specific testof equallity : defined as False if <other> has
+    --           not the same true Type, else contents are compared (by
+    --           C++ operator ==)
+
+    ValueType    (me) returns Type  is redefined;
+    ---Purpose : Returns the Type of the Value. By default, returns the
+    --           DynamicType of <me>, but can be redefined
+
+    ValueTypeName (me) returns CString  is redefined;
+    ---Purpose : Returns the name of the Type of the Value. Default is name
+    --           of ValueType, unless it is for a non-handled object
+
+fields
+
+    theval  : TheKey;
+
+end Elem;

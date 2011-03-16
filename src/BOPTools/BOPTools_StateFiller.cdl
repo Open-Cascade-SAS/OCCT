@@ -1,0 +1,88 @@
+-- File:	BOPTools_StateFiller.cdl
+-- Created:	Mon Feb  4 10:04:52 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class StateFiller from BOPTools 
+
+	---Purpose:  
+    	---  root class to compute states (3D)    
+	---
+
+uses 
+    PaveFiller  from BOPTools,
+    PPaveFiller from BOPTools, 
+    PInterferencePool from BOPTools, 
+    PShapesDataStructure from BooleanOperations, 
+    
+    Shape from TopoDS,   
+    Edge  from TopoDS,
+    State from TopAbs, 
+    ShapeEnum from TopAbs,
+    StateOfShape from BooleanOperations
+--raises
+
+is 
+    Create (aFiller: PaveFiller from BOPTools) 
+    	returns StateFiller from BOPTools; 
+    	---Purpose:  
+    	--- Constructor 
+    	---
+    Do(me:out) 
+    	is virtual; 
+    	---Purpose: 
+    	--- Launch the Filler   
+    	---
+    IsDone(me) 
+    	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns true if Ok
+	---
+     
+    ConvertState (myclass; 
+    	    aSt: State from  TopAbs) 
+	returns StateOfShape from BooleanOperations; 
+    	---Purpose:  
+    	--- Convert conventional states to VDS-states
+    	---
+    ConvertState (myclass; 
+    	    aSt: StateOfShape from BooleanOperations) 
+	returns State from  TopAbs; 
+    	---Purpose:  
+    	--- Convert VDS-states to conventional states     
+    	---
+    ClassifyEdgeToSolidByOnePoint  (me:out;  
+    	    anEdge: Edge from TopoDS; 
+	    aRef  : Shape from TopoDS)  
+	returns State from  TopAbs;    
+    	---Purpose:  
+    	--- Computation the 3D-state of the edge <anEdge>  
+    	--- to solid  <aRef>       
+    	---
+    ClassifyShapeByRef  (me:out; 
+    	    aShape: Shape from TopoDS; 
+    	    aRef  : Shape from TopoDS) 
+    	returns  StateOfShape from BooleanOperations;    
+    	---Purpose:  
+    	--- Computation the 3D-state of the shape <aShape>  
+    	--- to solid <aRef>       
+    	---
+    SubType (myclass; 
+    	    	aShape: Shape from TopoDS) 
+    	returns ShapeEnum from TopAbs;    
+    	---Purpose:  
+    	--- Returns first subtype of <Shape> 
+    	---
+fields
+    myFiller  : PPaveFiller from BOPTools                    
+    	is protected; 
+    myDS      : PShapesDataStructure from BooleanOperations  
+    	is protected;   
+    myIntrPool: PInterferencePool from BOPTools              
+    	is protected;  
+    myIsDone  : Boolean   from Standard                      
+    	is protected;  
+     
+end StateFiller;

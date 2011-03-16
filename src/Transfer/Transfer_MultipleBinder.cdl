@@ -1,0 +1,75 @@
+-- File:	Transfer_MultipleBinder.cdl
+-- Created:	Wed Apr  7 19:13:46 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class MultipleBinder  from Transfer  inherits Binder
+
+    ---Purpose : Allows direct binding between a starting Object and the Result
+    --           of its transfer, when it can be made of several Transient
+    --           Objects. Compared to a Transcriptor, it has no Transfer Action
+    --           
+    --           Result is a list of Transient Results. Unique Result is not
+    --           available : SetResult is redefined to start the list on the
+    --           first call, and refuse the other times.
+    --           
+    --           rr
+    --           
+    --           Remark : MultipleBinder itself is intended to be created and
+    --           filled by TransferProcess itself (method Bind). In particular,
+    --           conflicts between Unique (Standard) result and Multiple result
+    --           are avoided through management made by TransferProcess.
+    --           
+    --           Also, a Transcriptor (with an effective Transfer Method) which
+    --           can produce a Multiple Result, may be defined as a sub-class
+    --           of MultipleBinder by redefining method Transfer.
+
+uses CString, Transient, Type, HSequenceOfTransient from TColStd
+
+raises TransferFailure, OutOfRange
+
+is
+
+    Create returns mutable MultipleBinder;
+    ---Purpose : normal standard constructor, creates an empty MultipleBinder
+
+    IsMultiple (me) returns Boolean  is redefined;
+    ---Purpose : Returns True if a starting object is bound with SEVERAL
+    --           results : Here, returns allways True
+
+    ResultType (me) returns Type;
+    ---Purpose : Returns the Type permitted for Results, i.e. here Transient
+
+    ResultTypeName (me) returns CString;
+    ---Purpose : Returns the Name of the Type which characterizes the Result
+    --           Here, returns "(list)"
+
+
+    AddResult (me : mutable; res : mutable Transient);
+    ---Purpose : Adds a new Item to the Multiple Result
+
+    NbResults (me) returns Integer;
+    ---Purpose : Returns the actual count of recorded (Transient) results
+
+    ResultValue (me; num : Integer) returns mutable Transient
+    ---Purpose : Returns the value of the recorded result n0 <num>
+    	raises OutOfRange;
+    --           Error if <num> is out of range
+
+    MultipleResult (me) returns  HSequenceOfTransient from TColStd;
+    ---Purpose : Returns the Multiple Result, if it is defined (at least one
+    --           Item). Else, returns a Null Handle
+
+    SetMultipleResult (me : mutable;
+    	    	       mulres : mutable HSequenceOfTransient from TColStd)
+    	raises TransferFailure;
+    ---Purpose : Defines a Binding with a Multiple Result, given as a Sequence
+    --           Error if a Unique Result has yet been defined
+
+fields
+
+    themulres : HSequenceOfTransient from TColStd;
+
+end MultipleBinder;

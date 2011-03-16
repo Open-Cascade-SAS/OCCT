@@ -1,0 +1,48 @@
+-- File:	IntTools_CurveRangeLocalizeData.cdl
+-- Created:	Fri Oct 14 19:26:52 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class CurveRangeLocalizeData from IntTools
+uses
+    Box from Bnd,
+    CurveRangeSample from IntTools,
+    MapOfCurveSample from IntTools,
+    ListOfCurveRangeSample from IntTools,
+    DataMapOfCurveSampleBox from IntTools
+
+is
+    Create(theNbSample: Integer from Standard;
+    	   theMinRange: Real from Standard)
+    	returns CurveRangeLocalizeData from IntTools;
+
+    GetNbSample(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+    GetMinRange(me)
+    	returns Real from Standard;
+	---C++: inline
+
+    AddOutRange(me: in out; theRange: CurveRangeSample from IntTools);
+    
+    AddBox(me: in out; theRange: CurveRangeSample from IntTools;
+    	    	       theBox: Box from Bnd);
+
+    FindBox(me; theRange: CurveRangeSample from IntTools;
+    	    	theBox: out Box from Bnd)
+    	returns Boolean from Standard;
+
+    IsRangeOut(me; theRange: CurveRangeSample from IntTools)
+    	returns Boolean from Standard;
+
+    ListRangeOut(me; theList: out ListOfCurveRangeSample from IntTools);
+
+fields
+    myNbSampleC: Integer from Standard;
+    myMinRangeC: Real from Standard;
+    myMapRangeOut: MapOfCurveSample from IntTools;
+    myMapBox      : DataMapOfCurveSampleBox from IntTools;
+
+end CurveRangeLocalizeData from IntTools;

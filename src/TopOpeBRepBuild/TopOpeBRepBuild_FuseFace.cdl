@@ -1,0 +1,133 @@
+-- File:	TopOpeBRepBuild_FuseFace.cdl
+-- Created:	Tue Jul 28 16:36:19 1998
+-- Author:	LECLERE Florence
+--		<flo@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class FuseFace from TopOpeBRepBuild
+
+	---Purpose: 
+
+uses Shape                     from TopoDS,
+     Face                      from TopoDS,
+     Edge                      from TopoDS,
+     Vertex                    from TopoDS,
+     DataMapOfShapeListOfShape from TopTools,
+     ListOfShape               from TopTools
+
+
+is
+
+
+    Create
+    	returns FuseFace from TopOpeBRepBuild;
+    	---C++: inline
+    	--   
+	
+	
+    Create(LIF : ListOfShape from TopTools;
+   	   LRF : ListOfShape from TopTools;     
+	   CXM : Integer from Standard)
+	   
+    	---C++: inline
+    	--      
+    	returns FuseFace from TopOpeBRepBuild;
+
+
+    Init(me: in out; LIF : ListOfShape from TopTools;
+	       	     LRF : ListOfShape from TopTools;
+	    	     CXM : Integer from Standard)    
+    	is static;
+
+
+    PerformFace(me: in out)
+  
+    	is static;
+
+
+    PerformEdge(me: in out)
+  
+    	is static;
+
+    ClearEdge(me: in out)
+    
+    	is static;
+	
+    ClearVertex(me: in out)
+    
+    	is static;
+	
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;	
+	
+    IsModified(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;	
+	    
+    LFuseFace(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+
+    LInternEdge(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+    LExternEdge(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+    LModifEdge(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+    LInternVertex(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+    LExternVertex(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+    LModifVertex(me)
+    
+        returns ListOfShape from TopTools
+	---C++: return const&
+    	is static;
+	
+		
+fields
+
+    myLIF      : ListOfShape               from TopTools;
+    myLRF      : ListOfShape               from TopTools;
+    myLFF      : ListOfShape               from TopTools;
+    
+    myLIE      : ListOfShape               from TopTools is protected;
+    myLEE      : ListOfShape               from TopTools is protected;
+    myLME      : ListOfShape               from TopTools is protected;
+        
+    myLIV      : ListOfShape               from TopTools is protected;
+    myLEV      : ListOfShape               from TopTools is protected;
+    myLMV      : ListOfShape               from TopTools is protected;
+
+    myInternal : Boolean                   from Standard; 
+    myModified : Boolean                   from Standard;
+    myDone     : Boolean                   from Standard;
+    
+end FuseFace;    

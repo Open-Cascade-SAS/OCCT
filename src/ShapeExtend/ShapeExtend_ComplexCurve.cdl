@@ -1,0 +1,106 @@
+-- File:	ShapeExtend_ComplexCurve.cdl
+-- Created:	Tue Jun 22 19:08:30 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+deferred class ComplexCurve from ShapeExtend inherits Curve from Geom
+
+    ---Purpose: Defines a curve which consists of several segments.
+    --          Implements basic interface to it.
+
+uses
+
+    Pnt              from gp,
+    Vec              from gp,
+    Trsf             from gp,
+    Shape            from GeomAbs,
+    Curve            from Geom
+
+is
+
+    Initialize returns mutable ComplexCurve from ShapeExtend;
+    	---Purpose:
+
+    NbCurves (me) returns Integer is deferred;
+    	---Purpose: Returns number of curves
+    
+    Curve (me; index: Integer) returns Curve from Geom is deferred;
+    	---C++: return const &
+    	---Purpose: Returns curve given by its index
+	
+    LocateParameter (me; U   : Real;
+    	    	    	 UOut: out Real)
+    returns Integer is deferred;
+    	---Purpose: Returns number of the curve for the given parameter U
+	--          and local paramete r UOut for the found curve
+	
+    LocalToGlobal (me; index : Integer;
+    	    	       Ulocal: Real)
+    returns Real is deferred;
+    	---Purpose: Returns global parameter for the whole curve according
+    	--          to the segment and local parameter on it
+	
+    Transform (me: mutable; T: Trsf) is redefined;
+    	---Purpose: Applies transformation to each curve
+
+    ReversedParameter(me; U: Real) returns Real is redefined;
+	---C++: inline
+    	---Purpose: Returns 1 - U
+    
+    FirstParameter (me) returns Real is redefined;
+	---C++: inline
+    	---Purpose: Returns 0
+    
+    LastParameter (me) returns Real is redefined;
+	---C++: inline
+    	---Purpose: Returns 1
+    
+    IsClosed (me) returns Boolean is redefined;
+	---C++: inline
+    	---Purpose: Returns True if the curve is closed
+    
+    IsPeriodic (me) returns Boolean is redefined;
+	---C++: inline
+    	---Purpose: Returns False
+    
+    Continuity (me) returns Shape from GeomAbs is redefined;
+	---C++: inline
+    	---Purpose: Returns GeomAbs_C0
+    
+    IsCN (me; N: Integer) returns Boolean is redefined;
+	---C++: inline
+    	---Purpose: Returns False if N > 0
+		       
+    D0 (me; U: Real; P: out Pnt) is redefined;
+    	---Purpose: Returns point at parameter U.
+	--          Finds appropriate curve and local parameter on it.
+	
+    D1 (me; U: Real; P: out Pnt; V1: out Vec) is redefined;
+    
+    D2 (me; U: Real; P: out Pnt; V1, V2: out Vec) is redefined;
+    
+    D3 (me; U: Real; P: out Pnt; V1, V2, V3: out Vec) is redefined;
+    
+    DN (me; U: Real; N: Integer) returns Vec is redefined;
+
+    
+    GetScaleFactor(me; ind: Integer) returns Real is deferred;
+    	---Purpose: Returns scale factor for recomputing of deviatives.
+    
+    ---Level: Internal
+    
+    CheckConnectivity (me: mutable; Preci: Real) returns Boolean;
+        ---Purpose: Checks geometrical connectivity of the curves, including
+	--          closure (sets fields myClosed)
+    
+    TransformDN (me; V: in out Vec; ind: Integer; N: Integer) 
+    is protected;
+    	---Purpose: Transform the derivative according to its order
+
+fields
+
+    myClosed: Boolean is protected;
+    
+end ComplexCurve;

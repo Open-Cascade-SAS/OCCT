@@ -1,0 +1,40 @@
+-- File:	Point.cdl
+-- Created:	Thu Feb 21 10:31:01 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+generic class   Point from Extrema  (Pnt as any)
+        inherits Storable from Standard
+    	---Purpose: Definition of a point on curve.
+
+
+is
+    Create returns Point;
+    	---Purpose: Creation of an indefinite point on curve.
+
+    Create (U: Real; P: Pnt) returns Point;
+    	---Purpose: Creation of a point on curve with a parameter 
+    	--          value on the curve and a Pnt from gp.
+
+    SetValues(me: in out; U: Real; P: Pnt)
+    	---Purpose: sets the point and parameter values.
+    is static;
+
+    Value (me) returns Pnt
+    	---Purpose: Returns the point.
+    	---C++: return const&
+    	---C++: inline
+    	is static;
+
+    Parameter (me) returns Real
+    	---Purpose: Returns the parameter on the curve.
+    	---C++: inline
+    	is static;
+
+fields
+    myU: Real;
+    myP: Pnt;
+
+end Point;

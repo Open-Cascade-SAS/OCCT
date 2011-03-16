@@ -1,0 +1,73 @@
+-- File     : MeshVS_TextPrsBuilder.cdl
+-- Created  : 13 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class TextPrsBuilder from MeshVS inherits PrsBuilder from MeshVS
+
+	---Purpose: This class provides methods to create text data presentation.
+        -- It store map of texts assigned with nodes or elements.
+
+uses
+  Real from Standard,
+
+  Presentation from Prs3d,
+
+  Boolean from Standard,
+  Integer from Standard,
+
+  Mesh                        from MeshVS,
+  MeshPtr                     from MeshVS,
+  DisplayModeFlags            from MeshVS,
+  DataSource                  from MeshVS,
+  DataMapOfIntegerAsciiString from MeshVS,
+  BuilderPriority             from MeshVS,
+  Color                       from Quantity,
+  AsciiString                 from TCollection,
+  PackedMapOfInteger          from TColStd
+
+is
+
+  Create  ( Parent   : Mesh from MeshVS;
+            Height   : Real;
+            Color    : Color from Quantity;
+            Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_TextDataPrs;
+            DS       : DataSource from MeshVS = 0;
+            Id       : Integer = -1;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_Text ) returns mutable TextPrsBuilder from MeshVS;
+
+  Build   ( me; Prs        : Presentation from Prs3d;
+            IDs            : PackedMapOfInteger;
+            IDsToExclude   : in out PackedMapOfInteger;
+            IsElement      : Boolean;
+            theDisplayMode : Integer ) is virtual;
+	---Purpose: Builds presentation of text data
+
+  GetTexts ( me; IsElement : Boolean ) returns DataMapOfIntegerAsciiString from MeshVS;
+	---C++: return const &
+	---Purpose: Returns map of text assigned with nodes ( IsElement = False ) or elements ( IsElement = True )
+
+  SetTexts ( me : mutable;
+             IsElement     : Boolean;
+             Map           : DataMapOfIntegerAsciiString from MeshVS );
+	---Purpose: Sets map of text assigned with nodes or elements
+
+  HasTexts ( me; IsElement : Boolean )    returns Boolean;
+	---Purpose: Returns True if map isn't empty
+
+  GetText  ( me; IsElement : Boolean;
+             ID            : Integer;
+             Text          : out AsciiString from TCollection )   returns Boolean;
+	---Purpose: Returns text assigned with single node or element
+
+  SetText  ( me : mutable;
+             IsElement     : Boolean;
+             ID            : Integer;
+             Text          : AsciiString from TCollection );
+	---Purpose: Sets text assigned with single node or element
+
+fields
+  myNodeTextMap         : DataMapOfIntegerAsciiString from MeshVS;
+  myElemTextMap         : DataMapOfIntegerAsciiString from MeshVS;
+
+end TextPrsBuilder;

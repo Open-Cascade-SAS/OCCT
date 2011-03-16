@@ -1,0 +1,32 @@
+-- File:	Plate_PlaneConstraint.cdl
+-- Created:	Wed May  6 19:12:10 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+
+class PlaneConstraint from Plate
+---Purpose: constraint a point to belong to a Plane
+--          
+
+uses 
+ XY from gp, 
+ Pln  from  gp,
+ LinearScalarConstraint from Plate
+
+is
+    Create(point2d : XY ; pln  :  Pln  from  gp; 
+           iu : Integer = 0; iv : Integer = 0) returns PlaneConstraint;
+-- constraint the iu th derivative in u  and iv th  derivative in v at
+-- the point2d parametre to belong to the pln plane.
+
+    -- Accessors :
+    LSC(me) returns  LinearScalarConstraint ;
+    ---C++: inline 
+    ---C++: return const &
+
+fields
+    myLSC : LinearScalarConstraint;    
+end;
+

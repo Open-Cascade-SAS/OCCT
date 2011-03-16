@@ -1,0 +1,189 @@
+-- File:	Intersection.cdl
+-- Created:	Mon Apr 27 16:46:10 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+deferred class Intersection from IntRes2d
+
+
+    ---Purpose: Defines  the root   class  of  all  the  Intersections
+    --          between  two 2D-Curves, and  provides all  the methods
+    --          about the results of the Intersections Algorithms.
+
+
+uses IntersectionPoint             from IntRes2d,
+     IntersectionSegment           from IntRes2d,
+     SequenceOfIntersectionPoint   from IntRes2d,
+     SequenceOfIntersectionSegment from IntRes2d
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+is
+
+    Initialize
+    
+	---Purpose: Empty constructor.    	
+    	is protected;
+	---C++:inline
+
+	
+    Initialize(Other: Intersection from IntRes2d)
+        ---C++:inline
+    	is protected;
+    
+    IsDone(me)
+    
+	---Purpose: returns TRUE when the computation was successful.
+	---C++: inline
+    	returns Boolean from Standard
+   	is static;
+
+
+    IsEmpty(me)
+    
+	---Purpose: Returns TRUE if there is no intersection between the
+	--          given arguments.
+	--          The exception NotDone is raised if IsDone returns FALSE.
+	---C++: inline
+     	returns Boolean from Standard
+    	raises  NotDone from StdFail
+	is static;
+
+
+    NbPoints(me)
+
+      	---Purpose: This function returns the number of intersection
+       	--          points between the 2 curves.
+	--          The exception NotDone is raised if IsDone returns FALSE.
+	---C++: inline
+	
+	returns Integer from Standard
+    	raises  NotDone from StdFail
+	is static;
+
+
+    Point(me; N : Integer from Standard)
+
+	---Purpose: This function returns the intersection point
+	--          of range N;
+	--          The exception NotDone is raised if IsDone returns FALSE.
+	--          The exception OutOfRange is raised if (N <= 0) 
+	--          or (N > NbPoints).
+	---C++: inline
+
+	returns IntersectionPoint from IntRes2d
+    	---C++: return const &
+    	raises  NotDone           from StdFail,
+                OutOfRange        from Standard
+	is static;
+
+
+    NbSegments(me)
+
+	---Purpose: This function returns the number of intersection
+	--          segments between the two curves.
+	--          The exception NotDone is raised if IsDone returns FALSE.
+	---C++: inline
+	
+	returns Integer from Standard
+    	raises  NotDone from StdFail
+	is static;
+	
+	
+    Segment(me; N : Integer)
+
+	---Purpose: This function returns the intersection segment
+	--          of range N;
+	--          The exception NotDone is raised if IsDone returns FALSE.
+	--          The exception OutOfRange is raised if (N <= 0) 
+	--          or (N > NbPoints).
+	---C++: inline
+
+	returns IntersectionSegment from IntRes2d
+    	---C++: return const &
+    	raises  NotDone             from StdFail,
+                OutOfRange          from Standard
+	is static;
+
+
+
+    SetValues(me: in out; Inter: Intersection from IntRes2d)
+
+	--Purpose: Copies  the Inters values into the current object.
+		
+    	is static protected;
+
+
+    Append(me: in out; Inter      : Intersection from IntRes2d;
+                       FirstParam1: Real         from Standard;
+                       LastParam1 : Real         from Standard;
+                       FirstParam2: Real         from Standard;
+                       LastParam2 : Real         from Standard)		       
+
+	--Purpose: Appends  the Inters values to the current object
+	--         FirstParam and LastParam are the parameters of
+	--         the bounds of the parameter interval of the 
+	--         curves.
+	
+    	is static protected;
+
+
+    Append(me: in out; Seg: IntersectionSegment from IntRes2d) 
+
+    	--Purpose: Appends a new Intersection Segment.
+	---C++: inline
+	is static protected;
+
+
+    Append(me: in out; Pnt: IntersectionPoint from IntRes2d) 
+    
+    	--Purpose: Appends a new Intersection Point.
+	---C++: inline	    	
+	is static protected;
+	
+
+    Insert(me: in out; Pnt: IntersectionPoint from IntRes2d) 
+    
+    	--Purpose: Inserts a new Intersection Point.
+	    	
+	is static protected;
+	
+
+    ResetFields(me: in out)
+    
+	--Purpose: Resets all fields.  
+	---C++: inline	    
+    	is static protected;
+
+
+    SetReversedParameters(me: in out; Reverseflag: Boolean from Standard)
+    
+	--Purpose: Initialize the  reverse flag. This flag is  used to
+	--         determine  if the first and  second parameters have
+	--         to be   swaped when    the intersection  points and
+	--         segments are created.
+	---C++: inline	    
+    	is static;
+
+
+    ReversedParameters(me)
+    
+    	--Purpose: Returns the value of the reverse flag.
+	---C++: inline	
+    	returns Boolean from Standard
+    	is static protected;
+
+fields
+
+    done    : Boolean                       from Standard is protected;
+    reverse : Boolean                       from Standard;          
+    lpnt    : SequenceOfIntersectionPoint   from IntRes2d;
+    lseg    : SequenceOfIntersectionSegment from IntRes2d; 
+
+end Intersection;
+ 

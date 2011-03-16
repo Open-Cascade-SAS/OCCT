@@ -1,0 +1,38 @@
+-- File:	GeomToStep_MakePlane.cdl
+-- Created:	Mon Jun 14 15:54:27 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakePlane from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          Plane from Geom and Pln from gp, and the class
+    --          Plane from StepGeom which describes a plane from
+    --          Prostep. 
+  
+uses Pln   from gp,
+     Plane from Geom,
+     Plane from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( P : Pln from gp ) returns MakePlane;
+
+Create ( P : Plane from Geom ) returns MakePlane;
+
+Value (me) returns Plane from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+
+fields
+
+    thePlane : Plane from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakePlane;
+
+

@@ -1,0 +1,40 @@
+-- File:	BRep_PointOnSurface.cdl
+-- Created:	Tue Aug 10 14:29:18 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class PointOnSurface from BRep inherits PointsOnSurface from BRep
+
+uses
+    Surface  from Geom,
+    Location from TopLoc
+
+is
+    Create(P1,P2 : Real;
+    	   S : Surface from Geom;
+	   L : Location from TopLoc)
+    returns mutable PointOnSurface from BRep;
+    
+    
+    IsPointOnSurface(me)        returns Boolean
+    is redefined;
+
+    IsPointOnSurface(me; S  : Surface  from Geom;
+    	    	         L  : Location from TopLoc)   returns Boolean
+    is redefined;
+    
+    Parameter2(me) returns Real
+    is redefined;
+		
+    Parameter2(me : mutable; P : Real)
+    is redefined;
+
+    
+fields
+    
+    myParameter2 : Real;
+
+end PointOnSurface;

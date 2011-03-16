@@ -1,0 +1,71 @@
+-- File:	TopOpeBRepBuild_SolidBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class SolidBuilder from TopOpeBRepBuild 
+
+uses
+
+    Shape from TopoDS,
+    
+    ShapeSet from TopOpeBRepBuild,
+    LoopSet from TopOpeBRepBuild,
+    BlockIterator from TopOpeBRepBuild,
+    BlockBuilder from TopOpeBRepBuild,
+
+    ShellFaceSet from TopOpeBRepBuild,
+    SolidAreaBuilder from TopOpeBRepBuild
+    
+is
+
+    Create returns SolidBuilder;
+
+    Create(FS : in out ShellFaceSet; ForceClass : Boolean = Standard_False)  
+    returns SolidBuilder;
+    ---Purpose: Create a SolidBuilder to build the areas on
+    -- the shapes (shells, blocks of faces) described by <LS>.
+
+    InitSolidBuilder(me : in out; 
+    	    	     FS : in out ShellFaceSet;
+    	    	     ForceClass : Boolean) is static;
+    
+    -- Output methods 
+    InitSolid(me : in out) returns Integer from Standard;
+    MoreSolid(me) returns Boolean from Standard is static;
+    NextSolid(me : in out) is static;
+    
+    -- Exploration of the wires of the current Solid
+    InitShell(me : in out) returns Integer from Standard;
+    MoreShell(me) returns Boolean from Standard is static;
+    NextShell(me : in out) is static;
+    IsOldShell(me) returns Boolean from Standard is static;
+    OldShell(me) returns Shape from TopoDS is static;
+    ---Purpose: Returns current shell
+    -- This shell may be : 
+    -- * an old shell OldShell(), which has not been reconstructed;
+    -- * a new shell made of faces described by ...NewFace() methods.
+    ---C++: return const &
+
+    -- Exploration of the faces of current shell when IsOldShell = False
+    InitFace(me : in out) returns Integer from Standard;
+    MoreFace(me) returns Boolean from Standard is static;
+    NextFace(me : in out) is static;
+    Face(me) returns Shape from TopoDS is static;
+    ---Purpose: Returns current new face of current new shell.
+    ---C++: return const &
+
+    --- private
+    MakeLoops(me : in out; SS : in out ShapeSet from TopOpeBRepBuild) 
+    is static private;
+    
+fields
+
+    myLoopSet : LoopSet from TopOpeBRepBuild;
+    myBlockIterator : BlockIterator from TopOpeBRepBuild;
+    myBlockBuilder : BlockBuilder from TopOpeBRepBuild;
+
+    mySolidAreaBuilder : SolidAreaBuilder from TopOpeBRepBuild;
+    
+end SolidBuilder;

@@ -1,0 +1,158 @@
+-- File:	TopOpeBRepBuild_CorrectFace2d.cdl
+-- Created:	Tue Jan 25 17:43:26 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class CorrectFace2d from TopOpeBRepBuild 
+
+	---Purpose: 
+
+uses 
+    Box2d from Bnd, 
+    
+    Face  from TopoDS,  
+    Wire  from TopoDS, 
+    Edge  from TopoDS, 
+    Shape from TopoDS,
+     
+    Vec2d from gp, 
+    Pnt2d from gp, 
+    Curve from Geom2d,  
+    
+    IndexedMapOfOrientedShape from TopTools, 
+    ListOfShape from TopTools,    
+    IndexedDataMapOfShapeShape from TopTools 
+
+--raises
+
+is 
+    Create           returns CorrectFace2d from TopOpeBRepBuild;  
+
+    Create        (aFace: Face from TopoDS; 
+    	    	   anAvoidMap: IndexedMapOfOrientedShape from TopTools; 
+    	    	   aMap:out IndexedDataMapOfShapeShape from TopTools)   
+	            returns CorrectFace2d from TopOpeBRepBuild;   
+     
+    Face          (me) returns Face from TopoDS; 
+    ---C++: return const & 
+      
+    Perform       (me:out);  
+
+    IsDone        (me) returns Boolean from Standard; 
+
+    ErrorStatus   (me) returns Integer from Standard;   
+
+    --  CorrectedFace  returns copied face (not myFace) 	      
+    CorrectedFace (me) returns Face from TopoDS; 
+    ---C++: return const & 
+
+    SetMapOfTrans2dInfo  (me:out;  aMap:out IndexedDataMapOfShapeShape from TopTools); 
+
+    MapOfTrans2dInfo     (me:out)  returns IndexedDataMapOfShapeShape from TopTools; 
+    ---C++:  return  & 
+     
+    
+    --  private and  static   block   
+    CheckFace     (me:out)  
+    	    	    	is private; 
+
+    MakeRightWire (me:out)  
+    	    	    returns Integer from Standard  
+    	    	    	is private; 
+
+     
+    GetP2dFL      (myclass; 
+	    	   aFace : Face from TopoDS;  
+		   anEdge: Edge from TopoDS;  
+		   P2dF  : out  Pnt2d  from  gp; 
+		   P2dL  : out  Pnt2d  from  gp); 
+
+    MakeHeadList  (me; 
+    	    	    aFirstEdge: Shape from TopoDS;  
+		    aHeadList : out ListOfShape from TopTools)  
+    	    	    	is private; 
+		     
+    CheckList     (myclass; 
+     
+--modified by NIZNHY-PKV Mon Apr 24 14:41:44 2000f 
+		    aFace        :    Face from TopoDS;   
+--modified by NIZNHY-PKV Mon Apr 24 14:41:55 2000 t 		     
+                    aHeadList : out ListOfShape from TopTools); 
+  
+    TranslateCurve2d  (me:out; 
+	      	    	anEdge       :    Edge from TopoDS;	 
+    	    	    	aFace        :    Face from TopoDS; 
+			aTranslateVec:    Vec2d from gp; 
+			aCurve2d     :out Curve from Geom2d) 
+    	    	    	is private;   
+			 
+    OuterWire     (me; anOuterWire:out Wire from TopoDS)   
+      	    	    returns Integer from Standard  
+    	    	    	is private;   
+	 
+    BndBoxWire	  (me; aWire: Wire from TopoDS; 
+    		    aB2d:out Box2d from Bnd)  
+    	    	    	is private;   
+		     
+    MoveWire2d    (me:out; 
+		    aWire:out Wire from TopoDS; 
+		    aTrV:     Vec2d from  gp)  
+    	    	    	is private; 
+    MoveWires2d   (me:out; 
+		    aWire:out Wire from TopoDS)  
+    	    	    	is private; 
+    
+    UpdateEdge    (me:out; 
+    	    	    E      :  Edge from TopoDS;  
+    	   	    C      :  Curve from Geom2d; 
+		    F      :  Face  from TopoDS; 
+		    Tol    :  Real) 
+    	    	    	is private; 
+			    			 
+    UpdateEdge   (me:out;  
+    	           E      :  Edge  from TopoDS;
+    	    	   C1,C2  :  Curve from Geom2d;
+		   F      :  Face  from TopoDS;
+		   Tol    :  Real) 
+		    	is private;  
+     
+
+    BuildCopyData(me:out; 
+    	    	   F: Face  from  TopoDS;  
+		   anAvoidMap: IndexedMapOfOrientedShape from TopTools; 
+    	    	   aCopyFace:out Face  from  TopoDS; 
+    	    	   aCopyAvoidMap:out  IndexedMapOfOrientedShape from TopTools; 
+    	    	   aNeedToUsePMap: Boolean from Standard) 
+    	    	    	    is private;   		    
+					     
+
+    ConnectWire  (me:out; 
+	          aCopyFace:out Face  from  TopoDS;  
+		  aCopyAvoidMap: IndexedMapOfOrientedShape from TopTools; 
+    	    	  aTryToConnectFlag:  Boolean  from  Standard) 
+    	    	  	 returns Integer from Standard 
+			    is private;   		    
+
+fields
+    myFace         :  Face    from TopoDS;  
+    myCorrectedFace:  Face    from TopoDS; 
+    myIsDone       :  Boolean from Standard;  
+    myErrorStatus  :  Integer from Standard;   
+    myFaceTolerance:  Real    from Standard;	 
+    myCurrentWire  :  Wire  from  TopoDS;   
+    myOrderedWireList: ListOfShape  from  TopTools;
+    myAvoidMap     :  IndexedMapOfOrientedShape from TopTools; 
+
+    myMap          :  Address from Standard;
+     
+    myCopyFace     :  Face    from TopoDS;   
+    myCopyAvoidMap :  IndexedMapOfOrientedShape from TopTools;   
+      
+    myEdMapInversed:  IndexedDataMapOfShapeShape from TopTools; 
+    
+    
+end CorrectFace2d;
+
+

@@ -1,0 +1,23 @@
+// File:	IntCurve_ToolPolygon.gxx
+// Created:	Thu Jan 14 14:52:18 1993
+// Author:	Laurent BUCHARD
+//		<lbr@phylox>
+
+
+void IntCurveSurface_PolygonTool::Dump(const ThePolygon& L) { 
+
+  static Standard_Integer num=0;
+  num++;
+  Standard_Integer nbs = IntCurveSurface_PolygonTool::NbSegments(L);
+  cout<<"\npol2d "<<num<<" "<<nbs<<endl;
+  cout<<"Deflection "<<IntCurveSurface_PolygonTool::DeflectionOverEstimation(L)<<endl;
+  
+  for(Standard_Integer i=1;i<=nbs;i++) {
+    gp_Pnt P(IntCurveSurface_PolygonTool::BeginOfSeg(L,i));
+    cout<<"pnt "<<num<<" "<<i<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<endl;
+  }
+  gp_Pnt PF(IntCurveSurface_PolygonTool::EndOfSeg(L,nbs));
+  cout<<"pnt "<<num<<" "<<nbs<<" "<< PF.X()<<" "<<PF.Y()<<" "<<PF.Z()<<endl;
+}
+
+

@@ -1,0 +1,248 @@
+--
+-- File:	Visual3d_ViewOrientation.cdl
+-- Created:	Mercredi 12 Juin 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class ViewOrientation from Visual3d
+
+	---Version:
+
+	---Purpose: This class allows the definition of the manner in
+	--	    which an observer looks at the visualised scene.
+	--	    It defines a coordinate system called VRC
+    	--	    (View Reference Coordinates) with 3 axes U,V,N
+    	-- Summary of 3D View Orientation              --
+	--                                             --
+	-- The view orientation transformation defines --
+	-- the relationship  between World Coordinates --
+	-- (WC) and  View Reference  Coordinates (VRC) --
+	--                                             --
+	-- To define a view orientation transformation --
+	-- you must define :                           --
+	--                                             --
+	--	The View Reference Point (VRP)         --
+	--	The View Plane Normal (VPN)            --
+	--	The View Up Vector (VUP).              -- 
+	-- 
+	-- Optionally, it is possible to specify anisotropic 
+	-- (axial) scale factors. This allows to scale the scene 
+	-- using individual scale values along each coordinate axis.
+	
+uses
+
+	Vector		from Graphic3d,
+	Vertex		from Graphic3d,
+	
+	HArray2OfReal   from TColStd
+
+raises
+
+	ViewOrientationDefinitionError	from Visual3d
+
+is
+
+
+	Create
+		returns ViewOrientation from Visual3d;
+	---Level: Public
+	---Purpose: Creates a VRC coordinate system.
+	--	    VRP		: Origin of the VRC coordinate system.
+	--			  (default value : 0.0, 0.0, 0.0)
+	--	    VPN		: Vector normal to the plane of visualisation.
+	--			  (default value : 0.0, 0.0, 1.0)
+	--	    VUP 	: Vector for which the projection in the plane
+	--			  of visualisation defines the axis V of a VRC
+	--			  coordinate system.
+	--			  (default value : 0.0, 1.0, 0.0)
+
+	Create ( VRP	: Vertex from Graphic3d;
+		 VPN	: Vector from Graphic3d;
+		 VUP	: Vector from Graphic3d )
+		returns ViewOrientation from Visual3d
+	---Level: Public
+	---Purpose: Creates a VRC coordinate system.
+	--	    VRP		: Origin of the VRC coordinate system.
+	--	    VPN		: Vector normal to the plane of visualisation.
+	--	    VUP 	: Vector for which the projection in the plane
+	--			  of visualisation defines the axis V of a VRC
+	--			  coordinate system.
+	--			  This vector can be likened to the
+	--			  vertical of the observer.
+	--  Warning: Raises ViewOrientationDefinitionError
+	--	    if <VPN> is null.
+	--	    if <VUP> is null.
+	--	    if <VPN> and <VUP> are parallel.
+	raises ViewOrientationDefinitionError from Visual3d;
+
+	Create ( VRP	: Vertex from Graphic3d;
+		 VPN	: Vector from Graphic3d;
+		 Twist	: Real from Standard )
+		returns ViewOrientation from Visual3d
+	---Level: Internal
+	---Purpose: Creates a VRC coordinate system.
+	--	    VRP		: Origin of VRC coordinate system.
+	--	    VPN		: Normal vector to the plane of visualisation.
+	--	    Twist 	: Angle in radians of the V axis in the VRC
+	--			  coordinate system with the projection in
+	--			  the plane of visualisation of the Zm axis
+	--			  in the model space.
+	--  Warning: Raises ViewOrientationDefinitionError if <VPN> is null.
+	raises ViewOrientationDefinitionError from Visual3d;
+
+	Create ( VRP			: Vertex from Graphic3d;
+		 Azim, Inc, Twist	: Real from Standard )
+		returns ViewOrientation from Visual3d
+	---Level: Internal
+	---Purpose: Creates a VRC coordinate system.
+	--	    VRP		: Origin of the VRC coordinate system.
+	--	    Azim 	: Angle in radians of the plane of visualisation
+	--			  with the XmYm plane of the model space.
+	--	    Inc 	: Angle in radians of the plane of visualisation
+	--			  with the YmZm plane of the model space.
+	--	    Twist 	: Angle in radians of the V axis in the VRC
+	--			  coordinate system with the projection in
+	--			  the plane of visualisation of the Zm axis
+	--			  in the model space.
+	--  Warning: Raises ViewOrientationDefinitionError
+	raises ViewOrientationDefinitionError from Visual3d;
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetViewReferencePlane ( me	: in out;
+				VPN	: Vector from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the plane of visualisation
+	--	    defined by a normal vector.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewOrientationDefinitionError if <VPN> is null.
+	raises ViewOrientationDefinitionError from Visual3d is static;
+
+	SetViewReferencePoint ( me	: in out;
+				VRP	: Vertex from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the origin of the VRC coordinate system
+	---Category: Methods to modify the class definition
+
+	SetViewReferenceUp ( me		: in out;
+			     VUP	: Vector from Graphic3d )
+	---Level: Public
+	---Purpose: Modifies the vertical of the observer.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ViewOrientationDefinitionError if <VUP> is null.
+	raises ViewOrientationDefinitionError from Visual3d is static; 
+	 
+	SetAxialScale ( me                   : in out ;  
+    	    	    	Sx, Sy, Sz           : Real from Standard ) 
+        ---Level: Public 
+        ---Purpose: Sets axial scale factors of the view 
+                raises ViewOrientationDefinitionError from Visual3d ;
+        --      If the one of factors <= 0  
+
+	SetCustomModelViewMatrix( me : in out;
+			Mat : HArray2OfReal from TColStd ) is static;
+	---Level: Public
+	---Purpose: Sets custom MODELVIEW matrix for the OpenGl context
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Twist ( me )
+		returns Real from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the angle in radians of the V axis in the VRC
+	--	    coordinate system with the projection in the plane of
+	--	    visualisation of the Zm axis in the model space.
+	---Category: Inquire methods
+
+	ViewReferencePlane ( me )
+		returns Vector from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the normal to the plane of projection.
+	---Category: Inquire methods
+
+	ViewReferencePoint ( me )
+		returns Vertex from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns origin of the VRC coordinate system.
+	---Category: Inquire methods
+
+	ViewReferenceUp ( me )
+		returns Vector from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the vertical of the observer.
+	---Category: Inquire methods 
+	 
+	AxialScale ( me ; Sx, Sy, Sz : out Real from Standard ) ;
+        ---Level: Public 
+        ---Purpose: Returns current values of the axial scale factors.
+
+	IsCustomMatrix( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns whether the custom MODELVIEW matrix is used.
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Assign ( me	: in out;
+		 Other	: ViewOrientation from Visual3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Copies the content of <Other> into <me>.
+	---Category: Private methods
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ViewOrientation
+--
+-- Purpose	:	Declaration of variables specific to
+--			the view orientation
+--
+-- Reminders	:	the orientation of a view is defined by :
+--			- the origin point of the coordinate system
+--			- the normal vector to the plane of visualisation
+--			- the vector vertical to the observer
+--
+
+	-- the coordinate system origin point
+	MyViewReferencePoint	:	Vertex from Graphic3d;
+
+	-- the normal vector to the plane of visualisation
+	MyViewPlaneNormal	:	Vector from Graphic3d;
+
+	-- the vertical vector of the observer
+	MyViewUpVector		:	Vector from Graphic3d; 
+	 
+	-- the scale parameter of the X axis	  
+	MyScaleX                :       Real from Standard; 
+	 
+	-- the scale parameter of the Y axis	  
+	MyScaleY                :       Real from Standard; 
+	 
+	-- the scale parameter of the Z axis	  
+	MyScaleZ                :       Real from Standard;
+
+	-- the custom MODELVIEW matrix to set directly to OpenGl context
+	MyModelViewMatrix       :   HArray2OfReal from TColStd;
+
+friends
+
+	class View from Visual3d
+
+end ViewOrientation;

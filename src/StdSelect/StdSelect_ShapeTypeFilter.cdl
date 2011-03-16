@@ -1,0 +1,46 @@
+-- File:	StdSelect_ShapeTypeFilter.cdl
+-- Created:	Tue Sep 17 10:02:44 1996
+-- Author:	Odile Olivier
+--		<g_design@robox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class ShapeTypeFilter from StdSelect inherits Filter from SelectMgr
+
+	--- Purpose: A filter framework which allows you to define a filter
+    	-- for a specific shape type. The types available include:
+    	-- -   compound
+    	-- -   compsolid
+    	-- -   solid
+    	-- -   shell
+	-- -   face
+    	-- -   wire
+    	-- -   edge
+    	-- -   vertex.
+
+uses
+    Shape from TopoDS,
+    EntityOwner from SelectMgr,
+    ShapeEnum from TopAbs
+is
+
+    Create (aType: ShapeEnum from TopAbs)
+    returns mutable ShapeTypeFilter from StdSelect;
+    	---Purpose: Constructs a filter object defined by the shape type aType.
+    
+    IsOk (me;anobj : EntityOwner from SelectMgr) 
+    returns Boolean from Standard is redefined virtual;
+
+    Type(me) returns ShapeEnum from TopAbs;
+    	---Purpose: Returns the type of shape selected by the filter.
+    	---C++: inline
+
+    ActsOn(me; aStandardMode : ShapeEnum from TopAbs)
+    returns Boolean from Standard is redefined virtual;
+
+fields
+
+    myType : ShapeEnum from TopAbs;
+
+end ShapeTypeFilter;

@@ -1,0 +1,150 @@
+-- File:	TCollection_BasicMap.cdl
+-- Created:	Fri Feb 26 16:37:33 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+private deferred class BasicMap from TCollection 
+
+	---Purpose: Root  class of  all the maps,  provides utilitites
+	-- for managing the buckets.
+        -- Maps are dynamically extended data structures where
+    	--  data is quickly accessed with a key.
+    	-- General properties of maps
+    	-- -   Map items may be (complex) non-unitary data; they
+    	--   may be difficult to manage with an array. Moreover, the
+    	--   map allows a data structure to be indexed by complex   data.
+    	-- -   The size of a map is dynamically extended. So a map
+    	--   may be first dimensioned for a little number of items.
+    	--   Maps avoid the use of large and quasi-empty arrays.
+    	-- -   The access to a map item is much faster than the one
+    	--   to a sequence, a list, a queue or a stack item.
+    	-- -   The access time to a map item may be compared with
+    	--   the one to an array item. First of all, it depends on the
+    	--   size of the map. It also depends on the quality of a user
+    	--   redefinable function (the hashing function) to find
+    	--   quickly where the item is.
+    	-- -   The exploration of a map may be of better performance
+    	--   than the exploration of an array because the size of the
+    	--   map is adapted to the number of inserted items.
+    	--   These properties explain why maps are commonly used as
+    	-- internal data structures for algorithms.
+    	-- Definitions
+    	-- -   A map is a data structure for which data is addressed   by keys.
+    	-- -   Once inserted in the map, a map item is referenced as   an entry of the map.
+    	-- -   Each entry of the map is addressed by a key. Two
+    	--   different keys address two different entries of the map.
+    	-- -   The position of an entry in the map is called a bucket.
+    	-- -   A map is dimensioned by its number of buckets, i.e. the
+    	--   maximum number of entries in the map. The
+    	--   performance of a map is conditioned by the number of buckets.
+    	-- -   The hashing function transforms a key into a bucket
+    	--   index. The number of values that can be computed by
+    	--   the hashing function is equal to the number of buckets of the map.
+    	-- -   Both the hashing function and the equality test
+    	--   between two keys are provided by a hasher object.
+    	-- -   A map may be explored by a map iterator. This
+    	--   exploration provides only inserted entries in the map
+    	--   (i.e. non empty buckets).
+    	--   Collections' generic maps
+    	-- The Collections component provides numerous generic derived maps.
+    	-- -   These maps include automatic management of the
+    	--   number of buckets: they are automatically resized when
+    	--   the number of keys exceeds the number of buckets. If
+    	--   you have a fair idea of the number of items in your map,
+    	--   you can save on automatic resizing by specifying a
+    	--   number of buckets at the time of construction, or by using
+    	-- a resizing function. This may be considered for crucial optimization issues.
+    	-- -   Keys, items and hashers are parameters of these generic derived maps.
+    	-- -   TCollection_MapHasher class describes the
+    	--   functions required by any hasher which is to be used
+    	--   with a map instantiated from the Collections component.
+    	-- -   An iterator class is automatically instantiated at the
+    	--   time of instantiation of a map provided by the
+    	--   Collections component if this map is to be explored
+    	--   with an iterator. Note that some provided generic maps
+    	--   are not to be explored with an iterator but with indexes   (indexed maps).
+  
+uses MapNodePtr from TCollection
+is
+    Initialize(NbBuckets : Integer; single : Boolean);
+	---Purpose: Initialize the map.  Single is  True when the  map
+	-- uses only one table of buckets.
+	-- 
+	-- One table  : Map, DataMap
+	-- Two tables : DoubleMap, IndexedMap, IndexedDataMap
+
+    NbBuckets(me) returns Integer
+	---Purpose: Returns the number of buckets in <me>.
+	---C++: inline
+    is static;
+
+    Extent(me) returns Integer
+	---Purpose: Returns the number of keys already stored in <me>.
+	--          
+	---C++: inline
+    is static;
+    
+    IsEmpty(me) returns Boolean
+	---Purpose: Returns  True when the map  contains no keys. 
+	-- This is exactly Extent() == 0.
+	---C++: inline
+    is static;
+    
+    BeginResize(me; 
+    	    	NbBuckets     : Integer; 
+    	    	NewBuckets    : out Integer;
+    	        data1, data2  : out Address) 
+    returns Boolean
+	---Purpose: Tries to resize  the Map with  NbBuckets.  Returns
+	-- True if  possible, NewBuckts is  the  new nuber of
+	-- buckets.   data1 and data2  are the new tables  of
+	-- buckets where the data must be copied.
+    is static protected;
+    
+    EndResize(me : in out; 
+	      NbBuckets    : Integer; 
+    	      NewBuckets   : Integer;
+    	      data1, data2 : Address) 
+	---Purpose: If  BeginResize was  succesfull  after copying the
+	-- data to  data1  and data2 this methods  update the
+	-- tables and destroys the old ones.
+    is static protected;
+    
+    Resizable(me) returns Boolean
+	---Purpose: Returns   True  if resizing   the   map should  be
+	-- considered.
+	---C++: inline
+    is static protected;
+    
+    Increment(me : in out) 
+	---Purpose: Decrement the  extent of the  map.
+	---C++: inline
+    is static protected;
+    
+    Decrement(me : in out) 
+	---Purpose: Decrement the  extent of the  map.
+	---C++: inline
+    is static protected;
+    
+    Destroy(me : in out)
+	---Purpose: Destroys the buckets.
+    is static protected;
+    
+    Statistics(me; S : in out OStream)
+	---Purpose: Prints  on <S> usefull  statistics  about  the map
+	-- <me>.  It  can be used  to test the quality of the hashcoding. 
+    is static;
+	
+fields
+    isDouble    : Boolean from Standard; -- True for double maps
+    mySaturated : Boolean from Standard;
+    myNbBuckets : Integer;
+    mySize      : Integer;
+    myData1     : Address from Standard is protected;
+    myData2     : Address from Standard is protected;
+    
+friends
+    class BasicMapIterator from TCollection
+end BasicMap;

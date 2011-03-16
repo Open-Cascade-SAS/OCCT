@@ -1,0 +1,38 @@
+-- File:	Interface_SignType.cdl
+-- Created:	Wed Feb  4 12:40:40 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+deferred class SignType  from Interface    inherits SignText from MoniTool
+
+    	---Purpose : Provides the basic service to get a type name, according
+    	--           to a norm
+    	--           It can be used for other classes (general signatures ...)
+
+uses CString, Transient, AsciiString, InterfaceModel
+
+is
+
+--    Name (me) returns CString  is deferred;  already in SignText
+    ---Purpose : Returns an identification of the Signature (a word), given at
+    --           initialization time
+
+    Text  (me; ent : any Transient; context : any Transient)
+    	returns AsciiString from TCollection;
+    ---Purpose : Specialised to consider context as an InterfaceModel
+
+
+    Value (me; ent : any Transient; model : InterfaceModel)
+    	returns CString  is deferred;
+    ---Purpose : Returns the Signature for a Transient object. It is specific
+    --           of each sub-class of Signature. For a Null Handle, it should
+    --           provide ""
+    --           It can work with the model which contains the entity
+
+    ClassName (myclass; typnam : CString) returns CString;
+    ---Purpose : From a CDL Type Name, returns the Class part (package dropped)
+    --           WARNING : buffered, to be immediately copied or printed
+
+end SignType;

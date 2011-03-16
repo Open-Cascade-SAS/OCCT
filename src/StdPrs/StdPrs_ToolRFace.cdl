@@ -1,0 +1,45 @@
+-- File:	StdPrs_ToolRFace.cdl
+-- Created:	Tue Jan 26 15:10:23 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolRFace from StdPrs 
+
+	---Purpose: 
+uses 
+    Curve        from Geom2dAdaptor,
+    Face         from TopoDS,
+    HSurface     from BRepAdaptor,
+    Curve2dPtr   from Adaptor2d,
+    Orientation  from TopAbs,
+    Explorer     from TopExp
+
+is
+    Create returns ToolRFace from StdPrs;    
+
+    Create ( aSurface :HSurface from BRepAdaptor ) 
+    returns ToolRFace from StdPrs;
+
+    IsOriented (me) returns Boolean from Standard;
+
+    Init(me: in out); 
+
+
+    More(me) returns Boolean from Standard;
+
+    Next(me: in out);
+
+    Value(me) returns Curve2dPtr from Adaptor2d;
+
+    Orientation(me) returns Orientation from TopAbs;    
+
+fields
+    myFace      : Face       from TopoDS;
+    myExplorer  : Explorer   from TopExp;
+    DummyCurve  : Curve      from Geom2dAdaptor;
+    
+end ToolRFace;
+
+

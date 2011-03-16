@@ -1,0 +1,158 @@
+Blend_CSWalking::Blend_CSWalking(const TheCurve& Curv,
+				 const TheSurface& Surf,
+				 const Handle(TheTopolTool)& Domain):
+       done(Standard_False),surf(Surf),
+       curv(Curv)
+{
+  domain = Domain;
+}
+
+
+
+void Blend_CSWalking::Perform(Blend_CSFunction& Func,
+//			      Blend_CSFuncInv& FuncInv,
+			      const Standard_Real Pdep,   
+			      const Standard_Real Pmax,
+			      const Standard_Real MaxStep,
+			      const Standard_Real TolGuide,
+			      const math_Vector& ParDep,
+			      const Standard_Real Tolesp,
+			      const Standard_Real Fleche,
+			      const Standard_Boolean Appro)
+{
+
+  done = Standard_False;
+  iscomplete = Standard_False;
+  comptra = Standard_False;
+  line = new TheLine ();
+  Standard_Integer Nbvar = Func.NbVariables();
+  tolesp = Abs(Tolesp);
+  tolgui = Abs(TolGuide);
+  fleche = Abs(Fleche);
+  rebrou = Standard_False;
+  pasmax = Abs(MaxStep);
+  math_Vector sol(1,Nbvar);
+
+  firstsol = new TColStd_HArray1OfReal(1,Nbvar);
+
+  if (Pmax-Pdep >= 0.) {
+    sens = 1.;
+  }
+  else {
+    sens = -1.;
+  }
+
+  Blend_Status State;
+  TheExtremity ptf1,ptf2;
+
+  param = Pdep;
+  firstparam = Pdep;
+  Func.Set(param);
+
+  if (Appro) {
+
+    TopAbs_State situ;
+//    math_Vector tolerance(1,3),infbound(1,3),supbound(1,3);
+    math_Vector tolerance(1,Nbvar),infbound(1,Nbvar),supbound(1,Nbvar);
+    Func.GetTolerance(tolerance,tolesp);
+    Func.GetBounds(infbound,supbound);
+    math_FunctionSetRoot rsnld(Func,tolerance,30);
+
+    rsnld.Perform(Func,ParDep,infbound,supbound);
+    
+    if (!rsnld.IsDone()) {
+      return;
+    }
+    rsnld.Root(sol);
+
+//    situ1 = TheTopolTool::Classify(surf1,gp_Pnt2d(sol(1),sol(2)),
+//				   Max(tolerance(1),tolerance(2)));
+//    situ2 = TheTopolTool::Classify(surf2,gp_Pnt2d(sol(3),sol(4)),
+//				   Max(tolerance(3),tolerance(4)));
+/*
+    situ = domain->Classify(gp_Pnt2d(sol(1),sol(2)),
+			      Min(tolerance(1),tolerance(2)));
+*/
+    situ = domain->Classify(Func.Pnt2d(),
+			    Min(tolerance(1),tolerance(2)));
+
+    if (situ != TopAbs_IN ) {
+      return;
+    }
+  }
+  else {
+    sol = ParDep;
+  }
+
+  for (Standard_Integer i=1; i<= Nbvar; i++) {
+    firstsol->ChangeValue(i) = sol(i);
+  }
+  State = TestArret(Func,sol,Standard_False,Blend_OK);
+  if (State!=Blend_OK) {
+    return;
+  }
+#ifdef DEB
+  if (Blend_GettraceDRAWSECT()){
+    Drawsect(surf,curv,param,Func);
+  }
+#endif
+  // Mettre a jour la ligne.
+  line->Append(previousP);
+  Standard_Real U,V,W;
+  previousP.ParametersOnS(U,V);
+  W = previousP.ParameterOnC();
+  TheExtremity P1(previousP.PointOnS(),U,V,previousP.Parameter(),tolesp);
+  TheExtremity P2(previousP.PointOnC(),W,previousP.Parameter(),tolesp);
+  if (sens>0.) {
+    line->SetStartPoints(P1,P2);
+  }
+  else {
+    line->SetEndPoints(P1,P2);
+  }
+
+//  InternalPerform(Func,FuncInv,Pmax);
+  InternalPerform(Func,sol,Pmax);
+
+  done = Standard_True;
+}
+
+
+
+Standard_Boolean Blend_CSWalking::Complete(Blend_CSFunction& Func,
+//					   Blend_CSFuncInv& FuncInv,
+					   const Standard_Real Pmin)
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  if (iscomplete) {return Standard_True;}
+
+/*
+  if (sens >0.) {
+    previousP = line->Point(1);
+  }
+  else {
+    previousP = line->Point(line->NbPoints());
+  }
+*/
+
+  sens = -sens;
+/*
+  param = previousP.Parameter();
+  previousP.ParametersOnS(sol(1),sol(2));
+  sol(3) = previousP.ParameterOnC();
+*/
+  Standard_Integer Nbvar = Func.NbVariables();
+  math_Vector sol(1,Nbvar);
+  for (Standard_Integer i =1; i<= Nbvar; i++) {
+    sol(i) = firstsol->Value(i);
+  }
+
+  param = firstparam;
+
+//  InternalPerform(Func,FuncInv,Pmin);
+  InternalPerform(Func,sol,Pmin);
+
+  sens = -sens;
+  iscomplete = Standard_True;
+  return Standard_True;
+}
+

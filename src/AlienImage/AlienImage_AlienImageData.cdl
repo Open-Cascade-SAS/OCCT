@@ -1,0 +1,43 @@
+-- File:        AlienImage_AlienImage.cdl
+-- Created:     23/03/93
+-- Author:      BBL,JLF
+--
+-- Modified:    DCB (20-OCT-98)
+--              Define Name()/SetName() as deferred.
+--
+---Copyright:   Matravision 1993
+
+deferred class AlienImageData from AlienImage inherits AlienImage
+
+        ---Version: 0.0
+
+        ---Purpose: This class defines an Alien image.
+        -- Alien Image is X11 . xwd image or SGI .rgb image for examples
+
+        ---Keywords:
+        ---Warning:
+        ---References:
+
+uses
+  AsciiString    from TCollection
+
+is
+        Initialize ;
+
+        SetName( me : in out mutable;
+                 aName : in AsciiString from TCollection)
+        is virtual;
+        ---Level: Public
+        ---Purpose: Set Image name .
+
+        Name( me : in immutable ) returns AsciiString from TCollection
+        is virtual;
+        ---C++: return const &
+        ---Level: Public
+        ---Purpose: get Image name .
+
+fields
+  myName:      AsciiString from TCollection is protected;
+
+end AlienImageData;
+ 

@@ -1,0 +1,11 @@
+-- File:	QACEADRT.cdl
+-- Created:	Fri Jun 25 12:08:55 2004
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2004
+
+package QACEADRT
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

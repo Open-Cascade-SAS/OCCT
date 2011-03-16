@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWFeaShellShearStiffness.cdl
+-- Created:	Thu Dec 12 17:51:06 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWFeaShellShearStiffness from RWStepFEA
+
+    ---Purpose: Read & Write tool for FeaShellShearStiffness
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    FeaShellShearStiffness from StepFEA
+
+is
+    Create returns RWFeaShellShearStiffness from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : FeaShellShearStiffness from StepFEA);
+	---Purpose: Reads FeaShellShearStiffness
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: FeaShellShearStiffness from StepFEA);
+	---Purpose: Writes FeaShellShearStiffness
+
+    Share (me; ent : FeaShellShearStiffness from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWFeaShellShearStiffness;

@@ -1,0 +1,27 @@
+-- File:	IntTools_BaseRangeSample.cdl
+-- Created:	Wed Oct  5 16:22:27 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class BaseRangeSample from IntTools
+
+
+is
+    Create
+    	returns BaseRangeSample from IntTools;
+
+    Create(theDepth: Integer from Standard)
+    	returns BaseRangeSample from IntTools;
+
+    SetDepth(me: in out; theDepth: Integer from Standard);
+    	---C++: inline
+
+    GetDepth(me)
+    	returns Integer from Standard;
+	---C++: inline
+
+fields
+    myDepth: Integer from Standard;
+
+end BaseRangeSample from IntTools;

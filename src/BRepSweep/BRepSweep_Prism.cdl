@@ -1,0 +1,106 @@
+-- File:	BRepSweep_Prism.cdl
+-- Created:	Tue Jun 22 15:23:43 1993
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Prism from BRepSweep
+
+---Purpose: Provides natural constructors to build BRepSweep 
+--          translated swept Primitives.
+
+uses
+    Location from TopLoc,
+    NumShape from Sweep,
+    Translation from BRepSweep,
+    Shape from TopoDS,
+    Vec from gp,
+    Dir from gp
+
+raises
+    ConstructionError from Standard
+
+is
+    Create (S    : Shape from TopoDS;
+    	    V    : Vec from gp;
+    	    Copy : Boolean from Standard = Standard_False;
+            Canonize: Boolean from Standard = Standard_True)
+    ---Purpose: Builds the prism of base S and vector V. If C is true,
+    --          S is copied. If Canonize is true then generated surfaces
+    --          are attempted to be canonized in simple types
+    returns Prism from BRepSweep;
+
+    Create (S         : Shape from TopoDS;
+    	    D         : Dir from gp;
+	    Inf       : Boolean from Standard = Standard_True;
+    	    Copy      : Boolean from Standard = Standard_False;
+            Canonize  : Boolean from Standard = Standard_True)
+    ---Purpose: Builds a semi-infinite or an infinite prism of base S.
+    --          If Copy is true S is copied.  If Inf is true the prism
+    --          is infinite, if Inf is false the  prism is infinite in
+    --          the direction D. If Canonize is true then generated surfaces
+    --          are attempted to be canonized in simple types
+    returns Prism from BRepSweep;
+
+    Shape (me : in out)
+    ---Purpose: Returns the TopoDS Shape attached to the prism.
+    returns Shape from TopoDS
+    is static;
+
+    Shape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns    the  TopoDS  Shape   generated  with  aGenS
+    --          (subShape  of the generating shape).
+    returns Shape from TopoDS
+    is static;
+
+    FirstShape (me : in out)
+    ---Purpose: Returns the  TopoDS  Shape of the bottom of the prism.
+    returns Shape from TopoDS
+    is static;
+
+    FirstShape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns the TopoDS Shape of the bottom  of the  prism.
+    --          generated  with  aGenS  (subShape  of  the  generating
+    --          shape).
+    returns Shape from TopoDS
+    is static;
+
+    LastShape (me : in out)
+    ---Purpose: Returns the TopoDS Shape of the top of the prism.
+    returns Shape from TopoDS
+    is static;
+
+    LastShape (me : in out; aGenS : Shape from TopoDS)
+    ---Purpose: Returns the  TopoDS  Shape of the top  of  the  prism.
+    --          generated  with  aGenS  (subShape  of  the  generating
+    --          shape).
+    returns Shape from TopoDS
+    is static;
+
+    Vec(me) 
+    ---Purpose: Returns the Vector of the Prism,  if it is an infinite
+    --          prism the Vec is unitar.
+    returns Vec from gp
+    is static;
+
+    NumShape (me)
+    returns NumShape from Sweep
+    ---Purpose: used to build the NumShape of a limited prism.
+    is static private;
+
+    NumShape (me; Inf : Boolean from Standard) 
+    returns NumShape from Sweep
+    ---Purpose: used to build the NumShape of an infinite prism.
+    is static private;
+
+    Location(me; V : Vec from gp) 
+    returns Location from TopLoc
+    ---Purpose: used to build the Location.
+    is static private;
+
+fields
+
+    myTranslation : Translation from BRepSweep;
+    
+end Prism from BRepSweep;

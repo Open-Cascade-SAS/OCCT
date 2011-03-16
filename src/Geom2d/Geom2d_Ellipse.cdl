@@ -1,0 +1,275 @@
+-- File:	Geom2d_Ellipse.cdl
+-- Created:	Wed Mar 24 18:04:26 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991, 1992
+
+
+class Ellipse from Geom2d inherits Conic from Geom2d
+
+    	--- Purpose :  Describes an ellipse in the plane (2D space).
+    	-- An ellipse is defined by its major and minor radii and,
+    	-- as with any conic curve, is positioned in the plane
+    	-- with a coordinate system (gp_Ax22d object) where:
+    	-- - the origin is the center of the ellipse,
+    	-- - the "X Direction" defines the major axis, and
+    	-- - the "Y Direction" defines the minor axis.
+    	--   This coordinate system is the local coordinate system of the ellipse.
+    	-- The orientation (direct or indirect) of the local
+    	-- coordinate system gives an explicit orientation to the
+    	-- ellipse, determining the direction in which the
+    	-- parameter increases along the ellipse.
+    	-- The Geom2d_Ellipse ellipse is parameterized by an angle:
+    	-- P(U) = O + MajorRad*Cos(U)*XDir + MinorRad*Sin(U)*YDir
+    	-- where:
+    	-- - P is the point of parameter U,
+    	-- - O, XDir and YDir are respectively the origin, "X
+    	--   Direction" and "Y Direction" of its local coordinate system,
+    	-- - MajorRad and MinorRad are the major and
+    	--   minor radii of the ellipse.
+    	-- The "X Axis" of the local coordinate system therefore
+    	-- defines the origin of the parameter of the ellipse.
+    	-- An ellipse is a closed and periodic curve. The period
+    	-- is 2.*Pi and the parameter range is [ 0,2.*Pi [.
+    	-- See Also
+    	-- GCE2d_MakeEllipse which provides functions for
+    	-- more complex ellipse constructions
+    	-- gp_Ax22d
+    	-- gp_Elips2d for an equivalent, non-parameterized data structure
+      
+uses Ax2d     from gp,
+     Ax22d    from gp,
+     Elips2d  from gp,
+     Pnt2d    from gp,
+     Trsf2d   from gp,
+     Vec2d    from gp,
+     Geometry from Geom2d
+
+
+raises ConstructionError from Standard,
+       RangeError        from Standard
+
+
+is
+
+
+  Create (E : Elips2d)  returns mutable Ellipse;
+        --- Purpose :
+        --  Creates an ellipse by conversion of the gp_Elips2d ellipse E.
+
+
+  Create (MajorAxis : Ax2d; MajorRadius, MinorRadius : Real;
+          Sense: Boolean from Standard = Standard_True)
+     returns mutable Ellipse
+    	--- Purpose :  Creates an ellipse defined by its major and minor radii,
+    	--   MajorRadius and MinorRadius, and positioned
+    	--   in the plane by its major axis MajorAxis; the
+    	--   center of the ellipse is the origin of MajorAxis
+    	--   and the unit vector of MajorAxis is the "X
+    	--   Direction" of the local coordinate system of the
+    	--   ellipse; this coordinate system is direct if Sense
+    	--   is true (default value) or indirect if Sense is false.
+        --  Warnings :
+        --  It is not forbidden to create an ellipse with MajorRadius =
+        --  MinorRadius.
+        -- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - MajorRadius is less than MinorRadius, or
+    	-- - MinorRadius is less than 0.
+     raises ConstructionError;
+
+
+  Create (Axis : Ax22d; MajorRadius, MinorRadius : Real)
+     returns mutable Ellipse
+    	--- Purpose : Creates an ellipse defined by its major and minor radii,
+    	--   MajorRadius and MinorRadius, where the
+    	--   coordinate system Axis locates the ellipse and
+    	--   defines its orientation in the plane such that:
+    	--   - the center of the ellipse is the origin of Axis,
+    	--   - the "X Direction" of Axis defines the major
+    	--    axis of the ellipse,
+    	--   - the "Y Direction" of Axis defines the minor
+    	--    axis of the ellipse,
+    	--   - the orientation of Axis (direct or indirect)
+    	--    gives the orientation of the ellipse.
+	        --  Warnings :
+        --  It is not forbidden to create an ellipse with MajorRadius =
+        --  MinorRadius.  
+        -- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - MajorRadius is less than MinorRadius, or
+    	-- - MinorRadius is less than 0.
+     raises ConstructionError;
+	
+
+  SetElips2d (me : mutable; E : Elips2d);
+        --- Purpose: Converts the gp_Elips2d ellipse E into this ellipse.
+     
+
+
+  SetMajorRadius (me : mutable; MajorRadius : Real)
+     raises ConstructionError;
+	--- Purpose : Assigns a value to the major radius of this ellipse.
+    	-- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - the major radius of this ellipse becomes less than
+    	--   the minor radius, or
+    	-- - MinorRadius is less than 0.
+
+
+  SetMinorRadius (me : mutable; MinorRadius : Real)
+     raises ConstructionError;
+	--- Purpose : Assigns a value to the minor radius of this ellipse.
+    	-- Exceptions
+    	-- Standard_ConstructionError if:
+    	-- - the major radius of this ellipse becomes less than
+    	--   the minor radius, or
+    	-- - MinorRadius is less than 0.
+
+
+  Elips2d (me)  returns Elips2d;
+        --- Purpose : Converts this ellipse into a gp_Elips2d ellipse.
+
+
+  ReversedParameter(me; U : Real) returns Real is redefined static;
+  	---Purpose: Computes the parameter on the reversed ellipse for
+    	-- the point of parameter U on this ellipse.
+    	-- For an ellipse, the returned value is: 2.*Pi - U.
+
+
+  Directrix1 (me)   returns Ax2d
+        --- Purpose : Computes the directrices of this ellipse.
+        --  This directrix is the line normal to the XAxis of the ellipse
+        --  in the local plane (Z = 0) at a distance d = MajorRadius / e 
+        --  from the center of the ellipse, where e is the eccentricity of
+        --  the ellipse.
+        --  This line is parallel to the "YAxis". The intersection point
+        --  between directrix1 and the "XAxis" is the "Location" point
+        --  of the directrix1. This point is on the positive side of 
+        --  the "XAxis". 
+    	-- Raises ConstructionError if Eccentricity = 0.0. (The ellipse degenerates
+	--  into a circle)
+     raises ConstructionError;
+	
+
+
+  Directrix2 (me)   returns Ax2d
+        --- Purpose :
+        --  This line is obtained by the symmetrical transformation 
+        --  of "Directrix1" with respect to the "YAxis" of the ellipse. 
+    	-- Raises ConstructionError if Eccentricity = 0.0. (The ellipse degenerates into a
+	--  circle).
+    raises ConstructionError;
+	
+  Eccentricity (me)   returns Real is redefined static;
+	--- Purpose :
+	--  Returns the eccentricity of the ellipse  between 0.0 and 1.0
+	--  If f is the distance between the center of the ellipse and
+	--  the Focus1 then the eccentricity e = f / MajorRadius.
+	--  Returns 0 if MajorRadius = 0
+
+
+  Focal (me)   returns Real;
+	--- Purpose :
+	--  Computes the focal distance. The focal distance is the distance between the center
+    	-- and a focus of the ellipse. 
+
+  Focus1 (me)   returns Pnt2d;
+	--- Purpose :
+	--  Returns the first focus of the ellipse. This focus is on the
+        --  positive side of the "XAxis" of the ellipse.
+
+
+  Focus2 (me)   returns Pnt2d;
+        --- Purpose :
+	--  Returns the second focus of the ellipse. This focus is on
+	--  the negative side of the "XAxis" of the ellipse.
+
+
+  MajorRadius (me)  returns Real;
+    	---Purpose: Returns the major radius of this ellipse.
+
+  MinorRadius (me)  returns Real;
+    	---Purpose: Returns the minor radius of this ellipse.
+
+  Parameter (me)   returns Real;
+        --- Purpose :
+    	--   Computes the parameter of this ellipse. This value is
+    	-- given by the formula p = (1 - e * e) * MajorRadius where e is the eccentricity 
+        --  of the ellipse.
+	--  Returns 0 if MajorRadius = 0
+
+
+  FirstParameter (me)   returns Real is redefined static;
+        --- Purpose : Returns the value of the first parameter of this
+    	-- ellipse. This is  0.0, which gives the start point of this ellipse.
+    	-- The start point and end point of an ellipse are coincident.
+
+
+  LastParameter (me)  returns Real is redefined static;
+        --- Purpose : Returns the value of the  last parameter of this
+    	-- ellipse. This is  2.*Pi, which gives the end point of this ellipse.
+    	--  The start point and end point of an ellipse are coincident.
+
+
+
+  IsClosed (me)  returns Boolean is redefined static;
+        --- Purpose : return True.
+
+
+  IsPeriodic (me)  returns Boolean is redefined static;
+        --- Purpose : return True.
+
+
+  D0(me; U : Real; P : out Pnt2d) is redefined static;
+	---Purpose: Returns in P the point of parameter U.  	
+        --  P = C + MajorRadius * Cos (U) * XDir + MinorRadius * Sin (U) * YDir
+        --  where C is the center of the ellipse , XDir the direction of
+        --  the "XAxis" and "YDir" the "YAxis" of the ellipse.
+
+
+
+  D1 (me; U : Real; P : out Pnt2d; V1 : out Vec2d) is redefined static;
+        -- Purpose :
+        -- Returns the point P of parameter U and the first derivative 
+        -- at this point.
+
+
+  D2 (me; U : Real; P : out Pnt2d; V1, V2 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U. The vectors V1 and V2 
+        --  are the first and second derivatives at this point.
+
+
+  D3 (me; U : Real; P : out Pnt2d; V1, V2, V3 : out Vec2d) is redefined static;
+        --- Purpose :
+        --  Returns the point P of parameter U, the first second and
+        --  third derivatives V1 V2 and V3.
+
+
+  DN (me; U : Real; N : Integer)  returns Vec2d
+        --- Purpose : For the point of parameter U of this ellipse,
+    	-- computes the vector corresponding to the Nth derivative.
+    	-- Exceptions Standard_RangeError if N is less than 1.
+          raises RangeError
+     is redefined static;
+
+
+
+
+  Transform (me : mutable; T : Trsf2d) is redefined static;
+
+    	---Purpose: Applies the transformation T to this ellipse.
+
+  Copy (me)  returns mutable like me
+     is redefined static;
+    	---Purpose: Creates a new object which is a copy of this ellipse.     
+fields
+
+     majorRadius : Real;
+     minorRadius : Real;
+
+end;
+

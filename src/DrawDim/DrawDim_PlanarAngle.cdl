@@ -1,0 +1,43 @@
+-- File:	DrawDim_PlanarAngle.cdl
+-- Created:	Fri Jan 12 17:47:31 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+class PlanarAngle from DrawDim inherits PlanarDimension from DrawDim
+
+	---Purpose: 
+
+uses Shape    from TopoDS,
+     Face    from TopoDS,
+     Color   from Draw,
+     Display from Draw
+
+is
+
+    Create (plane : Face  from TopoDS;
+            line1 : Shape from TopoDS; 
+            line2 : Shape from TopoDS)
+    returns mutable PlanarAngle from DrawDim;    
+
+    Create (line1 : Shape from TopoDS; 
+            line2 : Shape from TopoDS)
+    returns mutable PlanarAngle from DrawDim;
+    
+    Sector (me : mutable; inverted, reversed : Boolean from Standard);
+    
+    Position (me : mutable; value : Real from Standard);
+    
+    DrawOn (me; dis : in out Display);
+    
+fields
+
+    myLine1 : Shape from TopoDS;
+    myLine2 : Shape from TopoDS;
+    myIsReversed : Boolean from Standard;
+    myIsInverted : Boolean from Standard;
+    myPosition   : Real from Standard; -- par rapport au point d'intersection    	    
+		
+end PlanarAngle;
+

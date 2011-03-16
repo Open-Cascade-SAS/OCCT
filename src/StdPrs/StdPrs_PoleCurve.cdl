@@ -1,0 +1,59 @@
+-- File:	StdPrs_PoleCurve.cdl
+-- Created:	Mon Jul 24 15:08:55 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+class PoleCurve from StdPrs 
+
+inherits Root from Prs3d
+     
+  	     
+    	---Purpose: A framework to provide display of Bezier or BSpline curves.
+
+uses
+    Curve        from Adaptor3d,
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Length       from Quantity 
+
+is
+
+    --- Purpose:
+    
+    Add(myclass; aPresentation: Presentation from Prs3d; 
+    	    	 aCurve       : Curve        from Adaptor3d;
+    	    	 aDrawer      : Drawer       from Prs3d);
+    	---Purpose: Defines display of BSpline and Bezier curves.
+    	-- Adds the 3D curve aCurve to the
+    	-- StdPrs_PoleCurve algorithm. This shape is found in
+    	-- the presentation object aPresentation, and its display
+    	-- attributes are set in the attribute manager aDrawer.
+    	-- The curve object from Adaptor3d provides data from
+    	-- a Geom curve. This makes it possible to use the
+    	-- surface in a geometric algorithm.
+
+		 
+    Match(myclass; X,Y,Z    : Length from Quantity;
+                   aDistance: Length from Quantity;
+    	    	   aCurve   : Curve  from Adaptor3d;
+    	    	   aDrawer  : Drawer from Prs3d) 
+    returns Boolean from Standard;
+    	---Purpose: returns true if the distance between the point (X,Y,Z) and the
+    	--          broken line made of the poles is less then aDistance.
+
+
+    Pick(myclass; X,Y,Z    : Length from Quantity;
+    	          aDistance: Length from Quantity;
+                  aCurve   : Curve  from Adaptor3d;
+    	          aDrawer  : Drawer from Prs3d)
+    returns Integer from Standard;
+    	---Purpose: returns the pole  the most near of the point (X,Y,Z) and
+    	--          returns its range. The distance between the pole and
+    	--          (X,Y,Z) must be less then aDistance. If no pole corresponds, 0 is returned.
+
+end PoleCurve from StdPrs;
+
+
+

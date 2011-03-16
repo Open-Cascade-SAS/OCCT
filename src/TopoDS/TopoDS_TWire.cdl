@@ -1,0 +1,23 @@
+-- File:	TopoDS_TWire.cdl
+-- Created:	Mon Dec 17 10:57:10 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class TWire from TopoDS  inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TWire;
+    ---C++: inline
+    ---Purpose: Creates an empty TWire.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: Returns WIRE.
+
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+    ---Purpose: Returns an empty TWire.
+
+end TWire;

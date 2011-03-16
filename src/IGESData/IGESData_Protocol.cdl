@@ -1,0 +1,46 @@
+-- File:	IGESData_Protocol.cdl
+-- Created:	Wed May  5 11:30:30 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Protocol  from IGESData  inherits  Protocol from Interface
+
+    ---Purpose : Description of basic Protocol for IGES
+    --           This comprises treatement of IGESModel and Recognition of
+    --           Undefined-FreeFormat-Entity
+
+uses OStream, Type, InterfaceModel, Check
+
+is
+
+    Create returns mutable Protocol from IGESData;
+
+    NbResources (me) returns Integer;
+    ---Purpose : Gives the count of Resource Protocol. Here, none
+
+    Resource (me; num : Integer) returns Protocol from Interface;
+    ---Purpose : Returns a Resource, given a rank. Here, none
+
+    TypeNumber (me; atype : any Type) returns Integer;
+    ---Purpose : Returns a Case Number, specific of each recognized Type
+    --         Here, Undefined and Free Format Entities have the Number 1.
+
+    	-- --    General Services (defined at Norm level)    -- --
+
+    NewModel (me) returns mutable InterfaceModel;
+    ---Purpose : Creates an empty Model for IGES Norm
+
+    IsSuitableModel (me; model : InterfaceModel) returns Boolean;
+    ---Purpose : Returns True if <model> is a Model of IGES Norm
+
+    UnknownEntity (me) returns mutable Transient;
+    ---Purpose : Creates a new Unknown Entity for IGES (UndefinedEntity)
+
+    IsUnknownEntity (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if <ent> is an Unknown Entity for the Norm, i.e.
+    --           Type UndefinedEntity, status Unknown
+
+end Protocol;

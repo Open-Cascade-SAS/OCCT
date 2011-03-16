@@ -1,0 +1,24 @@
+-- File:        BezierCurve.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BezierCurve from StepGeom 
+
+inherits BSplineCurve from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray1OfCartesianPoint from StepGeom, 
+	BSplineCurveForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable BezierCurve;
+	---Purpose: Returns a BezierCurve
+
+
+end BezierCurve;

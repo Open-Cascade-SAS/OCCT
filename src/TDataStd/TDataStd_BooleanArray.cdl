@@ -1,0 +1,110 @@
+-- File:        TDataStd_BooleanArray.cdl
+-- Created:     May 29 11:40:00 2007
+-- Author:      Vlad Romashko
+--  	    	<vladislav.romashko@opencascade.com>
+-- Copyright:   Open CASCADE
+
+class BooleanArray from TDataStd inherits Attribute from TDF
+
+    ---Purpose: An array of boolean values.
+
+uses 
+
+    Attribute       from TDF,
+    GUID            from Standard,
+    Label           from TDF,
+    RelocationTable from TDF,
+    HArray1OfByte   from TColStd
+
+is 
+
+    ---Purpose: Static methods
+    --          ==============
+
+    GetID (myclass)   
+    ---C++: return const & 
+    ---Purpose: Returns an ID for array.
+    returns GUID from Standard;
+
+    Set (myclass; 
+    	 label : Label from TDF; 
+    	 lower, upper : Integer from Standard)
+    ---Purpose: Finds or creates an attribute with the array.
+    returns BooleanArray from TDataStd;
+
+    
+    ---Category: BooleanArray methods
+    --           ====================
+
+    Init (me : mutable; 
+    	  lower, upper : Integer from Standard);
+    ---Purpose: Initialize the inner array with bounds from <lower> to <upper>  
+
+    SetValue (me : mutable; 
+    	      index :Integer from Standard; 
+    	      value : Boolean from Standard);
+    ---Purpose: Sets the <Index>th element of the array to <Value>
+
+    Value (me; 
+    	   Index : Integer from Standard)
+    ---Purpose: Return the value of the <Index>th element of the array.
+    ---C++: alias operator ()
+    returns Boolean from Standard;
+
+    Lower (me) 
+    ---Purpose: Returns the lower boundary of the array.
+    returns Integer from Standard;      
+
+    Upper (me) 
+    ---Purpose: Returns the upper boundary of the array.
+    returns Integer from Standard;
+    
+    Length (me) 
+    ---Purpose: Returns the number of elements in the array.
+    returns Integer from Standard;    
+
+    
+    ---Category: Advanced area
+    --           =============
+
+    InternalArray (me)
+    ---C++: return const &
+    returns HArray1OfByte from TColStd;
+    
+    SetInternalArray (me : mutable;
+    	    	      values : HArray1OfByte from TColStd);
+
+
+    ---Category: Methodes of TDF_Attribute
+    --           =========================
+    Create    
+    returns mutable BooleanArray from TDataStd; 
+    
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; 
+    	     with : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+    
+    Dump (me; 
+    	  OS : in out OStream from Standard)
+    returns OStream from Standard
+    is redefined;
+    ---C++: return &
+
+
+fields
+
+    myValues : HArray1OfByte from TColStd;
+    myLower  : Integer from Standard;
+    myUpper  : Integer from Standard;
+
+
+end BooleanArray;

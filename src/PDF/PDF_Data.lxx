@@ -1,0 +1,26 @@
+// File:	PDF_Data.lxx
+//      	------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Mar 13 1997	Creation
+
+inline Standard_Integer PDF_Data::VersionNumber() const
+{ return myVersion; }
+
+inline void PDF_Data::Labels
+(const Handle(PColStd_HArray1OfInteger)& theLabels) 
+{ myLabels = theLabels; }
+ 
+inline Handle(PColStd_HArray1OfInteger) PDF_Data::Labels() const
+{ return myLabels; }
+ 
+inline void PDF_Data::Attributes
+(const Handle(PDF_HAttributeArray1)& theAttributes) 
+{ myAttributes = theAttributes; }
+ 
+inline Handle(PDF_HAttributeArray1) PDF_Data::Attributes() const
+{ return myAttributes; }

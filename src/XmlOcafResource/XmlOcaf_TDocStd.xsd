@@ -1,0 +1,24 @@
+<schema targetNamespace="http://www.opencascade.org/OCAF/XML"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:ocaf="http://www.opencascade.org/OCAF/XML"
+	elementFormDefault="qualified">
+
+<annotation>
+  <documentation xml:lang="en">
+    Open Cascade Application Framework: Definition of attributes from TDocStd
+    This file is included in XmlOcaf.xsd
+    URL: $(CASROOT)/src/XmlOcafResource/XmlOcaf_TDocStd.xsd
+  </documentation>
+</annotation>
+
+<element name="TDocStd_XLink" substitutionGroup="ocaf:AbstractXPathLabel">
+  <complexType>
+    <complexContent>
+      <extension base="ocaf:AbsXPathLabelType">
+        <attribute name="documentEntry" type="string" use="required"/>
+      </extension>
+    </complexContent>
+  </complexType>
+</element>
+
+</schema>

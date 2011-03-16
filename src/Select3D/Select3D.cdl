@@ -1,0 +1,84 @@
+-- File:	Select3D.cdl
+-- Created:	Wed Feb 22 11:15:53 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+--Modified by Rob Jan 13 th  98 : Compute Depth on EyeLine for
+--                                Each Kind of SensitiveEntity. 
+--                                (Deferred Method to be implemented)
+--                               
+---Copyright:	 Matra Datavision 1995
+
+
+package Select3D 
+
+	---Purpose: The Select3D package provides the following services
+    	-- -   definition of standard   3D sensitive primitives such as points, curves and faces.
+    	-- -   recovery of the bounding boxes in the 2D graphic selection space, if required.
+    	-- -   a 3D-2D projector.
+
+uses
+    Standard,
+    TCollection,
+    TColStd,
+    TColgp,
+    gp,
+    Bnd,
+    Poly,
+    TopLoc,
+    Geom,
+    SelectBasics,
+    V3d
+
+is
+    
+    ---Category: sensitive entities
+
+    enumeration TypeOfSensitivity is TOS_INTERIOR,TOS_BOUNDARY,TOS_EXTERIOR
+    end TypeOfSensitivity;
+    	---Purpose: Provides values for type of sensitivity in 3D.
+    	-- These are used to specify whether it is the interior,
+    	-- the boundary, or the exterior of a 3D sensitive entity which is sensitive.
+
+    deferred class SensitiveEntity;
+    
+    deferred class SensitivePoly;
+
+    class SensitivePoint;
+
+    class SensitiveSegment;
+
+    class SensitiveCircle;
+
+    class SensitiveCurve;
+
+    class SensitiveTriangle; 
+
+    class SensitiveTriangulation;
+
+    class SensitiveFace;
+
+    class SensitiveBox;
+
+    class SensitiveWire;
+
+    class SensitiveGroup;
+
+    class SensitiveEntitySequence instantiates Sequence from TCollection 
+    	(SensitiveEntity from Select3D);
+
+    ---Category: selectors/projectors
+
+    class Projector;
+
+
+    class ListOfSensitiveTriangle instantiates List from TCollection
+    (SensitiveTriangle from Select3D);
+
+    class ListOfSensitive instantiates List from TCollection
+    (SensitiveEntity from Select3D);
+
+    imported Pnt;
+    imported Pnt2d;
+    imported Box2d;
+
+end Select3D;

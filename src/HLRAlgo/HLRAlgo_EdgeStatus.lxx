@@ -1,0 +1,83 @@
+// File:	HLRAlgo_EdgeStatus.lxx
+// Created:	Tue Feb 18 11:30:12 1992
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+#define EMaskAllHidden  ((Standard_Boolean)1)
+#define EMaskAllVisible ((Standard_Boolean)2)
+
+//=======================================================================
+//function : Bounds
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeStatus::Bounds 
+( Standard_Real& Start, Standard_ShortReal& TolStart,
+  Standard_Real& End  , Standard_ShortReal& TolEnd  ) const
+{
+  Start    = myStart;
+  TolStart = myTolStart;
+  End      = myEnd;
+  TolEnd   = myTolEnd;
+}
+
+//=======================================================================
+//function : HideAll
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeStatus::HideAll()
+{
+  AllVisible(Standard_False);
+  AllHidden (Standard_True);
+}
+
+//=======================================================================
+//function : ShowAll
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeStatus::ShowAll()
+{
+  AllVisible(Standard_True);
+  AllHidden (Standard_False);
+}
+
+//=======================================================================
+//function : AllHidden
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_EdgeStatus::AllHidden () const
+{ return (myFlags & EMaskAllHidden) != 0; }
+
+//=======================================================================
+//function : AllHidden
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeStatus::AllHidden (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMaskAllHidden;
+  else   myFlags &= ~EMaskAllHidden;
+}
+
+//=======================================================================
+//function : AllVisible
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean HLRAlgo_EdgeStatus::AllVisible () const
+{ return (myFlags & EMaskAllVisible) != 0; }
+
+//=======================================================================
+//function : AllVisible
+//purpose  : 
+//=======================================================================
+
+inline void HLRAlgo_EdgeStatus::AllVisible (const Standard_Boolean B)
+{
+  if (B) myFlags |=  EMaskAllVisible;
+  else   myFlags &= ~EMaskAllVisible;
+}
+

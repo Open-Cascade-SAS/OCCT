@@ -1,0 +1,376 @@
+-- File:	TopOpeBRep_FacesFiller.cdl
+-- Created:	Mon Oct 10 17:13:35 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@bravox>
+---Copyright:	 Matra Datavision 1994
+
+class FacesFiller from TopOpeBRep 
+
+    ---Purpose: Fills a DataStructure from TopOpeBRepDS with the result 
+    -- of Face/Face instersection described by FacesIntersector from TopOpeBRep.
+    -- if the faces have same Domain, record it in the DS.         
+    -- else record lines and  points and attach list of interferences
+    -- to the faces, the lines and the edges.
+
+uses
+
+    Orientation from TopAbs,
+    ShapeEnum from TopAbs,
+    State from TopAbs,
+    Shape from TopoDS,
+    Face from TopoDS,
+    Edge from TopoDS,
+    ListOfShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    Pnt from gp,
+    Vec from gp,
+    Curve from Geom,
+    Curve from Geom2d,
+
+    ShapeTool from TopOpeBRepTool,
+    PShapeClassifier from TopOpeBRepTool,
+    FacesIntersector from TopOpeBRep,
+    PFacesIntersector from TopOpeBRep,
+    PointGeomTool from TopOpeBRep,
+    PointClassifier from TopOpeBRep,
+    LineInter from TopOpeBRep,
+    PLineInter from TopOpeBRep,
+    VPointInter from TopOpeBRep,
+    VPointInterIterator from TopOpeBRep,
+    VPointInterClassifier from TopOpeBRep,
+    FFTransitionTool from TopOpeBRep,
+    FFDumper from TopOpeBRep,
+    
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS,
+    InterferenceTool from TopOpeBRepDS,
+    PointIterator from TopOpeBRepDS,
+    Transition  from TopOpeBRepDS,
+    Kind from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    DataStructure from TopOpeBRepDS,
+    PDataStructure from TopOpeBRepDS,
+    Curve from TopOpeBRepDS,
+    Point from TopOpeBRepDS
+
+is
+
+    Create returns FacesFiller from TopOpeBRep;
+    	    	    
+    Insert(me : in out; F1,F2 : Shape from TopoDS;
+    	    	    	FACINT : in out FacesIntersector from TopOpeBRep;
+    	    	    	HDS : HDataStructure from TopOpeBRepDS) is static;
+    ---Purpose: Stores in <DS> the intersections of <S1> and <S2>.
+
+    ProcessSectionEdges(me : in out);
+    
+    ChangePointClassifier(me : in out) 
+    returns PointClassifier from TopOpeBRep;
+    ---C++: return &
+
+    PShapeClassifier(me) returns PShapeClassifier from TopOpeBRepTool;
+    ---Purpose: return field myPShapeClassifier.
+
+    SetPShapeClassifier(me : in out; PSC : PShapeClassifier from TopOpeBRepTool);
+    ---Purpose: set field myPShapeClassifier.
+
+    -- -------
+    -- private
+    -- -------
+
+    LoadLine(me : in out; L : in out LineInter from TopOpeBRep) is static;
+    -- Complete informations given on intersection line.
+    -- Set current intersection line to process myLine to <L>.
+    
+    CheckLine(me; L : in out LineInter from TopOpeBRep) 
+    returns Boolean is static;
+
+    VP_Position(me : in out; FACINT : in out FacesIntersector from TopOpeBRep)
+    ---Purpose: compute position of VPoints of lines
+    is static;
+
+    VP_Position(me : in out; L : in out LineInter from TopOpeBRep)
+    ---Purpose: compute position of VPoints of line L
+    is static;
+
+    VP_PositionOnL(me : in out; L : in out LineInter from TopOpeBRep)
+    ---Purpose: compute position of VPoints of non-restriction line L.
+    is static;
+
+    VP_PositionOnR(me : in out; L : in out LineInter from TopOpeBRep)
+    ---Purpose: compute position of VPoints of restriction line L.
+    is static;
+
+    VP_Position(me : in out; VP : in out VPointInter from TopOpeBRep; 
+    	    	             VPC : in out VPointInterClassifier from TopOpeBRep)
+    is static;
+    ---Purpose: compute position of VP with current faces,
+    --          according to VP.ShapeIndex() .
+
+    -- --------------------------------
+    -- current line (myLine) processing
+    -- --------------------------------
+
+    ProcessLine(me : in out) is static;
+    ---Purpose: Process current intersection line (set by LoadLine)
+
+    ResetDSC(me : in out) is static;
+
+    ProcessRLine(me : in out) is static;
+    ---Purpose: Process current restriction line, adding restriction edge
+    --          and computing face/edge interference. 
+
+    FillLineVPonR(me : in out) is static;
+    ---Purpose:  VP processing for restriction  line  and line sharing
+    --           same domain with  section edges : 
+    --            - if restriction :
+    --            Adds restriction edges as  section edges and compute
+    --           face/edge  interference. 
+    --            - if  same domain : 
+    --            If line share same domain  with section edges, compute 
+    --           parts of line IN/IN the two faces, and compute curve/point 
+    --           interference for VP boundaries.
+               
+    
+    FillLine(me : in out) is static;
+
+    AddShapesLine(me : in out) is static;
+    ---Purpose: compute 3d curve, pcurves and face/curve interferences
+    --          for current NDSC. Add them to the DS.
+
+    GetESL(me : in out; LES : out ListOfShape from TopTools) is static;
+    ---Purpose: Get map <mapES > of restriction edges having parts IN one
+    --          of the 2 faces.
+	
+    KeepRLine(me;
+    	     Lrest : LineInter from TopOpeBRep; 
+	     checkkeep : Boolean)
+    returns Boolean is static private;
+	       
+    ProcessVPR(me : in out; 
+    	       FF : in out FacesFiller from TopOpeBRep; 
+    	       VP : VPointInter from TopOpeBRep);
+    ---Purpose: calling the followings ProcessVPIonR and ProcessVPonR.
+
+    ProcessVPIonR(me : in out; VPI : in out VPointInterIterator from TopOpeBRep;
+                 trans1 : Transition from TopOpeBRepDS; F1 : Shape from TopoDS;
+		 ShapeIndex : Integer)
+    is static;
+    ---Purpose: processing ProcessVPonR for VPI.
+
+    ProcessVPonR(me : in out; VP : VPointInter from TopOpeBRep;
+                trans1 : Transition from TopOpeBRepDS; F1 : Shape from TopoDS;
+		ShapeIndex : Integer)
+    is static;
+    ---Purpose: adds <VP>'s   geometric   point (if not   stored)  and
+    --          computes (curve or edge)/(point or vertex) interference.
+
+    ProcessVPonclosingR(me : in out; VP : VPointInter from TopOpeBRep;
+    	    	    	F1 : Shape from TopoDS; ShapeIndex : Integer;
+                        transEdge : Transition from TopOpeBRepDS; 
+			PVKind : Kind from TopOpeBRepDS; PVIndex : Integer;
+    	    	    	EPIfound : Boolean; IEPI : Interference from TopOpeBRepDS)
+    is static;
+     ---Purpose: VP processing on closing arc. 
+
+    ProcessVPondgE(me : in out; VP : VPointInter from TopOpeBRep;
+		   ShapeIndex : Integer;
+    	    	   PVKind : out Kind from TopOpeBRepDS; PVIndex : out Integer;
+    	    	   EPIfound : out Boolean; IEPI : out Interference from TopOpeBRepDS;
+    	    	   CPIfound : out Boolean; ICPI : out Interference from TopOpeBRepDS)
+    returns Boolean is static;
+     ---Purpose: VP processing on degenerated arc.
+
+    ProcessVPInotonR(me : in out; VPI : in out VPointInterIterator from TopOpeBRep)
+    is static;
+     ---Purpose: processing ProcessVPnotonR for VPI.
+
+    ProcessVPnotonR(me : in out; VP : VPointInter from TopOpeBRep)
+    is static;
+    ---Purpose: adds <VP>'s  geometrical point to the DS (if not stored) 
+    --          and computes curve point interference.
+
+    GetGeometry(me : in out; 
+    	    	IT : in out ListIteratorOfListOfInterference from TopOpeBRepDS;
+		VP : VPointInter from TopOpeBRep;
+	    	G : in out Integer; K : in out Kind from TopOpeBRepDS)
+    returns Boolean is static;
+    ---Purpose:
+    -- Get the geometry of a DS point <DSP>.
+    -- Search for it with ScanInterfList (previous method).
+    -- if found, set <G> to the geometry of the interference found.
+    -- else, add the point <DSP> in the <DS> and set <G> to the 
+    -- value of the new geometry such created.
+    -- returns the value of ScanInterfList().
+
+    MakeGeometry(me : in out; VP : VPointInter from TopOpeBRep;
+		 ShapeIndex : Integer; K : in out Kind from TopOpeBRepDS)  
+    returns Integer is static;
+
+    StoreCurveInterference(me : in out; I : Interference from TopOpeBRepDS)
+    is static;
+    ---Purpose: 
+    -- Add interference <I> to list myDSCIL.
+    -- on a given line, at first call, add a new DS curve.
+
+    GetFFGeometry(me; DSP : Point from TopOpeBRepDS; K : out Kind; G : in out Integer)
+    returns Boolean is static;
+    ---Purpose: search for G = geometry of Point which is identical to <DSP>
+    --          among the DS Points created in the CURRENT face/face
+    --          intersection ( current Insert() call).
+
+    GetFFGeometry(me; VP : VPointInter from TopOpeBRep; K : out Kind; G : in out Integer)
+    returns Boolean is static;
+    ---Purpose: search for G = geometry of Point which is identical to <VP>
+    --          among the DS Points created in the CURRENT face/face
+    --          intersection ( current Insert() call).
+     
+    GetEdgeTrans(me : in out;
+    	    	 VP : VPointInter from TopOpeBRep;
+		 PVKind : Kind from TopOpeBRepDS;
+		 PVIndex : Integer;
+		 Sind : Integer;
+		 F : Face from TopoDS)
+    returns Transition from TopOpeBRepDS is static private;		 
+
+    StateVPonFace(me;
+      	    	  VP : VPointInter from TopOpeBRep)
+    returns State from TopAbs is static private;
+    ---Purpose: If <VP>'s index != 3, calls a classifier to determine 
+    --          <VP>'s state on the face. 
+
+    PequalVPonR(me;
+    	    	P3D : Pnt from gp;
+		VPshapeindex : Integer;
+		VP : in out VPointInter from TopOpeBRep;
+	        Lrest : in out LineInter from TopOpeBRep) 
+    returns Boolean is static private;
+    ---Purpose: <VP> is of geometry <P>.
+    --          Looks after a   VPoint on RESTRICTION <Lrest>  with
+    --          geometric value  <P>. If true, updates states ON for <VP>.
+		 
+    StBipVPonF(me;
+    	       IVPf, IVPl : VPointInter from TopOpeBRep;
+	       Lrest : LineInter from TopOpeBRep;
+    	       isonedge1 : Boolean)
+    returns State from TopAbs is static private;
+    ---Purpose: Classifies (VPf, VPl) middle point on restriction edge
+							    
+    ChangeFacesIntersector(me:in out) returns FacesIntersector is static;
+    ---C++: return &
+
+    HDataStructure(me:in out) returns HDataStructure is static;
+
+    ChangeDataStructure(me:in out) returns DataStructure is static;
+    ---C++: return &
+
+    Face(me;I:Integer) returns Face from TopoDS is static;
+    ---C++: return const &
+
+    FaceFaceTransition(me;L:LineInter;I:Integer)
+    returns Transition from TopOpeBRepDS;
+    ---C++: return const &
+    -- transition from face I(1,2) through line L with face (2,1) 
+            
+    FaceFaceTransition(me;I:Integer)
+    returns Transition from TopOpeBRepDS;
+    ---C++: return const &
+    -- transition from face I(1,2) through current line with face (2,1) 
+            
+    PFacesIntersectorDummy(me) returns PFacesIntersector from TopOpeBRep;
+    PDataStructureDummy(me) returns PDataStructure from TopOpeBRepDS;
+    PLineInterDummy(me) returns PLineInter from TopOpeBRep;
+    
+    SetTraceIndex(me:in out; exF1,exF2 : Integer) is static;    
+    GetTraceIndex(me; exF1,exF2 : out Integer) is static;    
+    -- <exf1,exf2> TopExp_Explorer exploration index of faces F1,F2
+    -- in ancestors shapes. (trace)
+    
+    -------------------------
+    --        Class methods :
+    -------------------------
+
+    Lminmax(myclass; L : LineInter from TopOpeBRep;
+	             pmin, pmax : out Real);
+    ---Purpose: Computes <pmin> and <pmax> the upper and lower bounds of <L>
+    --          enclosing all vpoints.
+
+    LSameDomainERL(myclass; L : LineInter from TopOpeBRep;
+		            ERL : ListOfShape from TopTools) returns Boolean;
+    ---Purpose: Returns <True> if <L> shares a same geometric domain with
+    --          at least one of the section edges of <ERL>.		       		    	
+
+    
+    IsVPtransLok(myclass; L : LineInter from TopOpeBRep;
+		          iVP, SI12 : Integer; 
+    	    	          T : out Transition from TopOpeBRepDS)
+    returns Boolean;
+    ---Purpose: Computes the transition <T> of the VPoint <iVP> on the edge
+    --          of <SI12>. Returns <False> if the status is unknown.
+
+    TransvpOK(myclass; L : LineInter from TopOpeBRep;
+	               iVP, SI : Integer;
+	               isINOUT : Boolean) returns Boolean;
+    ---Purpose: Computes   transition   on line for  VP<iVP>   on edge
+    --          restriction of <SI>.  If <isINOUT>  :  returns <true> if
+    --          transition computed is IN/OUT else : returns <true> if
+    --          transition computed is OUT/IN.
+
+    VPParamOnER(myclass; vp : VPointInter from TopOpeBRep;
+	            	 Lrest : LineInter from TopOpeBRep) returns Real;
+    ---Purpose: Returns parameter u of vp on the restriction edge.		 
+
+    EqualpPonR(myclass; Lrest : LineInter from TopOpeBRep;    			
+    	       	    	VP1, VP2 : VPointInter from TopOpeBRep) returns Boolean;
+    
+    EqualpP(myclass; L : LineInter from TopOpeBRep;
+    	    	     iVP1, iVP2 : Integer) returns Boolean;
+
+fields
+
+    -- input
+    myF1 : Face from TopoDS;
+    myF2 : Face from TopoDS;
+    myF1ori : Orientation from TopAbs;
+    myF2ori : Orientation from TopAbs;
+    myFacesIntersector : PFacesIntersector from TopOpeBRep;
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    myDS : PDataStructure from TopOpeBRepDS;
+
+    -- current face/face intersection
+    myFFfirstDSP : Integer;
+    	-- First DS point created by current face/face intersection
+
+    -- current line
+    myLine : PLineInter from TopOpeBRep;
+    myLineOK : Boolean;
+    myLineINL : Boolean; -- Is Null Length
+    myLineTonF1 : Transition from TopOpeBRepDS;
+    myLineTonF2 : Transition from TopOpeBRepDS;
+    myLineIsonEdge : Boolean;
+    myERL : ListOfShape from TopTools;
+    	-- Stores the restriction edges found by the current faces intersector.
+
+    myDataforDegenEd : DataMapOfShapeListOfShape from TopTools;
+        -- If the line describes a VP on degenerated edge, stores
+        -- the vertex, the degenerated edge, the couture edge on same
+        -- shape.
+
+    myLastVPison0 : Boolean;-- only for walking.
+    mykeptVPnbr : Boolean;  -- number of current line's VP kept 
+    	    
+    -- curve on current line
+    myDSCIndex : Integer;
+    myDSCIL : ListOfInterference from TopOpeBRepDS;
+
+    -- tools
+    myPointClassifier : PointClassifier from TopOpeBRep;
+    myPShapeClassifier : PShapeClassifier from TopOpeBRepTool;
+
+    -- trace
+    myexF1,myexF2 : Integer;
+    myHFFD : FFDumper from TopOpeBRep;
+
+end FacesFiller from TopOpeBRep;

@@ -1,0 +1,40 @@
+-- File:        CompositeTextWithExtent.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CompositeTextWithExtent from StepVisual 
+
+inherits CompositeText from StepVisual 
+
+uses
+
+	PlanarExtent from StepVisual, 
+	HAsciiString from TCollection, 
+	HArray1OfTextOrCharacter from StepVisual
+is
+
+	Create returns mutable CompositeTextWithExtent;
+	---Purpose: Returns a CompositeTextWithExtent
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCollectedText : mutable HArray1OfTextOrCharacter from StepVisual) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aCollectedText : mutable HArray1OfTextOrCharacter from StepVisual;
+	      aExtent : mutable PlanarExtent from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetExtent(me : mutable; aExtent : mutable PlanarExtent);
+	Extent (me) returns mutable PlanarExtent;
+
+fields
+
+	extent : PlanarExtent from StepVisual;
+
+end CompositeTextWithExtent;

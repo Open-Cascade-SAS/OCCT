@@ -1,0 +1,22 @@
+-- File:        DefinitionalRepresentation.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DefinitionalRepresentation from StepRepr 
+
+inherits Representation from StepRepr 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr, 
+	RepresentationContext from StepRepr
+is
+
+	Create returns mutable DefinitionalRepresentation;
+	---Purpose: Returns a DefinitionalRepresentation
+
+
+end DefinitionalRepresentation;

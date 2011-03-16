@@ -1,0 +1,108 @@
+-- File:        BinLDrivers_DocumentStorageDriver.cdl
+-- Created:     Tue Oct 29 11:34:03 2002
+-- Author:      Michael SAZONOV
+--              <msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:   Matra Datavision 2002
+
+
+class DocumentStorageDriver from BinLDrivers inherits StorageDriver from PCDM
+
+    ---Purpose: persistent implemention of storage a document in a binary file
+
+uses
+    AsciiString                 from TCollection,
+    LabelList                   from TDF,
+    MessageDriver               from CDM,
+    ExtendedString              from TCollection,
+    Document                    from CDM,
+    ADriverTable                from BinMDF,
+    SRelocationTable            from BinObjMgt,
+    Persistent                  from BinObjMgt,
+    Label                       from TDF,
+    OStream                     from Standard,
+    MapOfTransient              from TColStd,
+    IndexedMapOfTransient       from TColStd,
+    DocumentSection             from BinLDrivers,
+    VectorOfDocumentSection     from BinLDrivers
+
+is
+    -- ===== Public methods =====
+
+    Create returns mutable DocumentStorageDriver from BinLDrivers;
+        ---Purpose: Constructor
+
+    SchemaName(me) returns ExtendedString from TCollection is redefined virtual;
+        ---Purpose: pure virtual method definition
+
+    Write (me: mutable; theDocument: Document from CDM;
+                        theFileName: ExtendedString from TCollection)
+        is redefined virtual;
+        ---Purpose: Write <theDocument> to the binary file <theFileName>
+
+    IsError           (me) returns Boolean from Standard;
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+        returns ADriverTable from BinMDF
+        is virtual;
+
+    -- ===== Protected methods =====
+
+    WriteSubTree (me: mutable; theData  : Label from TDF;
+                               theOS    : in out OStream from Standard)
+        is protected;
+        ---Purpose: Write the tree under <theLabel> to the stream <theOS>
+
+    AddSection      (me: mutable; theName    : AsciiString from TCollection;
+                                  isPostRead : Boolean = Standard_True);
+        ---Purpose: Create a section that should be written after the OCAF data
+
+    WriteSection    (me: mutable; theName : AsciiString from TCollection;
+                                  theDoc  : Document    from CDM;
+                                  theOS   : in out OStream from Standard)
+        is virtual protected; 
+        ---Purpose: define the procedure of writing a section to file.  
+	
+    WriteShapeSection    (me: mutable; theDocSection : in out DocumentSection from BinLDrivers;
+                                       theOS         : in out OStream from Standard)
+        is virtual protected; 
+        ---Purpose: defines the procedure of writing a shape  section to file 
+	
+    FirstPass       (me: mutable; theRoot       : Label from TDF) is private; 
+    
+    FirstPassSubTree(me: mutable; L             : Label from TDF;
+                                  ListOfEmptyL  : in out LabelList from TDF)
+        returns Boolean from Standard is private;
+        ---Purpose: Returns true if <L> and its sub-labels do not contain
+        --          attributes to store
+    
+    WriteInfoSection(me: mutable; theDocument  : Document from CDM;
+                                  theFile      : AsciiString from TCollection)
+        is private;
+        ---Purpose: Write info secton using FSD_BinaryFile driver
+    
+    WriteMessage(me: mutable; theMessage : ExtendedString from TCollection)
+        is protected;
+        ---Purpose: write  theMessage  to  the  MessageDriver  of  the
+        --          Application
+    
+    UnsupportedAttrMsg(me: mutable; theType: Type from Standard) is private;
+
+
+fields
+    -- use one self-increasing buffer for an attribute
+    myPAtt      :       Persistent              from BinObjMgt;
+    myDrivers   :       ADriverTable            from BinMDF    is protected;
+    myRelocTable:       SRelocationTable        from BinObjMgt is protected;
+    myIsError   :       Boolean                 from Standard  is protected;
+    myMsgDriver :       MessageDriver           from CDM;
+
+    -- labels not having writable attributes on it-self and on children
+    myEmptyLabels :     LabelList               from TDF;
+    -- map of types (Standard_Type) of attributes not having a driver
+    myMapUnsupported :  MapOfTransient          from TColStd;
+    -- map of types to be written
+    myTypesMap  :       IndexedMapOfTransient   from TColStd;
+
+    mySections  :       VectorOfDocumentSection from BinLDrivers;
+
+end DocumentStorageDriver;

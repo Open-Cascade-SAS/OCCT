@@ -1,0 +1,17 @@
+-- File:	QARoutelous.cdl
+-- Created:	Tue Apr  9 18:30:16 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QARoutelous
+     uses Draw,
+          AIS,
+          SelectMgr,
+          Prs3d,
+          PrsMgr
+is
+    class PresentableObject;
+    
+    Commands(DI : in out Interpretor from Draw);
+end;

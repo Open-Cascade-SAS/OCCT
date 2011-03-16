@@ -1,0 +1,27 @@
+-- File:	StepShape_TypeQualifier.cdl
+-- Created:	Tue Apr 24 14:14:31 2001
+-- Author:	Christian CAILLET
+--		<cky@photox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+class TypeQualifier  from StepShape    inherits TShared
+
+    ---Purpose : Added for Dimensional Tolerances
+
+uses
+    HAsciiString from TCollection
+
+is
+
+    Create returns mutable TypeQualifier;
+
+    Init (me : mutable; name : HAsciiString from TCollection);
+
+    Name (me) returns HAsciiString from TCollection;
+    SetName (me : mutable; name : HAsciiString from TCollection);
+
+fields
+
+    theName : HAsciiString from TCollection;
+
+end TypeQualifier;

@@ -1,0 +1,64 @@
+-- File:	Generator.cdl
+-- Created:	Mon Jul 20 16:59:17 1992
+-- Author:	Arnaud BOUZY
+--		<adn@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class Generator from ExprIntrp inherits TShared from MMgt
+
+	---Purpose: Implements general services for interpretation of 
+	--          expressions.
+
+uses NamedExpression from Expr,
+    NamedFunction from Expr,
+    SequenceOfNamedFunction from ExprIntrp,
+    SequenceOfNamedExpression from ExprIntrp,
+    AsciiString from TCollection
+
+is
+
+    Initialize;
+    
+    Use(me : mutable; func : NamedFunction)
+    ---Level: Internal 
+    is static;
+
+    Use(me : mutable; named : NamedExpression)
+    ---Level: Internal 
+    is static;
+        
+    GetNamed(me)
+    returns SequenceOfNamedExpression
+    ---C++: return const &
+    ---Level: Internal 
+    is static;
+    
+    GetFunctions(me)
+    returns SequenceOfNamedFunction
+    ---C++: return const &
+    ---Level: Internal 
+    is static;
+
+    GetNamed(me; name : AsciiString)
+    ---Purpose: Returns NamedExpression with name <name> already 
+    --          interpreted if it exists. Returns a null handle if 
+    --          not. 
+    ---Level: Advanced
+    returns any NamedExpression
+    is static;
+    
+    GetFunction(me; name : AsciiString)
+    ---Purpose: Returns NamedFunction with name <name> already 
+    --          interpreted if it exists. Returns a null handle if 
+    --          not.
+    ---Level: Advanced 
+    returns any NamedFunction
+    is static;
+    
+fields
+
+    myFunctions : SequenceOfNamedFunction;
+    myNamed : SequenceOfNamedExpression;
+    
+end Generator;

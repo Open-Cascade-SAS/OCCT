@@ -1,0 +1,73 @@
+-- File:	PGeom2d_TrimmedCurve.cdl
+-- Created:	Tue Apr  6 17:34:06 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class TrimmedCurve from PGeom2d inherits BoundedCurve from PGeom2d
+
+        ---Purpose :
+        --  Defines a portion of a curve limited by two values of 
+        --  parameters inside the parametric domain of the curve.
+        --  
+	---See Also : TrimmedCurve from Geom2d.
+
+
+uses Curve from PGeom2d
+
+is
+
+
+  Create returns mutable TrimmedCurve from PGeom2d;
+	---Purpose: Creates a TrimmedCurve with default values.
+	---Level: Advanced 
+
+
+  Create (
+    	aBasisCurve: Curve from PGeom2d;
+    	aFirstU, aLastU: Real from Standard)
+     returns mutable TrimmedCurve from PGeom2d;
+        ---Purpose : Creates a TrimmedCurve with these field values.
+	---Level: Advanced 
+
+
+  FirstU(me : mutable; aFirstU: Real from Standard);
+        ---Purpose : Set the value of the field firstU with <aFirstU>.
+	---Level: Advanced 
+
+
+  FirstU(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field firstU.
+	---Level: Advanced 
+
+
+  LastU(me : mutable; aLastU: Real from Standard);
+        ---Purpose : Set the value of the field lastU with <aLastU>.
+	---Level: Advanced 
+
+
+  LastU(me) returns Real from Standard;
+        ---Purpose : Returns the value of the field lastU.
+	---Level: Advanced 
+
+
+  BasisCurve (me: mutable; aBasisCurve: Curve from PGeom2d);
+        ---Purpose : Set the value of the field basisCurve with <aBasisCurve>.
+        --  This curve can be a trimmed curve.
+	---Level: Advanced 
+
+
+  BasisCurve (me) returns Curve from PGeom2d;
+        ---Purpose : Returns the value of the field basisCurve. 
+        --  This curve can be a trimmed curve.
+	---Level: Advanced 
+
+
+fields
+
+    basisCurve : Curve from PGeom2d;
+    firstU     : Real from Standard;
+    lastU      : Real from Standard;
+
+end;

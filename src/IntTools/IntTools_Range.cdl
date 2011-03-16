@@ -1,0 +1,58 @@
+-- File:	IntTools_Range.cdl
+-- Created:	Thu May 18 13:35:47 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class Range from IntTools 
+
+	---Purpose: The class describes the  1-d range 
+        --          [myFirst, myLast].  	 
+
+--uses
+is 
+    Create   
+    	returns  Range from IntTools ;
+	---Purpose:
+	--- Empty constructor
+	---
+     
+    Create  (aFirst:Real  from  Standard;  aLast:Real  from  Standard) 
+    	returns  Range from IntTools ; 
+	---Purpose:
+	--- Initialize me by range boundaries
+	---
+	 
+    SetFirst(me:out; aFirst:Real  from  Standard); 
+    	---Purpose:
+	--- Modifier
+	---
+     
+    SetLast (me:out; aLast:Real  from  Standard);  
+    	---Purpose:
+	--- Modifier
+	---
+     
+    First   (me) 
+    	returns  Real  from  Standard; 
+	---Purpose:
+	--- Selector
+	---
+     
+    Last   (me) 
+    	returns  Real  from  Standard;  
+	---Purpose:
+	--- Selector
+	---
+	 
+    Range  (me; aFirst:out Real  from  Standard;   
+    	    	aLast :out Real  from  Standard);
+    	---Purpose:
+	--- Selector
+	---
+	    	
+fields
+    myFirst:  Real  from  Standard;
+    myLast :  Real  from  Standard;
+end Range;

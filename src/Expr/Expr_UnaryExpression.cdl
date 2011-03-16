@@ -1,0 +1,81 @@
+-- File:	UnaryExpression.cdl
+-- Created:	Thu Jan 10 12:23:23 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class UnaryExpression from Expr
+
+inherits GeneralExpression from Expr
+
+uses NamedUnknown from Expr
+
+raises OutOfRange from Standard, 
+    NumericError from Standard,
+    InvalidOperand from Expr
+
+is
+
+    Operand(me)
+    ---Purpose: Returns the operand used
+    ---C++: inline
+    ---C++: return const &
+    ---Level : Internal
+    returns any GeneralExpression
+    is static;
+
+    SetOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets the operand used
+    --          Raises InvalidOperand if <exp> contains <me>.
+    ---Level : Internal
+    raises InvalidOperand
+    is static;
+    
+    CreateOperand(me : mutable; exp : GeneralExpression)
+    ---Purpose: Sets the operand used during creation
+    ---Level : Internal
+    is static protected;
+    
+    NbSubExpressions(me)
+    ---Purpose: Returns the number of sub-expressions contained
+    --          in <me> ( >= 0)
+    returns Integer
+    is static;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: Returns the <I>-th sub-expression of <me>.
+    --          Raises OutOfRange if <I> > NbSubExpressions(me)
+    ---C++: return const &
+    returns any GeneralExpression
+    raises OutOfRange
+    is static;
+
+    ContainsUnknowns(me) 
+    ---Purpose: Does <me> contains NamedUnknown ?
+    returns Boolean
+    is static;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> is contained in <me>.
+    returns Boolean
+    is static;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression)
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>
+    --          Raises InvalidOperand if <with> contains <me>.
+    raises InvalidOperand
+    is static;
+    
+    Simplified(me) 
+    ---Purpose: Returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression, and after
+    --          values computation.
+    returns any GeneralExpression
+    raises NumericError;
+    
+fields
+
+    myOperand : GeneralExpression;
+
+end UnaryExpression;
+

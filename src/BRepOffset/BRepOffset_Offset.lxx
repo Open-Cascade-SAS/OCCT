@@ -1,0 +1,9 @@
+// File:	BRepOffset_Offset.lxx
+// Created:	Mon Feb  9 10:24:49 1998
+// Author:	Bruno DUMORTIER
+//		<dub@brunox.paris1.matra-dtv.fr>
+
+inline const TopoDS_Shape& BRepOffset_Offset::InitialShape() const
+{
+  return myShape;
+}

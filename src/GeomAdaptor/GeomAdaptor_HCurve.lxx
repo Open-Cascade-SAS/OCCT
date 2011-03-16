@@ -1,0 +1,46 @@
+// File:      GeomAdaptor_HCurve.lxx
+// Created:   Fri Aug 25 14:40:42 1995
+// Author:    Remi LEQUETTE
+// Copyright: OPEN CASCADE 1995
+
+
+//=======================================================================
+//function : GeomAdaptor_HCurve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HCurve::GeomAdaptor_HCurve()
+{
+}
+
+//=======================================================================
+//function : GeomAdaptor_HCurve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HCurve::GeomAdaptor_HCurve(const GeomAdaptor_Curve& AS) :
+GeomAdaptor_GHCurve(AS)
+{
+}
+
+//=======================================================================
+//function : GeomAdaptor_HCurve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HCurve::GeomAdaptor_HCurve(const Handle(Geom_Curve)& S)
+{
+  ChangeCurve().Load(S);
+}
+
+//=======================================================================
+//function : GeomAdaptor_HCurve
+//purpose  : 
+//=======================================================================
+
+inline GeomAdaptor_HCurve::GeomAdaptor_HCurve(const Handle(Geom_Curve)& S, 
+                                              const Standard_Real UFirst, 
+                                              const Standard_Real ULast)
+{
+  ChangeCurve().Load(S,UFirst,ULast);
+}

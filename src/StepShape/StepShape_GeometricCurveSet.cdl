@@ -1,0 +1,21 @@
+-- File:        GeometricCurveSet.cdl
+-- Created:     Fri Dec  1 11:11:21 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class GeometricCurveSet from StepShape 
+
+inherits GeometricSet from StepShape 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfGeometricSetSelect from StepShape
+is
+
+	Create returns mutable GeometricCurveSet;
+	---Purpose: Returns a GeometricCurveSet
+
+
+end GeometricCurveSet;

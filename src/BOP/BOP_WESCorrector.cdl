@@ -1,0 +1,74 @@
+-- File:	BOP_WESCorrector.cdl
+-- Created:	Fri Apr 13 10:41:43 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class WESCorrector from BOP 
+
+	---Purpose: 
+    	---  The algorithm to change the Wire Edges Set (WES) contents.
+    	--   The NewWES will contain only wires instead of wires and edges. 
+    	--
+uses
+    WireEdgeSet          from BOP,
+    PWireEdgeSet         from BOP,
+    ListOfConnexityBlock from BOP 
+    
+is 
+    Create   
+    	returns WESCorrector from BOP; 
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    SetWES  (me:out; 
+		aWES: WireEdgeSet from BOP);  
+    	---Purpose: 
+    	--- Modifier 
+    	---
+    Do (me:out); 
+    	---Purpose: 
+    	--- Performs the algorithm that  consists  of  two  steps 
+    	--- 1. Make conexity blocks (  DoConnexityBlocks()  )     
+    	--- 2. Make corrections     (  DoCorrections()  )        
+    	---
+    DoConnexityBlocks(me:out) 
+    	is  private; 
+       
+    DoCorrections(me:out) 
+    	is  private; 
+      
+    IsDone(me)  
+    	returns Boolean from Standard;   
+    	---Purpose: 
+    	--- Selector 
+    	---
+    ErrorStatus	(me)  
+    	returns Integer from Standard; 
+    	---Purpose: 
+    	--- Selector  
+    	--- contents see BOP_WESCorrector.cxx  
+    	---
+    WES     (me:out) 
+    	returns WireEdgeSet from BOP; 
+    	---C++:  return &  
+    	---Purpose: 
+    	--- Selector 
+    	---
+    NewWES  (me:out) 
+    	returns WireEdgeSet from BOP; 
+    	---C++:  return &   
+    	---Purpose: 
+    	--- Selector 
+    	---
+
+fields 
+
+    myWES             : PWireEdgeSet         from BOP; 
+    myNewWES          : WireEdgeSet          from BOP;  
+    myConnexityBlocks : ListOfConnexityBlock from BOP;  
+    myIsDone          : Boolean from Standard;  
+    myErrorStatus     : Integer from Standard;  
+
+end WESCorrector;

@@ -1,0 +1,71 @@
+-- File:	ProjLib_Torus.cdl
+-- Created:	Tue Aug 24 11:26:33 1993
+-- Author:	Bruno DUMORTIER
+--		<dub@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+class Torus from ProjLib inherits Projector from ProjLib
+
+	---Purpose: Projects elementary curves on a torus.
+
+uses
+    CurveType  from GeomAbs,
+    Torus      from gp,
+    Lin        	   from gp,
+    Circ       	   from gp,
+    Elips      	   from gp,
+    Parab      	   from gp,
+    Hypr       	   from gp,
+    Lin2d      from gp,
+    Circ2d     from gp,
+    Elips2d    from gp,
+    Parab2d    from gp,
+    Hypr2d     from gp
+
+raises
+    NoSuchObject from Standard
+
+is
+
+    Create returns Torus from ProjLib;
+	---Purpose: Undefined projection.
+
+    Create(To : Torus from gp) returns Torus from ProjLib;
+	---Purpose: Projection on the torus <To>.
+
+    Create(To : Torus  from gp;
+           C  : Circ from gp) returns Torus from ProjLib;
+	---Purpose: Projection of the circle <C> on the torus <To>.
+
+
+
+    Init(me : in out;
+    	 To : Torus from gp)
+    is static;
+	 
+     Project(me : in out;
+     	     L  : Lin from gp)
+     is redefined;
+ 
+    Project(me : in out;
+    	    C  : Circ from gp)
+    is redefined;
+
+     Project(me : in out;
+     	     E  : Elips from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     P  : Parab from gp)
+     is redefined;
+ 
+     Project(me : in out;
+     	     H  : Hypr from gp)
+     is redefined;
+	     
+
+fields
+
+    myTorus : Torus from gp;
+
+end Torus;

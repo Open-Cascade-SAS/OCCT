@@ -1,0 +1,194 @@
+-- File:	AIS_FixRelation.cdl
+-- Created:	Thu Dec  5 10:08:10 1996
+-- Author:	Flore Lantheaume/Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class FixRelation from AIS inherits Relation from AIS
+
+
+	---Purpose: Constructs and manages a constraint by a fixed
+    	-- relation between two or more interactive datums. This
+    	-- constraint is represented by a wire from a shape -
+    	-- point, vertex, or edge - in the first datum and a
+    	-- corresponding shape in the second.
+	-- Warning: This relation is not bound with any kind of parametric 
+	--          constraint : it represents the "status" of an parametric
+	--          object.
+uses
+
+    PresentationManager3d from PrsMgr,
+    Presentation          from Prs3d,
+    Selection             from SelectMgr,
+    Shape                 from TopoDS,
+    Vertex                from TopoDS,
+    Edge                  from TopoDS,
+    Wire                  from TopoDS,
+    Curve                 from Geom,
+    Circ                  from gp,
+    Lin                   from gp,
+    Pnt                   from gp,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,    
+    Plane                 from Geom
+
+is
+    Create (aShape      : Shape          from TopoDS;
+	    aPlane      : Plane          from Geom;
+	    aWire       : Wire           from TopoDS)
+	---Purpose:  initializes the vertex aShape, the
+    	--   plane aPlane and the wire aWire, which connects
+    	--   the two vertices in a fixed relation.
+    returns mutable FixRelation from AIS;
+
+    Create (aShape      : Shape          from TopoDS;
+	    aPlane      : Plane          from Geom;
+	    aWire       : Wire           from TopoDS;
+	    aPosition   : Pnt            from gp;
+    	    anArrowSize : Real           from Standard = 0.01)
+	---Purpose:  initializes the vertex aShape, the
+    	--   plane aPlane and the wire aWire, the position
+    	--   aPosition, the arrow size anArrowSize and the
+    	-- wire aWire, which connects the two vertices in a fixed relation.
+    returns mutable FixRelation from AIS;
+    Create (aShape      : Shape          from TopoDS;
+	    aPlane      : Plane          from Geom)
+	---Purpose:  initializes the edge aShape and the plane aPlane.
+    returns mutable FixRelation from AIS;
+
+    Create (aShape      : Shape          from TopoDS;
+	    aPlane      : Plane          from Geom;
+	    aPosition   : Pnt            from gp;
+    	    anArrowSize : Real           from Standard = 0.01)
+	---Purpose: initializes the edge aShape, the
+    	--   plane aPlane, the position aPosition and the arrow
+    	--   size anArrowSize.
+        
+    returns mutable FixRelation from AIS;
+
+    Wire(me: mutable) returns Wire from TopoDS 
+    is static;
+    	---Purpose: Returns the wire which connects vertices in a fixed relation.
+
+    SetWire(me: mutable;aWire : Wire from TopoDS)
+    is static;
+    	--- Purpose: Constructs the wire aWire. This connects vertices
+    	-- which are in a fixed relation.
+        
+    IsMovable(me) returns Boolean from Standard 
+        ---C++: inline    
+    	---Purpose: Returns true if the Interactive Objects in the relation
+    	-- are movable.   
+    is redefined;    
+    
+    -- Methods from PresentableObject
+    
+    Compute(me            : mutable;
+  	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;
+    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+    	---Purpose: computes the presentation according to a point of view
+    	--          given by <aProjector>. 
+    	--          To be Used when the associated degenerated Presentations 
+    	--          have been transformed by <aTrsf> which is not a Pure
+    	--          Translation. The HLR Prs can't be deducted automatically
+    	--          WARNING :<aTrsf> must be applied
+    	--           to the object to display before computation  !!!
+
+    -- Methods from SelectableObject
+   
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+    
+       
+    --
+    --             Computation private methods
+    --
+
+    ComputeVertex(me : mutable;
+    	    	  FixVertex : Vertex from TopoDS;
+		  curpos    : out Pnt from gp)
+    ---Purpose: computes the presentation for <myFixShape> if it's a
+    --          vertex.
+    is private;
+    
+    
+    ComputePosition(me;
+    	    	    curv1   : Curve from Geom;
+		    curv2   : Curve from Geom;
+    	    	    firstp1 : Pnt   from gp;
+		    lastp1  : Pnt   from gp ;
+    	    	    firstp2 : Pnt   from gp;
+		    lastp2  : Pnt   from gp)
+    returns Pnt from gp
+    is private;
+    
+    
+    ComputePosition(me;
+    	    	    curv   : Curve from Geom;
+    	    	    firstp : Pnt  from gp;
+		    lastp  : Pnt  from gp)
+    returns Pnt from gp
+    is private;
+    
+    
+    ComputeEdge(me : mutable;
+    	    	FixEdge : Edge from TopoDS;
+		curpos    : out Pnt from gp)
+    ---Purpose: computes the presentation for <myFixShape> if it's a
+    --          edge.
+    is private;
+    
+    
+    ComputeLinePosition(me     : mutable;
+    	    	    	glin   : Lin from gp;
+			pos    : out Pnt from gp;
+			pfirst : out Real from Standard;
+			plast  : out Real from Standard)
+    is private;
+    
+    
+    ComputeCirclePosition(me     : mutable;
+    	    	    	  gcirc  : Circ from gp;
+			  pos    : out Pnt from gp;
+			  pfirst : out Real from Standard;
+			  plast  : out Real from Standard)
+    is private;
+
+    ConnectedEdges(myclass; aWire       : Wire     from TopoDS;
+    	    	    	    aVertex     : Vertex   from TopoDS;
+			    Edge1,Edge2 : out Edge from TopoDS)
+    returns Boolean from Standard
+    is private;
+    
+   
+fields
+
+    myWire      : Wire    from TopoDS;
+    myPntAttach : Pnt     from gp;
+    haspos      : Boolean from Standard;
+
+end FixRelation;
+

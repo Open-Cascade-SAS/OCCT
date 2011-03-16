@@ -1,0 +1,69 @@
+-- File:	ShapeUpgrade_FixSmallCurves.cdl
+-- Created:	Wed Jun  7 15:36:50 2000
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class FixSmallCurves from ShapeUpgrade inherits Tool from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+    SplitCurve3d from ShapeUpgrade,
+    SplitCurve2d from ShapeUpgrade,
+    --HArray1OfCurve from TColGeom,
+    --HArray1OfCurve from TColGeom2d,
+    --HSequenceOfReal from TColStd,
+    Edge from TopoDS,
+    Face from TopoDS,
+    Curve from Geom,
+    Curve from Geom2d,
+    Status from ShapeExtend
+is
+
+    Create returns FixSmallCurves from ShapeUpgrade;
+    ---Purpose :
+    --Init(me : mutable; theCurve3d : Curve from Geom; theCurve2d : Curve from Geom2d);
+    Init(me : mutable; theEdge : Edge from TopoDS; theFace : Face from TopoDS);
+    ---Purpose :
+    Approx(me : mutable; Curve3d :  out Curve from Geom;
+    	  		 Curve2d :  out Curve from Geom2d;
+    	    	    	 Curve2dR : out Curve from Geom2d;
+    	    	    	 First, Last : in out Real) returns Boolean is virtual;
+   -- 	    	    	 theKnots3d : in out HSequenceOfReal from TColStd;
+   -- 	    	    	 theSegments2d :in out HArray1OfCurve from TColGeom2d;
+   -- 	    	    	 theKnots2d : in out HSequenceOfReal from TColStd) returns Boolean is virtual;
+    ---Purpose :
+     SetSplitCurve3dTool(me: mutable; splitCurve3dTool: SplitCurve3d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting 3D curves.
+    
+    SetSplitCurve2dTool(me: mutable; splitCurve2dTool: SplitCurve2d from ShapeUpgrade);
+    	---Purpose: Sets the tool for splitting pcurves.
+	
+    
+    GetSplitCurve3dTool(me) returns SplitCurve3d from ShapeUpgrade
+    is virtual protected;
+    
+    GetSplitCurve2dTool(me) returns SplitCurve2d from ShapeUpgrade
+    is virtual protected;
+    
+    	---Purpose: Returns the tool for splitting pcurves.
+    Status (me; status: Status from ShapeExtend) returns Boolean;
+	---Purpose: Queries the status of last call to Perform
+	-- OK   : 
+	-- DONE1: 
+	-- DONE2: 
+	-- FAIL1: 
+    
+fields
+ 
+    myStatus     : Integer is protected; 
+    mySplitCurve3dTool: SplitCurve3d from ShapeUpgrade is protected;
+    mySplitCurve2dTool: SplitCurve2d from ShapeUpgrade is protected;
+    myEdge : Edge from TopoDS is protected;
+    myFace :  Face from TopoDS is protected;
+    --myCurve3d : Curve from Geom;
+    --myCurve2d :  Curve from Geom;
+    
+end FixSmallCurves;

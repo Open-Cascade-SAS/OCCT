@@ -1,0 +1,59 @@
+-- File:	Geom_SweptSurface.cdl
+-- Created:	Wed Mar 10 10:54:18 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class SweptSurface from Geom inherits Surface from Geom 
+
+        ---Purpose : Describes the common behavior for surfaces
+    	-- constructed by sweeping a curve with another curve.
+    	-- The Geom package provides two concrete derived
+    	-- surfaces: surface of revolution (a revolved surface),
+    	-- and surface of linear extrusion (an extruded surface).
+       
+
+uses Dir         from gp,
+     Curve       from Geom,
+     Shape       from GeomAbs
+
+is
+
+
+  Continuity (me)   returns Shape from GeomAbs;
+        ---Purpose :
+        --  returns the continuity of the surface : 
+        --  C0 : only geometric continuity,
+        --  C1 : continuity of the first derivative all along the surface,
+        --  C2 : continuity of the second derivative all along the surface,
+        --  C3 : continuity of the third derivative all along the surface,
+        --  G1 : tangency continuity all along the surface,
+        --  G2 : curvature continuity all along the surface,
+        --  CN : the order of continuity is infinite.
+
+
+  Direction (me)  returns Dir;
+        ---Purpose :
+        --  Returns the reference direction of the swept surface.
+        --  For a surface of revolution it is the direction of the 
+        --  revolution axis, for a surface of linear extrusion it is 
+        --  the direction of extrusion.
+    	---C++: return const&
+
+
+  BasisCurve (me)  returns Curve from Geom;
+        ---Purpose :
+        --  Returns the referenced curve of the surface.
+        --  For a surface of revolution it is the revolution curve,
+        --  for a surface of linear extrusion it is the extruded curve.
+
+
+fields
+
+  basisCurve : Curve       from Geom    is protected;
+  direction  : Dir         from gp      is protected;
+  smooth     : Shape       from GeomAbs is protected;
+
+
+end;

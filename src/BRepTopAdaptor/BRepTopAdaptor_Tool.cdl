@@ -1,0 +1,62 @@
+-- File:	BRepTopAdaptor_Tool.cdl
+-- Created:	Tue Oct  7 09:42:43 1997
+-- Author:	Laurent BUCHARD
+--		<lbr@cracbox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+
+class Tool from BRepTopAdaptor 
+
+uses 
+    Face       from TopoDS,
+    TopolTool  from BRepTopAdaptor,
+    HSurface   from Adaptor3d
+
+
+is 
+
+  Create
+     returns Tool from BRepTopAdaptor;
+
+  Create(F     : Face from TopoDS;
+    	 Tol2d : Real from Standard)
+     returns Tool from BRepTopAdaptor;
+     
+  Create(Surface: HSurface from Adaptor3d;
+         Tol2d  : Real from Standard)
+     returns Tool from BRepTopAdaptor;
+ 
+ 
+  Init(me    : in out;
+       F     : Face from TopoDS;
+       Tol2d : Real from Standard);
+       
+  Init(me     : in out;
+       Surface: HSurface from Adaptor3d;
+       Tol2d  : Real from Standard);       
+	  
+  ---- 
+
+  GetTopolTool(me: in out) 
+     returns mutable TopolTool from BRepTopAdaptor;
+     
+  SetTopolTool(me: in out ; 
+               TT: TopolTool from BRepTopAdaptor);
+	
+  GetSurface(me: in out)
+    returns mutable HSurface from Adaptor3d;
+    
+	
+  ---
+	
+  Destroy(me: in out) ;
+    ---C++: alias ~
+    
+fields
+
+  myloaded    : Boolean   from Standard;
+  myTopolTool : TopolTool from BRepTopAdaptor; 
+  myHSurface  : HSurface  from Adaptor3d;
+
+end Tool;

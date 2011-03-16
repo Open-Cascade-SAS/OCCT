@@ -1,0 +1,21 @@
+-- File:	CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+
+--
+-- Templates HP-UX 
+--
+@if ( %Station == "hp" ) then
+
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w  ";
+--- POP suivant directive POP :  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w +a1 ";
+--
+-- FSA : +O2 est trop consomateur de swap pour l'instant.
+
+  @set %CMPLRS_CXX_ModeOpt = "+O1";
+
+@endif;
+
+

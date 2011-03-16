@@ -1,0 +1,71 @@
+-- File:	VrmlConverter_ShadingAspect.cdl
+-- Created:	Wed Mar 12 17:07:28 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class ShadingAspect from VrmlConverter inherits TShared from MMgt
+
+	---Purpose: qualifies the aspect properties for  
+	--          the VRML conversation of ShadedShape . 
+
+uses 
+
+    Material    from   Vrml,
+    ShapeHints  from   Vrml
+
+is
+ 
+    Create
+    ---Purpose: create a default ShadingAspect.
+    returns mutable ShadingAspect from VrmlConverter;
+ 
+    SetFrontMaterial(me: mutable; aMaterial: Material from Vrml)
+    is static;
+ 
+    FrontMaterial(me) returns mutable Material from Vrml 
+    is  static; 
+    
+--    SetBackMaterial(me: mutable; aMaterial: Material from Vrml)
+--    is static;
+
+    SetShapeHints ( me : mutable; aShapeHints  :  ShapeHints  from  Vrml  ) 
+    is static;
+ 
+    ShapeHints ( me )  returns  ShapeHints  from  Vrml;
+
+    SetHasNormals (me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: defines necessary of  a  calculation  of  normals for  ShadedShape  to  more  
+    --          accurately  display  curved  surfaces,  pacticularly  when  smoooth  or  phong   
+    --          shading  is  used  in  VRML  viewer. 
+    --          By default False  -  the normals are not calculated, 
+    --          True  -  the normals are calculated. 
+    --          Warning: If  normals  are  calculated  the  resulting  VRML  file  will   
+    --          be  substantially  lager.
+    is static;
+    
+    HasNormals(me) returns Boolean from Standard 
+    ---Purpose: returns True if the normals are calculating 
+    is static;
+ 
+    SetHasMaterial(me: mutable; OnOff: Boolean from Standard)
+    ---Purpose: defines necessary of writing  Material from Vrml into  output  OStream. 
+    --          By default False  -  the material is not writing into OStream, 
+    --          True  -  the material is writing. 
+    is  static; 
+
+    HasMaterial(me) returns Boolean from Standard 
+    ---Purpose: returns True if the  materials is  writing into OStream.
+    is static;
+
+
+fields
+     
+    myFrontMaterial		:	Material    from   Vrml;
+--    myBackMaterial		:	Material    from   Vrml;
+    myShapeHints                :       ShapeHints  from   Vrml;  
+    myHasNormals                :       Boolean  from  Standard;
+    myHasMaterial               :       Boolean  from  Standard;
+
+end ShadingAspect;

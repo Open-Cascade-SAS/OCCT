@@ -1,0 +1,530 @@
+-- File:	BRepBuilderAPI_Sewing.cdl
+-- Created:	Thu Mar 23 17:57:20 1995
+
+-- Author:	Jing Cheng MEI
+--		<mei@junon>
+---Copyright:	 Matra Datavision 1995
+-- Modified     Thu May 7  15:20:25 1998 by David Carbonel (dcl)
+--              Little faces management.
+--              Add of Cutting option.
+--              Optimisation of cutting fonction
+-- Modified     Thu Jan 21 13:00:58 MET 1999 by Jing Cheng MEI
+--              Nonmanifold processing
+
+class Sewing from BRepBuilderAPI inherits TShared from MMgt
+
+	---Purpose: Provides methods to
+	--           
+	--          - identify possible contigous boundaries (for control
+	--            afterwards)
+	--            
+	--          - assemble contigous shapes into one shape.
+	--            Only manifold shapes will be found. Sewing will not
+	--            be done in case of multiple edges.
+	--          
+	--          For sewing, use this function as following:
+	--            - create an empty object 
+	--                - default tolerance 1.E-06
+	--                - with face analysis on
+	--                - with sewing operation on
+	--                - set the cutting option as you need (default True)
+	--            - define a tolerance
+	--            - add shapes to be sewed -> Add
+	--            - compute -> Perfom
+	--            - output the resulted shapes 
+	--            - output free edges if necessary
+	--            - output multiple edges if necessary
+	--            - output the problems if any
+
+	--          For control, use this function as following:
+	--            - create an empty object 
+	--                - default tolerance 1.E-06
+	--                - with face analysis on
+	--                - with sewing operation on
+	--                - set the cutting option as you need (default True)
+	--            - define a tolerance to capture contigous boundaries
+	--            - set if necessary face analysis off
+	--            - set sewing operation off
+	--            - add shapes to be controlled -> Add
+	--            - compute -> Perfom
+	--            - output couples of connected edges (contigous) and
+	--              their original boundary for control
+	--            - output the problems if any
+
+
+uses
+
+    Shape from TopoDS,
+    Edge from TopoDS,
+    ListOfShape from TopTools,
+    MapOfShape from TopTools,
+    DataMapOfShapeShape from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    IndexedMapOfShape from TopTools,
+    IndexedDataMapOfShapeShape from TopTools,
+    IndexedDataMapOfShapeListOfShape from TopTools,
+    SequenceOfShape from TopTools, 
+    Array1OfShape from  TopTools,
+    Face from TopoDS,
+    Array1OfInteger from TColStd,
+    Array1OfPnt from TColgp,
+    Array2OfPnt2d from TColgp,
+    Array1OfBoolean from TColStd,
+    Array1OfReal from TColStd,
+    IndexedMapOfInteger from TColStd,
+    Surface from Geom,
+    Location from TopLoc,
+    Curve from Geom2d,
+    Curve from Geom,
+    Surface from Geom,
+    Pnt from gp,
+    ReShape from BRepTools,
+    SequenceOfInteger from TColStd,
+    SequenceOfReal from TColStd,
+    SequenceOfPnt from TColgp
+
+raises
+
+    OutOfRange from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create(tolerance: Real = 1.0e-06; -- tolerance of connexity
+    	   option1 : Boolean = Standard_True;   -- option for sewing
+           option2 : Boolean = Standard_True;   -- option for analysis of degenerated  shapes
+           option3 : Boolean = Standard_True;   -- option for cutting of free edges.
+           option4 : Boolean = Standard_False)  -- option for non manifold processing
+    returns Sewing from BRepBuilderAPI;
+    	---Purpose: Creates an object with
+    	--          tolerance of connexity
+    	--          option for sewing (if false only control)
+    	--          option for analysis of degenerated shapes
+    	--          option for cutting of free edges.
+    	--          option for non manifold processing
+
+    Init(me : mutable; tolerance: Real = 1.0e-06; -- tolerance of connexity
+    	 option1: Boolean = Standard_True;  -- option for sewing
+    	 option2: Boolean = Standard_True;  -- option for analysis of degenerated  shapes
+	 option3: Boolean = Standard_True;  -- option for cutting free edge after first merging
+	                                    -- This option can be set to False if no edge need to be cut. 
+         option4: Boolean = Standard_False);-- option for non manifold processing
+    	---Purpose: initialize the parameters if necessary
+      
+    Load(me : mutable; shape : Shape from TopoDS);
+    	---Purpose: Loades the context shape.
+      
+    Add(me : mutable; shape : Shape from TopoDS);
+    	---Purpose: Defines the shapes to be sewed or controlled
+
+    Perform(me : mutable); ---is virtual;
+    	---Purpose: Computing
+
+    SewedShape(me) returns Shape from TopoDS;
+    	---C++: return const &
+    	---Purpose: Gives the sewed shape
+    	--          a null shape if nothing constructed
+    	--          may be a face, a shell, a solid or a compound
+
+    NbFreeEdges(me) returns Integer;
+    	---Purpose: Gives the number of free edges (edge shared by one face)
+
+    FreeEdge(me; index: Integer) returns Edge from TopoDS
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbFreeEdges
+    	---C++: return const &
+    	---Purpose: Gives each free edge
+
+    NbMultipleEdges(me) returns Integer;
+    	---Purpose: Gives the number of multiple edges
+    	--          (edge shared by more than two faces)
+
+    MultipleEdge(me; index: Integer) returns Edge from TopoDS
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbMultipleEdges
+    	---C++: return const &
+    	---Purpose: Gives each multiple edge
+
+    NbContigousEdges(me) returns Integer;
+    	---Purpose: Gives the number of contigous edges (edge shared by two faces)
+
+    ContigousEdge(me; index: Integer) returns Edge from TopoDS
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbContigousEdges
+    	---C++: return const &
+    	---Purpose: Gives each contigous edge
+ 
+    ContigousEdgeCouple(me; index: Integer) returns ListOfShape from TopTools
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbContigousEdges
+    	---C++: return const &
+    	---Purpose: Gives the sections (edge) belonging to a contigous edge
+
+    IsSectionBound(me; section: Edge from TopoDS) returns Boolean;
+    	---Purpose: Indicates if a section is bound (before use SectionToBoundary)
+
+    SectionToBoundary(me; section: Edge from TopoDS) returns Edge from TopoDS
+    raises NoSuchObject from Standard; -- raised if section has not been bound
+    	---C++: return const &
+    	---Purpose: Gives the original edge (free boundary) which becomes the 
+    	--          the section. Remember that sections constitute  common edges.
+    	--          This imformation is important for control because with 
+    	--          original edge we can find the surface to which the section
+    	--          is attached.
+
+    NbDegeneratedShapes(me) returns Integer;
+    	---Purpose: Gives the number of degenerated shapes
+
+    DegeneratedShape(me; index: Integer) returns Shape from TopoDS
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbDegeneratedShapes
+    	---C++: return const &
+    	---Purpose: Gives each degenerated shape
+
+    IsDegenerated(me; shape: Shape from TopoDS) returns Boolean;
+    	---Purpose: Indicates if a input shape is degenerated
+
+    IsModified(me; shape: Shape from TopoDS) returns Boolean;
+    	---Purpose: Indicates if a input shape has been modified
+
+    Modified(me ; shape: Shape from TopoDS) returns Shape from TopoDS
+    raises NoSuchObject from Standard; -- raised if shape has not been modified
+    	---C++: return const &
+    	---Purpose: Gives a modifieded shape
+	
+    IsModifiedSubShape(me; shape: Shape from TopoDS) returns Boolean;
+    	---Purpose: Indicates if a input subshape has been modified
+
+    ModifiedSubShape(me ; shape: Shape from TopoDS) returns Shape from TopoDS
+    raises NoSuchObject from Standard; -- raised if shape has not been modified
+    	---Purpose: Gives a modifieded subshape
+	
+    Dump(me);
+    	---Purpose: print the informations
+
+    NbDeletedFaces(me) returns Integer;
+    	---Purpose: Gives the number of deleted faces (faces smallest than tolerance)
+
+    DeletedFace(me; index: Integer) returns Face from TopoDS
+    raises OutOfRange from Standard; -- raised if index < 1 or > NbDeletedFaces
+    	---C++: return const &
+    	---Purpose: Gives each deleted face
+
+    WhichFace(me; theEdg: Edge from TopoDS; index: Integer = 1) returns Face from TopoDS;
+    	---Purpose: Gives a modified shape
+
+    SameParameterMode(me) returns Boolean;
+	---C++: inline
+    	---Purpose: Gets same parameter mode.
+	
+    SetSameParameterMode(me: in mutable; SameParameterMode : Boolean);
+	---C++: inline
+    	---Purpose: Sets same parameter mode.
+	
+    Tolerance(me) returns Real;
+	---C++: inline
+       	---Purpose: Gives set tolerance.
+
+    SetTolerance(me: mutable; theToler : Real);
+      	---C++: inline
+       	---Purpose: Sets tolerance
+    MinTolerance(me) returns Real;
+	---C++: inline
+       	---Purpose: Gives set min tolerance.
+
+    SetMinTolerance(me: mutable; theMinToler : Real);
+      	---C++: inline
+       	---Purpose: Sets min tolerance
+	
+    MaxTolerance(me) returns Real;
+      	---C++: inline
+       	---Purpose: Gives set max tolerance
+
+    SetMaxTolerance(me:mutable; theMaxToler : Real);
+      	---C++: inline
+   	---Purpose: Sets max tolerance.
+
+    FaceMode(me) returns Boolean;
+      	---C++: inline
+    	---Purpose: Returns mode for sewing faces By default - true.
+
+    SetFaceMode(me: mutable; theFaceMode : Boolean);
+      	---C++: inline
+    	---Purpose: Sets mode for sewing faces By default - true.
+
+    FloatingEdgesMode(me) returns Boolean;
+      	---C++: inline
+    	---Purpose: Returns mode for sewing floating edges By default - false.
+
+    SetFloatingEdgesMode(me: mutable; theFloatingEdgesMode : Boolean);
+      	---C++: inline
+    	---Purpose: Sets mode for sewing floating edges By default - false.
+
+--    CuttingFloatingEdgesMode(me) returns Boolean;
+      	---C++: inline
+    	---Purpose: Returns mode for cutting floating edges By default - false.
+
+--    SetCuttingFloatingEdgesMode(me: mutable; theCuttingFloatingEdgesMode : Boolean);
+      	---C++: inline
+    	---Purpose: Sets mode for cutting floating edges By default - false.
+  
+    LocalTolerancesMode(me) returns Boolean;
+      	---C++: inline
+    	---Purpose: Returns mode for accounting of local tolerances
+    	--          of edges and vertices during of merging.
+
+    SetLocalTolerancesMode(me: mutable; theLocalTolerancesMode : Boolean);
+      	---C++: inline
+    	---Purpose: Sets mode for accounting of local tolerances
+    	--          of edges and vertices during of merging
+    	--          in this case WorkTolerance = myTolerance + tolEdge1+ tolEdg2;
+	
+    SetNonManifoldMode(me: mutable; theNonManifoldMode : Boolean);
+    	---C++: inline
+    	---Purpose: Sets mode for non-manifold sewing.
+	
+    NonManifoldMode(me) returns Boolean;
+    	---C++: inline
+    	---Purpose: Gets mode for non-manifold sewing.
+    	-------------------------
+    	--- INTERNAL FUCTIONS ---
+	-------------------------
+    
+    Cutting(me : mutable) is protected;
+    	---Purpose: Performs cutting of sections
+
+    Merging(me : mutable; passage : Boolean) is protected;
+
+    IsMergedClosed(me;
+    	    	   Edge1 : Edge from TopoDS;
+    	    	   Edge2 : Edge from TopoDS;
+    	    	   fase  : Face from TopoDS)
+    returns Boolean is protected;
+						 
+    FindCandidates(me : mutable;
+    	    	   seqSections     : in out SequenceOfShape from TopTools;
+		   mapReference    : in out IndexedMapOfInteger from TColStd;
+		   seqCandidates   : in out SequenceOfInteger from TColStd;
+		   seqOrientations : in out SequenceOfInteger from TColStd)
+    returns Boolean is protected;
+    
+    AnalysisNearestEdges(me : mutable;
+    	    	    	 sequenceSec : SequenceOfShape from TopTools;
+		         seqIndCandidate : in out SequenceOfInteger from TColStd;
+			 seqOrientations : in out SequenceOfInteger from TColStd;
+    	    	    	 evalDist : Boolean = Standard_True) is protected;
+			 
+		---Purpose:
+		
+    MergedNearestEdges(me : mutable;
+    	    	       edge          : Shape from TopoDS;
+    	    	       SeqMergedEdge : in out SequenceOfShape from TopTools;
+    	    	       SeqMergedOri  : in out SequenceOfInteger from TColStd)
+    returns Boolean is protected;
+    	---Purpose: Merged nearest edges.
+    
+    EdgeProcessing(me : mutable) is protected;
+
+    CreateOutputInformations(me : mutable) is protected;
+
+    	---------------------------------
+    	--- VIRTUAL INTERNAL FUCTIONS ---
+	---------------------------------
+
+    IsUClosedSurface(me; surf : Surface from Geom; theEdge : Shape from TopoDS;
+    	    	    	 theloc : Location from TopLoc) 
+    returns Boolean is virtual protected;
+	---Purpose: Defines if surface is U closed.
+
+    IsVClosedSurface(me; surf : Surface from Geom; theEdge : Shape from TopoDS;
+    	    	    	 theloc : Location from TopLoc)
+    returns Boolean is virtual protected;
+	---Purpose:Defines if surface is V closed.
+
+    FaceAnalysis(me : mutable) is virtual protected;
+	---Purpose: 
+        --          This method is called from Perform only
+
+    FindFreeBoundaries(me : mutable) is virtual protected;
+	---Purpose: 
+        --          This method is called from Perform only
+
+    VerticesAssembling(me : mutable) is virtual protected;
+	---Purpose: 
+        --          This method is called from Perform only
+
+    CreateSewedShape(me : mutable) is virtual protected;
+	---Purpose: 
+        --          This method is called from Perform only
+
+    GetFreeWires(me : mutable;
+    	    	 MapFreeEdges : in out MapOfShape from TopTools; 
+    	    	 seqWires     : in out SequenceOfShape from TopTools) is virtual protected;
+    	---Purpose: Get wire from free edges.
+        --          This method is called from EdgeProcessing only
+
+    EvaluateAngulars(me;
+   	    	     sequenceSec : in out SequenceOfShape from TopTools;
+		     secForward  : in out Array1OfBoolean from TColStd;
+		     tabAng      : in out Array1OfReal from TColStd;
+    	    	     indRef      : in Integer) is virtual protected;
+	---Purpose: 
+        --          This method is called from MergingOfSections only
+      
+    EvaluateDistances(me;
+    	    	      sequenceSec : in out SequenceOfShape from TopTools;
+		      secForward  : in out Array1OfBoolean from TColStd;
+		      tabAng      : in out Array1OfReal from TColStd;
+		      arrLen      : in out Array1OfReal from TColStd;
+		      tabMinDist  : in out Array1OfReal from TColStd;
+    	    	      indRef      : in Integer) is virtual protected;
+	---Purpose: 
+        --          This method is called from MergingOfSections only
+
+    SameRange(me;
+    	      CurvePtr       : Curve from Geom2d;
+    	      FirstOnCurve   : Real from Standard;
+    	      LastOnCurve    : Real from Standard;
+    	      RequestedFirst : Real from Standard;
+    	      RequestedLast  : Real from Standard)
+    returns Curve from Geom2d is virtual protected;
+	---Purpose: 
+        --          This method is called from SameParameterEdge only
+
+    SameParameter(me; edge : Edge from TopoDS) is virtual protected;
+	---Purpose: 
+        --          This method is called from SameParameterEdge only
+
+    SameParameterEdge(me : mutable;
+    	    	      edge       : Shape from TopoDS;
+		      seqEdges   : SequenceOfShape from TopTools;
+		      seqForward : SequenceOfInteger from TColStd;
+		      mapMerged  : in out MapOfShape from TopTools;
+		      locReShape : ReShape from BRepTools)
+    returns Edge from TopoDS is virtual protected;
+	---Purpose: 
+        --          This method is called from Merging only
+
+    SameParameterEdge(me : mutable;
+    	    	      edge1      : Edge from TopoDS;
+    	    	      edge2      : Edge from TopoDS;
+		      listFaces1 : ListOfShape from TopTools;
+		      listFaces2 : ListOfShape from TopTools;
+		      secForward : Boolean ;
+		      whichSec   : in out Integer;
+                      firstCall  : Boolean = Standard_True)
+    returns Edge from TopoDS is virtual protected;
+	---Purpose: 
+        --          This method is called from Merging only
+
+    ProjectPointsOnCurve(me;
+    	    	    	 arrPnt  : Array1OfPnt from TColgp;
+    	    	    	 Crv     : Curve from Geom;
+    	    	    	 first   : Real from Standard;
+    	    	    	 last    : Real from Standard;
+    	    	    	 arrDist : in out Array1OfReal from TColStd;
+    	    	    	 arrPara : in out Array1OfReal from TColStd;
+    	    	    	 arrProj : in out Array1OfPnt from TColgp) is virtual protected;
+	---Purpose: Projects points on curve
+        --          This method is called from Cutting only
+
+    CreateCuttingNodes(me : mutable;
+    	    	       MapVert : IndexedMapOfShape from TopTools;
+    	    	       bound   : Shape from TopoDS;
+		       vfirst  : Shape from TopoDS;
+		       vlast   : Shape from TopoDS;
+    	    	       arrDist : Array1OfReal from TColStd;
+    	    	       arrPara : Array1OfReal from TColStd;
+    	    	       arrPnt  : Array1OfPnt from TColgp;
+    	    	       seqNode : in out SequenceOfShape from TopTools;
+    	    	       seqPara : in out SequenceOfReal from TColStd) is virtual protected;
+	---Purpose: Creates cutting vertices on projections
+        --          This method is called from Cutting only
+
+    CreateSections(me : mutable;
+    	           bound    : Shape from TopoDS;
+    	           seqNode  : SequenceOfShape from TopTools;
+    	           seqPara  : SequenceOfReal from TColStd;
+    	           listEdge : in out ListOfShape from TopTools) is virtual protected;
+	---Purpose: Performs cutting of bound
+        --          This method is called from Cutting only
+
+    SameParameterShape(me : mutable) is virtual protected;
+	---Purpose: Makes all edges from shape same parameter
+    	--          if SameParameterMode is equal to Standard_True
+        --          This method is called from Perform only
+   
+fields
+
+    -- Input data
+    myTolerance                : Real is protected;
+    mySewing                   : Boolean is protected;
+    myAnalysis                 : Boolean is protected;
+    myCutting                  : Boolean is protected;
+                            	-- Indicates if the cutting will be done or not.
+			    	-- Default value is true.
+    myNonmanifold              : Boolean is protected;
+    myFaceMode                 : Boolean; -- Mode for sewing faces by default true
+    myFloatingEdgesMode        : Boolean; -- Mode for sewing floating edges by default - false
+--    myCuttingFloatingEdgesMode : Boolean; -- Mode for cutting of floating edges by default - false
+    mySameParameterMode        : Boolean;
+    myLocalToleranceMode       : Boolean;
+
+    myOldShapes                : IndexedDataMapOfShapeShape from TopTools is protected;
+                               -- input shape -> input shape after analysis
+    mySewedShape              : Shape from TopoDS is protected;
+                              -- contains the sewed shape
+    myDegenerated             : IndexedMapOfShape from TopTools is protected;
+                              -- contains all degenerated shapes
+    myFreeEdges               : IndexedMapOfShape from TopTools is protected;
+                              -- contains all free edges
+                              -- (edge shared by only one face)
+    myMultipleEdges           : IndexedMapOfShape from TopTools is protected;
+                              -- contains all multiple edges
+                              -- (edge shared by more than two faces)
+    myContigousEdges          : IndexedDataMapOfShapeListOfShape from TopTools is protected;
+                              -- contains all contigous edges
+                              -- (edge shared by two faces) and a list of sections
+                              -- (two edges) which constitute each contigous edge
+    myContigSecBound          : DataMapOfShapeShape is protected;
+    	    	    	      -- for each section belong to a contigous edge
+    	    	    	      -- indicates its the original free boundary
+
+    --  Work data
+    --  OldShape : input shapes
+    --  Shape    : input shapes after analysis
+    --  Bound    : free boundaries
+    --  Section  : free boundaries after cutting
+    --  Edge     : connected sections become edge
+    --              - Free edge : edge shared by one face
+    --              - Contigous edge : edge shared by two faces
+    --              - Multiple edge  : edge shared by more than two faces
+    --  Vertex   : vertices on free boundaries
+    --  Node     : assembled vertices become node
+
+    myNbShapes        : Integer is protected; -- number of input shapes after analysis
+    myNbVertices      : Integer is protected; -- number of nodes after assembling
+    myNbEdges         : Integer is protected; -- number of edges after merging
+
+    myBoundFaces     : IndexedDataMapOfShapeListOfShape from TopTools is protected;
+                       -- for EACH bound contains a list of faces (REFERENCE map)
+    myBoundSections  : DataMapOfShapeListOfShape from TopTools is protected;
+                       -- for bound contains a list of cutting sections if any
+    --mySectionEdge    : DataMapOfShapeShape from TopTools is protected;
+                       -- for section contains a merged edge for this section
+    mySectionBound   : DataMapOfShapeShape from TopTools is protected;
+                       -- for EACH section contains its bound
+    myVertexNode     : IndexedDataMapOfShapeShape from TopTools is protected;
+                       -- for EACH original vertex contains a node
+    myVertexNodeFree : IndexedDataMapOfShapeShape from TopTools is protected;
+                       -- for EACH floating vertex contains a node
+    myNodeSections   : DataMapOfShapeListOfShape from TopTools is protected;
+                       -- for EACH node contains a list of sections
+    myCuttingNode    : DataMapOfShapeListOfShape from TopTools is protected;
+    	    	       -- nodes cutting edges
+    myLittleFace     : IndexedMapOfShape from TopTools is protected;
+    	    	       -- Faces to be suppress because they are too little
+    myMinTolerance   : Real;
+
+    myMaxTolerance   : Real;
+
+    myShape          : Shape from TopoDS is protected;
+
+    myReShape        : ReShape from BRepTools is protected;
+    myMergedEdges    : MapOfShape from TopTools;
+end Sewing;

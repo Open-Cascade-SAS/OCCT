@@ -1,0 +1,43 @@
+-- File:	StepRepr_AssemblyComponentUsageSubstitute.cdl
+-- Created:	Tue Jun 30 17:30:46 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class AssemblyComponentUsageSubstitute  from StepRepr    inherits TShared from MMgt
+
+uses
+     HAsciiString from TCollection,
+     AssemblyComponentUsage from StepRepr
+
+is
+
+    Create returns mutable AssemblyComponentUsageSubstitute;
+
+    Init (me : mutable;
+    	  aName : HAsciiString;
+	  aDef  : HAsciiString;
+	  aBase : AssemblyComponentUsage;
+	  aSubs : AssemblyComponentUsage);
+
+    Name (me) returns HAsciiString;
+    SetName (me : mutable; aName : HAsciiString);
+
+    Definition (me) returns HAsciiString;
+    SetDefinition (me : mutable; aDef : HAsciiString);
+
+    Base (me) returns AssemblyComponentUsage;
+    SetBase (me : mutable; aBase : AssemblyComponentUsage);
+
+    Substitute (me) returns AssemblyComponentUsage;
+    SetSubstitute (me : mutable; aSubstitute : AssemblyComponentUsage);
+
+fields
+
+    theName : HAsciiString;
+    theDef  : HAsciiString;
+    theBase : AssemblyComponentUsage;
+    theSubs : AssemblyComponentUsage;
+
+end AssemblyComponentUsageSubstitute;

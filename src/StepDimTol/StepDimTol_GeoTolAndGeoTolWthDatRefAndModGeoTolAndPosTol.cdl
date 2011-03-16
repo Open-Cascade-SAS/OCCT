@@ -1,0 +1,48 @@
+-- File:	StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.cdl
+-- Created:	Fri Aug 22 11:58:14 2003
+-- Author:	Sergey KUUL
+--		<skl@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+class GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol from StepDimTol
+    	    	    	inherits GeometricTolerance from StepDimTol
+			
+uses
+    HAsciiString from TCollection,
+    MeasureWithUnit from StepBasic,
+    ShapeAspect from StepRepr,
+    GeometricToleranceWithDatumReference from StepDimTol,
+    ModifiedGeometricTolerance from StepDimTol,
+    PositionTolerance from StepDimTol
+    
+is
+
+    Create returns mutable GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
+    
+    Init (me: mutable; aName: HAsciiString from TCollection;
+    		       aDescription: HAsciiString from TCollection;
+		       aMagnitude: MeasureWithUnit from StepBasic;
+		       aTolerancedShapeAspect: ShapeAspect from StepRepr;
+		       aGTWDR : GeometricToleranceWithDatumReference;
+		       aMGT : ModifiedGeometricTolerance);
+
+
+    SetGeometricToleranceWithDatumReference(me: mutable; aGTWDR : GeometricToleranceWithDatumReference);
+    
+    GetGeometricToleranceWithDatumReference(me) returns mutable GeometricToleranceWithDatumReference;
+    
+    SetModifiedGeometricTolerance(me: mutable; aMGT : ModifiedGeometricTolerance);
+    
+    GetModifiedGeometricTolerance(me) returns mutable ModifiedGeometricTolerance;
+    
+    SetPositionTolerance(me: mutable; aPT : PositionTolerance);
+    
+    GetPositionTolerance(me) returns mutable PositionTolerance;
+    
+fields
+
+    myGeometricToleranceWithDatumReference : GeometricToleranceWithDatumReference;
+    myModifiedGeometricTolerance : ModifiedGeometricTolerance;
+    myPositionTolerance : PositionTolerance;
+    
+end GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;

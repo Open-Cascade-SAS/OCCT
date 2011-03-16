@@ -1,0 +1,44 @@
+-- File:        Organization.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Organization from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Boolean from Standard
+is
+
+	Create returns mutable Organization;
+	---Purpose: Returns a Organization
+
+	Init (me : mutable;
+	      hasAid : Boolean from Standard;
+	      aId : mutable HAsciiString from TCollection;
+	      aName : mutable HAsciiString from TCollection;
+	      aDescription : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetId(me : mutable; aId : mutable HAsciiString);
+	UnSetId (me:mutable);
+	Id (me) returns mutable HAsciiString;
+	HasId (me) returns Boolean;
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	Description (me) returns mutable HAsciiString;
+
+fields
+
+	id : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	name : HAsciiString from TCollection;
+	description : HAsciiString from TCollection;
+	hasId : Boolean from Standard;
+
+end Organization;

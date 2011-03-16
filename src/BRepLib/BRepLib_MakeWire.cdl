@@ -1,0 +1,179 @@
+-- File:	BRepLib_MakeWire.cdl
+-- Created:	Thu Jul  8 11:15:02 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class MakeWire from BRepLib inherits MakeShape from BRepLib 
+
+	---Purpose: Provides methods to build wires.
+	--          
+	--          A wire may be built :
+	--          
+	--          * From a single edge.
+	--          
+	--          * From a wire and an edge.  
+	--          
+	--            - A new wire  is created with the edges  of  the
+	--            wire + the edge.
+	--          
+	--            - If the edge is not connnected  to the wire the
+	--            flag NotDone   is set and  the  method Wire will
+	--            raise an error.
+	--            
+	--            - The connection may be :
+	--              
+	--              . Through an existing vertex. The edge is shared.
+	--              
+	--              . Through a geometric coincidence of vertices.
+	--              The edge is  copied  and the vertices from the
+	--              edge are  replaced  by  the vertices from  the
+	--              wire.
+	--              
+	--              . The new edge and the connection vertices are
+	--              kept by the algorithm.
+	--              
+	--          
+	--          * From 2, 3, 4 edges.
+	--          
+	--              - A wire is  created from  the first edge, the
+	--              following edges are added.
+	--              
+	--          * From many edges.
+	--          
+	--              - The following syntax may be used :
+	--              
+	--                BRepLib_MakeWire MW;
+	--                
+	--                  // for all the edges ...
+	--                  MW.Add(anEdge);
+	--                
+	--                TopoDS_Wire W = MW;
+
+
+
+uses
+    WireError   from BRepLib,
+    Wire        from TopoDS,
+    Edge        from TopoDS,
+    Vertex      from TopoDS,
+    MapOfShape  from TopTools,
+    ListOfShape from TopTools
+
+raises
+    NotDone    from StdFail
+
+is
+
+    Create                                              
+	---Purpose: NotDone MakeWire.
+	---Level: Public
+    returns MakeWire from BRepLib;
+    
+    ----------------------------------------------
+    -- From edges
+    ----------------------------------------------
+
+    Create(E : Edge from TopoDS)                        
+	---Purpose: Make a Wire from an edge.
+	---Level: Public
+    returns MakeWire from BRepLib;
+
+    Create(E1,E2 : Edge from TopoDS)                    
+	---Purpose: Make a Wire from two edges.
+	---Level: Public
+    returns MakeWire from BRepLib;
+
+    Create(E1,E2,E3 : Edge from TopoDS)                 
+	---Purpose: Make a Wire from three edges.
+	---Level: Public
+    returns MakeWire from BRepLib;
+
+    Create(E1,E2,E3,E4 : Edge from TopoDS)              
+	---Purpose: Make a Wire from four edges.
+	---Level: Public
+    returns MakeWire from BRepLib;
+
+    ----------------------------------------------
+    -- From wire and edge
+    ----------------------------------------------
+
+    Create(W : Wire from TopoDS)                        
+	---Purpose: Make a Wire from a Wire. Usefull for adding later.
+	---Level: Public
+    returns MakeWire from BRepLib;
+
+    Create(W : Wire from TopoDS; E : Edge from TopoDS)  
+	---Purpose: Add an edge to a wire.
+	---Level: Public
+    returns MakeWire from BRepLib;
+	
+    ----------------------------------------------
+    -- Auxiliary methods
+    ----------------------------------------------
+
+    Add(me : in out; E : Edge from TopoDS)
+	---Purpose: Add the edge <E> to the current wire.
+	---Level: Public
+    is static;
+    
+    Add(me : in out; W : Wire from TopoDS)
+	---Purpose: Add the edges of <W> to the current wire.
+	---Level: Public
+    is static;
+    
+    Add(me : in out; L : ListOfShape from TopTools)
+	---Purpose: Add the edges of <L> to the current wire.
+	--          The edges are not to be consecutive.  But they are
+	--          to be all connected geometrically or topologically.
+        ---Level: Public
+    is static;
+    
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    Error(me) returns WireError from BRepLib
+	---Level: Public
+    is static;
+
+    Wire(me) returns Wire from TopoDS
+	---Purpose: Returns the new wire.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Wire() const;"
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    Edge(me) returns Edge from TopoDS
+	---Purpose: Returns the last edge added to the wire.
+	--          
+	---C++: return const &
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    Vertex(me) returns Vertex from TopoDS
+	---Purpose: Returns the last connecting vertex.
+	--          
+	---C++: return const &
+	---Level: Public
+    raises
+    	NotDone from StdFail
+    is static;
+     
+
+fields
+    myError     : WireError   from BRepLib;
+    myEdge      : Edge        from TopoDS;
+    myVertex    : Vertex      from TopoDS;
+    myVertices  : MapOfShape  from TopTools; 
+    FirstVertex : Vertex      from TopoDS; 
+    VF,  VL     : Vertex      from TopoDS;
+
+end MakeWire;

@@ -1,0 +1,85 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Process.cdl
+-- Created:       Tue 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+-- Modified:
+---     Stephane Routelous ( stephane.routelous@altavista.net ) : 
+--                   add ShowWindow flag to allow show/hide of the window ( only used on WNT )
+
+
+class Process from OSD
+
+   ---Purpose: A set of system process tools
+
+uses Date from Quantity, Error, Path, File, AsciiString from TCollection
+raises OSDError
+
+is
+
+ Create returns Process;
+   ---Purpose: Initializes the object and prepare for a possible dump
+   ---Level: Advanced
+
+ Spawn (me : in out; cmd : AsciiString; ShowWindow : Boolean from Standard = Standard_True) is static;
+   ---Purpose: Issues a shell command
+   --- ShowWindow : flag to allow show/hide of the window ( only used on WNT )
+   ---Level: Advanced
+
+ TerminalType (me : in out; Name : out AsciiString) is static;
+   ---Purpose: Returns the terminal used (vt100, vt200 ,sun-cmd ...)
+   ---Level: Advanced
+
+ SystemDate (me :  out) returns Date is static;
+   ---Purpose: Gets system date.
+   ---Level: Advanced
+
+ UserId (me : in out) returns Integer is static;
+   ---Purpose: Returns the 'User Id'.
+   ---Level: Advanced
+
+ UserName (me : in out) returns AsciiString is static;
+   ---Purpose: Returns the user name.
+   ---Level: Advanced
+
+ IsSuperUser (me: in out) returns Boolean is static;
+   ---Purpose: Returns True if the process user is the super-user.
+   ---Level: Advanced
+
+ ProcessId ( me : in out ) returns Integer is static;
+   ---Purpose: Returns the 'Process Id'
+   ---Level: Advanced
+
+ CurrentDirectory (me : in out) returns Path is static;
+   ---Purpose: Returns the current path where the process is.
+   ---Level: Advanced
+ 
+ SetCurrentDirectory (me : in out; where : Path) is static;
+   ---Purpose: Changes the current process directory.
+   ---Level: Advanced
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+   ---Level: Advanced
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+   ---Level: Advanced
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+   ---Level: Advanced
+   raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Advanced
+
+fields
+
+ myError : Error;
+end Process from OSD;
+
+

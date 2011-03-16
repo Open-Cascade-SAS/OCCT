@@ -1,0 +1,26 @@
+-- File:	RWStepBasic_RWSiUnitAndMassUnit.cdl
+-- Created:	Sun Dec 15 15:07:46 2002
+-- Author:	data exchange team
+--		<det@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+
+class RWSiUnitAndMassUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for SiUnitAndMassUnit
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SiUnitAndMassUnit from StepBasic
+
+is
+
+	Create returns RWSiUnitAndMassUnit;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SiUnitAndMassUnit from StepBasic);
+
+	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndMassUnit from StepBasic);
+
+end RWSiUnitAndMassUnit;

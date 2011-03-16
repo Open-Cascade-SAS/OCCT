@@ -1,0 +1,90 @@
+#include <Standard_OutOfRange.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+// ----------------------------------------------------------------------
+// Copyright: 	Matra-Datavision 1992
+// File:	PCollection_MapIterator.gxx
+// Created:	Oct, 9 1992
+// Author:      Mireille MERCIEN
+// ----------------------------------------------------------------------
+
+//----------------------------------------------------------------
+// Create
+//----------------------------------------------------------------
+PCollection_MapIterator::PCollection_MapIterator
+                       (const Handle(PCollection_HDataMap)& AMap) 
+{
+  if (AMap->IsEmpty()) {
+    Index = 0;
+    Node.Nullify();
+    Buckets.Nullify();
+    HasMore = False;
+  } 
+  else {
+//  stop at the first element of the first "no empty" bucket entry
+    HasMore = True;
+    Buckets = AMap->GetArray();
+    NbBuck = AMap->NbBuckets();
+    Boolean Found = False;
+    Index = 1 ;
+    while ( Index <= NbBuck && !Found ) {
+      Node = Buckets->Value(Index);
+      if (Node.IsNull())    
+        Index++;
+      else 
+        Found = True;
+    }           
+    if (!Found) HasMore = False;
+  }
+}
+
+//----------------------------------------------------------------
+// More
+//----------------------------------------------------------------
+Standard_Boolean PCollection_MapIterator::More() const
+{
+   return HasMore; 
+}
+
+
+//----------------------------------------------------------------
+// Value
+//----------------------------------------------------------------
+Item PCollection_MapIterator::Value() const
+{
+  if (Node.IsNull()) Standard_NoSuchObject::Raise();
+  return (Node->Value());
+}
+
+//----------------------------------------------------------------
+// GetKey
+//----------------------------------------------------------------
+Key PCollection_MapIterator::GetKey() const
+{
+  if (Node.IsNull()) Standard_NoSuchObject::Raise();
+  return (Node->GetKey());
+}
+
+//----------------------------------------------------------------
+// Next
+//----------------------------------------------------------------
+void PCollection_MapIterator::Next()
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  Node = Node->Next();
+  if (Node.IsNull()) {
+     Boolean Found = False;
+     Index++;
+     while ( Index <= NbBuck && !Found ) {
+       Node = Buckets->Value(Index);
+       if (Node.IsNull()) 
+         Index++;
+       else
+         Found = True;
+     }           
+     if (!Found) HasMore = False;
+   }
+}
+
+

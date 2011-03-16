@@ -1,0 +1,463 @@
+--
+-- File:	Visual3d_ContextView.cdl
+-- Created:	Jeudi 5 Septembre 1991
+-- Author:	NW,JPB,CAL
+--
+-- Updated:
+--		1/08/97  ; PCT : Ajout texture mapping
+-- 		15/01/98 ; FMN : Suppression Hidden Line 
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class ContextView from Visual3d
+
+	---Version:
+
+	---Purpose: This class manages the creation and update of
+	--	    a visualization context for one view in the viewer.
+	--	    A context is defined by :
+	--	    Antialiasing.
+	--	    ZClipping.
+	--	    Depth-cueing.
+	--	    The type of visualization.
+	--	    The light sources.
+
+
+uses
+
+	SequenceOfAddress	from TColStd,
+	ClipPlane		from Visual3d,
+	Light			from Visual3d,
+	HSetOfLight		from Visual3d,
+	HSetOfClipPlane		from Visual3d,
+	TypeOfModel		from Visual3d,
+	TypeOfVisualization	from Visual3d, 
+	TypeOfSurfaceDetail     from Visual3d,
+	TextureEnv              from Graphic3d
+
+raises
+
+	ClipDefinitionError		from Visual3d,
+	DepthCueingDefinitionError	from Visual3d,
+	LightDefinitionError		from Visual3d,
+	ZClippingDefinitionError	from Visual3d
+
+is
+
+	Create
+		returns ContextView from Visual3d;
+	---Level: Public
+	---Purpose: Creates a context from default values
+	--
+	--	    Aliasing		  : OFF
+	--	    BackZClipping	  : OFF
+	--	    FrontZClipping	  : OFF
+	--	    Depth-cueing	  : OFF
+	--	    Light source	  : 0
+	--	    Clipping plane	  : 0
+	--	    Type Of Visualization : TOV_WIREFRAME
+	--	    Type Of Model	  : TOM_NONE
+	--          Type Of SurfaceDetail : TOSD_NONE
+
+ 
+    	SetSurfaceDetail(me  :  in  out; 
+	    	    	 TOSD  :  TypeOfSurfaceDetail); 
+	---Purpose: Selects the kind of rendering
+	--          default to: TOSD_NONE
+
+    	SetTextureEnv(me  :  in  out; 
+	    	      ATexture  :  TextureEnv  from  Graphic3d); 
+	---Purpose: Sets the environment texture to use
+	--          no environment texture by default
+		       
+
+      	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Aliasing
+	---------------------------------------------------
+
+	SetAliasingOn ( me	: in out )
+		is static;
+	---Level: Public
+	---Purpose: Activates antialiasing.
+	--	Antialiasing can be activated on all the structures
+	--	in the view
+	---Category: Methods to modify the class definition
+
+	SetAliasingOff ( me	: in out )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the antialiasing.
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Depth-Cueing
+	---------------------------------------------------
+
+	SetDepthCueingBackPlane ( me	: in out;
+				  ABack	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the back depth-cueing plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises DepthCueingDefinitionError if <BackPlane>
+	--	    is front of <FrontPlane> and DepthCueing is ON.
+	raises DepthCueingDefinitionError is static;
+
+	SetDepthCueingFrontPlane ( me		: in out;
+				   ABack	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the front depth-cueing plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises DepthCueingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane> and DepthCueing is ON.
+	raises DepthCueingDefinitionError is static;
+
+	SetDepthCueingOn ( me	: in out )
+	---Level: Public
+	---Purpose: Activates the depth-cueing.
+	--	Depth-cueing can be activated on all structures
+	--	present in the view.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises DepthCueingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane>.
+	raises DepthCueingDefinitionError is static;
+
+	SetDepthCueingOff ( me	: in out )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the depth-cueing.
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Clip Plane
+	---------------------------------------------------
+
+	SetClipPlaneOn ( me		: in out;
+			 AClipPlane	: ClipPlane from Visual3d )
+		is static;
+	---Level: Internal
+	---Purpose: Activates the clipping plane <AClipPlane>
+	---Category: Methods to modify the class definition
+
+	SetClipPlaneOff ( me		: in out;
+			  AClipPlane	: ClipPlane from Visual3d )
+		is static;
+	---Level: Internal
+	---Purpose: Deactivates the clipping plane <AClipPlane>
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Lights
+	---------------------------------------------------
+
+	SetLightOn ( me		: in out;
+		     ALight	: Light from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Activates the light source <ALight>
+	---Category: Methods to modify the class definition
+
+	SetLightOff ( me	: in out;
+		      ALight	: Light from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the light source <ALight>
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     Visualization and Shading
+	---------------------------------------------------
+
+	SetModel ( me		: in out;
+		   AModel	: TypeOfModel from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the shading model when the type of
+	--	    visualization is TOV_SHADING
+	--
+	--	    TypeOfModel	: TOM_NONE
+	--			  TOM_INTERP_COLOR
+	--			  TOM_FACET
+	--			  TOM_VERTEX
+	--
+	---Category: Methods to modify the class definition
+
+	SetVisualization ( me		: in out;
+			   AVisual	: TypeOfVisualization from Visual3d )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the mode of visualization.
+	--
+	--	    TypeOfVisualization	: TOV_WIREFRAME
+	--				  TOV_SHADING
+	--
+	---Category: Methods to modify the class definition
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	--	     ZClipping
+	---------------------------------------------------
+
+	SetZClippingBackPlane ( me	: in out;
+				ABack	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the back Z-clipping plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ZClippingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane> and ZClipping is ON.
+	raises ZClippingDefinitionError is static;
+
+	SetZClippingFrontPlane ( me	: in out;
+				 AFront	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the front Z-clipping plane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ZClippingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane> and ZClipping is ON.
+	raises ZClippingDefinitionError is static;
+
+	SetZClippingOn ( me	: in out )
+	---Level: Public
+	---Purpose: Activates the Z-clipping planes defined by
+	--	    SetZClippingFrontPlane and SetZClippingBackPlane.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ZClippingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane>.
+	raises ZClippingDefinitionError is static;
+
+	SetZClippingOff ( me	: in out )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the Z-clipping planes defined by
+	--	    SetFrontPlane and SetBackPlane.
+	---Category: Methods to modify the class definition
+
+	SetFrontZClippingOn ( me: in out )
+	---Level: Public
+	---Purpose: Activates the front Z-clipping plane defined by
+	--	    SetFrontPlane method.
+	---Category: Methods to modify the class definition
+	--
+	raises ZClippingDefinitionError is static;
+	-- if <BackPlane> is front of <FrontPlane>.
+
+	SetFrontZClippingOff ( me: in out )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the front Z-clipping plane defined by
+	--	    SetFrontPlane method.
+	---Category: Methods to modify the class definition
+
+	SetBackZClippingOn ( me	: in out )
+	---Level: Public
+	---Purpose: Activates the back Z-clipping plane defined by
+	--	    SetBackPlane method.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises ZClippingDefinitionError if <BackPlane> is
+	--	    front of <FrontPlane>.
+	raises ZClippingDefinitionError is static;
+
+	SetBackZClippingOff ( me	: in out )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the back Z-clipping plane defined by
+	--	    SetBackPlane method.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	ActivatedClipPlanes ( me )
+		returns HSetOfClipPlane from Visual3d
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of active clipping planes
+	--	    in the view of context <me>.
+	---Category: Inquire methods
+
+	NumberOfActivatedClipPlanes ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the number of active clipping planes
+	--	    in the view of context <me>.
+	---Category: Inquire methods
+
+	ActivatedClipPlane ( me;
+			     AnIndex	: Integer from Standard )
+		returns ClipPlane from Visual3d
+		is static;
+	---Level: Internal
+	---Category: Inquire methods
+
+	ActivatedLights ( me )
+		returns HSetOfLight from Visual3d
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of active light sources
+	--	    in the view of context <me>.
+	---Category: Inquire methods
+
+	NumberOfActivatedLights ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the number of active light sources
+	--	    in the view of context <me>.
+	---Category: Inquire methods
+
+	ActivatedLight ( me;
+			 AnIndex	: Integer from Standard )
+		returns Light from Visual3d
+		is static;
+	---Level: Internal
+	---Category: Inquire methods
+
+	AliasingIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the activity of the aliasing.
+	---Category: Inquire methods
+
+	BackZClippingIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the activity of the ZClipping.
+	---Category: Inquire methods
+
+	DepthCueingBackPlane ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the definition of the back depth-cueing plane.
+	---Category: Inquire methods
+
+	DepthCueingFrontPlane ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the definition of the front depth-cueing plane.
+	---Category: Inquire methods
+
+	DepthCueingIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the activity of the depth-cueing.
+	---Category: Inquire methods
+
+	FrontZClippingIsOn ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the activity of the ZClipping.
+	---Category: Inquire methods
+
+	Model ( me )
+		returns TypeOfModel from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the shading model.
+	---Category: Inquire methods
+
+	Visualization ( me )
+		returns TypeOfVisualization from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns the mode of visualization.
+	---Category: Inquire methods
+
+	ZClippingBackPlane ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the definition of the back Z-clipping plane.
+	---Category: Inquire methods
+
+	ZClippingFrontPlane ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the definition of the front Z-clipping plane.
+	---Category: Inquire methods
+
+ 
+    	SurfaceDetail(me) 
+	    returns  TypeOfSurfaceDetail  from  Visual3d;
+	-- level: public
+	-- purpose: returns the current SurfaceDetail mode
+
+
+	TextureEnv(me)  returns  TextureEnv  from  Graphic3d;
+	-- level: public
+	-- purpose: return the current environment texture used
+
+
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ContextView
+--
+-- Purpose	:	Declaration of variables specific to view contexts.
+
+--
+-- Reminders	:	A view context is defined by :
+--			- aliasing activity
+--			- depth-cueing activity
+--			- Z clipping activity
+--			- activity of defined light sources
+--			- the type of visualization
+--			- the shading model if required
+--
+--
+	-- flag for aliasing activity
+	AliasingIsActive	:	Boolean from Standard;
+
+	-- flag for depth cueing activity
+	ZcueingIsActive		:	Boolean from Standard;
+
+	-- flag for Z clipping activity
+	FrontZclippingIsActive	:	Boolean from Standard;
+
+	-- flag for Z clipping activity
+	BackZclippingIsActive	:	Boolean from Standard;
+
+	-- Z clipping, front plane
+	MyZclippingFrontPlane	:	ShortReal from Standard;
+
+	-- Z clipping, back plane
+	MyZclippingBackPlane	:	ShortReal from Standard;
+
+	-- DepthCueing, front plane
+	MyDepthCueingFrontPlane	:	ShortReal from Standard;
+
+	-- DepthCueing, back plane
+	MyDepthCueingBackPlane	:	ShortReal from Standard;
+
+	-- the type of shading activated
+	MyModel			:	TypeOfModel from Visual3d;
+
+	-- the type of visualization activated
+	MyVisual		:	TypeOfVisualization from Visual3d;
+
+	-- the light sources activated
+	MyLights		:	SequenceOfAddress from TColStd;
+
+	-- the clipping planes activated
+	MyClipPlanes		:	SequenceOfAddress from TColStd;
+
+
+    	MyTextureEnv            :       TextureEnv  from  Graphic3d; 
+	MySurfaceDetail         :       TypeOfSurfaceDetail  from  Visual3d;
+
+end ContextView;

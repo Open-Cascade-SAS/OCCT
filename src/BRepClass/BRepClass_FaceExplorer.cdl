@@ -1,0 +1,108 @@
+-- File:	FaceExplorer.cdl
+-- Created:	Thu Nov 19 14:30:44 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627
+
+class FaceExplorer from BRepClass 
+
+	---Purpose: Provide an   exploration of a  BRep Face   for the
+	--          classification.
+
+uses
+    Orientation  from TopAbs,
+    Pnt2d        from gp,
+    Lin2d        from gp,
+    Face         from TopoDS,
+    Explorer     from TopExp,
+    Edge         from BRepClass
+
+is
+    Create (F : Face from TopoDS) returns FaceExplorer from BRepClass;
+    
+    Reject(me;  P : Pnt2d from gp) returns Boolean
+	---Purpose: Should  return  True  if the  point  is  outside a
+	--          bounding volume of the face.
+    is static;
+    
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 Begin
+--    Segment(me;  P :  Pnt2d from gp;
+    Segment(me: in out;  P :  Pnt2d from gp;
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 End
+    	         L : out Lin2d from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the   face  boundary  to
+	 --          compute  intersections. 
+    returns Boolean from Standard  -- skv OCC12627
+    is static;
+    
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 Begin
+    OtherSegment(me: in out;  P :  Pnt2d from gp;
+    	                      L : out Lin2d from gp; Par : out  Real)
+	 ---Purpose: Returns  in <L>, <Par>  a segment having at least
+	 --          one  intersection  with  the   face  boundary  to
+	 --          compute  intersections. Each call gives another segment.
+    returns Boolean from Standard
+    is static;
+    
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 End
+    InitWires(me : in out)
+	---Purpose: Starts an exploration of the wires.
+    is static;
+    
+    MoreWires(me) returns Boolean
+	---Purpose: Returns True if there is  a current wire.
+	--          
+	---C++: inline
+    is static;
+    	
+    NextWire(me : in out)
+	---Purpose: Sets the explorer  to the  next  wire.
+	--          
+	---C++: inline
+    is static;
+    
+    RejectWire(me; L :  Lin2d from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the wire  bounding volume does not
+	--          intersect the segment.
+    is static;
+    
+    InitEdges(me : in out)
+	---Purpose: Starts an exploration of the  edges of the current
+	--          wire.
+    is static;
+    
+    MoreEdges(me) returns Boolean
+	---Purpose: Returns True if there is a current edge.
+	--          
+	---C++: inline
+    is static;
+    
+    NextEdge(me  : in out)
+	---Purpose: Sets the explorer  to the  next  edge.
+	--          
+	---C++: inline
+    is static;
+
+    RejectEdge(me; L :  Lin2d from gp; Par : Real) returns Boolean
+	---Purpose: Returns True  if the edge  bounding volume does not
+	--          intersect the segment.
+    is static;
+    
+    CurrentEdge(me; E : out Edge from BRepClass;
+    	           Or : out Orientation from TopAbs)
+	---Purpose: Current edge in current wire and its orientation.
+    is static;
+
+fields
+    myFace      : Face from TopoDS;
+    myWExplorer : Explorer from TopExp;
+    myEExplorer : Explorer from TopExp; 
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 Begin
+    myCurEdgeInd: Integer  from Standard;
+    myCurEdgePar: Real     from Standard;
+-- Modified by skv - Wed Jul 12 10:05:54 2006 OCC12627 End
+
+end FaceExplorer;

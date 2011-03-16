@@ -1,0 +1,20 @@
+-- File:	StepShape_ShapeDefinitionRepresentation.cdl
+-- Created:	Fri Nov 26 16:26:39 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ShapeDefinitionRepresentation from StepShape
+inherits PropertyDefinitionRepresentation from StepRepr
+
+    ---Purpose: Representation of STEP entity ShapeDefinitionRepresentation
+
+uses
+    RepresentedDefinition from StepRepr,
+    Representation from StepRepr
+
+is
+    Create returns ShapeDefinitionRepresentation from StepShape;
+	---Purpose: Empty constructor
+
+end ShapeDefinitionRepresentation;

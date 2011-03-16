@@ -1,0 +1,50 @@
+// File:	DBRep_Edge.lxx
+// Created:	Thu Jul 15 11:32:11 1993
+// Author:	Remi LEQUETTE
+//		<rle@nonox>
+
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+ inline const TopoDS_Edge&  DBRep_Edge::Edge()const 
+{
+  return myEdge;
+}
+
+
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+
+ inline void  DBRep_Edge::Edge(const TopoDS_Edge& E)
+{
+  myEdge = E;
+}
+
+
+//=======================================================================
+//function : Color
+//purpose  : 
+//=======================================================================
+
+ inline const Draw_Color&  DBRep_Edge::Color()const 
+{
+  return myColor;
+}
+
+
+//=======================================================================
+//function : Color
+//purpose  : 
+//=======================================================================
+
+ inline void  DBRep_Edge::Color(const Draw_Color& C)
+{
+  myColor = C;
+}
+
+

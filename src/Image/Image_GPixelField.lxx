@@ -1,0 +1,70 @@
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include Item_hxx
+
+#include <stdio.h>
+
+# ifdef WNT
+#  include <InterfaceGraphic_wntio.hxx>
+# endif  // WNT
+
+//static char *ErrorMessag, LocalMessag[255];
+static char LocalMessag[255];
+
+inline Standard_Integer Image_GPixelField::Width()  const { return myWidth; }
+inline Standard_Integer Image_GPixelField::Height() const { return myHeight; }
+inline Standard_Integer Image_GPixelField::UpperX() const { return myWidth-1; }
+inline Standard_Integer Image_GPixelField::UpperY() const { return myHeight-1; }
+
+//=======================================================================
+//function : SetValue
+//purpose  : 
+//=======================================================================
+
+inline void Image_GPixelField::SetValue ( const Standard_Integer X,
+                                   const Standard_Integer Y,
+                                   const Item& Value )
+{
+   if (X < 0 || X > (myWidth  -1) || Y < 0 || Y > (myHeight -1)) {
+	sprintf(LocalMessag,
+		"Index out of range in PixelField::SetValue(%d,%d)",X,Y);
+	Standard_OutOfRange::Raise (LocalMessag);
+   }
+
+  ((Item *)myData)[(Y)*(myWidth)+X] = Value ;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const Item& Image_GPixelField::Value(const Standard_Integer X,
+                                     const Standard_Integer Y) const
+{
+   if (X < 0 || X > (myWidth  -1) || Y < 0 || Y > (myHeight -1)) {
+	sprintf(LocalMessag,
+		"Index out of range in PixelField::Value(%d,%d)",X,Y);
+	Standard_OutOfRange::Raise (LocalMessag);
+   }
+
+  return ((Item *)myData)[(Y)*(myWidth)+X] ;
+} 
+
+//=======================================================================
+//function : ChangeValue
+//purpose  : 
+//=======================================================================
+
+inline Item& Image_GPixelField::ChangeValue(const Standard_Integer X,
+                                     const Standard_Integer Y)
+{
+   if ((X < 0 || X > (myWidth  -1) || Y < 0 || Y > (myHeight -1))) {
+	sprintf(LocalMessag,
+		"Index out of range in PixelField::ChangeValue(%d,%d)",X,Y);
+	Standard_OutOfRange::Raise (LocalMessag);
+   }
+
+  return ((Item *)myData)[(Y)*(myWidth)+X] ;
+}
+

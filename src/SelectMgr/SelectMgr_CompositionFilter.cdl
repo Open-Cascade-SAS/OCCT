@@ -1,0 +1,47 @@
+-- File:	SelectMgr_CompositionFilter.cdl
+-- Created:	Mon Jan 29 17:47:00 1996
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+deferred class CompositionFilter from SelectMgr inherits Filter from SelectMgr
+    	---Purpose: A framework to define a compound filter composed of
+    	-- two or more simple filters.
+
+uses
+    Boolean      from Standard,
+    ListOfFilter from SelectMgr,
+    ShapeEnum from TopAbs
+is
+
+    Add(me : mutable; afilter : Filter from SelectMgr);
+    	--- Purpose: Adds the filter afilter to a filter object created by a
+    	-- filter class inheriting this framework.   
+    Remove(me:mutable;aFilter : Filter from SelectMgr);
+
+    	--- Purpose: Removes the filter aFilter from this framework.
+    IsEmpty(me) returns Boolean;
+    	---Purpose: Returns true if this framework is empty.
+    IsIn(me;aFilter : Filter from SelectMgr)
+    returns Boolean;
+
+    	--- Purpose: Returns true if the filter aFilter is in this framework.
+    
+    StoredFilters(me) returns ListOfFilter from SelectMgr;
+    	---C++: return const &
+    	---C++: inline
+    	---Purpose: Returns the list of stored filters from this framework.
+
+    Clear(me:mutable);
+    	---Purpose: Clears the filters used in this framework.
+    ActsOn(me; aStandardMode : ShapeEnum from TopAbs)
+    returns Boolean from Standard is redefined virtual;
+
+
+fields
+
+    myFilters : ListOfFilter from SelectMgr is protected;
+
+end CompositionFilter;

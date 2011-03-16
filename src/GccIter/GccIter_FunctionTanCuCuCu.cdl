@@ -1,0 +1,106 @@
+-- File:        FunctionTanCuCuCu.cdl
+-- Created:     Mon May 13 15:33:43 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991
+
+generic class FunctionTanCuCuCu from GccIter(
+    TheCurve     as any;
+    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
+     
+inherits FunctionSetWithDerivatives from math
+     
+    ---Purpose: This abstract class describes a set on N Functions of 
+    --          M independant variables.
+
+uses Vector from math,
+     Matrix from math,
+     Circ2d from gp,
+     Lin2d  from gp,
+     Pnt2d  from gp,
+     Vec2d  from gp,
+     Type1  from GccIter 
+
+raises ConstructionError
+
+is
+
+    Create (C1  : TheCurve ;
+    	    C2  : TheCurve ;
+    	    C3  : TheCurve ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (C1  : Circ2d    from gp ;
+    	    C2  : TheCurve          ;
+    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (C1  : Circ2d    from gp ;
+    	    C2  : Circ2d    from gp ;
+    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (C1  : Circ2d    from gp ;
+    	    L2  : Lin2d     from gp ;
+    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (L1  : Lin2d     from gp ;
+    	    L2  : Lin2d     from gp ;
+    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (L1  : Lin2d     from gp ;
+    	    C2  : TheCurve          ;
+    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (C1  : Circ2d    from gp ;
+    	    C2  : TheCurve          ;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (L1  : Lin2d     from gp ;
+    	    C2  : TheCurve          ;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+
+    Create (C1  : TheCurve          ;
+    	    P2  : Pnt2d     from gp ;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+
+InitDerivative(me                         : in out                   ;
+    	       X                          :        Vector from math  ;
+	       Point1,Point2,Point3       :    out Pnt2d  from gp    ;
+	       Tan1,Tan2,Tan3,D21,D22,D23 :    out Vec2d  from gp    )
+raises ConstructionError
+is static;
+
+    NbVariables(me) returns Integer;
+    	---Purpose: Returns the number of variables of the function.
+
+    NbEquations(me) returns Integer;
+    	---Purpose: Returns the number of equations of the function.
+
+    Value(me : in out                 ; 
+    	  X  :        Vector from math; 
+    	  F  :    out Vector from math) returns Boolean;
+    	---Purpose: Computes the values of the Functions for the variable <X>.
+    
+    Derivatives(me : in out                 ;
+    	        X  :        Vector from math;
+    	        D  :    out Matrix from math) returns Boolean;
+    	---Purpose: Returns the values of the derivatives for the variable <X>.
+    
+    Values(me : in out                 ;
+    	   X  :        Vector from math;
+    	   F  :    out Vector from math;
+     	   D  :    out Matrix from math)    returns Boolean;
+    	---Purpose: Returns the values of the functions and the derivatives
+    	--          for the variable <X>.
+    
+fields
+
+Curv1   : TheCurve             ;
+Curv2   : TheCurve             ;
+Curv3   : TheCurve             ;
+Circ1   : Circ2d   from gp     ;
+Circ2   : Circ2d   from gp     ;
+Lin1    : Lin2d    from gp     ;
+Lin2    : Lin2d    from gp     ;
+TheType : Type1    from GccIter;
+
+end FunctionTanCuCuCu;
+

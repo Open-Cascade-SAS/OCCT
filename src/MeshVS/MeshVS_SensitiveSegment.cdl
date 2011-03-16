@@ -1,0 +1,43 @@
+-- File:	MeshVS_SensitiveSegment.cdl
+-- Created:	Mon Sep 29 2003
+-- Author:	Alexander SOLOVYOV and Sergey LITONIN
+---Copyright:	 Open CASCADE 2003
+
+class SensitiveSegment from MeshVS inherits SensitiveSegment from Select3D
+
+	---Purpose: This class provides custom sensitive face, which will be selected if it center is in rectangle.
+
+uses
+  EntityOwner from SelectBasics,
+
+  Array1OfPnt from TColgp,
+
+  TypeOfSensitivity from Select3D,
+  Projector         from Select3D,
+
+  Pnt   from gp,
+  Pnt2d from gp,
+
+  Array1OfPnt2d from TColgp,
+
+  Box2d from Bnd
+
+is
+
+  Create ( theOwner              : EntityOwner from SelectBasics;
+           theFirstP, theLastP   : Pnt from gp;
+           theMaxRect            : Integer = 1 ) returns mutable SensitiveSegment from MeshVS;
+
+  Project( me: mutable; aProjector : Projector from Select3D ) is redefined;
+
+  Matches  ( me: mutable; XMin, YMin, XMax, YMax: Real;
+             aTol: Real ) returns Boolean is redefined;
+
+  Matches  ( me: mutable; Polyline: Array1OfPnt2d from TColgp;
+             aBox: Box2d; aTol: Real ) returns Boolean is redefined;
+
+fields
+  myCentre      : Pnt   from gp is protected;
+  myProjCentre  : Pnt2d from gp is protected;
+
+end SensitiveSegment;

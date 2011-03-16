@@ -1,0 +1,85 @@
+-- File:	Blend.cdl
+-- Created:	Thu Dec  2 10:37:10 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+package Blend
+
+uses IntSurf, 
+    TColgp, 
+    TColStd, 
+    Adaptor2d, 
+    gp, 
+    TopAbs, 
+    math, 
+    TCollection, 
+    MMgt, 
+    StdFail,  
+    GeomAbs
+
+is
+
+--    deferred generic class SurfaceTool;
+    
+    generic class Iterator;          -- template class
+
+    deferred class AppFunction;      -- inherits FunctionSetWithDerivatives from math
+
+    deferred class Function;         -- inherits AppFunction from Blend
+
+    deferred class FuncInv;          -- inherits FunctionSetWithDerivatives from math
+
+    deferred class CSFunction;       -- inherits AppFunction from Blend
+
+    deferred class SurfRstFunction;  -- inherits AppFunction from Blend
+
+    deferred class SurfPointFuncInv; -- inherits FunctionSetWithDerivatives from math
+
+    deferred class SurfCurvFuncInv;  -- inherits FunctionSetWithDerivatives from math
+
+    deferred class RstRstFunction;  -- inherits AppFunction from Blend
+
+    deferred class CurvPointFuncInv; -- inherits FunctionSetWithDerivatives from math
+
+
+
+    class Point;
+    
+    generic class Extremity;
+    
+    generic class PointOnRst;
+    
+    generic class Line;
+
+    generic class Walking;
+
+    generic class CSWalking;
+
+
+    class SequenceOfPoint instantiates Sequence from TCollection
+    	(Point from Blend);
+	
+    enumeration Status is 
+    	StepTooLarge,
+	StepTooSmall,
+	Backward,
+	SamePoints,
+	OnRst1,
+	OnRst2,
+	OnRst12,
+	OK
+    end Status;
+
+
+    enumeration DecrochStatus is 
+    	NoDecroch,
+	DecrochRst1,
+	DecrochRst2,
+	DecrochBoth
+    end Status;
+
+
+
+end Blend;

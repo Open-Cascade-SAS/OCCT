@@ -1,0 +1,39 @@
+-- File:        MeasureWithUnit.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class MeasureWithUnit from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	MeasureValueMember from StepBasic,
+	Unit from StepBasic
+is
+
+	Create returns mutable MeasureWithUnit;
+	---Purpose: Returns a MeasureWithUnit
+
+	Init (me : mutable;
+	      aValueComponent : MeasureValueMember from StepBasic;
+	      aUnitComponent : Unit from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetValueComponent(me : mutable; aValueComponent : Real);
+	ValueComponent (me) returns Real;
+	ValueComponentMember (me) returns MeasureValueMember;
+	SetValueComponentMember (me : mutable; val : MeasureValueMember);
+
+	SetUnitComponent(me : mutable; aUnitComponent : Unit);
+	UnitComponent (me) returns Unit;
+
+fields
+
+	valueComponent : MeasureValueMember from StepBasic;
+	unitComponent  : Unit from StepBasic;
+
+end MeasureWithUnit;

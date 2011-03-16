@@ -1,0 +1,71 @@
+-- File:	Adaptor3d_GenHSurface.cdl
+-- Created:	Mon Feb 14 15:13:04 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+generic class GenHSurface from Adaptor3d
+    (TheSurface as Surface from Adaptor3d)
+ 
+inherits HSurface from Adaptor3d 
+    
+	---Purpose: Generic class used to create a surface manipulated
+      	--          with Handle from a surface described by the class Surface. 
+	
+uses
+
+     Surface      from Adaptor3d
+
+
+raises
+
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+
+
+is
+
+    Create
+    
+	---Purpose: Creates an empty GenHSurface.
+    	returns mutable GenHSurface from Adaptor3d; 
+    
+
+    Create(S: TheSurface)
+    
+	---Purpose: Creates a GenHSurface from a Surface.
+    	returns mutable GenHSurface from Adaptor3d; 
+
+
+    Set(me: mutable; S: TheSurface)
+    
+	---Purpose: Sets the field of the GenHSurface.
+    	is static;
+
+    --
+    --  Access to the surface
+    --  
+    
+    Surface(me) returns Surface from Adaptor3d;
+	---Purpose: Returns a reference to the Surface inside the HSurface.
+	--          This is redefined from HSurface, cannot be inline.
+	--          
+	---C++: return const &
+
+    ChangeSurface(me : mutable)
+    
+	---Purpose: Returns the surface used to create the GenHSurface.
+	--          
+	---C++: return &
+	---C++: inline
+
+    	returns TheSurface;
+
+
+fields
+
+    mySurf: TheSurface is protected;
+
+end GenHSurface;

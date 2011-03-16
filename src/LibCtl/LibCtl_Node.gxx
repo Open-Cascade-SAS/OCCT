@@ -1,0 +1,31 @@
+//#include <LibCtl_Node.ixx>
+
+
+//  Classe generique imbriquee dans Library : utilisee pour construire la
+//  listes de Modules d une librairie  (cf Library pour plus de details)
+//  (En fait : Liste de Global Nodes -> Module + Protocol)
+
+    LibCtl_Node::LibCtl_Node ()    {  }
+
+    void LibCtl_Node::AddNode (const Handle(LibCtl_GlobalNode)& anode)
+{
+  if (thenode == anode) return;
+  if (thenext.IsNull()) {
+    if (thenode.IsNull()) thenode = anode;
+    else {
+      thenext = new LibCtl_Node;
+      thenext->AddNode (anode);
+    }
+  }
+  else thenext->AddNode (anode);
+}
+
+
+    const Handle(TheModule)&   LibCtl_Node::Module () const
+      {  return thenode->Module();  }
+
+    const Handle(TheProtocol)& LibCtl_Node::Protocol () const
+      {  return thenode->Protocol();  }
+
+    const Handle(LibCtl_Node)& LibCtl_Node::Next () const
+      {  return thenext;  }

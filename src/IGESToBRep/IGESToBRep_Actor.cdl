@@ -1,0 +1,49 @@
+-- File:	IGESToBRep_Actor.cdl
+-- Created:	Thu Nov  3 14:59:07 1994
+-- Author:	Marie Jose MARTZ
+--		<mjm@minox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Actor from IGESToBRep
+    inherits ActorOfTransientProcess  from Transfer
+
+    ---Purpose : This class performs the transfer of an Entity from
+    --           IGESToBRep
+    --           
+    --           I.E. for each type of Entity, it invokes the appropriate Tool
+    --           then returns the Binder which contains the Result
+
+uses TransientProcess, Binder, InterfaceModel from Interface
+
+is
+
+    Create  returns mutable Actor from IGESToBRep;
+
+    SetModel (me : mutable; model : InterfaceModel from Interface);
+    
+    SetContinuity (me : mutable; continuity : Integer from Standard = 0);
+    ---Purpose   By default continuity = 0
+    --           if continuity = 1 : try C1
+    --           if continuity = 2 : try C2
+    
+    GetContinuity (me) returns Integer from Standard;
+    ---Purpose : Return "thecontinuity"
+
+    Recognize (me : mutable; start : Transient) returns Boolean  is redefined;
+
+    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
+    	returns mutable Binder  is redefined;
+
+    UsedTolerance (me) returns Real;
+    ---Purpose : Returns the tolerance which was actually used, either from
+    --           the file or from statics
+
+fields
+
+    themodel      : InterfaceModel from Interface;
+    thecontinuity : Integer;
+    theeps        : Real;
+
+end Actor;

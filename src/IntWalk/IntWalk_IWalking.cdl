@@ -1,0 +1,293 @@
+-- File:	IWalking.cdl
+-- Created:	Wed Mar 25 15:16:53 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+generic class IWalking from  IntWalk (
+      ThePointOfPath     as any;
+      ThePointOfPathTool as any;   -- as PathPointTool(ThePointOfPath)
+      ThePOPIterator     as any;   -- as Iterator from IntWalk(ThePointOfPath)
+      ThePointOfLoop     as any;
+      ThePointOfLoopTool as any;   -- as LoopPointTool(ThePointOfLoop)
+      ThePOLIterator     as any;   -- as Iterator from IntWalk(ThePointOfLoop)
+      ThePSurface        as any;
+      ThePSurfaceTool    as any;   -- as PSurfaceTool(ThePSurface)
+      TheIWFunction      as any)   -- as IWFunction from IntWalk(ThePSurface)
+
+
+    ---Purpose: This class implements an algorithm to find all the points
+    --          on a parametric surface  verifying f(u,v)=0
+    --          where f is defined in the IWFunction class.
+    --          These points are found by a marching algorithm, using a set of
+    --          points as starting points.
+
+
+
+
+uses Vector            from math,
+     SequenceOfInteger from TColStd,
+     SequenceOfReal    from TColStd,
+     StatusDeflection  from IntWalk,
+     Vec               from gp,
+     Dir2d             from gp,
+     PntOn2S           from IntSurf
+
+
+raises   NotDone    from StdFail,
+         OutOfRange from Standard
+
+
+    class TheIWLine instantiates IWLine from IntWalk
+            (ThePointOfPath);
+
+    class SequenceOfIWLine instantiates Sequence from TCollection
+            (TheIWLine);
+
+
+is
+
+    Create
+    
+    	returns IWalking from IntWalk; 
+
+
+    Create(Epsilon, Deflection, Step : Real from Standard)
+    
+	---Purpose: Deflection is the maximum deflection admitted between two 
+    	--          consecutive points on a resulting polyline.
+    	--          Step is the maximum increment admitted between two 
+    	--          consecutive points (in 2d space).
+    	--          Epsilon est la tolerance au dela de laquelle 2 points
+    	--          sont confondus
+    
+    	returns IWalking from IntWalk;
+
+
+    SetTolerance(me: in out;Epsilon, Deflection, Step : Real from Standard)
+    
+	---Purpose: Deflection is the maximum deflection admitted between two 
+    	--          consecutive points on a resulting polyline.
+    	--          Step is the maximum increment admitted between two 
+    	--          consecutive points (in 2d space).
+    	--          Epsilon est la tolerance au dela de laquelle 2 points
+    	--          sont confondus
+    
+	---C++: inline
+
+    	is static;
+
+
+    Perform(me: in out;
+            Pnts1    : ThePOPIterator;
+            Pnts2    : ThePOLIterator;
+            Func     : in out TheIWFunction;
+	    S        : ThePSurface;
+            Reversed : Boolean from Standard = Standard_False)
+     
+    	---Purpose: Searches a set of polylines starting on a point of Pnts1
+    	--          or Pnts2.
+    	--          Each point on a resulting polyline verifies F(u,v)=0
+
+        is static;
+
+
+    Perform(me: in out;
+            Pnts1    : ThePOPIterator;
+            Func     : in out TheIWFunction;
+	    S        : ThePSurface;
+            Reversed : Boolean from Standard = Standard_False)
+
+    	---Purpose: Searches a set of polylines starting on a point of Pnts1.
+    	--          Each point on a resulting polyline verifies F(u,v)=0
+
+    	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns true if the calculus was successful.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	is static;	
+
+
+    NbLines(me)
+    
+    	---Purpose: Returns the number of resulting polylines.
+    	--          An exception is raised if IsDone returns False.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	
+    	is static;	
+
+
+    Value(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the polyline of range Index.
+    	--          An exception is raised if IsDone is False.
+    	--          An exception is raised if Index<=0 or Index>NbLines.
+
+    	returns TheIWLine
+	---C++: return const&
+	---C++: inline
+
+    	raises OutOfRange from Standard,
+               NotDone    from StdFail
+
+	is static;
+
+
+    NbSinglePnts(me)
+    
+    	---Purpose: Returns the number of points belonging to Pnts on which no
+    	--          line starts or ends.
+    	--          An exception is raised if IsDone returns False.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	
+    	is static;
+    
+
+    SinglePnt(me ; Index: Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index .
+    	--          An exception is raised if IsDone returns False.
+    	--          An exception is raised if Index<=0 or
+    	--          Index > NbSinglePnts.
+
+    	returns ThePointOfPath
+	---C++: return const&
+	---C++: inline
+
+    	raises OutOfRange from Standard,
+               NotDone    from StdFail
+
+        is static;
+    
+
+-- -- private
+
+    Cadrage(me; BornInf, BornSup, UVap : in out Vector from math;
+                Step : in out Real from Standard; 
+--                StepV : in out Real from Standard; 
+                StepSign : Integer from Standard)
+    returns Boolean from Standard 
+    is static protected;
+    
+    TestArretPassage (me: in out; Umult  : SequenceOfReal from TColStd;
+                                  Vmult  : SequenceOfReal from TColStd;
+				  Section: in out TheIWFunction;
+                                  UV     : in out Vector from math;
+                                  Irang  : out Integer from Standard) 
+    returns Boolean from Standard
+    is static protected;		      
+       
+    TestArretPassage (me: in out; Umult  : SequenceOfReal from TColStd;
+                                  Vmult  : SequenceOfReal from TColStd;
+                                  UV     : Vector from math;
+                                  Index  : Integer from Standard;
+	          	          Irang  : out Integer from Standard) 
+    returns Boolean from Standard
+    is static protected;		      
+
+    TestArretAjout(me: in out; Section: in out TheIWFunction;
+		               UV     : in out Vector from math;
+    	                       Irang  : out Integer from Standard; 
+                               PSol   : out PntOn2S from IntSurf )
+    returns Boolean from Standard
+    is static protected;		      
+		    
+    TestArretCadre(me : in out; Umult  : SequenceOfReal from TColStd;
+                                Vmult  : SequenceOfReal from TColStd;
+                                Line   : mutable TheIWLine;
+				Section: in out TheIWFunction;
+                                UV     : in out Vector from math;
+                                Irang  : out Integer from Standard)
+    is static protected;		      
+
+
+    TestDeflection(me: in out; Section         : in out TheIWFunction;
+                               Finished        : Boolean from Standard;
+                               UV              : Vector from math;
+		               StatusPrecedent : StatusDeflection from IntWalk;
+                               NbDivision      : in out Integer from Standard;
+                               Step           : in out Real from Standard;
+--                               StepV           : in out Real from Standard;
+                               StepSign        : Integer from Standard)
+    returns StatusDeflection from IntWalk		    
+    is static protected;		      
+
+    ComputeOpenLine(me : in out; Umult  : SequenceOfReal from TColStd;
+                                 Vmult  : SequenceOfReal from TColStd;
+    	                         Pnts1  : ThePOPIterator;
+				 Section: in out TheIWFunction;
+                                 Rajout : in out Boolean from Standard)
+    is static protected;	
+       
+    OpenLine(me : in out; N      : Integer from Standard; 
+                          Psol   : PntOn2S from IntSurf;
+			  Pnts1  : ThePOPIterator;
+ 			  Section: in out TheIWFunction;
+                          Line   : mutable TheIWLine)
+    is static protected;	
+
+    ComputeCloseLine(me : in out; Umult  : SequenceOfReal from TColStd;
+                                  Vmult  : SequenceOfReal from TColStd;
+                                  Pnts1  : ThePOPIterator;
+				  Pnts2  : ThePOLIterator;
+                                  Section: in out TheIWFunction;
+                                  Rajout : in out Boolean from Standard)
+    is static protected;	
+
+    AddPointInCurrentLine(me ; N           : Integer from Standard;
+                               PathPnt     : ThePointOfPath;
+                               CurrentLine : mutable TheIWLine)
+    is static protected;
+
+    MakeWalkingPoint(me : in out ; Case    : Integer from Standard;
+                                   U,V     : Real from Standard;
+				   Section : in out TheIWFunction;
+                                   Psol    : in out PntOn2S from IntSurf)
+
+    is static protected;
+
+
+fields 
+
+    done                : Boolean           from Standard;
+    seqSingle           : ThePOPIterator;
+    fleche              : Real              from Standard;
+    pas                 : Real              from Standard;
+    tolerance           : Vector            from math;
+    epsilon             : Real              from Standard;
+    reversed            : Boolean           from Standard;
+
+    ustart1             : SequenceOfReal    from TColStd;
+    vstart1             : SequenceOfReal    from TColStd;
+    nbMultiplicities    : SequenceOfInteger from TColStd;
+    etat1               : SequenceOfInteger from TColStd;
+    ustart2             : SequenceOfReal    from TColStd;
+    vstart2             : SequenceOfReal    from TColStd;
+    etat2               : SequenceOfInteger from TColStd;
+    Um                  : Real              from Standard; -- Min U de la surf
+    UM                  : Real              from Standard; -- Max U de la surf
+    Vm                  : Real              from Standard; -- Min V de la surf
+    VM                  : Real              from Standard; -- Max V de la surf
+    previousPoint       : PntOn2S           from IntSurf;
+    prevtg              : Boolean           from Standard;
+    previousd3d         : Vec               from gp;
+    previousd2d         : Dir2d             from gp;
+    seqAjout            : SequenceOfInteger from TColStd; 
+    lines               : SequenceOfIWLine;
+
+end IWalking;
+

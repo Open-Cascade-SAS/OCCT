@@ -1,0 +1,42 @@
+-- File:	Parameter.cdl
+-- Created:	Tue Aug 18 19:43:39 1992
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+private class Parameter from Hatch
+
+	---Purpose: Stores an intersection on a line represented by :
+	--          
+	--          * A Real parameter.
+	--          
+	--          * A flag True when the parameter starts an interval.
+	--          
+
+uses
+    Real    from Standard,
+    Integer from Standard,
+    Boolean from Standard
+
+is
+    Create;
+    
+    Create( Par1  : Real    from Standard;
+            Start : Boolean from Standard;
+	    Index : Integer from Standard = 0;
+	    Par2  : Real    from Standard = 0)
+    returns Parameter from Hatch;
+    
+fields
+    myPar1  : Real      from Standard;
+    myStart : Boolean   from Standard;
+    myIndex : Integer   from Standard;
+    myPar2  : Real      from Standard;
+    
+friends
+    class Line    from Hatch,
+    class Hatcher from Hatch
+
+end Parameter;

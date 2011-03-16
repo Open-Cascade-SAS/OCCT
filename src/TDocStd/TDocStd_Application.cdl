@@ -1,0 +1,238 @@
+-- File:	TDocStd_Application.cdl
+-- Created:	Wed Jun 30 12:40:07 1999
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+
+deferred class Application from TDocStd inherits Application from CDF
+
+	---Purpose:  
+    	-- The abstract root class for all application classes.
+    	-- They are in charge of:
+    	-- -   Creating documents
+    	-- -   Storing documents and retrieving them
+    	-- -   Initializing document views.
+    	-- To create a useful OCAF-based application, you
+    	-- derive a class from Application and implement
+    	-- the methods below. You will have to redefine the
+    	-- deferred (virtual) methods Formats,
+    	-- InitDocument, and Resources, and override others.
+    	-- The application is a container for a document,
+    	-- which in its turn is the container of the data
+    	-- framework made up of labels and attributes.
+    	-- Besides furnishing a container for documents,
+    	-- TDocStd_Application provides the following
+    	-- services for them:
+    	-- -   Creation of new documents
+    	-- -   Activation of documents in sessions of an application
+    	-- -   Storage and retrieval of documents
+    	-- -   Initialization of document views.
+    	-- Note:
+    	-- If a client needs detailed information concerning
+    	-- the events during the Open/Store operation, MessageDriver
+    	-- inherited from CDM_MessageDriver of the
+    	-- corresponding application has to be implemented. 
+    	-- If the MessageDriver is not defined all messages
+    	-- will be (by default) directed to
+    	-- CDM_NullMessageDriver and will be lost.
+
+uses Manager                  from Resource,
+     Document                 from TDocStd,
+     CString                  from Standard,
+     ExtendedString           from TCollection,
+     SequenceOfExtendedString from TColStd,
+     RetrievableStatus        from CDF,
+     StoreStatus              from CDF
+
+raises NoSuchObject from Standard
+
+is
+
+    Initialize;
+
+    IsDriverLoaded (me)
+    	---Purpose: Check if meta data driver was successfully loaded
+    	--          by the application constructor
+    returns Boolean from Standard;
+
+ 
+
+    Resources (me: mutable)
+    	---Purpose: create  (if  not done)  a Manager  using ResourcesName
+    	--          method.
+    returns Manager from Resource
+    is redefined virtual;
+
+    ResourcesName (me: mutable)
+    	---Purpose:  Returns the name of the file containing the
+    	-- resources of this application.
+    	-- In a resource file, the application associates the schema name 
+    	-- of the document with the storage and
+    	-- retrieval plug-ins that are to be loaded for each
+    	-- document. On retrieval, the application reads the
+    	-- schema name in the heading of the CSF file and
+    	-- loads the plug-in indicated in the resource file.
+    	-- This plug-in instantiates the actual driver for
+    	-- transient-persistent conversion.
+    	-- Your application can bring this process into play
+    	-- by defining a class which inherits
+    	-- CDF_Application and redefines the function
+    	-- which returns the appropriate resources file. At
+    	-- this point, the function Retrieve and the class
+    	-- CDF_Store can be called. This allows you to
+    	-- deal with storage and retrieval of - as well as
+    	-- copying and pasting - documents.
+    	-- To implement a class like this, several virtual
+    	-- functions should be redefined. In particular, you
+    	-- must redefine the abstract function Resources
+    	-- inherited from the superclass CDM_Application.
+    returns CString from Standard
+    is deferred;
+
+    NbDocuments (me)
+    	---Purpose: returns the number of documents handled by the current applicative session.
+    returns Integer from Standard;
+
+    GetDocument (me; index : Integer from Standard; aDoc : in out Document from TDocStd);
+    	---Purpose: Constructs the new document aDoc.
+    	-- aDoc is identified by the index index which is
+    	-- any integer between 1 and n where n is the
+    	-- number of documents returned by NbDocument.
+    	-- Example
+    	-- Handle(TDocStd_Application)
+    	-- anApp;
+    	-- if (!CafTest::Find(A)) return 1;
+    	--  Handle(TDocStd) aDoc;
+    	-- Standard_Integer nbdoc = anApp->NbDocuments();
+    	-- for (Standard_Integer i = 1; i <= nbdoc; i++) {
+    	-- aApp->GetDocument(i,aDoc);
+    
+    Formats(me: mutable; Formats: out SequenceOfExtendedString from TColStd)
+    	---Purpose: 
+    	-- Returns the format name Formats
+    	-- representing the format supported for
+    	-- application documents.
+    	-- This virtual function is to be redefined for each
+    	-- specific application.
+    is redefined deferred;
+
+    NewDocument (me : mutable; format : ExtendedString from TCollection; aDoc : out Document from TDocStd)
+    	---Purpose: Constructs the empty new document aDoc.
+    	-- This document will have the format format.
+    	-- If InitDocument is redefined for a specific
+    	-- application, the new document is handled by the
+    	-- applicative session.
+    is virtual;
+
+    InitDocument (me; aDoc : Document from TDocStd)
+    	---Purpose: Initialize the document aDoc for the applicative session.
+    	-- This virtual function is called by NewDocument
+    	-- and is to be redefined for each specific application.
+        
+    is virtual;
+
+
+    ---Purpose: Modified flag (different of disk version)
+    --          =============
+
+    --Modify(me: mutable); (see CDM_Document)
+
+
+    --IsModified(me) returns Boolean from Standard; (see CDM_Document)
+
+
+    ---Purpose: to open/save a document
+    --          =======================
+
+    Close  (me : mutable; aDoc : Document from TDocStd);
+    ---Purpose: Close the given document. the document is not any more
+    --          handled by the applicative session.
+
+
+    IsInSession (me; path : ExtendedString from TCollection)
+    	---Purpose:  Returns an index for the document found in the
+    	-- path path in this applicative session.
+    	-- If the returned value is 0, the document is not
+    	-- present in the applicative session.
+   	-- This method can be used for the interactive part
+    	-- of an application. For instance, on a call to
+    	-- Open, the document to be opened may already
+    	-- be in memory. IsInSession checks to see if this
+    	-- is the case. Open can be made to depend on
+    	-- the value of the index returned: if IsInSession
+    	--  returns 0, the document is opened; if it returns
+    	-- another value, a message is displayed asking the
+    	--  user if he wants to override the version of the
+    	--  document in memory.
+    	-- Example:
+    	-- Standard_Integer insession = A->IsInSession(aDoc);
+    	-- if (insession > 0) {
+    	-- cout << "document " << insession << " is already in session" << endl;
+    	-- return 0;
+    	-- }
+  
+    returns Integer from Standard;
+
+    Open (me : mutable; path :     ExtendedString from TCollection;
+                        aDoc : out Document from TDocStd)
+    	---Purpose: Retrieves the document aDoc stored under the
+    	-- name aName in the directory directory.
+    	-- In order not to override a version of aDoc which
+    	-- is already in memory, this method can be made
+    	-- to depend on the value returned by IsInSession.
+    returns RetrievableStatus from CDF;
+
+    SaveAs (me : mutable; aDoc : Document from TDocStd;
+                          path : ExtendedString from TCollection)
+    	---Purpose:  Save the  active document  in the file  <name> in the
+    	--           path <path> ; o verwrites  the file  if  it already exists.
+    returns StoreStatus from CDF;
+    
+    
+    Save (me : mutable; aDoc : Document from TDocStd)
+    	---Purpose: Save aDoc active document.  
+        -- Exceptions:
+    	--  Standard_NotImplemented if the document
+    	-- was not retrieved in the applicative session by using Open. 
+    returns StoreStatus from CDF;
+    
+    SaveAs (me : mutable; aDoc : Document from TDocStd;
+                          path : ExtendedString from TCollection;
+    	    	    	  theStatusMessage:  out  ExtendedString from TCollection)
+    	---Purpose:  Save the  active document  in the file  <name> in the
+    	--           path <path>  .  overwrite  the file  if  it
+    	--          already exist. 
+    returns StoreStatus from CDF;    
+    
+    Save (me : mutable; aDoc : Document from TDocStd; 
+    	    	    	theStatusMessage:  out  ExtendedString from TCollection)
+    	---Purpose: Save the document overwriting the previous file 
+    returns StoreStatus from CDF;
+    
+    --Exit (me)
+    --  to quit the application. the applicative documents must be closed before.
+    OnOpenTransaction   (me:mutable; theDoc: Document from TDocStd)
+    is virtual protected;
+    ---Purpose: Notification that is fired at each OpenTransaction event.
+
+    OnCommitTransaction (me:mutable; theDoc: Document from TDocStd)
+    is virtual protected;
+    ---Purpose: Notification that is fired at each CommitTransaction event.
+
+    OnAbortTransaction  (me:mutable; theDoc: Document from TDocStd)
+    is virtual protected;
+    ---Purpose: Notification that is fired at each AbortTransaction event.
+
+
+fields
+
+    myResources      : Manager from Resource;
+    myIsDriverLoaded : Boolean from Standard;
+
+friends
+    class Document from TDocStd
+
+end Application;
+

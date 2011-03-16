@@ -1,0 +1,157 @@
+-- File:	Convert_GridPolynomilaToPoles.cdl
+-- Created:	Mon Jul  8 13:28:08 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class GridPolynomialToPoles from Convert 
+
+	---Purpose: 
+
+uses     Array1OfReal       from TColStd,
+         HArray1OfReal      from TColStd,
+	 HArray2OfReal      from TColStd,
+	 HArray1OfInteger   from TColStd,
+	 HArray2OfInteger   from TColStd,
+	 HArray2OfPnt        from TColgp,
+         Shape              from GeomAbs
+raises 
+
+    DomainError       from Standard,
+    NotDone           from StdFail
+    
+is
+
+ Create(MaxUDegree            : Integer ;
+	MaxVDegree            : Integer ;
+	NumCoeff              : HArray1OfInteger from TColStd ;
+	Coefficients          : HArray1OfReal    from TColStd ;
+	PolynomialUIntervals  : HArray1OfReal    from TColStd ;
+	PolynomialVIntervals  : HArray1OfReal    from TColStd )
+ returns GridPolynomialToPoles
+ ---Purpose:  To    only  one   polynomial  Surface.    
+ --          The  Length  of  <PolynomialUIntervals> and <PolynomialVIntervals>
+ --          have to be 2.
+ --          This values defined the parametric domain of the Polynomial Equation.
+ --          
+ --          Coefficients :
+ --           The <Coefficients> have to be formated than an "C array" 
+ --          [MaxUDegree+1] [MaxVDegree+1] [3]
+ --          
+ ---Level:    Public
+ raises DomainError; -- if <NumCoeff>  is  not a [1,  2]  array 
+                     --  if the <Coefficients> is not a [1,(MaxUDegree+1)*(MaxVDegree+1)*3]
+                     --  array 
+			     
+			    
+ Create(NbUSurfaces           : Integer;
+        NBVSurfaces           : Integer;
+        UContinuity           : Integer ;
+    	VContinuity           : Integer ;
+	MaxUDegree            : Integer ;
+	MaxVDegree            : Integer ;
+	NumCoeffPerSurface    : HArray2OfInteger from TColStd ;
+	Coefficients          : HArray1OfReal    from TColStd ;
+	PolynomialUIntervals  : HArray1OfReal    from TColStd ;
+	PolynomialVIntervals  : HArray1OfReal    from TColStd ;
+	TrueUIntervals        : HArray1OfReal    from TColStd;
+	TrueVIntervals        : HArray1OfReal    from TColStd) 
+ returns GridPolynomialToPoles
+ ---Purpose: To one grid of polynomial Surface.
+ --  Warning!
+ --  Continuity in each parametric direction can be at MOST the
+ --  maximum degree of the polynomial functions. 
+ --           
+ --  <TrueUIntervals>, <TrueVIntervals> :
+ --  this is the true parameterisation for the composite surface
+ --  
+ --  Coefficients :
+ --  The Coefficients have to be formated than an "C array" 
+ --          [NbVSurfaces] [NBUSurfaces] [MaxUDegree+1] [MaxVDegree+1] [3] 
+--  raises DomainError    if <NumCoeffPerSurface> is not a  
+                      -- [1, NbVSurfaces*NbUSurfaces, 1,2] array.
+                      -- if <Coefficients> is not a 
+	              --[1, NbVSurfaces*NBUSurfaces*(MaxUDegree+1)*(MaxVDegree+1)*3] array
+ raises DomainError ;  
+
+
+ Perform(me : in out;
+         UContinuity           : Integer ;
+    	 VContinuity           : Integer ;
+	 MaxUDegree            : Integer ;
+	 MaxVDegree            : Integer ;
+	 NumCoeffPerSurface    : HArray2OfInteger from TColStd ;
+	 Coefficients          : HArray1OfReal    from TColStd ;
+	 PolynomialUIntervals  : HArray1OfReal    from TColStd ;
+	 PolynomialVIntervals  : HArray1OfReal    from TColStd ;
+	 TrueUIntervals        : HArray1OfReal    from TColStd ;
+	 TrueVIntervals        : HArray1OfReal    from TColStd ); 
+           
+ BuildArray(me;
+        Degree     : Integer;
+        Knots      : HArray1OfReal;
+	Continuty  : Integer;
+	FlatKnots  : in out HArray1OfReal;  
+	Mults      : in out HArray1OfInteger;
+	Parameters : in out HArray1OfReal)
+ is private;
+	
+		       
+ NbUPoles(me) returns Integer ;
+ NbVPoles(me) returns Integer ;
+  
+ Poles(me)
+  ---Purpose: returns the poles of the BSpline Surface 
+  ---C++: return const &
+ returns HArray2OfPnt ;
+
+ UDegree(me) 
+ returns Integer ;
+ 
+ VDegree(me)
+ returns Integer ;
+ 
+ NbUKnots(me) 
+ returns Integer ;
+ 
+ NbVKnots(me) 
+ returns Integer ; 
+ 
+ UKnots(me)
+ ---Purpose: Knots in the U direction
+ ---C++: return const &
+ returns HArray1OfReal;
+ 
+ VKnots(me)
+ ---Purpose:  Knots in the V direction
+  ---C++: return const &
+ returns HArray1OfReal;
+ 
+ UMultiplicities(me)
+ ---Purpose: Multiplicities of the knots in the U direction
+ ---C++: return const &
+ returns HArray1OfInteger;
+ 
+ VMultiplicities(me)
+ ---Purpose: Multiplicities of the knots in the V direction    
+ ---C++: return const &
+ returns HArray1OfInteger;
+
+ IsDone(me) returns Boolean ;	
+
+
+fields
+
+ myUFlatKnots             : HArray1OfReal    from TColStd ;
+ myVFlatKnots             : HArray1OfReal    from TColStd ;
+ myUKnots                 : HArray1OfReal    from TColStd ;
+ myVKnots                 : HArray1OfReal    from TColStd ; 
+ myUMults                 : HArray1OfInteger from TColStd ;
+ myVMults                 : HArray1OfInteger from TColStd ; 
+ myPoles                  : HArray2OfPnt     from TColgp ;
+ myUDegree                : Integer ;
+ myVDegree                : Integer ;
+ myDone                   : Boolean ;
+
+end GridPolynomialToPoles;

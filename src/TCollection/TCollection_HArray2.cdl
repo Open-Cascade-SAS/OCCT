@@ -1,0 +1,129 @@
+-- File:	TCollection_HArray2.cdl
+-- Created:	Thu Dec 17 18:00:36 1992
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+generic class HArray2 from TCollection 
+    (ItemHArray2 as any;
+     TheArray2 as Array2 from TCollection(ItemHArray2))
+
+inherits TShared
+
+	---Purpose: The class HArray2 represents bi-dimensionnal arrays 
+	-- of fixed size dynamically dimensioned at construction time.
+    	-- As with a C array, the access time to an HArray2 indexed
+    	-- item is constant and is independent of the array size.
+    	-- Arrays are commonly used as elementary data structures for more complex objects.
+    	-- HArray2 objects are handles to arrays.
+    	-- -   HArray2 arrays may be shared by several objects.
+    	-- -   You may use a TCollection_Array2 structure to get the actual array.
+    	-- HArray2 is a generic class which depends on two parameters:
+    	-- -   Item, the type of element in the array,
+    	-- -   Array, the actual type of array handled by HArray2.
+    	-- This is an instantiation with Item of the TCollection_Array2 generic class.
+    	--  Warning
+    	-- HArray2 indexes start and end at a user-defined position.
+    	-- Thus, when accessing an item you must base the indexes
+    	-- on the lower and upper bounds of the array.
+
+raises
+    RangeError from Standard,
+    OutOfRange from Standard,
+    OutOfMemory from Standard,
+    DimensionMismatch from Standard
+
+is
+    
+    Create (R1, R2, C1, C2: Integer from Standard) 
+    returns  mutable HArray2 from TCollection
+    	---Purpose: Creates an array of lower bound <R1><C1> and upper
+    	-- bound <R2><C2>.   Range    from Standard error  is
+    	-- raised when <R2> is less than <R1> or <C2> is less than <C1>.
+    raises 
+    	RangeError  from Standard,
+    	OutOfMemory from Standard;
+
+
+    Create (R1, R2, C1, C2: Integer from Standard; V : ItemHArray2) 
+    returns  mutable HArray2 from TCollection
+    	---Purpose: Creates an array of lower bound <R1><C1> and upper
+    	-- bound <R2><C2>.   Range    from Standard error  is
+    	-- raised when <R2> is less than <R1> or <C2> is less than <C1>.
+    raises 
+    	RangeError  from Standard,
+    	OutOfMemory from Standard;
+    Init(me : mutable; V : ItemHArray2) ;
+    	---Purpose: Initializes the array with the value <V>
+
+    ColLength (me) returns Integer from Standard
+    	---Purpose: Returns the number of rows of <me>.
+	---C++: inline	
+    is static ;
+
+    RowLength (me) returns Integer from Standard
+    	---Purpose: Returns the number of columns of <me>.
+        ---C++: inline
+    is static;
+
+    LowerCol (me) returns Integer from Standard
+    	---Purpose: Returns the lower column number of the array.
+	---C++: inline
+    is static ;
+
+    LowerRow (me) returns Integer from Standard
+    	---Purpose:  Returns the lower row number of the array.
+	---C++: inline
+    is static ;
+
+    UpperCol (me) returns Integer from Standard
+    	---Purpose:  Returns the upper column number of the array.
+	---C++: inline
+    is static ;
+
+    UpperRow (me) returns Integer from Standard
+    	---Purpose:  Returns the upper row number of the array.
+	---C++: inline
+    is static ;
+
+    SetValue (me : mutable; Row, Col: Integer from Standard; 
+    Value: ItemHArray2) 
+    	---Purpose: Assigns the value Value to the (Row,Col) item of this array.
+	---C++: inline
+    raises OutOfRange from Standard
+    is static ;
+
+    Value (me; Row,Col: Integer from Standard) returns any ItemHArray2
+        ---Level: Public
+    	---Purpose: Returns the value of the element of index  <Row><Col>
+    	---C++: return const &
+    raises OutOfRange from Standard
+    is static;
+
+    ChangeValue (me : mutable; Row,Col: Integer from Standard) 
+    returns any ItemHArray2
+        ---Level: Public
+    	---Purpose: Returns the value of the element of index <Row><Col>
+    	---C++: return &
+    raises OutOfRange from Standard
+    is static;
+
+    Array2(me) returns TheArray2
+        ---Purpose: Returns the Array array used as a field by this array;
+    	--   the returned array is not modifiable.
+        ---C++: return const &
+        ---C++: inline
+    is static;
+    
+    ChangeArray2(me : mutable) returns TheArray2
+        ---Purpose: -   Returns a modifiable reference on the Array array
+    	-- used as a field by this array, in order to modify it.
+        ---C++: return &
+        ---C++: inline
+    is static;
+    
+fields
+
+	myArray : TheArray2;
+	
+end HArray2 ;

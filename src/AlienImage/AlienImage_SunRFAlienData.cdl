@@ -1,0 +1,128 @@
+--
+-- File:	AlienImage_SunRFAlienData.cdl
+-- Created:	23/03/93
+-- Author:	BBL
+--
+---Copyright:	Matravision 1993
+--
+
+class SunRFAlienData from AlienImage inherits AlienImageData from AlienImage
+
+	---Version: 0.0
+
+	---Level: Public
+	---Purpose: This class defines a SUN Raster File .rs Alien image.
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	File 			from OSD,
+	AsciiString 		from TCollection,
+	ColorImage 		from Image,
+	PseudoColorImage 	from Image,
+	Image			from Image,
+	SUNRFFileHeader 	from AlienImage,
+	SUNRFFormat	 	from AlienImage
+
+raises
+	OutOfRange 	from Standard,
+	TypeMismatch 	from Standard
+
+is
+	Create returns mutable SunRFAlienData from AlienImage ;
+
+	Clear( me : in out mutable ) ;
+	---Level: Public
+	---Purpose: Frees memory allocated by SunRFAlienData and
+	--          reset Object fields.
+	---C++: alias ~
+
+	FreeData( me : in out mutable ) ;
+	---Level: Public
+	---Purpose: Frees memory allocated by SunRFAlienData
+
+	Read ( me : in out mutable ; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	---Purpose: Read content of a  SunRFAlienData object from a file .
+	--          Returns True if file is a Sun Raster file .
+
+	Write( me : in immutable; afile : in out File from OSD )
+	  returns Boolean from Standard ;
+	---Level: Public
+	---Purpose: Write content of a  SunRFAlienData object to a file .
+
+	SetFormat( me : in out mutable ;
+		   aFormat : SUNRFFormat from AlienImage);
+	---Level: Public
+	---Purpose: Set SUN Raster File Format for Write method.
+
+	Format( me : in  immutable )
+	    returns SUNRFFormat from AlienImage ;
+	---Level: Public
+	---Purpose: Get SUN Raster File Format .
+
+	ToImage( me : in  immutable) 
+	  returns mutable Image from Image 
+          raises TypeMismatch from Standard ;
+	---Level: Public
+	---Purpose : convert a SunRFAlienData object to a Image object.
+
+	FromImage( me : in out mutable ; anImage : in Image from Image )
+          raises TypeMismatch from Standard ;
+	---Level: Public
+	---Purpose : convert a Image object to a SunRFAlienData object.
+
+	--
+	--			Private Method
+	--
+
+	ToPseudoColorImage( me : in immutable) 
+	  returns PseudoColorImage from Image is private ;
+	---Level: Internal
+	---Purpose : convert a AlienImage object to a Image object.
+
+	ToColorImage( me : in immutable) 
+	  returns ColorImage from Image is private ;
+	---Level: Internal
+	---Purpose : convert a AlienImage object to a Image object.
+
+	FromPseudoColorImage( me : in out mutable ; 
+			      anImage : in PseudoColorImage from Image );
+	---Level: Internal
+	---Purpose : convert a Image object to a SunRFAlienData object.
+
+	FromColorImage( me : in out mutable ; 
+				anImage : in ColorImage from Image );
+	---Level: Internal
+	---Purpose : convert a Image object to a SunRFAlienData object.
+
+	ReadPixelRow( me : in out mutable ; 
+			afile       : in out File from OSD ;
+			aAddress    : in Address from Standard ;
+			TheRowSize  : in Integer from Standard ) 
+		returns Boolean from Standard;
+	---Level: Internal
+	---Purpose : Read a Image row from a file and store
+	--           TheRowSize byte at aAddress
+	--           returns True if Success.
+
+	WritePixelRow( me : in immutable ; 
+			afile       : in out File from OSD ;
+			aAddress    : in Address from Standard ;
+			TheRowSize  : in Integer from Standard )
+		returns Boolean from Standard;
+	---Level: Internal
+	---Purpose : Write a Image row to a file from TheRowSize byte at
+	--           aAddress
+	--           returns True if Success.
+
+fields
+	myHeader 	: SUNRFFileHeader from AlienImage is protected ;
+	myDataSize 	: Integer from Standard ;
+	myData		: Address from Standard is protected;
+	myRedData, myGreenData, myBlueData : Address from Standard is protected;
+
+end ;
+ 

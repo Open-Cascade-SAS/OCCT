@@ -1,0 +1,16 @@
+-- File:        AppStd.cdl
+-- Created:     Sep 7 14:50:00 2000
+-- Author:      TURIN Anatoliy <ati@nnov.matra-dtv.fr>
+-- Copyright:   Matra Datavision 2000
+
+package AppStd 
+
+uses  
+
+    Standard, TCollection, TColStd, Resource, CDM, TDocStd
+is
+    class Application; 
+      
+end AppStd;
+
+

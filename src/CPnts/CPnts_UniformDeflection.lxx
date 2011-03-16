@@ -1,0 +1,44 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+//=======================================================================
+//function : IsAllDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean CPnts_UniformDeflection::IsAllDone () const 
+{ 
+  return myDone;
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+
+inline void CPnts_UniformDeflection::Next()
+{ 
+  Standard_OutOfRange_Raise_if(myIPoint >= myNbPoints, "");
+  myIPoint++;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real CPnts_UniformDeflection::Value () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, "");
+  return myParams[myIPoint + 1];
+}
+//=======================================================================
+//function : Point
+//purpose  : 
+//=======================================================================
+
+inline gp_Pnt  CPnts_UniformDeflection::Point () const
+{ 
+  StdFail_NotDone_Raise_if(!myDone, "");
+  return myPoints[myIPoint + 1];
+}

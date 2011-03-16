@@ -1,0 +1,47 @@
+-- File:	DsgPrs_OffsetPresentation.cdl
+-- Created:	Wed Sep 18 17:27:47 1996
+-- Author:	Jacques MINOT
+--		<jmi@anotax.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class OffsetPresentation from DsgPrs
+
+        ---Purpose: A framework to define display of offsets.
+uses
+    Presentation from Prs3d,
+    Pnt from gp,
+    Dir from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection,
+    ArrowSide from DsgPrs
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection: Dir from gp;
+		  aDirection2: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Defines the display of elements showing offset shapes.
+    	-- These include the two points of attachment
+    	-- AttachmentPoint1 and AttachmentPoint1, the two
+    	-- directions aDirection and aDirection2, and the offset point OffsetPoint.
+    	-- These arguments are added to the presentation
+    	-- object aPresentation. Their display attributes are
+    	-- defined by the attribute manager aDrawer.
+
+    AddAxes( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+		  aText: ExtendedString from TCollection;
+                  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection: Dir from gp;
+		  aDirection2: Dir from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: draws the representation of axes alignement Constraint
+	--          between the point AttachmentPoint1 and the
+	--          point AttachmentPoint2, along direction 
+	--          aDirection, using the offset point OffsetPoint.
+
+end OffsetPresentation;

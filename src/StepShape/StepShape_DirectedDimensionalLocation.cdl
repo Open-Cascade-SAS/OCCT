@@ -1,0 +1,19 @@
+-- File:	StepShape_DirectedDimensionalLocation.cdl
+-- Created:	Tue Apr 24 12:16:53 2001 
+-- Author:	Christian CAILLET
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class DirectedDimensionalLocation from StepShape
+inherits DimensionalLocation from StepShape
+
+    ---Purpose: Representation of STEP entity DirectedDimensionalLocation
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns DirectedDimensionalLocation from StepShape;
+	---Purpose: Empty constructor
+
+end DirectedDimensionalLocation;

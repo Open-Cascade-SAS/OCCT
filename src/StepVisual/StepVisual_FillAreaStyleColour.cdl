@@ -1,0 +1,36 @@
+-- File:        FillAreaStyleColour.cdl
+-- Created:     Fri Dec  1 11:11:20 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class FillAreaStyleColour from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Colour from StepVisual
+is
+
+	Create returns mutable FillAreaStyleColour;
+	---Purpose: Returns a FillAreaStyleColour
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aFillColour : mutable Colour from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetFillColour(me : mutable; aFillColour : mutable Colour);
+	FillColour (me) returns mutable Colour;
+
+fields
+
+	name : HAsciiString from TCollection;
+	fillColour : Colour from StepVisual;
+
+end FillAreaStyleColour;

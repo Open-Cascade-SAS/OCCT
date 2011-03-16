@@ -1,0 +1,40 @@
+-- File:	TopOpeBRepTool_HBoxTool.cdl
+-- Created:	Thu Jul  8 20:02:32 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class HBoxTool from TopOpeBRepTool inherits TShared from MMgt
+
+uses
+
+    Box from Bnd,
+    Shape from TopoDS,
+    ShapeEnum from TopAbs,
+    IndexedDataMapOfShapeBox from TopOpeBRepTool
+    
+is
+    
+    Create returns mutable HBoxTool from TopOpeBRepTool;
+    Clear(me:mutable);
+    AddBoxes(me:mutable;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
+    AddBox(me:mutable;S:Shape);
+
+    ComputeBox(myclass;S:Shape;B:out Box from Bnd);
+    ComputeBoxOnVertices(myclass;S:Shape;B:out Box from Bnd);
+    DumpB(myclass;B:Box from Bnd);
+
+    Box(me:mutable;S:Shape) returns Box from Bnd;---C++: return const &
+    Box(me; I:Integer) returns Box from Bnd;---C++: return const &
+    HasBox(me; S:Shape) returns Boolean;
+    Shape(me; I:Integer) returns Shape;---C++: return const &
+    Index(me; S:Shape) returns Integer;
+    Extent(me) returns Integer;
+    ChangeIMS(me:mutable) returns IndexedDataMapOfShapeBox;---C++:return &
+    IMS(me) returns IndexedDataMapOfShapeBox;---C++:return const &
+    
+fields
+
+    myIMS:IndexedDataMapOfShapeBox from TopOpeBRepTool;
+
+end HBoxTool;

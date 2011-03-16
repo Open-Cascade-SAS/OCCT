@@ -1,0 +1,165 @@
+-- File:	 ConicToBSplineCurve.cdl
+-- Created:	 Thu Oct 10 11:26:44 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+
+deferred class ConicToBSplineCurve   from Convert
+
+        ---Purpose: Root class for algorithms which convert a conic curve into
+    	--  a BSpline curve (CircleToBSplineCurve, EllipseToBSplineCurve,
+        --  HyperbolaToBSplineCurve, ParabolaToBSplineCurve).
+    	-- These algorithms all work on 2D curves from the gp
+    	-- package and compute all the data needed to construct a
+    	-- BSpline curve equivalent to the conic curve. This data consists of:
+    	-- -   the degree of the curve,
+    	-- -   the periodic characteristics of the curve,
+    	-- -   a poles table with associated weights,
+    	-- -   a knots table with associated multiplicities.
+    	-- The abstract class ConicToBSplineCurve provides a
+    	-- framework for storing and consulting this computed data.
+    	-- The data may then be used to construct a
+    	-- Geom2d_BSplineCurve curvSuper class of the following classes :
+        --  This abstract class implements the methods to get the geometric
+        --  representation of the B-spline curve equivalent to the conic.
+        --  The B-spline is computed at the creation time in the sub classes.
+        --  The B-spline curve is defined with its degree, its control points
+        --  (Poles), its weights, its knots and their multiplicity.
+        --  All the geometric entities used in this package are defined in 2D
+        --  space.
+        --  KeyWords :
+        --  Convert, Conic, BSplineCurve, 2D.
+
+uses Array1OfInteger      from TColStd,
+     Array1OfReal         from TColStd,
+     HArray1OfInteger     from TColStd,
+     HArray1OfReal        from TColStd,
+     HArray1OfPnt2d       from TColgp,
+     ParameterisationType from Convert,
+     Pnt2d                from gp
+     
+
+raises  OutOfRange        from Standard,
+        ConstructionError from Standard 
+        
+
+is
+
+  Degree (me)   returns Integer   is static;
+    	---Purpose: Returns the degree of the BSpline curve whose data is
+    	-- computed in this framework.
+
+  NbPoles (me)  returns Integer   is static;
+    	---Purpose: Returns the number of poles of the BSpline curve whose
+    	-- data is computed in this framework.
+    
+  NbKnots (me)  returns Integer   is static;
+    	---Purpose: Returns the number of knots of the BSpline curve whose
+    	-- data is computed in this framework.
+  
+  IsPeriodic(me) returns Boolean  is static;
+    	--- Purpose: Returns true if the BSpline curve whose data is computed in
+    	-- this framework is periodic.
+  
+  Pole (me; Index : Integer)   returns Pnt2d
+        --- Purpose : Returns the pole of index Index to the poles table of the
+    	-- BSpline curve whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the bounds of
+    	-- the poles table of the BSpline curve whose data is computed in this framework.
+     raises OutOfRange
+     is static;
+
+
+  Weight (me; Index : Integer)    returns Real
+        --- Purpose : Returns the weight of the pole of index Index to the poles
+    	-- table of the BSpline curve whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the bounds of
+    	-- the poles table of the BSpline curve whose data is computed in this framework.
+     raises OutOfRange
+     is static;
+
+
+  Knot (me; Index : Integer)   returns Real
+        --- Purpose : Returns the knot of index Index to the knots table of the
+    	-- BSpline curve whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the bounds of
+    	-- the knots table of the BSpline curve whose data is computed in this framework.
+     raises OutOfRange
+     is static;
+
+
+  Multiplicity (me; Index : Integer)    returns Integer
+        --- Purpose : Returns the multiplicity of the knot of index Index to the
+    	-- knots table of the BSpline curve whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the bounds of
+    	-- the knots table of the BSpline curve whose data is computed in this framework.
+     raises OutOfRange
+     is static;
+
+  
+  Initialize (NumberOfPoles, NumberOfKnots, Degree : Integer);
+  
+  BuildCosAndSin(me ;
+    Parametrisation   :  ParameterisationType       from Convert ;
+      --
+      -- allowed parameterisation are TgtThetaOver2 and RationalC1
+      -- will raise otherwise 
+    CosNumerator      : in out HArray1OfReal        from TColStd  ;
+      --  Array has the following dimensions :
+      --  <1, NbPoles> without multiplying by the weights
+
+    SinNumerator      :  in out HArray1OfReal       from TColStd  ;
+      --  Array has the following dimensions :
+      --  <1, NbPoles> without multiplying by the weights
+    Denominator       :  in out HArray1OfReal       from TColStd  ;
+      -- Array has the following dimension
+      -- <1, NbPoles>
+    Degree            :  in out  Integer            from Standard ;
+    Knots             :  in out HArray1OfReal       from TColStd  ;
+    Mults             :  in out HArray1OfInteger    from TColStd) 
+    raises ConstructionError 
+    -- see above
+    is static ;
+    -- builds a full periodic circle
+    -- 
+  BuildCosAndSin(me; 
+    Parametrisation   :  ParameterisationType       from Convert ; 
+    UFirst            :  Real                       from Standard ;
+    ULast             :  Real                       from Standard ;
+    CosNumerator      : in out HArray1OfReal        from TColStd  ;
+      --  Array has the following dimensions :
+      --  <1, NbPoles> without multiplying by the weights
+
+    SinNumerator      :  in out HArray1OfReal       from TColStd  ;
+      --  Array has the following dimensions :
+      --  <1, NbPoles> without multiplying by the weights
+    Denominator       :  in out HArray1OfReal       from TColStd  ;
+      -- Array has the following dimension
+      -- <1, NbPoles>
+    Degree            :  in out  Integer            from Standard ;
+    Knots             :  in out HArray1OfReal       from TColStd  ;
+    Mults             :  in out HArray1OfInteger    from TColStd) 
+    raises ConstructionError
+    is static ;
+
+fields
+
+  poles      : HArray1OfPnt2d    is protected;
+  weights    : HArray1OfReal     is protected;
+  knots      : HArray1OfReal     is protected;
+  mults      : HArray1OfInteger  is protected;
+  degree     : Integer           is protected;
+  nbPoles    : Integer           is protected;
+  nbKnots    : Integer           is protected;
+  isperiodic : Boolean           is protected;
+
+end ConicToBSplineCurve;
+
+

@@ -1,0 +1,73 @@
+-- File:        BSplineSurface.cdl
+-- Created:     Fri Dec  1 11:11:14 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BSplineSurface from StepGeom 
+
+inherits BoundedSurface from StepGeom 
+
+
+  -- N.B : EXPRESS Complexe SUBTYPE Declaration :
+
+  -- ANDOR ( ONEOF ( b_spline_surface_with_knots uniform_surface quasi_uniform_surface bezier_surface ) rational_b_spline_surface ) 
+
+uses
+
+	Integer from Standard, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData, 
+	CartesianPoint from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable BSplineSurface;
+	---Purpose: Returns a BSplineSurface
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aUDegree : Integer from Standard;
+	      aVDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
+	      aUClosed : Logical from StepData;
+	      aVClosed : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetUDegree(me : mutable; aUDegree : Integer);
+	UDegree (me) returns Integer;
+	SetVDegree(me : mutable; aVDegree : Integer);
+	VDegree (me) returns Integer;
+	SetControlPointsList(me : mutable; aControlPointsList : mutable HArray2OfCartesianPoint);
+	ControlPointsList (me) returns mutable HArray2OfCartesianPoint;
+	ControlPointsListValue (me; num1 : Integer;  num2 : Integer) returns mutable CartesianPoint;
+	NbControlPointsListI (me) returns Integer;
+	NbControlPointsListJ (me) returns Integer;
+	SetSurfaceForm(me : mutable; aSurfaceForm : BSplineSurfaceForm);
+	SurfaceForm (me) returns BSplineSurfaceForm;
+	SetUClosed(me : mutable; aUClosed : Logical);
+	UClosed (me) returns Logical;
+	SetVClosed(me : mutable; aVClosed : Logical);
+	VClosed (me) returns Logical;
+	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
+	SelfIntersect (me) returns Logical;
+
+fields
+
+	uDegree : Integer from Standard;
+	vDegree : Integer from Standard;
+	controlPointsList : HArray2OfCartesianPoint from StepGeom;
+	surfaceForm : BSplineSurfaceForm from StepGeom; -- an Enumeration
+	uClosed : Logical from StepData;
+	vClosed : Logical from StepData;
+	selfIntersect : Logical from StepData;
+
+end BSplineSurface;

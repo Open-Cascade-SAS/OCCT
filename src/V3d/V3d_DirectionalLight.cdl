@@ -1,0 +1,126 @@
+-- File:	DirectionalLight.cdl
+-- Created:	Wed Jan 22 15:51:06 1992
+-- Author:	GG
+-- Update:      FDA Oct 15 1994
+--		ZOV - Mars 30 1998
+---Copyright:	Matra Datavision 1992
+
+
+class DirectionalLight from V3d
+
+    	---Purpose: Create and modify a directional light source
+	--          in a viewer.
+
+ 
+ 
+inherits PositionLight from V3d
+
+uses 
+
+	Viewer from V3d,
+	TypeOfOrientation from V3d,
+	TypeOfRepresentation from V3d,
+	Coordinate from V3d,
+	NameOfColor from Quantity,
+	Parameter from Quantity,
+	Vertex from Graphic3d,
+	Structure from Graphic3d,
+	Group from Graphic3d,
+	View from V3d
+
+raises BadValue from Viewer
+
+is
+
+    	Create ( VM : mutable Viewer ; 
+		 Direction : TypeOfOrientation = V3d_XposYposZpos;
+		 Color : NameOfColor = Quantity_NOC_WHITE; 
+    	    	 Headlight : Boolean  from  Standard  =  Standard_False)
+				returns mutable DirectionalLight ;
+        ---Level: Public
+      	---Purpose : Creates a directional light source in the viewer.
+
+    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+	         Xp,Yp,Zp : Coordinate;
+		 Color : NameOfColor = Quantity_NOC_WHITE;
+    	    	 Headlight : Boolean  from  Standard  =  Standard_False)
+		       returns mutable DirectionalLight;
+	---Level: Public
+	---Purpose: Creates a directional light source in the viewer.
+	--          Xt,Yt,Zt : Coordinate of light source Target.
+	--          Xp,Yp,Zp : Coordinate of light source Position.
+	--          The others parameters describe before.
+
+        --------------------------------------------------------
+        ---Category: Methods to modify the attributes of the light
+        --------------------------------------------------------
+
+    	SetDirection ( me : mutable; Direction : TypeOfOrientation ) is static;
+	---Level: Public
+	---Purpose : Defines the direction of the light source
+	--	     by a predefined orientation.
+
+    	SetDirection ( me : mutable; Xm, Ym, Zm : Parameter ) raises BadValue from Viewer is static;
+	---Level: Public
+	---Purpose : Defines the direction of the light source by the predefined
+    	-- vector Xm,Ym,Zm.
+	--  Warning: raises  BadValue from Viewer if the vector is null.
+
+        SetDisplayPosition (me : mutable; X,Y,Z : Coordinate) is static;
+	---Level: Public
+	---Purpose: Defines the point of light source representation.
+
+        SetPosition (me : mutable; Xp,Yp,Zp : Coordinate) is redefined;
+	---Level: Public
+	---Purpose: Calls SetDisplayPosition method.
+
+        ---------------------------------------------------
+        ---Category: display methods
+        ---------------------------------------------------
+
+        Display(me: mutable; aView: View from V3d;
+	        Representation : TypeOfRepresentation)
+	is redefined static;
+	---Level: Public
+	---Purpose: Display the graphic structure of light source
+	--          in the choosen view. We have three type of representation
+	--          - SIMPLE   : Only the light source is displayed.
+	--          - PARTIAL  : The light source and the light space are
+	--                       displayed.
+	--          - COMPLETE : The same representation as PARTIAL.
+	--          We can choose the "SAMELAST" as parameter of representation
+	--          In this case the graphic structure representation will be 
+	--          the last displayed.
+
+        ---------------------------------------------------
+        ---Category: Inquiry methods
+        ---------------------------------------------------
+
+        Position ( me; X,Y,Z : out Coordinate ) is redefined;
+	---Level: Public
+	---Purpose: Calls DisplayPosition method.
+
+        DisplayPosition ( me; X,Y,Z : out Coordinate ) is static;
+	---Level: Public
+	---Purpose: Returns the choosen position to represent the light
+	--          source.
+
+    	Direction ( me; Vx,Vy,Vz : out Parameter ) is static;
+	---Level: Public
+	---Purpose : Returns the Vx,Vy,Vz direction of the light source. 
+
+        -----------------------------------------
+        ---Category: Private or Protected methods
+        -----------------------------------------
+        
+        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+                      aView   : View from V3d ) is redefined static private;
+    	---Level: Internal
+	---Purpose: Defines the representation of the directional light source.
+
+fields
+
+        MyDisplayPosition:      Vertex from Graphic3d;
+
+end DirectionalLight;
+

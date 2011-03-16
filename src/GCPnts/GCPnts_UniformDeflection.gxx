@@ -1,0 +1,259 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <GCPnts_DeflectionType.hxx>
+#include <CPnts_UniformDeflection.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <BSplCLib.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <Precision.hxx>
+
+
+//=======================================================================
+//function : Controle
+//purpose  :
+//=======================================================================
+static void Controle (const TheCurve& C,
+                      TColStd_SequenceOfReal& Parameters,
+                      TColgp_SequenceOfPnt& Points,
+                      const Standard_Real U2)
+{
+  Standard_Integer nbp = Points.Length();
+
+  if (nbp > 2)
+  {
+    Standard_Real Ua = Parameters (nbp - 2);
+    Standard_Real Ub = Parameters (nbp - 1);
+    if (U2 - Ub < 0.33 * (U2 - Ua))
+    {
+      Standard_Real Uc = (U2 + Ua) * 0.5;
+      Parameters (nbp - 1) = Uc;
+      Points (nbp - 1) = Value (C, Uc);
+    }
+  }
+}
+
+
+//=======================================================================
+//function : PerformLinear
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformLinear (const TheCurve& C,
+                                       TColStd_SequenceOfReal& Parameters,
+                                       TColgp_SequenceOfPnt& Points,
+                                       const Standard_Real U1,
+                                       const Standard_Real U2)
+{
+  gp_Pnt aPoint;
+  Parameters.Append (U1);
+  aPoint = Value (C, U1);
+  Points.Append (aPoint);
+
+  Parameters.Append (U2);
+  aPoint = Value (C, U2);
+  Points.Append (aPoint);
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : PerformCircular
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformCircular (const TheCurve& C,
+                                         TColStd_SequenceOfReal& Parameters,
+                                         TColgp_SequenceOfPnt& Points,
+                                         const Standard_Real Deflection,
+                                         const Standard_Real U1,
+                                         const Standard_Real U2)
+{
+  gp_Pnt aPoint;
+  Standard_Real Angle = Max (1.0e0 - (Deflection / C.Circle().Radius()), 0.0e0);
+  Angle = 2.0e0 * ACos (Angle);
+  Standard_Integer NbPoints = (Standard_Integer )((U2 - U1) / Angle);
+  NbPoints += 2;
+  Angle = (U2 - U1) / (Standard_Real) (NbPoints - 1);
+  Standard_Real U = U1;
+  for (Standard_Integer i = 1; i <= NbPoints; ++i)
+  {
+    Parameters.Append (U);
+    aPoint = Value (C, U);
+    Points.Append (aPoint);
+    U += Angle;
+  }
+  return Standard_True;
+}
+
+
+static GCPnts_DeflectionType GetDefType (TheCurve& C)
+{
+  if (C.NbIntervals (GeomAbs_C2) > 1)
+    return GCPnts_DefComposite;
+
+  switch (C.GetType())
+  {
+    case GeomAbs_Line:   return GCPnts_Linear;
+    case GeomAbs_Circle: return GCPnts_Circular;
+    case GeomAbs_BSplineCurve:
+    {
+      Handle_TheBSplineCurve aBSpline = C.BSpline();
+      return (aBSpline->NbPoles() == 2) ? GCPnts_Linear : GCPnts_Curved;
+    }
+    case GeomAbs_BezierCurve:
+    {
+      Handle_TheBezierCurve aBezier = C.Bezier();
+      return (aBezier->NbPoles() == 2) ? GCPnts_Linear : GCPnts_Curved;
+    }
+    default: return GCPnts_Curved;
+  }
+}
+
+
+//=======================================================================
+//function : PerformCurve
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
+                                      TColgp_SequenceOfPnt&   Points,
+                                      const TheCurve& C,
+                                      const Standard_Real Deflection,
+                                      const Standard_Real U1,
+                                      const Standard_Real U2,
+                                      const Standard_Real EPSILON,
+                                      const Standard_Boolean WithControl)
+{
+  CPnts_UniformDeflection Iterator (C, Deflection, U1, U2, EPSILON, WithControl);
+  for(; Iterator.More(); Iterator.Next())
+  {
+    Parameters.Append (Iterator.Value());
+    Points.Append (Iterator.Point());
+  }
+  return Iterator.IsAllDone();
+}
+
+
+//=======================================================================
+//function : PerformComposite
+//purpose  :
+//=======================================================================
+static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
+                                          TColgp_SequenceOfPnt& Points,
+                                          TheCurve& C,
+                                          const Standard_Real Deflection,
+                                          const Standard_Real U1,
+                                          const Standard_Real U2,
+                                          const Standard_Real EPSILON,
+                                          const Standard_Boolean WithControl)
+{
+  Standard_Integer NbIntervals = C.NbIntervals (GeomAbs_C2);
+  Standard_Integer PIndex;
+
+  TColStd_Array1OfReal TI (1, NbIntervals + 1);
+  C.Intervals (TI, GeomAbs_C2);
+  BSplCLib::Hunt (TI, U1, PIndex);
+
+  // iterate by continuous segments
+  Standard_Real Ua = U1;
+  for (Standard_Integer Index = PIndex;;)
+  {
+    Standard_Real Ub = Min (U2, TI (Index + 1));
+    if (!PerformCurve (Parameters, Points, C, Deflection,
+		    Ua, Ub, EPSILON, WithControl))
+    {
+      return Standard_False;
+    }
+    ++Index;
+    if (Index > NbIntervals || U2 < TI (Index))
+      return Standard_True;
+
+    // remove last point to avoid duplication
+    Parameters.Remove (Parameters.Length());
+    Points.Remove (Parameters.Length());
+
+    Ua = Ub;
+  }
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : GCPnts_UniformDeflection
+//purpose  :
+//=======================================================================
+GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
+                                                    const Standard_Real Deflection,
+                                                    const Standard_Real U1,
+                                                    const Standard_Real U2,
+                                                    const Standard_Boolean WithControl)
+{
+  Initialize (C, Deflection, U1, U2, WithControl);
+}
+
+
+//=======================================================================
+//function : GCPnts_UniformDeflection
+//purpose  :
+//=======================================================================
+GCPnts_UniformDeflection::GCPnts_UniformDeflection (TheCurve& C,
+                                                    const Standard_Real Deflection,
+                                                    const Standard_Boolean WithControl)
+{
+  Initialize(C, Deflection, WithControl);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  :
+//=======================================================================
+void   GCPnts_UniformDeflection::Initialize (TheCurve& C,
+                                             const Standard_Real Deflection,
+                                             const Standard_Boolean WithControl)
+{
+  Initialize (C, Deflection, C.FirstParameter(), C.LastParameter(), WithControl);
+}
+
+
+//=======================================================================
+//function : Initialize
+//purpose  :
+//=======================================================================
+void GCPnts_UniformDeflection::Initialize (TheCurve& C,
+                                           const Standard_Real Deflection,
+                                           const Standard_Real theU1,
+                                           const Standard_Real theU2,
+                                           const Standard_Boolean WithControl)
+{
+  Standard_Real EPSILON = C.Resolution (Precision::Confusion());
+  myDeflection = Deflection;
+  myDone = Standard_False;
+  myParams.Clear();
+  myPoints.Clear();
+  Standard_Real U1 = Min (theU1, theU2);
+  Standard_Real U2 = Max (theU1, theU2);
+  GCPnts_DeflectionType Type = GetDefType (C);
+  switch (Type)
+  {
+    case GCPnts_Linear:
+      myDone = PerformLinear (C, myParams, myPoints, U1, U2);
+      break;
+    case GCPnts_Circular:
+      myDone = PerformCircular (C, myParams, myPoints, Deflection, U1, U2);
+      break;
+    case GCPnts_Curved:
+      myDone = PerformCurve (myParams, myPoints, C, Deflection,
+                             U1, U2, EPSILON, WithControl);
+      break;
+    case GCPnts_DefComposite:
+      myDone = PerformComposite (myParams, myPoints, C, Deflection,
+                                 U1, U2, EPSILON, WithControl);
+      break;
+  }
+
+  // controle des derniers points:
+  Controle (C, myParams, myPoints, U2);
+}

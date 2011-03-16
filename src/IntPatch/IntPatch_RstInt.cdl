@@ -1,0 +1,33 @@
+-- File:      IntPatch_RstInt.cdl
+-- Created:   Fri May  7 12:45:18 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
+
+class RstInt from IntPatch
+
+    ---Purpose: trouver les points d intersection entre la ligne de
+    --          cheminement et les arcs de restriction
+
+uses Polygo     from IntPatch,
+     PolygoTool from IntPatch,
+     Line       from IntPatch,
+     HSurface   from Adaptor3d,
+     TopolTool  from Adaptor3d
+
+raises DomainError from Standard
+
+is
+
+    PutVertexOnLine(myclass;
+                    L         : in out Line from IntPatch; 
+                    Surf      : HSurface from Adaptor3d; 
+                    Domain    : TopolTool from Adaptor3d; 
+                    OtherSurf : HSurface from Adaptor3d; 
+                    OnFirst   : Boolean from Standard ;
+                    Tol       : Real from Standard)
+
+    	raises DomainError from Standard;
+    	--- The exception is raised if the Line from is neither
+    	--  a WLine nor a RLine.
+
+end RstInt;

@@ -1,0 +1,33 @@
+-- File:        PreDefinedColour.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PreDefinedColour from StepVisual 
+
+-- inherits PreDefinedItem from StepVisual 
+-- WARNING : Multiple EXPRESS inheritance
+-- Not yet automaticly managed
+inherits Colour from StepVisual 
+
+uses
+
+	HAsciiString from TCollection,
+	PreDefinedItem from StepVisual
+is
+
+	Create returns mutable PreDefinedColour;
+	---Purpose: Returns a PreDefinedColour
+
+    	SetPreDefinedItem (me: mutable; item: PreDefinedItem from StepVisual);
+	---Purpose: set a pre_defined_item part
+    	GetPreDefinedItem (me) returns PreDefinedItem from StepVisual;
+	---Purpose: return a pre_defined_item part
+	---C++: return const &
+
+fields
+
+    myItem: PreDefinedItem from StepVisual;
+
+end PreDefinedColour;

@@ -1,0 +1,20 @@
+-- File:        CameraModel.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CameraModel from StepVisual 
+
+inherits GeometricRepresentationItem from StepGeom 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable CameraModel;
+	---Purpose: Returns a CameraModel
+
+
+end CameraModel;

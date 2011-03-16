@@ -1,0 +1,58 @@
+--
+-- File      :  IntercharacterSpacing.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( TCD )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class IntercharacterSpacing from IGESGraph  inherits IGESEntity
+
+        ---Purpose: defines IGESIntercharacterSpacing, Type <406> Form <18>
+        --          in package IGESGraph
+        --
+        --          Specifies the gap between letters when fixed-pitch
+        --          spacing is used
+
+uses  Integer, Real  -- no one specific type
+
+
+is
+
+        Create returns mutable IntercharacterSpacing;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me       : mutable;
+              nbProps  : Integer;
+              anISpace : Real);
+        ---Purpose : This method is used to set the fields of the class
+        --           IntercharacterSpacing
+        --       - nbProps  : Number of property values (NP = 1)
+        --       - anISpace : Intercharacter spacing percentage
+
+        NbPropertyValues (me) returns Integer;
+        ---Purpose : returns the number of property values in <me>
+
+        ISpace (me) returns Real;
+        ---Purpose : returns the Intercharacter Space of <me> in percentage
+        -- of the text height (Range = 0..100)
+
+fields
+
+--
+-- Class    : IGESGraph_IntercharacterSpacing
+--
+-- Purpose  : Declaration of the variables specific to a
+--            Intercharacter Spacing property.
+--
+-- Reminder : An Intercharacter spacing property is defined by :
+--                  - Number of property values (NP=1)
+--                  - ISpace
+--
+
+        theNbPropertyValues : Integer;
+
+        theISpace           : Real;
+
+end IntercharacterSpacing;

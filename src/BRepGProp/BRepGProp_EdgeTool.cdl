@@ -1,0 +1,72 @@
+-- File:	BRepGProp_EdgeTool.cdl
+-- Created:	Tue Dec  7 10:39:08 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class EdgeTool from BRepGProp
+
+     --- Purpose :   Provides  the required  methods    to instantiate
+     --  CGProps from GProp with a Curve from BRepAdaptor.
+
+uses Pnt from gp,
+     Vec from gp,
+     Curve from BRepAdaptor,
+     Shape from GeomAbs,
+     Array1OfReal from TColStd
+raises
+    OutOfRange  from Standard
+
+is
+
+
+  FirstParameter (myclass; C : Curve from BRepAdaptor)   returns Real;
+        --- Purpose :
+        --  Returns the parametric value of the start point of
+        --  the curve.  The curve is oriented from the start point
+        --  to the end point.
+
+
+  LastParameter (myclass; C : Curve from BRepAdaptor)   returns Real;
+        --- Purpose :
+        --  Returns the parametric value of the end point of
+        --  the curve.  The curve is oriented from the start point
+        --  to the end point.
+
+
+  IntegrationOrder (myclass; C : Curve from BRepAdaptor)    returns Integer;
+        --- Purpose :
+        --  Returns the number of Gauss points required to do
+        --  the integration with a good accuracy using the
+        --  Gauss method.  For a polynomial curve of degree n
+        --  the maxima of accuracy is obtained with an order
+        --  of integration equal to 2*n-1.
+
+
+  Value (myclass; C : Curve from BRepAdaptor; U : Real)  returns Pnt;
+    	--- Purpose : Returns the point of parameter U on the loaded curve.
+
+
+  D1 (myclass; C : Curve from BRepAdaptor; U: Real; P: out Pnt; V1: out Vec);
+    	--- Purpose : 
+    	--  Returns the point of parameter U and the first derivative
+    	--  at this point.
+
+  NbIntervals(myclass; C : Curve from BRepAdaptor; S : Shape from GeomAbs)
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    	returns Integer;
+
+  Intervals(myclass; C : Curve from BRepAdaptor;
+    	    	     T : in out Array1OfReal from TColStd; 
+    	             S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    	raises
+    	    OutOfRange from Standard;
+
+end EdgeTool;

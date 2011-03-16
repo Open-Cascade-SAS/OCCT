@@ -1,0 +1,60 @@
+-- File:	TFunction.cdl
+-- Created:	Thu Jun 10 19:08:45 1999
+-- Author:	Vladislav ROMASHKO
+--		<vro@flox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+package TFunction 
+    --- Purpose: Function attributes separate data from
+    -- algorithms. Each function contains the ID of a function driver.
+uses  
+
+    Standard, 
+    TCollection,  
+    TColStd,
+    TDF, 
+    TDataStd
+ 
+is 
+  
+    enumeration ExecutionStatus is
+    	ES_WrongDefinition,
+	ES_NotExecuted,
+	ES_Executing,
+	ES_Succeeded,
+	ES_Failed;
+
+    deferred class Driver;         
+
+    class DriverTable;   
+
+    class Logbook;
+
+    class DataMapOfGUIDDriver
+    instantiates DataMap from TCollection(GUID   from Standard, 
+	    	 		       	  Driver from TFunction, 
+				          GUID   from Standard);
+    class Array1OfDataMapOfGUIDDriver
+    instantiates Array1 from TCollection(DataMapOfGUIDDriver from TFunction);
+    class HArray1OfDataMapOfGUIDDriver
+    instantiates HArray1 from TCollection(DataMapOfGUIDDriver from TFunction,
+    	    	    	    	    	  Array1OfDataMapOfGUIDDriver from TFunction);
+
+    class Function; 
+    class GraphNode;
+    class Scope;
+
+    class IFunction;
+    class Iterator;
+
+    class DataMapOfLabelListOfLabel
+    instantiates DataMap from TCollection(Label          from TDF, 
+	    	 		       	  LabelList      from TDF, 
+				          LabelMapHasher from TDF);     
+    class DoubleMapOfIntegerLabel
+    instantiates DoubleMap from TCollection(Integer from Standard,
+    	    	    	    	    	    Label from TDF,
+					    MapIntegerHasher from TColStd,
+					    LabelMapHasher from TDF);
+
+end TFunction;    

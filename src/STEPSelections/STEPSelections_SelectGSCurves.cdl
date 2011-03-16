@@ -1,0 +1,31 @@
+-- File:	StepSelect_STEPGSCurves.cdl
+-- Created:	Mon Mar 22 17:55:38 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectGSCurves from STEPSelections inherits SelectExplore from IFSelect
+
+	---Purpose: This selection returns "curves in the geometric_set (except composite curves)"
+
+uses
+        
+    AsciiString from TCollection,
+    Transient,
+    EntityIterator,
+    Graph
+
+is
+
+    Create returns mutable SelectGSCurves;
+    
+    Explore(me; level: Integer; ent: Transient; G: Graph;
+    	    	explored: in out EntityIterator)
+    returns Boolean;
+    	---Purpose:
+	
+    ExploreLabel (me) returns AsciiString from TCollection;
+    	---Purpose : Returns a text defining the criterium : "Curves"
+    
+end SelectGSCurves;

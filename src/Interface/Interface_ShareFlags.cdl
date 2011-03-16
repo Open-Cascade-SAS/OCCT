@@ -1,0 +1,76 @@
+-- File:	Interface_ShareFlags.cdl
+-- Created:	Mon Apr  5 19:31:50 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class ShareFlags  from Interface
+
+    ---Purpose : This class only says for each Entity of a Model, if it is
+    --           Shared or not by one or more other(s) of this Model
+    --           It uses the General Service "Shared".
+
+uses HSequenceOfTransient from TColStd,
+     BitMap, InterfaceModel, EntityIterator,
+     GeneralLib, Protocol from Interface, GTool, Graph
+
+raises DomainError, OutOfRange
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns ShareFlags;
+    ---Purpose : Creates a ShareFlags from a Model and builds required data
+    --           (flags) by calling the General Service Library given as
+    --           argument <lib>
+
+    Create (amodel : InterfaceModel; gtool : GTool from Interface)
+    	returns ShareFlags;
+    ---Purpose : Same as above, but GeneralLib is detained by a GTool
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns ShareFlags;
+    ---Purpose : Same as above, but GeneralLib is defined through a Protocol
+
+    Create (amodel : InterfaceModel) returns ShareFlags;
+    ---Purpose : Same as above, but works with the GTool of the Model
+
+    Create (agraph : Graph) returns ShareFlags;
+    ---Purpose : Creates a ShareFlags by querying informations from a Graph
+    --           (remark that Graph also has a method IsShared)
+
+    Evaluate (me : in out; lib : GeneralLib; gtool : GTool)  is static private;
+    ---Purpose : Computes flags at Creation time
+    --           
+    --           Normally, gtool suffices. But if a Graph is created from a
+    --           GeneralLib directly, it cannot be used
+    --           If <gtool> is defined, it has priority
+
+    Model (me) returns InterfaceModel;
+    ---Purpose : Returns the Model used for the evaluation
+
+    IsShared (me; ent : Transient) returns Boolean
+    ---Purpose : Returns True if <ent> is Shared by one or more other
+    --           Entity(ies) of the Model
+    	raises DomainError;
+    --           Error if <ent> does not come from the Model
+
+    RootEntities (me) returns EntityIterator;
+    ---Purpose : Returns the Entities which are not Shared (see their flags)
+
+    NbRoots (me) returns Integer;
+    ---Purpose : Returns the count of root entities
+
+    Root (me; num : Integer = 1) returns any Transient
+    ---Purpose : Returns a root entity according its rank in the list of roots
+    --           By default, it returns the first one
+    	raises OutOfRange;
+    --           Error if <num> if not between 1 and <NbRoots>
+
+fields
+
+    themodel : InterfaceModel;
+    theflags : BitMap;
+    theroots : HSequenceOfTransient from TColStd;
+
+end ShareFlags;

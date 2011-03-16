@@ -1,0 +1,9 @@
+// File:	SelectMgr_CompositionFilter.lxx
+// Created:	Tue Jan 21 15:05:42 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+
+inline const SelectMgr_ListOfFilter& SelectMgr_CompositionFilter::
+StoredFilters() const
+{return myFilters;}

@@ -1,0 +1,32 @@
+// File:	TopBas_Interference.gxx
+// Created:	Thu Aug 13 17:57:15 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : TopBas_Interference
+//purpose  : 
+//=======================================================================
+
+TopBas_Interference::TopBas_Interference()
+{
+}
+
+//=======================================================================
+//function : TopBas_Interference
+//purpose  : 
+//=======================================================================
+
+TopBas_Interference::TopBas_Interference(const TheSubShape& Inters,
+					 const TheShape& Bound,
+					 const TopAbs_Orientation Orient,
+					 const TopAbs_Orientation Trans,
+					 const TopAbs_Orientation BTrans) :
+       myIntersection(Inters),
+       myBoundary(Bound),
+       myOrientation(Orient),
+       myTransition(Trans),
+       myBTransition(BTrans)
+{
+}

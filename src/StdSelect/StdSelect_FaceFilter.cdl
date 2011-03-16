@@ -1,0 +1,44 @@
+-- File:	StdSelect_FaceFilter.cdl
+-- Created:	Fri Mar  8 17:04:18 1996
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class FaceFilter from StdSelect inherits Filter from SelectMgr
+
+	---Purpose: A framework to define a filter to select a specific type of face.
+    	-- The types available include:
+    	-- -   any face
+    	-- -   a planar face
+    	-- -   a cylindrical face
+    	-- -   a spherical face
+    	-- -   a toroidal face
+    	-- -   a revol face.
+
+uses
+    TypeOfFace from StdSelect,
+    Shape from TopoDS,
+    EntityOwner from SelectMgr,
+    ShapeEnum from TopAbs
+is
+
+    Create (aTypeOfFace: TypeOfFace from StdSelect)
+    returns mutable FaceFilter from StdSelect;
+    	---Purpose: Constructs a face filter object defined by the type of face aTypeOfFace.    
+    SetType(me:mutable;aNewType : TypeOfFace from StdSelect);  
+    	--- Purpose: Sets the type of face aNewType. aNewType is to be highlighted in selection.   
+    Type(me) returns TypeOfFace from StdSelect;
+    	--- Purpose: Returns the type of face to be highlighted in selection.   
+    IsOk (me;anobj : EntityOwner from SelectMgr) 
+    returns Boolean from Standard is redefined virtual;
+  
+    ActsOn(me; aStandardMode : ShapeEnum from TopAbs)
+    returns Boolean from Standard is redefined virtual;
+   
+fields
+
+    mytype : TypeOfFace from StdSelect;
+
+end FaceFilter;

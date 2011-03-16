@@ -1,0 +1,56 @@
+-- File:	FunctionTanObl.cdl
+-- Created:	Thu Jan  9 16:43:44 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+generic class FunctionTanObl from GccIter (
+    TheCurve     as any;
+    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
+
+inherits FunctionWithDerivative from math
+    ---Purpose: This class describe a function of a single variable.
+
+uses Dir2d from gp     
+
+     
+is
+
+Create (Curve : TheCurve      ;
+    	Dir   : Dir2d from gp ) returns FunctionTanObl from GccIter;
+
+Value (me : in out      ;
+       X  :        Real ;
+       F  :    out Real ) returns Boolean;
+    ---Purpose: Computes the value of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Derivative (me    : in out      ;
+            X     :        Real ;
+            Deriv :    out Real ) returns Boolean;
+    ---Purpose: Computes the derivative of the function F for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+Values (me    : in out      ;
+        X     :        Real ;
+        F     : out    Real ;
+        Deriv : out    Real ) returns Boolean;
+    ---Purpose: Computes the value and the derivative of the function F 
+    --          for the variable X.
+    --          It returns True if the computation is successfully done,
+    --          False otherwise.
+
+fields
+
+TheCurv      : TheCurve        ;
+TheDirection : Dir2d    from gp;
+
+end FunctionTanObl;
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+-- File:        Pcurve.cdl
+-- Created:     Fri Dec  1 11:11:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Pcurve from StepGeom 
+
+inherits Curve from StepGeom 
+
+uses
+
+	Surface from StepGeom, 
+	DefinitionalRepresentation from StepRepr,
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Pcurve;
+	---Purpose: Returns a Pcurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisSurface : mutable Surface from StepGeom;
+	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisSurface(me : mutable; aBasisSurface : mutable Surface);
+	BasisSurface (me) returns mutable Surface;
+	SetReferenceToCurve(me : mutable; aReferenceToCurve : mutable DefinitionalRepresentation);
+	ReferenceToCurve (me) returns mutable DefinitionalRepresentation;
+
+fields
+
+	basisSurface : Surface from StepGeom;
+	referenceToCurve : DefinitionalRepresentation from StepRepr;
+
+end Pcurve;

@@ -1,0 +1,85 @@
+-- File:	ApproxInt_ImpPrmSvSurfaces.cdl
+-- Created:	Wed Mar 17 12:19:46 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+generic class ImpPrmSvSurfaces from ApproxInt (
+    ThePSurface         as any;
+    ThePSurfaceTool     as any;
+    TheISurface         as any;
+    TheISurfaceTool     as any;     -- as ISurfaceTool from IntImp
+    TheLine             as Transient)
+
+inherits SvSurfaces from ApproxInt
+
+uses 
+    Pnt     from gp,
+    Pnt2d   from gp,
+    Vec     from gp,
+    Vec2d   from gp
+
+    class TheZerImpFunc instantiates ZerImpFunc from IntImp(
+    	ThePSurface,ThePSurfaceTool,TheISurface,TheISurfaceTool);
+
+is 
+    Create(Surf1: ThePSurface;  Surf2: TheISurface);
+
+    Create(Surf1: TheISurface;  Surf2: ThePSurface);
+       
+    Compute(me: in out; 
+            u1,v1,u2,v2: in out Real from Standard;
+	    Pt: out Pnt from gp;
+	    Tg: out Vec from gp;
+	    Tguv1,Tguv2: out Vec2d from gp)
+	    ---Purpose: returns True if Tg,Tguv1 Tguv2 can be computed.
+       returns Boolean from Standard	is static;
+
+    Pnt(me: in out;
+    	u1,v1,u2,v2: in Real from Standard;
+    	P: out Pnt from gp) is static;
+    Tangency(me: in out;
+    	     u1,v1,u2,v2: in Real from Standard;
+	     Tg: out Vec from gp)
+       returns Boolean from Standard is static;
+
+    TangencyOnSurf1(me: in out;
+    	            u1,v1,u2,v2: in Real from Standard;
+	            Tg: out Vec2d from gp)
+       returns Boolean from Standard is static;
+
+    TangencyOnSurf2(me: in out;
+    	            u1,v1,u2,v2: in Real from Standard;
+	            Tg: out Vec2d from gp)
+       returns Boolean from Standard is static;   
+    
+fields
+
+    MyParOnS1            : Pnt2d        from gp;
+    MyParOnS2            : Pnt2d        from gp;
+    MyPnt                : Pnt          from gp;
+    MyTguv1              : Vec2d        from gp;
+    MyTguv2              : Vec2d        from gp;
+    MyTg                 : Vec          from gp;
+    MyIsTangent          : Boolean      from Standard;
+    MyHasBeenComputed    : Boolean      from Standard;
+    
+    
+    
+    MyParOnS1bis            : Pnt2d        from gp;
+    MyParOnS2bis            : Pnt2d        from gp;
+    MyPntbis                : Pnt          from gp;
+    MyTguv1bis              : Vec2d        from gp;
+    MyTguv2bis              : Vec2d        from gp;
+    MyTgbis                 : Vec          from gp;
+    MyIsTangentbis          : Boolean      from Standard;
+    MyHasBeenComputedbis    : Boolean      from Standard;
+    
+    
+    MyImplicitFirst      : Boolean      from Standard;
+    MyZerImpFunc         : TheZerImpFunc from ApproxInt;
+
+end ImpPrmSvSurfaces;
+
+
+

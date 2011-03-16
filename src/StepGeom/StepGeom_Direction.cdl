@@ -1,0 +1,40 @@
+-- File:        Direction.cdl
+-- Created:     Fri Dec  1 11:11:19 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Direction from StepGeom 
+
+inherits GeometricRepresentationItem from StepGeom 
+
+uses
+
+	HArray1OfReal from TColStd, 
+	Real from Standard, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Direction;
+	---Purpose: Returns a Direction
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDirectionRatios : mutable HArray1OfReal from TColStd) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDirectionRatios(me : mutable; aDirectionRatios : mutable HArray1OfReal);
+	DirectionRatios (me) returns mutable HArray1OfReal;
+	DirectionRatiosValue (me; num : Integer) returns Real;
+	NbDirectionRatios (me) returns Integer;
+
+fields
+
+	directionRatios : HArray1OfReal from TColStd;
+
+end Direction;

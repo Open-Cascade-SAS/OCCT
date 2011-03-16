@@ -1,0 +1,108 @@
+-- File:	Builder.cdl
+-- Created:	Thu Feb 21 09:40:26 1991
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class Builder from TopoDS
+
+	---Purpose: A  Builder is used   to  create  Topological  Data
+	--          Structures.
+	--          
+	--          There are three groups of methods in the Builder :
+	--          
+	--          The Make methods create Shapes.
+	--          
+	--          The Add method includes a Shape in another Shape.
+	--          
+	--          The Remove  method  removes a  Shape from an other
+	--          Shape.
+	--          
+	--          The methods in Builder are not static. They can be
+	--          redefined in inherited builders.
+	--
+	--          This   Builder does not  provide   methods to Make
+	--          Vertices,  Edges, Faces,  Shells  or Solids. These
+	--          methods are  provided  in  the inherited  Builders
+	--          as they must provide the geometry.
+	--          
+	--          The Add method check for the following rules :
+	--          
+	--          - Any SHAPE can be added in a COMPOUND.
+	--          
+	--          - Only SOLID can be added in a COMPSOLID.
+	--          
+	--          - Only SHELL, EDGE and VERTEX can be added in a SOLID.
+	--                   EDGE and VERTEX as to be INTERNAL or EXTERNAL.
+	--                   
+	--          - Only FACE can be added in a SHELL.
+	--          
+	--          - Only WIRE and VERTEX can be added in a FACE.
+	--                   VERTEX as to be INTERNAL or EXTERNAL.
+	--          
+	--          - Only EDGE can be added in a WIRE.
+	--          
+	--          - Only VERTEX can be added in an EDGE.
+	--          
+	--          - Nothing can be added in a VERTEX.
+	
+uses
+    Shape     from TopoDS,
+    TShape    from TopoDS,
+    Wire      from TopoDS,
+    Shell     from TopoDS,
+    Solid     from TopoDS,
+    CompSolid from TopoDS,
+    Compound  from TopoDS
+
+raises
+    NullObject         from Standard,
+    FrozenShape        from TopoDS, 
+    UnCompatibleShapes from TopoDS 
+
+is
+    MakeShape(me; S : out     Shape  from TopoDS;
+                  T : mutable TShape from TopoDS)
+    ---Purpose: The basic method to make  a Shape, used by all the
+    --          Make methods.
+    is static protected;
+
+    MakeWire(me; W : out Wire from TopoDS);
+    ---C++: inline
+    ---Purpose: Make an empty Wire.
+
+    MakeShell(me; S : out Shell from TopoDS);
+    ---C++: inline
+    ---Purpose: Make an empty Shell.
+
+    MakeSolid(me; S : out Solid from TopoDS);
+    ---C++: inline
+    ---Purpose: Make a Solid covering the whole 3D space.
+
+    MakeCompSolid(me; C : out CompSolid from TopoDS);
+    ---C++: inline
+    ---Purpose: Make an empty Composite Solid.
+
+    MakeCompound(me; C : out Compound from TopoDS);
+    ---C++: inline
+    ---Purpose: Make an empty Compound.
+
+    Add(me; S : in out Shape   from TopoDS;
+            C : in     Shape   from TopoDS)
+    ---Purpose: Add the Shape C in the Shape S.
+    -- Exceptions
+    -- - TopoDS_FrozenShape if S is not free and cannot be modified.
+    -- - TopoDS__UnCompatibleShapes if S and C are not compatible.
+    raises
+        FrozenShape,
+        UnCompatibleShapes;
+
+    Remove(me; S : in out Shape   from TopoDS;
+               C : in     Shape   from TopoDS)
+    ---Purpose: Remove the Shape C from the Shape S.
+    -- Exceptions
+    -- TopoDS_FrozenShape if S is frozen and cannot be modified.
+    raises
+        FrozenShape;
+
+end Builder;

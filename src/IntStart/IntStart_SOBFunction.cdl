@@ -1,0 +1,55 @@
+-- File:	IntStart_SOBFunction.cdl
+-- Created:	Wed Jun  2 13:10:29 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class SOBFunction from IntStart 
+    (TheArc as any)
+
+inherits FunctionWithDerivative from math 
+
+
+	---Purpose: Template class for the function on an arc of restriction
+	--          used in the SearchOnBoundaries class.
+
+uses Pnt from gp
+
+
+is
+
+
+    Set(me: in out; A: TheArc)
+    
+    	is static;
+
+
+    Value(me: in out; X: Real from Standard; F: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+    Derivative(me: in out; X: Real from Standard; D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+    Values(me: in out; X: Real from Standard; F,D: out Real from Standard)
+    
+    	returns Boolean from Standard;
+    
+
+    GetStateNumber(me: in out)
+
+    	returns Integer from Standard
+
+    	is redefined;
+	
+	
+    Valpoint(me; Index: Integer from Standard)
+    
+    	returns Pnt from gp
+	
+	is static;
+    
+
+end SOBFunction;

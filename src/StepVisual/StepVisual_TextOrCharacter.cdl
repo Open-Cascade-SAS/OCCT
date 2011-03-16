@@ -1,0 +1,41 @@
+-- File:        TextOrCharacter.cdl
+-- Created:     Fri Dec  1 11:11:11 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+class TextOrCharacter from StepVisual inherits SelectType from StepData
+
+	-- <TextOrCharacter> is an EXPRESS Select Type construct translation.
+	-- it gathers : AnnotationText, CompositeText, TextLiteral
+
+uses
+
+	AnnotationText,
+	CompositeText,
+	TextLiteral
+is
+
+	Create returns TextOrCharacter;
+	---Purpose : Returns a TextOrCharacter SelectType
+
+	CaseNum (me; ent : Transient) returns Integer;
+	---Purpose: Recognizes a TextOrCharacter Kind Entity that is :
+	--        1 -> AnnotationText
+	--        2 -> CompositeText
+	--        3 -> TextLiteral
+	--        0 else
+
+	AnnotationText (me) returns any AnnotationText;
+	---Purpose : returns Value as a AnnotationText (Null if another type)
+
+	CompositeText (me) returns any CompositeText;
+	---Purpose : returns Value as a CompositeText (Null if another type)
+
+	TextLiteral (me) returns any TextLiteral;
+	---Purpose : returns Value as a TextLiteral (Null if another type)
+
+
+end TextOrCharacter;
+

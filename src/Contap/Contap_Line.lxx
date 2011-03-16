@@ -1,0 +1,57 @@
+#include <Standard_DomainError.hxx>
+#include <TColgp_HSequenceOfPnt.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Circ.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_LineOn2S.hxx>
+
+
+#include TheHSequenceOfPoint_hxx
+
+inline const Handle(IntSurf_LineOn2S)& Contap_Line::LineOn2S () const
+{
+  return curv;
+}
+
+inline void Contap_Line::Add(const IntSurf_PntOn2S& POn2S)
+{
+  curv->Add(POn2S);
+}
+
+inline Standard_Integer Contap_Line::NbVertex () const
+{
+  return svtx->Length();
+}
+
+inline ThePoint& Contap_Line::Vertex (const Standard_Integer Index) const
+{
+  return svtx->ChangeSequence()(Index);
+}
+
+inline Contap_IType Contap_Line::TypeContour () const
+{
+  return typL;
+}
+
+inline Standard_Integer Contap_Line::NbPnts () const {
+  if (typL != Contap_Walking) {Standard_DomainError::Raise();}
+  return(curv->NbPoints());
+}
+
+inline const IntSurf_PntOn2S& Contap_Line::Point (const Standard_Integer Index) const {
+  if (typL != Contap_Walking) {Standard_DomainError::Raise();}
+  return(curv->Value(Index));
+}
+
+inline gp_Lin Contap_Line::Line () const
+{
+  if (typL != Contap_Lin) {Standard_DomainError::Raise();}
+  return gp_Lin(pt,dir1);
+}
+
+inline gp_Circ Contap_Line::Circle () const
+{
+  if (typL != Contap_Circle) {Standard_DomainError::Raise();}
+  return gp_Circ(gp_Ax2(pt,dir1,dir2),rad);
+}
+

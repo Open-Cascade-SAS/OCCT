@@ -1,0 +1,249 @@
+-- File:	BRepLib_MakeFace.cdl
+-- Created:	Mon Jul 12 11:35:23 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeFace from BRepLib inherits MakeShape from BRepLib 
+
+	---Purpose: Provides methods to build faces.
+	--          
+	--          A face may be built :
+	--          
+	--          * From a surface.
+	--          
+	--             - Elementary surface from gp.
+	--             
+	--             - Surface from Geom.
+	--             
+	--          * From a surface and U,V values.
+	--          
+	--          * From a wire.
+	--            
+	--            - Find the surface automatically if possible.
+	--          
+	--          * From a surface and a wire.
+	--          
+	--            - A flag Inside is given, when this flag is True
+	--            the  wire is  oriented to bound a finite area on
+	--            the surface.
+	--          
+	--          * From a face and a wire.
+	--            
+	--            - The new wire is a perforation.
+
+uses
+    Pln       from gp,
+    Cylinder  from gp,
+    Cone      from gp,
+    Sphere    from gp,
+    Torus     from gp,
+    Surface   from Geom,
+    Face      from TopoDS,
+    Wire      from TopoDS,
+    FaceError from BRepLib
+    
+raises
+    NotDone    from StdFail
+
+is
+
+    Create  
+	---Purpose: Not done.
+	---Level: Public
+    returns MakeFace from BRepLib;
+    
+    Create(F : Face from TopoDS)  
+	---Purpose: Load a face. Usefull to add wires.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    ----------------------------------------------
+    -- From a surface
+    ----------------------------------------------
+
+    Create(P : Pln from gp)
+	---Purpose: Make a face from a plane.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cylinder from gp)
+	---Purpose: Make a face from a cylinder.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cone from gp)
+	---Purpose: Make a face from a cone.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Sphere from gp)
+	---Purpose: Make a face from a sphere.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Torus from gp)
+	---Purpose: Make a face from a torus.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Surface from Geom)
+	---Purpose: Make a face from a Surface.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    ----------------------------------------------
+    -- From a surface and U,V values
+    ----------------------------------------------
+
+    Create(P : Pln from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a plane.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cylinder from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a cylinder.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cone from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a cone.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Sphere from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a sphere.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Torus from gp; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a torus.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Surface from Geom; UMin, UMax, VMin, VMax : Real)
+	---Purpose: Make a face from a Surface.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    ----------------------------------------------
+    -- From a wire
+    ----------------------------------------------
+
+    Create(W         : Wire    from TopoDS;
+    	   OnlyPlane : Boolean from Standard = Standard_False)
+	---Purpose: Find a surface from the wire and make a face.
+	--          if <OnlyPlane> is true, the computed surface will be
+	--          a plane. If it is not possible to find a plane, the
+	--          flag NotDone will be set.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    ----------------------------------------------
+    -- From a surface and a wire
+    ----------------------------------------------
+
+    Create(P : Pln from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a plane and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cylinder from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a cylinder and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Cone from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a cone and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Sphere from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a sphere and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(C : Torus from gp; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a torus and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    Create(S : Surface from Geom; W : Wire from TopoDS;
+    	   Inside : Boolean = Standard_True)
+	---Purpose: Make a face from a Surface and a wire.
+	---Level: Public
+    returns MakeFace from BRepLib;
+
+    ----------------------------------------------
+    -- From face and wire.
+    ----------------------------------------------
+
+    Create(F : Face from TopoDS; W : Wire from TopoDS)
+	---Purpose: Adds the wire <W> in the face <F>
+	---Level: Public
+    returns MakeFace from BRepLib;
+    
+    ----------------------------------------------
+    -- Auxiliary methods
+    ----------------------------------------------
+
+    Init(me : in out; F : Face from TopoDS)
+	---Purpose: Load the face.
+	---Level: Public
+    is static;
+
+    Init(me : in out; S : Surface from Geom; Bound : Boolean = Standard_True)
+	---Purpose: Creates the face  from the  surface.  If Bound  is
+	--          True a wire is made from the natural bounds.
+	---Level: Public
+    is static;
+
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real) 
+	---Purpose: Creates the face from the surface  and the min-max
+	--          values.
+	---Level: Public
+    is static;
+
+    Add(me : in out; W : Wire from TopoDS)
+	---Purpose: Adds the wire <W> in the current face.
+	---Level: Public
+    is static;
+
+    ----------------------------------------------
+    -- Auxiliary methods
+    ----------------------------------------------
+
+    CheckInside(me : in out)
+	---Purpose: Reorient the current face if  the boundary  is not
+	--          finite.
+	---Level: Public
+    is static private;
+
+    ----------------------------------------------
+    -- Results
+    ----------------------------------------------
+
+    Error(me) returns FaceError from BRepLib
+	---Level: Public
+    is static;
+
+    Face(me) returns Face from TopoDS
+	---Purpose: Returns the new face.
+	--          
+	---C++: return const &
+	---C++: alias "Standard_EXPORT operator TopoDS_Face() const;"
+	---Level: Public
+    raises 
+    	NotDone from StdFail
+    is static;
+    
+fields
+    myError : FaceError from BRepLib;
+
+end MakeFace;

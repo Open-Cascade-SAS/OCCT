@@ -1,0 +1,79 @@
+-- File:	Image_PlanarPixelInterpolation.cdl
+-- Created:	Tue Jul 27 18:47:06 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@sparc3>
+---Copyright:	 Matra Datavision 1993
+
+
+class PlanarPixelInterpolation from Image inherits PixelInterpolation from Image
+
+	---Purpose: The class PlanarPixelInterpolation is used to compute a  
+	--            SubPixelvalue on non integer Image coordinate
+	--          PlanarPixelInterpolation redefined a new method to compute a
+	--	      SubPixel value .
+	--	    To compute the value of a Image SubPixel, first we look
+	--	      for the three nearest Image Pixels .
+	--	    Then we compute the plane definition in the 3D space 
+	--	      composed by the Image Pixel coordinate and Pixel value 
+	--	      on Z axis .
+	--	    The SubPixel value is the Z value of ( FX,FY ) point in the
+	--	      three nearest Image Pixel defined plane .
+
+uses
+
+    Image 		from Image,
+    Pixel       	from Aspect,
+    ColorPixel       	from Aspect,
+    IndexPixel       	from Aspect,
+    DColorImage 	from Image,
+    DIndexedImage 	from Image
+
+is
+
+    	Create returns PlanarPixelInterpolation from Image ;
+	---Level: Public
+    	---Purpose: Create a PlanarPixelInterpolation  object.
+
+	Interpolate( me ; aImage   : Image from Image ;
+		          X,Y      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out Pixel from Aspect ) 
+		returns Boolean from Standard is redefined ;
+	---Level: Public
+    	---Purpose: Redefined the method to compute SubPixel's value 
+	--	      on non integer Image coordinate.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate FX,FY is outside of
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DColorImage from Image ;
+		          X,Y      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out ColorPixel from Aspect ) 
+		returns Boolean from Standard  is redefined;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DColorImage and ColorPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate FX,FY is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+	Interpolate( me ; aImage   : DIndexedImage from Image ;
+		          X,Y      : Real  from Standard ;
+			  LowerX,LowerY,UpperX,UpperY : Integer from Standard ;
+		          RetPixel : in out IndexPixel from Aspect ) 
+		returns Boolean from Standard  is redefined ;
+	---Level: Public
+    	---Purpose: Compute SubPixel's value on non integer Image coordinate for
+	--	      DIndexedImage and IndexPixel.
+	--	    LowerX,LowerY,UpperX,UpperY is the Image Min Max, it's used
+	--	      to check if the SubPixel coordinate X,Y is outside of 
+	--	      image.
+	--          Return True  if Interpolation Succes.
+	--	    Return False if the SubPixel is out from Image.
+
+end PlanarPixelInterpolation from Image;

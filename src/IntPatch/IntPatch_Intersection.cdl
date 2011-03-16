@@ -1,0 +1,256 @@
+-- File:	IntPatch_Intersection.cdl
+-- Created:	Thu Jan 21 16:40:38 1993
+-- Author:	Jacques GOUSSARD
+---Copyright:	OPEN CASCADE 1993
+
+
+class Intersection from IntPatch
+
+	---Purpose: This class provides a generic algorithm to intersect
+	--          2 surfaces.
+
+uses
+     HVertex        from Adaptor3d,
+     HCurve2d       from Adaptor2d,
+     HSurface       from Adaptor3d,
+     Point          from IntPatch,
+     SequenceOfPoint from IntPatch,
+     TopolTool      from Adaptor3d,
+     SequenceOfLine from IntPatch,
+     Line           from IntPatch,
+     --amv
+     ListOfPntOn2S  from IntSurf
+ 
+raises NotDone           from StdFail,
+       OutOfRange        from Standard,
+       DomainError       from Standard,
+       ConstructionError from Standard
+
+is
+    Create
+    
+    	returns Intersection from IntPatch;
+
+
+    Create (S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+            S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+            TolArc,TolTang: Real from Standard)
+	    
+	returns Intersection from IntPatch
+	
+	raises ConstructionError from Standard;
+
+    Create (S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+            TolArc,TolTang: Real from Standard)
+	    
+	returns Intersection from IntPatch
+	
+	raises ConstructionError from Standard;
+
+
+    SetTolerances(me       : in out;
+                  TolArc   : Real from Standard;
+		  TolTang  : Real from Standard;
+		  UVMaxStep: Real from Standard;
+		  Fleche   : Real from Standard)
+		  
+	---Purpose: Set the tolerances used by the algorithms:
+	--          --- Implicit   - Parametric  
+	--          --- Parametric - Parametric 
+	--          --- Implicit   - Implicit 
+	--         
+	--          TolArc   is  used  to   compute  the intersections
+	--          between the restrictions   of  a  surface   and  a
+	--          walking line.
+	--          
+	--          TolTang is used to compute the points on a walking
+	--          line, and in geometric algorithms.
+	--          
+	--          Fleche  is  a  parameter   used in    the  walking
+	--          algorithms to provide small curvatures on a line.
+	--          
+	--          UVMaxStep is  a  parameter   used in  the  walking
+	--          algorithms  to    compute the  distance between to
+	--          points in their respective parametrtic spaces.
+	--          
+        is static;
+
+    Perform (me: in out;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+             TolArc,TolTang: Real from Standard)   	     
+
+	raises ConstructionError from Standard    
+
+        is static;
+    
+    --amv
+    Perform (me: in out;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+             TolArc,TolTang: Real from Standard;
+    	     LOfPnts: in out ListOfPntOn2S from IntSurf;
+    	     RestrictLine: Boolean from Standard = Standard_True)
+
+	raises ConstructionError from Standard    
+
+	is static;
+
+    Perform (me: in out;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+	     U1,V1,U2,V2 : Real from Standard;
+             TolArc,TolTang: Real from Standard)
+
+	raises ConstructionError from Standard    
+
+	is static;
+
+    Perform (me: in out;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             TolArc,TolTang: Real from Standard)
+
+	raises ConstructionError from Standard    
+
+	is static;
+
+
+    IsDone(me)
+    
+    	---Purpose: Returns True if the calculus was succesfull.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+    	is static;
+
+
+    IsEmpty(me)
+    
+    	---Purpose: Returns true if the is no intersection.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    TangentFaces(me)
+    
+	---Purpose: Returns True if the two patches are considered as
+	--          entierly tangent, i-e every restriction arc of one
+	--          patch is inside the geometric base of the other patch.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone from StdFail
+	
+	is static;
+
+
+    OppositeFaces(me)
+    
+	---Purpose: Returns True when the TangentFaces returns True and the
+	--          normal vectors evaluated at a point on the first and the
+	--          second surface are opposite. 
+	--          The exception DomainError is raised if TangentFaces
+	--          returns False.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises NotDone     from StdFail,
+               DomainError from Standard
+	
+	is static;
+
+
+    NbPnts(me)
+    
+    	---Purpose: Returns the number of "single" points.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+	
+    	is static;
+
+
+    Point(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the point of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbPnt.
+
+    	returns Point from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+
+    	is static;
+
+
+    NbLines(me)
+    
+    	---Purpose: Returns the number of intersection lines.
+
+    	returns Integer from Standard
+	---C++: inline
+
+    	raises NotDone from StdFail
+
+    	is static;
+
+
+    Line(me; Index: Integer from Standard)
+    
+    	---Purpose: Returns the line of range Index.
+    	--          An exception is raised if Index<=0 or Index>NbLine.
+
+    	returns Line from IntPatch
+	---C++: return const&
+	---C++: inline
+
+    	raises NotDone    from StdFail,
+               OutOfRange from Standard
+	
+    	is static;
+	
+    SequenceOfLine(me) 
+    	returns SequenceOfLine from IntPatch
+	---C++: return const&
+        raises NotDone    from StdFail
+	is static;
+	
+    Dump(me; Mode: Integer from Standard;
+             S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+             S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d) 
+    	---Purpose: Dump of each result line. 
+    	---         Mode for more accurate dumps. 
+    	--          
+    	is static;
+
+fields
+
+    done       : Boolean         from Standard;
+    empt       : Boolean         from Standard;
+    tgte       : Boolean         from Standard;
+    oppo       : Boolean         from Standard;
+    spnt       : SequenceOfPoint from IntPatch;
+    slin       : SequenceOfLine  from IntPatch;
+    myTolArc   : Real from Standard;
+    myTolTang  : Real from Standard;
+    myUVMaxStep: Real from Standard;
+    myFleche   : Real from Standard;
+    myIsStartPnt: Boolean from Standard;
+    myU1Start  : Real from Standard;
+    myV1Start  : Real from Standard;
+    myU2Start  : Real from Standard;
+    myV2Start  : Real from Standard;
+
+end Intersection;

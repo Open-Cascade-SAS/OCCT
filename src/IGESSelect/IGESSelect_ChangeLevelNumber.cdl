@@ -1,0 +1,69 @@
+-- File:	IGESSelect_ChangeLevelNumber.cdl
+-- Created:	Thu Aug 25 15:01:48 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+class  ChangeLevelNumber  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Changes Level Number (as null or single) to a new single value
+    --           Entities attached to a LevelListEntity are ignored
+    --           Entities considered can be, either all Entities but those
+    --           attached to a LevelListEntity, or Entities attached to a
+    --           specific Level Number (0 for not defined).
+    --           
+    --           Remark : this concerns the Directory Part only. The Level List
+    --           Entities themselves (their content) are not affected.
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif, IntParam
+
+is
+
+    Create returns mutable ChangeLevelNumber;
+    ---Purpose : Creates a ChangeLevelNumber, not yet defined
+    --           (see SetOldNumber and SetNewNumber)
+
+    HasOldNumber (me) returns Boolean;
+    ---Purpose : Returns True if OldNumber is defined : then, only entities
+    --           attached to the value of OldNumber will be considered. Else,
+    --           all entities but those attached to a Level List will be.
+
+    OldNumber (me) returns mutable IntParam;
+    ---Purpose : Returns the parameter for OldNumber. If not defined (Null
+    --           Handle), it will be interpreted as "all level numbers"
+
+    SetOldNumber (me : mutable; param : mutable IntParam);
+    ---Purpose : Sets a parameter for OldNumber
+
+    NewNumber (me) returns mutable IntParam;
+    ---Purpose : Returns the parameter for NewNumber. If not defined (Null
+    --           Handle), it will be interpreted as "new value 0"
+
+    SetNewNumber (me : mutable; param : mutable IntParam);
+    ---Purpose : Sets a parameter for NewNumber
+
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : considers selected target entities :
+    --           If OldNumber is not defined, all entities but those attached
+    --             to a Level List
+    --           If OldNumber is defined (value not negative), entities with a
+    --             defined Level Number (can be zero)
+    --           Attaches all these entities to value given by NewNumber, or
+    --             zero if not defined
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Changes Level Number <old> to <new>" , or
+    --           "Changes all Levels Numbers positive and zero to <new>"
+
+fields
+
+    theold : IntParam;
+    thenew : IntParam;
+
+end ChangeLevelNumber;

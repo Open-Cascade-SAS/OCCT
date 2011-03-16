@@ -1,0 +1,63 @@
+-- File:	Dynamic_Parameter.cdl
+-- Created:	Thu Jan 28 15:03:38 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Parameter from Dynamic 
+inherits
+
+    TShared from MMgt
+
+
+	---Purpose: A  parameter is defined  as  the association of  a
+	--          name and a value.  For easy use, inherited classes
+	--          have been  created  to manipulate  values by their
+	--          C++ type.  This class is the root class of all the
+	--          derived parameter classes.  Only the identifier of
+	--          the parameter is  stored  in it.   The  associated
+	--          value is stored in the  inherited classes where it
+	--          is more  easy to overload the methods manipulating
+	--          the  value.   No  instance of  this class  must be
+	--          created. It is for this  reason that this class is
+	--          deferred.
+
+uses
+
+    OStream from Standard,
+    CString from Standard,
+    HAsciiString from TCollection,
+    AsciiString  from TCollection
+
+
+is
+
+    Initialize(aname : CString from Standard) ;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Initializer of this class  taking in argument the name
+    --          of the parameter <aname>.
+    
+    Name(me) returns AsciiString from TCollection
+    
+    ---Level: Public 
+
+    ---Purpose: Returns in an AsciiString the name of the parameter.
+
+    is static;
+        
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+    is virtual;
+    
+fields
+
+    theparametername : HAsciiString from TCollection;
+    
+end Parameter;

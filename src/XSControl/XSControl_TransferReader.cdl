@@ -1,0 +1,349 @@
+-- File:	XSControl_TransferReader.cdl
+-- Created:	Tue Dec  5 10:50:44 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class TransferReader  from XSControl  inherits TShared
+
+    ---Purpose : A TransferReader performs, manages, handles results of,
+    --           transfers done when reading a file (i.e. from entities of an
+    --           InterfaceModel, to objects for Imagine)
+    --           
+    --           Running is organised around basic tools : TransientProcess and
+    --           its Actor, results are Binders and CheckIterators. It implies
+    --           control by a Controller (which prepares the Actor as required)
+    --           
+    --           Getting results can be done directly on TransientProcess, but
+    --           these are immediate "last produced" results. Each transfer of
+    --           an entity gives a final result, but also possible intermediate
+    --           data, and checks, which can be attached to sub-entities.
+    --           
+    --           Hence, final results (which intermediates and checks) are
+    --           recorded as ResultFromModel and can be queried individually.
+    --           
+    --           Some more direct access are given for results which are
+    --           Transient or Shapes
+
+uses CString, AsciiString, Transient,
+     DataMapOfIntegerTransient, HSequenceOfTransient, DictionaryOfTransient,
+     InterfaceModel, CheckIterator, Graph, HGraph,
+     TransientProcess, ActorOfTransientProcess, Binder, ResultFromModel,
+     CheckStatus from Interface, Controller from XSControl,
+     Shape from TopoDS, HSequenceOfShape from TopTools
+
+is
+
+    Create returns mutable TransferReader;
+    ---Purpose : Creates a TransferReader, empty
+
+    	--    General Management    --
+
+    SetController (me : mutable; control : mutable Controller from XSControl);
+    ---Purpose : Sets a Controller. It is required to generate the Actor.
+    --           Elsewhere, the Actor must be provided directly
+
+    SetActor (me : mutable; actor : mutable ActorOfTransientProcess);
+    ---Purpose : Sets the Actor directly : this value will be used if the
+    --           Controller is not set
+
+    Actor    (me : mutable) returns mutable ActorOfTransientProcess;
+    ---Purpose : Returns the Actor, determined by the Controller, or if this
+    --           one is unknown, directly set.
+    --           Once it has been defined, it can then be edited.
+
+    SetModel (me : mutable; model : InterfaceModel);
+    ---Purpose : Sets an InterfaceModel. This causes former results, computed
+    --           from another one, to be lost (see also Clear)
+
+    SetGraph (me : mutable; graph : HGraph);
+    ---Purpose : Sets a Graph and its InterfaceModel (calls SetModel)
+
+    Model    (me) returns InterfaceModel;
+    ---Purpose : Returns the currently set InterfaceModel
+
+    SetContext (me : mutable; name : CString; ctx : Transient);
+    ---Purpose : Sets a Context : according to receiving appli, to be
+    --           interpreted by the Actor
+
+    GetContext (me; name : CString; type : Type; ctx : out Transient)
+    	returns Boolean;
+    ---Purpose : Returns the Context attached to a name, if set and if it is
+    --           Kind of the type, else a Null Handle
+    --           Returns True if OK, False if no Context
+
+    Context    (me : mutable) returns DictionaryOfTransient;
+    ---Purpose : Returns (modifiable) the whole definition of Context
+    --           Rather for internal use (ex.: preparing and setting in once)
+    ---C++ : return &
+
+    SetFileName (me : mutable; name : CString);
+    ---Purpose : Sets a new value for (loaded) file name
+
+    FileName (me) returns CString;
+    ---Purpose : Returns actual value of file name
+
+    Clear    (me : mutable; mode : Integer);
+    ---Purpose : Clears data, according mode :
+    --           -1 all
+    --            0 nothing done
+    --           +1 final results
+    --           +2 working data (model, context, transfer process)
+
+    TransientProcess (me) returns mutable TransientProcess;
+    ---Purpose : Returns the currently used TransientProcess
+    --           It is computed from the model by TransferReadRoots, or by
+    --           BeginTransferRead
+
+    SetTransientProcess (me : mutable; TP : mutable TransientProcess);
+    ---Purpose : Forces the TransientProcess
+    --           Remark : it also changes the Model and the Actor, from those
+    --           recorded in the new TransientProcess
+
+
+    	--    Recording and Querying Results    --
+    	--    these methods work mainly on recorded data
+    	--    i.e. they don't need Controller and Actor
+
+    RecordResult (me : mutable; ent : Transient) returns Boolean;
+    ---Purpose : Records a final result of transferring an entity
+    --           This result is recorded as a ResultFromModel, taken from
+    --           the TransientProcess
+    --           Returns True if a result is available, False else
+
+    IsRecorded   (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if a final result is recorded for an entity
+    --           Remark that it can bring no effective result if transfer has
+    --           completely failed (FinalResult brings only fail messages ...)
+
+    HasResult    (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if a final result is recorded AND BRINGS AN
+    --           EFFECTIVE RESULT (else, it brings only fail messages)
+
+    RecordedList (me) returns HSequenceOfTransient;
+    ---Purpose : Returns the list of entities to which a final result is
+    --           attached (i.e. processed by RecordResult)
+
+    Skip         (me : mutable; ent : Transient) returns Boolean;
+    ---Purpose : Note that an entity has been required for transfer but no
+    --           result at all is available (typically : case not implemented)
+    --           It is not an error, but it gives a specific status : Skipped
+    --           Returns True if done, False if <ent> is not in starting model
+
+    IsSkipped    (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if an entity is noted as skipped
+
+    IsMarked     (me; ent : Transient) returns Boolean;
+    ---Purpose : Returns True if an entity has been asked for transfert, hence
+    --           it is marked, as : Recorded (a computation has ran, with or
+    --           without an effective result), or Skipped (case ignored)
+
+
+    FinalResult  (me; ent : Transient) returns ResultFromModel;
+    ---Purpose : Returns the final result recorded for an entity, as such
+
+    FinalEntityLabel  (me; ent : Transient) returns CString;
+    ---Purpose : Returns the label attached to an entity recorded for final,
+    --           or an empty string if not recorded
+
+    FinalEntityNumber (me; ent : Transient) returns Integer;
+    ---Purpose : Returns the number attached to the entity recorded for final,
+    --           or zero if not recorded (looks in the ResultFromModel)
+
+    ResultFromNumber  (me; num : Integer) returns ResultFromModel;
+    ---Purpose : Returns the final result recorded for a NUMBER of entity
+    --           (internal use). Null if out of range
+
+    TransientResult   (me; ent : Transient) returns mutable Transient;
+    ---Purpose : Returns the resulting object as a Transient
+    --           Null Handle if no result or result not transient
+
+    ShapeResult       (me; ent : Transient) returns Shape from TopoDS;
+    ---Purpose : Returns the resulting object as a Shape
+    --           Null Shape if no result or result not a shape
+
+    ClearResult (me : mutable; ent : Transient; mode : Integer) returns Boolean;
+    ---Purpose : Clears recorded result for an entity, according mode
+    --           <mode> = -1 : true, complete, clearing (erasing result)
+    --           <mode> >= 0 : simple "stripping", see ResultFromModel,
+    --             in particular, 0 for simple internal strip,
+    --             10 for all but final result,
+    --             11 for all : just label, status and filename are kept
+    --           Returns True when done, False if nothing was to clear
+
+
+    EntityFromResult (me; res : Transient; mode : Integer=0) returns Transient;
+    ---Purpose : Returns an entity from which a given result was produced.
+    --           If <mode> = 0 (D), searches in last root transfers
+    --           If <mode> = 1,     searches in last (root & sub) transfers
+    --           If <mode> = 2,     searches in root recorded results
+    --           If <mode> = 3,     searches in all (root & sub) recordeds
+    --           <res> can be, either a transient object (result itself) or
+    --           a binder. For a binder of shape, calls EntityFromShapeResult
+    --           Returns a Null Handle if <res> not recorded
+
+    EntityFromShapeResult (me; res : Shape from TopoDS; mode : Integer=0)
+    	returns Transient;
+    ---Purpose : Returns an entity from which a given shape result was produced
+    --           Returns a Null Handle if <res> not recorded or not a Shape
+
+    EntitiesFromShapeList (me; res : HSequenceOfShape from TopTools; mode : Integer = 0)
+    	returns HSequenceOfTransient from TColStd;
+    ---Purpose : Returns the list of entities from which some shapes were
+    --           produced : it corresponds to a loop on EntityFromShapeResult,
+    --           but is optimised
+
+
+    CheckList (me; ent : Transient; level : Integer = 0) returns CheckIterator;
+    ---Purpose : Returns the CheckList resulting from transferring <ent>, i.e.
+    --           stored in its recorded form ResultFromModel
+    --           (empty if transfer successful or not recorded ...)
+    --           
+    --           If <ent> is the Model, returns the complete cumulated
+    --           check-list, <level> is ignored
+    --           
+    --           If <ent> is an entity of the Model, <level> applies as follows
+    --           <level> : -1 for <ent> only, LAST transfer (TransientProcess)
+    --           <level> : 0  for <ent> only (D)
+    --                     1  for <ent> and its immediate subtransfers, if any
+    --                     2  for <ent> and subtransferts at all levels
+
+    HasChecks (me; ent : Transient; failsonly : Boolean) returns Boolean;
+    ---Purpose : Returns True if an entity (with a final result) has checks :
+    --           - failsonly = False : any kind of check message
+    --           - failsonly = True  : fails only
+    --           Returns False if <ent> is not recorded
+
+    CheckedList (me; ent : Transient;
+    	withcheck : CheckStatus = Interface_CheckAny; result : Boolean = Standard_True)
+    	    returns HSequenceOfTransient;
+    ---Purpose : Returns the list of starting entities to which a given check
+    --           status is attached, IN FINAL RESULTS
+    --           <ent> can be an entity, or the model to query all entities
+    --           Below, "entities" are, either <ent> plus its sub-transferred,
+    --           or all the entities of the model
+    --           
+    --           <check> = -2 , all entities whatever the check (see result)
+    --           <check> = -1 , entities with no fail (warning allowed)
+    --           <check> =  0 , entities with no check at all
+    --           <check> =  1 , entities with warning but no fail
+    --           <check> =  2 , entities with fail
+    --           <result> : if True, only entities with an attached result
+    --           Remark : result True and check=0 will give an empty list
+
+    	--  Actions for Transfer (Read)  --
+
+    BeginTransfer (me : mutable) returns Boolean;
+    ---Purpose : Defines a new TransferProcess for reading transfer
+    --           Returns True if done, False if data are not properly defined
+    --           (the Model, the Actor for Read)
+
+    Recognize     (me : mutable; ent : Transient) returns Boolean;
+    ---Purpose : Tells if an entity is recognized as a valid candidate for
+    --           Transfer. Calls method Recognize from the Actor (if known)
+
+    TransferOne   (me : mutable; ent : Transient;
+    	    	   rec : Boolean = Standard_True) returns Integer;
+    ---Purpose : Commands the transfer on reading for an entity to data for
+    --           Imagine, using the selected Actor for Read
+    --           Returns count of transferred entities, ok or with fails (0/1)
+    --           If <rec> is True (D), the result is recorded by RecordResult
+
+    TransferList  (me : mutable; list : HSequenceOfTransient;
+    	    	   rec : Boolean = Standard_True) returns Integer;
+    ---Purpose : Commands the transfer on reading for a list of entities to
+    --           data for Imagine, using the selected Actor for Read
+    --           Returns count of transferred entities, ok or with fails (0/1)
+    --           If <rec> is True (D), the results are recorded by RecordResult
+
+    TransferRoots (me : mutable; G : Graph) returns Integer;
+    ---Purpose : Transfers the content of the current Interface Model to
+    --           data handled by Imagine, starting from its Roots (determined
+    --           by the Graph <G>),  using the selected Actor for Read
+    --           Returns the count of performed root transfers (i.e. 0 if none)
+    --           or -1 if no actor is defined
+
+    TransferClear (me : mutable; ent : Transient; level : Integer = 0);
+    ---Purpose : Clears the results attached to an entity
+    --           if <ents> equates the starting model, clears all results
+
+    PrintStats (me; what : Integer; mode : Integer = 0);
+    ---Purpose : Prints statistics on current Trace File, according <what> and
+    --           <mode>.  See PrintStatsProcess for details
+
+    	--    Querying last transfer (i.e. TransientProcess)    --
+
+    LastCheckList    (me) returns CheckIterator;
+    ---Purpose : Returns the CheckList resulting from last TransferRead
+    --           i.e. from TransientProcess itself, recorded from last Clear
+
+    LastTransferList (me; roots : Boolean) returns HSequenceOfTransient;
+    ---Purpose : Returns the list of entities recorded as lastly transferred
+    --           i.e. from TransientProcess itself, recorded from last Clear
+    --           If <roots> is True , considers only roots of transfer
+    --           If <roots> is False, considers all entities bound with result
+
+    ShapeResultList (me : mutable; rec : Boolean)
+    	returns HSequenceOfShape from TopTools;
+    ---Purpose : Returns a list of result Shapes
+    --           If <rec> is True , sees RecordedList
+    --           If <rec> is False, sees LastTransferList (last ROOT transfers)
+    --           For each one, if it is a Shape, it is cumulated to the list
+    --           If no Shape is found, returns an empty Sequence
+
+    PrintStatsProcess (myclass; TP : TransientProcess;
+    	    	       what : Integer; mode : Integer = 0);
+    ---Purpose : This routines prints statistics about a TransientProcess
+    --           It can be called, by a TransferReader, or isolately
+    --           Prints are done on the default trace file
+    --           <what> defines what kind of statistics are to be printed :
+    --           0 : basic figures
+    --           1 : root results
+    --           2 : all recorded (roots, intermediate, checked entities)
+    --           3 : abnormal records
+    --           4 : check messages (warnings and fails)
+    --           5 : fail messages
+    --           
+    --           <mode> is used according <what> :
+    --           <what> = 0 : <mode> is ignored
+    --           <what> = 1,2,3 : <mode> as follows :
+    --           0 (D) : just lists numbers of concerned entities in the model
+    --           1 : for each entity, gives number,label, type and result
+    --                  type and/or status (fail/warning...)
+    --           2 : for each entity, gives maximal information (i.e. checks)
+    --           3 : counts per type of starting entity (class type)
+    --           4 : counts per result type and/or status
+    --           5 : counts per couple (starting type / result type/status)
+    --           6 : idem plus gives for each item, the list of numbers of
+    --                  entities in the starting model
+    --           
+    --           <what> = 4,5 : modes relays on an enum PrintCount :
+    --           0 (D) : ItemsByEntity (sequential list by entity)
+    --           1 : CountByItem
+    --           2 : ShortByItem       (count + 5 first numbers)
+    --           3 : ListByItem        (count + entity numbers)
+    --           4 : EntitiesByItem    (count + entity numbers and labels)
+
+    PrintStatsOnList (myclass; TP : TransientProcess;
+    	    	       list : HSequenceOfTransient;
+    	    	       what : Integer; mode : Integer = 0);
+    ---Purpose : Works as PrintStatsProcess, but displays data only on the
+    --           entities which are in <list> (filter)
+
+fields
+
+    theController  : Controller;
+
+    theFilename    : AsciiString;
+    theModel       : InterfaceModel;
+    theGraph       : HGraph;
+    theContext     : DictionaryOfTransient;
+
+    theActor       : ActorOfTransientProcess;
+    theTransfer    : TransientProcess;
+
+    theResults     : DataMapOfIntegerTransient;
+    theShapeResult : HSequenceOfShape from TopTools;
+
+end TransferReader;

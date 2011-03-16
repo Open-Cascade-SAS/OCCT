@@ -1,0 +1,43 @@
+-- File:	BOPTools_VEInterference.cdl
+-- Created:	Tue Nov 21 15:43:14 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class VEInterference from BOPTools 
+    inherits ShapeShapeInterference from BOPTools  
+     
+    	---Purpose:  
+    	--  class for storing info about an Verex/Edge interference
+	--- 
+
+is 
+    Create  
+    	returns  VEInterference from BOPTools; 
+    	---Purpose: 
+    	--- Empty constructor  
+    	---
+    Create  (anIndex1, anIndex2:  Integer from Standard; 
+    	    aT: Real from Standard)
+    	returns  VEInterference from BOPTools;  
+    	---Purpose:   
+    	--- Constructor  
+    	--- anIndex1,  
+    	--- anIndex2 see BOPTools_ShapeShapeInterference for details      
+    	--- aT -  values of parameter on the edge    
+    	---
+    SetParameter  (me:out; aT: Real from Standard); 
+    	---Purpose:  
+    	--- Modifier   
+    	---
+    Parameter     (me) 
+	returns Real from Standard;   
+    	---Purpose:  
+    	--- Selector  
+    	---
+    
+fields
+    myParameter:  Real from Standard;  
+
+end VEInterference;

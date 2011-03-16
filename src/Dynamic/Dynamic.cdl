@@ -1,0 +1,290 @@
+-- File:	Dynamic.cdl
+-- Created:	Fri Jan 22 11:14:25 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+package Dynamic 
+
+	---Purpose: This package propose a  set of abstract persistent
+	--          classes. These classes may  be sort in  three main
+	--          groups, which are :
+	--          
+	--          - fuzzy classes
+	--          - methods
+	--          - dynamic classes
+	--          
+	--          And in    two complementary  groups   used by  the
+	--          previously    described family,  which   are  :
+	--          
+	--          - parameter classes
+	--          - variable classes
+	--          
+	--          All the main classes  are manipulated  through two
+	--          steps which are :
+	--          
+	--          - the definition  which gives the signature of the
+	--          object
+	--          -  the instanciation   which  always  references a
+	--          definition
+	--          
+	--          This    separation has  been  created  to  clearly
+	--          separate the definition  of an object, a method or
+	--          a class which  is the description and the instance
+	--          which is the utilisation with  a particular set of
+	--          values.   In  this case  for few instanciations of
+	--          the same object, the definition can be unique.
+	--            
+	--          Each family address a particular problem.
+	--            
+	--          Dynamic class
+	--          -------------
+	--            
+	--          This family of  classes offers  the possibility to
+	--          define and to  manipulate  dynamically objets with
+	--          the  same  specifications        as C++   objects.
+	--          Dynamically  means without  CDL description    and
+	--          without compilation  and link  if all  the methods
+	--          attached are interpreted methods.
+	--          
+	--          The first thing to  do is to define the  signature
+	--          of the class, in terms of fields and methods.
+	--          
+	--          You  can  also  derive a   class  from others, add
+	--          fields, and add or redefine methods.
+	--          
+	--          Then instances of the   class can be   created and
+	--          values can be assigned to the fields.
+	--          
+	--          It is then possible to execute methods attached to
+	--          the definition of the class. These methods may set
+	--          computed values to  other fields, or simply return
+	--          them.
+	--          
+	--          A method can be compiled or interpreted.
+	--          
+	--          Fuzzy class
+	--          -----------
+	--          
+	--          A fuzzy  class   is a   degeneration  of a dynamic
+	--          class.  Only  the   fields are  specified.   These
+	--          classes  are useful    to describe  objects   with
+	--          various definitions, and  with the number and  the
+	--          nature of fields depending of the definition.
+	--          
+	--          The definitions of the lights for Photo  Realistic
+	--          Renderer is an illutration of the use of the fuzzy
+	--          classes.
+	--          
+	--          These lights have the same definitions in terms of
+	--          parameters as   the lights used  in the LightWorks
+	--          module.
+	--          
+	--          For each type  of  light   an exhaustive set    of
+	--          parameters is  described,  and  each  parameter is
+	--          defined by its  name, its type  and, if necessary,
+	--          its default value as follows :
+	--          
+	--          ambient
+	--                "intensity"   Standard_Real    1.0
+	--                "colour"      Materials_PColor 1.0 1.0 1.0
+	--          
+	--          distant
+	--                "intensity"         Standard_Real          1.0
+	--                "colour"            Materials_PColor       1.0 1.0 1.0
+	--                "location"          PGeom_CartesianPoint   0.0 0.0 1.0
+	--                "to"                PGeom_CartesianPoint   0.0 0.0 0.0
+	--                "shadows"           Standard_Boolean       Standard_False
+	--                "shadow resolution" Standard_Integer       256
+	--                "shadow quality"    Standard_Integer       4
+	--                "shadow softness"   Standard_Real          1.0
+	--          
+	--          eye
+	--                "intensity"         Standard_Real          1.0
+	--                "colour"            Materials_PColor       1.0 1.0 1.0
+	--          
+	--          point
+	--                "intensity"         Standard_Real            1.0
+	--                "colour"            Materials_PColor         1.0 1.0 1.0
+	--                "location"          PGeom_CartesianPoint     0.0 0.0 0.0
+	--                "fall off"          LightWorks_LiFallOffType LI_FALL_OFF_CONSTANT
+	--                "shadows"           Standard_Boolean         Standard_False
+	--                "shadow resolution" Standard_Integer         256
+	--                "shadow quality"    Standard_Integer         4
+	--                "shadow softness"   Standard_Real            1.0
+	--          
+	--          spot
+	--                "intensity"         Standard_Real            1.0
+	--                "colour"            Materials_PColor         1.0 1.0 1.0
+	--                "location"          PGeom_CartesianPoint     0.0 0.0 1.0
+	--                "to"                PGeom_CartesianPoint     0.0 0.0 0.0
+	--                "fall off"          LightWorks_LiFallOffType LI_FALL_OFF_CONSTANT
+	--                "cone angle"        Standard_Real            60.0
+	--                "cone delta angle"  Standard_Real            5.0
+	--                "beam distribution" Standard_Real            2.0
+	--                "shadows"           Standard_Boolean         Standard_False
+	--                "shadow resolution" Standard_Integer         256
+	--                "shadow quality"    Standard_Integer         4
+	--                "shadow softness"   Standard_Real            1.0
+	--          
+	--          All  these  definitions are described  in  a  file
+	--          which is read  at  the first  creation  of a light
+	--          instance to be put in a dictionary.
+	--          
+	--          At the creation  of an instance, just  a reference
+	--          on the definition is set. All the parameter values
+	--          are read in the definition. If now  a value of one
+	--          parameter  is changed, the  modified parameter  is
+	--          added   to the  instance.   So  only  the modified
+	--          parameters are directely attached to the instance.
+	--          This behaviour allows the  use of an  instance  as
+	--          definition,  and can be  useful to create catalogs
+	--          of standards which  can be directly  questioned in
+	--          the database.
+	--          
+	--          The use  of fuzzy classes needs four prerequisites
+	--          which are :
+	--          
+	--          - The   creation  of a  file   with the exhaustive
+	--          description of all  the possible types taken by an
+	--          object and for each    type the complete   set  of
+	--          parameters  in  terms  of  name,   type,   and, if
+	--          necessary, default value.
+	--          
+	--          -    The     inheritance    from     the     class
+	--          FuzzyDefinitionsDictionary  and, if necessary, the
+	--          redefinition of the  Switch  method for the   non-
+	--          standard type of parameters described in the file.
+	--          
+	--          - The following method :
+	--          
+	--          void  DictionaryOfDefinitions(Handle(MyPackage_MyDictionary)&);
+	--          
+	--          must be  writen in the file MyPackage.cxx, because
+	--          this method   is  automatically  called   by   the
+	--          constructor of FuzzyInstance. This method tests if
+	--          the dictionary has  been  created yet.  If  it  is
+	--          true  the  method returns    a reference   to  it,
+	--          otherwise the method creates the dictionary before
+	--          returning the reference.
+	--          
+	--          - The instanciation   of  the FuzzyInstance  class
+	--          with the pre-defined dictionary.
+	--          
+	--          Method class
+	--          ------------
+	--          
+	--          The behaviour  of  these  classes  are  similar to
+	--          fuzzy classes.    Only the semantic  is different.
+	--          These   classes   are   for memorized actions   or
+	--          constraints,  e.g.  they  are useful  to memorized
+	--          persistently   the  working  system  of    Imagine
+	--          Conception.
+
+uses
+
+    TCollection,
+    MMgt
+    
+is
+
+enumeration ModeEnum is
+    IN,
+    OUT,
+    INOUT,
+    INTERNAL,
+    CONSTANT
+end ModeEnum;
+
+    generic class Node;
+
+    deferred class Parameter;
+    
+      class BooleanParameter;
+      
+      generic class EnumerationParameter;
+      
+      class IntegerParameter;
+      
+      class RealParameter;
+      
+      class StringParameter; 
+      
+      class ObjectParameter;
+      
+      class InstanceParameter;
+    
+    class ParameterNode instantiates Node from Dynamic(Parameter from Dynamic);
+
+    class Variable;
+    
+      class VariableGroup;
+
+      deferred class AbstractVariableInstance;
+
+        class VariableInstance;
+
+        class CompositVariableInstance;
+
+    class VariableNode instantiates Node from Dynamic(Variable from Dynamic);
+
+    deferred class Method;
+    
+      deferred class MethodDefinition;
+    
+        class CompiledMethod;
+
+        class InterpretedMethod;
+	
+	class CompositMethod;
+      
+      generic class MethodInstance;
+
+     deferred class MethodDefinitionsDictionary;
+    
+     class SeqOfMethods instantiates 
+    	Sequence from TCollection (Method from Dynamic);
+     class SequenceOfMethods instantiates 
+    	HSequence from TCollection (Method from Dynamic, SeqOfMethods from Dynamic);
+   
+   class SeqOfMethodDefinitions instantiates 
+    	Sequence from TCollection (MethodDefinition from Dynamic);
+   class SequenceOfMethodDefinitions instantiates 
+    	HSequence from TCollection (MethodDefinition from Dynamic, 
+    	    	    	    	    SeqOfMethodDefinitions from Dynamic);
+    
+    class DynamicClass;
+
+      class DynamicDerivedClass;
+
+    class SeqOfClasses instantiates 
+    	Sequence from TCollection (DynamicClass from Dynamic);
+    class SequenceOfClasses instantiates 
+    	HSequence from TCollection (DynamicClass from Dynamic, SeqOfClasses from Dynamic);
+    
+    class DynamicInstance;
+    
+    deferred class FuzzyClass;
+    
+      class FuzzyDefinition;
+    
+    class SeqOfFuzzyDefinitions instantiates 
+    	Sequence from TCollection (FuzzyDefinition from Dynamic);
+    class SequenceOfFuzzyDefinitions instantiates 
+    	HSequence from TCollection (FuzzyDefinition from Dynamic,
+    	    	    	    	    SeqOfFuzzyDefinitions from Dynamic);
+
+    deferred class FuzzyDefinitionsDictionary;
+    
+      generic class FuzzyInstance;
+      
+      Mode(amode : CString from Standard) returns ModeEnum from Dynamic;
+      
+       ---Level: Advanced 
+    
+end Dynamic;
+
+
+

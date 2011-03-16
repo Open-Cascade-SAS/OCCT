@@ -1,0 +1,58 @@
+-- File:	Vrml_AsciiText.cdl
+-- Created:	Tue Dec 24 14:02:54 1996
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class AsciiText from Vrml inherits  TShared  from  MMgt
+
+	---Purpose: defines a AsciiText node of VRML specifying geometry shapes.
+	-- This  node  represents  strings  of  text  characters  from  ASCII  coded 
+    	-- character  set. All subsequent strings advance y by -( size * spacing). 
+    	-- The justification field determines the placement of the strings in the x
+	-- dimension. LEFT (the default) places the left edge of each string at x=0.  
+    	-- CENTER places the center of each string at x=0. RIGHT places the right edge  
+    	-- of each string at x=0. Text is rendered from left to right, top to
+	-- bottom in the font set by FontStyle. 
+    	-- The  default  value  for  the  wigth  field  indicates  the  natural  width 
+    	-- should  be  used  for  that  string.
+	      
+uses
+ 
+     AsciiTextJustification from Vrml,
+     HArray1OfAsciiString   from  TColStd
+
+is
+ 
+    Create  returns  mutable  AsciiText from Vrml;
+
+    Create ( aString        : HArray1OfAsciiString   from  TColStd;
+    	     aSpacing       : Real    from  Standard;
+    	     aJustification : AsciiTextJustification;
+	     aWidth         : Real    from  Standard ) 
+        returns mutable AsciiText from Vrml;
+ 
+    SetString ( me :  mutable; aString  : HArray1OfAsciiString   from  TColStd );
+    String ( me )  returns HArray1OfAsciiString  from  TColStd;
+     
+    SetSpacing ( me : mutable; aSpacing  : Real from Standard );
+    Spacing ( me )  returns Real  from  Standard;
+
+    SetJustification ( me : mutable; aJustification : AsciiTextJustification from Vrml );
+    Justification ( me )  returns AsciiTextJustification from Vrml;
+
+    SetWidth ( me : mutable; aWidth : Real from Standard ); 
+    Width ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+
+    myString        : HArray1OfAsciiString   from  TColStd;  -- Text string
+    mySpacing       : Real                   from  Standard;  -- Inter-string spacing
+    myJustification : AsciiTextJustification from  Vrml;      -- Text justification
+    myWidth         : Real                   from  Standard;  -- Suggested width constraint
+
+end AsciiText;

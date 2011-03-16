@@ -1,0 +1,41 @@
+-- File:	IGESSelect_SetLabel.cdl
+-- Created:	Fri Feb 26 12:45:55 1999
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SetLabel  from IGESSelect    inherits ModelModifier from IGESSelect
+
+    ---Purpose : Sets/Clears Short Label of Entities, those designated by the
+    --           Selection. No Selection means all the file
+    --           
+    --           May enforce, else it sets only if no label is yet set
+    --           Mode : 0 to clear (always enforced)
+    --                  1 to set label to DE number (changes it if already set)
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+ 
+is
+
+    Create (mode : Integer; enforce : Boolean) returns SetLabel;
+    ---Purpose : Creates a SetLabel for IGESEntity
+    --           Mode : see Purpose of the class
+
+    Performing (me; ctx : in out ContextModif;
+                target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : Sets or Clears the Label
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Clear Short Label"  or  "Set Label to DE"
+    --           With possible additional information " (enforced)"
+
+fields
+
+    themode  : Integer;
+    theforce : Boolean;
+
+end SetLabel;

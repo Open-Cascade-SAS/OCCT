@@ -1,0 +1,45 @@
+-- File:	BRepMesh_PairOfPolygonOnTriangulation.cdl
+-- Created:	Mon Jan 26 11:03:30 2009
+-- Author:	Pavel TELKOV
+--		<ptv@valenox>
+---Copyright:	 Open CASCADE 2009
+
+
+class PairOfPolygon from BRepMesh 
+
+	---Purpose: 
+
+uses
+    PolygonOnTriangulation from Poly
+
+is
+    Create
+    ---Purpose: Create empty pair with null fileds
+    returns PairOfPolygon from BRepMesh;
+
+    Clear(me: out);
+    ---Purpose: Clear pair handles
+    
+    Prepend (me: out; thePoly: PolygonOnTriangulation from Poly);
+    --- Initialise first polygon on triangulation
+    
+    Append (me: out; thePoly: PolygonOnTriangulation from Poly);
+    --- Initialise first or last polygon on triangulation
+    
+    First(me)
+    ---Purpose: Returns first polygon on triangulation
+    ---C++: return const &
+    ---C++: inline
+    returns PolygonOnTriangulation from Poly;
+
+    Last(me)
+    ---Purpose: Returns last polygon on triangulation
+    ---C++: return const &
+    ---C++: inline
+    returns PolygonOnTriangulation from Poly;
+
+fields
+    myFirst : PolygonOnTriangulation from Poly;
+    myLast  : PolygonOnTriangulation from Poly;
+     
+end PairOfPolygon;

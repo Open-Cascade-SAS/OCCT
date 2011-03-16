@@ -1,0 +1,139 @@
+-- File:	ShapeCustom_RestrictionParameters.cdl
+-- Created:	Mon May 22 16:23:30 2000
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 2000
+
+
+class RestrictionParameters from ShapeCustom inherits TShared from MMgt
+
+	---Purpose: This class is axuluary tool which contains parameters for
+	--          BSplineRestriction class.
+
+
+is
+
+    Create returns mutable RestrictionParameters from ShapeCustom;
+    	---Purpose: Sets default parameters.
+    
+    ---Methods for modifying fields.
+    
+    GMaxDegree(me: mutable) returns Integer;
+    	---C++: inline
+	---C++: return &
+    	---Purpose: Returns (modifiable) maximal degree of approximation.
+    
+    GMaxSeg(me: mutable) returns Integer;  
+    	---C++: inline
+	---C++: return &
+    	---Purpose: Returns (modifiable) maximal number of spans of 
+    	--          approximation.
+    
+    ConvertPlane (me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+	---Purpose: Sets flag for define if Plane converted to BSpline surface.
+    
+    ConvertBezierSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+	---Purpose: Sets flag for define if Bezier surface converted to BSpline
+    	--          surface.
+    
+    ConvertRevolutionSurf(me: mutable) returns Boolean;
+    	---C++: inline
+	---C++: return &
+    	---Purpose: Sets flag for define if surface of Revolution converted to 
+    	--          BSpline surface.
+    
+    ConvertExtrusionSurf(me: mutable) returns Boolean;
+    	---C++: inline
+	---C++: return &
+    	---Purpose: Sets flag for define if surface of LinearExtrusion converted
+    	--          to BSpline surface.
+    
+    ConvertOffsetSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if Offset surface converted to BSpline
+    	--          surface.
+    
+    ConvertCylindricalSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if cylindrical surface converted to BSpline
+    	--          surface.
+    ConvertConicalSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if conical surface converted to BSpline
+    	--          surface.
+    ConvertToroidalSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if toroidal surface converted to BSpline
+    	--          surface.
+   
+    ConvertSphericalSurf(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if spherical surface converted to BSpline
+    	--          surface.
+    
+   -- ConvertElementarySurf(me: mutable) returns Boolean;
+   -- 	---C++: inline
+   -- 	---C++: return &
+   -- 	---Purpose: Sets flag for define if Offset surface converted to BSpline
+   -- 	--          surface.
+    
+    SegmentSurfaceMode(me: mutable)returns Boolean;
+    	---C++: inline
+	---C++: return &
+    	---Purpose: Sets Segment mode for surface. If Segment is True surface is
+    	--          approximated in the bondaries of face lying on this surface.
+    
+    ConvertCurve3d(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if 3d curve converted to BSpline curve.
+    
+    ConvertOffsetCurv3d(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Sets flag for define if Offset curve3d converted to BSpline
+    	--          surface.
+    
+    ConvertCurve2d(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) flag for define if 2d curve converted 
+    	--          to BSpline curve.
+    
+    ConvertOffsetCurv2d(me: mutable) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) flag for define if Offset curve2d 
+    	--          converted to BSpline surface.
+
+fields
+
+    myGMaxDegree: Integer from Standard;
+    myGMaxSeg   : Integer from Standard;
+        
+    myConvPlane         : Boolean;
+    --myConvElementarySurf: Boolean;
+    myConvConicalSurf : Boolean;
+    myConvSphericalSurf : Boolean;
+    myConvCylindricalSurf : Boolean;
+    myConvToroidalSurf : Boolean;
+    myConvBezierSurf    : Boolean;
+    myConvRevolSurf     : Boolean;
+    myConvExtrSurf      : Boolean;
+    myConvOffsetSurf    : Boolean;
+    mySegmentSurfaceMode: Boolean;
+    myConvCurve3d       : Boolean;
+    myConvOffsetCurv3d  : Boolean;
+    myConvCurve2d       : Boolean;
+    myConvOffsetCurv2d  : Boolean;
+
+end RestrictionParameters;

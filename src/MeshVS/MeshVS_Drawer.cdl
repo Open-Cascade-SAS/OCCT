@@ -1,0 +1,62 @@
+-- File     : MeshVS_Drawer.cdl
+-- Created  : 27 November 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class Drawer from MeshVS inherits TShared from MMgt
+
+    ---Purpose: This class provided the common interface to share between classes
+        --  big set of constants affecting to object appearance. By default, this class
+        -- can store integers, doubles, OCC colors, OCC materials. Each of OCC enum members
+        -- can be stored as integers.
+
+uses
+  DataMapOfIntegerInteger from TColStd,
+  DataMapOfIntegerReal    from TColStd,
+
+  Color from Quantity,
+
+  MaterialAspect from Graphic3d,
+  AsciiString from TCollection,
+
+
+  DataMapOfIntegerBoolean        from MeshVS,
+  DataMapOfIntegerColor          from MeshVS,
+  DataMapOfIntegerMaterial       from MeshVS,
+  DataMapOfIntegerAsciiString    from MeshVS
+
+is
+
+  Assign ( me: mutable; aDrawer : Drawer ) is virtual;
+    ---Purpose: This method copies other drawer contents to this.
+
+  SetInteger        ( me: mutable; Key : Integer; Value : Integer );
+  SetDouble         ( me: mutable; Key : Integer; Value : Real    );
+  SetBoolean        ( me: mutable; Key : Integer; Value : Boolean );
+  SetColor          ( me: mutable; Key : Integer; Value : Color from Quantity );
+  SetMaterial       ( me: mutable; Key : Integer; Value : MaterialAspect from Graphic3d );
+  SetAsciiString    ( me: mutable; Key : Integer; Value : AsciiString    from TCollection );
+
+  GetInteger        ( me; Key : Integer; Value : out Integer ) returns Boolean;
+  GetDouble         ( me; Key : Integer; Value : out Real    ) returns Boolean;
+  GetBoolean        ( me; Key : Integer; Value : out Boolean ) returns Boolean;
+  GetColor          ( me; Key : Integer; Value : out Color from Quantity ) returns Boolean;
+  GetMaterial       ( me; Key : Integer; Value : out MaterialAspect from Graphic3d ) returns Boolean;
+  GetAsciiString    ( me; Key : Integer; Value : out AsciiString from TCollection ) returns Boolean;
+
+  RemoveInteger     ( me: mutable; Key : Integer ) returns Boolean;
+  RemoveDouble      ( me: mutable; Key : Integer ) returns Boolean;
+  RemoveBoolean     ( me: mutable; Key : Integer ) returns Boolean;
+  RemoveColor       ( me: mutable; Key : Integer ) returns Boolean;
+  RemoveMaterial    ( me: mutable; Key : Integer ) returns Boolean;
+  RemoveAsciiString ( me: mutable; Key : Integer ) returns Boolean;
+
+fields
+  myIntegers    : DataMapOfIntegerInteger   from TColStd;
+  myBooleans    : DataMapOfIntegerBoolean   from MeshVS;
+  myDoubles     : DataMapOfIntegerReal      from TColStd;
+  myColors      : DataMapOfIntegerColor     from MeshVS;
+  myMaterials   : DataMapOfIntegerMaterial  from MeshVS;
+  myAsciiString : DataMapOfIntegerAsciiString   from MeshVS;
+
+end Drawer;

@@ -1,0 +1,66 @@
+--
+-- File:	Graphic3d_AspectLine3d.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class AspectLine3d from Graphic3d inherits AspectLine from Aspect
+
+	---Version:
+
+	---Purpose: Creates and updates a group of attributes
+	--	    for 3d line primitives. This group contains the
+	--	    colour, the type of line, and its thickness.
+	
+
+uses
+
+	Color		from Quantity,
+
+	TypeOfLine	from Aspect
+
+is
+
+	Create
+		returns mutable AspectLine3d from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a context table for line primitives
+	--	    defined with the following default values:
+	--
+	--	    Colour	: NOC_YELLOW
+	--	    Line type	: TOL_SOLID
+	--	    Width	: 1.0
+
+	Create ( AColor	: Color from Quantity;
+		 AType	: TypeOfLine from Aspect;
+		 AWidth	: Real from Standard )
+		returns mutable AspectLine3d from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a context table for line primitives
+	--	    defined with the specified values.
+	--  Warning: <AWidth> is the "linewidth scale factor".
+	--	    The nominal line width is 1 pixel. The width of
+	--	    the line is determined by applying the linewidth scale
+	--	    factor to this nominal line width.
+	--	    The supported linewidths vary by 1-pixel units.
+
+--
+
+-- fields
+
+--
+-- Class	:	Graphic3d_AspectLine3d
+--
+-- Purpose	:	Declaration of context-specific variables
+--			for drawing 3d lines
+--
+-- Reminder	:	A context for drawing 3d lines inherits:
+--			- the colour
+--			- the type of line
+--			- the thickness
+--			defined by AspectLine.
+--
+
+end AspectLine3d;

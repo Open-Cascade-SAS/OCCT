@@ -1,0 +1,564 @@
+-- File:        WNT_DDriver.cdl
+-- Created:     Mon Mar 17 17:28:42 1997
+-- Author:      EugenyPLOTNIKOV
+-- Modified:    MAR-98, MAY-98 (DCB)
+--              OCT-98 (DCB) - see CXX file for details
+---Copyright:   Matra Datavision 1993
+
+class DDriver from WNT inherits PlotterDriver from PlotMgt
+
+    	---Purpose: Defines the device-independent Windows NT driver.
+    	--          After graphics output enhanced metafile will be created.
+    	--          It is possible to play this file on device several times
+    	--          by Spool () method.
+
+uses
+  Handle                  from Aspect,
+  HColorTable             from WNT,
+  HFontTable              from WNT,
+  HArray1OfInteger        from TColStd,
+  GraphicDevice           from WNT,
+  OrientationType         from WNT,
+  TypeOfText              from Aspect,
+  ColorMap                from Aspect,
+  TypeMap                 from Aspect,
+  WidthMap                from Aspect,
+  FontMap                 from Aspect,
+  MarkMap                 from Aspect,
+  PlotMode                from Aspect,
+  PlaneAngle              from Quantity,
+  Factor                  from Quantity,
+  Ratio                   from Quantity,
+  Length                  from Quantity,
+  Array1OfShortReal       from TShort,
+  ExtendedString          from TCollection,
+  AsciiString             from TCollection,
+  HAsciiString            from TCollection,
+  HSequenceOfAsciiString  from TColStd,
+  FontManager             from MFT,
+  HListOfMFTFonts         from WNT,
+  HArray1OfShortReal      from TShort,
+  TextManager             from WNT
+
+raises
+
+  DriverDefinitionError   from Aspect,
+  DriverError             from Aspect
+
+is
+
+  Create (
+    aDeviceName   : CString         from Standard;
+    aFileName     : CString         from Standard;
+    anOrientation : OrientationType from WNT = WNT_OT_LANDSCAPE;
+    aScale        : Factor          from Quantity = 1.0;
+    aCopies       : Integer         from Standard = 1
+  ) returns mutable DDriver from WNT
+    raises DriverDefinitionError from Aspect;
+      	---Purpose: Constructs a device driver framework defined by the
+    	-- string aDeviceName, the path specified as an
+    	-- argument for OSD_Path, the type of orientation
+    	-- anOrientation, the scale aScale, the number of copies
+    	-- aCopies and the flag aPrintFlag.
+
+  Create (
+    aFileName : CString from Standard;
+    aCopies   : Integer from Standard = 1
+  ) returns mutable DDriver from WNT;
+      	---Purpose: 
+    	-- Creates the class object. An empty path is authorized
+    	-- and in this case, a temporary enhanced metafile is
+    	-- created. You can delete this file by using the EndDraw function.
+    	-- Warning - OSD_Path corresponds to an ASCII string.
+    	-- Exceptions
+    	-- Aspect_DriverDefinitionError if the driver could not be defined.
+
+  Close(me: mutable)
+  is redefined;
+  ---C++: alias ~ 
+
+  BeginDraw ( me : mutable )
+  is redefined;
+      	---Purpose: Begins a new picture of graphics in the enhanced metafile
+
+  EndDraw ( me : mutable; fSynchronize: Boolean = Standard_False )
+  is redefined;
+      	---Purpose: Flushes all graphics, closes enhanced metafile.
+
+  Spool (me        : mutable;
+    aPlotMode      : PlotMode from Aspect = Aspect_PM_FILEONLY;
+    aDeviceName    : CString from Standard = NULL;
+    anOriginalSize : Boolean from Standard = Standard_False
+  ) returns Boolean from Standard
+  raises DriverError from Aspect is redefined;
+    	---Purpose: Spools the driver onto a printer spool.
+    	-- Stretches the picture so that it fits into the device
+    	-- workspace if the Boolean anOriginalSize is False
+    	-- and the workspace dimensions of the original
+    	-- device differ from those of the current device. This
+    	-- flag is ignored if aDeviceName is NULL.
+    	-- Warning
+    	-- If aDeviceName is NULL, then the driver should be
+    	-- created with the first constructor. Otherwise, use
+    	-- the second constructor to create a class object.
+    	-- Exceptions
+    	-- Aspect_DriverError if the driver is not correctly defined.
+
+  ---------------------------------------------
+  -- Category: Methods to define the attributes
+  ---------------------------------------------
+
+  SetLineAttrib (
+   me         : mutable;
+   ColorIndex : Integer from Standard;
+   TypeIndex  : Integer from Standard;
+   WidthIndex : Integer from Standard
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Defines the Current Line Attibutes
+
+  SetTextAttrib (
+   me         : mutable;
+   ColorIndex : Integer from Standard;
+   FontIndex  : Integer from Standard
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Defines the Current Text Attributes
+
+  SetTextAttrib (
+   me: mutable;
+   ColorIndex   : Integer    from Standard;
+   FontIndex    : Integer    from Standard;
+   aSlant       : PlaneAngle from Quantity;
+   aHScale      : Factor     from Quantity;
+   aWScale      : Factor     from Quantity;
+   isUnderlined : Boolean    from Standard = Standard_False
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Defines the Current Extended Text Attributes
+
+  SetPolyAttrib (
+   me         : mutable;
+   ColorIndex : Integer from Standard;
+   TileIndex  : Integer from Standard;
+   DrawEdge   : Boolean from Standard = Standard_False
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Sets the poly attributes
+
+  SetMarkerAttrib (
+   me         : mutable;
+   ColorIndex : Integer from Standard;
+   WidthIndex : Integer from Standard;
+   FillMarker : Boolean from Standard = Standard_False
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Defines the Current Marker Attributes
+
+
+      ---------------------------
+      -- Category: Images methods
+      ---------------------------
+
+  IsKnownImage (
+   me      : mutable;
+   anImage : Transient from Standard
+  ) returns Boolean from Standard is redefined;
+
+  SizeOfImageFile (
+   me;
+   anImageFile     : CString from Standard;
+   aWidth, aHeight : out Integer from Standard
+  ) returns Boolean from Standard is redefined;
+
+  ClearImage (
+   me        : mutable;
+   anImageId : Transient from Standard
+  ) raises DriverError from Aspect is redefined;
+
+  ClearImageFile (
+   me          : mutable;
+   anImageFile : CString from Standard
+  ) raises DriverError from Aspect is redefined;
+
+  DrawImage (
+   me        : mutable;
+   anImageId : Transient from Standard;
+   aX, aY    : ShortReal from Standard
+  ) raises DriverError from Aspect is redefined;
+
+
+  ---------------------------------------
+  -- Category: Methods to draw primitives
+  ---------------------------------------
+  DrawImageFile (
+   me          : mutable;
+   anImageFile : CString from Standard;
+   aX, aY      : ShortReal from Standard;
+   aScale      : Factor from Quantity = 1.0
+  ) raises DriverError from Aspect is redefined;
+
+  FillAndDrawImage (
+   me              : mutable;
+   anImageId       : Transient from Standard;
+   aX, aY          : ShortReal from Standard;
+   aWidth, aHeight : Integer from Standard;
+   anArrayOfPixels : Address from Standard
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Fills a complete Image .
+
+  FillAndDrawImage (
+   me                             : mutable; 
+   anImageId                      : Transient from Standard;
+   aX, aY                         : ShortReal from Standard;
+   anIndexOfLine, aWidth, aHeight : Integer from Standard;
+   anArrayOfPixels                : Address from Standard
+  ) raises DriverError from Aspect is redefined;
+      	---Purpose: Fills a line of the Image .
+      	--  Warning: 0 <= anIndexOfLine < aHeight
+      	--              anIndexOfLine = 0 must be the first call
+
+  PlotPolyline (me : mutable;
+      xArray : Address from Standard;
+      yArray : Address from Standard;
+      nPts   : Address from Standard;
+      nParts : Integer from Standard
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws a polyline depending of the SetLineAttrib() attributes.
+
+  PlotPolygon (me : mutable;
+      xArray : Address from Standard;
+      yArray : Address from Standard;
+      nPts   : Address from Standard;
+      nParts : Integer from Standard
+  ) returns Boolean from Standard
+  is redefined protected;
+        ---Purpose: Draws a polygon depending of the SetPolyAttrib() attributes. 
+
+  PlotSegment (
+   me     : mutable;
+   X1, Y1 : ShortReal from Standard;
+   X2, Y2 : ShortReal from Standard
+  ) returns Boolean from Standard
+  is redefined protected;
+        ---Purpose: Draws a segment depending of the SetLineAttrib() attributes.
+
+  PlotText (
+   me      : mutable;
+   aText   : ExtendedString from TCollection;
+   Xpos    : ShortReal      from Standard;
+   Ypos    : ShortReal      from Standard;
+   anAngle : ShortReal      from Standard = 0.0;
+   aType   : TypeOfText     from Aspect = Aspect_TOT_SOLID
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws a text depending of the SetTextAttrib() attributes.
+      	--  Warning: Coordinates must be defined in DWU space.
+
+  PlotText (
+   me      : mutable;
+   aText   : CString        from Standard;
+   Xpos    : ShortReal      from Standard;
+   Ypos    : ShortReal      from Standard;
+   anAngle : ShortReal      from Standard = 0.0;
+   aType   : TypeOfText     from Aspect = Aspect_TOT_SOLID
+  ) returns Boolean from Standard
+  is redefined protected;
+     	---Purpose: Draws a text depending of the SetTextAttrib() attributes.
+      	--  Warning: Coordinates must be defined in DWU space.
+
+  PlotPolyText (
+   me : mutable;
+   aText   : ExtendedString from TCollection;
+   Xpos    : ShortReal      from Standard;
+   Ypos    : ShortReal      from Standard;
+   aMarge  : Ratio          from Quantity = 0.1;
+   anAngle : ShortReal      from Standard = 0.0;
+   aType   : TypeOfText     from Aspect = Aspect_TOT_SOLID
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws an framed text depending of the 
+      	-- SetTextAttrib() and SetPolyAttrib() attributes.
+      	--  Warning: Coordinates must be defined in DWU space.
+      	--          <aMarge> defines the ratio of the space between the 
+      	--          polygon borders and the bounding box of the text and 
+      	--          depending of the height of the text.
+
+  PlotPolyText (
+   me : mutable;
+   aText   : CString        from Standard;
+   Xpos    : ShortReal      from Standard;
+   Ypos    : ShortReal      from Standard;
+   aMarge  : Ratio          from Quantity = 0.1;
+   anAngle : ShortReal      from Standard = 0.0;
+   aType   : TypeOfText     from Aspect = Aspect_TOT_SOLID
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws an framed text depending of the 
+      	-- SetTextAttrib() and SetPolyAttrib() attributes.
+      	--  Warning: Coordinates must be defined in DWU space.
+      	--          <aMarge> defines the ratio of the space between the 
+      	--          polygon borders and the bounding box of the text and 
+      	--          depending of the height of the text.
+
+  PlotPoint ( me : mutable; X, Y : ShortReal from Standard )
+  returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws a 1 PIXEL point depending of the SetMarkerAttrib() 
+      	--          color attribute or add a point depending of the incremental BeginXxxxxx() 
+      	--          primitive used.
+
+  PlotMarker (
+   me      : mutable;
+   aMarker : Integer   from Standard;
+   Xpos    : ShortReal from Standard;
+   Ypos    : ShortReal from Standard;
+   Width   : ShortReal from Standard;
+   Height  : ShortReal from Standard;
+   Angle   : ShortReal from Standard = 0.0
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws the prevously defined marker <aMarker> 
+      	--          depending of the SetMarkerAttrib() attributes.
+      	--  Warning: Coordinates and sizes must be defined in DWU space.
+      	--          Angle must be defined in RADIAN.
+      	--          A one pixel marker is drawn when aMarker index is undefined
+
+  PlotArc (
+   me                   : mutable;
+   X, Y                 : ShortReal from Standard;
+   anXradius, anYradius : ShortReal from Standard;
+   aStartAngle          : ShortReal from Standard = 0.0;
+   anOpenAngle          : ShortReal from Standard = 6.283185
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws an Ellipsoid arc of center <X,Y> and Radius
+      	--          <anXradius,anYradius> of relative angle <anOpenAngle> from 
+      	--          the base angle <aStartAngle> and depending of the SetLineAttrib() attributes
+              
+  PlotPolyArc (
+   me                   : mutable;
+   X, Y                 : ShortReal from Standard;
+   anXradius, anYradius : ShortReal from Standard;
+   aStartAngle          : ShortReal from Standard = 0.0;
+   anOpenAngle          : ShortReal from Standard = 6.283185
+  ) returns Boolean from Standard
+  is redefined protected;
+      	---Purpose: Draws an filled Ellipsoid arc of center <X,Y> and Radius
+      	--          <anXradius,anYradius> of relative angle <anOpenAngle> from 
+      	--          the base angle <aStartAngle> and depending of the SetPolyAttrib() attributes.
+              
+  BeginPolyline ( me : mutable; aNumber : Integer ) is static;
+    	---Purpose: Begin an incremental polyline primitive of <aNumber> of points
+    	--  Warning: Points must be added by the the DrawPoint() method.
+
+  BeginPolygon ( me : mutable; aNumber : Integer )
+  is redefined;
+      	---Purpose: Begin an incremental polygon primitive of <aNumber> of points
+      	--  Warning: Points must be added by the the DrawPoint() method.
+
+  BeginSegments ( me : mutable )
+  is redefined;
+      	---Purpose: Begin a set of segments .
+      	--  Warning: Segments must be added by the DrawSegment() method
+
+  BeginArcs ( me : mutable )
+  is redefined;
+     	---Purpose: Begin a set of circles or ellips .
+      	--  Warning: Arcs must be added by the DrawArc() methods
+
+  BeginPolyArcs ( me : mutable )
+  is redefined;
+      	---Purpose: Begin a set of polygon circles or ellips
+      	--  Warning: Arcs must be added by the DrawPolyArc() methods
+
+  BeginMarkers ( me : mutable )
+  is redefined;
+      	---Level:   Public
+      	---Purpose: Begin a set of markers .
+      	--  Warning: Markers must be added by the DrawMarker() method
+
+  BeginPoints ( me : mutable )
+  is redefined;
+    	---Level:   Public
+    	---Purpose: Begin a set of points .
+    	--  Warning: Points must be added by the DrawPoint() method
+
+  ClosePrimitive ( me : mutable ) raises DriverError from Aspect is static;
+      	---Purpose: Close the last Begining primitive
+
+  ---------------------------------------------
+  -- Category: Methods to define the attributes
+  ---------------------------------------------
+  InitializeColorMap(me: mutable; aColorMap: ColorMap from Aspect) 
+  raises DriverError from Aspect is redefined protected;
+    	---Category: Methods to define the ColorIndexs
+
+  InitializeTypeMap(me: mutable; aTypeMap: TypeMap from Aspect)
+  raises DriverError from Aspect is redefined protected;
+    	---Category: Methods to define the TypeIndexs
+
+  InitializeWidthMap(me: mutable; aWidthMap: WidthMap from Aspect)
+  raises DriverError from Aspect is redefined protected;
+    	---Category: Methods to define the WidthIndexs
+
+  InitializeFontMap(me: mutable; aFontMap: FontMap from Aspect)
+  raises DriverError from Aspect is redefined protected;
+    	---Category: Methods to define the FontIndexs
+
+  InitializeMarkMap(me: mutable; aFontMap: MarkMap from Aspect)
+  raises DriverError from Aspect is redefined protected;
+    	---Category: Methods to define the MarkIndexs
+
+
+  ----------------------------
+  -- Category: Inquire methods
+  ----------------------------
+
+
+  WorkSpace ( me ; Width,Heigth : out Length from Quantity ) is static;
+      	---Purpose: Returns the Available WorkSpace in DWU coordinates
+
+  Convert ( me ; PV : Integer from Standard ) returns Length from Quantity is static;
+      	---Purpose: Returns the DWU value depending of
+      	--          the PIXEL value.
+
+  Convert ( me ; DV : Length from Quantity ) returns Integer from Standard is static;
+      	---Purpose: Returns the PIXEL value depending of the DWU value.
+
+  Convert (
+   me;
+   PX, PY : Integer    from Standard;
+   DX, DY : out Length from Quantity
+  ) is static;
+      	---Purpose: Returns the DWU position depending of the PIXEL position .
+
+  Convert (
+   me; 
+   DX, DY : Length      from Quantity;
+   PX, PY : out Integer from Standard
+  ) is static;
+      	---Purpose: Returns the PIXEL position depending of the DWU position
+
+  TextSize (
+   me; 
+   aText           : ExtendedString from TCollection;
+   aWidth, aHeight : out ShortReal  from Standard;
+   aFontIndex      : Integer        from Standard = -1
+  ) is static;
+      	---Purpose: Returns the TEXT size in DWU space depending
+      	--          of the required FontIndex if aFontIndex is >= 0
+      	--          or the current FontIndex if < 0 (default).
+
+  TextSize (
+   me;
+   aText                                 : ExtendedString from TCollection;
+   aWidth, aHeight, anXoffset, anYoffset : out ShortReal from Standard;
+   aFontIndex: Integer from Standard = -1
+  ) is static;
+      	---Purpose: Returns the TEXT size and offsets 
+      	--          in DWU space depending
+      	--          of the required FontIndex if aFontIndex is >= 0
+      	--          or the current FontIndex if < 0 (default).
+
+  TextSize ( 
+   me;  
+   aText                                 : CString from Standard;
+   aWidth, aHeight, anXoffset, anYoffset : out ShortReal from Standard;
+   aFontIndex                            : Integer        from Standard = -1
+  ) is static;
+      	---Purpose: Returns the TEXT size in DWU space depending
+      	--          of the required FontIndex if aFontIndex is >= 0
+      	--          or the current FontIndex if < 0 (default).
+
+  HDC ( me ) returns Handle from Aspect is static;
+      	---Purpose: Returns device context handle
+
+  ClientRect ( me; aWidth, aHeigth : out Integer from Standard ) is static;
+      	---Purpose: Returns dimensions of the device
+
+  GraphicDevice ( me ) returns GraphicDevice from WNT is static;
+      	---Purpose: Returns graphic device
+
+  DeviceList ( myclass )
+   returns HSequenceOfAsciiString from TColStd
+   raises  DriverError            from Aspect;
+      	---Purpose: Returns list of available graphic devices.
+      	--          First element is default device
+
+  DeviceSize (myclass;
+              aDevice        :     AsciiString from TCollection;
+              aWidth, aHeight: out Real        from Standard);
+    	---Purpose: Returns size of a specified device.
+
+  EMFDim (
+    me      : mutable;
+    aWidth  : out Integer from Standard;
+    aHeight : out Integer from Standard;
+    aSwap   : out Integer from Standard
+  ) returns Real from Standard;
+      	---Purpose: returns dimensions, in .01 millimeter units,
+      	--           of a rectangle that surrounds the picture stored
+      	--           in the metafile ( parameters <aWidth> & <aHeight> ).
+      	--           <aSwap> value idicates whether rotate operation
+      	--           (portrait/landscape) was performed or not. Valid
+      	--           values are: <0> - no rotation
+      	--                       <1> - do rotation
+      	--                       <2> - could not determine
+      	--           Returns ratio between <aWidth> & <aHeight>.
+      	--  Warning:  returns <-1> in case of error
+
+  ProcessColorIndex ( me; ColorIndex     : Integer from Standard )
+    returns Integer from Standard is private;
+
+  ProcessWidthIndex ( me; WidthIndex     : Integer from Standard )
+    returns Length  from Quantity is private;
+
+  ProcessTypeIndex  ( me; TypeIndex      : Integer from Standard )
+    returns Integer from Standard is private;
+
+  DoSpool           ( me;
+    anOriginalSize : Boolean from Standard;
+    aPlotMode      : PlotMode from Aspect = Aspect_PM_NPLOTTER
+  ) returns Boolean from Standard is private;
+    	---Purpose: Internal methods
+
+  TextManager (me: mutable)
+  returns TextManager from WNT;
+    	---C++: return const &
+    	---Category: Inquire methods
+
+  MFT_Font (me: mutable; anIndex: Integer)
+  returns FontManager from MFT;
+    	---C++: return const &
+    	---Category: Inquire methods
+
+  MFT_Size (me: mutable; anIndex: Integer)
+  returns ShortReal;
+    	---Category: Inquire methods
+
+fields
+  myRect             : Address               from Standard;
+  myPrnName          : AsciiString           from TCollection; -- Name of .PRN file
+  myEmfName          : AsciiString           from TCollection; -- Name of .EMF file
+  myAllocators,
+  myAllocator        : Address               from Standard;
+  myPixelToUnit      : Real                  from Standard;
+  myImageName        : HAsciiString          from TCollection;
+  myDevice           : GraphicDevice         from WNT;
+  myHDC              : Handle                from Aspect;
+  myHDCMeta          : Handle                from Aspect;
+  myHMetaFile        : Handle                from Aspect;
+  myImage            : Handle                from Aspect;
+  myOrientation      : OrientationType       from WNT;
+  myScale            : Factor                from Quantity;
+  myFlags            : Integer               from Standard;
+  myNCopies          : Integer               from Standard;
+
+  myColors           : HColorTable           from WNT;
+  myFonts            : HFontTable            from WNT;
+  myTypeIdxs         : HArray1OfInteger      from TColStd;
+  myWidthIdxs        : HArray1OfInteger      from TColStd;
+  myMarkerIdxs       : HArray1OfInteger      from TColStd;
+
+  myMFTFonts         : HListOfMFTFonts       from WNT;
+  myMFTSizes         : HArray1OfShortReal    from TShort;
+  myNTextManager     : TextManager           from WNT;
+
+end DDriver from WNT;

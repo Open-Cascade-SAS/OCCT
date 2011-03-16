@@ -1,0 +1,69 @@
+-- File:	MAT_BasicElt.cdl
+-- Created:	Fri Apr 30 12:10:31 1993
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+class BasicElt from MAT 
+
+	---Purpose: A    BasicELt  is  associated   to  each  elemtary
+	--          constituant of  the figure.
+
+inherits 
+
+    TShared from MMgt
+
+uses
+    Arc            from MAT,
+    Side           from MAT,
+    Address        from Standard
+is
+    
+    Create (anInteger : Integer) 
+    	--- Purpose : Constructor, <anInteger> is the <index> of <me>.
+    returns mutable BasicElt from MAT;
+
+    StartArc(me)  
+    	--- Purpose : Return <startArcLeft> or <startArcRight> corresponding
+    	--            to <aSide>.
+    returns Arc is static;
+
+    EndArc(me)  
+    	--- Purpose : Return <endArcLeft> or <endArcRight> corresponding
+    	--            to <aSide>.
+    returns Arc is static;
+     
+    Index (me) 
+    	--- Purpose : Return the <index> of <me> in Graph.TheBasicElts.
+    returns Integer is static;
+
+    GeomIndex(me) 
+    	--- Purpose : Return the <GeomIndex> of <me>.
+    returns Integer is static;
+    
+    SetStartArc (me : mutable ; anArc : Arc)
+    is static;
+    
+    SetEndArc (me : mutable ; anArc : Arc)
+    is static;
+    
+    SetIndex (me : mutable ; anInteger : Integer)
+    is static;
+
+    SetGeomIndex(me : mutable ; anInteger : Integer)
+    is static;
+    
+fields
+    startLeftArc  : Address from Standard;
+    endLeftArc    : Address from Standard;
+    index         : Integer;
+    geomIndex     : Integer;
+    
+end BasicElt;
+
+
+
+
+
+

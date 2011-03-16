@@ -1,0 +1,61 @@
+-- File:	Adaptor3d_InterFunc.cdl
+-- Created:	Wed Feb 18 09:06:58 1998
+-- Author:	Jeanine PANCIATICI
+--		<jpi@sgi38>
+---Copyright:	 Matra Datavision 1998
+
+private  class  InterFunc  from  Adaptor3d  inherits  FunctionWithDerivative  from  math 
+
+         ---Purpose: Used to find the points U(t) = U0 or V(t) = V0 in
+         --          order to determine the  Cn discontinuities of  an
+         --               Adpator_CurveOnSurface  relativly  to    the
+         --          discontinuities of the surface. 
+	 
+uses  
+      HCurve2d  from  Adaptor2d
+ 
+raises  ConstructionError
+
+is 
+      Create  (C :  HCurve2d  from  Adaptor2d;  FixVal:  Real  from  Standard; 
+               Fix:  Integer) 
+      returns  InterFunc 
+      raises  ConstructionError  from  Standard;  
+      ---Purpose:   build the function  U(t)=FixVal   if Fix =1 or 
+      --            V(t)=FixVal if Fix=2
+
+    Value(me: in out; X: Real; F: out Real)
+        ---Purpose: computes the value <F>of the function for the variable <X>.
+    	--         Returns True if the calculation were successfully done, 
+    	--          False otherwise.
+
+    returns Boolean;
+
+ 
+    Derivative(me: in out; X: Real; D: out Real)
+         ---Purpose: computes the derivative <D> of the function 
+         --          for the variable <X>.
+    	--           Returns True if the calculation were successfully done, 
+    	--           False otherwise.
+
+    returns Boolean;
+
+
+    Values(me: in out; X: Real; F, D: out Real)
+    	---Purpose: computes the value <F> and the derivative <D> of the 
+    	--          function for the variable <X>.
+    	--          Returns True if the calculation were successfully done,
+    	--          False otherwise.
+
+    returns Boolean;
+
+fields 
+
+    myCurve2d :  HCurve2d    from  Adaptor2d; 
+    myFixVal  :  Real  from  Standard;
+    myFix    :  Integer     from  Standard; 
+
+
+    
+end InterFunc;
+      

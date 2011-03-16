@@ -1,0 +1,86 @@
+-- File:	StlMesh_MeshExplorer.cdl
+-- Created:	Tue Sep 21 10:06:20 1995
+-- Author:	Philippe GIRODENGO
+---Copyright:	 Matra Datavision 1995
+
+
+
+class MeshExplorer from StlMesh 
+
+	---Purpose: Provides  facilities to explore  the triangles  of
+	--          each mesh domain.
+	--          
+uses  
+
+    Mesh                   from StlMesh,
+    SequenceOfMeshTriangle from StlMesh,
+    SequenceOfXYZ          from TColgp
+
+raises 
+
+    OutOfRange   from Standard,
+    NoMoreObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+    Create (M : Mesh)  returns MeshExplorer;
+    
+
+    Deflection (me) returns Real is static;
+    	---Purpose: Returns the mesh deflection of the current domain.
+
+    InitTriangle (me : in out; DomainIndex : Integer = 1)
+    	---Purpose: Initializes the exploration  of the  triangles  of
+    	--          the mesh domain of range <DomainIndex>.
+    raises OutOfRange
+    	---Purpose: Raised if <DomainIndex> is lower than 1 or greater
+    	--          than the number of domains.
+    is static;
+
+
+    MoreTriangle (me) returns Boolean is static;
+    	---C++: inline
+
+
+    NextTriangle (me : in out) 
+    raises NoMoreObject
+    	---Purpose: Raised if there is no more triangle in the current
+    	--          domain.
+    is static;
+
+
+    TriangleVertices (me; X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3 : in out Real)
+    raises NoSuchObject
+    	---Purpose: Raised if there is no more triangle in the current
+    	--          domain.
+    is static;
+
+   
+    TriangleOrientation (me; Xn, Yn, Zn : in out Real)
+    raises NoSuchObject
+    	---Purpose: Raised if there is no more triangle in the current
+    	--          domain.
+    is static;
+
+
+
+fields
+
+    mesh            : Mesh;
+    xn, yn, zn      : Real;
+    v1, v2, v3      : Integer;
+    domainIndex     : Integer;
+    nbTriangles     : Integer;
+    triangleIndex   : Integer;
+    trianglesVertex : SequenceOfXYZ;
+    trianglesdef    : SequenceOfMeshTriangle;
+
+end MeshExplorer;
+
+
+
+
+
+
+

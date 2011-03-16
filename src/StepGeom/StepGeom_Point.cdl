@@ -1,0 +1,20 @@
+-- File:        Point.cdl
+-- Created:     Fri Dec  1 11:11:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Point from StepGeom 
+
+inherits GeometricRepresentationItem from StepGeom 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable Point;
+	---Purpose: Returns a Point
+
+
+end Point;

@@ -1,0 +1,124 @@
+-- File:        Address.cdl
+-- Created:     Mon Dec  4 12:01:02 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Address from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Boolean from Standard
+is
+
+	Create returns mutable Address;
+	---Purpose: Returns a Address
+
+	Init (me : mutable;
+	      hasAinternalLocation : Boolean from Standard;
+	      aInternalLocation : mutable HAsciiString from TCollection;
+	      hasAstreetNumber : Boolean from Standard;
+	      aStreetNumber : mutable HAsciiString from TCollection;
+	      hasAstreet : Boolean from Standard;
+	      aStreet : mutable HAsciiString from TCollection;
+	      hasApostalBox : Boolean from Standard;
+	      aPostalBox : mutable HAsciiString from TCollection;
+	      hasAtown : Boolean from Standard;
+	      aTown : mutable HAsciiString from TCollection;
+	      hasAregion : Boolean from Standard;
+	      aRegion : mutable HAsciiString from TCollection;
+	      hasApostalCode : Boolean from Standard;
+	      aPostalCode : mutable HAsciiString from TCollection;
+	      hasAcountry : Boolean from Standard;
+	      aCountry : mutable HAsciiString from TCollection;
+	      hasAfacsimileNumber : Boolean from Standard;
+	      aFacsimileNumber : mutable HAsciiString from TCollection;
+	      hasAtelephoneNumber : Boolean from Standard;
+	      aTelephoneNumber : mutable HAsciiString from TCollection;
+	      hasAelectronicMailAddress : Boolean from Standard;
+	      aElectronicMailAddress : mutable HAsciiString from TCollection;
+	      hasAtelexNumber : Boolean from Standard;
+	      aTelexNumber : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetInternalLocation(me : mutable; aInternalLocation : mutable HAsciiString);
+	UnSetInternalLocation (me:mutable);
+	InternalLocation (me) returns mutable HAsciiString;
+	HasInternalLocation (me) returns Boolean;
+	SetStreetNumber(me : mutable; aStreetNumber : mutable HAsciiString);
+	UnSetStreetNumber (me:mutable);
+	StreetNumber (me) returns mutable HAsciiString;
+	HasStreetNumber (me) returns Boolean;
+	SetStreet(me : mutable; aStreet : mutable HAsciiString);
+	UnSetStreet (me:mutable);
+	Street (me) returns mutable HAsciiString;
+	HasStreet (me) returns Boolean;
+	SetPostalBox(me : mutable; aPostalBox : mutable HAsciiString);
+	UnSetPostalBox (me:mutable);
+	PostalBox (me) returns mutable HAsciiString;
+	HasPostalBox (me) returns Boolean;
+	SetTown(me : mutable; aTown : mutable HAsciiString);
+	UnSetTown (me:mutable);
+	Town (me) returns mutable HAsciiString;
+	HasTown (me) returns Boolean;
+	SetRegion(me : mutable; aRegion : mutable HAsciiString);
+	UnSetRegion (me:mutable);
+	Region (me) returns mutable HAsciiString;
+	HasRegion (me) returns Boolean;
+	SetPostalCode(me : mutable; aPostalCode : mutable HAsciiString);
+	UnSetPostalCode (me:mutable);
+	PostalCode (me) returns mutable HAsciiString;
+	HasPostalCode (me) returns Boolean;
+	SetCountry(me : mutable; aCountry : mutable HAsciiString);
+	UnSetCountry (me:mutable);
+	Country (me) returns mutable HAsciiString;
+	HasCountry (me) returns Boolean;
+	SetFacsimileNumber(me : mutable; aFacsimileNumber : mutable HAsciiString);
+	UnSetFacsimileNumber (me:mutable);
+	FacsimileNumber (me) returns mutable HAsciiString;
+	HasFacsimileNumber (me) returns Boolean;
+	SetTelephoneNumber(me : mutable; aTelephoneNumber : mutable HAsciiString);
+	UnSetTelephoneNumber (me:mutable);
+	TelephoneNumber (me) returns mutable HAsciiString;
+	HasTelephoneNumber (me) returns Boolean;
+	SetElectronicMailAddress(me : mutable; aElectronicMailAddress : mutable HAsciiString);
+	UnSetElectronicMailAddress (me:mutable);
+	ElectronicMailAddress (me) returns mutable HAsciiString;
+	HasElectronicMailAddress (me) returns Boolean;
+	SetTelexNumber(me : mutable; aTelexNumber : mutable HAsciiString);
+	UnSetTelexNumber (me:mutable);
+	TelexNumber (me) returns mutable HAsciiString;
+	HasTelexNumber (me) returns Boolean;
+
+fields
+
+	internalLocation : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	streetNumber : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	street : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	postalBox : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	town : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	region : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	postalCode : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	country : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	facsimileNumber : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	telephoneNumber : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	electronicMailAddress : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	telexNumber : HAsciiString from TCollection;   -- OPTIONAL can be NULL
+	hasInternalLocation : Boolean from Standard;
+	hasStreetNumber : Boolean from Standard;
+	hasStreet : Boolean from Standard;
+	hasPostalBox : Boolean from Standard;
+	hasTown : Boolean from Standard;
+	hasRegion : Boolean from Standard;
+	hasPostalCode : Boolean from Standard;
+	hasCountry : Boolean from Standard;
+	hasFacsimileNumber : Boolean from Standard;
+	hasTelephoneNumber : Boolean from Standard;
+	hasElectronicMailAddress : Boolean from Standard;
+	hasTelexNumber : Boolean from Standard;
+
+end Address;

@@ -1,0 +1,8 @@
+@ifnotdefined(%PMMgt_WOKSteps_EDL) then
+@set %PMMgt_WOKSteps_EDL = "";
+
+@string %WOKSteps_XcppGroup += " xcpp.std ";
+@set %WOKSteps_xcpp_std = "*PMMgt_InsertDelete(xcpp.header)";
+
+@endif;
+

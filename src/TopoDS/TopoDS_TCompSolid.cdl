@@ -1,0 +1,23 @@
+-- File:	TopoDS_TCompSolid.cdl
+-- Created:	Mon Dec 17 11:18:44 1990
+-- Author:	Remi Lequette
+---Copyright:	 Matra Datavision 1990, 1992
+
+
+class TCompSolid from TopoDS inherits TShape from TopoDS
+
+uses
+    ShapeEnum from TopAbs
+
+is
+    Create returns mutable TCompSolid from TopoDS;
+    ---C++: inline
+    ---Purpose: Creates an empty TCompSolid.
+
+    ShapeType(me) returns ShapeEnum from TopAbs;
+    ---Purpose: returns COMPSOLID
+
+    EmptyCopy(me) returns mutable TShape from TopoDS;
+    ---Purpose: Returns an empty TCompSolid.
+
+end TCompSolid;

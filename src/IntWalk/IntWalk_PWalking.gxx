@@ -1,0 +1,10 @@
+#include <IntWalk_StatusDeflection.hxx>
+
+#include <TColgp_Array1OfPnt.hxx>
+#include <IntImp_ComputeTangence.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+#include <IntWalk_PWalking_1.gxx>
+#include <IntWalk_PWalking_2.gxx>
+#include <IntWalk_PWalking_3.gxx>
+#include <IntWalk_PWalking_4.gxx>

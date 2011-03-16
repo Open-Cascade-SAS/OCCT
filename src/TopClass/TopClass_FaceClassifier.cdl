@@ -1,0 +1,91 @@
+-- File:	FaceClassifier.cdl
+-- Created:	Tue Nov 17 14:34:03 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class FaceClassifier from TopClass 
+    (TheFaceExplorer as any;
+     TheEdge as any;
+     TheIntersection2d as any)
+
+	---Purpose: Provides an algorithm to classify a  point in a 2D
+	--          face (or in the UV space of a face on a surface).
+
+uses
+    Pnt2d from gp,
+    Position from IntRes2d,
+    State from TopAbs
+    
+raises
+    DomainError
+
+    class FClass2d instantiates Classifier2d from TopClass
+    	(TheEdge, TheIntersection2d);
+
+is
+    Create returns FaceClassifier from TopClass;
+	---Purpose: Empty constructor, undefined algorithm.
+	
+    Create(F : in out TheFaceExplorer; P : Pnt2d from gp; Tol : Real)
+    returns FaceClassifier from TopClass;
+	---Purpose: Creates an algorithm to classify the Point  P with
+	--          Tolerance <T> on the face described by <F>.
+	
+    Perform(me : in out;
+    	    F : in out TheFaceExplorer; P : Pnt2d from gp; Tol : Real)
+	---Purpose: Classify  the Point  P  with  Tolerance <T> on the
+	--          face described by <F>.
+    is static;
+    
+    State(me) returns State from TopAbs
+	---Purpose: Returns the result of the classification.
+    is static;
+    
+    Rejected(me) returns Boolean
+	---Purpose: Returns  True when  the   state was computed by  a
+	--          rejection. The state is OUT.
+	---C++: inline
+    is static;
+    
+    NoWires(me) returns Boolean
+	---Purpose: Returns True if  the face  contains  no wire.  The
+	--          state is IN.
+	---C++: inline
+    is static;
+    
+    Edge(me) returns TheEdge
+	---Purpose: Returns   the    Edge  used   to    determine  the
+	--          classification. When the State is ON  this  is the
+	--          Edge containing the point.
+	---C++: return const &
+    raises
+    	DomainError -- when no edge was used (rejected or nowires)
+    is static;
+    
+    EdgeParameter(me) returns Real from Standard
+	---Purpose: Returns the parameter on Edge() used to determine  the
+	--          classification.
+    raises
+    	DomainError -- when no edge was used (rejected or nowires)
+    is static;
+    
+    Position(me) returns Position from IntRes2d
+	---Purpose: Returns the  position of  the   point on the  edge
+	--          returned by Edge.
+	---C++: inline
+    is static;
+	
+fields
+
+    myClassifier    : FClass2d  is protected;
+    myEdge          : TheEdge  is protected;
+    myEdgeParameter : Real from Standard  is protected;
+    myPosition      : Position from IntRes2d  is protected;
+    rejected        : Boolean from Standard  is protected;
+    nowires         : Boolean from Standard  is protected;
+
+end FaceClassifier;
+

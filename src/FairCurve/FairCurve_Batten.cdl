@@ -1,0 +1,298 @@
+-- File:	FairCurve_Batten.cdl
+-- Created:	Mon Feb  5 09:34:00 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class Batten from FairCurve 
+
+	---Purpose: Constructs curves with a constant or linearly increasing
+    	-- section to be used in the design of wooden or plastic
+    	-- battens. These curves are two-dimensional, and
+    	-- simulate physical splines or battens.
+
+uses Pnt2d from gp, 
+     Vec2d from gp,
+     BSplineCurve from Geom2d,
+     HArray1OfPnt2d from TColgp,
+     HArray1OfReal from TColStd,
+     HArray1OfInteger from TColStd,
+     AnalysisCode from FairCurve
+
+raises NegativeValue, NullValue
+
+is
+    Create (P1,P2 : Pnt2d; Height : Real; Slope : Real = 0)
+
+        ---Purpose: Constructor  with the two points and the geometrical
+    	--          characteristics of the batten (elastic beam)  
+    	-- Height is the height of the deformation, and Slope is the
+    	-- slope value, initialized at 0. The user can then supply the
+    	-- desired slope value by the method, SetSlope.
+    	--          Other parameters are initialized as follow :
+    	--           - FreeSliding = False
+    	--           - ConstraintOrder1 = 1
+    	--           - ConstraintOrder2 = 1 
+    	--           - Angle1 = 0
+    	--           - Angle2 = 0
+    	--           - SlidingFactor = 1
+      	--  Exceptions
+    	-- NegativeValue if Height is less than or equal to 0.
+    	-- NullValue if the distance between P1 and P2 is less
+    	-- than or equal to the tolerance value for distance in
+    	-- Precision::Confusion: P1.IsEqual(P2,
+    	-- Precision::Confusion()). The function
+    	-- gp_Pnt2d::IsEqual tests to see if this is the case.
+    returns Batten
+    raises  NegativeValue,   
+            NullValue;    
+  
+    Delete(me:out) is virtual;
+    	---C++: alias "Standard_EXPORT virtual ~FairCurve_Batten(){Delete();}"
+ 
+    SetFreeSliding (me : in out; FreeSliding : Boolean);
+   	---C++: inline
+	---Purpose: Freesliding is initialized with the default setting false.
+    	-- When Freesliding is set to true and, as a result, sliding
+    	-- is free, the sliding factor is automatically computed to
+    	-- satisfy the equilibrium of the batten.
+    	--      
+    SetConstraintOrder1 (me : in out; ConstraintOrder : Integer);
+    	---C++: inline
+    	---Purpose: Allows you to change the order of the constraint on the
+    	-- first point. ConstraintOrder has the default setting of 1.
+    	-- The following settings are available:
+    	-- -   0-the curve must pass through a point
+    	-- -   1-the curve must pass through a point and have a given tangent
+    	-- -   2-the curve must pass through a point, have a given tangent and a given curvature.
+    	--   The third setting is only valid for
+    	-- FairCurve_MinimalVariation curves.
+    	-- These constraints, though geometric, represent the
+    	-- mechanical constraints due, for example, to the
+    	-- resistance of the material the actual physical batten is made of.
+    	
+    SetConstraintOrder2 (me : in out; ConstraintOrder : Integer);
+    	---C++: inline
+    	---Purpose: Allows you to change the order of the constraint on the
+    	-- second point. ConstraintOrder is initialized with the default setting of 1.
+    	-- The following settings are available:
+    	-- -   0-the curve must pass through a point
+    	-- -   1-the curve must pass through a point and have a given tangent
+    	-- -   2-the curve must pass through a point, have a given
+    	--   tangent and a given curvature.
+    	-- The third setting is only valid for
+    	-- FairCurve_MinimalVariation curves.
+    	-- These constraints, though geometric, represent the
+    	-- mechanical constraints due, for example, to the
+    	-- resistance of the material the actual physical batten is made of.
+    	      
+    SetP1 (me : in out; P1: Pnt2d)
+	---Purpose: Allows you to change the location of the point, P1, and in
+    	-- doing so, modify the curve.
+    	-- Warning
+    	-- This method changes the angle as well as the point.
+    	-- Exceptions
+    	-- NullValue if the distance between P1 and P2 is less
+    	-- than or equal to the tolerance value for distance in
+    	-- Precision::Confusion: P1.IsEqual(P2,
+    	-- Precision::Confusion()). The function
+    	-- gp_Pnt2d::IsEqual tests to see if this is the case.
+    raises NullValue;   
+     
+    SetP2 (me : in out; P2: Pnt2d)
+	---Purpose: Allows you to change the location of the point, P1, and in
+    	-- doing so, modify the curve.
+    	-- Warning
+    	-- This method changes the angle as well as the point.
+    	-- Exceptions
+    	-- NullValue if the distance between P1 and P2 is less
+    	-- than or equal to the tolerance value for distance in
+    	-- Precision::Confusion: P1.IsEqual(P2,
+    	-- Precision::Confusion()). The function
+    	-- gp_Pnt2d::IsEqual tests to see if this is the case.
+    raises NullValue;  
+
+    SetAngle1(me : in out; Angle1 : Real);
+  	---C++: inline
+  	---Purpose: Allows you to change the angle Angle1 at the first point,
+    	-- P1. The default setting is 0.
+    	--      
+    SetAngle2 (me : in out; Angle2 : Real);
+    	---C++: inline
+    	---Purpose: Allows you to change the angle Angle2 at the second
+    	-- point, P2. The default setting is 0.
+    	--       
+    SetHeight (me : in out; Height : Real)
+    	---C++: inline
+    	---Purpose: Allows you to change the height of the deformation.  
+    	--  Raises  NegativeValue; -- if  Height <= 0 
+    raises  NegativeValue; -- if  Height <= 0 
+    
+    SetSlope (me : in out; Slope  : Real);
+    	---C++: inline
+ 	---Purpose: Allows you to set the slope value, Slope.
+    	      
+    SetSlidingFactor(me : in out  ; SlidingFactor : Real);
+    	---C++: inline
+    	---Purpose: Allows you to change the ratio SlidingFactor. This
+    	-- compares the length of the batten and the reference
+    	-- length, which is, in turn, a function of the constraints.
+    	-- This modification has one of the following two effects:
+    	-- -   if you increase the value, it inflates the batten
+    	-- -   if you decrease the value, it flattens the batten.
+    	-- When sliding is free, the sliding factor is automatically
+    	-- computed to satisfy the equilibrium of the batten. When
+    	-- sliding is imposed, a value is required for the sliding factor.
+    	-- SlidingFactor is initialized with the default setting of 1.
+
+    Compute (me :in out;  
+    	     Code : in out  AnalysisCode;
+    	     NbIterations : Integer = 50;  
+    	     Tolerance    : Real = 1.0e-3 )
+    	---Purpose: Performs the algorithm, using the arguments Code,
+    	-- NbIterations and Tolerance and computes the curve
+    	-- with respect to the constraints.
+    	-- Code will have one of the following values:
+    	-- -   OK
+    	-- -   NotConverged
+    	-- -   InfiniteSliding
+    	-- -   NullHeight
+    	-- The parameters Tolerance and NbIterations control
+    	-- how precise the computation is, and how long it will take.
+    	        
+    	returns Boolean
+        is virtual;
+	
+    Compute (me :in out;
+             DeltaP1 : Vec2d;
+	     DeltaP2 : Vec2d;
+	     DeltaAngle1 : Real;
+	     DeltaAngle2 : Real;
+    	     ACode : in out  AnalysisCode;
+    	     NbIterations : Integer;  
+    	     Tolerance: Real )
+    	---Purpose: compute the curve with respect of the delta-constraints.
+    	returns Boolean is private;
+			
+    SlidingOfReference(me) returns Real;
+    	---Purpose:  Computes the real number value for length Sliding of
+    	-- Reference for new constraints. If you want to give a
+    	-- specific length to a batten curve, use the following
+    	-- syntax: b.SetSlidingFactor(L /
+    	-- b.SlidingOfReference()) where b is the
+    	-- name of the batten curve object.
+     
+    SlidingOfReference(me; D, A1, A2 : Real) returns Real is protected;   
+    Compute(me; D, A1, A2 : Real) returns Real is protected; 
+    Compute(me; D, A : Real) returns Real is protected; 
+    	--
+    	--      Selector Methods   ---------------------------------------
+    	--        
+    	---Purpose: Returns the effective geometrical constraints at  the
+    	--          last batten  computation.  This effectives values may
+    	--          be not equal with the wanted values if
+    	--          - if the value is "free"
+    	--          - in the case of incomplete computation : collapse, 
+    	--            infinite sliding, height of batten will be negative at end points
+
+    GetFreeSliding (me)  
+    	---C++: inline
+	---Purpose: Returns the initial free sliding value, false by default.
+    	-- Free sliding is generally more aesthetically pleasing
+    	-- than constrained sliding. However, the computation can
+    	-- fail with values such as angles greater than PI/2. This is
+    	-- because the resulting batten length is theoretically infinite.
+    returns  Boolean;
+    
+    GetConstraintOrder1 (me)
+  	---C++: inline
+    	---Purpose: Returns the established first constraint order.
+    returns Integer;
+    
+    GetConstraintOrder2 (me)
+  	---C++: inline
+    	---Purpose: Returns the established second constraint order.
+    returns Integer;
+    
+    GetP1 (me) 
+    	---C++: inline
+        ---C++: return const&
+    	---Purpose: Returns the established location of the point P1.
+    returns Pnt2d;
+    
+    GetP2 (me)
+    	---C++: inline
+    	---C++: return const&
+    	---Purpose: Returns the established location of the point P2.
+    returns Pnt2d;
+    
+    GetAngle1 (me) 
+    	---C++: inline
+    	---Purpose: Returns the established first angle.
+    returns  Real;
+    
+    GetAngle2 (me) 
+    	---C++: inline
+    	---Purpose: Returns the established second angle.
+    returns  Real;
+    
+    GetHeight (me) 
+    	---C++: inline
+    	---Purpose: Returns the thickness of the lathe.
+    returns  Real;
+    
+    GetSlope  (me)
+    	---C++: inline
+ 	---Purpose: Returns the established slope value.
+    returns  Real;
+    
+    GetSlidingFactor(me)
+    	---C++: inline    
+    	---Purpose: Returns the initial sliding factor.    
+    returns  Real;
+--
+--  result methods  -------------------------------------------
+--            
+    Curve(me)
+    	---Purpose: Returns the computed curve a 2d BSpline.
+    returns BSplineCurve;
+    
+    Dump(me ; o : in out OStream) is virtual;
+        ---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+---
+---   Private methodes  --------------------------------------
+---                           
+
+   Angles(me : in out; P1, P2 : Pnt2d) is private;
+
+fields
+  myCode   :  AnalysisCode from FairCurve is protected;
+---  parameter of current Batten      
+  OldP1, OldP2 : Pnt2d is protected;
+  OldAngle1, OldAngle2 : Real is protected;
+  OldHeight, OldSlope : Real is protected;
+  OldSlidingFactor : Real is protected;
+  
+  OldFreeSliding : Boolean is protected;
+  OldConstraintOrder1, OldConstraintOrder2 : Integer is protected;
+
+  NewP1, NewP2 : Pnt2d is protected;
+  NewAngle1, NewAngle2 : Real is protected;
+  NewHeight, NewSlope : Real is protected;
+  NewSlidingFactor : Real is protected;
+  
+---  parameter of next Batten
+  NewFreeSliding : Boolean is protected;
+  NewConstraintOrder1, NewConstraintOrder2 : Integer is protected;
+  
+---  BSpline definition
+
+  Degree    : Integer is protected; 
+  Poles     : HArray1OfPnt2d from TColgp is protected;
+  Flatknots : HArray1OfReal from TColStd is protected;
+  Knots     : HArray1OfReal from TColStd is protected;
+  Mults     : HArray1OfInteger from TColStd is protected;  
+
+end Batten;

@@ -1,0 +1,14 @@
+cgmlib.hxx
+cgmatt.h
+cgminit.h
+cgmpar.h
+cgmtypes.h
+cgmelem.h
+cgmmach.h
+cgmstruc.h
+cgmerr.h
+cgmout.h
+cgmobin.c
+cgmotext.c
+cgmochar.c
+Gestfic.cxx

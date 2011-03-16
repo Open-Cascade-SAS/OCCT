@@ -1,0 +1,25 @@
+-- File:	BRepAlgo_Common.cdl
+-- Created:	Thu Oct 14 18:25:52 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Common from BRepAlgo inherits BooleanOperation from BRepAlgo
+
+	---Purpose: Describes functions for performing a topological
+    	-- common operation (Boolean intersection).
+    	-- A Common object provides the framework for:
+    	-- - defining the construction of a common shape,
+    	-- - implementing the construction algorithm, and
+    	-- - consulting the result.
+        
+uses
+    Shape from TopoDS
+
+is
+    Create (S1,S2 : Shape from TopoDS) returns Common from BRepAlgo;  
+	---Purpose: Constructs the common part of shapes S1 and S2. 
+	
+end Common;

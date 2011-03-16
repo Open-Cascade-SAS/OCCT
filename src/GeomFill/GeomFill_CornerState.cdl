@@ -1,0 +1,39 @@
+-- File:	GeomFill_CornerState.cdl
+-- Created:	Fri Dec  8 10:00:47 1995
+-- Author:	Laurent BOURESCHE
+--		<lbo@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class CornerState from GeomFill 
+
+	---Purpose: Class  (should    be  a  structure)   storing  the
+	--          informations         about     continuity, normals
+	--          parallelism,  coons conditions and bounds tangents
+	--          angle on the corner of contour to be filled.
+
+is
+
+    Create returns CornerState from GeomFill;
+    Gap(me) returns Real from Standard;
+    Gap(me : in out; G : Real from Standard);
+    TgtAng(me) returns Real from Standard;
+    TgtAng(me : in out; Ang : Real from Standard);
+    HasConstraint(me) returns Boolean from Standard;
+    Constraint(me : in out);
+    NorAng(me) returns Real from Standard;
+    NorAng(me : in out; Ang : Real from Standard);
+    IsToKill(me; Scal : out Real from Standard) 
+    returns Boolean from Standard;
+    DoKill(me : in out; Scal : Real from Standard);
+    
+fields
+
+    gap           : Real from Standard;
+    tgtang        : Real from Standard;
+    isconstrained : Boolean from Standard;
+    norang        : Real from Standard;
+    scal          : Real from Standard;
+    coonscnd      : Boolean from Standard;
+
+end CornerState;

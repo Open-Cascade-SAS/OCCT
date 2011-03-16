@@ -1,0 +1,89 @@
+-- File:	BOP_Refiner.cdl
+-- Created:	Mon Dec 24 12:14:36 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Refiner from BOP 
+
+	---Purpose:  
+	--  The  algorithm to provide the refinition  
+    	--  for a resulting shape of Boolean Operation  
+    	--  algorithm.   
+        --  (not  completed  yet)	     
+
+
+uses
+    Shape from TopoDS,
+    ListOfShape from TopTools 
+    
+--raises
+
+is 
+    Create   
+    	returns Refiner from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;  
+    	---
+    Create(aS: Shape from TopoDS)    
+    	returns Refiner from BOP; 
+    	---Purpose:  
+    	--- Constructor;  
+    	---
+    SetShape(me:out; 
+    	   aS: Shape from TopoDS); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetInternals (me:out; 
+	   aLS:ListOfShape from TopTools); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    Do(me:out); 
+    	---Purpose: 
+    	--- Performs the algorithm  
+    	---
+    IsDone(me) 
+    	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+    ErrorStatus(me) 
+    	returns Integer from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+    Shape(me) 
+    	returns Shape from TopoDS; 
+    	---C++: return const & 
+    	---Purpose: 
+    	--- Selector
+    	---
+    NbRemovedVertices(me) 
+ 	 returns Integer from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+    NbRemovedEdges(me) 
+ 	 returns Integer from Standard;  
+    	---Purpose: 
+    	--- Selector
+    	---
+    DoInternals(me:out) is  private; 
+    	---Purpose: 
+    	--- Internal usage
+    	---
+
+
+fields
+ 
+    myShape       : Shape   from TopoDS; 
+    myIsDone      : Boolean from Standard; 
+    myErrorStatus : Integer from Standard;	     
+    myNbRemovedVertices  : Integer from Standard;	
+    myNbRemovedEdges     : Integer from Standard;	 
+    myInternals   : ListOfShape from TopTools; 
+    
+end Refiner;

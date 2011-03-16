@@ -1,0 +1,1023 @@
+-- File:	Geom_BSplineCurve.cdl
+-- Created:	Tue Mar  9 19:30:09 1993
+-- Author:	JCV
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+-- xab : modified 15-Mar-95 : added cache mecanism to speed up evaluation
+-- mei : modified 08-Jun-95 : added method MovePoint
+
+
+class BSplineCurve from Geom inherits BoundedCurve from Geom
+
+        ---Purpose : Definition of the B_spline curve.
+        --       A B-spline curve can be  
+        --         Uniform  or non-uniform
+        --         Rational or non-rational
+        --         Periodic or non-periodic
+        --  
+        --  a b-spline curve is defined by :
+        --  its degree; the degree for a
+    	--   Geom_BSplineCurve is limited to a value (25)
+    	--   which is defined and controlled by the system.
+    	--   This value is returned by the function MaxDegree;
+    	-- - its periodic or non-periodic nature;
+    	-- - a table of poles (also called control points), with
+    	--   their associated weights if the BSpline curve is
+    	--   rational. The poles of the curve are "control
+    	--   points" used to deform the curve. If the curve is
+    	--   non-periodic, the first pole is the start point of
+    	--   the curve, and the last pole is the end point of
+    	--   the curve. The segment which joins the first pole
+    	--   to the second pole is the tangent to the curve at
+    	--   its start point, and the segment which joins the
+    	--   last pole to the second-from-last pole is the
+    	--   tangent to the curve at its end point. If the curve
+    	--   is periodic, these geometric properties are not
+    	--   verified. It is more difficult to give a geometric
+    	--   signification to the weights but are useful for
+    	--   providing exact representations of the arcs of a
+    	--   circle or ellipse. Moreover, if the weights of all the
+    	--   poles are equal, the curve has a polynomial
+    	--   equation; it is therefore a non-rational curve.
+    	-- - a table of knots with their multiplicities. For a
+    	--   Geom_BSplineCurve, the table of knots is an
+    	--   increasing sequence of reals without repetition;
+    	--   the multiplicities define the repetition of the knots.
+    	--   A BSpline curve is a piecewise polynomial or
+    	--   rational curve. The knots are the parameters of
+    	--   junction points between two pieces. The
+    	--   multiplicity Mult(i) of the knot Knot(i) of
+    	--   the BSpline curve is related to the degree of
+    	--   continuity of the curve at the knot Knot(i),
+    	--   which is equal to Degree - Mult(i)
+    	--   where Degree is the degree of the BSpline curve.
+    	--   If the knots are regularly spaced (i.e. the difference
+    	--   between two consecutive knots is a constant), three
+    	--   specific and frequently used cases of knot
+    	--   distribution can be identified:
+    	-- - "uniform" if all multiplicities are equal to 1,
+    	-- - "quasi-uniform" if all multiplicities are equal to 1,
+    	--   except the first and the last knot which have a
+    	--   multiplicity of Degree + 1, where Degree is
+    	--   the degree of the BSpline curve,
+    	-- - "Piecewise Bezier" if all multiplicities are equal to
+    	--   Degree except the first and last knot which
+    	--   have a multiplicity of Degree + 1, where
+    	--   Degree is the degree of the BSpline curve. A
+    	--   curve of this type is a concatenation of arcs of Bezier curves.
+    	-- If the BSpline curve is not periodic:
+    	-- - the bounds of the Poles and Weights tables are 1
+    	--   and NbPoles, where NbPoles is the number
+    	--   of poles of the BSpline curve,
+    	-- - the bounds of the Knots and Multiplicities tables
+    	--   are 1 and NbKnots, where NbKnots is the
+    	--   number of knots of the BSpline curve.
+    	-- If the BSpline curve is periodic, and if there are k
+    	-- periodic knots and p periodic poles, the period is:
+    	-- period = Knot(k + 1) - Knot(1)
+    	-- and the poles and knots tables can be considered
+    	-- as infinite tables, verifying:
+    	-- - Knot(i+k) = Knot(i) + period
+    	-- - Pole(i+p) = Pole(i)
+    	-- Note: data structures of a periodic BSpline curve
+    	-- are more complex than those of a non-periodic one.
+    	-- Warning
+    	-- In this class, weight value is considered to be zero if
+    	-- the weight is less than or equal to gp::Resolution().
+        --    
+        -- References :
+        --  . A survey of curve and surface methods in CADG Wolfgang BOHM
+        --    CAGD 1 (1984)
+        --  . On de Boor-like algorithms and blossoming Wolfgang BOEHM
+        --    cagd 5 (1988)
+        --  . Blossoming and knot insertion algorithms for B-spline curves
+        --    Ronald N. GOLDMAN
+        --  . Modelisation des surfaces en CAO, Henri GIAUME Peugeot SA   
+        --  . Curves and Surfaces for Computer Aided Geometric Design,
+        --    a practical guide Gerald Farin
+
+uses  Array1OfInteger      from TColStd,
+      Array1OfReal         from TColStd,
+      HArray1OfInteger     from TColStd,
+      HArray1OfReal        from TColStd,
+      Array1OfPnt          from TColgp,
+      Ax1                  from gp,
+      Ax2                  from gp, 
+      Pnt                  from gp,
+      HArray1OfPnt         from TColgp,
+      Trsf                 from gp,
+      Vec                  from gp,
+      BSplKnotDistribution from GeomAbs,
+      Geometry             from Geom,
+      Shape                from GeomAbs
+
+
+raises ConstructionError   from Standard,
+       DimensionError      from Standard,
+       DomainError         from Standard,
+       OutOfRange          from Standard,
+       RangeError          from Standard,
+       NoSuchObject        from Standard,
+       UndefinedDerivative from Geom
+
+is
+ 
+  Create (Poles          : Array1OfPnt     from TColgp; 
+          Knots          : Array1OfReal    from TColStd; 
+          Multiplicities : Array1OfInteger from TColStd; 
+          Degree         : Integer;
+    	  Periodic       : Boolean = Standard_False)
+	  
+  returns mutable BSplineCurve from Geom
+
+        ---Purpose :  Creates a  non-rational B_spline curve   on  the
+        --         basis <Knots, Multiplicities> of degree <Degree>.
+
+  raises ConstructionError;
+
+    	-- The following conditions must be verified.
+
+        --  0 < Degree <= MaxDegree.
+        --  
+        --  Knots.Length() == Mults.Length() >= 2
+        --  
+        --  Knots(i) < Knots(i+1) (Knots are increasing)
+        --  
+        --  1 <= Mults(i) <= Degree
+        --  
+        --   On a non periodic curve the first and last multiplicities
+        --   may be Degree+1 (this is even recommanded if you want the
+        --   curve to start and finish on the first and last pole).
+        --   
+        --   On a periodic  curve the first  and  the last multicities
+        --   must be the same.
+        --   
+        --   on non-periodic curves
+        --   
+        --     Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+        --     
+        --   on periodic curves 
+        --   
+        --     Poles.Length() == Sum(Mults(i)) except the first or last
+
+
+  Create (Poles          : Array1OfPnt     from TColgp; 
+    	  Weights        : Array1OfReal    from TColStd;
+          Knots          : Array1OfReal    from TColStd; 
+          Multiplicities : Array1OfInteger from TColStd; 
+          Degree         : Integer;
+    	  Periodic       : Boolean = Standard_False; 
+	  CheckRational  : Boolean = Standard_True)
+	  
+  returns mutable BSplineCurve from Geom
+
+        ---Purpose : Creates  a rational B_spline  curve  on the basis
+        --         <Knots, Multiplicities> of degree <Degree>.
+    	--  Raises ConstructionError subject to the following conditions 
+    	--  0 < Degree <= MaxDegree.
+        --  
+        --  Weights.Length() == Poles.Length()
+        --  
+        --  Knots.Length() == Mults.Length() >= 2
+        --  
+        --  Knots(i) < Knots(i+1) (Knots are increasing)
+        --  
+        --  1 <= Mults(i) <= Degree
+        --  
+        --   On a non periodic curve the first and last multiplicities
+        --   may be Degree+1 (this is even recommanded if you want the
+        --   curve to start and finish on the first and last pole).
+        --   
+        --   On a periodic  curve the first  and  the last multicities
+        --   must be the same.
+        --   
+        --   on non-periodic curves
+        --   
+        --     Poles.Length() == Sum(Mults(i)) - Degree - 1 >= 2
+        --     
+        --   on periodic curves 
+        --   
+        --     Poles.Length() == Sum(Mults(i)) except the first or last
+
+  raises ConstructionError;
+
+    	
+
+
+  IncreaseDegree (me : mutable; Degree : Integer)
+  
+        ---Purpose: Increases the degree of this BSpline curve to
+    	-- Degree. As a result, the poles, weights and
+    	-- multiplicities tables are modified; the knots table is
+    	-- not changed. Nothing is done if Degree is less than
+    	-- or equal to the current degree.
+    	-- Exceptions
+    	-- Standard_ConstructionError if Degree is greater than
+    	-- Geom_BSplineCurve::MaxDegree().
+  raises ConstructionError;
+
+ IncreaseMultiplicity (me : mutable; Index : Integer; M : Integer)
+ 
+        ---Purpose :Increases the multiplicity  of the knot <Index> to
+        --         <M>.   
+        --         
+        --         If   <M>   is   lower   or  equal   to  the current
+        --         multiplicity nothing is done. If <M> is higher than
+        --         the degree the degree is used.
+
+ raises OutOfRange;
+    	
+	---Purpose: If <Index> is not in [FirstUKnotIndex, LastUKnotIndex]
+
+
+  IncreaseMultiplicity (me : mutable; I1, I2 : Integer; M : Integer) 
+  
+        ---Purpose :Increases  the  multiplicities   of  the knots  in
+        --         [I1,I2] to <M>.
+        --         
+        --         For each knot if  <M>  is  lower  or equal  to  the
+        --         current multiplicity  nothing  is  done. If <M>  is
+        --         higher than the degree the degree is used.
+
+ raises OutOfRange;
+    	
+	---Purpose: If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
+
+  IncrementMultiplicity (me : mutable; I1, I2 : Integer; M : Integer) 
+  
+        ---Purpose :Increment  the  multiplicities   of  the knots  in
+        --         [I1,I2] by <M>.
+        --         
+        --         If <M> is not positive nithing is done.
+        --         
+        --         For   each  knot   the resulting   multiplicity  is
+        --         limited to the Degree.
+
+ raises OutOfRange;
+    	
+	---Purpose: If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
+
+
+
+
+  InsertKnot (me : mutable; 
+    	      U : Real; 
+    	      M : Integer = 1; 
+    	      ParametricTolerance : Real = 0.0;
+    	      Add : Boolean = Standard_True); 
+  
+        ---Purpose: Inserts a knot value in the sequence of knots.  If
+        --          <U>  is an  existing knot     the multiplicity  is
+        --          increased by <M>.
+        --          
+        --          If U  is  not  on the parameter  range  nothing is
+        --          done.
+        --          
+        --          If the multiplicity is negative or null nothing is
+        --          done. The  new   multiplicity  is limited  to  the
+        --          degree.
+        --          
+        --          The  tolerance criterion  for  knots  equality  is
+        --          the max of Epsilon(U) and ParametricTolerance.
+
+
+  InsertKnots (me : mutable; Knots : Array1OfReal    from TColStd; 
+    	    	    	     Mults : Array1OfInteger from TColStd;
+    	    	    	     ParametricTolerance : Real = 0.0;
+      	    	    	     Add : Boolean = Standard_False);
+			     
+        ---Purpose: Inserts a set of knots  values in  the sequence of
+        --          knots.    
+        --          
+        --          For each U = Knots(i), M = Mults(i)
+        --          
+        --          If <U>  is an existing  knot  the  multiplicity is
+        --          increased by  <M> if  <Add>  is True, increased to
+        --          <M> if <Add> is False.
+        --          
+        --          If U  is  not  on the parameter  range  nothing is
+        --          done.
+        --          
+        --          If the multiplicity is negative or null nothing is
+        --          done. The  new   multiplicity  is limited  to  the
+        --          degree.
+        --          
+        --          The  tolerance criterion  for  knots  equality  is
+        --          the max of Epsilon(U) and ParametricTolerance.
+
+
+			     
+
+
+  RemoveKnot(me : mutable; Index     : Integer; 
+    	    	    	   M         : Integer;
+    	    	    	   Tolerance : Real) returns Boolean
+			   
+        ---Purpose : Reduces the multiplicity of the knot of index Index
+    	-- to M. If M is equal to 0, the knot is removed.
+    	-- With a modification of this type, the array of poles is also modified.
+    	-- Two different algorithms are systematically used to
+    	-- compute the new poles of the curve. If, for each
+    	-- pole, the distance between the pole calculated
+    	-- using the first algorithm and the same pole
+    	-- calculated using the second algorithm, is less than
+    	-- Tolerance, this ensures that the curve is not
+    	-- modified by more than Tolerance. Under these
+    	-- conditions, true is returned; otherwise, false is returned.
+    	-- A low tolerance is used to prevent modification of
+    	-- the curve. A high tolerance is used to "smooth" the curve.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the
+    	-- bounds of the knots table.
+     raises OutOfRange;
+     
+
+        ---Purpose : pole insertion and pole removing
+        --  this operation is limited to the Uniform or QuasiUniform
+        --  BSplineCurve. The knot values are modified . If the BSpline is
+        --  NonUniform or Piecewise Bezier an exception Construction error
+        --  is raised.
+
+
+  Reverse (me : mutable);
+        ---Purpose :
+        --  Changes the direction of parametrization of <me>. The Knot
+        --  sequence is modified, the FirstParameter and the 
+        --  LastParameter are not modified. The StartPoint of the 
+        --  initial curve becomes the EndPoint of the reversed curve 
+        --  and the EndPoint of the initial curve becomes the StartPoint
+        --  of the reversed curve.
+
+
+  ReversedParameter(me; U : Real) returns Real;
+	---Purpose: Returns the  parameter on the  reversed  curve for
+	--          the point of parameter U on <me>.
+	--          
+	--          returns UFirst + ULast - U
+
+  Segment (me : mutable; U1, U2 : Real)
+        ---Purpose : Modifies this BSpline curve by segmenting it between
+    	-- U1 and U2. Either of these values can be outside the
+    	-- bounds of the curve, but U2 must be greater than U1.
+    	-- All data structure tables of this BSpline curve are
+    	-- modified, but the knots located between U1 and U2
+    	-- are retained. The degree of the curve is not modified.
+        --  Warnings :
+        --  Even if <me> is not closed it can become closed after the 
+        --  segmentation for example if U1 or U2 are out of the bounds 
+        --  of the curve <me> or if the curve makes loop.
+        --  After the segmentation the length of a curve can be null.
+    raises DomainError from Standard;
+	---Purpose: raises if U2 < U1.
+
+
+  SetKnot (me : mutable; Index : Integer; K : Real)
+    	---Purpose : Modifies this BSpline curve by assigning the value K
+    	-- to the knot of index Index in the knots table. This is a
+    	-- relatively local modification because K must be such that:
+    	-- Knots(Index - 1) < K < Knots(Index + 1)
+    	-- The second syntax allows you also to increase the
+    	-- multiplicity of the knot to M (but it is not possible to
+    	-- decrease the multiplicity of the knot with this function).
+    	-- Standard_ConstructionError if:
+    	-- - K is not such that:
+    	-- Knots(Index - 1) < K < Knots(Index + 1)
+    	-- - M is greater than the degree of this BSpline curve
+    	--   or lower than the previous multiplicity of knot of
+    	--   index Index in the knots table.
+    	--  Standard_OutOfRange if Index is outside the bounds of the knots table.
+     raises ConstructionError,
+	            OutOfRange;
+
+
+  SetKnots (me : mutable; K : Array1OfReal from TColStd)
+	---Purpose :  Modifies this BSpline curve by assigning the array
+    	-- K to its knots table. The multiplicity of the knots is not modified.
+    	-- Exceptions
+    	-- Standard_ConstructionError if the values in the
+    	-- array K are not in ascending order.
+    	-- Standard_OutOfRange if the bounds of the array
+    	-- K are not respectively 1 and the number of knots of this BSpline curve.
+     raises ConstructionError,
+	            OutOfRange;
+  
+  SetKnot (me : mutable; Index : Integer; K : Real; M : Integer)
+	---Purpose :
+	--  Changes the knot of range Index with its multiplicity.
+        --  You can increase the multiplicity of a knot but it is
+        --  not allowed to decrease the multiplicity of an existing knot.
+     raises ConstructionError,
+	---Purpose :
+	--  Raised if K >= Knots(Index+1) or K <= Knots(Index-1).
+        --  Raised if M is greater than Degree or lower than the previous
+        --  multiplicity of knot of range Index. 
+            OutOfRange;
+        ---Purpose : Raised if Index < 1 || Index > NbKnots
+
+  PeriodicNormalization(me ;  U : in out Real) ; 
+       
+        ---Purpose : returns the parameter normalized within
+        --         the period if the curve is periodic : otherwise
+        --         does not do anything
+    
+  SetPeriodic (me : mutable)
+    	---Purpose : Changes this BSpline curve into a periodic curve.
+    	-- To become periodic, the curve must first be closed.
+    	-- Next, the knot sequence must be periodic. For this,
+    	-- FirstUKnotIndex and LastUKnotIndex are used
+    	-- to compute I1 and I2, the indexes in the knots
+    	-- array of the knots corresponding to the first and
+    	-- last parameters of this BSpline curve.
+    	-- The period is therefore: Knots(I2) - Knots(I1).
+    	-- Consequently, the knots and poles tables are modified.
+    	-- Exceptions
+    	-- Standard_ConstructionError if this BSpline curve is not closed.
+     raises ConstructionError;
+
+
+  SetOrigin (me : mutable; Index : Integer)
+    	---Purpose: Assigns the knot of index Index in the knots table as
+    	-- the origin of this periodic BSpline curve. As a
+    	-- consequence, the knots and poles tables are modified.
+    	-- Exceptions
+    	-- Standard_NoSuchObject if this curve is not periodic.
+    	-- Standard_DomainError if Index is outside the bounds of the knots table.
+    raises NoSuchObject,
+    	   DomainError;
+	
+  SetOrigin (me  : mutable; 
+    	     U   : Real from Standard;
+    	     Tol : Real from Standard)
+    	---Purpose: Set the origin of a periodic curve at Knot U. If U
+    	--          is  not a  knot  of  the  BSpline  a  new knot  is
+    	--          inseted. KnotVector and poles are modified.
+    raises NoSuchObject;
+	---Purpose: Raised if the curve is not periodic
+
+
+  SetNotPeriodic (me : mutable);
+        ---Purpose : Changes this BSpline curve into a non-periodic
+    	-- curve. If this curve is already non-periodic, it is not modified.
+    	-- Note: the poles and knots tables are modified.
+    	-- Warning
+    	-- If this curve is periodic, as the multiplicity of the first
+    	-- and last knots is not modified, and is not equal to
+    	-- Degree + 1, where Degree is the degree of
+    	-- this BSpline curve, the start and end points of the
+    	-- curve are not its first and last poles.
+   
+	        
+ 
+  SetPole (me : mutable; Index : Integer; P : Pnt)
+        ---Purpose : Modifies this BSpline curve by assigning P to the pole
+    	-- of index Index in the poles table.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the
+    	-- bounds of the poles table.
+    	-- Standard_ConstructionError if Weight is negative or null.
+     raises OutOfRange;
+     
+  SetPole (me : mutable; Index : Integer; P : Pnt; Weight : Real)
+        ---Purpose: Modifies this BSpline curve by assigning P to the pole
+    	-- of index Index in the poles table.
+    	-- This syntax also allows you to modify the
+    	-- weight of the modified pole, which becomes Weight.
+    	-- In this case, if this BSpline curve is non-rational, it
+    	-- can become rational and vice versa.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is outside the
+    	-- bounds of the poles table.
+    	-- Standard_ConstructionError if Weight is negative or null.
+     raises OutOfRange,
+               ConstructionError;
+
+
+  SetWeight (me : mutable; Index : Integer; Weight : Real)
+        ---Purpose :
+        --  Changes the weight for the pole of range Index.
+        --  If the curve was non rational it can become rational.
+        --  If the curve was rational it can become non rational.
+     raises OutOfRange,
+        ---Purpose:
+        --  Raised if Index < 1 || Index > NbPoles
+            ConstructionError;
+	---Purpose : Raised if Weight <= 0.0
+
+  MovePoint (me : mutable; U: Real; P: Pnt; Index1, Index2: Integer;
+             FirstModifiedPole, LastModifiedPole: out Integer)
+        ---Purpose : Moves the point of parameter U of this BSpline curve
+    	-- to P. Index1 and Index2 are the indexes in the table
+    	-- of poles of this BSpline curve of the first and last
+    	-- poles designated to be moved.
+    	-- FirstModifiedPole and LastModifiedPole are the
+    	-- indexes of the first and last poles which are effectively modified.
+    	-- In the event of incompatibility between Index1, Index2 and the value U:
+    	-- - no change is made to this BSpline curve, and
+    	-- - the FirstModifiedPole and LastModifiedPole are returned null.
+    	--   Exceptions
+    	-- Standard_OutOfRange if:
+    	-- - Index1 is greater than or equal to Index2, or
+    	-- - Index1 or Index2 is less than 1 or greater than the
+    	--   number of poles of this BSpline curve.
+         raises OutOfRange;
+      
+  MovePointAndTangent (me : mutable; 
+    	    	       U                 : Real; 
+    	    	       P                 : Pnt; 
+                       Tangent           : Vec ;
+		       Tolerance         : Real ; 
+    	    	       StartingCondition, 
+                       EndingCondition   : Integer; 
+    	    	       ErrorStatus       : out Integer) 
+
+        ---Purpose : 
+        -- Move a point with parameter U to P.
+        -- and makes it tangent at U be Tangent.
+        -- StartingCondition = -1 means first can move
+        -- EndingCondition   = -1 means last point can move
+        -- StartingCondition = 0 means the first point cannot move
+        -- EndingCondition   = 0 means the last point cannot move
+        -- StartingCondition = 1 means the first point and tangent cannot move
+        -- EndingCondition   = 1 means the last point and tangent cannot move  
+        -- and so forth
+        -- ErrorStatus != 0 means that there are not enought degree of freedom
+        -- with the constrain to deform the curve accordingly
+        -- 
+     raises OutOfRange;
+     
+  IsCN (me; N : Integer)   returns Boolean
+        ---Purpose :
+        --  Returns the continuity of the curve, the curve is at least C0.
+     raises RangeError;
+        ---Purpose : Raised if N < 0.
+
+
+  IsClosed (me)  returns Boolean;
+        ---Purpose :
+        --  Returns true if the distance between the first point and the 
+        --  last point of the curve is lower or equal to Resolution 
+        --  from package gp.
+        --- Warnings :
+        --  The first and the last point can be different from the first
+        --  pole and the last pole of the curve.
+
+
+  IsPeriodic (me)  returns Boolean;
+        ---Purpose : Returns True if the curve is periodic.
+
+
+  IsRational (me)  returns Boolean;
+        ---Purpose :
+        --  Returns True if the weights are not identical.
+        --  The tolerance criterion is Epsilon of the class Real.
+    
+  IsCacheValid(me;  Parameter : Real) returns Boolean
+  
+        ---Purpose :
+        --           Tells whether the Cache is valid for the
+        --           given parameter 
+        -- Warnings : the parameter must be normalized within
+        -- the period if the curve is periodic. Otherwise
+        -- the answer will be false
+        -- 
+        is static private;
+  
+  Continuity (me)  returns Shape from GeomAbs;
+        ---Purpose :
+        --  Returns the global continuity of the curve :
+        --  C0 : only geometric continuity,
+        --  C1 : continuity of the first derivative all along the Curve,
+        --  C2 : continuity of the second derivative all along the Curve,
+        --  C3 : continuity of the third derivative all along the Curve,
+        --  CN : the order of continuity is infinite.
+        --  For a B-spline curve of degree d if a knot Ui has a
+        --  multiplicity p the B-spline curve is only Cd-p continuous 
+        --  at Ui. So the global continuity of the curve can't be greater 
+        --  than Cd-p where p is the maximum multiplicity of the interior
+        --  Knots. In the interior of a knot span the curve is infinitely
+        --  continuously differentiable.
+
+
+  Degree (me)  returns Integer;
+    	---Purpose: Returns the degree of this BSpline curve.
+    	-- The degree of a Geom_BSplineCurve curve cannot
+    	-- be greater than Geom_BSplineCurve::MaxDegree().
+
+        ---Purpose : Computation of value and derivatives
+
+  D0 (me ; U : Real; P : out Pnt);
+	---Purpose: Returns in P the point of parameter U.
+
+  D1 (me; U : Real; P : out Pnt; V1 : out Vec)
+     raises UndefinedDerivative;
+        ---Purpose : Raised if the continuity of the curve is not C1.
+
+
+  D2 (me; U : Real; P : out Pnt; V1, V2 : out Vec)
+     raises UndefinedDerivative;
+        ---Purpose : Raised if the continuity of the curve is not C2.
+
+
+  D3 (me; U : Real; P : out Pnt; V1, V2, V3 : out Vec)
+     raises UndefinedDerivative;
+        ---Purpose : Raised if the continuity of the curve is not C3.
+        
+
+  DN (me; U : Real; N : Integer)  returns Vec
+        ---Purpose : For the point of parameter U of this BSpline curve,
+    	-- computes the vector corresponding to the Nth derivative.
+    	-- Warning
+    	-- On a point where the continuity of the curve is not the
+    	-- one requested, this function impacts the part defined
+    	-- by the parameter with a value greater than U, i.e. the
+    	-- part of the curve to the "right" of the singularity.
+    	-- Exceptions
+    	-- Standard_RangeError if N is less than 1.
+     raises  UndefinedDerivative,
+                    RangeError;
+
+        ---Purpose  :
+        --  The following functions compute the point of parameter U 
+        --  and the derivatives at this point on the B-spline curve 
+        --  arc defined between the knot FromK1 and the knot ToK2. 
+        --  U can be out of bounds [Knot (FromK1),  Knot (ToK2)] but
+        --  for the computation we only use the definition of the curve
+        --  between these two knots. This method is useful to compute 
+        --  local derivative, if the order of continuity of the whole 
+        --  curve is not greater enough.    Inside the parametric
+        --  domain Knot (FromK1), Knot (ToK2) the evaluations are
+        --  the same as if we consider the whole definition of the
+        --  curve. Of course the evaluations are different outside
+        --  this parametric domain.
+
+
+  LocalValue (me; U : Real; FromK1, ToK2 : Integer)   returns Pnt
+     raises DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+            OutOfRange;
+	---Purpose :
+	--  Raised if FromK1 and ToK2 are not in the range 
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+  LocalD0 (me; U : Real; FromK1, ToK2 : Integer; P : out Pnt)
+     raises DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+            OutOfRange;
+	---Purpose :
+	--  Raised if FromK1 and ToK2 are not in the range 
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+  LocalD1 (me; U : Real; FromK1, ToK2 : Integer; P : out Pnt; V1 : out Vec)
+     raises UndefinedDerivative,
+        ---Purpose :
+        --  Raised if the local continuity of the curve is not C1 
+        --  between the knot K1 and the knot K2. 
+            DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+            OutOfRange;
+	---Purpose :
+	--  Raised if FromK1 and ToK2 are not in the range 
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+
+  LocalD2 (me; U : Real; FromK1, ToK2 : Integer; P : out Pnt; V1, V2 : out Vec)
+     raises UndefinedDerivative,
+        ---Purpose :
+        --  Raised if the local continuity of the curve is not C2 
+        --  between the knot K1 and the knot K2. 
+            DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+            OutOfRange;
+	---Purpose :
+	--  Raised if FromK1 and ToK2 are not in the range 
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+
+
+  LocalD3 (me; U : Real;  FromK1, ToK2 : Integer;
+           P : out Pnt; V1, V2, V3 : out Vec)
+     raises UndefinedDerivative,
+        ---Purpose :
+        --  Raised if the local continuity of the curve is not C3
+        --  between the knot K1 and the knot K2. 
+            DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+            OutOfRange;
+	---Purpose :
+	--  Raised if FromK1 and ToK2 are not in the range
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+
+  LocalDN (me; U : Real;  FromK1, ToK2 : Integer; N : Integer)  returns Vec
+     raises  UndefinedDerivative,
+        ---Purpose :
+        --  Raised if the local continuity of the curve is not CN
+        --  between the knot K1 and the knot K2. 
+            DomainError,
+	---Purpose : Raised if FromK1 = ToK2.
+             RangeError,
+        ---Purpose : Raised if N < 1.
+             OutOfRange;
+	---Purpose :
+	--  Raises if FromK1 and ToK2 are not in the range 
+	--  [FirstUKnotIndex, LastUKnotIndex].
+
+
+  EndPoint (me)   returns Pnt;
+        ---Purpose :
+        --  Returns the last point of the curve.
+        -- Warnings :
+        --  The last point of the curve is different from the last 
+        --  pole of the curve if the multiplicity of the last knot
+        --  is lower than Degree.
+
+
+  FirstUKnotIndex (me)   returns Integer;
+        ---Purpose : Returns the index in the knot array of the knot
+    	-- corresponding to the first or last parameter of this BSpline curve.
+    	-- For a BSpline curve, the first (or last) parameter
+    	-- (which gives the start (or end) point of the curve) is a
+    	-- knot value. However, if the multiplicity of the first (or
+    	-- last) knot is less than Degree + 1, where
+    	-- Degree is the degree of the curve, it is not the first
+    	-- (or last) knot of the curve.
+      
+
+  FirstParameter (me)   returns Real;
+        ---Purpose : Returns the value of the first parameter of this
+    	-- BSpline curve. This is a knot value.
+    	-- The first parameter is the one of the start point of the BSpline curve. 
+       
+
+
+  Knot (me; Index : Integer)   returns Real
+        ---Purpose :
+        --  Returns the knot of range Index. When there is a knot 
+        --  with a multiplicity greater than 1 the knot is not repeated.
+        --  The method Multiplicity can be used to get the multiplicity 
+        --  of the Knot.
+     raises OutOfRange;
+        ---Purpose : Raised if Index < 1 or Index > NbKnots
+
+
+  Knots (me; K : out Array1OfReal from TColStd)
+        ---Purpose : returns the knot values of the B-spline curve; 
+    	-- Warning
+    	-- A knot with a multiplicity greater than 1 is not
+    	-- repeated in the knot table. The Multiplicity function
+    	-- can be used to obtain the multiplicity of each knot.
+     raises DimensionError;
+        ---Purpose :
+        --  Raised if the length of K is not equal to the number of knots.
+
+
+  KnotSequence (me; K : out Array1OfReal from TColStd)
+    	---Purpose : Returns K, the knots sequence of this BSpline curve.
+    	-- In this sequence, knots with a multiplicity greater than 1 are repeated.
+    	-- In the case of a non-periodic curve the length of the
+    	-- sequence must be equal to the sum of the NbKnots
+    	-- multiplicities of the knots of the curve (where
+    	-- NbKnots is the number of knots of this BSpline
+    	-- curve). This sum is also equal to : NbPoles + Degree + 1
+    	-- where NbPoles is the number of poles and
+    	-- Degree the degree of this BSpline curve.
+    	-- In the case of a periodic curve, if there are k periodic
+    	-- knots, the period is Knot(k+1) - Knot(1).
+    	-- The initial sequence is built by writing knots 1 to k+1,
+    	-- which are repeated according to their corresponding multiplicities.
+    	-- If Degree is the degree of the curve, the degree of
+    	-- continuity of the curve at the knot of index 1 (or k+1)
+    	-- is equal to c = Degree + 1 - Mult(1). c
+    	-- knots are then inserted at the beginning and end of
+    	-- the initial sequence:
+    	-- - the c values of knots preceding the first item
+    	--   Knot(k+1) in the initial sequence are inserted
+    	--   at the beginning; the period is subtracted from these c values;
+    	-- - the c values of knots following the last item
+    	--   Knot(1) in the initial sequence are inserted at
+    	--   the end; the period is added to these c values.
+    	-- The length of the sequence must therefore be equal to:
+    	-- NbPoles + 2*Degree - Mult(1) + 2.
+    	-- Example
+    	-- For a non-periodic BSpline curve of degree 2 where:
+    	-- - the array of knots is: { k1 k2 k3 k4 },
+    	-- - with associated multiplicities: { 3 1 2 3 },
+    	-- the knot sequence is:
+    	-- K = { k1 k1 k1 k2 k3 k3 k4 k4 k4 }
+    	-- For a periodic BSpline curve of degree 4 , which is
+    	-- "C1" continuous at the first knot, and where :
+    	-- - the periodic knots are: { k1 k2 k3 (k4) }
+    	--   (3 periodic knots: the points of parameter k1 and k4
+    	--   are identical, the period is p = k4 - k1),
+    	-- - with associated multiplicities: { 3 1 2 (3) },
+    	-- the degree of continuity at knots k1 and k4 is:
+    	-- Degree + 1 - Mult(i) = 2.
+    	-- 2 supplementary knots are added at the beginning
+    	-- and end of the sequence:
+    	-- - at the beginning: the 2 knots preceding k4 minus
+    	--   the period; in this example, this is k3 - p both times;
+    	-- - at the end: the 2 knots following k1 plus the period;
+    	--   in this example, this is k2 + p and k3 + p.
+    	-- The knot sequence is therefore:
+    	-- K = { k3-p k3-p k1 k1 k1 k2 k3 k3
+    	-- k4 k4 k4 k2+p k3+p }
+    	-- Exceptions
+    	-- Standard_DimensionError if the array K is not of
+    	-- the appropriate length.Returns the knots sequence.
+             raises DimensionError;
+       
+
+
+  KnotDistribution (me)   returns BSplKnotDistribution from GeomAbs;
+        ---Purpose :
+        --  Returns NonUniform or Uniform or QuasiUniform or PiecewiseBezier.
+        --  If all the knots differ by a positive constant from the 
+        --  preceding knot the BSpline Curve can be :
+        --  - Uniform if all the knots are of multiplicity 1,
+        --  - QuasiUniform if all the knots are of multiplicity 1 except for
+        --    the first and last knot which are of multiplicity Degree + 1,
+        --  - PiecewiseBezier if the first and last knots have multiplicity
+        --    Degree + 1 and if interior knots have multiplicity Degree
+        --    A piecewise Bezier with only two knots is a BezierCurve. 
+        --  else the curve is non uniform.
+        --  The tolerance criterion is Epsilon from class Real.
+
+
+  LastUKnotIndex (me)  returns Integer;
+        ---Purpose :
+        --  For a BSpline curve the last parameter (which gives the 
+        --  end point of the curve) is a knot value but if the 
+        --  multiplicity of the last knot index is lower than 
+        --  Degree + 1 it is not the last knot of the curve. This
+        --  method computes the index of the knot corresponding to
+        --  the last parameter.
+
+
+  LastParameter (me)   returns Real;
+        ---Purpose :
+        --  Computes the parametric value of the end point of the curve.
+        --  It is a knot value.
+
+
+  LocateU (me;
+           U                   : Real; 
+           ParametricTolerance : Real; 
+           I1, I2              : in out Integer;
+           WithKnotRepetition  : Boolean = Standard_False);
+        ---Purpose :
+        --  Locates the parametric value U in the sequence of knots.
+        --  If "WithKnotRepetition" is True we consider the knot's
+        --  representation with repetition of multiple knot value,
+        --  otherwise  we consider the knot's representation with
+        --  no repetition of multiple knot values.
+        --  Knots (I1) <= U <= Knots (I2)
+        --  . if I1 = I2  U is a knot value (the tolerance criterion 
+        --    ParametricTolerance is used).
+        --  . if I1 < 1  => U < Knots (1) - Abs(ParametricTolerance)
+        --  . if I2 > NbKnots => U > Knots (NbKnots) + Abs(ParametricTolerance)
+
+
+  Multiplicity (me; Index : Integer)   returns Integer
+        ---Purpose :
+        --  Returns the multiplicity of the knots of range Index.
+     raises OutOfRange;
+        ---Purpose : Raised if Index < 1 or Index > NbKnots
+
+
+  Multiplicities (me; M : out Array1OfInteger from TColStd)
+        ---Purpose :
+        --  Returns the multiplicity of the knots of the curve.
+     raises DimensionError;
+        ---Purpose :
+        --  Raised if the length of M is not equal to NbKnots.
+
+
+  NbKnots (me)  returns Integer;
+        ---Purpose :
+        --  Returns the number of knots. This method returns the number of 
+        --  knot without repetition of multiple knots.
+
+
+  NbPoles (me)  returns Integer;
+        ---Purpose : Returns the number of poles
+
+
+  Pole (me; Index : Integer)   returns Pnt
+        ---Purpose : Returns the pole of range Index.
+     raises OutOfRange;
+        ---Purpose : Raised if Index < 1 or Index > NbPoles.
+
+
+  Poles (me; P : out Array1OfPnt from TColgp)
+        ---Purpose : Returns the poles of the B-spline curve;
+     raises DimensionError;
+        ---Purpose : 
+        --  Raised if the length of P is not equal to the number of poles.
+
+
+  StartPoint (me)  returns Pnt;
+        ---Purpose :
+        --  Returns the start point of the curve.
+        -- Warnings :
+        --  This point is different from the first pole of the curve if the
+        --  multiplicity of the first knot is lower than Degree.
+
+
+  Weight (me; Index : Integer)  returns Real  
+        ---Purpose : Returns the weight of the pole of range Index .
+     raises OutOfRange;
+        ---Purpose : Raised if Index < 1 or Index > NbPoles.
+
+
+  Weights (me; W : out Array1OfReal from TColStd)
+        ---Purpose : Returns the weights of the B-spline curve;
+     raises DimensionError;
+        ---Purpose :
+        --  Raised if the length of W is not equal to NbPoles.
+
+
+
+
+
+
+
+  Transform (me : mutable; T : Trsf);
+    	---Purpose: Applies the transformation T to this BSpline curve.
+  MaxDegree (myclass)  returns Integer;
+        ---Purpose :
+        --  Returns the value of the maximum degree of the normalized 
+        --  B-spline basis functions in this package.
+
+  Resolution(me          : mutable; 
+             Tolerance3D : Real;
+             UTolerance  : out Real) 
+    	---Purpose:  Computes for this BSpline curve the parametric
+    	-- tolerance UTolerance for a given 3D tolerance Tolerance3D.
+    	-- If f(t) is the equation of this BSpline curve,
+    	-- UTolerance ensures that:
+	--           | t1 - t0| < Utolerance ===> 
+	--           |f(t1) - f(t0)| < Tolerance3D
+  ;
+
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this BSpline curve.
+    
+  InvalidateCache(me : mutable)
+	---Purpose : Invalidates the cache. This has to be private
+	-- this has to be private
+      is static private;
+
+  UpdateKnots(me : mutable)
+        ---Purpose : Recompute  the  flatknots,  the knotsdistribution, the continuity.
+    is static private;
+  
+  ValidateCache(me : mutable ; Parameter : Real) 
+  
+    is static private;
+	---Purpose : updates the cache and validates it
+
+  
+	
+
+
+fields
+
+  rational        : Boolean;
+  periodic        : Boolean;
+  knotSet         : BSplKnotDistribution from GeomAbs; 
+  smooth          : Shape from GeomAbs;
+  deg             : Integer;
+  poles           : HArray1OfPnt     from TColgp;
+  weights         : HArray1OfReal    from TColStd;
+  flatknots       : HArray1OfReal    from TColStd;
+  knots           : HArray1OfReal    from TColStd;
+  mults           : HArray1OfInteger from TColStd;
+  cachepoles      : HArray1OfPnt     from TColgp;
+  -- Taylor expansion of the poles function, in homogeneous
+  -- form if the curve is rational. The taylor expansion
+  -- is normalized so that the span corresponds to
+  -- [0 1] see below
+  cacheweights    : HArray1OfReal    from TColStd;
+  -- Taylor expansion of the poles function, in homogeneous
+  -- form if the curve is rational. The taylor expansion
+  -- is normalized so that the span corresponds to
+  -- [0 1] see below
+  validcache      : Integer;
+  -- = 1 the cache is valid 
+  -- = 0 the cache is invalid
+  parametercache    : Real;
+  -- Parameter at which the Taylor expension is stored in 
+  -- the cache
+  spanlenghtcache   : Real;
+  -- Since the Taylor expansion is normalized in the 
+  -- cache to evaluate the cache one has to use
+  -- (Parameter - parametercache) / nspanlenghtcache
+  spanindexcache : Integer;
+  -- the span for which the cache is valid if 
+  -- validcache is 1 
+
+  -- usefull to evaluate the parametric resolution
+  maxderivinv   : Real from Standard;
+  maxderivinvok : Boolean from Standard;
+
+end;

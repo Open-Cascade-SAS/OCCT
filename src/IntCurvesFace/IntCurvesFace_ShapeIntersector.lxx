@@ -1,0 +1,62 @@
+// File:	IntCurvesFace_ShapeIntersector.lxx
+// Created:	Wed Jan 28 10:10:37 1998
+// Author:	Laurent BUCHARD
+//		<lbr@cracbox.paris1.matra-dtv.fr>
+
+
+
+#include <IntCurvesFace_Intersector.hxx>
+
+
+inline Standard_Integer IntCurvesFace_ShapeIntersector::NbPnt() const { 
+  return(IndexPt.Length());
+}
+
+inline  Standard_Real IntCurvesFace_ShapeIntersector::UParameter(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->UParameter(IndexIntPnt(IndexPt(i))));
+}
+
+inline  Standard_Real IntCurvesFace_ShapeIntersector::VParameter(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->VParameter(IndexIntPnt(IndexPt(i))));
+}
+
+inline  Standard_Real IntCurvesFace_ShapeIntersector::WParameter(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->WParameter(IndexIntPnt(IndexPt(i))));
+}
+
+inline  const gp_Pnt& IntCurvesFace_ShapeIntersector::Pnt(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->Pnt(IndexIntPnt(IndexPt(i))));
+}
+
+inline  IntCurveSurface_TransitionOnCurve  IntCurvesFace_ShapeIntersector::Transition(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->Transition(IndexIntPnt(IndexPt(i))));
+}
+
+inline  TopAbs_State  IntCurvesFace_ShapeIntersector::State(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->State(IndexIntPnt(IndexPt(i))));
+}
+
+
+inline  const TopoDS_Face&  IntCurvesFace_ShapeIntersector::Face(const Standard_Integer i) const { 
+  IntCurvesFace_Intersector *Ptr =
+    (IntCurvesFace_Intersector *)(PtrIntersector(IndexFace(IndexPt(i))));
+  return(Ptr->Face());
+}
+
+inline Standard_Boolean IntCurvesFace_ShapeIntersector::IsDone() const {
+  return(done);
+}
+
+

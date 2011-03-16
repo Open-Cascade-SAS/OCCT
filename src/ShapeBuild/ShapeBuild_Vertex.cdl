@@ -1,0 +1,35 @@
+-- File:	ShapeBuild_Vertex.cdl
+-- Created:	Thu Jun 11 19:18:12 1998
+-- Author:	data exchange team
+--		<det@nicebox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Vertex from ShapeBuild 
+
+    ---Purpose: Provides low-level functions used for constructing vertices
+
+uses
+    Pnt from gp,
+    Vertex from TopoDS
+
+is
+
+    CombineVertex ( me; V1, V2: Vertex from TopoDS; tolFactor: Real = 1.0001 ) 
+    returns Vertex from TopoDS;
+    	---Purpose: Combines new vertex from two others. This new one is the 
+    	--          smallest vertex which comprises both of the source vertices. 
+    	--          The function takes into account the positions and tolerances 
+        --          of the source vertices.
+    	--          The tolerance of the new vertex will be equal to the minimal
+        --          tolerance that is required to comprise source vertices 
+    	--          multiplied by tolFactor (in order to avoid errors because
+	--          of discreteness of calculations).
+
+    CombineVertex ( me; pnt1, pnt2: Pnt from gp; tol1, tol2: Real;
+    	    	    tolFactor: Real = 1.0001 ) 
+    returns Vertex from TopoDS;
+    	---Purpose: The same function as above, except that it accepts two points
+	--          and two tolerances instead of vertices
+
+end Vertex;

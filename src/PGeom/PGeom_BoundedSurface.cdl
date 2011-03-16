@@ -1,0 +1,21 @@
+-- File:	PGeom_BoundedSurface.cdl
+-- Created:	Tue Mar  2 11:46:35 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class BoundedSurface from PGeom inherits Surface from PGeom
+
+        ---Purpose : Defines a  non  infinite surface limited by its U
+        --         isoparametric and V  isoparametric curves which are
+        --         the boundaries of the surface.
+        --  
+	---See Also : BoundedSurface from Geom.
+
+is
+
+end;
+
+
+

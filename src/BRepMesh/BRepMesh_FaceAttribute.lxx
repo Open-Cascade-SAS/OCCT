@@ -1,0 +1,53 @@
+// File:	BRepMesh_FaceAttribute.lxx
+// Author:	Ekaterina SMIRNOVA
+// Copyright: Open CASCADE SAS 2008
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetDefFace()
+{
+  return mydefface;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetUMin()
+{
+  return myumin;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetVMin()
+{
+  return myvmin;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetUMax()
+{
+  return myumax;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetVMax()
+{
+  return myvmax;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetDeltaX()
+{
+  return mydeltaX;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetDeltaY()
+{
+  return mydeltaY;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetMinX()
+{
+  return myminX;
+}
+
+inline Standard_Real& BRepMesh_FaceAttribute::GetMinY()
+{
+  return myminY;
+}
+
+inline BRepMesh_ClassifierPtr& BRepMesh_FaceAttribute::GetClassifier()
+{
+  return myclassifier;
+}

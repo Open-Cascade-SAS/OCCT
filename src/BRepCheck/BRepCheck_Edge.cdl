@@ -1,0 +1,55 @@
+-- File:	BRepCheck_Edge.cdl
+-- Created:	Mon Dec 11 13:41:22 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Edge from BRepCheck inherits Result from BRepCheck
+
+	---Purpose: 
+
+uses Shape               from TopoDS,
+     Edge                from TopoDS,
+     CurveRepresentation from BRep,
+     HCurve              from Adaptor3d
+
+is
+
+    Create(E: Edge from TopoDS)
+    
+    	returns mutable Edge from BRepCheck;
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS);
+    
+
+
+    Minimum(me: mutable);
+    
+
+    
+    Blind(me: mutable);
+
+
+    GeometricControls(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    GeometricControls(me: mutable; B: Boolean from Standard)
+    
+	is static;
+
+    Tolerance(me: mutable) returns Real from Standard 
+
+    	is static;
+
+fields
+
+    myCref   : CurveRepresentation from BRep;
+    myHCurve : HCurve              from Adaptor3d;
+    myGctrl  : Boolean from Standard;
+
+end Edge;

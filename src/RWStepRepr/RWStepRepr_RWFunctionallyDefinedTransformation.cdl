@@ -1,0 +1,27 @@
+-- File:        FunctionallyDefinedTransformation.cdl
+-- Created:     Mon Dec  4 12:02:27 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWFunctionallyDefinedTransformation from RWStepRepr
+
+	---Purpose : Read & Write Module for FunctionallyDefinedTransformation
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     FunctionallyDefinedTransformation from StepRepr
+
+is
+
+	Create returns RWFunctionallyDefinedTransformation;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable FunctionallyDefinedTransformation from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : FunctionallyDefinedTransformation from StepRepr);
+
+end RWFunctionallyDefinedTransformation;

@@ -1,0 +1,72 @@
+-- File:        GaussSingleIntegration.cdl
+-- Created:     Tue May 14 18:15:11 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class GaussSingleIntegration from math
+    	---Purpose:
+    	-- This class implements the integration of a function of a single variable
+    	-- between the parameter bounds Lower and Upper.
+    	--  Warning: Order must be inferior or equal to 61.
+
+
+uses Function from math,
+     OStream from Standard
+
+raises NotDone from StdFail
+
+is
+     Create
+     returns GaussSingleIntegration;
+     
+     Create(F: in out Function; Lower, Upper: Real; Order: Integer)
+     	---Purpose:
+     	-- The Gauss-Legendre integration with N = Order points of integration,
+     	-- is done on the function F between the bounds Lower and Upper. 
+    
+     returns GaussSingleIntegration;
+     
+     Create(F: in out Function; Lower, Upper: Real; Order: Integer; Tol: Real)
+     	---Purpose:
+     	-- The Gauss-Legendre integration with N = Order points of integration  and 
+     	-- given tolerance = Tol is done on the function F between the bounds  
+     	-- Lower and Upper. 
+    
+     returns GaussSingleIntegration;
+
+     Perform(me: in out; F: in out Function; Lower, Upper: Real; Order: Integer)      
+	---Purpose:  perfoms  actual  computation  
+     is private;
+	
+     IsDone(me)
+     	---Purpose: returns True if all has been correctly done.
+    	---C++: inline
+
+     returns Boolean
+     is static;
+     
+     
+     Value(me)
+     	---Purpose: returns the value of the integral.
+    	---C++: inline
+
+     returns Real
+     raises NotDone
+     is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+
+    is static;
+
+
+fields
+
+Val: Real;
+Done: Boolean;
+
+end GaussSingleIntegration;

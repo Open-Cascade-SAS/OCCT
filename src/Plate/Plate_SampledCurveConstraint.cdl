@@ -1,0 +1,38 @@
+-- File:	Plate_SampledCurveConstraint.cdl
+-- Created:	Wed May  6 18:16:08 1998
+-- Author:	Andre LIEUTIER
+--		<alr@sgi63>
+---Copyright:	 Matra Datavision 1998
+
+
+class SampledCurveConstraint from Plate
+---Purpose: define m PinPointConstraint driven by m unknown
+--          
+--          
+--          
+--                   
+uses 
+ SequenceOfPinpointConstraint from Plate, 
+ LinearXYZConstraint from Plate
+raises
+    DimensionMismatch from Standard
+
+is
+    Create(SOPPC  :  SequenceOfPinpointConstraint; 
+    	    n  :  Integer) 
+    	    returns SampledCurveConstraint
+	    raises DimensionMismatch from Standard;
+    --  n have to be less than the length of SOPPC
+    --  
+
+     -- Accessors :
+    LXYZC(me) returns LinearXYZConstraint;
+    ---C++: inline 
+    ---C++: return const &
+
+fields
+    myLXYZC : LinearXYZConstraint;
+    
+end;
+
+

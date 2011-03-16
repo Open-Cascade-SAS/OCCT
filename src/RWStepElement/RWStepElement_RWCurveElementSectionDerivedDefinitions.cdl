@@ -1,0 +1,35 @@
+-- File:	RWStepElement_RWCurveElementSectionDerivedDefinitions.cdl
+-- Created:	Thu Dec 12 17:29:00 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWCurveElementSectionDerivedDefinitions from RWStepElement
+
+    ---Purpose: Read & Write tool for CurveElementSectionDerivedDefinitions
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CurveElementSectionDerivedDefinitions from StepElement
+
+is
+    Create returns RWCurveElementSectionDerivedDefinitions from RWStepElement;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CurveElementSectionDerivedDefinitions from StepElement);
+	---Purpose: Reads CurveElementSectionDerivedDefinitions
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CurveElementSectionDerivedDefinitions from StepElement);
+	---Purpose: Writes CurveElementSectionDerivedDefinitions
+
+    Share (me; ent : CurveElementSectionDerivedDefinitions from StepElement;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCurveElementSectionDerivedDefinitions;

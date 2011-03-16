@@ -1,0 +1,44 @@
+// File:	TDataStd_ByteArray.lxx
+// Created:	Wed Dec  5 16:41:27 2007
+// Author:	Sergey ZARITCHNY
+//		<sergey.zaritchny@opencascade.com>
+//Copyright:    Open CasCade SA 2007
+
+#include <TColStd_HArray1OfByte.hxx>
+
+//=======================================================================
+//function : Array
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TColStd_HArray1OfByte) TDataStd_ByteArray::InternalArray(void) const
+{
+  return myValue; 
+}
+
+//=======================================================================
+//function : RemoveArray
+//purpose  : 
+//=======================================================================
+inline void TDataStd_ByteArray::RemoveArray(void) 
+{
+  myValue.Nullify(); 
+}
+
+
+//=======================================================================
+//function : SetDelta
+//purpose  : 
+//=======================================================================
+inline void TDataStd_ByteArray::SetDelta(const Standard_Boolean isDelta) 
+{
+  myIsDelta = isDelta;
+}
+//=======================================================================
+//function : GetDelta
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TDataStd_ByteArray::GetDelta(void)  const
+{
+  return myIsDelta;
+}

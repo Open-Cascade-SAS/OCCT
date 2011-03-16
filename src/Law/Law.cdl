@@ -1,0 +1,111 @@
+-- File:	Law.cdl
+-- Created:	Thu Apr  7 17:57:23 1994
+-- Author:	Isabelle GRIGNON
+--		<isg@zerox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+
+package Law 
+
+	---Purpose: Multiple services concerning 1d functions.
+
+uses  Adaptor3d,GeomAbs,TColgp,TColStd,TCollection,MMgt,Standard,StdFail
+
+is
+
+    class BSpline;            -- inherits TShared from MMgt
+
+    class Interpolate;        -- duplication of GeomAPI algorithm!?!
+
+    deferred class Function;  -- inherits TShared from MMgt
+    
+    class Constant;           -- inherits Function from Law
+
+    class Linear;             -- inherits Function from Law
+
+    class BSpFunc;            -- inherits Function from Law
+
+    class S;                  -- inherits BSpFunc from Law
+
+    class Interpol;           -- inherits BSpFunc from Law
+
+    class Laws instantiates List from TCollection (Function from Law);
+
+    class Composite;          -- inherits Function from Law
+    
+    class BSplineKnotSplitting;
+        --- Purpose :
+        --  This algorithm searches the knot values corresponding to the 
+        --  splitting of a given B-spline law into  several arcs with
+        --  the same continuity. The continuity order is given at the
+        --  construction time.
+    
+    MixBnd(Lin    : Linear from Law)       
+    ---Purpose: Builds a 1d bspline that   is near from Lin with  null
+    --          derivatives at the extremities.
+    returns BSpFunc from Law;
+
+    MixBnd(Degree : Integer from Standard;
+    	   Knots  : Array1OfReal from TColStd;
+    	   Mults  : Array1OfInteger from TColStd;
+	   Lin    : Linear from Law)       
+    ---Purpose: Builds  the poles of the 1d  bspline that is near from
+    --          Lin with null derivatives at the extremities.
+    returns HArray1OfReal from TColStd;
+
+    MixTgt(Degree        : Integer from Standard;
+    	   Knots         : Array1OfReal from TColStd;
+    	   Mults         : Array1OfInteger from TColStd;
+    	   NulOnTheRight : Boolean from Standard;
+    	   Index         : Integer from Standard) 
+    ---Purpose: Builds the poles of the 1d bspline that is null on the
+    --          rigth    side   of   Knots(Index)  (on  the    left if
+    --          NulOnTheRight  is  false)    and   that is     like  a
+    --          t*(1-t)(1-t) curve  on the  left side of  Knots(Index)
+    --          (on the rigth  if NulOnTheRight is false).  The result
+    --          curve is  C1 with  a derivative  equal  to 1. at first
+    --          parameter (-1 at last  parameter  if  NulOnTheRight is
+    --          false).  
+    --  Warning: Mults(Index) must greater or equal to degree-1.
+    returns HArray1OfReal from TColStd;
+
+
+    Reparametrize(Curve         : Curve   from Adaptor3d;
+                  First, Last   : Real    from Standard;
+                  HasDF, HasDL  : Boolean from Standard;
+                  DFirst, DLast : Real    from Standard;
+                  Rev           : Boolean from Standard;
+    	    	  NbPoints      : Integer from Standard)
+    returns mutable BSpline from Law;
+    ---Purpose: Computes a 1 d curve to  reparametrize a curve. Its an
+    --          interpolation of NbPoints  points calculated  at quasi
+    --          constant abscissa.
+
+    Scale(First, Last   : Real    from Standard;
+          HasF, HasL    : Boolean from Standard;
+          VFirst, VLast : Real    from Standard)
+    returns mutable BSpline from Law;
+    ---Purpose: Computes a 1  d curve to  scale  a field of  tangency.
+    --          Value is 1. for t = (First+Last)/2 .
+    --          If HasFirst value for t = First is VFirst (null derivative). 
+    --          If HasLast value for t = Last is VLast (null derivative).
+    --
+    --          1.                   _     
+    --                             _/ \_    
+    --                          __/     \__
+    --                         /           \
+    --          VFirst    ____/             \     
+    --          VLast                        \____
+    --                  First                    Last  
+
+    ScaleCub(First, Last   : Real    from Standard;
+             HasF, HasL    : Boolean from Standard;
+             VFirst, VLast : Real    from Standard)
+    returns mutable BSpline from Law;
+
+end Law;
+
+
+

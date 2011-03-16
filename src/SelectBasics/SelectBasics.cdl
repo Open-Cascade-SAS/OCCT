@@ -1,0 +1,63 @@
+-- File:	SelectBasics.cdl
+-- Created:	Mon Jan 23 10:57:48 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+package SelectBasics 
+
+	---Purpose:  kernel of dynamic selection:
+	--           - contains the algorithm to sort the sensitive areas
+	--           before the selection action;->quick selection of
+	--           an item in a set of items...
+	--           - contains the entities able to give the algorithm
+	--             sensitive areas .
+
+uses
+    Bnd,
+    TCollection,
+    TColStd,
+    Standard,
+    MMgt,
+    gp,
+    TColgp,
+    TopLoc
+    
+
+is
+
+
+    deferred class EntityOwner;
+    ---Purpose: entity able to set multiple owners for a SensitiveEntity;
+
+    class SortAlgo; 
+    ---Purpose: sort algorithm for 2D rectangles.
+
+    class BasicTool;
+    ---Purpose: give Tools for sorting Selection results
+    --          (example : sensitive entities matching)
+
+    class ListOfBox2d instantiates List from TCollection 
+    (Box2d from Bnd);
+    
+
+    class SequenceOfOwner instantiates Sequence from TCollection 
+    (EntityOwner);
+    
+
+
+    deferred class SensitiveEntity;
+    ---Purpose: general entity able to give sensitive areas 
+
+
+    class ListOfSensitive instantiates List from TCollection 
+    (SensitiveEntity);
+
+
+    MaxOwnerPriority returns Integer;
+    
+    MinOwnerPriority returns Integer;
+
+
+end SelectBasics;

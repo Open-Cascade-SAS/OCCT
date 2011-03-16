@@ -1,0 +1,14 @@
+// File:	FairCurve_EnergyOfMVC.cxx
+// Created:	Mon Apr  1 09:10:45 1996
+// Author:	Philippe MANGIN
+
+inline Standard_Real FairCurve_EnergyOfMVC::LengthSliding() const 
+{
+  return MyLengthSliding;
+}
+
+inline  FairCurve_AnalysisCode FairCurve_EnergyOfMVC::Status() const 
+{
+  return MyStatus;
+}
+

@@ -1,0 +1,177 @@
+-- File:	TDataXtd_Geometry.cdl
+-- Created:	Mon Apr  6 17:49:28 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009 
+
+class Geometry from TDataXtd inherits Attribute from TDF
+
+	---Purpose: This class is used to model construction geometry.
+    	-- The specific geometric construction of the
+    	--  attribute is defined by an element of the
+    	-- enumeration TDataXtd_GeometryEnum.
+    	--      This attribute may  also be used to qualify  underlying
+	--          geometry  of   the  associated NamedShape.     for
+	--          Constructuion element by example.
+
+uses Attribute       from TDF,
+     Label           from TDF,
+     GUID            from Standard,
+     GeometryEnum    from TDataXtd,
+     DataSet         from TDF,
+     RelocationTable from TDF,
+     NamedShape      from TNaming,
+     Pnt             from gp,
+     Ax1             from gp,
+     Lin             from gp,
+     Circ            from gp,
+     Elips           from gp,
+     Pln             from gp,
+     Cylinder        from gp
+
+
+
+
+is    
+
+   ---Purpose: API class methods
+    --         =================
+    
+    Set (myclass ; label : Label from TDF) 
+    	---Purpose: Finds, or  creates, a Geometry attribute  defined by the label label.
+    	-- The default type of geometry is the value
+    	-- ANY_GEOM of the enumeration TDataXtd_GeometryEnum.
+    	-- To specify another value of this enumeration, use
+    	-- the function SetType. 
+        
+    returns Geometry from TDataXtd;    
+
+    Type (myclass; L : Label from TDF)
+    returns GeometryEnum from TDataXtd; 
+    	---Purpose:
+    	-- Returns the label L used to define the type of
+    	-- geometric construction for the geometry attribute.
+    Type (myclass; S : NamedShape from TNaming)   
+    returns GeometryEnum from TDataXtd; 
+    	---Purpose: Returns the topological attribute S used to define
+    	-- the type of geometric construction for the geometry attribute.
+    Point (myclass; L : Label from TDF; G : in out Pnt from gp) 
+    returns Boolean from Standard; 
+    	---Purpose:
+    	-- Returns the point attribute defined by the label L and the point G.
+    Point (myclass; S : NamedShape from TNaming; G : in out Pnt from gp) 
+    	---Purpose:
+    	-- Returns the point attribute defined by the topological attribute S and the point G.
+        returns Boolean from Standard;
+    
+    
+    Axis (myclass; L : Label from TDF; G : in out Ax1 from gp)
+    returns Boolean from Standard; 
+    	---Purpose:
+    	-- Returns the axis attribute defined by the label L and the axis G.
+    Axis (myclass;  S : NamedShape from TNaming; G : in out Ax1 from gp)
+    	---Purpose:
+    	-- Returns the axis attribute defined by the topological attribute S and the axis G.
+        returns Boolean from Standard;
+    
+    
+    Line (myclass; L : Label from TDF; G : in out Lin from gp)
+    returns Boolean from Standard; 
+    	---Purpose:
+    	-- Returns the line attribute defined by the label L and the line G.
+
+    Line (myclass;  S : NamedShape from TNaming; G : in out Lin from gp)
+    returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns the line attribute defined by the topological attribute S and the line G.   
+    
+    Circle (myclass; L : Label from TDF; G : in out Circ from gp) 
+    returns Boolean from Standard; 
+    	---Purpose:
+    	-- Returns the circle attribute defined by the label L and the circle G.
+    Circle (myclass; S : NamedShape from TNaming; G : in out Circ from gp) 
+    returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns the circle attribute defined by the topological attribute S and the circle G.    
+    
+    Ellipse (myclass; L : Label from TDF; G : in out Elips from gp) 
+    returns Boolean from Standard;  
+    	---Purpose:
+    	-- Returns the ellipse attribute defined by the label L and the ellipse G.
+    Ellipse (myclass; S : NamedShape from TNaming; G : in out Elips from gp) 
+    returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns the ellipse attribute defined by the
+    	-- topological attribute S and the ellipse G.    
+    
+    Plane (myclass; L : Label from TDF; G : in out Pln from gp)  
+    returns Boolean from Standard; 
+    	---Purpose:
+    	-- Returns the plane attribute defined by the label L and the plane G.
+    Plane (myclass; S : NamedShape from TNaming; G : in out Pln from gp) 
+    returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns the plane attribute defined by the
+    	-- topological attribute S and the plane G.    
+    
+    Cylinder  (myclass; L : Label from TDF; G : in out Cylinder from gp) 
+    	---Purpose:
+    	-- Returns the cylinder attribute defined by the label L and the cylinder G.
+    returns Boolean from Standard;  
+
+    Cylinder  (myclass; S : NamedShape from TNaming; G : in out Cylinder from gp) 
+    	---Purpose:
+    	-- Returns the cylinder attribute defined by the
+    	-- topological attribute S and the cylinder G.
+    returns Boolean from Standard;
+    
+    GetID(myclass)    
+        ---C++: return const & 
+	---Purpose: Returns the GUID for geometry attributes.
+    returns GUID from Standard;
+
+  
+  
+    Create
+    returns mutable Geometry from TDataXtd;  
+    	---Purpose: This and the next methods are used to  retrieve  underlying geometry of  the
+	--           NamedShape, even   if  noone Geometry   Attribute  is
+    	--          associated  .  if not  found or not compliant geometry return False.
+
+
+    SetType (me : mutable; T : GeometryEnum from TDataXtd);
+    	---Purpose: Returns the type of geometric construction T of this attribute.
+    	-- T will be a value of the enumeration TDataXtd_GeometryEnum.
+        
+    GetType (me)
+    returns GeometryEnum from TDataXtd;
+    	---Purpose: Returns the type of geometric construction.    
+    
+    ---Category: TDF_Attribute methods
+    --           =====================
+    
+    ID(me)  
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore(me: mutable; with : Attribute from TDF);
+
+    NewEmpty(me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);  
+
+    Dump(me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+fields
+
+    myType : GeometryEnum from TDataXtd;
+    
+end Geometry;
+
+
+

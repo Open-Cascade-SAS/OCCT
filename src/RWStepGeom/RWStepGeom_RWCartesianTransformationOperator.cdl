@@ -1,0 +1,30 @@
+-- File:        CartesianTransformationOperator.cdl
+-- Created:     Mon Dec  4 12:02:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWCartesianTransformationOperator from RWStepGeom
+
+	---Purpose : Read & Write Module for CartesianTransformationOperator
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     CartesianTransformationOperator from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWCartesianTransformationOperator;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable CartesianTransformationOperator from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : CartesianTransformationOperator from StepGeom);
+
+	Share(me; ent : CartesianTransformationOperator from StepGeom; iter : in out EntityIterator);
+
+end RWCartesianTransformationOperator;

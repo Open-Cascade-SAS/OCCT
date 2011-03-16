@@ -1,0 +1,76 @@
+-- File:	IGESData_ReadWriteModule.cdl
+-- Created:	Mon Sep  6 19:22:12 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred class ReadWriteModule  from IGESData
+      inherits ReaderModule from Interface
+
+    ---Purpose : Defines basic File Access Module, under the control of
+    --           IGESReaderTool for Reading and IGESWriter for Writing :
+    --           Specific actions concern : Read and Write Own Parameters of
+    --           an IGESEntity.           
+    --           The common parts (Directory Entry, Lists of Associativities
+    --           and Properties) are processed by IGESReaderTool & IGESWriter
+    --           
+    --           Each sub-class of ReadWriteModule is used in conjunction with
+    --           a sub-class of Protocol from IGESData and processes several
+    --           types of IGESEntity (typically, them of a package) :
+    --           The Protocol gives a unique positive integer Case Number for
+    --           each type of IGESEntity it recognizes, the corresponding
+    --           ReadWriteModule processes an Entity by using the Case Number
+    --           to known what is to do
+    --           On Reading, the general service NewVoid is used to create an
+    --           IGES Entity the first time
+    --           
+    --  Warning : Works with an IGESReaderData which stores "DE parts" of Items
+
+uses Transient, FileReaderData, Check,
+     IGESEntity, DirPart, IGESReaderData, ParamReader, IGESWriter
+
+raises DomainError
+
+is
+
+    CaseNum (me; data : FileReaderData; num : Integer) returns Integer;
+    ---Purpose : Translates the Type of record <num> in <data> to a positive
+    --           Case Number, or 0 if failed.
+    --           Works with IGESReaderData which provides Type & Form Numbers,
+    --           and calls CaseIGES (see below)
+
+    CaseIGES (me; typenum, formnum : Integer) returns Integer  is deferred;
+    ---Purpose : Defines Case Numbers corresponding to the Entity Types taken
+    --           into account by a sub-class of ReadWriteModule (hence, each
+    --           sub-class of ReadWriteModule has to redefine this method)
+    --           Called by CaseNum. Its result will then be used to call
+    --           Read, etc ...
+
+    Read (me; CN : Integer; data : FileReaderData; num : Integer;
+    	ach : in out Check; ent : mutable Transient)
+    	raises DomainError;
+    ---Purpose : General Read Function. See IGESReaderTool for more info
+
+    ReadOwnParams (me; CN : Integer; ent : mutable IGESEntity;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is deferred;
+    ---Purpose : Reads own parameters from file for an Entity; <PR> gives
+    --           access to them, <IR> detains parameter types and values
+    --           For each class, there must be a specific action provided
+    --           Note that Properties and Associativities Lists are Read by
+    --           specific methods (see below), they are called under control
+    --           of reading process (only one call) according Stage recorded
+    --           in ParamReader
+
+
+    WriteOwnParams (me; CN : Integer; ent : IGESEntity;
+    	    	    IW : in out IGESWriter)
+	is deferred;
+    ---Purpose : Writes own parameters to IGESWriter; defined for each class
+    --           (to be redefined for other IGES ReadWriteModules)
+    --  Warning : Properties and Associativities are directly managed by
+    --           WriteIGES, must not be sent by this method
+
+end ReadWriteModule;

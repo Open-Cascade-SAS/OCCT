@@ -1,0 +1,18 @@
+-- File:	PCDM_Writer.cdl
+-- Created:	Thu Dec 18 09:27:19 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class Writer from PCDM inherits Transient from Standard
+
+uses Document from CDM, ExtendedString from TCollection
+
+raises DriverError from PCDM
+is
+
+    Write(me: mutable; aDocument: Document from CDM; aFileName: ExtendedString from TCollection)
+    raises DriverError
+    is deferred;
+
+end Writer from PCDM;

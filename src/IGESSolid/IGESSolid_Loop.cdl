@@ -1,0 +1,145 @@
+--
+-- File      :  Loop.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Loop from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines Loop, Type <508> Form Number <1>
+        --          in package IGESSolid
+        --          A Loop entity specifies a bound of a face. It represents
+        --          a connected collection of face boundaries, seams, and
+        --          poles of a single face.
+        --          
+        --          From IGES-5.3, a Loop can be free with Form Number 0,
+        --          else it is a bound of a face (it is the default)
+
+uses
+
+        HArray1OfIGESEntity          from IGESData,
+        HArray1OfInteger             from TColStd,
+        HArray1OfHArray1OfInteger    from IGESBasic,
+        HArray1OfHArray1OfIGESEntity from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable Loop;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                 : mutable;
+              types              : HArray1OfInteger;
+              edges              : HArray1OfIGESEntity;
+              index              : HArray1OfInteger;
+              orient             : HArray1OfInteger;
+              nbParameterCurves  : HArray1OfInteger;
+              isoparametricFlags : HArray1OfHArray1OfInteger;
+              curves             : HArray1OfHArray1OfIGESEntity from
+                                   IGESBasic)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class Loop
+        --       - types              : 0 = Edge; 1 = Vertex
+        --       - edges              : Pointer to the EdgeList or VertexList
+        --       - index              : Index of the edge into the EdgeList
+        --                              VertexList entity
+        --       - orient             : Orientation flag of the edge
+        --       - nbParameterCurves  : the number of parameter space curves
+        --                              for each edge
+        --       - isoparametricFlags : the isoparametric flag of the
+        --                              parameter space curve
+        --       - curves             : the parameter space curves
+        -- raises exception if length of types, edges, index, orient and
+        -- nbParameterCurves do not match or the length of
+        -- isoparametricFlags and curves do not match
+
+    	IsBound (me) returns Boolean;
+	---Purpose : Tells if a Loop is a Bound (FN 1) else it is free (FN 0)
+
+    	SetBound (me : mutable; bound : Boolean);
+	---Purpose : Sets or Unset the Bound Status (from Form Number)
+	--           Default is True
+
+        NbEdges (me) returns Integer;
+        ---Purpose : returns the number of edge tuples
+
+        EdgeType (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns the type of Index'th edge (0 = Edge, 1 = Vertex)
+        -- raises exception if Index <= 0 or Index > NbEdges()
+
+        Edge (me; Index : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : return the EdgeList or VertexList corresponding to the Index
+        -- raises exception if Index <= 0 or Index > NbEdges()
+
+        Orientation (me; Index : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns the orientation flag corresponding to Index'th edge
+        -- raises exception if Index <= 0 or Index > NbEdges()
+
+        NbParameterCurves (me; Index : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : return the number of parameter space curves associated with
+        -- Index'th Edge
+        -- raises exception if Index <= 0 or Index > NbEdges()
+
+        IsIsoparametric (me; EdgeIndex, CurveIndex : Integer)
+            returns Boolean
+        raises OutOfRange;
+        -- returns the EdgeIndex'th edge's CurveIndex'th isoparametric flag
+        -- raises exception if EdgeIndex <= 0 or EdgeIndex > NbEdges() or
+        -- if CurveIndex <= 0 or CurveIndex > NbParameterCurves(EdgeIndex)
+
+        ParametricCurve (me; EdgeIndex, CurveIndex : Integer) returns IGESEntity
+        raises OutOfRange;
+        ---Purpose : returns the CurveIndex'th parameter space curve associated with
+        -- EdgeIndex'th edge
+        -- raises exception if EdgeIndex <= 0 or EdgeIndex > NbEdges() or
+        -- if CurveIndex <= 0 or CurveIndex > NbParameterCurves(EdgeIndex)
+
+        ListIndex (me; num : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : raises exception If num <= 0 or num > NbEdges()
+
+fields
+
+--
+-- Class    : IGESSolid_Loop
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Loop.
+--
+-- Reminder : A Loop instance is defined by :
+--            either an edge, an orientation, and optional parameter
+--            curves or (in case of a pole) a vertex and an optional
+--            parameter space curve.
+--
+
+        theTypes              : HArray1OfInteger;
+            -- array containing the type of the edge
+
+        theEdges              : HArray1OfIGESEntity;
+            -- array of Vertex List or Edge List entity
+
+        theIndex              : HArray1OfInteger;
+            -- array of list index into Vertex or Edge List entity
+
+        theOrientationFlags   : HArray1OfInteger;
+            -- array of orientation flags
+
+        theNbParameterCurves  : HArray1OfInteger;
+            -- no. of underlying parameter space curves
+
+        theIsoparametricFlags : HArray1OfHArray1OfInteger;
+            -- Isoparametric flags of the space curves
+
+        theCurves             : HArray1OfHArray1OfIGESEntity 
+                                from IGESBasic;
+            -- parameter space curves corresponding to the edges
+
+end Loop;

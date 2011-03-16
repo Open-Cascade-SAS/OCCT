@@ -1,0 +1,45 @@
+-- File:        ApplicationProtocolDefinition.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ApplicationProtocolDefinition from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	ApplicationContext from StepBasic
+is
+
+	Create returns mutable ApplicationProtocolDefinition;
+	---Purpose: Returns a ApplicationProtocolDefinition
+
+	Init (me : mutable;
+	      aStatus : mutable HAsciiString from TCollection;
+	      aApplicationInterpretedModelSchemaName : mutable HAsciiString from TCollection;
+	      aApplicationProtocolYear : Integer from Standard;
+	      aApplication : mutable ApplicationContext from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetStatus(me : mutable; aStatus : mutable HAsciiString);
+	Status (me) returns mutable HAsciiString;
+	SetApplicationInterpretedModelSchemaName(me : mutable; aApplicationInterpretedModelSchemaName : mutable HAsciiString);
+	ApplicationInterpretedModelSchemaName (me) returns mutable HAsciiString;
+	SetApplicationProtocolYear(me : mutable; aApplicationProtocolYear : Integer);
+	ApplicationProtocolYear (me) returns Integer;
+	SetApplication(me : mutable; aApplication : mutable ApplicationContext);
+	Application (me) returns mutable ApplicationContext;
+
+fields
+
+	status : HAsciiString from TCollection;
+	applicationInterpretedModelSchemaName : HAsciiString from TCollection;
+	applicationProtocolYear : Integer from Standard;
+	application : ApplicationContext from StepBasic;
+
+end ApplicationProtocolDefinition;

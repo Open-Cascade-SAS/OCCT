@@ -1,0 +1,445 @@
+// File:	IntCurve_Polygon2dGen.gxx
+// Created:	Mon Oct 12 17:17:30 1992
+// Author:	Laurent BUCHARD
+//		<lbr@sdsun2>
+
+#define TEST 0
+
+
+#include <Standard_ConstructionError.hxx>
+#include <Bnd_Box2d.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_Dir2d.hxx>
+
+
+
+
+#define MAJORATION_DEFLECTION 1.5
+//======================================================================
+//== On echantillonne sur le Domain de la Curve  NbPts Points 
+//== a parametres constants.
+//== 
+//== On estime la fleche maximum en prenant la distance maxi entre la 
+//== droite Curve.Value(X(i))-->Curve.Value(X(i+1)) 
+//== et le point Curve.Value(X(i+1/2))
+//======================================================================
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:02:43 2003 Begin
+IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
+					     const Standard_Integer tNbPts,
+					     const IntRes2d_Domain& D,
+					     const Standard_Real    Tol):
+// 					     const Standard_Real    ):
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:02:45 2003 End
+       ThePnts(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)),
+       TheParams(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)),
+       TheIndex(1,(tNbPts<3)? 6 : (tNbPts+tNbPts))
+{ 
+	 
+  Standard_Integer NbPts = (tNbPts<3)? 3 : tNbPts;
+  TheMaxNbPoints = NbPts+NbPts;
+  NbPntIn = NbPts;
+  //----------------------------------------------------- 
+  //--- Initialisation du Brise a d_Parametre constant
+  //---
+  Binf = D.FirstParameter();
+  Bsup = D.LastParameter();
+  //-----------------------------------------------------
+  //-- IntRes2d Raise si HasFirst retourne False
+  //-- et Acces a First Parameter
+  //-- 
+  Standard_Real u=Binf; 
+  Standard_Real u1=Bsup;
+  Standard_Real du=(u1-u)/(Standard_Real)(NbPts-1);
+//  Standard_Integer ip1,i=1;
+  Standard_Integer i=1;
+  
+  do {
+    gp_Pnt2d P=TheCurveTool::Value(C,u);
+    TheBnd.Add(P);
+    TheIndex.SetValue(i,i);
+    ThePnts.SetValue(i,P); 
+    TheParams.SetValue(i,u);
+    u+=du;
+    i++;
+  }
+  while(i<=NbPts);
+
+
+  //-----------------------------------------------------
+  //--- Calcul d un majorant de fleche approche
+  //---
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:05 2003 Begin
+//   TheDeflection = 0.000000001;
+  TheDeflection = Min(0.000000001, Tol/100.);
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:05 2003 End
+  i=1;
+  u=D.FirstParameter();
+  u+=du * 0.5;
+  
+  do {
+    gp_Pnt2d Pm = TheCurveTool::Value(C,u);
+    const gp_Pnt2d& P1 = ThePnts.Value(i);
+    const gp_Pnt2d& P2 = ThePnts.Value(i+1);
+
+    u+=du;
+    i++;
+
+
+    Standard_Real dx,dy,t=0;    
+    dx=P1.X()-P2.X(); if(dx<0) dx=-dx;
+    dy=P1.Y()-P2.Y(); if(dy<0) dy=-dy;
+    if(dx+dy>1e-12) { 
+      gp_Lin2d L(P1,gp_Dir2d(gp_Vec2d(P1,P2)));
+      t = L.Distance(Pm);
+      if(t>TheDeflection) {
+	TheDeflection = t;
+      }
+    }
+  }
+  while(i<NbPts);
+
+  TheBnd.Enlarge(TheDeflection*MAJORATION_DEFLECTION);
+  ClosedPolygon = Standard_False;
+}
+//======================================================================
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:26 2003 Begin
+IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
+					     const Standard_Integer tNbPts,
+					     const IntRes2d_Domain& D,
+					     const Standard_Real Tol,
+					     const Bnd_Box2d& BoxOtherPolygon):
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:28 2003 End
+       ThePnts(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)), 
+       TheParams(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)), 
+       TheIndex(1,(tNbPts<3)? 6 : (tNbPts+tNbPts))
+{
+  Standard_Integer NbPts = (tNbPts<3)? 3 : tNbPts;
+  TheMaxNbPoints = NbPts+NbPts;
+  NbPntIn = NbPts; 
+  //----------------------------------------------------- 
+  //--- Initialisation du Brise a d_Parametre constant
+  //---
+  Binf = D.FirstParameter();
+  Bsup = D.LastParameter();
+  //-----------------------------------------------------
+  Standard_Real u=Binf; 
+  Standard_Real u1=Bsup;
+  Standard_Real du=(u1-u)/(Standard_Real)(NbPts-1);
+  Standard_Integer i=1;
+  do {
+    gp_Pnt2d P=TheCurveTool::Value(C,u);
+    TheBnd.Add(P);
+    ThePnts.SetValue(i,P); 
+    TheParams.SetValue(i,u);
+    TheIndex.SetValue(i,i);
+    u+=du;
+    i++;
+  }
+  while(i<=NbPts);
+
+
+  //-----------------------------------------------------
+  //--- Calcul d un majorant de fleche approche
+  //---
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:55 2003 Begin
+//   TheDeflection = 0.0000001;
+  TheDeflection = Min(0.0000001, Tol/100.);
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:56 2003 End
+  i=1;
+  u=D.FirstParameter();
+  u+=du * 0.5;
+  
+  do {
+    gp_Pnt2d Pm = TheCurveTool::Value(C,u);
+    const gp_Pnt2d& P1 = ThePnts.Value(i);
+    const gp_Pnt2d& P2 = ThePnts.Value(i+1);
+
+    Standard_Real dx,dy;    
+    dx=P1.X()-P2.X(); if(dx<0) dx=-dx;
+    dy=P1.Y()-P2.Y(); if(dy<0) dy=-dy;
+    if(dx+dy>1e-12) {      
+      gp_Lin2d L(P1,gp_Dir2d(gp_Vec2d(P1,P2)));
+      Standard_Real t = L.Distance(Pm);      
+      if(t>TheDeflection) {
+	TheDeflection = t;
+      }
+    }
+    u+=du;
+    i++;
+  }
+  while(i<NbPts);
+  
+  TheBnd.Enlarge(TheDeflection*MAJORATION_DEFLECTION);
+  ClosedPolygon = Standard_False;
+  //-------------------------------------------------------
+  //-- On supprime les points alignes 
+  //-- (Permet de diminuer le nombre total de points) 
+  //-- (Dans le cas ou la courbe est "droite"       )
+  Standard_Real DeflectionMaj = TheDeflection;
+  for(i=2;i<NbPntIn && NbPntIn>3;i++) { 
+    Standard_Integer indexim1 = TheIndex.Value(i-1);
+    Standard_Integer indexi   = TheIndex.Value(i);
+    Standard_Integer indexip1 = TheIndex.Value(i+1);
+    const gp_Pnt2d& Pim1 = ThePnts.Value(indexim1);
+    const gp_Pnt2d& Pi   = ThePnts.Value(indexi);
+    const gp_Pnt2d& Pip1 = ThePnts.Value(indexip1);
+
+    Standard_Real dx,dy;    
+    dx=Pim1.X()-Pip1.X(); if(dx<0) dx=-dx;
+    dy=Pim1.Y()-Pip1.Y(); if(dy<0) dy=-dy;
+    Standard_Real t=0;
+    if(dx+dy>1e-12) {    
+      gp_Lin2d L(Pim1,gp_Dir2d(gp_Vec2d(Pim1,Pip1)));
+      t = L.Distance(Pi);
+    }
+    if(t<=DeflectionMaj) { 
+      //-- On supprime le point i
+      for(Standard_Integer j = i; j<NbPntIn; j++) { 
+	TheIndex.SetValue(j,TheIndex.Value(j+1));
+      }
+      NbPntIn--;
+      i--;
+    }
+  }
+
+  ComputeWithBox(C,BoxOtherPolygon);
+}
+//======================================================================
+void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve&        C,
+					   const Bnd_Box2d& BoxOtherPolygon) {
+  if(TheBnd.IsOut(BoxOtherPolygon)) { 
+    NbPntIn=2;
+    TheBnd.SetVoid();
+  }
+  else { 
+     Standard_Real bx0,bx1,by0,by1;
+     BoxOtherPolygon.Get(bx0,by0,bx1,by1);
+
+    bx0-=TheDeflection; 
+    by0-=TheDeflection; 
+    bx1+=TheDeflection; 
+    by1+=TheDeflection;
+    Standard_Integer MaxIndexUsed = 1;
+    Standard_Integer i,nbp;
+    Standard_Integer Rprec,Ri;
+    Standard_Real x,y;
+    
+    nbp = 0;
+    x = ThePnts.Value(TheIndex.Value(1)).X();
+    y = ThePnts.Value(TheIndex.Value(1)).Y();
+    
+    Rprec = CalculRegion(x,y,bx0,bx1,by0,by1);
+    for(i = 2; i<=NbPntIn; i++) { 
+      const gp_Pnt2d& P2d = ThePnts.Value(TheIndex.Value(i));
+      Ri = CalculRegion(P2d.X(),P2d.Y(),bx0,bx1,by0,by1);
+      if((Ri & Rprec)==0) { 
+	if(nbp) { 
+	  if(TheIndex.Value(nbp) != TheIndex.Value(i-1)) { 
+	    nbp++;
+	    TheIndex.SetValue(nbp,TheIndex.Value(i-1));
+	  }
+	}
+	else {
+	  nbp++;
+	  TheIndex.SetValue(nbp,TheIndex.Value(i-1)); 
+	}
+	nbp++;
+	TheIndex.SetValue(nbp,TheIndex.Value(i));
+	if(TheIndex.Value(i) > MaxIndexUsed) MaxIndexUsed = TheIndex.Value(i);
+
+	Rprec = Ri;
+      }
+      else { 
+	if((Ri & Rprec)==0) { 
+	  nbp++;
+	  TheIndex.SetValue(nbp,TheIndex.Value(i));
+	  if(TheIndex.Value(i) > MaxIndexUsed) MaxIndexUsed = TheIndex.Value(i);
+
+	  Rprec = Ri; 
+	}
+      }
+      Rprec = Ri;
+    }
+    if(nbp==1) { 
+      NbPntIn=2;
+      TheBnd.SetVoid();
+    }
+    else {
+      TheBnd.SetVoid();
+      if(nbp) { 
+	TheBnd.Add(ThePnts.Value(TheIndex.Value(1)));
+      }
+      Standard_Real    RatioDeflection;
+      Standard_Integer nbpassagedeflection = 0;
+//      Standard_Integer PointHasBeenAdded = 0;
+      do { 
+	nbpassagedeflection++;
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:05:28 2003 Begin
+// 	Standard_Real NewDeflection = 0.0000001;
+	Standard_Real NewDeflection = TheDeflection;
+//  Modified by Sergey KHROMOV - Mon Mar 24 12:05:29 2003 End
+	for(i=2; i<=nbp; i++) { 
+	  Standard_Integer Ii  = TheIndex.Value(i);
+	  Standard_Integer Iim1= TheIndex.Value(i-1);
+	  const gp_Pnt2d& Pi   = ThePnts.Value(Ii);
+	  const gp_Pnt2d& Pim1 = ThePnts.Value(Iim1);
+	  TheBnd.Add(Pi);
+	  Standard_Integer Regi   = CalculRegion(Pi.X(),Pi.Y(),bx0,bx1,by0,by1);
+	  Standard_Integer Regim1 = CalculRegion(Pim1.X(),Pim1.Y(),bx0,bx1,by0,by1); 
+	  if((Regi & Regim1) == 0) {  
+	    Standard_Real u = 0.5*( TheParams.Value(Ii)
+				   +TheParams.Value(Iim1));
+	    gp_Pnt2d Pm = TheCurveTool::Value(C,u);
+	    Standard_Real dx,dy,t=0;    
+	    dx=Pim1.X()-Pi.X(); if(dx<0) dx=-dx;
+	    dy=Pim1.Y()-Pi.Y(); if(dy<0) dy=-dy;
+	    if(dx+dy>1e-12)  {
+	      gp_Lin2d L(Pim1,gp_Dir2d(gp_Vec2d(Pim1,Pi)));
+	      t = L.Distance(Pm);
+	      if((MaxIndexUsed<(TheMaxNbPoints-1)) && (t>(TheDeflection * 0.5))) {
+		const gp_Pnt2d& P1=Pim1;
+		nbp++;
+		for(Standard_Integer j=nbp; j>=i+1; j--) { 
+		  TheIndex.SetValue(j,TheIndex.Value(j-1));
+		}
+		MaxIndexUsed++;
+		TheIndex.SetValue(i,MaxIndexUsed);
+		ThePnts.SetValue(MaxIndexUsed,Pm);
+		TheParams.SetValue(MaxIndexUsed,u);
+		
+		Standard_Real u1m = 0.5*(u+TheParams.Value(TheIndex.Value(i-1)));
+		Standard_Real um2 = 0.5*(u+TheParams.Value(TheIndex.Value(i+1)));
+		gp_Pnt2d P1m = TheCurveTool::Value(C,u1m);
+#ifdef DEB
+		gp_Pnt2d Pm2 = TheCurveTool::Value(C,um2);
+#else
+                TheCurveTool::Value(C,um2);
+#endif
+		gp_Lin2d L1m(P1,gp_Dir2d(gp_Vec2d(P1,Pm)));
+#ifdef DEB
+		gp_Lin2d Lm2(Pm,gp_Dir2d(gp_Vec2d(Pm,ThePnts.Value(TheIndex.Value(i+1)))));
+#else
+                ThePnts.Value(TheIndex.Value(i+1));
+#endif
+		t = L1m.Distance(P1m);
+		i--; 
+	      }
+	    }
+	    else { 
+	      if(t>NewDeflection) { 
+		NewDeflection = t; 
+	      }
+	    }
+	  }
+	}
+	if(NewDeflection) 
+	  RatioDeflection = TheDeflection / NewDeflection; 
+	else RatioDeflection = 10.0;
+	TheDeflection = NewDeflection;
+	NbPntIn = nbp;
+      }
+      while((RatioDeflection<3.0)
+	    && (nbpassagedeflection < 3) 
+	    && (MaxIndexUsed<(TheMaxNbPoints-2)));
+    }
+
+    TheDeflection*=MAJORATION_DEFLECTION;
+    TheBnd.Enlarge(TheDeflection);
+  }
+  ClosedPolygon = Standard_False;
+  Dump();
+}
+
+
+Standard_Boolean IntCurve_Polygon2dGen::AutoIntersectionIsPossible() const { 
+
+  gp_Vec2d VRef(ThePnts.Value(TheIndex.Value(1)),
+		ThePnts.Value(TheIndex.Value(2)));
+  for(Standard_Integer i=3; i<=NbPntIn; i++) { 
+    gp_Vec2d V(ThePnts.Value(TheIndex.Value(i-1)),
+		ThePnts.Value(TheIndex.Value(i)));
+    if(V.Dot(VRef)<0.0) {
+      return(Standard_True);
+    }
+  }
+  return(Standard_False); 
+}
+
+//======================================================================
+Standard_Real IntCurve_Polygon2dGen::ApproxParamOnCurve( const Standard_Integer Aindex
+							,const Standard_Real TheParamOnLine) 
+     const 
+{
+  Standard_Integer Indexp1,Index = Aindex;
+  Standard_Real    ParamOnLine = TheParamOnLine;
+  if (Index > NbPntIn) {
+    cout << "OutOfRange Polygon2d::ApproxParamOnCurve " <<endl;
+  }
+  if((Index == NbPntIn) && (ParamOnLine == 0.0)) { 
+    Index--; ParamOnLine=1.0;
+  }
+  if(Index==0) { 
+    Index=1; 
+    ParamOnLine = 0.0;
+  }
+  Indexp1 = TheIndex.Value(Index+1);
+  Index   = TheIndex.Value(Index);
+
+  Standard_Real du = TheParams.Value(Indexp1)-TheParams.Value(Index);
+  Standard_Real u  = TheParams.Value(Index) + ParamOnLine * du;
+  return(u);
+}
+
+
+//======================================================================
+#if TEST
+
+extern Standard_Boolean DebugPolygon2d;
+extern void DrawSegmentBlanc(const gp_Pnt2d& _P1,const gp_Pnt2d& _P2);
+extern void DrawSegment(const gp_Pnt2d& _P1,const gp_Pnt2d& _P2);
+
+void IntCurve_Polygon2dGen::Dump(void) const {
+  if(!DebugPolygon2d) return;
+  Standard_Real bx0,bx1,by0,by1;
+  if(TheBnd.IsVoid()) return;
+  TheBnd.Get(bx0,by0,bx1,by1);
+  DrawSegment(gp_Pnt2d(bx0,by0),gp_Pnt2d(bx1,by0));
+  DrawSegment(gp_Pnt2d(bx1,by0),gp_Pnt2d(bx1,by1));
+  DrawSegment(gp_Pnt2d(bx1,by1),gp_Pnt2d(bx0,by1));
+  DrawSegment(gp_Pnt2d(bx0,by1),gp_Pnt2d(bx0,by0));    
+  Standard_Integer i;
+  if(NbPntIn<=1) return;
+  for(i=2;i<=NbPntIn; i++) { 
+    DrawSegmentBlanc(ThePnts.Value(TheIndex.Value(i-1)),ThePnts.Value(TheIndex.Value(i)));
+  }
+}
+#else
+void IntCurve_Polygon2dGen::Dump(void) const { 
+  static int debug = 0;
+  if(debug) { 
+    Standard_Real bx0,bx1,by0,by1;
+    
+    cout<<"\n ----- Dump de IntCurve_Polygon2dGen -----"<<endl;
+    if(TheBnd.IsVoid()) { 
+      cout<<"  Polygone Vide "<<endl;
+      return;
+    }
+    TheBnd.Get(bx0,by0,bx1,by1);
+    cout<<"  bx0:"<<bx0  <<endl;
+    cout<<"  by0:"<<by0<<endl;
+    cout<<"  bx1:"<<bx1<<endl;
+    cout<<"  by1:"<<by1<<endl;
+    
+    Standard_Integer i;
+    for(i=1;i<=NbPntIn; i++) { 
+      const gp_Pnt2d& P = ThePnts(TheIndex(i));
+      cout<<"  ("<<i<<") u:"<<TheParams.Value(TheIndex(i))<<" X:"<<P.X()<<"  Y:"<<P.Y()<<endl;
+    }
+  }
+} 
+#endif
+//======================================================================
+//======================================================================
+

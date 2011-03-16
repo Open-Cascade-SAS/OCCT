@@ -1,0 +1,60 @@
+-- File:	Approx_MCurvesToBSpCurve.cdl
+-- Created:	Mon Feb 21 10:27:51 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@zerox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class MCurvesToBSpCurve from Approx
+
+
+
+uses MultiBSpCurve        from AppParCurves,
+     MultiCurve           from AppParCurves,
+     SequenceOfMultiCurve from AppParCurves
+
+is
+
+
+    Create returns MCurvesToBSpCurve;
+    
+    Reset(me: in out) 
+    	--- Clear the internal Sequence Of MultiCurve
+    is static;
+    
+    Append(me: in out; MC: MultiCurve from AppParCurves)
+    is static;
+
+
+    Perform(me: in out)
+    is static;
+    
+    Perform(me: in out; TheSeq: SequenceOfMultiCurve from AppParCurves)
+    is static;
+    
+    
+    Value(me)
+    	---Purpose: return the composite MultiCurves as a MultiBSpCurve.
+    	---C++: return const&
+
+    returns MultiBSpCurve
+    is static;
+
+
+    ChangeValue(me: in out)
+    	---Purpose: return the composite MultiCurves as a MultiBSpCurve.
+    	---C++: return const&
+
+    returns MultiBSpCurve
+    is static;
+
+
+fields
+
+
+mySpline: MultiBSpCurve           from AppParCurves;
+myDone  : Boolean                 from Standard;
+myCurves: SequenceOfMultiCurve    from AppParCurves; 
+
+end MCurvesToBSpCurve;

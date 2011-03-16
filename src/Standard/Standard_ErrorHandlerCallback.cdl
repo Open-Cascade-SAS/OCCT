@@ -1,0 +1,55 @@
+-- File:	Standard_ErrorHandlerCallback.cdl
+-- Created:	Thu Apr 13 11:17:05 2006
+-- Author:	Andrey BETENEV
+---Copyright:	Open CASCADE SAS 2006
+
+deferred class ErrorHandlerCallback from Standard
+
+    ---Purpose: Defines a base class for callback objects that can be registered
+    --          in the OCC error handler (the class simulating C++ exceptions)
+    --          so as to be correctly destroyed when error handler is activated.
+    --
+    --          Note that this is needed only when Open CASCADE is compiled with
+    --          NO_CXX_EXCEPTION or OCC_CONVERT_SIGNALS options (i.e. on UNIX/Linux).
+    --          In that case, raising OCC exception and/or signal will not cause 
+    --          C++ stack unwinding and destruction of objects created in the stack.
+    --
+    --          This class is intended to protect critical objects and operations in 
+    --          the try {} catch {} block from being bypassed by OCC signal or exception.
+    --
+    --          Inherit your object from that class, implement DestroyCallback() function,
+    --          and call Register/Unregister in critical points.
+    --
+    --          Note that you must ensure that your object has life span longer than 
+    --          that of the try {} block in which it calls Register().
+
+is
+
+    Initialize returns ErrorHandlerCallback;
+    	---Purpose: Empty constructor
+	---C++: inline
+	
+    RegisterCallback (me: in out);
+    	---Purpose: Registers this callback object in the current error handler 
+	--          (if found).
+	---C++: inline
+	
+    UnregisterCallback (me: in out);
+    	---Purpose: Unregisters this callback object from the error handler.
+	---C++: inline
+	---C++: alias "virtual Standard_EXPORT ~Standard_ErrorHandlerCallback ();"
+
+    DestroyCallback (me: in out) is deferred;
+    	---Purpose: The callback function to perform necessary callback action.
+        --          Called by the exception handler when it is being destroyed but 
+        --          still has this callback registered.
+
+fields
+
+    myHandler:      Address from Standard; -- Pointer to the error handler
+    myPrev, myNext: Address from Standard; -- Pointers to the previous and next callback objects
+    
+friends
+    class ErrorHandler
+    
+end ErrorHandlerCallback;

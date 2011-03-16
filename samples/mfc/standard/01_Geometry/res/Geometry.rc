@@ -1,0 +1,347 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\Common\res\OCC_Resource.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\Common\\res\\OCC_Resource.h""\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "Toolbar1.bmp"
+IDR_MAINFRAME2          BITMAP                  "Toolbar2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+    SEPARATOR
+    BUTTON      ID_BUTTON_Test_1
+    BUTTON      ID_BUTTON_Test_2
+    BUTTON      ID_BUTTON_Test_3
+    BUTTON      ID_BUTTON_Test_4
+    BUTTON      ID_BUTTON_Test_5
+    BUTTON      ID_BUTTON_Test_6
+    BUTTON      ID_BUTTON_Test_7
+    BUTTON      ID_BUTTON_Test_8
+    BUTTON      ID_BUTTON_Test_9
+    BUTTON      ID_BUTTON_Test_10
+    BUTTON      ID_BUTTON_Test_11
+    BUTTON      ID_BUTTON_Test_12
+    BUTTON      ID_BUTTON_Test_13
+    BUTTON      ID_BUTTON_Test_14
+    BUTTON      ID_BUTTON_Test_15
+    BUTTON      ID_BUTTON_Test_16
+    BUTTON      ID_BUTTON_Test_17
+    BUTTON      ID_BUTTON_Test_18
+    BUTTON      ID_BUTTON_Test_19
+    BUTTON      ID_BUTTON_Test_20
+    BUTTON      ID_BUTTON_Test_21
+    BUTTON      ID_BUTTON_Test_22
+    BUTTON      ID_BUTTON_Test_23
+    BUTTON      ID_BUTTON_Test_24
+    SEPARATOR
+    BUTTON      ID_Create_Sol
+END
+
+IDR_MAINFRAME2 TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_BUTTON_Test_25
+    BUTTON      ID_BUTTON_Test_26
+    BUTTON      ID_BUTTON_Test_27
+    BUTTON      ID_BUTTON_Test_28
+    BUTTON      ID_BUTTON_Test_29
+    BUTTON      ID_BUTTON_Test_30
+    BUTTON      ID_BUTTON_Test_31
+    BUTTON      ID_BUTTON_Test_32
+    BUTTON      ID_BUTTON_Test_33
+    BUTTON      ID_BUTTON_Test_34
+    BUTTON      ID_BUTTON_Test_35
+    BUTTON      ID_BUTTON_Test_36
+    SEPARATOR
+    BUTTON      ID_BUTTON_Test_37
+    BUTTON      ID_BUTTON_Test_38
+    BUTTON      ID_BUTTON_Test_39
+    BUTTON      ID_BUTTON_Test_40
+    BUTTON      ID_BUTTON_Test_41
+    BUTTON      ID_BUTTON_Test_42
+    BUTTON      ID_BUTTON_Test_43
+    BUTTON      ID_BUTTON_Test_44
+    BUTTON      ID_BUTTON_Test_45
+    BUTTON      ID_BUTTON_Test_46
+    BUTTON      ID_BUTTON_Test_47
+    BUTTON      ID_BUTTON_Test_48
+    BUTTON      ID_BUTTON_Test_49
+    BUTTON      ID_BUTTON_Test_50
+    SEPARATOR
+    BUTTON      ID_BUTTON_Simplify
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Geometry...",          ID_APP_ABOUT
+    END
+END
+
+IDR_3DTYPE MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        POPUP "Export"
+        BEGIN
+            MENUITEM "Image...",                    ID_FILE_EXPORT_IMAGE
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window 2D",              ID_WINDOW_NEW2D
+        MENUITEM "&New Window 3D",              ID_WINDOW_NEW
+        MENUITEM SEPARATOR
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Geometry...",          ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Viewer MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "Viewer"
+            VALUE "LegalCopyright", "Copyright (C) 1997"
+            VALUE "OriginalFilename", "Viewer.EXE"
+            VALUE "ProductName", "SampleGeometry Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Geometry"
+    IDR_Samples2DTYPE       "2D View \nArgOne\nArgTwo\nArgThree\nArgFour\n.Document\nArgSix "
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_TYPE                "3D View\nGeometry\n\n\n\n.Document\n Document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BUTTON_Test_1        "Build a cartesian coordinate entity \nCartesian Coordinate Entity "
+    ID_BUTTON_Test_2        "Build geometric Points\nGeometric Points"
+    ID_BUTTON_Test_3        "Build a point with a triplet of coordinates\nGeometric point "
+    ID_BUTTON_Test_4        "Return the coordinates of a geometric point\nCoordinates of a point"
+    ID_BUTTON_Test_5        "Build the barycenter of two points\nBarycenter of two points"
+    ID_BUTTON_Test_6        "Build the barycenter of several points\nBarycenter of several points"
+    ID_BUTTON_Test_7        "Build a trimmed curve and a tangent vector\nTrimmed curve"
+    ID_BUTTON_Test_8        "Build a geometric circle and a tangent direction\nGeometric circle"
+    ID_BUTTON_Test_9        "Build a point from curve and a start point\nPoint from curve"
+    ID_BUTTON_Test_10       "Build points from a circle and uniform abscissa\nPoints from curve"
+    ID_BUTTON_Test_23       " Build a trimmed curve from an ellips\nBuild a trimmed curve"
+    ID_BUTTON_Test_22       " Build a curve from two points and energy\nBuild a fair curve"
+    ID_BUTTON_Test_32       " Build a trimmed ellipse\nTrimmed ellipse"
+    ID_BUTTON_Test_11       "Build a point from a sphere and u,v parameters\nPoint from sphere"
+    ID_BUTTON_Test_12       "Project a point on a curve\nProject a point on a curve"
+    ID_BUTTON_Test_13       "Project a point on a sphere\nProject a point on a sphere"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BUTTON_Test_14       "Build points from an intersection\nBuild points from an intersection"
+    ID_BUTTON_Test_15       " Build a point from a transformation\nBuild a point from a transformation"
+    ID_BUTTON_Test_16       " Build vectors from points\nVectors"
+    ID_BUTTON_Test_17       " Calculate the angle between two directions\nAngle"
+    ID_BUTTON_Test_18       " Build a parabola from an axis\nParabola"
+    ID_BUTTON_Test_19       " Build right and left handed axis\nAxis"
+    ID_BUTTON_Test_20       " Build B-Spline curves\nB-Spline curves"
+    ID_BUTTON_Test_21       " Build a fair curve\nBuild a fair curve"
+    ID_BUTTON_Test_24       " Project a curve in a 2D one\nProjection"
+    ID_BUTTON_Test_25       " Interpolate a curve from points\nInterpolate a curve"
+    ID_BUTTON_Test_26       " Calculate the extreme points between curves\nExtreme points"
+    ID_BUTTON_Test_27       " Build offset curves\nOffset curves"
+    ID_BUTTON_Test_28       " Build a line passing trough two points\nLine"
+    ID_BUTTON_Test_29       " Build a bisector\nBisector"
+    ID_BUTTON_Test_30       " Build a line passing through a point and tangent to a circle\nBuild a tangent line"
+    ID_BUTTON_Test_31       " Build tangent circles\nTangent circles"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BUTTON_Test_33       " Build B-Spline curves\nB-Spline curves"
+    ID_BUTTON_Test_34       " Test the average shape of points\nTest points"
+    ID_BUTTON_Test_35       " Intersection between curve and surface\nIntersection between curve and surface"
+    ID_BUTTON_Test_36       " Build entitys from geometric transformations\nGeometric transformations"
+    ID_BUTTON_Test_37       " Test the average shape of points\nTest points"
+    ID_BUTTON_Test_38       " Build surfaces by filling curves\nFill curves"
+    ID_BUTTON_Test_39       " Build a constrained surface from curves\nConstrained surface"
+    ID_BUTTON_Test_40       " Build pipe from basis entitys\nPipe"
+    ID_BUTTON_Test_41       " Split a B-Spline surface\nSplit a B-Spline surface"
+    ID_BUTTON_Test_42       " Build Bezier surface\nBezier surface"
+    ID_BUTTON_Test_43       " Build offset surfaces\nOffset surfaces"
+    ID_BUTTON_Test_44       " Build a surface of linear extrusion\nLinear extrusion"
+    ID_BUTTON_Test_45       " Build a surface of revolution\nSurface of revolution"
+    ID_BUTTON_Test_46       " Build a surface extended by a length\nExtended surface"
+    ID_BUTTON_Test_47       " Calculate the extreme distances between surfaces\nExtreme distances"
+    ID_BUTTON_Test_48       " Build the bounding boxes of curves 2D\nBounding boxes 2D"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BUTTON_Test_49       " Build the bounding boxes of curves 3D\nBounding boxes 3D"
+    ID_BUTTON_Test_50       " Build the bounding boxes of surface 3D\nBounding boxes 3D"
+    ID_BUTTON_Test_51       " "
+    ID_Create_Sol           "Create a surface from a set of points\nSurface from points"
+    ID_BUTTON_Simplify      "Simplification of shape\nSimplification"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

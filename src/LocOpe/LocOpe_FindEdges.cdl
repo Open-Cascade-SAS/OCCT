@@ -1,0 +1,91 @@
+-- File:	LocOpe_FindEdges.cdl
+-- Created:	Thu Feb 15 09:20:07 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class FindEdges from LocOpe
+
+	---Purpose: 
+
+uses Shape                      from TopoDS,
+     Edge                      from TopoDS,
+     ListOfShape               from TopTools,
+     ListIteratorOfListOfShape from TopTools
+     
+
+raises ConstructionError from Standard,
+       NoSuchObject      from Standard,
+       NoMoreObject      from Standard
+
+is
+
+    Create
+    	returns FindEdges from LocOpe;
+	---C++: inline
+
+
+
+    Create(FFrom,FTo: Shape from TopoDS)
+    
+	---C++: inline
+    	returns FindEdges from LocOpe
+	raises ConstructionError from Standard;
+	
+	
+    Set(me: in out; FFrom, FTo: Shape from TopoDS)
+    
+	raises ConstructionError from Standard
+    	is static;
+
+
+    InitIterator(me: in out)
+    
+	---C++: inline
+    	is static;
+
+
+    More(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    EdgeFrom(me)
+    
+    	returns Edge from TopoDS
+	---C++: return const&
+	---C++: inline
+	raises NoSuchObject from Standard
+	is static;
+
+
+    EdgeTo(me)
+    
+    	returns Edge from TopoDS
+	---C++: return const&
+	---C++: inline
+	raises NoSuchObject from Standard
+	is static;
+
+
+    Next(me: in out)
+    
+	---C++: inline
+    	raises NoMoreObject from Standard
+	is static;
+
+
+fields
+
+    myFFrom  : Shape                     from TopoDS;
+    myFTo    : Shape                     from TopoDS;
+    myLFrom  : ListOfShape               from TopTools;
+    myLTo    : ListOfShape               from TopTools;
+    myItFrom : ListIteratorOfListOfShape from TopTools;
+    myItTo   : ListIteratorOfListOfShape from TopTools;
+
+end FindEdges;

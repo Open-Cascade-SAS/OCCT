@@ -1,0 +1,66 @@
+-- File:	LProp_CurAndInf.cdl
+-- Created:	Fri Sep  2 11:27:40 1994
+-- Author:	Yves FRICAUD
+--		<yfr@phylox>
+---Copyright:	 Matra Datavision 1994
+
+class CurAndInf from LProp 
+
+	---Purpose: Stores the parameters of a curve 2d or 3d corresponding
+	--          to the curvature's extremas and the Inflection's Points.
+
+uses
+    CIType            from LProp,
+    SequenceOfReal    from TColStd,
+    SequenceOfCIType  from LProp
+    
+raises 
+    OutOfRange from Standard 
+    
+is
+    Create;
+    
+    AddInflection (me : in out; Param : Real) 
+    is static;
+    
+    AddExtCur (me : in out; Param : Real; IsMin : Boolean)
+    is static;
+    
+    Clear (me : in out) 
+    is static;
+    
+    IsEmpty (me) returns Boolean
+    is static;
+    
+    NbPoints (me) returns Integer
+	---Purpose: Returns the number of points.
+	--          The Points are stored to increasing parameter.
+    is static;
+    
+    Parameter (me; N : Integer) returns Real
+	---Purpose: Returns the parameter of the Nth point.
+    raises
+    	OutOfRange from Standard
+	---Purpose: raises if N not in the range [1,NbPoints()]    
+    is static;
+    
+    Type (me; N : Integer) returns CIType 
+    	---Purpose: Returns 
+    	--          - MinCur if the Nth parameter corresponds to
+    	--          a minimum of the radius of curvature.
+    	--          - MaxCur if the Nth parameter corresponds to
+    	--          a maximum of the radius of curvature.    
+    	--          - Inflection if the parameter corresponds to
+    	--          a point of inflection.
+    raises
+    	OutOfRange from Standard
+	---Purpose: raises if N not in the range [1,NbPoints()] 
+    is static;	    
+    
+fields
+    theParams : SequenceOfReal    from TColStd;
+    theTypes  : SequenceOfCIType  from LProp;
+
+end CurAndInf;
+
+

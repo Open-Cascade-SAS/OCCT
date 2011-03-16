@@ -1,0 +1,53 @@
+// File:	AIS_LocalContext.lxx
+// Created:	Fri Jan 17 13:34:31 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+#include <SelectMgr_AndFilter.hxx>
+
+#include <SelectMgr_OrFilter.hxx>
+
+inline const TCollection_AsciiString& AIS_LocalContext::
+SelectionName() const 
+{return mySelName;}
+
+inline void AIS_LocalContext::SetAutomaticHilight(const Standard_Boolean aStatus)
+{myAutoHilight = aStatus;}
+
+inline Standard_Boolean AIS_LocalContext::AutomaticHilight() const 
+{return myAutoHilight;}
+
+inline const TColStd_ListOfInteger& 
+AIS_LocalContext::StandardModes() const 
+{return myListOfStandardMode;}
+
+inline const SelectMgr_ListOfFilter& AIS_LocalContext::ListOfFilter() const 
+{return myFilters->StoredFilters();}
+
+inline const Handle(SelectMgr_OrFilter)& AIS_LocalContext::Filter() const 
+{return myFilters;}
+
+
+inline void AIS_LocalContext::AcceptErase(const Standard_Boolean aStatus)
+{myAcceptErase = aStatus;}
+
+inline Standard_Boolean AIS_LocalContext::AcceptErase() const
+{return myAcceptErase;}
+
+inline const Handle(StdSelect_ViewerSelector3d)& 
+AIS_LocalContext::MainSelector() const
+{return myMainVS;}
+
+inline Standard_Boolean AIS_LocalContext::HasDetected() const 
+{return mylastindex!=0;}
+
+inline Standard_Integer AIS_LocalContext::DetectedIndex()
+{
+  return mylastindex;
+}
+
+inline Standard_Boolean AIS_LocalContext::HasNextDetected() const
+{return myCurDetected<myDetectedSeq.Length();}
+
+inline Standard_Boolean AIS_LocalContext::IsValidIndex(const Standard_Integer indx) const
+{ return (indx>0 && indx<=myMapOfOwner.Extent());}

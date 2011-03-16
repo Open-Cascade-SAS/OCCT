@@ -1,0 +1,103 @@
+-- File:	Extrema_GenLocateExtPC.cdl
+-- Created:	Tue Jul 18 17:40:06 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+generic class   GenLocateExtPC from Extrema 
+(Curve    as any;
+ Tool     as any;    -- as ToolCurve(Curve);
+ POnC     as any;
+ Pnt      as any;
+ Vec      as any )  
+					   
+    	---Purpose: It calculates the distance between a point and a
+    	--          curve with a close point.
+    	--          This distance can be a minimum or a maximum.
+
+
+raises  DomainError  from Standard,
+    	TypeMismatch from Standard,
+        NotDone      from StdFail
+	
+private  class PCLocF instantiates FuncExtPC (Curve, Tool, POnC, Pnt, Vec);
+
+is
+    Create returns GenLocateExtPC;
+
+    Create (P: Pnt; C: Curve; U0: Real; TolU: Real)
+    	returns GenLocateExtPC
+    	---Purpose: Calculates the distance with a close point.
+    	--          The close point is defined by the parameter value
+    	--          U0.
+    	--          The function F(u)=distance(P,C(u)) has an extremum
+    	--          when g(u)=dF/du=0. The algorithm searchs a zero 
+    	--          near the close point.
+    	--          TolU is used to decide to stop the iterations.
+    	--          At the nth iteration, the criteria is:
+    	--           abs(Un - Un-1) < TolU.
+    	raises  DomainError;
+	    	-- if U0 is outside the definition range of the curve.
+
+
+    Create (P: Pnt; C: Curve; U0: Real; Umin, Usup: Real; TolU: Real)
+    	returns GenLocateExtPC
+    	---Purpose: Calculates the distance with a close point.
+    	--          The close point is defined by the parameter value
+    	--          U0.
+    	--          The function F(u)=distance(P,C(u)) has an extremum
+    	--          when g(u)=dF/du=0. The algorithm searchs a zero 
+    	--          near the close point.
+    	--          Zeros are searched between Umin et Usup.
+    	--          TolU is used to decide to stop the iterations.
+    	--          At the nth iteration, the criteria is:
+    	--           abs(Un - Un-1) < TolU.
+    	raises  DomainError;
+	    	-- if U0 is outside the definition range of the curve.
+
+
+
+    Initialize(me: in out; C: Curve; Umin, Usup: Real; TolU: Real)
+    	---Purpose: sets the fields of the algorithm.
+    is static;
+
+    Perform(me: in out; P: Pnt; U0: Real)
+        ---Purpose: the algorithm is done with the point P.
+        --          An exception is raised if the fields have not
+        --          been initialized.  
+    raises TypeMismatch from Standard
+    is static;
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distance is found.
+    	is static;
+
+    SquareDistance (me) returns Real
+    	---Purpose: Returns the value of the extremum square distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    IsMin (me) returns Boolean
+    	---Purpose: Returns True if the extremum distance is a minimum.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    Point (me) returns POnC
+    	---Purpose: Returns the point of the extremum distance.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+    
+
+fields
+    myDone : Boolean;
+    mytolU : Real;
+    myumin:  Real;
+    myusup:  Real;
+    myF:     PCLocF;
+
+end GenLocateExtPC;

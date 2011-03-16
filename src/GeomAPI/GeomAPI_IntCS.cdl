@@ -1,0 +1,132 @@
+-- File:	GeomAPI_IntCS.cdl
+-- Created:	Tue Sep 12 11:11:40 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+
+class IntCS from GeomAPI 
+
+	---Purpose: This class implements methods for
+    	--  computing intersection points and  segments between a
+    	--3D curve and a surface.
+        -- It intersects  a Curve and  a  Surface from Geom. The
+	--          result is a set of  points and segments with their
+	--          parameters  on the curve   and the  surface.   The
+	--          "domain"  used  for  a  surface  is  the   natural
+	--          parametric  domain  unless   the surface   is    a
+	--          RectangularTrimmedSurface from Geom.
+
+uses
+    Parameter from Quantity,
+    Surface   from Geom,
+    Curve     from Geom,  
+    Pnt       from gp,
+    HInter    from IntCurveSurface
+   
+   
+raises
+
+    NotDone    from StdFail,
+    OutOfRange from Standard
+
+is
+
+    Create returns IntCS from GeomAPI;
+    
+    	---Purpose: Creates an empty object. Use the
+    	-- function Perform for further initialization of the algorithm by
+    	-- the curve and the surface.
+    
+    Create(C : Curve from Geom; S : Surface from Geom) 
+    returns IntCS from GeomAPI;
+    	---Purpose: Computes the intersections between
+    	-- the curve C and the surface S.
+    	-- Warning
+    	-- Use function IsDone to verify that the intersections are computed successfully.
+    
+    Perform(me : in out; C : Curve from Geom; S : Surface from Geom);
+	---Purpose: This function Initializes an algorithm with the curve C and the
+    	-- surface S and computes the intersections between C and S.
+    	-- Warning
+    	-- Use function IsDone to verify that the intersections are computed successfully.
+        
+    IsDone(me) 
+    	---Purpose: Returns true if the intersections are successfully computed.
+    returns Boolean from Standard;
+
+    NbPoints(me)
+    	---Purpose: Returns the number of Intersection Points
+    	--          if IsDone returns True.
+    	--          else NotDone is raised.
+    returns Integer from Standard 
+    raises  NotDone from StdFail;
+	
+    Point(me; Index: Integer from Standard) 
+    	---Purpose: Returns the Intersection Point of range <Index>in case of cross intersection.
+    	--         Raises NotDone if the computation has failed or if 
+    	--          the computation has not been done
+    	--          raises OutOfRange if Index is not in the range <1..NbPoints>
+        ---C++: return const &
+    returns Pnt from gp
+    raises  NotDone           from StdFail,
+            OutOfRange        from Standard;
+	
+    Parameters(me; Index: Integer from Standard;
+    	       U,V,W : out Parameter from Quantity) 
+    	---Purpose: Returns parameter W on the curve
+    	-- and (parameters U,V) on the surface of the computed intersection point
+    	-- of index Index in case of cross intersection.
+    	-- Exceptions
+    	-- StdFail_NotDone if intersection algorithm fails or is not initialized.
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
+    	-- NbPoints is the number of computed intersection points.
+	
+    raises  NotDone           from StdFail,
+            OutOfRange        from Standard;
+	
+    NbSegments(me)
+    	---Purpose: Returns the number of computed
+    	-- intersection segments in case of tangential intersection.
+    	-- Exceptions
+    	-- StdFail_NotDone if the intersection algorithm fails or is not initialized.
+    	returns Integer from Standard 
+        raises  NotDone from StdFail 
+        is static;
+	
+    Segment(me; Index: Integer from Standard) 
+        ---Purpose: Returns the computed intersection
+    	-- segment of index Index in case of tangential intersection.
+    	-- Intersection segment is a portion of the initial curve tangent to surface.
+    	-- Exceptions
+    	-- StdFail_NotDone if intersection algorithm fails or is not initialized.
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
+    	-- where NbSegments is the number of computed intersection segments.
+
+     returns Curve from Geom
+     raises  NotDone             from StdFail,
+	     OutOfRange          from Standard;
+	
+    
+    Parameters(me; Index : Integer from Standard;
+    	       U1,V1, U2, V2 : out Parameter from Quantity)
+
+	---Purpose: Returns the parameters of the first (U1,V1) and the last (U2,V2) points
+    	-- of curve's segment on the surface in case of tangential intersection.
+    	-- Index is the number of computed intersection segments.
+    	-- Exceptions
+    	-- StdFail_NotDone if intersection algorithm fails or is not initialized.
+    	-- Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
+    	-- where NbSegments is the number of computed intersection segments.
+	       	
+     raises  NotDone             from StdFail,
+	     OutOfRange          from Standard;
+	
+fields
+    
+    myCurve : Curve  from Geom;
+    myIntCS : HInter from IntCurveSurface;
+
+end IntCS;

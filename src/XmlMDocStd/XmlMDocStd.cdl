@@ -1,0 +1,26 @@
+-- File:      XmlMDocStd.cxx
+-- Created:   05.09.01 09:40:49
+-- Author:    Julia DOROVSKIKH
+-- Copyright: Open Cascade 2001
+
+package XmlMDocStd
+
+        ---Purpose: Driver for TDocStd_XLink
+
+uses
+    TDF,
+    CDM,
+    XmlMDF,
+    XmlObjMgt
+
+is
+    ---Category: Classes
+    --           =============================================================
+
+    class XLinkDriver;
+
+    AddDrivers (aDriverTable    : ADriverTable  from XmlMDF;
+                theMessageDriver: MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <aDriverTable>.
+
+end XmlMDocStd;

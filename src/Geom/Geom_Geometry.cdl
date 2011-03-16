@@ -1,0 +1,144 @@
+-- File:	Geom_Geometry.cdl
+-- Created:	Tue Mar  9 19:17:40 1993
+-- Author:	JVC
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Geometry   from Geom   inherits TShared from MMgt
+
+        ---Purpose : The abstract class Geometry for 3D space is the root
+    	-- class of all geometric objects from the Geom
+    	-- package. It describes the common behavior of these objects when:
+    	-- - applying geometric transformations to objects, and
+    	-- - constructing objects by geometric transformation (including copying).
+    	-- Warning
+    	-- Only transformations which do not modify the nature
+    	-- of the geometry can be applied to Geom objects: this
+    	-- is the case with translations, rotations, symmetries
+    	-- and scales; this is also the case with gp_Trsf
+    	-- composite transformations which are used to define
+    	-- the geometric transformations applied using the
+    	-- Transform or Transformed functions.
+    	-- Note: Geometry defines the "prototype" of the
+    	-- abstract method Transform which is defined for each
+    	-- concrete type of derived object. All other
+    	-- transformations are implemented using the Transform method.
+        
+
+uses  Ax1  from gp,
+      Ax2  from gp,
+      Pnt  from gp,
+      Trsf from gp,
+      Vec  from gp
+
+raises ConstructionError from Standard
+
+is
+
+  ---Group:
+  --  All the following transformations modify the object itself.
+
+
+  Mirror (me : mutable; P : Pnt)
+        ---Purpose :
+        --  Performs the symmetrical transformation of a Geometry
+        --  with respect to the point P which is the center of the 
+        --  symmetry.
+    is static;
+
+  Mirror (me : mutable; A1 : Ax1)
+        ---Purpose :
+        --  Performs the symmetrical transformation of a Geometry
+        --  with respect to an axis placement which is the axis of the
+        --  symmetry.
+    is static;
+
+
+  Mirror (me : mutable; A2 : Ax2)
+        ---Purpose :
+        --  Performs the symmetrical transformation of a Geometry
+        --  with respect to a plane. The axis placement A2 locates 
+        --  the plane of the symmetry : (Location, XDirection, YDirection).
+    is static;
+
+
+
+  Rotate (me : mutable; A1 : Ax1; Ang : Real)
+        ---Purpose :
+        --  Rotates a Geometry. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+    is static;
+
+
+
+  Scale (me : mutable; P : Pnt; S : Real) 
+        ---Purpose : 
+        --  Scales a Geometry. S is the scaling value.
+    is static;
+
+  Translate (me : mutable; V : Vec)
+        ---Purpose :
+        --  Translates a Geometry.  V is the vector of the tanslation.
+    is static;
+
+
+  Translate (me : mutable; P1, P2 : Pnt)
+        ---Purpose :
+        --  Translates a Geometry from the point P1 to the point P2.
+     is static;
+
+  Transform (me : mutable; T : Trsf) 
+        ---Purpose :
+        --  Transformation of a geometric object. This tansformation 
+        --  can be a translation, a rotation, a symmetry, a scaling
+        --  or a complex transformation obtained by combination of
+        --  the previous elementaries transformations.
+        --  (see class Transformation of the package Geom).
+     is deferred;
+
+
+
+
+  ---Group:
+  --  The following transformations have the same properties 
+  --  as the previous ones but they don't modified the object
+  --  itself. A copy of the object is returned.
+
+
+  Mirrored (me; P : Pnt)              returns mutable like me 
+     is static;
+
+
+  Mirrored (me; A1 : Ax1)             returns mutable like me 
+     is static;
+
+
+  Mirrored (me; A2 : Ax2)             returns mutable like me 
+      is static;
+
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns mutable like me 
+     is static;
+
+
+  Scaled (me; P : Pnt; S : Real)      returns mutable like me 
+     is static;
+
+
+  Transformed (me; T : Trsf)          returns mutable like me
+     is static;
+
+
+  Translated (me; V : Vec)            returns mutable like me
+     is static;
+
+
+  Translated (me; P1, P2 : Pnt)       returns mutable like me
+     is static;
+
+  Copy (me)  returns mutable like me                      is deferred;
+    	---Purpose: Creates a new object which is a copy of this geometric object.   
+
+
+end;

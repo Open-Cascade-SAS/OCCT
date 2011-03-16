@@ -1,0 +1,47 @@
+-- File:	Message_Printer.cdl
+-- Created:	Sat Jan  6 19:12:06 2001
+-- Author:	OCC Team
+---Copyright:	Open CASCADE S.A. 2005
+
+
+deferred class Printer from Message inherits TShared from MMgt
+
+    ---Purpose: Abstract interface class defining printer as output context for 
+    --          text messages
+    --          
+    --          The message, besides being text string, has associated gravity
+    --          level, which can be used by printer to decide either to process 
+    --          a message or ignore it. 
+
+uses
+
+    Gravity from Message,
+    AsciiString from TCollection,
+    ExtendedString from TCollection
+    
+is
+
+    Send (me; theString: ExtendedString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean) is deferred;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          This method must be redefined in descentant.
+
+    Send (me; theString: CString; theGravity: Gravity from Message;
+	      putEndl: Boolean) is virtual;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          Default implementation calls first method Send().
+
+    Send (me; theString: AsciiString from TCollection;
+              theGravity: Gravity from Message;
+	      putEndl: Boolean) is virtual;
+	---Purpose: Send a string message with specified trace level.
+	--          The parameter putEndl specified whether end-of-line
+	--          should be added to the end of the message.
+	--          Default implementation calls first method Send().
+
+end Printer;

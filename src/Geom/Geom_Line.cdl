@@ -1,0 +1,201 @@
+-- File:	Geom_Line.cdl
+-- Created:	Wed Mar 10 09:46:21 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Line from Geom inherits Curve from Geom
+
+
+        ---Purpose : Describes an infinite line.
+    	-- A line is defined and positioned in space with an axis
+    	-- (gp_Ax1 object) which gives it an origin and a unit vector.
+    	-- The Geom_Line line is parameterized:
+    	-- P (U) = O + U*Dir, where:
+    	-- - P is the point of parameter U,
+    	-- - O is the origin and Dir the unit vector of its positioning axis.
+    	--   The parameter range is ] -infinite, +infinite [.
+    	-- The orientation of the line is given by the unit vector
+    	-- of its positioning axis.
+      
+
+uses Ax1      from gp,
+     Ax2      from gp, 
+     Dir      from gp, 
+     Lin      from gp, 
+     Pnt      from gp, 
+     Vec      from gp,
+     Trsf     from gp,
+     Geometry from Geom,
+     Shape   from GeomAbs
+
+
+raises RangeError  from Standard
+
+is
+
+
+
+  Create (A1 : Ax1)   returns mutable Line;
+        ---Purpose :
+        --  Creates a line located in 3D space with the axis placement A1.
+        --  The Location of A1 is the origin of the line. 
+
+
+  Create (L : Lin)  returns mutable Line;
+        ---Purpose :
+        --  Creates a line from a non transient line from package gp.
+
+
+  Create (P : Pnt; V : Dir)    returns mutable Line;
+        ---Purpose :
+    	-- Constructs a line passing through point P and parallel to vector V
+    	--   (P and V are, respectively, the origin and the unit
+    	--   vector of the positioning axis of the line). 
+
+
+  SetLin (me : mutable; L : Lin)
+        ---Purpose :
+        --  Set <me> so that <me> has the same geometric properties as L.
+  is static;
+
+  SetDirection (me : mutable; V : Dir)
+        ---Purpose : changes the direction of the line.
+  is static;
+
+
+  SetLocation (me : mutable; P : Pnt)
+        ---Purpose : 
+        --  changes the "Location" point (origin) of the line.
+  is static;
+
+
+  SetPosition (me : mutable; A1 : Ax1)
+        ---Purpose :
+        --  changes the "Location" and a the "Direction" of <me>.
+  is static;
+
+
+  Lin (me)  returns Lin from gp
+        ---Purpose : 
+        --  Returns non transient line from gp with the same geometric
+        --  properties as <me>
+  is static;
+
+  Position(me) returns Ax1 from gp
+       	---C++: return const &
+       	---Purpose: Returns the positioning axis of this line; this is also its local coordinate system.
+  is static;
+
+  Reverse (me : mutable);
+        ---Purpose : Changes the orientation of this line. As a result, the
+    	-- unit vector of the positioning axis of this line is reversed.
+
+
+  ReversedParameter(me; U : Real) returns Real;
+	---Purpose: Computes the parameter on the reversed line for the
+    	-- point of parameter U on this line.
+    	-- For a line, the returned value is -U.
+
+
+  FirstParameter (me)  returns Real;
+        ---Purpose : Returns the value of the first parameter of this
+    	-- line. This is Standard_Real::RealFirst().
+
+
+  LastParameter (me)   returns Real;
+        ---Purpose : Returns the value of the last parameter of this
+    	-- line. This is  Standard_Real::RealLast().
+
+
+
+  IsClosed (me)  returns Boolean;
+        ---Purpose : returns False
+
+
+  IsPeriodic (me)   returns Boolean;
+        ---Purpose : returns False
+
+
+  Continuity (me)   returns Shape from GeomAbs;
+        ---Purpose : Returns GeomAbs_CN, which is the global continuity of any line.
+        
+  IsCN (me; N : Integer) returns Boolean
+        ---Purpose: returns True.
+    raises RangeError;
+       	---Purpose: Raised if N < 0.
+
+  D0(me; U : Real; P : out Pnt);
+	---Purpose: Returns in P the point of parameter U.
+       	--  P (U) = O + U * Dir where O is the "Location" point of the 
+       	--  line and Dir the direction of the line.
+
+  D1 (me; U : Real; P : out Pnt; V1 : out Vec);
+        ---Purpose :
+        --  Returns the point P of parameter u and the first derivative V1.
+
+
+  D2 (me; U : Real; P : out Pnt; V1, V2 : out Vec);
+        ---Purpose :
+        --  Returns the point P of parameter U, the first and second 
+        --  derivatives V1 and V2. V2 is a vector with null magnitude
+        --  for a line.
+
+
+  D3 (me; U : Real; P : out Pnt; V1, V2, V3 : out Vec);
+        ---Purpose :
+        --  V2 and V3 are vectors with null magnitude for a line.
+
+        
+  DN (me; U : Real; N : Integer)   returns Vec
+        ---Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+     raises RangeError;
+        ---Purpose : Raised if N < 1.
+
+
+
+
+
+  Transform (me : mutable; T : Trsf);
+    	---Purpose: Applies the transformation T to this line.
+    
+  TransformedParameter(me; U : Real; T : Trsf from gp) returns Real
+	---Purpose: Returns the  parameter on the  transformed  curve for
+	--          the transform of the point of parameter U on <me>.
+	--          
+	--          me->Transformed(T)->Value(me->TransformedParameter(U,T))
+	--          
+	--          is the same point as
+	--          
+	--          me->Value(U).Transformed(T)
+	--          
+	--          This methods returns <U> * T.ScaleFactor()
+     is redefined;  
+
+  ParametricTransformation(me; T : Trsf from gp) returns Real
+	---Purpose: Returns a  coefficient to compute the parameter on
+	--          the transformed  curve  for  the transform  of the
+	--          point on <me>.
+	--          
+	--          Transformed(T)->Value(U * ParametricTransformation(T))
+	--          
+	--          is the same point as
+	--          
+	--          Value(U).Transformed(T)
+	--          
+	--          This methods returns T.ScaleFactor()
+     is redefined;  
+
+
+  Copy (me)  returns mutable like me;
+    	---Purpose: Creates a new object which is a copy of this line.
+
+
+fields
+
+  pos : Ax1;
+
+end;

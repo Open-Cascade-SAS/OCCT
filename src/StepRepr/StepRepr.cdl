@@ -1,0 +1,139 @@
+-- File:        StepRepr.cdl
+-- Created:     Fri Dec  1 11:11:09 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+package StepRepr 
+
+    ---Purpose : Sub-Schema of Step for Representations
+    --           Collects definitions of STEP entities used for describing 
+    --           representation structures (from Parts 41, 43, 44 of ISO10303)
+
+uses
+
+    TCollection, TColStd, StepData, Interface, MMgt,
+    StepBasic
+
+is
+
+    class CharacterizedDefinition;		-- Select Type for
+	-- ProductDefinition
+	-- ShapeDefinition
+
+    class Transformation;                   -- Select Type for
+        -- ItemDefinedTransformation
+        -- FunctionallyDefinedTransformation
+
+    --class Protocol;
+
+
+    class FunctionallyDefinedTransformation;
+    --moved to StepBasic: class Group;
+    --moved to StepAP214:	class RepItemGroup;
+    --moved to StepBasic: deferred class GroupAssignment;
+    --moved to StepBasic: class GroupRelationship;
+    class PropertyDefinition;
+	class ProductDefinitionShape;
+    class PropertyDefinitionRepresentation;
+    -- 	class ShapeDefinitionRepresentation;  -> StepShape
+    class Representation;
+	class DefinitionalRepresentation;
+    --	class PresentationRepresentation;
+    class RepresentationContext;
+	class GlobalUncertaintyAssignedContext;
+	class GlobalUnitAssignedContext;
+	class ParametricRepresentationContext;
+    class RepresentationItem;
+	class DescriptiveRepresentationItem;
+	class MappedItem;
+    class RepresentationMap;
+    class RepresentationRelationship;
+    class RepresentedDefinition;
+
+    class ShapeAspect;
+    class ShapeAspectTransition;
+    class ShapeAspectRelationship;
+    class ShapeDefinition;
+
+    -- Added from Rev2 to Rev4
+    class ItemDefinedTransformation;
+
+    -- Added from STEP214 CC1 to CC2
+
+    class ProductDefinitionUsage;
+    	class MakeFromUsageOption;
+    	class AssemblyComponentUsage;
+    	    class NextAssemblyUsageOccurrence;
+	    class PromissoryUsageOccurrence;
+    	    class QuantifiedAssemblyComponentUsage;
+    	    class SpecifiedHigherUsageOccurrence;
+
+    class AssemblyComponentUsageSubstitute;
+
+    class SuppliedPartRelationship;
+    
+    class ExternallyDefinedRepresentation;
+
+    class MaterialDesignation;
+
+    -- ABV Added for CAX TRJ2
+    class MeasureRepresentationItem;
+
+    --class RepresentationRelationship;
+    class ShapeRepresentationRelationship;
+    	class RepresentationRelationshipWithTransformation;
+	    class ShapeRepresentationRelationshipWithTransformation;
+
+
+    class Array1OfRepresentationItem instantiates Array1 from TCollection (RepresentationItem);
+    class HArray1OfRepresentationItem instantiates HArray1 from TCollection (RepresentationItem,Array1OfRepresentationItem from StepRepr);
+
+    -- Added from Rev2 to Rev4
+
+    -- Added for AP203
+    class ConfigurationDesign;
+    class ConfigurationDesignItem;
+    class ConfigurationEffectivity;
+    class ConfigurationItem;
+    class ProductConcept;
+
+    -- Added for Dimensional Tolerances, in 2001 by CKY (CAXIF TR7J)
+    class CompositeShapeAspect;
+    class DerivedShapeAspect;
+    class Extension;
+    class CompoundRepresentationItem;
+    class ValueRange;
+    class ShapeAspectDerivingRelationship;
+    
+    
+    --added for AP209
+    class DataEnvironment;
+    class MaterialPropertyRepresentation;
+    class PropertyDefinitionRelationship;
+    class MaterialProperty;
+    class StructuralResponseProperty;
+    class StructuralResponsePropertyDefinitionRepresentation;
+
+    --added for G&DT by skl 21.08.2003 (CAXIF TR12J)
+    class ReprItemAndLengthMeasureWithUnit;
+    
+    
+    class Array1OfPropertyDefinitionRepresentation instantiates Array1 from TCollection (PropertyDefinitionRepresentation);
+    class HArray1OfPropertyDefinitionRepresentation instantiates HArray1 from TCollection (PropertyDefinitionRepresentation, Array1OfPropertyDefinitionRepresentation from StepRepr);
+
+    class Array1OfMaterialPropertyRepresentation instantiates Array1 from TCollection (MaterialPropertyRepresentation);
+    class HArray1OfMaterialPropertyRepresentation instantiates HArray1 from TCollection (MaterialPropertyRepresentation, Array1OfMaterialPropertyRepresentation from StepRepr);
+
+    class SequenceOfMaterialPropertyRepresentation instantiates Sequence from TCollection (MaterialPropertyRepresentation);
+    class HSequenceOfMaterialPropertyRepresentation instantiates HSequence from TCollection (MaterialPropertyRepresentation, SequenceOfMaterialPropertyRepresentation from StepRepr);
+
+    class SequenceOfRepresentationItem instantiates Sequence from TCollection (RepresentationItem);
+    class HSequenceOfRepresentationItem instantiates HSequence from TCollection (RepresentationItem, SequenceOfRepresentationItem from StepRepr);
+
+
+    --	Protocol returns Protocol from StepRepr;
+	---Purpose : creates a Protocol
+
+end StepRepr;
+

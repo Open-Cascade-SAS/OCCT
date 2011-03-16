@@ -1,0 +1,83 @@
+-- File:	BooleanOperations_AncestorsAndSuccessors.cdl
+-- Created:	Mon Jul 10 15:32:53 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class AncestorsAndSuccessors from BooleanOperations 
+
+	---Purpose:   provides all the ancestors   and successors of a
+	--          given  shape. Exemple : for  an edge the ancestors
+	--          are the wires that hold it  and the successors are
+	--          its vertices.
+
+uses
+    Orientation from TopAbs,
+    SequenceOfInteger from TColStd,
+    AncestorsSeqAndSuccessorsSeq from BooleanOperations
+    
+is
+
+    Create returns AncestorsAndSuccessors from BooleanOperations;
+      
+    Create (AncSuccessors: AncestorsSeqAndSuccessorsSeq; shift: Integer) returns AncestorsAndSuccessors from BooleanOperations;
+    ---Purpose: allocates space and fills it with the data of AncSuccessors.
+    
+    Destroy(me:in out);
+    ---C++: alias ~
+	
+    
+    Dump (me);
+    ---Purpose: to display the fields.
+
+    
+    --------------------
+    -- INLINE METHODS --
+    --------------------
+
+    GetAncestor (me; AncestorIndex: Integer) returns Integer;
+    ---C++: inline    
+    SetAncestor (me:in out; AncestorIndex,AncestorNumber: Integer);
+    ---C++: inline
+    GetAncestors(me; theArrayOfAncestors:out Address;AncestorsNumber:out Integer);
+    ---C++: inline    
+    
+    GetSuccessor (me; SuccessorIndex: Integer) returns Integer;
+    ---C++: inline    
+    SetSuccessor (me:in out; SuccessorIndex,SuccessorNumber: Integer);
+    ---C++: inline
+    GetSuccessors(me; theArrayOfSuccessors:out Address; SuccessorsNumber:out Integer);
+    ---C++: inline    
+
+    GetOrientation (me; OrientationIndex: Integer) returns Orientation;
+    ---C++: inline    
+    SetOrientation (me:in out; OrientationIndex: Integer; anOrientation: Orientation from TopAbs);
+    ---C++: inline
+    GetOrientations(me; theArrayOfOrientations:out Address;OrientationsNumber:out Integer);
+    ---C++: inline    
+
+    NumberOfAncestors  (me) returns Integer;
+    ---C++: inline
+    NumberOfSuccessors (me) returns Integer;
+    ---C++: inline
+
+
+fields
+
+myAncestors: Address;
+---Purpose: the array containing all the ancestors of our given shape.
+
+mySuccessors: Address;
+---Purpose: the array containing all the successors.
+
+myOrientations: Address;
+---Purpose: the array containing all the orientation of the successors.
+
+myAncestorsSize : Integer;
+---Purpose: the number of ancestors.
+
+mySuccessorsSize: Integer;
+---Purpose: the number of successors.
+
+end AncestorsAndSuccessors;

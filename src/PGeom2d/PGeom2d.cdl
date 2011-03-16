@@ -1,0 +1,61 @@
+-- File:	PGeom2d.cdl
+-- Created:	Tue Apr  6 12:17:31 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+package PGeom2d 
+
+        ---Purpose :  This  package contains   the definition   of the
+        --         geometric persistent objects such as point, vector,
+        --         axis placement, curves, surfaces.
+        --  
+        --  All these entities are defined in 2D space.
+        --  This package gives the possibility :
+        --    . to create geometric objects with given or default field values,
+        --    . to set field values,
+        --    . to get field values.
+
+
+uses PColStd, gp, PColgp, GeomAbs
+
+is
+
+
+  class Transformation from PGeom2d;
+
+
+  deferred class Geometry from PGeom2d;
+
+
+     deferred class Point from PGeom2d;
+              class  CartesianPoint from PGeom2d;
+
+
+     deferred class Vector from PGeom2d;
+              class Direction from PGeom2d;
+              class VectorWithMagnitude from PGeom2d;
+     
+
+     class AxisPlacement from PGeom2d;
+
+
+     deferred class Curve from PGeom2d;
+
+              class Line from PGeom2d;
+
+              deferred class Conic from PGeom2d;
+                       class Circle from PGeom2d;
+                       class Ellipse from PGeom2d;
+                       class Hyperbola from PGeom2d;
+                       class Parabola from PGeom2d;
+
+              deferred class BoundedCurve from PGeom2d;
+                       class BezierCurve from PGeom2d;
+                       class BSplineCurve from PGeom2d;
+                       class TrimmedCurve from PGeom2d;
+
+              class  OffsetCurve from PGeom2d;
+
+end PGeom2d;

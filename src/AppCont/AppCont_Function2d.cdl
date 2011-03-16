@@ -1,0 +1,40 @@
+-- File:	AppCont_Function2d.cdl
+-- Created:	Wed Sep  1 15:17:55 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Function2d from AppCont
+
+    ---Purpose: deferred class describing a continous 2d function f(u)
+
+
+uses Pnt2d from gp,
+     Vec2d from gp
+
+is
+
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~AppCont_Function2d(){Delete() ; }"
+    
+
+    FirstParameter(me) returns Real
+    	---Purpose: returns the first parameter of the function.
+    is deferred;
+
+    LastParameter(me) returns Real
+    	---Purpose: returns the last parameter of the function.
+    is deferred;
+
+    Value(me; U: Real) returns Pnt2d
+    	---Purpose: returns the point at parameter <U>.
+    is deferred;
+
+    D1(me; U: Real; P: in out Pnt2d; V: in out Vec2d) returns Boolean
+    	---Purpose: returns the point and the derivative values at
+    	--          the parameter <U>.
+    is deferred;
+    
+    
+end Function2d;    

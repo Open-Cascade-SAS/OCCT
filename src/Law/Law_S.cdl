@@ -1,0 +1,37 @@
+-- File:	Law_S.cdl
+-- Created:	Fri Dec 24 10:43:17 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+class S from Law inherits BSpFunc from Law
+
+	---Purpose: Describes an "S" evolution law. 
+
+is
+
+    Create
+    returns mutable S from Law;
+
+    	---Purpose: Constructs an empty "S" evolution law.
+    Set(me: mutable; Pdeb,Valdeb,Pfin,Valfin: Real from Standard)
+    is static;
+    	---Purpose:
+    	-- Defines this S evolution law by assigning both:
+    	-- -   the bounds Pdeb and Pfin of the parameter, and
+    	-- -   the values Valdeb and Valfin of the function at these
+    	--   two parametric bounds.
+    	-- The function is assumed to have the first derivatives
+    	-- equal to 0 at the two parameter points Pdeb and Pfin.
+
+    Set(me: mutable; Pdeb,Valdeb,Ddeb,Pfin,Valfin,Dfin: Real from Standard)
+    is static;
+    	---Purpose: Defines this S evolution law by assigning
+    	-- -   the bounds Pdeb and Pfin of the parameter,
+    	-- -   the values Valdeb and Valfin of the function at these
+    	--   two parametric bounds, and
+	-- -   the values Ddeb and Dfin of the first derivative of the
+    	--   function at these two parametric bounds.
+
+end S;

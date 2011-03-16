@@ -1,0 +1,65 @@
+-- File:	IntPolyh_ArrayOfSectionLines.cdl
+-- Created:	Tue Apr  6 11:05:48 1999
+-- Author:	Fabrice SERVANT
+--		<fst@cleox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ArrayOfSectionLines from IntPolyh
+
+uses
+    
+    SectionLine from IntPolyh
+
+is
+
+
+    Create;
+    
+    Create(nn : Integer from Standard) ; 
+    
+    Init(me: in out; nn: Integer from Standard) 
+    is static;
+
+    Value(me; nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return const &
+    returns SectionLine from IntPolyh    
+    is static;
+    
+    ChangeValue(me: in out;  nn: Integer from Standard)
+    	---C++: alias operator [] 
+    	---C++: return &
+    returns SectionLine from IntPolyh    
+    is static;
+    
+    Copy(me: in out; Other : ArrayOfSectionLines from IntPolyh)
+    	---C++: alias operator =
+    	---C++: return &
+    returns ArrayOfSectionLines from IntPolyh
+    is static;
+    
+    GetN(me)
+    returns Integer from Standard
+    is static;
+    
+    NbSectionLines(me)
+    returns Integer from Standard
+    is static;
+    
+    IncrementNbSectionLines(me: in out)
+    is static;
+    
+    Destroy(me: in out)
+    	---C++: alias ~
+    is static;
+    
+    Dump(me) 
+    is static;
+     	
+fields
+
+    n,nbsectionlines : Integer from Standard;
+    ptr : Address from Standard;
+    
+end ArrayOfSectionLines from IntPolyh;

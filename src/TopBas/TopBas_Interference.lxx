@@ -1,0 +1,121 @@
+
+//=======================================================================
+//function : Intersection
+//purpose  : 
+//=======================================================================
+
+inline void TopBas_Interference::Intersection(const TheSubShape& I)
+{
+  myIntersection = I;
+}
+
+//=======================================================================
+//function : Boundary
+//purpose  : 
+//=======================================================================
+
+inline void TopBas_Interference::Boundary(const TheShape& B)
+{
+  myBoundary = B;
+}
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline void TopBas_Interference::Orientation(const TopAbs_Orientation Or)
+{
+  myOrientation = Or;
+}
+
+//=======================================================================
+//function : Transition
+//purpose  : 
+//=======================================================================
+
+inline void TopBas_Interference::Transition(const TopAbs_Orientation Or)
+{
+  myTransition = Or;
+}
+
+//=======================================================================
+//function : BoundaryTransition
+//purpose  : 
+//=======================================================================
+
+inline void TopBas_Interference::BoundaryTransition
+  (const TopAbs_Orientation Or)
+{
+  myBTransition = Or;
+}
+
+//=======================================================================
+//function : Intersection
+//purpose  : 
+//=======================================================================
+
+inline const TheSubShape& TopBas_Interference::Intersection() const
+{
+  return myIntersection;
+}
+
+//=======================================================================
+//function : ChangeIntersection
+//purpose  : 
+//=======================================================================
+
+inline TheSubShape& TopBas_Interference::ChangeIntersection()
+{
+  return myIntersection;
+}
+
+//=======================================================================
+//function : Boundary
+//purpose  : 
+//=======================================================================
+
+inline const TheShape& TopBas_Interference::Boundary() const 
+{
+  return myBoundary;
+}
+
+//=======================================================================
+//function : ChangeBoundary
+//purpose  : 
+//=======================================================================
+
+inline TheShape& TopBas_Interference::ChangeBoundary() 
+{
+  return myBoundary;
+}
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation TopBas_Interference::Orientation() const
+{
+  return myOrientation;
+}
+
+//=======================================================================
+//function : Transition
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation TopBas_Interference::Transition() const
+{
+  return myTransition;
+}
+
+//=======================================================================
+//function : BoundaryTransition
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation TopBas_Interference::BoundaryTransition() const
+{
+  return myBTransition;
+}

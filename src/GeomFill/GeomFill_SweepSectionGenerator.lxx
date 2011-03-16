@@ -1,0 +1,14 @@
+// File:	GeomFill_SweepSectionGenerator.lxx
+// Created:	Thu Apr 14 10:36:58 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+//=======================================================================
+//function : NbSections
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer GeomFill_SweepSectionGenerator::NbSections() const 
+{
+  return myNbSections;
+}

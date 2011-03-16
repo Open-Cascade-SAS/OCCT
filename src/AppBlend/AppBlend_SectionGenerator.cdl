@@ -1,0 +1,67 @@
+-- File:	AppBlend_SectionGenerator.cdl
+-- Created:	Thu Dec 16 10:35:55 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class SectionGenerator from AppBlend 
+    (ThePoint as any)
+
+	---Purpose: 
+
+uses Array1OfPnt     from TColgp,
+     Array1OfVec     from TColgp,
+     Array1OfPnt2d   from TColgp,
+     Array1OfVec2d   from TColgp,
+     Array1OfReal    from TColStd,
+     Array1OfInteger from TColStd
+
+is
+
+    GetShape(me; NbPoles   : out Integer from Standard;
+                 NbKnots   : out Integer from Standard;
+                 Degree    : out Integer from Standard;
+                 NbPoles2d : out Integer from Standard)
+
+    	is static;
+
+    Knots(me; TKnots: out Array1OfReal from TColStd)
+
+	is static;
+
+
+    Mults(me; TMults: out Array1OfInteger from TColStd)
+
+	is static;
+
+
+    Section(me; P: ThePoint; Poles    : out Array1OfPnt   from TColgp;
+			     DPoles   : out Array1OfVec   from TColgp;
+    	                     Poles2d  : out Array1OfPnt2d from TColgp;
+			     DPoles2d : out Array1OfVec2d from TColgp;
+			     Weigths  : out Array1OfReal  from TColStd;
+			     DWeigths : out Array1OfReal  from TColStd)
+
+	---Purpose: Used for the first and last section 
+	--          The method returns Standard_True if the derivatives
+	--          are computed, otherwise it returns Standard_False.
+
+    	returns Boolean from Standard
+
+    	is static;
+
+
+    Section(me; P: ThePoint; Poles    : out Array1OfPnt   from TColgp;
+    	                     Poles2d  : out Array1OfPnt2d from TColgp;
+			     Weigths  : out Array1OfReal  from TColStd)
+    	is static;
+
+
+    Parameter(me; P: ThePoint)
+	---Purpose: Returns  the parameter  of  the point  P. Used  to
+	--          impose the parameters in the approximation.
+    	returns Real from Standard
+	is static;
+
+end SectionGenerator;

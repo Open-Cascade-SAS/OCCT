@@ -1,0 +1,34 @@
+-- File:	IGESControl_ActorWrite.cdl
+-- Created:	Mon Sep  7 14:33:09 1998
+-- Author:	Christian CAILLET
+--		<cky@paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ActorWrite from IGESControl
+    inherits ActorOfFinderProcess  from Transfer
+
+    ---Purpose : Actor to write Shape to IGES
+
+uses
+
+    Finder from Transfer,
+    FinderProcess from Transfer,
+    Binder from Transfer
+
+is
+
+    Create returns ActorWrite;
+
+    Recognize (me : mutable; start : Finder from Transfer)  returns Boolean
+    	is redefined;
+    ---Purpose : Recognizes a ShapeMapper
+
+    Transfer  (me : mutable; start : Finder from Transfer;
+    	       FP : mutable FinderProcess)  returns Binder  is redefined;
+    ---Purpose : Transfers Shape to IGES Entities
+    --         
+    --           ModeTrans may be : 0 -> groups of Faces
+    --           or 1 -> BRep
+
+end ActorWrite;

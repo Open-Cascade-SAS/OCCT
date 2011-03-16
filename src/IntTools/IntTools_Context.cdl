@@ -1,0 +1,293 @@
+-- File:	IntTools_Context.cdl
+-- Created:	Wed Apr  3 16:44:34 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class Context from IntTools 
+
+	---Purpose:  
+        --- The class is to provide direct access 
+	--- to the frequently using objects like 
+	--- IntTools_FClass2d,    
+    	--- GeomAPI_ProjectPointOnSurf,  etc. 
+	--- The instance of the class allows to avoid repeated  
+        --- computations by mapping internal objects in the  
+	--  instance. 
+	
+uses     
+    State from TopAbs,
+    Pnt2d from  gp,
+    Pnt   from  gp, 
+    Curve from Geom, 
+    ProjectPointOnCurve from GeomAPI, 
+    ProjectPointOnSurf  from GeomAPI, 
+    Vertex from  TopoDS, 
+    Face   from  TopoDS,
+    Edge   from  TopoDS, 
+    Solid  from  TopoDS, 
+    SolidClassifier from BRepClass3d,
+    IndexedDataMapOfShapeAddress from TopTools, 
+    IndexedDataMapOfTransientAddress from IntTools, 
+    FClass2d from IntTools, 
+    SurfaceRangeLocalizeData from IntTools,
+    Curve from IntTools 
+    
+--raises
+
+is 
+    Create   
+    	returns Context from IntTools; 
+    	---C++: alias "Standard_EXPORT virtual ~IntTools_Context();" 
+	---Purpose:
+	--- Empty constructor
+	---
+   
+    FClass2d(me: in out; 
+    	    aF: Face from TopoDS) 
+    	returns FClass2d from IntTools; 
+    	---C++: return & 
+	---Purpose:
+	--- Returns a reference to point classifier
+	--- for given face
+	---
+     
+    ProjPS (me: in out; 
+    	    aF: Face from TopoDS) 
+    	returns ProjectPointOnSurf from GeomAPI;
+    	---C++: return &  
+	---Purpose:
+	--- Returns a reference to point projector
+	--- for given face
+	---
+     
+    ProjPC (me: in out; 
+    	    aE: Edge from TopoDS) 
+    	returns ProjectPointOnCurve from GeomAPI;
+    	---C++: return &
+	---Purpose:
+	--- Returns a reference to point projector
+	--- for given edge
+	---
+
+    ProjPT (me: in out; 
+    	    aC: Curve from Geom) 
+    	returns ProjectPointOnCurve from GeomAPI;
+    	---C++: return &
+	---Purpose:
+	--- Returns a reference to point projector
+	--- for given curve
+	---
+
+    SurfaceData(me: in out; 
+		aF: Face from TopoDS)
+	returns SurfaceRangeLocalizeData from IntTools;
+    	---C++: return &
+	---Purpose:
+	--- Returns a reference to surface localization data
+	--- for given face
+
+
+    SolidClassifier(me: in out;  
+    	    	    aSolid: Solid from TopoDS) 
+	returns SolidClassifier from BRepClass3d; 
+    	---C++: return &   
+    	---Purpose:
+	--- Returns a reference to solid classifier
+	--- for given solid
+	---
+
+    ---         API  Block
+    ---
+    ComputeVE  (me:out;  
+    	    	aV   : Vertex from  TopoDS; 
+    	    	aE   : Edge   from  TopoDS; 
+                aT   :out Real from Standard) 
+    	returns Integer from Standard;
+	---Purpose:
+	--- Computes parameter of the vertex aV on
+	--- the edge aE.
+	--- Returns zero if the distance between vertex
+	--- and edge is less than sum of tolerances,
+	--- otherwise and for following conditions returns
+	--- negative value
+	--- 1. the edge is degenerated (-1)
+	--- 2. the edge does not contain 3d curve and pcurves (-2)
+	--- 3. projection algorithm failed (-3)
+	---
+	
+    --modified by NIZNHY-PKV Tue Feb  2 08:20:43 2010f
+    ComputeVE  (me:out;  
+    	    	aV   : Vertex from  TopoDS; 
+    	    	aE   : Edge   from  TopoDS; 
+                aT   :out Real from Standard; 
+    	    	bToUpdateVertex:out Boolean from Standard; 
+		aDist          :out Real from Standard)  
+    	returns Integer from Standard;
+	---Purpose:
+	--- Computes parameter aT of the vertex aV on
+	--- the edge aE.
+	--- Returns zero if the distance between vertex
+	--- and edge is less than sum of tolerances,
+	--- otherwise and for following conditions returns
+	--- negative value
+	--- 1. the edge is degenerated (-1)
+	--- 2. the edge does not contain 3d curve and pcurves (-2)
+	--- 3. projection algorithm failed (-3)
+	---  
+        --- Output parameters 
+        ---	 
+	--- bToUpdateVertex - the flag that indicates whether the  
+        ---  	 vertex tolerance should be modified or not 
+        --- aDist - the	value of the distance between the vertex  
+    	---      and the edge  
+    --modified by NIZNHY-PKV Tue Feb  2 08:20:55 2010t 
+    
+    ComputeVS  (me:out;  
+    	    	aV  :     Vertex from  TopoDS; 
+    	    	aF  :     Face   from  TopoDS; 
+                U   : out Real from Standard; 
+                V   : out Real from Standard) 
+    	returns Integer from Standard;
+	---Purpose:
+	--- Computes UV parameters of the vertex aV on face aF
+	--- Returns zero if the distance between vertex and face is
+	--- less than or equal the sum of tolerances and the projection 
+	--- point lays inside boundaries of the face.
+	--- For following conditions returns negative value
+	--- 1. projection algorithm failed (-1)
+	--- 2. distance is more than sum of tolerances (-2)
+	--- 3. projection point out or on the boundaries of face (-3)
+	--- 
+	 
+    StatePointFace(me:out;    
+    	       	   aF   :  Face   from  TopoDS;
+    	    	   aP2D :  Pnt2d  from  gp) 
+	returns State from TopAbs; 
+	---Purpose:
+	--- Returns the state of the point aP2D
+	--- relative to face aF
+	---
+	 
+    IsPointInFace(me:out;    
+    	    	  aF   :  Face   from  TopoDS;
+    	    	  aP2D :  Pnt2d  from  gp) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if the point aP2D is
+	--- inside the boundaries of the face aF,
+	--- otherwise returns false
+	---
+    
+    IsPointInOnFace(me:out;     
+    	    	    aF   :  Face   from  TopoDS;
+    	    	    aP2D :  Pnt2d  from  gp) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if the point aP2D is
+	--- inside or on the boundaries of aF
+	---
+	 
+    IsValidPointForFace(me:out;
+    	    	     	aP3D :  Pnt   from  gp; 
+    	    	     	aF   :  Face  from TopoDS; 
+    	    	     	aTol :  Real from Standard) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if the distance between point aP3D
+	--- and face aF is less or equal to tolerance aTol
+	--- and projection point is inside or on the boundaries
+	--- of the face aF
+	---
+
+    IsValidPointForFaces(me:out;
+    	    	     	 aP3D :  Pnt   from  gp; 
+    	    	     	 aF1  :  Face  from TopoDS; 
+    	    	     	 aF2  :  Face  from TopoDS;
+		     	 aTol :  Real from Standard)   
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if IsValidPointForFace returns true
+	--- for both face aF1 and aF2
+	---
+	 
+    IsValidBlockForFace (me:out;  
+		     	 aT1  :  Real  from Standard;      
+		     	 aT2  :  Real  from Standard;      
+    	    	     	 aIC  :  Curve from IntTools; 
+    	    	     	 aF   :  Face  from TopoDS; 
+    	    	     	 aTol :  Real from Standard) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if IsValidPointForFace returns true
+	--- for some 3d point that lay on the curve aIC bounded by
+	--- parameters aT1 and aT2
+	---
+
+    IsValidBlockForFaces (me:out;  
+		     	  aT1  :  Real  from Standard;      
+		     	  aT2  :  Real  from Standard;      
+    	    	     	  aIC  :  Curve from IntTools; 
+    	    	     	  aF1  :  Face  from TopoDS; 
+    	    	     	  aF2  :  Face  from TopoDS; 
+    	    	     	  aTol :  Real from Standard) 
+	returns Boolean from Standard;
+	---Purpose:
+	--- Returns true if IsValidBlockForFace returns true
+	--- for both faces aF1 and aF2
+	---
+	 
+    IsVertexOnLine(me:out;  
+    	    	   aV   :  Vertex from  TopoDS;  
+    	    	   aIC  :  Curve from IntTools;  
+    	    	   aTolC:  Real  from Standard; 
+    	    	   aT   :out  Real  from Standard)   
+	returns Boolean from Standard;
+	---Purpose:
+	--- Computes parameter of the vertex aV on
+	--- the curve aIC.
+	--- Returns true if the distance between vertex and
+	--- curve is less than sum of tolerance of aV and aTolC,
+	--- otherwise or if projection algorithm failed
+	--- returns false (in this case aT isn't significant)
+	--- 
+	
+     IsVertexOnLine(me:out;  
+    	    	   aV   :  Vertex from  TopoDS; 
+    	    	   aTolV:  Real  from Standard;  
+    	    	   aIC  :  Curve from IntTools;  
+    	    	   aTolC:  Real  from Standard; 
+    	    	   aT   :out  Real  from Standard)   
+	returns Boolean from Standard;
+	---Purpose:
+	--- Computes parameter of the vertex aV on
+	--- the curve aIC.
+	--- Returns true if the distance between vertex and
+	--- curve is less than sum of tolerance of aV and aTolC,
+	--- otherwise or if projection algorithm failed
+	--- returns false (in this case aT isn't significant)
+	--- 
+
+     ProjectPointOnEdge (me:out;  
+		   	 aP   : Pnt  from  gp;       
+   	    	     	 aE   : Edge from  TopoDS; 	           
+   	    	     	 aT   :out Real from  Standard) 
+        returns Boolean from Standard;
+	---Purpose:
+	--- Computes parameter of the point aP on
+	--- the edge aE.
+	--- Returns false if projection algorithm failed
+	--- other wiese returns true.
+	---
+
+fields 
+    myFClass2dMap :  IndexedDataMapOfShapeAddress     from TopTools; 
+    myProjPSMap   :  IndexedDataMapOfShapeAddress     from TopTools; 
+    myProjPCMap   :  IndexedDataMapOfShapeAddress     from TopTools;    
+    myProjPTMap   :  IndexedDataMapOfTransientAddress from IntTools;    
+    mySClassMap   :  IndexedDataMapOfShapeAddress     from TopTools;
+    myProjSDataMap:  IndexedDataMapOfShapeAddress     from TopTools;
+     
+end Context;
+

@@ -1,0 +1,98 @@
+-- File:      BlendFunc_ConstRadInv.cdl
+-- Created:   Thu Dec  2 10:25:35 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
+
+
+class ConstRadInv from BlendFunc
+
+inherits FuncInv from Blend
+
+uses Vector from math,
+     Matrix from math,
+     HCurve2d from Adaptor2d,
+     HCurve from Adaptor3d,
+     HSurface from Adaptor3d
+is
+
+    Create(S1,S2: HSurface from Adaptor3d; C: HCurve from Adaptor3d)
+    
+    	returns ConstRadInv from BlendFunc;
+	
+    Set(me: in out; OnFirst: Boolean from Standard;
+    	            COnSurf: HCurve2d from Adaptor2d)
+
+    	;
+
+
+    GetTolerance(me; Tolerance: out Vector from math; Tol: Real from Standard)
+    
+    	;
+
+
+    GetBounds(me; InfBound,SupBound: out Vector from math)
+    
+    	;
+
+
+    IsSolution(me: in out; Sol: Vector from math; Tol: Real from Standard)
+    
+    	returns Boolean from Standard
+    
+    	;
+
+
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+    	returns Integer from Standard
+    	is redefined static ;
+
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Functions for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard
+    	is redefined static ;
+    
+    
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    is redefined static	;
+    
+    
+    Values(me: in out; X: Vector; F: out Vector; D: out Matrix)
+    	---Purpose: returns the values <F> of the functions and the derivatives
+    	--          <D> for the variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    returns Boolean from Standard
+    	is redefined static ;
+
+-- methodes hors template (en plus du create)
+
+    Set(me: in out; R: Real from Standard; Choix: Integer from Standard)
+
+    is static;
+
+
+
+fields
+
+    surf1: HSurface from Adaptor3d;
+    surf2: HSurface from Adaptor3d;
+    curv : HCurve from Adaptor3d;
+    csurf: HCurve2d from Adaptor2d;
+    ray1 : Real from Standard;
+    ray2 : Real from Standard;
+    choix: Integer from Standard;
+    first : Boolean from Standard;
+
+end ConstRadInv;

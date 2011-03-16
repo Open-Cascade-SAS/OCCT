@@ -1,0 +1,85 @@
+--
+-- File      :  CurveOnSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CurveOnSurface from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESCurveOnSurface, Type <142> Form <0>
+        --          in package IGESGeom
+        --          A curve on a parametric surface entity associates a given
+        --          curve with a surface and identifies the curve as lying on
+        --          the surface.
+
+uses  Integer  -- no one specific type
+
+is
+
+        Create returns mutable CurveOnSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              aMode       : Integer;
+              aSurface    : IGESEntity;
+              aCurveUV    : IGESEntity;
+              aCurve3D    : IGESEntity;
+              aPreference : Integer);
+        ---Purpose : This method is used to set the fields of the class
+        --           CurveOnSurface
+        --       - aMode       : Way the curve on the surface has been created
+        --       - aSurface    : Surface on which the curve lies
+        --       - aCurveUV    : Curve S (UV)
+        --       - aCurve3D    : Curve C (3D)
+        --       - aPreference : 0 = Unspecified
+        --                       1 = S o B is preferred
+        --                       2 = C is preferred
+        --                       3 = C and S o B are equally preferred
+
+        CreationMode (me) returns Integer;
+        ---Purpose : returns the mode in which the curve is created on the surface
+        -- 0 = Unspecified
+        -- 1 = Projection of a given curve on the surface
+        -- 2 = Intersection of two surfaces
+        -- 3 = Isoparametric curve, i.e:- either a `u` parametric
+        --     or a `v` parametric curve
+
+        Surface (me) returns IGESEntity;
+        ---Purpose : returns the surface on which the curve lies
+
+        CurveUV (me) returns IGESEntity;
+        ---Purpose : returns curve S
+
+        Curve3D (me) returns IGESEntity;
+        ---Purpose : returns curve C
+
+        PreferenceMode (me) returns Integer;
+        ---Purpose : returns preference mode
+        -- 0 = Unspecified
+        -- 1 = S o B is preferred
+        -- 2 = C is preferred
+        -- 3 = C and S o B are equally preferred
+
+fields
+
+--
+-- Class    : IGESGeom_CurveOnSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CurveOnSurface.
+--
+-- Reminder : A CurveOnSurface instance is defined by :
+--            The way the curve has been created, the surface on which
+--            it has been created, and two other curves, curve S and
+--            curve C involved in its creation
+
+        theCreationMode   : Integer;
+        theSurface        : IGESEntity;
+        theCurveUV        : IGESEntity;
+        theCurve3D         : IGESEntity;
+        thePreferenceMode : Integer;
+
+end CurveOnSurface;

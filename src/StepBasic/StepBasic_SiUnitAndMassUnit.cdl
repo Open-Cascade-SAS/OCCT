@@ -1,0 +1,41 @@
+-- File:	StepBasic_SiUnitAndMassUnit.cdl
+-- Created:	Sun Dec 15 14:35:49 2002
+-- Author:	data exchange team
+--		<det@petrox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+class SiUnitAndMassUnit from StepBasic inherits SiUnit from StepBasic 
+
+
+	--- This classe is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    MassUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    SiPrefix from StepBasic, 
+    SiUnitName from StepBasic
+    
+is
+
+    Create returns mutable SiUnitAndMassUnit;
+	---Purpose: Returns a SiUnitAndMassUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    is redefined;
+
+    Init (me: mutable; hasAprefix: Boolean from Standard;
+	               aPrefix   : SiPrefix from StepBasic;
+	               aName     : SiUnitName from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetMassUnit(me: mutable; aMassUnit: mutable MassUnit);
+    
+    MassUnit (me) returns mutable MassUnit;
+
+fields
+
+    massUnit: MassUnit from StepBasic;
+
+end SiUnitAndMassUnit;

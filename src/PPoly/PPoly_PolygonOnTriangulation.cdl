@@ -1,0 +1,64 @@
+-- File:	PPoly_PolygonOnTriangulation.cdl
+-- Created:	Wed Jun  5 16:56:57 1996
+-- Author:	Mister rmi
+--		<rmi@pronox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class PolygonOnTriangulation from PPoly inherits Persistent from Standard
+
+    	---Purpose: This class represents a 3d Polygon based on
+    	--          indices of triangulation nodes.
+    	--          
+    	--          This polygon may also have a parametric
+    	--          representation.
+
+
+uses HArray1OfInteger  from PColStd,
+     HArray1OfReal     from PColStd
+
+raises NullObject from Standard
+
+is
+
+    Create returns mutable PolygonOnTriangulation from PPoly;
+    
+    Create(Nodes : HArray1OfInteger from PColStd;
+    	   Defl  : Real             from Standard)
+    returns mutable PolygonOnTriangulation from PPoly;
+    	---Purpose: Defaults with allocation of nodes.
+    
+    Create(Nodes      : HArray1OfInteger from PColStd;
+       	   Defl       : Real             from Standard;
+           Parameters : HArray1OfReal    from PColStd) 
+    returns mutable PolygonOnTriangulation from PPoly;
+    	---Purpose: Defaults with allocation of nodes.
+    
+    Deflection(me) returns Real;
+    
+    Deflection(me : mutable; D : Real);
+
+
+    NbNodes(me) returns Integer;
+    
+    Nodes(me) returns HArray1OfInteger from PColStd;
+	---Purpose: Reference on the 3d nodes indices.
+
+    Nodes(me : mutable; Nodes : HArray1OfInteger from PColStd);
+    
+    HasParameters(me) returns Boolean from Standard;
+    
+    Parameters(me) returns HArray1OfReal from PColStd;
+	---Purpose: Returns the parameters values.
+
+    Parameters(me : mutable; Param : HArray1OfReal from PColStd);
+    
+    
+fields
+
+    myDeflection    : Real             from Standard;
+    myNodes         : HArray1OfInteger from PColStd;
+    myParameters    : HArray1OfReal    from PColStd; 
+    	 -- myParameters is Optional (pointer can be null)
+    
+end PolygonOnTriangulation;

@@ -1,0 +1,148 @@
+-- File:	CLProps.cdl
+-- Created:	Mon Mar 25 16:30:42 1991
+-- Author:	Michel CHAUVAT
+--		<mca@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+generic class CLProps from LProp
+                         (Curve as any;
+                    	  Vec   as any; -- as Vec or Vec2d
+		     	  Pnt   as any; -- as Pnt or Pnt2d
+		   	  Dir   as any; -- as Dir or Dir2d
+                   	  Tool  as any) -- as ToolCurve(Curve, Pnt, Vec)  
+
+    ---Purpose: Computation of Curve Local Properties:
+    --          - point,
+    --          - derivatives,
+    --          - tangent,
+    --          - normal plane,
+    --          - curvature,
+    --          - normal,
+    --          - centre of curvature,
+
+uses    Status from LProp
+
+raises  BadContinuity from LProp, 
+        DomainError   from Standard, 
+        OutOfRange    from Standard, 
+        NotDefined    from LProp
+is
+
+
+    Create(C: Curve; N: Integer; Resolution: Real)
+    	---Purpose: Initializes the local properties of the curve <C> 
+    	--          The current point and the derivatives are 
+    	--          computed at the same time, which allows an 
+    	--          optimization of the computation time.
+    	--          <N> indicates the maximum number of derivations to 
+    	--          be done (0, 1, 2 or 3). For example, to compute 
+    	--          only the tangent, N should be equal to 1.
+    	--          <Resolution> is the linear tolerance (it is used to test
+    	--          if a vector is null).
+    	returns CLProps
+    	raises OutOfRange;
+	    	-- if N < 0 or N > 3.
+
+    Create(C: Curve; U : Real; N: Integer; Resolution: Real)
+        --- Purpose : Same as previous constructor but here the parameter is
+        --            set to the value <U>.
+        --            All the computations done will be related to <C> and <U>.
+    	returns CLProps
+    	raises OutOfRange;
+	    	-- if N < 0 or N > 3.
+	    	
+    Create(N : Integer;Resolution:Real)
+        --- Purpose : Same as previous constructor but here the parameter is
+        --            set to the value <U> and the curve is set 
+        --            with SetCurve.
+        --            the curve can have a empty constructor
+        --            All the computations done will be related to <C> and <U>
+        --            when the functions "set" will be done.
+
+    returns CLProps
+    raises OutOfRange;
+    
+    SetParameter(me: in out; U : Real)
+    	---Purpose: Initializes the local properties of the curve 
+    	--          for the parameter value <U>.
+	is static;
+	    	
+    SetCurve(me: in out; C : Curve)
+    	---Purpose: Initializes the local properties of the curve 
+    	--          for the new curve.
+	is static;
+
+    Value(me) returns Pnt is static;
+    	---Purpose: Returns the Point.
+    	---C++: return const &
+
+    D1(me: in out) returns Vec is static;
+    	---Purpose: Returns the first derivative. 
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    D2(me: in out) returns Vec is static;
+    	---Purpose: Returns the second derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    D3(me: in out) returns Vec is static;
+    	---Purpose: Returns the third derivative.
+    	--          The derivative is computed if it has not been yet.
+    	---C++: return const &
+
+    IsTangentDefined(me: in out) returns Boolean is static;
+    	---Purpose: Returns True if the tangent is defined.
+    	--          For example, the tangent is not defined if the 
+    	--          three first derivatives are all null.
+
+    Tangent(me: in out; D : out Dir)
+        ---Purpose: output  the tangent direction <D>
+	raises  NotDefined
+    	    	-- if IsTangentDefined(me)=False.
+    	is static;
+
+    Curvature(me: in out)
+    	---Purpose: Returns the curvature.
+    	returns Real
+	raises  NotDefined
+    	    	-- if IsTangentDefined(me) == False.
+    	is static;
+
+    Normal(me: in out; N : out Dir)
+    	---Purpose: Returns the normal direction <N>.
+	raises  NotDefined
+	    	-- if Curvature(me) < Resolution
+	is static;
+
+    CentreOfCurvature(me: in out; P : out Pnt)
+    	---Purpose: Returns the centre of curvature <P>.
+	raises  NotDefined
+	    	-- if Curvature(me) < Resolution
+	is static;
+
+fields
+
+    myCurve   : Curve;    -- the Curve on which thw calculus are done
+    u         : Real;     -- the current value of the parameter
+    level     : Integer;  -- the order of derivation
+    cn        : Real;     -- the order of continuity of the Curve
+    linTol    : Real;     -- the tolerance for null Vector
+    
+    pnt       : Pnt;      -- the current point value
+    d         : Vec[3];   -- the current first, second and third derivative
+                          -- value
+    tangent   : Dir;      -- the tangent value
+    curvature : Real;     -- the curvature value
+
+    tangentStatus   : Status from LProp; 
+                          -- the status of the tangent direction
+    significantFirstDerivativeOrder : Integer;
+                          -- the order of the first non null derivative
+                          -- 
+end CLProps;
+
+
+
+

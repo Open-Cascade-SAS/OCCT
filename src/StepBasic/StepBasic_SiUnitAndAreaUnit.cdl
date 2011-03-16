@@ -1,0 +1,34 @@
+-- File:	StepBasic_SiUnitAndAreaUnit.cdl
+-- Created:	Mon Oct 11 14:15:25 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class SiUnitAndAreaUnit from StepBasic inherits SiUnit from StepBasic
+
+	---Purpose: 
+
+uses
+
+    AreaUnit from StepBasic,
+    DimensionalExponents
+
+is
+
+    Create returns mutable SiUnitAndAreaUnit from StepBasic;
+    	---Purpose: Returns a SiUnitAndAreaUnit
+    
+    SetAreaUnit(me: mutable; anAreaUnit: mutable AreaUnit from StepBasic);
+    
+    AreaUnit(me) returns mutable AreaUnit from StepBasic;
+    
+    SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) is redefined;
+    
+    Dimensions(me) returns mutable DimensionalExponents is redefined;
+    
+fields
+
+    areaUnit: AreaUnit from StepBasic;
+
+end SiUnitAndAreaUnit;

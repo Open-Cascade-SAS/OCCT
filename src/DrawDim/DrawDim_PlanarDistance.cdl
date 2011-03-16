@@ -1,0 +1,45 @@
+-- File:	DrawDim_PlanarDistance.cdl
+-- Created:	Wed Jan 10 10:16:25 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class PlanarDistance from DrawDim inherits PlanarDimension from DrawDim
+
+	---Purpose: PlanarDistance point/point
+	--          PlanarDistance point/line
+	--          PlanarDistance line/line
+
+uses Face    from TopoDS,
+     Pnt     from gp,
+     Shape   from TopoDS,
+     Edge    from TopoDS,
+     Color   from Draw,
+     Display from Draw
+
+is
+
+    Create (plane  : Face from TopoDS;
+            point1 : Shape from TopoDS;
+            point2 : Shape from TopoDS)
+    returns mutable PlanarDistance from DrawDim;
+    
+    Create (geom1 : Shape from TopoDS;
+            geom2 : Shape from TopoDS)
+    returns mutable PlanarDistance from DrawDim; 
+    
+    DrawOn(me; dis : in out Display);
+
+    ---Purpose: private
+    Draw (me; p : Pnt from gp;
+              e : Edge from TopoDS;
+              d : in out Display) is private;
+    
+fields
+
+    myGeom1 : Shape from TopoDS;
+    myGeom2 : Shape from TopoDS;
+    
+end PlanarDistance;

@@ -1,0 +1,14 @@
+// File:	TFunction_Driver.lxx
+// Created:	Tue Sep 28 09:29:19 1999
+// Author:	Vladislav ROMASHKO
+//		<vro@flox.nnov.matra-dtv.fr>
+//=======================================================================
+//function : Label
+//purpose  : Returns the initialized label
+//=======================================================================
+
+inline TDF_Label TFunction_Driver::Label() const
+{
+  return myLabel;
+}
+

@@ -1,0 +1,63 @@
+-- File:	FEmTool.cdl
+-- Created:	Wed Oct 29 16:49:48 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package FEmTool 
+
+	---Purpose: Tool to Finite Element methods
+	
+	---Level: Advanced
+uses  
+    TCollection, 
+    TColStd, 
+    math, 
+    PLib,
+    GeomAbs 
+is  
+                   
+    class  Assembly; 
+      
+    ---Purpose: To define Criterium (or  Energy) on finite element   
+    deferred  class  ElementaryCriterion;     
+    class  LinearTension;      
+    class  LinearFlexion;      
+    class  LinearJerk;
+      
+    ---Purpose: To define sparse Matrix          
+    deferred  class  SparseMatrix; 
+    class  ProfileMatrix;
+
+    ---Purpose: Do define one curves with Finite Element
+    class  Curve;   
+    
+    ---Purpose:  To  define  set  of  functions  for  calculating  matrix 
+    --	         elements  of  RefMatrix  by  Gauss  integration. 
+    class  ElementsOfRefMatrix; 
+     
+    --  instantiate  classes  
+      
+    ---Purpose:  To define the  table  [Freedom's degree] [Dimension,Element]
+    --           which gives Index  of Freedom's degree in the
+    --           assembly problem.
+   
+    class  AssemblyTable
+    instantiates Array2 from TCollection (HArray1OfInteger from  TColStd);     
+    class  HAssemblyTable   
+    instantiates HArray2 from TCollection (HArray1OfInteger from  TColStd,
+    	    	    	                   AssemblyTable  from  FEmTool); 
+					    
+    ---Purpose:  To  define  list  of  segments with  non-zero  coefficients   
+    --           of constraint 
+        
+    class  ListOfVectors  
+    instantiates  List  from  TCollection  (HArray1OfReal  from  TColStd); 
+
+    ---Purpose:  To  define  sequence  of  constraints 
+    
+    class  SeqOfLinConstr  
+    instantiates  Sequence  from  TCollection  (ListOfVectors  from  FEmTool); 
+      
+     
+end FEmTool;

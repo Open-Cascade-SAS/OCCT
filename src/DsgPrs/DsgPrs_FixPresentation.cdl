@@ -1,0 +1,36 @@
+-- File:	DsgPrs_FixPresentation.cdl
+-- Created:	Mon Apr  1 12:59:22 1996
+-- Author:	Flore Lantheaume
+--		<fla@filax>
+---Copyright:	 Matra Datavision 1996
+
+
+class FixPresentation from DsgPrs 
+
+	---Purpose: class which draws the presentation of Fixed objects
+
+uses
+
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Pnt          from gp,
+    Dir          from gp
+
+is
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer    : Drawer from Prs3d;
+	aPntAttach : Pnt    from gp;
+    	aPntEnd    : Pnt    from gp;
+    	aNormPln   : Dir    from gp;
+    	aSymbSize  : Real   from Standard);
+	 
+    	---Purpose: draws the presentation of fixed objects by
+    	--          drawing the 'fix' symbol at position <aPntEnd>.
+    	--          A binding segment is drawn between <aPntAttach>
+    	--          ( which belongs the the fix object) and <aPntEnd>.
+    	--          aSymbSize is the size of the 'fix'symbol
+
+
+end FixPresentation;

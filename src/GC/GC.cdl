@@ -1,0 +1,94 @@
+-- File:	GC.cdl
+-- Created:	Fri Mar 27 15:18:48 1992
+-- Author:	Remi GILET
+--		<reg@phobox>
+---Copyright:	 Matra Datavision 1992
+
+package GC
+
+uses gp,
+     gce,
+     Geom,
+     StdFail
+
+
+    ---Level : Public. 
+    --  All methods of all  classes will be public.
+
+
+is
+
+private deferred class Root;
+
+---------------------------------------------------------------------------
+--         Constructions of 3d geometrical elements from Geom.
+---------------------------------------------------------------------------
+
+class MakeLine;
+    	---Purpose: Makes a Line from Geom.
+
+class MakeCircle;
+    	---Purpose: Makes a Circle from Geom.
+
+class MakeHyperbola;
+    	---Purpose: Makes an hyperbola from Geom.
+
+class MakeEllipse;
+    	---Purpose: Makes an ellipse from Geom.
+
+class MakeSegment;
+    	---Purpose: Makes a segment of Line from the 2 points <P1> and <P2>.
+
+class MakeArcOfCircle;
+    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom).
+
+class MakeArcOfEllipse;
+    	---Purpose: Makes an arc of Ellipse (TrimmedCurve from Geom).
+
+class MakeArcOfHyperbola;
+    	---Purpose: Makes an arc of hyperbola (TrimmedCurve from Geom). 
+
+class MakeArcOfParabola;
+    	---Purpose: Makes an arc of parabola (TrimmedCurve from Geom).
+
+---------------------------------------------------------------------------
+--                   Constructions of planes from Geom.
+---------------------------------------------------------------------------
+
+class MakePlane;
+
+---------------------------------------------------------------------------
+--                  Construction of surfaces from Geom.
+---------------------------------------------------------------------------
+
+class MakeCylindricalSurface;
+    ---Purpose: Makes a cylindricalSurface <Cyl> from Geom. 
+
+class MakeConicalSurface;
+    ---Purpose: Makes a ConicalSurface <Cone> from Geom.
+
+class MakeTrimmedCylinder;
+    ---Purpose: Makes a cylindricalSurface <Cyl> from Geom
+
+class MakeTrimmedCone;
+    ---Purpose: Makes a ConicalSurface <Cyl> from Geom
+
+---------------------------------------------------------------------------
+--               Constructions of Transformation from Geom.
+---------------------------------------------------------------------------
+
+class MakeTranslation;
+    	---Purpose: Returns a translation transformation of vector <V>.
+
+class MakeMirror;
+    	---Purpose: Returns a symmetry transformation of center <P>.
+
+class MakeRotation;
+    	---Purpose: Returns a rotation transformation around the axis <A> 
+    	--          and of angle <Angle>.
+
+class MakeScale;
+    	---Purpose: Returns a scaling transformation with the center point
+    	--          <Point> and the scaling value <Scale>.
+
+end GC;

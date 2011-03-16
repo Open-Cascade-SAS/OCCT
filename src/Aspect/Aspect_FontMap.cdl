@@ -1,0 +1,69 @@
+--
+-- File:	Aspect_FontMap.cdl
+-- Created:	07/09/93
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1993
+--
+
+class FontMap from Aspect inherits TShared from MMgt
+
+	---Version: 0.0
+
+	---Purpose: This class defines a FontMap object.
+	---Keywords:
+	---Warning:
+	---References:
+uses
+	FontStyle		from Aspect,
+	FontMapEntry 		from Aspect,
+	SequenceOfFontMapEntry 	from Aspect
+
+raises
+	BadAccess 	from Aspect
+
+is
+
+	Create returns mutable FontMap from Aspect;
+
+        AddEntry (me : mutable; AnEntry : FontMapEntry from Aspect)
+	---Level: Public
+        ---Purpose: Adds an entry in the font map <me>.
+        --  Warning: Raises BadAccess if FontMap size is exceeded.
+        raises BadAccess from Aspect;
+
+        AddEntry (me : mutable; aStyle : FontStyle from Aspect)
+                                        returns Integer from Standard;
+        ---Level: Public
+        ---Purpose: Search an identical font style entry in the font map <me>
+        -- and returns the FontMapEntry Index if exist.
+        -- Or add a new entry and returns the computed FontMapEntry index used.
+
+        Size( me ) returns Integer from Standard is static;
+        ---Level: Public
+        ---Purpose: Returns the Allocated fontmap Size
+ 
+        Index( me ; aFontmapIndex : Integer ) returns Integer from Standard
+        ---Level: Public
+        ---Purpose: Returns the FontMapEntry.Index of the FontMap
+        --          at rank <aFontmapIndex> .
+        raises BadAccess from Aspect is static;
+        ---Trigger: Raises BadAccess if the index less than 1 or
+        --          greater than Size.
+
+	Dump( me ) ;
+
+	Entry ( me ;
+		AnIndex : Integer from Standard )
+	returns FontMapEntry from Aspect
+	---Level: Public
+	---Purpose: Returns the Font map entry with the index <AnIndex>.
+	--  Warning: Raises BadAccess if the index less than 1
+	--	    or greater than Size.
+	raises BadAccess from Aspect is static;
+
+fields
+
+	mydata	    :	SequenceOfFontMapEntry from Aspect is protected;
+
+end FontMap ;

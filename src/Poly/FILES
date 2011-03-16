@@ -1,0 +1,14 @@
+Handle_Poly_CoherentTriangulation.hxx
+Poly_CoherentTriangulation.hxx
+Poly_CoherentTriangle.hxx
+Poly_CoherentTriPtr.hxx
+Poly_CoherentNode.hxx
+Poly_CoherentLink.hxx
+Poly_CoherentTriangulation.cxx
+Poly_CoherentTriangle.cxx
+Poly_CoherentTriPtr.cxx
+Poly_CoherentNode.cxx
+Poly_CoherentLink.cxx
+Poly_MakeLoops.hxx
+Poly_MakeLoops.cxx
+Poly_ListOfTriangulation.hxx

@@ -1,0 +1,23 @@
+-- File:	SWDRAW_ShapeCustom.cdl
+-- Created:	Tue Mar  9 14:56:15 1999
+-- Author:	Roman LYGIN
+--		<rln@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeCustom from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeCustom
+	--          List of DRAW commands and corresponding functionalities:
+	--          directfaces - ShapeCustom::DirectFaces
+	--          scaleshape  - ShapeCustom::ScaleShape
+
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeCustom
+
+end ShapeCustom;

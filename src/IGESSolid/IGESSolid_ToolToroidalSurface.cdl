@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolToroidalSurface.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolToroidalSurface  from IGESSolid
+
+    ---Purpose : Tool to work on a ToroidalSurface. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses ToroidalSurface from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolToroidalSurface;
+    ---Purpose : Returns a ToolToroidalSurface, ready to work
+
+
+    ReadOwnParams (me; ent : mutable ToroidalSurface;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : ToroidalSurface;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : ToroidalSurface;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a ToroidalSurface <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : ToroidalSurface) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : ToroidalSurface;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : ToroidalSurface; entto : mutable ToroidalSurface;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : ToroidalSurface;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolToroidalSurface;

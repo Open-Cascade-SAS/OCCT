@@ -1,0 +1,21 @@
+// File:	HLRAlgo_TriangleData.lxx
+// Created:	Mon Jan 11 13:58:26 1993
+// Author:	Christophe MARION
+//		<cma@sdsun1>
+
+//=======================================================================
+//function : TriangleData
+//purpose  : 
+//=======================================================================
+
+inline HLRAlgo_TriangleData::HLRAlgo_TriangleData ()
+{}
+
+//=======================================================================
+//function : Indices
+//purpose  : 
+//=======================================================================
+
+inline Standard_Address HLRAlgo_TriangleData::Indices () const
+{ return (Standard_Address)myIndices; }
+

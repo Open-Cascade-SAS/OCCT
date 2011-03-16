@@ -1,0 +1,33 @@
+-- File:	Document_ReferenceIterator.cdl
+-- Created:	Mon Aug  4 17:06:07 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class ReferenceIterator from CDM
+
+uses Document from CDM, ListIteratorOfListOfReferences from CDM
+is
+
+    Create(aDocument: Document from CDM);
+    
+    
+    More(me) returns Boolean from Standard;
+    
+    
+    Next(me: in out);
+    
+    
+    Document(me) returns Document from CDM;
+    
+    ReferenceIdentifier(me) returns Integer from Standard;
+    
+    
+    DocumentVersion(me) returns Integer from Standard;
+    ---Purpose: returns the Document Version in the reference.
+    
+fields 
+    myIterator: ListIteratorOfListOfReferences from CDM;
+end ReferenceIterator from CDM;
+    
+    

@@ -1,0 +1,29 @@
+-- File:        XmlLDrivers_NamespaceDef.cdl
+-- Created:     Wed Sep 19 15:14:48 2001
+-- Author:      admin of fao FACTORY
+--              <fao@renox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2001
+
+private class NamespaceDef from XmlLDrivers
+
+uses    AsciiString from TCollection
+
+is
+    Create returns NamespaceDef from XmlLDrivers;
+    
+    Create (thePrefix: AsciiString from TCollection;
+            theURI   : AsciiString from TCollection)
+        returns NamespaceDef from XmlLDrivers;
+
+    Prefix (me) returns AsciiString from TCollection;
+    ---C++: return const &
+
+    URI (me) returns AsciiString from TCollection;
+    ---C++: return const &
+
+fields
+
+    myPrefix :  AsciiString     from TCollection;
+    myURI    :  AsciiString     from TCollection;
+
+end NamespaceDef;

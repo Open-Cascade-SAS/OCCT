@@ -1,0 +1,111 @@
+-- File:	NumericValue.cdl
+-- Created:	Thu Jan 10 12:20:27 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class NumericValue from Expr
+
+inherits GeneralExpression from Expr  
+
+    ---Purpose: This class describes any reel value defined in an 
+    --          expression. 
+
+uses AsciiString from TCollection,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    NamedUnknown from Expr
+
+
+raises OutOfRange from Standard
+
+is
+
+    Create(val : Real)
+    ---Level: Advanced
+    returns mutable NumericValue;
+
+    GetValue(me)
+    ---Level: Advanced
+    returns Real;
+
+    SetValue(me : mutable; val : Real);
+    ---Level: Internal
+
+    NbSubExpressions(me)
+    ---Purpose: Returns the number of sub-expressions contained
+    --          in <me> ( >= 0)
+    returns Integer
+    is static;
+
+    SubExpression(me; I : Integer)
+    ---Purpose: Returns the <I>-th sub-expression of <me>
+    --          raises OutOfRange if <I> > NbSubExpressions(me)
+    ---C++: return const &
+    returns any GeneralExpression
+    raises OutOfRange
+    is static;
+
+    Simplified(me) 
+    ---Purpose: Returns a GeneralExpression after replacement of
+    --          NamedUnknowns by an associated expression and after
+    --          values computation.
+    returns any GeneralExpression;
+
+    ShallowSimplified(me)
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    ContainsUnknowns(me) 
+    ---Purpose: Tests if <me> contains NamedUnknown.
+    returns Boolean
+    is static;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> is contained in <me>.
+    returns Boolean
+    is static;
+
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --          This method does not include any simplification before
+    --          testing.
+    returns Boolean;
+
+    IsLinear(me)
+    returns Boolean
+    is static;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me> 
+    returns any GeneralExpression;
+
+    NDerivative(me; X : NamedUnknown; N : Integer)
+    ---Purpose: Returns the <N>-th derivative on <X> unknown of <me>.
+    --          Raises OutOfRange if <N> <= 0
+    returns any GeneralExpression
+    raises OutOfRange
+    is redefined;
+
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression);
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>
+    
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    returns Real;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+
+fields 
+
+    myValue : Real;
+
+end NumericValue;

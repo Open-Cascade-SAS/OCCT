@@ -1,0 +1,19 @@
+// File:      IntPatch_PrmPrmIntersection_T3Bits.lxx
+// Created:   Thu Dec 16 16:34:03 1999
+// Author:    Atelier CAS2000
+// Copyright: OPEN CASCADE 1999
+
+inline void IntPatch_PrmPrmIntersection_T3Bits::Add(const Standard_Integer t)
+{
+  ((Standard_Integer *) p)[t>>5] |= (1<<(((unsigned int)t)&31));
+}
+
+inline Standard_Integer IntPatch_PrmPrmIntersection_T3Bits::Val(const Standard_Integer t) const
+{
+  return (((Standard_Integer *) p)[t>>5] & (1<<(((unsigned int)t)&31)));
+}
+
+inline void IntPatch_PrmPrmIntersection_T3Bits::Raz(const Standard_Integer t)
+{
+  ((Standard_Integer *) p)[t>>5] &= ~(1<<(((unsigned int)t)&31));
+}

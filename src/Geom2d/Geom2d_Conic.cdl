@@ -1,0 +1,134 @@
+-- File:	Geom2d_Conic.cdl
+-- Created:	Wed Mar 24 17:59:38 1993
+-- Author:	JCV
+--		<fid@sdsun2>
+-- Copyright:	 Matra Datavision 1993
+
+---Copyright:   Matra Datavision 1991
+
+deferred class Conic from Geom2d inherits Curve from Geom2d
+
+        --- Purpose : The abstract class Conic describes the common
+    	-- behavior of conic curves in 2D space and, in
+    	-- particular, their general characteristics. The Geom2d
+    	-- package provides four specific classes of conics:
+    	-- Geom2d_Circle, Geom2d_Ellipse,
+    	-- Geom2d_Hyperbola and Geom2d_Parabola.
+    	-- A conic is positioned in the plane with a coordinate
+    	-- system (gp_Ax22d object), where the origin is the
+    	-- center of the conic (or the apex in case of a parabola).
+    	-- This coordinate system is the local coordinate
+    	-- system of the conic. It gives the conic an explicit
+    	-- orientation, determining the direction in which the
+    	-- parameter increases along the conic. The "X Axis" of
+    	-- the local coordinate system also defines the origin of
+    	-- the parameter of the conic.
+
+uses  Ax2d   from gp, 
+      Ax22d  from gp,
+      Pnt2d  from gp, 
+      Vec2d  from gp,
+      Shape  from GeomAbs
+
+
+raises ConstructionError from Standard,
+       DomainError       from Standard
+
+
+is
+
+
+  SetAxis (me: mutable; A: Ax22d);
+
+    	---Purpose: Modifies this conic, redefining its local coordinate system
+    	-- partially, by assigning P as its origin
+
+  SetXAxis (me : mutable; A : Ax2d);
+	    	
+
+  SetYAxis (me : mutable; A : Ax2d);
+    	---Purpose: Assigns the origin and unit vector of axis A to the
+    	-- origin of the local coordinate system of this conic and either:
+    	-- - its "X Direction", or
+    	-- - its "Y Direction".
+    	-- The other unit vector of the local coordinate system
+    	-- of this conic is recomputed normal to A, without
+    	-- changing the orientation of the local coordinate
+    	-- system (right-handed or left-handed).
+
+  SetLocation (me : mutable; P : Pnt2d);
+        --- Purpose : Modifies this conic, redefining its local coordinate
+    	-- system fully, by assigning A as this coordinate system.
+
+
+  XAxis (me)  returns Ax2d;
+        --- Purpose :
+        --  Returns the "XAxis" of the conic.
+        --  This axis defines the origin of parametrization of the conic.
+        --  This axis and the "Yaxis" define the local coordinate system
+        --  of the conic.
+    	-- -C++: return const&
+
+
+  YAxis (me)  returns Ax2d;
+        --- Purpose :
+        --  Returns the "YAxis" of the conic.
+        --  The "YAxis" is perpendicular to the "Xaxis".
+	  
+
+  Eccentricity (me)  returns Real
+        --- Purpose :
+        --  returns the eccentricity value of the conic e.
+        --  e = 0 for a circle
+        --  0 < e < 1 for an ellipse  (e = 0 if MajorRadius = MinorRadius)
+        --  e > 1 for a hyperbola
+        --  e = 1 for a parabola
+     raises DomainError
+     is deferred;
+
+
+  Location (me)  returns Pnt2d;
+        --- Purpose :
+        --  Returns the location point of the conic.
+        --  For the circle, the ellipse and the hyperbola it is the center of
+        --  the conic. For the parabola it is the vertex of the parabola.
+
+
+
+  Position (me)   returns Ax22d;
+        ---Purpose :
+	--  Returns the local coordinates system of the conic.
+    	---C++: return const&
+
+
+  Reverse (me : mutable);
+	--- Purpose :
+	--  Reverses the direction of parameterization of <me>.
+        --  The local coordinate system of the conic is modified.
+
+
+  ReversedParameter(me; U : Real) returns Real
+	---Purpose: Returns the  parameter on the  reversed  curve for
+	--          the point of parameter U on <me>.
+	--          
+  is deferred;
+
+
+  Continuity (me)   returns Shape from GeomAbs;
+        --- Purpose : Returns GeomAbs_CN which is the global continuity of any conic.
+        
+
+  IsCN (me; N : Integer)  returns Boolean;
+        --- Purpose :
+        --  Returns True, the order of continuity of a conic is infinite.
+
+
+
+
+  
+fields
+
+  pos : Ax22d is protected;
+
+end;
+

@@ -1,0 +1,23 @@
+-- File:	STEPSelections_SelectForTransfer.cdl
+-- Created:	Mon Jun  2 16:45:25 2003
+-- Author:	Galina KULIKOVA
+--		<gka@zamox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2003
+
+
+class SelectForTransfer from STEPSelections inherits SelectForTransfer from XSControl
+
+	---Purpose: 
+
+uses
+    EntityIterator,
+    Graph,
+    TransferReader from XSControl
+   
+is
+    Create returns mutable SelectForTransfer;
+    Create (TR : TransferReader from XSControl) returns mutable SelectForTransfer;
+    RootResult(me; G : Graph) returns EntityIterator is redefined;
+    
+
+end SelectForTransfer;

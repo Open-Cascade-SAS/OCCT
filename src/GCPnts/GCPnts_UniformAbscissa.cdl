@@ -1,0 +1,199 @@
+-- File:	UniformAbscissa.cdl
+-- Created:	Wed Feb 27 09:57:51 1991
+-- Author:	Jean Claude Vauthier
+--		<jcv@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class UniformAbscissa from GCPnts 
+  
+
+    ---Purpose: This class allows to compute a uniform distribution of points
+    --          on a curve (ie the points will all be equally distant).
+uses 
+    Curve        from Adaptor3d,
+    Curve2d      from Adaptor2d,
+    HArray1OfReal from TColStd
+
+    
+raises DomainError       from Standard, 
+       ConstructionError from Standard,
+       OutOfRange        from Standard,
+       NotDone           from StdFail
+
+is
+        
+    Create 
+    	---Purpose: creation of a indefinite UniformAbscissa
+    	returns UniformAbscissa from GCPnts;
+
+    Create(C : in out Curve from Adaptor3d ; Abscissa : Real ; Toler : Real = -1)
+        --- Purpose : Computes a uniform abscissa distribution of points on 
+        --  the Curve <C>. Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+    	returns UniformAbscissa from GCPnts
+     	raises ConstructionError;
+
+    Create(C : in out Curve from Adaptor3d ; Abscissa, U1, U2 : Real ; 
+               Toler : Real = -1)
+        --- Purpose : Computes a Uniform abscissa distribution of points 
+        --  on a part of the Curve <C>. Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+     	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve from Adaptor3d ; NbPoints : Integer ; 
+           Toler : Real = -1)
+        --- Purpose : Computes a uniform abscissa distribution of points on 
+        --  the Curve <C>. 
+        --  <NbPoints> defines the nomber of desired points. 
+	--  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+    	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve from Adaptor3d ; NbPoints : Integer; U1, U2 : Real ; 
+           Toler : Real = -1)
+        --- Purpose : Computes a Uniform abscissa distribution of points 
+        --  on a part of the Curve <C>. 
+	--  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+     	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; Abscissa : Real ;
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <Toler>
+     	raises ConstructionError
+	is static;
+
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; Abscissa, U1, U2 : Real ; 
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>, <Toler>
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+  
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; NbPoints : Integer ; 
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <NbPoints>, <Toler> and 
+     	raises ConstructionError
+	is static;
+
+
+    Initialize(me : in out; C : in out Curve from Adaptor3d ; NbPoints : Integer; U1, U2 : Real ; 
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>, <Toler>.
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+    Create(C : in out Curve2d from Adaptor2d ; Abscissa : Real ; Toler : Real = -1)
+        --- Purpose : Computes a uniform abscissa distribution of points on 
+        --  the Curve2d <C>. 
+        --  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+    	returns UniformAbscissa from GCPnts
+     	raises ConstructionError;
+
+    Create(C : in out Curve2d from Adaptor2d ; Abscissa, U1, U2 : Real ; Toler : Real = -1)
+        --- Purpose : Computes a Uniform abscissa distribution of points 
+        --  on a part of the Curve2d <C>. 
+	--  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+     	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve2d from Adaptor2d ; NbPoints : Integer ; 
+               Toler : Real = -1)
+        --- Purpose : Computes a uniform abscissa distribution of points on 
+        --  the Curve2d <C>. 
+        --  <NbPoints> defines the nomber of desired points. 
+	--  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+    	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Create(C : in out Curve2d from Adaptor2d ; NbPoints : Integer; U1, U2 : Real ; 
+               Toler : Real = -1)
+        --- Purpose : Computes a Uniform abscissa distribution of points 
+        --  on a part of the Curve2d <C>. 
+	--  Parameter Toler is equal Precision::Confusion by default.
+	--  It Is used for more precise calculation of curve length
+     	returns UniformAbscissa from GCPnts
+     	raises ConstructionError,
+               DomainError;
+
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; Abscissa : Real ; Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <Toler>
+     	raises ConstructionError
+	is static;
+
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; Abscissa, U1, U2 : Real ; 
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>, <Toler>
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+  
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; NbPoints : Integer ; 
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <NbPoints>, <Toler> and 
+     	raises ConstructionError
+	is static;
+
+
+    Initialize(me : in out; C : in out Curve2d from Adaptor2d ; NbPoints : Integer; U1, U2 : Real ;
+                            Toler : Real = -1)
+    	---Purpose: Initialize the algoritms with <C>, <Abscissa>, <U1>,
+    	--          <U2>, <Toler>.
+     	raises ConstructionError,
+               DomainError
+	is static;
+
+	       
+    IsDone(me) returns Boolean 
+	---C++: inline
+    	is static;
+
+	       
+    NbPoints(me) returns Integer
+	---C++: inline
+    	 is static;
+  
+    Parameter(me; Index : Integer) returns Real 
+        ---Purpose : returns the computed Parameter of index <Index>.
+	---C++: inline
+    	is static;
+   
+    Abscissa(me) returns Real
+      	---Purpose : returne the current abscissa
+      	-- ie the distance between two consecutive points
+	---C++: inline
+	is static;
+
+fields
+
+    myDone       : Boolean;
+    myNbPoints   : Integer ;
+    -- stores the number of points computed with the 
+    -- requested Abscissa else stores the requested
+    -- number of points 
+    myAbscissa   : Real;
+    myParams     : HArray1OfReal from TColStd ;
+    -- the size of this array will be be bigger than myNbPoints
+    --  by one or two 
+    
+    
+
+end UniformAbscissa;

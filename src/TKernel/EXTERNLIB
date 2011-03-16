@@ -1,0 +1,11 @@
+CSF_SOCKETLibs
+CSF_FPELibs
+CSF_ThreadLibs
+CSF_advapi32
+CSF_gdi32
+CSF_user32
+CSF_kernel32
+STLPortLib
+CSF_TBB
+CSF_MotifLibs
+

@@ -1,0 +1,278 @@
+-- File:      GeomAdaptor_Curve.cdl
+-- Created:   Tue Sep  1 10:58:10 1992
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1992
+
+class Curve from GeomAdaptor inherits Curve from Adaptor3d
+        
+    	---Purpose: This class provides an interface between the services provided by any
+    	-- curve from the package Geom and those required of the curve by algorithms which use it.
+        
+uses Vec                  from gp,
+     Pnt                  from gp,
+     Circ                 from gp,
+     Elips                from gp,
+     Hypr                 from gp,
+     Parab                from gp,
+     Lin                  from gp,
+     Array1OfReal         from TColStd,
+     Curve                from Geom,
+     BezierCurve          from Geom,
+     BSplineCurve         from Geom,
+     CurveType            from GeomAbs,
+     Shape                from GeomAbs,
+     HCurve               from Adaptor3d
+     
+raises NoSuchObject from Standard,
+       ConstructionError from Standard,
+       OutOfRange  from Standard,
+       DomainError from Standard
+
+
+is
+
+   Create 
+   returns Curve from GeomAdaptor;
+    	---C++: inline
+
+   Create(C : Curve from Geom) 
+   returns Curve from GeomAdaptor;
+    	---C++: inline
+
+   Create(C : Curve from Geom; UFirst,ULast : Real)
+   returns Curve from GeomAdaptor
+   raises 
+    	ConstructionError from Standard;
+        ---Purpose: ConstructionError is raised if Ufirst>Ulast
+    	---C++: inline
+   
+   Load(me : in out; C : Curve from Geom);
+    	---C++: inline
+   
+   Load(me : in out; C : Curve from Geom; UFirst,ULast : Real)
+   raises 
+    	ConstructionError from Standard;
+    	---Purpose: ConstructionError is raised if Ufirst>Ulast
+
+   Curve(me) returns Curve from Geom
+        ---Purpose:
+    	-- Provides a curve inherited from Hcurve from Adaptor.
+    	-- This is inherited to provide easy to use constructors.
+    	---C++: return const& 
+    	---C++: inline
+   is static;
+
+
+
+   FirstParameter(me) returns Real
+	---C++: inline
+   is redefined static;
+
+   LastParameter(me) returns Real
+	---C++: inline
+   is redefined static;     
+
+   Continuity(me) returns Shape from GeomAbs
+   is redefined static;
+
+   NbIntervals(me:in out; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+   is redefined static;
+
+   Intervals(me: in out; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+   raises
+    	OutOfRange from Standard 
+   is redefined static;
+    
+   Trim(me; First, Last, Tol : Real) returns HCurve from Adaptor3d
+	---Purpose: Returns    a  curve equivalent   of  <me>  between
+	--          parameters <First>  and <Last>. <Tol>  is used  to
+	--          test for 3d points confusion.
+   raises
+    	OutOfRange from Standard
+	---Purpose: If <First> >= <Last> 
+   is redefined static;
+    
+   IsClosed(me) returns Boolean
+   is redefined static;
+    
+   IsPeriodic(me) returns Boolean
+   is redefined static;
+
+   Period(me) returns Real
+   raises
+    	DomainError from Standard -- if the curve is not periodic
+   is redefined static;
+
+    
+   Value(me; U : Real) returns Pnt from gp
+        --- Purpose : Computes the point of parameter U on the curve 
+   is redefined static;
+
+   D0 (me; U : Real; P : out Pnt from gp)
+        --- Purpose : Computes the point of parameter U.
+   is redefined static;
+
+   D1 (me; U : Real; P : out Pnt from gp ; V : out Vec from gp)
+        --- Purpose : Computes the point of parameter U on the curve 
+        --  with its first derivative.
+        --  
+    	--  Warning : On the specific case of BSplineCurve:
+    	--  if the curve is cut in interval of continuity at least C1, the
+    	--  derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis curve.
+   is redefined static;
+    
+   D2 (me; U : Real; P : out Pnt from gp; V1, V2 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first and second
+        --  derivatives V1 and V2.
+        --  
+    	--  Warning : On the specific case of BSplineCurve:
+    	--  if the curve is cut in interval of continuity at least C2, the
+    	--  derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis curve.
+   is redefined static;
+
+   D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+        --  
+    	--  Warning : On the specific case of BSplineCurve:
+    	--  if the curve is cut in interval of continuity at least C3, the
+    	--  derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis curve.
+   is redefined static;
+        
+   DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    	--  Warning : On the specific case of BSplineCurve:
+    	--  if the curve is cut in interval of continuity CN, the
+    	--  derivatives are computed on the current interval.
+    	--  else the derivatives are computed on the basis curve.
+   raises  
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+   is redefined static;
+
+
+   Resolution(me; R3d :Real) returns Real
+        ---Purpose : returns the parametric resolution
+   is redefined static;   
+   
+
+   GetType(me) returns CurveType from GeomAbs
+    	---C++: inline
+   is redefined static;
+
+   Line(me) returns Lin from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+   
+   Circle(me) returns Circ from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Ellipse(me) returns Elips from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Hyperbola(me) returns  Hypr from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+   Parabola(me) returns Parab from gp
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+
+    
+   Degree(me) returns Integer
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+     ---Purpose: 
+     --          this should NEVER make a copy
+     --          of the underlying curve to read
+     --          the relevant information
+     --          
+   IsRational(me) returns Boolean
+    raises 
+    	NoSuchObject from Standard
+    is redefined static;
+    
+     ---Purpose: 
+     --          this should NEVER make a copy
+     --          of the underlying curve to read
+     --          the relevant information
+     --             
+   NbPoles(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+    is redefined static;
+
+     ---Purpose: 
+     --          this should NEVER make a copy
+     --          of the underlying curve to read
+     --          the relevant information
+     --            
+   NbKnots(me) returns Integer
+     raises 
+    	NoSuchObject from Standard
+    is redefined static;     
+     ---Purpose: 
+     --          this should NEVER make a copy
+     --          of the underlying curve to read
+     --          the relevant information
+     --                    
+
+   Bezier(me) returns BezierCurve from Geom
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+   ---Purpose : this will NOT make a copy of the
+    --         Bezier Curve : If you want to modify
+    --         the Curve please make a copy yourself
+    --         Also it will NOT trim the surface to
+    --         myFirst/Last.
+    
+   BSpline(me) returns BSplineCurve from Geom
+   raises 
+    	NoSuchObject from Standard
+   is redefined static;
+    ---Purpose : this will NOT make a copy of the
+    --         BSpline Curve : If you want to modify
+    --         the Curve please make a copy yourself
+    --         Also it will NOT trim the surface to
+    --         myFirst/Last.
+     
+
+   LocalContinuity(me; U1, U2 : Real) returns Shape from GeomAbs 
+   is static private;
+   
+fields 
+
+  myCurve             : Curve            from Geom ;
+  myTypeCurve         : CurveType        from GeomAbs ;
+  myFirst             : Real             from Standard ;
+  myLast              : Real             from Standard;
+  
+friends
+    class Surface from GeomAdaptor
+    
+end Curve;
+

@@ -1,0 +1,48 @@
+-- File:	ParGenCurve.cdl
+-- Created:	Mon Nov 18 09:41:29 1991
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+generic class ParGenCurve from GccGeo (TheCurve as any)
+
+    ---Purpose: Definition of a virtual curve.
+
+uses Pnt2d  from gp,
+     Vec2d  from gp
+     
+is
+
+Create returns ParGenCurve;
+
+Create(C : TheCurve) returns ParGenCurve;
+
+Create(C : TheCurve               ;
+       D : Real     from Standard ) returns ParGenCurve;
+
+Value(me; U : Real)returns Pnt2d;
+    --- Purpose : Computes the point of parameter U on the curve 
+
+D1 (me; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp);
+    --- Purpose : Computes the point of parameter U on the curve with its
+    --  first derivative.
+
+D2 (me; U : Real; P : out Pnt2d from gp ; V1,V2 : out Vec2d from gp);
+    --- Purpose : Computes the point of parameter U on the curve with its
+    --  first derivative and second derivative.
+
+
+FirstParameter(me)  returns Real;
+    	
+LastParameter(me) returns Real;
+
+GetResolution(me) returns Real;
+
+GetIntervals(me) returns Integer;
+
+fields
+
+Cu  : TheCurve              ;
+Dep : Real     from Standard;
+
+end ParGenCurve;

@@ -1,0 +1,128 @@
+--
+-- File:	Graphic3d_Vertex.cdl
+-- Created:	Jeudi 22 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class Vertex from Graphic3d
+
+        ---Purpose: This class allows the creation and update of a
+	--	    3D point.
+
+	is
+
+	Create
+		returns Vertex from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with 0.0, 0.0, 0.0 coordinates.
+
+	Create ( APoint	: Vertex from Graphic3d )
+		returns Vertex from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with coordinates identical to <APoint>.
+	--
+	-- It's just a copy, but this simplifies the management
+	-- of the constructors of VertexC, VertexN and VertexNC.
+
+	Create ( AX, AY ,AZ	: Real from Standard )
+		returns Vertex from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with <AX>, <AY> and <AZ> coordinates.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetCoord ( me			: in out;
+		   Xnew, Ynew, Znew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the coordinates of the point <me>.
+	---Category: Methods to modify the class definition
+
+	SetXCoord ( me		: in out;
+		    Xnew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the X coordinate of the point <me>.
+	---Category: Methods to modify the class definition
+
+	SetYCoord ( me		: in out;
+		    Ynew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the Y coordinate of the point <me>.
+	---Category: Methods to modify the class definition
+
+	SetZCoord ( me		: in out;
+		    Znew	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the Z coordinate of the point <me>.
+	---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Coord ( me;
+		AX, AY, AZ	: out Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Returns the coordinates of the point <me>.
+	---Category: Inquire methods
+
+	X ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the X coordinates of the point <me>.
+	---Category: Inquire methods
+
+	Y ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the Y coordinate of the point <me>.
+	---Category: Inquire methods
+
+	Z ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the Z coordinate of the point <me>.
+	---Category: Inquire methods
+
+	--------------------------
+	-- Category: Class methods
+	--------------------------
+
+	Distance ( myclass;
+		   AV1	: Vertex from Graphic3d;
+		   AV2	: Vertex from Graphic3d )
+		returns Real from Standard;
+	---Level: Public
+	---Purpose: Returns the distance between <AV1> and <AV2>.
+	---Category: Class methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_Vertex
+--
+-- Purpose	:	Declaration of variables specific to points
+--
+-- Reminder	:	A point is defined by its coordinates
+--
+--
+
+	-- the coordinates of a point
+	MyX		:	ShortReal from Standard;
+	MyY		:	ShortReal from Standard;
+	MyZ		:	ShortReal from Standard;
+
+end Vertex;

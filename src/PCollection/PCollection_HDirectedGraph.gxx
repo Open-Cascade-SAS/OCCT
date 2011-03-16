@@ -1,0 +1,180 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_HDirectedGraph.gxx
+// Created:	Wed May 29 17:06:01 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised:     Mireille MERCIEN
+
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+
+//----------------------------------------------------------------------
+PCollection_HDirectedGraph::PCollection_HDirectedGraph () 
+{
+  MyVertices = new PCollection_SetOfVertex;
+  MyEdges = new PCollection_SetOfEdge;
+}
+
+//--------------------------------------------------------------------
+Integer PCollection_HDirectedGraph::NumberOfVertices () const 
+{
+  return MyVertices->Extent();
+}
+
+
+//--------------------------------------------------------------------
+Integer PCollection_HDirectedGraph::NumberOfEdges () const 
+{
+  return MyEdges->Extent();
+} 
+
+//--------------------------------------------------------------------
+Integer PCollection_HDirectedGraph::NumberOfLeaves () const 
+{
+  Integer nb = 0;
+  PCollection_SetIteratorOfSetOfVertex It (MyVertices);
+  while (It.More()) {
+    Handle(PCollection_Vertex) V = It.Value();
+    if (V->IsLeaf()) nb++;
+    It.Next();
+  }
+  return nb;
+}
+
+
+//--------------------------------------------------------------------
+Integer PCollection_HDirectedGraph::NumberOfRoots () const 
+{
+  Integer nb = 0;
+  PCollection_SetIteratorOfSetOfVertex It(MyVertices);
+  while (It.More()) {
+    Handle(PCollection_Vertex) V = It.Value();
+    if (V->IsRoot()) nb++;
+    It.Next();
+  }
+  return nb;
+}
+
+
+//--------------------------------------------------------------------
+Boolean PCollection_HDirectedGraph::IsEmpty () const 
+{
+  return (MyVertices->Extent() == 0);
+}
+
+
+//--------------------------------------------------------------------
+void PCollection_HDirectedGraph::Clear ()  
+{
+  MyVertices = new PCollection_SetOfVertex;
+  MyEdges = new PCollection_SetOfEdge;
+}
+
+
+//--------------------------------------------------------------------
+Boolean PCollection_HDirectedGraph::IsMember 
+                              (const Handle(PCollection_Vertex)& V) const 
+{
+  return MyVertices->Contains(V);
+}
+
+
+//--------------------------------------------------------------------
+Boolean PCollection_HDirectedGraph::IsMember 
+                              (const Handle(PCollection_Edge)& E) const 
+{
+  return MyEdges->Contains(E);
+}
+
+
+//--------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_HDirectedGraph::Add 
+                              (const Item& val) 
+{
+  Handle(PCollection_Vertex) V = new PCollection_Vertex (val,this);
+  MyVertices->Add(V);
+  return V;
+}
+
+
+//--------------------------------------------------------------------
+void PCollection_HDirectedGraph::Remove (const Handle(PCollection_Vertex)& V) 
+{
+  if (IsMember(V)) {
+     PCollection_BackEdgesIterator ItBack(V);
+     while (ItBack.More()) {
+        Handle(PCollection_Edge) BE = ItBack.Value();
+        if (BE->Source() != V) BE->Source()->RemoveFrontEdge(BE);
+        MyEdges->Remove(BE);
+        ItBack.Next();
+     }
+     PCollection_FrontEdgesIterator ItFront(V);
+     while (ItFront.More()) {
+       Handle(PCollection_Edge) FE = ItFront.Value();
+       if (FE->Destination() != V) FE->Destination()->RemoveBackEdge(FE);
+       if (MyEdges->Contains(FE)) MyEdges->Remove(FE);
+       ItFront.Next();
+     }
+     MyVertices->Remove(V);
+//   V->Nullify();  // test Handle nul sur Vertex retire
+   }
+   else  {
+    NoSuchObject::Raise();
+   }
+}
+
+
+//--------------------------------------------------------------------
+Handle(PCollection_Edge) PCollection_HDirectedGraph::Add 
+                    (const Handle(PCollection_Vertex)& source,
+                     const Handle(PCollection_Vertex)& destination,
+                     const Attribute& A) 
+{
+  if (IsMember(source) && IsMember(destination)) {
+    Handle(PCollection_Edge) E = new PCollection_Edge (source,destination,A);
+    source->AddFrontEdge (E);
+    destination->AddBackEdge(E);
+    MyEdges->Add (E);
+    return E;
+  }
+  else {
+    NoSuchObject::Raise();
+  }
+}
+
+//--------------------------------------------------------------------
+void PCollection_HDirectedGraph::Remove (const Handle(PCollection_Edge)& E) 
+{
+  if (IsMember(E)) {
+    (E->Source())->RemoveFrontEdge(E);
+    (E->Destination())->RemoveBackEdge(E);
+    MyEdges->Remove(E);
+//    E->Nullify();  // test Handle nul sur Edge retire
+  }
+  else {
+    NoSuchObject::Raise();
+  }
+}
+
+
+//--------------------------------------------------------------------
+Handle(PCollection_SetOfVertex) PCollection_HDirectedGraph::GetVertices() const 
+{
+  return MyVertices;
+}
+
+
+//--------------------------------------------------------------------
+Handle(PCollection_SetOfEdge) PCollection_HDirectedGraph::GetEdges() const 
+{
+  return MyEdges;
+}
+  
+
+
+
+
+
+
+

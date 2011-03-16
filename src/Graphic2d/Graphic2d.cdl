@@ -1,0 +1,336 @@
+
+-- File:        Graphic2d.cdl
+-- Created:     Tue Jun 22 16:27:10 1993
+-- Author:      Jean Louis FRENKEL, Gerard Gras.
+--              <jlf@stylox>
+-- Modified:    TCL 12-06-00 G002 new enumeration PickMode
+-- Modified:    SAV 16/08/02 new enumeration DisplayStatus
+
+---Copyright:    Matra Datavision 1993
+
+package Graphic2d
+
+        ---Version:
+
+        ---Purpose: This package permits the creation of 2d graphic objects
+        --          in a visualiser.
+        --          Each object, called GraphicObject, is composed of
+        --          primitives and is created in a View.
+        --          Each Primitive is a class and contains attributes.
+        --          Each Primitive have its own method Draw to draw the
+        --          primitive.
+        --          A View manages a set of graphic objects.
+        --          A Drawer makes conversions.
+
+        ---Keywords: Drawer, View, Graphic Object, Primitive, Line,
+        --           Circle, Polyline, Ellips, Curve, Image, Text, HidingText,
+        --           FramedText, Paragraph
+        ---Warning:
+        ---References:
+
+uses
+        Aspect,
+        PlotMgt,
+--      Geom2d,         -- disparait a partir de K4
+        Image,
+        MMgt,
+        gp,
+        OSD,
+        Quantity,
+        TCollection,
+        TColStd,
+        TShort
+
+is
+        -----------------------
+        -- Category: Exceptions
+        -----------------------
+
+        exception CircleDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception EllipsDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception ImageDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception InfiniteLineDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception MarkerDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception PolylineDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception SegmentDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception TextDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception DrawerDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception OverrideColorError inherits OutOfRange;
+        ---Category: Exceptions
+
+        exception DetectionColorError inherits OutOfRange;
+        ---Category: Exceptions
+
+--      exception CurveDefinitionError inherits OutOfRange;     -- disparait a partir de K4
+        ---Category: Exceptions
+
+        exception TransientDefinitionError inherits OutOfRange;
+        ---Category: Exceptions
+
+        ---------------------------------
+        -- Category: The deferred classes
+        ---------------------------------
+
+        deferred class Primitive;
+        ---Purpose: Groups all drawing elements stored in a
+        --          graphic object.
+        ---Category: The deferred classes
+
+        deferred class Line;
+        ---Purpose: Groups all the primitives which behaves like
+        --          geometrical lines.
+        --          for example: Polyline, Circle ...
+        ---Category: The deferred classes
+
+        deferred class VectorialMarker;
+        ---Purpose: Groups all the primitives which behaves like
+        --          geometrical marker.
+        --          for example : EllipsMarker, CircleMarker ...
+        ---Category: The deferred classes
+
+        ------------------------
+        -- Category: The classes
+        ------------------------
+
+        class Buffer;
+        ---Purpose: A Buffer is a list of primitives and/or
+        --          GraphicObject drawn with one color.
+        --          This Buffer is used to attach geometry to
+        --          the cursor in a Aspect_WindowDriver.
+
+        class Drawer;
+        ---Purpose: Internal class, makes conversions.
+
+        class GraphicObject;
+        ---Purpose: A GraphicObject is a primitives manager.
+
+        class HidingGraphicObject;
+        ---Purpose: A HidingGraphicObject is a primitives manager.
+
+        class Vertex;
+        ---Purpose: Defines a 2D point.
+
+        class View;
+        ---Purpose: A View is a graphic object manager.
+
+        class ViewMapping;
+        ---Purpose: Defines a view mapping.
+
+        class TransientManager;
+        ---Purpose: To draw temporary graphics in a view.
+
+        ---------------------------
+        -- Category: Imported types
+        ---------------------------
+
+        imported CBitFields8;
+        ---Purpose: Defines the C structure
+        ---Category: Imported types
+
+        ---------------------
+        -- Category: Pointers
+        ---------------------
+
+        pointer ViewPtr to View from Graphic2d;
+        ---Category: Pointers
+
+        pointer GOPtr to GraphicObject from Graphic2d;
+        ---Category: Pointers
+
+        -------------------------------
+        -- Category: Graphic primitives
+        -------------------------------
+
+        class Circle;
+        ---Category: Graphic primitives
+
+--      class Curve;    -- disparait a partir de K4
+        ---Category: Graphic primitives
+
+        class Ellips;
+        ---Category: Graphic primitives
+
+        class Image;
+        ---Category: Graphic primitives
+
+        class ImageFile;
+        ---Category: Graphic primitives
+
+        class InfiniteLine;
+        ---Category: Graphic primitives
+
+        class Marker;
+        ---Category: Graphic primitives
+
+        class Polyline;
+        ---Category: Graphic primitives
+
+        class Segment;
+        ---Category: Graphic primitives
+
+        class Text;
+        ---Category: Graphic primitives
+
+        class HidingText;
+        ---Category: Graphic primitives
+
+        class FramedText;
+        ---Category: Graphic primitives
+
+        class Paragraph;
+        ---Category: Graphic primitives
+
+        class CircleMarker;
+        ---Category: Graphic primitives
+
+        class PolylineMarker;
+        ---Category: Graphic primitives
+
+        class EllipsMarker;
+        ---Category: Graphic primitives
+
+        class SetOfSegments;
+        ---Category: Set Of Graphic primitives
+
+        class SetOfMarkers;
+        ---Category: Set Of Graphic primitives
+
+--      class SetOfCurves;      -- disparait a partir de K4
+        ---Category: Set Of Graphic primitives
+
+        class SetOfPolylines;
+        ---Category: Set Of Graphic primitives
+
+        ---------------------------------
+        -- Category: enumerations
+        ---------------------------------
+
+        enumeration TypeOfPolygonFilling is     TOPF_EMPTY,
+                                                TOPF_FILLED,
+                                                TOPF_PATTERNED
+        end TypeOfPolygonFilling from Graphic2d;
+    	---Purpose:
+    	-- Defines whether the polygon is filled or displays an
+    	-- empty background.
+    	-- -   The EMPTY syntax defines a polygon
+    	--  transparent background (the frame is visible).
+    	-- -   The FILLED syntax creates a regularly filled
+    	--   polygon by using the method
+    	--   SetInteriorColorIndex.
+    	-- -   The PATTERNED syntax is not yet implemented.
+        enumeration TypeOfAlignment is  TOA_LEFT,
+                                        TOA_CENTER,
+                                        TOA_RIGHT,
+                                        TOA_TOPLEFT,
+                                        TOA_TOPCENTER,
+                                        TOA_TOPRIGHT,
+                                        TOA_MEDIUMLEFT,
+                                        TOA_MEDIUMCENTER,
+                                        TOA_MEDIUMRIGHT,
+                                        TOA_BOTTOMLEFT,
+                                        TOA_BOTTOMCENTER,
+                                        TOA_BOTTOMRIGHT
+        end TypeOfAlignment from Graphic2d;
+    	---Purpose:
+    	-- These specific points define text alignment with
+    	-- respect to the origin of the text.
+        enumeration TypeOfComposition is        TOC_REPLACE,
+                                                TOC_POSTCONCATENATE
+        end TypeOfComposition;
+
+        enumeration TypeOfFrame is              TOF_UNKNOWN,
+                                                TOF_RECTANGULAR,
+                                                TOF_CIRCULAR
+        end TypeOfFrame;
+
+        enumeration TypeOfPrimitive is
+                                        TOP_UNKNOWN,
+                                        TOP_LINE,
+                                        TOP_MARKER,
+                                        TOP_TEXT,
+                                        TOP_IMAGE
+        end TypeOfPrimitive;
+
+        enumeration PickMode is         PM_INCLUDE,
+                                        PM_EXCLUDE,
+                                        PM_INTERSECT
+        end PickMode from Graphic2d;
+
+    	enumeration DisplayStatus is
+	    	    	    	    	DS_DISPLAYED,
+					DS_ERASED,
+					DS_REMOVED,
+					DS_NONE
+	end DisplayStatus from Graphic2d;
+		
+		---------------------------------
+        -- Category: Instantiated classes
+        ---------------------------------
+
+        class SequenceOfBuffer instantiates
+                Sequence from TCollection (Buffer from Graphic2d);
+        ---Category: Instantiated classes
+
+        class BufferList instantiates
+                HSequence from TCollection
+        (Buffer from Graphic2d, SequenceOfBuffer from Graphic2d);
+        ---Category: Instantiated classes
+
+        class SequenceOfGraphicObject instantiates
+                Sequence from TCollection (GraphicObject from Graphic2d);
+        ---Category: Instantiated classes
+
+        class DisplayList instantiates
+                HSequence from TCollection
+        (GraphicObject from Graphic2d, SequenceOfGraphicObject from Graphic2d);
+        ---Category: Instantiated classes
+
+        class SequenceOfPrimitives instantiates
+                Sequence from TCollection(Primitive from Graphic2d);
+        ---Category: Instantiated classes
+
+        class HSequenceOfPrimitives instantiates
+                HSequence from TCollection
+        (Primitive from Graphic2d,SequenceOfPrimitives from Graphic2d);
+        ---Category: Instantiated classes
+
+        class Array1OfVertex instantiates
+                Array1 from TCollection (Vertex from Graphic2d);
+        class HArray1OfVertex instantiates
+                HArray1 from TCollection (Vertex from Graphic2d,Array1OfVertex);
+        ---Category: Instantiated classes
+
+--      class SequenceOfCurve instantiates  -- disparait a partir de K4
+--              Sequence from TCollection (Curve from Geom2d);
+        ---Category: Instantiated classes
+
+        class SequenceOfVertex instantiates
+                Sequence from TCollection (Vertex from Graphic2d);
+        ---Category: Instantiated classes
+        class HSequenceOfVertex instantiates
+                HSequence from TCollection (Vertex from Graphic2d,SequenceOfVertex);
+        ---Category: Instantiated classes
+
+        class SequenceOfPolyline instantiates
+                Sequence from TCollection (HSequenceOfVertex from Graphic2d);
+        ---Category: Instantiated classes
+
+end Graphic2d;

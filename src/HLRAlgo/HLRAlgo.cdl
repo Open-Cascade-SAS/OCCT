@@ -1,0 +1,170 @@
+-- File:	HLRAlgo.cdl
+-- Created:	Tue Feb 18 17:18:30 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+package HLRAlgo 
+--- Purpose:        In order to have the precision required in
+-- industrial design, drawings need to offer the
+-- possibility of removing lines, which are hidden
+-- in a given projection. To do this, the Hidden
+-- Line Removal component provides two
+ --   algorithms: HLRBRep_Algo and HLRBRep_PolyAlgo.
+-- These algorithms remove or indicate lines
+-- hidden by surfaces. For a given projection, they
+-- calculate a set of lines characteristic of the
+-- object being represented. They are also used
+-- in conjunction with extraction utilities, which
+-- reconstruct a new, simplified shape from a
+-- selection of calculation results. This new shape
+-- is made up of edges, which represent the lines
+-- of the visualized shape in a plane. This plane is the projection plane.
+-- HLRBRep_Algo takes into account the shape
+-- itself. HLRBRep_PolyAlgo works with a
+-- polyhedral simplification of the shape. When
+-- you use HLRBRep_Algo, you obtain an exact
+-- result, whereas, when you use
+-- HLRBRep_PolyAlgo, you reduce computation
+-- time but obtain polygonal segments.
+uses
+    Standard,
+    StdFail,
+    MMgt,
+    TCollection,
+    TColStd,
+    TColgp,
+    Intrv,
+    gp,
+    GeomAbs,
+    TopAbs,
+    TopBas,
+    TopCnx,
+    TopLoc,
+    IntRes2d,
+    IntCurveSurface
+
+is
+    class BiPoint;
+    
+    class ListOfBPoint             instantiates List         from TCollection
+    	(BiPoint from HLRAlgo);
+
+    class PolyShellData;
+	---Purpose: All the PolyData of a Shell
+    
+    class PolyInternalData;
+	---Purpose: to Update OutLines.
+    
+    class PolyInternalSegment;
+	---Purpose: to Update OutLines.
+    
+    class PolyInternalNode;
+	---Purpose: to Update OutLines.
+    
+    class PolyData;
+	---Purpose: Data structure of a set of Triangles.
+    
+    class PolyHidingData;
+	---Purpose: Data structure of a set of Hiding Triangles.
+    
+    class TriangleData;
+	---Purpose: Data structure of a triangle.
+    
+    class Array1OfPHDat            instantiates Array1       from TCollection
+    	(PolyHidingData from HLRAlgo);
+	
+    class HArray1OfPHDat           instantiates HArray1      from TCollection
+    	(PolyHidingData from HLRAlgo,
+         Array1OfPHDat  from HLRAlgo);
+	
+    class Array1OfPISeg            instantiates Array1       from TCollection
+    	(PolyInternalSegment from HLRAlgo);
+	
+    class HArray1OfPISeg           instantiates HArray1      from TCollection
+    	(PolyInternalSegment from HLRAlgo,
+         Array1OfPISeg       from HLRAlgo);
+	
+    class Array1OfPINod            instantiates Array1       from TCollection
+    	(PolyInternalNode from HLRAlgo);
+	
+    class HArray1OfPINod           instantiates HArray1      from TCollection
+    	(PolyInternalNode from HLRAlgo,
+         Array1OfPINod    from HLRAlgo);
+	
+    class Array1OfTData            instantiates Array1       from TCollection
+    	(TriangleData from HLRAlgo);
+	
+    class HArray1OfTData           instantiates HArray1      from TCollection
+    	(TriangleData  from HLRAlgo,
+         Array1OfTData from HLRAlgo);
+	
+    class PolyAlgo;
+	---Purpose: to remove Hidden lines on Triangulations.
+    
+    class EdgeStatus;
+	---Purpose: This class describes the  visible-hidden Status of
+	--          an Edge and its parametric bounds.
+	
+    class Projector;
+    	---Purpose: To transform and project Points and Planes.
+	
+    class Intersection;
+	---Purpose: Parameter and State (above, on or under the face).
+
+    class Coincidence;
+	---Purpose: A coincidence  describes the geometry  of the edge
+	--          of the hiding face around the intersection.
+	
+    class Interference             instantiates Interference from TopBas
+    	(Intersection from HLRAlgo, 
+	 Coincidence  from HLRAlgo);
+
+    class InterferenceList         instantiates List         from TCollection
+    	(Interference from HLRAlgo);
+	
+    class EdgesBlock;
+	---Purpose: A set of oriented Edges. (A wire).
+    
+    class WiresBlock;
+	---Purpose: A set of Wires. (A face).
+    
+    class EdgeIterator;
+	---Purpose: Iterator  on the  visible or  hidden  parts of  an
+	--          EdgeStatus.
+    
+    UpdateMinMax (x,y,z : Real    from Standard;
+                  Min   : Address from Standard;
+                  Max   : Address from Standard);
+
+    EnlargeMinMax (tol : Real    from Standard;
+                   Min : Address from Standard;
+                   Max : Address from Standard);
+
+    InitMinMax (Big : Real    from Standard;
+                Min : Address from Standard;
+                Max : Address from Standard);
+
+    EncodeMinMax (Min    : Address from Standard;
+                  Max    : Address from Standard;
+                  MinMax : Address from Standard);
+
+    SizeBox (Min    : Address from Standard;
+             Max    : Address from Standard)
+    returns Real from Standard;
+
+    DecodeMinMax (MinMax : Address from Standard;
+                  Min    : Address from Standard;
+                  Max    : Address from Standard);
+
+    CopyMinMax (IMin : Address from Standard;
+                IMax : Address from Standard;
+                OMin : Address from Standard;
+                OMax : Address from Standard);
+
+    AddMinMax (IMin : Address from Standard;
+               IMax : Address from Standard;
+               OMin : Address from Standard;
+               OMax : Address from Standard);
+
+end HLRAlgo;

@@ -1,0 +1,106 @@
+-- File:	MDataStd.cdl
+-- Created:	Thu Aug  7 16:12:08 1997
+-- Author:	VAUTHIER Jean-Claude 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+
+package MDataXtd 
+
+	---Purpose: Storage    and  Retrieval  drivers   for modelling
+	--          attributes.   Transient  attributes are defined in
+	--          package TDataStd and persistent one are defined in
+	--          package PDataStd
+
+uses TDF,
+     PDF,
+     MDF, 
+     CDM,
+     TDataStd, 
+     TDataXtd,
+     Geom,  -- a supprimer des que Translate est poussee dans MgtGeom
+     PGeom  -- a supprimer des que Translate est poussee dans MgtGeom
+
+is
+
+    	---Purpose: Storage drivers for TDataXtd attributes
+    	--          =======================================
+
+        class ShapeStorageDriver;
+	
+	class PointStorageDriver;
+	
+	class AxisStorageDriver;
+	
+	class PlaneStorageDriver;
+
+    	class GeometryStorageDriver;
+
+	class ConstraintStorageDriver;
+	
+	class PlacementStorageDriver;
+	
+	class PatternStdStorageDriver;
+
+ 
+    
+    	---Purpose: Retrieval drivers for PDataXtd attributes
+    	--          =========================================
+
+	class ShapeRetrievalDriver;	
+	
+	class PointRetrievalDriver;
+	
+	class AxisRetrievalDriver;
+	
+	class PlaneRetrievalDriver;
+
+    	class GeometryRetrievalDriver;
+
+	class ConstraintRetrievalDriver;
+	
+	class PlacementRetrievalDriver;
+	
+	class PatternStdRetrievalDriver;
+
+
+
+    AddStorageDrivers(aDriverSeq : ASDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute storage drivers to <aDriverSeq>.
+
+
+    AddRetrievalDrivers(aDriverSeq : ARDriverHSequence from MDF; theMessageDriver : MessageDriver from CDM);
+	---Purpose: Adds the attribute retrieval drivers to <aDriverSeq>.
+
+
+    Translate (Geometry : Geometry from Geom)
+    	---Purpose: Method to launch in MgtGeom
+    	--           Delete MDataStd_1.cxx
+    	--           Modify MDataStd_GeometryStorageDriver::Paste
+    returns Geometry from PGeom;
+
+
+    Translate (Geometry : Geometry from PGeom)
+    	---Purpose : Method to lasunch in MgtGeom
+    	--           Delete MDataStd_1.cxx
+    	--           Modify MDataStd_GeometryRetrievalDriver::Paste
+    returns Geometry from Geom;
+
+
+    ---Purpose: Translation of TDataXtd enumerations to integer
+    --          ===============================================
+ 
+    ConstraintTypeToInteger (e : ConstraintEnum from TDataXtd)
+    returns Integer from Standard;
+
+    IntegerToConstraintType (i : Integer from Standard)
+    returns ConstraintEnum from TDataXtd;     
+    
+    GeometryTypeToInteger (e : GeometryEnum from TDataXtd)
+    returns Integer from Standard;
+
+    IntegerToGeometryType (i : Integer from Standard)
+    returns GeometryEnum from TDataXtd;     
+    
+end MDataXtd;

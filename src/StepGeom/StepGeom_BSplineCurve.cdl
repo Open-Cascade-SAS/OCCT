@@ -1,0 +1,64 @@
+-- File:        BSplineCurve.cdl
+-- Created:     Fri Dec  1 11:11:14 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BSplineCurve from StepGeom 
+
+inherits BoundedCurve from StepGeom 
+
+
+  -- N.B : EXPRESS Complexe SUBTYPE Declaration :
+
+  -- ANDOR ( ONEOF ( uniform_curve b_spline_curve_with_knots quasi_uniform_curve bezier_curve ) rational_b_spline_curve ) 
+
+uses
+
+	Integer from Standard, 
+	HArray1OfCartesianPoint from StepGeom, 
+	BSplineCurveForm from StepGeom, 
+	Logical from StepData, 
+	CartesianPoint from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable BSplineCurve;
+	---Purpose: Returns a BSplineCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aDegree : Integer from Standard;
+	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aCurveForm : BSplineCurveForm from StepGeom;
+	      aClosedCurve : Logical from StepData;
+	      aSelfIntersect : Logical from StepData) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDegree(me : mutable; aDegree : Integer);
+	Degree (me) returns Integer;
+	SetControlPointsList(me : mutable; aControlPointsList : mutable HArray1OfCartesianPoint);
+	ControlPointsList (me) returns mutable HArray1OfCartesianPoint;
+	ControlPointsListValue (me; num : Integer) returns mutable CartesianPoint;
+	NbControlPointsList (me) returns Integer;
+	SetCurveForm(me : mutable; aCurveForm : BSplineCurveForm);
+	CurveForm (me) returns BSplineCurveForm;
+	SetClosedCurve(me : mutable; aClosedCurve : Logical);
+	ClosedCurve (me) returns Logical;
+	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
+	SelfIntersect (me) returns Logical;
+
+fields
+
+	degree : Integer from Standard;
+	controlPointsList : HArray1OfCartesianPoint from StepGeom;
+	curveForm : BSplineCurveForm from StepGeom; -- an Enumeration
+	closedCurve : Logical from StepData;
+	selfIntersect : Logical from StepData;
+
+end BSplineCurve;

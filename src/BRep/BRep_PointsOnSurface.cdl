@@ -1,0 +1,36 @@
+-- File:	BRep_PointsOnSurface.cdl
+-- Created:	Tue Aug 10 14:20:39 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+deferred class PointsOnSurface from BRep inherits PointRepresentation from BRep
+
+	---Purpose: 
+
+uses
+
+    Surface  from Geom,
+    Location from TopLoc
+
+is
+    Initialize (P : Real;
+    	    	S : Surface  from Geom;
+    	        L : Location from TopLoc);
+		
+
+    Surface(me) returns any Surface from Geom
+	---C++: return const &
+    is redefined;
+    
+    Surface(me : mutable; S : Surface from Geom)
+    is redefined;    
+
+fields
+
+    mySurface : Surface from Geom;
+
+end PointsOnSurface;

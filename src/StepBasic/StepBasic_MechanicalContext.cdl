@@ -1,0 +1,14 @@
+-- File:	StepBasic_MechanicalContext.cdl
+-- Created:	Wed Jul 24 14:32:07 1996
+-- Author:	Frederic MAUPAS
+--		<fma@pronox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class MechanicalContext from StepBasic inherits ProductContext from StepBasic 
+
+is
+
+	Create returns mutable MechanicalContext;
+	---Purpose: Returns a MechanicalContext
+
+end MechanicalContext;

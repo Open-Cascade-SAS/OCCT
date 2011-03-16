@@ -1,0 +1,35 @@
+// File:	GProp_VGPropsGK.lxx
+// Created:	Wed Dec 21 11:31:17 2005
+// Author:	Sergey KHROMOV
+//		<skv@dimox>
+
+
+//==========================================================================
+//function : Constructor
+//           Empty constructor.
+//==========================================================================
+
+inline GProp_VGPropsGK::GProp_VGPropsGK()
+     : myErrorReached(0.)
+{
+}
+
+//==========================================================================
+//function : SetLocation
+//           Sets the vertex that delimit 3D closed region of space.
+//==========================================================================
+
+inline void GProp_VGPropsGK::SetLocation(const gp_Pnt &theVertex)
+{
+  loc = theVertex;
+}
+
+//==========================================================================
+//function : GetErrorReached
+//           Returns the reached Error.
+//==========================================================================
+
+inline Standard_Real GProp_VGPropsGK::GetErrorReached() const
+{
+  return myErrorReached;
+}

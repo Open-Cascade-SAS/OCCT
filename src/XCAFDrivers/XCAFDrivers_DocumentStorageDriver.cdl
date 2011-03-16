@@ -1,0 +1,25 @@
+-- File:	XCAFDrivers_DocumentStorageDriver.cdl
+-- Created:	Wed May 24 11:55:56 2000
+-- Author:	Edward AGAPOV
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DocumentStorageDriver from XCAFDrivers 
+inherits DocumentStorageDriver from MDocStd
+		    
+	---Purpose: storage driver of a  XS document
+		    
+uses
+    ASDriverTable from MDF,
+    MessageDriver from CDM
+
+is
+    Create returns mutable DocumentStorageDriver from XCAFDrivers;
+
+    AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM)
+    returns ASDriverTable from MDF
+    is redefined;
+
+end DocumentStorageDriver;
+    

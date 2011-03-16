@@ -1,0 +1,82 @@
+-- File:	BOPTools_Pave.cdl
+-- Created:	Thu Feb  8 12:26:04 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class Pave from BOPTools 
+
+	---Purpose:  
+    	--  Class for storing info about a vertex on an edge 
+
+uses 
+    KindOfInterference from BooleanOperations 
+    
+is 
+    Create 
+    	returns Pave from BOPTools; 
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Create (Index: Integer from Standard; 
+            aParam:Real from Standard;  
+    	    aType:  KindOfInterference from BooleanOperations   
+    	    	    =BooleanOperations_UnknownInterference)   
+    	returns Pave from BOPTools;  
+    	---Purpose:  
+    	--- Constructor 
+    	--- Index  - DS-index of the vertex    	 
+    	--- aParam - value of the parameter of the vertex on an edge              
+    	--- aType  - the type of interference from which the pave comes from        
+    	---
+    SetParam  (me:out; aParam:Real from Standard);  
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    SetIndex  (me:out; Index: Integer from Standard); 
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    SetType   (me:out;  aType:KindOfInterference from BooleanOperations); 
+    	---Purpose:  
+    	--- Modifier  
+    	---
+    SetInterference (me:out; Index: Integer from Standard); 
+    	---Purpose:  
+    	--- Modifier  
+    	--- Sets the index of the interference in corresponding table 
+    	---
+    Param     (me) 
+    	returns Real from Standard;	    		  
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Index     (me) 
+	returns Integer from Standard; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Type   (me) 
+    	returns KindOfInterference from BooleanOperations; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Interference(me) 
+	returns Integer from Standard; 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    IsEqual(me;  Other:Pave from BOPTools) 
+    	returns Boolean from Standard; 
+    	---Purpose:  
+    	--- Returns TRUE if  <Other>==me 
+    	---
+fields 
+    myParam:  Real from Standard; 
+    myIndex:  Integer from Standard; 
+    myType :  KindOfInterference from BooleanOperations; 
+    myInterf: Integer from Standard; 
+end Pave;
+
+

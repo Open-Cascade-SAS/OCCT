@@ -1,0 +1,115 @@
+-- File:	Approx_CurvilinearParameter.cdl
+-- Created:	Fri Aug 22 08:19:47 1997
+-- Author:	Jeannine PANCIATICI,  Sergey SOKOLOV
+--		<ssv@nonox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CurvilinearParameter from Approx 
+
+    ---Purpose: Approximation of a Curve to make its parameter be its
+    --          curvilinear  abscissa
+    --          If the curve is a curve on a surface S, C2D is the corresponding Pcurve,
+    --          we considere the curve is given by its representation S(C2D(u))
+    --          If the curve is a curve on 2 surfaces S1 and S2 and C2D1 C2D2 are  
+    --          the two corresponding Pcurve, we considere the curve is given  
+    --          by its representation  1/2(S1(C2D1(u) + S2 (C2D2(u)))
+
+uses 
+    Shape        from GeomAbs,
+    HSurface      from Adaptor3d,
+    HCurve        from Adaptor3d,
+    HCurve2d        from Adaptor2d,
+    BSplineCurve from Geom,
+    BSplineCurve from Geom2d
+    
+raises OutOfRange        from Standard,
+       ConstructionError from Standard
+
+is  
+    Create (C3D : HCurve from Adaptor3d; 
+            Tol : Real; 
+	    Order : Shape from GeomAbs;
+            MaxDegree   : Integer; 
+            MaxSegments : Integer)   
+
+    returns CurvilinearParameter from Approx
+    ---Purpose : case of a free 3D curve
+    --
+    raises ConstructionError; 
+    -- If the length of the curve can't be computed or if the length is null
+  
+    Create (C2D   : HCurve2d   from  Adaptor2d;
+	    Surf  : HSurface from Adaptor3d;
+            Tol   : Real; 
+	    Order : Shape from GeomAbs;
+            MaxDegree   : Integer; 
+            MaxSegments : Integer)   
+    returns  CurvilinearParameter from Approx  
+    ---Purpose : case of a curve on one surface
+    --
+    raises ConstructionError; 
+    -- If the length of the curve can't be computed or if the length is null
+
+    Create (C2D1  : HCurve2d   from Adaptor2d;
+	    Surf1 : HSurface from Adaptor3d; 
+	    C2D2  : HCurve2d   from Adaptor2d; 
+	    Surf2 : HSurface from Adaptor3d;
+            Tol   : Real; 
+	    Order : Shape from GeomAbs;
+            MaxDegree   : Integer; 
+            MaxSegments : Integer)   
+    returns  CurvilinearParameter from Approx
+    ---Purpose : case of a curve on two surfaces
+    --           
+    raises ConstructionError; 
+    -- If the length of the curve can't be computed or if the length is null
+
+    IsDone(me) returns Boolean from Standard;
+    --  True if the approximation succeeded within the imposed
+    --  tolerances 
+ 
+    HasResult(me) returns Boolean from Standard;
+    -- True if the approximation did come out with a result that
+    --  is not NECESSARELY within the required tolerance
+ 
+    Curve3d(me) returns BSplineCurve from Geom; 
+    --- Purpose: returns the Bspline curve corresponding to the reparametrized 3D curve 
+
+    MaxError3d (me) returns Real; 
+    --- Purpose: returns the maximum error on the reparametrized 3D curve
+   
+    Curve2d1(me) returns BSplineCurve from Geom2d; 
+    ---Purpose: returns the BsplineCurve representing the reparametrized 2D curve on the
+    --          first surface (case of a curve on one or two surfaces)
+
+    MaxError2d1(me) returns Real; 
+    ---Purpose: returns the maximum error on the first reparametrized 2D curve
+
+    Curve2d2(me) returns BSplineCurve from Geom2d; 
+    ---Purpose: returns the BsplineCurve representing the reparametrized 2D curve on the
+    --          second surface (case of a curve on two surfaces)
+
+    MaxError2d2(me) returns Real; 
+    ---Purpose: returns the maximum error on the second reparametrized 2D curve 
+     
+    Dump(me; o: in out OStream); 
+    ---Purpose: print the maximum errors(s) 
+     
+    ToleranceComputation(myclass; C2D : HCurve2d from Adaptor2d; S : HSurface from Adaptor3d;  
+                         MaxNumber : Integer; Tol : Real; TolV, TolW : out Real) 
+    is private; 
+        
+fields 
+  
+    myCase        : Integer      from Standard;
+    myDone        : Boolean      from Standard; 
+    myHasResult   : Boolean      from Standard; 
+    myCurve3d     : BSplineCurve from Geom; 
+    myMaxError3d  : Real         from Standard;
+    myCurve2d1    : BSplineCurve from Geom2d; 
+    myMaxError2d1 : Real         from Standard;
+    myCurve2d2    : BSplineCurve from Geom2d;
+    myMaxError2d2 : Real         from Standard;
+
+end CurvilinearParameter;

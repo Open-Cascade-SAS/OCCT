@@ -1,0 +1,44 @@
+-- File:        BoxDomain.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BoxDomain from StepShape 
+
+inherits TShared from MMgt
+
+uses
+
+	CartesianPoint from StepGeom, 
+	Real from Standard
+is
+
+	Create returns mutable BoxDomain;
+	---Purpose: Returns a BoxDomain
+
+	Init (me : mutable;
+	      aCorner : mutable CartesianPoint from StepGeom;
+	      aXlength : Real from Standard;
+	      aYlength : Real from Standard;
+	      aZlength : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetCorner(me : mutable; aCorner : mutable CartesianPoint);
+	Corner (me) returns mutable CartesianPoint;
+	SetXlength(me : mutable; aXlength : Real);
+	Xlength (me) returns Real;
+	SetYlength(me : mutable; aYlength : Real);
+	Ylength (me) returns Real;
+	SetZlength(me : mutable; aZlength : Real);
+	Zlength (me) returns Real;
+
+fields
+
+	corner : CartesianPoint from StepGeom;
+	xlength : Real from Standard;
+	ylength : Real from Standard;
+	zlength : Real from Standard;
+
+end BoxDomain;

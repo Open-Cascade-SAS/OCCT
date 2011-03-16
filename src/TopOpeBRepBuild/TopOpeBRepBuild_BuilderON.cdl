@@ -1,0 +1,50 @@
+-- File:	TopOpeBRepBuild_BuilderON.cdl
+-- Created:	Mon Jun 14 10:23:56 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class BuilderON from TopOpeBRepBuild
+
+uses
+
+    PBuilder from TopOpeBRepBuild,
+    PGTopo from TopOpeBRepBuild,
+    PWireEdgeSet from TopOpeBRepBuild,
+    ListOfShape from TopTools,
+    Shape from TopoDS,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    Plos from TopOpeBRepTool
+
+is
+    -- BuilderON3d
+    --------------
+    Create returns BuilderON;
+    Create(PB:PBuilder;F:Shape;PG:PGTopo;PLSclass:Plos;PWES:PWireEdgeSet) returns BuilderON;
+    Perform(me:in out;PB:PBuilder;F:Shape;PG:PGTopo;PLSclass:Plos;PWES:PWireEdgeSet) is static;
+
+    -- private
+    GFillONCheckI(me;I:Interference) returns Boolean;
+    GFillONPartsWES1(me:in out;I:Interference);
+    GFillONPartsWES2(me:in out;I:Interference;EspON:Shape);
+
+
+    -- BuilderON2d
+    --------------
+    Perform2d(me:in out;PB:PBuilder;F:Shape;PG:PGTopo;PLSclass:Plos;PWES:PWireEdgeSet) is static;
+    
+    -- private
+    GFillONParts2dWES2(me:in out;I:Interference;EspON:Shape);
+    
+fields
+
+    myPB : PBuilder from TopOpeBRepBuild;
+    myPG : PGTopo from TopOpeBRepBuild;
+    myPLSclass : Plos from TopOpeBRepTool;
+    myPWES : PWireEdgeSet from TopOpeBRepBuild;
+    myFace : Shape from TopoDS;
+    
+    myFEI : ListOfInterference from TopOpeBRepDS; --BuilderON2d 
+    
+end BuilderON from TopOpeBRepBuild;

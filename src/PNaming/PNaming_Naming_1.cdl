@@ -1,0 +1,26 @@
+-- File:	PNaming_Naming_1.cdl
+-- Created:	Fri Aug 15 18:19:05 2008 
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+---Copyright:	Open CasCade SA 2008
+
+
+class Naming_1 from PNaming inherits Attribute from PDF
+
+	---Purpose: 
+uses 
+    Name_1 from PNaming
+			    
+is
+    Create
+    returns mutable Naming_1 from PNaming;
+    
+    SetName(me : mutable ; aName : Name_1 from PNaming);
+
+    GetName(me) returns Name_1 from PNaming;
+
+fields
+
+    myName :  Name_1 from PNaming;
+
+
+end Naming_1;

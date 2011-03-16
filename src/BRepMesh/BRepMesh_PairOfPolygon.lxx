@@ -1,0 +1,24 @@
+// File:      BRepMesh_PairOfPolygon.lxx
+// Created:   26.01.09 11:24:04
+// Author:    Pavel TELKOV
+// Copyright: Open CASCADE 2009
+
+//=======================================================================
+//function : First
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Poly_PolygonOnTriangulation)& BRepMesh_PairOfPolygon::First() const
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : Last
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Poly_PolygonOnTriangulation)& BRepMesh_PairOfPolygon::Last() const
+{
+  return myLast;
+}

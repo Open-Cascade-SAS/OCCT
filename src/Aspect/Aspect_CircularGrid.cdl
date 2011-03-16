@@ -1,0 +1,85 @@
+-- File:	Aspect_CircularGrid.cdl
+-- Created:	Fri Mar 17 08:21:04 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+class CircularGrid from Aspect
+
+inherits Grid from Aspect
+
+
+uses
+    PlaneAngle, Length from Quantity
+
+raises 
+    NegativeValue,NullValue,NumericError from Standard
+
+is 
+
+    Create(aRadiusStep: Length from Quantity;
+	       aDivisionNumber: Integer from Standard;
+               XOrigin: Length from Quantity = 0;
+	       anYOrigin: Length from Quantity = 0;
+               aRotationAngle: PlaneAngle from Quantity = 0)
+    returns mutable CircularGrid from Aspect;
+    ---Purpose: creates a new grid. By default this grid is not
+    --          active.
+    
+---Category: grid definition methods
+
+
+    SetRadiusStep(me: mutable; aStep: Length from Quantity) 
+    ---Purpose: defines the x step of the grid.
+    raises NegativeValue,NullValue from Standard
+    ---Warning: raises an exception if <aStep> is not strictly positive.
+    is static;
+
+    SetDivisionNumber(me: mutable; aNumber: Integer from Standard)
+    ---Purpose: defines the step of the grid.
+    raises NegativeValue,NullValue from Standard
+    ---Warning: raises an exception if <aNumber> is not strictly positive.
+    is static;
+
+    SetGridValues(me: mutable; XOrigin, YOrigin: Length from Quantity;
+                               RadiusStep: Length from Quantity;
+                               DivisionNumber: Integer from Standard;
+                               RotationAngle: PlaneAngle from Quantity)
+    raises NegativeValue,NullValue from Standard
+    ---Warning: raises an exception if <RadiusStep> is not strictly positive.
+    ---Warning: raises an exception if <DivisionNumber> is not strictly positive.
+    is static;
+ 
+   
+---Category: Pick methods
+--           
+    Compute(me; X,Y: Length from Quantity; gridX, gridY : out Length from Quantity)
+    ---Purpose: returns the point of the grid the closest to the point X,Y
+    is static;
+    
+
+    
+---Category: inquire methods
+
+    RadiusStep(me) returns Length from Quantity
+    ---Purpose: returns the x step of the grid.
+    is static;
+
+    DivisionNumber(me) returns Integer from Standard
+    ---Purpose: returns the x step of the grid.
+    is static;
+    
+---Category: private methods.
+
+    
+    Init(me: mutable)
+    is redefined static;
+    
+fields
+
+    myRadiusStep: Length from Quantity;
+    myDivisionNumber: Integer from Standard;
+    myAlpha: Real from Standard;
+    myA1,myB1: Real from Standard;
+    
+end CircularGrid from Aspect;

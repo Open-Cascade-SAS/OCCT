@@ -1,0 +1,122 @@
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+
+#include <gp_Lin2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Parab2d.hxx>
+
+
+Standard_Boolean  IGESToBRep_TopoCurve::Project(TopoDS_Wire& wir, 
+						const TopoDS_Face& face)
+{
+
+  //  Creation du GeomAdaptor pour la surface support :
+  //  =================================================
+
+  if (face.IsNull() || wir.IsNull()) return Standard_False;
+  TopLoc_Location          SrfLoc;
+  Handle(Geom_Surface)     Srf = BRep_Tool::Surface(face,SrfLoc);
+  Standard_Real            UMin, UMax, VMin, VMax;
+  BRepTools::UVBounds(face,UMin, UMax, VMin, VMax);
+  GeomAdaptor_Surface      GASrf(Srf, UMin, UMax, VMin, VMax);
+
+
+  //  Creation des GeomAdaptors pour mettre a jour les edges du wire :
+  //  ================================================================
+
+  BRep_Builder  B;
+  for (TopoDS_Iterator  Iter(wir); Iter.More(); Iter.Next()) {
+
+    Standard_Integer  num = 1;
+    TopoDS_Shape      Sh  = Iter.Value();
+    if (Sh.IsNull() || Sh.ShapeType()!=TopAbs_EDGE)
+      continue;
+
+    TopoDS_Edge                 E = TopoDS::Edge(Sh);
+    TopLoc_Location             L;
+    Standard_Real               a,b;
+    Handle(Geom_Curve)          C = BRep_Tool::Curve(E,L,a,b);
+    GeomAdaptor_Curve           GACrv(C,a,b);
+
+
+    //  Test of the 3d curve type :
+    //  ===========================
+
+    ProjLib_ProjectedCurve  PrjCrv;
+    GeomAbs_CurveType           CrvTpe = GACrv.GetType();
+    if (CrvTpe==GeomAbs_BezierCurve  ||
+	CrvTpe==GeomAbs_BSplineCurve ||
+	CrvTpe==GeomAbs_OtherCurve) {
+      return  Standard_False;
+    }
+    else {
+      PrjCrv = ProjLib_ProjectedCurve
+	(new GeomAdaptor_HSurface(GASrf),
+	 new GeomAdaptor_HCurve(GACrv));
+
+      CrvTpe = PrjCrv.GetType();
+    }
+
+    //  Test of the 2d curve type :
+    //  ===========================
+
+    switch (CrvTpe) {
+
+    case GeomAbs_Line :
+      {
+	gp_Lin2d  Lin = PrjCrv.Line();
+	Handle(Geom2d_Line)  GLin = new Geom2d_Line(Lin);
+	B.UpdateEdge(E,GLin,face,GetEpsGeom());
+	B.Range(E,face,a,b);
+      }
+      break;
+    case GeomAbs_Circle :
+      {
+	gp_Circ2d  C = PrjCrv.Circle();
+	Handle(Geom2d_Circle)  GC = new Geom2d_Circle(C);
+	B.UpdateEdge(E,GC,face,GetEpsGeom());
+	B.Range(E,face,a,b);
+      }
+      break;
+    case GeomAbs_Ellipse :
+      {
+	gp_Elips2d  Elps = PrjCrv.Ellipse();
+	Handle(Geom2d_Ellipse)  GElps = new Geom2d_Ellipse(Elps);
+	B.UpdateEdge(E,GElps,face,GetEpsGeom());
+	B.Range(E,face,a,b);
+      }
+      break;
+    case GeomAbs_Hyperbola :
+      {
+	gp_Hypr2d  H = PrjCrv.Hyperbola();
+	Handle(Geom2d_Hyperbola)  GH = new Geom2d_Hyperbola(H);
+	B.UpdateEdge(E,GH,face,GetEpsGeom());
+	B.Range(E,face,a,b);
+      }
+      break;
+    case GeomAbs_Parabola :
+      {
+	gp_Parab2d  P = PrjCrv.Parabola();
+	Handle(Geom2d_Parabola)  GP = new Geom2d_Parabola(P);
+	B.UpdateEdge(E,GP,face,GetEpsGeom());
+	B.Range(E,face,a,b);
+      }
+      break;
+    default :
+      {
+	return  Standard_False;
+      }
+      break;
+    }
+  }
+
+  return  Standard_True;
+  
+}

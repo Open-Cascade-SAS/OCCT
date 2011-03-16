@@ -1,0 +1,151 @@
+-- File:	HatchGen_Domain.cdl
+-- Created:	Fri Nov  5 18:15:21 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@sdsun1>
+-- Copyright:   Matra Datavision 1993
+
+class Domain from HatchGen
+
+uses
+    PointOnHatching from HatchGen
+
+raises
+    DomainError from Standard
+
+is
+
+    Create
+    
+    	---Purpose: Creates an infinite domain.
+
+        returns Domain from HatchGen ;
+	
+
+    Create (P1, P2 : PointOnHatching from HatchGen)
+    
+    	---Purpose: Creates a domain for the curve associated to a hatching.
+
+    	returns Domain from HatchGen ;
+
+
+    Create (P : PointOnHatching from HatchGen ; First : Boolean from Standard)
+    
+    	---Purpose: Creates a semi-infinite domain for the curve associated
+    	--          to a hatching. The `First' flag means that the given
+    	--          point is the first one.
+
+    	returns Domain from HatchGen ;
+
+
+    SetPoints (me : in out ; P1, P2 : PointOnHatching from HatchGen)
+    
+    	---Purpose: Sets the first and the second points of the domain.
+
+      	---C++: inline
+	is static ;
+
+
+    SetPoints (me : in out)
+    
+    	---Purpose: Sets the first and the second points of the domain
+    	--          as the infinite.
+
+    	---C++: inline
+	is static ;
+
+
+    SetFirstPoint (me : in out ; P : PointOnHatching from HatchGen)
+    
+    	---Purpose: Sets the first point of the domain.
+
+    	---C++: inline
+	is static ;
+
+
+    SetFirstPoint (me : in out)
+    
+    	---Purpose: Sets the first point of the domain at the
+    	--          infinite.
+
+    	---C++: inline
+	is static ;
+
+
+    SetSecondPoint (me : in out ; P : PointOnHatching from HatchGen)
+    
+    	---Purpose: Sets the second point of the domain.
+
+    	---C++: inline
+	is static ;
+
+
+    SetSecondPoint (me : in out)
+    
+    	---Purpose: Sets the second point of the domain at the
+    	--          infinite.
+
+    	---C++: inline
+	is static ;
+
+
+    HasFirstPoint (me)
+
+    	---Purpose: Returns True if the domain has a first point.
+ 
+    	---C++: inline
+   	returns Boolean from Standard
+	is static ;
+
+
+    FirstPoint (me)
+    
+    	---Purpose: Returns the first point of the domain.
+    	--          The exception DomainError is raised if
+    	--          HasFirstPoint returns False.
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns PointOnHatching from HatchGen
+	raises DomainError from Standard
+	is static ;
+
+
+    HasSecondPoint (me)
+
+    	---Purpose: Returns True if the domain has a second point.
+
+    	---C++: inline
+    	returns Boolean from Standard
+	is static ;
+
+
+    SecondPoint (me)
+    
+    	---Purpose: Returns the second point of the domain.
+    	--          The exception DomainError is raised if
+    	--          HasSecondPoint returns False.
+
+    	---C++: inline
+    	---C++: return const &
+
+    	returns PointOnHatching from HatchGen
+	raises DomainError from Standard
+	is static ;
+
+
+    Dump (me; Index : Integer from Standard = 0)
+    
+    	---Purpose: Dump of the domain.
+
+    	is static ;
+	
+
+fields
+
+    myHasFirstPoint  : Boolean         from Standard ;
+    myFirstPoint     : PointOnHatching from HatchGen ;
+    myHasSecondPoint : Boolean         from Standard ;
+    mySecondPoint    : PointOnHatching from HatchGen ;
+    
+end Domain from HatchGen ;

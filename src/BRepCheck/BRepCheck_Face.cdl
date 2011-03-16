@@ -1,0 +1,90 @@
+-- File:	BRepCheck_Face.cdl
+-- Created:	Fri Dec 15 11:48:23 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class Face from BRepCheck inherits Result from BRepCheck
+
+	---Purpose: 
+
+uses Shape  from TopoDS,
+     Face   from TopoDS,
+     Status from BRepCheck,
+     DataMapOfShapeListOfShape from TopTools
+
+is
+
+    Create(F: Face from TopoDS)
+    
+    	returns mutable Face from BRepCheck;
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS);
+    
+
+
+    Minimum(me: mutable);
+    
+
+    
+    Blind(me: mutable);
+    
+    
+    
+    IntersectWires(me: mutable; Update: Boolean from Standard = Standard_False)
+    
+    	returns Status from BRepCheck
+	is static;
+
+
+    ClassifyWires(me: mutable; Update: Boolean from Standard = Standard_False)
+    
+    	returns Status from BRepCheck
+	is static;
+
+
+
+    OrientationOfWires(me: mutable; 
+    	    	    	Update: Boolean from Standard = Standard_False)
+    
+    	returns Status from BRepCheck
+	is static;
+
+
+    SetUnorientable(me: mutable)
+    
+    	is static;
+
+
+    IsUnorientable(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+    GeometricControls(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    GeometricControls(me: mutable; B: Boolean from Standard)
+    
+	is static;
+
+
+
+fields
+
+    myIntdone : Boolean                   from Standard;
+    myIntres  : Status                    from BRepCheck;
+    myImbdone : Boolean                   from Standard;
+    myImbres  : Status                    from BRepCheck;
+    myOridone : Boolean                   from Standard;
+    myOrires  : Status                    from BRepCheck;
+    myMapImb  : DataMapOfShapeListOfShape from TopTools;
+    myGctrl   : Boolean from Standard;
+
+end Face;

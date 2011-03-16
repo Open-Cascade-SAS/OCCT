@@ -1,0 +1,65 @@
+--
+-- File      :  GeneralLabel.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class GeneralLabel from IGESDimen  inherits IGESEntity
+
+        ---Purpose: defines GeneralLabel, Type <210> Form <0>
+        --          in package IGESDimen
+        --          Used for general labeling with leaders
+
+uses
+
+        GeneralNote          from IGESDimen,
+        LeaderArrow          from IGESDimen,
+        HArray1OfLeaderArrow from IGESDimen
+
+raises OutOfRange
+
+is
+
+        Create returns mutable GeneralLabel;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me          : mutable;
+              aNote       : GeneralNote;
+              someLeaders : HArray1OfLeaderArrow);
+        ---Purpose : This method is used to set the fields of the class
+        --           GeneralLabel
+        --       - aNote       : General Note Entity
+        --       - someLeaders : Associated Leader Entities
+
+        Note (me) returns GeneralNote;
+        ---Purpose : returns General Note Entity
+
+        NbLeaders (me) returns Integer;
+        ---Purpose : returns Number of Leaders
+
+        Leader (me; Index : Integer) returns LeaderArrow
+        raises OutOfRange;
+        ---Purpose : returns Leader Entity
+        -- raises exception if Index <= 0 or Index > NbLeaders()
+
+fields
+
+--
+-- Class    : IGESDimen_GeneralLabel
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class GeneralLabel.
+--
+-- Reminder : A GeneralLabel instance is defined by :
+--            - Note    : General Note Entity
+--            - Leaders : Associated Leader Entities
+-- An GeneralLabel Entity consists of a general note with one or more
+-- associated leaders.
+
+        theNote      : GeneralNote;
+        theLeaders   : HArray1OfLeaderArrow;
+
+end GeneralLabel;

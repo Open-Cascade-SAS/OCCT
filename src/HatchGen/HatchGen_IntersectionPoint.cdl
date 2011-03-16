@@ -1,0 +1,176 @@
+-- File:	HatchGen_IntersectionPoint.cdl
+-- Created:	Fri Oct 29 15:21:47 1993
+-- Author:	Jean Marc LACHAUME
+--		<jml@phobox>
+-- Copyright:	Matra Datavision 1993
+
+deferred class IntersectionPoint from HatchGen
+
+uses
+    Orientation       from TopAbs ,
+    State             from TopAbs ,
+    IntersectionPoint from IntRes2d
+
+is
+
+
+    Initialize
+    
+    	---Purpose: Creates an empty intersection point.
+
+      	---Category: IntersectionPoint
+
+    	is protected ;
+
+
+    SetIndex (me : in out ; Index : Integer from Standard)
+
+       	---Purpose: Sets the index of the supporting curve.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    Index (me)
+    
+    	---Purpose: Returns the index of the supporting curve.
+
+    	---Category: IntersectionPoint
+
+    	returns Integer from Standard
+	is static ;
+
+
+    SetParameter (me : in out ; Parameter : Real from Standard)
+
+       	---Purpose: Sets the parameter on the curve.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    Parameter (me)
+
+       	---Purpose: Returns the parameter on the curve.
+
+      	---Category: IntersectionPoint
+
+    	returns Real from Standard
+    	is static ;
+
+
+    SetPosition (me : in out ; Position : Orientation from TopAbs)
+		 
+    	---Purpose: Sets the position of the point on the curve.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    Position (me)
+    
+      	---Purpose: Returns the position of the point on the curve.
+
+      	---Category: IntersectionPoint
+
+    	returns Orientation from TopAbs
+    	is static ;
+
+
+    SetStateBefore (me : in out ; State : State from TopAbs)
+		   
+      	---Purpose: Sets the transition state before the intersection.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    StateBefore (me)
+    
+      	---Purpose: Returns the transition state before the intersection.
+
+      	---Category: IntersectionPoint
+
+    	returns State from TopAbs
+    	is static ;
+
+
+    SetStateAfter (me : in out ; State : State from TopAbs)
+		   
+      	---Purpose: Sets the transition state after the intersection.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    StateAfter (me)
+    
+      	---Purpose: Returns the transition state after of the intersection.
+
+      	---Category: IntersectionPoint
+
+    	returns State from TopAbs
+    	is static ;
+
+
+    SetSegmentBeginning (me : in out ; State : Boolean from Standard = Standard_True)
+    
+    	---Purpose: Sets the flag that the point is the beginning of a segment.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    SegmentBeginning (me)
+    
+    	---Purpose: Returns the flag that the point is the beginning of a segment.
+
+      	---Category: IntersectionPoint
+
+    	returns Boolean from Standard
+    	is static ;
+
+
+    SetSegmentEnd (me : in out ; State : Boolean from Standard = Standard_True)
+    
+    	---Purpose: Sets the flag that the point is the end of a segment.
+
+      	---Category: IntersectionPoint
+
+    	is static ;
+
+
+    SegmentEnd (me)
+    
+    	---Purpose: Returns the flag that the point is the end of a segment.
+
+      	---Category: IntersectionPoint
+
+    	returns Boolean from Standard
+    	is static ;
+
+
+    Dump (me; Index : Integer from Standard = 0)
+    
+    	---Purpose: Dump of the point on element.
+
+    	is deferred ;
+	
+
+fields
+
+    myIndex  : Integer         from Standard is protected ;
+    myParam  : Real            from Standard is protected ;
+    myPosit  : Orientation     from TopAbs   is protected ;
+    myBefore : State           from TopAbs   is protected ;
+    myAfter  : State           from TopAbs   is protected ;
+    mySegBeg : Boolean         from Standard is protected ;
+    mySegEnd : Boolean         from Standard is protected ;
+
+end IntersectionPoint from HatchGen ;

@@ -1,0 +1,51 @@
+// File:	TDF_DataSet.lxx
+//      	---------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Mar 11 1997	Creation
+
+#include <TDF_Label.hxx>
+#include <TDF_Attribute.hxx>
+
+// IsEmpty
+//=========
+inline Standard_Boolean TDF_DataSet::IsEmpty() const
+{ return (myLabelMap.IsEmpty() && myAttributeMap.IsEmpty()); }
+
+// Labels
+//========
+inline void TDF_DataSet::AddLabel(const TDF_Label& aLabel)
+{ if (!aLabel.IsNull()) myLabelMap.Add(aLabel); }
+
+inline Standard_Boolean TDF_DataSet::ContainsLabel
+(const TDF_Label& aLabel) const
+{ return myLabelMap.Contains(aLabel); }
+
+inline TDF_LabelMap& TDF_DataSet::Labels()
+{ return myLabelMap; }
+
+// Attributes
+//============
+
+inline void TDF_DataSet::AddAttribute(const Handle(TDF_Attribute)& anAttribute)
+{ if (!anAttribute.IsNull()) myAttributeMap.Add(anAttribute); }
+
+inline Standard_Boolean TDF_DataSet::ContainsAttribute
+(const Handle(TDF_Attribute)& anAttribute) const
+{ return myAttributeMap.Contains(anAttribute); }
+
+inline TDF_AttributeMap& TDF_DataSet::Attributes()
+{ return myAttributeMap; }
+
+// Root labels
+//=============
+
+inline void TDF_DataSet::AddRoot(const TDF_Label& aLabel)
+{ if (ContainsLabel(aLabel)) myRootLabels.Append(aLabel); }
+
+inline TDF_LabelList& TDF_DataSet::Roots()
+{ return myRootLabels; }

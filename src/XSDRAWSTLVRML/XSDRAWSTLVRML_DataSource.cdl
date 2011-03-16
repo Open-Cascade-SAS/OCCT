@@ -1,0 +1,78 @@
+-- File     : XSDRAWSTLVRML_DataSource.cdl
+-- Created  : 10 June 2004
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2004
+
+class DataSource from XSDRAWSTLVRML inherits DataSource from MeshVS
+
+	---Purpose: The sample DataSource for working with STLMesh_Mesh
+
+uses
+  Mesh from StlMesh,
+
+  Integer from Standard,
+  Boolean from Standard,
+  Address from Standard,
+
+  Array1OfReal      from TColStd,
+  Array1OfInteger   from TColStd,
+  SequenceOfInteger from TColStd,
+  PackedMapOfInteger from TColStd,
+
+  EntityType from MeshVS,
+ 
+  HArray2OfInteger from TColStd,
+  HArray2OfReal from TColStd
+
+is
+
+  Create ( aMesh : Mesh from StlMesh ) returns mutable DataSource from XSDRAWSTLVRML;
+	---Purpose: Constructor
+
+  GetGeom ( me; ID     : Integer;
+            IsElement  : Boolean;
+            Coords     : out Array1OfReal;
+            NbNodes    : out Integer;
+            Type       : out EntityType ) returns Boolean;
+	---Purpose: Returns geometry information about node ( if IsElement is False ) or element ( IsElement is True )
+        -- by co-ordinates. For element this method must return all its nodes co-ordinates in the strict order: X, Y, Z and
+	-- with nodes order is the same as in wire bounding the face or link. NbNodes is number of nodes of element.
+	-- It is recommended to return 1 for node. Type is an element type.
+
+  GetGeomType ( me; ID     : Integer;
+                IsElement  : Boolean;
+                Type       : out EntityType ) returns Boolean;
+	---Purpose: This method is similar to GetGeom, but returns only element or node type. This method is provided for
+        -- a fine performance.
+
+  GetAddr ( me; ID     : Integer;
+            IsElement  : Boolean   ) returns Address;
+	---Purpose: This method returns by number an address of any entity which represents element or node data structure.
+
+  GetNodesByElement ( me; ID  : Integer;
+		      NodeIDs : out Array1OfInteger from TColStd;
+		      NbNodes : out Integer ) returns Boolean is redefined;
+	---Purpose: This method returns information about what node this element consist of.
+
+  GetAllNodes    ( me ) returns PackedMapOfInteger;
+	---C++: return const &
+	---Purpose: This method returns map of all nodes the object consist of.
+
+  GetAllElements ( me ) returns PackedMapOfInteger;
+	---C++: return const &
+	---Purpose: This method returns map of all elements the object consist of.
+
+  GetNormal ( me; Id : Integer; Max : Integer;
+                  nx, ny, nz : out Real ) returns Boolean is redefined virtual;
+	---Purpose: This method calculates normal of face, which is using for correct reflection presentation.
+        --   There is default method, for advance reflection this method can be redefined.
+
+fields
+  myMesh      : Mesh from StlMesh;
+  myNodes     : PackedMapOfInteger from TColStd;
+  myElements  : PackedMapOfInteger from TColStd;
+  myElemNodes : HArray2OfInteger from TColStd;
+ 
+  myNodeCoords, myElemNormals : HArray2OfReal from TColStd;
+
+end DataSource;

@@ -1,0 +1,77 @@
+-- File:	BOPTools_ShapeShapeInterference.cdl
+-- Created:	Tue Nov 21 15:16:07 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+
+class ShapeShapeInterference from BOPTools 
+
+	---Purpose: 
+	--  Root class for storing  an  Interference        
+	--  between a couple BRep shapes  
+is
+    Create 
+    	returns ShapeShapeInterference from BOPTools;  
+    	---Purpose:  
+    	--- Empty constructor 
+    	---
+    Create (anIndex1:  Integer from Standard;  
+    	    anIndex2:  Integer from Standard)
+    	returns ShapeShapeInterference from BOPTools;  
+    	---Purpose:   
+    	--- Constructor 
+    	---
+    SetIndex1(me:out; anIndex1:Integer from Standard);  
+    	---Purpose:  
+    	--- Modifier  
+    	--- Sets DS-index for the first shape from the  couple 
+    	---
+    SetIndex2(me:out; anIndex2:Integer from Standard);   
+    	---Purpose:  
+    	--- Modifier 
+    	--- Sets DS-index for the second shape from the  couple  
+    	---
+    SetNewShape(me:out; anIndex:Integer from Standard);   
+    	---Purpose:  
+    	--- Modifier   
+    	--- Sets DS-index for the new shape 
+    	---
+    Index1(me) 
+    	returns Integer from Standard;
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Index2(me) 
+    	returns Integer from Standard;
+    	---Purpose:  
+    	--- Selector  
+    	---
+    Indices(me; 
+    	    anIndex1:out Integer from Standard;	      
+    	    anIndex2:out Integer from Standard); 
+    	---Purpose:  
+    	--- Selector  
+    	---
+    OppositeIndex(me; 
+    	     anIndex:Integer from Standard) 
+    	returns Integer from Standard; 		     
+    	---Purpose:  
+    	--- Selector  
+    	--- Gets the value of index 
+    	--- if  anIndex==myIndex1 it returns myIndex2; 
+    	--- if  anIndex==myIndex2 it returns myIndex1; 
+    	--- otherwise it returns 0; 
+    	---
+    NewShape(me) 
+    	returns Integer from Standard; 
+     	---Purpose:  
+    	--- Selector  
+    	---
+
+fields
+    myIndex1  : Integer from Standard; 
+    myIndex2  : Integer from Standard; 
+    myNewShape: Integer from Standard; 
+    
+end ShapeShapeInterference;

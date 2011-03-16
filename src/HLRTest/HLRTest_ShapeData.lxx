@@ -1,0 +1,105 @@
+// File:	HLRTest_ShapeData.lxx
+// Created:	Tue Aug 25 10:43:05 1992
+// Author:	Christophe MARION
+//		<cma@sdsun2>
+
+//=======================================================================
+//function : VisibleColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::VisibleColor(const Draw_Color& CVis)
+{ myVColor = CVis; }
+
+//=======================================================================
+//function : VisibleOutLineColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::VisibleOutLineColor
+  (const Draw_Color& COVis)
+{ myVOColor = COVis; }
+
+//=======================================================================
+//function : VisibleIsoColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::VisibleIsoColor
+  (const Draw_Color& CIVis)
+{ myVIColor = CIVis; }
+
+//=======================================================================
+//function : HiddenColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::HiddenColor(const Draw_Color& CHid)
+{ myHColor = CHid; }
+
+//=======================================================================
+//function : HiddenOutLineColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::HiddenOutLineColor
+  (const Draw_Color& COHid)
+{ myHOColor = COHid; }
+
+//=======================================================================
+//function : HiddenIsoColor
+//purpose  : 
+//=======================================================================
+
+inline void HLRTest_ShapeData::HiddenIsoColor
+  (const Draw_Color& CIHid)
+{ myHIColor = CIHid; }
+
+//=======================================================================
+//function : VisibleColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::VisibleColor() const
+{ return myVColor; }
+
+//=======================================================================
+//function : VisibleOutLineColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::VisibleOutLineColor() const
+{ return myVOColor; }
+
+//=======================================================================
+//function : VisibleIsoColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::VisibleIsoColor() const
+{ return myVIColor; }
+
+//=======================================================================
+//function : HiddenColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::HiddenColor() const
+{ return myHColor; }
+
+//=======================================================================
+//function : HiddenOutLineColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::HiddenOutLineColor() const
+{ return myHOColor; }
+
+//=======================================================================
+//function : HiddenIsoColor
+//purpose  : 
+//=======================================================================
+
+inline Draw_Color HLRTest_ShapeData::HiddenIsoColor() const
+{ return myHIColor; }
+

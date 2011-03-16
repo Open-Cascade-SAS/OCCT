@@ -1,0 +1,40 @@
+-- File:	GeomInt_LineTool.cdl
+-- Created:	Wed Feb  8 09:42:03 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class LineTool from GeomInt
+
+	---Purpose: 
+
+uses Line  from IntPatch,
+     Point from IntPatch,
+     Pnt2d from gp
+
+is
+
+
+    NbVertex(myclass; L: Line from IntPatch)
+    
+    	returns Integer from Standard;
+
+
+    Vertex(myclass; L:Line from IntPatch; I: Integer from Standard)
+    
+    	returns Point from IntPatch;
+	---C++: return const&
+	
+    FirstParameter(myclass; L: Line from IntPatch)
+    
+    	returns Real from Standard;
+
+
+    LastParameter(myclass; L: Line from IntPatch)
+    
+    	returns Real from Standard;
+
+
+end LineTool;

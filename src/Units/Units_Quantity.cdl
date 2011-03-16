@@ -1,0 +1,100 @@
+-- File:	Units_Quantity.cdl
+-- Created:	Mon Jun 22 17:00:25 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Quantity from Units 
+
+inherits
+
+    TShared from MMgt 
+
+
+	---Purpose: This  class stores  in its  field all the possible
+	--          units of all the unit systems for a given physical
+	--          quantity. Each unit's  value  is  expressed in the
+	--          S.I. unit system.
+
+uses
+
+    UnitsSequence from Units,
+    Dimensions    from Units,
+    HAsciiString  from TCollection,
+    AsciiString   from TCollection
+
+is
+
+    Create(aname          : CString ;
+           adimensions    : Dimensions    from Units ;
+           aunitssequence : UnitsSequence from Units)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Creates  a new Quantity  object with <aname> which  is
+    --          the name of the physical quantity, <adimensions> which
+    --          is the physical dimensions, and <aunitssequence> which
+    --          describes all the units known for this quantity.
+    
+    returns mutable Quantity from Units;
+    
+    Name(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns in a AsciiString from TCollection the name of the quantity.
+    
+    is static;
+    
+    Dimensions(me) returns any Dimensions from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns the physical dimensions of the quantity.
+    
+    is static;
+    
+    Sequence(me) returns any UnitsSequence from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns <theunitssequence>, which  is the  sequence of
+    --          all the units stored for this physical quantity.
+    
+    is static;
+    
+    IsEqual(me ; astring : CString) returns Boolean
+    
+    ---Level: Internal 
+    
+--    ---C++: alias "friend Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Quantity)&,const Standard_CString);"
+    
+    ---Purpose: Returns True if the name of the Quantity <me> is equal 
+    --          to <astring>, False otherwise.
+    
+    is static;
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Useful for debugging.
+    
+    is static;
+
+fields
+
+    thename          : HAsciiString  from TCollection;
+    thedimensions    : Dimensions    from Units;
+    theunitssequence : UnitsSequence from Units;
+
+end Quantity;

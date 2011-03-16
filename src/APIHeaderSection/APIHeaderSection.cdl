@@ -1,0 +1,21 @@
+-- File:	APIHeaderSection.cdl
+-- Created:	Wed Sep 21 15:47:30 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+package APIHeaderSection
+
+    ---Purpose : This package gives the means to access to the Header of a
+    --           Step Model
+
+uses  Standard, TCollection, Interface, IFSelect, StepData, HeaderSection
+
+is
+
+    class MakeHeader;  -- which provide basic access services to Step Header
+
+    class EditHeader;  -- to edit a Step Header
+
+end APIHeaderSection;

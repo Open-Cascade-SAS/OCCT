@@ -1,0 +1,66 @@
+-- File:	DBRep_Face.cdl
+-- Created:	Thu Jul 15 10:15:52 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Face from DBRep inherits TShared from MMgt
+
+uses
+    Face            from TopoDS,
+    IsoType         from GeomAbs,
+    Array1OfInteger from TColStd,
+    Array1OfReal    from TColStd,
+    Color           from Draw
+
+is
+    Create (F : Face from TopoDS; 
+    	    N : Integer;
+    	    C : Color from Draw)
+    returns mutable Face from DBRep;
+	---Purpose: N is the number of iso intervals.
+    
+    Face(me) returns Face from TopoDS
+	---C++: return const &
+	---C++: inline
+    is static;
+
+    Face(me : mutable; F : Face from TopoDS)
+	---C++: inline
+    is static;
+    
+    NbIsos(me) returns Integer
+	---C++: inline
+    is static;
+
+    Iso(me : mutable; 
+    	I           : Integer; 
+    	T           : IsoType from GeomAbs; 
+    	Par, T1, T2 : Real)
+	---C++: inline
+    is static;
+
+    GetIso(me;
+    	   I           : Integer; 
+    	   T           : out IsoType from GeomAbs; 
+    	   Par, T1, T2 : out Real)
+	---C++: inline
+    is static;
+
+    Color(me) returns Color from Draw
+	---C++: return const &
+	---C++: inline
+    is static;
+
+    Color(me : mutable; C : Color from Draw)
+	---C++: inline
+    is static;
+    
+fields
+    myFace   : Face            from TopoDS;
+    myColor  : Color           from Draw;
+    myTypes  : Array1OfInteger from TColStd;
+    myParams : Array1OfReal    from TColStd;
+
+end Face;

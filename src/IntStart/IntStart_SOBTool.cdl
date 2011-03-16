@@ -1,0 +1,142 @@
+-- File:	IntStart_SOBTool.cdl
+-- Created:	Tue May  4 18:13:35 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred generic class SOBTool from IntStart 
+    (TheVertex as any;
+     TheArc    as any)
+
+	---Purpose: 
+
+uses Pnt from gp
+
+is
+
+-- Methods for an arc of restrictition
+
+    HasBeenSeen(myclass; A: TheArc)
+
+	---Purpose: Returns True if all the intersection point and edges
+	--          are known on the Arc.
+
+    	returns Boolean from Standard;
+
+-- The following methods are used when HasBeenSeen returns Standard_True
+
+    NbPoints(myclass; A: TheArc)
+    
+	---Purpose: Returns the number of intersection points on the arc A.
+    
+    	returns Integer from Standard;
+
+
+    Value(myclass; A: TheArc; Index: Integer from Standard;
+                   Pt: out Pnt from gp; Tol: out Real from Standard;
+                   U: out Real from Standard);
+
+	---Purpose: Returns the value (Pt), the tolerance (Tol), and
+	--          the parameter (U) on the arc A , of the intersection
+	--          point of range Index.
+
+
+    IsVertex(myclass; A: TheArc; Index: Integer from Standard)
+    
+	---Purpose: Returns True if the intersection point of range Index
+	--          corresponds with a vertex on the arc A.
+
+    	returns Boolean from Standard;
+
+
+    Vertex(myclass; A: TheArc; Index: Integer from Standard;
+                    Vtx: out TheVertex);
+
+	---Purpose: When IsVertex returns True, this method returns the
+	--          vertex on the arc A.
+
+
+    NbSegments(myclass; A: TheArc)
+    
+	---Purpose: returns the number of part of A solution of the
+	--          of intersection problem.
+    
+    	returns Integer from Standard;
+
+
+    HasFirstPoint(myclass; A: TheArc; Index: Integer from Standard;
+                           IndFirst: out Integer from Standard)
+    
+	---Purpose: Returns True when the segment of range Index is not
+	--          open at the left side. In that case, IndFirst is the
+	--          range in the list intersection points (see NbPoints)
+	--          of the one which defines the left bound of the segment.
+	--          Otherwise, the method has to return False, and IndFirst
+	--          has no meaning.
+
+    	returns Boolean from Standard;
+
+
+    HasLastPoint(myclass; A: TheArc; Index: Integer from Standard;
+                           IndLast: out Integer from Standard)
+    
+	---Purpose: Returns True when the segment of range Index is not
+	--          open at the right side. In that case, IndLast is the
+	--          range in the list intersection points (see NbPoints)
+	--          of the one which defines the right bound of the segment.
+	--          Otherwise, the method has to return False, and IndLast
+	--          has no meaning.
+
+    	returns Boolean from Standard;
+
+
+    IsAllSolution(myclass; A: TheArc)
+    
+	---Purpose: Returns True when the whole restriction is solution
+	--          of the intersection problem.
+    
+    	returns Boolean from Standard;
+
+
+
+-- The following methods are used when HasBeenSeen returns Standard_False
+
+    NbSamplesOnArc(myclass; A: TheArc)
+    
+    	---Purpose: returns the number of points which is used to make 
+    	--          a sample on the arc. this number is a function of
+    	--          the Surface and the CurveOnSurface complexity.
+    
+        returns Integer from Standard;
+
+
+    Bounds(myclass; A: TheArc; Ufirst,Ulast: out Real from Standard);
+
+	---Purpose: Returns the parametric limits on the arc A.
+	--          These limits must be finite : they are either
+	--          the real limits of the arc, for a finite arc,
+	--          or a bounding box for an infinite arc.
+
+
+    Parameter(myclass; V: TheVertex; A: TheArc)
+    
+	---Purpose: Returns the parameter of the vertex V on the arc A.
+
+	returns Real from Standard;
+
+
+    Tolerance(myclass; V: TheVertex; A: TheArc)
+
+	---Purpose: Returns the parametric tolerance on the arc used
+	--          to consider that the vertex and another point meet,
+	--          i-e if the difference between the parameter of the
+	--          Vertex and the parameter of the other point is less
+	--          than Tolerance, the point are "merged".
+
+    	returns Real from Standard;
+
+
+
+
+end SOBTool;

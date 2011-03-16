@@ -1,0 +1,31 @@
+-- File:	SelectModelEntities.cdl
+-- Created:	Tue Nov 17 19:00:03 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectModelEntities  from IFSelect  inherits SelectBase
+
+    ---Purpose : A SelectModelEntities gets all the Entities of an
+    --           InterfaceModel.
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create  returns mutable SelectModelEntities;
+    ---Purpose : Creates a SelectModelRoot
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected entities : the Entities of the
+    --           Model (note that this result assures naturally uniqueness)
+
+    CompleteResult (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : The complete list of Entities (including shared ones) ...
+    --           is exactly identical to RootResults in this case
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Model Entities"
+
+end SelectModelEntities;

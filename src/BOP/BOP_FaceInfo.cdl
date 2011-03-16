@@ -1,0 +1,116 @@
+-- File:	BOP_FaceInfo.cdl
+-- Created:	Thu Aug  2 10:22:48 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class FaceInfo from BOP 
+
+	---Purpose: 
+    	---  The  auxiliary class to store data about faces on a  shell 
+    	---  that have common edge         	 
+	---  
+	
+uses
+    Face  from TopoDS, 
+    Pnt   from gp, 
+    Dir   from gp,
+    Pnt2d from gp 
+    
+--raises
+
+is 
+    Create 
+    	returns FaceInfo from BOP;
+    	---Purpose:  
+    	--- Empty constructor;  
+    	---
+    SetFace   (me:out; 
+    	        aF:Face from TopoDS); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetPassed (me:out;   
+    	        aFlag:Boolean from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetPOnEdge (me:out;   
+    	        aP:Pnt from gp);  
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetPInFace (me:out;   
+    	        aP:Pnt from gp);   
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetPInFace2D (me:out;   
+    	        aP:Pnt2d from gp);
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetNormal (me:out;   
+    	        aD:Dir from gp);   
+    	---Purpose: 
+    	--- Modifier
+    	---
+    SetAngle  (me:out;   
+    	        A:Real from Standard); 
+    	---Purpose: 
+    	--- Modifier
+    	---
+     
+    Face      (me) 
+    	returns Face from TopoDS; 
+    	---C++:  return const & 
+    	---Purpose: 
+    	--- Selector
+    	---
+    POnEdge   (me) 
+	returns Pnt from gp; 
+    	---C++:  return const &  
+    	---Purpose: 
+    	--- Selector
+    	---
+    PInFace   (me) 
+	returns Pnt from gp; 
+    	---C++:  return const &  
+    	---Purpose: 
+    	--- Selector
+    	---
+    PInFace2D   (me) 
+	returns Pnt2d from gp; 
+    	---C++:  return const &  
+    	---Purpose: 
+    	--- Selector
+    	---
+ 
+    Normal   (me) 
+	returns Dir from gp; 
+    	---C++:  return const &  
+    	---Purpose: 
+    	--- Selector
+    	---
+    IsPassed (me)   
+    	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+    Angle  (me)   
+    	returns Real from Standard; 
+    	---Purpose: 
+    	--- Selector
+    	---
+fields  
+
+    myFace  : Face from TopoDS; 
+    myPassed: Boolean from Standard; 
+    myPOnEdge  :  Pnt from gp;  
+    myPInFace  :  Pnt from gp; 
+    myPInFace2D:  Pnt2d from gp; 
+    myNormal   :  Dir from gp;  
+    myAngle    :  Real from  Standard; 
+
+end FaceInfo;

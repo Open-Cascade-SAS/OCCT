@@ -1,0 +1,56 @@
+-- File:	QANewBRepNaming_ImportShape.cdl
+-- Created:	Fri Oct  1 14:18:02 1999
+-- Author:	Vladislav ROMASHKO
+--		<v-romashko@opencascade.com>
+---Copyright:	 Open CASCADE 2003
+
+class ImportShape from QANewBRepNaming inherits TopNaming from QANewBRepNaming
+
+    ---Purpose: This class provides a topological naming 
+    --          of a Shape
+
+uses 
+ 
+    Shape     from TopoDS,
+    Label     from TDF,
+    LabelMap  from TDF,
+    TagSource from TDF
+
+is 
+ 
+    Create returns ImportShape from QANewBRepNaming;    
+
+    Create (ResultLabel : Label from TDF) 
+    returns ImportShape from QANewBRepNaming;  
+
+    Init (me : in out; ResultLabel : Label from TDF);
+    
+
+    Load (me; S : Shape from TopoDS);
+    ---Purpose: Use this method for a topological naming of a Shape
+
+    LoadPrime (me; S : Shape from TopoDS);
+
+    LoadFirstLevel (me; S : Shape from TopoDS; Tagger : TagSource from TDF);
+
+    LoadNextLevels (me; S : Shape from TopoDS; Tagger : TagSource from TDF);
+
+    LoadC0Edges(me; S : Shape from TopoDS; 
+    	     	       Tagger : TagSource from TDF);
+    ---Purpose: Method for internal use. It is used by Load().
+    --          It loads the edges which couldn't be uniquely identified as 
+    --          an intersection of two faces.
+
+
+    LoadC0Vertices (me; S : Shape from TopoDS; Tagger : TagSource from TDF);
+
+    NamedFaces (me; theNamedFaces : in out LabelMap from TDF)
+    returns Integer from Standard;
+
+    NamedEdges (me; theNamedEdges : in out LabelMap from TDF)
+    returns Integer from Standard;
+
+    NamedVertices (me; theNamedVertices : in out LabelMap from TDF)
+    returns Integer from Standard;
+
+end ImportShape;	       

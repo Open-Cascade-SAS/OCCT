@@ -1,0 +1,36 @@
+-- File:        ApplicationContextElement.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ApplicationContextElement from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection, 
+	ApplicationContext from StepBasic
+is
+
+	Create returns mutable ApplicationContextElement;
+	---Purpose: Returns a ApplicationContextElement
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aFrameOfReference : mutable ApplicationContext from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetFrameOfReference(me : mutable; aFrameOfReference : mutable ApplicationContext);
+	FrameOfReference (me) returns mutable ApplicationContext;
+
+fields
+
+	name : HAsciiString from TCollection;
+	frameOfReference : ApplicationContext from StepBasic;
+
+end ApplicationContextElement;

@@ -1,0 +1,178 @@
+#ifndef Standard_DomainError_HeaderFile
+#include <Standard_DomainError.hxx>
+#endif
+#ifndef IntSurf_LineOn2S_HeaderFile
+#include <IntSurf_LineOn2S.hxx>
+#endif
+#ifndef IntSurf_Couple_HeaderFile
+#include <IntSurf_Couple.hxx>
+#endif
+#ifndef IntSurf_SequenceOfCouple_HeaderFile
+#include <IntSurf_SequenceOfCouple.hxx>
+#endif
+
+inline void IntWalk_IWLine::Cut(const Standard_Integer Index)
+{
+//--   cout<<" split : "<<Index<<endl;
+  Handle(IntSurf_LineOn2S) lost = line->Split(Index);
+}
+
+inline void IntWalk_IWLine::AddPoint(const IntSurf_PntOn2S& P)
+{
+  line->Add(P);
+}
+
+inline void IntWalk_IWLine::AddStatusFirst(const Standard_Boolean Closed,
+					   const Standard_Boolean HasFirst)
+{
+  closed = Closed;
+  hasFirst = HasFirst; 
+}
+
+inline void IntWalk_IWLine::AddStatusLast (const Standard_Boolean HasLast)
+{
+  hasLast = HasLast; 
+}
+
+inline void IntWalk_IWLine::AddStatusFirst(const Standard_Boolean Closed,
+					   const Standard_Boolean HasFirst,
+					   const Standard_Integer Index,
+					   const TheStartPoint& P ) {
+  closed = Closed;
+  hasFirst = HasFirst; 
+  firstIndex = Index;
+  theFirstPoint = P;
+}
+
+inline void IntWalk_IWLine::AddStatusLast(const Standard_Boolean HasLast,
+					  const Standard_Integer Index,
+					  const TheStartPoint& P ) {
+  hasLast = HasLast; 
+  lastIndex = Index;
+  theLastPoint = P;
+}
+
+inline void IntWalk_IWLine::AddStatusFirstLast(const Standard_Boolean Closed,
+					       const Standard_Boolean HasFirst,
+					       const Standard_Boolean HasLast )
+{
+  closed = Closed;
+  hasFirst = HasFirst; 
+  hasLast = HasLast;
+}
+
+inline void IntWalk_IWLine::AddIndexPassing(const Standard_Integer Index)
+
+{
+  couple.Append(IntSurf_Couple(line->NbPoints()+1, Index));
+}
+
+inline Standard_Integer IntWalk_IWLine::NbPoints() const
+{
+  return line->NbPoints();
+}
+  
+inline const IntSurf_PntOn2S& IntWalk_IWLine::Value
+  (const Standard_Integer Index) const
+{
+  return line->Value(Index);
+}
+
+inline const Handle(IntSurf_LineOn2S)& IntWalk_IWLine::Line () const
+{
+  return line;
+}
+
+inline Standard_Boolean IntWalk_IWLine::IsClosed() const
+{
+  return closed;
+}
+
+inline Standard_Boolean IntWalk_IWLine::HasFirstPoint() const
+{
+  return hasFirst;
+}
+
+inline Standard_Integer IntWalk_IWLine::FirstPointIndex() const
+{
+  if (!hasFirst) Standard_DomainError::Raise();
+  return firstIndex;
+}
+
+inline const TheStartPoint& IntWalk_IWLine::FirstPoint() const
+{
+ if (!hasFirst) Standard_DomainError::Raise();
+ return theFirstPoint;
+}
+
+inline Standard_Boolean IntWalk_IWLine::HasLastPoint() const
+{
+  return hasLast;
+}
+
+inline const TheStartPoint& IntWalk_IWLine::LastPoint() const
+{
+  if (!hasLast) Standard_DomainError::Raise();
+  return theLastPoint;
+}
+
+inline Standard_Integer IntWalk_IWLine::LastPointIndex() const
+{
+  if (!hasLast) Standard_DomainError::Raise();
+  return lastIndex;
+}
+
+inline Standard_Integer IntWalk_IWLine::NbPassingPoint() const
+{ 
+  return couple.Length();
+}
+
+inline void IntWalk_IWLine::PassingPoint(const Standard_Integer Index,
+					 Standard_Integer& IndexLine,
+					 Standard_Integer& IndexPnts) const 
+{
+  IndexLine = couple(Index).First();
+  IndexPnts = couple(Index).Second();
+}
+
+inline void IntWalk_IWLine::SetTangentVector (const gp_Vec& V,
+					      const Standard_Integer Index) {
+  indextg = Index;
+  vcttg = V;
+  
+  //-- cout<<"\n IntWalk_IWLine::SetTangentVector : "<<V.X()<<" "<<V.Y()<<" "<<V.Z()<<"   Ind:"<<Index<<"  NbPts:"<<NbPoints()<<endl;
+  
+}
+
+inline void IntWalk_IWLine::SetTangencyAtBegining
+  (const Standard_Boolean IsTangent) {
+
+  istgtend = IsTangent;
+}
+
+inline void IntWalk_IWLine::SetTangencyAtEnd
+  (const Standard_Boolean IsTangent) {
+
+  istgtend = IsTangent;
+}
+
+inline const gp_Vec& IntWalk_IWLine::TangentVector
+  (Standard_Integer& Index) const {
+//--    if(istgtend == Standard_False && istgtbeg == Standard_False) { 
+//--      cout<<" IntWalk_IWLine.lxx : Pb "<<endl;
+//--    }
+  Index = indextg;
+  return vcttg;
+}
+
+inline Standard_Boolean IntWalk_IWLine::IsTangentAtBegining () const {
+
+  return istgtbeg;
+}
+
+inline Standard_Boolean IntWalk_IWLine::IsTangentAtEnd () const {
+
+  return istgtend;
+}
+
+

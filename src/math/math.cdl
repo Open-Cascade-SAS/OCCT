@@ -1,0 +1,142 @@
+---- File:	math.cdl
+-- Created:	Mon Jan 21 14:19:01 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+--		Modified by PMN 29/02/96: GaussSetIntegration added
+--		Modified by PMN 03/05/96: NewtonMinimum added
+---Copyright:	 Matra Datavision 1991-1996
+
+
+package math
+
+uses StdFail, TColStd, TCollection, Standard,  SortTools
+  	  
+is
+
+    ---Level : Public
+    -- All methods of all classes of this package will be public.
+
+
+
+    enumeration Status is
+    	OK,
+	TooManyIterations,
+	FunctionError,
+	DirectionSearchError,
+        NotBracketed
+    end Status;
+    
+    exception NotSquare inherits DimensionError;
+    exception SingularMatrix inherits Failure;
+    
+
+    class Vector;
+    class IntegerVector;
+    class Matrix;
+    deferred class Function;
+    deferred class FunctionWithDerivative;
+    deferred class MultipleVarFunction;
+    deferred class MultipleVarFunctionWithGradient;
+    deferred class MultipleVarFunctionWithHessian;
+    deferred class FunctionSet;
+    deferred class FunctionSetWithDerivatives;
+    class IntegerRandom;
+    class Gauss;
+    class GaussLeastSquare;
+    class SVD;
+    class DirectPolynomialRoots;
+    class FunctionRoots;
+    class BissecNewton;
+    class FunctionRoot;
+    class NewtonFunctionRoot;
+    class BracketedRoot;
+    class FunctionSetRoot;
+    class NewtonFunctionSetRoot;
+    class BracketMinimum;
+    class BrentMinimum;
+    class Powell;
+    class FRPR;
+    class BFGS;
+    class NewtonMinimum;
+    class Jacobi;
+    class GaussSingleIntegration;
+    class GaussMultipleIntegration;
+    class GaussSetIntegration;
+    class RealRandom;
+    class FunctionSample;
+    class FunctionAllRoots;    
+    class Householder;
+    class Crout;
+    class Uzawa;
+    class TrigonometricFunctionRoots;
+    class KronrodSingleIntegration; -- SKV: Kronrod method implementation.
+    class EigenValuesSearcher;  -- for Kronrod method
+    class ComputeGaussPointsAndWeights; 
+    class ComputeKronrodPointsAndWeights; 
+    class ValueAndWeight; 
+    class Array1OfValueAndWeight
+    	instantiates Array1 from TCollection (ValueAndWeight from math);
+    class CompareOfValueAndWeight; 
+    class QuickSortOfValueAndWeight
+    	instantiates QuickSort from SortTools (ValueAndWeight from math, 
+	    	    	    	    	       Array1OfValueAndWeight from math,
+	    	    	    	    	       CompareOfValueAndWeight from math);
+
+  generic class SingleTab;
+  generic class DoubleTab;
+
+    --- Instantiate classes:
+    class SingleTabOfReal instantiates SingleTab(Real);
+    class SingleTabOfInteger instantiates SingleTab(Integer);
+    class DoubleTabOfReal instantiates DoubleTab(Real);
+
+    --- Gauss Points
+
+    GaussPointsMax returns Integer;
+
+    GaussPoints(Index : Integer; Points : out Vector from math);
+    
+    GaussWeights(Index : Integer; Weights : out Vector from math);
+    
+-- Modified by skv - Wed Dec  7 15:32:31 2005 Kronrod method. Begin
+    KronrodPointsMax returns Integer;
+        ---Purpose: Returns the maximal number of points for that the values 
+        --          are stored in the table. If the number is greater then 
+        --          KronrodPointsMax, the points will be computed.
+
+    OrderedGaussPointsAndWeights(Index : Integer; 
+    	    	    	    	 Points  : out Vector from math;
+    	    	    	    	 Weights : out Vector from math)
+        ---Purpose: Returns a vector of Gauss points and a vector of their weights. 
+    	--          The difference with the 
+        --          method GaussPoints is the following: 
+	--            - the points are returned in increasing order. 
+	--            - if Index is greater then GaussPointsMax, the points are 
+        --              computed. 
+	--          Returns Standard_True if Index is positive, Points' and Weights' 
+        --          length is equal to Index, Points and Weights are successfully computed.
+    returns Boolean from Standard;
+    
+    KronrodPointsAndWeights(Index : Integer; 
+    	    	    	    Points  : out Vector from math;
+    	    	    	    Weights : out Vector from math)
+    	---Purpose: Returns a vector of Kronrod points and a vector of their 
+    	--          weights for Gauss-Kronrod computation method.
+        --          Index should be odd and greater then or equal to 3,
+        --          as the number of Kronrod points is equal to 2*N + 1,
+        --          where N is a number of Gauss points. Points and Weights should 
+        --          have the size equal to Index. Each even element of Points 
+        --          represents a Gauss point value of N-th Gauss quadrature. 
+	--          The values from Index equal to 3 to 123 are stored in a 
+        --          table (see the file math_Kronrod.cxx). If Index is greater, 
+        --          then points and weights will be computed. Returns Standard_True
+        --          if Index is odd, it is equal to the size of Points and Weights
+        --          and the computation of Points and Weights is performed successfully.
+        --          Otherwise this method returns Standard_False. 
+    returns Boolean from Standard;
+    
+-- Modified by skv - Wed Dec  7 15:32:31 2005 Kronrod method. End
+	
+end math;
+
+

@@ -1,0 +1,149 @@
+-- File:	Approx_CurvlinFunc.cdl
+-- Created:	Tue May 12 12:17:17 1998
+-- Author:	Roman BORISOV
+--		<rbv@sgi38>
+---Copyright:	 Matra Datavision 1998
+
+
+class CurvlinFunc from Approx  inherits TShared from MMgt
+
+	---Purpose: defines an abstract curve with 
+	--          curvilinear parametrization
+	--          
+	--          
+	--          
+	--          
+
+uses
+    HCurve from Adaptor3d,  
+    Curve  from Adaptor3d,
+    HCurve2d from Adaptor2d, 
+    HSurface from Adaptor3d, 
+    Shape from GeomAbs, 
+    Array1OfReal  from  TColStd,  
+    HArray1OfReal  from  TColStd,
+    Pnt  from  gp, 
+    Vec  from  gp
+
+raises
+    OutOfRange from Standard, 
+    DomainError from Standard,
+    ConstructionError  from  Standard 
+
+is 
+    Create(C:  HCurve from Adaptor3d; Tol: Real) 
+    returns  mutable  CurvlinFunc;
+    
+    Create(C2D:  HCurve2d from Adaptor2d;  S:  HSurface from Adaptor3d; Tol: Real) 
+    returns  mutable  CurvlinFunc;
+     
+    Create(C2D1,  C2D2:  HCurve2d from Adaptor2d;  S1,  S2:  HSurface from Adaptor3d; Tol: Real)
+    returns  mutable  CurvlinFunc; 
+     
+    SetTol(me:  mutable;  Tol: Real) 
+    ---Purpose Update the tolerance to used            
+    is  static;
+
+    Init(me:  mutable) 
+    is  private;
+ 
+    Init(me; C: in out Curve from Adaptor3d;   
+             Si: out HArray1OfReal from  TColStd;   
+             Ui: out HArray1OfReal from  TColStd) 
+    is  private;
+
+    FirstParameter(me) returns Real;
+
+    LastParameter(me) returns Real;
+
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer;
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs);
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+
+    Trim(me:  mutable;  First,  Last,  Tol:  Real  from  Standard) 
+    raises  OutOfRange  from  Standard; 
+    	--- Purpose : if First < 0 or Last > 1
+
+    Length(me:  mutable)       
+         --- Purpose : Computes length of the curve.
+    is  static;
+
+    Length(me; C:  in out Curve  from  Adaptor3d;  
+    	    	    	  FirstU,  LasrU:  Real) returns  Real      
+         --- Purpose : Computes length of the curve segment.
+  
+    is  static;
+    GetLength(me)  returns  Real; 
+
+    GetUParameter(me;  C: in out Curve  from  Adaptor3d;  S:  Real;  NumberOfCurve:  Integer)  returns  Real;	     
+         --- Purpose : returns  original parameter correponding S.  if
+         --  Case == 1 computation is performed on myC2D1 and mySurf1,
+         --  otherwise it is done on myC2D2 and mySurf2.
+
+    GetSParameter(me;  U:  Real)  returns  Real;	     
+         --- Purpose : returns original parameter correponding S.
+
+    GetSParameter(me;  C:  in out Curve  from  Adaptor3d;  U,  Length:  Real)  returns  Real	     
+         --- Purpose : returns curvilinear parameter correponding U.
+    is  private;
+
+    EvalCase1(me; S:  Real; Order: Integer; 
+    	      Result: out Array1OfReal  from  TColStd) --  dim(Result) = 3 
+    returns  Boolean  from  Standard 
+
+    raises 
+    	ConstructionError  from  Standard; 
+	--- Purpose : if myCase != 1
+    
+    EvalCase2(me; S:  Real; Order: Integer;
+	      Result: out Array1OfReal  from  TColStd) --  dim(Result) = 5 
+    returns  Boolean  from  Standard
+    raises 
+    	ConstructionError  from  Standard; 
+	--- Purpose : if myCase != 2
+
+    EvalCase3(me:  mutable; S:  Real; Order: Integer;
+	      Result: out Array1OfReal  from  TColStd)  --  dim(Result) = 7 
+    returns  Boolean  from  Standard
+    raises 
+    	ConstructionError  from  Standard; 
+	--- Purpose : if myCase != 3
+
+    EvalCurOnSur(me; S: Real; Order: Integer;
+	        Result: out Array1OfReal  from  TColStd; 
+    	    	NumberOfCurve: Integer) 
+    returns  Boolean  from  Standard		
+    is private;
+		 
+fields
+ 
+    myC3D    :  HCurve    from  Adaptor3d; 
+    myC2D1   :  HCurve2d  from  Adaptor2d;
+    myC2D2   :  HCurve2d  from  Adaptor2d; 
+    mySurf1  :  HSurface  from  Adaptor3d; 
+    mySurf2  :  HSurface  from  Adaptor3d; 
+    myCase   :  Integer   from  Standard;  --  [1..3]
+    myFirstS :  Real      from  Standard;
+    myLastS  :  Real      from  Standard; 
+    myFirstU1:  Real      from  Standard;
+    myLastU1 :  Real      from  Standard; 
+    myFirstU2:  Real      from  Standard;
+    myLastU2 :  Real      from  Standard; 
+    myLength :  Real      from  Standard; 
+    myLength1:  Real      from  Standard;
+    myLength2:  Real      from  Standard;
+    myTolLen :  Real      from  Standard;
+     
+    myUi_1   :  HArray1OfReal  from  TColStd;
+    mySi_1   :  HArray1OfReal  from  TColStd;
+    myUi_2   :  HArray1OfReal  from  TColStd;
+    mySi_2   :  HArray1OfReal  from  TColStd;
+end CurvlinFunc;

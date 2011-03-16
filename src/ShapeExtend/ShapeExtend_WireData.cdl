@@ -1,0 +1,218 @@
+-- File:	ShapeExtend_WireData.cdl
+-- Created:	Wed Jun  3 12:42:27 1998
+-- Author:	data exchange team
+--		<det@loufox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class WireData from ShapeExtend inherits TShared from MMgt
+
+   	---Purpose: This class provides a data structure necessary for work with the wire as with
+    	-- ordered list of edges, what is required for many algorithms. The advantage of
+    	-- this class is that it allows to work with wires which are not correct.
+    	-- The object of the class ShapeExtend_WireData can be initialized by
+    	-- TopoDS_Wire, and converted back to TopoDS_Wire.
+    	-- An edge in the wire is defined by its rank number. Operations of accessing,
+    	-- adding and removing edge at the given rank number are provided. On the whole
+    	-- wire, operations of circular permutation and reversing (both orientations of
+    	-- all edges and order of edges) are provided as well.
+    	-- This class also provides a method to check if the edge in the wire is a seam
+    	-- (if the wire lies on a face). 
+    	-- This class is handled by reference. Such an approach gives the following advantages:
+    	--    1.    Sharing the object of this class strongly optimizes the processes of
+    	--       analysis and fixing performed in parallel on the wire stored in the form
+    	--      of this class. Fixing tool (e.g. ShapeFix_Wire) fixes problems one by
+    	--      one using analyzing tool (e.g. ShapeAnalysis_Wire). Sharing allows not
+    	--      to reinitialize each time the analyzing tool with modified
+    	--      ShapeExtend_WireData what consumes certain time. 
+    	--   2.    No copying of contents. The object of ShapeExtend_WireData class has
+    	--      quite big size, returning it as a result of the function would cause
+    	--      additional copying of contents if this class were one handled by value.
+    	--      Moreover, this class is stored as a field in other classes which are
+    	--      they returned as results of functions, storing only a handle to
+    	--      ShapeExtend_WireData saves time and memory. 
+
+uses 
+    HSequenceOfInteger from TColStd,
+    Shape              from TopoDS,
+    Edge               from TopoDS, 
+    Wire               from TopoDS, 
+    Face               from TopoDS, 
+    HSequenceOfShape   from TopTools
+
+is
+
+    Create returns mutable WireData from ShapeExtend;
+    	---Purpose: Empty constructor, creates empty wire with no edges
+
+    Create (wire: Wire from TopoDS; chained: Boolean = Standard_True ;
+            theManifoldMode :Boolean = Standard_True)
+    returns mutable WireData from ShapeExtend;
+    	---Purpose: Constructor initializing the data from TopoDS_Wire. Calls Init(wire,chained).
+
+    Init (me: mutable; other: WireData from ShapeExtend);
+    	---Purpose: Copies data from another WireData
+
+    Init (me: mutable; wire: Wire from TopoDS; chained: Boolean = Standard_True; 
+    	    	       theManifoldMode :Boolean = Standard_True)
+    returns Boolean;
+    	---Purpose: Loads an already existing wire
+	--          If <chained> is True (default), edges are added in the 
+	--          sequence as they are explored by TopoDS_Iterator
+	--          Else, if <chained> is False, wire is explored by
+	--          BRepTools_WireExplorer and it is guaranteed that edges will
+    	--          be sequencially connected. 
+        -- Remark : In the latter case it can happen that not all edges
+	--          will be found (because of limitations of 
+        --          BRepTools_WireExplorer for disconnected wires and wires 
+        --          with seam edges).
+
+    Clear (me: mutable);
+    	---Purpose: Clears data about Wire.
+
+    ComputeSeams (me: mutable; enforce: Boolean = Standard_True);
+    	---Purpose: Computes the list of seam edges
+    	--          By default (direct call), computing is enforced
+    	--          For indirect call (from IsSeam) it is redone only if not yet
+    	--          already done or if the list of edges has changed
+    	-- Remark : A Seam Edge is an Edge present twice in the list, once as
+    	--          FORWARD and once as REVERSED
+    	--          Each sense has its own PCurve, the one for FORWARD
+    	--          must be set in first
+
+    SetLast (me: mutable; num: Integer);
+    	---Purpose: Does a circular permutation in order to set <num>th edge last
+
+    SetDegeneratedLast (me: mutable);
+    	---Purpose: When the wire contains at least one degenerated edge, sets it
+    	--          as last one
+    	-- Note   : It is useful to process pcurves, for instance, while the pcurve
+    	--          of a DGNR may not be computed from its 3D part (there is none)
+    	--          it is computed after the other edges have been computed and
+    	--          chained.
+
+    Add (me: mutable; edge: Edge from TopoDS; atnum: Integer = 0);
+    	---Purpose: Adds an edge to a wire, being defined (not yet ended)
+    	--          This is the plain, basic, function to add an edge
+    	--          <num> = 0 (D): Appends at end
+    	--          <num> = 1: Preprends at start
+    	--          else, Insert before <num>
+    	-- Remark : Null Edge is simply ignored
+
+    Add (me: mutable; wire: Wire from TopoDS; atnum: Integer = 0);
+    	---Purpose: Adds an entire wire, considered as a list of edges
+    	-- Remark : The wire is assumed to be ordered (TopoDS_Iterator 
+        --          is used)
+
+    Add (me: mutable; wire: WireData from ShapeExtend; atnum: Integer = 0);
+    	---Purpose: Adds a wire in the form of WireData
+    	
+    Add (me: mutable; shape: Shape from TopoDS; atnum: Integer = 0);
+    	---Purpose: Adds an edge or a wire invoking corresponding method Add
+    	
+
+    AddOriented (me: mutable; edge: Edge from TopoDS; mode: Integer);
+    	---Purpose: Adds an edge to start or end of <me>, according to <mode>
+    	--          0: at end, as direct
+    	--          1: at end, as reversed
+    	--          2: at start, as direct
+    	--          3: at start, as reversed
+    	--          < 0: no adding
+
+    AddOriented (me: mutable; wire: Wire from TopoDS; mode: Integer);
+    	---Purpose: Adds a wire to start or end of <me>, according to <mode>
+    	--          0: at end, as direct
+    	--          1: at end, as reversed
+    	--          2: at start, as direct
+    	--          3: at start, as reversed
+    	--          < 0: no adding
+
+    AddOriented (me: mutable; shape: Shape from TopoDS; mode: Integer);
+    	---Purpose: Adds an edge or a wire invoking corresponding method
+    	--          AddOriented
+    	
+    Remove (me: mutable; num: Integer = 0);
+    	---Purpose: Removes an Edge, given its rank. By default removes the last edge.
+
+    Set (me: mutable; edge: Edge from TopoDS; num: Integer = 0);
+    	---Purpose: Replaces an edge at the given
+    	--          rank number <num> with new one. Default is last edge (<num> = 0).
+  
+
+    Reverse (me: mutable);
+    	---Purpose: Reverses the sense of the list and the orientation of each Edge
+	--          This method should be called when either wire has no seam edges
+	--          or face is not available
+
+    Reverse (me: mutable; face: Face from TopoDS);
+    	---Purpose: Reverses the sense of the list and the orientation of each Edge
+	--          The face is necessary for swapping pcurves for seam edges
+	--          (first pcurve corresponds to orientation FORWARD, and second to
+        --          REVERSED; when edge is reversed, pcurves must be swapped)
+	--          If face is NULL, no swapping is performed
+
+    ---Basic Querying:
+
+    NbEdges (me) returns Integer;
+    	---Purpose: Returns the count of currently recorded edges
+	
+    NbNonManifoldEdges (me) returns Integer;
+    	---Purpose: Returns the count of currently recorded non-manifold edges
+	
+    NonmanifoldEdge (me; num: Integer) returns Edge from TopoDS;
+    	---Purpose: Returns <num>th nonmanifold Edge
+	
+    NonmanifoldEdges(me) returns HSequenceOfShape from TopTools;
+    	---Purpose: Returns sequence of non-manifold edges
+	--          This sequence can be not empty if wire data set in manifold mode but 
+    	--          initial wire has INTERNAL orientation or contains INTERNAL edges
+	--
+    
+    ManifoldMode(me: mutable) returns Boolean;
+    	---Purpose: Returns mode defining manifold wire data or not.
+	--          If manifold that nonmanifold edges will not be not 
+        --          consider during operations(previous behaviour)
+	--         and they will be added only in result wire
+	--          else non-manifold edges will consider during operations
+	---C++: return &
+    	---Default: True
+	
+    Edge (me; num: Integer) returns Edge from TopoDS;
+    	---Purpose: Returns <num>th Edge
+
+    Index (me: mutable; edge: Edge from TopoDS) returns Integer;
+    	---Purpose: Returns the index of the edge
+	--          If the edge is a seam the orientation is also checked
+	--          Returns 0 if the edge is not found in the list
+
+    IsSeam (me: mutable; num: Integer) returns Boolean;
+    	---Purpose: Tells if an Edge is seam (see ComputeSeams)
+    	-- An edge is considered as seam if it presents twice in
+    	-- the edge list, once as FORWARD and once as REVERSED.
+    
+    Wire (me) returns Wire from TopoDS;
+    	---Purpose: Makes TopoDS_Wire using
+    	-- BRep_Builder (just creates the TopoDS_Wire object and adds
+    	-- all edges into it). This method should be called when
+    	-- the wire is correct (for example, after successful
+    	-- fixes by ShapeFix_Wire) and adjacent edges share common
+    	-- vertices. In case if adjacent edges do not share the same
+    	-- vertices the resulting TopoDS_Wire will be invalid.
+
+    WireAPIMake (me) returns Wire from TopoDS;
+    	---Purpose: Makes TopoDS_Wire using
+    	-- BRepAPI_MakeWire. Class BRepAPI_MakeWire merges
+    	-- geometrically coincided vertices and can disturb
+    	-- correct order of edges in the wire. If this class fails,
+    	-- null shape is returned.
+ 
+fields
+
+    myEdges: HSequenceOfShape from TopTools;
+    myNonmanifoldEdges : HSequenceOfShape from TopTools;
+    mySeams: HSequenceOfInteger from TColStd;
+    mySeamF: Integer;
+    mySeamR: Integer;
+    myManifoldMode : Boolean;
+    
+end WireData;

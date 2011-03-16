@@ -1,0 +1,65 @@
+-- File:	Prs3d_ArrowAspect.cdl
+-- Created:	Fri Jun 11 11:28:18 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+-- Modified	GG : GER61351 01/02/00 Add SetColor() & Aspect() methods
+---Copyright:	 Matra Datavision 1993
+
+
+class ArrowAspect from Prs3d inherits CompositeAspect from Prs3d
+    	---Purpose: A framework for displaying arrows in representations
+    	-- of dimensions and relations.
+uses
+    Length from Quantity,
+    PlaneAngle from Quantity,
+    NameOfColor from Quantity,
+    Color       from Quantity,
+    AspectLine3d from Graphic3d
+    
+raises
+    InvalidAngle from Prs3d
+    
+is
+    Create returns mutable ArrowAspect from Prs3d;
+    	---Purpose: Constructs an empty framework for displaying arrows
+    	-- in representations of lengths. The lengths displayed
+    	-- are either on their own or in chamfers, fillets,
+    	-- diameters and radii.    
+    Create (anAngle: PlaneAngle from Quantity; aLength: Length from Quantity)
+    returns mutable ArrowAspect from Prs3d;
+    	--- Purpose: Constructs a framework to display an arrow with a
+    	-- shaft of the length aLength and having a head with
+    	-- sides at the angle anAngle from each other.   
+        
+    SetAngle(me: mutable; anAngle: PlaneAngle from Quantity)
+    	---Purpose: defines the angle of the arrows.
+    raises InvalidAngle from Prs3d
+    is static;
+    
+    Angle(me) returns PlaneAngle from Quantity
+    	---Purpose: returns the current value of the angle used when drawing an arrow.
+    is static;
+    
+    SetLength(me: mutable; aLength: Length from Quantity)
+	---Purpose: defines the length of the arrows.
+    is static;
+    
+    Length(me) returns Length from Quantity
+	---Purpose: returns the current value of the length used when drawing an arrow.
+    is static;
+
+    SetColor(me: mutable; aColor:  Color  from  Quantity);
+
+    SetColor(me: mutable; aColor:  NameOfColor  from  Quantity);
+
+    Aspect(me) returns AspectLine3d  from  Graphic3d;
+
+    Print( me; s: in out OStream from Standard)
+    is virtual;
+
+fields
+	    myArrowAspect: AspectLine3d  from  Graphic3d;
+	    myAngle: PlaneAngle from Quantity;
+	    myLength: Length from Quantity;
+
+end ArrowAspect from Prs3d;

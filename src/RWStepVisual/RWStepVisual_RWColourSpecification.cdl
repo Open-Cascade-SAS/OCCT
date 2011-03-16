@@ -1,0 +1,27 @@
+-- File:        ColourSpecification.cdl
+-- Created:     Mon Dec  4 12:02:24 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWColourSpecification from RWStepVisual
+
+	---Purpose : Read & Write Module for ColourSpecification
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ColourSpecification from StepVisual
+
+is
+
+	Create returns RWColourSpecification;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ColourSpecification from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : ColourSpecification from StepVisual);
+
+end RWColourSpecification;

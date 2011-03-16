@@ -1,0 +1,19 @@
+-- File:	PGeom_Geometry.cdl
+-- Created:	Mon Feb 22 17:09:16 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Geometry from PGeom inherits Persistent
+
+        ---Purpose : The  general abstract class  Geometry in 3D space
+        --         describes the common behaviour of all the geometric
+        --         entities.
+        --        
+	---See Also : Geometry from Geom.
+
+
+is
+
+end;

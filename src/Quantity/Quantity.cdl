@@ -1,0 +1,1301 @@
+-- File:	Quantity.cdl
+-- Created:	Tue Feb  8 10:27:41 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@metrox>
+---Copyright:	 Matra Datavision 1994
+
+package Quantity
+
+    	---Purpose: The Quantities component deals with
+    	-- mathematical and physical quantities.
+    	-- A mathematical quantity is characterized by its value. It is a real value.
+    	-- A physical quantity is characterized by:
+    	-- -   its value, which is also a real value, and
+    	-- -   the unit in which it is expressed. This unit may
+    	--   be either an international unit complying with
+    	--   the International Unit System (SI) or a user
+    	--   defined unit. The unit is managed by the
+    	--   physical quantity user.  
+    	--  Each mathematical or physical quantity is
+    	-- described by its name. This ensures distinction
+    	-- between two different quantities.
+    	-- Moreover, both physical and mathematical
+    	-- quantities are also manipulated as real values:
+    	-- -   They are defined as aliases of reals, so all
+    	--   functions provided by the Standard_Real
+    	--   class are available on each quantity.
+    	-- -   You may also mix several physical quantities
+    	--   in a mathematical or physical formula involving real values.
+    	-- Associated with the physical quantities, a range
+    	-- of functions provides tools to manage unit conversions.
+    	-- The physical quantities described in this chapter
+    	-- are commonly used basic physical quantities.
+    	-- Nevertheless, the Quantity package includes all
+    	-- physical quantities you may require.
+    	-- The Quantities component also provides
+    	-- resources to manage time information (dates and
+    	-- periods) and color definition.
+        
+  uses Standard,
+       TCollection
+
+is
+         -------------------------------
+         -------------------------------
+
+         alias Scalaire is Real;
+               ---Purpose:          Mathematical quantities. 
+
+         alias Parameter is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Quotient is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Ratio is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Coefficient is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Factor is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Index is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Constant is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Content is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Rate is Real;
+               ---Purpose:
+         ---Category:  Mathematical quantities. 
+
+         alias Normality is Real;
+         ---Category:  Mathematical quantities. 
+               ---Purpose:
+
+
+
+         alias Mass is Real;
+               ---Purpose:
+               -- Defined as a quantity of matter. Gives rise to the 
+	       -- inertial and gravitational properties of a body.
+	       -- It is measured in kilograms. 
+         ---Category:  Physical quantities. 
+
+         alias PlaneAngle is Real;
+               ---Purpose:
+               -- Defined as a difference in direction. 
+	       -- It is measured in radians. 
+         ---Category:  Physical quantities. 
+
+         alias SolidAngle is Real;
+               ---Purpose:
+               -- Defined as an angle formed by three or more planes.  
+	       -- It is measured in steradians.
+         ---Category:  Physical quantities. 
+
+         alias Length is Real;
+               ---Purpose:
+               -- Defined as spatial extension. 
+	       -- It is measured in metres.
+         ---Category:  Physical quantities. 
+
+         alias Area is Real;
+               ---Purpose:
+               -- Defined as superficial extension.   
+	       -- It is measured in square metres. 
+         ---Category:  Physical quantities. 
+
+         alias Volume is Real;
+               ---Purpose:
+               -- Defined as an extension in three dimensions.  
+	       -- It is measured in cubic metres. 
+         ---Category:  Physical quantities. 
+
+         alias Speed is Real;
+               ---Purpose:
+               -- Defined as distance covered per unit time.   
+	       -- It is measured in metres per second.
+         ---Category:  Physical quantities. 
+
+         alias Velocity is Real;
+               ---Purpose:
+               -- Defined as distance covered per unit time in a 
+	       -- given direction. It is a vector quantity.  
+	       -- It is measured in metres per second.
+         ---Category:  Physical quantities. 
+
+         alias Acceleration is Real;
+               ---Purpose:
+               -- Defined as the change of velocity per unit time.
+	       -- It is a vector quantity. 
+	       -- It is measured in metres per second per second. 
+         ---Category:  Physical quantities. 
+
+         alias AngularVelocity is Real;
+               ---Purpose:
+	       -- Defined as the rate at which a body moves around an axis.
+               -- It is quantified as change in direction per unit time. 
+	       -- It is measured in radians per second. 
+         ---Category:  Physical quantities. 
+
+         alias Frequency is Real;
+               ---Purpose:
+               -- Defined as the number of oscillations per unit time.  
+	       -- It is measured in cycles per second. 
+         ---Category:  Physical quantities. 
+
+         alias Temperature is Real;
+               ---Purpose:
+               -- Defined as a measure of the average kinetic energy
+	       -- of the molecules in a body.   
+	       -- It is measured in degrees kelvin. 
+         ---Category:  Physical quantities. 
+
+         alias AmountOfSubstance is Real;
+               ---Purpose:
+               -- Defined as a dimensionless quantity proportional to
+	       -- the number of specified particles of a substance. 	    
+	       -- Amount of substance is measured in moles. 
+	       -- For all substances the number of molecules in a mole
+	       -- is given by Avogadro's Constant.
+         ---Category:  Physical quantities. 
+
+         alias Density is Real;
+               ---Purpose:
+               -- Defined as mass per unit volume.   
+	       -- It is measured in kilograms per cubic metre. 
+         ---Category:  Physical quantities. 
+
+         alias MassFlow is Real;
+               ---Purpose:
+               -- Defined as mass per unit time.   
+	       -- It is measured in kilograms per second. 
+         ---Category:  Physical quantities. 
+
+         alias VolumeFlow is Real;
+               ---Purpose:
+               -- Defined as volume per unit time.   
+	       -- It is measured in cubic metres per second.
+         ---Category:  Physical quantities. 
+
+         alias Consumption is Real;
+               ---Purpose:
+               -- Defined as a measure of fuel used per unit distance
+	       -- travelled, or distance travelled per unit of fuel.  
+	       -- It is measured in litres per 100 kilometres or in
+	       -- miles per gallon (UK or US). 
+         ---Category:  Physical quantities. 
+
+         alias Momentum is Real;
+               ---Purpose: 
+	       -- Defined as the product of mass and velocity.
+	       -- It is a vector quantity.   
+	       -- It is measured in kilogram-metres per second. 
+         ---Category:  Physical quantities. 
+
+         alias KineticMoment is Real;
+               ---Purpose: 
+	       -- Defined as the product of momentum of a body 
+	       -- and the distance of its centre of gravity from an axis.   
+	       -- It is measured in kilogram-square-metres per second.
+         ---Category:  Physical quantities. 
+
+         alias MomentOfInertia is Real;
+               ---Purpose: 
+	       -- Defined as the product of the mass of a body
+               -- and the square of the distance of its centre of gravity
+	       -- from an axis.   
+	       -- It is measured in kilogram-square-metres.
+         ---Category:  Physical quantities. 
+
+         alias Force is Real;
+               ---Purpose: 
+	       -- Defined as the product of the mass of a body 
+	       -- and the acceleration that the force produces.
+	       -- It is a vector quantity.  
+	       -- It is measured in newtons. 
+         ---Category:  Physical quantities. 
+
+         alias MomentOfAForce is Real;
+               ---Purpose: 
+	       -- Defined as the product of a force and the
+               -- perpendicular distance to an axis.   
+	       -- It is measured in newtons x metres. 
+         ---Category:  Physical quantities. 
+
+         alias Torque is Real;
+               ---Purpose: 
+	       -- Defined as the product of a force and the
+               -- perpendicular distance to an axis or as the
+	       -- the product of a force couple.   
+	       -- It is measured in newtons x metres. 
+         ---Category:  Physical quantities. 
+
+	 alias Weight is Real;
+	       ---Purpose:
+	       -- Defined as the force of gravitation acting on a body
+	       -- near to the surface of the Earth or other planet.
+	       -- It is quantified as the product of the mass of the body
+	       -- and the local value of the acceleration of free fall.
+	       -- It is measured in newtons.
+         ---Category:  Physical quantities. 
+
+         alias Pressure is Real;
+               ---Purpose: 
+	       -- Defined as the force perpendicular to a
+               -- unit area. In a fluid it is defined as the product
+	       -- of the depth, density, and free fall acceleration.   
+	       -- It is measured in pascals (newtons per square metre). 
+         ---Category:  Physical quantities. 
+
+         alias Viscosity is Real;
+               ---Purpose: 
+	       -- Defined as the resistance to flow in a fluid.
+               -- It is quantified as the product of pressure 
+	       -- and time. For a liquid it generally decreases with
+	       -- temperature; for a gas it increases.  
+	       -- It is measured in pascal-seconds. 
+         ---Category:  Physical quantities. 
+
+         alias KinematicViscosity is Real;
+               ---Purpose: 
+	       -- Defined as the ratio of the dynamic viscosity
+	       -- to the fluid density. Used in modifying the motion of a
+	       -- perfect fluid to include terms due to a real fluid. 
+	       -- It is quantified as area per unit time.    
+	       -- It is measured in square metres per second. 
+         ---Category:  Physical quantities. 
+
+         alias Energy is Real;
+               ---Purpose: 
+	       -- Defined as the capacity of a system to do work.
+               -- In mechanical terms this can be quantified as the 
+	       -- product of a force and a distance moved by its point of
+	       -- application.
+	       -- In kinetic terms it is the product of half the mass
+	       -- and the square of the speed .
+	       -- In a rotating system it is the product of half the
+	       -- moment of inertia and the square of the angular velocity.
+	       -- In potential terms it is the product of a mass,
+	       -- a height, and the free fall acceleration. 
+	       -- In molecular terms it is the sum of the kinetic and
+	       -- potential energies of the molecules.
+	       -- In electric terms it is the product of charge and
+	       -- the electric potential traversed.
+	       -- In relativistic terms it is the difference between
+	       -- the observed mass and the rest mass of a body multiplied
+	       -- by the square of the speed of light.
+	       -- It is measured in joules (newton-metres). 
+         ---Category:  Physical quantities. 
+
+         alias Work is Real;
+               ---Purpose: 
+	       -- In mechanics, the product of a force and the distance
+	       -- moved. In a rotating system, the product of the torque
+	       -- and the angular displacement. In a pressure system,
+	       -- the product of the pressure and the change in volume.
+	       -- In electrical terms, the product of a charge and the
+	       -- potential difference it traverses.
+	       -- It is measured in joules (newton-metres).
+         ---Category:  Physical quantities. 
+
+         alias Power is Real;
+               ---Purpose:
+               -- Defined as the rate of expending energy or doing work.
+	       -- In mechanical terms it is the product of a force and
+	       -- the distance it moves per unit time.
+	       -- In electrical terms it is the product of the voltage
+	       -- and the current. For AC the root-mean-square values
+	       -- are multiplied by the cosine of the phase angle.  
+	       -- It is measured in watts (joules per second).
+         ---Category:  Physical quantities. 
+
+	 alias SurfaceTension is Real;
+	       ---Purpose:
+	       -- Defined as the force required to hold unit length
+	       -- of a plane liquid surface.
+	       -- It is measured in newtons per metre.
+         ---Category:  Physical quantities. 
+
+         alias CoefficientOfExpansion is Real;
+               ---Purpose:
+               -- Defined as the proportional change in the length,
+	       -- area, or volume of a solid per degree of temperature.
+	       -- For a liquid the expansion of the container must be
+	       -- taken into account.
+	       -- For a gas there are coefficients for constant pressure
+	       -- and constant volume changes.
+	       -- It is measured in units of reciprocal degree kelvin. 
+         ---Category:  Physical quantities. 
+
+         alias ThermalConductivity is Real;
+               ---Purpose:
+               -- Defined as the rate at which heat passes through an
+	       -- area inside a body. Quantified as work per unit time
+	       -- per unit length per unit of temperature.   
+	       -- It is measured in watts per metre per degee kelvin. 
+         ---Category:  Physical quantities. 
+
+         alias SpecificHeatCapacity is Real;
+               ---Purpose:
+               -- Defined as the quantity of heat required to raise
+	       -- unit mass by one degree temperature. For a gas
+	       -- there are two values: one at constant pressure, the
+	       -- other at constant volume. Their ratio is linked to the
+	       -- speed of sound in the gas and to the number of 
+	       -- degrees of freedom of the molecules. 
+	       -- It is quantified as energy per unit mass per
+	       -- degree of temperature.
+	       -- It is measured in joules per kilogram per degree
+	       -- kelvin. 
+         ---Category:  Physical quantities. 
+
+         alias Entropy is Real;
+               ---Purpose:
+               -- Defined as a property which changes as a system undergoes
+	       -- reversible change. The change in entropy is quantified as
+	       -- the change in energy per degree of temperature. All real
+	       -- changes are at least partially irreversible so entropy
+	       -- is increased by change. Entropy can be viewed as a 
+	       -- measure of the molecular disorder of a system, or as the
+	       -- unavailability of its internal energy to do work in a
+	       -- cyclical process.  
+	       -- A change in entropy is measured in joules per degree kelvin. 
+         ---Category:  Physical quantities. 
+
+         alias Enthalpy is Real;
+               ---Purpose:
+               -- Defined as the sum of the internal energy of a system plus
+	       -- the product of its pressure and volume. For a reversible
+	       -- process at constant pressure the change in enthalpy is
+	       -- equal to the quantity of heat absorbed (or lost).   
+	       -- It is measured in joules. 
+         ---Category:  Physical quantities. 
+
+         alias LuminousIntensity is Real;
+               ---Purpose:
+               -- Defined as the luminous flux emitted per unit solid
+	       -- angle in a given direction by a point source.   
+	       -- It is measured in candelas. 
+         ---Category:  Physical quantities. 
+
+         alias LuminousFlux is Real;
+               ---Purpose:
+               -- Defined as the rate of flow of radiant energy as evaluated
+	       -- by the luminous sensation it produces. This means it
+	       -- depends on the sensitivity of the receptor or observer. It
+	       -- is related to the radiant flux of the source by the
+	       -- spectral luminous efficiency.	
+	       -- It is measured in lumens.  
+         ---Category:  Physical quantities. 
+
+         alias Luminance is Real;
+               ---Purpose:
+               -- It is defined the luminous flux per unit area per unit 
+	       -- solid angle. 
+	       -- It is measured in candelas per square metre.  
+         ---Category:  Physical quantities. 
+
+         alias Illuminance is Real;
+               ---Purpose:
+               -- Defined as the incident luminous flux per unit area.
+	       -- It is measured in lux (lumen per square metre).   
+         ---Category:  Physical quantities. 
+
+         alias LuminousExposition is Real;
+               ---Purpose:
+               -- Defined as the quantity of illuminance with time. 
+	       -- It is measured in lux-seconds.  
+         ---Category:  Physical quantities. 
+
+         alias LuminousEfficacity is Real;
+               ---Purpose:
+               -- Defined as the ratio of luminous flux emitted by a 
+	       -- source to the power it consumes. 
+	       -- It is measured in lumens per watt.   
+         ---Category:  Physical quantities. 
+
+         alias ElectricCharge is Real;
+               ---Purpose:
+               -- Defined as a property of elementary particles. It is
+	       -- more commonly viewed as the product of electric current
+	       -- and time. 
+	       -- It is measured in coulombs (ampere-second).  
+         ---Category:  Physical quantities. 
+
+         alias ElectricCurrent is Real;
+               ---Purpose:
+               -- Defined as the amount of charge flowing per unit time.  
+	       -- It is measured in amperes (coulombs per second). 
+         ---Category:  Physical quantities. 
+
+         alias ElectricFieldStrength is Real;
+               ---Purpose:
+               -- Defined as the force exerted on a unit charge at a
+	       -- given point in space. 
+	       -- It is measured in volts per metre.  
+         ---Category:  Physical quantities. 
+
+         alias ElectricPotential is Real;
+               ---Purpose: 
+	       -- Defined as the work done in bringing unit positive
+               -- charge from infinity to the point. 
+	       -- It is measured in volts.
+	       -- Volts are in practice used to measure differences
+	       -- in potential e.g. the electromotive force generated when
+	       -- a conductor cuts a magnetic field.    
+         ---Category:  Physical quantities. 
+
+         alias ElectricCapacitance is Real;
+               ---Purpose:
+               -- Defined for a capacitor as the ratio of the charge on
+	       -- either conductor to the potential between them.
+	       -- It is measured in farads (coulomb per volt).  
+         ---Category:  Physical quantities. 
+
+         alias MagneticFlux is Real;
+               ---Purpose:
+               -- Defined as the product of a given area and the
+	       -- average magnetic flux density normal to it. 
+	       -- It is measured in webers (tesla-square-metre).
+         ---Category:  Physical quantities. 
+
+         alias MagneticFluxDensity is Real;
+               ---Purpose:
+               -- Defined as the magnetic flux passing through unit area
+	       -- of a magnetic field normal to the magnetic force.
+	       -- It is a vector quantity, the product of the permeability 
+	       -- and the magnetic field strength and with a direction at any
+	       -- given point the same as that of the magnetic field. 
+	       -- It is measured in teslas (webers per square metre).
+         ---Category:  Physical quantities. 
+
+         alias MagneticFieldStrength is Real;
+               ---Purpose:
+               -- Described as a vector quantity, it is the ratio of the 
+	       -- magnetic flux density to the permeability of the medium.
+	       -- Its integral along a closed line is equal to the 
+	       -- magnetomotive force.
+	       -- It is measured in amperes per metre. 
+         ---Category:  Physical quantities. 
+
+         alias Reluctance is Real;
+               ---Purpose:
+               -- Defined as the ratio of the magnetomotive force applied
+	       -- to a magnetic circuit to the magnetic flux in the circuit.
+	       -- It is measured in reciprocal henrys. 
+	       -- Its reciprocal is permanence.
+         ---Category:  Physical quantities. 
+
+         alias Resistance is Real;
+               ---Purpose:
+               -- Defined as the ratio of the potential difference
+	       -- across a conductor to the current flowing through it.
+	       -- It is measured in ohms.
+         ---Category:  Physical quantities. 
+
+         alias Inductance is Real;
+               ---Purpose:
+               -- Defined as numerically equal to the electromotive force
+	       -- induced when the current in a circuit changes at
+	       -- unit rate.
+	       -- It is measured in henrys (webers per ampere).  
+         ---Category:  Physical quantities. 
+
+         alias Capacitance is Real;
+               ---Purpose:
+               -- Defined as a measure of the increase in voltage on
+	       -- an isolated conductor by the addition of a charge.
+	       -- for two isolated conductors, it is the ratio of the charge 
+	       -- on either conductor to the potential difference between
+	       -- them. 
+	       -- It is measured in farads (coulomb per volt).
+	       -- In practice micro-, nano-, and pico-farads are used.
+         ---Category:  Physical quantities. 
+
+         alias Impedance is Real;
+               ---Purpose:
+               -- Defined as the total opposition to the flow of current
+	       -- in a circuit. Includes the contributions of resistance,
+	       -- inductance, and capacitance.
+	       -- It is measured in Ohms.
+         ---Category:  Physical quantities. 
+
+         alias Admittance is Real;
+               ---Purpose:
+               -- Defined as the reciprocal of impedance.
+	       -- It is measured in Siemens (reciprocal Ohms). 
+	       -- The square of the admittance is equal to the sum of the
+	       -- squares of the conductance and the susceptance.
+         ---Category:  Physical quantities. 
+
+         alias Resistivity is Real;
+               ---Purpose:
+               -- Defined as the resistance of a conductor of unit
+	       -- cross-section per unit length. 
+	       -- It is measured in Ohm-metres. 
+	       -- It is the reciprocal of the conductivity.  
+         ---Category:  Physical quantities. 
+
+         alias Conductivity is Real;
+               ---Purpose:
+               -- Defined as the current density divided by the electrical
+	       -- field strength. It is also the reciprocal of resistivity.
+	       -- It is measured in Siemens per metre. 
+         ---Category:  Physical quantities. 
+
+         alias MolarMass is Real;
+               ---Purpose:
+               -- Defined as the mass of a given substance contained in one 
+	       -- mole. One mole of any substance contains Avogadro's
+	       -- Constant of molecules.
+	       -- It is measured in kilograms per mole.  
+         ---Category:  Physical quantities. 
+
+         alias MolarVolume is Real;
+               ---Purpose:
+               -- Defined as the volume occupied by one mole of substance.
+	       -- One mole of any substance contains Avogadro's
+	       -- Constant of molecules.
+	       -- It is measured in cubic metres per mole.   
+         ---Category:  Physical quantities. 
+
+         alias Concentration is Real;
+               ---Purpose:
+               -- Defined as the strength of a mixture or solution. It can
+	       -- be measured as kilograms per litre of solvent or of
+	       -- solution. For certain purposes percentage by weight or
+	       -- volume can be used, and parts per million (ppm) is used  
+	       -- for trace elements.  
+         ---Category:  Physical quantities. 
+
+         alias MolarConcentration is Real;
+               ---Purpose:
+               -- Defined as the concentration in moles per litre of
+	       -- solution. It is also called molarity.  
+         ---Category:  Physical quantities. 
+
+         alias Molarity is Real;
+               ---Purpose:
+               -- Defined as the concentration in moles per kilogram of
+	       -- solvent.   
+         ---Category:  Physical quantities. 
+
+         alias SoundIntensity is Real;
+               ---Purpose:
+               -- Defined as the rate of flow of sound energy through
+	       -- a unit area normal to the flow. It is quantified as the
+	       -- square of the root-mean-square sound pressure, divided by
+	       -- the density of the medium and by the speed of sound. 
+	       -- It is measured in watts per square metre.    
+         ---Category:  Physical quantities. 
+
+         alias AcousticIntensity is Real;
+               ---Purpose:
+               -- Defined as a dimensionless comparison of sound pressure
+	       -- levels. The conventional unit, the bel, is the base ten
+	       -- logarithm of the ratio of the two pressures. In practice
+	       -- the decibel (one tenth of a bel) is used.   
+         ---Category:  Physical quantities. 
+
+         alias Activity is Real;
+               ---Purpose:
+               -- Defined as the number of atoms of a radioactive
+	       -- substance which disintegrate per unit time. It is 
+	       -- measured in becquerels (one disintegration per second).   
+         ---Category:  Physical quantities. 
+
+         alias AbsorbedDose is Real;
+               ---Purpose:
+               -- Defined as the energy absorbed per unit mass in an
+	       -- irradiated medium. 
+	       -- It is measured in grays.   
+         ---Category:  Physical quantities. 
+
+         alias DoseEquivalent is Real;
+               ---Purpose:
+               -- Defined as the product of the absorbed dose and a 
+	       -- quality factor related to the effect of a particular
+	       -- type of radiation on biological tissue.
+	       -- It is measured in sieverts.   
+         ---Category:  Physical quantities. 
+
+--	 alias OpticalPower
+	       ---Purpose:
+	       -- Defined as the power of a lens. It is quantified
+	       -- as the reciprocal of the focal length. 
+	       -- It is measured in dioptres (reciprocal metres).
+         ---Category:  Physical quantities. 
+
+
+
+         exception DateDefinitionError    inherits DomainError;
+         exception PeriodDefinitionError  inherits DomainError;
+	 exception ColorDefinitionError   inherits DomainError;
+
+
+         class Date;
+             ---Purpose: Gets and sets values of date.
+             --          This represents a point in time.
+             --          So it deals with year,month,day,hour,minute,second,
+             --          millisecond and microsecond.
+
+         class Period;
+             ---Purpose: Gets and sets values of Period
+             --          This allows management of an elapsed time.
+
+
+
+    	 class Color;
+	     ---Purpose: Definition and manipulation of colors.
+
+
+    	 class Convert;
+	     ---Purpose: Conversion units.
+
+
+	class Array1OfCoefficient instantiates
+			Array1 from TCollection (Coefficient from Quantity);
+	---Category: Instantiated classes
+
+	class Array2OfColor instantiates
+			Array2 from TCollection (Color from Quantity);
+	---Category: Instantiated classes
+
+	class Array1OfColor instantiates
+			Array1 from TCollection (Color from Quantity);
+	---Category: Instantiated classes
+
+	class HArray1OfColor instantiates
+			HArray1 from TCollection (Color from Quantity,
+						  Array1OfColor from Quantity);
+	---Category: Instantiated classes
+
+
+
+    	enumeration PhysicalQuantity is MASS,
+	    	    	    	    	PLANEANGLE,
+					SOLIDANGLE,
+					LENGTH,
+					AREA,
+					VOLUME,
+					SPEED,
+					VELOCITY,
+					ACCELERATION,
+    	    	    	    	    	ANGULARVELOCITY,
+					FREQUENCY,
+					TEMPERATURE,
+					AMOUNTOFSUBSTANCE,
+					DENSITY,
+					MASSFLOW,
+					VOLUMEFLOW,
+					CONSUMPTION,
+					MOMENTUM,
+					KINETICMOMENT,
+					MOMENTOFINERTIA,
+					FORCE,
+					MOMENTOFAFORCE,
+					TORQUE,
+					WEIGHT,
+					PRESSURE,
+					VISCOSITY,
+					KINEMATICVISCOSITY,
+					ENERGY,
+					WORK,
+					POWER,
+					SURFACETENSION,
+					COEFFICIENTOFEXPANSION,
+					THERMALCONDUCTIVITY,
+					SPECIFICHEATCAPACITY,
+					ENTROPY,
+					ENTHALPY,
+					LUMINOUSINTENSITY,
+					LUMINOUSFLUX,
+					LUMINANCE,
+					ILLUMINANCE,
+					LUMINOUSEXPOSITION,
+					LUMINOUSEFFICACITY,
+					ELECTRICCHARGE,
+					ELECTRICCURRENT,
+					ELECTRICFIELDSTRENGTH,
+					ELECTRICPOTENTIAL,
+					ELECTRICCAPACITANCE,
+					MAGNETICFLUX,
+					MAGNETICFLUXDENSITY,
+					MAGNETICFIELDSTRENGTH,
+					RELUCTANCE,
+					RESISTANCE,
+					INDUCTANCE,
+					CAPACITANCE,
+					IMPEDANCE,
+					ADMITTANCE,
+					RESISTIVITY,
+					CONDUCTIVITY,
+					MOLARMASS,
+					MOLARVOLUME,
+					CONCENTRATION,
+					MOLARCONCENTRATION,
+					MOLARITY,
+					SOUNDINTENSITY,
+					ACOUSTICINTENSITY,
+					ACTIVITY,
+					ABSORBEDDOSE,
+					DOSEEQUIVALENT
+--                                      OPTICALPOWER			       
+	end PhysicalQuantity;
+	---Purpose: List of all physical quantities(Afnor)
+	              
+
+
+	enumeration TypeOfColor is	TOC_RGB,
+					TOC_HLS
+	end TypeOfColor;
+	
+	---Purpose:  Identifies color definition systems
+    	-- -   Quantity_TOC_RGB: with this system a
+    	--   color is defined by its quantities of red, green and blue (R-G-B values).
+    	-- -   Quantity_TOC_HLS: with this system a
+    	--   color is defined by its hue angle and its
+    	--   lightness and saturation values (H-L-S values).
+    	--   A Quantity_Color object may define a color
+    	-- from three values R-G-B or H-L-S according
+    	-- to a given color definition system.
+
+	enumeration NameOfColor is	NOC_BLACK,
+					NOC_MATRABLUE,
+					NOC_MATRAGRAY,
+					NOC_ALICEBLUE,
+					NOC_ANTIQUEWHITE,
+					NOC_ANTIQUEWHITE1,
+					NOC_ANTIQUEWHITE2,
+					NOC_ANTIQUEWHITE3,
+					NOC_ANTIQUEWHITE4,
+					NOC_AQUAMARINE1,
+					NOC_AQUAMARINE2,
+					NOC_AQUAMARINE4,
+					NOC_AZURE,
+					NOC_AZURE2,
+					NOC_AZURE3,
+					NOC_AZURE4,
+					NOC_BEIGE,
+					NOC_BISQUE,
+					NOC_BISQUE2,
+					NOC_BISQUE3,
+					NOC_BISQUE4,
+					NOC_BLANCHEDALMOND,
+					NOC_BLUE1,
+					NOC_BLUE2,
+					NOC_BLUE3,
+					NOC_BLUE4,
+					NOC_BLUEVIOLET,
+					NOC_BROWN,
+					NOC_BROWN1,
+					NOC_BROWN2,
+					NOC_BROWN3,
+					NOC_BROWN4,
+					NOC_BURLYWOOD,
+					NOC_BURLYWOOD1,
+					NOC_BURLYWOOD2,
+					NOC_BURLYWOOD3,
+					NOC_BURLYWOOD4,
+					NOC_CADETBLUE,
+					NOC_CADETBLUE1,
+					NOC_CADETBLUE2,
+					NOC_CADETBLUE3,
+					NOC_CADETBLUE4,
+					NOC_CHARTREUSE,
+					NOC_CHARTREUSE1,
+					NOC_CHARTREUSE2,
+					NOC_CHARTREUSE3,
+					NOC_CHARTREUSE4,
+					NOC_CHOCOLATE,
+					NOC_CHOCOLATE1,
+					NOC_CHOCOLATE2,
+					NOC_CHOCOLATE3,
+					NOC_CHOCOLATE4,
+					NOC_CORAL,
+					NOC_CORAL1,
+					NOC_CORAL2,
+					NOC_CORAL3,
+					NOC_CORAL4,
+					NOC_CORNFLOWERBLUE,
+					NOC_CORNSILK1,
+					NOC_CORNSILK2,
+					NOC_CORNSILK3,
+					NOC_CORNSILK4,
+					NOC_CYAN1,
+					NOC_CYAN2,
+					NOC_CYAN3,
+					NOC_CYAN4,
+					NOC_DARKGOLDENROD,
+					NOC_DARKGOLDENROD1,
+					NOC_DARKGOLDENROD2,
+					NOC_DARKGOLDENROD3,
+					NOC_DARKGOLDENROD4,
+					NOC_DARKGREEN,
+					NOC_DARKKHAKI,
+					NOC_DARKOLIVEGREEN,
+					NOC_DARKOLIVEGREEN1,
+					NOC_DARKOLIVEGREEN2,
+					NOC_DARKOLIVEGREEN3,
+					NOC_DARKOLIVEGREEN4,
+					NOC_DARKORANGE,
+					NOC_DARKORANGE1,
+					NOC_DARKORANGE2,
+					NOC_DARKORANGE3,
+					NOC_DARKORANGE4,
+					NOC_DARKORCHID,
+					NOC_DARKORCHID1,
+					NOC_DARKORCHID2,
+					NOC_DARKORCHID3,
+					NOC_DARKORCHID4,
+					NOC_DARKSALMON,
+					NOC_DARKSEAGREEN,
+					NOC_DARKSEAGREEN1,
+					NOC_DARKSEAGREEN2,
+					NOC_DARKSEAGREEN3,
+					NOC_DARKSEAGREEN4,
+					NOC_DARKSLATEBLUE,
+					NOC_DARKSLATEGRAY1,
+					NOC_DARKSLATEGRAY2,
+					NOC_DARKSLATEGRAY3,
+					NOC_DARKSLATEGRAY4,
+					NOC_DARKSLATEGRAY,
+					NOC_DARKTURQUOISE,
+					NOC_DARKVIOLET,
+					NOC_DEEPPINK,
+					NOC_DEEPPINK2,
+					NOC_DEEPPINK3,
+					NOC_DEEPPINK4,
+					NOC_DEEPSKYBLUE1,
+					NOC_DEEPSKYBLUE2,
+					NOC_DEEPSKYBLUE3,
+					NOC_DEEPSKYBLUE4,
+					NOC_DODGERBLUE1,
+					NOC_DODGERBLUE2,
+					NOC_DODGERBLUE3,
+					NOC_DODGERBLUE4,
+					NOC_FIREBRICK,
+					NOC_FIREBRICK1,
+					NOC_FIREBRICK2,
+					NOC_FIREBRICK3,
+					NOC_FIREBRICK4,
+					NOC_FLORALWHITE,
+					NOC_FORESTGREEN,
+					NOC_GAINSBORO,
+					NOC_GHOSTWHITE,
+					NOC_GOLD,
+					NOC_GOLD1,
+					NOC_GOLD2,
+					NOC_GOLD3,
+					NOC_GOLD4,
+					NOC_GOLDENROD,
+					NOC_GOLDENROD1,
+					NOC_GOLDENROD2,
+					NOC_GOLDENROD3,
+					NOC_GOLDENROD4,
+					NOC_GRAY,
+					NOC_GRAY0,
+					NOC_GRAY1,
+					NOC_GRAY10,
+					NOC_GRAY11,
+					NOC_GRAY12,
+					NOC_GRAY13,
+					NOC_GRAY14,
+					NOC_GRAY15,
+					NOC_GRAY16,
+					NOC_GRAY17,
+					NOC_GRAY18,
+					NOC_GRAY19,
+					NOC_GRAY2,
+					NOC_GRAY20,
+					NOC_GRAY21,
+					NOC_GRAY22,
+					NOC_GRAY23,
+					NOC_GRAY24,
+					NOC_GRAY25,
+					NOC_GRAY26,
+					NOC_GRAY27,
+					NOC_GRAY28,
+					NOC_GRAY29,
+					NOC_GRAY3,
+					NOC_GRAY30,
+					NOC_GRAY31,
+					NOC_GRAY32,
+					NOC_GRAY33,
+					NOC_GRAY34,
+					NOC_GRAY35,
+					NOC_GRAY36,
+					NOC_GRAY37,
+					NOC_GRAY38,
+					NOC_GRAY39,
+					NOC_GRAY4,
+					NOC_GRAY40,
+					NOC_GRAY41,
+					NOC_GRAY42,
+					NOC_GRAY43,
+					NOC_GRAY44,
+					NOC_GRAY45,
+					NOC_GRAY46,
+					NOC_GRAY47,
+					NOC_GRAY48,
+					NOC_GRAY49,
+					NOC_GRAY5,
+					NOC_GRAY50,
+					NOC_GRAY51,
+					NOC_GRAY52,
+					NOC_GRAY53,
+					NOC_GRAY54,
+					NOC_GRAY55,
+					NOC_GRAY56,
+					NOC_GRAY57,
+					NOC_GRAY58,
+					NOC_GRAY59,
+					NOC_GRAY6,
+					NOC_GRAY60,
+					NOC_GRAY61,
+					NOC_GRAY62,
+					NOC_GRAY63,
+					NOC_GRAY64,
+					NOC_GRAY65,
+					NOC_GRAY66,
+					NOC_GRAY67,
+					NOC_GRAY68,
+					NOC_GRAY69,
+					NOC_GRAY7,
+					NOC_GRAY70,
+					NOC_GRAY71,
+					NOC_GRAY72,
+					NOC_GRAY73,
+					NOC_GRAY74,
+					NOC_GRAY75,
+					NOC_GRAY76,
+					NOC_GRAY77,
+					NOC_GRAY78,
+					NOC_GRAY79,
+					NOC_GRAY8,
+					NOC_GRAY80,
+					NOC_GRAY81,
+					NOC_GRAY82,
+					NOC_GRAY83,
+					NOC_GRAY85,
+					NOC_GRAY86,
+					NOC_GRAY87,
+					NOC_GRAY88,
+					NOC_GRAY89,
+					NOC_GRAY9,
+					NOC_GRAY90,
+					NOC_GRAY91,
+					NOC_GRAY92,
+					NOC_GRAY93,
+					NOC_GRAY94,
+					NOC_GRAY95,
+					NOC_GREEN,
+					NOC_GREEN1,
+					NOC_GREEN2,
+					NOC_GREEN3,
+					NOC_GREEN4,
+					NOC_GREENYELLOW,
+					NOC_GRAY97,
+					NOC_GRAY98,
+					NOC_GRAY99,
+					NOC_HONEYDEW,
+					NOC_HONEYDEW2,
+					NOC_HONEYDEW3,
+					NOC_HONEYDEW4,
+					NOC_HOTPINK,
+					NOC_HOTPINK1,
+					NOC_HOTPINK2,
+					NOC_HOTPINK3,
+					NOC_HOTPINK4,
+					NOC_INDIANRED,
+					NOC_INDIANRED1,
+					NOC_INDIANRED2,
+					NOC_INDIANRED3,
+					NOC_INDIANRED4,
+					NOC_IVORY,
+					NOC_IVORY2,
+					NOC_IVORY3,
+					NOC_IVORY4,
+					NOC_KHAKI,
+					NOC_KHAKI1,
+					NOC_KHAKI2,
+					NOC_KHAKI3,
+					NOC_KHAKI4,
+					NOC_LAVENDER,
+					NOC_LAVENDERBLUSH1,
+					NOC_LAVENDERBLUSH2,
+					NOC_LAVENDERBLUSH3,
+					NOC_LAVENDERBLUSH4,
+					NOC_LAWNGREEN,
+					NOC_LEMONCHIFFON1,
+					NOC_LEMONCHIFFON2,
+					NOC_LEMONCHIFFON3,
+					NOC_LEMONCHIFFON4,
+					NOC_LIGHTBLUE,
+					NOC_LIGHTBLUE1,
+					NOC_LIGHTBLUE2,
+					NOC_LIGHTBLUE3,
+					NOC_LIGHTBLUE4,
+					NOC_LIGHTCORAL,
+					NOC_LIGHTCYAN1,
+					NOC_LIGHTCYAN2,
+					NOC_LIGHTCYAN3,
+					NOC_LIGHTCYAN4,
+					NOC_LIGHTGOLDENROD,
+					NOC_LIGHTGOLDENROD1,
+					NOC_LIGHTGOLDENROD2,
+					NOC_LIGHTGOLDENROD3,
+					NOC_LIGHTGOLDENROD4,
+					NOC_LIGHTGOLDENRODYELLOW,
+					NOC_LIGHTGRAY,
+					NOC_LIGHTPINK,
+					NOC_LIGHTPINK1,
+					NOC_LIGHTPINK2,
+					NOC_LIGHTPINK3,
+					NOC_LIGHTPINK4,
+					NOC_LIGHTSALMON1,
+					NOC_LIGHTSALMON2,
+					NOC_LIGHTSALMON3,
+					NOC_LIGHTSALMON4,
+					NOC_LIGHTSEAGREEN,
+					NOC_LIGHTSKYBLUE,
+					NOC_LIGHTSKYBLUE1,
+					NOC_LIGHTSKYBLUE2,
+					NOC_LIGHTSKYBLUE3,
+					NOC_LIGHTSKYBLUE4,
+					NOC_LIGHTSLATEBLUE,
+					NOC_LIGHTSLATEGRAY,
+					NOC_LIGHTSTEELBLUE,
+					NOC_LIGHTSTEELBLUE1,
+					NOC_LIGHTSTEELBLUE2,
+					NOC_LIGHTSTEELBLUE3,
+					NOC_LIGHTSTEELBLUE4,
+					NOC_LIGHTYELLOW,
+					NOC_LIGHTYELLOW2,
+					NOC_LIGHTYELLOW3,
+					NOC_LIGHTYELLOW4,
+					NOC_LIMEGREEN,
+					NOC_LINEN,
+					NOC_MAGENTA1,
+					NOC_MAGENTA2,
+					NOC_MAGENTA3,
+					NOC_MAGENTA4,
+					NOC_MAROON,
+					NOC_MAROON1,
+					NOC_MAROON2,
+					NOC_MAROON3,
+					NOC_MAROON4,
+					NOC_MEDIUMAQUAMARINE,
+					NOC_MEDIUMORCHID,
+					NOC_MEDIUMORCHID1,
+					NOC_MEDIUMORCHID2,
+					NOC_MEDIUMORCHID3,
+					NOC_MEDIUMORCHID4,
+					NOC_MEDIUMPURPLE,
+					NOC_MEDIUMPURPLE1,
+					NOC_MEDIUMPURPLE2,
+					NOC_MEDIUMPURPLE3,
+					NOC_MEDIUMPURPLE4,
+					NOC_MEDIUMSEAGREEN,
+					NOC_MEDIUMSLATEBLUE,
+					NOC_MEDIUMSPRINGGREEN,
+					NOC_MEDIUMTURQUOISE,
+					NOC_MEDIUMVIOLETRED,
+					NOC_MIDNIGHTBLUE,
+					NOC_MINTCREAM,
+					NOC_MISTYROSE,
+					NOC_MISTYROSE2,
+					NOC_MISTYROSE3,
+					NOC_MISTYROSE4,
+					NOC_MOCCASIN,
+					NOC_NAVAJOWHITE1,
+					NOC_NAVAJOWHITE2,
+					NOC_NAVAJOWHITE3,
+					NOC_NAVAJOWHITE4,
+					NOC_NAVYBLUE,
+					NOC_OLDLACE,
+					NOC_OLIVEDRAB,
+					NOC_OLIVEDRAB1,
+					NOC_OLIVEDRAB2,
+					NOC_OLIVEDRAB3,
+					NOC_OLIVEDRAB4,
+					NOC_ORANGE,
+					NOC_ORANGE1,
+					NOC_ORANGE2,
+					NOC_ORANGE3,
+					NOC_ORANGE4,
+					NOC_ORANGERED,
+					NOC_ORANGERED1,
+					NOC_ORANGERED2,
+					NOC_ORANGERED3,
+					NOC_ORANGERED4,
+					NOC_ORCHID,
+					NOC_ORCHID1,
+					NOC_ORCHID2,
+					NOC_ORCHID3,
+					NOC_ORCHID4,
+					NOC_PALEGOLDENROD,
+					NOC_PALEGREEN,
+					NOC_PALEGREEN1,
+					NOC_PALEGREEN2,
+					NOC_PALEGREEN3,
+					NOC_PALEGREEN4,
+					NOC_PALETURQUOISE,
+					NOC_PALETURQUOISE1,
+					NOC_PALETURQUOISE2,
+					NOC_PALETURQUOISE3,
+					NOC_PALETURQUOISE4,
+					NOC_PALEVIOLETRED,
+					NOC_PALEVIOLETRED1,
+					NOC_PALEVIOLETRED2,
+					NOC_PALEVIOLETRED3,
+					NOC_PALEVIOLETRED4,
+					NOC_PAPAYAWHIP,
+					NOC_PEACHPUFF,
+					NOC_PEACHPUFF2,
+					NOC_PEACHPUFF3,
+					NOC_PEACHPUFF4,
+					NOC_PERU,
+					NOC_PINK,
+					NOC_PINK1,
+					NOC_PINK2,
+					NOC_PINK3,
+					NOC_PINK4,
+					NOC_PLUM,
+					NOC_PLUM1,
+					NOC_PLUM2,
+					NOC_PLUM3,
+					NOC_PLUM4,
+					NOC_POWDERBLUE,
+					NOC_PURPLE,
+					NOC_PURPLE1,
+					NOC_PURPLE2,
+					NOC_PURPLE3,
+					NOC_PURPLE4,
+					NOC_RED,
+					NOC_RED1,
+					NOC_RED2,
+					NOC_RED3,
+					NOC_RED4,
+					NOC_ROSYBROWN,
+					NOC_ROSYBROWN1,
+					NOC_ROSYBROWN2,
+					NOC_ROSYBROWN3,
+					NOC_ROSYBROWN4,
+					NOC_ROYALBLUE,
+					NOC_ROYALBLUE1,
+					NOC_ROYALBLUE2,
+					NOC_ROYALBLUE3,
+					NOC_ROYALBLUE4,
+					NOC_SADDLEBROWN,
+					NOC_SALMON,
+					NOC_SALMON1,
+					NOC_SALMON2,
+					NOC_SALMON3,
+					NOC_SALMON4,
+					NOC_SANDYBROWN,
+					NOC_SEAGREEN,
+					NOC_SEAGREEN1,
+					NOC_SEAGREEN2,
+					NOC_SEAGREEN3,
+					NOC_SEAGREEN4,
+					NOC_SEASHELL,
+					NOC_SEASHELL2,
+					NOC_SEASHELL3,
+					NOC_SEASHELL4,
+					NOC_BEET,
+					NOC_TEAL,
+					NOC_SIENNA,
+					NOC_SIENNA1,
+					NOC_SIENNA2,
+					NOC_SIENNA3,
+					NOC_SIENNA4,
+					NOC_SKYBLUE,
+					NOC_SKYBLUE1,
+					NOC_SKYBLUE2,
+					NOC_SKYBLUE3,
+					NOC_SKYBLUE4,
+					NOC_SLATEBLUE,
+					NOC_SLATEBLUE1,
+					NOC_SLATEBLUE2,
+					NOC_SLATEBLUE3,
+					NOC_SLATEBLUE4,
+					NOC_SLATEGRAY1,
+					NOC_SLATEGRAY2,
+					NOC_SLATEGRAY3,
+					NOC_SLATEGRAY4,
+					NOC_SLATEGRAY,
+					NOC_SNOW,
+					NOC_SNOW2,
+					NOC_SNOW3,
+					NOC_SNOW4,
+					NOC_SPRINGGREEN,
+					NOC_SPRINGGREEN2,
+					NOC_SPRINGGREEN3,
+					NOC_SPRINGGREEN4,
+					NOC_STEELBLUE,
+					NOC_STEELBLUE1,
+					NOC_STEELBLUE2,
+					NOC_STEELBLUE3,
+					NOC_STEELBLUE4,
+					NOC_TAN,
+					NOC_TAN1,
+					NOC_TAN2,
+					NOC_TAN3,
+					NOC_TAN4,
+					NOC_THISTLE,
+					NOC_THISTLE1,
+					NOC_THISTLE2,
+					NOC_THISTLE3,
+					NOC_THISTLE4,
+					NOC_TOMATO,
+					NOC_TOMATO1,
+					NOC_TOMATO2,
+					NOC_TOMATO3,
+					NOC_TOMATO4,
+					NOC_TURQUOISE,
+					NOC_TURQUOISE1,
+					NOC_TURQUOISE2,
+					NOC_TURQUOISE3,
+					NOC_TURQUOISE4,
+					NOC_VIOLET,
+					NOC_VIOLETRED,
+					NOC_VIOLETRED1,
+					NOC_VIOLETRED2,
+					NOC_VIOLETRED3,
+					NOC_VIOLETRED4,
+					NOC_WHEAT,
+					NOC_WHEAT1,
+					NOC_WHEAT2,
+					NOC_WHEAT3,
+					NOC_WHEAT4,
+					NOC_WHITESMOKE,
+					NOC_YELLOW,
+					NOC_YELLOW1,
+					NOC_YELLOW2,
+					NOC_YELLOW3,
+					NOC_YELLOW4,
+					NOC_YELLOWGREEN,
+					NOC_WHITE
+	end NameOfColor;
+	---Purpose: Definition of names of known colours.
+
+
+
+end Quantity;
+

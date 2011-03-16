@@ -1,0 +1,61 @@
+-- File:	ArgSinh.cdl
+-- Created:	Mon Jan 14 16:16:44 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+class ArgSinh from Expr
+
+inherits UnaryExpression from Expr
+
+uses GeneralExpression from Expr,
+    Array1OfNamedUnknown from Expr,
+    Array1OfReal from TColStd,
+    AsciiString from TCollection,
+    NamedUnknown from Expr
+
+raises NumericError from Standard,
+    NotEvaluable from Expr
+
+is
+
+    Create(exp : GeneralExpression)
+    ---Purpose: Creates the ArgSinh of <exp>.
+    returns mutable ArgSinh;
+
+    ShallowSimplified(me) 
+    ---Purpose: Returns a GeneralExpression after a simplification 
+    --          of the arguments of <me>.
+    returns any GeneralExpression
+    raises NumericError;
+
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and functions.
+    returns mutable like me;
+    
+    IsIdentical(me; Other : GeneralExpression)
+    ---Purpose: Tests if <me> and <Other> define the same expression.
+    --          This method does not include any simplification before
+    --          testing.
+    returns Boolean;
+
+    IsLinear(me)
+    returns Boolean;
+
+    Derivative(me; X : NamedUnknown)
+    ---Purpose: Returns the derivative on <X> unknown of <me>. 
+    returns any GeneralExpression;
+
+    Evaluate(me; vars : Array1OfNamedUnknown; vals : Array1OfReal)
+    ---Purpose: Returns the value of <me> (as a Real) by 
+    --          replacement of <vars> by <vals>.
+    --          Raises NotEvaluable if <me> contains NamedUnknown not 
+    --          in <vars> or NumericError if result cannot be computed.
+    returns Real
+    raises NotEvaluable;
+
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    returns AsciiString;
+
+end ArgSinh;

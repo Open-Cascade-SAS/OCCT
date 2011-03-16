@@ -1,0 +1,102 @@
+-- File:	Dynamic_DynamicClass.cdl
+-- Created:	Fri Jan 22 11:41:34 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class DynamicClass from Dynamic
+
+inherits
+
+    TShared from MMgt 
+	---Purpose: A  dynamic class  is  defined   as a  sequence  of
+	--          parameters and   as a   sequence of   methods. The
+	--          specifications  are similar   to C++  classes. The
+	--          class  has  to  be   defined  in terms  of  fields
+	--          (Parameters) and methods. An instance of the class
+	--          must be   made to set  the  fields and to  use the
+	--          functionalities.
+
+    
+uses
+
+    OStream from Standard,
+    CString from Standard,
+    HAsciiString      from TCollection,
+    DynamicInstance   from Dynamic,
+    Parameter         from Dynamic,
+    ParameterNode     from Dynamic,
+    Method            from Dynamic,
+    SequenceOfMethods from Dynamic
+
+    
+is
+
+    Create(aname : CString from Standard) returns mutable DynamicClass from Dynamic;
+    
+    ---Level: Public 
+    
+    ---Purpose: Creates a new empty instance of DynamicClass.
+    
+    Parameter(me : mutable ; aparameter : Parameter from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds another parameter <aparameter> to the sequence of
+    --          parameter definitions.
+    
+    is static;
+    
+    CompiledMethod(me : mutable ; amethod , anaddress : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds another method to the sequence of methods. It has
+    --          <amethod> as name  and <anaddress> as mangled  name of
+    --          the corresponding C++ function which must be called.
+    
+    is static;
+    
+    InterpretedMethod(me : mutable ; amethod , afile : CString from Standard)
+    
+    ---Level: Public 
+    
+    ---Purpose: Adds  another method to the  sequence of methods.   It
+    --          has <amethod> as name and <afile> as interpreted file.
+    
+    is static;
+    
+    Method(me ; amethod : CString from Standard) returns any Method from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns a reference to the method object identified by
+    --          the string <amethod>.
+    
+    is virtual;
+    
+    Instance(me) returns mutable DynamicInstance from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns an instance object of this class.
+
+    is virtual;
+
+    Dump(me ; astream : in out OStream from Standard)
+    
+    ---Level: Internal 
+    
+    ---Purpose: useful for debugging.
+
+    is virtual;
+    
+fields
+
+    thename               : HAsciiString      from TCollection;
+    thefirstparameternode : ParameterNode     from Dynamic;
+    thesequenceofmethods  : SequenceOfMethods from Dynamic;
+
+end ;

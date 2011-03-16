@@ -1,0 +1,35 @@
+-- File:	IntStart_SITool.cdl
+-- Created:	Tue May  4 16:20:18 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred generic class SITool from IntStart
+    (ThePSurface as any)
+                                   
+
+	---Purpose: Template class for an additional tool on a bi-parametrised
+	--          surface.
+
+
+uses State from TopAbs
+
+is
+
+    NbSamplePoints(myclass; S: ThePSurface)
+
+    	returns Integer from Standard;
+
+
+    SamplePoint(myclass; S: ThePSurface; Index: Integer from Standard;
+                U,V: out Real from Standard);
+
+
+--    Classify(myclass; S: ThePSurface; U,V: Real from Standard)
+--    
+--    	returns State from TopAbs;
+
+
+end SITool;

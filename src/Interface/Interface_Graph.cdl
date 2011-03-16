@@ -1,0 +1,321 @@
+-- File:	Graph.cdl
+-- Created:	Tue Sep 22 19:01:29 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Graph from Interface
+
+    	---Purpose : Gives basic data structure for operating and storing
+    	--           graph results (usage is normally internal)
+    	--           Entities are Mapped according their Number in the Model
+    	--           
+    	--           Each Entity from the Model can be known as "Present" or
+    	--           not; if it is, it is Mapped with a Status : an Integer
+    	--           which can be used according to needs of each algorithm
+    	--           In addition, the Graph brings a BitMap which can be used
+    	--           by any caller
+    	--           
+    	--           Also, it is bound with two lists : a list of Shared
+    	--           Entities (in fact, their Numbers in the Model) which is
+    	--           filled by a ShareTool, and a list of Sharing Entities,
+    	--           computed by deduction from the Shared Lists
+    	--           
+    	--           Moreover, it is possible to redefine the list of Entities
+    	--           Shared by an Entity (instead of standard answer by general
+    	--           service Shareds) : this new list can be empty; it can
+    	--           be changed or reset (i.e. to come back to standard answer)
+
+uses  Transient, Type,
+      Array1OfInteger from TColStd,
+      AsciiString from TCollection, HAsciiString from TCollection,
+      Protocol from Interface,  GeneralLib,      InterfaceModel,   GTool,
+      EntityIterator,           IntList,         BitMap
+
+raises DomainError
+
+is
+
+    Create (amodel : InterfaceModel; lib : GeneralLib) returns Graph;
+    ---Purpose : Creates an empty graph, ready to receive Entities from amodel
+    --           Note that this way of Creation allows <me> to verify that
+    --           Entities to work with are contained in <amodel>
+    --           Basic Shared and Sharing lists are obtained from a General
+    --           Services Library, given directly as an argument
+
+    Create (amodel : InterfaceModel; protocol : Protocol from Interface)
+    	returns Graph;
+    ---Purpose : Same as above, but the Library is defined through a Protocol
+
+    Create (amodel : InterfaceModel; gtool    : GTool from Interface)
+    	returns Graph;
+    ---Purpose : Same as above, but the Library is defined through a Protocol
+
+    Create (amodel : InterfaceModel) returns Graph;
+    ---Purpose : Same a above but works with the Protocol recorded in the Model
+
+    Create (agraph : Graph; copied : Boolean = Standard_False) returns Graph;
+    ---Purpose : Creates a Graph from another one, getting all its data
+    --           Remark that status are copied from <agraph>, but the other
+    --           lists (sharing/shared) are copied only if <copied> = True
+
+    Evaluate (me : in out; lib : GeneralLib; gtool : GTool)  is static private;
+    ---Purpose : Performs the Evaluation of the Graph, from an initial Library,
+    --           either defined through a Protocol, or given dierctly
+    --           Called by the non-empty Constructors
+    --           
+    --           Normally, gtool suffices. But if a Graph is created from a
+    --           GeneralLib directly, it cannot be used
+    --           If <gtool> is defined, it has priority
+
+    EvalSharings (me : in out)  is static;
+    ---Purpose : Reevaluates the Sharing Lists of the Graph, starting from the
+    --           Shared Lists (priority to the redefined ones)
+
+
+    BasicSharedTable (me) returns IntList  is static private;
+    ---Purpose : Returns the Table of Basic Shared lists. Used to Create
+    --           another Graph from <me>
+
+    RedefinedSharedTable (me) returns IntList  is static private;
+    ---Purpose : Returns the Table of redefined Shared lists. Used to Create
+    --           another Graph from <me>. Null Handle is no one redefinition
+
+    SharingTable (me) returns IntList  is static private;
+    ---Purpose : Returns the Table of Sharing lists. Used to Create
+    --           another Graph from <me>
+
+
+--    NbVertex(me) returns Integer  is static;  -- for GraphTools requirements
+
+    Reset (me : in out)  is static;
+    ---Purpose : Erases data, making graph ready to rebegin from void
+    --           (also resets Shared lists redefinitions)
+
+    ResetStatus (me : in out)  is static;
+    ---Purpose : Erases Status (Values and Flags of Presence), making graph
+    --           ready to rebegin from void. Does not concerns Shared lists
+
+    Size (me) returns Integer  is static;
+    ---Purpose : Returns size (max nb of entities, i.e. Model's nb of entities)
+
+    	-- --    Fine Actions    -- --
+
+    EntityNumber (me; ent : Transient) returns Integer  is static;
+    ---Purpose : Returns the Number of the entity in the Map, computed at
+    --           creation time (Entities loaded from the Model)
+    --           Returns 0 if <ent> not contained by Model used to create <me>
+    --           (that is, <ent> is unknown from <me>)
+
+    IsPresent (me; num : Integer) returns Boolean  is static;
+    ---Purpose : Returns True if an Entity is noted as present in the graph
+    --           (See methods Get... which determine this status)
+    --           Returns False if <num> is out of range too
+
+    IsPresent (me; ent : Transient) returns Boolean;
+    ---Purpose : Same as above but directly on an Entity <ent> : if it is not
+    --           contained in the Model, returns False. Else calls
+    --            IsPresent(num)  with <num> given by EntityNumber
+
+    Entity (me; num : Integer) returns any Transient  is static;
+    ---Purpose : Returns mapped Entity given its no (if it is present)
+    ---C++ : return const &
+
+    Status (me; num : Integer) returns Integer  is static;
+    ---Purpose : Returns Status associated to a numero (only to read it)
+
+    CStatus (me : in out; num : Integer) returns Integer  is static;
+    ---Purpose : Returns Status associated to a numero, to be read or changed
+    ---C++ : return &
+
+    SetStatus (me : in out; num : Integer; stat : Integer)  is static;
+    ---Purpose : Modifies Status associated to a numero
+
+    RemoveItem (me : in out; num : Integer)  is static;
+    ---Purpose : Clears Entity and sets Status to 0, for a numero
+
+    ChangeStatus (me : in out; oldstat, newstat : Integer)  is static;
+    ---Purpose : Changes all status which value is oldstat to new value newstat
+
+    RemoveStatus (me : in out; stat : Integer)  is static;
+    ---Purpose : Removes all items of which status has a given value stat
+
+    BitMap (me) returns BitMap;
+    ---Purpose : Returns the Bit Map in order to read or edit flag values
+    ---C++ : return const &
+
+    CBitMap (me : in out) returns BitMap;
+    ---Purpose : Returns the Bit Map in order to edit it (add new flags)
+    ---C++ : return &
+
+    	-- --    General Actions    -- --
+
+    Model (me) returns InterfaceModel  is static;
+    ---Purpose : Returns the Model with which this Graph was created
+    ---C++ : return const &
+
+    GetFromModel (me : in out)  is static;
+    ---Purpose : Loads Graph with all Entities contained in the Model
+
+    GetFromEntity (me : in out; ent : Transient; shared : Boolean;
+    	       newstat : Integer = 0)  is static;
+    ---Purpose : Gets an Entity, plus its shared ones (at every level) if
+    --           "shared" is True. New items are set to status "newstat"
+    --           Items already present in graph remain unchanged
+    --           Of course, redefinitions of Shared lists are taken into
+    --           account if there are some
+
+    GetFromEntity (me : in out; ent : Transient; shared : Boolean;
+	     newstat, overlapstat : Integer; cumul : Boolean)
+	 is static;
+    ---Purpose : Gets an Entity, plus its shared ones (at every level) if
+    --           "shared" is True. New items are set to status "newstat".
+    --           Items already present in graph are processed as follows :
+    --           - if they already have status "newstat", they remain unchanged
+    --           - if they have another status, this one is modified :
+    --             if cumul is True,  to former status + overlapstat (cumul)
+    --             if cumul is False, to overlapstat (enforce)
+
+    GetFromIter (me : in out; iter : EntityIterator; newstat : Integer)
+    	is static;
+    ---Purpose : Gets Entities given by an EntityIterator. Entities which were
+    --           not yet present in the graph are mapped with status "newstat"
+    --           Entities already present remain unchanged
+
+    GetFromIter (me : in out; iter : EntityIterator;
+	     newstat, overlapstat : Integer; cumul : Boolean)
+	 is static;
+    ---Purpose : Gets Entities given by an EntityIterator and distinguishes
+    --           those already present in the Graph :
+    --           - new entities added to the Graph with status "newstst"
+    --           - entities already present with status = "newstat" remain
+    --             unchanged
+    --           - entities already present with status different form
+    --             "newstat" have their status modified :
+    --             if cumul is True,  to former status + overlapstat (cumul)
+    --             if cumul is False, to overlapstat (enforce)
+    --             (Note : works as GetEntity, shared = False, for each entity)
+
+    GetFromGraph (me : in out; agraph : Graph)
+    ---Purpose : Gets all present items from another graph
+    	raises DomainError  is static;
+    --           Error if the other graph has not been created with same Model
+
+    GetFromGraph (me : in out; agraph : Graph; stat : Integer)
+    ---Purpose : Gets items from another graph which have a specific Status
+    	raises DomainError  is static;
+    --           Error if the other graph has not been created with same Model
+
+    	-- --    Shared Lists    -- --
+
+    HasShareErrors (me; ent : Transient) returns Boolean  is static;
+    ---Purpose : Returns True if <ent> or the list of entities shared by <ent>
+    --           (not redefined) contains items unknown from this Graph
+    --           Remark : apart from the status HasShareError, these items
+    --           are ignored
+
+    HasRedefinedShareds (me; ent : Transient) returns Boolean  is static;
+    ---Purpose : Returns True if Shared list of <ent> has been redefined
+    --           (Thus, Shareds from Graph gives a result different from
+    --            general service Shareds)
+
+    Shareds (me; ent : Transient) returns EntityIterator
+    ---Purpose : Returns the list of Entities Shared by an Entity, as recorded
+    --           by the Graph. That is, by default Basic Shared List, else it
+    --           can be redefined by methods SetShare, SetNoShare ... see below
+    	raises DomainError  is static;
+    --           Error if <ent> is not contained by the model used for Creation
+
+    SharedNums (me; num : Integer) returns IntList  is static;
+    ---Purpose : Same as Shareds, but under the form of a list of Integers,
+    --           each one beeing the Number of a Shared Entity in the Graph
+    --           Especially intended for fast internal uses
+    --           Returns a Null Handle if <num> is not contained by <themodel>
+
+    Sharings (me; ent : Transient) returns EntityIterator
+    ---Purpose : Returns the list of Entities which Share an Entity, computed
+    --           from the Basic or Redefined Shared Lists
+    	raises DomainError  is static;
+    --           Error if <ent> is not contained by the model used for Creation
+
+    SharingNums (me; num : Integer) returns IntList  is static;
+    ---Purpose : Same as Sharings, but under the form of a list of Integers
+    --           each one beeing the Number of a Sharing Entity in the Graph
+
+    TypedSharings (me; ent : Transient; type : Type) returns EntityIterator;
+    ---Purpose : Returns the list of sharings entities, AT ANY LEVEL, which are
+    --           kind of a given type. A sharing entity kind of this type
+    --           ends the exploration of its branch
+
+    RootEntities (me) returns EntityIterator  is static;
+    ---Purpose : Returns the Entities which are not Shared (their Sharing List
+    --           is empty) in the Model
+
+    	-- --    Redefinitions of Shared-Sharing Lists    -- --
+
+    SetShare (me : in out; ent : Transient)  is static;
+    ---Purpose : Sets explicit the shared list of an Entity <ent>, that is,
+    --           available for a further edit (Add/Remove). All SetShare and
+    --           SetNoShare methods allow further edit operations.
+    --           Effect cancelled by ResetShare
+    --           Remark that all Redefinition methods work on Shared Lists,
+    --           but also manage (update) the Sharing Lists
+
+    SetShare (me : in out; ent : Transient; list : EntityIterator)
+    	is static;
+    ---Purpose : Sets as Shared list of an Entity <ent> considered by <me>,
+    --           the list given as an EntityIterator <iter>. It can be empty.
+    --           This list will now be considered by method Shareds above
+    --           Does nothing if <ent> is not contained by <themodel>
+
+    SetShare (me : in out; ent : Transient; list : IntList)
+    	is static;
+    ---Purpose : Same as above, but the list is given as the list of Numbers
+    --           of the Entities shared by <ent>
+
+    SetNoShare (me : in out; ent : Transient)  is static;
+    ---Purpose : Sets the Shared list of an Entity considered in <me> as beeing
+    --           Empty (if <ent> is contained by <themodel>)
+
+    SetNoShare (me : in out; list : EntityIterator)  is static;
+    ---Purpose : Sets the Shared lists of a list of Entities to be Empty
+
+    AddShared (me : in out; ent,shared : Transient)
+    ---Purpose : Adds a shared Entity to a redefined Shared List (formerly
+    --           defined by SetShare or SetNoShare). Does nothing if already in
+    	raises DomainError  is static;
+    --           Error if no shared list was formerly redefined for <ent>
+
+    RemoveShared (me : in out; ent,shared : Transient)
+    ---Purpose : Removes a shared Entity from a redefined Shared List (formerly
+    --           defined ...). Does nothing if <shared> no in the list
+    	raises DomainError  is static;
+    --           Error if no shared list was formerly redefined for <ent>
+
+    ResetShare (me : in out; ent : Transient)  is static;
+    ---Purpose : Comes back to the standard Shared list for <ent> : Cancels all
+    --           the former redefinitions for it
+
+    ResetAllShare (me : in out)  is static;
+    ---Purpose : Clears all effects of former redefinition of Shared lists
+
+
+    Name (me; ent : Transient) returns HAsciiString;
+    ---Purpose : Determines the name attached to an entity, by using the
+    --           general service Name in GeneralModule
+    --           Returns a null handle if no name could be computed or if
+    --           the entity is not in the model
+
+fields
+
+    themodel    : InterfaceModel;   -- Model which contains the Entities
+    thepresents : AsciiString from TCollection; -- flags present/or not
+    thestats    : Array1OfInteger from TColStd; -- numeric status
+    theflags    : BitMap;                       -- logical flags status
+
+    theshareds  : IntList;  -- Basic Shared Lists  (one per Entity)
+    thesharnews : IntList;  -- Shared Lists Redefinitions
+    thesharings : IntList;  -- The Sharing Lists (one per Entity)
+
+end Graph;

@@ -1,0 +1,62 @@
+#include <ShapeExtend.hxx>
+
+//=======================================================================
+//function : StatusWireGaps
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wireframe::StatusWireGaps
+  (const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus( myStatusWireGaps, status );
+}
+
+//=======================================================================
+//function : StatusSmallEdges
+//purpose  : 
+//=======================================================================
+
+inline  Standard_Boolean ShapeFix_Wireframe::StatusSmallEdges
+  (const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus( myStatusSmallEdges, status );
+}
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline  TopoDS_Shape ShapeFix_Wireframe::Shape()
+{
+  return myShape;
+}
+//=======================================================================
+//function : ModeDropSmallEdges
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeFix_Wireframe::ModeDropSmallEdges() 
+{
+  return myModeDrop;
+}
+
+ 
+//=======================================================================
+//function : SetLimitAngle
+//purpose  : 
+//=======================================================================
+
+inline void ShapeFix_Wireframe::SetLimitAngle(const Standard_Real theLimitAngle) 
+{
+  myLimitAngle =  theLimitAngle;
+}
+//=======================================================================
+//function : LimitAngle
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real ShapeFix_Wireframe::LimitAngle() const
+{
+  return myLimitAngle; 
+}

@@ -1,0 +1,34 @@
+-- File:	StepAP203_CcDesignDateAndTimeAssignment.cdl
+-- Created:	Fri Nov 26 16:26:32 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class CcDesignDateAndTimeAssignment from StepAP203
+inherits DateAndTimeAssignment from StepBasic
+
+    ---Purpose: Representation of STEP entity CcDesignDateAndTimeAssignment
+
+uses
+    DateAndTime from StepBasic,
+    DateTimeRole from StepBasic,
+    HArray1OfDateTimeItem from StepAP203
+
+is
+    Create returns CcDesignDateAndTimeAssignment from StepAP203;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDateAndTimeAssignment_AssignedDateAndTime: DateAndTime from StepBasic;
+                       aDateAndTimeAssignment_Role: DateTimeRole from StepBasic;
+                       aItems: HArray1OfDateTimeItem from StepAP203);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Items (me) returns HArray1OfDateTimeItem from StepAP203;
+	---Purpose: Returns field Items
+    SetItems (me: mutable; Items: HArray1OfDateTimeItem from StepAP203);
+	---Purpose: Set field Items
+
+fields
+    theItems: HArray1OfDateTimeItem from StepAP203;
+
+end CcDesignDateAndTimeAssignment;

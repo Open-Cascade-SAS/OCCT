@@ -1,0 +1,42 @@
+// File:	PNaming_Name_1.lxx
+// Created:	Fri Aug 15 18:10:07 2008
+// Author:	Sergey ZARITCHNY <szy@op
+// Copyright:   Open CasCade SA 2008
+
+
+inline   void PNaming_Name_1::Type(const Standard_Integer T) 
+{myType = T;}
+
+inline   void PNaming_Name_1::ShapeType(const Standard_Integer T) 
+{myShapeType = T;}
+
+inline   void PNaming_Name_1::Arguments(const Handle(PNaming_HArray1OfNamedShape)& Args)
+{myArgs = Args;}
+
+inline   void PNaming_Name_1::StopNamedShape(const Handle(PNaming_NamedShape)& NS)
+{myStop = NS;}
+
+inline   void PNaming_Name_1::Index(const Standard_Integer I) 
+{myIndex = I;}
+
+inline   Standard_Integer PNaming_Name_1::Type() const
+{return myType;}
+
+inline   Standard_Integer PNaming_Name_1::ShapeType() const 
+{return myShapeType;}
+
+inline   Handle_PNaming_HArray1OfNamedShape PNaming_Name_1::Arguments() const
+{return myArgs;}
+
+inline   Handle_PNaming_NamedShape PNaming_Name_1::StopNamedShape() const
+{return myStop;}
+
+inline   Standard_Integer PNaming_Name_1::Index() const
+{return myIndex;}
+
+inline  void PNaming_Name_1::ContextLabel(const Handle(PCollection_HAsciiString)& theLabel)
+{myContextLabel = theLabel;}
+
+inline   const Handle(PCollection_HAsciiString)& PNaming_Name_1::ContextLabel() const 
+{return myContextLabel;}
+

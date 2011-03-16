@@ -1,0 +1,21 @@
+-- File:	NameEntity.cdl
+-- Created:	Tue Apr  7 15:43:06 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class NameEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : a NameEntity is a kind of IGESEntity which can provide a Name
+    --           under alphanumeric (String) form, from Properties list
+    --           an effective Name entity must inherit it
+
+uses  HAsciiString from TCollection
+
+is
+
+    Value (me) returns HAsciiString from TCollection  is deferred;
+    ---Purpose : Retyrns the alphanumeric value of the Name, to be defined
+
+end NameEntity;

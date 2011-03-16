@@ -1,0 +1,157 @@
+-- File:	CurveTool.cdl
+-- Created:	Thu Oct 22 12:09:58 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class CurveTool from Geom2dInt  (
+    IntCurveCurve       as any)
+    
+
+	---Purpose: This class provides a CurveTool as < CurveTool from IntCurve >
+	--          from a Tool as < CurveTool from Adaptor3d > .
+
+uses 
+
+     Pnt2d        from gp,
+     Vec2d        from gp,
+     Lin2d        from gp,
+     Circ2d       from gp,
+     Elips2d      from gp,
+     Parab2d      from gp,
+     Hypr2d       from gp,
+     Array1OfReal from TColStd,
+     CurveType    from GeomAbs
+
+
+is
+
+
+    TheType(myclass; C: IntCurveCurve)
+    	---C++: inline
+    	returns CurveType from GeomAbs;
+
+    IsComposite(myclass; C:  IntCurveCurve)
+        ---C++: inline
+    	returns Boolean from Standard;
+
+    Line(myclass; C: IntCurveCurve)
+    
+	---Purpose: Returns the Lin2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          GeomAbs_Line.
+        ---C++: inline
+    	returns Lin2d from gp;
+
+ 
+    Circle(myclass; C: IntCurveCurve)
+    
+	---Purpose: Returns the Circ2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          GeomAbs_Circle.
+        ---C++: inline
+    	returns Circ2d from gp;
+
+
+    Ellipse(myclass; C: IntCurveCurve)
+    
+	---Purpose: Returns the Elips2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          GeomAbs_Ellipse.
+        ---C++: inline
+    	returns Elips2d from gp;
+
+
+    Parabola(myclass; C: IntCurveCurve)
+    
+	---Purpose: Returns the Parab2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          GeomAbs_Parabola.
+        ---C++: inline
+    	returns Parab2d from gp;
+
+
+    Hyperbola(myclass; C: IntCurveCurve)
+    
+	---Purpose: Returns the Hypr2d from gp corresponding to the curve C.
+	--          This method is called only when TheType returns
+	--          GeomAbs_Hyperbola.
+        ---C++: inline
+    	returns Hypr2d from gp;
+
+
+-- The following method are used only when TheType returns  IntCurve_Other.
+
+
+    EpsX (myclass; C: IntCurveCurve)
+        ---C++: inline
+    	returns Real;
+
+    EpsX (myclass; C: IntCurveCurve;
+                   Eps_XYZ : Real from Standard)
+        ---C++: inline
+    	returns Real;
+
+
+    NbSamples(myclass; C: IntCurveCurve)
+
+    	returns Integer;
+
+    NbSamples(myclass; C: IntCurveCurve; U0,U1: Real from Standard)
+
+    	returns Integer;
+
+
+    FirstParameter(myclass; C:IntCurveCurve)
+        ---C++: inline
+    	returns Real;
+
+
+    LastParameter(myclass; C:IntCurveCurve)
+        ---C++: inline
+    	returns Real;
+	
+
+    Value (myclass; C: IntCurveCurve; X: Real)
+        ---C++: inline
+    	returns Pnt2d from gp;
+
+
+    D0 (myclass; C: IntCurveCurve; U: Real ; 
+                 P: out Pnt2d);
+        ---C++: inline
+
+    D1 (myclass; C: IntCurveCurve; U: Real ; 
+                 P: out Pnt2d; T: out Vec2d);
+         ---C++: inline
+
+    D2 (myclass; C: IntCurveCurve; U: Real ; 
+                 P: out Pnt2d; T,N: out Vec2d);
+         ---C++: inline
+
+   NbIntervals(myclass ; C:  IntCurveCurve) 
+        ---Purpose : output the number of interval of continuity C2 of 
+        --           the curve
+        ---C++: inline
+        returns Integer from Standard;
+        
+   Intervals         (myclass; C:  IntCurveCurve
+		       ; Tab    : out    Array1OfReal from TColStd);
+	---Purpose: compute Tab. 
+        ---C++: inline
+
+   GetInterval (myclass; C:  IntCurveCurve
+                       ; Index  : Integer from Standard
+		       ; Tab    : Array1OfReal from TColStd
+    	    	       ; U1, U2 : out Real from Standard);
+        ---Purpose : output the bounds of interval of index <Index>
+        --           used if Type == Composite.
+        ---C++: inline
+
+end CurveTool;
+
+
+
+

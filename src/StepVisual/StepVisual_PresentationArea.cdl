@@ -1,0 +1,22 @@
+-- File:        PresentationArea.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PresentationArea from StepVisual 
+
+inherits PresentationRepresentation from StepVisual 
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr,
+	RepresentationContext from StepRepr
+is
+
+	Create returns mutable PresentationArea;
+	---Purpose: Returns a PresentationArea
+
+
+end PresentationArea;

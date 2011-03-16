@@ -1,0 +1,39 @@
+-- File:      GeomAdaptor_HSurface.cdl
+-- Created:   Fri Aug 25 14:31:20 1995
+-- Author:    Remi LEQUETTE
+---Copyright: Matra Datavision 1995
+
+
+class HSurface from GeomAdaptor inherits GHSurface from GeomAdaptor
+
+    	---Purpose: An interface between the services provided by any
+    	-- surface from the package Geom and those required
+    	-- of the surface by algorithms which use it.
+
+uses
+    Surface from Geom,
+    Surface from GeomAdaptor
+
+raises
+    ConstructionError from Standard
+
+is
+
+    Create returns mutable HSurface from GeomAdaptor;
+    	---C++: inline
+    
+    Create( AS : Surface from GeomAdaptor) returns mutable HSurface from GeomAdaptor;
+    	---C++: inline
+
+    Create( S : Surface from Geom) returns mutable HSurface from GeomAdaptor;
+    	---C++: inline
+    
+    Create( S : Surface from Geom; UFirst,ULast,VFirst,VLast : Real; 
+    	    TolU  :  Real  =  0.0; 
+            TolV  :  Real  =  0.0) 
+    returns  mutable HSurface from GeomAdaptor
+    raises ConstructionError from Standard;
+    	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
+    	---C++: inline
+
+end HSurface;

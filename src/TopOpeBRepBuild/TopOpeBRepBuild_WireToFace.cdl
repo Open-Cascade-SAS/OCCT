@@ -1,0 +1,40 @@
+-- File:	TopOpeBRepBuild_WireToFace.cdl
+-- Created:	Mon Jan 29 16:38:23 1996
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1996
+
+class WireToFace from TopOpeBRepBuild
+
+---Purpose: 
+-- This class builds faces from a set of wires  SW and a face F.
+-- The face must have and underlying surface, say S.
+-- All of the edges of all of the wires must have a 2d representation 
+-- on surface S (except if S is planar)
+
+uses
+
+    Wire from TopoDS,
+    Face from TopoDS,
+    ListOfShape from TopTools
+
+is
+
+    Create returns WireToFace;
+     
+    Init(me : in out)
+    is static;
+    
+    AddWire(me : in out; W : Wire from TopoDS)
+    is  static;
+     	
+    MakeFaces(me : in out; 
+    	      F : Face from TopoDS;
+    	      LF : in out ListOfShape from TopTools)
+    is static;
+
+fields 
+
+    myLW : ListOfShape from TopTools;
+    
+end WireToFace;

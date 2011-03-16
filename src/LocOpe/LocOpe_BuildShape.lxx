@@ -1,0 +1,36 @@
+// File:	LocOpe_BuildShape.lxx
+// Created:	Mon Sep 16 09:32:41 1996
+// Author:	Jacques GOUSSARD
+//		<jag@mobilox.lyon.matra-dtv.fr>
+
+
+
+//=======================================================================
+//function : LocOpe_BuildShape
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_BuildShape::LocOpe_BuildShape ()
+{}
+
+
+//=======================================================================
+//function : LocOpe_BuildShape
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_BuildShape::LocOpe_BuildShape (const TopTools_ListOfShape& L)
+{
+  Perform(L);
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_BuildShape::Shape () const
+{
+  return myRes;
+}

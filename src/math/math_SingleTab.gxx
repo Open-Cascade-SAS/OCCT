@@ -1,0 +1,74 @@
+//
+
+#include <math_Memory.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Failure.hxx>
+
+math_SingleTab::math_SingleTab(const Standard_Integer LowerIndex,
+		               const Standard_Integer UpperIndex) :
+
+			       isAllocated(Standard_True),
+			       First(LowerIndex), Last(UpperIndex)
+{
+  Item* TheAddr = (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
+  Addr = (Standard_Address) (TheAddr - First);
+//cout << " Vector allocation = " << Addr << endl;
+}
+
+math_SingleTab::math_SingleTab(const Item& Tab,
+			       const Standard_Integer LowerIndex,
+			       const Standard_Integer UpperIndex) :
+			       Addr((void*)(&Tab - LowerIndex)), 
+			       isAllocated(Standard_False),
+			       First(LowerIndex), Last(UpperIndex)
+			       
+{
+//cout << " Vector allocation = " << Addr << endl;
+}
+
+void math_SingleTab::Init(const Item& InitValue)
+{
+  for (Standard_Integer i=First; i<= Last; i++) {
+    ((Item*)Addr)[i] = InitValue;
+  }
+}
+
+
+math_SingleTab::math_SingleTab(const math_SingleTab& Other) :
+
+  isAllocated(Standard_True),
+  First(Other.First),
+  Last(Other.Last)
+
+{
+  Item* TheAddr = (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
+  Addr = (Standard_Address) (TheAddr - First);
+//cout << " Vector allocation = " << Addr << endl;
+  Item* TheOtherAddr = (Item*) Other.Addr;
+  memmove((void*) TheAddr, (const void*) (TheOtherAddr + First),
+	  (size_t)(Last - First + 1) * sizeof(Item));
+}
+
+
+void math_SingleTab::Free()
+{
+//cout << " Vector deallocation = " << Addr << endl;
+  if(isAllocated) {
+    Standard_Address it = (Standard_Address)&((Item*)Addr)[First];
+    Standard::Free(it);
+    Addr = 0;
+  }
+}
+
+
+void math_SingleTab::SetLower(const Standard_Integer LowerIndex)
+{
+  Item* TheAddr = (Item*) Addr;
+  Addr = (Standard_Address) (TheAddr + First - LowerIndex);
+  Last = Last - First + LowerIndex;
+  First = LowerIndex;
+}
+
+
+
+

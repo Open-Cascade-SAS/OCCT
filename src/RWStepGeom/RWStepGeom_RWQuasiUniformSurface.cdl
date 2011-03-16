@@ -1,0 +1,30 @@
+-- File:        QuasiUniformSurface.cdl
+-- Created:     Mon Dec  4 12:02:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWQuasiUniformSurface from RWStepGeom
+
+	---Purpose : Read & Write Module for QuasiUniformSurface
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     QuasiUniformSurface from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWQuasiUniformSurface;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable QuasiUniformSurface from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : QuasiUniformSurface from StepGeom);
+
+	Share(me; ent : QuasiUniformSurface from StepGeom; iter : in out EntityIterator);
+
+end RWQuasiUniformSurface;

@@ -1,0 +1,55 @@
+// File:	HLRAlgo_Coincidence.lxx
+// Created:	Wed Feb 19 14:31:45 1992
+// Author:	Christophe MARION
+//		<cma@sdsun2>
+
+//=======================================================================
+//function : Set2D
+//purpose  : 
+//=======================================================================
+
+inline void  HLRAlgo_Coincidence::Set2D
+  (const Standard_Integer FE,
+   const Standard_Real Param)
+{
+  myFE    = FE;
+  myParam = Param;
+}
+
+//=======================================================================
+//function : SetState3D
+//purpose  : 
+//=======================================================================
+
+inline void  HLRAlgo_Coincidence::SetState3D
+  (const TopAbs_State stbef,const TopAbs_State staft)
+{
+  myStBef = stbef;
+  myStAft = staft;
+}
+
+//=======================================================================
+//function : Value2D
+//purpose  : 
+//=======================================================================
+
+inline void  HLRAlgo_Coincidence::Value2D
+  (Standard_Integer& FE,
+   Standard_Real& Param) const
+{
+  FE    = myFE;
+  Param = myParam;
+}
+
+//=======================================================================
+//function : State3D
+//purpose  : 
+//=======================================================================
+
+inline void  HLRAlgo_Coincidence::State3D
+  (TopAbs_State& stbef,TopAbs_State& staft) const
+{
+  stbef = myStBef;
+  staft = myStAft;
+}
+

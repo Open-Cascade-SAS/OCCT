@@ -1,0 +1,58 @@
+// File IntAna2d_AnaIntersection.lxx, JAG le 6 Juin 1991
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline Standard_Boolean IntAna2d_AnaIntersection::IsDone () const {
+  return done;
+}
+
+inline Standard_Boolean IntAna2d_AnaIntersection::IsEmpty () const {
+  
+  if (!done) {
+    StdFail_NotDone::Raise();
+  }
+  return ((nbp==0)&&(!iden));
+}
+
+inline Standard_Boolean IntAna2d_AnaIntersection::IdenticalElements () const {
+  
+  if (!done) {
+    StdFail_NotDone::Raise();
+  }
+  return iden ;
+}
+
+inline Standard_Boolean IntAna2d_AnaIntersection::ParallelElements () const {
+  
+  if (!done) {
+    StdFail_NotDone::Raise();
+  }
+  return para ;
+}
+
+inline Standard_Integer IntAna2d_AnaIntersection::NbPoints () const {
+  
+  if (!done) {
+    StdFail_NotDone::Raise();
+  }
+  return nbp ;
+}
+
+inline const IntAna2d_IntPoint& IntAna2d_AnaIntersection::Point (const Standard_Integer N) const {
+  
+  if (!done) {
+    StdFail_NotDone::Raise();
+    return lpnt[0];
+  }
+  else {
+    if ((N<=0)||(N>nbp)) {
+      Standard_OutOfRange::Raise();
+      return lpnt[0];
+    }
+    else {
+      return lpnt[N-1];
+    }
+  }
+}
+

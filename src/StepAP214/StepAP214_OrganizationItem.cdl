@@ -1,0 +1,47 @@
+-- File:	StepAP214_OrganizationItem.cdl
+-- Created:	Wed Mar 10 10:45:35 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class OrganizationItem from StepAP214 
+inherits ApprovalItem from StepAP214
+	
+
+uses
+
+	AppliedOrganizationAssignment from StepAP214,   	
+    	Approval from StepBasic
+is
+
+    Create returns OrganizationItem;
+	---Purpose : Returns a OrganizationItem SelectType
+
+    CaseNum (me; ent : Transient) returns Integer is redefined;
+	---Purpose: Recognizes a OrganizationItem Kind Entity that is :
+    	
+    	--        1 -> AppliedOrganizationAssignment
+    	--        2 -> Approval  
+    	--        3 -> AssemblyComponentUsageSubstitute
+	--        4 -> DocumentFile
+    	--        5 -> MaterialDesignation
+    	--        6 -> MechanicalDesignGeometricPresentationRepresentation
+	--        7 -> PresentationArea
+    	--        8 -> Product
+	--        9 -> ProductDefinition
+    	--        10 -> ProductDefinitionFormation
+	--        11 -> ProductDefinitionRelationship
+	--        12 -> PropertyDefinition
+    	--        13 -> ShapeRepresentation
+    	--        14 -> SecurityClassification 
+	--        0 else
+	
+    AppliedOrganizationAssignment (me) returns any AppliedOrganizationAssignment;
+	---Purpose : returns Value as a AppliedOrganizationAssignment (Null if another type)
+	
+    Approval (me) returns any Approval;
+    	---Purpose : returns Value as a Approval (Null if another type)
+	
+	
+end OrganizationItem;

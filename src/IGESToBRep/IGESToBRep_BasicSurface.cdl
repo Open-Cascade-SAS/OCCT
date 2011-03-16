@@ -1,0 +1,103 @@
+-- File:	IGESToBRep_BasicSurface.cdl
+-- Created:	Mon Mar 14 14:02:21 1994
+-- Author:	Frederic UNTEREINER
+--		<fun@ecolox>
+---Copyright:	 Matra Datavision 1994
+
+
+class BasicSurface  from IGESToBRep inherits CurveAndSurface from IGESToBRep
+
+    ---Purpose : Provides methods to transfer basic geometric surface entities 
+    --         from IGES to CASCADE.
+    --         These can be :
+    --         * Spline surface
+    --         * BSpline surface
+
+uses   
+
+    CurveAndSurface      from IGESToBRep,
+    PlaneSurface         from IGESSolid,
+    CylindricalSurface   from IGESSolid,
+    ConicalSurface       from IGESSolid,
+    SphericalSurface     from IGESSolid,
+    ToroidalSurface      from IGESSolid,
+    IGESEntity           from IGESData,
+    SplineSurface        from IGESGeom,
+    BSplineSurface       from IGESGeom,
+    Surface              from Geom,
+    BSplineSurface       from Geom,
+    Plane                from Geom,
+    CylindricalSurface   from Geom,
+    ConicalSurface       from Geom,
+    SphericalSurface     from Geom,
+    ToroidalSurface      from Geom
+
+is
+
+    Create returns BasicSurface;
+    	---Purpose: Creates  a tool BasicSurface  ready  to  run, with
+    	--          epsilons  set  to  1.E-04,  TheModeTopo  to  True,  the
+    	--          optimization of  the continuity to False.
+
+    Create(CS : CurveAndSurface from IGESToBRep)  returns BasicSurface;
+    	---Purpose: Creates a tool BasicSurface ready to run and sets its 
+    	--          fields as CS's.
+
+    Create(eps        : Real;
+    	   epsGeom    : Real;
+    	   epsCoeff   : Real;
+    	   mode       : Boolean; 
+	   modeapprox : Boolean; 
+    	   optimized  : Boolean)  
+    returns BasicSurface;
+    	---Purpose: Creates a tool BasicSurface ready to run.
+
+    TransferBasicSurface   (me    : in out;
+    	    	    	    start : IGESEntity from IGESData)
+    returns mutable Surface from Geom;
+    	---Purpose: Returns Surface  from Geom if the last transfer has
+    	--          succeded.
+     
+    TransferPlaneSurface   (me    : in out;
+			    start : PlaneSurface from IGESSolid)
+    returns mutable Plane from Geom;
+    	---Purpose: Returns Plane from Geom if the transfer has
+     	--          succeded.
+    
+    TransferRigthCylindricalSurface(me   : in out;
+    	    	    	    	    start: CylindricalSurface from IGESSolid)
+    returns mutable CylindricalSurface from Geom;
+    	---Purpose: Returns CylindricalSurface from Geom if the transfer has
+     	--          succeded.
+    
+    TransferRigthConicalSurface    (me   : in out;
+    	    	    	    	    start: ConicalSurface from IGESSolid)
+    returns mutable ConicalSurface from Geom;
+    	---Purpose: Returns ConicalSurface from Geom if the transfer has
+     	--          succeded.
+    
+    TransferSphericalSurface(me   : in out;
+    	    	    	    start: SphericalSurface from IGESSolid)
+    returns mutable SphericalSurface from Geom;
+    	---Purpose: Returns SphericalSurface from Geom if the transfer has
+     	--          succeded.
+	
+    TransferToroidalSurface (me   : in out;
+    	    	    	     start: ToroidalSurface from IGESSolid)
+    returns mutable ToroidalSurface from Geom;
+    	---Purpose: Returns SphericalSurface from Geom if the transfer has
+     	--          succeded.
+    
+    TransferSplineSurface   (me   : in out; 
+    	    	    	     start: SplineSurface from IGESGeom)
+    returns mutable BSplineSurface from Geom;
+    	---Purpose: Returns BSplineSurface  from Geom if the transfer has
+     	--          succeded.
+
+    TransferBSplineSurface  (me   : in out; 
+    	    	    	     start: BSplineSurface from IGESGeom)
+    returns mutable BSplineSurface from Geom;
+    	---Purpose: Returns BSplineSurface  from Geom if the transfer has
+    	--          succeded.
+
+end BasicSurface;

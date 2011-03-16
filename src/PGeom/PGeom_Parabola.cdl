@@ -1,0 +1,49 @@
+-- File:	PGeom_Parabola.cdl
+-- Created:	Mon Feb 22 18:41:48 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class Parabola from PGeom
+inherits Conic from PGeom 
+
+        --- Purpose :
+        --  Defines the parabola in the parameterization range  :
+        --  ]-infinite,+infinite[
+        --  
+	--  See Also : Parabola from Geom.
+
+uses  Ax2 from gp 
+
+is
+
+
+  Create returns mutable Parabola from PGeom;
+        ---Purpose : Creates a parabola with default values.
+    	---Level: Internal 
+
+
+  Create (aPosition : Ax2 from gp; aFocalLength : Real)
+    returns mutable Parabola from PGeom;
+	---Purpose : Creates a Parabola with <aPosition> and <aFocalLength>
+	--         as field values.
+    	---Level: Internal 
+
+
+  FocalLength (me : mutable; aFocalLength : Real);
+        ---Purpose :   Set the value  of   the  field focalLength with
+        --         <aFocalLength>.
+    	---Level: Internal 
+
+
+  FocalLength (me)  returns Real;
+	---Purpose : Retruns the value of the field focalLength.
+    	---Level: Internal 
+
+
+fields
+
+  focalLength : Real;
+
+end;

@@ -1,0 +1,52 @@
+-- File:	SingleTab.cdl
+-- Created:	Tue Feb  4 10:43:00 1992
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+
+generic class SingleTab from math (Item as any)
+uses Address from Standard
+is
+
+    Create(LowerIndex, UpperIndex: Integer)
+       returns SingleTab;    	
+    
+    Create(Tab : Item; LowerIndex, UpperIndex: Integer)
+       returns SingleTab;    	
+    
+    Init(me : in out;  InitValue: Item) is static;
+
+    Create(Other: SingleTab)
+    	returns SingleTab;
+	
+    Copy(me; Other : in out SingleTab)
+    	---C++: inline
+    is static;
+
+    SetLower(me: in out; LowerIndex : Integer)
+    is static;
+    
+    Value(me; Index: Integer)
+    	---C++: alias operator()
+    	---C++: return &
+    	---C++: inline
+       returns Item
+    is static;
+
+
+    Free(me: in out)
+    	---C++: alias ~
+
+    is static;
+
+fields
+
+Addr        : Address;
+isAllocated : Boolean;
+First       : Integer;
+Last        : Integer;
+
+end;
+

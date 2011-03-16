@@ -1,0 +1,27 @@
+-- File:	IntTools_CurveRangeSampleMapHasher.cdl
+-- Created:	Fri Oct 14 20:54:10 2005
+-- Author:	Mikhail KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2005
+
+class CurveRangeSampleMapHasher from IntTools
+uses
+    CurveRangeSample from IntTools
+
+is
+    HashCode(myclass; K : CurveRangeSample from IntTools; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	--
+	---C++: inline
+	
+    IsEqual(myclass; S1, S2 : CurveRangeSample from IntTools) returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	--          
+	---C++: inline
+
+
+
+end CurveRangeSampleMapHasher from IntTools;

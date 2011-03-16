@@ -1,0 +1,256 @@
+-- File:	BRepFill_Evolved.cdl
+-- Created:	Mon Oct  3 14:28:26 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class Evolved from BRepFill 
+
+	---Purpose: Constructs a evolved volume from a spine (wire or face) 
+	--          and  a profile ( wire).
+
+uses
+    Vertex      from TopoDS,
+    Edge        from TopoDS,
+    Face        from TopoDS,
+    Wire        from TopoDS,
+    Shape       from TopoDS,
+    Location    from TopLoc,
+    Ax3         from gp,
+    JoinType    from GeomAbs,
+    ListOfShape from TopTools,
+    DataMapOfShapeShape                     from TopTools,
+    DataMapOfShapeDataMapOfShapeListOfShape from BRepFill,  
+    BisectingLocus                          from BRepMAT2d, 
+    LinkTopoBilo                            from BRepMAT2d,
+    Quilt                                   from BRepTools
+    
+    
+raises
+    ConstructionError from Standard,
+    NoSuchObject      from Standard
+    
+is
+
+---Level: Public 
+
+    Create returns Evolved from BRepFill;
+
+    Create ( Spine   : Wire      from TopoDS; 
+    	     Profile : Wire      from TopoDS;
+    	     AxeProf : Ax3       from gp; 
+    	     Join    : JoinType  from GeomAbs  =  GeomAbs_Arc;
+    	     Solid   : Boolean   from Standard = Standard_False)
+    returns Evolved from BRepFill
+	---Purpose: Creates an evolved shape by sweeping the <Profile>
+	--          along the  <Spine>.  <AxeProf> is  used to set the
+	--          position of <Profile> along  <Spine> as  follow: 
+	--          l <AxeProf> glisse  sur le profil  avec  sa
+	--          direction colineaire a la normale au <Spine>, et sa
+	--          <XDirection> confondue avec la tangente au <Spine>.
+	--          
+    raises
+    	ConstructionError from Standard;
+    
+    Create ( Spine   : Face      from TopoDS; 
+    	     Profile : Wire      from TopoDS;
+     	     AxeProf : Ax3       from gp; 
+    	     Join    : JoinType  from GeomAbs  =  GeomAbs_Arc;
+	     Solid   : Boolean   from Standard = Standard_False)
+    returns Evolved from BRepFill
+	---Purpose: Creates an  evolved shape  by sweeping the <Profile>
+	--          along the <Spine>
+    raises
+    	ConstructionError from Standard;
+    
+    Perform (me      : in out;   
+             Spine   : Wire      from TopoDS; 
+    	     Profile : Wire      from TopoDS;     	     
+    	     AxeProf : Ax3       from gp;  
+    	     Join    : JoinType  from GeomAbs  =  GeomAbs_Arc;
+	     Solid   : Boolean   from Standard = Standard_False) 
+	---Purpose: Performs an  evolved shape  by sweeping the <Profile>
+	--          along the <Spine>
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    Perform (me : in out; 
+    	     Spine   : Face      from TopoDS; 
+    	     Profile : Wire      from TopoDS; 
+    	     AxeProf : Ax3       from gp;  
+   	     Join    : JoinType  from GeomAbs  =  GeomAbs_Arc;
+	     Solid   : Boolean   from Standard = Standard_False) 
+	---Purpose: Performs an  evolved shape  by sweeping the <Profile>
+	--          along the <Spine>
+    raises
+    	ConstructionError from Standard
+    is static;
+    
+    
+    IsDone ( me) 
+    returns Boolean from Standard
+    is static;
+
+    Shape(me) returns Shape from TopoDS
+	---Purpose: returns the generated shape.
+	---C++ : return const &
+    is static;
+    
+    GeneratedShapes (me ;
+    	    	     SpineShape : Shape from TopoDS;
+    	    	     ProfShape  : Shape from TopoDS)
+        ---Purpose: Returns   the  shapes  created  from   a  subshape
+        --          <SpineShape>  of     the  spine   and   a subshape
+        --          <ProfShape> on the profile.
+        --	
+        ---C++ : return const &          
+    returns ListOfShape from TopTools
+    is static;			 
+    
+    JoinType (me) returns JoinType from GeomAbs
+    is static;
+
+
+    Top (me) returns Shape from TopoDS
+       ---Purpose: Return the face Top if <Solid> is True in the constructor.
+       ---C++ : return const &
+    is static;
+
+    Bottom (me) returns Shape from TopoDS
+       ---Purpose: Return the face Bottom  if <Solid> is True in the constructor.
+       ---C++ : return const &
+    is static;
+    
+    
+---Level: Internal 
+
+    PrivatePerform (me      : in out; 
+    	   	    Spine   : Face      from TopoDS; 
+    	            Profile : Wire      from TopoDS; 
+		    AxeProf : Ax3       from gp;  
+   	            Join    : JoinType  from GeomAbs  = GeomAbs_Arc;
+    	            Solid   : Boolean   from Standard = Standard_False) 
+    raises
+    	ConstructionError from Standard
+    is static private;
+    
+    SetWork         (me : in out;
+        	     Spine   : Face                    from TopoDS;
+    	    	     Profile : Wire                    from TopoDS)
+    is static private;		     
+    
+    ElementaryPerform ( me      : in out; 
+    	    	    	Spine   : Face                    from TopoDS;
+    	    	    	Profile : Wire                    from TopoDS;  
+ 			Locus   : BisectingLocus          from BRepMAT2d; 
+			Link    : in out LinkTopoBilo     from BRepMAT2d; 
+    	                Join    : JoinType  from GeomAbs  =  GeomAbs_Arc)
+    raises
+    	ConstructionError from Standard
+    is static private;	
+
+    PlanarPerform ( me      : in out; 
+    	    	    Spine   : Face                    from TopoDS;
+    	    	    Profile : Wire                    from TopoDS;  
+ 		    Locus   : BisectingLocus          from BRepMAT2d; 
+		    Link    : in out LinkTopoBilo     from BRepMAT2d; 
+    	            Join    : JoinType  from GeomAbs  =  GeomAbs_Arc)
+    raises
+    	ConstructionError from Standard
+    is static private;	
+
+    VerticalPerform ( me      : in out; 
+    	    	      Spine   : Face                    from TopoDS;
+    	    	      Profile : Wire                    from TopoDS;  
+ 		      Locus   : BisectingLocus          from BRepMAT2d; 
+		      Link    : in out LinkTopoBilo     from BRepMAT2d; 
+    	              Join    : JoinType  from GeomAbs  =  GeomAbs_Arc)
+    raises
+    	ConstructionError from Standard
+    is static private;	
+
+    Generated (me : in out )
+    	---C++: return &
+    returns DataMapOfShapeDataMapOfShapeListOfShape from BRepFill
+    is static private;
+    
+    Add ( me : in out; Vevo  : in out Evolved      from BRepFill;
+    	    	       Prof  : Wire                from TopoDS;
+    	    	       Glue  : in out Quilt        from BRepTools)
+    is static private;
+    
+    ChangeShape(me : in out) returns Shape from TopoDS
+	---C++: return &
+    is static private;
+    
+    Transfert( me                  : in out;
+    	       Vevo                : in out Evolved      from BRepFill;   
+	       MapProf             : DataMapOfShapeShape from TopTools; 
+	       MapSpine            : DataMapOfShapeShape from TopTools;
+	       LS, InitLS, InitLP  : Location            from TopLoc)	
+    is static private;	  
+    
+    PrepareProfile ( me ; WorkProf : in out ListOfShape from TopTools;
+    	    	    	  MapProf  : in out DataMapOfShapeShape from TopTools) 
+    	---Purpose: Prepare the profil as follow 
+    	--          - Project the profile in the yOz Plane 
+    	--          - Cut the profile at the extrema of distance from the 
+    	--            Profile to the Oz Axis.
+    	--          - building the new wires with the cutting edges.
+    is static private;
+    
+    PrepareSpine ( me ; WorkSpine : in out Face                from TopoDS ;
+    	       	        SpineProf : in out DataMapOfShapeShape from TopTools)
+	---Purpose: Prepare the spine as follow
+	--          - Cut the spine-Edges at the extrema of curvature and
+	--            at the inflexion points.
+    is static private;
+
+    MakePipe (me : in out; SpineEdge   : Edge from TopoDS ;
+    	    	    	   ProfRef     : Ax3  from gp)
+    is static private;	
+    
+    MakeRevol(me : in out; SpineEdge   : Edge   from TopoDS;
+    	    	    	   SpineVertex : Vertex from TopoDS;
+			   ProfRef     : Ax3    from gp)
+    is static private;			   
+    
+    FindLocation(me; Face : Face from TopoDS)
+    returns Location from TopLoc
+	---Purpose: Find the location transforming the planar shape <Shape>
+	--          in the plane xOy
+    raises NoSuchObject from Standard
+	---Purpose: if the Shape is not planar.
+    is static private;
+    
+    TransformInitWork(me : in out; LS , LP : Location from TopLoc)
+	---Purpose: Apply the Location <LS> to <mySpine> and  <LP> to 
+	--          <myProfil> 
+	--          in order to set the Shapes in the work space.
+    is static private;
+    
+    ContinuityOnOffsetEdge (me : in out; WorkProf : ListOfShape from TopTools)
+    is static private;
+    
+    AddTopAndBottom (me : in out;Glue : in out Quilt from BRepTools)
+    is static private;
+
+    MakeSolid(me : in out)
+    is static private;
+    
+    
+fields
+
+    mySpine     : Face      from TopoDS;
+    myProfile   : Wire      from TopoDS;
+    myShape     : Shape     from TopoDS;
+    myIsDone    : Boolean   from Standard;
+    mySpineType : Boolean   from Standard;  -- True : Face ; False : Wire
+    myJoinType  : JoinType  from GeomAbs;	    
+    myMap       : DataMapOfShapeDataMapOfShapeListOfShape from BRepFill;  
+    myTop       : Shape     from TopoDS;
+    myBottom    : Shape     from TopoDS;
+    
+end Evolved;

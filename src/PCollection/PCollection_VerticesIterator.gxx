@@ -1,0 +1,67 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	PCollection_VerticesIterator.gxx
+// Created:	Wed May 29 17:43:20 1991
+// Author:	Denis PASCAL
+//		<dp>
+// Revised by:  Mireille MERCIEN
+//              Sep,7 1992
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+
+
+//---------------------------------------------------------------------------
+// Constructor
+//---------------------------------------------------------------------------
+PCollection_VerticesIterator::PCollection_VerticesIterator 
+     (const Handle(PCollection_HDirectedGraph)& G):MyVertexIterator(G->GetVertices()) 
+{
+  HasMore = MyVertexIterator.More();
+}
+
+
+//---------------------------------------------------------------------------
+// More
+//---------------------------------------------------------------------------
+Boolean PCollection_VerticesIterator::More () const 
+{
+  return HasMore;
+}
+
+//---------------------------------------------------------------------------
+// Next
+//---------------------------------------------------------------------------
+void PCollection_VerticesIterator::Next ()  
+{
+  if (!HasMore) Standard_NoMoreObject::Raise();
+  MyVertexIterator.Next();
+  HasMore = MyVertexIterator.More();
+}
+
+
+//---------------------------------------------------------------------------
+// Value
+//---------------------------------------------------------------------------
+Handle(PCollection_Vertex) PCollection_VerticesIterator::Value () const 
+{
+  if (!HasMore) Standard_NoSuchObject::Raise();
+  return MyVertexIterator.Value();
+}
+
+
+//---------------------------------------------------------------------------
+// Clear
+//---------------------------------------------------------------------------
+void PCollection_VerticesIterator::Clear () 
+{
+  HasMore = False;
+}
+
+
+
+
+
+
+
+
+

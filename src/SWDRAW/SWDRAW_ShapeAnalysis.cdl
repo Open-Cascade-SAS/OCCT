@@ -1,0 +1,24 @@
+-- File:	SWDRAW_ShapeAnalysis.cdl
+-- Created:	Tue Mar  9 15:26:10 1999
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeAnalysis from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeAnalysis
+	--          List of DRAW commands and corresponding functionalities:
+	--          tolerance - ShapeAnalysis_ShapeTolerance
+	--          projcurve - ShapeAnalysis_Curve
+	--          projface  - ShapeAnalysis_Surface
+
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeAnalysis
+    
+end ShapeAnalysis;

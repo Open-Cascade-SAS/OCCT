@@ -1,0 +1,45 @@
+-- File:	MeshAlgo_Circ.cdl
+-- Created:	Mon Aug  9 16:31:05 1993
+-- Author:	Didier PIFFAULT
+--		<dpf@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class Circ from MeshAlgo 
+
+	---Purpose: Describes  a  2d circle  with  a   size of  only 3
+	--          Standard Real  numbers instead  of gp who  needs 7
+	--          Standard Real numbers.
+
+uses    Real from Standard,
+    	XY from gp
+    	
+
+is      Create returns Circ from MeshAlgo;
+
+    	Create (loc : XY from gp; rad : Real from Standard)
+	    returns Circ from MeshAlgo;
+	    
+	SetLocation(me : in out; loc : XY from gp)
+    	    is static;
+
+	SetRadius  (me : in out; rad : Real from Standard)
+    	    is static;
+	
+	Location   (me)
+	---C++: return const &
+	---C++: inline
+	    returns XY from gp
+    	    is static;
+
+	Radius     (me)
+	---C++: return const &
+	---C++: inline
+	    returns Real from Standard
+    	    is static;
+
+
+fields  location : XY from gp;
+    	radius   : Real from Standard;
+
+end Circ;

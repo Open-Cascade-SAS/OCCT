@@ -1,0 +1,29 @@
+-- File:	RWStepBasic_RWMassMeasureWithUnit.cdl
+-- Created:	Wed Feb 11 11:28:39 2004
+-- Author:	Sergey KUUL
+--		<skl@doomox>
+---Copyright:	 Matra Datavision 2004
+
+class RWMassMeasureWithUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for MassMeasureWithUnit
+
+uses
+    Check from Interface,
+    StepReaderData from StepData,
+    StepWriter from StepData,
+    MassMeasureWithUnit from StepBasic,
+    EntityIterator from Interface
+
+is
+
+    Create returns RWMassMeasureWithUnit;
+
+    ReadStep (me; data : StepReaderData; num : Integer;
+	          ach : in out Check; ent : mutable MassMeasureWithUnit from StepBasic);
+
+    WriteStep (me; SW : in out StepWriter; ent : MassMeasureWithUnit from StepBasic);
+
+    Share(me; ent : MassMeasureWithUnit from StepBasic; iter : in out EntityIterator);
+
+end RWMassMeasureWithUnit;

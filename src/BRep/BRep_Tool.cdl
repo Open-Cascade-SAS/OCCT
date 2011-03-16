@@ -1,0 +1,594 @@
+-- File:	BRep_Tool.cdl
+-- Created:	Wed Jul  7 15:26:57 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Tool from BRep 
+
+	---Purpose: Provides class methods  to  access to the geometry
+	--          of BRep shapes.
+
+uses
+    Vertex   from TopoDS,
+    Edge     from TopoDS,
+    Face     from TopoDS,
+    Shape    from TopoDS,
+    Location from TopLoc,
+    Pnt      from gp,
+    Pnt2d    from gp,
+    Box2d    from Bnd,
+    Curve    from Geom2d,
+    Curve    from Geom,
+    Surface  from Geom,
+    Shape    from GeomAbs,
+    
+    Triangulation          from Poly,
+    Polygon3D              from Poly,
+    Polygon2D              from Poly,
+    PolygonOnTriangulation from Poly,
+    HArray1OfInteger       from TColStd,
+    HArray1OfReal          from TColStd
+
+raises
+    NullObject from Standard,
+    NoSuchObject from Standard
+
+is
+
+
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Solid                         -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    IsClosed (myclass; S : Shape from TopoDS) returns Boolean from Standard;
+    
+    	---Purpose: Returns <True>  if S if flaged Closed, if S is a
+    	--          Solid,Shell or Compound  returns <True> is S has no free boundaries.
+
+    	
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Face                          --
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+
+
+
+    -----------------------------------------------------------
+    --  Face surface
+    -----------------------------------------------------------
+
+
+    Surface(myclass; F : Face         from TopoDS;
+    	    	     L : out Location from TopLoc) returns Surface from Geom 
+    
+	---Purpose: Returns the geometric surface of the face. Returns
+	--          in <L> the location for the surface.
+	---C++: return const &
+    raises
+    	NullObject from Standard;
+    
+    Surface(myclass; F : Face from TopoDS) returns Surface from Geom 
+    
+	---Purpose: Returns the geometric  surface of the face. It can
+	--          be a copy if there is a Location.
+	--          
+    raises
+    	NullObject from Standard;
+	
+    Triangulation(myclass; F : Face         from TopoDS;
+    	    	           L : out Location from TopLoc) returns Triangulation from  Poly
+    
+	---Purpose: Returns  the Triangulation of  the  face. It  is a
+	--          null handle if there is no triangulation.
+	--          
+	---C++: return const &
+    raises
+    	NullObject from Standard;
+	
+	
+    
+    -----------------------------------------------------------
+    --  Face tolerance
+    -----------------------------------------------------------
+  
+    Tolerance(myclass; F : Face from TopoDS)  returns Real
+    
+	---Purpose: Returns the tolerance of the face.
+    raises
+    	NullObject from Standard;
+	
+    -----------------------------------------------------------
+    --  Face natural restriction flag
+    -----------------------------------------------------------
+    
+    NaturalRestriction(myclass; F : Face from TopoDS) returns Boolean
+    
+	---Purpose: Returns the  NaturalRestriction  flag of the  face.
+    raises
+    	NullObject from Standard;
+    
+    
+    
+    
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Edge                          -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    
+    IsGeometric(myclass; E: Edge from TopoDS)
+    	---Purpose: Returns True if <E> is a 3d curve or a curve on
+    	--          surface.
+    returns Boolean;    
+    
+    -----------------------------------------------------------
+    --  Edge 3d curve
+    -----------------------------------------------------------
+    
+    Curve(myclass; E : Edge from TopoDS;
+    	    	   L : out Location from TopLoc;
+    	    	   First, Last : out Real) 
+    returns Curve from Geom
+    
+	---Purpose: Returns the 3D curve  of the edge.  May be  a Null
+	--          handle. Returns in <L> the location for the curve.
+	--          In <First> and <Last> the parameter range.
+	--          
+	---C++: return const &
+    raises
+    	NullObject from Standard;
+	
+
+    Curve(myclass; E : Edge from TopoDS;
+    	    	   First, Last : out Real) 
+    returns Curve from Geom
+    
+	---Purpose: Returns the 3D curve  of the edge. May be a Null handle.
+	--          In <First> and <Last> the parameter range.
+	--          It can be a copy if there is a Location.
+    raises
+    	NullObject from Standard;
+	
+    -----------------------------------------------------------
+    --  Edge 3d polygon
+    -----------------------------------------------------------
+    
+    Polygon3D(myclass; E : Edge from TopoDS;
+    	    	   L : out Location from TopLoc)
+    returns Polygon3D from Poly
+    
+	---Purpose: Returns the 3D polygon of the edge. May be   a Null
+	--          handle. Returns in <L> the location for the polygon.
+	--          
+	---C++: return const &
+    raises
+    	NullObject from Standard;
+	
+
+    -----------------------------------------------------------
+    --  Edge curve on surface
+    -----------------------------------------------------------
+    
+    CurveOnSurface(myclass; E : Edge from TopoDS; 
+    	    	            F : Face from TopoDS;
+    	    	            First, Last : out Real) 
+    returns Curve from Geom2d
+    
+	---Purpose: Returns the curve  associated to the  edge in  the
+	--          parametric  space of  the  face.  Returns   a NULL
+	--          handle  if this curve  does not exist.  Returns in
+	--          <First> and <Last> the parameter range.
+    raises
+    	NullObject from Standard;	
+
+
+    CurveOnSurface(myclass; E : Edge     from TopoDS; 
+    	    	            S : Surface  from Geom;
+			    L : Location from TopLoc;
+    	    	            First, Last : out Real) 
+    returns Curve from Geom2d
+    
+	---Purpose: Returns the  curve associated to   the edge in the
+	--          parametric  space of the   surface. Returns a NULL
+	--          handle  if this curve does  not exist.  Returns in
+	--          <First> and <Last> the parameter range.
+    raises
+    	NullObject from Standard;
+    
+
+    CurveOnSurface(myclass; E :     Edge     from TopoDS;
+    	    	            C : out Curve    from Geom2d;
+			    S : out Surface  from Geom;
+    	    	            L : out Location from TopLoc;
+    	    	            First, Last : out Real) 
+    
+	---Purpose: Returns in <C>, <S>, <L> a 2d curve, a surface and
+	--          a location for the edge <E>. <C> and <S>  are null
+	--          if the  edge has no curve on  surface.  Returns in
+	--          <First> and <Last> the parameter range.
+    raises
+    	NullObject from Standard;
+	
+    CurveOnSurface(myclass; E :     Edge     from TopoDS;
+    	    	            C : out Curve    from Geom2d;
+			    S : out Surface  from Geom;
+    	    	            L : out Location from TopLoc;
+    	    	            First, Last : out Real;
+    	    	    	    Index : Integer) 
+    
+	---Purpose: Returns in <C>, <S>, <L> the 2d curve, the surface
+	--          and the location for the edge <E> of rank <Index>.
+	--          <C> and <S> are null if the index is out of range.
+	--          Returns in <First> and <Last> the parameter range.
+    raises
+    	NullObject from Standard;
+	
+    -----------------------------------------------------------
+    --  Edge polygon on surface
+    -----------------------------------------------------------
+ 
+    PolygonOnSurface(myclass; E : Edge     from TopoDS; 
+    	    	              F : Face     from TopoDS)
+    returns Polygon2D from Poly
+    
+	---Purpose: Returns the polygon associated to the  edge in  the
+	--          parametric  space of  the  face.  Returns   a NULL
+	--          handle  if this polygon  does not exist.
+    raises
+    	NullObject from Standard;	
+	
+    PolygonOnSurface(myclass; E : Edge     from TopoDS; 
+    	    	              S : Surface  from Geom;
+			      L : Location from TopLoc)
+    returns Polygon2D from Poly
+    
+	---Purpose: Returns the polygon associated to the  edge in  the
+	--          parametric  space of  the surface. Returns   a NULL
+	--          handle  if this polygon  does not exist.
+    raises
+    	NullObject from Standard;	
+	
+    
+    PolygonOnSurface(myclass; E :     Edge      from TopoDS;
+    	    	              C : out Polygon2D from Poly;
+			      S : out Surface   from Geom;
+    	    	              L : out Location  from TopLoc)
+    
+	---Purpose: Returns in <C>, <S>, <L> a 2d curve, a surface and
+	--          a location for the edge <E>. <C> and <S>  are null
+	--          if the  edge has no polygon on  surface.
+    raises
+    	NullObject from Standard;
+	
+    PolygonOnSurface(myclass; E :     Edge      from TopoDS;
+    	    	              C : out Polygon2D from Poly;
+			      S : out Surface   from Geom;
+    	    	              L : out Location  from TopLoc;
+     	    	    	      Index : Integer) 
+    
+	---Purpose: Returns in <C>, <S>, <L> the 2d curve, the surface
+	--          and the location for the edge <E> of rank <Index>.
+	--          <C> and <S> are null if the index is out of range.
+    raises
+    	NullObject from Standard;
+	
+	
+	
+    -----------------------------------------------------------
+    --  Edge polygon on triangulation
+    -----------------------------------------------------------
+ 
+    PolygonOnTriangulation(myclass; E : Edge          from TopoDS; 
+    	    	          	    T : Triangulation from Poly;
+    	    	    	    	    L : Location      from TopLoc)
+	---C++: return const &
+    returns PolygonOnTriangulation from Poly;
+    	--      
+	---Purpose: Returns the polygon associated to the  edge in  the
+	--          parametric  space of  the  face.  Returns   a NULL
+	--          handle  if this polygon  does not exist.
+	
+    
+    PolygonOnTriangulation(myclass; E :     Edge                   from TopoDS;
+    	    	          	    P : out PolygonOnTriangulation from Poly;
+			   	    T : out Triangulation          from Poly;
+    	    	            	    L : out Location               from TopLoc)
+    
+	---Purpose: Returns in <P>, <T>, <L> a polygon on triangulation, a 
+	--          triangulation and a location for the edge <E>. 
+	--          <P>  and  <T>  are null  if  the  edge has no 
+	--          polygon on  triangulation.
+    raises
+    	NullObject from Standard;
+	
+    PolygonOnTriangulation(myclass; E :     Edge                   from TopoDS;
+    	    	          	    P : out PolygonOnTriangulation from Poly;
+			      	    T : out Triangulation          from Poly;
+    	    	              	    L : out Location               from TopLoc;
+     	    	    	            Index : Integer) 
+	---Purpose: Returns   in   <P>,  <T>,    <L> a     polygon  on
+	--          triangulation,   a triangulation  and a  location for
+	--          the edge <E> for the range index.  <C> and <S> are
+	--          null if the edge has no polygon on triangulation.
+    
+    raises
+    	NullObject from Standard;
+	
+	
+    -----------------------------------------------------------
+    --  Edge closed on surface
+    -----------------------------------------------------------
+    
+    IsClosed(myclass; E : Edge from TopoDS; 
+    	    	      F : Face from TopoDS)
+    returns Boolean
+    
+	---Purpose: Returns  True  if  <E>  has  two  PCurves  in  the
+	--          parametric space of <F>. i.e.  <F>  is on a closed
+	--          surface and <E> is on the closing curve.
+	--          
+    raises
+    	NullObject from Standard;	
+    
+
+    -----------------------------------------------------------
+    --  Edge closed on surface
+    -----------------------------------------------------------
+    
+    IsClosed(myclass; E : Edge     from TopoDS; 
+    	    	      S : Surface  from Geom;
+		      L : Location from TopLoc)
+    returns Boolean
+    
+	---Purpose: Returns  True  if  <E>  has  two  PCurves  in  the
+	--          parametric space  of <S>.  i.e.   <S>  is a closed
+	--          surface and <E> is on the closing curve.
+	--          
+    raises
+    	NullObject from Standard;
+    
+    -----------------------------------------------------------
+    --  Edge closed on triangulation
+    -----------------------------------------------------------
+    
+    IsClosed(myclass; E : Edge          from TopoDS; 
+    	    	      T : Triangulation from Poly)
+    returns Boolean
+    
+	---Purpose: Returns  True  if <E> has two arrays of indices in
+	--          the triangulation <T>.
+    raises
+    	NullObject from Standard;
+    
+    -----------------------------------------------------------
+    --  Edge tolerance
+    -----------------------------------------------------------
+
+    Tolerance(myclass; E : Edge from TopoDS) returns Real
+    
+	---Purpose: Returns the tolerance for <E>.
+    raises
+    	NullObject from Standard;
+	
+    -----------------------------------------------------------
+    --  Edge flags
+    -----------------------------------------------------------
+    
+    SameParameter(myclass; E : Edge from TopoDS) returns Boolean
+    
+	---Purpose: Returns the SameParameter flag for the edge.
+    raises
+    	NullObject from Standard;
+	
+    SameRange(myclass; E : Edge from TopoDS) returns Boolean
+    
+	---Purpose: Returns the SameRange flag for the edge.
+    raises
+    	NullObject from Standard;
+	
+    Degenerated(myclass; E : Edge from TopoDS)
+    returns Boolean 
+    
+	---Purpose: Returns True  if the edge is degenerated.
+    raises
+    	NullObject from Standard;
+    
+    -------------------------------------------------------
+    -- Edge parameter range
+    -------------------------------------------------------
+    
+    Range(myclass; E : Edge from TopoDS;
+                   First, Last : out Real)
+	---Purpose: Gets the range of the 3d curve.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+ 
+    
+    Range(myclass; E : Edge from TopoDS;
+    	           S : Surface from Geom;
+	           L : Location from TopLoc;
+                   First, Last : out Real)
+	---Purpose: Gets the range  of the edge  on the pcurve on  the
+	--          surface.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+ 
+    
+    Range(myclass; E : Edge from TopoDS;
+    	           F : Face from TopoDS;
+                   First, Last : out Real)
+	---Purpose: Gets the range of the edge on the pcurve on the face.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+
+
+    -------------------------------------------------------
+    -- Edge UV points
+    -- 
+    -- The  data  structures records a   location in UV   for  the two
+    -- extremities of an edge.
+    --  
+    --  By default these location are computed from the PCurve.
+    --  
+    --  They can be updated to ensure their identity on connected edges.
+    --    (See the package BRepTools)
+    -- 
+    -------------------------------------------------------
+    
+    UVPoints(myclass; E : Edge from TopoDS;
+    	              S : Surface from Geom;
+	              L : Location from TopLoc;
+                      PFirst, PLast : out Pnt2d from gp)
+	---Purpose: Gets the UV locations of the extremities of the edge.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+ 
+    
+    UVPoints(myclass; E : Edge from TopoDS;
+    	              F : Face from TopoDS;
+                      PFirst, PLast : out Pnt2d from gp)
+	---Purpose: Gets the UV locations of the extremities of the edge.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+
+    SetUVPoints(myclass; E : Edge from TopoDS;
+    	                 S : Surface from Geom;
+	                 L : Location from TopLoc;
+                         PFirst, PLast : Pnt2d from gp)
+	---Purpose: Sets the UV locations of the extremities of the edge.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+ 
+    
+    SetUVPoints(myclass; E : Edge from TopoDS;
+    	                 F : Face from TopoDS;
+                         PFirst, PLast : Pnt2d from gp)
+	---Purpose: Sets the UV locations of the extremities of the edge.
+    raises 
+    	NullObject  from Standard; -- If <E> is Null
+
+    -----------------------------------------------------------
+    --  Edge continuity
+    -----------------------------------------------------------
+ 
+   HasContinuity(myclass; E      : Edge from TopoDS; 
+    	    	    	  F1, F2 : Face from TopoDS) 
+   returns Boolean
+    
+	---Purpose: Returns True if the edge is on the surfaces of the
+	--          two faces.
+    raises
+    	NullObject from Standard; -- If the edge or the faces are null.
+
+
+    Continuity(myclass; E      : Edge from TopoDS; 
+                        F1, F2 : Face from TopoDS)  
+    returns Shape from GeomAbs
+    
+	---Purpose: Returns the continuity.
+    raises
+    	NullObject from Standard; -- If the edge or the faces are null.
+    
+   HasContinuity(myclass; E      : Edge     from TopoDS; 
+    	    	    	  S1, S2 : Surface  from Geom;
+			  L1, L2 : Location from TopLoc)
+   returns Boolean
+    
+	---Purpose: Returns True if the edge is on the surfaces.
+    raises
+    	NullObject from Standard; -- If the edge or the surfaces are null.
+
+
+    Continuity(myclass; E      : Edge     from TopoDS;
+    	    	    	S1, S2 : Surface  from Geom;
+			L1, L2 : Location from TopLoc)
+    returns Shape from GeomAbs
+    
+	---Purpose: Returns the continuity.
+    raises
+    	NullObject from Standard; -- If the edge or the faces are null.
+
+    
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    --                         Vertex                        -- 
+    -----------------------------------------------------------
+    -----------------------------------------------------------
+    
+    
+	
+    -----------------------------------------------------------
+    --  Vertex point
+    -----------------------------------------------------------
+
+    Pnt(myclass; V : Vertex from TopoDS) returns Pnt from gp
+    
+	---Purpose: Returns the 3d point.
+    raises
+    	NullObject from Standard; -- if <V> is Null or has no geometry.
+
+    -----------------------------------------------------------
+    --  Vertex tolerance
+    -----------------------------------------------------------
+
+    Tolerance(myclass; V : Vertex from TopoDS) returns Real
+    
+	---Purpose: Returns the tolerance.
+    raises
+    	NullObject from Standard; -- if <V> is Null or has no geometry.
+
+    -----------------------------------------------------------
+    --  Vertex parameter on edge
+    -----------------------------------------------------------
+    
+    Parameter(myclass; V : Vertex from TopoDS; 
+                       E : Edge from TopoDS)
+    returns Real
+    
+	---Purpose: Returns the parameter of <V> on <E>.
+    raises
+    	NullObject from Standard;
+	
+   
+    
+    Parameter(myclass; V : Vertex from TopoDS;
+    	    	       E : Edge from TopoDS; 
+                       F : Face from TopoDS) 
+    returns Real
+    
+	---Purpose: Returns the  parameters  of   the  vertex   on the
+	--          pcurve of the edge on the face.
+    raises
+    	NullObject from Standard;
+
+
+    
+    Parameter(myclass; V : Vertex from TopoDS;
+    	    	       E : Edge from TopoDS; 
+                       S : Surface from Geom;
+		       L : Location from TopLoc)
+    returns Real
+    
+	---Purpose: Returns the  parameters  of   the  vertex   on the
+	--          pcurve of the edge on the surface.
+    raises
+    	NullObject from Standard;
+    
+
+    Parameters(myclass; V : Vertex from TopoDS;
+                        F : Face from TopoDS) 
+    returns Pnt2d from gp
+    
+	---Purpose: Returns the parameters of the vertex on the face.
+    raises
+    	NullObject from Standard;
+
+    
+
+end Tool;
+

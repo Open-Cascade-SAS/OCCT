@@ -1,0 +1,132 @@
+-- File:	Display.cdl
+-- Created:	Mon Jul 15 10:05:54 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn2>
+---Copyright:	 Matra Datavision 1991
+
+
+class Display from Draw 
+
+	---Purpose: Use to  draw in a 3d or a 2d view.  
+	--          
+	--          * The  3d methods draw in the 3d  system,  in a 2d
+	--          view the drawing is projected on X,Y.
+	--          
+	--          * The 2d methods draw in the projection plane.
+	--          
+	--          * To draw in screen coordinates the length must be
+	--          divided by the zoom.
+
+uses
+    CString,	
+    Color       from Draw,
+    MarkerShape from Draw,
+    Pnt         from gp,
+    Pnt2d       from gp,
+    Circ        from gp,
+    Circ2d      from gp
+
+is
+
+    Create
+    returns Display;
+    
+    SetColor(me; col : Color)
+	---Purpose: Following drawings will use this color.
+    is static;
+    
+    SetMode(me; M : Integer)
+	---Purpose: Set the drawing mode, 3 = copy, 6 = xor
+    is static;
+    
+    Flush(me)
+    is static;
+    
+    MoveTo(me : in out; pt : Pnt from gp)
+    is static;
+    
+    DrawTo(me : in out; pt : Pnt from gp)
+    is static;
+    
+    MoveTo(me : in out; pt : Pnt2d from gp)
+    is static;
+    
+    DrawTo(me : in out; pt : Pnt2d from gp)
+    is static;
+    
+    Draw(me : in out; p1,p2 : Pnt from gp)
+    is static;
+    
+    Draw(me : in out; p1,p2 : Pnt2d from gp)
+    is static;
+    
+    Draw(me : in out; C : Circ from gp; A1, A2 : Real;
+    	 ModifyWithZoom : Boolean = Standard_True)
+	---Purpose:  Draw  a  circle   <C> from  angle <A1>   to  <A2>
+	--           (Radians). if ModifyWithZoom  = 0,  then 
+	--           rayon of circle is convert to Integer.
+    is static;
+    
+    Draw(me : in out; C : Circ2d from gp; A1, A2 : Real;
+    	 ModifyWithZoom : Boolean = Standard_True)
+	---Purpose:  Draw  a 2D circle  <C>  from angle   <A1> to <A2>
+	--           (Radians). if ModifyWithZoom  = 0,  then 
+	--           rayon of circle is convert to Integer.
+    is static;
+    
+    DrawMarker(me : in out; pt : Pnt from gp; S : MarkerShape from Draw; 
+    	       Size : Integer = 5)
+    is static;
+    
+    DrawMarker(me : in out; pt : Pnt2d from gp; S : MarkerShape from Draw; 
+    	       Size : Integer = 5)
+    is static;
+    
+    DrawMarker(me : in out; pt : Pnt from gp; S : MarkerShape from Draw; 
+    	       Size : Real)
+    is static;
+    
+    DrawMarker(me : in out; pt : Pnt2d from gp; S : MarkerShape from Draw; 
+    	       Size : Real)
+    is static;
+    
+    DrawString(me : in out; pt : Pnt from gp; S : CString)
+    is static;
+    
+    DrawString(me : in out; pt : Pnt2d from gp; S : CString)
+    is static;
+    
+    DrawString(me : in out; pt : Pnt from gp; S : CString; moveX : Real; moveY : Real)
+    is static;
+    
+    DrawString(me : in out; pt : Pnt2d from gp; S : CString; moveX : Real; moveY : Real)
+    is static;
+    
+    Project(me; pt : Pnt from gp) returns Pnt2d from gp
+	---Purpose: Returns the 2D projection of a 3D point.
+    is static;
+    
+    Project(me; pt : Pnt from gp; pt2d : out Pnt2d from gp)
+	---Purpose: Returns the 2D projection of a 3D point.
+    is static;
+    
+    Zoom(me) returns Real
+	---Purpose: Returns the current Zoom value.
+    is static;
+    
+    ViewId(me) returns Integer
+	---Purpose: Returns the   identifier  of the  view   where the
+	--          display is drawing.
+    is static;
+    
+    HasPicked(me) returns Boolean
+	---Purpose: Returs  True  if  the  last   drawing   operations
+	--          generated  a pick hit.  When HasPicked is True the
+	--          Drawing should be resumed.
+	--          
+	--          This function is used to shorten the  drawing when
+	--          picking and to save the picked sub-parts.
+
+    is static;
+    
+end Display;

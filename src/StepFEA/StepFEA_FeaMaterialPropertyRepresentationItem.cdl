@@ -1,0 +1,19 @@
+-- File:	StepFEA_FeaMaterialPropertyRepresentationItem.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaMaterialPropertyRepresentationItem from StepFEA
+inherits RepresentationItem from StepRepr
+
+    ---Purpose: Representation of STEP entity FeaMaterialPropertyRepresentationItem
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns FeaMaterialPropertyRepresentationItem from StepFEA;
+	---Purpose: Empty constructor
+
+end FeaMaterialPropertyRepresentationItem;

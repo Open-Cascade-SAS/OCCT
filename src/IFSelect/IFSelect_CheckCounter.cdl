@@ -1,0 +1,47 @@
+-- File:	IFSelect_CheckCounter.cdl
+-- Created:	Mon Nov  7 18:34:38 1994
+-- Author:	Christian CAILLET
+--		<cky@stylox>
+---Copyright:	 Matra Datavision 1994
+
+
+class CheckCounter  from IFSelect  inherits SignatureList
+
+    ---Purpose : A CheckCounter allows to see a CheckList (i.e. CheckIterator)
+    --           not per entity, its messages, but per message, the entities
+    --           attached (count and list). Because many messages can be
+    --           repeated if they are due to systematic errors
+
+uses CheckIterator, InterfaceModel, SignText from MoniTool
+
+is
+
+    Create (withlist : Boolean = Standard_False) returns mutable CheckCounter;
+    ---Purpose : Creates a CheckCounter, empty ready to work
+
+    SetSignature (me : mutable; sign : SignText);
+    ---Purpose : Sets a specific signature
+    --           Else, the current SignType (in the model) is used
+
+    Signature    (me) returns SignText;
+    ---Purpose : Returns the Signature;
+ 
+    Analyse (me : mutable;
+    	 list  : CheckIterator;
+    	 model : InterfaceModel;
+	 original  : Boolean = Standard_False;
+	 failsonly : Boolean = Standard_False);
+    ---Purpose : Analyses a CheckIterator according a Model (which detains the
+    --           entities for which the CheckIterator has messages), i.e.
+    --           counts messages for entities
+    --           If <original> is True, does not consider final messages but
+    --             those before interpretation (such as inserting variables :
+    --             integers, reals, strings)
+    --           If <failsonly> is True, only Fails are considered
+    --           Remark : global messages are recorded with a Null entity
+
+fields
+
+    thesign : SignText;  -- optional
+
+end CheckCounter;

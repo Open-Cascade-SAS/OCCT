@@ -1,0 +1,203 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+
+class Ax2d   from gp   inherits Storable
+
+         ---Purpose:
+         -- Describes an axis in the plane (2D space).
+         -- An axis is defined by:
+         -- -   its origin (also referred to as its "Location point"),   and
+         -- -   its unit vector (referred to as its "Direction").
+         -- An axis implicitly defines a direct, right-handed
+         -- coordinate system in 2D space by:
+         -- -   its origin,
+         -- - its "Direction" (giving the "X Direction" of the coordinate system), and
+         -- -   the unit vector normal to "Direction" (positive angle
+         --   measured in the trigonometric sense).
+         -- An axis is used:
+         -- -   to describe 2D geometric entities (for example, the
+         --   axis which defines angular coordinates on a circle).
+         --   It serves for the same purpose as the STEP function
+         --   "axis placement one axis", or
+         -- -   to define geometric transformations (axis of
+         --   symmetry, axis of rotation, and so on).
+         -- Note: to define a left-handed 2D coordinate system, use gp_Ax22d.
+
+uses Dir2d, Pnt2d, Trsf2d, Vec2d
+
+is
+
+
+  Create  returns Ax2d;
+        ---C++:inline
+        --- Purpose : Creates an axis object representing X axis of
+        --            the reference co-ordinate system.
+     
+  Create (P : Pnt2d; V : Dir2d)  returns Ax2d;
+        ---C++:inline
+	--- Purpose :
+	--  Creates an Ax2d. <P> is the "Location" point of
+	--  the axis placement and V is the "Direction" of
+	--  the axis placement.
+
+
+  SetLocation (me : out; Locat : Pnt2d)      is static;
+        ---C++:inline
+        --- Purpose :  Changes the "Location" point (origin) of <me>.
+
+  SetDirection (me : out; V : Dir2d)         is static;
+        ---C++:inline
+        --- Purpose : Changes the direction of <me>.
+
+  Location (me)  returns Pnt2d       is static;
+        ---C++:inline
+        --- Purpose : Returns the origin of <me>.
+    	---C++: return const&
+
+  Direction (me)   returns Dir2d     is static;
+        ---C++:inline
+        --- Purpose : Returns the direction of <me>.
+    	---C++: return const&
+
+  IsCoaxial (me; Other : Ax2d; AngularTolerance, LinearTolerance : Real)
+     returns Boolean
+     is static;
+        --- Purpose :
+        --  Returns True if  :
+        --  . the angle between <me> and <Other> is lower or equal
+        --    to <AngularTolerance> and
+        --  . the distance between <me>.Location() and <Other> is lower
+        --    or equal to <LinearTolerance> and 
+        --  . the distance between <Other>.Location() and <me> is lower 
+        --    or equal to LinearTolerance.
+
+
+  IsNormal (me; Other : Ax2d; AngularTolerance : Real)   returns Boolean
+     is static;
+        ---C++:inline
+        --- Purpose : Returns true if this axis and the axis Other are normal to
+        -- each other. That is, if the angle between the two axes is equal to Pi/2 or -Pi/2.
+        -- Note: the tolerance criterion is given by AngularTolerance.
+ 
+
+  IsOpposite (me; Other : Ax2d; AngularTolerance : Real)   returns Boolean
+     is static;
+        ---C++:inline
+        --- Purpose : Returns true if this axis and the axis Other are parallel,
+        -- and have opposite orientations. That is, if the angle
+        -- between the two axes is equal to Pi or -Pi.
+        -- Note: the tolerance criterion is given by AngularTolerance.
+
+  IsParallel (me; Other : Ax2d; AngularTolerance : Real)   returns Boolean
+     is static;
+        ---C++:inline
+        --- Purpose :  Returns true if this axis and the axis Other are parallel,
+        -- and have either the same or opposite orientations. That
+        -- is, if the angle between the two axes is equal to 0, Pi or -Pi.
+        -- Note: the tolerance criterion is given by AngularTolerance.
+
+  Angle (me; Other : Ax2d)   returns Real   is static;
+        ---C++:inline
+        --- Purpose :
+        -- Computes the angle, in radians, between this axis and
+        -- the axis Other. The value of the angle is between -Pi and Pi.
+        
+  Reverse (me : in out)          is static;
+        ---C++:inline
+        --- Purpose : Reverses the direction of <me> and assigns the result to this axis.
+
+
+  Reversed (me)   returns Ax2d   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Computes a new axis placement with a direction opposite to
+        --  the direction of <me>.
+
+            
+  Mirror (me : in out; P : Pnt2d)          is static;
+
+  Mirrored (me; P : Pnt2d)  returns Ax2d   is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to the point P which is the
+        --  center of the symmetry.
+
+
+
+  Mirror (me : in out; A : Ax2d)           is static;
+
+  Mirrored (me; A : Ax2d) returns Ax2d     is static;
+        --- Purpose :
+        --  Performs the symmetrical transformation of an axis
+        --  placement with respect to an axis placement which
+        --  is the axis of the symmetry.
+
+
+
+
+
+  Rotate (me : in out; P : Pnt2d; Ang : Real)        is static;
+        ---C++:inline
+
+  Rotated (me; P : Pnt2d; Ang : Real)  returns Ax2d  is static;
+        ---C++:inline
+        --- Purpose :
+        --  Rotates an axis placement. <P> is the center of the
+        --  rotation . Ang is the angular value of the rotation
+        --  in radians.
+
+
+ 
+
+  Scale (me : in out; P : Pnt2d; S : Real)         is static;
+
+  Scaled (me; P : Pnt2d; S : Real)  returns Ax2d   is static;
+        ---C++:inline
+       --- Purpose :
+        --  Applies a scaling transformation on the axis placement.
+        --  The "Location" point of the axisplacement is modified.
+        --  The "Direction" is reversed if the scale is negative.
+
+
+
+
+
+  Transform (me : in out; T : Trsf2d)              is static;
+        ---C++:inline
+
+  Transformed(me; T : Trsf2d)   returns Ax2d       is static;
+        ---C++:inline
+        --- Purpose :  Transforms an axis placement with a Trsf.
+
+ 
+
+  Translate (me : in out; V : Vec2d)               is static;
+        ---C++:inline
+
+  Translated (me; V : Vec2d)  returns Ax2d         is static;
+        ---C++:inline
+        --- Purpose : 
+        --  Translates an axis placement in the direction of the vector
+        --  <V>. The magnitude of the translation is the vector's magnitude.
+
+  Translate (me : in out; P1, P2 : Pnt2d)          is static;
+        ---C++:inline
+
+  Translated (me; P1, P2 : Pnt2d) returns Ax2d     is static;
+        ---C++:inline
+        --- Purpose :
+        --  Translates an axis placement from the point <P1> to the 
+        --  point <P2>.
+
+
+
+fields
+
+   loc  : Pnt2d;
+   vdir : Dir2d;
+
+end;

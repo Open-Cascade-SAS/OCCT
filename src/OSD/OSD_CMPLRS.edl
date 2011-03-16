@@ -1,0 +1,3 @@
+@if (%Station == "ao1") then
+	@string %CMPLRS_CXX_Command  = "/usr/bin/cxx -shared ";
+@endif;

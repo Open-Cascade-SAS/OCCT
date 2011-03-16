@@ -1,0 +1,85 @@
+-- File:	FEmTool_ProfileMatrix.cdl
+-- Created:	Wed Oct 29 16:54:05 1997
+-- Author:	Roman BORISOV
+--		<rbv@velox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class ProfileMatrix from FEmTool  inherits SparseMatrix  from FEmTool
+
+	---Purpose: Symmetric Sparse ProfileMatrix useful  for 1D Finite
+	--          Element methods
+
+uses   
+    HArray1OfInteger  from  TColStd,  
+    Array1OfInteger  from  TColStd,
+    Array2OfInteger  from  TColStd,
+    HArray1OfReal     from  TColStd, 
+    Vector           from  math
+
+raises   
+    NotDone  from  StdFail, 
+    NotImplemented  from  Standard, 
+    OutOfRange  from  Standard 
+	 
+is 
+    Create(FirstIndexes  :  Array1OfInteger)   
+    returns  mutable  ProfileMatrix  from  FEmTool; 
+
+    Init(me:  mutable;  Value  :  Real); 
+     
+    ChangeValue(me:  mutable;  I,  J  :  Integer) 
+     ---C++: return &
+    returns  Real 
+    raises  OutOfRange; 
+     
+    Decompose(me  :  mutable)   
+    ---Purpose: To make a Factorization of <me>
+    returns  Boolean;
+        
+    Solve(me;  B  :  Vector;  X  :  in  out  Vector) 
+    ---Purpose: Direct Solve of AX = B   
+    raises  NotDone from  StdFail; --  if  <me> is not decomposed
+    
+    Prepare(me  :  mutable) 
+     ---Purpose: Make Preparation to iterative solve  
+    returns  Boolean 
+    raises  NotImplemented  from  Standard;
+     
+    Solve(me;  B          :  Vector;   
+               Init       :  Vector;  
+	       X          :  out  Vector;
+               Residual   :  out  Vector; 
+               Tolerance  :  Real  =  1.0e-8;
+	       NbIterations: Integer = 50)
+    ---Purpose: Iterative solve  of AX = B
+    raises  NotDone from  StdFail;  --  if  <me> is not prepared;
+    
+    Multiplied(me; X: Vector; MX  :  in  out  Vector); 
+    ---Purpose: returns the product of a SparseMatrix by a vector.
+    --          An exception is raised if the dimensions are different
+        
+    RowNumber(me)
+    	---Purpose: returns the row range of a matrix.
+    returns Integer;
+
+    
+    ColNumber(me)
+    	---Purpose: returns the column range of the matrix.
+    returns Integer;  
+     
+    IsInProfile(me;  i, j  :  Integer) 
+    returns  Boolean;
+
+--  for  debug 
+
+    OutM(me); 
+     
+    OutS(me); 
+    
+fields 
+  profile        :  Array2OfInteger;  --  Like  MPOSIT  in  Fortran 
+  ProfileMatrix  :  HArray1OfReal;     --  Like  AMATRI  in  Fortran 
+  SMatrix        :  HArray1OfReal;     --  Like  SMATRI  in  Fortran 
+  NextCoeff      :  HArray1OfInteger;  --  Like  POSUIV  in  Fortran 
+  IsDecomp       :  Boolean; 
+end ProfileMatrix;

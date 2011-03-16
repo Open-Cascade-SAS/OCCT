@@ -1,0 +1,107 @@
+-- File:	TopOpeBRepDS_InterferenceIterator.cdl
+-- Created:	Mon Jun  6 12:42:45 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1994
+
+
+class InterferenceIterator from TopOpeBRepDS 
+
+	---Purpose: Iterate  on  interferences  of  a  list,  matching
+	--          conditions  on   interferences.    	
+	-- Nota   :
+	--          inheritance  of   ListIteratorOfListOfInterference  from
+	--          TopOpeBRepDS  has  not   been  done   because  of  the
+	--          impossibility of naming  the classical  More, Next
+	--          methods  which are declared as static in 
+	--          TCollection_ListIteratorOfList ... . ListIteratorOfList
+	--          has benn placed as a field of InterferenceIterator.
+
+uses
+
+    Kind from TopOpeBRepDS,
+    Interference from TopOpeBRepDS,
+    ListOfInterference from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS
+    
+is
+
+    Create returns InterferenceIterator from TopOpeBRepDS;
+
+    Create(L : ListOfInterference from TopOpeBRepDS) 
+    returns InterferenceIterator from TopOpeBRepDS;
+    ---Purpose: Creates an iterator on the Interference of list <L>.
+
+    Init(me : in out; L : ListOfInterference from TopOpeBRepDS) 
+    ---Purpose: re-initialize  interference iteration  process  on
+    --          the list of interference <L>.
+    --          Conditions are not modified.
+    is static;
+    
+    GeometryKind(me : in out; GK : Kind from TopOpeBRepDS)
+    ---Purpose: define a condition on interference iteration process.
+    --          Interference must match the Geometry Kind <ST>
+    is static;
+
+    Geometry(me : in out; G : Integer from Standard)
+    ---Purpose: define a condition on interference iteration process.
+    --          Interference must match the Geometry <G>
+    is static;
+
+    SupportKind(me : in out; ST : Kind from TopOpeBRepDS)
+    ---Purpose: define a condition on interference iteration process.
+    --          Interference must match the Support Kind <ST>
+    is static;
+    
+    Support(me : in out; S : Integer from Standard)
+    ---Purpose: define a condition on interference iteration process.
+    --          Interference must match the Support <S>
+    is static;
+
+    Match(me : in out) 
+    ---Purpose: reach for an interference  matching the conditions
+    --          (if  defined).
+    is static;
+
+    MatchInterference(me; I : Interference from TopOpeBRepDS) 
+    returns Boolean from Standard
+    ---Purpose: Returns  True if the Interference <I>  matches the
+    --          conditions (if defined).
+    --          If no conditions defined, returns True.
+    is virtual;
+
+    More(me) returns Boolean from Standard
+    ---Purpose: Returns True if there is a current Interference in
+    --          the iteration.
+    is static;
+
+    Next(me : in out)
+    ---Purpose: Move to the next Interference.
+    is static;
+
+    Value(me) returns any Interference from TopOpeBRepDS
+    ---Purpose: Returns   the   current   Interference,   matching   the
+    --          conditions  (if defined).
+    ---C++: return &
+    is static;
+
+    ChangeIterator(me : in out)
+    returns ListIteratorOfListOfInterference from TopOpeBRepDS
+    is static;    
+    ---C++: return &
+	
+fields
+
+    myIterator : ListIteratorOfListOfInterference from TopOpeBRepDS;
+
+    myGKDef : Boolean from Standard;
+    myGK    : Kind from TopOpeBRepDS;  -- Geometry Kind
+    myGDef  : Boolean from Standard;
+    myG     : Integer from Standard;   -- Geometry
+    
+    mySKDef : Boolean from Standard;
+    mySK    : Kind from TopOpeBRepDS;  -- Support Kind
+    mySDef  : Boolean from Standard;
+    myS     : Integer from Standard;   -- Support
+
+end InterferenceIterator from TopOpeBRepDS;

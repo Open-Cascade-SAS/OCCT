@@ -1,0 +1,111 @@
+-- File:	Standard_Failure.cdl
+-- Created:	Thu Sep  5 17:21:09 1991
+-- Author:	Philippe COICADAN
+--		<phc@topsn1>
+-- Revised      J.P. TIRAULT
+--              New organization of standard Package (August 1992)
+--              		
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class Failure from Standard inherits Transient from Standard 
+
+    ---Purpose: 
+    --   Forms the root of the entire exception hierarchy.
+
+uses
+    CString from Standard,
+    OStream from Standard,
+    SStream from Standard
+
+raises
+    NoSuchObject from Standard
+    
+is
+
+    Create returns mutable Failure;
+    	---Purpose: 
+    	--   Creates a status object of type "Failure".
+    	---Level: Advanced
+	---C++: alias "Standard_EXPORT Standard_Failure (const Standard_Failure& f);"
+
+    Create (aString: CString) returns mutable Failure;
+    	---Purpose: 
+    	--   Creates a status object of type "Failure".
+        ---Level: Advanced
+      	---C++: alias "Standard_EXPORT Standard_Failure& operator= (const Standard_Failure& f);"
+
+    Destroy(me:mutable);
+    	---Level: Advanced
+      	---C++: alias ~
+
+    Print (me; s: in out OStream);
+    	---Purpose: 
+    	--   Prints on the stream <s> the exception name followed by 
+    	--   the error message.
+        --  Level: Advanced
+    	--  Warning:
+    	--   The operator "OStream& operator<< (Standard_OStream&,
+    	--                                      Handle(Standard_Failure)&)"
+    	--   is implemented. (This operator uses the method Print)
+    	--   
+   	---C++: alias operator<< 
+
+    GetMessageString (me) returns CString from Standard;
+        ---Purpose: Returns error message
+        ---C++: inline
+    
+    SetMessageString (me: mutable; aMessage: CString);
+    	---Purpose: Sets error message
+
+    Reraise (me: mutable);
+    Reraise (me: mutable; aMessage: CString);
+    Reraise (me: mutable; aReason: SStream);
+    	---Purpose: Reraises a caught exception and changes its error message.
+        ---Level: Advanced
+    
+    Raise (myclass; aMessage: CString  = "") ;
+    	---Purpose: Raises an exception of type "Failure" and associates
+    	--          an error message to it. The message can be printed 
+    	--          in an exception handler.
+        ---Level: Advanced
+	
+        
+    Raise (myclass; aReason: SStream) ;
+    	---Purpose: Raises an exception of type "Failure" and associates
+    	--          an error message to it. The message can be constructed
+    	--          at run-time.
+        ---Level: Advanced
+    
+    NewInstance(myclass; aMessage: CString) returns mutable Failure;
+   	---Purpose: Used to construct an instance of the exception object
+	--          as a handle. Shall be used to protect against possible
+	--          construction of exception object in C stack -- that is 
+	--          dangerous since some of methods require that object
+	--          was allocated dynamically.
+	
+    Jump (me);
+   	---Purpose: Used to throw CASCADE exception from C signal handler.
+        --          On platforms that do not allow throwing C++ exceptions 
+        --          from this handler (e.g. Linux), uses longjump to get to 
+        --          the current active signal handler, and only then is 
+        --          converted to C++ exception.
+        ---Level: Advanced, not for regular use
+    
+    Caught (myclass) returns mutable Failure raises NoSuchObject;
+    	---Purpose: Returns the last caught exception. 
+	--          Needed when exceptions are emulated by C longjumps,
+        --          in other cases is also provided for compatibility.
+
+    Throw (me) is virtual protected;
+	---Purpose: Used only if standard C++ exceptions are used.
+	--          Throws exception of the same type as this by C++ throw,
+	--          and stores current object as last thrown exception,
+	--          to be accessible by method Caught()
+
+fields
+    
+    myMessage: CString;
+    
+end Failure from Standard;
+

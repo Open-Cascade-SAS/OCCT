@@ -1,0 +1,504 @@
+--
+-- File:	Graphic2d_TransientManager.cdl
+-- Created:	Thursday 10,May 1996
+-- Author:	GG
+--
+---Copyright:	MatraDatavision 1995
+--
+
+--              SAV 14/11/01 Added DrawPickedElements() - highlights picked elements.
+
+class TransientManager from Graphic2d inherits Drawer from Graphic2d 
+
+	---Version:
+
+	---Purpose: This class allows to manage transient graphics
+	--	    above one View.
+	--	    A simple way to drawn something very quicly above
+	--	    a complex scene (Hilighting,Sketching,...)
+	--	    All transient graphics will be erased at the
+	--	    next View::Update(),Redraw().
+	--
+	--	    Remember that nothing is stored by this object and
+	--	    graphic library,the application must managed itself
+	--	    exposure,resizing,...
+	--
+	--	    The double_buffering must be is activated on the view,
+	--	    the back buffer is preserved and used for restoring 
+	--	    the front buffer at begin drawing time.
+	--  Keywords: TransientManager, Immediate Mode, Line, Polygon
+	--	     Text, Marker
+	---Warning:
+	---References:
+
+uses
+	View			from Graphic2d,
+	ViewPtr			from Graphic2d,
+	GraphicObject		from Graphic2d,
+	Primitive		from Graphic2d,
+        ViewMapping             from Graphic2d,
+        Array1OfVertex          from Graphic2d,
+	TypeOfComposition 	from Graphic2d,
+	TypeOfAlignment 	from Graphic2d,
+	Length			from Quantity,
+	Factor			from Quantity,
+	Ratio			from Quantity,
+	PlaneAngle		from Quantity,
+        ExtendedString 		from TCollection,
+        WindowDriver            from Aspect,
+	TypeOfPrimitive		from Aspect,
+	TypeOfText		from Aspect,
+        GTrsf2d 		from gp
+--	Curve                   from Geom2d	-- disparait a partir de K4
+
+raises
+	TransientDefinitionError	from Graphic2d
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+        Create (aView: View from Graphic2d)
+		returns mutable TransientManager from Graphic2d;
+
+        Create (aView: ViewPtr from Graphic2d)
+		returns mutable TransientManager from Graphic2d;
+	---Level: Public
+	---Purpose: Creates a TransientManager associated to the view <aView>
+	---Category: Constructors
+
+	------------------------
+	-- Category: Destructors
+	------------------------
+
+	Destroy (me : mutable);
+	---Level: Public
+	---Purpose: Suppress the TransientManager <me>.
+	---Category: Destructors
+	---C++: alias ~
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	BeginDraw (me : mutable;
+                   aDriver: WindowDriver from Aspect;
+		   ClearBefore: Boolean = Standard_True)
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Begins any graphics in the view <aView> and Driver <aDriver>
+	--	    with the current view attributes in a transient area.
+	--          Restore the front buffer from the back before
+	--	    if <ClearBefore> is TRUE.
+	--	
+	--  Warning: Returns TRUE if transient backing-store is enabled in
+	--	   the associated view.
+	--          Returns FALSE ,if nothing works because something
+	--	   is wrong for the transient principle :
+	--	   Immediat mode is not implemented depending of the
+	--	   graphic library used.
+	--  	   MBX,PIXMAP double buffering don't works depending of
+	--  	   the graphic board and the visual of the window supporting 
+	--  	   the view.
+	---Category: Methods to modify the class definition
+
+	BeginDraw (me : mutable;
+                   aDriver: WindowDriver from Aspect;
+                   aViewMapping: ViewMapping from Graphic2d;
+                   aXPosition, aYPosition: Real from Standard;
+                   aScale: Real from Standard;
+		   ClearBefore: Boolean = Standard_True)
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Begins any graphics in the view <aView> and Driver <aDriver>
+	--	    with the view attributes in a transient area defined
+	--	    by :
+        --          <aViewMapping> defines the "map from".
+        --          <aXPosition>, <aYPosition>, <aScale> define the "map to".
+	--          Restore the front buffer from the back before
+	--	    if <ClearBefore> is TRUE.
+	---Category: Methods to modify the class definition
+
+	EndDraw (me : mutable;
+		 Synchronize: Boolean = Standard_True) is static;
+	---Level: Public
+	---Purpose: Flush all graphics to the front buffer.
+	--	Synchronize graphics to the screen if <Synchronize> is
+	--	TRUE (make becarefull to the performances!).
+	---Category: Methods to modify the class definition
+
+	Restore (me : mutable;
+                   aDriver: WindowDriver from Aspect)
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Restore the full transient view,
+	--          returns TRUE if the transient area has been restored
+	--	    correctly or FALSE if the view has been redrawn.
+	---Category: Methods to modify the class definition
+
+	RestoreArea (me : mutable;
+                   aDriver: WindowDriver from Aspect)
+	returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Restore the last updated transient area,
+	--          returns TRUE if the transient area has been restored
+	--	    correctly or FALSE if the view has been redrawn.
+	---Category: Methods to modify the class definition
+
+	---------------------------------------
+	-- Category: Graphic definition methods
+	---------------------------------------
+
+	Draw (me : mutable;
+                aPrimitive   : Primitive from Graphic2d)
+        ---Level: Public
+        ---Purpose: Drawn the primitive <aPrimitive>,
+	--	    with the internal primitive attributes.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+	---Category: Draw methods
+
+	Draw (me : mutable;
+                aGraphicObject   : GraphicObject from Graphic2d)
+        ---Level: Public
+        ---Purpose: Drawn the graphic object <aGraphicObject>.
+	--	    with the internal graphic object primitives attributes.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+	---Category: Draw methods
+
+	DrawElement (me : mutable;
+		aPrimitive   : Primitive from Graphic2d;
+		anIndex	:	Integer from Standard)
+        ---Level: Public
+        ---Purpose: Drawn the element <anIndex> from the primitive <aPrimitive>,
+	--	    with the internal primitive attributes.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+	---Category: Draw methods
+    
+    	--- SAV
+	DrawPickedElements(me : mutable; aPrimitive   : Primitive from Graphic2d )
+        ---Level: Public
+        ---Purpose: Draws all picked elements.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+	---Category: Draw methods
+
+	DrawVertex (me : mutable;
+		aPrimitive   : Primitive from Graphic2d;
+		anIndex	:	Integer from Standard)
+        ---Level: Public
+        ---Purpose: Drawn the vertex <anIndex> from the primitive <aPrimitive>,
+	--	    with the internal primitive attributes.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+	---Category: Draw methods
+
+        BeginPrimitive (me : mutable;
+                        aType: TypeOfPrimitive from Aspect;
+                        aSize: Integer from Standard = 0)
+        ---Level: Public
+        ---Purpose: Sets the current type of primitive to be opened.
+        --          After this call, <me> is ready to receive
+        --          a definition of an incremental primitive
+        --          such as a polyline or polygon with DrawPoint(),
+        --          or the definition of a set of primitives such as
+        --          a segment with DrawSegment() or DrawMarker().
+        --  Warning: The max number of element of the primitive can be defined
+        --          with <aSize> for optimization.
+	--  Example: This sequence drawn a polyline square of size 1.
+	--	    myTransientManager->BeginDraw(myDriver)
+	--	    myTransientManager->BeginPrimitive(Aspect_TOP_POLYLINE,5)
+	--	    myTransientManager->DrawPoint(-0.5,-0.5)
+	--	    myTransientManager->DrawPoint(-0.5, 0.5)
+	--	    myTransientManager->DrawPoint( 0.5, 0.5)
+	--	    myTransientManager->DrawPoint( 0.5,-0.5)
+	--	    myTransientManager->DrawPoint(-0.5,-0.5)
+	--	    myTransientManager->ClosePrimitive()
+	--	    myTransientManager->EndDraw()
+        raises TransientDefinitionError from Graphic2d is static;
+        ---Trigger: if the primitive type is not UNKNOWN,
+        --          or if the associated driver is not defined.
+        ---Category: Draw methods
+
+        ClosePrimitive (me : mutable)
+        ---Level: Public
+        ---Purpose: After this call, <me> stops the reception of
+        --          a definition of a Begin... primitive.
+        raises TransientDefinitionError from Graphic2d is static;
+        ---Trigger: if a Begin... primitive is not opened,
+        --          or if the associated driver is not defined.
+        ---Category: Draw methods
+
+        DrawSegment (me : mutable; X1, Y1, X2, Y2: Length from Quantity)
+        ---Level: Public
+        ---Purpose: Draw a segment.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong
+        ---Category: Draw methods
+
+        DrawInfiniteLine (me : mutable; X, Y, Dx, Dy: Length from Quantity)
+        ---Level: Public
+        ---Purpose: Draw an infinite line defined by a reference point <X,Y>
+        --          and a slope <Dx,Dy>
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawArc (me : mutable; Xc, Yc, 
+		aRadius: Length from Quantity;
+                anAngle1: PlaneAngle from Quantity = 0.0; 
+		anAngle2: PlaneAngle from Quantity = 0.0)
+        ---Level: Public
+        ---Purpose: Draw a circle arc from the start angle <anAngle1>
+	--	   to the ending angle <anAngle2>.
+	--	    NOTE that if <anAngle2> is equal to <anAngle1>
+	--	    a full circle is drawn.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawPolyArc (me : mutable; Xc, Yc, aRadius: Length from Quantity;
+                anAngle1: PlaneAngle from Quantity = 0.0; 
+		anAngle2: PlaneAngle from Quantity = 0.0)
+        ---Level: Public
+        ---Purpose: Draw a filled circle arc from the start angle <anAngle1>
+	--	   to the ending angle <anAngle2>.
+	--	    NOTE that if <anAngle2> is equal to <anAngle1>
+	--	    a full circle is drawn.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawPoint (me : mutable; X, Y    : Length from Quantity)
+        ---Level: Public
+        ---Purpose: Draw a marker point.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawMarker (me : mutable;
+                anIndex: Integer from Standard;
+                X, Y, aWidth, anHeight: Length from Quantity;
+		anAngle: PlaneAngle from Quantity = 0.0)
+        ---Level: Public
+        ---Purpose: Draw an indexed marker.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawText (me : mutable; aText: ExtendedString from TCollection;
+                X, Y: Length from Quantity;
+		anAngle: PlaneAngle from Quantity = 0.0;
+		aDeltaX : Real from Standard = 0.0;
+		aDeltaY: Real from Standard = 0.0;
+                aType: TypeOfText from Aspect = Aspect_TOT_SOLID;
+		anAlignment: TypeOfAlignment from Graphic2d = Graphic2d_TOA_LEFT)
+        ---Level: Public
+        ---Purpose: Draw a text at the position <X,Y> added to
+        --         the untransformed drawer offset <aDeltaX,aDeltaY> ,
+        --         with an orientation <anAngle> and a type <aType>.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawPolyText (me : mutable; aText: ExtendedString from TCollection;
+                X, Y: Length from Quantity;
+		anAngle: PlaneAngle from Quantity = 0.0;
+		aMargin: Ratio from Quantity = 0.1;
+		aDeltaX : Real from Standard = 0.0;
+		aDeltaY: Real from Standard = 0.0;
+                aType: TypeOfText from Aspect = Aspect_TOT_SOLID;
+		anAlignment: TypeOfAlignment from Graphic2d = Graphic2d_TOA_LEFT)
+        ---Level: Public
+        ---Purpose: Draw an hiding text at the position <X,Y> added to
+        --         the untransformed offset <aDeltaX,aDeltaY> ,
+        --         with an orientation <anAngle> and a type <aType>.
+        --         <aMargin> defined the relative margin factor between
+        --         the text string and the frame height.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+ 
+        DrawFramedText (me : mutable; aText: ExtendedString from TCollection;
+                X, Y: Length from Quantity;
+		anAngle: PlaneAngle from Quantity = 0.0;
+		aMargin: Ratio from Quantity = 0.1;
+		aDeltaX : Real from Standard = 0.0;
+		aDeltaY: Real from Standard = 0.0;
+                aType: TypeOfText from Aspect = Aspect_TOT_SOLID;
+		anAlignment: TypeOfAlignment from Graphic2d = Graphic2d_TOA_LEFT)
+        ---Level: Public
+        ---Purpose: Draw a framed text at the position <X,Y> added to
+        --         the untransformed offset <aDeltaX,aDeltaY> ,
+        --         with an orientation <anAngle> and a type <aType>.
+        --         <aMargin> defined the relative margin factor between
+        --         the text string and the frame height.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+
+--        DrawCurve (me : mutable; aCurve: Curve from Geom2d)	-- disparait a partir de K4
+        ---Level: Public 
+        ---Purpose: Draw a curve.
+    	--        raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened,
+	--	    or if the opened primitive type is wrong.
+        ---Category: Draw methods
+
+	---------------------------------------
+	-- Category: Graphic attributes methods
+	---------------------------------------
+
+        SetTextAttrib (me: mutable;
+                ColorIndex: Integer from Standard;
+                FontIndex: Integer from Standard;
+                aSlant: PlaneAngle from Quantity = 0.0;
+                aHScale: Factor from Quantity = 1.0;
+                aWScale: Factor from Quantity = 1.0;
+                isUnderlined: Boolean from Standard = Standard_False;
+                isZoomable: Boolean from Standard = Standard_True)
+        ---Level: Public
+        ---Purpose: Methods to define the Current Text Attributes
+	--	    NOTE that ,if isZoomable is TRUE the text size follow
+	--	    the scale factor of the view and the current transformation
+	--	    scale factor.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+        ---Category: graphic attributes methods
+
+        SetHidingTextAttrib (me: mutable;
+                ColorIndex: Integer from Standard;
+                HidingColorIndex: Integer from Standard;
+                FrameColorIndex: Integer from Standard;
+                FrameWidthIndex: Integer from Standard;
+                FontIndex: Integer from Standard;
+                aSlant: PlaneAngle from Quantity = 0.0;
+                aHScale: Factor from Quantity = 1.0;
+                aWScale: Factor from Quantity = 1.0;
+                isUnderlined: Boolean from Standard = Standard_False;
+                isZoomable: Boolean from Standard = Standard_True)
+        ---Level: Public
+        ---Purpose: Methods to define the Current Hiding Text Attributes
+	--	    NOTE that ,if isZoomable is TRUE the text size follow
+	--	    the scale factor of the view and the current transformation
+	--	    scale factor.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+        ---Category: graphic attributes methods
+ 
+        SetFramedTextAttrib (me: mutable;
+                ColorIndex: Integer from Standard;
+                FrameColorIndex: Integer from Standard;
+                FrameWidthIndex: Integer from Standard;
+                FontIndex: Integer from Standard;
+                aSlant: PlaneAngle from Quantity = 0.0;
+                aHScale: Factor from Quantity = 1.0;
+                aWScale: Factor from Quantity = 1.0;
+                isUnderlined: Boolean from Standard = Standard_False;
+                isZoomable: Boolean from Standard = Standard_True)
+        ---Level: Public
+        ---Purpose: Methods to define the Current Framed Text Attributes
+	--	    NOTE that ,if isZoomable is TRUE the text size follow
+	--	    the scale factor of the view and the current transformation
+	--	    scale factor.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+        ---Category: graphic attributes methods
+
+	----------------------------------------
+	-- Category: Geometric attributes methods
+	----------------------------------------
+
+        SetTransform (me : mutable; 
+			aTrsf : in GTrsf2d from gp;
+                        aType : TypeOfComposition from Graphic2d =
+                                                Graphic2d_TOC_REPLACE)
+        ---Level: Public
+        ---Purpose: Sets the current transformation <aTrsf> applied to
+        --          the primitives.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+        ---Category: geometric attributes methods 
+
+        SetMapping(me: mutable; aStatus: Boolean from Standard = Standard_True)
+        ---Level: Public 
+        ---Purpose: Enable/Disable the mapping conversion between
+        --      the view and the driver system coordinates.
+	raises TransientDefinitionError from Graphic2d is static;
+	---Trigger: If a Drawing is not opened.
+        ---Category: geometric attributes methods 
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	MinMax (me;
+		XMin, YMin	: out Length from Quantity;
+		XMax, YMax	: out Length from Quantity) 
+		returns Boolean from Standard is static;
+	---Level: Public
+	---Purpose: Returns the world coordinates of the boundary box
+	--	    of the Transient graphics actually drawn
+	--	    since BeginDraw() has been call.
+	--  Warning: If nothing has been drawn then :
+	--	    XMin = YMin = RealFirst ().
+	--	    XMax = YMax = RealLast ().
+	--	    and returns a min-max status to FALSE;
+	---Category: Inquire methods
+
+        Transform (me ) returns GTrsf2d from gp is static; 
+        ---Level: Public
+        ---Purpose: Returns the current transformation.
+	---Category: Inquire methods
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	Redraw(me : mutable;
+                   aDriver: WindowDriver from Aspect) is static private;
+	---Level: Private
+	---Purpose: Redraw the view.
+	---Category: Private method.
+
+        EnableMinMax(me: mutable; 
+		aStatus: Boolean from Standard = Standard_True ;
+                Reset: Boolean from Standard = Standard_True)
+                is static private;
+	---Level: Private
+        ---Purpose: Enable/Disable the min-max computation.
+        --          and reset the boundary-box if <Reset> is TRUE.
+
+        MinMax (me; aMinX, aMaxX, aMinY, aMaxY: out Integer from Standard)
+                returns Boolean from Standard
+                is static private;
+	---Level: Private
+        ---Purpose: Returns TRUE if the returned pixel space min max
+        --          boundary box has been computed correctly arround
+        --          all the primitives drawn in the driver.
+        --  Warning: the boundary box size cannot be greater that
+        --          the associated window space size.
+        --          Returns FALSE if the min-max boundary box is NULL.
+
+fields
+	myPView :			ViewPtr from Graphic2d;
+	myTrsf,myCompositeTrsf :	GTrsf2d from gp;
+	myTypeOfComposition :		TypeOfComposition from Graphic2d;
+	myDrawingIsStarted :		Boolean from Standard;
+	myTrsfIsDefined :		Boolean from Standard;
+	myMappingIsEnable :		Boolean from Standard;
+	myTypeOfPrimitive :		TypeOfPrimitive from Aspect;
+
+end TransientManager from Graphic2d;

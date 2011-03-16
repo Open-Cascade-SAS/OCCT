@@ -1,0 +1,243 @@
+-- File:	MgtBRep_TranslateTool1.cdl
+--      	--------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1998
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb  3 1998	Creation
+
+
+class TranslateTool1 from MgtBRep inherits TranslateTool1 from MgtTopoDS
+
+	---Purpose: The TranslateTool1 class is provided to support the
+	--          translation of BRep topological data structures.
+uses
+
+    TransientPersistentMap from PTColStd,
+    PersistentTransientMap from PTColStd,
+    CurveRepresentation    from PBRep,
+    CurveRepresentation    from BRep,
+    Curve                  from Geom,
+    Curve                  from PGeom,
+    Curve                  from Geom2d,
+    Curve                  from PGeom2d,
+    Surface                from Geom,
+    Surface                from PGeom,
+    Shape                  from TopoDS,
+    Shape1                 from PTopoDS,
+    TriangleMode           from MgtBRep
+
+raises
+    TypeMismatch from Standard
+
+is
+
+    Create(aTriMode : TriangleMode from MgtBRep)
+    returns TranslateTool1 from MgtBRep;
+    	---Purpose: Creates a new TranslateTool1
+
+    --
+    --     Auxiliairy Protected Methods for Shape Geometrical Rep
+    --     
+
+    Translate(me;
+    	      TC : Curve                         from Geom;
+	      M  : in out TransientPersistentMap from PTColStd)
+    returns Curve from PGeom
+    is protected;
+    ---Purpose: Translates a Transient Curve onto a Persistent Curve
+
+    Translate(me;
+    	      PC : Curve                         from PGeom;
+	      M  : in out PersistentTransientMap from PTColStd)
+    returns Curve from Geom
+    is protected;
+    ---Purpose: Translates a Persistent Curve onto a Transient Curve
+
+
+    Translate(me;
+    	      TC : Curve                         from Geom2d;
+	      M  : in out TransientPersistentMap from PTColStd)
+    returns Curve from PGeom2d
+    is protected;
+    ---Purpose: Translates a Transient Curve2d onto a Persistent Curve
+
+    Translate(me;
+    	      PC : Curve                         from PGeom2d;
+	      M  : in out PersistentTransientMap from PTColStd)
+    returns Curve from Geom2d
+    is protected;
+    ---Purpose: Translates a Persistent Curve2d onto a Transient Curve
+    
+
+    Translate(me;
+    	      TS : Surface                       from Geom;
+	      M  : in out TransientPersistentMap from PTColStd)
+    returns Surface from PGeom
+    is protected;
+    ---Purpose: Translates a Transient Surface onto a Persistent Curve
+
+    Translate(me;
+    	      PS : Surface                       from PGeom;
+	      M  : in out PersistentTransientMap from PTColStd)
+    returns Surface from Geom
+    is protected;
+    ---Purpose: Translates a Persistent Surface onto a Transient Curve
+        
+    --         
+    --     The Add method is used to insert a shape in an other shape.
+    --     
+    
+    Add(me;
+    	S1 : in out Shape from TopoDS;
+    	S2 : Shape from TopoDS)
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    --
+    --       The Make methods should create a new empty  object of the
+    --       given type with  the given Model.   They should raise the
+    --       TypeMismatch   exception  if  the Model   is  not of  the
+    --       expected type.
+    --       
+
+
+    MakeVertex(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeVertex(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeEdge(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeEdge(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeWire(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeWire(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeFace(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeFace(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeShell(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeShell(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeSolid(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeSolid(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompSolid(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompSolid(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompound(me; S : in out Shape from TopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    MakeCompound(me; S : in out Shape1 from PTopoDS) 
+	---Level: Internal 
+    raises
+    	TypeMismatch from Standard;
+    
+    --
+    --     The Update methods should transfer the data from  the first
+    --     shape to the second.
+    --     
+    --     When an update method  is redefined it  should transfer the
+    --     data then call the Update  redefined method to transfer the
+    --     inherited data.
+    --     
+    
+    UpdateVertex(me;
+    	         S1 : Shape from TopoDS;
+		 S2 : in out Shape1 from PTopoDS;
+		 M  : in out TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+    
+    UpdateVertex(me;
+    	         S1 : Shape1 from PTopoDS;
+		 S2 : in out Shape from TopoDS;
+		 M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+    
+    UpdateEdge(me;
+    	       S1 : Shape  from TopoDS;
+	       S2 : in out Shape1 from PTopoDS;
+	       M  : in out TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+    
+    UpdateEdge(me;
+    	       S1 : Shape1 from PTopoDS;
+	       S2 : in out Shape from TopoDS;
+	       M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+    
+    UpdateFace(me;
+    	       S1 : Shape  from TopoDS;
+	       S2 : in out Shape1 from PTopoDS;
+	       M  : in out TransientPersistentMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+    
+    UpdateFace(me;
+    	       S1 : Shape1 from PTopoDS;
+	       S2 : in out Shape from TopoDS;
+	       M  : in out PersistentTransientMap from PTColStd)
+	---Level: Internal 
+    is redefined;
+
+fields
+
+    myTriangleMode       : TriangleMode   from MgtBRep;
+    
+end TranslateTool1;

@@ -1,0 +1,31 @@
+-- File:	IFSelect_BasicDumper.cdl
+-- Created:	Thu Nov  4 12:06:15 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class BasicDumper  from IFSelect  inherits SessionDumper
+
+    ---Purpose : BasicDumper takes into account, for SessionFile, all the
+    --           classes defined in the package IFSelect : Selections,
+    --           Dispatches (there is no Modifier)
+
+uses Transient, AsciiString from TCollection, SessionFile
+
+is
+
+    Create returns mutable BasicDumper;
+    ---Purpose : Creates a BasicDumper and puts it into the Library of Dumper
+
+    WriteOwn (me; file : in out SessionFile; item : Transient) returns Boolean;
+    ---Purpose : Write the Own Parameters of Types defined in package IFSelect
+    --           Returns True if <item> has been processed, False else
+
+    ReadOwn  (me; file : in out SessionFile;
+    	    type : AsciiString from TCollection; item : out mutable Transient)
+    	returns Boolean;
+    ---Purpose : Recognizes and Read Own Parameters for Types of package
+    --           IFSelect. Returns True if done and <item> created, False else
+
+end BasicDumper;

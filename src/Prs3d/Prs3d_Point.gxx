@@ -1,0 +1,40 @@
+#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_PointAspect.hxx>
+
+static void DrawPoint (const anyPoint& aPoint,
+                       const Handle(Graphic3d_Group) aGroup) {
+
+  Quantity_Length x,y,z;
+  PointTool::Coord(aPoint,x,y,z);
+  Graphic3d_Vertex Vertex(x,y,z);
+  aGroup->Marker(Vertex);
+}
+
+void Prs3d_Point::Add (const Handle (Prs3d_Presentation)& aPresentation,
+		     const anyPoint& aPoint,
+		     const Handle (Prs3d_Drawer)& aDrawer){
+
+  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+  TheGroup->SetPrimitivesAspect(aDrawer->PointAspect()->Aspect());
+  DrawPoint(aPoint,TheGroup);
+}
+
+void Prs3d_Point::Add (const Handle (Prs3d_Presentation)& aPresentation,
+			const anyPoint& aPoint){
+
+  DrawPoint(aPoint,Prs3d_Root::CurrentGroup(aPresentation));
+}
+
+
+Standard_Boolean Prs3d_Point::Match (const anyPoint& aPoint,
+				     const Quantity_Length X,
+				     const Quantity_Length Y,
+				     const Quantity_Length Z,
+				     const Quantity_Length aDistance) {
+
+  Quantity_Length x,y,z;
+  PointTool::Coord(aPoint,x,y,z);
+  return Sqrt( (X-x)*(X-x) + (Y-y)*(Y-y) + (Z-z)*(Z-z) ) <= aDistance;
+}

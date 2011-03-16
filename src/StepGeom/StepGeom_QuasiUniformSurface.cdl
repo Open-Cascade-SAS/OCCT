@@ -1,0 +1,24 @@
+-- File:        QuasiUniformSurface.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class QuasiUniformSurface from StepGeom 
+
+inherits BSplineSurface from StepGeom 
+
+uses
+
+	HAsciiString from TCollection, 
+	Integer from Standard, 
+	HArray2OfCartesianPoint from StepGeom, 
+	BSplineSurfaceForm from StepGeom, 
+	Logical from StepData
+is
+
+	Create returns mutable QuasiUniformSurface;
+	---Purpose: Returns a QuasiUniformSurface
+
+
+end QuasiUniformSurface;

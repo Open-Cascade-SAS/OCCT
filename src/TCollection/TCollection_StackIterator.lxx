@@ -1,0 +1,15 @@
+// File:	TCollection_StackIterator.lxx
+// Created:	26, Oct 1994
+// Author:	Mireille MERCIEN
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_StackIterator::More() const
+{
+  return current != 0L;
+}
+

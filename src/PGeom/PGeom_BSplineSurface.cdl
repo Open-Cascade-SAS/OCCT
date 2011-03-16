@@ -1,0 +1,189 @@
+-- File:	PGeom_BSplineSurface.cdl
+-- Created:	Tue Mar  2 12:07:23 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class BSplineSurface from PGeom inherits BoundedSurface from PGeom
+
+        ---Purpose : Definition  of  a B-spline   Surface   (it can be
+        --         rational,  periodic and   non uniform) The  maximum
+        --         degree  of  the  normalized B-spline   functions is
+        --         limited to 9 in this package.
+        --  
+	---See Also : BSplineSurface from Geom.
+
+uses  HArray1OfInteger from PColStd,
+      HArray1OfReal    from PColStd,
+      HArray2OfReal    from PColStd,
+      HArray2OfPnt     from PColgp
+
+
+is
+  
+  Create returns mutable BSplineSurface from PGeom;
+	---Purpose: Creates a BSplineSurface with default values.
+    	---Level: Internal 
+
+
+  Create (
+    	    aURational : Boolean from Standard;
+    	    aVRational : Boolean from Standard;
+    	    aUPeriodic : Boolean from Standard;
+    	    aVPeriodic : Boolean from Standard;
+    	    aUSpineDegree      : Integer from Standard;
+    	    aVSpineDegree      : Integer from Standard;
+    	    aPoles     : HArray2OfPnt from PColgp;
+    	    aWeights   : HArray2OfReal from PColStd;
+    	    aUKnots    : HArray1OfReal from PColStd;
+    	    aVKnots    : HArray1OfReal from PColStd;
+    	    aUMultiplicities    : HArray1OfInteger from PColStd;
+    	    aVMultiplicities    : HArray1OfInteger from PColStd)
+    returns mutable BSplineSurface from PGeom;
+	---Purpose: Creates a BSplineSurface with these values.
+
+
+
+  URational (me: mutable; aURational: Boolean from Standard);
+        ---Purpose : Set the value of the field uRational with <aURational>.
+    	---Level: Internal 
+
+
+  URational (me) returns Boolean from Standard;
+        ---Purpose : Returns the value of the field uRational.
+    	---Level: Internal 
+
+
+  VRational (me: mutable; aVRational: Boolean from Standard);
+        ---Purpose : Set the value of the field vRational with <aVRational>.
+    	---Level: Internal 
+
+
+  VRational (me) returns Boolean from Standard;
+        ---Purpose : Returns the value of the field vRational.
+    	---Level: Internal 
+
+
+  UPeriodic (me: mutable; aUPeriodic: Boolean from Standard);
+	---Purpose: Set the value of the field uPeriodic with <aUPeriodic>.
+    	---Level: Internal 
+
+
+  UPeriodic (me) returns Boolean from Standard;
+    	---Level: Internal 
+	---Purpose: Returns the value of the field uPeriodic.
+
+
+  VPeriodic (me: mutable; aVPeriodic: Boolean from Standard);
+	---Purpose: Set the value of the field vPeriodic with <aVPeriodic>.
+    	---Level: Internal 
+
+
+  VPeriodic (me) returns Boolean from Standard;
+	---Purpose: Returns the value of the field vPeriodic.
+    	---Level: Internal 
+
+
+  USpineDegree (me: mutable; aUSpineDegree: Integer from Standard);
+        ---Purpose : Set  the value  of the  field  uSpineDegree  with
+        --         <aUSpineDegree>.
+    	---Level: Internal 
+
+
+  USpineDegree (me) returns Integer from Standard;
+        ---Purpose : Returns the value of the field uSpineDegree.
+    	---Level: Internal 
+
+
+  VSpineDegree (me: mutable; aVSpineDegree: Integer from Standard);
+        ---Purpose : Set  the value  of the  field  vSpineDegree  with
+        --         <aVSpineDegree>.
+    	---Level: Internal 
+
+
+  VSpineDegree (me) returns Integer from Standard;
+        ---Purpose : Returns the value of the field vSpineDegree.
+    	---Level: Internal 
+
+
+  Poles (me: mutable; aPoles : HArray2OfPnt from PColgp);
+	---Purpose: Set the value of the field poles with <aPoles>.
+    	---Level: Internal 
+
+
+  Poles (me) returns HArray2OfPnt from PColgp;
+	---Purpose: Returns the value of the field poles.
+    	---Level: Internal 
+
+
+  Weights (me: mutable; aWeights : HArray2OfReal from PColStd);
+	---Purpose: Set the value of the field weights with <aWeights>.
+    	---Level: Internal 
+
+
+  Weights (me) returns HArray2OfReal from PColStd;
+	---Purpose: Returns the value of the field weights.
+    	---Level: Internal 
+
+
+  UKnots (me: mutable; aUKnots : HArray1OfReal from PColStd);
+	---Purpose: Set the value of the field uKnots with <aUKnots>.
+    	---Level: Internal 
+
+
+  UKnots (me) returns HArray1OfReal from PColStd;
+	---Purpose: Returns the value of the field uKnots.
+    	---Level: Internal 
+
+
+  VKnots (me: mutable; aVKnots : HArray1OfReal from PColStd);
+	---Purpose: Set the value of the field vKnots with <aVKnots>.
+    	---Level: Internal 
+
+
+  VKnots (me) returns HArray1OfReal from PColStd;
+	---Purpose: Returns the value of the field vKnots.
+    	---Level: Internal 
+
+
+  UMultiplicities (me: mutable;
+    	    	    aUMultiplicities : HArray1OfInteger from PColStd);
+	---Purpose: Set the  value of the  field  uMultiplicities with
+	--          <aUMultiplicities>.
+    	---Level: Internal 
+
+
+  UMultiplicities (me) returns HArray1OfInteger from PColStd;
+	---Purpose: Returns the value of the field uMultiplicities.
+    	---Level: Internal 
+
+
+  VMultiplicities (me: mutable;
+    	    	    aVMultiplicities : HArray1OfInteger from PColStd);
+	---Purpose: Set the value  of  the field vMultiplicities  with
+	--          <aVMultiplicities>.
+    	---Level: Internal 
+
+
+  VMultiplicities (me) returns HArray1OfInteger from PColStd;
+	---Purpose: Returns the value of the field vMultiplicities.
+    	---Level: Internal 
+
+
+fields
+	     
+   uRational       : Boolean from Standard;
+   vRational       : Boolean from Standard;
+   uPeriodic       : Boolean from Standard;
+   vPeriodic       : Boolean from Standard;
+   uSpineDegree    : Integer from Standard;
+   vSpineDegree    : Integer from Standard;
+   poles           : HArray2OfPnt from PColgp;
+   weights         : HArray2OfReal from PColStd;
+   uKnots          : HArray1OfReal from PColStd;
+   vKnots          : HArray1OfReal from PColStd;
+   uMultiplicities : HArray1OfInteger from PColStd;
+   vMultiplicities : HArray1OfInteger from PColStd;
+   
+end;

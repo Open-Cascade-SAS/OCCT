@@ -1,0 +1,30 @@
+-- File:        SurfaceCurve.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSurfaceCurve from RWStepGeom
+
+	---Purpose : Read & Write Module for SurfaceCurve
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SurfaceCurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSurfaceCurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SurfaceCurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : SurfaceCurve from StepGeom);
+
+	Share(me; ent : SurfaceCurve from StepGeom; iter : in out EntityIterator);
+
+end RWSurfaceCurve;

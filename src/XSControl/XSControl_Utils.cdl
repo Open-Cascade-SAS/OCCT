@@ -1,0 +1,207 @@
+-- File:	XSControl_Utils.cdl
+-- Created:	Mon Dec  4 14:15:56 1995
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Utils  from XSControl
+
+    ---Purpose : This class provides various useful utility routines, to
+    --           facilitate handling of most common data structures :
+    --           transients (type, type name ...),
+    --           strings (ascii or extended, pointed or handled or ...),
+    --           shapes (reading, writing, testing ...),
+    --           sequences & arrays (of strings, of transients, of shapes ...),
+    --           ...
+    --           
+    --           Also it gives some helps on some data structures from XSTEP,
+    --           such as printing on standard trace file, recignizing most
+    --           currently used auxiliary types (Binder,Mapper ...)
+
+uses CString, ExtString, Transient,
+     AsciiString, HAsciiString,  ExtendedString, HExtendedString,
+     HSequenceOfInteger from TColStd,
+     HSequenceOfTransient, HSequenceOfHAsciiString, HSequenceOfHExtendedString,
+     Shape from TopoDS, HSequenceOfShape from TopTools, ShapeEnum from TopAbs,
+     Binder from Transfer
+
+raises TypeMismatch
+
+is
+
+    Create returns Utils;
+    ---Purpose : the only use of this, is to allow a frontal to get one
+    --           distinct "Utils" set per separate engine
+
+    	--    Trace File
+    	-- the class TraceFile gives enough functions to work from ccl
+    	-- except to print a line to the default trace file (ccl can't call it)
+
+    TraceLine  (me; line : CString);
+    ---Purpose : Just prints a line into the current Trace File. This allows to
+    --           better characterise the various trace outputs, as desired.
+
+    TraceLines (me; lines : Transient);
+    ---Purpose : Just prints a line or a set of lines into the current Trace
+    --           File. <lines> can be a HAscii/ExtendedString (produces a print
+    --           without ending line) or a HSequence or HArray1 Of ..
+    --            (one new line per item)
+
+    	-- General Functions on Sequences : below
+
+    	--    Simple Transient Objects (complements)    --
+
+    IsKind   (me; item : Transient; what : Type) returns Boolean;
+    -- simply IsKind from Transient
+
+    TypeName (me; item : Transient; nopk : Boolean = Standard_False)
+    	 returns CString;
+    ---Purpose : Returns the name of the dynamic type of an object, i.e. :
+    --           If it is a Type, its Name
+    --           If it is a object not a type, the Name of its DynamicType
+    --           If it is Null, an empty string
+    --           If <nopk> is False (D), gives complete name
+    --           If <nopk> is True, returns class name without package
+
+    	--    List of Transients (HSequence or HArray1)    --
+
+    TraValue  (me; list : Transient; num : Integer)
+    	returns mutable Transient;
+    --  allowed : HSequenceOfTransient    -> Transient,
+    --            HSequenceOfHAsciiString -> HAsciiString
+    --  out of range gives Null Handle
+    NewSeqTra (me) returns mutable HSequenceOfTransient;    -- empty new
+    AppendTra (me; seqval : mutable HSequenceOfTransient;
+    			traval : Transient);
+
+    	--    Dates
+
+    DateString (me; yy,mm,dd,hh,mn,ss : Integer) returns CString;
+    DateValues (me; text : CString; yy,mm,dd,hh,mn,ss : out Integer);
+
+    	--    --    Strings    --    --
+    	--    Ascii    --
+
+    ToCString (me; strval : HAsciiString) returns CString;
+    ToCString (me; strval :  AsciiString) returns CString;
+    ToHString (me; strcon : CString) returns mutable HAsciiString;
+    ToAString (me; strcon : CString) returns AsciiString;
+
+    	--    Extended    --
+
+    ToEString (me; strval : HExtendedString) returns ExtString;
+    ToEString (me; strval :  ExtendedString) returns ExtString;
+    ToHString (me; strcon : ExtString) returns mutable HExtendedString;
+    ToXString (me; strcon : ExtString) returns ExtendedString;
+
+    	--    Ascii <-> Extended    --
+
+    AsciiToExtended (me; str : CString)   returns ExtString;
+    IsAscii         (me; str : ExtString) returns Boolean;
+    ExtendedToAscii (me; str : ExtString) returns CString;
+
+    	--    List of Strings    --
+
+    CStrValue  (me; list : Transient; num : Integer) returns CString;
+    EStrValue  (me; list : Transient; num : Integer) returns ExtString;
+    --  list : HSequence or HArray1 of (H)AsciiString or (H)ExtendedString
+    --  conversions Ascii<->Extended are done if required
+    --  out of range gives empty string
+
+    NewSeqCStr (me) returns mutable HSequenceOfHAsciiString;      -- empty
+    AppendCStr (me; seqval : mutable HSequenceOfHAsciiString;
+    	    	    	 strval : CString);
+    NewSeqEStr (me) returns mutable HSequenceOfHExtendedString;   -- empty
+    AppendEStr (me; seqval : mutable HSequenceOfHExtendedString;
+    	    	    	 strval : ExtString);
+
+    	--    --    Shapes    --    --
+    	--    Direct Handling, Read-Write    --
+
+    WriteShape (me; shape : Shape from TopoDS; filename : CString)
+    	returns Boolean;
+    ---Purpose : Writes a Shape under the internal BRepTools form
+    --           (an internal help utility)
+    --           Returns True if writing has succeeded, False else
+
+    NewShape   (me) returns Shape from TopoDS;
+    ---Purpose : Returns a new empty, undefined Shape, which can then be filled
+    --           by ReadShape
+
+    ReadShape  (me; shape : in out Shape from TopoDS; filename : CString)
+    	returns Boolean;
+    ---Purpose : Reads a Shape from the internal BRepTools form and returns it
+    --           (an internal help utility)
+    --           Returns True if reading has succeeded, False else
+
+    IsNullShape (me; shape : Shape from TopoDS) returns Boolean;
+    ---Purpose : Returns True if a Shape is Null
+
+    CompoundFromSeq (me; seqval : HSequenceOfShape)
+    	returns Shape from TopoDS;
+    ---Purpose : Converts a list of Shapes to a Compound (a kind of Shape)
+
+    ShapeType  (me; shape : Shape from TopoDS; compound : Boolean)
+    	returns ShapeEnum;
+    ---Purpose : Returns the type of a Shape : true type if <compound> is False
+    --           If <compound> is True and <shape> is a Compound, iterates on
+    --           its items. If all are of the same type, returns this type.
+    --           Else, returns COMPOUND. If it is empty, returns SHAPE
+    --           For a Null Shape, returns SHAPE
+
+    SortedCompound (me; shape : Shape from TopoDS; type : ShapeEnum;
+    	    	    explore : Boolean; compound : Boolean)
+    	returns Shape from TopoDS;
+    ---Purpose : From a Shape, builds a Compound as follows :
+    --           explores it level by level
+    --           If <explore> is False, only COMPOUND items. Else, all items
+    --           Adds to the result, shapes which comply to <type>
+    --           + if <type> is WIRE, considers free edges (and makes wires)
+    --           + if <type> is SHELL, considers free faces (and makes shells)
+    --           If <compound> is True, gathers items in compounds which
+    --           correspond to starting COMPOUND,SOLID or SHELL containers, or
+    --           items directly contained in a Compound
+
+    	--    --    List of Shapes    --    --
+
+    ShapeValue  (me; seqv : HSequenceOfShape from TopTools; num : Integer)
+    	returns Shape from TopoDS;
+    --  out of range gives Null Handle
+    NewSeqShape (me) returns mutable HSequenceOfShape;    -- empty new
+    AppendShape (me; seqv  : mutable HSequenceOfShape;
+    	    	    	  shape : Shape from TopoDS);
+
+    	--    Shape <-> Transient    --
+
+    ShapeBinder (me; shape : Shape from TopoDS; hs : Boolean = Standard_True)
+    	returns mutable Transient;
+    ---Purpose : Creates a Transient Object from a Shape : it is either a Binder
+    --           (used by functions which require a Transient but can process
+    --           a Shape, such as viewing functions) or a HShape (according to hs)
+    --           Default is a HShape
+
+    BinderShape (me; tr : Transient) returns Shape from TopoDS;
+    ---Purpose : From a Transient, returns a Shape.
+    --           In fact, recognizes ShapeBinder ShapeMapper and HShape
+
+    	--    --    Lists : others functions    --    --
+
+    SeqLength (me; list : Transient) returns Integer;
+    --  list : HSequence of Transient,(H)Ascii/ExtendedString,Shape,Integer
+
+    SeqToArr  (me; seq : Transient; first : Integer = 1)
+    	returns mutable Transient   raises TypeMismatch;
+    --   <first> gives the lower index of produced array
+    --   empty sequence gives a null handle
+    ArrToSeq  (me; arr : Transient)
+    	returns mutable Transient   raises TypeMismatch;
+    -- allowed combinations :
+    --    HSequenceOfTransient       <-> HArray1OfTransient
+    --    HSequenceOfHAsciiString    <-> HArray1OfHAsciiString (from Interface)
+    --    Arrays are build from index <first>, by default 1
+
+    SeqIntValue (me; list : HSequenceOfInteger from TColStd; num : Integer)
+    	returns Integer;
+
+end Utils;

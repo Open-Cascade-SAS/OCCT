@@ -1,0 +1,53 @@
+-- File:	BOP_EmptyBuilder.cdl
+-- Created:	Fri Feb  1 12:52:38 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class EmptyBuilder from BOP inherits Builder from BOP
+
+	---Purpose: 
+    	---        Performs Boolean Operation (BO) for shapes   
+	---        in cases when one of arguments(or both) is(are) empty 
+	---
+uses
+    DSFiller  from BOPTools, 
+    PDSFiller from BOPTools, 
+    ListOfShape from TopTools 
+    
+--raises
+
+is 
+    Create   
+    	returns  EmptyBuilder from BOP; 
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    Do  (me:out) 
+    	is  redefined; 	 
+    	---Purpose:  
+    	--- see base classes, please
+    	---
+    DoWithFiller      (me:out; 
+    	     aDSF: DSFiller from BOPTools) 
+    	is  redefined; 
+    	---Purpose: 
+    	--- see base classes, please
+    	---
+    Destroy (me: in out) 
+    	is redefined; 
+    	---C++: alias "Standard_EXPORT virtual ~BOP_EmptyBuilder(){Destroy();}"  
+    	---Purpose: 
+    	--- Destructor
+    	---
+    BuildResult (me:out) 
+	is  redefined;	  
+    	---Purpose: 
+    	--- see base classes, please
+    	---
+    
+--fields
+  
+end EmptyBuilder;
+

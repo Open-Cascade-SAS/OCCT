@@ -1,0 +1,39 @@
+-- File:	GProp_CelGProps.cdl
+-- Created:	Wed Dec  2 16:22:06 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+class CelGProps  from GProp inherits GProps from GProp
+
+	--- Purpose  : 
+	--  Computes the  global properties of bounded curves 
+	--  in 3D space. 
+	--  It can be an elementary curve from package gp such as 
+	--  Lin, Circ, Elips, Parab .
+
+uses  Circ  from gp,
+      Lin   from gp,
+      Parab from gp,
+      Pnt   from gp
+       
+is
+
+    Create returns CelGProps;
+  
+    Create (C : Circ from gp; CLocation : Pnt)   returns CelGProps;
+
+    Create (C : Circ from gp; U1, U2 : Real; CLocation : Pnt)returns CelGProps;
+
+    Create (C : Lin from gp; U1, U2 : Real; CLocation : Pnt) returns CelGProps;
+
+    SetLocation(me : in out;CLocation : Pnt) ;
+
+    Perform(me : in out; C :Circ; U1,U2 : Real);
+    
+    Perform(me : in out; C : Lin ; U1,U2 : Real);
+
+end CelGProps;
+
+

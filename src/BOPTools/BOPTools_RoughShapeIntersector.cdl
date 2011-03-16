@@ -1,0 +1,83 @@
+-- File:	BOPTools_RoughShapeIntersector.cdl
+-- Created:	Fri Nov 24 15:07:01 2000
+-- Author:	Michael KLOKOV
+--		<mkk@nizhnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+class RoughShapeIntersector from BOPTools
+
+   	---Purpose: The class RoughShapeIntersector describes the algorithm of
+    	--         intersection of bounding boxes of 
+    	--         shapes stored in ShapesDataStructure.
+	--         It stores statuses of intersection in 2 dimension array.
+    
+uses
+    Array1OfListOfInteger from TColStd,
+    ListOfInteger         from TColStd, 
+    HArray2OfIntersectionStatus from BOPTools,
+    IntersectionStatus          from BOPTools, 
+    HArray1OfBox from Bnd,
+    PShapesDataStructure from BooleanOperations
+is
+
+    Create(PDS: PShapesDataStructure from BooleanOperations)  
+    	returns RoughShapeIntersector from BOPTools;
+	---Purpose:
+	-- Initializes algorithm by shapes data structure
+	--
+    
+    Perform(me: in out);
+    	---Purpose: 
+    	-- Perform computations.
+	--
+	--  Warning: 
+    	-- Using this function, after the destructor of
+    	-- the object pointed by PDS (see constructor)
+    	-- was invoked, lead to crash.
+	--
+    
+    TableOfStatus(me)
+    	returns HArray2OfIntersectionStatus from BOPTools;
+	---C++: return const &
+	---Purpose:
+	--  Returns 2 dimension array of status flags.
+    	-- First indices of the array corresponds to indices of 
+    	-- subshapes of Object of myPDS.
+    	-- Second indices of array corresponds to indices of 
+    	-- subshapes of Tool of myPDS.
+	--
+
+    IsDone(me) returns Boolean from Standard;
+    	---Purpose:
+	-- Returns False if some errors occured during
+	-- computations or method Perform
+	-- was not invoked before, 
+    	-- otherwise returns True.
+	--
+    
+    --    private methods
+    Prepare(me: in out)  
+    	is private;
+
+    PropagateForSuccessors1(me: in out; AncestorsIndex1: Integer from Standard;
+    	    	    	    	    	AncestorsIndex2: Integer from Standard;
+    	    	    	    	    	theStatus      : IntersectionStatus from BOPTools)
+    	is private;
+
+    PropagateForSuccessors2(me: in out; AncestorsIndex1: Integer from Standard;
+    	    	    	    	    	AncestorsIndex2: Integer from Standard;
+    	    	    	    	    	theStatus      : IntersectionStatus from BOPTools)
+    	is private;
+
+fields   
+    myPDS: PShapesDataStructure from BooleanOperations;
+    myBoundingBoxes: HArray1OfBox from Bnd;
+    
+    myTableOfStatus: HArray2OfIntersectionStatus from BOPTools;
+    ---Purpose: First indices of array corresponds to indices of subshapes of Object of myPDS.
+    --          Second indices of array corresponds to indices of subshapes of Tool of myPDS.
+    
+    myIsDone: Boolean from Standard;
+       
+end RoughShapeIntersector from BOPTools;
+

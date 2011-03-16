@@ -1,0 +1,463 @@
+#include <LProp_Status.hxx>
+#include <LProp_NotDefined.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_DomainError.hxx>
+#include <CSLib.hxx>
+#include <CSLib_DerivativeStatus.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <TColgp_Array2OfVec.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+
+
+static Standard_Boolean IsTangentDefined (LProp_SLProps& SProp,
+                                 const Standard_Integer  cn,
+                                 const Standard_Real     linTol,
+                                 const Standard_Integer  Derivative, 
+                                 Standard_Integer&       Order,
+                                 LProp_Status&  Status) 
+{
+  Standard_Real Tol = linTol * linTol;
+  gp_Vec V[2];
+  Order = 0;
+  while (Order < 3) {
+    Order++;
+    if(cn >= Order) {
+      switch(Order) {
+      case 1 :
+	V[0] = SProp.D1U();
+	V[1] = SProp.D1V();
+	break;
+      case 2 :
+	V[0] = SProp.D2U();
+	V[1] = SProp.D2V();
+	break;
+      };
+      if(V[Derivative].SquareMagnitude() > Tol) {
+	Status = LProp_Defined;
+	return Standard_True;
+      }
+    }
+    else {
+      Status = LProp_Undefined;
+      return Standard_False;
+    }
+  }
+  return Standard_False;
+}
+
+LProp_SLProps::LProp_SLProps (const Surface& S, 
+			      const Standard_Real     U,  
+                              const Standard_Real     V, 
+                              const Standard_Integer  N, 
+                              const Standard_Real     Resolution) 
+     : surf(S),
+       level(N),
+       cn(4), // (Tool::Continuity(S)),
+       linTol(Resolution)
+{
+
+  Standard_OutOfRange_Raise_if(N < 0 || N > 2, 
+                               "LProp_SLProps::LProp_SLProps()");
+
+  SetParameters(U, V);
+}
+
+LProp_SLProps::LProp_SLProps (const Surface& S, 
+                              const Standard_Integer  N, 
+                              const Standard_Real     Resolution) 
+     : surf(S),
+       u(RealLast()), v(RealLast()),
+       level(N),
+       cn(4), // (Tool::Continuity(S)),
+       linTol(Resolution),
+       uTangentStatus (LProp_Undecided),
+       vTangentStatus (LProp_Undecided),
+       normalStatus   (LProp_Undecided),
+       curvatureStatus(LProp_Undecided)
+{
+  Standard_OutOfRange_Raise_if(N < 0 || N > 2, 
+                               "LProp_SLProps::LProp_SLProps()");
+}
+
+LProp_SLProps::LProp_SLProps (const Standard_Integer  N, 
+                              const Standard_Real     Resolution) 
+       :u(RealLast()), v(RealLast()),
+       level(N),
+       cn(0),
+       linTol(Resolution),
+       uTangentStatus (LProp_Undecided),
+       vTangentStatus (LProp_Undecided),
+       normalStatus   (LProp_Undecided),
+       curvatureStatus(LProp_Undecided)
+{
+  Standard_OutOfRange_Raise_if(N < 0 || N > 2, 
+                               "LProp_SLProps::LProp_SLProps() bad level");
+}
+
+void LProp_SLProps::SetSurface (const Surface& S ) {
+
+     surf = S;
+     cn = 4; // =Tool::Continuity(S);
+}
+
+void LProp_SLProps::SetParameters (const Standard_Real U, const Standard_Real V)
+{
+  u = U;
+  v = V;
+  switch (level) {
+  case 0:
+    Tool::Value(surf, u, v, pnt);
+    break;
+  case 1:
+    Tool::D1(surf, u, v, pnt, d1U, d1V);
+    break;
+  case 2:
+    Tool::D2(surf, u, v, pnt, d1U, d1V, d2U, d2V, dUV);
+    break;
+  };
+  uTangentStatus  = LProp_Undecided;
+  vTangentStatus  = LProp_Undecided;
+  normalStatus    = LProp_Undecided;
+  curvatureStatus = LProp_Undecided;
+}
+
+const gp_Pnt& LProp_SLProps::Value() const
+{
+  return pnt;
+}
+
+const gp_Vec& LProp_SLProps::D1U()
+{
+  if (level < 1) {
+    level =1;
+    Tool::D1(surf,u,v,pnt,d1U,d1V);
+  }
+  return d1U;
+}
+
+const gp_Vec& LProp_SLProps::D1V()
+{
+  if (level < 1) {
+    level =1;
+    Tool::D1(surf,u,v,pnt,d1U,d1V);
+  }
+  return d1V;
+}
+
+const gp_Vec& LProp_SLProps::D2U()
+{
+  if (level < 2) {
+    level =2;
+    Tool::D2(surf,u,v,pnt,d1U,d1V,d2U,d2V,dUV);
+  }
+  return d2U;
+}
+
+const gp_Vec& LProp_SLProps::D2V()
+{
+  if (level < 2) {
+    level =2;
+    Tool::D2(surf,u,v,pnt,d1U,d1V,d2U,d2V,dUV);
+  }
+  return d2V;
+}
+const gp_Vec& LProp_SLProps::DUV()
+{
+  if (level < 2) {
+    level =2;
+    Tool::D2(surf,u,v,pnt,d1U,d1V,d2U,d2V,dUV);
+  }
+  return dUV;
+}
+
+Standard_Boolean LProp_SLProps::IsTangentUDefined ()
+{
+  if (uTangentStatus == LProp_Undefined) { 
+    return Standard_False;
+  }
+  else if (uTangentStatus >= LProp_Defined) { 
+    return Standard_True; 
+  }
+  // uTangentStatus == Lprop_Undecided 
+  // we have to calculate the first non null U derivative
+  return IsTangentDefined(*this, cn, linTol, 0, 
+                          significantFirstUDerivativeOrder, uTangentStatus);
+}
+
+void LProp_SLProps::TangentU (gp_Dir& D) {
+
+  if(!IsTangentUDefined()) { LProp_NotDefined::Raise(); }
+  if(significantFirstUDerivativeOrder == 1) {
+    D = gp_Dir(d1U);
+  }
+  else {
+    D = gp_Dir(d2U);
+  }
+}
+
+Standard_Boolean LProp_SLProps::IsTangentVDefined ()
+{
+
+  if (vTangentStatus == LProp_Undefined) { 
+    return Standard_False;
+  }
+  else if (vTangentStatus >= LProp_Defined) { 
+    return Standard_True; 
+  }
+  // vTangentStatus == Lprop_Undecided 
+  // we have to calculate the first non null V derivative
+  return IsTangentDefined(*this, cn, linTol, 1, 
+                          significantFirstVDerivativeOrder, vTangentStatus);
+}
+
+void LProp_SLProps::TangentV (gp_Dir& D) {
+
+  if(!IsTangentVDefined()) { LProp_NotDefined::Raise(); }
+  if(significantFirstVDerivativeOrder == 1) {
+    D = gp_Dir(d1V);
+  }
+  else {
+    D = gp_Dir(d2V);
+  }
+}
+
+Standard_Boolean LProp_SLProps::IsNormalDefined()
+{
+
+  if (normalStatus == LProp_Undefined) {
+    return Standard_False;
+  }
+  else if (normalStatus >= LProp_Defined) {
+    return Standard_True;
+  }
+  // status = UnDecided 
+  
+  // first try the standard computation of the normal.
+  CSLib_DerivativeStatus Status;
+  CSLib::Normal(d1U, d1V, linTol, Status, normal);
+  if (Status  == CSLib_Done ) { 
+    normalStatus = LProp_Computed;
+    return Standard_True;
+  }
+  // else solve the degenerated case only if continuity >= 2
+/*  if (cn >= 2) {
+    if(level < 2) this->D2U();
+    Standard_Boolean Done;
+    CSLib_NormalStatus Stat;
+    CSLib::Normal(d1U, d1V, d2U, d2V, dUV, linTol, Done, Stat, normal);
+    if (Done) {
+      normalStatus = LProp_Computed;
+      return Standard_True;
+    }
+  }*/
+  /*
+  else {
+    Standard_Integer MaxOrder=3;
+    CSLib_NormalStatus Stat;
+    gp_Dir thenormal;
+    TColgp_Array2OfVec DerNUV(0,MaxOrder,0,MaxOrder);
+    TColgp_Array2OfVec DerSurf(0,MaxOrder+1,0,MaxOrder+1);
+    Standard_Integer i,j,OrderU,OrderV;
+    Standard_Real Umin,Umax,Vmin,Vmax;
+ 
+    Tool::Bounds(surf, Umin, Vmin, Umax, Vmax);
+
+    // Calcul des derivees
+    for(i=1;i<=MaxOrder+1;i++){
+      DerSurf.SetValue(i,0, Tool::DN(surf,u,v,i,0));
+    }
+  
+    for(i=0;i<=MaxOrder+1;i++)
+      for(j=1;j<=MaxOrder+1;j++){
+	DerSurf.SetValue(i,j, Tool::DN(surf,u,v,i,j));
+      }
+
+    for(i=0;i<=MaxOrder;i++)
+      for(j=0;j<=MaxOrder;j++){
+	DerNUV.SetValue(i,j,CSLib::DNNUV(i,j,DerSurf));
+      }
+
+    CSLib::Normal(MaxOrder,DerNUV, 1.e-9, u,v,
+		  Umin,Umax,Vmin,Vmax,
+		  Stat, thenormal, OrderU, OrderV);
+    normal.SetXYZ(thenormal.XYZ());
+    if (Stat == CSLib_Defined) {
+      normalStatus = LProp_Computed;
+      return Standard_True;
+    }
+  }
+  */
+
+  normalStatus = LProp_Undefined;
+  return Standard_False;
+}
+
+const gp_Dir& LProp_SLProps::Normal () {
+
+  if(!IsNormalDefined()) { LProp_NotDefined::Raise(); }
+  return normal;
+}
+
+Standard_Boolean LProp_SLProps::IsCurvatureDefined ()
+{
+  
+  if (curvatureStatus == LProp_Undefined) {
+    return Standard_False;
+  }
+  else if (curvatureStatus >= LProp_Defined) {
+    return Standard_True;
+  }
+  if(cn < 2) {
+    curvatureStatus = LProp_Undefined;
+    return Standard_False;
+  }
+  // status = UnDecided 
+  if (!IsNormalDefined()) {
+    curvatureStatus = LProp_Undefined;
+    return Standard_False;
+  }
+  // pour eviter un plantage dans le cas du caro pointu
+  // en fait on doit pouvoir calculer les courbure
+  // avoir
+  if(!IsTangentUDefined() || !IsTangentVDefined()) {
+    curvatureStatus = LProp_Undefined;
+    return Standard_False;
+  }
+
+  // here we compute the curvature features of the surface
+
+  gp_Vec Norm (normal);
+
+  Standard_Real E = d1U.SquareMagnitude();
+  Standard_Real F = d1U.Dot(d1V);
+  Standard_Real G = d1V.SquareMagnitude();
+
+  if(level < 2) this->D2U();
+
+  Standard_Real L = Norm.Dot(d2U);
+  Standard_Real M = Norm.Dot(dUV);
+  Standard_Real N = Norm.Dot(d2V);
+
+  Standard_Real A = E * M - F * L;
+  Standard_Real B = E * N - G * L;
+  Standard_Real C = F * N - G * M;
+
+  Standard_Real MaxABC = Max(Max(Abs(A),Abs(B)),Abs(C));
+  if (MaxABC < RealEpsilon()) {          // ombilic
+    minCurv = N / G;
+    maxCurv = minCurv;
+    dirMinCurv = gp_Dir (d1U);
+    dirMaxCurv = gp_Dir (d1U.Crossed(Norm));
+    meanCurv = minCurv;            // (Cmin + Cmax) / 2.
+    gausCurv = minCurv * minCurv;  // (Cmin * Cmax)
+    curvatureStatus = LProp_Computed;
+    return Standard_True;
+  }
+
+  A = A / MaxABC;
+  B = B / MaxABC;
+  C = C / MaxABC;
+  Standard_Real Curv1, Curv2, Root1, Root2;
+  gp_Vec VectCurv1, VectCurv2;
+  if (Abs(A) > RealEpsilon()) {
+    math_DirectPolynomialRoots Root (A, B, C);
+    if(Root.NbSolutions() != 2) {
+      curvatureStatus = LProp_Undefined;
+      return Standard_False;
+    }
+    else {
+       Root1 = Root.Value(1);
+      Root2 = Root.Value(2);
+      Curv1 = ((L * Root1 + 2. * M) * Root1 + N) /
+	      ((E * Root1 + 2. * F) * Root1 + G);
+      Curv2 = ((L * Root2 + 2. * M) * Root2 + N) /
+	      ((E * Root2 + 2. * F) * Root2 + G);
+      VectCurv1 = Root1 * d1U + d1V;
+      VectCurv2 = Root2 * d1U + d1V;
+    }
+  }
+  else if (Abs(C) > RealEpsilon()) {
+    math_DirectPolynomialRoots Root(C, B, A);
+    if((Root.NbSolutions() != 2)) {
+      curvatureStatus = LProp_Undefined;
+      return Standard_False;
+    }
+    else {
+      Root1 = Root.Value(1);
+      Root2 = Root.Value(2);
+      Curv1 = ((N * Root1 + 2. * M) * Root1 + L) /
+	      ((G * Root1 + 2. * F) * Root1 + E);
+      Curv2 = ((N * Root2 + 2. * M) * Root2 + L) /
+	      ((G * Root2 + 2. * F) * Root2 + E);
+      VectCurv1 = d1U + Root1 * d1V;
+      VectCurv2 = d1U + Root2 * d1V;
+    }
+  }
+  else {
+    Curv1 = L / E;
+    Curv2 = N / G;
+    VectCurv1 = d1U;
+    VectCurv2 = d1V;
+  }
+  if (Curv1 < Curv2) {
+    minCurv = Curv1;
+    maxCurv = Curv2;
+    dirMinCurv = gp_Dir (VectCurv1);
+    dirMaxCurv = gp_Dir (VectCurv2);
+  }
+  else {
+    minCurv = Curv2;
+    maxCurv = Curv1;
+    dirMinCurv = gp_Dir (VectCurv2);
+    dirMaxCurv = gp_Dir (VectCurv1);
+  }
+  meanCurv = ((N * E) - (2. * M * F) + (L * G)) // voir Farin p.282
+               / (2. * ((E * G) - (F * F)));
+  gausCurv = ((L * N) - (M * M)) 
+               / ((E * G) - (F * F));
+  curvatureStatus = LProp_Computed;
+  return Standard_True;
+} 
+
+
+Standard_Boolean LProp_SLProps::IsUmbilic ()
+{
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  return Abs(maxCurv - minCurv) < Abs(Epsilon(maxCurv));
+}
+
+Standard_Real LProp_SLProps::MaxCurvature ()
+{
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  return maxCurv;
+}
+
+Standard_Real LProp_SLProps::MinCurvature ()
+{
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  return minCurv;
+}
+
+void LProp_SLProps::CurvatureDirections(gp_Dir& Max, gp_Dir& Min)
+{
+
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  Max = dirMaxCurv;
+  Min = dirMinCurv;
+}
+
+Standard_Real LProp_SLProps::MeanCurvature () {
+
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  return meanCurv;
+
+}
+
+Standard_Real LProp_SLProps::GaussianCurvature () {
+
+  if(!IsCurvatureDefined()) { LProp_NotDefined::Raise(); }
+  return gausCurv;
+}
+
+
+

@@ -1,0 +1,40 @@
+// File:	LocOpe_HBuilder.lxx
+// Created:	Mon Jul  1 16:32:23 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : LocOpe_HBuilder
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_HBuilder::LocOpe_HBuilder(const TopOpeBRepDS_BuildTool& BT):
+   TopOpeBRepBuild_HBuilder(BT)
+{
+  myBuilder.ChangeClassify(Standard_True);
+}
+
+
+//=======================================================================
+//function : Classify
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_HBuilder::Classify () const
+{
+  return myBuilder.Classify();
+}
+
+
+//=======================================================================
+//function : Classify
+//purpose  : 
+//=======================================================================
+
+inline void LocOpe_HBuilder::Classify (const Standard_Boolean B)
+{
+  myBuilder.ChangeClassify(B);
+}
+
+

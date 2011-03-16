@@ -1,0 +1,37 @@
+-- File:	TNaming_DeltaOnModification.cdl
+-- Created:	Wed Dec  3 10:27:33 1997
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+private class DeltaOnModification from TNaming inherits DeltaOnModification from TDF
+
+	---Purpose: This class provides default services for an
+	--          AttributeDelta on a MODIFICATION action.
+	--          
+	--          Applying this AttributeDelta means GOING BACK to
+	--          the attribute previously registered state.
+
+uses
+
+    Attribute      from TDF,
+    HArray1OfShape from TopTools,
+    NamedShape     from TNaming
+
+is
+
+    Create (NS : NamedShape from TNaming)
+    	returns mutable DeltaOnModification from TNaming;
+	---Purpose: Initializes a TDF_DeltaOnModification.
+
+    Apply (me : mutable)
+    	is redefined virtual;
+    	---Purpose: Applies the delta to the attribute.
+
+fields
+    
+    myOld  : HArray1OfShape from TopTools;
+    myNew  : HArray1OfShape from TopTools;
+
+end DeltaOnModification;

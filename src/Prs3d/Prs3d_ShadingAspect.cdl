@@ -1,0 +1,82 @@
+-- File:	Prs3d_ShadingAspect.cdl
+-- Created:	Mon Apr 26 16:18:12 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+--   GG  : GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+--			  Parameters the color model rule (not especially the front & back side)
+--			  Add the SetTransparency() method.
+--			  Add the Color(),Material() and Transparency() methods
+---Copyright:	 Matra Datavision 1993
+
+
+class ShadingAspect from Prs3d inherits BasicAspect from Prs3d
+    	---Purpose: A framework to define the display of shading.
+    	-- The attributes which make up this definition include:
+    	-- -   fill aspect
+    	-- -   color, and
+    	-- -   material
+uses 
+
+    TypeOfFacingModel	   from Aspect,
+    AspectFillArea3d       from Graphic3d,
+    NameOfColor            from Quantity,
+    Color			   from Quantity,
+    NameOfMaterial   from Graphic3d,
+    --NameOfMaterialPhysic   from Graphic3d,
+    MaterialAspect         from Graphic3d,
+    TypeOfLine             from Aspect
+
+is
+    Create
+    	---Purpose: Constructs an empty framework to display shading.
+    returns mutable ShadingAspect from Prs3d;
+    
+    SetColor (me: mutable; aColor: Color from Quantity;
+				   aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
+    is static;
+    	--- Purpose: Change the polygons interior color and material ambient color.
+
+    SetColor (me: mutable; aColor: NameOfColor from Quantity;
+		  		   aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
+    is static;
+    	--- Purpose: Change the polygons interior color and material ambient color.
+    	
+    SetMaterial(me: mutable; aMaterial: MaterialAspect from Graphic3d;
+				     aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
+    is static;
+    	--- Purpose: Change the polygons material aspect.
+
+    SetMaterial(me: mutable; aMaterial: NameOfMaterial from Graphic3d;
+				     aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
+    is static;
+
+    SetTransparency(me: mutable; aValue: Real from Standard;
+				         aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
+    is static;
+    	--- Purpose: Change the polygons transparency value.
+    	--  Warning : aValue must be in the range 0,1. 0 is the default (NO transparent)
+
+    SetAspect(me:mutable; Asp : AspectFillArea3d from Graphic3d);
+    	--- Purpose: Change the polygons aspect properties.
+
+    Color (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
+    returns Color from Quantity is static;
+    	--- Purpose: Returns the polygons color.
+
+    Material (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
+    returns MaterialAspect from Graphic3d is static;
+    	--- Purpose: Returns the polygons material aspect.
+
+    Transparency (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
+    returns Real from Standard is static;
+    	--- Purpose: Returns the polygons transparency value.
+
+    Aspect (me) returns AspectFillArea3d from Graphic3d;
+    	--- Purpose: Returns the polygons aspect properties.
+    
+fields
+
+    myAspect: AspectFillArea3d from Graphic3d;
+
+end ShadingAspect from Prs3d;

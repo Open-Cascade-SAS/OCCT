@@ -1,0 +1,39 @@
+--
+-- File:	MFT_CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:12:20 1996	Jean GAUTIER	Creation
+--              bgn  27-04-98 Portage des fontes MFT sur WNT.
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %MFT_CMPLRS_EDL) then
+  @set %MFT_CMPLRS_EDL = "";
+  @uses "CSF.edl";
+
+  --@uses "MFT.edl";
+
+  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -DITYPE_REF";
+
+  -- bgn   27-04-98 
+  @if ( %Station == "wnt" ) then
+    @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -D_AFXDLL ";
+  @endif;
+  
+  @if ( %Station == "sun" ) then
+    @string %CMPLRS_C_Options   = %CMPLRS_C_Options   " " %CSF_X11_INCLUDE ;
+    @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " " %CSF_X11_INCLUDE ;
+  @endif;
+
+  @if ( %Station == "sil" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -ansi";
+  @endif;
+  
+  @if ( %Station == "ao1" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -std1";
+  @endif;
+
+  @if ( %Station == "hp" ) then
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -I/usr/include/X11R5";
+    @string %CMPLRS_C_Options = %CMPLRS_C_Options " -Ac";
+  @endif;
+@endif;

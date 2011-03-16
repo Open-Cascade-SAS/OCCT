@@ -1,0 +1,183 @@
+-- File:	HLRBRep_FaceData.cdl
+-- Created:	Thu Apr 17 11:55:00 1997
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class FaceData from HLRBRep
+
+uses
+    Boolean     from Standard,
+    ShortReal   from Standard,
+    Orientation from TopAbs,
+    WiresBlock  from HLRAlgo,
+    Surface     from HLRBRep,
+    Face        from TopoDS
+
+is
+    Create returns FaceData from HLRBRep;
+
+    Set(me : in out; FG  : Face        from TopoDS;
+	             Or  : Orientation from TopAbs;
+                     Cl  : Boolean     from Standard;
+                     NW  : Integer     from Standard)
+    	---Purpose: <Or> is the orientation of the face.  <Cl> is true
+    	--          if the face  belongs to a  closed  volume. <NW> is
+    	--          the number of wires ( or block  of  edges ) of the
+    	--          face.
+    is static;
+    
+    SetWire(me : in out; WI : Integer from Standard;
+    	    	    	 NE : Integer from Standard)
+    	---Purpose: Set <NE> the number  of  edges of the wire  number
+    	--          <WI>.
+    is static;
+    
+    SetWEdge(me : in out; WI,EWI,EI           : Integer     from Standard;
+			  Or                  : Orientation from TopAbs;
+                          OutL,Inte,Dble,IsoL : Boolean     from Standard)
+    	---Purpose: Set the edge number <EWI> of the  wire <WI>.
+    is static;
+    
+    Selected(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+    
+    Selected(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+    
+    Back(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Back(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Side(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Side(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Closed(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Closed(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Hiding(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Hiding(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Simple(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Simple(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Cut(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Cut(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    WithOutL(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    WithOutL(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Plane(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Plane(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Cylinder(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Cylinder(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Cone(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Cone(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Sphere(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Sphere(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Torus(me) returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Torus(me : in out; B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Size(me) returns Real from Standard
+    	---C++: inline
+    is static;
+
+    Size(me : in out; S : Real from Standard)
+    	---C++: inline
+    is static;
+
+    Orientation(me) returns Orientation from TopAbs
+        ---C++: inline
+    is static;
+
+    Orientation(me : in out; O : Orientation from TopAbs)
+        ---C++: inline
+    is static;
+
+    Wires(me : in out) returns WiresBlock from HLRAlgo
+        ---C++: inline
+        ---C++: return &
+    is static;
+
+    Geometry(me : in out) returns Surface from HLRBRep
+        ---C++: inline
+        ---C++: return &
+    is static;
+
+    Tolerance(me) returns ShortReal from Standard
+        ---C++: inline
+    is static;
+
+fields
+    myFlags       : Boolean    from Standard;
+    myWires       : WiresBlock from HLRAlgo;
+    myGeometry    : Surface    from HLRBRep;
+    mySize        : Real       from Standard;
+    myTolerance   : ShortReal  from Standard;
+
+end FaceData;

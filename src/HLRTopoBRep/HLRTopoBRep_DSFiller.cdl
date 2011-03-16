@@ -1,0 +1,69 @@
+-- File:	HLRTopoBRep_DSFiller.cdl
+-- Created:	Wed Jun 23 20:25:39 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+class DSFiller from HLRTopoBRep
+
+	---Purpose: Provides methods  to  fill a HLRTopoBRep_Data.
+
+uses
+    Real              from Standard,
+    Integer           from Standard,
+    Boolean           from Standard,
+    Shape             from TopoDS,
+    Face              from TopoDS,
+    Edge              from TopoDS,
+    Vertex            from TopoDS,
+    ThePointOfContour from Contap,
+    Contour           from Contap,
+    Data              from HLRTopoBRep,
+    MapOfShapeTool    from BRepTopAdaptor
+
+is
+    Insert(myclass;
+    	   S     :        Shape          from TopoDS;
+	   FO    : in out Contour        from Contap;
+    	   DS    : in out Data           from HLRTopoBRep;
+	   MST   : in out MapOfShapeTool from BRepTopAdaptor;
+           nbIso :        Integer        from Standard);
+    ---Purpose: Stores in <DS> the outlines of  <S> using the current
+    --          outliner and stores the isolines in <DS> using a Hatcher.
+    
+    InsertFace(myclass;
+               FI         :        Integer      from Standard;
+    	       F          :        Face         from TopoDS;
+	       FO         : in out Contour      from Contap;
+    	       DS         : in out Data         from HLRTopoBRep;
+               withPCurve :        Boolean      from Standard)
+    ---Purpose: Stores in <DS> the outlines of  <F> using the current
+    --          outliner.
+    is private;
+    
+    MakeVertex(myclass;
+    	       P   :        ThePointOfContour from Contap;
+	       tol :        Real              from Standard;
+	       DS  : in out Data              from HLRTopoBRep)
+    returns Vertex from TopoDS
+	---Purpose: Make a  vertex  from an intersection  point <P>and
+	--          store it in the data structure <DS>.
+    is private;
+    
+    InsertVertex(myclass;
+    	         P   :        ThePointOfContour from Contap;
+                 tol :        Real              from Standard;
+		 E   :        Edge              from TopoDS;
+	         DS  : in out Data              from HLRTopoBRep)
+	---Purpose: Insert a vertex    from an internal   intersection
+	--          point <P> on restriction <E>  and store it in  the
+	--          data structure <DS>.
+    is private;
+    
+    ProcessEdges(myclass; DS : in out Data from HLRTopoBRep)
+	---Purpose: Split all  the edges  with  vertices in   the data
+	--          structure.
+    is private;
+    	
+end DSFiller;

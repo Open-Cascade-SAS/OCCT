@@ -1,0 +1,30 @@
+-- File:	TopOpeBRepDS_SurfaceIterator.cdl
+-- Created:	Tue Jun  7 18:22:33 1994
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1994
+
+class SurfaceIterator from TopOpeBRepDS 
+    inherits InterferenceIterator from TopOpeBRepDS
+
+uses
+
+    State               from TopAbs,
+    Orientation         from TopAbs,
+    ListOfInterference  from TopOpeBRepDS
+    
+is
+    Create(L : ListOfInterference from TopOpeBRepDS) 
+    returns SurfaceIterator;
+    ---Purpose: Creates an  iterator on the  Surfaces on solid
+    --          described by the interferences in <L>.
+    
+    Current(me) returns Integer from Standard
+    ---Purpose: Index of the surface in the data structure.
+    is static;
+    
+    Orientation(me; S : State from TopAbs) 
+    returns Orientation from TopAbs
+    is static;
+    
+end SurfaceIterator from TopOpeBRepDS;

@@ -1,0 +1,39 @@
+//=======================================================================
+//function : Adaptor3d_GenHCurve
+//purpose  : 
+//=======================================================================
+
+Adaptor3d_GenHCurve::Adaptor3d_GenHCurve () {}
+
+//=======================================================================
+//function : Adaptor3d_GenHCurve
+//purpose  : 
+//=======================================================================
+
+Adaptor3d_GenHCurve::Adaptor3d_GenHCurve (const TheCurve& C)
+{myCurve = C;}
+
+//=======================================================================
+//function : Set
+//purpose  : 
+//=======================================================================
+
+void Adaptor3d_GenHCurve::Set(const TheCurve& C)
+{
+  myCurve = C;
+}
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+
+const Adaptor3d_Curve& Adaptor3d_GenHCurve::Curve () const
+{
+  return myCurve;
+}
+
+Adaptor3d_Curve& Adaptor3d_GenHCurve::GetCurve () 
+{
+  return myCurve;
+}

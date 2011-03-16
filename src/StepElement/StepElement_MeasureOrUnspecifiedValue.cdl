@@ -1,0 +1,45 @@
+-- File:	StepElement_MeasureOrUnspecifiedValue.cdl
+-- Created:	Tue Dec 10 18:12:58 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
+-- Copyright:	Open CASCADE 2002
+
+class MeasureOrUnspecifiedValue from StepElement inherits SelectType from StepData
+
+    ---Purpose: Representation of STEP SELECT type MeasureOrUnspecifiedValue
+
+uses
+    SelectMember from StepData,
+    UnspecifiedValue from StepElement
+
+is
+    Create returns MeasureOrUnspecifiedValue from StepElement;
+	---Purpose: Empty constructor
+
+    CaseNum (me; ent: Transient) returns Integer;
+	---Purpose: Recognizes a kind of MeasureOrUnspecifiedValue select type
+	--          return 0 
+
+    CaseMem (me; ent: SelectMember from StepData) returns Integer is redefined;
+	---Purpose: Recognizes a items of select member MeasureOrUnspecifiedValueMember
+	--          1 -> ContextDependentMeasure
+	--          2 -> UnspecifiedValue
+	--          0 else
+
+
+     NewMember(me) returns SelectMember from StepData is redefined;
+	---Purpose: Returns a new select member the type MeasureOrUnspecifiedValueMember
+
+    SetContextDependentMeasure(me: in out; aVal :Real);
+	---Purpose: Set Value for ContextDependentMeasure
+
+    ContextDependentMeasure (me) returns Real;
+	---Purpose: Returns Value as ContextDependentMeasure (or Null if another type)
+
+    SetUnspecifiedValue(me: in out; aVal :UnspecifiedValue from StepElement);
+	---Purpose: Set Value for UnspecifiedValue
+
+    UnspecifiedValue (me) returns UnspecifiedValue from StepElement;
+	---Purpose: Returns Value as UnspecifiedValue (or Null if another type)
+
+end MeasureOrUnspecifiedValue;

@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWElementRepresentation.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWElementRepresentation from RWStepFEA
+
+    ---Purpose: Read & Write tool for ElementRepresentation
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ElementRepresentation from StepFEA
+
+is
+    Create returns RWElementRepresentation from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ElementRepresentation from StepFEA);
+	---Purpose: Reads ElementRepresentation
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ElementRepresentation from StepFEA);
+	---Purpose: Writes ElementRepresentation
+
+    Share (me; ent : ElementRepresentation from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWElementRepresentation;

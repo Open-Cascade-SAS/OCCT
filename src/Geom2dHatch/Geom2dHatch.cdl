@@ -1,0 +1,24 @@
+-- File:	Geom2dHacth.cdl
+-- Created:	Thu Feb  3 11:04:48 1994
+-- Author:	Jean Marc LACHAUME
+--		<jml@phylox>
+---Copyright:	 Matra Datavision 1994
+
+package Geom2dHatch
+
+uses
+    Geom2dAdaptor ,
+    Geom2dInt ,
+    gp ,
+    HatchGen
+
+is
+    
+    class Intersector ;
+    
+    class Hatcher instantiates Hatcher from HatchGen
+    	(Curve       from Geom2dAdaptor,
+	 Curve       from Geom2dAdaptor,
+	 Intersector from Geom2dHatch) ;
+
+end Geom2dHatch ;

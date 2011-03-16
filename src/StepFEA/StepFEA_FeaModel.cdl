@@ -1,0 +1,57 @@
+-- File:	StepFEA_FeaModel.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaModel from StepFEA
+inherits Representation from StepRepr
+
+    ---Purpose: Representation of STEP entity FeaModel
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr,
+    HArray1OfAsciiString from TColStd
+
+is
+    Create returns FeaModel from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentation_Name: HAsciiString from TCollection;
+                       aRepresentation_Items: HArray1OfRepresentationItem from StepRepr;
+                       aRepresentation_ContextOfItems: RepresentationContext from StepRepr;
+                       aCreatingSoftware: HAsciiString from TCollection;
+                       aIntendedAnalysisCode: HArray1OfAsciiString from TColStd;
+                       aDescription: HAsciiString from TCollection;
+                       aAnalysisType: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    CreatingSoftware (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field CreatingSoftware
+    SetCreatingSoftware (me: mutable; CreatingSoftware: HAsciiString from TCollection);
+	---Purpose: Set field CreatingSoftware
+
+    IntendedAnalysisCode (me) returns HArray1OfAsciiString from TColStd;
+	---Purpose: Returns field IntendedAnalysisCode
+    SetIntendedAnalysisCode (me: mutable; IntendedAnalysisCode: HArray1OfAsciiString from TColStd);
+	---Purpose: Set field IntendedAnalysisCode
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+    AnalysisType (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field AnalysisType
+    SetAnalysisType (me: mutable; AnalysisType: HAsciiString from TCollection);
+	---Purpose: Set field AnalysisType
+
+fields
+    theCreatingSoftware: HAsciiString from TCollection;
+    theIntendedAnalysisCode: HArray1OfAsciiString from TColStd;
+    theDescription: HAsciiString from TCollection;
+    theAnalysisType: HAsciiString from TCollection;
+
+end FeaModel;

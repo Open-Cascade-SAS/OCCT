@@ -1,0 +1,21 @@
+-- File:	StepShape_PointRepresentation.cdl
+-- Created:	Thu Dec 12 15:38:08 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class PointRepresentation from StepShape
+inherits ShapeRepresentation from StepShape
+
+    ---Purpose: Representation of STEP entity PointRepresentation
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr
+
+is
+    Create returns PointRepresentation from StepShape;
+	---Purpose: Empty constructor
+
+end PointRepresentation;

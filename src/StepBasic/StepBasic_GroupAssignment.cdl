@@ -1,0 +1,30 @@
+-- File:	StepBasic_GroupAssignment.cdl
+-- Created:	Wed May 10 15:09:07 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class GroupAssignment from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity GroupAssignment
+
+uses
+    Group from StepBasic
+
+is
+    Create returns GroupAssignment from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAssignedGroup: Group from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AssignedGroup (me) returns Group from StepBasic;
+	---Purpose: Returns field AssignedGroup
+    SetAssignedGroup (me: mutable; AssignedGroup: Group from StepBasic);
+	---Purpose: Set field AssignedGroup
+
+fields
+    theAssignedGroup: Group from StepBasic;
+
+end GroupAssignment;

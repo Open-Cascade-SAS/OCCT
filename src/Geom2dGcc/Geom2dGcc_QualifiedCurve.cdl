@@ -1,0 +1,106 @@
+-- File:	QualifiedCurve.cdl
+-- Created:	Mon Apr 15 15:34:24 1991
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+---Copyright:	 Matra Datavision 1991
+
+class QualifiedCurve from Geom2dGcc
+
+	---Purpose: Describes functions for building a qualified 2D curve.
+    	-- A qualified 2D curve is a curve with a qualifier which
+    	-- specifies whether the solution of a construction
+    	-- algorithm using the qualified curve (as an argument):
+    	-- -   encloses the curve, or
+    	-- -   is enclosed by the curve, or
+    	-- -   is built so that both the curve and it are external to one another, or
+    	-- -   is undefined (all solutions apply).
+
+-- inherits Entity from Standard
+
+uses Position from GccEnt,
+     Curve    from Geom2dAdaptor
+
+-- raises
+
+is
+
+Create(Curve     : Curve    from Geom2dAdaptor;
+       Qualifier : Position from GccEnt       ) 
+returns QualifiedCurve from Geom2dGcc;
+    	---Purpose: Constructs a qualified curve by assigning the qualifier
+    	-- Qualifier to the curve Curve. Qualifier may be:
+    	-- -   GccEnt_enclosing if the solution of a construction
+    	--   algorithm using the qualified curve encloses the curve, or
+    	-- -   GccEnt_enclosed if the solution is enclosed by the curve, or
+    	-- -   GccEnt_outside if both the solution and the curve
+    	--   are external to one another, or
+    	-- -   GccEnt_unqualified if all solutions apply.
+    	-- Note: The interior of a curve is defined as the left-hand
+    	-- side of the curve in relation to its orientation.
+    	-- Warning
+    	-- Curve is an adapted curve, i.e. an object which is an interface between:
+    	-- -   the services provided by a 2D curve from the package Geom2d,
+    	-- -   and those required on the curve by a computation algorithm.
+    	-- The adapted curve is created in the following way:
+    	-- Handle(Geom2d_Curve) mycurve = ... ;
+    	-- Geom2dAdaptor_Curve Curve ( mycurve ) ;
+    	-- The qualified curve is then constructed with this object:
+    	-- GccEnt_Position myQualif = GccEnt_outside ;
+    	-- Geom2dGcc_QualifiedCurve myQCurve ( Curve, myQualif );
+    	-- is private;
+
+Qualified(me) returns Curve from Geom2dAdaptor
+is static;
+    	---Purpose: Returns a 2D curve to which the qualifier is assigned.
+    	-- Warning
+    	-- The returned curve is an adapted curve, i.e. an object
+    	-- which is an interface between:
+    	-- -   the services provided by a 2D curve from the package Geom2d,
+    	-- -   and those required on the curve by a computation algorithm.
+    	-- The Geom2d curve on which the adapted curve is
+    	-- based can be obtained in the following way:
+    	-- myQualifiedCurve = ... ;
+    	-- Geom2dAdaptor_Curve myAdaptedCurve = myQualifiedCurve.Qualified();
+    	-- Handle(Geom2d_Curve) = myAdaptedCurve.Curve();
+    
+Qualifier(me) returns Position from GccEnt
+is static;
+    	---Purpose: Returns
+    	-- - the qualifier of this qualified curve if it is enclosing,
+    	--   enclosed or outside, or
+    	-- -   GccEnt_noqualifier if it is unqualified.
+        
+IsUnqualified(me) returns Boolean from Standard
+is static;
+    	---Purpose: Returns true if the solution is unqualified and false in the other cases.
+
+IsEnclosing(me) returns Boolean from Standard
+is static;
+    	---Purpose: It returns true if the solution is Enclosing the Curv and false in 
+    	-- the other cases.
+
+IsEnclosed(me) returns Boolean from Standard
+is static;
+    	---Purpose: It returns true if the solution is Enclosed in the Curv and false in 
+    	-- the other cases.
+
+IsOutside(me) returns Boolean from Standard
+is static;
+    	---Purpose: It returns true if the solution is Outside the Curv and false in 
+    	-- the other cases.
+
+fields
+
+TheQualifier : Position from GccEnt;
+TheQualified : Curve    from Geom2dAdaptor;
+
+-- friends
+
+-- Unqualified(Obj : Curve3) from Geom2dGcc,
+-- Enclosing  (Obj : Curve3) from Geom2dGcc,
+-- Enclosed   (Obj : Curve3) from Geom2dGcc,
+-- Outside    (Obj : Curve3) from Geom2dGcc
+
+end QualifiedCurve;
+
+

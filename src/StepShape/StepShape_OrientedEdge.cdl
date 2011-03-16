@@ -1,0 +1,53 @@
+-- File:        OrientedEdge.cdl
+-- Created:     Fri Dec  1 11:11:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class OrientedEdge from StepShape 
+
+inherits Edge from StepShape 
+
+uses
+
+	Boolean from Standard, 
+	Vertex from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable OrientedEdge;
+	---Purpose: Returns a OrientedEdge
+	
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aEdgeElement : mutable Edge from StepShape;
+	      aOrientation : Boolean from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetEdgeElement(me : mutable; aEdgeElement : mutable Edge);
+	EdgeElement (me) returns mutable Edge;
+	SetOrientation(me : mutable; aOrientation : Boolean);
+	Orientation (me) returns Boolean;
+	SetEdgeStart(me : mutable; aEdgeStart : mutable Vertex) is redefined;
+	EdgeStart (me) returns mutable Vertex is redefined;
+	SetEdgeEnd(me : mutable; aEdgeEnd : mutable Vertex) is redefined;
+	EdgeEnd (me) returns mutable Vertex is redefined;
+
+fields
+
+	edgeElement : Edge from StepShape;
+	orientation : Boolean from Standard;
+
+ -- 
+ -- NB : field <edge_start> inherited from classe <edge> is redeclared.
+ --      it shall appears in a physical file as a *.
+ --
+
+ -- 
+ -- NB : field <edge_end> inherited from classe <edge> is redeclared.
+ --      it shall appears in a physical file as a *.
+ --
+
+end OrientedEdge;

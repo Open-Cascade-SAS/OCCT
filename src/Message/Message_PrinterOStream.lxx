@@ -1,0 +1,57 @@
+// File:      Message_PrinterOStream.lxx
+// Created:   28.06.07 14:31:55
+// Author:    Pavel TELKOV
+// Copyright: Open CASCADE S.A. 2007
+
+#include <Message_PrinterOStream.hxx>
+
+//=======================================================================
+//function : GetTraceLevel
+//purpose  : 
+//=======================================================================
+
+inline Message_Gravity Message_PrinterOStream::GetTraceLevel() const
+{
+  return myTraceLevel;
+}
+
+//=======================================================================
+//function : SetTraceLevel
+//purpose  : 
+//=======================================================================
+
+inline void Message_PrinterOStream::SetTraceLevel (const Message_Gravity theTraceLevel)
+{
+  myTraceLevel = theTraceLevel;
+}
+
+//=======================================================================
+//function : GetUseUtf8
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean Message_PrinterOStream::GetUseUtf8() const
+{
+  return myUseUtf8;
+}
+
+//=======================================================================
+//function : SetUseUtf8
+//purpose  : 
+//=======================================================================
+
+inline void Message_PrinterOStream::SetUseUtf8 (const Standard_Boolean useUtf8)
+{
+  myUseUtf8 = useUtf8;
+}
+
+//=======================================================================
+//function : GetStream
+//purpose  : 
+//=======================================================================
+
+inline Standard_OStream& Message_PrinterOStream::GetStream () const
+{
+  return *(Standard_OStream*)myStream;
+}
+

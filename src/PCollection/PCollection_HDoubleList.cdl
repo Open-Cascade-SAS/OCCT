@@ -1,0 +1,123 @@
+-- File:	PCollection_HDoubleList.cdl
+-- Created:	Wed Feb 19 14:24:56 1992
+-- Author:	Jean Pierre TIRAULT
+--		<jpt@topsn1>
+---Copyright:	 Matra Datavision 1992
+
+generic class HDoubleList from PCollection (Item as Storable) 
+inherits PManaged 
+
+
+raises NoSuchObject from Standard
+
+is
+
+	---Purpose: Definition of a double linked list
+        -- Idem to the SingleList with a pointer to the previous node
+
+	
+	Create returns  mutable HDoubleList;
+	---Purpose: Creation of an empty list
+
+	IsEmpty(me) returns Boolean;
+        ---Level: Public
+	---Purpose: Returns True if the list contains no element.
+
+	Construct(me : mutable; T : Item) returns mutable HDoubleList;
+        ---Level: Public
+	---Purpose: Adds T at the begining of me.
+	---Example: before
+	--   me = (A B C) 
+        -- after
+	--   me = (A B C)
+	-- returns 
+	--   (T A B C)
+
+	Value(me) returns any Item
+                raises NoSuchObject;
+        ---Level: Public
+	---Purpose: Value of the first node of me
+	-- Raises an exception if me is empty
+	---Purpose: before
+	--   me = (A B C) 
+        -- after
+	--   me = (A B C)
+	-- returns 
+	--   A
+
+	Tail(me) returns any HDoubleList
+                raises NoSuchObject;
+        ---Level: Public
+	---Purpose: Returns the end of the list <me>.
+	-- Raises an exception if me is empty.
+	---Example: before
+	--   me = (A B C) 
+        -- after
+	--   me = (A B C)
+	-- returns 
+	--   (B C)
+
+	Previous(me) returns any HDoubleList
+                raises NoSuchObject;
+                ---Level: Public
+		---Purpose: Previous node of me.
+		-- Raises an exception if me is empty.
+		---Example: before
+                --   A list L = (A B C) with me = (B C) a sub-list of L.
+                -- after
+		--   L = (A B C), me = (B C)
+		-- returns 
+		--   (A)
+
+	SwapTail(me : mutable; WithList : in out any HDoubleList) 
+                raises NoSuchObject;
+                ---Level: Public
+		---Purpose: Exchanges end of me with WithList.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C)
+		--   WithList = (D E)
+		-- after
+		--   me = (A D E)
+		--   WithList = (B C)
+
+	SetValue(me : mutable; T : Item) 
+                raises NoSuchObject;
+                ---Level: Public
+		---Purpose: Changes the value of the first node of me.
+		-- Raises an exception if me is empty.
+		---Example: before
+		--   me = (A B C) 
+                -- after
+		--   me = (T B C)
+
+
+	ChangeBackPointer(me : mutable; BackPointer : HDoubleList);
+                ---Level: Public
+		---Purpose: Modification of the backward pointer
+
+	ChangeForwardPointer(me : mutable; ForwardPointer : 
+						HDoubleList);
+                ---Level: Public
+		---Purpose: Modification of the forward pointer
+
+    	ShallowCopy(me) 
+                returns mutable like me 
+                is redefined;
+                ---Level: Advanced
+	    	---C++: function call
+
+    	ShallowDump (me; s: in out OStream) 
+                is redefined;
+                ---Level: Advanced
+    	    	---C++: function call
+
+    	Destroy(me : mutable);
+	---C++: alias ~
+       
+fields 
+           Data : 	Item;
+           Next : 	HDoubleList;
+           Before : 	HDoubleList;
+
+end HDoubleList;

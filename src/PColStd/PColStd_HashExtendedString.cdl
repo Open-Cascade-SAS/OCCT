@@ -1,0 +1,31 @@
+---Copyright:	 Matra Datavision 1992,1993
+---Version: 
+
+---History:
+--  Version	Date         Purpose
+--              01/04/93     Creation
+
+class HashExtendedString from PColStd 
+
+---Purpose: Redefines the HashCode for HExtendedString
+
+inherits HOfExtendedString from PColStd
+
+uses
+
+    HExtendedString  from PCollection
+    
+is
+
+    Create returns HashExtendedString;
+    ---Purpose : Empty constructor.
+
+    HashCode (me; MyKey : HExtendedString ; Upper : Integer) 
+             returns Integer is redefined;
+    ---Purpose : Returns a hashcod value of key bounded by Upper.
+
+    Compare (me; One , Two : HExtendedString) returns Boolean is redefined;
+    ---Purpose : Compare two keys and returns a boolean value
+
+end HashExtendedString;
+

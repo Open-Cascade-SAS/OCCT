@@ -1,0 +1,155 @@
+-- File:	BSplineSurface.cdl
+-- Created:	Fri May 22 10:29:42 1992
+-- Author:	Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1992
+
+
+class BSplineSurface  from DrawTrSurf 
+
+inherits Surface from DrawTrSurf
+
+        --- Purpose :
+        --  This class defines a drawable BSplineSurface. 
+        --  With this class you can draw the control points and the knots 
+        --  of the surface.
+        --  You can use the general class Surface from DrawTrSurf too,
+        --  if you just want to sea boundaries and isoparametric curves.
+
+uses BSplineSurface from Geom,
+     Color from Draw,
+     MarkerShape from Draw,
+     Display from Draw,
+     Drawable3D from Draw
+
+is
+
+
+
+  Create (S : BSplineSurface from Geom)
+     returns mutable BSplineSurface from DrawTrSurf;
+        --- Purpose : default drawing mode.
+        --  The isoparametric curves corresponding to the knots values are 
+        --  drawn.
+        --  The control points and the knots points are drawn.
+        --  The boundaries are yellow, the isoparametric curves are blues.
+        --  For the discretisation 50 points are computed in each parametric
+        --  direction.
+
+
+  Create (S : BSplineSurface from Geom;
+          BoundsColor, IsosColor, PolesColor, KnotsColor : Color from Draw;
+          KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
+          ShowPoles, ShowKnots : Boolean; Discret : Integer; Deflection : Real;
+          DrawMode : Integer)
+     returns mutable BSplineSurface from DrawTrSurf;
+        --- Purpose :
+        --  The isoparametric curves corresponding to the knots values are 
+        --  drawn.
+
+
+
+  Create (S : BSplineSurface from Geom;
+          NbUIsos, NbVIsos : Integer;
+          BoundsColor, IsosColor, PolesColor, KnotsColor : Color from Draw;
+          KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
+          ShowPoles, ShowKnots : Boolean; Discret : Integer; Deflection : Real;
+          DrawMode : Integer)
+     returns mutable BSplineSurface from DrawTrSurf;
+	--- Purpose : Parametric equidistant iso curves are drawn.
+
+
+  DrawOn (me; dis : in out Display from Draw)
+     is redefined static;
+
+
+  ShowPoles  (me : mutable)
+     is static;
+
+
+  ShowKnots  (me : mutable)
+     is static;
+
+
+  ShowIsos (me : mutable; Nu, Nv : Integer)
+        --- Purpose : change the number of isoparametric curves to be drawn.
+     is redefined;
+
+
+  ShowKnotsIsos (me : mutable)
+        --- Purpose : change the number of isoparametric curves to be drawn.
+     is static;
+
+
+  ClearIsos (me : mutable)
+        --- Purpose : rub out all the isoparametric curves.
+     is redefined;
+     
+
+  ClearPoles (me : mutable)
+     is static;
+  
+
+  ClearKnots (me : mutable)
+     is static;
+
+
+  FindPole(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+            UIndex, VIndex : in out Integer)
+  is static;
+  
+
+  FindUKnot(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+            UIndex : in out Integer)
+  is static;
+
+
+  FindVKnot(me; X,Y : Real; D : Display from Draw; Prec : Real; 
+            VIndex : in out Integer)
+  is static;
+
+
+  SetPolesColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+
+  SetKnotsColor (me : mutable; aColor : Color from Draw)
+        ---C++: inline
+     is static;
+
+
+  SetKnotsShape (me : mutable; Shape : MarkerShape from Draw)
+        ---C++: inline
+     is static;
+
+
+  KnotsShape (me)  returns MarkerShape from Draw
+        ---C++: inline
+     is static;
+  
+
+  KnotsColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+  
+
+  PolesColor (me)  returns Color from Draw
+        ---C++: inline
+     is static;
+    
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+	
+
+fields
+
+  drawPoles   : Boolean;
+  drawKnots   : Boolean;
+  knotsIsos   : Boolean;
+  knotsForm   : MarkerShape from Draw;
+  knotsLook   : Color from Draw;
+  knotsDim    : Integer;
+  polesLook   : Color from Draw;
+
+end BSplineSurface;

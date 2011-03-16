@@ -1,0 +1,593 @@
+-- File:        AIS_LocalContext.cdl
+-- Created:     Wed Sep  4 16:13:24 1996
+-- Author:      Robert COUBLANC
+--              <rob@robox.paris1.matra-dtv.fr>
+--              
+-- Modified     May  20th 98  :  
+--              Modification in Management of selected entities 
+--              Now we store the selected entity Owner in AIS_Selection.
+--              (no more links with Session...)
+--              Modifications in Management of hilight of detected entities
+--              VTN 23/11/99 BUC60614 Avoid to crash because
+--              myStdFilters array is too short.
+--   GG  : BUC60688 25/05/00 Add SetSensitivity() methods
+--   GG  : IMP150501 Remove oboslete method DragTo
+--              (See AIS_InteractiveContext)
+--   ZSV : IMP160701 Add InitDetected(),MoreDetected(),NextDetected(),
+--                       DetectedCurrentShape(),DetectedCurrentObject()
+--                       methods
+--        
+---Copyright:    Matra Datavision 1996
+
+
+private class LocalContext from AIS inherits TShared from MMgt
+
+        ---Purpose: Defines a specific context  for selection.      
+        --          It becomes possible to:
+        --          +  Load  InteractiveObjects  with   a mode   to be
+        --          activated +  associate InteractiveObjects   with a
+        --          set of  temporary   selectable Objects....   +   +
+        --          activate StandardMode  of selection  for  Entities
+        --          inheriting  BasicShape  from  AIS (Selection    Of
+        --          vertices, edges,   wires,faces...  + Add   Filters
+        --          acting on detected owners of sensitive primitives
+        --          
+        --          
+        --          -     automatically    highlight   shapes   and
+        --          InteractiveObjects  (highlight of  detected shape +
+        --          highlight of detected selectable...
+        --          
+
+uses
+    AsciiString               from TCollection,
+    ListOfInteger             from TColStd,
+    SequenceOfInteger         from TColStd,
+    MapOfTransient            from TColStd,
+    Array1OfPnt2d             from TColgp,
+    NameOfColor               from Quantity,
+    ShapeEnum                 from TopAbs,    
+    Shape                     from TopoDS,
+    View                      from V3d,
+    PresentationManager3d     from PrsMgr,
+    Projector                 from Select3D,
+    IndexedMapOfOwner         from SelectMgr,
+    EntityOwner               from SelectMgr,
+    OrFilter                  from SelectMgr,
+    Filter                    from SelectMgr,
+    SelectionManager          from SelectMgr,
+    SelectableObject          from SelectMgr ,
+    ListOfFilter              from SelectMgr,
+    BRepOwner                 from StdSelect,
+    ViewerSelector3d          from StdSelect,
+    InteractiveContext        from AIS,
+    ClearMode                 from AIS,
+    InteractiveObject         from AIS,
+    Shape                     from AIS,
+    DataMapOfSelStat          from AIS,
+    LocalStatus               from AIS, 
+    StatusOfPick              from AIS,
+    StatusOfDetection         from AIS,
+    SequenceOfInteractive     from AIS
+
+is
+
+    Create returns mutable LocalContext from AIS;
+    
+
+    Create (aCtx                : InteractiveContext from AIS;
+            anIndex             : Integer from Standard;
+            LoadDisplayed       : Boolean from Standard=Standard_True;
+            AcceptStandardModes : Boolean from Standard=Standard_True;
+            AcceptErase         : Boolean from Standard= Standard_False;
+            UseBothViewers      : Boolean from Standard= Standard_False)
+            returns mutable LocalContext from AIS;
+    ---Purpose: Constructor By Default, the  displayed objects are 
+    --          automatically loaded.
+
+
+    AcceptErase(me:mutable;aStatus : Boolean from Standard);
+    ---C++: inline
+    ---Purpose: authorize or not others contexts to erase
+    --          temporary displayed objects here;
+
+    AcceptErase(me) returns Boolean from Standard;
+    ---C++: inline
+
+    SetContext(me:mutable;aCtx:InteractiveContext from AIS);
+    
+    SelectionName(me) returns AsciiString from TCollection;
+    ---C++: inline
+    ---C++: return const&
+
+
+    Terminate(me: mutable; updateviewer : Boolean from Standard = Standard_True);
+
+    HasSameProjector(me;aPrj:Projector from Select3D)
+    returns Boolean from Standard;
+    ---Purpose: compares the current projector of the localContext
+    --          with <aPrj>
+    --          returns True if the projectors are identical.
+    --          (no need to update projection of selection primitives
+    --          when closing the local context)....
+
+    Reactivate(me:mutable);
+    ---Purpose: to be called when a upper local context was closed...
+    --          useful to put pack the right projector...
+
+                            ---Category: LOAD AND PREPARE 
+                            --           - INTERACTIVE   OBJECTS...
+                            --           - FILTERS
+                            --           - STANDARD MODES OF ACTIVATION
+
+
+
+
+    Display(me               : mutable;
+            anInteractive    : InteractiveObject from AIS;
+            DisplayMode      : Integer from Standard = 0;
+            AllowShapeDecomposition: Boolean from Standard = Standard_True; 
+            ActivationMode : Integer from Standard = 0)
+    returns Boolean from Standard;
+    ---Purpose: returns true if done...
+
+    Load(me             : mutable;
+         anInteractive   : InteractiveObject from AIS;
+         AllowShapeDecomposition: Boolean from Standard = Standard_True; 
+         ActivationMode : Integer from Standard = 0)
+    returns Boolean from Standard;
+    ---Purpose: loads <anInteractive> with nodisplay...
+    --          returns true if done
+    
+    Erase(me: mutable;
+          anInteractive   : InteractiveObject from AIS)
+    returns Boolean from Standard;
+    ---Purpose: returns true if done...
+          
+         
+    Remove(me          : mutable;
+           aSelectable : InteractiveObject from AIS)
+    returns Boolean from Standard;
+
+          
+    ClearPrs (me             : mutable;
+              anInteractive  : InteractiveObject from AIS;
+              aMode          : Integer from Standard)
+    returns Boolean from Standard;
+          
+    SetShapeDecomposition(me            : mutable;
+                          aStoredObject : InteractiveObject from  AIS; 
+                          aStatus       : Boolean  from  Standard); 
+    ---Purpose: allows  or  forbids   the   shape  decomposition  into
+    --          Activated Standard   Mode  for   <aStoredObject> 
+    --          does nothing if the object doesn't inherits 
+    --          BasicShape from AIS
+    
+    
+    Clear(me:mutable;atype: ClearMode from AIS = AIS_CM_All);
+    ---Purpose: according to <atype>  , clears the  different parts of
+    --          the selector (filters, modeof activation, objects...)
+ 
+
+
+
+    ActivateMode (me         : mutable; 
+                  aSelectable: InteractiveObject from AIS; 
+                  aMode      : Integer from Standard );
+    ---Purpose: optional : activation of a mode which is not 0 for a selectable...
+                      
+    DeactivateMode(me         : mutable; 
+                  aSelectable: InteractiveObject from AIS; 
+                  aMode      : Integer from Standard );
+    Deactivate(me         : mutable; 
+                  aSelectable: InteractiveObject from AIS);
+
+    ActivateStandardMode(me:mutable;aType:ShapeEnum from TopAbs);
+    ---Purpose: decomposition of shapes into <aType>
+   
+    
+    DeactivateStandardMode(me:mutable;aType:ShapeEnum from TopAbs);
+
+    StandardModes(me) returns ListOfInteger from TColStd;
+    ---C++: return const &
+    ---C++: inline
+
+
+
+    AddFilter(me:mutable;aFilter:Filter from SelectMgr);
+
+    RemoveFilter(me:mutable;aFilter:     Filter from SelectMgr);
+
+    
+    ListOfFilter(me) returns ListOfFilter from SelectMgr;
+    ---C++: return const &
+    ---C++: inline
+
+    Filter(me) returns any OrFilter from SelectMgr;
+    ---C++: return const &
+    ---C++: inline
+    
+
+    SetAutomaticHilight(me:mutable ; aStatus:Boolean) ;
+    ---Purpose: if <aStatus> = True , the shapes or subshapes detected
+    --          by the selector will be automatically hilighted in the
+    --          main viewer.
+    --          Else the user has to manage the detected shape outside the
+    --          Shape Selector....
+    ---C++: inline
+
+
+
+    AutomaticHilight(me) returns Boolean;
+    ---C++: inline
+
+
+
+                    ---Category: THE SELECTION PROCESS
+
+
+    MoveTo(me:mutable;Xpix,Ypix : Integer from Standard;
+                         aview : View from V3d)
+    returns StatusOfDetection from AIS;
+
+
+    HasNextDetected(me) returns Boolean from Standard;
+    ---C++: inline
+    ---Purpose: returns True if more than one entity
+    --          was detected at the last Mouse position.
+    
+    HilightNextDetected(me:mutable;aView:View from V3d)
+    returns Integer from Standard;
+    ---Purpose: returns True if  last detected. the next detected will
+    --          be first one (endless loop)
+
+    HilightPreviousDetected(me:mutable;aView:View from V3d)
+    returns Integer from Standard;
+
+    
+    UnhilightLastDetected(me:mutable;aView:View from V3d) returns Boolean from Standard;
+    ---Purpose: returns True if something was done...
+
+    Select(me: mutable;updateviewer : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+    ---Purpose: returns the number of selected
+    
+    ShiftSelect(me: mutable;updateviewer : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+
+    Select(me                      : mutable;
+           XPMin,YPMin,XPMax,YPMax : Integer from Standard;
+           aView                   : View from V3d;
+           updateviewer            : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+
+
+    ShiftSelect(me                      : mutable;
+                XPMin,YPMin,XPMax,YPMax : Integer from Standard;
+                aView                   : View from V3d;
+                updateviewer            : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+
+    Select(me                      : mutable;
+           Polyline                : Array1OfPnt2d from TColgp;
+           aView                   : View from V3d;
+           updateviewer            : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+
+    ShiftSelect(me                      : mutable;
+                Polyline                : Array1OfPnt2d from TColgp;
+                aView                   : View from V3d;
+                updateviewer            : Boolean from Standard = Standard_True)
+    returns StatusOfPick from AIS;
+
+    HilightPicked(me:mutable;updateviewer:Boolean from Standard =Standard_True) ;
+    
+    UnhilightPicked(me:mutable;updateviewer:Boolean from Standard = Standard_True) ;
+
+
+    UpdateSelected     (me           : mutable;
+                        updateviewer : Boolean from Standard = Standard_True); 
+
+    UpdateSelected     (me           : mutable;
+                        anobj        : InteractiveObject from AIS;
+                        updateviewer : Boolean from Standard = Standard_True); 
+    ---Purpose: Part of advanced selection highlighting mechanism.
+    --          If no owners belonging to anobj are selected, calls anobj->ClearSelected(),
+    --          otherwise calls anobj->HilightSelected(). This method can be used to avoid
+    --          redrawing the whole selection belonging to several Selectable Objects.
+        
+
+    SetSelected(me           : mutable;
+                anobj        : InteractiveObject from AIS;
+                updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose: useful  to  update selection with objects  coming from
+    --          Collector or stack
+
+    AddOrRemoveSelected(me           : mutable;
+                        anobj        : InteractiveObject from AIS;
+                        updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose: useful  to  update selection with objects  coming from
+    --          Collector or stack
+    AddOrRemoveSelected(me           : mutable;
+                        aShape       : Shape from TopoDS;
+                        updateviewer : Boolean from Standard=Standard_True);
+
+    AddOrRemoveSelected(me           : mutable;
+                        Ownr         : EntityOwner from SelectMgr;
+                        updateviewer : Boolean from Standard=Standard_True);
+
+
+
+    ClearSelected(me:mutable;updateviewer : Boolean from Standard=Standard_True);
+    ---Purpose: 
+
+                    
+                    ---Category: GET THE DETECTED
+
+
+    HasDetected     (me) returns Boolean from Standard;
+    ---C++: inline
+
+    InitDetected(me: mutable);
+    MoreDetected(me) returns Boolean from Standard;
+    NextDetected(me: mutable);
+    DetectedCurrentShape(me) returns Shape from TopoDS;
+    ---C++: return const &
+    DetectedCurrentObject(me) returns InteractiveObject from AIS;
+
+    HasDetectedShape(me) returns Boolean from Standard;
+    DetectedShape   (me) returns Shape from TopoDS;
+    ---C++: return const &
+    DetectedInteractive(me) returns InteractiveObject from AIS;
+    DetectedOwner   (me) returns EntityOwner from SelectMgr;
+
+
+                    ---Category: GET THE SELECTED
+
+    InitSelected     (me: mutable);
+    MoreSelected(me) returns Boolean from Standard;
+    NextSelected(me:mutable);
+    HasShape(me) returns Boolean from Standard;
+    ---Purpose: returns TRUE if the detected entity is a shape
+    --          coming from a Decomposition of an element.
+    SelectedShape(me) returns Shape from TopoDS;
+    ---C++: return const &
+
+    SelectedOwner(me) returns EntityOwner from SelectMgr;
+    IsSelected(me;aniobj: InteractiveObject from AIS) returns Boolean  from  Standard;
+    IsSelected(me;anOwner: EntityOwner from SelectMgr) returns Boolean from Standard;
+    SelectedInteractive(me) returns InteractiveObject from AIS;
+    HasApplicative (me) returns Boolean from Standard;
+    ---Purpose: returns TRUE if an interactive element
+    --          was associated with the current picked entity.
+    SelectedApplicative(me) returns any Transient from Standard;
+    ---C++: return const &
+
+
+
+
+
+
+                  ---Category: Management Of Temporary Attributes
+
+    SetDisplayPriority(me      : mutable;
+                       anObject: InteractiveObject from AIS;
+                       Prior   : Integer from Standard);
+
+    DisplayedObjects(me;theMapToFill : in out MapOfTransient from TColStd)
+    returns Integer from Standard;
+
+    IsIn(me;anObject : InteractiveObject from AIS)
+    returns Boolean from Standard;
+
+
+    IsDisplayed(me;anObject : InteractiveObject from AIS)
+    returns Boolean from Standard;
+
+    IsDisplayed(me;anObject : InteractiveObject from AIS;
+                aMode : Integer from Standard)
+    returns Boolean from Standard;
+
+    SelectionModes(me;anObject:InteractiveObject from AIS)
+    returns ListOfInteger from TColStd;
+    ---C++: return const &
+
+    SubIntensityOn(me:mutable; anObject : InteractiveObject from AIS ); 
+ 
+    SubIntensityOff(me:mutable; anObject : InteractiveObject from AIS ); 
+    
+    Hilight(me: mutable; anObject  : InteractiveObject from AIS);
+
+    Hilight(me:mutable; anObject  : InteractiveObject from AIS;aCol:NameOfColor  from  Quantity);
+
+    Unhilight(me:mutable; anObject : InteractiveObject from AIS);
+
+    IsHilighted(me;anObject : InteractiveObject from AIS)
+    returns Boolean from Standard;
+
+    IsHilighted(me;
+                anObject  : InteractiveObject from AIS;
+                WithColor : out Boolean from Standard;
+                HiCol     : out NameOfColor from Quantity)
+    returns Boolean from Standard;
+    
+    SetSensitivity(me:mutable;
+                        aPrecision: Real from Standard);
+    ---Level: Public
+    ---Purpose: Define the current selection sensitivity for
+    --          this local context according to the view size.
+    
+    SetSensitivity(me:mutable;
+                        aPrecision: Integer from Standard = 2);
+    ---Level: Public
+    ---Purpose: Define the current selection sensitivity for
+    --          this local context according to the view size.
+
+                        ---Category: IMMEDIATE MODE
+
+
+    BeginImmediateDraw (me:mutable)  returns Boolean from Standard;
+    ---Purpose: initializes the list of presentations to be displayed
+    --          returns False if No Local COnte
+
+    ImmediateAdd (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    returns Boolean from Standard;
+    ---Purpose: returns True if <anIObj> has been stored in the list.
+
+    ImmediateRemove (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    returns Boolean from Standard;
+    ---Purpose: returns True if <anIObj> has been removed from the list.
+
+    EndImmediateDraw(me:mutable;aView : View from V3d;DoubleBuf:Boolean from Standard=Standard_False)
+    returns Boolean from Standard;
+    ---Purpose: returns True if the immediate display has been done.
+
+    IsImmediateModeOn(me) returns Boolean from Standard;
+            
+                            ---Category: INTERNAL METHODS;
+
+    UpdateConversion(me:mutable);
+
+    UpdateSort(me:mutable);
+
+
+
+    Status(me) returns AsciiString from TCollection is private;
+    
+    Status(me;anObject : InteractiveObject from AIS)
+    returns any LocalStatus from AIS is private;
+    ---C++: return const&
+
+
+
+    LoadContextObjects(me:mutable);
+
+    UnloadContextObjects(me:mutable);
+
+    Process(me       : mutable;
+            anObject : SelectableObject from SelectMgr;
+            WithProj: Boolean from Standard = Standard_True) is static private;
+
+    Process(me:mutable;
+            WithProj: Boolean from Standard = Standard_True) is static private;
+    
+
+    ActivateStandardModes(me:mutable;anObject: SelectableObject from SelectMgr;
+            WithProj: Boolean from Standard = Standard_True)  is  static  private;
+
+    ManageDetected(me:mutable;
+                   aPickOwner : EntityOwner from SelectMgr;
+                   aview      : View  from  V3d) is static  private;
+
+    DetectedIndex(me:mutable) returns Integer from Standard is static private;
+    ---C++: inline
+    ---Purpose: returns 0  if the detected entity was Not FilterOK...
+  
+    Hilight(me:mutable;Own:EntityOwner from SelectMgr;aview:   View from V3d) is static  private; 
+    
+    
+    Unhilight(me:mutable;Ownr:EntityOwner from SelectMgr;aview: View from  V3d) is static  private;
+
+  
+    ClearObjects(me:mutable) is static private;
+
+    ClearDetected(me:mutable) is static private;
+
+    IsDecompositionOn(me) returns Boolean from Standard is static private;
+    
+    IsShape(me;anIndex:Integer from Standard) returns Boolean from Standard is static private;
+
+    IsValidForSelection(me;anIObj:InteractiveObject from AIS) returns Boolean from Standard is static private;
+    
+    IsValidIndex(me;anIndex:Integer from Standard) 
+    returns Boolean from Standard is static private;    
+    ---C++: inline
+    
+    ComesFromDecomposition(me; aPickedIndex : Integer from Standard)
+    returns Boolean from Standard is static private;
+
+
+    DisplayAreas(me:mutable;aviou:View from V3d);
+    
+    ClearAreas (me:mutable;
+                aView: View from V3d) is static;
+    ---Level: Internal 
+
+    HasFilters(me;aType:ShapeEnum from TopAbs) 
+    returns Boolean from Standard is private;
+    
+    DisplaySensitive(me:mutable;aView : View from V3d) is static; 
+    
+    ClearSensitive(me:mutable;aView:View from V3d) is static;
+
+
+        
+    MainSelector(me) returns any ViewerSelector3d from StdSelect;
+    ---C++: inline
+    ---C++: return const&
+
+
+    HilightTriangle(me:mutable;Rank:Integer from Standard;aViou:View from V3d) is static private;
+    ---Level: Internal 
+
+
+    FindSelectedOwnerFromIO(me;anIObj:InteractiveObject from AIS)
+    returns EntityOwner from SelectMgr is private;
+
+    FindSelectedOwnerFromShape(me;aShape : Shape from TopoDS)
+    returns EntityOwner from SelectMgr is private;
+
+
+
+fields
+
+    myCTX                              : InteractiveContext from AIS;
+    myLoadDisplayed,myAcceptStdMode    : Boolean from Standard;
+    myAcceptErase                      : Boolean from Standard;        
+
+    mySM               : SelectionManager      from SelectMgr;
+    myMainVS           : ViewerSelector3d      from StdSelect;
+    myMainPM           : PresentationManager3d from PrsMgr;
+    mySelName          : AsciiString           from TCollection;
+    myCollVS           : ViewerSelector3d      from StdSelect;
+    
+            -- The Objects and their attributes...
+    
+    myActiveObjects  : DataMapOfSelStat    from AIS;  
+    
+    
+            -- The  Filters...
+        
+    myFilters              : OrFilter      from SelectMgr;
+    myListOfStandardMode   : ListOfInteger from TColStd;
+
+    -- VTN myStdFilters : Filter from SelectMgr [7]; --internal mgt
+    myStdFilters : Filter from SelectMgr [9]; --internal mgt
+ 
+            -- Selection Process
+
+    myAutoHilight  : Boolean                   from Standard;
+    myMapOfOwner   : IndexedMapOfOwner         from SelectMgr;
+    mylastindex    : Integer                   from Standard;
+    mylastgood     : Integer                   from Standard;
+    myCurrentOwner : Integer                   from Standard;          
+
+
+    myDetectedSeq  : SequenceOfInteger from TColStd;
+    myCurDetected  : Integer from Standard;
+
+   -- the detected objects.
+    myAISDetectedSeq : SequenceOfInteractive from AIS;
+    myAISCurDetected : Integer from Standard;
+    -- This variables is used by following functions:
+    -- InitDetected(), MoreDetected(), NextDetected(), DetectedCurrentShape(), DetectedCurrentObject().
+    
+friends 
+
+    KeepTemporary from  InteractiveContext from AIS(me:mutable;anIObj:InteractiveObject from AIS;WhichMode  :  Integer  from  Standard  =  -1) 
+
+end LocalContext;
+
+
+
+
+

@@ -1,0 +1,55 @@
+-- File:        TextLiteral.cdl
+-- Created:     Fri Dec  1 11:11:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TextLiteral from StepVisual 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	HAsciiString from TCollection, 
+	Axis2Placement from StepGeom, 
+	TextPath from StepVisual, 
+	FontSelect from StepVisual
+is
+
+	Create returns mutable TextLiteral;
+	---Purpose: Returns a TextLiteral
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aLiteral : mutable HAsciiString from TCollection;
+	      aPlacement : Axis2Placement from StepGeom;
+	      aAlignment : mutable HAsciiString from TCollection;
+	      aPath : TextPath from StepVisual;
+	      aFont : FontSelect from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetLiteral(me : mutable; aLiteral : mutable HAsciiString);
+	Literal (me) returns mutable HAsciiString;
+	SetPlacement(me : mutable; aPlacement : Axis2Placement);
+	Placement (me) returns Axis2Placement;
+	SetAlignment(me : mutable; aAlignment : mutable HAsciiString);
+	Alignment (me) returns mutable HAsciiString;
+	SetPath(me : mutable; aPath : TextPath);
+	Path (me) returns TextPath;
+	SetFont(me : mutable; aFont : FontSelect);
+	Font (me) returns FontSelect;
+
+fields
+
+	literal : HAsciiString from TCollection;
+	placement : Axis2Placement from StepGeom; -- a SelectType
+	alignment : HAsciiString from TCollection;
+	path : TextPath from StepVisual; -- an Enumeration
+	font : FontSelect from StepVisual; -- a SelectType
+
+end TextLiteral;

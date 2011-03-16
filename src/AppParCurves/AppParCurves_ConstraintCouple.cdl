@@ -1,0 +1,56 @@
+-- File:	AppParCurves_ConstraintCouple.cdl
+-- Created:	Wed Feb 24 16:50:46 1993
+-- Author:	Laurent PAINNOT
+--		<lpa@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ConstraintCouple from AppParCurves
+	    ---Purpose: associates an index and a constraint for an object.
+    	    -- This couple is used by AppDef_TheVariational when performing approximations.
+uses Constraint from AppParCurves
+
+is 
+
+    Create returns ConstraintCouple;
+    	---Purpose: returns an indefinite ConstraintCouple.
+
+    Create(TheIndex: Integer; Cons: Constraint)
+    	---Purpose: Create a couple the object <Index> will have the 
+    	--          constraint <Cons>.
+
+    returns ConstraintCouple;
+
+
+    Index(me)
+    	---Purpose: returns the index of the constraint object.
+
+    returns Integer
+    is static;
+    
+
+    Constraint(me) 
+    	---Purpose: returns the constraint of the object.
+
+    returns Constraint
+    is static;
+    
+
+    SetIndex(me: in out; TheIndex: Integer)
+    	---Purpose: Changes the index of the constraint object.
+    
+    is static;
+    
+    
+    SetConstraint(me: in out; Cons: Constraint)
+    	---Purpose: Changes the constraint of the object.
+    
+    is static;
+    
+    
+fields
+
+myIndex:      Integer;
+myConstraint: Constraint from AppParCurves;
+
+end ConstraintCouple;

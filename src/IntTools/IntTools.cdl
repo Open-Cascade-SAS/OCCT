@@ -1,0 +1,238 @@
+-- File:	IntTools.cdl
+-- Created:	Thu May 18 13:34:39 2000
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2000
+
+package IntTools
+
+	---Purpose: Contains classes for intersection and classification
+	---         purposes and accompanying classes
+uses
+    
+    TCollection, 
+    TopoDS, 
+    TopAbs, 
+    TColStd, 
+    BRepAdaptor, 
+    BRepTopAdaptor,
+    SortTools, 
+    TopTools, 
+    math,
+    gp, 
+    Bnd,
+    Adaptor3d,
+    GeomAdaptor,
+    Geom,
+    Geom2d,
+    GeomInt,  
+    GeomAbs,
+    GeomAPI,
+    Extrema,
+    IntPatch, 
+    IntSurf, 
+    BRepClass3d, 
+    TColgp
+
+is
+    	
+    class  Range;	       	
+    class  CommonPrt; 
+    class  Root; 
+    class  Compare; 
+    class  CompareRange;     
+
+    class  EdgeEdge;
+    	---Purpose: class provides the Edge/Edge algorithm 
+
+    class  EdgeFace;
+    	---Purpose: class provides the Edge/Face algorithm 
+
+    class  FClass2d;
+    	---Purpose: class provides classification of a point in a face
+
+    class  LineConstructor;
+    	---Purpose: class provides post-processing of results of 
+	---         surfaces intersection
+
+    -----
+    class MarkedRangeSet;
+    	---Purpose: auxiliary class for range management
+
+--modified by NIZHNY-MKK  Wed Oct  5 18:08:38 2005.BEGIN
+    class BaseRangeSample;
+    	---Purpose: base class for range index management
+    
+    class CurveRangeSample;
+    	---Purpose: class for range index management of curve
+    
+    class SurfaceRangeSample;
+	---Purpose: class for range index management of surface
+
+    class CurveRangeLocalizeData;
+    
+    class SurfaceRangeLocalizeData;
+--modified by NIZHNY-MKK  Wed Oct  5 18:08:43 2005.END
+   
+    class BeanFaceIntersector;
+    	---Purpose: class provides computing ranges of parameters
+	---         of edge/face intersection.
+
+    class BeanBeanIntersector;
+    	---Purpose: class provides computing ranges of parameters
+	---         of edge/edge intersection.
+
+    -----
+    class  Curve;
+    	---Purpose: class is a container of
+	---         one 3d curve
+	---         two 2d curves
+    -----
+
+    class  PntOnFace;
+    class  PntOn2Faces; 
+      
+    class  TopolTool;
+    	---Purpose: class redefines TopolTool from Adaptor3d
+
+    class  FaceFace;
+    	---Purpose: class provides the Face/Face algorithm
+    --- 
+
+    class  ShrunkRange;
+    	---Purpose: class provides computing and storage of shrunk range
+	---         for an edge bounded by two vertices
+    
+    class  Context;
+    	---Purpose: class is a container of a large number of reusable
+	---         projection and classification algorithms
+	
+    class  Tools; 
+    	---Purpose: class is a container of usefull geometrical and
+	---         topological algorithms
+    
+    generic class CArray1;   
+    ---
+    ---                          P  o  i  n  t  e  r  s  	        
+    --- 
+    pointer PContext to Context from IntTools;  
+    ---
+    ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
+    ---   
+    class SequenceOfPntOn2Faces instantiates  
+    	Sequence from TCollection(PntOn2Faces from IntTools); 
+    --
+    class SequenceOfCurves instantiates  
+    	Sequence from TCollection(Curve from IntTools); 
+	
+    
+    class  SequenceOfRanges  instantiates  
+    	Sequence from TCollection(Range from IntTools); 
+
+    class  CArray1OfInteger  instantiates  
+    	CArray1(Integer from Standard); 
+  
+    class  CArray1OfReal  instantiates  
+    	CArray1(Real from Standard); 
+	 
+    class  SequenceOfRoots   instantiates  
+    	Sequence from TCollection(Root  from IntTools); 
+	 
+    class  Array1OfRoots     instantiates  
+    	Array1    from TCollection  (Root from IntTools);  
+     
+    class  Array1OfRange     instantiates  
+    	Array1    from TCollection  (Range from IntTools); 
+	 
+    class  QuickSort         instantiates  
+    	QuickSort from SortTools   (Root from IntTools, 
+	    	    	    	    Array1OfRoots from IntTools, 
+	    	    	    	    Compare from IntTools); 
+				    
+    class  QuickSortRange    instantiates  
+    	QuickSort from SortTools   (Range from IntTools, 
+	    	    	    	    Array1OfRange from IntTools, 
+	    	    	    	    CompareRange from IntTools); 
+    class  SequenceOfCommonPrts   instantiates  
+    	Sequence from TCollection(CommonPrt from IntTools); 			    
+	 
+    class  IndexedDataMapOfTransientAddress instantiates
+    	IndexedDataMap from TCollection(Transient      from Standard,
+	    	    	    	    	Address        from Standard,
+                                        MapTransientHasher from TColStd);	
+    
+--modified by NIZHNY-MKK  Wed Oct  5 18:06:39 2005
+    class  ListOfCurveRangeSample  instantiates  
+    	List from TCollection(CurveRangeSample from IntTools);
+
+    class  ListOfSurfaceRangeSample  instantiates  
+    	List from TCollection(SurfaceRangeSample from IntTools);
+
+    class  ListOfBox  instantiates  
+    	List from TCollection(Box from Bnd);
+	
+    class CurveRangeSampleMapHasher;
+    	---Purpose: class for range index management of curve
+    
+    class SurfaceRangeSampleMapHasher;
+    
+    class MapOfCurveSample instantiates 
+    	Map from TCollection(CurveRangeSample from IntTools,
+                             CurveRangeSampleMapHasher from IntTools);
+			     
+    class MapOfSurfaceSample instantiates 
+    	Map from TCollection(SurfaceRangeSample from IntTools,
+    	    	    	     SurfaceRangeSampleMapHasher from IntTools);
+    
+    class DataMapOfCurveSampleBox instantiates 
+    	DataMap from TCollection(CurveRangeSample from IntTools,
+	    	    	    	 Box              from Bnd,
+				 CurveRangeSampleMapHasher from IntTools);
+
+    class DataMapOfSurfaceSampleBox instantiates 
+    	DataMap from TCollection(SurfaceRangeSample from IntTools,
+	    	    	    	 Box              from Bnd,
+				 SurfaceRangeSampleMapHasher from IntTools);
+    -----------------------------------------------------
+    --  Block  of  static  functions  
+    -----------------------------------------------------  
+    Length  (E : Edge from TopoDS) 
+    	returns  Real  from  Standard; 
+    ---Purpose:  returns the length of the edge;	 
+
+    RemoveIdenticalRoots  (aSeq  :out SequenceOfRoots from IntTools; 
+    	    	    	   anEpsT:    Real from Standard); 
+    ---Purpose: Remove from  the  sequence aSeq the Roots  that  have  
+    --          values ti and tj such as  |ti-tj]  <  anEpsT.     
+
+    SortRoots (aSeq  :out SequenceOfRoots from IntTools; 
+    	       anEpsT:    Real from Standard);	 
+    ---Purpose: Sort the sequence aSeq of the Roots to arrange the 
+    --          Roons  in  increasing  order 
+    FindRootStates  (aSeq  :out SequenceOfRoots from IntTools; 
+                     anEpsNull:    Real from Standard);
+    ---Purpose: Find the states (before  and  after) for  each  Root  
+    --          from  the sequence aSeq 
+     
+    Parameter (P          : Pnt   from gp; 
+   	       Curve      : Curve from Geom; 
+               aParm      : out Real  from  Standard) 
+	returns  Integer from Standard; 	        
+ 
+    GetRadius(C:  Curve  from  BRepAdaptor; 
+    	      t1,t3:Real  from  Standard; 
+	      R:out Real  from  Standard) 
+        returns  Integer from Standard;    
+	 
+
+    PrepareArgs(C:  in out Curve  from  BRepAdaptor;  
+                tMax,tMin:  Real  from  Standard; 
+		Discret  :  Integer from Standard;    
+		Deflect  :  Real  from  Standard;  
+	        anArgs   :  out  CArray1OfReal  from IntTools) 
+        returns  Integer from Standard; 
+
+end IntTools; 
+
+
+

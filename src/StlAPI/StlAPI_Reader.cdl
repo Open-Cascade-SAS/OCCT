@@ -1,0 +1,20 @@
+-- File:	StlAPI_Reader.cdl
+-- Created:	Fri Jun 23 14:36:58 2000
+-- Author:	Sergey MOZOKHIN
+--		<smh@russox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Reader from StlAPI 
+
+	---Purpose: Reading from stereolithography format.
+
+uses
+    Shape from TopoDS,
+    Mesh from StlMesh
+is
+    Create;
+    
+    Read(me : in out; aShape : in out Shape from TopoDS; aFileName : CString from Standard);
+    
+end Reader;

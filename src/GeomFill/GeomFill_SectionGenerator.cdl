@@ -1,0 +1,74 @@
+-- File:	GeomFill_SectionGenerator.cdl
+-- Created:	Fri Feb 18 15:37:04 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SectionGenerator from GeomFill inherits Profiler from GeomFill
+
+    ---Purpose: gives  the  functions  needed  for  instantiation from
+    --          AppSurf in AppBlend.   Allow  to  evaluate  a  surface
+    --          passing by all the curves if the Profiler.
+
+
+uses
+    Array1OfPnt     from TColgp,
+    Array1OfVec     from TColgp,
+    Array1OfPnt2d   from TColgp,
+    Array1OfVec2d   from TColgp,
+    Array1OfReal    from TColStd,
+    HArray1OfReal    from TColStd,
+    Array1OfInteger from TColStd
+    
+is
+
+  Create returns SectionGenerator from GeomFill;
+
+  SetParam(me  :  in  out  ; Params  :  HArray1OfReal  from  TColStd);
+
+  GetShape(me; NbPoles   : out Integer from Standard;
+               NbKnots   : out Integer from Standard;
+               Degree    : out Integer from Standard;
+               NbPoles2d : out Integer from Standard)
+  is static;
+
+  Knots(me; TKnots: out Array1OfReal from TColStd)
+  is static;
+
+  Mults(me; TMults: out Array1OfInteger from TColStd)
+  is static;
+
+  Section(me; P        : Integer           from Standard; 
+    	      Poles    : out Array1OfPnt   from TColgp;
+	      DPoles   : out Array1OfVec   from TColgp;
+    	      Poles2d  : out Array1OfPnt2d from TColgp;
+	      DPoles2d : out Array1OfVec2d from TColgp;
+	      Weigths  : out Array1OfReal  from TColStd;
+	      DWeigths : out Array1OfReal  from TColStd)
+
+	---Purpose: Used for the first and last section 
+	--          The method returns Standard_True if the derivatives
+	--          are computed, otherwise it returns Standard_False.
+
+  returns Boolean from Standard
+  is static;
+
+  Section(me; P       : Integer           from Standard; 
+    	      Poles   : out Array1OfPnt   from TColgp;
+    	      Poles2d : out Array1OfPnt2d from TColgp;
+	      Weigths : out Array1OfReal  from TColStd)
+  is static;
+
+
+  Parameter(me; P: Integer)
+    ---Purpose: Returns  the parameter of   Section<P>, to impose  it for the
+    --          approximation. 
+    returns Real from Standard
+    is static;
+
+    
+fields
+    myParams   : HArray1OfReal from TColStd  is  protected;
+
+end SectionGenerator;

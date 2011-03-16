@@ -1,0 +1,31 @@
+-- File:	StepSelect.cdl
+-- Created:	Thu Dec 22 11:03:12 1994
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1994
+
+
+package StepSelect
+
+    ---Purpose : This package defines the library of the tools used for every
+    --           kind of STEP Files, i.e. whatever the considered Protocol.
+
+uses MMgt, TCollection, TColStd, Message,
+     Interface, IFGraph, IFSelect, StepData
+
+is
+
+    class StepType;
+
+    deferred class ModelModifier  instantiates  ModelModifier from IFSelect
+    	(StepModel from StepData, Protocol from StepData);
+    deferred class FileModifier   instantiates 	FileModifier  from IFSelect
+    	(StepWriter from StepData);
+
+    class FloatFormat;
+
+    class WorkLibrary;
+
+    class Activator;
+
+end StepSelect;

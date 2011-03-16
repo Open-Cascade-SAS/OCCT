@@ -1,0 +1,68 @@
+-- File:	Compare.cdl
+-- Created:	Wed Sep 23 10:52:07 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class Compare  from IFGraph  inherits GraphContent
+
+    	---Purpose : this class evaluates effect of two compared sub-parts :
+    	--           cumulation (union), common part (intersection-overlapping)
+    	--           part specific to first sub-part or to the second one
+    	--           Results are kept in a Graph, several question can be set
+    	--           Basic Iteration gives Cumulation (union)
+
+uses Transient, EntityIterator, Graph
+
+is
+
+    Create (agraph : Graph) returns Compare;
+    ---Purpose : creates empty Compare, ready to work
+
+    GetFromEntity (me : in out; ent : any Transient; first : Boolean);
+    ---Purpose : adds an entity and its shared ones to the list :
+    --           first True means adds to the first sub-list, else to the 2nd
+
+    GetFromIter (me : in out; iter : EntityIterator; first : Boolean);
+    ---Purpose : adds a list of entities (as an iterator) as such, that is,
+    --           their shared entities are not considered (use AllShared to
+    --           have them)
+    --           first True means adds to the first sub-list, else to the 2nd
+
+    Merge (me : in out);
+    ---Purpose : merges the second list into the first one, hence the second
+    --           list is empty
+
+    RemoveSecond (me : in out);
+    ---Purpose : Removes the contents of second list
+
+    KeepCommon (me : in out);
+    ---Purpose : Keeps only Common part, sets it as First list and clears
+    --           second list
+
+    ResetData (me : in out);
+    ---Purpose : Allows to restart on a new data set
+
+    	-- --   Results   -- --
+    	--   More-Next-Value-Entity give all entities taken into the Cumulation
+    	--   other informations are provided, as EntityIterator : hence they
+    	--   are available for other evaluations
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : Recomputes result of comparing to sub-parts
+
+    Common (me) returns EntityIterator;
+    ---Purpose : returns entities common to the both parts
+
+    FirstOnly (me) returns EntityIterator;
+    ---Purpose : returns entities which are exclusively in the first list
+
+    SecondOnly (me) returns EntityIterator;
+    ---Purpose : returns entities which are exclusively in the second part
+
+fields
+
+    thegraph : Graph;
+
+end Compare;

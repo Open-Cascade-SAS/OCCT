@@ -1,0 +1,476 @@
+--
+-- File:	Graphic3d_MaterialAspect.cdl
+-- Created:	Mardi 27 Aout 1991
+-- Author:	NW,JPB,CAL
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+--        28-07-97 : PCT ; support for texture mapping
+--        08-04-98 : FGU ; support for emission
+--        26-03-99 : FMN ; Compatibilite ascendante: Ajout methodes SetColor() et Color()
+--        09-04-99 : GG ; Compatibilite ascendante:
+--                         NameOfPhysicalMaterial disparait.
+--        23-11-99 : GG : GER61351 Add Name() & Reset() methods
+--	  IMP150200: GG : Add IsEqual() IsDifferent() methods.
+--			  Add NumberOfMaterials() MaterialName() class methods
+--	  IMP171201: GG : Add MaterialName(), SetMaterialName()
+--			  instance methods and field MyRequestedMaterialName
+
+class MaterialAspect from Graphic3d
+
+	---Version:
+
+	---Purpose: This class allows the definition of the type of a surface.
+	--  Keywords: Material, FillArea, Shininess, Ambient, Color, Diffuse,
+	--	     Specular, Transparency, Emissive, ReflectionMode,
+	--	     BackFace, FrontFace, Reflection, Absorbtion
+
+	---Warning:
+	---References:
+
+uses
+
+	Color			from Quantity,
+
+	NameOfMaterial		from Graphic3d,
+	TypeOfReflection	from Graphic3d,
+	TypeOfMaterial          from Graphic3d,
+	AsciiString		from TCollection
+
+raises
+
+	MaterialDefinitionError	from Graphic3d,
+	OutOfRange from Standard
+
+is
+
+	Create
+		returns MaterialAspect from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a material from default values.
+	---Material is generic
+
+	Create ( AName	: NameOfMaterial from Graphic3d )
+		 returns MaterialAspect from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a generic material calls <AName>
+	
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	IncreaseShine ( me	: in out;
+			ADelta	: Real from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Increases or decreases the luminosity of <me>.
+	--	    <ADelta> is a signed percentage.
+	---Category: Methods to modify the class definition
+
+	SetAmbient ( me		: in out;
+		     AValue	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the reflection properties of the surface.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is
+	--	    a negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+
+	SetDiffuse ( me		: in out;
+		     AValue	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the reflection properties of the surface.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is a
+	--	    negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+	
+	SetEmissive ( me		: in out;
+		     AValue	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the reflection properties of the surface.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is a
+	--	    negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+	
+	SetShininess ( me	: in out;
+		      AValue	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the luminosity of the surface.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is a
+	--	    negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+
+	SetSpecular ( me	: in out;
+		      AValue	: Real from Standard )
+	---Level: Public
+	---Purpose: Modifies the reflection properties of the surface.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is a
+	--	    negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+
+	SetTransparency ( me		: in out;
+			  AValue	: Real from Standard )
+	---Level: Public
+	---Purpose:  Modifies the transparency coefficient of the surface.
+	--  <AValue> = 0. opaque. (default)
+	--  <AValue> = 1. transparent.
+	--  Transparency is applicable to materials that have at least
+	--  one of reflection modes (ambient, diffuse, specular or emissive)
+    	--  enabled. See also SetReflectionModeOn() and SetReflectionModeOff() methods.
+	--      
+	--  NOTE: In order for transparency specified through this method to 
+	--  take effect, it is necessary to enable transparency 
+	--  in the viewer. This can be done either directly -
+	--  see Visual3d_ViewManager::SetTransparency(Standard_Boolean),
+	--  or indirectly - by calling AIS_InteractiveObject::SetTransparency()
+	--  before an object is added to an interactive context, or by
+	--  calling AIS_InteractiveContext::SetTransparency() for a given 
+	--  interactive object already displayed.
+	--  Category: Methods to modify the class definition
+	--  Warning: Raises MaterialDefinitionError if <AValue> is a
+	--	    negative value or greater than 1.0.
+	raises MaterialDefinitionError from Graphic3d is static;
+
+	SetColor ( me		: in out;
+		   AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the ambient colour of the surface.
+	--  Category: Methods to modify the class definition
+	
+	SetAmbientColor ( me		: in out;
+		          AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the ambient colour of the surface.
+	---Category: Methods to modify the class definition
+	
+	SetDiffuseColor ( me		: in out;
+		          AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the difuse colour of the surface.
+	---Category: Methods to modify the class definition
+	
+	SetSpecularColor ( me		: in out;
+		          AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the specular colour of the surface.
+	---Category: Methods to modify the class definition
+	
+	SetEmissiveColor ( me		: in out;
+		          AColor	: Color from Quantity )
+		is static;
+	---Level: Public
+	---Purpose: Modifies the emissive colour of the surface.
+	---Category: Methods to modify the class definition
+
+	
+	SetReflectionModeOn ( me	: in out;
+			      AType	: TypeOfReflection from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Activates the reflective properties of the surface <AType>.
+	--
+	--	    TypeOfReflection : TOR_AMBIENT
+	--			       TOR_DIFFUSE
+	--			       TOR_SPECULAR
+	--                             TOR_EMISSION
+	-- 1, 2, 3 or 4 types of reflection can be set for a given surface.
+	---Category: Methods to modify the class definition
+
+	SetReflectionModeOff ( me	: in out;
+			       AType	: TypeOfReflection from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates the reflective properties of
+	--	    the surface <AType>.
+	--
+	--	    TypeOfReflection : TOR_AMBIENT
+	--			       TOR_DIFFUSE
+	--			       TOR_SPECULAR
+	--                             TOR_EMISSION
+	--  1, 2, 3 or 4 types of reflection can be set off for a given surface.
+	--  Disabling diffuse and specular reflectance is useful for efficient visualization
+	--  of large amounts of data as definition of normals for graphic primitives is not needed
+    	--  when only "all-directional" reflectance is active.
+	--
+	--  NOTE: Disabling all four reflection modes also turns off the following effects:
+	--  1. Lighting. Colors of primitives are not affected by the material properties when lighting is off.
+	--  2. Transparency. 
+	---Category: Methods to modify the class definition
+
+        SetMaterialType ( me	: in out;
+			  AType	: TypeOfMaterial from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Set MyMaterialType to the value of parameter <AType>
+	--
+	--	    TypeOfMaterial :   MATERIAL_ASPECT
+	--			       MATERIAL_PHYSIC
+	---Category: Methods to modify the class definition
+
+        SetMaterialName ( me	: in out;
+			  AName	: CString from Standard )
+		is static;
+	---Level: Public
+	---Purpose: The current matarial become a "UserDefined" material.
+	--	    Set the name of the "UserDefined" material.
+	---Category: Methods to modify the class definition
+
+    	SetEnvReflexion(me  :  in  out; 
+			AValue  :  ShortReal  from  Standard  );
+
+	Reset(me : out);
+        ---Level: Public
+        ---Purpose: Resets the material with the original values according to
+        -- the material name but leave the current color values untouched 
+	-- for the material of type ASPECT.
+        ---Category: Methods to modify the class definition
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	Color ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the ambient colour of the surface.
+	---Category: Inquire methods
+
+	AmbientColor ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the ambient colour of the surface.
+	---Category: Inquire methods
+		
+	DiffuseColor ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the diffuse colour of the surface.
+	---Category: Inquire methods
+	
+	SpecularColor ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the specular colour of the surface.
+	---Category: Inquire methods
+	
+	EmissiveColor ( me )
+		returns Color from Quantity
+		is static;
+	---Level: Public
+	---Purpose: Returns the emissive colour of the surface.
+	---Category: Inquire methods
+	
+	Ambient ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the reflection properties of the surface.
+	---Category: Inquire methods
+
+	Diffuse ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the reflection properties of the surface.
+	---Category: Inquire methods
+	
+	Specular ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the reflection properties of the surface.
+	---Category: Inquire methods
+
+	Transparency ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the transparency coefficient of the surface.
+	---Category: Inquire methods
+
+        Emissive ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the emissive coefficient of the surface.
+	---Category: Inquire methods 
+
+	Shininess ( me )
+		returns Real from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns the luminosity of the surface.
+	---Category: Inquire methods
+
+	ReflectionMode ( me;
+			 AType	: TypeOfReflection from Graphic3d )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if the reflection mode is active,
+	--	    Standard_False otherwise.
+	---Category: Inquire methods
+	
+	MaterialType ( me;
+		       AType	: TypeOfMaterial from Graphic3d )
+		returns Boolean from Standard
+		is static;
+	---Level: Public
+	---Purpose: Returns Standard_True if MyMaterialType equal the parameter AType,
+	--	    Standard_False otherwise.
+	---Category: Inquire methods
+
+    	EnvReflexion(me) 
+	    	returns  ShortReal  from  Standard;
+
+        Name(me)
+                returns NameOfMaterial from Graphic3d;
+        ---Level: Public
+        ---Purpose: Returns the material name.
+        ---Category: Inquire methods
+
+        IsDifferent ( me;
+                      Other     : MaterialAspect from Graphic3d )
+                returns Boolean from Standard is static;
+        ---Purpose: Returns Standard_True if the materials <me> and
+        --          <Other> are different.
+        ---Category: Inquire methods
+        ---C++: alias operator !=
+
+        IsEqual ( me;
+                      Other     : MaterialAspect from Graphic3d )
+                returns Boolean from Standard is static;
+        ---Purpose: Returns Standard_True if the materials <me> and
+        --          <Other> are identical.
+        ---Category: Inquire methods
+        ---C++: alias operator ==
+
+        NumberOfMaterials(myclass) returns Integer from Standard;
+        ---Purpose:
+        -- Returns the number of predefined textures.
+        ---Level: Public
+
+        MaterialName(myclass; aRank: Integer from Standard)
+            returns CString from Standard
+        raises OutOfRange from Standard;
+        ---Purpose:
+        -- Returns the name of the predefined material of rank <aRank>
+        --  Trigger: when <aRank> is < 1 or > NumberOfMaterials.
+        ---Level: Public
+
+        MaterialName(me)
+            returns CString from Standard;
+        ---Purpose:
+        -- Returns the name of this material
+        ---Level: Public
+
+        MaterialType(myclass; aRank: Integer from Standard)
+            returns TypeOfMaterial from Graphic3d 
+        raises OutOfRange from Standard;
+        ---Purpose:
+        -- Returns the type of the predefined material of rank <aRank>
+        --  Trigger: when <aRank> is < 1 or > NumberOfMaterials.
+        ---Level: Public
+
+        ----------------------------
+        -- Category: Private methods
+        ----------------------------
+
+        Init ( me : out; AName  : NameOfMaterial from Graphic3d) is private;
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_MaterialAspect
+--
+-- purpose	:	Declaration of variables specific to the definition
+--			of materials.
+--
+-- Reminders	:	A material is defines by:
+--			- A coefficient of transparency
+--			- A coefficient of diffuse reflection
+--			- A coefficient of ambiant reflection
+--			- A coefficient of specular reflection
+--                      - A emissive coefficient
+--
+--			Two properties define a material :
+--			- its transparency
+--			- its reflection which is to say its properties of
+--			- absorbtion and diffusion of light
+--
+--			The diffuse reflection is seen as a component
+--			of the colour of the object.
+--			The specular reflection is seen as a component
+--			of the colour of the light source
+--
+--			To determine the three colours of reflection,
+--			four things are required:
+--			- A coefficient of diffuse reflection
+--			- A coefficient of ambiant reflection
+--			- A coefficient of specular reflection
+--
+--			( Under GL, the Silicon graphics interface,
+--			we need to determine 3 colours )
+--
+-- References	:	Getting started with DEC PHIGS, appendix C
+--			Iris Advanced Graphics, unit D
+--
+--
+	-- the coefficient of diffuse reflection, the colour, and the activity
+	MyDiffuseCoef		:	ShortReal from Standard;
+	MyDiffuseColor		:	Color from Quantity;
+	MyDiffuseActivity	:	Boolean from Standard;
+
+	-- the coefficient of ambient reflection, the colour
+	-- and the activity
+	MyAmbientCoef		:	ShortReal from Standard;
+	MyAmbientColor		:	Color from Quantity;
+	MyAmbientActivity	:	Boolean from Standard;
+
+	-- the coefficient of specular reflection, the colour
+	-- and the activity
+	MySpecularCoef		:	ShortReal from Standard;
+	MySpecularColor		:	Color from Quantity;
+	MySpecularActivity	:	Boolean from Standard;
+	
+	-- the coefficient of emissive reflection
+	MyEmissiveCoef          :       ShortReal from Standard;
+	MyEmissiveColor         :       Color from Quantity;
+	MyEmissiveActivity      :       Boolean from Standard;
+
+	-- the coefficient of transparency
+	MyTransparencyCoef	:	ShortReal from Standard;
+
+	-- the coefficient of luminosity
+	MyShininess		:	ShortReal from Standard;
+
+
+    	-- the coeficient of reflexion for the environment texture
+    	MyEnvReflexion          :       ShortReal  from  Standard;
+	
+	-- the type of material
+	--MyMaterialType          :       Boolean from Standard;
+	MyMaterialType          :       TypeOfMaterial from Graphic3d;
+
+        -- the Name of material
+        MyMaterialName          : NameOfMaterial from Graphic3d;
+        MyRequestedMaterialName : NameOfMaterial from Graphic3d;
+
+	-- the string name of the material
+	MyStringName		: AsciiString from TCollection;
+
+end MaterialAspect;

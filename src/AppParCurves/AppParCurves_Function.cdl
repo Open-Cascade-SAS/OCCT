@@ -1,0 +1,168 @@
+-- File:	Function.cdl
+-- Created:	Fri Sep 20 15:07:26 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+generic class Function from AppParCurves (
+    	    	    	      MultiLine  as any;
+			      ToolLine   as any; -- as ToolLine(MultiLine)
+    	    	    	      Squares    as any;
+			      ResolCons  as any)
+
+    inherits MultipleVarFunctionWithGradient from math
+
+    ---Purpose: This function inherits MultipleVarFunctionWithGradient to be 
+    --          used in the mathematical algorithm BFGS.
+    --          It computes the value of the function 
+    --          F=sum(||Qui - B*Pi||)2 where Pi are Poles of the Bezier curves 
+    --          approximating the given MultiLine SSP and ui the parameters 
+    --          associated to the points Qi of SSP.
+    --          It also computes the gradient for values ui of the parameter.
+
+
+uses MultiCurve                from AppParCurves, 
+     HArray1OfConstraintCouple from AppParCurves,
+     Constraint                from AppParCurves,
+     Vector                    from math, 
+     Matrix                    from math,
+     HArray1OfInteger          from TColStd
+
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: Vector; Deg: Integer)
+       ---Purpose: initializes the fields of the function. The approximating
+       --          curve has the desired degree Deg.
+
+    returns Function from AppParCurves;
+    
+    
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function. It 
+    	--          corresponds to the number of MultiPoints.
+
+    returns Integer
+    is static;
+    
+    
+
+    Perform(me: in out; X: Vector)
+    	---Purpose: this method is used each time Value or Gradient is
+    	--           needed.
+    
+    is static protected;
+
+
+    Value(me: in out; X: Vector; F: out Real) 
+    	---Purpose: this method computes the new approximation of the 
+    	--          MultiLine
+    	--          SSP and calculates F = sum (||Pui - Bi*Pi||2) for each 
+    	--          point of the MultiLine.
+    
+    returns Boolean
+    is static;
+
+
+    Gradient(me: in out; X: Vector; G: out Vector)
+    	---Purpose: returns the gradient G of the sum above for the 
+    	--          parameters Xi.
+
+    returns Boolean
+    is static;
+    
+    
+    Values(me: in out; X: Vector; F: out Real; G: out Vector)
+    	---Purpose: returns the value F=sum(||Pui - Bi*Pi||)2.
+    	--          returns the value G = grad(F) for the parameters Xi.
+
+    returns Boolean
+    is static;
+    
+    
+    
+    NewParameters(me)
+    	---Purpose: returns the new parameters of the MultiLine.
+    	---C++: return const&
+    returns Vector
+    is static;
+
+
+    CurveValue(me: in out)
+    	---Purpose: returns the MultiCurve approximating the set after
+    	--          computing the value F or Grad(F).
+    	---C++: return const&
+    returns MultiCurve from AppParCurves
+    is static;
+    
+
+    Error(me; IPoint, CurveIndex: Integer)
+    	---Purpose: returns the distance between the MultiPoint of range 
+    	--          IPoint and the curve CurveIndex.
+    
+    returns Real
+    is static;
+
+
+    MaxError3d(me)
+    	---Purpose: returns the maximum distance between the points
+    	--          and the MultiCurve.
+
+    returns Real
+    is static;
+    
+    MaxError2d(me)
+    	---Purpose: returns the maximum distance between the points
+    	--          and the MultiCurve.
+
+    returns Real
+    is static;
+
+    
+    FirstConstraint(me; TheConstraints: HArray1OfConstraintCouple;
+    	    	    FirstPoint: Integer)
+	---Purpose:
+
+    returns Constraint from AppParCurves
+    is static;
+    
+    
+    LastConstraint(me; TheConstraints: HArray1OfConstraintCouple;
+    	    	   LastPoint: Integer)
+	---Purpose:
+
+    returns Constraint from AppParCurves
+    is static;
+    
+    
+fields
+
+Done:           Boolean;
+MyMultiLine :   MultiLine;
+MyMultiCurve:   MultiCurve from AppParCurves;
+Degre:          Integer;
+myParameters:   Vector;
+FVal:           Real;
+ValGrad_F:      Vector from math;
+MyF:            Matrix from math;
+PTLX :          Matrix from math;
+PTLY :          Matrix from math;
+PTLZ :          Matrix from math;
+A:              Matrix from math;
+DA:             Matrix from math;
+MyLeastSquare : Squares;
+Contraintes:    Boolean;
+NbP:            Integer;
+NbCu:           Integer;
+Adeb:           Integer;
+Afin:           Integer;
+tabdim:         HArray1OfInteger from TColStd;
+ERR3d:          Real;
+ERR2d:          Real;
+FirstP:         Integer;
+LastP:          Integer;
+myConstraints:  HArray1OfConstraintCouple from AppParCurves;
+
+end Function;

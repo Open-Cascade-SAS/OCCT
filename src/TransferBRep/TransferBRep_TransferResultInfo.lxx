@@ -1,0 +1,85 @@
+// File:	TransferBRep_TransferResultInfo.lxx
+// Created:	Wed Aug 11 10:04:59 1999
+// Author:	Roman LYGIN
+//		<rln@kinox>
+
+//=======================================================================
+//function : Result
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::Result()
+{
+  return myR;
+}
+
+//=======================================================================
+//function : ResultWarning
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarning()
+{
+  return myRW;
+}
+
+//=======================================================================
+//function : ResultFail
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::ResultFail()
+{
+  return myRF;
+}
+
+//=======================================================================
+//function : ResultWarningFail
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::ResultWarningFail()
+{
+  return myRWF;
+}
+
+//=======================================================================
+//function : NoResult
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::NoResult()
+{
+  return myNR;
+}
+
+//=======================================================================
+//function : NoResultWarning
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarning()
+{
+  return myNRW;
+}
+
+//=======================================================================
+//function : NoResultFail
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultFail()
+{
+  return myNRF;
+}
+
+//=======================================================================
+//function : NoResultWarningFail
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& TransferBRep_TransferResultInfo::NoResultWarningFail()
+{
+  return myNRWF;
+}
+

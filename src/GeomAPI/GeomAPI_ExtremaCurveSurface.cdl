@@ -1,0 +1,207 @@
+-- File:	GeomAPI_ExtremaCurveSurface.cdl
+-- Created:	Fri Mar 18 11:30:11 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class ExtremaCurveSurface from GeomAPI
+
+    	---Purpose: Describes functions for computing all the extrema
+    	-- between a curve and a surface.
+    	-- An ExtremaCurveSurface algorithm minimizes or
+    	-- maximizes the distance between a point on the curve
+    	-- and a point on the surface. Thus, it computes start
+    	-- and end points of perpendiculars common to the
+    	-- curve and the surface (an intersection point is not an
+    	-- extremum except where the curve and the surface
+    	-- are tangential at this point).
+    	-- Solutions consist of pairs of points, and an extremum
+    	-- is considered to be a segment joining the two points of a solution.
+    	-- An ExtremaCurveSurface object provides a framework for:
+    	-- -   defining the construction of the extrema,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results.
+    	-- Warning
+    	-- In some cases, the nearest points between a curve
+    	-- and a surface do not correspond to one of the
+    	-- computed extrema. Instead, they may be given by:
+    	-- -   a point of a bounding curve of the surface and one of the following:
+    	--   -   its orthogonal projection on the curve,
+    	--   -   a limit point of the curve; or
+    	-- -   a limit point of the curve and its projection on the surface; or
+    	-- -   an intersection point between the curve and the surface.
+        
+uses
+    Curve     from Geom,
+    Surface   from Geom,
+    ExtCS     from Extrema,
+    Pnt       from gp,
+    Length    from Quantity,
+    Parameter from Quantity
+    
+    
+raises
+    OutOfRange from Standard,
+    NotDone    from StdFail
+    
+    
+is
+
+    Create
+	---Purpose: Constructs an empty algorithm for computing
+    	-- extrema between a curve and a surface. Use an
+    	-- Init function to define the curve and the surface on
+    	-- which it is going to work.      
+    returns ExtremaCurveSurface from GeomAPI;
+    
+    
+    Create(Curve      : Curve   from Geom;
+    	   Surface    : Surface from Geom)
+        ---Purpose: Computes  the  extrema  distances  between  the
+        --          curve <C> and the surface  <S>.
+	---Level: Public          
+    returns ExtremaCurveSurface from GeomAPI;
+
+
+    Create(Curve      : Curve   from Geom;
+    	   Surface    : Surface from Geom;
+	   Wmin, Wmax : Parameter from Quantity;
+    	   Umin, Umax : Parameter from Quantity; 
+    	   Vmin, Vmax : Parameter from Quantity)
+        ---Purpose: Computes  the  extrema  distances  between  the
+        --          curve <C>  and the  surface  <S>.  The solution
+        --          point are computed in the domain [Wmin,Wmax] of
+        --          the  curve   and  in  the  domain   [Umin,Umax]
+        --          [Vmin,Vmax] of the surface.
+    	--	Warning
+    	-- Use the function NbExtrema to obtain the number
+    	-- of solutions. If this algorithm fails, NbExtrema returns 0.
+          returns ExtremaCurveSurface from GeomAPI;
+
+
+    Init(me : in out;
+    	 Curve      : Curve   from Geom;
+	 Surface    : Surface from Geom)
+        ---Purpose: Computes  the  extrema  distances  between  the
+        --          curve <C> and the surface  <S>.
+	---Level: Public          
+    is static;
+
+
+    Init(me : in out;
+    	 Curve      : Curve   from Geom;
+	 Surface    : Surface from Geom;
+	 Wmin, Wmax : Parameter from Quantity;
+    	 Umin, Umax : Parameter from Quantity;
+    	 Vmin, Vmax : Parameter from Quantity)
+        ---Purpose: Computes  the  extrema  distances  between  the
+        --          curve <C>  and the  surface  <S>.  The solution
+        --          point are computed in the domain [Wmin,Wmax] of
+        --          the  curve   and  in  the  domain   [Umin,Umax]
+        --          [Vmin,Vmax] of the surface.
+       	-- Warning
+    	-- Use the function NbExtrema to obtain the number
+    	-- of solutions. If this algorithm fails, NbExtrema returns 0.
+	    is static;
+
+
+    NbExtrema(me)
+	---Purpose: Returns the number of extrema computed by this algorithm.
+    	-- Note: if this algorithm fails, NbExtrema returns 0.
+    returns Integer from Standard
+	---C++: alias "Standard_EXPORT operator Standard_Integer() const;"
+    is static;
+    
+    
+    Points(me; Index  :     Integer from Standard;
+    	       P1, P2 : out Pnt     from gp )
+        ---Purpose: Returns the points P1 on the curve and P2 on the
+    	-- surface, which are the ends of the extremum of index
+    	-- Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.  
+    raises
+    	OutOfRange from Standard
+	    is static;	       
+
+
+    Parameters(me; Index :     Integer   from Standard;
+    	     	   W     : out Parameter from Quantity;
+                   U, V  : out Parameter from Quantity)
+	---Purpose: Returns the parameters W of the point on the curve,
+    	-- and (U,V) of the point on the surface, which are the
+    	-- ends of the extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    Distance(me; Index : Integer from Standard)
+    returns Length from Quantity
+	---Purpose: Computes the distance between the end points of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    NearestPoints(me; PC, PS : out Pnt from gp)
+	---Purpose: Returns the points PC on the curve and PS on the
+    	-- surface, which are the ends of the shortest extremum computed by this algorithm.
+    	-- Exceptions - StdFail_NotDone if this algorithm fails.       
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistanceParameters(me;  W    : out Parameter from Quantity;
+            	    	    	 U, V : out Parameter from Quantity)
+    	---Purpose: Returns the parameters W of the point on the curve
+    	-- and (U,V) of the point on the surface, which are the
+    	-- ends of the shortest extremum computed by this algorithm.
+    	-- Exceptions - StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistance(me)
+	---Purpose: Computes the distance between the end points of the
+    	-- shortest extremum computed by this algorithm.
+    	-- Exceptions - StdFail_NotDone if this algorithm fails.
+    returns Length from Quantity
+	---C++: alias "Standard_EXPORT operator Standard_Real() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    Extrema(me)
+	---Purpose: Returns the algorithmic object from Extrema
+	---Level: Advanced
+	---C++: return const&
+	---C++: inline      
+    returns ExtCS from Extrema
+    is static;
+    	
+	
+fields
+
+    myIsDone: Boolean from Standard;
+    myIndex : Integer from Standard;    -- index of the nearest solution
+    myExtCS : ExtCS   from Extrema;
+
+
+end ExtremaCurveSurface;

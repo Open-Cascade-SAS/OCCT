@@ -1,0 +1,73 @@
+-- File:	BRepPrim.cdl
+-- Created:	Wed Jul 24 16:40:38 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+
+
+package BRepPrim 
+
+	---Purpose: this package implements the primitives of the 
+	--          Primitives package with the BRep Topology
+	--          
+	--          Contains :
+	--          a Builder implementing the Template from Primitives
+	--          
+	--          The instantiations of the algorithms :
+	--                OneAxis
+	--                Wedge
+	--                
+	--          The rotational primitives inherited from OneAxis
+	--          
+	--                Revolution
+	--                   Cylinder
+	--                   Cone
+	--                   Sphere
+	--                   Torus
+	--                   
+	--          The  class FaceBuilder is  a tool to  build a face
+	--          from a Geom surface.
+
+uses
+    gp,
+    Geom2d,
+    Geom,
+    Primitives,
+    TopoDS,
+    BRep
+
+is
+    class Builder;
+
+    deferred class OneAxis instantiates OneAxis from Primitives(
+    	Shell   from TopoDS,
+	Face    from TopoDS,
+	Wire    from TopoDS,
+	Edge    from TopoDS,
+	Vertex  from TopoDS,
+	Builder from BRepPrim);
+	
+    class Revolution;
+    
+    class Cylinder;
+    
+    class Cone;
+    
+    class Sphere;
+    
+    class Torus;
+    
+    class GWedge instantiates Wedge from Primitives(
+    	Shell   from TopoDS,
+	Face    from TopoDS,
+	Wire    from TopoDS,
+	Edge    from TopoDS,
+	Vertex  from TopoDS,
+	Builder from BRepPrim);
+	
+    class Wedge;
+	
+    class FaceBuilder;
+    
+end BRepPrim;

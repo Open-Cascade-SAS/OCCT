@@ -1,0 +1,36 @@
+-- File:	StepShape_SweptFaceSolid.cdl
+-- Created:	Thu Mar 11 11:54:24 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SweptFaceSolid from StepShape 
+inherits SolidModel from StepShape
+	
+uses
+    	HAsciiString from TCollection,
+    	FaceSurface from StepShape
+
+is
+    	Create returns mutable SweptFaceSolid;
+	---Purpose: Returns a SweptFaceSolid
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptArea : mutable FaceSurface from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetSweptFace(me : mutable; aSweptArea : mutable FaceSurface from StepShape) is virtual;
+	SweptFace (me) returns mutable FaceSurface from StepShape is virtual;
+
+    	
+fields
+    	sweptArea :  FaceSurface from StepShape;
+	    	
+end SweptFaceSolid;

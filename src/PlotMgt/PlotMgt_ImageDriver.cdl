@@ -1,0 +1,23 @@
+-- File:      PlotMgt_ImageDriver.cdl
+-- Created:   25-NOV-98
+-- Author:    DCB
+-- Copyright: Matra Datavision 1994
+
+class ImageDriver from PlotMgt inherits PlotterDriver from PlotMgt
+
+uses
+  Plotter from PlotMgt
+
+is
+  Create(aPlotter : Plotter from PlotMgt;
+         aName    : CString from Standard)
+  returns mutable ImageDriver from PlotMgt;
+
+  Create(aName : CString from Standard)
+  returns mutable ImageDriver from PlotMgt;
+
+  BeginDraw (me: mutable) is static;
+
+  EndDraw (me: mutable; dontFlush: Boolean = Standard_False) is static;
+   
+end ImageDriver from PlotMgt;

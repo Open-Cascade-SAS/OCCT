@@ -1,0 +1,552 @@
+static void evalpinit(math_Vector& parinit,
+		      const Blend_Point& previousP,
+		      const Standard_Real parprec,
+		      const Standard_Real param,
+		      const math_Vector& infbound,
+		      const math_Vector& supbound,
+		      const Standard_Boolean classonS1, 
+		      const Standard_Boolean classonS2)
+{
+  if(previousP.IsTangencyPoint()){
+    previousP.ParametersOnS1(parinit(1),parinit(2));
+    previousP.ParametersOnS2(parinit(3),parinit(4));
+  }
+  else {
+    Standard_Real u1,v1,u2,v2;
+    Standard_Real du1,dv1,du2,dv2;
+    Standard_Boolean Inside=Standard_True;
+    previousP.ParametersOnS1(u1,v1);
+    previousP.ParametersOnS2(u2,v2);
+    previousP.Tangent2dOnS1().Coord(du1,dv1);
+    previousP.Tangent2dOnS2().Coord(du2,dv2);
+    Standard_Real step = param - parprec;
+    u1+= step*du1;
+    v1+= step*dv1;
+    if ( classonS1 ) {
+      if ((u1<infbound(1)) || (u1>supbound(1))) Inside=Standard_False;
+      if ((v1<infbound(2)) || (v1>supbound(2))) Inside=Standard_False;
+    }
+    u2+= step*du2;
+    v2+= step*dv2;
+    if ( classonS2) {
+      if ((u2<infbound(3)) || (u2>supbound(3))) Inside=Standard_False;
+      if ((v2<infbound(4)) || (v2>supbound(4))) Inside=Standard_False;
+    }
+
+    if (Inside) {
+      parinit(1) = u1;
+      parinit(2) = v1;
+      parinit(3) = u2;
+      parinit(4) = v2;
+    }
+    else { // on ne joue pas au plus malin
+      previousP.ParametersOnS1(parinit(1),parinit(2));
+      previousP.ParametersOnS2(parinit(3),parinit(4));
+    }
+    
+  }
+}
+
+
+
+void Blend_Walking::InternalPerform(Blend_Function& Func,
+				    Blend_FuncInv& FuncInv,
+				    const Standard_Real Bound)
+{
+
+  Standard_Real stepw = pasmax;
+  Standard_Integer nbp = line->NbPoints();
+  if(nbp >= 2){ //On reprend le dernier step s'il n est pas trop petit.
+    if(sens < 0.){
+      stepw = (line->Point(2).Parameter() - line->Point(1).Parameter());
+    }
+    else{
+      stepw = (line->Point(nbp).Parameter() - line->Point(nbp - 1).Parameter());
+    }
+    stepw = Max(stepw,100.*tolgui);
+  }
+  Standard_Real parprec = param;
+
+  if (sens*(parprec - Bound) >= -tolgui) {
+    return;
+  }
+  Blend_Status State = Blend_OnRst12;
+  TopAbs_State situ1 =TopAbs_IN,situ2=TopAbs_IN;
+  Standard_Real w1,w2;
+  Standard_Integer Index1,Index2,nbarc;
+  Standard_Boolean Arrive,recad1,recad2, control;
+  Standard_Boolean Isvtx1,Isvtx2,echecrecad;
+  gp_Pnt2d p2d;
+  math_Vector tolerance(1,4),infbound(1,4),supbound(1,4),parinit(1,4);
+  math_Vector solrst1(1,4),solrst2(1,4);
+  TheVertex Vtx1,Vtx2;
+  TheExtremity Ext1,Ext2;
+
+  //IntSurf_Transition Tline,Tarc;
+
+  Func.GetTolerance(tolerance,tolesp);
+  Func.GetBounds(infbound,supbound);
+
+  math_FunctionSetRoot rsnld(Func,tolerance,30);
+  parinit = sol;
+
+  Arrive = Standard_False;
+  param = parprec + sens*stepw;
+  if(sens *(param - Bound) > 0.) {
+    stepw = sens*(Bound - parprec)*0.5;
+    param = parprec + sens*stepw;
+  }
+
+  evalpinit(parinit,previousP,parprec,param,
+	    infbound,supbound, clasonS1, clasonS2);
+
+  while (!Arrive) {
+
+#ifdef DEB
+    sectioncalculee = 0;
+    nbcomputedsection++;
+#endif
+    Standard_Boolean bonpoint = 1;
+    Func.Set(param);
+    rsnld.Perform(Func,parinit,infbound,supbound);
+
+    if (!rsnld.IsDone()) {
+      State = Blend_StepTooLarge;
+      bonpoint = 0;
+    }
+    else {
+      rsnld.Root(sol);
+
+      if(clasonS1) situ1 = domain1->Classify(gp_Pnt2d(sol(1),sol(2)),
+					     Min(tolerance(1),tolerance(2)),0);
+      else situ1 = TopAbs_IN;
+      if(clasonS2) situ2 = domain2->Classify(gp_Pnt2d(sol(3),sol(4)),
+					     Min(tolerance(3),tolerance(4)),0);
+      else situ2 = TopAbs_IN;
+    }
+    if(bonpoint && line->NbPoints() == 1 && (situ1 != TopAbs_IN || situ2 != TopAbs_IN)){
+      State = Blend_StepTooLarge;
+      bonpoint = 0;
+    }
+    if(bonpoint){
+      w1 = w2 = Bound;
+      recad1 = Standard_False;
+      recad2 = Standard_False;
+      echecrecad = Standard_False;
+      control = Standard_False;
+
+      if (situ1 == TopAbs_OUT || situ1 == TopAbs_ON) {
+	// pb inverse sur surf1
+	//Si le recadrage s'effectue dans le sens de la progression a une tolerance pres,
+	//on a pris la mauvaise solution.
+	recad1 = Recadre(FuncInv,Standard_True,
+			 sol,solrst1,Index1,Isvtx1,Vtx1);
+
+	if (recad1) {
+	  Standard_Real wtemp;
+	  wtemp  = solrst1(2);
+	  if ((param - wtemp)/sens>= -10*tolesp){
+	    w1 = solrst1(2);
+	    control = Standard_True;
+	  }
+	  else {
+	    echecrecad = Standard_True;
+	    recad1 = Standard_False;
+	    State = Blend_StepTooLarge;
+	    bonpoint = 0;
+	    stepw = stepw/2.;
+	  }
+	}
+	else {
+	  echecrecad = Standard_True;
+	}
+      }
+      if (situ2 == TopAbs_OUT || situ2 == TopAbs_ON) {
+	// pb inverse sur surf2
+	//Si le recadrage s'effectue dans le sens de la progression a une tolerance pres,
+	//on a pris la mauvaise solution.
+	recad2 = Recadre(FuncInv,Standard_False,
+			 sol,solrst2,Index2,Isvtx2,Vtx2);
+	
+	if (recad2) {
+	  Standard_Real wtemp;
+	  wtemp = solrst2(2);
+	  if ((param - wtemp)/sens>= -10*tolesp){
+	    w2 = solrst2(2);
+	    control = Standard_True;
+	  }
+	  else {
+	    echecrecad = Standard_True;
+	    recad2 = Standard_False;
+	    State = Blend_StepTooLarge;
+	    bonpoint = 0;
+	    stepw = stepw/2.;
+	  }
+	}
+	else {
+	  echecrecad = Standard_True;
+	}
+      }
+      
+      // Que faut il controler
+      if (recad1 && recad2) {
+	  if (Abs(w1-w2) <= 10*tolgui) {
+	  // pas besoin de controler les recadrage
+	  // Le control pouvant se planter (cf model blend10)
+          // La tolerance est choisie grossse afin, de permetre au 
+          // cheminement suivant, de poser quelques sections ...
+	  control = Standard_False; 
+	  }
+	  else if (sens*(w1-w2) < 0.) {
+	    //sol sur 1 ?
+	    recad2 = Standard_False;
+	  }
+	  else {
+	    //sol sur 2 ?
+	    recad1 = Standard_False;
+	  }
+	}
+
+      // Controle effectif des recadrage
+      if (control) {
+	TopAbs_State situ;
+	if (recad1 && clasonS2) {
+	  situ = recdomain2->Classify(gp_Pnt2d(solrst1(3),solrst1(4)),
+			              Min(tolerance(3),tolerance(4)));
+	  if (situ == TopAbs_OUT) {
+	    recad1 = Standard_False;
+	    echecrecad = Standard_True;
+	  }
+	}
+	else if (recad2 && clasonS1) {
+	  situ = recdomain1->Classify(gp_Pnt2d(solrst2(3),solrst2(4)),
+			              Min(tolerance(1),tolerance(1)));
+	  if (situ == TopAbs_OUT) {
+	    recad2 = Standard_False;
+	    echecrecad = Standard_True;
+	  }
+	}
+      }
+
+      if(recad1 || recad2) echecrecad = Standard_False;
+
+      if (!echecrecad) {
+	if (recad1 && recad2) {
+	  //sol sur 1 et 2 a la fois
+	  // On passe par les arcs , pour ne pas avoir de probleme
+	  // avec les surfaces periodiques.
+	  State = Blend_OnRst12;
+	  param =  (w1+w2)/2;
+	  p2d = TheArcTool::Value(recdomain1->Value(),solrst1(1));
+	  sol(1) = p2d.X();
+	  sol(2) = p2d.Y();
+	  p2d = TheArcTool::Value(recdomain2->Value(),solrst2(1));
+	  sol(3) = p2d.X();
+	  sol(4) = p2d.Y();
+	}
+	else if (recad1) {
+	  // sol sur 1
+	  State = Blend_OnRst1;
+	  param = w1;
+	  recdomain1->Init();
+	  nbarc = 1;
+	  while (nbarc < Index1) {
+	    nbarc++;
+	    recdomain1->Next();
+	  }
+	  p2d = TheArcTool::Value(recdomain1->Value(),solrst1(1));
+	  sol(1) = p2d.X();
+	  sol(2) = p2d.Y();
+	  sol(3) = solrst1(3);
+	  sol(4) = solrst1(4);
+	}
+	else if (recad2) {
+	  //sol sur 2
+	  State = Blend_OnRst2;
+	  param = w2;
+	  
+	  recdomain2->Init();
+	  nbarc = 1;
+	  while (nbarc < Index2) {
+	    nbarc++;
+	    recdomain2->Next();
+	  }
+	  p2d = TheArcTool::Value(recdomain2->Value(),solrst2(1));
+	  sol(1) = solrst2(3);
+	  sol(2) = solrst2(4);
+	  sol(3) = p2d.X();
+	  sol(4) = p2d.Y();
+	}
+	else {
+	  State = Blend_OK;
+	}
+
+	Standard_Boolean testdefl = 1;
+#ifdef DEB
+	testdefl = !Blend_GetcontextNOTESTDEFL();
+#endif	
+	if (recad1 || recad2) {
+	  Func.Set(param);
+          // Il vaut mieux un pas non orthodoxe que pas de recadrage!! PMN
+	  State = TestArret(Func, State, 
+			    (testdefl && (Abs(stepw) > 3*tolgui)),
+			    Standard_False, Standard_True);
+	}
+	else {
+	  State = TestArret(Func, State, testdefl);
+	}
+      }
+      else { 
+	// Ou bien le pas max est mal regle. On divise.
+//	if(line->NbPoints() == 1) State = Blend_StepTooLarge;
+	if (stepw > 2*tolgui) State = Blend_StepTooLarge;
+	// Sinon echec recadrage. On sort avec PointsConfondus
+	else {
+#if DEB
+	  cout << "Echec recadrage" << endl;
+#endif	  
+	  State = Blend_SamePoints;
+	}
+      }
+    }
+
+#ifdef DEB
+    if (Blend_GettraceDRAWSECT()){
+      Drawsect(surf1,surf2,sol,param,Func, State);
+    }
+#endif
+    switch (State) {
+    case Blend_OK :
+      {  
+	// Mettre a jour la ligne.
+	if (sens>0.) {
+	  line->Append(previousP);
+	}
+	else {
+	  line->Prepend(previousP);
+	}
+
+	parprec = param;
+
+	if (param == Bound) {
+	  Arrive = Standard_True;
+	  Ext1.SetValue(previousP.PointOnS1(),
+			sol(1),sol(2),
+			previousP.Parameter(), tolesp);
+	  Ext2.SetValue(previousP.PointOnS2(),
+			sol(3),sol(4),
+			previousP.Parameter(), tolesp);
+	  if (!previousP.IsTangencyPoint()) {
+	    Ext1.SetTangent(previousP.TangentOnS1());
+	    Ext2.SetTangent(previousP.TangentOnS2());
+	  }
+
+	  // Indiquer que fin sur Bound.
+	}
+	else {
+	  param = param + sens*stepw;
+	  if (sens*(param - Bound) > - tolgui) {
+	    param = Bound;
+	  }
+	}
+	evalpinit(parinit,previousP,parprec,param,
+		  infbound,supbound, clasonS1, clasonS2);
+      }
+      break;
+      
+    case Blend_StepTooLarge :
+      {
+	stepw = stepw/2.;
+	if (Abs(stepw) < tolgui) {
+	  Ext1.SetValue(previousP.PointOnS1(),
+			sol(1),sol(2),
+			previousP.Parameter(),tolesp);
+	  Ext2.SetValue(previousP.PointOnS2(),
+			sol(3),sol(4),
+			previousP.Parameter(),tolesp);
+	  if (!previousP.IsTangencyPoint()) {
+	    Ext1.SetTangent(previousP.TangentOnS1());
+	    Ext2.SetTangent(previousP.TangentOnS2());
+	  }
+	  Arrive = Standard_True;
+	  if (line->NbPoints()>=2) {
+	    // Indiquer qu on s arrete en cours de cheminement
+	  }
+//	  else {
+//	    line->Clear();
+//	  }
+	}
+	else {
+	  param = parprec + sens*stepw;  // on ne risque pas de depasser Bound.
+	  evalpinit(parinit,previousP,parprec,param,
+		    infbound,supbound, clasonS1, clasonS2);
+	}
+      }
+      break;
+      
+    case Blend_StepTooSmall :
+      {
+	// Mettre a jour la ligne.
+	if (sens>0.) {
+	  line->Append(previousP);
+	}
+	else {
+	  line->Prepend(previousP);
+	}
+
+	parprec = param;
+
+	stepw = Min(1.5*stepw,pasmax);
+	if (param == Bound) {
+	  Arrive = Standard_True;
+	  Ext1.SetValue(previousP.PointOnS1(),
+			sol(1),sol(2),
+			previousP.Parameter(),tolesp);
+	  Ext2.SetValue(previousP.PointOnS2(),
+			sol(3),sol(4), 
+			previousP.Parameter(),tolesp);
+	  if (!previousP.IsTangencyPoint()) {
+	    Ext1.SetTangent(previousP.TangentOnS1());
+	    Ext2.SetTangent(previousP.TangentOnS2());
+	  }
+	  // Indiquer que fin sur Bound.
+	}
+	else {
+	  param = param + sens*stepw;
+	  if (sens*(param - Bound) > - tolgui) {
+	    param = Bound;
+	  }
+	}
+	evalpinit(parinit,previousP,parprec,param,
+		  infbound,supbound, clasonS1, clasonS2);
+      }
+      break;
+      
+    case Blend_OnRst1  :
+      {
+	if (sens>0.) {
+	  line->Append(previousP);
+	}
+	else {
+	  line->Prepend(previousP);
+	}
+	MakeExtremity(Ext1,Standard_True,Index1,
+		      solrst1(1),Isvtx1,Vtx1);
+        // On blinde le cas singulier ou un des recadrage a planter
+        if (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2*tolesp)) {
+	  Ext2.SetValue(previousP.PointOnS1(),
+			sol(3),sol(4),tolesp);
+	  if (Isvtx1) MakeSingularExtremity(Ext2, Standard_False, Vtx1);
+	}
+	else {
+	  Ext2.SetValue(previousP.PointOnS2(),
+			sol(3),sol(4),
+			previousP.Parameter(),tolesp);
+	}
+	Arrive = Standard_True;
+      }
+      break;
+
+    case Blend_OnRst2  :
+      {
+	if (sens>0.) {
+	  line->Append(previousP);
+	}
+	else {
+	  line->Prepend(previousP);
+	}
+        // On blinde le cas singulier ou un des recadrage a plante
+        if (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2*tolesp)) {
+	  Ext1.SetValue(previousP.PointOnS2(),
+			sol(1),sol(2),tolesp);
+	  if (Isvtx2) MakeSingularExtremity(Ext1, Standard_True, Vtx2);
+	}
+	else {
+	  Ext1.SetValue(previousP.PointOnS1(),
+			sol(1),sol(2),
+			previousP.Parameter(),tolesp);
+	}
+	MakeExtremity(Ext2,Standard_False,Index2,
+		      solrst2(1),Isvtx2,Vtx2);
+	Arrive = Standard_True;
+      }
+      break;
+
+
+    case Blend_OnRst12 :
+      {
+	if (sens>0.) {
+	  line->Append(previousP);
+	}
+	else {
+	  line->Prepend(previousP);
+	}
+
+	if ( (Isvtx1 != Isvtx2) &&
+	    (previousP.PointOnS1().IsEqual(previousP.PointOnS2(), 2*tolesp)) ) {
+	  // On blinde le cas singulier ou un seul recadrage
+	  // est reconnu comme vertex.
+	  if (Isvtx1) {
+	    Isvtx2 = Standard_True;
+	    Vtx2 = Vtx1;
+	  }
+	  else {
+	    Isvtx1 = Standard_True;
+	    Vtx1 = Vtx2;
+	  }
+	}
+
+	MakeExtremity(Ext1,Standard_True,Index1,
+		      solrst1(1),Isvtx1,Vtx1);
+	MakeExtremity(Ext2,Standard_False,Index2,
+		      solrst2(1),Isvtx2,Vtx2);
+	Arrive = Standard_True;
+      }
+      break;
+
+    case Blend_SamePoints :
+      {
+	// On arrete
+#if DEB
+	cout << " Points confondus dans le cheminement" << endl;
+#endif
+	Ext1.SetValue(previousP.PointOnS1(),
+		      sol(1),sol(2),
+		      previousP.Parameter(),tolesp);
+	Ext2.SetValue(previousP.PointOnS2(),
+		      sol(3),sol(4),
+		      previousP.Parameter(),tolesp);;
+	if (!previousP.IsTangencyPoint()) {
+	  Ext1.SetTangent(previousP.TangentOnS1());
+	  Ext2.SetTangent(previousP.TangentOnS2());
+	}
+	Arrive = Standard_True;
+      }
+      break;
+#ifndef DEB
+    default:
+      break;
+#endif
+    }
+    if (Arrive) {
+      if (sens > 0.) {
+	line->SetEndPoints(Ext1,Ext2);
+      }
+      else {
+	line->SetStartPoints(Ext1,Ext2);
+
+      }
+    }
+
+  }
+
+}
+
+
+
+
+
+
+
+
+

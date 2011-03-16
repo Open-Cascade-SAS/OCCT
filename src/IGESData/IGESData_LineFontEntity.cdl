@@ -1,0 +1,15 @@
+-- File:	LineFontEntity.cdl
+-- Created:	Tue Apr  7 15:51:55 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class LineFontEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for LineFont in directory part
+    --           an effective LineFont entity must inherits it
+
+is
+
+end LineFontEntity;

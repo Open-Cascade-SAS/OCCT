@@ -1,0 +1,80 @@
+-- File:	Drawable.cdl
+-- Created:	Tue Jul 16 08:55:41 1991
+-- Author:	Christophe MARION
+--		<cma@sdsun1>
+---Copyright:	 Matra Datavision 1991
+
+
+
+deferred class Drawable from DrawTrSurf inherits Drawable3D from Draw
+
+	---Purpose: this  class adds   to   the Drawable3D methods  to
+	--          display Curves and Curves on Surface.
+	--          
+	--          The discretisation,  number  of points on a Curve,
+	--          is stored in this class.
+
+uses
+    Display        from Draw,
+    Curve          from Adaptor3d,
+    Curve2d        from Adaptor2d,
+    IsoCurve       from Adaptor3d,
+    IsoType        from GeomAbs
+
+is
+    Initialize(discret : Integer; deflection : Real = 0.01; DrawMode : Integer = 0);
+	---Purpose: set the number of points on a curve at creation.
+	
+    DrawCurve2dOn(me;
+                C : in out Curve2d from Adaptor2d;
+    	        D : in out Display from Draw);
+	---Purpose: Draw a polygon of the curve on the Display
+	
+    DrawCurveOn(me;
+                C : in out Curve from Adaptor3d;
+    	        D : in out Display from Draw);
+	---Purpose: Draw a polygon of the curve on the Display
+	
+    DrawIsoCurveOn(me;
+                C : in out IsoCurve from Adaptor3d;
+		T : IsoType from GeomAbs;
+		P, F, L : Real;
+    	        D : in out Display from Draw);
+	---Purpose: Load C  with the specified iso  and Draw a polygon
+	--          of the curve on the Display
+	
+    DrawOn(me; dis : in out Display from Draw)
+	---Purpose: this is defined only to tell C++ not to complain
+	--          about inheriting a pure virtual method.
+    is deferred;
+
+   
+    SetDiscretisation (me : mutable; Discret : Integer);
+        ---C++: inline
+    
+    GetDiscretisation (me) returns Integer;
+        ---C++: inline
+    
+    SetDeflection (me : mutable; Deflection : Real);
+        ---C++: inline
+    
+    GetDeflection (me) returns Real;
+        ---C++: inline
+
+    SetDrawMode (me : mutable; DrawMode : Integer);
+        ---C++: inline
+    
+    GetDrawMode (me) returns Integer;
+        ---C++: inline
+
+        
+
+    
+fields
+    myDrawMode   : Integer;
+       --- Purpose : 0 parametre constant, 1 fleche constante
+    myDiscret    : Integer;
+    myDeflection : Real;
+
+end Drawable;
+

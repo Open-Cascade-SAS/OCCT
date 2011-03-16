@@ -1,0 +1,248 @@
+---Copyright:   Matra Datavision 1991
+
+
+
+class Trsf2d   from gp   inherits Storable
+
+        --- Purpose :
+        --  Defines a non-persistent transformation in 2D space.
+        --  The following transformations are implemented :  
+        --  . Translation, Rotation, Scale
+        --  . Symmetry with respect to a point and a line.
+        --  Complex transformations can be obtained by combining the
+        --  previous elementary transformations using the method Multiply.
+        --  The transformations can be represented as follow :
+        --  
+        --       V1   V2   T       XY        XY
+        --    | a11  a12  a13 |   | x |     | x'|
+        --    | a21  a22  a23 |   | y |     | y'|
+        --    |  0    0    1  |   | 1 |     | 1 |
+        --
+        --   where {V1, V2} defines the vectorial part of the transformation
+        --   and T defines the translation part of the transformation.
+
+ 
+uses Ax2d     from gp,
+     Mat2d    from gp,
+     Pnt2d    from gp,
+     TrsfForm from gp,
+     Trsf     from gp,
+     Vec2d    from gp,
+     XY       from gp
+
+raises ConstructionError from Standard,
+       OutOfRange        from Standard
+
+
+is
+
+  Create   returns Trsf2d from gp;
+        ---C++: inline
+        --- Purpose : Returns identity transformation.
+
+
+  Create(T : Trsf from gp) 
+  returns Trsf2d from gp
+  raises ConstructionError;
+        ---C++: inline
+	---Purpose: Creates a 2d transformation in the XY plane from a
+	--          3d transformation .
+
+  SetMirror (me : in out; P : Pnt2d)    is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the transformation into a symmetrical transformation.
+        --  P is the center of the symmetry.
+
+
+  SetMirror (me : in out; A : Ax2d)    is static;
+        --- Purpose :
+        --  Changes the transformation into a symmetrical transformation.
+        --  A is the center of the axial symmetry.
+
+
+  SetRotation (me : in out; P : Pnt2d; Ang : Real)    is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the transformation into a rotation.
+        --  P is the rotation's center and Ang is the angular value of the 
+        --  rotation in radian.
+
+  
+  SetScale (me : in out; P : Pnt2d; S : Real)    is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the transformation into a scale.
+        --  P is the center of the scale and S is the scaling value.
+
+
+  SetTransformation (me : in out; FromSystem1, ToSystem2 : Ax2d)  is static;
+        --- Purpose :
+        --  Changes a transformation allowing passage from the coordinate
+        --  system "FromSystem1" to the coordinate system "ToSystem2".
+
+
+  SetTransformation (me : in out; ToSystem : Ax2d)    is static;
+        --- Purpose :
+        --  Changes the transformation allowing passage from the basic
+        --  coordinate system
+        --  {P(0.,0.,0.), VX (1.,0.,0.), VY (0.,1.,0.)}
+        --  to the local coordinate system defined with the Ax2d ToSystem.
+
+
+  SetTranslation (me : in out; V : Vec2d)       is static;
+        ---C++: inline
+        --- Purpose :
+        --  Changes the transformation into a translation.
+        --  V is the vector of the translation.
+
+
+  SetTranslation (me: in out; P1, P2 : Pnt2d)   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Makes the transformation into a translation from
+        --  the point P1 to the point P2.
+
+
+  SetTranslationPart (me : in out; V : Vec2d)   is static;
+        --- Purpose :  Replaces the translation vector with V.
+
+
+  SetScaleFactor (me : in out; S : Real)        is static;
+        --- Purpose :  Modifies the scale factor.
+     
+
+
+  IsNegative (me)  returns Boolean    is static;
+        --- Purpose : Returns true if the determinant of the vectorial part of
+    	-- this transformation is negative..
+        ---C++: inline
+
+  Form (me)  returns TrsfForm   is static;
+        --- Purpose :
+        --  Returns the nature of the transformation. It can be  an
+    	-- identity transformation, a rotation, a translation, a mirror
+    	-- (relative to a point or an axis), a scaling transformation,
+    	-- or a compound transformation.
+        ---C++: inline
+	
+  ScaleFactor (me)  returns Real   is static;
+        --- Purpose : Returns the scale factor.
+        ---C++: inline
+
+
+  TranslationPart (me)   returns XY    is static;
+        --- Purpose :
+        --  Returns the translation part of the transformation's matrix
+        ---C++: inline
+        ---C++: return const&
+
+
+  VectorialPart (me)   returns Mat2d    is static;
+        --- Purpose : 
+        --  Returns the vectorial part of the transformation. It is a 
+        --  2*2 matrix which includes the scale factor.
+
+
+  HVectorialPart (me)   returns Mat2d   is static;
+        --- Purpose : 
+        --  Returns the homogeneous vectorial part of the transformation.
+        --  It is a 2*2 matrix which doesn't include the scale factor.
+        --  The coefficients of this matrix must be multiplied by the
+        --  scale factor to obtain the coefficients of the transformation.
+        ---C++: inline
+        ---C++: return const&
+
+  RotationPart (me) returns Real is static;
+        --- Purpose : 
+        --  Returns the angle corresponding to the rotational component
+        --  of the transformation matrix (operation opposite to SetRotation()).
+
+  Value (me; Row, Col : Integer)   returns Real
+        ---C++: inline
+        --- Purpose :
+        --  Returns the coefficients of the transformation's matrix.
+        --  It is a 2 rows * 3 columns matrix.
+        -- Raises OutOfRange if Row < 1 or Row > 2 or Col < 1 or Col > 3
+     raises OutOfRange
+       
+     is static;
+
+
+
+
+  Invert (me : in out)   raises ConstructionError         is static;
+
+  Inverted (me) returns Trsf2d   raises ConstructionError is static;
+	--- Purpose :
+        --  Computes the reverse transformation.
+        --  Raises an exception if the matrix of the transformation
+        --  is not inversible, it means that the scale factor is lower
+        --  or equal to Resolution from package gp.
+        ---C++: inline
+
+
+
+    
+
+  Multiplied (me; T : Trsf2d)   returns Trsf2d   is static;
+        ---C++: inline
+        ---C++: alias operator *
+
+  Multiply (me : in out; T : Trsf2d)             is static;
+        ---C++: alias operator *=
+        --- Purpose :
+        --  Computes the transformation composed from <T> and  <me>.
+        --  In a C++ implementation you can also write Tcomposed = <me> * T.
+        --  Example :
+        --      Trsf2d T1, T2, Tcomp; ...............
+        --      //composition :
+        --        Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
+        --      // transformation of a point
+        --        Pnt2d P1(10.,3.,4.);
+        --        Pnt2d P2 = P1.Transformed(Tcomp);  //using Tcomp
+        --        Pnt2d P3 = P1.Transformed(T1);     //using T1 then T2
+        --        P3.Transform(T2);                  // P3 = P2 !!!
+
+     
+
+  PreMultiply (me : in out; T : Trsf2d)   is static;
+
+        --- Purpose :
+        --  Computes the transformation composed from <me> and T.
+        --  <me> = T * <me>
+
+  Power (me : in out; N : Integer)  raises ConstructionError   is static;
+
+  Powered (me : in out; N : Integer)  returns Trsf2d
+     raises ConstructionError
+     is static;
+        --- Purpose :
+        --  Computes the following composition of transformations
+        --  <me> * <me> * .......* <me>,  N time.
+        --  if N = 0 <me> = Identity
+        --  if N < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+        --
+        --  Raises if N < 0 and if the matrix of the transformation not
+        --  inversible.
+        ---C++: inline
+	
+  Transforms (me; X, Y : out Real)  is static;
+        ---C++: inline
+  Transforms (me; Coord : out XY)   is static;
+        ---C++: inline    
+        --- Purpose : Transforms  a doublet XY with a Trsf2d
+fields
+
+  scale  : Real;
+  shape  : TrsfForm;
+  matrix : Mat2d;
+  loc    : XY; 
+
+
+friends 
+
+  class GTrsf2d
+
+end;
+

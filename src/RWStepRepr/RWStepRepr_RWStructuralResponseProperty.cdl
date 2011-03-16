@@ -1,0 +1,35 @@
+-- File:	RWStepRepr_RWStructuralResponseProperty.cdl
+-- Created:	Sun Dec 15 10:59:25 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWStructuralResponseProperty from RWStepRepr
+
+    ---Purpose: Read & Write tool for StructuralResponseProperty
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    StructuralResponseProperty from StepRepr
+
+is
+    Create returns RWStructuralResponseProperty from RWStepRepr;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : StructuralResponseProperty from StepRepr);
+	---Purpose: Reads StructuralResponseProperty
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: StructuralResponseProperty from StepRepr);
+	---Purpose: Writes StructuralResponseProperty
+
+    Share (me; ent : StructuralResponseProperty from StepRepr;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWStructuralResponseProperty;

@@ -1,0 +1,15 @@
+-- File:	PStandard_ArrayNode.cdl
+-- Created:	Mon Jan 29 15:12:20 1996
+-- Author:	Kernel
+--		<kernel@ylliox>
+---Copyright:	 Matra Datavision 1996
+
+class ArrayNode from PStandard
+-- inherits Storable from Standard
+inherits Persistent from Standard
+
+is
+    Create returns mutable ArrayNode from PStandard;
+    ---Purpose: Creates an empty ArrayNode.
+
+end ArrayNode;

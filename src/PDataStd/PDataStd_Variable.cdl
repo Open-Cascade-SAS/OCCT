@@ -1,0 +1,35 @@
+-- File:	PDataStd_Variable.cdl
+-- Created:	Wed Dec 10 10:37:50 1997
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Variable from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistant variable
+	--          ===================
+
+uses HAsciiString from PCollection
+is
+
+    Create returns mutable Variable from PDataStd;
+
+    
+    Create (constant : Boolean from Standard)
+    returns mutable Variable from PDataStd;
+    
+    Constant (me : mutable; status : Boolean from Standard);    
+    Constant (me)
+    returns Boolean from Standard;
+
+    Unit(me:mutable; unit : HAsciiString from PCollection);
+    Unit(me) 
+    returns HAsciiString from PCollection;
+
+fields
+
+    isConstant : Boolean      from Standard;
+    myUnit     : HAsciiString from PCollection;
+
+end Variable;

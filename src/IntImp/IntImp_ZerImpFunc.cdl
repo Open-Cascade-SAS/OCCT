@@ -1,0 +1,196 @@
+-- File:	ZerImpFunc.cdl
+-- Created:	Fri Mar 27 09:15:20 1992
+-- Author:	Isabelle GRIGNON
+--		<isg@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+generic class ZerImpFunc from IntImp
+    (ThePSurface     as any;
+     ThePSurfaceTool as any;  -- as PSurfaceTool from IntImp(ThePSurface)
+     TheISurface     as any;
+     TheISurfaceTool as any)  -- as ISurfaceTool from IntImp(TheISurface)
+
+
+inherits FunctionSetWithDerivatives from math			       
+
+	---Purpose: this function is associated to IWalking
+	--          it's the function : F(x,y,z)=0 
+	--          where    x=X(u,v), y=Y(u,v), z=Z(u,v)
+
+uses Vector  from math,
+     Matrix  from math,
+     Pnt     from gp,
+     Vec     from gp,
+     Dir2d   from gp
+
+raises UndefinedDerivative from StdFail
+
+is
+
+    Create
+    
+    	returns ZerImpFunc from IntImp;
+	
+
+    Create(PS: ThePSurface;
+           IS: TheISurface)
+
+    	returns ZerImpFunc from IntImp;
+    
+
+    Create(IS: TheISurface)
+    
+    	returns ZerImpFunc from IntImp;
+
+
+    Set(me: in out; PS: ThePSurface)
+
+	---C++: inline
+    	is static;
+
+    
+    SetImplicitSurface(me: in out; IS: TheISurface)
+
+	---C++: inline
+    	is static;
+
+
+    Set(me: in out; Tolerance: Real from Standard)    
+
+	---C++: inline
+    	is static;
+
+
+    NbVariables(me)
+
+    	returns Integer from Standard
+
+    	is static;
+
+
+    NbEquations(me)
+
+    	returns Integer from Standard
+
+    	is static;
+
+
+    Value(me : in out; X : Vector from math;
+                       F : out Vector from math)
+
+    	returns Boolean from Standard
+    	is static;
+
+
+    Derivatives(me : in out; X : Vector from math;
+                             D : out Matrix from math)
+
+    	returns Boolean from Standard
+    	is static;
+
+
+    Values(me : in out; X : Vector from math;
+                        F : out Vector from math;
+                        D : out Matrix from math)
+
+    	returns Boolean from Standard
+    	is static;
+
+
+    Root(me)
+
+    	returns Real from Standard
+	---C++: inline
+
+    	is static;
+
+
+    Tolerance(me)
+    
+	---Purpose: Returns the value Tol so that if Abs(Func.Root())<Tol
+	--          the function is considered null.
+	--          
+	---C++: inline
+    
+    	returns Real from Standard
+	is static;
+
+
+    Point(me)
+
+    	returns Pnt from gp
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+    
+
+    IsTangent(me : in out)
+
+    	returns Boolean from Standard 
+
+    	is static;
+    
+
+    Direction3d(me: in out)
+
+    	returns Vec from gp
+	---C++: return const&
+	---C++: inline
+
+    	raises UndefinedDerivative from StdFail
+    	is static;
+    
+
+    Direction2d(me: in out)
+
+    	returns Dir2d from gp
+	---C++: return const&
+	---C++: inline
+
+    	raises UndefinedDerivative from StdFail
+    	is static;
+    
+
+    PSurface(me)
+
+    	returns ThePSurface
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+    
+
+    ISurface(me)
+
+    	returns TheISurface
+	---C++: return const&
+	---C++: inline
+
+    	is static;
+
+
+
+fields
+
+  surf        : Address from Standard; --- ThePSurface;
+  func        : Address from Standard; --- TheISurface;
+  u           : Real    from Standard;
+  v           : Real    from Standard;
+  tol         : Real    from Standard;
+  pntsol      : Pnt     from gp;
+  valf        : Real    from Standard;
+  computed    : Boolean from Standard; 
+  tangent     : Boolean from Standard;
+  tgdu        : Real    from Standard;
+  tgdv        : Real    from Standard;
+  gradient    : Vec     from gp;
+  derived     : Boolean from Standard;
+  d1u         : Vec     from gp;
+  d1v         : Vec     from gp;
+  d3d         : Vec     from gp;
+  d2d         : Dir2d   from gp;
+
+end ZerImpFunc;
+

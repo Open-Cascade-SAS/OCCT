@@ -1,0 +1,466 @@
+-- File:	ChFi3d_FilBuilder.cdl
+-- Created:	Tue Apr 25 10:54:55 1995
+-- Author:	Modelistation
+--		<model@phylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class FilBuilder from ChFi3d inherits Builder from ChFi3d
+
+	---Purpose: Tool  of  construction of  fillets 3d on  edges.
+
+uses
+    Shape             from TopoDS,
+    Edge              from TopoDS,
+    Vertex            from TopoDS, 
+    XY	              from gp,
+    State             from TopAbs,
+    Orientation       from TopAbs,
+    Function          from Law,
+    HCurve            from Adaptor3d,	
+    TopolTool         from Adaptor3d,
+    HCurve2d          from BRepAdaptor,
+    HSurface          from BRepAdaptor,
+    HElSpine          from ChFiDS,
+    SurfData          from ChFiDS,
+    SequenceOfSurfData  from ChFiDS,
+    Stripe            from ChFiDS,
+    ListOfStripe      from ChFiDS,	
+    Spine             from ChFiDS,
+    Function          from Blend,
+    SecHArray1        from ChFiDS,
+    FilletShape       from ChFi3d,
+    SectionShape      from BlendFunc,
+    Vector            from math,
+    Line              from BRepBlend
+
+is
+
+	Create(S : Shape from TopoDS;  
+               FShape: FilletShape from ChFi3d = ChFi3d_Rational;
+               Ta : Real from Standard = 1.0e-2)  
+
+        returns FilBuilder from ChFi3d;
+
+    	SetFilletShape(me: in out; FShape: FilletShape from ChFi3d)
+	 ---Purpose: Sets the type of fillet surface.
+	
+	is static;
+
+  	GetFilletShape(me)
+	---Purpose: Returns the type of fillet surface.
+	returns FilletShape from ChFi3d
+        is static;
+
+    ------------------------------------------------
+    --- Ajout d un contour sans indication de rayon.
+    ------------------------------------------------
+
+    	Add(me : in out; E : Edge from TopoDS) 
+	 ---Purpose: initialisation of  a contour with the first edge
+	 --          (the following are found  by propagation).
+	 --          Attention, you  need  to start  with  SetRadius.
+	 --          
+	is static; 
+    
+    ------------------------------------------------------------------
+    --- Ajout ou update d  un  contour avec un  rayon defini  pour  la
+    --  totalite du contour.
+    ------------------------------------------------------------------
+
+    	Add(me : in out; Radius : Real; E : Edge from TopoDS) 
+	 ---Purpose: initialisation of the constant vector the corresponding  1st  edge.
+	 --          
+	is static; 
+
+	--Add(me : in out; C: Function from Law; E : Edge from TopoDS) 
+	--   ---Purpose: initialisation of  the vector (the vector is defined by
+	-- --          a curve - this  is  an evolutive vector).
+	--is static; 
+
+    	--SetRadius(me : in out; Radius : Real; IC : Integer from Standard) 
+	--   ---Purpose: Set the radius of the contour of index IC.
+	--is static; 
+
+	SetRadius(me : in out; 
+                  C    : Function from Law; 
+                  IC   : Integer from Standard;
+                  IinC : Integer from Standard)
+	 ---Purpose: Set the radius of the contour of index IC.
+	is static; 
+
+    	IsConstant(me         : in out; 
+    	    	   IC         : Integer from Standard)
+	returns Boolean from Standard
+	 ---Purpose: Returns true the contour is flaged as edge constant.
+	is static; 
+
+
+    	Radius(me         : in out; 
+    	       IC         : Integer from Standard)
+	returns Real from Standard
+	 ---Purpose: Returns the vector if the contour is flagged as edge 
+	 --          constant.
+	is static; 
+
+
+        ResetContour(me : in out;
+                     IC : Integer from Standard) 
+        ---Purpose: Reset all vectors of contour IC.
+        is static;
+    
+    
+    ------------------------------------------------------------------
+    --- Update selectif d  un contour avec  un rayon constant applique
+    --  a la portion de contour correspondant a un edge.
+    ------------------------------------------------------------------
+
+    	SetRadius(me     : in out; 
+    	    	  Radius : Real; 
+    	    	  IC     : Integer from Standard;
+    	    	  E      : Edge from TopoDS) 
+	 ---Purpose: Set a constant on edge E of  the contour of 
+	 --          index IC. Since  then  E is flagged as constant.
+	is static; 
+
+    	UnSet(me     : in out; 
+    	      IC     : Integer from Standard;
+    	      E      : Edge from TopoDS) 
+	 ---Purpose: Extracts the flag constant and the vector of edge E.
+	is static; 
+
+    ------------------------------------------------------------------
+    --- Update selectif d un   contour    avec une valeur de     rayon
+    --  appliquee  a un vertex du contour.
+    ------------------------------------------------------------------
+
+    	SetRadius(me     : in out; 
+    	    	  Radius : Real; 
+    	    	  IC     : Integer from Standard;
+    	    	  V      : Vertex from TopoDS) 
+	 ---Purpose: Set a vector on vertex  V of  the contour of index IC.
+	is static; 
+
+    	UnSet(me     : in out; 
+    	      IC     : Integer from Standard;
+    	      V      : Vertex from TopoDS) 
+	 ---Purpose: Extracts the vector of  the vertex V.
+	is static; 
+
+    ------------------------------------------------------------------
+    --- Update selectif d un   contour    avec une valeur de     rayon
+    --  appliquee  a un parametre du contour.
+    ------------------------------------------------------------------
+
+    	SetRadius(me     : in out; 
+    	    	  UandR  : XY from gp; 
+    	    	  IC     : Integer from Standard;
+    	    	  IinC   : Integer from Standard) 
+	 ---Purpose: Set  a vertex on the point of parametre U in the edge IinC
+	 --          of  the contour of index IC 
+	is static; 
+
+    ------------------------------------------------------------------
+    --- Methode pour recuperer et editer la portion de contour a rayon
+    --  variable ou constant encadrant un edge donne.
+    ------------------------------------------------------------------
+
+    	IsConstant(me         : in out; 
+    	    	   IC         : Integer from Standard;
+    	    	   E          : Edge from TopoDS)
+	returns Boolean from Standard
+	 ---Purpose: Returns true E is flagged as edge constant.
+	is static; 
+
+
+    	Radius(me         : in out; 
+    	       IC         : Integer from Standard;
+    	       E          : Edge from TopoDS)
+	returns Real from Standard
+	 ---Purpose: Returns the vector if E is flagged as edge constant.
+	is static; 
+
+
+    	GetBounds(me         : in out; 
+    	    	  IC         : Integer from Standard;
+    	    	  E          : Edge from TopoDS;
+    	    	  First,Last : out Real from Standard) 
+	returns Boolean from Standard
+	 ---Purpose: Returns in First and Last  les extremities of  the
+	 --          part of variable  vector framing E, returns
+	 --          False  if  E is flagged as edge constant.
+	is static; 
+
+    	GetLaw(me         : in out; 
+    	       IC         : Integer from Standard;
+    	       E          : Edge from TopoDS)
+	returns mutable Function from Law
+	 ---Purpose: Returns the rule of  elementary  evolution of  the
+	 --          part to  variable vector framing E, returns a
+	 --          rule zero if E is flagged as edge constant.
+	is static; 
+
+    	SetLaw(me         : in out; 
+    	       IC         : Integer from Standard;
+    	       E          : Edge from TopoDS;
+               L          : Function from Law)
+	 ---Purpose: Sets the rule of elementary evolution of  the  
+	 --          part to variable  vector framing E.
+	is static; 
+
+
+    	---Methods for quick simulation
+    	-------------------------------
+
+        Simulate(me : in out; 
+	    	 IC : Integer from Standard);
+
+        NbSurf(me; IC : Integer from Standard)
+    	returns Integer from Standard;
+		 
+    	Sect(me; IC, IS : Integer from Standard)
+    	returns mutable SecHArray1 from ChFiDS;
+
+        SimulKPart(me; SD : mutable SurfData from ChFiDS)
+        is protected; 
+    
+        SimulSurf(me              : in out; 
+                  Data            : out SurfData from ChFiDS;
+    	          Guide           : HElSpine from ChFiDS;
+   	          Spine           : Spine from ChFiDS; 
+    	    	  Choix           : Integer from Standard;
+                  S1              : HSurface from BRepAdaptor;
+     	          I1              : TopolTool from Adaptor3d;
+	          S2              : HSurface from BRepAdaptor;
+	          I2              : TopolTool from Adaptor3d;
+    	          TolGuide        : Real from Standard;
+    	          First,Last      : in out Real from Standard;
+	          Inside,Appro    : Boolean from Standard;
+		  Forward         : Boolean from Standard;
+	          RecOnS1,RecOnS2 : Boolean from Standard;
+		  Soldep          : Vector from math;
+    	    	  Intf,Intl       : in out Boolean from Standard)
+        returns  Boolean  is protected;
+
+        SimulSurf(me                   : in out; 
+                  Data                 : out SurfData from ChFiDS;
+                  Guide                : HElSpine from ChFiDS;
+                  Spine                : Spine from ChFiDS; 
+                  Choix                : Integer from Standard;
+                  S1                   : HSurface from BRepAdaptor;
+                  I1                   : TopolTool from Adaptor3d;
+                  PC1                  : HCurve2d from BRepAdaptor;
+                  Sref1                : HSurface from BRepAdaptor;
+                  PCref1               : HCurve2d from BRepAdaptor;
+                  Decroch1             : out Boolean from Standard;
+                  S2                   : HSurface from BRepAdaptor;
+                  I2                   : TopolTool from Adaptor3d;
+                  Or2                  : Orientation from TopAbs;
+                  Fleche               : Real from Standard;
+                  TolGuide             : Real from Standard;
+                  First,Last           : in out Real from Standard;
+                  Inside,Appro,Forward : Boolean from Standard;
+                  RecP,RecS,RecRst     : Boolean from Standard;
+                  Soldep               : Vector from math)
+        is redefined protected;	
+
+        SimulSurf(me                   : in out; 
+                  Data                 : out SurfData from ChFiDS;
+                  Guide                : HElSpine from ChFiDS;
+                  Spine                : Spine from ChFiDS; 
+                  Choix                : Integer from Standard;
+                  S1                   : HSurface from BRepAdaptor;
+                  I1                   : TopolTool from Adaptor3d;
+                  Or1                  : Orientation from TopAbs;
+                  S2                   : HSurface from BRepAdaptor;
+                  I2                   : TopolTool from Adaptor3d;
+                  PC2                  : HCurve2d from BRepAdaptor;
+                  Sref2                : HSurface from BRepAdaptor;
+                  PCref2               : HCurve2d from BRepAdaptor;
+                  Decroch2             : out Boolean from Standard;
+                  Fleche               : Real from Standard;
+                  TolGuide             : Real from Standard;
+                  First,Last           : in out Real from Standard;
+                  Inside,Appro,Forward : Boolean from Standard;
+                  RecP,RecS,RecRst     : Boolean from Standard;
+                  Soldep               : Vector from math)
+        is redefined protected;	
+
+        SimulSurf(me                   : in out; 
+                  Data                 : out SurfData from ChFiDS;
+                  Guide                : HElSpine from ChFiDS;
+                  Spine                : Spine from ChFiDS; 
+                  Choix                : Integer from Standard;
+                  S1                   : HSurface from BRepAdaptor;
+                  I1                   : TopolTool from Adaptor3d;
+	          PC1                  : HCurve2d from BRepAdaptor;
+                  Sref1                : HSurface from BRepAdaptor;
+	          PCref1               : HCurve2d from BRepAdaptor;
+	          Decroch1             : out Boolean from Standard;
+		  Or1                  : Orientation from TopAbs; 
+                  S2                   : HSurface from BRepAdaptor;
+                  I2                   : TopolTool from Adaptor3d;
+	          PC2                  : HCurve2d from BRepAdaptor;
+                  Sref2                : HSurface from BRepAdaptor;
+	          PCref2               : HCurve2d from BRepAdaptor;
+	          Decroch2             : out Boolean from Standard;
+		  Or2                  : Orientation from TopAbs;
+                  Fleche               : Real from Standard;
+                  TolGuide             : Real from Standard;
+                  First,Last           : in out Real from Standard;
+                  Inside,Appro,Forward : Boolean from Standard;
+                  RecP1,RecRst1        : Boolean from Standard;
+                  RecP2,RecRst2        : Boolean from Standard;
+                  Soldep               : Vector from math)
+        is redefined protected;	
+
+    	---Methods for computation
+    	--------------------------
+
+        PerformFirstSection(me ;
+                            S         :        Spine    from ChFiDS;
+                            HGuide    :        HElSpine from ChFiDS;
+	                    Choix     :        Integer  from Standard;
+                            S1,S2     : in out HSurface from BRepAdaptor;
+                            I1,I2     :        TopolTool from Adaptor3d;
+ 			    Par       :        Real      from Standard;
+		 	    SolDep    : in out Vector    from math;
+                            Pos1,Pos2 :    out State    from TopAbs)
+        returns Boolean from Standard
+        is protected;		 
+
+        PerformSurf(me              : in out; 
+    	    	    SeqData         : out SequenceOfSurfData from ChFiDS; 
+    	            Guide           : HElSpine from ChFiDS;
+   	            Spine           : Spine from ChFiDS; 
+    	    	    Choix           : Integer from Standard;
+                    S1              : HSurface from BRepAdaptor;
+     	            I1              : TopolTool from Adaptor3d;
+	            S2              : HSurface from BRepAdaptor;
+	            I2              : TopolTool from Adaptor3d;
+                    MaxStep         : Real from Standard;
+                    Fleche          : Real from Standard;
+    	            TolGuide        : Real from Standard;
+    	            First,Last      : in out Real from Standard;
+	            Inside,Appro    : Boolean from Standard;
+                    Forward         : Boolean from Standard;
+	            RecOnS1,RecOnS2 : Boolean from Standard;
+		    Soldep          : Vector from math;
+    	    	    Intf,Intl       : in out Boolean from Standard) 
+	returns  Boolean
+    	is protected;
+    	---Purpose: Method calculates the elements of construction of  the
+    	--          fillet (constant or evolutive).
+
+        PerformSurf(me                   : in out; 
+                    SeqData              : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+                    PC1                  : HCurve2d from BRepAdaptor;
+                    Sref1                : HSurface from BRepAdaptor;
+                    PCref1               : HCurve2d from BRepAdaptor;
+                    Decroch1             : out Boolean from Standard;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+                    Or2                  : Orientation from TopAbs;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP,RecS,RecRst     : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+        PerformSurf(me                   : in out;  
+	    	    SeqData              : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+                    Or1                  : Orientation from TopAbs;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+                    PC2                  : HCurve2d from BRepAdaptor;
+                    Sref2                : HSurface from BRepAdaptor;
+                    PCref2               : HCurve2d from BRepAdaptor;
+                    Decroch2             : out Boolean from Standard;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP,RecS,RecRst     : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+        PerformSurf(me                   : in out; 
+                    Data                 : out SequenceOfSurfData from ChFiDS;
+                    Guide                : HElSpine from ChFiDS;
+                    Spine                : Spine from ChFiDS; 
+                    Choix                : Integer from Standard;
+                    S1                   : HSurface from BRepAdaptor;
+                    I1                   : TopolTool from Adaptor3d;
+		    PC1                  : HCurve2d from BRepAdaptor;
+                    Sref1                : HSurface from BRepAdaptor;
+		    PCref1               : HCurve2d from BRepAdaptor;
+		    Decroch1             : out Boolean from Standard;
+		    Or1                  : Orientation from TopAbs;
+                    S2                   : HSurface from BRepAdaptor;
+                    I2                   : TopolTool from Adaptor3d;
+		    PC2                  : HCurve2d from BRepAdaptor;
+                    Sref2                : HSurface from BRepAdaptor;
+		    PCref2               : HCurve2d from BRepAdaptor;
+		    Decroch2             : out Boolean from Standard;
+		    Or2                  : Orientation from TopAbs;
+                    MaxStep              : Real from Standard;
+                    Fleche               : Real from Standard;
+                    TolGuide             : Real from Standard;
+                    First,Last           : in out Real from Standard;
+                    Inside,Appro,Forward : Boolean from Standard;
+                    RecP1,RecRst1        : Boolean from Standard;
+                    RecP2,RecRst2        : Boolean from Standard;
+                    Soldep               : Vector from math)
+        is redefined protected;	
+
+	SplitSurf(me         : in out; 
+    	    	  SeqData    : in out SequenceOfSurfData from ChFiDS; 
+    	          line       : Line from BRepBlend)
+    	is protected;
+    	---Purpose: Method to split an singular SurfData  in  several  non
+    	--          singular  SurfData..
+
+    	PerformTwoCorner(me    : in out ; 
+                         Index : Integer from Standard)
+	is protected;	
+
+    	PerformThreeCorner(me    : in out ; 
+                           Index : Integer from Standard)
+    	is protected;
+
+    	ExtentOneCorner(me : in out; 
+	    	    	V  : Vertex from TopoDS;
+			S  : Stripe from ChFiDS)
+	is protected;
+	
+	ExtentTwoCorner(me : in out; 
+	    	    	V  : Vertex       from TopoDS;
+			LS : ListOfStripe from ChFiDS)
+	is protected;
+	
+	ExtentThreeCorner(me : in out; 
+	    	    	  V  : Vertex       from TopoDS;
+			  LS : ListOfStripe from ChFiDS)
+	is protected;
+	
+	SetRegul(me : in out) is protected;
+
+fields
+
+    myShape   : SectionShape      from BlendFunc; 
+
+end FilBuilder;

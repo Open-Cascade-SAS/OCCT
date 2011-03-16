@@ -1,0 +1,47 @@
+-- File:	StepGeom_CurveBoundedSurface.cdl
+-- Created:	Fri Nov 26 16:26:38 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class CurveBoundedSurface from StepGeom
+inherits BoundedSurface from StepGeom
+
+    ---Purpose: Representation of STEP entity CurveBoundedSurface
+
+uses
+    HAsciiString from TCollection,
+    Surface from StepGeom,
+    HArray1OfSurfaceBoundary from StepGeom
+
+is
+    Create returns CurveBoundedSurface from StepGeom;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aBasisSurface: Surface from StepGeom;
+                       aBoundaries: HArray1OfSurfaceBoundary from StepGeom;
+                       aImplicitOuter: Boolean);
+	---Purpose: Initialize all fields (own and inherited)
+
+    BasisSurface (me) returns Surface from StepGeom;
+	---Purpose: Returns field BasisSurface
+    SetBasisSurface (me: mutable; BasisSurface: Surface from StepGeom);
+	---Purpose: Set field BasisSurface
+
+    Boundaries (me) returns HArray1OfSurfaceBoundary from StepGeom;
+	---Purpose: Returns field Boundaries
+    SetBoundaries (me: mutable; Boundaries: HArray1OfSurfaceBoundary from StepGeom);
+	---Purpose: Set field Boundaries
+
+    ImplicitOuter (me) returns Boolean;
+	---Purpose: Returns field ImplicitOuter
+    SetImplicitOuter (me: mutable; ImplicitOuter: Boolean);
+	---Purpose: Set field ImplicitOuter
+
+fields
+    theBasisSurface: Surface from StepGeom;
+    theBoundaries: HArray1OfSurfaceBoundary from StepGeom;
+    theImplicitOuter: Boolean;
+
+end CurveBoundedSurface;

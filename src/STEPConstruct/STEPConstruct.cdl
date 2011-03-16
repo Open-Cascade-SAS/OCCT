@@ -1,0 +1,103 @@
+-- File:	STEPConstruct.cdl
+-- Created:	Wed Nov 17 14:13:03 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+package STEPConstruct 
+
+    ---Purpose: Defines tools for creation and investigation STEP constructs 
+    --          used for representing various kinds of data, such as product and
+    --          assembly structure, unit contexts, associated information
+    --          The creation of these structures is made according to currently
+    --          active schema (AP203 or AP214 CD2 or DIS)
+    --          This is taken from parameter write.step.schema
+
+uses
+    gp,
+    Quantity,
+    TCollection,
+    TColStd,
+    TopTools,
+    TopLoc,
+    TopoDS,
+    Interface,
+    Transfer,
+    XSControl,
+    StepData,
+    StepBasic,
+    StepGeom,
+    StepRepr,
+    StepShape,
+    StepVisual,
+    StepAP203,
+    StepAP214
+is
+
+    class Tool;
+    	---Purpose: Basic class providing general features
+	
+    class UnitContext;
+    	---Purpose: Create and investigate context of units and uncertanties
+
+    class Part;
+    	---Purpose: Create and investigate data associated with parts (product etc.)
+	
+    class Assembly;
+    	---Purpose: Create and check assembly data structures
+    
+    class Styles;
+    	---Purpose: Create and investigate STEP constructs for styles (mostly colors)
+    
+    class ValidationProps;
+    	---Purpose: Create and investigate STEP constructs for validation properties
+    
+    class ExternRefs;
+    	---Purpose: Work with references to external documents
+    
+    class AP203Context;
+        ---Purpose: maintains context specific to AP203
+    
+    class ContextTool;
+        ---Purpose: Maintains global context tool for writing
+	
+    --- skl 15.01.2004
+    class DataMapOfAsciiStringTransient instantiates 
+    	  DataMap from TCollection (AsciiString from TCollection,
+	    	    	    	    Transient from Standard,
+				    AsciiString from TCollection);
+
+    class PointHasher;
+                                                                                                            
+    class DataMapOfPointTransient instantiates
+    	  DataMap from TCollection (Pnt from gp,
+	                            Transient,
+		               	    PointHasher from STEPConstruct);
+
+
+    FindEntity (FinderProcess: FinderProcess from Transfer; Shape: Shape from TopoDS)
+    returns RepresentationItem from StepRepr;
+    	---Purpose: Returns STEP entity of the (sub)type of RepresentationItem
+        --          which is a result of the tranalation of the Shape, or Null if
+	--          no result is recorded
+
+    FindEntity (FinderProcess: FinderProcess from Transfer; Shape: Shape from TopoDS;
+                               Loc: out Location from TopLoc) 
+    returns RepresentationItem from StepRepr;
+    	---Purpose: The same as above, but in the case if item not found, repeats
+        --          search on the same shape without location. The Loc corresponds to the
+        --          location with which result is found (either location of the Shape,
+        --          or Null)
+
+    FindShape (TransientProcess: TransientProcess from Transfer; item: RepresentationItem from StepRepr)
+    returns Shape from TopoDS;
+    	---Purpose: Returns Shape resulting from given STEP entity (Null if not mapped)
+
+    FindCDSR (ComponentBinder: Binder from Transfer;
+    	      AssemblySDR: ShapeDefinitionRepresentation from StepShape;
+	      ComponentCDSR: out ContextDependentShapeRepresentation from StepShape)
+    returns Boolean from Standard;
+    	---Purpose: Find CDSR correcponding to the component in the specified assembly
+
+end STEPConstruct;

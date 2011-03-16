@@ -1,0 +1,33 @@
+-- File:        Vector.cdl
+-- Created:     Mon Dec  4 12:02:33 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWVector from RWStepGeom
+
+	---Purpose : Read & Write Module for Vector
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Vector from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWVector;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Vector from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Vector from StepGeom);
+
+	Share(me; ent : Vector from StepGeom; iter : in out EntityIterator);
+
+	Check(me; ent : Vector from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWVector;

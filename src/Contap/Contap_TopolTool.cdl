@@ -1,0 +1,103 @@
+-- File:	Contap_TopolTool.cdl
+-- Created:	Wed May 12 09:16:05 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+deferred generic class TopolTool from Contap
+           ( TheVertex as any;
+             TheArc    as any
+           )
+
+inherits TShared from MMgt 
+
+    ---Purpose: Template class for an iterator the restriction of
+    --          a surface.
+
+uses Orientation from TopAbs,
+     State       from TopAbs,
+     Pnt2d       from gp
+
+
+is
+
+-- Arc iterator
+
+    Init(me: mutable)
+
+    	;
+
+
+    More(me: mutable)
+
+    	returns Boolean from Standard
+    	;
+
+
+    Value(me: mutable)
+
+    	returns any TheArc
+    	;
+
+
+    Next(me: mutable)
+
+    	;
+
+
+-- Iterator on the vertex of an arc of restriction
+
+
+    Initialize(me: mutable; A:TheArc);
+
+
+    InitVertexIterator(me: mutable)
+
+    	;
+
+
+    MoreVertex(me: mutable)
+
+    	returns Boolean from Standard
+    	;
+
+
+
+    Vertex(me: mutable)
+    	returns any TheVertex
+    	;
+
+
+    NextVertex(me: mutable)
+
+    	;
+
+
+    Orientation(me: mutable; A: TheArc)
+    
+    	returns Orientation from TopAbs;
+
+
+    Orientation(me: mutable; V: TheVertex)
+    
+    	returns Orientation from TopAbs;
+
+
+    Identical(me: mutable; V1,V2: TheVertex)
+    
+	---Purpose: Returns True if the vertices V1 and V2 are identical.
+	--          This method does not take the orientation of the
+	--          vertices in account.
+
+    	returns Boolean from Standard;
+
+
+    Classify(me: mutable; P: Pnt2d from gp; Tol: Real from Standard)
+    
+    	returns State from TopAbs;
+
+
+end TopolTool;
+

@@ -1,0 +1,127 @@
+-- File:	Geom2dHatch_Intersector.cdl
+-- Created:	Wed Mar 23 11:16:39 1994
+-- Author:	Jean Marc LACHAUME
+--		<jml@phylox>
+---Copyright:	 Matra Datavision 1994
+
+class Intersector from Geom2dHatch
+
+inherits GInter from Geom2dInt
+
+uses
+
+    Curve from Geom2dAdaptor,
+    Lin2d from gp,
+    Dir2d from gp
+    
+is
+
+    Create (Confusion : Real from Standard ;
+    	    Tangency  : Real from Standard)
+
+    	---Purpose: Creates an intersector.
+
+    	---C++: inline
+
+    	returns Intersector from Geom2dHatch ;
+
+
+    ConfusionTolerance (me)
+
+    	---Purpose: Returns the confusion tolerance of the
+    	--          intersector.
+
+    	---C++: inline
+
+    	returns Real from Standard
+	is static ;
+
+
+    SetConfusionTolerance (me : in out ;
+    	    	    	   Confusion : Real from Standard)
+
+    	---Purpose: Sets the confusion tolerance of the intersector.
+
+    	---C++: inline
+
+	is static ;
+
+
+    TangencyTolerance (me)
+
+    	---Purpose: Returns the tangency tolerance of the
+    	--          intersector.
+
+    	---C++: inline
+
+    	returns Real from Standard
+	is static ;
+
+
+    SetTangencyTolerance (me : in out ;
+    	    	    	  Tangency : Real from Standard)
+
+    	---Purpose: Sets the tangency tolerance of the intersector.
+
+    	---C++: inline
+
+	is static ;
+
+
+    Intersect (me : in out ; C1 : Curve from Geom2dAdaptor ;
+    	       	    	     C2 : Curve from Geom2dAdaptor )
+
+    	---Purpose: Intersects the curves C1 and C2.
+    	--          The results are retreived by the usual methods
+    	--          described in IntRes2d_Intersection.
+
+    	---C++: inline
+
+    	is static ;
+
+-------------------------------------------------------------------------
+---- M e t h o d s   u s e d   b y   t h e   C l a s s i f i e r 2 d  ---
+-------------------------------------------------------------------------
+    Create
+
+    	---Purpose: Creates an intersector.
+
+    	---C++: inline
+
+    	returns Intersector from Geom2dHatch ;
+
+    Perform(me    : in out;
+             L    :         Lin2d from gp; 
+             P    :         Real  from Standard; 
+             Tol  :         Real  from Standard; 
+             E    :         Curve from Geom2dAdaptor) -- en fait in out
+	     
+	---Purpose: Performs the intersection   between the  2d   line
+	--          segment (<L>, <P>) and  the  Curve <E>.  The  line
+	--          segment  is the  part  of  the  2d   line   <L> of
+	--          parameter range [0, <P>] (P is positive and can be
+	--          RealLast()). Tol is the  Tolerance on the segment.
+	--          The order  is relevant, the  first argument is the
+	--          segment, the second the Edge.
+    is static;
+	
+    LocalGeometry(me; 
+                  E :     Curve from Geom2dAdaptor;
+                  U :     Real  from Standard; 
+    	    	  T : out Dir2d from gp; 
+    	    	  N : out Dir2d from gp;
+                  C : out Real)
+		  
+	---Purpose: Returns in <T>,  <N> and <C>  the tangent,  normal
+	--          and  curvature of the edge  <E> at parameter value
+	--          <U>.
+    is static;
+
+    
+
+fields
+
+    myConfusionTolerance : Real from Standard ;
+    myTangencyTolerance  : Real from Standard ;
+
+end Intersector from Geom2dHatch ;

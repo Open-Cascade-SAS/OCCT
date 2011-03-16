@@ -1,0 +1,259 @@
+-- File:	BRepTools.cdl
+-- Created:	Fri Aug 28 18:54:27 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package BRepTools 
+
+        ---Level : Public. 
+        --  All methods of all  classes will be public.
+
+	---Purpose: The BRepTools package provides  utilities for BRep
+	--          data structures.
+	--          
+	--          * WireExplorer : A tool to explore the topology of
+	--          a wire in the order of the edges.
+	--          
+	--          * ShapeSet :  Tools used for  dumping, writing and
+	--          reading.
+	--          
+	--          * UVBounds : Methods to compute the  limits of the
+	--          boundary  of a  face,  a wire or   an edge in  the
+	--          parametric space of a face.
+	--          
+	--          *  Update : Methods  to call when   a topology has
+	--          been created to compute all missing data.
+	--          
+	--          * UpdateFaceUVPoints  :  Method to  update  the UV
+	--          points stored   with  the edges   on a face.  This
+	--          method ensure that connected  edges  have the same
+	--          UV point on their common extremity.
+	--          
+	--          * Compare : Method to compare two vertices.
+	--          
+	--          * Compare : Method to compare two edges.
+	--          
+	--          * OuterWire : A method to find the outer wire of a
+	--          face.
+	--          
+	--          * OuterShell : A method to find the outer shell of
+	--          a solid.
+	--          
+	--          * Map3DEdges : A method to map all the 3D Edges of
+	--          a Shape.
+	--          
+	--          * Dump : A method to dump a BRep object.
+	--          
+
+uses
+    BRep,
+    TopExp,
+    TopTools,
+    TopoDS,
+    TopAbs,
+    TopLoc,
+    GeomAbs,
+    GeomTools,
+    Geom,
+    Geom2d,
+    gp,
+    Bnd,
+    TColgp,
+    TColStd,
+    TCollection,
+    MMgt,
+    Message
+
+is
+
+    class WireExplorer;
+	---Purpose: To explore the 3D or the UV topology of a Face.
+    
+    deferred class Modification;
+	---Purpose: Defines geometric modifications on a shape
+	--          ( on the faces, the edges, the vertices).
+    
+    class Modifier;
+	---Purpose: Performs geometric modifications on a shape.
+
+    class TrsfModification;
+	---Purpose: Defines a  Modification  with  a  Trsf from   gp.
+	--          Inherited from Modification.
+
+    class NurbsConvertModification;
+        ---Purpose: Conversion des entites analytiques d'une shape
+        --          en NURBS (courbes et surface 3D) 
+        --          Inherited from Modification.
+
+    class GTrsfModification;
+	---Purpose: Defines a  Modification  with  a  GTrsf from   gp.
+	--          Inherited from Modification.
+
+    class Substitution;
+    	---Purpose: Provides a tool to change subshapes in a shape. 
+
+    class Quilt;
+	---Purpose: Provides a tool to glue shapes on edges.
+	--          for exemple glue faces to make a shell.
+
+  --  class Sewing;
+	---Purpose: Provides a tool to
+	--          - identify contigous boundaries (for control
+	--            of continuity: C0, C1, ...)
+	--          - assemble contigous shapes into one shape.
+
+    --
+    --  Dump, Write, Read tools
+    
+    class ShapeSet;
+	---Purpose: A set of BRep TShapes. Inherited from TopTools. 
+
+    class ReShape;
+     ---Purpose: Provides tools for modification of shape.
+
+    class MapOfVertexPnt2d instantiates DataMap from TCollection
+    	(Shape from TopoDS,
+    	 SequenceOfPnt2d from TColgp,
+	 ShapeMapHasher  from TopTools);
+	
+    --
+    --     Methods
+    --     
+
+    UVBounds(F : Face from TopoDS;
+             UMin, UMax, VMin, VMax : out Real);
+	---Purpose: Returns in UMin,  UMax, VMin,  VMax  the  bounding
+	--          values in the parametric space of F.
+    
+    UVBounds(F : Face from TopoDS;
+    	     W : Wire from TopoDS;
+             UMin, UMax, VMin, VMax : out Real);
+	---Purpose: Returns in UMin,  UMax, VMin,  VMax  the  bounding
+	--          values of the wire in the parametric space of F.
+    
+    UVBounds(F : Face from TopoDS;
+    	     E : Edge from TopoDS;
+             UMin, UMax, VMin, VMax : out Real);
+	---Purpose: Returns in UMin,  UMax, VMin,  VMax  the  bounding
+	--          values of the edge in the parametric space of F.
+        
+    AddUVBounds(F : Face from TopoDS;
+                B : in out Box2d from Bnd);
+	---Purpose: Adds  to  the box <B>  the bounding values in  the
+	--          parametric space of F.
+    
+    AddUVBounds(F : Face from TopoDS;
+    	        W : Wire from TopoDS;
+                B : in out Box2d from Bnd);
+	---Purpose: Adds  to the box  <B>  the bounding  values of the
+	--          wire in the parametric space of F.
+    
+    AddUVBounds(F : Face from TopoDS;
+    	        E : Edge from TopoDS;
+    	        B : in out Box2d from Bnd);
+	---Purpose: Adds to  the box <B>  the  bounding values  of the
+	--          edge in the parametric space of F.
+
+
+    Update(V : Vertex from TopoDS);
+	---Purpose: Update a vertex (nothing is done)
+
+    Update(E : Edge from TopoDS);
+	---Purpose: Update an edge, compute 2d bounding boxes.
+
+    Update(W : Wire from TopoDS);
+	---Purpose: Update a wire (nothing is done)
+
+    Update(F : Face from TopoDS);
+	---Purpose: Update a Face, update UV points.
+
+    Update(S : Shell from TopoDS);
+	---Purpose: Update a shell (nothing is done)
+
+    Update(S : Solid from TopoDS);
+	---Purpose: Update a solid (nothing is done)
+
+    Update(C : CompSolid from TopoDS);
+	---Purpose: Update a composite solid (nothing is done)
+
+    Update(C : Compound from TopoDS);
+	---Purpose: Update a compound (nothing is done)
+
+    Update(S : Shape from TopoDS);
+	---Purpose: Update a shape, call the corect update.
+
+
+
+    UpdateFaceUVPoints(F : Face from TopoDS);
+	---Purpose: For  all the edges  of the face  <F> reset  the UV
+	--          points to  ensure that  connected  faces  have the
+	--          same point at there common extremity.
+
+    Clean(S: Shape from TopoDS);
+    	---Purpose: Removes all the triangulations of the faces of <S>
+    	--          and removes all polygons on triangulations of the
+    	--          edges.
+
+
+    Triangulation(S: Shape from TopoDS; deflec: Real)
+    returns Boolean from Standard;
+    	---Purpose: verifies that each face from the shape <S> has got
+    	--          a triangulation  with a  deflection <= deflec  and
+    	--          the edges a discretisation on  this triangulation.
+
+
+    Compare(V1,V2 : Vertex from TopoDS) returns Boolean;
+	---Purpose: Returns  True if  the    distance between the  two
+	--          vertices is lower than their tolerance.
+
+    Compare(E1,E2 : Edge from TopoDS) returns Boolean;
+	---Purpose: Returns  True if  the    distance between the  two
+	--          edges is lower than their tolerance.
+
+    OuterWire(F : Face from TopoDS) returns Wire from TopoDS;
+	---Purpose: Returns the outer most wire of <F>. Returns a Null
+	--          wire if <F> has no wires.
+    
+    OuterShell(S : Solid from TopoDS) returns Shell from TopoDS;
+	---Purpose: Returns the outer most shell of <S>. Returns a Null
+	--          wire if <S> has no shells.
+    
+    Map3DEdges(S    : Shape from TopoDS;
+    	       M    : in out IndexedMapOfShape from TopTools);
+	  ---Purpose: Stores in the map  <M> all the 3D topology edges
+	  --          of <S>. 
+
+    IsReallyClosed(E: Edge from TopoDS; F: Face from TopoDS)
+	---Purpose: Verifies that the edge  <E> is found two  times on
+	--          the face <F> before calling BRep_Tool::IsClosed.
+    	returns Boolean from Standard;
+
+
+    Dump(Sh : Shape from TopoDS; S : in out OStream);
+	  ---Purpose: Dumps the topological structure and the geometry 
+	  --          of <Sh> on the stream <S>.
+
+    Write(Sh : Shape from TopoDS; S : in out OStream;
+          PR : ProgressIndicator from Message = NULL);
+	  ---Purpose: Writes <Sh> on <S> in an ASCII format.
+
+    Read(Sh : out Shape from TopoDS; S : in out IStream; 
+    	 B  : Builder from  BRep; PR : ProgressIndicator from Message = NULL);
+	  ---Purpose: Reads a Shape  from <S> in  returns it in  <Sh>.
+	  --          <B> is used to build the shape.
+
+    Write(Sh : Shape from TopoDS; File : CString;
+          PR : ProgressIndicator from Message = NULL ) returns Boolean;
+	  ---Purpose: Writes <Sh> in <File>.
+
+    Read(Sh : out Shape from TopoDS; File : CString;
+    	 B  : Builder from  BRep; PR : ProgressIndicator from Message = NULL)
+          returns Boolean;
+	  ---Purpose: Reads a Shape  from <File>,  returns it in  <Sh>.
+	  --          <B> is used to build the shape.
+
+end BRepTools;
+
+

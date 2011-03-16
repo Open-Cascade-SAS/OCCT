@@ -1,0 +1,27 @@
+-- File:	StrongComponants.cdl
+-- Created:	Wed Sep 23 14:26:23 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class StrongComponants  from IFGraph  inherits SubPartsIterator
+
+    	---Purpose : determines strong componants of a graph, that is
+    	--           isolated entities (single componants) or loops
+
+uses Graph
+
+is
+
+    Create (agraph : Graph; whole : Boolean) returns StrongComponants;
+    ---Purpose : creates with a Graph, and will analyse :
+    --           whole True  : all the contents of the Model
+    --           whole False : sub-parts which will be given later
+
+    Evaluate (me : in out) is redefined;
+    ---Purpose : does the computation
+
+    	-- --   Iteration : More-Next-etc... will give strong componants
+
+end StrongComponants;

@@ -1,0 +1,28 @@
+-- File:	MiniSchema.cdl
+-- Created:	Fri Jul  5 16:55:54 1996
+-- Author:	Design
+--		<design@gazon.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+schema ShapeSchema
+
+is
+
+
+---Category: inheritage and persistence basic tools
+
+    package ObjMgt;
+
+    package PTopLoc;
+    package PColgp;
+    package PGeom2d;
+    package PGeom;
+    package PColPGeom;
+    package PColPGeom2d;
+    package PPoly;
+    package PTopoDS;
+    package PBRep;
+
+    package PCDMShape; -- class Document from PCDM.
+
+end ShapeSchema;

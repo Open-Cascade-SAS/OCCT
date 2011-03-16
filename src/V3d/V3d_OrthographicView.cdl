@@ -1,0 +1,54 @@
+-- File:	OrthographicView.cdl
+-- Created:	Tue Jan 21 16:21:26 1992
+-- Author:	GG
+--                           
+---Copyright:	Matra Datavision 1992
+
+
+class OrthographicView from V3d
+
+        ---Version:
+
+	---Purpose: Define an orthographic view.
+        --          See the methods of the Class View
+
+        ---Keywords: View,Orthographic
+
+        ---Warning:
+
+        ---References:
+
+
+inherits View from V3d
+
+uses
+
+	Viewer from V3d,
+	PerspectiveView from V3d
+
+is
+
+    	Create ( VM : mutable Viewer ) returns mutable OrthographicView; 
+	---Level : Public
+	---Purpose: Define an orthographic view in the viewer VM.
+
+    	Create ( VM : mutable Viewer ; V : PerspectiveView ) 
+					returns mutable OrthographicView; 
+	---Level : Public
+	---Purpose: Defines an orthographic view from a Perspective view.
+	--	    The parameters of the original view are duplicated
+	--	    in the resulting view (Projection,Mapping,Context) .
+	--	    The view thus created must be activated in a new
+	--	    window.
+
+    	Create ( VM : mutable Viewer ; V : OrthographicView ) 
+					returns mutable OrthographicView; 
+	---Level : Public
+	---Purpose: Defines one orthographic view from another.
+	--	    The parameters of the original view are duplicated 
+	--	    in the resulting view. (Projection,Mapping,Context) .
+	--	    The view thus created must be activated in a new window.
+
+        Copy ( me ) returns mutable OrthographicView from V3d is static;
+	---Level : Public
+end OrthographicView;

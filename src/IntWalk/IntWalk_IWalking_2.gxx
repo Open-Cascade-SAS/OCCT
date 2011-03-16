@@ -1,0 +1,751 @@
+//-- IntWalk_IWalking_2.gxx
+
+#ifndef DEB
+#define No_Standard_RangeError
+#define No_Standard_OutOfRange
+#endif
+
+
+// _______________________________________________
+//
+// Cadrage d un point (u, v) dans le domaine naturel d une surface ET mise 
+// a jour du couple (u, v) pour le calcul du point suivant.
+//
+Standard_Boolean IntWalk_IWalking::Cadrage 
+  (math_Vector& BornInf,
+   math_Vector& BornSup,
+   math_Vector& UVap,
+   Standard_Real& Step,
+//   Standard_Real& StepV,
+   const Standard_Integer StepSign) const 
+
+// on a toujours :
+// BorInf(1) <= UVap(1) <= BornSup(1) et BorInf(2) <= UVap(2) <= BornSup(2)
+// 1) on verifier si le point approche ne depasse pas le domaine naturel de 
+//  la surface
+// 2) si c est le cas on cadre le point approche sur frontiere en prenant la
+//  meilleure direction. On MODIFIE alors le pas d avancement et une des 
+//  bornes bloquer un des parametres lors du prochain appel a FunctionSetRoot;
+// 3) on recalcule couple (u, v) approche pour le le calcul du point suivant.
+// 4) return Standard_True si cadrage, Standard_False si pas de cadrage.
+{
+  Standard_Real Duvx = previousd2d.X();
+  Standard_Real Duvy = previousd2d.Y();
+
+  if (!reversed) {
+    previousPoint.ParametersOnS2(UVap(1),UVap(2));
+  }
+  else {
+    previousPoint.ParametersOnS1(UVap(1),UVap(2));
+  }
+
+  Standard_Real U1 = UVap(1) + Step * Duvx * StepSign;
+  Standard_Real V1 = UVap(2) + Step * Duvy * StepSign;
+
+
+  Standard_Boolean infu = (U1 <= BornInf(1)+Precision::PConfusion());
+  Standard_Boolean supu = (U1 >= BornSup(1)-Precision::PConfusion());
+  Standard_Boolean infv = (V1 <= BornInf(2)+Precision::PConfusion());
+  Standard_Boolean supv = (V1 >= BornSup(2)-Precision::PConfusion());
+
+  Standard_Real theStepU,theStepV;
+
+  if (!infu && !supu && !infv && !supv) {
+    UVap(1) = U1;
+    UVap(2) = V1;
+    return Standard_False;
+  }
+
+  if ((infu || supu) && (infv || supv)) {
+    if (infu) { // jag 940616
+      if(Duvx) { 
+	theStepU = Abs((BornInf(1) - UVap(1)) / Duvx);  // iso U =BornInf(1)
+      }
+      else { 
+	theStepU = Step; 
+      }
+    }
+    else {
+      if(Duvx) { 
+	theStepU = Abs((BornSup(1) - UVap(1)) / Duvx);  // iso U =BornSup(1)
+      }
+      else { 
+	theStepU = Step;
+      }
+    }
+    if (infv) { // jag 940616
+      if(Duvy) { 
+	theStepV = Abs((BornInf(2) - UVap(2)) / Duvy);  // iso V =BornInf(2)
+      }
+      else { 
+	theStepV = Step;
+      }
+    }
+    else {
+      if(Duvy) { 
+	theStepV = Abs((BornSup(2) - UVap(2)) / Duvy);  // iso V =BornSup(2)
+      }
+      else { 
+	theStepV = Step; 
+      }
+    }
+
+
+    if (theStepU <= theStepV) {
+      Step = theStepU;
+      if (infu) {
+	UVap(1) = BornInf(1);
+	BornSup(1) = BornInf(1);
+      }
+      else {
+	UVap(1) = BornSup(1);
+	BornInf(1) = BornSup(1);
+      }
+      UVap(2) += Step*Duvy*StepSign;
+    }
+    else {
+      Step = theStepV;
+      if (infv) {
+	UVap(2) = BornInf(2);
+	BornSup(2) = BornInf(2); 
+      }
+      else {
+	UVap(2) = BornSup(2);
+	BornInf(2) = BornSup(2); 
+      }
+      UVap(1) += Step*Duvx*StepSign;
+    }
+    return Standard_True;
+  }
+
+  else if (infu) { // jag 940616
+    if(Duvx) { 
+      Standard_Real aStep = Abs((BornInf(1) - UVap(1)) / Duvx);  // iso U =BornInf(1)
+      if(aStep<Step) Step=aStep;
+    }
+    BornSup(1) = BornInf(1);                     // on bloque le parametre
+    UVap(1) = BornInf(1);
+    UVap(2) += Step*Duvy*StepSign;;
+    return Standard_True;
+  }
+  else if (supu) { // jag 940616
+    if(Duvx) { 
+      Standard_Real aStep = Abs((BornSup(1) - UVap(1)) / Duvx);  // iso U =BornSup(1)
+      if(aStep<Step) Step=aStep;
+    }
+    BornInf(1) = BornSup(1);                    // on bloque le parametre
+    UVap(1) = BornSup(1);
+    UVap(2) += Step*Duvy*StepSign;
+    return Standard_True;
+  }
+  else if (infv) { // jag 940616
+    if(Duvy) { 
+      Standard_Real aStep = Abs((BornInf(2) - UVap(2)) / Duvy);  // iso V =BornInf(2) 
+      if(aStep<Step) Step=aStep;
+    }
+    BornSup(2) = BornInf(2);
+    UVap(1) += Step*Duvx*StepSign;
+    UVap(2) = BornInf(2);
+    return Standard_True;
+  }
+  else if (supv) { // jag 940616
+    if(Duvy) { 
+      Standard_Real aStep = Abs((BornSup(2) - UVap(2)) / Duvy);  // iso V =BornSup(2)
+      if(aStep<Step) Step=aStep;
+    }
+    BornInf(2) = BornSup(2);
+    UVap(1) += Step*Duvx*StepSign;
+    UVap(2) = BornSup(2);
+    return Standard_True;
+  }
+  return Standard_True;
+}
+
+
+Standard_Boolean IntWalk_IWalking::TestArretPassage
+  (const TColStd_SequenceOfReal& Umult,
+   const TColStd_SequenceOfReal& Vmult,
+   TheIWFunction& sp,
+   math_Vector& UV,
+   Standard_Integer& Irang)
+
+// Umult et Vmult : tableau des points d arret (ou passant) sur frontiere, ici
+//          on ne s interesse qu aux points passant.
+// UV     : le point courant.
+// Irang  : en sortie : donne l index du point d arret dans uvstart1 ou 0.
+//          on considere qu on ne risque de passer que sur un seul point
+//          passant.
+
+
+// test d arret pour une ligne d intersection OUVERTE
+// 1) test de passage sur l ensemble des points interieur
+// 2) test d arret sur l ensemble des points depart
+// si on detecte un arret on renvoie l index du point d arret (Irang) dans 
+// l iterateur des points de depart et les parametres associes dans 
+// l espace UV.
+{
+  Standard_Real Up, Vp, Du, Dv, Dup, Dvp, Utest,Vtest; 
+  Standard_Integer i, j, k, N, ind;
+  Standard_Real tolu = tolerance(1);
+  Standard_Real tolv = tolerance(2);
+  Standard_Real tolu2 = 10.*tolerance(1);
+  Standard_Real tolv2 = 10.*tolerance(2);
+  
+  Standard_Boolean Arrive = Standard_False;
+  
+  // test de passage sur point pouvant demarrer une boucle;les marquer traites
+  // si passe sur la ligne ouverte
+  
+  if (!reversed) {
+    previousPoint.ParametersOnS2(Up,Vp);
+  }
+  else {
+    previousPoint.ParametersOnS1(Up,Vp);
+  }
+
+  for (i = 1; i <= etat2.Length(); i++) { 
+    if (etat2(i) > 0) { 
+      // debug jag 05.04.94
+
+//      if ((Up-ustart2(i))*(UV(1)-ustart2(i)) +
+//	  (Vp-vstart2(i))*(UV(2)-vstart2(i)) <= 0)
+      Utest = ustart2(i);
+      Vtest = vstart2(i);
+
+      Du  = UV(1)-Utest;
+      Dv  = UV(2)-Vtest;
+      Dup = Up - Utest;
+      Dvp = Vp - Vtest;
+      
+//-- lbr le 30 oct 97 
+
+      //IFV for OCC20285
+
+
+      Standard_Real tolustolv=tolu/tolv;
+ 
+      if ((Abs(Du) < tolu2 && Abs(Dv) < tolv2) ||
+	  (Abs(Dup) < tolu2 && Abs(Dvp) < tolv2)) { 
+	    
+	etat2(i) = -etat2(i);
+      }
+      else {
+	Standard_Real DDu = (UV(1)-Up);
+	Standard_Real DDv = (UV(2)-Vp);
+	Standard_Real DDD = DDu*DDu+DDv*DDv;
+	Standard_Real DD1 = Du*Du+Dv*Dv;
+	if(DD1<=DDD) { 
+	  Standard_Real DD2 = Dup*Dup+Dvp*Dvp;
+	  if(DD2<=DDD && ((Du*Dup) + (Dv*Dvp*tolu/tolv) <= 0.)) { 	
+	    etat2(i) = -etat2(i);
+	  }
+	}
+      }
+    }
+  }
+
+  // test d arret sur point donne en entree et non encore traite
+
+//  Modified by Sergey KHROMOV - Tue Nov 20 10:55:01 2001 Begin
+// Check of all path points in the following order:
+//   * First check all not treated points;
+//   * After that check of already treated ones.
+  Standard_Integer l;
+
+  //// Modified by jgv, 28.07.2010 for OCC21914 ////
+  // There are several path points between (Up,Vp) and UV
+  // So several path points satisfy the condition
+  // Dup*UV1mUtest + Dvp*UV2mVtest) < 0
+  // We choose from them the path point with
+  // minimum distance to (Up,Vp)
+  TColStd_SequenceOfInteger i_candidates;
+  TColStd_SequenceOfReal    SqDist_candidates;
+
+  for (l = 1; l <= 2 && !Arrive; l++) {
+    Standard_Boolean isToCheck;
+
+    for (i = 1; i <= etat1.Length(); i++) {
+      if (l == 1)
+	isToCheck = (etat1(i) > 0);
+      else
+	isToCheck = (etat1(i) < 0);
+	
+      if (isToCheck) {
+//  Modified by Sergey KHROMOV - Tue Nov 20 11:03:16 2001 End
+
+	// debug jag voir avec isg
+
+	Utest = ustart1(i);
+	Vtest = vstart1(i);
+	Dup = Up - Utest;
+	Dvp = Vp - Vtest;
+	if (Abs(Dup) >= tolu || Abs(Dvp) >= tolv) {
+	  Standard_Real UV1mUtest = UV(1)-Utest;
+	  Standard_Real UV2mVtest = UV(2)-Vtest;
+	  if(( (Dup*UV1mUtest + Dvp*UV2mVtest) < 0) ||
+	     (   Abs(UV1mUtest) < tolu 
+	      && Abs(UV2mVtest) < tolv)) {
+	    i_candidates.Append(i);
+	    SqDist_candidates.Append(Dup*Dup + Dvp*Dvp);
+	    /*
+	    Irang=i;
+	    Arrive = Standard_True;
+	    UV(1) = Utest;
+	    UV(2) = Vtest;
+	    */
+	  }
+	  else if (nbMultiplicities(i) > 0 && i_candidates.IsEmpty()) {
+	    N=0;
+	    for (k = 1; k < i; k++) { 
+	      N+=nbMultiplicities(k);
+	    }
+	    for (j = N + 1; j <= N + nbMultiplicities(i); j++) {
+	      if (((Up-Umult(j))*(UV(1)-Umult(j)) +
+		   (Vp-Vmult(j))*(UV(2)-Vmult(j)) < 0) ||
+		  (Abs(UV(1)-Umult(j)) < tolu &&
+		   Abs(UV(2)-Vmult(j)) < tolv)) {
+		Irang=i;
+		Arrive = Standard_True;
+		UV(1) = Utest;
+		UV(2) = Vtest;
+		break;
+	      }
+	    }
+	  }
+	  if (Arrive) {
+	    static math_Vector bidF(1,1);
+	    static math_Matrix bidD(1,1,1,2);
+#ifdef DEB
+	    Standard_Boolean bidB = 
+#endif
+	      sp.Values(UV,bidF,bidD);
+	    break;
+	  }
+	}
+      }
+    } //end of for (i = 1; i <= etat1.Length(); i++)
+    if (!i_candidates.IsEmpty())
+      {
+	Standard_Real MinSqDist = RealLast();
+	for (ind = 1; ind <= i_candidates.Length(); ind++)
+	  if (SqDist_candidates(ind) < MinSqDist)
+	    {
+	      MinSqDist = SqDist_candidates(ind);
+	      Irang = i_candidates(ind);
+	    }
+	Arrive = Standard_True;
+	UV(1) = ustart1(Irang);
+	UV(2) = vstart1(Irang);
+      }
+  } //end of for (l = 1; l <= 2 && !Arrive; l++)
+  return  Arrive;
+}
+
+Standard_Boolean IntWalk_IWalking::TestArretPassage
+  (const TColStd_SequenceOfReal& Umult,
+   const TColStd_SequenceOfReal& Vmult,
+   const math_Vector& UV, 
+   const Standard_Integer Index, 
+   Standard_Integer& Irang)
+{
+// Umult, Vmult : tableau des points d arret (ou passant) sur frontiere, ici
+//          on ne s interesse qu aux points passant.
+// UV     : le point courant.
+// Index  : l index du point de demarrage dans uvstart2 de la ligne en cours
+//          (c est un point interieur).
+// Irang  : en sortie : donne l index du point passant dans uvstart1 ou 0.
+//          on considere qu on ne risque de passer que sur un seul point
+//          passant.
+
+// test d arret pour une ligne d intersection FERMEE.
+// 1) test de passage sur l ensemble des points interieur
+// 2) test de passage sur les points passant.
+
+  Standard_Real Up, Vp, Scal;
+  Standard_Boolean Arrive = Standard_False;
+  Standard_Integer N, k, i;
+  Standard_Real Utest,Vtest;
+  Standard_Real tolu = tolerance(1);
+  Standard_Real tolv = tolerance(2);
+
+  
+  // tests d arret et de passage sur points interieurs.
+
+  if (!reversed) {
+    previousPoint.ParametersOnS2(Up,Vp);
+  }
+  else {
+    previousPoint.ParametersOnS1(Up,Vp);
+  }
+
+  Standard_Real UV1=UV(1);
+  Standard_Real UV2=UV(2);
+
+
+  //-- On met tout le monde ds une boite 0 1  x 0 1 
+  //-- en tourte rigueur il faudrait faire les test en 3d
+
+  Standard_Real deltau=UM-Um;
+  Standard_Real deltav=VM-Vm;
+
+  Up/=deltau; UV1/=deltau; 
+  Vp/=deltav; UV2/=deltav;
+
+  tolu/=deltau;
+  tolv/=deltav;
+
+  Standard_Real tolu2=tolu+tolu;
+  Standard_Real tolv2=tolv+tolv;
+
+  
+  Standard_Real dPreviousCurrent = (Up-UV1)*(Up-UV1)+(Vp-UV2)*(Vp-UV2);
+  for (k = 1; k <= etat2.Length(); k++) { 
+    if (etat2(k) > 0) {
+      Utest = ustart2(k);
+      Vtest = vstart2(k);
+      
+      Utest/=deltau;
+      Vtest/=deltav;
+      
+      Standard_Real UV1mUtest=UV1-Utest;
+      Standard_Real UV2mVtest=UV2-Vtest;
+      if(   (UV1mUtest<tolu2 && UV1mUtest>-tolu2)
+	 && (UV2mVtest<tolv2 && UV2mVtest>-tolv2)) { 
+	if(Index!=k) { 
+	  //-- cout<<"* etat2 : ("<<k<<")"<<endl;
+	  etat2(k)=-etat2(k); //-- marque le point comme point de passage 
+	}
+	else {  //-- Index == k
+	  //-- cout<<"* Arrive"<<endl;
+	  Arrive=Standard_True;
+	}
+      }
+      else { 
+	Standard_Real UpmUtest = (Up-Utest);
+	Standard_Real VpmVtest = (Vp-Vtest);
+	Standard_Real dPreviousStart = (UpmUtest)*(UpmUtest)+(VpmVtest)*(VpmVtest);
+	Standard_Real dCurrentStart  = UV1mUtest * UV1mUtest + UV2mVtest * UV2mVtest;
+
+	Scal=(UpmUtest)*(UV1mUtest)+(VpmVtest)*(UV2mVtest);
+	if( (Abs(UpmUtest)<tolu && Abs(VpmVtest)<tolv)) { 
+	  if(Index != k ) { 
+	    //-- cout<<"** etat2 : ("<<k<<")"<<endl;
+	    etat2(k) = -etat2(k);
+	  }
+	}
+	else if(Scal<0 && (dPreviousStart+dCurrentStart < dPreviousCurrent)) { 
+	  if (Index == k ) { // on a boucle.
+	    Arrive = Standard_True;
+	    //-- cout<<"** Arrive  : k="<<k<<endl;
+	  }
+	  else {
+	    //-- cout<<"*** etat2 : ("<<k<<")"<<endl;
+	    etat2(k) = -etat2(k); // marque le point point de passage 
+	  }
+	}
+	else if(k!=Index) {
+	  if(dPreviousStart < dPreviousCurrent*0.25) { 
+	    etat2(k) = -etat2(k); // marque le point point de passage 
+	    //-- cout<<"**** etat2 : ("<<k<<")"<<endl;
+	  }
+	  else { 
+	    if(dCurrentStart < dPreviousCurrent*0.25) {
+	      //-- cout<<"***** etat2 : ("<<k<<")"<<endl;
+	      etat2(k) = -etat2(k); // marque le point point de passage 
+	    }
+	    else { 
+	      Standard_Real UMidUtest = 0.5*(UV1+Up)-Utest;
+	      Standard_Real VMidVtest = 0.5*(UV2+Vp)-Vtest;	    
+	      Standard_Real dMiddleStart =  UMidUtest* UMidUtest+VMidVtest*VMidVtest;
+
+	      if(dMiddleStart < dPreviousCurrent*0.5) { 
+		//-- cout<<"*********** etat2 : ("<<k<<")"<<endl;
+		etat2(k) = -etat2(k); // marque le point point de passage 
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+
+  // test de passage sur points passant.
+  
+  Irang =0;
+  for (i = 1; i <= etat1.Length(); i++) {
+    if (etat1(i) > 0 && etat1(i) < 11) { //test des points passant
+      Utest = ustart1(i);
+      Vtest = vstart1(i);
+      Utest/=deltau;
+      Vtest/=deltav;
+      
+      if (((Up-Utest) * (UV1-Utest) + (Vp-Vtest) * (UV2-Vtest) < 0) ||
+	  (Abs(UV1-Utest) < tolu &&  Abs(UV2-Vtest) < tolv)) 
+	Irang = i;
+      else if (nbMultiplicities(i) > 0) {
+	N=0;
+	for (k = 1; k < i; k++) N = N + nbMultiplicities(k);
+	for (Standard_Integer j = N + 1; j <= N + nbMultiplicities(i); j++) {
+	  Standard_Real Umultj = Umult(j)/deltau;
+	  Standard_Real Vmultj = Vmult(j)/deltav;	  
+          if (((Up-Umultj)*(UV1-Umultj) +
+	       (Vp-Vmultj)*(UV2-Vmultj) < 0) ||
+	      (Abs(UV1-Umultj) < tolu &&
+	       Abs(UV2-Vmultj) < tolv)) {
+	    Irang=i;
+	    break;
+          }
+	}
+      }
+    }    
+  }
+  return Arrive;
+}
+
+
+Standard_Boolean IntWalk_IWalking::TestArretAjout
+  (TheIWFunction& sp,
+   math_Vector& UV, 
+   Standard_Integer& Irang,
+   IntSurf_PntOn2S& Psol) 
+
+// test d arret sur les points rajoutes 
+// ces points sont des points sur frontiere naturelle qui n ont pas ete 
+// donnes en entree
+// on renvoit : Psol,  le point rajoute.
+//              Irang, l index dans l iterateur des points rajoutes.
+//              UV,     parametre du point rajoute.
+//
+{
+  Standard_Boolean Arrive = Standard_False;
+  Standard_Real U1,V1;
+  Standard_Real Up,Vp; 
+
+  if (!reversed) {
+    previousPoint.ParametersOnS2(Up,Vp);
+  }
+  else {
+    previousPoint.ParametersOnS1(Up,Vp);
+  }
+
+  Standard_Integer nbAjout = seqAjout.Length();
+  for (Standard_Integer i = 1; i <= nbAjout; i++) {
+    Irang = seqAjout.Value(i);
+
+// on rajoute le test Abs(Irang) <= lines.Length() pour le cas ou
+// on ouvre une ligne fermee suite a l ajout 1 point sur cette meme
+// ligne. De toute facon on a un gros pb , car on va avoir 2 points
+// rajoutes sur cette ligne...
+
+    if (Abs(Irang) <= lines.Length()) {
+
+      const Handle(IntWalk_TheIWLine)& Line = lines.Value(Abs(Irang));
+      if (Irang>0) 
+	Psol = Line->Value(Line->NbPoints()); 
+      else 
+	Psol = Line->Value(1);
+      if (!reversed) {
+	Psol.ParametersOnS2(U1, V1);
+      }
+      else {
+	Psol.ParametersOnS1(U1, V1);
+      }
+      if (((Up-U1) * (UV(1)-U1) + 
+	   (Vp-V1) * (UV(2)-V1)) < 0 ||
+	  (Abs(UV(1)-U1) < tolerance(1) &&  
+	   Abs(UV(2)-V1) < tolerance(2))) {
+//jag 940615	Irang= -Abs(Irang); 
+	Arrive = Standard_True; 
+	UV(1) = U1;
+	UV(2) = V1;
+	static math_Vector bidF(1,1);
+	static math_Matrix bidD(1,1,1,2);
+#ifdef DEB
+	Standard_Boolean bidB = 
+#endif
+	  sp.Values(UV,bidF,bidD);
+	break;
+      }
+    }
+  }
+  return Arrive;
+}
+
+void IntWalk_IWalking::TestArretCadre
+  (const TColStd_SequenceOfReal& Umult,
+   const TColStd_SequenceOfReal& Vmult,
+   const Handle(IntWalk_TheIWLine)& Line,
+   TheIWFunction& sp,
+   math_Vector& UV,
+   Standard_Integer& Irang)
+
+// test d arret alors qu on est sur frontiere.
+// on a essaye tous les tests d  arret et on est arrive.
+// test d  arret sur les points donne au depart deja marques et sur 
+// l  ensemble de la ligne courante. Cette ligne peut etre racourcie si
+// on trouve in point d arret.
+// Abs(Irang) = index dans l  iterateur des points de depart ou 0
+//  si Irang <0 , il faut ajouter ce point a la ligne ( pas de Line->Cut)
+// UV = parametre du point de depart
+{
+  Standard_Real Scal, Up, Vp, Uc, Vc;
+  Standard_Integer N;
+  Standard_Boolean Found = Standard_False;
+
+
+  Irang =0;
+  for (Standard_Integer i = 1; i <= etat1.Length(); i++) {
+    if (etat1(i) < 0) {
+      N=0; // rang dans UVMult.
+      if (nbMultiplicities(i) > 0) {
+	for (Standard_Integer k = 1; k < i; k++) 
+	  N+=nbMultiplicities(k);
+      }
+      if (!reversed) {
+	Line->Value(1).ParametersOnS2(Up,Vp);
+      }
+      else {
+	Line->Value(1).ParametersOnS1(Up,Vp);
+      }
+      Standard_Integer nbp= Line->NbPoints();
+      for (Standard_Integer j = 2; j <= nbp; j++) {
+	if (!reversed) {
+	  Line->Value(j).ParametersOnS2(Uc,Vc);
+	}
+	else {
+	  Line->Value(j).ParametersOnS1(Uc,Vc);
+	}
+
+	Scal = (Up-ustart1(i)) * (Uc-ustart1(i)) +
+	       (Vp-vstart1(i)) * (Vc-vstart1(i));
+        // si on a trouve un point d arret : on arrete la ligne sur ce point.
+	if (Scal < 0) { 
+          Line->Cut(j);  nbp= Line->NbPoints();
+          Irang = i;
+	  UV(1) = ustart1(Irang);
+	  UV(2) = vstart1(Irang);
+          Found = Standard_True;
+	}
+	else if (Abs(Uc-ustart1(i)) < tolerance(1) &&
+		 Abs(Vc-vstart1(i)) < tolerance(2) ) {
+          Line->Cut(j);  nbp= Line->NbPoints();
+          Irang=i; 
+	  UV(1) = ustart1(Irang);
+	  UV(2) = vstart1(Irang);
+          Found = Standard_True;
+	}
+	else if (nbMultiplicities(i) > 0) {
+          for (Standard_Integer k = N+1; k <= N + nbMultiplicities(i); k++) {
+	    Scal = (Up-Umult(k)) * (Uc-Umult(k)) +
+	           (Vp-Vmult(k)) * (Vc-Vmult(k));
+	    if (Scal < 0) { 
+	      Line->Cut(j);  nbp= Line->NbPoints();
+	      Irang=i;
+	      UV(1) = ustart1(Irang);
+	      UV(2) = vstart1(Irang);
+	      Found = Standard_True;
+	      break;
+	    }
+	    else if (Abs(Uc-Umult(k)) < tolerance(1) &&
+		     Abs(Vc-Vmult(k)) < tolerance(2)) {
+	      Line->Cut(j);  nbp= Line->NbPoints();
+	      Irang=i; 
+	      UV(1) = ustart1(Irang);
+	      UV(2) = vstart1(Irang);
+	      Found = Standard_True;
+	      break;
+	    }
+          }
+	}
+	if (Found) {
+	  static math_Vector bidF(1,1);
+	  static math_Matrix bidD(1,1,1,2);
+#ifdef DEB
+	  Standard_Boolean bidB = 
+#endif
+	    sp.Values(UV,bidF,bidD);
+	  Standard_Integer NBP =  Line->NbPoints();
+	  Standard_Integer Indextg;	  
+	  Line->TangentVector(Indextg);
+	  if(Indextg > NBP) { 
+	    if(j>3 && j<=NBP+1) { 
+	      gp_Vec Dir3d = sp.Direction3d();
+	      gp_Vec Dir3d1 = gp_Vec(Line->Value(j-2).Value(),Line->Value(j-1).Value());
+	      Standard_Real dot = Dir3d.Dot(Dir3d1);
+	      if(dot<0.0) { // Normalement on ne doit pas passer souvent ds cette Fonction !!! 
+		Dir3d.Reverse();
+		//-- cout<<" IntWalk_IWalking_2.gxx REVERSE "<<endl;
+	      }
+	      Line->SetTangentVector(previousd3d,j-1);
+	    }
+#ifdef DEB
+	    else { 
+	      cout<<" IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 "<<endl;
+	    }
+#endif
+	  }
+
+	  return;
+	}
+	Up = Uc;
+	Vp = Vc;
+      }
+
+      // et maintenant on compare le dernier point de la ligne et le dernier
+      // point calcule.
+      // il n y aura pas besoin de "Cuter"
+
+      Scal = (Up-ustart1(i)) * (UV(1)-ustart1(i)) +
+	// 	(Vp-ustart1(i)) * (UV(2)-vstart1(i));
+      // modified by NIZHNY-MKK  Fri Oct 27 12:29:41 2000
+	(Vp-vstart1(i)) * (UV(2)-vstart1(i));
+
+      if (Scal < 0) { 
+        Irang = i;
+	UV(1) = ustart1(Irang);
+	UV(2) = vstart1(Irang);
+	Found = Standard_True;
+      }
+      else if (Abs(UV(1)-ustart1(i)) < tolerance(1) &&
+	       Abs(UV(2)-vstart1(i)) < tolerance(2)) {
+        Irang=i; 
+	UV(1) = ustart1(Irang);
+	UV(2) = vstart1(Irang);
+	Found = Standard_True;
+      }
+      else if (nbMultiplicities(i) > 0) {
+        for (Standard_Integer j = N+1; j <= N+nbMultiplicities(i); j++) {
+	  Scal = (Up-Umult(j)) * (UV(1)-Umult(j)) +
+                 (Vp-Vmult(j)) * (UV(2)-Vmult(j));
+	  if (Scal < 0) { 
+	    Irang=i;
+	    UV(1) = ustart1(Irang);
+	    UV(2) = vstart1(Irang);
+	    Found = Standard_True;
+	    break;
+	  }
+	  else if (Abs(UV(1)-Umult(j)) < tolerance(1) &&
+		   Abs(UV(2)-Vmult(j)) < tolerance(2)) {
+	    Irang=i; 
+	    UV(1) = ustart1(Irang);
+	    UV(2) = vstart1(Irang);
+	    Found = Standard_True;
+	    break;
+	  }
+        }
+      }
+      if (Found) {
+	Irang = -Irang; // jag 941017
+	static math_Vector bidF(1,1);
+	static math_Matrix bidD(1,1,1,2);
+#ifdef DEB
+	Standard_Boolean bidB = 
+#endif
+	  sp.Values(UV,bidF,bidD);
+	return;
+      }
+    }
+  } 
+}
+
+

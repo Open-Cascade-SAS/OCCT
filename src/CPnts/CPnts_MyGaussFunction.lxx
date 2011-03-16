@@ -1,0 +1,7 @@
+// File:	CPnts_MyGaussFunction.lxx
+// Created:	Thu May  4 17:36:53 1995
+// Author:	Modelistation
+//		<model@fuegox>
+
+
+inline CPnts_MyGaussFunction::CPnts_MyGaussFunction() {}

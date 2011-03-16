@@ -1,0 +1,94 @@
+--
+-- File      :  ConicalSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ConicalSurface from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines ConicalSurface, Type <194> Form Number <0,1>
+        --          in package IGESSolid
+        --          The right circular conical surface is defined by a
+        --          point on the axis on the cone, the direction of the axis
+        --          of the cone, the radius of the cone at the axis point and
+        --          the cone semi-angle.
+
+uses
+
+        Point             from   IGESGeom,
+        Direction         from   IGESGeom
+
+is
+
+        Create returns mutable ConicalSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aLocation : Point;
+              anAxis    : Direction;
+              aRadius   : Real;
+              anAngle   : Real;
+              aRefdir   : Direction);
+        ---Purpose : This method is used to set the fields of the class
+        --           ConicalSurface
+        --       - aLocation : Location of the point on axis
+        --       - anAxis    : Direction of the axis
+        --       - aRadius   : Radius at axis point
+        --       - anAngle   : Value of semi-angle in degrees (0<angle<90)
+        --       - aRefdir   : Reference direction (parametrised surface)
+        --                     Null if unparametrised surface.
+
+        LocationPoint(me) returns Point;
+        ---Purpose : returns the location of the point on the axis
+
+        Axis(me) returns Direction;
+        ---Purpose : returns the direction of the axis
+
+        Radius(me)  returns Real;
+        ---Purpose : returns the radius at the axis point
+
+        SemiAngle(me) returns Real;
+        ---Purpose : returns the semi-angle value
+
+        ReferenceDir(me) returns Direction;
+        ---Purpose : returns the reference direction of the conical surface in case
+        -- of parametrised surface. For unparametrised surface it returns
+        -- NULL.
+
+        IsParametrised(me) returns Boolean;
+        ---Purpose : returns True if Form no is 1 else false
+
+fields
+
+--
+-- Class    : IGESSolid_ConicalSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ConicalSurface.
+--
+-- Reminder : A ConicalSurface instance is defined by :
+--            a point on the axis of the cone(Location), the direction of
+--            the axis of the cone(Axis), the radius of the cone at the axis
+--            point(Radius) and the cone semi-angle(Angle). If the surface
+--            is parametrised then a reference direction is given(RefDir).
+--
+
+        theLocationPoint : Point;
+            --  the location of the point on the axis
+
+        theAxis          : Direction;
+            -- the direction of the axis
+
+        theRadius        : Real;
+            -- the radius at the axis point
+
+        theAngle         : Real;
+            -- the semi-angle of the cone
+
+        theRefDir        : Direction;
+            -- the reference direction (for parametrised surface alone)
+
+end ConicalSurface;

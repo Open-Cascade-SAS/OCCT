@@ -1,0 +1,27 @@
+-- File:	SelectUnion.cdl
+-- Created:	Mon Jan 11 12:34:05 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+class SelectUnion  from IFSelect  inherits SelectCombine
+
+    ---Purpose : A SelectUnion cumulates the Entities issued from several other
+    --           Selections (union of results : "OR" operator)
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectUnion;
+    ---Purpose : Creates an empty SelectUnion
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected Entities, which is the addition
+    --           result from all input selections. Uniqueness is guaranteed.
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Union (OR)"
+
+end SelectUnion;

@@ -1,0 +1,59 @@
+-- File:        StepAP214.cdl
+-- Created:     Mon Dec  4 12:02:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package RWStepAP214 
+
+uses
+
+	StepData, Interface, TCollection, TColStd, StepAP214
+
+is
+
+
+class ReadWriteModule;
+
+class GeneralModule;
+
+class RWAutoDesignActualDateAndTimeAssignment;
+class RWAutoDesignActualDateAssignment;
+class RWAutoDesignApprovalAssignment;
+class RWAutoDesignDateAndPersonAssignment;
+class RWAutoDesignGroupAssignment;
+class RWAutoDesignNominalDateAndTimeAssignment;
+class RWAutoDesignNominalDateAssignment;
+class RWAutoDesignOrganizationAssignment;
+class RWAutoDesignPersonAndOrganizationAssignment;
+class RWAutoDesignPresentedItem;
+class RWAutoDesignSecurityClassificationAssignment;
+-- Removed from Rev2 to Rev4 : class RWAutoDesignViewArea;
+
+-- Added from STEP214-CC1 to CC2
+class RWAutoDesignDocumentReference;
+--Added from CC2 to DIS
+
+class RWAppliedDateAndTimeAssignment;
+class RWAppliedDateAssignment;
+class RWAppliedApprovalAssignment;
+class RWAppliedGroupAssignment;
+class RWAppliedOrganizationAssignment;
+class RWAppliedPersonAndOrganizationAssignment;
+class RWAppliedPresentedItem;
+class RWAppliedSecurityClassificationAssignment;
+class RWAppliedDocumentReference;
+
+-- added for external references (CAX-IF TRJ4)
+class RWAppliedExternalIdentificationAssignment;
+class RWClass;
+class RWExternallyDefinedClass;
+class RWExternallyDefinedGeneralProperty;
+class RWRepItemGroup;
+
+	Init;
+	---Purpose: enforced the initialisation of the  libraries
+
+end RWStepAP214;

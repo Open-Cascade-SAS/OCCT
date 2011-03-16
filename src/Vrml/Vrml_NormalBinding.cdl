@@ -1,0 +1,39 @@
+-- File:	Vrml_NormalBinding.cdl
+-- Created:	Tue Feb 11 09:49:51 1997
+-- Author:	Alexander BRIVIN and Dmitry Tarasov
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class NormalBinding from Vrml 
+
+	---Purpose: defines a NormalBinding node of VRML specifying properties of geometry
+	---          and its appearance.
+    	--  This node specifies how the current normals are bound to shapes that follow in the scene
+       	--  graph. Each shape node may interpret bindings differently. 
+    	--  The bindings for faces and vertices are meaningful only for shapes that are made from
+       	--  faces and vertices. Similarly, the indexed bindings are only used by the shapes that allow
+       	--  indexing. For bindings that require multiple normals, be sure to have at least as many
+       	--  normals defined as are necessary; otherwise, errors will occur. 
+uses
+ 
+    MaterialBindingAndNormalBinding  from  Vrml
+
+is
+ 
+    Create ( aValue : MaterialBindingAndNormalBinding  from  Vrml )
+        returns NormalBinding from Vrml; 
+	
+    Create returns NormalBinding from Vrml; 
+
+    SetValue ( me:in out; aValue : MaterialBindingAndNormalBinding from  Vrml );
+    Value ( me )  returns  MaterialBindingAndNormalBinding from  Vrml;
+
+    Print  ( me; anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myValue  :   MaterialBindingAndNormalBinding from  Vrml;  -- Normal binding value
+
+end NormalBinding;

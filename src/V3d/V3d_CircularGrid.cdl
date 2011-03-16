@@ -1,0 +1,75 @@
+--
+-- File:	V3d_CircularGrid.cdl
+-- Created:	Jeudi 16 Juillet 1998
+-- Author:	CAL
+-- Updated:     GG IMP230300 The color fields are moved in Aspect_Grid
+--
+---Copyright:	Matra Datavision 1998
+
+private class CircularGrid from V3d inherits CircularGrid from Aspect
+
+uses
+	Ax3			from gp,
+	Color			from Quantity,
+	Group			from Graphic3d,
+	Structure		from Graphic3d,
+	GridDrawMode		from Aspect,
+	ViewerPointer		from V3d
+
+is
+	Create ( aViewer	: ViewerPointer from V3d;
+		 aColor		: Color from Quantity;
+		 aTenthColor	: Color from Quantity )
+	returns mutable CircularGrid from V3d;
+
+	SetColors ( me	: mutable;
+		    aColor	: Color from Quantity;
+		    aTenthColor	: Color from Quantity )
+	is redefined static;
+
+	Display ( me	: mutable )
+	is redefined static;
+   
+	Erase ( me )
+	is redefined static;
+
+	IsDisplayed ( me )
+	returns Boolean from Standard
+	is redefined static;
+
+	GraphicValues ( me; 
+			Radius	: out Real from Standard;
+			OffSet	: out Real from Standard )
+	is static;
+
+	SetGraphicValues ( me	: mutable; 
+			   Radius	: Real from Standard;
+			   OffSet	: Real from Standard )
+	is static;
+
+	DefineLines ( me : mutable )
+	is static private;
+
+	DefinePoints ( me : mutable )
+	is static private;
+
+	UpdateDisplay ( me	: mutable )
+	is redefined static protected;
+
+fields
+	myStructure		: Structure from Graphic3d;
+	myGroup1, myGroup2	: Group from Graphic3d;
+	myCurViewPlane		: Ax3 from gp;
+--	myColor, myTenthColor	: Color from Quantity;
+--	myCurColor1, myCurColor2: Color from Quantity;
+	myViewer		: ViewerPointer from V3d;
+	myCurAreDefined		: Boolean from Standard;
+	myCurDrawMode		: GridDrawMode from Aspect;
+	myCurXo, myCurYo	: Real from Standard;
+	myCurAngle		: Real from Standard;
+	myCurStep		: Real from Standard;
+	myCurDivi		: Integer from Standard;
+	myRadius		: Real from Standard;
+	myOffSet		: Real from Standard;
+
+end CircularGrid from V3d;

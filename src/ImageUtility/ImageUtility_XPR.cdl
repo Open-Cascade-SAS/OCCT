@@ -1,0 +1,68 @@
+--
+-- File:	ImageUtility_XPR.cdl
+-- Created:	23/03/93
+-- Author:	BBL,JLF
+--
+---Copyright:	Matravision 1993
+--
+
+class XPR from ImageUtility
+
+	---Version: 0.0
+
+	---Purpose: Performs a "xpr" with a XAlienImage build
+	-- 		 from any Image , any AlienImage .
+
+	---Keywords:
+	---Warning:
+	---References:
+
+uses
+	AlienUserImage 	from AlienImage,
+	XAlienImage  	from AlienImage,
+	File  		from OSD,
+	Image 		from Image
+
+raises
+	TypeMismatch 	from Standard
+
+is
+	XPR ( myclass ; aImage          : in Image from Image; 
+			aName           : CString from Standard;
+			xprOptions      : CString from Standard 
+						= "" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a Image object to aTmpFile and
+	  --          execute a Spawn "xpr xprOptions aTmpFile | lpr &" .
+
+	XPR ( myclass ; aAlienUserImage : in AlienUserImage from AlienImage; 
+			aName           : CString from Standard ;
+			xprOptions      : CString from Standard 
+						= "" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a  AlienImage object to aTmpFile and
+	  --          execute a Spawn "xpr xprOptions aTmpFile| lpr  &" .
+
+	XPR ( myclass ; aXAlienImage    : in XAlienImage from AlienImage ;
+			xprOptions      : CString from Standard 
+						= "" ) ;
+	---Level: Internal
+	  ---Purpose: Write content of a  XAlienImage object to aTmpFile and
+	  --          execute a Spawn "xpr xprOptions aTmpFile| lpr  &" .
+
+	XPR ( myclass ; aFile           : in File from OSD ;
+			xprOptions      : CString from Standard 
+						= "" ) ;
+	---Level: Internal
+	  ---Purpose: execute a Spawn 
+	  --	"xpr xprOptions /aFile.SystemName()/ | lpr &" .
+
+	XPR ( myclass ; aFileName       : CString from Standard ;
+			xprOptions      : CString from Standard 
+						= "" ) ;
+	---Level: Internal
+	  ---Purpose: execute a Spawn "xpr xprOptions aFileName | lpr &" .
+
+
+
+end ;

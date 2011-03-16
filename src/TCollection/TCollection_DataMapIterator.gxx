@@ -1,0 +1,34 @@
+// File:	TCollection_DataMapIterator.gxx
+// Created:	Fri Feb 26 19:21:18 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+
+//=======================================================================
+//function : TCollection_DataMapIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_DataMapIterator::TCollection_DataMapIterator() :
+       TCollection_BasicMapIterator()
+{}
+
+//=======================================================================
+//function : TCollection_DataMapIterator
+//purpose  : 
+//=======================================================================
+
+TCollection_DataMapIterator::TCollection_DataMapIterator(const TCollection_DataMap& aMap) :
+       TCollection_BasicMapIterator(aMap)
+{}
+
+//=======================================================================
+//function : TCollection_DataMapIterator
+//purpose  : 
+//=======================================================================
+
+void TCollection_DataMapIterator::Initialize(const TCollection_DataMap& aMap)
+{
+  TCollection_BasicMapIterator::Initialize(aMap);
+}
+

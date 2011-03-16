@@ -1,0 +1,77 @@
+-- File:	IntImp_ZerCSParFunc.cdl
+-- Created:	Thu Jan 14 11:50:55 1993
+-- Author:	Isabelle GRIGNON
+--		<isg@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+
+
+generic class ZerCSParFunc from IntImp 
+    (ThePSurface as any;
+     ThePSurfaceTool as any; --as PSurfaceTool from IntImp(ThePSurface)
+     TheCurve as any;
+     TheCurveTool as any     --as CSCurveTool from IntImp(TheCurve)
+    )
+    
+inherits FunctionSetWithDerivatives from math
+
+      	---Purpose: this function is associated to the intersection between 
+      	--          a curve in 3d space and a surface  
+
+
+uses Vector from math,
+     Matrix from math,
+     Pnt from gp
+
+is
+    Create( S : ThePSurface;
+    	    C : TheCurve)   returns ZerCSParFunc from IntImp;
+	    
+    NbVariables(me) returns Integer from Standard
+    is static;
+    
+    NbEquations(me) returns Integer from Standard
+    is static;
+    
+    Value(me : in out; X : in Vector from math;
+    	    	       F : out Vector from math)
+    returns Boolean from Standard
+    is static;
+    
+    Derivatives(me : in out;X : in  Vector from math;
+    	    	    	    D : out Matrix from math)
+    returns Boolean from Standard
+    is static;
+    
+    Values(me : in out;
+    	   X  : in Vector from math;
+	   F  : out Vector from math; D: out Matrix from math)
+    returns Boolean from Standard
+    is static;
+
+    Point(me)
+    	---C++: return const&
+    	returns Pnt from gp
+    	is static;
+    
+    Root(me) returns Real from Standard
+    is static;
+    
+    AuxillarSurface(me)
+    	---C++: return const&
+    	returns ThePSurface
+    	is static;
+
+    AuxillarCurve(me)
+    	---C++: return const&
+    	returns TheCurve
+    	is static;
+    
+fields
+     surface : ThePSurface;
+     curve   : TheCurve;
+     p	     : Pnt from gp;
+     f       : Real from Standard;
+     
+end ZerCSParFunc;

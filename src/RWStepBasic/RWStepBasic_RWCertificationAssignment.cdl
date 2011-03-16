@@ -1,0 +1,35 @@
+-- File:	RWStepBasic_RWCertificationAssignment.cdl
+-- Created:	Fri Nov 26 16:26:34 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCertificationAssignment from RWStepBasic
+
+    ---Purpose: Read & Write tool for CertificationAssignment
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CertificationAssignment from StepBasic
+
+is
+    Create returns RWCertificationAssignment from RWStepBasic;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CertificationAssignment from StepBasic);
+	---Purpose: Reads CertificationAssignment
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CertificationAssignment from StepBasic);
+	---Purpose: Writes CertificationAssignment
+
+    Share (me; ent : CertificationAssignment from StepBasic;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCertificationAssignment;

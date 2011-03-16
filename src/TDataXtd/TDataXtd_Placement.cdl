@@ -1,0 +1,64 @@
+-- File:	TDataXtd_Placement.cdl
+-- Created:	Mon Apr  6 18:12:47 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009
+
+class Placement from TDataXtd inherits Attribute from TDF
+
+	---Purpose: 
+
+uses Attribute         from TDF,
+     Label             from TDF,
+     GUID              from Standard,
+     Integer           from Standard,
+     DataSet           from TDF,
+     RelocationTable   from TDF,
+     Constraint        from TDataXtd
+
+is
+
+    ---Purpose: class methods
+    --          =============
+
+
+    GetID (myclass)   
+    	---C++: return const &  
+    returns GUID from Standard;
+
+
+    Set (myclass; label : Label from TDF)  
+    ---Purpose: Find, or    create,   an Placement  attribute.     the
+    --          Placement attribute is returned.
+    returns Placement from TDataXtd;  
+    
+
+    ---Purpose: Placement methods
+    --          =================
+
+
+    Create
+    returns mutable  Placement from TDataXtd;
+
+    ---Category: TDF_Attribute methods
+    --           =====================
+
+    ID (me)
+    	---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; With : Attribute from TDF);
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF;
+
+    Paste (me; Into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF);    
+
+    Dump (me; anOS : in out OStream from Standard)
+    	returns OStream from Standard
+    	is redefined;
+	---C++: return &
+
+end Placement;
+

@@ -1,0 +1,30 @@
+-- File:        ItemDefinedTransformation.cdl
+-- Created:     Mon Dec  4 12:02:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWItemDefinedTransformation from RWStepRepr
+
+	---Purpose : Read & Write Module for ItemDefinedTransformation
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     ItemDefinedTransformation from StepRepr,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWItemDefinedTransformation;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable ItemDefinedTransformation from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : ItemDefinedTransformation from StepRepr);
+
+	Share(me; ent : ItemDefinedTransformation from StepRepr; iter : in out EntityIterator);
+
+end RWItemDefinedTransformation;

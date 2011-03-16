@@ -1,0 +1,108 @@
+-- File:	AIS_Chamf3dDimension.cdl
+-- Created:	Thu Dec  5 09:19:29 1996
+-- Author:	Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Chamf3dDimension from AIS inherits Relation from AIS
+
+	---Purpose: A framework to define display of 3D chamfers.
+    	-- A chamfer is displayed with arrows and text. The text
+    	-- gives the length of the chamfer if it is a symmetrical
+    	-- chamfer, or the angle if it is not.
+
+
+uses
+
+    PresentationManager3d from PrsMgr,
+    Presentation          from Prs3d,
+    Selection             from SelectMgr,
+    Shape                 from TopoDS,
+    Pnt                   from gp,
+    Dir                   from gp,
+    Projector             from Prs3d,
+    Transformation        from Geom,
+    PresentationManager2d from PrsMgr,
+    GraphicObject         from Graphic2d,    
+    ExtendedString        from TCollection,
+    ArrowSide             from DsgPrs,
+    KindOfDimension       from AIS 
+    
+is
+    Create (aFShape     : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection)	    
+	 ---Purpose:  Constructs a display object for 3D chamfers.
+    	 -- This object is defined by the shape aFShape, the
+    	 -- dimension aVal and the text aText.
+    returns mutable Chamf3dDimension from AIS;
+
+    Create (aFShape     : Shape          from TopoDS;
+	    aVal        : Real           from Standard;
+	    aText       : ExtendedString from TCollection;	    
+	    aPosition   : Pnt            from gp;
+	    aSymbolPrs  : ArrowSide      from DsgPrs;    
+    	    anArrowSize : Real           from Standard = 0.0)
+	 ---Purpose:  Constructs a display object for 3D chamfers.
+    	 -- This object is defined by the shape aFShape, the
+    	 -- dimension aVal, the text aText, the point of origin of
+    	 -- the chamfer aPosition, the type of arrow aSymbolPrs
+    	 -- with the size anArrowSize.
+    returns mutable Chamf3dDimension from AIS;
+
+    KindOfDimension(me) 
+	 ---Purpose: Indicates that we are concerned with a 3d length.
+	 ---C++: inline
+    returns KindOfDimension from AIS 
+    is redefined;
+    
+    IsMovable(me) returns Boolean from Standard 
+	 ---C++: inline    
+	 ---Purpose: Returns true if the 3d chamfer dimension is movable.
+    is redefined;
+    
+    -- Methods from PresentableObject
+    
+    Compute(me            : mutable;
+  	    aPresentationManager: PresentationManager3d from PrsMgr;
+    	    aPresentation : mutable Presentation from Prs3d;
+    	    aMode         : Integer from Standard= 0) 
+    is redefined static private;
+    
+    Compute(me:mutable;
+    	        aProjector: Projector from Prs3d;
+                aPresentation: mutable Presentation from Prs3d)
+    is redefined static private;     
+
+    Compute(me:mutable;
+    	    aPresentationManager: PresentationManager2d from PrsMgr;
+            aPresentation: mutable GraphicObject from Graphic2d;
+            aMode: Integer from Standard = 0)
+    is redefined static private;	    
+    Compute(me            : mutable;
+    	    aProjector    : Projector from Prs3d;
+    	    aTrsf         : Transformation from Geom;
+	    aPresentation : mutable Presentation from Prs3d)
+    is redefined;
+	 ---Purpose: computes the presentation according to a point of view
+	 --          given by <aProjector>. 
+	 --          To be Used when the associated degenerated Presentations 
+ 	 --          have been transformed by <aTrsf> which is not a Pure
+	 --          Translation. The HLR Prs can't be deducted automatically
+  	 --          WARNING :<aTrsf> must be applied
+   	 --           to the object to display before computation  !!!
+
+    ComputeSelection(me         : mutable;
+    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aMode      : Integer from Standard)
+    is redefined private;
+    
+    
+    
+fields
+
+    myPntAttach : Pnt     from gp;
+    myDir       : Dir     from gp;
+
+end Chamf3dDimension;

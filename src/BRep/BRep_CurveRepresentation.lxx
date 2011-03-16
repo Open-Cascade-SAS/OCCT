@@ -1,0 +1,26 @@
+// File:	BRep_CurveRepresentation.lxx
+// Created:	Fri Jul  9 14:24:02 1993
+// Author:	Remi LEQUETTE
+//		<rle@nonox>
+
+
+//=======================================================================
+//function : Location
+//purpose  : 
+//=======================================================================
+
+inline const TopLoc_Location&  BRep_CurveRepresentation::Location()const 
+{
+  return myLocation;
+}
+
+//=======================================================================
+//function : Location
+//purpose  : 
+//=======================================================================
+
+inline void BRep_CurveRepresentation::Location (const TopLoc_Location& L)
+{
+  myLocation = L;
+}
+

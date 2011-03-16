@@ -1,0 +1,70 @@
+-- File:	ShapeUpgrade_Tool.cdl
+-- Created:	Tue Aug 31 15:08:56 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+private class Tool from ShapeUpgrade inherits TShared from MMgt
+
+	---Purpose: Tool is a root class for splitting classes
+	--          Provides context for recording changes, basic 
+    	--          precision value and limit (minimal and maximal) 
+    	--          values for tolerances
+
+uses
+
+    ReShape from ShapeBuild
+
+is
+
+    Create returns Tool from ShapeUpgrade;
+    	---Purpose: Empty constructor
+	    
+    Set (me: mutable; tool: Tool from ShapeUpgrade);
+    	---Purpose: Copy all fields from another Root object
+	
+    SetContext (me: mutable; context : ReShape from ShapeBuild);
+	---Purpose: Sets context
+	---C++: inline
+	
+    Context (me) returns ReShape from ShapeBuild;
+    	---Purpose: Returns context 
+	---C++: inline
+	
+    SetPrecision (me: mutable; preci: Real);
+    	---Purpose: Sets basic precision value
+	---C++: inline
+    
+    Precision (me) returns Real;
+    	---Purpose: Returns basic precision value
+	---C++: inline
+	
+    SetMinTolerance (me: mutable; mintol: Real);
+    	---Purpose: Sets minimal allowed tolerance
+	---C++: inline
+    
+    MinTolerance (me) returns Real;
+    	---Purpose: Returns minimal allowed tolerance
+	---C++: inline
+	
+    SetMaxTolerance (me: mutable; maxtol: Real);
+    	---Purpose: Sets maximal allowed tolerance
+	---C++: inline
+    
+    MaxTolerance (me) returns Real;
+    	---Purpose: Returns maximal allowed tolerance
+	---C++: inline
+    
+    LimitTolerance (me; toler: Real) returns Real;
+    	---Purpose: Returns tolerance limited by [myMinTol,myMaxTol]
+	---C++: inline
+
+fields
+
+    myContext  : ReShape from ShapeBuild;
+    myPrecision: Real;       -- basic precision
+    myMinTol   : Real;       -- minimal allowed tolerance
+    myMaxTol   : Real;       -- maximal allowed tolerance
+
+end Tool;

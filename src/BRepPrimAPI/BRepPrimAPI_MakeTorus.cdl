@@ -1,0 +1,120 @@
+-- File:	BRepPrimAPI_MakeTorus.cdl
+-- Created:	Wed Jul 21 16:07:53 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeTorus from BRepPrimAPI  inherits MakeOneAxis from BRepPrimAPI
+
+	---Purpose: Describes functions to build tori or portions of tori.
+    	-- A MakeTorus object provides a framework for:
+    	-- -   defining the construction of a torus,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses
+    Ax2      from gp,
+    Torus    from BRepPrim,
+    OneAxis  from BRepPrim
+
+raises
+    DomainError from Standard
+
+is
+
+    Create(R1, R2 : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a torus of radii R1 R2.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if R <= Precision::Confusion()
+
+    Create(R1, R2, angle : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a section of a torus of radii R1 R2.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if R <= Precision::Confusion()
+
+    Create(R1, R2, angle1,angle2 : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make  a torus of  radii R2, R2  with angles on the
+	--          small circle.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if R <= Precision::Confusion()
+
+    Create(R1, R2, angle1,angle2,angle : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make  a torus of  radii R2, R2  with angles on the
+	--          small circle.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if R <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2 : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a torus of radii R1 R2.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2, angle : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a section of a torus of radii R1 R2. 
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2, angle1, angle2 : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a torus of radii R1 R2. 
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2, angle1, angle2, angle : Real)
+    returns MakeTorus from BRepPrimAPI
+	---Purpose: Make a section of a torus of radii R1 R2. 
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    	---Purpose: For all algorithms The resulting shape is composed of
+    	--   -      a lateral toroidal face,
+    	--   -      two conical faces (defined  by the equation v = angle1 and
+    	--      v = angle2) if the sphere is truncated in the v parametric
+    	--      direction (they may be cylindrical faces in some
+    	--      particular conditions), and in case of a portion
+    	--      of torus, two planar faces to close the shape.(in the planes
+    	--      u = 0 and u = angle).
+    	-- Notes:
+    	--   -      The u parameter corresponds to a rotation angle around the Z axis.
+    	--   -      The circle whose radius is equal to the minor radius,
+    	--      located in the plane defined by the X axis and the Z axis,
+    	--      centered on the X axis, on its positive side, and positioned
+    	--      at a distance from the origin equal to the major radius, is
+    	--      the reference circle of the torus. The rotation around an
+    	--      axis parallel to the Y axis and passing through the center
+    	--      of the reference circle gives the v parameter on the
+    	--      reference circle. The X axis gives the origin of the v
+    	-- parameter. Near 0, as v increases, the Z coordinate decreases.   
+    
+
+    OneAxis(me : in out) returns Address;
+	---Purpose: Returns the algorithm.
+	---Level: Advanced
+
+    Torus(me : in out) returns Torus from BRepPrim
+	---Purpose: Returns the algorithm.
+	--          
+	---C++: return &
+	---Level: Public
+    is static;
+ 
+
+fields
+    myTorus : Torus from BRepPrim;
+
+end MakeTorus;

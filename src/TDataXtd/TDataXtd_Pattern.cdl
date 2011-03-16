@@ -1,0 +1,47 @@
+-- File:	TDataXtd_Pattern.cdl
+-- Created:	Mon Apr  6 17:58:39 2009
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2009  
+
+deferred class Pattern from TDataXtd inherits Attribute from TDF
+
+	---Purpose: a general pattern model
+
+uses 
+     Array1OfTrsf from TDataXtd,
+     LabelList    from TDF,
+     GUID         from Standard
+
+is
+
+    GetID (myclass)   
+    ---C++: return const &  
+    returns GUID from Standard;    
+   
+    ID(me)
+    	returns GUID from Standard
+	is redefined static;
+	---Purpose: Returns the ID of the attribute.
+	--          
+	---C++: return const &
+
+    PatternID(me)
+    	returns GUID from Standard
+	is deferred;
+	---Purpose: Returns the ID of the attribute.
+	--          
+	---C++: return const &
+
+    NbTrsfs(me)
+    returns Integer from Standard
+    is deferred;
+        ---Purpose: Give the number of transformation
+
+    ComputeTrsfs(me; Trsfs : in out Array1OfTrsf from TDataXtd)
+    is deferred;
+        ---Purpose: Give the transformations
+
+end Pattern;
+
+

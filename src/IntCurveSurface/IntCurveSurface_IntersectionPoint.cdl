@@ -1,0 +1,97 @@
+-- File:	IntCurveSurface_IntersectionPoint.cdl
+-- Created:	Wed Apr  7 16:35:02 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@sdsun2>
+---Copyright:	 Matra Datavision 1993
+
+
+class IntersectionPoint from IntCurveSurface
+
+    ---Purpose: Definition of an interserction point between a 
+    --          curve and a surface. 
+
+    ---Level: Public
+
+   
+uses
+    Pnt                   from gp,
+    TransitionOnCurve     from IntCurveSurface
+
+is 
+
+    Create
+    	---Purpose: Empty Constructor.
+    	returns IntersectionPoint from IntCurveSurface;
+	
+    Create(P     : Pnt        from gp; 
+    	   USurf : Real       from Standard;
+	   VSurf : Real       from Standard;
+	   UCurv : Real       from Standard;
+	   TrCurv: TransitionOnCurve   from IntCurveSurface)
+	---Purpose: Create an IntersectionPoint.
+	returns IntersectionPoint from IntCurveSurface;
+	
+    SetValues(me: in out;
+             P     : Pnt        from gp; 
+      	     USurf : Real       from Standard;
+	     VSurf : Real       from Standard;
+	     UCurv : Real       from Standard;
+	     TrCurv: TransitionOnCurve   from IntCurveSurface)
+	 ---Purpose: Set the fields of the current IntersectionPoint.
+	 is static;
+	 
+    Values(me;
+    	  P     : out Pnt        from gp; 
+    	  USurf : out Real       from Standard;
+	  VSurf : out Real       from Standard;
+	  UCurv : out Real       from Standard;
+	  TrCurv: out TransitionOnCurve   from IntCurveSurface)
+	 ---Purpose: Get the fields of the current IntersectionPoint.
+	 is static;
+	 
+    Pnt(me)
+    	 ---Purpose: returns the geometric point.
+         ---C++: return const & 
+         ---C++: inline
+         returns Pnt from gp
+         is static;
+
+    U(me)
+    	 ---Purpose: returns the U parameter on the surface.
+         ---C++: inline
+         returns Real from Standard
+         is static;
+
+    V(me)
+    	 ---Purpose: returns the V parameter on the surface.
+         ---C++: inline
+         returns Real from Standard
+         is static;
+
+    W(me)
+    	 ---Purpose: returns the parameter on the curve.
+         ---C++: inline
+         returns Real from Standard
+         is static;
+
+    Transition(me)
+    	 ---Purpose: returns the Transition of the point.
+         ---C++: inline
+         returns TransitionOnCurve from IntCurveSurface
+         is static;
+
+
+    Dump(me) 
+    	 ---Purpose: Dump all the fields.
+    	 is static;
+
+fields
+
+    myP       : Pnt      from gp;
+    myUSurf   : Real     from Standard;
+    myVSurf   : Real     from Standard;
+    myUCurv   : Real     from Standard;
+    myTrOnCurv: TransitionOnCurve   from IntCurveSurface;
+ 
+end IntersectionPoint;
+

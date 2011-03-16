@@ -1,0 +1,61 @@
+-- File:	PPoly_Polygon3D.cdl
+-- Created:	Tue Oct 24 10:50:25 1995
+-- Author:	Mister rmi
+--		<rmi@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Polygon3D from PPoly inherits Persistent from Standard
+
+    	---Purpose: This class represents a 3d Polygon3D.
+    	--          
+    	--          It is defined by an array of 3d nodes values.
+    	--          If the Polygon3D is closed, the point will be
+    	--          repeated.
+
+
+uses HArray1OfPnt  from PColgp,
+     HArray1OfReal from PColStd
+
+is
+
+    Create(Nodes: HArray1OfPnt from PColgp;
+    	   Defl : Real from Standard) 
+    returns mutable Polygon3D from PPoly;
+    	---Purpose: Defaults with allocation of nodes.
+
+    Create(Nodes      : HArray1OfPnt  from PColgp;
+           Parameters : HArray1OfReal from PColStd;
+    	   Defl       : Real          from Standard) 
+    returns mutable Polygon3D from PPoly;
+    	---Purpose: Defaults with allocation of nodes + Parameters
+    
+
+    Deflection(me) returns Real;
+
+    Deflection(me : mutable; Defl : Real from Standard);
+    
+
+    NbNodes(me) returns Integer;
+    
+    Nodes(me) returns HArray1OfPnt from PColgp;
+
+    Nodes(me : mutable; Nodes : HArray1OfPnt from PColgp);
+    
+
+    HasParameters(me) returns Boolean from Standard;
+
+    Parameters(me : mutable; Parameters : HArray1OfReal from PColStd);
+    	---Purpose: Sets the value of myParameters
+
+    Parameters(me) returns HArray1OfReal from PColStd;
+	---Purpose: Reference on the parameters values.
+    
+fields
+
+    myDeflection : Real          from Standard;
+    myNodes      : HArray1OfPnt  from PColgp;
+    myParameters : HArray1OfReal from PColStd;
+    	-- myParameters is Optional (Pointer can be Null)
+    
+end Polygon3D;

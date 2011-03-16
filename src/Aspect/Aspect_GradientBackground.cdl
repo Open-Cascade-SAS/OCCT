@@ -1,0 +1,85 @@
+--
+-- File:    Aspect_GradientBackground.cdl
+-- Created: 21 May 2010
+-- Author:  PAUL SUPRYATKIN
+--
+---Copyright:   Open CASCADE 2010
+--
+
+class GradientBackground from Aspect 
+inherits Background from Aspect
+
+
+    ---Purpose: This class allows the definition of
+    --      a window gradient background.
+
+uses
+
+    Color               from Quantity,
+    GradientFillMethod  from Aspect
+
+is
+
+    Create
+        returns GradientBackground from Aspect;
+    ---Level: Public
+    ---Purpose: Creates a window gradient background.
+    -- Default colors : Quantity_NOC_BLACK.
+    -- Default fill method : Aspect_GFM_NONE
+
+    Create ( AColor1 : Color from Quantity;
+             AColor2 : Color from Quantity;
+             AMethod : GradientFillMethod from Aspect = Aspect_GFM_HOR)
+        returns GradientBackground from Aspect;
+    ---Level: Public
+    ---Purpose: Creates a window gradient background with colours <AColor1, AColor2>.
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    SetColors ( me       : in out;
+                AColor1  : Color from Quantity ;
+                AColor2  : Color from Quantity ;
+                AMethod  : GradientFillMethod from Aspect = Aspect_GFM_HOR
+              );
+    ---Level: Public
+    ---Purpose: Modifies the colours of the window gradient background <me>.
+    ---Category: Methods to modify the class definition
+
+    SetBgGradientFillMethod( me      ;
+                             AMethod : GradientFillMethod from Aspect = Aspect_GFM_NONE);
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    Colors ( me;
+             AColor1 : out Color from Quantity;
+             AColor2 : out Color from Quantity
+           );        
+    ---Level: Public
+    ---Purpose: Returns colours of the window gradient background <me>.
+    ---Category: Inquire methods
+
+    BgGradientFillMethod( me ) returns GradientFillMethod from Aspect;
+    ---Level: Public
+    ---Purpose: Returns the current gradient background fill mode. 
+
+
+fields
+           
+--
+-- Class    :   Aspect_GradientBackground
+--
+-- Purpose  :   Declaration of variables specific to the window
+--              gradient background.
+--
+-- Reminder :   A Gradient background is defined by two colours
+--
+
+    -- the colour associated with the window background
+    MyColor2          :   Color from Quantity;
+    MyGradientMethod  :   GradientFillMethod from Aspect;
+
+end GradientBackground ;

@@ -1,0 +1,30 @@
+-- File:	DsgPrs_XYZPlanePresentation.cdl
+-- Created:	Mon Feb 10 14:50:11 1997
+-- Author:	Odile Olivier
+--		<odl@sacadox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class XYZPlanePresentation from DsgPrs
+    	---Purpose: A framework for displaying the planes of an XYZ trihedron.
+uses
+
+    Presentation from Prs3d,
+    Drawer       from Prs3d,
+    Pnt          from gp
+
+is
+
+    Add(myclass;
+    	aPresentation: Presentation from Prs3d;
+    	aDrawer      : Drawer from Prs3d;
+    	aPt1         : Pnt    from gp;
+    	aPt2         : Pnt    from gp;
+    	aPt3         : Pnt    from gp);
+	 
+    	---Purpose: Draws each plane of a trihedron displayed in the
+    	-- presentation aPresentation and with attributes
+    	-- defined by the attribute manager aDrawer. Each
+    	-- triangular plane is defined by the points aPt1 aPt2 and aPt3.
+
+end XYZPlanePresentation;

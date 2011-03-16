@@ -1,0 +1,143 @@
+-- File:	TCollection_Queue.cdl
+-- Created:	Mon Jan 18 14:08:21 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class Queue from TCollection (Item as any)
+
+	---Purpose: A queue is  a structure where Items are  added  at
+	-- the end  and removed from   the  front. The  first
+	-- entered Item  will be the  first removed. This  is
+	-- called a FIFO (First In First Out).
+    	-- Queue is a generic class, which depends on Item, the
+    	-- type of element in the structure.
+raises
+    NoSuchObject from Standard
+
+    	class QueueNode from TCollection 
+	    inherits MapNode from TCollection
+	    uses MapNodePtr from TCollection
+	    is
+	      Create(I : Item; n : MapNodePtr from TCollection) returns QueueNode from TCollection;
+	      ---C++: inline
+      
+	      Value(me) returns Item;
+	      ---C++: return &
+	      ---C++: inline
+
+	 fields  
+	      myValue : Item;
+	 end;
+        
+is
+    Create returns Queue from TCollection;
+       ---Purpose: Creates an empty Queue.
+
+    Create(Other : Queue from TCollection)
+    returns Queue from TCollection
+	---Purpose: Constructs an empty queue.
+    	-- Use:
+    	-- -   the function Push to insert an item at the end of the queue,
+    	-- -   the function Front to read the item at the front of the   queue,
+    	-- -   the function Pop to remove the item at the front of the   queue.
+    	--   Warning
+    	-- To copy a queue, you must explicitly call the assignment
+    	-- operator (operator=). A copy operation is an expensive operation it is
+	-- incorrect  to  do  it implicitly. This constructor is private and 
+	-- will raise a warning if the Queue is not empty. 
+	-- To copy the content of a Queue use the Assign method (operator =).
+    is private;
+    
+    Assign(me : in out; Other : Queue from TCollection) 
+    returns Queue from TCollection
+	---Purpose: Copies in this Queue the content of <Other>.
+    	--	If this queue is not empty, it is automatically cleared before the copy
+	---C++: alias operator =
+	---C++: return const &
+    is static;
+    
+    Length(me) returns Integer
+	---Purpose: Returns the length of the queue.
+	-- Example:          
+	-- before
+	--   me = (A B C) 
+	-- returns 3
+	---C++: inline
+    is static;
+    
+    IsEmpty(me) returns Boolean
+	---Purpose: Returns True if  the queue is empty. 
+	-- i.e. Length() == 0.
+	---C++: inline
+    is static;
+    
+    Front(me) returns any Item 
+	---Purpose: returns the item at the front of the queue
+        -- Example:
+        -- before
+	--   me = (A B C) 
+        -- after
+	--   me = (A B C)
+       	-- returns 
+	--   A
+	-- Trigger: Raises an exception if <me> is Empty
+	---C++: return const &
+    raises NoSuchObject from Standard
+    is static;
+    
+	
+    Clear(me : in out)
+       ---Purpose: remove all the elements from the queue
+       -- Example:
+       -- before
+       --   me = (A B C) 
+       -- after
+       --   me = ()
+       ---C++: alias ~
+    is static;
+
+    Push(me : in out; T : Item)
+       ---Purpose: Insert an item at the end of the queue.
+       -- Example:
+       -- before
+       --   me = (A B) , T = C
+       -- after
+       --   me = (A B C)
+    is static;
+
+    Pop(me : in out) 
+       ---Purpose: Removes the item at the front of the queue.
+       -- Example:
+       -- before
+       --   me = (A B C)
+       -- after
+       --   me = (B C)
+       -- Trigger: Raises an exception if <me> is empty.
+    raises NoSuchObject from Standard  
+    is static;
+ 
+    ChangeFront(me: in out) returns any Item
+       ---Purpose: Returns a modifiable reference on the  front of the queue.
+       -- The purpose of this syntax is to modify the item at the front  of this queue. 
+       -- Example:
+       -- before
+       --   me = (A B C)
+       --   me.ChangeFront() = D
+       -- after
+       --   me = (D B C)
+       -- Trigger: Raises an exception if <me> is empty.
+       ---C++: return &
+    raises NoSuchObject from Standard
+    is static;
+
+fields
+    myFront  : Address from Standard;
+    myEnd    : Address from Standard;
+    myLength : Integer from Standard;
+
+end Queue;
+
+

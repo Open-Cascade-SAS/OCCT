@@ -1,0 +1,29 @@
+-- File:	Vrml_Sphere.cdl
+-- Created:	Tue Feb  4 16:11:10 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@minox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Sphere from Vrml 
+
+	---Purpose: defines a Sphere node of VRML specifying geometry shapes.
+    	-- This  node  represents  a  sphere. 
+        -- By  default ,  the  sphere  is  centred  at  (0,0,0) and  has  a  radius  of  1.
+
+is
+
+    Create ( aRadius :  Real from Standard = 1 )
+    	returns Sphere from Vrml;
+
+    SetRadius ( me : in out; aRadius :  Real from Standard );
+    Radius ( me )  returns Real  from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+    
+fields
+
+    myRadius :  Real from Standard;	-- Radius of sphere
+
+end Sphere;

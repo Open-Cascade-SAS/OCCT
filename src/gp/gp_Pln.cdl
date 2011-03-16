@@ -1,0 +1,302 @@
+---Copyright:   Matra Datavision 1991
+
+
+class Pln   from gp   inherits Storable
+
+
+        --- Purpose :Describes a plane.
+        -- A plane is positioned in space with a coordinate system
+        -- (a gp_Ax3 object), such that the plane is defined by the
+        -- origin, "X Direction" and "Y Direction" of this coordinate
+        -- system, which is the "local coordinate system" of the
+        -- plane. The "main Direction" of the coordinate system is a
+        -- vector normal to the plane. It gives the plane an implicit
+        -- orientation such that the plane is said to be "direct", if the
+        -- coordinate system is right-handed, or "indirect" in the other case.
+        -- Note: when a gp_Pln plane is converted into a
+        -- Geom_Plane plane, some implicit properties of its local
+        -- coordinate system are used explicitly:
+        -- -   its origin defines the origin of the two parameters of
+        --   the planar surface,
+        -- -   its implicit orientation is also that of the Geom_Plane.
+        -- See Also
+        -- gce_MakePln which provides functions for more complex
+        -- plane constructions
+        -- Geom_Plane which provides additional functions for
+        -- constructing planes and works, in particular, with the
+        -- parametric equations of planes
+        
+uses Ax1  from gp,
+     Ax2  from gp,
+     Ax3  from gp,
+     Dir  from gp,
+     Lin  from gp,
+     Pnt  from gp,
+     Trsf from gp,
+     Vec  from gp
+
+raises ConstructionError from Standard
+
+
+is
+
+  
+
+  Create   returns Pln;
+        ---C++:inline
+        --- Purpose : Creates a plane coincident with OXY plane of the
+	--            reference coordinate system.
+
+  Create (A3 : Ax3)   returns Pln;
+        ---C++:inline
+        --- Purpose :
+        --  The coordinate system of the plane is defined with the axis
+        --  placement A3.
+        --  The "Direction" of A3 defines the normal to the plane.
+        --  The "Location" of A3 defines the location (origin) of the plane.
+        --  The "XDirection" and "YDirection" of A3 define the "XAxis" and
+        --  the "YAxis" of the plane used to parametrize the plane.
+
+  Create (P : Pnt; V : Dir)  returns Pln;
+        --- Purpose :
+        --  Creates a plane with the  "Location" point <P>
+        --  and the normal direction <V>.
+
+  Create (A, B, C, D : Real)   returns Pln
+        --- Purpose :
+        --  Creates a plane from its cartesian equation :
+        --  A * X + B * Y + C * Z + D = 0.0 
+    	--  Raises ConstructionError if Sqrt (A*A + B*B + C*C) <= Resolution from gp.
+     raises ConstructionError;
+       
+
+  Coefficients (me; A, B ,C ,D : out Real)   is static;
+        ---C++:inline
+        --- Purpose :
+        --  Returns the coefficients of the plane's cartesian equation :
+        --  A * X + B * Y + C * Z + D = 0.
+
+  SetAxis (me : in out; A1 : Ax1)
+        ---C++: inline
+        --- Purpose : Modifies this plane, by redefining its local coordinate system so that
+        -- -   its origin and "main Direction" become those of the
+        --   axis A1 (the "X Direction" and "Y Direction" are then recomputed).
+        --  Raises ConstructionError if the A1 is parallel to the "XAxis" of the plane.
+     raises ConstructionError
+       
+     is static;
+
+  SetLocation (me : in out; Loc : Pnt)   is static;
+        ---C++:inline
+        --- Purpose : Changes the origin of the plane.
+
+  SetPosition (me : in out; A3 : Ax3)    is static;
+       ---C++:inline
+       --- Purpose : Changes the local coordinate system of the plane.
+
+  UReverse (me : in out)
+        ---C++:inline
+	---Purpose: Reverses the   U   parametrization of   the  plane
+	--          reversing the XAxis.
+  is static;
+
+  VReverse (me : in out)
+        ---C++:inline
+	---Purpose: Reverses the   V   parametrization of   the  plane
+	--          reversing the YAxis.
+  is static;
+
+  Direct (me) returns Boolean from Standard
+        ---C++:inline
+        ---Purpose: returns true if the Ax3 is right handed.
+  is static;
+
+  Axis (me)  returns Ax1  is static;
+        ---C++:inline 
+        --- Purpose : Returns the plane's normal Axis.
+    	---C++: return const&
+
+  Location (me)  returns Pnt   is static;
+        --- Purpose : Returns the plane's location (origin).
+        ---C++: inline
+    	---C++: return const&
+
+  Position (me)  returns Ax3   is static;
+        --- Purpose : Returns the local coordinate system of the plane .
+        ---C++: inline
+    	---C++: return const&
+
+  Distance (me; P : Pnt)  returns Real             is static;
+        ---C++: inline
+        --- Purpose : Computes the distance between <me> and the point <P>.
+
+  Distance (me; L : Lin)   returns Real            is static;
+        ---C++: inline
+        --- Purpose : Computes the distance between <me> and the line <L>.
+
+  Distance (me; Other : Pln)   returns Real        is static;
+        ---C++: inline
+        --- Purpose : Computes the distance between two planes.
+
+  SquareDistance (me; P : Pnt)   returns Real      is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the square distance between <me> and the point <P>.
+
+  SquareDistance (me; L : Lin)   returns Real      is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the square distance between <me> and the line <L>.
+
+  SquareDistance (me; Other : Pln)   returns Real  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the square distance between two planes.
+
+  XAxis (me)  returns Ax1    is static;
+        ---C++:inline
+        --- Purpose : Returns the X axis of the plane.
+
+  YAxis (me)  returns Ax1    is static;
+        ---C++:inline
+        --- Purpose : Returns the Y axis  of the plane.
+
+  Contains (me; P : Pnt; LinearTolerance : Real)  returns Boolean
+     is static;
+        ---C++: inline
+        ---Purpose: Returns true if this plane contains the point P. This means that
+        -- -   the distance between point P and this plane is less
+        --   than or equal to LinearTolerance, or
+        -- -   line L is normal to the "main Axis" of the local
+        --   coordinate system of this plane, within the tolerance
+        --   AngularTolerance, and the distance between the origin
+        --   of line L and this plane is less than or equal to
+        --   LinearTolerance.
+
+
+  Contains (me; L : Lin; LinearTolerance, AngularTolerance : Real)
+     returns Boolean
+     is static;
+        ---C++: inline
+        ---Purpose: Returns true if this plane contains the line L. This means that
+        -- -   the distance between point P and this plane is less
+        --   than or equal to LinearTolerance, or
+        -- -   line L is normal to the "main Axis" of the local
+        --   coordinate system of this plane, within the tolerance
+        --   AngularTolerance, and the distance between the origin
+        --   of line L and this plane is less than or equal to
+        --   LinearTolerance.
+     
+
+
+
+  Mirror (me : in out; P : Pnt)          is static;
+
+  Mirrored (me; P : Pnt)   returns Pln   is static;
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a plane with respect 
+        --  to the point <P> which is the center of the symmetry
+        -- Warnings :
+        --  The normal direction to the plane is not changed.
+        --  The "XAxis" and the "YAxis" are reversed. 
+
+
+                    
+  Mirror (me : in out; A1 : Ax1) 
+         is static;
+
+  Mirrored (me; A1 : Ax1)   returns Pln   is static;
+
+       --- Purpose  : Performs   the symmetrical transformation  of a
+        --  plane with respect to an axis placement  which is the axis
+        --  of  the symmetry.  The  transformation is performed on the
+        --  "Location" point, on  the "XAxis"  and the "YAxis".    The
+        --  resulting normal  direction  is  the cross product between
+        --  the "XDirection" and the "YDirection" after transformation
+        --  if  the  initial plane was right  handed,  else  it is the
+        --  opposite.
+
+
+
+  Mirror (me : in out; A2 : Ax2)         
+       is static;
+
+  Mirrored (me; A2 : Ax2)   returns Pln  is static;
+
+        --- Purpose :  Performs the  symmetrical transformation  of  a
+        --  plane    with respect to    an axis  placement.   The axis
+        --  placement  <A2> locates the plane  of  the symmetry.   The
+        --  transformation is performed  on  the  "Location" point, on
+        --  the  "XAxis" and  the    "YAxis".  The resulting    normal
+        --  direction is the cross  product between   the "XDirection"
+        --  and the "YDirection"  after  transformation if the initial
+        --  plane was right handed, else it is the opposite.
+
+
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)         
+      ---C++:inline
+      is static;
+
+  Rotated (me; A1 : Ax1; Ang : Real)   returns Pln   is static;
+        ---C++: inline
+        --- Purpose :
+        --  rotates a plane. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+
+  Scale (me : in out; P : Pnt; S : Real)        
+        ---C++: inline
+      is static;
+
+  Scaled (me; P : Pnt; S : Real)   returns Pln  is static;        
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a plane. S is the scaling value.
+ 
+
+      
+  Transform (me : in out; T : Trsf)         
+        ---C++: inline
+      is static;
+
+  Transformed (me; T : Trsf)   returns Pln  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms a plane with the transformation T from class Trsf.
+        --  The transformation is performed on the "Location"
+        --  point, on the "XAxis" and the "YAxis". 
+        --  The resulting normal direction is the cross product between 
+        --  the "XDirection" and the "YDirection" after transformation.
+
+       
+
+  Translate (me : in out; V : Vec)          
+        ---C++: inline
+     is static;
+
+  Translated (me; V : Vec)   returns Pln    is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a plane in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+    
+
+  Translate (me : in out; P1, P2 : Pnt)        
+        ---C++: inline
+      is static;   
+
+  Translated (me; P1, P2 : Pnt)   returns Pln  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a plane from the point P1 to the point P2.        
+
+
+fields
+
+  pos : Ax3;
+
+end;

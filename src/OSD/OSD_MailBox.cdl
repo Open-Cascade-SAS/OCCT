@@ -1,0 +1,110 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_MailBox.cdl
+-- Created:       Thu 19 March 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+
+class MailBox from OSD
+   
+   ---Purpose: Establishes a mailbox with VMS-like-features and with
+   --          asynchronous functions.
+   --          The mail boxes are used to communicate asynchronously
+   --          between processes.
+   --          Basically MailBox facilities provide tools to communicate
+   --          between a client process and a server process.
+   --          The client process puts data/requests into the mail-box and
+   --          the server process gets these data/requests. In this context 
+   --          client and server must run on the same machine. 
+   --  Warning: On VMS, you need TMPMBX privilege.
+
+   uses  Function, SharedMemory, Error, AsciiString from TCollection
+raises ConstructionError, NullObject, OSDError, ProgramError
+
+
+is
+  Create returns MailBox;
+    ---Purpose: To be used with 'Open'.
+    --          It just allocates room for 'myName'.
+    --          This is for a client process.
+    ---Level: Advanced
+
+  Create (name : AsciiString ; Size : Integer ; Async_function : Function) 
+    returns MailBox
+    ---Purpose: Instantiates MailBox object with a name, size required
+    --          and a function to read mail boxes asynchronously.
+    --          Each process working with the same MailBox must use
+    --          a common known access : the mail-box's name.
+    --
+    --          This is for a server process.
+    --          Raises ConstructionError when the name is not composed by
+    --          characters in range of ' ' .. '~'.
+    --          Raises NullObject when Async_function is a null function 
+    --          pointer
+    --          Raises ProgramError when Size has a negative or null value. 
+    ---Level: Advanced
+   raises ConstructionError, NullObject, ProgramError;
+
+  Build (me : in out) is static;
+   ---Purpose: Builds (physically) <me> into system.
+   --          <me> is created and ready to run.
+   --          This can be seen as an asynchronous server.
+   ---Level: Advanced
+
+  Open (me: out ; name : AsciiString ; Size : Integer)
+    ---Purpose: Opens mail box, and is ready to communicate with an 
+    --          already created mailbox.
+    --          Raises NullObject when the name is a null string.
+    --          Raises ConstructionError when the name contains characters not
+    --          in range of ' '...'~'.
+    --          Raises ProgramError when the mail box has a null size.
+    --          This can be seen as a client.
+    ---Level: Advanced
+   raises ConstructionError, NullObject, ProgramError is static;
+
+  Delete (me: out)
+    ---Purpose: Removes the mail box from system.
+    --          This is used only by server process !
+    --          Raises ProgramError when the mail box is already deleted.
+    ---Level: Advanced
+    raises ProgramError is static;
+
+  Write (me : in out; Message : AsciiString ; Length : Integer)
+    ---Purpose: Writes a message of specified length into mail box.
+    --          <Message> is used as a buffer, not as a common string.
+    --          So this can be not null terminated like a 'char *'.
+    --          This is why <Length> is useful.
+    --          Raises ProgramError when the length of the data is either
+    --          negative or zero.
+    --          
+    ---Level: Advanced
+    raises ProgramError is static;
+
+  Failed (me) returns Boolean is static;
+    ---Purpose: Returns TRUE if an error occurs
+    ---Level: Advanced
+
+  Reset (me : in out) is static;
+    ---Purpose: Resets error counter to zero
+    ---Level: Advanced
+      
+  Perror (me : in out)
+    ---Purpose: Raises OSD_Error
+    ---Level: Advanced
+    raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Advanced
+
+fields
+  myId   : Integer;  -- Mail box Identification
+  myName : AsciiString;   -- Name of mail box
+  mySize : Integer;  -- Size of data area
+  myFunc : Function; -- AST like function
+  myError: Error;
+end MailBox from OSD;
+

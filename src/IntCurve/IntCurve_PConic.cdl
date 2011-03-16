@@ -1,0 +1,93 @@
+-- File:	PConic.cdl
+-- Created:	Wed Mar  4 14:28:50 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class PConic from IntCurve
+
+	---Purpose: This class represents a conic from gp as a
+	--          parametric curve ( in order to be used by the
+	--          class PConicTool from IntCurve).
+
+        ---Level: Internal
+
+uses   Elips2d    from gp,
+       Lin2d      from gp,
+       Circ2d     from gp,
+       Parab2d    from gp,
+       Hypr2d     from gp,
+       Ax22d      from gp,
+       CurveType  from GeomAbs
+
+is
+
+    Create(PC: PConic from IntCurve) returns PConic from IntCurve;
+
+    Create(E: Elips2d from gp) returns PConic from IntCurve;
+    
+    Create(C: Circ2d  from gp)  returns PConic from IntCurve;
+
+    Create(P: Parab2d  from gp)  returns PConic from IntCurve;
+
+    Create(H: Hypr2d  from gp)  returns PConic from IntCurve;
+
+    Create(L: Lin2d   from gp)  returns PConic from IntCurve;
+
+
+    SetEpsX(me: in out; EpsDist: Real from Standard) is static;
+    	---Purpose: EpsX is a internal tolerance used in math 
+    	--          algorithms, usually about 1e-10
+    	--          (See FunctionAllRoots for more details)
+    
+    SetAccuracy(me: in out; Nb: Integer from Standard) is static;
+    	---Purpose: Accuracy is the number of samples used to 
+    	--          approximate the parametric curve on its domain.
+    
+    Accuracy(me) 
+    	---C++: inline
+    	returns Integer from Standard is static;
+
+    EpsX(me) 
+    	---C++: inline
+    	returns Real from Standard is static;
+
+    TypeCurve(me)
+    	---Purpose: The Conics are manipulated as objects which only 
+    	--          depend on three parameters : Axis and two Real from Standards.
+    	--          Type Curve is used to select the correct Conic.
+    	---C++: inline
+    	returns CurveType from GeomAbs
+	is static;
+	
+    Axis2(me)
+    	---C++: inline
+    	---C++: return const &
+    	returns Ax22d from gp
+	is static;
+
+    Param1(me)  
+    	---C++: inline
+     	returns Real from Standard	is static;
+	
+    Param2(me) 	
+    	---C++: inline
+    	returns Real from Standard    is static;
+
+fields
+
+    axe         : Ax22d     from gp;
+    prm1        : Real      from Standard;
+    prm2        : Real      from Standard;
+    
+    TheEpsX     : Real      from Standard;
+    TheAccuracy : Integer   from Standard;
+    type        : CurveType from GeomAbs;
+
+end PConic;
+
+
+
+
+

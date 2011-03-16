@@ -1,0 +1,35 @@
+-- File:	RWStepAP203_RWChange.cdl
+-- Created:	Fri Nov 26 16:26:35 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWChange from RWStepAP203
+
+    ---Purpose: Read & Write tool for Change
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    Change from StepAP203
+
+is
+    Create returns RWChange from RWStepAP203;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : Change from StepAP203);
+	---Purpose: Reads Change
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: Change from StepAP203);
+	---Purpose: Writes Change
+
+    Share (me; ent : Change from StepAP203;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWChange;

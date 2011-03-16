@@ -1,0 +1,101 @@
+
+-- File:	Graphic2d_Segment.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL, Gerard GRAS
+--		<jlf@stylox>
+-- Modified: TCL G002, 07-08-00, new inquire methods FirstPoint, SecondPoint
+
+---Copyright:	 Matra Datavision 1993
+
+class Segment from Graphic2d inherits Line from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive Segment
+
+	---Keywords: Primitive, Segment
+	---Warning:
+	---References:
+
+uses
+	Drawer		from Graphic2d,
+	GraphicObject	from Graphic2d,
+	Length		from Quantity,
+	FStream		from Aspect,
+	IFStream	from Aspect
+
+raises
+	SegmentDefinitionError	from Graphic2d
+
+is
+	-------------------------------------
+	-- Category: Constructors
+	-------------------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		X1, Y1, X2, Y2: Length from Quantity)
+	returns mutable Segment from Graphic2d
+	---Level: Public
+	---Purpose: Creates a segment in the graphic object <aGraphicObject>.
+	--	    The first point is <X1>, <Y1>.
+	--	    The second point is <X2>, <Y2>.
+	--  Warning: Raises SegmentDefinitionError if the
+	--	    first point and the second point are identical.
+	raises SegmentDefinitionError from Graphic2d;
+
+	----------------------------------------
+	-- Category: Inquire methods
+	----------------------------------------
+
+	FirstPoint( me; X, Y: out Length from Quantity );  
+	---Level: Public
+	---Purpose: returns the coordinates of the first point of the segment
+	
+	SecondPoint( me; X, Y: out Length from Quantity );  
+	---Level: Public
+	---Purpose: returns the coordinates of the second point of the segment
+	
+	--------------------------------------
+	-- Category: Draw and Pick
+	--------------------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Internal
+	---Purpose: Draws the segment <me>.
+
+	DrawElement( me : mutable; aDrawer: Drawer from Graphic2d;
+		 anIndex: Integer from Standard)
+	is redefined protected;
+	---Level: Internal
+	---Purpose: Draws edge <anIndex> of the segment <me>.
+
+	DrawVertex( me : mutable; aDrawer: Drawer from Graphic2d;
+		anIndex: Integer from Standard)
+	is redefined protected;
+	---Level: Internal
+	---Purpose: Draws vertex <anIndex> of the segment <me>.
+
+	Pick (me : mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard
+	is static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the segment <me> is picked,
+	--	    Standard_False if not.
+
+	----------------------------------------------------------------------
+
+	Save(me; aFStream: in out FStream from Aspect) is virtual;
+	Retrieve(myclass; anIFStream: in out IFStream from Aspect;
+		aGraphicObject: GraphicObject from Graphic2d);
+
+fields
+
+	myX1:	ShortReal from Standard;
+	myY1:	ShortReal from Standard;
+	myX2:	ShortReal from Standard;
+	myY2:	ShortReal from Standard;
+
+end Segment from Graphic2d;

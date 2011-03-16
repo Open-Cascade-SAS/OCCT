@@ -1,0 +1,122 @@
+-- File:	GeomFill_ConstantBiNormal.cdl
+-- Created:	Tue Dec  9 18:33:12 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+class   ConstantBiNormal from  GeomFill   
+inherits TrihedronLaw  from  GeomFill 
+
+	---Purpose: Defined an Trihedron Law  where the BiNormal, is fixed       
+
+uses
+ HCurve from  Adaptor3d, 
+ Shape  from  GeomAbs, 
+ Array1OfReal   from TColStd, 
+ Vec    from  gp, 
+ Dir  from  gp,
+ Frenet from GeomFill
+ 
+raises
+ OutOfRange,  ConstructionError
+is  
+
+   Create(BiNormal : Dir from gp)
+   returns  ConstantBiNormal from  GeomFill;   
+
+   Copy(me)   
+   returns  TrihedronLaw  from  GeomFill          
+   is  redefined;
+ 
+   SetCurve(me : mutable;  C  :  HCurve  from  Adaptor3d) 
+   is  redefined;
+
+-- 
+-- 
+--========== To compute Location and derivatives Location
+--              
+   D0(me : mutable; 
+      Param: Real; 
+      Tangent    : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp)
+      ---Purpose: Computes Triedrhon on curve at parameter <Param>         
+   returns Boolean  is  redefined;
+	
+   D1(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp)
+      ---Purpose: Computes Triedrhon and  derivative Trihedron  on curve
+      --          at parameter <Param>                
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   is  redefined; 
+   
+   D2(me : mutable;
+      Param: Real;       
+      Tangent    : out  Vec  from  gp;  
+      DTangent   : out  Vec  from  gp; 
+      D2Tangent  : out  Vec  from  gp; 
+      Normal     : out  Vec  from  gp; 
+      DNormal    : out  Vec  from  gp;                 
+      D2Normal   : out  Vec  from  gp; 
+      BiNormal   : out  Vec  from  gp; 
+      DBiNormal  : out  Vec  from  gp; 
+      D2BiNormal : out  Vec  from  gp)    
+      ---Purpose: compute  Trihedron on curve          
+      --          first and seconde  derivatives.
+      --  Warning : It used only for C2 aproximation
+   returns Boolean
+   is  redefined; 
+--
+--  =================== Management  of  continuity  ===================
+--                 
+   NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  redefined;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is redefined;  
+     
+	  
+--  ===================  To help   computation of  Tolerance   ===============	 
+    GetAverageLaw(me  :  mutable;
+      ATangent    : out  Vec  from  gp; 
+      ANormal     : out  Vec  from  gp; 
+      ABiNormal   : out  Vec  from  gp) 
+     ---Purpose: Gets average value of Tangent(t) and Normal(t) it is usfull to 
+     --          make fast approximation of rational  surfaces.        
+  is  redefined;
+
+--   =================== To help Particular case   ===============	
+   
+    IsConstant(me) 
+    ---Purpose:  Says if the law is Constant.  
+    returns  Boolean   
+    is redefined;  
+
+    IsOnlyBy3dCurve(me) 
+     ---Purpose: Return True.        
+    returns  Boolean   
+    is redefined;       
+
+fields 
+    BN :  Vec  from  gp;
+    frenet : Frenet from GeomFill;
+end ConstantBiNormal;

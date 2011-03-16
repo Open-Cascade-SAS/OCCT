@@ -1,0 +1,147 @@
+-- File:	Convert_CompPolynomialToPoles.cdl
+-- Created:	Tue May 30 13:38:39 1995
+-- Author:	Xavier BENVENISTE
+--		<xab@nonox>
+---Copyright:	 Matra Datavision 1995
+
+class CompPolynomialToPoles from Convert
+
+    ---Purpose: To convert an function (curve) polynomial by span in a BSpline.
+    -- 
+    --   This class uses the following arguments :
+    --   NumCurves :  the number of Polynomial Curves 
+    --   Continuity:  the requested continuity for the n-dimensional Spline
+    --   Dimension :  the dimension of the Spline
+    --   MaxDegree :  maximum allowed degree for each composite 
+    --                polynomial segment.
+    --   NumCoeffPerCurve : the number of coefficient per segments = degree - 1
+    --   Coefficients  :  the coefficients organized in the following way
+    --       [1..<myNumPolynomials>][1..myMaxDegree +1][1..myDimension] 
+    --       that is : index [n,d,i] is at slot 
+    --       (n-1) * (myMaxDegree + 1) * myDimension + (d-1) * myDimension + i 
+    --  PolynomialIntervals :  nth polynomial represents a polynomial between 
+    --     myPolynomialIntervals->Value(n,0) and 
+    --     myPolynomialIntervals->Value(n,1)
+    --  TrueIntervals : the nth polynomial has to be mapped linearly to be
+    --       defined on the following interval :
+    --       myTrueIntervals->Value(n) and myTrueIntervals->Value(n+1)
+    --       so that it represent adequatly the function with the
+    --       required continuity
+
+uses     Array1OfReal       from TColStd,
+         HArray1OfReal      from TColStd,
+	 HArray2OfReal      from TColStd,
+	 HArray1OfInteger   from TColStd,
+	 Array1OfReal      from TColStd,
+	 Array2OfReal      from TColStd,
+	 Array1OfInteger   from TColStd,
+         Shape              from GeomAbs
+raises 
+
+    OutOfRange        from Standard,
+    ConstructionError from Standard
+    
+is
+
+ Create(NumCurves             : Integer ;
+        Continuity            : Integer ;
+    	Dimension             : Integer ;
+	MaxDegree             : Integer ;
+	NumCoeffPerCurve      : HArray1OfInteger from TColStd ;
+	Coefficients          : HArray1OfReal    from TColStd ;
+	PolynomialIntervals   : HArray2OfReal    from TColStd ;
+	TrueIntervals         : HArray1OfReal    from TColStd) 
+ raises ConstructionError ;
+ ---Purpose:  Warning!  
+ --           Continuity can be at MOST the maximum degree of
+ --           the polynomial functions
+ --  TrueIntervals :
+ --  this is the true parameterisation for the composite curve
+ --  that is : the curve has myContinuity if the nth curve
+ --  is parameterized between myTrueIntervals(n) and myTrueIntervals(n+1)
+ --  
+ --  Coefficients have to be the implicit "c form": 
+ --  Coefficients[Numcurves][MaxDegree+1][Dimension]
+ --         
+ --  Warning! 
+ --         The NumberOfCoefficient of an polynome is his degree + 1
+ --  Example: To convert the linear function f(x) = 2*x + 1 on the         
+ --         domaine [2,5] to BSpline with the bound [-1,1]. Arguments are :          
+ --          NumCurves  = 1;                                     
+ --          Continuity = 1;                                     
+ --          Dimension  = 1;                                     
+ --          MaxDegree  = 1;
+ --          NumCoeffPerCurve [1] = {2};
+ --          Coefficients[2] = {1, 2};
+ --          PolynomialIntervals[1,2] = {{2,5}}
+ --          TrueIntervals[2] = {-1, 1}
+                 
+                 
+ Create(NumCurves             : Integer ;
+    	Dimension             : Integer ;
+	MaxDegree             : Integer ;
+	Continuity            : Array1OfInteger from TColStd ;
+	NumCoeffPerCurve      : Array1OfInteger from TColStd ;
+	Coefficients          : Array1OfReal    from TColStd ;
+	PolynomialIntervals   : Array2OfReal    from TColStd ;
+	TrueIntervals         : Array1OfReal    from TColStd)
+	---Purpose: To Convert sevral span with different order of Continuity.
+	--  Warning: The Length of Continuity have to be NumCurves-1 
+ raises ConstructionError;
+ 
+ Create(Dimension          : Integer ;
+        MaxDegree          : Integer ;
+	Degree             : Integer ;
+	Coefficients       : Array1OfReal    from TColStd ;
+	PolynomialIntervals: Array1OfReal    from TColStd ;
+	TrueIntervals      : Array1OfReal    from TColStd)
+	---Purpose: To Convert only one span. 
+ raises ConstructionError;
+ 
+ 
+ Perform(me : in out;
+         NumCurves         : Integer;
+         MaxDegree         : Integer;
+	 Dimension         : Integer ;
+     	 NumCoeffPerCurve  : Array1OfInteger from TColStd ;
+    	 Coefficients      : Array1OfReal from TColStd;
+         PolynomialIntervals : Array2OfReal    from TColStd ;
+         TrueIntervals       : Array1OfReal    from TColStd) is private;
+
+ NbPoles(me) returns Integer ;
+ --
+ ---Purpose:  number of poles of the n-dimensional BSpline
+ --  
+ Poles(me; Poles  : in out HArray2OfReal from TColStd) ;
+ ---Purpose:  returns the poles of the n-dimensional BSpline 
+ --  in the following format :
+ --  [1..NumPoles][1..Dimension] 
+ --  
+ Degree(me) 
+ returns Integer ;
+ 
+ NbKnots(me) 
+ returns Integer ;
+ 
+ ---Purpose: Degree of the n-dimensional Bspline
+ Knots(me; K : in out HArray1OfReal    from TColStd) ;
+
+ ---Purpose: Knots of the n-dimensional Bspline
+ 
+ Multiplicities(me; M : in out HArray1OfInteger from TColStd) ;
+ ---Purpose: Multiplicities of the knots in the BSpline
+ IsDone(me) returns Boolean ;	
+
+
+fields
+ myFlatKnots             : HArray1OfReal    from TColStd ;
+ myKnots                 : HArray1OfReal    from TColStd ;
+ myMults                 : HArray1OfInteger from TColStd ;
+ myPoles                 : HArray2OfReal    from TColStd ;
+ -- the poles of the n-dimensional Bspline organized in the following
+ -- fashion
+ -- [1..NumPoles][1..myDimension] 
+ myDegree                : Integer ;
+ myDone                  : Boolean ;
+
+end CompPolynomialToPoles ;

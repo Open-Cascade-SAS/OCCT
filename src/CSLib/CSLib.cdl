@@ -1,0 +1,194 @@
+-- File:	CSLib.cdl
+-- Created:	Mon Sep 9 15:44:13 1991
+-- Author:	Michel Chauvat
+--              JCV Decembre 1991 
+---Copyright:   Matra Datavision 1991
+
+
+
+
+package CSLib
+
+       ---Purpose:  This package implements functions for basis geometric 
+       --  computation on curves and surfaces. 
+       --  The tolerance criterions used in this package are
+       --  Resolution from package gp and RealEpsilon from class
+       --  Real of package Standard.
+
+uses gp,
+     TColgp,
+     TColStd,
+     math
+
+
+is
+
+ enumeration DerivativeStatus is 
+             Done, D1uIsNull, D1vIsNull, D1IsNull, D1uD1vRatioIsNull, 
+             D1vD1uRatioIsNull, D1uIsParallelD1v;
+
+        --- Purpose : 
+        --  
+        --  D1uIsNull : ||D1U|| <= Resolution
+        --  
+        --  D1vIsNull : ||D1V|| <= Resolution
+        --  
+        --  D1IsNull  : the first derivatives in the U and V parametric 
+        --              directions have null length  :
+        --              ||D1U|| <= Resolution and ||D1V|| <= Resolution
+        --              
+        --  D1uD1vRatioIsNull : the first derivative in the U direction has 
+        --                      null length by comparison with the derivative
+        --                      in the V direction 
+        --                      ||D1U|| / ||D1V|| <= RealEpsilon 
+        --                      
+        --  D1vD1uRatioIsNull : the first derivative in the V direction has 
+        --                      null length by comparison with the derivative
+        --                      in the U direction 
+        --                      ||D1V|| / ||D1U|| <= RealEpsilon
+        --                      
+        --  D1uIsParallelD1v : the angle between the derivatives in the U and
+        --                     V direction is null (tolerance criterion given
+        --                     as input data)
+
+
+ enumeration NormalStatus is
+             Singular,Defined,InfinityOfSolutions, D1NuIsNull, D1NvIsNull, D1NIsNull, 
+             D1NuNvRatioIsNull, D1NvNuRatioIsNull, D1NuIsParallelD1Nv;
+
+        --- Purpose :
+        --  
+        --  if N is the normal 
+        --  
+        --  InfinityOfSolutions : ||DN/du||>Resolution, ||DN/dv||>Resolution
+        --  
+        --  D1NuIsNull          : ||DN/du|| <= Resolution 
+        --  
+        --  D1NvIsNull          : ||DN/dv|| <= Resolution 
+        --  
+        --  D1NIsNull           : ||DN/du||<=Resolution, ||DN/dv||<=Resolution
+        --  
+        --  D1NuNvRatioIsNull   : ||D1Nu|| / ||D1Nv|| <= RealEpsilon 
+        --  
+        --  D1NvNuRatioIsNull   : ||D1Nu|| / ||D1Nv|| <= RealEpsilon
+        --  
+        --  D1NuIsParallelD1Nv  : The angle between D1Nu and D1Nv is Null.
+
+     class Class2d;
+	---Purpose: 
+	--          
+	--          *** Class2d    : Low level algorithm for 2d classification
+	--          this class was moved from package BRepTopAdaptor
+
+
+
+
+
+        --- Purpose :
+        --  The following functions computes the normal to a surface
+        
+    private class NormalPolyDef;
+        --- Purpose :
+        --  The following functions computes the normal to a surface
+        -- inherits FunctionWithDerivative from math
+        -- 
+    Normal (D1U, D1V: Vec from gp; SinTol: Real;
+            Status: out DerivativeStatus; 
+            Normal: out Dir from gp);
+
+	--- Purpose : 
+	--  Computes the normal direction of a surface as the cross product
+	--  between D1U and D1V. 
+	--  If D1U has null length or D1V has null length or D1U and D1V are 
+	--  parallel the normal is undefined. 
+	--  To check that D1U and D1V are colinear the sinus of the angle
+	--  between D1U and D1V is computed and compared with SinTol.
+        --  The normal is computed if Status == Done else the Status gives the
+        --  reason why the computation has failed.
+
+
+
+    Normal (D1U, D1V, D2U, D2V, D2UV: Vec from gp; SinTol: Real;
+    	    Done : out Boolean; Status : out NormalStatus; 
+            Normal: out Dir from gp);
+    	--- Purpose :
+    	--  If there is a singularity on the surface  the previous method
+    	--  cannot compute the local normal. 
+    	--  This method computes an approched normal direction of a surface.
+    	--  It does a limited development and needs the second derivatives
+    	--  on the surface as input data.
+    	--  It computes the normal as follow :
+    	--  N(u, v) = D1U ^ D1V
+        --  N(u0+du,v0+dv) = N0 + DN/du(u0,v0) * du + DN/dv(u0,v0) * dv + Eps
+        --  with Eps->0 so we can have the equivalence N ~ dN/du + dN/dv.
+        --  DNu = ||DN/du|| and DNv = ||DN/dv||
+        --  
+     	--  . if DNu IsNull (DNu <= Resolution from gp) the answer Done = True
+     	--    the normal direction is given by DN/dv
+     	--  . if DNv IsNull (DNv <= Resolution from gp) the answer Done = True
+     	--    the normal direction is given by DN/du
+     	--  . if the two directions DN/du and DN/dv are parallel Done = True
+     	--    the normal direction is given either by DN/du or DN/dv. 
+	--    To check that the two directions are colinear the sinus of the 
+	--    angle between these directions is computed and compared with 
+	--    SinTol.
+     	--  . if DNu/DNv or DNv/DNu is lower or equal than Real Epsilon
+     	--    Done = False, the normal is undefined
+     	--  . if DNu IsNull and DNv is Null Done = False, there is an
+     	--    indetermination and we should do a limited developpement at
+     	--    order 2 (it means that we cannot omit Eps).
+     	--  . if DNu Is not Null and DNv Is not Null Done = False, there are
+     	--    an infinity of normals at the considered point on the surface.
+
+    Normal (D1U, D1V: Vec from gp; MagTol:  Real;
+            Status: out NormalStatus; 
+            Normal: out Dir from gp);
+
+	--- Purpose : 
+	--  Computes the normal direction of a surface as the cross product
+	--  between D1U and D1V.
+	--    
+  Normal (MaxOrder : Integer ; DerNUV : Array2OfVec from TColgp; MagTol:  Real;  
+          U , V , Umin , Umax , Vmin , Vmax : Real; Status: out NormalStatus;
+          Normal  :  out  Dir  from  gp; OrderU , OrderV : out Integer);
+        --- Purpose :   find the first  order k0  of deriviative of NUV
+        --  where: foreach order < k0  all the derivatives of NUV  are
+        --  null all the derivatives of NUV corresponding to the order
+        --  k0 are collinear and have the same sens.
+        --  In this case, normal at U,V is unique. 
+	  
+  DNNUV ( Nu , Nv : Integer;  DerSurf : Array2OfVec from TColgp )
+     returns Vec  from  gp;
+        ---Purpose : -- Computes the derivative  of order Nu in the --
+        --         direction U and Nv in the direction V of the not --
+        --         normalized  normal vector at  the point  P(U,V) The
+        --         array DerSurf contain the derivative (i,j) of the surface 
+        --         for i=0,Nu+1 ; j=0,Nv+1
+
+
+  DNNUV (Nu,Nv : Integer ; DerSurf1 : Array2OfVec from TColgp;
+                           DerSurf2 : Array2OfVec from TColgp )  
+     returns Vec from gp;
+        ---Purpose : Computes the derivatives of order Nu in the direction Nu  
+        --           and Nv in the direction Nv of the not normalized vector  
+        --           N(u,v) = dS1/du * dS2/dv (cases where we use an osculating surface)
+        --           DerSurf1 are the derivatives of S1 
+     
+  DNNormal( Nu , Nv : Integer;  DerNUV : Array2OfVec from TColgp ;
+          Iduref : Integer  = 0;  Idvref  : Integer = 0   )
+     returns Vec  from  gp;
+        ---Purpose : -- Computes the derivative  of order Nu in the --
+        --         direction   U and  Nv in the  direction  V  of the
+        --         normalized normal vector  at the point P(U,V) array
+        --         DerNUV contain the  derivative  (i+Iduref,j+Idvref)
+        --         of D1U ^ D1V for i=0,Nu  ; j=0,Nv Iduref and Idvref
+        --         correspond to a derivative  of D1U ^ D1V  which can
+        --         be used to compute the normalized normal vector.
+        --         In the regular cases , Iduref=Idvref=0.
+
+end CSLib;
+
+
+
+
+

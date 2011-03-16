@@ -1,0 +1,22 @@
+-- File:	BinXCAFDrivers.cdl
+-- Created:	Mon Apr 18 15:33:20 2005
+-- Author:	Eugeny NAPALKOV <eugeny.napalkov@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2005
+
+package BinXCAFDrivers
+
+uses
+    Standard,
+    CDM,
+    BinMDF,
+    BinDrivers
+is
+    class DocumentStorageDriver;
+    class DocumentRetrievalDriver;
+
+    Factory (theGUID : GUID from Standard) returns Transient from Standard;
+
+    AttributeDrivers (MsgDrv : MessageDriver from CDM)
+    	returns ADriverTable from BinMDF;
+    	---Purpose: Creates the table of drivers of types supported
+end;    

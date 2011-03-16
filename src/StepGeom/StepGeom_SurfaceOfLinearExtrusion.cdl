@@ -1,0 +1,40 @@
+-- File:        SurfaceOfLinearExtrusion.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceOfLinearExtrusion from StepGeom 
+
+inherits SweptSurface from StepGeom 
+
+uses
+
+	Vector from StepGeom, 
+	HAsciiString from TCollection, 
+	Curve from StepGeom
+is
+
+	Create returns mutable SurfaceOfLinearExtrusion;
+	---Purpose: Returns a SurfaceOfLinearExtrusion
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptCurve : mutable Curve from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aSweptCurve : mutable Curve from StepGeom;
+	      aExtrusionAxis : mutable Vector from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetExtrusionAxis(me : mutable; aExtrusionAxis : mutable Vector);
+	ExtrusionAxis (me) returns mutable Vector;
+
+fields
+
+	extrusionAxis : Vector from StepGeom;
+
+end SurfaceOfLinearExtrusion;

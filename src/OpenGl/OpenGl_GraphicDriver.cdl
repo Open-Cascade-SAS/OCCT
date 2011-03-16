@@ -1,0 +1,1434 @@
+--
+-- File:    OpenGl_GraphicDriver.cdl
+-- Created: Mardi 28 janvier 1997
+-- Author:  CAL
+-- Modified:
+--              07-10-99 : EUG : Degeneration support (G003)
+--                               Add DegenerateStructure() and
+--                                   SetBackFacingModel() methods.
+--      16-06-2000 : ATS,SPK : G005 : PARRAY method
+--      17/08/00 ; THA ; Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
+--              -> Add Print methods (works only under Windows).
+--      27/03/02 ; GG  ; RIC120302 Add new method Begin(Aspect_Display)
+--      23/12/02 ; SAV Added methods to set background image
+--              20/01/09 ; ABD : Integration support of system fonts (using FTGL and FreeType)
+--
+--
+---Copyright:   MatraDatavision 1997
+--
+
+class GraphicDriver from OpenGl inherits GraphicDriver from Graphic3d
+
+    ---Version:
+
+    ---Purpose: This class allows the definition of an opengl graphic
+    --      driver
+
+    ---Keywords: OpenGl
+
+    ---Warning:
+    ---References:
+
+uses
+
+    Array1OfInteger     from TColStd,
+    Array1OfReal        from TColStd,
+    Array2OfReal        from TColStd,
+
+    ExtendedString      from TCollection,
+
+    NameOfColor         from Quantity,
+    Color		from Quantity,
+    PlaneAngle          from Quantity,
+
+    AlienImage          from AlienImage,
+
+    Array1OfEdge        from Aspect,
+    CLayer2d            from Aspect,
+    TypeOfTriedronEcho  from Aspect,
+    TypeOfTriedronPosition  from Aspect,
+    Handle              from Aspect,
+    Display             from Aspect,
+
+    AspectLine3d        from Graphic3d,
+    AspectMarker3d      from Graphic3d,
+    AspectText3d        from Graphic3d,
+    AspectFillArea3d    from Graphic3d,
+    HorizontalTextAlignment from Graphic3d,
+    CBitFields20        from Graphic3d,
+    CGroup              from Graphic3d,
+    CPick               from Graphic3d,
+    CStructure          from Graphic3d,
+    CView               from Graphic3d,
+    CRawBufferData      from Image,
+    Structure           from Graphic3d,
+    TextPath            from Graphic3d,
+    TypeOfComposition   from Graphic3d,
+    TypeOfPolygon       from Graphic3d,
+    TypeOfPrimitive     from Graphic3d,
+    Vector              from Graphic3d,
+    Array1OfVertex      from Graphic3d,
+    Array2OfVertex      from Graphic3d,
+    Vertex              from Graphic3d,
+    Array1OfVertexC     from Graphic3d,
+    Array2OfVertexC     from Graphic3d,
+    VertexC             from Graphic3d,
+    Array1OfVertexN     from Graphic3d,
+    Array2OfVertexN     from Graphic3d,
+    VertexN             from Graphic3d,
+    Array1OfVertexNC    from Graphic3d,
+    Array2OfVertexNC    from Graphic3d,
+    VertexNC            from Graphic3d,
+    VerticalTextAlignment   from Graphic3d,
+    CInitTexture        from Graphic3d,
+    TypeOfTexture       from Graphic3d,
+    VertexNT            from Graphic3d,
+    Array1OfVertexNT    from Graphic3d,
+    Array2OfVertexNT    from Graphic3d,
+    PrimitiveArray      from Graphic3d,
+    PtrFrameBuffer      from Graphic3d,
+    FillMethod          from Aspect,
+    GradientFillMethod  from Aspect,
+    HArray1OfByte       from TColStd,
+    ExportFormat        from Graphic3d,
+    SortType            from Graphic3d,
+    HArray1OfReal       from TColStd,
+    CUserDraw           from Graphic3d,
+    NListOfHAsciiString from Graphic3d,
+    FontAspect          from OSD,
+    CGraduatedTrihedron from Graphic3d
+is
+
+    Create ( AShrName   : CString from Standard )
+        returns mutable GraphicDriver from OpenGl;
+
+    -------------------------
+    -- Category: Init methods
+    -------------------------
+    DefaultTextHeight( me )
+        returns ShortReal from Standard
+         is redefined  static;
+
+    Begin ( me          : mutable;
+            ADisplay    : CString from Standard )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_begin
+
+    Begin ( me          : mutable;
+            ADisplay    : Display from Aspect )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_begin_display
+
+    End ( me    : mutable )
+        is redefined static;
+    ---Purpose: call_togl_end
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    InquireLightLimit ( me  : mutable )
+        returns Integer from Standard
+        is redefined static;
+    ---Purpose: call_togl_inquirelight
+
+    InquireMat ( me     : mutable;
+                 ACView : CView from Graphic3d;
+                 AMatO  : out Array2OfReal from TColStd;
+                 AMatM  : out Array2OfReal from TColStd )
+        is redefined static;
+    ---Purpose: call_togl_inquiremat
+
+    InquirePlaneLimit ( me  : mutable )
+        returns Integer from Standard
+        is redefined static;
+    ---Purpose: call_togl_inquireplane
+
+    InquireViewLimit ( me   : mutable )
+        returns Integer from Standard
+        is redefined static;
+    ---Purpose: call_togl_inquireview
+
+    InquireTextureAvailable ( me    : mutable )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: Returns Standard_True if texture is
+    --      supported by the graphic driver
+
+    ------------------------------
+    -- Category: Highlight methods
+    ------------------------------
+
+    Blink ( me          : mutable;
+            ACStructure : CStructure from Graphic3d;
+            Create      : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_blink
+
+    BoundaryBox ( me            : mutable;
+                  ACStructure   : CStructure from Graphic3d;
+                  Create        : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_boundarybox
+
+    HighlightColor ( me             : mutable;
+                     ACStructure    : CStructure from Graphic3d;
+                     R              : ShortReal from Standard;
+                     G              : ShortReal from Standard;
+                     B              : ShortReal from Standard;
+                     Create         : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_highlightcolor
+
+    NameSetStructure ( me           : mutable;
+                       ACStructure  : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_namesetstructure
+
+    -------------------------------------
+    -- Category: Group management methods
+    -------------------------------------
+
+    ClearGroup ( me         : mutable;
+                 ACGroup    : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_cleargroup
+
+    CloseGroup ( me     : mutable;
+             ACGroup    : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_closegroup
+
+    FaceContextGroup ( me       : mutable;
+                       ACGroup  : CGroup from Graphic3d;
+                       NoInsert : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_facecontextgroup
+
+    Group ( me      : mutable;
+            ACGroup : in out CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_group
+
+    LineContextGroup ( me       : mutable;
+                       ACGroup  : CGroup from Graphic3d;
+                       NoInsert : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_linecontextgroup
+
+    MarkerContextGroup ( me         : mutable;
+                         ACGroup    : CGroup from Graphic3d;
+                         NoInsert   : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_markercontextgroup
+
+    MarkerContextGroup ( me          : mutable;
+                         ACGroup     : CGroup from Graphic3d;
+                         NoInsert    : Integer from Standard;
+                         AMarkWidth  : Integer from Standard;
+                         AMarkHeight : Integer from Standard;
+                         ATexture    : HArray1OfByte from TColStd )
+        is redefined static;
+    ---Purpose: call_togl_markercontextgroup
+
+
+    OpenGroup ( me      : mutable;
+                ACGroup : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_opengroup
+
+    RemoveGroup ( me        : mutable;
+                  ACGroup   : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_removegroup
+
+    TextContextGroup ( me       : mutable;
+                       ACGroup  : CGroup from Graphic3d;
+                       NoInsert : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_textcontextgroup
+
+    -----------------------------------------
+    -- Category: Structure management methods
+    -----------------------------------------
+
+    ClearStructure ( me     : mutable;
+             ACStructure    : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_clearstructure
+
+    Connect ( me        : mutable;
+              AFather   : CStructure from Graphic3d;
+              ASon      : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_connect
+
+    ContextStructure ( me           : mutable;
+                       ACStructure  : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_contextstructure
+
+    Disconnect ( me         : mutable;
+                 AFather    : CStructure from Graphic3d;
+                 ASon       : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_disconnect
+
+    DisplayStructure ( me           : mutable;
+                       ACView       : CView from Graphic3d;
+                       ACStructure  : CStructure from Graphic3d;
+                       APriority    : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_displaystructure
+
+    EraseStructure ( me             : mutable;
+                     ACView         : CView from Graphic3d;
+                     ACStructure    : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_erasestructure
+
+    RemoveStructure ( me            : mutable;
+                      ACStructure   : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_removestructure
+
+    Structure ( me          : mutable;
+                ACStructure : in out CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_structure
+
+    --------------------------------
+    -- Category: Exploration methods
+    --------------------------------
+
+    DumpGroup ( me      : mutable;
+                ACGroup : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_structure_exploration
+
+    DumpStructure ( me          : mutable;
+                    ACStructure : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_structure_exploration
+
+    DumpView ( me       : mutable;
+               ACView   : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_view_exploration
+
+    ElementExploration ( me             : mutable;
+                         ACStructure    : CStructure from Graphic3d;
+                         ElementNumber  : Integer from Standard;
+                         AVertex        : out VertexNC from Graphic3d;
+                         AVector        : out Vector from Graphic3d )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_element_exploration
+
+    ElementType ( me            : mutable;
+                  ACStructure   : CStructure from Graphic3d;
+                  ElementNumber : Integer from Standard )
+        returns TypeOfPrimitive from Graphic3d
+        is redefined static;
+    ---Purpose: call_togl_element_type
+
+    ------------------------------------
+    -- Category: Pick management methods
+    ------------------------------------
+
+    InitPick ( me   : mutable )
+        is redefined static;
+    ---Purpose: call_togl_init_pick
+
+    Pick ( me       : mutable;
+           ACPick   : out CPick from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_pick
+
+    PickId ( me         : mutable;
+             ACGroup    : CGroup from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_pickid
+
+    ------------------------------------
+    -- Category: Structured mode methods
+    ------------------------------------
+
+    ActivateView ( me       : mutable;
+                   ACView   : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_activateview
+
+    AntiAliasing ( me       : mutable;
+                   ACView   : CView from Graphic3d;
+                   AFlag    : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_antialiasing
+
+    Background ( me     : mutable;
+                 ACView : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_background
+
+    GradientBackground ( me     : mutable;
+                         ACView : CView from Graphic3d;
+		         AColor1: Color from Quantity;
+		         AColor2: Color from Quantity;
+                         FillStyle : GradientFillMethod from Aspect
+                       )
+                   is redefined static;
+    ---Purpose: call_togl_gradient_background
+
+    BackgroundImage( me         : mutable;
+                     FileName   : CString from Standard;
+                     ACView     : CView from Graphic3d;
+                     FillStyle  : FillMethod from Aspect )
+    is redefined static;
+
+    SetBgImageStyle( me : mutable; ACView   : CView from Graphic3d;
+                     FillStyle : FillMethod from Aspect )
+    is redefined static;
+
+    SetBgGradientStyle( me        : mutable;
+                        ACView    : CView from Graphic3d;
+                        FillStyle : GradientFillMethod from Aspect )
+    is redefined static;
+
+    ClipLimit ( me      : mutable;
+                ACView  : CView from Graphic3d;
+                AWait   : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_cliplimit
+
+    DeactivateView ( me     : mutable;
+                     ACView : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_deactivateview
+
+    DepthCueing ( me        : mutable;
+                  ACView    : CView from Graphic3d;
+                  AFlag     : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_cliplimit
+
+    ProjectRaster ( me      : mutable;
+                    ACView  : CView from Graphic3d;
+                    AX      : ShortReal from Standard;
+                    AY      : ShortReal from Standard;
+                    AZ      : ShortReal from Standard;
+                    AU      : out Integer from Standard;
+                    AV      : out Integer from Standard )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_unproject_raster
+
+    UnProjectRaster ( me        : mutable;
+                      ACView    : CView from Graphic3d;
+                      Axm       : Integer from Standard;
+                      Aym       : Integer from Standard;
+                      AXM       : Integer from Standard;
+                      AYM       : Integer from Standard;
+                      AU        : Integer from Standard;
+                      AV        : Integer from Standard;
+                      AX        : out ShortReal from Standard;
+                      AY        : out ShortReal from Standard;
+                      AZ        : out ShortReal from Standard )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_unproject_raster
+
+    UnProjectRasterWithRay ( me        : mutable;
+                             ACView    : CView from Graphic3d;
+                             Axm       : Integer from Standard;
+                             Aym       : Integer from Standard;
+                             AXM       : Integer from Standard;
+                             AYM       : Integer from Standard;
+                             AU        : Integer from Standard;
+                             AV        : Integer from Standard;
+                             AX        : out ShortReal from Standard;
+                             AY        : out ShortReal from Standard;
+                             AZ        : out ShortReal from Standard;
+                             DX        : out ShortReal from Standard;
+                             DY        : out ShortReal from Standard;
+                             DZ        : out ShortReal from Standard )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_unproject_raster_with_ray
+
+    RatioWindow ( me        : mutable;
+                  ACView    : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_ratio_window
+
+    Redraw ( me             : mutable;
+             ACView         : CView from Graphic3d;
+             ACUnderLayer   : CLayer2d from Aspect;
+             ACOverLayer    : CLayer2d from Aspect;
+             x              : Integer = 0;
+             y              : Integer = 0;
+             width          : Integer = 0;
+             height         : Integer = 0 )
+        is redefined static;
+    ---Purpose: call_togl_redraw
+
+    RemoveView ( me      : mutable;
+                 ACView  : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_removeview
+
+    SetLight ( me       : mutable;
+               ACView   : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_setlight
+
+    SetPlane ( me       : mutable;
+               ACView   : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_setplane
+
+    SetVisualisation ( me       : mutable;
+                       ACView   : CView from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_setvisualisation
+
+    TransformStructure ( me             : mutable;
+                         ACStructure    : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_transformstructure
+
+        DegenerateStructure ( me                : mutable;
+                              ACStructure       : CStructure from Graphic3d )
+                is redefined static;
+        ---Purpose: call_togl_degeneratestructure
+
+    Transparency ( me       : mutable;
+                   ACView   : CView from Graphic3d;
+                   AFlag    : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_transparency
+
+    Update ( me             : mutable;
+             ACView         : CView from Graphic3d;
+             ACUnderLayer   : CLayer2d from Aspect;
+             ACOverLayer    : CLayer2d from Aspect )
+        is redefined static;
+    ---Purpose: call_togl_update
+
+    View ( me   : mutable;
+           ACView   : in out CView from Graphic3d )
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_view
+
+    ViewMapping ( me        : mutable;
+                  ACView    : CView from Graphic3d;
+                  AWait     : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_viewmapping
+
+    ViewOrientation ( me        : mutable;
+                      ACView    : CView from Graphic3d;
+                      AWait     : Boolean from Standard )
+        is redefined static;
+    ---Purpose: call_togl_vieworientation
+
+        Environment ( me        : mutable;
+                      ACView    : CView from Graphic3d )
+        is redefined static;
+    ---Purpose:
+
+    ----------------------------------------
+    -- Category: Methods to create Marker
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    Marker ( me         : mutable;
+             ACGroup    : CGroup from Graphic3d;
+             APoint     : Vertex from Graphic3d;
+             EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined static;
+
+    MarkerSet ( me          : mutable;
+                ACGroup     : CGroup from Graphic3d;
+                ListVertex  : Array1OfVertex from Graphic3d;
+                EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+
+    ----------------------------------------
+    -- Category: Methods to create Polygon
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    Polygon ( me            : mutable;
+              ACGroup       : CGroup from Graphic3d;
+              ListVertex    : Array1OfVertex from Graphic3d;
+              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+              EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon
+
+    Polygon ( me            : mutable;
+              ACGroup       : CGroup from Graphic3d;
+              ListVertex    : Array1OfVertex from Graphic3d;
+              Normal        : Vector from Graphic3d;
+              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+              EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon
+
+    Polygon ( me            : mutable;
+              ACGroup       : CGroup from Graphic3d;
+              ListVertex    : Array1OfVertexN from Graphic3d;
+              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+              EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon
+
+    Polygon ( me            : mutable;
+              ACGroup       : CGroup from Graphic3d;
+              ListVertex    : Array1OfVertexN from Graphic3d;
+              Normal        : Vector from Graphic3d;
+              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+              EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon
+
+    Polygon ( me            : mutable;
+              ACGroup       : CGroup from Graphic3d;
+              ListVertex    : Array1OfVertexNT from Graphic3d;
+              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
+              EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined  static;
+    ---Purpose: call_togl_polygon
+
+    PolygonHoles ( me          : mutable;
+                   ACGroup     : CGroup from Graphic3d;
+                   Bounds      : Array1OfInteger from TColStd;
+                   ListVertex  : Array1OfVertex from Graphic3d;
+                   EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_holes
+
+    PolygonHoles ( me          : mutable;
+                   ACGroup     : CGroup from Graphic3d;
+                   Bounds      : Array1OfInteger from TColStd;
+                   ListVertex  : Array1OfVertex from Graphic3d;
+                   Normal      : Vector from Graphic3d;
+                   EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_holes
+
+    PolygonHoles ( me          : mutable;
+                   ACGroup     : CGroup from Graphic3d;
+                   Bounds      : Array1OfInteger from TColStd;
+                   ListVertex  : Array1OfVertexN from Graphic3d;
+                   EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_holes
+
+    PolygonHoles ( me          : mutable;
+                   ACGroup     : CGroup from Graphic3d;
+                   Bounds      : Array1OfInteger from TColStd;
+                   ListVertex  : Array1OfVertexN from Graphic3d;
+                   Normal      : Vector from Graphic3d;
+                   EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_holes
+
+    ----------------------------------------
+    -- Category: Methods to create Polyline
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    Polyline ( me                       : mutable;
+               ACGroup                  : CGroup from Graphic3d;
+               X1, Y1, Z1, X2, Y2, Z2   : Real from Standard;
+               EvalMinMax               : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polyline
+
+    Polyline ( me           : mutable;
+               ACGroup      : CGroup from Graphic3d;
+               ListVertex   : Array1OfVertex from Graphic3d;
+               EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polyline
+
+    Polyline ( me           : mutable;
+               ACGroup      : CGroup from Graphic3d;
+               ListVertex   : Array1OfVertexC from Graphic3d;
+               EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polyline
+
+    -----------------------------------------
+    -- Category: Methods to create Quadrangle
+    -- for Purpose : see Graphic3d_Group.cdl
+    -----------------------------------------
+
+    QuadrangleMesh ( me         : mutable;
+                     ACGroup    : CGroup from Graphic3d;
+                     ListVertex : Array2OfVertex from Graphic3d;
+                     EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_quadrangle
+
+    QuadrangleMesh ( me         : mutable;
+                     ACGroup    : CGroup from Graphic3d;
+                     ListVertex : Array2OfVertexN from Graphic3d;
+                     EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_quadrangle
+
+    QuadrangleMesh ( me         : mutable;
+                     ACGroup    : CGroup from Graphic3d;
+                     ListVertex : Array2OfVertexNT from Graphic3d;
+                     EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined  static;
+    ---Purpose: call_togl_quadrangle
+
+    QuadrangleSet ( me          : mutable;
+                    ACGroup     : CGroup from Graphic3d;
+                    ListVertex  : Array1OfVertex from Graphic3d;
+                    ListEdge    : Array1OfEdge from Aspect;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    QuadrangleSet ( me          : mutable;
+                    ACGroup     : CGroup from Graphic3d;
+                    ListVertex  : Array1OfVertexN from Graphic3d;
+                    ListEdge    : Array1OfEdge from Aspect;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    QuadrangleSet ( me          : mutable;
+                    ACGroup     : CGroup from Graphic3d;
+                    ListVertex  : Array1OfVertexNT from Graphic3d;
+                    ListEdge    : Array1OfEdge from Aspect;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined  static;
+    ---Purpose: call_togl_polygon_indices
+
+    QuadrangleSet ( me          : mutable;
+                    ACGroup     : CGroup from Graphic3d;
+                    ListVertex  : Array1OfVertexC from Graphic3d;
+                    ListEdge    : Array1OfEdge from Aspect;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    QuadrangleSet ( me          : mutable;
+                    ACGroup     : CGroup from Graphic3d;
+                    ListVertex  : Array1OfVertexNC from Graphic3d;
+                    ListEdge    : Array1OfEdge from Aspect;
+                    EvalMinMax  : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    ----------------------------------------
+    -- Category: Methods to create Text
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    Text ( me   : mutable;
+           ACGroup  : CGroup from Graphic3d;
+           AText    : CString from Standard;
+           APoint   : Vertex from Graphic3d;
+           AHeight  : Real from Standard;
+           AAngle   : PlaneAngle from Quantity;
+           ATp  : TextPath from Graphic3d;
+           AHta : HorizontalTextAlignment from Graphic3d;
+           AVta : VerticalTextAlignment from Graphic3d;
+           EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_text
+
+    Text ( me   : mutable;
+           ACGroup  : CGroup from Graphic3d;
+           AText    : CString from Standard;
+           APoint   : Vertex from Graphic3d;
+           AHeight  : Real from Standard;
+           EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_text
+
+    Text ( me   : mutable;
+           ACGroup  : CGroup from Graphic3d;
+           AText    : ExtendedString from TCollection;
+           APoint   : Vertex from Graphic3d;
+           AHeight  : Real from Standard;
+           AAngle   : PlaneAngle from Quantity;
+           ATp  : TextPath from Graphic3d;
+           AHta : HorizontalTextAlignment from Graphic3d;
+           AVta : VerticalTextAlignment from Graphic3d;
+           EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_text
+
+    Text ( me   : mutable;
+           ACGroup  : CGroup from Graphic3d;
+           AText    : ExtendedString from TCollection;
+           APoint   : Vertex from Graphic3d;
+           AHeight  : Real from Standard;
+           EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_text
+
+    ----------------------------------------
+    ---Category: Methods to create Triangle
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    TriangleMesh ( me           : mutable;
+                   ACGroup      : CGroup from Graphic3d;
+                   ListVertex   : Array1OfVertex from Graphic3d;
+                   EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_triangle
+
+    TriangleMesh ( me           : mutable;
+                   ACGroup       : CGroup from Graphic3d;
+                   ListVertex   : Array1OfVertexN from Graphic3d;
+                   EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_triangle
+
+    TriangleMesh ( me           : mutable;
+                   ACGroup      : CGroup from Graphic3d;
+                   ListVertex   : Array1OfVertexNT from Graphic3d;
+                   EvalMinMax   : Boolean from Standard = Standard_True )
+        is redefined  static;
+    ---Purpose: call_togl_triangle
+
+    TriangleSet ( me            : mutable;
+                  ACGroup       : CGroup from Graphic3d;
+                  ListVertex    : Array1OfVertex from Graphic3d;
+                  ListEdge      : Array1OfEdge from Aspect;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    TriangleSet ( me            : mutable;
+                  ACGroup       : CGroup from Graphic3d;
+                  ListVertex    : Array1OfVertexN from Graphic3d;
+                  ListEdge      : Array1OfEdge from Aspect;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    TriangleSet ( me            : mutable;
+                  ACGroup       : CGroup from Graphic3d;
+                  ListVertex    : Array1OfVertexNT from Graphic3d;
+                  ListEdge      : Array1OfEdge from Aspect;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined  static;
+    ---Purpose: call_togl_polygon_indices
+
+    TriangleSet ( me            : mutable;
+                  ACGroup       : CGroup from Graphic3d;
+                  ListVertex    : Array1OfVertexC from Graphic3d;
+                  ListEdge      : Array1OfEdge from Aspect;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+    TriangleSet ( me            : mutable;
+                  ACGroup       : CGroup from Graphic3d;
+                  ListVertex    : Array1OfVertexNC from Graphic3d;
+                  ListEdge      : Array1OfEdge from Aspect;
+                  EvalMinMax    : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_polygon_indices
+
+        PrimitiveArray( me              : mutable;
+                        ACGroup         : CGroup from Graphic3d;
+                        parray          : PrimitiveArray from Graphic3d;
+                        EvalMinMax      : Boolean from Standard = Standard_True )
+        is redefined static;
+        ---Purpose: call_togl_parray
+
+    UserDraw( me          : mutable;
+              ACGroup     : CGroup from Graphic3d;
+              AUserDraw   : CUserDraw from Graphic3d )
+        is redefined static;
+        ---Purpose: call_togl_userdraw
+
+    EnableVBO( me		: mutable;
+	       status           : Boolean from Standard )
+	is redefined static;
+    ---Purpose: enables/disables usage of OpenGL vertex buffer arrays while drawing primitiev arrays
+
+
+    ----------------------------------------
+    ---Category: Methods to create Triedron
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    ZBufferTriedronSetup ( me          : mutable;
+                           XColor      : NameOfColor from Quantity = Quantity_NOC_RED;
+                           YColor      : NameOfColor from Quantity = Quantity_NOC_GREEN;
+                           ZColor      : NameOfColor from Quantity = Quantity_NOC_BLUE1;
+                           SizeRatio   : Real from Standard = 0.8;
+                           AxisDiametr : Real from Standard = 0.05;
+                           NbFacettes  : Integer from Standard = 12)
+         is redefined  static;
+        ---Purpose: call_togl_ztriedron_setup
+
+    TriedronDisplay ( me            : mutable;
+                      ACView        : CView from Graphic3d;
+                      APosition     : TypeOfTriedronPosition from Aspect  = Aspect_TOTP_CENTER;
+                      AColor        : NameOfColor from Quantity = Quantity_NOC_WHITE ;
+                      AScale        : Real from Standard  =  0.02;
+                      AsWireframe   : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_triedron_display
+
+
+    TriedronErase ( me        : mutable;
+                    ACView    : CView from Graphic3d)
+        is redefined static;
+    ---Purpose: call_togl_triedron_erase
+
+
+    TriedronEcho ( me       : mutable;
+                   ACView   : CView from Graphic3d;
+                   AType    : TypeOfTriedronEcho from Aspect  = Aspect_TOTE_NONE )
+        is redefined static;
+    ---Purpose: call_togl_triedron_echo
+
+    ---------------------------------
+    ---Category: Graduated trihedron
+    --------------------------------
+
+    GetGraduatedTrihedron(me;
+                          view : CView from Graphic3d;
+                          -- Names of axes --
+                          xname : out CString from Standard;
+                          yname : out CString from Standard;
+                          zname : out CString from Standard;
+                          -- Draw names --
+                          xdrawname : out Boolean from Standard;
+                          ydrawname : out Boolean from Standard;
+                          zdrawname : out Boolean from Standard;
+                          -- Draw values --
+                          xdrawvalues : out Boolean from Standard;
+                          ydrawvalues : out Boolean from Standard;
+                          zdrawvalues : out Boolean from Standard;
+                          -- Draw grid --
+                          drawgrid : out Boolean from Standard;
+                          -- Draw axes --
+                          drawaxes : out Boolean from Standard;
+                          -- Number of splits along axes --
+                          nbx : out Integer from Standard;
+                          nby : out Integer from Standard;
+                          nbz : out Integer from Standard;
+                          -- Offset for drawing values --
+                          xoffset : out Integer from Standard;
+                          yoffset : out Integer from Standard;
+                          zoffset : out Integer from Standard;
+                          -- Offset for drawing names of axes --
+                          xaxisoffset : out Integer from Standard;
+                          yaxisoffset : out Integer from Standard;
+                          zaxisoffset : out Integer from Standard;
+                          -- Draw tickmarks --
+                          xdrawtickmarks : out Boolean from Standard;
+                          ydrawtickmarks : out Boolean from Standard;
+                          zdrawtickmarks : out Boolean from Standard;
+                          -- Length of tickmarks --
+                          xtickmarklength : out Integer from Standard;
+                          ytickmarklength : out Integer from Standard;
+                          ztickmarklength : out Integer from Standard;
+                          -- Grid color --
+                          gridcolor : out Color from Quantity;
+                          -- X name color --
+                          xnamecolor : out Color from Quantity;
+                          -- Y name color --
+                          ynamecolor : out Color from Quantity;
+                          -- Z name color --
+                          znamecolor : out Color from Quantity;
+                          -- X color of axis and values --
+                          xcolor : out Color from Quantity;
+                          -- Y color of axis and values --
+                          ycolor : out Color from Quantity;
+                          -- Z color of axis and values --
+                          zcolor : out Color from Quantity;
+                          -- Name of font for names of axes --
+                          fontOfNames : out CString from Standard;
+                          -- Style of names of axes --
+                          styleOfNames : out FontAspect from OSD;
+                          -- Size of names of axes --
+                          sizeOfNames : out Integer from Standard;
+                          -- Name of font for values --
+                          fontOfValues : out CString from Standard;
+                          -- Style of values --
+                          styleOfValues : out FontAspect from OSD;
+                          -- Size of values --
+                          sizeOfValues : out Integer from Standard)
+    ---Purpose: call_togl_graduatedtrihedron_get
+    is redefined static;
+
+    GraduatedTrihedronDisplay(me : mutable;
+                              view : CView from Graphic3d;
+                              cubic : in out CGraduatedTrihedron from Graphic3d;
+                              -- Names of axes --
+                              xname : CString from Standard;
+                              yname : CString from Standard;
+                              zname : CString from Standard;
+                              -- Draw names --
+                              xdrawname : Boolean from Standard;
+                              ydrawname : Boolean from Standard;
+                              zdrawname : Boolean from Standard;
+                              -- Draw values --
+                              xdrawvalues : Boolean from Standard;
+                              ydrawvalues : Boolean from Standard;
+                              zdrawvalues : Boolean from Standard;
+                              -- Draw grid --
+                              drawgrid : Boolean from Standard;
+                              -- Draw axes --
+                              drawaxes : Boolean from Standard;
+                              -- Number of splits along axes --
+                              nbx : Integer from Standard;
+                              nby : Integer from Standard;
+                              nbz : Integer from Standard;
+                              -- Offset for drawing values --
+                              xoffset : Integer from Standard;
+                              yoffset : Integer from Standard;
+                              zoffset : Integer from Standard;
+                              -- Offset for drawing names of axes --
+                              xaxisoffset : Integer from Standard;
+                              yaxisoffset : Integer from Standard;
+                              zaxisoffset : Integer from Standard;
+                              -- Draw tickmarks --
+                              xdrawtickmarks : Boolean from Standard;
+                              ydrawtickmarks : Boolean from Standard;
+                              zdrawtickmarks : Boolean from Standard;
+                              -- Length of tickmarks --
+                              xtickmarklength : Integer from Standard;
+                              ytickmarklength : Integer from Standard;
+                              ztickmarklength : Integer from Standard;
+                              -- Grid color --
+                              gridcolor : Color from Quantity;
+                              -- X name color --
+                              xnamecolor : Color from Quantity;
+                              -- Y name color --
+                              ynamecolor : Color from Quantity;
+                              -- Z name color --
+                              znamecolor : Color from Quantity;
+                              -- X color of axis and values --
+                              xcolor : Color from Quantity;
+                              -- Y color of axis and values --
+                              ycolor : Color from Quantity;
+                              -- Z color of axis and values --
+                              zcolor : Color from Quantity;
+                              -- Name of font for names of axes --
+                              fontOfNames : CString from Standard;
+                              -- Style of names of axes --
+                              styleOfNames : FontAspect from OSD;
+                              -- Size of names of axes --
+                              sizeOfNames : Integer from Standard;
+                              -- Name of font for values --
+                              fontOfValues : CString from Standard;
+                              -- Style of values --
+                              styleOfValues : FontAspect from OSD;
+                              -- Size of values --
+                              sizeOfValues : Integer from Standard)
+    ---Purpose: call_togl_graduatedtrihedron_display
+    is redefined static;
+
+    GraduatedTrihedronErase(me : mutable;
+                            view : CView from Graphic3d)
+    ---Purpose: call_togl_graduatedtrihedron_erase
+    is redefined static;
+
+    GraduatedTrihedronMinMaxValues(me : mutable;
+                                   xmin : ShortReal from Standard;
+                                   ymin : ShortReal from Standard;
+                                   zmin : ShortReal from Standard;
+                                   xmax : ShortReal from Standard;
+                                   ymax : ShortReal from Standard;
+                                   zmax : ShortReal from Standard)
+    ---Purpose: call_togl_graduatedtrihedron_minmaxvalues
+    is redefined static;
+
+    ----------------------------------------
+    -- Category: Internal methods
+    -- for Purpose : see Graphic3d_Group.cdl
+    ----------------------------------------
+
+    Bezier ( me         : mutable;
+             ACGroup    : CGroup from Graphic3d;
+             ListVertex : Array1OfVertex from Graphic3d;
+             EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_bezier
+
+    Bezier ( me         : mutable;
+             ACGroup    : CGroup from Graphic3d;
+             ListVertex : Array1OfVertex from Graphic3d;
+             ListWeight : Array1OfReal from TColStd;
+             EvalMinMax : Boolean from Standard = Standard_True )
+        is redefined static;
+    ---Purpose: call_togl_bezier_weight
+
+    ---------------------------
+    -- Category: Animation mode
+    ---------------------------
+
+    BeginAnimation ( me     : mutable;
+                     ACView : CView from Graphic3d)
+        is redefined static;
+    ---Purpose: call_togl_begin_animation
+
+    EndAnimation ( me       : mutable;
+                   ACView   : CView from Graphic3d)
+        is redefined static;
+    ---Purpose: call_togl_end_animation
+
+    ----------------------------------
+    -- Category: Ajout mode methods
+    ----------------------------------
+
+    BeginAddMode ( me          : mutable;
+                   ACView      : CView from Graphic3d)
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_begin_ajout_mode
+
+    EndAddMode ( me     : mutable)
+        is redefined static;
+    ---Purpose: call_togl_end_ajout_mode
+
+    ----------------------------------
+    -- Category: Immediat mode methods
+    ----------------------------------
+
+    BeginImmediatMode ( me              : mutable;
+                        ACView          : CView from Graphic3d;
+                        ACUnderLayer    : CLayer2d from Aspect;
+                        ACOverLayer     : CLayer2d from Aspect;
+                        DoubleBuffer    : Boolean from Standard;
+                        RetainMode      : Boolean from Standard)
+        returns Boolean from Standard
+        is redefined static;
+    ---Purpose: call_togl_begin_immediat_mode
+
+    BeginPolyline ( me  : mutable )
+        is redefined static;
+    ---Purpose: call_togl_begin_polyline
+
+    ClearImmediatMode ( me  : mutable; ACView       : CView from Graphic3d;
+                        aFlush        : Boolean from Standard = Standard_True)
+        is redefined static;
+    ---Purpose: call_togl_clear_immediat_mode
+
+    Draw ( me   : mutable;
+           X    : ShortReal from Standard;
+           Y    : ShortReal from Standard;
+           Z    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_draw
+
+    DrawStructure ( me          : mutable;
+                    ACStructure : CStructure from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_draw_structure
+
+    EndImmediatMode ( me            : mutable;
+                      Synchronize   : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_end_immediat_mode
+
+    EndPolyline ( me    : mutable )
+        is redefined static;
+    ---Purpose: call_togl_end_polyline
+
+    Move ( me   : mutable;
+           X    : ShortReal from Standard;
+           Y    : ShortReal from Standard;
+           Z    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_move
+
+    SetLineColor ( me   : mutable;
+                   R    : ShortReal from Standard;
+                   G    : ShortReal from Standard;
+                   B    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_linecolor
+
+    SetLineType ( me    : mutable;
+                  Type  : Integer from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_linetype
+
+    SetLineWidth ( me   : mutable;
+               Width    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_linewidth
+
+    SetMinMax ( me  : mutable;
+                X1  : ShortReal from Standard;
+                Y1  : ShortReal from Standard;
+                Z1  : ShortReal from Standard;
+                X2  : ShortReal from Standard;
+                Y2  : ShortReal from Standard;
+                Z2  : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_minmax
+
+    Transform ( me      : mutable;
+                AMatrix : Array2OfReal from TColStd;
+                AType   : TypeOfComposition from Graphic3d )
+        is redefined static;
+    ---Purpose: call_togl_transform
+
+    -----------------------------
+    -- Category: Textures methods
+    -----------------------------
+
+        CreateTexture ( me;
+                        Type            : TypeOfTexture from Graphic3d;
+                        Image           : AlienImage from AlienImage;
+                        FileName        : CString from Standard;
+                        TexUpperBounds  : HArray1OfReal from TColStd )
+        returns Integer from Standard
+        is redefined static;
+    ---Purpose:
+
+    DestroyTexture ( me;
+                     TexId  : Integer from Standard )
+        is redefined static;
+    ---Purpose:
+
+    ModifyTexture ( me;
+                    TexId   : Integer from Standard;
+                    AValue  : CInitTexture from Graphic3d )
+        is redefined static;
+    ---Purpose:
+
+    -------------------------------
+    -- Category: Layer mode methods
+    -------------------------------
+
+    Layer ( me      : mutable;
+            ACLayer : in out CLayer2d from Aspect )
+        is redefined static;
+    ---Purpose: call_togl_layer2d
+
+    RemoveLayer ( me        : mutable;
+                  ACLayer   : CLayer2d from Aspect )
+        is redefined static;
+    ---Purpose: call_togl_removelayer2d
+
+    BeginLayer ( me         : mutable;
+                 ACLayer    : CLayer2d from Aspect )
+        is redefined static;
+    ---Purpose: call_togl_begin_layer2d
+
+    BeginPolygon2d ( me : mutable )
+        is redefined static;
+    ---Purpose: call_togl_begin_polygon2d
+
+    BeginPolyline2d ( me    : mutable )
+        is redefined static;
+    ---Purpose: call_togl_begin_polyline2d
+
+    ClearLayer ( me         : mutable;
+                 ACLayer    : CLayer2d from Aspect )
+        is redefined static;
+    ---Purpose: call_togl_clear_layer2d
+
+    Draw ( me   : mutable;
+           X    : ShortReal from Standard;
+           Y    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_draw2d
+
+    Edge ( me   : mutable;
+           X    : ShortReal from Standard;
+           Y    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_edge2d
+
+    EndLayer ( me       : mutable )
+        is redefined static;
+    ---Purpose: call_togl_end_layer2d
+
+    EndPolygon2d ( me   : mutable )
+        is redefined static;
+    ---Purpose: call_togl_end_polygon2d
+
+    EndPolyline2d ( me  : mutable )
+        is redefined static;
+    ---Purpose: call_togl_end_polyline2d
+
+    Move ( me   : mutable;
+           X    : ShortReal from Standard;
+           Y    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_move2d
+
+    Rectangle ( me          : mutable;
+                X, Y        : ShortReal from Standard;
+            Width, Height   : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_rectangle2d
+
+    SetColor ( me   : mutable;
+               R    : ShortReal from Standard;
+               G    : ShortReal from Standard;
+               B    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_color
+
+    SetTransparency ( me               : mutable;
+                      ATransparency    : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_transparency
+
+    UnsetTransparency ( me  : mutable )
+        is redefined static;
+    ---Purpose: call_togl_unset_transparency
+
+    SetLineAttributes ( me      : mutable;
+                        Type    : Integer from Standard;
+                        Width   : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_line_attributes
+
+    SetTextAttributes ( me          : mutable;
+                        FontName    : CString from Standard;
+                        Type        : Integer from Standard;
+                        R           : ShortReal from Standard;
+                        G           : ShortReal from Standard;
+                        B           : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_set_text_attributes
+
+
+    Text ( me   : mutable;
+           AText    : CString from Standard;
+           X, Y : ShortReal from Standard;
+           AHeight  : ShortReal from Standard )
+        is redefined static;
+    ---Purpose: call_togl_text2d
+
+    TextSize( me;
+              AText    : CString from Standard;
+              AHeight  : ShortReal from Standard;
+              AWidth   : in out ShortReal from Standard;
+              AnAscent : in out ShortReal from Standard;
+              ADescent : in out ShortReal from Standard )
+            is redefined static;
+    ---Purpose: call_togl_textsize2d
+
+         SetBackFacingModel ( me    : mutable;
+                              aView : CView from Graphic3d )
+                is redefined static;
+        ---Purpose: call_togl_backfacing
+
+      Print (me;
+             ACView          : CView from Graphic3d;
+             ACUnderLayer    : CLayer2d from Aspect;
+             ACOverLayer     : CLayer2d from Aspect;
+             hPrnDC          : Handle from Aspect;
+             showBackground  : Boolean;
+             filename        : CString)
+        is redefined static;
+      ---Level: Internal
+      ---Purpose: print the contents of all layers of the view to the printer.
+    -- <hPrnDC> : Pass the PrinterDeviceContext (HDC),
+    -- <showBackground> : When set to FALSE then print the view without background color
+    -- (background is white)
+      -- else set to TRUE for printing with current background color.
+    -- <filename>: If != NULL, then the view will be printed to a file.
+    ---Warning: Works only under Windows.
+
+
+        Export( me: mutable;
+                FileName         : CString from Standard;
+                Format           : ExportFormat from Graphic3d;
+                SortType         : SortType from Graphic3d;
+                W, H             : Integer from Standard;
+                View             : CView from Graphic3d;
+                Under, Over      : CLayer2d from Aspect;
+                Precision        : Real from Standard = 0.005;
+                ProgressBarFunc  : Address from Standard = NULL;
+                ProgressObject   : Address from Standard = NULL ) is redefined virtual;
+
+
+        SetDepthTestEnabled( me; view : CView from Graphic3d;
+                                 isEnabled : Boolean from Standard )
+    is redefined static;
+    ---Purpose: call_togl_depthtest()
+
+        IsDepthTestEnabled( me; view : CView from Graphic3d )
+        returns Boolean from Standard is redefined static;
+    ---Purpose: call_togl_isdepthtest()
+
+        ReadDepths( me; view : CView from Graphic3d;
+                        x, y : Integer;
+                width, height : Integer;
+                        buffer : Address )
+    is redefined static;
+    ---Purpose: Reads depths of shown pixels of the given
+    --          rectangle (glReadPixels with GL_DEPTH_COMPONENT)
+
+        FBOCreate( me            : mutable;
+                   view          : CView from Graphic3d;
+                   width, height : Integer from Standard )
+                  returns PtrFrameBuffer from Graphic3d
+    is redefined static;
+    ---Purpose: Generate offscreen FBO (needs OpenGL2+ hardware)
+    --          If not supported on hardware returns NULL.
+
+        FBORelease( me            : mutable;
+                    view          : CView from Graphic3d;
+                    fboPtr        : in out PtrFrameBuffer from Graphic3d )
+    is redefined static;
+    ---Purpose: Remove offscreen FBO
+
+        FBOGetDimensions( me                  : mutable;
+                          view                : CView from Graphic3d;
+                          fboPtr              : PtrFrameBuffer from Graphic3d;
+                          width, height       : out Integer from Standard;
+                          widthMax, heightMax : out Integer from Standard )
+    is redefined static;
+    ---Purpose: Read offscreen FBO configuration.
+
+        FBOChangeViewport( me                  : mutable;
+                           view                : CView from Graphic3d;
+                           fboPtr              : in out PtrFrameBuffer from Graphic3d;
+                           width, height       : Integer from Standard )
+    is redefined static;
+    ---Purpose: Change offscreen FBO viewport.
+
+        BufferDump( me            : mutable;
+                    view          : CView from Graphic3d;
+                    buffer        : in out CRawBufferData from Image )
+                   returns Boolean from Standard
+    is redefined static;
+    ---Purpose: Dump active rendering buffer into specified memory buffer.
+
+        SetGLLightEnabled( me; view : CView from Graphic3d;
+                               isEnabled : Boolean from Standard )
+    is redefined static;
+    ---Purpose: call_togl_gllight()
+
+        IsGLLightEnabled( me; view : CView from Graphic3d )
+        returns Boolean from Standard is redefined static;
+    ---Purpose: call_togl_isgllight()
+
+    --ListOfAvalableFontNames( me;
+    --           lst: out NListOfHAsciiString from Graphic3d )
+    --           returns Boolean from Standard
+    --           is redefined;
+    --  Purpose:  Initialize list of names of avalable system fonts
+    --            returns Standard_False if fails
+    --  ABD Integration support of system fonts (using FTGL and FreeType)
+
+end GraphicDriver from OpenGl;

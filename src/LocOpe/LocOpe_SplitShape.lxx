@@ -1,0 +1,38 @@
+// File:	LocOpe_SplitShape.lxx
+// Created:	Tue Jun 27 16:18:07 1995
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : LocOpe_SplitShape
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_SplitShape::LocOpe_SplitShape (): myDone(Standard_False)
+{}
+
+
+//=======================================================================
+//function : LocOpe_SplitShape
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_SplitShape::LocOpe_SplitShape(const TopoDS_Shape& S)
+{
+  Init(S);
+}
+
+
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& LocOpe_SplitShape::Shape() const
+{
+  return myShape;
+}
+
+

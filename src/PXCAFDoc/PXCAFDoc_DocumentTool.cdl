@@ -1,0 +1,15 @@
+-- File:	PXCAFDoc_DocumentTool.cdl
+-- Created:	Thu Aug 31 14:49:46 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class DocumentTool from PXCAFDoc inherits Attribute from PDF
+
+	---Purpose: 
+
+is
+    Create returns DocumentTool from PXCAFDoc;
+    
+end DocumentTool;

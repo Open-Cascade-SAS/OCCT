@@ -1,0 +1,33 @@
+-- File:	Graphic3d_Texture1Dmanual.cdl
+-- Created:	Mon Jul 28 10:39:21 1997
+-- Author:	Pierre CHALAMET
+--		<pct@sgi93>
+---Copyright:	 Matra Datavision 1997
+
+class  Texture1Dmanual  from  Graphic3d 
+
+inherits  Texture1D  from  Graphic3d  
+ 
+---Purpose: This class provides the implementation of
+-- a manual 1D texture.
+-- you MUST provides texture coordinates on
+-- your facets if you want to see your
+-- texture. 
+
+
+uses 
+    NameOfTexture1D  from  Graphic3d, 
+    StructureManager    from  Graphic3d
+
+is 
+    Create(SM  :  StructureManager  from  Graphic3d; 
+           FileName  :  CString  from  Standard)  returns  mutable  Texture1Dmanual  from  Graphic3d; 
+    ---Purpose: Creates a texture from the file FileName.
+
+
+    Create(SM  :  StructureManager  from  Graphic3d; 
+    	   NOT  :  NameOfTexture1D  from  Graphic3d)  returns  mutable  Texture1Dmanual  from  Graphic3d;
+    ---Purpose: Create a texture from a predefined texture name set.
+
+end  Texture1Dmanual; 
+

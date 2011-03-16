@@ -1,0 +1,46 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline Standard_Boolean IntAna_IntConicQuad::IsDone() const {
+  return(done);
+}
+
+
+inline Standard_Boolean IntAna_IntConicQuad::IsInQuadric() const {
+  if (!done) {StdFail_NotDone::Raise();}
+  return(inquadric);
+}
+
+
+inline Standard_Boolean IntAna_IntConicQuad::IsParallel() const {
+  if(!done) {StdFail_NotDone::Raise();}
+  return(parallel);
+}
+
+
+inline Standard_Integer IntAna_IntConicQuad::NbPoints() const {
+  if(!done) {StdFail_NotDone::Raise();}
+  if (parallel || inquadric) {Standard_DomainError::Raise();}
+  return(nbpts);
+}
+
+
+inline const gp_Pnt& IntAna_IntConicQuad::Point
+  (const Standard_Integer i) const {
+
+  if(!done) {StdFail_NotDone::Raise();}
+  if (parallel || inquadric) {Standard_DomainError::Raise();}
+  if((i>nbpts)||(i<=0)) {Standard_OutOfRange::Raise();}
+  return(pnts[i-1]);
+}
+
+
+inline Standard_Real IntAna_IntConicQuad::ParamOnConic
+  (const Standard_Integer i) const {  
+
+  if(!done) {StdFail_NotDone::Raise();}
+  if (parallel || inquadric) {Standard_DomainError::Raise();}
+  if((i>nbpts)||(i<=0)) {Standard_OutOfRange::Raise();}
+  return(paramonc[i-1]);
+}

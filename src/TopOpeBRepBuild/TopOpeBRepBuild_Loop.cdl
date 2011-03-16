@@ -1,0 +1,43 @@
+-- File:	TopOpeBRepBuild_Loop.cdl
+-- Created:	Tue Dec 19 19:44:23 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+
+class Loop from TopOpeBRepBuild inherits TShared from MMgt
+
+---Purpose: 
+-- a Loop is an existing shape (Shell,Wire) or a set
+-- of shapes (Faces,Edges) which are connex.
+-- a set of connex shape is represented by a BlockIterator
+
+uses
+
+    Shape from TopoDS,
+    BlockIterator from TopOpeBRepBuild,
+    ShapeEnum from TopAbs
+
+is
+
+    Create(S : Shape from TopoDS) returns mutable Loop;
+    Create(BI : BlockIterator) returns mutable Loop;
+	
+    IsShape(me) returns Boolean from Standard is virtual;
+
+    Shape(me) returns Shape from TopoDS is virtual;
+    ---C++: return const &
+    -- only when IsShape() is true
+    
+    BlockIterator(me) returns BlockIterator is static;
+    ---C++: return const &
+    -- only when IsShape() is false
+
+    Dump(me) is virtual;	
+
+fields
+
+    myIsShape       : Boolean from Standard is protected;
+    myShape         : Shape from TopoDS     is protected;
+    myBlockIterator : BlockIterator         is protected;
+
+end Loop from TopOpeBRepBuild;

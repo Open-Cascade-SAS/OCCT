@@ -1,0 +1,204 @@
+-- File:        PlotMgt.cdl
+-- Created:     25-NOV-98
+-- Author:      DCB
+-- Copyright:   Matra Datavision 1998
+
+package PlotMgt
+
+uses
+  Aspect,
+  MFT,
+  Quantity,
+  TCollection,
+  TColStd,
+  TShort,
+  OSD,
+  MMgt
+
+is
+  ------------------------------
+  -- Category: Pointers
+  ------------------------------
+  pointer PlotterDriverPtr to PlotterDriver from PlotMgt;
+
+  ------------------------------
+  -- Category: Exceptions
+  ------------------------------
+  exception PlotterDefinitionError inherits OutOfRange from Standard;
+  ---Category: The exceptions
+
+  exception PlotterAccessError     inherits OutOfRange from Standard;
+  ---Category: The exceptions
+             
+  --------------------
+  -- Category: Classes
+  --------------------
+  class ImageDriver;
+  ---Purpose:
+
+  class PlotterParameter;
+  ---Purpose: Defines any plotter parameter and determines its behavior.
+  ---Category: Classes
+
+  class Plotter;
+  ---Purpose: Defines a Plotter (sequence of plotter parameters and some
+  --          methods to operate with). This class must be used to access
+  --          plotter parameters.
+  ---Category: Classes
+
+  deferred class PlotterDriver;
+  ---Purpose:
+  
+  private class TextManager;
+  ---Purpose:
+
+  -------------------------
+  -- Category: Enumerations
+  -------------------------
+
+  enumeration TypeOfOrigin is
+    TOO_CENTER,
+    TOO_BOTTOMLEFT,
+    TOO_BOTTOMRIGHT,
+    TOO_TOPLEFT,
+    TOO_TOPRIGHT
+  end;
+
+  enumeration TypeOfQuality is
+    TOQ_DRAFT,
+    TOQ_NORMAL,
+    TOQ_HIGH,
+    TOQ_BEST
+  end;
+
+  enumeration ImageFormat is
+    IF_DISABLE,
+    IF_ENABLE,
+    IF_XWD,
+    IF_BMP,
+    IF_GIF
+  end;
+
+  enumeration TypeOfPlotterParameter is
+    TOPP_Undefined,
+    TOPP_Boolean,
+    TOPP_Integer,
+    TOPP_Real,
+    TOPP_String,
+    TOPP_ListString
+  end;
+
+  enumeration PlottingType is
+    PT_RASTER,
+    PT_PENEMULATOR
+  end;
+
+  enumeration PaperFormat is
+    PF_USERDEFINED,  -- (00.00 x 00.00)
+    PF_A0,           -- (84.10 x 118.9)
+    PF_A1,           -- (59.40 x 84.10)
+    PF_A2,           -- (42.00 x 59.40)
+    PF_A3,           -- (29.70 x 42.00)
+    PF_A4,           -- (21.00 x 29.70)
+    PF_A5,           -- (14.80 x 21.00)
+    PF_LETTER,       -- (21.59 x 27.94)
+    PF_LEGAL,        -- (21.59 x 35.56)
+    PF_STATEMENT,    -- (13.97 x 21.59)
+    PF_EXCLUSIVE,    -- (18.41 x 26.67)
+    PF_FOLIO,        -- (21.59 x 33.02)
+    PF_QUARTO,       -- (21.50 x 27.50)
+    PF_ENVELOPE,     -- (11.00 x 23.00)
+    PF_MONARCH       -- (09.84 x 19.04)
+  end;
+
+  ---------------------------------
+  -- Category: Instantiated classes
+  ---------------------------------
+  private class ListOfPlotterParameter instantiates
+    Sequence from TCollection (PlotterParameter from PlotMgt);
+
+  private class HListOfPlotterParameter instantiates
+    HSequence from TCollection (PlotterParameter from PlotMgt,
+                                ListOfPlotterParameter from PlotMgt);
+
+  class ListOfMFTFonts instantiates
+    Array1 from TCollection (FontManager from MFT);
+
+  class HListOfMFTFonts instantiates
+    HArray1 from TCollection (FontManager from MFT, ListOfMFTFonts);
+
+  ---------------------------------
+  -- Category: Package methods
+  ---------------------------------
+  DeviceList
+  returns HSequenceOfAsciiString from TColStd;
+  ---Purpose:
+
+  TypeFromString (
+    aTypeString : in out AsciiString from TCollection
+  ) returns TypeOfPlotterParameter from PlotMgt;
+  ---Purpose:
+
+  StringFromType (
+    aType : TypeOfPlotterParameter from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  OriginFromString (
+    anOriginString : in out AsciiString from TCollection
+  ) returns TypeOfOrigin from PlotMgt;
+  ---Purpose:
+
+  StringFromOrigin (
+    anOrigin : TypeOfOrigin from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  QualityFromString (
+    aQualityString : in out AsciiString from TCollection
+  ) returns TypeOfQuality from PlotMgt;
+  ---Purpose:
+
+  StringFromQuality (
+    aQuality : TypeOfQuality from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  ImageFormatFromString (
+    anImageFormatString : in out AsciiString from TCollection
+  ) returns ImageFormat from PlotMgt;
+  ---Purpose:
+
+  StringFromImageFormat (
+    anImageFormat : ImageFormat from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  PlottingTypeFromString (
+    aPlottingTypeString : in out AsciiString from TCollection
+  ) returns PlottingType from PlotMgt;
+  ---Purpose:
+
+  StringFromPlottingType (
+    aPlottingType : PlottingType from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  PaperFormatFromString (
+    aPaperFormatString : in out AsciiString from TCollection
+  ) returns PaperFormat from PlotMgt;
+  ---Purpose:
+
+  StringFromPaperFormat (
+    aPaperFormat : PaperFormat from PlotMgt
+  ) returns AsciiString from TCollection;
+  ---Purpose:
+
+  PaperSize (
+    aFormat : in out AsciiString from TCollection;
+    aWidth  :    out Real from Standard;
+    aLength :    out Real from Standard
+  );
+  ---Purpose:
+
+end PlotMgt;

@@ -1,0 +1,39 @@
+-- File:	Dynamic_AbstractVariableInstance.cdl
+-- Created:	Mon Sep  5 15:02:15 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+deferred class AbstractVariableInstance from Dynamic
+
+	---Purpose: This class is the header class to define instances
+	--          of variables.  There  are two kinds  of instances,
+	--          These  are VariableInstance  which  addresses only
+	--          one Variable and CompositVariableInstance which is
+	--          able to address  more than one variable. This last
+	--          class is useful for methods with a variable number
+	--          of arguments.
+
+inherits
+
+    Variable from Dynamic
+   
+
+is
+
+    Initialize;
+    
+    Variable(me : mutable ; avariable : Variable from Dynamic)
+    
+    ---Level: Public
+    
+    ---Purpose: This  deferred method must     be implemented in   the
+    --          derived    classes for  setting    reference(s) to the
+    --          corresponding variable(s)  which define the  signature
+    --          of the method definition.
+    
+    is deferred;
+ 
+    
+end AbstractVariableInstance;

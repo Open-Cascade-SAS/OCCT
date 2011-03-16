@@ -1,0 +1,120 @@
+-- File:        WNT_TextManager.cdl
+-- Created:     Feb 1998
+-- Author:      CHABROVSKY Dmitry
+---Copyright:   Matra Datavision 1998
+
+class TextManager from WNT inherits TextManager from MFT 
+
+uses
+	Length          from Quantity,
+	PlaneAngle      from Quantity,
+	TypeOfText	from Aspect
+
+is
+  -------------------------
+  -- Category: Constructors
+  -------------------------
+  Create (aPixelToUnit: Real from Standard)
+	returns mutable TextManager from WNT;
+
+  -------------------------
+  -- Category: Draw methods
+  -------------------------
+  BeginString  (me: mutable;
+                X,Y: Length from Quantity;
+                anOrientation: PlaneAngle from Quantity;
+                aWidth,aHeight: Length from Quantity;
+                aSlant: PlaneAngle from Quantity;
+                aPaintType: Integer from Standard)
+  is redefined;
+  ---Purpose: Calls when string drawing is started.
+  --          with a string aspect <aPaintType> :
+  --            0 for filled string
+  --            1 for stroke string
+  --            2 for outline string
+  --          The origine of the string <X>,<Y>,
+  --          The orientation of the string <anOrientation>,
+  --          The medium size of the char <aWidth,aHeight>,
+  --          The Slant of the char <aSlant>,
+
+  BeginChar  (me: mutable;
+              aCharCode: Integer from Standard;
+              X,Y: Length from Quantity)
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls when a char drawing is started
+  --          and give the current string position for this char.
+  --          and give the relative char position from the beginning
+  --          of the string.
+  --          The application can returns FALSE for skipping the char drawing.
+
+  SetCharBoundingBox (me: mutable;
+                      X1,Y1,X2,Y2,X3,Y3,X4,Y4: Length from Quantity) 
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls to defines the current char bounding-box. 
+  --	    The application can returns FALSE for ending the char drawing.
+
+  SetCharEncoding (me: mutable;
+                   anEncoding: CString from Standard)
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls to defines the current char encoding.
+  --  Warning: The application can returns FALSE for skipping the char drawing.
+
+  Moveto (me: mutable; X,Y: Length from Quantity) 
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls to sets the current string position. 
+  --	    The application can returns FALSE for ending the char drawing.
+
+  Lineto (me: mutable; X,Y: Length from Quantity) 
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls to drawn to the current string position. 
+  --	    The application can returns FALSE for ending the char drawing.
+
+  Curveto (me: mutable; X1,Y1,X2,Y2,X3,Y3,X4,Y4: Length from Quantity)
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls to drawn to the current string position.
+  --          The application can drawn the curve defined by
+  --          his descriptor P1,P2,P3,P4 or
+  --          returns FALSE to let the interpretor compute the curve
+  --          vectors.
+
+  ClosePath (me: mutable)
+  is redefined;
+  ---Purpose: Calls when a char path drawing is ended 
+
+  EndChar (me: mutable; X,Y: Length from Quantity)
+  returns Boolean from Standard is redefined;
+  ---Purpose: Calls when a char drawing is ended
+  --          and give the relative char ending position from the
+  --          beginning of the string.
+  --          The application can returns FALSE for skipping the string
+  --          drawing.
+
+  EndString (me: mutable)
+  is redefined;
+  ---Purpose: Calls when string drawing is ended (Normally the last call).
+
+  SetDrawAttribs (me: mutable; aDrawData: Address from Standard);
+  ---Purpose: Called when starting to draw the string
+
+  -------------------------
+  -- Category: Private methods
+  -------------------------
+  SetTextAttribs (me: mutable ;
+                  aTextColor: Integer from Standard;
+                  aTypeOfText: TypeOfText from Aspect;
+                  anUnderlinePosition: Length from Quantity = 0.0);
+    ---Purpose: Sets the current attribs of the text.
+
+fields
+  myPixelToUnit:      Real    from Standard;
+  myDevContext:       Integer from Standard;
+  myWin95:            Boolean from Standard;
+  myDevWidth:         Integer from Standard;
+  myDevHeight:        Integer from Standard;
+  myUWidth:           Integer from Standard;
+  myMonoBuf:          Integer from Standard;
+
+friends
+	class WDriver from WNT
+
+end TextManager from WNT;

@@ -1,0 +1,44 @@
+-- File:	BOP_CorrectTolerances.cdl
+-- Created:	Tue Apr 17 12:09:02 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class CorrectTolerances from BOP 
+
+    	---Purpose: 
+	---  The  Set  of  static functions to provide valid values of  
+    	---  tolerances for shapes.     
+    	---  Tolerances becomes valid in  terms of the checkshape.    
+
+uses
+    Shape  from  TopoDS 
+    
+is 
+    CorrectTolerances      (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001);  
+    	---Purpose:	 
+    	--- Provides valid values of tolerances for the shape <aS>         
+    	--- <aTolMax> is max value of the tolerance that can be 
+    	--- accepted for correction.  If real value of the tolerance 
+    	--- will be greater than  <aTolMax>, the correction does not 
+    	--- perform. 
+    	---
+    CorrectCurveOnSurface  (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001); 
+    	---Purpose:	 
+    	--- Provides valid values of tolerances for the shape <aS> 
+    	--- in  terms of BRepCheck_InvalidCurveOnSurface.   
+    	---
+    CorrectPointOnCurve    (myclass;  
+    	    	    	    aS: Shape  from  TopoDS; 
+    	    	    	    aTolMax: Real from Standard =0.0001);  		    
+    	---Purpose:	 
+    	--- Provides valid values of tolerances for the shape <aS> 
+    	--- in  terms of BRepCheck_InvalidPointOnCurve.   
+    	---
+
+end CorrectTolerances;

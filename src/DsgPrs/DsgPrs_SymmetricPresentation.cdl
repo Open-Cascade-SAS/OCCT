@@ -1,0 +1,71 @@
+-- File:	DsgPrs_SymmetricPresentation.cdl
+-- Created:	Wed Jan 22 18:43:39 1997
+-- Author:	Prestataire Michael ALEONARD
+--		<mal@matrox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class SymmetricPresentation from DsgPrs
+    	---Purpose: A framework to define display of symmetry between shapes.
+uses
+    Presentation from Prs3d,
+    Pnt  from gp,
+    Dir  from gp,
+    Lin  from gp,
+    Circ from gp,
+    Drawer from Prs3d,
+    ExtendedString from TCollection
+    	
+is  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+	       	  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp;
+		  aDirection1: Dir from gp;  
+		  aAxis: Lin from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Adds the points OffsetPoint, AttachmentPoint1,
+    	-- AttachmentPoint2, the direction aDirection1 and the
+    	-- axis anAxis to the presentation object aPresentation.
+    	-- The display attributes of the symmetry are defined by
+    	-- the attribute manager aDrawer.
+    	-- This syntax is used for display of symmetries between two segments.
+		  
+     
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+	       	  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp; 
+		  aCircle1: Circ from gp;
+		  aAxis: Lin from gp;
+		  OffsetPoint: Pnt from gp);
+	---Purpose: Adds the points OffsetPoint, AttachmentPoint1,
+    	-- AttachmentPoint2, the direction aDirection1 the circle
+    	-- aCircle1 and the axis anAxis to the presentation
+    	-- object aPresentation.
+    	-- The display attributes of the symmetry are defined by
+    	-- the attribute manager aDrawer.
+    	-- This syntax is used for display of symmetries between two arcs.
+	  
+    Add( myclass; aPresentation: Presentation from Prs3d;
+    	    	  aDrawer: Drawer from Prs3d;
+	       	  AttachmentPoint1: Pnt from gp;
+		  AttachmentPoint2: Pnt from gp; 
+	          aAxis: Lin from gp;
+	          OffsetPoint: Pnt from gp);
+	---Purpose: Adds the points OffsetPoint, AttachmentPoint1,
+    	-- AttachmentPoint2 and the axis anAxis to the
+    	-- presentation object aPresentation.
+    	-- The display attributes of the symmetry are defined by
+    	-- the attribute manager aDrawer.
+    	-- This syntax is used for display of symmetries between two vertices.
+		  
+end SymmetricPresentation;
+
+
+
+
+
+
+
+
+

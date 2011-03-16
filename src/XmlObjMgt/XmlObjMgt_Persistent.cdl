@@ -1,0 +1,55 @@
+-- File:        XmlObjMgt_Persistent.cdl
+-- Created:     Tue Jul 17 12:30:46 2001
+-- Author:      Julia DOROVSKIKH <jfa@hotdox.nnov.matra-dtv.fr>
+---Copyright:   Matra Datavision 2001
+
+class Persistent from XmlObjMgt
+
+uses
+    Element from XmlObjMgt,
+    DOMString from XmlObjMgt
+
+is
+    Create      returns Persistent from XmlObjMgt;
+      ---Purpose: empty constructor
+
+    Create (theElement : Element from XmlObjMgt)
+                returns Persistent from XmlObjMgt;
+      ---Purpose: constructor
+
+    Create (theElement : Element from XmlObjMgt;
+            theRef     : DOMString from XmlObjMgt)
+                returns Persistent from XmlObjMgt;
+      ---Purpose: constructor from sub-element of Element referenced by theRef
+
+    CreateElement (me:in out; theParent: out Element   from XmlObjMgt;
+                              theType:       DOMString from XmlObjMgt;
+                              theID:         Integer   from Standard);
+      ---Purpose: myElement := <theType id="theID"/>
+
+    SetId (me:in out; theId: Integer from Standard)
+    is static;
+      ---Level: Internal
+
+    Element (me) returns Element from XmlObjMgt;
+      ---C++: inline
+      ---C++: return const &
+      ---C++: alias "inline operator const XmlObjMgt_Element&() const;"
+      ---Purpose: return myElement
+
+    Element (me:in out) returns Element from XmlObjMgt;
+      ---C++: inline
+      ---C++: return &
+      ---C++: alias "inline operator XmlObjMgt_Element&();"
+      ---Purpose: return myElement
+
+    Id(me) returns Integer from Standard
+    is static;
+      ---C++: inline
+      ---Level: Internal
+
+fields
+    myElement: Element from XmlObjMgt;
+    myID     : Integer from Standard;
+
+end Persistent;

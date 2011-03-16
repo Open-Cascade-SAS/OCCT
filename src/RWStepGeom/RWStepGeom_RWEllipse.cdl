@@ -1,0 +1,33 @@
+-- File:        Ellipse.cdl
+-- Created:     Mon Dec  4 12:02:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWEllipse from RWStepGeom
+
+	---Purpose : Read & Write Module for Ellipse
+	--           Check added by CKY , 7-OCT-1996
+
+uses Check from Interface, ShareTool from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     Ellipse from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWEllipse;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable Ellipse from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : Ellipse from StepGeom);
+
+	Share(me; ent : Ellipse from StepGeom; iter : in out EntityIterator);
+
+	Check(me; ent : Ellipse from StepGeom; shares : ShareTool; ach : in out Check);
+
+end RWEllipse;

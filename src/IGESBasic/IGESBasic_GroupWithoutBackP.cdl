@@ -1,0 +1,40 @@
+--
+-- File      :  GroupWithoutBackP.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class GroupWithoutBackP from IGESBasic  inherits Group
+
+        ---Purpose: defines GroupWithoutBackP, Type <402> Form <7>
+        --          in package IGESBasic
+        --          this class defines a Group without back pointers
+        --          
+        --          It inherits from Group
+
+uses
+
+        Transient        ,
+        HArray1OfIGESEntity from IGESData
+
+raises OutOfRange
+
+is
+
+        Create returns mutable GroupWithoutBackP;
+
+        -- Specific Methods pertaining to the class : see Group
+
+--
+-- Class    : IGESBasic_GroupWithoutBackP
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class GroupWithoutBackP.
+--
+-- Reminder : A GroupWithoutBackP instance is defined by :
+--            - an array of Entities
+--            See Group
+
+end GroupWithoutBackP;

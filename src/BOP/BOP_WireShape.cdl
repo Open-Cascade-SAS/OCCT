@@ -1,0 +1,48 @@
+-- File:	BOP_WireShape.cdl
+-- Created:	Mon Feb  4 11:57:17 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class WireShape from BOP inherits Builder from BOP
+
+	---Purpose: 
+    	--  The Root class to perform a Boolean Operations (BO)       
+	--  Common,Cut,Fuse  between arguments when one of them is  
+    	--  a wire          
+
+uses
+--    Wire   from TopoDS, 
+    ListOfShape from TopTools
+
+is 
+    Create   
+    	returns  WireShape from BOP; 
+    	---Purpose:  
+    	--- Empty constructor;
+    	---
+
+    ---------------------------------------------- 
+    --     
+    --         W E S  C O M P O N E N T S  
+    --     
+    --            (for internal usage)    
+    --     
+    --      
+    AddSplitPartsINOUT(me:out);   
+
+    AddSplitPartsON(me:out);  
+
+    MakeResult(me:out);   
+    	---Purpose:   
+    	--- Constructs the result of the BO 
+    	---
+     
+    		    
+fields 
+
+    myLS        : ListOfShape from TopTools   
+    	is protected;  
+
+end WireShape;

@@ -1,0 +1,111 @@
+// File:	IntCurveSurface_QuadricCurveExactInter.cdl
+// Created:	Wed Aug 18 18:50:09 1993
+// Author:	Laurent BUCHARD
+//		<lbr@nonox>
+//-Copyright:	 Matra Datavision 1993
+
+//  Modified by skv - Wed Jun 16 17:36:47 2004 OCC6001
+
+#include <TColStd_SequenceOfReal.hxx>
+#include <math_FunctionAllRoots.hxx>
+#include <math_FunctionSample.hxx>
+#include <IntSurf_Quadric.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+
+
+#define EPSX    0.00000000000001
+#define EPSDIST 0.00000001
+#define EPSNUL  0.00000001
+
+//================================================================================
+IntCurveSurface_QuadricCurveExactInter::IntCurveSurface_QuadricCurveExactInter(const TheSurface& S,
+									       const TheCurve&   C)
+     : nbpnts(-1),nbintv(-1)  
+{ 
+  GeomAbs_SurfaceType QuadricType = TheSurfaceTool::GetType(S);
+  IntSurf_Quadric Quadric;
+  switch(QuadricType) { 
+  case GeomAbs_Plane:     { Quadric.SetValue(TheSurfaceTool::Plane(S));     break; }  
+  case GeomAbs_Cylinder:  { Quadric.SetValue(TheSurfaceTool::Cylinder(S));  break; }  
+  case GeomAbs_Cone:      { Quadric.SetValue(TheSurfaceTool::Cone(S));      break; }  
+  case GeomAbs_Sphere:    { Quadric.SetValue(TheSurfaceTool::Sphere(S));    break; }  
+  default:  {  
+    //cout<<" Probleme Sur le Type de Surface dans IntCurveSurface_Inter::InternalPerform "<<endl; 
+    break;  
+  }
+  }
+
+  //  Modified by skv - Wed Jun 16 17:36:47 2004 OCC6001 Begin
+  Standard_Integer     nbIntervals = TheCurveTool::NbIntervals(C, GeomAbs_C1);
+  TColStd_Array1OfReal anIntervals(1, nbIntervals + 1);
+  Standard_Integer     ii;
+
+  TheCurveTool::Intervals(C, anIntervals, GeomAbs_C1);
+
+  for (ii = 1; ii <= nbIntervals; ii++) {
+    Standard_Real U1 = anIntervals.Value(ii);
+    Standard_Real U2 = anIntervals.Value(ii + 1);
+  
+    math_FunctionSample Sample(U1,U2,TheCurveTool::NbSamples(C,U1,U2));
+    IntCurveSurface_TheQuadCurvFunc Function(Quadric,C);
+    math_FunctionAllRoots Roots(Function,Sample,EPSX,EPSDIST,EPSNUL);
+
+    if(Roots.IsDone()) { 
+      Standard_Integer nbp = Roots.NbPoints(); 
+      Standard_Integer nbi = Roots.NbIntervals(); 
+      Standard_Integer i;
+      for( i = 1; i<=nbp; i++) { 
+	pnts.Append(Roots.GetPoint(i));
+	//-- cout<<" QuadricCurveExactInter : Roots("<<i<<") = "<<Roots.GetPoint(i)<<endl;  
+      }
+
+      Standard_Real a,b;
+      for(i = 1; i<=nbi; i++) {
+	Roots.GetInterval(i,a,b); 
+	//cout<<" QuadricCurveExactInter : RootsSeg("<<i<<") = "<<a<<" , "<<b<<endl;
+	intv.Append(a);
+	intv.Append(b);
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (ii > nbIntervals) {
+    nbpnts = pnts.Length();
+    nbintv = intv.Length()/2;
+  }
+//  Modified by skv - Wed Jun 16 17:36:47 2004 OCC6001 End
+}
+//================================================================================
+Standard_Boolean IntCurveSurface_QuadricCurveExactInter::IsDone() const { 
+  return(nbpnts!=-1); 
+}
+//================================================================================
+Standard_Integer IntCurveSurface_QuadricCurveExactInter::NbRoots() const { 
+  return(nbpnts); 
+}
+//================================================================================
+Standard_Integer IntCurveSurface_QuadricCurveExactInter::NbIntervals() const { 
+  return(nbintv); 
+}
+//================================================================================
+Standard_Real IntCurveSurface_QuadricCurveExactInter::Root(const Standard_Integer Index) const { 
+  return(pnts(Index)); 
+}
+//================================================================================
+void IntCurveSurface_QuadricCurveExactInter::Intervals(const Standard_Integer Index,
+						       Standard_Real& a,
+						       Standard_Real& b) const 
+{ 
+  Standard_Integer Index2 = Index+Index-1;
+  a = intv(Index2); 
+  b = intv(Index2+1); 
+}
+
+
+
+
+
+
+

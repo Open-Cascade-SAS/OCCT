@@ -1,0 +1,30 @@
+// File:	BRepTools_Modifier.lxx
+// Created:	Thu Aug 25 15:37:21 1994
+// Author:	Jacques GOUSSARD
+//		<jag@ecolox>
+
+
+#include <Standard_NoSuchObject.hxx>
+
+//=======================================================================
+//function : ModifiedShape
+//purpose  : 
+//=======================================================================
+
+inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape
+  (const TopoDS_Shape& S) const
+{
+  if (!myMap.IsBound(S)) { Standard_NoSuchObject::Raise();}
+  return myMap(S);
+}
+
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean BRepTools_Modifier::IsDone () const
+{
+  return myDone;
+}
+

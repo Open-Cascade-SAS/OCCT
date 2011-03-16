@@ -1,0 +1,158 @@
+//-Copyright:	 Matra Datavision 1992
+//-Version: 
+
+//-History:
+//  Version	Date         Purpose
+//              14/12/92     Creation   
+
+//-Language     C++2.0
+
+//=======================================================================
+// Function : PCollection_IndexedDataMapNode
+// Purpose  : 
+//=======================================================================
+
+PCollection_IndexedDataMapNode::PCollection_IndexedDataMapNode
+  (
+   const Key& aKey,
+   const Standard_Integer Index,
+   const Item& anItem,
+   const Handle(PCollection_IndexedDataMapNode)& NextKey,
+   const Handle(PCollection_IndexedDataMapNode)& NextIndex) :
+
+  myKey(aKey), myIndex(Index), myItem(anItem), 
+  myNextKey(NextKey), myNextIndex(NextIndex)
+{
+}
+
+//=======================================================================
+// Function : Set
+// Purpose  : 
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::Set
+  (
+   const Key& aKey,
+   const Standard_Integer Index,
+   const Item& anItem,
+   const Handle(PCollection_IndexedDataMapNode)& NextK,
+   const Handle(PCollection_IndexedDataMapNode)& NextI)
+
+{
+  myKey       = aKey;
+  myIndex     = Index;
+  myItem      = anItem;
+  myNextKey   = NextK;
+  myNextIndex = NextI;
+}
+
+//=======================================================================
+// Function : GetKey
+// Purpose  : 
+//=======================================================================
+
+Key PCollection_IndexedDataMapNode::GetKey() const
+{
+  return myKey;
+}
+
+
+//=======================================================================
+// Function : Index
+// Purpose  : 
+//=======================================================================
+
+Standard_Integer PCollection_IndexedDataMapNode::Index() const
+{
+  return myIndex;
+}
+
+
+//=======================================================================
+// Function : GetItem
+// Purpose  : 
+//=======================================================================
+
+Item PCollection_IndexedDataMapNode::GetItem() const
+{
+  return myItem;
+}
+
+//=======================================================================
+// Function : KeyAndItem
+// Purpose  : get two fields
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::KeyAndItem(Key& theKey, Item& theItem) const
+{
+  theKey     = myKey;
+  theItem    = myItem;
+}
+
+//=======================================================================
+// Function : IndexAndItem
+// Purpose  : get two fields
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::IndexAndItem(Standard_Integer& Index, 
+						Item& theItem) const
+{
+  Index    = myIndex;
+  theItem  = myItem;
+}
+
+
+//=======================================================================
+// Function : NextKey
+// Purpose  : 
+//=======================================================================
+
+Handle(PCollection_IndexedDataMapNode) 
+     PCollection_IndexedDataMapNode::NextKey() const
+{
+  return myNextKey;
+}
+
+//=======================================================================
+// Function : NextIndex
+// Purpose  : 
+//=======================================================================
+
+Handle(PCollection_IndexedDataMapNode) 
+     PCollection_IndexedDataMapNode::NextIndex() const
+{
+  return myNextIndex;
+}
+
+//=======================================================================
+// Function : SetItem
+// Purpose  : 
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::SetItem(const Item& anItem)
+{
+  myItem = anItem;
+}
+
+//=======================================================================
+// Function : SetNextKey
+// Purpose  : 
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::
+  SetNextKey(const Handle(PCollection_IndexedDataMapNode)& aNode)
+{
+  myNextKey = aNode;
+}
+
+//=======================================================================
+// Function : SetNextIndex
+// Purpose  : 
+//=======================================================================
+
+void PCollection_IndexedDataMapNode::
+  SetNextIndex(const Handle(PCollection_IndexedDataMapNode)& aNode)
+{
+  myNextIndex = aNode;
+}
+

@@ -1,0 +1,128 @@
+-- File:	Householder.cdl
+-- Created:	Wed Aug  7 10:24:48 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class Householder from math
+
+    	---Purpose: This class implements the least square solution of a set of
+    	--          linear equations of m unknowns (n >= m) using the Householder
+    	--          method. It solves A.X = B.
+    	--          This algorithm has more numerical stability than 
+    	--          GaussLeastSquare but is longer.
+    	--          It must be used if the matrix is singular or nearly singular.
+    	--          It is about 16% longer than GaussLeastSquare if there is only
+    	--          one member B to solve.
+    	--          It is about 30% longer if there are twenty B members to solve.
+
+uses Matrix from math,
+     Vector from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       OutOfRange from Standard,
+       DimensionError from Standard,
+       ConstructionError from Standard
+
+is
+
+    Create(A, B: Matrix; EPS: Real = 1.0e-20)
+    	---Purpose: Given an input matrix A with n>= m, given an input matrix B
+    	--          this constructor performs the least square resolution of 
+    	--          the set of linear equations A.X = B for each column of B.
+    	--          If a column norm is less than EPS, the resolution can't 
+    	--          be done.
+    	--          Exception DimensionError is raised if the row number of B
+    	--          is different from the A row number.
+
+    returns Householder
+    raises DimensionError;
+
+    Create(A, B: Matrix; lowerArow, upperArow, lowerAcol, upperAcol: Integer;
+           EPS: Real = 1.0e-20)
+    	---Purpose: Given an input matrix A with n>= m, given an input matrix B
+    	--          this constructor performs the least square resolution of 
+    	--          the set of linear equations A.X = B for each column of B.
+    	--          If a column norm is less than EPS, the resolution can't 
+    	--          be done.
+    	--          Exception DimensionError is raised if the row number of B
+    	--          is different from the A row number.
+
+    returns Householder
+    raises DimensionError;
+
+
+    Create(A: Matrix; B: Vector; EPS: Real = 1.0e-20)
+    	---Purpose: Given an input matrix A with n>= m, given an input vector B
+    	--          this constructor performs the least square resolution of 
+    	--          the set of linear equations A.X = B.
+    	--          If a column norm is less than EPS, the resolution can't 
+    	--          be done.
+    	--          Exception DimensionError is raised if the length of B
+    	--          is different from the A row number.
+
+    returns Householder
+    raises DimensionError;
+
+
+    Perform(me: in out; A, B: Matrix; EPS: Real) 
+    	---Purpose: This method is used internally for each constructor 
+    	--          above and can't be used directly. 
+
+    is static protected;
+
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+    
+    
+    Value(me; sol : out Vector; Index: Integer = 1)
+    	---Purpose: Given the integer Index, this routine returns the 
+    	--          corresponding least square solution sol.
+    	--          Exception NotDone is raised if the resolution has not be 
+    	--          done.
+    	--          Exception OutOfRange is raised if Index <=0 or 
+    	--          Index is more than the number of columns of B.
+    	---C++: inline
+
+    raises NotDone, OutOfRange
+    is static;
+
+
+    AllValues(me)
+    	---Purpose: Returns the matrix sol of all the solutions of the system 
+    	--          A.X = B.
+    	--          Exception NotDone is raised is the resolution has not be 
+    	--          done.
+    	---C++: inline
+    	---C++: return const&
+
+    returns Matrix	    
+    raises NotDone, ConstructionError
+    is static;
+    
+
+    
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints informations on the current state of the object.
+
+    is static;
+
+
+fields
+
+Sol:         Matrix;
+Q:           Matrix;
+Done:        Boolean;
+mylowerArow: Integer;
+myupperArow: Integer;
+mylowerAcol: Integer;
+myupperAcol: Integer;
+
+end Householder;

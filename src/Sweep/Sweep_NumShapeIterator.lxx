@@ -1,0 +1,41 @@
+// File:	Sweep_NumShapeIterator.lxx
+// Created:	Fri Jun  4 15:24:04 1993
+// Author:	Laurent BOURESCHE
+//		<lbo@phylox>
+
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean  Sweep_NumShapeIterator::More()const 
+{
+  return myMore;
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+inline const Sweep_NumShape&  Sweep_NumShapeIterator::Value()const 
+{
+  return myCurrentNumShape;
+}
+
+
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+
+inline TopAbs_Orientation  Sweep_NumShapeIterator::Orientation()const 
+{
+  return myCurrentOrientation;
+}
+
+
+
+

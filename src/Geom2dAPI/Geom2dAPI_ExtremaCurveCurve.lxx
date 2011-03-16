@@ -1,0 +1,16 @@
+// File:	Geom2dAPI_ExtremaCurveCurve.lxx
+// Created:	Wed Mar 23 15:27:51 1994
+// Author:	Bruno DUMORTIER
+//		<dub@fuegox>
+
+
+//=======================================================================
+//function : Extrema
+//purpose  : 
+//=======================================================================
+
+inline const Extrema_ExtCC2d& Geom2dAPI_ExtremaCurveCurve::Extrema() const
+{
+  return myExtCC;
+}
+

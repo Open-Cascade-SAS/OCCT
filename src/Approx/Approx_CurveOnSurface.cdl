@@ -1,0 +1,70 @@
+-- File:	Approx_CurveOnSurface.cdl
+-- Created:	Tue Sep 30 12:28:05 1997
+-- Author:	Roman BORISOV
+--		<rbv@orthodox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class CurveOnSurface from Approx 
+
+	---Purpose: 
+    ---Purpose: Approximation of   curve on surface
+
+uses     
+         Surface         from   Geom,
+         HCurve2d          from   Adaptor2d, 
+	 HSurface    from  Adaptor3d, 
+         BSplineCurve    from   Geom,
+         BSplineCurve    from   Geom2d,  
+	 Shape  from  GeomAbs   
+	  
+raises  OutOfRange        from Standard,
+        ConstructionError from Standard
+
+is  
+
+Create (C2D  :  HCurve2d    from  Adaptor2d;
+	  Surf :  HSurface  from  Adaptor3d; 
+	     First, 
+	     Last, 		      
+             Tol  :  Real; 
+	     Continuity  :  Shape  from  GeomAbs; 
+             MaxDegree  :  Integer  ; 
+             MaxSegments  :  Integer; 
+    	     Only3d, 
+    	     Only2d : Boolean  from  Standard  =  Standard_False)   
+    returns  CurveOnSurface   from  Approx  
+    raises ConstructionError; 
+
+
+    IsDone(me) returns Boolean from Standard;
+    
+    HasResult(me) returns  Boolean from Standard;
+   
+    Curve3d(me) 
+    returns  BSplineCurve  from  Geom; 
+     
+    MaxError3d(me) returns  Real; 
+    
+    Curve2d(me)   
+   
+    ---Purpose: 
+    returns  BSplineCurve  from  Geom2d; 
+     
+    MaxError2dU(me)  returns  Real; 
+    MaxError2dV(me) returns Real;
+    
+    ---Purpose : returns the maximum errors relativly to the  U component or the V component of the  
+    --                 2d Curve
+    
+fields   
+
+    myCurve2d    : BSplineCurve  from  Geom2d; 
+    myCurve3d    : BSplineCurve  from  Geom; 
+    myIsDone     : Boolean       from  Standard;   
+    myHasResult  : Boolean       from  Standard;
+    myError3d    : Real          from  Standard; 
+    myError2dU   : Real          from  Standard; 
+    myError2dV   : Real          from  Standard;  
+     
+end CurveOnSurface;

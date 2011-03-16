@@ -1,0 +1,53 @@
+-- File     : MeshVS_Tool.cdl
+-- Created  : 17 December 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+class Tool from MeshVS
+
+	---Purpose: This class provides auxiliary methods to create differents aspects
+
+uses
+  Boolean from Standard,
+
+  Drawer from MeshVS,
+
+  AspectFillArea3d from Graphic3d,
+  AspectLine3d     from Graphic3d,
+  AspectMarker3d   from Graphic3d,
+  AspectText3d     from Graphic3d,
+  MaterialAspect   from Graphic3d,
+
+  Array1OfReal     from TColStd,
+
+  Vec              from gp,
+  Dir              from gp
+
+is
+  CreateAspectFillArea3d ( myclass; theDr : Drawer; UseDefaults : Boolean = Standard_True ) returns AspectFillArea3d from Graphic3d;
+	---Purpose: Creates fill area aspect with values from Drawer according to keys from DrawerAttribute
+
+  CreateAspectFillArea3d ( myclass; theDr : Drawer; Mat : MaterialAspect; UseDefaults : Boolean = Standard_True ) returns AspectFillArea3d from Graphic3d;
+	---Purpose: Creates fill aspect with values from Drawer according to keys from DrawerAttribute
+        -- and specific material aspect
+
+  CreateAspectLine3d     ( myclass; theDr : Drawer; UseDefaults : Boolean = Standard_True ) returns AspectLine3d from Graphic3d;
+	---Purpose: Creates line aspect with values from Drawer according to keys from DrawerAttribute
+
+  CreateAspectMarker3d   ( myclass; theDr : Drawer; UseDefaults : Boolean = Standard_True ) returns AspectMarker3d from Graphic3d;
+	---Purpose: Creates marker aspect with values from Drawer according to keys from DrawerAttribute
+
+  CreateAspectText3d     ( myclass; theDr : Drawer; UseDefaults : Boolean = Standard_True ) returns AspectText3d from Graphic3d;
+	---Purpose: Creates text aspect with values from Drawer according to keys from DrawerAttribute
+
+  GetNormal( myclass; Nodes : Array1OfReal from TColStd;
+                      Norm  : out Vec from gp ) returns Boolean;
+	---Purpose: Get one of normals to polygon described by these points.
+        --          If the polygon isn't planar, function returns false
+
+  GetAverageNormal( myclass; Nodes : Array1OfReal from TColStd;
+                      Norm  : out Vec from gp ) returns Boolean;
+	---Purpose: Get an average of normals to non-planar polygon described by these points or compute
+        --          normal of planar polygon. If the polygon isn't planar, function returns false
+
+end Tool;

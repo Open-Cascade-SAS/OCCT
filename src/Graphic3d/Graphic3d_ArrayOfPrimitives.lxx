@@ -1,0 +1,315 @@
+// File     Graphic3d_ArrayOfPrimitives.lxx
+// Created  16/06/2000 : ATS/GG : G005
+
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Standard_OutOfRange.hxx>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+inline Graphic3d_PrimitiveArray Graphic3d_ArrayOfPrimitives::Array() const {
+
+  return myPrimitiveArray;
+}
+
+inline Graphic3d_TypeOfPrimitiveArray Graphic3d_ArrayOfPrimitives::Type() const {
+
+  Graphic3d_TypeOfPrimitiveArray type = Graphic3d_TOPA_UNDEFINED;
+  if( myPrimitiveArray ) type = (Graphic3d_TypeOfPrimitiveArray) myPrimitiveArray->type;
+  return type;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::HasVertexNormals() const {
+  Standard_Boolean defined = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->vnormals ) defined = Standard_True;
+  return defined;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::HasVertexColors() const {
+  Standard_Boolean defined = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->vcolours ) defined = Standard_True;
+  return defined;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::HasVertexTexels() const {
+  Standard_Boolean defined = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->vtexels ) defined = Standard_True;
+  return defined;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::HasEdgeInfos() const {
+  Standard_Boolean defined = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->edge_vis ) defined = Standard_True;
+  return defined;
+}
+
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::VertexNumber() const {
+  Standard_Integer number = -1;
+  if( myPrimitiveArray ) number = myPrimitiveArray->num_vertexs;
+  return number;
+}
+
+inline void Graphic3d_ArrayOfPrimitives::SetVertice(
+        const Standard_Integer anIndex,
+        const Standard_Real X, const Standard_Real Y, const Standard_Real Z) {
+
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myMaxVertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  {
+    if( myPrimitiveArray->vertices ) {
+      Tfloat *p = myPrimitiveArray->vertices[index].xyz;
+      *p++ = Standard_ShortReal(X);
+      *p++ = Standard_ShortReal(Y);
+      *p = Standard_ShortReal(Z);
+    }
+  }
+  myPrimitiveArray->num_vertexs = Max(anIndex,myPrimitiveArray->num_vertexs);
+}
+
+
+inline void Graphic3d_ArrayOfPrimitives::SetVertexColor(
+                                                        const Standard_Integer anIndex,
+                                                        const Standard_Real R, 
+                                                        const Standard_Real G, 
+                                                        const Standard_Real B) {
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myMaxVertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  if( myPrimitiveArray->vcolours ) {
+    unsigned char red   = (unsigned int)(R * 255.);
+    unsigned char green = (unsigned int)(G * 255.);
+    unsigned char blue  = (unsigned int)(B * 255.);
+    unsigned char alpha = 0;
+    Standard_Integer outColor ;
+    outColor = red;
+    outColor += green << 8;
+    outColor += blue  << 16; 
+    outColor += alpha << 24;
+    SetVertexColor( anIndex, outColor );
+  } 
+  myPrimitiveArray->num_vertexs = Max(anIndex,myPrimitiveArray->num_vertexs);
+}
+
+inline void Graphic3d_ArrayOfPrimitives::SetVertexNormal(
+        const Standard_Integer anIndex,
+        const Standard_Real NX, const Standard_Real NY, const Standard_Real NZ)
+{
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myMaxVertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+
+  {
+    if( myPrimitiveArray->vnormals ) {
+      Tfloat *p = myPrimitiveArray->vnormals[index].xyz;
+      *p++ = Standard_ShortReal(NX);
+      *p++ = Standard_ShortReal(NY);
+      *p = Standard_ShortReal(NZ);
+    }
+  }
+  myPrimitiveArray->num_vertexs = Max(anIndex,myPrimitiveArray->num_vertexs);
+}
+
+inline void Graphic3d_ArrayOfPrimitives::SetVertexTexel(
+        const Standard_Integer anIndex,
+        const Standard_Real TX, const Standard_Real TY) {
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myMaxVertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  if( myPrimitiveArray->vtexels ) {
+    Tfloat *p = myPrimitiveArray->vtexels[index].xy;
+    *p++ = Standard_ShortReal(TX);
+    *p = Standard_ShortReal(TY);
+  }
+  myPrimitiveArray->num_vertexs = Max(anIndex,myPrimitiveArray->num_vertexs);
+}
+
+inline void Graphic3d_ArrayOfPrimitives::SetBoundColor(
+        const Standard_Integer anIndex,
+        const Standard_Real R, const Standard_Real G, const Standard_Real B) {
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myMaxBounds ) {
+    Standard_OutOfRange::Raise(" BAD BOUND index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  Tfloat *p = myPrimitiveArray->fcolours[index].rgb;
+  *p++ = Standard_ShortReal(R);
+  *p++ = Standard_ShortReal(G);
+  *p = Standard_ShortReal(B);
+
+  myPrimitiveArray->num_bounds = Max(anIndex,myPrimitiveArray->num_bounds);
+}
+
+inline void Graphic3d_ArrayOfPrimitives::Vertice(const Standard_Integer anIndex,
+        Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const {
+  X = Y = Z = 0.;
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myPrimitiveArray->num_vertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  if( myPrimitiveArray->vertices ) { 
+    Tfloat *p = myPrimitiveArray->vertices[index].xyz;
+    X = Standard_Real(*p++); Y = Standard_Real(*p++); Z = Standard_Real(*p);
+  }
+}
+
+inline void Graphic3d_ArrayOfPrimitives::VertexColor(const Standard_Integer anIndex,
+        Standard_Real& R, Standard_Real& G, Standard_Real& B) const {
+  R = G = B = 0;
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myPrimitiveArray->num_vertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  } 
+  Standard_Integer aColor;
+  VertexColor(anIndex, aColor);
+  if( myPrimitiveArray->vcolours ) { 
+    Standard_Integer r,g,b,a;  
+    Standard_Integer aColor;
+    VertexColor(anIndex, aColor);
+    Standard_Real A;
+    a = aColor & 0xff000000;
+    a >>= 24;
+    A = ((Standard_Real) a) / 255.;
+
+    b = aColor & 0x00ff0000;
+    b >>= 16;
+    B =((Standard_Real) b) / 255.;
+
+    g = aColor & 0x0000ff00;
+    g >>= 8;
+    G = ((Standard_Real) g) / 255.;
+
+    r = aColor & 0x000000ff;
+    r >>= 0; 
+    R = ((Standard_Real) r) / 255.;
+  }
+}
+
+inline void Graphic3d_ArrayOfPrimitives::VertexColor(const Standard_Integer anIndex,
+        Standard_Integer& aColor) const 
+{
+  Standard_Integer index = anIndex-1;
+
+  if( myPrimitiveArray->vcolours ) { 
+#if defined (sparc) || defined (__sparc__) || defined (__sparc)
+    aColor = 0;
+    const char* p_ch = (const char*)&(myPrimitiveArray->vcolours[index]);
+    aColor += p_ch[0];
+    aColor += p_ch[1] << 8 ;
+    aColor += p_ch[2] << 16;
+    aColor += p_ch[3] << 24;
+#else
+    aColor = myPrimitiveArray->vcolours[index];
+#endif
+    }
+}
+
+
+inline void Graphic3d_ArrayOfPrimitives::VertexNormal(const Standard_Integer anIndex,
+        Standard_Real& NX, Standard_Real& NY, Standard_Real& NZ) const {
+  NX = NY = NZ = 0.;
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myPrimitiveArray->num_vertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  if( myPrimitiveArray->vnormals ) { 
+    Tfloat *p = myPrimitiveArray->vnormals[index].xyz;
+    NX = Standard_Real(*p++); NY = Standard_Real(*p++); NZ = Standard_Real(*p);
+  }
+}
+
+inline void Graphic3d_ArrayOfPrimitives::VertexTexel(const Standard_Integer anIndex,
+        Standard_Real& TX, Standard_Real& TY) const {
+  TX = TY = 0.;
+  if( !myPrimitiveArray ) return;
+  if( anIndex < 1 || anIndex > myPrimitiveArray->num_vertexs ) {
+    Standard_OutOfRange::Raise(" BAD VERTEX index");
+  }
+
+  Standard_Integer index = anIndex-1;
+  if( myPrimitiveArray->vtexels ) { 
+    Tfloat *p = myPrimitiveArray->vtexels[index].xy;
+    TX = Standard_Real(*p++); TY = Standard_Real(*p);
+  }
+}
+
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::EdgeNumber() const {
+  Standard_Integer number = -1;
+  if( myPrimitiveArray ) number = myPrimitiveArray->num_edges;
+  return number;
+}
+
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::Edge(
+        const Standard_Integer anIndex ) const {
+  Standard_Integer index=0;
+  if( myPrimitiveArray && myPrimitiveArray->edge_vis && 
+    (anIndex > 0) && (anIndex <= myPrimitiveArray->num_edges) ) {
+    index = myPrimitiveArray->edges[anIndex-1];
+  } else {
+    Standard_OutOfRange::Raise(" BAD EDGE index");
+  }
+  return index+1;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::EdgeIsVisible(
+        const Standard_Integer anIndex ) const {
+  Standard_Boolean isVisible = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->edge_vis && 
+    (anIndex > 0) && (anIndex <= myPrimitiveArray->num_edges) ) {
+    isVisible = (myPrimitiveArray->edge_vis[anIndex-1] == 0) ? 
+                    Standard_False : Standard_True;
+  } else {
+    Standard_OutOfRange::Raise(" BAD EDGE index");
+  }
+  return isVisible;
+}
+
+inline Standard_Boolean Graphic3d_ArrayOfPrimitives::HasBoundColors() const {
+  Standard_Boolean defined = Standard_False;
+  if( myPrimitiveArray && myPrimitiveArray->fcolours ) defined = Standard_True;
+  return defined;
+}
+
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::BoundNumber() const {
+  Standard_Integer number = -1;
+  if( myPrimitiveArray ) number = myPrimitiveArray->num_bounds;
+  return number;
+}
+
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::Bound(const Standard_Integer anIndex) const {
+  Standard_Integer number=-1;
+  if( myPrimitiveArray && myPrimitiveArray->bounds && 
+    (anIndex > 0) && (anIndex <= myPrimitiveArray->num_bounds) ) {
+    number = myPrimitiveArray->bounds[anIndex-1];
+  } else {
+    Standard_OutOfRange::Raise(" BAD BOUND index");
+  }
+  return number;
+}
+
+inline void Graphic3d_ArrayOfPrimitives::BoundColor(const Standard_Integer anIndex,
+        Standard_Real& R, Standard_Real& G, Standard_Real& B) const {
+  if( myPrimitiveArray && myPrimitiveArray->fcolours && 
+    (anIndex > 0) && (anIndex <= myPrimitiveArray->num_bounds) ) {
+    Tfloat *p = myPrimitiveArray->fcolours[anIndex-1].rgb;
+    R = Standard_Real(*p++); G = Standard_Real(*p++); B = Standard_Real(*p);
+  } else {
+    Standard_OutOfRange::Raise(" BAD BOUND index");
+  }
+}

@@ -1,0 +1,56 @@
+-- File:	CSLib_Class2d.cdl
+-- Created:	Wed Mar  8 14:53:28 1995
+-- Author:	Laurent BUCHARD
+--		<lbr@mastox>
+---Copyright:	 Matra Datavision 1995
+
+class Class2d from CSLib
+
+uses 
+    Pnt2d          from gp,
+    Array1OfPnt2d  from TColgp
+    
+is 
+
+    Create(TP: Array1OfPnt2d from TColgp; aTolu,aTolv:Real from Standard;
+           umin,vmin,umax,vmax: Real from Standard)
+    returns Class2d     from CSLib;
+    
+    SiDans(me; P: Pnt2d from gp)
+    returns Integer from Standard;
+    
+    SiDans_OnMode(me; P: Pnt2d from gp; Tol: Real from Standard)
+    returns Integer from Standard;
+    
+    InternalSiDans(me; X,Y: Real from Standard)
+    returns Integer from Standard;
+    
+    InternalSiDansOuOn(me; X,Y: Real from Standard)
+    returns Integer from Standard;    
+
+    Copy(me; Other: Class2d from CSLib)
+    returns Class2d from CSLib;
+    	---C++: return const &
+      	---C++: alias operator=
+     --Purpose *** Raise if called ***
+
+    Destroy(me: in out);
+       	---C++: alias ~
+     
+    
+fields 
+    MyPnts2dX: Address  from Standard;
+    MyPnts2dY: Address  from Standard;
+    Tolu     : Real     from Standard;
+    Tolv     : Real     from Standard;
+    N        : Integer  from Standard;
+    Umin     : Real     from Standard;
+    Vmin     : Real     from Standard;
+    Umax     : Real     from Standard;
+    Vmax     : Real     from Standard;
+   
+end Class2d from CSLib;
+
+
+    
+    

@@ -1,0 +1,68 @@
+// File:	AIS_GlobalStatus.lxx
+// Created:	Fri Jan 24 16:55:27 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline void AIS_GlobalStatus::SetGraphicStatus(const AIS_DisplayStatus aStat)
+{
+ myStatus = aStat;
+}
+
+inline void AIS_GlobalStatus::AddDisplayMode(const Standard_Integer aMode)
+{
+  if(!IsDModeIn(aMode)) myDispModes.Append(aMode);
+}
+
+inline void AIS_GlobalStatus::AddSelectionMode(const Standard_Integer aMode)
+{
+  if(!IsSModeIn(aMode)) mySelModes.Append(aMode);
+}
+
+inline void AIS_GlobalStatus::SetLayerIndex(const Standard_Integer AnIndex)
+{
+  myLayerIndex=AnIndex;
+}
+
+inline void AIS_GlobalStatus::SetHilightStatus(const Standard_Boolean aStat)
+{
+  myIsHilit = aStat;
+}
+inline void AIS_GlobalStatus::SetHilightColor(const Quantity_NameOfColor aCol)
+{myHiCol = aCol;}
+
+inline Standard_Boolean  AIS_GlobalStatus::IsSubIntensityOn() const 
+{
+  return mySubInt;
+}
+inline void AIS_GlobalStatus::SubIntensityOn()
+{
+  mySubInt = Standard_True;
+}
+inline void AIS_GlobalStatus::SubIntensityOff()
+{
+  mySubInt = Standard_False;
+}
+
+
+
+inline AIS_DisplayStatus AIS_GlobalStatus::GraphicStatus() const 
+{
+  return myStatus;
+}
+
+inline const TColStd_ListOfInteger& AIS_GlobalStatus::DisplayedModes() const 
+{
+  return myDispModes;
+}
+
+inline const TColStd_ListOfInteger& AIS_GlobalStatus::SelectionModes() const 
+{
+  return mySelModes;
+}
+
+inline Standard_Boolean AIS_GlobalStatus::IsHilighted() const 
+{
+  return myIsHilit;
+}
+
+inline Quantity_NameOfColor AIS_GlobalStatus::HilightColor() const 
+{return myHiCol;}

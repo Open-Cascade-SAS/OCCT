@@ -1,0 +1,120 @@
+-- File:	BRepCheck_Result.cdl
+-- Created:	Thu Dec  7 08:55:04 1995
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+deferred class Result from BRepCheck inherits TShared from MMgt
+
+	---Purpose: 
+
+uses Shape                                       from TopoDS,
+     ListOfStatus                                from BRepCheck,
+     DataMapOfShapeListOfStatus                  from BRepCheck,
+     DataMapIteratorOfDataMapOfShapeListOfStatus from BRepCheck
+
+raises NoSuchObject from Standard
+
+is
+
+    Initialize;
+
+    Init(me: mutable; S: Shape from TopoDS);
+
+
+    InContext(me: mutable; ContextShape: Shape from TopoDS)
+    
+    	is deferred;
+
+
+    Minimum(me: mutable)
+    
+    	is deferred;
+
+    
+    Blind(me: mutable)
+    
+    	is deferred;
+
+    SetFailStatus(me: mutable; S: Shape from TopoDS);
+
+
+    Status(me)
+    
+    	returns ListOfStatus from BRepCheck
+	---C++: return const&
+	---C++: inline
+	is static;
+
+    IsMinimum(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    IsBlind(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    StatusOnShape(me: mutable; S: Shape from TopoDS)
+	---Purpose: If  not  already   done,  performs the   InContext
+	--          control and returns the list of status.
+    	returns ListOfStatus from BRepCheck
+	---C++: return const&
+	raises
+	    NoSuchObject from Standard
+	is static;
+
+
+    InitContextIterator(me: mutable)
+    
+    	is static;
+
+
+    MoreShapeInContext(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+	is static;
+
+
+    ContextualShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const&
+	---C++: inline
+	raises
+	    NoSuchObject from Standard
+	is static;
+
+
+    StatusOnShape(me)
+    
+    	returns ListOfStatus from BRepCheck
+	---C++: return const&
+	---C++: inline
+	raises
+	    NoSuchObject from Standard
+	is static;
+
+
+    NextShapeInContext(me: mutable)
+    
+    	is static;
+
+
+fields
+
+    myShape : Shape                      from TopoDS    is protected;
+    myMin   : Boolean                    from Standard  is protected;
+    myBlind : Boolean                    from Standard  is protected;
+    myMap   : DataMapOfShapeListOfStatus from BRepCheck is protected;
+    myIter  : DataMapIteratorOfDataMapOfShapeListOfStatus from BRepCheck;
+
+end Result;

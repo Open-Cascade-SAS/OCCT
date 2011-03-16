@@ -1,0 +1,39 @@
+// File:	BRepFeat_MakePrism.lxx
+// Created:	Tue Feb 13 14:43:36 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+
+//=======================================================================
+//function : BRepFeat_MakePrism
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakePrism::BRepFeat_MakePrism () {}
+
+
+//=======================================================================
+//function : BRepFeat_MakePrism
+//purpose  : 
+//=======================================================================
+
+inline BRepFeat_MakePrism::BRepFeat_MakePrism (const TopoDS_Shape& Sbase,
+					       const TopoDS_Shape& Pbase,
+					       const TopoDS_Face& Skface,
+					       const gp_Dir& Direc,
+					       const Standard_Integer Fuse,
+					       const Standard_Boolean Modify)
+					       
+{
+  Init(Sbase,Pbase,Skface,Direc,Fuse,Modify);
+}
+
+
+
+
+
+
+
+
+
+

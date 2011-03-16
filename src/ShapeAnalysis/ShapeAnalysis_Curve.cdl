@@ -1,0 +1,178 @@
+-- File:	ShapeAnalysis_Curve.cdl
+-- Created:	Wed Jun  3 12:00:34 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Curve from ShapeAnalysis 
+
+    ---Purpose: Analyzing tool for 2d or 3d curve.
+    --          Computes parameters of projected point onto a curve.
+
+uses
+    XYZ   from gp,
+    Pnt   from gp,
+    Pnt2d from gp,
+    Box2d from Bnd,
+    Curve from Geom,
+    Curve from Adaptor3d,
+    Curve from Geom2d,
+    Array1OfPnt from TColgp,
+    SequenceOfPnt from TColgp,
+    SequenceOfPnt2d from TColgp
+
+is
+    Project (me; C3D: Curve from Geom;
+    	         P3D: Pnt from gp;
+                 preci: Real;
+    	         proj: out Pnt from gp;
+                 param: out Real;
+      	    	 AdjustToEnds: Boolean = Standard_True)
+    returns Real;
+    	---Purpose : Projects a Point on a Curve.
+    	--           Computes the projected point and its parameter on the curve.
+    	--           <preci> is used as 3d precision (hence, 0 will produce
+    	--           reject unless exact confusion).
+    	--           The number of iterations is limited.
+	--           If AdjustToEnds is True, point will be adjusted to the end
+	--           of the curve if distance is less than <preci>
+    	--           
+    	--           Returned value is the distance between the given point and
+    	--           computed one.
+    
+    Project (me; C3D: Curve from Adaptor3d;
+    	    	 P3D: Pnt from gp;
+                 preci: Real;
+    	         proj: out Pnt from gp;
+                 param: out Real;
+    	    	 AdjustToEnds: Boolean = Standard_True) 
+    returns Real;
+    	---Purpose : Projects a Point on a Curve.
+    	--           Computes the projected point and its parameter on the curve.
+    	--           <preci> is used as 3d precision (hence, 0 will produce
+    	--           reject unless exact confusion).
+    	--           The number of iterations is limited.
+    	--           
+    	--           Returned value is the distance between the given point and
+    	--           computed one.
+
+    Project (me; C3D: Curve from Geom;
+    	    	 P3D: Pnt from gp;
+    	     	 preci: Real;
+		 proj: out Pnt from gp;
+    	    	 param: out Real;
+    	    	 cf, cl: Real;
+      	    	 AdjustToEnds: Boolean = Standard_True)
+    returns Real;
+    	---Purpose : Projects a Point on a Curve, but parameters are limited
+    	--           between <cf> and <cl>.
+	--           The range [cf, cl] is extended with help of Adaptor3d on the
+	--           basis of 3d precision <preci>.
+	--           If AdjustToEnds is True, point will be adjusted to the end
+	--           of the curve if distance is less than <preci>
+	
+    ProjectAct(me; C3D  : Curve from Adaptor3d;
+    	    	   P3D  : Pnt from gp;
+                   preci: Real;
+    	           proj : out Pnt from gp;
+                   param: out Real) 
+    returns Real;
+	
+    NextProject(me; paramPrev: Real;
+    	    	    C3D      : Curve from Geom;
+		    P3D      : Pnt from gp;
+		    preci    : Real;
+		    proj     : out Pnt from gp;
+		    param    : out Real;
+		    cf, cl   : Real;
+      	    	    AdjustToEnds: Boolean = Standard_True)
+    returns Real;
+    	---Purpose: Projects a Point on a Curve using Newton method. 
+	--          <paramPrev> is taken as the first approximation of solution. 
+	--          If Newton algorithm fails the method Project() is used. 
+	--          If AdjustToEnds is True, point will be adjusted to the end
+	--          of the curve if distance is less than <preci>
+	
+    NextProject(me; paramPrev: Real;
+    	    	    C3D      : Curve from Adaptor3d;
+		    P3D      : Pnt from gp;
+		    preci    : Real;
+		    proj     : out Pnt from gp;
+		    param    : out Real)
+    returns Real;
+    	---Purpose: Projects a Point on a Curve using Newton method. 
+	--          <paramPrev> is taken as the first approximation of solution. 
+	--          If Newton algorithm fails the method Project() is used. 
+
+    ValidateRange (me; Crv: Curve from Geom; First, Last: out Real;
+    	    	       prec: Real) returns Boolean;
+    	---Purpose: Validate parameters First and Last for the given curve
+	--          in order to make them valid for creation of edge.
+	--          This includes:
+	--          - limiting range [First,Last] by range of curve
+	--          - adjusting range [First,Last] for periodic (or closed) 
+        --            curve if Last < First
+	--          Returns True if parameters are OK or are successfully 
+        --          corrected, or False if parameters cannot be corrected. 
+        --          In the latter case, parameters are reset to range of curve.
+    
+    FillBndBox (me; C2d: Curve from Geom2d; First, Last: Real;
+                    NPoints: Integer; Exact: Boolean;
+		    Box: out Box2d from Bnd);
+	---Purpose: Computes a boundary box on segment of curve C2d from First
+	--          to Last. This is done by taking NPoints points from the
+	--          curve and, if Exact is True, by searching for exact
+	--          extrema. All these points are added to Box.
+
+    SelectForwardSeam (me; C1, C2: Curve from Geom2d) returns Integer;
+    	---Purpose: Defines which pcurve (C1 or C2) should be chosen for FORWARD
+    	--          seam edge.
+    	---Returns: 1 for C1,
+    	--          2 for C2,
+	--          0 if C1 and/or C2 are neither lines nor BoundedCurves, or if could
+	--          not analyze.
+    	--  Warning: It is an absolute selection, hence C1 is MANDATORY on the
+    	--          FORWARD Edge, C2 on the REVERSED. Whatever the sense of the
+    	--          Wires and Faces which contain it.
+    
+    IsPlanar (myclass; pnts : Array1OfPnt from TColgp;
+    	    	       Normal: in out XYZ from gp;
+    	    	       preci : Real = 0)
+    returns Boolean;
+    	---Purpose: Checks if points are planar with given preci. If Normal has not zero
+	--          modulus, checks with given normal
+
+    IsPlanar (myclass; curve : Curve from Geom;
+    	    	       Normal: in out XYZ from gp;
+    	    	       preci : Real = 0)
+    returns Boolean;
+    	---Purpose: Checks if curve is planar with given preci. If Normal has not zero
+	--          modulus, checks with given normal
+
+    GetSamplePoints (myclass; curve: Curve from Geom2d; first, last: Real;
+    	    	     seq: out SequenceOfPnt2d from TColgp) returns Boolean;
+	---Purpose: Returns sample points which will serve as linearisation 
+        --          of the2d curve in range (first, last)
+	--          The distribution of sample points is consystent with
+	--          what is used by BRepTopAdaptor_FClass2d
+	
+    GetSamplePoints (myclass; curve: Curve from Geom; first, last: Real;
+    	    	     seq: out SequenceOfPnt from TColgp) returns Boolean;
+	---Purpose: Returns sample points which will serve as linearisation 
+        --          of the curve in range (first, last)
+
+    IsClosed (myclass; curve : Curve from Geom; preci: Real = -1) returns Boolean;
+    	---Purpose: Tells if the Curve is closed with given precision.
+    	--          If <preci> < 0 then Precision::Confusion is used.
+
+    IsPeriodic (myclass; curve : Curve from Geom) returns Boolean;
+    	---Purpose: This method was implemented as fix for changes in trimmed curve
+    	--          behaviour. For the moment trimmed curve returns false anyway.
+	--          So it is necessary to adapt all Data exchange tools for this behaviour.
+	--          Current implementation takes into account that curve may be offset.
+
+    IsPeriodic (myclass; curve : Curve from Geom2d) returns Boolean;
+    	---Purpose: The same as for Curve3d.
+
+end Curve;

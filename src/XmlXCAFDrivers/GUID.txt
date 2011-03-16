@@ -1,0 +1,5 @@
+GUIDs defined here:
+
+ed8793f8-3142-11d4-b9b5-0060b0ee281b: DECAF storage driver
+ed8793f9-3142-11d4-b9b5-0060b0ee281b: DECAF retrieval driver
+ed8793fa-3142-11d4-b9b5-0060b0ee281b: XS schema

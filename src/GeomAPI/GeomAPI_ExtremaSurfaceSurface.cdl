@@ -1,0 +1,211 @@
+-- File:	GeomAPI_ExtremaSurfaceSurface.cdl
+-- Created:	Fri Mar 18 13:58:48 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ExtremaSurfaceSurface from GeomAPI
+
+    	---Purpose: Describes functions for computing all the extrema
+    	-- between two surfaces.
+    	-- An ExtremaSurfaceSurface algorithm minimizes or
+    	-- maximizes the distance between a point on the first
+    	-- surface and a point on the second surface. Results
+    	-- are start and end points of perpendiculars common to the two surfaces.
+    	-- Solutions consist of pairs of points, and an extremum
+    	-- is considered to be a segment joining the two points of a solution.
+    	-- An ExtremaSurfaceSurface object provides a framework for:
+    	-- -   defining the construction of the extrema,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the results.
+    	-- Warning
+    	-- In some cases, the nearest points between the two
+    	-- surfaces do not correspond to one of the computed
+    	-- extrema. Instead, they may be given by:
+    	-- -   a point of a bounding curve of one surface and one of the following:
+    	--   -   its orthogonal projection on the other surface,
+    	--   -   a point of a bounding curve of the other surface; or
+    	-- -   any point on intersection curves between the two surfaces.
+        
+uses
+    Surface   from Geom,
+    ExtSS     from Extrema,
+    Pnt       from gp,
+    Length    from Quantity,
+    Parameter from Quantity
+    
+    
+raises
+    OutOfRange from Standard,
+    NotDone    from StdFail
+    
+    
+is
+
+    Create
+	---Purpose: Constructs an empty algorithm for computing
+    	-- extrema between two surfaces. Use an Init function
+    	-- to define the surfaces on which it is going to work.
+    returns ExtremaSurfaceSurface from GeomAPI;
+    
+    
+    Create(S1           : Surface from Geom;
+    	   S2           : Surface from Geom)
+        ---Purpose: Computes  the  extrema  distances  between  the
+        --          surfaces <S1>  and <S2>
+    	---Level: Public
+    returns ExtremaSurfaceSurface from GeomAPI;
+
+
+    Create(S1           : Surface   from Geom;
+    	   S2           : Surface   from Geom;
+    	   U1min, U1max : Parameter from Quantity;
+    	   V1min, V1max : Parameter from Quantity;
+    	   U2min, U2max : Parameter from Quantity;
+    	   V2min, V2max : Parameter from Quantity)
+        ---Purpose: Computes  the  extrema  distances  between 
+        --   the portion of the surface S1 limited by the
+    	--  two values of parameter (U1min,U1max) in
+    	--    the u parametric direction, and by the two
+    	--    values of parameter (V1min,V1max) in the v
+    	--    parametric direction, and
+    	--   -   the portion of the surface S2 limited by the
+    	--    two values of parameter (U2min,U2max) in
+    	--    the u parametric direction, and by the two
+    	--    values of parameter (V2min,V2max) in the v
+    	--    parametric direction. 
+    returns ExtremaSurfaceSurface from GeomAPI;
+
+
+    Init(me : in out;
+    	 S1           : Surface from Geom;
+	 S2           : Surface from Geom)
+        ---Purpose: Initializes this algorithm with the given arguments
+    	--        and computes  the  extrema  distances  between  the
+        --          surfaces <S1>  and <S2>
+    	---Level: Public
+    is static;
+
+
+    Init(me : in out;
+    	 S1           : Surface   from Geom;
+	 S2           : Surface   from Geom;
+    	 U1min, U1max : Parameter from Quantity;
+    	 V1min, V1max : Parameter from Quantity;
+    	 U2min, U2max : Parameter from Quantity;
+    	 V2min, V2max : Parameter from Quantity)
+        ---Purpose: Initializes this algorithm with the given arguments
+    	--        and computes  the  extrema  distances  between -  
+    	-- the portion of the surface S1 limited by the two
+    	--    values of parameter (U1min,U1max) in the u
+    	--    parametric direction, and by the two values of
+    	--    parameter (V1min,V1max) in the v parametric direction, and
+    	--   -   the portion of the surface S2 limited by the two
+    	--    values of parameter (U2min,U2max) in the u
+    	--    parametric direction, and by the two values of
+    	--    parameter (V2min,V2max) in the v parametric direction.
+    is static;
+
+
+    NbExtrema(me)
+	---Purpose: Returns the number of extrema computed by this algorithm.
+    	-- Note: if this algorithm fails, NbExtrema returns 0.
+    returns Integer from Standard
+	---C++: alias "Standard_EXPORT operator Standard_Integer() const;"
+    is static;
+    
+    
+    Points(me; Index  :     Integer from Standard;
+    	       P1, P2 : out Pnt     from gp )
+        ---Purpose: Returns the points P1 on the first surface and P2 on
+    	-- the second surface, which are the ends of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;	       
+
+
+    Parameters(me; Index :       Integer from Standard;
+                   U1, V1  : out Parameter from Quantity;
+    	     	   U2, V2  : out Parameter from Quantity)
+	---Purpose: Returns the parameters (U1,V1) of the point on the
+    	-- first surface, and (U2,V2) of the point on the second
+    	-- surface, which are the ends of the extremum of index
+    	-- Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    Distance(me; Index : Integer from Standard)
+    returns Length from Quantity
+	---Purpose: Computes the distance between the end points of the
+    	-- extremum of index Index computed by this algorithm.
+    	-- Exceptions
+    	-- Standard_OutOfRange if Index is not in the range [
+    	-- 1,NbExtrema ], where NbExtrema is the
+    	-- number of extrema computed by this algorithm.
+    raises
+    	OutOfRange from Standard
+	    is static;		    
+		    
+    
+    NearestPoints(me; P1, P2 : out Pnt from gp)
+	---Purpose: Returns the points P1 on the first surface and P2 on
+    	-- the second surface, which are the ends of the
+    	-- shortest extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistanceParameters(me;  U1, V1 : out Parameter from Quantity;
+            	    	    	 U2, V2 : out Parameter from Quantity)
+    	---Purpose: Returns the parameters (U1,V1) of the point on the
+    	-- first surface and (U2,V2) of the point on the second
+    	-- surface, which are the ends of the shortest extremum
+    	-- computed by this algorithm.
+    	-- Exceptions - StdFail_NotDone if this algorithm fails.
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    LowerDistance(me)
+	---Purpose: Computes the distance between the end points of the
+    	-- shortest extremum computed by this algorithm.
+    	-- Exceptions StdFail_NotDone if this algorithm fails.
+    returns Length from Quantity
+	---C++: alias "Standard_EXPORT operator Standard_Real() const;"
+    raises
+    	NotDone from StdFail
+    is static;
+    
+    
+    Extrema(me)
+	---Purpose: return the algorithmic object from Extrema
+    	---Level: Advanced
+	---C++: return const&
+	---C++: inline      
+    returns ExtSS from Extrema
+    is static;
+    	
+	
+fields
+
+    myIsDone: Boolean from Standard;
+    myIndex : Integer from Standard;    -- index of the nearest solution
+    myExtSS : ExtSS   from Extrema;
+
+
+end ExtremaSurfaceSurface;

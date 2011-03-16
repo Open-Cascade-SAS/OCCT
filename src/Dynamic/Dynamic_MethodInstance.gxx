@@ -1,0 +1,204 @@
+// File:	Dynamic_MethodInstance.gxx
+// Created:	Fri Dec 24 10:35:10 1993
+// Author:	Gilles DEBARBOUILLE
+//		<gde@mastox>
+// CRD : 15/04/97 : Passage WOK++ : Remplacement de TYPE par STANDARD_TYPE
+
+
+#include <Dynamic_MethodDefinition.hxx>
+#include <Dynamic_SequenceOfMethodDefinitions.hxx>
+#include <Dynamic_VariableNode.hxx>
+#include <Dynamic_Variable.hxx>
+#include <Dynamic_VariableInstance.hxx>
+#include <Dynamic_CompositVariableInstance.hxx>
+#include <Dynamic_AbstractVariableInstance.hxx>
+
+void  DictionaryOfDefinitions(Handle(Dictionary)&);
+
+//=======================================================================
+//function : Dynamic_MethodInstance
+//purpose  : 
+//=======================================================================
+
+Dynamic_MethodInstance::Dynamic_MethodInstance(const Standard_CString atype)
+{
+  Handle(Dictionary) dictionary;
+  DictionaryOfDefinitions(dictionary);
+  
+  if(dictionary->Definition(atype,thedefinition)) return;
+  else cout<<atype<<" n'existe pas dans le dictionnaire."<<endl;
+}
+
+//=======================================================================
+//function : Dynamic_MethodInstance
+//purpose  : 
+//=======================================================================
+
+Dynamic_MethodInstance::Dynamic_MethodInstance(const Handle(Dynamic_MethodInstance)& amethodinstance)
+{
+  thedefinition = amethodinstance;
+}
+
+//=======================================================================
+//function : Type
+//purpose  : 
+//=======================================================================
+
+TCollection_AsciiString Dynamic_MethodInstance::Type() const
+{
+  return Definition()->Type();
+}
+
+//=======================================================================
+//function : Definition
+//purpose  : 
+//=======================================================================
+
+Handle(Dynamic_Method) Dynamic_MethodInstance::Definition() const
+{
+  Handle(Dynamic_MethodInstance) definition;
+
+  if(thedefinition->IsKind(STANDARD_TYPE(Dynamic_MethodDefinition)))
+    {
+      return thedefinition;
+    }
+  else
+    {
+      definition  = *(Handle_Dynamic_MethodInstance*)&thedefinition;
+      return definition->Definition();
+    }
+}
+
+//=======================================================================
+//function : Variable
+//purpose  : 
+//=======================================================================
+
+void Dynamic_MethodInstance::Variable(const Handle(Dynamic_Parameter)& aparameter,
+				      const Dynamic_ModeEnum amode,
+				      const Handle(Dynamic_Variable)& avariable)
+{
+  Handle(Dynamic_AbstractVariableInstance) abstractvariableinstance;
+  Handle(Dynamic_VariableNode) variablenode;
+  Handle(Dynamic_Variable) variable;
+  TCollection_AsciiString name = aparameter->Name();
+
+  if(Definition()->Variable(name.ToCString()))
+    {
+      variablenode = FirstVariableNode();
+      while(!variablenode.IsNull())
+	{
+	  variable = variablenode->Object();
+	  abstractvariableinstance = *(Handle_Dynamic_AbstractVariableInstance*)&variable;
+	  if(abstractvariableinstance->Parameter()->Name() == aparameter->Name())
+	    {
+	      abstractvariableinstance->Mode(amode);
+	      abstractvariableinstance->Parameter(aparameter);
+	      abstractvariableinstance->Variable(avariable);
+	      return;
+	    }
+	  variablenode = variablenode->Next();
+	}
+      abstractvariableinstance = new Dynamic_VariableInstance();
+      abstractvariableinstance->Mode(amode);
+      abstractvariableinstance->Parameter(aparameter);
+      abstractvariableinstance->Variable(avariable);
+      Dynamic_Method::Variable(abstractvariableinstance);
+    }
+  else
+    cout<<"Pas de parametre du nom de : "<< aparameter->Name()<<endl;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_MethodInstance::Value(const Standard_CString aname,
+					       Handle(Dynamic_Parameter)& aparameter,
+					       Dynamic_ModeEnum& amode,
+					       Handle(Dynamic_Variable)& avariable) const
+{
+  Handle(Dynamic_Variable) variable;
+  Handle(Dynamic_Variable) nullvariable;
+
+  if(Dynamic_Method::Value(aname,variable))
+    {
+      amode = variable->Mode();
+      aparameter = variable->Parameter();
+      if(variable->IsKind(STANDARD_TYPE(Dynamic_VariableInstance)))
+	avariable = (*(Handle_Dynamic_VariableInstance*)&variable)->Variable();
+      else
+	avariable = nullvariable;
+
+      return Standard_True;
+    }
+  else if(thedefinition->Value(aname,variable))
+    {
+      amode = variable->Mode();
+      aparameter = variable->Parameter();
+      if(variable->IsKind(STANDARD_TYPE(Dynamic_VariableInstance)))
+	avariable = (*(Handle_Dynamic_VariableInstance*)&variable)->Variable();
+      else
+	avariable = nullvariable;
+
+      return Standard_True;
+    }
+  else return Standard_False;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_MethodInstance::Value(const Standard_CString aname,
+					       Handle(Dynamic_Parameter)& aparameter,
+					       Dynamic_ModeEnum& amode,
+					       Handle(Dynamic_VariableNode)& avariablenode) const
+{
+  Handle(Dynamic_Variable) variable;
+  Handle(Dynamic_VariableNode) nullvariablenode;
+
+  if(Dynamic_Method::Value(aname,variable))
+    {
+      amode = variable->Mode();
+      aparameter = variable->Parameter();
+      if(variable->IsKind(STANDARD_TYPE(Dynamic_CompositVariableInstance)))
+	avariablenode = (*(Handle_Dynamic_CompositVariableInstance*)&variable)->FirstVariableNode();
+      else
+	avariablenode = nullvariablenode;
+
+      return Standard_True;
+    }
+  else if(thedefinition->Value(aname,variable))
+    {
+      amode = variable->Mode();
+      aparameter = variable->Parameter();
+      if(variable->IsKind(STANDARD_TYPE(Dynamic_CompositVariableInstance)))
+	avariablenode = (*(Handle_Dynamic_CompositVariableInstance*)&variable)->FirstVariableNode();
+      else
+	avariablenode = nullvariablenode;
+
+      return Standard_True;
+    }
+  else return Standard_False;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+void Dynamic_MethodInstance::Dump(Standard_OStream& astream) const
+{
+  Handle(Dynamic_VariableNode) variablenode = FirstVariableNode();
+  astream<<"Method Instance : "<<Definition()->Type()<<endl;
+  while(!variablenode.IsNull())
+    {
+      astream<<"   ";
+      variablenode->Object()->Dump(astream);
+      astream<<endl;
+      variablenode = variablenode->Next();
+    }
+}

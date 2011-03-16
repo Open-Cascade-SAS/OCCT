@@ -1,0 +1,65 @@
+-- File:	DsgPrs_EllipseRadiusPresentation.cdl
+-- Created:	Mon Jan 26 09:41:13 1998
+-- Author:	Sergey ZARITCHNY
+--		<szy@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EllipseRadiusPresentation from DsgPrs 
+
+	---Purpose: 
+
+uses
+    Presentation from Prs3d,
+    Pnt          from gp,
+    Elips        from gp, 
+    OffsetCurve  from Geom,
+    Drawer       from Prs3d,
+    ArrowSide    from DsgPrs,
+    ExtendedString from TCollection
+
+is
+      Add( myclass; aPresentation   : Presentation   from Prs3d;
+    	    	    aDrawer         : Drawer         from Prs3d; 
+		    theval          : Real           from Standard;
+		    aText           : ExtendedString from TCollection; 
+                    AttachmentPoint : Pnt            from gp;
+    	    	    anEndOfArrow    : Pnt            from gp; 
+		    aCenter         : Pnt            from gp; 
+		    IsMaxRadius     : Boolean        from  Standard;
+		    ArrowSide: ArrowSide             from DsgPrs);
+		   ---Purpose: draws a  Radius  (Major  or  Minor)   
+    	    	   -- representation for whole ellipse  case
+		   
+    Add( myclass; aPresentation   : Presentation   from Prs3d;
+    	    	  aDrawer         : Drawer         from Prs3d; 
+		  theval          : Real           from Standard;
+		  aText           : ExtendedString from TCollection; 
+		  anEllipse       : Elips          from gp;  
+                  AttachmentPoint : Pnt            from gp; 
+		  anEndOfArrow    : Pnt            from gp; 
+		  aCenter         : Pnt            from gp;
+		  uFirst          : Real           from Standard;  
+		  IsInDomain      : Boolean        from Standard; 
+		  IsMaxRadius     : Boolean        from Standard;
+	          ArrowSide       : ArrowSide      from DsgPrs);
+		   ---Purpose: draws a  Radius  (Major  or  Minor) representation     
+    	    	   --  for arc of an ellipse  case 
+
+		   
+    Add( myclass; aPresentation   : Presentation   from Prs3d;
+    	    	  aDrawer         : Drawer         from Prs3d; 
+		  theval          : Real           from Standard;
+		  aText           : ExtendedString from TCollection; 
+    	    	  aCurve          : OffsetCurve    from Geom;
+                  AttachmentPoint : Pnt            from gp; 
+		  anEndOfArrow    : Pnt            from gp; 
+		  aCenter         : Pnt            from gp;
+		  uFirst          : Real           from Standard;  
+		  IsInDomain      : Boolean        from Standard; 
+		  IsMaxRadius     : Boolean        from Standard;
+	          ArrowSide       : ArrowSide      from DsgPrs);
+		   ---Purpose: draws a  Radius  (Major  or  Minor) representation     
+    	    	   --  for arc of an offset  curve  from  ellipse
+
+end EllipseRadiusPresentation;

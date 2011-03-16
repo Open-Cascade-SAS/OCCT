@@ -1,0 +1,56 @@
+-- File:	MakeMirror2d.cdl
+-- Created:	Tue Sep  1 15:33:36 1992
+-- Author:	Remi GILET
+--		<reg@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+class MakeMirror2d
+
+from gce
+
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- symmetrical transformation in 2D space about a point
+    -- or axis. The result is a gp_Trsf2d transformation.
+    -- A MakeMirror2d object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and consulting the result.
+
+uses Pnt2d  from gp,
+     Ax2d   from gp,
+     Dir2d  from gp,
+     Lin2d  from gp,
+     Trsf2d from gp,
+     Real   from Standard
+     
+is
+
+Create(Point : Pnt2d from gp) returns MakeMirror2d;
+    ---Puprose: Makes a symmetry transformation of center <Point>.
+
+Create(Axis : Ax2d from gp) returns MakeMirror2d;
+    ---Puprose: Makes a symmetry transformation of axis <Axis>.
+
+Create(Line : Lin2d from gp) returns MakeMirror2d;
+    ---Puprose: Makes a symmetry transformation of axis <Line>.
+
+Create(Point : Pnt2d from gp;
+       Direc : Dir2d from gp) returns MakeMirror2d;
+    ---Purpose: Makes a symmetry transformation af axis defined by 
+    --          <Point> and <Direc>.
+
+Value(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed transformation.
+
+Operator(me) returns Trsf2d from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Trsf2d() const;"
+
+fields
+
+    TheMirror2d : Trsf2d from gp;
+
+end MakeMirror2d;
+

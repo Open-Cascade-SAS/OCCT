@@ -1,0 +1,22 @@
+-- File:        PresentationRepresentation.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PresentationRepresentation from StepVisual 
+
+inherits Representation from StepRepr
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr,
+	RepresentationContext from StepRepr
+is
+
+	Create returns mutable PresentationRepresentation;
+	---Purpose: Returns a PresentationRepresentation
+
+
+end PresentationRepresentation;

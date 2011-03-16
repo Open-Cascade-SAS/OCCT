@@ -1,0 +1,78 @@
+--
+-- File:	Graphic3d_GraphicDevice.cdl
+-- Created:	Mercredi 19 Janvier 1994
+-- Author:	CAL
+-- Modified:	GG RIC120302 add new constructor to pass Display structure
+--		directly instead the connexion name.
+---Copyright:	Matra Datavision 1994
+
+class GraphicDevice from Graphic3d inherits GraphicDevice from Xw 
+
+---Purpose: This class allows the definition of the Advanced
+	--	    Graphic Device 
+-- Warning: An Graphic Device is defined by a connexion
+	--	    "host:server.screen" 
+
+
+uses
+
+	SharedLibrary	from OSD,
+	GraphicDriver	from Aspect,
+	Display		from Aspect,
+	GraphicDriver	from Graphic3d,
+	TypeOfMapping	from Xw
+
+raises
+
+	GraphicDeviceDefinitionError	from Aspect
+
+is
+
+	Create ( Connexion	: CString from Standard;
+		 Mapping	: TypeOfMapping from Xw = Xw_TOM_COLORCUBE;
+		 Ncolors	: Integer from Standard = 0;
+		 UseDefault	: Boolean from Standard = Standard_True ) 
+	returns mutable GraphicDevice from Graphic3d 
+	---Level: Public
+	---Purpose: Creates a GraphicDevice
+	---Warning: Raises if the Device is badly defined
+	raises GraphicDeviceDefinitionError from Aspect;
+
+	Create ( DisplayHandle	: Display from Aspect)
+	returns mutable GraphicDevice from Graphic3d 
+	---Level: Public
+	---Purpose: Creates a GraphicDevice from the Display structure
+	---Warning: Raises if the Device is badly defined
+	raises GraphicDeviceDefinitionError from Aspect;
+
+	Destroy ( me	: mutable )
+		is redefined static;
+	---Level: Public
+	---Purpose: Deletes the GraphicDevice <me>.
+	---C++: alias ~
+
+	GraphicDriver ( me )
+		returns GraphicDriver from Aspect
+		is redefined static;
+	---Level: Public
+	---Purpose: Returns the GraphicDriver.
+
+	SetGraphicDriver ( me	: mutable )
+		is private;
+	---Level: Internal
+	---Purpose: Sets the GraphicDriver.
+
+	ShrIsDefined ( me;
+		       aShr	: out CString from Standard )
+		returns Boolean from Standard
+		is private;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the shared library
+	--	    is defined by the environment.
+	--	    (variables : CSF_GraphicShr, CSF_Graphic3dLib, GRAPHICHOME)
+
+fields
+
+	MyGraphicDriver	:	GraphicDriver from Graphic3d;
+
+end GraphicDevice from Graphic3d;

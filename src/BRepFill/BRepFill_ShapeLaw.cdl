@@ -1,0 +1,87 @@
+-- File:	BRepFill_ShapeLaw.cdl
+-- Created:	Mon Aug 17 10:17:21 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class ShapeLaw from BRepFill inherits  SectionLaw  from  BRepFill
+
+	---Purpose: Build Section Law, with an Vertex, or an Wire
+        ---Level: Advanced
+       
+uses 
+ SectionLaw          from GeomFill,  
+ HArray1OfSectionLaw from  GeomFill, 
+ HArray1OfShape      from  TopTools,  
+ Shape               from  GeomAbs,
+ Vertex              from  TopoDS, 
+ Wire                from  TopoDS,  
+ Edge                from  TopoDS,  
+ Shape               from  TopoDS, 
+ Function            from  Law
+
+is  
+  Create (V:  Vertex  from  TopoDS;   
+          Build  :  Boolean = Standard_True )  
+    ---Purpose: Construct an constant Law  
+  returns  ShapeLaw  from BRepFill;   
+
+  Create (W:Wire  from  TopoDS;   
+          Build :  Boolean = Standard_True)   
+     ---Purpose: Construct an constant Law   
+  returns ShapeLaw from BRepFill;  
+   
+  Create  (W:  Wire  from  TopoDS;  
+           L:  Function  from  Law; 
+           Build :  Boolean = Standard_True)   
+    ---Purpose: Construct an evolutive Law         
+  returns ShapeLaw from BRepFill;      
+
+  IsVertex(me) 
+    ---Purpose: Say if the input shape is a  vertex. 
+  returns  Boolean   
+  is  redefined; 
+   
+  IsConstant(me) 
+    ---Purpose: Say if the Law is  Constant.        
+  returns  Boolean   
+  is  redefined;        
+
+  ConcatenedLaw(me)  
+   ---Purpose: Give the law build on a concaneted section         
+  returns SectionLaw from GeomFill 
+  is  redefined;    
+  
+  Continuity(me; Index  :  Integer; 
+    	         TolAngular  :  Real)
+  returns  Shape  from  GeomAbs  
+  is  redefined;  
+   
+  VertexTol(me; Index  :  Integer;   
+                Param  :  Real) 
+  returns  Real   
+  is  redefined;  
+  
+  Vertex(me;  Index  :  Integer; 
+              Param  :  Real) 
+  returns Vertex  from  TopoDS 
+  is  redefined;	    
+   
+  D0(me:mutable;  Param  :  Real;   
+     S  :  out  Shape  from  TopoDS)   
+    is  redefined;  
+   
+  Edge(me; Index  :  Integer)  
+   ---C++: return const &
+   ---C++: inline
+  returns  Edge  from  TopoDS;  
+   
+  Init(me  :  mutable;  B  :  Boolean)  is  private;
+   
+fields
+  myShape:  Shape          from  TopoDS;
+  myEdges:  HArray1OfShape from  TopTools;   
+  TheLaw :  Function       from  Law;   
+  vertex :  Boolean        from  Standard is  protected; 
+end ShapeLaw;

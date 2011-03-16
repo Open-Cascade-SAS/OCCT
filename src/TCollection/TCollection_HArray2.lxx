@@ -1,0 +1,98 @@
+// File:	TCollection_HArray2.lxx
+// Created:	Thu Mar 11 20:02:10 1993
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//=======================================================================
+//function : ColLength
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::ColLength () const
+{
+   return myArray.ColLength();
+}
+
+//=======================================================================
+//function : LowerCol
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::LowerCol () const
+{
+   return myArray.LowerCol();
+}
+
+//=======================================================================
+//function : LowerRow
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::LowerRow () const
+{
+   return myArray.LowerRow();	
+}
+
+//=======================================================================
+//function : RowLength
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::RowLength () const
+{
+   return myArray.RowLength();
+}
+
+//=======================================================================
+//function : UpperRow
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::UpperRow () const
+{
+   return myArray.UpperRow();
+}
+
+//=======================================================================
+//function : UpperCol
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_HArray2::UpperCol () const
+{
+   return myArray.UpperCol();
+}
+
+//=======================================================================
+//function : SetValue
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_HArray2::SetValue ( const Standard_Integer Row,
+					   const Standard_Integer Col,
+					   const ItemHArray2& Value )
+{
+  myArray.SetValue(Row,Col,Value);
+}
+
+
+
+//=======================================================================
+//function : Array2
+//purpose  : 
+//=======================================================================
+
+inline const TheArray2& TCollection_HArray2::Array2() const
+{
+  return myArray;
+}
+
+//=======================================================================
+//function : ChangeArray2
+//purpose  : 
+//=======================================================================
+
+inline TheArray2& TCollection_HArray2::ChangeArray2()
+{
+  return myArray;
+}

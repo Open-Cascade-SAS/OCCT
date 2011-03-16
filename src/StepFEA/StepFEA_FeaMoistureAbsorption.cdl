@@ -1,0 +1,32 @@
+-- File:	StepFEA_FeaMoistureAbsorption.cdl
+-- Created:	Thu Dec 12 17:51:05 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class FeaMoistureAbsorption from StepFEA
+inherits FeaMaterialPropertyRepresentationItem from StepFEA
+
+    ---Purpose: Representation of STEP entity FeaMoistureAbsorption
+
+uses
+    HAsciiString from TCollection,
+    SymmetricTensor23d from StepFEA
+
+is
+    Create returns FeaMoistureAbsorption from StepFEA;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aRepresentationItem_Name: HAsciiString from TCollection;
+                       aFeaConstants: SymmetricTensor23d from StepFEA);
+	---Purpose: Initialize all fields (own and inherited)
+
+    FeaConstants (me) returns SymmetricTensor23d from StepFEA;
+	---Purpose: Returns field FeaConstants
+    SetFeaConstants (me: mutable; FeaConstants: SymmetricTensor23d from StepFEA);
+	---Purpose: Set field FeaConstants
+
+fields
+    theFeaConstants: SymmetricTensor23d from StepFEA;
+
+end FeaMoistureAbsorption;

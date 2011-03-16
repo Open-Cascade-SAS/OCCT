@@ -1,0 +1,34 @@
+-- File:	StepFile_CODEGEN.edl
+-- Author:	data exchange team
+-- History:	Tue Feb 29 16:31:08 2000	data exchange team	Creation
+-- Copyright:	 Matra Datavision 2000
+
+@ifnotdefined ( %StepFile_CODEGEN_EDL) then
+@set %StepFile_CODEGEN_EDL = "";
+
+--- Insert your stuff Here
+@if ( %Station != "wnt" ) then
+@template CODEGEN_LEX_OptLine  (%CODEGEN_FlexBisHome) is
+$%CODEGEN_FlexBisHome/flex -P<Module>  -L -8 <LexFile>
+@end;
+
+@template CODEGEN_LEX_CmdLine  ( %CODEGEN_FlexBisHome, %Source, %BaseName, %OutputDir ) is
+$cd %OutputDir
+$%CODEGEN_FlexBisHome/flex -P%BaseName  -L -8 %Source
+@end;
+@else
+
+@template CODEGEN_LEX_OptLine  (%CODEGEN_LEX_CmdPath) is
+$%CODEGEN_LEX_CmdPath -P <Module>  -L -8 <LexFile>
+@end;
+
+@set %CODEGEN_LEX_CmdPath = "%WOKHOME%/lib/wnt/flex";
+
+@template CODEGEN_LEX_CmdLine  ( %CODEGEN_LEX_CmdPath, %Source, %BaseName, %OutputDir ) is
+$cd %OutputDir;
+$%CODEGEN_LEX_CmdPath -P%BaseName -L -8 %Source
+@end;
+
+@endif;
+
+@endif;

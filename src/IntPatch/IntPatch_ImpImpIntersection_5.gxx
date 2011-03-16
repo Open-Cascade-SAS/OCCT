@@ -1,0 +1,819 @@
+// File:      IntPatch_ImpImpIntersection_5.gxx
+// Created:   Thu May  7 08:47:45 1992
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 1992
+
+#include <gce_MakeLin.hxx>
+
+//=======================================================================
+//function : IntCoCo
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
+			 const IntSurf_Quadric& Quad2,
+			 const Standard_Real Tol,
+			 Standard_Boolean& Empty,
+			 Standard_Boolean& Same,
+			 Standard_Boolean& Multpoint,
+			 IntPatch_SequenceOfLine& slin,
+			 IntPatch_SequenceOfPoint& spnt)
+
+{
+  Standard_Integer i, NbSol;
+  Standard_Real U1,V1,U2,V2;
+  IntSurf_TypeTrans trans1,trans2;
+  IntAna_ResultType typint;
+  //
+  gp_Cone Co1(Quad1.Cone());
+  gp_Cone Co2(Quad2.Cone());
+  //
+  IntAna_QuadQuadGeo inter(Co1,Co2,Tol);
+  if (!inter.IsDone()) {
+    return Standard_False;
+  }
+  //
+  typint = inter.TypeInter();
+  NbSol = inter.NbSolutions();
+  Empty = Standard_False;
+  Same  = Standard_False;
+
+  switch (typint) {
+
+  case IntAna_Empty :
+    {
+      Empty = Standard_True;
+    }
+    break;
+
+  case IntAna_Same:
+    {
+	Same  = Standard_True;
+    }
+    break;
+
+    //modified by NIZNHY-PKV Wed Nov 30 12:56:06 2005f
+  case IntAna_Line :{
+    Standard_Real para, aDot;
+    gp_Pnt aPApex1, aPApex2, ptbid;
+    gp_Lin linsol;
+    gp_Vec NormC1,NormC2;
+    IntPatch_Point aPtsol;
+    Handle(IntPatch_GLine) glig;
+    //
+    aPApex1=Co1.Apex();
+    aPApex2=Co2.Apex();
+    //
+    if (NbSol==1) {
+      IntSurf_Situation situC1, situC2;
+      //
+      linsol = inter.Line(1);
+      para =ElCLib::Parameter(linsol, aPApex1);
+      ptbid=ElCLib::Value(para+5., linsol);
+      Quad1.Parameters(aPApex1, U1, V1);
+      Quad2.Parameters(aPApex1, U2, V2);
+      //
+      aPtsol.SetValue(aPApex1, Tol, Standard_False);
+      aPtsol.SetParameters(U1, V1, U2, V2);
+      aPtsol.SetParameter(para);
+      //
+      NormC1=Quad1.Normale(ptbid);
+      NormC2=Quad2.Normale(ptbid);
+      aDot=NormC1.Dot(NormC2);
+      if (aDot<0.) {
+	situC1=IntSurf_Outside;
+	situC2=IntSurf_Outside;
+      }
+      else {
+	Standard_Real aR1, aR2;
+	gp_Lin aLAx1(aPApex1, Co1.Axis().Direction());
+	gp_Lin aLAx2(aPApex2, Co2.Axis().Direction());
+	//
+	aR1=aLAx1.Distance(ptbid);
+	aR2=aLAx2.Distance(ptbid);
+	//
+	situC1=IntSurf_Inside;
+	situC2=IntSurf_Outside;
+	if (aR1>aR1) {
+	  situC1=IntSurf_Outside;
+	  situC2=IntSurf_Inside;
+	}
+      }
+      // 1
+      glig=new IntPatch_GLine(linsol, Standard_True, situC1, situC2);
+      glig->AddVertex(aPtsol);
+      glig->SetFirstPoint(1);
+      slin.Append(glig);
+      // 2
+      linsol.SetDirection(linsol.Direction().Reversed());
+      para =ElCLib::Parameter(linsol, aPApex1);
+      aPtsol.SetParameter(para);
+      
+      glig = new IntPatch_GLine(linsol, Standard_True, situC2, situC1);
+      glig->AddVertex(aPtsol);
+      glig->SetFirstPoint(1);
+      slin.Append(glig);
+    } // if (NbSol==1) {
+    //////////////////////
+    else if (NbSol==2) {
+      //
+      for (i=1; i<=2; ++i) {
+	linsol = inter.Line(i);
+	para =ElCLib::Parameter(linsol, aPApex1);
+	ptbid=ElCLib::Value(para+5., linsol);
+	Quad1.Parameters(aPApex1, U1, V1);
+	Quad2.Parameters(aPApex1, U2, V2);
+	//
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
+	if (linsol.Direction().
+	    DotCross(Quad2.Normale(ptbid),Quad1.Normale(ptbid)) >0.) {
+	  trans1 = IntSurf_Out;
+	  trans2 = IntSurf_In;
+	}
+	//
+	Multpoint = Standard_True;
+	// 1,3
+	aPtsol.SetValue(aPApex1, Tol, Standard_False);
+	aPtsol.SetParameters(U1,V1,U2,V2);
+	aPtsol.SetParameter(para);
+	aPtsol.SetMultiple(Standard_True);
+	
+	glig = new IntPatch_GLine(linsol, Standard_False, trans1, trans2);
+	glig->AddVertex(aPtsol);
+	glig->SetFirstPoint(1);
+	slin.Append(glig);
+	// 2,4
+	linsol.SetDirection(linsol.Direction().Reversed());
+	para = ElCLib::Parameter(linsol, aPApex1);
+	aPtsol.SetParameter(para);
+	glig = new IntPatch_GLine(linsol, Standard_False, trans1, trans2);
+	glig->AddVertex(aPtsol);
+	glig->SetFirstPoint(1);
+	slin.Append(glig);
+	//
+      } //for (i=1; i<=2; ++i) 
+    } //else if (NbSol==2)
+  }
+    break;
+    //modified by NIZNHY-PKV Wed Nov 30 12:56:10 2005t
+  
+  case IntAna_Point : {
+    gp_Pnt ptcontact;
+    gp_Pnt apex1(Co1.Apex());
+    gp_Pnt apex2(Co2.Apex());
+    Standard_Real param1,param2;
+    Standard_Real paramapex1   = ElCLib::LineParameter(Co1.Axis(),apex1);
+    Standard_Real paramapex2   = ElCLib::LineParameter(Co2.Axis(),apex2);
+    for (i=1; i <= NbSol; i++) {
+      ptcontact = inter.Point(i);
+      param1 = ElCLib::LineParameter(Co1.Axis(),ptcontact);
+      param2 = ElCLib::LineParameter(Co2.Axis(),ptcontact);
+      
+      Quad1.Parameters(ptcontact,U1,V1);
+      Quad2.Parameters(ptcontact,U2,V2);
+      
+      if (apex1.Distance(ptcontact) <= Tol &&
+	  apex2.Distance(ptcontact) <= Tol) {
+	IntPatch_Point ptsol;
+	ptsol.SetValue(ptcontact,Tol,Standard_False);
+	ptsol.SetParameters(U1,V1,U2,V2);
+	spnt.Append(ptsol);
+      }
+      else if (param1 >= paramapex1 && param2 >= paramapex2) {
+	IntPatch_Point ptsol;
+	ptsol.SetValue(ptcontact,Tol,Standard_True);
+	ptsol.SetParameters(U1,V1,U2,V2);
+	spnt.Append(ptsol);
+      }
+    }
+  }
+    break;
+
+  case IntAna_Circle:
+    {
+      Standard_Real para;
+      IntPatch_Point aPtsol;
+      gp_Vec Tgt;
+      gp_Pnt ptref;
+      for (i = 1; i <= NbSol; i++) {
+	gp_Circ cirsol = inter.Circle(i);
+	ElCLib::D1(0.,cirsol,ptref,Tgt);
+	Standard_Real qwe=Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref));
+	if(qwe> 0.00000001) {
+	  trans1 = IntSurf_Out;
+	  trans2 = IntSurf_In;
+	}
+	else if(qwe<-0.00000001){
+	  trans1 = IntSurf_In;
+	  trans2 = IntSurf_Out;
+	}
+	else { 
+	  trans1=trans2=IntSurf_Undecided; 
+	}
+	Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
+	if(inter.HasCommonGen()) {
+	  const gp_Pnt& aPChar = inter.PChar();
+	  Quad1.Parameters(aPChar, U1, V1);
+	  Quad2.Parameters(aPChar, U2, V2);
+	  aPtsol.SetValue(aPChar, Tol, Standard_False);
+	  aPtsol.SetParameters(U1, V1, U2, V2);
+	  para = ElCLib::Parameter(cirsol, aPChar);
+	  aPtsol.SetParameter(0.);
+	  glig->AddVertex(aPtsol);
+	}
+	slin.Append(glig);
+      }
+    }
+    break;
+
+
+  case IntAna_Ellipse:
+    {
+      Standard_Real para;
+      IntPatch_Point aPtsol;
+      gp_Elips elipsol = inter.Ellipse(1);
+      
+      gp_Vec Tgt;
+      gp_Pnt ptref;
+      ElCLib::D1(0.,elipsol,ptref,Tgt);
+      
+      Standard_Real qwe=Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref));
+      if(qwe> 0.00000001) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
+      }
+      else if(qwe<-0.00000001) {
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
+      }
+      else { 
+	trans1=trans2=IntSurf_Undecided;
+      }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
+      if(inter.HasCommonGen()) {
+	const gp_Pnt& aPChar = inter.PChar();
+	Quad1.Parameters(aPChar, U1, V1);
+	Quad2.Parameters(aPChar, U2, V2);
+	aPtsol.SetValue(aPChar, Tol, Standard_False);
+	aPtsol.SetParameters(U1, V1, U2, V2);
+	para = ElCLib::Parameter(elipsol, aPChar);
+	aPtsol.SetParameter(0.);
+	glig->AddVertex(aPtsol);
+      }
+      slin.Append(glig);
+      
+    }
+    break;
+
+
+  case IntAna_Hyperbola:
+    {
+      Standard_Real para;
+      IntPatch_Point aPtsol;
+      gp_Vec Tgt;
+      gp_Pnt ptref;
+      for(i=1; i<=2; i++) { 
+	gp_Hypr hyprsol = inter.Hyperbola(i);
+	ElCLib::D1(0.,hyprsol,ptref,Tgt);
+	Standard_Real qwe=Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref));
+	if(qwe> 0.00000001) {
+	  trans1 = IntSurf_Out;
+	  trans2 = IntSurf_In;
+	}
+	else if(qwe<-0.00000001){
+	  trans1 = IntSurf_In;
+	  trans2 = IntSurf_Out;
+	}
+	else { 
+	  trans1=trans2=IntSurf_Undecided; 
+	}
+	Handle(IntPatch_GLine) glig = new IntPatch_GLine(hyprsol,Standard_False,trans1,trans2);
+	if(inter.HasCommonGen()) {
+	  const gp_Pnt& aPChar = inter.PChar();
+	  Quad1.Parameters(aPChar, U1, V1);
+	  Quad2.Parameters(aPChar, U2, V2);
+	  aPtsol.SetValue(aPChar, Tol, Standard_False);
+	  aPtsol.SetParameters(U1, V1, U2, V2);
+	  para = ElCLib::Parameter(hyprsol, aPChar);
+	  aPtsol.SetParameter(0.);
+	  glig->AddVertex(aPtsol);
+	}
+	slin.Append(glig);
+      }
+    }
+    break;
+    
+  case IntAna_Parabola:
+    {
+      Standard_Real para;
+      IntPatch_Point aPtsol;
+      gp_Parab parabsol = inter.Parabola(1);
+      
+      gp_Vec Tgtorig(parabsol.YAxis().Direction());
+      Standard_Real ptran = Tgtorig.DotCross(Quad2.Normale(parabsol.Location()),
+					       Quad1.Normale(parabsol.Location()));
+      if (ptran >0.00000001) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
+      }
+      else if (ptran <-0.00000001) {
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
+      }
+      else { 
+	trans1=trans2=IntSurf_Undecided; 
+      }
+
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(parabsol,Standard_False,trans1,trans2);
+      if(inter.HasCommonGen()) {
+	const gp_Pnt& aPChar = inter.PChar();
+	Quad1.Parameters(aPChar, U1, V1);
+	Quad2.Parameters(aPChar, U2, V2);
+	aPtsol.SetValue(aPChar, Tol, Standard_False);
+	aPtsol.SetParameters(U1, V1, U2, V2);
+	para = ElCLib::Parameter(parabsol, aPChar);
+	aPtsol.SetParameter(0.);
+	glig->AddVertex(aPtsol);
+      }
+      slin.Append(glig);
+    }
+    break;
+    
+    
+  case IntAna_NoGeometricSolution:
+    {
+      gp_Pnt psol;
+      IntAna_IntQuadQuad anaint(Co1,Co2,Tol);
+      if (!anaint.IsDone()) {
+	return Standard_False;
+      }
+
+      if (anaint.NbPnt() == 0 && anaint.NbCurve() == 0) {
+	Empty = Standard_True;
+      }
+      else {
+	NbSol = anaint.NbPnt();
+	for (i = 1; i <= NbSol; i++) {
+	  psol = anaint.Point(i);
+	  Quad1.Parameters(psol,U1,V1);
+	  Quad2.Parameters(psol,U2,V2);
+	  IntPatch_Point ptsol;
+	  ptsol.SetValue(psol,Tol,Standard_True);
+	  ptsol.SetParameters(U1,V1,U2,V2);
+	  spnt.Append(ptsol);
+	}
+
+	gp_Pnt ptvalid, ptf, ptl;
+	gp_Vec tgvalid;
+
+	Standard_Real first,last,para;
+	Standard_Boolean tgfound,firstp,lastp,kept;
+	Standard_Integer kount;
+	
+	NbSol = anaint.NbCurve();
+	for (i = 1; i <= NbSol; i++) {
+	  Handle(IntPatch_ALine) alig;
+	  kept = Standard_False;
+	  IntAna_Curve curvsol = anaint.Curve(i);
+	  curvsol.Domain(first,last);
+	  firstp = !curvsol.IsFirstOpen();
+	  lastp  = !curvsol.IsLastOpen();
+	  if (firstp) {
+	    ptf = curvsol.Value(first);
+	  }
+	  if (lastp) {
+	    ptl = curvsol.Value(last);
+	  }
+	  para = last;
+	  kount = 1;
+	  tgfound = Standard_False;
+	  
+	  while (!tgfound) {
+	    para = (1.123*first + para)/2.123;
+	    tgfound = curvsol.D1u(para,ptvalid,tgvalid);
+	    if(tgvalid.SquareMagnitude() < 1e-14) { 
+	      //-- on se trouve ds un cas ou les normales n'auront pas de sens
+	      tgfound = Standard_False; 
+	    } 
+	      
+	    if (!tgfound) {
+	      kount ++;
+	      tgfound = kount > 5;
+	    }
+	  }
+	  if (kount <= 5) {
+	    Standard_Real qwe= tgvalid.DotCross(Quad2.Normale(ptvalid),
+						Quad1.Normale(ptvalid));
+	    if(qwe > 0.000000001) {
+	      trans1 = IntSurf_Out;
+	      trans2 = IntSurf_In;
+	    }
+	    else if(qwe < -0.000000001) {
+	      trans1 = IntSurf_In;
+	      trans2 = IntSurf_Out;
+	    }
+	    else { 
+	      trans1=trans2=IntSurf_Undecided;
+	    }
+	    alig = new IntPatch_ALine(curvsol,Standard_False,trans1,trans2);
+	    kept = Standard_True;
+	  }
+	  else {
+	    ptvalid = curvsol.Value(para);
+	    alig = new IntPatch_ALine(curvsol,Standard_False);
+	    kept = Standard_True;
+	    //-- cout << "Transition indeterminee" << endl;
+	  }
+	  if (kept) {
+	    Standard_Boolean Nfirstp = !firstp;
+	    Standard_Boolean Nlastp  = !lastp;
+	    ProcessBounds(alig,slin,Quad1,Quad2,Nfirstp,ptf,first,
+			  Nlastp,ptl,last,Multpoint,Tol);
+	    slin.Append(alig);
+	  }
+	}
+      }
+    }
+    break;
+    
+  default:
+    {
+      return Standard_False;
+    }
+  }
+
+  //When two cones have common generatrix passing trough apexes
+  //it is necessary to add it is solution
+  if(inter.HasCommonGen()) {
+    Standard_Real para;
+    IntPatch_Point aPtsol;
+    gp_Pnt aPApex1, aPApex2;
+    aPApex1=Co1.Apex();
+    aPApex2=Co2.Apex();
+    //common generatrix of cones
+    gce_MakeLin aMkLin(aPApex1, aPApex2);
+    const gp_Lin& linsol = aMkLin.Value();
+    Handle(IntPatch_GLine) glig = 
+      new IntPatch_GLine(linsol,Standard_True,IntSurf_Undecided,IntSurf_Undecided);
+    
+    const gp_Pnt& aPChar = inter.PChar();
+    Quad1.Parameters(aPChar, U1, V1);
+    Quad2.Parameters(aPChar, U2, V2);
+    aPtsol.SetValue(aPChar, Tol, Standard_False);
+    aPtsol.SetParameters(U1, V1, U2, V2);
+    para = ElCLib::Parameter(linsol, aPChar);
+    aPtsol.SetParameter(para);
+    glig->AddVertex(aPtsol);
+
+    slin.Append(glig);
+
+  }    
+
+  return Standard_True;
+}
+//=======================================================================
+//function : IntCoSp
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntCoSp(const IntSurf_Quadric& Quad1,
+			 const IntSurf_Quadric& Quad2,
+			 const Standard_Real Tol,
+			 const Standard_Boolean Reversed,
+			 Standard_Boolean& Empty,
+			 Standard_Boolean& Multpoint,
+			 IntPatch_SequenceOfLine& slin,
+			 IntPatch_SequenceOfPoint& spnt)
+
+{
+
+  Standard_Integer i;
+
+  IntSurf_TypeTrans trans1,trans2;
+  IntAna_ResultType typint;
+
+  gp_Sphere Sp;
+  gp_Cone   Co;
+  Standard_Real U1,V1,U2,V2;
+
+  if (!Reversed) {
+    Co = Quad1.Cone();
+    Sp = Quad2.Sphere();
+  }
+  else {
+    Co = Quad2.Cone();
+    Sp = Quad1.Sphere();
+  }
+  IntAna_QuadQuadGeo inter(Sp,Co,Tol);
+
+  if (!inter.IsDone()) {return Standard_False;}
+
+  typint = inter.TypeInter();
+  Standard_Integer NbSol = inter.NbSolutions();
+  Empty = Standard_False;
+
+  switch (typint) {
+
+  case IntAna_Empty :
+    {
+      Empty = Standard_True;
+    }
+    break;
+
+  case IntAna_Point :
+    {
+      gp_Pnt ptcontact;
+      gp_Pnt apex(Co.Apex());
+      Standard_Real param;
+      Standard_Real paramapex   = ElCLib::LineParameter(Co.Axis(),apex);
+      for (i=1; i <= NbSol; i++) {
+	ptcontact = inter.Point(i);
+	param = ElCLib::LineParameter(Co.Axis(),ptcontact);
+	Quad1.Parameters(ptcontact,U1,V1);
+	Quad2.Parameters(ptcontact,U2,V2);
+
+	if (apex.Distance(ptcontact) <= Tol) {
+	  IntPatch_Point ptsol;
+	  ptsol.SetValue(ptcontact,Tol,Standard_False);
+	  ptsol.SetParameters(U1,V1,U2,V2);
+	  spnt.Append(ptsol);
+	}
+	else if (param >= paramapex) {
+	  IntPatch_Point ptsol;
+  	  ptsol.SetValue(ptcontact,Tol,Standard_True);
+	  ptsol.SetParameters(U1,V1,U2,V2);
+	  spnt.Append(ptsol);
+	}
+      }
+    }
+    break;
+
+  case IntAna_Circle:
+    {
+      gp_Vec Tgt;
+      gp_Pnt ptref;
+#ifndef DEB
+      Co.Apex();
+#else
+      gp_Pnt apex(Co.Apex());
+      //Standard_Real param;
+      Standard_Real paramapex   =  ElCLib::LineParameter(Co.Axis(),apex);
+#endif
+
+      for (i=1; i<=NbSol; i++) {
+	gp_Circ cirsol = inter.Circle(i);
+	//-- param = ElCLib::LineParameter(Co.Axis(),
+	//-- 			      cirsol.Location());
+	//-- if (param >= paramapex) {
+	
+	ElCLib::D1(0.,cirsol,ptref,Tgt);
+	Standard_Real qwe = Tgt.DotCross(Quad2.Normale(ptref),
+					 Quad1.Normale(ptref));
+	if(qwe> 0.00000001) {
+	  trans1 = IntSurf_Out;
+	  trans2 = IntSurf_In;
+	}
+	else if(qwe< -0.00000001) {
+	  trans1 = IntSurf_In;
+	  trans2 = IntSurf_Out;
+	}
+	else { 
+	  trans1=trans2=IntSurf_Undecided; 
+	}
+	Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
+	slin.Append(glig);
+	//-- }
+      }
+    }
+    break;
+
+  case IntAna_PointAndCircle:
+    {
+      gp_Vec Tgt;
+      gp_Pnt ptref;
+      gp_Pnt apex(Co.Apex());
+      Standard_Real param;
+      Standard_Real paramapex   = ElCLib::LineParameter(Co.Axis(),apex);
+
+      // le point est necessairement l apex
+      Quad1.Parameters(apex,U1,V1);
+      Quad2.Parameters(apex,U2,V2);
+      IntPatch_Point ptsol;
+      ptsol.SetValue(apex,Tol,Standard_False);
+      ptsol.SetParameters(U1,V1,U2,V2);
+      spnt.Append(ptsol);
+
+      gp_Circ cirsol = inter.Circle(1);
+      param = ElCLib::LineParameter(Co.Axis(),
+				    cirsol.Location());
+      if (param >= paramapex) {
+	
+	ElCLib::D1(0.,cirsol,ptref,Tgt);
+	Standard_Real qwe = Tgt.DotCross(Quad2.Normale(ptref),
+					 Quad1.Normale(ptref));
+	if(qwe> 0.000000001) {
+	  trans1 = IntSurf_Out;
+	  trans2 = IntSurf_In;
+	}
+	else if(qwe< -0.000000001){
+	  trans1 = IntSurf_In;
+	  trans2 = IntSurf_Out;
+	}
+	else { 
+	  trans1=trans2=IntSurf_Undecided;
+	}
+	Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
+	slin.Append(glig);
+      }
+    }
+    break;
+
+  case IntAna_NoGeometricSolution:
+    {
+      gp_Pnt psol;
+      IntAna_IntQuadQuad anaint(Co,Sp,Tol);
+      if (!anaint.IsDone()) {
+	return Standard_False;
+      }
+      
+      if (anaint.NbPnt()==0 && anaint.NbCurve()==0) {
+	Empty = Standard_True;
+      }
+      else {
+	NbSol = anaint.NbPnt();
+	for (i = 1; i <= NbSol; i++) {
+	  psol = anaint.Point(i);
+	  Quad1.Parameters(psol,U1,V1);
+	  Quad2.Parameters(psol,U2,V2);
+	  IntPatch_Point ptsol;
+	  ptsol.SetValue(psol,Tol,Standard_True);
+	  ptsol.SetParameters(U1,V1,U2,V2);
+	  spnt.Append(ptsol);
+	}
+
+	gp_Pnt ptvalid, ptf, ptl;
+	gp_Vec tgvalid;
+#ifdef DEB
+	Standard_Real paramapex   = 
+#endif
+	  ElCLib::LineParameter(Co.Axis(),
+				Co.Apex());
+	Standard_Real first,last,para;
+	Standard_Boolean tgfound,firstp,lastp,kept;
+	Standard_Integer kount;
+	
+	NbSol = anaint.NbCurve();
+	for (i = 1; i <= NbSol; i++) {
+	  Handle(IntPatch_ALine) alig;
+	  kept = Standard_False;
+	  IntAna_Curve curvsol = anaint.Curve(i);
+	  curvsol.Domain(first,last);
+	  firstp = !curvsol.IsFirstOpen();
+	  lastp  = !curvsol.IsLastOpen();
+	  if (firstp) {
+	    ptf = curvsol.Value(first);
+	  }
+	  if (lastp) {
+	    ptl = curvsol.Value(last);
+	  }
+	  para = last;
+	  kount = 1;
+	  tgfound = Standard_False;
+	  
+	  while (!tgfound) {
+	    para = (1.123*first + para)/2.123;
+	    tgfound = curvsol.D1u(para,ptvalid,tgvalid);
+	    if (!tgfound) {
+	      kount ++;
+	      tgfound = kount > 5;
+	    }
+	  }
+	  if (kount <= 5) {
+	    para = ElCLib::LineParameter(Co.Axis(),ptvalid);
+	    Standard_Real qwe = tgvalid.DotCross(Quad2.Normale(ptvalid),
+						 Quad1.Normale(ptvalid));
+	    if(qwe> 0.000000001) {
+	      trans1 = IntSurf_Out;
+	      trans2 = IntSurf_In;
+	    }
+	    else if(qwe<-0.000000001) {
+	      trans1 = IntSurf_In;
+	      trans2 = IntSurf_Out;
+	    }
+	    else { 
+	      trans1=trans2=IntSurf_Undecided; 
+	    }
+	    alig = new IntPatch_ALine(curvsol,Standard_False,trans1,trans2);
+	    kept = Standard_True;
+	  }
+	  else {
+	    ptvalid = curvsol.Value(para);
+	    para = ElCLib::LineParameter(Co.Axis(),ptvalid);
+	    alig = new IntPatch_ALine(curvsol,Standard_False);
+	    kept = Standard_True;
+	    //-- cout << "Transition indeterminee" << endl;
+	  }
+	  if (kept) {
+	    Standard_Boolean Nfirstp = !firstp;
+	    Standard_Boolean Nlastp  = !lastp;
+	    ProcessBounds(alig,slin,Quad1,Quad2,Nfirstp,ptf,first,
+			  Nlastp,ptl,last,Multpoint,Tol);
+	    slin.Append(alig);
+	  }
+	}
+      }
+    }
+    break;
+
+  default:
+    {
+      return Standard_False;
+    }
+  }
+
+  return Standard_True;
+}
+//=======================================================================
+//function : IntSpSp
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntSpSp(const IntSurf_Quadric& Quad1,
+			 const IntSurf_Quadric& Quad2,
+			 const Standard_Real Tol,
+			 Standard_Boolean& Empty,
+			 Standard_Boolean& Same,
+			 IntPatch_SequenceOfLine& slin,
+			 IntPatch_SequenceOfPoint& spnt)
+
+// Traitement du cas Sphere/Sphere
+
+{
+  IntSurf_TypeTrans trans1,trans2;
+  IntAna_ResultType typint;
+  gp_Sphere sph1(Quad1.Sphere());
+  gp_Sphere sph2(Quad2.Sphere());
+
+  IntAna_QuadQuadGeo inter(sph1,sph2,Tol);
+  if (!inter.IsDone()) {return Standard_False;}
+
+  typint = inter.TypeInter();
+  Empty  = Standard_False;
+  Same   = Standard_False;
+
+  switch (typint) {
+
+  case IntAna_Empty :
+    {
+      Empty = Standard_True;
+    }
+    break;
+
+  case IntAna_Same:
+    {
+      Same  = Standard_True;
+    }
+    break;
+
+  case IntAna_Point:
+    {
+      gp_Pnt psol(inter.Point(1));
+      Standard_Real U1,V1,U2,V2;
+      Quad1.Parameters(psol,U1,V1);
+      Quad2.Parameters(psol,U2,V2);
+      IntPatch_Point ptsol;
+      ptsol.SetValue(psol,Tol,Standard_True);
+      ptsol.SetParameters(U1,V1,U2,V2);
+      spnt.Append(ptsol);
+    }
+    break;
+    
+  case IntAna_Circle:
+    {
+      gp_Circ cirsol = inter.Circle(1);
+      gp_Pnt ptref;
+      gp_Vec Tgt;
+      ElCLib::D1(0.,cirsol,ptref,Tgt);
+
+      Standard_Real qwe=Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref));
+      if(qwe>0.00000001) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
+      }
+      else  if(qwe<-0.00000001) {
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
+      }
+      else { 
+	trans1=trans2=IntSurf_Undecided; 
+      }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
+      slin.Append(glig);
+    }
+    break;
+    
+  default:
+    {
+      return Standard_False;  // on ne doit pas passer ici
+    }
+  }
+  return Standard_True;
+}

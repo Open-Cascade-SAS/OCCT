@@ -1,0 +1,44 @@
+-- File:	VDASelect_SelectName.cdl
+-- Created:	Tue May 31 18:15:22 1994
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+class SelectName  from IGESSelect  inherits  SelectExtract
+
+    ---Purpose : Selects Entities which have a given name.
+    --           Consider Property Name if present, else Short Label, but
+    --           not the Subscript Number
+    --           First version : keeps exact name
+    --           Later : regular expression
+
+uses AsciiString from TCollection, HAsciiString from TCollection,
+     Transient, InterfaceModel
+
+is
+
+    Create returns mutable SelectName;
+    ---Purpose : Creates an empty SelectName : every entity is considered
+    --           good (no filter active)
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+    	returns Boolean;
+    ---Purpose : Returns True if Name of Entity complies with Name Filter
+
+    SetName (me : mutable; name : HAsciiString from TCollection);
+    ---Purpose : Sets a Name as a criterium : IGES Entities which have this name
+    --           are kept (without regular expression, there should be at most
+    --           one). <name> can be regarded as a Text Parameter
+
+    Name (me) returns HAsciiString from TCollection;
+    ---Purpose : Returns the Name used as Filter
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Selection criterium : "IGES Entity, Name : <name>"
+
+fields
+
+    thename : HAsciiString from TCollection;
+
+end SelectName;

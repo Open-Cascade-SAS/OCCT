@@ -1,0 +1,51 @@
+-- File:	PGeom2d_Transformation.cdl
+-- Created:	Tue Apr  6 17:33:03 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+
+class Transformation from PGeom2d inherits Persistent from Standard
+
+        ---Purpose :  The    class Transformation  allows   to  create
+        --         Translation, Rotation,   Symmetry,     Scaling  and
+        --         complex transformations obtained by  combination of
+        --         the  previous elementary   transformations.     The
+        --         restriction to  these basic  transformations allows
+        --         us to be sure that   an object  will never   change
+        --         nature.
+        --         
+	---See Also : Transformation from Geom2d.
+
+
+uses Trsf2d from gp
+
+is
+
+
+  Create returns mutable Transformation from PGeom2d;
+        ---Purpose : Creates a transformation with default values.
+	---Level: Internal 
+
+
+  Create (aTrsf : Trsf2d from gp) returns mutable Transformation from PGeom2d;
+        ---Purpose :  Creates a transformation with <aTrsf>.
+	---Level: Internal 
+
+
+  Trsf (me : mutable; aTrsf : Trsf2d from gp);
+        ---Purpose : Creates a Transformation with <aTrsf>.
+	---Level: Internal 
+
+
+  Trsf (me)  returns Trsf2d from gp;
+        ---Purpose : Returns the value of the field trsf.
+	---Level: Internal 
+
+
+fields
+
+  trsf : Trsf2d from gp;
+
+end;

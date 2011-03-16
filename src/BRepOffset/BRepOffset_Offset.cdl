@@ -1,0 +1,170 @@
+-- File:	BRepOffset_Offset.cdl
+-- Created:	Thu Oct 19 14:54:41 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Offset from BRepOffset 
+
+	---Purpose: class for the creation of Offseting.
+
+uses
+    
+    Status              from BRepOffset,
+    Shape               from TopoDS,
+    Face                from TopoDS,
+    Edge                from TopoDS,
+    Vertex              from TopoDS,
+    ListOfShape         from TopTools,
+    DataMapOfShapeShape from TopTools, 
+    Shape               from GeomAbs, 
+    JoinType            from GeomAbs
+
+is
+
+    Create returns Offset from BRepOffset;
+
+    Create( Face   : Face from TopoDS;
+    	    Offset : Real from Standard;
+	    OffsetOutside : Boolean from Standard = Standard_True;
+	    JoinType      : JoinType from GeomAbs = GeomAbs_Arc)
+	---Purpose: 
+    returns Offset from BRepOffset;
+
+    Create( Face    : Face                from TopoDS;
+    	    Offset  : Real                from Standard;
+    	    Created : DataMapOfShapeShape from TopTools;
+	    OffsetOutside : Boolean from Standard = Standard_True; 
+	    JoinType      : JoinType from GeomAbs = GeomAbs_Arc)
+	---Purpose: This method will be  called when you want to share
+	--          the  edges  soon generated  from  an other  face.
+	--          e.g. when two faces are  tangents the common  edge
+	--          will generate only one edge ( no pipe).
+	--          
+	--          The Map  will be fill  as  follow: 
+	--          
+	--          Created(E) = E'
+	--          with: E  = an edge of <Face> 
+	--                E' = the image of E in the offseting  of 
+	--                     another  face  sharing E  with a
+	--                     continuity at least G1
+	--          
+    returns Offset from BRepOffset;
+
+    Create( Path      : Edge    from TopoDS;
+    	    Edge1     : Edge    from TopoDS;
+	    Edge2     : Edge    from TopoDS;
+	    Offset    : Real    from Standard;
+            Polynomial: Boolean from Standard = Standard_False; 
+            Tol       : Real    from Standard =  1.0e-4; 
+            Conti     : Shape   from GeomAbs  =  GeomAbs_C1)
+	---Purpose: 
+    returns Offset from BRepOffset;
+    
+    Create( Path      : Edge    from TopoDS;
+    	    Edge1     : Edge    from TopoDS;
+	    Edge2     : Edge    from TopoDS;
+	    Offset    : Real    from Standard;
+    	    FirstEdge : Edge    from TopoDS;
+    	    LastEdge  : Edge    from TopoDS;
+    	    Polynomial: Boolean from Standard = Standard_False; 
+            Tol       : Real    from Standard =  1.0e-4; 
+            Conti     : Shape   from GeomAbs  =  GeomAbs_C1)
+	---Purpose: 
+    returns Offset from BRepOffset;
+    
+    Create( Vertex    : Vertex      from TopoDS;
+    	    LEdge     : ListOfShape from TopTools;
+    	    Offset    : Real        from Standard;
+    	    Polynomial: Boolean     from Standard = Standard_False; 
+            Tol       : Real        from Standard =  1.0e-4; 
+            Conti     : Shape       from GeomAbs  =  GeomAbs_C1)
+	---Purpose: Tol and Conti are only used if Polynomial is True
+	--          (Used to perfrom the approximation)
+    returns Offset from BRepOffset;
+    
+    Init( me     : in out;
+    	  Face   : Face from TopoDS;
+    	  Offset : Real from Standard;
+	  OffsetOutside : Boolean from Standard = Standard_True; 
+	  JoinType      : JoinType from GeomAbs = GeomAbs_Arc)
+	---Purpose: 
+    is static;
+    
+    Init( me      : in out;
+    	  Face    : Face                from TopoDS;
+    	  Offset  : Real                from Standard;
+    	  Created : DataMapOfShapeShape from TopTools; 
+	  OffsetOutside : Boolean from Standard = Standard_True; 
+	  JoinType      : JoinType from GeomAbs = GeomAbs_Arc)
+	---Purpose: 
+    is static;
+    
+    Init( me : in out;
+    	  Path      : Edge    from TopoDS;
+    	  Edge1     : Edge    from TopoDS;
+	  Edge2     : Edge    from TopoDS;
+	  Offset    : Real    from Standard;
+          Polynomial: Boolean from Standard = Standard_False; 
+          Tol       : Real    from Standard =  1.0e-4; 
+          Conti     : Shape   from GeomAbs  =  GeomAbs_C1)
+	---Purpose: 
+    is static;
+    
+    Init( me : in out;
+    	  Path      : Edge    from TopoDS;
+    	  Edge1     : Edge    from TopoDS;
+	  Edge2     : Edge    from TopoDS;
+	  Offset    : Real    from Standard;
+    	  FirstEdge : Edge    from TopoDS;
+    	  LastEdge  : Edge    from TopoDS;
+          Polynomial: Boolean from Standard = Standard_False; 
+          Tol       : Real    from Standard =  1.0e-4; 
+          Conti     : Shape   from GeomAbs  =  GeomAbs_C1)
+	---Purpose: 
+    is static;
+    
+    Init( me: in out;
+    	  Vertex    : Vertex      from TopoDS;
+    	  LEdge     : ListOfShape from TopTools;
+    	  Offset    : Real        from Standard;
+          Polynomial: Boolean     from Standard = Standard_False; 
+          Tol       : Real        from Standard =  1.0e-4; 
+          Conti     : Shape       from GeomAbs  =  GeomAbs_C1)
+	---Purpose: Tol and Conti are only used if Polynomial is True
+	--          (Used to perfrom the approximation)
+    is static;
+    
+    Init( me     : in out;
+    	  Edge   : Edge from TopoDS;
+	  Offset : Real from Standard)
+	---Purpose: Only used in Rolling Ball. Pipe on Free Boundary
+    is static;
+
+    InitialShape(me)
+	---C++: return const &
+	---C++: inline
+    returns Shape from TopoDS;
+    
+    	
+    Face( me)
+	---C++: return const &
+    returns Face from TopoDS;
+
+    Generated(me; Shape : Shape from TopoDS)
+	---Purpose: 
+    returns Shape from TopoDS;
+
+    Status( me) 
+    	---Purpose: 
+    returns Status from BRepOffset;
+
+fields
+    
+    myShape  : Shape               from TopoDS;
+    myStatus : Status              from BRepOffset;
+    myFace   : Face                from TopoDS;
+    myMap    : DataMapOfShapeShape from TopTools;
+
+end Offset;

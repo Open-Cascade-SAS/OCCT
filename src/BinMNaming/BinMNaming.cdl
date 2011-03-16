@@ -1,0 +1,33 @@
+-- File:	BinMNaming.cdl
+-- Created:	Thu Apr  8 15:05:52 2004
+-- Author:	Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright:	Open CasCade S.A. 2004
+
+
+
+package BinMNaming 
+
+	---Purpose: Storage/Retrieval drivers for TNaming attributes
+
+uses BinMDF,
+     BinObjMgt, 
+     BRepTools, 
+     BinTools,
+     TDF,
+     CDM
+
+is 
+
+    class NamedShapeDriver; 
+     
+    class NamingDriver; 
+     
+    AddDrivers (theDriverTable : ADriverTable  from BinMDF;
+                aMsgDrv        : MessageDriver from CDM);
+        ---Purpose: Adds the attribute drivers to <theDriverTable>. 
+
+    SetDocumentVersion (DocVersion  : Integer from Standard); 
+    
+    DocumentVersion returns Integer from Standard; 	 
+    
+end BinMNaming;

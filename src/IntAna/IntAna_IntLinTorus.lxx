@@ -1,0 +1,38 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline Standard_Boolean IntAna_IntLinTorus::IsDone () const {
+  return done;
+}
+
+inline Standard_Integer IntAna_IntLinTorus::NbPoints () const {
+  if (!done) {StdFail_NotDone::Raise();}
+  return nbpt;
+}
+
+inline const gp_Pnt& IntAna_IntLinTorus::Value
+  (const Standard_Integer Index) const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  if(Index<=0 || Index>nbpt) { Standard_OutOfRange::Raise();}
+  return thePoint[Index-1];
+}
+
+inline Standard_Real IntAna_IntLinTorus::ParamOnLine 
+  (const Standard_Integer Index) const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  if(Index<=0 || Index>nbpt) { Standard_OutOfRange::Raise();}
+  return theParam[Index-1];
+}
+
+inline void IntAna_IntLinTorus::ParamOnTorus 
+    (const Standard_Integer Index, 
+     Standard_Real& FI, Standard_Real& THETA) const {
+
+  if (!done) {StdFail_NotDone::Raise();}
+  if(Index<=0 || Index>nbpt) { Standard_OutOfRange::Raise();}
+  FI=theFi[Index-1];
+  THETA=theTheta[Index-1];
+}
+

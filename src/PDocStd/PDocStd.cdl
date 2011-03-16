@@ -1,0 +1,23 @@
+-- File:	PDocStd.cdl
+-- Created:	Wed Nov  5 11:10:55 1997
+-- Author:	Francois PONTET
+--		<fpo@salgox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+package PDocStd 
+
+	---Purpose: 
+
+uses   PCollection,
+       PCDM,
+       PDF
+      
+
+is
+
+      class Document;
+
+      class XLink;
+
+end PDocStd;

@@ -1,0 +1,86 @@
+-- File:	IntCurveSurface_QuadricCurveExactInter.cdl
+-- Created:	Wed Aug 18 18:50:09 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+generic class QuadricCurveExactInter from IntCurveSurface (
+    TheSurface        as any;
+    TheSurfaceTool    as any;
+    TheCurve          as any;
+    TheCurveTool      as any)
+
+    
+    ---Purpose: ---------------------------------------------------------
+    --                                                                 --
+    --  find a root (u,v,w) from a starting point (w0) of the problem :--
+    --        Q(X(w),Y(w),Z(w)) = 0                                    --
+    --                                                                 --
+    --  where Q(X,Y,Z) = 0    is the implicit expression of a quadric  -- 
+    --  and (X(w),Y(w),Z(w)) the point of parameter w on a parametric  --
+    --  curve.                                                         --
+    ----------------------------------------------------------------------
+
+
+uses 
+    Quadric        from IntSurf,
+    SequenceOfReal from TColStd
+
+------------------------------------------------------------
+class  TheQuadCurvFunc  instantiates QuadricCurveFunc from IntCurveSurface (
+    Quadric        from IntSurf,
+    TheCurve,
+    TheCurveTool);
+    
+    ---Purpose: Provides the signed distance function : Q(w) 
+    --          and its first derivative dQ(w)/dw
+------------------------------------------------------------
+
+is 
+
+    Create(S: TheSurface;   C: TheCurve)
+    	---Purpose: 
+    returns QuadricCurveExactInter  from IntCurveSurface;
+
+
+    IsDone(me)  
+    	---Purpose:
+    returns Boolean from Standard
+    is static;
+    
+
+    NbRoots(me)
+    	---Purpose: 
+    returns Integer from Standard
+    is static;
+
+
+    Root(me; Index: Integer from Standard) 
+    	---Purpose:
+    returns Real from Standard
+    is static; 
+    
+    
+    NbIntervals(me)
+    	---Purpose: 
+    returns Integer from Standard
+    is static;
+    
+    
+    Intervals(me; Index: Integer from Standard;
+                  U1,U2: out Real from Standard) 
+    	---Purpose: U1 and U2 are the parameters of
+    	--          a segment on the curve.
+    is static;
+    
+    
+    	
+fields
+
+    nbpnts :  Integer        from Standard;
+    pnts   :  SequenceOfReal from TColStd;
+    nbintv :  Integer        from Standard;
+    intv   :  SequenceOfReal from TColStd;    
+    
+end QuadricCurveExactInter; 

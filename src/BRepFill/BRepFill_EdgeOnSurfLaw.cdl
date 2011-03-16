@@ -1,0 +1,31 @@
+-- File:	BRepFill_EdgeOnSurfLaw.cdl
+-- Created:	Mon Jul 27 13:37:38 1998
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1998
+
+
+class EdgeOnSurfLaw from BRepFill inherits LocationLaw  from  BRepFill 
+
+	---Purpose: Build Location Law, with a Wire and a  Surface.
+
+uses
+  Wire  from  TopoDS, 
+  Shape  from TopoDS   
+
+is 
+    Create (Path   :  Wire  from  TopoDS; 
+            Surf   :  Shape  from TopoDS)  
+    returns EdgeOnSurfLaw  from BRepFill; 
+     
+     
+    HasResult(me)   
+	---Purpose: returns <False> if one  Edge of <Path> do not have
+	--           representation on  <Surf>.   In this  case  it is
+	--          impossible to use this object.          
+    returns  Boolean; 
+     
+fields 
+    hasresult  :  Boolean; 
+    
+end EdgeOnSurfLaw;

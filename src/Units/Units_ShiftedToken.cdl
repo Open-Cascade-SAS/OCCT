@@ -1,0 +1,102 @@
+-- File:	Units_ShiftedToken.cdl
+-- Created:	Thu Nov  5 15:19:54 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@bravox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class ShiftedToken from Units 
+
+	---Purpose: The  ShiftedToken class  inherits   from Token and
+	--          describes tokens which have  a gap in  addition of
+	--          the  multiplicative factor.   This kind  of  token
+	--          allows  the  description of linear functions which
+	--          do not pass through the origin, of the form :
+	--          
+	--           y = ax  +b
+	--           
+	--          where <x> and  <y>  are the unknown variables, <a>
+	--          the mutiplicative factor, and <b> the gap relative
+	--          to the ordinate axis.
+	--          
+	--          An example is the  tranlation between the  Celsius
+	--          and Fahrenheit degree of temperature.
+
+inherits
+
+    Token from Units
+    
+uses
+
+    Dimensions from Units
+
+--raises
+
+is
+
+    Create(aword , amean : CString ; avalue , amove : Real ; adimensions : Dimensions from Units)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a  shifted   token.  <aword> is  a
+    --          string containing the   available word, <amean>  gives
+    --          the signification   of the   token,  <avalue> is   the
+    --          numeric value  of the  dimension, <amove> is  the gap,
+    --          and <adimensions> is  the dimension of the given  word
+    --          <aword>.
+    
+    returns mutable ShiftedToken from Units;
+    
+    Creates(me) returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and returns a  token, which is a ShiftedToken. 
+    
+    is redefined;
+    
+    Move(me) returns Real
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns the gap <themove>
+    
+    is static;
+    
+    Multiplied(me ; avalue : Real) returns Real
+    
+    ---Level: Internal 
+    
+    ---Purpose: This  virtual   method  is  called  by the Measurement
+    --          methods,  to   compute  the   measurement    during  a
+    --          conversion.
+    
+    is redefined;
+    
+    Divided(me ; avalue : Real) returns Real
+    
+    ---Level: Internal 
+    
+    ---Purpose: This   virtual  method is  called  by  the Measurement
+    --          methods,   to   compute   the   measurement   during a
+    --          conversion.
+    
+    is redefined;
+
+    Destroy ( me : mutable ) is redefined;
+    ---Level: Internal
+    ---Purpose: Destroies the Token
+    ---C++: alias ~
+    
+    Dump(me ; ashift , alevel : Integer)
+    
+    ---Level: Internal 
+    
+    is redefined;
+    
+fields
+
+    themove : Real;
+
+end ShiftedToken;

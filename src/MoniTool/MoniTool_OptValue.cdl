@@ -1,0 +1,100 @@
+-- File:	MoniTool_OptValue.cdl
+-- Created:	Fri Dec 17 10:52:31 1999
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class OptValue  from MoniTool
+
+    ---Purpose : This class allows two kinds of use
+    --         
+    --           As an object, a OptValue can be put in any operator or
+    --           algorithm ... to use an Option of a Profile, by recording
+    --           its value, hence avoiding to query the Profile eachtime
+    --           
+    --           This object brings a value which can be set as coming from a
+    --           Profile, with a configuration name and for an Option name
+    --           This value is evaluated then returned immediately
+    --           
+    --           As a class, it can be redefined to work on a dedicated
+    --           Profile, provided by such or such specific way (as static
+    --           context for instance)
+    --           
+    --           To change configuration, etc... can be done by querying and
+    --           editing the Profile
+
+uses AsciiString from TCollection, Transient,
+     Profile from MoniTool
+
+is
+
+    Create (opt : CString = "") returns OptValue;
+    ---Purpose : Creates an OptValue on a given Option
+    --           This allows to use "shortcut" method to set the value
+    --           
+    --           WARNING : loading is not done at creation time. It must be
+    --           done explicitly by call to Load
+    --           
+    --           The reason comes from C++ : the Profile being virtual, and
+    --           intended to be redefined in sub-classes, must not be used in
+    --           the constructor. A separate method, called on the object
+    --           already created with its true type, must be called after
+
+    	-- Methods to set an OptValue
+    	-- Two kinds : basic methods (which require complete set of arguments)
+    	--   and shortcuts (which allow to use pre-defined Profile and Option)
+
+    	-- Basic Methods
+
+    Clear (me : in out);
+    ---Purpose : Clears the Value of the OptValue
+
+    SetValue (me : in out; prof : Profile; opt : CString; fast : Boolean = Standard_True);
+    ---Purpose : Sets the value as coming from the Profile, according to an
+    --           Option name. Access as Fast or regular
+    --           If no value is available, the former one remains : can be
+    --             cleared by call to Clear
+
+    	-- Context
+    	-- It is defined by the Option name given when creating the OptValue,
+    	--   and the Profile, provided by a specific virtual method : Prof
+
+    Prof (me) returns Profile  is virtual;
+    ---Purpose : Returns the Profile which can be used by Short Cut methods
+    --           Defaults returns a Null Handle, can be redefined
+    --           For instance, to return a static used as dictionary or context
+
+    	-- Short Cuts
+    	-- They suppose that Profile is provided and that Option name has been
+    	--   given when creating
+
+    Load (me : in out; fast : Boolean = Standard_True);
+    ---Purpose : Sets the value from the Profile returned by method Prof,
+    --           and Option Name given at creation time.
+    --           FastValue by default, else Value
+    --           
+    --           Does not check if already loaded : reloads anyway
+    --           IsLoaded allows to test
+
+    	-- Returned Value
+
+    IsLoaded (me) returns Boolean;
+    ---Purpose : Says if the OptValue is already loaded (i.e. Value defined)
+
+    Value (me; val : out Transient);
+    ---Purpose : Returns the Value set by, either SetConf or SetValue
+    --           Can be Null ... (if not set or not properly set)
+    --           
+    --           Returned as Argument, hence avoiding DownCast
+    --  Warning : type is not controlled
+
+    Delete (me:out) is virtual; 
+    	---C++: alias "Standard_EXPORT virtual ~MoniTool_OptValue() { Delete(); }" 	    
+
+fields
+
+    theopt : AsciiString;
+    theval : Transient;
+
+end OptValue;

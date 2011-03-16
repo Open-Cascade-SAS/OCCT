@@ -1,0 +1,72 @@
+--
+-- File      :  SolidOfLinearExtrusion.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class SolidOfLinearExtrusion from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines SolidOfLinearExtrusion, Type <164> Form Number <0>
+        --          in package IGESSolid
+        --          Solid of linear extrusion is defined by translatin an
+        --          area determined by a planar curve
+
+uses
+
+        Dir             from gp,
+        XYZ             from gp
+
+is
+
+        Create returns mutable SolidOfLinearExtrusion;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aCurve     : IGESEntity;
+              aLength    : Real;
+              aDirection : XYZ);
+        ---Purpose : This method is used to set the fields of the class
+        --           SolidOfLinearExtrusion
+        --       - aCurve     : the planar curve that is to be translated
+        --       - aLength    : the length of extrusion
+        --       - aDirection : the vector specifying the direction of extrusion
+        --                      default (0,0,1)
+
+        Curve (me) returns IGESEntity;
+        ---Purpose : returns the planar curve that is to be translated
+
+        ExtrusionLength (me) returns Real;
+        ---Purpose : returns the Extrusion Length
+
+        ExtrusionDirection (me) returns Dir;
+        ---Purpose : returns the Extrusion direction
+
+        TransformedExtrusionDirection (me) returns Dir;
+        ---Purpose : returns ExtrusionDirection after applying TransformationMatrix
+
+fields
+
+--
+-- Class    : IGESSolid_SolidOfLinearExtrusion
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class SolidOfLinearExtrusion.
+--
+-- Reminder : A SolidOfLinearExtrusion instance is defined by :
+--            a planar curve(Curve) that is translated by a distance(Length)
+--            in the direction specified by a vector(I1,J1,K1).
+--
+
+        theCurve     : IGESEntity;
+            --  the planar curve
+
+        theLength    : Real;
+            -- the length of the extrusion
+
+        theDirection : XYZ;
+            -- the vector defining the direction of the extrusion
+
+end SolidOfLinearExtrusion;

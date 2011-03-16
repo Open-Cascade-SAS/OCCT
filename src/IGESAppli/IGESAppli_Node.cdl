@@ -1,0 +1,67 @@
+--
+-- File      :  Node.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Arun MENON )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class Node from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines Node, Type <134> Form <0>
+        --          in package IGESAppli
+        --          Geometric point used in the definition of a finite element.
+
+uses
+
+    	XYZ  from gp,
+	Pnt  from gp,
+        TransfEntity         from IGESData,
+        TransformationMatrix from IGESGeom
+
+is
+
+        Create returns mutable Node;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me           : mutable;
+              aCoord       : XYZ;
+              aCoordSystem : TransformationMatrix);
+        ---Purpose : This method is used to set the fields of the class Node
+        --       - aCoord       : Nodal Coordinates
+        --       - aCoordSystem : the Nodal Displacement Coordinate
+        --                        System Entity (default 0 is Global 
+        --                        Cartesian Coordinate system)
+
+        Coord (me) returns Pnt;
+        ---Purpose : returns the nodal coordinates
+
+        System (me) returns TransfEntity;
+        ---Purpose : returns TransfEntity if a Nodal Displacement Coordinate
+        --           System Entity is defined
+        -- else (for Global Cartesien) returns Null Handle
+
+    	SystemType (me) returns Integer;
+	---Purpose : Computes & returns the Type of Coordinate System :
+	-- 0 GlobalCartesian, 1 Cartesian, 2 Cylindrical, 3 Spherical
+
+        TransformedNodalCoord (me) returns Pnt;
+        ---Purpose : returns the Nodal coordinates after transformation
+
+fields
+
+--
+-- Class    : IGESAppli_Node
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class Node.
+--
+-- Reminder : A Node instance is defined by :
+--            - Nodal Coordinates
+--            - the Nodal Displacement Coordinate System Entity
+
+        theCoord  : XYZ;
+        theSystem : TransformationMatrix;
+
+end Node;

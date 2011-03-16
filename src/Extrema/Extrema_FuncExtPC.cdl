@@ -1,0 +1,97 @@
+-- File:	FuncExtPC.cdl
+-- Created:	Wed Jul 24 14:31:49 1991
+-- Author:	Michel CHAUVAT
+--		<mca@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+private generic class FuncExtPC from Extrema 
+(Curve    as any;
+ Tool     as any;
+ POnC     as any;
+ Pnt      as any;
+ Vec      as any)
+						     
+    inherits FunctionWithDerivative from math
+    ---Purpose: Fonction permettant de rechercher les extrema de la 
+    --          distance entre un point et une courbe.
+
+uses    SequenceOfReal    from TColStd,
+	SequenceOfInteger from TColStd
+	
+raises  OutOfRange   from Standard,
+        TypeMismatch from Standard
+
+private class SeqPC instantiates Sequence from TCollection(POnC);	
+
+
+is
+
+    Create returns FuncExtPC;
+
+    Create (P: Pnt; C: Curve) returns FuncExtPC;
+    	---Purpose: 
+
+    Initialize(me: in out; C: Curve)
+    	---Purpose: sets the field mycurve of the function.
+    is static;
+    
+    SetPoint(me: in out; P: Pnt)
+    	---Purpose: sets the field P of the function.
+    is static;
+
+
+    -- In all next methods, an exception is raised if the fields 
+    -- were not initialized.
+
+    Value (me: in out; U: Real; F: out Real) returns Boolean;
+    	---Purpose: Calcul de F(U).
+
+    Derivative (me: in out; U: Real; DF: out Real) returns Boolean;
+    	---Purpose: Calcul de F'(U).
+
+    Values (me: in out; U: Real; F,DF: out Real) returns Boolean;
+    	---Purpose: Calcul de F(U) et F'(U).
+
+    GetStateNumber (me: in out) returns Integer
+    	---Purpose: Memorise l'extremum trouve.
+    	is redefined;
+
+    NbExt (me) returns Integer
+    	---Purpose: Renvoie le nombre d'extrema trouves.
+    raises TypeMismatch from Standard;
+
+    SquareDistance (me; N: Integer) returns Real
+    	---Purpose: Renvoie la Nieme distance.
+    	raises  OutOfRange from Standard,
+                TypeMismatch from Standard;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    IsMin (me; N: Integer) returns Boolean
+    	---Purpose: Indique si la Nieme distance est un minimum.
+    	raises  OutOfRange from Standard,
+                TypeMismatch from Standard;
+	    	-- si N < 1 ou N > NbExt(me).
+
+    Point (me; N: Integer) returns POnC
+    	---Purpose: Renvoie le Nieme extremum.
+    	raises  OutOfRange from Standard,
+                TypeMismatch from Standard;
+	    	-- si N < 1 ou N > NbExt(me).
+
+fields
+    myP    : Pnt;
+    myC    : Address from Standard;
+
+    myU    : Real;          -- valeur courante
+    myPc   : Pnt;           -- point courant
+    myD1f  : Real;          -- valeur de la derivee de la fonction
+
+    mySqDist: SequenceOfReal    from TColStd;
+    myIsMin: SequenceOfInteger from TColStd;
+    myPoint: SeqPC;
+    myPinit: Boolean;
+    myCinit: Boolean;
+    myD1Init: Boolean;
+
+end FuncExtPC;

@@ -1,0 +1,39 @@
+-- File:	MoniTool_SignText.cdl
+-- Created:	Wed May 20 16:47:50 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+ 
+deferred class SignText  from MoniTool    inherits TShared
+ 
+        ---Purpose : Provides the basic service to get a text which identifies
+        --           an object in a context
+        --           It can be used for other classes (general signatures ...)
+        --           It can also be used to build a message in which an object
+        --           is to be identified
+ 
+uses CString, Transient, AsciiString from TCollection
+ 
+is
+ 
+    Name (me) returns CString  is deferred;
+    ---Purpose : Returns an identification of the Signature (a word), given at
+    --           initialization time
+
+    TextAlone (me; ent : any Transient)
+    	returns AsciiString from TCollection  is virtual;
+    ---Purpose : Gives a text as a signature for a transient object alone, i.e.
+    --           without defined context.
+    --           By default, calls Text with undefined context (Null Handle) and
+    --           if empty, then returns DynamicType
+
+    Text (me; ent : any Transient; context : any Transient)
+    	returns AsciiString from TCollection  is deferred;
+    ---Purpose : Gives a text as a signature for a transient object in a context
+    --           If the context is senseless, it can be given as Null Handle
+    --           empty result if nothing to give (at least the DynamicType could
+    --           be sent ?)
+
+end SignText;

@@ -1,0 +1,31 @@
+-- File:        PreDefinedItem.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class PreDefinedItem from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable PreDefinedItem;
+	---Purpose: Returns a PreDefinedItem
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+
+fields
+
+	name : HAsciiString from TCollection;
+
+end PreDefinedItem;

@@ -1,0 +1,46 @@
+-- File:	BRepOffset_Inter2d.cdl
+-- Created:	Fri Aug 30 15:21:25 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+--  Modified by skv - Fri Dec 26 16:53:16 2003 OCC4455
+
+class Inter2d from BRepOffset 
+
+	---Purpose: Computes the intersections betwwen edges on a face
+	--          stores result is SD as AsDes from BRepOffset.
+
+uses
+    AsDes               from BRepAlgo,
+    Offset              from BRepOffset,
+    Face                from TopoDS,
+    MapOfShape          from TopTools,
+    DataMapOfShapeShape from TopTools,
+    Real                from Standard
+
+is
+    Compute(myclass ; AsDes    : mutable AsDes      from BRepAlgo;
+    	    	      F        :         Face       from TopoDS;
+       	    	      NewEdges :         MapOfShape from TopTools;
+		      Tol      :         Real       from Standard);
+		      
+      	---Purpose: Computes the intersections between the edges stored
+      	--          is AsDes as descendants of <F> . Intersections is computed
+      	--          between two edges if one of them is bound in NewEdges.
+
+    
+    --  Modified by skv - Fri Dec 26 16:53:16 2003 OCC4455 Begin
+    --  Add another parameter: offset value.
+    ConnexIntByInt(myclass ; 
+      	    	   FI    :          Face                from TopoDS;
+    	    	   OFI   : in out   Offset              from BRepOffset;
+		   MES   : in out   DataMapOfShapeShape from TopTools;  
+		   Build :          DataMapOfShapeShape from TopTools;  
+		   AsDes : mutable  AsDes               from BRepAlgo; 
+    	    	   Offset:          Real                from Standard;
+    	    	   Tol   :          Real                from Standard);
+    --  Modified by skv - Fri Dec 26 16:53:16 2003 OCC4455 End
+			    
+end Inter2d;
+

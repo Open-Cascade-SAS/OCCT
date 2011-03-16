@@ -1,0 +1,27 @@
+-- File:	PXCAFDoc_Location.cdl
+-- Created:	Tue Aug 15 12:12:40 2000
+-- Author:	data exchange team
+--		<det@strelox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Location from PXCAFDoc inherits Attribute from PDF
+
+	---Purpose: 
+
+uses 
+--    Location from TopLoc,
+    Location from PTopLoc
+is
+    Create returns mutable Location from PXCAFDoc;
+    
+    Create (Loc: Location from PTopLoc) returns mutable Location from PXCAFDoc;
+    
+    Set (me: mutable; Loc: Location from PTopLoc);
+    
+    Get (me) returns Location from PTopLoc;
+    
+fields
+    myPLocation : Location from PTopLoc;
+    
+end Location;

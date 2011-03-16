@@ -1,0 +1,33 @@
+-- File:	TDF_LabelMapHasher.cdl
+--      	----------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb 13 1997	Creation
+
+
+class LabelMapHasher from TDF 
+
+uses
+    Label from TDF
+
+is
+
+    HashCode(myclass; aLab : Label from TDF; Upper : Integer) returns Integer;
+	---Purpose: Returns a HasCode value  for  the  Key <K>  in the
+	--          range 0..Upper.
+	--
+	---C++: inline
+	
+    IsEqual(myclass; aLab1, aLab2 : Label from TDF) returns Boolean;
+	---Purpose: Returns True  when the two  keys are the same. Two
+	--          same  keys  must   have  the  same  hashcode,  the
+	--          contrary is not necessary.
+	--          
+	---C++: inline
+	
+
+end LabelMapHasher;

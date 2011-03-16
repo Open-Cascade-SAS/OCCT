@@ -1,0 +1,22 @@
+-- File:	StepFEA_NodeWithSolutionCoordinateSystem.cdl
+-- Created:	Thu Dec 12 17:51:07 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class NodeWithSolutionCoordinateSystem from StepFEA
+inherits Node from StepFEA
+
+    ---Purpose: Representation of STEP entity NodeWithSolutionCoordinateSystem
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfRepresentationItem from StepRepr,
+    RepresentationContext from StepRepr,
+    FeaModel from StepFEA
+
+is
+    Create returns NodeWithSolutionCoordinateSystem from StepFEA;
+	---Purpose: Empty constructor
+
+end NodeWithSolutionCoordinateSystem;

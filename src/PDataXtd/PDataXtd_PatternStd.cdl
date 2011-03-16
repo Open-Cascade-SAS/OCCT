@@ -1,0 +1,105 @@
+-- File:	PDataStd_PatternStd.cdl
+-- Created:	Mon Feb 16 13:33:02 1998
+-- Author:	Jing Cheng MEI
+--		<mei@pinochiox.paris1.matra-dtv.fr> 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1998
+
+
+class PatternStd from PDataXtd inherits Attribute from PDF
+
+	---Purpose: to create a pattern function
+
+uses
+
+
+    NamedShape      from PNaming,
+    Integer         from PDataStd,
+    Real            from PDataStd
+
+
+is
+
+    Create
+    returns mutable PatternStd from PDataXtd;
+    
+    --- Category: Set and Get methods
+
+    Signature(me: mutable; signature: Integer from Standard);
+        ---C++: inline
+
+    Axis1Reversed(me: mutable;  Axis1Reversed:  Boolean from Standard);
+        ---C++: inline
+     
+    Axis2Reversed(me: mutable;  Axis2Reversed:  Boolean from Standard);
+        ---C++: inline
+     
+    Axis1(me: mutable; Axis1: NamedShape from PNaming);
+        ---C++: inline
+
+    Axis2(me: mutable; Axis2: NamedShape from PNaming);
+        ---C++: inline
+
+    Value1(me: mutable; Value1: Real from PDataStd);
+        ---C++: inline
+
+    Value2(me: mutable; Value2: Real from PDataStd);
+        ---C++: inline
+
+    NbInstances1(me: mutable; NbInstances1: Integer from PDataStd);
+        ---C++: inline
+
+    NbInstances2(me: mutable; NbInstances2: Integer from PDataStd);
+        ---C++: inline
+
+    Mirror(me: mutable; plane: NamedShape from PNaming);
+        ---C++: inline
+
+
+
+    Signature(me) returns Integer from Standard;
+        ---C++: inline
+    
+    Axis1Reversed(me) returns Boolean from Standard;
+        ---C++: inline
+     
+    Axis2Reversed(me) returns Boolean from Standard;
+        ---C++: inline
+
+    Axis1(me) returns NamedShape from PNaming;
+        ---C++: inline
+
+    Axis2(me) returns NamedShape from PNaming;
+        ---C++: inline
+
+    Value1(me) returns Real from PDataStd;
+        ---C++: inline
+
+    Value2(me) returns Real from PDataStd;
+        ---C++: inline
+
+    NbInstances1(me) returns Integer from PDataStd;
+        ---C++: inline
+
+    NbInstances2(me) returns Integer from PDataStd;
+        ---C++: inline
+
+    Mirror(me) returns NamedShape from PNaming;
+        ---C++: inline
+
+
+fields
+
+    mySignature     : Integer         from Standard;
+    myAxis1Reversed : Boolean         from Standard;
+    myAxis2Reversed : Boolean         from Standard;
+
+    myAxis1         : NamedShape      from PNaming;
+    myAxis2         : NamedShape      from PNaming;
+    myValue1        : Real            from PDataStd;
+    myValue2        : Real            from PDataStd;
+    myNb1           : Integer         from PDataStd;
+    myNb2           : Integer         from PDataStd;
+    myMirror        : NamedShape      from PNaming;
+
+end PatternStd;

@@ -1,0 +1,59 @@
+-- File:	AIS_GraphicTool.cdl
+-- Created:	Mon Feb 10 16:17:04 1997
+-- Author:	Robert COUBLANC
+--		<rob@robox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--                                     the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1997
+
+class GraphicTool from AIS 
+
+	---Purpose: 
+
+uses
+    Drawer          from Prs3d,
+    TypeOfAttribute from AIS,
+    NameOfColor     from Quantity,
+    Color     	    from Quantity,
+    TypeOfLine      from Aspect,
+    MaterialAspect  from Graphic3d
+
+
+is
+
+    GetLineColor(myclass; aDrawer : Drawer from Prs3d; TheTypeOfAttributes :  TypeOfAttribute  from  AIS) 
+    returns NameOfColor from Quantity; 
+    
+    GetLineColor(myclass; aDrawer : Drawer from Prs3d; 
+		TheTypeOfAttributes :  TypeOfAttribute  from  AIS;
+		TheLineColor: out Color from Quantity);
+    
+    GetLineWidth(myclass; aDrawer : Drawer from Prs3d; TheTypeOfAttributes :  TypeOfAttribute  from  AIS)
+    returns Real from Standard;
+    
+    
+    GetLineType (myclass; aDrawer : Drawer from Prs3d; TheTypeOfAttributes :  TypeOfAttribute  from  AIS)  
+    returns TypeOfLine from Aspect;
+    
+    
+    GetLineAtt(myclass;
+    	       aDrawer : Drawer from Prs3d;
+    	       TheTypeOfAttributes :  TypeOfAttribute  from  AIS; 
+    	       aCol   : in out NameOfColor from Quantity;
+	       aWidth : in out Real from Standard;
+	       aTyp   : in out TypeOfLine from Aspect);
+	       
+	       
+    GetInteriorColor(myclass;
+    	    	    aDrawer : Drawer from Prs3d) 
+    returns NameOfColor from  Quantity;
+
+    GetInteriorColor(myclass;
+    	    	    aDrawer : Drawer from Prs3d;
+		    aColor: out Color from Quantity);
+
+    GetMaterial(myclass; aDrawer:Drawer from Prs3d)
+    returns MaterialAspect from Graphic3d;
+	       
+end GraphicTool;
+

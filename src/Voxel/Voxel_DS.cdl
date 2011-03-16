@@ -1,0 +1,134 @@
+-- File:	Voxel_DS.cdl
+-- Created:	Sun May 07 14:53:46 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+class DS from Voxel
+
+    ---Purpose: A base class for all voxel data structures.
+
+is
+
+    Create
+    ---Purpose: An empty constructor.
+    returns DS from Voxel;
+
+    Create(x     : Real    from Standard;
+    	   y     : Real    from Standard;
+    	   z     : Real    from Standard;
+    	   x_len : Real    from Standard;
+    	   y_len : Real    from Standard;
+    	   z_len : Real    from Standard;
+	   nb_x  : Integer from Standard;
+	   nb_y  : Integer from Standard;
+	   nb_z  : Integer from Standard)
+    ---Purpose: A constructor initializing the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    returns DS from Voxel;
+
+    Init(me : in out;
+    	 x     : Real    from Standard;
+    	 y     : Real    from Standard;
+    	 z     : Real    from Standard;
+    	 x_len : Real    from Standard;
+    	 y_len : Real    from Standard;
+    	 z_len : Real    from Standard;
+	 nb_x  : Integer from Standard;
+	 nb_y  : Integer from Standard;
+	 nb_z  : Integer from Standard)
+    ---Purpose: Initialization of the voxel model.
+    --          (x, y, z) - the start point of the box.
+    --          (x_len, y_len, z_len) - lengths in x, y and z directions along axes of a co-ordinate system.
+    --          (nb_x, nb_y, nb_z) - number of splits (voxels) along x, y and z directions.
+    is virtual;
+
+    ---Purpose: The methods below return initial data of the voxel model.
+    GetX   (me) returns Real    from Standard;
+    GetY   (me) returns Real    from Standard;
+    GetZ   (me) returns Real    from Standard;
+    GetXLen(me) returns Real    from Standard;
+    GetYLen(me) returns Real    from Standard;
+    GetZLen(me) returns Real    from Standard;
+    GetNbX (me) returns Integer from Standard;
+    GetNbY (me) returns Integer from Standard;
+    GetNbZ (me) returns Integer from Standard;
+
+    GetCenter(me;
+    	      ix : Integer from Standard;
+    	      iy : Integer from Standard;
+    	      iz : Integer from Standard;
+	      xc : out Real from Standard;
+	      yc : out Real from Standard;
+	      zc : out Real from Standard);
+    ---Purpose: Returns the center point of a voxel with co-ordinates (ix, iy, iz).
+
+    GetVoxel(me;
+	     x  : Real from Standard;
+	     y  : Real from Standard;
+	     z  : Real from Standard;
+    	     ix : out Integer from Standard;
+    	     iy : out Integer from Standard;
+    	     iz : out Integer from Standard)
+    ---Purpose: Finds a voxel corresponding to a 3D point.
+    --          Returns true if it is found.
+    returns Boolean from Standard;
+
+    GetVoxelX(me;
+    	      x : Real from Standard;
+	      ix : out Integer from Standard)
+    ---Purpose: Returns x-index of a voxel corresponding to x-coordinate.
+    returns Boolean from Standard;
+
+    GetVoxelY(me;
+    	      y : Real from Standard;
+	      iy : out Integer from Standard)
+    ---Purpose: Returns y-index of a voxel corresponding to y-coordinate.
+    returns Boolean from Standard;
+
+    GetVoxelZ(me;
+    	      z : Real from Standard;
+	      iz : out Integer from Standard)
+    ---Purpose: Returns z-index of a voxel corresponding to z-coordinate.
+    returns Boolean from Standard;
+
+fields
+
+    -- Flag (1 or 0) attached to each voxel (BoolDS).
+    -- 4 bits attached to each voxel        (ColorDS).
+    -- Etc.
+    myData : Address from Standard is protected;
+
+    -- Start point of the cube of voxels.
+    myX    : Real from Standard   is protected;
+    myY    : Real from Standard   is protected;
+    myZ    : Real from Standard   is protected;
+
+    -- Lengths of cube of voxels along X, Y and Z directions.
+    myXLen : Real from Standard   is protected;
+    myYLen : Real from Standard   is protected;
+    myZLen : Real from Standard   is protected;
+
+    -- Number of voxels along X, Y and Z directions.
+    myNbX : Integer from Standard is protected;
+    myNbY : Integer from Standard is protected;
+    myNbZ : Integer from Standard is protected;
+
+    --- Optimization data.
+    myNbXY   : Integer from Standard is protected;
+    myDX     : Real    from Standard is protected;
+    myDY     : Real    from Standard is protected;
+    myDZ     : Real    from Standard is protected;
+    myHalfDX : Real    from Standard is protected;
+    myHalfDY : Real    from Standard is protected;
+    myHalfDZ : Real    from Standard is protected;
+
+friends
+
+    -- Gives access to myData inorder to make reading/writing much faster.
+    class Writer from Voxel,
+    class Reader from Voxel
+
+end DS;

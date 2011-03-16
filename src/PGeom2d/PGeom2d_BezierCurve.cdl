@@ -1,0 +1,71 @@
+-- File:	PGeom2d_BezierCurve.cdl
+-- Created:	Tue Apr  6 17:13:07 1993
+-- Author:	Philippe DAUTRY
+--		<fid@mastox>
+-- Copyright:	 Matra Datavision 1993
+
+
+class BezierCurve from PGeom2d inherits BoundedCurve from PGeom2d
+
+        ---Purpose : Defines a rational or non rational Bezier curve.
+        --         
+	---See Also : BezierCurve from Geom2d.
+
+uses  HArray1OfReal from PColStd,
+      HArray1OfPnt2d  from PColgp
+
+is 
+
+
+  Create returns mutable BezierCurve from PGeom2d;
+        ---Purpose : Creates a non rational  Bezier curve with default
+        --         values.
+	---Level: Internal 
+
+
+  Create(aPoles    : HArray1OfPnt2d;
+         aWeights  : HArray1OfReal;
+	 aRational : Boolean from Standard)
+     returns mutable BezierCurve from PGeom2d;
+        ---Purpose : Creates a non rational Bezier curve with a set of
+        --         poles aCurvePoles and a set of weights aPoleWeight.
+	---Level: Internal 
+
+
+  Rational (me: mutable; aRational: Boolean from Standard);
+        ---Purpose : Set the value of the field rational with <aRational>.
+	---Level: Internal 
+
+
+  Rational (me) returns Boolean;
+        ---Purpose : Returns the value of the field rational.
+	---Level: Internal 
+
+
+  Poles (me: mutable; aPoles : HArray1OfPnt2d from PColgp);
+        ---Purpose : Set the value of the field poles with <aPoles>.
+	---Level: Internal 
+
+
+  Poles (me) returns HArray1OfPnt2d from PColgp;
+        ---Purpose : Returns the value of the field poles.
+	---Level: Internal 
+
+
+  Weights (me: mutable; aWeights : HArray1OfReal from PColStd);
+        ---Purpose : Set the value of the field weights.
+	---Level: Internal 
+
+
+  Weights (me)returns HArray1OfReal from PColStd;
+        ---Purpose : Returns the value of the field weights.
+	---Level: Internal 
+
+
+fields
+
+   rational : Boolean from Standard;
+   poles    : HArray1OfPnt2d  from PColgp;
+   weights  : HArray1OfReal from PColStd;
+
+end;

@@ -1,0 +1,54 @@
+-- File:	LocOpe_GeneratedShape.cdl
+-- Created:	Mon Jan  8 16:23:49 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+deferred class GeneratedShape from LocOpe inherits TShared from MMgt
+
+	---Purpose:
+
+uses Vertex      from TopoDS,
+     Edge        from TopoDS,
+     Face        from TopoDS,
+     ListOfShape from TopTools
+
+is
+
+
+    GeneratingEdges(me: mutable)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	is deferred;
+
+
+    Generated(me: mutable; V: Vertex from TopoDS)
+	---Purpose: Returns the  edge  created by  the  vertex <V>. If
+	--          none, must return a null shape.
+    	returns Edge from TopoDS
+	is deferred;
+
+
+    Generated(me: mutable; E: Edge from TopoDS)
+	---Purpose: Returns the face created by the edge <E>. If none,
+	--          must return a null shape.
+    	returns Face from TopoDS
+	is deferred;
+
+
+    OrientedFaces(me: mutable)
+	---Purpose: Returns  the  list of correctly oriented generated
+	--          faces. 
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	is deferred;
+
+
+fields
+
+    myGEdges : ListOfShape from TopTools is protected;
+    myList   : ListOfShape from TopTools is protected;
+
+end GeneratedShape;

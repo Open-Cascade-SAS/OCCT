@@ -1,0 +1,88 @@
+--
+-- File      :  RadiusDimension.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class RadiusDimension from IGESDimen  inherits IGESEntity
+
+        ---Purpose: Defines IGES Radius Dimension, type <222> Form <0, 1>,
+        --          in package IGESDimen.
+        --          A Radius Dimension Entity consists of a General Note, a
+        --          leader, and an arc center point. A second form of this
+        --          entity accounts for the occasional need to have two
+        --          leader entities referenced.
+
+uses
+
+        LeaderArrow from IGESDimen,
+        GeneralNote from IGESDimen,
+        XY          from gp,
+        Pnt         from gp,
+        XYZ         from gp,
+        Pnt2d       from gp
+
+is
+
+        Create returns mutable RadiusDimension;
+
+            -- --specific-- --
+        Init(me           : mutable;
+             aNote        : GeneralNote;
+             anArrow      : LeaderArrow;
+             arcCenter    : XY;
+             anotherArrow : LeaderArrow);
+        -- This method is used to set fields of the
+        -- class RadiusDimension
+        --       - aNote        : Note for the dimension
+        --       - anArrow      : Leader arrow used for the dimensioning
+        --       - arcCenter    : Center point of the arc
+        --       - anotherArrow : Second leader arrow used for the dimensioning
+        --                        (will be Null, if Form no. is 0)
+
+    	InitForm (me : mutable; form : Integer);
+	---Purpose : Allows to change Form Number
+	--           (1 admits null arrow)
+
+        Note(me) returns GeneralNote;
+        ---Purpose : returns the General Note entity
+
+        Leader(me) returns LeaderArrow;
+        ---Purpose : returns the Leader Arrow entity
+
+        Center(me) returns Pnt2d;
+        ---Purpose : returns the coordinates of the Arc Center
+
+        TransformedCenter(me) returns Pnt;
+        ---Purpose : returns the coordinates of the Arc Center after Transformation
+        -- (Z coord taken from ZDepth of Leader Entity)
+
+        HasLeader2(me) returns Boolean;
+        ---Purpose : returns True if form is 1, False if 0
+
+        Leader2(me) returns LeaderArrow;
+        ---Purpose : returns Null handle if Form is 0
+
+fields
+
+--
+-- Class    : IGESDimen_RadiusDimension
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class RadiusDimension.
+--
+-- Reminder : A RadiusDimension instance is defined by :
+--                     - A General Note
+--                - A Leader Arrow
+--                - The arc center coordinates
+--                - The second Leader Arrow
+--
+
+        theNote        : GeneralNote;
+        theLeaderArrow : LeaderArrow;
+        theCenter      : XY;
+        theLeader2     : LeaderArrow; -- Null handle if form is 0
+
+end RadiusDimension;

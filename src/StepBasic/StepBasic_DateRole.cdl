@@ -1,0 +1,31 @@
+-- File:        DateRole.cdl
+-- Created:     Fri Dec  1 11:11:18 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class DateRole from StepBasic 
+
+inherits TShared from MMgt
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable DateRole;
+	---Purpose: Returns a DateRole
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+
+fields
+
+	name : HAsciiString from TCollection;
+
+end DateRole;

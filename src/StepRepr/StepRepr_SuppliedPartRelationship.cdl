@@ -1,0 +1,18 @@
+-- File:	StepRepr_SuppliedPartRelationship.cdl
+-- Created:	Tue Jun 30 17:39:51 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SuppliedPartRelationship  from StepRepr
+    inherits ProductDefinitionRelationship  from StepBasic
+
+uses
+     HAsciiString from TCollection
+
+is
+
+    Create returns mutable SuppliedPartRelationship;
+
+end SuppliedPartRelationship;

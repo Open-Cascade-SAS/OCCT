@@ -1,0 +1,345 @@
+--
+-- Package: Visual3d.cdl
+-- Author:  NW,JPB,CAL
+-- Created: Lundi 7 Octobre 1991
+-- Updated: Vendredi 2 Octobre 1992
+--      Mercredi 31 mars 1993
+--      1/08/97 ; PCT : ajout texture mapping
+--      11-97: CAL; retrait de la dependance avec math.
+--      15/01/98 ; FMN : Suppression Hidden Line 
+--      16-09-98 ; BGN : Ajout TypeOfTriedronEcho, 
+--                               TypeOfTriedronPosition.
+--              22-09-98; BGN: S3989 (anciennement S3819): report
+--                             dans Aspect des TypeOfTriedron*
+--      14-01-00; GG : IMP140100 Add ViewManager pointer
+--      25-01-00; EUG: G003 Add backfacing model enum.
+--
+-- Copyright:   MatraDatavision 1991,1992,1993
+--
+-- Purpose: Specifications definitives
+--
+--
+-- Date:    Mercredi 31 mars 1993
+--
+--
+-- File:    Visual3d.cdl
+-- Created: Lundi 7 Octobre 1991
+-- Author:  NW,JPB,CAL
+--
+---Copyright:   MatraDatavision 1991,1992,1993
+--
+
+package Visual3d
+
+    ---Version:
+
+    ---Purpose: This package contains the group of classes necessary
+    --      for the implementation of commands for the 3D visualiser.
+    --      Use of this package is reserved to the visualiser.
+    --
+    --      The visualiser manages the structures, the views, the
+    --      light sources, and object picking.
+
+    ---Keywords: View, Light, Plane, Pick
+    ---Warning:
+    ---References:
+
+uses
+
+    gp,
+    TCollection,
+    TColStd,
+    Quantity,
+    Aspect,
+    Graphic3d,
+    Image,
+    MMgt,
+    Xw,
+    WNT,
+    OSD
+
+is
+
+    ---------------------------
+    -- Category: The exceptions
+    ---------------------------
+
+    exception ClipDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ContextPickDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception DepthCueingDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception LightDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception PickError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception TransformError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ViewDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ViewManagerDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ViewMappingDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ViewOrientationDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception ZClippingDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception TransientDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    exception LayerDefinitionError inherits OutOfRange;
+    ---Category: The exceptions
+
+    -----------------------------
+    -- Category: The enumerations
+    -----------------------------
+
+    enumeration TypeOfAnswer is TOA_YES,
+                    TOA_NO,
+                    TOA_COMPUTE
+    end TypeOfAnswer;
+    ---Purpose: The answer of the method AcceptDisplay
+    --      AcceptDisplay  means is it possible to display the
+    --             specified structure in the specified view ?
+    --      TOA_YES yes
+    --      TOA_NO  no
+    --      TOA_COMPUTE yes but we have to compute the representation
+
+    enumeration TypeOfLightSource is    TOLS_AMBIENT,
+                        TOLS_DIRECTIONAL,
+                        TOLS_POSITIONAL,
+                        TOLS_SPOT
+    end TypeOfLightSource;
+    ---Purpose: Definition of all the type of light sources
+    --
+    --      TOLS_AMBIENT    ambient light
+    --      TOLS_DIRECTIONAL    directional light
+    --      TOLS_POSITIONAL positional light
+    --      TOLS_SPOT       spot light
+
+    enumeration TypeOfModel is  TOM_NONE,
+                    TOM_INTERP_COLOR,
+                    TOM_FACET,
+                    TOM_VERTEX
+    end TypeOfModel;
+    ---Purpose: Definition of the rendering (colour shading) model
+    --  TOM_NONE        No interpolation, constant shading
+    --              (FLAT Shading)
+    --  TOM_INTERP_COLOR    Linear interpolation of color
+    --              (Gouraud Shading)
+    --  TOM_FACET       Interpolation of color based on
+    --              dot products
+    --              (Quick Phong Shading)
+    --  TOM_VERTEX      Interpolation of color based on
+    --              normals
+    --              (Phong Shading)
+    ---Category: The enumerations
+
+    enumeration TypeOfOrder is  TOO_TOPFIRST,
+                    TOO_BOTTOMFIRST
+    end TypeOfOrder;
+    ---Purpose: Definition of the order of selection
+    --      TOO_TOPFIRST    the root structure first
+    --      TOO_BOTTOMFIRST the leaf structure first
+    --      Allows exploration of a PickPath in a PickDescriptor.
+    ---Category: The enumerations
+
+    enumeration TypeOfProjection is TOP_PERSPECTIVE,
+                    TOP_PARALLEL
+    end TypeOfProjection;
+    ---Purpose: Definition of the type of 3D projection
+    --
+    --      TOP_PERSPECTIVE perspective projection (centre of
+    --              projection at a  distance finite from
+    --              plane of projection)
+    --      TOP_PARALLEL    parallel projection (point of
+    --              projection at infinity)
+    ---Category: The enumerations
+
+    enumeration TypeOfVisualization is  TOV_WIREFRAME,
+                        TOV_SHADING
+    end TypeOfVisualization;
+    ---Purpose: Modes of visualisation of objects in a view
+    --
+    --      TOV_WIREFRAME   wireframe visualisation
+    --      TOV_SHADING     shaded visualisation
+    ---Category: The enumerations
+
+    enumeration TypeOfSurfaceDetail is  TOD_NONE, 
+                        TOD_ENVIRONMENT, 
+                        TOD_ALL
+    end TypeOfSurfaceDetail;
+    ---Purpose: Modes of visualisation of objects in a view
+    --
+    --      TOD_NONE        no texture mapping
+    --      TOD_ENVIRONMENT only environnement mapping
+    --      TOD_ALL     environnement + texture mapping
+    ---Category: The enumerations
+
+        enumeration TypeOfBackfacingModel is
+                TOBM_AUTOMATIC, TOBM_FORCE, TOBM_DISABLE
+        end TypeOfBackfacingModel;
+        ---Purpose  : Modes of display of back faces in the view
+        --
+        --            TOBM_AUTOMATIC graphic's structure setting is in use
+        --            TOBM_FORCE     force display of back faces
+        --            TOBM_DISABLE   disable display of back faces
+        ---Category : Enumerations
+
+    ------------------------
+    -- Category: The classes
+    ------------------------
+
+    class ClipPlane;
+    ---Purpose: This class allows the creation and update of a
+    --      clipping plane in the space model.
+    ---Category: The classes
+
+    class ContextPick;
+    ---Purpose: This class allows the creation and update of a
+    --      pick context for one view of the viewer.
+    --      A context allows the control of different parameters
+    --      before the activation of a pick :
+    --
+    --      * pick aperture.
+    --      * the depth of pick, the number of sub-structures selected.
+    --      * the order of picking, the possibility to traverse
+    --        the pick structures starting from the roots or the leaves.
+    ---Category: The classes
+
+    class ContextView;
+    ---Purpose: This class manages the creation and update of a
+    --      visualisation context for one view in the viewer.
+    --
+    --      A context is defined by :
+    --      * Antialiasing.
+    --      * ZClipping.
+    --      * Depth-cueing.
+    --      * The type of visualisation.
+    --      * The light sources.
+    ---Category: The classes
+
+    class Light;
+    ---Purpose: This class defines and updates light sources.
+    --      There is no limit to the number of light sources defined.
+    --      Only the number of active sources is limited.
+    ---Category: The classes
+
+    class PickDescriptor;
+    ---Purpose: A PickDescriptor contains information on the picks.
+    --      It contains a certain number of PickPaths.
+    ---Category: The classes
+
+    class PickPath;
+    ---Purpose: A PickPath is a vector ( elem_num, pick_id, struct_id ).
+    --      It is one of the constituents of a PickDescriptor.
+    --      There are many Pickpaths in a PickDescriptor.
+    --      Each PickPath describes a structure or an sub-structure.
+    --      The pick-id is set by the SetPickId method from Group.
+    ---Category: The classes
+
+    class View;
+    ---Purpose: Creation and editing of a view in a 3D visualiser.
+    --
+    --      A 3D view is composed of an 'orientation' part defined
+    --      by the position of the observer, the viewing direction,
+    --      and a 'mapping' part defined by the type of projection
+    --      (parallel or perspective), and by the window-viewport
+    --      couple which allows passage from the projected coordinate
+    --      space into the screen space.
+    ---Category: The classes
+
+    class ViewManager;
+    ---Purpose: 3D Visualiser
+    ---Category: The classes
+
+    class ViewMapping;
+    ---Purpose: This class describes a projection and a system of
+    --      coordinates called NPC.(Normalized Projection Coordinates)
+    ---Category: The classes
+
+    class ViewOrientation;
+    ---Purpose: This class describes the manner in which the
+    --      observer looks at the visualised scene.
+    --      It defines a coordinates system called VRC
+    --      (View Reference Coordinates) with 3 axes U,V,N
+    ---Category: The classes
+
+    class TransientManager;
+    ---Purpose: 3D Transient Visualiser
+    ---Category: The classes
+
+    class Layer;
+    ---Purpose: 2D Layer
+    ---Category: The classes
+
+        class LayerItem;
+    ---Purpose: 2D Layer presentation unit
+    ---Category: The classes
+
+        ---------------------
+        -- Category: Pointers
+        ---------------------
+
+        pointer ViewPtr to View from Visual3d;
+        ---Category: Pointers
+
+        pointer ViewManagerPtr to ViewManager from Visual3d;
+        ---Category: Pointers
+
+    ---------------------------------
+    -- Category: Instantiated classes
+    ---------------------------------
+
+        imported NListOfLayerItem;
+    
+    class SequenceOfPickPath instantiates
+            Sequence from TCollection (PickPath from Visual3d);
+    ---Category: Instantiated classes
+
+    class HSequenceOfPickPath instantiates
+            HSequence from TCollection
+            (PickPath from Visual3d, SequenceOfPickPath);
+    ---Category: Instantiated classes
+
+    class SetOfClipPlane instantiates
+            Set from TCollection (ClipPlane from Visual3d);
+    ---Category: Instantiated classes
+
+    class HSetOfClipPlane instantiates
+            HSet from TCollection
+            (ClipPlane from Visual3d, SetOfClipPlane);
+    ---Category: Instantiated classes
+
+    class SetOfLight instantiates
+            Set from TCollection (Light from Visual3d);
+    ---Category: Instantiated classes
+
+    class HSetOfLight instantiates
+            HSet from TCollection
+            (Light from Visual3d, SetOfLight);
+    ---Category: Instantiated classes
+
+    class SetOfView instantiates
+            Set from TCollection (View from Visual3d);
+    ---Category: Instantiated classes
+
+    class HSetOfView instantiates
+            HSet from TCollection
+            (View from Visual3d, SetOfView);
+    ---Category: Instantiated classes
+
+end Visual3d;

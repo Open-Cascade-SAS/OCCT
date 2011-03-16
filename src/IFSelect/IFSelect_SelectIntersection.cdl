@@ -1,0 +1,27 @@
+-- File:	SelectIntersection.cdl
+-- Created:	Mon Jan 11 12:40:26 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+class SelectIntersection  from IFSelect  inherits SelectCombine
+
+    ---Purpose : A SelectIntersection filters the Entities issued from several
+    --           other Selections as Intersection of results : "AND" operator
+
+uses AsciiString from TCollection, EntityIterator, Graph
+
+is
+
+    Create returns mutable SelectIntersection;
+    ---Purpose : Creates an empty SelectIntersection
+
+    RootResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the list of selected Entities, which is the common part
+    --           of results from all input selections. Uniqueness is guaranteed.
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Intersection (AND)"
+
+end SelectIntersection;

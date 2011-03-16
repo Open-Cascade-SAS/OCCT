@@ -1,0 +1,96 @@
+#include <Precision.hxx>
+//=======================================================================
+//function : IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries
+//purpose  : 
+//=======================================================================
+  IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
+:  done(Standard_False) 
+{
+}  
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+  void IntStart_SearchOnBoundaries::Perform (TheFunction& Func,
+					     const Handle(TheTopolTool)& Domain,
+					     const Standard_Real TolBoundary,
+					     const Standard_Real TolTangency) 
+{
+  
+  done = Standard_False;
+  spnt.Clear();
+  sseg.Clear();
+
+  Standard_Boolean Arcsol;
+  Standard_Real PDeb,PFin, prm, tol;
+  Standard_Integer i, nbknown, nbfound,index;
+  gp_Pnt pt;
+  
+  Domain->Init();
+
+  if (Domain->More()) {
+    all  = Standard_True;
+  }
+  else {
+    all = Standard_False;
+  }
+
+  while (Domain->More()) {
+    TheArc A = Domain->Value();
+    if (!TheSOBTool::HasBeenSeen(A)) {
+      Func.Set(A);
+      FindVertex(A,Domain,Func,spnt,TolBoundary);
+      TheSOBTool::Bounds(A,PDeb,PFin);
+      if(Precision::IsNegativeInfinite(PDeb) || 
+	 Precision::IsPositiveInfinite(PFin)) { 
+
+	InfiniteArc(A,Domain,PDeb,PFin,Func,spnt,sseg,
+		    TolBoundary,TolTangency,Arcsol);
+      }
+      else { 
+	BoundedArc(A,Domain,PDeb,PFin,Func,spnt,sseg,
+		   TolBoundary,TolTangency,Arcsol);
+      }
+      all = (all && Arcsol);
+    }
+    
+    else {
+      // as it seems we'll never be here, because 
+      // TheSOBTool::HasBeenSeen(A) always returns FALSE
+      nbfound = spnt.Length();
+
+      // On recupere les points connus
+      nbknown = TheSOBTool::NbPoints(A);
+      for (i=1; i<=nbknown; i++) {
+	TheSOBTool::Value(A,i,pt,tol,prm);
+	if (TheSOBTool::IsVertex(A,i)) {
+	  TheVertex vtx;
+	  TheSOBTool::Vertex(A,i,vtx);
+	  spnt.Append(IntStart_ThePathPoint(pt,tol,vtx,A,prm));
+	}
+	else {
+	  spnt.Append(IntStart_ThePathPoint(pt,tol,A,prm));
+	}
+      }
+      // On recupere les arcs solutions
+      nbknown = TheSOBTool::NbSegments(A);
+      for (i=1; i<=nbknown; i++) {
+	IntStart_TheSegment newseg;
+	newseg.SetValue(A);
+	if (TheSOBTool::HasFirstPoint(A,i,index)) {
+	  newseg.SetLimitPoint(spnt.Value(nbfound+index),Standard_True);
+	}
+	if (TheSOBTool::HasLastPoint(A,i,index)) {
+	  newseg.SetLimitPoint(spnt.Value(nbfound+index),Standard_False);
+	}
+	sseg.Append(newseg);
+      }
+
+      all = (all& TheSOBTool::IsAllSolution(A));
+    }
+    Domain->Next();
+  }
+  done = Standard_True;
+}
+

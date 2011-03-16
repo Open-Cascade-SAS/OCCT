@@ -1,0 +1,38 @@
+-- File:	GeomFill_Line.cdl
+-- Created:	Fri Feb 18 16:42:03 1994
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Line from GeomFill
+
+	---Purpose: 
+
+inherits TShared from MMgt
+
+
+is
+
+    Create returns mutable Line from GeomFill;
+
+    Create(NbPoints : Integer from Standard)
+    returns mutable Line from GeomFill;
+
+    NbPoints(me)
+    returns Integer from Standard
+	---C++: inline
+    is static;
+
+
+    Point(me; Index: Integer from Standard)
+    returns Integer  from Standard
+	---C++: inline
+    is static;
+
+fields
+
+    myNbPoints : Integer from Standard;
+
+end Line;

@@ -1,0 +1,61 @@
+-- File:	BlendFunc_Tensor.cdl
+-- Created:	Thu Dec  5 09:27:33 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class Tensor from BlendFunc 
+
+	---Purpose: used to store the "gradient of gradient"
+
+uses
+Array1OfReal from TColStd,
+Vector from math,
+Matrix from math
+
+raises DimensionError from Standard, 
+       RangeError from Standard 
+
+is
+    Create(NbRow, NbCol, NbMat : Integer) 
+    returns Tensor;
+ 
+    Init(me : in out; InitialValue: Real)
+	   ---Purpose:Initialize all the elements of a Tensor to InitialValue.
+    is static;
+ 
+    Value(me; Row, Col, Mat: Integer)
+    	---Purpose: accesses (in read or write mode) the value of index <Row>,
+    	--          <Col> and <Mat> of a Tensor.
+    	--          An exception is raised if <Row>, <Col> or <Mat> are not
+    	--          in the correct range.
+    	---C++: alias operator() 
+    	---C++: return const & 
+    	---C++: inline
+    returns Real
+    is static;
+    
+    ChangeValue(me : in out; Row, Col, Mat: Integer)
+    	---Purpose: accesses (in read or write mode) the value of index <Row>,
+    	--          <Col> and <Mat> of a Tensor.
+    	--          An exception is raised if <Row>, <Col> or <Mat> are not
+    	--          in the correct range.
+    	---C++: alias operator() 
+    	---C++: return & 
+    	---C++: inline
+    returns Real
+    is static;
+
+    Multiply(me; Right: Vector; Product:out Matrix)
+    raises DimensionError
+    is static;
+    
+
+fields
+    Tab     : Array1OfReal;
+    nbrow   : Integer;
+    nbcol   : Integer;
+    nbmat   : Integer;
+    nbmtcl  : Integer;
+end ;

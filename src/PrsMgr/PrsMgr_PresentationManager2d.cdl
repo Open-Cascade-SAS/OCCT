@@ -1,0 +1,162 @@
+-- File:	PrsMgr_PresentationManager2d.cdl
+-- Created:	Thu Oct 21 12:45:31 1993
+-- Author:	Jean-Louis FRENKEL
+--		<jlf@stylox>
+-- Modified by rob Aug 20 98 : 
+--               new Methods : Is3D() , AddToImmediateList (GO)
+--                            BeginDraw redefined		
+--                            new field : myGOList
+--               => allows users to store independant Graphic
+--                  Objects, which will be displayed in immediate mode
+--                  when EndDraw is applied
+---Copyright:	 Matra Datavision 1993
+
+
+class PresentationManager2d from PrsMgr inherits PresentationManager from PrsMgr
+
+    	---Purpose: A framework to manage 2D displays, graphic entities
+    	-- and their updates. Plotters, Highlights, Minima
+    	-- maxima, immediate display (of transient graphic data???].
+        
+uses
+    ListOfTransient     from TColStd,
+    View                from Graphic2d,
+    TransientManager    from Graphic2d,
+    PresentableObject   from PrsMgr,
+    Presentation        from PrsMgr,
+    Presentation2d      from PrsMgr,
+    DisplayList         from Graphic2d,
+    GraphicObject       from Graphic2d,
+    Buffer              from Graphic2d,
+    View                from Viewer
+    
+is
+
+    Create(aStructureManager: View from Graphic2d)
+    returns mutable PresentationManager2d from  PrsMgr;
+    	---Purpose: Creates a framework to manage displays and graphic
+    	-- entities with the 2D view aStructureManager.
+        
+    Is3D(me) returns Boolean from Standard is redefined static;
+    
+    ColorHighlight(me: mutable; 
+                  aPresentableObject: mutable PresentableObject from PrsMgr;
+                  anIndex: Integer from Standard;
+    	          aMode: Integer from Standard = 0)
+    is static;
+    	---Purpose: Highlights the graphic object aPresentableObject in
+    	-- color by the color index anIndex. aPresentableObject
+    	-- has the display mode aMode.
+        
+    EnablePlot (me: mutable; 
+                  aPresentableObject: mutable PresentableObject from PrsMgr;
+    	          aMode: Integer from Standard = 0)
+    is static;
+    	---Purpose: Allows the drawing on a plotter of the graphic object
+    	-- aPresentableObject with the display mode aMode.
+
+    DisablePlot (me: mutable; 
+                  aPresentableObject: mutable PresentableObject from PrsMgr;
+    	          aMode: Integer from Standard = 0)
+	---Purpose: Forbids the drawing on a plotter of the graphic object
+    	-- aPresentableObject with the display mode aMode.
+    is static;
+
+    IsPlottable (me; 
+                 aPresentableObject: mutable PresentableObject from PrsMgr;
+    	         aMode: Integer from Standard = 0)
+    returns Boolean from Standard
+    	---Level: Public
+    	---Purpose: Returns Standard_True if the graphic object <me>
+    	--	    is plottable, Standard_False if not.
+    	---Category: Methods to manage the plotter
+     is static;
+
+    SetOffset (me: mutable;
+               aPresentableObject: mutable PresentableObject from PrsMgr;
+	       anOffset: Integer from Standard;
+  	       aMode: Integer from Standard = 0)
+    is static;
+    	---Level: Public
+    	---Purpose: Specifies an Offset applied to the original color
+    	--	    index of all primitives in the graphic object <me>.
+    	--  Warning: To reset the real color of the primitives
+    	--	    you have to call this method with <anOffset> = 0.
+    	---Category: Methods to manage the highlight
+
+    Offset (me;
+            aPresentableObject: mutable PresentableObject from PrsMgr;
+  	    aMode: Integer from Standard = 0)
+    returns Integer from Standard
+    is static;
+    	---Level: Public
+    	---Purpose: Returns the Offset applied to the original color
+    	--	    index of all primitives in the graphic object <me>.
+    	---Category: Methods to manage the highlight
+
+
+    InitMinMax(me: mutable)
+    	---Purpose: Initializes a list of 2D objects for which minima and
+    	-- maxima will be calculated.
+    is static;
+    
+    AddMinMax(me: mutable; aPresentableObject: PresentableObject from PrsMgr;
+    	                   aMode: Integer from Standard = 0)
+    	---Purpose: Appends the graphic object aPresentableObject with
+    	-- the display mode aMode to the list of objects for
+    	-- which minima and maxima will be calculated.
+    is static;	
+
+    MinMax(me; MinX,MaxX,MinY,MaxY: out Real from Standard)
+    	---Purpose: Returns the minima and maxima for all the graphic
+    	-- objects listed by the AddMinMax function.
+    is static;
+    
+    SetHighlightColor(me:mutable; anIndex: Integer from Standard) 
+    is static;
+    	--- Purpose: Sets the highlight color index anIndex.   
+
+    StructureManager(me) returns mutable View from Graphic2d
+    is static;
+    	---Purpose: Returns the structure manager.
+    
+         
+
+    BeginDraw(me:mutable) is redefined static;
+
+    AddToImmediateList(me:mutable;aGO:GraphicObject from Graphic2d);
+
+    EndDraw(me: mutable; aView: View from Viewer; DoubleBuffer: Boolean from Standard = Standard_False)
+    is redefined static;
+    	---Purpose: Allows rapid drawing of the view aView by avoiding
+    	-- an update of the whole background. If DoubleBuffer is true, the background is drawn.
+
+
+    Dump (me: mutable;
+    	  aBuffer: Buffer from Graphic2d; 
+          aPresentableObject: PresentableObject from PrsMgr;
+    	  aMode: Integer from Standard = 0) is static;
+    	---Level: Public
+    	---Purpose: Dumps the Graphic Primitives of the PresentatbleObject in the buffer
+ 
+
+    CastPresentation(me; aPresentableObject: mutable PresentableObject from PrsMgr;
+         	         aMode: Integer from Standard = 0)
+    returns mutable Presentation2d from PrsMgr
+    is static;
+
+    newPresentation(me: mutable; aPresentableObject: PresentableObject from PrsMgr) 
+    returns mutable Presentation from PrsMgr
+    	---Level: Internal 
+    	---Purpose: Creates a new presentation in the presentation manager.
+    is redefined static;
+
+
+
+fields
+
+    myStructureManager: View from Graphic2d;
+    MinMaxList: DisplayList from Graphic2d;
+    myTM : TransientManager from Graphic2d;
+    myGOList : ListOfTransient from TColStd;
+end PresentationManager2d from PrsMgr;

@@ -1,0 +1,21 @@
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean GCPnts_AbscissaPoint::IsDone() const 
+{
+  return myComputer.IsDone();
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real GCPnts_AbscissaPoint::Parameter() const
+{
+  return myComputer.Parameter();
+}
+
+

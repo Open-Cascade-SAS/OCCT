@@ -1,0 +1,163 @@
+-- File:	BRepToIGESBRep_Entity.cdl
+-- Created:	Tue Apr 25 11:39:19 1995
+-- Author:	Marie Jose MARTZ
+--		<mjm@pronox>
+---Copyright:	 Matra Datavision 1995
+
+class Entity from BRepToIGESBRep inherits BREntity from BRepToIGES
+
+
+    ---Purpose : provides methods to transfer BRep entity from CASCADE to IGESBRep.
+
+uses
+
+    Geometry                 from Geom,
+    Shape                    from TopoDS,
+    Vertex                   from TopoDS,
+    Edge                     from TopoDS,
+    Wire                     from TopoDS,
+    Face                     from TopoDS,
+    Shell                    from TopoDS,
+    Solid                    from TopoDS,
+    CompSolid	             from TopoDS,
+    Compound                 from TopoDS,
+    IndexedMapOfShape        from TopTools,
+    IndexedMapOfTransient    from TColStd,
+    IGESEntity               from IGESData,
+    IGESModel                from IGESData,
+    VertexList               from IGESSolid,
+    EdgeList                 from IGESSolid,
+    Loop                     from IGESSolid,
+    Face                     from IGESSolid,   
+    Shell                    from IGESSolid, 
+    ManifoldSolid            from IGESSolid,
+    CString                  from Standard,
+    FinderProcess            from Transfer
+
+is
+
+    Create 
+    	returns Entity from BRepToIGESBRep;
+    ---Purpose : Creates a tool Entity
+
+
+    Clear              (me        : in out);
+    ---Purpose : Clears the contents of the fields
+
+
+    TransferVertexList (me        : in out);
+    ---Purpose :  Create the VertexList entity 
+
+
+    IndexVertex        (me; 
+                        myvertex    : Vertex from TopoDS) 
+    returns Integer
+    ---Purpose: Returns the index of <myvertex> in "myVertices"
+    is static;
+
+
+    AddVertex          (me        : in out; 
+                        myvertex  : Vertex from TopoDS) 
+    returns Integer
+    ---Purpose: Stores <myvertex> in "myVertices"
+    --          Returns the index of <myvertex>.
+    is static;
+	
+
+    TransferEdgeList   (me        : in out);
+    ---Purpose :  Transfert an Edge entity from TopoDS to IGES
+
+
+    IndexEdge          (me; 
+                        myedge    : Edge from TopoDS) 
+    returns Integer
+    ---Purpose: Returns the index of <myedge> in "myEdges"
+    is static;
+
+
+    AddEdge            (me        : in out; 
+                        myedge    : Edge from TopoDS;
+			mycurve3d : IGESEntity from IGESData)
+    returns Integer
+    ---Purpose: Stores <myedge> in "myEdges" and <mycurve3d> in "myCurves".
+    --           Returns the index of <myedge>.
+    is static;
+	
+
+    TransferShape      (me : in out; start : Shape from TopoDS)
+    returns IGESEntity from IGESData is redefined;
+    ---Purpose : Returns the result of the transfert of any Shape
+    --           If  the transfer has  failed, this member return a NullEntity.
+	
+
+    TransferEdge       (me        : in out;
+                        myedge    : Edge     from TopoDS)
+    returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Edge entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferEdge       (me        : in out;
+                        myedge    : Edge     from TopoDS;
+		        myface    : Face     from TopoDS;
+                        length    : in Real   from Standard)		    				    
+    returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an Edge entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferWire       (me        : in out;
+                        mywire    : Wire     from TopoDS;
+		        myface    : Face     from TopoDS;
+			length    : in Real   from Standard)		    
+    returns mutable Loop from IGESSolid;
+    ---Purpose :  Transfert a Wire entity from TopoDS to IGES.
+    --            Returns the curve associated to mywire in the parametric space of myface.
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferFace       (me    : in out;
+                        start : Face from TopoDS)
+    returns mutable Face from IGESSolid;
+    ---Purpose :  Transfert a Face entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferShell      (me    : in out;
+                        start : Shell from TopoDS)
+    returns mutable Shell from IGESSolid;
+    ---Purpose :  Transfert an Shell entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferSolid      (me    : in out;
+                        start : Solid from TopoDS)
+    	 returns mutable ManifoldSolid from IGESSolid;
+    ---Purpose :  Transfert a Solid entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferCompSolid  (me    : in out;
+                        start : CompSolid from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert an CompSolid entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+
+    TransferCompound   (me    : in out;
+                        start : Compound from TopoDS)
+    	 returns mutable IGESEntity from IGESData;
+    ---Purpose :  Transfert a Compound entity from TopoDS to IGES
+    --            If this Entity could not be converted, this member returns a NullEntity.
+
+fields
+
+    myVertices    : IndexedMapOfShape from TopTools;
+    myEdges       : IndexedMapOfShape from TopTools;
+    myCurves      : IndexedMapOfTransient from TColStd;
+    myEdgeList    : EdgeList from IGESSolid;
+    myVertexList  : VertexList from IGESSolid;
+    
+    
+end Entity;
+

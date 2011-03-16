@@ -1,0 +1,35 @@
+-- File:	GeomToStep_MakeCylindricalSurface.cdl
+-- Created:	Mon Jun 14 16:09:17 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeCylindricalSurface from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between class
+    --          CylindricalSurface from Geom and the class
+    --          CylindricalSurface from StepGeom which describes a
+    --          cylindrical_surface from Prostep
+  
+uses CylindricalSurface from Geom,
+     CylindricalSurface from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( CSurf : CylindricalSurface from Geom ) returns MakeCylindricalSurface;
+
+Value (me) returns CylindricalSurface from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+    
+fields
+
+    theCylindricalSurface : CylindricalSurface from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeCylindricalSurface;
+
+

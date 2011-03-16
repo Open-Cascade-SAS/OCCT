@@ -1,0 +1,36 @@
+-- File:	ShapeUpgrade_ShapeDivideAngle.cdl
+-- Created:	Thu May  6 10:33:49 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeDivideAngle from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
+
+	---Purpose: Splits all surfaces of revolution, cylindrical, toroidal, 
+    	--          conical, spherical surfaces in the given shape so that 
+	--          each resulting segment covers not more than defined number 
+	--          of degrees. 
+
+uses
+    
+    Shape from TopoDS
+
+is
+    Create (MaxAngle: Real) returns ShapeDivideAngle from ShapeUpgrade;
+    	---Purpose: Empty constructor.
+    
+    Create (MaxAngle: Real; S: Shape from TopoDS)
+    returns ShapeDivideAngle from ShapeUpgrade;
+    	---Purpose: Initialize by a Shape.
+
+    InitTool (me: in out; MaxAngle: Real);
+     	---Purpose: Resets tool for splitting face with given angle
+
+    SetMaxAngle (me: in out; MaxAngle: Real);
+    	---Purpose: Set maximal angle (calls InitTool)
+    
+    MaxAngle (me) returns Real;
+    	---Purpose: Returns maximal angle 
+    
+end ShapeDivideAngle;

@@ -1,0 +1,58 @@
+--
+-- File:	WNT_WOKUMake.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Oct  3 13:12:20 1996	Jean GAUTIER	Creation
+-- Copyright:	Matra Datavision 1996
+--
+
+@ifnotdefined ( %WNT_WOKUMake_EDL) then
+
+  @set %WNT_WOKUMake_EDL = "";
+
+  @uses "WNT.edl";
+
+  @if ( %Station == "sun" ) then
+    -- Pas de WNT sur SUN
+    @set    %WOKUMake_Steps = "";
+    @string %WOKUMake_Steps = %WOKUMake_Steps "*src ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.fill(src) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.src(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.header(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps ".xcpp.template(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " obj.inc(src,xcpp.src) ";
+  @endif;
+
+  @if ( %Station == "sil" ) then
+    -- Pas de WNT sur SGI
+    @set    %WOKUMake_Steps = "";
+    @string %WOKUMake_Steps = %WOKUMake_Steps "*src ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.fill(src) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.src(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.header(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps ".xcpp.template(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " obj.inc(src,xcpp.src) ";
+  @endif;
+  
+  @if ( %Station == "ao1" ) then
+    -- Pas de WNT sur DEC
+    @set    %WOKUMake_Steps = "";
+    @string %WOKUMake_Steps = %WOKUMake_Steps "*src ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.fill(src) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.src(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.header(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps ".xcpp.template(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " obj.inc(src,xcpp.src) ";
+  @endif;
+
+  @if ( %Station == "hp" ) then
+    -- Pas de WNT sur HP
+    @set    %WOKUMake_Steps = "";
+    @string %WOKUMake_Steps = %WOKUMake_Steps "*src ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.fill(src) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.src(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " xcpp.header(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps ".xcpp.template(xcpp.fill) ";
+    @string %WOKUMake_Steps = %WOKUMake_Steps " obj.inc(src,xcpp.src) ";
+  @endif;
+
+@endif;

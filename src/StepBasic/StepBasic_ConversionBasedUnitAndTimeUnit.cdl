@@ -1,0 +1,41 @@
+-- File:        ConversionBasedUnitAndTimeUnit.cdl
+-- Created:     Fri Jun 17 11:43:44 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConversionBasedUnitAndTimeUnit from StepBasic inherits ConversionBasedUnit from StepBasic 
+
+	--- This class is an implementation of EXPRESS
+	--  ANDOR Subtype Declaration.
+uses
+
+    TimeUnit from StepBasic, 
+    DimensionalExponents from StepBasic, 
+    HAsciiString from TCollection, 
+    MeasureWithUnit from StepBasic
+    
+is
+
+    Create returns mutable ConversionBasedUnitAndTimeUnit;
+	---Purpose: Returns a ConversionBasedUnitAndTimeUnit
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic) is redefined;
+
+
+    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
+	      	       aName      : mutable HAsciiString from TCollection;
+		       aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+
+    -- Specific Methods for Field Data Access --
+
+    SetTimeUnit(me: mutable; aTimeUnit: mutable TimeUnit);
+    
+    TimeUnit (me) returns mutable TimeUnit;
+
+
+fields
+
+    timeUnit: TimeUnit from StepBasic;
+
+end ConversionBasedUnitAndTimeUnit;

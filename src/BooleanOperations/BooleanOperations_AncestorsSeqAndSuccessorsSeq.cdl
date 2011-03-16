@@ -1,0 +1,72 @@
+-- File:	BooleanOperations_AncestorsSeqAndSuccessorsSeq.cdl
+-- Created:	Thu Aug 17 09:52:15 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class AncestorsSeqAndSuccessorsSeq from BooleanOperations 
+
+	---Purpose: provide all the ancestors and  successors of a --
+	--          given shape.  Exemple : for  an edge the ancestors
+	--           -- are the wires  that hold it and the successors
+	--          are -- its vertices.  As  we don't know the number
+	--          of -- ancestors of a given shape we first put them
+	--           in a -- sequence  of integers (our data structure
+	--          -- defining      the shapes does not   have   back
+	--          pointers). Then  we   transfer these data  in  the
+	--          class AncestorsAndSuccessors.
+
+uses
+    Orientation from TopAbs,
+    SequenceOfInteger from TColStd,
+    AncestorsAndSuccessors from BooleanOperations
+
+is
+
+    Create returns AncestorsSeqAndSuccessorsSeq from BooleanOperations;
+
+      
+    Dump (me);
+    ---Purpose: to display the fields.
+
+
+    --------------------
+    -- INLINE METHODS --
+    --------------------
+
+    GetAncestor   (me; AncestorIndex:    Integer) returns Integer;
+    ---C++: inline    
+    GetSuccessor  (me; SuccessorIndex:   Integer) returns Integer;
+    ---C++: inline    
+    GetOrientation(me; OrientationIndex: Integer) returns Orientation;
+    ---C++: inline    
+
+    NumberOfAncestors  (me) returns Integer;
+    ---C++: inline
+    NumberOfSuccessors (me) returns Integer;
+    ---C++: inline
+
+    SetNewAncestor   (me:in out; AncestorNumber: Integer);
+    ---C++: inline    
+    ---Purpose: appends AncestorNumber in the sequence.
+    SetNewSuccessor  (me:in out; SuccessorNumber: Integer);
+    ---C++:   inline
+    ---Purpose: appends SuccessorNumber in the array refering to <mySuccessorsInserted>.
+    SetNewOrientation(me:in out; theOrientation: Orientation);
+    ---C++:   inline
+    ---Purpose: appends SuccessorNumber in the array refering to <mySuccessorsInserted>.
+
+
+fields
+
+myAncestors: SequenceOfInteger;
+---Purpose: the sequence containing all the ancestors of our given shape.
+
+mySuccessors: SequenceOfInteger;
+---Purpose: the array containing all the successors.
+
+myOrientations:SequenceOfInteger;
+---Purpose: the array containing all orientations corresponding to the successors.
+
+end AncestorsSeqAndSuccessorsSeq;

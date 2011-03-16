@@ -1,0 +1,99 @@
+--
+-- File:	Graphic3d_VertexNT.cdl
+-- Created:	27/09/97
+-- Author:	PCT
+-- Modified:	03-02-98 : FMN ; Add Flag Normal
+--
+---Copyright:	MatraDatavision 1997
+--
+
+class VertexNT from Graphic3d inherits VertexN from Graphic3d
+
+	---Version:
+
+	---Purpose: This class allows the creation and update of
+	--	    a vertex with a 3D normal and texture coordinate.
+
+	---Keywords: Vertex, Normal, Coordinate, Point, Texture
+
+	---Warning:
+	---References:
+
+uses
+
+	Vector	from Graphic3d,
+	Vertex	from Graphic3d
+
+is
+
+	Create
+		returns VertexNT from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with 0.0, 0.0, 0.0 coordinates
+	--	    for which the normal is 0.0, 0.0, 1.0.
+	--          texture coordinate is 0.0, 0.0.
+
+	Create ( AX, AY, AZ	: Real from Standard;
+		 ANX, ANY, ANZ	: Real from Standard;
+		 ATX            : Real from Standard;
+		 ATY            : Real from Standard = 0.0;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexNT from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point with coordinates <AX>, <AY>, <AZ> and
+	--	    for which the normal is <ANX>, <ANY>, <ANZ>,
+	--          texture coordinate is <ATX>, <ATY>.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	Create ( APoint		: Vertex from Graphic3d;
+		 AVector	: Vector from Graphic3d;
+		 ATX            : Real from Standard;
+		 ATY            : Real from Standard = 0.0;
+		 FlagNormalise  : Boolean from Standard = Standard_True )
+		returns VertexNT from Graphic3d;
+	---Level: Public
+	---Purpose: Creates a point in <APoint> for which the normal is <AVector>. 
+        --          <ATX>, <ATY> are texture coordinate.
+	--	    If <FlagNormalise> is True the normal is already normalised
+	--	    Else the normal is not normalised, the graphic do it.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	SetTextureCoordinate( me        : in out;
+			      ATX       : Real from Standard;
+			      ATY       : Real from Standard = 0.0)
+		is static;
+	---Level: Public
+	---Purpose: Modifies the texture coordinate to the point <me>.
+	---Category: Methods to modify the class definition
+
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+	
+	TextureCoordinate( me;
+			   ATX, ATY : out Real from Standard)
+		is static;
+	---Level: Public
+	---Purpose: Returns the texture coordinate to the point <me>.
+	---Category: Inquire methods
+
+--
+
+fields
+
+--
+-- Class	:	Graphic3d_VertexNT
+--
+-- Purpose	:	Declaration of variables specific to points.
+--
+-- Reminder	:	A point is defined by its coordinates and its normal.
+
+	-- the texel
+	MyTX, MyTY      :       Real from Standard;
+
+end VertexNT;

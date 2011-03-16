@@ -1,0 +1,46 @@
+-- File:	CurveTool.cdl
+-- Created:	Tue Mar  3 18:07:18 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred generic class CurveTool from LProp (Curve as any;
+				             Pnt   as any;
+                                             Vec   as any)
+
+is
+
+    Value(myclass; C : Curve; U : Real; P : out Pnt);
+    ---Purpose: Computes the point <P> of parameter <U> on the curve <C>.
+     	
+    D1   (myclass; C : Curve; U : Real; P : out Pnt; V1 : out Vec);
+    ---Purpose: Computes the point <P> and first derivative <V1> of 
+    --          parameter <U> on the curve <C>.
+
+    D2   (myclass; C : Curve; U : Real; P : out Pnt; V1, V2 : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <V1> and second
+    --          derivative <V2> of parameter <U> on the curve <C>.
+    
+    D3   (myclass; C : Curve; U : Real; 
+              P : out Pnt; V1, V2, V3 : out Vec);
+    ---Purpose: Computes the point <P>, the first derivative <V1>, the 
+    --          second derivative <V2> and third derivative <V3> of 
+    --          parameter <U> on the curve <C>.
+
+     Continuity(myclass; C : Curve) returns Integer;
+     ---Purpose: returns the order of continuity of the curve <C>.
+     --          returns 1 : first derivative only is computable
+     --          returns 2 : first and second derivative only are computable.
+     --          returns 3 : first, second and third are computable.
+
+     FirstParameter(myclass; C : Curve) returns Real;
+     ---Purpose: returns the first parameter bound of the curve.
+     --          
+     
+     LastParameter(myclass; C : Curve) returns Real;
+     ---Purpose: returns the last parameter bound of the curve.
+     --          FirstParameter must be less than LastParamenter.
+
+end CurveTool;
+

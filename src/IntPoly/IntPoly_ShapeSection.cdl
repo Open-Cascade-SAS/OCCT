@@ -1,0 +1,121 @@
+-- File:	IntPoly_ShapeSection.cdl
+-- Created:	Tue Aug  1 09:14:30 1995
+-- Author:	Stagiaire Alain JOURDAIN
+--		<ajo@phobox>
+---Copyright:	 Matra Datavision 1995
+
+
+class ShapeSection from IntPoly
+
+  ---Purpose: determines the section between 2 triangulated shapes.
+  --          The section is a set of edges.
+
+uses  Real                    from Standard,
+      Integer                 from Standard,
+      Boolean                 from Standard,
+      Shape                   from TopoDS,
+      Edge                    from TopoDS,
+      Vec                     from gp,
+      Pnt                     from gp,
+      SequenceOfPnt           from TColgp,
+      SequenceOfSequenceOfPnt from IntPoly,
+      IndexedMapOfPnt         from IntPoly,
+      PntHasher               from IntPoly
+
+is    Create
+      returns ShapeSection from IntPoly;
+      
+      Create (S1 : Shape from TopoDS;
+              S2 : Shape from TopoDS)
+      returns ShapeSection from IntPoly;
+      
+      Section (me : in out)
+      is static;
+      
+      Explore (me : in out)
+      is static;
+      
+      Intersect (me : in out; S1,S2,S3      :        Pnt  from gp;
+                              OS1,VS0,V1,V2 :        Vec  from gp;
+		              h1,h2,ah1,ah2 : in out Real from Standard)
+      ---Purpose: determines if it exists, the intersection point between 
+      --          the (S1,S2,S3) triangle and the edge pointed by V1 and V2.
+      --          Returns True if the triangle-triangle section is found.
+      returns Boolean from Standard;
+      
+      IsEqual (me : in out; Pt1,Pt2 : Pnt from gp)
+      returns Boolean from Standard;			    
+
+       IsInside (me : in out; P,P1,P2,P3 : Pnt from gp;
+      	                      N0         : Vec from gp)
+      ---Purpose: returns True if P is inside the (P1,P2,P3) triangle
+      --          N0 = P1P2 ^ P1P3
+      returns Boolean from Standard;			    
+
+      InsertInMap (me : in out)
+      ---Purpose: adds if necessary, myBegPoint in myMapBegPoint 
+      --          and myEndPoint in  myMapEndPoint. 
+      is static;
+
+      Insert (me : in out; OldPnt : Pnt from gp;
+                           ComPnt : Pnt from gp;
+                           NewPnt : Pnt from gp)
+      ---Purpose: sees whether OldPnt and NewPnt begins or ends a section
+      --          created before and adds the 2 others points.
+      --          If not, creates a section
+      is static;
+      
+      Concat (me : in out; BegPnt :     Pnt from gp;
+                           EndPnt :     Pnt from gp;
+                           OutPnt : out Pnt from gp)
+      ---Purpose: sees whether BegPnt or EndPnt begins or ends a section
+      --          created before, and returns the other point to continue 
+      --          the construction
+      --          Returns 2 if the construction is 'Forward'
+      --          Returns 1 if the construction is 'Previous'
+      --          Returns 0 if not and creates a section
+      returns Integer from Standard;
+      
+      ConcatSection (me : in out; Section   : in out SequenceOfPnt from TColgp; 
+                                  NbSection :        Integer       from Standard;
+				  Index     :        Integer       from Standard)
+      ---Purpose: sees whether Section begins or ends another one in  mySection,
+      --          from the rank 'Index' to the last one 'NbSection'
+      is static;
+      
+      ForwConstruction (me : in out; Point : Pnt from gp)
+      ---Purpose: builds a section from Point in this way  
+      --                       ___   ___   ___   ___
+      --               Point--/__/--/__/--/__/--/__/--->
+      is static;
+
+      PrevConstruction (me : in out; Point : Pnt from gp)
+      ---Purpose: builds a section from Point in this way  
+      --                    ___   ___   ___   ___
+      --               <---/__/--/__/--/__/--/__/--Point
+       is static;
+
+      NbEdges (me : in out)
+      returns Integer from Standard;
+      
+      Edge (me : in out; Index : Integer from Standard)
+      ---Purpose: builds an edge from a sequence of Pnt
+      --          this is a part of the whole section
+      returns Edge from TopoDS;
+
+
+fields
+      myShape1       : Shape                   from TopoDS;
+      myShape2       : Shape                   from TopoDS;
+      mySection      : SequenceOfSequenceOfPnt from IntPoly;
+      myMapBegPoints : IndexedMapOfPnt         from IntPoly;
+      myMapEndPoints : IndexedMapOfPnt         from IntPoly;
+      myBegPoint     : Pnt                     from gp;
+      myEndPoint     : Pnt                     from gp;
+      myFirstTime    : Boolean                 from Standard;
+      myCpt          : Integer                 from Standard;
+      myIndex        : Integer                 from Standard;
+      myNbEdges      : Integer                 from Standard;
+
+end ShapeSection;
+

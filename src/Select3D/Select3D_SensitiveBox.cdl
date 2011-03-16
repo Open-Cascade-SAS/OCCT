@@ -1,0 +1,113 @@
+-- File:	Select3D_SensitiveBox.cdl
+-- Created:	Thu Apr 13 10:16:20 1995
+-- Author:	Robert COUBLANC
+--		<rob@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class SensitiveBox   from Select3D 
+inherits SensitiveEntity from Select3D
+
+	---Purpose: A framework to define selection by a sensitive box.         
+
+uses
+    Pnt              from gp,
+    Pnt2d            from gp,
+    Box              from Bnd,
+    Box2d            from Bnd,
+    Projector        from Select3D,
+    Lin              from gp,
+    EntityOwner      from SelectBasics,
+    ListOfBox2d      from SelectBasics,
+    Array1OfPnt2d    from TColgp,
+    Location         from TopLoc
+
+is
+
+
+    Create (OwnerId      : EntityOwner from SelectBasics;
+    	    BoundingBox  : Box from Bnd)
+    returns mutable SensitiveBox;
+	---Purpose: Constructs a sensitive box object defined by the
+    	-- owner OwnerId, and the bounding box BoundingBox.
+    Create (OwnerId         : EntityOwner from SelectBasics;
+    	    XMin,YMin,ZMin,
+    	    XMax,YMax,ZMax  : Real)
+    returns mutable SensitiveBox;
+	---	Purpose: Constructs a sensitive box object defined by the
+    	-- owner OwnerId, and the coordinates Xmin, YMin, ZMin, XMax, YMax, ZMax.
+    	-- Xmin, YMin and ZMin define the minimum point in
+    	-- the front lower left hand corner of the box,
+    	-- and   XMax, YMax   and ZMax define the maximum
+    	-- point in the back upper right hand corner of the box.     
+	    
+    Project (me:mutable;aProjector : Projector from Select3D) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: projection of the sensitive primitive in order to
+    	--          get 2D boxes for the Sort Algorithm
+    
+    Areas   (me:mutable ; boxes : in out ListOfBox2d from SelectBasics) 
+    is redefined static;
+    	---Level: Public 
+    	---Purpose: gives the 2D boxes which represent the Box in the 
+    	--          selection process...
+
+    GetConnected(me:mutable;aLocation: Location from TopLoc)
+    returns SensitiveEntity from Select3D is redefined static;
+    
+    Matches(me  :mutable; 
+            X,Y : Real from Standard;
+            aTol: Real from Standard;
+            DMin: out Real from Standard) 
+    returns Boolean
+    is static;
+    	---Level: Public 
+    	---Purpose: 
+    	--          
+    
+    Matches (me  :mutable; 
+             XMin,YMin,XMax,YMax : Real from Standard;
+             aTol: Real from Standard)
+    returns Boolean is redefined static;
+     
+    Matches (me  :mutable; 
+             Polyline:Array1OfPnt2d from TColgp;
+	     aBox:Box2d from Bnd;
+             aTol: Real from Standard) 
+    returns Boolean
+    is redefined virtual;
+    	---Level: Public 
+    
+   
+    ComputeDepth(me;EyeLine: Lin from gp) 
+    returns Real from Standard is redefined static;
+
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+
+    Box(me) returns Box from Bnd;
+    ---Purpose: Returns the sensitive 3D box used at the time of construction.
+    ---C++: inline
+    ---C++: return const &
+
+
+    ProjectBox(me:mutable;aPrj: Projector from Select3D;aBox:Box from Bnd)
+    is static private;
+
+fields
+
+    mybox3d   : Box   from Bnd;
+    mybox2d   : Box2d from Bnd;
+
+end SensitiveBox;
+
+
+
+
+
+
+
+
+
+

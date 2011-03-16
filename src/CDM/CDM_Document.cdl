@@ -1,0 +1,521 @@
+-- File:	Document_Document.cdl
+-- Created:	Wed Jul 30 08:45:22 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class Document from CDM
+
+inherits Transient from Standard
+
+---Purpose: An applicative document is an instance of a class inheriting CDM_Document. 
+--          These documents have the following properties: 
+--        - they can have references to other documents.
+--        - the modifications of a document are propagated to the referencing 
+--          documents.
+--        - a  document can be   stored in different formats, with  or
+--          without a persistent model.
+--        - the drivers  for  storing  and retrieving documents  are
+--          plugged in when necessary.
+--        - a  document has a modification counter. This counter is
+--          incremented when the document is  modified.  When a document
+--          is stored,  the current  counter  value is memorized as the
+--          last storage  version of the   document.  A document  is
+--          considered to be  modified   when the  counter value  is
+--          different from the storage version.  Once  the document is
+--          saved  the storage  version  and the  counter  value are
+--          identical.  The document  is  now  not considered  to  be
+--          modified.
+--        - a reference is a link between two documents. A reference has two
+--          components: the "From Document" and the "To Document". When 
+--          a reference is created, an identifier of the reference is generated.
+--          This identifier is unique in the scope of the From Document and 
+--          is conserved during storage and retrieval. This means that the 
+--          referenced document will be always accessible through this 
+--          identifier.
+--        - a reference memorizes the counter value of the To Document when 
+--          the reference is created. The From Document is considered to 
+--          be up to date relative to the To Document when the 
+--          reference counter value is equal to the To Document counter value.
+--        -  retrieval of a document  having references does not imply
+--           the retrieving of the referenced documents.
+
+uses
+    Reference from CDM,
+    ReferenceIterator from CDM,
+    ExtendedString from TCollection,MetaData from CDM, Application from CDM,
+    ListOfReferences from CDM, SequenceOfExtendedString from TColStd,
+    GUID from Standard,Manager from Resource,CanCloseStatus from CDM 
+    
+
+raises NoSuchObject from Standard,Failure from Standard,DomainError from Standard
+is
+
+    Initialize;
+     
+    Destroy(me: mutable) is protected;
+    ---C++: alias ~
+---Category: virtual methods
+
+    Update(me: mutable; aToDocument: Document from CDM; aReferenceIdentifier: Integer from Standard; aModifContext: Address from Standard)
+    ---Purpose: The Update  method  will be called  once  for each
+    --          reference, but it  should not perform any computation,
+    --          to avoid multiple computation of a same document.
+    is virtual;
+
+   
+    Update(me:mutable; ErrorString: out ExtendedString from TCollection)
+    returns Boolean from Standard
+    ---Purpose: This method Update   will be called
+    --          to signal the end   of the modified references list.
+    --          The    document     should    be  recomputed     and
+    --          UpdateFromDocuments  should be called.  Update should
+    --          returns True in case  of success, false otherwise.  In
+    --          case of Failure, additional information can be given in
+    --          ErrorString.
+    is virtual;
+    
+    
+    StorageFormat(me) 
+    returns ExtendedString from TCollection
+    ---Purpose: The Storage Format is the key which is used to determine in the 
+    --          application resources the storage driver plugin, the file 
+    --          extension and other data used to store the document.
+    is deferred;
+    
+    Extensions(me; Extensions: out SequenceOfExtendedString from TColStd)
+    is virtual;
+    ---Purpose: by default empties the extensions.
+    --          
+
+    GetAlternativeDocument(me: mutable; aFormat: ExtendedString from TCollection;
+    anAlternativeDocument: out Document from CDM)
+    returns Boolean from Standard
+    ---Purpose: This method can be redefined to extract another document in
+    --           a different format. For example, to extract a MDTV-Shape 
+    --           from an applicative document.
+    is virtual;
+    
+---Category: Reference management.
+--           
+    CreateReference(me: mutable; anOtherDocument: Document from CDM)
+    returns Integer from Standard;
+    ---Purpose: Creates a reference from this document to {anOtherDocument}. 
+    --          Returns a reference identifier. This reference identifier 
+    --          is unique in the document and will not be used for the
+    --           next references, even after the storing of the document.
+    --           If there is already a reference between the two documents, 
+    --           the reference is not created, but its reference identifier 
+    --           is returned.
+
+    
+    RemoveReference(me: mutable; aReferenceIdentifier: Integer from Standard);
+    ---Purpose: Removes the reference between the From Document and the 
+    --          To Document identified by a reference identifier.
+
+    
+    RemoveAllReferences(me: mutable);
+    ---Purpose: Removes all references having this document for From Document.
+
+    Document(me; aReferenceIdentifier: Integer from Standard)
+    returns Document from CDM
+    ---Purpose:  Returns the To Document  of the reference identified by 
+    --           aReferenceIdentifier. If the ToDocument is stored and 
+    --           has not yet been retrieved, this method will retrieve it.
+    raises NoSuchObject from Standard;
+
+    IsInSession(me; aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard
+    ---Purpose:   returns True if   the  To Document of the  reference
+    --          identified by aReferenceIdentifier is in session,  False
+    --          if it corresponds to a not yet retrieved document.
+    raises NoSuchObject from Standard;
+
+    IsStored(me; aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard
+    ---Purpose:   returns True if   the  To Document of the  reference
+    --          identified by aReferenceIdentifier has already been stored,
+    --          False  otherwise.
+    raises NoSuchObject from Standard;
+
+    Name(me; aReferenceIdentifier: Integer from Standard)
+    returns ExtendedString from TCollection
+    ---Purpose: returns the name of the metadata of the To Document of
+    --          the reference identified by aReferenceIdentifier.
+    raises DomainError from Standard;
+    ---Warning: if the corresponding document is not stored.
+    
+    UpdateFromDocuments(me; aModifContext: Address from Standard);
+    ---Purpose:  call  virtual  method   Update  on  all   referencing
+    --             documents.   This method keeps  the list  of the --
+    --            documents  to process.It may  be the starting of an
+    --              update -- cycle. If  not,  the reentrant calls made by
+    --            Update  method (without argument)  will append the 
+    --            referencing documents to the list and call the Update method
+    --            (with arguments). Only the first call to UpdateFromDocuments
+    --            generate call to Update().
+
+    ToReferencesNumber(me)
+    returns Integer from Standard;
+    ---Purpose: returns the number of references having this document as 
+    --          From Document.
+
+
+    FromReferencesNumber(me)
+    returns Integer from Standard;
+    ---Purpose: returns the number of references having this document as 
+    --          To Document.
+
+    ShallowReferences(me; aDocument: Document from CDM)
+    returns Boolean from Standard;
+    ---Purpose: returns True is this document references aDocument;
+    --          
+    DeepReferences(me; aDocument: Document from CDM)
+    returns Boolean from Standard;
+    ---Purpose: returns True is this document references aDocument;
+    --          
+    CopyReference(me: mutable; aFromDocument: Document from CDM; aReferenceIdentifier: Integer from Standard)
+    returns Integer from Standard;
+    ---Purpose: Copies a  reference  to  this document.   This  method
+    --          avoid retrieval of referenced document.  The arguments
+    --          are  the  original  document  and a  valid  reference
+    --          identifier Returns the  local identifier. 
+    --          
+    ---Category: Modifications Counter management.
+    
+    IsReadOnly(me) returns Boolean from Standard;
+    ---Purpose: indicates  that  this document cannot be   modified. 
+
+
+
+    IsReadOnly(me;  aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard;
+    ---Purpose: indicates that the referenced document cannot be modified, 
+
+
+    SetIsReadOnly(me: mutable);
+    
+    UnsetIsReadOnly(me: mutable);
+    
+    Modify(me: mutable);
+    ---Purpose: Indicates that this document has been modified. 
+    --          This method increments the modification counter.
+    --          
+    Modifications(me) returns Integer from Standard;
+    ---Purpose: returns the current modification counter.
+
+    UnModify(me: mutable);
+     
+    IsUpToDate(me; aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard;
+    ---Purpose: returns true if the modification counter found in the given 
+    --          reference is equal to the actual modification counter of 
+    --          the To Document. This method is able to deal with a reference 
+    --          to a not retrieved document.
+
+    
+    SetIsUpToDate(me: mutable; aReferenceIdentifier: Integer from Standard);
+    ---Purpose: Resets the modification counter in the given reference 
+    --          to the actual modification counter of its To Document. 
+    --          This method should be called after the application has updated 
+    --          this document.
+
+    
+    SetComment(me: mutable; aComment: ExtendedString from TCollection);
+    ---Purpose: associates a comment with this document.
+
+    AddComment(me: mutable; aComment: ExtendedString from TCollection);
+    ---Purpose: appends a comment into comments of this document.
+
+    SetComments(me: mutable; aComments: SequenceOfExtendedString from TColStd);
+    ---Purpose: associates a comments with this document.
+    	
+    Comments(me; aComments: out SequenceOfExtendedString from TColStd); 	
+    ---Purpose: returns the associated comments through <aComments>.
+    --          Returns empty sequence if no comments are associated.
+
+    Comment(me) returns ExtString from Standard; 	
+    ---Purpose: returns the first of associated comments. By defaut
+    --          the comment is an empty string.
+
+---Category: presentation methods. The presentation is an alphanumeric string.
+--           In a given session a presentation cannot be given to two differents
+--           documents.
+
+    Presentation(me: mutable) returns ExtString from Standard;
+    ---Purpose: Returns an alphanumeric string identifying this document 
+    --          in a unique manner in the current process. The presentation 
+    --          may change when the document is stored. 
+    --          Tries to get the 'FileFormat`.Presentation resource 
+    --          This item is used to give a default presentation 
+    --          to the document.
+    FindFromPresentation(myclass; aPresentation: ExtendedString from TCollection)
+    returns Document from CDM
+    ---Purpose: returns the document having the given alphanumeric presentation.
+    raises NoSuchObject from Standard;
+    
+    
+    FindPresentation(myclass; aPresentation: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    ---Purpose: indicates whether a document having the given presentation 
+    --          does exist.
+    
+    ---Category: database related methods
+    IsStored(me) returns Boolean from Standard;
+
+    StorageVersion(me) returns Integer from Standard;
+    ---Purpose: returns  the value of  the modification counter at the
+    --          time of storage. By default returns 0.
+
+
+    SetMetaData(me: mutable; aMetaData: MetaData from CDM);
+    ---Purpose:  associates database  information to  a document which
+    --          has been stored.  The name of the  document is now the
+    --          name which has beenused to store the data.
+
+
+    UnsetIsStored(me: mutable);
+    
+    MetaData(me) returns MetaData from CDM
+    raises NoSuchObject from Standard;
+    
+    Folder(me) returns ExtendedString from TCollection
+    raises NoSuchObject from Standard;
+    ---Warning: if the object is not stored;
+
+
+ ---Category: methods to define where to store  the document, the name
+ --           under which it has to be stored and some other metadatas.
+
+			   
+    
+    SetRequestedFolder(me: mutable; aFolder: ExtendedString from TCollection);
+    ---Purpose: defines the folder in which the object should be stored.
+
+    RequestedFolder(me) returns ExtendedString from TCollection
+    raises NoSuchObject from Standard;
+    
+    
+    HasRequestedFolder(me) returns Boolean from Standard;
+    
+    
+    
+    
+    SetRequestedName(me: mutable; aName: ExtendedString from TCollection);
+    ---Purpose: defines the name under which the object should be stored.
+    RequestedName(me:mutable) returns ExtendedString from TCollection;
+    ---Purpose: determines  under  which the document  is  going to be
+    --           store.  By default the name of the document wil be --
+    --           used.  If the document has  no name  its presentation
+    --           will be used.
+    
+    SetRequestedPreviousVersion(me: mutable; aPreviousVersion: ExtendedString from TCollection);
+    
+    UnsetRequestedPreviousVersion(me: mutable);
+    
+    HasRequestedPreviousVersion(me) returns Boolean from Standard;
+    RequestedPreviousVersion(me) returns ExtendedString from TCollection
+    raises NoSuchObject from Standard;
+
+    SetRequestedComment(me: mutable; aComment: ExtendedString from TCollection);
+    ---Purpose: defines the Comment with  which the object should be stored.
+
+    RequestedComment(me) returns ExtendedString from TCollection;
+    
+
+---Category: resource reading methods
+--           
+--           
+--           
+--  
+--  Resources are read once at the creation of the document
+--  until LoadResources is called again.
+--  
+--  
+    LoadResources(me: mutable);
+    ---Purpose: read (or rereads) the following resource.
+    
+    StorageResource(me: mutable) returns Manager from Resource
+    is private;
+    ---Purpose:  the manager returned by  this method will be
+    --          used to search for the following resource items.
+
+    FindFileExtension(me: mutable) returns Boolean from Standard;
+    
+    FileExtension(me: mutable) returns ExtendedString from TCollection;
+    ---Purpose: gets the Desktop.Domain.Application.`FileFormat`.FileExtension resource.
+    FindDataType(me: mutable) returns Boolean from Standard;
+    
+    DataType(me: mutable)  returns ExtendedString from TCollection;
+    ---Purpose: this datatype will be used if the DBMS deals with this concept
+    ---Purpose: gets the `FileFormat`.DataType resource.
+    --          concept.
+
+    FindVersionDataType(me: mutable) returns Boolean from Standard;
+    
+    VersionDataType(me: mutable)  returns ExtendedString from TCollection;
+    ---Purpose: this datatype will be used if the DBMS deals with this concept
+    ---Purpose: gets the `FileFormat`.VersionDataType resource.
+    --          
+    FindDescription(me: mutable) returns Boolean from Standard;
+    
+    Description(me: mutable)  returns ExtendedString from TCollection;
+    ---Purpose: gets the `FileFormat`.Description resource.
+
+    FindDomain(me: mutable) returns Boolean from Standard;
+    
+    Domain(me: mutable) returns ExtendedString from TCollection;
+    ---Purpose: gets the `FileFormat`.Domain resource.
+
+
+    FindStoragePlugin(me: mutable) returns Boolean from Standard;
+    
+    StoragePlugin(me: mutable) returns GUID from Standard;
+    
+    ---Category: Miscellaneous methods
+
+    IsModified(me) returns Boolean from Standard;
+    ---Purpose: returns  true  if the   version is greater  than   the
+    --          storage version
+
+    ---Category: print method
+    Print(me; anOStream:  in out OStream from Standard)
+    returns OStream from Standard;
+    ---C++: return &
+    ---C++: alias "Standard_OStream& operator << (Standard_OStream& anOStream);"
+
+---Category: activation controll
+
+    IsOpened(me) returns Boolean from Standard;
+    
+    Open(me: mutable; anApplication: Application from CDM);
+    
+    
+    CanClose(me) returns CanCloseStatus from CDM;
+    ---Purpose:
+    --Returns CDM_CCS_OK true if it is possible to close the document. 
+    -- Otherwise, returns:
+    --     CDM_CSS_NotOpen if the document has not been  opened
+    --     CDM_CCS_UnstoredReferenced if the document is not stored if it 
+    --     is referenced.
+    --     CDM_CSS_ModifiedReferenced if the document has been modified, 
+    --     if it is referenced,  since it has been stored.
+    --     CDM_CCS_ReferenceRejection if   one of the referencing documents 
+    --     does not allow the closing of the document.    
+    Close(me: mutable);
+    
+    Application(me) returns Application from CDM
+    raises Failure from Standard;
+    ---C++: return const &
+    ---Warning: exception if the document is not open
+
+
+    CanCloseReference(me; aDocument: Document from CDM;
+                 aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard
+    is virtual;
+    ---Purpose: A  referenced  document  may  indicate   through  this
+    --          virtual  method that it does  not allow the closing of
+    --          aDocument  which  it references through  the reference
+    --          aReferenceIdentifier. By default returns Standard_True;;
+
+    CloseReference(me: mutable; aDocument: Document from CDM;
+                       aReferenceIdentifier: Integer from Standard)
+    is virtual;
+    ---Purpose: A referenced document may update its internal 
+    --          data structure when {aDocument} which it references 
+    --          through the reference {aReferenceIdentifier} is being closed.
+    --          By default this method does nothing.
+
+    IsOpened(me; aReferenceIdentifier: Integer from Standard)
+    returns Boolean from Standard;
+    ---Purpose:  returns true if  the   document corresponding to  the
+    --           given   reference has    been retrieved  and  opened.
+    --          Otherwise returns false. This method does not retrieve
+    --          the referenced document
+
+---Category: private methods;
+--           
+    Reference(me; aReferenceIdentifier: Integer from Standard)
+    returns Reference from CDM
+    is private;
+
+    ComputePresentation(me: mutable)
+    is private;
+    
+    UnvalidPresentation(me: mutable)
+    is private;
+    
+    CreateReference(me: mutable; aMetaData: MetaData from CDM; aReferenceIdentifier: Integer from Standard; anApplication: Application from CDM; aToDocumentVersion: Integer from Standard; UseStorageConfiguration: Boolean from Standard);
+
+    CreateReference(me: mutable; aMetaData: MetaData from CDM; anApplication: Application from CDM; aDocumentVersion: Integer from Standard; UseStorageConfiguration: Boolean from Standard)
+    returns Integer from Standard;
+
+    AddToReference(me: mutable; aReference: Reference from CDM)
+    is private;
+    
+    AddFromReference(me: mutable; aReference: Reference from CDM)
+    is private;
+   
+    RemoveFromReference(me: mutable; aReferenceIdentifier: Integer from Standard)
+    is private;
+
+    SetModifications(me: mutable; Modifications: Integer from Standard)
+    is private;
+
+    ReferenceCounter(me) returns Integer from Standard;
+    
+    SetReferenceCounter(me: mutable; aReferenceCounter: Integer from Standard)
+    is private;
+
+---Category: obsolete methods
+
+    Update(me: mutable)
+    is virtual;
+    ---Purpose: the following method should be used instead:
+    --          
+    --  Update(me:mutable; ErrorString: out ExtendedString from TCollection)
+    --  returns Boolean from Standard
+
+fields
+
+
+    myComments: SequenceOfExtendedString from TColStd;
+
+    myPresentation: ExtendedString from TCollection;
+    myValidPresentation: Boolean from Standard;
+ 
+    myFromReferences: ListOfReferences from CDM;
+    myToReferences: ListOfReferences from CDM;
+    myVersion: Integer from Standard;
+    
+    myActualReferenceIdentifier: Integer from Standard;
+
+    myStorageVersion: Integer from Standard;
+    myMetaData: MetaData from CDM;
+
+    myRequestedComment: ExtendedString from TCollection;
+
+    myRequestedFolder: ExtendedString from TCollection;
+    myRequestedFolderIsDefined: Boolean from Standard;
+
+    myRequestedName: ExtendedString from TCollection;
+    myRequestedNameIsDefined: Boolean from Standard;
+
+    myRequestedPreviousVersionIsDefined:  Boolean from Standard;
+    myRequestedPreviousVersion:  ExtendedString from TCollection;
+
+    ---Category: resources.
+    myFileExtension,myDataType,myVersionDataType,myDescription,myDomain,myDefaultPresentation: ExtendedString from TCollection;
+    
+    myFileExtensionWasFound,myDataTypeWasFound,myVersionDataTypeWasFound,myDescriptionWasFound,myDomainWasFound,myStoragePluginWasFound,myDefaultPresentationWasFound: Boolean from Standard;
+    myResourcesAreLoaded: Boolean from Standard is protected;
+    myStoragePlugin: GUID from Standard;
+    myApplication: Application from CDM;
+
+friends 
+    class Reference from CDM,
+    class ReferenceIterator from CDM,
+    class Application from CDM
+    
+end Document from CDM;

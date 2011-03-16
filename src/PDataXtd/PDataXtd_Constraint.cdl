@@ -1,0 +1,72 @@
+-- File:	PDataStd_Constraint.cdl
+-- Created:	Tue Jul 29 13:41:48 1997
+-- Author:	Denis PASCAL 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1997
+
+
+class Constraint from PDataXtd inherits Attribute from PDF
+
+	---Purpose: 
+
+uses Integer          from Standard,
+     Real             from PDataStd,
+     HAttributeArray1 from PDF,
+     NamedShape       from PNaming
+    
+is
+
+    Create returns mutable Constraint from  PDataXtd;
+    
+    
+    Create (Type        : Integer          from Standard;
+    	    Geometries  : HAttributeArray1 from PDF;
+    	    Value       : Real             from PDataStd;
+    	    Plane       : NamedShape       from PNaming) 
+    returns mutable Constraint from PDataXtd;
+    
+    
+    GetValue (me) returns Real from PDataStd;
+    
+
+    GetType (me) returns Integer from Standard;
+    
+    
+    GetGeometries (me) returns HAttributeArray1 from PDF;
+    
+    
+    Set (me : mutable; V : Real from PDataStd);
+
+
+    SetType (me : mutable; Type : Integer from Standard);
+    
+    
+    SetGeometries (me : mutable; Geometries : HAttributeArray1 from PDF);
+    
+    SetPlane (me : mutable; plane : NamedShape from PNaming);
+    GetPlane (me)
+    returns NamedShape from PNaming;
+    
+    Verified(me:mutable; status : Boolean from Standard);
+    Verified(me) 
+    returns Boolean from Standard;    
+
+    Inverted(me:mutable; status : Boolean from Standard);
+    Inverted(me) 
+    returns Boolean from Standard;    
+
+    Reversed(me:mutable; status : Boolean from Standard);
+    Reversed(me) 
+    returns Boolean from Standard;    
+    
+fields
+
+    myType       : Integer          from Standard;
+    myGeometries : HAttributeArray1 from PDF;
+    myValue      : Real             from PDataStd;
+    myIsReversed : Boolean          from Standard;
+    myIsInverted : Boolean          from Standard;
+    myIsVerified : Boolean          from Standard;
+    myPlane      : NamedShape       from PNaming;
+    
+end Constraint;

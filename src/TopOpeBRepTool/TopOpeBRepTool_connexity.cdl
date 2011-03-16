@@ -1,0 +1,60 @@
+-- File:	TopOpeBRepTool_connexity.cdl
+-- Created:	Wed Dec  9 14:19:52 1998
+-- Author:	Xuan PHAM PHU
+--		<xpu@poulopox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+class connexity from TopOpeBRepTool
+
+uses 
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    Array1OfListOfShape from TopTools
+is
+    Create returns connexity from TopOpeBRepTool;
+    Create (Key : Shape from TopoDS) returns connexity from TopOpeBRepTool;
+    SetKey (me : in out; Key : Shape from TopoDS);	        	
+    Key (me) returns Shape from TopoDS;
+    ---C++: return const &
+    
+    Item(me; OriKey : Integer; Item : out ListOfShape from TopTools) 
+    returns Integer;
+    -- if <theKey> is oriented <OriKey> in all shapes of <Item>, returns
+    -- the <Item>'s length.
+    
+    AllItems(me; Item : out ListOfShape from TopTools)
+    returns Integer;
+    -- returns all items attached to <theKey>
+    
+    AddItem(me : in out; OriKey : Integer; Item : ListOfShape from TopTools);
+    AddItem(me : in out; OriKey : Integer; Item : Shape from TopoDS);
+    RemoveItem(me : in out; OriKey : Integer; Item : Shape from TopoDS)
+    returns Boolean;
+    -- returns true if <Item> is stored in the list.
+    RemoveItem(me : in out; Item : Shape from TopoDS)
+    returns Boolean;
+    
+    ChangeItem(me : in out; OriKey : Integer)
+    returns ListOfShape from TopTools;
+    ---C++: return & 
+   
+    IsMultiple(me)
+    returns Boolean;
+    -- returns true if <theKey> is multiple.   
+
+    IsFaulty(me)
+    returns Boolean;
+
+    IsInternal(me; Item : out ListOfShape from TopTools)
+    returns Integer;
+    -- <theKey> is INTERNAL in shapes of <Item> oriented FORWARD.
+    
+fields
+    theKey : Shape from TopoDS;
+    theItems : Array1OfListOfShape from TopTools; 
+	-- <theKey> is FORWARD in shapes of theItems(1)  
+	-- <theKey> is REVERSED in shapes of theItems(2)  
+	-- <theKey> is INTERNAL in shapes of theItems(3)  
+	-- <theKey> is EXTERNAL in shapes of theItems(4) 
+	-- <theKey> appears FORWARD and REVERSED in shapes of theItems(5)  
+end connexity;

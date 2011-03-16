@@ -1,0 +1,53 @@
+-- File:	Curve2dTool.cdl
+-- Created:	Thu Mar 26 13:38:57 1992
+-- Author:	Herve LEGRAND
+--		<hl@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class Curve2dTool from Geom2dLProp
+
+uses Vec2d   from gp,
+     Pnt2d   from gp,     
+     Dir2d   from gp,
+     Curve from Geom2d
+
+is
+
+    Value(myclass; C : Curve from Geom2d; U : Real;
+    	           P : out Pnt2d);
+    ---Purpose: Computes the point <P> of parameter <U> on the curve <C>.
+     	
+    D1   (myclass; C : Curve from Geom2d; U : Real; 
+                   P : out Pnt2d; V1 : out Vec2d);
+    ---Purpose: Computes the point <P> and first derivative <V1> of 
+    --          parameter <U> on the curve <C>.
+
+    D2   (myclass; C : Curve from Geom2d; U : Real;
+                   P : out Pnt2d; V1, V2 : out Vec2d);
+    ---Purpose: Computes the point <P>, the first derivative <V1> and second
+    --          derivative <V2> of parameter <U> on the curve <C>.
+    
+    D3   (myclass; C : Curve from Geom2d; U : Real; 
+              P : out Pnt2d; V1, V2, V3 : out Vec2d);
+    ---Purpose: Computes the point <P>, the first derivative <V1>, the 
+    --          second derivative <V2> and third derivative <V3> of 
+    --          parameter <U> on the curve <C>.
+
+     Continuity(myclass; C : Curve from Geom2d) returns Integer;
+     ---Purpose: returns the order of continuity of the curve <C>.
+     --          returns 1 : first derivative only is computable
+     --          returns 2 : first and second derivative only are computable.
+     --          returns 3 : first, second and third are computable.
+
+     FirstParameter(myclass; C : Curve from Geom2d) returns Real;
+     ---Purpose: returns the first parameter bound of the curve.
+     --          
+     
+     LastParameter(myclass; C : Curve from Geom2d) returns Real;
+     ---Purpose: returns the last parameter bound of the curve.
+     --          FirstParameter must be less than LastParameter.
+
+end Curve2dTool;
+
+
+

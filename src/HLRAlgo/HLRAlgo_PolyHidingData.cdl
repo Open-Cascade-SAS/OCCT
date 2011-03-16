@@ -1,0 +1,35 @@
+-- File:	HLRAlgo_PolyHidingData.cdl
+-- Created:	Fri Oct 29 15:19:08 1993
+-- Author:	Christophe MARION
+--		<cma@nonox>
+---Copyright:	 Matra Datavision 1993
+
+class PolyHidingData from HLRAlgo
+
+uses
+    Address from Standard,
+    Integer from Standard,
+    Real    from Standard
+
+is
+    Create returns PolyHidingData from HLRAlgo;
+    	---C++: inline
+
+    Set(me : in  out;
+	Index,Minim,Maxim : Integer from Standard;
+	A,B,C,D           : Real    from Standard)
+    	---C++: inline
+    is static;
+    
+    IndexAndMinMax(me) returns Address from Standard
+    	---C++: inline
+    is static;
+    
+    Plan(me) returns Address from Standard
+    	---C++: inline
+    is static;
+    
+fields
+    myMinMax : Integer from Standard[3];
+    myPlan   : Real    from Standard[4];
+end PolyHidingData;

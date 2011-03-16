@@ -1,0 +1,28 @@
+-- File     : Prs2d_AspectRoot.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+deferred class AspectRoot from Prs2d inherits TShared from MMgt
+
+---Purpose: Abstract class, the root class for aspect classes
+
+uses
+
+   AspectName from Prs2d
+
+is
+
+  Initialize( anAspectName: AspectName from Prs2d = Prs2d_AN_UNKNOWN );
+  ---Level: Internal
+  ---Purpose: Initializes the Aspect class having name <anAspectName>
+
+  GetAspectName( me ) returns AspectName from Prs2d;
+  ---Level: Internal
+  ---Purpose: Returns the Aspect Name of the Aspect class
+    
+fields
+
+  myAspectName: AspectName from Prs2d;
+
+end AspectRoot;

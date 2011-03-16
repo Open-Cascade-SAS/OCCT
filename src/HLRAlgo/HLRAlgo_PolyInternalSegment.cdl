@@ -1,0 +1,24 @@
+-- File:	HLRAlgo_PolyInternalSegment.cdl
+-- Created:	Tue Dec  3 17:00:57 1996
+-- Author:	Christophe MARION
+--		<cma@partox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+class PolyInternalSegment from HLRAlgo
+
+uses
+    Address from Standard,
+    Integer from Standard
+    
+is
+    Create returns PolyInternalSegment from HLRAlgo; 
+    	---C++: inline
+    
+    Indices(me) returns Address from Standard
+    	---C++: inline
+    is static;
+
+fields
+    myIndices : Integer from Standard[6];
+    
+end PolyInternalSegment;

@@ -1,0 +1,229 @@
+// File:	Dynamic_FuzzyInstance.gxx
+// Created:	Fri Dec 24 10:35:10 1993
+// Author:	Gilles DEBARBOUILLE
+//		<gde@mastox>
+// CRD : 15/04/97 : Passage WOK++ : Remplacement de TYPE par STANDARD_TYPE
+
+
+#include <Dynamic_FuzzyDefinition.hxx>
+#include <Dynamic_SequenceOfFuzzyDefinitions.hxx>
+#include <Dynamic_Parameter.hxx>
+#include <Dynamic_ParameterNode.hxx>
+#include <Dynamic_BooleanParameter.hxx>
+#include <Dynamic_IntegerParameter.hxx>
+#include <Dynamic_RealParameter.hxx>
+#include <Dynamic_StringParameter.hxx>
+#include <Dynamic_ObjectParameter.hxx>
+
+void  DictionaryOfDefinitions(Handle(Dictionary)&);
+
+//=======================================================================
+//function : Dynamic_FuzzyInstance
+//purpose  : 
+//=======================================================================
+
+Dynamic_FuzzyInstance::Dynamic_FuzzyInstance(const Standard_CString atype)
+{
+  Handle(Dictionary) dictionary;
+  DictionaryOfDefinitions(dictionary);
+  
+  if(dictionary->Definition(atype,thedefinition)) return;
+  else cout<<atype<<" n'existe pas dans le dictionnaire."<<endl;
+}
+
+//=======================================================================
+//function : Dynamic_FuzzyInstance
+//purpose  : 
+//=======================================================================
+
+Dynamic_FuzzyInstance::Dynamic_FuzzyInstance(const Handle(Dynamic_FuzzyInstance)& afuzzyinstance)
+{
+  thedefinition = afuzzyinstance;
+}
+
+//=======================================================================
+//function : Type
+//purpose  : 
+//=======================================================================
+
+TCollection_AsciiString Dynamic_FuzzyInstance::Type() const
+{
+  return Definition()->Type();
+}
+
+//=======================================================================
+//function : Definition
+//purpose  : 
+//=======================================================================
+
+Handle(Dynamic_FuzzyClass) Dynamic_FuzzyInstance::Definition() const
+{
+  Handle(Dynamic_FuzzyInstance) definition;
+
+  if(thedefinition->IsKind(STANDARD_TYPE(Dynamic_FuzzyDefinition)))
+    {
+      return thedefinition;
+    }
+  else
+    {
+      definition  = *(Handle_Dynamic_FuzzyInstance*)&thedefinition;
+      return definition->Definition();
+    }
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Parameter(const Standard_CString aparameter,
+				      const Standard_Boolean avalue)
+{
+  if(Definition()->Parameter(aparameter))
+    Dynamic_FuzzyClass::Parameter(aparameter,avalue);
+  //else
+   // cout<<"Pas de parametre du nom de : "<< aparameter<<endl;
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Parameter(const Standard_CString aparameter,
+				      const Standard_Integer avalue)
+{
+  if(Definition()->Parameter(aparameter))
+    Dynamic_FuzzyClass::Parameter(aparameter,avalue);
+  //else
+  //  cout<<"Pas de parametre du nom de : "<< aparameter<<endl;
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Parameter(const Standard_CString aparameter,
+				      const Standard_Real avalue)
+{
+  if(Definition()->Parameter(aparameter))
+    Dynamic_FuzzyClass::Parameter(aparameter,avalue);
+  //else
+    //cout<<"Pas de parametre du nom de : "<< aparameter<<endl;
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Parameter(const Standard_CString aparameter,
+				      const Standard_CString astring)
+{
+  if(Definition()->Parameter(aparameter))
+    Dynamic_FuzzyClass::Parameter(aparameter,astring);
+  //else
+   // cout<<"Pas de parametre du nom de : "<< aparameter<<endl;
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Parameter(const Standard_CString aparameter,
+				      const Handle(Standard_Transient)& anobject)
+{
+  if(Definition()->Parameter(aparameter))
+    Dynamic_FuzzyClass::Parameter(aparameter,anobject);
+  //else
+    //cout<<"Pas de parametre du nom de : "<< aparameter<<endl;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_FuzzyInstance::Value(const Standard_CString aparameter,
+					      Standard_Boolean& avalue) const
+{
+  if(Dynamic_FuzzyClass::Value(aparameter,avalue))
+    return Standard_True;
+  else
+    return thedefinition->Value(aparameter,avalue);
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_FuzzyInstance::Value(const Standard_CString aparameter,
+					      Standard_Integer& avalue) const
+{
+  if(Dynamic_FuzzyClass::Value(aparameter,avalue))
+    return Standard_True;
+  else
+    return thedefinition->Value(aparameter,avalue);
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_FuzzyInstance::Value(const Standard_CString aparameter,
+					      Standard_Real& avalue) const
+{
+  if(Dynamic_FuzzyClass::Value(aparameter,avalue))
+    return Standard_True;
+  else
+    return thedefinition->Value(aparameter,avalue);
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_FuzzyInstance::Value(const Standard_CString aparameter,
+					      TCollection_AsciiString& avalue) const
+{
+  if(Dynamic_FuzzyClass::Value(aparameter,avalue))
+    return Standard_True;
+  else
+    return thedefinition->Value(aparameter,avalue);
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Dynamic_FuzzyInstance::Value(const Standard_CString aparameter,
+					      Handle(Standard_Transient)& anobject) const
+{
+  if(Dynamic_FuzzyClass::Value(aparameter,anobject))
+    return Standard_True;
+  else
+    return thedefinition->Value(aparameter,anobject);
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+void Dynamic_FuzzyInstance::Dump(Standard_OStream& astream) const
+{
+  Handle(Dynamic_ParameterNode) parameternode = FirstParameter();
+  while(!parameternode.IsNull())
+    {
+      astream<<"   ";
+      parameternode->Object()->Dump(astream);
+      astream<<"\n";
+      parameternode = parameternode->Next();
+    }
+}

@@ -1,0 +1,32 @@
+-- File:	StepBasic_DerivedUnitElement.cdl
+-- Created:	Wed Mar 26 14:32:39 1997
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class DerivedUnitElement  from StepBasic    inherits TShared
+
+    ---Purpose : Added from StepBasic Rev2 to Rev4
+
+uses
+     NamedUnit from StepBasic
+
+is
+
+    Create returns mutable DerivedUnitElement;
+
+    Init (me : mutable; aUnit : NamedUnit from StepBasic; aExponent : Real);
+
+    SetUnit (me : mutable; aUnit : NamedUnit from StepBasic);
+    Unit (me) returns NamedUnit from StepBasic;
+
+    SetExponent (me : mutable; aExponent : Real);
+    Exponent (me) returns Real;
+
+fields
+
+    theUnit : NamedUnit from StepBasic;
+    theExponent : Real;
+
+end DerivedUnitElement;

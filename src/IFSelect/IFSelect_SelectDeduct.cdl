@@ -1,0 +1,71 @@
+-- File:	SelectDeduct.cdl
+-- Created:	Tue Nov 17 19:13:08 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SelectDeduct  from IFSelect  inherits Selection
+
+    ---Purpose : A SelectDeduct determines a list of Entities from an Input
+    --           Selection, by a computation : Output list is not obliged to be
+    --           a sub-list of Input list
+    --           (for more specific, see SelectExtract for filtered sub-lists,
+    --            and SelectExplore for recurcive exploration)
+    --            
+    --           A SelectDeduct may use an alternate input for one shot
+    --           This allows to use an already existing definition, by
+    --           overloading the input selection by an alternate list,
+    --           already defined, for one use :
+    --           If this alternate list is set, InputResult queries it instead
+    --           of calling the input selection, then clears it immediately
+
+uses AsciiString from TCollection, EntityIterator, Graph,
+     SelectionIterator, SelectPointed
+
+raises InterfaceError
+
+is
+
+    SetInput (me : mutable; sel : mutable Selection);
+    ---Purpose : Defines or Changes the Input Selection
+
+    Input (me) returns mutable Selection;
+    ---Purpose : Returns the Input Selection
+
+    HasInput (me) returns Boolean;
+    ---Purpose : Returns True if the Input Selection is defined, False else
+
+    HasAlternate (me) returns Boolean;
+    ---Purpose : Tells if an Alternate List has been set, i.e. : the Alternate
+    --           Definition is present and set
+
+    Alternate (me : mutable) returns SelectPointed;
+    ---Purpose : Returns the Alternate Definition
+    --           It is returned modifiable, hence an already defined
+    --           SelectPointed can be used
+    --           But if it was not yet defined, it is created the first time
+    --           
+    --           It is exploited by InputResult
+    ---C++ : return &
+
+    InputResult (me; G : Graph) returns EntityIterator;
+    ---Purpose : Returns the Result determined by Input Selection, as Unique
+    --           if Input Selection is not defined, returns an empty list.
+    --           
+    --           If Alternate is set, InputResult takes its definition instead
+    --           of calling the Input Selection, then clears it
+
+    -- RootResult remains to be defined by each class of Selection
+
+
+    FillIterator (me; iter : in out SelectionIterator);
+    ---Purpose : Puts in an Iterator the Selections from which "me" depends
+    --           This list contains one Selection : the InputSelection
+
+fields
+
+    thesel : Selection;
+    thealt : SelectPointed;
+
+end SelectDeduct;

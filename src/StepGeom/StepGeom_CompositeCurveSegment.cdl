@@ -1,0 +1,41 @@
+-- File:        CompositeCurveSegment.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class CompositeCurveSegment from StepGeom 
+
+inherits TShared from MMgt
+
+uses
+
+	TransitionCode from StepGeom, 
+	Boolean from Standard, 
+	Curve from StepGeom
+is
+
+	Create returns mutable CompositeCurveSegment;
+	---Purpose: Returns a CompositeCurveSegment
+
+	Init (me : mutable;
+	      aTransition : TransitionCode from StepGeom;
+	      aSameSense : Boolean from Standard;
+	      aParentCurve : mutable Curve from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetTransition(me : mutable; aTransition : TransitionCode);
+	Transition (me) returns TransitionCode;
+	SetSameSense(me : mutable; aSameSense : Boolean);
+	SameSense (me) returns Boolean;
+	SetParentCurve(me : mutable; aParentCurve : mutable Curve);
+	ParentCurve (me) returns mutable Curve;
+
+fields
+
+	transition : TransitionCode from StepGeom; -- an Enumeration
+	sameSense : Boolean from Standard;
+	parentCurve : Curve from StepGeom;
+
+end CompositeCurveSegment;

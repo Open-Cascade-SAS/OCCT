@@ -1,0 +1,144 @@
+--
+-- File      : ConicArc.cdl
+-- Created   : Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen (Kiran)
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ConicArc from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESConicArc, Type <104> Form <0-3>  in package IGESGeom
+        --          A conic arc is a bounded connected portion of a parent
+        --          conic curve which consists of more than one point. The
+        --          parent conic curve is either an ellipse, a parabola, or
+        --          a hyperbola. The definition space coordinate system is
+        --          always chosen so that the conic arc lies in a plane either
+        --          coincident with or parallel to XT, YT plane. Within such
+        --          a plane a conic is defined by the six coefficients in the
+        --          following equation.
+        --          A*XT^2 + B*XT*YT + C*YT^2 + D*XT + E*YT + F = 0
+
+uses
+
+        Pnt         from gp,
+        Pnt2d       from gp,
+        Dir         from gp,
+        XY          from gp
+
+is
+
+        Create returns mutable ConicArc;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                   : mutable;
+              A, B, C, D, E, F, ZT : Real;
+              aStart, anEnd        : XY);
+        ---Purpose : This method is used to set the fields of the class
+        --           ConicalArc
+        --       - A, B, C, D, E, F : Coefficients of the equation
+        --                            defining conic arc
+        --       - ZT               : Parallel ZT displacement of the arc
+        --                            from XT, YT plane.
+        --       - aStart           : Starting point of the conic arc
+        --       - anEnd            : End point of the conic arc
+
+    	OwnCorrect (me : mutable) returns Boolean;
+	---Purpose : sets the Form Number equal to ComputedFormNumber,
+	--           returns True if changed
+
+    	ComputedFormNumber (me) returns Integer;
+	---Purpose : Computes the Form Number according to the equation
+	--           1 for Ellipse, 2 for Hyperbola, 3 for Parabola
+
+        Equation (me; A, B, C, D, E, F : out Real);
+        -- returns the basic equation defining the arc
+        -- A, B, C, D, E, F are the coefficients of the equation
+
+        ZPlane (me) returns Real;
+        ---Purpose : returns the Z displacement of the arc from XT, YT plane
+
+        StartPoint (me) returns Pnt2d;
+        ---Purpose : returns the starting point of the arc
+
+        TransformedStartPoint (me) returns Pnt;
+        ---Purpose : returns the starting point of the arc after applying
+        -- Transf. Matrix
+
+        EndPoint (me) returns Pnt2d;
+        ---Purpose : returns the end point of the arc
+
+        TransformedEndPoint (me) returns Pnt;
+        ---Purpose : returns the end point of the arc after applying
+        -- Transf. Matrix
+
+        IsFromEllipse (me) returns Boolean;
+        ---Purpose : returns True if parent conic curve is an ellipse
+
+        IsFromParabola (me) returns Boolean;
+        ---Purpose : returns True if parent conic curve is a parabola
+
+        IsFromHyperbola (me) returns Boolean;
+        ---Purpose : returns True if parent conic curve is a hyperbola
+
+        IsClosed (me) returns Boolean;
+        ---Purpose : returns True if StartPoint = EndPoint
+
+
+        Axis(me) returns Dir;
+        ---Purpose : Z-Axis of conic (i.e. [0,0,1])
+
+    	TransformedAxis (me) returns Dir;
+	---Purpose : Z-Axis after applying Trans. Matrix
+
+    	Definition (me; Center : out Pnt; MainAxis : out Dir;
+    	    	        rmin, rmax : out Real);
+    	---Purpose : Returns a Definition computed from equation, easier to use
+    	--           <Center> : the center of the the conic (meaningless for
+    	--                      a parabola) (defined with Z displacement)
+    	--           <MainAxis> : the Main Axis of the conic (for a Circle,
+    	--                        arbitrary the X Axis)
+    	--           <Rmin,Rmax> : Minor and Major Radii of the conic
+    	--                         For a Circle, Rmin = Rmax,
+    	--                         For a Parabola, Rmin = Rmax = the Focal
+    	--  Warning : the basic definition (by equation) is not very stable,
+    	--           limit cases may be approximative
+
+    	TransformedDefinition (me; Center : out Pnt; MainAxis : out Dir;
+    	    	            	   rmin, rmax : out Real);
+    	---Purpose : Same as Definition, but the Location is applied on the
+    	--           Center and the MainAxis
+
+    	ComputedDefinition (me; Xcen,Ycen, Xax, Yax, Rmin,Rmax : out Real);
+	---Purpose : Computes and returns the coordinates of the definition of
+	--           a comic from its equation. Used by Definition &
+	--           TransformedDefinition, or may be called directly if needed
+
+fields
+
+--
+-- Class    : IGESGeom_ConicArc
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ConicArc.
+--
+-- Reminder : A ConicArc instance is defined by :
+--            The six coefficients in the following equation.
+--            A*XT^2 + B*XT*YT + C*YT^2 + D*XT + E*YT + F = 0
+--            The parent curve could be a parabola or a hyperbola
+--            or an ellipse. The arc has one start and one end point.
+
+            theA     : Real;
+            theB     : Real;
+            theC     : Real;
+            theD     : Real;
+            theE     : Real;
+            theF     : Real;
+                --  Conic coefficients
+
+            theZT    : Real;
+            theStart : XY;
+            theEnd   : XY;
+
+end ConicArc;

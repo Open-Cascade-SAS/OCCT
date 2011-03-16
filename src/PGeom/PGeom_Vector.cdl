@@ -1,0 +1,45 @@
+-- File:	PGeom_Vector.cdl
+-- Created:	Mon Feb 22 17:30:39 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class Vector from PGeom inherits Geometry from PGeom
+
+        ---Purpose :  Defines a vector in 3D space.
+        --  It can be a Direction (unitary vector) or a vector
+        --  with magnitude.
+        --  
+	---See Also : Vector from Geom.
+
+uses Vec from gp
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+    	---Level: Internal 
+
+
+    Initialize(aVec: Vec from gp);
+	---Purpose: Initializes the field vec with <aVec>.
+    	---Level: Internal 
+
+
+  Vec (me: mutable; aVec: Vec from gp);
+        ---Purpose : Set the field vec.
+    	---Level: Internal 
+
+
+  Vec (me)  returns Vec from gp;
+        ---Purpose : Returns the value of the field vec.
+    	---Level: Internal 
+
+
+fields
+
+  vec : Vec from gp is protected;
+
+end;

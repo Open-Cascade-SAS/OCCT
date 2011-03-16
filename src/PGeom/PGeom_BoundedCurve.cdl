@@ -1,0 +1,17 @@
+-- File:	PGeom_BoundedCurve.cdl
+-- Created:	Mon Feb 22 18:58:01 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phobox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class BoundedCurve from PGeom inherits Curve from PGeom
+
+        ---Purpose : Defines a bounded  curve, with finite arc length.
+        --         The curve is limited with its parametric values.
+        --         
+	---See Also BoundedCurve from Geom.
+
+is
+
+end;

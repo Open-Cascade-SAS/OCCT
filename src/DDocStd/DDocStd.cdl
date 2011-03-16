@@ -1,0 +1,93 @@
+-- File:	DDocStd.cdl
+-- Created:	Wed Mar  1 14:05:19 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package DDocStd 
+
+	---Purpose: This package   provides Draw services to test  CAF
+	--          standard documents (see TDocStd package)
+	--          
+	--          It provides :
+	--          
+	--          * Modification registration and Update management.
+	--          
+	--          * External references mechanism
+	--          
+	--          * UNDO/REDO
+	--          
+	--          * Document Creation, Save and Restore
+
+
+uses
+
+    Standard,
+    TCollection,
+    TColStd,
+    Draw,
+    TDF,
+    TDocStd,
+    DDF
+
+is
+
+
+    ---Category: Draw variable wich handle a CAF document
+    --           ========================================
+    
+    class DrawDocument;
+
+    
+    ---Category: draw Application/Document/Label/Attribute tools
+    -- =========================================================
+
+    Find (Appli    : in out Application from TDocStd;
+          Complain : in     Boolean  from Standard = Standard_True)   
+    ---Purpose: return the application of the session. False
+    --          if there is noone current application.
+    returns Boolean from Standard;
+
+	
+    GetDocument (Name     : in out CString  from Standard; 
+                 Doc      : in out Document from TDocStd;
+                 Complain : in     Boolean  from Standard = Standard_True)
+    returns Boolean from Standard;
+    
+    Find (Document : in     Document from TDocStd; 
+          Entry    : in     CString  from Standard;
+	  Label    : in out Label    from TDF;
+          Complain : in     Boolean  from Standard = Standard_True)
+    returns Boolean from Standard;
+    
+    Find (Document : in     Document  from TDocStd; 
+          Entry    : in     CString   from Standard;
+    	  ID       : in     GUID      from Standard;
+          A        : in out Attribute from TDF;
+          Complain : Boolean from Standard = Standard_True)
+    returns Boolean;
+    
+    ReturnLabel(theCommands : in out Interpretor from Draw; L : Label from TDF)
+    returns Interpretor from Draw;  	
+    ---C++: return &         
+
+    ---Category: Commands
+    -- ==================
+				    
+    AllCommands(theCommands : in out Interpretor from Draw);
+
+    ApplicationCommands (theCommands : in out Interpretor from Draw);
+    ---Purpose: NewDocument, Open, SaveAs, Save
+    
+    DocumentCommands (theCommands : in out Interpretor from Draw); 
+    ---Purpose: Undo, Redo, SetModified, Propagate
+
+    ToolsCommands (theCommands : in out Interpretor from Draw);    
+    ---Purpose : Modified, Update
+
+    MTMCommands (theCommands : in out Interpretor from Draw);    
+    ---Purpose : Create, Add, Remove, Open, Commit, Undo, Redo, SetNestedMode
+
+
+end DDocStd;

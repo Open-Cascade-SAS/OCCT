@@ -1,0 +1,109 @@
+-- File:	Crout.cdl
+-- Created:	Thu Aug 22 10:57:59 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class Crout from math
+
+    	---Purpose: This class implements the Crout algorithm used to solve a 
+   	--          system A*X = B where A is a symmetric matrix. It can be used to
+    	--          invert a symmetric matrix.
+    	--          This algorithm is similar to Gauss but is faster than Gauss.
+    	--          Only the inferior triangle of A and the diagonal can be given.
+
+
+uses Matrix from math, 
+     Vector from math,
+     OStream from Standard
+
+raises NotDone from StdFail,
+       NotSquare from math,
+       DimensionError from Standard
+
+is
+
+    Create(A: Matrix; MinPivot: Real = 1.0e-20)
+    	---Purpose: Given an input matrix A, this algorithm inverts A by the
+    	--          Crout algorithm. The user can give only the inferior 
+    	--          triangle for the implementation.
+    	--          A can be decomposed like this:
+    	--          A = L * D * T(L) where L is triangular inferior and D is 
+    	--          diagonal.
+    	--          If one element of A is less than MinPivot, A is
+    	--          considered as singular.
+    	--          Exception NotSquare is raised if A is not a square matrix.
+
+    returns Crout
+    raises NotSquare;
+    
+    
+    IsDone(me)
+    	---Purpose: Returns True if all has been correctly done.
+    	---C++: inline
+    returns Boolean
+    is static;
+    
+
+    Solve(me; B: Vector; X: out Vector)
+    	---Purpose: Given an input vector <B>, this routine returns the 
+    	--          solution of the set of linear equations A . X = B.
+    	--          Exception NotDone is raised if the decomposition was not
+    	--          done successfully.
+    	--          Exception DimensionError is raised if the range of B is
+    	--          not equal to the rowrange of A.
+
+    raises NotDone, 
+    	   DimensionError
+    is static;
+    
+
+    Inverse(me)
+    	---Purpose: returns the inverse matrix of A. Only the inferior 
+    	--          triangle is returned.
+    	--          Exception NotDone is raised if NotDone.
+    	---C++: inline
+    	---C++: return const&
+    returns Matrix
+    raises NotDone
+    is static;
+    
+    
+    Invert(me; Inv: out Matrix)
+    	---Purpose: returns in Inv the inverse matrix of A. Only the inferior 
+    	--          triangle is returned.
+    	--          Exception NotDone is raised if NotDone.
+    	---C++: inline
+
+    raises NotDone
+    is static;
+
+
+    Determinant(me)
+    	---Purpose: Returns the value of the determinant of the previously LU
+    	-- decomposed matrix A. Zero is returned if the matrix A is considered as singular.
+    	-- Exceptions
+    	-- StdFail_NotDone if the algorithm fails (and IsDone returns false).
+    	---C++: inline    
+    returns Real
+    raises NotDone
+    is static;
+
+
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+
+    is static;
+
+
+
+fields
+
+InvA:  Matrix;
+Done:  Boolean;
+Det:   Real;
+
+end Crout;

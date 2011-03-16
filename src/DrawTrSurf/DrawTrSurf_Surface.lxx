@@ -1,0 +1,34 @@
+
+
+  inline Handle(Geom_Surface) DrawTrSurf_Surface::GetSurface () const {
+     return surf;
+  }
+
+
+  inline Draw_Color DrawTrSurf_Surface::BoundsColor () const  { 
+    return boundsLook;
+  }
+
+
+  inline Draw_Color DrawTrSurf_Surface::IsosColor () const  { 
+    return isosLook;
+  }
+
+
+  inline void DrawTrSurf_Surface::SetIsosColor (const Draw_Color& aColor)  {
+
+     isosLook = aColor;
+  }
+
+  inline void DrawTrSurf_Surface::SetBoundsColor (const Draw_Color& aColor)  {
+
+     boundsLook = aColor;
+  }
+
+
+
+  inline void DrawTrSurf_Surface::NbIsos (Standard_Integer& Nu, Standard_Integer& Nv) const {
+
+    Nu = nbUIsos;
+    Nv = nbVIsos;
+  }

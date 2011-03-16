@@ -1,0 +1,120 @@
+--
+-- File:      Image_PixMap.cdl
+-- Created:   16 September 2010
+-- Author:    KGV
+--
+---Copyright: Open CASCADE S.A.S. 2010
+
+class PixMap from Image
+
+	---Version:
+
+	---Purpose: This class defines a system-independent bitmap
+
+	---Keywords: Bitmap, Pixmap
+
+inherits
+    PixMap         from Aspect
+
+uses
+    Handle         from Aspect,
+    TypeOfImage    from Image,
+    HPrivateImage  from Image,
+    CRawBufferData from Image,
+    Color          from Quantity
+
+raises
+    PixmapDefinitionError  from Aspect,
+    PixmapError            from Aspect
+
+is
+
+    Create ( theWidth, theHeight : Integer from Standard;
+             theType             : TypeOfImage from Image )
+    returns mutable PixMap from Image
+    raises PixmapDefinitionError from Aspect;
+    ---Level: Public
+    ---Purpose:
+    -- Allocate the bitmap with requested dimensions.
+    -- Allowed image types:
+    --  - Image_TOI_RGB (color image, 1 byte per component);
+    --  - Image_TOI_RGBA (color image with alpha channel);
+    --  - Image_TOI_RGBF (color image, 1 float per component);
+    --  - Image_TOI_RGBAF (color image with alpha channel);
+    --  - Image_TOI_FLOAT (grey image, 1 float per pixel).
+
+    Create ( theDataPtr          : PByte from Standard;
+             theWidth, theHeight : Integer from Standard;
+             thePitch            : Integer from Standard;
+             theBitsPerPixel     : Integer from Standard;
+             theIsTopDown        : Boolean from Standard )
+    returns mutable PixMap from Image
+    raises PixmapDefinitionError from Aspect;
+    ---Level: Public
+    ---Purpose:
+    -- Create a bitmap by copying an existing buffer.
+
+    ---------------------------------------------------
+    -- Category: Methods to modify the class definition
+    ---------------------------------------------------
+
+    Destroy ( me : mutable )
+    ---Level: Advanced
+    ---Purpose:
+    -- Destroies the Bitmap
+    ---C++: alias ~
+    ---Trigger: Raises if Bitmap is not defined properly
+    raises PixmapError from Aspect is virtual;
+
+    Dump ( me;
+           theFilename  : CString from Standard;
+           theGammaCorr : Real from Standard = 1.0 )
+    returns Boolean from Standard
+    ---Level: Advanced
+    ---Purpose:
+    -- Dumps the Bitmap to an image file with
+    -- an optional gamma correction value
+    -- and returns TRUE if the dump occurs normaly.
+    raises PixmapError from Aspect is virtual;
+
+    ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    PixmapID ( me ) returns Handle from Aspect is virtual;
+    ---Level: Advanced
+    ---Purpose:
+    -- Returns NULL handle
+    ---Category: Inquire methods
+
+    ----------------------------
+    -- Category: Access methods
+    ----------------------------
+
+    AccessBuffer ( me            : in;
+                   theBufferInfo : in out CRawBufferData from Image )
+    is static;
+    ---Purpose:
+    -- Fill the structure for low-level access to the bitmap data.
+    -- It is up to you to interpret these bytes correctly!
+    -- Important notice: image stored upside-down in the memory,
+    --                   first image row is an last scanline in
+    --                   the memory buffer.
+    -- If image was created with type Image_TOI_FLOAT buffer
+    -- format will be set to TDepthComponent. You can override
+    -- this field with another one-channel buffer format because
+    -- it useless for bitmap definition.
+
+    PixelColor ( me         : in;
+                 theX, theY : in Integer from Standard )
+    returns Color from Quantity
+    is virtual;
+    ---Purpose:
+    -- Returns the pixel color. This function is relatively slow,
+    -- use AccessBuffer() instead for stream operations.
+    -- Note that this function convert input theY coordinate
+    -- to count off from top of an image (while in memory it stored
+    -- upside-down).
+fields
+    myImage : HPrivateImage from Image is protected;
+end PixMap;

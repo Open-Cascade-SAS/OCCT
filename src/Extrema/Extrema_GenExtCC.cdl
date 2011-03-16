@@ -1,0 +1,105 @@
+-- File:	Extrema_GenExtCC.cdl
+-- Created:	Tue Jul 18 17:41:35 1995
+-- Author:	Modelistation
+--		<model@metrox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+generic class   GenExtCC from Extrema 
+(Curve1    as any;
+ Tool1     as any;   -- as ToolCurve(Curve1)
+ Curve2    as any;
+ Tool2     as any;   -- as ToolCurve(Curve2)
+ Cache     as Transient from Standard;   -- CurveCache from Extrema
+ ArrayOfPnt as Transient from Standard; -- as returned by Extrema_CurveCache::Points()
+ POnC      as any;
+ Pnt       as any;
+ Vec       as any)
+
+	---Purpose: It calculates all the distance between two curves.
+	--          These distances can be maximum or minimum.
+
+raises  InfiniteSolutions from StdFail,
+    	NotDone           from StdFail,
+    	OutOfRange        from Standard
+	
+private class CCF instantiates FuncExtCC from Extrema (Curve1, Tool1,  
+    	    	    	    	    	    	       Curve2, Tool2,  
+    	    	    	    	    	    	       POnC, Pnt, Vec);
+
+is
+
+    Create returns GenExtCC;
+    	---Purpose: Calculates all the distances as above
+    	--          between Uinf and Usup for C1 and  between Vinf and Vsup 
+    	--          for C2.
+
+    Create (C1: Curve1; C2: Curve2; NbU,NbV: Integer; TolU,TolV: Real) returns GenExtCC;
+      	---Purpose: It calculates all the distances.
+        --          The function F(u,v)=distance(C1(u),C2(v)) has an 
+        --          extremum when gradient(f)=0. The algorithm searchs
+        --          all the zeros.
+      	--          NbU,NbV are used to locate the close points to
+      	--          find the zeros. They must be great enough such that
+      	--          if there is N extrema, there will be N extrema 
+      	--          between the segment and the grid.
+      	--          TolU and TolV are used to determinethe conditions
+      	--          to stop the iterations; at the iteration number n:
+      	--           (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
+
+    Create (C1: Curve1; C2: Curve2; Uinf, Usup, Vinf, Vsup: Real;
+    	    NbU,NbV: Integer; TolU,TolV: Real) returns GenExtCC;
+    	---Purpose: Calculates all the distances as above
+    	--          between Uinf and Usup for C1 and  between Vinf and Vsup 
+    	--          for C2.
+
+    SetCurveCache (me: in out; theRank: Integer; theCache: Cache);
+        ---Purpose: 
+
+    SetTolerance (me: in out; Tol: Real);
+        ---Purpose:
+
+    Perform(me: in out) is static;
+    	---Purpose: Performs calculations.
+
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)= True.
+    	is static;
+
+    SquareDistance (me; N: Integer =1) returns Real
+    	---Purpose: Returns the value of the Nth square extremum distance.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True and N > 1.
+    	    	OutOfRange
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+    Points (me; N: Integer; P1,P2: out POnC)
+    	---Purpose: Returns the points of the Nth extremum distance.
+    	--          P1 is on the first curve, P2 on the second one.
+    	raises  NotDone from StdFail,
+	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail,
+		-- if IsParallel(me)= True.
+    	    	OutOfRange
+		-- if N < 1 or N > NbExt(me)
+    	is static;
+
+fields
+    myF    : CCF from Extrema;
+    myDone : Boolean;
+    myCache: Cache [2];
+
+end GenExtCC;

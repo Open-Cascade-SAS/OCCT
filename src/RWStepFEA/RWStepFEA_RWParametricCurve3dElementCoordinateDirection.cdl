@@ -1,0 +1,35 @@
+-- File:	RWStepFEA_RWParametricCurve3dElementCoordinateDirection.cdl
+-- Created:	Thu Dec 12 17:51:07 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class RWParametricCurve3dElementCoordinateDirection from RWStepFEA
+
+    ---Purpose: Read & Write tool for ParametricCurve3dElementCoordinateDirection
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    ParametricCurve3dElementCoordinateDirection from StepFEA
+
+is
+    Create returns RWParametricCurve3dElementCoordinateDirection from RWStepFEA;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : ParametricCurve3dElementCoordinateDirection from StepFEA);
+	---Purpose: Reads ParametricCurve3dElementCoordinateDirection
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: ParametricCurve3dElementCoordinateDirection from StepFEA);
+	---Purpose: Writes ParametricCurve3dElementCoordinateDirection
+
+    Share (me; ent : ParametricCurve3dElementCoordinateDirection from StepFEA;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWParametricCurve3dElementCoordinateDirection;

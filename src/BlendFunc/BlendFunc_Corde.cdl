@@ -1,0 +1,142 @@
+-- File:      BlendFunc_Corde.cdl
+-- Created:   Tue Jun  4 18:41:25 1996
+-- Author:    Stagiaire Xuan Trang PHAMPHU
+---Copyright: Matra Datavision 1996
+
+
+class Corde from BlendFunc
+
+	---Purpose: Cette fonction calcule le point pts sur la courbe intersection
+ 	--          entre la normale  a  une courbe (guide) en un parametre choisi
+	--          et une surface  (surf), tel que pts soit a une distance
+	--          donnee de guide.
+	--          X(1),X(2) sont les parametres U,V de pts sur surf.
+
+ 
+uses Vector   from math,
+     Matrix   from math,
+     Gauss    from math,	
+     Vec      from gp,
+     Vec2d    from gp,	     	    
+     Pnt      from gp,
+     Pnt2d    from gp,
+     HCurve   from Adaptor3d,
+     HSurface from Adaptor3d
+
+raises  
+    DomainError from Standard
+    	
+     
+is
+
+    Create(S: HSurface from Adaptor3d; CGuide: HCurve from Adaptor3d)     
+    	returns Corde from BlendFunc;
+	
+	
+    SetParam(me: in out; Param: Real from Standard);
+
+
+    SetDist(me: in out; Dist: Real from Standard);
+       
+		
+    Value(me: in out; X: Vector; F: out Vector)
+    	---Purpose: computes the values <F> of the Function for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.
+
+    	returns Boolean from Standard;    	
+
+	
+    Derivatives(me: in out; X: Vector; D: out Matrix)
+    	---Purpose: returns the values <D> of the derivatives for the 
+    	--          variable <X>.
+    	--          Returns True if the computation was done successfully, 
+    	--          False otherwise.	
+
+    returns Boolean from Standard;
+    
+ 
+    PointOnS(me)
+    
+    	returns Pnt from gp
+	---C++: return const&
+	;
+
+
+    PointOnGuide(me)
+    
+    	returns Pnt from gp
+	---Purpose: returns the point of parameter <Param> on CGuide
+	---C++: return const&
+	;
+	
+    NPlan(me)
+    
+    	returns Vec from gp
+	---Purpose: returns the normal to CGuide at Ptgui.
+	---C++: return const&           
+	;
+	
+    IsTangencyPoint(me)
+    
+	---Purpose: Returns True when it is not possible to compute
+	--          the tangent vectors at PointOnS.
+    
+    	returns Boolean from Standard;
+	
+	
+    TangentOnS(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS, in 3d space.
+
+    	returns Vec from gp
+	---C++: return const&
+    	raises DomainError from Standard;
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.	
+	
+	    
+    Tangent2dOnS(me)
+    
+	---Purpose: Returns the tangent vector at PointOnS, in the
+	--          parametric space of the first surface.
+
+    	returns Vec2d from gp
+	---C++: return const&
+    	raises DomainError from Standard;
+	--- The exception is raised when IsTangencyPoint
+	--  returns Standard_True.	
+
+	    
+    DerFguide(me: in out; Sol : Vector from math; DerF : out Vec2d from gp);
+	---Purpose: Derivee de la fonction par rapport au parametre 
+	--          de la ligne guide
+			
+			
+    IsSolution(me : in out;
+    	       Sol: Vector from math; Tol: Real from Standard)  
+	  
+	---Purpose: Returns False if Sol is not solution else returns
+	--          True and updates the fields tgs and tg2d  
+      
+      returns Boolean from Standard;  
+    
+fields
+
+    surf       : HSurface from Adaptor3d;    
+    guide      : HCurve from Adaptor3d;	
+    pts        : Pnt     from gp;
+    pt2d       : Pnt2d   from gp;
+    dis        : Real    from Standard;
+    normtg     : Real    from Standard;	
+    theD       : Real    from Standard;     
+    ptgui      : Pnt     from gp;
+    nplan      : Vec     from gp;	
+    d1gui      : Vec     from gp;
+    d2gui      : Vec     from gp;
+    tgs        : Vec     from gp;
+    tg2d       : Vec2d   from gp; 
+    istangent  : Boolean from Standard;	
+
+end Corde;    

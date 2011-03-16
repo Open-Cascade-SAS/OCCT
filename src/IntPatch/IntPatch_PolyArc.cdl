@@ -1,0 +1,62 @@
+-- File:      IntPatch_PolyArc.cdl
+-- Created:   Wed Jan 27 09:44:03 1993
+-- Author:    Isabelle GRIGNON
+---Copyright: Matra Datavision 1993
+
+class PolyArc from IntPatch
+
+inherits Polygo from IntPatch
+
+uses Box2d         from Bnd,
+     Pnt2d         from gp,
+     Array1OfPnt2d from TColgp,
+     Array1OfReal  from TColStd,
+     HCurve2d from Adaptor2d
+
+raises ConstructionError from Standard
+
+is
+
+    Create(A: HCurve2d from Adaptor2d; NbSample: Integer from Standard; 
+    	   Pfirst,Plast : Real from Standard;
+           BoxOtherPolygon: Box2d from Bnd)
+
+    	---Purpose: Creates the polygon of the arc A on the surface S.
+    	--          The arc is limited by the parameters Pfirst and Plast.
+    	--          None of these parameters can be infinite.
+
+    	returns PolyArc from IntPatch
+	
+	raises ConstructionError from Standard;
+    	--- This exception is raised if Pfirst=RealFirst or Plast=RealLast or
+    	--  NbSample<=1.
+
+
+    Bounding(me)                 
+    	---C++: return const&
+    returns Box2d from Bnd;
+ 	    	
+    Error(me)                    returns Real from Standard;
+                      	    	          
+    Closed(me)                   returns Boolean from Standard;
+
+    NbPoints(me)                 returns Integer;
+ 
+    Point(me; Index : Integer)   returns Pnt2d from gp;
+                                      	    	 
+    Parameter(me ; Index : Integer) returns Real from Standard;
+     
+    SetOffset(me:in out;  OffsetX,OffsetY: Real from Standard);
+       
+		
+fields
+
+    brise  : Array1OfPnt2d from TColgp;
+    param  : Array1OfReal  from TColStd;
+    boite  : Box2d         from Bnd;
+    fleche : Real          from Standard;
+    offsetx: Real          from Standard;
+    offsety: Real          from Standard;
+    ferme  : Boolean       from Standard;
+
+end PolyArc;

@@ -1,0 +1,93 @@
+-- File:	BOP_ShellFaceClassifier.cdl
+-- Created:	Mon Jun 25 15:33:06 2001
+-- Author:	Michael KLOKOV
+--		<mkk@kurox>
+---Copyright:	 Matra Datavision 2001
+
+class ShellFaceClassifier from BOP inherits CompositeClassifier from BOP
+
+
+    	---Purpose:  
+	
+    	--- The  algorithm is to classify loops that  
+    	--  consist of faces and shells
+	--- 
+    
+uses
+    
+    Shape               from TopoDS,
+    Shell               from TopoDS,
+    State               from TopAbs,
+    Pnt                 from gp,
+    Builder             from BRep, 
+    BlockBuilder        from BOP,
+    SolidClassifier     from BOP,
+    DataMapOfShapeShape from TopTools
+
+is
+    Create(theBlockBuilder: BlockBuilder from BOP)
+    	returns ShellFaceClassifier from BOP;
+    	---Purpose: 
+    	--- Creates a classifier in 3D space, to compare
+    	--- a face with a set of faces,
+    	--- a shell with a set of faces,
+    	--- a shell with a shell
+    	---
+    Clear(me: in out);
+    	---Purpose:  
+    	--- Clears  contents of internal state of the object     
+    	---
+    CompareShapes(me : in out;  
+    	    	  B1 : Shape from TopoDS;  
+    	    	  B2 : Shape from TopoDS)
+    	returns State from TopAbs
+    	is redefined;
+    	---Purpose:  
+    	--- Classify shape <B1> with shape <B2> 
+    	---
+    CompareElementToShape(me : in out;  
+    	    	  E : Shape from TopoDS;  
+    	    	  B : Shape from TopoDS)
+    
+    	returns State from TopAbs
+	is redefined;
+    	---Purpose:  
+    	--- Classify element <E> with shape <B> 
+    	---
+    ResetShape(me : in out;  
+    	          B : Shape from TopoDS)
+    	is redefined;
+    	---Purpose:  
+    	--- Prepare classification involving shape <B>
+    	--- Calls ResetElement on first element of <B> 
+    	---
+    ResetElement(me : in out;  
+    	          E : Shape from TopoDS)
+	is redefined;
+    	---Purpose:  
+    	--- Prepare classification involving element <E>. 
+    	---
+    CompareElement(me : in out;  
+    	    	  E : Shape from TopoDS);
+    	---Purpose:  
+    	--- Add element <E> in the set of elements used in classification.
+    	---
+    State(me : in out)  
+    	returns State from TopAbs
+	is redefined;
+    	---Purpose:  
+    	--- Returns state of classification of 2D point, defined by 
+    	--- ResetElement, with the current set of elements,  
+    	--- defined by Compare. 
+    	---
+    
+fields
+
+    myFirstCompare:    Boolean from Standard;
+    myPoint:           Pnt from gp;
+    myShell:           Shell from TopoDS;
+    myBuilder:         Builder from BRep;
+    mySolidClassifier: SolidClassifier from BOP; 
+    myFaceShellMap :   DataMapOfShapeShape from TopTools;
+
+end ShellFaceClassifier from BOP;

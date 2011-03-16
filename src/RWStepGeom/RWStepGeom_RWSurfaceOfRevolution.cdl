@@ -1,0 +1,30 @@
+-- File:        SurfaceOfRevolution.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWSurfaceOfRevolution from RWStepGeom
+
+	---Purpose : Read & Write Module for SurfaceOfRevolution
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     SurfaceOfRevolution from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWSurfaceOfRevolution;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable SurfaceOfRevolution from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : SurfaceOfRevolution from StepGeom);
+
+	Share(me; ent : SurfaceOfRevolution from StepGeom; iter : in out EntityIterator);
+
+end RWSurfaceOfRevolution;

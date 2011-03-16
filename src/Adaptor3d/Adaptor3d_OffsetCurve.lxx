@@ -1,0 +1,42 @@
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+
+inline const Handle(Adaptor2d_HCurve2d)& Adaptor3d_OffsetCurve::Curve() const
+{
+  return myCurve;
+}
+
+
+//=======================================================================
+//function : Offset
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Adaptor3d_OffsetCurve::Offset() const
+{
+  return myOffset;
+}
+
+
+//=======================================================================
+//function : FirstParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Adaptor3d_OffsetCurve::FirstParameter() const 
+{
+  return myFirst;
+}
+
+//=======================================================================
+//function : LastParameter
+//purpose  : 
+//=======================================================================
+
+inline Standard_Real Adaptor3d_OffsetCurve::LastParameter() const 
+{
+  return myLast;
+}

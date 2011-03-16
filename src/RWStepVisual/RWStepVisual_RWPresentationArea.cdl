@@ -1,0 +1,30 @@
+-- File:        PresentationArea.cdl
+-- Created:     Mon Dec  4 12:02:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWPresentationArea from RWStepVisual
+
+	---Purpose : Read & Write Module for PresentationArea
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     PresentationArea from StepVisual,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWPresentationArea;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable PresentationArea from StepVisual);
+
+	WriteStep (me; SW : in out StepWriter; ent : PresentationArea from StepVisual);
+
+	Share(me; ent : PresentationArea from StepVisual; iter : in out EntityIterator);
+
+end RWPresentationArea;

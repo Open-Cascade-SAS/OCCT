@@ -1,0 +1,20 @@
+-- File:	StepAP214_SecurityClassificationItem.cdl
+-- Created:	Wed Mar 10 16:33:51 1999
+-- Author:	data exchange team
+--		<det@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SecurityClassificationItem from StepAP214 
+inherits ApprovalItem from StepAP214
+	
+
+is
+
+    	Create returns SecurityClassificationItem;
+	---Purpose : Returns a SecurityClassificationItem SelectType
+
+
+
+
+end SecurityClassificationItem;

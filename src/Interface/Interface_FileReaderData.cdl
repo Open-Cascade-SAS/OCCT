@@ -1,0 +1,200 @@
+-- File:	FileReaderData.cdl
+-- Created:	Mon Feb 10 16:51:50 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class FileReaderData  from Interface  inherits TShared
+
+    ---Purpose : This class defines services which permit to access Data issued
+    --           from a File, in a form which does not depend of physical
+    --           format : thus, each Record has an attached ParamList (to be
+    --           managed) and resulting Entity.
+    --           
+    --           Each Interface defines its own FileReaderData : on one hand by
+    --           defining deferred methods given here, on the other hand by
+    --           describing literal data and their accesses, with the help of
+    --           basic classes such as String, Array1OfString, etc...
+    --           
+    --           FileReaderData is used by a FileReaderTool, which is also
+    --           specific of each Norm, to read an InterfaceModel of the Norm
+    --           FileReaderData inherits TShared to be accessed by Handle :
+    --           this allows FileReaderTool to define more easily the specific
+    --           methods, and improves memory management.
+
+uses Integer, Boolean,  CString, Transient,  AsciiString from TCollection,
+     Array1OfInteger  from TColStd,     Array1OfTransient from TColStd,
+     InterfaceModel,  Check,  FileParameter,  ParamSet,  ParamList,  ParamType
+
+raises NoSuchObject
+
+is
+
+    Initialize (nbr : Integer; npar : Integer);
+    ---Purpose : Initializes arrays of Entities and of ParamLists attached
+    --           to registered records
+    --           <nbr> must be the maximum number of records to get (no way to
+    --           extend it at run-time) : count entities and sub-entities ...
+    --           <npar> is the total count of parameters (if it is not exact,
+    --           it will be extented as necessary)
+    --           
+    --           Hence, to each record can be bound an Entity and a list of
+    --           Parameters. Each kind of FileReaderData can add other data, by
+    --           having them in parallel (other arrays with same sizes)
+    --           Else, it must manage binding between items and their data
+
+
+    NbRecords (me) returns Integer   is virtual;
+    ---Purpose : Returns the count of registered records
+    --           That is, value given for Initialization (can be redefined)
+
+    NbEntities (me) returns Integer  is virtual;
+    ---Purpose : Returns the count of entities. Depending of each norm, records
+    --           can be Entities or SubParts (SubList in STEP, SubGroup in SET
+    --           ...). NbEntities counts only Entities, not Subs
+    --           Used for memory reservation in InterfaceModel
+    --           Default implementation uses FindNextRecord
+    --           Can be redefined into a more performant way
+
+    FindNextRecord (me; num : Integer) returns Integer is deferred;
+    ---Purpose : Determines the record number defining an Entity following a
+    --           given record number. Specific to each sub-class of
+    --           FileReaderData. Returning zero means no record found
+
+    	-- --   access to Paramaters   -- --
+
+    InitParams (me : mutable; num : Integer);
+    ---Purpose : attaches an empty ParamList to a Record
+
+    AddParam   (me : mutable; num : Integer; aval : CString;
+    	        atype : ParamType; nument : Integer = 0);
+    ---Purpose : Adds a parameter to record no "num" and fills its fields
+    --           (EntityNumber is optional)
+    --  Warning : <aval> is assumed to be memory-managed elsewhere : it is NOT
+    --           copied. This gives a best speed : strings remain stored in
+    --           pages of characters
+
+    AddParam   (me : mutable; num : Integer; aval : AsciiString from TCollection;
+    	        atype : ParamType; nument : Integer = 0);
+    ---Purpose : Same as above, but gets a AsciiString from TCollection
+    --           Remark that the content of the AsciiString is locally copied
+    --           (because its content is most often lost after using)
+
+    AddParam   (me : mutable; num : Integer; FP : FileParameter);
+    ---Purpose : Same as above, but gets a complete FileParameter
+    --  Warning : Content of <FP> is NOT copied : its original address and space
+    --           in memory are assumed to be managed elsewhere (see ParamSet)
+
+    SetParam   (me : mutable; num, nump : Integer; FP : FileParameter);
+    ---Purpose : Sets a new value for a parameter of a record, given by :
+    --           num : record number; nump : parameter number in the record
+
+    NbParams (me; num : Integer) returns Integer  is static;
+    ---Purpose : Returns count of parameters attached to record "num"
+    --           If <num> = 0, returns the total recorded count of parameters
+
+    Params   (me; num : Integer) returns ParamList  is static;
+    ---Purpose : Returns the complete ParamList of a record (read only)
+    --           num = 0 to return the whole param list for the file
+
+    Param       (me; num, nump : Integer) returns FileParameter  is static;
+    ---Purpose : Returns parameter "nump" of record "num", as a complete
+    --           FileParameter
+    ---C++ : return const &
+
+    ChangeParam (me : mutable; num, nump : Integer) returns FileParameter
+    	is static;
+    ---Purpose : Same as above, but in order to be modified on place
+    ---C++ : return &
+
+    ParamType   (me; num, nump : Integer) returns ParamType  is static;
+    ---Purpose : Returns type of parameter "nump" of record "num"
+
+--    ParamValue  (me; num, nump : Integer) returns AsciiString from TCollection;
+    ---Purpose : Returns literal value of parameter "nump" of record "num"
+    --  was C++ : return const &
+
+    ParamCValue (me; num, nump : Integer) returns CString  is static;
+    ---Purpose : Same as above, but as a CString
+    --  was C++ : return const
+
+    IsParamDefined (me; num, nump : Integer) returns Boolean  is static;
+    ---Purpose : Returns True if parameter "nump" of record "num" is defined
+    --           (it is not if its type is ParamVoid)
+
+    ParamNumber (me; num, nump : Integer) returns Integer  is static;
+    ---Purpose : Returns record number of an entity referenced by a parameter
+    --           of type Ident; 0 if no EntityNumber has been determined
+    --           Note that it is used to reference Entities but also Sublists
+    --           (sublists are not objects, but internal descriptions)
+
+    ParamEntity (me; num, nump : Integer)
+    	returns mutable Transient  raises NoSuchObject  is static;
+    ---Purpose : Returns the StepEntity referenced by a parameter
+    --           Error if none
+    ---C++ : return const &
+
+    ChangeParameter (me : mutable; numpar : Integer) returns FileParameter
+    	is static protected;
+    ---Purpose : Returns a parameter given its absolute rank in the file
+    --           in order to be consulted or modified in specilaized actions
+    ---C++ : return &
+
+    ParamPosition (me; numpar : Integer; num,nump : out Integer)
+    	is static protected;
+    ---Purpose : For a given absolute rank of parameter, determines the
+    --           record to which its belongs, and the parameter number for it
+
+    ParamFirstRank (me; num : Integer) returns Integer  is static;
+    ---Purpose : Returns the absolute rank of the beginning of a record
+    --           (its lsit is from ParamFirstRank+1 to ParamFirstRank+NbParams)
+
+    	-- --   binding empty entities before loading model   -- --
+
+    BoundEntity (me; num : Integer) returns mutable Transient;
+    ---Purpose : Returns the entity bound to a record, set by SetEntities
+    ---C++ : return const &
+
+    BindEntity (me : mutable; num : Integer; ent : mutable Transient);
+    ---Purpose : Binds an entity to a record
+
+    SetErrorLoad (me : mutable; val : Boolean);
+    ---Purpose : Sets the status "Error Load" on, to overside check fails
+    --           <val> True  : declares unloaded
+    --           <val> False : declares loaded
+    --           If not called before loading (see FileReaderTool), check fails
+    --             give the status
+    --           IsErrorLoad says if SetErrorLoad has been called by user
+    --           ResetErrorLoad resets it (called by FileReaderTool)
+    --           This allows to specify that the currently loaded entity
+    --           remains unloaded (because of syntactic fail)
+
+    IsErrorLoad (me) returns Boolean;
+    ---Purpose : Returns True if the status "Error Load" has been set (to True
+    --           or False)
+
+    ResetErrorLoad (me : mutable) returns Boolean;
+    ---Purpose : Returns the former value of status "Error Load" then resets it
+    --           Used to read the status then ensure it is reset
+
+    	-- --   specials    -- --
+
+    Destroy (me : mutable);
+    ---Purpose : Destructor (waiting for memory management)
+    ---C++ : alias ~
+
+    Fastof (myclass; str : CString) returns Real;
+    ---Purpose : Same spec.s as standard <atof> but 5 times faster
+
+fields
+
+    thenum0   : Integer;        -- current data for access to parameters
+    thenump0  : Integer;
+    therrload : Integer;
+    theparams : ParamSet;               -- the general set of parameters
+    thenumpar : Array1OfInteger   from TColStd;   -- beginning of each one
+--    thenbpar  : Array1OfInteger   from TColStd;   -- its size
+    theents   : Array1OfTransient from TColStd;   -- entities bound to records
+
+end FileReaderData;

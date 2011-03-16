@@ -1,0 +1,268 @@
+-- File:	AIS_TexturedShape.cdl
+-- Created:	Mon Jul  2 11:32:59 2001
+-- Author:	Mathias BOSSHARD
+--		<mbd@pomalox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2001
+
+
+class TexturedShape from AIS inherits Shape from AIS
+
+	---Purpose: This class allows to map textures on shapes
+	--  Textures are image files.
+	--   The texture itself is parametrized in (0,1)x(0,1).
+    	--  Each face of a shape located in
+    	-- UV space is provided with these parameters:
+    	--    -      Umin - starting position in U
+    	--    -      Umax - ending position in U
+    	--    -      Vmin - starting position in V
+    	--    -      Vmax - ending position in V
+	--  Each face is triangulated and a texel is assigned to each 
+	--  node. Facets are then filled using a linear interpolation 
+	--  of texture between each 'three texels'	        	    	
+	--  User can act on :
+	--  - the number of occurences of the texture on the face
+	--  - the position of the origin of the texture
+	--  - the scale factor of the texture
+	   
+
+
+uses    
+    Pnt                   from gp,
+    Shape                 from TopoDS,
+    NameOfTexture2D       from Graphic3d,
+    AspectFillArea3d      from Graphic3d,
+    Texture2Dmanual       from Graphic3d,
+    PresentationManager3d from PrsMgr,
+    Presentation          from Prs3d,
+    AsciiString           from TCollection
+
+is
+
+    Create (shap: Shape from TopoDS) 
+    returns mutable TexturedShape from AIS;
+    	---Purpose:      Initializes the textured shape ashape.
+
+
+    ------------------------------------------------------------
+    SetTextureFileName( me: mutable; 
+    	    	    	TextureFileName: AsciiString from TCollection) 
+    is virtual;
+			
+			
+    	---Purpose : Sets the name of the texture file to map. The accepted
+    	--      file types are those used in AlienImage with extensions
+    	--      such as xwd, bmp, gif, rgb, ras, rs and more.
+
+
+    ------------------------------------------------------------
+    SetTextureRepeat(   me: mutable; 
+    	    	    	RepeatYN: Boolean from Standard; 
+    	    	    	URepeat: Real from Standard = 1.0; 
+    	    	    	VRepeat: Real from Standard = 1.0)
+    is virtual;
+			
+			
+    	---Purpose : Sets the number of occurrences of
+    	-- the texture on each face. The texture itself is parameterized
+    	-- in (0,1) by (0,1) . Each face of the shape to be textured is
+    	-- parameterized in UV space (Umin,Umax) by (Vmin,Vmax). If
+    	-- RepeatYN is set to false, texture coordinates are clamped in the
+    	-- range (0,1)x(0,1) of the face. 
+  
+
+    ------------------------------------------------------------
+    SetTextureOrigin(   me: mutable; 
+    	    	    	SetTextureOriginYN: Boolean from Standard; 
+    	    	    	UOrigin: Real from Standard = 0.0; 
+    	    	    	VOrigin: Real from Standard = 0.0)
+    is virtual;
+
+    	---Purpose : Use this method to change the origin of the 
+    	--         texture. The texel (0,0) will be mapped to the 
+    	--         surfel (UOrigin,VOrigin)
+    ------------------------------------------------------------
+   
+   
+     
+    ------------------------------------------------------------
+    SetTextureScale(    me: mutable; 
+    	    	    	SetTextureScaleYN: Boolean from Standard; 
+    	    	    	ScaleU: Real from Standard = 1.0; 
+    	    	    	ScaleV: Real from Standard = 1.0)
+    is virtual;   
+   
+
+    	---Purpose : Use this method to scale the texture (percent of
+    	--         the face).
+    	--         You can specify a scale factor for both U and V.
+    	--         
+    	--         example : if you set ScaleU and ScaleV to 0.5 and
+    	--         you enable texture repeat, the texture will appear
+    	--         twice on the face in each direction.
+    ------------------------------------------------------------
+
+
+   
+    ------------------------------------------------------------
+    ShowTriangles(  me : mutable; 
+    	    	    ShowTrianglesYN: Boolean from Standard = Standard_False)
+    is virtual;
+    
+    
+    	---Purpose : Use this method to show the triangulation of 
+    	--         the shape. This is not very esthetic but can be 
+    	--         usefull for debug ... 
+    ------------------------------------------------------------
+
+    
+
+    ------------------------------------------------------------
+    SetTextureMapOn(me: mutable);
+   
+    	---Purpose : Enables texture mapping    
+    ------------------------------------------------------------
+   
+   
+
+    ------------------------------------------------------------
+    SetTextureMapOff(me: mutable);
+   
+    	---Purpose : Disables texture mapping    
+    ------------------------------------------------------------
+      
+   
+
+    ------------------------------------------------------------
+    EnableTextureModulate(me: mutable);
+   
+    	---Purpose : Enables texture modulation
+    ------------------------------------------------------------
+      
+
+
+    ------------------------------------------------------------
+    DisableTextureModulate(me: mutable);
+   
+    	---Purpose : Disables texture modulation    
+    ------------------------------------------------------------
+      
+   
+
+    ------------------------------------------------------------
+    UpdateAttributes(me: mutable);
+
+    	---Purpose : Use this method to display the textured shape 
+    	--         without recomputing the whole presentation.
+    	--         Use this method when ONLY the texture has been changed.
+    	--         ie : myTShape->UpdateAttributes()
+    	--          
+    	--         If other parameters (ie: scale factors,
+    	--         texture origin, texture repeat ...) have changed,
+    	--         the whole presentation has to be recomputed.
+    	--         ie : if (myShape->DisplayMode() == 3)
+    	--	    	       myAISContext->RecomputePrsOnly(myShape);
+    	--	    	    else
+    	--	    	       {
+    	--	    	         myAISContext->SetDisplayMode(myShape,3,Standard_False);
+    	--	                 myAISContext->Display(myShape, Standard_True);
+    	--	               } 
+    ------------------------------------------------------------
+   
+   
+    
+    ------------------------------------------------------------
+    Compute(me                   : mutable;
+    	    aPresentationManager : PresentationManager3d from PrsMgr;
+            aPresentation        : mutable Presentation from Prs3d;
+    	    aMode                : Integer from Standard = 0) 
+    is redefined virtual protected;
+    
+    ------------------------------------------------------------
+   
+   
+
+    ------------------------------------------------------------
+    TriangleIsValid(me; 
+    	    	    P1: Pnt from gp; 
+    	    	    P2: Pnt from gp; 
+    	    	    P3: Pnt from gp) 
+    returns Boolean from Standard is private;
+    
+    ------------------------------------------------------------
+
+
+    
+    ------------------------------------------------------------
+    --          
+    --          QUERY METHODS
+    --          
+    ------------------------------------------------------------
+    
+    
+    TextureMapState(me) returns Boolean from Standard;
+    
+
+    URepeat(me)         returns Real    from Standard;
+    
+
+    TextureRepeat(me)   returns Boolean from Standard;
+    
+    
+    Deflection(me)      returns Real    from Standard;
+    
+    
+    TextureFile(me)     returns CString from Standard;
+    
+
+    VRepeat(me)         returns Real    from Standard;
+    
+
+    ShowTriangles(me)   returns Boolean from Standard;
+    
+
+    TextureUOrigin(me)  returns Real    from Standard;
+    
+    
+    TextureVOrigin(me)  returns Real    from Standard;
+    
+
+    TextureScaleU(me)   returns Real    from Standard;
+    
+
+    TextureScaleV(me)   returns Real    from Standard;
+    
+
+    TextureScale(me)    returns Boolean from Standard;
+    
+
+    TextureOrigin(me)   returns Boolean from Standard;
+    
+
+    TextureModulate(me) returns Boolean from Standard;
+    
+    
+fields
+    myPredefTexture    : NameOfTexture2D  from Graphic3d;
+    myTextureFile      : AsciiString      from TCollection;
+    DoRepeat           : Boolean          from Standard;
+    myURepeat          : Real             from Standard;
+    myVRepeat          : Real             from Standard;
+    DoMapTexture       : Boolean          from Standard;
+    DoSetTextureOrigin : Boolean          from Standard;
+    myUOrigin          : Real             from Standard;
+    myVOrigin          : Real             from Standard;
+    DoSetTextureScale  : Boolean          from Standard;
+    myScaleU           : Real             from Standard;
+    myScaleV           : Real             from Standard;
+    DoShowTriangles    : Boolean          from Standard;
+    myDeflection       : Real             from Standard;
+    myAspect           : AspectFillArea3d from Graphic3d;
+    mytexture          : Texture2Dmanual  from Graphic3d;
+    Umin               : Real             from Standard;
+    Umax               : Real             from Standard;
+    Vmin               : Real             from Standard;
+    Vmax               : Real             from Standard;
+    dUmax              : Real             from Standard;
+    dVmax              : Real             from Standard;
+    myModulate         : Boolean          from Standard;
+end TexturedShape;

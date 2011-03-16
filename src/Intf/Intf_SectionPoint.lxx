@@ -1,0 +1,27 @@
+// File:	Intf_SectionPoint.lxx
+// Created:	Tue Jun 25 10:05:51 1991
+// Author:	Didier PIFFAULT
+//		<dpf@phobox>
+
+inline Standard_Real Intf_SectionPoint::ParamOnFirst() const
+{return (IndexO2-1)+ParamObje;}
+
+inline Standard_Real Intf_SectionPoint::ParamOnSecond() const
+{return (IndexT2-1)+ParamTool;}
+
+inline Intf_PIType Intf_SectionPoint::TypeOnFirst() const
+{return DimenObje;}
+
+inline Intf_PIType Intf_SectionPoint::TypeOnSecond() const
+{return DimenTool;}
+
+inline Standard_Boolean Intf_SectionPoint::IsEqual
+  (const Intf_SectionPoint& Other) const
+{
+  return (DimenObje==Other.DimenObje &&
+	  IndexO1==Other.IndexO1 &&
+	  IndexO2==Other.IndexO2 &&
+	  DimenTool==Other.DimenTool &&
+	  IndexT1==Other.IndexT1 &&
+	  IndexT2==Other.IndexT2);
+}

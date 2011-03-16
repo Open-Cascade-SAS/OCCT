@@ -1,0 +1,71 @@
+-- File:	BRepMesh_DiscretFactory.cdl
+-- Created:	Thu Apr 10 12:34:15 2008
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2008
+
+
+class DiscretFactory from BRepMesh 
+
+	---Purpose: 
+
+uses
+    AsciiString from TCollection, 
+    PDiscretRoot from BRepMesh, 
+    MapOfAsciiString from TColStd, 
+    FactoryError from BRepMesh,
+    Shape from TopoDS  
+--raises
+
+
+is     
+    Create
+    	returns DiscretFactory from BRepMesh 
+    	is protected;  
+    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretFactory();" 
+
+    Get(myclass) 
+    	returns DiscretFactory from BRepMesh; 
+    ---C++: return &  
+     
+    Names(me) 
+    	returns MapOfAsciiString from TColStd;  
+    ---C++: return const & 	 
+
+    SetDefaultName(me:out; 
+    	    theName:AsciiString from TCollection); 
+	 
+    DefaultName(me) 
+    	returns  AsciiString from TCollection; 
+    ---C++: return const &  
+     	 
+    SetFunctionName(me:out; 
+    	    theName:AsciiString from TCollection); 
+	 
+    FunctionName(me) 
+    	returns  AsciiString from TCollection;  
+    ---C++: return const &  
+
+    Discret(me:out; 
+	    theShape:Shape from TopoDS; 
+    	    theDeflection : Real    from Standard; 
+    	    theAngle      : Real    from Standard)
+    	returns PDiscretRoot from BRepMesh; 
+    ---C++: return &  
+     
+    ErrorStatus(me) 
+    	returns FactoryError from BRepMesh; 
+
+    Clear(me:out) 
+    	is protected; 
+	 
+fields 
+    myPDiscret    : PDiscretRoot from BRepMesh is protected; 
+    myErrorStatus : FactoryError from BRepMesh is protected;
+    myNames       : MapOfAsciiString from TColStd is protected; 
+    myFixedNames  : AsciiString from TCollection[1] is protected; 
+    myDefaultName : AsciiString from TCollection is protected; 
+    myFunctionName: AsciiString from TCollection is protected; 
+     
+end DiscretFactory;
+

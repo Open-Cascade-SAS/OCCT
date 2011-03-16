@@ -1,0 +1,432 @@
+-- File:	AppParCurves_Variational.cdl
+-- Created:	Tue May 14 11:04:08 1996
+-- Author:	Philippe MANGIN / Jeannine PANCIATICI
+--		<pmn@sgi29> 
+--              Igor  FEOKTISTOV  -  correction  14/12/98
+---Copyright:	 Matra Datavision 1996
+
+
+generic class Variational from AppParCurves    	    	    
+    	    	    (MultiLine   as any;
+    	    	     ToolLine    as any)   -- as ToolLine(MultiLine)
+
+
+    ---Purpose: This class is used to smooth N points with constraints
+    --          by   minimization  of quadratic  criterium   but  also
+    --          variational criterium in order to obtain " fair Curve "
+    --          
+
+uses Matrix                    from math,
+     Vector                    from math,
+     HArray1OfReal             from TColStd, 
+     Array1OfReal              from TColStd, 
+     HArray1OfInteger          from TColStd,
+     Shape                     from GeomAbs,       
+     HArray1OfConstraintCouple from AppParCurves,
+     MultiBSpCurve             from AppParCurves,  
+     SmoothCriterion           from AppParCurves, 
+     Curve                     from FEmTool,
+     Assembly                  from FEmTool, 
+     Base                      from PLib,
+     Constraint                from AppParCurves
+
+raises OutOfRange from Standard,
+       DimensionError from Standard,
+       DomainError from Standard,
+       ConstructionError from Standard,
+       NotDone    from StdFail,
+       VectorWithNullMagnitude from gp
+
+    class MyCriterion instantiates LinearCriteria from AppParCurves 
+    	    	(MultiLine, ToolLine); 
+    
+
+is
+    Create(SSP: MultiLine; 
+    	   FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   MaxDegree: Integer = 14;
+	   MaxSegment: Integer = 100;
+	   Continuity : Shape from GeomAbs = GeomAbs_C2;
+	   WithMinMax : Boolean = Standard_False;
+	   WithCutting: Boolean = Standard_True;
+	   Tolerance : Real = 1.0;
+    	   NbIterations: Integer = 2)
+	---Purpose: Constructor.   
+	--            Initialization of   the   fields.
+	--            warning :  Nc0 : number of PassagePoint consraints
+	--                       Nc2 : number  of  TangencyPoint constraints 
+	--                       Nc3 : number of    CurvaturePoint   constraints
+	--            if
+	--            ((MaxDegree-Continuity)*MaxSegment -Nc0  - 2*Nc1
+	--             -3*Nc2)
+	--            is  negative 
+	--            The problem is over-constrained.
+	--            
+	--            Limitation : The MultiLine has to be composed by
+	--            only one Line ( Dimension 2 or 3).
+           
+    returns Variational from AppParCurves;
+    
+
+    Approximate(me : in out)
+      ---Purpose: Makes the approximation with the current fields.
+    raises NotDone from StdFail
+    is static;
+    
+
+    
+--   ====================  The Selectors  =========================== 
+
+    IsCreated(me)
+    	---Purpose: returns True if the creation is done    
+	--          and correspond  to the current fields.
+    returns Boolean
+    is static;
+
+ 
+    IsDone(me)
+	---Purpose: returns True if the  approximation is ok    
+	--          and correspond  to the current fields.
+    returns Boolean
+    is static;
+    
+    IsOverConstrained(me)
+        ---Purpose: returns True if the problem is overconstrained
+        --          in this case, approximation cannot be done.
+    returns Boolean
+    is static;
+    
+    Value(me)
+    	---Purpose: returns all the BSpline curves approximating the
+    	--          MultiLine SSP after minimization of the parameter.
+
+    returns MultiBSpCurve from AppParCurves
+    raises NotDone from StdFail
+    is static;
+    
+    
+    MaxError(me)
+	---Purpose: returns the maximum of the distances between 
+	--          the points of the multiline and the approximation 
+	--          curves.  
+    returns Real 
+    raises NotDone from StdFail
+    is static;
+    
+    MaxErrorIndex(me)
+	---Purpose: returns the index of the MultiPoint of ErrorMax  
+    returns Integer 
+    
+    raises NotDone from StdFail
+    is static;
+
+    
+    QuadraticError(me)
+	---Purpose: returns the quadratic average of the distances between 
+	--          the points of the multiline and the approximation 
+	--          curves.
+    returns Real
+    raises NotDone from StdFail
+        is static;
+    
+    Distance(me : in out ; mat : out Matrix from math)    
+    	---Purpose: returns the distances between the points of the 
+    	--          multiline and the approximation curves.
+    raises NotDone from StdFail
+    is static;
+    
+    AverageError(me)
+       ---Purpose: returns the average error between          
+       --          the MultiLine and the approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+    
+    Parameters(me)   
+    	---Purpose: returns the parameters uses to the approximations
+       	---C++: return const&
+
+    returns HArray1OfReal
+    raises NotDone from StdFail
+    is static;
+    
+    Knots(me)   
+    	---Purpose: returns the knots uses to the approximations
+       	---C++: return const&
+    returns HArray1OfReal
+    raises NotDone from StdFail
+    is static;
+    
+    Criterium(me; VFirstOrder,  
+    	    	  VSecondOrder,  
+    	    	  VThirdOrder : out Real) 
+    ---Purpose: returns the values of the quality criterium.	  
+    raises NotDone from StdFail
+    is static;
+    
+    CriteriumWeight(me ; 
+    	    	    Percent1,  Percent2, Percent3 : out Real)
+    ---Purpose: returns the Weights (as percent) associed  to the criterium used in
+    --          the  optimization.
+    is static;		
+    
+    MaxDegree(me)   
+    ---Purpose: returns the Maximum Degree used in the approximation 
+    returns Integer
+    is static;
+    
+    MaxSegment(me)
+     ---Purpose: returns the Maximum of segment used in the approximation 
+    returns Integer
+    is static;   
+    
+    Continuity(me)
+    ---Purpose: returns the Continuity used in the approximation 
+    returns Shape from GeomAbs
+    is static;   
+    
+    
+    WithMinMax(me)
+    ---Purpose: returns if the  approximation  search to  minimize the
+    --          maximum Error or not.
+    returns Boolean
+    is static;   
+    
+    WithCutting(me)
+    ---Purpose: returns if the  approximation can insert new Knots or not.
+    returns Boolean
+    is static;	
+
+    Tolerance(me)
+    ---Purpose: returns the tolerance used in the approximation.
+    returns Real
+    is static;
+    
+    NbIterations(me)  
+    ---Purpose: returns the number of iterations used in the approximation.
+    returns Integer
+    is static;
+    
+    Dump(me ; o : in out OStream)
+        ---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          MaxError,MaxErrorIndex,AverageError,QuadraticError,Criterium
+    	--          Distances,Degre,Nombre de poles, parametres, noeuds    
+    is static;
+
+    SetConstraints(me:in out; aConstrainst:HArray1OfConstraintCouple) 
+        ---Purpose: Define the constraints to approximate
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean
+    is static;
+    
+    SetParameters(me:in out; param : HArray1OfReal)   
+    	---Purpose: Defines the parameters used by the approximations.  
+    raises DimensionError
+    is static;
+    
+    SetKnots(me:in out; knots : HArray1OfReal)   
+    	---Purpose: Defines the knots used by the approximations
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean
+    raises DimensionError,
+           DomainError
+    is static;
+        
+    SetMaxDegree(me: in out; Degree : Integer)   
+    ---Purpose: Define the Maximum Degree used in the approximation
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean
+    is static;
+    
+    SetMaxSegment(me: in out;  NbSegment : Integer)   
+    ---Purpose: Define the maximum number of segments used in the approximation
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean
+    is static;   
+    
+    SetContinuity(me: in out; C : Shape from GeomAbs)
+    ---Purpose: Define the Continuity used in the approximation 
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean         
+    raises ConstructionError from Standard
+    is static;   
+    
+    
+    SetWithMinMax(me: in out; MinMax : Boolean)
+    ---Purpose: Define if the  approximation  search to  minimize the
+    --          maximum Error or not.
+    is static;   
+    
+    SetWithCutting(me : in out; Cutting : Boolean )
+    ---Purpose: Define if the  approximation can insert new Knots or not.
+    --          If this value is incompatible with the others fields
+    --          this method modify nothing and returns false 
+    returns Boolean
+    is static;	
+
+    SetCriteriumWeight(me : in out; 
+    	    	       Percent1,  Percent2, Percent3 : Real)
+    ---Purpose: define the Weights (as percent) associed to the criterium used in
+    --          the  optimization.
+    --          
+    raises DomainError -- if Percent <= 0
+    is static;			
+									
+    SetCriteriumWeight(me : in out; 
+    	               Order : Integer;
+    	    	       Percent : Real)
+    ---Purpose: define the  Weight   (as  percent)  associed  to   the
+    --          criterium   Order used in   the optimization  : Others
+    --          weights are updated.	       
+    raises DomainError,  -- if Percent < 0
+           OutOfRange   -- if Order < 1 or Order > 3     
+    is static;
+  
+    SetTolerance(me:in out; Tol : Real)
+    ---Purpose: define the tolerance used in the approximation.
+    is static;
+    
+    SetNbIterations(me:in out; Iter : Integer)  
+    ---Purpose: define the number of iterations used in the approximation.
+    raises DomainError  -- if Iter < 1
+    is static; 
+
+      
+--   ====================== The Private methods ======================   
+       
+    TheMotor(me  :  in  out; 
+    	     J  :  in  out SmoothCriterion from AppParCurves; 
+             WQuadratic,  WQuality  :  Real;  	      
+             TheCurve : in  out  Curve from  FEmTool; 
+             Ecarts : out  Array1OfReal  from  TColStd)  is  private; 
+
+    Adjusting(me  :  in  out; 
+    	      J  :  in  out SmoothCriterion from AppParCurves; 
+              WQuadratic,  WQuality  :  in  out  Real;  	      
+              TheCurve : in  out  Curve from  FEmTool; 
+              Ecarts : out  Array1OfReal  from  TColStd)  is  private; 
+      
+    Optimization(me;   
+                 J  :  in  out SmoothCriterion from AppParCurves; 
+                 A  :  in  out Assembly  from  FEmTool; 
+		 ToAssemble  : in  Boolean;	 
+		 EpsDeg  :  Real; 
+                 Curve  :  out  Curve  from  FEmTool; 
+                 Parameters  :  Array1OfReal  from  TColStd)  is  private;    
+
+    Project(me;  C  :  Curve from  FEmTool;   
+                 Ti  :  Array1OfReal  from  TColStd; 
+		 ProjTi    :  out  Array1OfReal from  TColStd;  
+                 Distance  :  out  Array1OfReal from  TColStd; 
+		 NumPoints  :  out  Integer; 
+		 MaxErr,  QuaErr,  AveErr  :  out  Real; 
+                 NbIterations: Integer=2)  is  private; 
+
+    ACR(me;  Curve : in  out  Curve from  FEmTool; 
+    	     Ti    : in  out  Array1OfReal from  TColStd; 
+	     Decima: Integer)  is  private; 
+
+    SplitCurve(me;  InCurve :  Curve from  FEmTool; 
+    	     	    Ti      :  Array1OfReal from  TColStd;  
+		    CurveTol:  Real;
+                    OutCurve:  out Curve from  FEmTool; 
+                    iscut   :  out Boolean)  is  private; 
+		    		     
+    Init(me : in out) 
+    raises NotDone from StdFail,
+           ConstructionError from Standard,
+	   DimensionError from Standard
+    is private; 
+     
+    InitSmoothCriterion(me  :  in  out)   
+    is  private; 
+     
+    InitParameters(me  :  in  out;  Length  :  out  Real) 
+    raises  ConstructionError from Standard
+    is  private; 
+       
+    InitCriterionEstimations(me;  Length  :  Real;  J1,  J2,  J3  :  out  Real) 
+    is  private; 
+     
+    EstTangent(me;  ipnt  :  Integer;  VTang  :  out  Vector  from  math) 
+    is  private;
+ 
+    EstSecnd(me;  ipnt  :  Integer;  VTang1,  VTang2  :  Vector  from  math; 
+    	    	  Length  :  Real;  VScnd  :  out  Vector  from  math) 
+    is  private;
+ 
+    InitCutting(me;  aBase  :  Base  from  PLib; CurvTol  :  Real;  
+                     aCurve  :  out  Curve   from  FEmTool) 
+    raises  ConstructionError from Standard
+    is  private;  
+     
+    AssemblingConstraints(me;  Curve  :  Curve  from  FEmTool; 
+    	                      Parameters  :  Array1OfReal  from  TColStd; 
+			      CBLONG  :  Real  from  Standard; 
+			      A  :  out  Assembly  from  FEmTool) 
+    is  private;  
+    
+    InitTthetaF(me : in out;  ndimen  :  Integer  from  Standard;
+    	    	     	      typcon  :  Constraint  from  AppParCurves;
+  			      begin   :  Integer  from  Standard; 
+    	    	    	      jndex   :  Integer  from  Standard)
+    returns  Boolean
+    is  private;
+			      
+
+fields
+     -- Description of the points to smooth and the constraints
+mySSP  :  MultiLine;
+myNbP3d  : Integer;
+myNbP2d : Integer;
+myDimension : Integer;
+myFirstPoint : Integer;
+myLastPoint : Integer;
+myNbPoints : Integer;
+myTabPoints : HArray1OfReal;
+myConstraints : HArray1OfConstraintCouple;
+myNbConstraints : Integer;
+myTabConstraints : HArray1OfReal;
+myNbPassPoints : Integer;
+myNbTangPoints : Integer;
+myNbCurvPoints : Integer;
+myTypConstraints : HArray1OfInteger; 
+myTtheta  :  HArray1OfReal; 
+myTfthet  :  HArray1OfReal;
+
+     -- Context parameters
+myMaxDegree  : Integer;
+myMaxSegment : Integer;
+myNbIterations: Integer;
+myTolerance : Real; 
+
+     -- Options
+myContinuity : Shape from GeomAbs;
+myNivCont : Integer;
+myWithMinMax : Boolean;
+myWithCutting: Boolean;
+myPercent    : Real[3];
+myCriterium  : Real[4]; 
+mySmoothCriterion  :  SmoothCriterion  from  AppParCurves; 
+
+     -- output
+myParameters  : HArray1OfReal;
+myKnots      : HArray1OfReal;
+myMBSpCurve  : MultiBSpCurve;
+
+myMaxError     : Real;
+myMaxErrorIndex: Integer;
+myAverageError : Real;
+myIsCreated      : Boolean;
+myIsDone         : Boolean;
+myIsOverConstr : Boolean;
+
+end Variational;

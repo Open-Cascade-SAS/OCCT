@@ -1,0 +1,72 @@
+-- File:	MakeDir2d.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakeDir2d from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Dir2d from gp.
+    --           * Create a Dir2d with 2 points.
+    --           * Create a Dir2d with a Vec2d.
+    --           * Create a Dir2d with a XY from gp.
+    --           * Create a Dir2d with a 2 Reals (Coordinates).
+
+uses Pnt2d from gp,
+     Vec2d from gp,
+     Dir2d from gp,
+     XY    from gp,
+     Real  from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (V : Vec2d from gp)  returns MakeDir2d;
+    --- Purpose : Normalizes the vector V and creates a direction.
+    --            Status is "NullVector" if V.Magnitude() <= Resolution.
+
+Create (Coord : XY from gp) returns MakeDir2d;
+    --- Purpose : Creates a direction from a triplet of coordinates.
+    --            Status is "NullVector" if Coord.Modulus() <= 
+    --            Resolution from gp.
+
+Create ( Xv, Yv : Real from Standard)  returns MakeDir2d;
+    --- Purpose : Creates a direction with its 3 cartesian coordinates.
+    --            Status is "NullVector" if Sqrt(Xv*Xv + Yv*Yv ) 
+    --            <= Resolution
+
+Create(P1     :     Pnt2d from gp;
+       P2     :     Pnt2d from gp) returns MakeDir2d;
+    ---Purpose : Make a Dir2d from gp <TheDir> passing through 2 
+    --           Pnt <P1>,<P2>.
+    --           Status is "ConfusedPoints" if <P1> and <P2> are confused.
+    -- Warning
+    -- If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_ConfusedPoints if points P1 and P2 are coincident, or
+    -- -   gce_NullVector if one of the following is less
+    --   than or equal to gp::Resolution():
+    --   -   the magnitude of vector V,
+    --   -   the modulus of Coord,
+    --   -   Sqrt(Xv*Xv + Yv*Yv).
+        
+Value(me) returns Dir2d from gp
+    raises NotDone
+    is static;
+     ---C++: return const&
+     ---Purpose: Returns the constructed unit vector.
+     -- Exceptions StdFail_NotDone if no unit vector is constructed.
+
+Operator(me) returns Dir2d from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Dir2d() const;"
+
+fields
+
+    TheDir2d : Dir2d from gp;
+    --The solution from gp.
+    
+end MakeDir2d;

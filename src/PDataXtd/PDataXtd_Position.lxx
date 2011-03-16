@@ -1,0 +1,24 @@
+// File:	PDataXtd_Position.lxx
+// Created:	Tue Apr  7 13:54:37 1998
+// Author:	Jean-Pierre COMBE
+//		<jpr>
+// modified     Sergey Zaritchny
+
+//=======================================================================
+//function : Position
+//purpose  : 
+//=======================================================================
+inline gp_Pnt PDataXtd_Position::GetPosition() const
+{
+  return myPosition;
+} 
+//=======================================================================
+//function : Color
+//purpose  : 
+//=======================================================================
+inline void PDataXtd_Position::SetPosition(const gp_Pnt& aPosition) 
+{
+  myPosition = aPosition;
+}
+
+ 

@@ -1,0 +1,163 @@
+-- File:	 ElementarySurfaceToBSplineSurface.cdl
+-- Created:	 Thu Oct 10 12:04:22 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+
+
+deferred class ElementarySurfaceToBSplineSurface   from Convert 
+
+        --- Purpose :Root class for algorithms which convert an elementary
+    	-- surface (cylinder, cone, sphere or torus) into a BSpline
+    	-- surface (CylinderToBSplineSurface, ConeToBSplineSurface,
+        --  SphereToBSplineSurface, TorusToBSplineSurface).
+    	-- These algorithms all work on elementary surfaces from
+    	-- the gp package and compute all the data needed to
+    	-- construct a BSpline surface equivalent to the cylinder,
+    	-- cone, sphere or torus. This data consists of the following:
+    	-- -   degrees in the u and v parametric directions,
+    	-- -   periodic characteristics in the u and v parametric directions,
+    	-- -   a poles table with associated weights,
+    	-- -   a knots table (for the u and v parametric directions)
+    	--  with associated multiplicities.
+    	-- The abstract class
+    	-- ElementarySurfaceToBSplineSurface provides a
+    	-- framework for storing and consulting this computed data.
+    	-- This data may then be used to construct a
+    	-- Geom_BSplineSurface surface, for example.
+        --  All those classes define algorithmes to convert an
+        --  ElementarySurface into a B-spline surface.
+        --  This abstract class implements the methods to get 
+        --  the geometric representation of the B-spline surface. 
+        --  The B-spline representation is computed at the creation 
+        --  time in the sub classes.
+        --  The B-spline surface is defined with its degree in the 
+        --  parametric U and V directions, its control points (Poles), 
+        --  its weights, its knots and their multiplicity.
+        --  KeyWords :
+        --  Convert, ElementarySurface, BSplineSurface.
+
+
+uses Array1OfInteger from TColStd,
+     Array1OfReal    from TColStd,
+     Array2OfReal    from TColStd,
+     Array2OfPnt     from TColgp,
+     Pnt             from gp
+     
+
+raises OutOfRange from Standard
+
+is
+
+  UDegree (me)    returns Integer   is static;
+
+
+  VDegree (me)    returns Integer   is static;
+
+    	---Purpose: Returns the degree for the u or v parametric direction of
+    	-- the BSpline surface whose data is computed in this framework.
+	
+  NbUPoles (me)   returns Integer   is static;
+
+
+  NbVPoles (me)   returns Integer   is static;
+    	---Purpose: Returns the number of poles for the u or v parametric
+    	-- direction of the BSpline surface whose data is computed in this framework.
+        
+  NbUKnots (me)   returns Integer   is static;
+
+
+  NbVKnots (me)   returns Integer   is static;
+    	---Purpose: Returns the number of knots for the u or v parametric
+    	-- direction of the BSpline surface whose data is computed in this framework .
+
+  IsUPeriodic(me) returns Boolean   is static;
+  
+  
+  IsVPeriodic(me) returns Boolean   is static;
+    	---Purpose: Returns true if the BSpline surface whose data is computed
+    	-- in this framework is periodic in the u or v parametric direction.
+
+  Pole (me; UIndex, VIndex : Integer)    returns Pnt
+        --- Purpose :  Returns the pole of index (UIndex,VIndex) to the poles
+    	-- table of the BSpline surface whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if, for the BSpline surface whose
+    	-- data is computed in this framework:
+    	-- -   UIndex is outside the bounds of the poles table in the u
+    	--  parametric direction, or
+    	-- -   VIndex is outside the bounds of the poles table in the v
+    	--  parametric direction.
+     raises OutOfRange
+     is static;
+
+
+  Weight (me; UIndex, VIndex : Integer)   returns Real
+        --- Purpose :  Returns the weight of the pole of index (UIndex,VIndex) to
+    	-- the poles table of the BSpline surface whose data is computed in this framework.
+    	-- Exceptions
+    	-- Standard_OutOfRange if, for the BSpline surface whose
+    	-- data is computed in this framework:
+    	-- -   UIndex is outside the bounds of the poles table in the u
+    	--  parametric direction, or
+    	-- -   VIndex is outside the bounds of the poles table in the v
+    	--  parametric direction.
+     raises OutOfRange     
+     is static;
+
+
+  UKnot (me; UIndex : Integer)    returns Real
+        --- Purpose :  Returns the U-knot of range UIndex.
+     raises OutOfRange
+        --- Purpose : Raised if UIndex < 1 or UIndex > NbUKnots.
+     is static;
+
+
+  VKnot (me; UIndex : Integer)   returns Real
+        --- Purpose : Returns the V-knot of range VIndex.
+     raises OutOfRange
+        --- Purpose : Raised if VIndex < 1 or VIndex > NbVKnots.
+     is static;
+
+
+  UMultiplicity (me; UIndex : Integer)   returns Integer
+        --- Purpose : Returns the multiplicity of the U-knot of range UIndex.
+     raises OutOfRange
+        --- Purpose : Raised if UIndex < 1 or UIndex > NbUKnots.
+     is static;
+
+
+  VMultiplicity (me; VIndex : Integer)   returns Integer
+        --- Purpose : Returns the multiplicity of the V-knot of range VIndex.
+     raises OutOfRange
+        --- Purpose : Raised if VIndex < 1 or VIndex > NbVKnots.
+     is static;
+
+
+  Initialize (NumberOfUPoles, NumberOfVPoles, NumberOfUKnots,
+              NumberOfVKnots, UDegree, VDegree : Integer);
+
+
+fields
+
+  poles       : Array2OfPnt     is protected;
+  weights     : Array2OfReal    is protected;
+  uknots      : Array1OfReal    is protected;
+  umults      : Array1OfInteger is protected;
+  vknots      : Array1OfReal    is protected;
+  vmults      : Array1OfInteger is protected;
+  udegree     : Integer         is protected;
+  vdegree     : Integer         is protected;
+  nbUPoles    : Integer         is protected;
+  nbVPoles    : Integer         is protected;
+  nbUKnots    : Integer         is protected;
+  nbVKnots    : Integer         is protected;
+  isuperiodic : Boolean         is protected;
+  isvperiodic : Boolean         is protected;
+
+
+end ElementarySurfaceToBSplineSurface;
+
+

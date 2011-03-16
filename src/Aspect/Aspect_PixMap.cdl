@@ -1,0 +1,78 @@
+--
+-- File:	Aspect_PixMap.cdl
+-- Created:	14 October 1999
+-- Author:	VKH
+-- Updated:	GG IMP100701 Add the "depth" field and method
+--              to the pixmap object.
+
+--
+---Copyright:	MatraDatavision 1991,1992,1999
+
+deferred class PixMap from Aspect
+inherits
+    TShared from MMgt
+    ---Purpose: This class allows the definition of a pixmap(bitmap)
+
+uses
+    Handle                from Aspect,
+    Color                 from Quantity
+
+raises
+    PixmapDefinitionError	from Aspect,
+    PixmapError           from Aspect
+is
+    Initialize ( aWidth, anHeight : Integer from Standard;
+                 aDepth           : Integer from Standard );
+    ---Level: Public
+    ---Purpose: Initializes the datas of a pixmap with a pixel size
+    -- <aWidth>,<anHeight> and depth.
+
+    Destroy ( me : mutable )
+    raises PixmapError from Aspect is deferred;
+    ---Level: Advanced
+    ---Purpose: Destroy the pixmap
+    ---Category: Methods to modify the class definition
+
+    Dump ( me ; aFilename : CString from Standard;
+           aGammaValue: Real from Standard = 1.0 )
+    returns Boolean
+    raises PixmapError from Aspect is deferred;
+    ---Level: Advanced
+    ---Purpose:
+    -- Dumps the Bitmap to an image file with
+    -- an optional gamma correction value
+    -- and returns TRUE if the dump occurs normaly.
+    ---Trigger: Raises if pixmap is not defined properly
+
+    PixelColor ( me         : in;
+                 theX, theY : in Integer from Standard )
+    returns Color from Quantity is deferred;
+    ---Purpose:
+    -- Returns the pixel color.
+
+	  ----------------------------
+    -- Category: Inquire methods
+    ----------------------------
+
+    PixmapID ( me ) returns Handle from Aspect
+    is deferred;
+    ---Level: Advanced
+    ---Purpose: Returns the ID of the just created pixmap
+    ---Category: Inquire methods
+
+    Size ( me ; aWidth, anHeight : out Integer from Standard )
+    is static;
+    ---Level: Public
+    ---Purpose: Returns the allocated pixmap's size in PIXEL
+    ---Category: Inquire methods
+
+    Depth ( me ) returns Integer from Standard
+    is static;
+    ---Level: Public
+    ---Purpose: Returns the allocated pixmap's depth (planes number)
+    ---Category: Inquire methods
+fields
+    myWidth  : Integer from Standard is protected;
+    myHeight : Integer from Standard is protected;
+    myDepth	 : Integer from Standard is protected;
+end PixMap;

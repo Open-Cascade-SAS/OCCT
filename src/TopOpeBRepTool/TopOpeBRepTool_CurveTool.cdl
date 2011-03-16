@@ -1,0 +1,70 @@
+-- File:	TopOpeBRepTool_CurveTool.cdl
+-- Created:	Thu Jun 24 17:20:00 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@zerox>
+---Copyright:	 Matra Datavision 1993
+
+class CurveTool from TopOpeBRepTool
+
+uses
+
+    Shape from TopoDS,
+    Curve from Geom,
+    Curve from Geom2d,
+    Array1OfPnt from TColgp,
+    Array1OfPnt2d from TColgp,
+    GeomTool from TopOpeBRepTool,
+    OutCurveType from TopOpeBRepTool
+    
+is
+
+    Create returns CurveTool from TopOpeBRepTool;
+
+    Create (OCT:OutCurveType from TopOpeBRepTool)
+    returns CurveTool from TopOpeBRepTool;
+
+    Create(GT:GeomTool from TopOpeBRepTool)
+    returns CurveTool from TopOpeBRepTool;
+
+    ChangeGeomTool(me:in out) returns GeomTool from TopOpeBRepTool is static;
+    ---C++: return &
+    GetGeomTool(me) returns GeomTool from TopOpeBRepTool is static;
+    ---C++: return const &
+    SetGeomTool(me:in out; GT:GeomTool from TopOpeBRepTool) is static;
+
+    MakeCurves(me; 
+    	       min,max:Real from Standard;
+    	       C3D:Curve from Geom;
+    	       PC1,PC2:Curve from Geom2d;
+    	       S1,S2:Shape from TopoDS;
+	       C3DN:out Curve from Geom;
+    	       PC1N,PC2N:out Curve from Geom2d;
+    	       Tol3d,Tol2d:out Real from Standard)
+    returns Boolean from Standard is static;
+    ---Purpose: Approximates curves.
+    --          Returns False in the case of failure
+
+    -- class methods
+
+    MakeBSpline1fromPnt(myclass;P:Array1OfPnt from TColgp)
+    returns Curve from Geom;  
+
+    MakeBSpline1fromPnt2d(myclass;P:Array1OfPnt2d from TColgp)
+    returns Curve from Geom2d;
+
+    IsProjectable(myclass;S:Shape from TopoDS;C:Curve from Geom)
+    returns Boolean;
+
+    MakePCurveOnFace(myclass;
+    	    	     S:Shape from TopoDS;
+    	    	     C:Curve from Geom;
+    	    	     TolReached2d : out Real from Standard;
+		     first: Real from Standard = 0.0;
+		     last: Real from Standard = 0.0)
+    returns Curve from Geom2d;
+
+fields 
+
+    myGeomTool : GeomTool from TopOpeBRepTool is protected;
+
+end CurveTool;

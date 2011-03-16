@@ -1,0 +1,55 @@
+-- File:	BRepFill_OffsetAncestors.cdl
+-- Created:	Fri Sep  1 10:01:30 1995
+-- Author:	Bruno DUMORTIER
+--		<dub@fuegox>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class OffsetAncestors from BRepFill 
+
+	---Purpose: this class is used to find the generating shapes
+	--          of an OffsetWire.
+
+uses
+    OffsetWire          from BRepFill,
+    Shape               from TopoDS,
+    Edge                from TopoDS,	
+    DataMapOfShapeShape from TopTools
+    
+raises
+    NotDone from StdFail
+    
+is
+    Create returns OffsetAncestors from BRepFill;
+    
+    Create ( Paral : in out OffsetWire from BRepFill)
+    returns OffsetAncestors from BRepFill;
+    
+    Perform ( me : in out; Paral : in out OffsetWire from BRepFill)
+    is static;
+    
+    IsDone( me)
+    returns Boolean from Standard
+    is static;
+
+    HasAncestor (me; S1 : Edge from TopoDS)	    
+    returns Boolean from Standard
+    is static;
+
+    Ancestor    (me ; S1 : Edge from TopoDS)
+	---Purpose: may return a Null Shape if S1 is not a subShape
+	--          of <Paral>;
+	---C++: return const &
+    returns Shape from TopoDS
+    raises
+    	NotDone from StdFail
+	---Purpose: if Perform is not done.
+    is static;
+    
+fields
+
+    myIsPerform : Boolean             from Standard;
+    myMap       : DataMapOfShapeShape from TopTools;
+    
+end OffsetAncestors;

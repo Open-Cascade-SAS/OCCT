@@ -1,0 +1,32 @@
+-- File:	Dynamic_VariableGroup.cdl
+-- Created:	Wed Aug 24 09:59:22 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+class VariableGroup from Dynamic
+
+inherits
+
+    Variable from Dynamic
+    
+	---Purpose: This   inherited  class   from   variable is   for
+	--          specifing  that the variable  does not accept only
+	--          one   value    but a  collection   of  homogeneous
+	--          values. This class is for describing the signature
+	--          of the method definition. When an instance of this
+	--          kind   of   method    is     done,    it   is    a
+	--          CompositVariableInstance which is used.
+
+
+is
+
+    Create returns mutable VariableGroup from Dynamic;
+    
+    ---Level: Advanced 
+    
+    ---Purpose: Creates and Returns a new instance of this class.
+    
+
+end VariableGroup;

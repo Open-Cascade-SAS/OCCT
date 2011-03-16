@@ -1,0 +1,113 @@
+-- File:         DirectPolynomialRoots.cdl
+-- Created:      Mon May 13 16:47:42 1991
+-- Author:       Laurent PAINNOT
+--               <lpa@topsn3>
+---Copyright:     Matra Datavision 1991, 1992
+
+
+class DirectPolynomialRoots from math
+    	---Purpose:
+    	-- This class implements the calculation of all the real roots of a real 
+    	-- polynomial of degree <= 4 using a direct method. Once found, 
+    	-- the roots are polished using the Newton method.
+
+uses OStream from Standard
+
+raises RangeError from Standard,
+       InfiniteSolutions from StdFail
+
+is
+    Create(A, B, C, D, E: Real)
+    	---Purpose:
+        -- computes all the real roots of the polynomial 
+        -- Ax4 + Bx3 + Cx2 + Dx + E using a direct method.
+    returns DirectPolynomialRoots;
+
+    
+    
+    Create(A, B, C, D: Real)
+    	---Purpose:
+        -- computes all the real roots of the polynomial 
+        -- Ax3 + Bx2 + Cx + D using a direct method.
+
+    returns DirectPolynomialRoots;
+    
+    
+    
+    Create(A, B, C: Real)
+    	---Purpose:
+        -- computes all the real roots of the polynomial 
+        -- Ax2 + Bx + C using a direct method.
+
+    returns DirectPolynomialRoots;
+    
+    
+    Create(A, B: Real)
+    	---Purpose:
+        -- computes the real root of the polynomial Ax + B.
+
+    returns DirectPolynomialRoots;
+    
+
+    Solve(me: in out; A, B, C, D, E: Real)
+    is static protected;
+
+    Solve(me: in out; A, B, C, D: Real)
+    is static protected;
+
+    Solve(me: in out; A, B, C: Real)
+    is static protected;
+    
+    Solve(me: in out; A, B: Real)
+    is static protected;
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+        ---C++: inline
+    returns Boolean
+    is static;
+    
+
+    InfiniteRoots(me)
+	---Purpose: Returns true if there is an infinity of roots, otherwise returns false.
+    	---C++: inline
+    returns Boolean
+    is static;
+
+
+    NbSolutions(me)
+    	---Purpose: returns the number of solutions.
+    	--          An exception is raised if there are an infinity of roots.
+    	---C++: inline
+    returns Integer
+    raises InfiniteSolutions
+    is static;
+    
+    
+    Value(me; Nieme: Integer)
+    	---Purpose: returns the value of the Nieme root.
+    	--          An exception is raised if there are an infinity of roots.
+        --          Exception RangeError is raised if Nieme is < 1 
+        --          or Nieme > NbSolutions.
+    	---C++: inline
+
+    returns Real
+    raises InfiniteSolutions, RangeError
+    is static;
+    
+    Dump(me; o: in out OStream)
+	---Purpose: Prints on the stream o information on the current state 
+    	--          of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:                Boolean;
+InfiniteStatus:      Boolean;
+NbSol:     Integer;
+TheRoots:  Real[4];
+
+end DirectPolynomialRoots;

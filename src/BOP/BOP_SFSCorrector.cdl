@@ -1,0 +1,82 @@
+-- File:	BOP_SFSCorrector.cdl
+-- Created:	Fri Apr 13 10:41:43 2001
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2001
+
+
+class SFSCorrector from BOP 
+
+	---Purpose: 
+    	---  the algorithm is to change the Shell Faces Set (SFS)contents.      
+    	---  The NewSFS will contain only shells   
+    	---  instead of shells and faces.  
+        --- 
+	 
+uses
+ 
+    ShellFaceSet         from BOP,
+    PShellFaceSet        from BOP,
+    ListOfConnexityBlock from BOP 
+    
+is 
+    Create   
+    	returns SFSCorrector from BOP; 
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    SetSFS  (me:out; 
+		aSFS: ShellFaceSet from BOP);  
+    	---Purpose: 
+    	--- Modifier 
+    	---
+    Do (me:out); 
+    	---Purpose:
+    	--- Performs the algorithm of  two  steps 
+    	--- 1. Make conexity blocks (  DoConnexityBlocks()  )     
+    	--- 2. Make corrections     (  DoCorrections()  )        
+    	---
+    DoConnexityBlocks(me:out) 
+    	is  private; 
+    	---Purpose: 
+    	--- Internal Purpose  
+    	---
+    DoCorrections(me:out) 
+    	is  private; 
+    	---Purpose: 
+    	--- Internal Purpose  
+    	---
+    IsDone(me)  
+    	returns Boolean from Standard;   
+    	---Purpose: 
+    	--- Selector 
+    	---
+    ErrorStatus	(me)  
+    	returns Integer from Standard; 
+    	---Purpose: 
+    	--- Selector  
+    	--- - 1 - Nothing is done because only constructor has been called
+    	---
+    SFS     (me:out) 
+    	returns ShellFaceSet from BOP; 
+    	---C++:  return &  
+    	---Purpose: 
+    	--- Selector 
+    	---
+    NewSFS  (me:out) 
+    	returns ShellFaceSet from BOP; 
+    	---C++:  return &   
+    	---Purpose: 
+    	--- Selector 
+    	--- Returns the resulting SFS
+	---
+
+fields 
+
+    mySFS             : PShellFaceSet        from BOP; 
+    myNewSFS          : ShellFaceSet         from BOP;  
+    myConnexityBlocks : ListOfConnexityBlock from BOP;  
+    myIsDone          : Boolean from Standard;  
+    myErrorStatus     : Integer from Standard;  
+
+end SFSCorrector;

@@ -1,0 +1,96 @@
+-- File:	Voxel.cdl
+-- Created:	Sun May 04 09:39:16 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	Open CASCADE S.A.
+
+package Voxel
+
+    ---Purpose: Data structuire and visualization engine for voxel modeling.
+
+uses
+
+    IntCurvesFace,
+    TCollection,
+    SelectMgr,
+    Quantity,
+    TopTools,
+    TColStd,
+    TColgp,
+    TopoDS,
+    PrsMgr,
+    Prs3d,
+    Poly,
+    V3d,
+    AIS,
+    Bnd,
+    gp
+
+is
+
+    enumeration VoxelDisplayMode is
+    	VDM_POINTS,
+	VDM_NEARESTPOINTS,
+	VDM_BOXES,
+	VDM_NEARESTBOXES
+    end VoxelDisplayMode;
+
+    enumeration VoxelFileFormat is
+    	VFF_ASCII,
+	VFF_BINARY
+    end VoxelFileFormat;
+
+    -- A base class for all voxels data structures.
+    class DS;
+
+	    -- A voxel model keeping a boolean flag for each voxel (1 || 0).
+	    class BoolDS;
+	    
+	    	-- A voxel model keeping a boolean flag for each voxel 
+	    	-- with an opportunity to split a voxel into 8 sub-voxels.
+	    	class OctBoolDS;
+
+    	    	    -- A voxel model keeping a boolean flag for each voxel 
+	    	    -- with an opportunity to split a voxel into 8 sub-voxels
+	    	    -- recursively.
+    	    	    class ROctBoolDS;
+		    	private class SplitData;
+
+	    -- A voxel model keeping 4 bits of information for each voxel (16 colors).
+	    class ColorDS;
+	    
+	    -- A voxel model keeping 4 bytes of information for each voxel (a floating-point value).
+	    class FloatDS;
+
+
+    -- A converter of a shape to voxel model.
+    --class Converter;
+    
+    	-- An internal class searching intersections between a line and a shape.
+    	--class ShapeIntersector;
+    
+    -- An alternative method of conversion of a shape into voxels.
+    -- It is faster, but less precise.
+    class FastConverter;
+    
+    --- Converts voxels into triangulation
+    --class Triangulator;
+    
+    -- Interactive object of voxels
+    class Prs;
+
+    -- Boolean operations for voxels.
+    class BooleanOperation;
+    
+    -- Collision detection
+    class CollisionDetection;
+
+    -- Selection of voxels in the viewer 3d
+    class Selector;
+
+    -- Ascii writer/reader of voxels
+    class Writer;
+    class Reader;
+    
+
+end Voxel;

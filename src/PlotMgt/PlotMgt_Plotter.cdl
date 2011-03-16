@@ -1,0 +1,416 @@
+-- File:        PlotMgt_Plotter.cdl
+-- Created:     Quebex 6 April 1998
+-- Author:      DCB
+---Copyright:   MatraDatavision 1998
+
+class Plotter from PlotMgt inherits TShared from MMgt
+
+uses
+  PlotterParameter        from PlotMgt,
+  TypeOfPlotterParameter  from PlotMgt,
+  HListOfPlotterParameter from PlotMgt,
+  TypeOfOrigin            from PlotMgt,
+  TypeOfQuality           from PlotMgt,
+  ImageFormat             from PlotMgt,
+  PlottingType            from PlotMgt,
+  PaperFormat             from PlotMgt,
+  ColorMap                from Aspect,
+  GenericColorMap         from Aspect,
+  WidthMap                from Aspect,
+  TypeMap                 from Aspect,
+  FontMap                 from Aspect,
+  HSequenceOfAsciiString  from TColStd,
+  HSequenceOfInteger      from TColStd,
+  AsciiString             from TCollection
+
+is
+  -------------------------
+  -- Category: Constructors
+  -------------------------
+  Create (
+    theName         : AsciiString from TCollection;
+    fDirectDevice   : Boolean from Standard = Standard_False
+    -- This is a WNT specific parameter which indicates
+    -- that the <aName> parameters is the name of a plotter
+    -- instaled on WNT System.
+  ) returns mutable Plotter from PlotMgt;
+  ---Purpose: Create class instance
+
+  ----------------------------
+  -- Category: Public methods
+  ----------------------------
+  CheckConfig (me: mutable; theViewIs2D : Boolean from Standard)
+  returns Boolean from Standard;
+  ---Purpose: Checks if the plotter configured properly.
+
+  ------------------------------
+  -- Category: Load/save plotter
+  ------------------------------
+  Load ( me: mutable )
+  returns Boolean from Standard;
+  ---Purpose:
+
+  SavePlotter ( me: mutable )
+  returns Boolean from Standard is private;
+  ---Purpose:
+
+  Save ( me: mutable )
+  returns Boolean from Standard;
+  ---Purpose:
+
+  SaveAs ( me: mutable; aNewName: AsciiString from TCollection )
+  returns Boolean from Standard;
+  ---Purpose:
+
+  NeedToBeSaved ( me )
+  returns Boolean from Standard;
+  ---Purpose:
+
+  --------------------------------------
+  -- Category: Static & internal methods
+  --------------------------------------
+  ListPlotters ( myclass;
+    anActiveOnly : Boolean from Standard = Standard_True
+  ) returns HSequenceOfAsciiString from TColStd;
+  ---Purpose: Returns list of active plotters (and inactive if
+  --          <anActiveOnly> = Standared_False).
+
+  Dump ( me: mutable );
+  ---Purpose:
+
+  ReadParametersFromFile ( me : mutable;
+    aFileName    : AsciiString from TCollection;
+    fChangeState : Boolean     from Standard
+  ) returns Boolean from Standard is private;
+  ---Purpose:
+
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  -- Category: Inquire methods
+  ---------------------------------------------------
+  NumberOfParameters ( me: mutable )
+  returns Integer from Standard;
+  ---Purpose:
+
+  Parameter ( me: mutable; anIndex: Integer from Standard )
+  returns PlotterParameter from PlotMgt;
+  ---Purpose:
+  ---C++: return const &
+
+  FindParameter ( me: mutable; aName : AsciiString from TCollection )
+  returns Integer from Standard is private;
+  ---Purpose:
+
+  GetStringValue ( me: mutable;
+    aParam :     CString from Standard;
+    aValue : out AsciiString from TCollection
+  ) is private;
+  ---Purpose:
+
+  GetBooleanValue ( me: mutable;
+    aParam :     CString from Standard
+  ) returns Boolean from Standard is private;
+  ---Purpose:
+
+  GetIntegerValue ( me: mutable;
+    aParam :     CString from Standard
+  ) returns Integer from Standard is private;
+  ---Purpose:
+
+  GetRealValue ( me: mutable;
+    aParam :     CString from Standard
+  ) returns Real from Standard is private;
+  ---Purpose:
+
+  GetListValue ( me: mutable;
+    aParam :     CString from Standard;
+    aList  : out HSequenceOfAsciiString from TColStd
+  ) is private;
+  ---Purpose:
+
+  GetIntTable ( me: mutable;
+    aParam :     CString from Standard;
+    aTable : out HSequenceOfInteger from TColStd
+  ) is private;
+  ---Purpose:
+
+  ---------------------- STRING VALUES ------------------------
+  Name                 ( me: mutable ) returns AsciiString from TCollection;
+  Model                ( me: mutable ) returns AsciiString from TCollection;
+  Title                ( me: mutable ) returns AsciiString from TCollection;
+  FileExtension        ( me: mutable ) returns AsciiString from TCollection;
+  PrintCommand         ( me: mutable ) returns AsciiString from TCollection;
+  BeforePrintCommand   ( me: mutable ) returns AsciiString from TCollection;
+  AfterPrintCommand    ( me: mutable ) returns AsciiString from TCollection;
+  Comments             ( me: mutable ) returns AsciiString from TCollection;
+  BackDraw             ( me: mutable ) returns AsciiString from TCollection;
+  ColorMapping         ( me: mutable ) returns AsciiString from TCollection;
+  OutputFormat         ( me: mutable ) returns AsciiString from TCollection;
+  DriverType           ( me: mutable ) returns AsciiString from TCollection;
+
+  ---------------------- BOOLEAN VALUES ------------------------
+  MirrorPlot           ( me: mutable ) returns Boolean from Standard;
+  MultiSheet           ( me: mutable ) returns Boolean from Standard;
+  FramePlot            ( me: mutable ) returns Boolean from Standard;
+
+  PlotTitle            ( me: mutable ) returns Boolean from Standard;
+  PlotComments         ( me: mutable ) returns Boolean from Standard;
+  PlotBackDraw         ( me: mutable ) returns Boolean from Standard;
+
+  PlotterColor         ( me: mutable ) returns Boolean from Standard;
+  EndOfPlotDriven      ( me: mutable ) returns Boolean from Standard;
+  DryTimeDriven        ( me: mutable ) returns Boolean from Standard;
+  PaperFeedDriven      ( me: mutable ) returns Boolean from Standard;
+  MirrorDriven         ( me: mutable ) returns Boolean from Standard;
+  CheckSumDriven       ( me: mutable ) returns Boolean from Standard;
+  MediaSaverDriven     ( me: mutable ) returns Boolean from Standard;
+  QualityDriven        ( me: mutable ) returns Boolean from Standard;
+  CopyDriven           ( me: mutable ) returns Boolean from Standard;
+  PaperCutDriven       ( me: mutable ) returns Boolean from Standard;
+  RotateDriven         ( me: mutable ) returns Boolean from Standard;
+
+  CircleDriven         ( me: mutable ) returns Boolean from Standard;
+  EllipseDriven        ( me: mutable ) returns Boolean from Standard;
+  CurveDriven          ( me: mutable ) returns Boolean from Standard;
+  TextDriven           ( me: mutable ) returns Boolean from Standard;
+  MarkerDriven         ( me: mutable ) returns Boolean from Standard;
+  RectangleDriven      ( me: mutable ) returns Boolean from Standard;
+  FillDriven           ( me: mutable ) returns Boolean from Standard;
+  PlottingColor        ( me: mutable ) returns Boolean from Standard;
+
+  ---------------------- LIST VALUES ---------------------------
+  ListOfPaperFormats   ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfOrigins        ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfQualities      ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfImageFormats   ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfColorMappings  ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfOutputFormats  ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+  ListOfDriverTypes    ( me: mutable ) returns HSequenceOfAsciiString from TColStd;
+
+  ---------------------- REAL VALUES ---------------------------
+  PaperWidth           ( me: mutable ) returns Real from Standard;
+  PaperLength          ( me: mutable ) returns Real from Standard;
+  PaperSize            ( me: mutable; aWidth, aLength : out Real from Standard );
+  HardMargins          ( me: mutable;
+                         aLeft, aTop, aRight, aBottom : out Real from Standard );
+  Margins              ( me: mutable;
+                         aLeft, aTop, aRight, aBottom : out Real from Standard );
+  HardMappings         ( me: mutable;
+                         aWOffset, aWScale            : out Real from Standard;
+                         anLOffset, anLScale          : out Real from Standard );
+  SpaceDrawing         ( me: mutable ) returns Real from Standard;
+  PhysicalStep         ( me: mutable ) returns Real from Standard;
+  MinWidthOfLine       ( me: mutable ) returns Real from Standard;
+  WidthMaxGap          ( me: mutable ) returns Real from Standard;
+  LineTypeMaxGap       ( me: mutable ) returns Real from Standard;
+  Resolution           ( me: mutable ) returns Real from Standard;
+  ColorResolution      ( me: mutable ) returns Real from Standard;
+  FillWidth            ( me: mutable ) returns Real from Standard;
+
+  ---------------------- INTEGER VALUES ------------------------
+  MediaSaverDelay      ( me: mutable ) returns Integer from Standard;
+  NumberOfCopies       ( me: mutable ) returns Integer from Standard;
+  DryTime              ( me: mutable ) returns Integer from Standard;
+  EndOfPlotTimer       ( me: mutable ) returns Integer from Standard;
+  MaxColors            ( me: mutable ) returns Integer from Standard;
+  MaxPatterns          ( me: mutable ) returns Integer from Standard;
+  ColorMaxGap          ( me: mutable ) returns Integer from Standard;
+  LinearDensity        ( me: mutable ) returns Integer from Standard;
+  StylusNumber         ( me: mutable ) returns Integer from Standard;
+  PenMaxNumber         ( me: mutable ) returns Integer from Standard;
+  NumberInCarrousel    ( me: mutable ) returns Integer from Standard;
+
+  ---------------------- ENUM VALUES ---------------------------
+  Origin               ( me: mutable ) returns TypeOfOrigin  from PlotMgt;
+  Quality              ( me: mutable ) returns TypeOfQuality from PlotMgt;
+  ImageFormat          ( me: mutable ) returns ImageFormat   from PlotMgt;
+  PlottingType         ( me: mutable ) returns PlottingType  from PlotMgt;
+  PaperFormat          ( me: mutable ) returns PaperFormat   from PlotMgt;
+
+  ----------------------- MAP VALUES ---------------------------
+  PenColorIndex        ( me: mutable ) returns HSequenceOfInteger from TColStd;
+  PenWidthIndex        ( me: mutable ) returns HSequenceOfInteger from TColStd;
+  PenTypeIndex         ( me: mutable ) returns HSequenceOfInteger from TColStd;
+  ColorMap             ( me: mutable ) returns ColorMap from Aspect;
+  WidthMap             ( me: mutable ) returns WidthMap from Aspect;
+  TypeMap              ( me: mutable ) returns TypeMap  from Aspect;
+  FontMap              ( me: mutable ) returns FontMap  from Aspect;
+  AllFonts             ( me: mutable ) returns FontMap  from Aspect;
+
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  ---------------------------------------------------
+  -- Category: Methods to change plotter's definition
+  ---------------------------------------------------
+  SetStringValue ( me: mutable;
+    aParam     :     CString from Standard;
+    anOldValue : out AsciiString from TCollection;
+    aNewValue  :     AsciiString from TCollection
+  ) is private;
+  ---Purpose:
+
+  SetBooleanValue ( me: mutable;
+    aParam  : CString from Standard;
+    aValue  : Boolean from Standard
+  ) is private;
+  ---Purpose:
+
+  SetIntegerValue ( me: mutable;
+    aParam : CString from Standard;
+    aValue : Integer from Standard
+  ) is private;
+  ---Purpose:
+
+  SetRealValue ( me: mutable;
+    aParam : CString from Standard;
+    aValue : Real from Standard
+  ) is private;
+  ---Purpose:
+
+  SetIntTable ( me: mutable;
+    aParam : CString from Standard;
+    aTable : HSequenceOfInteger from TColStd
+  ) is private;
+  ---Purpose:
+
+  -------------------- SET STRING VALUES -----------------------
+  SetModel              ( me: mutable; aValue: AsciiString from TCollection );
+  SetTitle              ( me: mutable; aValue: AsciiString from TCollection );
+  SetFileExtension      ( me: mutable; aValue: AsciiString from TCollection );
+  SetPrintCommand       ( me: mutable; aValue: AsciiString from TCollection );
+  SetBeforePrintCommand ( me: mutable; aValue: AsciiString from TCollection );
+  SetAfterPrintCommand  ( me: mutable; aValue: AsciiString from TCollection );
+  SetComments           ( me: mutable; aValue: AsciiString from TCollection );
+  SetBackDraw           ( me: mutable; aValue: AsciiString from TCollection );
+  SetPaperFormat        ( me: mutable; aValue: AsciiString from TCollection );
+  SetColorMapping       ( me: mutable; aValue: AsciiString from TCollection );
+  SetOutputFormat       ( me: mutable; aValue: AsciiString from TCollection );
+  SetDriverType         ( me: mutable; aValue: AsciiString from TCollection );
+
+  -------------------- SET BOOLEAN VALUES ----------------------
+  SetMirrorPlot         ( me: mutable; aValue: Boolean from Standard );
+  SetMultiSheet         ( me: mutable; aValue: Boolean from Standard );
+  SetFramePlot          ( me: mutable; aValue: Boolean from Standard );
+
+  SetPlotTitle          ( me: mutable; aValue: Boolean from Standard );
+  SetPlotComments       ( me: mutable; aValue: Boolean from Standard );
+  SetPlotBackDraw       ( me: mutable; aValue: Boolean from Standard );
+
+  SetPlotterColor       ( me: mutable; aValue: Boolean from Standard );
+  SetEndOfPlotDriven    ( me: mutable; aValue: Boolean from Standard );
+  SetDryTimeDriven      ( me: mutable; aValue: Boolean from Standard );
+  SetPaperFeedDriven    ( me: mutable; aValue: Boolean from Standard );
+  SetMirrorDriven       ( me: mutable; aValue: Boolean from Standard );
+  SetCheckSumDriven     ( me: mutable; aValue: Boolean from Standard );
+  SetMediaSaverDriven   ( me: mutable; aValue: Boolean from Standard );
+  SetQualityDriven      ( me: mutable; aValue: Boolean from Standard );
+  SetCopyDriven         ( me: mutable; aValue: Boolean from Standard );
+  SetPaperCutDriven     ( me: mutable; aValue: Boolean from Standard );
+  SetRotateDriven       ( me: mutable; aValue: Boolean from Standard );
+
+  SetCircleDriven       ( me: mutable; aValue: Boolean from Standard );
+  SetEllipseDriven      ( me: mutable; aValue: Boolean from Standard );
+  SetCurveDriven        ( me: mutable; aValue: Boolean from Standard );
+  SetTextDriven         ( me: mutable; aValue: Boolean from Standard );
+  SetMarkerDriven       ( me: mutable; aValue: Boolean from Standard );
+  SetRectangleDriven    ( me: mutable; aValue: Boolean from Standard );
+  SetFillDriven         ( me: mutable; aValue: Boolean from Standard );
+  SetPlottingColor      ( me: mutable; aValue: Boolean from Standard );
+
+  ---------------------- SET REAL VALUES -----------------------
+  SetPaperWidth         ( me: mutable; aValue: Real from Standard );
+  SetPaperLength        ( me: mutable; aValue: Real from Standard );
+  SetPaperSize          ( me: mutable; aWidth, aLength : Real from Standard );
+  SetHardMargins        ( me: mutable;
+                         aLeft, aTop, aRight, aBottom : Real from Standard );
+  SetMargins            ( me: mutable;
+                         aLeft, aTop, aRight, aBottom : Real from Standard );
+  SetHardMappings       ( me: mutable;
+                         aWOffset, aWScale            : Real from Standard;
+                         anLOffset, anLScale          : Real from Standard );
+  SetSpaceDrawing       ( me: mutable; aValue: Real from Standard );
+  SetPhysicalStep       ( me: mutable; aValue: Real from Standard );
+  SetMinWidthOfLine     ( me: mutable; aValue: Real from Standard );
+  SetWidthMaxGap        ( me: mutable; aValue: Real from Standard );
+  SetLineTypeMaxGap     ( me: mutable; aValue: Real from Standard );
+  SetResolution         ( me: mutable; aValue: Real from Standard );
+  SetColorResolution    ( me: mutable; aValue: Real from Standard );
+  SetFillWidth          ( me: mutable; aValue: Real from Standard );
+
+  -------------------- SET INTEGER VALUES ----------------------
+  SetMediaSaverDelay    ( me: mutable; aValue: Integer from Standard );
+  SetNumberOfCopies     ( me: mutable; aValue: Integer from Standard );
+  SetDryTime            ( me: mutable; aValue: Integer from Standard );
+  SetEndOfPlotTimer     ( me: mutable; aValue: Integer from Standard );
+  SetMaxColors          ( me: mutable; aValue: Integer from Standard );
+  SetMaxPatterns        ( me: mutable; aValue: Integer from Standard );
+  SetColorMaxGap        ( me: mutable; aValue: Integer from Standard );
+  SetLinearDensity      ( me: mutable; aValue: Integer from Standard );
+  SetStylusNumber       ( me: mutable; aValue: Integer from Standard );
+  SetPenMaxNumber       ( me: mutable; aValue: Integer from Standard );
+  SetNumberInCarrousel  ( me: mutable; aValue: Integer from Standard );
+
+  ---------------------- SET ENUM VALUES -----------------------
+  SetOrigin             ( me: mutable; anOrigin      : TypeOfOrigin  from PlotMgt );
+  SetQuality            ( me: mutable; aQuality      : TypeOfQuality from PlotMgt );
+  SetImageFormat        ( me: mutable; anImageFormat : ImageFormat   from PlotMgt );
+  SetPlottingType       ( me: mutable; aPlottingType : PlottingType  from PlotMgt );
+  SetPaperFormat        ( me: mutable; aPaperFormat  : PaperFormat   from PlotMgt );
+
+  ----------------------- MAP VALUES ---------------------------
+  SetPenColorIndex      ( me: mutable; aTable: HSequenceOfInteger from TColStd );
+  SetPenWidthIndex      ( me: mutable; aTable: HSequenceOfInteger from TColStd );
+  SetPenTypeIndex       ( me: mutable; aTable: HSequenceOfInteger from TColStd );
+  SetColorMap           ( me: mutable; aColorMap : ColorMap from Aspect );
+  SetWidthMap           ( me: mutable; aWidthMap : WidthMap from Aspect );
+  SetTypeMap            ( me: mutable; aTypeMap  : TypeMap  from Aspect );
+  SetFontMap            ( me: mutable; aFontMap  : FontMap  from Aspect );
+
+fields
+  myName                : AsciiString             from TCollection;
+  myModelName           : AsciiString             from TCollection;
+  mySystemName          : AsciiString             from TCollection;
+  myModelSystemName     : AsciiString             from TCollection;
+  myDirectDevice        : Boolean                 from Standard;
+  myIsLoaded            : Boolean                 from Standard;
+  myParameters          : HListOfPlotterParameter from PlotMgt;
+  -- Strings for all 'string' parameters
+  myConfigVer           : AsciiString             from TCollection;
+  myModel               : AsciiString             from TCollection;
+  myTitle               : AsciiString             from TCollection;
+  myExtension           : AsciiString             from TCollection;
+  myBeforeCommand       : AsciiString             from TCollection;
+  myAfterCommand        : AsciiString             from TCollection;
+  myPrintCommand        : AsciiString             from TCollection;
+  myComments            : AsciiString             from TCollection;
+  myBackDraw            : AsciiString             from TCollection;
+  myColorMapping        : AsciiString             from TCollection;
+  myOutputFormat        : AsciiString             from TCollection;
+  myDriverType          : AsciiString             from TCollection;
+  -- Lists for all 'list_string' parameters
+  myListOfPaperFormats  : HSequenceOfAsciiString  from TColStd;
+  myListOfOrigins       : HSequenceOfAsciiString  from TColStd;
+  myListOfQualities     : HSequenceOfAsciiString  from TColStd;
+  myListOfImageFormats  : HSequenceOfAsciiString  from TColStd;
+  myListOfColorMappings : HSequenceOfAsciiString  from TColStd;
+  myListOfOutputFormats : HSequenceOfAsciiString  from TColStd;
+  myListOfDriverTypes   : HSequenceOfAsciiString  from TColStd;
+  -- ColorMap, WidthMap, TypeMap, FontMap, PenIndexTables
+  myPenColorIndex       : HSequenceOfInteger      from TColStd;
+  myPenWidthIndex       : HSequenceOfInteger      from TColStd;
+  myPenTypeIndex        : HSequenceOfInteger      from TColStd;
+
+  myColorMap            : GenericColorMap         from Aspect;
+  myWidthMap            : WidthMap                from Aspect;
+  myTypeMap             : TypeMap                 from Aspect;
+  myFontMap             : FontMap                 from Aspect;
+  myAllFonts            : FontMap                 from Aspect;
+
+end Plotter from PlotMgt;

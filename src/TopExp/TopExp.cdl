@@ -1,0 +1,107 @@
+-- File:	TopExp.cdl
+-- Created:	Thu Dec 20 16:28:01 1990
+-- Author:	Remi Lequette
+--		<rle@topsn3>
+---Copyright:	 Matra Datavision 1990
+
+
+package TopExp 
+
+    ---Purpose: This package   provides  basic tools  to   explore the
+    --          topological data structures.
+    --          
+    --          * Explorer : A tool to find all sub-shapes of  a given
+    --          type. e.g. all faces of a solid.
+    --          
+    --          * Package methods to map sub-shapes of a shape.
+    --          
+    -- Level : Public  
+    --  All methods of all  classes will be public.
+
+
+uses
+
+    TCollection,
+    TopLoc,
+    TopAbs,    
+    TopoDS,
+    TopTools
+
+is
+
+    private class StackOfIterator instantiates 
+    	Stack from TCollection (Iterator from TopoDS);
+
+    pointer Stack to Iterator from TopoDS;
+    
+    class Explorer;
+	---Purpose: Tool to explore a topological data structure.
+
+    --
+    --      Package methods
+    --      
+    
+    
+    MapShapes(S    : Shape from TopoDS;
+    	      T    : ShapeEnum from TopAbs;
+    	      M    : in out IndexedMapOfShape from TopTools);
+	  ---Purpose: Stores in the map <M> all  the sub-shapes of <S>
+	  --          of type <T>.
+	  --          
+	  --  Warning: The map is not cleared at first.
+
+    MapShapes(S    : Shape from TopoDS;
+    	      M    : in out IndexedMapOfShape from TopTools);
+	  ---Purpose: Stores in the map <M> all  the sub-shapes of <S>.
+
+    MapShapesAndAncestors
+    	(S  : Shape from TopoDS;
+    	 TS : ShapeEnum from TopAbs;
+	 TA : ShapeEnum from TopAbs;
+	 M  : in out IndexedDataMapOfShapeListOfShape from TopTools);  
+ ---Purpose: Stores in the map <M> all the subshape of <S> of
+ --          type <TS>  for each one append  to  the list all
+ --          the ancestors of type <TA>.  For example map all
+	  --          the edges and bind the list of faces.
+	  --  Warning: The map is not cleared at first.
+
+    FirstVertex(E : Edge from TopoDS;
+    	    	CumOri : Boolean from Standard = Standard_False)
+    returns Vertex from TopoDS;
+	---Purpose: Returns the Vertex of orientation FORWARD in E. If
+	--          there is none returns a Null Shape.
+	--          CumOri = True : taking account the edge orientation
+    
+    LastVertex(E : Edge from TopoDS;
+    	       CumOri : Boolean from Standard = Standard_False)
+    returns Vertex from TopoDS;
+	---Purpose: Returns the Vertex of orientation REVERSED in E. If
+	--          there is none returns a Null Shape.
+	--          CumOri = True : taking account the edge orientation
+    
+    Vertices(E : Edge from TopoDS; Vfirst, Vlast : out Vertex from TopoDS;
+    	     CumOri : Boolean from Standard = Standard_False);
+	---Purpose: Returns in Vfirst, Vlast the  FORWARD and REVERSED
+	--          vertices of the edge <E>. May be null shapes.
+	--          CumOri = True : taking account the edge orientation
+             
+    Vertices(W : Wire from TopoDS; Vfirst, Vlast : out Vertex from TopoDS);
+	---Purpose: Returns  in  Vfirst,  Vlast   the first   and last 
+	--          vertices of the open wire <W>. May be null shapes.
+	--          if   <W>  is closed Vfirst and Vlast  are a same
+	--          vertex on <W>.
+	--          if <W> is no manifold. VFirst and VLast are null 
+	--          shapes.
+
+    CommonVertex( E1, E2 :     Edge   from TopoDS;
+                  V      : out Vertex from TopoDS)
+    returns Boolean;
+	---Purpose: Finds   the  vertex <V> common   to  the two edges
+	--          <E1,E2>, returns True if this vertex exists.
+	--          
+    	--  Warning: <V> has sense only if the value <True> is returned    
+
+end TopExp;
+
+
+

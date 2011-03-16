@@ -1,0 +1,111 @@
+// Copyright: 	Matra-Datavision 1992
+// Created:	Wed May,13 1992
+// Created by:  Jean-Pierre TIRAULT
+//              <jpt@topsn1>
+// Revised:	Wed Oct,21 1992
+// By     :     Mireille MERCIEN
+//              <mip@sdsun3>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+typedef PCollection_AVLNodeStack Stack;
+typedef PCollection_HAVLSearchTree Tree;
+typedef Handle(PCollection_HAVLSearchTree) Handle(Tree);
+typedef PCollection_AVLNode Node;
+typedef Handle(PCollection_AVLNode) Handle(Node);
+
+//-----------------------------------------------------------------------------
+PCollection_AVLIterator::
+              PCollection_AVLIterator ( const Handle(Tree)& aTree) 
+{
+  CurrentStack = new Stack;                     // Create an empty Stack
+  Handle(Node) Root = aTree->GetRoot();     // Current node = root of tree
+  if (Root.IsNull()) {
+     HasMore = False;
+  }
+  else {
+     HasMore = True;
+     // CURRENTSTACK MANAGEMENT
+     Append( Root);
+  }
+}
+
+//-----------------------------------------------------------------------------
+Boolean PCollection_AVLIterator::More () const 
+{
+  return  HasMore;
+}
+
+//-----------------------------------------------------------------------------
+Handle(Node) PCollection_AVLIterator::Value () const 
+{
+  if (!HasMore) NoSuchObject::Raise();
+  return CurrentNode;
+}
+
+//-----------------------------------------------------------------------------
+void PCollection_AVLIterator::Clear () 
+{
+  CurrentNode.Nullify();
+  CurrentStack.Nullify();
+  HasMore = False;
+}
+
+//-----------------------------------------------------------------------------
+void PCollection_AVLIterator::Next () 
+{
+  if (!HasMore) NoMoreObject::Raise();
+  Handle(Node) Right = CurrentNode->RightChild();
+
+  // WHAT ARE THE FOLLOWING ELEMENTS ?
+  if ( Right.IsNull()) {
+    RecursiveRemove(CurrentNode);
+    // MAYBE IT'S THE END
+    if (CurrentStack->IsEmpty()) 
+       HasMore = False;
+    else 
+       CurrentNode = CurrentStack->Top();
+  }
+  else {
+    Append (Right);
+  }
+}
+
+
+// PRIVATE TOOLS TO ITERATE
+
+
+void PCollection_AVLIterator::Append ( const Handle(Node)& Root) 
+{
+  RecursiveAppend( Root);
+  CurrentNode = CurrentStack->Top();
+}
+
+
+void PCollection_AVLIterator::RecursiveAppend(const Handle(Node)& ANode) 
+{
+  if (!ANode.IsNull()) {
+    CurrentStack->Push(ANode);
+    Handle(Node) Left = ANode->LeftChild();
+    RecursiveAppend( Left);
+  }
+}
+
+
+void PCollection_AVLIterator::RecursiveRemove(const Handle(Node)& theNode) 
+{       
+     CurrentStack->Pop();
+     if (CurrentStack->IsEmpty()) return;
+     Handle(Node) NewNode = CurrentStack->Top();
+     if (theNode == NewNode->RightChild()) {
+        RecursiveRemove(NewNode);
+     }
+}
+
+
+
+
+
+
+
+

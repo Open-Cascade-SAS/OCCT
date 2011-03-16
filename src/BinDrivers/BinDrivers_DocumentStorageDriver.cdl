@@ -1,0 +1,33 @@
+-- File:	BinDrivers_DocumentStorageDriver.cdl
+-- Created:	Tue Oct 29 11:34:03 2002
+-- Author:	Michael SAZONOV
+--		<msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+
+class DocumentStorageDriver from BinDrivers inherits DocumentStorageDriver from BinLDrivers
+
+    ---Purpose: persistent implemention of storage a document in a binary file
+
+uses   
+    OStream          from Standard,
+    MessageDriver    from CDM, 
+    DocumentSection  from BinLDrivers,
+    ADriverTable     from BinMDF
+is
+    -- ===== Public methods =====
+
+    Create returns mutable DocumentStorageDriver from BinDrivers;
+	---Purpose: Constructor
+
+
+    AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
+	returns ADriverTable from BinMDF
+	is redefined virtual; 
+	 
+    WriteShapeSection    (me: mutable; theDocSection : in out DocumentSection from BinLDrivers;
+                                       theOS         : in out OStream from Standard)
+        is redefined  virtual; 
+        ---Purpose: implements the procedure of writing a shape section to file 	
+
+end DocumentStorageDriver;

@@ -1,0 +1,19 @@
+-- File:	StepAP214_Class.cdl
+-- Created:	Wed May 10 15:09:06 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
+-- Copyright:	Matra Datavision 2000
+
+class Class from StepAP214
+inherits Group from StepBasic
+
+    ---Purpose: Representation of STEP entity Class
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns Class from StepAP214;
+	---Purpose: Empty constructor
+
+end Class;

@@ -1,0 +1,13 @@
+-- File:	ExprIntrp_CMPLRS.edl
+-- Author:	Prestataire Pascal BABIN
+-- History:	Wed Jan 15 10:02:48 1997	Prestataire Pascal BABIN	Creation
+-- Copyright:	 Matra Datavision 1997
+
+@ifnotdefined ( %ExprIntrp_CMPLRS_EDL) then
+@set %ExprIntrp_CMPLRS_EDL = "";
+
+@if ( %Station == "hp" ) then
+  @string %CMPLRS_C_Options = %CMPLRS_C_Options " -Ae";
+@endif;
+
+@endif;

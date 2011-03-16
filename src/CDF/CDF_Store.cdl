@@ -1,0 +1,187 @@
+-- File:	CDF_Store.cdl
+-- Created:	Mon Nov 13 10:46:37 1995
+-- Author:	Jean-Louis Frenkel
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+class Store from CDF
+
+uses Document from CDM,
+     TryStoreStatus from CDF,
+     StoreSetNameStatus from CDF,
+     SubComponentStatus from CDF,
+     ExtendedString from TCollection,
+     StoreList from CDF,
+     StoreStatus from CDF,
+     ExtendedString from TCollection
+    
+is
+  
+  
+    Create  is private;
+    
+    Create (aDocument: Document from CDM)
+    returns Store from CDF;
+    ---Purpose: creates a store list  from the document of the current selection.
+    --          
+    
+    ---Category: Checks methods
+    --           
+    Check(me: in out)
+    ---Purpose: Checks will make the following control. Check must be used before
+    --          using Create method. Check will not be done twice by Create.
+    --          
+    --          1) controls whether there is one document in the current selection.
+    --          2) controls whether there is a storage driver for the document.
+    --          3) controls whether the applicationdatatype associated with the driver
+    --             exists as metadata in the metadata manager (Design Manager for example).
+    --          4) controls whether there is a storage driver for each subcomponents 
+    --             of the document if there are.  If the control fails for a subcomponent, 
+    --             the control stops and name and type of this subcomponent can be get 
+    --             with LastName method
+    --          5) controls whether the applicationdatatype associated with the driver of
+    --             each subcomponent exists as metadata in the metadata manager 
+    --             (Design Manager for example). If the control fails for a subcomponent, 
+    --             the control stops and name and type of this subcomponent can be get 
+    --             with LastName method
+    --            
+    returns TryStoreStatus from CDF;
+    
+    LastName(me) returns ExtString from Standard;
+    ---Purpose: in the case of a subcomponent for which no storage driver exists,
+    --          returns the name of the subcomponent if there is one.
+
+    ---Category:  Inquire Methods
+    --            
+    --            The store list contains one or more documents. One of them is the current document.
+    --            
+    Folder(me) 
+    returns ExtString from Standard;
+    ---Purpose: returns the folder in which the current document will be stored.
+    
+    Name(me) returns ExtString from Standard;
+    ---Purpose: returns the name under which the current document will be stored
+    
+    IsStored(me) returns Boolean from Standard;
+    ---Purpose: returns true if the current document is already stored
+
+    IsModified(me) returns Boolean from Standard;
+
+    CurrentIsConsistent(me) returns Boolean from Standard;
+    
+    IsConsistent(me) returns Boolean from Standard;
+    
+    HasAPreviousVersion(me) returns Boolean from Standard;
+    
+    PreviousVersion(me) returns ExtString from Standard;
+    
+    IsMainDocument(me) returns Boolean from Standard;
+    ---Purpose: returns true if the currentdocument is the main one, ie the document
+    --          of the current selection.
+
+---Category: Set methods
+--           
+    SetFolder(me: in out; aFolder: ExtendedString from TCollection)
+    ---Purpose: defines the   folder in which  the document  should be
+    --          stored.  returns  Standard_True if  the Folder exists,
+    --          Standard_False otherwise.
+    returns Boolean from Standard;
+    
+			   
+    SetName(me: in out; aName: ExtString from Standard)
+    ---Purpose: defines the name under which the document should be stored.
+    returns StoreSetNameStatus  from CDF;
+    
+    SetComment(me: in out; aComment: ExtString from Standard);
+    
+    Comment(me) returns ExtString from Standard;
+    
+    RecheckName(me: in out)
+    ---Purpose: defines the name under which the document should be stored.
+    --          uses for example after modification of the folder.
+    returns StoreSetNameStatus  from CDF;
+    
+    SetPreviousVersion(me: in out; aPreviousVersion: ExtString from Standard)
+    returns Boolean from Standard;
+    
+    Realize(me: in out);
+
+    Path(me) returns ExtString from Standard;
+    ---Purpose: returns the complete path of the created meta-data.
+
+    MetaDataPath(me) returns ExtString from Standard;
+    ---Purpose: returns the path of  the previous store is the object
+    --          is already stored, otherwise an empty string;
+    Description(me) returns ExtString from Standard;
+    ---Purpose: returns the description of the format of the main object.
+
+---Category: subcomponents management.
+
+    InitComponent (me: in out);
+    ---Purpose : Allows to Start a new Iteration from beginning
+    
+    MoreComponent (me) returns Boolean from Standard;
+    ---Purpose : Returns True if there are more entries to return
+    
+    NextComponent (me: in out);
+    ---Purpose : Go to the next entry
+    --           (if there is not, Value will raise an exception)
+    
+    
+    SetCurrent(me: in out);
+    
+    Component (me) returns ExtString from Standard;
+    ---Purpose : Returns item value of current entry
+    
+    HasSubComponents(me) returns Boolean from Standard;
+    
+    SubComponentStatus(me; aPresentation: ExtString from Standard)
+    returns SubComponentStatus from CDF;
+
+    SetCurrent(me: in out; aPresentation: ExtString from Standard);
+    
+    SetMain(me: in out);
+
+
+---Category:  Status method 
+---Purpose:  the two following methods can
+--           be used just after Realize  or Import --  method to know if
+--           thes methods worked correctly, and if not why.
+
+    StoreStatus(me) returns StoreStatus from CDF;
+    AssociatedStatusText(me) returns ExtString from Standard;
+
+    ---Category: Private methods
+
+    FindDefault(me: in out) is private;
+
+    Init(me: in out) is private;
+
+    SetName(me: in out; aName: ExtendedString from TCollection)
+    ---Purpose: defines the name under which the document should be stored.
+    returns StoreSetNameStatus  from CDF;
+    
+    
+---Category: compatibility
+    SetFolder(me: in out; aFolder: ExtString from Standard)
+    ---Purpose: defines the   folder in which  the document  should be
+    --          stored.  returns  Standard_True if  the Folder exists,
+    --          Standard_False otherwise.
+    returns Boolean from Standard;
+    
+			   
+fields
+    myList: StoreList from CDF ;
+    myMainDocument: Document from CDM ;
+    myCurrentDocument: Document from CDM ;
+    myHasSubComponents: Boolean from Standard ;
+    myIsMainDocument: Boolean from Standard ;
+    
+    myLastName: ExtendedString from TCollection;
+
+    myPath: ExtendedString from TCollection;
+    myText: ExtendedString from TCollection;
+    myStatus: StoreStatus from CDF;
+    
+
+end Store from CDF;

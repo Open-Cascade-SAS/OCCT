@@ -1,0 +1,34 @@
+-- File:	 HyperbolaToBSplineCurve.cdl
+-- Created:	 Thu Oct 10 14:48:30 1991
+-- Author:	 Jean Claude VAUTHIER
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class HyperbolaToBSplineCurve   from Convert   inherits ConicToBSplineCurve
+
+        --- Purpose :
+        --  This algorithm converts a hyperbola into a rational B-spline curve.
+        --  The hyperbola is an Hypr2d from package gp with the
+        --  parametrization :
+        --  P (U) = 
+        --  Loc + (MajorRadius * Cosh(U) * Xdir + MinorRadius * Sinh(U) * Ydir)
+        --  where Loc is the location point of the hyperbola, Xdir and Ydir are
+        --  the normalized directions of the local cartesian coordinate system
+        --  of the hyperbola.
+        --- KeyWords :
+        --  Convert, Hyperbola, BSplineCurve, 2D .
+
+uses Hypr2d from gp
+
+is
+
+
+  Create (H : Hypr2d; U1, U2 : Real)   returns HyperbolaToBSplineCurve;
+        --- Purpose : 
+        --  The hyperbola H is limited between the parametric values U1, U2
+        --  and the equivalent B-spline curve has the same orientation as the
+        --  hyperbola.
+
+
+end HyperbolaToBSplineCurve;

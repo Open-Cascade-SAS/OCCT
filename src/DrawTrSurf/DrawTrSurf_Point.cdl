@@ -1,0 +1,85 @@
+-- File:	DrawTrSurf_Point.cdl
+-- Created:	Mon Mar 28 15:49:05 1994
+-- Author:	Remi LEQUETTE
+--		<rle@zerox>
+---Copyright:	 Matra Datavision 1994
+
+
+
+class Point from DrawTrSurf inherits Drawable3D from Draw
+
+	---Purpose: A drawable point.
+
+uses
+    	Pnt from gp,
+    	Pnt2d from gp,
+	MarkerShape from Draw,
+     	Color from Draw,
+     	Display from Draw,
+     	Drawable3D from Draw,
+	Interpretor from Draw
+
+is
+
+    Create( P : Pnt from gp; 
+    	    Shape : MarkerShape from Draw;
+	    Col   : Color from Draw) 
+    returns mutable Point from DrawTrSurf;
+    
+    Create( P : Pnt2d from gp; 
+    	    Shape : MarkerShape from Draw;
+	    Col   : Color from Draw) 
+    returns mutable Point from DrawTrSurf;
+    
+    DrawOn (me; dis : in out Display from Draw);
+     
+    Is3D(me) returns Boolean
+	---Purpose: Is a 3D object. (Default True).
+    is redefined;
+    
+    Point(me) returns Pnt from gp
+    is static;
+    
+    Point(me : mutable; P : Pnt from gp)
+    is static;
+
+    Point2d(me) returns Pnt2d from gp
+    is static;
+    
+    Point2d(me : mutable; P : Pnt2d from gp)
+    is static;
+
+  Color(me : mutable; aColor : Color from Draw)
+     is static;
+
+  Color (me)  returns Color from Draw
+     is static;
+     
+  Shape(me : mutable; S : MarkerShape from Draw)
+  is static;
+  
+  Shape(me) returns MarkerShape from Draw
+  is  static;
+     
+  Copy(me) returns mutable Drawable3D from Draw
+	---Purpose: For variable copy.
+  is redefined;
+  
+  Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+  is redefined;
+
+  Whatis(me; I : in out Interpretor from Draw)
+	---Purpose: For variable whatis command.
+  is redefined;
+
+fields
+
+    myPoint : Pnt from gp;
+    is3D    : Boolean;
+    myShape : MarkerShape from Draw;
+    myColor : Color from Draw;
+
+end Point;
+
+

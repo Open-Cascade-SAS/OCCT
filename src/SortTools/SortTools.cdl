@@ -1,0 +1,114 @@
+-- File:	SortTools.cdl
+-- Created:	Thu Mar  7 09:00:21 1991
+-- Author:	Herve Legrand
+--		<hl@topsn3>
+---Copyright:	Matra Datavision 1991
+-- Revised:	Fri Oct 30 1992 
+-- By     :	Mireille MERCIEN
+
+
+package SortTools
+
+	---Purpose: This package provides the basic sorting tools generally 
+	--          used.    
+
+uses TCollection,
+     TColStd
+
+is
+        generic class HeapSort;
+        ---Purpose: Sort an array using the heap sort algorithm.
+
+        generic class QuickSort;
+        ---Purpose: Sort an array using the quick sort algorithm.
+
+        generic class ShellSort;
+        ---Purpose: Sort an array using the shell sort algorithm.
+
+        generic class StraightInsertionSort;
+        ---Purpose: Sort an array using the straight insertion sort algorithm.
+
+
+  -- The table below summarizes the most important characteristics that 
+  -- must be considered when selecting a particular sorting algorithm.
+  -- A sorting algorithm is known as stable if the initial order of items
+  -- with equals keys is preserved after the sorting operation.
+
+  ------------------------------------------------------------------------
+  --  Algorithm        Stable       Comparisons            Moves
+  --                             Min    Avg    Max    Min    Avg     Max     
+  ------------------------------------------------------------------------
+  --                                            2                     2
+  --  QuickSort          No     nlogn  nlogn   n      nlogn  nlogn   n
+  -- 
+  ------------------------------------------------------------------------
+  --
+  --  HeapSort           No     nlogn  nlogn  nlogn   nlogn  nlogn  nlogn
+  --
+  ------------------------------------------------------------------------
+  --                                    1.25                   1.25
+  --  ShellSort          No       -    n        -       -     n       -
+  --
+  ------------------------------------------------------------------------
+  --                                     2     2               2      2
+  --  StraightInsertion  Yes       n    n     n         n     n      n
+  --
+  -------------------------------------------------------------------------
+
+   --+ Heap sort exhibits an interesting time complexity, in that it runs 
+   -- on the order of nlogn for the best, average, and worst case.
+   --+ Quick sort is still faster on the average(its constant of proportiona-
+   -- lity is lower), but it does not guarantee such good worst-case perfor-
+   -- mance.
+   --+ Shell sort is not sensitive to the initial ordering and offers accepta-
+   -- ble running time even for moderately larges arrays (say, 1000 elements).
+   --+ Insertion sort is the method of choice for "almost sorted" arrays with
+   -- few inversions : for such cases, it will outperform even the more 
+   -- sophisticated method (quick sort, heap sort).
+
+
+--                             Instantiations                         --
+--                             **************                         --
+------------------------------------------------------------------------
+
+--
+--       Instantiations QuickSort (Integer,Real)
+--       ***************************************
+ class QuickSortOfInteger instantiates QuickSort(Integer,
+    	    	    	    	    	     Array1OfInteger from TColStd,
+    	    	    	    	    	     CompareOfInteger  from TCollection);
+ class QuickSortOfReal instantiates QuickSort(Real,
+    	    	    	    	             Array1OfReal from TColStd,
+    	    	    	    	             CompareOfReal from TCollection );
+
+--       Instantiations HeapSort (Integer,Real)
+--       ***************************************
+ class HeapSortOfInteger instantiates HeapSort(Integer,
+    	    	    	    	    	     Array1OfInteger from TColStd,
+    	    	    	    	             CompareOfInteger  from TCollection);
+ class HeapSortOfReal instantiates HeapSort(Real,
+    	    	    	    	             Array1OfReal from TColStd,
+    	    	    	    	             CompareOfReal  from TCollection);
+
+--       Instantiations ShellSort (Integer,Real)
+--       ***************************************
+ class ShellSortOfInteger instantiates ShellSort(Integer,
+    	    	    	    	             Array1OfInteger from TColStd,
+    	    	    	    	             CompareOfInteger  from TCollection);
+ class ShellSortOfReal instantiates ShellSort(Real,
+    	    	    	    	             Array1OfReal from TColStd,
+    	    	    	    	             CompareOfReal from TCollection );
+
+--       Instantiations StraightInsertionSort (Integer,Real)
+--       ***************************************************
+ class StraightInsertionSortOfInteger instantiates
+                           StraightInsertionSort(Integer,
+    	    	    	    	             Array1OfInteger from TColStd,
+    	    	    	    	             CompareOfInteger from TCollection);
+ class StraightInsertionSortOfReal instantiates
+                           StraightInsertionSort(Real,
+    	    	    	    	             Array1OfReal from TColStd,
+    	    	    	    	             CompareOfReal from TCollection);
+
+end SortTools;
+

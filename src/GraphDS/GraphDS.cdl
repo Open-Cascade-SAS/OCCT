@@ -1,0 +1,61 @@
+-- File:	GraphDS.cdl
+-- Created:	Fri Aug  6 16:39:11 1993
+-- Author:	Denis PASCAL
+--		<dp@phobox>
+---Copyright:	 Matra Datavision 1993
+
+
+package GraphDS 
+
+    ---Purpose: This  package  <GraphDS> provides  generic  classes to
+    --          describe transient graph data structure.
+
+uses Standard,
+     MMgt,
+     TCollection,
+     TColStd
+
+is
+    enumeration EntityRole is 
+    	OnlyInput, 
+    	OnlyOutput, 
+    	InputAndOutput
+    end EntityRole;
+    
+    enumeration RelationRole is 
+        OnlyFront, 
+    	OnlyBack, 
+    	FrontAndBack
+    end RelationRole;
+
+    class EntityRoleMap instantiates DataMap from TCollection
+                                    (Transient  from Standard,
+				     EntityRole from GraphDS,
+				     MapTransientHasher from TColStd);
+
+    generic class DirectedGraph,
+                  Vertex,
+		  Edge,
+		  VerticesIterator,
+		  EdgesIterator;
+		 
+    
+    generic class RelationGraph,
+                  Entity,
+		  Relation,
+    	    	  EntitiesIterator,
+                  IncidentEntitiesIterator,
+                  RelationsIterator,
+                  IncidentRelationsIterator;		  
+
+end GraphDS;
+
+
+
+
+
+
+
+
+
+

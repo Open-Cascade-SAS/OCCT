@@ -1,0 +1,61 @@
+-- File:	GraphContent.cdl
+-- Created:	Wed Sep 23 10:23:20 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+class GraphContent  from Interface  inherits EntityIterator
+
+    	---Purpose : Defines general form for classes of graph algorithms on
+    	--           Interfaces, this form is that of EntityIterator
+    	--           Each sub-class fills it according to its own algorithm
+    	--           This also allows to combine any graph result to others,
+    	--           all being given under one unique form
+
+uses Transient, Graph
+
+is
+
+    Create returns GraphContent;
+    ---Purpose : Creates an empty GraphContent, ready to be filled
+
+    Create (agraph : Graph) returns GraphContent;
+    ---Purpose : Creates with all entities designated by a Graph
+
+    Create (agraph : Graph; stat : Integer) returns GraphContent;
+    ---Purpose : Creates with entities having specific Status value in a Graph
+
+    Create (agraph : Graph; ent : Transient) returns GraphContent;
+    ---Purpose : Creates an Iterator with Shared entities of an entity
+    --           (equivalente to EntityIterator but with a Graph) 
+
+    GetFromGraph (me : in out; agraph : Graph);
+    ---Purpose : Gets all Entities designated by a Graph (once created), adds
+    --           them to those already recorded
+
+    GetFromGraph (me : in out; agraph : Graph; stat : Integer);
+    ---Purpose : Gets entities from a graph which have a specific Status value
+    --           (one created), adds them to those already recorded
+
+    Result (me : in out) returns EntityIterator;
+    ---Purpose : Returns Result under the exact form of an EntityIterator :
+    --           Can be used when EntityIterator itself is required (as a
+    --           returned value for instance), whitout way for a sub-class
+
+    	-- --    Evaluation - Iteration    -- --
+    	--   Made by Start-More-Next-Value  inherited from EntityIterator
+    	--   Start is redefined to call Evaluate moreover
+    	--   Default for Evaluate is given as doing nothing
+
+--    Start (me : in out)  is redefined;
+    Begin (me : in out);
+    ---Purpose : Does the Evaluation before starting the iteration itself
+    --           (in out)
+
+    Evaluate (me : in out)  is virtual;
+    ---Purpose : Evaluates list of Entities to be iterated. Called by Start
+    --           Default is set to doing nothing : intended to be redefined
+    --           by each sub-class
+
+end GraphContent;

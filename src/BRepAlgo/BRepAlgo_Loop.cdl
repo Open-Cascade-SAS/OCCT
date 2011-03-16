@@ -1,0 +1,95 @@
+-- File:	BRepAlgo_Loop.cdl
+-- Created:	Fri Nov 10 15:58:31 1995
+-- Author:	Yves FRICAUD
+--		<yfr@stylox>
+---Copyright:	 Matra Datavision 1995
+
+
+class Loop from BRepAlgo
+
+	---Purpose: Builds the loops from a set of edges on a face.
+
+uses
+
+    Face                      from TopoDS,
+    Edge                      from TopoDS,
+    ListOfShape               from TopTools,
+    DataMapOfShapeListOfShape from TopTools, 
+    DataMapOfShapeShape       from TopTools
+
+is
+
+    Create;
+    
+    Init (me : in out; F : Face from TopoDS)
+	---Purpose: Init with <F> the set of edges must have
+	--          pcurves on <F>. 
+    is static;
+    
+    AddEdge (me : in out; E  : in out Edge from TopoDS;
+    	    	    	  LV : ListOfShape from TopTools)
+    	---Purpose: Add E with <LV>. <E> will be copied and trim 
+    	--          by vertices in <LV>.
+    is static;
+    
+    AddConstEdge  (me : in out; E : Edge from TopoDS)
+	---Purpose: Add <E> as const edge, E can be in the result.
+    is static;
+
+    AddConstEdges (me : in out; LE : ListOfShape from TopTools)
+    	---Purpose: Add <LE> as a set of const edges.
+    is static;
+
+    Perform(me : in out)
+	---Purpose: Make loops.
+    is static;
+    
+    CutEdge(me;
+    	    E    :        Edge        from TopoDS;
+	    VonE :        ListOfShape from TopTools;
+	    NE   : in out ListOfShape from TopTools)
+	---Purpose:  Cut the  edge <E>  in  several edges  <NE> on the
+	--          vertices<VonE>.
+    is static;
+    
+    NewWires (me)	
+	---Purpose: Returns the list of wires performed. 
+	--          can be an empty list.
+	---C++: return const &
+    returns ListOfShape from TopTools;
+    	
+    WiresToFaces (me : in out)
+    	---Purpose:  Build faces from the wires result.
+    is static;
+    
+    NewFaces (me)
+        ---Purpose: Returns the list of faces.
+    	--  Warning: The method <WiresToFaces> as to be called before.
+    	--          can be an empty list.
+	---C++: return const &
+    returns ListOfShape from TopTools;
+
+    NewEdges (me ; E : Edge from TopoDS)
+    	---Purpose: Returns the list of new edges built from an edge <E>
+    	--          it can be an empty list.
+    	---C++: return const &
+    returns ListOfShape from TopTools;
+
+    GetVerticesForSubstitute (me; VerVerMap: out DataMapOfShapeShape from TopTools);
+        ---Purpose: Returns the datamap of vertices with their substitutes.
+    
+    VerticesForSubstitute (me : in out; VerVerMap: in out DataMapOfShapeShape from TopTools);
+        ---Purpose:
+    
+fields
+
+    myFace       : Face                      from TopoDS;
+    myConstEdges : ListOfShape               from TopTools;
+    myVerOnEdges : DataMapOfShapeListOfShape from TopTools;
+    myNewWires   : ListOfShape               from TopTools;
+    myNewFaces   : ListOfShape               from TopTools;
+    myNewEdges   : DataMapOfShapeListOfShape from TopTools; 
+     
+    myVerticesForSubstitute  : DataMapOfShapeShape from TopTools;
+    
+end Loop;

@@ -1,0 +1,51 @@
+-- File:	TopOpeBRepDS_Filter.cdl
+-- Created:	Mon Apr 21 17:09:19 1997
+-- Author:	Prestataire Mary FABIEN
+--		<fbi@langdox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+class Filter from TopOpeBRepDS 
+
+---Purpose: 
+
+uses
+
+    Shape       from TopoDS,
+    Edge        from TopoDS,
+    ListOfShape from TopTools,
+    IndexedMapOfShape from TopTools,
+    
+    Config                           from TopOpeBRepDS,    
+    Interference                     from TopOpeBRepDS,
+    ListOfInterference               from TopOpeBRepDS,
+    ListIteratorOfListOfInterference from TopOpeBRepDS,
+    ListOfShapeOn1State from TopOpeBRepDS,
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS,
+    PShapeClassifier from TopOpeBRepTool
+
+is
+
+    Create(HDS : HDataStructure from TopOpeBRepDS;
+           pClassif: PShapeClassifier from TopOpeBRepTool = 0) returns Filter;
+
+    ProcessInterferences(me : in out); -- oldies
+    
+    ProcessFaceInterferences(me : in out;
+    	    	    	     MEsp : DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS);
+    ProcessFaceInterferences(me : in out; I : Integer;
+	    		     MEsp : DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS);
+
+    ProcessEdgeInterferences(me : in out);
+    ProcessEdgeInterferences(me : in out; I : Integer);
+
+    ProcessCurveInterferences(me: in out);
+    ProcessCurveInterferences(me: in out; I : Integer);
+
+
+fields
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    myPShapeClassif: PShapeClassifier from TopOpeBRepTool;
+    
+end Filter from TopOpeBRepDS;

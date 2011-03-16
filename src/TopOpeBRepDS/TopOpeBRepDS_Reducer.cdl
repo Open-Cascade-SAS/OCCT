@@ -1,0 +1,21 @@
+class Reducer from TopOpeBRepDS 
+
+---Purpose: reduce interferences of a data structure (HDS)
+--          used in topological operations.
+
+uses
+
+    DataMapOfShapeListOfShapeOn1State from TopOpeBRepDS,
+    HDataStructure from TopOpeBRepDS
+
+is
+
+    Create(HDS:HDataStructure from TopOpeBRepDS) returns Reducer from TopOpeBRepDS;
+    ProcessFaceInterferences(me:out;M:DataMapOfShapeListOfShapeOn1State);
+    ProcessEdgeInterferences(me:out);
+
+fields
+
+    myHDS : HDataStructure from TopOpeBRepDS;
+    
+end Reducer from TopOpeBRepDS;

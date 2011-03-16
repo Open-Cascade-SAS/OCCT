@@ -1,0 +1,41 @@
+-- File:	PBRep_Curve3D.cdl
+-- Created:	Tue Jul  6 10:09:31 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class Curve3D from PBRep inherits GCurve from PBRep
+
+	---Purpose: Representation of a curve by a 3D curve.
+
+uses
+
+    Location from PTopLoc,
+    Curve    from PGeom
+
+is
+
+    Create(C  : Curve    from PGeom;
+    	   CF : Real     from Standard;
+	   CL : Real     from Standard;
+    	   L  : Location from PTopLoc) 
+    returns mutable Curve3D from PBRep;
+    	---Purpose : CF is curve first param
+    	--           CL is curve last param
+    	--           As far as they can't be computed from a Persistent Curve
+    	--          they are given in the Curve3D constructor
+
+    Curve3D(me) returns Curve from PGeom
+    is static;
+
+    IsCurve3D(me) returns Boolean
+	 ---Purpose: Returns True.
+    is redefined;
+	
+fields
+    
+    myCurve3D : Curve from PGeom;
+
+end Curve3D;

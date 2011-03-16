@@ -1,0 +1,30 @@
+-- File:	IGESSelect_AddGroup.cdl
+-- Created:	Thu Mar  2 18:03:54 1995
+-- Author:	Christian CAILLET
+--		<cky@pronox>
+---Copyright:	 Matra Datavision 1995
+
+
+class AddGroup  from IGESSelect  inherits ModelModifier from IGESSelect
+
+    ---Purpose : Adds a Group to contain the entities designated by the
+    --           Selection. If no Selection is given, nothing is done
+
+uses AsciiString from TCollection,
+     IGESModel, CopyTool, ContextModif
+
+is
+
+    Create returns mutable AddGroup;
+    ---Purpose : Creates an AddGroup
+
+    Performing (me; ctx : in out ContextModif;
+    	        target  : mutable IGESModel;
+                TC      : in out CopyTool);
+    ---Purpose : Specific action : Adds a new group
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which is
+    --           "Add Group"
+
+end AddGroup;

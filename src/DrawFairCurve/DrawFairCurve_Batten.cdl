@@ -1,0 +1,35 @@
+-- File:	DrawFairCurve_Batten.cdl
+-- Created:	Fri Feb 16 14:32:26 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+class Batten from DrawFairCurve inherits  BSplineCurve2d from DrawTrSurf
+
+	---Purpose: Interactive Draw object of type "Batten"
+
+uses Batten from FairCurve, 
+     BSplineCurve2d from DrawTrSurf,
+     Pnt2d from gp
+
+is
+   Create(TheBatten : Address)
+   returns mutable Batten from DrawFairCurve;
+   Compute(me:mutable);
+   SetPoint(me: mutable; Side : Integer; Point : Pnt2d);
+   SetAngle(me: mutable; Side : Integer; Angle : Real);
+   SetSliding(me: mutable; Length : Real);
+   SetHeight(me: mutable; Heigth : Real);
+   SetSlope(me: mutable; Slope : Real);
+   GetAngle(me; Side : Integer) returns Real;
+   GetSliding(me) returns Real;
+   FreeSliding(me:mutable);
+   FreeAngle(me:mutable; Side : Integer);
+   Dump(me; S : in out OStream)
+	---Purpose: For variable dump.
+  is redefined;
+   
+fields
+ MyBatten : Address is protected;
+end Batten;

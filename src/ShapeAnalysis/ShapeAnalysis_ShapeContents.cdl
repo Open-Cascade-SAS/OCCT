@@ -1,0 +1,212 @@
+-- File:	ShapeAnalysis_ShapeContents.cdl
+-- Created:	Thu Feb 25 16:53:11 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeContents from ShapeAnalysis 
+
+	---Purpose: 
+
+uses
+
+    Shape from TopoDS,
+    HSequenceOfShape from TopTools
+    
+is
+
+    Create returns ShapeContents from ShapeAnalysis;
+    	---Purpose: Initialize fields and call ClearFlags()
+       
+    Clear(me:in out);
+    	---Purpose: Clears all accumulated statictics
+    
+    ClearFlags(me:in out);
+    	---Purpose: Clears all flags
+
+    Perform(me: in out;shape: Shape from TopoDS);
+    	---Purpose: Counts quantities of sun-shapes in shape and
+	--          stores sub-shapes according to flags
+    
+    --Methods for setting parameters
+    
+    ModifyBigSplineMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          with edges if its 3D curves has more than 8192 poles.
+	---Default: False
+   
+    ModifyIndirectMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          on indirect surfaces
+	---Default: False
+    
+    ModifyOffestSurfaceMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          on offset surfaces.
+	---Default: False
+	    
+    ModifyTrimmed3dMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          with edges if ist 3D curves are trimmed curves
+	---Default: False
+	    
+    ModifyOffsetCurveMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          with edges if its 3D curves and pcurves are offest curves
+	---Default: False
+    
+    ModifyTrimmed2dMode(me: in out) returns Boolean;
+    	---C++: inline
+    	---C++: return &
+    	---Purpose: Returns (modifiable) the flag which defines whether to store faces
+	--          with edges if its  pcurves are trimmed curves
+	---Default: False
+    
+    -- Methods for fetching results
+    
+    NbSolids(me) returns Integer;
+    	---C++: inline
+    NbShells(me) returns Integer;
+    	---C++: inline
+    NbFaces(me) returns Integer;
+    	---C++: inline
+    NbWires(me) returns Integer;
+    	---C++: inline
+    NbEdges(me) returns Integer;
+    	---C++: inline
+    NbVertices(me) returns Integer;
+    	---C++: inline
+    NbSolidsWithVoids(me) returns Integer;
+    	---C++: inline
+    NbBigSplines(me) returns Integer;
+    	---C++: inline
+    NbC0Surfaces(me) returns Integer;
+    	---C++: inline
+    NbC0Curves(me) returns Integer;
+    	---C++: inline
+    NbOffsetSurf(me) returns Integer;
+    	---C++: inline
+    NbIndirectSurf(me) returns Integer;
+    	---C++: inline
+    NbOffsetCurves(me) returns Integer;
+    	---C++: inline
+    NbTrimmedCurve2d(me) returns Integer;
+    	---C++: inline
+    NbTrimmedCurve3d(me) returns Integer;
+    	---C++: inline
+    NbBSplibeSurf(me) returns Integer;
+    	---C++: inline
+    NbBezierSurf(me) returns Integer;
+    	---C++: inline
+    NbTrimSurf(me) returns Integer;
+    	---C++: inline
+    NbWireWitnSeam(me) returns Integer;
+    	---C++: inline
+    NbWireWithSevSeams(me) returns Integer;
+    	---C++: inline
+    NbFaceWithSevWires(me) returns Integer;
+    	---C++: inline
+    NbNoPCurve(me) returns Integer;
+    	---C++: inline
+    NbFreeFaces(me) returns Integer;
+    	---C++: inline
+    NbFreeWires(me) returns Integer;
+    	---C++:inline
+    NbFreeEdges(me) returns Integer;
+    	---C++: inline
+    
+    NbSharedSolids(me) returns Integer;
+    	---C++: inline
+    NbSharedShells(me) returns Integer;
+    	---C++: inline
+    NbSharedFaces(me) returns Integer;
+    	---C++: inline
+    NbSharedWires(me) returns Integer;
+    	---C++: inline
+    NbSharedFreeWires(me) returns Integer;
+    	---C++: inline
+    NbSharedFreeEdges(me) returns Integer;
+    	---C++: inline
+    NbSharedEdges(me) returns Integer;
+    	---C++: inline
+    NbSharedVertices(me) returns Integer;
+    	---C++: inline
+
+    -- Methods for obtaining sequenses of selected shapes
+    
+    BigSplineSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+    IndirectSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+    OffsetSurfaceSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+    Trimmed3dSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+    OffsetCurveSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+    Trimmed2dSec(me) returns HSequenceOfShape from TopTools;
+    	---C++: inline
+
+fields
+
+    myNbSolids: Integer;
+    myNbShells: Integer;
+    myNbFaces : Integer;
+    myNbWires : Integer;
+    myNbEdges : Integer;
+    myNbVertices       : Integer;
+    myNbSolidsWithVoids: Integer;
+    myNbBigSplines     : Integer;
+    myNbC0Surfaces     : Integer;
+    myNbC0Curves       : Integer;
+    myNbOffsetSurf     : Integer;
+    myNbIndirectSurf   : Integer;
+    myNbOffsetCurves   : Integer;
+    myNbTrimmedCurve2d : Integer;
+    myNbTrimmedCurve3d : Integer;
+    myNbBSplibeSurf    : Integer;
+    myNbBezierSurf     : Integer;
+    myNbTrimSurf       : Integer;
+    myNbWireWitnSeam   : Integer;
+    myNbWireWithSevSeams: Integer;
+    myNbFaceWithSevWires: Integer;
+    myNbNoPCurve       : Integer;
+    myNbFreeFaces      : Integer;
+    myNbFreeWires      : Integer;
+    myNbFreeEdges      : Integer;
+    
+    myNbSharedSolids: Integer;
+    myNbSharedShells: Integer;
+    myNbSharedFaces : Integer;
+    myNbSharedWires : Integer;
+    myNbSharedFreeWires:Integer;
+    myNbSharedFreeEdges:Integer;
+    myNbSharedEdges    :Integer;
+    myNbSharedVertices :Integer;
+    
+    myBigSplineMode    : Boolean;
+    myIndirectMode     : Boolean;
+    myOffestSurfaceMode: Boolean;
+    myTrimmed3dMode    : Boolean;
+    myOffsetCurveMode  : Boolean;
+    myTrimmed2dMode    : Boolean;
+    
+    myBigSplineSec    : HSequenceOfShape from TopTools;
+    myIndirectSec     : HSequenceOfShape from TopTools;
+    myOffsetSurfaceSec: HSequenceOfShape from TopTools;
+    myTrimmed3dSec    : HSequenceOfShape from TopTools;
+    myOffsetCurveSec  : HSequenceOfShape from TopTools;
+    myTrimmed2dSec    : HSequenceOfShape from TopTools;
+
+end ShapeContents;

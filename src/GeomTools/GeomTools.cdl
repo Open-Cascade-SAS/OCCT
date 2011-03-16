@@ -1,0 +1,77 @@
+-- File:	GeomTools.cdl
+-- Created:	Fri Aug 28 18:54:27 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+package GeomTools 
+
+	---Purpose: The GeomTools package provides  utilities for Geometry.
+	--          
+	--          *  SurfaceSet,  CurveSet, Curve2dSet  : Tools used
+	--          for dumping, writing and reading.
+	--          
+	--          * Methods to dump, write, read curves and surfaces.
+
+uses
+    Geom,
+    Geom2d,
+    TColStd,
+    Message
+
+is
+
+    class UndefinedTypeHandler;
+    --
+    --  Dump, Write, Read tools
+    
+    class SurfaceSet;
+	---Purpose: A set of Surfaces from Geom.
+    	
+    class CurveSet;
+	---Purpose: A set of Curves from Geom.
+    	
+    class Curve2dSet;
+	---Purpose: A set of Curves from Geom2d.
+    	
+    --
+    --     Methods
+    --     
+    
+    Dump(S : Surface from Geom; OS : in out OStream);
+	  ---Purpose: Dumps the surface on the stream.
+
+    Write(S : Surface from Geom; OS : in out OStream);
+	  ---Purpose: Writes the surface on the stream.
+
+    Read(S : in out Surface from Geom; IS : in out IStream); 
+	  ---Purpose: Reads the surface from the stream.
+
+
+    Dump(C : Curve from Geom; OS : in out OStream);
+	  ---Purpose: Dumps the Curve on the stream.
+
+    Write(C : Curve from Geom; OS : in out OStream);
+	  ---Purpose: Writes the Curve on the stream.
+
+    Read(C : in out Curve from Geom; IS : in out IStream); 
+	  ---Purpose: Reads the Curve from the stream.
+
+
+    Dump(C : Curve from Geom2d; OS : in out OStream);
+	  ---Purpose: Dumps the Curve on the stream.
+
+    Write(C : Curve from Geom2d; OS : in out OStream);
+	  ---Purpose: Writes the Curve on the stream.
+
+    Read(C : in out Curve from Geom2d; IS : in out IStream); 
+	  ---Purpose: Reads the Curve from the stream.
+	  
+    SetUndefinedTypeHandler(aHandler: UndefinedTypeHandler from GeomTools);
+    
+    GetUndefinedTypeHandler returns UndefinedTypeHandler from GeomTools;
+
+end GeomTools;
+
+

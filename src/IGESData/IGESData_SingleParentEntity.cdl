@@ -1,0 +1,31 @@
+-- File:	SingleParentEntity.cdl
+-- Created:	Wed Oct 21 18:19:01 1992
+-- Author:	Christian CAILLET
+--		<cky@topsn2>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class SingleParentEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : a SingleParentEntity is a kind of IGESEntity which can refer
+    --           to a (Single) Parent, from Associativities list of an Entity
+    --           a effective SingleParent definition entity must inherit it
+
+uses Integer
+
+raises OutOfRange
+
+is
+
+    SingleParent (me) returns IGESEntity  is deferred;
+    ---Purpose : Returns the parent designated by the Entity, if only one !
+
+    NbChildren (me) returns Integer  is deferred;
+    ---Purpose : Returns the count of Entities designated as children
+
+    Child (me; num : Integer) returns IGESEntity
+    ---Purpose : Returns a Child given its rank
+    	raises OutOfRange  is deferred;
+    --           Error if <num> is below one or over <NbChildren>
+
+end SingleParentEntity;

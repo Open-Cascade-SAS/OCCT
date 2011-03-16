@@ -1,0 +1,82 @@
+-- File:	IFSelect_SelectSuite.cdl
+-- Created:	Mon Oct 19 16:15:23 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SelectSuite  from IFSelect    inherits SelectDeduct  from IFSelect
+
+    ---Purpose : A SelectSuite can describe a suite of SelectDeduct as a unique
+    --           one : in other words, it can be seen as a "macro selection"
+    --           
+    --           It works by applying each of its items (which is a
+    --           SelectDeduct) on the result computed by the previous one
+    --           (by using Alternate Input)
+    --           
+    --           But each of these Selections used as items may be used
+    --           independently, it will then give its own result
+    --           
+    --           Hence, SelectSuite gives a way of defining a new Selection
+    --           from existing ones, without having to do copies or saves
+
+uses CString, AsciiString from TCollection,
+     SequenceOfTransient from TColStd,
+     Graph from Interface, EntityIterator from Interface,
+     Selection from IFSelect
+
+raises InterfaceError
+
+is
+
+    Create returns SelectSuite;
+    ---Purpose : Creates an empty SelectSuite
+
+    AddInput (me : mutable; item : Selection) returns Boolean;
+    ---Purpose : Adds an input selection. I.E. :
+    --           If <item> is a SelectDeduct, adds it as Previous, not as Input
+    --           Else, sets it as Input
+    --           Returns True when done
+    --           Returns False and refuses to work if Input is already defined
+
+    AddPrevious (me : mutable; item : SelectDeduct);
+    ---Purpose : Adds a new first item (prepends to the list). The Input is not
+    --           touched
+    --           If <item> is null, does nothing
+
+    AddNext     (me : mutable; item : SelectDeduct);
+    ---Purpose : Adds a new last item (prepends to the list)
+    --           If <item> is null, does nothing
+
+    NbItems (me) returns Integer;
+    ---Purpose : Returns the count of Items
+
+    Item    (me; num : Integer) returns SelectDeduct;
+    ---Purpose : Returns an item from its rank in the list
+    --           (the Input is always apart)
+
+    SetLabel (me : mutable; lab : CString);
+    ---Purpose : Sets a value for the Label
+
+    	--  Definitions for Selecting
+
+    RootResult (me; G : Graph) returns EntityIterator
+        raises InterfaceError;
+    ---Purpose : Returns the list of selected entities
+    --           To do this, once InputResult has been taken (if Input or
+    --           Alternate has been defined, else the first Item gives it) :
+    --           this result is set as alternate input for the first item,
+    --           which computes its result : this result is set as alternate
+    --           input for the second item, etc...
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns the Label
+    --           Either it has been defined by SetLabel, or it will give
+    --           "Suite of nn Selections"
+
+fields
+
+    thelab : AsciiString;
+    thesel : SequenceOfTransient;
+
+end SelectSuite;

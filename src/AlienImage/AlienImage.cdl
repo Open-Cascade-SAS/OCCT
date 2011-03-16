@@ -1,0 +1,133 @@
+-- File:        AlienImage.cdl
+-- Created:     Tue Jul 27 18:51:28 1993
+-- Author:      Jean Louis FRENKEL
+--              <jlf@sparc3>
+---Copyright:    Matra Datavision 1993
+
+package AlienImage
+
+        ---Purpose: This package allows importation of images 
+        --          from some other format into CAS.CADE format.
+
+uses
+    Image,
+    TColStd,
+    TCollection,
+    Aspect,
+    OSD,
+    MMgt
+
+is
+
+        ------------------------
+        ---Category: The classes
+        ------------------------
+
+        deferred class AlienImage;
+        ---Purpose: Define the general methods on AlienImage
+
+        deferred class AlienImageData  ;
+        ---Purpose: Internal Definition of  AlienImage.
+
+        deferred class AlienUserImage  ;
+        ---Purpose: Public Definition of  AlienImage.
+    
+--      class PSAlienImage;
+        ---Purpose: Definition of PostScript AlienImage.
+
+        class SunRFAlienData;
+        ---Purpose: Private definition of Sun Raster File .rs AlienImage.
+
+        class SunRFAlienImage;
+        ---Purpose: Public definition of Sun Raster File .rs AlienImage.
+
+        class EuclidAlienData;
+        ---Purpose: Private definition of Euclid .pix AlienImage.
+
+        class EuclidAlienImage;
+        ---Purpose: Public definition of Euclid .pix AlienImage.
+
+        class SGIRGBAlienData;
+        ---Purpose: Private definition of SGI .rgb AlienImage.
+
+        class SGIRGBAlienImage;
+        ---Purpose: Public definition of SGI .rgb AlienImage.
+
+        class X11XWDAlienData;
+        ---Purpose: Private definition X11 .xwd AlienImage .
+        
+        class XAlienImage;
+        ---Purpose: Public definition X11 .xwd AlienImage.
+       
+        class AidaAlienData;
+        ---Purpose: Private definition of Aida .i AlienImage .
+        
+        class AidaAlienImage;
+        ---Purpose: Public definition of Aida .i AlienImage.
+       
+        class MemoryOperations;
+        ---Purpose: A set of function to swap byte in memory, used for
+        --          comaptibility between LSBFirst and MSBFirst .
+
+
+
+
+        private class BMPAlienData;
+        ---Purpose: Private definition of windows .bmp AlienImage.
+
+        private class GIFAlienData;
+        ---Purpose: Private definition of windows .gif AlienImage.
+
+        class BMPAlienImage;
+        ---Purpose: Public definition of windows .bmp AlienImage.
+
+        class GIFAlienImage;
+        ---Purpose: Public definition of windows .gif AlienImage.
+
+
+
+
+        ---Category: Imported types:
+        imported GIFLZWDict;
+        imported BMPHeader;
+        
+        imported X11XColor ;
+        imported X11XWDFileHeader ;
+        imported SGIRGBFileHeader ;
+        imported SUNRFFileHeader ;
+
+        enumeration SUNRFFormat is      SUNRF_Old,
+                                        SUNRF_Standard,
+                                        SUNRF_ByteEncoded,
+                                        SUNRF_RGB,
+                                        SUNRF_Unknown
+        end SUNRFFormat ;
+---Purpose: Type of code for a SUNRF image.
+    
+        ----------------------------
+        ---Category: Package methods
+        ----------------------------
+        CreateImage (theFileName :     AsciiString from TCollection;
+                     theImage    : out Image from Image)
+        returns Boolean from Standard;
+        ---Purpose:
+
+        CreateImage (theFileName :     CString from Standard;
+                     theImage    : out Image from Image)
+        returns Boolean from Standard;
+        ---Purpose:
+
+        CreateImage (theFile  : in out File from OSD;
+                     theImage :    out Image from Image)
+        returns Boolean from Standard;
+        ---Purpose:
+
+        LoadImageFile (anImageFile :     CString     from Standard;
+                       anImage     : out Image       from Image;
+                       aWidth      : out Integer     from Standard;
+                       aHeight     : out Integer     from Standard
+        ) returns Boolean from Standard;
+        ---Purpose: Used by plotter drivers
+
+end AlienImage;
+ 

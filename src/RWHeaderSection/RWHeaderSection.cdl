@@ -1,0 +1,31 @@
+-- File:        HeaderSection.cdl
+-- Created:     Thu Jun 16 18:05:55 1994
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+package RWHeaderSection 
+
+uses
+
+	StepData, Interface, TCollection, TColStd, HeaderSection
+
+is
+
+
+class ReadWriteModule;
+
+class GeneralModule;
+
+class RWFileName;
+class RWFileDescription;
+class RWFileSchema;
+
+	---Package Method ---
+
+	Init;
+	---Purpose: enforced the initialisation of the  libraries
+
+end RWHeaderSection;

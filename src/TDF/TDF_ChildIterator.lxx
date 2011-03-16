@@ -1,0 +1,16 @@
+// File:	TDF_ChildIterator.lxx
+//      	----------------------
+// Author:	DAUTRY Philippe
+//		<fid@fox.paris1.matra-dtv.fr>
+// Copyright:	Matra Datavision 1997
+
+// Version:	0.0
+// History:	Version	Date		Purpose
+//		0.0	Feb  7 1997	Creation
+
+inline  Standard_Boolean TDF_ChildIterator::More() const
+{ return (myNode != NULL); }
+
+inline const TDF_Label TDF_ChildIterator::Value() const
+{ return TDF_Label(myNode); }
+

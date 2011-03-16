@@ -1,0 +1,65 @@
+inline Handle(Standard_Transient) AIS2D_LocalStatus::PreviousState() const {
+     return myPrevState;     
+}
+
+inline Standard_Boolean AIS2D_LocalStatus::Decomposed() const {
+	   return myDecomposition;
+}
+
+inline Standard_Boolean AIS2D_LocalStatus::IsTemporary() const {
+       return myIsTemporary;
+}
+
+inline Standard_Integer AIS2D_LocalStatus::DisplayMode() const {
+       return myDMode; 
+}
+
+inline AIS2D_PToListOfInt AIS2D_LocalStatus::SelectionModes() {
+	
+	 return &mySModes;
+}
+
+inline AIS2D_TypeOfDetection AIS2D_LocalStatus::HighlightMode() const {
+    return myHMode;
+}
+
+inline Standard_Boolean AIS2D_LocalStatus::IsSubIntensityOn() const {
+	return mySubIntensity;
+}
+
+inline Standard_Boolean AIS2D_LocalStatus::IsFirstDisplay() const {
+	return myFirstDisplay;
+}
+
+inline Quantity_NameOfColor AIS2D_LocalStatus::HighlightColor() const {
+	return myHighlCol;
+}
+
+inline void AIS2D_LocalStatus::SubIntensityOn() {
+  mySubIntensity = Standard_True;
+}
+
+inline void AIS2D_LocalStatus::SetDecomposition(const Standard_Boolean aStatus) {
+    myDecomposition = aStatus;
+}
+
+inline void AIS2D_LocalStatus::SetTemporary(const Standard_Boolean aStatus) {
+    myIsTemporary = aStatus;
+}
+
+inline void AIS2D_LocalStatus::SetDisplayMode(const Standard_Integer aMode) {
+    myDMode = aMode;
+}
+
+inline void AIS2D_LocalStatus::SetFirstDisplay(const Standard_Boolean aStatus) {
+	myFirstDisplay = aStatus;
+}
+
+inline void AIS2D_LocalStatus::SetHighlightMode(const AIS2D_TypeOfDetection aMode) {
+    myHMode = aMode;
+}
+
+inline void AIS2D_LocalStatus::SetHighlightColor(const Quantity_NameOfColor aHiCol) {
+	myHighlCol = aHiCol;
+}
+

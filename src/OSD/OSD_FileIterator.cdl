@@ -1,0 +1,88 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:    OSD_FileIterator.cdl
+-- Created: Mar 18, 1992
+-- Author:  Stephan GARNAUD
+--          <sga@sparc4>
+
+
+class FileIterator from OSD  
+
+ ---Purpose: Manages a breadth-only search for files in the specified
+ --          Path.
+ --          There is no specific order of results.
+
+uses File, Path, Error, AsciiString from TCollection
+raises OSDError
+
+
+is
+
+ Create returns FileIterator ;
+    ---WARNING : This method is not implemented on Windows NT System
+    ---Purpose: Instantiates Object as empty Iterator;
+    ---Level: Public
+
+ Create (where : Path ; Mask : AsciiString) returns FileIterator;
+    ---Purpose: Instantiates Object as Iterator;
+    --          Wild-card "*" can be used in Mask the same way it
+    --          is used by unix shell for file names
+    ---Level: Public
+
+ Destroy ( me : out );
+	---C++: alias ~
+        -- Only implemented on Windows NT
+
+ Initialize (me : in out ; where : Path ; Mask : AsciiString) is static;
+    ---WARNING : This method is not implemented on Windows NT System
+    ---Purpose: Initializes the current File Iterator
+    ---Level: Public
+
+ More (me : in out) returns Boolean is static;
+    ---Purpose: Returns TRUE if there are other items using the 'Tree'
+    --          method.
+    ---Level: Public
+
+ Next (me : in out)  is static;
+    ---Purpose: Sets the iterator to the next item.
+    --          Returns the item value corresponding to the current
+    --          position of the iterator.
+    ---Level: Public
+
+ Values (me : in out) returns File is static;
+    ---Purpose: Returns the next file found .
+    ---Level: Public
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+   ---Level: Public
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+   ---Level: Public
+      
+      
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error
+   ---Level: Public
+   raises OSDError is static;
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns error number if 'Failed' is TRUE.
+   ---Level: Public
+
+ fields
+      TheIterator  : File;     -- The iterator item
+      myFlag       : Integer; 
+      myMask       : AsciiString;
+      myPlace      : AsciiString;
+      myDescr      : Address ;      -- unused by Windows NT code
+      myEntry      : Address ;      -- unused by Windows NT code
+      myInit       : Integer ;      -- unused by Windows NT code
+      myError      : Error;
+      myHandle     : Integer;   -- Windows NT specific
+      myData       : Address;   -- Windows NT specific
+      myFirstCall  : Boolean;   -- Windows NT specific
+end FileIterator from OSD;
+

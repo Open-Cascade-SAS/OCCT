@@ -1,0 +1,10 @@
+// File:	Adaptor3d_GenHSurface.lxx
+// Created:	Tue May  9 16:09:21 1995
+// Author:	Xavier BENVENISTE
+//		<xab@nonox>
+
+
+inline TheSurface& Adaptor3d_GenHSurface::ChangeSurface()
+{
+  return mySurf;
+}

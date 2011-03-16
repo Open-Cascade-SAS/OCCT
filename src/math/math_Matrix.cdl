@@ -1,0 +1,563 @@
+-- File:	Matrix.cdl
+-- Created:	Tue May  7 13:53:36 1991
+-- Author:	Laurent PAINNOT
+--		<lpa@topsn3>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+
+class Matrix from math
+
+    ---Purpose: This class implements the real matrix abstract data type.
+    --          Matrixes can have an arbitrary range which must be defined
+    --          at the declaration and cannot be changed after this declaration
+    --          math_Matrix(-3,5,2,4); //a vector with range [-3..5, 2..4]
+    --          Matrix values may be initialized and
+    --          retrieved using indexes which must lie within the range
+    --          of definition of the matrix.
+    --          Matrix objects follow "value semantics", that is, they
+    --          cannot be shared and are copied through assignment 
+    --          Matrices are copied through assignement:
+    --          math_Matrix M2(1, 9, 1, 3);
+    --          ...
+    --          M2 = M1;
+    --          M1(1) = 2.0;//the matrix M2 will not be modified.
+    --          
+    --          The exception RangeError is raised when trying to access 
+    --          outside the range of a matrix :
+    --          M1(11, 1)=0.0// --> will raise RangeError.
+    --          
+    --          The exception DimensionError is raised when the dimensions of 
+    --          two matrices or vectors are not compatible.
+    --          math_Matrix M3(1, 2, 1, 2);
+    --          M3 = M1;   // will raise DimensionError
+    --          M1.Add(M3) // --> will raise DimensionError.
+    --          A Matrix can be constructed with a a pointer to "c array". 
+    --          It allows to carry the bounds inside the matrix.
+    -- Exemple :
+    -- 	    Standard_Real tab1[10][20];
+    -- 	    Standard_Real tab2[200];
+    -- 	    
+    --      math_Matrix A (tab1[0][0], 1, 10, 1, 20);
+    --      math_Matrix B (tab2[0],    1, 10, 1, 20);
+
+
+uses Vector from math,
+     DoubleTabOfReal from math,
+     OStream from Standard
+
+raises DimensionError from Standard, RangeError from Standard, 
+       DivideByZero from Standard, NotSquare from math,
+       SingularMatrix from math
+
+is
+
+    Create(LowerRow, UpperRow, LowerCol, UpperCol: Integer)
+    	---Purpose: Constructs a non-initialized  matrix of range [LowerRow..UpperRow,
+    	--                                        LowerCol..UpperCol]
+-- For the constructed matrix:
+-- -   LowerRow and UpperRow are the indexes of the
+--   lower and upper bounds of a row, and
+-- -   LowerCol and UpperCol are the indexes of the
+--   lower and upper bounds of a column.
+    returns Matrix
+    raises RangeError;
+
+    Create(LowerRow, UpperRow, LowerCol, UpperCol: Integer;
+    	   InitialValue : Real)
+    	---Purpose: constructs a non-initialized matrix of range [LowerRow..UpperRow,
+    	--                                        LowerCol..UpperCol]
+    	--       whose values are all initialized with the value InitialValue.
+    returns Matrix
+    raises RangeError;
+
+
+    Create(Tab : Address;
+    	   LowerRow, UpperRow, LowerCol, UpperCol: Integer)
+    	---Purpose: constructs a matrix of range [LowerRow..UpperRow,
+    	--                                        LowerCol..UpperCol]
+    	-- Sharing data with a "C array" pointed by Tab.
+
+    returns Matrix
+    raises RangeError;
+
+    
+    
+    Create(Other: Matrix)
+    	---Purpose: constructs a matrix for copy in initialization.
+    	-- An exception is raised if the matrixes have not the same dimensions.
+
+    returns Matrix
+    raises DimensionError;
+    --JR/Hp is private;
+
+
+    SetLowerRow(me: in out; LowerRow: Integer)
+    	---Purpose: The new lower row of the matrix is set to <LowerRow>
+
+    is static protected;
+
+    
+    SetLowerCol(me: in out; LowerCol: Integer)
+    	---Purpose: The new lower column of the matrix is set to the column 
+    	--          of range <LowerCol>.
+    
+    is static protected;
+    
+
+    SetLower(me: in out; LowerRow, LowerCol: Integer)
+    	---Purpose: The new lower row of the matrix is set to <LowerRow>
+    	---         and the new lower column of the matrix is set to the column
+    	--          of range <LowerCol>.
+    	---C++: inline
+    is static protected;
+
+    
+    Init(me : in out; InitialValue: Real)
+	   ---Purpose:Initialize all the elements of a matrix to InitialValue.
+    is static;
+    
+    RowNumber(me)
+    	---Purpose: Returns the number of rows  of this matrix.
+    	-- Note that for a matrix A you always have the following relations:
+    	-- - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
+    	-- - A.ColNumber() = A.UpperCol() -   A.LowerCol() + 1
+    	-- - the length of a row of A is equal to the number of columns of A,
+    	-- - the length of a column of A is equal to the number of
+    	--   rows of A.returns the row range of a matrix.
+    	---C++: inline
+
+    returns Integer
+    is static;
+
+    
+    ColNumber(me)
+    	---Purpose: Returns the number of rows  of this matrix.
+    	-- Note that for a matrix A you always have the following relations:
+    	-- - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
+    	-- - A.ColNumber() = A.UpperCol() -   A.LowerCol() + 1
+    	-- - the length of a row of A is equal to the number of columns of A,
+    	-- - the length of a column of A is equal to the number of
+    	--   rows of A.returns the row range of a matrix.
+     	---C++: inline
+
+    returns Integer
+    is static;
+    
+
+    LowerRow(me)
+    	---Purpose: Returns the value of the Lower index of the row
+    	--          range of a matrix.
+    	---C++: inline
+    
+    returns Integer
+    is static;
+    
+    
+    UpperRow(me)
+    	---Purpose: Returns the Upper index of the row range 
+    	--          of a matrix.
+    	---C++: inline
+
+    returns Integer
+    is static;
+    
+    
+    LowerCol(me)
+    	---Purpose: Returns the value of the Lower index of the 
+    	--          column range of a matrix.
+    	---C++: inline
+    
+    returns Integer
+    is static;
+    
+    
+    UpperCol(me)
+    	---Purpose: Returns the value of the upper index of the
+    	--          column range of a matrix.
+    	---C++: inline
+    
+    returns Integer
+    is static;
+    
+    
+    Determinant(me)
+    	---Purpose: Computes the determinant of a matrix.
+    	-- An exception is raised if the matrix is not a square matrix.
+    
+    returns Real
+    raises NotSquare
+    is static;
+    
+    Transpose(me: in out)
+    	---Purpose: Transposes a given matrix.
+    	-- An exception is raised if the matrix is not a square matrix.
+
+    raises NotSquare from math
+    is static;
+    
+    
+    Invert(me: in out)
+    	---Purpose: Inverts a matrix using Gauss algorithm.
+    	-- Exception NotSquare is raised if the matrix is not square.
+    	-- Exception SingularMatrix is raised if the matrix is singular.
+
+    raises NotSquare from math,
+    	   SingularMatrix from math
+    is static;
+    
+    
+    Multiply(me: in out; Right: Real)
+    	---Purpose: Sets this matrix to the product of the matrix Left, and the matrix Right.
+    	-- Example
+    	-- math_Matrix A (1, 3, 1, 3);
+    	-- math_Matrix B (1, 3, 1, 3);
+    	-- // A = ... , B = ...
+    	-- math_Matrix C (1, 3, 1, 3);
+    	-- C.Multiply(A, B);
+    	-- Exceptions
+    	-- Standard_DimensionError if matrices are of incompatible dimensions, i.e. if:
+    	-- -   the number of columns of matrix Left, or the number of
+    	--   rows of matrix TLeft is not equal to the number of rows
+    	--   of matrix Right, or
+    	-- -   the number of rows of matrix Left, or the number of
+    	--   columns of matrix TLeft is not equal to the number of
+    	--   rows of this matrix, or
+    	-- -   the number of columns of matrix Right is not equal to
+    	--   the number of columns of this matrix.
+        ---C++: alias   operator*=
+
+    is static;
+
+    Multiplied(me; Right: Real)
+    	---Purpose: multiplies all the elements of a matrix by the 
+    	--          value <Right>.
+        ---C++: alias operator*
+    
+    returns Matrix
+    is static;
+
+
+    TMultiplied(me; Right: Real)
+    	---Purpose: Sets this matrix to the product of the 
+        -- transposed matrix TLeft, and the matrix Right.
+    	-- Example
+    	-- math_Matrix A (1, 3, 1, 3);
+    	-- math_Matrix B (1, 3, 1, 3);
+    	-- // A = ... , B = ...
+    	-- math_Matrix C (1, 3, 1, 3);
+    	-- C.Multiply(A, B);
+    	-- Exceptions
+    	-- Standard_DimensionError if matrices are of incompatible dimensions, i.e. if:
+    	-- -   the number of columns of matrix Left, or the number of
+    	--   rows of matrix TLeft is not equal to the number of rows
+    	--   of matrix Right, or
+    	-- -   the number of rows of matrix Left, or the number of
+    	--   columns of matrix TLeft is not equal to the number of
+    	--   rows of this matrix, or
+    	-- -   the number of columns of matrix Right is not equal to
+    	--   the number of columns of this matrix.
+    	---C++: alias "friend math_Matrix  operator *(const Standard_Real Left,const math_Matrix& Right);"
+    returns Matrix
+    is static;
+
+    
+
+    Divide(me: in out; Right: Real)
+    	---Purpose: divides all the elements of a matrix by the value <Right>.
+    	--          An exception is raised if <Right> = 0.
+        ---C++: alias operator/=
+
+    raises DivideByZero
+    is static;
+
+
+    Divided(me; Right: Real)
+    	---Purpose: divides all the elements of a matrix by the value <Right>.
+    	--          An exception is raised if <Right> = 0.
+        ---C++: alias operator/
+
+    returns Matrix
+    raises DivideByZero
+    is static;
+    
+    
+    
+    Add(me: in out; Right: Matrix)
+    	---Purpose: adds the matrix <Right> to a matrix.
+    	-- An exception is raised if the dimensions are different.
+    	-- 	Warning
+    	-- In order to save time when copying matrices, it is
+    	-- preferable to use operator += or the function Add
+    	-- whenever possible.
+        ---C++: alias  operator+=
+    raises DimensionError
+    is static;
+
+
+    Added(me; Right: Matrix)
+    	---Purpose: adds the matrix <Right> to a matrix.
+    	-- An exception is raised if the dimensions are different.
+    	---C++: alias  operator+ 
+    returns Matrix
+    raises DimensionError
+    is static;
+
+
+
+    Add(me: in out; Left, Right: Matrix)
+    	---Purpose: sets a  matrix to the addition of <Left> and <Right>.
+    	-- An exception is raised if the dimensions are different.
+    
+    raises DimensionError
+    is static;
+    
+    
+    
+    Subtract(me: in out; Right: Matrix)
+    	---Purpose: Subtracts the matrix <Right> from <me>.
+    	--          An exception is raised if the dimensions are different.
+    	--    	Warning
+    	-- In order to avoid time-consuming copying of matrices, it
+    	-- is preferable to use operator -= or the function
+    	-- Subtract whenever possible.
+      	---C++: alias operator-=
+  raises DimensionError
+    is static;
+
+    
+    Subtracted(me; Right: Matrix)
+    	---Purpose: Returns the result of the subtraction of <Right> from <me>.
+    	--          An exception is raised if the dimensions are different.
+    	---C++: alias operator-
+
+    returns Matrix
+    raises DimensionError
+    is static;
+    
+	
+    Set(me: in out; I1, I2, J1, J2: Integer; M: Matrix)
+    	---Purpose: Sets the values of this matrix,
+    	-- -   from index I1 to index I2 on the row dimension, and
+    	-- -   from index J1 to index J2 on the column dimension,
+    	--   to those of matrix M.
+    	-- Exceptions
+    	-- Standard_DimensionError if:
+    	-- -   I1 is less than the index of the lower row bound of this matrix, or
+    	-- -   I2 is greater than the index of the upper row bound of this matrix, or
+    	-- -   J1 is less than the index of the lower column bound of this matrix, or
+    	-- -   J2 is greater than the index of the upper column bound of this matrix, or
+    	-- -   I2 - I1 + 1 is not equal to the number of rows of matrix M, or
+    	-- -   J2 - J1 + 1 is not equal to the number of columns of matrix M.
+    
+    raises DimensionError
+    is static;
+    
+    
+    SetRow(me: in out; Row: Integer; V: Vector)
+    	---Purpose: Sets the row of index Row of a matrix to the vector <V>.
+    	--          An exception is raised if the dimensions are different.
+    	--          An exception is raises if <Row> is inferior to the lower
+    	--          row of the matrix or <Row> is superior to the upper row.
+    
+    raises RangeError, DimensionError
+    is static;
+    
+    SetCol(me: in out; Col: Integer; V: Vector)
+    	---Purpose: Sets the column of index Col of a matrix to the vector <V>.
+    	--          An exception is raised if the dimensions are different.
+    	--          An exception is raises if <Col> is inferior to the lower
+    	--          column of the matrix or <Col> is superior to the upper
+    	--          column.
+    
+    raises RangeError, DimensionError
+    is static;
+    
+    SetDiag(me: in out; Value: Real)
+    	---Purpose: Sets the diagonal of a matrix to the value <Value>.
+    	-- An exception is raised if the matrix is not square.
+
+    raises NotSquare    
+    is static;
+    
+    Row(me; Row: Integer)
+    	---Purpose: Returns the row of index Row of a matrix.
+    
+    returns Vector
+    is static;
+    
+    Col(me; Col: Integer)
+    	---Purpose: Returns the column of index <Col> of a matrix.
+    
+    returns Vector
+    is static;
+    
+    
+    SwapRow(me: in out; Row1, Row2: Integer)
+    	---Purpose: Swaps the rows of index Row1 and Row2.    
+    	-- An exception is raised if <Row1> or <Row2> is out of range.
+
+    raises RangeError    
+    is static;
+    
+    
+    SwapCol(me: in out; Col1, Col2: Integer)
+    	---Purpose: Swaps the columns of index <Col1> and <Col2>.
+    	-- An exception is raised if <Col1> or <Col2> is out of range.
+
+    raises RangeError    
+    is static;
+    
+    
+    Transposed(me)
+    	---Purpose: Teturns the transposed of a matrix.
+       	-- An exception is raised if the matrix is not a square matrix.
+
+    returns Matrix
+    raises NotSquare
+    is static;
+    
+    
+    Inverse(me)
+    	---Purpose: Returns the inverse of a matrix.
+    	-- Exception NotSquare is raised if the matrix is not square.
+    	-- Exception SingularMatrix is raised if the matrix is singular.
+    
+    returns Matrix
+    raises NotSquare, SingularMatrix
+    is static;
+    
+    
+    TMultiply(me; Right: Matrix)
+    	---Purpose: Returns the product of the transpose of a matrix with
+    	-- the matrix <Right>.
+        -- An exception is raised if the dimensions are different.
+    
+    returns Matrix
+    raises DimensionError
+    is static;
+    
+    
+    Multiply(me: in out; Left, Right: Vector)
+    	---Purpose: Computes a matrix as the product of 2 vectors.
+        -- An exception is raised if the dimensions are different.
+        -- <me> = <Left> * <Right>.
+    
+    raises DimensionError
+    is static;
+    
+
+    Multiply(me: in out; Left, Right: Matrix)
+    	---Purpose: Computes a matrix as the product of 2 matrixes.
+        -- An exception is raised if the dimensions are different.
+    
+    raises DimensionError
+    is static;
+    
+
+    TMultiply(me: in out; TLeft, Right: Matrix)
+    	---Purpose: Computes a matrix to the product of the transpose of 
+    	--          the matrix <TLeft> with the matrix <Right>.
+        -- An exception is raised if the dimensions are different.
+    
+    raises DimensionError
+    is static;
+    
+
+    Subtract(me: in out; Left, Right: Matrix)
+    	---Purpose: Sets a matrix to the Subtraction of the matrix <Right>
+    	--           from the matrix <Left>.
+        -- An exception is raised if the dimensions are different.
+
+    raises DimensionError
+    is static;
+
+    
+    Value(me; Row, Col: Integer)
+    	---Purpose: Accesses (in read or write mode) the value of index <Row>
+    	--          and <Col> of a matrix.
+    	--          An exception is raised if <Row> and <Col> are not
+    	--          in the correct range.
+    	---C++: alias operator() 
+    	---C++: return & 
+    	---C++: inline
+
+    returns Real
+    raises RangeError
+    is static;
+
+	
+    Initialized(me: in out; Other: Matrix)
+    	---Purpose: Matrixes are copied through assignement.
+    	--          An exception is raised if the dimensions are differents.
+    	---C++: alias operator= 
+    	---C++: return & 
+
+    returns Matrix
+    raises DimensionError
+    is static;
+    
+
+    Multiply(me: in out; Right: Matrix)
+    	---Purpose: Returns the product of 2 matrices.
+    	--          An exception is raised if the dimensions are different.
+    	---C++: alias operator*= 
+
+    raises DimensionError
+    is static;
+
+
+    Multiplied(me; Right: Matrix)
+    	---Purpose: Returns the product of 2 matrices.
+    	--          An exception is raised if the dimensions are different.
+    	---C++: alias operator*
+
+    returns Matrix
+    raises DimensionError
+    is static;
+
+
+
+
+    Multiplied(me; Right: Vector)
+    	---Purpose: Returns the product of a matrix by a vector.
+    	--          An exception is raised if the dimensions are different.
+    	---C++: alias operator*
+
+    returns Vector
+    raises DimensionError
+    is static;
+
+
+    Opposite(me : in out)
+    	---Purpose: Returns the opposite of a matrix.
+    	--          An exception is raised if the dimensions are different.
+    	---C++: alias operator- 
+
+    returns Matrix
+    raises DimensionError from Standard
+    is static;
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+
+	
+fields
+
+LowerRowIndex:      Integer;
+UpperRowIndex:      Integer;
+LowerColIndex:      Integer;
+UpperColIndex:      Integer;
+Array:              DoubleTabOfReal;
+
+friends
+class Vector from math
+
+end Matrix;    
+

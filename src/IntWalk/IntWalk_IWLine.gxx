@@ -1,0 +1,20 @@
+#include <IntSurf_Couple.hxx>
+
+IntWalk_IWLine::IntWalk_IWLine()
+{
+  line = new IntSurf_LineOn2S ();
+  closed=hasFirst=hasLast=istgtbeg=istgtend=Standard_False;
+  indextg=-1;
+}
+
+void IntWalk_IWLine::Reverse()
+{
+  line->Reverse();
+  Standard_Integer N = line->NbPoints();
+  Standard_Integer NbCouple = couple.Length();
+  for (Standard_Integer i = 1; i <= NbCouple; i++) {
+    couple(i) = IntSurf_Couple(N - couple(i).First() + 1,
+			       couple(i).Second());
+  }
+}
+    

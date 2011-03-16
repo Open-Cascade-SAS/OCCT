@@ -1,0 +1,28 @@
+-- File:	math_ValueAndWeight.cdl
+-- Created:	Tue Dec 20 12:44:31 2005
+-- Author:	Julia GERASIMOVA
+--		<jgv@clubox>
+---Copyright:	 Matra Datavision 2005
+
+class ValueAndWeight from math
+
+is  
+    Create
+    returns ValueAndWeight; 
+
+    Create(Value  : Real from Standard; 
+    	   Weight : Real from Standard) 
+    returns ValueAndWeight; 
+     
+    Value(me) 
+    returns Real from Standard; 
+     
+    Weight(me) 
+    returns Real from Standard; 
+     
+fields 
+ 
+    myValue  : Real from Standard; 
+    myWeight : Real from Standard;
+
+end ValueAndWeight;

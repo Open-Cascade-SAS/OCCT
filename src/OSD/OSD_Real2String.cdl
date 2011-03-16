@@ -1,0 +1,41 @@
+-- File:	OSD_Real2String.cdl
+-- Created:	Fri Jan 25 12:55:44 2002
+-- Author:	doneux <doneux@samcef.com>
+
+
+-- sccsid[] = "@(#) OSD_Real2String.cdl    %V%-1, 06/17/02@(#)";
+
+class Real2String from OSD 
+
+	---Purpose:  Convertion of CString to Real and reciprocally
+
+is 
+
+    Create
+    	returns Real2String from OSD;
+ 
+    RealToCString(me;
+    	    	  aReal: Real;
+    	    	  aString:out PCharacter) 
+     returns Boolean ;
+    ---Purpose:
+    --  Converts aReal into aCstring in exponential format with maximum
+    --  17 digits. The size of the destination string must be sufficient (at least 23 characters)
+    --  The decimal separator account for locale setting, but 
+    --  neither thousand separator nor grouping of digits in the output string.
+    --  
+
+    CStringToReal(me: in out;
+    	          aString: CString; 
+    	    	  aReal: out Real) returns Boolean ;
+    ---Purpose:
+    --  Converts aCstring representing a real. The first occurence of the decimal separator
+    --  (comma or period) defines it values for further readings.
+   --  Neither thousand separator nor grouping of digits are allowed in the CString
+
+fields
+
+    myReadDecimalPoint: Integer from Standard;
+    myLocalDecimalPoint: Integer from Standard;
+
+end Real2String;

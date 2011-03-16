@@ -1,0 +1,145 @@
+-- File:	Transition.cdl
+-- Created:	Wed May  6 14:09:43 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Transition from IntSurf
+
+	---Purpose: Definition of the transition at the intersection
+	--          between an intersection line and a restriction curve
+	--          on a surface.
+
+uses TypeTrans from IntSurf,
+     Situation from IntSurf
+
+raises DomainError from Standard
+
+is
+
+    Create
+    
+	---Purpose: Empty constructor. Creates an UNDECIDED transition.
+    
+    	returns Transition from IntSurf;
+
+
+    Create(Tangent: Boolean from Standard; Type: TypeTrans from IntSurf)
+    
+	---Purpose: Create a IN or OUT transition
+
+       	returns Transition from IntSurf;
+
+
+    Create(Tangent: Boolean from Standard;
+           Situ: Situation from IntSurf; Oppos: Boolean from Standard)
+    
+	---Purpose: Create a TOUCH transition.
+    
+    	returns Transition from IntSurf;
+
+
+    SetValue(me: in out; Tangent: Boolean from Standard;
+             Type: TypeTrans from IntSurf)
+
+	---Purpose: Set the values of an IN or OUT transition.
+    	 
+	---C++: inline
+
+    	is static;
+
+
+    SetValue(me: in out; Tangent: Boolean from Standard;
+             Situ: Situation from IntSurf; Oppos: Boolean from Standard)
+
+	---Purpose: Set the values of a TOUCH transition.
+    
+	---C++: inline
+
+    	is static;
+
+
+    SetValue(me: in out)
+
+	---Purpose: Set the values of an UNDECIDED transition.
+
+	---C++: inline
+
+    	is static;
+
+
+    TransitionType(me)
+
+    	---Purpose: Returns the type of Transition (in/out/touch/undecided)
+    	--          for the arc given by value. This the transition of
+    	--          the intersection line compared to the Arc of restriction,
+    	--          i-e when the function returns INSIDE for example, it
+    	--          means that the intersection line goes inside the 
+    	--          part of plane limited by the arc of restriction.
+
+    	returns TypeTrans from IntSurf
+	---C++: inline
+
+    	is static;
+
+
+    IsTangent(me)
+    
+    	---Purpose: Returns TRUE if the point is tangent to the arc
+    	--          given by Value.
+    	--          An exception is raised if TransitionType returns UNDECIDED.
+
+    	returns Boolean from Standard
+	---C++: inline
+	
+	raises DomainError from Standard
+
+    	is static;
+
+
+    Situation(me)
+    
+	---Purpose: Returns a significant value if TransitionType returns
+	--          TOUCH. In this case, the function returns :
+	--          INSIDE when the intersection line remains inside the Arc,
+	--          OUTSIDE when it remains outside the Arc,
+	--          UNKNOWN when the calsulus cannot give results.
+	--          If TransitionType returns IN, or OUT, or UNDECIDED, a
+	--          exception is raised.
+
+    	returns Situation from IntSurf
+	---C++: inline
+	
+	raises DomainError from Standard
+	
+	is static;
+
+
+    IsOpposite(me)
+    
+    	---Purpose: returns a significant value if TransitionType returns
+    	--          TOUCH. 
+    	--          In this case, the function returns true when
+    	--          the 2 curves locally define two different parts of the
+    	--          space.
+    	--          If TransitionType returns IN or OUT or UNDECIDED, an
+    	--          exception is raised.
+
+    	returns Boolean from Standard
+	---C++: inline
+
+        raises DomainError from Standard
+	
+    	is static;
+
+
+fields
+
+    tangent : Boolean   from Standard;
+    typetra : TypeTrans from IntSurf;
+    situat  : Situation from IntSurf;
+    oppos   : Boolean   from Standard;
+
+end Transition;

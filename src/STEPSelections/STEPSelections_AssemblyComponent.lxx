@@ -1,0 +1,39 @@
+// File:	STEPSelections_AssemblyComponent.lxx
+// Created:	Wed Mar 24 15:52:38 1999
+// Author:	data exchange team
+//		<det@friendox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : GetSDR
+//purpose  : 
+//=======================================================================
+
+inline Handle(StepShape_ShapeDefinitionRepresentation) STEPSelections_AssemblyComponent::GetSDR() const
+{
+  return mySDR;
+}
+
+//=======================================================================
+//function : GetList
+//purpose  : 
+//=======================================================================
+
+inline Handle(STEPSelections_HSequenceOfAssemblyLink) STEPSelections_AssemblyComponent::GetList() const
+{
+  return myList;
+}
+
+//=======================================================================
+//function : SetSDR
+//purpose  : 
+//=======================================================================
+
+inline void STEPSelections_AssemblyComponent::SetSDR(const Handle(StepShape_ShapeDefinitionRepresentation)& sdr)
+{
+  mySDR = sdr;
+}
+
+inline void STEPSelections_AssemblyComponent::SetList(const Handle(STEPSelections_HSequenceOfAssemblyLink)& list)
+{
+  myList = list;
+}

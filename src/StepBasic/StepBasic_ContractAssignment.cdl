@@ -1,0 +1,30 @@
+-- File:	StepBasic_ContractAssignment.cdl
+-- Created:	Fri Nov 26 16:26:37 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class ContractAssignment from StepBasic
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ContractAssignment
+
+uses
+    Contract from StepBasic
+
+is
+    Create returns ContractAssignment from StepBasic;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aAssignedContract: Contract from StepBasic);
+	---Purpose: Initialize all fields (own and inherited)
+
+    AssignedContract (me) returns Contract from StepBasic;
+	---Purpose: Returns field AssignedContract
+    SetAssignedContract (me: mutable; AssignedContract: Contract from StepBasic);
+	---Purpose: Set field AssignedContract
+
+fields
+    theAssignedContract: Contract from StepBasic;
+
+end ContractAssignment;

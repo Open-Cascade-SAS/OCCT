@@ -1,0 +1,20 @@
+// File:	GeomToStep_MakeCircle.gxx
+// Created:	Wed Jun 23 12:27:20 1993
+// Author:	Martine LANGLOIS
+//		<mla@mastox>
+
+
+  Handle(StepGeom_Circle) CStep = new StepGeom_Circle;
+  StepGeom_Axis2Placement Ax2;
+  Handle(StepGeom_Axis2Placement3d) Ax2Step;
+  Standard_Real Rayon;
+  
+  GeomToStep_MakeAxis2Placement3d MkAxis2(C.Position());
+  Ax2Step = MkAxis2.Value();
+  Rayon = C.Radius();
+  Ax2.SetValue(Ax2Step);
+  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  CStep->Init(name, Ax2, Rayon / UnitsMethods::LengthFactor());
+  theCircle = CStep;
+  done = Standard_True;
+

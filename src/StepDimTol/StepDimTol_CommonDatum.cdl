@@ -1,0 +1,41 @@
+-- File:	StepDimTol_CommonDatum.cdl
+-- Created:	Wed Jun  4 11:17:02 2003 
+-- Author:	Galina KULIKOVA
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CommonDatum from StepDimTol
+inherits CompositeShapeAspect from StepRepr
+
+    ---Purpose: Representation of STEP entity CommonDatum
+
+uses
+    HAsciiString from TCollection,
+    ProductDefinitionShape from StepRepr,
+    Logical from StepData,
+    Datum from StepDimTol
+
+is
+    Create returns CommonDatum from StepDimTol;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aShapeAspect_Name: HAsciiString from TCollection;
+                       aShapeAspect_Description: HAsciiString from TCollection;
+                       aShapeAspect_OfShape: ProductDefinitionShape from StepRepr;
+                       aShapeAspect_ProductDefinitional: Logical from StepData;
+                       aDatum_Name: HAsciiString from TCollection;
+                       aDatum_Description: HAsciiString from TCollection;
+                       aDatum_OfShape: ProductDefinitionShape from StepRepr;
+                       aDatum_ProductDefinitional: Logical from StepData;
+                       aDatum_Identification: HAsciiString from TCollection);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Datum (me) returns Datum from StepDimTol;
+	---Purpose: Returns data for supertype Datum
+    SetDatum (me: mutable; Datum: Datum from StepDimTol);
+	---Purpose: Set data for supertype Datum
+
+fields
+    theDatum: Datum from StepDimTol; -- supertype
+
+end CommonDatum;

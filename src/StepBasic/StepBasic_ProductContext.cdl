@@ -1,0 +1,39 @@
+-- File:        ProductContext.cdl
+-- Created:     Fri Dec  1 11:11:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ProductContext from StepBasic 
+
+inherits ApplicationContextElement from StepBasic 
+
+uses
+
+	HAsciiString from TCollection, 
+	ApplicationContext from StepBasic
+is
+
+	Create returns mutable ProductContext;
+	---Purpose: Returns a ProductContext
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aFrameOfReference : mutable ApplicationContext from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aFrameOfReference : mutable ApplicationContext from StepBasic;
+	      aDisciplineType : mutable HAsciiString from TCollection) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetDisciplineType(me : mutable; aDisciplineType : mutable HAsciiString);
+	DisciplineType (me) returns mutable HAsciiString;
+
+fields
+
+	disciplineType : HAsciiString from TCollection;
+
+end ProductContext;

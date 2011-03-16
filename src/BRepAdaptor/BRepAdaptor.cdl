@@ -1,0 +1,74 @@
+-- File:	BRepAdaptor.cdl
+-- Created:	Fri Feb 19 11:02:26 1993
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1993
+
+
+package BRepAdaptor 
+
+	---Purpose: The BRepAdaptor package provides classes to access 
+	--          the geometry of the BRep models.
+	--          
+	--          OverView of classes
+	--          
+	--          * Surface :  Provides the methods  of Surface from
+	--          Adpator on a Face.
+	--          
+	--          *  Curve  : Provides  the  methods of  Curve  from
+	--          Adaptor3d on an Edge.
+	--          
+	--          * Curve2d : Provides  the methods of  Curve2d from
+	--          Adaptor2d on an Edge on a Face.
+	--          
+
+uses
+    gp, 
+    TCollection,
+    TColgp,
+    TColStd,
+    GeomAbs,
+    Adaptor3d,
+    Adaptor2d,
+    Geom,
+    Geom2d,
+    GeomAdaptor,
+    Geom2dAdaptor,
+    TopoDS,
+    BRep
+
+is
+
+    class Surface;
+	---Purpose: Transforms a Face in a Surface from Adaptor3d.
+	
+    class Curve;
+	---Purpose: Transforms an Edge in a Curve from Adaptor3d.
+
+    class Curve2d;
+	---Purpose: Transforms an Edge   on a Face  in  a Curve2d from
+	--          Adaptor2d. 
+
+    class  CompCurve; 
+    	---Purpose: Transforms a Wire in a Curve from Adaptor3d.
+    	
+    class HSurface instantiates GenHSurface from Adaptor3d
+    	(Surface from BRepAdaptor);
+
+    class HCurve instantiates GenHCurve from Adaptor3d
+    	(Curve from BRepAdaptor);
+
+    class HCurve2d instantiates GenHCurve2d from Adaptor2d
+    	(Curve2d from BRepAdaptor); 
+	 
+    class HCompCurve instantiates GenHCurve from Adaptor3d
+    	(CompCurve from BRepAdaptor); 
+	 
+    class Array1OfCurve 
+    	instantiates Array1 from TCollection (Curve from BRepAdaptor); 
+	 
+    class HArray1OfCurve
+    	instantiates HArray1 from TCollection (Curve from BRepAdaptor,
+    	    	    	    	Array1OfCurve from BRepAdaptor);
+
+end BRepAdaptor;

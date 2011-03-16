@@ -1,0 +1,59 @@
+//-----------------------------------------------------------------------------
+//
+// inline methods for Convert from Quantity
+//
+// Author : M. MERCIEN
+//-----------------------------------------------------------------------------
+#include <Quantity_Array1OfCoefficient.hxx>
+
+
+#ifndef __Quantity_API
+# if defined(WNT) && !defined(HAVE_NO_DLL)
+#  ifdef __Quantity_DLL
+#   define __Quantity_API __declspec( dllexport )
+#  else
+#   define __Quantity_API __declspec( dllimport )
+#  endif  // __Quantity_DLL
+# else
+#   define __Quantity_API
+# endif  // WNT
+#endif  // __Quantity_API 
+
+
+extern __Quantity_API Quantity_Array1OfCoefficient ConvertTable;
+
+
+//----------------------------------------------------------------------------
+//  SetQuantity
+//----------------------------------------------------------------------------
+inline void Quantity_Convert::SetQuantity (const Quantity_PhysicalQuantity aQuantity,
+                                const Quantity_Coefficient aCoef) {
+// ...Update du coefficient de conversion
+   if (aQuantity > 0 && aQuantity <= 68) ConvertTable(aQuantity) = aCoef;
+}
+
+//----------------------------------------------------------------------------
+//  ConvertUserToSI
+//----------------------------------------------------------------------------
+inline Quantity_Coefficient Quantity_Convert::ConvertUserToSI 
+        (const Quantity_PhysicalQuantity aQuantity ,
+         const Standard_Real aVal) {
+// ...Conversion de la valeur aVal, du Systeme Utilisateur en Systeme International
+   if (aQuantity > 0 && aQuantity <= 68)   
+      return (aVal*ConvertTable(aQuantity));
+   else
+     return aVal;
+}
+
+//----------------------------------------------------------------------------
+//  ConvertSIToUser
+//----------------------------------------------------------------------------
+inline Quantity_Coefficient Quantity_Convert::ConvertSIToUser 
+        (const Quantity_PhysicalQuantity aQuantity ,
+         const Standard_Real aVal) {
+// ...Conversion de la valeur aVal, du Systeme International au Systeme Utilisateur
+   if (aQuantity > 0 && aQuantity <= 68)   
+      return (aVal/ConvertTable(aQuantity));
+   else
+     return aVal;
+}

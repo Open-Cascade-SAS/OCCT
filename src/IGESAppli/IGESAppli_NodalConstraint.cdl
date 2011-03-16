@@ -1,0 +1,74 @@
+--
+-- File      :  NodalConstraint.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class NodalConstraint from IGESAppli  inherits IGESEntity
+
+        ---Purpose: defines NodalConstraint, Type <418> Form <0>
+        --          in package IGESAppli
+        --          Relates loads and/or constraints to specific nodes in
+        --          the Finite Element Model by creating a relation between
+        --          Node entities and Tabular Data Property that contains
+        --          the load or constraint data
+
+uses
+
+        TabularData          from IGESDefs,
+        Node                 from IGESAppli,
+        HArray1OfTabularData from IGESDefs
+
+raises OutOfRange
+
+is
+
+        Create returns mutable NodalConstraint;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me         : mutable;
+              aType      : Integer;
+              aNode      : Node;
+              allTabData : HArray1OfTabularData);
+        ---Purpose : This method is used to set the fields of the class
+        --           NodalConstraint
+        --       - aType      : Loads / Constraints
+        --       - aNode      : the Node
+        --       - allTabData : Tabular Data Property carrying the load
+        --                      or constraint vector
+
+        NbCases (me) returns Integer;
+        ---Purpose : returns total number of cases
+
+        Type (me) returns Integer;
+        ---Purpose : returns whether Loads (1) or Constraints (2)
+
+        NodeEntity (me) returns Node;
+        ---Purpose : returns the Node
+
+        TabularData (me; Index : Integer) returns TabularData
+        raises OutOfRange;
+        ---Purpose : returns Tabular Data Property carrying load or constraint vector
+        -- raises exception if Index <= 0 or Index > NbCases
+
+fields
+
+--
+-- Class    : IGESAppli_NodalConstraint
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class NodalConstraint.
+--
+-- Reminder : A NodalConstraint instance is defined by :
+--            - indicator whether Loads or Constraints
+--            - a Node
+--            - Tabular Data Property carrying load or constraint vector
+
+        theType             : Integer;
+        theNode             : Node;
+        theTabularDataProps : HArray1OfTabularData;
+
+end NodalConstraint;

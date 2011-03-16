@@ -1,0 +1,37 @@
+// File:	TopClass_FaceClassifier.lxx
+// Created:	Wed Nov 18 12:27:58 1992
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+#include TheFaceExplorer_hxx
+
+//=======================================================================
+//function : Rejected
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopClass_FaceClassifier::Rejected() const
+{
+  return rejected;
+}
+
+//=======================================================================
+//function : Nowires
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopClass_FaceClassifier::NoWires() const
+{
+  return nowires;
+}
+
+//=======================================================================
+//function : Position
+//purpose  : 
+//=======================================================================
+
+inline IntRes2d_Position TopClass_FaceClassifier::Position() const
+{
+  return myPosition;
+}
+

@@ -1,0 +1,30 @@
+-- File:        RepresentationRelationship.cdl
+-- Created:     Mon Dec  4 12:02:31 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWRepresentationRelationship from RWStepRepr
+
+	---Purpose : Read & Write Module for RepresentationRelationship
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     RepresentationRelationship from StepRepr,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWRepresentationRelationship;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable RepresentationRelationship from StepRepr);
+
+	WriteStep (me; SW : in out StepWriter; ent : RepresentationRelationship from StepRepr);
+
+	Share(me; ent : RepresentationRelationship from StepRepr; iter : in out EntityIterator);
+
+end RWRepresentationRelationship;

@@ -1,0 +1,25 @@
+-- File:        TopologicalRepresentationItem.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TopologicalRepresentationItem from StepShape 
+
+inherits RepresentationItem from StepRepr
+
+
+  -- N.B : EXPRESS Complexe SUBTYPE Declaration :
+
+  -- ONEOF ( vertex edge face_bound face connected_face_set ANDOR ( loop path ) ) 
+
+uses
+
+	HAsciiString from TCollection
+is
+
+	Create returns mutable TopologicalRepresentationItem;
+	---Purpose: Returns a TopologicalRepresentationItem
+
+
+end TopologicalRepresentationItem;

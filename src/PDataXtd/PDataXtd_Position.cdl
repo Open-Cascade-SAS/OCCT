@@ -1,0 +1,30 @@
+-- File:	PDataXtd_Position.cdl
+-- Created:	Tue Apr  7 13:51:14 1998
+-- Author:	Jean-Pierre COMBE
+--		<jpr@chariox.paris1.matra-dtv.fr> 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1998
+
+class Position from PDataXtd inherits Attribute from PDF
+
+	---Purpose: Position of a Label
+
+uses Pnt from gp
+
+is
+
+    Create returns Position from PDataXtd;
+    
+    GetPosition (me)
+    ---C++: inline
+    returns Pnt from gp;
+    
+    SetPosition (me: mutable ; aPosition : Pnt from gp);
+    ---C++: inline
+
+fields
+
+    myPosition : Pnt  from gp;	
+    
+end Position;
+

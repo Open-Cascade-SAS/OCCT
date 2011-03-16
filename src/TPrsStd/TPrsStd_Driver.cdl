@@ -1,0 +1,54 @@
+-- File:	TPrsStd_Driver.cdl
+-- Created:	Fri Aug  1 10:44:29 1997
+-- Author:	SMO
+---Copyright:	 Matra Datavision 1997
+
+deferred class Driver from TPrsStd inherits TShared from MMgt
+
+    --- Purpose: Driver for AIS
+    --           ==============
+-- An abstract class, which - in classes inheriting
+-- from it - allows you to update an
+--  AIS_InteractiveObject or create one if one does
+--  not already exist.
+--  For both creation and update, the interactive
+--  object is filled with information contained in
+--  attributes. These attributes are those found on
+ -- the label given as an argument in the method Update.
+-- true is returned if the interactive object was modified by the update.
+    --  This class  provide  an algorithm  to  Build with its  default
+    --  values (if Null) or Update (if !Null) an AIS_InteractiveObject
+    --  .   Resources are found  in  attributes associated to  a given
+    --  label.
+
+    --  The algorithm Returns   <True>  if the minimum  resources  are
+    --   found.  The  returned AIS may   be null  if  algorithm failed
+    --  (values of resources attributes are not acceptable).
+
+    --  This  algorithm may   be  called, even if  an AISPresentation
+    --  attribute  is not setted at  the label (for simulation need by
+    --  example).
+
+    --  It belongs to the application to test the returned AIS object,
+    --  to set  it in  the AISPresentation  attribute and to  set  the
+    --  owner of the AIS. See Tool class for default implementation of
+    --  those methods.
+
+uses Label             from TDF,
+     InteractiveObject from AIS
+
+
+is
+
+    Initialize;
+    
+    Update (me : mutable ; L   :        Label from TDF;
+	                   ais : in out InteractiveObject from AIS)
+---Purpose:
+-- Updates the interactive object ais with
+-- information found on the attributes associated with the label L.
+        returns Boolean from Standard
+    is  deferred;    
+    
+
+end Driver;

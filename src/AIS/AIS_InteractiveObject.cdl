@@ -1,0 +1,698 @@
+-- File:        AIS_InteractiveObject.cdl
+-- Created:     Wed Dec 11 11:29:18 1996
+-- Author:      Robert COUBLANC
+--              <rob@robox.paris1.matra-dtv.fr>
+--   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible 
+--              Quantity_Color instead the restricted NameOfColor.
+--          Add SetCurrentFacingModel() methods
+--   EUG :  G003 05/11/1999 Degeneration mode support
+--              Add SetDegenerateModel() methods
+--   GG :   IMP140100 Add HasPresentation() and Presentation() methods
+--                    Add SetAspect() method
+--   SAN :  OCC4895 22/03/04 High-level interface for controlling polygon offsets
+--
+---Copyright:    Matra Datavision 1996
+
+
+deferred class InteractiveObject from AIS inherits SelectableObject from SelectMgr
+
+        ---Purpose: 
+    	-- Defines a class of objects with display and selection services.
+    	-- Entities which are visualized and selected are
+    	-- Interactive Objects. You can make use of classes of
+    	-- standard Interactive Objects for which all necessary
+    	-- methods have already been programmed, or you can
+    	-- implement your own classes of Interactive Objects.
+    	-- Specific attributes of entities such as arrow aspect for
+    	-- dimensions must be loaded in a Drawer. This Drawer
+    	-- is then applied to the Interactive Object in view.
+    	-- There are four types of Interactive Object in AIS: the
+    	-- construction element or Datum, the Relation, which
+    	-- includes both dimensions and constraints, the Object,
+    	-- and finally, when the object is of an unknown type, the None type.
+    	-- Inside these categories, a signature, or index,
+    	-- provides the possibility of additional characterization.
+    	-- By default, the Interactive Object has a None type
+    	-- and a signature of 0. If you want to give a particular
+    	-- type and signature to your interactive object, you must
+    	-- redefine the methods, Signature and Type.
+    	-- Warning
+    	-- In the case of attribute methods, methods for
+    	-- standard attributes are virtual. They must be
+    	-- redefined   by the inheriting classes. Setcolor for a
+    	-- point and Setcolor for a plane, for example, do not
+    	-- affect the same attributes in the Drawer.
+
+uses
+    Trsf                 from gp,
+    NameOfColor          from Quantity,
+    Color                from Quantity,
+    Ratio                from Quantity,
+    ListOfTransient      from TColStd,
+    ListOfInteger        from TColStd,
+    Box                  from Bnd,
+    NameOfMaterial       from Graphic3d,
+    MaterialAspect       from Graphic3d,
+    Drawer               from AIS,
+    PToContext           from AIS,
+    TypeOfPresentation3d from PrsMgr,
+    InteractiveContext   from AIS,
+    KindOfInteractive    from AIS,
+    TypeOfFacingModel    from Aspect,
+    TypeOfDegenerateModel from Aspect,
+    Transformation       from Geom,
+    Presentation         from Prs3d,
+    BasicAspect          from Prs3d,
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+    PresentationManager  from PrsMgr,
+    Presentation         from PrsMgr
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+
+is
+    Initialize (aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) ;
+    	---Purpose: The TypeOfPresention3d means that the interactive object
+    	--          may have a presentation dependant of the view of Display
+    
+
+    
+            ---Category: Virtual methods to be redefined...
+        
+    Type     (me) returns KindOfInteractive from AIS is virtual;
+    	---Purpose:
+    	-- Returns the kind of Interactive Object:
+    	-- -   None
+    	-- -   Datum
+    	-- -   Relation
+    	-- -   Object
+    	--   By default, the   interactive object has a None type.
+    	-- Because specific shapes entail different behavior
+    	-- according to their sub-shapes, you may need to
+    	-- create a Local Context. This will allow you to
+    	-- specify the additional characteristics which you
+    	-- need to handle these shapes.
+    
+    Signature(me) returns Integer from Standard is virtual;
+    	---Purpose: Specifies additional characteristics of Interactive
+    	-- Objects. A signature is, in fact, an index with integer
+    	-- values assigned different properties.
+    	-- This method is frequently used in conjuction with
+    	-- Type to give a particular type and signature to an
+    	-- Interactive Object. By default, the Interactive Object
+    	-- has a None type and a signature of 0. Among the
+    	-- datums, this signature is attributed to the shape
+    	-- The remaining datums have the following default signatures:
+    	-- -   Point                   signature 1
+    	-- -   Axis                     signature 2
+    	-- -   Trihedron                signature 3
+    	-- -   PlaneTrihedron            signature 4
+    	-- -   Line                     signature 5
+    	-- -   Circle                  signature 6
+    	-- -   Plane                   signature 7.
+    
+        
+    AcceptShapeDecomposition(me) returns Boolean from Standard is virtual;
+        ---C++: inline
+    	---Purpose:  Informs the graphic context that the interactive Object
+    	-- may be decomposed into sub-shapes for dynamic selection.
+    	-- The most used Interactive Object is AIS_Shape.
+    	-- Activation methods for standard selection modes are
+    	-- proposed in the Interactive Context. These include
+    	-- selection by vertex or by edges. For datums with the
+    	-- same behavior as AIS_Shape, such as vetices and
+    	-- edges, we must redefine the virtual method so that
+    	-- AcceptShapeDecomposition returns false.
+	    --      Rule for selection : 
+	    --        Mode 0 :  Selection of  the interactive Object itself
+	    --        Mode 1 :  Selection of vertices
+	    --        Mode 2 :  Selection Of Edges
+	    --        Mode 3 :  Selection Of Wires
+	    --        Mode 4 :  Selection Of Faces ... 
+    
+
+    SetCurrentFacingModel(me: mutable;
+               aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE);
+	---Purpose: change the current facing model apply on polygons for
+	-- SetColor(), SetTransparency(), SetMaterial() methods
+	-- default facing model is Aspect_TOFM_TWO_SIDE. This mean that attributes is
+	-- applying both on the front and back face.
+
+    CurrentFacingModel(me) returns TypeOfFacingModel from Aspect;
+    	---Purpose: Returns the current facing model which is in effect.
+
+    SetColor(me:mutable;aColor:Color from Quantity) is virtual;
+
+    SetColor(me:mutable;aColor:NameOfColor from Quantity) is virtual;
+    	---Purpose: only the interactive obj knowns which Drawer attribute
+    	--          is  affected by the color  (ex:  for a  wire, it's the
+    	--          wireaspect field of the drawer, but  for a vertex, only
+    	--          the point aspect field is affected by the color)
+    	--          WARNING : Do not forget to set the corresponding fields
+    	--          here (hasOwnColor and myOwnColor)
+    
+    UnsetColor(me:mutable) is virtual;
+    	---Purpose: Removes color settings. Only the Interactive Object
+    	-- knows which Drawer attribute is   affected by the color
+    	-- setting. For a wire, for example, wire aspect is the
+    	-- attribute affected. For a vertex, however, only point
+    	-- aspect is affected by the color setting.
+ 
+    SetWidth(me:mutable; aValue:Real from Standard) is virtual;
+    	---Purpose: Allows you to provide the setting aValue for width.
+    	-- Only the Interactive Object knows which Drawer
+    	-- attribute is affected by the width setting.
+
+    UnsetWidth(me:mutable) is virtual;
+    
+    AcceptDisplayMode(me;aMode:Integer from Standard) returns Boolean from  Standard is virtual;
+    	---Purpose: Returns true if the class of objects accepts the display mode aMode.
+    	-- The interactive context can have a default mode of
+    	-- representation for the set of Interactive Objects. This
+    	-- mode may not be accepted by a given class of
+    	-- objects. Consequently, this virtual method allowing us
+    	-- to get information about the class in question must be implemented.
+    DefaultDisplayMode(me) returns Integer from Standard is virtual;
+    	---Purpose: Returns the default display mode. This method is to
+    	-- be implemented when the main mode is not mode 0.
+
+
+    Redisplay (me:mutable; AllModes:Boolean from Standard =Standard_False); 
+    	---Purpose: Updates the active presentation; if <AllModes> = Standard_True
+    	--          all the presentations inside are recomputed. 
+    
+
+    SetInfiniteState(me:mutable;aFlag:Boolean from Standard = Standard_True);
+    	---Purpose: Sets the infinite state flag aFlage.
+    	-- if   <aFlag>   = True  ,  the   interactiveObject  is
+    	--          considered as infinite, i.e. its graphic presentations
+    	--          are not taken in account for View FitAll...
+    
+    IsInfinite(me) returns Boolean from Standard;
+      	---C++: inline
+      	---Purpose:
+      	-- Returns true if the interactive object is infinite. In this
+      	-- case, its graphic presentations are not taken into
+      	-- account in the fit-all view.
+
+   
+                    ---Category: Link To InteractiveContext
+
+    HasInteractiveContext(me) returns Boolean from Standard;
+    	---Purpose: Indicates whether the Interactive Object has a pointer
+    	-- to an interactive context.
+        
+    GetContext(me) returns InteractiveContext from AIS;
+    	---Purpose: Returns the context pointer to the interactive context.
+        
+    SetContext(me:mutable; aCtx : InteractiveContext from AIS) is virtual;
+    	---Purpose:  Sets the interactive context aCtx and provides a link
+    	-- to the default drawing tool or "Drawer" if there is none.
+    
+    HasOwner (me) returns Boolean from Standard;
+    	---Purpose: Returns true if the object has an owner attributed to it.
+    	-- The owner can be a shape for a set of sub-shapes or
+    	-- a sub-shape for sub-shapes which it is composed of,
+    	-- and takes the form of a transient.
+        
+    GetOwner (me) returns any Transient from Standard;
+    	---Purpose: Returns the owner of the Interactive Object.
+    	-- The owner can be a shape for a set of sub-shapes or
+    	-- a sub-shape for sub-shapes which it is composed of,
+    	-- and takes the form of a transient.
+    	-- There are two types of owners:
+    	-- -   Direct owners, decomposition shapes such as
+    	--   edges, wires, and faces.
+    	-- -   Users, presentable objects connecting to sensitive
+    	--   primitives, or a shape which has been decomposed.
+    	---C++: inline
+    	---C++: return const&
+    
+    
+    
+    SetOwner (me                : mutable; 
+              ApplicativeEntity : Transient from  Standard);
+   	---Purpose: Allows you to attribute the owner ApplicativeEntity to
+    	-- an Interactive Object. This can be a shape for a set of
+    	-- sub-shapes or a sub-shape for sub-shapes which it
+    	-- is composed of. The owner takes the form of a transient.
+        ---C++: inline
+         
+    ClearOwner(me:mutable);    
+    	---Purpose: Each Interactive Object has methods which allow us
+    	-- to attribute an Owner to it in the form of a Transient.
+    	-- This method removes the owner from the graphic entity.    
+    
+    
+    HasUsers(me) returns Boolean from Standard;
+    
+    Users(me) returns ListOfTransient from TColStd;
+    	---C++: inline
+    	---C++: return const&
+    
+    
+    AddUser(me:mutable; aUser : Transient from Standard);
+    
+    ClearUsers(me:mutable);
+    
+    
+    
+                ---Category: "STANDARD" LOCAL ATTRIBUTES :
+                --           
+                --           -Local DisplayMode
+                --           -Color
+                --           -width of lines or points
+                --           -typeOfLine or Marker Aspect
+                --           -material name (if needed)
+                --           -transparency (if needed)
+                --           
+                --           Specific attributes of entities (such  as
+                --           arrow  aspect   for dimensions)   must be
+                --           loaded in a  Drawer; this drawer  is then
+                --           applied to InteractiveObject   WARNING  :
+                --           Here the  Methods for standard attributes
+                --           are virtual and  do nothing  they must be
+                --           redefined  by the  inheriting     classes
+                --           (setcolor for a  point and setcolor for a plane
+                --           don't affect the same attributes in the Drawer)
+    
+
+    HasDisplayMode (me)
+    returns Boolean from Standard;
+    	---Purpose:
+    	-- Returns true if the Interactive Object has a display
+    	-- mode setting. Otherwise, it is displayed in Neutral Point.
+   	---C++: inline
+
+    SetDisplayMode(me : mutable; aMode : Integer from Standard);
+    	---Purpose: Sets the display mode aMode for the interactive object.
+    	-- An object can have its own temporary display mode,
+    	-- which is different from that proposed by the interactive context.
+    	-- The range of possibilities currently proposed is the following:
+    	-- -   AIS_WireFrame
+    	-- -   AIS_Shaded
+    	-- -   AIS_QuickHLR
+    	-- -   AIS_ExactHLR
+    	--   This range can, however, be extended through the creation of new display modes.
+    
+    UnsetDisplayMode(me : mutable);
+    	---Purpose: Removes display mode settings from the interactive object.
+    	---C++: inline
+
+    DisplayMode(me)
+    returns Integer;
+        ---C++: inline
+    	---Purpose: Returns the display mode setting of the Interactive Object.
+    	-- The range of possibilities is the following:
+    	-- -   AIS_WireFrame
+    	-- -   AIS_Shaded
+    	-- -   AIS_QuickHLR
+    	-- -   AIS_ExactHLR
+    	--   This range can, however, be extended through the
+    	-- creation of new display modes.
+
+
+    HasSelectionMode(me) returns Boolean from Standard;
+    	---Purpose: Allows you to change the selection mode of an
+    	-- Interactive Object.
+    	-- The default selection mode setting is 0.
+    	-- For shapes, for example, the selection modes are as follows:
+    	-- -   mode 0 - selection of the shape itself
+    	-- -   mode 1 - selection of vertices
+    	-- -   mode 2 - selection of edges
+    	-- -   mode 3 - selection of wires
+    	-- -   mode 4 - selection of faces
+    	-- -   mode 5 - selection of shells
+    	-- -   mode 6 - selection of solids
+    	-- -   mode 7 - selection of compounds
+    	--   For trihedra, on the other hand, the selection modes are the following four:
+    	-- -   mode 0 - selection of a trihedron
+    	-- -   mode 1 - selection of its origin
+    	-- -   mode 2 - selection of its axes
+    	-- -   mode 3 - selection of its planes    
+    
+    SelectionMode(me) returns Integer from Standard;
+    	---Purpose: Returns the selection mode of the interactive object.    
+    
+    SetSelectionMode(me:mutable; aMode: Integer from Standard);
+    	---Purpose: You can change the default selection mode index
+    	-- aMode of an Interactive Object.
+    	-- This is only of interest if you decide that mode 0
+    	-- adopted by convention will not do.    
+    
+    UnsetSelectionMode(me:mutable);
+    	---Purpose: You can change the default selection mode index of
+    	-- an Interactive Object.
+    	-- This is only of interest if you decide that the 0 mode
+    	-- adopted by convention will not do.
+ 	---C++: inline
+
+    
+    SelectionPriority(me) returns Integer from Standard;
+        ---C++: inline
+    	---Purpose: Returns the selection priority setting. -1 indicates that there is none.
+    	-- You can modify the selection priority of an owner to
+    	-- make one entity more selectionable than another one.
+    	-- The default selection priority for an owner is 5, for
+    	-- example. To increase selection priority, choose a
+    	-- setting between 5 and 10. An entity with priority 7 will
+    	-- take priority over one with a setting of 6 if both
+    	-- objects are selected at the same time.
+    	-- You could give vertices priority 8, edges priority 7,
+    	-- faces priority 6, and shapes priority 5. If a vertex, an
+    	-- edge and a face are simultaneously detected during
+    	-- selection, only the vertex will then be highlighted.
+    	-- For trihedra, for example, the default priorities are the following four:
+    	-- -   priority 1 - a trihedron
+    	-- -   priority 5 - its origin
+    	-- -   priority 3 - its axes
+    	-- -   priority 2 - its planes
+        
+    SetSelectionPriority(me:mutable; aPriority : Integer from Standard); 
+    	---C++: inline
+    	---Purpose: Allows you to provide a setting aPriority for selection priority.
+    	-- You can modify selection priority of an owner to make
+    	-- one entity more selectionable than another one. The
+    	-- default selection priority for an owner is 5, for
+    	-- example. To increase selection priority, choose a
+    	-- setting between 5 and 10. An entity with priority 7 will
+    	-- take priority over one with a setting of 6.
+        
+    UnsetSelectionPriority(me:mutable);
+    	---C++: inline
+    	---Purpose: Removes the setting for selection priority. SelectionPriority then returns -1.
+        
+    HasSelectionPriority(me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose: Returns true if there is a setting for selection priority.
+    	-- You can modify selection priority of an owner to make
+    	-- one entity more selectionable than another one. The
+    	-- default selection priority for an owner is 5, for
+    	-- example. To increase selection priority, choose a
+    	-- setting between 5 and 10. An entity with priority 7 will
+    	-- take priority over one with a setting of 6.
+
+    HasHilightMode(me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose: Returns true if the Interactive Object is in highlight mode.
+ 
+   HilightMode(me) returns Integer from Standard ;
+     	---C++: inline
+     	---Purpose: Returns the setting for highlight mode.
+    	-- At dynamic detection, the presentation echoed by the
+    	-- Interactive Context, is by default the presentation
+    	-- already on the screen. You can specify a Highlight
+    	-- presentation mode which is valid no matter what the
+    	-- active representation of the object. It makes no
+    	-- difference whether this choice is temporary or
+    	-- definitive.   To do this, we use the following functions:
+    	-- -   SetHilightMode
+    	-- -   UnSetHilightMode
+    	--   In the case of a shape, whether it is visualized in
+    	-- wireframe presentation or with shading, we want to
+    	-- systematically highlight the wireframe presentation.
+    	-- Consequently, we set the highlight mode to 0.
+        
+    SetHilightMode(me:mutable;anIndex : Integer from Standard);
+    	---C++: inline
+    	---Purpose: Sets the highlight mode anIndex for the interactive object.
+    	-- If, for example, you want to systematically highlight
+    	-- the wireframe presentation of a shape - whether
+    	-- visualized in wireframe presentation or with shading -
+    	-- you set the highlight mode to 0.
+    
+    UnsetHilightMode(me:mutable);
+    	---C++: inline
+    	---Purpose: Allows the user to take a given Prs for hilight
+    	--          ex : for a shape which would be displayed in shading mode
+    	--          the hilight Prs is the wireframe mode.
+    	--          if No specific hilight mode is defined, the displayed Prs
+    	--          will be the hilighted one.    
+    
+    HasColor (me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose: Returns true if the Interactive Object has color.
+            
+    Color(me) returns NameOfColor from Quantity is virtual;
+    	---C++: inline
+    	---Purpose: Returns the color setting of the Interactive Object.
+
+    Color(me; aColor: out Color from Quantity) is virtual;
+    	---C++: inline
+   
+    HasWidth(me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose: Returns true if the Interactive Object has width.
+    
+    Width(me) returns Real from Standard ;
+    	--- Purpose: Returns the width setting of the Interactive Object.   
+    
+    HasMaterial(me) returns Boolean from Standard ;
+    	---Purpose: Returns true if the Interactive Object has a setting for material.    
+    Material(me) returns NameOfMaterial from Graphic3d is virtual;
+    	---Purpose: Returns the current material setting.
+    	-- This will be on of the following materials:
+    	-- -   Brass
+    	-- -   Bronze
+    	-- -   Gold
+    	-- -   Pewter
+    	-- -   Silver
+    	-- -   Stone.
+    
+    SetMaterial(me:mutable;aName:NameOfMaterial from Graphic3d) is virtual; 
+    	---Purpose: Sets the name aName for material defining this
+    	-- display attribute for the interactive object.
+    	-- Material aspect determines shading aspect, color and
+    	-- transparency of visible entities.
+
+ 
+    SetMaterial(me:mutable;aName:MaterialAspect from Graphic3d) is virtual; 
+    	--- Purpose: Sets the material aMat defining this display attribute
+    	-- for the interactive object.
+    	-- Material aspect determines shading aspect, color and
+    	-- transparency of visible entities.
+    
+    UnsetMaterial(me:mutable) is virtual;
+    	---Purpose: Removes the setting for material.
+
+    SetTransparency(me:mutable;aValue : Real from Standard=0.6) is virtual;
+    	---Purpose: Attributes a setting aValue for transparency.
+    	-- The transparency value should be between 0.0 and 1.0.
+    	-- At 0.0 an object will be totally opaque, and at 1.0, fully transparent.
+    	-- Warning At a value of 1.0, there may be nothing visible.
+    
+    IsTransparent(me) returns Boolean from Standard;
+    	---C++: inline
+    	---Purpose: Returns true if there is a transparency setting.
+          
+    Transparency(me) returns Real from Standard is virtual;      
+    	---Purpose: Returns the transparency setting.
+    	-- This will be between 0.0 and 1.0.
+    	-- At 0.0 an object will be totally opaque, and at 1.0, fully transparent.
+        
+    UnsetTransparency(me:mutable) is virtual;   
+    	---Purpose: Removes the transparency setting. The object is opaque by default.
+    
+    SetAttributes(me:mutable; aDrawer: Drawer from AIS) is virtual; 
+    	---Purpose: Initializes the drawing tool aDrawer.
+    
+    Attributes(me) returns any Drawer from AIS;
+    	---C++: return const&
+    	---C++:  inline
+    	---Purpose: Returns the attributes settings.
+        
+    UnsetAttributes(me:mutable) is virtual;
+	---Purpose: Clears settings provided by the drawing tool aDrawer.
+
+            ---Category: information about Prs to be recomputed
+            --           after local attributes change... to be removed...
+
+    RecomputeEveryPrs(me) returns Boolean is virtual private;
+
+    MustRecomputePrs(me;aMode : Integer from Standard) is  private;
+        
+    ListOfRecomputeModes(me)returns ListOfInteger from TColStd is private;
+    	---C++: return const&
+    SetRecomputeOk(me:mutable) is private;
+
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+    Fill(me: mutable; 
+         aPresentationManager: PresentationManager from PrsMgr;
+         aPresentation: mutable Presentation from PrsMgr;
+         aMode: Integer from Standard = 0)
+    is redefined protected;
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+
+
+    State(me:mutable;theState: Integer from Standard) ;
+    	---C++: inline
+    State(me) returns Integer from Standard ;
+    	---C++: inline
+
+    SetDegenerateModel ( me : mutable;
+                aModel     : TypeOfDegenerateModel from Aspect =
+                                                Aspect_TDM_WIREFRAME;
+                aRatio : Ratio from Quantity = 0.0) is virtual;
+    	---Level: Public
+    	---Purpose: Sets the model of degeneration for the shaded representation 
+    	--   according to the degenerate ratio >= 0. & <= 1. where :
+    	--   <aRatio> = 0. indicate that all polygons of the object 
+    	--      will be displayed.
+    	--   <aRatio> = 1. indicate that no polygons will be displayed !!
+    	--   When <ARatio> is > 0 & < 1. the corresponding amount
+    	--   of object polygons will be displayed with a random method.
+    	--  Warning: the degenerate structure is shown only when
+    	--  the animation and degenerate flags are set to TRUE
+    	--  in V3d_View::SetAnimationMode(..)
+    	--  Category: Methods to manage the object degeneration
+
+    DegenerateModel ( me ;
+                aRatio: out Ratio from Quantity ) 
+        returns TypeOfDegenerateModel from Aspect is virtual;
+    	---Level: Public
+    	---Purpose: returns the current degeneration model and ratio 
+    	--  for the polygons
+    	---Category: Inquire methods
+
+    SetTransformation ( me : mutable;
+                aTranformation: Transformation from Geom;
+                postConcatenate: Boolean from Standard = Standard_False;
+                updateSelection: Boolean from Standard = Standard_True)
+        is static;
+    	---Level: Public
+    	---Purpose: Transforms all presentations of the object
+    	--  and replace the actual transformation matrix if <postConcatenate> is FALSE.
+    	-- Note that the selection  must be updated only at the end of 
+    	-- object animation when <updateSelection> is TRUE
+    	---Category: Transformation method
+
+    UnsetTransformation ( me : mutable )   
+        is static;
+    	---Level: Public
+    	---Purpose: Deactivate the current transformation
+    	---Category: Transformation method
+
+    Transformation ( me : mutable ) returns Transformation from Geom 
+        is static;
+    	---Level: Public
+    	---Purpose: Returns the current transformation associated
+    	-- to the first available presentation of this object.
+    	---Category: Inquire transformation method
+
+    HasTransformation ( me ) returns Boolean from Standard
+        is static;
+    	---Level: Public
+    	---Purpose: Returns TRUE when this object is transformed
+    	---Category: Inquire transformation method
+
+    HasPresentation ( me ) returns Boolean from Standard
+        is static;
+    	---Level: Public
+    	---Purpose: Returns TRUE when this object has a presentation 
+    	--          in the current DisplayMode()
+    	---Category: Inquire transformation method
+
+    Presentation ( me ) returns Presentation from Prs3d 
+        is static;
+    	---Level: Public
+    	---Purpose: Returns the current presentation of this object
+    	--          according to the current DisplayMode()
+    	---Category: Inquire transformation method
+
+    SetAspect ( me : mutable; anAspect: any BasicAspect from Prs3d;
+                     globalChange: Boolean from Standard = Standard_True)
+        is static;
+    	---Level: Public
+    	---Purpose: Sets the graphic basic aspect to the current presentation.
+    	--          When <globalChange> is TRUE , the full object presentation
+    	--          is changed.
+    	--          When <globalChange> is FALSE , only the current group
+    	--          of the object presentation is changed.
+    	---Category: Graphic attributes management 
+
+    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
+    SetPolygonOffsets ( me : mutable;
+                aMode   : Integer from Standard;
+                aFactor : Real from Standard = 1.0;
+                aUnits  : Real from Standard = 0.0 ) is virtual;
+    	---Level: Public
+    	---Purpose: Sets up polygon offsets for this object.
+    	--          It modifies all existing presentations of <anObj> (if any),
+    	--          so it is reasonable to call this method after <anObj> has been displayed.
+    	--          Otherwise, Compute() method should pass Graphic3d_AspectFillArea3d 
+    	--          aspect from <myDrawer> to Graphic3d_Group to make polygon offsets work.
+    	--
+    	--          <aMode> parameter can contain various combinations of 
+    	--          Aspect_PolygonOffsetMode enumeration elements (Aspect_POM_None means
+    	--          that polygon offsets are not changed).
+    	--          If <aMode> is different from Aspect_POM_Off and Aspect_POM_None, then <aFactor> and <aUnits> 
+    	--          arguments are used by graphic renderer to calculate a depth offset value:
+    	--          
+    	--          offset = <aFactor> * m + <aUnits> * r, where
+    	--          m - maximum depth slope for the polygon currently being displayed,
+    	--          r - minimum window coordinates depth resolution (implementation-specific).
+    	-- 
+    	--          Deafult settings for OCC 3D viewer: mode = Aspect_POM_Fill, factor = 1., units = 0.
+    	--
+    	--          Negative offset values move polygons closer to the viewport,
+    	--          while positive values shift polygons away.
+    	--          Consult OpenGL reference for details (glPolygonOffset function description).
+    	--
+    	--          NOTE: This method has a side effect - it creates own shading aspect
+    	--          if not yet created, so it is better to set up object material, 
+    	--          color, etc. first.
+    	---Category: Graphic attributes management
+
+    HasPolygonOffsets ( me ) 
+                returns Boolean from Standard 
+                is virtual;
+    	---Level: Public
+    	---Purpose: Returns Standard_True if <myDrawer> has non-null shading aspect
+    	---Category: Inquire methods
+
+    PolygonOffsets ( me;
+                aMode   : out Integer from Standard;
+                aFactor : out Real from Standard;
+                aUnits  : out Real from Standard ) is virtual;
+    	---Level: Public
+    	---Purpose: Retrieves current polygon offsets settings from <myDrawer>.
+    	---Category: Inquire methods
+
+fields
+
+    myCTXPtr : PToContext from AIS;
+
+    -- The reference to applicative World...
+
+    myOwner  : Transient from Standard;
+    myUsers  : ListOfTransient  from TColStd;
+
+    -- The Information Fields
+
+    myDrawer            : Drawer  from AIS is protected ;
+    myTransparency      : Real    from Standard is protected;
+ -- GER61351   myOwnColor          : NameOfColor from Quantity is protected;
+    myOwnColor          : Color from Quantity is protected;
+    myOwnMaterial       : NameOfMaterial from Graphic3d is protected;
+    ---myOwnMaterial       : NameOfPhysicalMaterial from Graphic3d is protected;
+    mySelPriority       : Integer from Standard;
+    myDisplayMode       : Integer from Standard ;
+    mySelectionMode     : Integer from Standard;
+    myHilightMode       : Integer from Standard is protected;
+    myOwnWidth          : Real    from Standard is protected;
+    myInfiniteState     : Boolean from Standard is protected;
+    hasOwnColor         : Boolean from Standard is protected;
+    hasOwnMaterial      : Boolean from Standard is protected ;
+    myCurrentFacingModel: TypeOfFacingModel from Aspect is protected;
+    
+    -- the management field (to be removed)... 
+    myRecomputeEveryPrs : Boolean from Standard is protected;
+    
+    myToRecomputeModes  : ListOfInteger from TColStd is protected;
+    mystate             : Integer from Standard;
+    myHasTransformation : Boolean from Standard;
+
+
+friends
+    class InteractiveContext from AIS
+
+end InteractiveObject;
+

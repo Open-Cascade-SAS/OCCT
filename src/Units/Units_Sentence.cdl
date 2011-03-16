@@ -1,0 +1,90 @@
+-- File:	Units_Sentence.cdl
+-- Created:	Mon Jun 22 17:29:32 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+private class Sentence from Units 
+
+	---Purpose: This class describes all the methods to create and
+	--          compute an expression contained in a string.
+
+uses
+
+    Token          from Units,
+    TokensSequence from Units,
+    Lexicon        from Units
+
+--raises
+
+is
+
+    Create(alexicon : Lexicon from Units ; astring : CString)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Creates and  returns  a   Sentence, by  analyzing  the
+    --          string <astring> with the lexicon <alexicon>.
+    
+    returns Sentence from Units;
+    
+    SetConstants(me : in out)
+    
+    ---Level: Internal 
+    
+    ---Purpose: For each constant encountered, sets the value.
+    
+    is static;
+    
+    Sequence(me) returns any TokensSequence from Units
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Returns <thesequenceoftokens>.
+    
+    is static;
+    
+    Sequence(me : in out ; asequenceoftokens : any TokensSequence from Units)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Sets the field <thesequenceoftokens> to <asequenceoftokens>.
+    
+    is static;
+    
+    Evaluate(me : in out)returns mutable Token from Units
+    
+    ---Level: Internal 
+    
+    ---Purpose: Computes and  returns in a   token the result  of  the
+    --          expression.
+    
+    is static;
+    
+    IsDone(me) returns Boolean from Standard
+    ---Level: Internal 
+    ---C++: inline
+    ---Purpose: Return True if number of created tokens > 0
+    --          (i.e creation of sentence is succesfull)
+    is static;
+
+    Dump(me)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    
+    ---Purpose: Useful for debugging.
+    
+    is static;
+
+fields
+
+    thesequenceoftokens : TokensSequence from Units;
+
+end Sentence;

@@ -1,0 +1,8 @@
+srcinc:::Modules.tcl
+srcinc:::Draw.tcl
+srcinc:::FoundationClasses.tcl
+srcinc:::ModelingAlgorithms.tcl
+srcinc:::ModelingData.tcl
+srcinc:::Visualization.tcl
+srcinc:::ApplicationFramework.tcl
+srcinc:::DataExchange.tcl

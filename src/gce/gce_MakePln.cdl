@@ -1,0 +1,118 @@
+-- File:	MakePln.cdl
+-- Created:	Wed Aug 26 14:30:57 1992
+-- Author:	Remi GILET
+--		<reg@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class MakePln from gce inherits Root from gce
+
+    ---Purpose : This class implements the following algorithms used 
+    --           to create a Pln from gp.
+    --           * Create a Pln parallel to another and passing 
+    --             through a point.
+    --           * Create a Pln passing through 3 points.
+    --           * Create a Pln by its normal.
+    --  Defines a non-persistent plane.
+    --  The plane is located in 3D space with an axis placement
+    --  two axis. It is the local coordinate system of the plane.
+    --  
+    --  The "Location" point and the main direction of this axis
+    --  placement define the "Axis" of the plane. It is the axis
+    --  normal to the plane which gives the orientation of the
+    --  plane.
+    --  
+    --  The "XDirection" and the "YDirection" of the axis 
+    --  placement define the plane ("XAxis" and "YAxis") .
+
+uses Pnt  from gp,
+     Pln  from gp,
+     Ax1  from gp,
+     Ax2  from gp,
+     Dir  from gp,
+     Real from Standard
+
+raises NotDone from StdFail
+
+is
+
+Create (A2 : Ax2 from gp) returns MakePln;
+    --- Purpose :
+    --  The coordinate system of the plane is defined with the axis
+    --  placement A2.
+    --  The "Direction" of A2 defines the normal to the plane.
+    --  The "Location" of A2 defines the location (origin) of the plane.
+    --  The "XDirection" and "YDirection" of A2 define the "XAxis" and
+    --  the "YAxis" of the plane used to parametrize the plane.
+
+ 
+Create (P : Pnt from gp; 
+    	V : Dir from gp)  returns MakePln;
+    --- Purpose :
+    --  Creates a plane with the  "Location" point <P>
+    --  and the normal direction <V>.
+
+Create (A, B, C, D : Real from Standard)   returns MakePln;
+    --- Purpose :
+    --  Creates a plane from its cartesian equation :
+    --  A * X + B * Y + C * Z + D = 0.0
+    --- Purpose :
+    --  the status is "BadEquation" if Sqrt (A*A + B*B + C*C) <= 
+    --  Resolution from gp.
+
+Create(Pln    :     Pln from gp;
+       Point  :     Pnt from gp) returns MakePln;
+    ---Purpose : Make a Pln from gp <ThePln> parallel to another 
+    --           Pln <Pln> and passing through a Pnt <Point>.
+
+Create(Pln  : Pln  from gp      ;
+       Dist : Real from Standard) returns MakePln;
+    ---Purpose : Make a Pln from gp <ThePln> parallel to another 
+    --           Pln <Pln> at the distance <Dist> which can be greater 
+    --           or less than zero.
+    --           In the first case the result is at the distance 
+    --           <Dist> to the plane <Pln> in the direction of the 
+    --           normal to <Pln>.
+    --           Otherwize it is in the opposite direction.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp;
+       P3     :     Pnt from gp) returns MakePln;
+    ---Purpose : Make a Pln from gp <ThePln> passing through 3
+    --           Pnt <P1>,<P2>,<P3>.
+    --           It returns false if <P1> <P2> <P3> are confused.
+
+Create(P1     :     Pnt from gp;
+       P2     :     Pnt from gp) returns MakePln;
+    ---Purpose : Make a Pln from gp <ThePln> perpendicular to the line 
+    --           passing through <P1>,<P2>.
+    --           The status is "ConfusedPoints" if <P1> <P2> are confused.
+
+Create(Axis : Ax1 from gp) returns MakePln;
+    ---Purpose: Make a pln  passing through the location of <Axis>and 
+    --          normal to the Direction of <Axis>.
+    -- Warning -  If an error occurs (that is, when IsDone returns
+    -- false), the Status function returns:
+    -- -   gce_BadEquation if Sqrt(A*A + B*B +
+    --   C*C) is less than or equal to gp::Resolution(),
+    -- -   gce_ConfusedPoints if P1 and P2 are coincident, or
+    -- -   gce_ColinearPoints if P1, P2 and P3 are collinear.
+        
+Value(me) returns Pln from gp
+    raises NotDone
+    is static;
+    ---C++: return const&
+    ---Purpose: Returns the constructed plane.
+    -- Exceptions StdFail_NotDone if no plane is constructed.
+
+Operator(me) returns Pln from gp
+    is static;
+    ---C++: return const&
+    ---C++: alias "Standard_EXPORT operator gp_Pln() const;"
+
+fields
+
+    ThePln : Pln from gp;
+    --The solution from gp.
+    
+end MakePln;
+

@@ -1,0 +1,245 @@
+-- File:	Units_Dimensions.cdl
+-- Created:	Mon Jun 22 18:11:28 1992
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@phobox>
+-- Modified     Mon Apr  7 16:52:40 1997 by Patrick BOSINCO
+--              Add Basic Dimensions query methods
+-- Modified     Wed Apr  9 10:32:39 1997 by Gerard GRAS
+--              Add Quantity query method
+---Copyright:	 Matra Datavision 1992
+
+
+class Dimensions from Units 
+
+	---Purpose: This class includes all  the methods to create and
+	--          manipulate    the   dimensions  of the    physical
+	--          quantities.
+
+inherits
+
+    TShared from MMgt 
+    
+--uses
+
+--raises
+
+is
+
+    Create(amass                     ,
+           alength                   ,
+           atime                     ,
+           anelectriccurrent         ,
+           athermodynamictemperature ,
+           anamountofsubstance       ,
+           aluminousintensity        ,
+           aplaneangle               ,
+           asolidangle               : Real)
+
+    ---Level: Internal 
+
+    ---Purpose: Returns  a  Dimensions  object  which  represents  the
+    --          dimension  of  a  physical  quantity.    Each  of  the
+    --          <amass>,  <alength>,   <atime>,   <anelectriccurrent>,
+    --          <athermodynamictemperature>,    <anamountofsubstance>,
+    --          <aluminousintensity>, <aplaneangle>, <asolidangle> are
+    --          the powers for  the 7  fundamental  units of  physical
+    --          quantity and  the 2  secondary  fundamental  units  of
+    --          physical quantity.
+	   
+    returns mutable Dimensions from Units;
+
+    Mass(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns the power of mass stored in the dimensions.
+    
+    is static;
+    
+    Length(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns the power of length stored in the dimensions.
+    
+    is static;
+    
+    Time(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns the power of time stored in the dimensions.
+    
+    is static;
+    
+    ElectricCurrent(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns the  power of  electrical  intensity (current)
+    --          stored in the dimensions.
+    
+    is static;
+    
+    ThermodynamicTemperature(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns  the  power  of   temperature stored  in   the
+    --          dimensions.
+    
+    is static;
+    
+    AmountOfSubstance(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns  the power   of quantity   of  material (mole)
+    --          stored in the dimensions.
+    
+    is static;
+    
+    LuminousIntensity(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline 
+    
+    ---Purpose: Returns the  power of light   intensity stored  in the
+    --          dimensions.
+    
+    is static;
+    
+    PlaneAngle(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns  the power   of plane   angle  stored  in  the
+    --          dimensions.
+    
+    is static;
+    
+    SolidAngle(me) returns Real
+    
+    ---Level: Internal 
+
+    ---C++: inline
+    
+    ---Purpose: Returns the   power   of  solid angle stored   in  the
+    --          dimensions.
+
+    is static;
+
+    Quantity(me) returns CString from Standard
+
+    ---Level: Internal 
+
+    ---Purpose: Returns the quantity string of the dimension
+
+    is static;
+    
+    Multiply(me ; adimensions : Dimensions from Units)
+    
+    ---Level: Internal 
+
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Dimensions) operator *(const Handle(Units_Dimensions)&,const Handle(Units_Dimensions)&);"
+    
+    ---Purpose: Creates and returns  a new Dimensions  object which is
+    --          the   result   of the  multiplication    of  <me>  and
+    --          <adimensions>.
+    
+    returns mutable Dimensions from Units is static;
+    
+    Divide(me ; adimensions : Dimensions from Units)
+    
+    ---Level: Internal 
+
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Dimensions) operator /(const Handle(Units_Dimensions)&,const Handle(Units_Dimensions)&);"
+    
+    ---Purpose: Creates and returns a new  Dimensions object which  is
+    --          the result of the division of <me> by <adimensions>.
+    
+    returns mutable Dimensions from Units is static;
+    
+    Power(me ; anexponent : Real) returns mutable Dimensions from Units
+    
+    ---Level: Internal 
+
+--    ---C++: alias "friend Standard_EXPORT Handle(Units_Dimensions) pow(const Handle(Units_Dimensions)&,const Standard_Real);"
+
+    ---Purpose: Creates  and returns a new  Dimensions object which is
+    --          the result of the power of <me> and <anexponent>.
+    
+    is static;
+    
+    IsEqual(me ; adimensions : Dimensions from Units) returns Boolean
+    
+    ---Level: Internal 
+
+--    --  -C++: alias "friend Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Dimensions)&,const Handle(Units_Dimensions)&);"
+    
+    ---Purpose: Returns true if  <me>  and <adimensions> have the same
+    --          dimensions, false otherwise.
+    
+    is static;
+    
+    IsNotEqual(me ; adimensions : Dimensions from Units) returns Boolean
+    
+    ---Level: Internal 
+
+--    --  -C++: alias "friend Standard_EXPORT Standard_Boolean operator !=(const Handle(Units_Dimensions)&,const Handle(Units_Dimensions)&);"
+    
+    ---Purpose: Returns false if <me> and  <adimensions> have the same
+    --          dimensions, true otherwise.
+    
+    is static;
+    
+    
+    Dump(me ; ashift : Integer)
+    
+    ---Level: Internal 
+
+    ---Purpose: Useful for degugging.
+    
+    is static;
+
+    ALess(myclass) returns Dimensions;
+    AMass(myclass) returns Dimensions;
+    ALength(myclass) returns Dimensions;
+    ATime(myclass) returns Dimensions;
+    AElectricCurrent(myclass) returns Dimensions;
+    AThermodynamicTemperature(myclass) returns Dimensions;
+    AAmountOfSubstance(myclass) returns Dimensions;
+    ALuminousIntensity(myclass) returns Dimensions;
+    APlaneAngle(myclass) returns Dimensions;
+    ASolidAngle(myclass) returns Dimensions;
+    ---Level: Internal
+    ---Purpose: Returns the basic dimensions.
+
+fields
+
+    themass                     : Real;
+    thelength                   : Real;
+    thetime                     : Real;
+    theelectriccurrent          : Real;
+    thethermodynamictemperature : Real;
+    theamountofsubstance        : Real;
+    theluminousintensity        : Real;
+    theplaneangle               : Real;
+    thesolidangle               : Real;
+
+end Dimensions;

@@ -1,0 +1,95 @@
+-- File:        Jacobi.cdl
+-- Created:     Tue May 14 18:21:21 1991
+-- Author:      Laurent PAINNOT
+--              <lpa@topsn3>
+---Copyright:    Matra Datavision 1991, 1992
+
+
+
+class Jacobi from math
+    	---Purpose:
+      	-- This class implements the Jacobi method to find the eigenvalues and
+      	-- the eigenvectors of a real symmetric square matrix.
+      	-- A sort of eigenvalues is done.
+
+uses Vector from math, 
+     Matrix from math,
+     OStream from Standard
+
+raises NotDone from StdFail
+
+is
+
+      Create(A: Matrix)
+      	---Purpose:
+      	-- Given a Real n X n matrix A, this constructor computes all its
+      	-- eigenvalues and eigenvectors using the Jacobi method.
+      	-- The exception NotSquare is raised if the matrix is not square.
+      	-- No verification that the matrix A is really symmetric is done.
+      
+      returns Jacobi;
+      
+
+    IsDone(me)
+    	---Purpose: Returns true if the computations are successful, otherwise returns false.
+        ---C++: inline
+    returns Boolean
+    is static;
+    
+
+    Values(me)
+    	---Purpose: Returns the eigenvalues vector.
+        -- Exception NotDone is raised if calculation is not done successfully.
+    	---C++: inline
+    	---C++: return const&
+    returns Vector
+    raises NotDone
+    is static;
+    
+    
+    Value(me; Num: Integer)
+    	---Purpose: returns the eigenvalue number Num.
+        -- Eigenvalues are in the range (1..n).
+        -- Exception NotDone is raised if calculation is not done successfully.
+        ---C++: inline
+    returns Real
+    raises NotDone
+    is static;
+    
+    
+    Vectors(me)
+    	---Purpose: returns the eigenvectors matrix.
+        -- Exception NotDone is raised if calculation is not done successfully.
+    	---C++: inline
+    	---C++: return const&
+    returns Matrix
+    raises NotDone
+    is static;
+    
+    
+    Vector(me; Num: Integer; V : out Vector)
+    	---Purpose: Returns the eigenvector V of number Num.
+        -- Eigenvectors are in the range (1..n).    
+        -- Exception NotDone is raised if calculation is not done successfully.
+    	---C++: inline
+    raises NotDone
+    is static;
+
+
+
+    Dump(me; o: in out OStream)
+    	---Purpose: Prints information on the current state of the object.
+    	--          Is used to redefine the operator <<.
+
+    is static;
+
+
+fields
+
+Done:         Boolean;
+AA:           Matrix;
+NbRotations:  Integer;
+EigenValues:  Vector;
+EigenVectors: Matrix;
+
+end Jacobi;

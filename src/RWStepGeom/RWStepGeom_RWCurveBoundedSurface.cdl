@@ -1,0 +1,35 @@
+-- File:	RWStepGeom_RWCurveBoundedSurface.cdl
+-- Created:	Fri Nov 26 16:26:38 1999 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class RWCurveBoundedSurface from RWStepGeom
+
+    ---Purpose: Read & Write tool for CurveBoundedSurface
+
+uses
+    Check from Interface,
+    StepWriter from StepData,
+    StepReaderData from StepData,
+    EntityIterator from Interface,
+    CurveBoundedSurface from StepGeom
+
+is
+    Create returns RWCurveBoundedSurface from RWStepGeom;
+	---Purpose: Empty constructor
+
+    ReadStep (me; data: StepReaderData from StepData; num: Integer;
+                  ach : in out Check from Interface;
+                  ent : CurveBoundedSurface from StepGeom);
+	---Purpose: Reads CurveBoundedSurface
+
+    WriteStep (me; SW: in out StepWriter from StepData;
+                   ent: CurveBoundedSurface from StepGeom);
+	---Purpose: Writes CurveBoundedSurface
+
+    Share (me; ent : CurveBoundedSurface from StepGeom;
+               iter: in out EntityIterator from Interface);
+	---Purpose: Fills data for graph (shared items)
+
+end RWCurveBoundedSurface;

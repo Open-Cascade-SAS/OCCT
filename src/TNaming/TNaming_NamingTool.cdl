@@ -1,0 +1,45 @@
+-- File:	TNaming_NamingTool.cdl
+-- Created:	Mon Feb 14 15:57:37 2000
+-- Author:	Denis PASCAL
+--		<dp@dingox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+private class NamingTool from TNaming 
+
+	---Purpose: 
+
+
+uses Label   from TDF,
+     LabelMap from TDF,
+     NamedShape from TNaming,
+     MapOfShape from TopTools,
+     Shape      from TopoDS
+
+
+is
+
+
+    CurrentShape  (myclass;
+    	           Valid    :        LabelMap   from TDF;
+                   Forbiden :        LabelMap   from TDF;
+		   NS       :        NamedShape from TNaming;
+		   MS       : in out MapOfShape from TopTools);
+		   
+    CurrentShapeFromShape  (myclass;
+                            Valid    :        LabelMap   from TDF;
+                    	    Forbiden :        LabelMap   from TDF;
+		    	    Acces    :        Label      from TDF;
+		    	    S        :        Shape      from TopoDS;
+		    	    MS       : in out MapOfShape from TopTools);
+		   
+    BuildDescendants (myclass;
+                      NS       : NamedShape from TNaming;
+    	    	      Labels   : in out LabelMap   from TDF);
+
+
+
+end NamingTool from TNaming;
+
+
+

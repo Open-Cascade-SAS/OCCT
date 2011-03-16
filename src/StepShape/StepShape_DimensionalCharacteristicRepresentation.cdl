@@ -1,0 +1,38 @@
+-- File:	StepShape_DimensionalCharacteristicRepresentation.cdl
+-- Created:	Tue Apr 18 16:42:58 2000 
+-- Author:	Andrey BETENEV
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
+-- Copyright:	Matra Datavision 1999
+
+class DimensionalCharacteristicRepresentation from StepShape
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity DimensionalCharacteristicRepresentation
+
+uses
+    DimensionalCharacteristic from StepShape,
+    ShapeDimensionRepresentation from StepShape
+
+is
+    Create returns DimensionalCharacteristicRepresentation from StepShape;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDimension: DimensionalCharacteristic from StepShape;
+                       aRepresentation: ShapeDimensionRepresentation from StepShape);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Dimension (me) returns DimensionalCharacteristic from StepShape;
+	---Purpose: Returns field Dimension
+    SetDimension (me: mutable; Dimension: DimensionalCharacteristic from StepShape);
+	---Purpose: Set field Dimension
+
+    Representation (me) returns ShapeDimensionRepresentation from StepShape;
+	---Purpose: Returns field Representation
+    SetRepresentation (me: mutable; Representation: ShapeDimensionRepresentation from StepShape);
+	---Purpose: Set field Representation
+
+fields
+    theDimension: DimensionalCharacteristic from StepShape;
+    theRepresentation: ShapeDimensionRepresentation from StepShape;
+
+end DimensionalCharacteristicRepresentation;

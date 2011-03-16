@@ -1,0 +1,60 @@
+-- File:	XSControl_Vars.cdl
+-- Created:	Wed Jul 22 16:05:57 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class Vars  from XSControl    inherits TShared  from MMgt
+
+    ---Purpose : Defines a receptacle for externally defined variables, each
+    --           one has a name
+    --           
+    --           I.E. a WorkSession for XSTEP is generally used inside a
+    --           context, which brings variables, especially shapes and
+    --           geometries. For instance DRAW or an application engine
+    --           
+    --           This class provides a common form for this. It also provides
+    --           a default implementation (locally recorded variables in a
+    --           dictionary), but which is aimed to be redefined
+
+uses CString, Transient, DictionaryOfTransient,
+     Pnt from gp, Pnt2d from gp,
+     Geometry from Geom, Curve from Geom, Curve from Geom2d, Surface from Geom,
+     Shape from TopoDS
+
+is
+
+    Create returns mutable Vars;
+
+    Set (me : mutable; name : CString; val : Transient)  is virtual;
+
+    Get (me; name : in out CString) returns Transient  is virtual;
+
+
+    GetGeom (me; name : in out CString) returns Geometry  is virtual;
+
+    GetCurve2d (me; name : in out CString) returns Curve from Geom2d  is virtual;
+
+    GetCurve   (me; name : in out CString) returns Curve from Geom  is virtual;
+
+    GetSurface (me; name : in out CString) returns Surface from Geom  is virtual;
+
+    SetPoint   (me : mutable; name : CString; val : Pnt   from gp)  is virtual;
+
+    SetPoint2d (me : mutable; name : CString; val : Pnt2d from gp)  is virtual;
+
+    GetPoint   (me; name : in out CString; pnt : out Pnt   from gp) returns Boolean  is virtual;
+
+    GetPoint2d (me; name : in out CString; pnt : out Pnt2d from gp) returns Boolean  is virtual;
+
+
+    SetShape   (me : mutable; name : CString; val : Shape from TopoDS)  is virtual;
+
+    GetShape   (me; name : in out CString) returns Shape from TopoDS  is virtual;
+
+fields
+
+    thevars : DictionaryOfTransient;
+
+end Vars;

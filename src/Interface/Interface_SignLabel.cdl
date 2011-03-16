@@ -1,0 +1,26 @@
+-- File:	Interface_SignLabel.cdl
+-- Created:	Wed May 20 18:28:59 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignLabel  from Interface    inherits SignText  from MoniTool
+
+    ---Purpose : Signature to give the Label from the Model
+
+uses Transient, AsciiString from TCollection
+
+is
+
+    Create returns mutable SignLabel;
+
+    Name (me) returns CString;
+    ---Purpose : Returns "Entity Label"
+
+    Text (me; ent : any Transient; context : any Transient)
+    	returns AsciiString from TCollection;
+    ---Purpose : Considers context as an InterfaceModel and returns the Label
+    --           computed by it
+
+end SignLabel;

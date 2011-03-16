@@ -1,0 +1,39 @@
+-- File:	IGESSelect_SignStatus.cdl
+-- Created:	Wed Jan 28 17:10:13 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class SignStatus  from IGESSelect    inherits Signature  from IFSelect
+
+    ---Purpose : Gives D.E. Status under the form i,j,k,l (4 figures)
+    --           i for BlankStatus
+    --           j for SubordinateStatus
+    --           k for UseFlag
+    --           l for Hierarchy
+    --           
+    --           For matching, allowed shortcuts
+    --           B(Blanked) or V(Visible) are allowed instead of  i
+    --           I(Independant=0), P(Physically Dep.=1), L(Logically Dep.=2) or
+    --             D(Dependant=3) are allowed instead of  j
+    --           These letters must be given in their good position
+    --           For non-exact matching :
+    --           a letter (see above), no comma : only this status is checked
+    --           nothing or a star between commas : this status is OK
+
+uses CString, Transient, AsciiString, InterfaceModel
+
+is
+
+    Create returns mutable SignStatus;
+
+    Value   (me; ent : any Transient; model : InterfaceModel) returns CString;
+    ---Purpose : Returns the value (see above)
+
+    Matches (me; ent : Transient; model : InterfaceModel;
+    	    	 text : AsciiString; exact : Boolean)
+	returns Boolean  is redefined;
+    ---Purpose : Performs the match rule (see above)
+
+end SignStatus;

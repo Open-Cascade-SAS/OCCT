@@ -1,0 +1,19 @@
+-- File:	QAOCC.cdl
+-- Created:	Wed Mar 20 09:42:33 2002
+-- Author:	QA Admin
+--		<qa@umnox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2002
+
+package QAOCC
+     uses Draw,
+          TopoDS,
+          AIS,
+          PrsMgr,
+          Prs3d,
+          SelectMgr,
+	  Quantity
+is
+    
+    class OCC749Prs;
+    Commands(DI : in out Interpretor from Draw);
+end;

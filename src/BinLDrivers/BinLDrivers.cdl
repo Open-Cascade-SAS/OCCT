@@ -1,0 +1,38 @@
+-- File:        BinLDrivers.cdl
+-- Created:     Tue Oct 29 11:30:48 2002
+-- Author:      Michael SAZONOV
+--              <msv@novgorox.nnov.matra-dtv.fr>
+---Copyright:    Matra Datavision 2002
+
+
+package BinLDrivers
+
+uses
+    Standard,
+    TDF,
+    TCollection,
+    TColStd,
+    CDM,
+    PCDM,
+    Storage,
+    BinObjMgt,
+    BinMDF
+
+is
+
+    class DocumentStorageDriver;
+    class DocumentRetrievalDriver;
+
+    class    DocumentSection;
+    imported VectorOfDocumentSection;
+
+    Factory (theGUID : GUID from Standard) returns Transient from Standard;
+
+    AttributeDrivers (MsgDrv : MessageDriver from CDM)
+        returns ADriverTable from BinMDF;
+        ---Purpose: Creates a table of the supported drivers' types
+
+    StorageVersion returns AsciiString from TCollection;
+        ---Purpose: returns last storage version
+    
+end BinLDrivers;

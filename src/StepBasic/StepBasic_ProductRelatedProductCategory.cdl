@@ -1,0 +1,45 @@
+-- File:        ProductRelatedProductCategory.cdl
+-- Created:     Fri Dec  1 11:11:26 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ProductRelatedProductCategory from StepBasic 
+
+inherits ProductCategory from StepBasic 
+
+uses
+
+	HArray1OfProduct from StepBasic, 
+	Product from StepBasic, 
+	HAsciiString from TCollection, 
+	Boolean from Standard
+is
+
+	Create returns mutable ProductRelatedProductCategory;
+	---Purpose: Returns a ProductRelatedProductCategory
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAdescription : Boolean from Standard;
+	      aDescription : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      hasAdescription : Boolean from Standard;
+	      aDescription : mutable HAsciiString from TCollection;
+	      aProducts : mutable HArray1OfProduct from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetProducts(me : mutable; aProducts : mutable HArray1OfProduct);
+	Products (me) returns mutable HArray1OfProduct;
+	ProductsValue (me; num : Integer) returns mutable Product;
+	NbProducts (me) returns Integer;
+
+fields
+
+	products : HArray1OfProduct from StepBasic;
+
+end ProductRelatedProductCategory;

@@ -1,0 +1,93 @@
+-- File:	StdSelect_BRepHilighter.cdl
+-- Created:	Wed Mar 22 17:26:54 1995
+-- Author:	Robert COUBLANC
+--		<rob@fidox>
+---Copyright:	 Matra Datavision 1995
+
+
+class BRepHilighter from StdSelect 
+
+	---Purpose: Tool to manage hilight of BRepOwners  during the selection process
+	--          -> Built with a ViewSelector3d.
+	--          -> Can hilight all the detected elements at the mouse position or
+	--                 just the closest one.
+	--          How Use It:         
+	--          TheSelector -> SelectPix (Xmouse,YMouse);
+	--          TheBRepHilighter->Process ();
+	--          
+	--          When good choice 
+	--          
+	--          toto = TheSelector->LastPicked();
+
+uses
+    NameOfColor       from Quantity,
+    ViewerSelector3d  from StdSelect,
+    Viewer            from V3d,
+    View              from V3d,
+    Drawer            from Prs3d,
+    MapOfInteger      from TColStd,
+    IndexedDataMapOfOwnerPrs,
+    TypeOfResult      from StdSelect,
+    OStream,
+    TransientManager from Visual3d
+is
+
+    Create returns BRepHilighter;
+
+    Create (aSelector : ViewerSelector3d from StdSelect;
+    	    aViewer   : Viewer       from V3d;
+    	    acolor    : NameOfColor  from Quantity = Quantity_NOC_INDIANRED3;
+    	    aType     : TypeOfResult from StdSelect = StdSelect_TOR_SIMPLE)
+    returns BRepHilighter;
+    
+    Set(me:in out; aSelector : ViewerSelector3d from StdSelect) is static;
+    
+    Set(me:in out; aViewer : Viewer from V3d) is static;
+    
+    Set(me:in out; acolor    : NameOfColor  from Quantity) is static;
+
+    Set(me:in out; atype     : TypeOfResult from StdSelect) is static;
+    
+    Process(me        : in out) is static;
+    	---Purpose: updates the viewer with the selection. 
+
+    Process(me:in out; aView : View from V3d; DoubleBuffer: Boolean = Standard_False) is static;
+    	---Purpose: updates only the view with the selection. 
+    	--          The updating will be made using immediate drawing which is far quicker.
+
+    Clear(me:in out ) is static;
+    	---Level: Public
+    	---Purpose: Clears the hilight structures
+    	--          which were created during the selection action;
+    	--          must me called after each selection loop;
+    	--          
+
+    Update(me:in out) is static private;
+
+    Update(me:in out; aView : View from V3d; DoubleBuffer: Boolean = Standard_False) is static private;
+
+
+    ---Category: Internal Methods
+    --           
+    --           
+
+    Drawer(me)
+    	---C++: return const &
+    returns any Drawer from Prs3d;
+    
+fields
+
+    myselector   : ViewerSelector3d  from StdSelect;
+    myviewer     : Viewer            from V3d;
+    mycolor      : NameOfColor       from Quantity;
+    mydrwr       : Drawer            from Prs3d;
+    mytype       : TypeOfResult      from StdSelect;
+    
+    myold        : MapOfInteger      from TColStd;
+    mynew        : MapOfInteger      from TColStd;
+    myhimap      : IndexedDataMapOfOwnerPrs;
+    
+    mynbpick     : Integer;
+    mylastindex  : Integer;
+    myManager    : TransientManager from Visual3d;
+end BRepHilighter;

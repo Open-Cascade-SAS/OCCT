@@ -1,0 +1,40 @@
+-- File:	IGESCAFControl.cdl
+-- Created:	Wed Aug 16 13:39:19 2000
+-- Author:	Andrey BETENEV
+--		<abv@hotdox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+package IGESCAFControl 
+
+    ---Purpose: Provides high-level API to translate IGES file
+    --          to and from DECAF document
+
+uses
+    Quantity,
+    TCollection,
+    TopoDS,
+    TopTools,
+    TDocStd,
+    XCAFDoc,
+    XCAFPrs,
+    XSControl,
+    IGESControl
+
+is
+
+    class Reader;
+    	---Purpose: Provides a tool for reading IGES file
+
+    class Writer;
+    	---Purpose: Provides a tool for writing IGES file
+
+    DecodeColor (col: Integer) returns Color from Quantity;
+    	---Purpose: Converts IGES color index to CASCADE color
+
+    EncodeColor (col: Color from Quantity) returns Integer;
+    	---Purpose: Tries to Convert CASCADE color to IGES color index
+	--          If no corresponding color defined in IGES, returns 0
+	
+
+end IGESCAFControl;

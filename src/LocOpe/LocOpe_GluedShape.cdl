@@ -1,0 +1,84 @@
+-- File:	LocOpe_GluedShape.cdl
+-- Created:	Tue Jan 30 13:45:54 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+
+class GluedShape from LocOpe inherits GeneratedShape from LocOpe
+
+	---Purpose: 
+
+uses Shape  from TopoDS,
+     Face   from TopoDS,
+     Wire   from TopoDS,
+     Edge   from TopoDS,
+     Vertex from TopoDS,
+     ListOfShape         from TopTools,
+     MapOfShape          from TopTools,
+     DataMapOfShapeShape from TopTools
+
+is
+
+    Create
+    
+    	returns mutable GluedShape from LocOpe;
+
+
+    Create(S: Shape from TopoDS)
+    
+    	returns mutable GluedShape from LocOpe;
+    
+
+    Init(me: mutable; S: Shape from TopoDS)
+    
+    	is static;
+
+
+    GlueOnFace(me: mutable; F: Face from TopoDS)
+    
+    	is static;
+
+
+    MapEdgeAndVertices(me: mutable)
+    
+    	is static private;
+
+
+    GeneratingEdges(me: mutable)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	;
+
+
+    Generated(me: mutable; V: Vertex from TopoDS)
+	---Purpose: Returns the  edge  created by  the  vertex <V>. If
+	--          none, must return a null shape.
+    	returns Edge from TopoDS
+	;
+
+
+    Generated(me: mutable; E: Edge from TopoDS)
+	---Purpose: Returns the face created by the edge <E>. If none,
+	--          must return a null shape.
+    	returns Face from TopoDS
+	;
+
+
+    OrientedFaces(me: mutable)
+	---Purpose: Returns  the  list of correctly oriented generated
+	--          faces. 
+    	returns ListOfShape from TopTools
+	---C++: return const&
+	;
+
+
+fields
+
+    myShape  : Shape               from TopoDS;
+    myMap    : MapOfShape          from TopTools;
+    myGShape : DataMapOfShapeShape from TopTools;
+
+end GluedShape;

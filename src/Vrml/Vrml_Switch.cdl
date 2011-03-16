@@ -1,0 +1,35 @@
+-- File:	Vrml_Switch.cdl
+-- Created:	Wed Feb 12 12:40:24 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class Switch from Vrml 
+
+	---Purpose: defines a Switch node of VRML specifying group properties.
+    	--  This  group  node  traverses  one,  none,  or  all  of  its  children.
+    	--  One  can  use  this  node  to  switch  on  and  off  the  effects  of  some   
+    	--  properties  or  to  switch  between  different  properties.
+    	--  The  whichChild  field  specifies  the  index  of  the  child  to  traverse, 
+	--  where  the  first  child  has  index  0.	
+    	--  A  value  of  -1  (the  default)  means  do  not  traverse  any  children. 
+	--  A  value  of  -3  traverses  all  children,  making  the  switch  behave  exactly   
+    	--  like  a  regular  Group.
+is
+ 
+    Create  ( aWhichChild  :   Integer from  Standard  =  -1 ) 
+    	returns  Switch from Vrml;
+
+    SetWhichChild ( me: in out; aWhichChild  :  Integer from  Standard );
+    WhichChild ( me  )  returns  Integer from  Standard;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myWhichChild  :   Integer from  Standard;  -- Child to traverse
+
+end Switch;
+

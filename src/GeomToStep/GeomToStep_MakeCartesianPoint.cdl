@@ -1,0 +1,44 @@
+-- File:	GeomToStep_MakeCartesianPoint.cdl
+-- Created:	Fri Jun 11 18:43:50 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+class MakeCartesianPoint from GeomToStep inherits Root from GeomToStep
+
+    ---Purpose: This class implements the mapping between classes 
+    --          CartesianPoint from Geom and Pnt from gp, and the class
+    --          CartesianPoint from StepGeom which describes a point from
+    --          Prostep. 
+  
+uses Pnt from gp,
+     Pnt2d from gp,
+     CartesianPoint from Geom,
+     CartesianPoint from Geom2d,
+     CartesianPoint from StepGeom
+     
+raises NotDone from StdFail
+     
+is 
+
+Create ( P : Pnt from gp ) returns MakeCartesianPoint;
+
+Create ( P : Pnt2d from gp ) returns MakeCartesianPoint;
+
+Create ( P : CartesianPoint from Geom ) returns MakeCartesianPoint;
+
+Create ( P : CartesianPoint from Geom2d ) returns MakeCartesianPoint;
+
+Value (me) returns CartesianPoint from StepGeom
+    raises NotDone
+    is static;
+    ---C++: return const&
+    
+fields
+
+    theCartesianPoint : CartesianPoint from StepGeom;
+    	-- The solution from StepGeom
+    	
+end MakeCartesianPoint;
+
+

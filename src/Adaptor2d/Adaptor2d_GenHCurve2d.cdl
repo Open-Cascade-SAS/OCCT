@@ -1,0 +1,70 @@
+-- File:	Adaptor2d_GenHCurve2d.cdl
+-- Created:	Wed Feb 23 11:38:12 1994
+-- Author:	model
+--		<model@topsn2>
+---Copyright:	 Matra Datavision 1994
+
+
+
+generic class GenHCurve2d from Adaptor2d 
+    (TheCurve as Curve2d from Adaptor2d)
+   	         
+inherits HCurve2d from Adaptor2d
+     
+	---Purpose: Generic class used to create a curve2d manipulated
+      	--          with Handle from a curve2d described by the class Curve2d. 
+	
+uses
+
+     Curve2d from Adaptor2d
+
+
+raises
+    
+    OutOfRange          from Standard,
+    NoSuchObject        from Standard,
+    DomainError         from Standard
+ 
+is
+
+    Create
+	---Purpose: Creates an empty GenHCurve2d.
+    	returns mutable GenHCurve2d from Adaptor2d; 
+    
+
+    Create(C: TheCurve)
+    
+	---Purpose: Creates a GenHCurve2d from a Curve
+    	returns mutable GenHCurve2d from Adaptor2d; 
+
+
+    Set(me: mutable; C: TheCurve)
+    
+	---Purpose: Sets the field of the GenHCurve2d.
+    	is static;
+
+    Curve2d(me)
+    
+	---Purpose: Returns the curve used to create the GenHCurve2d.
+	--          This is redefined from HCurve2d, cannot be inline.
+	--          
+	---C++: return const &
+
+    	returns Curve2d from Adaptor2d
+	is static;
+
+    ChangeCurve2d(me : mutable)
+    
+	---Purpose: Returns the curve used to create the GenHCurve.
+	--          
+	---C++: return &
+	---C++: inline
+
+    	returns TheCurve;
+
+     
+fields
+
+    myCurve : TheCurve is protected;
+
+end GenHCurve2d;

@@ -1,0 +1,108 @@
+-- File:	IFSelect_SelectPointed.cdl
+-- Created:	Mon May 30 17:11:41 1994
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1994
+
+
+class SelectPointed  from IFSelect  inherits SelectBase
+
+    ---Purpose : This type of Selection is intended to describe a direct
+    --           selection without an explicit criterium, for instance the
+    --           result of picking viewed entities on a graphic screen
+    --           
+    --           It can also be used to provide a list as internal alternate
+    --           input : this use implies to clear the list once queried
+
+uses AsciiString from TCollection, SequenceOfTransient, HSequenceOfTransient,
+     EntityIterator, Graph, CopyControl,
+     Transformer
+
+raises InterfaceError
+
+is
+
+    Create returns mutable SelectPointed;
+    ---Purpose : Creates a SelectPointed
+
+    Clear (me : mutable);
+    ---Purpose : Clears the list of selected items
+    --           Also says the list is unset
+    --           All Add* methods and SetList say the list is set
+
+    IsSet (me) returns Boolean;
+    ---Purpose : Tells if the list has been set. Even if empty
+
+    SetEntity (me : mutable; item : any Transient);
+    ---Purpose : As SetList but with only one entity
+    --           If <ent> is Null, the list is said as being set but is empty
+
+    SetList    (me : mutable; list : HSequenceOfTransient);
+    ---Purpose : Sets a given list to define the list of selected items
+    --           <list> can be empty or null : in this case, the list is said
+    --           as being set, but it is empty
+    --           
+    --           To use it as an alternate input, one shot :
+    --           - SetList or SetEntity to define the input list
+    --           - RootResult to get it
+    --           - then Clear to drop it
+
+    Add (me : mutable; item : any Transient) returns Boolean;
+    ---Purpose : Adds an item. Returns True if Done, False if <item> is already
+    --           in the selected list
+
+    Remove (me : mutable; item : any Transient) returns Boolean;
+    ---Purpose : Removes an item. Returns True if Done, False if <item> was not
+    --           in the selected list
+
+    Toggle (me : mutable; item : any Transient) returns Boolean;
+    ---Purpose : Toggles status of an item : adds it if not pointed or removes
+    --           it if already pointed. Returns the new status (Pointed or not)
+
+    AddList    (me : mutable; list : HSequenceOfTransient) returns Boolean;
+    ---Purpose : Adds all the items defined in a list. Returns True if at least
+    --           one item has been added, False else
+
+    RemoveList (me : mutable; list : HSequenceOfTransient) returns Boolean;
+    ---Purpose : Removes all the items defined in a list. Returns True if at
+    --           least one item has been removed, False else
+
+    ToggleList (me : mutable; list : HSequenceOfTransient) returns Boolean;
+    ---Purpose : Toggles status of all the items defined in a list : adds it if
+    --           not pointed or removes it if already pointed.
+
+    Rank (me; item : any Transient) returns Integer;
+    ---Purpose : Returns the rank of an item in the selected list, or 0.
+
+    NbItems (me) returns Integer;
+    ---Purpose : Returns the count of selected items
+
+    Item (me; num : Integer) returns any Transient;
+    ---Purpose : Returns an item given its rank, or a Null Handle
+
+    Update (me : mutable; control : CopyControl);
+    ---Purpose : Rebuilds the selected list. Any selected entity which has a
+    --           bound result is replaced by this result, else it is removed.
+
+    Update (me : mutable; trf : Transformer);
+    ---Purpose : Rebuilds the selected list, by querying a Transformer
+    --           (same principle as from a CopyControl)
+
+    	--  Services to provide  --
+
+    RootResult (me; G : Graph) returns EntityIterator
+    	raises InterfaceError;
+    ---Purpose : Returns the list of selected items. Only the selected entities
+    --           which are present in the graph are given (this result assures
+    --           uniqueness).
+
+    Label (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text which identifies the type of selection made.
+    --           It is "Pointed Entities"
+
+fields
+
+    theset   : Boolean;
+    theitems : SequenceOfTransient;
+
+end SelectPointed;

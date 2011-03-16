@@ -1,0 +1,282 @@
+#include <Standard_Failure.hxx>
+#include <Precision.hxx>
+
+//#define DEBUG 0 
+
+  IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
+
+// tester si fleche respectee en calculant un majorant de fleche 
+//     soit le point precedent et sa tangente ,le point nouveau calcule et sa 
+//     tangente ;on peut trouver une cubique passant par ces 2 points et ayant 
+//     pour derivee les tangentes de l intersection
+//     calculer le point au parametre 0.5 sur la cubique=p1 
+//     calculer le point milieu des 2 points d intersection=p2
+//   si fleche/2<=||p1p2||<= fleche on considere que l on respecte la fleche
+//   sinon ajuster le pas en fonction du rapport ||p1p2||/fleche et du pas
+//   precedent 
+// tester si dans les 2 plans tangents des surfaces on a pas un angle2d trop
+// grand : si oui diviser le pas
+// tester s il n y a pas changement de rive
+//  
+{
+  static Standard_Integer STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+  static Standard_Integer STATIC_PRECEDENT_INFLEXION = 0;
+
+  if(line->NbPoints() ==1 ) { 
+    STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=STATIC_PRECEDENT_INFLEXION=0;
+  }
+
+  IntWalk_StatusDeflection Status = IntWalk_OK;
+  Standard_Real FlecheCourante ,Ratio;
+
+
+  const IntSurf_PntOn2S& CurrentPoint = myIntersectionOn2S.Point(); 
+  //==================================================================================
+  //=========               A r r e t   s u r   p o i n t                 ============
+  //================================================================================== 
+  if (myIntersectionOn2S.IsTangent())  { 
+    return IntWalk_ArretSurPoint;  
+  }
+
+  const gp_Dir& TgCourante = myIntersectionOn2S.Direction();
+
+  //==================================================================================
+  //=========   R i s q u e   d e   p o i n t   d   i n f l e x i o n     ============
+  //==================================================================================  
+  if (TgCourante.Dot(previousd)<0) {
+    //------------------------------------------------------------
+    //-- Risque de point d inflexion : On divise le pas par 2
+    //-- On initialise STATIC_PRECEDENT_INFLEXION pour qu a 
+    //-- l appel suivant, on retourne Pas_OK si il n y a 
+    //-- plus de risque de point d inflexion
+    //------------------------------------------------------------
+
+    pasuv[0]*=0.5;
+    pasuv[1]*=0.5;
+    pasuv[2]*=0.5;
+    pasuv[3]*=0.5;
+    STATIC_PRECEDENT_INFLEXION+=3; 
+    if (pasuv[0] < ResoU1 && pasuv[1] <ResoV1 && pasuv[2] <ResoU2 && pasuv[3] < ResoV2)
+      return IntWalk_ArretSurPointPrecedent;
+    else 
+      return IntWalk_PasTropGrand;
+  }
+  
+  else {
+    if(STATIC_PRECEDENT_INFLEXION  > 0) { 
+      STATIC_PRECEDENT_INFLEXION -- ;
+      return IntWalk_OK;
+    }
+  }
+  
+  //==================================================================================
+  //=========  D e t e c t i o n   d e   P o in t s   c o n f o n d u s    ===========
+  //==================================================================================
+
+  Standard_Real Dist = previousPoint.Value().
+    SquareDistance(CurrentPoint.Value());
+
+
+  if (Dist < tolconf*tolconf ) { 
+    pasuv[0] = Max(5.*ResoU1,Min(1.5*pasuv[0],pasInit[0]));
+    pasuv[1] = Max(5.*ResoV1,Min(1.5*pasuv[1],pasInit[1]));
+    pasuv[2] = Max(5.*ResoU2,Min(1.5*pasuv[2],pasInit[2]));
+    pasuv[3] = Max(5.*ResoV2,Min(1.5*pasuv[3],pasInit[3]));
+    Status = IntWalk_PointConfondu;
+  }
+
+  //==================================================================================
+  Standard_Real Up1,Vp1,Uc1,Vc1,Du1,Dv1,AbsDu1,AbsDu2,AbsDv1,AbsDv2;
+  Standard_Real Up2,Vp2,Uc2,Vc2,Du2,Dv2;
+
+  previousPoint.Parameters(Up1,Vp1,Up2,Vp2);
+  CurrentPoint.Parameters(Uc1,Vc1,Uc2,Vc2);               
+
+  Du1 = Uc1 - Up1;   Dv1 = Vc1 - Vp1;
+  Du2 = Uc2 - Up2;   Dv2 = Vc2 - Vp2;
+
+  AbsDu1 = Abs(Du1);
+  AbsDu2 = Abs(Du2);
+  AbsDv1 = Abs(Dv1);
+  AbsDv2 = Abs(Dv2);
+  //=================================================================================
+  //====   P a s   d e   p  r o g r e s s i o n (entre previous et Current)   =======
+  //=================================================================================
+  if (   AbsDu1 < ResoU1 && AbsDv1 < ResoV1 
+      && AbsDu2 < ResoU2 && AbsDv2 < ResoV2) {
+    pasuv[0] = ResoU1; pasuv[1] = ResoV1; pasuv[2] = ResoU2; pasuv[3] = ResoV2;
+    return(IntWalk_ArretSurPointPrecedent);
+  }
+  //==================================================================================
+  //OCC431(apo): modified ->
+  static Standard_Real CosRef2D =  Cos(PI/9.0),  AngRef2D = PI/2.0; 
+
+  static Standard_Real /*tolArea = 100.0,*/ d = 7.0;
+  Standard_Real tolArea = 100.0;
+  if (ResoU1 < Precision::PConfusion() ||
+      ResoV1 < Precision::PConfusion() ||
+      ResoU2 < Precision::PConfusion() ||
+      ResoV2 < Precision::PConfusion() )
+    tolArea =  tolArea*2.0;
+
+  Standard_Real Cosi1, CosRef1, Ang1, AngRef1, ResoUV1, Duv1, d1, tolCoeff1;   
+  Standard_Real Cosi2, CosRef2, Ang2, AngRef2, ResoUV2, Duv2, d2, tolCoeff2;   
+  Cosi1 = Du1*previousd1.X() + Dv1*previousd1.Y();
+  Cosi2 = Du2*previousd2.X() + Dv2*previousd2.Y();
+  Duv1 = Du1*Du1 + Dv1*Dv1;
+  Duv2 = Du2*Du2 + Dv2*Dv2;
+  ResoUV1 = ResoU1*ResoU1 + ResoV1*ResoV1;
+  ResoUV2 = ResoU2*ResoU2 + ResoV2*ResoV2;
+  //
+  //modified by NIZNHY-PKV Wed Nov 13 12:25:44 2002 f
+  //
+  Standard_Real aMinDiv2=Precision::Confusion();
+  aMinDiv2=aMinDiv2*aMinDiv2;
+  //
+  d1=d;
+  if (Duv1>aMinDiv2)  {
+    d1 = Abs(ResoUV1/Duv1);
+    d1 = Min(Sqrt(d1)*tolArea, d);  
+  } 
+  //d1 = Abs(ResoUV1/Duv1); 
+  //d1 = Min(Sqrt(d1)*tolArea,d);  
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:30 2002 t
+  tolCoeff1 = Exp(d1);
+  //
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:43 2002 f
+  d2=d;
+  if (Duv2>aMinDiv2) {
+    d2 = Abs(ResoUV2/Duv2); 
+    d2 = Min(Sqrt(d2)*tolArea,d); 
+  }
+  //d2 = Abs(ResoUV2/Duv2); 
+  //d2 = Min(Sqrt(d2)*tolArea,d);  
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:53 2002 t
+  tolCoeff2 = Exp(d2);
+  CosRef1 = CosRef2D/tolCoeff1;
+  CosRef2 = CosRef2D/tolCoeff2;
+  //
+  //==================================================================================
+  //== Les points ne sont pas confondus :                                           ==
+  //== D e t e c t i o n   d e   A  r r e t   s u r   P o i n t   p r e c e d e n t ==
+  //==                           P a s   T r o p   G r a n d (angle dans Esp UV)    ==
+  //==                           C h a n g e m e n t   d e   r i v e                ==
+  //==================================================================================
+  if (Status != IntWalk_PointConfondu) { 
+    if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2) {
+      pasuv[0]*=0.5;  pasuv[1]*=0.5;  pasuv[2]*=0.5;  pasuv[3]*=0.5;
+      if (pasuv[0]<ResoU1 && pasuv[1]<ResoV1 && pasuv[2]<ResoU2 && pasuv[3]<ResoV2) { 
+	return(IntWalk_ArretSurPointPrecedent);
+      }
+      else {
+	pasuv[0]*=0.5; pasuv[1]*=0.5; pasuv[2]*=0.5; pasuv[3]*=0.5;
+	return(IntWalk_PasTropGrand);
+      }
+    }
+    const gp_Dir2d& Tg2dcourante1 = myIntersectionOn2S.DirectionOnS1();
+    const gp_Dir2d& Tg2dcourante2 = myIntersectionOn2S.DirectionOnS2();
+    Cosi1 = Du1*Tg2dcourante1.X() + Dv1*Tg2dcourante1.Y();
+    Cosi2 = Du2*Tg2dcourante2.X() + Dv2*Tg2dcourante2.Y();
+    Ang1 = Abs(previousd1.Angle(Tg2dcourante1));  
+    Ang2 = Abs(previousd2.Angle(Tg2dcourante2));  
+    AngRef1 = AngRef2D*tolCoeff1;
+    AngRef2 = AngRef2D*tolCoeff2;
+    //-------------------------------------------------------
+    //-- Test : Angle trop grand dans l espace UV       -----
+    //--        Changement de rive                      -----
+    //-------------------------------------------------------
+    if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2 || Ang1 > AngRef1 || Ang2 > AngRef2) {
+      pasuv[0]*=0.5;  pasuv[1]*=0.5;  pasuv[2]*=0.5;  pasuv[3]*=0.5;
+      if (pasuv[0]<ResoU1 && pasuv[1]<ResoV1 && pasuv[2]<ResoU2 && pasuv[3]<ResoV2) 
+	return(IntWalk_ArretSurPoint);
+      else 
+	return(IntWalk_PasTropGrand);
+    }
+  }
+  //<-OCC431(apo)
+  //==================================================================================
+  //== D e t e c t i o n   d e   :  Pas Trop Petit 
+  //==                              Pas Trop Grand 
+  //==================================================================================
+
+  //---------------------------------------
+  //-- Estimation de la fleche           --
+  //---------------------------------------
+  FlecheCourante =
+    Sqrt(Abs((previousd.XYZ()-TgCourante.XYZ()).SquareModulus()*Dist))/8.;
+
+  if ( FlecheCourante<= fleche*0.5) {     //-- Pas Courant trop petit 
+    if(FlecheCourante>1e-16) { 
+      Ratio = 0.5*(fleche/FlecheCourante);
+    }
+    else { 
+      Ratio = 10.0;
+    }
+    Standard_Real pasSu1 = pasuv[0];
+    Standard_Real pasSv1 = pasuv[1];
+    Standard_Real pasSu2 = pasuv[2];
+    Standard_Real pasSv2 = pasuv[3];
+    
+    //-- Dans les cas ou lorsqu on demande
+    //-- un point a U+DeltaU , ....
+    //-- on recupere un point a U + Epsilon
+    //-- Epsilon << DeltaU.
+    
+    if(pasuv[0]< AbsDu1) pasuv[0] = AbsDu1;
+    if(pasuv[1]< AbsDv1) pasuv[1] = AbsDv1;
+    if(pasuv[2]< AbsDu2) pasuv[2] = AbsDu2;
+    if(pasuv[3]< AbsDv2) pasuv[3] = AbsDv2;
+    
+    if(pasuv[0]<ResoU1) pasuv[0]=ResoU1;
+    if(pasuv[1]<ResoV1) pasuv[1]=ResoV1;
+    if(pasuv[2]<ResoU2) pasuv[2]=ResoU2;
+    if(pasuv[3]<ResoV2) pasuv[3]=ResoV2;
+    //-- if(Ratio>10.0 ) { Ratio=10.0; } 
+    Standard_Real R1,R = pasInit[0]/pasuv[0];
+    R1= pasInit[1]/pasuv[1];     if(R1<R) R=R1;
+    R1= pasInit[2]/pasuv[2];     if(R1<R) R=R1;
+    R1= pasInit[3]/pasuv[3];     if(R1<R) R=R1;
+    if(Ratio > R) Ratio=R;
+    pasuv[0] = Min(Ratio*pasuv[0],pasInit[0]);
+    pasuv[1] = Min(Ratio*pasuv[1],pasInit[1]);
+    pasuv[2] = Min(Ratio*pasuv[2],pasInit[2]);
+    pasuv[3] = Min(Ratio*pasuv[3],pasInit[3]);
+    if (pasuv[0] != pasSu1 || pasuv[2] != pasSu2|| 
+	pasuv[1] != pasSv1 || pasuv[3] != pasSv2) {
+      if(++STATIC_BLOCAGE_SUR_PAS_TROP_GRAND > 5) {
+	STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+	return IntWalk_PasTropGrand; 
+      }
+    }
+    if(Status == IntWalk_OK) { 
+      STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
+      //-- On tente d augmenter le pas
+    }
+    return Status;
+  }
+  else {                                //-- FlecheCourante > fleche*0.5 
+    if (FlecheCourante > fleche) {      //-- Pas Courant Trop Grand
+      Ratio = fleche/FlecheCourante; 
+      pasuv[0] = Ratio*pasuv[0];
+      pasuv[1] = Ratio*pasuv[1];
+      pasuv[2] = Ratio*pasuv[2];
+      pasuv[3] = Ratio*pasuv[3];
+      //if(++STATIC_BLOCAGE_SUR_PAS_TROP_GRAND > 5) {
+      //	STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+	return IntWalk_PasTropGrand; 
+      //}
+    }
+    else {                             //-- fleche/2  <  FlecheCourante <= fleche    
+      Ratio = 0.75 * (fleche / FlecheCourante);
+    }
+  }
+  pasuv[0] = Max(5.*ResoU1,Min(Min(Ratio*AbsDu1,pasuv[0]),pasInit[0]));
+  pasuv[1] = Max(5.*ResoV1,Min(Min(Ratio*AbsDv1,pasuv[1]),pasInit[1]));
+  pasuv[2] = Max(5.*ResoU2,Min(Min(Ratio*AbsDu2,pasuv[2]),pasInit[2]));
+  pasuv[3] = Max(5.*ResoV2,Min(Min(Ratio*AbsDv2,pasuv[3]),pasInit[3]));
+  if(Status == IntWalk_OK) STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
+  return Status;
+}
+     
+
+

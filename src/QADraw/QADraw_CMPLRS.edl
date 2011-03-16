@@ -1,0 +1,14 @@
+-- File:	QADraw_CMPLRS.edl
+-- Author:	QA Admin
+-- History:	Mon Feb  4 18:15:52 2002	QA Admin	Creation
+-- Copyright:	 Matra Datavision 2002
+
+@ifnotdefined ( %QADraw_CMPLRS_EDL) then
+@set %QADraw_CMPLRS_EDL = "";
+
+@uses "CSF.edl";
+@ifdefined( %CSF_TCL_INCLUDE ) then
+@string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE %CMPLRS_CXX_Options ;
+@endif;
+
+@endif;

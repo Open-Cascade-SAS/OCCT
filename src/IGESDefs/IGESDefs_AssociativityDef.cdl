@@ -1,0 +1,103 @@
+--
+-- File      :  AssociativityDef.cdl
+-- Created   :  Wed 13 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Deepak PRABHU )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class AssociativityDef from IGESDefs  inherits IGESEntity
+
+        ---Purpose: defines IGES Associativity Definition Entity, Type <302>
+        --          Form <5001 - 9999> in package IGESDefs.
+        --          This class permits the preprocessor to define an
+        --          associativity schema. i.e., by using it preprocessor
+        --          defines the type of relationship.
+
+uses
+
+        HArray1OfInteger          from TColStd,
+        HArray1OfHArray1OfInteger from IGESBasic
+
+raises DimensionMismatch, OutOfRange
+
+is
+
+        Create returns mutable AssociativityDef;
+
+        -- Specific methods for the entity
+
+        Init (me           : mutable;
+              requirements : HArray1OfInteger;
+              orders       : HArray1OfInteger;
+              numItems     : HArray1OfInteger;
+              items        : HArray1OfHArray1OfInteger)
+        raises DimensionMismatch;
+        ---Purpose : This method is used to set the fields of the class
+        --           AssociativityDef
+        --       - requirements : Back Pointers requirements
+        --       - orders       : Class Orders
+        --       - numItems     : Number of Items per Class
+        --       - items        : Items in each class
+        -- raises exception if lengths of the arrays are not the same.
+
+    	SetFormNumber (me : mutable; form : Integer);
+	-- Sets Form Number to a given value (free over 5000)
+
+
+        NbClassDefs(me) returns Integer;
+        ---Purpose : returns the Number of class definitions
+
+        IsBackPointerReq(me ; ClassNum : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns 1 if the theBackPointerReqs(ClassNum) = 1
+        -- returns 0 if the theBackPointerReqs(ClassNum) = 2
+        -- raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
+
+        BackPointerReq(me ; ClassNum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns 1 or 2
+        -- raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
+
+        IsOrdered(me ; ClassNum : Integer) returns Boolean
+        raises OutOfRange;
+        ---Purpose : returns 1 if theClassOrders(ClassNum) = 1 (ordered class)
+        -- returns 0 if theClassOrders(ClassNum) = 2 (unordered class)
+        -- raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
+
+        ClassOrder(me ; ClassNum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns 1 or 2
+        -- raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
+
+        NbItemsPerClass(me ; ClassNum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns no. of items per class entry
+        -- raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
+
+        Item(me ; ClassNum : Integer; ItemNum : Integer) returns Integer
+        raises OutOfRange;
+        ---Purpose : returns ItemNum'th Item of ClassNum'th Class
+        -- raises exception if
+        --      ClassNum <= 0 or ClassNum > NbClassDefs()
+        --      ItemNum <= 0 or ItemNum > NbItemsPerClass(ClassNum)
+
+fields
+
+--
+--  Class    : IGESDefs_AssociativityDef
+--
+--  Purpose  : Declaration of variables specific to AssociativityDef
+--
+--  Reminder : An AssociativityDef Entity permits the preprocessor
+--             to define an associativity schema. The definition
+--             includes associativity form, the no. of classes,
+--             the number and type of items in each class, and
+--             whether back pointers are required.
+
+        theBackPointerReqs : HArray1OfInteger;
+        theClassOrders     : HArray1OfInteger;
+        theNbItemsPerClass : HArray1OfInteger;
+        theItems           : HArray1OfHArray1OfInteger;
+
+end AssociativityDef;

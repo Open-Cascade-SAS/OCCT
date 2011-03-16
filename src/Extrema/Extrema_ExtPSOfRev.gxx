@@ -1,0 +1,92 @@
+#include <StdFail_NotDone.hxx>
+#include <Standard_OutOfRange.hxx>
+//=============================================================================
+
+Extrema_ExtPSOfRev::Extrema_ExtPSOfRev (const gp_Pnt& P,
+			      const SurfaceOfRevolution& S,
+			      const Standard_Real Tol,
+			      const Standard_Integer NbV, const Standard_Real TolV)
+/*-----------------------------------------------------------------------------
+Fonction:
+   Recherche de toutes les distances extremales entre le point P et la surface
+  de revolution S.
+
+Methode:
+   Soit Pp la projection du point P dans le plan XOY de la surface S;
+  2 cas sont consideres:
+  1- distance(Pp,O) < Tol:
+     Il existe 0 ou une infinite de solutions; IsDone() = Standard_False;
+  2- distance(Pp,O) > Tol:
+     Soit U1 = angle(OX,OPp) avec 0. < U1 < 2.*PI,
+          U2 = U1 + PI       avec 0. < U2 < 2.*PI,
+          M1 le meridien S(U1),
+	  M2 le meridien S(U2);
+     On recherche les distances minimales entre P et M1 et les distances
+     maximales entre P et M2. Soit {V1i,i=1,n} et {V2j, j=1,m} ces solutions;
+     alors les (U1,V1i) correspondent a des distances minimales
+     et    les (U2,V2j) correspondent a des distances maximales.
+-----------------------------------------------------------------------------*/
+{
+  myDone = Standard_False;
+
+// Projection de P dans le plan XOY de la surface de revolution ...
+  gp_Ax3 Pos = Tool::Position(S);
+  gp_Pnt O = Pos.Location();
+  gp_Vec OZ (Pos.Direction());
+  gp_Pnt Pp = P.Translated(OZ.Multiplied(-(gp_Vec(O,P).Dot(OZ))));
+  gp_Vec OPp (O,Pp);
+  if (OPp.Magnitude() < Tol) { return; }
+
+  Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,OZ);
+  Standard_Real U2 = U1 + PI;
+  if (U1 < 0.) { U1 += 2. * PI; }
+  Curve M1 = Tool::Meridian(S, U1);
+  Curve M2 = Tool::Meridian(S, U2);
+  TheExtPC ExtPM1 (P,M1,NbV,TolV,Tol);
+  TheExtPC ExtPM2 (P,M2,NbV,TolV,Tol);
+  if ((ExtPM1.IsDone()) && (ExtPM2.IsDone())) {
+    Standard_Integer NbExt1 = ExtPM1.NbExt();
+    Standard_Integer NbExt2 = ExtPM2.NbExt();
+    Extrema_POnCurv ExtPM;
+    for (Standard_Integer NoExt = 1; NoExt <= NbExt1; NoExt++) {
+      if (ExtPM1.IsMin(NoExt)) {
+	ExtPM = ExtPM1.Point(NoExt);
+	mySqDist.Append(ExtPM1.SquareDistance(NoExt));
+	myPoint.Append(Extrema_POnSurf(U1,ExtPM.Parameter(),ExtPM.SquareDistance()));
+      }
+    }
+    for (NoExt = 1; NoExt <= NbExt2; NoExt++) {
+      if (!ExtPM2.IsMin(NoExt)) {
+	ExtPM = ExtPM2.Point(NoExt);
+	mySqDist.Append(ExtPM2.SquareDistance(NoExt));
+	myPoint.Append(Extrema_POnSurf(U2,ExtPM.Parameter(),ExtPM.SquareDistance()));
+      }
+    }
+    myDone = Standard_True;
+  }
+}
+//=============================================================================
+
+Standard_Boolean Extrema_ExtPSOfRev::IsDone () const { return myDone; }
+//=============================================================================
+
+Standard_Integer Extrema_ExtPSOfRev::NbExt () const
+{
+  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  return mySqDist.Length();
+}
+//=============================================================================
+
+Standard_Real Extrema_ExtPSOfRev::SquareDistance (const Standard_Integer N) const
+{
+  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  return mySqDist.Value(N);
+}
+//=============================================================================
+
+Extrema_POnSurf Extrema_ExtPSOfRev::Point (const Standard_Integer N) const
+{
+  if (!IsDone()) { StdFail_NotDone::Raise(); }
+  return myPoint.Value(N);
+}
+//=============================================================================

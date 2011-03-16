@@ -1,0 +1,42 @@
+-- File:	IFSelect_SelectInList.cdl
+-- Created:	Thu Jan  7 16:45:30 1993
+-- Author:	Christian CAILLET
+--		<cky@sdsun1>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class SelectInList  from IFSelect  inherits SelectAnyList
+
+    ---Purpose : A SelectInList kind Selection selects a List of an Entity,
+    --           which is composed of single Entities
+    --           To know the list on which to work, SelectInList has two
+    --           deferred methods : NbItems (inherited from SelectAnyList) and
+    --           ListedEntity (which gives an item as an Entity) which must be
+    --           defined to get a List in an Entity of the required Type (and
+    --           consider that list is empty if Entity has not required Type)
+    --           
+    --           As for SelectAnyList, if a type of Entity defines several
+    --           lists, a given sub-class of SelectInList is attached on one
+
+uses AsciiString from TCollection, Transient, EntityIterator, Graph, IntParam
+
+raises OutOfRange
+
+is
+
+--    NbItems (me; ent : Transient) returns Integer  is deferred;
+--    KeepInputEntity (me; iter : in out EntityIterator) is deferred; 
+--    these method are inherited as deferred and remain to be defined
+
+    ListedEntity (me; num : Integer; ent : Transient)
+    	returns Transient  raises OutOfRange  is deferred;
+    ---Purpose : Returns an Entity, given its rank in the list
+
+    FillResult (me; n1,n2 : Integer; ent : Transient;
+    	result : in out EntityIterator);
+    ---Purpose : Puts into the result, the sub-entities of the list, from n1 to
+    --           n2 included. Remark that adequation with Entity's type and
+    --           length of list has already been made at this stage
+    --           Called by RootResult; calls ListedEntity (see below)
+
+end SelectInList;

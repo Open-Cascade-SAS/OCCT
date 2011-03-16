@@ -1,0 +1,30 @@
+-- File:	RWStepBasic_RWConversionBasedUnitAndMassUnit.cdl
+-- Created:	Tue Feb 10 12:57:57 2004
+-- Author:	Sergey KUUL
+--		<skl@doomox>
+---Copyright:	 Matra Datavision 2004
+
+
+class RWConversionBasedUnitAndMassUnit from RWStepBasic
+
+	---Purpose : Read & Write Module for ConversionBasedUnitAndMassUnit
+
+uses
+    Check from Interface,
+    StepReaderData from StepData,
+    StepWriter from StepData,
+    ConversionBasedUnitAndMassUnit from StepBasic,
+    EntityIterator from Interface
+
+is
+
+    Create returns RWConversionBasedUnitAndMassUnit;
+
+    ReadStep (me; data : StepReaderData; num : Integer;
+	          ach : in out Check; ent : mutable ConversionBasedUnitAndMassUnit from StepBasic);
+
+    WriteStep (me; SW : in out StepWriter; ent : ConversionBasedUnitAndMassUnit from StepBasic);
+
+    Share(me; ent : ConversionBasedUnitAndMassUnit from StepBasic; iter : in out EntityIterator);
+
+end RWConversionBasedUnitAndMassUnit;

@@ -1,0 +1,39 @@
+-- File:	DrawDim_Angle.cdl
+-- Created:	Tue May 28 12:27:28 1996
+-- Author:	Denis PASCAL
+--		<dp@zerox>
+---Copyright:	 Matra Datavision 1996
+
+
+class Angle from DrawDim inherits Dimension from DrawDim
+
+	---Purpose: 
+
+uses Face    from TopoDS,
+     Display from Draw
+
+is
+
+    Create (plane1 : Face from TopoDS; 
+            plane2 : Face from TopoDS)
+    returns mutable Angle from DrawDim;
+    
+    Plane1 (me) returns Face from TopoDS;
+	---C++: return const&
+
+    Plane1 (me : mutable; plane : Face from TopoDS);
+
+    Plane2  (me) returns Face from TopoDS;
+	---C++: return const&
+
+    Plane2 (me : mutable; plane : Face from TopoDS);    
+
+    DrawOn (me; dis : in out Display);
+    
+fields
+
+    myPlane1 : Face from TopoDS;
+    myPlane2 : Face from TopoDS;
+    
+end Angle;
+

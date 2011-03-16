@@ -1,0 +1,143 @@
+-- File:	PathPoint.cdl
+-- Created:	Tue Nov 10 11:12:59 1992
+-- Author:	Jacques GOUSSARD
+--		<jag@sdsun1>
+---Copyright:	 Matra Datavision 1992
+
+
+class PathPoint from IntSurf 
+
+	---Purpose: 
+
+uses Pnt           from gp,
+     Vec           from gp,
+     Dir2d         from gp,
+     HSequenceOfXY from TColgp
+
+raises UndefinedDerivative from StdFail,
+       OutOfRange          from Standard
+
+is
+
+    Create
+    
+    	returns PathPoint from IntSurf;
+
+
+    Create (P: Pnt from gp; U,V: Real from Standard)
+    
+    	returns PathPoint from IntSurf;
+
+
+    SetValue (me: in out; P: Pnt from gp; U,V: Real from Standard)
+    
+    	is static;
+
+
+    AddUV(me: in out; U,V : Real from Standard)
+    
+	---C++: inline
+
+    	is static;
+	
+
+    SetDirections(me: in out; V: Vec from gp; D: Dir2d from gp)
+    
+	---C++: inline
+
+    	is static;
+	
+
+    SetTangency(me: in out; Tang: Boolean from Standard)
+    
+	---C++: inline
+
+    	is static;
+
+
+
+    SetPassing(me: in out; Pass: Boolean from Standard)
+    
+	---C++: inline
+
+    	is static;
+
+
+    Value(me)
+    
+    	returns Pnt from gp
+	---C++: return const &
+	---C++: inline
+
+	is static;
+
+
+    Value2d(me; U,V: out Real from Standard)
+    
+	---C++: inline
+    	is static;
+
+
+    IsPassingPnt(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    IsTangent(me)
+    
+    	returns Boolean from Standard
+	---C++: inline
+
+	is static;
+
+
+    Direction3d(me)
+    
+    	returns Vec from gp
+	---C++: return const &
+	---C++: inline
+
+	raises UndefinedDerivative from StdFail
+	is static;
+
+
+    Direction2d(me)
+    
+    	returns Dir2d from gp
+	---C++: return const &
+	---C++: inline
+
+	raises UndefinedDerivative from StdFail
+	is static;
+
+
+    Multiplicity(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+
+	is static;
+
+
+    Parameters(me; Index: Integer from Standard;
+                   U,V: out Real from Standard)
+
+	---C++: inline
+
+    	raises OutOfRange from Standard
+    	is static;
+
+
+fields
+
+    pt     : Pnt           from gp;
+    ispass : Boolean       from Standard;
+    istgt  : Boolean       from Standard;
+    vectg  : Vec           from gp;
+    dirtg  : Dir2d         from gp;
+    sequv  : HSequenceOfXY from TColgp;
+
+end PathPoint;

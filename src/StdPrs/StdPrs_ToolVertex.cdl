@@ -1,0 +1,15 @@
+-- File:	StdPrs_ToolVertex.cdl
+-- Created:	Wed May 18 18:06:49 1994
+-- Author:	Laurent PAINNOT
+--		<lpa@metrox>
+---Copyright:	 Matra Datavision 1994
+
+
+class ToolVertex from StdPrs
+uses
+    Length from Quantity,
+    Vertex from TopoDS
+is
+    Coord( myclass; aPoint: Vertex from TopoDS; X,Y,Z: out Length from Quantity);
+    
+end ToolVertex from StdPrs;

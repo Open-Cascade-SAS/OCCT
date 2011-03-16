@@ -1,0 +1,144 @@
+-- File:	StdSelect_BRepOwner.cdl
+-- Created:	Wed Mar  8 15:56:17 1995
+-- Author:	Mister rmi
+--		<rmi@photon>
+---Copyright:	 Matra Datavision 1995
+
+
+
+class BRepOwner from StdSelect inherits EntityOwner from SelectMgr
+
+	---Purpose: Defines Specific Owners for Sensitive Primitives
+	--          (Sensitive Segments,Circles...).
+	--          Used in Dynamic Selection Mechanism.
+	--          A BRepOwner has an Owner (the shape it represents)
+	--          and Users (One or More Transient entities).
+
+uses
+    Location              from TopLoc,
+    Shape                 from TopoDS,
+    SelectableObject      from SelectMgr,
+    EntityOwner           from SelectMgr,
+    Presentation          from Prs3d,
+    PresentationManager   from PrsMgr,
+    PresentationManager3d from PrsMgr,
+    NameOfColor           from Quantity,
+    Drawer                from Prs3d,
+    Shape                 from StdSelect
+is
+
+
+    Create(aPriority:Integer from Standard)
+    returns mutable BRepOwner from StdSelect;
+    	---Purpose: Constructs an owner specification framework defined
+    	-- by the priority aPriority.
+    Create (aShape    : Shape from TopoDS;
+    	    aPriority : Integer = 0;
+    	    ComesFromDecomposition:Boolean from Standard = Standard_False)
+    returns mutable BRepOwner;
+    	---Purpose: Constructs an owner specification framework defined
+    	-- by the shape aShape and the priority aPriority.
+    	-- aShape and aPriority are stored in this framework. If
+    	-- more than one owner are detected during dynamic
+    	-- selection, the one with the highest priority is the one stored.
+
+    Create (aShape    : Shape from TopoDS;
+    	    theOrigin : SelectableObject from SelectMgr;
+    	    aPriority : Integer = 0;
+	    FromDecomposition:Boolean from Standard = Standard_False)
+    returns mutable BRepOwner;
+    	---Purpose: Constructs an owner specification framework defined
+    	-- by the shape aShape, the selectable object theOrigin
+    	-- and the priority aPriority.
+    	-- aShape, theOrigin and aPriority are stored in this
+    	-- framework. If more than one owner are detected
+    	-- during dynamic selection, the one with the highest
+    	-- priority is the one stored.
+
+
+    HasShape(me) returns Boolean from Standard;
+    ---C++: inline
+    ---Purpose: returns False if no shape was set
+    --          
+    
+    Set(me     : mutable;
+    	aShape : Shape from TopoDS;
+    	FromDecomposition:Boolean from Standard=Standard_False);
+    ---Purpose: <FromDecomposition> indicates whether <aShape>
+    --          comes from decomposition of a bigger shape.
+
+    ComesFromDecomposition(me) returns Boolean from Standard;
+    ---C++: inline
+
+    Shape(me) returns Shape from TopoDS ;
+    ---C++: inline
+    ---C++: return const&
+    
+
+    ---Category: hilight of detected shapes...
+
+    HasHilightMode(me) returns Boolean from Standard;
+    	---Purpose:
+       	-- Returns true if this framework has a highlight mode defined for it.
+    	---C++: inline
+    
+    SetHilightMode(me:mutable;aMode : Integer from Standard);
+    	---C++: inline
+    	---Purpose: Sets the highlight mode for this framework.
+    	-- This defines the type of display used to highlight the
+    	-- owner of the shape when it is detected by the selector.
+    	-- The default type of display is wireframe, defined by the index 0.
+
+    ResetHilightMode(me:mutable) ;
+   	---Purpose: Resets the higlight mode for this framework.
+	-- This defines the type of display used to highlight the
+    	-- owner of the shape when it is detected by the selector.
+    	-- The default type of display is wireframe, defined by the index 0.
+	---C++: inline
+    HilightMode(me) returns Integer from Standard;
+    	---Purpose: Returns the highlight mode for this framework.
+	-- This defines the type of display used to highlight the
+	-- owner of the shape when it is detected by the selector.
+	-- The default type of display is wireframe, defined by the index 0.
+	---C++: inline
+
+    IsHilighted (me  ;
+      	         aPM   : PresentationManager from PrsMgr;
+                 aMode : Integer  from  Standard  =0)
+    returns Boolean from Standard is redefined virtual;    
+    	---Purpose: Returns true if an object with the selection mode
+    	-- aMode is highlighted in the presentation manager aPM.
+    Hilight(me:mutable) is redefined virtual;
+ 
+    Hilight(me    : mutable;
+    	    aPM   : PresentationManager from PrsMgr;
+            aMode : Integer  from  Standard  =0) is redefined virtual;   
+ 	--- Purpose: Returns the selection mode aMode defining the type
+    	-- of shape highlighted in the presentation manager aPM.        
+    HilightWithColor  (me    : mutable;
+    	               aPM   : PresentationManager3d from PrsMgr;
+	               aCol  : NameOfColor from Quantity;
+                       aMode : Integer  from  Standard  =0) is redefined virtual;    
+	    
+    Unhilight(me    : mutable;
+    	      aPM   : PresentationManager from PrsMgr;
+              aMode : Integer  from  Standard  =0) is redefined virtual;    
+    	---Purpose: Removes highlighting from the type of shape
+    	-- identified the selection mode aMode in the presentation manager aPM.
+    Clear(me: mutable;  
+          aPM   : PresentationManager from PrsMgr;
+          aMode : Integer  from  Standard  =0) is redefined virtual;    
+    	---Purpose: Clears the presentation manager object aPM of all
+    	-- shapes with the selection mode aMode.
+	
+    SetLocation(me:mutable; aLoc : Location from TopLoc) is redefined;
+    ResetLocation(me:mutable) is redefined;
+
+fields
+    myPrsSh   		: Shape   from StdSelect; 
+    myCurMode 		: Integer from Standard;
+    myFromDecomposition : Boolean from Standard is protected;
+    myShape             : Shape from TopoDS     is protected;
+end BRepOwner;
+
+

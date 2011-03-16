@@ -1,0 +1,33 @@
+-- File:	BRepFill_EdgeFaceAndOrder.cdl
+-- Created:	Fri Oct  2 19:38:40 1998
+-- Author:	Julia GERASIMOVA
+--		<jgv@redfox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+private class EdgeFaceAndOrder from BRepFill
+
+	---Purpose: 
+
+uses
+    Edge from TopoDS,
+    Face from TopoDS, 
+    Shape from GeomAbs
+is
+    Create returns EdgeFaceAndOrder from BRepFill;
+    
+    Create( anEdge  : Edge from TopoDS;
+    	    aFace   : Face from TopoDS; 
+    	    anOrder : Shape from GeomAbs )
+    returns EdgeFaceAndOrder from BRepFill;
+
+fields
+
+    myEdge  : Edge from TopoDS;
+    myFace  : Face from TopoDS;
+    myOrder : Shape from GeomAbs;
+
+friends
+    class Filling from BRepFill
+
+end EdgeFaceAndOrder;

@@ -1,0 +1,390 @@
+-- File:	IntConicConic.cdl
+-- Created:	Mon Apr 27 17:02:19 1992
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1992
+
+class IntConicConic from IntCurve
+
+    ---Purpose: Provides methods to intersect two conics.
+    --          The exception ConstructionError is raised  in constructors
+    --          or in Perform methods  when a domain  (Domain from IntRes2d)
+    --          is not correct, i-e when a Circle (Circ2d from  gp) or
+    --          an Ellipse (i-e Elips2d from  gp) do not have a closed
+    --          domain (use the  SetEquivalentParameters method for a domain
+    --          on a circle or an ellipse).
+
+
+inherits Intersection from IntRes2d
+
+uses Lin2d               from gp,
+     Elips2d             from gp,
+     Circ2d              from gp,
+     Parab2d             from gp,
+     Hypr2d              from gp,
+     PConic              from IntCurve,
+     IConicTool          from IntCurve,
+     Domain              from IntRes2d,
+     IntImpConicParConic from IntCurve
+
+
+
+raises ConstructionError from Standard
+
+
+is
+
+    Create
+    
+    	---Purpose: Empty Constructor
+    
+    	returns IntConicConic from IntCurve;
+	---C++:inline
+
+
+    Create(L1: Lin2d from gp; D1: Domain from IntRes2d;  
+           L2: Lin2d from gp; D2: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 lines from gp.
+
+    	returns IntConicConic from IntCurve;
+	---C++:inline
+
+
+	
+    Perform(me: in out;L1: Lin2d from gp; D1: Domain from IntRes2d;  
+	               L2: Lin2d from gp; D2: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 lines from gp.
+
+        is static;
+
+
+    Create(L: Lin2d from gp;  DL: Domain from IntRes2d;  
+           C: Circ2d from gp; DC: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard )
+	   
+	---Purpose: Intersection between a line and a circle.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+    	returns IntConicConic from IntCurve
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;L: Lin2d from gp;  DL: Domain from IntRes2d;  
+                       C: Circ2d from gp; DC: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard) 
+    
+	---Purpose: Intersection between a line and a circle.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+        raises ConstructionError from Standard
+        is static;
+	
+	
+    Create(L: Lin2d from gp;   DL: Domain from IntRes2d;  
+           E: Elips2d from gp; DE: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a line and an ellipse.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        returns IntConicConic from IntCurve 
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;L: Lin2d from gp;   DL: Domain from IntRes2d;  
+                       E: Elips2d from gp; DE: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a line and an ellipse.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(L: Lin2d from gp;   DL: Domain from IntRes2d; 
+           P: Parab2d from gp; DP: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+       
+	---Purpose: Intersection between a line and a parabola from gp.
+
+        returns IntConicConic from IntCurve;
+	---C++:inline
+
+	
+    Perform(me: in out; L: Lin2d from gp;   DL: Domain from IntRes2d;
+                        P: Parab2d from gp; DP: Domain from IntRes2d;
+                        TolConf,Tol: Real from Standard )
+			
+	---Purpose: Intersection between a line and a parabola from gp.
+
+        is static;
+	
+
+    Create(L: Lin2d from gp;  DL: Domain from IntRes2d;  
+           H: Hypr2d from gp; DH: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a line and an hyperbola.
+
+        returns IntConicConic from IntCurve;
+	---C++:inline
+
+	
+    Perform(me: in out;L: Lin2d from gp;  DL: Domain from IntRes2d; 
+                       H: Hypr2d from gp; DH: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+        
+	---Purpose: Intersection between a line and an hyperbola.
+
+        is static;
+
+
+    Create(C1: Circ2d from gp; D1: Domain from IntRes2d;  
+           C2: Circ2d from gp; D2: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 circles from gp.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of one of the domain returns False.
+
+        returns IntConicConic from IntCurve
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;C1: Circ2d from gp; D1: Domain from IntRes2d;  
+                       C2: Circ2d from gp; D2: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard)
+		       
+	---Purpose: Intersection between 2 circles from gp.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of one of the circle returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(C: Circ2d from gp;  DC: Domain from IntRes2d;
+           E: Elips2d from gp; DE: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a circle and an ellipse.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of one the domain returns False.
+
+        returns IntConicConic from IntCurve   
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out; C: Circ2d from gp;  DC: Domain from IntRes2d;
+                        E: Elips2d from gp; DE: Domain from IntRes2d;
+                        TolConf,Tol: Real from Standard ) 
+        		
+	---Purpose: Intersection between a circle and an ellipse.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of one the domain returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(C: Circ2d from gp;   DC: Domain from IntRes2d;  
+           P: Parab2d from gp;  DP: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a circle and a parabola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+        returns IntConicConic from IntCurve
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out; C: Circ2d from gp;  DC: Domain from IntRes2d;  
+                        P: Parab2d from gp; DP: Domain from IntRes2d;
+                        TolConf,Tol: Real from Standard ) 
+           
+	---Purpose: Intersection between a circle and a parabola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+        raises ConstructionError from Standard
+        is static;
+	
+	
+    Create(C: Circ2d from gp; DC: Domain from IntRes2d;
+           H: Hypr2d from gp; DH: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a circle and an hyperbola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+        returns IntConicConic from IntCurve   
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;C: Circ2d from gp; DC: Domain from IntRes2d;
+                       H: Hypr2d from gp; DH: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+        	
+	---Purpose: Intersection between a circle and an hyperbola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the circle returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+	
+    Create(E1: Elips2d from gp; D1: Domain from IntRes2d;   
+           E2: Elips2d from gp; D2: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 ellipses.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of one of the domain returns False.
+
+        returns IntConicConic from IntCurve   
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;E1: Elips2d from gp; D1: Domain from IntRes2d;  
+                       E2: Elips2d from gp; D2: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+           
+	---Purpose: Intersection between 2 ellipses.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of one of the domain returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(E: Elips2d from gp; DE: Domain from IntRes2d; 
+           P: Parab2d from gp; DP: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between an ellipse and a parabola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        returns IntConicConic from IntCurve   
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out; E: Elips2d from gp; DE: Domain from IntRes2d;
+                        P: Parab2d from gp; DP: Domain from IntRes2d;
+                        TolConf,Tol: Real from Standard ) 
+           
+	---Purpose: Intersection between an ellipse and a parabola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(E: Elips2d from gp; DE: Domain from IntRes2d; 
+           H: Hypr2d from gp;  DH: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between an ellipse and an hyperbola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        returns IntConicConic from IntCurve   
+        raises ConstructionError from Standard;
+	---C++:inline
+
+
+    Perform(me: in out;E: Elips2d from gp; DE: Domain from IntRes2d; 
+                       H: Hypr2d from gp;  DH: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+        		
+	---Purpose: Intersection between an ellipse and an hyperbola.
+	--          The exception ConstructionError is raised if the method
+	--          IsClosed of the domain of the ellipse returns False.
+
+        raises ConstructionError from Standard
+        is static;
+
+
+    Create(P1: Parab2d from gp; D1: Domain from IntRes2d;  
+           P2: Parab2d from gp; D2: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 parabolas.
+
+        returns IntConicConic from IntCurve;
+	---C++:inline
+
+	
+    Perform(me: in out;P1: Parab2d from gp; D1: Domain from IntRes2d;  
+                       P2: Parab2d from gp; D2: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+           
+	---Purpose: Intersection between 2 parabolas.
+
+        is static;
+	
+
+    Create(P: Parab2d from gp; DP: Domain from IntRes2d;
+           H: Hypr2d from gp;  DH: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a parabola and an hyperbola.
+
+        returns IntConicConic from IntCurve;
+	---C++:inline
+
+	
+    Perform(me: in out;P: Parab2d from gp; DP: Domain from IntRes2d;
+                       H: Hypr2d from gp;  DH: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between a parabola and an hyperbola.
+
+        is static;
+
+
+    Create(H1: Hypr2d from gp; D1: Domain from IntRes2d;  
+           H2: Hypr2d from gp; D2: Domain from IntRes2d;
+           TolConf,Tol: Real from Standard ) 
+
+	---Purpose: Intersection between 2 hyperbolas.
+
+        returns IntConicConic from IntCurve;
+	---C++:inline
+
+	
+    Perform(me: in out;H1: Hypr2d from gp; D1: Domain from IntRes2d;
+                       H2: Hypr2d from gp; D2: Domain from IntRes2d;
+                       TolConf,Tol: Real from Standard ) 
+           
+	---Purpose: Intersection between 2 hyperbolas.
+
+        is static;
+
+
+fields
+
+    Inter : IntImpConicParConic from IntCurve;
+
+end IntConicConic;
+

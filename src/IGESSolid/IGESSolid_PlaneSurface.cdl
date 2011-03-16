@@ -1,0 +1,74 @@
+--
+-- File      :  PlaneSurface.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( SIVA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class PlaneSurface from IGESSolid  inherits IGESEntity
+
+        ---Purpose: defines PlaneSurface, Type <190> Form Number <0,1>
+        --          in package IGESSolid
+        --          A plane surface entity is defined by a point on the
+        --          surface and a normal to it.
+
+uses
+
+        Point           from IGESGeom,
+        Direction       from IGESGeom
+
+is
+
+        Create returns mutable PlaneSurface;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aLocation : Point;
+              aNormal   : Direction;
+              refdir    : Direction);
+        ---Purpose : This method is used to set the fields of the class
+        --           PlaneSurface
+        --       - aLocation : the point on the surface
+        --       - aNormal   : the surface normal direction
+        --       - refdir    : the reference direction (default NULL) for
+        --                    unparameterised curves
+
+        LocationPoint(me) returns Point;
+        ---Purpose : returns the point on the surface
+
+        Normal(me) returns Direction;
+        ---Purpose : returns the normal to the surface
+
+        ReferenceDir(me) returns Direction;
+        ---Purpose : returns the reference direction (for parameterised curve)
+        -- returns NULL for unparameterised curve
+
+        IsParametrised(me) returns Boolean;
+        ---Purpose : returns True if parameterised, else False
+
+fields
+
+--
+-- Class    : IGESSolid_PlaneSurface
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class PlaneSurface.
+--
+-- Reminder : A PlaneSurface instance is defined by :
+--            A plane surface entity is defined by a point(Location) on the
+--            surface and a normal(Normal) to it. In case of parameterised
+--            surface a reference direction (RefDir) is also given.
+--
+
+        theLocationPoint : Point;
+            -- the point on the surface
+
+        theNormal        : Direction;
+            -- the normal to the surface
+
+        theRefDir        : Direction;
+            -- the reference direction of the surface
+
+end PlaneSurface;

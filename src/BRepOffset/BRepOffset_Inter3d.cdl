@@ -1,0 +1,114 @@
+-- File:	BRepOffset_Inter3d.cdl
+-- Created:	Fri Aug 30 10:23:06 1996
+-- Author:	Yves FRICAUD
+--		<yfr@claquox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class Inter3d from BRepOffset 
+
+	---Purpose: Computes the intersection face face in a set of faces
+	--          Store the result in a SD as AsDes.
+
+uses
+    AsDes                     from BRepAlgo,
+    Image                     from BRepAlgo,
+    Analyse                   from BRepOffset,	
+    DataMapOfShapeOffset      from BRepOffset,
+    Shape                     from TopoDS,
+    Face                      from TopoDS,
+    ListOfShape               from TopTools,
+    MapOfShape                from TopTools,
+    DataMapOfShapeShape       from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
+    Real                      from Standard,
+    State                     from TopAbs	
+
+is
+    Create(AsDes : mutable AsDes from BRepAlgo;
+           Side  : State         from TopAbs;
+    	   Tol   : Real          from Standard);
+    
+    CompletInt (me : in out; SetOfFaces     : ListOfShape from TopTools; 
+    	    	    	     InitOffsetFace : Image       from BRepAlgo  ) 
+    is static;
+
+    FaceInter (me : in out; 
+    	       F1, F2         : Face  from TopoDS;
+    	       InitOffsetFace : Image from BRepAlgo) 
+    is static;
+    
+    ConnexIntByArc(me : in out; 
+    	          SetOfFaces     : ListOfShape from TopTools; 
+    	          ShapeInit      : Shape       from TopoDS;
+    	          Analyse        : Analyse     from BRepOffset;
+    	    	  InitOffsetFace : Image       from BRepAlgo)
+    is static;		  
+    
+    ConnexIntByInt(me     : in out;  
+    	    	   SI     :        Shape                from TopoDS;
+    	           MapSF  :        DataMapOfShapeOffset from BRepOffset;
+		   A      :        Analyse              from BRepOffset;
+		   MES    : in out DataMapOfShapeShape  from TopTools;
+		   Build  : in out DataMapOfShapeShape  from TopTools;
+		   Failed : in out ListOfShape          from TopTools)
+    is static;
+     
+    ContextIntByInt( me             : in  out;   
+                     ContextFaces   :        MapOfShape           from TopTools; 
+		     ExtentContext  :        Boolean              from Standard;	
+    	             MapSF          :        DataMapOfShapeOffset from BRepOffset;
+		     A              :        Analyse              from BRepOffset;
+		     MES            : in out DataMapOfShapeShape  from TopTools;
+		     Build          : in out DataMapOfShapeShape  from TopTools;
+		     Failed         : in out ListOfShape          from TopTools) 
+    is  static; 
+     
+    ContextIntByArc(me : in out;
+    	      	    ContextFaces   :        MapOfShape from TopTools;
+    	    	    ExtentContext  :        Boolean    from Standard;	
+    	       	    Analyse        :        Analyse    from BRepOffset;
+    	      	    InitOffsetFace :        Image      from BRepAlgo;
+    	       	    InitOffsetEdge : in out Image      from BRepAlgo)
+    is static;	       	
+    
+    AddCommonEdges(me : in out; 
+    	    	   SetOfFaces : ListOfShape from TopTools)
+    is static;		   
+    
+    SetDone(me : in out; F1,F2 : Face from TopoDS)
+    is static;
+    
+   ---Category: Querying
+
+    IsDone(me ; F1,F2 : Face from TopoDS) 
+    returns Boolean from Standard
+    is static;
+    
+    TouchedFaces(me : in out) returns MapOfShape from TopTools
+	---C++: return &
+    is static;
+    
+    AsDes(me) returns AsDes from BRepAlgo
+    is static;
+    
+    NewEdges(me : in out) returns MapOfShape from TopTools
+    	---C++:  return &
+    is static;
+    
+    ---Category: Private
+
+    Store(me : in out;F1,F2       : Face        from TopoDS;
+    	              LInt1,LInt2 : ListOfShape from TopTools)
+    is static private;    
+    
+fields
+
+   myAsDes        : AsDes                     from BRepAlgo;
+   myTouched      : MapOfShape                from TopTools;
+   myDone         : DataMapOfShapeListOfShape from TopTools;
+   myNewEdges     : MapOfShape                from TopTools;
+   mySide         : State                     from TopAbs;
+   myTol          : Real                      from Standard;
+   
+end Inter3d;

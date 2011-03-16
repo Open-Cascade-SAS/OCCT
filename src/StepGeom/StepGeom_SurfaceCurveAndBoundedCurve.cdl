@@ -1,0 +1,31 @@
+-- File:	StepGeom_SurfaceCurveAndBoundedCurve.cdl
+-- Created:	Mon Feb 15 10:32:14 1999
+-- Author:	Andrey BETENEV
+--		<abv@doomox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SurfaceCurveAndBoundedCurve from StepGeom 
+    inherits SurfaceCurve from StepGeom
+
+	---Purpose: complex type: bounded_curve + surface_curve
+	--          needed for curve_bounded_surfaces (S4132)
+
+uses
+    
+    BoundedCurve from StepGeom
+
+is
+
+    Create returns mutable SurfaceCurveAndBoundedCurve;
+	---Purpose: creates empty object
+
+    BoundedCurve (me: mutable) returns mutable BoundedCurve from StepGeom;
+        ---Purpose: returns field BoundedCurve
+	---C++: return &
+
+fields
+
+    myBoundedCurve : BoundedCurve from StepGeom;
+
+end SurfaceCurveAndBoundedCurve;

@@ -1,0 +1,57 @@
+--- File:	FairCurve_DistributionOfEnergy.cdl
+-- Created:	Mon Jan 22 15:11:20 1996
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1996
+
+
+deferred class DistributionOfEnergy from  FairCurve 
+     inherits  FunctionSet from math
+
+	---Purpose: Abstract class to use the Energy of an FairCurve
+
+uses  Vector        from math, 
+      FunctionSet   from math,
+      HArray1OfReal  from TColStd,
+      HArray1OfPnt2d from TColgp   
+
+
+
+is
+
+---    redefined methods
+
+    NbVariables(me)
+    	---Purpose: returns the number of variables of the function.
+
+    returns Integer is redefined;
+
+    
+    NbEquations(me)
+    	---Purpose: returns the number of equations of the function.
+
+    returns Integer is redefined;
+
+    
+---    new methods
+    Initialize( BSplOrder : Integer;
+                FlatKnots :  HArray1OfReal;
+		Poles     :  HArray1OfPnt2d;
+    	    	DerivativeOrder : Integer;
+    	    	NbValAux  : Integer = 0);
+		
+    SetDerivativeOrder(me :in out; DerivativeOrder : Integer); 
+		    
+
+fields
+
+MyBSplOrder   : Integer is protected;
+MyFlatKnots   : HArray1OfReal is  protected;
+MyPoles       : HArray1OfPnt2d  is protected;
+MyDerivativeOrder : Integer is protected;
+MyNbVar       : Integer is protected;
+MyNbEqua      : Integer is protected;
+MyNbValAux    : Integer is protected;
+
+
+end DistributionOfEnergy ;

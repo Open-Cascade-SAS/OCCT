@@ -1,0 +1,40 @@
+-- File:        Parabola.cdl
+-- Created:     Fri Dec  1 11:11:23 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Parabola from StepGeom 
+
+inherits Conic from StepGeom 
+
+uses
+
+	Real from Standard, 
+	HAsciiString from TCollection, 
+	Axis2Placement from StepGeom
+is
+
+	Create returns mutable Parabola;
+	---Purpose: Returns a Parabola
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aPosition : Axis2Placement from StepGeom;
+	      aFocalDist : Real from Standard) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetFocalDist(me : mutable; aFocalDist : Real);
+	FocalDist (me) returns Real;
+
+fields
+
+	focalDist : Real from Standard;
+
+end Parabola;

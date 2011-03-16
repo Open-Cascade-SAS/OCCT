@@ -1,0 +1,464 @@
+-- File:	GProp_VGPropsGK.cdl
+-- Created:	Wed Dec 21 17:35:57 2005
+-- Author:	Sergey KHROMOV
+--		<skv@dimox>
+
+
+generic class VGPropsGK from GProp (Arc as any;
+                                  Face as any;  -- as FaceTool(Arc)
+    	    	    	    	  Domain as any -- as DomainTool(Arc)
+    	    	    	    	 )
+inherits GProps from GProp
+
+        ---Purpose: Computes the global properties of a geometric solid 
+        --          (3D closed region of space) delimited with :
+        --            -  a point and a surface
+        --            -  a plane and a surface
+        --  
+        --          The surface can be :
+        --            -  a surface limited with its parametric values U-V, 
+        --               (naturally restricted)
+        --            -  a surface limited in U-V space with its boundary 
+        --               curves.
+        --  
+        --          The surface's requirements to evaluate the global 
+        --          properties are defined in the template FaceTool class from 
+        --          the package GProp. 
+	--  
+	--          The adaptive 2D algorithm of Gauss-Kronrod integration of 
+        --          double integral is used. 
+        --  
+        --          The inner integral is computed along U parameter of 
+        --          surface. The integrand function is encapsulated in the 
+        --          support class UFunction that is defined below. 
+	--  
+	--          The outer integral is computed along T parameter of a 
+        --          bounding curve. The integrand function is encapsulated in 
+        --          the support class TFunction that is defined below.
+
+uses 
+ 
+    Pnt     from gp, 
+    XYZ     from gp, 
+    Pln     from gp, 
+    Address from Standard, 
+    Boolean from Standard, 
+    Real    from Standard 
+
+
+--  Template class functions. Used for integration. Begin
+
+    class UFunction from GProp inherits Function from math 
+        ---Purpose: This class represents the integrand function for 
+        --          computation of an inner integral. The returned value 
+        --          depends on the value type and the flag IsByPoint. 
+	--  
+	--          The type of returned value is the one of the following 
+        --          values: 
+	--            -  GProp_Mass - volume computation. 
+	--            -  GProp_CenterMassX, GProp_CenterMassY, 
+        --               GProp_CenterMassZ - X, Y and Z coordinates of center 
+        --                                   of mass computation. 
+	--            -  GProp_InertiaXX, GProp_InertiaYY, GProp_InertiaZZ, 
+        --               GProp_InertiaXY, GProp_InertiaXZ, GProp_InertiaYZ 
+        --                                 - moments of inertia computation. 
+	--  
+	--          If the flag IsByPoint is set to Standard_True, the value is 
+        --          returned for the region of space that is delimited by a 
+        --          surface and a point. Otherwise all computations are 
+        --          performed for the region of space delimited by a surface 
+        --          and a plane.
+     
+    uses 
+     
+        Pnt       from gp, 
+	XYZ       from gp, 
+        Address   from Standard, 
+        Boolean   from Standard, 
+	Real      from Standard, 
+	ValueType from GProp
+    
+    is 
+     
+        Create(theSurface: Face; 
+               theVertex : Pnt     from gp; 
+	       IsByPoint : Boolean from Standard; 
+               theCoeffs : Address from Standard) 
+	---Purpose: Constructor. Initializes the function with the face, the 
+        --          location point, the flag IsByPoint and the coefficients 
+        --          theCoeff that have different meaning depending on the value 
+        --          of IsByPoint. 
+        --          If IsByPoint is equal to Standard_True, the number of the 
+        --          coefficients is equal to 3 and they represent X, Y and Z 
+        --          coordinates (theCoeff[0], theCoeff[1] and theCoeff[2] 
+        --          correspondingly) of the shift, if the inertia is computed 
+        --          with respect to the point different then the location. 
+        --          If IsByPoint is equal to Standard_False, the number of the 
+        --          coefficients is 4 and they represent the combination of 
+        --          plane parameters and shift values.
+        returns UFunction from GProp;  
+     
+        SetValueType(me: in out; theType: ValueType from GProp); 
+	---Purpose: Setting the type of the value to be returned. 
+	---C++: inline 
+     
+	SetVParam(me: in out; theVParam: Real from Standard);
+	---Purpose: Setting the V parameter that is constant during the 
+        --          integral computation.
+	---C++: inline 
+     
+        Value(me: in out; X:     Real from Standard; 
+                          F: out Real from Standard) 
+        ---Purpose: Returns a value of the function.
+	returns Boolean from Standard 
+	is redefined; 
+     
+        -----------------------
+        --  Private methods  --
+        -----------------------
+
+        VolumeValue(me: in out; X      :     Real from Standard; 
+                                thePMP0: out XYZ  from gp; 
+                                theS   : out Real from Standard; 
+                                theD1  : out Real from Standard) 
+        ---Purpose: Private method. Returns the value for volume computation. 
+        --          Other returned values are: 
+	--            -  thePMP0 - PSurf(X,Y) minus Location. 
+	--            -  theS and theD1 coeffitients that are computed and used 
+        --               for computation of center of mass and inertia values 
+        --               by plane.
+	returns Real from Standard 
+        is private; 
+     
+        CenterMassValue(me: in out; X:     Real from Standard; 
+                                    F: out Real from Standard) 
+        ---Purpose: Private method. Returns a value for the center of mass 
+        --          computation. If the value type other then GProp_CenterMassX,
+        --          GProp_CenterMassY or GProp_CenterMassZ this method returns 
+        --          Standard_False. Returns Standard_True in case of successful 
+        --          computation of a value.
+	returns Boolean from Standard 
+        is private; 
+     
+        InertiaValue(me: in out; X:     Real from Standard; 
+                                 F: out Real from Standard) 
+        ---Purpose: Private method. Computes the value of intertia. The type of 
+        --          a value returned is defined by the value type. If it is 
+        --          other then GProp_InertiaXX, GProp_InertiaYY, 
+        --          GProp_InertiaZZ, GProp_InertiaXY, GProp_InertiaXZ or 
+        --          GProp_InertiaYZ, the method returns Standard_False. Returns 
+        --          Standard_True in case of successful computation of a value.
+	returns Boolean from Standard 
+        is private; 
+     
+    fields 
+     
+        mySurface  : Face; 
+	myVertex   : Pnt       from gp; 
+	myCoeffs   : Address   from Standard; 
+	myVParam   : Real      from Standard; 
+	myValueType: ValueType from GProp;
+	myIsByPoint: Boolean   from Standard; 
+     
+    end UFunction;
+
+
+    --  Class  TFunction.
+
+    class TFunction from GProp inherits Function from math
+        ---Purpose: This class represents the integrand function for the outer 
+        --          integral computation. The returned value represents the 
+        --          integral of UFunction. It depends on the value type and the 
+        --          flag IsByPoint. 
+     
+    uses 
+     
+        Pnt       from gp, 
+        Address   from Standard, 
+        Boolean   from Standard, 
+        Integer   from Standard, 
+	Real      from Standard, 
+	ValueType from GProp
+    
+    is 
+     
+        Create(theSurface  : Face; 
+               theVertex   : Pnt     from gp; 
+	       IsByPoint   : Boolean from Standard; 
+               theCoeffs   : Address from Standard; 
+               theUMin     : Real    from Standard; 
+               theTolerance: Real    from Standard) 
+	---Purpose: Constructor. Initializes the function with the face, the 
+        --          location point, the flag IsByPoint, the coefficients 
+        --          theCoeff that have different meaning depending on the value 
+        --          of IsByPoint. The last two parameters are theUMin - the 
+        --          lower bound of the inner integral. This value is fixed for 
+        --          any integral. And the value of tolerance of inner integral 
+        --          computation.
+        --          If IsByPoint is equal to Standard_True, the number of the 
+        --          coefficients is equal to 3 and they represent X, Y and Z 
+        --          coordinates (theCoeff[0], theCoeff[1] and theCoeff[2] 
+        --          correspondingly) of the shift if the inertia is computed 
+        --          with respect to the point different then the location. 
+        --          If IsByPoint is equal to Standard_False, the number of the 
+        --          coefficients is 4 and they represent the compbination of 
+        --          plane parameters and shift values.
+        returns TFunction from GProp;   
+	 
+	Init(me: in out);
+      
+        SetNbKronrodPoints(me: in out; theNbPoints: Integer from Standard);
+        ---Purpose: Setting the expected number of Kronrod points for the outer 
+        --          integral computation. This number is required for 
+        --          computation of a value of tolerance for inner integral 
+        --          computation. After GetStateNumber method call, this number 
+        --          is recomputed by the same law as in 
+        --          math_KronrodSingleIntegration, i.e. next number of points 
+        --          is equal to the current number plus a square root of the 
+        --          current number. If the law in math_KronrodSingleIntegration
+        --          is changed, the modification algo should be modified 
+        --          accordingly.
+	---C++: inline 
+     
+        SetValueType(me: in out; aType: ValueType from GProp);
+	---Purpose: Setting the type of the value to be returned. This 
+        --          parameter is directly passed to the UFunction. 
+	---C++: inline 
+
+        SetTolerance(me: in out; aTol: Real from Standard);
+	---Purpose: Setting the tolerance  for  inner integration
+	---C++: inline 
+     
+        ErrorReached(me) 
+	---Purpose: Returns the relative reached error of all values computation since 
+        --          the last call of GetStateNumber method.
+	---C++: inline 
+	returns Real from Standard;
+
+        AbsolutError(me) 
+	---Purpose: Returns the absolut reached error of all values computation since 
+        --          the last call of GetStateNumber method.
+	---C++: inline 
+	returns Real from Standard;
+     
+        Value(me: in out; X:     Real from Standard; 
+                          F: out Real from Standard) 
+        ---Purpose: Returns a value of the function. The value represents an 
+        --          integral of UFunction. It is computed with the predefined 
+        --          tolerance using the adaptive Gauss-Kronrod method.
+	returns Boolean from Standard 
+	is redefined; 
+     
+        GetStateNumber(me: in out) 
+	---Purpose:  Redefined  method. Remembers the error reached during 
+        --           computation of integral values since the object creation 
+        --           or the last call of GetStateNumber. It is invoked in each 
+        --           algorithm from the package math. Particularly in the 
+        --           algorithm math_KronrodSingleIntegration that is used to 
+        --           compute the integral of TFunction.
+        returns Integer
+        is redefined;
+     
+    fields 
+     
+        mySurface   : Face; 
+	myUFunction : UFunction; 
+	myUMin      : Real      from Standard; 
+	myTolerance : Real      from Standard; 
+	myTolReached: Real      from Standard; 
+	myErrReached: Real      from Standard; 
+	myAbsError  : Real      from Standard; 
+	myValueType : ValueType from GProp; 
+	myIsByPoint : Boolean   from Standard; 
+	myNbPntOuter: Integer   from Standard;
+    
+    end TFunction;
+
+--  Template class functions. Used for integration. End
+
+is
+ 
+    Create
+        ---Purpose: Empty constructor. 
+	---C++: inline 
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the point VLocation.
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           thePoint    :        Pnt  from gp;
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the point VLocation. The inertia is computed with 
+        --          respect to thePoint.
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           theDomain   : in out Domain; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the point VLocation.
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           theDomain   : in out Domain; 
+           thePoint    :        Pnt  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001;
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the point VLocation. The inertia is computed with 
+        --          respect to thePoint.
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           thePlane    :        Pln  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the plane.
+    returns VGPropsGK; 
+
+    Create(theSurface  : in out Face; 
+           theDomain   : in out Domain; 
+           thePlane    :        Pln  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the plane.
+    returns VGPropsGK; 
+
+    SetLocation(me: in out; theLocation: Pnt from gp);
+        ---Purpose:  Sets the vertex that delimit 3D closed region of space.
+	---C++: inline 
+
+    Perform(me: in out; theSurface  : in out Face; 
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          point VLocation.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face; 
+			thePoint    :        Pnt  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          point VLocation. The inertia is computed with respect to 
+        --          thePoint.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face; 
+                        theDomain   : in out Domain; 
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          point VLocation.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face; 
+                        theDomain   : in out Domain; 
+			thePoint    :        Pnt  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          point VLocation. The inertia is computed with respect to 
+        --          thePoint.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face; 
+                        thePlane    :        Pln  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          plane.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face; 
+                        theDomain   : in out Domain; 
+                        thePlane    :        Pln  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          plane.
+    returns Real from Standard; 
+
+    GetErrorReached(me)
+        ---Purpose: Returns the relative reached computation error. 
+	---C++: inline 
+    returns Real from Standard;
+
+    GetAbsolutError(me)
+        ---Purpose: Returns the absolut reached computation error. 
+	---C++: inline 
+    returns Real from Standard;
+  
+-----------------------
+--  Private methods  --
+-----------------------
+
+    PrivatePerform(me: in out; 
+           theSurface  : in out Face; 
+           thePtrDomain:        Address from Standard; --  pointer to Domain.
+           IsByPoint   :        Boolean from Standard; 
+	   theCoeffs   :        Address from Standard; 
+           theTolerance:        Real    from Standard; 
+           theCGFlag   :        Boolean from Standard;  
+           theIFlag    :        Boolean from Standard)
+	   
+        ---Purpose: Main method for computation of the global properties that 
+        --          is invoked by each Perform method.
+    returns Real from Standard 
+    is private; 
+
+fields
+ 
+    myErrorReached: Real from Standard;
+    myAbsolutError: Real from Standard;
+
+end VGPropsGK;

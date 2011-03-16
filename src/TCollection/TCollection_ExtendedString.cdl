@@ -1,0 +1,363 @@
+-- File:	TCollection_ExtendedString.cdl
+-- Created:	Mon Feb 22 16:58:21 1993
+-- Author:	Mireille MERCIEN
+--		<mip@sdsun4>
+---Copyright:	 Matra Datavision 1993
+
+class ExtendedString from TCollection
+    ---Purpose: A variable-length sequence of "extended"
+    -- (UNICODE) characters (16-bit character type). It
+    -- provides editing operations with built-in memory
+    -- management to make ExtendedString objects
+    -- easier to use than ordinary extended character arrays.
+    -- ExtendedString objects follow "value
+    -- semantics", that is, they are the actual strings,
+    -- not handles to strings, and are copied through
+    -- assignment. You may use HExtendedString
+    -- objects to get handles to strings.
+        
+uses   AsciiString from TCollection
+
+raises 
+    NullObject,
+    OutOfRange, 
+    NumericError, 
+    NegativeValue
+
+is
+    Create returns ExtendedString from TCollection;
+    ---Purpose: Initializes a ExtendedString to an empty ExtendedString.
+
+    Create( astring : CString; isMultiByte : Boolean = Standard_False)
+            returns ExtendedString from TCollection
+            raises NullObject;
+    ---Purpose: Creation by converting a CString to an extended string. 
+	
+    Create( astring : ExtString)
+            returns ExtendedString from TCollection
+            raises NullObject;
+    ---Purpose: Creation by converting an ExtString to an extended string. 
+	
+    Create ( aChar : Character) returns ExtendedString from TCollection;
+    ---Purpose: Initializes a AsciiString with a single character.
+
+    Create ( aChar : ExtCharacter) returns ExtendedString from TCollection;
+    ---Purpose: Initializes a ExtendedString with a single character.
+
+    Create ( length : Integer; filler : ExtCharacter)
+              returns ExtendedString from TCollection;
+    ---Purpose: Initializes a ExtendedString with <length> space allocated.
+    -- and filled with <filler>.This is useful for buffers.
+
+    Create ( value : Integer ) returns ExtendedString from TCollection
+    ---Purpose: Initializes an ExtendedString with an integer value
+    raises NullObject;
+
+    Create ( value : Real ) returns ExtendedString from TCollection
+    ---Purpose: Initializes an ExtendedString with a real value
+    raises NullObject;
+
+    Create ( astring : ExtendedString from TCollection ) 
+            returns ExtendedString from TCollection;
+    ---Purpose: Initializes a ExtendedString with another ExtendedString.
+
+    Create( astring : AsciiString from TCollection)
+            returns ExtendedString from TCollection;
+    ---Purpose: Creation by converting a normal Ascii string to an extended string. 
+	
+   AssignCat (me : out ; other : ExtendedString from TCollection)
+   is static;
+   ---Purpose:  Appends the other extended string to this extended string.
+   -- Note that this method is an alias of operator +=.
+   -- Example: aString += anotherString
+   ---C++: alias operator +=
+   
+   Cat (me ; other : ExtendedString from TCollection) 
+   returns ExtendedString from TCollection
+   is static;
+   ---Level: Public
+   ---Purpose: Appends <other> to me.
+   ---Example:  aString = aString + anotherString
+   ---C++: alias operator +
+
+   ChangeAll(me : out; aChar, NewChar : ExtCharacter)
+   is static;
+   ---Level: Public
+   ---Purpose: Substitutes all the characters equal to aChar by NewChar
+   -- in the ExtendedString <me>.
+   -- The substitution can be case sensitive.
+   -- If you don't use default case sensitive, no matter wether aChar 
+   -- is uppercase or not.
+   ---Example:
+   --   me = "Histake" -> ChangeAll('H','M',Standard_True)
+   --   gives me = "Mistake"
+
+   Clear (me : out)
+   is static;
+   ---Level: Public
+   ---Purpose: Removes all characters contained in <me>.
+   -- This produces an empty ExtendedString.
+
+   Copy (me : out ; fromwhere : ExtendedString from TCollection)
+   is static;
+   ---Level: Public
+   ---Purpose: Copy <fromwhere> to <me>.
+   -- Used as operator =
+   ---Example: aString = anotherString;
+   ---C++: alias operator =
+   
+   Destroy (me : in out)
+   is static;
+   ---Level: Public
+   ---Purpose: Frees memory allocated by ExtendedString.
+   ---C++: alias ~
+
+   Insert (me : out; where : Integer; what : ExtCharacter)
+   ---Level: Public
+   ---Purpose: Insert a Character at position <where>.
+   ---Example:
+   --   aString contains "hy not ?"
+   --   aString.Insert(1,'W'); gives "Why not ?"
+   --   aString contains "Wh"
+   --   aString.Insert(3,'y'); gives "Why"
+   --   aString contains "Way"
+   --   aString.Insert(2,'h'); gives "Why"
+   raises OutOfRange from Standard
+   is static;
+
+   Insert (me : out; where : Integer; what : ExtendedString from TCollection)
+   ---Level: Public
+   ---Purpose: Insert a ExtendedString at position <where>.
+   raises OutOfRange from Standard
+   is static;
+
+   IsEqual (me ; other : ExtString ) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns true if the characters in this extended
+   -- string are identical to the characters in the other extended string.
+   -- Note that this method is an alias of operator ==
+   ---C++: alias operator ==
+    
+    IsEqual (me ; other : ExtendedString from TCollection) 
+   returns Boolean from Standard
+   is static;
+   ---Purpose: Returns true if the characters in this extended
+   -- string are identical to the characters in the other extended string.
+   -- Note that this method is an alias of operator ==
+   ---C++: alias operator ==
+
+   IsDifferent (me ; other : ExtString ) 
+   returns Boolean from Standard
+   is static;
+   ---Purpose: Returns true if there are differences between the
+   -- characters in this extended string and the other extended string.
+   -- Note that this method is an alias of operator !=.
+   ---C++: alias operator !=
+   
+   IsDifferent (me ; other : ExtendedString from TCollection) 
+   returns Boolean from Standard
+   is static;
+   ---Purpose: Returns true if there are differences between the
+   -- characters in this extended string and the other extended string.
+   -- Note that this method is an alias of operator !=.
+   ---C++: alias operator !=
+
+   IsLess (me ; other : ExtString ) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is less than <other>.
+   ---C++: alias operator <
+
+   IsLess (me ; other : ExtendedString from TCollection) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is less than <other>.
+   ---C++: alias operator <
+
+   IsGreater (me ; other : ExtString ) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is greater than <other>.
+   ---C++: alias operator >
+
+   IsGreater (me ; other : ExtendedString from TCollection) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns TRUE if <me> is greater than <other>.
+   ---C++: alias operator >
+
+   IsAscii(me) 
+   returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns True if the ExtendedString contains only 
+   -- "Ascii Range" characters .
+         
+   Length (me) returns Integer from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Returns number of characters in <me>.
+   -- This is the same functionality as 'strlen' in C.
+
+   Print (me ; astream : out OStream)
+   is static;
+   ---Level: Public
+   ---Purpose: Displays <me> .
+   ---C++: alias "friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream& astream,const TCollection_ExtendedString& astring);"
+
+   RemoveAll(me : out; what : ExtCharacter)
+   is static;
+   ---Level: Public
+   ---Purpose: Removes every <what> characters from <me>.
+
+   Remove (me : out ; where : Integer ; ahowmany : Integer=1)
+   ---Level: Public
+   ---Purpose: Erases <ahowmany> characters from position <where>,<where> included.
+   ---Example:
+   --   aString contains "Hello"
+   --   aString.Erase(2,2) erases 2 characters from position 1
+   --   This gives "Hlo".
+   raises OutOfRange from Standard
+   is static;
+
+ 
+   Search (me ; what : ExtendedString from TCollection) 
+   returns Integer from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Searches a ExtendedString in <me> from the beginning 
+   -- and returns position of first item <what> matching.
+   -- it returns -1 if not found.
+
+   SearchFromEnd (me ; what : ExtendedString from TCollection)
+   returns Integer from Standard
+   is static;
+   ---Level: Public
+   ---Purpose: Searches a ExtendedString in another ExtendedString from the 
+   -- end and returns position of first item <what> matching.
+   -- it returns -1 if not found.
+
+   SetValue(me : out; where : Integer; what : ExtCharacter)
+   ---Level: Public
+   ---Purpose: Replaces one character in the ExtendedString at position <where>.
+   -- If <where> is less than zero or greater than the length of <me>
+   -- an exception is raised.
+   ---Example:  
+   --   aString contains "Garbake"
+   --   astring.Replace(6,'g')  gives <me> = "Garbage"
+   raises OutOfRange from Standard
+   is static;
+
+   SetValue(me : out; where : Integer; what : ExtendedString from TCollection)
+   ---Level: Public
+   ---Purpose: Replaces a part of <me> by another ExtendedString see above.
+   raises OutOfRange from Standard
+   is static;
+
+   Split(me : out; where : Integer) returns ExtendedString from TCollection
+   ---Purpose: Splits this extended string into two sub-strings at position where.
+   -- -   The second sub-string (from position
+   --   where + 1 of this string to the end) is
+   --   returned in a new extended string.
+   -- -   this extended string is modified: its last
+   --   characters are removed, it becomes equal to
+   --   the first sub-string (from the first character to position where).
+   -- Example:
+   --   aString contains "abcdefg"
+   --   aString.Split(3) gives <me> = "abc" and returns "defg"
+   raises OutOfRange from Standard
+   is static;
+   
+   Token (me ; separators : ExtString; whichone : Integer=1) 
+   returns ExtendedString from TCollection
+   ---Purpose: Extracts <whichone> token from <me>.
+   -- By default, the <separators> is set to space and tabulation.
+   -- By default, the token extracted is the first one (whichone = 1).
+   -- <separators> contains all separators you need.
+   -- If no token indexed by <whichone> is found, it returns an empty AsciiString.
+   -- Example:
+   --    aString contains "This is a     message"
+   --    aString.Token()  returns "This" 
+   --    aString.Token(" ",4) returns "message"
+   --    aString.Token(" ",2) returns "is"
+   --    aString.Token(" ",9) returns ""
+   -- Other separators than space character and tabulation are allowed :
+   --    aString contains "1234; test:message   , value"
+   --    aString.Token("; :,",4) returns "value"
+   --    aString.Token("; :,",2) returns "test"
+   raises NullObject from Standard
+   is static;
+   
+   ToExtString(me) returns ExtString
+   ---Level: Public
+   ---Purpose: Returns pointer to ExtString
+   ---C++: return const
+   is static;
+
+   Trunc (me : out ; ahowmany  : Integer)
+   ---Purpose: Truncates <me> to <ahowmany> characters.
+   -- Example:  me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
+   --   Exceptions
+   -- Standard_OutOfRange if ahowmany is greater
+   -- than the length of this string.
+    raises OutOfRange from Standard
+   is static;
+
+   Value(me ; where : Integer) returns ExtCharacter
+   ---Purpose: Returns character at position <where> in <me>.
+   -- If <where> is less than zero or greater than the lenght of
+   -- <me>, an exception is raised.
+   -- Example: 
+   --   aString contains "Hello"
+   --   aString.Value(2) returns 'e'
+   -- Exceptions
+   -- Standard_OutOfRange if where lies outside
+   -- the bounds of this extended string.
+    raises OutOfRange from Standard
+   is static;
+ 
+   HashCode(myclass ; astring : ExtendedString from TCollection; Upper : Integer)
+   returns Integer;
+   ---Purpose: Returns a hashed value for the extended string
+   -- astring within the range 1..Upper.
+   -- Note: if astring is ASCII, the computed value is
+   -- the same as the value computed with the HashCode function on a
+   -- TCollection_AsciiString string composed with equivalent ASCII characters
+
+   IsEqual(myclass ; string1 : ExtendedString from TCollection; 
+           string2 : ExtendedString from TCollection)
+   returns Boolean;
+   ---Purpose: Returns true if the characters in this extended
+   -- string are identical to the characters in the other extended string.
+   -- Note that this method is an alias of operator ==. 
+    
+   ToUTF8CString(me; theCString : out PCharacter from Standard) 
+   returns Integer from Standard; 
+   ---Purpose: Converts the internal <mystring> to UTF8 coding and 
+   --          returns length of the out CString. A memory for the 
+   --          <theCString> should be allocated before call!
+   
+   LengthOfCString(me)  
+   returns Integer from Standard;  
+   ---Purpose: Returns expected CString length in UTF8 coding.
+   --          It can be used for  memory  calculation  before converting  
+   --          to CString containing symbols in UTF8 coding.
+   
+   ConvertToUnicode(me : out; astring : CString)  
+   returns Boolean is private;
+   ---Purpose: Returns true if the input CString was successfuly converted 
+   --          to UTF8 coding
+fields
+  mystring      : PExtCharacter from Standard; 
+  mylength      : Integer from Standard;
+
+
+end ExtendedString from TCollection;
+
+

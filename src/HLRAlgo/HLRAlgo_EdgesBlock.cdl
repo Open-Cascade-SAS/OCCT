@@ -1,0 +1,111 @@
+-- File:	HLRAlgo_EdgesBlock.cdl
+-- Created:	Mon Apr  6 17:57:45 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class EdgesBlock from HLRAlgo inherits TShared from MMgt
+
+	---Purpose: An EdgesBlock is a set of Edges. It is used by the
+	--          DataStructure to structure the Edges.
+	--          
+	--          An EdgesBlock contains :
+	--          
+	--          * An Array  of index of Edges.
+	--          
+	--          * An Array of flagsf ( Orientation
+	--                                OutLine
+	--                                Internal
+	--                                Double
+	--                                IsoLine)
+
+uses
+    Address         from Standard,
+    Boolean         from Standard,
+    Integer         from Standard,
+    Orientation     from TopAbs,
+    Array1OfInteger from TColStd,
+    Array1OfBoolean from TColStd
+    
+is
+    Create(NbEdges : Integer)
+	---Purpose: Create a Block of Edges for a wire.
+    returns mutable EdgesBlock from HLRAlgo;
+    
+    NbEdges(me) returns Integer from Standard
+    	---C++: inline
+    is static;
+    
+    Edge(me : mutable; I  : Integer from Standard;
+                       EI : Integer from Standard)
+    	---C++: inline
+    is static;		   
+
+    Edge(me; I : Integer from Standard)
+    returns Integer from Standard
+    	---C++: inline
+    is static;
+    
+    Orientation(me : mutable; I  : Integer     from Standard;
+		              Or : Orientation from TopAbs)
+    	---C++: inline
+    is static;		   
+
+    Orientation(me; I : Integer from Standard)
+    returns Orientation from TopAbs
+    	---C++: inline
+    is static;
+    
+    OutLine(me; I : Integer from Standard)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    OutLine(me : mutable; I : Integer from Standard;
+		          B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Internal(me; I : Integer from Standard)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Internal(me : mutable; I : Integer from Standard;
+		           B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    Double(me; I : Integer from Standard)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    Double(me : mutable; I : Integer from Standard;
+		         B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    IsoLine(me; I : Integer from Standard)
+    returns Boolean from Standard
+    	---C++: inline
+    is static;
+
+    IsoLine(me : mutable; I : Integer from Standard;
+		          B : Boolean from Standard)
+    	---C++: inline
+    is static;
+
+    UpdateMinMax(me : mutable; TotMinMax : Address from Standard)
+    is static;
+
+    MinMax(me) returns Address from Standard
+	---C++: inline
+    is static;
+
+fields
+    myEdges  : Array1OfInteger from TColStd;
+    myFlags  : Array1OfBoolean from TColStd;
+    myMinMax : Integer         from Standard[16];
+
+end EdgesBlock;

@@ -1,0 +1,79 @@
+-- File:	Law_Function.cdl
+-- Created:	Fri Dec 24 10:43:17 1993
+-- Author:	Jacques GOUSSARD
+--		<jag@topsn2>
+---Copyright:	 Matra Datavision 1993
+
+
+deferred class Function from Law
+
+	---Purpose: Root class for evolution laws.
+
+inherits TShared from MMgt
+
+
+uses  Array1OfReal    from TColStd,
+      Shape           from GeomAbs
+      
+raises OutOfRange from Standard
+
+
+is
+    Continuity(me) returns Shape from GeomAbs
+    is deferred;
+    
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. May be one if Continuity(me) >= <S>
+    is deferred;
+    
+    Intervals(me; T : in out Array1OfReal from TColStd; 
+    	          S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is deferred;
+    
+    Value(me: mutable; X: Real from Standard)
+    
+	---Purpose: Returns the value of the function at the point of parameter X.
+
+    	returns Real from Standard
+	is deferred;
+
+
+    D1(me: mutable; X: Real from Standard; F,D: out Real from Standard)
+    
+	---Purpose: Returns the value F and the first derivative D of the
+    	-- function at the point of parameter X.
+
+	is deferred;
+	
+    
+    D2(me: mutable; X: Real from Standard; F,D, D2: out Real from Standard)
+    
+	---Purpose: Returns the value, first and seconde derivatives 
+	--          at parameter X.
+
+	is deferred;
+
+    Trim(me; PFirst, PLast, Tol :Real from Standard) returns Function
+    
+    	---Purpose:   Returns a  law equivalent of  <me>  between
+	--        parameters <First>  and <Last>. <Tol>  is used  to
+	--        test for 3d points confusion.
+	--        It is usfule to determines the derivatives 
+	--        in these values <First> and <Last> if 
+        --        the Law is not Cn.          
+    	is deferred;    
+
+    Bounds(me: mutable; PFirst,PLast : out Real from Standard)
+    	
+	---Purpose: Returns the parametric bounds of the function.
+    	is deferred;
+
+end Function;

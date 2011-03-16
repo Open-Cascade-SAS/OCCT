@@ -1,0 +1,145 @@
+-- File:	SurfaceTransition.cdl
+-- Created:	Thu Jan 30 12:10:44 1992
+-- Author:	Didier PIFFAULT
+--		<dpf@sdsun1>
+--	        xpu:4/3/97 implementation	
+---Copyright:	 Matra Datavision 1992
+
+
+class SurfaceTransition from TopTrans 
+
+	---Purpose: This algorithm  is used to  compute the transition
+	--          of a 3D surface intersecting a topological surfacic
+	--          boundary on a 3D curve ( intersection curve ).          
+	--          The  boundary is  described  by a  set of faces 
+	--          each face is described by 
+	--          - its support surface,
+	--          - an orientation defining its matter side.
+	--          The geometric elements are described locally at the 
+	--          intersection point by a second order development.          
+	--          A surface is described by the normal vector, the
+	--          principal directions and the principal curvatures.
+	--          A curve is described  by the  tangent, the normal
+	--          and the curvature.          
+	--          The  algorithm  keeps track of the two faces elements 
+	--          closest to the part of the curve "before" and "after"
+	--          the intersection,  these  two elements are updated 
+	--          for each new face.          
+	--          The position of the  curve can be computed when at
+	--          least  one surface  element has   been given, this
+	--          position is "In","Out" or "On" for the part of the
+	--          curve "Before" or "After" the intersection.
+
+uses
+    Pnt from gp,
+    Dir from gp,    
+    State from TopAbs,
+    Orientation from TopAbs,
+    Array2OfReal from TColStd,
+    Array2OfOrientation from TopTrans
+is
+
+    Create returns SurfaceTransition from TopTrans;
+	---Purpose: Create an empty Surface Transition.
+    
+    Reset ( me     : in out;
+   	    Tgt    : Dir from gp;           -- curve tangent at this point
+    	    Norm   : Dir from gp;           -- surface normal at this point 
+            MaxD, MinD : Dir from gp;       -- surface principal directions at this point     
+    	    MaxCurv, MinCurv : in Real );   -- curvatures on surface at this point  
+	---Purpose: Initialize  a  Surface Transition with the local
+	--          description of the intersection curve and of the 
+	--          reference surface.
+	--          PREQUESITORY : Norm oriented OUTSIDE "geometric matter"
+    
+    Reset ( me   : in out;
+    	    Tgt  : Dir from gp;    
+    	    Norm : Dir from gp );     
+	---Purpose: Initialize  a  Surface Transition  with the  local
+	--          description of a straight line.
+
+    Compare(me  : in out; 
+    	    Tole : Real;                -- Cosine tolerance
+    	    Norm : Dir from gp;         -- surface normal oriented at this point 
+            MaxD, MinD : Dir from gp;   -- surface principal directions at this point    
+    	    MaxCurv, MinCurv : in Real; -- curvatures on surface at this point 
+	    S : Orientation from TopAbs;
+	    O : Orientation from TopAbs );     
+	---Purpose: Add a face element to the boundary.
+	--          
+	--          - S defines topological orientation for the face :
+	--          S FORWARD means: along the intersection curve on the
+	--          reference surface, transition states while crossing
+	--          the face are OUT,IN.
+	--          S REVERSED means states are IN,OUT. 
+	--          S INTERNAL means states are IN,IN.
+	--          
+	--          - O defines curve's position on face :
+	--          O FORWARD means the face is before the intersection
+	--          O REVERSED means the face is AFTER
+	--          O INTERNAL means the curve intersection is in the face.
+	--          PREQUESITORY : Norm oriented OUTSIDE "geometric matter"
+
+    Compare(me : in out;
+    	    Tole : Real;        
+    	    Norm : Dir from gp;    
+	    S : Orientation from TopAbs;
+	    O : Orientation from TopAbs);    
+	---Purpose: Add a plane or a cylindric face to the boundary.     
+            
+    StateBefore(me) returns State from TopAbs;
+	---Purpose: Returns the state of the reference surface before 
+	--          the interference, this is the position relative to 
+	--          the surface of a  point very close to the intersection
+	--          on the negative side of the tangent.
+	
+    StateAfter(me) returns State from TopAbs;
+	---Purpose: Returns the state of the reference surface after
+	--          interference, this is the position relative to the
+	--          surface of a point very  close to the intersection
+	--          on the positive side of the tangent.
+
+    --
+    --	Private :
+    --		
+    
+    UpdateReference(me : in out;
+    	    	    Tole : Real;
+    	    	    isInfRef : Boolean;
+    	    	    CosInf, CosSup : in out Real;
+		    Tran : Orientation from TopAbs;
+		    TranRef : in out Orientation from TopAbs) is private;
+
+    ComputeCos(me;
+    	       Tole : Real;                 -- cosinus tolerance
+	       Norm : Dir from gp;          -- face normal 	
+	       O : Orientation from TopAbs; -- intersection position on face
+    	       isleft : out Boolean) returns Real is private;
+
+    GetBefore(myclass;
+    	      Tran : Orientation from TopAbs)
+     returns State from TopAbs;
+			       
+    GetAfter(myclass;
+    	     Tran : Orientation from TopAbs)
+     returns State from TopAbs;
+
+fields
+
+    -- local reference input data :
+    myTgt   : Dir from gp;   -- intersection curve tangent 
+    myNorm  : Dir from gp;   -- reference surface normal
+    beafter : Dir from gp;   -- direction (Before, After) on reference surface.
+    myCurvRef : Real;        -- for the reference surface
+
+    -- local data for boundary faces :
+    myAng  : Array2OfReal from TColStd;
+    myCurv : Array2OfReal from TColStd;    
+    myOri : Array2OfOrientation from TopTrans;	
+    
+    -- flag for touch case (eap Mar 25 2002)
+    myTouchFlag : Boolean from Standard;
+
+end SurfaceTransition;
+
+

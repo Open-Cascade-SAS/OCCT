@@ -1,0 +1,108 @@
+-- File:	XSControl_TransferWriter.cdl
+-- Created:	Wed Mar 13 09:49:23 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox>
+---Copyright:	 Matra Datavision 1996
+
+
+class TransferWriter  from XSControl  inherits TShared
+
+    ---Purpose : TransferWriter gives help to control transfer to write a file
+    --           after having converted data from Cascade/Imagine
+    --           
+    --           It works with a Controller (which itself can work with an
+    --           Actor to Write) and a FinderProcess. It records results and
+    --           checks
+
+uses Transient,
+     Shape from TopoDS,
+     CheckIterator  from Interface,
+     InterfaceModel from Interface,
+     FinderProcess, Controller, ReturnStatus
+
+is
+
+    Create  returns mutable TransferWriter;
+    ---Purpose : Creates a TransferWriter, empty, ready to run
+    --           with an empty FinderProcess (but no controller, etc)
+
+    FinderProcess (me) returns mutable FinderProcess;
+    ---Purpose : Returns the FinderProcess itself
+
+    SetFinderProcess (me : mutable; FP : mutable FinderProcess);
+    ---Purpose : Sets a new FinderProcess and forgets the former one
+
+    Controller (me) returns Controller;
+    ---Purpose : Returns the currently used Controller
+
+    SetController (me : mutable; ctl : Controller);
+    ---Purpose : Sets a new Controller, also sets a new FinderProcess
+
+    Clear (me : mutable; mode : Integer);
+    ---Purpose : Clears recorded data according a mode
+    --           0 clears FinderProcess (results, checks)
+    --          -1 create a new FinderProcess
+
+    TransferMode (me) returns Integer;
+    ---Purpose : Returns the current Transfer Mode (an Integer)
+    --           It will be interpreted by the Controller to run Transfers
+    --           This call form could be later replaced by more specific ones
+    --             (parameters suited for each norm / transfer case)
+
+    SetTransferMode (me : mutable; mode : Integer);
+    ---Purpose : Changes the Transfer Mode
+
+    PrintStats (me; what : Integer; mode : Integer = 0);
+    ---Purpose : Prints statistics on current Trace File, according what,mode
+    --           See PrintStatsProcess for details
+
+    	--  Operations themselves
+
+    RecognizeTransient (me : mutable; obj : Transient) returns Boolean;
+    ---Purpose : Tells if a transient object (from an application) is a valid
+    --           candidate for a transfer to a model
+    --           Asks the Controller (RecognizeWriteTransient)
+    --           If <obj> is a HShape, calls RecognizeShape
+
+    TransferWriteTransient (me : mutable; model : mutable InterfaceModel;
+    	 obj : Transient)
+        returns ReturnStatus;
+    ---Purpose : Transfers a Transient object (from an application) to a model
+    --           of current norm, according to the last call to SetTransferMode
+    --           Works by calling the Controller
+    --           Returns status : =0 if OK, >0 if error during transfer, <0 if
+    --               transfer badly initialised
+
+    RecognizeShape (me : mutable; shape : Shape from TopoDS) returns Boolean;
+    ---Purpose : Tells if a Shape is valid for a transfer to a model
+    --           Asks the Controller (RecognizeWriteShape)
+
+    TransferWriteShape (me : mutable; model : mutable InterfaceModel;
+    	 shape : Shape from TopoDS)
+        returns ReturnStatus;
+    ---Purpose : Transfers a Shape from CasCade to a model of current norm,
+    --           according to the last call to SetTransferMode
+    --           Works by calling the Controller
+    --           Returns status : =0 if OK, >0 if error during transfer, <0 if
+    --               transfer badly initialised
+
+    CheckList (me) returns CheckIterator;
+    ---Purpose : Returns the check-list of last transfer (write), i.e. the
+    --           check-list currently recorded in the FinderProcess
+
+    ResultCheckList (me; model : InterfaceModel) returns CheckIterator;
+    ---Purpose : Returns the check-list of last transfer (write), but tries
+    --           to bind to each check, the resulting entity in the model
+    --           instead of keeping the original Mapper, whenever known
+
+    PrintStatsProcess (myclass; TP : FinderProcess;
+    	    	       what : Integer; mode : Integer = 0);
+    ---Purpose : Forecast to print statitics about a FinderProcess
+
+fields
+
+    theController    : Controller;
+    theTransferWrite : FinderProcess;
+    theTransferMode  : Integer;
+
+end TransferWriter;

@@ -1,0 +1,24 @@
+// File:	STEPSelections_AssemblyExplorer.lxx
+// Created:	Fri Mar 26 16:03:53 1999
+// Author:	data exchange team
+//		<det@friendox.nnov.matra-dtv.fr>
+
+//=======================================================================
+//function : NbAssemblies
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer STEPSelections_AssemblyExplorer::NbAssemblies() const
+{
+  return myRoots.Length();
+}
+
+//=======================================================================
+//function : Root
+//purpose  : 
+//=======================================================================
+
+inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyExplorer::Root(const Standard_Integer rank) const
+{
+  return myRoots.Value(rank);
+}

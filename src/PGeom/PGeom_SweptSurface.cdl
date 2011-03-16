@@ -1,0 +1,60 @@
+-- File:	PGeom_SweptSurface.cdl
+-- Created:	Tue Mar  2 11:09:11 1993
+-- Author:	Philippe DAUTRY
+--		<fid@phylox>
+-- Copyright:	 Matra Datavision 1993
+
+
+deferred class SweptSurface from PGeom inherits Surface from PGeom
+
+        ---Purpose : A  swept surface  is  one that is constructed  by
+        --         sweeping a curve by another curve.
+        --         
+	---See Also : SweptSurface from Geom.
+
+
+uses Dir         from gp,
+     Curve       from PGeom,
+     SurfaceForm from GeomAbs, 
+     Shape       from GeomAbs
+
+is
+
+
+    Initialize;
+	---Purpose: Initializes the field(s) with default value(s).
+    	---Level: Internal 
+
+
+    Initialize(aBasisCurve: Curve from PGeom;
+    	       aDirection: Dir from gp);
+	---Purpose: Initialize the fields with these values.
+    	---Level: Internal 
+
+
+  BasisCurve (me: mutable; aBasisCurve: Curve from PGeom);
+        ---Purpose : Set the value of the field basisCurve with <aBasisCurve>.
+    	---Level: Internal 
+
+
+  BasisCurve (me) returns Curve from PGeom;
+        ---Purpose : Returns the value of the field basisCurve.
+    	---Level: Internal 
+
+
+  Direction (me: mutable; aDirection: Dir from gp);
+        ---Purpose : Set the value of the field direction with <aDirection>.
+    	---Level: Internal 
+
+
+  Direction (me) returns Dir from gp;
+        ---Purpose : Returns the value of the field direction.
+    	---Level: Internal 
+
+
+fields
+
+  basisCurve : Curve       from PGeom   is protected;
+  direction  : Dir         from gp      is protected;
+
+end;

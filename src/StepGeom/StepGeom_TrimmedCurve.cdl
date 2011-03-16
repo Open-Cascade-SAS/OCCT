@@ -1,0 +1,61 @@
+-- File:        TrimmedCurve.cdl
+-- Created:     Fri Dec  1 11:11:30 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class TrimmedCurve from StepGeom 
+
+inherits BoundedCurve from StepGeom 
+
+uses
+
+	Curve from StepGeom, 
+	HArray1OfTrimmingSelect from StepGeom, 
+	Boolean from Standard, 
+	TrimmingPreference from StepGeom, 
+	TrimmingSelect from StepGeom, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable TrimmedCurve;
+	---Purpose: Returns a TrimmedCurve
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aBasisCurve : mutable Curve from StepGeom;
+	      aTrim1 : mutable HArray1OfTrimmingSelect from StepGeom;
+	      aTrim2 : mutable HArray1OfTrimmingSelect from StepGeom;
+	      aSenseAgreement : Boolean from Standard;
+	      aMasterRepresentation : TrimmingPreference from StepGeom) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
+	BasisCurve (me) returns mutable Curve;
+	SetTrim1(me : mutable; aTrim1 : mutable HArray1OfTrimmingSelect);
+	Trim1 (me) returns mutable HArray1OfTrimmingSelect;
+	Trim1Value (me; num : Integer) returns TrimmingSelect;
+	NbTrim1 (me) returns Integer;
+	SetTrim2(me : mutable; aTrim2 : mutable HArray1OfTrimmingSelect);
+	Trim2 (me) returns mutable HArray1OfTrimmingSelect;
+	Trim2Value (me; num : Integer) returns TrimmingSelect;
+	NbTrim2 (me) returns Integer;
+	SetSenseAgreement(me : mutable; aSenseAgreement : Boolean);
+	SenseAgreement (me) returns Boolean;
+	SetMasterRepresentation(me : mutable; aMasterRepresentation : TrimmingPreference);
+	MasterRepresentation (me) returns TrimmingPreference;
+
+fields
+
+	basisCurve : Curve from StepGeom;
+	trim1 : HArray1OfTrimmingSelect from StepGeom; -- a SelectType
+	trim2 : HArray1OfTrimmingSelect from StepGeom; -- a SelectType
+	senseAgreement : Boolean from Standard;
+	masterRepresentation : TrimmingPreference from StepGeom; -- an Enumeration
+
+end TrimmedCurve;

@@ -1,0 +1,35 @@
+-- File:	BRepFilletAPI.cdl
+-- Created:	Mon Oct 11 16:05:10 1999
+-- Author:	Atelier CAS2000
+--		<cas@h2ox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+package  BRepFilletAPI 
+
+uses    
+    TColgp, 
+    GeomAbs, 
+    Geom,
+    TopoDS,
+    TopTools,
+    BRepBuilderAPI, 
+    ChFiDS,
+    ChFi3d,
+    ChFi2d, 
+    TopOpeBRepBuild,
+    Law 
+     
+is   
+
+    -- 
+    -- Local Operations
+    --      
+    deferred  class  LocalOperation  ;  ---  inherits  MakeShape  from BRepBuilderAPI
+ 
+    class  MakeFillet    ;    ---  inherits  LocalOperation from BRepFilletAPI
+
+    class  MakeChamfer   ;    ---  inherits  LocalOperation from BRepFilletAPI
+     
+    class  MakeFillet2d  ;    ---  inherits  inherits MakeShape from BRepBuilderAPI
+
+end;

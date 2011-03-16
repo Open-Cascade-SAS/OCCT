@@ -1,0 +1,56 @@
+-- File:	ShapeFix_EdgeProjAux.cdl
+-- Created:	Wed Jun  3 12:32:09 1998
+-- Author:	data exchange team
+--		<det@nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class EdgeProjAux from ShapeFix inherits TShared from MMgt
+
+    ---Purpose: Project 3D point (vertex) on pcurves to find Vertex Parameter
+    --          on parametric representation of an edge
+
+uses
+
+    Curve   from Geom2d,
+    Face    from TopoDS,
+    Edge    from TopoDS,
+    Surface from Geom
+    
+is
+
+    Create returns mutable EdgeProjAux from ShapeFix;
+
+    Create (F: Face from TopoDS; E: Edge from TopoDS)
+    returns mutable EdgeProjAux from ShapeFix;
+    
+    Init (me: mutable; F: Face from TopoDS; E: Edge from TopoDS);
+
+    Compute (me: mutable; preci: Real);
+
+    IsFirstDone (me) returns Boolean from Standard;
+
+    IsLastDone (me) returns Boolean from Standard;
+
+    FirstParam (me) returns Real from Standard;
+
+    LastParam (me) returns Real from Standard;
+
+    IsIso (me: mutable; C: Curve from Geom2d) returns Boolean;
+
+    Init2d (me: mutable; preci: Real) is protected;
+
+    Init3d (me: mutable; preci: Real) is protected;
+
+    UpdateParam2d (me: mutable; C: Curve from Geom2d) is protected;
+
+fields
+
+    myFace: Face from TopoDS is protected;
+    myEdge: Edge from TopoDS is protected;
+    myFirstParam: Real is protected;
+    myLastParam: Real is protected;
+    myFirstDone: Boolean is protected;
+    myLastDone: Boolean is protected;
+    
+end EdgeProjAux;

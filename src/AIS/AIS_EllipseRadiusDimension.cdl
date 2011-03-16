@@ -1,0 +1,77 @@
+-- File:	AIS_EllipseRadiusDimension.cdl
+-- Created:	Thu Jan 22 09:01:38 1998
+-- Author:	Sergey ZARITCHNY
+--		<szy@androx.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+deferred class EllipseRadiusDimension from AIS inherits Relation from AIS
+
+	---Purpose: 
+    	--  Computes  geometry  (  basis  curve  and  plane  of  dimension)
+    	--  for  input  shape  aShape  from  TopoDS
+	--  Root  class  for MinRadiusDimension  and  MaxRadiusDimension 
+uses
+     Shape                 from TopoDS,
+     Elips                 from gp,
+     Pnt                   from gp, 
+     Pln                   from gp, 
+     Curve                 from Geom,  
+     OffsetCurve           from Geom,
+     Ellipse               from Geom,
+     Plane                 from Geom, 
+     Surface               from Geom,
+     ExtendedString        from TCollection,    
+     KindOfSurface         from AIS,
+     KindOfDimension       from AIS 
+
+is
+     Initialize(aShape      :  Shape           from  TopoDS; 
+    	    	aText       :  ExtendedString  from  TCollection); 
+
+    	--  Ellipse  radius  dimension  of  a  Shape  which  can  be  Edge 
+    	--  or  Face  (planar  or  cylindrical(surface  of  extrusion  or 
+    	--  surface  of  offset)) 		 
+
+      
+
+    KindOfDimension(me) returns KindOfDimension from AIS 
+    is redefined;
+
+    IsMovable(me) returns Boolean from Standard 
+    is redefined;        
+
+
+--
+--     Computation private methods
+-- 
+
+    ComputeGeometry( me: mutable ) ;
+--     is  private;  
+      
+    ComputeFaceGeometry(me: mutable)
+    is private; 
+     
+    ComputeCylFaceGeometry(me: mutable;
+    	    	     	aSurfType     : KindOfSurface  from  AIS; 
+    	    	    	aSurf         : Surface  from  Geom; 
+    	    	    	Offset        : Real     from  Standard )
+    is private; 
+     
+    ComputePlanarFaceGeometry(me: mutable)
+    is private; 
+    
+    ComputeEdgeGeometry(me: mutable)
+    is private;
+    
+fields 
+
+    myEllipse     :  Elips        from  gp        is  protected; 
+    myFirstPar    :  Real         from  Standard  is  protected; 
+    myLastPar     :  Real         from  Standard  is  protected;  
+    myIsAnArc     :  Boolean      from  Standard  is  protected; 
+    myOffsetCurve  : OffsetCurve  from  Geom      is  protected; 
+    myOffset       : Real         from  Standard  is  protected; 
+    myIsOffset     : Boolean      from  Standard  is  protected;  
+     
+end EllipseRadiusDimension;

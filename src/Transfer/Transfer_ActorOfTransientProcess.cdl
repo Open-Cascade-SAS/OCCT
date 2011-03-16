@@ -1,0 +1,33 @@
+-- File:	Transfer_ActorOfTransientProcess.cdl
+-- Created:	Wed Sep  4 17:42:46 1996
+-- Author:	Christian CAILLET
+--		<cky@fidox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class ActorOfTransientProcess  from Transfer  inherits ActorOfProcessForTransient from Transfer
+
+    ---Purpose : The original class was renamed. Compatibility only
+
+uses Transient, TransientProcess, ProcessForTransient, Binder
+
+is
+
+    Create  returns mutable ActorOfTransientProcess;
+
+    Transferring (me : mutable; start : Transient; TP : mutable ProcessForTransient)
+        returns mutable Binder  is redefined;
+    -- calls the one below
+
+    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
+        returns mutable Binder  is virtual;
+    -- default calls TransferTransient i.e. does nothing, to be redefined
+
+    TransferTransient (me : mutable; start : Transient;
+    	    	       TP : mutable TransientProcess)
+	returns mutable Transient  is virtual;
+    -- default does nothing, can be redefined
+    -- usefull when a result is Transient, simpler to define than Transfer with
+    -- a Binder
+
+end ActorOfTransientProcess;

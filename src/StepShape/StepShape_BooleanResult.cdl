@@ -1,0 +1,46 @@
+-- File:        BooleanResult.cdl
+-- Created:     Fri Dec  1 11:11:15 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class BooleanResult from StepShape 
+
+inherits GeometricRepresentationItem from StepGeom
+
+uses
+
+	BooleanOperator from StepShape, 
+	BooleanOperand from StepShape, 
+	HAsciiString from TCollection
+is
+
+	Create returns mutable BooleanResult;
+	---Purpose: Returns a BooleanResult
+
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection) is redefined;
+
+	Init (me : mutable;
+	      aName : mutable HAsciiString from TCollection;
+	      aOperator : BooleanOperator from StepShape;
+	      aFirstOperand : BooleanOperand from StepShape;
+	      aSecondOperand : BooleanOperand from StepShape) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetOperator(me : mutable; aOperator : BooleanOperator);
+	Operator (me) returns BooleanOperator;
+	SetFirstOperand(me : mutable; aFirstOperand : BooleanOperand);
+	FirstOperand (me) returns BooleanOperand;
+	SetSecondOperand(me : mutable; aSecondOperand : BooleanOperand);
+	SecondOperand (me) returns BooleanOperand;
+
+fields
+
+	anOperator : BooleanOperator from StepShape; -- an Enumeration
+	firstOperand : BooleanOperand from StepShape; -- a SelectType
+	secondOperand : BooleanOperand from StepShape; -- a SelectType
+
+end BooleanResult;

@@ -1,0 +1,22 @@
+-- File:        Template.cdl
+-- Created:     Fri Dec  1 11:11:29 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Template from StepVisual 
+
+inherits Representation from StepRepr
+
+uses
+
+	HAsciiString from TCollection, 
+	HArray1OfRepresentationItem from StepRepr,
+	RepresentationContext from StepRepr
+is
+
+	Create returns mutable Template;
+	---Purpose: Returns a Template
+
+
+end Template;

@@ -1,0 +1,101 @@
+
+--Copyright:      Matra Datavision 1992,1993
+
+-- File:          OSD_Error.cdl
+-- Created:       May 18 1992
+-- Author:        Stephan GARNAUD (ARM)
+--                <sga@sparc4>
+
+
+class Error from OSD
+
+   ---Purpose: Management of OSD errors
+
+--  Error handling style example:
+--
+--
+--  try{
+--  .
+--  .
+--  .
+--  OSD_Semaphore mysem("KeyName"); 
+--  if (mysem.Failed()) 
+--   switch (mysem.Error()){
+--    case 201: mysem.Perror();
+--    case 202: cout << "Just a warning";
+--   }
+--  .
+--  .
+--  .
+--  }
+--  catch(Standard_Failure){
+--   Handle(Standard_Failure) Occur = Standard_Failure::Caught();
+--   .
+--   .  // Programmer's decision
+--   .
+--
+--  Each method can be error tested with object.Failed().
+--  To manage an occuring error, just use object.Perror(); 
+--
+--  It is possible to reset the error counter to zero.
+--  To do this use the 'Reset' method .
+
+
+--  Only 4 methods are usable for programmer :
+--      Failed   to see whether an error occured or not.
+--      Value    to get system independent error code.
+--               (See annexe for a complete list of error code).
+--      Reset    to reset error code to zero (no error).
+--      Perror   to raise OSDError and print a self explanatory error
+--               message. This message says why an error occurs and
+--               explains what to do to correct it.
+
+uses
+  WhoAmI, AsciiString from TCollection
+
+raises
+  OSDError 
+
+is
+ Create returns Error;
+   ---Purpose: Initializes Error to be without any Error.
+   --          This is only used by OSD, not by programmer.
+   ---Level: Public
+
+ Perror (me : in out)
+   ---Purpose: Raises OSD_Error with accurate error message.
+   raises OSDError is static;
+   ---Level: Public
+
+ SetValue (me : in out; Errcode : Integer; From : Integer; Message : AsciiString) is static;
+   ---Purpose: Instantiates error
+   --          This is only used by OSD methods to instantiates an error code.
+   --          No description is done for the programmer.
+   ---Level: Public
+
+ Error (me) returns Integer is static;
+   ---Purpose: Returns an accurate error code.
+   --          To test these values, you must include "OSD_ErrorList.hxx"
+   ---Level: Public
+
+
+ Failed (me) returns Boolean is static;
+   ---Purpose: Returns TRUE if an error occurs
+   --          This is a way to test if a system call succeeded or not.
+   ---Level: Public
+
+ Reset (me : in out) is static;
+   ---Purpose: Resets error counter to zero
+   --          This allows the user to ignore an error (WARNING).
+   ---Level: Public
+
+fields
+   myMessage : AsciiString;   -- Internal error message
+   myErrno   : Integer;  -- UNIX/VMS error used by OSD only
+   myCode    : WhoAmI;   -- Accuracy code in error for OSD only
+   extCode   : Integer;  -- Error type decoded for user
+end Error from OSD;
+
+
+
+

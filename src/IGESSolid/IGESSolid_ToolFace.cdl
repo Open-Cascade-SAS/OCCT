@@ -1,0 +1,59 @@
+-- File:	IGESSolid_ToolFace.cdl
+-- Created:	Thu Oct 14 19:16:58 1993
+-- Author:	Christian CAILLET
+--		<cky@bravox>
+---Copyright:	 Matra Datavision 1993
+
+
+class ToolFace  from IGESSolid
+
+    ---Purpose : Tool to work on a Face. Called by various Modules
+    --           (ReadWriteModule, GeneralModule, SpecificModule)
+
+uses Face from IGESSolid,
+     IGESReaderData, ParamReader, IGESWriter, EntityIterator,
+     DirChecker,     ShareTool,   Check,      CopyTool,   IGESDumper, Messenger from Message
+
+raises DomainError
+
+is
+
+    Create returns ToolFace;
+    ---Purpose : Returns a ToolFace, ready to work
+
+
+    ReadOwnParams (me; ent : mutable Face;
+    	    	   IR : IGESReaderData; PR : in out ParamReader)
+    	raises DomainError  is static;
+    ---Purpose : Reads own parameters from file. <PR> gives access to them,
+    --           <IR> detains parameter types and values
+
+    WriteOwnParams (me; ent : Face;
+    	    	    IW : in out IGESWriter)  is static;
+    ---Purpose : Writes own parameters to IGESWriter
+
+
+    OwnShared  (me; ent : Face;
+    	        iter : in out EntityIterator)  is static;
+    ---Purpose : Lists the Entities shared by a Face <ent>, from
+    --           its specific (own) parameters
+
+    DirChecker (me; ent : Face) returns DirChecker  is static;
+    ---Purpose : Returns specific DirChecker
+
+    OwnCheck   (me; ent : Face;
+    	        shares  : ShareTool; ach : in out Check)  is static;
+    ---Purpose : Performs Specific Semantic Check
+
+
+    OwnCopy    (me; entfrom : Face; entto : mutable Face;
+    	        TC : in out CopyTool)  is static;
+    ---Purpose : Copies Specific Parameters
+
+
+    OwnDump (me; ent : Face;
+    	     dumper  : IGESDumper;  S : Messenger from Message; own : Integer)
+        is static;
+    ---Purpose : Dump of Specific Parameters
+
+end ToolFace;

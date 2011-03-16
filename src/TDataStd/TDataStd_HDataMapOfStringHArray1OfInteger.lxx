@@ -1,0 +1,23 @@
+// File:	TDataStd_HDataMapOfStringHArray1OfInteger.lxx
+// Created:	Fri Aug 17 17:12:04 2007
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+// Copyright:   Open CasCade SA 2007
+
+//=======================================================================
+//function : Map
+//purpose  : Access to the map
+//=======================================================================
+inline const TDataStd_DataMapOfStringHArray1OfInteger& TDataStd_HDataMapOfStringHArray1OfInteger::Map () const 
+{ 
+  return myMap; 
+}
+
+//=======================================================================
+//function : ChangeMap
+//purpose  : Access to the map for modification
+//=======================================================================
+inline TDataStd_DataMapOfStringHArray1OfInteger& TDataStd_HDataMapOfStringHArray1OfInteger::ChangeMap () 
+{ 
+  return myMap; 
+}

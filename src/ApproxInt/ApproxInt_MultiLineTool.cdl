@@ -1,0 +1,121 @@
+-- File:	ApproxInt_MultiLineTool.cdl
+-- Created:	Fri Mar 26 10:54:51 1993
+-- Author:	Laurent BUCHARD
+--		<lbr@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+generic class MultiLineTool from ApproxInt (TheMultiLine   as any;
+    	    	    	                    TheMultiMPoint as any)
+
+
+uses 
+      Status           from Approx,
+      Array1OfPnt      from TColgp,
+      Array1OfPnt2d    from TColgp,
+      Array1OfVec      from TColgp,
+      Array1OfVec2d    from TColgp
+    
+is
+    
+    
+    FirstPoint(myclass; ML: TheMultiLine) returns Integer;
+    	---C++:inline
+    	---Purpose: Returns the number of multipoints of the TheMultiLine.
+
+    LastPoint(myclass; ML: TheMultiLine) returns Integer;
+    	---C++:inline
+    	---Purpose: Returns the number of multipoints of the TheMultiLine.
+
+    NbP2d(myclass; ML: TheMultiLine) returns Integer;
+    	---C++:inline
+    	---Purpose: Returns the number of 2d points of a TheMultiLine.
+
+
+    NbP3d(myclass; ML: TheMultiLine) returns Integer; 
+    	---C++:inline
+   	---Purpose: Returns the number of 3d points of a TheMultiLine.
+
+
+    Value(myclass; ML:  TheMultiLine; MPointIndex: Integer; tabPt: out Array1OfPnt);
+    	---C++:inline
+    	---Purpose: returns the 3d points of the multipoint <MPointIndex>
+    	--          when only 3d points exist.
+
+
+    Value(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+          tabPt2d: out Array1OfPnt2d from TColgp);
+    	---C++:inline
+    	---Purpose: returns the 2d points of the multipoint <MPointIndex>
+    	--          when only 2d points exist.
+
+
+    Value(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+          tabPt: out Array1OfPnt from TColgp; tabPt2d: out Array1OfPnt2d);
+    	---C++:inline
+    	---Purpose: returns the 3d and 2d points of the multipoint 
+    	--          <MPointIndex>.
+
+    Tangency(myclass; ML:  TheMultiLine; MPointIndex: Integer; tabV: out Array1OfVec from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 3d points of the multipoint <MPointIndex>
+    	--          when only 3d points exist.
+
+
+    Tangency(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+          tabV2d: out Array1OfVec2d from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 2d tangency points of the multipoint 
+    	--          <MPointIndex> only when 2d points exist.
+
+
+    Tangency(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+             tabV: out Array1OfVec from TColgp; tabV2d: out Array1OfVec2d from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 3d and 2d points of the multipoint 
+    	--          <MPointIndex>.
+
+
+--- methods not used but necessary
+
+
+    Curvature(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+             tabV: out Array1OfVec from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 3d curvature of the multipoint <MPointIndex>
+    	--          when only 3d points exist.
+
+
+    Curvature(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+          tabV2d: out Array1OfVec2d from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 2d curvature points of the multipoint 
+    	--          <MPointIndex> only when 2d points exist.
+
+
+    Curvature(myclass; ML:  TheMultiLine; MPointIndex: Integer; 
+             tabV: out Array1OfVec from TColgp; 
+             tabV2d: out Array1OfVec2d from TColgp)
+    returns Boolean;
+    	---C++:inline
+    	---Purpose: returns the 3d and 2d curvature of the multipoint 
+    	--          <MPointIndex>.
+
+    
+     
+    MakeMLBetween(myclass; ML:  TheMultiLine; I1, I2: Integer;
+                  NbPMin: Integer) 
+    returns TheMultiLine;
+    	---C++:inline
+    	---Purpose: Is called if WhatStatus returned "PointsAdded".
+   
+    WhatStatus(myclass; ML:  TheMultiLine; I1, I2: Integer) 
+    	---C++:inline
+    returns Status from Approx;
+    
+end MultiLineTool;    
+

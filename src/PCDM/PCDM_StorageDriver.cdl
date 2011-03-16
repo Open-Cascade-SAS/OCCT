@@ -1,0 +1,70 @@
+-- File:	PCDM_StorageDriver.cdl
+-- Created:	Mon Nov  3 10:09:25 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class StorageDriver from PCDM inherits Writer from PCDM
+
+    ---Purpose: persistent implemention of storage.
+    --
+    --          The  application  must redefine one the two Make()
+    --           methods.  The first one, if  the application wants to
+    --          put only one document in the storage file.
+    --          
+    --            The  second  method  should  be   redefined  to  put
+    --            additional document  that   could  be  used by   the
+    --          retrieval instead of the principal document, depending
+    --          on the schema used during the retrieval.  For example,
+    --          a    second     document   could   be     a   standard
+    --             CDMShape_Document.    This  means   that a   client
+    --          application will already be able to extract a CDMShape_Document
+    --          of the file, if the Shape Schema remains unchanged.
+    --          
+    ---Category: persistent implemention of storage.
+
+uses Document from CDM, Document from PCDM, Data from Storage, ExtendedString from TCollection, Schema from Storage,SequenceOfExtendedString from TColStd, SequenceOfDocument from PCDM
+
+raises NoSuchObject from Standard,DriverError from PCDM
+is
+
+
+    Make(me: mutable; aDocument: Document from CDM)
+    returns Document from PCDM 
+    is virtual;
+    ---Purpose: raises NotImplemented.
+
+    Make(me: mutable; aDocument: Document from CDM; Documents: out SequenceOfDocument from PCDM)
+    is virtual;
+    ---Purpose:By default, puts  in the Sequence the  document returns
+    --            by the previous Make method.
+    --            
+
+    --          
+    SchemaName(me) returns ExtendedString from TCollection
+    is deferred;
+    
+    LoadExtensions(me: mutable; aSchema: Schema from Storage; Extensions: SequenceOfExtendedString from TColStd)
+    is virtual;
+    
+    Write(me: mutable; aDocument: Document from CDM; aFileName: ExtendedString from TCollection)
+    raises DriverError
+    ---Purpose:  Warning! raises DriverError if an error occurs during inside the
+    --          Make method.
+    is redefined virtual;
+    ---Purpose: stores the content of the Document into a new file.
+    --          
+    --          by  default  Write will  use Make   method to build a persistent
+    --          document and the Schema method to write the persistent document.
+    --          
+
+    SetFormat (me : mutable; aformat : ExtendedString from TCollection);
+
+    GetFormat (me)
+    returns ExtendedString from TCollection;
+
+fields 
+
+    myFormat : ExtendedString from TCollection;
+
+end StorageDriver from PCDM;

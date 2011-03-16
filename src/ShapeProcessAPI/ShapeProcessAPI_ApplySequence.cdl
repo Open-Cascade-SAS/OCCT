@@ -1,0 +1,59 @@
+-- File:	ShapeProcessAPI_ApplySequence.cdl
+-- Created:	Tue Jun 22 11:35:28 1999
+-- Author:	data exchange team
+--		<det@friendox>
+---Copyright:	 Matra Datavision 1999
+
+
+class ApplySequence from ShapeProcessAPI 
+
+    ---Purpose: Applies one of the sequence read from resource file.
+
+uses
+    
+    ShapeEnum           from TopAbs,
+    Shape               from TopoDS,
+    DataMapOfShapeShape from TopTools,
+    Printer             from Message,
+    ShapeContext        from ShapeProcess,
+    AsciiString         from TCollection
+is
+
+    Create (rscName: CString; seqName: CString = "") returns ApplySequence from ShapeProcessAPI;
+    	---Purpose: Creates an object and loads resource file and sequence of
+    	--          operators given by their names.
+    
+    Context (me: in out) returns ShapeContext from ShapeProcess;
+    	---C++ : return &
+	---Purpose: Returns object for managing resource file and sequence of
+    	--          operators.
+    
+    PrepareShape (me: in out; shape  : Shape from TopoDS;
+    	    	    	      fillmap: Boolean = Standard_False;
+			      until  : ShapeEnum from TopAbs = TopAbs_SHAPE)
+    returns Shape from TopoDS;
+    	---Purpose: Performs sequence of operators stored in myRsc.
+	--          If <fillmap> is True adds history "shape-shape" into myMap
+	--          for shape and its subshapes until level <until> (included).
+    	--          If <until> is TopAbs_SHAPE,  all the subshapes are considered.
+	
+    ClearMap (me: in out);
+    	---Purpose: Clears myMap with accumulated history.
+	
+    Map (me) returns DataMapOfShapeShape from TopTools;
+    	---C++: return const &
+	---Purpose: Returns myMap with accumulated history.
+
+    PrintPreparationResult (me);
+    	---Purpose: Prints result of preparation onto the messenger of the context.
+	--          Note that results can be accumulated from previous preparations
+	--          it method ClearMap was not called before PrepareShape.
+	---Remark: At the moment outputs information only on shells and faces.
+    
+fields
+
+    myContext: ShapeContext from ShapeProcess;
+    myMap    : DataMapOfShapeShape from TopTools;
+    mySeq    : AsciiString from TCollection;
+
+end ApplySequence;

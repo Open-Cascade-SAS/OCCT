@@ -1,0 +1,149 @@
+-- File:	HLRAlgo_Projector.cdl
+-- Created:	Thu Mar 12 13:32:28 1992
+-- Author:	Christophe MARION
+--		<cma@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+class Projector from HLRAlgo
+---Purpose: Implements a  projector object.
+-- This object is designed to be used in the
+-- removal of hidden lines and is returned by the
+-- Prs3d_Projector::Projector function.
+-- You define the projection of the selected shape
+-- by calling one of the following functions:
+-- -   HLRBRep_Algo::Projector, or
+-- -   HLRBRep_PolyAlgo::Projector
+-- The choice depends on the algorithm, which you are using.
+-- The parameters of the view are defined at the
+-- time of construction of a Prs3d_Projector object.
+uses
+    Real    from Standard,
+    Boolean from Standard,
+    Trsf    from gp,
+    Lin     from gp,
+    Pnt     from gp,
+    Vec     from gp,
+    Ax2     from gp,
+    Vec2d   from gp,
+    Pnt2d   from gp
+
+raises
+    NoSuchObject from Standard
+
+is
+    Create returns Projector from HLRAlgo;
+
+    Create(CS : Ax2 from gp)
+	---Purpose: Creates   an axonometric  projector.   <CS> is the
+	--          viewing coordinate system.
+    returns Projector from HLRAlgo;
+
+    Create(CS    : Ax2  from gp;
+    	   Focus : Real from Standard)
+	---Purpose: Creates  a  perspective  projector.   <CS>  is the
+	--          viewing coordinate system.
+    returns Projector from HLRAlgo;
+
+    Create(T         : Trsf    from gp;
+    	   Persp     : Boolean from Standard;
+    	   Focus     : Real    from Standard)
+	---Purpose: build a Projector with automatic minmax directions.
+    returns Projector from HLRAlgo;
+
+    Create(T         : Trsf    from gp;
+    	   Persp     : Boolean from Standard;
+    	   Focus     : Real    from Standard;
+	   v1,v2,v3  : Vec2d   from gp)
+	---Purpose: build a Projector with given minmax directions.
+    returns Projector from HLRAlgo;
+
+    Set (me: in out ;
+    	 T         : Trsf    from gp;
+         Persp     : Boolean from Standard;
+         Focus     : Real    from Standard) 
+    is static;
+	 
+    Directions(me; D1 , D2 , D3 : out Vec2d from gp)
+	---C++: inline
+    is static;
+
+    Scaled(me : in out; On : Boolean from Standard = Standard_False)
+	---Purpose: to compute with the given scale and translation.
+    is static;
+
+    Perspective(me) returns Boolean
+	---Purpose: Returns True if there is a perspective transformation.
+	---C++: inline
+    is static;
+
+    Transformation(me) returns Trsf from gp
+	---Purpose: Returns the active transformation.
+	---C++: return const &
+    is static;
+
+    InvertedTransformation(me) returns Trsf from gp
+	---Purpose: Returns the active inverted transformation.
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    FullTransformation(me) returns Trsf from gp
+	---Purpose: Returns the original transformation.
+	---C++: inline
+	---C++: return const &
+    is static;
+
+    Focus(me) returns Real from Standard
+	---Purpose: Returns the focal length.
+	---C++: inline
+    raises
+    	NoSuchObject from Standard -- if there is no perspective
+    is static;
+    
+    Transform(me; D : in out Vec from gp)
+	---C++: inline
+    is static;
+
+    Transform(me; Pnt : in out Pnt from gp)
+    	---C++: inline
+    is static;
+    
+    Project(me; P    :     Pnt   from gp;
+                Pout : out Pnt2d from gp)
+	---Purpose: Transform and apply perspective if needed.
+    is static;
+    
+    Project(me; P     :     Pnt  from gp;
+                X,Y,Z : out Real from Standard)
+	---Purpose: Transform and apply perspective if needed.
+    is static;
+    
+    Project(me; P     :     Pnt   from gp;
+                D1    :     Vec   from gp;
+    	        Pout  : out Pnt2d from gp;
+		D1out : out Vec2d from gp)
+	---Purpose: Transform and apply perspective if needed.
+    is static;
+    
+    Shoot(me; X , Y : Real from Standard)
+    returns Lin from gp
+	---Purpose: return a line going through the eye towards the
+	--          2d point <X,Y>.
+    is static;
+
+    SetDirection(me: in out) 
+    is static private;
+
+fields
+    myType       : Integer from Standard; 
+		     
+    myPersp      : Boolean from Standard;
+    myFocus      : Real    from Standard;
+    myScaledTrsf : Trsf    from gp;
+    myTrsf       : Trsf    from gp;
+    myInvTrsf    : Trsf    from gp;
+    myD1         : Vec2d   from gp;
+    myD2         : Vec2d   from gp;
+    myD3         : Vec2d   from gp;
+
+end Projector;

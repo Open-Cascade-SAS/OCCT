@@ -1,0 +1,217 @@
+-- File:	GeomInt_IntSS.cdl
+-- Created:	Fri Jan 27 10:26:45 1995
+-- Author:	Jacques GOUSSARD
+---Copyright:	 Matra Datavision 1995
+
+
+class IntSS from GeomInt 
+
+	---Purpose: 
+
+
+uses Intersection    from IntPatch,
+     LineConstructor from GeomInt,
+     SequenceOfCurve from TColGeom,
+     SequenceOfCurve from TColGeom2d,     
+     Pnt             from gp,
+     Pnt2d           from gp,
+     Curve           from Geom,
+     Curve           from Geom2d,     
+     Surface         from Geom,
+     HSurface        from GeomAdaptor,
+     TopolTool       from Adaptor3d,
+     Line            from IntPatch
+
+
+raises NotDone    from StdFail,
+       OutOfRange from Standard
+
+is
+
+    Create
+    	returns IntSS from GeomInt;
+	---C++: inline
+
+    Create(S1,S2: Surface from Geom; Tol: Real from Standard; 
+           Approx    : Boolean  from  Standard  =  Standard_True;
+           ApproxS1  : Boolean  from  Standard  =  Standard_False;
+           ApproxS2  : Boolean  from  Standard  =  Standard_False)
+    ---Purpose: performs general intersection of two surfaces just now
+    	returns IntSS from GeomInt;
+	---C++: inline
+	
+    Perform(me: in out;S1,S2  : Surface from Geom; Tol: Real from Standard;  
+    	           Approx     : Boolean  from  Standard  =  Standard_True;
+                   ApproxS1   : Boolean  from  Standard  =  Standard_False;
+                   ApproxS2   : Boolean  from  Standard  =  Standard_False)
+    ---Purpose: general intersection of two surfaces
+    	is static;
+
+    Perform(me: in out;HS1,HS2: HSurface from GeomAdaptor; Tol: Real from Standard;  
+    	           Approx    : Boolean  from  Standard  =  Standard_True;
+                   ApproxS1  : Boolean  from  Standard  =  Standard_False;
+                   ApproxS2  : Boolean  from  Standard  =  Standard_False)
+    ---Purpose: intersection of adapted surfaces
+    	is static;
+	---C++: inline
+
+    Perform(me: in out;S1,S2: Surface from Geom; Tol: Real from Standard;  
+                   U1,V1,U2,V2: Real from Standard;    	          
+    	           Approx    : Boolean  from  Standard  =  Standard_True;
+                   ApproxS1  : Boolean  from  Standard  =  Standard_False;
+                   ApproxS2  : Boolean  from  Standard  =  Standard_False)
+    ---Purpose: general intersection using a starting point
+    	is static;
+
+    Perform(me: in out;HS1,HS2: HSurface from GeomAdaptor; Tol: Real from Standard;  
+                   U1,V1,U2,V2: Real from Standard;    	          
+    	           Approx    : Boolean  from  Standard  =  Standard_True;
+                   ApproxS1  : Boolean  from  Standard  =  Standard_False;
+                   ApproxS2  : Boolean  from  Standard  =  Standard_False)
+    ---Purpose: intersection of adapted surfaces using a starting point
+    	is static;
+	---C++: inline
+
+    IsDone(me)
+    	returns Boolean from Standard
+	is static;
+	---C++: inline
+
+    TolReached3d(me) returns Real from Standard
+    is static;
+	---C++: inline
+
+    TolReached2d(me) returns Real from Standard
+    is static;
+	---C++: inline
+
+    NbLines(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	raises NotDone from StdFail
+	is static;
+	
+
+    Line(me; Index: Integer from Standard)
+
+    	returns any Curve from Geom
+	---C++: return const&
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+	is static;
+
+
+    HasLineOnS1(me; Index: Integer from Standard)
+    	returns Boolean from Standard;
+
+    LineOnS1(me; Index: Integer from Standard)
+
+    	returns any Curve from Geom2d
+	---C++: return const&
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+	is static;
+
+    HasLineOnS2(me; Index: Integer from Standard)
+    	returns Boolean from Standard;
+
+    LineOnS2(me; Index: Integer from Standard)
+
+    	returns any Curve from Geom2d
+	---C++: return const&
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+	is static;
+
+
+    NbBoundaries(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	raises NotDone from StdFail
+	is static;
+	
+
+    Boundary(me; Index: Integer from Standard)
+
+    	returns any Curve from Geom
+	---C++: return const&
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+	is static;
+
+
+
+    NbPoints(me)
+    
+    	returns Integer from Standard
+	---C++: inline
+	raises NotDone from StdFail
+	is static;
+	
+
+    Point(me; Index: Integer from Standard)
+
+    	returns Pnt from gp
+	---C++: inline
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+
+	is static;
+
+
+    Pnt2d(me; Index: Integer from Standard;
+              OnFirst: Boolean from Standard)
+    
+        returns Pnt2d from gp
+	raises NotDone from StdFail,
+	       OutOfRange from Standard
+	is static;
+
+    SetTolFixTangents(me:out;   
+    	    aTolCheck:Real from Standard;
+    	    aTolAngCheck:Real from Standard); 
+	 
+    TolFixTangents(me:out;   
+    	    aTolCheck:out Real from Standard;
+    	    aTolAngCheck:out Real from Standard);     
+
+--- Private methods
+--  
+--   
+    InternalPerform(me: in out; Tol: Real from Standard;
+    	           Approx,ApproxS1,ApproxS2 : Boolean from Standard;
+		   useStart : Boolean from Standard;
+                   U1,V1,U2,V2: Real from Standard)
+    	is static protected;
+     
+    MakeCurve(me: in out; Ind     : Integer from Standard;
+    	                  D1,D2   : TopolTool from Adaptor3d;
+			  Tol     : Real from Standard;
+                          Approx  : Boolean from Standard;
+                          Approx1 : Boolean from Standard;
+                          Approx2 : Boolean from Standard)
+    	is protected;
+
+fields
+
+    myIntersector  : Intersection    from IntPatch;
+    myLConstruct   : LineConstructor from GeomInt;
+    myHS1          : HSurface        from GeomAdaptor;
+    myHS2          : HSurface        from GeomAdaptor;
+    myNbrestr      : Integer         from Standard;
+    sline          : SequenceOfCurve from TColGeom;
+    slineS1        : SequenceOfCurve from TColGeom2d;
+    slineS2        : SequenceOfCurve from TColGeom2d;
+    myTolReached2d : Real            from Standard;
+    myTolReached3d : Real            from Standard;     
+    --
+    myTolCheck     : Real            from Standard;  
+    myTolAngCheck  : Real            from Standard;  
+    --
+end IntSS;

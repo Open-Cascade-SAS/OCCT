@@ -1,0 +1,14 @@
+// File:	XmlMNaming_NamedShapeDriver.lxx
+// Created:	Thu Feb  10 14:43:51 2011
+// Author:	Oleg AGASHIN <oan@opencascade.com>
+// Copyright:	Open CasCade S.A. 2011
+
+//=======================================================================
+//function : GetShapesLocations
+//purpose  : 
+//=======================================================================
+inline TopTools_LocationSet& XmlMNaming_NamedShapeDriver::GetShapesLocations()
+{
+  return myShapeSet.ChangeLocations();
+}
+

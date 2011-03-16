@@ -1,0 +1,37 @@
+-- File:	LocOpe_HBuilder.cdl
+-- Created:	Mon Jul  1 16:28:02 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@bravox>
+---Copyright:	 Matra Datavision 1996
+
+
+private class HBuilder from LocOpe 
+
+	---Purpose: 
+
+inherits HBuilder from TopOpeBRepBuild
+
+uses BuildTool from TopOpeBRepDS
+
+is
+
+    Create(BT: BuildTool from TopOpeBRepDS)
+    
+	---C++: inline
+    	returns mutable HBuilder from LocOpe;
+    
+
+    Classify(me)
+    
+	---C++: inline
+    	returns Boolean from Standard
+	is static;
+    
+
+    Classify(me: mutable; B: Boolean from Standard)
+    
+	---C++: inline
+    	is static;
+
+
+end HBuilder;

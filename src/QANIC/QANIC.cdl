@@ -1,0 +1,11 @@
+-- File:	QANIC.cdl
+-- Created:	Tue May 28 17:13:13 2002
+-- Author:	QA Admin
+--		<qa@russox>
+---Copyright:	 Matra Datavision 2002
+
+package QANIC
+     uses Draw
+is
+    Commands(DI : in out Interpretor from Draw);
+end;

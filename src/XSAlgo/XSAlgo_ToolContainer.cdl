@@ -1,0 +1,16 @@
+-- File:	XSAlgo_ToolContainer.cdl
+-- Created:	Wed Jan 19 17:48:16 2000
+-- Author:	data exchange team
+--		<det@nnov>
+---Copyright:	 Matra Datavision 2000
+
+
+class ToolContainer from XSAlgo inherits TShared from MMgt
+
+    ---Purpose: 
+
+is
+    Create returns mutable ToolContainer from XSAlgo;
+    	---Purpose: Empty constructor
+	
+end ToolContainer;

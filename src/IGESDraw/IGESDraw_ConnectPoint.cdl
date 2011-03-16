@@ -1,0 +1,182 @@
+--
+-- File      :  ConnectPoint.cdl
+-- Created   :  Mon 11 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Niraj RANGWALA )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ConnectPoint from IGESDraw  inherits IGESEntity
+
+        ---Purpose : defines IGESConnectPoint, Type <132> Form Number <0>
+        --           in package IGESDraw
+        --
+        --           Connect Point Entity describes a point of connection for
+        --           zero, one or more entities. Its referenced from Composite
+        --           curve, or Network Subfigure Definition/Instance, or Flow
+        --           Associative Instance, or it may stand alone.
+
+uses
+
+        HAsciiString        from TCollection,
+        Pnt                 from gp,
+        XYZ                 from gp,
+        TextDisplayTemplate from IGESGraph
+
+is
+
+        Create returns mutable ConnectPoint;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me                   : mutable;
+              aPoint               : XYZ;
+              aDisplaySymbol       : IGESEntity;
+              aTypeFlag            : Integer;
+              aFunctionFlag        : Integer;
+              aFunctionIdentifier  : HAsciiString;
+              anIdentifierTemplate : TextDisplayTemplate;
+              aFunctionName        : HAsciiString;
+              aFunctionTemplate    : TextDisplayTemplate;
+              aPointIdentifier     : Integer;
+              aFunctionCode        : Integer;
+              aSwapFlag            : Integer;
+              anOwnerSubfigure     : IGESEntity);
+        ---Purpose : This method is used to set the fields of the class
+        --           ConnectPoint
+        --       - aPoint               : A Coordinate point
+        --       - aDisplaySymbol       : Display symbol Geometry
+        --       - aTypeFlag            : Type of the connection
+        --       - aFunctionFlag        : Function flag for the connection
+        --       - aFunctionIdentifier  : Connection Point Function Identifier
+        --       - anIdentifierTemplate : Connection Point Function Template
+        --       - aFunctionName        : Connection Point Function Name
+        --       - aFunctionTemplate    : Connection Point Function Template
+        --       - aPointIdentifier     : Unique Connect Point Identifier
+        --       - aFunctionCode        : Connect Point Function Code
+        --       - aSwapFlag            : Connect Point Swap Flag
+        --       - anOwnerSubfigure     : Pointer to the "Owner" Entity
+
+        Point (me) returns Pnt;
+        ---Purpose : returns the coordinate of the connection point
+
+        TransformedPoint (me) returns Pnt;
+        ---Purpose : returns the Transformed coordinate of the connection point
+
+        HasDisplaySymbol (me) returns Boolean;
+        ---Purpose : returns True if Display symbol is specified
+        -- else returns False
+
+        DisplaySymbol (me) returns IGESEntity;
+        ---Purpose : if display symbol specified returns display symbol geometric entity
+        -- else returns NULL Handle
+
+        TypeFlag (me) returns Integer;
+        ---Purpose : return value specifies a particular type of connection :
+        --          Type Flag = 0   : Not Specified(default)
+        --                      1   : Nonspecific logical  point of connection
+        --                      2   : Nonspecific physical point of connection
+        --                      101 : Logical component pin
+        --                      102 : Logical part connector
+        --                      103 : Logical offpage connector
+        --                      104 : Logical global signal connector
+        --                      201 : Physical PWA surface mount pin
+        --                      202 : Physical PWA blind pin
+        --                      203 : Physical PWA thru-pin
+        --                5001-9999 : Implementor defined.
+
+        FunctionFlag (me) returns Integer;
+        ---Purpose : returns Function Code that specifies a particular function for the
+        -- ECO576 connection :
+        -- e.g.,        Function Flag = 0 : Unspecified(default)
+        --                            = 1 : Electrical Signal
+        --                            = 2 : Fluid flow Signal
+
+        FunctionIdentifier (me) returns HAsciiString from TCollection;
+        ---Purpose : return HAsciiString identifying Pin Number or Nozzle Label etc.
+
+        HasIdentifierTemplate (me) returns Boolean;
+        ---Purpose : returns True if Text Display Template is specified for Identifier
+        -- else returns False
+
+        IdentifierTemplate (me) returns TextDisplayTemplate;
+        ---Purpose : if Text Display Template for the Function Identifier is defined,
+        -- returns TestDisplayTemplate
+        -- else returns NULL Handle
+
+        FunctionName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns Connection Point Function Name
+
+        HasFunctionTemplate (me) returns Boolean;
+        ---Purpose : returns True if Text Display Template is specified for Function Name
+        -- else returns False
+
+        FunctionTemplate (me) returns TextDisplayTemplate;
+        ---Purpose : if Text Display Template for the Function Name is defined,
+        -- returns TestDisplayTemplate
+        -- else returns NULL Handle
+
+        PointIdentifier (me) returns Integer;
+        ---Purpose : returns the Unique Connect Point Identifier
+
+        FunctionCode (me) returns Integer;
+        ---Purpose : returns the Connect Point Function Code
+
+        SwapFlag (me) returns Boolean;
+        ---Purpose : return value = 0 : Connect point may be swapped(default)
+        --              = 1 : Connect point may not be swapped
+
+        HasOwnerSubfigure (me) returns Boolean;
+        ---Purpose : returns True if Network Subfigure Instance/Definition Entity
+        -- is specified
+        -- else returns False
+
+        OwnerSubfigure (me) returns IGESEntity;
+        ---Purpose : returns "owner" Network Subfigure Instance Entity,
+        -- or Network Subfigure Definition Entity, or NULL Handle.
+
+fields
+
+--
+-- Class    : IGESDraw_ConnectPoint
+--
+-- Purpose  : Declaration of the variables specific to a ConnectPoint.
+--
+-- Reminder : A ConnectPoint is defined by :
+--                  - A Coordinate point
+--                  - Display symbol Geometry
+--                  - Type of the connection
+--                  - Function flag for the connection
+--                  - Connection Point Function Identifier and its Template
+--                  - Connection Point Function Name and its Template
+--                  - Unique Connect Point Identifier
+--                  - Connect Point Function Code
+--                  - Connect Point Swap Flag
+--                  - Pointer to the "Owner"
+--
+
+        thePoint                : XYZ;
+
+        theDisplaySymbol        : IGESEntity;
+
+        theTypeFlag             : Integer;
+
+        theFunctionFlag         : Integer;
+
+        theFunctionIdentifier   : HAsciiString;
+
+        theIdentifierTemplate   : TextDisplayTemplate;
+
+        theFunctionName         : HAsciiString;
+
+        theFunctionTemplate     : TextDisplayTemplate;
+
+        thePointIdentifier      : Integer;
+
+        theFunctionCode         : Integer;
+
+        theSwapFlag             : Integer;
+
+        theOwnerSubfigure       : IGESEntity;
+
+end ConnectPoint;

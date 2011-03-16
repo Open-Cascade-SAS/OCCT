@@ -1,0 +1,62 @@
+-- File:	Dynamic_VariableInstance.cdl
+-- Created:	Mon Sep  5 15:02:15 1994
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@watson>
+---Copyright:	 Matra Datavision 1994
+
+
+class VariableInstance from Dynamic
+
+inherits
+
+    AbstractVariableInstance from Dynamic
+    
+	---Purpose: This    class  is set   in     the fields of   the
+	--          MethodInstance  class.  When   a MethodInstance is
+	--          done each  variable of   the definition   must  be
+	--          defined in the instance by a VariableInstance with
+	--          the same name as in the definition.  If the method
+	--          instance is directly  used  by an application  the
+	--          user    value    is   directly    set   into   the
+	--          VariableInstance. If now the MethodInstance enters
+	--          in  the   definition of    a CompositMethod It  is
+	--          necessary to define the correspondance between the
+	--          variables of the CompositMethod definition and the
+	--          use throughout the MethodInstance.
+
+uses
+
+    Variable from Dynamic
+
+
+is
+
+    Create returns mutable VariableInstance from Dynamic;
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns a new empty instance of this class.
+    
+    Variable(me : mutable ; avariable : Variable from Dynamic)
+    
+    ---Level: Public 
+    
+    ---Purpose: Sets    the    variable  <avariable>     into      the
+    --          VariableInstance <me>.
+    
+    is redefined;
+    
+    Variable(me) returns Variable from Dynamic
+    
+    ---Level: Public 
+    
+    ---Purpose: Returns       the      variable contained     into the
+    --          VariableInstance <me>.
+    
+    is static;
+
+fields
+
+    thevariable : Variable from Dynamic;
+
+end VariableInstance;

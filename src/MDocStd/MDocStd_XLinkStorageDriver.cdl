@@ -1,0 +1,47 @@
+-- File:	MDocStd_XLinkStorageDriver.cdl
+--      	---------------------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Sep 17 1997	Creation
+
+
+class XLinkStorageDriver from MDocStd
+    inherits ASDriver from MDF
+
+	---Purpose: Tool used to translate a transient XLink into a
+	--          persistent one.
+
+uses
+
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+is
+
+    Create(theMessageDriver : MessageDriver from CDM) -- Version 0
+    returns mutable XLinkStorageDriver from MDocStd;
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: XLink from TXLink.
+
+    NewEmpty (me)
+    returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  aSource     :         Attribute        from TDF;
+    	  aTarget     : mutable Attribute        from PDF;
+    	  aRelocTable :         SRelocationTable from MDF);
+	  
+	  
+end XLinkStorageDriver;

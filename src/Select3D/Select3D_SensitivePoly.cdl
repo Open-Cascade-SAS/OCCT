@@ -1,0 +1,72 @@
+deferred class SensitivePoly from Select3D 
+inherits SensitiveEntity from Select3D
+
+    ---Purpose: Sensitive Entity to make a face selectable.
+
+uses
+    EntityOwner       from SelectBasics,
+    Projector         from Select3D,
+    ListOfBox2d       from SelectBasics,
+    Array1OfPnt       from TColgp,
+    HArray1OfPnt      from TColgp,
+    Array1OfPnt2d   from TColgp,
+    Box2d             from Select3D
+
+is
+
+    Initialize (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : Array1OfPnt from TColgp)
+     returns mutable SensitivePoly;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive face object defined by the
+        -- owner OwnerId, the array of points ThePoints, and
+        -- the sensitivity type Sensitivity.
+        -- The array of points is the outer polygon of the geometric face.
+
+    Initialize (OwnerId      : EntityOwner from SelectBasics;
+            ThePoints    : HArray1OfPnt from TColgp)
+     returns mutable SensitivePoly;
+        ---Level: Public 
+        ---Purpose: Constructs a sensitive face object defined by the
+        -- owner OwnerId, the array of points ThePoints, and
+        -- the sensitivity type Sensitivity.
+        -- The array of points is the outer polygon of the geometric face.
+
+    Initialize(OwnerId      : EntityOwner from SelectBasics;
+            NbOfPoints   : Integer = 6)
+     returns mutable SensitivePoly;
+        ---Level: Public 
+        ---Purpose: Constructs the sensitive circle object defined by the
+        -- owner OwnerId, the circle Circle, the Boolean
+        -- FilledCircle and the number of points NbOfPoints.
+
+    Project (me:mutable;aProjector : Projector from Select3D) is redefined virtual;
+    ---Level: Public 
+    ---Purpose: projection of the sensitive primitive in order to
+    --          get 2D boxes for the Sort Algorithm
+    
+    Areas   (me:mutable ; boxes : in out ListOfBox2d from SelectBasics) is redefined static;
+    ---Level: Public 
+    ---Purpose: stores in <boxes> the 2D Boxes which represent the sensitive face
+    --          in the selection algorithm.
+
+    Points3D(me:mutable; theHArrayOfPnt : in out HArray1OfPnt from TColgp);
+    ---Purpose: Returns the 3D points of the array used at construction time.
+    ---C++: inline
+
+    Points2D(me:mutable; theArrayOfPnt2d : in out Array1OfPnt2d from TColgp);
+    ---Purpose: Returns the 2D points of the array used at construction time.
+    ---C++: inline
+
+
+    Destroy(me: mutable);
+    ---C++: alias ~
+
+
+fields
+ 
+    mypolyg3d       : Address   from Standard is protected;
+    mypolyg2d       : Address   from Standard is protected;
+    mybox2d         : Box2d     from Select3D is protected;
+    mynbpoints      : Integer   from Standard is protected;
+end SensitiveFace;

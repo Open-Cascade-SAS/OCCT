@@ -1,0 +1,129 @@
+-- File:	LocOpe_Pipe.cdl
+-- Created:	Wed Sep  4 14:41:52 1996
+-- Author:	Jacques GOUSSARD
+--		<jag@mobilox.lyon.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1996
+
+
+class DPrism from LocOpe 
+
+	---Purpose: Defines a  pipe  (near from   Pipe from BRepFill),
+	--          with modifications provided for the Pipe feature.
+
+uses Evolved from BRepFill,
+     DataMapOfShapeListOfShape    from TopTools,
+     ListOfShape  from TopTools,
+     
+     Shape from TopoDS,
+     Wire  from TopoDS,
+     Edge  from TopoDS, 
+     Face  from TopoDS,
+     Curve from Geom,
+     SequenceOfPnt   from TColgp,
+     SequenceOfCurve from TColGeom
+     
+
+raises NoSuchObject from Standard,
+       DomainError  from Standard,
+       NotDone      from StdFail
+
+is
+
+    Create (Spine     : Face from TopoDS;
+            Height1   : Real from Standard;
+	    Height2   : Real from Standard;
+	    Angle     : Real from Standard)
+	    
+	returns DPrism from LocOpe;     
+
+    Create (Spine     : Face from TopoDS;
+    	    Height    : Real from Standard;
+	    Angle     : Real from Standard)
+
+    	returns DPrism from LocOpe;
+
+
+    IsDone(me)
+    
+    	returns Boolean from Standard
+	is static;
+
+
+    Spine(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    Profile(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    FirstShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    LastShape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+	is static;
+
+
+    Shape(me)
+    
+    	returns Shape from TopoDS
+	---C++: return const &
+    	raises NotDone from StdFail
+	is static;
+
+
+    Shapes(me; S: Shape from TopoDS)
+    
+    	returns ListOfShape from TopTools
+	---C++: return const &
+    	raises NoSuchObject from Standard,
+	       -- The exception is raised if S is not a subshape of the profile
+               DomainError  from Standard,
+	       -- The exception is raised if S is neither a vertex nor
+	       -- an edge
+    	       NotDone from StdFail
+	is static;
+
+
+    Curves(me;  SCurves:  in  out  SequenceOfCurve  from  TColGeom)
+    
+	is static;
+ 
+    BarycCurve(me) 
+     
+    	returns  Curve  from  Geom 
+	is  static;
+
+    IntPerf(me:  in  out) 
+     
+    	is  static  private;
+  
+fields
+
+    myDPrism     : Evolved         from BRepFill;
+    myRes        : Shape           from TopoDS;
+    mySpine      : Face            from TopoDS; 
+    myProfile    : Wire            from TopoDS;
+    myProfile1   : Edge            from TopoDS;
+    myProfile2   : Edge            from TopoDS;
+    myProfile3   : Edge            from TopoDS;
+    myHeight     : Real            from Standard;
+    myFirstShape : Shape           from TopoDS;
+    myLastShape  : Shape           from TopoDS;
+    myCurvs      : SequenceOfCurve from TColGeom;
+    myMap        : DataMapOfShapeListOfShape    from TopTools;
+    
+end DPrism;     

@@ -1,0 +1,7 @@
+// File:	PrsMgr_PresentationManager3d.lxx
+// Created:	Thu Aug 20 10:00:41 1998
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+inline const Handle(Graphic3d_StructureManager)& PrsMgr_PresentationManager3d::StructureManager () const {
+  return myStructureManager;
+}

@@ -1,0 +1,36 @@
+
+#include <TColGeom_HArray1OfSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+
+
+ inline Standard_Boolean AdvApp2Var_ApproxAFunc2Var::IsDone() const 
+{
+  return myDone;
+}
+
+ inline Standard_Boolean AdvApp2Var_ApproxAFunc2Var::HasResult() const 
+{
+  return myHasResult;
+}
+
+ inline Handle(Geom_BSplineSurface) 
+AdvApp2Var_ApproxAFunc2Var::Surface( const Standard_Integer SSPIndex) const
+{
+ return Handle(Geom_BSplineSurface)::DownCast( mySurfaces->Value(SSPIndex) );
+}
+
+ inline Standard_Integer AdvApp2Var_ApproxAFunc2Var::UDegree() const 
+{
+  return myDegreeInU;
+}
+
+ inline Standard_Integer AdvApp2Var_ApproxAFunc2Var::VDegree() const 
+{
+  return myDegreeInV;
+}
+
+ inline Standard_Integer AdvApp2Var_ApproxAFunc2Var::NumSubSpaces(const Standard_Integer Dimension) const 
+{
+  return myNumSubSpaces[Dimension-1];
+}
+

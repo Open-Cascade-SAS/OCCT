@@ -1,0 +1,28 @@
+-- File:	BOPTColStd_Dump.cdl
+-- Created:	Thu Aug  1 10:23:09 2002
+-- Author:	Peter KURNEV
+--		<pkv@irinox>
+---Copyright:	 Matra Datavision 2002
+
+
+class Dump from BOPTColStd 
+
+	---Purpose: 
+    	--  The class provides dump service used for debugging   
+  	--  purposes 
+    	--     
+uses
+    AsciiString from TCollection
+
+--raises
+
+is 
+    PrintMessage(myclass; 
+    	aMessage:  AsciiString from TCollection); 
+	 
+    PrintMessage(myclass; 
+    	aMessage:  CString from Standard);    	
+
+--fields
+
+end Dump;

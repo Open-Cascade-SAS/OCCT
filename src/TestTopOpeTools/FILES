@@ -1,0 +1,5 @@
+FILES
+TestTopOpeTools_Trace.hxx
+TestTopOpeTools_Trace.cxx
+TestTopOpeTools_TraceCommands.cxx
+TestTopOpeTools_OtherCommands.cxx

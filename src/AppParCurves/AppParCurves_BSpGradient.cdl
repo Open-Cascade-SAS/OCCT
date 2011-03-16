@@ -1,0 +1,176 @@
+-- File:	AppParCurves_BSpGradient.cdl
+-- Created:	Wed Sep 22 10:23:14 1993
+-- Author:	Modelistation
+--		<model@zerox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+generic class BSpGradient from AppParCurves
+    	    	    (MultiLine   as any;
+    	    	     ToolLine    as any)   -- as ToolLine(MultiLine)
+
+
+    ---Purpose: This algorithm uses the algorithms LeastSquare, 
+    --          ResConstraint and a gradient method to approximate a set 
+    --          of points (AppDef_MultiLine) with a minimization of the
+    --          sum(square(|F(i)-Qi|)) by changing the parameter. 
+    --          The algorithm used is from of the mathematical 
+    --          package: math_BFGS, a gradient method.
+
+
+
+uses Vector                           from math, 
+     MultipleVarFunctionWithGradient  from math,
+     MultiBSpCurve                    from AppParCurves,
+     HArray1OfConstraintCouple        from AppParCurves,
+     Array1OfReal                     from TColStd,
+     Array1OfInteger                  from TColStd
+
+
+raises OutOfRange from Standard,
+       NotDone    from StdFail
+
+
+private class BSpParLeastSquare instantiates LeastSquare from AppParCurves
+    	(MultiLine, ToolLine);
+	
+private class BSpParFunction instantiates BSpFunction from AppParCurves
+    	(MultiLine, ToolLine, BSpParLeastSquare);
+
+
+class  BSpGradient_BFGS  from  AppParCurves 
+    inherits  BFGS  from  math 
+    uses  MultipleVarFunctionWithGradient  from math, 
+    	  Vector                           from math
+
+    is 
+     
+    	Create  (  F              :  in  out  MultipleVarFunctionWithGradient  from  math  ; 
+	           StartingPoint  :           Vector   from  math  ; 
+		   Tolerance3d	  :           Real     from  Standard  ; 
+		   Tolerance2d	  :           Real     from  Standard  ; 
+		   Eps    	  :           Real     from  Standard  ; 
+		   NbIterations   :           Integer  from  Standard  = 200  ); 
+		    
+        IsSolutionReached  ( me ; 
+    	    	    	     F  :  in  out  MultipleVarFunctionWithGradient  from  math  ) 
+		returns  Boolean  from  Standard  is  redefined ; 
+		 
+	fields 
+	  
+	  myTol3d  :  Real  from  Standard  ; 
+	  myTol2d  :  Real  from  Standard  ; 
+	 
+        end  BSpGradient_BFGS  from  AppParCurves ;
+is
+
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: in out Vector; 
+    	   Knots: Array1OfReal; Mults: Array1OfInteger;
+    	   Deg: Integer; 
+    	   Tol3d, Tol2d: Real; NbIterations: Integer = 1)
+	---Purpose: Tries to minimize the sum (square(||Qui - Bi*Pi||)) 
+	--          where Pui describe the approximating BSpline curves'Poles 
+	--          and Qi the MultiLine points with a parameter ui.
+	--          In this algorithm, the parameters ui are the unknowns.
+	--          The tolerance required on this sum is given by Tol.
+	--          The desired degree of the resulting curve is Deg.
+
+    returns BSpGradient from AppParCurves;
+
+    
+    Create(SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: in out Vector; 
+    	   Knots: Array1OfReal; Mults: Array1OfInteger;
+    	   Deg: Integer; 
+    	   Tol3d, Tol2d: Real; NbIterations: Integer;
+           lambda1, lambda2: Real)
+	---Purpose: Tries to minimize the sum (square(||Qui - Bi*Pi||)) 
+	--          where Pui describe the approximating BSpline curves'Poles 
+	--          and Qi the MultiLine points with a parameter ui.
+	--          In this algorithm, the parameters ui are the unknowns.
+	--          The tolerance required on this sum is given by Tol.
+	--          The desired degree of the resulting curve is Deg.
+
+    returns BSpGradient from AppParCurves;
+
+    
+    Perform(me: in out; SSP: MultiLine; FirstPoint, LastPoint: Integer;
+    	   TheConstraints: HArray1OfConstraintCouple;
+    	   Parameters: in out Vector; 
+    	   Knots: Array1OfReal; Mults: Array1OfInteger;
+    	   Deg: Integer; 
+    	   Tol3d, Tol2d: Real; NbIterations: Integer = 200)
+    is static protected;
+
+
+    IsDone(me)
+	---Purpose: returns True if all has been correctly done.	
+
+    returns Boolean
+    is static;
+    
+    
+    Value(me)
+    	---Purpose: returns all the BSpline curves approximating the
+    	--          MultiLine SSP after minimization of the parameter.
+
+    returns MultiBSpCurve from AppParCurves
+    raises NotDone from StdFail
+    is static;
+    
+    
+    Error(me; Index: Integer)
+	---Purpose: returns the difference between the old and the new 
+	--          approximation.
+	--          An exception is raised if NotDone.
+	--          An exception is raised if Index<1 or Index>NbParameters.
+
+    returns Real
+    raises NotDone from StdFail,
+    	   OutOfRange from Standard
+    is static;
+    
+
+    MaxError3d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    MaxError2d(me)
+    	---Purpose: returns the maximum difference between the old and the 
+    	--          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+    AverageError(me)
+       ---Purpose: returns the average error between the old and the
+       --          new approximation.
+
+    returns Real
+    raises NotDone from StdFail
+    is static;
+
+
+fields
+
+SCU:          MultiBSpCurve from AppParCurves;
+ParError:     Vector from math;
+AvError:      Real;
+MError3d:     Real;
+MError2d:     Real;
+mylambda1:    Real;
+mylambda2:    Real;
+Done:         Boolean;
+
+end BSpGradient from AppParCurves;

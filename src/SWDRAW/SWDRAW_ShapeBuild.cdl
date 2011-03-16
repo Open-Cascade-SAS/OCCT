@@ -1,0 +1,21 @@
+-- File:	SWDRAW_ShapeBuild.cdl
+-- Created:	Tue Mar  9 15:19:30 1999
+-- Author:	data exchange team
+--		<det@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeBuild from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeBuild
+	--          List of DRAW commands and corresponding functionalities:
+
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeBuild
+
+end ShapeBuild;

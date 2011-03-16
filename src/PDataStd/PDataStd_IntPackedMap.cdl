@@ -1,0 +1,45 @@
+-- File:	PDataStd_IntPackedMap.cdl
+-- Created:	Wed Aug 22 16:38:53 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+class IntPackedMap from PDataStd inherits Attribute from PDF
+
+	---Purpose: Persistance attribute of  TDataStd_IntPackedMap  
+
+uses   
+    HArray1OfInteger  from  PColStd
+
+
+is
+    Create returns mutable  IntPackedMap from  PDataStd;
+
+    Init (me : mutable; theLow,  theUp:  Integer  from Standard);
+    ---Purpose: Inits the internal container
+    --  if  (upper  -  lower)  ==  0  and (upper  |  lower) == 0, the corresponding  
+    --  array is empty (not requested)
+     
+    IsEmpty (me)
+    ---Purpose: Returns true if the internal container is empty
+    returns Boolean from Standard;  
+
+    Upper  (me)
+     ---Purpose: Returns an upper bound of the internal container
+    returns Integer from Standard;   
+
+    Lower  (me)
+     ---Purpose: Returns a lower bound of the internal container
+    returns Integer from Standard;   
+    
+    GetValue (me; theIndex : Integer from Standard)  
+    returns Integer from Standard;
+        
+    SetValue (me : mutable; theIndex : Integer from Standard;  
+    	    	    	    theValue : Integer from Standard);
+    
+fields 
+
+    myIntValues      :  HArray1OfInteger from PColStd;   
+    
+end IntPackedMap;

@@ -1,0 +1,16 @@
+-- File:	PDataStd_Directory.cdl
+-- Created:	Thu Jul 1 13:59:31 1999
+-- Author:	Sergey RUIN 
+-- modified     Sergey Zaritchny
+---Copyright:	 Matra Datavision 1999
+
+
+
+class Shape from PDataXtd inherits Attribute from PDF
+
+	---Purpose: 
+is
+
+    Create returns mutable Shape from  PDataXtd;
+
+end Shape;

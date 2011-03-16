@@ -1,0 +1,42 @@
+-- File     : Prs2d_AspectHidingPoly.cdl
+-- Created  : February  2000
+-- Author   : Tanya COOL
+---Copyright: Matra Datavision 2000
+
+class AspectHidingPoly from Prs2d inherits AspectRoot from Prs2d
+
+ ---Purpose: defines the attributes when drawing a hiding 
+ --          polyhedral simplification Presentation.
+uses
+
+  NameOfColor from Quantity,
+  TypeOfLine from Aspect,
+  WidthOfLine from Aspect 
+
+is
+ 
+    Create ( HidingColorInd: NameOfColor from Quantity;
+             FrameColorInd:  NameOfColor from Quantity;
+             FrameTypeInd:   TypeOfLine from Aspect;
+             FrameWidthInd:  WidthOfLine from Aspect)
+	   returns mutable AspectHidingPoly from Prs2d;
+	    
+    SetHidingColor (me: mutable; aColorInd:      NameOfColor from Quantity ) is static;
+    SetFrameColor  (me: mutable; aFrameColorInd: NameOfColor from Quantity ) is static;
+    SetFrameType   (me: mutable; aFrameTypeInd:  TypeOfLine from Aspect) is static;
+    SetFrameWidth  (me: mutable; aFrameWidthInd: WidthOfLine from Aspect ) is static;
+
+    Values( me;
+	      HidingColorInd: out NameOfColor from Quantity;
+            FrameColorInd:  out NameOfColor from Quantity;
+            FrameTypeInd:   out TypeOfLine from Aspect;
+            FrameWidthInd:  out WidthOfLine from Aspect );
+
+ fields
+    
+    myHidingColorInd: NameOfColor from Quantity;
+    myFrameColorInd:  NameOfColor from Quantity;
+    myFrameTypeInd:   TypeOfLine  from Aspect;
+    myFrameWidthInd:  WidthOfLine from Aspect; 
+
+end AspectHidingPoly from Prs2d;

@@ -1,0 +1,299 @@
+// File:	Intf_InterferencePolygon3d.gxx
+// Created:	Fri Oct  9 10:28:57 1992
+// Author:	Didier PIFFAULT
+//		<dpf@sdsun1>
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <Intf_SeqOfSectionPoint.hxx>
+#include <Intf_SectionLine.hxx>
+#include <Intf_SeqOfSectionLine.hxx>
+#include <Intf_SeqOfTangentZone.hxx>
+#include <Intf_TangentZone.hxx>
+
+//=======================================================================
+//function : Intf_InterferencePolygon3d
+//purpose  : Empty constructor.
+//=======================================================================
+
+Intf_InterferencePolygon3d::Intf_InterferencePolygon3d()
+: Intf_Interference(Standard_False), IndexMin(0)
+{}
+
+//=======================================================================
+//function : Intf_InterferencePolygon3d
+//purpose  : Constructor of the interference beetween two Polygon.
+//=======================================================================
+
+static Standard_Integer iObje1, iObje2;
+
+Intf_InterferencePolygon3d::Intf_InterferencePolygon3d
+  (const Polygon3d1& Obje1, const Polygon3d2& Obje2)
+: Intf_Interference(Standard_False), IndexMin(0)
+{
+  Tolerance=ToolPolygon3d1::DeflectionOverEstimation(Obje1)+
+            ToolPolygon3d2::DeflectionOverEstimation(Obje2);
+  if (Tolerance<=0.) Tolerance=Epsilon(1000.);
+  Interference(Obje1, Obje2);
+}
+
+
+//=======================================================================
+//function : Intf_InterferencePolygon3d
+//purpose  : Constructor of the auto interference of a Polygon.
+//=======================================================================
+
+Intf_InterferencePolygon3d::Intf_InterferencePolygon3d
+  (const Polygon3d1& Obje)
+: Intf_Interference(Standard_True), IndexMin(0)
+{
+  Tolerance=ToolPolygon3d1::DeflectionOverEstimation(Obje)*2;
+  Interference(Obje);
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void Intf_InterferencePolygon3d::Perform 
+  (const Polygon3d1& Obje1, const Polygon3d2& Obje2)
+{
+  SelfInterference(Standard_False);
+  IndexMin=0;
+  Tolerance=ToolPolygon3d1::DeflectionOverEstimation(Obje1)+
+            ToolPolygon3d2::DeflectionOverEstimation(Obje2);
+  if (Tolerance<=0.) Tolerance=Epsilon(1000.);
+  Interference(Obje1, Obje2);
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void Intf_InterferencePolygon3d::Perform 
+  (const Polygon3d1& Obje)
+{
+  SelfInterference(Standard_True);
+  IndexMin=0;
+  Tolerance=ToolPolygon3d1::DeflectionOverEstimation(Obje)*2;
+  Interference(Obje);
+}
+
+//--------------------------------------------------------
+// Return the number of singularity in the interference.
+//--------------------------------------------------------
+Standard_Integer Intf_InterferencePolygon3d::NbResults () const
+{
+  return mySLines.Length();
+}
+
+//----------------------------------------------------------
+// Give the result of range Index in the interference.
+//----------------------------------------------------------
+const Intf_SectionLine& Intf_InterferencePolygon3d::ResultLine  
+  (const Standard_Integer Index) const
+{
+  return mySLines(Index);
+}
+
+//=======================================================================
+//function : ResultValue
+//purpose  : give the distance beetween the two polygons for this result.
+//=======================================================================
+
+Standard_Real Intf_InterferencePolygon3d::ResultValue 
+  (const Standard_Integer Index) const
+{
+  return mySLines(Index).GetPoint(1).Pnt().Distance
+        (mySLines(Index).GetPoint(2).Pnt());
+}
+
+//=======================================================================
+//function : MinimalDistance
+//purpose  : 
+//=======================================================================
+
+Standard_Real Intf_InterferencePolygon3d::MinimalDistance  () const
+{
+  return MinimalDist;
+}
+
+
+//=======================================================================
+//function : MinimalResult
+//purpose  : give the result of minimal distance.
+//=======================================================================
+
+Standard_Integer Intf_InterferencePolygon3d::MinimalResult () const
+{
+  return IndexMin;
+}
+
+//=======================================================================
+//function : Interference
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean beginOfNotClosedFirst=Standard_True;
+static Standard_Boolean beginOfNotClosedSecon=Standard_True;
+
+void Intf_InterferencePolygon3d::Interference
+  (const Polygon3d1& Obje1,
+   const Polygon3d2& Obje2)
+{
+  beginOfNotClosedFirst=!ToolPolygon3d1::Closed(Obje1);
+  for (iObje1=1; iObje1<=ToolPolygon3d1::NbSegments(Obje1); iObje1++) {
+    beginOfNotClosedSecon=!ToolPolygon3d2::Closed(Obje2);
+    for (iObje2=1; iObje2<=ToolPolygon3d2::NbSegments(Obje2); iObje2++) {
+
+      CommonPerpen(ToolPolygon3d1::BeginOfSeg(Obje1, iObje1), 
+		   ToolPolygon3d1::EndOfSeg(Obje1, iObje1),
+		   ToolPolygon3d2::BeginOfSeg(Obje2, iObje2), 
+		   ToolPolygon3d2::EndOfSeg(Obje2, iObje2));
+
+      Projections(ToolPolygon3d1::BeginOfSeg(Obje1, iObje1), 
+		  ToolPolygon3d1::EndOfSeg(Obje1, iObje1),
+		  ToolPolygon3d2::BeginOfSeg(Obje2, iObje2), 
+		  ToolPolygon3d2::EndOfSeg(Obje2, iObje2));
+
+      beginOfNotClosedSecon=Standard_False;
+    }
+    beginOfNotClosedFirst=Standard_False;
+  }
+}
+
+//=======================================================================
+//function : Interference
+//purpose  : 
+//=======================================================================
+
+void Intf_InterferencePolygon3d::Interference
+  (const Polygon3d1& Obje)
+{
+  beginOfNotClosedFirst=!ToolPolygon3d1::Closed(Obje);
+  beginOfNotClosedSecon=Standard_False;
+  for (iObje1=1; iObje1<=ToolPolygon3d1::NbSegments(Obje); iObje1++) {
+    for (iObje2=iObje1+1; iObje2<=ToolPolygon3d1::NbSegments(Obje); iObje2++) {
+
+      CommonPerpen(ToolPolygon3d1::BeginOfSeg(Obje, iObje1), 
+		   ToolPolygon3d1::EndOfSeg(Obje, iObje1),
+		   ToolPolygon3d1::BeginOfSeg(Obje, iObje2), 
+		   ToolPolygon3d1::EndOfSeg(Obje, iObje2));
+
+      Projections(ToolPolygon3d1::BeginOfSeg(Obje, iObje1), 
+		  ToolPolygon3d1::EndOfSeg(Obje, iObje1),
+		  ToolPolygon3d1::BeginOfSeg(Obje, iObje2), 
+		  ToolPolygon3d1::EndOfSeg(Obje, iObje2));
+
+    }
+    beginOfNotClosedFirst=Standard_False;
+  }
+}
+
+
+
+//=======================================================================
+//function : CommonPerpen
+//purpose  : 
+//=======================================================================
+
+void Intf_InterferencePolygon3d::CommonPerpen
+  (const gp_Pnt& BegO, const gp_Pnt& EndO,
+   const gp_Pnt& BegT, const gp_Pnt& EndT)
+{
+  gp_XYZ segT=EndT.XYZ()-BegT.XYZ();
+  gp_XYZ segO=EndO.XYZ()-BegO.XYZ();
+  gp_XYZ refPlane=segT^segO;
+  Standard_Real lgsO=Sqrt(segT*segT);
+  Standard_Real lgsT=Sqrt(segO*segO);
+
+  if (lgsO<=Tolerance || lgsT<=Tolerance) {
+    // Un des segments n a pas une longueur significative
+  }
+  else if (refPlane.Modulus()<Tolerance) {
+    // Les deux segments sont paralleles
+  }
+  else {
+    // Les deux segments ne sont pas parralleles
+    Standard_Real distOP=(BegT.XYZ()*refPlane)/refPlane.Modulus();
+    Standard_Real distTP=(BegO.XYZ()*refPlane)/refPlane.Modulus();
+    Standard_Real lgPC=distOP-distTP;
+
+    if (Abs(lgPC)< Tolerance) {
+      // Les deux segments sont dans le meme plan
+    }
+    else {
+      // Les deux segments ne sont pas dans le meme plan
+
+      gp_XYZ pO=refPlane^segO; // Plan contenant segO normal a refPlane
+      pO.Normalize();
+      Standard_Real dpO=pO*BegO.XYZ();
+      
+      Standard_Real distBegTpO=(pO*BegT.XYZ())-dpO;
+      Standard_Real distEndTpO=(pO*EndT.XYZ())-dpO;
+      Standard_Real parT=-1.;
+
+      if (distBegTpO*distEndTpO<0.)
+	parT=distBegTpO/(distBegTpO-distEndTpO);
+      else if (Abs(distBegTpO)<=Tolerance)
+	parT=0.;
+      else if (Abs(distEndTpO)<=Tolerance)
+	parT=1.;
+
+      if (parT>=0.) {
+	gp_XYZ pT=refPlane^segT; // Plan contenant segT normal a refPlane
+	pT.Normalize();
+	Standard_Real dpT=pT*BegT.XYZ();
+	
+	Standard_Real distBegOpT=(pT*BegO.XYZ())-dpT;
+	Standard_Real distEndOpT=(pT*EndO.XYZ())-dpT;
+	Standard_Real parO=-1.;
+	
+	if (distBegOpT*distEndOpT<0.)
+	  parO=distBegOpT/(distBegOpT-distEndOpT);
+	else if (Abs(distBegOpT)<=Tolerance)
+	  parO=0.;
+	else if (Abs(distEndOpT)<=Tolerance)
+	  parO=1.;
+
+	if (parO>=0.) {
+	  // Il y a une perpendiculaire commune interessante
+	  Intf_SectionLine PC;
+	  PC.Append(Intf_SectionPoint
+		    (BegO.Translated(gp_Vec(segO*parO)),
+		     Intf_EDGE, iObje1, 0, parO,
+		     Intf_EXTERNAL, 0, 0, 0., 0));
+	  PC.Append(Intf_SectionPoint
+		    (BegT.Translated(gp_Vec(segT*parT)),
+		     Intf_EXTERNAL, 0, 0, 0.,
+		     Intf_EDGE, iObje2, 0, parT, 0.));
+	  mySLines.Append(PC);
+	  Standard_Real dist=PC.GetPoint(1).Pnt().Distance
+	                    (PC.GetPoint(2).Pnt());
+	  if (dist< MinimalDist) {
+	    MinimalDist=dist;
+	    IndexMin=mySLines.Length();
+	  }
+	}
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : Projections
+//purpose  : 
+//=======================================================================
+
+void Intf_InterferencePolygon3d::Projections  
+  (const gp_Pnt& BegO, const gp_Pnt& EndO,
+   const gp_Pnt& BegT, const gp_Pnt& EndT)
+{
+}
+
+// EOF File:        Intf_InterferencePolygon3d.gxx

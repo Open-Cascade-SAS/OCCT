@@ -1,0 +1,33 @@
+-- File:	HLRTopoBRep_VData.cdl
+-- Created:	Wed Mar 22 16:29:19 1995
+-- Author:	Christophe MARION
+--		<cma@ecolox>
+---Copyright:	 Matra Datavision 1995
+
+class VData from HLRTopoBRep
+
+uses
+    Real  from Standard,
+    Shape from TopoDS
+
+is
+    Create returns VData from HLRTopoBRep;
+    	---C++: inline
+	
+    Create (P : Real; V : Shape from TopoDS)
+    returns VData from HLRTopoBRep;
+	
+    Parameter(me) returns Real from Standard
+    	---C++: inline
+    is static;
+	
+    Vertex(me) returns Shape from TopoDS
+    	---C++: inline
+    	---C++: return const &
+    is static;
+
+fields
+    myParameter : Real  from Standard;
+    myVertex    : Shape from TopoDS;
+
+end VData;

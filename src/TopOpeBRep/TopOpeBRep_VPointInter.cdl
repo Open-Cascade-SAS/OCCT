@@ -1,0 +1,299 @@
+-- File:	TopOpeBRep_VPointInter.cdl
+-- Created:	Wed Nov 10 18:26:49 1993
+-- Author:	Jean Yves LEBEY
+---Copyright: Matra Datavision 1993
+
+class VPointInter from TopOpeBRep 
+
+uses
+
+    State from TopAbs,
+    Point from IntPatch,
+    PThePointOfIntersection from TopOpeBRep,
+    Transition from IntSurf,
+    Shape from TopoDS,
+    Edge from TopoDS,
+    Face from TopoDS,
+    Pnt from gp,
+    Pnt2d from gp
+
+raises 
+
+    DomainError from Standard
+
+is
+
+    Create returns VPointInter from TopOpeBRep;
+    ---C++: inline
+
+    SetPoint(me : in out; P : Point from IntPatch)
+    is static;
+
+    SetShapes(me:out;I1,I2:Integer);
+    ---C++: inline
+
+    GetShapes(me;I1,I2:out Integer);
+    ---C++: inline
+
+    TransitionOnS1(me)
+    returns Transition from IntSurf
+    ---C++: inline
+    is static;
+
+    TransitionOnS2(me) 
+    returns Transition from IntSurf
+    ---C++: inline
+    is static;
+
+    TransitionLineArc1(me)
+    returns Transition from IntSurf
+    ---C++: inline
+    is static;
+
+    TransitionLineArc2(me)
+    returns Transition from IntSurf
+    ---C++: inline
+    is static;
+
+    IsOnDomS1(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    IsOnDomS2(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    
+    ParametersOnS1(me; u,v : out Real from Standard)
+    ---C++: inline
+    is static;
+
+    ParametersOnS2(me; u,v : out Real from Standard)
+    ---C++: inline
+    is static;
+
+    Value(me)
+    returns Pnt from gp
+    ---C++: return const &
+    ---C++: inline
+    is static;
+
+    Tolerance(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+
+    ArcOnS1(me)
+    returns Shape from TopoDS
+    ---C++: return const &
+    is static;
+
+    ArcOnS2(me)
+    returns Shape from TopoDS
+    ---C++: return const &
+    is static;
+
+    ParameterOnLine(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+
+    ParameterOnArc1(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+
+    IsVertexOnS1(me)
+    ---Purpose: Returns TRUE if the point is a vertex on the initial
+    --          restriction facet of the first surface.
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    VertexOnS1(me)
+    ---Purpose: Returns the information about the point when it is
+    --          on the domain of the first patch, i-e when the function
+    --          IsVertexOnS1 returns True.
+    --          Otherwise, an exception is raised.
+    ---C++: return const&
+    returns Shape from TopoDS
+    raises DomainError from Standard
+    is static;
+
+    ParameterOnArc2(me)
+    returns Real from Standard
+    ---C++: inline
+    is static;
+
+    IsVertexOnS2(me)
+    ---Purpose: Returns TRUE if the point is a vertex on the initial
+    --          restriction facet of the second surface.
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    VertexOnS2(me)
+    ---Purpose: Returns the information about the point when it is
+    --          on the domain of the second patch, i-e when the function
+    --          IsVertexOnS2 returns True.
+    --          Otherwise, an exception is raised.
+    ---C++: return const&
+    returns Shape from TopoDS
+    raises DomainError from Standard
+    is static;
+
+    IsInternal(me)
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+    -- dummy method
+
+    IsMultiple(me)
+    ---Purpose: Returns True if the point belongs to several intersection
+    --          lines.
+    returns Boolean from Standard
+    ---C++: inline
+    is static;
+
+    State(me; I : Integer from Standard)
+    ---Purpose: get state of VPoint within the domain of geometric shape 
+    --          domain <I> (= 1 or 2).
+    returns State from TopAbs
+    is static;
+
+    State(me : in out; S : State from TopAbs; I : Integer from Standard) 
+    ---Purpose: Set the state of VPoint within the  domain of
+    --          the geometric shape <I> (= 1 or 2).
+    is static;
+    
+    EdgeON(me : in out; Eon : Shape from TopoDS;
+    	                Par : Real from Standard;
+                        I : Integer from Standard)
+    ---Purpose: set the shape Eon of shape I (1,2) containing the point,
+    --          and parameter <Par> of point on <Eon>.
+    is static;
+
+    EdgeON(me; I : Integer from Standard)
+    ---Purpose: get the edge of shape I (1,2) containing the point.
+    ---C++: return const &
+    returns Shape from TopoDS
+    is static;
+
+    EdgeONParameter(me; I : Integer from Standard) 
+    ---Purpose: get the parameter on edge of shape I (1,2) containing the point.
+    returns Real from Standard
+    is static;
+    
+    ShapeIndex(me)
+    ---Purpose: returns value of filed myShapeIndex = 0,1,2,3
+    --          0 means the VPoint is on no restriction
+    --          1 means the VPoint is on the restriction 1
+    --          2 means the VPoint is on the restriction 2
+    --          3 means the VPoint is on the restrictions 1 and 2
+    returns Integer from Standard
+    ---C++: inline
+    is static;
+
+    ShapeIndex(me : in out; I : Integer from Standard) 
+    ---Purpose: set value of shape supporting me (0,1,2,3).
+    ---C++: inline
+    is static;
+
+    Edge(me; I : Integer from Standard)
+    ---Purpose: get the edge of shape I (1,2) containing the point.
+    --          Returned shape is null if the VPoint is not on an edge
+    --          of shape I (1,2).
+    ---C++: return const &
+    returns Shape from TopoDS
+    is static;
+
+    EdgeParameter(me; I : Integer from Standard) 
+    ---Purpose: get the parameter on edge of shape I (1,2) containing the point
+    returns Real from Standard
+    is static;
+
+    SurfaceParameters(me; I : Integer from Standard) returns Pnt2d from gp;
+    ---Purpose: get the parameter on surface of shape I (1,2) containing the point 
+
+    IsVertex(me; I : Integer from Standard)
+    returns Boolean from Standard
+    is static;
+
+    Vertex(me; I : Integer from Standard)
+    ---C++: return const &
+    returns Shape from TopoDS
+    is static;
+
+    UpdateKeep(me : in out)
+    ---Purpose: set myKeep value according to current states.
+    is static;
+
+    Keep(me) returns Boolean from Standard
+    ---Purpose: 
+    -- Returns value of myKeep (does not evaluate states)
+    -- False at creation of VPoint.
+    -- Updated by State(State from TopAbs,Integer from Standard)
+    ---C++: inline
+    is static;
+
+
+    ChangeKeep(me : in out;
+    	       keep : Boolean from Standard )
+    ---Purpose: updates VPointInter flag "keep" with <keep>.
+    ---C++: inline
+    is static;
+
+    -- other
+    -- 
+    
+    EqualpP(me; VP : VPointInter from TopOpeBRep)
+    returns Boolean;
+    ---Purpose: returns <True> if the 3d points and the parameters of the
+    --          VPoints are same	    
+    
+    ParonE(me; E : Edge from TopoDS; par : out Real)
+    returns Boolean;
+    ---Purpose: returns <false> if the vpoint is not given on arc <E>,
+    --          else returns <par> parameter on <E> 
+
+    -- =====
+    -- trace
+    -- =====
+
+    Index(me : in out; I : Integer from Standard) is static;
+    ---C++: inline
+
+    Index(me) returns Integer from Standard is static;
+    ---C++: inline
+
+    Dump(me; I : Integer from Standard;
+    	     F : Face from TopoDS;
+    	     OS : in out OStream from Standard) 
+    returns OStream from Standard is static;
+    ---C++: return &
+
+    Dump(me; F1 : Face from TopoDS;
+	     F2 : Face from TopoDS;
+    	     OS : in out OStream from Standard) 
+    returns OStream from Standard is static;
+    ---C++: return &
+    
+    PThePointOfIntersectionDummy(me) returns PThePointOfIntersection from TopOpeBRep;
+    
+fields
+
+    myPPOI : PThePointOfIntersection from TopOpeBRep;
+    myShapeIndex : Integer from Standard;
+    myState1 : State from TopAbs;	    
+    myState2 : State from TopAbs;
+    myKeep : Boolean from Standard;
+    myEdgeON1 : Shape from TopoDS;
+    myEdgeON2 : Shape from TopoDS;
+    myEdgeONPar1 : Real from Standard;
+    myEdgeONPar2 : Real from Standard;
+    myIndex : Integer from Standard; -- trace
+    myNullShape : Shape from TopoDS; -- dummy
+    myS1,myS2 : Integer;
+    
+end VPointInter;

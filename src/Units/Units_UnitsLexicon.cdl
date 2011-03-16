@@ -1,0 +1,75 @@
+-- File:	Units_UnitsLexicon.cdl
+-- Created:	Fri Oct  8 10:34:10 1993
+-- Author:	Gilles DEBARBOUILLE
+--		<gde@meteox>
+---Copyright:	 Matra Datavision 1993
+
+
+private class UnitsLexicon from Units 
+
+inherits
+
+    Lexicon from Units
+	---Purpose: This class defines a lexicon useful to analyse and
+	--          recognize the different key  words  included  in a
+	--          sentence. The  lexicon is stored  in a sequence of
+	--          tokens.
+
+uses
+
+    HAsciiString from TCollection,
+    AsciiString  from TCollection
+
+
+is
+
+    Create returns mutable UnitsLexicon from Units;
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns an empty instance of UnitsLexicon
+    
+    Creates(me : mutable ; afilename1 , afilename2 : CString ;
+                 amode : Boolean = Standard_True)
+    
+    ---Level: Internal 
+    
+    ---Purpose: Reads  the files  <afilename1>  and  <afilename2>   to
+    --          create     a   sequence     of    tokens   stored   in
+    --          <thesequenceoftokens>.
+    
+    is static;
+    
+    FileName2(me) returns AsciiString from TCollection
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns in a AsciiString from TCollection the name of the file.
+    
+    is static;
+    
+    UpToDate(me) returns Boolean
+    
+    ---Level: Internal 
+    
+    ---Purpose: Returns true if  the  file has not  changed  since the
+    --          creation   of   the  Lexicon   object.   Returns false
+    --          otherwise.
+    
+    is redefined;
+    
+    Dump(me)
+    
+    ---Level: Internal 
+    
+    ---C++: inline
+    ---Purpose: Useful for debugging.
+    
+    is redefined;
+
+fields
+
+    thefilename     : HAsciiString from TCollection;
+    thetime         : Integer;
+
+end UnitsLexicon;

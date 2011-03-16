@@ -1,0 +1,160 @@
+-- File:	TangentZone.cdl
+-- Created:	Tue Jun 18 13:58:15 1991
+-- Author:	Didier PIFFAULT
+--		<dpf@phobox>
+---Copyright:	 Matra Datavision 1991, 1992
+
+
+class TangentZone from Intf
+
+	---Purpose: Describes   a  zone  of  tangence  between  polygons  or
+	--          polyhedra as a sequence of points of intersection.
+
+uses    SectionPoint from Intf,
+    	SeqOfSectionPoint from Intf
+
+
+raises  OutOfRange from Standard
+
+
+is
+
+-- User Interface :
+
+    NumberOfPoints (me)
+    	    	    returns Integer is static;
+    ---Purpose: Returns number of SectionPoint in this TangentZone.
+    ---C++: inline
+
+    GetPoint       (me;
+    	    	    Index    : in Integer)
+    	    	    returns SectionPoint from Intf
+    	    	    raises OutOfRange from Standard
+    	    	    is static;
+    ---Purpose: Gives   the   SectionPoint   of  address  <Index>  in  the
+    --          TangentZone.
+    --          
+    ---C++: return const &
+
+
+    IsEqual        (me;
+    	    	    Other    : in TangentZone from Intf)
+    	    	    returns Boolean is static;
+    ---Purpose: Compares two TangentZones.
+    --          
+    ---C++: alias operator ==
+
+
+    Contains       (me;
+    	    	    ThePI    : in SectionPoint from Intf)
+    	    	    returns Boolean is static;
+    ---Purpose: Checks if <ThePI> is in TangentZone.
+
+
+    ParamOnFirst   (me;
+    	    	    paraMin : in out Real from Standard;
+    	    	    paraMax : in out Real from Standard) is static;
+    ---C++: inline
+    ---Purpose: Gives  the parameter range of the  TangentZone on the first
+    --          argument of the Interference. (Usable only for polygon)
+
+
+    ParamOnSecond  (me;
+    	    	    paraMin : in out Real from Standard;
+    	    	    paraMax : in out Real from Standard) is static;
+    ---C++: inline
+    ---Purpose: Gives the parameter range of the  TangentZone on the second
+    --          argument of the Interference. (Usable only for polygon)
+
+
+    InfoFirst      (me;
+    	    	    segMin  : in out Integer from Standard;
+    	    	    paraMin : in out Real from Standard;
+    	    	    segMax  : in out Integer from Standard;
+    	    	    paraMax : in out Real from Standard) is static;
+    ---Purpose: Gives information  about  the    first argument   of   the
+    --          Interference. (Usable only for polygon)
+
+    InfoSecond     (me;
+    	    	    segMin  : in out Integer from Standard;
+    	    	    paraMin : in out Real from Standard;
+    	    	    segMax  : in out Integer from Standard;
+    	    	    paraMax : in out Real from Standard) is static;
+    ---Purpose: Gives   informations  about  the  second   argument of  the
+    --          Interference. (Usable only for polygon)
+
+
+    RangeContains  (me;
+    	    	    ThePI    : in SectionPoint from Intf)
+    	    	    returns Boolean is static;
+    ---Purpose: Returns True if  <ThePI>  is in the parameter  range of the
+    --          TangentZone.
+
+    HasCommonRange (me;
+    	    	    Other    : in TangentZone from Intf)
+    	    	    returns Boolean is static;
+    ---Purpose: Returns True if the TangentZone  <Other> has  a common part
+    --          with <me>.
+
+
+-- Builder :
+
+    Create          returns TangentZone;
+    ---Purpose: Builds an empty tangent zone.
+
+    Create         (Other : TangentZone)
+            	    returns TangentZone;
+    ---Purpose: Copies a Tangent zone.
+
+
+    Append         (me       : in out;
+    	    	    Pi       : SectionPoint from Intf)
+    	    	    is static;
+    ---Purpose: Adds a SectionPoint to the TangentZone.
+
+
+    Append         (me       : in out;
+    	    	    Tzi      : TangentZone from Intf)
+    	    	    is static;
+    ---Purpose: Adds the TangentZone <Tzi> to <me>.
+
+
+    Insert         (me       : in out;
+    	    	    Pi       : SectionPoint from Intf)
+		    returns Boolean
+    	    	    is static;
+    ---Purpose: Inserts a SectionPoint in the TangentZone.
+
+
+    PolygonInsert  (me       : in out;
+    	    	    Pi       : SectionPoint from Intf)
+    	    	    is static;
+    ---Purpose: Inserts a point in the polygonal TangentZone.
+
+
+    InsertBefore   (me       : in out;
+    	    	    Index    : in Integer;
+    	    	    Pi       : SectionPoint from Intf)
+    	    	    is static;
+    ---Purpose: Inserts a SectionPoint before <Index> in the TangentZone.
+
+    InsertAfter    (me       : in out;
+    	    	    Index    : in Integer;
+    	    	    Pi       : SectionPoint from Intf)
+    	    	    is static;
+    ---Purpose: Inserts a SectionPoint after <Index> in the TangentZone.
+
+
+    Dump           (me;
+    	    	    Indent   : in Integer) is static;
+
+fields
+
+    Result            : SeqOfSectionPoint;
+    ParamOnFirstMin   : Real from Standard;
+    ParamOnFirstMax   : Real from Standard;
+    ParamOnSecondMin  : Real from Standard;
+    ParamOnSecondMax  : Real from Standard;
+
+
+end TangentZone;

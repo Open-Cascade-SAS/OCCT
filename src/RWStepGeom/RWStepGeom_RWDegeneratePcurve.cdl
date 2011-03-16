@@ -1,0 +1,30 @@
+-- File:        DegeneratePcurve.cdl
+-- Created:     Mon Dec  4 12:02:25 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+
+
+class RWDegeneratePcurve from RWStepGeom
+
+	---Purpose : Read & Write Module for DegeneratePcurve
+
+uses Check from Interface,
+     StepReaderData from StepData,
+     StepWriter from StepData,
+     DegeneratePcurve from StepGeom,
+     EntityIterator from Interface
+
+is
+
+	Create returns RWDegeneratePcurve;
+
+	ReadStep (me; data : StepReaderData; num : Integer;
+	              ach : in out Check; ent : mutable DegeneratePcurve from StepGeom);
+
+	WriteStep (me; SW : in out StepWriter; ent : DegeneratePcurve from StepGeom);
+
+	Share(me; ent : DegeneratePcurve from StepGeom; iter : in out EntityIterator);
+
+end RWDegeneratePcurve;

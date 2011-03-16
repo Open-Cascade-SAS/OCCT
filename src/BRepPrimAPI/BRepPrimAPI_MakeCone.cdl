@@ -1,0 +1,103 @@
+-- File:	BRepPrimAPI_MakeCone.cdl
+-- Created:	Wed Jul 21 16:07:30 1993
+-- Author:	Remi LEQUETTE
+--		<rle@nonox>
+---Copyright:	 Matra Datavision 1993
+
+
+class MakeCone from BRepPrimAPI  inherits MakeOneAxis from BRepPrimAPI
+
+	---Purpose: Describes functions to build cones or portions of cones.
+    	-- A MakeCone object provides a framework for:
+    	-- -   defining the construction of a cone,
+    	-- -   implementing the construction algorithm, and
+    	-- -   consulting the result.
+
+uses
+    Ax2      from gp,
+    Cone     from BRepPrim,
+    OneAxis  from BRepPrim
+
+raises
+    DomainError from Standard
+
+is
+    Create(R1, R2, H : Real)
+    returns MakeCone from BRepPrimAPI
+	---Purpose: Make a cone of height H radius R1 in the plane z =
+	--          0, R2 in the plane Z = H. R1 and R2 may be null.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(R1, R2, H, angle : Real)
+    returns MakeCone from BRepPrimAPI
+	---Purpose: Make a cone of height H radius R1 in the plane z =
+	--          0, R2 in the plane Z = H. R1 and R2 may be null.
+	--          Take a section of <angle>
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2, H : Real)
+    returns MakeCone from BRepPrimAPI
+	---Purpose: Make a cone of height H radius R1 in the plane z =
+	--          0, R2 in the plane Z = H. R1 and R2 may be null.
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    Create(Axes : Ax2 from gp; R1, R2, H, angle : Real)
+    returns MakeCone from BRepPrimAPI
+	---Purpose: Make a cone of height H radius R1 in the plane z =
+	--          0, R2 in the plane Z = H. R1 and R2 may be null.
+	--          Take a section of <angle>
+	---Level: Public
+    raises
+    	DomainError from Standard; -- if H <= Precision::Confusion()
+
+    	---Purpose: Constructs a cone, or a portion of a cone, of height H,
+    	-- and radius R1 in the plane z = 0 and R2 in the plane
+    	-- z = H. The result is a sharp cone if R1 or R2 is equal to 0.
+    	-- The cone is constructed about the "Z Axis" of either:
+    	-- -   the global coordinate system, or
+    	-- -   the local coordinate system Axes.
+    	-- It is limited in these coordinate systems as follows:
+    	-- -   in the v parametric direction (the Z coordinate), by
+    	--   the two parameter values 0 and H,
+    	-- -   and in the u parametric direction (defined by the
+    	--   angle of rotation around the Z axis), in the case of a
+    	--   portion of a cone, by the two parameter values 0 and
+    	--   angle. Angle is given in radians.
+    	-- The resulting shape is composed of:
+    	-- -   a lateral conical face
+    	-- -   two planar faces in the planes z = 0 and z = H,
+    	--   or only one planar face in one of these two planes if a
+    	--   radius value is null (in the case of a complete cone,
+    	--   these faces are circles), and
+    	-- -   and in the case of a portion of a cone, two planar
+    	--   faces to close the shape. (either two parallelograms or
+    	--   two triangles, in the planes u = 0 and u = angle).    
+    	-- Exceptions
+    	-- Standard_DomainError if:
+    	-- -   H is less than or equal to Precision::Confusion(), or
+    	-- -   the half-angle at the apex of the cone, defined by
+    	--   R1, R2 and H, is less than Precision::Confusion()/H, or greater than
+    	--   (Pi/2)-Precision::Confusion()/H.f
+        
+    OneAxis(me : in out) returns Address;
+	---Purpose: Returns the algorithm.
+	---Level: Public
+
+    Cone(me : in out) returns Cone from BRepPrim
+	---Purpose: Returns the algorithm.
+	--          
+	---C++: return &
+	---Level: Public
+    is static;
+
+fields 
+
+    myCone : Cone from BRepPrim;
+
+end MakeCone;

@@ -1,0 +1,55 @@
+-- File:	UTL.cdl
+-- Created:	Fri Nov 21 17:29:01 1997
+-- Author:	Mister rmi
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+package UTL
+uses Resource, TCollection,Storage, OSD
+is
+
+    xgetenv(aCString: CString from Standard)
+    returns ExtendedString from TCollection;
+    
+    OpenFile(aFile: in out BaseDriver from Storage; aName: ExtendedString from TCollection; aMode : OpenMode from Storage)
+    returns Error from Storage;
+    
+    AddToUserInfo(aData: mutable Data from Storage; anInfo: ExtendedString from TCollection);
+    
+    Path(aFileName: ExtendedString from TCollection) returns Path from OSD;
+
+    Disk(aPath: Path from OSD) returns ExtendedString from TCollection;
+    Trek(aPath: Path from OSD) returns ExtendedString from TCollection;
+    Name(aPath: Path from OSD) returns ExtendedString from TCollection;
+    Extension(aPath: Path from OSD) returns ExtendedString from TCollection;
+
+    FileIterator(aPath: Path from OSD; aMask:ExtendedString from TCollection) returns FileIterator from OSD;
+   
+    Extension(aFileName: ExtendedString from TCollection) returns ExtendedString from TCollection;
+    
+    LocalHost returns ExtendedString from TCollection;
+    
+    ExtendedString(anAsciiString: AsciiString from TCollection) 
+    returns ExtendedString from TCollection;
+
+
+    GUID(anXString: ExtendedString from TCollection)
+    returns GUID from Standard;
+
+    Find(aResourceManager: Manager from Resource; aResourceName: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    
+    Value(aResourceManager: Manager from Resource; aResourceName: ExtendedString from TCollection)
+    returns ExtendedString from TCollection;
+    
+
+    IntegerValue(anExtendedString: ExtendedString from TCollection)
+    returns Integer from Standard;
+    
+    CString(anExtendedString: ExtendedString from TCollection)
+    returns CString from Standard;
+
+    IsReadOnly(aFileName: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    
+end UTL;

@@ -1,0 +1,22 @@
+-- File:	SWDRAW_ShapeExtend.cdl
+-- Created:	Tue Mar  9 18:22:41 1999
+-- Author:	data exchange team
+--		<det@kinox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeExtend from SWDRAW 
+
+	---Purpose: Contains commands to activate package ShapeExtend
+	--          List of DRAW commands and corresponding functionalities:
+	--          sortcompound - ShapeExtend_Explorer::SortedCompound
+
+uses
+    Interpretor from Draw
+
+is
+
+    InitCommands (myclass; theCommands: in out Interpretor from Draw);
+    	---Purpose: Loads commands defined in ShapeExtend
+
+end ShapeExtend;

@@ -1,0 +1,126 @@
+-- File:	ExtElSS.cdl
+-- Created:	Wed Jul 22 11:01:39 1992
+-- Author:	Laurent PAINNOT
+--		<lpa@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class   ExtElSS from Extrema 
+				   
+    	---Purpose: It calculates all the distances between 2 elementary
+    	--          surfaces.
+    	--          These distances can be maximum or minimum.
+
+uses   	POnSurf              from Extrema,
+    	HArray1OfPOnSurf     from Extrema,
+	HArray1OfReal        from TColStd,
+    	Pnt                  from gp,
+	Pln                  from gp,
+	Sphere               from gp,
+	Cone                 from gp,
+	Torus                from gp,
+	Cylinder             from gp
+
+raises  InfiniteSolutions from StdFail,
+    	NotDone           from StdFail,
+    	OutOfRange        from Standard
+
+is
+
+    Create  returns ExtElSS;
+
+    Create (S1,S2: Pln) returns ExtElSS;
+      	---Purpose: Calculates the distances between 2 planes.
+      	--          These planes can be parallel.
+    
+    Perform(me: in out; S1,S2: Pln)
+    is static;
+
+    Create (S1: Pln; S2: Sphere) returns ExtElSS;
+      	---Purpose: Calculates the distances between a plane
+      	--          and a sphere.
+    
+    Perform(me: in out; S1: Pln; S2: Sphere)
+    is static;
+
+
+    Create (S1: Sphere; S2: Sphere) returns ExtElSS;
+      	---Purpose: Calculates the distances between 2 spheres.
+      	--          These spheres can be parallel.
+    
+    Perform(me: in out; S1,S2: Sphere)
+    is static;
+
+
+    Create (S1: Sphere; S2: Cylinder) returns ExtElSS;
+      	---Purpose: Calculates the distances between a sphere 
+      	--          and a cylinder.
+    
+    Perform(me: in out; S1: Sphere; S2: Cylinder)
+    is static;
+
+    Create (S1: Sphere; S2: Cone) returns ExtElSS;
+      	---Purpose: Calculates the distances between a sphere
+      	--          and a cone. 
+    
+    Perform(me: in out; S1: Sphere; S2: Cone)
+    is static;
+
+
+    Create (S1: Sphere; S2: Torus) returns ExtElSS;
+      	---Purpose: Calculates the distances between a sphere
+      	--          and a torus. 
+    
+    Perform(me: in out; S1: Sphere; S2: Torus)
+    is static;
+
+
+    IsDone (me) returns Boolean
+    	---Purpose: Returns True if the distances are found.
+    	is static;
+
+    IsParallel (me) returns Boolean
+    	---Purpose: Returns True if the two surfaces are parallel.
+    	raises  NotDone from StdFail
+	    	-- if IsDone(me)=False.
+    	is static;
+
+    NbExt (me) returns Integer
+    	---Purpose: Returns the number of extremum distances.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True
+    	is static;
+
+    SquareDistance (me; N: Integer =1) returns Real
+    	---Purpose: Returns the value of the Nth extremum square distance.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	    	OutOfRange,
+    	    	-- if N < 1 or N > NbPoints(me)
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True and N<>1.
+    	is static;
+
+    Points (me; N: Integer; P1,P2: out POnSurf)
+    	---Purpose: Returns the points for the Nth resulting distance.
+    	--          P1 is on the first surface, P2 on the second one.
+    	raises  NotDone from StdFail,
+    	    	-- if IsDone(me)=False.
+    	    	OutOfRange,
+    	    	-- if N < 1 or N > NbPoints(me)
+    	    	InfiniteSolutions from StdFail
+		-- if IsParallel(me)=True and N<>1.
+    	is static;
+
+fields
+    myDone  : Boolean;
+    myIsPar : Boolean;
+    myNbExt : Integer;
+    mySqDist : HArray1OfReal    from TColStd;
+    myPOnS1 : HArray1OfPOnSurf from Extrema;
+    myPOnS2 : HArray1OfPOnSurf from Extrema;
+
+end ExtElSS;

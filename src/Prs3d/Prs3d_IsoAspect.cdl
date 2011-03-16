@@ -1,0 +1,57 @@
+-- File:	Prs3d_IsoAspect.cdl
+-- Created:	Mon Apr 26 19:04:20 1993
+-- Author:	Jean-Louis Frenkel
+--		<jlf@phylox>
+--   GG  : GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
+--				       the restricted NameOfColor.
+---Copyright:	 Matra Datavision 1993
+
+
+class IsoAspect from Prs3d inherits LineAspect from Prs3d
+    	---Purpose: A framework to define the display attributes of isoparameters.
+    	-- This framework can be used to modify the default
+    	-- setting for isoparameters in AIS_Drawer.
+        
+uses 
+
+    NameOfColor from Quantity,
+    Color from Quantity,
+    TypeOfLine from Aspect
+
+is
+    Create (aColor: NameOfColor from Quantity;
+	    aType: TypeOfLine from Aspect;
+    	    aWidth: Real from Standard;
+          aNumber: Integer from Standard)    
+	    returns mutable IsoAspect from Prs3d;
+    	---Purpose: Constructs a framework to define display attributes of isoparameters.
+    	-- These include:
+    	-- -   the color attribute aColor
+    	-- -   the type of line aType
+    	-- -   the width value aWidth
+    	-- -   aNumber, the number of isoparameters to be   displayed.
+        
+    Create (aColor: Color from Quantity;
+	    aType: TypeOfLine from Aspect;
+    	    aWidth: Real from Standard;
+          aNumber: Integer from Standard)	    
+	    returns mutable IsoAspect from Prs3d;
+	    
+
+    SetNumber (me: mutable; aNumber: Integer from Standard) 
+    	---Purpose: defines the number of U or V isoparametric curves 
+    	--         to be drawn for a single face.
+    	--          Default value: 10
+    is static;
+
+    Number (me) returns Integer from Standard 
+    	---Purpose: returns the number of U or V isoparametric curves drawn for a single face.
+    is static;
+
+    Print(me; s: in out OStream from Standard) is redefined;
+    
+fields
+
+    myNumber: Integer from Standard;
+    
+end IsoAspect from Prs3d;

@@ -1,0 +1,141 @@
+-- File:	IFSelect_ListEditor.cdl
+-- Created:	Tue Jul 28 11:17:08 1998
+-- Author:	Christian CAILLET
+--		<cky@heliox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1998
+
+
+class ListEditor  from IFSelect    inherits TShared  from MMgt
+
+    ---Purpose : A ListEditor is an auxiliary operator for Editor/EditForm
+    --           I.E. it works on parameter values expressed as strings
+    --         
+    --           For a parameter which is a list, it may not be edited in once
+    --           by just setting a new value (as a string)
+    --           
+    --           Firstly, a list can be long (and tedious to be accessed flat)
+    --           then requires a better way of accessing
+    --           
+    --           Moreover, not only its VALUES may be changed (SetValue), but
+    --           also its LENGTH : items may be added or removed ...
+    --           
+    --           Hence, the way of editing a parameter as a list is :
+    --           - edit it separately, with the help of a ListEditor
+    --           - it remains possible to prepare a new list of values apart
+    --           - then give the new list in once to the EditForm
+    --           
+    --           An EditList is produced by the Editor, with a basic definition
+    --           This definition (brought by this class) can be redefined
+    --           Hence the Editor may produce a specific ListEditor as needed
+
+uses CString, HAsciiString from TCollection,
+     HSequenceOfHAsciiString from TColStd,
+     HSequenceOfInteger from TColStd,
+     TypedValue from Interface, InterfaceModel from Interface
+
+is
+
+    Create returns ListEditor;
+    ---Purpose : Creates a ListEditor with absolutely no constraint
+
+    Create (def : TypedValue; max : Integer = 0) returns ListEditor;
+    ---Purpose : Creates a ListEditor, for which items of the list to edit are
+    --           defined by <def>, and <max> describes max length :
+    --           0 (D) means no limit
+    --           value > 0 means : no more the <max> items are allowed
+
+    LoadModel  (me : mutable; model : InterfaceModel);
+    ---Purpose : Loads a Model. It is used to check items of type Entity(Ident)
+
+    LoadValues (me : mutable; vals : HSequenceOfHAsciiString);
+    ---Purpose : Loads the original values for the list
+    --           Remark : If its length is mor then MaxLength, editions remain
+    --           allowed, except Add
+
+    SetTouched (me : mutable);
+    ---Purpose : Declares this ListEditor to have been touched (whatever action)
+
+    ClearEdit (me : mutable);
+    ---Purpose : Clears all editions already recorded
+
+    	--- Editing : can be specialised
+
+    LoadEdited (me : mutable; list : HSequenceOfHAsciiString)
+    	returns Boolean  is virtual;
+    ---Purpose : Loads a new list to replace the older one, in once !
+    --           By default (can be redefined) checks the length of the list
+    --           and the value of each item according to the def
+    --           Items are all recorded as Modified
+    --           
+    --           If no def has been given at creation time, no check is done
+    --           Returns True when done, False if checks have failed ... a
+    --           specialisation may also lock it by returning always False ...
+
+    SetValue (me : mutable; num : Integer; val : HAsciiString)
+    	returns Boolean  is virtual;
+    ---Purpose : Sets a new value for the item <num> (in edited list)
+    --           <val> may be a Null Handle, then the value will be cleared but
+    --           not removed
+    --           Returns True when done. False if <num> is out of range or if
+    --           <val> does not satisfy the definition
+
+    AddValue (me : mutable; val : HAsciiString; atnum : Integer = 0)
+    	returns Boolean  is virtual;
+    ---Purpose : Adds a new item. By default appends (at the end of the list)
+    --           Can insert before a given rank <num>, if positive
+    --           Returns True when done. False if MaxLength may be overpassed
+    --           or if <val> does not satisfy the definition
+
+    Remove (me : mutable; num : Integer = 0; howmany : Integer = 1)
+    	returns Boolean  is virtual;
+    ---Purpose : Removes items from the list
+    --           By default removes one item. Else, count given by <howmany>
+    --           Remove from rank <num> included. By default, from the end
+    --           Returns True when done, False (and does not work) if case of
+    --           out of range of if <howmany> is greater than current length
+
+    	--  Results
+
+    OriginalValues (me) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the value from which the edition started
+
+    EditedValues (me) returns HSequenceOfHAsciiString;
+    ---Purpose : Returns the result of the edition
+
+
+
+    NbValues (me; edited : Boolean = Standard_True) returns Integer;
+    ---Purpose : Returns count of values, edited (D) or original
+
+    Value (me; num : Integer; edited : Boolean = Standard_True)
+    	returns HAsciiString;
+    ---Purpose : Returns a value given its rank. Edited (D) or Original
+    --           A Null String means the value is cleared but not removed
+
+    IsChanged (me; num : Integer) returns Boolean;
+    ---Purpose : Tells if a value (in edited list) has been changed, i.e.
+    --           either modified-value, or added
+
+    IsModified (me; num : Integer) returns Boolean;
+    ---Purpose : Tells if a value (in edited list) has been modified-value
+    --           (not added)
+
+    IsAdded (me; num : Integer) returns Boolean;
+    ---Purpose : Tells if a value (in edited list) has been added (new one)
+
+
+    IsTouched (me) returns Boolean;
+    ---Purpose : Tells if at least one edition (SetValue-AddValue-Remove) has
+    --           been recorded
+
+fields
+
+    themax  : Integer;
+    thedef  : TypedValue;
+    thetouc : Integer;  -- global IsTouched
+    theorig : HSequenceOfHAsciiString;
+    theedit : HSequenceOfHAsciiString;
+    thestat : HSequenceOfInteger;
+    themodl : InterfaceModel;
+
+end ListEditor;

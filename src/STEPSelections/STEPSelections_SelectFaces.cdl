@@ -1,0 +1,32 @@
+-- File:	StepSelect_SelectFaces.cdl
+-- Created:	Thu Feb 11 14:32:43 1999
+-- Author:	Pavel DURANDIN
+--		<pdn@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class SelectFaces from STEPSelections inherits SelectExplore from IFSelect
+
+	---Purpose: This selection returns "STEP faces"
+
+uses 
+    
+    AsciiString from TCollection,
+    Transient,
+    EntityIterator,
+    Graph
+    
+is
+
+    Create returns mutable SelectFaces;
+    
+    Explore (me; level : Integer; ent : Transient; G : Graph;
+    	     explored : in out EntityIterator)
+    returns Boolean;
+    ---Purpose : Explores an entity, to take its faces
+    --           Works recursively
+    
+    ExploreLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : "Faces"
+
+end SelectFaces;

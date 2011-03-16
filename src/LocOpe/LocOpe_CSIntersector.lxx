@@ -1,0 +1,38 @@
+// File:	LocOpe_CSIntersector.lxx
+// Created:	Tue Jun 11 09:11:57 1996
+// Author:	Jacques GOUSSARD
+//		<jag@bravox>
+
+#include <StdFail_NotDone.hxx>
+
+//=======================================================================
+//function : LocOpe_CSIntersector
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_CSIntersector::LocOpe_CSIntersector () :
+   myDone(Standard_False),myPoints(NULL),myNbelem(0)
+{}
+
+
+//=======================================================================
+//function : LocOpe_CSIntersector
+//purpose  : 
+//=======================================================================
+
+inline LocOpe_CSIntersector::LocOpe_CSIntersector (const TopoDS_Shape& S):
+   myDone(Standard_False),myShape(S),myPoints(NULL),myNbelem(0)
+{}
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_CSIntersector::IsDone () const
+{
+  return myDone;
+}
+
+
+

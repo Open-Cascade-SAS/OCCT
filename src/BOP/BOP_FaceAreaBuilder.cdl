@@ -1,0 +1,48 @@
+-- File:	BOP_FaceAreaBuilder.cdl
+-- Created:	Thu Dec 21 17:07:40 1995
+-- Author:	Jean Yves LEBEY
+--		<jyl@meteox>
+---Copyright:	 Matra Datavision 1995
+--modified by NIZNHY-PKV Tue Apr  3 15:53:58 2001   
+
+class FaceAreaBuilder from BOP inherits Area2dBuilder from BOP
+
+    ---Purpose: 
+    -- The FaceAreaBuilder algorithm is used to construct Faces from a LoopSet,
+    -- where the Loop is the composite topological object of the boundary,
+    -- here wire or block of edges.
+    -- The LoopSet gives an iteration on Loops.
+    -- For each Loop  it indicates if it is on the boundary (wire) or if it
+    -- results from  an interference (block of edges).
+    -- The result of the FaceAreaBuilder is an iteration on areas.
+    -- An area is described by a set of Loops.
+
+uses
+
+    LoopSet        from BOP,
+    LoopClassifier from BOP
+    
+is
+
+    Create returns FaceAreaBuilder;
+    	---Purpose:  
+    	--- Empty constructor; 
+    	---
+    Create(LS :out LoopSet from BOP;  
+    	   LC :out LoopClassifier from BOP;
+    	   ForceClass : Boolean = Standard_False)  
+    	returns FaceAreaBuilder;
+    	---Purpose:  
+    	--- Creates the object to build faces on the (wires,blocks of edge)  
+    	--- of <LS>, using the classifier <LC>.
+	---
+    InitFaceAreaBuilder(me :out;
+    	    	   	LS :out LoopSet from BOP;  
+    	    	        LC :out LoopClassifier from BOP;
+    	    	    	ForceClass : Boolean = Standard_False) 
+    	 is static;
+    	---Purpose:  
+    	--- Initializes the object to build faces on the (wires,blocks of edge)  
+    	--- of <LS>, using the classifier <LC>.
+	---
+end FaceAreaBuilder;

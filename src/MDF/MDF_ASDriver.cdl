@@ -1,0 +1,61 @@
+-- File:	MDF_ASDriver.cdl
+--      	----------------
+-- Author:	DAUTRY Philippe
+--		<fid@fox.paris1.matra-dtv.fr>
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Apr  4 1997	Creation
+
+
+deferred class ASDriver from MDF
+    inherits TShared from MMgt
+
+	---Purpose: Attribute Storage Driver.
+
+uses
+
+    Attribute from TDF,
+    Attribute from PDF,
+    SRelocationTable from MDF, 
+    MessageDriver from CDM, 
+    ExtendedString from TCollection
+
+-- raises
+
+is
+    Initialize (theMessageDriver : MessageDriver from CDM); 
+    
+    VersionNumber(me) returns Integer from Standard
+    	is deferred;
+	---Purpose: Returns the version number from which the driver
+	--          is available.
+
+    SourceType(me) returns Type from Standard
+    	is deferred;
+	---Purpose: Returns the type of source object, inheriting from
+	--          Attribute from TDF.
+
+    NewEmpty(me)
+    	returns mutable Attribute from PDF
+    	is deferred;
+	---Purpose: Creates a new attribute from PDF.
+
+    Paste(me;
+    	  aSource     :         Attribute from TDF;
+    	  aTarget     : mutable Attribute from PDF;
+    	  aRelocTable : SRelocationTable from MDF)
+    	is deferred;
+	---Purpose: Translate the contents of <aSource> and put it
+	--          into <aTarget>, using the relocation table
+	--          <aRelocTable> to keep the sharings. 
+	
+    WriteMessage (me; theMessage : ExtendedString from TCollection);
+        ---Purpose: To send message to Application (if MessageDriver defined) 
+	
+fields 
+
+    myMessageDriver : MessageDriver from CDM;  
+    
+end ASDriver;

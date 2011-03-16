@@ -1,0 +1,72 @@
+-- File:	ShapeUpgrade_ShapeDivideContinuity.cdl
+-- Created:	Fri Apr 30 17:01:47 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+
+class ShapeDivideContinuity from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
+
+	---Purpose: 
+
+uses
+    
+    Shape from TopoDS,
+    Shape from GeomAbs,
+    FaceDivide from ShapeUpgrade
+
+is
+    Create returns ShapeDivideContinuity from ShapeUpgrade;
+    
+    Create (S: Shape from TopoDS)
+    returns ShapeDivideContinuity from ShapeUpgrade;
+    	---Purpose: Initialize by a Shape.
+    
+    SetTolerance(me: in out; Tol: Real);
+    	---Purpose: Sets tolerance.
+    
+    SetTolerance2d(me: in out; Tol: Real);
+    	---Purpose: Sets tolerance.
+    
+    SetBoundaryCriterion (me: in out; Criterion: Shape from GeomAbs = GeomAbs_C1);
+    	---Purpose: 
+        --  Defines a criterion of continuity for the boundary (all the
+        --  Wires)
+        --  
+        --  The possible values are C0, G1, C1, G2, C2, C3, CN The
+        --  default is C1 to respect the Cas.Cade Shape Validity.  G1
+        --  and G2 are not authorized.
+	
+    SetPCurveCriterion (me: in out; Criterion: Shape from GeomAbs = GeomAbs_C1);
+    	---Purpose: 
+        --  Defines a criterion of continuity for the boundary (all the
+        --  pcurves of Wires)
+        --  
+        --  The possible values are C0, G1, C1, G2, C2, C3, CN The
+        --  default is C1 to respect the Cas.Cade Shape Validity.  G1
+        --  and G2 are not authorized.
+    
+    SetSurfaceCriterion (me: in out; Criterion: Shape from GeomAbs = GeomAbs_C1);
+    	---Purpose: 
+        --  Defines a criterion of continuity for the boundary (all the
+        --  Wires)
+        --  
+        --  The possible values are C0, G1, C1, G2, C2, C3, CN The
+        --  default is C1 to respect the Cas.Cade Shape Validity.  G1
+        --  and G2 are not authorized.
+    
+    ---Level: Internal
+    
+    GetSplitFaceTool (me) returns FaceDivide from ShapeUpgrade
+    is redefined protected;
+    	---Purpose: Returns the tool for dividing faces.
+    
+fields
+
+    myCurve3dCriterion: Shape from GeomAbs;
+    myCurve2dCriterion: Shape from GeomAbs;
+    mySurfaceCriterion : Shape from GeomAbs;
+    myTolerance3d: Real;
+    myTolerance2d: Real;
+
+end ShapeDivideContinuity;

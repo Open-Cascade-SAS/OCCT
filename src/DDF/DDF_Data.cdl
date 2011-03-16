@@ -1,0 +1,57 @@
+-- File:	DDF_Data.cdl
+--      	------------
+-- Author:	DAUTRY Philippe
+---Copyright:	 MATRA DATAVISION 1997
+
+---Version:	0.0
+---History:	Version	Date		Purpose
+--		0.0	Feb 10 1997	Creation
+
+
+class Data from DDF inherits Drawable3D from Draw
+
+	---Purpose : Encapsulates a data framework in a drawable object
+
+uses
+
+    Data        from TDF,
+    Interpretor from Draw,
+    Display     from Draw
+
+is
+
+
+    Create  (aDF : Data from TDF)
+    returns mutable Data from DDF;
+    
+    
+    DrawOn (me; dis : in out Display);
+    
+    
+    Copy (me) 
+    returns mutable Drawable3D from Draw
+    is redefined;
+
+	
+    Dump (me; S : in out OStream) 
+    is redefined;
+
+
+    DataFramework (me : mutable; aDF : Data from TDF);
+
+
+    DataFramework (me)
+    returns Data from TDF;
+    
+
+    Whatis (me; I : in out Interpretor from Draw)
+    is redefined;
+
+	
+fields
+
+    myDF : Data from TDF;
+
+end Data;
+
+

@@ -1,0 +1,71 @@
+-- File:	IFSelect_SelectSent.cdl
+-- Created:	Wed Oct 25 09:38:28 1995
+-- Author:	Christian CAILLET
+--		<cky@anion>
+---Copyright:	 Matra Datavision 1995
+
+
+class SelectSent  from IFSelect    inherits SelectExtract
+
+    ---Purpose : This class returns entities according sending to a file
+    --           Once a model has been loaded, further sendings are recorded
+    --           as status in the graph (for each value, a count of sendings)
+    --           
+    --           Hence, it is possible to query entities : sent ones (at least
+    --           once), non-sent (i.e. remaining) ones, duplicated ones, etc...
+    --           
+    --           This selection performs this query
+
+uses AsciiString from TCollection, InterfaceModel, Graph, EntityIterator
+
+is
+
+    Create (sentcount : Integer = 1; atleast : Boolean = Standard_True)
+    	returns mutable SelectSent;
+    ---Purpose : Creates a SelectSent :
+    --           sentcount = 0 -> remaining (non-sent) entities
+    --           sentcount = 1, atleast = True (D) -> sent (at least once)
+    --           sentcount = 2, atleast = True -> duplicated (sent least twice)
+    --             etc...
+    --           sentcount = 1, atleast = False -> sent just once (non-dupl.d)
+    --           sentcount = 2, atleast = False -> sent just twice
+    --             etc...
+
+    SentCount (me) returns Integer;
+    ---Purpose : Returns the queried count of sending
+
+    AtLeast (me) returns Boolean;
+    ---Purpose : Returns the <atleast> status, True for sending at least the
+    --           sending count, False for sending exactly the sending count
+    --           Remark : if SentCount is 0, AtLeast is ignored
+
+    RootResult (me; G : Graph) returns EntityIterator  is redefined;
+    ---Purpose : Returns the list of selected entities. It is redefined to
+    --           work on the graph itself (not queried by sort)
+    --           
+    --           An entity is selected if its count complies to the query in
+    --           Direct Mode, rejected in Reversed Mode
+    --           
+    --           Query works on the sending count recorded as status in Graph
+
+    Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)
+        returns Boolean;
+    ---Purpose : Returns always False because RootResult has done the work
+
+
+    ExtractLabel (me) returns AsciiString from TCollection;
+    ---Purpose : Returns a text defining the criterium : query :
+    --           SentCount = 0 -> "Remaining (non-sent) entities"
+    --           SentCount = 1, AtLeast = True  -> "Sent entities"
+    --           SentCount = 1, AtLeast = False -> "Sent once (no duplicated)"
+    --           SentCount = 2, AtLeast = True  -> "Sent several times entities"
+    --           SentCount = 2, AtLeast = False -> "Sent twice entities"
+    --           SentCount > 2, AtLeast = True  -> "Sent at least <count> times entities"
+    --           SentCount > 2, AtLeast = False -> "Sent <count> times entities"
+
+fields
+
+    thecnt : Integer;
+    thelst : Boolean;
+
+end SelectSent;

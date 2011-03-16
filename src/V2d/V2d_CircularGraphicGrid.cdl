@@ -1,0 +1,52 @@
+-- File:	V2d_CircularGraphicGrid.cdl
+-- Created:	Fri Mar 17 08:52:56 1995
+-- Author:	Mister rmi
+--		<rmi@pernox>
+---Copyright:	 Matra Datavision 1995
+
+private class CircularGraphicGrid from V2d inherits Primitive from Graphic2d
+
+
+uses
+	Drawer          from Graphic2d,
+	GraphicObject	from Graphic2d,
+	Length          from Quantity,
+        GridDrawMode    from Aspect,
+	FStream         from Aspect 
+is
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		X, Y, alpha, step: Real from Standard;
+		aDivision: Integer from Standard;
+		PointsColorIndex: Integer from Standard)
+	returns mutable CircularGraphicGrid from V2d;
+
+	SetDrawMode(me: mutable; aDrawMode: GridDrawMode from Aspect)
+	is static;
+	
+	Draw (me: mutable; aDrawer: Drawer from Graphic2d)
+	is redefined static protected;
+	---Level: Internal
+	---Purpose: Draws the grid
+
+	Pick (me: mutable; X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard is redefined static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the infinite line <me> is picked,
+	--	    Standard_False if not.
+
+        DrawCircle(me; aDrawer: Drawer from Graphic2d;
+                       xc,yc,r: ShortReal from Standard;
+                       DrawPoints: Boolean from Standard)
+	is static private;
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+
+fields
+	OX,OY,angle,Step: ShortReal from Standard;
+	Division: Integer from Standard;
+        DrawMode: GridDrawMode from Aspect;
+        myPointsColorIndex: Integer from Standard;	
+end CircularGraphicGrid from V2d;
+

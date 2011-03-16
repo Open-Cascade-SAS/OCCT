@@ -1,0 +1,38 @@
+-- File:	MDataStd_AsciiStringStorageDriver.cdl
+-- Created:	Wed Aug 22 18:33:31 2007
+-- Author:	Sergey ZARITCHNY
+--		<sergey.zaritchny@opencascade.com>
+---Copyright:	Open CasCade SA 2007
+
+class AsciiStringStorageDriver from MDataStd inherits ASDriver from MDF
+
+	---Purpose: Storage driver for AsciiString attribute
+
+uses   
+    SRelocationTable from MDF,
+    Attribute        from TDF,
+    Attribute        from PDF, 
+    MessageDriver    from CDM
+
+
+is
+    Create (theMessageDriver : MessageDriver from CDM)
+    returns mutable AsciiStringStorageDriver from MDataStd;
+
+
+    VersionNumber(me) returns Integer from Standard;
+	---Purpose: Returns the version number from which the driver
+	--          is available: 0.
+
+    SourceType(me) returns Type from Standard;
+	---Purpose: Returns the type: Integer from TDataStd.
+
+    NewEmpty (me) returns mutable Attribute from PDF;
+
+
+    Paste(me;
+    	  Source     :         Attribute from TDF;
+    	  Target     : mutable Attribute from PDF;
+    	  RelocTable : SRelocationTable from MDF);
+
+end AsciiStringStorageDriver;

@@ -1,0 +1,131 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	GraphTools_ConnectedVerticesIterator.gxx
+// Created:	Wed May 29 17:42:50 1991
+// Author:	Denis PASCAL
+//		<dp>
+
+
+//=======================================================================
+//function : GraphTools_ConnectedVerticesIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_ConnectedVerticesIterator::GraphTools_ConnectedVerticesIterator () 
+{}
+
+
+//=======================================================================
+//function : GraphTools_TopologicalSortIterator
+//purpose  : 
+//=======================================================================
+
+GraphTools_ConnectedVerticesIterator::GraphTools_ConnectedVerticesIterator
+  (const Graph& G)
+{
+  FromGraph (G);
+}
+
+//=======================================================================
+//function : FromVertex
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesIterator::FromVertex
+  (const Vertex& V)
+{
+  myIterator.FromVertex(V);
+}
+
+
+//=======================================================================
+//function : GraphTools_ConnectedVerticesIterator
+//purpose  : 
+//=======================================================================
+void GraphTools_ConnectedVerticesIterator::FromGraph  (const Graph& G)  
+{
+  for ( GIterator it (G); it.More(); it.Next() ) {
+    myIterator.FromVertex(it.Value());
+  }
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesIterator::Perform
+  (const Graph& G)
+{
+  myIterator.Perform(G);
+}
+
+
+//=======================================================================
+//function : Reset
+//purpose  : 
+//=======================================================================
+
+void GraphTools_ConnectedVerticesIterator::Reset ()
+{
+  myIterator.Reset();
+}
+
+//=======================================================================
+//function : More
+//purpose  : 
+//=======================================================================
+Standard_Boolean GraphTools_ConnectedVerticesIterator::More () const 
+{
+  return myIterator.More();
+}
+
+//=======================================================================
+//function : Next
+//purpose  : 
+//=======================================================================
+void GraphTools_ConnectedVerticesIterator::Next () 
+{
+  myIterator.Next();
+}
+
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+Standard_Integer GraphTools_ConnectedVerticesIterator::NbVertices() const
+{  
+  return myIterator.NbVertices();
+}
+
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+const Vertex& GraphTools_ConnectedVerticesIterator::Value 
+  (const Standard_Integer I) const 
+{
+  return myIterator.Value(I);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

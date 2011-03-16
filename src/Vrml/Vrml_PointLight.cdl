@@ -1,0 +1,60 @@
+-- File:	Vrml_PointLight.cdl
+-- Created:	Wed Feb 12 11:06:15 1997
+-- Author:	Alexander BRIVIN
+--		<brivin@meteox.nizhny.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+
+class PointLight from Vrml 
+
+	---Purpose:defines a point  light node of VRML specifying
+	--         properties of lights. 
+    	--  This  node  defines  a  point  light  source   at  a  fixed  3D  location
+    	--  A  point  source  illuminates equally  in  all  directions;   
+    	--  that  is  omni-directional.
+    	--  Color is  written  as  an  RGB  triple.
+    	--  Light intensity must be in the range 0.0 to 1.0, inclusive.  
+
+uses
+ 
+    Color   from Quantity, 
+    Vec     from gp
+
+is
+                                                    --  defaults  :
+    Create returns PointLight from Vrml; 
+    	    	    	    	    	    	    --  myOnOff(Standard_TRUE)
+ 						    --  myIntensity(1)
+						    --  myColor(1 1 1)
+						    --  myLocation(0 0 1)
+
+    Create  (  aOnOff     :   Boolean from  Standard; 
+    	       aIntensity :   Real    from  Standard; 
+    	       aColor     :   Color   from  Quantity; 
+    	       aLocation  :   Vec     from  gp ) 
+    	returns PointLight from Vrml; 
+     
+    SetOnOff ( me : in out;  aOnOff : Boolean from  Standard );
+    OnOff ( me )  returns Boolean  from  Standard;
+
+    SetIntensity ( me : in out;  aIntensity : Real from  Standard );
+    Intensity ( me )  returns Real  from  Standard;
+
+    SetColor ( me : in out;  aColor :  Color   from  Quantity );
+    Color ( me )  returns  Color   from  Quantity;
+
+    SetLocation ( me : in out;  aLocation : Vec  from  gp );
+    Location ( me )  returns Vec  from  gp;
+
+    Print  ( me;  anOStream: in out OStream from Standard) returns OStream from Standard;
+    ---C++:  return  & 
+
+fields
+ 
+    myOnOff     :   Boolean from  Standard; -- Whether light is on
+    myIntensity :   Real    from  Standard; -- Source intensity (0 to 1)
+    myColor     :   Color   from  Quantity; -- RGB source color
+    myLocation  :   Vec     from  gp;       -- Illumination Location vector
+
+end PointLight;
+

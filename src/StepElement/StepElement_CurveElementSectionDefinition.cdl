@@ -1,0 +1,37 @@
+-- File:	StepElement_CurveElementSectionDefinition.cdl
+-- Created:	Thu Dec 12 17:29:00 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class CurveElementSectionDefinition from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity CurveElementSectionDefinition
+
+uses
+    HAsciiString from TCollection
+
+is
+    Create returns CurveElementSectionDefinition from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aDescription: HAsciiString from TCollection;
+                       aSectionAngle: Real);
+	---Purpose: Initialize all fields (own and inherited)
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+    SectionAngle (me) returns Real;
+	---Purpose: Returns field SectionAngle
+    SetSectionAngle (me: mutable; SectionAngle: Real);
+	---Purpose: Set field SectionAngle
+
+fields
+    theDescription: HAsciiString from TCollection;
+    theSectionAngle: Real;
+
+end CurveElementSectionDefinition;

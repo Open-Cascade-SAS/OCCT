@@ -1,0 +1,148 @@
+
+-- -- File:	TopOpeBRep_ShapeIntersector2d.cdl
+-- Created:	Fri May  7 17:03:26 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@topsn3>
+---Copyright:	 Matra Datavision 1993
+
+
+class ShapeIntersector2d from TopOpeBRep
+
+---Purpose: Intersect two shapes.
+--          
+--          A GeomShape is a  shape with a geometric domain, i.e.
+--          a Face or an Edge.
+--          
+--          The purpose   of  the  ShapeIntersector2d is   to  find
+--          couples  of  intersecting   GeomShape  in  two Shapes
+--          (which can   be  any kind of  topologies  : Compound,
+--          Solid, Shell, etc... )
+--          
+--          It  is in charge  of  exploration  of the shapes  and
+--          rejection. For this it is provided with two tools :
+--            
+--            - ShapeExplorer from TopOpeBRepTool.
+--            - ShapeScanner from TopOpeBRep which implements bounding boxes.
+--
+--      Let S1,S2 the shapes sent to InitIntersection(S1,S2) method :
+--          - S1 is always SCANNED by a ShapeScanner from TopOpeBRep.
+--          - S2 is always EXPLORED by a ShapeExplorer from TopOpeBRepTool.
+     
+uses
+
+    State from TopAbs,
+    Orientation from TopAbs,
+    Shape from TopoDS,
+    Face from TopoDS,
+    HBoxTool from TopOpeBRepTool,
+    ShapeTool from TopOpeBRepTool,
+    ShapeExplorer from TopOpeBRepTool,
+    ShapeScanner from TopOpeBRep,
+    FacesIntersector from TopOpeBRep,
+    EdgesIntersector from TopOpeBRep,
+    FaceEdgeIntersector from TopOpeBRep
+
+is
+
+    -- -------------------------------
+    -- intersection between two shapes
+    -- -------------------------------
+
+    Create returns ShapeIntersector2d from TopOpeBRep;
+
+    InitIntersection(me : in out; S1,S2 : Shape from TopoDS) 
+    ---Purpose: Initialize the intersection of shapes S1,S2.
+    is static;
+
+    Reset(me : in out) is static private;
+    Init(me : in out; S1,S2 : Shape from TopoDS) is static private;
+
+    Shape(me; Index : Integer from Standard) returns Shape from TopoDS
+    ---Purpose: return  the shape  <Index> ( = 1 or 2) given to
+    --          InitIntersection().  
+    --          Index = 1 will return S1, Index = 2 will return S2.
+    ---C++: return const &
+    is static;
+
+    MoreIntersection(me) returns Boolean from Standard
+    ---Purpose: returns True if there are more intersection
+    --          between two the shapes.
+    is static;
+	
+    NextIntersection(me : in out) 
+    ---Purpose: search for the next intersection between the two shapes.
+    is static;
+	
+    ChangeEdgesIntersector(me : in out)
+    returns EdgesIntersector from TopOpeBRep
+    ---Purpose: return the current intersection of two Edges.
+    ---C++: return &
+    is static;
+
+    -- -----------------------------------------
+    -- intersection between two geometric shapes
+    -- -----------------------------------------
+    
+    CurrentGeomShape(me; Index : Integer from Standard)  
+    returns Shape from TopoDS 
+    ---Purpose: return  geometric  shape <Index> ( = 1 or 2 )  of
+    --          current intersection.  
+    ---C++ : return const &
+    is static;
+
+    SetIntersectionDone(me : in out) is static private;
+
+    -- ----------------------------
+    -- Faces intersection (private)
+    -- ----------------------------
+    
+    InitFFIntersection(me : in out)
+    is static private;
+    FindFFIntersection(me : in out)
+    is static private;
+    MoreFFCouple(me) returns Boolean from Standard 
+    is static private;
+    NextFFCouple(me : in out) 
+    is static private;
+
+    -- ----------------------------
+    -- Edges intersection on SameDomain faces (private)
+    -- ----------------------------
+    
+    InitEEFFIntersection(me : in out)
+    is static private;
+    FindEEFFIntersection(me : in out)
+    is static private;
+    MoreEEFFCouple(me) returns Boolean from Standard 
+    is static private;
+    NextEEFFCouple(me : in out) 
+    is static private;
+	
+    -- debug
+    DumpCurrent(me; K : Integer from Standard) is static;
+    Index(me; K : Integer from Standard) 
+    returns Integer from Standard
+    is static;
+    
+fields
+
+    myShape1 : Shape from TopoDS;
+    myShape2 : Shape from TopoDS;
+    
+    myHBoxTool : HBoxTool from TopOpeBRepTool;
+    myFaceExplorer : ShapeExplorer from TopOpeBRepTool;
+    myFaceScanner : ShapeScanner from TopOpeBRep;
+    
+    myEdgeExplorer : ShapeExplorer from TopOpeBRepTool;
+    myEdgeScanner : ShapeScanner from TopOpeBRep;
+    myEEIntersector : EdgesIntersector from TopOpeBRep;
+    
+    myIntersectionDone : Boolean from Standard;
+
+    myFFDone : Boolean from Standard;         
+    myEEFFDone : Boolean from Standard;
+
+    myFFInit : Boolean from Standard;         
+    myEEFFInit : Boolean from Standard;
+
+end ShapeIntersector2d from TopOpeBRep;

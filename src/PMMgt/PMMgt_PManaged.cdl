@@ -1,0 +1,72 @@
+-- File:	PMMgt_PManaged.cdl
+-- Created:	Tue Oct 13 17:34:48 1992
+-- Author:	Ramin BARRETO
+--		<rba@sdsun4>
+---Copyright:	 Matra Datavision 1992
+
+deferred class PManaged from PMMgt
+
+inherits Persistent from Standard
+
+  ---Purpose: 
+  --   The class <PManaged> is a persistent abstract class that
+  --   provides a strategy for managing  the necessary storage 
+  --   for an instance of <PManaged>. The storage is taken from
+  --   Persistent cache.
+  --
+  --   The storage of an instance is returned to persistent cache
+  --   when the instance is deleted explicitly.
+  --
+  --   The persistent classes like the persistent nodes benefit from
+  --   the "PManaged" allocator if they inherit from <PManaged>.
+  --   
+  --  Warning: 
+  --    The only way to delete explicitly an instance of <PManaged> is 
+  --    to apply the method "Delete()" to a "Handle(PManaged)".
+  --    Exemple:
+  --       Handle(PManaged) aHand ;
+  --       ...
+  --       aHand.Delete(); 
+  --       
+
+uses  
+   Integer from Standard
+
+raises  
+    OutOfMemory from Standard
+  
+is
+    --New(myclass; aSize: Integer) returns PManaged
+    ---Purpose:
+    --   Returns an instance. The storage of the given "size" is 
+    --   allocated by <StorageManager>.
+    --
+    --raises  
+    --	OutOfMemory;  
+    --	-- If the allocation fails.
+    -- -C++: alias "void* operator new (size_t);"
+    ---Level: Advanced
+
+    --Delete(myclass; aInstance: PManaged; aSize: Integer);
+    ---Purpose: 
+    --   Returns the storage of the given size to the <StorageManager>.
+    --   The application using "Delete" must guarantee that the
+    --   instance is not shared.
+    --
+    -- -C++: alias "void operator delete (void*, size_t);"
+    ---Level: Advanced
+
+    --Destructor(me);
+    ---Purpose: 
+    --   The virtual Destructor for the class "PManaged". This
+    --   declaration is necessary for the C++ compiler to
+    --   generate a call to "operator delete" with the real size
+    --   of the object.
+    --
+    -- -C+..+: alias "virtual ~PMMgt_PManaged();"
+    ---Level: Advanced
+    
+    Initialize ;
+    
+end PManaged from PMMgt;
+

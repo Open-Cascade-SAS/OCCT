@@ -1,0 +1,23 @@
+// File:	TDataStd_HDataMapOfStringByte.lxx
+// Created:	Fri Aug 17 17:00:33 2007
+// Author:	Sergey ZARITCHNY
+//		<szy@popox.nnov.matra-dtv.fr>
+// Copyright:   Open CasCade SA 2007
+
+//=======================================================================
+//function : Map
+//purpose  : Access to the map
+//=======================================================================
+inline const TDataStd_DataMapOfStringByte& TDataStd_HDataMapOfStringByte::Map () const 
+{ 
+  return myMap; 
+}
+
+//=======================================================================
+//function : ChangeMap
+//purpose  : Access to the map for modification
+//=======================================================================
+inline TDataStd_DataMapOfStringByte& TDataStd_HDataMapOfStringByte::ChangeMap () 
+{ 
+  return myMap; 
+}

@@ -1,0 +1,129 @@
+
+-- File:	Graphic2d_PolylineMarker.cdl
+-- Created:	Tue Jun 22 16:36:51 1993
+-- Author:	Jean Louis FRENKEL
+--		<jlf@stylox>
+-- Modified: TCL G002A, 28-11-00, new section "inquire methods"
+
+---Copyright:	 Matra Datavision 1993
+
+class PolylineMarker from Graphic2d inherits VectorialMarker from Graphic2d
+
+	---Version:
+
+	---Purpose: The primitive PolylineMarker
+	--	    Every marker takes a reference point as an argument in
+	--	    its constructor. CircleMarker and EllipsMarker take
+	--	    another point as the center and PolylineMarker takes the
+	--	    first point of its list as its origin.
+	--	    The coordinates of the centre or origin point are offsets
+	--	    with respect to the reference point.
+
+
+uses
+	Drawer			from Graphic2d,
+	Array1OfReal		from TColStd,
+	Array1OfShortReal	from TShort,
+	GraphicObject		from Graphic2d,
+	Array1OfVertex		from Graphic2d,
+	Length			from Quantity,
+	FStream			from Aspect,
+	IFStream		from Aspect,
+	IFStream		from Aspect
+raises
+
+	PolylineDefinitionError	from Graphic2d,
+	OutOfRange from Standard
+
+is
+	-------------------------
+	-- Category: Constructors
+	-------------------------
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		aXPosition, aYPosition: Length from Quantity;
+		aListVertex: Array1OfVertex from Graphic2d)
+	returns mutable PolylineMarker from Graphic2d
+	---Level: Public
+	---Purpose: Creates a polyline marker.
+	--	    The reference point is <aXPosition>, <aYPosition>
+	--  Warning: Raises an error if the length of the polyline
+	--	    is less than 2 points.
+	raises PolylineDefinitionError from Graphic2d;
+	---Category: Constructors
+
+	Create (aGraphicObject: GraphicObject from Graphic2d;
+		aXPosition, aYPosition: Length from Quantity;
+		aListX: Array1OfReal from TColStd;
+		aListY: Array1OfReal from TColStd)
+	returns mutable PolylineMarker from Graphic2d
+	---Level: Public
+	---Purpose: Creates a polyline marker.
+	--	    The reference point is <aXPosition>, <aYPosition>
+	--  Warning: Raises an error if the length of the polyline
+	--	    is less than 2 points or if length of <aListX>
+	--	    is not equal to length of <aListY>.
+	raises PolylineDefinitionError from Graphic2d;
+	---Category: Constructors
+
+	-------------------------------------
+    ---Category: Inquire methods
+    -------------------------------------
+	
+    Length( me ) returns Integer from Standard;
+    ---Level: Public
+    ---Purpose: Returns the number of points of 
+    --          the polyline marker
+    ---Category: Inquiry method
+
+    Values( me; aRank: Integer from Standard;
+            X,Y: out Length from Quantity )
+    ---Level: Public
+    ---Purpose: Returns the point of rank <aRank> 
+    --          from the polyline marker
+    ---Trigger: Raises OutOfRange if <aRank> is <1 or >Length()
+       raises OutOfRange from Standard;
+    ---Category: Inquiry method
+    
+    --------------------------------------
+	-- Category: Draw and Pick
+	--------------------------------------
+
+	Draw (me : mutable; aDrawer: Drawer from Graphic2d)
+	is static protected;
+	---Level: Internal
+	---Purpose: Draws the polyline <me>.
+
+    DrawElement( me : mutable; aDrawer: Drawer from Graphic2d;
+                 anIndex: Integer from Standard)
+        is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws edge <anIndex> of the polyline marker <me>.
+
+    DrawVertex( me : mutable; aDrawer: Drawer from Graphic2d;
+                anIndex: Integer from Standard)
+        is redefined protected;
+    ---Level: Internal
+    ---Purpose: Draws vertex <anIndex> of the polyline marker <me>.
+
+	Pick (me : mutable;
+		X, Y: ShortReal from Standard;
+		aPrecision: ShortReal from Standard;
+		aDrawer: Drawer from Graphic2d)
+	returns Boolean from Standard is static protected;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the polyline <me> is picked,
+	--	    Standard_False if not.
+
+	----------------------------------------------------------------------
+
+	Save( me; aFStream: in out FStream from Aspect ) is virtual;
+	Retrieve(myclass; anIFStream: in out IFStream from Aspect;
+		aGraphicObject: GraphicObject from Graphic2d);
+
+fields
+
+	myX:	Array1OfShortReal from TShort;
+	myY:	Array1OfShortReal from TShort;
+
+end PolylineMarker from Graphic2d;

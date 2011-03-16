@@ -1,0 +1,160 @@
+// File:	ShapeCustom_RestrictionParameters.lxx
+// Created:	Mon May 22 17:05:18 2000
+// Author:	data exchange team
+//		<det@friendox>
+
+//=======================================================================
+//function : GMaxDegree
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeCustom_RestrictionParameters::GMaxDegree()
+{
+  return myGMaxDegree;
+}
+
+//=======================================================================
+//function : GMaxSeg
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeCustom_RestrictionParameters::GMaxSeg()
+{
+  return myGMaxSeg;
+}
+
+//=======================================================================
+//function : ConvertPlane
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertPlane()
+{
+  return myConvPlane;
+}
+
+//=======================================================================
+//function : ConvertBezierSurf
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertBezierSurf()
+{
+  return myConvBezierSurf;
+}
+
+//=======================================================================
+//function : ConvertRevolutionSurf
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertRevolutionSurf()
+{
+  return myConvRevolSurf;
+}
+
+//=======================================================================
+//function : ConvertExtrusionSurf
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertExtrusionSurf()
+{
+  return myConvExtrSurf;
+}
+
+//=======================================================================
+//function : ConvertOffsetSurf
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetSurf()
+{
+  return myConvOffsetSurf;
+}
+
+//=======================================================================
+//function : SegmentSurfaceMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::SegmentSurfaceMode()
+{
+  return mySegmentSurfaceMode;
+}
+
+//=======================================================================
+//function : ConvertCurve3d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertCurve3d()
+{
+  return myConvCurve3d;
+}
+
+//=======================================================================
+//function : ConvertOffsetCurv3d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetCurv3d()
+{
+  return myConvOffsetCurv3d;
+}
+
+//=======================================================================
+//function : ConvertCurve2d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertCurve2d()
+{
+  return myConvCurve2d;
+}
+
+//=======================================================================
+//function : ConvertOffsetCurv2d
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertOffsetCurv2d()
+{
+  return myConvOffsetCurv2d;
+}
+
+//=======================================================================
+//function : ConvertConicalSurface
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertConicalSurf()
+{
+  return myConvConicalSurf;
+}
+
+//=======================================================================
+//function : ConvertSphericalSurf
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertSphericalSurf()
+{
+  return myConvSphericalSurf;
+}
+
+//=======================================================================
+//function : ConvertToroidalSurf
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertToroidalSurf()
+{
+  return myConvCylindricalSurf;
+}
+
+//=======================================================================
+//function : ConvertCylindricalSurf
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean& ShapeCustom_RestrictionParameters::ConvertCylindricalSurf()
+{
+  return myConvToroidalSurf;
+}

@@ -1,0 +1,31 @@
+// File:	Units_Lexicon.lxx
+// Created:	Wed Jun 24 12:47:40 1992
+// Author:	Gilles DEBARBOUILLE
+//		<gde@phobox>
+
+
+#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+
+//=======================================================================
+//function : Sequence
+//purpose  : 
+//=======================================================================
+
+inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
+{
+  return thesequenceoftokens;
+}
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+inline void Units_Lexicon::Dump() const
+{
+  Standard_Integer index;
+  cout<<" LEXICON : "<<endl;
+  for(index=1;index<=thesequenceoftokens->Length();index++)
+    thesequenceoftokens->Value(index)->Dump(1,0);
+}

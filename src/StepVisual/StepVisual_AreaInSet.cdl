@@ -1,0 +1,36 @@
+-- File:        AreaInSet.cdl
+-- Created:     Fri Dec  1 11:11:13 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class AreaInSet from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	PresentationArea from StepVisual, 
+	PresentationSet from StepVisual
+is
+
+	Create returns mutable AreaInSet;
+	---Purpose: Returns a AreaInSet
+
+	Init (me : mutable;
+	      aArea : mutable PresentationArea from StepVisual;
+	      aInSet : mutable PresentationSet from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetArea(me : mutable; aArea : mutable PresentationArea);
+	Area (me) returns mutable PresentationArea;
+	SetInSet(me : mutable; aInSet : mutable PresentationSet);
+	InSet (me) returns mutable PresentationSet;
+
+fields
+
+	area : PresentationArea from StepVisual;
+	inSet : PresentationSet from StepVisual;
+
+end AreaInSet;

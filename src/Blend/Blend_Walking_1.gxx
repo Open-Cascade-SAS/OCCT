@@ -1,0 +1,559 @@
+Blend_Walking::Blend_Walking(const TheSurface& Surf1,
+			     const TheSurface& Surf2,
+			     const Handle(TheTopolTool)& Domain1,
+			     const Handle(TheTopolTool)& Domain2):
+       sol(1,4),surf1(Surf1),surf2(Surf2),
+       done(Standard_False),
+       clasonS1(Standard_True),clasonS2(Standard_True),
+       check2d(Standard_True),check(Standard_True),
+       twistflag1(Standard_False),twistflag2(Standard_False)
+
+{
+  domain1 = Domain1;
+  domain2 = Domain2;
+  recdomain1 = Domain1;
+  recdomain2 = Domain2;  
+}
+
+void Blend_Walking::SetDomainsToRecadre(const Handle(TheTopolTool)& Domain1,
+					const Handle(TheTopolTool)& Domain2)
+{
+  recdomain1 = Domain1;
+  recdomain2 = Domain2;
+}
+
+void Blend_Walking::AddSingularPoint(const Blend_Point& P) 
+{
+  if (jalons.Length() == 0) {
+    jalons.Append(P);
+  }
+  else {
+    Standard_Integer ii, jj;
+    Standard_Real tp = P.Parameter(), 
+                  ti=jalons.First().Parameter();
+    for (jj=1, ii=1; ii<=jalons.Length() && tp>ti; ii++) {
+      jj = ii;
+      ti = jalons.Value(jj).Parameter();
+    }
+    if (tp > ti) jalons.InsertAfter(jj, P);
+    else         jalons.InsertBefore(jj, P); 
+  }
+}
+
+void Blend_Walking::Perform(Blend_Function& Func,
+			    Blend_FuncInv& FuncInv,
+			    const Standard_Real Pdep,   
+			    const Standard_Real Pmax,
+			    const Standard_Real MaxStep,
+			    const Standard_Real TolGuide,
+			    const math_Vector& ParDep,
+			    const Standard_Real Tolesp,
+			    const Standard_Real Fleche,
+			    const Standard_Boolean Appro)
+{
+
+  done = Standard_False;
+  iscomplete = Standard_False;
+  comptra = Standard_False;
+  Standard_Boolean doextremities = 1;
+  if(line.IsNull()) line = new TheLine ();
+  else {line->Clear();doextremities = 0;}
+  tolesp = Abs(Tolesp);
+  tolgui = Abs(TolGuide);
+  fleche = Abs(Fleche);
+  rebrou = Standard_False;
+  pasmax = Abs(MaxStep);
+  if (Pmax-Pdep >= 0.) {
+    sens = 1.;
+  }
+  else {
+    sens = -1.;
+  }
+
+  Blend_Status State;
+  TheExtremity ptf1,ptf2;
+
+  param = Pdep;
+  Func.Set(param);
+
+  if (Appro) {
+
+    TopAbs_State situ1,situ2;
+    math_Vector tolerance(1,4),infbound(1,4),supbound(1,4);
+    Func.GetTolerance(tolerance,tolesp);
+    Func.GetBounds(infbound,supbound);
+    math_FunctionSetRoot rsnld(Func,tolerance,30);
+
+    rsnld.Perform(Func,ParDep,infbound,supbound);
+    
+    if (!rsnld.IsDone()) {
+      return;
+    }
+    rsnld.Root(sol);
+
+    if(clasonS1) situ1 = domain1->Classify(gp_Pnt2d(sol(1),sol(2)),
+					   Min(tolerance(1),tolerance(2)),0);
+    else situ1 = TopAbs_IN;
+    if(clasonS2) situ2 = domain2->Classify(gp_Pnt2d(sol(3),sol(4)),
+					   Min(tolerance(3),tolerance(4)),0);
+    else situ2 = TopAbs_IN;
+
+    if (situ1 != TopAbs_IN || situ2 != TopAbs_IN) {
+      return;
+    }
+  }
+  else {
+    sol = ParDep;
+  }
+
+#ifdef DEB
+  sectioncalculee = 0;
+#endif
+  State = TestArret(Func, Blend_OK, Standard_False);
+  if (State!=Blend_OK) {
+    return;
+  }
+#ifdef DEB
+  if (Blend_GettraceDRAWSECT()){
+    Drawsect(surf1,surf2,sol,param,Func);
+  }
+  nbcomputedsection = 1;
+#endif
+  // Mettre a jour la ligne.
+  line->Append(previousP);
+
+  if(doextremities){
+    TheExtremity ptf1 (previousP.PointOnS1(),
+		       sol(1),sol(2),tolesp);
+    TheExtremity ptf2 (previousP.PointOnS2(),
+		       sol(3),sol(4),tolesp);
+    if (!previousP.IsTangencyPoint()) {
+      ptf1.SetTangent(previousP.TangentOnS1());
+      ptf2.SetTangent(previousP.TangentOnS2());
+    }
+    
+    if (sens>0.) {      
+      line->SetStartPoints(ptf1, ptf2);      
+    }
+    else {
+      line->SetEndPoints(ptf1, ptf2);
+    }
+  }
+
+  InternalPerform(Func,FuncInv,Pmax);
+
+#ifdef DEB
+//  cout <<"Perform : "<<nbcomputedsection<<" sections calculees"<<endl;
+//  cout <<line->NbPoints()<<" sections gardees"<<endl;
+#endif
+
+  done = Standard_True;
+}
+
+
+Standard_Boolean Blend_Walking::PerformFirstSection
+(Blend_Function&     Func,
+ const Standard_Real Pdep,   
+ math_Vector&        ParDep,
+ const Standard_Real Tolesp,
+ const Standard_Real TolGuide,
+ TopAbs_State&       Pos1,
+ TopAbs_State&       Pos2)
+{
+  iscomplete = Standard_False;
+  comptra = Standard_False;
+  line = new TheLine ();
+  tolesp = Abs(Tolesp);
+  tolgui = Abs(TolGuide);
+
+  Pos1 = Pos2 = TopAbs_UNKNOWN;
+
+  Blend_Status State;
+
+  param = Pdep;
+  Func.Set(param);
+
+  math_Vector tolerance(1,4),infbound(1,4),supbound(1,4);
+  Func.GetTolerance(tolerance,tolesp);
+  Func.GetBounds(infbound,supbound);
+  math_FunctionSetRoot rsnld(Func,tolerance,30);
+  
+  rsnld.Perform(Func,ParDep,infbound,supbound);
+  
+  if (!rsnld.IsDone()) {
+    return Standard_False;
+  }
+  rsnld.Root(sol);
+  ParDep = sol;
+  Pos1 = domain1->Classify(gp_Pnt2d(sol(1),sol(2)),
+			   Min(tolerance(1),tolerance(2)),0);
+  Pos2 = domain2->Classify(gp_Pnt2d(sol(3),sol(4)),
+			   Min(tolerance(3),tolerance(4)),0);
+  if (Pos1 != TopAbs_IN || Pos2 != TopAbs_IN) {
+    return Standard_False;
+  }
+
+  State = TestArret(Func, Blend_OK, Standard_False);
+#ifdef DEB
+  if (Blend_GettraceDRAWSECT()){
+    Drawsect(surf1,surf2,sol,param,Func);
+  }
+#endif
+  return Standard_True;
+}
+
+
+Standard_Boolean Blend_Walking::PerformFirstSection
+   (Blend_Function& Func,
+    Blend_FuncInv& FuncInv,
+    const Standard_Real Pdep,   
+    const Standard_Real Pmax,   
+    const math_Vector& ParDep,
+    const Standard_Real Tolesp,
+    const Standard_Real TolGuide,
+    const Standard_Boolean RecOnS1,
+    const Standard_Boolean RecOnS2,
+    Standard_Real& Psol,   
+    math_Vector& ParSol)
+
+{
+  iscomplete = Standard_False;
+  comptra = Standard_False;
+  line = new TheLine ();
+
+  Standard_Real w1,w2, extrapol;
+  Standard_Boolean recad1,recad2;
+
+  tolesp = Abs(Tolesp);
+  tolgui = Abs(TolGuide);
+  if (Pmax-Pdep >= 0.) {
+    sens = 1.;
+  }
+  else {
+    sens = -1.;
+  }
+  extrapol = Abs(Pmax-Pdep)/50; // 2%
+
+  Blend_Status State;
+
+  param = Pdep;
+  Func.Set(param);
+
+  math_Vector tolerance(1,4),infbound(1,4),supbound(1,4);
+  math_Vector solrst1(1,4),solrst2(1,4);
+  TheExtremity Ext1,Ext2;
+  Standard_Integer Index1,Index2,nbarc;
+  Standard_Boolean Isvtx1,Isvtx2;
+  TheVertex Vtx1,Vtx2;
+  gp_Pnt2d p2d;
+
+  Func.GetTolerance(tolerance,tolesp);
+  Func.GetBounds(infbound,supbound);
+  math_FunctionSetRoot rsnld(Func,tolerance,30);
+
+  rsnld.Perform(Func,ParDep,infbound,supbound);
+    
+  if (!rsnld.IsDone()) {
+    return Standard_False;
+  }
+  rsnld.Root(sol);
+
+  w1 = w2 = Pmax;
+
+  recad1 = RecOnS1 && Recadre(FuncInv,Standard_True,
+			      sol,solrst1,Index1,Isvtx1,Vtx1, extrapol);
+  if (recad1) {
+    w1 = solrst1(2);
+  }
+
+  recad2 = RecOnS2 && Recadre(FuncInv,Standard_False,
+			      sol,solrst2,Index2,Isvtx2,Vtx2, extrapol);
+  if (recad2) {
+    w2 = solrst2(2);
+  }
+
+  if (!recad1 && !recad2) {
+    return Standard_False;
+  }
+
+  if (recad1 && recad2) {
+    if (Abs(w1-w2) <= tolgui) {
+      //sol sur 1 et 2 a la fois
+      State = Blend_OnRst12;
+      param = w1;
+      ParSol(1) = solrst2(3);
+      ParSol(2) = solrst2(4);
+      ParSol(3) = solrst1(3);
+      ParSol(4) = solrst1(4);
+    }
+    else if (sens*(w2-w1) < 0.) { // on garde le plus grand
+      //sol sur 1
+      State = Blend_OnRst1;
+      param = w1;
+      
+      recdomain1->Init();
+      nbarc = 1;
+      while (nbarc < Index1) {
+	nbarc++;
+	recdomain1->Next();
+      }
+      p2d = TheArcTool::Value(recdomain1->Value(),solrst1(1));
+      ParSol(1) = p2d.X();
+      ParSol(2) = p2d.Y();
+      ParSol(3) = solrst1(3);
+      ParSol(4) = solrst1(4);
+      
+    }
+    else {
+      //sol sur 2
+      State = Blend_OnRst2;
+      param = w2;
+      
+      recdomain2->Init();
+      nbarc = 1;
+      while (nbarc < Index2) {
+	nbarc++;
+	recdomain2->Next();
+      }
+      p2d = TheArcTool::Value(recdomain2->Value(),solrst2(1));
+      ParSol(1) = solrst2(3);
+      ParSol(2) = solrst2(4);
+      ParSol(3) = p2d.X();
+      ParSol(4) = p2d.Y();
+    }
+  }
+  else if (recad1) {
+    // sol sur 1
+    State = Blend_OnRst1;
+    param = w1;
+    recdomain1->Init();
+    nbarc = 1;
+    while (nbarc < Index1) {
+      nbarc++;
+      recdomain1->Next();
+    }
+    p2d = TheArcTool::Value(recdomain1->Value(),solrst1(1));
+    ParSol(1) = p2d.X();
+    ParSol(2) = p2d.Y();
+    ParSol(3) = solrst1(3);
+    ParSol(4) = solrst1(4);
+  }
+  else { //if (recad2) {
+    //sol sur 2
+    State = Blend_OnRst2;
+    param = w2;
+    
+    recdomain2->Init();
+    nbarc = 1;
+    while (nbarc < Index2) {
+      nbarc++;
+      recdomain2->Next();
+    }
+    p2d = TheArcTool::Value(recdomain2->Value(),solrst2(1));
+    ParSol(1) = solrst2(3);
+    ParSol(2) = solrst2(4);
+    ParSol(3) = p2d.X();
+    ParSol(4) = p2d.Y();
+  }
+
+  Psol = param;
+  sol = ParSol;
+  Func.Set(param);
+  State = TestArret(Func, State, Standard_False);
+  switch (State) {
+  case Blend_OnRst1  :
+    {
+#ifdef DEB
+      if (Blend_GettraceDRAWSECT()){
+	Drawsect(surf1,surf2,sol,param,Func);
+      }
+#endif
+      MakeExtremity(Ext1,Standard_True,Index1,
+		    solrst1(1),Isvtx1,Vtx1);
+      Ext2.SetValue(previousP.PointOnS2(),
+		    sol(3),sol(4),tolesp);
+    }
+    break;
+    
+  case Blend_OnRst2  :
+    {
+#ifdef DEB
+      if (Blend_GettraceDRAWSECT()){
+	Drawsect(surf1,surf2,sol,param,Func);
+      }
+#endif
+      Ext1.SetValue(previousP.PointOnS1(),
+		    sol(1),sol(2),tolesp);
+      MakeExtremity(Ext2,Standard_False,Index2,
+		    solrst2(1),Isvtx2,Vtx2);
+    }
+    break;
+    
+  case Blend_OnRst12 :
+    {
+#ifdef DEB
+      if (Blend_GettraceDRAWSECT()){
+	Drawsect(surf1,surf2,sol,param,Func);
+      }
+#endif
+      MakeExtremity(Ext1,Standard_True,Index1,
+		    solrst1(1),Isvtx1,Vtx1);
+      MakeExtremity(Ext2,Standard_False,Index2,
+		    solrst2(1),Isvtx2,Vtx2);
+    }
+    break;
+  default:
+    {
+      Standard_Failure::Raise("Blend_Walking::PerformFirstSection : echec");
+    }
+  }
+  if (sens < 0.) {
+    line->SetEndPoints(Ext1,Ext2);
+  }
+  else {
+    line->SetStartPoints(Ext1,Ext2);
+  }
+  return Standard_True;
+}
+
+
+
+Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
+					Blend_FuncInv& FuncInv,
+					const Standard_Real P)
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  const Blend_Point& firstBP =  line->Point(1);
+  const Blend_Point& lastBP =  line->Point(line->NbPoints());
+
+  if (P < firstBP.Parameter()){
+    sens = -1.;
+    previousP = firstBP;
+  }
+  else if(P > lastBP.Parameter()){
+    sens = 1.;
+    previousP = lastBP;
+  }
+
+  param = previousP.Parameter();
+  previousP.ParametersOnS1(sol(1),sol(2));
+  previousP.ParametersOnS2(sol(3),sol(4));
+
+  InternalPerform(Func,FuncInv,P);
+  return Standard_True;
+}
+
+
+Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
+					Blend_FuncInv& FuncInv,
+					const Standard_Real P,
+					const Standard_Boolean OnS1)
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  TheExtremity Ext1,Ext2;
+  if (sens < 0.) {
+    Ext1 = line->StartPointOnFirst();
+    Ext2 = line->StartPointOnSecond();
+    if (OnS1 && Ext1.NbPointOnRst() == 0 ||
+	!OnS1 && Ext2.NbPointOnRst() == 0) {
+      return Standard_False;
+    }
+    previousP = line->Point(1);
+
+
+  }
+  else {
+    Ext1 = line->EndPointOnFirst();
+    Ext2 = line->EndPointOnSecond();
+    if (OnS1 && Ext1.NbPointOnRst() == 0 ||
+	!OnS1 && Ext2.NbPointOnRst() == 0) {
+      return Standard_False;
+    }
+    previousP = line->Point(line->NbPoints());
+  }
+
+  Standard_Integer length = line->NbPoints();
+  param = previousP.Parameter();
+  previousP.ParametersOnS1(sol(1),sol(2));
+  previousP.ParametersOnS2(sol(3),sol(4));
+  
+  if(OnS1) clasonS1 = Standard_False;
+  else clasonS2 = Standard_False;
+
+  InternalPerform(Func,FuncInv,P);
+
+  clasonS1 = Standard_True;
+  clasonS2 = Standard_True;
+
+  Standard_Integer newlength = line->NbPoints();
+  if (sens <0.) {
+    if (OnS1 && line->StartPointOnSecond().NbPointOnRst() == 0 ||
+	!OnS1 && line->StartPointOnFirst().NbPointOnRst() == 0) {
+      line->Remove(1,newlength-length);
+      line->SetStartPoints(Ext1,Ext2);
+      return Standard_False;
+    }
+  }
+  else {
+    if (OnS1 && line->EndPointOnSecond().NbPointOnRst() == 0 ||
+	!OnS1 && line->EndPointOnFirst().NbPointOnRst() == 0) {
+      line->Remove(length,newlength);
+      line->SetEndPoints(Ext1,Ext2);
+      return Standard_False;
+    }
+  }
+  return Standard_True;
+}
+
+
+Standard_Boolean Blend_Walking::Complete(Blend_Function& Func,
+					 Blend_FuncInv& FuncInv,
+					 const Standard_Real Pmin)
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  if (iscomplete) {return Standard_True;}
+
+  if (sens >0.) {
+    previousP = line->Point(1);
+  }
+  else {
+    previousP = line->Point(line->NbPoints());
+  }
+
+  sens = -sens;
+
+  param = previousP.Parameter();
+  previousP.ParametersOnS1(sol(1),sol(2));
+  previousP.ParametersOnS2(sol(3),sol(4));
+
+  InternalPerform(Func,FuncInv,Pmin);
+
+#ifdef DEB
+//  cout <<"Complete : "<<nbcomputedsection<<" sections calculees"<<endl;
+//  cout <<line->NbPoints()<<" sections gardees"<<endl;
+#endif
+
+  iscomplete = Standard_True;
+  return Standard_True;
+}
+
+void Blend_Walking::ClassificationOnS1(const Standard_Boolean C)
+{
+  clasonS1 = C;
+}
+
+void Blend_Walking::ClassificationOnS2(const Standard_Boolean C)
+{
+  clasonS2 = C;
+}
+
+void Blend_Walking::Check2d(const Standard_Boolean C)
+{
+  check2d = C;
+}
+
+void Blend_Walking::Check(const Standard_Boolean C)
+{
+  check = C;
+}
+

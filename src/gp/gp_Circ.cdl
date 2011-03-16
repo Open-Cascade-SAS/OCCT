@@ -1,0 +1,251 @@
+---Copyright:   Matra Datavision 1991, 1992
+
+
+class Circ  from gp  inherits Storable
+
+        --- Purpose :
+        --  Describes a circle in 3D space.
+        -- A circle is defined by its radius and positioned in space
+        -- with a coordinate system (a gp_Ax2 object) as follows:
+        -- -   the origin of the coordinate system is the center of the circle, and
+        -- -   the origin, "X Direction" and "Y Direction" of the
+        --   coordinate system define the plane of the circle.
+        -- This positioning coordinate system is the "local
+        -- coordinate system" of the circle. Its "main Direction"
+        -- gives the normal vector to the plane of the circle. The
+        -- "main Axis" of the coordinate system is referred to as
+        -- the "Axis" of the circle.
+        -- Note: when a gp_Circ circle is converted into a
+        -- Geom_Circle circle, some implicit properties of the
+        -- circle are used explicitly:
+        -- -   the "main Direction" of the local coordinate system
+        --   gives an implicit orientation to the circle (and defines
+        --   its trigonometric sense),
+        -- -   this orientation corresponds to the direction in
+        --   which parameter values increase,
+        -- -   the starting point for parameterization is that of the
+        -- "X Axis" of the local coordinate system (i.e. the "X Axis" of the circle).
+        -- See Also
+        -- gce_MakeCirc which provides functions for more complex circle constructions
+        -- Geom_Circle which provides additional functions for
+        -- constructing circles and works, in particular, with the
+        -- parametric equations of circles
+
+uses  Ax1  from gp,
+      Ax2  from gp, 
+      Pln  from gp,
+      Pnt  from gp,
+      Trsf from gp,
+      Vec  from gp
+
+raises ConstructionError from Standard
+
+is
+
+
+  Create  returns Circ;
+        ---C++: inline
+        --- Purpose : Creates an indefinite circle.
+
+  Create (A2 : Ax2; Radius : Real)  returns Circ
+        ---C++: inline
+        --- Purpose : 
+        --  A2 locates the circle and gives its orientation in 3D space.
+        -- Warnings :
+        --  It is not forbidden to create a circle with Radius = 0.0  Raises ConstructionError if Radius < 0.0
+     raises ConstructionError;
+
+  SetAxis (me : in out; A1 : Ax1)
+        ---C++: inline
+        --- Purpose :
+        --  Changes the main axis of the circle. It is the axis 
+        --  perpendicular to the plane of the circle. 
+        -- Raises ConstructionError if the direction of A1 
+        -- is parallel to the "XAxis" of the circle.
+     raises ConstructionError
+ 
+     is static;
+
+  SetLocation (me : in out; P :Pnt)  is static;
+        ---C++:inline
+        --- Purpose :
+        --  Changes the "Location" point (center) of the circle.
+
+  SetPosition (me : in out; A2 : Ax2)  is static;
+        ---C++:inline
+        --- Purpose : Changes the position of the circle.
+
+  SetRadius (me : out; Radius : Real)
+        ---C++: inline
+   	---Purpose: Modifies the radius of this circle.
+        -- Warning. This class does not prevent the creation of a circle where Radius is null.
+        -- Exceptions
+        -- Standard_ConstructionError if Radius is negative.
+    raises ConstructionError
+    is static;
+
+  Area (me) returns Real    is static;
+        ---C++: inline
+        --- Purpose : Computes the area of the circle.
+
+  Axis (me)  returns Ax1   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the main axis of the circle.
+        --  It is the axis perpendicular to the plane of the circle,
+        --  passing through the "Location" point (center) of the circle.
+    	---C++: return const&
+
+  Length (me)  returns Real   is static;
+        ---C++: inline
+        --- Purpose :  Computes the circumference of the circle.
+
+  Location (me) returns Pnt   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the center of the circle. It is the
+        --  "Location" point of the local coordinate system 
+        --  of the circle
+    	---C++: return const&
+  
+  Position (me)  returns Ax2   is static;
+        --- Purpose : 
+        --  Returns the position of the circle.
+        --  It is the local coordinate system of the circle.
+        ---C++: inline
+    	---C++: return const&
+
+
+  Radius (me) returns Real    is static;
+        ---C++: inline
+        ---Purpose:  Returns the radius of this circle.
+
+  XAxis (me)  returns Ax1     is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the "XAxis" of the circle.
+        --  This axis is perpendicular to the axis of the conic.
+        --  This axis and the "Yaxis" define the plane of the conic.
+    
+  YAxis (me)  returns Ax1     is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns the "YAxis" of the circle.
+        --  This axis and the "Xaxis" define the plane of the conic.
+        --  The "YAxis" is perpendicular to the "Xaxis".
+
+  Distance (me; P : Pnt)  returns Real         is static;
+        ---C++: inline
+        --- Purpose :
+        --  Computes the minimum of distance between the point P and 
+        --  any point on the circumference of the circle.
+
+  SquareDistance (me; P : Pnt)  returns Real   is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Computes the square distance between <me> and the point P.
+
+  Contains (me; P : Pnt; LinearTolerance : Real)  returns Boolean
+     is static;
+        ---C++: inline
+        --- Purpose :
+        --  Returns True if the point P is on the circumference.
+        --  The distance between <me> and <P> must be lower or 
+        --  equal to LinearTolerance.
+       
+
+
+  Mirror (me : in out; P : Pnt)         is static;
+
+  Mirrored (me; P : Pnt)  returns Circ  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a circle 
+        --  with respect to the point P which is the center of the 
+        --  symmetry.
+
+
+  Mirror (me : in out; A1 : Ax1)         is static;
+
+  Mirrored (me; A1 : Ax1)  returns Circ  is static;
+
+
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a circle with
+        --  respect to an axis placement which is the axis of the
+        --  symmetry.
+
+ 
+
+  Mirror (me : in out; A2 : Ax2)          is static;
+
+  Mirrored (me; A2 : Ax2)   returns Circ  is static;
+
+        --- Purpose :
+        --  Performs the symmetrical transformation of a circle with respect 
+        --  to a plane. The axis placement A2 locates the plane of the
+        --  of the symmetry : (Location, XDirection, YDirection).
+
+
+  Rotate (me : in out; A1 : Ax1; Ang : Real)         is static;
+        ---C++: inline
+
+  Rotated (me; A1 : Ax1; Ang : Real)  returns Circ   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Rotates a circle. A1 is the axis of the rotation.
+        --  Ang is the angular value of the rotation in radians.
+
+ 
+
+  Scale (me : in out; P : Pnt; S : Real)        is static;
+        ---C++: inline
+
+  Scaled (me; P : Pnt; S : Real)  returns Circ  is static;
+        ---C++: inline
+        --- Purpose : 
+        --  Scales a circle. S is the scaling value.
+        --  Warnings :
+        --  If S is negative the radius stay positive but
+        --  the "XAxis" and the "YAxis" are  reversed as for
+        --  an ellipse.
+
+
+  Transform (me : in out; T : Trsf)          is static;
+        ---C++: inline
+
+  Transformed (me; T : Trsf)  returns Circ   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Transforms a circle with the transformation T from class Trsf.
+
+
+  Translate (me : in out; V : Vec)         is static;
+        ---C++: inline
+
+  Translated (me; V : Vec)   returns Circ  is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a circle in the direction of the vector V.
+        --  The magnitude of the translation is the vector's magnitude.
+
+
+
+  
+  Translate (me : in out; P1, P2 : Pnt)          is static;
+        ---C++: inline
+
+  Translated (me; P1, P2 : Pnt)   returns Circ   is static;
+        ---C++: inline
+        --- Purpose :
+        --  Translates a circle from the point P1 to the point P2.
+
+
+
+fields
+
+  pos    : Ax2;
+  radius : Real;  
+
+end;

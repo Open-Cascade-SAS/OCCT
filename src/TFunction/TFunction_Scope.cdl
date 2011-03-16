@@ -1,0 +1,150 @@
+-- File:	TFunction_Scope.cdl
+-- Created:	Mon Jun 22 11:25:42 2008
+-- Author:	Vladislav ROMASHKO
+--		<vladislav.romashko@opencascade.com>
+---Copyright:	 Open CASCADE S.A.
+
+class Scope from TFunction inherits Attribute from TDF
+
+    	---Purpose: Keeps a scope of functions.
+
+uses 
+
+    GUID            from Standard,   
+    OStream         from Standard,
+    Attribute       from TDF, 
+    RelocationTable from TDF,  
+    DataSet         from TDF, 
+    Label           from TDF,
+    Logbook         from TFunction,
+    DoubleMapOfIntegerLabel from TFunction
+
+is  
+
+    ---Purpose: Static methods
+    --          ==============
+
+    Set (myclass; Access : Label from TDF) 
+    ---Purpose: Finds or Creates a TFunction_Scope attribute at the root label accessed by <Access>. 
+    --          Returns the attribute.
+    returns Scope from TFunction;
+
+    GetID (myclass) 
+    ---Purpose: Returns the GUID for Scope attribute. 
+    ---C++: return const & 
+    returns GUID from Standard;  
+				    
+     
+    ---Purpose: Instant methods
+    --          =============== 
+
+    Create 
+    ---Purpose: Constructor (empty).
+    returns mutable Scope from TFunction;
+
+
+    AddFunction (me : mutable;
+    	    	 L : Label from TDF)
+    ---Purpose: Adds a function to the scope of functions.
+    returns Boolean from Standard;
+
+    RemoveFunction (me : mutable;
+    	    	    L : Label from TDF)
+    ---Purpose: Removes a function from the scope of functions.
+    returns Boolean from Standard;
+
+    RemoveFunction (me : mutable;
+    	    	    ID : Integer from Standard)
+    ---Purpose: Removes a function from the scope of functions.
+    returns Boolean from Standard;
+
+    RemoveAllFunctions (me : mutable);
+    ---Purpose: Removes all functions from the scope of functions.
+
+
+    ---Category: Access to the functions and their IDs
+    --           =====================================
+
+    HasFunction (me;
+    	    	 ID : Integer from Standard)
+    ---Purpose: Returns true if the function exists with such an ID.
+    returns Boolean from Standard;
+
+    HasFunction (me;
+    	    	 L : Label from TDF)
+    ---Purpose: Returns true if the label contains a function of this scope.
+    returns Boolean from Standard;
+
+    GetFunction (me;
+    	    	 L : Label from TDF)
+    ---Purpose: Returns an ID of the function.
+    returns Integer from Standard;
+    
+    GetFunction (me;
+    	         ID : Integer from Standard)
+    ---Purpose: Returns the label of the function with this ID.
+    ---C++: return const &
+    returns Label from TDF;
+
+
+    ---Category: Logbook
+    --           =======
+
+    GetLogbook (me : mutable)
+    ---Purpose: Returns the Logbook used in TFunction_Driver methods.
+    ---C++: return &
+    returns Logbook from TFunction;
+
+
+    ---Purpose: Implementation of Attribute methods
+    --          ===================================  
+     
+    ID (me)
+    ---C++: return const & 
+    returns GUID from Standard;
+
+    Restore (me: mutable; with : Attribute from TDF) 
+    is virtual;
+
+    Paste (me; into : mutable Attribute from TDF;
+	       RT   : mutable RelocationTable from TDF) 
+    is virtual;    
+
+    NewEmpty (me)
+    returns mutable Attribute from TDF
+    is redefined;
+	
+    Dump (me; anOS : in out OStream from Standard) 
+    ---C++: return &
+    returns OStream from Standard
+    is redefined; 
+
+
+    ---Category: Private methods
+    --           ===============
+
+    GetFunctions (me)
+    ---Purpose: Returns the scope of functions.
+    ---C++: return const &
+    returns DoubleMapOfIntegerLabel from TFunction;
+
+    ChangeFunctions (me : mutable)
+    ---Purpose: Returns the scope of functions for modification.
+    --          Warning: Don't use this method if You are not sure what You do!
+    ---C++: return &
+    returns DoubleMapOfIntegerLabel from TFunction;
+
+    SetFreeID (me : mutable;
+    	       ID : Integer from Standard);
+	       
+    GetFreeID (me)
+    returns Integer from Standard;
+
+
+fields
+
+    myFunctions : DoubleMapOfIntegerLabel from TFunction;
+    myLogbook   : Logbook from TFunction;
+    myFreeID    : Integer from Standard;
+
+end Scope;   

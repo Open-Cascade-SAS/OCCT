@@ -1,0 +1,70 @@
+-- File:	ShapeUpgrade_ConvertCurve3dToBezier.cdl
+-- Created:	Thu May 13 14:02:24 1999
+-- Author:	data exchange team
+--		<det@friendox.nnov.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+class ConvertCurve3dToBezier from ShapeUpgrade inherits SplitCurve3d from ShapeUpgrade
+
+    ---Purpose: converts/splits a 3d curve of any type to a list of beziers
+
+uses
+
+    HSequenceOfCurve from TColGeom,
+    HSequenceOfReal from TColStd
+
+is
+
+    Create returns ConvertCurve3dToBezier from ShapeUpgrade;
+    	---Purpose: Empty constructor
+    
+    SetLineMode(me:mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Line to bezier.
+    	---C++: inline
+    
+    GetLineMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_Line conversion mode.
+    	---C++: inline
+    
+    SetCircleMode(me:mutable; mode: Boolean);
+    	---Purpose: Sets mode for conversion Geom_Circle to bezier.
+    	---C++: inline
+    
+    GetCircleMode(me) returns Boolean;
+    	---Purpose: Returns the Geom_Circle conversion mode.
+    	---C++: inline
+    
+    SetConicMode(me:mutable; mode: Boolean);
+    	---Purpose: Returns the Geom_Conic conversion mode.
+    	---C++: inline
+    
+    GetConicMode(me) returns Boolean;
+    	---Purpose: Performs converting and computes the resulting shape.
+    	---C++: inline
+    
+    Compute(me: mutable) is redefined;
+    	---Purpose: Converts curve into a list of beziers, and stores the 
+    	--          splitting parameters on original curve.
+    
+    Build (me: mutable; Segment: Boolean) is redefined;
+    	---Purpose: Splits a list of beziers computed by Compute method according
+	--          the split values and splitting parameters.
+    
+    Segments(me) returns HSequenceOfCurve from TColGeom is private;
+    	---Purpose: Returns the list of bezier curves correspondent to original
+	--          curve.
+    
+    SplitParams(me) returns HSequenceOfReal from TColStd;
+    	---Purpose: Returns the list of splitted parameters in original curve
+	--          parametrisation.
+    
+fields
+
+   mySegments   : HSequenceOfCurve from TColGeom;
+   mySplitParams: HSequenceOfReal from TColStd;
+   myLineMode   : Boolean;
+   myCircleMode : Boolean;
+   myConicMode  : Boolean;
+    
+end ConvertCurve2dToBezier;
+ 

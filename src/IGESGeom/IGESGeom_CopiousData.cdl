@@ -1,0 +1,119 @@
+--
+-- File      :  CopiousData.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Kiran )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class CopiousData from IGESGeom  inherits IGESEntity
+
+        ---Purpose: defines IGESCopiousData, Type <106> Form <1-3,11-13,63>
+        --          in package IGESGeom
+        --          This entity stores data points in the form of pairs,
+        --          triples, or sextuples. An interpretation flag value
+        --          signifies which of these forms is being used.
+
+uses
+
+        Pnt           from gp,
+        Vec           from gp,
+        HArray1OfReal from TColStd
+
+raises OutOfRange
+
+is
+
+        Create returns mutable CopiousData;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me        : mutable;
+              aDataType : Integer;
+              aZPlane   : Real;
+              allData   : HArray1OfReal);
+        ---Purpose : This method is used to set the fields of the class
+        --           CopiousData
+        --       - aDataType : Specifies whether data is a pair or a triple
+        --                     or a sextuple.
+        --       - aZPlane   : Common Z value for all points if datatype = 1
+        --       - allData   : Data to be read in groups of 2, 3 or 6
+
+    	SetPolyline (me : mutable; mode : Boolean);
+	---Purpose : Sets Copious Data to be a Polyline if <mode> is True
+	--           (Form = 11-12-13) or a Set of Points else (Form 1-2-3)
+
+    	SetClosedPath2D (me : mutable);
+	---Purpose : Sets Copious Data to be a Closed Path 2D (Form 63)
+	--  Warning : DataType is not checked and must be set to ONE by Init
+
+    	IsPointSet (me) returns Boolean;
+	---Purpose : Returns True if <me> is a Set of Points (Form 1-2-3)
+
+    	IsPolyline (me) returns Boolean;
+	---Purpose : Returns True if <me> is a Polyline (Form 11-12-13)
+
+    	IsClosedPath2D (me) returns Boolean;
+	---Purpose : Returns True if <me> is a Closed Path 2D (Form 63)
+
+
+        DataType(me) returns Integer;
+        ---Purpose : returns data type
+        -- 1 = XY ( with common Z given by plane)
+        -- 2 = XYZ ( point)
+        -- 3 = XYZ + Vec(XYZ) (point + normal vector)
+
+        NbPoints(me) returns Integer;
+        ---Purpose : returns the number of tuples
+
+    	Data (me; NumPoint, NumData : Integer) returns Real raises OutOfRange;
+	---Purpose : Returns an individual Data, given the N0 of the Point
+	---Purpose :           and the B0 of the Coordinate (according DataType)
+
+        ZPlane(me) returns  Real;
+        ---Purpose : If datatype = 1, then returns common z value for all data
+        -- else returns 0
+
+        Point(me; anIndex : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the coordinates of the point specified by the anIndex
+        -- raises exception if anIndex <= 0 or anIndex > NbPoints()
+
+        TransformedPoint(me; anIndex : Integer) returns Pnt
+        raises OutOfRange;
+        ---Purpose : returns the coordinates of the point specified by the anIndex
+        -- after applying Transf. Matrix
+        -- raises exception if anIndex <= 0 or anIndex > NbPoints()
+
+        Vector(me; anIndex : Integer) returns Vec
+        raises OutOfRange;
+        ---Purpose : returns i, j, k values if 3-tuple else returns (0, 0, 0)
+        -- raises exception if anIndex <= 0 or anIndex > NbPoints()
+
+        TransformedVector(me; anIndex : Integer) returns Vec
+        raises OutOfRange;
+        ---Purpose : returns transformed vector if 3-tuple else returns (0, 0, 0)
+        -- raises exception if anIndex <= 0 or anIndex > NbPoints()
+
+fields
+
+--
+-- Class    : IGESGeom_CopiousData
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class CopiousData.
+--
+-- Reminder : A CopiousData instance is defined by :
+--            The data type which it holds (whether it is a pair
+--            or a triad or sex-tuple), and the data.
+
+        theDataType   : Integer;
+            -- 1 for x, y pairs, common z
+            -- 2 for x, y, z coordinates
+            -- 3 for x, y, z coordinates and i, j, k vectors
+        theZPlane     : Real;
+            -- The common Z displacement if the data type is a pair
+        theData       : HArray1OfReal;
+            -- To be read in groups of 2 or 3 or 6 according to data type
+
+end CopiousData;

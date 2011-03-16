@@ -1,0 +1,69 @@
+-- File:	BooleanOperations_Explorer.cdl
+-- Created:	Mon Sep  4 11:04:51 2000
+-- Author:	Vincent DELOS
+--		<vds@bulox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 2000
+
+
+class Explorer from BooleanOperations 
+
+	---Purpose:  the explorer associated  to the Data Structure to
+	--          retrieve   subshapes of a  given   shape stored in
+	--          ShapesDataStructure.
+
+uses
+    Shape    from TopoDS,
+    ShapeEnum from TopAbs,
+    ShapesDataStructure from BooleanOperations,
+    PShapesDataStructure from BooleanOperations
+
+is
+    Create (SDS: ShapesDataStructure)  
+    	returns Explorer from BooleanOperations;
+
+    --modified by NIZNHY-PKV Sun Dec 15 16:24:39 2002  f 
+    Delete(me:  out)  
+    	is virtual; 
+    ---C++:  alias  "Standard_EXPORT virtual ~BooleanOperations_Explorer()  {Delete();}" 
+    --modified by NIZNHY-PKV Sun Dec 15 16:27:53 2002  t 
+    
+    Init (me:in out;  
+    	aShape: Integer;  
+    	TargetToFind: ShapeEnum;  
+    	TargetToAvoid: ShapeEnum = TopAbs_SHAPE) is virtual;
+    
+    Next (me:in out)  
+    	is virtual;
+    
+    More (me)  
+    	returns Boolean;
+    
+    Current (me:in out)  
+    	returns Integer is virtual;
+
+    Dump (me; S : in out OStream)  
+    	is virtual;
+
+
+fields
+
+myShapesDataStructure: PShapesDataStructure is protected;
+---Purpose: the data structure we're working on.
+
+myStack : Address is protected;
+---Purpose: contains all the numbers associated to the shapes.
+myTopOfStack : Integer is protected;
+---Purpose: gives the position of  the  highest element in the stack,
+--          i.e. the index of the number of the current shape.
+mySizeOfStack : Integer is protected;
+---Purpose: gives the number of elements in the stack.
+
+myTargetToFind : ShapeEnum is protected;
+---Purpose: the kind of shape we are looking for.
+myTargetToAvoid: ShapeEnum is protected;
+---Purpose: the kind of shape we want to avoid.
+
+hasMore : Boolean is protected;
+---Purpose: if we still have a new shape to return.
+
+end Explorer;

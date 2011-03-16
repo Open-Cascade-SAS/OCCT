@@ -1,0 +1,20 @@
+-- File:        LengthUnit.cdl
+-- Created:     Fri Dec  1 11:11:22 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class LengthUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable LengthUnit;
+	---Purpose: Returns a LengthUnit
+
+
+end LengthUnit;

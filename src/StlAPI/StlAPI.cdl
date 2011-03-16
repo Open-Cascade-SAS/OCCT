@@ -1,0 +1,32 @@
+-- File:	StlAPI.cdl
+-- Created:	Tue May 13 15:12:43 1997
+-- Author:	Fabien REUTER
+--		<frr@sgi69>
+---Copyright:	 Matra Datavision 1997
+
+package  StlAPI 
+
+    	 ---Purpose : Offers the API for STL data manipulation.
+    	 --         
+
+uses 
+ 
+    TopoDS,
+    StlMesh
+     
+is 
+    class Writer; 
+    class Reader; 
+    
+    Write(aShape      : in Shape from TopoDS;  
+          aFile       : in CString from Standard;
+    	  aAsciiMode  : in Boolean from Standard = Standard_True);
+	  ---Purpose : Convert and write shape to STL format.
+	  --         file is written in binary if aAsciiMode is False
+	  --         otherwise it is written in Ascii (by default)
+
+    Read(aShape      : in out Shape from TopoDS;  
+          aFile      : CString from Standard);
+	  ---Purpose : Create a shape from a STL format.
+
+end  StlAPI;

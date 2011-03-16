@@ -1,0 +1,748 @@
+// File:      IntPatch_ImpImpIntersection_2.gxx
+// Created:   Thu May  7 08:47:45 1992
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 1992
+
+IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
+       done(Standard_False)
+{
+}
+//--------------------------------------------------------------
+IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
+       (const Handle(Adaptor3d_HSurface)&  S1,
+	const Handle(Adaptor3d_TopolTool)& D1,
+        const Handle(Adaptor3d_HSurface)&  S2,
+	const Handle(Adaptor3d_TopolTool)& D2,
+	const Standard_Real TolArc,
+	const Standard_Real TolTang)
+{
+  Perform(S1,D1,S2,D2,TolArc,TolTang);
+}
+//--------------------------------------------------------------
+void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
+					  const Handle(Adaptor3d_TopolTool)& D1,
+					  const Handle(Adaptor3d_HSurface)&  S2,
+					  const Handle(Adaptor3d_TopolTool)& D2,
+					  const Standard_Real TolArc,
+					  const Standard_Real TolTang) {
+  done = Standard_False;
+  spnt.Clear();
+  slin.Clear();
+
+  empt = Standard_True;
+  tgte = Standard_False;
+  oppo = Standard_False;
+
+  Standard_Boolean all1 = Standard_False;
+  Standard_Boolean all2 = Standard_False;
+  Standard_Boolean SameSurf = Standard_False;
+  Standard_Boolean multpoint = Standard_False;
+
+  Standard_Boolean nosolonS1 = Standard_False;
+              // indique s il y a des points sur restriction du carreau 1
+  Standard_Boolean nosolonS2 = Standard_False;
+              // indique s il y a des points sur restriction du carreau 2
+
+  Standard_Integer i, nbpt, nbseg;
+
+  IntPatch_SequenceOfSegmentOfTheSOnBounds edg1,edg2;
+  IntPatch_SequenceOfPathPointOfTheSOnBounds pnt1,pnt2;
+
+  // On commence par intersecter les supports des surfaces
+
+  IntSurf_Quadric quad1;
+  IntSurf_Quadric quad2;
+  IntPatch_ArcFunction AFunc;
+  Standard_Real Tolang = 1.e-8;
+  GeomAbs_SurfaceType typs1 = S1->GetType();
+  GeomAbs_SurfaceType typs2 = S2->GetType();
+
+
+  switch (typs1) {
+
+  case GeomAbs_Plane :
+    {
+      quad1.SetValue(S1->Plane());
+
+      switch (typs2) {
+
+      case GeomAbs_Plane:
+	{
+	  quad2.SetValue(S2->Plane());
+	  if (!IntPP(quad1,quad2,Tolang,TolTang,SameSurf,slin)) {
+	    return;
+	  }
+	}
+	break;
+	
+	
+      case GeomAbs_Cylinder:
+	{
+	  quad2.SetValue(S2->Cylinder());
+	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_False,empt,slin)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Sphere:
+	{
+	  quad2.SetValue(S2->Sphere());
+	  if (!IntPSp(quad1,quad2,TolTang,Standard_False,empt,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+	
+      case GeomAbs_Cone:
+	{
+	  quad2.SetValue(S2->Cone());
+	  if (!IntPCo(quad1,quad2,Tolang,TolTang,Standard_False,
+		      empt,multpoint,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+      default: 
+	{
+	  Standard_ConstructionError::Raise();
+	  break;
+	}
+      }
+    }
+    break;
+
+  case GeomAbs_Cylinder:
+    {
+      quad1.SetValue(S1->Cylinder());
+      switch (typs2){
+
+      case GeomAbs_Plane:
+	{
+	  quad2.SetValue(S2->Plane());
+	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_True,empt,slin)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cylinder:
+	{
+	  quad2.SetValue(S2->Cylinder());
+	  if (!IntCyCy(quad1,quad2,TolTang,empt,SameSurf,multpoint,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Sphere:
+	{
+	  quad2.SetValue(S2->Sphere());
+	  if (!IntCySp(quad1,quad2,TolTang,Standard_False,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cone:
+	{
+	  quad2.SetValue(S2->Cone());
+	  if (!IntCyCo(quad1,quad2,TolTang,Standard_False,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+      default: 
+	{
+	  Standard_ConstructionError::Raise();
+	  break;
+	}
+      }
+
+    }
+    break;
+
+  case GeomAbs_Sphere:
+    {
+      quad1.SetValue(S1->Sphere());
+
+      switch (typs2){
+
+      case GeomAbs_Plane:
+	{
+	  quad2.SetValue(S2->Plane());
+	  if (!IntPSp(quad1,quad2,TolTang,Standard_True,empt,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cylinder:
+	{
+	  quad2.SetValue(S2->Cylinder());
+	  if (!IntCySp(quad1,quad2,TolTang,Standard_True,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Sphere:
+	{
+	  quad2.SetValue(S2->Sphere());
+	  if (!IntSpSp(quad1,quad2,TolTang,empt,SameSurf,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cone:
+	{
+	  quad2.SetValue(S2->Cone());
+	  if (!IntCoSp(quad1,quad2,TolTang,Standard_True,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+      default: 
+	{
+	  Standard_ConstructionError::Raise();
+	  break;
+	}
+      }
+
+    }
+    break;
+
+  case GeomAbs_Cone:
+    {
+      quad1.SetValue(S1->Cone());
+
+      switch (typs2){
+
+      case GeomAbs_Plane:
+	{
+	  quad2.SetValue(S2->Plane());
+	  if (!IntPCo(quad1,quad2,Tolang,TolTang,Standard_True,
+		      empt,multpoint,slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cylinder:
+	{
+	  quad2.SetValue(S2->Cylinder());
+	  if (!IntCyCo(quad1,quad2,TolTang,Standard_True,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Sphere:
+	{
+	  quad2.SetValue(S2->Sphere());
+	  if (!IntCoSp(quad1,quad2,TolTang,Standard_False,empt,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      case GeomAbs_Cone:
+	{
+	  quad2.SetValue(S2->Cone());
+	  if (!IntCoCo(quad1,quad2,TolTang,empt,SameSurf,multpoint,
+		       slin,spnt)) {
+	    return;
+	  }
+	  if (empt) {
+	    done = Standard_True;
+	    return;
+	  }
+	}
+	break;
+
+      default:
+	{
+	  Standard_ConstructionError::Raise();
+	  break;
+	}
+      }
+
+    }
+    break;
+    default:
+    {
+      Standard_ConstructionError::Raise();
+      break;
+    }
+  }
+
+
+  if (!SameSurf) {
+
+    AFunc.SetQuadric(quad2);
+    AFunc.Set(S1);
+    
+    solrst.Perform(AFunc, D1, TolArc, TolTang);
+
+
+    if (!solrst.IsDone()) {
+      return;
+    }
+
+
+    if (solrst.AllArcSolution() && typs1 == typs2) {
+      all1 = Standard_True;
+    }
+    nbpt = solrst.NbPoints();
+    nbseg= solrst.NbSegments();
+    for (i=1; i<= nbpt; i++) {
+      pnt1.Append(solrst.Point(i));
+    }
+    for (i=1; i<= nbseg; i++) {
+      edg1.Append(solrst.Segment(i));
+    }
+    nosolonS1 = (nbpt == 0) && (nbseg == 0);
+
+    if (nosolonS1 && all1) {  // cas de face sans restrictions
+      all1 = Standard_False;
+    }
+
+  }
+  else {
+    nosolonS1 = Standard_True;
+  }
+
+  if (!SameSurf) {
+
+    AFunc.SetQuadric(quad1);
+    AFunc.Set(S2);
+
+    solrst.Perform(AFunc, D2, TolArc, TolTang);
+
+    if (!solrst.IsDone()) {
+      return;
+    }
+    
+    if (solrst.AllArcSolution() && typs1 == typs2) {
+      all2 = Standard_True;
+    }
+    nbpt = solrst.NbPoints();
+    nbseg= solrst.NbSegments();
+    for (i=1; i<= nbpt; i++) {
+      pnt2.Append(solrst.Point(i));
+    }
+    
+    for (i=1; i<= nbseg; i++) {
+      edg2.Append(solrst.Segment(i));
+    }
+    nosolonS2 = (nbpt == 0) && (nbseg == 0);
+
+    if (nosolonS2 && all2) {  // cas de face sans restrictions
+      all2 = Standard_False;
+    }
+
+  }
+  else {
+    nosolonS2 = Standard_True;
+  }
+
+  if (SameSurf || (all1 && all2)) {
+
+    // faces "paralleles" parfaites
+
+    empt = Standard_False;
+    tgte = Standard_True;
+    slin.Clear();
+    spnt.Clear();
+
+    gp_Pnt Ptreference;
+
+    switch (typs1) {
+    case GeomAbs_Plane:
+      {
+	Ptreference = (S1->Plane()).Location();
+      }
+      break;
+    case GeomAbs_Cylinder:
+      {
+	Ptreference = ElSLib::Value(0.,0.,S1->Cylinder());
+      }
+      break;
+    case GeomAbs_Sphere:
+      {
+	Ptreference = ElSLib::Value(PI/4.,PI/4.,S1->Sphere());
+      }
+      break;
+    case GeomAbs_Cone:
+      {
+	Ptreference = ElSLib::Value(0.,10.,S1->Cone());
+      }
+      break;
+    
+#ifndef DEB
+    default: 
+      break;
+#endif
+    }
+    oppo = quad1.Normale(Ptreference).Dot(quad2.Normale(Ptreference)) < 0.0;
+
+    done = Standard_True;
+    return;
+  }
+
+  if (!nosolonS1 || !nosolonS2) {
+
+
+    empt = Standard_False;
+
+    // C est la qu il faut commencer a bosser...
+
+
+    PutPointsOnLine(S1,S2,pnt1, slin, Standard_True, D1, quad1,quad2,
+		    multpoint,TolArc);
+    
+    PutPointsOnLine(S1,S2,pnt2, slin, Standard_False,D2, quad2,quad1,
+		    multpoint,TolArc);
+
+    if (edg1.Length() != 0) {
+      ProcessSegments(edg1,slin,quad1,quad2,Standard_True,TolArc);
+    }
+
+    if (edg2.Length() != 0) {
+      ProcessSegments(edg2,slin,quad1,quad2,Standard_False,TolArc);
+    }
+
+    if (edg1.Length() !=0 || edg2.Length() !=0) {
+//      ProcessRLine(slin,S1,S2,TolArc);
+      ProcessRLine(slin,quad1,quad2,TolArc);
+    }
+
+  }
+  else {
+    empt = ((slin.Length()==0) && (spnt.Length()==0));
+  }
+
+  Standard_Integer nblin = slin.Length();
+
+
+
+  for(i=1; i<=nblin; i++) {
+    IntPatch_IType thetype = slin.Value(i)->ArcType();
+    if(  (thetype ==  IntPatch_Ellipse)
+       ||(thetype ==  IntPatch_Circle)
+       ||(thetype ==  IntPatch_Lin)
+       ||(thetype ==  IntPatch_Parabola)
+       ||(thetype ==  IntPatch_Hyperbola)) { 
+      Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
+      
+/*      if(thetype  == IntPatch_Circle) { 
+	gp_Pnt P;
+	IntPatch_Point point;
+	Standard_Real u1,v1,u2,v2; 
+	Standard_Boolean Addf = Standard_False;
+	Standard_Boolean Addl = Standard_False;
+	Standard_Integer v=0;
+	Standard_Integer nbv;
+	gp_Circ Circ = glin->Circle();
+	nbv = glin->NbVertex();
+	if(glin->HasFirstPoint() == Standard_False) { 
+	  P=ElCLib::Value(0.0,Circ);
+	  quad1.Parameters(P,u1,v1); quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2); 
+	  point.SetParameter(0.0);
+	  glin->AddVertex(point);
+	  nbv++;
+	  glin->SetFirstPoint(nbv);
+	}
+	if(glin->HasLastPoint() == Standard_False) { 
+	  P=ElCLib::Value(0.0,Circ);
+	  quad1.Parameters(P,u1,v1); quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(PI+PI);
+	  glin->AddVertex(point);
+	  nbv++;
+	  glin->SetLastPoint(nbv);
+	}
+      }
+      else if(thetype == IntPatch_Ellipse) { 
+	gp_Pnt P;
+	IntPatch_Point point;
+	Standard_Real u1,v1,u2,v2; 
+	Standard_Boolean Addf = Standard_False;
+	Standard_Boolean Addl = Standard_False;
+	Standard_Integer v=0;
+	Standard_Integer nbv;
+	gp_Elips Elips = glin->Ellipse();
+	nbv = glin->NbVertex();
+	if(glin->HasFirstPoint() == Standard_False) { 
+	  P=ElCLib::Value(0.0,Elips);
+	  quad1.Parameters(P,u1,v1);  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(0.0);
+	  glin->AddVertex(point);
+	  nbv++;
+	  glin->SetFirstPoint(nbv);
+	}
+	if(glin->HasLastPoint() == Standard_False) {
+	  P=ElCLib::Value(0.0,Elips);
+	  quad1.Parameters(P,u1,v1);  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(PI+PI);
+	  glin->AddVertex(point);
+	  nbv++;
+	  glin->SetLastPoint(nbv);
+	}
+	} 
+*/
+    glin->ComputeVertexParameters(TolArc); 
+    }
+    else if(thetype == IntPatch_Analytic) { 
+      Handle(IntPatch_ALine)& aligold = *((Handle(IntPatch_ALine)*)&slin.Value(i));
+      aligold->ComputeVertexParameters(TolArc);
+    }
+    else if(thetype == IntPatch_Restriction) {
+      Handle(IntPatch_RLine)& rlig = *((Handle(IntPatch_RLine)*)&slin.Value(i));
+      rlig->ComputeVertexParameters(TolArc); 
+    }
+  }
+#if 1 
+  //----------------------------------------------------------------
+  //-- On place 2 vertex sur les courbes de GLine qui n en 
+  //-- contiennent pas. 
+  
+  for(i=1; i<=nblin; i++) {
+    gp_Pnt P;
+    IntPatch_Point point;
+    Standard_Real u1,v1,u2,v2; 
+#ifdef DEB
+    Standard_Boolean Addf = Standard_False;
+    Standard_Boolean Addl = Standard_False;
+    Standard_Integer v=0;
+#endif
+    Standard_Integer nbv;
+    if(slin.Value(i)->ArcType() == IntPatch_Circle) { 
+      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
+      nbv = glin->NbVertex();
+      if(glin->NbVertex() == 0) { 
+	gp_Circ Circ = glin->Circle();
+	P=ElCLib::Value(0.0,Circ);
+	quad1.Parameters(P,u1,v1);
+	quad2.Parameters(P,u2,v2);
+	point.SetValue(P,TolArc,Standard_False);
+	point.SetParameters(u1,v1,u2,v2);
+	point.SetParameter(0.0);
+	glin->AddVertex(point);
+
+	P=ElCLib::Value(0.0,Circ);
+	quad1.Parameters(P,u1,v1);
+	quad2.Parameters(P,u2,v2);
+	point.SetValue(P,TolArc,Standard_False);
+	point.SetParameters(u1,v1,u2,v2);
+	point.SetParameter(PI+PI);
+	glin->AddVertex(point);
+      }
+    }
+    
+    else if(slin.Value(i)->ArcType() == IntPatch_Ellipse) { 
+      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
+      nbv = glin->NbVertex();
+      if(glin->NbVertex() == 0) { 
+	gp_Elips Elips = glin->Ellipse();
+	P=ElCLib::Value(0.0,Elips);
+	quad1.Parameters(P,u1,v1);
+	quad2.Parameters(P,u2,v2);
+	point.SetValue(P,TolArc,Standard_False);
+	point.SetParameters(u1,v1,u2,v2);
+	point.SetParameter(0.0);
+	glin->AddVertex(point);
+
+	P=ElCLib::Value(0.0,Elips);
+	quad1.Parameters(P,u1,v1);
+	quad2.Parameters(P,u2,v2);
+	point.SetValue(P,TolArc,Standard_False);
+	point.SetParameters(u1,v1,u2,v2);
+	point.SetParameter(PI+PI);
+	glin->AddVertex(point);
+      }
+    }
+  }
+#endif
+
+  done = Standard_True;
+}
+//--------------------------------------------------------------
+
+
+#if 0
+//-- Ancien bout de code 
+  //----------------------------------------------------------------
+  //-- On place 2 vertex sur les courbes de GLine qui n en 
+  //-- contiennent pas. 
+  
+  for(i=1; i<=nblin; i++) {
+    gp_Pnt P;
+    IntPatch_Point point;
+    Standard_Real u1,v1,u2,v2; 
+    Standard_Boolean Addf = Standard_False;
+    Standard_Boolean Addl = Standard_False;
+    Standard_Integer v=0;
+    Standard_Integer nbv;
+    if(slin.Value(i)->ArcType() == IntPatch_Circle) { 
+      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
+      nbv = glin->NbVertex();
+      if(glin->NbVertex() == 0) { Addf=Addl=Standard_True; } 
+      else { 
+	if(glin->HasFirstPoint() == Standard_False) { 
+	  Addf = Standard_True;
+	  for(v=1;v<=nbv;v++) { 
+	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
+	    if(gv<Precision::PConfusion()) 
+	      Addf = Standard_False;
+	  }
+	}
+	if(glin->HasLastPoint() == Standard_False) { 
+	  Addl = Standard_True;
+	  for(v=1;v<=nbv;v++) { 
+	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
+	    if((PI+PI-gv)<Precision::PConfusion()) 
+	      Addl = Standard_False;
+	  }
+	}
+      }
+      if(Addl || Addf) { 
+	gp_Circ Circ = glin->Circle();
+	if(Addf) { 
+	  P=ElCLib::Value(0.0,Circ);
+	  quad1.Parameters(P,u1,v1);
+	  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(0.0);
+	  glin->AddVertex(point);
+	}
+	if(Addl) { 
+	  P=ElCLib::Value(0.0,Circ);
+	  quad1.Parameters(P,u1,v1);
+	  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(PI+PI);
+	  glin->AddVertex(point);
+	}
+      }
+    }
+    
+    else if(slin.Value(i)->ArcType() == IntPatch_Ellipse) { 
+      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
+      nbv = glin->NbVertex();
+      if(glin->NbVertex() == 0) { Addf=Addl=Standard_True; } 
+      else { 
+	if(glin->HasFirstPoint() == Standard_False) { 
+	  Addf = Standard_True;
+	  for(v=1;v<=nbv;v++) { 
+	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
+	    if(gv<Precision::PConfusion()) 
+	      Addf = Standard_False;
+	  }
+	}
+	if(glin->HasLastPoint() == Standard_False) { 
+	  Addl = Standard_True;
+	  for(v=1;v<=nbv;v++) { 
+	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
+	    if((PI+PI-gv)<Precision::PConfusion()) 
+	      Addl = Standard_False;
+	  }
+	}
+      }
+      if(Addl || Addf) { 
+	gp_Elips Elips = glin->Ellipse();
+	if(Addf) { 
+	  P=ElCLib::Value(0.0,Elips);
+	  quad1.Parameters(P,u1,v1);
+	  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(0.0);
+	  glin->AddVertex(point);
+	}
+	if(Addl) { 
+	  P=ElCLib::Value(0.0,Elips);
+	  quad1.Parameters(P,u1,v1);
+	  quad2.Parameters(P,u2,v2);
+	  point.SetValue(P,TolArc,Standard_False);
+	  point.SetParameters(u1,v1,u2,v2);
+	  point.SetParameter(PI+PI);
+	  glin->AddVertex(point);
+	}
+      }
+    }
+  }
+#endif

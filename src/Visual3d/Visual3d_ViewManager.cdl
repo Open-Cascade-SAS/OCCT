@@ -1,0 +1,470 @@
+--
+-- File:	Visual3d_ViewManager.cdl
+-- Created:	Jeudi 5 Septembre 1991
+-- Author:	NW,JPB,CAL
+--		05-97: CAL; Ajout du Clear sur les TOS_COMPUTED.
+--		05-98: CAL; Perfs. Connection entre structures COMPUTED.
+--
+---Copyright:	MatraDatavision 1991,1992,1993
+--
+
+class ViewManager from Visual3d inherits StructureManager from Graphic3d
+
+	---Purpose: This class allows the definition of a manager to
+	--	    which the views are associated.
+	--	    It allows them to be globally manipulated.
+	--	    It activates the pick.
+
+uses
+
+	Array2OfReal		from TColStd,
+
+	GenId			from Aspect,
+	GraphicDevice           from Aspect,
+	Window			from Aspect,
+	TypeOfHighlightMethod	from Aspect,
+
+	GraphicDriver		from Graphic3d,
+	Structure		from Graphic3d,
+	DataStructureManager	from Graphic3d,
+	Vertex			from Graphic3d,
+	CView			from Graphic3d,
+	Vector                  from Graphic3d,
+
+	ContextPick		from Visual3d,
+	Layer			from Visual3d,
+	PickDescriptor		from Visual3d,
+	SetOfView		from Visual3d,
+	HSetOfView		from Visual3d,
+	View			from Visual3d
+
+is
+
+	Create ( aDevice	: GraphicDevice from Aspect)
+		returns mutable ViewManager from Visual3d;
+	---Level: Public
+	---Purpose: Creates a 3D visualizer.
+
+	---------------------------------------------------
+	-- Category: Methods to modify the class definition
+	---------------------------------------------------
+
+	Activate ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Activates all the views of the manager <me>.
+	---Category: Methods to modify the class definition
+
+	Deactivate ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Deactivates all the views of the manager <me>.
+	---Category: Methods to modify the class definition
+
+	Destroy ( me	: mutable )
+		is redefined;
+	---Level: Public
+	---Purpose: Deletes and erases the 3D visualiser <me>.
+	---Category: Methods to modify the class definition
+	---C++: alias ~
+
+	Erase ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Erases all of the structures displayed in the
+	--	    visualiser <me>.
+	---Category: Methods to modify the class definition
+
+	Redraw ( me )
+		is static;
+	---Level: Public
+	---Purpose: Redraws all the displayed structures.
+	---Category: Methods to modify the class definition
+
+	Remove ( me	: mutable )
+		is static;
+	---Level: Public
+	---Purpose: Deletes and erases the 3D visualiser <me>.
+	---Category: Methods to modify the class definition
+
+	Update ( me )
+		is redefined static;
+	---Level: Public
+	---Purpose: Updates screen in function of modifications of
+	--	    the structures.
+	--  Category: Methods to modify the class definition
+	--  Warning: Not necessary if the update mode is TOU_ASAP.
+
+	----------------------------
+	-- Category: Inquire methods
+	----------------------------
+
+	ActivatedView ( me )
+		returns HSetOfView from Visual3d
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of views activated in the visualiser <me>.
+	---Category: Inquire methods
+
+	ConvertCoord ( me;
+		       AWindow	: Window from Aspect;
+		       AVertex	: Vertex from Graphic3d;
+		       AU, AV	: out Integer from Standard )
+		is static;
+	---Level: Public
+	---Purpose: Applies the view orientation transformation, the
+	--	    view mapping transformation and view clip, the
+	--	    display transformation to the vertex <AVertex>.
+	--	    Returns the pixel coordinates <AU>, <AV>.
+	--  Warning: Returns <AU> = <AV> = IntegerLast () if the
+	--	    evaluation is impossible.
+	--	    -- Bad Window, Numeric error...
+	---Category: Inquire methods
+
+	ConvertCoord ( me;
+		       AWindow	: Window from Aspect;
+		       AU, AV	: Integer from Standard )
+		returns Vertex from Graphic3d
+		is static;
+	---Level: Public
+	---Purpose: Applies the inverse of the display transformation, the
+	--	    inverse of the view mapping transformation and view clip,
+	--	    the inverse of the view orientation transformation to
+	--	    the pixel coordinates <AU>, <AV>.
+	--	    Returns the world coordinates <AVertex>.
+	--  Warning: Returns AVertex (X, Y, Z) with X = Y = Z = RealLast ()
+	--	    if the evaluation is impossible.
+	--	    -- Bad Window, Numeric error...
+	---Category: Inquire methods
+
+	ConvertCoordWithProj ( me;
+		       AWindow	: Window from Aspect;
+		       AU, AV	: Integer from Standard;
+                       Point : out Vertex from Graphic3d;
+                       Proj  : out Vector from Graphic3d )
+		is static;
+	---Level: Public
+	---Purpose: Applies the inverse of the display transformation, the
+	--	    inverse of the view mapping transformation and view clip,
+	--	    the inverse of the view orientation transformation to
+	--	    the pixel coordinates <AU>, <AV>.
+	--	    Returns the world coordinates <AVertex> and projection ray <AVector>.
+	--  Warning: Returns AVertex (X, Y, Z) with X = Y = Z = RealLast () and 
+        --          AVector (VX, VY, VZ) with VX = VY = VZ = 0.
+	--	    if the evaluation is impossible.
+	--	    -- Bad Window, Numeric error...
+	---Category: Inquire methods
+
+	DefinedView ( me )
+		returns HSetOfView from Visual3d
+		is static;
+	---Level: Internal
+	---Purpose: Returns the group of views defined in the visualiser <me>.
+	---Category: Inquire methods
+
+	MaxNumOfViews ( me )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns the theoretical maximum number of
+	--	    definable views in the view manager <me>.
+	--  Warning: It's not possible to accept an infinite
+	--	    number of definable views because each
+	--	    view must have an identification and we
+	--	    have different view managers.
+	---Category: Inquire methods
+
+	Identification ( me	: mutable;
+			 AView  : View from Visual3d )
+		returns Integer from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns :
+	--	    a new identification number for a new view
+	--	    in the visualiser.
+	---Category: Inquire methods
+
+    	UnIdentification ( me : mutable;
+	    	     	   aViewId : Integer from Standard )
+	---Purpose: Release a unique ID of the view reserved for the view on its creation.
+        is static;
+
+	-------------------------------------------------
+	-- Summary of Pick Input                       --
+	--                                             --
+	-- Picking returns information about an        --
+	-- object pointed to on the display.           --
+	--                                             --
+	-- To be picked, a structure must be :         --
+	--                                             --
+	--	Visible                                --
+	--	Within the pick aperture               --
+	--	Pickable as determined by the method   --
+	--	Graphic3d_Structure::SetPick           --
+	--                                             --
+	-- The PickDescriptor is :                     --
+	--	A list of PickPath.                    --
+	--                                             --
+	-- The PickPath is defined by :                --
+	--	A Structure Identification             --
+	--	A Pick Identification                  --
+	--	An Element Number.                     --
+	--                                             --
+	-- To insert a Pick Identification use the     --
+	-- method Graphic3d_Group::SetPickId           --
+	--                                             --
+	-- The pick search order tends to select the   --
+	-- "top" object :                              --
+	--	High to low structure display priority --
+	--	Most recently displayed to least       --
+	--	recently displayed.                    --
+	-------------------------------------------------
+
+	Pick (  me	: mutable;
+		CTX	: ContextPick from Visual3d;
+		AWindow	: Window from Aspect;
+		AX, AY	: Integer from Standard )
+		returns PickDescriptor from Visual3d
+		is static;
+	---Level: Public
+	---Purpose: Returns a graphic pick with the pick context <CTX>
+	--	    at the coordinates <AX>, <AY> in the window <AWindow>.
+	---Category: Inquire methods
+
+	------------------------------
+	-- Category: Redefined methods
+	------------------------------
+
+	--
+	-- 3 redefined methods
+	--
+	-- The C++ programming language (Bjarne Stroustrup)
+	-- page 586 r.13.1 Declaration Matching
+	--
+	-- A function member of a derived class is not in the same
+	-- scope as a function member of the same name in a base class.
+	-- So Identification (AView) hides Identification (AStructure)
+	-- rather than overloads it !
+	--
+
+	Identification ( me;
+			 AId	: Integer from Standard )
+		returns Structure from Graphic3d
+		is redefined static;
+	---Level: Internal
+	---Purpose: Returns the structure with the identification number <AId>.
+	---Category: Redefined methods
+
+	Identification ( me )
+		returns Integer from Standard
+		is redefined static;
+	---Level: Internal
+	---Purpose: Returns the identification number of the visualiser.
+	---Category: Redefined methods
+
+	----------------------------
+	-- Category: Private methods
+	----------------------------
+
+	ChangeDisplayPriority ( me		: mutable;
+				AStructure	: Structure from Graphic3d;
+				OldPriority	: Integer from Standard;
+				NewPriority	: Integer from Standard )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Changes the display priority of the structure <AStructure>.
+	---Category: Private methods
+
+	Clear ( me		: mutable;
+		AStructure	: Structure from Graphic3d;
+		WithDestruction	: Boolean from Standard )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Clears the structure <AStructure>.
+	---Category: Private methods
+
+	Connect ( me		: mutable;
+		  AMother	: Structure from Graphic3d;
+		  ADaughter	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Connects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Disconnect ( me		: mutable;
+		     AMother	: Structure from Graphic3d;
+		     ADaughter	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Disconnects the structures <AMother> and <ADaughter>.
+	---Category: Private methods
+
+	Display ( me		: mutable;
+		  AStructure	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Display of the structure <AStructure>.
+	---Category: Private methods
+
+	Erase ( me		: mutable;
+		AStructure	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Erases the structure <AStructure>.
+	---Category: Private methods
+
+	Highlight ( me		: mutable;
+		    AStructure	: Structure from Graphic3d;
+		    AMethod	: TypeOfHighlightMethod from Aspect )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Highlights the structure <AStructure>.
+	---Category: Private methods
+
+	SetTransform ( me		: mutable;
+		       AStructure	: Structure from Graphic3d;
+		       ATrsf		: Array2OfReal from TColStd )
+		is redefined static;
+	---Level: Internal
+	---Purpose: 
+	---Category: Private methods
+
+	UnHighlight ( me		: mutable )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Suppress the highlighting on all the structures.
+	---Category: Private methods
+
+	UnHighlight ( me		: mutable;
+		      AStructure	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Internal
+	---Purpose: Suppress the highlighting on the structure <AStructure>.
+	---Category: Private methods
+
+	ViewExists ( me;
+		     AWindow	: Window from Aspect;
+		     TheCView	: out CView from Graphic3d )
+		returns Boolean from Standard
+		is static;
+	---Level: Internal
+	---Purpose: Returns Standard_True if the view associated to the
+	--	    window <AWindow> exists and is activated.
+	--	    <TheViewId> contains the internal identification of
+	--	    the associated view.
+	---Category: Private methods
+
+	SetLayer ( me		: mutable;
+		   ALayer	: Layer from Visual3d )
+		is static private;
+	---Level: Internal
+	---Purpose: Adds a new layer in all the views of <me>.
+	---Category: Private methods
+
+	UnderLayer ( me )
+		returns Layer from Visual3d;
+	---Level: Internal
+	---Purpose: Returns the underlay of the viewer <me>.
+	---Category: Private methods
+	---C++: return const &
+
+	OverLayer ( me )
+		returns Layer from Visual3d;
+	---Level: Internal
+	---Purpose: Returns the underlay of the viewer <me>.
+	---Category: Private methods
+	---C++: return const &
+
+	-----------------------------
+	-- Category: Internal methods
+	-----------------------------
+
+	ReCompute ( me		: mutable;
+		    AStructure	: Structure from Graphic3d )
+		is redefined static;
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <AStructure>
+	--	    if <AStructure> is displayed and TOS_COMPUTED.
+	---Category: Private methods
+
+	ReCompute ( me		: mutable;
+		    AStructure	: Structure from Graphic3d;
+		    AProjector	: DataStructureManager from Graphic3d )
+		is redefined static;
+	---Level: Advanced
+	---Purpose: Forces a new construction of the structure <AStructure>
+	--	    if <AStructure> is displayed in <AProjector> and TOS_COMPUTED.
+	---Category: Private methods
+
+	Transparency ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+	---Purpose: Returns Standard_True if the transparency
+	--	    is activated in all activated views.
+	--	    Default Standard_False
+	---Category: Internal methods
+
+	SetTransparency ( me : mutable;
+		AFlag : Boolean from Standard )
+		is static;
+	---Level: Advanced
+	---Purpose: if <AFlag> is Standard_True then the transparency
+	--	    is managed.
+	--	    Default Standard_False
+	---Category: Internal methods
+
+	ZBufferAuto ( me )
+		returns Boolean from Standard
+		is static;
+	---Level: Advanced
+	---Purpose: Returns Standard_True if the zbuffer activity
+	--	    is managed automatically.
+	--	    Default Standard_False
+	---Category: Internal methods
+
+	SetZBufferAuto ( me : mutable;
+		AFlag : Boolean from Standard )
+		is static;
+	---Level: Advanced
+	---Purpose: if <AFlag> is  Standard_True then the zbuffer activity
+	--	    is managed automatically.
+	--	    Default Standard_False
+	---Category: Internal methods
+--
+
+fields
+
+--
+-- Class	:	Visual3d_ViewManager
+--
+-- Purpose	:	Declaration of the variables specific to visualiser
+--
+-- Reminder	:	A visualiser manipulates a group of structures
+--			and a group of views.
+--
+	-- the defined views
+ 	MyDefinedView			:	SetOfView from Visual3d;
+
+	-- the layers
+	MyUnderLayer			:	Layer from Visual3d;
+	MyOverLayer			:	Layer from Visual3d;
+
+	-- the view identifier generator
+	MyViewGenId			:	GenId from Aspect;
+
+	-- the graphic driver used
+	MyGraphicDriver			:	GraphicDriver from Graphic3d;
+
+	-- advanced
+	MyZBufferAuto			:	Boolean from Standard;
+	MyTransparency			:	Boolean from Standard;
+
+friends
+
+	class View from Visual3d,
+
+	class Layer from Visual3d
+	-- Create, Destroy, SetType
+
+end ViewManager;

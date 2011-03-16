@@ -1,0 +1,42 @@
+-- File:        ConversionBasedUnit.cdl
+-- Created:     Fri Dec  1 11:11:17 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class ConversionBasedUnit from StepBasic 
+
+inherits NamedUnit from StepBasic 
+
+uses
+
+	HAsciiString from TCollection, 
+	MeasureWithUnit from StepBasic, 
+	DimensionalExponents from StepBasic
+is
+
+	Create returns mutable ConversionBasedUnit;
+	---Purpose: Returns a ConversionBasedUnit
+
+
+	Init (me : mutable;
+	      aDimensions : mutable DimensionalExponents from StepBasic) is redefined;
+
+	Init (me : mutable;
+	      aDimensions : mutable DimensionalExponents from StepBasic;
+	      aName : mutable HAsciiString from TCollection;
+	      aConversionFactor : mutable MeasureWithUnit from StepBasic) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetName(me : mutable; aName : mutable HAsciiString);
+	Name (me) returns mutable HAsciiString;
+	SetConversionFactor(me : mutable; aConversionFactor : mutable MeasureWithUnit);
+	ConversionFactor (me) returns mutable MeasureWithUnit;
+
+fields
+
+	name : HAsciiString from TCollection;
+	conversionFactor : MeasureWithUnit from StepBasic;
+
+end ConversionBasedUnit;

@@ -1,0 +1,389 @@
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NotImplemented.hxx>
+
+// ------------
+// constructor
+// -----------
+
+PCollection_HSet::PCollection_HSet() 
+{
+    TheExtent   = 0;
+    TheLast     = new PCollection_SetNode;
+}
+
+// -----------------------------
+// IsEmpty : is the Set empty ? 
+// -----------------------------
+Standard_Boolean PCollection_HSet::IsEmpty() const 
+{
+    return TheLast->IsEmpty();
+} 
+
+// ----------------
+// Contains an item 
+// ----------------
+Standard_Boolean PCollection_HSet::Contains(const Item& T) const
+{
+    Standard_Boolean Ilela;
+    Handle(PCollection_SetNode) TheCurrent;
+    TheCurrent = TheLast; 
+    Ilela      = Standard_False;
+    while (!Ilela && !TheCurrent->IsEmpty())
+      { 
+       if (TheCurrent->Value() == T) 
+          Ilela      = Standard_True;
+       else
+          TheCurrent = TheCurrent->Tail();       
+      };     
+    return Ilela;
+}    
+
+// ---------------------------------
+// The Set S IsASubset of the set me
+// ---------------------------------
+Standard_Boolean PCollection_HSet::IsASubset(const Handle(PCollection_HSet)& S) const 
+{
+    Standard_Boolean Ilela,Ilsonla;
+    Handle(PCollection_SetNode) TheCurrent1,TheCurrent2;
+    TheCurrent1 = TheLast;
+    TheCurrent2 = S->Last(); 
+    Ilela       = Standard_False;
+    Ilsonla     = Standard_True;
+    while (Ilsonla && !TheCurrent2->IsEmpty())
+    { 
+      while (!Ilela && !TheCurrent1->IsEmpty())
+      { 
+       if (TheCurrent1->Value() == TheCurrent2->Value()) 
+          Ilela = Standard_True;
+       else
+          TheCurrent1 = TheCurrent1->Tail();       
+      };     
+    if (!Ilela)
+       Ilsonla = Standard_False;
+    else
+      {
+       TheCurrent2 = TheCurrent2->Tail();
+       TheCurrent1 = TheLast;
+      };
+    };    
+    return Ilsonla;
+
+}
+
+ 
+// ----------------------------------------
+// The Set S IsAProperSubset of the set me
+// ----------------------------------------
+Standard_Boolean PCollection_HSet::IsAProperSubset(const Handle(PCollection_HSet)& S) const 
+{
+    Standard_Boolean Ilela,Ilsonla;
+    Handle(PCollection_SetNode) TheCurrent1,TheCurrent2;
+    TheCurrent1 = TheLast;
+    TheCurrent2 = S->Last(); 
+    Ilela       = Standard_False;
+    Ilsonla     = Standard_True;
+    if (S->Extent() >= TheExtent) Ilsonla = Standard_False; 
+    while (Ilsonla && !TheCurrent2->IsEmpty())
+    { 
+      while (!Ilela && !TheCurrent1->IsEmpty())
+      { 
+       if (TheCurrent1->Value() == TheCurrent2->Value()) 
+          Ilela      = Standard_True;
+       else
+          TheCurrent1 = TheCurrent1->Tail();       
+      };     
+     if (!Ilela)
+        Ilsonla = Standard_False;
+     else
+       {
+        TheCurrent2 = TheCurrent2->Tail();
+        TheCurrent1 = TheLast;
+       };
+    };    
+    return Ilsonla;
+
+} 
+
+// ------------------------------------
+// Clear : remove all items
+// ------------------------------------
+void PCollection_HSet::Clear() 
+{   
+   Handle(PCollection_SetNode) temp; 
+   while (TheExtent != 0) {
+      temp = TheLast;
+      TheLast = TheLast->Tail();
+#ifndef CSFDB 
+      temp.Delete();
+#endif
+      --TheExtent;
+   }  
+}
+
+// -------------------------------------------
+// Add : insert an item 
+// returns Standard_True if the item has been inserted, 
+// Standard_False otherwise
+// ------------------------------------------- 
+Standard_Boolean PCollection_HSet::Add(const Item& T)
+{   
+    Standard_Boolean Dejala;
+    Handle(PCollection_SetNode) TheCurrent;
+    TheCurrent = TheLast; 
+    Dejala = Standard_False;
+    while (!Dejala && !TheCurrent->IsEmpty())
+      { if (TheCurrent->Value() == T) Dejala = Standard_True;
+        TheCurrent = TheCurrent->Tail();       
+      };     
+    if (!Dejala)
+      {
+       TheLast = TheLast->Construct(T);
+       TheExtent = TheExtent + 1;
+      };     
+    return !Dejala;
+}
+
+// ------------------------
+// Remove : remove an item 
+// from the set me.
+// Raises Standard_NoSuchObject
+// ------------------------
+void PCollection_HSet::Remove(const Item& T)
+{   
+   Standard_Boolean Nepala;
+   Handle(PCollection_SetNode) TheCurrent,ThePrevious;
+   TheCurrent  = TheLast; 
+   ThePrevious = TheLast;
+   Nepala      = Standard_True;
+   while (Nepala && !TheCurrent->IsEmpty()) { 
+      if (TheCurrent->Value() == T) 
+        Nepala      = Standard_False;
+      else {
+        ThePrevious = TheCurrent;
+        TheCurrent  = TheCurrent->Tail();
+      }       
+   }     
+   if (Nepala)
+     Standard_NoSuchObject::Raise();     
+   else {
+     if (TheCurrent == ThePrevious)
+       TheLast = TheLast->Tail();
+     else 
+       ThePrevious->ChangeForwardPointer(TheCurrent->Tail());
+     TheExtent = TheExtent - 1;
+#ifndef CSFDB
+     TheCurrent.Delete();
+#endif
+   }
+}
+
+// ------------------------------------
+// Union with the set S
+// returns a set containing all the 
+// items of the set me and all the items 
+// of the set B which are not in me
+// ------------------------------------
+Handle(PCollection_HSet) PCollection_HSet::Union(const Handle(PCollection_HSet)& S) 
+const 
+{   
+    Standard_Boolean Insere;
+    Handle(PCollection_SetNode) TheCurrent;
+    Handle(PCollection_HSet) Lunion;
+    Lunion = new PCollection_HSet;
+// copier this dans Lunion 
+    TheCurrent = TheLast;
+    while (!TheCurrent->IsEmpty())
+      { 
+       Insere = Lunion->Add(TheCurrent->Value());
+       TheCurrent = TheCurrent->Tail();
+      };
+// Inserer dans Lunion les items de S    
+    TheCurrent = S->Last();
+    while (!TheCurrent->IsEmpty())
+      { 
+       Insere = Lunion->Add(TheCurrent->Value());
+       TheCurrent = TheCurrent->Tail();
+      };
+    return Lunion;
+}
+
+// -----------------------------
+// Intersection with the set S 
+// -----------------------------
+Handle(PCollection_HSet) PCollection_HSet::
+                          Intersection(const Handle(PCollection_HSet)& S)  
+const
+{
+    Item Litem;
+    Standard_Boolean Insere;
+    Handle(PCollection_SetNode) TheCurrent1,TheCurrent2;
+    Handle(PCollection_HSet) Linter;
+    Linter = new PCollection_HSet;
+    TheCurrent1 = TheLast;
+    while (!TheCurrent1->IsEmpty())
+      { 
+       Litem = TheCurrent1->Value();
+       TheCurrent2 = S->Last();
+       while (!TheCurrent2->IsEmpty())
+	 {
+          if (TheCurrent2->Value() == Litem) 
+             Insere = Linter->Add(Litem);
+          TheCurrent2 = TheCurrent2->Tail();           
+	 };
+       TheCurrent1 = TheCurrent1->Tail();  
+      };
+    return Linter;
+}    
+
+
+// -----------------------------
+// Difference with the set S 
+// returns a set containing the 
+// items which are in the set me
+// and not in the set B 
+// -----------------------------
+Handle(PCollection_HSet) PCollection_HSet::
+                         Difference(const Handle(PCollection_HSet)& S) 
+const
+{    
+    Item Litem;
+    Standard_Boolean Insere,Ilela;
+    Handle(PCollection_SetNode) TheCurrent1,TheCurrent2;
+    Handle(PCollection_HSet) Ladif;
+    Ladif = new PCollection_HSet;
+    TheCurrent1 = TheLast;
+    while (!TheCurrent1->IsEmpty())
+      { 
+       Litem = TheCurrent1->Value();
+       TheCurrent2 = S->Last();
+       Ilela = Standard_False;
+       while (!TheCurrent2->IsEmpty() && !Ilela)
+	 {
+          if (TheCurrent2->Value() == Litem)
+             Ilela = Standard_True;
+          else
+             TheCurrent2 = TheCurrent2->Tail();
+	 };
+       if (!Ilela)
+       Insere = Ladif->Add(Litem);           
+       TheCurrent1 = TheCurrent1->Tail();  
+      };
+    return Ladif;
+}
+
+
+//---------------------------------------------------------------------
+// ShallowCopy
+//---------------------------------------------------------------------
+Handle(Standard_Persistent) PCollection_HSet::ShallowCopy() const
+{
+
+  PCollection_HSet* TheCopy = new PCollection_HSet (*this);
+  TheCopy->TheLast = 
+      Handle(PCollection_SetNode)::DownCast(::ShallowCopy(TheLast));
+  return TheCopy;
+
+}
+
+//---------------------------------------------------------------------
+// ShallowDump
+//---------------------------------------------------------------------
+void PCollection_HSet::ShallowDump(Standard_OStream& S) const
+{
+
+  S << "begin class Set "<<endl;
+  S << "extent of Set : "<< TheExtent << endl;
+  TheLast->ShallowDump(S);
+  S << "end of class Set." << endl;
+
+}
+
+
+
+
+
+// -----------------------------
+// Extent : numbers of items 
+// -----------------------------
+Standard_Integer PCollection_HSet::Extent() const {
+    return TheExtent;
+} 
+
+// -----------------------------
+// Last : last enterred item  
+// -----------------------------
+Handle(PCollection_SetNode) PCollection_HSet::Last() const {
+    return TheLast;
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+// #include <DBC_BaseArray.hxx>
+
+DBC_VArrayNode::DBC_VArrayNode()
+{
+}
+
+DBC_VArrayNode::DBC_VArrayNode(const Item& aValue)
+{
+  myValue = aValue;
+}
+
+void DBC_VArrayNode::SetValue(const Item& aValue)
+{
+  myValue = aValue;
+}
+
+Standard_Address DBC_VArrayNode::Value() const 
+{
+  return (Standard_Address)&myValue;
+}

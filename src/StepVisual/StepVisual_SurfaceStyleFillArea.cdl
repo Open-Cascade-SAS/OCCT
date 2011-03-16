@@ -1,0 +1,31 @@
+-- File:        SurfaceStyleFillArea.cdl
+-- Created:     Fri Dec  1 11:11:28 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class SurfaceStyleFillArea from StepVisual 
+
+inherits TShared from MMgt
+
+uses
+
+	FillAreaStyle from StepVisual
+is
+
+	Create returns mutable SurfaceStyleFillArea;
+	---Purpose: Returns a SurfaceStyleFillArea
+
+	Init (me : mutable;
+	      aFillArea : mutable FillAreaStyle from StepVisual) is virtual;
+
+	-- Specific Methods for Field Data Access --
+
+	SetFillArea(me : mutable; aFillArea : mutable FillAreaStyle);
+	FillArea (me) returns mutable FillAreaStyle;
+
+fields
+
+	fillArea : FillAreaStyle from StepVisual;
+
+end SurfaceStyleFillArea;

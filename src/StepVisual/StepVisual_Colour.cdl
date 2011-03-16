@@ -1,0 +1,17 @@
+-- File:        Colour.cdl
+-- Created:     Fri Dec  1 11:11:16 1995
+-- Author:      EXPRESS->CDL V0.2 Translator
+-- Copyright:   Matra-Datavision 1993
+
+
+class Colour from StepVisual 
+
+inherits TShared from MMgt
+
+is
+
+	Create returns mutable Colour;
+	---Purpose: Returns a Colour
+
+
+end Colour;

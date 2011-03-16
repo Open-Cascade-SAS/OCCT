@@ -1,0 +1,13 @@
+// File:	TopoDS_Vertex.lxx
+// Created:	Fri Apr 12 16:47:14 1991
+// Author:	Remi LEQUETTE
+
+
+//=======================================================================
+//function : TopoDS_Vertex
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Vertex::TopoDS_Vertex()
+{
+}

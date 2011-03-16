@@ -1,0 +1,133 @@
+-- File     : MeshVS_MeshPrsBuilder.cdl
+-- Created  : 10 October 2003
+-- Author   : Alexander SOLOVYOV
+---Copyright: Open CASCADE 2003
+
+
+class MeshPrsBuilder from MeshVS inherits PrsBuilder from MeshVS
+
+	---Purpose: This class provides methods to compute base mesh presentation
+
+uses
+  Integer from Standard,
+  Boolean from Standard,
+
+  Presentation from Prs3d,
+
+  PrsBuilder                 from MeshVS,
+  Mesh                       from MeshVS,
+  MeshPtr                    from MeshVS,
+  DisplayModeFlags           from MeshVS,
+  DataSource                 from MeshVS,
+  BuilderPriority            from MeshVS,
+  Drawer                     from MeshVS,
+  HArray1OfSequenceOfInteger from MeshVS,
+  MaterialAspect             from Graphic3d,
+  AspectFillArea3d           from Graphic3d,
+  AspectLine3d               from Graphic3d,
+  AspectMarker3d             from Graphic3d,
+  Array1OfReal               from TColStd,
+  ArrayOfPolylines           from Graphic3d,
+  ArrayOfPolygons            from Graphic3d,
+  ArrayOfPrimitives          from Graphic3d,
+  PackedMapOfInteger         from TColStd
+
+is
+
+  Create  ( Parent   : Mesh from MeshVS;
+            Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_OCCMask;
+            DS       : DataSource from MeshVS = 0;
+            Id       : Integer = -1;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_Mesh ) returns mutable MeshPrsBuilder from MeshVS;
+	---Purpose: Creates builder with certain display mode flags, data source, ID and priority
+
+  Build   ( me; Prs     : Presentation from Prs3d;
+            IDs         : PackedMapOfInteger;
+            IDsToExclude: in out PackedMapOfInteger;
+            IsElement   : Boolean;
+            DisplayMode : Integer  ) is virtual;
+	---Purpose: Builds base mesh presentation by calling the methods below
+
+  BuildNodes ( me; Prs     : Presentation from Prs3d;
+               IDs         : PackedMapOfInteger;
+               IDsToExclude: in out PackedMapOfInteger;
+               DisplayMode : Integer  ) is virtual;
+	---Purpose: Builds nodes presentation
+
+  BuildElements ( me; Prs     : Presentation from Prs3d;
+                  IDs         : PackedMapOfInteger;
+                  IDsToExclude: in out PackedMapOfInteger;
+                  DisplayMode : Integer  ) is virtual;
+	---Purpose: Builds elements presentation
+
+  BuildHilightPrs ( me; Prs     : Presentation from Prs3d;
+                    IDs         : PackedMapOfInteger;
+                    IsElement   : Boolean
+                  ) is virtual;
+	---Purpose: Builds presentation of hilighted entity
+
+  AddLinkPrs      ( me; theCoords    : Array1OfReal from TColStd;
+                        theLines     : ArrayOfPolylines from Graphic3d;
+                        IsShrinked   : Boolean;
+                        ShrinkCoef   : Real
+                  )  is protected;
+	---Purpose: Add to array of polylines some lines representing link
+
+  AddFaceWirePrs      ( me; theCoords : Array1OfReal from TColStd;
+                        NbNodes       : Integer;
+                        theLines      : ArrayOfPolylines from Graphic3d;
+                        IsShrinked    : Boolean;
+                        ShrinkCoef    : Real
+                      )  is protected;
+    ---Purpose: Add to array of polylines some lines representing face's wire
+
+  AddFaceSolidPrs     ( me; ID              : Integer;
+                        theCoords           : Array1OfReal from TColStd;
+                        NbNodes             : Integer;
+                        MaxNodes            : Integer;
+                        thePolygons         : ArrayOfPolygons from Graphic3d;
+                        IsReflected         : Boolean;
+                        IsShrinked          : Boolean;
+                        ShrinkCoef          : Real; 
+			IsMeshSmoothShading : Boolean
+                      )  is protected;
+    ---Purpose: Add to array of polygons a polygon representing face
+
+  AddVolumePrs   ( myclass; Topo        : HArray1OfSequenceOfInteger from MeshVS;
+                            Nodes       : Array1OfReal from TColStd;
+                            NbNodes     : Integer;
+                            Array       : ArrayOfPrimitives from Graphic3d;
+                            IsReflected : Boolean;
+                            IsShrinked  : Boolean;
+                            IsSelect    : Boolean;
+                            ShrinkCoef  : Real );
+    ---Purpose: Add to array polygons or polylines representing volume
+
+  HowManyPrimitives( myclass; Topo             : HArray1OfSequenceOfInteger from MeshVS;
+                              AsPolygons       : Boolean;
+                              IsSelect         : Boolean;
+                              NbNodes          : Integer;
+                              Vertices, Bounds : out Integer );
+    ---Purpose: Calculate how many polygons or polylines are necessary to draw passed topology
+
+  DrawArrays      ( me; Prs                : Presentation from Prs3d;
+                        thePolygons        : ArrayOfPolygons from Graphic3d;
+                        theLines           : ArrayOfPolylines from Graphic3d;
+                        theLinkLines       : ArrayOfPolylines from Graphic3d;
+                        theVolumesInShad   : ArrayOfPolygons from Graphic3d;
+                        IsPolygonsEdgesOff : Boolean;
+                        IsSelected         : Boolean;
+                        theFillAsp         : AspectFillArea3d from Graphic3d;
+                        theLineAsp         : AspectLine3d from Graphic3d
+                  )  is protected;
+    ---Purpose: Draw array of polygons and polylines in the certain order according to transparency
+
+  CalculateCenter ( myclass; theCoords  : Array1OfReal from TColStd;
+                             NbNodes    : Integer;
+                             xG, yG, zG : out Real ) is protected;
+    ---Purpose: Default calculation of center of face or link. This method if useful for shrink mode presentation
+    -- theCoords is array of nodes co-ordinates in the strict order X1, Y1, Z1, X2...
+    -- NbNodes is number of nodes an element consist of
+    -- xG, yG, zG are co-ordinates of center whose will be returned
+
+end MeshPrsBuilder;

@@ -1,0 +1,55 @@
+-- File:	Torus.cdl
+-- Created:	Thu Nov  5 18:50:02 1992
+-- Author:	Remi LEQUETTE
+--		<rle@phylox>
+---Copyright:	 Matra Datavision 1992
+
+
+
+class Torus from BRepPrim inherits Revolution from BRepPrim
+
+	---Purpose: Implements the torus primitive
+
+uses
+    Face from TopoDS,
+    
+    Pnt from gp,
+    Ax2 from gp    
+
+raises
+    DomainError
+
+is
+    Create(Position : Ax2 from gp; Major : Real; Minor : Real)
+    returns Torus from BRepPrim
+	   ---Purpose: the STEP definition
+	   --          Position : center and axes
+	   --          Major, Minor : Radii
+	   --          
+	   --          Errors : Major < Resolution
+	   --                   Minor < Resolution
+    raises DomainError;
+
+    Create(Major,Minor : Real)
+    returns Torus from BRepPrim
+	---Purpose: Torus centered at origin
+    raises DomainError;
+    
+    Create(Center : Pnt from gp; Major, Minor : Real)
+    returns Torus from BRepPrim
+	---Purpose: Torus at Center
+    raises DomainError;
+    
+    MakeEmptyLateralFace(me) returns Face from TopoDS
+	---Purpose: The surface normal should be directed  towards the
+	--          outside.
+    is redefined;
+    
+    SetMeridian(me : in out)
+    is static private;
+    
+fields
+    myMajor     : Real;
+    myMinor     : Real;
+
+end Torus;

@@ -1,0 +1,240 @@
+-- File:	GeomFill_LocationLaw.cdl
+-- Created:	Thu Nov 20 17:53:46 1997
+-- Author:	Philippe MANGIN
+--		<pmn@sgi29>
+---Copyright:	 Matra Datavision 1997
+
+
+deferred  class LocationLaw from GeomFill inherits TShared from MMgt 
+
+	---Purpose: To define location  law in Sweeping location is --
+	--          defined   by an  Matrix  M and  an Vector  V,  and
+	--          transform an point P in MP+V.          
+	          
+
+uses  
+    HCurve from  Adaptor3d,
+    Mat  from  gp, 
+    Vec  from  gp, 
+    Pnt  from  gp, 
+    Shape  from  GeomAbs,
+    Array1OfReal   from TColStd,
+    Array1OfPnt2d  from TColgp, 
+    Array1OfVec2d  from TColgp, 
+    PipeError      from GeomFill,   
+    Shape          from GeomAbs 
+        
+raises   
+    NotImplemented,  OutOfRange
+
+is   
+   SetCurve(me : mutable;  C  :  HCurve  from  Adaptor3d) 
+   is  deferred; 
+
+   GetCurve(me)   
+   returns HCurve  from  Adaptor3d  
+    ---C++: return const &      
+   is  deferred;
+   
+   SetTrsf(me  :  mutable;  Transfo  :  Mat  from  gp) 
+   ---Purpose:  Set a transformation Matrix like   the law M(t) become
+   --          Mat * M(t)         
+   is  deferred;    
+
+   Copy(me)   
+    returns  LocationLaw  from  GeomFill          
+    is  deferred;
+   
+-- 
+--========== To compute Location and derivatives Location
+--              
+              
+   D0(me : mutable; 
+      Param: Real;
+      M    : out  Mat  from  gp; 
+      V    : out  Vec  from  gp)
+      ---Purpose: compute Location        
+   returns Boolean  is  deferred; 
+    
+   D0(me : mutable; 
+      Param: Real;
+      M    : out  Mat  from  gp; 
+      V    : out  Vec  from  gp;
+      Poles2d  : out Array1OfPnt2d from TColgp)
+      ---Purpose: compute Location and 2d points        
+   returns Boolean  is  deferred;
+	
+   D1(me : mutable;
+      Param: Real;
+      M    : out  Mat  from  gp; 
+      V    : out  Vec  from  gp; 
+      DM   : out  Mat  from  gp; 
+      DV   : out  Vec  from  gp;             
+      Poles2d  : out Array1OfPnt2d from TColgp;
+      DPoles2d : out Array1OfVec2d from TColgp)
+      ---Purpose: compute location 2d  points and  associated
+      --          first derivatives.         
+      --  Warning : It used only for C1 or C2 aproximation
+   returns Boolean  
+   raises  NotImplemented 
+   is  virtual; 
+   
+   D2(me : mutable;
+      Param: Real;
+      M    : out  Mat  from  gp; 
+      V    : out  Vec  from  gp; 
+      DM   : out  Mat  from  gp; 
+      DV   : out  Vec  from  gp;  
+      D2M  : out  Mat  from  gp; 
+      D2V  : out  Vec  from  gp; 
+      Poles2d   : out Array1OfPnt2d from TColgp;
+      DPoles2d  : out Array1OfVec2d from TColgp;
+      D2Poles2d : out Array1OfVec2d from TColgp)      
+      ---Purpose: compute location 2d  points and associated
+      --          first and seconde  derivatives.
+      --  Warning : It used only for C2 aproximation
+   returns Boolean
+   raises  NotImplemented  
+   is  virtual;
+    
+-- 
+--   ================== General Information On The Function  ==================
+--                                         
+   Nb2dCurves(me)     
+     ---Purpose:   get the number of  2d  curves (Restrictions  +  Traces)
+     --            to approximate.
+   returns Integer  is static; 
+    
+   HasFirstRestriction(me) 
+    ---Purpose: Say if the first restriction is defined in this class.
+    --           If it  is true the  first element  of poles array   in
+    --          D0,D1,D2... Correspond to this restriction.
+    --  Returns Standard_False (default implementation) 
+   returns  Boolean 
+   is  virtual;
+    
+   HasLastRestriction(me) 
+    ---Purpose: Say if the last restriction is defined in this class.
+    --           If it is  true the  last element  of poles array in
+    --          D0,D1,D2... Correspond to this restriction.
+    --          Returns Standard_False (default implementation)   
+   returns  Boolean
+   is  virtual;
+    
+   TraceNumber(me) 
+   ---Purpose: Give the number of trace (Curves 2d wich are not restriction)
+   --          Returns 0 (default implementation)   
+   returns  Integer 
+   is  virtual;   
+
+   ErrorStatus(me)   
+   ---Purpose:Give a status to the Law              
+   --          Returns PipeOk (default implementation) 
+   returns  PipeError  from  GeomFill 
+   is  virtual;
+    
+--
+--  =================== Management  of  continuity  ===================
+--                 
+    NbIntervals(me; S : Shape from GeomAbs) 
+	---Purpose: Returns  the number  of  intervals for  continuity
+	--          <S>. 
+        --          May be one if Continuity(me) >= <S>
+   returns Integer  is  deferred;
+
+   Intervals(me; T : in out Array1OfReal from TColStd; 
+    	         S : Shape from GeomAbs)
+	---Purpose: Stores in <T> the  parameters bounding the intervals
+	--          of continuity <S>.
+	--          
+	--          The array must provide  enough room to  accomodate
+	--          for the parameters. i.e. T.Length() > NbIntervals()
+    raises
+    	OutOfRange from Standard 
+    is deferred;  
+     
+    	
+   SetInterval(me: mutable; First, Last: Real from Standard)    
+	---Purpose: Sets the bounds of the parametric interval on 
+	--          the function
+	--          This determines the derivatives in these values if the
+	--          function is not Cn.
+    	is deferred; 
+   
+    GetInterval(me; First, Last: out  Real from Standard)    
+	---Purpose: Gets the bounds of the parametric interval on 
+	--          the function
+    	is deferred;  
+	 
+    GetDomain(me; First, Last: out  Real from Standard)  
+    	---Purpose: Gets the bounds of the function parametric domain.
+    	--  Warning: This domain it is  not modified by the
+    	--          SetValue method         
+    	is  deferred;
+    
+--  ===================  To help   computation of  Tolerance   ===============
+--  
+--  Evaluation of error,  in  2d space,  or  on composed function,  is
+--  difficult.  The  following methods can  help the  approximation to
+--  make good evaluation and use good tolerances.
+--      
+--      It is not necessary for the following informations to be very
+--      precise. A fast evaluation is sufficient.
+     
+   Resolution(me;   
+              Index       :  Integer  from  Standard;
+   	      Tol         : Real from Standard;   
+              TolU,  TolV :  out Real  from Standard)    
+    ---Purpose: Returns the resolutions in the  sub-space 2d <Index>
+    --          This information is usfull to find an good tolerance in
+    --          2d approximation.              
+    ---Warning: Used only if Nb2dCurve > 0          
+  raises  NotImplemented   
+  is virtual;
+	       
+  SetTolerance(me :  mutable; Tol3d, Tol2d : Real)
+        ---Purpose: Is usefull, if (me) have to run numerical
+        --          algorithm to perform D0, D1 or D2        
+    	-- The default implementation make nothing.
+  is  virtual;  
+   
+  GetMaximalNorm(me  :  mutable)
+    ---Purpose:  Get the maximum Norm  of the matrix-location part.  It
+    --           is usful to find an good Tolerance to approx M(t).  
+  returns Real
+  is  deferred;  
+   
+  GetAverageLaw(me  :  mutable;   
+                AM: out Mat  from  gp;   
+                AV: out Vec  from  gp) 
+     ---Purpose: Get average value of M(t) and V(t) it is usfull to 
+     --          make fast approximation of rational surfaces.        
+  is  deferred; 
+
+-- 
+-- To find elementary sweep
+-- 
+ 
+  IsTranslation(me;  Error  :  out  Real)  
+  ---Purpose: Say if the Location  Law, is an translation of  Location
+   -- The default implementation is " returns False ". 
+  returns  Boolean
+  is  virtual;
+     
+  IsRotation(me;  Error  :  out  Real) 
+   ---Purpose: Say if the Location  Law, is a rotation of Location
+    -- The default implementation is " returns False ".  
+  returns  Boolean 
+  is  virtual; 
+   
+     
+  Rotation(me; Center  :  out  Pnt  from  gp) 
+  raises  NotImplemented 
+  is  virtual; 
+
+end LocationLaw;
+
+
+
+
+

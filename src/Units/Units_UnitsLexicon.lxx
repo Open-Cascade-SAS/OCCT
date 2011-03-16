@@ -1,0 +1,18 @@
+// File:	Units_UnitsLexicon.lxx
+// Created:	Fri Oct  8 11:01:21 1993
+// Author:	Gilles DEBARBOUILLE
+//		<gde@meteox>
+
+
+#include <Units_Lexicon.hxx>
+
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+
+inline void Units_UnitsLexicon::Dump() const
+{
+  cout<<" UNITSLEXICON : "<<endl;
+  Units_Lexicon::Dump();
+}

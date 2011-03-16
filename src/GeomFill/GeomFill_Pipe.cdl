@@ -1,0 +1,371 @@
+-- File:        GeomFill_Pipe.cdl
+-- Created:     Wed Apr 13 13:59:08 1994
+-- Author:      Eric BONNARDEL
+--              <ebo@fuegox>
+---Copyright:    Matra Datavision 1994
+
+
+class Pipe from GeomFill 
+
+             ---Purpose: Describes functions to construct pipes. A pipe is built by
+             -- sweeping a curve (the section) along another curve (the path).
+             -- The Pipe class provides the following types of construction:
+             -- -   pipes with a circular section of constant radius,
+             -- -   pipes with a constant section,
+             -- -   pipes with a section evolving between two given curves.
+             --   All standard specific cases are detected in order to build,
+             -- where required, a plane, cylinder, cone, sphere, torus,
+             -- surface of linear extrusion or surface of revolution.
+             -- Generally speaking, the result is a BSpline surface (NURBS).
+             -- A Pipe object provides a framework for:
+             -- -   defining the pipe to be built,
+             -- -   implementing the construction algorithm, and
+             -- -   consulting the resulting surface.
+             --          There are several methods to instantiate a Pipe:
+             --          1) give a path and  a radius : the section is
+             --          a circle.  This location  is the first  point
+             --          of the path,  and this direction is the first
+             --          derivate (calculate at  the  first point ) of
+             --          the path.
+             --          
+             --          2) give a path and a section.
+             --             Differtent options are available
+             --          2.a) Use the classical Frenet trihedron 
+             --            - or the CorrectedFrenet trihedron 
+             --              (To avoid twisted surface)
+             --            - or a constant trihedron to have all the sections
+             --              in a same plane
+             --          2.b) Define a ConstantBinormal Direction to keep the
+             --            same angle beetween the Direction and the sections
+             --            along the sweep surface.
+             --          2.c) Define the path by a surface and a 2dcurve, 
+             --            the surface is used to define the trihedron's normal.
+             --            It is usefull to keep a constant angle beetween 
+             --            input surface and the pipe.                           --          
+             --          3) give a  path and two sections. The section
+             --          evoluate from First to Last Section.
+             --          
+             --          3) give a  path and N sections. The section
+             --          evoluate from First to Last Section.
+             --          
+             --          In general case the result is a NURBS. But we
+             --          can  generate plane,  cylindrical, spherical,
+             --          conical, toroidal surface in some particular case.
+             --          
+             --          The natural parametrization of the result is:
+             --          
+             --             U-Direction along the section.
+             --             V-Direction along the path.
+             --          
+             --          But, in some particular case, the surface must
+             --          be construct otherwise.
+             --          The method "EchangeUV" return false in such cases.
+             --          
+                       
+             
+
+uses
+    HCurve  from Adaptor3d,
+    Curve   from Geom, 
+    Curve   from Geom2d,
+    Surface from Geom, 
+    Shape   from GeomAbs,   
+    SequenceOfCurve    from  TColGeom,
+    Trihedron          from  GeomFill,
+    LocationLaw        from  GeomFill, 
+    SectionLaw         from  GeomFill, 
+    Dir     from  gp
+
+raises     
+    ConstructionError from Standard
+    
+is
+    Create
+    returns Pipe from GeomFill;
+        ---Purpose:
+        -- Constructs an empty algorithm for building pipes. Use
+        -- the function Init to initialize it.    
+    Create ( Path   : Curve from Geom;
+             Radius : Real from Standard)
+    returns Pipe from GeomFill;
+    
+    Create ( Path : Curve from Geom;
+             FirstSect : Curve from Geom; 
+             Option :  Trihedron  from GeomFill = GeomFill_IsCorrectedFrenet)
+             --- Purpose:  Create  a  pipe  with  a  constant  section
+             --  (<FirstSection>)  and a path (<Path>)
+             -- Option can be  - GeomFill_IsCorrectedFrenet
+	     --                - GeomFill_IsFrenet
+             --                - GeomFill_IsConstant
+    returns Pipe from GeomFill;
+
+    Create( Path : Curve from Geom2d;
+           Support: Surface from Geom;
+           FirstSect : Curve from Geom) 
+             --- Purpose:  Create  a  pipe  with  a  constant  section
+             --  (<FirstSection>)  and a path defined by <Path> and <Support>
+    returns Pipe from GeomFill; 
+    
+    Create( Path : Curve from Geom;
+           FirstSect : Curve from Geom; 
+           Dir  :  Dir  from  gp) 
+             ---Purpose:  Create  a  pipe with  a  constant section
+             --    (<FirstSection>) and a   path <Path>  and a fixed 
+             --    binormal direction <Dir>         
+    returns Pipe from GeomFill;
+
+    Create( Path      : Curve from Geom;
+            FirstSect : Curve from Geom;
+            LastSect  : Curve from Geom )
+          ---Purpose: Create a pipe with an evolving section 
+          --          The section evoluate from First to Last Section
+    returns Pipe from GeomFill;
+
+    Create( Path      : Curve from Geom;
+            NSections : SequenceOfCurve from TColGeom)
+          ---Purpose: Create a pipe with N  sections
+          --          The section evoluate from First to Last Section
+    returns Pipe from GeomFill;
+       
+    Create( Path      : Curve from Geom;
+            Curve1    : Curve from Geom;
+            Curve2    : Curve from Geom;
+            Radius    : Real  from Standard )
+          ---Purpose: Create  a pipe  with  a constant  radius with  2
+          --          guide-line. 
+         ---Level : Advanced
+    returns Pipe from GeomFill;
+       
+    Create( Path      : HCurve from Adaptor3d;
+            Curve1    : HCurve from Adaptor3d;
+            Curve2    : HCurve from Adaptor3d;
+            Radius    : Real  from Standard )
+          ---Purpose: Create  a pipe  with  a constant  radius with  2
+          --          guide-line. 
+          ---Level : Advanced
+    returns Pipe from GeomFill; 
+      
+    Create( Path      : Curve from Geom;
+            Guide     : HCurve from Adaptor3d;
+            FirstSect : Curve from Geom; 
+	    ByACR     : Boolean  from  Standard; 	     
+    	    rotat  :  Boolean  from  Standard)  
+          ---Purpose: Create a pipe with a constant section and  with 1
+          --          guide-line.
+          --     Use the function Perform to build the surface.
+          -- All standard specific cases are detected in order to
+          -- construct, according to the respective geometric
+          -- nature of Path and the sections, a planar, cylindrical,
+          -- conical, spherical or toroidal surface, a surface of
+          -- linear extrusion or a surface of revolution.
+          -- In the general case, the result is a BSpline surface
+          -- (NURBS) built by approximation of a series of sections where:
+          -- -   the number of sections N is chosen automatically
+          --   by the algorithm according to the respective
+          --   geometries of Path and the sections. N is greater than or equal to 2;
+          -- -   N points Pi (with i in the range [ 1,N ]) are
+          --   defined at regular intervals along the curve Path
+          --   from its first point to its end point. At each point Pi,
+          --   a coordinate system Ti is computed with Pi as
+          --   origin, and with the tangential and normal vectors
+          --   to Path defining two of its coordinate axes.
+          -- In the case of a pipe with a constant circular section,
+          -- the first section is a circle of radius Radius centered
+          -- on the origin of Path and whose "Z Axis" is aligned
+          -- along the vector tangential to the origin of Path. In the
+          -- case of a pipe with a constant section, the first section
+          -- is the curve FirstSect. In these two cases, the ith
+          -- section (for values of i greater than 1) is obtained by
+          -- applying to a copy of this first section the geometric
+          -- transformation which transforms coordinate system
+          -- T1 into coordinate system Ti.
+          -- In the case of an evolving section, N-2 intermediate
+          -- curves Si are first computed (if N is greater than 2,
+          -- and with i in the range [ 2,N-1 ]) whose geometry
+          -- evolves regularly from the curve S1=FirstSect to the
+          -- curve SN=LastSect. The first section is FirstSect,
+          -- and the ith section (for values of i greater than 1) is
+          -- obtained by applying to the curve Si the geometric
+          -- transformation which transforms coordinate system
+          -- T1 into coordinate system Ti.
+        
+    returns Pipe from GeomFill; 
+     
+     
+    Init( me : in out)
+    is static  private;
+       
+--
+--  Init methods : The same options than in Create methods !
+--
+    Init( me : in out;
+          Path   : Curve from Geom;
+          Radius : Real from Standard)
+    is static;
+    
+    Init( me : in out;
+          Path      : Curve from Geom;
+          FirstSect : Curve from Geom; 
+          Option :  Trihedron  from GeomFill 
+                    = GeomFill_IsCorrectedFrenet)
+    is static; 
+
+    Init(me : in out;
+     Path : Curve from Geom2d;
+     Support: Surface from Geom;
+     FirstSect : Curve from Geom)
+    is static; 
+     
+    Init(me : in out;
+     Path : Curve from Geom;
+     FirstSect : Curve from Geom; 
+     Dir  :  Dir  from  gp)
+    is static;    
+    
+    Init( me : in out;
+          Path      : Curve from Geom;
+          FirstSect : Curve from Geom;
+          LastSect  : Curve from Geom)
+    is static;
+    
+    Init( me : in out;
+          Path      : Curve from Geom;
+          NSections : SequenceOfCurve from TColGeom)
+    is static;
+    
+    Init( me : in out;
+          Path      : HCurve from Adaptor3d;
+          Curve1    : HCurve from Adaptor3d;
+          Curve2    : HCurve from Adaptor3d;
+          Radius    : Real  from Standard )
+          ---Purpose: Create  a pipe  with  a constant  radius with  2
+          --          guide-line. 
+    is static; 
+     
+    Init( me : in out;
+    	  Path   : Curve from Geom;
+          Guide     : HCurve from  Adaptor3d; 
+          FirstSect : Curve from Geom;  
+	  ByACR     : Boolean  from  Standard;
+    	  rotat  :  Boolean  from  Standard )
+    is static;  
+        ---Purpose:
+        -- Initializes this pipe algorithm to build the following surface:
+	-- -   a pipe with a constant circular section of radius
+	--   Radius along the path Path, or
+	-- -   a pipe with constant section FirstSect along the path Path, or
+	-- -   a pipe where the section evolves from FirstSect to
+	--   LastSect along the path Path.
+	-- Use the function Perform to build the surface.
+	-- Note: a description of the resulting surface is given under Constructors.
+      
+       
+    ApproxSurf(me : in out; WithParameters: Boolean from Standard)
+        ---Purpose: The result  (<mySurface>)  is an approximation.  Using
+        --          <SweepSectionGenerator>  to      do    that.        If
+        --          <WithParameters>    is   set  to <Standard_True>,  the
+        --          apprxoximation will be   done in respect to  the spine
+        --          parametrization. 
+    is static private;
+    
+    Perform( me : in out;
+             WithParameters: Boolean from Standard = Standard_False;
+             myPolynomial  : Boolean from Standard = Standard_False)
+        ---Purpose: Builds the pipe defined at the time of initialization of this
+	-- algorithm. A description of the resulting surface is given under Constructors.
+	-- If WithParameters (defaulted to false) is set to true, the
+	-- approximation algorithm (used only in the general case
+	-- of construction of a BSpline surface) builds the surface
+	-- with a u parameter corresponding to the one of the path.
+	-- Exceptions
+	-- Standard_ConstructionError if a surface cannot be constructed from the data.
+        --  Warning: It is the old Perform method, the next methode is recommended. 
+    raises 
+        ConstructionError from Standard
+
+    is static;
+    
+    Perform(me : in out; 
+            Tol     : Real;
+            Polynomial : Boolean;
+            Conti : Shape  from  GeomAbs  =  GeomAbs_C1;  
+	    MaxDegree  :  Integer  =  11;
+            NbMaxSegment  :  Integer  =  30) 
+        ---Purpose: detects the  particular cases.  And compute the surface.
+        --    if  none   particular  case  is  detected we make an approximation
+        --    with respect of the Tolerance <Tol>, the continuty <Conti>, the 
+        --    maximum degree <MaxDegree>, the maximum number of span <NbMaxSegment>
+        --    and the spine parametrization.  
+    raises 
+        ConstructionError from Standard
+        ---Purpose: If we can't create a surface with the data
+    is static;  
+      
+    KPartT4(  me  : in out)  
+    returns Boolean  is  private;
+    
+    Surface(me)
+        ---C++: inline
+        ---C++: return const &
+        ---Purpose: Returns the surface built by this algorithm.
+	-- Warning
+	-- Do not use this function before the surface is built (in this
+	-- case the function will return a null handle).
+    returns Surface from Geom
+    is static;
+
+    ExchangeUV(me)
+        ---Purpose: The u parametric direction of the surface constructed by
+	-- this algorithm usually corresponds to the evolution
+	-- along the path and the v parametric direction
+	-- corresponds to the evolution along the section(s).
+	-- However, this rule is not respected when constructing
+	-- certain specific Geom surfaces (typically cylindrical
+	-- surfaces, surfaces of revolution, etc.) for which the
+	-- parameterization is inversed.
+	-- The ExchangeUV function checks for this, and returns
+	-- true in all these specific cases.
+	-- Warning
+	-- Do not use this function before the surface is built.
+    returns Boolean from Standard
+    is static;
+
+
+    GenerateParticularCase(me: in out; B: Boolean from Standard)
+        ---Purpose: Sets a flag  to  try to   create as many   planes,
+        --          cylinder,...    as  possible.  Default  value   is
+        --          <Standard_False>. 
+        ---C++: inline
+        is static;
+
+    
+    GenerateParticularCase(me)
+        ---Purpose: Returns the flag.
+        ---C++: inline
+        returns Boolean from Standard
+        is static;
+ 
+    ErrorOnSurf(me) 
+        ---Purpose: Returns the approximation's error.  if the Surface
+        --          is plane, cylinder ... this error can be 0.          
+        ---C++: inline
+        returns Real from Standard
+        is static;    
+    
+fields     
+    myRadius       : Real    from Standard;
+    myError        : Real    from Standard; 
+
+    myAdpPath      : HCurve  from Adaptor3d;
+    myAdpFirstSect : HCurve  from Adaptor3d;
+    myAdpLastSect  : HCurve  from Adaptor3d;
+    mySurface      : Surface from Geom; 
+    
+    myLoc          : LocationLaw from  GeomFill; 
+    mySec          : SectionLaw  from  GeomFill; 
+     
+    myType         : Integer from Standard;     
+    myExchUV       : Boolean from Standard;
+    myKPart        : Boolean from Standard;
+    myPolynomial   : Boolean from Standard; 
+end Pipe;

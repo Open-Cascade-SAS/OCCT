@@ -1,0 +1,55 @@
+//#include <Transfer_Actor.ixx>
+
+//  TheStart : Handle(Standard_Transient) ou (Transfer_Finder)
+
+
+
+    Transfer_Actor::Transfer_Actor ()    {  }
+
+
+    Standard_Boolean  Transfer_Actor::Recognize  (const TheStart& /*start*/)
+      {  return Standard_True;  }
+
+    Handle(Transfer_Binder) Transfer_Actor::Transferring
+  (const TheStart& /*start*/,
+   const Handle(Transfer_TransferProcess)& /*TP*/)
+      {  return NullResult();  }
+
+
+    Handle(Transfer_SimpleBinderOfTransient)
+        Transfer_Actor::TransientResult
+  (const Handle(Standard_Transient)& res) const
+{
+  Handle(Transfer_SimpleBinderOfTransient) binder;
+  if (res.IsNull()) return binder;
+  binder = new Transfer_SimpleBinderOfTransient;
+  binder->SetResult (res);
+  return binder;
+}
+
+
+    Handle(Transfer_Binder) Transfer_Actor::NullResult () const
+{
+  Handle(Transfer_Binder) binder;
+  return binder;
+}
+
+
+    void Transfer_Actor::SetNext
+  (const Handle(Transfer_Actor)& next)
+{
+  if (thenext == next) return;
+  if (thenext.IsNull())           thenext = next;
+  else if (thenext->IsLast())  {  next->SetNext(thenext);  thenext = next;  }
+  else                            thenext->SetNext(next);
+}
+
+    Handle(Transfer_Actor) Transfer_Actor::Next () const
+      {  return thenext;  }
+
+    void Transfer_Actor::SetLast (const Standard_Boolean mode)
+      {  thelast = mode;  }
+
+
+    Standard_Boolean  Transfer_Actor::IsLast () const
+      {  return thelast;  }

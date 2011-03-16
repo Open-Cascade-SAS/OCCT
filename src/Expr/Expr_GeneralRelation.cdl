@@ -1,0 +1,97 @@
+-- File:	GeneralRelation.cdl
+-- Created:	Mon Jan 14 09:44:03 1991
+-- Author:	Arnaud BOUZY
+--		<adn@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+deferred class GeneralRelation from Expr
+    
+inherits TShared from MMgt 
+
+    ---Purpose: Defines the general purposes of any relation between 
+    --          expressions.
+
+uses GeneralExpression from Expr,
+    NamedUnknown from Expr,
+    AsciiString from TCollection
+
+
+raises OutOfRange from Standard,
+    NumericError from Standard
+
+is
+
+    IsSatisfied(me)
+    ---Purpose: Returns the current status of the relation
+    ---Level: Advanced 
+    returns Boolean
+    is deferred;
+
+    IsLinear(me)
+    ---Purpose: Tests if <me> is linear between its NamedUnknowns.
+    ---Level: Advanced 
+    returns Boolean
+    is deferred;
+    
+    Simplified(me)
+    ---Purpose: Returns a GeneralRelation after replacement of
+    --          NamedUnknowns by an associated expression, and after
+    --          values computation.
+    ---Level: Advanced 
+    returns mutable GeneralRelation
+    raises NumericError
+    is deferred;
+
+    Simplify(me : mutable)
+    ---Purpose: Replaces NamedUnknowns by associated expressions,
+    --          and computes values in <me>.
+    ---Level: Advanced 
+    raises NumericError
+    is deferred;
+    
+    Copy(me)
+    ---Purpose: Returns a copy of <me> having the same unknowns and 
+    --          functions.
+    ---Level: Advanced 
+    returns mutable like me
+    is deferred;
+    
+    NbOfSubRelations(me)
+    ---Purpose: Returns the number of relations contained in <me>.
+    ---Level: Internal
+    returns Integer
+    is deferred;
+    
+    NbOfSingleRelations(me)
+    ---Purpose: Returns the number of SingleRelations contained in 
+    --          <me>.
+    ---Level: Internal
+    returns Integer
+    is deferred;
+    
+    SubRelation(me; index : Integer)
+    ---Purpose: Returns the relation denoted by <index> in <me>.
+    --          An exception is raised if <index> is out of range.
+    ---Level: Internal
+    returns any GeneralRelation
+    raises OutOfRange
+    is deferred;
+
+    Contains(me; exp : GeneralExpression)
+    ---Purpose: Tests if <exp> contains <var>.
+    ---Level: Internal
+    returns Boolean
+    is deferred;
+    
+    Replace(me : mutable ; var : NamedUnknown ; with : GeneralExpression)
+    ---Purpose: Replaces all occurences of <var> with <with> in <me>.
+    ---Level: Internal
+    is deferred;
+    
+    String(me)
+    ---Purpose: returns a string representing <me> in a readable way.
+    ---Level: Public
+    returns AsciiString
+    is deferred;
+    
+end GeneralRelation;

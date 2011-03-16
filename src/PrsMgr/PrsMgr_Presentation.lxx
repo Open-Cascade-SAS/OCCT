@@ -1,0 +1,15 @@
+// File:	PrsMgr_Presentation.lxx
+// Created:	Thu Feb 20 15:08:40 1997
+// Author:	Robert COUBLANC
+//		<rob@robox.paris1.matra-dtv.fr>
+
+
+
+inline void PrsMgr_Presentation::SetUpdateStatus(const Standard_Boolean TheUpdateStatus)
+{myMustBeUpdated = TheUpdateStatus ;}
+
+inline Standard_Boolean  PrsMgr_Presentation::MustBeUpdated() const 
+{return myMustBeUpdated;}
+
+inline const Handle(PrsMgr_PresentationManager)& PrsMgr_Presentation::PresentationManager() const 
+{return myPresentationManager;}

@@ -1,0 +1,51 @@
+// File math_FunctionSetRoot.lxx
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_DimensionError.hxx>
+
+
+inline Standard_Boolean math_FunctionSetRoot::IsDone() const { return Done; }
+
+inline Standard_OStream& operator<<(Standard_OStream& o,
+				    const math_FunctionSetRoot& F)
+{
+  F.Dump(o);
+  return o;
+}
+
+
+inline const math_Vector& math_FunctionSetRoot::Root() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Sol;
+}
+
+
+inline const math_Vector& math_FunctionSetRoot::FunctionSetErrors() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Delta;
+}
+
+
+inline const math_Matrix& math_FunctionSetRoot::Derivative() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return DF;
+}
+
+inline void math_FunctionSetRoot::Derivative(math_Matrix& Der) const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  Standard_DimensionError_Raise_if(Der.ColNumber() != Sol.Length(), " ");
+  Der = DF;
+}
+
+
+inline Standard_Integer math_FunctionSetRoot::StateNumber() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return State;
+}
+
+
+inline Standard_Integer math_FunctionSetRoot::NbIterations() const{
+  StdFail_NotDone_Raise_if(!Done, " ");
+  return Kount;
+}    
+

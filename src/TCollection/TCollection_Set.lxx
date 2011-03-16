@@ -1,0 +1,35 @@
+// File:	TCollection_Set.lxx
+// Created:	Tue Mar  2 15:59:35 1993
+// Author:	Remi LEQUETTE
+//		<rle@phylox>
+
+//=======================================================================
+//function : Extent
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer TCollection_Set::Extent() const
+{
+  return myItems.Extent();
+}
+
+//=======================================================================
+//function : IsEmpty
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TCollection_Set::IsEmpty() const
+{
+  return myItems.IsEmpty();
+}
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_Set::Clear()
+{
+  myItems.Clear();
+}
+

@@ -1,0 +1,59 @@
+-- File:	MyRootFunction.cdl
+-- Created:	Fri Jul 19 16:11:34 1991
+-- Author:	Isabelle GRIGNON
+--		<isg@topsn3>
+---Copyright:	 Matra Datavision 1991
+
+
+private class MyRootFunction from CPnts 
+
+inherits FunctionWithDerivative from math
+
+---Purpose: Implements a function for the Newton algorithm to find the
+--          solution of Integral(F) = L
+
+uses
+    MyGaussFunction from CPnts,
+    RealFunction    from CPnts
+
+is
+
+    Create returns MyRootFunction from CPnts;
+	---C++: inline
+
+    Init(me : in out;
+           F : RealFunction from CPnts;
+           D : Address from Standard;
+    	   Order : Integer);
+	---Purpose: F  is a pointer on a  function  D is a client data
+	--          Order is the order of integration to use
+	--          
+
+    Init(me : in out; X0,L : Real);
+	---Purpose: We want to solve Integral(X0,X,F(X,D)) = L
+
+    Init(me : in out; X0,L,Tol : Real);
+	---Purpose: We want to solve Integral(X0,X,F(X,D)) = L 
+	--  with given tolerance
+   
+   Value(me:in out; X : Real; F : out Real)
+    ---Purpose: This is Integral(X0,X,F(X,D)) - L
+   returns Boolean
+   is static;
+
+   Derivative(me :in out; X: Real; Df : out Real)
+    ---Purpose: This is F(X,D)
+   returns Boolean
+   is static;
+
+   Values(me:in out; X : Real; F, Df : out Real)
+   returns Boolean
+   is static;
+
+fields
+   myFunction : MyGaussFunction from CPnts;
+   myX0       : Real;
+   myL        : Real;
+   myOrder    : Integer;
+   myTol      : Real;  -- rbv's modification 
+end MyRootFunction;

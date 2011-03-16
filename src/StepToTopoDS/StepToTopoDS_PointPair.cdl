@@ -1,0 +1,28 @@
+-- File:	StepToTopoDS_PointPair.cdl
+-- Created:	Fri Aug  6 12:38:21 1993
+-- Author:	Martine LANGLOIS
+--		<mla@mastox>
+---Copyright:	 Matra Datavision 1993
+
+
+
+class PointPair from StepToTopoDS 
+
+	---Purpose: Stores a pair of Points from step
+
+uses
+    CartesianPoint from StepGeom
+
+is
+    Create(P1, P2 : CartesianPoint from StepGeom)
+    returns PointPair from StepToTopoDS;
+    
+
+fields
+    myP1 : CartesianPoint from StepGeom;
+    myP2 : CartesianPoint from StepGeom;
+
+friends
+    class PointPairHasher from StepToTopoDS
+
+end PointPair;

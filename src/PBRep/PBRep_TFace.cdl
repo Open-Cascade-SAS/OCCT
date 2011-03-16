@@ -1,0 +1,82 @@
+-- File:	TFace.cdl
+-- Created:	Wed May 27 15:20:30 1992
+-- Author:	Remi LEQUETTE
+--		<rle@sdsun2>
+---Copyright:	 Matra Datavision 1992
+
+
+
+
+class TFace from PBRep inherits TFace from PTopoDS
+
+	---Purpose: The Tface from PBRep  is  based  on the TFace  from
+	--          TopoDS. The TFace contains :
+	--          
+	--          * A surface, a tolerance, a location
+	--          
+	--          * A NaturalRestriction flag,   when this  flag  is
+	--          True the  boundary of the  face is known to be the
+	--          parametric space (Umin, UMax, VMin, VMax).
+
+uses
+    Surface       from PGeom,
+    Triangulation from PPoly,
+    Location      from PTopLoc
+    
+is
+
+    Create returns mutable TFace from PBRep;
+	---Purpose: Creates an empty TFace.
+    	---Level: Internal 
+	
+    
+    Surface(me) returns Surface from PGeom
+    is static;
+    	---Level: Internal 
+
+    Triangulation(me) returns any Triangulation from PPoly
+    is static;
+	---Level: Internal    
+
+    Location(me) returns Location from PTopLoc
+    is static;
+    	---Level: Internal 
+    	
+    Tolerance(me) returns Real
+    is static;
+    	---Level: Internal 
+
+    Surface(me : mutable; S : Surface from PGeom)
+    is static;
+    	---Level: Internal 
+
+    Triangulation(me : mutable; T : Triangulation from PPoly)
+    is static;
+	---Level: Internal 
+    	
+    Location(me : mutable; L : Location from PTopLoc)
+    is static;
+    	---Level: Internal 
+    	
+    Tolerance(me : mutable; T : Real)
+    is static;
+    	---Level: Internal 
+
+    NaturalRestriction(me) returns Boolean
+    is static;
+    	---Level: Internal 
+    
+    NaturalRestriction(me : mutable; N : Boolean)
+    is static;
+    	---Level: Internal 
+    
+fields
+
+    mySurface            : Surface  from PGeom;
+    myTriangulation      : Triangulation from PPoly;
+    myLocation           : Location from PTopLoc;
+    myTolerance          : Real;
+    myNaturalRestriction : Boolean;
+
+end TFace;
+

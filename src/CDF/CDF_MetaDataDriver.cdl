@@ -1,0 +1,136 @@
+-- File:	CDF_MetaDataDriver.cdl
+-- Created:	Mon Nov 17 16:41:35 1997
+-- Author:	Jean-Louis Frenkel
+--		<rmi@frilox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1997
+
+deferred class MetaDataDriver from CDF inherits Transient from Standard
+
+
+uses
+    Document from CDM, MetaData from CDM,
+    ExtendedString from TCollection,
+    ReferenceIterator from PCDM
+    
+raises 
+    NotImplemented from Standard
+is
+
+    Initialize;
+
+    ---Category: virtual methods
+
+    HasVersionCapability(me: mutable)
+    ---Purpose: returns true if the MetaDataDriver can manage different
+    --          versions of a Data.
+    --          By default, returns Standard_False.
+    returns Boolean from Standard
+    is virtual;
+
+    CreateDependsOn(me: mutable; aFirstData: MetaData from CDM;
+                                aSecondData: MetaData from CDM)
+    ---Purpose: Creates a "Depends On"  relation between two Datas.
+    --          By default does nothing
+    is virtual;
+    
+    CreateReference(me: mutable; aFrom, aTo: MetaData from CDM; aReferenceIdentifier: Integer from Standard; aToDocumentVersion: Integer from Standard)
+    is virtual;
+    
+    HasVersion(me: mutable; aFolder, aName: ExtendedString from TCollection)
+    returns Boolean from Standard
+    ---Purpose: by default return Standard_True.
+    is virtual;
+    
+    BuildFileName(me: mutable; aDocument: Document from CDM)
+    returns ExtendedString from TCollection
+    is deferred;
+
+    SetName(me: mutable; aDocument: Document from CDM; aName: ExtendedString from TCollection)
+    returns ExtendedString from TCollection
+    is virtual;
+    ---Purpose: this methods  is usefull if the name  of an  object --
+    --           depends on  the metadatadriver. For  example a Driver
+    --           -- based  on the operating  system can choose to  add
+    --           the extension of file to create to the object.
+    
+---Category: Deferred methods
+
+    ---Overview: inquiring can be made either using a folder, a name and eventually
+    --           a version 
+    --           or a path which is the concatenation of a folder, a name  and eventually
+    --           a version.
+    Find(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns Boolean from Standard
+    ---Purpose: should indicate whether meta-data exist in the DBMS corresponding 
+    --          to the Data.
+    --          aVersion may be NULL;
+    is deferred;
+    
+    HasReadPermission(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns Boolean from Standard
+    is deferred;
+    
+    MetaData(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
+    returns MetaData from CDM
+    ---Purpose: should return the MetaData stored in the DBMS with the meta-data
+    --          corresponding to the Data. If the MetaDataDriver has version management capabilities
+    --          the version has to be set in the returned MetaData.
+    --          aVersion may be NULL
+    --          MetaData is called by GetMetaData
+    --          If the version is  set to NULL, MetaData should return
+    --          the last version of the metadata 
+    is deferred;
+    
+    LastVersion(me: mutable; aMetaData: MetaData from CDM)
+    returns MetaData from CDM
+    is virtual;
+    ---Purpose: by default returns aMetaDATA
+	    
+--    MetaData(me: mutable; aPath: ExtendedString from TCollection)
+--    returns MetaData from CDM
+    ---Purpose: should return the MetaData stored in the DBMS with the meta-data
+    --          corresponding to the path. If the MetaDataDriver has version management capabilities
+    --          the version has to be set in the returned MetaData.
+    --          MetaData is called by GetMetaData
+    --          If the version is not included in the path , MetaData should return
+    --          the last version of the metadata 
+--    is deferred;
+    
+
+
+    
+    CreateMetaData(me: mutable; aDocument: Document from CDM;
+    	         aFileName: ExtendedString from TCollection)
+    ---Purpose:  should create meta-data corresponding to aData and maintaining a meta-link
+    --           between these meta-data and aFileName
+    --           CreateMetaData is called by CreateData
+    returns  MetaData from CDM
+    ---Purpose: If the metadata-driver 
+    --          has version capabilities, version must be set in the returned Data.
+    is deferred;
+    
+    FindFolder(me: mutable; aFolder: ExtendedString from TCollection)
+    returns Boolean from Standard
+    is deferred;
+
+   DefaultFolder(me: mutable) returns ExtendedString from TCollection
+   is deferred;
+   
+   
+---Category:  methods about references.
+
+    ReferenceIterator(me: mutable)
+    returns ReferenceIterator from PCDM
+    is virtual;
+    
+
+    Find(me: mutable; aFolder, aName: ExtendedString from TCollection)
+    returns Boolean from Standard;
+    ---Purpose: calls Find with an empty version
+
+    MetaData(me: mutable; aFolder, aName: ExtendedString from TCollection)
+    returns MetaData from CDM;
+    ---Purpose: calls MetaData with an empty version
+    
+
+end MetaDataDriver from CDF;

@@ -1,0 +1,55 @@
+--
+-- File      :  ExternalRefLibName.cdl
+-- Created   :  Sat 9 Jan 1993
+-- Author    : CKY / Contract Toubro-Larsen ( Anand NATRAJAN )
+--
+---Copyright : MATRA-DATAVISION  1993
+--
+
+class ExternalRefLibName from IGESBasic  inherits IGESEntity
+
+        ---Purpose: defines ExternalRefLibName, Type <416> Form <4>
+        --          in package IGESBasic
+        --          Used when it is assumed that a copy of the subfigure
+        --          exists in native form in a library on the receiving 
+        --          system
+
+uses
+
+        HAsciiString from TCollection
+
+is
+
+        Create returns mutable ExternalRefLibName;
+
+        -- Specific Methods pertaining to the class
+
+        Init (me : mutable; aLibName, anExtName : HAsciiString);
+        ---Purpose : This method is used to set the fields of the class
+        --           ExternalRefLibName
+        --       - aLibName  : Name of library in which ExtName resides
+        --       - anExtName : External Reference Entity Symbolic Name
+
+        LibraryName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns name of library in which External Reference Entity
+        -- Symbolic Name resides
+
+        ReferenceName (me) returns HAsciiString from TCollection;
+        ---Purpose : returns External Reference Entity Symbolic Name
+
+fields
+
+--
+-- Class    : IGESBasic_ExternalRefLibName
+--
+-- Purpose  : Declaration of variables specific to the definition
+--            of the Class ExternalRefLibName.
+--
+-- Reminder : A ExternalRefLibName instance is defined by :
+--            - Name of library in which name resides
+--            - External Reference Entity Symbolic Name
+
+        theLibName              : HAsciiString from TCollection;
+        theExtRefEntitySymbName : HAsciiString from TCollection;
+
+end ExternalRefLibName;

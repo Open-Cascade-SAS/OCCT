@@ -1,0 +1,15 @@
+-- File:	LabelDisplayEntity.cdl
+-- Created:	Tue Apr  7 16:01:15 1992
+-- Author:	Christian CAILLET
+--		<cky@phobox>
+---Copyright:	 Matra Datavision 1992
+
+
+deferred class LabelDisplayEntity  from IGESData  inherits IGESEntity
+
+    ---Purpose : defines required type for LabelDisplay in directory part
+    --           an effective LabelDisplay entity must inherits it
+
+is
+
+end LabelDisplayEntity;

@@ -1,0 +1,294 @@
+// File gp_XYZ.lxx, JCV 05/12/90
+// LPA et JCV 07/92 
+
+#include <gp.hxx>
+#include <gp_Mat.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+
+inline gp_XYZ::gp_XYZ () : x(0.), y(0.), z(0.) { }
+
+inline gp_XYZ::gp_XYZ (const Standard_Real X,
+		       const Standard_Real Y,
+		       const Standard_Real Z) : x(X),y(Y),z(Z) { }
+
+inline void gp_XYZ::SetCoord (const Standard_Real X,
+			      const Standard_Real Y,
+			      const Standard_Real Z)
+{ x = X;  y = Y;  z = Z; }
+
+inline void gp_XYZ::SetCoord (const Standard_Integer i,
+			      const Standard_Real X) {
+  Standard_OutOfRange_Raise_if( i < 1 || i > 3,NULL);
+  (&x)[i-1] = X;
+}
+
+inline void gp_XYZ::SetX (const Standard_Real X)
+{ x = X; }
+
+inline void gp_XYZ::SetY (const Standard_Real Y)
+{ y = Y; }
+
+inline void gp_XYZ::SetZ (const Standard_Real Z) 
+{ z = Z; }
+
+inline Standard_Real gp_XYZ::Coord (const Standard_Integer i) const {
+  Standard_OutOfRange_Raise_if( i < 1 || i > 3,NULL);
+  return (&x)[i-1];
+}
+
+inline void gp_XYZ::Coord (Standard_Real& X,
+			   Standard_Real& Y,
+			   Standard_Real& Z) const
+{ X = x; Y = y; Z = z; }
+
+inline Standard_Real gp_XYZ::X () const
+{ return x; }
+
+inline Standard_Real gp_XYZ::Y () const
+{ return y; }
+
+inline Standard_Real gp_XYZ::Z () const
+{ return z; }
+
+inline Standard_Real gp_XYZ::Modulus () const { 
+  return sqrt (x * x + y * y + z * z);
+}
+
+inline Standard_Real gp_XYZ::SquareModulus () const {
+  return (x * x + y * y + z * z);
+}
+
+inline void gp_XYZ::Add (const gp_XYZ& Other)
+{
+  x += Other.x;
+  y += Other.y;
+  z += Other.z;
+}
+
+inline gp_XYZ gp_XYZ::Added (const gp_XYZ& Other) const {
+  return gp_XYZ(x + Other.x,y + Other.y,z + Other.z);
+}
+
+inline void gp_XYZ::Cross (const gp_XYZ& Right)
+{
+  Standard_Real Xresult = y * Right.z - z * Right.y;
+  Standard_Real Yresult = z * Right.x - x * Right.z;
+  z                     = x * Right.y - y * Right.x;
+  x = Xresult;
+  y = Yresult;
+}
+
+inline gp_XYZ gp_XYZ::Crossed (const gp_XYZ& Right) const
+{
+  return gp_XYZ (y * Right.z - z * Right.y,
+		 z * Right.x - x * Right.z,
+		 x * Right.y - y * Right.x);
+}
+
+inline Standard_Real gp_XYZ::CrossMagnitude (const gp_XYZ& Right) const
+{
+  Standard_Real Xresult = y * Right.z - z * Right.y;
+  Standard_Real Yresult = z * Right.x - x * Right.z;
+  Standard_Real Zresult = x * Right.y - y * Right.x;
+  return sqrt(Xresult * Xresult + Yresult * Yresult + Zresult * Zresult);
+}
+
+inline Standard_Real gp_XYZ::CrossSquareMagnitude (const gp_XYZ& Right) const
+{
+  Standard_Real Xresult = y * Right.z - z * Right.y;
+  Standard_Real Yresult = z * Right.x - x * Right.z;
+  Standard_Real Zresult = x * Right.y - y * Right.x;
+  return Xresult * Xresult + Yresult * Yresult + Zresult * Zresult;
+}
+
+inline void gp_XYZ::CrossCross (const gp_XYZ& Coord1,
+				const gp_XYZ& Coord2)
+{
+  Standard_Real Xresult = 
+    y * (Coord1.x * Coord2.y - Coord1.y * Coord2.x) -
+      z * (Coord1.z * Coord2.x - Coord1.x * Coord2.z);
+  Standard_Real Yresult  = 
+    z * (Coord1.y * Coord2.z - Coord1.z * Coord2.y) -
+      x * (Coord1.x * Coord2.y - Coord1.y * Coord2.x);
+  z = 
+    x * (Coord1.z * Coord2.x - Coord1.x * Coord2.z) -
+      y * (Coord1.y * Coord2.z - Coord1.z * Coord2.y);
+  x = Xresult;
+  y = Yresult;
+}
+
+inline gp_XYZ gp_XYZ::CrossCrossed (const gp_XYZ& Coord1,
+				    const gp_XYZ& Coord2) const
+{
+  gp_XYZ Coord0 = *this;
+  Coord0.CrossCross (Coord1, Coord2);
+  return Coord0;
+}
+
+inline void gp_XYZ::Divide (const Standard_Real Scalar)
+{
+  x /= Scalar;
+  y /= Scalar;
+  z /= Scalar;
+}
+
+inline gp_XYZ gp_XYZ::Divided (const Standard_Real Scalar) const {
+  return gp_XYZ(x / Scalar,y / Scalar,z / Scalar);
+}
+
+inline Standard_Real gp_XYZ::Dot (const gp_XYZ& Other) const {
+  return(x * Other.x + y * Other.y + z * Other.z);
+}
+
+inline Standard_Real gp_XYZ::DotCross (const gp_XYZ& Coord1,
+				       const gp_XYZ& Coord2) const
+{
+  Standard_Real Xresult = Coord1.y * Coord2.z - Coord1.z * Coord2.y;
+  Standard_Real Yresult = Coord1.z * Coord2.x - Coord1.x * Coord2.z;
+  Standard_Real Zresult = Coord1.x * Coord2.y - Coord1.y * Coord2.x;
+  return ( x * Xresult + y * Yresult + z * Zresult);
+}
+
+inline void gp_XYZ::Multiply (const Standard_Real Scalar)
+{
+  x *= Scalar;
+  y *= Scalar;
+  z *= Scalar;
+}
+
+inline void gp_XYZ::Multiply (const gp_XYZ& Other)
+{
+  x *= Other.x;
+  y *= Other.y;
+  z *= Other.z;
+}
+
+inline void gp_XYZ::Multiply (const gp_Mat& Matrix)
+{
+  const Standard_Address M = (Standard_Address)&(Matrix.matrix[0][0]);
+  Standard_Real Xresult = Mat00 * x + Mat01 * y + Mat02 * z;
+  Standard_Real Yresult = Mat10 * x + Mat11 * y + Mat12 * z;
+  z                     = Mat20 * x + Mat21 * y + Mat22 * z;
+  x                     = Xresult;
+  y                     = Yresult;
+}
+
+inline gp_XYZ gp_XYZ::Multiplied (const Standard_Real Scalar) const {
+  return gp_XYZ(x * Scalar,y * Scalar,z * Scalar);
+}
+
+inline gp_XYZ gp_XYZ::Multiplied (const gp_XYZ& Other) const {
+  return gp_XYZ(x * Other.x, y * Other.y, z * Other.z);
+}
+
+inline gp_XYZ gp_XYZ::Multiplied (const gp_Mat& Matrix) const
+{
+  const Standard_Address M = (Standard_Address)&(Matrix.matrix[0][0]);
+  return gp_XYZ (Mat00 * x + Mat01 * y + Mat02 * z,
+		 Mat10 * x + Mat11 * y + Mat12 * z,
+		 Mat20 * x + Mat21 * y + Mat22 * z);
+}
+
+inline void gp_XYZ::Normalize ()
+{
+  Standard_Real D = Modulus();
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  x = x / D;  y = y / D;  z = z / D;
+}
+
+inline gp_XYZ gp_XYZ::Normalized () const
+{
+  Standard_Real D = Modulus();
+  Standard_ConstructionError_Raise_if (D <= gp::Resolution(), "");
+  return gp_XYZ (x / D, y / D, z / D);
+}
+
+inline void gp_XYZ::Reverse ()
+{
+  x = - x;
+  y = - y;
+  z = - z;
+}
+
+inline gp_XYZ gp_XYZ::Reversed () const
+{
+  return gp_XYZ(-x, -y,	-z);
+}
+
+inline void gp_XYZ::Subtract (const gp_XYZ& Right)
+{
+  x-=Right.x;
+  y-=Right.y;
+  z-=Right.z;
+}
+
+inline gp_XYZ gp_XYZ::Subtracted (const gp_XYZ& Right) const
+{
+  return gp_XYZ(x - Right.x, y - Right.y, z - Right.z);
+}
+
+inline void gp_XYZ::SetLinearForm (const Standard_Real L, 
+				   const gp_XYZ& Left,
+				   const Standard_Real R, 
+				   const gp_XYZ& Right) {
+  
+  x = L * Left.x + R * Right.x;
+  y = L * Left.y + R * Right.y;
+  z = L * Left.z + R * Right.z; 
+}
+
+inline void gp_XYZ::SetLinearForm(const Standard_Real L, 
+				  const gp_XYZ& Left,
+				  const gp_XYZ& Right) {
+  x = L * Left.x + Right.x;
+  y = L * Left.y + Right.y;
+  z = L * Left.z + Right.z;
+}
+
+inline void gp_XYZ::SetLinearForm (const gp_XYZ& Left, const gp_XYZ& Right) {
+  x = Left.x + Right.x;
+  y = Left.y + Right.y;
+  z = Left.z + Right.z;
+}
+
+inline void gp_XYZ::SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1,
+				   const Standard_Real A2, const gp_XYZ& XYZ2, 
+				   const Standard_Real A3, const gp_XYZ& XYZ3) {
+  
+  x = A1 * XYZ1.x + A2 * XYZ2.x + A3 * XYZ3.x;
+  y = A1 * XYZ1.y + A2 * XYZ2.y + A3 * XYZ3.y;
+  z = A1 * XYZ1.z + A2 * XYZ2.z + A3 * XYZ3.z;  
+}
+
+inline void gp_XYZ::SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1,
+				   const Standard_Real A2, const gp_XYZ& XYZ2, 
+				   const gp_XYZ& XYZ3) {
+  x = A1 * XYZ1.x + A2 * XYZ2.x + XYZ3.x;
+  y = A1 * XYZ1.y + A2 * XYZ2.y + XYZ3.y;
+  z = A1 * XYZ1.z + A2 * XYZ2.z + XYZ3.z;
+}
+
+inline void gp_XYZ::SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1,
+				   const Standard_Real A2, const gp_XYZ& XYZ2, 
+				   const Standard_Real A3, const gp_XYZ& XYZ3,
+				   const gp_XYZ& XYZ4) {
+  x = A1 * XYZ1.x + A2 * XYZ2.x + A3 * XYZ3.x + XYZ4.x;
+  y = A1 * XYZ1.y + A2 * XYZ2.y + A3 * XYZ3.y + XYZ4.y;
+  z = A1 * XYZ1.z + A2 * XYZ2.z + A3 * XYZ3.z + XYZ4.z;
+  
+}
+
+inline gp_XYZ operator* (const gp_Mat& Matrix, const gp_XYZ& Coord1) {
+  return Coord1.Multiplied (Matrix);
+}
+
+inline gp_XYZ operator* (const Standard_Real Scalar, const gp_XYZ& Coord1) {
+  return Coord1.Multiplied (Scalar);
+}
+
+
+
+
+
+

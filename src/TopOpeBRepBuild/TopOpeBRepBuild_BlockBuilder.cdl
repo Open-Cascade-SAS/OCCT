@@ -1,0 +1,60 @@
+-- File:	TopOpeBRepBuild_BlockBuilder.cdl
+-- Created:	Thu Feb 25 15:16:42 1993
+-- Author:	Jean Yves LEBEY
+--		<jyl@phylox>
+---Copyright:	 Matra Datavision 1993
+
+class BlockBuilder from TopOpeBRepBuild
+
+uses
+    
+    Shape from TopoDS,  -- Face,Edge
+    ShapeSet from TopOpeBRepBuild,
+    IndexedMapOfOrientedShape from TopTools,
+    BlockIterator from TopOpeBRepBuild,
+    SequenceOfInteger from TColStd,
+    DataMapOfIntegerInteger from TColStd
+    
+is
+
+    Create returns BlockBuilder;
+    
+    -- creation of the blocks buildable from a ShapeSet
+    Create(SS : in out ShapeSet) returns BlockBuilder;
+    MakeBlock(me : in out; SS : in out ShapeSet) is static;
+
+    -- Iteration on blocks made by MakeBlock
+    InitBlock(me : in out) is static;
+    MoreBlock(me) returns Boolean from Standard is static;
+    NextBlock(me : in out) is static;
+    
+    -- Iteration on shapes of current block
+    BlockIterator(me) returns BlockIterator is static;
+
+    Element(me; BI : BlockIterator) returns Shape from TopoDS is static; 
+    ---Purpose: Returns the current element of <BI>.
+    ---C++: return const &
+    Element(me; I : Integer) returns Shape from TopoDS is static;
+    ---C++: return const &
+    Element(me; S : Shape from TopoDS) returns Integer;
+
+    ElementIsValid(me; BI : BlockIterator) returns Boolean; 
+    ElementIsValid(me; I : Integer) returns Boolean; 
+    
+    AddElement(me : in out; S : Shape from TopoDS) returns Integer;
+    
+    SetValid(me : in out; BI : BlockIterator; isvalid : Boolean);
+    SetValid(me : in out; I : Integer; isvalid : Boolean);
+
+    CurrentBlockIsRegular(me : in out) returns Boolean from Standard;
+
+fields
+
+    myOrientedShapeMapIsValid : DataMapOfIntegerInteger from TColStd;
+    myOrientedShapeMap : IndexedMapOfOrientedShape from TopTools;
+    myBlocks     : SequenceOfInteger from TColStd;
+    myBlockIndex : Integer from Standard;
+    myIsDone     : Boolean from Standard;
+    myBlocksIsRegular : SequenceOfInteger from TColStd;
+
+end BlockBuilder from TopOpeBRepBuild;

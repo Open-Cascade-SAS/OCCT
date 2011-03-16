@@ -1,0 +1,85 @@
+// File:	TCollection_HSet.gxx
+// Created:	Wed Mar  3 13:35:32 1993
+// Author:	Remi LEQUETTE
+//		<rle@phobox>
+
+//=======================================================================
+//function : TCollection_HSet
+//purpose  : 
+//=======================================================================
+
+TCollection_HSet::TCollection_HSet()
+{
+}
+
+//=======================================================================
+//function : Union
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HSet) TCollection_HSet::Union
+       (const Handle(TCollection_HSet)& B) const
+{
+  Handle(TCollection_HSet) R = new TCollection_HSet();
+  R->ChangeSet() = mySet;
+  R->ChangeSet().Union(B->Set());
+  return R;
+}
+
+//=======================================================================
+//function : Intersection
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HSet) TCollection_HSet::Intersection
+       (const Handle(TCollection_HSet)& B) const
+{
+  Handle(TCollection_HSet) R = new TCollection_HSet();
+  R->ChangeSet() = mySet;
+  R->ChangeSet().Intersection(B->Set());
+  return R;
+}
+
+//=======================================================================
+//function : Difference
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HSet) TCollection_HSet::Difference
+       (const Handle(TCollection_HSet)& B) const
+{
+  Handle(TCollection_HSet) R = new TCollection_HSet();
+  R->ChangeSet() = mySet;
+  R->ChangeSet().Difference(B->Set());
+  return R;
+}
+
+//=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(TCollection_HSet) TCollection_HSet::ShallowCopy() const
+{
+  Handle(TCollection_HSet) S = new TCollection_HSet();
+  S->ChangeSet() = mySet;
+  return S;
+}
+
+//=======================================================================
+//function : IsSameState
+//purpose  : 
+//=======================================================================
+
+//Standard_Boolean TCollection_HSet::IsSameState
+//  (const Handle(TCollection_HSet)& Other) const
+//{
+//  Handle(TCollection_HSet) S = Handle(TCollection_HSet)::DownCast(Other);
+//  Standard_Boolean result = Standard_False;
+//  if (!S.IsNull()) {
+//    if (S->Extent() == Extent()) {
+//      result = IsASubset(S);
+//    }
+//  }
+//  return result;
+//}

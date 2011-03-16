@@ -1,0 +1,17 @@
+// Copyright: 	Matra-Datavision 1991
+// File:	Expr_NamedUnknown.lxx
+// Created:	Mon Dec  2 14:30:57 1991
+// Author:	Arnaud BOUZY
+//		<adn>
+
+inline Standard_Boolean Expr_NamedUnknown::IsAssigned() const
+{
+  return !(myExpression.IsNull());
+}
+
+inline void Expr_NamedUnknown::Deassign ()
+{
+  myExpression.Nullify();
+}
+    
+

@@ -1,0 +1,45 @@
+-- File:	StepElement_ElementMaterial.cdl
+-- Created:	Thu Dec 12 17:29:01 2002 
+-- Author:	data exchange team
+-- Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
+-- Copyright:	Open CASCADE 2002
+
+class ElementMaterial from StepElement
+inherits TShared from MMgt
+
+    ---Purpose: Representation of STEP entity ElementMaterial
+
+uses
+    HAsciiString from TCollection,
+    HArray1OfMaterialPropertyRepresentation from StepRepr
+
+is
+    Create returns ElementMaterial from StepElement;
+	---Purpose: Empty constructor
+
+    Init (me: mutable; aMaterialId: HAsciiString from TCollection;
+                       aDescription: HAsciiString from TCollection;
+                       aProperties: HArray1OfMaterialPropertyRepresentation from StepRepr);
+	---Purpose: Initialize all fields (own and inherited)
+
+    MaterialId (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field MaterialId
+    SetMaterialId (me: mutable; MaterialId: HAsciiString from TCollection);
+	---Purpose: Set field MaterialId
+
+    Description (me) returns HAsciiString from TCollection;
+	---Purpose: Returns field Description
+    SetDescription (me: mutable; Description: HAsciiString from TCollection);
+	---Purpose: Set field Description
+
+    Properties (me) returns HArray1OfMaterialPropertyRepresentation from StepRepr;
+	---Purpose: Returns field Properties
+    SetProperties (me: mutable; Properties: HArray1OfMaterialPropertyRepresentation from StepRepr);
+	---Purpose: Set field Properties
+
+fields
+    theMaterialId: HAsciiString from TCollection;
+    theDescription: HAsciiString from TCollection;
+    theProperties: HArray1OfMaterialPropertyRepresentation from StepRepr;
+
+end ElementMaterial;
